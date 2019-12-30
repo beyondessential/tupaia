@@ -1,0 +1,61 @@
+import {} from 'dotenv/config'; // Load the environment variables into process.env
+import 'babel-polyfill';
+import http from 'http';
+import express from 'express';
+import compression from 'compression';
+import morgan from 'morgan';
+import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
+import { TupaiaDatabase } from './database';
+import { getRoutesForApiV1 } from './apiV1';
+import { bindUserSessions } from './authSession';
+import { BaseModel } from './models/BaseModel';
+import { handleError } from './utils';
+
+import './log';
+import winston from 'winston';
+
+export function createApp() {
+  const app = express();
+
+  app.server = http.createServer(app);
+  // Uncomment to log out incoming requests
+  // app.use(morgan('dev'));
+
+  app.use(compression());
+
+  // Allow all origins
+  app.use(
+    cors({
+      origin: true,
+      credentials: true,
+      optionsSuccessStatus: 200, // Some legacy browsers (IE11, various SmartTVs) choke on 204
+    }),
+  );
+
+  app.disable('etag');
+
+  // Limit max
+  app.use(
+    bodyParser.json({
+      limit: '100kb',
+    }),
+  );
+  app.use(cookieParser());
+
+  // Connect to db
+  const database = new TupaiaDatabase();
+  BaseModel.database = database;
+
+  // Initialise sessions
+  bindUserSessions(app);
+
+  // API router
+  app.use('/api/v1', getRoutesForApiV1());
+
+  // Handle errors
+  app.use(handleError);
+
+  return app;
+}

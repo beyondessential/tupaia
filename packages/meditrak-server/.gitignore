@@ -1,0 +1,6 @@
+uploads/*
+
+.vscode/tasks.json
+
+tests/testData/testSecrets.js
+exports/*

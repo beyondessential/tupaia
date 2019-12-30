@@ -1,0 +1,12 @@
+{
+  "Copyright": {
+    "prefix": "cpr",
+    "body": [
+      "/**",
+      " * Tupaia Admin",
+      " * Copyright (c) $CURRENT_YEAR Beyond Essential Systems Pty Ltd",
+      " */"
+    ],
+    "description": "Copyright notice"
+  }
+}

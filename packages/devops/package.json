@@ -1,0 +1,23 @@
+{
+  "name": "@tupaia/devops",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beyondessential/tupaia-devops.git"
+  },
+  "author": "Edwin Monk-Fromont <edmofro+npm@gmail.com> (http://sussol.net)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/beyondessential/tupaia-devops/issues"
+  },
+  "homepage": "https://github.com/beyondessential/tupaia-devops#readme",
+  "devDependencies": {
+    "generate-nginx-config": "^0.1.8"
+  }
+}

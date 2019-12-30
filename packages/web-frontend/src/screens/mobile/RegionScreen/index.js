@@ -1,0 +1,317 @@
+/**
+ * Tupaia Web
+ * Copyright (c) 2019 Beyond Essential Systems Pty Ltd.
+ * This source code is licensed under the AGPL-3.0 license
+ * found in the LICENSE file in the root directory of this source tree.
+ */
+
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+
+import CircularProgress from 'material-ui/CircularProgress';
+
+import BackButton from '../../../components/mobile/BackButton';
+import { ExpandableList } from '../../../components/mobile/ExpandableList';
+import { SelectListItem } from '../../../components/mobile/SelectListItem';
+import { Dashboard } from '../../../components/mobile/Dashboard';
+import StaticMap from '../../../components/StaticMap';
+import { filterShape } from '../../../components/mobile/FilterSelect';
+import {
+  changeOrgUnit,
+  changeMeasure,
+  toggleMeasureExpand,
+  toggleDashboardSelectExpand,
+  changeDashboardGroup,
+  clearMeasure,
+} from '../../../actions';
+import { DARK_BLUE, MOBILE_MARGIN_SIZE, WHITE } from '../../../styles';
+import { getMapUrl } from '../../../utils';
+import { getSingleFormattedValue } from '../../../utils/measures';
+import { ENTITY_TYPE } from '../../../constants';
+import { getCurrentDashboardKey } from '../../../selectors';
+
+const MAP_WIDTH = 420;
+const MAP_HEIGHT = 250;
+
+function scrollToTop() {
+  window.scrollTo(0, 0);
+}
+
+class RegionScreen extends PureComponent {
+  componentDidMount() {
+    scrollToTop();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.orgUnit.organisationUnitCode !== this.props.orgUnit.organisationUnitCode) {
+      scrollToTop();
+    }
+  }
+
+  onToggleDashboard() {
+    const open = this.state.dashboardOpen;
+    this.setState({
+      dashboardOpen: !open,
+    });
+  }
+
+  renderMap() {
+    const { orgUnit } = this.props;
+    if (!orgUnit || !orgUnit.location || !orgUnit.location.bounds) {
+      return '';
+    }
+
+    const url = getMapUrl(orgUnit);
+
+    return (
+      <div style={styles.mapWrapper}>
+        <a style={styles.mapLink} href={url} target="_blank" rel="noreferrer noopener">
+          <StaticMap
+            polygonBounds={orgUnit.location.bounds}
+            alt={`Map of ${orgUnit.name}`}
+            width={MAP_WIDTH}
+            height={MAP_HEIGHT}
+            style={styles.map}
+            showAttribution={false}
+          />
+        </a>
+      </div>
+    );
+  }
+
+  renderLoading() {
+    const { isLoading } = this.props;
+
+    if (!isLoading) {
+      return null;
+    }
+
+    return (
+      <div style={styles.spinner}>
+        <CircularProgress />
+      </div>
+    );
+  }
+
+  render() {
+    const {
+      dashboardConfig,
+      selectedFilter,
+      measureFilters,
+      onChangeMeasure,
+      mobileListItems,
+      onToggleMeasureExpand,
+      onToggleDashboardSelectExpand,
+      orgUnit,
+      measureFilterIsExpanded,
+      dashboardFilterIsExpanded,
+      onChangeOrgUnit,
+      isLoading,
+      isMeasureLoading,
+      currentDashboardKey,
+      onChangeDashboardGroup,
+    } = this.props;
+
+    const title = mobileListItems.some(i => i.data && i.data.type === ENTITY_TYPE.FACILITY)
+      ? 'Facilities'
+      : 'Districts';
+
+    return (
+      <div>
+        {this.renderMap()}
+        <Dashboard
+          orgUnit={orgUnit}
+          dashboardConfig={dashboardConfig}
+          currentDashboardKey={currentDashboardKey}
+          toggleFilter={onToggleDashboardSelectExpand}
+          filterIsExpanded={dashboardFilterIsExpanded}
+          handleFilterChange={onChangeDashboardGroup}
+        />
+        <div>
+          <ExpandableList
+            items={mobileListItems.map(item => (
+              <SelectListItem onSelect={onChangeOrgUnit} item={item} key={item.key} />
+            ))}
+            expandedByDefault={true}
+            title={title}
+            onSelectItem={unit => onChangeOrgUnit(unit)}
+            filterTitle="Measures"
+            filters={measureFilters}
+            currentFilter={selectedFilter}
+            onFilterChange={onChangeMeasure}
+            filterIsExpanded={measureFilterIsExpanded}
+            onFilterOpen={onToggleMeasureExpand}
+            onFilterClose={onToggleMeasureExpand}
+            showLoadingIcon={isMeasureLoading}
+            theme={{ background: WHITE, color: '#000' }}
+          />
+          {mobileListItems.length === 0 && !isLoading && (
+            <div style={styles.noResultText}>No clinics found in this region.</div>
+          )}
+          {this.renderLoading()}
+        </div>
+        <BackButton orgUnit={orgUnit} />
+      </div>
+    );
+  }
+}
+
+RegionScreen.propTypes = {
+  dashboardConfig: PropTypes.object.isRequired,
+  orgUnit: PropTypes.object.isRequired,
+  mobileListItems: PropTypes.array,
+  measureFilters: PropTypes.array,
+  selectedFilter: filterShape,
+  measureFilterIsExpanded: PropTypes.bool,
+  onToggleMeasureExpand: PropTypes.func.isRequired,
+  onChangeMeasure: PropTypes.func.isRequired,
+  isLoading: PropTypes.bool,
+  isMeasureLoading: PropTypes.bool,
+  onChangeOrgUnit: PropTypes.func.isRequired,
+};
+
+RegionScreen.defaultProps = {
+  mobileListItems: [],
+  measureFilters: [],
+  measureFilterIsExpanded: false,
+  selectedFilter: null,
+  isLoading: false,
+  isMeasureLoading: false,
+};
+
+const styles = {
+  spinner: {
+    background: 'rgba(0,0,0,0.5)',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+    padding: 40,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 2, // Above header.
+  },
+  mapWrapper: {
+    maxHeight: 400,
+    overflow: 'hidden',
+  },
+  mapLink: {
+    display: 'block',
+    position: 'relative',
+    paddingBottom: `${Math.floor((MAP_HEIGHT / MAP_WIDTH) * 100)}%`,
+    background: DARK_BLUE,
+    zIndex: 2, // Above floating toolbar.
+    overflow: 'hidden',
+  },
+  map: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+  },
+  noResultText: {
+    backgroundColor: WHITE,
+    padding: MOBILE_MARGIN_SIZE,
+  },
+};
+
+const getListItemsFromOrganisationUnitChildren = (
+  organisationUnitChildren,
+  isMeasureLoading,
+  measureInfo,
+) => {
+  const { measureOptions, measureData } = measureInfo;
+
+  if (!organisationUnitChildren) return [];
+
+  const getSubtitle =
+    isMeasureLoading || !measureData
+      ? () => ''
+      : code => {
+          const dataItem = measureData.find(d => d.organisationUnitCode === code);
+          if (!dataItem) return '';
+          return getSingleFormattedValue(dataItem, measureOptions);
+        };
+
+  return organisationUnitChildren.map(item => ({
+    title: item.name,
+    key: item.organisationUnitCode,
+    data: item,
+    subTitle: getSubtitle(item.organisationUnitCode),
+  }));
+};
+
+const getMeasureFiltersForHierarchy = measureHierarchy =>
+  Object.keys(measureHierarchy).map(categoryName => ({
+    category: categoryName,
+    items: measureHierarchy[categoryName].map(measure => ({
+      label: measure.name,
+      id: String(measure.measureId),
+      value: measure,
+    })),
+  }));
+
+const mapStateToProps = state => {
+  const { currentOrganisationUnit, dashboardConfig, loadingOrganisationUnit } = state.global;
+  const { measureHierarchy, currentMeasure, isExpanded } = state.measureBar;
+  const { measureInfo, isMeasureLoading } = state.map;
+  const { isGroupSelectExpanded, currentDashboardKey } = state.dashboard;
+  const hasSelectedMeasureId = currentMeasure !== undefined;
+
+  const mobileListItems = getListItemsFromOrganisationUnitChildren(
+    currentOrganisationUnit.organisationUnitChildren,
+    isMeasureLoading,
+    measureInfo,
+  );
+
+  const measureFilters = getMeasureFiltersForHierarchy(measureHierarchy);
+
+  const selectedFilter = hasSelectedMeasureId
+    ? { label: currentMeasure.name, id: `${currentMeasure.measureId}` }
+    : { label: '' };
+
+  return {
+    dashboardConfig,
+    currentDashboardKey: getCurrentDashboardKey(state),
+    orgUnit: currentOrganisationUnit,
+    mobileListItems,
+    measureFilters,
+    selectedFilter,
+    measureFilterIsExpanded: isExpanded,
+    dashboardFilterIsExpanded: isGroupSelectExpanded,
+    isLoading: !!loadingOrganisationUnit,
+    isMeasureLoading,
+  };
+};
+
+const mapDispatchToProps = dispatch => ({
+  onChangeMeasure: (measureId, orgUnit) => dispatch(changeMeasure(measureId, orgUnit)),
+  onClearMeasure: () => dispatch(clearMeasure()),
+  onToggleMeasureExpand: () => dispatch(toggleMeasureExpand()),
+  onToggleDashboardSelectExpand: () => dispatch(toggleDashboardSelectExpand()),
+  onChangeOrgUnit: orgUnit => dispatch(changeOrgUnit(orgUnit, false)),
+  onChangeDashboardGroup: name => dispatch(changeDashboardGroup(name)),
+});
+
+const mergeProps = (stateProps, dispatchProps, ownProps) => {
+  const { orgUnit } = stateProps;
+  const { onChangeMeasure, onClearMeasure } = dispatchProps;
+
+  return {
+    ...stateProps,
+    ...dispatchProps,
+    ...ownProps,
+    onChangeMeasure: measure =>
+      measure ? onChangeMeasure(measure.measureId, orgUnit.organisationUnitCode) : onClearMeasure(),
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps,
+)(RegionScreen);

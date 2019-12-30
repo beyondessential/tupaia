@@ -1,0 +1,7 @@
+{
+  "all": true,
+  "extension": [".js"],
+  "exclude": ["src/database/migrations/**", "src/tests/**"],
+  "include": ["src/**"],
+  "reporter": ["lcov", "text"]
+}

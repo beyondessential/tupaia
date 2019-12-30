@@ -1,0 +1,1 @@
+export { fridgeBreaches } from './fridgeBreaches';

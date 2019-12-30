@@ -1,0 +1,15 @@
+{
+  "cSpell.words": [
+    "analytics",
+    "dhis",
+    "groupby",
+    "imms",
+    "keyby",
+    "preaggregated",
+    "preaggregation",
+    "promisify",
+    "tupaia",
+    "upsert"
+  ],
+  "javascript.preferences.importModuleSpecifier": "non-relative"
+}

@@ -1,0 +1,160 @@
+/**
+ * Tupaia MediTrak
+ * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
+ */
+
+import multer from 'multer';
+
+import { logApiRequest } from './logApiRequest';
+
+import { authenticationMiddleware } from '../auth';
+import { InternalServerError, UnsupportedApiVersionError } from '../errors';
+import routes from '../routes';
+
+const {
+  authenticate,
+  countChanges,
+  deleteRecord,
+  editRecord,
+  exportSurveyResponses,
+  exportSurveys,
+  getChanges,
+  getRecords,
+  getSocialFeed,
+  importEntities,
+  importStriveLabResults,
+  importSurveys,
+  importUsers,
+  importOptionSets,
+  postChanges,
+  pruneChanges,
+  scratchpad,
+  updateSurveyResponses,
+  createUser,
+  changePassword,
+  requestCountryAccess,
+  putRecord,
+  getUserRewards,
+  requestPasswordReset,
+  getCountryAccessList,
+  surveyResponse,
+} = routes;
+
+const MINIMUM_API_VERSION = 2;
+
+export function addRoutesToApp(app) {
+  /**
+   * Create upload handler
+   **/
+  const upload = multer({ dest: './uploads/' });
+
+  app.use(extractApiVersion);
+
+  /**
+   * Attach authentication to each endpoint
+   **/
+  app.use(authenticationMiddleware);
+
+  /**
+   * Log every request in the api hit table
+   **/
+  app.use(logApiRequest);
+
+  /**
+   * Legacy routes to be eventually removed
+   */
+  app.post(
+    '(/v[0-9]+)?/user/:userId/requestCountryAccess', // TODO not used from app version 1.7.93. Once usage stops, remove
+    requestCountryAccess,
+  );
+  app.post('(/v[0-9]+)?/changes/prune', pruneChanges); // TODO not used from app version 1.5.68. Once usage stops, remove
+
+  /**
+   * GET routes
+   **/
+  app.get('(/v[0-9]+)?/changes/count', countChanges);
+  app.get('(/v[0-9]+)/export/surveyResponses', exportSurveyResponses);
+  app.get('(/v[0-9]+)/export/surveyResponse/:surveyResponseId', exportSurveyResponses);
+  app.get('(/v[0-9]+)/export/surveys', exportSurveys);
+  app.get('(/v[0-9]+)/export/survey/:surveyId', exportSurveys);
+  app.get('(/v[0-9]+)?/changes', getChanges);
+  app.get('(/v[0-9]+)/socialFeed', getSocialFeed);
+  app.get('(/v[0-9]+)/me/rewards', getUserRewards);
+  app.get('(/v[0-9]+)/me/countries', getCountryAccessList);
+  app.get('(/v[0-9]+)/:resource/:recordId?', getRecords);
+
+  /**
+   * POST routes
+   **/
+  app.post('(/v[0-9]+)?/auth', authenticate);
+  app.post('(/v[0-9]+)?/auth/resetPassword', requestPasswordReset);
+  app.post('(/v[0-9]+)?/changes', postChanges);
+  app.post('(/v[0-9]+)/import/entities', upload.single('entities'), importEntities);
+  app.post(
+    '(/v[0-9]+)/import/striveLabResults',
+    upload.single('striveLabResults'),
+    importStriveLabResults,
+  );
+  app.post('(/v[0-9]+)/import/surveys', upload.single('surveys'), importSurveys);
+  app.post(
+    '(/v[0-9]+)/import/surveyResponses',
+    upload.single('surveyResponses'),
+    updateSurveyResponses,
+  );
+  app.post('(/v[0-9]+)/import/users', upload.single('users'), importUsers);
+  app.post('(/v[0-9]+)/import/optionSets', upload.single('optionSets'), importOptionSets);
+  app.post('(/v[0-9]+)/scratchpad', scratchpad);
+  app.post('(/v[0-9]+)?/user', createUser);
+  app.post('(/v[0-9]+)/me/requestCountryAccess', requestCountryAccess);
+  app.post('(/v[0-9]+)/me/changePassword', changePassword);
+  app.post('(/v[0-9]+)/:resource/:id', editRecord);
+  app.post('(/v[0-9]+)/surveyResponse', surveyResponse);
+
+  /**
+   * PUT routes
+   */
+  app.put('(/v[0-9]+)/:resource', putRecord);
+
+  /**
+   * DELETE routes
+   **/
+  app.delete('(/v[0-9]+)/:resource/:recordId', deleteRecord);
+
+  /**
+   * Handle errors
+   */
+  app.use(handleError);
+}
+
+const extractApiVersion = (req, res, next) => {
+  if (!req.path.startsWith('/v')) {
+    // A version of the app that should be on v2 but missing the version section of the url
+    req.version = 2;
+    req.endpoint = req.path;
+  } else {
+    const secondSlashIndex = req.path.indexOf('/', 2);
+    req.version = parseFloat(req.path.substring(2, secondSlashIndex));
+    req.endpoint = req.path.substring(secondSlashIndex);
+  }
+  if (!req.version || req.version < MINIMUM_API_VERSION) {
+    throw new UnsupportedApiVersionError();
+  }
+  next();
+};
+
+const handleError = (err, req, res, next) => {
+  // eslint-disable-line no-unused-vars
+  const { database, apiRequestLogId } = req;
+  let error = err;
+  if (!error.respond) {
+    error = new InternalServerError(err);
+  }
+  if (database) {
+    database.create('error_log', {
+      message: error.message,
+      type: error.constructor.name,
+      api_request_log_id: apiRequestLogId,
+    });
+  }
+  error.respond(res);
+};

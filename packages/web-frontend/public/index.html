@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="theme-color" content="#000000">
+    <!-- Open Graph for Facebook link preview -->
+    <meta property="og:image" content="https://tupaia.org/images/tupaiaLogo.png" />
+    <meta property="og:description" content="Health resource and supply chain mapping for the Asia Pacific region" />
+    <meta property="og:url" content="https://tupaia.org" />
+    <meta property="og:title" content="Tupaia" />
+    <!-- Google Analytics -->
+    <script>
+    (function (i, s, o, g, r, a, m) {
+  i['GoogleAnalyticsObject'] = r;
+  (i[r] =
+    i[r] ||
+    function () {
+      (i[r].q = i[r].q || []).push(arguments);
+    }), (i[r].l = 1 * new Date());
+  (a = s.createElement(o)), (m = s.getElementsByTagName(o)[0]);
+  a.async = 1;
+  a.src = g;
+  m.parentNode.insertBefore(a, m);
+})(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+ga('create', 'UA-100824457-2', 'auto');
+ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!--
+      Record the load time at this point instead of in the javascript as cached resources would make
+      load time inconsistent between apge loads.
+    -->
+    <script>window.loadTime = Date.now() - window.performance.timing.navigationStart;</script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet/1.1.0/leaflet.css">
+
+    <!-- Loading spinner. No need to load this into separate style sheet as that will just add extra network overhead -->
+    <style>
+      @keyframes spinner {
+        to {transform: rotate(360deg);}
+      }
+      body {
+        background: #262834;
+        font-family: Roboto, sans-serif;
+      }
+      .spinner:before {
+        content: '';
+        box-sizing: border-box;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 60px;
+        height: 60px;
+        margin-top: -30px;
+        margin-left: -30px;
+        border-radius: 50%;
+        border: 5px solid rgba(255,255,255,0.3);
+        border-top-color: white;
+        animation: spinner .6s linear infinite;
+      }
+    </style>
+    <title>Tupaia</title>
+  </head>
+  <body>
+    <noscript>
+      You need to enable JavaScript to run this app.
+    </noscript>
+    <div id="root"><div class="spinner"></div></div>
+  </body>
+
+</html>

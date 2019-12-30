@@ -1,0 +1,19 @@
+import { ValidationError } from '../../errors';
+import { splitStringOnComma } from '../utilities';
+import { constructIsOneOf } from '../../validation';
+import { isYesOrNo } from './utilities';
+
+export const validateIsYesOrNo = value => {
+  if (!isYesOrNo(value)) {
+    throw new ValidationError('Value must be either Yes or No');
+  }
+  return true;
+};
+
+export const constructListItemsAreOneOf = validValues => listString => {
+  const list = splitStringOnComma(listString);
+  const itemValidator = constructIsOneOf(validValues);
+  list.forEach(itemValidator);
+
+  return true;
+};

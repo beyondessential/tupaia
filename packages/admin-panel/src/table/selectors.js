@@ -1,0 +1,11 @@
+/**
+ * Tupaia MediTrak
+ * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
+ */
+
+import { DEFAULT_TABLE_STATE } from './reducer';
+
+export const getTableState = (state, reduxId) => state.tables[reduxId] || DEFAULT_TABLE_STATE;
+
+export const getIsFetchingData = (state, reduxId) => !!getTableState(state, reduxId).fetchId;
+export const getFetchId = tableState => tableState.fetchId;

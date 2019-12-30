@@ -1,0 +1,1 @@
+export { villagesServicedByFacility } from './villagesServicedByFacility';

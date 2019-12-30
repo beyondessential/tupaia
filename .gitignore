@@ -1,0 +1,9 @@
+*.env*
+.DS_Store
+**/node_modules
+**/coverage
+**/builds
+**/build
+**/dist
+*.log*
+.nyc_output

@@ -1,0 +1,163 @@
+
+/**
+* node
+**/
+
+// Install node
+curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
+(close and reopen terminal session)
+nvm install 9.6.0
+
+/**
+* ssl
+**/
+
+// Install certbot-auto
+wget https://dl.eff.org/certbot-auto
+chmod a+x certbot-auto
+sudo mv certbot-auto /usr/local/bin/certbot-auto
+
+// Request ssl certificates
+// Notes:
+// - nginx must be off
+// - DNS A records must be set up to point to server for all ips (switch dev over after)
+// - AWS security group must allow all connections through http
+certbot-auto certonly --standalone -d api.tupaia.org -d admin.tupaia.org --debug
+certbot-auto certonly --standalone -d dev-api.tupaia.org -d dev-admin.tupaia.org --debug
+crontab -e
+// Paste in the following
+0 0,12 * * * certbot-auto renew
+// Save and exit
+
+
+// Turn off http on AWS security group
+
+/**
+* nginx
+**/
+
+// Install nginx
+sudo apt-get update
+sudo apt-get install nginx
+
+// Edit nginx configuration (copy paste from LastPass servers.conf)
+sudo vi /etc/nginx/conf.d/servers.conf
+
+// Start nginx
+sudo service nginx start
+
+/**
+* postgres
+**/
+
+// Install postgres
+sudo apt-get install postgresql postgresql-contrib
+
+// Use postgres user to edit postgres config files
+sudo -su postgres
+cd /etc/postgresql/9.5/main/
+
+// Set up ssl keys
+openssl req -new -text -out server.req
+openssl rsa -in privkey.pem -out server.key
+rm privkey.pem
+openssl req -x509 -in server.req -text -key server.key -out server.crt
+chmod og-rwx server.key
+
+// Turn on ssl and listen to all connections
+vi postgresql.conf
+Under Connection Settings:
+listen_addresses = '*'
+Under Security and Authentication:
+ssl = on
+
+// Edit pg_hba.conf
+vi pg_hba.conf
+Copy paste the following into the right section:
+# TYPE  DATABASE        USER            ADDRESS                 METHOD
+
+# "local" is for Unix domain socket connections only
+local   all             all                                     trust
+# IPv4 local connections:
+host    all             all             127.0.0.1/32            password
+# IPv6 local connections:
+host    all             all             ::1/128                 password
+# SSL IPv4 all connections:
+hostssl all             all             0.0.0.0/0               password
+
+// Go back into the normal user
+exit
+
+// Retart postgresql service
+sudo service postgresql restart
+
+// Set up database and user
+sudo su postgres
+psql
+CREATE USER tupaia WITH PASSWORD '{actual password}';
+CREATE DATABASE tupaia WITH OWNER tupaia;
+\q
+exit
+
+// Get a pg_dump from the live server onto your local machine
+(ssh in to live)
+pg_dump -h 127.0.0.1 -U tupaia -f dump.sql tupaia
+(use sftp to retrieve onto local)
+
+// Transmit the dump to the new server and restore db
+psql tupaia -U tupaia < dump.sql
+
+/**
+* git
+**/
+
+// Install git
+sudo apt-get install git
+
+// Install yarn
+npm i --global yarn
+
+// Set up the meditrak-server repository
+cd ~
+git clone https://github.com/beyondessential/meditrak-server.git
+cd ~/meditrak-server
+git config credential.helper store
+git pull
+(enter beyondessential-bot credentials)
+
+// Set up the tupaia-admin repository
+cd ~
+git clone https://github.com/beyondessential/tupaia-admin.git
+
+/**
+* pm2
+**/
+
+// Install pm2
+cd ~
+npm i --global pm2
+
+/**
+* aws
+**/
+
+// Install aws cli and set region
+sudo apt-get install python-pip python-dev build-essential
+pip install --upgrade pip --user
+pip install --upgrade virtualenv --user
+pip install awscli --upgrade --user
+aws configure
+(leave all blank, set region to ap-southeast-2)
+
+// Install jq for processing json returned by SSM parameter store
+sudo apt install jq
+
+/**
+* ssh (optional)
+**/
+
+// On local machine, set .ssh/config to ignore known_hosts for dev ip (it changes every day so gets annoying to remove and re-add it)
+vi .ssh/config
+Host 52.65.166.211
+   StrictHostKeyChecking no
+   UserKnownHostsFile=/dev/null

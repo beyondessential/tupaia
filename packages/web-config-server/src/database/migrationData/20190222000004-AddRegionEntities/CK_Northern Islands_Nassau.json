@@ -1,0 +1,10 @@
+{
+  "code": "CK_Northern Islands_Nassau",
+  "name": "Nassau",
+  "type": "region",
+  "geojson": null,
+  "facilityCodes": [
+    "CK_nassC"
+  ],
+  "parent_code": "CK_Northern Islands"
+}

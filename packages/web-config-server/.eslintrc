@@ -1,0 +1,18 @@
+{
+  "env": {
+    "mocha": true
+  },
+  "extends": ["@beyondessential/eslint-config-beyondessential", "plugin:prettier/recommended"],
+  "parser": "babel-eslint",
+  "plugins": ["import", "module-resolver"],
+  "rules": {
+    "import/no-absolute-path": "off",
+    "import/no-extraneous-dependencies": ["error", { "devDependencies": ["src/tests/**"] }],
+    "module-resolver/use-alias": "warn"
+  },
+  "settings": {
+    "import/resolver": {
+      "babel-module": {}
+    }
+  }
+}

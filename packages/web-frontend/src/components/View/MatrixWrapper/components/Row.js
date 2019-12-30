@@ -1,0 +1,214 @@
+/**
+ * Tupaia Web
+ * Copyright (c) 2019 Beyond Essential Systems Pty Ltd.
+ * This source code is licensed under the AGPL-3.0 license
+ * found in the LICENSE file in the root directory of this source tree.
+ */
+
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import PrevIcon from 'material-ui/svg-icons/navigation/chevron-left';
+import NextIcon from 'material-ui/svg-icons/navigation/chevron-right';
+import shallowEqual from 'shallowequal';
+
+import { findByKey } from '../../../../utils';
+import { PRESENTATION_OPTIONS_SHAPE } from '../../propTypes';
+
+const Cell = ({
+  onMouseEnter,
+  onMouseLeave,
+  onClick,
+  style,
+  columnActiveStripStyle,
+  dotStyle,
+  dotStyleActive,
+  color,
+  isActive,
+  cellKey,
+  value = '',
+  isUsingDots,
+}) => {
+  const linesOfText = value.toString().split('\n');
+  const contents = isUsingDots ? (
+    <span
+      style={{
+        ...(isActive ? dotStyleActive : dotStyle),
+        backgroundColor: color || 'transparent',
+      }}
+    />
+  ) : (
+    linesOfText.map((text, i) => (
+      <span key={i}>
+        {text}
+        <br />
+      </span>
+    ))
+  );
+  const activeIndicator = isActive ? <span style={columnActiveStripStyle} /> : null;
+
+  return (
+    <div
+      style={style}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      onClick={onClick}
+      key={cellKey}
+    >
+      {activeIndicator}
+      {contents}
+    </div>
+  );
+};
+
+export default class Row extends Component {
+  shouldComponentUpdate(nextProps) {
+    const currentProps = this.props;
+
+    // Always update this component on prop change if currently highlighted or
+    // about to be highlighted regardless of whether highlight state is changing.
+    if (currentProps.isRowHighlighted || nextProps.isRowHighlighted) {
+      return true;
+    }
+
+    return !shallowEqual(nextProps, currentProps, (a, b, key) => {
+      if (key) {
+        // Skip properties which shouldn't trigger re-renders.
+        if (key === 'highlightedColumn') {
+          return true;
+        }
+
+        return a === b;
+      }
+    });
+  }
+
+  getRowElement() {
+    return this.rowElement;
+  }
+
+  render() {
+    const {
+      rowKey,
+      isRowHighlighted,
+      highlightedColumn,
+      columns,
+      startColumn,
+      numberOfColumnsPerPage,
+      depth,
+      categoryIndent,
+      description,
+      onCellMouseEnter,
+      onCellMouseLeave,
+      onCellClick,
+      onTitleClick,
+      onMoveColumnPress,
+      onMoveColumnRelease,
+      presentationOptions,
+      isPreviousColumnEnabled,
+      isNextColumnEnabled,
+      styles,
+      isUsingDots,
+    } = this.props;
+
+    return (
+      <div
+        style={isRowHighlighted ? { ...styles.row, ...styles.rowHighlighted } : styles.row}
+        onMouseEnter={() => onCellMouseEnter(null, rowKey)}
+        onMouseLeave={() => onCellMouseLeave()}
+        ref={element => (this.rowElement = element)}
+      >
+        <div
+          style={{
+            ...styles.gridCell,
+            ...styles.descriptionCell,
+            paddingLeft: depth * categoryIndent,
+          }}
+          onClick={onTitleClick}
+        >
+          {description}
+        </div>
+        <div style={isRowHighlighted ? styles.gridCellChanger : styles.gridCellChangerActive}>
+          {isRowHighlighted ? (
+            <div
+              style={isPreviousColumnEnabled ? styles.columnChanger : styles.columnChangerDisabled}
+              onMouseDown={() => onMoveColumnPress(-1)}
+              onMouseUp={onMoveColumnRelease}
+            >
+              <PrevIcon />
+            </div>
+          ) : null}
+        </div>
+        {columns.map((column, index) => {
+          if (index < startColumn || index >= startColumn + numberOfColumnsPerPage) {
+            return null;
+          }
+
+          const isCellActive = index === highlightedColumn && isRowHighlighted;
+          const { value: cellValue = '', isGroupBoundary } = column;
+
+          if (isGroupBoundary) {
+            const style = isRowHighlighted ? styles.gridCellChanger : styles.gridCellChangerActive;
+            return <div style={style} key={index} />;
+          }
+
+          const presentation = findByKey(presentationOptions, cellValue, false) || {
+            color: '',
+          };
+
+          return (
+            <Cell
+              key={index}
+              cellKey={index}
+              onMouseEnter={() => onCellMouseEnter(index, rowKey)}
+              onMouseLeave={() => onCellMouseLeave()}
+              onClick={() => onCellClick(cellValue)}
+              color={presentation.color}
+              value={cellValue}
+              style={styles.gridCell}
+              columnActiveStripStyle={styles.columnActiveStrip}
+              isActive={isCellActive}
+              dotStyle={styles.cellIndicator}
+              dotStyleActive={styles.cellIndicatorActive}
+              isUsingDots={isUsingDots}
+            />
+          );
+        })}
+        <div
+          style={isRowHighlighted ? styles.gridCellChanger : styles.gridCellChangerActive}
+          onMouseEnter={() => onCellMouseEnter(null, rowKey)}
+          onMouseLeave={() => onCellMouseLeave()}
+        >
+          {isRowHighlighted ? (
+            <div
+              style={isNextColumnEnabled ? styles.columnChanger : styles.columnChangerDisabled}
+              onMouseDown={() => onMoveColumnPress(1)}
+              onMouseUp={onMoveColumnRelease}
+            >
+              <NextIcon />
+            </div>
+          ) : null}
+        </div>
+      </div>
+    );
+  }
+}
+
+Row.propTypes = {
+  columns: PropTypes.arrayOf(PropTypes.object),
+  isRowHighlighted: PropTypes.bool,
+  onMouseEnter: PropTypes.func,
+  onMouseLeave: PropTypes.func,
+  cellToolTip: PropTypes.node,
+  highlightedColumn: PropTypes.number,
+  depth: PropTypes.number,
+  categoryIndent: PropTypes.number,
+  onCellMouseEnter: PropTypes.func,
+  onCellMouseLeave: PropTypes.func,
+  onCellClick: PropTypes.func,
+  onTitleClick: PropTypes.func,
+  onMoveColumn: PropTypes.func,
+  styles: PropTypes.object.isRequired,
+  presentationOptions: PropTypes.shape(PRESENTATION_OPTIONS_SHAPE),
+  isPreviousColumnEnabled: PropTypes.bool,
+  isNextColumnEnabled: PropTypes.bool,
+};

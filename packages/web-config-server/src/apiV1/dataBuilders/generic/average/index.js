@@ -1,0 +1,1 @@
+export { averageMonthlyValuesOverCount } from './averageMonthlyValuesOverCount';

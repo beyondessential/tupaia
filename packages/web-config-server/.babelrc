@@ -1,0 +1,15 @@
+{
+  "plugins": [
+    "transform-regenerator",
+    [
+      "module-resolver",
+      {
+        "root": ["./src"],
+        "alias": {
+          "": "./src"
+        }
+      }
+    ]
+  ],
+  "presets": ["es2015", "es2016", "es2017", "stage-0"]
+}
