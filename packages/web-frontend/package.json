@@ -85,7 +85,7 @@
     "start-dev": "npm run start",
     "start-mobile": "REACT_APP_APP_TYPE=mobile PORT=8089 node scripts/start.js",
     "start-exporter": "PORT=3001 REACT_APP_APP_TYPE=exporter node scripts/start.js",
-    "build": "npm run build-desktop && npm run build-mobile && npm run build-exporter",
+    "build": "mkdir -p builds && npm run build-desktop && npm run build-mobile && npm run build-exporter",
     "build-desktop": "node scripts/build.js && rm -rf builds/desktop && mv build builds/desktop",
     "build-mobile": "REACT_APP_APP_TYPE=mobile node scripts/build.js && rm -rf builds/mobile && mv build builds/mobile",
     "build-exporter": "REACT_APP_APP_TYPE=exporter node scripts/build.js && rm -rf builds/exporter && mv build builds/exporter",
