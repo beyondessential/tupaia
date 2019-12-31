@@ -1,4 +1,4 @@
-# tupaia-web
+# @tupaia/web-frontend
 
 Web app that integrates with and displays data from the Tupaia project.
 
@@ -10,7 +10,7 @@ Web app that integrates with and displays data from the Tupaia project.
 
 ## Code of Conduct
 
-For contributor's code of conduct - see the [code-of-conduct.md](https://gitlab.com/beyond-essential/tupaia-config-server/blob/master/code-of-conduct.md) published in the repo.
+For contributor's code of conduct - see the [code-of-conduct.md](https://gitlab.com/beyond-essential/tupaia/blob/master/code-of-conduct.md) published in the repo.
 
 # Development
 
@@ -35,7 +35,7 @@ Targeted browsers are:
 
 ### Backend
 
-For any charts/measures to load any data, basically anything to work, you need need a config server providing the API for tupaia-web. There are 2 options
+For any charts/measures to load any data, basically anything to work, you need need a config server providing the API for web-frontend. There are 2 options
 
 #### Point at a remote server
 
@@ -55,27 +55,7 @@ The default is http://localhost:8080/api/v1/.
 
 #### Host the backend locally
 
-[Instructions are here](https://github.com/sussol/tupaia-config-server) for running config server and a docker instance of the DHIS2 aggregation server. You shouldn't need to change LOCAL_URL as above, as the existing localhost address and port should be the default local/dev address for tupaia-config-server.
-
-# Tupaia Ubuntu/Server common operations
-
-tupaia-web is hosted on an EC2 instance along with the backend, the following instructions require you to have access as follows.
-All operations start @ ubuntu user, [How to remote server](https://github.com/sussol/dhis2-server-side/blob/master/Documentation/ec2DetailsAndSSH.md)
-
-### Updating Tupaia-Web
-
-- In the server, enter git repository:
-  `cd ~/repos/tupaia-web`
-- First update git repository (described in section **Update Git repository**)
-- Check memory in use - if has less than 500mb stop tomcat (described in section **TOMCAT-DHIS**)
-- Rebuild the static files for nginx to serve:
-
-```
-yarn install
-yarn build
-```
-
-- If you stoped tomcat - start it over. It will take a few time to restart in meanwhile Tupaia will stop showing organisation units. Don't panic!
+[Instructions are here](https://github.com/beyondessential/tupaia/blob/dev/packages/web-config-server/README.md) for running config server and a docker instance of the DHIS2 aggregation server. You shouldn't need to change LOCAL_URL as above, as the existing localhost address and port should be the default local/dev address for web-config-server.
 
 ## Code Style
 

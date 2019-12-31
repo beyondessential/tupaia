@@ -1,4 +1,4 @@
-// Downloader to query a locally-running tupaia-config-server to get all the region data
+// Downloader to query a locally-running web-config-server to get all the region data
 // Run me from the project root with:
 // npx babel-node src/database/migrationData/20190222000004-AddRegionEntities-downloader.js
 //

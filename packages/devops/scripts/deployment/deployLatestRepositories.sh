@@ -15,22 +15,22 @@ else
    ENVIRONMENT="$STAGE"
 fi
 
-# For each repository, get the latest and deploy it
-for REPOSITORY_NAME in "meditrak-server" "tupaia-admin" "tupaia-web" "tupaia-config-server"; do
-    echo "Deploying ${REPOSITORY_NAME} (${ENVIRONMENT}, or dev if that doesn't exist)"
-    # Get latest code and dependencies
-    cd ${HOME_DIRECTORY}/$REPOSITORY_NAME
-    git fetch
-    git checkout dev # Ensure we have dev as our default, if the specified branch doesn't exist
-    git checkout $BRANCH
-    git pull
-    yarn install
+# Get latest code and dependencies
+echo "Checking out ${BRANCH}, or dev if that doesn't exist"
+cd ${HOME_DIRECTORY}
+git fetch
+git checkout dev # Ensure we have dev as our default, if the specified branch doesn't exist
+git checkout $BRANCH
+git pull
+yarn install
 
+# For each package, get the latest and deploy it
+for PACKAGE in "meditrak-server" "admin-panel" "web-frontend" "web-config-server"; do
     # Set up .env to match the environment variables stored in SSM parameter store
-    cd ${HOME_DIRECTORY}/$REPOSITORY_NAME
+    cd ${HOME_DIRECTORY}/packages/$PACKAGE
     rm .env
-    echo "Checking out ${ENVIRONMENT} environment variables for ${REPOSITORY_NAME}"
-    SSM_PATH="/${REPOSITORY_NAME}/${ENVIRONMENT}"
+    echo "Checking out ${ENVIRONMENT} environment variables for ${PACKAGE}"
+    SSM_PATH="/${PACKAGE}/${ENVIRONMENT}"
     $(aws ssm get-parameters-by-path --with-decryption  --path $SSM_PATH \
     | jq -r '.Parameters| .[] | .Name + "=\"" + .Value + "\""  '  \
     | sed -e "s~${SSM_PATH}/~~" > .env)
@@ -38,7 +38,7 @@ for REPOSITORY_NAME in "meditrak-server" "tupaia-admin" "tupaia-web" "tupaia-con
     # If there were no environment variables for the specified branch, default to dev
     if [ ! -s .env ];then
       echo "Checking out default dev environment variables"
-      SSM_PATH="/${REPOSITORY_NAME}/dev"
+      SSM_PATH="/${PACKAGE}/dev"
       $(aws ssm get-parameters-by-path --with-decryption  --path $SSM_PATH \
       | jq -r '.Parameters| .[] | .Name + "=\"" + .Value + "\""  '  \
       | sed -e "s~${SSM_PATH}/~~" > .env)
@@ -48,15 +48,15 @@ for REPOSITORY_NAME in "meditrak-server" "tupaia-admin" "tupaia-web" "tupaia-con
 
 
     # If it's a server, start it running on pm2, otherwise build it
-    echo "Preparing to start or build ${REPOSITORY_NAME}"
-    if [[ $REPOSITORY_NAME == *server ]];then
+    echo "Preparing to start or build ${PACKAGE}"
+    if [[ $PACKAGE == *server ]];then
       # It's a server, migrate the database then start the pm2 process
-      echo "Migrating database and starting ${REPOSITORY_NAME}"
+      echo "Migrating database and starting ${PACKAGE}"
       yarn migrate
-      pm2 start --name $REPOSITORY_NAME "yarn start"
+      pm2 start --name $PACKAGE "yarn start"
     else
       # It's a static site, build it
-      echo "Building ${REPOSITORY_NAME}"
+      echo "Building ${PACKAGE}"
       yarn build
     fi
 done

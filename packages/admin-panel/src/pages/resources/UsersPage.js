@@ -113,7 +113,7 @@ const CREATE_CONFIG = {
     fields: [
       ...EDIT_FIELDS,
       {
-        Header: 'Api Client (Not required for most users, see Readme of tupaia-admin for usage)',
+        Header: 'Api Client (Not required for most users, see Readme of admin-panel for usage)',
         source: 'is_api_client',
         type: 'boolean',
         editConfig: {

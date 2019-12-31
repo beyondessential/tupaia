@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/beyondessential/tupaia-devops.git"
+    "url": "git+https://github.com/beyondessential/tupaia.git"
   },
-  "author": "Edwin Monk-Fromont <edmofro+npm@gmail.com> (http://sussol.net)",
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/beyondessential/tupaia-devops/issues"
+    "url": "https://github.com/beyondessential/tupaia/issues"
   },
-  "homepage": "https://github.com/beyondessential/tupaia-devops#readme",
+  "homepage": "https://github.com/beyondessential/tupaia#readme",
   "devDependencies": {
     "generate-nginx-config": "^0.1.8"
   }

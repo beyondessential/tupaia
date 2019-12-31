@@ -53,12 +53,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/beyondessential/tupaia-access-policy.git"
+    "url": "git+https://github.com/beyondessential/tupaia.git"
   },
-  "author": "",
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/beyondessential/tupaia-access-policy/issues"
+    "url": "https://github.com/beyondessential/tupaia/issues"
   },
-  "homepage": "https://github.com/beyondessential/tupaia-access-policy#readme"
+  "homepage": "https://github.com/beyondessential/tupaia"
 }

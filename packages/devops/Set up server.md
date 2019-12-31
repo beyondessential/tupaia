@@ -231,7 +231,7 @@ npm i --global yarn
 ssh-keygen -t rsa -b 4096 -C "{user}@github.com"
 ```
 
-- Add deployment keys to all repos Meditrak server, Tupaia Admin & Tupaia config server repo https://github.com/{user}/{repo}/settings/keys as per: https://developer.github.com/v3/guides/managing-deploy-keys/#deploy-keys
+- Add deployment keys to the repo https://github.com/beyondessential/tupaia/settings/keys as per: https://developer.github.com/v3/guides/managing-deploy-keys/#deploy-keys
 
 ```
 ssh-add ~/.ssh/id_rsa
@@ -239,57 +239,11 @@ ssh-add ~/.ssh/id_rsa
 
 -
 
-### Set up the meditrak-server repository
-
-Add deployment key to https://github.com/beyondessential/meditrak-server/settings/keys
+### Set up the tupaia repository
 
 ```
 cd ~
-git clone git@github.com:beyondessential/meditrak-server.git
-cd ~/meditrak-server
-echo "Enter beyondessential-bot credentials when asked after next step"
-git pull
-```
-
-### Set up the tupaia-admin repository
-
-Add deployment key to https://github.com/beyondessential/tupaia-admin/settings/keys
-
-```
-cd ~
-git clone git@github.com:beyondessential/tupaia-admin.git
-cd ~/tupaia-admin
-```
-
-### Set up the tupaia-config-server repository
-
-Add deployment key to https://github.com/beyondessential/tupaia-config-server/settings/keys
-
-```
-cd ~
-git clone git@github.com:beyondessential/tupaia-config-server.git
-cd ~/tupaia-config-server
-```
-
-### Set up the tupaia-web repository
-
-Add deployment key to https://github.com/beyondessential/tupaia-web/settings/keys
-
-```
-cd ~
-git clone git@github.com:beyondessential/tupaia-web.git
-cd ~/tupaia-web
-git config credential.helper store
-```
-
-### Set up the tupaia-devops respository
-
-Add deployment key to https://github.com/beyondessential/tupaia-devops/settings/keys
-
-```
-cd ~
-git clone git@github.com:beyondessential/tupaia-devops.git
-cd ~/tupaia-devops
+git clone git@github.com:beyondessential/tupaia.git
 ```
 
 # pm2
@@ -326,7 +280,7 @@ sudo apt install jq
 
 ```
 crontab -e
-@reboot /home/ubuntu/tupaia-devops/scripts/deployment/startup.sh
+@reboot /home/ubuntu/tupaia/packages/devops/scripts/deployment/startup.sh
 ```
 
 # codeship

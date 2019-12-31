@@ -7,7 +7,6 @@ Backend for the MediTrak health facility survey and mapping software
 - Need to have the following installed
   - Node
   - yarn
-- Clone the repository
 - Add a .env file to the root directory, and enter valid environment variables based on LastPass
 - `yarn` (to install dependencies)
 - `yarn start-dev` to run in dev mode or `yarn start` to build and run production
@@ -18,11 +17,11 @@ By default, the DB_URL in the .env file will point to the database on the dev se
 can easily become confusing if multiple meditrak-server instances are changing data, so it's nicer
 to run a local database.
 
-Meditrak server actually uses exactly the same db as tupaia-config-server, so if you've already set
+Meditrak server actually uses exactly the same db as web-config-server, so if you've already set
 that up, you don't need to do anything except change the .env DB_URL and DISABLE_SSL variables
 
 If you haven't yet set up the db "tupaia", do the following (and note that you won't need to do this
-again if you work on tupaia-config-server):
+again if you work on web-config-server):
 
 Set up postgres on your machine and create the database 'tupaia', with credentials matching those in
 the .env file.

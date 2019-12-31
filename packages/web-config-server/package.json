@@ -18,14 +18,14 @@
     "migrate": "babel-node ./src/database/migrate.js  up --migrations-dir ./src/database/migrations -v",
     "migrate-down": "babel-node ./src/database/migrate.js  down --migrations-dir ./src/database/migrations -v",
     "migrate-create": "read -p \"Enter migration name: \" MIGRATION_NAME && babel-node ./src/database/migrate.js create ${MIGRATION_NAME} --migrations-dir ./src/database/migrations -v",
-    "refresh-database": "[[ ! -d \"../tupaia-devops\" ]] && echo \"Won't work unless you clone the tupaia-devops repo next to this one\" || ../tupaia-devops/scripts/utility/refresh_db.sh",
+    "refresh-database": "../devops/scripts/utility/refresh_db.sh",
     "validate": "babel-node scripts/validate/index.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sussol/tupaia-config-server"
+    "url": "git+https://github.com/beyondessential/tupaia"
   },
-  "author": "Sussol",
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "license": "MIT",
   "dependencies": {
     "@beyondessential/tupaia-access-policy": "^2.0.2",
@@ -98,7 +98,7 @@
     "supertest": "^3.1.0"
   },
   "bugs": {
-    "url": "https://github.com/sussol/tupaia-config-server/issues"
+    "url": "https://github.com/beyondessential/tupaia/issues"
   },
-  "homepage": "https://github.com/sussol/tupaia-config-server"
+  "homepage": "https://github.com/beyondessential/tupaia"
 }

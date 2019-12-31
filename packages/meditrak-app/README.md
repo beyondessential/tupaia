@@ -30,14 +30,14 @@ To work on Tupaia MediTrak, first you'll need to install the following
 Steps to get working:
 
 - Clone this repository (see notes below if using Windows)
-- Add a .env file to the root directory, and enter valid environment variables based on .env.template (ask maintainer for the secret bits)
+- Add a .env file to the root directory (look in lastpass)
 - `yarn`
 - Start your emulator or plug in your device and make sure USB debugging is enabled
 - If you are developing/building for ios:
   - `cd ios && pod update && pod install`
   - `cd .. && ./node_modules/react-native/scripts/ios-install-third-party.sh`
   - If you get build errors, can be helpful to delete `~/.rncache`, `ios/Pods/*`, `third-party/*`, and then rerun the above
-- `react-native run-android` or `react-native run-ios`
+- `react-native run-android` or `react-native run-ios` (for ios, may need to run through the XCode "build and run" button)
 - Edit some code, and reload it ('rr' in Genymotion, 'cmd + r' in iOS Simulator, shake a physical device)
 
 For more, see the react-native guides
@@ -47,9 +47,10 @@ For more, see the react-native guides
 - Wherever this Readme says to add something to your .bash_profile, instead add/edit the analagous entry in System Variables
   - Control Panel > System & Security > System > Advanced System Settings > Environment Variables
 - Before you clone the project from github:
+
   - Configure git so it stops converting LF endings to CRLF: `git config --global core.autocrlf input`
   - Change the defaults in your IDE (VS Code etc) from CRLF to LF
-  
+
 - It's advisable to get nvm, node (version 10.15.1), yarn and react-native running on the Windows subsystem for linux
 - After installing the cli tools download and install android studio
 

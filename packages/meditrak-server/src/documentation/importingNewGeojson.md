@@ -1,6 +1,6 @@
 # Importing geojson
 
-*This is based on how this system works as of June 2019, where we imported Laos using this method*
+_This is based on how this system works as of June 2019, where we imported Laos using this method_
 
 ### Case 1 - Automatically importing geojson for a totally new country / district
 
@@ -11,14 +11,15 @@
 
 ### Case 1.1 - Importing specific geojson for a totally new country / district
 
-*Note: if the district has already been imported into our system then skip to Case 2*
+_Note: if the district has already been imported into our system then skip to Case 2_
 
 - To handle importing specific geojson for a district there is now a new column in the facility import file that can be used, called 'district_osm_id' (and 'sub_district_osm_id' for subdistricts)
-- The value for this column can be found on https://nominatim.openstreetmap.org/ - search the district we want the geojson information for, click "Details", in the "Details" there should be a row called "OSM"	with a value like "relation 5831798". The number is the value we will be using in our import file
+- The value for this column can be found on https://nominatim.openstreetmap.org/ - search the district we want the geojson information for, click "Details", in the "Details" there should be a row called "OSM" with a value like "relation 5831798". The number is the value we will be using in our import file
 - For a facility in each district add the district geojson by copying the number found in the previous step (e.g 5831798) into the 'district_osm_id' column
-- Import this file through the facilities tab on tupaia-admin and we should be good to go!
+- Import this file through the facilities tab on admin-panel and we should be good to go!
 
 ### Case 2 - Updating geojson for an existing district
+
 - This is similar to the previous case but with a few extra steps beforehand
 - In the database we need to first go into the 'entity' table, find the district we want to update and delete whatever is in the 'region' column (so it now says NULL)
 - Then we need to delete the cache'd geojson. To do this ssh into meditrak-server, go to uploads/geojson/Laos (or whatever the country you want to update is)

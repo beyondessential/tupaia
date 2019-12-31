@@ -6,7 +6,7 @@ import { CustomError } from '/errors';
 const TUPAIA_CONFIG_SERVER_DEVICE_NAME = 'Tupaia Config Server';
 
 /**
- * Send request to the Tupaia App server and handle responses.
+ * Send request to Meditrak server and handle responses.
  *
  * @param {string} endpoint
  *   The api endpoint path eg 'auth' or 'user'.
