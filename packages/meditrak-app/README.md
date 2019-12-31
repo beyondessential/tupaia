@@ -34,7 +34,7 @@ Steps to get working:
 - `yarn`
 - Start your emulator or plug in your device and make sure USB debugging is enabled
 - If you are developing/building for ios:
-  - `cd ios && pod update && pod install`
+  - `cd ios && pod install`
   - `cd .. && ./node_modules/react-native/scripts/ios-install-third-party.sh`
   - If you get build errors, can be helpful to delete `~/.rncache`, `ios/Pods/*`, `third-party/*`, and then rerun the above
 - `react-native run-android` or `react-native run-ios` (for ios, may need to run through the XCode "build and run" button)
