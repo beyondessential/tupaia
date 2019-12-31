@@ -1916,7 +1916,7 @@
     babel-preset-es2015 "^6.22.0"
     babel-preset-stage-0 "^6.22.0"
 
-"@beyondessential/tupaia-access-policy@^2.5.0", "@beyondessential/tupaia-access-policy@^2.0.2":
+"@beyondessential/tupaia-access-policy@^2.0.2", "@beyondessential/tupaia-access-policy@^2.5.0":
   version "2.5.0"
   resolved "https://registry.yarnpkg.com/@beyondessential/tupaia-access-policy/-/tupaia-access-policy-2.5.0.tgz#118510a658b48372061948dd0499a6b1de8b4d9f"
   integrity sha512-ggIKTC5GZlpVihRSazCm8ogpB1H1Zqi4fFnGjz/VhyKqPin1O+ewOMgwCCgsGvudGgtYYHvMNRnaC7fMW0ME/g==
@@ -3183,7 +3183,7 @@ appcenter-push@^1.13.0:
   dependencies:
     appcenter "1.13.0"
 
-appcenter@^1.13.0:
+appcenter@1.13.0, appcenter@^1.13.0:
   version "1.13.0"
   resolved "https://registry.yarnpkg.com/appcenter/-/appcenter-1.13.0.tgz#b4bfc38bcdb9d69f20086ad69198d8993d6edb94"
   integrity sha512-YHWrLPlA7ZBH5Tz8vN6Eux0wjdA8nNRfwGL7IANjx0yv7OvIMftn9SC0/g2CWdVV752dL6a8Rt/rWXN8yeOfdQ==
@@ -3506,10 +3506,10 @@ atob@^2.1.2:
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.2.tgz#6d9517eb9e030d2436666651e86bd9f6f13533c9"
   integrity sha512-Wm6ukoaOGJi/73p/cl2GvLjTI5JM1k/O14isD73YML8StrH/7/lRFgmg8nICZgD3bZZvjwCGxtMOD3wWNAu8cg==
 
-authentication-utilities@^0.1.3:
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/authentication-utilities/-/authentication-utilities-0.1.3.tgz#6925b67da737214126abea7967ba0fe05d3c8b48"
-  integrity sha1-aSW2fac3IUEmq+p5Z7oP4F08i0g=
+authentication-utilities@^0.1.0, authentication-utilities@^0.1.4:
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/authentication-utilities/-/authentication-utilities-0.1.4.tgz#1984ab12b707ef732bf3adaa27ac64daa02611c1"
+  integrity sha512-MFDad/dpsQdEymH5o7AqzyBhsFemmo+fKulHVokdbMqnb5sQ0Y9pHwHc2pSF8FtaZ/8G6I9GYOgy3anescB+0g==
   dependencies:
     babel-core "^6.22.1"
     base-64 "^0.1.0"
@@ -3518,10 +3518,10 @@ authentication-utilities@^0.1.3:
     sha256 "^0.2.0"
     valid-url "^1.0.9"
 
-authentication-utilities@^0.1.0, authentication-utilities@^0.1.4:
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/authentication-utilities/-/authentication-utilities-0.1.4.tgz#1984ab12b707ef732bf3adaa27ac64daa02611c1"
-  integrity sha512-MFDad/dpsQdEymH5o7AqzyBhsFemmo+fKulHVokdbMqnb5sQ0Y9pHwHc2pSF8FtaZ/8G6I9GYOgy3anescB+0g==
+authentication-utilities@^0.1.3:
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/authentication-utilities/-/authentication-utilities-0.1.3.tgz#6925b67da737214126abea7967ba0fe05d3c8b48"
+  integrity sha1-aSW2fac3IUEmq+p5Z7oP4F08i0g=
   dependencies:
     babel-core "^6.22.1"
     base-64 "^0.1.0"
@@ -5238,14 +5238,6 @@ buffer@4.9.1:
     base64-js "^1.0.2"
     ieee754 "^1.1.4"
     isarray "^1.0.0"
-
-buffer@^5.2.1:
-  version "5.2.1"
-  resolved "https://registry.yarnpkg.com/buffer/-/buffer-5.2.1.tgz#dd57fa0f109ac59c602479044dca7b8b3d0b71d6"
-  integrity sha512-c+Ko0loDaFfuPWiL02ls9Xd3GO3cPVmUobQ6t3rXNUk304u6hGq+8N/kFi+QEIKhzK3uwolVhLzszmfLmMLnqg==
-  dependencies:
-    base64-js "^1.0.2"
-    ieee754 "^1.1.4"
 
 buffer@^4.3.0:
   version "4.9.2"
@@ -16249,7 +16241,7 @@ prompts@^2.0.1:
     kleur "^3.0.3"
     sisteransi "^1.0.3"
 
-prop-types@^15.7.2, prop-types@^15.5.0, prop-types@^15.5.10, prop-types@^15.5.4, prop-types@^15.5.6, prop-types@^15.5.7, prop-types@^15.5.8, prop-types@^15.6.0, prop-types@^15.6.1, prop-types@^15.6.2, prop-types@^15.7.2:
+prop-types@^15.5.0, prop-types@^15.5.10, prop-types@^15.5.4, prop-types@^15.5.6, prop-types@^15.5.7, prop-types@^15.5.8, prop-types@^15.6.0, prop-types@^15.6.1, prop-types@^15.6.2, prop-types@^15.7.2:
   version "15.7.2"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
   integrity sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ==
@@ -16695,7 +16687,7 @@ react-native-drawer-layout-polyfill@^1.3.2:
   dependencies:
     react-native-drawer-layout "1.3.2"
 
-react-native-drawer-layout@^1.3.2:
+react-native-drawer-layout@1.3.2:
   version "1.3.2"
   resolved "https://registry.yarnpkg.com/react-native-drawer-layout/-/react-native-drawer-layout-1.3.2.tgz#b9740d7663a1dc4f88a61b9c6d93d2d948ea426e"
   integrity sha512-fjO0scqbJUfNu2wuEpvywL7DYLXuCXJ2W/zYhWz986rdLytidbys1QGVvkaszHrb4Y7OqO96mTkgpOcP8KWevw==
@@ -16931,18 +16923,6 @@ react-proxy@^1.1.7:
     lodash "^4.6.1"
     react-deep-force-update "^1.0.0"
 
-react-redux@^5.0.7:
-  version "5.0.7"
-  resolved "https://registry.yarnpkg.com/react-redux/-/react-redux-5.0.7.tgz#0dc1076d9afb4670f993ffaef44b8f8c1155a4c8"
-  integrity sha512-5VI8EV5hdgNgyjfmWzBbdrqUkrVRKlyTKk1sGH3jzM2M2Mhj/seQgPXaz6gVAj2lz/nz688AdTqMO18Lr24Zhg==
-  dependencies:
-    hoist-non-react-statics "^2.5.0"
-    invariant "^2.0.0"
-    lodash "^4.17.5"
-    lodash-es "^4.17.5"
-    loose-envify "^1.1.0"
-    prop-types "^15.6.0"
-
 react-redux@^5.0.5, react-redux@^5.0.6:
   version "5.1.2"
   resolved "https://registry.yarnpkg.com/react-redux/-/react-redux-5.1.2.tgz#b19cf9e21d694422727bf798e934a916c4080f57"
@@ -16955,6 +16935,18 @@ react-redux@^5.0.5, react-redux@^5.0.6:
     prop-types "^15.6.1"
     react-is "^16.6.0"
     react-lifecycles-compat "^3.0.0"
+
+react-redux@^5.0.7:
+  version "5.0.7"
+  resolved "https://registry.yarnpkg.com/react-redux/-/react-redux-5.0.7.tgz#0dc1076d9afb4670f993ffaef44b8f8c1155a4c8"
+  integrity sha512-5VI8EV5hdgNgyjfmWzBbdrqUkrVRKlyTKk1sGH3jzM2M2Mhj/seQgPXaz6gVAj2lz/nz688AdTqMO18Lr24Zhg==
+  dependencies:
+    hoist-non-react-statics "^2.5.0"
+    invariant "^2.0.0"
+    lodash "^4.17.5"
+    lodash-es "^4.17.5"
+    loose-envify "^1.1.0"
+    prop-types "^15.6.0"
 
 react-resize-detector@^2.3.0:
   version "2.3.0"
