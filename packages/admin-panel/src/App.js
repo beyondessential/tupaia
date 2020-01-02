@@ -16,10 +16,6 @@ import { Navbar } from './widgets';
 
 const LEFT_LINKS = [
   {
-    label: 'Social Feed',
-    path: '/social-feed',
-  },
-  {
     label: 'Surveys',
     path: '/surveys',
   },
@@ -102,7 +98,4 @@ const mapDispatchToProps = dispatch => ({
   onNavigate: href => dispatch(pushToPage(href)),
 });
 
-export const AppContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(App);
+export const AppContainer = connect(mapStateToProps, mapDispatchToProps)(App);
