@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [[ $CI_BRANCH == "master" ]];then
-   export DEPLOYMENT_URL="tupaia.org"
+   echo "tupaia.org"
 else
-   export DEPLOYMENT_URL="${CI_BRANCH}.tupaia.org"
+   echo "${CI_BRANCH}.tupaia.org"
 fi
