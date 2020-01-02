@@ -9,5 +9,7 @@
       "@tupaia/meditrak-app/**"
     ]
   },
-  "scripts": {}
+  "scripts": {
+    "encrypt-ci-env-vars": "./packages/devops/scripts/ci/updateCiEnvVars.sh"
+  }
 }

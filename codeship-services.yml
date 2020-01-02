@@ -1,3 +1,8 @@
 admin-panel:
-  image: mdillon/postgis:9.6-alpine
-  context: ./packages/admin-panel
+  build:
+    dockerfile: frontend.Dockerfile
+    args:
+      package: admin-panel
+  encrypted_env_file: ./packages/admin-panel/ci_env.encrypted
+  environment:
+    CI_PACKAGE: admin-panel

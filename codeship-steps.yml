@@ -1,3 +1,6 @@
-- name: testing
-  service: admin-panel
-  command: echo hello
+- type: parallel
+  name: frontend-deploy
+  services:
+    - admin-panel
+  steps:
+    - command: "./devops/scripts/ci/deployFrontend.sh"
