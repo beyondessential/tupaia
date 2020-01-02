@@ -8,7 +8,6 @@ WORKDIR /tupaia
 
 # install dependencies via yarn, before copying the rest of the package, so that node_modules is
 # built and added to the container cache without changes to code invalidating it
-RUN npm install --global yarn
 COPY package.json ./
 COPY /packages/${package}/package.json ./packages/${packages}
 RUN yarn install
