@@ -1,0 +1,3 @@
+admin-panel:
+  image: mdillon/postgis:9.6-alpine
+  context: ./packages/admin-panel
