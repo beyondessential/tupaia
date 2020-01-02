@@ -3,6 +3,6 @@ admin-panel:
     dockerfile: frontend.Dockerfile
     args:
       package: admin-panel
-  encrypted_env_file: ./packages/admin-panel/ci_env.encrypted
+  encrypted_env_file: ./packages/admin-panel/ci-env-vars.encrypted
   environment:
     CI_PACKAGE: admin-panel
