@@ -1,7 +1,9 @@
 FROM node:10.18.0-alpine3.11
 
 # install features not available in base alpine distro
-RUN apk --no-cache add curl
+RUN apk --no-cache add \
+  bash \
+  curl
 
 # get the package within the mono-repo that we are running CI/CD for out of build arguments
 ARG package
