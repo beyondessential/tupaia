@@ -16,6 +16,10 @@ import { Navbar } from './widgets';
 
 const LEFT_LINKS = [
   {
+    label: 'Social Feed',
+    path: '/social-feed',
+  },
+  {
     label: 'Surveys',
     path: '/surveys',
   },
