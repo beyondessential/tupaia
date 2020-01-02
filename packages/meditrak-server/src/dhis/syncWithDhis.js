@@ -44,7 +44,7 @@ export async function startSyncWithDhis(models) {
   });
 
   // Start recursive sync loop
-  // syncWithDhis(models, syncQueue);
+  syncWithDhis(models, syncQueue);
 }
 
 async function syncWithDhis(models, syncQueue) {
