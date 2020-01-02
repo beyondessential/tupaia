@@ -32,11 +32,7 @@ const styles = {
 
 export class TupaiaHome extends Component {
   render() {
-    return (
-      <div style={styles.logo}>
-        <img src={logo} alt="Tupaia logo" style={styles.logoImage} onClick={this.props.goHome} />
-      </div>
-    );
+    return <div style={styles.logo}>Testing testing testing</div>;
   }
 }
 
@@ -57,7 +53,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(TupaiaHome);
+export default connect(mapStateToProps, mapDispatchToProps)(TupaiaHome);

@@ -13,6 +13,16 @@
   name: frontend-deploy
   services:
     - admin-panel
+    - web-frontend
   steps:
     - name: deploy
       command: "./packages/devops/scripts/ci/deployFrontend.sh"
+
+- type: parallel
+  name: backend-deploy
+  services:
+    - meditrak-server
+    - web-config-server
+  steps:
+    - name: deploy
+      command: "./packages/devops/scripts/ci/deployBackend.sh"
