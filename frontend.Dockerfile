@@ -9,6 +9,7 @@ WORKDIR /tupaia
 # install dependencies via yarn, before copying the rest of the package, so that node_modules is
 # built and added to the container cache without changes to code invalidating it
 COPY package.json ./
+COPY yarn.lock ./
 COPY /packages/${package}/package.json ./packages/${packages}
 RUN yarn install
 

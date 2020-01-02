@@ -3,4 +3,4 @@
   services:
     - admin-panel
   steps:
-    - command: "./devops/scripts/ci/deployFrontend.sh"
+    - command: "./packages/devops/scripts/ci/deployFrontend.sh"
