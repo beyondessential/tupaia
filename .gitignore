@@ -8,3 +8,4 @@
 *.log*
 .nyc_output
 *.aes
+codeship_deploy_key.pub

@@ -10,6 +10,7 @@
     ]
   },
   "scripts": {
-    "encrypt-ci-env-vars": "./packages/devops/scripts/ci/updateCiEnvVars.sh"
+    "update-codeship-env-vars": "./packages/devops/scripts/ci/updateCiEnvVars.sh",
+    "update-parameter-store-env-vars": "./packages/devops/scripts/utility/updateParameterStoreEnvVars.sh"
   }
 }

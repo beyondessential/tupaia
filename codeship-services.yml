@@ -6,3 +6,7 @@ admin-panel:
   encrypted_env_file: ./packages/admin-panel/ci-env-vars.encrypted
   environment:
     CI_PACKAGE: admin-panel
+  volumes:
+    # mapping to `.ssh` directory ensures that `id_rsa` file persists to subsequent steps
+    - ./.ssh:/root/.ssh
+

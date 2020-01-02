@@ -3,4 +3,7 @@
   services:
     - admin-panel
   steps:
-    - command: "./packages/devops/scripts/ci/deployFrontend.sh"
+    - name: reinstate SSH Private Key File
+      command: /bin/bash -c "echo -e $PRIVATE_SSH_KEY >> /root/.ssh/id_rsa" && chmod 600 /root/.ssh/id_rsa
+    - name: deploy
+      command: "./packages/devops/scripts/ci/deployFrontend.sh"
