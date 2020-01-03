@@ -18,6 +18,10 @@ WORKDIR /tupaia
 COPY package.json ./
 COPY yarn.lock ./
 COPY packages/${package}/package.json ./packages/${package}
+RUN cat ./packages/${package}/package.json
+RUN echo ./packages/${package}/package.json
+RUN ls ./packages/${package}
+RUN echo Is it there?
 RUN yarn install
 
 # copy everything else from the repo
