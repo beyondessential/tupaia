@@ -22,12 +22,8 @@ RUN mkdir ./packages/${package}
 RUN echo Copying /packages/${package}/package.json
 COPY /packages/${package}/package.json ./packages/${packages}
 RUN ls
-RUN cd ./packages
-RUN ls
-RUN cd ./${package}
-RUN ls
+RUN cd ./packages/${package} && ls
 RUN echo Is it there?
-RUN cd ../../
 RUN yarn install
 
 # copy everything else from the repo
