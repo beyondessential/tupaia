@@ -4,7 +4,8 @@ FROM node:10.18.0-alpine3.11
 RUN apk --no-cache add \
   bash \
   curl \
-  openssh
+  openssh \
+  postgresql-client
 
 # get the package within the mono-repo that we are running CI/CD for out of build arguments
 ARG package
