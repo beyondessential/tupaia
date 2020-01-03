@@ -1,3 +1,9 @@
+validation:
+  build:
+    dockerfile: codeship.Dockerfile
+    args:
+      package: meditrak-server
+
 admin-panel:
   build:
     dockerfile: codeship.Dockerfile
