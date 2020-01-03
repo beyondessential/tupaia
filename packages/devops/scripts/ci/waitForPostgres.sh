@@ -3,7 +3,7 @@ RETRIES=50
 
 args=(
 	--host "$DB_URL"
-	--username "tupaia"
+	--username "postgres"
 	--dbname "postgres"
 	--quiet --no-align --tuples-only
 )

@@ -1,10 +1,10 @@
 - type: parallel
-  name: validate
+  name: validate-all
   services:
     - meditrak-server
     - web-config-server
   steps:
-    - name: deploy
+    - name: validate
       command: /bin/bash -c "cd ./packages/${CI_PACKAGE} && yarn validate"
 
 - type: serial # both use one db, so might interfere with the others' tests if run in parallel
