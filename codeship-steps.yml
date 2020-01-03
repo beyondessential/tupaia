@@ -1,30 +1,50 @@
-- type: serial
-  name: pull latest into ec2
-  service: admin-panel # doesn't matter which, so long as we just do this group of steps once for all packages
-  steps:
-    - name: reinstate SSH Private Key File
-      command: /bin/bash -c "echo -e $PRIVATE_SSH_KEY >> /root/.ssh/id_rsa"
-    - name: chmod id_rsa
-      command: chmod 600 /root/.ssh/id_rsa
-    - name: pull latest and install dependencies
-      command: "./packages/devops/scripts/ci/pullLatest.sh"
+# - type: serial
+#   name: pull latest into ec2
+#   service: admin-panel # doesn't matter which, so long as we just do this group of steps once for all packages
+#   steps:
+#     - name: reinstate SSH Private Key File
+#       command: /bin/bash -c "echo -e $PRIVATE_SSH_KEY >> /root/.ssh/id_rsa"
+#     - name: chmod id_rsa
+#       command: chmod 600 /root/.ssh/id_rsa
+#     - name: pull latest and install dependencies
+#       command: "./packages/devops/scripts/ci/pullLatest.sh"
 
-- type: parallel
-  steps:
-    - type: parallel
-      name: frontend-deploy
-      services:
-        - admin-panel
-        - web-frontend
-      steps:
-        - name: deploy
-          command: "./packages/devops/scripts/ci/deployFrontend.sh"
+# - type: parallel
+#   name: validate
+#   services:
+#     - meditrak-server
+#     - web-config-server
+#   steps:
+#     - name: deploy
+#       command: /bin/bash -c "cd tupaia/packages/${CI_PACKAGE} && yarn validate"
 
-    - type: parallel
-      name: backend-deploy
-      services:
-        - meditrak-server
-        - web-config-server
-      steps:
-        - name: deploy
-          command: "./packages/devops/scripts/ci/deployBackend.sh"
+- type: serial # both use one db, so might interfere with the others' tests if run in parallel
+  name: test
+  services:
+    - meditrak-server
+    - web-config-server
+  steps:
+    - name: set up test data
+      command: /bin/bash -c 'echo 'SELECT 1' | psql --host db --port 5432 --username postgres --dbname postgres --quiet --no-align --tuples-only'
+    - name: test
+      command: /bin/bash -c "cd tupaia/packages/${CI_PACKAGE} && yarn test"
+# - type: parallel
+#   name: deploy-all
+#   steps:
+#     - type: parallel
+#       name: frontend-deploy
+#       services:
+#         - admin-panel
+#         - web-frontend
+#       steps:
+#         - name: deploy
+#           command: "./packages/devops/scripts/ci/deployFrontend.sh"
+
+#     - type: parallel
+#       name: backend-deploy
+#       services:
+#         - meditrak-server
+#         - web-config-server
+#       steps:
+#         - name: deploy
+#           command: "./packages/devops/scripts/ci/deployBackend.sh"
