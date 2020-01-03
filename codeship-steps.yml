@@ -1,12 +1,15 @@
-- name: validate-code
-  service: validation
+- type: parallel
+  name: validate-code
+  services:
+    - meditrak-server-validation
+    - web-config-server-validation
   command: "./packages/devops/scripts/ci/validateCode.sh"
 
 - type: parallel # they're in containers, so even though they generally use one db, they're sandboxed
   name: test-backends
   services:
-    - meditrak-server
-    - web-config-server
+    - meditrak-server-testing
+    - web-config-server-testing
   steps:
     - name: test
       command: "./packages/devops/scripts/ci/testBackend.sh"
