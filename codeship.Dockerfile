@@ -17,12 +17,14 @@ WORKDIR /tupaia
 # built and added to the container cache without changes to code invalidating it
 COPY package.json ./
 COPY yarn.lock ./
+RUN cat yarn.lock
 RUN mkdir ./packages
 RUN mkdir ./packages/${package}
-RUN echo Copying /packages/${package}/package.json
-COPY /packages/${package}/package.json ./packages/${packages}
+RUN echo Copying packages/${package}/package.json
+COPY packages/${package}/package.json ./packages/${packages}
 RUN ls
 RUN cd ./packages/${package} && ls
+RUN cat ./packages/${packages}/package.json
 RUN echo Is it there?
 RUN yarn install
 
