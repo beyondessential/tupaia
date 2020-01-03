@@ -18,7 +18,7 @@ WORKDIR /tupaia
 COPY package.json ./
 COPY yarn.lock ./
 COPY /packages/${package}/package.json ./packages/${packages}
-RUN yarn install
+RUN yarn install --production=false
 
 # copy everything else from the repo
 COPY . ./
