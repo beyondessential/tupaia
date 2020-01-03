@@ -17,6 +17,7 @@ WORKDIR /tupaia
 # built and added to the container cache without changes to code invalidating it
 COPY package.json ./
 COPY yarn.lock ./
+RUN mkdir ./packages/${package}
 COPY packages/${package}/package.json ./packages/${package}
 RUN cat ./packages/${package}/package.json
 RUN echo ./packages/${package}/package.json
