@@ -12,11 +12,7 @@
   services:
     - meditrak-server
     - web-config-server
-  steps:
-    - name: set up test data
-      command: "./packages/devops/scripts/ci/setupTestData.sh"
-    - name: test
-      command: /bin/bash -c "cd ./packages/${CI_PACKAGE} && yarn test"
+  command: "./packages/devops/scripts/ci/testBackend.sh"
 
 - type: serial
   name: pull latest into ec2
