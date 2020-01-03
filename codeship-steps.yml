@@ -7,13 +7,14 @@
 #     - name: validate
 #       command: /bin/bash -c "cd ./packages/${CI_PACKAGE} && yarn validate"
 
-- type: serial # both use one db, so might interfere with the others' tests if run in parallel
-  name: test
+- type: parallel # they're in containers, so even though they generally use one db, they're sandboxed
+  name: test-backends
   services:
     - meditrak-server
     - web-config-server
   steps:
-    - command: "./packages/devops/scripts/ci/testBackend.sh"
+    - name: test
+      command: "./packages/devops/scripts/ci/testBackend.sh"
 
 - type: serial
   name: pull latest into ec2
