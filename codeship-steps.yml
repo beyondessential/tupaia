@@ -1,11 +1,11 @@
-# - type: parallel
-#   name: validate-all
-#   services:
-#     - meditrak-server
-#     - web-config-server
-#   steps:
-#     - name: validate
-#       command: /bin/bash -c "cd ./packages/${CI_PACKAGE} && yarn validate"
+- type: parallel
+  name: validate-all
+  services:
+    - meditrak-server
+    - web-config-server
+  steps:
+    - name: validate
+      command: /bin/bash -c "cd ./packages/${CI_PACKAGE} && yarn validate"
 
 - type: parallel # they're in containers, so even though they generally use one db, they're sandboxed
   name: test-backends

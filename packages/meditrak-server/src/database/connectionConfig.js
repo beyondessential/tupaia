@@ -11,6 +11,7 @@ export const getConnectionConfig = () => {
         user: process.env.CI_TEST_DB_USER,
         password: process.env.CI_TEST_DB_PASSWORD,
         database: process.env.CI_TEST_DB_NAME,
+        port: 5432,
         ssl: null,
       }
     : {
