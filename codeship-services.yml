@@ -1,6 +1,6 @@
 admin-panel:
   build:
-    dockerfile: frontend.Dockerfile
+    dockerfile: codeship.Dockerfile
     args:
       package: admin-panel
   encrypted_env_file: ./packages/admin-panel/ci-env-vars.encrypted
@@ -12,7 +12,7 @@ admin-panel:
 
 web-frontend:
   build:
-    dockerfile: frontend.Dockerfile
+    dockerfile: codeship.Dockerfile
     args:
       package: web-frontend
   encrypted_env_file: ./packages/web-frontend/ci-env-vars.encrypted
@@ -24,7 +24,7 @@ web-frontend:
 
 web-config-server:
   build:
-    dockerfile: frontend.Dockerfile
+    dockerfile: codeship.Dockerfile
     args:
       package: web-config-server
   encrypted_env_file: ./packages/web-config-server/ci-env-vars.encrypted
@@ -38,7 +38,7 @@ web-config-server:
 
 meditrak-server:
   build:
-    dockerfile: frontend.Dockerfile
+    dockerfile: codeship.Dockerfile
     args:
       package: meditrak-server
   encrypted_env_file: ./packages/meditrak-server/ci-env-vars.encrypted

@@ -25,7 +25,7 @@
     - web-config-server
   steps:
     - name: set up test data
-      command: /bin/bash -c "echo 'SELECT 1' | psql --host db --port 5432 --username postgres --dbname postgres --quiet --no-align --tuples-only"
+      command: "./packages/devops/scripts/ci/setupTestData.sh"
     - name: test
       command: /bin/bash -c "cd tupaia/packages/${CI_PACKAGE} && yarn test"
 # - type: parallel
