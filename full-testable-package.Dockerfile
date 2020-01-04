@@ -18,6 +18,8 @@ COPY yarn.lock ./
 RUN mkdir ./packages
 RUN mkdir ./packages/${package}
 COPY packages/${package}/package.json ./packages/${package}
+RUN mkdir ./packages/common
+COPY packages/common/. ./packages/common
 RUN yarn install
 
 # copy everything else from the repo
