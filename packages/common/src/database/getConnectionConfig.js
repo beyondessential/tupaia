@@ -1,9 +1,9 @@
 /**
- * Tupaia MediTrak
+ * Tupaia
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-// Note: Must use method to guarentee environment variables have loaded.
+// Note: Must use function to guarantee environment variables have loaded.
 export const getConnectionConfig = () => {
   return process.env.CI_NAME === 'codeship'
     ? {
@@ -11,7 +11,6 @@ export const getConnectionConfig = () => {
         user: process.env.CI_TEST_DB_USER,
         password: process.env.CI_TEST_DB_PASSWORD,
         database: process.env.CI_TEST_DB_NAME,
-        port: 5432,
         ssl: null,
       }
     : {

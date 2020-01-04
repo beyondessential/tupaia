@@ -4,6 +4,7 @@
 
 ## Packages
 
+- [common](https://github.com/beyondessential/tupaia/blob/dev/packages/common/README.md) - shared utilities
 - [access-policy](https://github.com/beyondessential/tupaia/blob/dev/packages/access-policy/README.md)
 - [admin-panel](https://github.com/beyondessential/tupaia/blob/dev/packages/admin-panel/README.md)
 - [devops](https://github.com/beyondessential/tupaia/blob/dev/packages/devops/README.md)

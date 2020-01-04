@@ -1,0 +1,1 @@
+export { getConnectionConfig } from './getConnectionConfig';

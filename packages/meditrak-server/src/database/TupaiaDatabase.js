@@ -6,9 +6,9 @@ import autobind from 'react-autobind';
 import knex from 'knex';
 import PGPubSub from 'pg-pubsub';
 import winston from 'winston';
+import { getConnectionConfig } from '@tupaia/common';
 
 import { TYPES } from './types';
-import { getConnectionConfig } from './connectionConfig';
 import { generateId } from './generateId';
 
 import { Multilock } from '../utilities/multilock';
