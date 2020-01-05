@@ -1,5 +1,5 @@
 #!/bin/bash
-PACKAGE=$0
+PACKAGE=$1
 DIR=`dirname "$0"`
 DEPLOYMENT_URL=$(${DIR}/determineDeploymentUrl.sh)
 if curl --output /dev/null --silent --head --fail $DEPLOYMENT_URL; then
