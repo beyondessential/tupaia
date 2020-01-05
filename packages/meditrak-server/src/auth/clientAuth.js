@@ -21,7 +21,6 @@ async function getAPIClient(authHeader, apiClientModel) {
   // check can be removed once the proper credentials have been
   // added to the production database.
   const { API_CLIENT_SALT, CLIENT_USERNAME, CLIENT_SECRET } = process.env;
-  console.log(name, CLIENT_USERNAME, secretKey, CLIENT_SECRET);
   if (CLIENT_SECRET && CLIENT_USERNAME && name === CLIENT_USERNAME && secretKey === CLIENT_SECRET) {
     return { username: 'env', user_account_id: null };
   }

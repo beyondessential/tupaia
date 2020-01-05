@@ -32,7 +32,7 @@ meditrak-server-testing:
       package: meditrak-server
   depends_on:
     - db
-  encrypted_env_file: ./packages/web-config-server/ci-env-vars.encrypted
+  encrypted_env_file: ./packages/meditrak-server/ci-env-vars.encrypted
   environment:
     CI_PACKAGE: meditrak-server
 
