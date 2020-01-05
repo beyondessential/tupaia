@@ -4,7 +4,9 @@
  */
 import { expect } from 'chai';
 import { it, describe } from 'mocha';
+import sinon from 'sinon';
 
+import { Entity, Facility } from '../../../models';
 import { mostRecentValueFromChildren } from '/apiV1/measureBuilders/mostRecentValueFromChildren';
 
 const dataBuilderConfig = { level: 'District' };
@@ -62,6 +64,23 @@ const dhisApiMockup = {
 };
 
 describe('mostRecentValueFromChildren', () => {
+  before(() => {
+    sinon.stub(Entity, 'findOne').returns({
+      name: '',
+      photo_url: '',
+      getOrganisationLevel: () => '',
+    });
+    sinon.stub(Facility, 'findOne').returns({
+      type_name: '',
+      type: '',
+    });
+  });
+
+  after(() => {
+    Entity.findOne.restore();
+    Facility.findOne.restore();
+  });
+
   it('should get the most recent period ', async () => {
     const result = await mostRecentValueFromChildren(
       dhisApiMockup,
