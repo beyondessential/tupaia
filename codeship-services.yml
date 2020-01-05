@@ -6,8 +6,8 @@
 #   service (see below)
 # - the db service provides a postgres db with postgis (and takes a little while to run, thus the
 #   splitting of the above services so validation isn't slower than it should be)
-# - the other four services are deployment only, and just use the base alpine image + ssh to log into
-#   an ec2 instance and deploy the latest version of the code for that package
+# - the deployment service just uses the base alpine image + ssh to log into
+#   an ec2 instance and deploy the latest version of the code for each package
 
 meditrak-server-validation:
   build:
@@ -50,42 +50,12 @@ web-config-server-testing:
 db:
   image: mdillon/postgis:9.6-alpine
 
-admin-panel:
+deployment:
   build:
     dockerfile: deploy-only.Dockerfile
-  encrypted_env_file: ./packages/admin-panel/ci-env-vars.encrypted
+  encrypted_env_file: ./packages/devops/ci-env-vars.encrypted
   environment:
-    CI_PACKAGE: admin-panel
-  volumes:
-    # mapping to `.ssh` directory ensures that `id_rsa` file persists to subsequent steps
-    - ./.ssh:/root/.ssh
-
-web-frontend:
-  build:
-    dockerfile: deploy-only.Dockerfile
-  encrypted_env_file: ./packages/web-frontend/ci-env-vars.encrypted
-  environment:
-    CI_PACKAGE: web-frontend
-  volumes:
-    # mapping to `.ssh` directory ensures that `id_rsa` file persists to subsequent steps
-    - ./.ssh:/root/.ssh
-
-web-config-server:
-  build:
-    dockerfile: deploy-only.Dockerfile
-  encrypted_env_file: ./packages/web-config-server/ci-env-vars.encrypted
-  environment:
-    CI_PACKAGE: web-config-server
-  volumes:
-    # mapping to `.ssh` directory ensures that `id_rsa` file persists to subsequent steps
-    - ./.ssh:/root/.ssh
-
-meditrak-server:
-  build:
-    dockerfile: deploy-only.Dockerfile
-  encrypted_env_file: ./packages/meditrak-server/ci-env-vars.encrypted
-  environment:
-    CI_PACKAGE: meditrak-server
+    CI_PACKAGE: devops
   volumes:
     # mapping to `.ssh` directory ensures that `id_rsa` file persists to subsequent steps
     - ./.ssh:/root/.ssh
