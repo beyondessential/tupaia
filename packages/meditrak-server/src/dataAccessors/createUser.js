@@ -43,8 +43,6 @@ export const createUser = async (
         ...hashAndSaltPassword(password),
         ...restOfUser,
       });
-      console.log('*************************');
-      console.log(user.first_name);
 
       await transactingModels.userCountryPermission.findOrCreate({
         user_id: user.id,

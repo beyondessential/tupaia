@@ -31,6 +31,7 @@ describe('Access Policy', () => {
     let userId;
 
     it('should create basic test user', async () => {
+      console.log(headers);
       const userResponse = await app.post('user', {
         headers,
         body: {
