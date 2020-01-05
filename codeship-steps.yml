@@ -32,10 +32,10 @@
   service: deployment
   steps:
     - name: deploy-admin-panel
-      command: 'CI_PACKAGE=admin-panel ./packages/devops/scripts/ci/deployFrontend.sh'
+      command: './packages/devops/scripts/ci/deployFrontend.sh admin-panel'
     - name: deploy-web-frontend
-      command: 'CI_PACKAGE=web-frontend ./packages/devops/scripts/ci/deployFrontend.sh'
+      command: './packages/devops/scripts/ci/deployFrontend.sh web-frontend'
     - name: deploy-web-config-server
-      command: 'CI_PACKAGE=web-config-server ./packages/devops/scripts/ci/deployBackend.sh'
+      command: './packages/devops/scripts/ci/deployBackend.sh web-config-server'
     - name: deploy-meditrak-server
-      command: 'CI_PACKAGE=meditrak-server ./packages/devops/scripts/ci/deployBackend.sh'
+      command: './packages/devops/scripts/ci/deployBackend.sh meditrak-server'
