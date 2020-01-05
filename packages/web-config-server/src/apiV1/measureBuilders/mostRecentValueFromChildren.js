@@ -24,7 +24,10 @@ export const mostRecentValueFromChildren = async (
     facilityIdsToGroupCodes,
   });
   const orgUnitValuePromises = organisationUnits.map(async ({ id, code }) => {
+    console.log(code);
     const entity = await Entity.findOne({ code });
+    console.log(entity);
+    console.log('*************************');
     const entityMetadata = {
       name: entity.name,
       photoUrl: entity.photo_url,
