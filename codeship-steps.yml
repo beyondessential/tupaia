@@ -9,20 +9,21 @@
 
 - type: parallel # they're in containers, so even though they generally use one db, they're sandboxed
   name: test-all
-  - type: parallel
-    name: test-backend
-    services:
-      - meditrak-server-testing
-      - web-config-server-testing
-    steps:
-      - name: test
-        command: './packages/devops/scripts/ci/testBackend.sh'
-  - type: parallel
-    name: test-database
-    service: database-testing
-    steps:
-      - name: test
-        command: './packages/devops/scripts/ci/testPackage.sh'
+  steps:
+    - type: parallel
+      name: test-backend
+      services:
+        - meditrak-server-testing
+        - web-config-server-testing
+      steps:
+        - name: test
+          command: './packages/devops/scripts/ci/testBackend.sh'
+    - type: parallel
+      name: test-database
+      service: database-testing
+      steps:
+        - name: test
+          command: './packages/devops/scripts/ci/testPackage.sh'
 
 - type: serial
   name: pull latest into ec2
