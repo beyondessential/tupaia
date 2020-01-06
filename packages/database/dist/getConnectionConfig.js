@@ -1,13 +1,13 @@
 'use strict';
 
-var cov_c4bn93aqo = function () {
-  var path = '/Users/Edwin/Documents/Git/tupaia/packages/common/src/database/getConnectionConfig.js',
-      hash = '0e54b90403c65f53b3b0d5e94e1f83cebd971744',
+var cov_bkiqgnp6c = function () {
+  var path = '/Users/Edwin/Documents/Git/tupaia/packages/database/src/getConnectionConfig.js',
+      hash = '9d85181a97b6524c5866b95dafc6b5efe80dd623',
       Function = function () {}.constructor,
       global = new Function('return this')(),
       gcv = '__coverage__',
       coverageData = {
-    path: '/Users/Edwin/Documents/Git/tupaia/packages/common/src/database/getConnectionConfig.js',
+    path: '/Users/Edwin/Documents/Git/tupaia/packages/database/src/getConnectionConfig.js',
     statementMap: {
       '0': {
         start: {
@@ -150,7 +150,7 @@ var cov_c4bn93aqo = function () {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-cov_c4bn93aqo.s[0]++;
+cov_bkiqgnp6c.s[0]++;
 /**
  * Tupaia
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
@@ -158,21 +158,21 @@ cov_c4bn93aqo.s[0]++;
 
 // Note: Must use function to guarantee environment variables have loaded.
 var getConnectionConfig = exports.getConnectionConfig = function getConnectionConfig() {
-  cov_c4bn93aqo.f[0]++;
-  cov_c4bn93aqo.s[1]++;
+  cov_bkiqgnp6c.f[0]++;
+  cov_bkiqgnp6c.s[1]++;
 
-  return process.env.CI_NAME === 'codeship' ? (cov_c4bn93aqo.b[0][0]++, {
+  return process.env.CI_NAME === 'codeship' ? (cov_bkiqgnp6c.b[0][0]++, {
     host: process.env.CI_TEST_DB_URL,
     user: process.env.CI_TEST_DB_USER,
     password: process.env.CI_TEST_DB_PASSWORD,
     database: process.env.CI_TEST_DB_NAME,
     ssl: null
-  }) : (cov_c4bn93aqo.b[0][1]++, {
+  }) : (cov_bkiqgnp6c.b[0][1]++, {
     host: process.env.DB_URL,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    ssl: process.env.DB_DISABLE_SSL === 'true' ? (cov_c4bn93aqo.b[1][0]++, null) : (cov_c4bn93aqo.b[1][1]++, {
+    ssl: process.env.DB_DISABLE_SSL === 'true' ? (cov_bkiqgnp6c.b[1][0]++, null) : (cov_bkiqgnp6c.b[1][1]++, {
       // Test server cannot turn on ssl, so sets the env to disable it
       rejectUnauthorized: false
     })

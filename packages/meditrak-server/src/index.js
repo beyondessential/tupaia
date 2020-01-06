@@ -6,8 +6,9 @@
 import {} from 'dotenv/config'; // Load the environment variables into process.env
 
 import http from 'http';
+import { TupaiaDatabase } from '@tupaia/database';
 
-import { TupaiaDatabase, SyncQueue as GenericSyncQueue, TYPES, ModelRegistry } from './database';
+import { SyncQueue as GenericSyncQueue, ModelRegistry } from './database';
 import { startSyncWithDhis } from './dhis';
 import { startSyncWithMs1 } from './ms1';
 import { startFeedScraper } from './social';

@@ -4,9 +4,10 @@
  */
 
 import formatLinkHeader from 'format-link-header';
+import { JOIN_TYPES } from '@tupaia/database';
 import { respond } from '../respond';
 import { DatabaseError, ValidationError } from '../errors';
-import { TYPES, JOIN_TYPES } from '../database';
+import { TYPES } from '../database';
 import {
   findQuestionsBySurvey,
   findAnswersBySurveyResponse,

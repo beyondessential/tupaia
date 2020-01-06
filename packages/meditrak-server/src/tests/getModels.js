@@ -3,7 +3,8 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { TupaiaDatabase, ModelRegistry } from '../database';
+import { TupaiaDatabase } from '@tupaia/database';
+import { ModelRegistry } from '../database';
 
 let modelsSingleton = null;
 export function getModels() {

@@ -47,6 +47,14 @@ web-config-server-testing:
   environment:
     CI_PACKAGE: web-config-server
 
+database-testing:
+  build:
+    dockerfile: full-testable-package.Dockerfile
+    args:
+      package: database
+  environment:
+    CI_PACKAGE: database
+
 db:
   image: mdillon/postgis:9.6-alpine
 

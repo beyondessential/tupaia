@@ -2,12 +2,11 @@ import { expect } from 'chai';
 
 import { Multilock } from '../utilities/multilock';
 
-describe("Multilock", () => {
-
-  it("Should wait for one lock", async () => {
+describe('Multilock', () => {
+  it('Should wait for one lock', async () => {
     const m = new Multilock();
 
-    const unlock = m.createLock("a");
+    const unlock = m.createLock('a');
 
     expect(m.isLocked()).to.be.true;
 
@@ -17,11 +16,11 @@ describe("Multilock", () => {
     expect(m.isLocked()).to.be.false;
   });
 
-  it("Should wait for two locks", async () => {
+  it('Should wait for two locks', async () => {
     const m = new Multilock();
 
-    const unlockA = m.createLock("a");
-    const unlockB = m.createLock("b");
+    const unlockA = m.createLock('a');
+    const unlockB = m.createLock('b');
 
     expect(m.isLocked()).to.be.true;
 
@@ -32,7 +31,7 @@ describe("Multilock", () => {
     expect(m.isLocked()).to.be.false;
   });
 
-  it("Should wait for zero locks", async () => {
+  it('Should wait for zero locks', async () => {
     const m = new Multilock();
 
     expect(m.isLocked()).to.be.false;
@@ -42,11 +41,11 @@ describe("Multilock", () => {
     expect(m.isLocked()).to.be.false;
   });
 
-  it("Should wait for two locks with the same friendly name", async () => {
+  it('Should wait for two locks with the same friendly name', async () => {
     const m = new Multilock();
 
-    const unlockA = m.createLock("a");
-    const unlockB = m.createLock("a");
+    const unlockA = m.createLock('a');
+    const unlockB = m.createLock('a');
 
     expect(m.isLocked()).to.be.true;
 
@@ -59,27 +58,21 @@ describe("Multilock", () => {
     expect(m.isLocked()).to.be.false;
   });
 
-  it("Should be fine with multiple waits", async () => {
+  it('Should be fine with multiple waits', async () => {
     const m = new Multilock();
 
-    const unlock = m.createLock("a");
+    const unlock = m.createLock('a');
 
-    const waiters = Promise.all([
-      m.wait(),
-      m.wait(),
-      m.wait(),
-      m.wait(),
-    ]);
+    const waiters = Promise.all([m.wait(), m.wait(), m.wait(), m.wait()]);
 
     setTimeout(unlock, 10);
     await waiters;
   });
 
-  it("Should allow a debounce", async () => {
-      
+  it('Should allow a debounce', async () => {
     const m = new Multilock();
 
-    let val = "before";
+    let val = 'before';
 
     // unlock 10ms from now
     const unlock = m.createLock();
@@ -88,7 +81,7 @@ describe("Multilock", () => {
     // lock and unlock 20ms from now
     setTimeout(() => {
       const unlock2 = m.createLock();
-      val = "after";
+      val = 'after';
       unlock2();
     }, 20);
 
@@ -103,7 +96,6 @@ describe("Multilock", () => {
       }, 15);
     });
 
-    expect(valAfterLock).to.equal("after");
+    expect(valAfterLock).to.equal('after');
   });
-
 });

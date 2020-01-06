@@ -1,1 +1,0 @@
-export { getConnectionConfig } from './database';

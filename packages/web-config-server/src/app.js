@@ -7,7 +7,7 @@ import morgan from 'morgan';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import { TupaiaDatabase } from './database';
+import { TupaiaDatabase } from '@tupaia/database';
 import { getRoutesForApiV1 } from './apiV1';
 import { bindUserSessions } from './authSession';
 import { BaseModel } from './models/BaseModel';

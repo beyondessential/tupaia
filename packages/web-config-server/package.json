@@ -29,7 +29,7 @@
   "license": "MIT",
   "dependencies": {
     "@beyondessential/tupaia-access-policy": "^2.0.2",
-    "@tupaia/common": "0.1.1",
+    "@tupaia/database": "0.1.0",
     "apicache": "^0.8.7",
     "async": "^2.6.0",
     "aws-sdk": "^2.203.0",

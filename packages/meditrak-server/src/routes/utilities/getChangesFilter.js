@@ -3,7 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { getHighestPossibleIdForGivenTime } from '../../database';
+import { getHighestPossibleIdForGivenTime } from '@tupaia/database';
 import { ValidationError } from '../../errors';
 
 export const getChangesFilter = ({ since = 0, recordTypes = null }) => {
