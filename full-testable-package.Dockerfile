@@ -15,13 +15,12 @@ WORKDIR /tupaia
 # that node_modules is built and added to the container cache without changes to code invalidating it
 COPY package.json ./
 COPY yarn.lock ./
-RUN mkdir ./packages
-RUN mkdir ./packages/${package}
+RUN mkdir -p ./packages/${package}
 COPY packages/${package}/package.json ./packages/${package}
 
 # some packages also have internal dependencies loaded by yarn workspaces, so these internal
 # dependencies must exist during yarn install (currently just 'database')
-RUN mkdir ./packages/database
+RUN mkdir -p ./packages/database
 COPY packages/database/. ./packages/database
 
 # install internal and external dependencies
