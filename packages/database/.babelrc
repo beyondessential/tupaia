@@ -1,4 +1,4 @@
 {
-  "plugins": ["istanbul", "transform-runtime", "syntax-async-functions"],
+  "plugins": ["transform-runtime", "syntax-async-functions"],
   "presets": ["es2015", "stage-0"]
 }

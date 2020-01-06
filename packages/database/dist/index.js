@@ -1,31 +1,5 @@
 'use strict';
 
-var cov_1y5ibh64iy = function () {
-  var path = '/Users/Edwin/Documents/Git/tupaia/packages/database/src/index.js',
-      hash = '557be34838dcd6515b6487926384d00dae518e35',
-      Function = function () {}.constructor,
-      global = new Function('return this')(),
-      gcv = '__coverage__',
-      coverageData = {
-    path: '/Users/Edwin/Documents/Git/tupaia/packages/database/src/index.js',
-    statementMap: {},
-    fnMap: {},
-    branchMap: {},
-    s: {},
-    f: {},
-    b: {},
-    _coverageSchema: '332fd63041d2c1bcb487cc26dd0d5f7d97098a6c'
-  },
-      coverage = global[gcv] || (global[gcv] = {});
-
-  if (coverage[path] && coverage[path].hash === hash) {
-    return coverage[path];
-  }
-
-  coverageData.hash = hash;
-  return coverage[path] = coverageData;
-}();
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
