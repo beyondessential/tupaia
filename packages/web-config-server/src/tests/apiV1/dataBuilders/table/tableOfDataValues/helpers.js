@@ -11,9 +11,9 @@ import { DhisApi } from '/dhis/DhisApi';
 
 const query = { organisationUnitCode: 'TO' };
 
-const createGetAnalyticsStub = dataValues => {
-  const stub = sinon.stub();
-  stub
+const createDhisApiStub = dataValues => {
+  const getAnalytics = sinon.stub();
+  getAnalytics
     .returns({ results: [] })
     .withArgs(sinon.match({ outputIdScheme: 'code' }), query)
     .callsFake(({ dataElementCodes }) => ({
@@ -22,16 +22,23 @@ const createGetAnalyticsStub = dataValues => {
       ),
     }));
 
-  return stub;
+  return sinon.createStubInstance(DhisApi, { getAnalytics });
 };
 
 export const createAssertTableResults = availableDataValues => {
-  const dhisApiStub = sinon.createStubInstance(DhisApi, {
-    getAnalytics: createGetAnalyticsStub(availableDataValues),
-  });
+  const dhisApiStub = createDhisApiStub(availableDataValues);
 
   return async (dataBuilderConfig, expectedResults) =>
     expect(tableOfDataValues({ dataBuilderConfig, query }, dhisApiStub)).to.eventually.deep.equal(
       expectedResults,
     );
+};
+
+export const createAssertErrorIsThrown = availableDataValues => {
+  const dhisApiStub = createDhisApiStub(availableDataValues);
+
+  return async (dataBuilderConfig, expectedError) =>
+    expect(
+      tableOfDataValues({ dataBuilderConfig, query }, dhisApiStub),
+    ).to.eventually.be.rejectedWith(expectedError);
 };

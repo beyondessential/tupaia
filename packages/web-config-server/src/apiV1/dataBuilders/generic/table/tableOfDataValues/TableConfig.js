@@ -3,6 +3,8 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
+import { TotalCalculator } from './TotalCalculator';
+
 const METADATA_FIELDS = {
   $orgUnit: 'organisationUnit',
 };
@@ -53,7 +55,9 @@ export class TableConfig {
     const cells = [];
     metadataValues.forEach(metadataValue => {
       const newCellRows = this.cells.map(cellRow =>
-        cellRow.map(cell => addPrefixToCell(cell, metadataValue)),
+        cellRow.map(cell =>
+          !cell || TotalCalculator.isTotalKey(cell) ? cell : addPrefixToCell(cell, metadataValue),
+        ),
       );
       cells.push(...newCellRows);
     });

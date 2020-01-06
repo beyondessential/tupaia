@@ -33,7 +33,10 @@ export const testNoCategories = () => {
       },
       {
         rows: [{ dataElement: 'Smokers', Col1: 1, Col2: 2 }],
-        columns: [{ key: 'Col1', title: 'Female' }, { key: 'Col2', title: 'Male' }],
+        columns: [
+          { key: 'Col1', title: 'Female' },
+          { key: 'Col2', title: 'Male' },
+        ],
       },
     ));
 
@@ -45,7 +48,10 @@ export const testNoCategories = () => {
         cells: [['CD1'], ['CD3']],
       },
       {
-        rows: [{ dataElement: 'Smokers', Col1: 1 }, { dataElement: 'Overweight', Col1: 3 }],
+        rows: [
+          { dataElement: 'Smokers', Col1: 1 },
+          { dataElement: 'Overweight', Col1: 3 },
+        ],
         columns: [{ key: 'Col1', title: 'Female' }],
       },
     ));
@@ -55,14 +61,20 @@ export const testNoCategories = () => {
       {
         rows: ['Smokers', 'Overweight'],
         columns: ['Female', 'Male'],
-        cells: [['CD1', 'CD2'], ['CD3', 'CD4']],
+        cells: [
+          ['CD1', 'CD2'],
+          ['CD3', 'CD4'],
+        ],
       },
       {
         rows: [
           { dataElement: 'Smokers', Col1: 1, Col2: 2 },
           { dataElement: 'Overweight', Col1: 3, Col2: 4 },
         ],
-        columns: [{ key: 'Col1', title: 'Female' }, { key: 'Col2', title: 'Male' }],
+        columns: [
+          { key: 'Col1', title: 'Female' },
+          { key: 'Col2', title: 'Male' },
+        ],
       },
     ));
 
@@ -74,7 +86,10 @@ export const testNoCategories = () => {
         cells: [['CD1'], ['CD5']],
       },
       {
-        rows: [{ dataElement: 'Female', Col1: 1 }, { dataElement: 'Female', Col1: 5 }],
+        rows: [
+          { dataElement: 'Female', Col1: 1 },
+          { dataElement: 'Female', Col1: 5 },
+        ],
         columns: [{ key: 'Col1', title: 'Count' }],
       },
     ));
@@ -88,7 +103,32 @@ export const testNoCategories = () => {
       },
       {
         rows: [{ dataElement: 'Female', Col1: 1, Col2: 5 }],
-        columns: [{ key: 'Col1', title: 'Count' }, { key: 'Col2', title: 'Count' }],
+        columns: [
+          { key: 'Col1', title: 'Count' },
+          { key: 'Col2', title: 'Count' },
+        ],
+      },
+    ));
+
+  it('should ignore empty cells', () =>
+    assertTableResults(
+      {
+        rows: ['Smokers', 'Overweight'],
+        columns: ['Female', 'Male'],
+        cells: [
+          ['CD1', ''],
+          ['', ''],
+        ],
+      },
+      {
+        rows: [
+          { dataElement: 'Smokers', Col1: 1, Col2: '' },
+          { dataElement: 'Overweight', Col1: '', Col2: '' },
+        ],
+        columns: [
+          { key: 'Col1', title: 'Female' },
+          { key: 'Col2', title: 'Male' },
+        ],
       },
     ));
 };

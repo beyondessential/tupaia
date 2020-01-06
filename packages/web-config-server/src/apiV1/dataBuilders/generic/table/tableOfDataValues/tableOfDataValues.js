@@ -11,16 +11,19 @@ import { Entity } from '/models';
 
 import { TableConfig } from './TableConfig';
 import { getValuesByCell } from './getValuesByCell';
+import { TotalCalculator } from './TotalCalculator';
 
-const getColumnId = index => `Col${index + 1}`;
+const getColumnKey = columnIndex => `Col${parseInt(columnIndex, 10) + 1}`;
 
 class TableOfDataValuesBuilder extends DataBuilder {
   async build() {
     const results = await this.fetchResults();
     this.tableConfig = new TableConfig(this.config, results);
+    this.valuesByCell = getValuesByCell(this.tableConfig, results);
+    this.totalCalculator = new TotalCalculator(this.tableConfig, this.valuesByCell);
 
     const data = {
-      rows: await this.buildRows(results),
+      rows: await this.buildRows(),
       columns: await this.buildColumns(),
     };
     if (this.tableConfig.hasRowCategories()) {
@@ -37,12 +40,10 @@ class TableOfDataValuesBuilder extends DataBuilder {
     return results;
   }
 
-  async buildRows(results) {
-    const valuesByCell = getValuesByCell(this.tableConfig, results);
-
-    return this.buildBaseRows().map((baseRow, index) => ({
+  async buildRows() {
+    return this.buildBaseRows().map((baseRow, rowIndex) => ({
       ...baseRow,
-      ...this.buildRowValues(valuesByCell, index),
+      ...this.buildRowValues(rowIndex),
     }));
   }
 
@@ -59,17 +60,28 @@ class TableOfDataValuesBuilder extends DataBuilder {
       : this.tableConfig.rows.map(dataElement => ({ dataElement }));
   }
 
-  buildRowValues(valuesByCell, rowIndex) {
+  buildRowValues(rowIndex) {
     const values = {};
-    this.tableConfig.cells[rowIndex].forEach((cell, index) => {
-      values[getColumnId(index)] = valuesByCell[cell];
+    Object.keys(this.tableConfig.cells[rowIndex]).forEach(columnIndex => {
+      values[getColumnKey(columnIndex)] = this.calculateValue(rowIndex, columnIndex);
     });
 
     return values;
   }
 
+  calculateValue(rowIndex, columnIndex) {
+    const cell = this.tableConfig.cells[rowIndex][columnIndex];
+    if (!cell) {
+      return '';
+    }
+
+    return TotalCalculator.isTotalKey(cell)
+      ? this.totalCalculator.calculate(rowIndex, columnIndex)
+      : this.valuesByCell[cell];
+  }
+
   async buildColumns() {
-    const buildColumn = (column, index) => ({ key: getColumnId(index), title: column });
+    const buildColumn = (column, index) => ({ key: getColumnKey(index), title: column });
 
     if (!this.tableConfig.hasColumnCategories()) {
       return this.tableConfig.columns.map(buildColumn);
