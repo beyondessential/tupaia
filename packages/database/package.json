@@ -21,5 +21,12 @@
     "chai": "^4.1.2",
     "mocha": "^6.2.0",
     "nyc": "^14.1.1"
+  },
+  "dependencies": {
+    "knex": "0.14.6",
+    "os": "0.1.1",
+    "pg-pubsub": "0.3.0",
+    "react-autobind": "1.0.6",
+    "winston": "3.2.1"
   }
 }
