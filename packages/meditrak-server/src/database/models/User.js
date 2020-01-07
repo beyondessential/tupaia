@@ -14,6 +14,10 @@ import { buildAccessPolicy, cache, CACHE_KEY_GENERATORS, encryptPassword } from 
 class UserType extends DatabaseType {
   static databaseType = TYPES.USER_ACCOUNT;
 
+  static meditrakConfig = {
+    minAppVersion: '1.1.28',
+  };
+
   get fullName() {
     let userFullName = this.first_name;
     if (this.last_name && this.last_name.length > 0) {

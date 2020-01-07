@@ -52,4 +52,19 @@ export class ModelRegistry {
       return wrappedFunction(transactingModelRegistry);
     });
   }
+
+  getTypesToSyncWithMeditrak() {
+    return Object.values(this)
+      .filter(({ meditrakConfig }) => meditrakConfig)
+      .map(({ databaseType }) => databaseType);
+  }
+
+  getMinAppVersionByType() {
+    return Object.values(this).reduce((result, model) => {
+      const { databaseType, meditrakConfig } = model;
+      const { minAppVersion = Infinity } = meditrakConfig || {};
+
+      return { ...result, [databaseType]: minAppVersion };
+    }, {});
+  }
 }

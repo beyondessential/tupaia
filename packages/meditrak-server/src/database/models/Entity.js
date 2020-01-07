@@ -56,7 +56,10 @@ export const getDhisIdFromEntityData = data => get(data, 'metadata.dhis.id');
 class EntityType extends DatabaseType {
   static databaseType = TYPES.ENTITY;
 
-  static meditrakIgnorableFields = ['region', 'bounds'];
+  static meditrakConfig = {
+    ignorableFields: ['region', 'bounds'],
+    minAppVersion: '1.7.98',
+  };
 
   // Exposed for access policy creation.
   get organisationUnitCode() {
@@ -139,10 +142,6 @@ export class EntityModel extends DatabaseModel {
       `,
       [point, point, code],
     );
-  }
-
-  get meditrakIgnorableFields() {
-    return this.DatabaseTypeClass.meditrakIgnorableFields;
   }
 
   async updateRegionCoordinates(code, geojson) {

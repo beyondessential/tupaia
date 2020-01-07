@@ -10,6 +10,7 @@ export const logApiRequest = async (req, res, next) => {
     version: req.version,
     endpoint: req.endpoint,
     user_id: req.userId,
+    query: req.query,
   });
   req.apiRequestLogId = apiRequestLog.id;
   next();

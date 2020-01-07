@@ -9,6 +9,10 @@ import { TYPES } from '..';
 
 class OptionSetType extends DatabaseType {
   static databaseType = TYPES.OPTION_SET;
+
+  static meditrakConfig = {
+    minAppVersion: '1.7.89',
+  };
 }
 
 export class OptionSetModel extends DatabaseModel {

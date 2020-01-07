@@ -10,6 +10,10 @@ import { TYPES } from '..';
 class CountryType extends DatabaseType {
   static databaseType = TYPES.COUNTRY;
 
+  static meditrakConfig = {
+    minAppVersion: '0.0.1',
+  };
+
   async geographicalAreas() {
     return this.otherModels.geographicalArea.find({ country_id: this.id });
   }

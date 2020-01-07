@@ -32,7 +32,7 @@ export const TYPES = {
   FEED_ITEM: 'feed_item',
   USER_GEOGRAPHICAL_AREA_PERMISSION: 'user_geographical_area_permission',
   USER_REWARD: 'user_reward',
-  INSTALL_ID: 'install_id',
+  MEDITRAK_CLIENT: 'meditrak_client',
   USER_FACILITY_PERMISSION: 'user_clinic_permission',
   ONE_TIME_LOGIN: 'one_time_login',
   OPTION: 'option',

@@ -10,6 +10,10 @@ import { TYPES } from '..';
 class SurveyType extends DatabaseType {
   static databaseType = TYPES.SURVEY;
 
+  static meditrakConfig = {
+    minAppVersion: '0.0.1',
+  };
+
   async getPermissionGroup() {
     return this.otherModels.permissionGroup.findById(this.permission_group_id);
   }

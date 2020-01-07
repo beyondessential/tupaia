@@ -13,7 +13,8 @@ import { getChangesFilter } from './utilities';
 export async function countChanges(req, res) {
   const { models } = req;
   try {
-    const changeCount = await models.meditrakSyncQueue.count(getChangesFilter(req.query));
+    const filter = await getChangesFilter(req);
+    const changeCount = await models.meditrakSyncQueue.count(filter);
     respond(res, { changeCount });
     return;
   } catch (error) {

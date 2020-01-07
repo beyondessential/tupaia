@@ -15,7 +15,7 @@ export { EntityRelationModel as entityRelation } from './EntityRelation';
 export { EntityRelationTypeModel as entityRelationType } from './EntityRelationType';
 export { FeedItemModel as feedItem } from './FeedItem';
 export { GeographicalAreaModel as geographicalArea } from './GeographicalArea';
-export { InstallIdModel as installId } from './InstallId';
+export { MeditrakClientModel as meditrakClient } from './MeditrakClient';
 export { MeditrakSyncQueueModel as meditrakSyncQueue } from './MeditrakSyncQueue';
 export { Ms1SyncQueueModel as ms1SyncQueue } from './Ms1SyncQueue';
 export { Ms1SyncLogModel as ms1SyncLog } from './Ms1SyncLog';

@@ -10,6 +10,10 @@ import { DatabaseModel } from '../DatabaseModel';
 class FacilityType extends DatabaseType {
   static databaseType = TYPES.FACILITY;
 
+  static meditrakConfig = {
+    minAppVersion: '0.0.1',
+  };
+
   // Exposed for access policy creation.
   get organisationUnitCode() {
     return this.code;

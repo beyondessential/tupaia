@@ -8,7 +8,7 @@ import {} from 'dotenv/config'; // Load the environment variables into process.e
 import http from 'http';
 import { TupaiaDatabase } from '@tupaia/database';
 
-import { SyncQueue as GenericSyncQueue, ModelRegistry } from './database';
+import { createMeditrakSyncQueue, ModelRegistry } from './database';
 import { startSyncWithDhis } from './dhis';
 import { startSyncWithMs1 } from './ms1';
 import { startFeedScraper } from './social';
@@ -26,26 +26,7 @@ const models = new ModelRegistry(database);
 /**
  * Set up change handlers e.g. for syncing
  */
-const MODELS_TO_SYNC_WITH_MEDITRAK = [
-  models.facility,
-  models.permissionGroup,
-  models.country,
-  models.geographicalArea,
-  models.question,
-  models.survey,
-  models.surveyGroup,
-  models.surveyScreen,
-  models.surveyScreenComponent,
-  models.option,
-  models.optionSet,
-  models.entity,
-];
-
-const meditrakSyncQueue = new GenericSyncQueue( // Syncs changes to the data collection app
-  models,
-  models.meditrakSyncQueue,
-  MODELS_TO_SYNC_WITH_MEDITRAK,
-);
+createMeditrakSyncQueue(models);
 initialiseNotifiers(models); // Notifies users of relevant changes, e.g. permissions granted
 
 /**

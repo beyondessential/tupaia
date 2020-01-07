@@ -1,11 +1,9 @@
-/**
- * Tupaia MediTrak
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- */
-
-export { extractTabNameFromQuery } from './extractTabNameFromQuery';
-export { getChangesFilter } from './getChangesFilter';
-export { getColumnsForMeditrakApp } from './getColumnsForMeditrakApp';
-export { splitStringOn, splitStringOnComma, splitOnNewLinesOrCommas } from './split';
+export { getChangesFilter, getColumnsForMeditrakApp } from './changes';
+export {
+  extractTabNameFromQuery,
+  splitStringOn,
+  splitStringOnComma,
+  splitOnNewLinesOrCommas,
+} from './excel';
 export { getArrayQueryParameter } from './getArrayQueryParameter';
 export { SurveyResponseImporter } from './SurveyResponseImporter';

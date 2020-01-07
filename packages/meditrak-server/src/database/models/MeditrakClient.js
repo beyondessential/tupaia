@@ -7,16 +7,12 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '..';
 
-class SurveyScreenType extends DatabaseType {
-  static databaseType = TYPES.SURVEY_SCREEN;
-
-  static meditrakConfig = {
-    minAppVersion: '0.0.1',
-  };
+export class MeditrakClient extends DatabaseType {
+  static databaseType = TYPES.MEDITRAK_CLIENT;
 }
 
-export class SurveyScreenModel extends DatabaseModel {
+export class MeditrakClientModel extends DatabaseModel {
   get DatabaseTypeClass() {
-    return SurveyScreenType;
+    return MeditrakClient;
   }
 }
