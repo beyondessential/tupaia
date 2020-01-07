@@ -1,13 +1,16 @@
 /**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
+ * Tupaia
+ * Copyright (c) 2017-2020 Beyond Essential Systems Pty Ltd
  **/
-import winston from 'winston';
+
 import autobind from 'react-autobind';
 import knex from 'knex';
-import { getConnectionConfig } from '@tupaia/common';
+import PGPubSub from 'pg-pubsub';
+import winston from 'winston';
 
-import { generateId } from './generateId';
+import { getConnectionConfig } from './getConnectionConfig';
+import { generateId } from './utilities/generateId';
+import { Multilock } from './utilities/multilock';
 
 const QUERY_METHODS = {
   COUNT: 'count',
@@ -35,24 +38,82 @@ export const JOIN_TYPES = {
   DEFAULT: null,
 };
 
+// no math here, just hand-tuned to be as low as possible while
+// keeping all the tests passing
+const HANDLER_DEBOUNCE_DURATION = 250;
+
 export class TupaiaDatabase {
-  constructor() {
+  constructor(transactingConnection) {
     autobind(this);
     this.changeHandlers = {};
+
+    // If this instance is not for a specific transaction, it is the singleton instance
+    this.isSingleton = !transactingConnection;
+
     const connectToDatabase = async () => {
-      const connectionConfig = getConnectionConfig();
-      this.connection = await knex({
-        client: 'pg',
-        connection: connectionConfig,
-      });
-      winston.info('Connected to database');
-      return this.connection;
+      this.connection =
+        transactingConnection ||
+        (await knex({
+          client: 'pg',
+          connection: getConnectionConfig(),
+        }));
+      if (this.isSingleton) {
+        this.changeListener = new PGPubSub(getConnectionConfig());
+        this.changeListener.addChannel('change', this.notifyChangeHandlers);
+      }
+      return true;
     };
     this.connectionPromise = connectToDatabase();
+
+    this.handlerLock = new Multilock();
   }
 
   destroy() {
+    this.changeListener.close();
     this.connection.destroy();
+  }
+
+  addChangeHandlerForCollection(collectionName, changeHandler) {
+    this.getChangeHandlersForCollection(collectionName).push(changeHandler);
+  }
+
+  async notifyChangeHandlers({ change, record }) {
+    const unlock = this.handlerLock.createLock(change.record_id);
+    try {
+      const changeHandlersForCollection = this.getChangeHandlersForCollection(change.record_type);
+      for (let i = 0; i < changeHandlersForCollection.length; i++) {
+        try {
+          await changeHandlersForCollection[i](change, record);
+        } catch (e) {
+          winston.error(e);
+        }
+      }
+    } finally {
+      unlock();
+    }
+  }
+
+  async waitForAllChangeHandlers() {
+    return this.handlerLock.waitWithDebounce(HANDLER_DEBOUNCE_DURATION);
+  }
+
+  getChangeHandlersForCollection(collectionName) {
+    // Instantiate the array if no change handlers currently exist for the collection
+    if (!this.changeHandlers[collectionName]) {
+      this.changeHandlers[collectionName] = [];
+    }
+    return this.changeHandlers[collectionName];
+  }
+
+  wrapInTransaction(wrappedFunction) {
+    return this.connection.transaction(transaction =>
+      wrappedFunction(new TupaiaDatabase(transaction)),
+    );
+  }
+
+  async fetchSchemaForTable(databaseType) {
+    await this.connectionPromise;
+    return this.connection(databaseType).columnInfo();
   }
 
   /**
@@ -78,11 +139,8 @@ export class TupaiaDatabase {
    * Asynchronously await the database connection to be made, and then build the query as per normal
    */
   async queryWhenConnected(...args) {
-    const connection = await this.connectionPromise;
-    if (!connection) {
-      throw new Error('Database failed to connect');
-    }
-    return buildQuery(connection, ...args);
+    await this.connectionPromise;
+    return buildQuery(this.connection, ...args);
   }
 
   find(recordType, where = {}, options = {}, queryMethod = QUERY_METHODS.SELECT) {
@@ -161,9 +219,8 @@ export class TupaiaDatabase {
     }
 
     const recordsCreated = [record];
-    for (let i = 0; i < additionalRecords.length; i++) {
-      const additionalRecord = additionalRecords[i];
-      const recordCreated = await this.create(recordType, additionalRecord); // eslint-disable-line no-await-in-loop
+    for (const additionalRecord of additionalRecords) {
+      const recordCreated = await this.create(recordType, additionalRecord);
       recordsCreated.push(recordCreated);
     }
     return recordsCreated;
@@ -190,15 +247,58 @@ export class TupaiaDatabase {
     return this.update(recordType, { id }, updatedFields);
   }
 
-  async updateOrCreate(recordType, where, updatedFields) {
-    let record = await this.findOne(recordType, where);
-    if (record) {
-      const records = await this.update(recordType, where, updatedFields);
-      record = records[0];
-    } else {
-      record = await this.create(recordType, { ...where, ...updatedFields });
-    }
-    return record;
+  async updateOrCreate(recordType, identifiers, updatedFields) {
+    // Put together the full new record that will be created, if no matching record exists
+    const newId = generateId(); // Generate a new id, in no id was provided
+    const updatedFieldsWithoutUndefined = JSON.parse(JSON.stringify(updatedFields));
+    const newRecord = { id: newId, ...identifiers, ...updatedFieldsWithoutUndefined };
+
+    const buildQueryList = (object, formatter) =>
+      Object.keys(object)
+        .map(formatter)
+        .join(',');
+
+    // Build string of all column names to be inserted on new record creation
+    const columns = buildQueryList(newRecord, columnName => `:old_column_${columnName}:`);
+
+    // Build string of all values to be inserted on new record creation
+    const values = buildQueryList(newRecord, columnName => `:${columnName}`);
+
+    // Build string of column names to detect a conflict on, i.e. the identifying columns
+    const conflict = buildQueryList(identifiers, columnName => `:old_column_${columnName}:`);
+
+    // Build string of just those fields to update if a matching record exists
+    const updates = buildQueryList(
+      updatedFieldsWithoutUndefined,
+      columnName => `:old_column_${columnName}: = :new_column_${columnName}:`,
+    );
+
+    // Put together all parameters that may need to be bound, including the column names and values
+    const allParameterBindings = {
+      recordType,
+      ...newRecord,
+    };
+    Object.keys(newRecord).forEach(columnName => {
+      allParameterBindings[`old_column_${columnName}`] = columnName; // Use 'old_column_' prefix
+    });
+    Object.keys(updatedFieldsWithoutUndefined).forEach(columnName => {
+      // If updating on conflict, we can use the special postgres "excluded" table name to refer to
+      // the record that failed to be inserted. Use 'new_column_' as the prefix
+      allParameterBindings[`new_column_${columnName}`] = `excluded.${columnName}`;
+    });
+
+    // Run the sql
+    const result = await this.executeSql(
+      `
+        INSERT INTO :recordType: (${columns})
+          VALUES (${values})
+          ON CONFLICT (${conflict}) DO UPDATE
+            SET ${updates}
+          RETURNING *;
+      `,
+      allParameterBindings,
+    );
+    return result[0];
   }
 
   async delete(recordType, where = {}) {
@@ -213,6 +313,38 @@ export class TupaiaDatabase {
 
   async deleteById(recordType, id) {
     return this.delete(recordType, { id });
+  }
+
+  /**
+   * Force a change to be recorded against the records matching the search criteria, and return
+   * those records.
+   */
+  async markAsChanged(recordType, where, options) {
+    const records = await this.find(recordType, where, options);
+    for (const record of records) {
+      this.changeListener.publish('change', {
+        change: {
+          record_id: record.id,
+          type: 'update',
+          record_type: recordType,
+        },
+        record,
+      });
+    }
+    return records;
+  }
+
+  async getSetting(key) {
+    const setting = await this.findOne('setting', { key: key });
+    return setting ? setting.value : null;
+  }
+
+  setSetting(key, value) {
+    return this.updateOrCreate('setting', { key }, { value });
+  }
+
+  clearSetting(key) {
+    return this.delete('setting', { key });
   }
 
   /**
@@ -259,12 +391,12 @@ export class TupaiaDatabase {
    *
    * Use only for situations in which Knex is not able to assemble a query.
    */
-  async executeSql(sqlString, parameters = []) {
+  async executeSql(sqlString, parametersToBind) {
     if (!this.connection) {
       await this.connectionPromise;
     }
 
-    const result = await this.connection.raw(sqlString, parameters);
+    const result = await this.connection.raw(sqlString, parametersToBind);
     return result.rows;
   }
 }
@@ -296,11 +428,12 @@ function buildQuery(connection, queryConfig, where = {}, options = {}) {
   // Add filtering (or WHERE) details if provided
   query = addWhereClause(query[queryMethod](queryMethodParameter || options.columns), where);
 
-  // Add  sorting information if provided
+  // Add sorting information if provided
   if (options.sort) {
-    Object.entries(options.sort).forEach(([key, direction]) => {
-      query = query.orderBy(key, direction);
-    });
+    for (const sortKey of options.sort) {
+      const [columnName, direction] = sortKey.split(' ');
+      query = query.orderBy(columnName, direction);
+    }
   }
 
   // Restrict the number of rows returned if limit provided
@@ -322,9 +455,6 @@ function buildQuery(connection, queryConfig, where = {}, options = {}) {
     // Return all fields after
     query.returning('*');
   }
-
-  // Uncomment to debug database queries
-  winston.debug('database query', { query: query.toString() });
 
   // Now constructed, the query can either be 'awaited' (in which case it will execute and return
   // the result), or passed back in to this.query as part of a nested query.

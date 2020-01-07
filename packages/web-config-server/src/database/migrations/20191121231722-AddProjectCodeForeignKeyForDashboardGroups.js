@@ -4,7 +4,7 @@ var dbm;
 var type;
 var seed;
 
-import { generateId } from '/database/generateId';
+import { generateId } from '@tupaia/database';
 
 /**
  * We receive the dbmigrate dependency from dbmigrate initially.
@@ -26,7 +26,7 @@ exports.up = async function(db) {
       'Public',
       '{"5d3f8844a72aa231bf71977f"}'
     );
-    
+
     INSERT INTO "project" ("id", "code", "user_group", "name", "description", "sort_order", "theme", "entity_ids")
     VALUES (
       '${generateId()}',
@@ -41,7 +41,7 @@ exports.up = async function(db) {
   `);
 
   await db.runSql(`
-    ALTER TABLE "dashboardGroup" 
+    ALTER TABLE "dashboardGroup"
     RENAME COLUMN "project" TO "projectCode";
   `);
 

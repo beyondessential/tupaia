@@ -5,7 +5,7 @@
 
 import DBMigrate from 'db-migrate';
 import {} from 'dotenv/config'; // Load the environment variables into process.env
-import { getConnectionConfig } from '@tupaia/common';
+import { getConnectionConfig } from '@tupaia/database';
 
 (async () => {
   const connectionConfig = getConnectionConfig();
