@@ -52,7 +52,12 @@ For more, see the react-native guides
   - Change the defaults in your IDE (VS Code etc) from CRLF to LF
 
 - It's advisable to get nvm, node (version 10.15.1), yarn and react-native running on the Windows subsystem for linux
-- After installing the cli tools download and install android studio
+
+When simulating a device on windows, there are a couple of options you can use:
+
+**Simulating via Android Studio:**
+
+After installing the Android cli tools download and install android studio
 
 In Android studio Select the "SDK Platforms" tab from within the SDK Manager, then check the box next to "Show Package Details" in the bottom right corner. Look for and expand the Android 9 (Pie) entry, then make sure the following items are checked:
 
@@ -70,6 +75,33 @@ gradlew.bat installDebug
 From the WSL you should be able to type:
 react-native start
 and meditrak should install on the virtual device running
+
+**Simulating via Genymotion:**
+
+Genymotion can be installed via chocolatey: https://chocolatey.org/packages/genymotion
+
+However, by default Genymotion is packaged with an older version of the android SDK. Importantly, the Genymotion ADB (Android Debug Bridge) server is version 40 (as of the time of writing this). However the latest ADB which will be installed in WSL via the Android SDK Tools is version 41. Since we will be deploying the application and launching the ABD client from WSL, we need to have a consistent version for Genymotion's ABD server.
+
+The only solution I found for this is to install the Android cli tools for windows and keep them in sync with the version on WSL. To do this, perform the above steps to download JDK 8 and the Android SDK again but this time for windows.
+
+Once installed use the sdkmanager to install the Android SDK packages, run:
+```
+sdkmanager.bat --install platform-tools
+sdkmanager.bat --install platforms;android-<version>
+sdkmanager.bat --install build-tools;<version>
+sdkmanager.bat --licenses
+```
+Note (for the package versions, just make them consistent with whatever was installed in WSL when runnning `react-native run-android`)
+
+Now you just need to make Genymotion use the newly installed ADB server, do this by:
+1. Launch Genymotion
+2. Click 'Settings'
+3. Select 'ADB Settings'
+4. Choose custom ADB and select the folder containing the Android SDK
+
+Use Genymotion to create a virtual device, and then install the app and debug by running from WSL:
+
+`react-native run-android`
 
 ### Beta builds (Android)
 
