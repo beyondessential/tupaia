@@ -77,7 +77,6 @@
     "flow-bin": "0.38.0",
     "metro-react-native-babel-preset": "^0.53.1",
     "prettier": "^1.17.1",
-    "react-test-renderer": "16.8.6",
-    "reflective-bind": "^0.2.2"
+    "react-test-renderer": "16.8.6"
   }
 }
