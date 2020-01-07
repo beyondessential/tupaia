@@ -9,7 +9,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-import { FormError, LoadingIndicator } from './common';
+import { FormError, FormSuccess, LoadingIndicator } from './common';
 import { validateField } from './utils';
 
 const FormGrid = styled.div`
@@ -120,12 +120,13 @@ export class Form extends React.Component {
   };
 
   render() {
-    const { isLoading, formError } = this.props;
+    const { isLoading, formError, formSuccess } = this.props;
 
     return (
       <form onSubmit={this.submitForm} noValidate>
         {isLoading && <LoadingIndicator />}
         <FormGrid>
+          {formSuccess && <FormSuccess success={formSuccess} />}
           {this.renderChildren()}
           {formError && <FormError error={formError} />}
         </FormGrid>
@@ -136,6 +137,7 @@ export class Form extends React.Component {
 
 Form.propTypes = {
   formError: PropTypes.string,
+  formSuccess: PropTypes.string,
   isLoading: PropTypes.bool,
   render: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
@@ -144,4 +146,5 @@ Form.propTypes = {
 Form.defaultProps = {
   isLoading: false,
   formError: null,
+  formSuccess: null,
 };

@@ -17,6 +17,8 @@ import { TextField } from '../Form/Fields';
 import { emailAddress } from '../Form/validators';
 import { ForgotPassword } from './ForgotPassword';
 import { SubmitButton } from '../Form/common/SubmitButton';
+import { SignupComplete } from '../SignupForm/SignupComplete';
+import { EmailVerification } from '../EmailVerification';
 
 const PasswordField = styled(TextField)`
   margin-bottom: 16px;
@@ -27,12 +29,21 @@ export const LoginFormComponent = ({
   loginFailedMessage,
   onClickResetPassword,
   onAttemptUserLogin,
+  successMessage,
+  emailVerified,
 }) => {
+  const [shouldShowVerifyForm, showVerifyForm] = React.useState(false);
+
+  if (shouldShowVerifyForm) return <EmailVerification />;
+  else if (emailVerified === 'N')
+    return <SignupComplete onClickResend={() => showVerifyForm(true)} />;
+
   return (
     <Form
       onSubmit={({ email, password }) => onAttemptUserLogin(email, password)}
       isLoading={isRequestingLogin}
       formError={loginFailedMessage}
+      formSuccess={successMessage}
       render={submitForm => (
         <React.Fragment>
           <TextField fullWidth label="E-mail" name="email" validators={[emailAddress]} required />
@@ -57,8 +68,12 @@ LoginFormComponent.propTypes = {
   loginFailedMessage: PropTypes.string,
   onAttemptUserLogin: PropTypes.func.isRequired,
   onClickResetPassword: PropTypes.func.isRequired,
+  successMessage: PropTypes.string,
+  emailVerified: PropTypes.string,
 };
 
 LoginFormComponent.defaultProps = {
   loginFailedMessage: null,
+  successMessage: null,
+  emailVerified: null,
 };

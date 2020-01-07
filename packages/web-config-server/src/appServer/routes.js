@@ -1,6 +1,7 @@
 import { setSession } from '/authSession';
 import { handleAuthentication } from './handlers/handleAuthentication';
 import { createUser } from './handlers/createUser';
+import { verifyEmail, requestResendEmail } from './handlers/verifyEmail';
 import { changePassword } from './handlers/changePassword';
 import { requestResetPassword } from './handlers/requestResetPassword';
 import { getCountryAccessList } from './handlers/getCountryAccessList';
@@ -37,6 +38,7 @@ const authSuccess = (req, res) => {
     authenticated: true,
     name: req.session.userJson.name,
     defaultOrganisationUnit: req.session.userJson.defaultOrganisationUnit,
+    emailVerified: req.session.userJson.verified_email,
   });
 };
 
@@ -69,6 +71,11 @@ export const appRequestResetPassword = () => async (req, res) => {
   res.send(result);
 };
 
+export const appResendEmail = () => async (req, res) => {
+  const result = await requestResendEmail(req);
+  res.send(result);
+};
+
 /**
  * /getCountryAccessList
  *
@@ -86,5 +93,15 @@ export const appGetCountryAccessList = () => async (req, res) => {
  */
 export const appRequestCountryAccess = () => async (req, res) => {
   const result = await requestCountryAccess(req);
+  res.send(result);
+};
+
+/**
+ * /VerifyEmail
+ *
+ *
+ */
+export const appVerifyEmail = () => async (req, res) => {
+  const result = await verifyEmail(req);
   res.send(result);
 };

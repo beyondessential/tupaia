@@ -52,7 +52,12 @@ import {
   FETCH_INFO_VIEW_DATA_SUCCESS,
   FETCH_INFO_VIEW_DATA,
   FETCH_LOGIN_ERROR,
+  RESEND_VERIFICATION_EMAIL,
+  FETCH_EMAIL_VERIFY_ERROR,
+  FETCH_EMAIL_VERIFY_SUCCESS,
+  FETCH_RESEND_EMAIL_ERROR,
   FETCH_LOGIN_SUCCESS,
+  SHOW_UNVERIFIED_LOGIN,
   FETCH_LOGOUT_ERROR,
   FETCH_LOGOUT_SUCCESS,
   FETCH_MEASURES_ERROR,
@@ -116,6 +121,8 @@ function authentication(
     isRequestingLogin: false,
     loginFailedMessage: null,
     showSessionExpireDialog: false,
+    successMessage: '',
+    emailVerified: 'Y',
     errors: [],
   },
   action,
@@ -126,6 +133,7 @@ function authentication(
         ...state,
         isDialogVisible: true,
         dialogPage: action.dialogPage,
+        successMessage: action.successMessage,
         loginFailedMessage: null,
       };
     case ATTEMPT_LOGOUT:
@@ -151,6 +159,14 @@ function authentication(
         isUserLoggedIn: true,
         isRequestingLogin: false,
         isDialogVisible: action.shouldCloseDialog ? false : state.isDialogVisible,
+        emailVerified: state.emailVerified,
+      };
+    case SHOW_UNVERIFIED_LOGIN:
+      return {
+        ...state,
+        isUserLoggedIn: false,
+        isRequestingLogin: false,
+        emailVerified: 'N',
       };
     case FETCH_LOGIN_ERROR:
       return {
@@ -159,6 +175,39 @@ function authentication(
         isRequestingLogin: false,
         loginFailedMessage: 'Wrong e-mail or password',
         errors: action.errors,
+      };
+    case FETCH_EMAIL_VERIFY_SUCCESS:
+      return {
+        ...state,
+        messageFailLogin: '',
+        successMessage: action.successMessage,
+      };
+    case FETCH_EMAIL_VERIFY_ERROR:
+      return {
+        ...state,
+        isUserLoggedIn: false,
+        isRequestingLogin: false,
+        loginFailedMessage: action.messageFailLogin,
+      };
+    case RESEND_VERIFICATION_EMAIL:
+      return {
+        ...state,
+        hasSentEmail: true,
+        emailVerified: 'Y',
+      };
+    case FETCH_RESEND_EMAIL_ERROR:
+      return {
+        ...state,
+        hasSentEmail: false,
+        messageFailEmailVerify:
+          action.error ||
+          'Something went wrong with your email verification, please check the form and try again',
+      };
+
+    case FETCH_SIGNUP_SUCCESS:
+      return {
+        ...state,
+        isRequestingLogin: false,
       };
     case FETCH_LOGOUT_SUCCESS:
       return {
@@ -181,6 +230,7 @@ function authentication(
       return {
         ...state,
         isRequestingLogin: true,
+        emailVerified: action.emailVerified,
       };
     case FIND_USER_LOGIN_FAILED:
       return {
@@ -225,7 +275,7 @@ function signup(
     case FETCH_SIGNUP_SUCCESS:
       return {
         ...state,
-        signupComplete: true, // Remains for current session, prevents duplicate signups.
+        signupComplete: true,
         isRequestingSignup: false,
         signupFailedMessage: '',
       };

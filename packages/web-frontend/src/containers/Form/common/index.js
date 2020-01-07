@@ -8,4 +8,5 @@
 export { FieldErrors } from './FieldErrors';
 export { LoadingIndicator } from './LoadingIndicator';
 export { FormError } from './FormError';
+export { FormSuccess } from './FormSuccess';
 export { FormLink } from './FormLink';
