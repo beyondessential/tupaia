@@ -41,10 +41,10 @@
     - type: serial
       name: deploy-frontends
       steps:
-        - name: deploy-admin-panel
-          command: './packages/devops/scripts/ci/deployFrontend.sh admin-panel'
         - name: deploy-web-frontend
           command: './packages/devops/scripts/ci/deployFrontend.sh web-frontend'
+        - name: deploy-admin-panel
+          command: './packages/devops/scripts/ci/deployFrontend.sh admin-panel'
     - name: deploy-web-config-server
       command: './packages/devops/scripts/ci/deployBackend.sh web-config-server'
     - name: deploy-meditrak-server
