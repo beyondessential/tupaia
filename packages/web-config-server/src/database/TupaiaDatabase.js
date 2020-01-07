@@ -5,18 +5,9 @@
 import winston from 'winston';
 import autobind from 'react-autobind';
 import knex from 'knex';
+import { getConnectionConfig } from '@tupaia/common';
 
 import { generateId } from './generateId';
-
-export const CONNECTION_CONFIG = {
-  host: 'localhost',
-  port: process.env.POSTGRES_PORT,
-  max: '20',
-  idleTimeoutMillis: 60000,
-  user: process.env.POSTGRES_USERNAME,
-  password: process.env.POSTGRES_PASSWORD,
-  database: process.env.POSTGRES_DB_NAME,
-};
 
 const QUERY_METHODS = {
   COUNT: 'count',
@@ -49,9 +40,10 @@ export class TupaiaDatabase {
     autobind(this);
     this.changeHandlers = {};
     const connectToDatabase = async () => {
+      const connectionConfig = getConnectionConfig();
       this.connection = await knex({
         client: 'pg',
-        connection: CONNECTION_CONFIG,
+        connection: connectionConfig,
       });
       winston.info('Connected to database');
       return this.connection;

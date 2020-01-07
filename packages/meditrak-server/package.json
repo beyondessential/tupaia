@@ -6,6 +6,7 @@
   "private": true,
   "dependencies": {
     "@beyondessential/tupaia-access-policy": "2.1.0",
+    "@tupaia/common": "0.1.1",
     "api-error-handler": "^1.0.0",
     "async": "^2.6.2",
     "authentication-utilities": "^0.1.4",

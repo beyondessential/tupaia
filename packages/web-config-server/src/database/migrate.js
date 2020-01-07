@@ -5,16 +5,17 @@
 
 import DBMigrate from 'db-migrate';
 import {} from 'dotenv/config'; // Load the environment variables into process.env
-import { CONNECTION_CONFIG } from './TupaiaDatabase';
+import { getConnectionConfig } from '@tupaia/common';
 
 (async () => {
+  const connectionConfig = getConnectionConfig();
   const migrationInstance = DBMigrate.getInstance(true, {
     cwd: `${__dirname}/migrations`,
     config: {
       defaultEnv: 'tupaiaConfigServer',
       tupaiaConfigServer: {
         driver: 'pg',
-        ...CONNECTION_CONFIG,
+        ...connectionConfig,
       },
     },
   });

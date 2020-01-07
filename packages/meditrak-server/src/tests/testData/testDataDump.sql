@@ -69,16 +69,6 @@ CREATE TYPE public.entity_type AS ENUM (
 
 
 --
--- Name: view_mode; Type: TYPE; Schema: public; Owner: -
---
-
-CREATE TYPE public.view_mode AS ENUM (
-    'explore',
-    'disaster'
-);
-
-
---
 -- Name: generate_object_id(); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -299,8 +289,7 @@ CREATE TABLE public."dashboardGroup" (
     "organisationUnitCode" text NOT NULL,
     "dashboardReports" text[] DEFAULT '{}'::text[] NOT NULL,
     name text NOT NULL,
-    code text,
-    "viewMode" public.view_mode DEFAULT 'explore'::public.view_mode
+    code text
 );
 
 
@@ -672,13 +661,15 @@ CREATE TABLE public.permission_group (
 CREATE TABLE public.project (
     id text NOT NULL,
     code text NOT NULL,
-    user_group text NOT NULL,
     entity_ids text[] NOT NULL,
     name text NOT NULL,
     description text,
     sort_order integer,
     image_url text,
-    theme jsonb DEFAULT '{"text": "#ffffff", "background": "#262834"}'::jsonb NOT NULL
+    default_measure text DEFAULT '126,171'::text,
+    dashboard_group_name text DEFAULT 'General'::text,
+    user_groups text[],
+    logo_url text
 );
 
 
@@ -2871,9 +2862,34 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 471	/20191114030520-FixImportDeleteCountsForUpdates	2019-12-12 00:26:42.232
 472	/20191114044010-SingleDhisReferencePerRecord	2019-12-12 00:26:45.795
 473	/20191212221249-UpdateSTRIVEPermissions	2019-12-13 05:05:39.287
-474	/20191210055005-CoconutRewardUpdate	2019-12-16 15:05:20.76
-475	/20191216220622-RemoveVitiLevuRegionFromFiji	2019-12-16 22:33:02.088
-476	/20191127033638-ChangeSiteColumnConfig	2019-12-16 22:34:48.92
+474	/20191210055005-CoconutRewardUpdate	2019-12-17 23:27:40.851
+475	/20191127033638-ChangeSiteColumnConfig	2019-12-18 21:52:56.168
+476	/20191216015926-RemoveOrgUnitIsGroupFromConfig	2019-12-18 21:52:56.192
+477	/20191216220622-RemoveVitiLevuRegionFromFiji	2019-12-18 21:52:56.251
+478	/20191216041125-ResyncVillagesAsOrgUnits	2019-12-18 23:06:40.746
+479	/20191213030728-UpdateSTRIVEDashboardNames	2019-12-19 00:45:13.03
+480	/20191216225125-UpdateWeeklyFebrileCasesReportName	2019-12-19 00:45:13.05
+481	/20191216233942-UpdatePositiveMalariaConsultationsReport	2019-12-19 00:45:13.063
+482	/20191216235755-ChangeSTRIVEWeeklyReportedCasesReportName	2019-12-19 00:45:13.077
+483	/20191216002240-MapOverlayPercentage	2019-12-19 05:49:15.025
+484	/20191217044009-TongaVillageAnswersToEntityIds	2019-12-20 06:46:51.008
+485	/20191218040525-TongaVillageAnswersToPrimaryEntities	2019-12-20 06:46:56.316
+486	/20191219231942-TongaCD3CaseParentsToVillages	2019-12-20 06:46:56.678
+487	/20191220032822-DeleteTongaVillageAnswers	2019-12-20 06:46:58.623
+488	/20191118051744-RenameViewModeDashboardGroupColumn	2019-12-20 06:48:15.211
+489	/20191121231722-AddProjectCodeForeignKeyForDashboardGroups	2019-12-20 06:48:15.321
+490	/20191208223633-AddDefaultMeasureColumnToProjectTable	2019-12-20 06:48:15.349
+491	/20191208223643-RemoveProjectCodeFromDashboardGroupsAndAddDashboardGroupNameToProjects	2019-12-20 06:48:15.373
+492	/20191208223743-AddProjectsToTable	2019-12-20 06:48:15.431
+493	/20191208233743-AddUnfpaDashboardGroups	2019-12-20 06:48:15.491
+494	/20191208233747-AddUnfpaMethodsAvailableCharts	2019-12-20 06:48:15.617
+495	/20191209031534-AddUNFPARHContraceptiveMethodsOfferedReports	2019-12-20 06:48:15.651
+496	/20191209061626-AddUnfpaFacilitiesOfferingServicesAndDelivery	2019-12-20 06:48:15.746
+497	/20191217043147-RemoveThemeAndAddLogoProjectColumns	2019-12-20 06:48:15.756
+498	/20191217051444-UpdateProjectImageUrls	2019-12-20 06:48:15.773
+499	/20191220004141-UpdateProjectUserGroups	2019-12-20 06:48:15.787
+500	/20191219040555-ShowEventOrgUnitInTongaCDReports	2019-12-23 22:58:29.845
+503	/20191221032822-UseOriginalTimezoneForDateAnswers	2019-12-29 22:12:32.173
 \.
 
 
@@ -2881,7 +2897,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 476, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 503, true);
 
 
 --

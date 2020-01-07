@@ -45,14 +45,7 @@ use localhost:
     - Local: DHIS_URL="http://localhost:8888" (Run using docker according to `docker-dhis` repo)
 - web-config-server
   - Postgres Database
-    - Always expected to be on localhost, can't change.
-    - For local development, run `./pgSql/pg-start.sh -r` and if make sure the .env has:
-      ```
-      POSTGRES_DB_NAME="config"
-      POSTGRES_PASSWORD="pass"
-      POSTGRES_PORT="5433"
-      POSTGRES_USERNAME="postgres"
-      ```
+    - Same as meditrak-server database
   - Auth Server (meditrak-server)
     - Dev: TUPAIA_APP_SERVER_URL="https://dev-api.tupaia.org/v2"
     - Local: TUPAIA_APP_SERVER_URL="http://localhost:8090/v2" (`yarn start-dev` in `meditrak-server`)
