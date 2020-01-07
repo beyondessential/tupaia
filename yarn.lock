@@ -17450,13 +17450,6 @@ redux@^4.0.4:
     loose-envify "^1.4.0"
     symbol-observable "^1.2.0"
 
-reflective-bind@^0.2.2:
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/reflective-bind/-/reflective-bind-0.2.3.tgz#eee09195b1b570efe2a3e85bd44b18bd0ea3ad3a"
-  integrity sha512-lXpXjsci2zjybgD+vvjOun6VZzaGE2VhICrgJfFRGSVarWRCIlnw9hqfnT0WVZt5JeAaDIuRT7NLTQO1ruShxA==
-  dependencies:
-    "@babel/helper-module-imports" "^7.0.0"
-
 regenerate-unicode-properties@^8.1.0:
   version "8.1.0"
   resolved "https://registry.yarnpkg.com/regenerate-unicode-properties/-/regenerate-unicode-properties-8.1.0.tgz#ef51e0f0ea4ad424b77bf7cb41f3e015c70a3f0e"
