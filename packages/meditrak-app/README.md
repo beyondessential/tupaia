@@ -71,13 +71,23 @@ From the WSL you should be able to type:
 react-native start
 and meditrak should install on the virtual device running
 
+### Making a release build
+
+#### Android
+
+- If you've previously followed the iOS steps, rm -rf third-party && rm -rf node_modules && yarn
+- Create gradle.properties within the /android directory, using the contents found on LastPass
+- Copy meditrak-release-key.keystore from lastpass (follow instructions to save and decode) and save under /android/app
+- Uncomment the line `signingConfig signingConfigs.release` in android/app/build.gradle (don't commit this change, it will break CI builds)
+- cd android && ./gradlew assembleRelease
+
 ### Beta builds (Android)
 
 1. Create a new beta branch.
 2. Change the isBeta boolean to be true.
 3. Set BETA_BRANCH in .env to be the name of the branch it should build off (which sets the server URL it should look at, e.g. the beta branch points at beta-api.tupaia.org, dev branch points at dev-api.tupaia.org)
 4. Change the Android application id com.tupaiameditrak name in android/app/build.gradle to com.tupaiameditrak.beta
-5. Do a build
+5. Do a build (see above)
 6. Open the build on an Android device and make sure there is a semi-transparent orange banner on the bottom of the screen that says 'BETA' or the equivalent name of the branch it is building off.
 
 ### Testing
