@@ -5,6 +5,8 @@
 
 import * as models from './models';
 
+import { MAX_VERSION } from '../utilities/version';
+
 export class ModelRegistry {
   constructor(database) {
     this.database = database;
@@ -62,7 +64,7 @@ export class ModelRegistry {
   getMinAppVersionByType() {
     return Object.values(this).reduce((result, model) => {
       const { databaseType, meditrakConfig } = model;
-      const { minAppVersion = Infinity } = meditrakConfig || {};
+      const { minAppVersion = MAX_VERSION } = meditrakConfig || {};
 
       return { ...result, [databaseType]: minAppVersion };
     }, {});

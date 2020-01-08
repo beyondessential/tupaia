@@ -6,19 +6,21 @@
 // N.B. whatever name the model is exported under will be what it is retrieved as from the
 // ModelRegistry, e.g. models.answer.findOne() rather than models.AnswerModel.findOne()
 export { AnswerModel as answer } from './Answer';
+export { APIClientModel as apiClient } from './APIClient';
+export { ApiRequestLogModel as apiRequestLog } from './ApiRequestLog';
 export { CountryModel as country } from './Country';
 export { DhisSyncLogModel as dhisSyncLog } from './DhisSyncLog';
 export { DhisSyncQueueModel as dhisSyncQueue } from './DhisSyncQueue';
-export { FacilityModel as facility } from './Facility';
 export { EntityModel as entity } from './Entity';
 export { EntityRelationModel as entityRelation } from './EntityRelation';
 export { EntityRelationTypeModel as entityRelationType } from './EntityRelationType';
+export { FacilityModel as facility } from './Facility';
 export { FeedItemModel as feedItem } from './FeedItem';
 export { GeographicalAreaModel as geographicalArea } from './GeographicalArea';
-export { MeditrakClientModel as meditrakClient } from './MeditrakClient';
+export { MeditrakDeviceModel as meditrakDevice } from './MeditrakDevice';
 export { MeditrakSyncQueueModel as meditrakSyncQueue } from './MeditrakSyncQueue';
-export { Ms1SyncQueueModel as ms1SyncQueue } from './Ms1SyncQueue';
 export { Ms1SyncLogModel as ms1SyncLog } from './Ms1SyncLog';
+export { Ms1SyncQueueModel as ms1SyncQueue } from './Ms1SyncQueue';
 export { OneTimeLoginModel as oneTimeLogin } from './OneTimeLogin';
 export { OptionModel as option } from './Option';
 export { OptionSetModel as optionSet } from './OptionSet';
@@ -32,9 +34,6 @@ export { SurveyScreenComponentModel as surveyScreenComponent } from './SurveyScr
 export { SurveyScreenModel as surveyScreen } from './SurveyScreen';
 export { UserCountryPermissionModel as userCountryPermission } from './UserCountryPermission';
 export { UserFacilityPermissionModel as userFacilityPermission } from './UserFacilityPermission';
-export {
-  UserGeographicalAreaPermissionModel as userGeographicalAreaPermission,
-} from './UserGeographicalAreaPermission';
+export { UserGeographicalAreaPermissionModel as userGeographicalAreaPermission } from './UserGeographicalAreaPermission';
 export { UserModel as user } from './User';
 export { UserRewardModel as userReward } from './UserReward';
-export { APIClientModel as apiClient } from './APIClient';

@@ -47,7 +47,7 @@ const getAuthenticatedUser = async (models, { emailAddress, password, deviceName
   return user;
 };
 
-const upsertRefreshToken = async (models, { userId, deviceName }) => {
+const upsertRefreshToken = async (models, { userId, deviceName, meditrakDeviceId }) => {
   // Generate refresh token and save in db
   const refreshToken = randomToken.generate(REFRESH_TOKEN_LENGTH);
 
@@ -59,6 +59,7 @@ const upsertRefreshToken = async (models, { userId, deviceName }) => {
       },
       {
         token: refreshToken,
+        meditrak_device_id: meditrakDeviceId,
       },
     );
   } catch (error) {
@@ -71,7 +72,7 @@ const getAuthorizationObject = async ({ refreshToken, user, countryIdentifier })
   const accessToken = jwt.sign(
     {
       userId: user.id,
-      refreshTokenId: refreshToken.id,
+      refreshToken: refreshToken.token,
       role: 'Admin', // TODO think about permissions more, how to decide whether user has permission for API resource endpoints
     },
     process.env.JWT_SECRET,
@@ -97,24 +98,40 @@ const getAuthorizationObject = async ({ refreshToken, user, countryIdentifier })
   };
 };
 
+const saveMeditrakDeviceOnLogin = async (req, userId) => {
+  const { body, models, query } = req;
+  const { devicePlatform: platform, installId } = body || {};
+  const { appVersion } = query;
+
+  return models.meditrakDevice.updateOrCreate(
+    { install_id: installId },
+    {
+      user_id: userId,
+      install_id: installId,
+      platform,
+      app_version: appVersion,
+    },
+  );
+};
+
+const isMeditrakLogin = req => req.body && req.body.installId;
+
 const authenticatePassword = async req => {
   const { body, models } = req;
   // Get user's email, password, and deviceName from the POST body
-  const { emailAddress, password, deviceName, devicePlatform, installId } = body || {};
+  const { emailAddress, password, deviceName } = body || {};
 
   const user = await getAuthenticatedUser(models, { emailAddress, password, deviceName });
-  const refreshToken = await upsertRefreshToken(models, { userId: user.id, deviceName });
-
-  if (installId) {
-    await models.meditrakClient.updateOrCreate(
-      { install_id: installId },
-      {
-        user_id: user.id,
-        install_id: installId,
-        platform: devicePlatform,
-      },
-    );
+  let meditrakDeviceId;
+  if (isMeditrakLogin(req)) {
+    const meditrakDevice = await saveMeditrakDeviceOnLogin(req, user.id);
+    meditrakDeviceId = meditrakDevice.id;
   }
+  const refreshToken = await upsertRefreshToken(models, {
+    userId: user.id,
+    deviceName,
+    meditrakDeviceId,
+  });
 
   return { refreshToken, user };
 };

@@ -234,7 +234,10 @@ CREATE TABLE public.api_request_log (
     version double precision NOT NULL,
     endpoint text NOT NULL,
     user_id text,
-    request_time timestamp without time zone DEFAULT now()
+    request_time timestamp without time zone DEFAULT now(),
+    query jsonb DEFAULT '{}'::jsonb,
+    metadata jsonb DEFAULT '{}'::jsonb,
+    refresh_token text
 );
 
 
@@ -475,18 +478,6 @@ CREATE TABLE public.geographical_area (
 
 
 --
--- Name: install_id; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.install_id (
-    id text NOT NULL,
-    user_id text NOT NULL,
-    install_id text NOT NULL,
-    platform character varying DEFAULT ''::character varying
-);
-
-
---
 -- Name: mapOverlay; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -529,6 +520,20 @@ CREATE SEQUENCE public."mapOverlay_id_seq"
 --
 
 ALTER SEQUENCE public."mapOverlay_id_seq" OWNED BY public."mapOverlay".id;
+
+
+--
+-- Name: meditrak_device; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.meditrak_device (
+    id text NOT NULL,
+    user_id text NOT NULL,
+    install_id text NOT NULL,
+    platform character varying DEFAULT ''::character varying,
+    app_version text,
+    config jsonb DEFAULT '{}'::jsonb
+);
 
 
 --
@@ -700,7 +705,8 @@ CREATE TABLE public.refresh_token (
     user_id text NOT NULL,
     device text,
     token text NOT NULL,
-    expiry double precision
+    expiry double precision,
+    meditrak_device_id text
 );
 
 
@@ -787,6 +793,15 @@ CREATE TABLE public.survey_screen_component (
     question_label text,
     detail_label text,
     config character varying DEFAULT '{}'::character varying
+);
+
+
+--
+-- Name: test; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.test (
+    id text
 );
 
 
@@ -1096,10 +1111,10 @@ ALTER TABLE ONLY public.geographical_area
 
 
 --
--- Name: install_id install_id_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: meditrak_device install_id_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.install_id
+ALTER TABLE ONLY public.meditrak_device
     ADD CONSTRAINT install_id_pkey PRIMARY KEY (id);
 
 
@@ -1109,6 +1124,14 @@ ALTER TABLE ONLY public.install_id
 
 ALTER TABLE ONLY public."mapOverlay"
     ADD CONSTRAINT "mapOverlay_id_key" UNIQUE (id);
+
+
+--
+-- Name: meditrak_device meditrak_device_install_id_unique; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.meditrak_device
+    ADD CONSTRAINT meditrak_device_install_id_unique UNIQUE (install_id);
 
 
 --
@@ -1823,10 +1846,10 @@ CREATE TRIGGER geographical_area_trigger AFTER INSERT OR DELETE OR UPDATE ON pub
 
 
 --
--- Name: install_id install_id_trigger; Type: TRIGGER; Schema: public; Owner: -
+-- Name: meditrak_device install_id_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER install_id_trigger AFTER INSERT OR DELETE OR UPDATE ON public.install_id FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER install_id_trigger AFTER INSERT OR DELETE OR UPDATE ON public.meditrak_device FOR EACH ROW EXECUTE PROCEDURE public.notification();
 
 
 --
@@ -1834,6 +1857,13 @@ CREATE TRIGGER install_id_trigger AFTER INSERT OR DELETE OR UPDATE ON public.ins
 --
 
 CREATE TRIGGER mapoverlay_trigger AFTER INSERT OR DELETE OR UPDATE ON public."mapOverlay" FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
+-- Name: meditrak_device meditrak_device_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER meditrak_device_trigger AFTER INSERT OR DELETE OR UPDATE ON public.meditrak_device FOR EACH ROW EXECUTE PROCEDURE public.notification();
 
 
 --
@@ -1946,6 +1976,13 @@ CREATE TRIGGER survey_screen_trigger AFTER INSERT OR DELETE OR UPDATE ON public.
 --
 
 CREATE TRIGGER survey_trigger AFTER INSERT OR DELETE OR UPDATE ON public.survey FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
+-- Name: test test_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER test_trigger AFTER INSERT OR DELETE OR UPDATE ON public.test FOR EACH ROW EXECUTE PROCEDURE public.notification();
 
 
 --
@@ -2128,10 +2165,10 @@ ALTER TABLE ONLY public.geographical_area
 
 
 --
--- Name: install_id install_id_user_account_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: meditrak_device install_id_user_account_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.install_id
+ALTER TABLE ONLY public.meditrak_device
     ADD CONSTRAINT install_id_user_account_id_fk FOREIGN KEY (user_id) REFERENCES public.user_account(id) ON UPDATE RESTRICT ON DELETE CASCADE;
 
 
@@ -2165,6 +2202,14 @@ ALTER TABLE ONLY public.permission_group
 
 ALTER TABLE ONLY public.question
     ADD CONSTRAINT question_option_set_id_fk FOREIGN KEY (option_set_id) REFERENCES public.option_set(id) ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: refresh_token refresh_token_meditrak_device_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.refresh_token
+    ADD CONSTRAINT refresh_token_meditrak_device_id_fk FOREIGN KEY (meditrak_device_id) REFERENCES public.meditrak_device(id);
 
 
 --
@@ -2890,6 +2935,13 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 499	/20191220004141-UpdateProjectUserGroups	2019-12-20 06:48:15.787
 500	/20191219040555-ShowEventOrgUnitInTongaCDReports	2019-12-23 22:58:29.845
 503	/20191221032822-UseOriginalTimezoneForDateAnswers	2019-12-29 22:12:32.173
+504	/20200102222808-AddTongaUNFPADashboardGroupsAndReports	2020-01-05 15:12:09.801
+505	/20200107214233-AddColumnsToApiRequestLog	2020-01-08 11:10:57.916
+506	/20200107214234-RenameAndCleanupInstallId	2020-01-08 11:10:58.277
+507	/20200107221246-AddColumnsToMeditrakDevice	2020-01-08 11:10:58.353
+508	/20200107221247-AddMeditrakDeviceIdToRefreshToken	2020-01-08 11:10:58.382
+509	/20200107221249-AddRefreshTokenToApiRequestLog	2020-01-08 11:10:58.404
+510	/20200107221249-Test	2020-01-08 11:10:58.427
 \.
 
 
@@ -2897,7 +2949,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 503, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 510, true);
 
 
 --

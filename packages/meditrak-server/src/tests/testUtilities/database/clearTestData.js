@@ -32,7 +32,7 @@ const TABLES_TO_CLEAR = [
   'geographical_area',
   'country',
   'feed_item',
-  'meditrak_client',
+  'meditrak_device',
   'meditrak_sync_queue',
   'ms1_sync_queue',
   'ms1_sync_log',

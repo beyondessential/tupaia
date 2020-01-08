@@ -15,8 +15,12 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = async function(db) {
-  await db.addColumn('api_request_log', 'query', { type: 'jsonb', defaultValue: '{}' });
-  return db.addColumn('api_request_log', 'metadata', { type: 'jsonb', defaultValue: '{}' });
+  await db.runSql(`ALTER TABLE refresh_token ADD COLUMN meditrak_device_id text`);
+  return db.runSql(`
+    ALTER TABLE
+      refresh_token
+    ADD CONSTRAINT
+      refresh_token_meditrak_device_id_fk FOREIGN KEY (meditrak_device_id) REFERENCES meditrak_device (id)`);
 };
 
 exports.down = function(db) {

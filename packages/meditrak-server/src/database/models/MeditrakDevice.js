@@ -7,12 +7,12 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '..';
 
-export class MeditrakClient extends DatabaseType {
-  static databaseType = TYPES.MEDITRAK_CLIENT;
+export class MeditrakDeviceType extends DatabaseType {
+  static databaseType = TYPES.MEDITRAK_DEVICE;
 }
 
-export class MeditrakClientModel extends DatabaseModel {
+export class MeditrakDeviceModel extends DatabaseModel {
   get DatabaseTypeClass() {
-    return MeditrakClient;
+    return MeditrakDeviceType;
   }
 }
