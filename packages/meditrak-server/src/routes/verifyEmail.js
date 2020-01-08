@@ -25,7 +25,7 @@ const sendEmailVerification = async user => {
                     ${resetUrl}
                     
                     If you believe this email was sent to you in error, please contact us immediately at
-                    admin@tupaia.org.;                    
+                    admin@tupaia.org.
                     `;
 
   sendEmail(user.email, 'Tupaia email verification', emailBody);
@@ -33,7 +33,7 @@ const sendEmailVerification = async user => {
 
 export async function verifyEmail(req, res) {
   const { models } = req;
-  const token = req.body.token;
+  const { token } = req.body;
 
   // search for unverified emails first - if we don't find any try for emails already verified so we don't pass an error back if the user clicks the link twice
   const verifiedUser =
@@ -76,7 +76,7 @@ export const requestResendEmail = async (req, res) => {
 
   // if the user doesn't exist or the email address has already been verified do not give the user any extra information
   if (!user || user.verified_email === EMAIL_VERIFIED_STATUS.VERIFIED) {
-    throw new FormValidationError(`No account with the email ${emailAddress} found`);
+    throw new FormValidationError(`Unable to send verification email to ${emailAddress}`);
   }
 
   sendEmailVerification(user);
