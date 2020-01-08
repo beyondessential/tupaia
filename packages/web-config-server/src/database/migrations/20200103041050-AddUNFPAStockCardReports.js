@@ -18,7 +18,7 @@ exports.up = function(db) {
   return db.runSql(`
     INSERT INTO "dashboardReport" ("id", "dataBuilder", "dataBuilderConfig", "viewJson") VALUES (
       'UNFPA_RH_Stock_Cards',
-      'percentagesOfValueCountsPerDataClass',
+      'percentagesOfValueCounts',
       '{
           "dataClasses": {
             "Number of facilities using stock cards for RH commodities": {
@@ -90,6 +90,12 @@ exports.down = function(db) {
   return db.runSql(`
     DELETE FROM "dashboardReport"
       WHERE id = 'UNFPA_RH_Stock_Cards';
+
+    UPDATE
+      "dashboardGroup"
+    SET
+      "dashboardReports" = array_remove("dashboardReports", 'UNFPA_RH_Stock_Cards')
+    WHERE "userGroup" = 'UNFPA' AND "organisationLevel" IN ('Country', 'Province');
   `);
 };
 
