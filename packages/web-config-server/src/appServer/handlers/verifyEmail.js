@@ -1,7 +1,4 @@
-import {
-  fetchFromMeditrakServerUsingTokens,
-  fetchFromMediTrakServer,
-} from '/appServer/requestHelpers';
+import { fetchFromMediTrakServer } from '/appServer/requestHelpers';
 
 /*
  * Function will attempt to change a user's password on the TupaiaApp server.
@@ -10,7 +7,7 @@ import {
 export const verifyEmail = async req => {
   const endpoint = 'auth/verifyEmail';
   const token = req.query.emailToken;
-  const response = await fetchFromMeditrakServerUsingTokens(endpoint, { token });
+  const response = await fetchFromMediTrakServer(endpoint, { token });
   if (response.emailVerified === 'true') return response;
 
   throw Error('Email was not correctly verified');
