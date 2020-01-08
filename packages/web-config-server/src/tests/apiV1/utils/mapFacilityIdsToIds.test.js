@@ -5,7 +5,7 @@
 import { expect } from 'chai';
 import { it, describe } from 'mocha';
 
-import { mapFacilityIdsToIds } from '/apiV1/utils/mapFacilityIdsToIds';
+import { mapFacilityToOrgUnitIds } from '/apiV1/utils/mapFacilityToOrgUnitIds';
 
 const organisationUnits = [
   {
@@ -34,10 +34,10 @@ const organisationUnits = [
   },
 ];
 
-describe('mapFacilityIdsToIds', () => {
+describe('mapFacilityToOrgUnitIds', () => {
   it('should map facility ids to ids', () => {
     try {
-      const result = mapFacilityIdsToIds(organisationUnits);
+      const result = mapFacilityToOrgUnitIds(organisationUnits);
       expect(result['As8RCJJNVGC']).to.equal('As8RCJJNVGC');
       expect(result['IYRU3RH79ti']).to.equal('As8RCJJNVGC');
       expect(result['GqumUN45VC8']).to.equal('As8RCJJNVGC');
