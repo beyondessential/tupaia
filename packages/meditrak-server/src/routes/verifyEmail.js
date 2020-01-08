@@ -25,7 +25,7 @@ const sendEmailVerification = async user => {
                     ${resetUrl}
                     
                     If you believe this email was sent to you in error, please contact us immediately at
-                    admin@tupaia.org.;                    
+                    admin@tupaia.org.
                     `;
 
   sendEmail(user.email, 'Tupaia email verification', emailBody);
