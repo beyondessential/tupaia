@@ -36,16 +36,16 @@ const organisationUnits = [
 
 describe('mapFacilityToOrgUnitIds', () => {
   it('should map facility ids to ids', () => {
-    try {
-      const result = mapFacilityToOrgUnitIds(organisationUnits);
-      expect(result['As8RCJJNVGC']).to.equal('As8RCJJNVGC');
-      expect(result['IYRU3RH79ti']).to.equal('As8RCJJNVGC');
-      expect(result['GqumUN45VC8']).to.equal('As8RCJJNVGC');
-      expect(result['xeNth7JPCGf']).to.equal('xeNth7JPCGf');
-      expect(result['UbnIMaXikNf']).to.equal('xeNth7JPCGf');
-      return Promise.resolve();
-    } catch (e) {
-      return Promise.reject(e);
-    }
+    expect(mapFacilityToOrgUnitIds(organisationUnits)).to.deep.equal({
+      As8RCJJNVGC: 'As8RCJJNVGC',
+      IYRU3RH79ti: 'As8RCJJNVGC',
+      GqumUN45VC8: 'As8RCJJNVGC',
+      HxGTP4vnkfn: 'As8RCJJNVGC',
+      xeNth7JPCGf: 'xeNth7JPCGf',
+      UbnIMaXikNf: 'xeNth7JPCGf',
+      ODdaT8ncTzt: 'xeNth7JPCGf',
+      yLzHFimWVVF: 'xeNth7JPCGf',
+      iyd21zEg9jS: 'xeNth7JPCGf',
+    });
   });
 });

@@ -36,16 +36,16 @@ const organisationUnits = [
 
 describe('mapFacilityToOrgUnitGroupCodes', () => {
   it('should map facility ids to group codes', () => {
-    try {
-      const result = mapFacilityToOrgUnitGroupCodes(organisationUnits);
-      expect(result['As8RCJJNVGC']).to.equal('SB_Guadalcanal Province');
-      expect(result['IYRU3RH79ti']).to.equal('SB_Guadalcanal Province');
-      expect(result['GqumUN45VC8']).to.equal('SB_Guadalcanal Province');
-      expect(result['xeNth7JPCGf']).to.equal('SB_Honiara');
-      expect(result['UbnIMaXikNf']).to.equal('SB_Honiara');
-      return Promise.resolve();
-    } catch (e) {
-      return Promise.reject(e);
-    }
+    expect(mapFacilityToOrgUnitGroupCodes(organisationUnits)).to.deep.equal({
+      As8RCJJNVGC: 'SB_Guadalcanal Province',
+      IYRU3RH79ti: 'SB_Guadalcanal Province',
+      GqumUN45VC8: 'SB_Guadalcanal Province',
+      HxGTP4vnkfn: 'SB_Guadalcanal Province',
+      ODdaT8ncTzt: 'SB_Honiara',
+      yLzHFimWVVF: 'SB_Honiara',
+      iyd21zEg9jS: 'SB_Honiara',
+      xeNth7JPCGf: 'SB_Honiara',
+      UbnIMaXikNf: 'SB_Honiara',
+    });
   });
 });
