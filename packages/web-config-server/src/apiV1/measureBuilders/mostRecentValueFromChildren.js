@@ -20,7 +20,9 @@ export const mostRecentValueFromChildren = async (
     organisationUnitCode: organisationUnitGroupCode,
   };
   const groupMapping = mapFacilityIdsToIds(organisationUnits);
-  const { results } = await dhisApi.getAnalytics(jsonQueryData, {}, MOST_RECENT_PER_ORG_GROUP, { groupMapping, });
+  const { results } = await dhisApi.getAnalytics(jsonQueryData, {}, MOST_RECENT_PER_ORG_GROUP, {
+    groupMapping,
+  });
   const orgUnitValuePromises = organisationUnits.map(async ({ id, code }) => {
     const entity = await Entity.findOne({ code });
     const entityMetadata = {
