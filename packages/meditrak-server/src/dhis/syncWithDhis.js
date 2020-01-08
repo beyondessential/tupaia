@@ -49,7 +49,7 @@ export async function startSyncWithDhis(models) {
 
 async function syncWithDhis(models, syncQueue) {
   try {
-    // await pushLatest(models, syncQueue, BATCH_SIZE); // Push the next most recent batch of survey responses
+    await pushLatest(models, syncQueue, BATCH_SIZE); // Push the next most recent batch of survey responses
   } finally {
     setTimeout(() => syncWithDhis(models, syncQueue), PERIOD_BETWEEN_SYNCS);
   }

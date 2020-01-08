@@ -9,6 +9,12 @@ import { expect } from 'chai';
 import { TestableApp, getAuthorizationHeader } from './TestableApp';
 import { randomEmail, randomString } from './testUtilities';
 
+const EMAIL_VERIFIED_STATUS = {
+  UNVERIFIED: 'U',
+  VERIFIED: 'Y',
+  NEW_USER: 'N',
+};
+
 describe('Reset Password', () => {
   const app = new TestableApp();
   const models = app.models;
@@ -39,6 +45,9 @@ describe('Reset Password', () => {
       });
       const { userId } = userResponse.body;
       expect(userId).to.exist;
+
+      userId.verified_email = EMAIL_VERIFIED_STATUS.VERIFIED;
+      models.user.updateById(userId.id, userId);
 
       const result = await app.post('auth/resetPassword', {
         headers,
