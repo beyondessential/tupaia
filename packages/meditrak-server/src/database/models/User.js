@@ -58,7 +58,9 @@ class UserType extends DatabaseType {
     }
 
     if (!this.permissionGroups[countryIdentifier]) {
-      this.permissionGroups[countryIdentifier] = await cache.getOrElse(
+      this.permissionGroups[
+        countryIdentifier
+      ] = await cache.getOrElse(
         CACHE_KEY_GENERATORS.userPermissionGroups(this.id, countryIdentifier),
         () => getUserPermissionGroups(this.otherModels, this.id, countryIdentifier),
       );

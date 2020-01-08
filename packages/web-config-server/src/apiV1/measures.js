@@ -1,5 +1,5 @@
 import { MapOverlay } from '/models';
-import { QUERY_CONJUNCTIONS } from '/database';
+import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { DhisTranslationHandler } from './utils';
 const { AND, RAW } = QUERY_CONJUNCTIONS;
 

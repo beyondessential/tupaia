@@ -7,3 +7,7 @@
 **/dist
 *.log*
 .nyc_output
+*.aes
+*.pem
+codeship_deploy_key.pub
+codeship_deploy_key

@@ -5,8 +5,7 @@
 
 import DBMigrate from 'db-migrate';
 import {} from 'dotenv/config'; // Load the environment variables into process.env
-import { getConnectionConfig } from './connectionConfig';
-import { TupaiaDatabase } from './TupaiaDatabase';
+import { TupaiaDatabase, getConnectionConfig } from '@tupaia/database';
 import { ModelRegistry } from './ModelRegistry';
 
 // Note, keep single quotes in table names for sql query generation.

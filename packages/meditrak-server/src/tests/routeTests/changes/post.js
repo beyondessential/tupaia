@@ -6,7 +6,8 @@
 import { expect, assert } from 'chai';
 import fetch from 'node-fetch';
 
-import { TYPES, generateId } from '../../../database';
+import { generateId } from '@tupaia/database';
+import { TYPES } from '../../../database';
 import { TEST_IMAGE_DATA } from '../../testData';
 import {
   generateTestId,

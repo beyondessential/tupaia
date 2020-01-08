@@ -3,7 +3,8 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 
-import { TYPES, JOIN_TYPES } from '../database';
+import { JOIN_TYPES } from '@tupaia/database';
+import { TYPES } from '../database';
 
 /**
  * Delete all questions that aren't included in any survey

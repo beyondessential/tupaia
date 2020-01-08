@@ -102,7 +102,4 @@ const mapDispatchToProps = dispatch => ({
   onNavigate: href => dispatch(pushToPage(href)),
 });
 
-export const AppContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(App);
+export const AppContainer = connect(mapStateToProps, mapDispatchToProps)(App);
