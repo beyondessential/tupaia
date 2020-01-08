@@ -33,7 +33,7 @@ const sendEmailVerification = async user => {
 
 export async function verifyEmail(req, res) {
   const { models } = req;
-  const token = req.body.token;
+  const { token } = req.body;
 
   // search for unverified emails first - if we don't find any try for emails already verified so we don't pass an error back if the user clicks the link twice
   const verifiedUser =
