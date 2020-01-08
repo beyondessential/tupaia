@@ -76,7 +76,7 @@ export const requestResendEmail = async (req, res) => {
 
   // if the user doesn't exist or the email address has already been verified do not give the user any extra information
   if (!user || user.verified_email === EMAIL_VERIFIED_STATUS.VERIFIED) {
-    throw new FormValidationError(`No account with the email ${emailAddress} found`);
+    throw new FormValidationError(`Unable to send verification email to ${emailAddress}`);
   }
 
   sendEmailVerification(user);
