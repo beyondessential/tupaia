@@ -18,7 +18,7 @@ import { emailAddress } from '../Form/validators';
 import { ForgotPassword } from './ForgotPassword';
 import { SubmitButton } from '../Form/common/SubmitButton';
 import { SignupComplete } from '../SignupForm/SignupComplete';
-import { EmailVerification } from '../EmailVerification';
+import { EmailVerification, EMAIL_VERIFIED_STATUS } from '../EmailVerification';
 
 const PasswordField = styled(TextField)`
   margin-bottom: 16px;
@@ -32,11 +32,13 @@ export const LoginFormComponent = ({
   successMessage,
   emailVerified,
 }) => {
-  const [shouldShowVerifyForm, showVerifyForm] = React.useState(false);
+  const [shouldShowVerifyForm, setVerifyForm] = React.useState(false);
+
+  const showVerifyForm = React.useCallback(() => setVerifyForm(true), []);
 
   if (shouldShowVerifyForm) return <EmailVerification />;
-  else if (emailVerified === 'N')
-    return <SignupComplete onClickResend={() => showVerifyForm(true)} />;
+  else if (emailVerified === EMAIL_VERIFIED_STATUS.NEW_USER)
+    return <SignupComplete onClickResend={showVerifyForm} />;
 
   return (
     <Form

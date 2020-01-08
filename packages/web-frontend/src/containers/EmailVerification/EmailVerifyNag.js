@@ -5,6 +5,12 @@ import CloseIcon from '@material-ui/icons/Close';
 import PropTypes from 'prop-types';
 import { resendVerificationEmail, openResendEmailSuccess } from '../../actions';
 
+export const EMAIL_VERIFIED_STATUS = {
+  UNVERIFIED: 'U',
+  VERIFIED: 'Y',
+  NEW_USER: 'N',
+};
+
 function EmailVerifyNagComponent({
   emailVerified,
   currentUserEmail,
@@ -12,7 +18,7 @@ function EmailVerifyNagComponent({
   onCloseToast,
   displayNag,
 }) {
-  return emailVerified === 'U' && displayNag ? (
+  return emailVerified === EMAIL_VERIFIED_STATUS.UNVERIFIED && displayNag ? (
     <div>
       <Snackbar
         anchorOrigin={{
@@ -85,7 +91,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export const EmailVerifyNag = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(EmailVerifyNagComponent);
+export const EmailVerifyNag = connect(mapStateToProps, mapDispatchToProps)(EmailVerifyNagComponent);

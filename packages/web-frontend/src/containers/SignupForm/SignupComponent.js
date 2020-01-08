@@ -23,10 +23,12 @@ export const SignupComponent = ({
   onAttemptUserSignup,
   className,
 }) => {
-  const [shouldShowVerifyForm, showVerifyForm] = React.useState(false);
+  const [shouldShowVerifyForm, setVerifyForm] = React.useState(false);
+
+  const showVerifyForm = React.useCallback(() => setVerifyForm(true), []);
 
   if (shouldShowVerifyForm) return <EmailVerification />;
-  else if (signupComplete) return <SignupComplete onClickResend={() => showVerifyForm(true)} />;
+  else if (signupComplete) return <SignupComplete onClickResend={showVerifyForm} />;
 
   return (
     <div className={className}>

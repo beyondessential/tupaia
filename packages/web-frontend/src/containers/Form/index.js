@@ -126,7 +126,7 @@ export class Form extends React.Component {
       <form onSubmit={this.submitForm} noValidate>
         {isLoading && <LoadingIndicator />}
         <FormGrid>
-          {formSuccess && <FormSuccess success={formSuccess} />}
+          {formSuccess && <FormSuccess message={formSuccess} />}
           {this.renderChildren()}
           {formError && <FormError error={formError} />}
         </FormGrid>

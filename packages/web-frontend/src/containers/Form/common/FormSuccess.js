@@ -17,12 +17,12 @@ const Success = styled.div`
   text-align: left;
 `;
 
-export const FormSuccess = ({ success }) => <Success>{success}</Success>;
+export const FormSuccess = ({ message }) => <Success>{message}</Success>;
 
 FormSuccess.propTypes = {
-  success: PropTypes.string,
+  message: PropTypes.string,
 };
 
 FormSuccess.defaultProps = {
-  success: '',
+  message: '',
 };

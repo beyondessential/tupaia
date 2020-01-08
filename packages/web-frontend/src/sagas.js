@@ -223,7 +223,7 @@ function* attemptUserLogin(action) {
       requestContext,
       false,
     );
-
+    console.log(response);
     yield put(findLoggedIn(true, response.emailVerified));
   } catch (error) {
     const errorMessage = error.response ? yield error.response.json() : {};
@@ -310,6 +310,7 @@ function* attemptVerifyToken(action) {
     yield put(openEmailVerifiedPage());
     yield put(setOverlayComponent('landing'));
   } catch (error) {
+    console.log(`at 1 ${error}`);
     yield put(fetchEmailVerifyError());
     yield put(setOverlayComponent('landing'));
   }

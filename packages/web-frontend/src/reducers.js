@@ -22,6 +22,7 @@ import project from './projects/reducers';
 import { getMeasureFromHierarchy, isMobile } from './utils';
 import { LANDING } from './containers/OverlayDiv';
 import { getUniqueViewId } from './utils/getUniqueViewId';
+import { EMAIL_VERIFIED_STATUS } from './containers/EmailVerification';
 
 // Import Action Types
 import {
@@ -122,7 +123,7 @@ function authentication(
     loginFailedMessage: null,
     showSessionExpireDialog: false,
     successMessage: '',
-    emailVerified: 'Y',
+    emailVerified: EMAIL_VERIFIED_STATUS.VERIFIED,
     errors: [],
   },
   action,
@@ -166,7 +167,7 @@ function authentication(
         ...state,
         isUserLoggedIn: false,
         isRequestingLogin: false,
-        emailVerified: 'N',
+        emailVerified: EMAIL_VERIFIED_STATUS.NEW_USER,
       };
     case FETCH_LOGIN_ERROR:
       return {
@@ -193,7 +194,7 @@ function authentication(
       return {
         ...state,
         hasSentEmail: true,
-        emailVerified: 'Y',
+        emailVerified: EMAIL_VERIFIED_STATUS.VERIFIED,
       };
     case FETCH_RESEND_EMAIL_ERROR:
       return {

@@ -99,7 +99,7 @@ export const appRequestCountryAccess = () => async (req, res) => {
 /**
  * /VerifyEmail
  *
- *
+ * Receives a unique token that was emailed to the user to verify their email address
  */
 export const appVerifyEmail = () => async (req, res) => {
   const result = await verifyEmail(req);

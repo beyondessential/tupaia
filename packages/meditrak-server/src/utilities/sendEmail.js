@@ -23,6 +23,8 @@ export const sendEmail = (to, subject, text) => {
     to = process.env.DEV_EMAIL_ADDRESS;
   }
 
+  console.log(text);
+
   return transporter.sendMail({
     from: SITE_EMAIL_ADDRESS,
     to,

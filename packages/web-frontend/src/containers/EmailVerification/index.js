@@ -3,4 +3,4 @@
  */
 
 export { EmailVerification } from './EmailVerification';
-export { EmailVerifyNag } from './EmailVerifyNag';
+export { EmailVerifyNag, EMAIL_VERIFIED_STATUS } from './EmailVerifyNag';
