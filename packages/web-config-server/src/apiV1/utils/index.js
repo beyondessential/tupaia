@@ -2,6 +2,7 @@ export { DhisTranslationHandler } from './dhisTranslationHandler';
 export { aggregateOperationalFacilityValues } from './aggregateOperationalFacilityValues';
 export { countByOrganisationUnitByValue } from './countByOrganisationUnitByValue';
 export { calculatePercentagesWithinRange } from './calculatePercentagesWithinRange';
+export { mapFacilityIdsToIds } from './mapFacilityIdsToIds';
 export { mapFacilityIdsToGroupCodes } from './mapFacilityIdsToGroupCodes';
 export { formatFacilityDataForOverlay } from './formatFacilityDataForOverlay';
 export { getMatchedNumeratorsAndDenominators } from './getMatchedNumeratorsAndDenominators';
