@@ -3,7 +3,7 @@ export { aggregateOperationalFacilityValues } from './aggregateOperationalFacili
 export { countByOrganisationUnitByValue } from './countByOrganisationUnitByValue';
 export { calculatePercentagesWithinRange } from './calculatePercentagesWithinRange';
 export { mapFacilityToOrgUnitIds } from './mapFacilityToOrgUnitIds';
-export { mapFacilityIdsToGroupCodes } from './mapFacilityIdsToGroupCodes';
+export { mapFacilityToOrgUnitGroupCodes } from './mapFacilityToOrgUnitGroupCodes';
 export { formatFacilityDataForOverlay } from './formatFacilityDataForOverlay';
 export { getMatchedNumeratorsAndDenominators } from './getMatchedNumeratorsAndDenominators';
 export {

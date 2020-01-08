@@ -5,7 +5,7 @@
 import { expect } from 'chai';
 import { it, describe } from 'mocha';
 
-import { mapFacilityIdsToGroupCodes } from '/apiV1/utils/mapFacilityIdsToGroupCodes';
+import { mapFacilityToOrgUnitGroupCodes } from '/apiV1/utils/mapFacilityToOrgUnitGroupCodes';
 
 const organisationUnits = [
   {
@@ -34,10 +34,10 @@ const organisationUnits = [
   },
 ];
 
-describe('mapFacilityIdsToGroupCodes', () => {
+describe('mapFacilityToOrgUnitGroupCodes', () => {
   it('should map facility ids to group codes', () => {
     try {
-      const result = mapFacilityIdsToGroupCodes(organisationUnits);
+      const result = mapFacilityToOrgUnitGroupCodes(organisationUnits);
       expect(result['As8RCJJNVGC']).to.equal('SB_Guadalcanal Province');
       expect(result['IYRU3RH79ti']).to.equal('SB_Guadalcanal Province');
       expect(result['GqumUN45VC8']).to.equal('SB_Guadalcanal Province');
