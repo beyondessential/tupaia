@@ -12,11 +12,11 @@ export const aggregateResults = (
   aggregationType = AGGREGATION_TYPES.MOST_RECENT,
   aggregationConfig = {},
 ) => {
-  const { groupMapping } = aggregationConfig;
+  const { facilityIdsToOrgUnitKeys } = aggregationConfig;
   switch (aggregationType) {
     case AGGREGATION_TYPES.MOST_RECENT:
     case AGGREGATION_TYPES.MOST_RECENT_PER_ORG_GROUP:
-      return filterLatestResults(results, groupMapping);
+      return filterLatestResults(results, facilityIdsToOrgUnitKeys);
     case AGGREGATION_TYPES.SUM:
       return sumAcrossPeriods(results);
     case AGGREGATION_TYPES.SUM_MOST_RECENT_PER_FACILITY:
