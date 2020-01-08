@@ -59,6 +59,7 @@ export function clearTestData(testStartTime = moment().format('YYYY-MM-DD HH:mm:
     user_account: [`email = 'test.user@tupaia.org'`, `first_name = 'Automated test'`],
     clinic: [`country_id ${COMPARISON}`],
     entity: [`code LIKE 'test%'`],
+    meditrak_sync_queue: [`record_id ${COMPARISON}`],
   };
   const sql = TABLES_TO_CLEAR.reduce(
     (acc, table) => `${acc}\n${getDeleteStatement(table, extraConditions[table])}`,
