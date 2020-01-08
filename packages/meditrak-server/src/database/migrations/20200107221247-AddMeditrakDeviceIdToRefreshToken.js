@@ -20,7 +20,10 @@ exports.up = async function(db) {
     ALTER TABLE
       refresh_token
     ADD CONSTRAINT
-      refresh_token_meditrak_device_id_fk FOREIGN KEY (meditrak_device_id) REFERENCES meditrak_device (id)`);
+      refresh_token_meditrak_device_id_fk FOREIGN KEY (meditrak_device_id)
+        REFERENCES meditrak_device (id)
+        ON UPDATE CASCADE ON DELETE CASCADE;
+    `);
 };
 
 exports.down = function(db) {
