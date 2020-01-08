@@ -1,10 +1,10 @@
 export const mapFacilityIdsToGroupCodes = organisationUnits => {
   const facilityIdsToGroupCodes = {};
   organisationUnits.forEach(orgUnit => {
-    const { children, id } = orgUnit;
-    facilityIdsToGroupCodes[id] = id;
+    const { children, id, code } = orgUnit;
+    facilityIdsToGroupCodes[id] = code;
     children.forEach(child => {
-      facilityIdsToGroupCodes[child.id] = id;
+      facilityIdsToGroupCodes[child.id] = code;
     });
   });
   return facilityIdsToGroupCodes;
