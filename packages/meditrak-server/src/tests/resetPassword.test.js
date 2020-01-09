@@ -7,13 +7,7 @@ import {} from 'dotenv/config'; // Load the environment variables into process.e
 import { expect } from 'chai';
 
 import { TestableApp, getAuthorizationHeader } from './TestableApp';
-import { randomEmail, randomString } from './testUtilities';
-
-const EMAIL_VERIFIED_STATUS = {
-  UNVERIFIED: 'unverified',
-  VERIFIED: 'verified',
-  NEW_USER: 'new_user',
-};
+import { randomEmail, randomString, EMAIL_VERIFIED_STATUS } from './testUtilities';
 
 describe('Reset Password', () => {
   const app = new TestableApp();

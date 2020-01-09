@@ -6,7 +6,7 @@
 import { expect } from 'chai';
 
 import { TestableApp, getAuthorizationHeader } from './TestableApp';
-import { randomEmail } from './testUtilities';
+import { randomEmail, EMAIL_VERIFIED_STATUS } from './testUtilities';
 
 describe('Access Policy', () => {
   const app = new TestableApp();
@@ -21,7 +21,6 @@ describe('Access Policy', () => {
     employer: 'Test',
     position: 'Robot',
     deviceName: 'foobar',
-    verifiedEmail: 'verified',
   };
 
   const headers = { authorization: getAuthorizationHeader() };
@@ -40,6 +39,8 @@ describe('Access Policy', () => {
         },
       });
       userId = userResponse.body.userId;
+
+      models.user.updateById(userId, { verified_email: EMAIL_VERIFIED_STATUS.VERIFIED });
 
       const authResponse = await app.post('auth', {
         headers,
@@ -106,6 +107,8 @@ describe('Access Policy', () => {
         },
       });
       userId = userResponse.body.userId;
+
+      models.user.updateById(userId, { verified_email: EMAIL_VERIFIED_STATUS.VERIFIED });
 
       const adminPermissionGroup = await models.permissionGroup.findOne({
         name: 'Admin',
@@ -241,6 +244,8 @@ describe('Access Policy', () => {
         },
       });
       userId = userResponse.body.userId;
+
+      models.user.updateById(userId, { verified_email: EMAIL_VERIFIED_STATUS.VERIFIED });
 
       const adminPermissionGroup = await models.permissionGroup.findOne({
         name: 'Admin',
