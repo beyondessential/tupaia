@@ -19,5 +19,4 @@ export { fetchWithTimeout } from './fetchWithTimeout';
 export { singularise } from './singularise';
 export { getTimezoneNameFromTimestamp } from './datetime';
 export { getKeysSortedByValues, mapKeys } from './object';
-export { getPreviousVersion } from './version';
 export { WorkBookParser } from './WorkBookParser';

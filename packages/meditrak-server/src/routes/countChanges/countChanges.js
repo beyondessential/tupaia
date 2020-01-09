@@ -4,7 +4,7 @@
  **/
 
 import { respond } from '../../respond';
-import { DatabaseError } from '../../errors';
+import { DatabaseError, UnauthenticatedError } from '../../errors';
 import { getChangesFilter } from '../utilities';
 import { LegacyCountChangesHandler } from './LegacyCountChangesHandler';
 
@@ -30,6 +30,9 @@ export async function countChanges(req, res) {
       await handleNonLegacyRequest(req, res);
     }
   } catch (error) {
+    if (error instanceof UnauthenticatedError) {
+      throw error;
+    }
     throw new DatabaseError('counting the number of changes to sync', error);
   }
 }

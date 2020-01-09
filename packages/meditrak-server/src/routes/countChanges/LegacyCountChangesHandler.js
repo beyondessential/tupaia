@@ -7,6 +7,7 @@ import { getUniversalTypes } from '../../database/utilities';
 import { respond } from '../../respond';
 import { getKeysSortedByValues } from '../../utilities/object';
 import { fetchRequestingMeditrakDevice, getChangesFilter } from '../utilities';
+import { UnauthenticatedError } from '../../errors';
 
 const MAX_FAILS_BEFORE_LOG_OUT = 2;
 const MAX_FAILS_BEFORE_TYPE_EXCLUSION = 5;
@@ -41,7 +42,8 @@ export class LegacyCountChangesHandler {
 
   async logOutUser() {
     const { models, userId } = this.req;
-    return models.refreshToken.delete({ user_id: userId });
+    await models.refreshToken.delete({ user_id: userId });
+    throw new UnauthenticatedError('Refresh token has expired, please log in again');
   }
 
   /**
@@ -111,7 +113,7 @@ export class LegacyCountChangesHandler {
 
     // eslint-disable-next-line no-param-reassign
     meditrakDevice.config = { ...config, unsupportedTypes: newUnsupportedTypes };
-    meditrakDevice.save();
+    return meditrakDevice.save();
   }
 
   checkShouldAddNextUnsupportedType = async (meditrakDevice, failCount) => {
@@ -120,10 +122,6 @@ export class LegacyCountChangesHandler {
     return failCount > MAX_FAILS_BEFORE_TYPE_EXCLUSION && deviceMeetsRequirements;
   };
 
-  /**
-   * @param {*} req
-   * @returns {Promise<boolean>}
-   */
   async setChangesIncludeUniversalTypes() {
     const { apiRequestLogId, models } = this.req;
 
@@ -132,10 +130,10 @@ export class LegacyCountChangesHandler {
       ...apiRequestLog.metadata,
       changesIncludeUniversalTypes: true,
     };
-    await apiRequestLog.save();
+    return apiRequestLog.save();
   }
 
-  async checkChangesIncludeUniversalTypes() {
+  async checkRemainingChangesIncludeUniversalTypes() {
     const { models, query } = this.req;
 
     const universalTypes = getUniversalTypes(models);
@@ -151,8 +149,8 @@ export class LegacyCountChangesHandler {
   async handleSetUp() {
     // If changes include types supported by all version of the app ("universal"),
     // save this information since we need it for calculating the failed request count
-    if (await this.checkChangesIncludeUniversalTypes()) {
-      this.setChangesIncludeUniversalTypes();
+    if (await this.checkRemainingChangesIncludeUniversalTypes()) {
+      await this.setChangesIncludeUniversalTypes();
     }
 
     const meditrakDevice = await fetchRequestingMeditrakDevice(this.req);
