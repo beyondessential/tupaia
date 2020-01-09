@@ -17,6 +17,7 @@ export const createUser = async (
     countryName,
     permissionGroupName,
     is_api_client: isApiClient,
+    verified_email: verifiedEmail,
     ...restOfUser
   },
 ) => {

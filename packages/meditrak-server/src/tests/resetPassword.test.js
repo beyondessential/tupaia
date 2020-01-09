@@ -10,9 +10,9 @@ import { TestableApp, getAuthorizationHeader } from './TestableApp';
 import { randomEmail, randomString } from './testUtilities';
 
 const EMAIL_VERIFIED_STATUS = {
-  UNVERIFIED: 'U',
-  VERIFIED: 'Y',
-  NEW_USER: 'N',
+  UNVERIFIED: 'unverified',
+  VERIFIED: 'verified',
+  NEW_USER: 'new_user',
 };
 
 describe('Reset Password', () => {
@@ -46,8 +46,7 @@ describe('Reset Password', () => {
       const { userId } = userResponse.body;
       expect(userId).to.exist;
 
-      userId.verified_email = EMAIL_VERIFIED_STATUS.VERIFIED;
-      models.user.updateById(userId.id, userId);
+      models.user.updateById(userId, { verified_email: EMAIL_VERIFIED_STATUS.VERIFIED });
 
       const result = await app.post('auth/resetPassword', {
         headers,

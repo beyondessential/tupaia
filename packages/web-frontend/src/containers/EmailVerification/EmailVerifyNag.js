@@ -6,9 +6,9 @@ import PropTypes from 'prop-types';
 import { resendVerificationEmail, openResendEmailSuccess } from '../../actions';
 
 export const EMAIL_VERIFIED_STATUS = {
-  UNVERIFIED: 'U',
-  VERIFIED: 'Y',
-  NEW_USER: 'N',
+  UNVERIFIED: 'unverified',
+  VERIFIED: 'verified',
+  NEW_USER: 'new_user',
 };
 
 function EmailVerifyNagComponent({

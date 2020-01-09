@@ -96,7 +96,7 @@ const getAuthorizationObject = async ({ refreshToken, user, countryIdentifier })
       id: user.id,
       name: user.fullName,
       email: user.email,
-      verified_email: user.verified_email,
+      verifiedEmail: user.verified_email,
       permissionGroups,
       accessPolicy,
     },

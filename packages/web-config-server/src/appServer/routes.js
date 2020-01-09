@@ -38,7 +38,7 @@ const authSuccess = (req, res) => {
     authenticated: true,
     name: req.session.userJson.name,
     defaultOrganisationUnit: req.session.userJson.defaultOrganisationUnit,
-    emailVerified: req.session.userJson.verified_email,
+    emailVerified: req.session.userJson.verifiedEmail,
   });
 };
 

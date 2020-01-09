@@ -77,7 +77,7 @@ export const createUser = async (req, res) => {
     password,
     countryName: DEMO_LAND_NAME,
     permissionGroupName: PERMISSION_GROUPS.PUBLIC,
-    verified_email: EMAIL_VERIFIED_STATUS.NEW_USER,
+    verifiedEmail: EMAIL_VERIFIED_STATUS.NEW_USER,
   });
 
   sendVerifyEmail(req, userId);

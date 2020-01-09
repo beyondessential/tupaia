@@ -15,11 +15,17 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = function(db) {
-  return db.addColumn('user_account', 'verified_email', { type: 'text', defaultValue: 'U' });
+  return db.runSql(`
+    CREATE TYPE VERIFIED_EMAIL AS ENUM('unverified', 'new_user', 'verified');
+    ALTER TABLE user_account ADD COLUMN verified_email VERIFIED_EMAIL default 'new_user' 
+`);
 };
 
 exports.down = function(db) {
-  return db.removeColumn('user_account', 'verified_email');
+  return db.runSql(`
+    ALTER TABLE user_account drop COLUMN verified_email;
+    drop TYPE VERIFIED_EMAIL
+  `);
 };
 
 exports._meta = {

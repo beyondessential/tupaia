@@ -3,9 +3,9 @@ import { respond } from '../respond';
 import { UnverifiedError, FormValidationError } from '../errors';
 
 export const EMAIL_VERIFIED_STATUS = {
-  UNVERIFIED: 'U',
-  VERIFIED: 'Y',
-  NEW_USER: 'N',
+  UNVERIFIED: 'unverified',
+  VERIFIED: 'verified',
+  NEW_USER: 'new_user',
 };
 
 export const sendVerifyEmail = async (req, userId) => {
