@@ -108,6 +108,14 @@ export class DataPerPeriodBuilder extends DataBuilder {
     const results = await this.fetchResults();
     const data = await this.buildData(results);
 
-    return { data: this.formatData(data) };
+    const d = {
+      'ANC Services': { numerator: 1, denominator: 2 },
+      'Family Planning': { numerator: 3, denominator: 4 },
+      'PNC Services': { numerator: 5, denominator: 9 },
+      name: 'Jan 2019',
+      timestamp: 1546300800000,
+    };
+
+    return { data: this.formatData(data), metaData: d };
   }
 }

@@ -43,6 +43,7 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
 
       const key = Object.keys(this.config.dataClasses).length > 1 ? name : 'value';
       percentage[key] = divideValues(numerator, denominator);
+      percentage[`${key}_metaData`] = { numerator, denominator };
     });
 
     return [percentage];
