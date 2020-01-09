@@ -4,7 +4,7 @@
  */
 import {
   getChildOrganisationUnits,
-  mapFacilityIdsToGroupCodes,
+  mapOrgUnitIdsToGroupCodes,
   countByOrganisationUnitByValue,
   calculatePercentagesWithinRange,
 } from '/apiV1/utils';
@@ -22,13 +22,13 @@ export const percentPerValuePerOrgGroup = async ({ dataBuilderConfig, query }, d
     },
     dhisApi,
   );
-  const facilityIdsToGroupCodes = mapFacilityIdsToGroupCodes(organisationUnits);
+  const orgUnitIdsToGroupKeys = mapOrgUnitIdsToGroupCodes(organisationUnits);
 
   const { results } = await dhisApi.getAnalytics(
     dataBuilderConfig,
     query,
     MOST_RECENT_PER_ORG_GROUP,
-    { facilityIdsToGroupCodes },
+    { orgUnitIdsToGroupKeys },
   );
   const countsByOrganisationUnit = countByOrganisationUnitByValue(
     results,
