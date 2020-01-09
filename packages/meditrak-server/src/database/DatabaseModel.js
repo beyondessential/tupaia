@@ -153,13 +153,38 @@ export class DatabaseModel {
     return data;
   }
 
-  async create(fields) {
+  async upsert(fields, upsertMethod, whereCondition) {
     const data = await this.getDatabaseSafeData(fields);
-    const instance = await this.generateInstance(data);
-    await instance.assertValid();
-    const fieldValues = await this.database.create(this.databaseType, data);
+    const assertedInstance = await this.generateInstance(data);
+    await assertedInstance.assertValid();
+    const fieldValues = whereCondition
+      ? await upsertMethod(this.databaseType, whereCondition, data)
+      : await upsertMethod(this.databaseType, data);
+    const instance = await this.generateInstance(fieldValues);
+    await instance.afterUpsert();
 
-    return this.generateInstance(fieldValues);
+    return instance;
+  }
+
+  async create(fields) {
+    return this.upsert(fields, this.database.create);
+  }
+
+  /**
+   * Updates all records that match the criteria to have the values in fieldsToUpdate
+   * @param {object} whereCondition Records matching this criteria will be updated
+   * @param {object} fieldsToUpdate  The new values that should be in the record
+   */
+  async update(whereCondition, fieldsToUpdate) {
+    return this.upsert(fieldsToUpdate, this.database.update, whereCondition);
+  }
+
+  async updateOrCreate(whereCondition, fieldsToUpsert) {
+    return this.upsert(fieldsToUpsert, this.database.updateOrCreate, whereCondition);
+  }
+
+  async updateById(id, fieldsToUpdate) {
+    return this.update(this.getIdClause(id), fieldsToUpdate);
   }
 
   async delete(whereConditions) {
@@ -172,30 +197,6 @@ export class DatabaseModel {
 
   async deleteById(id) {
     return this.delete(this.getIdClause(id));
-  }
-
-  /**
-   * Updates all records that match the criteria to have the values in fieldsToUpdate
-   * @param {object} whereCondition Records matching this criteria will be updated
-   * @param {object} fieldsToUpdate  The new values that should be in the record
-   */
-  async update(whereCondition, fieldsToUpdate) {
-    const data = await this.getDatabaseSafeData(fieldsToUpdate);
-    const instance = await this.generateInstance(data);
-    await instance.assertValid();
-    return this.database.update(this.databaseType, whereCondition, data);
-  }
-
-  async updateOrCreate(whereCondition, fieldsToUpsert) {
-    const data = await this.getDatabaseSafeData(fieldsToUpsert);
-    const instance = await this.generateInstance(data);
-    await instance.assertValid();
-    const fieldValues = await this.database.updateOrCreate(this.databaseType, whereCondition, data);
-    return this.generateInstance(fieldValues);
-  }
-
-  async updateById(id, fieldsToUpdate) {
-    return this.update(this.getIdClause(id), fieldsToUpdate);
   }
 
   async markAsChanged(...args) {

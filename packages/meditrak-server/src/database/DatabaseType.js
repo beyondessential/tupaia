@@ -140,4 +140,9 @@ export class DatabaseType {
       this.id = records[0].id;
     }
   }
+
+  /**
+   * Template method
+   */
+  async afterUpsert() {}
 }
