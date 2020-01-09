@@ -8,7 +8,7 @@ import { PercentagesOfValueCountsBuilder } from '/apiV1/dataBuilders/generic/per
 import { groupAnalyticsByPeriod } from '/dhis';
 import { divideValues } from '/apiV1/dataBuilders/helpers';
 
-class PercentagesOfValueCountsPerPeriodDataBuilder extends PercentagesOfValueCountsBuilder {
+class BaseBuilder extends PercentagesOfValueCountsBuilder {
   buildData(analytics) {
     const percentage = {};
     Object.entries(this.config.dataClasses).forEach(([name, dataClass]) => {
@@ -25,7 +25,7 @@ class PercentagesOfValueCountsPerPeriodDataBuilder extends PercentagesOfValueCou
 }
 
 class PercentagesOfValueCountsPerPeriodBuilder extends DataPerPeriodBuilder {
-  getBaseBuilderClass = () => PercentagesOfValueCountsPerPeriodDataBuilder;
+  getBaseBuilderClass = () => BaseBuilder;
 
   groupResultsByPeriod(results) {
     return groupAnalyticsByPeriod(results, this.config.periodType);
@@ -33,6 +33,10 @@ class PercentagesOfValueCountsPerPeriodBuilder extends DataPerPeriodBuilder {
 
   async fetchResults() {
     return this.getBaseBuilder().fetchResults();
+  }
+
+  formatData(data) {
+    return this.areDataAvailable(data) ? data : [];
   }
 }
 
