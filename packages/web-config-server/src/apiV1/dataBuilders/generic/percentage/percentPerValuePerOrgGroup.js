@@ -22,13 +22,13 @@ export const percentPerValuePerOrgGroup = async ({ dataBuilderConfig, query }, d
     },
     dhisApi,
   );
-  const facilityIdsToOrgUnitKeys = mapOrgUnitIdsToGroupCodes(organisationUnits);
+  const orgUnitIdsToGroupKeys = mapOrgUnitIdsToGroupCodes(organisationUnits);
 
   const { results } = await dhisApi.getAnalytics(
     dataBuilderConfig,
     query,
     MOST_RECENT_PER_ORG_GROUP,
-    { facilityIdsToOrgUnitKeys },
+    { orgUnitIdsToGroupKeys },
   );
   const countsByOrganisationUnit = countByOrganisationUnitByValue(
     results,

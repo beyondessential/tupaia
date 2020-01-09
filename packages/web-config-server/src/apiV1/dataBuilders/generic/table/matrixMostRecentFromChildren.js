@@ -37,13 +37,13 @@ export const matrixMostRecentFromChildren = async ({ dataBuilderConfig, query },
 
   const { organisationUnits, categoryMapping, dataElementsInfo, optionSetOptions } = fetchedData;
 
-  const facilityIdsToOrgUnitKeys = mapOrgUnitIdsToGroupIds(organisationUnits);
+  const orgUnitIdsToGroupKeys = mapOrgUnitIdsToGroupIds(organisationUnits);
 
   const { results } = await dhisApi.getAnalytics(
     dataBuilderConfig,
     query,
     MOST_RECENT_PER_ORG_GROUP,
-    { facilityIdsToOrgUnitKeys },
+    { orgUnitIdsToGroupKeys },
   );
   const returnJson = {};
 
