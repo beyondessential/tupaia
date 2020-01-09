@@ -17,8 +17,9 @@ exports.setup = function(options, seedLink) {
 exports.up = function(db) {
   return db.runSql(`
     CREATE TYPE VERIFIED_EMAIL AS ENUM('unverified', 'new_user', 'verified');
-    ALTER TABLE user_account ADD COLUMN verified_email VERIFIED_EMAIL default 'new_user' 
-`);
+    ALTER TABLE user_account ADD COLUMN verified_email VERIFIED_EMAIL default 'new_user';
+    update user_account set verified_email = 'unverified'
+  `);
 };
 
 exports.down = function(db) {
