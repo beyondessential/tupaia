@@ -17,7 +17,6 @@ export class DataPerPeriodBuilder extends DataBuilder {
     super(...constructorArgs);
     this.constructorArgs = [...constructorArgs];
     this.baseBuilder = null;
-    this.baseDataBuilder = null;
   }
 
   /**
@@ -76,11 +75,10 @@ export class DataPerPeriodBuilder extends DataBuilder {
     const periodType = parsePeriodType(this.config.periodType);
     const resultsByPeriod = this.groupResultsByPeriod(results, periodType);
     const baseBuilder = this.getBaseBuilder();
-    const dataBuilder = this.baseDataBuilder || baseBuilder.buildData;
 
     const data = [];
     const processResultsForPeriod = async ([period, resultsForPeriod]) => {
-      const newData = await dataBuilder(resultsForPeriod).map(dataItem => ({
+      const newData = await this.baseBuilder.buildData(resultsForPeriod).map(dataItem => ({
         ...dataItem,
         timestamp: periodToTimestamp(period),
         name: periodToDisplayString(period),

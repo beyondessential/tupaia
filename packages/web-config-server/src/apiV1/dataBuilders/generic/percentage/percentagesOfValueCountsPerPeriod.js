@@ -8,21 +8,11 @@ import { PercentagesOfValueCountsBuilder } from '/apiV1/dataBuilders/generic/per
 import { groupAnalyticsByPeriod } from '/dhis';
 import { divideValues } from '/apiV1/dataBuilders/helpers';
 
-class PercentagesOfValueCountsPerPeriodBuilder extends DataPerPeriodBuilder {
-  getBaseBuilderClass = () => PercentagesOfValueCountsBuilder;
-
-  groupResultsByPeriod(results) {
-    return groupAnalyticsByPeriod(results, this.config.periodType);
-  }
-
-  async fetchResults() {
-    return this.getBaseBuilder().fetchResults();
-  }
-
-  baseDataBuilder = analytics => {
+class PercentagesOfValueCountsPerPeriodDataBuilder extends PercentagesOfValueCountsBuilder {
+  buildData(analytics) {
     const percentage = {};
     Object.entries(this.config.dataClasses).forEach(([name, dataClass]) => {
-      const [numerator, denominator] = this.getBaseBuilder().calculateFractionPartsForDataClass(
+      const [numerator, denominator] = this.calculateFractionPartsForDataClass(
         dataClass,
         analytics,
       );
@@ -31,7 +21,19 @@ class PercentagesOfValueCountsPerPeriodBuilder extends DataPerPeriodBuilder {
       percentage[key] = divideValues(numerator, denominator);
     });
     return [percentage];
-  };
+  }
+}
+
+class PercentagesOfValueCountsPerPeriodBuilder extends DataPerPeriodBuilder {
+  getBaseBuilderClass = () => PercentagesOfValueCountsPerPeriodDataBuilder;
+
+  groupResultsByPeriod(results) {
+    return groupAnalyticsByPeriod(results, this.config.periodType);
+  }
+
+  async fetchResults() {
+    return this.getBaseBuilder().fetchResults();
+  }
 }
 
 export const percentagesOfValueCountsPerPeriod = async (

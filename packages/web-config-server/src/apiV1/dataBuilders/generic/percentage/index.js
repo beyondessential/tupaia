@@ -12,4 +12,3 @@ export { percentInGroupByFacility } from './percentInGroupByFacility';
 export { percentOperationalFacilitiesWithData } from './percentOperationalFacilitiesWithData';
 export { percentPerValuePerOrgGroup } from './percentPerValuePerOrgGroup';
 export { percentPerValuePerOrgUnit } from './percentPerValuePerOrgUnit';
-export { percentagesOfValueCountsPerDataClass } from './percentagesOfValueCountsPerDataClass';
