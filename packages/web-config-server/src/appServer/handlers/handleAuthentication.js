@@ -26,7 +26,7 @@ const processResponse = resultJson => {
     return null;
   }
   const { user } = resultJson;
-  console.log(user);
+
   const { accessPolicy } = user;
   // attach public user groups permissions to every user
   UserSession.updateOrCreate({ userName: user.name }, { ...resultJson, accessPolicy }); // Save tokens for user
