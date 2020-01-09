@@ -5,12 +5,9 @@
 
 import { DataPerOrgUnitBuilder } from './DataPerOrgUnitBuilder';
 import { CountEventsBuilder } from '/apiV1/dataBuilders/generic/count/countEvents';
-import { groupEventsByOrgUnit } from '/dhis';
 
 export class CountEventsPerOrgUnitBuilder extends DataPerOrgUnitBuilder {
   getBaseBuilderClass = () => CountEventsBuilder;
-
-  groupResultsByOrgUnitCode = groupEventsByOrgUnit;
 
   async fetchResults() {
     const { organisationUnitGroupCode } = this.query;

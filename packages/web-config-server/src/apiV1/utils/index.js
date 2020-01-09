@@ -2,7 +2,8 @@ export { DhisTranslationHandler } from './dhisTranslationHandler';
 export { aggregateOperationalFacilityValues } from './aggregateOperationalFacilityValues';
 export { countByOrganisationUnitByValue } from './countByOrganisationUnitByValue';
 export { calculatePercentagesWithinRange } from './calculatePercentagesWithinRange';
-export { mapFacilityIdsToGroupCodes } from './mapFacilityIdsToGroupCodes';
+export { mapOrgUnitIdsToGroupIds } from './mapOrgUnitIdsToGroupIds';
+export { mapOrgUnitIdsToGroupCodes } from './mapOrgUnitIdsToGroupCodes';
 export { formatFacilityDataForOverlay } from './formatFacilityDataForOverlay';
 export { getMatchedNumeratorsAndDenominators } from './getMatchedNumeratorsAndDenominators';
 export {

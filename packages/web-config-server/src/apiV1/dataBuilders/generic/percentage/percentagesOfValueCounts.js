@@ -34,19 +34,24 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
   }
 
   buildData(analytics) {
-    const percentage = {};
+    const dataClasses = [];
     Object.entries(this.config.dataClasses).forEach(([name, dataClass]) => {
       const [numerator, denominator] = this.calculateFractionPartsForDataClass(
         dataClass,
         analytics,
       );
 
-      const key = Object.keys(this.config.dataClasses).length > 1 ? name : 'value';
-      percentage[key] = divideValues(numerator, denominator);
-      percentage[`${key}_metaData`] = { numerator, denominator };
+      const data = {
+        value: divideValues(numerator, denominator),
+        name,
+        numerator,
+        denominator,
+      };
+
+      dataClasses.push(data);
     });
 
-    return [percentage];
+    return dataClasses;
   }
 
   calculateFractionPartsForDataClass(dataClass, analytics) {

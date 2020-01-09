@@ -1,5 +1,5 @@
 import { AGGREGATION_TYPES } from '/dhis';
-import { getChildOrganisationUnits, mapFacilityIdsToGroupCodes } from '/apiV1/utils';
+import { getChildOrganisationUnits, mapOrgUnitIdsToGroupIds } from '/apiV1/utils';
 import { Facility, Entity } from '/models';
 const { MOST_RECENT_PER_ORG_GROUP } = AGGREGATION_TYPES;
 
@@ -19,9 +19,9 @@ export const mostRecentValueFromChildren = async (
     dataElementCodes: [dataElementCode],
     organisationUnitCode: organisationUnitGroupCode,
   };
-  const facilityIdsToGroupCodes = mapFacilityIdsToGroupCodes(organisationUnits);
+  const orgUnitIdsToGroupKeys = mapOrgUnitIdsToGroupIds(organisationUnits);
   const { results } = await dhisApi.getAnalytics(jsonQueryData, {}, MOST_RECENT_PER_ORG_GROUP, {
-    facilityIdsToGroupCodes,
+    orgUnitIdsToGroupKeys,
   });
   const orgUnitValuePromises = organisationUnits.map(async ({ id, code }) => {
     const entity = await Entity.findOne({ code });
