@@ -21,6 +21,7 @@ describe('Access Policy', () => {
     employer: 'Test',
     position: 'Robot',
     deviceName: 'foobar',
+    verifiedEmail: 'verified',
   };
 
   const headers = { authorization: getAuthorizationHeader() };
