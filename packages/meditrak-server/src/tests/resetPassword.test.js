@@ -40,7 +40,7 @@ describe('Reset Password', () => {
       const { userId } = userResponse.body;
       expect(userId).to.exist;
 
-      models.user.updateById(userId, { verified_email: EMAIL_VERIFIED_STATUS.VERIFIED });
+      await models.user.updateById(userId, { verified_email: EMAIL_VERIFIED_STATUS.VERIFIED });
 
       const result = await app.post('auth/resetPassword', {
         headers,

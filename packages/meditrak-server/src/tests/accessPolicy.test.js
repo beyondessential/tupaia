@@ -40,7 +40,7 @@ describe('Access Policy', () => {
       });
       userId = userResponse.body.userId;
 
-      models.user.updateById(userId, { verified_email: EMAIL_VERIFIED_STATUS.VERIFIED });
+      await models.user.updateById(userId, { verified_email: EMAIL_VERIFIED_STATUS.VERIFIED });
 
       const authResponse = await app.post('auth', {
         headers,
@@ -108,7 +108,7 @@ describe('Access Policy', () => {
       });
       userId = userResponse.body.userId;
 
-      models.user.updateById(userId, { verified_email: EMAIL_VERIFIED_STATUS.VERIFIED });
+      await models.user.updateById(userId, { verified_email: EMAIL_VERIFIED_STATUS.VERIFIED });
 
       const adminPermissionGroup = await models.permissionGroup.findOne({
         name: 'Admin',
@@ -245,7 +245,7 @@ describe('Access Policy', () => {
       });
       userId = userResponse.body.userId;
 
-      models.user.updateById(userId, { verified_email: EMAIL_VERIFIED_STATUS.VERIFIED });
+      await models.user.updateById(userId, { verified_email: EMAIL_VERIFIED_STATUS.VERIFIED });
 
       const adminPermissionGroup = await models.permissionGroup.findOne({
         name: 'Admin',

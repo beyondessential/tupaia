@@ -40,7 +40,7 @@ describe('One Time Login', function() {
       });
       const { userId } = userResponse.body;
 
-      models.user.updateById(userId, { verified_email: EMAIL_VERIFIED_STATUS.VERIFIED });
+      await models.user.updateById(userId, { verified_email: EMAIL_VERIFIED_STATUS.VERIFIED });
 
       const { token } = await models.oneTimeLogin.create({
         user_id: userId,
@@ -82,7 +82,7 @@ describe('One Time Login', function() {
     });
     const { userId } = userResponse.body;
 
-    models.user.updateById(userId, { verified_email: EMAIL_VERIFIED_STATUS.VERIFIED });
+    await models.user.updateById(userId, { verified_email: EMAIL_VERIFIED_STATUS.VERIFIED });
 
     const { token } = await models.oneTimeLogin.create({
       user_id: userId,
