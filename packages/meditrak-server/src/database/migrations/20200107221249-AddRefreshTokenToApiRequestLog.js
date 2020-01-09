@@ -15,8 +15,7 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = async function(db) {
-  await db.addColumn('api_request_log', 'query', { type: 'jsonb' });
-  return db.addColumn('api_request_log', 'metadata', { type: 'jsonb', defaultValue: '{}' });
+  return db.addColumn('api_request_log', 'refresh_token', { type: 'text' });
 };
 
 exports.down = function(db) {

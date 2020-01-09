@@ -15,7 +15,7 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = async function(db) {
-  await db.runSql('ALTER TABLE install_id RENAME TO meditrak_client;');
+  await db.runSql('ALTER TABLE install_id RENAME TO meditrak_device;');
   // Remove multiple entries for the same `install_id` from the table
   // Those were unintentionally created because of a bug
   // * commitId: #2d330d4
@@ -24,15 +24,15 @@ exports.up = async function(db) {
   //   a record with the same `install_id`and `user_id` will be created
   await db.runSql(`
     DELETE FROM
-      meditrak_client a
+      meditrak_device a
     USING
-      meditrak_client b
+      meditrak_device b
     WHERE
       a.id < b.id AND
       a.install_id = b.install_id;
   `);
   return db.runSql(
-    'ALTER TABLE meditrak_client ADD CONSTRAINT meditrak_client_install_id_unique UNIQUE (install_id);',
+    'ALTER TABLE meditrak_device ADD CONSTRAINT meditrak_device_install_id_unique UNIQUE (install_id);',
   );
 };
 
