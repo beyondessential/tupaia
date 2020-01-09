@@ -82,7 +82,7 @@ const VALUE_TYPE_TO_FORMATTER = {
   [VALUE_TYPES.BOOLEAN]: boolean,
 };
 
-export const formatDataValue = (value, valueType, extraConfig) => {
+export const formatDataValue = (value, valueType, metaData) => {
   const formatter = VALUE_TYPE_TO_FORMATTER[valueType] || defaultFormatter;
-  return formatter(value, extraConfig);
+  return formatter(value, metaData);
 };

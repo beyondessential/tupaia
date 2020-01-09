@@ -31,7 +31,6 @@ const MultiValueTooltip = ({
   labelType,
 }) => {
   const data = payload[0].payload;
-  // console.log(payload);
   const { name: headline, timestamp } = data;
   const valueLabels = payload.map(({ dataKey, value }) => {
     const options = presentationOptions && presentationOptions[dataKey];
@@ -54,20 +53,20 @@ const MultiValueTooltip = ({
   );
 };
 
-const SingleValueTooltip = ({ valueType, payload, periodGranularity, metaData }) => {
-  console.log(metaData);
+const SingleValueTooltip = ({ valueType, payload, periodGranularity, labelType }) => {
   const data = payload[0].payload;
-  const { name, value, timestamp } = data;
+  const { name, value, timestamp, value_metaData: metaData } = data;
+  const valueTypeForLabel = labelType || valueType;
 
   return (
     <div style={VIEW_STYLES.tooltip}>
       {getIsTimeSeries([payload[0].payload]) && periodGranularity ? (
         <div>
           <p>{formatTimestampForChart(timestamp, periodGranularity)}</p>
-          {formatDataValue(value, valueType)}
+          {formatDataValue(value, valueTypeForLabel, metaData)}
         </div>
       ) : (
-        formatLabelledValue(name, value, valueType)
+        formatLabelledValue(name, value, valueTypeForLabel, metaData)
       )}
     </div>
   );
