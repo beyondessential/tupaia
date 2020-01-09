@@ -78,7 +78,7 @@ export class DataPerPeriodBuilder extends DataBuilder {
 
     const data = [];
     const processResultsForPeriod = async ([period, resultsForPeriod]) => {
-      const newData = await this.baseBuilder.buildData(resultsForPeriod).map(dataItem => ({
+      const newData = await baseBuilder.buildData(resultsForPeriod).map(dataItem => ({
         ...dataItem,
         timestamp: periodToTimestamp(period),
         name: periodToDisplayString(period),
