@@ -1,7 +1,7 @@
 'use strict';
 
 import { insertMultipleObjects, arrayToDbString } from '../migrationUtilities';
-import { generateId } from '/database/generateId';
+import { generateId } from '@tupaia/database';
 
 var dbm;
 var type;
@@ -104,7 +104,7 @@ const overlays = [
 exports.up = async function(db) {
   await db.runSql(`
     DELETE FROM "project" WHERE "code" IN ('explore', 'disaster');
-    
+
     ALTER TABLE "project" DROP COLUMN "user_group";
     ALTER TABLE "project" ADD COLUMN "user_groups" text[];
   `);

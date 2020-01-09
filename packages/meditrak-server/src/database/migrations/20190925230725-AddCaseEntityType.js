@@ -1,5 +1,5 @@
 'use strict';
-import { TupaiaDatabase } from '../TupaiaDatabase';
+import { TupaiaDatabase } from '@tupaia/database';
 var dbm;
 var type;
 var seed;

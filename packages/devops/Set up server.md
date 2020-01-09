@@ -225,19 +225,13 @@ sudo apt-get install git
 npm i --global yarn
 ```
 
-### Set up deployment keys
+### Set up deploy key
 
 ```
-ssh-keygen -t rsa -b 4096 -C "{user}@github.com"
+ssh-keygen -t rsa -b 4096 -C "admin@tupaia.org"
 ```
 
-- Add deployment keys to the repo https://github.com/beyondessential/tupaia/settings/keys as per: https://developer.github.com/v3/guides/managing-deploy-keys/#deploy-keys
-
-```
-ssh-add ~/.ssh/id_rsa
-```
-
--
+- Add deploy key to the repo https://github.com/beyondessential/tupaia/settings/keys
 
 ### Set up the tupaia repository
 
@@ -279,8 +273,9 @@ sudo apt install jq
 ### Set startup script to be run on server start, so that all repositories are deployed
 
 ```
+mkdir ~/logs
 crontab -e
-@reboot /home/ubuntu/tupaia/packages/devops/scripts/deployment/startup.sh
+@reboot /home/ubuntu/tupaia/packages/devops/scripts/deployment/startup.sh >> /home/ubuntu/logs/deployment_log.txt
 ```
 
 # codeship

@@ -11,7 +11,7 @@ const DEFAULT_LIMIT = 20;
 
 export default class extends DhisTranslationHandler {
   getNextResults = async (filter, limit, pageNumber = 0) => {
-    const sort = { name: 'ASC' };
+    const sort = ['name'];
     return Entity.find(filter, {}, { sort, limit, offset: pageNumber * limit });
   };
 

@@ -1,0 +1,69 @@
+# In setting up these services, I have tried to minimise how much is loaded into each container for
+# each step in order to speed up those individual step build + run times
+# - 'validation' services include a nodejs container, plus the full repo code, and any node_modules
+#   dependencies for the package in question
+# - 'testing' services are the same as the validation services, but additionally depend on the db
+#   service (see below)
+# - the db service provides a postgres db with postgis (and takes a little while to run, thus the
+#   splitting of the above services so validation isn't slower than it should be)
+# - the deployment service just uses the base alpine image + ssh to log into
+#   an ec2 instance and deploy the latest version of the code for each package
+
+meditrak-server-validation:
+  build:
+    dockerfile: full-testable-package.Dockerfile
+    args:
+      package: meditrak-server
+  environment:
+    CI_PACKAGE: meditrak-server
+
+web-config-server-validation:
+  build:
+    dockerfile: full-testable-package.Dockerfile
+    args:
+      package: web-config-server
+  environment:
+    CI_PACKAGE: web-config-server
+
+meditrak-server-testing:
+  build:
+    dockerfile: full-testable-package.Dockerfile
+    args:
+      package: meditrak-server
+  depends_on:
+    - db
+  encrypted_env_file: ./packages/meditrak-server/ci-env-vars.encrypted
+  environment:
+    CI_PACKAGE: meditrak-server
+
+web-config-server-testing:
+  build:
+    dockerfile: full-testable-package.Dockerfile
+    args:
+      package: web-config-server
+  depends_on:
+    - db
+  encrypted_env_file: ./packages/web-config-server/ci-env-vars.encrypted
+  environment:
+    CI_PACKAGE: web-config-server
+
+database-testing:
+  build:
+    dockerfile: full-testable-package.Dockerfile
+    args:
+      package: database
+  environment:
+    CI_PACKAGE: database
+
+db:
+  image: mdillon/postgis:9.6-alpine
+
+deployment:
+  build:
+    dockerfile: deploy-only.Dockerfile
+  encrypted_env_file: ./packages/devops/ci-env-vars.encrypted
+  environment:
+    CI_PACKAGE: devops
+  volumes:
+    # mapping to `.ssh` directory ensures that `id_rsa` file persists to subsequent steps
+    - ./.ssh:/root/.ssh

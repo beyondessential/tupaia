@@ -24,7 +24,11 @@ The project requires importing an initial database dump. This can be obtained fr
 on Slack. Import the dump by running:
 
 ```bash
-psql tupaia -U tupaia < tupaia_dump.sql
+yarn refresh-database tupaia_dump.sql
+```
+or on windows, first DROP and recreate the tupaia database, then run:
+```bash
+psql -U tupaia < tupaia_dump.sql
 ```
 
 ## Development

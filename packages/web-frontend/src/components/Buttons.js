@@ -14,7 +14,6 @@ export const PrimaryButton = styled(Button)`
   margin: 0 auto;
   color: ${WHITE};
   background: ${PRIMARY_BLUE};
-  width: 100%;
 
   :hover {
     background: ${BREWER_PALETTE.blue};

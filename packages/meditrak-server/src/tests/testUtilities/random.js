@@ -3,7 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { generateId } from '../../database';
+import { generateId } from '@tupaia/database';
 
 export function generateValueOfType(type, options = {}) {
   switch (type) {

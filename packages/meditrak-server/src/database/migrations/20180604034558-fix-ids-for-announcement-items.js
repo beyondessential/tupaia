@@ -1,5 +1,5 @@
 'use strict';
-import { generateId } from '../generateId';
+import { generateId } from '@tupaia/database';
 
 var dbm;
 var type;
