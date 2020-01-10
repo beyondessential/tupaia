@@ -29,7 +29,6 @@ import {
   OPEN_USER_DIALOG,
   DIALOG_PAGE_REQUEST_COUNTRY_ACCESS,
   FINISH_USER_SESSION,
-  DIALOG_PAGE_LOGIN,
   SET_VERIFY_EMAIL_TOKEN,
   changeMeasure,
   clearMeasure,
@@ -99,22 +98,19 @@ import { INITIAL_MEASURE_ID } from './defaults';
  *
  */
 function* attemptChangePassword(action) {
-  const options = Object.assign(
-    {},
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        oldPassword: action.oldPassword,
-        password: action.password,
-        passwordConfirm: action.passwordConfirm,
-        oneTimeLoginToken: action.passwordResetToken,
-      }),
-      alwaysUseSuppliedErrorFunction: true,
+  const options = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
     },
-  );
+    body: JSON.stringify({
+      oldPassword: action.oldPassword,
+      password: action.password,
+      passwordConfirm: action.passwordConfirm,
+      oneTimeLoginToken: action.passwordResetToken,
+    }),
+    alwaysUseSuppliedErrorFunction: true,
+  };
 
   const requestResourceUrl = 'changePassword';
   try {
@@ -137,17 +133,14 @@ function* watchAttemptChangePasswordAndFetchIt() {
  *
  */
 function* attemptResetPassword(action) {
-  const options = Object.assign(
-    {},
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ emailAddress: action.email }),
-      alwaysUseSuppliedErrorFunction: true,
+  const options = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
     },
-  );
+    body: JSON.stringify({ emailAddress: action.email }),
+    alwaysUseSuppliedErrorFunction: true,
+  };
 
   const requestResourceUrl = 'resetPassword';
   try {
@@ -164,16 +157,13 @@ function* watchAttemptResetPasswordAndFetchIt() {
 }
 
 function* resendVerificationEmail(action) {
-  const options = Object.assign(
-    {},
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ emailAddress: action.email }),
+  const options = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
     },
-  );
+    body: JSON.stringify({ emailAddress: action.email }),
+  };
 
   const requestResourceUrl = 'resendEmail';
   try {
@@ -195,19 +185,16 @@ function* watchResendEmailVerificationAndFetchIt() {
  *
  */
 function* attemptUserLogin(action) {
-  const fetchOptions = Object.assign(
-    {},
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        emailAddress: action.emailAddress,
-        password: action.password,
-      }),
+  const fetchOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
     },
-  );
+    body: JSON.stringify({
+      emailAddress: action.emailAddress,
+      password: action.password,
+    }),
+  };
 
   const requestContext = {
     alwaysUseSuppliedErrorFunction: true,
@@ -245,16 +232,13 @@ function* watchAttemptUserLoginAndFetchIt() {
 function* attemptUserSignup(action) {
   const { fields } = action;
 
-  const fetchOptions = Object.assign(
-    {},
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(fields),
+  const fetchOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
     },
-  );
+    body: JSON.stringify(fields),
+  };
 
   const requestContext = {
     alwaysUseSuppliedErrorFunction: true,
@@ -324,16 +308,13 @@ function* attemptTokenLogin(action) {
     token: passwordResetToken,
   };
 
-  const fetchOptions = Object.assign(
-    {},
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body),
+  const fetchOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
     },
-  );
+    body: JSON.stringify(body),
+  };
 
   const requestContext = {
     alwaysUseSuppliedErrorFunction: true,
@@ -369,21 +350,18 @@ function* attemptRequestCountryAccess(action) {
   const { message, userGroup } = action;
   const countryIds = action.countryIds ? Object.keys(action.countryIds) : [];
 
-  const options = Object.assign(
-    {},
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        countryIds: countryIds,
-        message,
-        userGroup,
-      }),
-      alwaysUseSuppliedErrorFunction: true,
+  const options = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
     },
-  );
+    body: JSON.stringify({
+      countryIds: countryIds,
+      message,
+      userGroup,
+    }),
+    alwaysUseSuppliedErrorFunction: true,
+  };
 
   const requestResourceUrl = 'requestCountryAccess';
   try {
