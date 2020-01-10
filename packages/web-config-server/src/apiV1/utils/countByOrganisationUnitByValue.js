@@ -6,8 +6,12 @@ export const countByOrganisationUnitByValue = (results, entities, valuesOfIntere
       return;
     }
     if (!countsByOrganisationUnit[organisationUnitCode]) {
-      const { name } = entities.find(e => e.code === organisationUnitCode);
-      countsByOrganisationUnit[organisationUnitCode] = { name, total: 0 };
+      try {
+        const { name } = entities.find(e => e.code === organisationUnitCode);
+        countsByOrganisationUnit[organisationUnitCode] = { name, total: 0 };
+      } catch (err) {
+        throw new Error(`Could not find organisation with code: ${organisationUnitCode}`);
+      }
     }
     if (!countsByOrganisationUnit[organisationUnitCode][value]) {
       countsByOrganisationUnit[organisationUnitCode][value] = 0;

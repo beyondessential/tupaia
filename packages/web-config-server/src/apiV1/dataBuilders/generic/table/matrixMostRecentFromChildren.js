@@ -4,7 +4,7 @@ import {
   getDataElementsInGroupSet,
   getOptionSetOptions,
   getChildOrganisationUnits,
-  mapFacilityIdsToGroupCodes,
+  mapOrgUnitIdsToGroupIds,
 } from '/apiV1/utils';
 import { AGGREGATION_TYPES } from '/dhis';
 import { buildCategories } from './buildCategories';
@@ -37,13 +37,13 @@ export const matrixMostRecentFromChildren = async ({ dataBuilderConfig, query },
 
   const { organisationUnits, categoryMapping, dataElementsInfo, optionSetOptions } = fetchedData;
 
-  const facilityIdsToGroupCodes = mapFacilityIdsToGroupCodes(organisationUnits);
+  const orgUnitIdsToGroupKeys = mapOrgUnitIdsToGroupIds(organisationUnits);
 
   const { results } = await dhisApi.getAnalytics(
     dataBuilderConfig,
     query,
     MOST_RECENT_PER_ORG_GROUP,
-    { facilityIdsToGroupCodes },
+    { orgUnitIdsToGroupKeys },
   );
   const returnJson = {};
 
