@@ -61,9 +61,9 @@ describe('Verify Email', () => {
     return app.post('auth', { headers, body });
   };
 
-  const verifyUserStatus = async (userId, status) => {
+  const assertUserStatus = async userId => {
     const user = await models.user.findById(userId);
-    return user.verified_email === status;
+    return user.verified_email;
   };
 
   describe('Create Login and test email verification', () => {
@@ -74,8 +74,7 @@ describe('Verify Email', () => {
       const response = await login(emailAddress);
       expect(response.status).to.equal(403);
 
-      const userStatus = await verifyUserStatus(userId, EMAIL_VERIFIED_STATUS.NEW_USER);
-      expect(userStatus).to.equal(true);
+      expect(await assertUserStatus(userId)).to.equal(EMAIL_VERIFIED_STATUS.NEW_USER);
     });
 
     it('Should be able to verify email correctly', async () => {
@@ -85,8 +84,7 @@ describe('Verify Email', () => {
       const response = await verifyEmail(userId);
       expect(response.status).to.equal(200);
 
-      const userStatus = await verifyUserStatus(userId, EMAIL_VERIFIED_STATUS.VERIFIED);
-      expect(userStatus).to.equal(true);
+      expect(await assertUserStatus(userId)).to.equal(EMAIL_VERIFIED_STATUS.VERIFIED);
     });
 
     it('Should be able to login after verifying email', async () => {
@@ -97,8 +95,18 @@ describe('Verify Email', () => {
       const response = await login(emailAddress);
       expect(response.status).to.equal(200);
 
-      const userStatus = await verifyUserStatus(userId, EMAIL_VERIFIED_STATUS.VERIFIED);
-      expect(userStatus).to.equal(true);
+      expect(await assertUserStatus(userId)).to.equal(EMAIL_VERIFIED_STATUS.VERIFIED);
+    });
+
+    it('Exisitng users should be able to login with unverified status ', async () => {
+      const emailAddress = randomEmail();
+      const userId = await createUser(emailAddress);
+
+      await models.user.updateById(userId, { verified_email: EMAIL_VERIFIED_STATUS.UNVERIFIED });
+      expect(await assertUserStatus(userId)).to.equal(EMAIL_VERIFIED_STATUS.UNVERIFIED);
+
+      const response = await login(emailAddress);
+      expect(response.status).to.equal(200);
     });
   });
 });
