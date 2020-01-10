@@ -13,7 +13,6 @@ import { startSyncWithDhis } from './dhis';
 import { startSyncWithMs1 } from './ms1';
 import { startFeedScraper } from './social';
 import { createApp } from './app';
-import { initialiseNotifiers } from './notifications/notifiers';
 
 import winston from './log';
 
@@ -27,7 +26,7 @@ const models = new ModelRegistry(database);
  * Set up change handlers e.g. for syncing
  */
 createMeditrakSyncQueue(models);
-initialiseNotifiers(models); // Notifies users of relevant changes, e.g. permissions granted
+models.initialiseNotifiers(); // Notifies users of relevant changes, e.g. permissions granted
 
 /**
  * Set up actual app with routes etc.
