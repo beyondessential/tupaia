@@ -11,7 +11,7 @@ class PermissionGroupType extends DatabaseType {
   static databaseType = TYPES.PERMISSION_GROUP;
 
   static meditrakConfig = {
-    minAppVersion: '1.7.81',
+    minAppVersion: '1.7.86',
   };
 
   async parent() {

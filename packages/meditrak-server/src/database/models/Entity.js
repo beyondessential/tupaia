@@ -58,7 +58,7 @@ class EntityType extends DatabaseType {
 
   static meditrakConfig = {
     ignorableFields: ['region', 'bounds'],
-    minAppVersion: '1.7.98',
+    minAppVersion: '1.7.102',
   };
 
   // Exposed for access policy creation.

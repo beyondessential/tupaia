@@ -11,7 +11,7 @@ class SurveyGroupType extends DatabaseType {
   static databaseType = TYPES.SURVEY_GROUP;
 
   static meditrakConfig = {
-    minAppVersion: '1.6.68',
+    minAppVersion: '1.6.69',
   };
 }
 

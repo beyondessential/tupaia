@@ -11,7 +11,7 @@ class OptionSetType extends DatabaseType {
   static databaseType = TYPES.OPTION_SET;
 
   static meditrakConfig = {
-    minAppVersion: '1.7.89',
+    minAppVersion: '1.7.92',
   };
 }
 
