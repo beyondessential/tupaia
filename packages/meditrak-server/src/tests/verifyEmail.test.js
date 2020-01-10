@@ -98,7 +98,7 @@ describe('Verify Email', () => {
       expect(await assertUserStatus(userId)).to.equal(EMAIL_VERIFIED_STATUS.VERIFIED);
     });
 
-    it('Exisitng users should be able to login with unverified status ', async () => {
+    it('Existing users should be able to login with unverified status ', async () => {
       const emailAddress = randomEmail();
       const userId = await createUser(emailAddress);
 
