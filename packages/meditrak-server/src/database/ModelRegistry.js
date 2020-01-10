@@ -69,4 +69,12 @@ export class ModelRegistry {
       return { ...result, [databaseType]: minAppVersion };
     }, {});
   }
+
+  initialiseNotifiers() {
+    Object.values(this).forEach(({ databaseType, notifiers = [] }) => {
+      notifiers.forEach(notifier => {
+        this.addChangeHandlerForCollection(databaseType, (...args) => notifier(...args, this));
+      });
+    });
+  }
 }
