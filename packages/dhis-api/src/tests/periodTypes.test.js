@@ -6,7 +6,7 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 
-import * as UtcMoment from '/utils/utcMoment';
+import * as UtcMoment from '@tupaia/utils';
 
 import {
   PERIOD_TYPES,
@@ -14,12 +14,12 @@ import {
   findCoarsestPeriodType,
   getCurrentPeriod,
   getPeriodsInRange,
-  getPeriodType,
+  periodToType,
   momentToPeriod,
   periodToDisplayString,
   parsePeriodType,
   periodToTimestamp,
-} from '/dhis/periodTypes';
+} from '../periodTypes';
 
 const { DAY, WEEK, MONTH, YEAR } = PERIOD_TYPES;
 
@@ -46,29 +46,29 @@ const createWeekPeriods = (year, startWeekIndex, endWeekIndex) => {
 };
 
 context('periodTypes', () => {
-  describe('getPeriodType', () => {
+  describe('periodToType', () => {
     it('should return undefined for empty input', () => {
-      expect(getPeriodType()).to.equal(undefined);
+      expect(periodToType()).to.equal(undefined);
     });
 
     it('should return undefined for invalid input', () => {
-      expect(getPeriodType('20165')).to.equal(undefined);
+      expect(periodToType('20165')).to.equal(undefined);
     });
 
     it('year', () => {
-      expect(getPeriodType('2016')).to.equal(YEAR);
+      expect(periodToType('2016')).to.equal(YEAR);
     });
 
     it('month', () => {
-      expect(getPeriodType('201605')).to.equal(MONTH);
+      expect(periodToType('201605')).to.equal(MONTH);
     });
 
     it('week', () => {
-      expect(getPeriodType('2016W05')).to.equal(WEEK);
+      expect(periodToType('2016W05')).to.equal(WEEK);
     });
 
     it('day', () => {
-      expect(getPeriodType('20160501')).to.equal(DAY);
+      expect(periodToType('20160501')).to.equal(DAY);
     });
   });
 

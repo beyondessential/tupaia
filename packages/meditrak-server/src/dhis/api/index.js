@@ -10,4 +10,3 @@ export {
   getEnrollmentsByTrackedEntityId,
   checkIsTrackedEntityEnrolledToProgram,
 } from './enrollments';
-export { DHIS2_RESOURCE_TYPES } from './types';

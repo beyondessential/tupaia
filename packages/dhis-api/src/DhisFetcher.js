@@ -5,8 +5,7 @@
 
 import winston from 'winston';
 
-import { fetchWithTimeout } from '../../utilities';
-import { HttpError } from '../../errors';
+import { fetchWithTimeout } from '@tupaia/utils';
 import { checkIsImportResponse } from '../responseUtils';
 import { authenticateWithDhis } from './authenticateWithDhis';
 import { stringifyDhisQuery } from './stringifyDhisQuery';
@@ -34,14 +33,16 @@ const getIsCacheable = (endpoint, httpMethod) =>
  * Handles auth, fetching, and caching the more stable responses from dhis2 endpoints
  */
 export class DhisFetcher {
-  constructor(serverUrl) {
+  constructor(serverName, serverUrl, constructError) {
+    this.serverName = serverName;
     this.serverUrl = serverUrl;
     this.cache = {};
     this.accessTokenPromise = null;
+    this.constructError = constructError;
   }
 
   async requestAccessToken() {
-    const { token } = await authenticateWithDhis(this.serverUrl);
+    const { token } = await authenticateWithDhis(this.serverName, this.serverUrl);
     this.accessTokenExpiry = token.expires_at.valueOf(); // expires_at is a Date
     return token.access_token;
   }
@@ -68,7 +69,7 @@ export class DhisFetcher {
       return accessToken;
     } catch (e) {
       this.clearAccessToken();
-      throw new Error(`Authentication with DHIS2 failed: ${e.message}`);
+      throw this.constructError(`Authentication with DHIS2 failed: ${e.message}`);
     }
   }
 
@@ -87,11 +88,14 @@ export class DhisFetcher {
       },
       ...config,
     };
-    const queryString = stringifyDhisQuery({ paging: false, ...queryParameters }); // Turn off dhis2 paging
+    const queryString = stringifyDhisQuery({
+      paging: false,
+      ...queryParameters,
+    }); // Turn off dhis2 paging
     const url = `${this.serverUrl}/api/${endpoint}${queryString}`;
 
     // Uncomment for debugging requests to DHIS2
-    // winston.debug(`Fetching ${url}`);
+    // winston.debug('DHIS2 request', { url, endpoint, ...queryParameters });
     const [baseEndpoint, recordId] = endpoint.split('/');
     const { method: httpMethod } = fetchConfig;
     const cachedResponse = getIsCacheable(baseEndpoint, httpMethod) && this.cache[url];
@@ -100,45 +104,44 @@ export class DhisFetcher {
     }
     const response = await fetchWithTimeout(url, fetchConfig);
 
-    if (!response.ok) {
-      if (response.status === 401 && shouldRetryOnBadAuth) {
-        this.clearAccessToken(); // Clear the current access token to force a new one on next fetch
-        return this.fetch(endpoint, queryParameters, config, false);
-      }
-      winston.warn(`Error communicating with ${url} with the following config:`, config);
-      const errorDetails = {
-        status: response.status,
-        statusText: response.statusText,
-      };
-      // Attempt to get more specific message from DHIS2
+    if (response.ok) {
       try {
         const responseObject = await response.json();
-        const { message } = responseObject;
-        winston.info(message);
-        if (checkIsImportResponse(responseObject)) {
-          // Special case when a "not ok" response contains error diagnostics
-          return responseObject;
+        if (getIsCacheable(baseEndpoint, httpMethod)) {
+          // if no recordId was provided, matching records are stored under responseObject[endpoint]
+          // if recordId was provided, the structure is less predictable, but it would have 404'd if
+          // there was no matching record
+          const foundRecords = recordId || responseObject[baseEndpoint].length > 0;
+          if (foundRecords) this.cache[url] = responseObject;
         }
-        if (message) errorDetails.statusText = message;
-      } catch (e) {
-        // Ignore json parse errors in bad responses
+        return responseObject;
+      } catch (error) {
+        // deletes return an invalid body for json() to parse.
+        if (error.type === 'invalid-json' && customFetchConfig.method === 'DELETE') return {};
+        if (response.statusText) throw this.constructError(response.statusText, url);
+        throw this.constructError(error.message, url);
       }
-      throw new HttpError(errorDetails);
     }
+
+    if (response.status === 401 && shouldRetryOnBadAuth) {
+      this.clearAccessToken(); // Clear the current access token to force a new one on next fetch
+      return this.fetch(endpoint, queryParameters, config, false);
+    }
+    winston.warn(`Error communicating with ${url} with the following config:`, config);
+    let errorMessage = response.statusText;
+    // Attempt to get more specific message from DHIS2
     try {
       const responseObject = await response.json();
-      if (getIsCacheable(baseEndpoint, httpMethod)) {
-        // if no recordId was provided, matching records are stored under responseObject[endpoint]
-        // if recordId was provided, the structure is less predictable, but it would have 404'd if
-        // there was no matching record
-        const foundRecords = recordId || responseObject[baseEndpoint].length > 0;
-        if (foundRecords) this.cache[url] = responseObject;
+      const { message } = responseObject;
+      winston.info(message);
+      if (checkIsImportResponse(responseObject)) {
+        // Special case when a "not ok" response contains error diagnostics
+        return responseObject;
       }
-      return responseObject;
+      if (message) errorMessage = message;
     } catch (e) {
-      // sometimes dhis2 returns an empty response (e.g. on deleting a data value), which breaks
-      // json.parse, so we just catch the error here and return an empty object
-      return {};
+      // Ignore json parse errors in bad responses
     }
+    throw this.constructError(errorMessage, url);
   }
 }

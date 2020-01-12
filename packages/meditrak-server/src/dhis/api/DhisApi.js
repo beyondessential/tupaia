@@ -3,43 +3,9 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 
-import { DhisFetcher } from './DhisFetcher';
-import { getIsProductionEnvironment } from '../../devops';
-import { DHIS2_RESOURCE_TYPES } from './types';
 import { RESPONSE_TYPES } from '../responseUtils';
 
-const {
-  DATA_ELEMENT,
-  DATA_SET,
-  DATA_SET_COMPLETION,
-  DATA_VALUE_SET,
-  DATA_VALUE,
-  EVENT,
-  OPTION_SET,
-  OPTION,
-  ORGANISATION_UNIT,
-} = DHIS2_RESOURCE_TYPES;
-
-export const REGIONAL_SERVER_NAME = 'regional';
-
 export class DhisApi {
-  constructor(serverName = REGIONAL_SERVER_NAME) {
-    this.serverName = serverName;
-    const devPrefix = getIsProductionEnvironment() ? '' : 'dev-';
-    const specificServerPrefix = serverName === REGIONAL_SERVER_NAME ? '' : `${serverName}-`;
-    const serverUrl = `https://${devPrefix}${specificServerPrefix}aggregation.tupaia.org`;
-    this.fetcher = new DhisFetcher(serverUrl);
-    this.deleteEvent = this.deleteEvent.bind(this);
-  }
-
-  getServerName() {
-    return this.serverName;
-  }
-
-  async fetch(endpoint, queryParameters, config) {
-    return this.fetcher.fetch(endpoint, queryParameters, config);
-  }
-
   async put(endpoint, data, queryParameters) {
     return this.fetch(endpoint, queryParameters, { body: JSON.stringify(data), method: 'PUT' });
   }

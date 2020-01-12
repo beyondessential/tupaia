@@ -7,7 +7,7 @@ import {
   checkIsImportResponse,
   RESPONSE_TYPES,
   STATUS_TYPES,
-} from '../../dhis/responseUtils';
+} from '../responseUtils';
 
 const { IMPORT_SUMMARY, IMPORT_SUMMARIES, OBJECT_REPORT } = RESPONSE_TYPES;
 const { ERROR } = STATUS_TYPES;

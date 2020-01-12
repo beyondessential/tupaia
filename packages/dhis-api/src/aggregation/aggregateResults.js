@@ -1,4 +1,4 @@
-import { PERIOD_TYPES } from '/dhis/periodTypes';
+import { PERIOD_TYPES } from '../periodTypes';
 import { filterLatestResults } from './filterLatestResults';
 import { sumAcrossPeriods } from './sumAcrossPeriods';
 import { sumEachDataElement } from './sumEachDataElement';

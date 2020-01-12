@@ -3,7 +3,7 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
 
-import { findCoarsestPeriodType, getPeriodType } from '/dhis/periodTypes';
+import { findCoarsestPeriodType, periodToType } from '../periodTypes';
 
 /**
  * Returns which one of two DHIS periods is preferred for data aggregation
@@ -28,7 +28,7 @@ export const getPreferredPeriod = (periodA, periodB, preferredPeriodType) => {
   }
 
   const periods = [periodA, periodB];
-  const periodTypes = periods.map(period => getPeriodType(period));
+  const periodTypes = periods.map(period => periodToType(period));
 
   // Check if any period belongs to a preferred period type
   let filteredPeriods = periods.filter(

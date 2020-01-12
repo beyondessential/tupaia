@@ -1,9 +1,9 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
+import { DhisApi } from '@tupaia/dhis-api';
 
 import { fetchComposedData } from '/apiV1/dataBuilders/helpers/fetchComposedData';
 import * as GetDataBuilder from '/apiV1/dataBuilders/getDataBuilder';
-import { DhisApi } from '/dhis/DhisApi';
 
 const DATA_RESPONSES = {
   countBuilder: [{ value: 1 }],

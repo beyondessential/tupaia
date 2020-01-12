@@ -9,8 +9,8 @@ import {
   findCoarsestPeriodType,
   getCurrentPeriod,
   getPeriodsInRange,
-  getPeriodType,
-} from '/dhis/periodTypes';
+  periodToType,
+} from '../periodTypes';
 import { getPreferredPeriod } from './getPreferredPeriod';
 
 /**
@@ -59,7 +59,7 @@ class FinalValueCache {
       }
       cache[dataElementId][organisationUnit][period] = responseElement;
 
-      const currentPeriodType = getPeriodType(responseElement.period);
+      const currentPeriodType = periodToType(responseElement.period);
       if (!periodTypes.includes(currentPeriodType)) {
         periodTypes.push(currentPeriodType);
       }

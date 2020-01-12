@@ -3,8 +3,8 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
 import { kebab as convertToKebabCase } from 'case';
+import { DhisApi, REGIONAL_SERVER_NAME } from '@tupaia/dhis-api';
 import { getCountryNameFromCode } from '/utils';
-import { DhisApi, REGIONAL_SERVER_NAME } from './DhisApi';
 
 const SUPPORTED_SERVERS = new Set([REGIONAL_SERVER_NAME, 'tonga']);
 

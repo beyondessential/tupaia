@@ -5,7 +5,7 @@
 
 import keyBy from 'lodash.keyby';
 
-import { reduceToDictionary, utcMoment } from '/utils';
+import { utcMoment, reduceToDictionary } from '@tupaia/utils';
 import { PERIOD_TYPES, momentToPeriod } from './periodTypes';
 import { sanitizeValue } from './sanitizeValue';
 

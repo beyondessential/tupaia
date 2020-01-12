@@ -47,13 +47,11 @@ web-config-server-testing:
   environment:
     CI_PACKAGE: web-config-server
 
-database-testing:
+internal-dependency-testing:
   build:
     dockerfile: full-testable-package.Dockerfile
     args:
-      package: database
-  environment:
-    CI_PACKAGE: database
+      package: utils # doesn't matter which
 
 db:
   image: mdillon/postgis:9.6-alpine

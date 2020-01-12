@@ -5,9 +5,9 @@
 
 import { expect } from 'chai';
 import sinon from 'sinon';
+import { DhisApi } from '@tupaia/dhis-api';
 
 import { SumBuilder } from '/apiV1/dataBuilders/generic/sum/sum';
-import { DhisApi } from '/dhis/DhisApi';
 
 const createGetAnalyticsStub = ({ args = [], results = [] }) => {
   const getAnalytics = sinon.stub();

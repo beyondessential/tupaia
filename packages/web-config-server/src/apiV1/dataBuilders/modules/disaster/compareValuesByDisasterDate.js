@@ -1,4 +1,4 @@
-import { utcMoment } from '/utils';
+import { utcMoment } from '@tupaia/utils';
 import { AGGREGATION_TYPES, EARLIEST_DATA_DATE } from '/dhis';
 import { convertDateRangeToPeriodString } from '/apiV1/utils';
 

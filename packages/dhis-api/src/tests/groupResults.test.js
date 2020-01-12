@@ -6,12 +6,8 @@
 /* eslint-disable camelcase */
 
 import { expect } from 'chai';
-import {
-  groupAnalyticsByPeriod,
-  groupEventsByOrgUnit,
-  groupEventsByPeriod,
-} from '/dhis/groupResults';
-import { PERIOD_TYPES } from '/dhis';
+import { PERIOD_TYPES } from '../periodTypes';
+import { groupAnalyticsByPeriod, groupEventsByOrgUnit, groupEventsByPeriod } from '../groupResults';
 
 const { DAY, WEEK, MONTH, YEAR } = PERIOD_TYPES;
 

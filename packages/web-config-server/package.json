@@ -30,6 +30,8 @@
   "dependencies": {
     "@beyondessential/tupaia-access-policy": "^2.0.2",
     "@tupaia/database": "0.1.0",
+    "@tupaia/dhis-api": "0.1.0",
+    "@tupaia/utils": "0.1.0",
     "apicache": "^0.8.7",
     "async": "^2.6.0",
     "aws-sdk": "^2.203.0",
@@ -60,7 +62,6 @@
     "lodash.setwith": "^4.3.2",
     "moment": "^2.22.2",
     "morgan": "^1.9.0",
-    "node-fetch": "^2.1.2",
     "nodemailer": "^4.6.7",
     "nyc": "^14.1.1",
     "promise": "^7.3.1",

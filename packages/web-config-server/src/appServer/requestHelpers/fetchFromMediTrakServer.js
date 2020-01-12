@@ -1,4 +1,5 @@
-import { fetch, stringifyDhisQuery } from '/utils';
+import { fetchWithTimeout } from '@tupaia/utils';
+import { stringifyDhisQuery } from '/utils';
 import { UserSession } from '/models';
 import { refreshAccessToken } from './refreshAccessToken';
 import { CustomError } from '/errors';
@@ -32,7 +33,7 @@ export const fetchFromMediTrakServer = async (endpoint, payload, queryParameters
     config.body = JSON.stringify({ deviceName: TUPAIA_CONFIG_SERVER_DEVICE_NAME, ...payload });
   }
 
-  const response = await fetch(url, config);
+  const response = await fetchWithTimeout(url, config);
   if (response.ok) {
     if (response.headers.get('Content-Type').includes('application/json')) {
       return response.json();

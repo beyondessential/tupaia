@@ -1,16 +1,7 @@
-import { PERIOD_TYPES, getPeriodsInRange, momentToPeriod } from '/dhis/periodTypes';
-import { utcMoment } from './utcMoment';
+import { utcMoment } from '@tupaia/utils';
+import { PERIOD_TYPES, getPeriodsInRange, momentToPeriod } from './periodTypes';
 
 const { DAY, MONTH } = PERIOD_TYPES;
-
-export const GRANULARITY = {
-  DAY: 'day',
-  MONTH: 'month',
-  YEAR: 'year',
-  SINGLE_WEEK: 'one_week_at_a_time',
-  SINGLE_MONTH: 'one_month_at_a_time',
-  SINGLE_YEAR: 'one_year_at_a_time',
-};
 
 const getDateData = date => {
   const moment = utcMoment(date);

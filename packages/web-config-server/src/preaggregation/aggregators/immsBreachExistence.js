@@ -6,8 +6,8 @@
 import groupBy from 'lodash.groupby';
 import winston from 'winston';
 
-import { utcMoment } from '/utils/utcMoment';
-import { PERIOD_TYPES, momentToPeriod } from '/dhis/periodTypes';
+import { utcMoment } from '@tupaia/utils';
+import { PERIOD_TYPES, momentToPeriod } from '@tupaia/dhis-api';
 import {
   FRIDGE_BREACH_PROGRAM_CODE,
   FRIDGE_DAILY_PROGRAM_CODE,

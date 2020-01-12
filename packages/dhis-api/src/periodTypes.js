@@ -5,8 +5,7 @@
 
 import get from 'lodash.get';
 
-import { utcMoment } from '/utils';
-import { reduceToDictionary } from '/utils/object';
+import { utcMoment, reduceToDictionary } from '@tupaia/utils';
 
 const DAY = 'DAY';
 const WEEK = 'WEEK';
@@ -22,6 +21,7 @@ export const PERIOD_TYPES = {
   MONTH, // e.g. '201801'
   YEAR, // e.g. '2018'
 };
+export const DEFAULT_PERIOD_TYPE = PERIOD_TYPES.DAY;
 
 const PERIOD_TYPE_CONFIG = {
   [DAY]: {
@@ -30,6 +30,7 @@ const PERIOD_TYPE_CONFIG = {
     displayFormat: 'Do MMM YYYY',
     momentShorthand: 'd',
     momentUnit: 'day',
+    dhisType: 'Daily',
   },
   [WEEK]: {
     format: 'GGGG[W]WW',
@@ -37,6 +38,7 @@ const PERIOD_TYPE_CONFIG = {
     displayFormat: 'Do MMM YYYY',
     momentShorthand: 'w',
     momentUnit: 'isoWeek',
+    dhisType: 'Weekly',
   },
   [MONTH]: {
     format: 'YYYYMM',
@@ -44,6 +46,7 @@ const PERIOD_TYPE_CONFIG = {
     displayFormat: 'MMM YYYY',
     momentShorthand: 'M',
     momentUnit: 'month',
+    dhisType: 'Monthly',
   },
   [YEAR]: {
     format: 'YYYY',
@@ -51,6 +54,7 @@ const PERIOD_TYPE_CONFIG = {
     displayFormat: 'YYYY',
     momentShorthand: 'Y',
     momentUnit: 'year',
+    dhisType: 'Yeary',
   },
 };
 
@@ -63,14 +67,27 @@ const LENGTH_TO_PERIOD_TYPE = reduceToDictionary(
   'periodType',
 );
 
-const createAccessor = field => periodType => get(PERIOD_TYPE_CONFIG, [periodType, field]);
-const toFormat = createAccessor('format');
-const toLength = createAccessor('length');
-const toDisplayFormat = createAccessor('displayFormat');
-const toMomentShorthand = createAccessor('momentShorthand');
-const toMomentUnit = createAccessor('momentUnit');
+const createFieldToPeriodType = fieldName =>
+  reduceToDictionary(
+    Object.entries(PERIOD_TYPE_CONFIG).map(([periodType, { [fieldName]: field }]) => ({
+      field,
+      periodType,
+    })),
+    fieldName,
+    'periodType',
+  );
+const LENGTH_TO_PERIOD_TYPE = createFieldToPeriodType('length');
+const DHIS_TYPE_TO_PERIOD_TYPE = createFieldToPeriodType('dhisType');
+export const dhisToTupaiaPeriodType = dhisType => DHIS_TYPE_TO_PERIOD_TYPE[dhisType];
 
-export const getPeriodType = (period = '') => LENGTH_TO_PERIOD_TYPE[period.length];
+const createAccessor = field => periodType => get(PERIOD_TYPE_CONFIG, [periodType, field]);
+export const periodTypeToFormat = createAccessor('format');
+const periodTypeToLength = createAccessor('length');
+const periodTypeToDisplayFormat = createAccessor('displayFormat');
+const toMomentShorthand = createAccessor('momentShorthand');
+export const periodTypeToMomentUnit = createAccessor('momentUnit');
+
+export const periodToType = (period = '') => LENGTH_TO_PERIOD_TYPE[period.length];
 
 export const parsePeriodType = periodTypeString => {
   const error = new Error(`Period type must be one of ${PERIOD_TYPES}`);
@@ -87,19 +104,19 @@ export const parsePeriodType = periodTypeString => {
 };
 
 const periodToMoment = period => {
-  const periodType = getPeriodType(period);
-  return utcMoment(period, toFormat(periodType));
+  const periodType = periodToType(period);
+  return utcMoment(period, periodTypeToFormat(periodType));
 };
 
-export const momentToPeriod = (moment, periodType) => moment.format(toFormat(periodType));
+export const momentToPeriod = (moment, periodType) => moment.format(periodTypeToFormat(periodType));
 
 export const periodToTimestamp = period => periodToMoment(period).valueOf();
 
-export const getCurrentPeriod = periodType => utcMoment().format(toFormat(periodType));
+export const getCurrentPeriod = periodType => utcMoment().format(periodTypeToFormat(periodType));
 
 export const periodToDisplayString = (period, targetType) => {
-  const formattedPeriodType = targetType || getPeriodType(period);
-  return periodToMoment(period).format(toDisplayFormat(formattedPeriodType));
+  const formattedPeriodType = targetType || periodToType(period);
+  return periodToMoment(period).format(periodTypeToDisplayFormat(formattedPeriodType));
 };
 
 /**
@@ -119,14 +136,14 @@ export const convertToPeriod = (period, targetType, isEndPeriod = true) => {
 
 const convertToWeekPeriod = (period, isEndPeriod) => {
   const moment = periodToMoment(period);
-  const inputType = getPeriodType(period);
+  const inputType = periodToType(period);
   if (isEndPeriod) {
-    moment.endOf(toMomentUnit(inputType));
+    moment.endOf(periodTypeToMomentUnit(inputType));
   } else {
-    moment.startOf(toMomentUnit(inputType));
+    moment.startOf(periodTypeToMomentUnit(inputType));
   }
 
-  return moment.format(toFormat(WEEK));
+  return moment.format(periodTypeToFormat(WEEK));
 };
 
 /**
@@ -136,15 +153,17 @@ const convertToWeekPeriod = (period, isEndPeriod) => {
  */
 const convertToNonWeekPeriod = (period, targetType, isEndPeriod) => {
   let result = period;
-  if (getPeriodType(period) === WEEK) {
+  if (periodToType(period) === WEEK) {
     result = periodToMoment(result);
-    result = isEndPeriod ? result.endOf(toMomentUnit(WEEK)) : result.startOf(toMomentUnit(WEEK));
-    result = result.format(toFormat(DAY));
+    result = isEndPeriod
+      ? result.endOf(periodTypeToMomentUnit(WEEK))
+      : result.startOf(periodTypeToMomentUnit(WEEK));
+    result = result.format(periodTypeToFormat(DAY));
   }
   // Remove unnecessary characters at the end of the period string
-  result = result.substring(0, toLength(targetType));
+  result = result.substring(0, periodTypeToLength(targetType));
 
-  const inputType = getPeriodType(result);
+  const inputType = periodToType(result);
 
   switch (targetType) {
     case DAY: {
@@ -153,7 +172,7 @@ const convertToNonWeekPeriod = (period, targetType, isEndPeriod) => {
       } else if (inputType === MONTH) {
         result += isEndPeriod
           ? periodToMoment(period)
-              .endOf(toMomentUnit(MONTH))
+              .endOf(periodTypeToMomentUnit(MONTH))
               .date()
           : '01';
       }
@@ -182,7 +201,7 @@ export const findCoarsestPeriodType = periodTypes => {
   let result;
 
   periodTypes.forEach(periodType => {
-    const currentLength = toLength(periodType);
+    const currentLength = periodTypeToLength(periodType);
     if (!currentLength) {
       return;
     }
@@ -215,8 +234,8 @@ export const getPeriodsInRange = (start, end, targetType) => {
     startPeriod = convertToPeriod(start, targetType, false);
     endPeriod = convertToPeriod(end, targetType);
   } else {
-    periodType = getPeriodType(start);
-    if (getPeriodType(end) !== periodType) {
+    periodType = periodToType(start);
+    if (periodToType(end) !== periodType) {
       throw new Error('Start and end periods are of different period types');
     }
 

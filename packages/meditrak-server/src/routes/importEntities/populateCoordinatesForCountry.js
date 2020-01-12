@@ -6,7 +6,7 @@
 import { get } from 'lodash';
 import winston from 'winston';
 import { writeFileSync, existsSync, readFileSync, mkdirSync } from 'fs';
-import { fetchWithTimeout } from '../../utilities';
+import { fetchWithTimeout } from '@tupaia/utils';
 import { ENTITY_TYPES } from '../../database';
 import { HttpError } from '../../errors';
 
@@ -96,9 +96,7 @@ async function addCoordinatesToEntity(
       writeFileSync(filePath, JSON.stringify(geojson));
     } catch (error) {
       throw new Error(
-        `Failed to write geojson file for ${name}, ${countryName}. Download manually and save as ${filePath}, or resolve the error: ${
-          error.message
-        }`,
+        `Failed to write geojson file for ${name}, ${countryName}. Download manually and save as ${filePath}, or resolve the error: ${error.message}`,
       );
     }
   }

@@ -10,10 +10,12 @@
     ]
   },
   "scripts": {
+    "preinstall": "yarn build-common-dependencies",
     "update-codeship-env-vars": "./packages/devops/scripts/ci/updateCiEnvVars.sh",
     "update-parameter-store-env-vars": "./packages/devops/scripts/utility/updateParameterStoreEnvVars.sh",
     "build-admin-panel": "cd ./packages/admin-panel && yarn build",
     "build-web-frontend": "cd ./packages/web-frontend && yarn build",
+    "build-common-dependencies": "yarn workspace @tupaia/database build && yarn workspace @tupaia/dhis-api build && yarn workspace @tupaia/utils build",
     "migrate-web-config-server": "cd ./packages/web-config-server && yarn migrate",
     "migrate-meditrak-server": "cd ./packages/meditrak-server && yarn migrate"
   }

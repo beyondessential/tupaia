@@ -2,7 +2,7 @@
  * Tupaia Config Server
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
-import { getSortByKey } from '/utils';
+import { getSortByKey } from '@tupaia/utils';
 import { getDataElementGroupSets, stripFromStart } from '/apiV1/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { AGGREGATION_TYPES } from '/dhis';

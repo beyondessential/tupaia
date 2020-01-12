@@ -7,10 +7,10 @@ import groupBy from 'lodash.groupby';
 import keyBy from 'lodash.keyby';
 import invert from 'lodash.invert';
 import winston from 'winston';
+import { getSortByKey, reduceToDictionary } from '@tupaia/utils';
 
 import { getDataElementsFromCodes } from '/apiV1/utils/getDataElementsFromCodes';
 import { AGGREGATION_TYPES } from '/dhis/aggregation/aggregationTypes';
-import { getSortByKey, reduceToDictionary } from '/utils';
 import {
   WORLD,
   FRIDGE_DAILY_PROGRAM_CODE,
