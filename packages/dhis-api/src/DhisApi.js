@@ -52,6 +52,16 @@ export class DhisApi {
     return new Error(message);
   }
 
+  /**
+   * Constructs a new QueryBuilder for making query replacements. The web-config-server implementation
+   * involves database access, so it should not be pulled into the database free dhis-api package
+   */
+  constructQueryBuilder() {
+    throw new Error(
+      'You are attempting to use a method that requires a QueryBuilder, please subclass DhisApi and implement constructQueryBuilder',
+    );
+  }
+
   getServerName() {
     return this.serverName;
   }
@@ -280,7 +290,7 @@ export class DhisApi {
   }
 
   async getAnalytics(originalQuery, replacementValues = {}, aggregationType, aggregationConfig) {
-    const queryBuilder = new QueryBuilder(originalQuery, replacementValues);
+    const queryBuilder = this.constructQueryBuilder(originalQuery, replacementValues);
     queryBuilder.makeDimensionReplacements();
     const query = queryBuilder.makeCustomReplacements();
 
@@ -371,7 +381,7 @@ export class DhisApi {
     aggregationType,
     aggregationConfig = {},
   ) {
-    const queryBuilder = new QueryBuilder(originalQuery, replacementValues);
+    const queryBuilder = this.constructQueryBuilder(originalQuery, replacementValues);
     queryBuilder.makeDimensionReplacements();
     queryBuilder.makeEventReplacements();
     const query = queryBuilder.makeCustomReplacements();
@@ -398,7 +408,7 @@ export class DhisApi {
   }
 
   async getDataValuesInSets(originalQuery, replacementValues, aggregationType, aggregationConfig) {
-    const queryBuilder = new QueryBuilder(originalQuery, replacementValues);
+    const queryBuilder = this.constructQueryBuilder(originalQuery, replacementValues);
     await queryBuilder.buildOrganisationUnitCodes();
     const query = queryBuilder.makeCustomReplacements();
     const { dataSetCode, dataElementGroupCode, period, startDate, organisationUnitCodes } = query;
@@ -444,7 +454,10 @@ export class DhisApi {
   }
 
   async getOrganisationUnits(originalQuery, replacementValues) {
-    const query = new QueryBuilder(originalQuery, replacementValues).makeCustomReplacements();
+    const query = this.constructQueryBuilder(
+      originalQuery,
+      replacementValues,
+    ).makeCustomReplacements();
     const { organisationUnits, pager } = await this.fetch('organisationUnits', query);
     return query.paging ? { organisationUnits, pager } : organisationUnits;
   }
