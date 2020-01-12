@@ -17,4 +17,5 @@ After making changes to the code in this package, you must run
 yarn workspace @tupaia/database build
 ```
 
+(or simply `yarn` at the root level, which builds every internal dependency as a preinstall step)
 for those changes to be transpiled down and reflected in other packages
