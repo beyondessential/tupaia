@@ -8,9 +8,9 @@ import keyBy from 'lodash.keyby';
 import invert from 'lodash.invert';
 import winston from 'winston';
 import { getSortByKey, reduceToDictionary } from '@tupaia/utils';
+import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
 
 import { getDataElementsFromCodes } from '/apiV1/utils/getDataElementsFromCodes';
-import { AGGREGATION_TYPES } from '/dhis/aggregation/aggregationTypes';
 import {
   WORLD,
   FRIDGE_DAILY_PROGRAM_CODE,

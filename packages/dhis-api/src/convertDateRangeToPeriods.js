@@ -53,3 +53,6 @@ export const convertDateRangeToPeriods = (startDate, endDate) => {
 
   return result;
 };
+
+export const convertDateRangeToPeriodString = (startDate, endDate) =>
+  convertDateRangeToPeriods(startDate, endDate).join(';');

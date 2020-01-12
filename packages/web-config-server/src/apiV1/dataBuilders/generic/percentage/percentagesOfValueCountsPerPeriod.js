@@ -3,9 +3,9 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
+import { groupAnalyticsByPeriod } from '@tupaia/dhis-api';
 import { DataPerPeriodBuilder } from 'apiV1/dataBuilders/DataPerPeriodBuilder';
 import { PercentagesOfValueCountsBuilder } from '/apiV1/dataBuilders/generic/percentage/percentagesOfValueCounts';
-import { groupAnalyticsByPeriod } from '/dhis';
 
 class PercentagesOfValueCountsPerPeriodBuilder extends DataPerPeriodBuilder {
   getBaseBuilderClass = () => PercentagesOfValueCountsBuilder;

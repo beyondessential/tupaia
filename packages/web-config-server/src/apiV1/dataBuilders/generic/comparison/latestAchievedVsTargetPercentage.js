@@ -1,4 +1,4 @@
-import { AGGREGATION_TYPES } from '/dhis';
+import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
 
 export const latestAchievedVsTargetPercentage = async ({ dataBuilderConfig, query }, dhisApi) => {
   const { achievedDataElementCode, targetDataElementCode } = dataBuilderConfig;

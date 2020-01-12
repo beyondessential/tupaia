@@ -1,5 +1,5 @@
 import winston from 'winston';
-import { AGGREGATION_TYPES } from '/dhis';
+import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
 import { postDataValueSets } from '/preaggregation/postDataValueSets';
 
 /**
@@ -42,9 +42,7 @@ export const criticalMedicineAvailability = async dhisApi => {
     // Find denominator group for each facility type within the country.
     try {
       // Find all organisation unit groups representing facility types for this country (e.g. FacilityType_TO_1_Hospitals)
-      const organisationUnitGroupCodePrefixForCountry = `${ORGANISATION_UNIT_GROUP_CODE_PREFIX}_${
-        country.code
-      }`;
+      const organisationUnitGroupCodePrefixForCountry = `${ORGANISATION_UNIT_GROUP_CODE_PREFIX}_${country.code}`;
       const { organisationUnitGroups } = await dhisApi.fetch('organisationUnitGroups', {
         filter: [{ code: organisationUnitGroupCodePrefixForCountry, comparator: 'like' }],
         fields: 'code',

@@ -1,4 +1,4 @@
-import { AGGREGATION_TYPES } from '/dhis';
+import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
 import { getChildOrganisationUnits, mapFacilityIdsToGroupCodes } from '/apiV1/utils';
 import { Facility, Entity } from '/models';
 const { MOST_RECENT_PER_ORG_GROUP } = AGGREGATION_TYPES;

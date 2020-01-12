@@ -1,4 +1,4 @@
-import { convertDateRangeToPeriods } from '/utils';
+import { convertDateRangeToPeriods } from '@tupaia/dhis-api';
 import { DashboardReport } from '/models';
 import { getDhisApiInstance } from '/dhis';
 import { CustomError } from '/errors';

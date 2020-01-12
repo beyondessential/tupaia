@@ -1,6 +1,6 @@
 import { utcMoment } from '@tupaia/utils';
-import { AGGREGATION_TYPES, EARLIEST_DATA_DATE } from '/dhis';
-import { convertDateRangeToPeriodString } from '/apiV1/utils';
+import { AGGREGATION_TYPES, convertDateRangeToPeriodString } from '@tupaia/dhis-api';
+import { EARLIEST_DATA_DATE } from '/dhis';
 
 export const compareValuesByDisasterDate = async (
   { dataBuilderConfig, viewJson, query },

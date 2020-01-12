@@ -45,6 +45,5 @@ export { findLatestPeriod } from './findLatestPeriod';
 export { getDateRange } from './getDateRange';
 export { mapDataSourcesToElementCodes } from './mapDataSourcesToElementCodes';
 export { parseCoordinates } from './parseCoordinates';
-export { convertDateRangeToPeriodString } from './convertDateRangeToPeriodString';
 export { composeBuiltData } from './composeBuiltData';
 export { sumResults } from './sumResults';

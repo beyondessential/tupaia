@@ -2,9 +2,9 @@
  * Tupaia Config Server
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
+import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
 import { getDataElementsFromCodes, stripFromStart } from '/apiV1/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { AGGREGATION_TYPES } from '/dhis';
 
 class SingleColumnTableDataBuilder extends DataBuilder {
   async build() {

@@ -3,9 +3,9 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
 import { getSortByKey } from '@tupaia/utils';
+import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
 import { getDataElementGroupSets, stripFromStart } from '/apiV1/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { AGGREGATION_TYPES } from '/dhis';
 
 const TOTALS_COLUMN_KEY = '_totalsColumn';
 

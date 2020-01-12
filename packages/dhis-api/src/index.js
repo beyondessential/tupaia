@@ -1,6 +1,9 @@
 export { DhisApi } from './DhisApi';
 export * from './periodTypes';
 export * from './responseUtils';
-export * from './aggregation';
+export { AGGREGATION_TYPES } from './aggregation';
 export * from './groupResults';
-export { convertDateRangeToPeriods } from './convertDateRangeToPeriods';
+export {
+  convertDateRangeToPeriods,
+  convertDateRangeToPeriodString,
+} from './convertDateRangeToPeriods';

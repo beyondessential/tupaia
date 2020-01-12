@@ -6,7 +6,7 @@
 import { expect } from 'chai';
 import moment from 'moment';
 
-import { convertDateRangeToPeriods } from '/utils/convertDateRangeToPeriods';
+import { convertDateRangeToPeriods } from '../convertDateRangeToPeriods';
 
 describe('convertDateRangeToPeriods', () => {
   it('should convert a date range within a single month', () => {
