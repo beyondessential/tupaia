@@ -1,17 +1,15 @@
 import { AGGREGATION_TYPES } from '/dhis';
-import { sumResults } from '/apiV1/utils';
 
 const countBooleanDataQuery = async ({ dataBuilderConfig, query }, dhisApi, AGGREGATION_TYPE) => {
   const { dataClasses } = dataBuilderConfig;
 
-  const getReturnData = async dataValues => {
+  const getReturnData = async ({ dataValues }) => {
     const { results } = await dhisApi.getAnalytics(
       { dataElementCodes: dataValues },
       query,
       AGGREGATION_TYPE,
     );
 
-    console.log(results);
     if (results.length === 0) return { data: results };
 
     const bRtnValue =
@@ -20,18 +18,17 @@ const countBooleanDataQuery = async ({ dataBuilderConfig, query }, dhisApi, AGGR
     return bRtnValue;
   };
 
-  const data = Object.entries(dataClasses).map(async ([key, value]) => {
-    const t = await getReturnData(value);
+  const dataTasks = Object.entries(dataClasses).map(async ([key, value]) => {
+    const dataResponse = await getReturnData(value);
 
     return {
       name: key,
-      value: t,
+      value: dataResponse,
     };
   });
 
-  const b = Promise.all([data]);
-  console.log(b);
-  return { data: [] };
+  const data = await Promise.all(dataTasks);
+  return { data };
 };
 
 export const countBooleanData = async (queryConfig, dhisApi) =>
