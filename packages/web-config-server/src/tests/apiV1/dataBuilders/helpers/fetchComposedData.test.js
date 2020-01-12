@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
-import { DhisApi } from '@tupaia/dhis-api';
 
+import { DhisApi } from '/dhis/DhisApi';
 import { fetchComposedData } from '/apiV1/dataBuilders/helpers/fetchComposedData';
 import * as GetDataBuilder from '/apiV1/dataBuilders/getDataBuilder';
 

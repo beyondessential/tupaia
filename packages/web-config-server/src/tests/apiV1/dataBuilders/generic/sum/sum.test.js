@@ -5,8 +5,8 @@
 
 import { expect } from 'chai';
 import sinon from 'sinon';
-import { DhisApi } from '@tupaia/dhis-api';
 
+import { DhisApi } from '/dhis/DhisApi';
 import { SumBuilder } from '/apiV1/dataBuilders/generic/sum/sum';
 
 const createGetAnalyticsStub = ({ args = [], results = [] }) => {
