@@ -54,7 +54,7 @@ const PERIOD_TYPE_CONFIG = {
     displayFormat: 'YYYY',
     momentShorthand: 'Y',
     momentUnit: 'year',
-    dhisType: 'Yeary',
+    dhisType: 'Yearly',
   },
 };
 
