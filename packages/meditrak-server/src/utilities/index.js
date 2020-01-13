@@ -11,5 +11,4 @@ export { buildAccessPolicy } from './buildAccessPolicy';
 export { cache, CACHE_KEY_GENERATORS } from './cache';
 export { singularise } from './singularise';
 export { getTimezoneNameFromTimestamp } from './datetime';
-export { mapKeys } from './object';
 export { WorkBookParser } from './WorkBookParser';
