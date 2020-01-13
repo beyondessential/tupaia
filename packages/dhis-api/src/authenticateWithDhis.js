@@ -8,10 +8,10 @@ import oauth2 from 'simple-oauth2';
 export const authenticateWithDhis = async (serverName, serverUrl) => {
   const getServerVariable = variableName =>
     process.env[`${serverName.toUpperCase()}_${variableName}`] || process.env[variableName];
-  const clientId = getServerVariable('DHIS_OAUTH_CLIENT_NAME');
-  const clientSecret = getServerVariable('DHIS_OAUTH_CLIENT_SECRET');
-  const username = getServerVariable('DHIS_OAUTH_USERNAME');
-  const password = getServerVariable('DHIS_OAUTH_PASSWORD');
+  const clientId = getServerVariable('DHIS_CLIENT_ID');
+  const clientSecret = getServerVariable('DHIS_CLIENT_SECRET');
+  const username = getServerVariable('DHIS_USERNAME');
+  const password = getServerVariable('DHIS_PASSWORD');
   const oauth2Settings = {
     client: {
       id: clientId,
