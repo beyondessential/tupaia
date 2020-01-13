@@ -4,14 +4,7 @@ var dbm;
 var type;
 var seed;
 
-const buildCells = (start, end) => {
-  const cells = [];
-  for (let i = start; i <= end; i++) {
-    cells.push([`CH${i}`]);
-  }
-
-  return cells;
-};
+import { buildSingleColumnTableCells } from '../migrationUtilities';
 
 /**
  * We receive the dbmigrate dependency from dbmigrate initially.
@@ -51,7 +44,7 @@ exports.up = function(db) {
           },
         ],
         columns: ['Number'],
-        cells: buildCells(287, 297),
+        cells: buildSingleColumnTableCells('CH', 287, 297),
       })}'
     WHERE
       id = 'TO_CH_Validation_CH_4';
