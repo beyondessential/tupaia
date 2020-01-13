@@ -1,8 +1,8 @@
-## Tupaia Database
+## @tupaia/utils
 
-This package provides common database code for use across other packages within this mono-repo.
+Utility functions that are helpful across multiple packages
 
-See https://github.com/beyondessential/tupaia/blob/dev/packages/database/src/index.js for the list of externally available exports
+See [here](https://github.com/beyondessential/tupaia/blob/dev/packages/utils/src/index.js) for the currently exported functions
 
 ### Making changes
 
@@ -10,15 +10,15 @@ Handily, yarn workspaces is able to treat this as a package being pulled from np
 actually have to publish it. In order to use it in other packages, simply run (for example)
 
 ```
-yarn workspace @tupaia/meditrak-server add @tupaia/database@1.0.0
+yarn workspace @tupaia/meditrak-server add @tupaia/utils@1.0.0
 ```
 
-and then import from @tupaia/database as though it were any other dependency.
+and then import from @tupaia/utils as though it were any other dependency.
 
 After making changes to the code in this package, you must run
 
 ```
-yarn workspace @tupaia/database build
+yarn workspace @tupaia/utils build
 ```
 
 (or simply `yarn` at the root level, which builds every internal dependency as a preinstall step)

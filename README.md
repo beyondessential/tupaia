@@ -4,14 +4,23 @@
 
 ## Packages
 
-- [common](https://github.com/beyondessential/tupaia/blob/dev/packages/common/README.md) - shared utilities
-- [access-policy](https://github.com/beyondessential/tupaia/blob/dev/packages/access-policy/README.md)
+### Main packages
+
 - [admin-panel](https://github.com/beyondessential/tupaia/blob/dev/packages/admin-panel/README.md)
-- [devops](https://github.com/beyondessential/tupaia/blob/dev/packages/devops/README.md)
 - [meditrak-app](https://github.com/beyondessential/tupaia/blob/dev/packages/meditrak-app/README.md)
 - [meditrak-server](https://github.com/beyondessential/tupaia/blob/dev/packages/meditrak-server/README.md)
 - [web-config-server](https://github.com/beyondessential/tupaia/blob/dev/packages/web-config-server/README.md)
 - [web-frontend](https://github.com/beyondessential/tupaia/blob/dev/packages/web-frontend/README.md)
+
+### Internal dependencies
+
+See also https://docs.beyondessential.com.au/books/software-development/page/internal-dependencies
+
+- [access-policy](https://github.com/beyondessential/tupaia/blob/dev/packages/access-policy/README.md)
+- [devops](https://github.com/beyondessential/tupaia/blob/dev/packages/devops/README.md)
+- [database](https://github.com/beyondessential/tupaia/blob/dev/packages/database/README.md)
+- [dhis-api](https://github.com/beyondessential/tupaia/blob/dev/packages/dhis-api/README.md)
+- [utils](https://github.com/beyondessential/tupaia/blob/dev/packages/utils/README.md)
 
 ## Getting started
 
