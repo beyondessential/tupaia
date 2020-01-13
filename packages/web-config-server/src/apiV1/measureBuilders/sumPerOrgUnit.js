@@ -3,12 +3,6 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-<<<<<<< HEAD
-import groupBy from 'lodash.groupby';
-import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
-
-=======
->>>>>>> dev
 import { SumBuilder } from '/apiV1/dataBuilders/generic/sum/sum';
 import { DataPerOrgUnitBuilder } from './DataPerOrgUnitBuilder';
 
