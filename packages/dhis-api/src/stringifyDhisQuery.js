@@ -1,14 +1,32 @@
 /**
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+
+import urlEncode from 'urlencode';
+
+import { isDimension } from './dimensions';
+
+const COMPARATOR_KEY = 'comparator';
+const DEFAULT_COMPARATOR = 'eq';
+
+/**
  * Builds a dhis2 query string from an input object
+ *
+ * Example:
+ * ```js
  * const input = {
  *   fields: '[id, parent, name, coordinates]',
  *   filter: [{ name: 'countryunit' }, { name: 'province1', comparator: !eq }],
  *   rootJunction: 'OR',
  * };
  * const output = '?fields=[id, parent, name, coordinates]&filter=name:eq:countryunit&filter=name:!eq:province1&rootJunction=OR'
+ * ```
+ *
+ * @param {Object<string, *>} query
+ * @param {boolean} queryContinuation
+ * @returns {string}
  */
-import urlEncode from 'urlencode';
-
 export const stringifyDhisQuery = (query, queryContinuation = false) => {
   let queryString = '';
   // for each root key
@@ -57,15 +75,18 @@ const stringifyArray = (key, array) => {
 };
 
 // separate filter object into individual filter= queries
-const stringifyFilter = json => {
-  const defaultComparator = 'eq';
-  const comparator = !json.comparator ? defaultComparator : json.comparator;
+const stringifyFilter = ({ comparator = DEFAULT_COMPARATOR, ...filterObject }) => {
   let returnQuery = '';
-
-  Object.entries(json).forEach(([key, value]) => {
-    if (key !== 'comparator') {
-      returnQuery += `&filter=${key}:${comparator}:${urlEncode(value)}`;
+  Object.entries(filterObject).forEach(([key, value]) => {
+    if (key === COMPARATOR_KEY) {
+      return;
     }
+
+    const queryParam = isDimension(key)
+      ? `${key}=${value}`
+      : `filter=${key}:${comparator}:${urlEncode(value)}`;
+    returnQuery += `&${queryParam}`;
   });
+
   return returnQuery;
 };

@@ -6,8 +6,8 @@
 import winston from 'winston';
 
 import { fetchWithTimeout } from '@tupaia/utils';
-import { checkIsImportResponse } from '../responseUtils';
 import { authenticateWithDhis } from './authenticateWithDhis';
+import { checkIsImportResponse } from './responseUtils';
 import { stringifyDhisQuery } from './stringifyDhisQuery';
 import { DHIS2_RESOURCE_TYPES } from './types';
 
