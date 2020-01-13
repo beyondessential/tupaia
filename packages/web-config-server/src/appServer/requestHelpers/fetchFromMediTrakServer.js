@@ -1,5 +1,4 @@
-import { fetchWithTimeout } from '@tupaia/utils';
-import { stringifyDhisQuery } from '@tupaia/dhis-api';
+import { fetchWithTimeout, stringifyQuery } from '@tupaia/utils';
 import { UserSession } from '/models';
 import { refreshAccessToken } from './refreshAccessToken';
 import { CustomError } from '/errors';
@@ -19,8 +18,7 @@ const TUPAIA_CONFIG_SERVER_DEVICE_NAME = 'Tupaia Config Server';
  *   Any additional headers to send with the http request, e.g. can overwrite default Authorization
  */
 export const fetchFromMediTrakServer = async (endpoint, payload, queryParameters, headers = {}) => {
-  const queryString = queryParameters ? stringifyDhisQuery(queryParameters) : '';
-  const url = `${process.env.TUPAIA_APP_SERVER_URL}/${endpoint}${queryString}`;
+  const url = stringifyQuery(process.env.TUPAIA_APP_SERVER_URL, endpoint, queryParameters);
   const config = {
     method: payload ? 'POST' : 'GET',
     headers: {
