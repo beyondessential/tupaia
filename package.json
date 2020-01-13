@@ -10,7 +10,7 @@
     ]
   },
   "scripts": {
-    "preinstall": "yarn build-common-dependencies",
+    "postinstall": "yarn build-common-dependencies",
     "update-codeship-env-vars": "./packages/devops/scripts/ci/updateCiEnvVars.sh",
     "update-parameter-store-env-vars": "./packages/devops/scripts/utility/updateParameterStoreEnvVars.sh",
     "build-admin-panel": "cd ./packages/admin-panel && yarn build",
