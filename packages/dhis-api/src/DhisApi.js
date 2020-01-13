@@ -9,7 +9,8 @@ import { utcMoment, getSortByKey } from '@tupaia/utils';
 import { DhisFetcher } from './DhisFetcher';
 import { DHIS2_RESOURCE_TYPES } from './types';
 import { aggregateResults } from './aggregation';
-import { getEventDataValueMap, replaceElementIdsWithCodesInEvents } from '/apiV1/utils';
+import { getEventDataValueMap } from './getEventDataValueMap';
+import { replaceElementIdsWithCodesInEvents } from './replaceElementIdsWithCodesInEvents';
 import { translateEventResponse } from './translateEventResponse';
 import { translateDataValueResponse } from './translateDataValueResponse';
 
