@@ -24,9 +24,7 @@ export const testCreateAnswer = (dhisApi, models) => {
 
     const result = await pusher.push();
     expect(result).to.be.true;
-    expect(dhisApi.postDataValueSets).to.have.been.calledOnceWith({
-      dataValues: [ANSWER_DATA_VALUE],
-    });
+    expect(dhisApi.postDataValueSets).to.have.been.calledOnceWith([ANSWER_DATA_VALUE]);
     expect(dhisApi.deleteDataValue).not.to.have.been.called;
   });
 

@@ -32,9 +32,7 @@ export const testCreateSurveyResponse = (dhisApi, models) => {
 
     const result = await pusher.push();
     expect(result).to.be.true;
-    expect(dhisApi.postDataValueSets).to.have.been.calledOnceWith({
-      dataValues: [SURVEY_RESPONSE_DATA_VALUE],
-    });
+    expect(dhisApi.postDataValueSets).to.have.been.calledOnceWith([SURVEY_RESPONSE_DATA_VALUE]);
     expect(dhisApi.deleteDataValue).not.to.have.been.called;
   });
 
