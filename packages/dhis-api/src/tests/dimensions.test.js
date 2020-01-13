@@ -4,7 +4,7 @@
  */
 
 import { expect } from 'chai';
-import { isDimension } from '../../../dhis/api/dimensions';
+import { isDimension } from '../dimensions';
 
 describe('dimensions', () => {
   describe('isDimension()', () => {

@@ -8,3 +8,4 @@ export {
   convertDateRangeToPeriodString,
 } from './convertDateRangeToPeriods';
 export { DHIS2_RESOURCE_TYPES } from './types';
+export { DHIS2_DIMENSIONS } from './dimensions';
