@@ -6,7 +6,7 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 
-import * as UtcMoment from '@tupaia/utils';
+import * as UtcMoment from '../../../utils/dist/utcMoment';
 
 import {
   PERIOD_TYPES,
