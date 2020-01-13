@@ -8,6 +8,7 @@ import keyBy from 'lodash.keyby';
 import { utcMoment, reduceToDictionary } from '@tupaia/utils';
 import { PERIOD_TYPES, momentToPeriod } from './periodTypes';
 import { sanitizeValue } from './sanitizeValue';
+import { DHIS2_RESOURCE_TYPES } from './types';
 
 const { DAY } = PERIOD_TYPES;
 
@@ -66,7 +67,7 @@ class EventToAnalyticsTranslator {
 
     const records = await this.dhisApi.getRecords({
       ...dataElementIdentifiers,
-      type: 'dataElements',
+      type: DHIS2_RESOURCE_TYPES.DATA_ELEMENT,
       fields: 'id,code,name,valueType',
     });
 

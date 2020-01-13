@@ -8,7 +8,7 @@ import keyBy from 'lodash.keyby';
 import invert from 'lodash.invert';
 import winston from 'winston';
 import { getSortByKey, reduceToDictionary } from '@tupaia/utils';
-import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
+import { AGGREGATION_TYPES, DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
 
 import { getDataElementsFromCodes } from '/apiV1/utils/getDataElementsFromCodes';
 import {
@@ -98,7 +98,7 @@ class FridgeBreachAggregator {
     const dataElementIdToCode = invert(dataElementCodeToId);
     const thresholdTempByOrgUnit = await this.getThresholdTemperaturesByOrgUnit();
     const targetProgramId = await this.dhisApi.getIdFromCode(
-      'programs',
+      DHIS2_RESOURCE_TYPES.PROGRAM,
       FRIDGE_BREACH_AGR_PROGRAM_CODE,
     );
 

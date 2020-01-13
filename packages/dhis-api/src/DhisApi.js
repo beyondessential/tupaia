@@ -17,6 +17,7 @@ import { RESPONSE_TYPES } from './responseUtils';
 
 const {
   DATA_ELEMENT,
+  DATA_ELEMENT_GROUP,
   DATA_SET,
   DATA_SET_COMPLETION,
   DATA_VALUE_SET,
@@ -25,6 +26,7 @@ const {
   OPTION_SET,
   OPTION,
   ORGANISATION_UNIT,
+  PROGRAM,
 } = DHIS2_RESOURCE_TYPES;
 
 export const REGIONAL_SERVER_NAME = 'regional';
@@ -217,12 +219,12 @@ export class DhisApi {
       );
     }
 
-    const programId = programCode && (await this.getIdFromCode('programs', programCode));
+    const programId = programCode && (await this.getIdFromCode(PROGRAM, programCode));
     if (programCode && !programId) {
       throw this.constructError(`Program not found: ${programCode}`);
     }
     const organisationUnitId = organisationUnitCode
-      ? await this.getIdFromCode('organisationUnits', organisationUnitCode)
+      ? await this.getIdFromCode(ORGANISATION_UNIT, organisationUnitCode)
       : null;
 
     const queryParameters = {
@@ -447,14 +449,14 @@ export class DhisApi {
 
     // Attach relevant information into the query
     const organisationUnitIds = await this.getIdsFromCodes(
-      'organisationUnits',
+      ORGANISATION_UNIT,
       organisationUnitCodes,
     );
     query.orgUnit = organisationUnitIds;
     delete query.organisationUnitCodes;
     if (dataElementGroupCode) {
       const dataElementGroupResult = await this.getRecord({
-        type: 'dataElementGroups',
+        type: DATA_ELEMENT_GROUP,
         code: dataElementGroupCode,
         fields: 'id',
       });
@@ -462,14 +464,14 @@ export class DhisApi {
     }
     if (dataSetCode) {
       const dataSetResult = await this.getRecord({
-        type: 'dataSets',
+        type: DATA_SET,
         code: dataSetCode,
         fields: 'id',
       });
       query.dataSet = dataSetResult.id;
     }
 
-    const response = await this.fetch('dataValueSets', query);
+    const response = await this.fetch(DATA_VALUE_SET, query);
     if (!response.dataValues) return [];
 
     const aggregatedResults = aggregateResults(
@@ -486,7 +488,7 @@ export class DhisApi {
       originalQuery,
       replacementValues,
     ).makeCustomReplacements();
-    const { organisationUnits, pager } = await this.fetch('organisationUnits', query);
+    const { organisationUnits, pager } = await this.fetch(ORGANISATION_UNIT, query);
     return query.paging ? { organisationUnits, pager } : organisationUnits;
   }
 
