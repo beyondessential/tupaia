@@ -34,6 +34,7 @@ const GETTABLE_TYPES = [
   TYPES.FEED_ITEM,
   TYPES.OPTION_SET,
   TYPES.OPTION,
+  TYPES.DISASTER,
 ];
 
 const CUSTOM_FINDERS = {
@@ -94,7 +95,7 @@ export async function getRecords(req, res) {
 
     // First find out how many records there are and generate the pagination headers
     const unprocessedColumns = columnsString && JSON.parse(columnsString);
-    const { sort, multiJoin } = getQueryOptionsForColumns(unprocessedColumns, recordType);
+    const { sort, multiJoin } = getQueryOptionsForColumns(unprocessedColumns, recordType, models);
     if (!shouldReturnSingleRecord) {
       const numberOfRecords = await findOrCountRecords({ multiJoin }, 'count');
       const lastPage = Math.ceil(numberOfRecords / limit);
@@ -173,7 +174,7 @@ function processColumns(unprocessedColumns, recordType) {
   }));
 }
 
-function getQueryOptionsForColumns(columns, baseRecordType) {
+function getQueryOptionsForColumns(columns, baseRecordType, models) {
   const sort = [`${baseRecordType}.id`];
   if (!columns) {
     return { sort };
@@ -186,7 +187,22 @@ function getQueryOptionsForColumns(columns, baseRecordType) {
     // is 'survey.name', split into 'survey' and 'name'
     const resourceName = columnsNeedingJoin[i].split('.')[0];
     const recordType = resourceToRecordType(resourceName);
-    if (recordType !== baseRecordType && !recordTypesJoined.includes(recordType)) {
+
+    const found =
+      models[baseRecordType] &&
+      models[baseRecordType].joins &&
+      models[baseRecordType].joins.find(element => {
+        return element.joinWith === recordType;
+      });
+
+    if (found && found.joinCondition && !recordTypesJoined.includes(recordType)) {
+      multiJoin.push({
+        joinType: JOIN_TYPES.LEFT_OUTER,
+        joinWith: recordType,
+        joinCondition: found.joinCondition,
+      });
+      recordTypesJoined.push(recordType);
+    } else if (recordType !== baseRecordType && !recordTypesJoined.includes(recordType)) {
       multiJoin.push({
         joinType: JOIN_TYPES.LEFT_OUTER,
         joinWith: recordType,

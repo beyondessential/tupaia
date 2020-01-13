@@ -12,3 +12,4 @@ export { SurveysPage } from './SurveysPage';
 export { OptionSetsPage } from './OptionSetsPage';
 export { UsersPage } from './UsersPage';
 export { SocialFeedPage } from './SocialFeedPage';
+export { DisasterResponsePage } from './DisasterResponsePage';

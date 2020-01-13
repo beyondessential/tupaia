@@ -6,6 +6,7 @@
 // N.B. whatever name the model is exported under will be what it is retrieved as from the
 // ModelRegistry, e.g. models.answer.findOne() rather than models.AnswerModel.findOne()
 export { AnswerModel as answer } from './Answer';
+export { DisasterModel as disaster } from './Disaster';
 export { CountryModel as country } from './Country';
 export { DhisSyncLogModel as dhisSyncLog } from './DhisSyncLog';
 export { DhisSyncQueueModel as dhisSyncQueue } from './DhisSyncQueue';
@@ -32,9 +33,7 @@ export { SurveyScreenComponentModel as surveyScreenComponent } from './SurveyScr
 export { SurveyScreenModel as surveyScreen } from './SurveyScreen';
 export { UserCountryPermissionModel as userCountryPermission } from './UserCountryPermission';
 export { UserFacilityPermissionModel as userFacilityPermission } from './UserFacilityPermission';
-export {
-  UserGeographicalAreaPermissionModel as userGeographicalAreaPermission,
-} from './UserGeographicalAreaPermission';
+export { UserGeographicalAreaPermissionModel as userGeographicalAreaPermission } from './UserGeographicalAreaPermission';
 export { UserModel as user } from './User';
 export { UserRewardModel as userReward } from './UserReward';
 export { APIClientModel as apiClient } from './APIClient';

@@ -55,6 +55,10 @@ const LEFT_LINKS = [
     label: 'Strive',
     path: '/strive',
   },
+  {
+    label: 'Natural Disasters',
+    path: '/disaster',
+  },
 ];
 
 const App = props => {

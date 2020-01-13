@@ -37,4 +37,5 @@ export const TYPES = {
   ONE_TIME_LOGIN: 'one_time_login',
   OPTION: 'option',
   OPTION_SET: 'option_set',
+  DISASTER: 'disaster',
 };
