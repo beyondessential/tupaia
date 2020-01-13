@@ -43,7 +43,7 @@ export class DhisApi {
   constructor(serverName = REGIONAL_SERVER_NAME) {
     this.serverName = serverName;
     const serverUrl = getServerUrlFromName(serverName);
-    this.fetcher = new DhisFetcher(serverUrl, this.constructError);
+    this.fetcher = new DhisFetcher(serverName, serverUrl, this.constructError);
     this.deleteEvent = this.deleteEvent.bind(this);
   }
 
