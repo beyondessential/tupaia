@@ -1,5 +1,5 @@
 import { fetchWithTimeout } from '@tupaia/utils';
-import { stringifyDhisQuery } from '/utils';
+import { stringifyDhisQuery } from '@tupaia/dhis-api';
 import { UserSession } from '/models';
 import { refreshAccessToken } from './refreshAccessToken';
 import { CustomError } from '/errors';
