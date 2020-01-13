@@ -13,6 +13,7 @@ import { getEventDataValueMap } from './getEventDataValueMap';
 import { replaceElementIdsWithCodesInEvents } from './replaceElementIdsWithCodesInEvents';
 import { translateEventResponse } from './translateEventResponse';
 import { translateDataValueResponse } from './translateDataValueResponse';
+import { RESPONSE_TYPES } from './responseUtils';
 
 const {
   DATA_ELEMENT,
@@ -73,7 +74,7 @@ export class DhisApi {
 
   // function return one record with [fields] of [type] matching it's id or code
   // if no units found will return null
-  async getRecord({ type, id, code, fields }) {
+  async getRecord({ type, id, code, fields = [':all'] }) {
     const query = { fields };
     if (code) {
       query.filter = { code };
@@ -90,9 +91,9 @@ export class DhisApi {
     }
   }
 
-  // function return any records with [fields] of [type] matching the provided ids or codes
-  async getRecords({ type, ids, codes, fields }) {
-    const query = { fields, filter: { comparator: 'in' } };
+  // function return any records with [fields] of [type] matching the provided ids, codes, or filter
+  async getRecords({ type, ids, codes, filter, fields }) {
+    const query = { fields, filter: filter || { comparator: 'in' } };
     if (codes) {
       query.filter.code = `[${codes.join(',')}]`;
     }
@@ -129,19 +130,33 @@ export class DhisApi {
   }
 
   async post(endpoint, data, queryParameters) {
-    return this.fetch(endpoint, queryParameters, { body: JSON.stringify(data), method: 'POST' });
+    return this.fetch(endpoint, queryParameters, {
+      body: JSON.stringify(data),
+      method: 'POST',
+    });
   }
 
   async put(endpoint, data, queryParameters) {
-    return this.fetch(endpoint, queryParameters, { body: JSON.stringify(data), method: 'PUT' });
+    return this.fetch(endpoint, queryParameters, {
+      body: JSON.stringify(data),
+      method: 'PUT',
+    });
   }
 
   async delete(endpoint, queryParameters) {
     return this.fetch(endpoint, queryParameters, { method: 'DELETE' });
   }
 
+  async postData(endpoint, data) {
+    return this.post(endpoint, data, { idScheme: 'code', skipAudit: true });
+  }
+
   async postDataValueSets(data) {
-    return this.post('dataValueSets', { dataValues: data }, { idScheme: 'code', skipAudit: true });
+    return this.postData(DATA_VALUE_SET, { dataValues: data });
+  }
+
+  async postDataSetCompletion(data) {
+    return this.postData(DATA_SET_COMPLETION, { completeDataSetRegistrations: [data] });
   }
 
   async updateAnalyticsTables() {
@@ -253,7 +268,7 @@ export class DhisApi {
    * @returns {Promise<string>}
    */
   async postEvents(events) {
-    return this.post('events', { events });
+    return this.postData(EVENT, { events });
   }
 
   /**
@@ -288,6 +303,18 @@ export class DhisApi {
     }
 
     return { updated: totalUpdatedCount, errors };
+  }
+
+  async updateRecord(resourceType, record) {
+    let existingId = record.id;
+    if (!existingId && record.code) {
+      existingId = await this.getIdFromCode(resourceType, record.code);
+    }
+    // If the resource already exists on DHIS2, update the existing one
+    if (existingId) {
+      return this.put(`${resourceType}/${existingId}`, record);
+    }
+    return this.post(resourceType, record);
   }
 
   async getAnalytics(originalQuery, replacementValues = {}, aggregationType, aggregationConfig) {
@@ -463,14 +490,72 @@ export class DhisApi {
     return query.paging ? { organisationUnits, pager } : organisationUnits;
   }
 
-  async deleteDataValue(dataElementCode, period, organisationUnitCode) {
-    const dataElementId = await this.getIdFromCode('dataElements', dataElementCode);
-    if (!dataElementId) {
-      throw this.constructError(`No data element with code ${dataElementCode}`);
+  async getOptionsForDataElement(dataElementCode) {
+    const query = {
+      filter: `code:eq:${dataElementCode}`,
+      fields: 'optionSet',
+    };
+    const optionSetResponse = await this.fetch(DATA_ELEMENT, query);
+    if (
+      !optionSetResponse ||
+      !optionSetResponse.dataElements ||
+      optionSetResponse.dataElements.length === 0 ||
+      !optionSetResponse.dataElements[0].optionSet
+    ) {
+      throw new Error(`No option set found for data element ${dataElementCode}`);
     }
-    const organisationUnitId = await this.getIdFromCode('organisationUnits', organisationUnitCode);
+    const optionSetId = optionSetResponse.dataElements[0].optionSet.id;
+    const response = await this.fetch(`${OPTION_SET}/${optionSetId}`, {
+      fields: '[options]',
+    });
+    const options = {};
+    await Promise.all(
+      response.options.map(async ({ id: optionId }) => {
+        const option = await this.fetch(`${OPTION}/${optionId}`, { fields: '[name,code]' });
+        const { name: optionText, code: optionCode } = option;
+        options[optionText.toLowerCase()] = optionCode; // Convert text to lower case so we can ignore case
+      }),
+    );
+    return options;
+  }
+
+  async getDataSetByCode(code) {
+    return this.getRecord({ type: DATA_SET, code });
+  }
+
+  async deleteRecord(resourceType, code) {
+    const recordId = await this.getIdFromCode(resourceType, code);
+    if (!recordId) {
+      throw new Error(`Attempted to delete a record from ${resourceType} that does not exist`);
+    }
+    return this.deleteRecordById(resourceType, recordId);
+  }
+
+  async deleteRecordById(resourceType, id) {
+    return this.delete(`${resourceType}/${id}`);
+  }
+
+  async deleteWithQuery(endpoint, query) {
+    try {
+      // dhis2 returns empty response if successful, throws an error (409 status code) if it fails
+      await this.delete(endpoint, query);
+      return { responseType: RESPONSE_TYPES.DELETE };
+    } catch (error) {
+      if (error.status === 409) {
+        return { responseType: RESPONSE_TYPES.DELETE, errors: [error.message] };
+      }
+      throw error;
+    }
+  }
+
+  async deleteDataValue({ dataElement: dataElementCode, period, orgUnit: organisationUnitCode }) {
+    const dataElementId = await this.getIdFromCode(DATA_ELEMENT, dataElementCode);
+    if (!dataElementId) {
+      throw new Error(`No data element with code ${dataElementCode}`);
+    }
+    const organisationUnitId = await this.getIdFromCode(ORGANISATION_UNIT, organisationUnitCode);
     if (!organisationUnitId) {
-      throw this.constructError(`Organisation unit ${organisationUnitCode} does not exist`);
+      throw new Error(`Organisation unit ${organisationUnitCode} does not exist`);
     }
 
     const query = {
@@ -478,11 +563,19 @@ export class DhisApi {
       pe: period,
       ou: organisationUnitId,
     };
-    try {
-      await this.delete('dataValues', query);
-      return true;
-    } catch (error) {
-      throw this.constructError(error.message);
-    }
+    return this.deleteWithQuery(DATA_VALUE, query);
+  }
+
+  async deleteEvent(eventReference) {
+    return this.delete(`${EVENT}/${eventReference}`);
+  }
+
+  async deleteDataSetCompletion({ dataSet, period, organisationUnit }) {
+    const query = {
+      ds: dataSet,
+      pe: period,
+      ou: organisationUnit,
+    };
+    return this.deleteWithQuery(DATA_SET_COMPLETION, query);
   }
 }

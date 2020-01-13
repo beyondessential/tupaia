@@ -11,11 +11,11 @@ import {
   periodTypeToMomentUnit,
   periodTypeToFormat,
   dhisToTupaiaPeriodType,
+  RESPONSE_TYPES,
 } from '@tupaia/dhis-api';
 import { DataPusher } from '../DataPusher';
 import { generateDataValue } from '../generateDataValue';
 import { formatDateForDHIS2 } from '../formatDateForDHIS2';
-import { RESPONSE_TYPES } from '../../../responseUtils';
 
 const { ORGANISATION_UNIT } = DHIS2_RESOURCE_TYPES;
 const { DIAGNOSTICS } = RESPONSE_TYPES;
@@ -192,8 +192,7 @@ export class AggregateDataPusher extends DataPusher {
     const dataSetCompletionResponse = await this.pushDataSetCompletionIfRequired();
 
     // sync the data across to DHIS2
-    const dataToAdd = { dataValues: [dataValue] };
-    const updateResponse = await this.api.postDataValueSet(dataToAdd);
+    const updateResponse = await this.api.postDataValueSets([dataValue]);
 
     // combine the diagnostics
     const diagnostics = this.getDiagnosticsForResponses(

@@ -3,8 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 import sinon from 'sinon';
-import { DhisApi } from '@tupaia/dhis-api';
-import { RESPONSE_TYPES } from '../../../../../dhis/responseUtils';
+import { DhisApi, RESPONSE_TYPES } from '@tupaia/dhis-api';
 import { DHIS_REFERENCE } from './testData';
 
 const IMPORT_SUMMARY = {

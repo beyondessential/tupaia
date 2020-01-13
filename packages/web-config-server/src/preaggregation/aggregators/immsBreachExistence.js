@@ -64,7 +64,11 @@ const immsBreachExistenceWithinPeriod = async (
   await Promise.all(
     results.map(
       async result =>
-        await dhisApi.deleteDataValue(dataElementCode, result.period, result.organisationUnit),
+        await dhisApi.deleteDataValue({
+          dataElement: dataElementCode,
+          period: result.period,
+          orgUnit: result.organisationUnit,
+        }),
     ),
   );
 

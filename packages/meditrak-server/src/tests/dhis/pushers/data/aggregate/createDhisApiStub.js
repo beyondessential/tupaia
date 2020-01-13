@@ -3,8 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 import sinon from 'sinon';
-import { DhisApi } from '@tupaia/dhis-api';
-import { RESPONSE_TYPES } from '../../../../../dhis/responseUtils';
+import { DhisApi, RESPONSE_TYPES } from '@tupaia/dhis-api';
 import { ORGANISATION_UNIT_ID } from './testData';
 
 // taken directly from a DHIS2 api call, with redundant info stripped out

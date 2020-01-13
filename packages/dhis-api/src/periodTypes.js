@@ -61,7 +61,7 @@ const PERIOD_TYPE_CONFIG = {
 const createFieldToPeriodType = fieldName =>
   reduceToDictionary(
     Object.entries(PERIOD_TYPE_CONFIG).map(([periodType, { [fieldName]: field }]) => ({
-      field,
+      [fieldName]: field,
       periodType,
     })),
     fieldName,

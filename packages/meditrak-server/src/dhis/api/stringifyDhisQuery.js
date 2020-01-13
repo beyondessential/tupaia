@@ -63,15 +63,14 @@ const stringifyArray = (key, array) => {
 // separate filter object into individual filter= queries
 const stringifyFilter = ({ comparator = DEFAULT_COMPARATOR, ...filterObject }) => {
   let returnQuery = '';
-  Object.keys(filterObject)
-    .forEach(key => {
-      const value = urlEncode(filterObject[key]);
-      const queryParam = isDimension(key)
-        ? `${key}=${value}`
-        : `filter=${key}:${comparator}:${value}`;
+  Object.keys(filterObject).forEach(key => {
+    const value = urlEncode(filterObject[key]);
+    const queryParam = isDimension(key)
+      ? `${key}=${value}`
+      : `filter=${key}:${comparator}:${value}`;
 
-      returnQuery += `&${queryParam}`;
-    });
+    returnQuery += `&${queryParam}`;
+  });
 
   return returnQuery;
 };
