@@ -67,7 +67,6 @@
     "promise": "^7.3.1",
     "react-autobind": "^1.0.6",
     "request": "^2.81.0",
-    "simple-oauth2": "^1.5.0",
     "sinon-chai": "^3.3.0",
     "urlencode": "^1.1.0",
     "winston": "^3.1.0",

@@ -18353,7 +18353,7 @@ simple-lru-cache@0.0.x:
   resolved "https://registry.yarnpkg.com/simple-lru-cache/-/simple-lru-cache-0.0.2.tgz#d59cc3a193c1a5d0320f84ee732f6e4713e511dd"
   integrity sha1-1ZzDoZPBpdAyD4Tucy9uRxPlEd0=
 
-simple-oauth2@^1.5.0, simple-oauth2@^1.6.0:
+simple-oauth2@^1.5.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/simple-oauth2/-/simple-oauth2-1.6.0.tgz#aeee82f3bfd5478b2db25d4ea2500dcd8a384150"
   integrity sha512-nSfa5lIJbf89k+VpWrZTzChH4B0/a/DRD3+NlEqyto8qgQ/FWX8eWzZs4KnkvnTMAB2Lph/V46ikoqk7UrjjEg==
