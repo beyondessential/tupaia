@@ -5,8 +5,7 @@
 
 import { expect } from 'chai';
 import sinon from 'sinon';
-
-import * as UtcMoment from '../../../utils/dist/utcMoment';
+import moment from 'moment';
 
 import {
   PERIOD_TYPES,
@@ -136,7 +135,7 @@ context('periodTypes', () => {
   describe('getCurrentPeriod', () => {
     const assertCorrectMethodInvocations = (periodType, format) => {
       const formatMethodStub = sinon.stub();
-      const momentStub = sinon.stub(UtcMoment, 'utcMoment').returns({
+      const momentStub = sinon.stub(moment, 'utc').returns({
         format: formatMethodStub,
       });
 
@@ -146,7 +145,7 @@ context('periodTypes', () => {
     };
 
     afterEach(() => {
-      UtcMoment.utcMoment.restore();
+      moment.utc.restore();
     });
 
     it('year', () => {
