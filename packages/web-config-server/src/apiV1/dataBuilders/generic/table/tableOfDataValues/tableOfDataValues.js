@@ -5,10 +5,9 @@
 
 import flatten from 'lodash.flatten';
 
+import { reduceToDictionary } from '@tupaia/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { reduceToDictionary } from '/utils';
 import { Entity } from '/models';
-
 import { TableConfig } from './TableConfig';
 import { getValuesByCell } from './getValuesByCell';
 import { TotalCalculator } from './TotalCalculator';
