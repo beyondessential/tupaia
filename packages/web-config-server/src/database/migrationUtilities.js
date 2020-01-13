@@ -208,3 +208,12 @@ function deleteReport(db, reportId) {
 async function updateBuilderConfigByReportId(db, newConfig, reportId) {
   return updateValues(db, 'dashboardReport', { dataBuilderConfig: newConfig }, { id: reportId });
 }
+
+export const buildSingleColumnTableCells = (prefix, start, end) => {
+  const cells = [];
+  for (let i = start; i <= end; i++) {
+    cells.push([`${prefix}${i}`]);
+  }
+
+  return cells;
+};
