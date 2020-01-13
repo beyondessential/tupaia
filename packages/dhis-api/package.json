@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@tupaia/utils": "0.1.0",
+    "urlencode": "^1.1.0",
     "winston": "^3.1.0"
   },
   "devDependencies": {
