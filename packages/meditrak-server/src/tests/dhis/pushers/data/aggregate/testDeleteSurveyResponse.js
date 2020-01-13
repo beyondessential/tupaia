@@ -27,7 +27,7 @@ export const testDeleteSurveyResponse = (dhisApi, models) => {
 
     const result = await pusher.push();
     expect(result).to.be.true;
-    expect(dhisApi.postDataValueSet).not.to.have.been.called;
+    expect(dhisApi.postDataValueSets).not.to.have.been.called;
     expect(dhisApi.deleteDataValue).not.to.have.been.called;
   });
 
@@ -39,7 +39,7 @@ export const testDeleteSurveyResponse = (dhisApi, models) => {
     const pusher = new AggregateDataPusher(models, change, dhisApi);
     const result = await pusher.push();
     expect(result).to.be.true;
-    expect(dhisApi.postDataValueSet).not.to.have.been.called;
+    expect(dhisApi.postDataValueSets).not.to.have.been.called;
     expect(dhisApi.deleteDataValue).not.to.have.been.called;
   });
 
@@ -51,7 +51,7 @@ export const testDeleteSurveyResponse = (dhisApi, models) => {
 
     const result = await pusher.push();
     expect(result).to.be.true;
-    expect(dhisApi.postDataValueSet).not.to.have.been.called;
+    expect(dhisApi.postDataValueSets).not.to.have.been.called;
     expect(dhisApi.deleteDataValue).to.have.been.calledWith(SURVEY_RESPONSE_DATA_VALUE_DIMENSIONS);
   });
   it('should delete the data set complete registration if one exists', async () => {
@@ -108,7 +108,7 @@ export const testDeleteSurveyResponse = (dhisApi, models) => {
     const pusher = new AggregateDataPusher(models, change, dhisApi);
     const result = await pusher.push();
     expect(result).to.be.true;
-    expect(dhisApi.postDataValueSet).not.to.have.been.called;
+    expect(dhisApi.postDataValueSets).not.to.have.been.called;
     expect(dhisApi.deleteDataValue).to.have.been.calledWith(SURVEY_RESPONSE_DATA_VALUE_DIMENSIONS);
 
     // the one we added earlier should now have been added to the sync queue as the other was deleted

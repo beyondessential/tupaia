@@ -22,7 +22,7 @@ const DELETE_SUMMARY = {
 };
 
 const STUBBED_METHODS = {
-  postDataValueSet: IMPORT_SUMMARY,
+  postDataValueSets: IMPORT_SUMMARY,
   postDataSetCompletion: IMPORT_SUMMARY,
   deleteDataValue: DELETE_SUMMARY,
   deleteDataSetCompletion: DELETE_SUMMARY,

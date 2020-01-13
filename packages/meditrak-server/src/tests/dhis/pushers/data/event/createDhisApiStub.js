@@ -29,7 +29,7 @@ const DELETE_SUMMARY = {
 };
 
 const STUBBED_METHODS = {
-  postEvent: IMPORT_SUMMARY,
+  postEvents: IMPORT_SUMMARY,
   deleteEvent: DELETE_SUMMARY,
 };
 

@@ -22,7 +22,7 @@ export const testUpdateAnswer = (dhisApi, models) => {
 
     const result = await pusher.push();
     expect(result).to.be.true;
-    expect(dhisApi.postDataValueSet).to.have.been.calledOnceWith({
+    expect(dhisApi.postDataValueSets).to.have.been.calledOnceWith({
       dataValues: [{ ...ANSWER_DATA_VALUE, value: '4' }],
     });
     expect(dhisApi.deleteDataValue).not.to.have.been.called;
@@ -37,7 +37,7 @@ export const testUpdateAnswer = (dhisApi, models) => {
 
     const result = await pusher.push();
     expect(result).to.be.true;
-    expect(dhisApi.postDataValueSet).to.have.been.calledOnceWith({
+    expect(dhisApi.postDataValueSets).to.have.been.calledOnceWith({
       dataValues: [ANSWER_DATA_VALUE],
     });
     expect(dhisApi.deleteDataValue).to.have.been.calledWith({
@@ -55,7 +55,7 @@ export const testUpdateAnswer = (dhisApi, models) => {
 
     const result = await pusher.push();
     expect(result).to.be.true;
-    expect(dhisApi.postDataValueSet).to.have.been.calledOnceWith({
+    expect(dhisApi.postDataValueSets).to.have.been.calledOnceWith({
       dataValues: [ANSWER_DATA_VALUE],
     });
     expect(dhisApi.deleteDataValue).to.have.been.calledWith({
