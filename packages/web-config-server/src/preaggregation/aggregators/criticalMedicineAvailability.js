@@ -42,9 +42,7 @@ export const criticalMedicineAvailability = async dhisApi => {
     // Find denominator group for each facility type within the country.
     try {
       // Find all organisation unit groups representing facility types for this country (e.g. FacilityType_TO_1_Hospitals)
-      const organisationUnitGroupCodePrefixForCountry = `${ORGANISATION_UNIT_GROUP_CODE_PREFIX}_${
-        country.code
-      }`;
+      const organisationUnitGroupCodePrefixForCountry = `${ORGANISATION_UNIT_GROUP_CODE_PREFIX}_${country.code}`;
       const { organisationUnitGroups } = await dhisApi.fetch('organisationUnitGroups', {
         filter: [{ code: organisationUnitGroupCodePrefixForCountry, comparator: 'like' }],
         fields: 'code',
@@ -56,7 +54,7 @@ export const criticalMedicineAvailability = async dhisApi => {
         organisationUnitGroupIndex++
       ) {
         // Then it continues to next step: find values and facilities of group to aggregate
-        const organisationUnitGroupCode = organisationUnitGroups[organisationUnitGroupIndex].code;
+        const organisationUnitGroupCode = `OU_GROUP-${organisationUnitGroups[organisationUnitGroupIndex].code}`;
         const aggregatedValuesForDataElementGroup = await aggregateCriticalMedicineAvailabilityForGroup(
           dhisApi,
           organisationUnitGroupCode,
