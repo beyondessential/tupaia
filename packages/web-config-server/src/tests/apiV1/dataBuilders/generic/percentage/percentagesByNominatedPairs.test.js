@@ -202,11 +202,11 @@ describe('percentagesByNominatedPairs', async () => {
   });
 
   it('should cope with numerators and no denominators', () => {
-    expect(data.find(({ name }) => name === 'Haemoclips').value).to.equal('N/A');
+    expect(data.find(({ name }) => name === 'Haemoclips').value).to.equal('No data');
   });
 
   it('should cope with denominators and no numerators', () => {
-    expect(data.find(({ name }) => name === 'Haemoclips').value).to.equal('N/A');
+    expect(data.find(({ name }) => name === 'Haemoclips').value).to.equal('No data');
   });
 
   it('should return the correct average', () => {
