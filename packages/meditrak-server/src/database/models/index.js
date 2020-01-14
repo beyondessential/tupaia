@@ -6,7 +6,6 @@
 // N.B. whatever name the model is exported under will be what it is retrieved as from the
 // ModelRegistry, e.g. models.answer.findOne() rather than models.AnswerModel.findOne()
 export { AnswerModel as answer } from './Answer';
-export { DisasterModel as disaster } from './Disaster';
 export { CountryModel as country } from './Country';
 export { DhisSyncLogModel as dhisSyncLog } from './DhisSyncLog';
 export { DhisSyncQueueModel as dhisSyncQueue } from './DhisSyncQueue';

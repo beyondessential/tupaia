@@ -21,31 +21,28 @@ const type = {
 const description = {
   Header: 'Description',
   source: 'description',
-  editable: false,
 };
 
 const name = {
   Header: 'Name',
   source: 'name',
-  editable: false,
 };
 
 const countryCode = {
   Header: 'Country',
-  source: 'country.name',
-  editable: false,
+  source: 'country',
 };
 
 const point = {
   Header: 'Point',
-  source: 'entity.point',
-  editable: false,
+  source: 'point',
+  filterable: false,
 };
 
 const bounds = {
   Header: 'Bounds',
-  source: 'entity.bounds',
-  editable: false,
+  source: 'bounds',
+  filterable: false,
 };
 
 export const NATURAL_DISASTER_COLUMNS = [id, type, description, name, countryCode, point, bounds];

@@ -12,6 +12,7 @@ import {
   findQuestionsBySurvey,
   findAnswersBySurveyResponse,
   findEditableFeedItems,
+  findFormattedDisasters,
 } from '../dataAccessors';
 import { getApiUrl, resourceToRecordType } from '../utilities';
 import { DatabaseType } from '../database/DatabaseType';
@@ -41,6 +42,7 @@ const CUSTOM_FINDERS = {
   [TYPES.QUESTION]: findQuestionsBySurvey,
   [TYPES.ANSWER]: findAnswersBySurveyResponse,
   [TYPES.FEED_ITEM]: findEditableFeedItems,
+  [TYPES.DISASTER]: findFormattedDisasters,
 };
 
 const MAX_RECORDS_PER_PAGE = 100;
@@ -117,7 +119,6 @@ export async function getRecords(req, res) {
     }
     const options = { multiJoin, columns, limit, offset, sort };
     const records = await findOrCountRecords(options);
-
     // Respond only with the data in each record, stripping out metadata from DatabaseType instances
     const getRecordData = async record =>
       record instanceof DatabaseType ? record.getData() : record;
@@ -188,21 +189,7 @@ function getQueryOptionsForColumns(columns, baseRecordType, models) {
     const resourceName = columnsNeedingJoin[i].split('.')[0];
     const recordType = resourceToRecordType(resourceName);
 
-    const found =
-      models[baseRecordType] &&
-      models[baseRecordType].joins &&
-      models[baseRecordType].joins.find(element => {
-        return element.joinWith === recordType;
-      });
-
-    if (found && found.joinCondition && !recordTypesJoined.includes(recordType)) {
-      multiJoin.push({
-        joinType: JOIN_TYPES.LEFT_OUTER,
-        joinWith: recordType,
-        joinCondition: found.joinCondition,
-      });
-      recordTypesJoined.push(recordType);
-    } else if (recordType !== baseRecordType && !recordTypesJoined.includes(recordType)) {
+    if (recordType !== baseRecordType && !recordTypesJoined.includes(recordType)) {
       multiJoin.push({
         joinType: JOIN_TYPES.LEFT_OUTER,
         joinWith: recordType,
