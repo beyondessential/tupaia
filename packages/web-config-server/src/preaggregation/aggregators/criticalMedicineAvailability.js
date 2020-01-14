@@ -56,7 +56,7 @@ export const criticalMedicineAvailability = async dhisApi => {
         organisationUnitGroupIndex++
       ) {
         // Then it continues to next step: find values and facilities of group to aggregate
-        const organisationUnitGroupCode = `OU_GROUP-${organisationUnitGroups[organisationUnitGroupIndex].code}`;
+        const organisationUnitGroupCode = organisationUnitGroups[organisationUnitGroupIndex].code;
         const aggregatedValuesForDataElementGroup = await aggregateCriticalMedicineAvailabilityForGroup(
           dhisApi,
           organisationUnitGroupCode,
@@ -97,7 +97,7 @@ const aggregateCriticalMedicineAvailabilityForGroup = async (
       {
         dataElementGroupCode,
         period: LOOKBACK_PERIOD,
-        organisationUnitCode: organisationUnitGroupCode,
+        organisationUnitCode: `OU_GROUP-${organisationUnitGroupCode}`,
         inputIdScheme: 'code',
         outputIdScheme: 'code',
       },
