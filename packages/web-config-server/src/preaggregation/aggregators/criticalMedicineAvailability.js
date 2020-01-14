@@ -21,6 +21,8 @@ const DATA_ELEMENT_CODES = {
   expired: 'PercentageCriticalMedicinesExpired',
 };
 
+// LAST_12_MONTHS excludes the current month - this is intentional, to avoid misleading calculations
+// based on incomplete data in the current month
 const LOOKBACK_PERIOD = 'LAST_12_MONTHS';
 
 export const criticalMedicineAvailability = async dhisApi => {
@@ -98,7 +100,7 @@ const aggregateCriticalMedicineAvailabilityForGroup = async (
       {
         dataElementGroupCode,
         period: LOOKBACK_PERIOD,
-        organisationUnitCode: organisationUnitGroupCode,
+        organisationUnitCode: `OU_GROUP-${organisationUnitGroupCode}`,
         inputIdScheme: 'code',
         outputIdScheme: 'code',
       },
