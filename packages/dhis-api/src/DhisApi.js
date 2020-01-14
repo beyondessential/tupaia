@@ -312,8 +312,8 @@ export class DhisApi {
   }
 
   async getAnalytics(originalQuery, aggregationType, aggregationConfig) {
+    const { measureCriteria, period } = originalQuery;
     const query = buildAnalyticsQuery(originalQuery);
-    const { measureCriteria, period } = query;
     const response = await this.fetch('analytics/rawData.json', query);
     const { results, metadata } = translateDataValueResponse(response);
     const aggregatedResults = aggregateResults(results, aggregationType, aggregationConfig);
