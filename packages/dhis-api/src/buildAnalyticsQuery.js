@@ -9,10 +9,6 @@ const getDxString = query => {
     .join(';');
 };
 
-/**
- * @param {AnalyticsQueryInput} queryIn
- * @returns {Object<string, string>}
- */
 export const buildAnalyticsQuery = queryIn => {
   const query = {
     inputIdScheme: 'code',
