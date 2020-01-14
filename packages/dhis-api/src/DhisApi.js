@@ -1,7 +1,7 @@
 /**
  * Tupaia
  * Copyright (c) 2017 - 2019 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import winston from 'winston';
 
@@ -14,6 +14,8 @@ import { replaceElementIdsWithCodesInEvents } from './replaceElementIdsWithCodes
 import { translateEventResponse } from './translateEventResponse';
 import { translateDataValueResponse } from './translateDataValueResponse';
 import { RESPONSE_TYPES } from './responseUtils';
+import { buildAnalyticsQuery } from './buildAnalyticsQuery';
+import { filterAnalyticsResults } from './filterAnalyticsResults';
 
 const {
   DATA_ELEMENT,
@@ -54,16 +56,6 @@ export class DhisApi {
    */
   constructError(message, dhisUrl) {
     return new Error(message);
-  }
-
-  /**
-   * Constructs a new QueryBuilder for making query replacements. The web-config-server implementation
-   * involves database access, so it should not be pulled into the database free dhis-api package
-   */
-  constructQueryBuilder() {
-    throw new Error(
-      'You are attempting to use a method that requires a QueryBuilder, please subclass DhisApi and implement constructQueryBuilder',
-    );
   }
 
   getServerName() {
@@ -319,102 +311,21 @@ export class DhisApi {
     return this.post(resourceType, record);
   }
 
-  async getAnalytics(originalQuery, replacementValues = {}, aggregationType, aggregationConfig) {
-    const queryBuilder = this.constructQueryBuilder(originalQuery, replacementValues);
-    queryBuilder.makeDimensionReplacements();
-    const query = queryBuilder.makeCustomReplacements();
-
-    // Add common defaults for input and output id schemes
-    query.inputIdScheme = 'code';
-    query.outputIdScheme = query.outputIdScheme || 'uid';
-
-    // Transform the easily understood 'dataElementCodes', 'period', etc. to DHIS2 language
-    const {
-      dataElementCodes,
-      dataElementGroupCode,
-      dataElementGroupCodes,
-      measureCriteria,
-      organisationUnitCode,
-      period,
-    } = query;
-    const getDxString = () => {
-      if (dataElementCodes) {
-        return dataElementCodes.join(';');
-      }
-      return (dataElementGroupCodes || [dataElementGroupCode])
-        .map(groupCode => `DE_GROUP-${groupCode}`)
-        .join(';');
-    };
-    const dxString = getDxString();
-
-    query.dimension = [`dx:${dxString}`, `pe:${period}`, `ou:${organisationUnitCode}`];
-    query.includeMetadataDetails = true;
-
-    const response = await this.fetch('analytics/rawData.json', this.sanitizeAnalyticsQuery(query));
+  async getAnalytics(originalQuery, aggregationType, aggregationConfig) {
+    const { measureCriteria, period } = originalQuery;
+    const query = buildAnalyticsQuery(originalQuery);
+    const response = await this.fetch('analytics/rawData.json', query);
     const { results, metadata } = translateDataValueResponse(response);
     const aggregatedResults = aggregateResults(results, aggregationType, aggregationConfig);
 
-    let filteredResults = aggregatedResults;
-    if (measureCriteria) {
-      const { EQ, GT, GE, LT, LE } = measureCriteria;
-      if (EQ) {
-        filteredResults = filteredResults.filter(r => r.value == EQ); // eslint-disable-line eqeqeq
-      }
-      if (GT) {
-        filteredResults = filteredResults.filter(r => r.value > GT);
-      }
-      if (GE) {
-        filteredResults = filteredResults.filter(r => r.value >= GE);
-      }
-      if (LT) {
-        filteredResults = filteredResults.filter(r => r.value < LT);
-      }
-      if (LE) {
-        filteredResults = filteredResults.filter(r => r.value <= LE);
-      }
-    }
-
     return {
-      results: filteredResults,
+      results: filterAnalyticsResults(aggregatedResults, measureCriteria),
       metadata,
       period,
     };
   }
 
-  /**
-   * Sanitizes an analytics query to prevent the following DHIS errors:
-   * 1. `Periods and start and end dates cannot be specified simultaneously`
-   * 2. `Request-URI Too Large`
-   */
-  sanitizeAnalyticsQuery = query => {
-    const sanitizedQuery = { ...query };
-
-    if (query.period) {
-      // [`startDate`, `endDate`] and `period` cannot be used at the same data value analytic query
-      delete sanitizedQuery.startDate;
-      delete sanitizedQuery.endDate;
-    }
-
-    // Remove redundant properties which can significantly increase the request uri
-    delete sanitizedQuery.period;
-    delete sanitizedQuery.dataElementCodes;
-    delete sanitizedQuery.dataElementGroupCode;
-    delete sanitizedQuery.dataElementGroupCodes;
-    delete sanitizedQuery.organisationUnitCodes;
-
-    return sanitizedQuery;
-  };
-
-  async getEventAnalytics(
-    originalQuery,
-    replacementValues = {},
-    aggregationType,
-    aggregationConfig = {},
-  ) {
-    const queryBuilder = this.constructQueryBuilder(originalQuery, replacementValues);
-    queryBuilder.makeDimensionReplacements();
-    queryBuilder.makeEventReplacements();
-    const query = queryBuilder.makeCustomReplacements();
+  async getEventAnalytics(query, aggregationType, aggregationConfig = {}) {
     const programCodes = query.programCodes || (query.programCode && [query.programCode]);
 
     let events;
@@ -437,10 +348,8 @@ export class DhisApi {
     };
   }
 
-  async getDataValuesInSets(originalQuery, replacementValues, aggregationType, aggregationConfig) {
-    const queryBuilder = this.constructQueryBuilder(originalQuery, replacementValues);
-    await queryBuilder.buildOrganisationUnitCodes();
-    const query = queryBuilder.makeCustomReplacements();
+  async buildDataValuesInSetsQuery(originalQuery) {
+    const query = { ...originalQuery };
     const { dataSetCode, dataElementGroupCode, period, startDate, organisationUnitCodes } = query;
 
     if (!period && !startDate) {
@@ -471,6 +380,11 @@ export class DhisApi {
       query.dataSet = dataSetResult.id;
     }
 
+    return query;
+  }
+
+  async getDataValuesInSets(originalQuery, aggregationType, aggregationConfig) {
+    const query = await this.buildDataValuesInSetsQuery(originalQuery);
     const response = await this.fetch(DATA_VALUE_SET, query);
     if (!response.dataValues) return [];
 
@@ -483,11 +397,7 @@ export class DhisApi {
     return aggregatedResults;
   }
 
-  async getOrganisationUnits(originalQuery, replacementValues) {
-    const query = this.constructQueryBuilder(
-      originalQuery,
-      replacementValues,
-    ).makeCustomReplacements();
+  async getOrganisationUnits(query) {
     const { organisationUnits, pager } = await this.fetch(ORGANISATION_UNIT, query);
     return query.paging ? { organisationUnits, pager } : organisationUnits;
   }
