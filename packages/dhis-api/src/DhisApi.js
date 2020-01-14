@@ -15,7 +15,7 @@ import { translateEventResponse } from './translateEventResponse';
 import { translateDataValueResponse } from './translateDataValueResponse';
 import { RESPONSE_TYPES } from './responseUtils';
 import { buildAnalyticsQuery } from './buildAnalyticsQuery';
-import { filterResults } from './filterResults';
+import { filterAnalyticsResults } from './filterAnalyticsResults';
 
 const {
   DATA_ELEMENT,
@@ -319,7 +319,7 @@ export class DhisApi {
     const aggregatedResults = aggregateResults(results, aggregationType, aggregationConfig);
 
     return {
-      results: filterResults(aggregatedResults, measureCriteria),
+      results: filterAnalyticsResults(aggregatedResults, measureCriteria),
       metadata,
       period,
     };

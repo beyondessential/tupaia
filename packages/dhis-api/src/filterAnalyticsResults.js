@@ -1,4 +1,4 @@
-export const filterResults = (results, measureCriteria) => {
+export const filterAnalyticsResults = (results, measureCriteria) => {
   let filteredResults = results;
 
   const { EQ, GT, GE, LT, LE } = measureCriteria || {};
