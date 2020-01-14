@@ -43,10 +43,13 @@ export const criticalMedicineAvailability = async dhisApi => {
     try {
       // Find all organisation unit groups representing facility types for this country (e.g. FacilityType_TO_1_Hospitals)
       const organisationUnitGroupCodePrefixForCountry = `${ORGANISATION_UNIT_GROUP_CODE_PREFIX}_${country.code}`;
-      const { organisationUnitGroups } = await dhisApi.fetch(ORGANISATION_UNIT_GROUP, {
-        filter: [{ code: organisationUnitGroupCodePrefixForCountry, comparator: 'like' }],
-        fields: 'code',
-      });
+      const { organisationUnitGroups } = await dhisApi.fetch(
+        DHIS2_RESOURCE_TYPES.ORGANISATION_UNIT_GROUP,
+        {
+          filter: [{ code: organisationUnitGroupCodePrefixForCountry, comparator: 'like' }],
+          fields: 'code',
+        },
+      );
 
       for (
         let organisationUnitGroupIndex = 0;
