@@ -4,25 +4,7 @@ var dbm;
 var type;
 var seed;
 
-import { buildSingleColumnTableCells } from '../migrationUtilities';
-
-const convertToTableOfDataValuesSql = table => {
-  return `
-  UPDATE
-      "dashboardReport"
-
-  SET
-    "dataBuilder" = 'tableOfDataValues',
-    "dataBuilderConfig" = '${JSON.stringify({
-    rows: table.category ? { category: table.category, rows: table.rows } : table.rows,
-    columns: table.columns,
-    cells: table.cells,
-  })}'
-
-  WHERE
-    id = '${table.id}';
-  `;
-};
+import { buildSingleColumnTableCells, convertToTableOfDataValuesSql } from '../migrationUtilities';
 
 const table1b = {
   rows: [
@@ -63,7 +45,7 @@ const table2a = {
     'Foot Check: High Risk',
   ],
   columns: ['Count'],
-  cells: buildSingleColumnTableCells('CH', 243, 259),
+  cells: buildSingleColumnTableCells({ prefix: 'CH', start: 243, end: 259 }),
   id: 'TO_CH_Validation_CH2a',
 };
 
@@ -76,7 +58,7 @@ const table2b = {
     'Number of Complications Screening Tests: Foot Check',
   ],
   columns: ['Count'],
-  cells: buildSingleColumnTableCells('CH', 261, 265),
+  cells: buildSingleColumnTableCells({ prefix: 'CH', start: 261, end: 265 }),
   id: 'TO_CH_Validation_CH2b',
 };
 
@@ -102,7 +84,7 @@ const table3 = {
     'CVD Risk-Lowering Medication: Statin',
   ],
   columns: ['Count'],
-  cells: buildSingleColumnTableCells('CH', 267, 284),
+  cells: buildSingleColumnTableCells({ prefix: 'CH', start: 267, end: 284 }),
   id: 'TO_CH_Validation_CH3',
 };
 
@@ -121,7 +103,7 @@ const table6 = {
     'Other Services: Default Benzathine Injection',
   ],
   columns: ['Count'],
-  cells: buildSingleColumnTableCells('CH', 324, 334),
+  cells: buildSingleColumnTableCells({ prefix: 'CH', start: 324, end: 334 }),
   id: 'TO_CH_Validation_CH6',
 };
 
@@ -141,7 +123,7 @@ const table7 = {
     'Community Visit - Screening',
   ],
   columns: ['Count'],
-  cells: buildSingleColumnTableCells('CH', 336, 347),
+  cells: buildSingleColumnTableCells({ prefix: 'CH', start: 336, end: 347 }),
   id: 'TO_CH_Validation_CH7',
 };
 
@@ -165,7 +147,7 @@ const table8 = {
     'Number of Consultations by Age Group: 70+ yrs',
   ],
   columns: ['Count'],
-  cells: buildSingleColumnTableCells('CH', 349, 364),
+  cells: buildSingleColumnTableCells({ prefix: 'CH', start: 349, end: 364 }),
   id: 'TO_CH_Validation_CH8',
 };
 
@@ -218,7 +200,7 @@ const table10 = {
     'Amputation: Above knee',
   ],
   columns: ['Count'],
-  cells: buildSingleColumnTableCells('CH', 405, 449),
+  cells: buildSingleColumnTableCells({ prefix: 'CH', start: 405, end: 449 }),
   id: 'TO_CH_Validation_CH10',
 };
 
@@ -240,7 +222,7 @@ const table12 = {
     'Postnatal GDM: Did Not Attend but able to contact and re-book',
   ],
   columns: ['Count'],
-  cells: buildSingleColumnTableCells('CH', 606, 619),
+  cells: buildSingleColumnTableCells({ prefix: 'CH', start: 606, end: 619 }),
   id: 'TO_CH_Validation_CH12',
 };
 
