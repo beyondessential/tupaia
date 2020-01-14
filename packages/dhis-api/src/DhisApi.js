@@ -1,7 +1,7 @@
 /**
  * Tupaia
  * Copyright (c) 2017 - 2019 Beyond Essential Systems Pty Ltd
- **/
+ */
 
 import winston from 'winston';
 

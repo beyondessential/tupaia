@@ -100,7 +100,7 @@
  * @property {boolean} providedElsewhere
  *
  * @typedef {EventDataValueData & EventDataValueI} EventDataValue
- **/
+ */
 
 /**
  * Event data that get returned from the `events` api
