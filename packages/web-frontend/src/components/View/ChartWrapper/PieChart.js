@@ -48,6 +48,37 @@ export class PieChart extends PureComponent {
     this.onItemClick = this.onItemClick.bind(this);
   }
 
+  onItemClick(item) {
+    this.props.onItemClick(item.originalItem);
+  }
+
+  getLegendProps() {
+    const { isExporting, isEnlarged } = this.props;
+
+    // Show the chart legend to the right when we're in modal view so that the
+    // visible-on-hover values aren't obscured behind it.
+    //
+    // The proper Reacty way to address this would be to wrap Legend in a
+    // sub-component but recharts apparently does some reflection to pass Legend
+    // its data. So, we just calculate its props dynamically here.
+    if (isExporting) {
+      return {
+        wrapperStyle: VIEW_STYLES.legendExporting,
+      };
+    } else if (isEnlarged && !isMobile()) {
+      return {
+        wrapperStyle: {
+          paddingTop: '20px',
+          ...VIEW_STYLES.legend,
+        },
+      };
+    } else {
+      return {
+        wrapperStyle: VIEW_STYLES.legend,
+      };
+    }
+  }
+
   getValidData = () => {
     const { data, valueType } = this.props.viewContent;
     return data
@@ -93,7 +124,11 @@ export class PieChart extends PureComponent {
       };
 
   renderActiveShape = props => {
-    const { valueType } = this.props.viewContent;
+    const {
+      valueType,
+      labelType,
+      data: { value_met },
+    } = this.props.viewContent;
     const {
       cx,
       cy,
@@ -107,6 +142,7 @@ export class PieChart extends PureComponent {
       value,
       name,
     } = props;
+    console.log(labelType);
     const RADIAN = Math.PI / 180;
     const sin = Math.sin(-RADIAN * midAngle);
     const cos = Math.cos(-RADIAN * midAngle);
@@ -140,6 +176,8 @@ export class PieChart extends PureComponent {
     const ey = my;
 
     const textAnchor = isLabelOnRight ? 'start' : 'end';
+    const valueTypeForLabel = labelType || valueType;
+    const metadata = data[value_metad];
 
     return (
       <g>
@@ -173,42 +211,11 @@ export class PieChart extends PureComponent {
           textAnchor={textAnchor}
           fill="#999"
         >
-          {formatDataValue(value, valueType)}
+          {formatDataValue(value, valueTypeForLabel)}
         </text>
       </g>
     );
   };
-
-  getLegendProps() {
-    const { isExporting, isEnlarged } = this.props;
-
-    // Show the chart legend to the right when we're in modal view so that the
-    // visible-on-hover values aren't obscured behind it.
-    //
-    // The proper Reacty way to address this would be to wrap Legend in a
-    // sub-component but recharts apparently does some reflection to pass Legend
-    // its data. So, we just calculate its props dynamically here.
-    if (isExporting) {
-      return {
-        wrapperStyle: VIEW_STYLES.legendExporting,
-      };
-    } else if (isEnlarged && !isMobile()) {
-      return {
-        wrapperStyle: {
-          paddingTop: '20px',
-          ...VIEW_STYLES.legend,
-        },
-      };
-    } else {
-      return {
-        wrapperStyle: VIEW_STYLES.legend,
-      };
-    }
-  }
-
-  onItemClick(item) {
-    this.props.onItemClick(item.originalItem);
-  }
 
   render() {
     const { isEnlarged, isExporting } = this.props;
@@ -261,7 +268,7 @@ export class PieChart extends PureComponent {
 }
 
 PieChart.propTypes = {
-  viewContent: PropTypes.object.isRequired,
+  viewContent: PropTypes.shape({}).isRequired,
   isEnlarged: PropTypes.bool,
   onItemClick: PropTypes.func,
 };
