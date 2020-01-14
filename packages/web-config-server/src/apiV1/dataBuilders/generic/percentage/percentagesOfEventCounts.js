@@ -54,6 +54,10 @@ export class PercentagesOfEventCountsBuilder extends DataBuilder {
         value: divideValues(numerator, denominator),
         numerator,
         denominator,
+        metadata: {
+          numerator,
+          denominator,
+        },
       };
     });
   }
@@ -68,12 +72,7 @@ export class PercentagesOfEventCountsBuilder extends DataBuilder {
 }
 
 export const percentagesOfEventCounts = async ({ dataBuilderConfig, query, entity }, dhisApi) => {
-  const builder = new PercentagesOfEventCountsBuilder(
-    dhisApi,
-    dataBuilderConfig,
-    query,
-    entity,
-  );
+  const builder = new PercentagesOfEventCountsBuilder(dhisApi, dataBuilderConfig, query, entity);
 
   return builder.build();
 };

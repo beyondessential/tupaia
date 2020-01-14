@@ -15,8 +15,8 @@ import { VALUE_TYPES } from '../constants';
 import { PRESENTATION_OPTIONS_SHAPE } from '../propTypes';
 import { formatTimestampForChart, getIsTimeSeries } from './helpers';
 
-function formatLabelledValue(label, value, valueType, metaData) {
-  const valueText = formatDataValue(value, valueType, metaData);
+function formatLabelledValue(label, value, valueType, metadata) {
+  const valueText = formatDataValue(value, valueType, metadata);
   if (label) {
     return `${label}: ${valueText}`;
   }
@@ -37,9 +37,9 @@ const MultiValueTooltip = ({
     const label = (options && options.label) || dataKey;
     const valueTypeForLabel =
       labelType || valueType || get(presentationOptions, [dataKey, 'valueType']);
-    const metaData = data[`${dataKey}_metaData`];
+    const metadata = data[`${dataKey}_metadata`];
 
-    return <li key={dataKey}>{formatLabelledValue(label, value, valueTypeForLabel, metaData)}</li>;
+    return <li key={dataKey}>{formatLabelledValue(label, value, valueTypeForLabel, metadata)}</li>;
   });
 
   return (
@@ -55,7 +55,7 @@ const MultiValueTooltip = ({
 
 const SingleValueTooltip = ({ valueType, payload, periodGranularity, labelType }) => {
   const data = payload[0].payload;
-  const { name, value, timestamp, value_metaData: metaData } = data;
+  const { name, value, timestamp, value_metadata: metadata } = data;
   const valueTypeForLabel = labelType || valueType;
 
   return (
@@ -63,10 +63,10 @@ const SingleValueTooltip = ({ valueType, payload, periodGranularity, labelType }
       {getIsTimeSeries([payload[0].payload]) && periodGranularity ? (
         <div>
           <p>{formatTimestampForChart(timestamp, periodGranularity)}</p>
-          {formatDataValue(value, valueTypeForLabel, metaData)}
+          {formatDataValue(value, valueTypeForLabel, metadata)}
         </div>
       ) : (
-        formatLabelledValue(name, value, valueTypeForLabel, metaData)
+        formatLabelledValue(name, value, valueTypeForLabel, metadata)
       )}
     </div>
   );
