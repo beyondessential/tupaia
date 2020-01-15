@@ -6,8 +6,8 @@ import flatten from 'lodash.flatten';
 import winston from 'winston';
 
 import { PERIOD_TYPES, momentToPeriod } from '@tupaia/dhis-api';
-import { utcMoment, reduceToDictionary } from '@tupaia/utils';
-import { getDataElementGroups, getDataElementsFromCodes, stripFromStart } from '/apiV1/utils';
+import { utcMoment, reduceToDictionary, stripFromStart } from '@tupaia/utils';
+import { getDataElementGroups, getDataElementsFromCodes } from '/apiV1/utils';
 import {
   FRIDGE_BREACH_PROGRAM_CODE,
   FRIDGE_DAILY_PROGRAM_CODE,

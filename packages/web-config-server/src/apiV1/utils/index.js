@@ -35,7 +35,6 @@ export {
   getReportUserGroupAccessRightsForOrganisationUnit,
 } from './hasAccess';
 export { timestampToPeriod } from './timestampToPeriod';
-export { stripFromStart } from './stripFromStart';
 export { timestampToPeriodName } from './timestampToPeriodName';
 export { limitRange } from './limitRange';
 export { regexLabel } from './regexLabel';
