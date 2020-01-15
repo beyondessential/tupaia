@@ -7,7 +7,9 @@
         - meditrak-server-validation
         - web-config-server-validation
       steps:
-        - name: validate
+        - name: validate branch name
+          command: './packages/devops/scripts/ci/validateBranchName.sh'
+        - name: validate code
           command: './packages/devops/scripts/ci/validateCode.sh'
     - type: parallel # they're in containers, so even though they generally use one db, they're sandboxed
       name: test-all
