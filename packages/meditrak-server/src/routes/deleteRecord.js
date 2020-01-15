@@ -3,10 +3,9 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 
-import { respond } from '@tupaia/utils';
+import { respond, singularise } from '@tupaia/utils';
 import { ValidationError, DatabaseError } from '../errors';
 import { constructRecordExistsWithId } from '../validation';
-import { singularise } from '../utilities';
 
 /**
  * Responds to the DELETE requests by deleting the record with the given id
