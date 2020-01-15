@@ -1,3 +1,5 @@
+import { TOTAL_KEYS } from "../apiV1/dataBuilders/generic/table/tableOfDataValues/TotalCalculator";
+
 /**
  * Tupaia Config Server
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
@@ -209,10 +211,68 @@ async function updateBuilderConfigByReportId(db, newConfig, reportId) {
   return updateValues(db, 'dashboardReport', { dataBuilderConfig: newConfig }, { id: reportId });
 }
 
-export const buildSingleColumnTableCells = (prefix, start, end) => {
+export const convertToTableOfDataValuesSql = table => {
+  return `
+  UPDATE
+      "dashboardReport"
+  SET
+    "dataBuilder" = 'tableOfDataValues',
+    "dataBuilderConfig" = '${JSON.stringify({
+    rows: table.category ? { category: table.category, rows: table.rows } : table.rows,
+    columns: table.columns,
+    cells: table.cells,
+  })}'
+  WHERE
+    id = '${table.id}';
+  `;
+};
+
+export const buildSingleColumnTableCells = ({ prefix = '', start = 0, end = 0 }) => {
   const cells = [];
   for (let i = start; i <= end; i++) {
     cells.push([`${prefix}${i}`]);
+  }
+
+  return cells;
+};
+
+export const build2DTableCells = ({
+  prefix = '',
+  numRows = 0,
+  numCols = 0,
+  startCell = 0,
+  skipCells = [],
+  addRowTotal = false,
+  addColumnTotal = false,
+} = {}) => {
+  const cells = [];
+
+  let i = startCell;
+  for (let row = 0; row < numRows - (addColumnTotal ? 1 : 0); row++) {
+    const cellRow = [];
+    for (let column = 0; column < numCols - (addRowTotal ? 1 : 0); column++) {
+      cellRow.push(`${prefix}${i}`);
+      i++;
+      while (skipCells.includes(i)) {
+        // Data element does not exist, skip
+        i++;
+      }
+    }
+    if (addRowTotal) {
+      cellRow.push(TOTAL_KEYS.rowTotal);
+    }
+
+    cells.push(cellRow);
+  }
+
+  if (addColumnTotal) {
+    cells.push(Object.keys(new Array(numCols).fill(null)).map(index => {
+      if (addRowTotal && (index == (numCols - 1))) {
+        return TOTAL_KEYS.total; // If both rowTotal and colTotal, mark as tableTotal
+      }
+
+      return TOTAL_KEYS.columnTotal;
+    }));
   }
 
   return cells;

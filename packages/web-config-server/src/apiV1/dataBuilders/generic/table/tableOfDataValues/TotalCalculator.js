@@ -3,7 +3,7 @@
  * Copyright (c) 2020 Beyond Essential Systems Pty Ltd
  */
 
-const TOTAL_KEYS = {
+export const TOTAL_KEYS = {
   total: '$total',
   rowTotal: '$rowTotal',
   columnTotal: '$columnTotal',
@@ -108,7 +108,8 @@ export class TotalCalculator {
     for (let row = startRow; row <= endRow; row++) {
       for (let column = startColumn; column <= endColumn; column++) {
         const cell = this.tableConfig.cells[row][column];
-        total += cell && !TotalCalculator.isTotalKey(cell) ? this.valuesByCell[cell] : 0;
+        const cellVal = cell && !TotalCalculator.isTotalKey(cell) ? this.valuesByCell[cell] : undefined;
+        total += isNaN(cellVal) ? 0 : cellVal;
       }
     }
 
