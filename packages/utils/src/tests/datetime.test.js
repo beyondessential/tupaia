@@ -1,7 +1,12 @@
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+
 import { expect } from 'chai';
 import moment from 'moment';
 
-import { getTimezoneNameFromTimestamp } from '../../utilities/datetime';
+import { getTimezoneNameFromTimestamp } from '../datetime';
 
 describe('DateTime', () => {
   it('Should get the correct timezone name from a timestamp', async () => {
