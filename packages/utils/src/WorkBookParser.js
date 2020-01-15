@@ -4,6 +4,7 @@
  */
 
 import pickBy from 'lodash.pickby';
+import xlsx from 'xlsx';
 
 export class WorkBookParser {
   sheetNameFilter = null;
