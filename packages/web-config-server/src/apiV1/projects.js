@@ -1,5 +1,5 @@
+import { respond } from '@tupaia/utils';
 import { Project, Entity } from '/models';
-import { respond } from '/respond';
 import { calculateBoundsFromEntities } from '/utils/geoJson';
 import { translateForFrontend, getEntityByCode } from '/apiV1/organisationUnit';
 

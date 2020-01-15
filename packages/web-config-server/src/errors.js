@@ -3,7 +3,7 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  **/
 import winston from 'winston';
-import { respond } from './respond';
+import { respond } from '@tupaia/utils';
 
 /**
  * Logged errors print out to the server's logs so that we have a record of all errors. In future

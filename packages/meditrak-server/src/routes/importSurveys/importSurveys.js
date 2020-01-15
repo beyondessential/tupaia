@@ -4,7 +4,7 @@
  **/
 
 import xlsx from 'xlsx';
-import { respond } from '../../respond';
+import { respond } from '@tupaia/utils';
 import { DatabaseError, UploadError, ImportValidationError, ValidationError } from '../../errors';
 import { deleteScreensForSurvey, deleteOrphanQuestions } from '../../dataAccessors';
 import { ANSWER_TYPES } from '../../database/models/Answer';

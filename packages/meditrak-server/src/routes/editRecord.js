@@ -3,7 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 
-import { respond } from '../respond';
+import { respond } from '@tupaia/utils';
 import { TYPES } from '../database';
 import { ValidationError } from '../errors';
 import { ObjectValidator, constructRecordExistsWithId } from '../validation';

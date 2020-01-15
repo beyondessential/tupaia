@@ -4,7 +4,7 @@
  **/
 
 import xlsx from 'xlsx';
-import { respond } from '../respond';
+import { respond } from '@tupaia/utils';
 import { extractTabNameFromQuery, getArrayQueryParameter } from './utilities';
 import {
   DatabaseError,

@@ -5,7 +5,7 @@
 
 import xlsx from 'xlsx';
 
-import { respond } from '../respond';
+import { respond } from '@tupaia/utils';
 import { DatabaseError, ImportValidationError, UploadError } from '../errors';
 import { hashAndSaltPassword } from '../utilities';
 import { ObjectValidator, hasContent, constructIsOneOf } from '../validation';
