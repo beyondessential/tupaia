@@ -164,7 +164,7 @@ const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => ({
         formats,
         startDate,
         endDate,
-        chartType,
+        chartType: getIsMatrix(viewContent) ? 'matrix' : chartType,
         extraConfig: { ...extraConfig, export: exportConfig },
       }),
     );
