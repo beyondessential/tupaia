@@ -45,15 +45,21 @@ const bounds = {
   filterable: false,
 };
 
-export const NATURAL_DISASTER_COLUMNS = [id, type, description, name, countryCode, point, bounds];
+const NATURAL_DISASTER_FIELDS = [id, type, description, name, countryCode, point, bounds];
 
-const COLUMNS = [...NATURAL_DISASTER_COLUMNS];
+const IMPORT_CONFIG = {
+  title: 'Import Natural Disaster',
+  instruction: 'Please test on development server',
+  actionConfig: {
+    importEndpoint: 'disaster',
+  },
+};
 
 export const DisasterResponsePage = () => (
   <ResourcePage
     title="Natural Disasters"
     endpoint="disaster"
-    columns={COLUMNS}
-    // importConfig={IMPORT_CONFIG}
+    columns={NATURAL_DISASTER_FIELDS}
+    importConfig={IMPORT_CONFIG}
   />
 );

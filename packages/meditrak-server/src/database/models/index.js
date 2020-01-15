@@ -36,3 +36,4 @@ export { UserGeographicalAreaPermissionModel as userGeographicalAreaPermission }
 export { UserModel as user } from './User';
 export { UserRewardModel as userReward } from './UserReward';
 export { APIClientModel as apiClient } from './APIClient';
+export { DisasterModel as disaster } from './Disaster';
