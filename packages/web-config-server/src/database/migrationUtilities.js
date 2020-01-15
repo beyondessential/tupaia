@@ -1,4 +1,4 @@
-import { TOTAL_KEYS } from "../apiV1/dataBuilders/generic/table/tableOfDataValues/TotalCalculator";
+import { TOTAL_KEYS } from '../apiV1/dataBuilders/generic/table/tableOfDataValues/TotalCalculator';
 
 /**
  * Tupaia Config Server
@@ -218,19 +218,32 @@ export const convertToTableOfDataValuesSql = table => {
   SET
     "dataBuilder" = 'tableOfDataValues',
     "dataBuilderConfig" = '${JSON.stringify({
-    rows: table.category ? { category: table.category, rows: table.rows } : table.rows,
-    columns: table.columns,
-    cells: table.cells,
-  })}'
+      rows: table.category ? { category: table.category, rows: table.rows } : table.rows,
+      columns: table.columns,
+      cells: table.cells,
+    })}'
   WHERE
     id = '${table.id}';
   `;
 };
 
-export const buildSingleColumnTableCells = ({ prefix = '', start = 0, end = 0 }) => {
+export const buildSingleColumnTableCells = ({
+  prefix = '',
+  start = 0,
+  end = 0,
+  skipCells = [],
+  addColumnTotal = false,
+} = {}) => {
   const cells = [];
   for (let i = start; i <= end; i++) {
+    if (skipCells.includes(i)) {
+      continue;
+    }
     cells.push([`${prefix}${i}`]);
+  }
+
+  if (addColumnTotal) {
+    cells.push([TOTAL_KEYS.columnTotal]);
   }
 
   return cells;
@@ -242,6 +255,7 @@ export const build2DTableCells = ({
   numCols = 0,
   startCell = 0,
   skipCells = [],
+  insertCells = [],
   addRowTotal = false,
   addColumnTotal = false,
 } = {}) => {
@@ -251,11 +265,19 @@ export const build2DTableCells = ({
   for (let row = 0; row < numRows - (addColumnTotal ? 1 : 0); row++) {
     const cellRow = [];
     for (let column = 0; column < numCols - (addRowTotal ? 1 : 0); column++) {
-      cellRow.push(`${prefix}${i}`);
-      i++;
-      while (skipCells.includes(i)) {
-        // Data element does not exist, skip
+      const insertCell = insertCells.find(cell => {
+        return cell.rowIndex === row && cell.colIndex === column;
+      });
+
+      if (insertCell) {
+        cellRow.push(insertCell.name);
+      } else {
+        cellRow.push(`${prefix}${i}`);
         i++;
+        while (skipCells.includes(i)) {
+          // Data element does not exist, skip
+          i++;
+        }
       }
     }
     if (addRowTotal) {
@@ -266,14 +288,35 @@ export const build2DTableCells = ({
   }
 
   if (addColumnTotal) {
-    cells.push(Object.keys(new Array(numCols).fill(null)).map(index => {
-      if (addRowTotal && (index == (numCols - 1))) {
-        return TOTAL_KEYS.total; // If both rowTotal and colTotal, mark as tableTotal
-      }
+    cells.push(
+      Object.keys(new Array(numCols).fill(null)).map(index => {
+        if (addRowTotal && index == numCols - 1) {
+          return TOTAL_KEYS.total; // If both rowTotal and colTotal, mark as tableTotal
+        }
 
-      return TOTAL_KEYS.columnTotal;
-    }));
+        return TOTAL_KEYS.columnTotal;
+      }),
+    );
   }
+
+  return cells;
+};
+
+export const build2dTableStringFormatCells = (format, rows, cols, { addRowTotal = false } = {}) => {
+  const cells = [];
+
+  rows.forEach(row => {
+    const cellRow = [];
+    cols.forEach(col => {
+      cellRow.push(format(row, col));
+    });
+
+    if (addRowTotal) {
+      cellRow.push(TOTAL_KEYS.rowTotal);
+    }
+
+    cells.push(cellRow);
+  });
 
   return cells;
 };
