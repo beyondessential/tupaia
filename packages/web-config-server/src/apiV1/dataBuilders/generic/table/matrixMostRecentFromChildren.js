@@ -1,6 +1,6 @@
 import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
+import { asynchronouslyFetchValuesForObject } from '@tupaia/utils';
 import {
-  asynchronouslyFetchValuesForObject,
   getDataElementsInGroup,
   getDataElementsInGroupSet,
   getOptionSetOptions,

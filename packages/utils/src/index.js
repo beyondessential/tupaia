@@ -5,6 +5,6 @@
 
 export { getTimezoneNameFromTimestamp, utcMoment } from './datetime';
 export { flattenToObject, getSortByKey, mapKeys, reduceToDictionary, reduceToSet } from './object';
-export { fetchWithTimeout, stringifyQuery } from './request';
+export { asynchronouslyFetchValuesForObject, fetchWithTimeout, stringifyQuery } from './request';
 export { respond } from './respond';
 export { singularise } from './string';

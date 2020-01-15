@@ -30,7 +30,6 @@ export { getDataElementsFromCodes } from './getDataElementsFromCodes';
 export { getOptionsForDataElement } from './getOptionsForDataElement';
 export { getOptionSetOptions } from './getOptionSetOptions';
 export isSingleValue from './isSingleValue';
-export { asynchronouslyFetchValuesForObject } from './asynchronouslyFetchValuesForObject';
 export {
   hasReportAccessToOrganisationUnit,
   getReportUserGroupAccessRightsForOrganisationUnit,
