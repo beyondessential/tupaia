@@ -516,4 +516,150 @@ export const testTotals = () => {
         },
       ));
   });
+
+  describe('total of missing cells', () => {
+    it('row, column and overall totals, all missing', () =>
+      assertTableResults(
+        {
+          rows: ['Smokers', 'Overweight', 'Totals'],
+          columns: ['Female', 'Male', 'Totals'],
+          cells: [
+            [undefined, undefined, '$rowTotal'],
+            [undefined, undefined, '$rowTotal'],
+            ['$columnTotal', '$columnTotal', '$total'],
+          ],
+        },
+        {
+          rows: [
+            { dataElement: 'Smokers', Col1: '', Col2: '', Col3: 0 },
+            { dataElement: 'Overweight', Col1: '', Col2: '', Col3: 0 },
+            { dataElement: 'Totals', Col1: 0, Col2: 0, Col3: 0 },
+          ],
+          columns: [
+            { key: 'Col1', title: 'Female' },
+            { key: 'Col2', title: 'Male' },
+            { key: 'Col3', title: 'Totals' },
+          ],
+        },
+      ));
+
+    it('row, column and overall totals, some missing', () =>
+      assertTableResults(
+        {
+          rows: ['Smokers', 'Overweight', 'Totals'],
+          columns: ['Female', 'Male', 'Totals'],
+          cells: [
+            ['CD1', undefined, '$rowTotal'],
+            [undefined, 'CD4', '$rowTotal'],
+            ['$columnTotal', '$columnTotal', '$total'],
+          ],
+        },
+        {
+          rows: [
+            { dataElement: 'Smokers', Col1: 1, Col2: '', Col3: 1 },
+            { dataElement: 'Overweight', Col1: '', Col2: 4, Col3: 4 },
+            { dataElement: 'Totals', Col1: 1, Col2: 4, Col3: 5 },
+          ],
+          columns: [
+            { key: 'Col1', title: 'Female' },
+            { key: 'Col2', title: 'Male' },
+            { key: 'Col3', title: 'Totals' },
+          ],
+        },
+      ));
+
+    it('row totals, all missing', () =>
+      assertTableResults(
+        {
+          rows: ['Smokers', 'Overweight'],
+          columns: ['Female', 'Male', 'Totals'],
+          cells: [
+            [undefined, undefined, '$rowTotal'],
+            [undefined, undefined, '$rowTotal'],
+          ],
+        },
+        {
+          rows: [
+            { dataElement: 'Smokers', Col1: '', Col2: '', Col3: 0 },
+            { dataElement: 'Overweight', Col1: '', Col2: '', Col3: 0 },
+          ],
+          columns: [
+            { key: 'Col1', title: 'Female' },
+            { key: 'Col2', title: 'Male' },
+            { key: 'Col3', title: 'Totals' },
+          ],
+        },
+      ));
+
+    it('row totals, some missing', () =>
+      assertTableResults(
+        {
+          rows: ['Smokers', 'Overweight'],
+          columns: ['Female', 'Male', 'Totals'],
+          cells: [
+            ['CD1', undefined, '$rowTotal'],
+            [undefined, 'CD4', '$rowTotal'],
+          ],
+        },
+        {
+          rows: [
+            { dataElement: 'Smokers', Col1: 1, Col2: '', Col3: 1 },
+            { dataElement: 'Overweight', Col1: '', Col2: 4, Col3: 4 },
+          ],
+          columns: [
+            { key: 'Col1', title: 'Female' },
+            { key: 'Col2', title: 'Male' },
+            { key: 'Col3', title: 'Totals' },
+          ],
+        },
+      ));
+
+    it('column totals, all missing', () =>
+      assertTableResults(
+        {
+          rows: ['Smokers', 'Overweight', 'Totals'],
+          columns: ['Female', 'Male'],
+          cells: [
+            [undefined, undefined],
+            [undefined, undefined],
+            ['$columnTotal', '$columnTotal'],
+          ],
+        },
+        {
+          rows: [
+            { dataElement: 'Smokers', Col1: '', Col2: '' },
+            { dataElement: 'Overweight', Col1: '', Col2: '' },
+            { dataElement: 'Totals', Col1: 0, Col2: 0 },
+          ],
+          columns: [
+            { key: 'Col1', title: 'Female' },
+            { key: 'Col2', title: 'Male' },
+          ],
+        },
+      ));
+
+    it('row, column and overall totals, some missing', () =>
+      assertTableResults(
+        {
+          rows: ['Smokers', 'Overweight', 'Totals'],
+          columns: ['Female', 'Male'],
+          cells: [
+            ['CD1', undefined],
+            [undefined, 'CD4'],
+            ['$columnTotal', '$columnTotal'],
+          ],
+        },
+        {
+          rows: [
+            { dataElement: 'Smokers', Col1: 1, Col2: '' },
+            { dataElement: 'Overweight', Col1: '', Col2: 4 },
+            { dataElement: 'Totals', Col1: 1, Col2: 4 },
+          ],
+          columns: [
+            { key: 'Col1', title: 'Female' },
+            { key: 'Col2', title: 'Male' },
+          ],
+        },
+      ));
+  });
 };
