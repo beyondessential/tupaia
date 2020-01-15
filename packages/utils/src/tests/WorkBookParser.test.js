@@ -8,13 +8,19 @@ import chaiAsPromised from 'chai-as-promised';
 import xlsx from 'xlsx';
 import sinon from 'sinon';
 
-import { WorkBookParser } from '../utilities/WorkBookParser';
+import { WorkBookParser } from '../WorkBookParser';
 
 chai.use(chaiAsPromised);
 
 const SHEETS = {
-  Sheet1: [{ HeaderA: 'Value1', HeaderB: 'Value2' }, { HeaderA: 'Value3', HeaderB: 'Value4' }],
-  Sheet2: [{ HeaderC: 'Value5', HeaderD: 'Value6' }, { HeaderC: 'Value7', HeaderD: 'Value8' }],
+  Sheet1: [
+    { HeaderA: 'Value1', HeaderB: 'Value2' },
+    { HeaderA: 'Value3', HeaderB: 'Value4' },
+  ],
+  Sheet2: [
+    { HeaderC: 'Value5', HeaderD: 'Value6' },
+    { HeaderC: 'Value7', HeaderD: 'Value8' },
+  ],
 };
 const WORK_BOOK = {
   Sheets: SHEETS,
