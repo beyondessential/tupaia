@@ -3,6 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
+import { getTimezoneNameFromTimestamp } from '@tupaia/utils';
 import { ValidationError, MultiValidationError } from '../errors';
 import {
   ObjectValidator,
@@ -13,7 +14,6 @@ import {
   constructIsEmptyOr,
 } from '../validation';
 import { findQuestionsBySurvey } from '../dataAccessors';
-import { getTimezoneNameFromTimestamp } from '../utilities';
 
 const createSurveyResponseValidator = models =>
   new ObjectValidator({

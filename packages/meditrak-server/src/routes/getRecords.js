@@ -5,7 +5,7 @@
 
 import formatLinkHeader from 'format-link-header';
 import { JOIN_TYPES } from '@tupaia/database';
-import { respond } from '../respond';
+import { respond } from '@tupaia/utils';
 import { DatabaseError, ValidationError } from '../errors';
 import { TYPES } from '../database';
 import {

@@ -6,7 +6,7 @@
 import jwt from 'jsonwebtoken';
 import randomToken from 'rand-token';
 
-import { respond } from '../respond';
+import { respond } from '@tupaia/utils';
 import { DatabaseError, UnauthenticatedError } from '../errors';
 
 const REFRESH_TOKEN_LENGTH = 40;

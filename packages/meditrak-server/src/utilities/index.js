@@ -9,6 +9,3 @@ export { resourceToRecordType } from './resourceToRecordType';
 export { sendEmail } from './sendEmail';
 export { buildAccessPolicy } from './buildAccessPolicy';
 export { cache, CACHE_KEY_GENERATORS } from './cache';
-export { singularise } from './singularise';
-export { getTimezoneNameFromTimestamp } from './datetime';
-export { WorkBookParser } from './WorkBookParser';

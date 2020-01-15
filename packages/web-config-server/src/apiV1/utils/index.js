@@ -30,13 +30,11 @@ export { getDataElementsFromCodes } from './getDataElementsFromCodes';
 export { getOptionsForDataElement } from './getOptionsForDataElement';
 export { getOptionSetOptions } from './getOptionSetOptions';
 export isSingleValue from './isSingleValue';
-export { asynchronouslyFetchValuesForObject } from './asynchronouslyFetchValuesForObject';
 export {
   hasReportAccessToOrganisationUnit,
   getReportUserGroupAccessRightsForOrganisationUnit,
 } from './hasAccess';
 export { timestampToPeriod } from './timestampToPeriod';
-export { stripFromStart } from './stripFromStart';
 export { timestampToPeriodName } from './timestampToPeriodName';
 export { limitRange } from './limitRange';
 export { regexLabel } from './regexLabel';

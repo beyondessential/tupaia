@@ -4,8 +4,8 @@
  **/
 import jwt from 'jsonwebtoken';
 
+import { respond } from '@tupaia/utils';
 import { getJwtToken, sendEmail } from '../utilities';
-import { respond } from '../respond';
 import { DatabaseError, UnauthenticatedError, ValidationError } from '../errors';
 
 const checkUserPermission = (req, userId) => {
@@ -33,9 +33,7 @@ const mapCountryIdsToNames = async (countryIds, models) => {
 const getUserName = async (userId, models) => {
   try {
     const user = await models.user.findById(userId);
-    return `${user.first_name} ${user.last_name} (${user.email} - ${user.id}), ${
-      user.position
-    } at ${user.employer}, `;
+    return `${user.first_name} ${user.last_name} (${user.email} - ${user.id}), ${user.position} at ${user.employer}, `;
   } catch (error) {
     throw new DatabaseError('finding user', error);
   }

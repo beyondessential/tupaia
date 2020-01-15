@@ -3,8 +3,8 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { getSortByKey, reduceToSet } from '@tupaia/utils';
-import { getDataElementGroupSets, getOptionSetOptions, stripFromStart } from '/apiV1/utils';
+import { getSortByKey, reduceToSet, stripFromStart } from '@tupaia/utils';
+import { getDataElementGroupSets, getOptionSetOptions } from '/apiV1/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { DATA_SOURCE_TYPES } from '/apiV1/dataBuilders/dataSourceTypes';
 import { buildCategories } from './buildCategories';

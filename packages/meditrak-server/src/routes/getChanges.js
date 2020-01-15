@@ -3,7 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 
-import { respond } from '../respond';
+import { respond } from '@tupaia/utils';
 import { DatabaseError } from '../errors';
 import { TYPES } from '../database';
 import { getChangesFilter, getColumnsForMeditrakApp } from './utilities';

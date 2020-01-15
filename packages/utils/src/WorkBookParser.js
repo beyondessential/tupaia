@@ -3,7 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { pickBy } from 'lodash';
+import pickBy from 'lodash.pickby';
 import xlsx from 'xlsx';
 
 export class WorkBookParser {

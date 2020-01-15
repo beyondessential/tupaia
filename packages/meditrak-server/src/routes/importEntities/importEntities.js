@@ -4,7 +4,7 @@
  **/
 
 import xlsx from 'xlsx';
-import { respond } from '../../respond';
+import { respond } from '@tupaia/utils';
 import { DatabaseError, UploadError } from '../../errors';
 import { updateOrganisationUnitsFromSheet } from './updateOrganisationUnitsFromSheet';
 import { populateCoordinatesForCountry } from './populateCoordinatesForCountry';
