@@ -1,7 +1,5 @@
 'use strict';
 
-import { Entity } from '../../models/Entity';
-
 var dbm;
 var type;
 var seed;
