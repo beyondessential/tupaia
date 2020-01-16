@@ -51,7 +51,10 @@ internal-dependency-testing:
   build:
     dockerfile: full-testable-package.Dockerfile
     args:
-      package: utils # doesn't matter which
+      package: database
+  encrypted_env_file: ./packages/database/ci-env-vars.encrypted
+  environment:
+    CI_PACKAGE: database
 
 db:
   image: mdillon/postgis:9.6-alpine
