@@ -151,6 +151,7 @@ function authentication(
         ...state,
         isRequestingLogin: true,
         loginFailedMessage: null,
+        successMessage: null,
       };
     case FETCH_LOGIN_SUCCESS:
       return {
