@@ -3,9 +3,12 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { expect } from 'chai';
+import chai, { expect } from 'chai';
+import chaiAsPromised from 'chai-as-promised';
 
 import { removeArrayValue, replaceArrayValue, updateValues } from '../utilities/migration';
+
+chai.use(chaiAsPromised);
 
 const dbStub = {
   runSql: (query, replacementParams) => ({ query, replacementParams }),
