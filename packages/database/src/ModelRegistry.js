@@ -30,8 +30,8 @@ export class ModelRegistry {
       this[modelName] = new ModelClass(this.database, onChange);
     });
     // Inject other models into each model
-    Object.keys(models).forEach(modelName => {
-      Object.keys(models).forEach(otherModelName => {
+    Object.keys(this.modelClasses).forEach(modelName => {
+      Object.keys(this.modelClasses).forEach(otherModelName => {
         this[modelName].otherModels[otherModelName] = this[otherModelName];
       });
     });
