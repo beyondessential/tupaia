@@ -1,8 +1,9 @@
 import xlsx from 'xlsx';
+import { generateId } from '@tupaia/database';
+
 import { respond } from '../respond';
 import { DatabaseError } from '../errors';
 import { ObjectValidator, fieldHasContent } from '../validation';
-import { generateId } from '@tupaia/database';
 
 const TAB_NAMES = {
   DISASTER: 'Disaster',
@@ -22,6 +23,10 @@ const entityFieldValidators = {
   id: [],
   point: [fieldHasContent],
   bounds: [fieldHasContent],
+  code: [fieldHasContent],
+  parent_id: [fieldHasContent],
+  name: [fieldHasContent],
+  country_code: [fieldHasContent],
 };
 
 const disasterEventFieldValidators = {
@@ -75,14 +80,25 @@ export async function importDisaster(req, res) {
           }
           case TAB_NAMES.ENTITY: {
             const sheetData = await getDataAndValidate(sheet, entityFieldValidators);
-            const initialUpdate = sheetData;
 
-            await transactingModels.entity.updateOrCreate(
-              {
-                id: sheetData[0].id,
-              },
-              sheetData[0],
-            );
+            sheetData.forEach(async item => {
+              const initialUpdate = {
+                id: item.id ? item.id : generateId(),
+                code: item.code,
+                parent_id: item.parent_id,
+                name: item.name,
+                country_code: item.country_code,
+                type: 'disaster',
+              };
+              console.log(initialUpdate);
+              await transactingModels.entity.updateOrCreate(
+                {
+                  id: initialUpdate.id,
+                },
+                initialUpdate,
+              );
+              console.log('at 1');
+            });
 
             break;
           }
