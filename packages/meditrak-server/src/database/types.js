@@ -38,4 +38,5 @@ export const TYPES = {
   OPTION: 'option',
   OPTION_SET: 'option_set',
   DISASTER: 'disaster',
+  DISASTER_EVENT: 'disasterEvent',
 };

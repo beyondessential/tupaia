@@ -1,7 +1,8 @@
 import xlsx from 'xlsx';
 import { respond } from '../respond';
 import { DatabaseError } from '../errors';
-import { ObjectValidator, fieldHasContent, takesDateForm } from '../validation';
+import { ObjectValidator, fieldHasContent } from '../validation';
+import { generateId } from '@tupaia/database';
 
 const TAB_NAMES = {
   DISASTER: 'Disaster',
@@ -18,14 +19,14 @@ const disasterFieldValidators = {
 };
 
 const entityFieldValidators = {
-  id: [fieldHasContent],
+  id: [],
   point: [fieldHasContent],
   bounds: [fieldHasContent],
 };
 
 const disasterEventFieldValidators = {
   id: [fieldHasContent],
-  date: [fieldHasContent, takesDateForm],
+  date: [fieldHasContent],
   type: [fieldHasContent],
   organisationUnitCode: [fieldHasContent],
   disasterId: [fieldHasContent],
@@ -63,7 +64,6 @@ export async function importDisaster(req, res) {
           }
           case TAB_NAMES.DISASTER_EVENT: {
             const sheetData = await getDataAndValidate(sheet, disasterEventFieldValidators);
-
             await transactingModels.disasterEvent.updateOrCreate(
               {
                 id: sheetData[0].id,
@@ -75,6 +75,14 @@ export async function importDisaster(req, res) {
           }
           case TAB_NAMES.ENTITY: {
             const sheetData = await getDataAndValidate(sheet, entityFieldValidators);
+            const initialUpdate = sheetData;
+
+            await transactingModels.entity.updateOrCreate(
+              {
+                id: sheetData[0].id,
+              },
+              sheetData[0],
+            );
 
             break;
           }
