@@ -7,8 +7,7 @@
         - name: validate branch name
           service: meditrak-server-validation
           command: './packages/devops/scripts/ci/validateBranchName.sh'
-        - type: parallel
-          name: validate-code-all
+        - name: validate-code-all
           services:
             - meditrak-server-validation
             - web-config-server-validation
