@@ -1,30 +1,39 @@
 - type: parallel
   name: validate-and-test
   steps:
-    - name: validate branch
-      service: meditrak-server-validation
-      command: './packages/devops/scripts/ci/validateBranchName.sh'
     - type: parallel
-      name: validate-code-all
+      name: validate
       steps:
-        - name: validate-meditrak-server
+        - name: validate branch name
           service: meditrak-server-validation
-          command: './packages/devops/scripts/ci/validateCode.sh'
-        - name: validate-web-config-server
-          service: web-config-server-validation
-          command: './packages/devops/scripts/ci/validateCode.sh'
-    - type: parallel # they're in containers, so even though they generally use one db, they're sandboxed
-      name: test-all
+          command: './packages/devops/scripts/ci/validateBranchName.sh'
+        - type: parallel
+          name: validate-code-all
+          steps:
+            - name: validate-meditrak-server
+              service: meditrak-server-validation
+              command: './packages/devops/scripts/ci/validateCode.sh'
+            - name: validate-web-config-server
+              service: web-config-server-validation
+              command: './packages/devops/scripts/ci/validateCode.sh'
+    - type: serial
+      name: test
       steps:
-        - name: test-meditrak-server
+        - name: setup
           service: meditrak-server-testing
-          command: './packages/devops/scripts/ci/testBackend.sh'
-        - name: test-web-config-server
-          service: web-config-server-testing
-          command: './packages/devops/scripts/ci/testBackend.sh'
-        - name: test-database
-          service: database-testing
-          command: './packages/devops/scripts/ci/testPackage.sh'
+          command: './packages/devops/scripts/ci/setupTestDatabase.sh'
+        - type: parallel # they're in containers, so even though they generally use one db, they're sandboxed
+          name: test-all
+          steps:
+            - name: test-meditrak-server
+              service: meditrak-server-testing
+              command: './packages/devops/scripts/ci/testBackend.sh'
+            - name: test-web-config-server
+              service: web-config-server-testing
+              command: './packages/devops/scripts/ci/testBackend.sh'
+            - name: test-database
+              service: database-testing
+              command: './packages/devops/scripts/ci/testPackage.sh'
 
 - type: serial
   name: pull latest into ec2
