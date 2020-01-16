@@ -17,6 +17,6 @@
     "migrate": "yarn workspace @tupaia/database migrate",
     "migrate-create": "yarn workspace @tupaia/database migrate-create",
     "migrate-down": "yarn workspace @tupaia/database migrate-down",
-    "refresh-database": "./packages/devops/scripts/utility/refresh_db.sh"
+    "refresh-database": "./packages/devops/scripts/utility/refreshDb.sh"
   }
 }
