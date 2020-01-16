@@ -7,4 +7,3 @@ export { countOperationalFacilities } from './countOperationalFacilities';
 export { countOperationalFacilitiesByCountry } from './countOperationalFacilitiesByCountry';
 export { countOperationalFacilitiesByType } from './countOperationalFacilitiesByType';
 export { countValuesByDataElementGroup } from './countValuesByDataElementGroup';
-export { countBooleanData } from './countBooleanData';

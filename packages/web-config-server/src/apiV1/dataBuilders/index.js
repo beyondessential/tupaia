@@ -3,6 +3,7 @@ export { blankDataBuilder } from './blankDataBuilder';
 
 /** Generics */
 export * from './generic/average';
+export * from './generic/boolean';
 export * from './generic/comparison';
 export * from './generic/compose';
 export * from './generic/count';

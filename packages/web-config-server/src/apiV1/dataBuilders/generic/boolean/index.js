@@ -1,0 +1,1 @@
+export { evaluateAllTrue } from './evaluateAllTrue';
