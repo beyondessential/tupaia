@@ -7,11 +7,14 @@
         - name: validate branch name
           service: meditrak-server-validation
           command: './packages/devops/scripts/ci/validateBranchName.sh'
-        - name: validate-code-all
+        - type: parallel
+          name: validate all code
           services:
             - meditrak-server-validation
             - web-config-server-validation
-          command: './packages/devops/scripts/ci/validateCode.sh'
+          steps:
+            - name: validate package code
+              command: './packages/devops/scripts/ci/validateCode.sh'
     - type: serial
       name: test
       steps:
