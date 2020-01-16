@@ -10,6 +10,7 @@ export const TYPES = {
   COUNTRY: 'country',
   DASHBOARD_GROUP: 'dashboardGroup',
   DASHBOARD_REPORT: 'dashboardReport',
+  DATA_SOURCE: 'data_source',
   DHIS_SYNC_LOG: 'dhis_sync_log',
   DHIS_SYNC_QUEUE: 'dhis_sync_queue',
   DISASTER: 'disaster',
