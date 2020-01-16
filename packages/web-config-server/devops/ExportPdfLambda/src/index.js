@@ -4,7 +4,13 @@ const { process: coreWorkerProcess } = require('core-worker');
 const fs = require('fs');
 const nodemailer = require('nodemailer');
 
-const temporaryFilenamePrefix = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+const temporaryFilenamePrefix =
+  Math.random()
+    .toString(36)
+    .substring(2, 15) +
+  Math.random()
+    .toString(36)
+    .substring(2, 15);
 
 // Set defaults (overriden by lambda event params but useful for testing).
 let chartUrl = 'http://localhost:3001/?organisationUnitCode=TO&viewId=12&dashboardGroupId=13';
@@ -25,6 +31,7 @@ exports.handler = async (event, context, callback) => {
   chartType = event.chartType;
   exportEmail = event.email;
   fileType = event.fileType;
+  emailAttachFileName = event.exportFileName;
   extraConfig = event.extraConfig;
   exportFilename = `/tmp/all.${fileType}`;
   emailMessage = event.emailMessage;
@@ -32,14 +39,13 @@ exports.handler = async (event, context, callback) => {
   cookies = event.cookies;
 
   const browser = await setup.getBrowser();
-  exports.run(browser).then(
-    (result) => callback(null, result)
-  ).catch(
-    (err) => callback(err)
-  );
+  exports
+    .run(browser)
+    .then(result => callback(null, result))
+    .catch(err => callback(err));
 };
 
-const exportMatrix = async (page) => {
+const exportMatrix = async page => {
   if (fileType !== 'pdf') {
     throw new Error('Matrix export must be pdf');
   }
@@ -67,17 +73,21 @@ const exportMatrix = async (page) => {
 
     // Run the next page script which advanced to the next column or row and returns true.
     // Returns false if there was no page to advance to.
-    exportComplete = !await page.evaluate('window.tupaiaExportProps.moveToNextExportPage()');
-    pageCounter ++;
+    exportComplete = !(await page.evaluate('window.tupaiaExportProps.moveToNextExportPage()'));
+    pageCounter++;
     console.log(`Created ${fileName}`);
   }
 
   console.log('Screenshots complete');
-  await coreWorkerProcess(`ghostscript/bin/gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile=${exportFilename} ${files.join(' ')}`).death();
+  await coreWorkerProcess(
+    `ghostscript/bin/gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile=${exportFilename} ${files.join(
+      ' ',
+    )}`,
+  ).death();
   console.log('Screenshot combining complete');
 };
 
-const exportPage = async (page) => {
+const exportPage = async page => {
   if (fileType === 'pdf') {
     await page.pdf({
       path: exportFilename,
@@ -115,20 +125,20 @@ const sendCompletionEmail = async () => {
     html: emailMessage,
     attachments: [
       {
-        filename: `tupaia-export-${chartType}.${fileType}`,
+        filename: emailAttachFileName,
         content: fs.createReadStream(exportFilename),
       },
     ],
   });
 };
 
-const setCookie = async (page) => {
+const setCookie = async page => {
   for (let c = 0; c < cookies.length; c++) {
     await page.setCookie(cookies[c]);
   }
 };
 
-exports.run = async (browser) => {
+exports.run = async browser => {
   console.log('Begin running');
   const page = await browser.newPage();
   console.log('Browser launched');

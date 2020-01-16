@@ -1002,6 +1002,7 @@ export function attemptChartExport({
   startDate,
   endDate,
   selectedDisaster,
+  exportFileName,
   extraConfig = {},
   selectedFormat = 'pdf',
 }) {
@@ -1015,6 +1016,7 @@ export function attemptChartExport({
     startDate,
     endDate,
     selectedDisaster,
+    exportFileName,
     selectedFormat,
     extraConfig,
   };
