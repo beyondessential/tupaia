@@ -5,7 +5,7 @@
 
 import DBMigrate from 'db-migrate';
 import {} from 'dotenv/config'; // Load the environment variables into process.env
-import { constructMigratorCallback } from './constructMigratorCallback';
+import { runPostMigration } from './runPostMigration';
 import { getConnectionConfig } from './getConnectionConfig';
 
 const exitWithError = error => {
@@ -27,10 +27,9 @@ const migrationInstance = DBMigrate.getInstance(
   },
   async migrator => {
     const { driver } = migrator;
-    const callback = constructMigratorCallback(driver);
 
     try {
-      await callback();
+      await runPostMigration(driver);
       console.log('Migration complete');
     } catch (error) {
       exitWithError(error);

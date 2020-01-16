@@ -8,20 +8,16 @@
           service: meditrak-server-validation
           command: './packages/devops/scripts/ci/validateBranchName.sh'
         - type: parallel
-          name: validate-code-all
+          name: validate all code
+          services:
+            - meditrak-server-validation
+            - web-config-server-validation
           steps:
-            - name: validate-meditrak-server
-              service: meditrak-server-validation
-              command: './packages/devops/scripts/ci/validateCode.sh'
-            - name: validate-web-config-server
-              service: web-config-server-validation
+            - name: validate package code
               command: './packages/devops/scripts/ci/validateCode.sh'
     - type: serial
       name: test
       steps:
-        - name: setup
-          service: meditrak-server-testing
-          command: './packages/devops/scripts/ci/setupTestDatabase.sh'
         - type: parallel # they're in containers, so even though they generally use one db, they're sandboxed
           name: test-all
           steps:
