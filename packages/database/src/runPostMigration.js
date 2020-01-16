@@ -14,7 +14,7 @@ const EXCLUDED_TABLES_FROM_TRIGGER_CREATION = [
   "'spatial_ref_sys'", // Reference table provided by postgis
 ];
 
-export const constructMigratorCallback = driver => async () => {
+export const runPostMigration = async driver => {
   // ensure PostGIS is installed
   const { rows: postgisExtension } = await driver.runSql(`
     SELECT COUNT(1) FROM pg_extension WHERE extname = 'postgis';
