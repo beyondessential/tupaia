@@ -6,7 +6,7 @@
 import { capital } from 'case';
 import groupBy from 'lodash.groupby';
 
-import { reduceToDictionary } from '/utils';
+import { reduceToDictionary } from '@tupaia/utils';
 import { BaseModel } from './BaseModel';
 
 const FACILITY = 'facility';
