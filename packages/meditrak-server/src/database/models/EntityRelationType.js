@@ -3,9 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  **/
 
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '..';
-import { DatabaseModel } from '../DatabaseModel';
+import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
 
 class EntityRelationTypeType extends DatabaseType {
   static databaseType = TYPES.ENTITY_RELATION_TYPE;

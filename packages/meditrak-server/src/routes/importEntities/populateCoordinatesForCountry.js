@@ -6,9 +6,8 @@
 import { get } from 'lodash';
 import winston from 'winston';
 import { writeFileSync, existsSync, readFileSync, mkdirSync } from 'fs';
-import { fetchWithTimeout } from '@tupaia/utils';
+import { fetchWithTimeout, HttpError } from '@tupaia/utils';
 import { ENTITY_TYPES } from '../../database';
-import { HttpError } from '../../errors';
 
 const BASE_PATH = 'uploads/geojson';
 

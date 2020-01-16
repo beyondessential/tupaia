@@ -3,9 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 import moment from 'moment';
-import { DatabaseType } from '../DatabaseType';
-import { DatabaseModel } from '../DatabaseModel';
-import { TYPES } from '..';
+import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
 
 export const FEED_ITEM_TYPES = ['SurveyResponse', 'markdown'];
 
@@ -26,7 +24,5 @@ export class FeedItemModel extends DatabaseModel {
     return FeedItemType;
   }
 
-  get isDeletable() {
-    return true;
-  }
+  isDeletable = true;
 }

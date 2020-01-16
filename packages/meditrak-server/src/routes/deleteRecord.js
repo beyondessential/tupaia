@@ -3,8 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 
-import { respond, singularise } from '@tupaia/utils';
-import { ValidationError, DatabaseError } from '../errors';
+import { respond, singularise, ValidationError, DatabaseError } from '@tupaia/utils';
 import { constructRecordExistsWithId } from '../validation';
 
 /**

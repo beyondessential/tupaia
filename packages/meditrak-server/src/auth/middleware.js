@@ -1,7 +1,6 @@
+import { UnauthenticatedError } from '@tupaia/utils';
 import { getUserIDFromToken } from './userAuth';
 import { getAPIClientUser } from './clientAuth';
-
-import { UnauthenticatedError } from '../errors';
 
 async function authenticateUser(req) {
   const authHeader = req.headers.authorization || req.headers.Authorization;

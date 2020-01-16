@@ -1,7 +1,7 @@
 import { fetchWithTimeout, stringifyQuery } from '@tupaia/utils';
 import { UserSession } from '/models';
 import { refreshAccessToken } from './refreshAccessToken';
-import { CustomError } from '/errors';
+import { CustomError } from '@tupaia/utils';
 
 const TUPAIA_CONFIG_SERVER_DEVICE_NAME = 'Tupaia Config Server';
 

@@ -6,9 +6,7 @@ import winston from 'winston';
 
 /* eslint-disable camelcase */
 
-import { DatabaseType } from '../DatabaseType';
-import { DatabaseModel } from '../DatabaseModel';
-import { TYPES } from '..';
+import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
 
 import { getHook } from '../../hooks';
 import { CallbackQueue } from '../../utilities/CallbackQueue';

@@ -5,8 +5,7 @@
 
 import xlsx from 'xlsx';
 
-import { mapKeys, respond, WorkBookParser } from '@tupaia/utils';
-import { UploadError } from '../../errors';
+import { mapKeys, respond, WorkBookParser, UploadError } from '@tupaia/utils';
 import { SurveyResponseImporter } from '../utilities';
 import SURVEYS from './surveys';
 

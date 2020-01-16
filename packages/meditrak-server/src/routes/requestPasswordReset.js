@@ -2,9 +2,8 @@
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
-import { respond } from '@tupaia/utils';
+import { respond, DatabaseError, FormValidationError } from '@tupaia/utils';
 import { sendEmail } from '../utilities';
-import { DatabaseError, FormValidationError } from '../errors';
 
 export const requestPasswordReset = async (req, res) => {
   const { body, models } = req;

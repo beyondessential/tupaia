@@ -4,7 +4,7 @@
  */
 
 import { DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
-import { CustomError } from '/errors';
+import { CustomError } from '@tupaia/utils';
 
 export const getDataElementGroupSets = async (dhisApi, groupSetCodes, useCodeAsKey = false) => {
   const results = await dhisApi.getRecords({

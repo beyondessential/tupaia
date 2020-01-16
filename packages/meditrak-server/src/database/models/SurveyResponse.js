@@ -5,9 +5,7 @@
 
 import momentTimezone from 'moment-timezone';
 
-import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '..';
+import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
 class SurveyResponseType extends DatabaseType {
   static databaseType = TYPES.SURVEY_RESPONSE;
 
@@ -65,9 +63,7 @@ export class SurveyResponseModel extends DatabaseModel {
     return SurveyResponseType;
   }
 
-  get isDeletable() {
-    return true;
-  }
+  isDeletable = true;
 
   static onChange = async (change, record, model) => {
     const modelDetails = {

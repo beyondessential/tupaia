@@ -3,9 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 
-import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '..';
+import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
 
 class SurveyType extends DatabaseType {
   static databaseType = TYPES.SURVEY;
@@ -27,7 +25,5 @@ export class SurveyModel extends DatabaseModel {
     return SurveyType;
   }
 
-  get isDeletable() {
-    return true;
-  }
+  isDeletable = true;
 }

@@ -4,7 +4,7 @@
  **/
 
 import { DhisApi as BaseDhisApi } from '@tupaia/dhis-api';
-import { Dhis2Error } from '/errors';
+import { Dhis2Error } from '@tupaia/utils';
 import { QueryBuilder } from './QueryBuilder';
 
 export class DhisApi extends BaseDhisApi {
