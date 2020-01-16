@@ -5,7 +5,7 @@
 
 import { expect } from 'chai';
 
-import { removeArrayValue, replaceArrayValue, updateValues } from '/database/migrationUtilities';
+import { removeArrayValue, replaceArrayValue, updateValues } from '../utilities/migration';
 
 const dbStub = {
   runSql: (query, replacementParams) => ({ query, replacementParams }),
