@@ -34,7 +34,7 @@ export const exportChartScreenshot = async (
   });
   const { exportUrl, selectedFormat, ...restOfChartConfig } = chartConfig;
   const chartUrl = `${process.env.EXPORT_URL}/${exportUrl}`;
-  winston.log('Exporting chart', { exportUrl });
+  winston.info(`Exporting chart ${exportUrl}`);
   const pullParams = {
     FunctionName: 'export-charts',
     InvocationType: 'Event',
