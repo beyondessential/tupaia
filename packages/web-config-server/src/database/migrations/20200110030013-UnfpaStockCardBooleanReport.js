@@ -35,7 +35,7 @@ exports.down = function(db) {
   return db.runSql(`
     delete from "dashboardReport" where id = 'UNFPA_RH_Stock_Cards_metrics';
     update "dashboardGroup"
-    SET "dashboardReports" = '{UNFPA_RH_Contraceptives_Offered,UNFPA_RH_Services_Offered}'
+    SET "dashboardReports" = array_remove("dashboardReports", 'UNFPA_RH_Stock_Cards_metrics')
       WHERE "userGroup" = 'UNFPA' AND "organisationLevel" = 'Facility';
   `);
 };
