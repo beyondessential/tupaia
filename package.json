@@ -13,10 +13,12 @@
     "postinstall": "yarn build-internal-dependencies",
     "update-codeship-env-vars": "./packages/devops/scripts/ci/updateCiEnvVars.sh",
     "update-parameter-store-env-vars": "./packages/devops/scripts/utility/updateParameterStoreEnvVars.sh",
-    "build-admin-panel": "cd ./packages/admin-panel && yarn build",
-    "build-web-frontend": "cd ./packages/web-frontend && yarn build",
+    "build-admin-panel": "yarn workspace @tupaia/admin-panel build",
+    "build-web-frontend": "yarn workspace @tupaia/web-frontend build",
     "build-internal-dependencies": "yarn workspace @tupaia/database build && yarn workspace @tupaia/dhis-api build && yarn workspace @tupaia/utils build",
-    "migrate-web-config-server": "cd ./packages/web-config-server && yarn migrate",
-    "migrate-meditrak-server": "cd ./packages/meditrak-server && yarn migrate"
+    "migrate": "yarn workspace @tupaia/database migrate",
+    "migrate-create": "yarn workspace @tupaia/database migrate-create",
+    "migrate-down": "yarn workspace @tupaia/database migrate-down",
+    "refresh-database": "./packages/devops/scripts/utility/refreshDb.sh"
   }
 }

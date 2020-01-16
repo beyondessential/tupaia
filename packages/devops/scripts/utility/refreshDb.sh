@@ -3,11 +3,11 @@
 # Exit when any command fails
 set -e
 
-MIGRATE=false
-USAGE="usage: refresh_db dumpPath [-m --migrate]"
-DB_DUMP_PATH=$1
+USAGE="usage: refreshDb dumpPath [-m --migrate]"
+migrate=false
+db_dump_path=$1
 
-if [ "$DB_DUMP_PATH" == "" ]; then
+if [ "$db_dump_path" == "" ]; then
   echo "No dump path specified"
   echo $USAGE
   exit 1
@@ -17,7 +17,7 @@ while [ "$2" != "" ]; do
   case $2 in
       -m | --migrate )
         shift
-        MIGRATE=true
+        migrate=true
         ;;
       -h | --help )
         echo "Will drop your local tupaia database, and reinstate it from a dump"
@@ -33,8 +33,8 @@ done
 psql postgres -c 'DROP DATABASE "tupaia"'
 psql postgres -c 'CREATE DATABASE "tupaia" WITH OWNER "tupaia"'
 psql tupaia -c 'CREATE EXTENSION postgis'
-psql tupaia -U tupaia < $DB_DUMP_PATH
+psql tupaia -U tupaia < $db_dump_path
 
-if [ $MIGRATE = true ]; then
+if [ $migrate = true ]; then
   yarn migrate;
 fi

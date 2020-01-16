@@ -23,6 +23,8 @@ git checkout dev # Ensure we have dev as our default, if the specified branch do
 git checkout $BRANCH
 git pull
 yarn install
+echo "Migrating the database"
+yarn migrate
 
 # For each package, get the latest and deploy it
 for PACKAGE in "meditrak-server" "admin-panel" "web-frontend" "web-config-server"; do
@@ -50,9 +52,8 @@ for PACKAGE in "meditrak-server" "admin-panel" "web-frontend" "web-config-server
     # If it's a server, start it running on pm2, otherwise build it
     echo "Preparing to start or build ${PACKAGE}"
     if [[ $PACKAGE == *server ]];then
-      # It's a server, migrate the database then start the pm2 process
-      echo "Migrating database and starting ${PACKAGE}"
-      yarn migrate
+      # It's a server, start the pm2 process
+      echo "Starting ${PACKAGE}"
       pm2 start --name $PACKAGE "yarn start"
     else
       # It's a static site, build it
