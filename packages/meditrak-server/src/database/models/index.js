@@ -37,3 +37,4 @@ export { UserModel as user } from './User';
 export { UserRewardModel as userReward } from './UserReward';
 export { APIClientModel as apiClient } from './APIClient';
 export { DisasterModel as disaster } from './Disaster';
+export { DisasterEventModel as disasterEvent } from './DisasterEvent';
