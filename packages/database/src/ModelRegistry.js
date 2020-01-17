@@ -1,13 +1,12 @@
 /**
- * Tupaia MediTrak
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import * as models from './models';
-
 export class ModelRegistry {
-  constructor(database) {
+  constructor(database, modelClasses) {
     this.database = database;
+    this.modelClasses = modelClasses;
     this.generateModels(database.isSingleton);
   }
 
@@ -23,7 +22,7 @@ export class ModelRegistry {
 
   generateModels(isSingleton) {
     // Add models
-    Object.entries(models).forEach(([modelName, ModelClass]) => {
+    Object.entries(this.modelClasses).forEach(([modelName, ModelClass]) => {
       // Create a singleton instance of each model, passing through the change handler if there is
       // one statically defined on the ModelClass and this is the singleton (non transacting)
       // database instance
@@ -31,8 +30,8 @@ export class ModelRegistry {
       this[modelName] = new ModelClass(this.database, onChange);
     });
     // Inject other models into each model
-    Object.keys(models).forEach(modelName => {
-      Object.keys(models).forEach(otherModelName => {
+    Object.keys(this.modelClasses).forEach(modelName => {
+      Object.keys(this.modelClasses).forEach(otherModelName => {
         this[modelName].otherModels[otherModelName] = this[otherModelName];
       });
     });
@@ -48,7 +47,7 @@ export class ModelRegistry {
 
   async wrapInTransaction(wrappedFunction) {
     return this.database.wrapInTransaction(transactingDatabase => {
-      const transactingModelRegistry = new ModelRegistry(transactingDatabase);
+      const transactingModelRegistry = new ModelRegistry(transactingDatabase, this.modelClasses);
       return wrappedFunction(transactingModelRegistry);
     });
   }

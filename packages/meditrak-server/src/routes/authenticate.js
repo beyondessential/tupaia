@@ -6,8 +6,7 @@
 import jwt from 'jsonwebtoken';
 import randomToken from 'rand-token';
 
-import { respond } from '@tupaia/utils';
-import { DatabaseError, UnauthenticatedError } from '../errors';
+import { respond, DatabaseError, UnauthenticatedError } from '@tupaia/utils';
 
 const REFRESH_TOKEN_LENGTH = 40;
 const ACCESS_TOKEN_EXPIRY_SECONDS = 15 * 60; // User's access expires every 30 mins

@@ -5,9 +5,8 @@
 
 import { expect, assert } from 'chai';
 import { fetchWithTimeout } from '@tupaia/utils';
+import { generateId, TYPES } from '@tupaia/database';
 
-import { generateId } from '@tupaia/database';
-import { TYPES } from '../../../database';
 import { TEST_IMAGE_DATA } from '../../testData';
 import {
   generateTestId,

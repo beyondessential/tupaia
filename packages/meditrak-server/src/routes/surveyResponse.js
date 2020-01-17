@@ -3,8 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { getTimezoneNameFromTimestamp } from '@tupaia/utils';
-import { ValidationError, MultiValidationError } from '../errors';
+import { getTimezoneNameFromTimestamp, ValidationError, MultiValidationError } from '@tupaia/utils';
 import {
   ObjectValidator,
   hasContent,

@@ -1,8 +1,8 @@
 /**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  **/
-import { DatabaseError } from '../errors';
+import { DatabaseError } from '@tupaia/utils';
 
 export class DatabaseModel {
   otherModels = {};
@@ -40,12 +40,6 @@ export class DatabaseModel {
   // generate when returning results
   get DatabaseTypeClass() {
     throw new TypeError('get DatabaseTypeClass was called on object that has not implemented it');
-  }
-
-  // If a subclass wants to be deletable through the api, it should override this method and return
-  // true
-  get isDeletable() {
-    return false; // By default, records should not be able to be deleted through the api
   }
 
   get databaseType() {

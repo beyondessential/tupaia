@@ -3,8 +3,8 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 import moment from 'moment';
+import { TYPES } from '@tupaia/database';
 import { generateTestId } from '../../../../testUtilities';
-import { TYPES } from '../../../../../database';
 import { ANSWER_TYPES } from '../../../../../database/models/Answer';
 
 export const ORGANISATION_UNIT_ID = 'org_unit_xxx';

@@ -3,7 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 
-import { DatabaseError } from '../errors';
+import { DatabaseError } from '@tupaia/utils';
 import { hashAndSaltPassword, encryptPassword, generateSecretKey } from '../utilities';
 
 export const createUser = async (

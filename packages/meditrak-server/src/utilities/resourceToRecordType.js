@@ -4,7 +4,7 @@
  */
 import Case from 'case';
 import { singularise } from '@tupaia/utils';
-import { TYPES } from '../database';
+import { TYPES } from '@tupaia/database';
 
 // For those endpoints that do not make sense using the table name, we can provide a translation
 const RESOURCE_TRANSLATIONS = {

@@ -2,8 +2,7 @@
  * Tupaia MediTrak
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  **/
-import { HttpError } from '../../errors';
-import { fetchWithTimeout } from '@tupaia/utils';
+import { fetchWithTimeout, HttpError } from '@tupaia/utils';
 export class Ms1Api {
   constructor() {
     this.serverUrl = process.env.MS1_URL;

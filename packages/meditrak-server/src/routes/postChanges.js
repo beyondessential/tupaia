@@ -3,10 +3,9 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 
-import { respond } from '@tupaia/utils';
+import { respond, ValidationError } from '@tupaia/utils';
 import { ENTITY_TYPES } from '../database/models/Entity';
 import { updateOrCreateSurveyResponse, addSurveyImage } from '../dataAccessors';
-import { ValidationError } from '../errors';
 import {
   ObjectValidator,
   hasContent,

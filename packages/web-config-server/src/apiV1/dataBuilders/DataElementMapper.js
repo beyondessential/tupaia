@@ -2,8 +2,8 @@
  * Tupaia Config Server
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
+import { CustomError } from '@tupaia/utils';
 
-import { CustomError } from '/errors';
 import { getDataElementGroups } from '/apiV1/utils';
 import { DATA_SOURCE_TYPES } from './dataSourceTypes';
 
