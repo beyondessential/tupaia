@@ -242,7 +242,7 @@ export const buildSingleColumnTableCells = ({
   }
 
   if (addColumnTotal) {
-    cells.push([TOTAL_KEYS.columnTotal]);
+    cells.push(['$columnTotal']);
   }
 
   return cells;
@@ -311,7 +311,7 @@ export const build2dTableStringFormatCells = (format, rows, cols, { addRowTotal 
     });
 
     if (addRowTotal) {
-      cellRow.push(TOTAL_KEYS.rowTotal);
+      cellRow.push('$rowTotal');
     }
 
     cells.push(cellRow);

@@ -7,10 +7,24 @@ var seed;
 import {
   buildSingleColumnTableCells,
   build2DTableCells,
-  convertToTableOfDataValuesSql,
   build2dTableStringFormatCells,
-} from '../migrationUtilities';
-import { TOTAL_KEYS } from '../../apiV1/dataBuilders/generic/table/tableOfDataValues/TotalCalculator';
+} from '../utilities/migration';
+
+const convertToTableOfDataValuesSql = table => {
+  return `
+  UPDATE
+      "dashboardReport"
+  SET
+    "dataBuilder" = 'tableOfDataValues',
+    "dataBuilderConfig" = '${JSON.stringify({
+      rows: table.category ? { category: table.category, rows: table.rows } : table.rows,
+      columns: table.columns,
+      cells: table.cells,
+    })}'
+  WHERE
+    id = '${table.id}';
+  `;
+};
 
 //------------------------------------------------------------------------------
 // Single Column Table Migrations
@@ -444,7 +458,7 @@ const tableMCH03 = {
       ],
       addRowTotal: true,
     }),
-    Array(tMCH03Cols.length).fill(TOTAL_KEYS.rowCategoryColumnTotal),
+    Array(tMCH03Cols.length).fill('$rowCategoryColumnTotal'),
     ...build2DTableCells({
       prefix: 'MCH',
       numRows: tMCH03CategorisedRows[1].rows.length - 1,
@@ -457,7 +471,7 @@ const tableMCH03 = {
       ],
       addRowTotal: true,
     }),
-    Array(tMCH03Cols.length).fill(TOTAL_KEYS.rowCategoryColumnTotal),
+    Array(tMCH03Cols.length).fill('$rowCategoryColumnTotal'),
   ],
   id: 'TO_RH_Validation_MCH03',
 };
@@ -480,22 +494,8 @@ const tMCH05CategorisedCols = [
 ];
 
 const tMCH05Cells = [
-  [
-    'MCH58',
-    'MCH59',
-    TOTAL_KEYS.columnCategoryRowTotal,
-    'MCH66',
-    'MCH67',
-    TOTAL_KEYS.columnCategoryRowTotal,
-  ],
-  [
-    'MCH60',
-    'MCH61',
-    TOTAL_KEYS.columnCategoryRowTotal,
-    'MCH68',
-    'MCH69',
-    TOTAL_KEYS.columnCategoryRowTotal,
-  ],
+  ['MCH58', 'MCH59', '$columnCategoryRowTotal', 'MCH66', 'MCH67', '$columnCategoryRowTotal'],
+  ['MCH60', 'MCH61', '$columnCategoryRowTotal', 'MCH68', 'MCH69', '$columnCategoryRowTotal'],
 ];
 
 const tableMCH05 = {
