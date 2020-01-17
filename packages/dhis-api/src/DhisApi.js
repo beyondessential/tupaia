@@ -31,20 +31,12 @@ const {
   PROGRAM,
 } = DHIS2_RESOURCE_TYPES;
 
-export const REGIONAL_SERVER_NAME = 'regional';
 const LATEST_LOOKBACK_PERIOD = '600d';
 
-const getServerUrlFromName = serverName => {
-  const isProduction = process.env.IS_PRODUCTION_ENVIRONMENT === 'true';
-  const devPrefix = isProduction ? '' : 'dev-';
-  const specificServerPrefix = '' || serverName === REGIONAL_SERVER_NAME ? '' : `${serverName}-`;
-  return `https://${devPrefix}${specificServerPrefix}aggregation.tupaia.org`;
-};
-
 export class DhisApi {
-  constructor(serverName = REGIONAL_SERVER_NAME) {
+  constructor(serverName, serverUrl) {
     this.serverName = serverName;
-    const serverUrl = getServerUrlFromName(serverName);
+    this.serverUrl = serverUrl;
     this.fetcher = new DhisFetcher(serverName, serverUrl, this.constructError);
     this.deleteEvent = this.deleteEvent.bind(this);
   }

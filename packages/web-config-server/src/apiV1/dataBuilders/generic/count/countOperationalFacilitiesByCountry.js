@@ -1,5 +1,5 @@
+import { getCountryNameFromCode } from '@tupaia/utils';
 import { getPacificFacilityStatuses } from '/apiV1/utils';
-import { getCountryNameFromCode } from '/utils';
 
 export const countOperationalFacilitiesByCountry = async ({ query }) => {
   const operationalFacilities = await getPacificFacilityStatuses(

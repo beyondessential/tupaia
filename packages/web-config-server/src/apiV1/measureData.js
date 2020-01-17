@@ -1,6 +1,6 @@
 import { CustomError } from '@tupaia/utils';
+import { getDhisApiInstance } from '@tupaia/data-broker';
 import { getMeasureBuilder } from '/apiV1/measureBuilders/getMeasureBuilder';
-import { getDhisApiInstance } from '/dhis';
 import { DhisTranslationHandler, getOptionsForDataElement, getDateRange } from './utils';
 import { DATA_SOURCE_TYPES } from './dataBuilders/dataSourceTypes';
 
@@ -173,7 +173,7 @@ export default class extends DhisTranslationHandler {
     }
     // values have not been provided locally - fetch them from DHIS2
     const { code } = this.entity;
-    const dhisApi = getDhisApiInstance(code, isDataRegional);
+    const dhisApi = getDhisApiInstance({ entityCode: code, isDataRegional });
     const options =
       dataSourceType === DATA_SOURCE_TYPES.SINGLE
         ? await getOptionsForDataElement(dhisApi, dataElementCode)
@@ -198,7 +198,7 @@ export default class extends DhisTranslationHandler {
     const organisationUnitGroupCode = shouldFetchSiblings
       ? await this.getCountryLevelOrgUnitCode()
       : this.entity.code;
-    const dhisApi = getDhisApiInstance(this.entity.code, isDataRegional);
+    const dhisApi = getDhisApiInstance({ entityCode: this.entity.code, isDataRegional });
     const buildMeasure = getMeasureBuilder(measureBuilder);
     return buildMeasure(
       dhisApi,

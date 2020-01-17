@@ -1,5 +1,6 @@
 import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
-import { getDefaultPeriod, EARLIEST_DATA_DATE, getDhisApiInstance } from '/dhis';
+import { getDhisApiInstance } from '@tupaia/data-broker';
+import { getDefaultPeriod, EARLIEST_DATA_DATE } from '/dhis';
 
 // Request to calculate number of operational facilities with new query
 const getFacilitiesData = async (

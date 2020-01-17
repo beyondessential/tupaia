@@ -2,7 +2,7 @@
  * Tupaia Config Server
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
-import { getDhisApiInstance } from '/dhis';
+import { getDhisApiInstance } from '@tupaia/data-broker';
 import * as aggregators from './aggregators';
 
 export const runPreaggreagation = async aggregatorName => {

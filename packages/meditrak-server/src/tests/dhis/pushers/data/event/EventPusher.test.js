@@ -8,13 +8,13 @@ import chaiAsPromised from 'chai-as-promised';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import winston from 'winston';
+import * as DataBroker from '@tupaia/data-broker';
 
 import { EventPusher } from '../../../../../dhis/pushers/data/event/EventPusher';
 import { EventBuilder } from '../../../../../dhis/pushers/data/event/EventBuilder';
 import { populateTestData, insertSurveyAndScreens, resetTestData } from '../../../../testUtilities';
 import { Pusher } from '../../../../../dhis/pushers/Pusher';
 import { getModels } from '../../../../getModels';
-import * as GetDhisApiInstance from '../../../../../dhis/api/getDhisApiInstance';
 import { createDhisApiStub, resetDhisApiStubHistory } from './createDhisApiStub';
 import { BASELINE_TEST_DATA, QUESTION, SURVEY, CHANGE, DHIS_REFERENCE } from './testData';
 
@@ -32,7 +32,7 @@ describe('EventPusher', () => {
       sinon.stub(winston, 'error');
       sinon.stub(winston, 'warn');
       sinon.stub(Pusher.prototype, 'logResults');
-      sinon.stub(GetDhisApiInstance, 'getDhisApiInstance').returns(dhisApi);
+      sinon.stub(DataBroker, 'getDhisApiInstance').returns(dhisApi);
       sinon.stub(EventBuilder.prototype, 'build');
     });
 
@@ -40,7 +40,7 @@ describe('EventPusher', () => {
       winston.error.restore();
       winston.warn.restore();
       Pusher.prototype.logResults.restore();
-      GetDhisApiInstance.getDhisApiInstance.restore();
+      DataBroker.getDhisApiInstance.restore();
       EventBuilder.prototype.build.restore();
     });
 

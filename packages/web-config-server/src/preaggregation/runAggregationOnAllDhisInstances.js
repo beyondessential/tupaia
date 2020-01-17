@@ -3,7 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { getDhisApiInstance } from '/dhis';
+import { getDhisApiInstance } from '@tupaia/data-broker';
 
 /**
  * Runs the provided `aggregation` callback in all DHIS instances,
@@ -14,7 +14,7 @@ import { getDhisApiInstance } from '/dhis';
  * @param {boolean} isDataRegional
  */
 export const runAggregationOnAllDhisInstances = (runAggregation, regionalDhisApi) => {
-  const tongaDhisApi = getDhisApiInstance('TO', false);
+  const tongaDhisApi = getDhisApiInstance({ entityCode: 'TO', isDataRegional: false });
 
   runAggregation(regionalDhisApi);
   runAggregation(tongaDhisApi);

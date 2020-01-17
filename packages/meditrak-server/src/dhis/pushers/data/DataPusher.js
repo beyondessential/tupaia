@@ -2,7 +2,7 @@
  * Tupaia MediTrak
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
-import { getDhisApiInstance } from '../../api';
+import { getDhisApiInstance } from '@tupaia/data-broker';
 import { Pusher } from '../Pusher';
 
 export class DataPusher extends Pusher {
@@ -13,7 +13,7 @@ export class DataPusher extends Pusher {
     syncLogRecord.data;
 
   getDhisApiInstance(syncLogRecord) {
-    const originalData = this.extractDataFromSyncLog(syncLogRecord);
-    return getDhisApiInstance(originalData.serverName);
+    const { serverName } = this.extractDataFromSyncLog(syncLogRecord);
+    return getDhisApiInstance({ serverName });
   }
 }

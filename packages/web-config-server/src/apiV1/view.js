@@ -1,6 +1,6 @@
 import { convertDateRangeToPeriods } from '@tupaia/dhis-api';
 import { DashboardReport } from '/models';
-import { getDhisApiInstance } from '/dhis';
+import { getDhisApiInstance } from '@tupaia/data-broker';
 import { CustomError } from '@tupaia/utils';
 import { DhisTranslationHandler, isSingleValue } from './utils';
 import { getDataBuilder } from '/apiV1/dataBuilders/getDataBuilder';
@@ -82,7 +82,7 @@ export default class extends DhisTranslationHandler {
     }
     // Build the data and return it
     const dhisApiInstances = dataServices.map(({ isDataRegional }) =>
-      getDhisApiInstance(this.entity.code, isDataRegional),
+      getDhisApiInstance({ entityCode: this.entity.code, isDataRegional }),
     );
     const builtData = await dataBuilderForView({ ...this, req }, ...dhisApiInstances);
     return this.addViewMetaData(builtData);

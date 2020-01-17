@@ -26,6 +26,7 @@
   "license": "MIT",
   "dependencies": {
     "@beyondessential/tupaia-access-policy": "^2.0.2",
+    "@tupaia/data-broker": "1.0.0",
     "@tupaia/database": "1.0.0",
     "@tupaia/dhis-api": "1.0.0",
     "@tupaia/utils": "1.0.0",
@@ -40,7 +41,6 @@
     "compression": "^1.7.2",
     "cookie-parser": "^1.4.3",
     "cors": "^2.8.4",
-    "countrynames": "^0.1.1",
     "dotenv": "^5.0.1",
     "express": "^4.16.2",
     "lodash.difference": "^4.5.0",
