@@ -4,7 +4,7 @@
   "main": "dist/index.js",
   "private": true,
   "scripts": {
-    "build": "babel src --out-dir dist",
+    "build": "babel src --out-dir dist --ignore 'src/tests/**'",
     "test": "nyc --reporter=lcov mocha"
   },
   "dependencies": {
