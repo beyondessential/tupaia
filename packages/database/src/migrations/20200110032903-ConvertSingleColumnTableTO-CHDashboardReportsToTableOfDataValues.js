@@ -1,10 +1,27 @@
+/* eslint-disable func-names */
 'use strict';
 
 var dbm;
 var type;
 var seed;
 
-import { buildSingleColumnTableCells, convertToTableOfDataValuesSql } from '../utilities/migration';
+import { buildSingleColumnTableCells } from '../utilities/migration';
+
+const convertToTableOfDataValuesSql = table => {
+  return `
+  UPDATE
+      "dashboardReport"
+  SET
+    "dataBuilder" = 'tableOfDataValues',
+    "dataBuilderConfig" = '${JSON.stringify({
+      rows: table.category ? { category: table.category, rows: table.rows } : table.rows,
+      columns: table.columns,
+      cells: table.cells,
+    })}'
+  WHERE
+    id = '${table.id}';
+  `;
+};
 
 const table1b = {
   rows: [

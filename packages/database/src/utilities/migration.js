@@ -210,7 +210,7 @@ async function updateBuilderConfigByReportId(db, newConfig, reportId) {
   return updateValues(db, 'dashboardReport', { dataBuilderConfig: newConfig }, { id: reportId });
 }
 
-export const convertToTableOfDataValuesSql = table => {
+const convertToTableOfDataValuesSql = table => {
   return `
   UPDATE
       "dashboardReport"

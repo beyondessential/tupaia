@@ -1,10 +1,26 @@
-import { build2DTableCells, convertToTableOfDataValuesSql } from '../utilities/migration';
+import { build2DTableCells } from '../utilities/migration';
 
 ('use strict');
 
 var dbm;
 var type;
 var seed;
+
+const convertToTableOfDataValuesSql = table => {
+  return `
+  UPDATE
+      "dashboardReport"
+  SET
+    "dataBuilder" = 'tableOfDataValues',
+    "dataBuilderConfig" = '${JSON.stringify({
+      rows: table.category ? { category: table.category, rows: table.rows } : table.rows,
+      columns: table.columns,
+      cells: table.cells,
+    })}'
+  WHERE
+    id = '${table.id}';
+  `;
+};
 
 const t1Rows = [
   'Prediabetes',
