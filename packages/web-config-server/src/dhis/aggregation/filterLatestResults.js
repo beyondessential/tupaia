@@ -5,13 +5,15 @@
 import { getPreferredPeriod } from './getPreferredPeriod';
 
 // Filter to get latest period results from results
-export const filterLatestResults = (results, groupMapping) => {
+export const filterLatestResults = (results, orgUnitIdsToGroupKeys) => {
   const filteredResults = [];
   // Hold on to a cache of the latest results found for each data element/organisation unit combo
   const latestResultsCache = {};
   results.forEach(responseElement => {
     const { dataElement, organisationUnit, period } = responseElement;
-    const organisationUnitCode = groupMapping ? groupMapping[organisationUnit] : organisationUnit;
+    const organisationUnitCode = orgUnitIdsToGroupKeys
+      ? orgUnitIdsToGroupKeys[organisationUnit]
+      : organisationUnit;
     const dataElementOrganisationUnitKey = `${dataElement}_${organisationUnitCode}`;
     const mostRecentFoundSoFar = latestResultsCache[dataElementOrganisationUnitKey] || {};
     // Use responseElement if we haven't already found a matching response element with a more recent period

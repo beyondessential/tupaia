@@ -43,8 +43,12 @@ export async function startSyncWithDhis(models) {
     }
   });
 
-  // Start recursive sync loop
-  syncWithDhis(models, syncQueue);
+  // Start recursive sync loop (enabled by default)
+  if (process.env.DHIS_SYNC_DISABLE === 'true') {
+    console.log("DHIS2 sync is disabled")
+  } else {
+    syncWithDhis(models, syncQueue);
+  }
 }
 
 async function syncWithDhis(models, syncQueue) {

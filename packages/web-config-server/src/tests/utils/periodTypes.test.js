@@ -265,11 +265,11 @@ context('periodTypes', () => {
 
   describe('findCoarsestPeriodType', () => {
     it('should return undefined if the input is empty', () => {
-      expect(findCoarsestPeriodType([])).to.be.equal(undefined);
+      expect(findCoarsestPeriodType([])).to.equal(undefined);
     });
 
     it('should return undefined if no valid period type exists in the input', () => {
-      expect(findCoarsestPeriodType(['RANDOM', 'INPUT'])).to.be.equal(undefined);
+      expect(findCoarsestPeriodType(['RANDOM', 'INPUT'])).to.equal(undefined);
     });
 
     it('should detect an annual period', () => {

@@ -27,8 +27,10 @@ const currency = value => numeral(value).format('$0.00a');
 const fraction = (value, { total }) => {
   return `${String(value)}/${String(total)}`;
 };
-const fractionAndPercentage = (value, { numerator, denominator }) =>
-  `${numerator}/${denominator} = ${percentage(value)}`;
+const fractionAndPercentage = (value, { numerator, denominator }) => {
+  if (isNaN(value)) return value;
+  return `${numerator}/${denominator} = ${percentage(value)}`;
+};
 const text = value => String(value);
 const boolean = (value, { presentationOptions = {} }) => {
   const isPositive = value > 0;
@@ -82,7 +84,7 @@ const VALUE_TYPE_TO_FORMATTER = {
   [VALUE_TYPES.BOOLEAN]: boolean,
 };
 
-export const formatDataValue = (value, valueType, extraConfig) => {
+export const formatDataValue = (value, valueType, metadata) => {
   const formatter = VALUE_TYPE_TO_FORMATTER[valueType] || defaultFormatter;
-  return formatter(value, extraConfig);
+  return formatter(value, metadata);
 };
