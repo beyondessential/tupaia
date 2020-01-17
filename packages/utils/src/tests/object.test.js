@@ -5,7 +5,7 @@
 
 import { expect } from 'chai';
 
-import { flattenToObject, mapKeys, reduceToDictionary, reduceToSet, getSortByKey } from '..';
+import { flattenToObject, mapKeys, reduceToDictionary, reduceToSet, getSortByKey } from '../object';
 
 const object1 = {
   id: 'id1',
