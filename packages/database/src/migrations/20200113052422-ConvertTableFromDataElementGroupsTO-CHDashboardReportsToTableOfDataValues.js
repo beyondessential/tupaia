@@ -1,10 +1,26 @@
-'use strict';
+import { build2DTableCells } from '../utilities/migration';
+
+('use strict');
 
 var dbm;
 var type;
 var seed;
 
-import { build2DTableCells, convertToTableOfDataValuesSql } from '../migrationUtilities';
+const convertToTableOfDataValuesSql = table => {
+  return `
+  UPDATE
+      "dashboardReport"
+  SET
+    "dataBuilder" = 'tableOfDataValues',
+    "dataBuilderConfig" = '${JSON.stringify({
+      rows: table.category ? { category: table.category, rows: table.rows } : table.rows,
+      columns: table.columns,
+      cells: table.cells,
+    })}'
+  WHERE
+    id = '${table.id}';
+  `;
+};
 
 const t1Rows = [
   'Prediabetes',
@@ -69,7 +85,7 @@ const t5Cols = [
   'Unbooked Attendance ',
   'Did Not Attend',
   'Defaulters',
-  'Totals'
+  'Totals',
 ];
 
 const table5 = {
@@ -83,7 +99,7 @@ const table5 = {
     addRowTotal: true,
   }),
   id: 'TO_CH_Validation_CH5',
-}
+};
 
 const t9Rows = [
   'Diseases of the nervous system',
@@ -116,19 +132,19 @@ const table9 = {
     addColumnTotal: true,
   }),
   id: 'TO_CH_Validation_CH9',
-}
+};
 
 /**
-  * We receive the dbmigrate dependency from dbmigrate initially.
-  * This enables us to not have to rely on NODE_PATH.
-  */
-exports.setup = function (options, seedLink) {
+ * We receive the dbmigrate dependency from dbmigrate initially.
+ * This enables us to not have to rely on NODE_PATH.
+ */
+exports.setup = function(options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
 
-exports.up = function (db) {
+exports.up = function(db) {
   return db.runSql(`
     ${convertToTableOfDataValuesSql(table1)}
     ${convertToTableOfDataValuesSql(table5)}
@@ -136,10 +152,10 @@ exports.up = function (db) {
   `);
 };
 
-exports.down = function (db) {
+exports.down = function(db) {
   return null;
 };
 
 exports._meta = {
-  "version": 1
+  version: 1,
 };

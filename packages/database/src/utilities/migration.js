@@ -1,5 +1,3 @@
-import { TOTAL_KEYS } from '../apiV1/dataBuilders/generic/table/tableOfDataValues/TotalCalculator';
-
 /**
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
@@ -212,7 +210,7 @@ async function updateBuilderConfigByReportId(db, newConfig, reportId) {
   return updateValues(db, 'dashboardReport', { dataBuilderConfig: newConfig }, { id: reportId });
 }
 
-export const convertToTableOfDataValuesSql = table => {
+const convertToTableOfDataValuesSql = table => {
   return `
   UPDATE
       "dashboardReport"
@@ -282,7 +280,7 @@ export const build2DTableCells = ({
       }
     }
     if (addRowTotal) {
-      cellRow.push(TOTAL_KEYS.rowTotal);
+      cellRow.push('$rowTotal');
     }
 
     cells.push(cellRow);
@@ -292,10 +290,10 @@ export const build2DTableCells = ({
     cells.push(
       Object.keys(new Array(numCols).fill(null)).map(index => {
         if (addRowTotal && index == numCols - 1) {
-          return TOTAL_KEYS.total; // If both rowTotal and colTotal, mark as tableTotal
+          return '$total'; // If both rowTotal and colTotal, mark as tableTotal
         }
 
-        return TOTAL_KEYS.columnTotal;
+        return '$columnTotal';
       }),
     );
   }
