@@ -6969,7 +6969,7 @@ db-migrate-shared@^1.2.0:
   resolved "https://registry.yarnpkg.com/db-migrate-shared/-/db-migrate-shared-1.2.0.tgz#6125be1b3a5e661229fc75d50c85f6c3ffadbede"
   integrity sha512-65k86bVeHaMxb2L0Gw3y5V+CgZSRwhVQMwDMydmw5MvIpHHwD6SmBciqIwHsZfzJ9yzV/yYhdRefRM6FV5/siw==
 
-db-migrate@^0.11.1, db-migrate@^0.11.5:
+db-migrate@^0.11.5:
   version "0.11.6"
   resolved "https://registry.yarnpkg.com/db-migrate/-/db-migrate-0.11.6.tgz#06fce6bc7f93c4e06ae7b00de33378ac8fc991ee"
   integrity sha512-HdX4V/RFVSFE+9XjiVZ3K6ofTXtd8KAam+IE14ln+1RWLGUJ1Qo8HFjEs6H3u01yRnCzvHGU0/oNkllf+ZtjVA==
