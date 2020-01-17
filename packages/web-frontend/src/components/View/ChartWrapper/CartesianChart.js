@@ -276,13 +276,14 @@ export class CartesianChart extends PureComponent {
 
   renderTooltip = () => {
     const { viewContent } = this.props;
-    const { chartConfig, valueType } = viewContent;
+    const { chartConfig, valueType, labelType } = viewContent;
 
     return (
       <Tooltip
         content={
           <CustomTooltip
             valueType={valueType}
+            labelType={labelType}
             periodGranularity={viewContent.periodGranularity}
             presentationOptions={chartConfig}
           />
