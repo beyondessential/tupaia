@@ -1,5 +1,3 @@
-import { TOTAL_KEYS } from "../apiV1/dataBuilders/generic/table/tableOfDataValues/TotalCalculator";
-
 /**
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
@@ -219,10 +217,10 @@ export const convertToTableOfDataValuesSql = table => {
   SET
     "dataBuilder" = 'tableOfDataValues',
     "dataBuilderConfig" = '${JSON.stringify({
-    rows: table.category ? { category: table.category, rows: table.rows } : table.rows,
-    columns: table.columns,
-    cells: table.cells,
-  })}'
+      rows: table.category ? { category: table.category, rows: table.rows } : table.rows,
+      columns: table.columns,
+      cells: table.cells,
+    })}'
   WHERE
     id = '${table.id}';
   `;
@@ -260,20 +258,22 @@ export const build2DTableCells = ({
       }
     }
     if (addRowTotal) {
-      cellRow.push(TOTAL_KEYS.rowTotal);
+      cellRow.push('$rowTotal');
     }
 
     cells.push(cellRow);
   }
 
   if (addColumnTotal) {
-    cells.push(Object.keys(new Array(numCols).fill(null)).map(index => {
-      if (addRowTotal && (index == (numCols - 1))) {
-        return TOTAL_KEYS.total; // If both rowTotal and colTotal, mark as tableTotal
-      }
+    cells.push(
+      Object.keys(new Array(numCols).fill(null)).map(index => {
+        if (addRowTotal && index == numCols - 1) {
+          return '$total'; // If both rowTotal and colTotal, mark as tableTotal
+        }
 
-      return TOTAL_KEYS.columnTotal;
-    }));
+        return '$columnTotal';
+      }),
+    );
   }
 
   return cells;
