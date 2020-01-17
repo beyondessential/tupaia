@@ -61,5 +61,5 @@ export class UserFacilityPermissionModel extends DatabaseModel {
     return UserFacilityPermissionType;
   }
 
-  isDeletable = true;
+  isDeletableViaApi = true;
 }

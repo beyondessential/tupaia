@@ -57,5 +57,5 @@ export class UserGeographicalAreaPermissionModel extends DatabaseModel {
     return UserGeographicalAreaPermissionType;
   }
 
-  isDeletable = true;
+  isDeletableViaApi = true;
 }
