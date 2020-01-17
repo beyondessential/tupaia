@@ -4,7 +4,7 @@
   "main": "dist/index.js",
   "private": true,
   "scripts": {
-    "build": "babel src --out-dir dist --copy-files --ignore '**/migrations'",
+    "build": "babel src --out-dir dist --ignore '**/migrations','src/tests/**'",
     "test": "nyc --reporter=lcov mocha",
     "migrate": "babel-node ./src/migrate.js up --migrations-dir ./src/migrations -v",
     "migrate-down": "babel-node ./src/migrate.js  down --migrations-dir ./src/migrations -v",
