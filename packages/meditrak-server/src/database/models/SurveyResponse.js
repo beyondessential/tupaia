@@ -63,7 +63,7 @@ export class SurveyResponseModel extends DatabaseModel {
     return SurveyResponseType;
   }
 
-  isDeletable = true;
+  isDeletableViaApi = true;
 
   static onChange = async (change, record, model) => {
     const modelDetails = {

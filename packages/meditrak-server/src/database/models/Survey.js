@@ -25,5 +25,5 @@ export class SurveyModel extends DatabaseModel {
     return SurveyType;
   }
 
-  isDeletable = true;
+  isDeletableViaApi = true;
 }

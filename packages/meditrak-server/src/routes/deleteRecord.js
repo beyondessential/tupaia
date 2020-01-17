@@ -14,7 +14,7 @@ export async function deleteRecord(req, res) {
   const { resource: pluralResource, recordId } = params;
   const resource = singularise(pluralResource);
   const model = models[resource];
-  if (!model.isDeletable) {
+  if (!model.isDeletableViaApi) {
     throw new ValidationError(`${resource} is not a valid DELETE endpoint`);
   }
 

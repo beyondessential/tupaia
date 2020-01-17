@@ -36,5 +36,5 @@ export class UserCountryPermissionModel extends DatabaseModel {
     return UserCountryPermissionType;
   }
 
-  isDeletable = true;
+  isDeletableViaApi = true;
 }
