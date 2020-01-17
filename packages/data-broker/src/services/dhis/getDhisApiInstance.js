@@ -33,9 +33,12 @@ const getServerName = (entityCode, isDataRegional) => {
 /**
  * Returns an api instance connected to the dhis server for the country containing the given
  * entityCode, or the regional dhis server if either none is passed in, or the data
- * is regional
- * @param {*} entityCode
- * @param {*} isDataRegional
+ * is regional. Can also pass the `serverName` directly, to specify exactly which instance to use.
+ * @param {Object}  options
+ * @param {string}  options.entityCode      Along with isDataRegional, determines which dhis instance to use
+ * @param {boolean} options.isDataRegional  Along with entityCode, determines which dhis instance to use
+ * @param {string}  options.serverName      If provided, the server name will take this value rather
+ *                                          being derived from the other options
  */
 export const getDhisApiInstance = ({
   serverName: providedServerName,
