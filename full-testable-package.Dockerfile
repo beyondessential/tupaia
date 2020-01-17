@@ -20,6 +20,12 @@ COPY packages/${package}/package.json ./packages/${package}
 
 # some packages also have internal dependencies loaded by yarn workspaces, so these internal
 # dependencies must exist during yarn install (e.g. database, dhis-api)
+RUN mkdir -p ./packages/aggregator
+COPY packages/aggregator/. ./packages/aggregator
+RUN mkdir -p ./packages/data-broker
+COPY packages/data-broker/. ./packages/data-broker
+RUN mkdir -p ./packages/devops
+COPY packages/devops/. ./packages/devops
 RUN mkdir -p ./packages/database
 COPY packages/database/. ./packages/database
 RUN mkdir -p ./packages/dhis-api
