@@ -1,8 +1,8 @@
 import { TOTAL_KEYS } from "../apiV1/dataBuilders/generic/table/tableOfDataValues/TotalCalculator";
 
 /**
- * Tupaia Config Server
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
 /**
@@ -10,33 +10,6 @@ import { TOTAL_KEYS } from "../apiV1/dataBuilders/generic/table/tableOfDataValue
  *
  * @typedef {(Object<string, any>|string|number|boolean)} DbValue
  */
-
-export const rejectOnError = (resolve, reject, error) => {
-  if (error) {
-    reject(error);
-  } else {
-    resolve();
-  }
-};
-
-export function insertObject(db, table, data) {
-  const entries = Object.entries(data);
-  const keys = entries.map(([k, v]) => k);
-  const values = entries.map(([k, v]) => v);
-  return new Promise((resolve, reject) => {
-    return db.insert(table, keys, values, error => rejectOnError(resolve, reject, error));
-  });
-}
-
-export function insertMultipleObjects(db, table, objects) {
-  var chain = Promise.resolve();
-  objects.map(o => {
-    chain = chain.then(() => insertObject(db, table, o));
-  });
-  return chain;
-}
-
-export const arrayToDbString = array => array.map(item => `'${item}'`).join(', ');
 
 class RequiredParameterError extends Error {
   /**
@@ -48,6 +21,34 @@ class RequiredParameterError extends Error {
     this.name = 'RequiredParameterError';
   }
 }
+
+export const rejectOnError = (resolve, reject, error) => {
+  if (error) {
+    console.error(error);
+    reject(error);
+  } else {
+    resolve();
+  }
+};
+
+export function insertMultipleObjects(db, table, objects) {
+  var chain = Promise.resolve();
+  objects.map(o => {
+    chain = chain.then(() => insertObject(db, table, o));
+  });
+  return chain;
+}
+
+export function insertObject(db, table, data) {
+  const entries = Object.entries(data);
+  const keys = entries.map(([k, v]) => k);
+  const values = entries.map(([k, v]) => v);
+  return new Promise((resolve, reject) => {
+    return db.insert(table, keys, values, error => rejectOnError(resolve, reject, error));
+  });
+}
+
+export const arrayToDbString = array => array.map(item => `'${item}'`).join(', ');
 
 /**
  * @param {Object<string, any>} params
