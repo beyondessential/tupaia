@@ -22,33 +22,13 @@ const {
   PRIMARY_ENTITY,
 } = ANSWER_TYPES;
 
-const CODE = 'code';
-const ID = 'id';
-export const DATA_ELEMENT_ID_SCHEMES = { CODE, ID };
-
-export const generateDataValue = async (dhisApi, models, answer, dataElementIdScheme = CODE) => {
+export const generateDataValue = async (dhisApi, models, answer) => {
   const question = await models.question.findById(answer.question_id);
-  const dataElementId = await getDataElementId(dhisApi, question, dataElementIdScheme);
   const answerValue = await generateAnswerValue(dhisApi, models, answer, question);
   return {
-    dataElement: dataElementId,
+    dataElement: question.code,
     value: answerValue,
   };
-};
-
-const getDataElementId = async (dhisApi, question, dataElementIdScheme) => {
-  if (dataElementIdScheme === CODE) {
-    return question.code;
-  }
-  // Using "id" id scheme, need to fetch the DHIS2 internal id
-  const dataElementId = await dhisApi.getIdFromCode(
-    DHIS2_RESOURCE_TYPES.DATA_ELEMENT,
-    question.code,
-  );
-  if (!dataElementId) {
-    throw new Error(`No data element with code ${question.code}`);
-  }
-  return dataElementId;
 };
 
 const getEntityCodeFromAnswer = async (models, { text: entityId }) => {

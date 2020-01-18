@@ -23,9 +23,9 @@ export class DhisService extends DataService {
     return getDhisApiInstance({ serverName });
   }
 
-  async push(value) {
+  async push() {
     const api = this.getApi();
-    const pusher = new DhisPusher(api, this.dataSource, this.metadata, value);
+    const pusher = new DhisPusher(api, this.dataSource, this.metadata);
     return pusher.push();
   }
 

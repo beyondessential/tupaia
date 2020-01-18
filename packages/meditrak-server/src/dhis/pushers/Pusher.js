@@ -5,6 +5,7 @@
 
 import winston from 'winston';
 import { getDiagnosticsFromResponse } from '@tupaia/dhis-api';
+import { DataBroker } from '@tupaia/data-broker';
 
 /**
  * @typedef {PushResults}
@@ -19,6 +20,7 @@ export class Pusher {
     this.models = models;
     this.change = change;
     this.api = dhisApi;
+    this.dataBroker = new DataBroker();
   }
 
   get recordId() {

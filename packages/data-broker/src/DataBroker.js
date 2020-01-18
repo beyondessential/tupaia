@@ -23,10 +23,10 @@ export class DataBroker {
     }
   };
 
-  async push(code, metadata, value) {
+  async push(code, data) {
     const dataSource = await this.models.dataSource.findOne({ code });
-    const dataService = this.getServiceForDataSource(dataSource, metadata);
-    return dataService.push(value);
+    const dataService = this.getServiceForDataSource(dataSource, data);
+    return dataService.push();
   }
 
   async pull(code, metadata) {

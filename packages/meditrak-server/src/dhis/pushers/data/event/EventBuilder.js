@@ -7,7 +7,7 @@ import { get } from 'lodash';
 import { DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
 
 import { enrollTrackedEntityInProgramIfNotEnrolled } from '../../../api';
-import { generateDataValue } from '../generateDataValue';
+import { generateDataValue, DATA_ELEMENT_ID_SCHEMES } from '../generateDataValue';
 
 const { ORGANISATION_UNIT, PROGRAM } = DHIS2_RESOURCE_TYPES;
 
@@ -55,7 +55,7 @@ export class EventBuilder {
     const dataValues = [];
     for (let i = 0; i < answers.length; i++) {
       const answer = answers[i];
-      const dataValue = await generateDataValue(this.api, this.models, answer, true);
+      const dataValue = await generateDataValue(this.api, this.models, answer);
       dataValues.push(dataValue);
     }
 
