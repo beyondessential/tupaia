@@ -4,16 +4,34 @@
  */
 
 import { setupModelRegistry } from '@tupaia/database';
-import { DhisService } from './services';
+import { DhisService, SERVICE_TYPES } from './services';
+import * as modelClasses from './models';
 
 export class DataBroker {
   constructor() {
-    const models = setupModelRegistry();
-    this.dataSource = models.dataSource;
-    // each service below can either push, pull, or both
-    this.services = {
-      regionalDhis: new DhisService('regional'),
-      tongaDhis: new DhisService('tonga'),
-    };
+    this.models = setupModelRegistry(modelClasses);
+  }
+
+  getServiceForDataSource = (dataSource, metadata) => {
+    const { service: serviceType } = dataSource;
+    switch (serviceType) {
+      case SERVICE_TYPES.DHIS: {
+        return new DhisService(dataSource, metadata);
+      }
+      default:
+        throw new Error(`The data service ${serviceType} is not currently supported`);
+    }
+  };
+
+  async push(code, metadata, value) {
+    const dataSource = await this.models.dataSource.findOne({ code });
+    const dataService = this.getServiceForDataSource(dataSource, metadata);
+    return dataService.push(value);
+  }
+
+  async pull(code, metadata) {
+    const dataSource = await this.models.dataSource.findOne({ code });
+    const dataService = this.getServiceForDataSource(dataSource, metadata);
+    return dataService.pull();
   }
 }

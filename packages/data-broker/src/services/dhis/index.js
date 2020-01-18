@@ -3,4 +3,4 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-export { DataSourceModel as DataSource } from './DataSource';
+export { setupServices, getServiceKeyForDataSource } from './setupServices';
