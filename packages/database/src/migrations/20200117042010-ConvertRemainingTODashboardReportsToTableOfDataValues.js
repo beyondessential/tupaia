@@ -41,8 +41,6 @@ const tableHPU_Validation_HP_04_New_Calls = {
 
 //------------------------------------------------------------------------------
 
-//TODO: Fix this, it's borken!! (bools have become nums)
-
 const tableHPU_Validation_HP_05 = {
   rows: [
     'Billboard',
