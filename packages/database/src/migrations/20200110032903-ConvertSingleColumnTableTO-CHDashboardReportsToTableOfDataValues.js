@@ -37,7 +37,18 @@ const table1b = {
     'CH1 Annual NCD Screening and Diagnosis: Number of Deaths of NCD Patient',
   ],
   columns: ['Count'],
-  cells: ['CH2', 'CH3', 'CH10', 'CH11', 'CH12', 'CH13', 'CH14', 'CH239', 'CH240', 'CH241'],
+  cells: [
+    ['CH2'],
+    ['CH3'],
+    ['CH10'],
+    ['CH11'],
+    ['CH12'],
+    ['CH13'],
+    ['CH14'],
+    ['CH239'],
+    ['CH240'],
+    ['CH241'],
+  ],
   id: 'TO_CH_Validation_CH1b',
 };
 
