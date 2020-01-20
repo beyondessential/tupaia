@@ -38,9 +38,7 @@ const migrationInstance = DBMigrate.getInstance(
 );
 
 try {
-  console.log('get connection config: ', ...getConnectionConfig());
   migrationInstance.run();
 } catch (error) {
-  console.log('get connection config: ', ...getConnectionConfig());
   exitWithError(error);
 }
