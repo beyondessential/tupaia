@@ -12,6 +12,7 @@ class DataSourceType extends DatabaseType {
 }
 
 export class DataSourceModel extends DatabaseModel {
+  // eslint-disable-next-line class-methods-use-this
   get DatabaseTypeClass() {
     return DataSourceType;
   }

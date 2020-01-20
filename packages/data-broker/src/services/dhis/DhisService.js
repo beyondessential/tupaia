@@ -3,18 +3,10 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { DataService } from '../DataService';
+import { Service } from '../Service';
 import { getServerName, getDhisApiInstance } from './getDhisApiInstance';
-import { DhisPusher } from './DhisPusher';
-import { DhisPuller } from './DhisPuller';
 
-export class DhisService extends DataService {
-  constructor(dataSource, metadata) {
-    super();
-    this.dataSource = dataSource;
-    this.metadata = metadata;
-  }
-
+export class DhisService extends Service {
   getApi() {
     const serverName = getServerName(
       this.metadata.entityCode,
@@ -25,13 +17,11 @@ export class DhisService extends DataService {
 
   async push() {
     const api = this.getApi();
-    const pusher = new DhisPusher(api, this.dataSource, this.metadata);
-    return pusher.push();
+    // TODO implement
   }
 
   async pull() {
     const api = this.getApi();
-    const puller = new DhisPuller(api, this.dataSource, this.metadata);
-    return puller.pull();
+    // TODO implement
   }
 }

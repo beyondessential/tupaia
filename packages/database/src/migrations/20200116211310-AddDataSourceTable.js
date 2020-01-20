@@ -14,20 +14,23 @@ exports.setup = function(options, seedLink) {
   seed = seedLink;
 };
 
-exports.up = function(db) {
+exports.up = async function(db) {
+  await db.runSql(`CREATE TYPE service_type AS ENUM('dhis');`);
+
   return db.createTable('data_source', {
     columns: {
       id: { type: 'text', primaryKey: true },
       code: { type: 'text', notNull: true, unique: true },
-      service: { type: 'text', notNull: true },
+      service_type: { type: 'service_type', notNull: true },
       config: { type: 'jsonb', notNull: true, default: '{}' },
     },
     ifNotExists: true,
   });
 };
 
-exports.down = function(db) {
-  return db.dropTable('data_source');
+exports.down = async function(db) {
+  await db.dropTable('data_source');
+  return db.runSql('DROP TYPE service_type;');
 };
 
 exports._meta = {
