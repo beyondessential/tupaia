@@ -11,18 +11,18 @@ export class DataBroker {
     this.models = getModels();
   }
 
-  async getService(code, type) {
-    const dataSource = await this.models.dataSource.fetchFromDbOrDefault(code, type);
+  async getService(dataSourceSpec) {
+    const dataSource = await this.models.dataSource.fetchFromDbOrDefault(dataSourceSpec);
     return getServiceFromDataSource(dataSource, this.models);
   }
 
-  async push(code, data, type) {
-    const service = await this.getService(code, type);
+  async push(dataSourceSpec, data) {
+    const service = await this.getService(dataSourceSpec);
     return service.push(data);
   }
 
-  async pull(code, metadata, type) {
-    const service = await this.getService(code, type);
+  async pull(dataSourceSpec, metadata) {
+    const service = await this.getService(dataSourceSpec);
     return service.pull(metadata);
   }
 }

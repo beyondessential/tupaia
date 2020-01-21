@@ -18,16 +18,20 @@ exports.up = async function(db) {
   await db.runSql(`CREATE TYPE service_type AS ENUM('dhis');`);
   await db.runSql(`CREATE TYPE data_source_type AS ENUM('question', 'survey');`);
 
-  return db.createTable('data_source', {
+  await db.createTable('data_source', {
     columns: {
       id: { type: 'text', primaryKey: true },
-      code: { type: 'text', notNull: true, unique: true },
+      code: { type: 'text', notNull: true },
       type: { type: 'data_source_type', notNull: true, default: 'question' },
       service_type: { type: 'service_type', notNull: true },
       config: { type: 'jsonb', notNull: true, default: '{}' },
     },
     ifNotExists: true,
   });
+  return db.runSql(`
+    ALTER TABLE data_source
+    ADD UNIQUE (code, type);
+  `);
 };
 
 exports.down = async function(db) {
