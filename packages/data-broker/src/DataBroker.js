@@ -9,8 +9,6 @@ import { getServiceFromDataSource } from './services';
 import { getModels } from './getModels';
 
 export class DataBroker {
-  static dataSourceTypes = DataSource.types;
-
   constructor() {
     this.models = getModels();
   }
@@ -23,6 +21,14 @@ export class DataBroker {
   async push(type, code, data) {
     const service = await this.getService(code, type);
     return service.push(data);
+  }
+
+  async pushAggregateDataValue(dataValue) {
+    return this.push(DataSource.types.question, dataValue.code, dataValue);
+  }
+
+  async pushEvent(event) {
+    return this.push(DataSource.types.survey, event.program, event);
   }
 
   async pull(code, metadata) {
