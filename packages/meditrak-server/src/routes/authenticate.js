@@ -7,7 +7,8 @@ import jwt from 'jsonwebtoken';
 import randomToken from 'rand-token';
 
 import { respond } from '../respond';
-import { DatabaseError, UnauthenticatedError } from '../errors';
+import { DatabaseError, UnauthenticatedError, UnverifiedError } from '../errors';
+import { EMAIL_VERIFIED_STATUS } from './verifyEmail';
 
 const REFRESH_TOKEN_LENGTH = 40;
 const ACCESS_TOKEN_EXPIRY_SECONDS = 15 * 60; // User's access expires every 30 mins
@@ -44,6 +45,9 @@ const getAuthenticatedUser = async (models, { emailAddress, password, deviceName
     throw new UnauthenticatedError('Incorrect email or password');
   }
 
+  if (user.verified_email === EMAIL_VERIFIED_STATUS.NEW_USER) {
+    throw new UnverifiedError('Email address not yet verified');
+  }
   return user;
 };
 
@@ -92,6 +96,7 @@ const getAuthorizationObject = async ({ refreshToken, user, countryIdentifier })
       id: user.id,
       name: user.fullName,
       email: user.email,
+      verifiedEmail: user.verified_email,
       permissionGroups,
       accessPolicy,
     },
@@ -121,14 +126,13 @@ const authenticatePassword = async (req, res) => {
       user,
       countryIdentifier,
     });
-
     if (installId) {
       await models.installId.createForUser(user.id, installId, devicePlatform);
     }
 
     respond(res, authorizationObject);
   } catch (error) {
-    throw error; // Throw error up
+    throw error; // Throw up error
   }
 };
 
