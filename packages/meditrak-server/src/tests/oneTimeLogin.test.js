@@ -8,7 +8,7 @@ import { expect } from 'chai';
 import moment from 'moment';
 
 import { TestableApp, getAuthorizationHeader } from './TestableApp';
-import { randomEmail } from './testUtilities';
+import { randomEmail, EMAIL_VERIFIED_STATUS } from './testUtilities';
 
 describe('One Time Login', function() {
   const app = new TestableApp();
@@ -39,6 +39,8 @@ describe('One Time Login', function() {
         },
       });
       const { userId } = userResponse.body;
+
+      await models.user.updateById(userId, { verified_email: EMAIL_VERIFIED_STATUS.VERIFIED });
 
       const { token } = await models.oneTimeLogin.create({
         user_id: userId,
@@ -79,6 +81,8 @@ describe('One Time Login', function() {
       },
     });
     const { userId } = userResponse.body;
+
+    await models.user.updateById(userId, { verified_email: EMAIL_VERIFIED_STATUS.VERIFIED });
 
     const { token } = await models.oneTimeLogin.create({
       user_id: userId,

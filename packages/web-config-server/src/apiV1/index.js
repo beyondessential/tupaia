@@ -14,6 +14,8 @@ import {
   appRequestResetPassword,
   appGetCountryAccessList,
   appRequestCountryAccess,
+  appVerifyEmail,
+  appResendEmail,
 } from '/appServer';
 import { exportChart, exportSurveyResponses } from '/export';
 import { getUser } from './getUser';
@@ -40,6 +42,8 @@ export const getRoutesForApiV1 = () => {
   api.post('/resetPassword', catchAsyncErrors(appRequestResetPassword()));
   api.get('/countryAccessList', catchAsyncErrors(appGetCountryAccessList()));
   api.post('/requestCountryAccess', catchAsyncErrors(appRequestCountryAccess()));
+  api.get('/verifyEmail', catchAsyncErrors(appVerifyEmail()));
+  api.post('/resendEmail', catchAsyncErrors(appResendEmail()));
   api.post('/export/chart', catchAsyncErrors(exportChart()));
   api.get('/export/surveyResponses', catchAsyncErrors(exportSurveyResponses()));
   api.get(
