@@ -45,7 +45,7 @@ export class DhisService extends Service {
     return { diagnostics, serverName: api.getServerName() };
   }
 
-  async pushAggregateData(api, { code, orgUnit, ...restOfDataValue }) {
+  async pushAggregateData(api, { code, ...restOfDataValue }) {
     const dataValue = {
       dataElement: await this.translateDataElementIdentifier(api, this.dataSource),
       ...restOfDataValue,
