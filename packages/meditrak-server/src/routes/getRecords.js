@@ -97,7 +97,7 @@ export async function getRecords(req, res) {
 
     // First find out how many records there are and generate the pagination headers
     const unprocessedColumns = columnsString && JSON.parse(columnsString);
-    const { sort, multiJoin } = getQueryOptionsForColumns(unprocessedColumns, recordType, models);
+    const { sort, multiJoin } = getQueryOptionsForColumns(unprocessedColumns, recordType);
     if (!shouldReturnSingleRecord) {
       const numberOfRecords = await findOrCountRecords({ multiJoin }, 'count');
       const lastPage = Math.ceil(numberOfRecords / limit);
@@ -175,7 +175,7 @@ function processColumns(unprocessedColumns, recordType) {
   }));
 }
 
-function getQueryOptionsForColumns(columns, baseRecordType, models) {
+function getQueryOptionsForColumns(columns, baseRecordType) {
   const sort = [`${baseRecordType}.id`];
   if (!columns) {
     return { sort };
