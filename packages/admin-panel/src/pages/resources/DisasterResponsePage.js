@@ -45,7 +45,7 @@ const bounds = {
   filterable: false,
 };
 
-const NATURAL_DISASTER_FIELDS = [id, type, description, name, countryCode, point, bounds];
+const DISASTER_FIELDS = [id, type, description, name, countryCode, point, bounds];
 
 const IMPORT_CONFIG = {
   title: 'Import Natural Disaster',
