@@ -240,7 +240,7 @@ describe('actualMonthlyValuesVsIdeal', () => {
     }
   });
 
-  it("should have balloon dilators be 'N/A' for 20131113", async () => {
+  it("should have balloon dilators be 'No data' for 20131113", async () => {
     try {
       const result = await actualMonthlyValuesVsIdeal(
         {

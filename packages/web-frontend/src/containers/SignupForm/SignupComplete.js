@@ -23,8 +23,8 @@ const Container = styled.div`
   }
 `;
 
-export const SignupComplete = ({ ref, onClickLogin }) => (
-  <Container ref={ref}>
+export const SignupComplete = ({ onClickLogin }) => (
+  <Container>
     <div>
       Congratulations, you have successfully created an account for Tupaia! You can use your new
       account to sign in to Tupaia, as well as our app, Tupaia Meditrak, on
@@ -50,6 +50,4 @@ export const SignupComplete = ({ ref, onClickLogin }) => (
 
 SignupComplete.propTypes = {
   onClickLogin: PropTypes.func.isRequired,
-  ref: PropTypes.oneOfType([PropTypes.func, PropTypes.shape({ current: PropTypes.any })])
-    .isRequired,
 };
