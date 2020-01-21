@@ -26,7 +26,7 @@ export class DataBroker {
   }
 
   async pull(code, metadata) {
-    const service = await this.getService(this.dataSourceTypes.question, code);
+    const service = await this.getService(DataSource.types.question, code);
     return service.pull(metadata);
   }
 }
