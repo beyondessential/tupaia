@@ -270,7 +270,8 @@ export class DhisApi {
    * @returns {Promise<string>}
    */
   async updateEvent(eventId, event) {
-    return this.put(`events/${eventId}`, event);
+    const response = await this.put(`events/${eventId}`, event);
+    return getDiagnosticsFromResponse(response);
   }
 
   /**
@@ -282,20 +283,17 @@ export class DhisApi {
     let totalUpdatedCount = 0;
 
     for (let i = 0; i < events.length; i++) {
-      let updated = 0;
       const eventId = events[i].event;
 
       try {
-        const { response } = await this.updateEvent(eventId, events[i]);
-        updated = parseInt(response.importCount.updated, 10);
+        const { counts } = await this.updateEvent(eventId, events[i]);
+        totalUpdatedCount += counts.updated;
       } catch (error) {
         errors.push(error.message);
       }
-
-      totalUpdatedCount += updated;
     }
 
-    return { updated: totalUpdatedCount, errors };
+    return { counts: { updated: totalUpdatedCount }, errors };
   }
 
   async updateRecord(resourceType, record) {
