@@ -59,7 +59,7 @@ export const DisasterResponsePage = () => (
   <ResourcePage
     title="Disasters"
     endpoint="disaster"
-    columns={NATURAL_DISASTER_FIELDS}
+    columns={DISASTER_FIELDS}
     importConfig={IMPORT_CONFIG}
   />
 );
