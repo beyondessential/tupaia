@@ -33,31 +33,6 @@ on Slack. Import the dump by running:
 psql tupaia -U tupaia < tupaia_dump.sql
 ```
 
-## Migrations
-
-### Creating a migration
-
-1. Run the command `npm run migrate-create`, you will be prompted to define a name that accurately describes your migration (eg createUserTable ).
-2. A file will be created in `src/database/migrations` which is prefixed with the current timestamp and contains your chosen name.
-3. Add your migrations to the up method, you can see other migrations in the folder for example or visite the documentation at https://db-migrate.readthedocs.io/en/latest/API/SQL/ to see example migrations.
-
-#### Note
-
-- Think of migrations as create and patch. If you don't get the schema right the first time you can always patch it later with another migration that adds and remove columns or renames things.
-- The name you choose in step one won't influence which order your migration is run in relative to other migrations.
-- Read the section 'How migrations work' to learn more about what actually happens when migrations are created and then run.
-
-### Running migrations
-
-1. Run `npm run migrate`.
-2. To check if a migration finished, visit the PSQL database and look for your migration name at the bottom of the migrations table.
-
-### How migrations work
-
-Migrations using db-migrate work in a similar way to Laravel and Rails. When running migrate, the script will scan the `src/database/migrations` directory and find any files that haven't been added to the `migrations` table of the database. The files will then be executed in alphabetical order and, on each successful migration, a record will be stored in the database to indicate the migration completed and should not be run in the future.
-
-A migration file can be technically called anything however the standard is to prefix it with the current time to guarantee alphabetical order. Migrations function more as patch files than schema definitions. For example if, in a previous migration, a developer created a column that they no longer require they would create a new migration that removes that column and not edit the previous migration to remove the column. A migration is a paper trail of database changes. You wouldn't rewrite commits in GIT in order to fix a bug, similarly you wouldn't rewrite migrations to change schema.
-
 ## Tests
 
 ### Running the tests
