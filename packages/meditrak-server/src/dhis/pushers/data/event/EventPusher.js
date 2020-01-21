@@ -25,7 +25,7 @@ export class EventPusher extends DataPusher {
     }
 
     const survey = await surveyResponse.survey();
-    const { serverName, ...diagnostics } = await this.dataBroker.push(
+    const { serverName, diagnostics } = await this.dataBroker.push(
       { type: this.dataBroker.dataSourceTypes.survey, code: survey.code },
       data,
     );
@@ -36,7 +36,7 @@ export class EventPusher extends DataPusher {
     return {
       ...diagnostics,
       wasSuccessful: wasFullySuccessful,
-      data: { ...data, serverName: this.api.getServerName() },
+      data: { ...data, serverName },
     };
   }
 
