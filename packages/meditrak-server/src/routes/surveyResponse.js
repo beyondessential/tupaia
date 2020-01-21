@@ -116,11 +116,12 @@ async function submitResponse(models, userId, body) {
 export async function surveyResponse(req, res) {
   const { userId, body, models } = req;
 
+  let results;
   const responses = Array.isArray(body) ? body : [body];
   await models.wrapInTransaction(async transactingModels => {
-    const results = await submitResponses(transactingModels, userId, responses);
-    res.send({ count: responses.length, results });
+    results = await submitResponses(transactingModels, userId, responses);
   });
+  res.send({ count: responses.length, results });
 }
 
 export const submitResponses = async (models, userId, responses) => {

@@ -23,8 +23,8 @@ const Container = styled.div`
   }
 `;
 
-export const SignupComplete = ({ ref, onClickResend }) => (
-  <Container ref={ref}>
+export const SignupComplete = ({ onClickResend }) => (
+  <Container>
     <div>
       Congratulations, you have successfully signed up to Tupaia. To activate your account please{' '}
       <b>click the verification link in your email.</b> You can use your new account to log in to
@@ -51,6 +51,4 @@ export const SignupComplete = ({ ref, onClickResend }) => (
 
 SignupComplete.propTypes = {
   onClickResend: PropTypes.func.isRequired,
-  ref: PropTypes.oneOfType([PropTypes.func, PropTypes.shape({ current: PropTypes.any })])
-    .isRequired,
 };

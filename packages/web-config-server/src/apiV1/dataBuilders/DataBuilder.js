@@ -134,4 +134,6 @@ export class DataBuilder {
   sortDataByName = data => data.sort(getSortByKey('name'));
 
   areDataAvailable = data => data.some(({ value }) => value !== NO_DATA_AVAILABLE);
+
+  areEventResults = results => !!(results[0] && results[0].event);
 }

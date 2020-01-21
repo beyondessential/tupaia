@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 ADB=$ANDROID_SDK_ROOT/platform-tools/adb
-PACKAGE=com.tupaiameditrak.beta
+PACKAGE=com.tupaiameditrak
 REMOTE=/data/data/$PACKAGE/files/default.realm
 
 function pull() {
@@ -25,7 +25,7 @@ case $1 in
 Meditrak Realm Android Database Backup Tool
 
 Usage:
-  
+
   $ ./realm.sh pull local.realm
   Copy the realm database from the device to the local filesystem.
   Use for creating a backup or snapshot.
@@ -34,8 +34,8 @@ Usage:
   Copy the realm database from the local filesystem to the device.
   Use to reset the database to a previous state.
 
-If either command results in permission errors, you may need to tell 
-adb to reconnect to the device in root mode. This is included for 
+If either command results in permission errors, you may need to tell
+adb to reconnect to the device in root mode. This is included for
 convenience, just run:
 
   $ ./realm.sh root
