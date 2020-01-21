@@ -22,7 +22,20 @@ const createDhisApiStub = dataValues => {
       ),
     }));
 
-  return sinon.createStubInstance(DhisApi, { getAnalytics });
+  const fetch = sinon.stub();
+  fetch.callsFake((endpoint, { filter }) => {
+    const metadatas = [];
+    const codes = convertCodesFilterStringToArrayOfCodes(filter);
+    codes.forEach(code => {
+      const dataValue = dataValues.find(val => val.dataElement === code);
+      if (dataValue && dataValue.metadata) {
+        metadatas.push(dataValue.metadata);
+      }
+    });
+    return { dataElements: metadatas };
+  });
+
+  return sinon.createStubInstance(DhisApi, { getAnalytics, fetch });
 };
 
 export const createAssertTableResults = availableDataValues => {
@@ -42,3 +55,10 @@ export const createAssertErrorIsThrown = availableDataValues => {
       tableOfDataValues({ dataBuilderConfig, query }, dhisApiStub),
     ).to.eventually.be.rejectedWith(expectedError);
 };
+
+// Remove the opening 'code:in:[' and trailing ']' and split on commas
+const convertCodesFilterStringToArrayOfCodes = codesFilterString =>
+  codesFilterString
+    .substr(9)
+    .slice(0, -1)
+    .split(',');

@@ -39,7 +39,10 @@ class TableOfDataValuesBuilder extends DataBuilder {
     const { results } = await this.getAnalytics({ dataElementCodes, outputIdScheme: 'code' });
     const dataElements = await getDataElementsFromCodes(this.dhisApi, dataElementCodes, true);
 
-    return results.map(result => ({ ...result, metadata: dataElements[result.dataElement] }));
+    return results.map(result => ({
+      ...result,
+      metadata: dataElements[result.dataElement] ? dataElements[result.dataElement] : {},
+    }));
   }
 
   async buildRows() {
