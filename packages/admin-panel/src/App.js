@@ -56,7 +56,7 @@ const LEFT_LINKS = [
     path: '/strive',
   },
   {
-    label: 'Natural Disasters',
+    label: 'Disasters',
     path: '/disaster',
   },
 ];
