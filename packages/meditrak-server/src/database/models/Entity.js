@@ -129,6 +129,10 @@ export class EntityModel extends DatabaseModel {
 
   async updatePointCoordinates(code, { longitude, latitude }) {
     const point = JSON.stringify({ coordinates: [longitude, latitude], type: 'Point' });
+    await this.updatePointCoordinatesFormatted(code, point);
+  }
+
+  async updatePointCoordinatesFormatted(code, point) {
     return this.database.executeSql(
       `
         UPDATE "entity"

@@ -4,6 +4,7 @@ import { generateId } from '@tupaia/database';
 import { respond } from '../respond';
 import { DatabaseError } from '../errors';
 import { ObjectValidator, fieldHasContent } from '../validation';
+import { ENTITY_TYPES } from '../database';
 
 const TAB_NAMES = {
   DISASTER: 'Disaster',
@@ -22,7 +23,6 @@ const disasterFieldValidators = {
 const entityFieldValidators = {
   id: [],
   point: [fieldHasContent],
-  bounds: [fieldHasContent],
   code: [fieldHasContent],
   parent_id: [fieldHasContent],
   name: [fieldHasContent],
@@ -59,51 +59,64 @@ export async function importDisaster(req, res) {
           case TAB_NAMES.DISASTER: {
             const sheetData = await getDataAndValidate(sheet, disasterFieldValidators);
 
-            await transactingModels.disaster.updateOrCreate(
-              {
-                id: sheetData[0].id,
-              },
-              sheetData[0],
-            );
+            sheetData.forEach(async entry => {
+              await transactingModels.disaster.updateOrCreate(
+                {
+                  id: entry.id,
+                },
+                entry,
+              );
+            });
+
             break;
           }
           case TAB_NAMES.DISASTER_EVENT: {
             const sheetData = await getDataAndValidate(sheet, disasterEventFieldValidators);
-            await transactingModels.disasterEvent.updateOrCreate(
-              {
-                id: sheetData[0].id,
-              },
-              sheetData[0],
-            );
+
+            for (const entry of sheetData) {
+              await transactingModels.disasterEvent.updateOrCreate(
+                {
+                  id: entry.id,
+                },
+                entry,
+              );
+            }
 
             break;
           }
           case TAB_NAMES.ENTITY: {
             const sheetData = await getDataAndValidate(sheet, entityFieldValidators);
 
-            sheetData.forEach(async item => {
-              const initialUpdate = {
+            const intialData = sheetData.map(item => {
+              return {
                 id: item.id ? item.id : generateId(),
                 code: item.code,
                 parent_id: item.parent_id,
                 name: item.name,
                 country_code: item.country_code,
-                type: 'disaster',
+                type: ENTITY_TYPES.DISASTER,
               };
-              console.log(initialUpdate);
-              await transactingModels.entity.updateOrCreate(
-                {
-                  id: initialUpdate.id,
-                },
-                initialUpdate,
-              );
-              console.log('at 1');
             });
 
+            for (const entry of intialData) {
+              await transactingModels.entity.updateOrCreate(
+                {
+                  id: entry.id,
+                },
+                entry,
+              );
+            }
+
+            for (const entry of sheetData) {
+              await transactingModels.entity.updatePointCoordinatesFormatted(
+                entry.code,
+                entry.point,
+              );
+            }
             break;
           }
           default:
-          //just ignore this
+          //just ignore any tabs we're not interested in
         }
       }
     });
