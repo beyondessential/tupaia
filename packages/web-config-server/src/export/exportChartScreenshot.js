@@ -36,7 +36,7 @@ export const exportChartScreenshot = async (
   const chartUrl = `${process.env.EXPORT_URL}/${exportUrl}`;
   winston.info(`Exporting chart ${exportUrl}`);
   const pullParams = {
-    FunctionName: 'export-charts',
+    FunctionName: 'export-charts-v2',
     InvocationType: 'Event',
     LogType: 'None',
     Payload: JSON.stringify({
