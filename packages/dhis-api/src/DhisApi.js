@@ -141,7 +141,7 @@ export class DhisApi {
 
   async postDataValueSets(data) {
     const response = await this.postData(DATA_VALUE_SET, { dataValues: data });
-    return getDiagnosticsFromResponse(response, 'update');
+    return getDiagnosticsFromResponse(response);
   }
 
   async postDataSetCompletion(data) {
@@ -258,7 +258,7 @@ export class DhisApi {
    */
   async postEvents(events) {
     const response = await this.postData(EVENT, { events });
-    return getDiagnosticsFromResponse(response, 'update');
+    return getDiagnosticsFromResponse(response);
   }
 
   /**
@@ -441,20 +441,23 @@ export class DhisApi {
 
   async deleteRecordById(resourceType, id) {
     const response = await this.delete(`${resourceType}/${id}`);
-    return getDiagnosticsFromResponse(response);
+    return getDiagnosticsFromResponse(response, true);
   }
 
   async deleteWithQuery(endpoint, query) {
     try {
       // dhis2 returns empty response if successful, throws an error (409 status code) if it fails
       await this.delete(endpoint, query);
-      return getDiagnosticsFromResponse({ responseType: RESPONSE_TYPES.DELETE });
+      return getDiagnosticsFromResponse({ responseType: RESPONSE_TYPES.DELETE }, true);
     } catch (error) {
       if (error.status === 409) {
-        return getDiagnosticsFromResponse({
-          responseType: RESPONSE_TYPES.DELETE,
-          errors: [error.message],
-        });
+        return getDiagnosticsFromResponse(
+          {
+            responseType: RESPONSE_TYPES.DELETE,
+            errors: [error.message],
+          },
+          true,
+        );
       }
       throw error;
     }
@@ -479,7 +482,7 @@ export class DhisApi {
   }
 
   async deleteEvent(eventReference) {
-    return getDiagnosticsFromResponse(this.delete(`${EVENT}/${eventReference}`));
+    return getDiagnosticsFromResponse(this.delete(`${EVENT}/${eventReference}`, true));
   }
 
   async deleteDataSetCompletion({ dataSet, period, organisationUnit }) {
