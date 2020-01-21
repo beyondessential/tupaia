@@ -145,7 +145,10 @@ export class DhisApi {
   }
 
   async postDataSetCompletion(data) {
-    return this.postData(DATA_SET_COMPLETION, { completeDataSetRegistrations: [data] });
+    const response = await this.postData(DATA_SET_COMPLETION, {
+      completeDataSetRegistrations: [data],
+    });
+    return getDiagnosticsFromResponse(response);
   }
 
   async updateAnalyticsTables() {
