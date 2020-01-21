@@ -3,24 +3,20 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 import sinon from 'sinon';
-import { DhisApi, RESPONSE_TYPES } from '@tupaia/dhis-api';
+import { DhisApi } from '@tupaia/dhis-api';
 import { DHIS_REFERENCE } from './testData';
 
 const IMPORT_SUMMARY = {
-  responseType: RESPONSE_TYPES.IMPORT_SUMMARIES,
-  imported: 1,
-  updated: 0,
-  ignored: 0,
-  deleted: 0,
-  importSummaries: [
-    {
-      reference: DHIS_REFERENCE,
-    },
-  ],
+  counts: {
+    imported: 1,
+    updated: 0,
+    ignored: 0,
+    deleted: 0,
+  },
+  references: [DHIS_REFERENCE],
 };
 const DELETE_SUMMARY = {
-  responseType: RESPONSE_TYPES.IMPORT_SUMMARY,
-  importCount: {
+  counts: {
     imported: 0,
     updated: 0,
     ignored: 0,

@@ -288,8 +288,8 @@ class AggregatedEventPusher {
 
     let importedCount = 0;
     try {
-      const { response } = await this.dhisApi.postEvents(events);
-      importedCount = response.imported;
+      const { counts } = await this.dhisApi.postEvents(events);
+      importedCount = counts.imported;
     } catch (error) {
       winston.error(error);
     }

@@ -102,7 +102,7 @@ export const vaccineStockOnHand = async dhisApi => {
   const dataValues = buildDataValues(metadata, fridgeData);
 
   const {
-    importCount: { imported, updated, ignored },
+    counts: { imported, updated, ignored },
   } = await dhisApi.postDataValueSets(dataValues);
 
   if (imported) {

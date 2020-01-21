@@ -7,10 +7,10 @@ import winston from 'winston';
 
 export const postDataValueSets = async (dhisApi, dataValues) => {
   try {
-    const response = await dhisApi.postDataValueSets(dataValues);
-    if (response.importCount.imported + response.importCount.updated !== dataValues.length) {
+    const { counts } = await dhisApi.postDataValueSets(dataValues);
+    if (counts.imported + counts.updated !== dataValues.length) {
       winston.warn('Failed to push values', {
-        count: dataValues.length - (response.importCount.imported + response.importCount.updated),
+        count: dataValues.length - (counts.imported + counts.updated),
       });
     } else {
       winston.info('Succesfully posted data values', { count: dataValues.length });

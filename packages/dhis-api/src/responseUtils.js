@@ -9,14 +9,12 @@ const IMPORT_SUMMARY = 'ImportSummary';
 const IMPORT_SUMMARIES = 'ImportSummaries';
 const OBJECT_REPORT = 'ObjectReport';
 const DELETE = 'Delete';
-const DIAGNOSTICS = 'Diagnostics';
 
 export const RESPONSE_TYPES = {
   IMPORT_SUMMARIES,
   IMPORT_SUMMARY,
   OBJECT_REPORT,
   DELETE,
-  DIAGNOSTICS,
 };
 
 const IMPORT_SUMMARY_RESPONSE_TYPES = {
@@ -54,10 +52,10 @@ const getResponseDetails = response => {
 };
 
 /**
- * @param {{type: string}} change
+ * @param {string} type
  * @returns {Diagnostics}
  */
-const getDefaultDiagnostics = ({ type }) => {
+const getDefaultDiagnostics = type => {
   const counts = getZeroCounts();
   if (type === 'update') {
     counts.updated = 1;
@@ -110,10 +108,10 @@ const getImportSummariesDiagnostics = responseDetails => {
 
 /**
  * @param {ObjectReportResponse} response
- * @param {{type: string}} change
+ * @param {string} type
  * @returns {Diagnostics}
  */
-const getObjectReportDiagnostics = (response, { type }) => {
+const getObjectReportDiagnostics = (response, type) => {
   const counts = getZeroCounts();
   if (response.httpStatus === 'Created') {
     counts.imported = 1;
@@ -142,27 +140,25 @@ const getDeleteDataValueDiagnostics = ({ errors = [] }) => {
 
 /**
  * @param {DhisResponse} response
- * @param {{ type }} change
+ * @param {string} type   One of update or delete
  * @returns {Diagnostics}
  */
-export const getDiagnosticsFromResponse = (response, change) => {
+export const getDiagnosticsFromResponse = (response, type) => {
   const responseDetails = getResponseDetails(response);
-  const { responseType, ...restOfResponse } = responseDetails;
+  const { responseType } = responseDetails;
 
-  switch (responseDetails.responseType) {
+  switch (responseType) {
     case IMPORT_SUMMARIES:
       return getImportSummariesDiagnostics(responseDetails);
     case OBJECT_REPORT:
-      return getObjectReportDiagnostics(response, change);
+      return getObjectReportDiagnostics(response, type);
     case IMPORT_SUMMARY:
       return getImportSummaryDiagnostics(responseDetails);
     case DELETE:
       return getDeleteDataValueDiagnostics(response);
-    case DIAGNOSTICS: // already formatted as diagnostics
-      return restOfResponse;
     default:
       winston.warn(`Unknown responseType: ${responseType}`);
-      return getDefaultDiagnostics(change);
+      return getDefaultDiagnostics(type);
   }
 };
 

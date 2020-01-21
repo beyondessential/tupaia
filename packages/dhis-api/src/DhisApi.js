@@ -13,7 +13,7 @@ import { getEventDataValueMap } from './getEventDataValueMap';
 import { replaceElementIdsWithCodesInEvents } from './replaceElementIdsWithCodesInEvents';
 import { translateEventResponse } from './translateEventResponse';
 import { translateDataValueResponse } from './translateDataValueResponse';
-import { RESPONSE_TYPES } from './responseUtils';
+import { RESPONSE_TYPES, getDiagnosticsFromResponse } from './responseUtils';
 import { buildAnalyticsQuery } from './buildAnalyticsQuery';
 import { filterAnalyticsResults } from './filterAnalyticsResults';
 
@@ -140,7 +140,8 @@ export class DhisApi {
   }
 
   async postDataValueSets(data) {
-    return this.postData(DATA_VALUE_SET, { dataValues: data });
+    const response = await this.postData(DATA_VALUE_SET, { dataValues: data });
+    return getDiagnosticsFromResponse(response, 'update');
   }
 
   async postDataSetCompletion(data) {
@@ -256,7 +257,8 @@ export class DhisApi {
    * @returns {Promise<string>}
    */
   async postEvents(events) {
-    return this.postData(EVENT, { events });
+    const response = await this.postData(EVENT, { events });
+    return getDiagnosticsFromResponse(response, 'update');
   }
 
   /**
@@ -300,9 +302,9 @@ export class DhisApi {
     }
     // If the resource already exists on DHIS2, update the existing one
     if (existingId) {
-      return this.put(`${resourceType}/${existingId}`, record);
+      return getDiagnosticsFromResponse(this.put(`${resourceType}/${existingId}`, record));
     }
-    return this.post(resourceType, record);
+    return getDiagnosticsFromResponse(this.post(resourceType, record));
   }
 
   async getAnalytics(originalQuery, aggregationType, aggregationConfig) {
@@ -438,17 +440,21 @@ export class DhisApi {
   }
 
   async deleteRecordById(resourceType, id) {
-    return this.delete(`${resourceType}/${id}`);
+    const response = await this.delete(`${resourceType}/${id}`);
+    return getDiagnosticsFromResponse(response);
   }
 
   async deleteWithQuery(endpoint, query) {
     try {
       // dhis2 returns empty response if successful, throws an error (409 status code) if it fails
       await this.delete(endpoint, query);
-      return { responseType: RESPONSE_TYPES.DELETE };
+      return getDiagnosticsFromResponse({ responseType: RESPONSE_TYPES.DELETE });
     } catch (error) {
       if (error.status === 409) {
-        return { responseType: RESPONSE_TYPES.DELETE, errors: [error.message] };
+        return getDiagnosticsFromResponse({
+          responseType: RESPONSE_TYPES.DELETE,
+          errors: [error.message],
+        });
       }
       throw error;
     }
@@ -473,7 +479,7 @@ export class DhisApi {
   }
 
   async deleteEvent(eventReference) {
-    return this.delete(`${EVENT}/${eventReference}`);
+    return getDiagnosticsFromResponse(this.delete(`${EVENT}/${eventReference}`));
   }
 
   async deleteDataSetCompletion({ dataSet, period, organisationUnit }) {

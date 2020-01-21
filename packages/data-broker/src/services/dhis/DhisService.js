@@ -35,34 +35,35 @@ export class DhisService extends Service {
   }
 
   async push(data) {
-    switch (this.dataSource.type) {
-      default:
-      case DataSource.types.question:
-        return this.pushAggregateData(data);
-      case DataSource.types.survey:
-        return this.pushEvent(data);
-    }
+    const api = this.getApi(data.orgUnit);
+    const pushers = {
+      [DataSource.types.question]: this.pushAggregateData,
+      [DataSource.types.survey]: this.pushEvent,
+    };
+    const pushData = pushers[this.dataSource.type];
+    const diagnostics = await pushData(api, data);
+    return { diagnostics, serverName: api.getServerName() };
   }
 
-  async pushAggregateData({ code, ...restOfDataValue }) {
+  async pushAggregateData(api, { code, orgUnit, ...restOfDataValue }) {
     const dataValue = {
-      dataElement: await this.translateDataElementIdentifier(this.dataSource),
+      dataElement: await this.translateDataElementIdentifier(api, this.dataSource),
       ...restOfDataValue,
     };
-    return this.api.postDataValueSets([dataValue]);
+    return api.postDataValueSets([dataValue]);
   }
 
-  async pushEvent({ dataValues, ...restOfEvent }) {
+  async pushEvent(api, { dataValues, ...restOfEvent }) {
     const translatedDataValues = await Promise.all(
       dataValues.map(async ({ code, ...restOfValue }) => {
         const dataSource = await this.models.dataSource.fetchFromDbOrDefault(code);
         return {
-          dataElement: await this.translateDataElementIdentifier(dataSource, false),
+          dataElement: await this.translateDataElementIdentifier(api, dataSource, false),
           ...restOfValue,
         };
       }),
     );
-    return this.api.postEvents([{ dataValues: translatedDataValues, ...restOfEvent }]);
+    return api.postEvents([{ dataValues: translatedDataValues, ...restOfEvent }]);
   }
 
   async pull(metadata) {
