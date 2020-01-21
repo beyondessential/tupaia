@@ -50,9 +50,8 @@ export class EventPusher extends DataPusher {
       return { wasSuccessful: true };
     }
 
-    const { serverName, dhis_reference: dhisReference } = this.extractDataFromSyncLog(
-      syncLogRecord,
-    );
+    const { dhis_reference: dhisReference } = syncLogRecord;
+    const { serverName } = this.extractDataFromSyncLog(syncLogRecord);
     if (!dhisReference) {
       throw new Error(`No reference for record ${this.recordId}`);
     }
