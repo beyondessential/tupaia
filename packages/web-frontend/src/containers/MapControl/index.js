@@ -11,81 +11,81 @@
  * The controls for map zoom and tile layer.
  */
 
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import SatelliteOnIcon from 'material-ui/svg-icons/action/visibility';
-import SatelliteOffIcon from 'material-ui/svg-icons/action/visibility-off';
-import FlatButton from 'material-ui/FlatButton';
+import styled from 'styled-components';
+import SatelliteOnIcon from '@material-ui/icons/Visibility';
+import SatelliteOffIcon from '@material-ui/icons/VisibilityOff';
+import ZoomIn from '@material-ui/icons/Add';
+import ZoomOut from '@material-ui/icons/Remove';
+import Button from '@material-ui/core/Button';
 import { changeZoom, changeTileSet } from '../../actions';
-import { OFF_WHITE, TRANS_BLACK_LESS, BOX_SHADOW } from '../../styles';
+import { OFF_WHITE, TRANS_BLACK_LESS } from '../../styles';
 
-export class MapControl extends Component {
-  render() {
-    const { currentSetKey, onZoomInClick, onZoomOutClick, onVisibilityClick } = this.props;
+const Container = styled.div`
+  justify-items: end;
+  cursor: auto;
+  pointer-events: auto;
+  display: grid;
+  margin-bottom: 10px;
+  gap: 2px;
 
-    const visibilityIcon = currentSetKey === 'osm' ? <SatelliteOffIcon /> : <SatelliteOnIcon />;
-    const visiblityChangeKey = currentSetKey === 'osm' ? 'satellite' : 'osm';
-    return (
-      <div style={styles.container}>
-        <div style={styles.upperContainer}>
-          <FlatButton
-            fullWidth
-            onClick={() => onVisibilityClick(visiblityChangeKey)}
-            icon={visibilityIcon}
-          />
-        </div>
-
-        <div style={styles.lowerContainer}>
-          <FlatButton label="+" fullWidth labelStyle={styles.label} onClick={onZoomInClick} />
-          <hr style={styles.divider} />
-          <FlatButton label="-" fullWidth labelStyle={styles.label} onClick={onZoomOutClick} />
-        </div>
-      </div>
-    );
+  button {
+    max-width: 30px;
+    min-width: 30px;
+    color: ${OFF_WHITE};
+    background: ${TRANS_BLACK_LESS};
+    box-shadow: none;
   }
-}
+`;
 
-const styles = {
-  container: {
-    alignSelf: 'flex-end',
-    display: 'flex',
-    flexDirection: 'column',
-    width: '29px',
-    flexWrap: 'no-wrap',
-    pointerEvents: 'auto',
-    cursor: 'auto',
-    marginLeft: 'auto',
-    marginBottom: 10,
-  },
-  label: {
-    fontSize: 30,
-    padding: 0,
-  },
-  upperContainer: {
-    borderRadius: '2px',
-    marginBottom: '2px',
-    backgroundColor: TRANS_BLACK_LESS,
-    boxShadow: BOX_SHADOW,
-  },
-  divider: {
-    width: '60%',
-    color: OFF_WHITE,
-    margin: 5,
-  },
-  lowerContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    flexWrap: 'no-wrap',
-    borderRadius: '2px',
-    backgroundColor: TRANS_BLACK_LESS,
-    boxShadow: BOX_SHADOW,
-  },
+const ZoomContainer = styled.div`
+  display: grid;
+  font-size: 30px;
+
+  button:first-child {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom: none;
+  }
+
+  button:last-child {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-top: none;
+  }
+`;
+
+const MapControlComponent = ({
+  currentSetKey,
+  onZoomInClick,
+  onZoomOutClick,
+  onVisibilityClick,
+}) => {
+  const visibilityIcon = currentSetKey === 'osm' ? <SatelliteOffIcon /> : <SatelliteOnIcon />;
+  const visiblityChangeKey = currentSetKey === 'osm' ? 'satellite' : 'osm';
+
+  return (
+    <Container>
+      <Button variant="contained" onClick={() => onVisibilityClick(visiblityChangeKey)}>
+        {visibilityIcon}
+      </Button>
+
+      <ZoomContainer>
+        <Button variant="contained" onClick={onZoomInClick}>
+          <ZoomIn />
+        </Button>
+        <Button variant="contained" onClick={onZoomOutClick}>
+          <ZoomOut />
+        </Button>
+      </ZoomContainer>
+    </Container>
+  );
 };
 
-MapControl.propTypes = {
-  currentSetKey: PropTypes.string,
+MapControlComponent.propTypes = {
+  currentSetKey: PropTypes.string.isRequired,
   onZoomInClick: PropTypes.func.isRequired,
   onZoomOutClick: PropTypes.func.isRequired,
   onVisibilityClick: PropTypes.func.isRequired,
@@ -104,7 +104,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(MapControl);
+export const MapControl = connect(mapStateToProps, mapDispatchToProps)(MapControlComponent);

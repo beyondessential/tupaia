@@ -460,7 +460,7 @@ export class CartesianChart extends PureComponent {
     const { chartType, data } = viewContent;
     const Chart = CHART_TYPE_TO_COMPONENT[chartType];
 
-    const responsiveStyle = !isEnlarged && !isMobile() && !isExporting ? '1.6' : undefined;
+    const responsiveStyle = !isEnlarged && !isMobile() && !isExporting ? 1.6 : undefined;
 
     return (
       <ResponsiveContainer width="100%" aspect={responsiveStyle}>

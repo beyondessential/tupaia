@@ -226,7 +226,7 @@ export class PieChart extends PureComponent {
     const offsetStyle =
       isEnlarged && !isMobile() && !isExporting ? { position: 'relative', top: '-20px' } : null;
 
-    const responsiveStyle = !isEnlarged && !isMobile() && !isExporting ? '1.6' : undefined;
+    const responsiveStyle = !isEnlarged && !isMobile() && !isExporting ? 1.6 : undefined;
 
     return (
       <ResponsiveContainer width="100%" aspect={responsiveStyle}>
