@@ -44,8 +44,10 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
       const data = {
         value: divideValues(numerator, denominator),
         name,
-        numerator,
-        denominator,
+        [`${name}_metadata`]: {
+          numerator,
+          denominator,
+        },
       };
 
       dataClasses.push(data);
