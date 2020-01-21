@@ -32,8 +32,7 @@ exports.up = async function(db) {
 
 exports.down = async function(db) {
   await db.dropTable('data_source');
-  return db.runSql('DROP TYPE service_type;');
-  return db.runSql('DROP TYPE data_source_type;');
+  return db.runSql('DROP TYPE service_type; DROP TYPE data_source_type');
 };
 
 exports._meta = {

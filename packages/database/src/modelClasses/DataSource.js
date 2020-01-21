@@ -18,9 +18,14 @@ export class DataSourceModel extends DatabaseModel {
   };
 
   // default to 1:1 mapping with dhis, as only mappings with non-standard rules are kept in the db
-  async fetchFromDbOrDefault(type, code) {
-    const dataSource = await this.findOne({ code, type });
-    return dataSource || { type, code, service_type: 'dhis', config: {} };
+  async fetchFromDbOrDefault(code, type) {
+    const dataSourceRecord = await this.findOne({ code });
+    const dataSource = dataSourceRecord || { code, type, service_type: 'dhis', config: {} };
+
+    if (dataSource && dataSource.type !== type) {
+      throw new Error(`Invalid type '${type}' provided for data source with code '${code}'`);
+    }
+    return dataSource;
   }
 
   // eslint-disable-next-line class-methods-use-this
