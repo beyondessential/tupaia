@@ -6,28 +6,31 @@
 import sinon from 'sinon';
 
 import * as GetModels from '../getModels';
-import * as Services from '../services';
+import * as GetServiceFromDataSource from '../services/getServiceFromDataSource';
 import { Service } from '../services/Service';
 
-export const TEST_SERVICE_TYPE = 'testServiceType';
-
 const getModels = {
-  stub: ({ dataSources }) =>
-    sinon.stub(GetModels, 'getModels').returns({
-      dataSource: {
-        findOne: ({ code }) => dataSources[code],
-      },
-    }),
+  stub: models => sinon.stub(GetModels, 'getModels').returns(models),
   restore: () => {
     GetModels.getModels.restore();
   },
 };
 
 const getServiceFromDataSource = {
-  stub: service => sinon.stub(Services, 'getServiceFromDataSource').returns(service),
+  stub: service =>
+    sinon.stub(GetServiceFromDataSource, 'getServiceFromDataSource').returns(service),
   restore: () => {
-    Services.getServiceFromDataSource.restore();
+    GetServiceFromDataSource.getServiceFromDataSource.restore();
   },
+};
+
+export const models = {
+  getStub: ({ dataSources }) => ({
+    dataSource: {
+      fetchFromDbOrDefault: code =>
+        dataSources.find(dataSource => dataSource.code === code) || null,
+    },
+  }),
 };
 
 export const service = {
@@ -41,5 +44,6 @@ export const service = {
 export const stubs = {
   getModels,
   getServiceFromDataSource,
+  models,
   service,
 };

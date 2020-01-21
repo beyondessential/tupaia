@@ -24,7 +24,11 @@ export class EventPusher extends DataPusher {
       return { wasSuccessful: false, errors: [error.message] };
     }
 
-    const { serverName, ...diagnostics } = await this.dataBroker.pushEvent(data);
+    const survey = await surveyResponse.survey();
+    const { serverName, ...diagnostics } = await this.dataBroker.push(
+      { type: this.dataBroker.dataSourceTypes.survey, code: survey.code },
+      data,
+    );
     // If any errors or ignored, mark this push as a failure so it is reattempted
     const { wasSuccessful, errors = [], counts = {} } = diagnostics;
     const wasFullySuccessful = wasSuccessful && errors.length === 0 && counts.ignored === 0;
