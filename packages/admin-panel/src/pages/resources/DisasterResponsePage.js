@@ -57,7 +57,7 @@ const IMPORT_CONFIG = {
 
 export const DisasterResponsePage = () => (
   <ResourcePage
-    title="Natural Disasters"
+    title="Disasters"
     endpoint="disaster"
     columns={NATURAL_DISASTER_FIELDS}
     importConfig={IMPORT_CONFIG}
