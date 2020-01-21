@@ -15,7 +15,6 @@
     "prestart": "npm run -s build",
     "test": "nyc --reporter=lcov mocha",
     "test-coverage": "nyc mocha",
-    "refresh-database": "../devops/scripts/utility/refreshDb.sh",
     "validate": "babel-node scripts/validate/index.js"
   },
   "repository": {

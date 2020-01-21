@@ -82,7 +82,6 @@
     "start": "node dist",
     "start-dev": "nodemon -w src --exec \"babel-node src --inspect=9999\"",
     "start-verbose": "LOG_LEVEL=debug npm run start-dev",
-    "refresh-database": "../devops/scripts/utility/refreshDb.sh",
     "sync-organisation-unit-codes": "babel-node ./src/devops/importOrganisationUnitCodesFromWebsite.js",
     "validate": "babel-node scripts/validate/index.js"
   },
