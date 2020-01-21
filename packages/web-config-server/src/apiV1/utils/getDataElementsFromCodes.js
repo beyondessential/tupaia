@@ -22,12 +22,18 @@ export const getDataElementsFromCodes = async (dhisApi, dataElementCodes, should
   });
 
   const dataElementsByCode = {};
+  const optionsBySetId = {};
   for (let i = 0; i < dataElements.length; i++) {
     const { code, optionSet, ...restOfDataElement } = dataElements[i];
 
     dataElementsByCode[code] = { ...restOfDataElement, code };
     if (optionSet && optionSet.id) {
-      dataElementsByCode[code].options = await getOptionSetOptions(dhisApi, { id: optionSet.id });
+      if (optionsBySetId[optionSet.id]) {
+        dataElementsByCode[code].options = optionsBySetId[optionSet.id];
+      } else {
+        optionsBySetId[optionSet.id] = await getOptionSetOptions(dhisApi, { id: optionSet.id });
+        dataElementsByCode[code].options = optionsBySetId[optionSet.id];
+      }
     }
   }
 
