@@ -48,7 +48,7 @@ const bounds = {
 const DISASTER_FIELDS = [id, type, description, name, countryCode, point, bounds];
 
 const IMPORT_CONFIG = {
-  title: 'Import Natural Disaster',
+  title: 'Import Disaster',
   instruction: 'Please test on development server',
   actionConfig: {
     importEndpoint: 'disaster',
