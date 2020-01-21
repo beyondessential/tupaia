@@ -9,7 +9,7 @@ const TYPE_TO_SERVICE = {
   dhis: DhisService,
 };
 
-export const getServiceFromDataSource = (dataSource, metadata) => {
-  const ServiceClass = TYPE_TO_SERVICE[dataSource.service_type];
-  return new ServiceClass(dataSource, metadata);
+export const getServiceFromDataSource = (dataSource, models) => {
+  const ServiceClass = TYPE_TO_SERVICE[dataSource.service_type] || DhisService; // default to dhis
+  return new ServiceClass(dataSource, models);
 };

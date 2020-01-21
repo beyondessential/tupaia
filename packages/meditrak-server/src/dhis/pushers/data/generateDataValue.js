@@ -26,7 +26,7 @@ export const generateDataValue = async (dhisApi, models, answer) => {
   const question = await models.question.findById(answer.question_id);
   const answerValue = await generateAnswerValue(dhisApi, models, answer, question);
   return {
-    dataElement: question.code,
+    code: question.code,
     value: answerValue,
   };
 };

@@ -3,23 +3,30 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { DataSource } from '@tupaia/database';
+
 import { getServiceFromDataSource } from './services';
 import { getModels } from './getModels';
 
 export class DataBroker {
+  static dataSourceTypes = DataSource.types;
+
   constructor() {
     this.models = getModels();
   }
 
-  async push(code, data) {
-    const dataSource = await this.models.dataSource.findOne({ code });
-    const dataService = getServiceFromDataSource(dataSource, data);
-    return dataService.push();
+  async getService(type, code) {
+    const dataSource = await this.models.dataSource.fetchFromDbOrDefault(type, code);
+    return getServiceFromDataSource(dataSource);
+  }
+
+  async push(type, code, data) {
+    const service = await this.getService(code, type);
+    return service.push(data);
   }
 
   async pull(code, metadata) {
-    const dataSource = await this.models.dataSource.findOne({ code });
-    const dataService = getServiceFromDataSource(dataSource, metadata);
-    return dataService.pull();
+    const service = await this.getService(this.dataSourceTypes.question, code);
+    return service.pull(metadata);
   }
 }

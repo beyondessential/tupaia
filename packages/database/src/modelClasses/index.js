@@ -3,8 +3,9 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { DataSourceModel as dataSource } from './DataSource';
+import { DataSourceModel as DataSource } from './DataSource';
 
+export { DataSource };
 export const modelClasses = {
-  dataSource,
+  dataSource: DataSource,
 };

@@ -192,7 +192,7 @@ export class AggregateDataPusher extends DataPusher {
     const dataSetCompletionResponse = await this.pushDataSetCompletionIfRequired();
 
     // sync the data across to DHIS2
-    const updateResponse = await this.dataBroker.push(dataValue.dataElement, dataValue);
+    const updateResponse = await this.dataBroker.push(dataValue);
 
     // combine the diagnostics
     const diagnostics = this.getDiagnosticsForResponses(

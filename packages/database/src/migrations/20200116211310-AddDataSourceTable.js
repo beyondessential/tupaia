@@ -16,11 +16,13 @@ exports.setup = function(options, seedLink) {
 
 exports.up = async function(db) {
   await db.runSql(`CREATE TYPE service_type AS ENUM('dhis');`);
+  await db.runSql(`CREATE TYPE data_source_type AS ENUM('question', 'survey');`);
 
   return db.createTable('data_source', {
     columns: {
       id: { type: 'text', primaryKey: true },
       code: { type: 'text', notNull: true, unique: true },
+      type: { type: 'data_source_type', notNull: true, default: 'question' },
       service_type: { type: 'service_type', notNull: true },
       config: { type: 'jsonb', notNull: true, default: '{}' },
     },
@@ -31,6 +33,7 @@ exports.up = async function(db) {
 exports.down = async function(db) {
   await db.dropTable('data_source');
   return db.runSql('DROP TYPE service_type;');
+  return db.runSql('DROP TYPE data_source_type;');
 };
 
 exports._meta = {
