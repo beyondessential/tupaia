@@ -8,18 +8,16 @@ import { expect } from 'chai';
 import { DataBroker } from '../DataBroker';
 import { stubs } from './helpers';
 
-const DATA_SOURCES = {
-  POP01: { code: 'POP01', service_type: 'testServiceType' },
-};
-
-const dataBroker = new DataBroker();
+const dataSource = { code: 'POP01', service_type: 'testServiceType' };
 
 describe('DataBroker', () => {
   let getServiceFromDataSourceStub;
   let serviceStub;
+  let modelsStub;
 
   before(() => {
-    stubs.getModels.stub({ dataSources: DATA_SOURCES });
+    modelsStub = stubs.models.getStub({ dataSources: [dataSource] });
+    stubs.getModels.stub(modelsStub);
   });
 
   beforeEach(() => {
@@ -36,20 +34,18 @@ describe('DataBroker', () => {
   });
 
   it('push()', async () => {
-    const dataSource = DATA_SOURCES.POP01;
-    const metadata = { value: 2 };
+    const data = { value: 2 };
 
-    await dataBroker.push(dataSource.code, metadata);
-    expect(getServiceFromDataSourceStub).to.have.been.calledOnceWithExactly(dataSource, metadata);
-    expect(serviceStub.push).to.have.been.calledOnceWithExactly();
+    await new DataBroker().push(dataSource.code, data);
+    expect(getServiceFromDataSourceStub).to.have.been.calledOnceWithExactly(dataSource, modelsStub);
+    expect(serviceStub.push).to.have.been.calledOnceWithExactly(data);
   });
 
   it('pull()', async () => {
-    const dataSource = DATA_SOURCES.POP01;
-    const metadata = { value: 2 };
+    const metadata = { orgUnit: 'TO' };
 
-    await dataBroker.pull(dataSource.code, metadata);
-    expect(getServiceFromDataSourceStub).to.have.been.calledOnceWithExactly(dataSource, metadata);
-    expect(serviceStub.pull).to.have.been.calledOnceWithExactly();
+    await new DataBroker().pull(dataSource.code, metadata);
+    expect(getServiceFromDataSourceStub).to.have.been.calledOnceWithExactly(dataSource, modelsStub);
+    expect(serviceStub.pull).to.have.been.calledOnceWithExactly(metadata);
   });
 });
