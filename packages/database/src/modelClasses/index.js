@@ -5,7 +5,6 @@
 
 import { DataSourceModel as DataSource } from './DataSource';
 
-export { DataSource };
 export const modelClasses = {
   dataSource: DataSource,
 };
