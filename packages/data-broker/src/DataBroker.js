@@ -3,35 +3,26 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { setupModelRegistry } from '@tupaia/database';
-import { DhisService, SERVICE_TYPES } from './services';
-import * as modelClasses from './models';
+import { getServiceFromDataSource } from './services';
+import { getModels } from './getModels';
 
 export class DataBroker {
   constructor() {
-    this.models = setupModelRegistry(modelClasses);
+    this.models = getModels();
   }
 
-  getServiceForDataSource = (dataSource, metadata) => {
-    const { service: serviceType } = dataSource;
-    switch (serviceType) {
-      case SERVICE_TYPES.DHIS: {
-        return new DhisService(dataSource, metadata);
-      }
-      default:
-        throw new Error(`The data service ${serviceType} is not currently supported`);
-    }
-  };
-
-  async push(code, metadata, value) {
-    const dataSource = await this.models.dataSource.findOne({ code });
-    const dataService = this.getServiceForDataSource(dataSource, metadata);
-    return dataService.push(value);
+  async getService(dataSourceSpec) {
+    const dataSource = await this.models.dataSource.fetchFromDbOrDefault(dataSourceSpec);
+    return getServiceFromDataSource(dataSource, this.models);
   }
 
-  async pull(code, metadata) {
-    const dataSource = await this.models.dataSource.findOne({ code });
-    const dataService = this.getServiceForDataSource(dataSource, metadata);
-    return dataService.pull();
+  async push(dataSourceSpec, data) {
+    const service = await this.getService(dataSourceSpec);
+    return service.push(data);
+  }
+
+  async pull(dataSourceSpec, metadata) {
+    const service = await this.getService(dataSourceSpec);
+    return service.pull(metadata);
   }
 }

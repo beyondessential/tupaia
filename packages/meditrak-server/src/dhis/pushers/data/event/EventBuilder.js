@@ -52,11 +52,11 @@ export class EventBuilder {
       throw new Error(`No answers in survey ${this.surveyResponse.id}`);
     }
 
-    const dataValues = [];
+    const dataValues = {};
     for (let i = 0; i < answers.length; i++) {
       const answer = answers[i];
-      const dataValue = await generateDataValue(this.api, this.models, answer, true);
-      dataValues.push(dataValue);
+      const { code, value } = await generateDataValue(this.api, this.models, answer);
+      dataValues[code] = value;
     }
 
     return dataValues;

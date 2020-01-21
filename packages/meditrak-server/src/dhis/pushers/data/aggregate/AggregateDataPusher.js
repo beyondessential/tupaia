@@ -192,7 +192,7 @@ export class AggregateDataPusher extends DataPusher {
     const dataSetCompletionResponse = await this.pushDataSetCompletionIfRequired();
 
     // sync the data across to DHIS2
-    const updateResponse = await this.api.postDataValueSets([dataValue]);
+    const updateResponse = await this.dataBroker.push(dataValue.code, dataValue);
 
     // combine the diagnostics
     const diagnostics = this.getDiagnosticsForResponses(
@@ -274,7 +274,7 @@ export class AggregateDataPusher extends DataPusher {
     const survey = await this.fetchSurvey();
     const baseDataElement = this.isSurveyResponse
       ? {
-          dataElement: `${survey.code}SurveyDate`,
+          code: `${survey.code}SurveyDate`,
           value: formatDateForDHIS2(surveyResponse.timezoneAwareSubmissionTime()),
         }
       : await generateDataValue(this.api, this.models, answer);
