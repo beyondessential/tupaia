@@ -302,9 +302,11 @@ export class DhisApi {
     }
     // If the resource already exists on DHIS2, update the existing one
     if (existingId) {
-      return getDiagnosticsFromResponse(this.put(`${resourceType}/${existingId}`, record));
+      const response = await this.put(`${resourceType}/${existingId}`, record);
+      return getDiagnosticsFromResponse(response);
     }
-    return getDiagnosticsFromResponse(this.post(resourceType, record));
+    const response = await this.post(resourceType, record);
+    return getDiagnosticsFromResponse(response);
   }
 
   async getAnalytics(originalQuery, aggregationType, aggregationConfig) {
@@ -482,7 +484,8 @@ export class DhisApi {
   }
 
   async deleteEvent(eventReference) {
-    return getDiagnosticsFromResponse(this.delete(`${EVENT}/${eventReference}`, true));
+    const response = await this.delete(`${EVENT}/${eventReference}`, true);
+    return getDiagnosticsFromResponse(response);
   }
 
   async deleteDataSetCompletion({ dataSet, period, organisationUnit }) {
