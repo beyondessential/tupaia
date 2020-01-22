@@ -8,7 +8,7 @@ import { Service } from '../Service';
 import { getServerName, getDhisApiInstance } from './getDhisApiInstance';
 
 export class DhisService extends Service {
-  getApi(entityCode) {
+  getApiForEntity(entityCode) {
     const serverName = getServerName(entityCode, this.dataSource.config.isDataRegional);
     return getDhisApiInstance({ serverName });
   }
@@ -27,15 +27,14 @@ export class DhisService extends Service {
    * @param {DataSource} dataSource   Note that this may not be the instance's primary data source
    * @param {boolean}    isAggregate  Whether this translation is for an aggregate data value
    */
-  async translateDataValue(dataSource, isAggregate = true) {
+  async translateDataElementIdentifier(dataSource, isAggregate = true) {
     const dataElementCode = dataSource.config.dataElementCode || dataSource.code;
-    if (isAggregate) return { dataElement: dataElementCode };
-    const dataElementId = await this.getDataElementId(dataElementCode);
-    return { dataElement: dataElementId };
+    if (isAggregate) return dataElementCode;
+    return this.getDataElementId(dataElementCode);
   }
 
   async push(data) {
-    const api = this.getApi(data.orgUnit);
+    const api = this.getApiForEntity(data.orgUnit);
     const pushers = {
       [DataSource.types.question]: this.pushAggregateData,
       [DataSource.types.survey]: this.pushEvent,
@@ -63,11 +62,30 @@ export class DhisService extends Service {
         };
       }),
     );
-    return api.postEvents([{ dataValues: translatedDataValues, ...restOfEvent }]);
+    const event = { dataValues: translatedDataValues, ...restOfEvent };
+    return api.postEvents([event]);
+  }
+
+  async delete(data, { serverName }) {
+    const api = getDhisApiInstance({ serverName });
+    const deleters = {
+      [DataSource.types.question]: this.deleteAggregateData,
+      [DataSource.types.survey]: () => api.deleteEvent(data.dhisReference),
+    };
+    const deleteData = deleters[this.dataSource.type];
+    return deleteData(api, data);
+  }
+
+  async deleteAggregateData(api, { code, ...restOfDataValue }) {
+    const dataValue = {
+      dataElement: await this.translateDataElementIdentifier(api, this.dataSource),
+      ...restOfDataValue,
+    };
+    return api.deleteDataValue(dataValue);
   }
 
   async pull(metadata) {
-    const api = this.getApi(metadata.entityCode);
+    const api = this.getApiForEntity(metadata.entityCode);
     // TODO implement
   }
 }

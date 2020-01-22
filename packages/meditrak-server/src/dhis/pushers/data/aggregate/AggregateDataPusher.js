@@ -273,7 +273,7 @@ export class AggregateDataPusher extends DataPusher {
     const answer = await this.fetchAnswer();
     const surveyResponse = await this.fetchSurveyResponse();
     const survey = await this.fetchSurvey();
-    const baseDataElement = this.isSurveyResponse
+    const baseDataValue = this.isSurveyResponse
       ? {
           code: `${survey.code}SurveyDate`,
           value: formatDateForDHIS2(surveyResponse.timezoneAwareSubmissionTime()),
@@ -292,7 +292,7 @@ export class AggregateDataPusher extends DataPusher {
     const period = await this.calculatePeriod();
     const storedBy = await this.fetchStoredBy();
     const dataValue = {
-      ...baseDataElement,
+      ...baseDataValue,
       orgUnit: organisationUnit.code,
       period,
       storedBy,
@@ -368,7 +368,7 @@ export class AggregateDataPusher extends DataPusher {
     const syncLogData = this.extractDataFromSyncLog(syncLogRecord);
     const { orgUnit, code, period, serverName } = syncLogData;
     const dataToDelete = { orgUnit, code, period };
-    const deleteDiagnostics = await this.dataBroker.deleteDataValue(serverName, dataToDelete);
+    const deleteDiagnostics = await this.dataBroker.delete(code, dataToDelete, serverName);
 
     // delete data set completion if required
     const dataSetCompletionDiagnostics = await this.deleteDataSetCompletionIfRequired(dataToDelete);

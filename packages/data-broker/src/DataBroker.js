@@ -21,6 +21,11 @@ export class DataBroker {
     return service.push(data);
   }
 
+  async delete(dataSourceSpec, data, options) {
+    const service = await this.getService(dataSourceSpec);
+    return service.delete(data, options);
+  }
+
   async pull(dataSourceSpec, metadata) {
     const service = await this.getService(dataSourceSpec);
     return service.pull(metadata);

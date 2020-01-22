@@ -25,7 +25,7 @@ export class EventPusher extends DataPusher {
     }
 
     const survey = await surveyResponse.survey();
-    const { serverName, diagnostics } = await this.dataBroker.push(
+    const { diagnostics, serverName } = await this.dataBroker.push(
       { type: this.dataBroker.dataSourceTypes.survey, code: survey.code },
       data,
     );
@@ -51,11 +51,15 @@ export class EventPusher extends DataPusher {
     }
 
     const { dhis_reference: dhisReference } = syncLogRecord;
-    const { serverName } = this.extractDataFromSyncLog(syncLogRecord);
+    const { program: code, serverName } = this.extractDataFromSyncLog(syncLogRecord);
     if (!dhisReference) {
       throw new Error(`No reference for record ${this.recordId}`);
     }
-    const diagnostics = await this.dataBroker.deleteEvent({ dhisReference }, serverName);
+    const diagnostics = await this.dataBroker.delete(
+      { type: this.dataBroker.dataSourceTypes.survey, code },
+      { dhisReference },
+      { serverName },
+    );
     return { ...diagnostics, dhisReference: null };
   }
 }
