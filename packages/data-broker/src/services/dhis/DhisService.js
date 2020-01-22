@@ -29,7 +29,7 @@ export class DhisService extends Service {
    */
   async translateDataElementIdentifier(dataSource, isAggregate = true) {
     const dataElementCode = dataSource.config.dataElementCode || dataSource.code;
-    if (isAggregate) return dataElementCode;
+    return isAggregate ? dataElementCode : this.getDataElementId(dataElementCode);
     return this.getDataElementId(dataElementCode);
   }
 
