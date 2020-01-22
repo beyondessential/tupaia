@@ -32,15 +32,11 @@ const DEFAULT_DHIS_API_STUB_PROPS = {
   entityType: { id: ENTITY_TYPE_ID, displayName: 'Type' },
   organisationUnit: { id: ORGANISATION_UNIT_ID, code: ORGANISATION_UNIT_CODE },
   updateRecord: {
-    response: {
-      responseType: 'importSummaries',
-      importSummaries: [{ reference: DHIS_ID }],
-    },
+    references: [DHIS_ID],
+    wasSuccessful: true,
   },
   deleteRecordById: {
-    response: {
-      responseType: 'importSummary',
-    },
+    wasSuccessful: true,
   },
 };
 
