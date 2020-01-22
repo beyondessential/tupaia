@@ -7,6 +7,6 @@ describe('getModels()', () => {
   it('should return a ModelRegistry which contains the required models', () => {
     const models = getModels();
     expect(models).to.be.instanceOf(ModelRegistry);
-    expect(models.dataSource).to.be.instanceOf(modelClasses.dataSource);
+    expect(models.dataSource).to.be.instanceOf(modelClasses.DataSource);
   });
 });
