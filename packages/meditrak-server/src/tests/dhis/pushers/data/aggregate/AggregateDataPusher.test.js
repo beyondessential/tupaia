@@ -26,7 +26,7 @@ import { createDataBrokerStub, resetDataBrokerStubHistory } from './createDataBr
 chai.use(chaiAsPromised);
 chai.use(sinonChai);
 
-describe.only('AggregateDataPusher', () => {
+describe('AggregateDataPusher', () => {
   const models = getModels();
   const dhisApi = createDhisApiStub();
   const dataBroker = createDataBrokerStub();
