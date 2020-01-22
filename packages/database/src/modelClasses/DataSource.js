@@ -21,7 +21,7 @@ class DataSourceType extends DatabaseType {
  * Defines which data source should be selected. Polymorphic, allowing a simple code, or a code and
  * type within an object
  *
- * @typedef {(Object|string)} DataSourceSpec
+ * @typedef {Object} DataSourceSpec
  * @property {string} code    Matches on the code column
  * @property {string} [type]  Matches on the type column
  */
@@ -30,12 +30,6 @@ class DataSourceType extends DatabaseType {
  * @param {DataSourceSpec} dataSourceSpec
  */
 function extractDetailsFromDataSourceSpec(dataSourceSpec) {
-  if (typeof dataSourceSpec === 'string') {
-    return {
-      code: dataSourceSpec,
-      type: DEAFULT_DATA_SOURCE_TYPE,
-    };
-  }
   const { code, type = DEAFULT_DATA_SOURCE_TYPE } = dataSourceSpec;
   if (!code) throw new Error('Data Source specs must provide a code');
   return { code, type };
