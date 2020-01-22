@@ -4,7 +4,7 @@
  */
 
 // Converts e.g. PermissionGroup -> permissionGroup
-const getModelKey = modelName => `${modelName.charAt(0).toUpperCase()}${modelName.slice(1)}`;
+const getModelKey = modelName => `${modelName.charAt(0).toLowerCase()}${modelName.slice(1)}`;
 
 export class ModelRegistry {
   constructor(database, modelClasses) {
