@@ -124,7 +124,7 @@ export class PieChart extends PureComponent {
       };
 
   renderActiveShape = props => {
-    const { valueType, labelType, data } = this.props.viewContent;
+    const { valueType, labelType } = this.props.viewContent;
     const {
       cx,
       cy,
@@ -134,9 +134,9 @@ export class PieChart extends PureComponent {
       startAngle,
       endAngle,
       fill,
-      percent,
       value,
       name,
+      originalItem,
     } = props;
 
     const RADIAN = Math.PI / 180;
@@ -173,7 +173,7 @@ export class PieChart extends PureComponent {
 
     const textAnchor = isLabelOnRight ? 'start' : 'end';
     const valueTypeForLabel = labelType || valueType;
-    const metadataForLabel = data.find(m => m.name === name)[`${name}_metadata`];
+    const metadataForLabel = originalItem[`${name}_metadata`];
 
     return (
       <g>
