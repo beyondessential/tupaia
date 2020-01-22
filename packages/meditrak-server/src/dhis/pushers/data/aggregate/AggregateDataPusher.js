@@ -11,6 +11,7 @@ import {
   periodTypeToMomentUnit,
   periodTypeToFormat,
   dhisToTupaiaPeriodType,
+  combineDiagnostics,
 } from '@tupaia/dhis-api';
 import { DataPusher } from '../DataPusher';
 import { generateDataValue } from '../generateDataValue';
@@ -22,17 +23,6 @@ const SUCCESS_DIAGNOSTICS = {
   counts: {},
   errors: [],
 };
-
-function combineDiagnostics(primaryDiagnostics, ...additionalDiagnostics) {
-  const allDiagnostics = [primaryDiagnostics, ...additionalDiagnostics];
-  const wasSuccessful = allDiagnostics.every(d => d.wasSuccessful);
-  const errors = allDiagnostics.reduce((acc, d) => [...acc, ...d.errors], []);
-  return {
-    ...primaryDiagnostics, // counts should come from the primary diagnostics
-    wasSuccessful,
-    errors,
-  };
-}
 
 export class AggregateDataPusher extends DataPusher {
   constructor(...args) {
