@@ -30,7 +30,7 @@ chai.use(chaiAsPromised);
 chai.use(sinonChai);
 
 // relatively simple tests in here as EventBuilder contains a lot of logic, and is tested separately
-describe.only('EventPusher', () => {
+describe('EventPusher', () => {
   const models = getModels();
   const dhisApi = {};
   const dataBroker = createDataBrokerStub();
