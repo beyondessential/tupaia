@@ -8,7 +8,7 @@ import chaiAsPromised from 'chai-as-promised';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import winston from 'winston';
-import dataBroker from '@tupaia/data-broker';
+import dataBrokerPackage from '@tupaia/data-broker';
 
 import { populateTestData, insertSurveyAndScreens, resetTestData } from '../../../../testUtilities';
 import { Pusher } from '../../../../../dhis/pushers/Pusher';
@@ -22,13 +22,15 @@ import { testDeleteSurveyResponse } from './testDeleteSurveyResponse';
 import { testUpdateAnswer } from './testUpdateAnswer';
 import { testUpdateSurveyResponse } from './testUpdateSurveyResponse';
 import { testPeriodsBasedOnDataSet } from './testPeriodsBasedOnDataSet';
+import { createDataBrokerStub, resetDataBrokerStubHistory } from './createDataBrokerStub';
 
 chai.use(chaiAsPromised);
 chai.use(sinonChai);
 
-describe('AggregateDataPusher', () => {
+describe.only('AggregateDataPusher', () => {
   const models = getModels();
   const dhisApi = createDhisApiStub();
+  const dataBroker = createDataBrokerStub();
 
   describe('push()', () => {
     before(async () => {
@@ -36,14 +38,14 @@ describe('AggregateDataPusher', () => {
       sinon.stub(winston, 'error');
       sinon.stub(winston, 'warn');
       sinon.stub(Pusher.prototype, 'logResults');
-      sinon.stub(dataBroker, 'getDhisApiInstance').returns(dhisApi);
+      sinon.stub(dataBrokerPackage, 'getDhisApiInstance').returns(dhisApi);
     });
 
     after(() => {
       winston.error.restore();
       winston.warn.restore();
       Pusher.prototype.logResults.restore();
-      dataBroker.getDhisApiInstance.restore();
+      dataBrokerPackage.getDhisApiInstance.restore();
     });
 
     beforeEach(async () => {
@@ -55,25 +57,29 @@ describe('AggregateDataPusher', () => {
     afterEach(async () => {
       // reset spy calls after each test case
       resetDhisApiStubHistory(dhisApi);
+      resetDataBrokerStubHistory(dataBroker);
 
       // clear test data
       await resetTestData();
     });
 
-    describe('freshly created answer', () => testCreateAnswer(dhisApi, models));
+    describe('freshly created answer', () => testCreateAnswer(dhisApi, models, dataBroker));
 
-    describe('freshly created survey response', () => testCreateSurveyResponse(dhisApi, models));
+    describe('freshly created survey response', () =>
+      testCreateSurveyResponse(dhisApi, models, dataBroker));
 
-    describe('deleting an answer', () => testDeleteAnswer(dhisApi, models));
+    describe('deleting an answer', () => testDeleteAnswer(dhisApi, models, dataBroker));
 
-    describe('deleting a survey response', () => testDeleteSurveyResponse(dhisApi, models));
+    describe('deleting a survey response', () =>
+      testDeleteSurveyResponse(dhisApi, models, dataBroker));
 
-    describe('update to previously synced answer', () => testUpdateAnswer(dhisApi, models));
+    describe('update to previously synced answer', () =>
+      testUpdateAnswer(dhisApi, models, dataBroker));
 
     describe('update to previously synced survey response', () =>
-      testUpdateSurveyResponse(dhisApi, models));
+      testUpdateSurveyResponse(dhisApi, models, dataBroker));
 
     describe('periods based on data set period type', () =>
-      testPeriodsBasedOnDataSet(dhisApi, models));
+      testPeriodsBasedOnDataSet(dhisApi, models, dataBroker));
   });
 });
