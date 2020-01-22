@@ -8,6 +8,16 @@ import { Service } from '../Service';
 import { getServerName, getDhisApiInstance } from './getDhisApiInstance';
 
 export class DhisService extends Service {
+  pushers = {
+    [DataSource.types.question]: this.pushAggregateData,
+    [DataSource.types.survey]: this.pushEvent,
+  };
+
+  deleters = {
+    [DataSource.types.question]: this.deleteAggregateData,
+    [DataSource.types.survey]: (api, data) => api.deleteEvent(data.dhisReference),
+  };
+
   getApiForEntity(entityCode) {
     const serverName = getServerName(entityCode, this.dataSource.config.isDataRegional);
     return getDhisApiInstance({ serverName });
@@ -30,16 +40,11 @@ export class DhisService extends Service {
   async translateDataElementIdentifier(dataSource, isAggregate = true) {
     const dataElementCode = dataSource.config.dataElementCode || dataSource.code;
     return isAggregate ? dataElementCode : this.getDataElementId(dataElementCode);
-    return this.getDataElementId(dataElementCode);
   }
 
   async push(data) {
     const api = this.getApiForEntity(data.orgUnit);
-    const pushers = {
-      [DataSource.types.question]: this.pushAggregateData,
-      [DataSource.types.survey]: this.pushEvent,
-    };
-    const pushData = pushers[this.dataSource.type];
+    const pushData = this.pushers[this.dataSource.type];
     const diagnostics = await pushData(api, data);
     return { diagnostics, serverName: api.getServerName() };
   }
@@ -68,11 +73,7 @@ export class DhisService extends Service {
 
   async delete(data, { serverName }) {
     const api = getDhisApiInstance({ serverName });
-    const deleters = {
-      [DataSource.types.question]: this.deleteAggregateData,
-      [DataSource.types.survey]: () => api.deleteEvent(data.dhisReference),
-    };
-    const deleteData = deleters[this.dataSource.type];
+    const deleteData = this.deleters[this.dataSource.type];
     return deleteData(api, data);
   }
 
