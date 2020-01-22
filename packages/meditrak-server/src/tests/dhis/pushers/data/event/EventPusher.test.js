@@ -8,7 +8,6 @@ import chaiAsPromised from 'chai-as-promised';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import winston from 'winston';
-import dataBrokerPackage from '@tupaia/data-broker';
 
 import { EventPusher } from '../../../../../dhis/pushers/data/event/EventPusher';
 import { EventBuilder } from '../../../../../dhis/pushers/data/event/EventBuilder';
@@ -41,7 +40,6 @@ describe('EventPusher', () => {
       sinon.stub(winston, 'error');
       sinon.stub(winston, 'warn');
       sinon.stub(Pusher.prototype, 'logResults');
-      sinon.stub(dataBrokerPackage, 'getDhisApiInstance').returns(dhisApi);
       sinon.stub(EventBuilder.prototype, 'build');
     });
 
@@ -49,7 +47,6 @@ describe('EventPusher', () => {
       winston.error.restore();
       winston.warn.restore();
       Pusher.prototype.logResults.restore();
-      dataBrokerPackage.getDhisApiInstance.restore();
       EventBuilder.prototype.build.restore();
     });
 

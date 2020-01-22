@@ -8,7 +8,6 @@ import chaiAsPromised from 'chai-as-promised';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import winston from 'winston';
-import dataBrokerPackage from '@tupaia/data-broker';
 
 import { populateTestData, insertSurveyAndScreens, resetTestData } from '../../../../testUtilities';
 import { Pusher } from '../../../../../dhis/pushers/Pusher';
@@ -27,7 +26,7 @@ import { createDataBrokerStub, resetDataBrokerStubHistory } from './createDataBr
 chai.use(chaiAsPromised);
 chai.use(sinonChai);
 
-describe('AggregateDataPusher', () => {
+describe.only('AggregateDataPusher', () => {
   const models = getModels();
   const dhisApi = createDhisApiStub();
   const dataBroker = createDataBrokerStub();
@@ -38,14 +37,12 @@ describe('AggregateDataPusher', () => {
       sinon.stub(winston, 'error');
       sinon.stub(winston, 'warn');
       sinon.stub(Pusher.prototype, 'logResults');
-      sinon.stub(dataBrokerPackage, 'getDhisApiInstance').returns(dhisApi);
     });
 
     after(() => {
       winston.error.restore();
       winston.warn.restore();
       Pusher.prototype.logResults.restore();
-      dataBrokerPackage.getDhisApiInstance.restore();
     });
 
     beforeEach(async () => {
