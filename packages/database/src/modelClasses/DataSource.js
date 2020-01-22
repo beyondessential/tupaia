@@ -38,6 +38,8 @@ function extractDetailsFromDataSourceSpec(dataSourceSpec) {
 export class DataSourceModel extends DatabaseModel {
   static types = DATA_SOURCE_TYPES;
 
+  getDefault = (code, type) => ({ code, type, service_type: 'dhis', config: {} });
+
   /**
    * Find the matching data source, or default to 1:1 mapping with dhis, as only mappings
    * with non-standard rules are kept in the db
@@ -46,7 +48,16 @@ export class DataSourceModel extends DatabaseModel {
   async fetchFromDbOrDefault(dataSourceSpec) {
     const { code, type } = extractDetailsFromDataSourceSpec(dataSourceSpec);
     const dataSourceRecord = await this.findOne({ code, type });
-    return dataSourceRecord || { code, type, service_type: 'dhis', config: {} };
+    return dataSourceRecord || this.getDefault(code, type);
+  }
+
+  async fetchManyFromDbOrDefault(dataSourceSpecs) {
+    const codes = dataSourceSpecs.map(({ code }) => code);
+    const records = await this.find({ code: codes });
+    return dataSourceSpecs.map(
+      ({ code, type }) =>
+        records.find(r => r.code === code && r.type === type) || this.getDefault(code, type),
+    );
   }
 
   // eslint-disable-next-line class-methods-use-this
