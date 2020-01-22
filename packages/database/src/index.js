@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-export { ModelClasses } from './modelClasses';
+export { modelClasses } from './modelClasses';
 export { generateId, getHighestPossibleIdForGivenTime } from './utilities/generateId';
 export { TupaiaDatabase, QUERY_CONJUNCTIONS, JOIN_TYPES } from './TupaiaDatabase';
 export { TYPES } from './types';
