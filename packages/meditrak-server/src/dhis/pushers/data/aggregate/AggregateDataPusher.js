@@ -178,7 +178,7 @@ export class AggregateDataPusher extends DataPusher {
 
     // sync the data across to DHIS2
     const { diagnostics: updateDiagnostics, serverName } = await this.dataBroker.push(
-      dataValue.code,
+      { code: dataValue.code },
       dataValue,
     );
 
@@ -358,7 +358,7 @@ export class AggregateDataPusher extends DataPusher {
     const syncLogData = this.extractDataFromSyncLog(syncLogRecord);
     const { orgUnit, code, period, serverName } = syncLogData;
     const dataToDelete = { orgUnit, code, period };
-    const deleteDiagnostics = await this.dataBroker.delete(code, dataToDelete, { serverName });
+    const deleteDiagnostics = await this.dataBroker.delete({ code }, dataToDelete, { serverName });
 
     // delete data set completion if required
     const dataSetCompletionDiagnostics = await this.deleteDataSetCompletionIfRequired(dataToDelete);
