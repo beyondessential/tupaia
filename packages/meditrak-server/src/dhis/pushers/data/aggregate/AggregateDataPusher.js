@@ -368,7 +368,7 @@ export class AggregateDataPusher extends DataPusher {
     const syncLogData = this.extractDataFromSyncLog(syncLogRecord);
     const { orgUnit, code, period, serverName } = syncLogData;
     const dataToDelete = { orgUnit, code, period };
-    const deleteDiagnostics = await this.dataBroker.delete(code, dataToDelete, serverName);
+    const deleteDiagnostics = await this.dataBroker.delete(code, dataToDelete, { serverName });
 
     // delete data set completion if required
     const dataSetCompletionDiagnostics = await this.deleteDataSetCompletionIfRequired(dataToDelete);
