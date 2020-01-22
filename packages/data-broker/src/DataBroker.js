@@ -3,12 +3,12 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { DataSource } from '@tupaia/database';
+import { modelClasses } from '@tupaia/database';
 import { getServiceFromDataSource } from './services';
 import { getModels } from './getModels';
 
 export class DataBroker {
-  dataSourceTypes = DataSource.types;
+  dataSourceTypes = modelClasses.dataSource.types;
 
   constructor() {
     this.models = getModels();

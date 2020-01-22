@@ -3,9 +3,10 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { DataSource } from '@tupaia/database';
+import { modelClasses } from '@tupaia/database';
 import { Service } from '../Service';
 import { getServerName, getDhisApiInstance } from './getDhisApiInstance';
+const { dataSource: DataSource } = modelClasses;
 
 export class DhisService extends Service {
   pushers = {
