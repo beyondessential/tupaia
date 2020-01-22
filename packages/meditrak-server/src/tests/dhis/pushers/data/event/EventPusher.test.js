@@ -8,23 +8,32 @@ import chaiAsPromised from 'chai-as-promised';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import winston from 'winston';
-import dataBroker from '@tupaia/data-broker';
+import dataBrokerPackage from '@tupaia/data-broker';
 
 import { EventPusher } from '../../../../../dhis/pushers/data/event/EventPusher';
 import { EventBuilder } from '../../../../../dhis/pushers/data/event/EventBuilder';
 import { populateTestData, insertSurveyAndScreens, resetTestData } from '../../../../testUtilities';
 import { Pusher } from '../../../../../dhis/pushers/Pusher';
 import { getModels } from '../../../../getModels';
-import { createDhisApiStub, resetDhisApiStubHistory } from './createDhisApiStub';
-import { BASELINE_TEST_DATA, QUESTION, SURVEY, CHANGE, DHIS_REFERENCE } from './testData';
+import { createDataBrokerStub, resetDataBrokerStubHistory } from './createDataBrokerStub';
+import {
+  BASELINE_TEST_DATA,
+  QUESTION,
+  SURVEY,
+  CHANGE,
+  DHIS_REFERENCE,
+  SERVER_NAME,
+  DATA_SOURCE_TYPE_SURVEY,
+} from './testData';
 
 chai.use(chaiAsPromised);
 chai.use(sinonChai);
 
 // relatively simple tests in here as EventBuilder contains a lot of logic, and is tested separately
-describe('EventPusher', () => {
+describe.only('EventPusher', () => {
   const models = getModels();
-  const dhisApi = createDhisApiStub();
+  const dhisApi = {};
+  const dataBroker = createDataBrokerStub();
 
   describe('push()', () => {
     before(async () => {
@@ -32,7 +41,7 @@ describe('EventPusher', () => {
       sinon.stub(winston, 'error');
       sinon.stub(winston, 'warn');
       sinon.stub(Pusher.prototype, 'logResults');
-      sinon.stub(dataBroker, 'getDhisApiInstance').returns(dhisApi);
+      sinon.stub(dataBrokerPackage, 'getDhisApiInstance').returns(dhisApi);
       sinon.stub(EventBuilder.prototype, 'build');
     });
 
@@ -40,7 +49,7 @@ describe('EventPusher', () => {
       winston.error.restore();
       winston.warn.restore();
       Pusher.prototype.logResults.restore();
-      dataBroker.getDhisApiInstance.restore();
+      dataBrokerPackage.getDhisApiInstance.restore();
       EventBuilder.prototype.build.restore();
     });
 
@@ -52,7 +61,7 @@ describe('EventPusher', () => {
 
     afterEach(async () => {
       // reset spy calls after each test case
-      resetDhisApiStubHistory(dhisApi);
+      resetDataBrokerStubHistory(dataBroker);
 
       // clear test data
       await resetTestData();
@@ -62,22 +71,22 @@ describe('EventPusher', () => {
       it('should throw an error if the changed record was not found', async () => {
         const change = await models.dhisSyncQueue.findById(CHANGE.id);
         change.record_id = 'does_not_exist_xxxxxxxxx';
-        const pusher = new EventPusher(models, change, dhisApi);
+        const pusher = new EventPusher(models, change, dhisApi, dataBroker);
         expect(pusher.push()).to.be.rejectedWith(
           `No survey response found for ${change.record_id}`,
         );
-        expect(dhisApi.postEvents).not.to.have.been.called;
-        expect(dhisApi.deleteEvent).not.to.have.been.called;
+        expect(dataBroker.push).not.to.have.been.called;
+        expect(dataBroker.delete).not.to.have.been.called;
       });
 
       it('should post all the data values to a program', async () => {
         const change = await models.dhisSyncQueue.findById(CHANGE.id);
-        const pusher = new EventPusher(models, change, dhisApi);
+        const pusher = new EventPusher(models, change, dhisApi, dataBroker);
 
         const result = await pusher.push();
         expect(result).to.be.true;
-        expect(dhisApi.postEvents).to.have.been.calledOnce;
-        expect(dhisApi.deleteEvent).not.to.have.been.called;
+        expect(dataBroker.push).to.have.been.calledOnce;
+        expect(dataBroker.delete).not.to.have.been.called;
       });
     });
 
@@ -92,16 +101,23 @@ describe('EventPusher', () => {
           deleted: 0,
           ignored: 0,
           dhis_reference: DHIS_REFERENCE,
-          data: '{}',
+          data: `{"program":"${SURVEY.code}", "serverName":"${SERVER_NAME}"}`,
         };
         await populateTestData({ dhisSyncLog: [syncLogRecord] });
 
-        const pusher = new EventPusher(models, change, dhisApi);
+        const pusher = new EventPusher(models, change, dhisApi, dataBroker);
 
         const result = await pusher.push();
         expect(result).to.be.true;
-        expect(dhisApi.deleteEvent).to.have.been.calledOnceWith(DHIS_REFERENCE);
-        expect(dhisApi.postEvents).to.have.been.calledOnce;
+        expect(dataBroker.delete).to.have.been.calledOnceWith(
+          {
+            type: DATA_SOURCE_TYPE_SURVEY,
+            code: SURVEY.code,
+          },
+          { dhisReference: DHIS_REFERENCE },
+          { serverName: SERVER_NAME },
+        );
+        expect(dataBroker.push).to.have.been.calledOnce;
       });
     });
 
@@ -117,16 +133,23 @@ describe('EventPusher', () => {
           deleted: 0,
           ignored: 0,
           dhis_reference: DHIS_REFERENCE,
-          data: '{}',
+          data: `{"program":"${SURVEY.code}", "serverName":"${SERVER_NAME}"}`,
         };
         await populateTestData({ dhisSyncLog: [syncLogRecord] });
 
-        const pusher = new EventPusher(models, change, dhisApi);
+        const pusher = new EventPusher(models, change, dhisApi, dataBroker);
 
         const result = await pusher.push();
         expect(result).to.be.true;
-        expect(dhisApi.deleteEvent).to.have.been.calledOnceWith(DHIS_REFERENCE);
-        expect(dhisApi.postEvents).not.to.have.been.called;
+        expect(dataBroker.delete).to.have.been.calledOnceWith(
+          {
+            type: DATA_SOURCE_TYPE_SURVEY,
+            code: SURVEY.code,
+          },
+          { dhisReference: DHIS_REFERENCE },
+          { serverName: SERVER_NAME },
+        );
+        expect(dataBroker.push).not.to.have.been.called;
       });
     });
   });

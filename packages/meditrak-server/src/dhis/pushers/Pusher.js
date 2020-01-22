@@ -41,7 +41,6 @@ export class Pusher {
   async push() {
     const results = await (this.changeType === 'update' ? this.createOrUpdate() : this.delete());
     await this.logResults(results); // await to avoid db lock between delete/update on event push
-
     return results.wasSuccessful;
   }
 
