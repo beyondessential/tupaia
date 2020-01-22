@@ -25,9 +25,9 @@ export class EventPusher extends DataPusher {
     }
 
     const survey = await surveyResponse.survey();
-    const { survey: surveyType } = this.dataBroker.getDataSourceTypes();
+    const { dataGroup: dataGroupType } = this.dataBroker.getDataSourceTypes();
     const { diagnostics, serverName } = await this.dataBroker.push(
-      { type: surveyType, code: survey.code },
+      { type: dataGroupType, code: survey.code },
       data,
     );
     // If any errors or ignored, mark this push as a failure so it is reattempted
@@ -56,9 +56,9 @@ export class EventPusher extends DataPusher {
     if (!dhisReference) {
       throw new Error(`No reference for record ${this.recordId}`);
     }
-    const { survey: surveyType } = this.dataBroker.getDataSourceTypes();
+    const { dataGroup: dataGroupType } = this.dataBroker.getDataSourceTypes();
     const diagnostics = await this.dataBroker.delete(
-      { type: surveyType, code },
+      { type: dataGroupType, code },
       { dhisReference },
       { serverName },
     );

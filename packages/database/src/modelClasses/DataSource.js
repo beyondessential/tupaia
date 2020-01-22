@@ -8,10 +8,10 @@ import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
 const DATA_SOURCE_TYPES = {
-  question: 'question',
-  survey: 'survey',
+  dataElement: 'dataElement',
+  dataGroup: 'dataGroup',
 };
-const DEAFULT_DATA_SOURCE_TYPE = DATA_SOURCE_TYPES.question; // default to a question data source
+const DEAFULT_DATA_SOURCE_TYPE = DATA_SOURCE_TYPES.dataElement; // default to a dataElement data source
 
 class DataSourceType extends DatabaseType {
   static databaseType = TYPES.DATA_SOURCE;

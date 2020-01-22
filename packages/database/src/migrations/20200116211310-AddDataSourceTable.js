@@ -16,13 +16,13 @@ exports.setup = function(options, seedLink) {
 
 exports.up = async function(db) {
   await db.runSql(`CREATE TYPE service_type AS ENUM('dhis');`);
-  await db.runSql(`CREATE TYPE data_source_type AS ENUM('question', 'survey');`);
+  await db.runSql(`CREATE TYPE data_source_type AS ENUM('dataElement', 'dataGroup');`);
 
   await db.createTable('data_source', {
     columns: {
       id: { type: 'text', primaryKey: true },
       code: { type: 'text', notNull: true },
-      type: { type: 'data_source_type', notNull: true, default: 'question' },
+      type: { type: 'data_source_type', notNull: true, default: 'dataElement' },
       service_type: { type: 'service_type', notNull: true },
       config: { type: 'jsonb', notNull: true, default: '{}' },
     },

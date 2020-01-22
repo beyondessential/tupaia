@@ -10,13 +10,13 @@ const { DataSource } = modelClasses;
 
 export class DhisService extends Service {
   pushers = {
-    [DataSource.types.question]: this.pushAggregateData,
-    [DataSource.types.survey]: this.pushEvent,
+    [DataSource.types.dataElement]: this.pushAggregateData,
+    [DataSource.types.dataGroup]: this.pushEvent,
   };
 
   deleters = {
-    [DataSource.types.question]: this.deleteAggregateData,
-    [DataSource.types.survey]: (api, data) => api.deleteEvent(data.dhisReference),
+    [DataSource.types.dataElement]: this.deleteAggregateData,
+    [DataSource.types.dataGroup]: (api, data) => api.deleteEvent(data.dhisReference),
   };
 
   getApiForEntity(entityCode) {
