@@ -6,7 +6,7 @@ import sinon from 'sinon';
 import { DhisApi } from '@tupaia/dhis-api';
 import { DHIS_REFERENCE } from './testData';
 
- const IMPORT_DIAGNOSTICS = {
+const IMPORT_DIAGNOSTICS = {
   counts: {
     imported: 1,
     updated: 0,
@@ -25,8 +25,8 @@ const DELETE_DIAGNOSTICS = {
 };
 
 const STUBBED_METHODS = {
-  postEvents: IMPORT_SUMMARY,
-  deleteEvent: DELETE_SUMMARY,
+  postEvents: IMPORT_DIAGNOSTICS,
+  deleteEvent: DELETE_DIAGNOSTICS,
 };
 
 export const resetDhisApiStubHistory = dhisApiStub =>
