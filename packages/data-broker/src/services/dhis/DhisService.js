@@ -26,27 +26,32 @@ export class DhisService extends Service {
 
   /**
    *
+   * @param {Object}     dataValue    The untranslated data value
    * @param {DataSource} dataSource   Note that this may not be the instance's primary data source
-   * @param {boolean}    isAggregate  Whether this translation is for an aggregate data value
    */
-  async translateDataElementIdentifiers(dataSources, isAggregate = true) {
-    const dataElementCodes = dataSources.map(d =>);
-    return isAggregate ? dataElementCodes : this.getDataElementIds(dataElementCode);
-  }
-
-  translateDataValueCode({ code, ...restOfDataValue }, dataSource) {
+  translateDataValueCode = ({ code, ...restOfDataValue }, dataSource) => {
     return {
-      dataElement:  dataSource.config.dataElementCode || dataSource.code,
+      dataElement: dataSource.config.dataElementCode || dataSource.code,
       ...restOfDataValue,
     };
-  }
+  };
 
   async translateEventDataValues(dataValues) {
-    const dataSources = await Promise.all(dataValues.map(({ code }) => this.models.dataSource.fetchFromDbOrDefault({ code})));
-    const dataValuesWithCodeReplaced = dataValues.map((d, i) => this.translateDataValueCode(d, dataSources[i]));
+    const dataSources = await Promise.all(
+      dataValues.map(({ code }) => this.models.dataSource.fetchFromDbOrDefault({ code })),
+    );
+    const dataValuesWithCodeReplaced = dataValues.map((d, i) =>
+      this.translateDataValueCode(d, dataSources[i]),
+    );
     const dataElementCodes = dataValuesWithCodeReplaced.map(({ dataElement }) => dataElement);
-    const dataElementIds = await this.api.getIdsFromCodes(this.api.resourceTypes.DATA_ELEMENT, dataElementCodes);
-    const dataValuesWithIds = dataValuesWithCodeReplaced.map((d, i ) => ({ ...d, dataElement: dataElementIds[i] }));
+    const dataElementIds = await this.api.getIdsFromCodes(
+      this.api.resourceTypes.DATA_ELEMENT,
+      dataElementCodes,
+    );
+    const dataValuesWithIds = dataValuesWithCodeReplaced.map((d, i) => ({
+      ...d,
+      dataElement: dataElementIds[i],
+    }));
     return dataValuesWithIds;
   }
 
