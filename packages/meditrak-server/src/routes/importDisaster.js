@@ -89,7 +89,6 @@ export async function importDisaster(req, res) {
 
             const intialData = sheetData.map(item => {
               return {
-                id: item.id ? item.id : generateId(),
                 code: item.code,
                 parent_id: item.parent_id,
                 name: item.name,
@@ -101,7 +100,7 @@ export async function importDisaster(req, res) {
             for (const entry of intialData) {
               await transactingModels.entity.updateOrCreate(
                 {
-                  id: entry.id,
+                  code: entry.code,
                 },
                 entry,
               );
