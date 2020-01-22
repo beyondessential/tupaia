@@ -6,7 +6,7 @@ import sinon from 'sinon';
 import { DhisApi } from '@tupaia/dhis-api';
 import { DHIS_REFERENCE } from './testData';
 
-const IMPORT_SUMMARY = {
+ const IMPORT_DIAGNOSTICS = {
   counts: {
     imported: 1,
     updated: 0,
