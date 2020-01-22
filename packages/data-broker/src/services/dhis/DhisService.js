@@ -37,7 +37,9 @@ export class DhisService extends Service {
   };
 
   async translateEventDataValues(dataValues) {
-    const dataSources = await this.models.dataSource.fetchManyFromDbOrDefault(dataValues.map(({ code }) => code));
+    const dataSources = await this.models.dataSource.fetchManyFromDbOrDefault(
+      dataValues.map(({ code }) => code),
+    );
     const dataValuesWithCodeReplaced = dataValues.map((d, i) =>
       this.translateDataValueCode(d, dataSources[i]),
     );
