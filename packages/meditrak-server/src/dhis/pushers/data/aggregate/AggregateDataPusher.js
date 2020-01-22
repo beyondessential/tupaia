@@ -11,16 +11,14 @@ import {
   periodTypeToMomentUnit,
   periodTypeToFormat,
   dhisToTupaiaPeriodType,
-  RESPONSE_TYPES,
+  combineDiagnostics,
 } from '@tupaia/dhis-api';
 import { DataPusher } from '../DataPusher';
 import { generateDataValue } from '../generateDataValue';
 import { formatDateForDHIS2 } from '../formatDateForDHIS2';
 
 const { ORGANISATION_UNIT } = DHIS2_RESOURCE_TYPES;
-const { DIAGNOSTICS } = RESPONSE_TYPES;
 const SUCCESS_DIAGNOSTICS = {
-  responseType: DIAGNOSTICS,
   wasSuccessful: true,
   counts: {},
   errors: [],
@@ -157,19 +155,6 @@ export class AggregateDataPusher extends DataPusher {
     });
   }
 
-  getDiagnosticsForResponses(primaryResponse, ...additionalResponses) {
-    const primaryDiagnostics = this.getDiagnostics(primaryResponse);
-    const additionalDiagnostics = additionalResponses.map(r => this.getDiagnostics(r));
-    const allDiagnostics = [primaryDiagnostics, ...additionalDiagnostics];
-    const wasSuccessful = allDiagnostics.every(d => d.wasSuccessful);
-    const errors = allDiagnostics.reduce((acc, d) => [...acc, ...d.errors], []);
-    return {
-      ...primaryDiagnostics, // counts should come from the primary diagnostics
-      wasSuccessful,
-      errors,
-    };
-  }
-
   /**
    * @returns {Promise<PushResults>}
    */
@@ -178,7 +163,7 @@ export class AggregateDataPusher extends DataPusher {
     const dataToLog = { ...dataValue, ...extraDataToLog };
 
     // if org unit or period has changed from a prior sync, delete the old copy from dhis2
-    const deleteResponse = await this.deletePriorSyncIfSignificantChange(dataValue);
+    const deleteDiagnostics = await this.deletePriorSyncIfSignificantChange(dataValue);
 
     // check whether this update is redundant, i.e. there is a matching record later on the same day
     const matchingRecord = await this.findMoreRecentResponse();
@@ -189,20 +174,26 @@ export class AggregateDataPusher extends DataPusher {
     }
 
     // if this is a survey response, sync across a data set completion
-    const dataSetCompletionResponse = await this.pushDataSetCompletionIfRequired();
+    const dataSetCompletionDiagnostics = await this.pushDataSetCompletionIfRequired();
 
     // sync the data across to DHIS2
-    const updateResponse = await this.dataBroker.push(dataValue.code, dataValue);
+    const { diagnostics: updateDiagnostics, serverName } = await this.dataBroker.push(
+      dataValue.code,
+      dataValue,
+    );
 
     // combine the diagnostics
-    const diagnostics = this.getDiagnosticsForResponses(
-      updateResponse,
-      deleteResponse,
-      dataSetCompletionResponse,
+    const diagnostics = combineDiagnostics(
+      updateDiagnostics,
+      deleteDiagnostics,
+      dataSetCompletionDiagnostics,
     );
     return {
       ...diagnostics,
-      data: dataToLog,
+      data: {
+        ...dataToLog,
+        serverName,
+      },
     };
   }
 
@@ -272,7 +263,7 @@ export class AggregateDataPusher extends DataPusher {
     const answer = await this.fetchAnswer();
     const surveyResponse = await this.fetchSurveyResponse();
     const survey = await this.fetchSurvey();
-    const baseDataElement = this.isSurveyResponse
+    const baseDataValue = this.isSurveyResponse
       ? {
           code: `${survey.code}SurveyDate`,
           value: formatDateForDHIS2(surveyResponse.timezoneAwareSubmissionTime()),
@@ -291,7 +282,7 @@ export class AggregateDataPusher extends DataPusher {
     const period = await this.calculatePeriod();
     const storedBy = await this.fetchStoredBy();
     const dataValue = {
-      ...baseDataElement,
+      ...baseDataValue,
       orgUnit: organisationUnit.code,
       period,
       storedBy,
@@ -365,18 +356,17 @@ export class AggregateDataPusher extends DataPusher {
     }
 
     const syncLogData = this.extractDataFromSyncLog(syncLogRecord);
-    const dhisApiForDeletion = this.getDhisApiInstance(syncLogRecord);
-    const { orgUnit, dataElement, period } = syncLogData;
-    const dataToDelete = { orgUnit, dataElement, period };
-    const deleteResponse = await dhisApiForDeletion.deleteDataValue(dataToDelete);
+    const { orgUnit, code, period, serverName } = syncLogData;
+    const dataToDelete = { orgUnit, code, period };
+    const deleteDiagnostics = await this.dataBroker.delete(code, dataToDelete, { serverName });
 
     // delete data set completion if required
-    const dataSetCompletionResponse = await this.deleteDataSetCompletionIfRequired(dataToDelete);
+    const dataSetCompletionDiagnostics = await this.deleteDataSetCompletionIfRequired(dataToDelete);
 
     // Set up any duplicate information to resync, so that it is not lost from DHIS2
     await this.addMatchingRecordsToSyncQueue(syncLogData);
 
-    return this.getDiagnosticsForResponses(deleteResponse, dataSetCompletionResponse);
+    return combineDiagnostics(deleteDiagnostics, dataSetCompletionDiagnostics);
   }
 
   /**

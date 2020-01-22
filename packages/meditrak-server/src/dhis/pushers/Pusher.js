@@ -4,7 +4,6 @@
  */
 
 import winston from 'winston';
-import { getDiagnosticsFromResponse } from '@tupaia/dhis-api';
 import { DataBroker } from '@tupaia/data-broker';
 
 /**
@@ -89,10 +88,6 @@ export class Pusher {
     }
 
     return this.extractDataFromSyncLog(dhisSyncLog);
-  }
-
-  getDiagnostics(response) {
-    return getDiagnosticsFromResponse(response, this.change);
   }
 
   /**

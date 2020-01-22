@@ -13,7 +13,7 @@ import { getEventDataValueMap } from './getEventDataValueMap';
 import { replaceElementIdsWithCodesInEvents } from './replaceElementIdsWithCodesInEvents';
 import { translateEventResponse } from './translateEventResponse';
 import { translateDataValueResponse } from './translateDataValueResponse';
-import { RESPONSE_TYPES } from './responseUtils';
+import { RESPONSE_TYPES, getDiagnosticsFromResponse } from './responseUtils';
 import { buildAnalyticsQuery } from './buildAnalyticsQuery';
 import { filterAnalyticsResults } from './filterAnalyticsResults';
 
@@ -140,11 +140,15 @@ export class DhisApi {
   }
 
   async postDataValueSets(data) {
-    return this.postData(DATA_VALUE_SET, { dataValues: data });
+    const response = await this.postData(DATA_VALUE_SET, { dataValues: data });
+    return getDiagnosticsFromResponse(response);
   }
 
   async postDataSetCompletion(data) {
-    return this.postData(DATA_SET_COMPLETION, { completeDataSetRegistrations: [data] });
+    const response = await this.postData(DATA_SET_COMPLETION, {
+      completeDataSetRegistrations: [data],
+    });
+    return getDiagnosticsFromResponse(response);
   }
 
   async updateAnalyticsTables() {
@@ -256,7 +260,8 @@ export class DhisApi {
    * @returns {Promise<string>}
    */
   async postEvents(events) {
-    return this.postData(EVENT, { events });
+    const response = await this.postData(EVENT, { events });
+    return getDiagnosticsFromResponse(response);
   }
 
   /**
@@ -265,7 +270,8 @@ export class DhisApi {
    * @returns {Promise<string>}
    */
   async updateEvent(eventId, event) {
-    return this.put(`events/${eventId}`, event);
+    const response = await this.put(`events/${eventId}`, event);
+    return getDiagnosticsFromResponse(response);
   }
 
   /**
@@ -277,20 +283,17 @@ export class DhisApi {
     let totalUpdatedCount = 0;
 
     for (let i = 0; i < events.length; i++) {
-      let updated = 0;
       const eventId = events[i].event;
 
       try {
-        const { response } = await this.updateEvent(eventId, events[i]);
-        updated = parseInt(response.importCount.updated, 10);
+        const { counts } = await this.updateEvent(eventId, events[i]);
+        totalUpdatedCount += counts.updated;
       } catch (error) {
         errors.push(error.message);
       }
-
-      totalUpdatedCount += updated;
     }
 
-    return { updated: totalUpdatedCount, errors };
+    return { counts: { updated: totalUpdatedCount }, errors };
   }
 
   async updateRecord(resourceType, record) {
@@ -300,9 +303,11 @@ export class DhisApi {
     }
     // If the resource already exists on DHIS2, update the existing one
     if (existingId) {
-      return this.put(`${resourceType}/${existingId}`, record);
+      const response = await this.put(`${resourceType}/${existingId}`, record);
+      return getDiagnosticsFromResponse(response);
     }
-    return this.post(resourceType, record);
+    const response = await this.post(resourceType, record);
+    return getDiagnosticsFromResponse(response);
   }
 
   async getAnalytics(originalQuery, aggregationType, aggregationConfig) {
@@ -438,17 +443,24 @@ export class DhisApi {
   }
 
   async deleteRecordById(resourceType, id) {
-    return this.delete(`${resourceType}/${id}`);
+    const response = await this.delete(`${resourceType}/${id}`);
+    return getDiagnosticsFromResponse(response, true);
   }
 
   async deleteWithQuery(endpoint, query) {
     try {
       // dhis2 returns empty response if successful, throws an error (409 status code) if it fails
       await this.delete(endpoint, query);
-      return { responseType: RESPONSE_TYPES.DELETE };
+      return getDiagnosticsFromResponse({ responseType: RESPONSE_TYPES.DELETE }, true);
     } catch (error) {
       if (error.status === 409) {
-        return { responseType: RESPONSE_TYPES.DELETE, errors: [error.message] };
+        return getDiagnosticsFromResponse(
+          {
+            responseType: RESPONSE_TYPES.DELETE,
+            errors: [error.message],
+          },
+          true,
+        );
       }
       throw error;
     }
@@ -473,7 +485,8 @@ export class DhisApi {
   }
 
   async deleteEvent(eventReference) {
-    return this.delete(`${EVENT}/${eventReference}`);
+    const response = await this.delete(`${EVENT}/${eventReference}`, true);
+    return getDiagnosticsFromResponse(response);
   }
 
   async deleteDataSetCompletion({ dataSet, period, organisationUnit }) {

@@ -85,7 +85,7 @@ const immsBreachExistenceWithinPeriod = async (
 
   winston.info(`${AGGREGATION_NAME} (${numberOfDays} days) done, pushing new data values...`);
   const {
-    importCount: { imported, updated, ignored },
+    counts: { imported, updated, ignored },
   } = await dhisApi.postDataValueSets(dataValues);
 
   if (imported) {

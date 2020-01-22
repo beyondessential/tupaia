@@ -80,7 +80,7 @@ const PERIOD = moment(SURVEY_RESPONSE.submission_time).format('YYYYMMDD');
 const STORED_BY = `${USER.first_name} ${USER.last_name}`;
 
 export const ANSWER_DATA_VALUE_DIMENSIONS = {
-  dataElement: QUESTION.code,
+  code: QUESTION.code,
   orgUnit: ENTITY.code,
   period: PERIOD,
 };
@@ -97,7 +97,7 @@ export const ANSWER_SYNC_LOG_DATA = {
 };
 export const SURVEY_RESPONSE_DATA_VALUE_DIMENSIONS = {
   ...ANSWER_DATA_VALUE_DIMENSIONS,
-  dataElement: `${SURVEY.code}SurveyDate`,
+  code: `${SURVEY.code}SurveyDate`,
 };
 export const SURVEY_RESPONSE_DATA_VALUE = {
   ...ANSWER_DATA_VALUE,

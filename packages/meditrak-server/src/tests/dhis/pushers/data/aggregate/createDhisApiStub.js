@@ -3,13 +3,12 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 import sinon from 'sinon';
-import { DhisApi, RESPONSE_TYPES } from '@tupaia/dhis-api';
+import { DhisApi } from '@tupaia/dhis-api';
 import { ORGANISATION_UNIT_ID } from './testData';
 
 // taken directly from a DHIS2 api call, with redundant info stripped out
-const IMPORT_SUMMARY = {
-  responseType: RESPONSE_TYPES.IMPORT_SUMMARY,
-  importCount: {
+const IMPORT_DIAGNOSTICS = {
+  counts: {
     imported: 1,
     updated: 0,
     ignored: 0,
@@ -17,15 +16,13 @@ const IMPORT_SUMMARY = {
   },
 };
 
-const DELETE_SUMMARY = {
-  responseType: RESPONSE_TYPES.DELETE,
-};
+const DELETE_DIAGNOSTICS = {};
 
 const STUBBED_METHODS = {
-  postDataValueSets: IMPORT_SUMMARY,
-  postDataSetCompletion: IMPORT_SUMMARY,
-  deleteDataValue: DELETE_SUMMARY,
-  deleteDataSetCompletion: DELETE_SUMMARY,
+  postDataValueSets: IMPORT_DIAGNOSTICS,
+  postDataSetCompletion: IMPORT_DIAGNOSTICS,
+  deleteDataValue: DELETE_DIAGNOSTICS,
+  deleteDataSetCompletion: DELETE_DIAGNOSTICS,
   getDataSetByCode: null,
   getIdFromCode: ORGANISATION_UNIT_ID,
 };

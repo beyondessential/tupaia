@@ -288,8 +288,8 @@ class AggregatedEventPusher {
 
     let importedCount = 0;
     try {
-      const { response } = await this.dhisApi.postEvents(events);
-      importedCount = response.imported;
+      const { counts } = await this.dhisApi.postEvents(events);
+      importedCount = counts.imported;
     } catch (error) {
       winston.error(error);
     }
@@ -304,7 +304,8 @@ class AggregatedEventPusher {
   async update(events) {
     winston.info('Updating existing events...');
 
-    const { updated: updatedCount, errors } = await this.dhisApi.updateEvents(events);
+    const { counts, errors } = await this.dhisApi.updateEvents(events);
+    const { updated: updatedCount } = counts;
     errors.forEach(({ message }) => winston.error(message));
 
     const message =

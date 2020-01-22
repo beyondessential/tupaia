@@ -25,11 +25,10 @@ export class EventPusher extends DataPusher {
     }
 
     const survey = await surveyResponse.survey();
-    const response = await this.dataBroker.push(
+    const { diagnostics, serverName } = await this.dataBroker.push(
       { type: this.dataBroker.dataSourceTypes.survey, code: survey.code },
       data,
     );
-    const diagnostics = this.getDiagnostics(response);
     // If any errors or ignored, mark this push as a failure so it is reattempted
     const { wasSuccessful, errors = [], counts = {} } = diagnostics;
     const wasFullySuccessful = wasSuccessful && errors.length === 0 && counts.ignored === 0;
@@ -37,7 +36,7 @@ export class EventPusher extends DataPusher {
     return {
       ...diagnostics,
       wasSuccessful: wasFullySuccessful,
-      data: { ...data, serverName: this.api.getServerName() },
+      data: { ...data, serverName },
     };
   }
 
@@ -51,12 +50,16 @@ export class EventPusher extends DataPusher {
       return { wasSuccessful: true };
     }
 
-    const apiForDeletion = this.getDhisApiInstance(syncLogRecord);
     const { dhis_reference: dhisReference } = syncLogRecord;
+    const { program: code, serverName } = this.extractDataFromSyncLog(syncLogRecord);
     if (!dhisReference) {
       throw new Error(`No reference for record ${this.recordId}`);
     }
-    const response = await apiForDeletion.deleteEvent(dhisReference);
-    return { ...this.getDiagnostics(response), dhisReference: null };
+    const diagnostics = await this.dataBroker.delete(
+      { type: this.dataBroker.dataSourceTypes.survey, code },
+      { dhisReference },
+      { serverName },
+    );
+    return { ...diagnostics, dhisReference: null };
   }
 }
