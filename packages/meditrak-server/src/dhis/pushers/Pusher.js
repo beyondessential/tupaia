@@ -4,7 +4,6 @@
  */
 
 import winston from 'winston';
-import { DataBroker } from '@tupaia/data-broker';
 
 /**
  * @typedef {PushResults}
@@ -15,11 +14,11 @@ import { DataBroker } from '@tupaia/data-broker';
  */
 
 export class Pusher {
-  constructor(models, change, dhisApi) {
+  constructor(models, change, dhisApi, dataBroker) {
     this.models = models;
     this.change = change;
     this.api = dhisApi;
-    this.dataBroker = new DataBroker();
+    this.dataBroker = dataBroker;
   }
 
   get recordId() {

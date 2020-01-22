@@ -3,6 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 
+import { DataBroker } from '@tupaia/data-broker';
 import { ExternalApiSyncQueue } from '../database/ExternalApiSyncQueue';
 import { generateChangeRecordAdditions } from './syncQueue';
 import { pushLatest } from './pushLatest';
@@ -45,16 +46,17 @@ export async function startSyncWithDhis(models) {
 
   // Start recursive sync loop (enabled by default)
   if (process.env.DHIS_SYNC_DISABLE === 'true') {
-    console.log("DHIS2 sync is disabled")
+    console.log('DHIS2 sync is disabled');
   } else {
-    syncWithDhis(models, syncQueue);
+    const dataBroker = new DataBroker();
+    syncWithDhis(models, syncQueue, dataBroker);
   }
 }
 
-async function syncWithDhis(models, syncQueue) {
+async function syncWithDhis(models, syncQueue, dataBroker) {
   try {
-    await pushLatest(models, syncQueue, BATCH_SIZE); // Push the next most recent batch of survey responses
+    await pushLatest(models, syncQueue, dataBroker, BATCH_SIZE); // Push the next most recent batch of survey responses
   } finally {
-    setTimeout(() => syncWithDhis(models, syncQueue), PERIOD_BETWEEN_SYNCS);
+    setTimeout(() => syncWithDhis(models, syncQueue, dataBroker), PERIOD_BETWEEN_SYNCS);
   }
 }
