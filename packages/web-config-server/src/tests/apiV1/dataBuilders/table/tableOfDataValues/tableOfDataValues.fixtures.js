@@ -15,16 +15,14 @@
  */
 
 export const OPTIONS = {
-  TO_HvlMCH: {
-    1: 'One',
-    2: 'Two',
-    3: 'Three',
-    4: 'Four',
-    5: 'Five',
-    6: 'Six',
-    7: 'Seven',
-    8: 'Eight',
-  },
+  1: 'One',
+  2: 'Two',
+  3: 'Three',
+  4: 'Four',
+  5: 'Five',
+  6: 'Six',
+  7: 'Seven',
+  8: 'Eight',
 };
 
 export const DATA_VALUES = [
@@ -53,7 +51,7 @@ export const DATA_VALUES = [
     organisationUnit: 'TO_HvlMCH',
     metadata: {
       code: 'HP1',
-      options: { ...OPTIONS.TO_HvlMCH },
+      options: OPTIONS,
     },
   },
   {
@@ -62,7 +60,7 @@ export const DATA_VALUES = [
     organisationUnit: 'TO_HvlMCH',
     metadata: {
       code: 'HP2',
-      options: { ...OPTIONS.TO_HvlMCH },
+      options: OPTIONS,
     },
   },
   {
@@ -71,7 +69,7 @@ export const DATA_VALUES = [
     organisationUnit: 'TO_HvlMCH',
     metadata: {
       code: 'HP3',
-      options: { ...OPTIONS.TO_HvlMCH },
+      options: OPTIONS,
     },
   },
   {
@@ -80,7 +78,7 @@ export const DATA_VALUES = [
     organisationUnit: 'TO_HvlMCH',
     metadata: {
       code: 'HP4',
-      options: { ...OPTIONS.TO_HvlMCH },
+      options: OPTIONS,
     },
   },
   {
@@ -89,7 +87,7 @@ export const DATA_VALUES = [
     organisationUnit: 'TO_HvlMCH',
     metadata: {
       code: 'HP5',
-      options: { ...OPTIONS.TO_HvlMCH },
+      options: OPTIONS,
     },
   },
   {
@@ -98,7 +96,7 @@ export const DATA_VALUES = [
     organisationUnit: 'TO_HvlMCH',
     metadata: {
       code: 'HP6',
-      options: { ...OPTIONS.TO_HvlMCH },
+      options: OPTIONS,
     },
   },
   {
@@ -107,7 +105,7 @@ export const DATA_VALUES = [
     organisationUnit: 'TO_HvlMCH',
     metadata: {
       code: 'HP7',
-      options: { ...OPTIONS.TO_HvlMCH },
+      options: OPTIONS,
     },
   },
   {
@@ -116,7 +114,7 @@ export const DATA_VALUES = [
     organisationUnit: 'TO_HvlMCH',
     metadata: {
       code: 'HP8',
-      options: { ...OPTIONS.TO_HvlMCH },
+      options: OPTIONS,
     },
   },
 ];

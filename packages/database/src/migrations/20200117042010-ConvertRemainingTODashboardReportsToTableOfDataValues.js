@@ -200,32 +200,32 @@ const tableCD_Validation_CD7 = {
   rows: tCD_Validation_CD7Rows,
   columns: tCD_Validation_CD7Cols,
   cells: [
-    ...build2DTableCells({
-      prefix: 'CD',
-      numRows: tCD_Validation_CD7Rows[0].rows.length - 1,
-      numCols: tCD_Validation_CD7Cols.length,
-      startCell: 70,
-    }).concat([['$rowCategoryColumnTotal']]),
-    ...build2DTableCells({
-      prefix: 'CD',
-      numRows: tCD_Validation_CD7Rows[1].rows.length - 1,
-      numCols: tCD_Validation_CD7Cols.length,
-      startCell: 73,
-      insertCells: [{ rowIndex: 0, colIndex: 0 }], // First cell is missing entry
-    }).concat([['$rowCategoryColumnTotal']]),
-    ...build2DTableCells({
-      prefix: 'CD',
-      numRows: tCD_Validation_CD7Rows[2].rows.length - 1,
-      numCols: tCD_Validation_CD7Cols.length,
-      startCell: 75,
-    }).concat([['$rowCategoryColumnTotal']]),
-    ...build2DTableCells({
-      prefix: 'CD',
-      numRows: tCD_Validation_CD7Rows[3].rows.length - 1,
-      numCols: tCD_Validation_CD7Cols.length,
-      startCell: 85,
-      insertCells: [{ name: 'CD84a', rowIndex: 1, colIndex: 0 }],
-    }).concat([['$rowCategoryColumnTotal']]),
+    ['CD70'],
+    ['CD71'],
+    ['$rowCategoryColumnTotal'],
+    [undefined],
+    ['CD73'],
+    ['CD74'],
+    ['$rowCategoryColumnTotal'],
+    ['CD75'],
+    ['CD76'],
+    ['CD77'],
+    ['CD78'],
+    ['CD79'],
+    ['CD80'],
+    ['CD81'],
+    ['CD82'],
+    ['CD83'],
+    ['CD84'],
+    ['$rowCategoryColumnTotal'],
+    ['CD85'],
+    ['CD84a'],
+    ['CD86'],
+    ['CD87'],
+    ['CD88'],
+    ['CD89'],
+    ['CD90'],
+    ['$rowCategoryColumnTotal'],
   ],
   id: 'TO_CD_Validation_CD7',
 };
@@ -249,16 +249,11 @@ const tHPU_Validation_HP_01Cols = [
 
 const HPU_Validation_MaleFemaleFormatFunctionBuilder = (start, prefix = 'HP') => {
   return (row, col) => {
-    if (row % 2 === 0) {
-      return `${prefix}${start +
-        Math.floor(row / 2) * 2 * tHPU_Validation_HP_01Cols.length +
-        col * 2}`;
-    }
+    const genderIndexOffset = row % 2; //Female rows are always 2nd and have an offset of 1
+    const rowBaseIndex = start + Math.floor(row / 2) * 2 * tHPU_Validation_HP_01Cols.length;
+    const index = rowBaseIndex + col * 2 + genderIndexOffset;
 
-    return `${prefix}${start +
-      Math.floor(row / 2) * 2 * tHPU_Validation_HP_01Cols.length +
-      col * 2 +
-      1}`;
+    return `${prefix}${index}`;
   };
 };
 
@@ -483,36 +478,31 @@ const tableHPU_Validation_HP_06 = {
   rows: tHPU_Validation_HP_06Rows,
   columns: tHPU_Validation_HP_06Cols,
   cells: [
-    ...build2DTableCells({
-      prefix: 'HP',
-      numRows: tHPU_Validation_HP_06Rows[0].rows.length,
-      numCols: tHPU_Validation_HP_06Cols.length,
-      startCell: 253,
-    }),
-    ...build2DTableCells({
-      prefix: 'HP',
-      numRows: tHPU_Validation_HP_06Rows[1].rows.length - 1,
-      numCols: tHPU_Validation_HP_06Cols.length,
-      startCell: 254,
-    }).concat([['$rowCategoryColumnTotal']]),
-    ...build2DTableCells({
-      prefix: 'HP',
-      numRows: tHPU_Validation_HP_06Rows[2].rows.length - 1,
-      numCols: tHPU_Validation_HP_06Cols.length,
-      startCell: 263,
-    }).concat([['$rowCategoryColumnTotal']]),
-    ...build2DTableCells({
-      prefix: 'HP',
-      numRows: tHPU_Validation_HP_06Rows[3].rows.length - 1,
-      numCols: tHPU_Validation_HP_06Cols.length,
-      startCell: 268,
-    }).concat([['$rowCategoryColumnTotal']]),
-    ...build2DTableCells({
-      prefix: 'HP',
-      numRows: tHPU_Validation_HP_06Rows[4].rows.length,
-      numCols: tHPU_Validation_HP_06Cols.length,
-      startCell: 273,
-    }),
+    ['HP253'],
+    ['HP254'],
+    ['HP255'],
+    ['HP256'],
+    ['HP257'],
+    ['HP258'],
+    ['HP259'],
+    ['HP260'],
+    ['HP261'],
+    ['$rowCategoryColumnTotal'],
+    ['HP263'],
+    ['HP264'],
+    ['HP265'],
+    ['HP266'],
+    ['$rowCategoryColumnTotal'],
+    ['HP268'],
+    ['HP269'],
+    ['HP270'],
+    ['HP271'],
+    ['$rowCategoryColumnTotal'],
+    ['HP273'],
+    ['HP274'],
+    ['HP275'],
+    ['HP276'],
+    ['HP277'],
   ],
   id: 'TO_HPU_Validation_HP_06',
 };

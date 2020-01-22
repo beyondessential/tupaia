@@ -8,6 +8,7 @@ import sinon from 'sinon';
 
 import { tableOfDataValues } from '/apiV1/dataBuilders';
 import { DhisApi } from '/dhis/DhisApi';
+import groupBy from 'lodash.groupby';
 
 const query = { organisationUnitCode: 'TO' };
 
@@ -23,17 +24,27 @@ const createDhisApiStub = dataValues => {
     }));
 
   const fetch = sinon.stub();
-  fetch.callsFake((endpoint, { filter }) => {
-    const metadatas = [];
-    const codes = convertCodesFilterStringToArrayOfCodes(filter);
-    codes.forEach(code => {
-      const dataValue = dataValues.find(val => val.dataElement === code);
-      if (dataValue && dataValue.metadata) {
-        metadatas.push(dataValue.metadata);
-      }
+  fetch
+    .returns({ dataElements: [] })
+    .withArgs(
+      sinon.match('dataElements'),
+      sinon.match({
+        filter: sinon.match(/code:in:\[.*\]/),
+        fields: sinon.match('id,code,name,optionSet'),
+      }),
+    )
+    .callsFake((endpoint, { filter }) => {
+      const metadatas = [];
+      const codes = convertCodesFilterStringToArrayOfCodes(filter);
+      const dataValuesByCode = groupBy(dataValues, val => val.dataElement);
+      codes.forEach(code => {
+        const dataValue = dataValuesByCode[code] ? dataValuesByCode[code][0] : undefined;
+        if (dataValue && dataValue.metadata) {
+          metadatas.push(dataValue.metadata);
+        }
+      });
+      return { dataElements: metadatas };
     });
-    return { dataElements: metadatas };
-  });
 
   return sinon.createStubInstance(DhisApi, { getAnalytics, fetch });
 };
