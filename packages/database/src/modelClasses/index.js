@@ -8,3 +8,5 @@ import { DataSourceModel as DataSource } from './DataSource';
 export const modelClasses = {
   dataSource: DataSource,
 };
+
+export { DataSource };
