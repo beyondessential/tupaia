@@ -15,7 +15,7 @@ import { DHIS_REFERENCE } from './testData';
   },
   references: [DHIS_REFERENCE],
 };
-const DELETE_SUMMARY = {
+const DELETE_DIAGNOSTICS = {
   counts: {
     imported: 0,
     updated: 0,
