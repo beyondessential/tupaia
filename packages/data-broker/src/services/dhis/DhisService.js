@@ -6,7 +6,7 @@
 import { modelClasses } from '@tupaia/database';
 import { Service } from '../Service';
 import { getServerName, getDhisApiInstance } from './getDhisApiInstance';
-const { dataSource: DataSource } = modelClasses;
+const { DataSource } = modelClasses;
 
 export class DhisService extends Service {
   pushers = {

@@ -8,7 +8,7 @@ import { getServiceFromDataSource } from './services';
 import { getModels } from './getModels';
 
 export class DataBroker {
-  dataSourceTypes = modelClasses.dataSource.types;
+  dataSourceTypes = modelClasses.DataSource.types;
 
   constructor() {
     this.models = getModels();

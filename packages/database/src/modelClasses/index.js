@@ -6,5 +6,5 @@
 import { DataSourceModel as DataSource } from './DataSource';
 
 export const modelClasses = {
-  dataSource: DataSource,
+  DataSource,
 };
