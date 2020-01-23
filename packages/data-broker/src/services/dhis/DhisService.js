@@ -26,14 +26,21 @@ export class DhisService extends Service {
   }
 
   /**
-   *
+   * Translates the data element metadata using the config in dataSource
    * @param {Object}     dataValue    The untranslated data value
    * @param {DataSource} dataSource   Note that this may not be the instance's primary data source
    */
-  translateDataValueCode = ({ code, ...restOfDataValue }, dataSource) => ({
-    dataElement: dataSource.config.dataElementCode || dataSource.code,
-    ...restOfDataValue,
-  });
+  translateDataValueCode = ({ code, ...restOfDataValue }, { config }) => {
+    const { dataElementCode, categoryOptionComboId } = config;
+    const translatedDataValue = {
+      dataElement: dataElementCode || code, // if no alternative mapping is specified, use its code
+      ...restOfDataValue,
+    };
+    if (categoryOptionComboId) {
+      translatedDataValue.categoryOptionCombo = categoryOptionComboId;
+    }
+    return translatedDataValue;
+  };
 
   async translateEventDataValues(api, dataValues) {
     const dataSources = await this.models.DataSource.fetchManyFromDbOrDefault(
