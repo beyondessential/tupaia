@@ -4,39 +4,101 @@
  */
 
 import { expect } from 'chai';
-import sinon from 'sinon';
 
 import { DhisService } from '../../../services/dhis/DhisService';
-import * as GetDhisApiInstance from '../../../services/dhis/getDhisApiInstance';
-import { createModelsStub, createDhisApiStub } from './helpers';
-import { BASIC_DATA_SOURCE, SERVER_NAME } from './dhisService.fixtures';
+import { stubModels, stubDhisApi, cleanupDhisApiStub, setupDhisApiForStubbing } from './helpers';
+import {
+  CODE_1,
+  CODE_2,
+  DIFFERENT_CODE,
+  DATA_ELEMENT_CODE_TO_ID,
+  DATA_VALUE_1,
+  DATA_VALUE_2,
+  DATA_GROUP_DATA_SOURCE,
+  DATA_SOURCE_1,
+  DATA_SOURCE_2,
+  UNUSED_DATA_SOURCE,
+} from './dhisService.fixtures';
 
-const modelsStub = createModelsStub({ dataSources: [BASIC_DATA_SOURCE] });
 let dhisApi;
+const modelsStub = stubModels({
+  dataSources: [DATA_GROUP_DATA_SOURCE, DATA_SOURCE_1, DATA_SOURCE_2, UNUSED_DATA_SOURCE],
+});
 
-describe.only('DhisService', () => {
-  beforeEach(() => {
-    // recreate stub so spy calls are reset
-    dhisApi = createDhisApiStub();
-    sinon.stub(GetDhisApiInstance, 'getDhisApiInstance').returns(dhisApi);
-    sinon.stub(GetDhisApiInstance, 'getServerName').returns(SERVER_NAME);
+describe('DhisService', () => {
+  before(() => {
+    setupDhisApiForStubbing();
+  });
+  after(() => {
+    cleanupDhisApiStub();
   });
 
-  afterEach(() => {
-    GetDhisApiInstance.getDhisApiInstance.restore();
-    GetDhisApiInstance.getServerName.restore();
+  beforeEach(() => {
+    // recreate stub so spy calls are reset
+    dhisApi = stubDhisApi();
   });
 
   describe('push()', () => {
     it('pushes a basic aggregate data element', async () => {
-      // set up test data
-      const dataValue = { code: BASIC_DATA_SOURCE.code, value: 2 };
-      const translatedDataValue = { dataElement: BASIC_DATA_SOURCE.code, value: 2 };
+      const translatedDataValue = { dataElement: CODE_1, value: DATA_VALUE_1.value };
 
-      await new DhisService(BASIC_DATA_SOURCE, modelsStub).push(dataValue);
+      await new DhisService(DATA_SOURCE_1).push(DATA_VALUE_1);
       expect(dhisApi.postDataValueSets).to.have.been.called.calledOnceWithExactly([
         translatedDataValue,
       ]);
+    });
+
+    it('pushes an aggregate data element with a different dhis code', async () => {
+      const dataSource = {
+        ...DATA_SOURCE_1,
+        config: { ...DATA_SOURCE_1.config, dataElementCode: DIFFERENT_CODE },
+      };
+      const translatedDataValue = { dataElement: DIFFERENT_CODE, value: DATA_VALUE_1.value };
+
+      await new DhisService(dataSource).push(DATA_VALUE_1);
+      expect(dhisApi.postDataValueSets).to.have.been.called.calledOnceWithExactly([
+        translatedDataValue,
+      ]);
+    });
+
+    it('pushes an event data group', async () => {
+      const event = {
+        otherField: 'otherValue',
+        dataValues: [DATA_VALUE_1, DATA_VALUE_2],
+      };
+      const translatedEvent = {
+        ...event,
+        dataValues: [
+          { dataElement: DATA_ELEMENT_CODE_TO_ID[CODE_1], value: DATA_VALUE_1.value },
+          { dataElement: DATA_ELEMENT_CODE_TO_ID[CODE_2], value: DATA_VALUE_2.value },
+        ],
+      };
+
+      await new DhisService(DATA_GROUP_DATA_SOURCE, modelsStub).push(event);
+      expect(dhisApi.postEvents).to.have.been.called.calledOnceWithExactly([translatedEvent]);
+    });
+
+    it('pushes an event data group with a different dhis code', async () => {
+      const event = {
+        otherField: 'otherValue',
+        dataValues: [DATA_VALUE_1, DATA_VALUE_2],
+      };
+      const translatedEvent = {
+        ...event,
+        dataValues: [
+          { dataElement: DATA_ELEMENT_CODE_TO_ID[CODE_1], value: DATA_VALUE_1.value },
+          { dataElement: DATA_ELEMENT_CODE_TO_ID[DIFFERENT_CODE], value: DATA_VALUE_2.value },
+        ],
+      };
+      const customDataSource2 = {
+        ...DATA_SOURCE_2,
+        config: { ...DATA_SOURCE_2.config, dataElementCode: DIFFERENT_CODE },
+      };
+      const customModelsStub = stubModels({
+        dataSources: [DATA_GROUP_DATA_SOURCE, DATA_SOURCE_1, customDataSource2, UNUSED_DATA_SOURCE],
+      });
+      await new DhisService(DATA_GROUP_DATA_SOURCE, customModelsStub).push(event);
+      expect(dhisApi.postEvents).to.have.been.called.calledOnceWithExactly([translatedEvent]);
     });
   });
 });

@@ -32,23 +32,21 @@ export class DhisService extends Service {
    * @param {Object}     dataValue    The untranslated data value
    * @param {DataSource} dataSource   Note that this may not be the instance's primary data source
    */
-  translateDataValueCode = ({ code, ...restOfDataValue }, dataSource) => {
-    return {
-      dataElement: dataSource.config.dataElementCode || dataSource.code,
-      ...restOfDataValue,
-    };
-  };
+  translateDataValueCode = ({ code, ...restOfDataValue }, dataSource) => ({
+    dataElement: dataSource.config.dataElementCode || dataSource.code,
+    ...restOfDataValue,
+  });
 
-  async translateEventDataValues(dataValues) {
+  async translateEventDataValues(api, dataValues) {
     const dataSources = await this.models.dataSource.fetchManyFromDbOrDefault(
-      dataValues.map(({ code }) => code),
+      dataValues.map(({ code }) => ({ code })),
     );
     const dataValuesWithCodeReplaced = dataValues.map((d, i) =>
       this.translateDataValueCode(d, dataSources[i]),
     );
     const dataElementCodes = dataValuesWithCodeReplaced.map(({ dataElement }) => dataElement);
-    const dataElementIds = await this.api.getIdsFromCodes(
-      this.api.resourceTypes.DATA_ELEMENT,
+    const dataElementIds = await api.getIdsFromCodes(
+      api.getResourceTypes().DATA_ELEMENT,
       dataElementCodes,
     );
     const dataValuesWithIds = dataValuesWithCodeReplaced.map((d, i) => ({
@@ -71,7 +69,7 @@ export class DhisService extends Service {
   }
 
   async pushEvent(api, { dataValues, ...restOfEvent }) {
-    const translatedDataValues = await this.translateEventDataValues(dataValues);
+    const translatedDataValues = await this.translateEventDataValues(api, dataValues);
     const event = { dataValues: translatedDataValues, ...restOfEvent };
     return api.postEvents([event]);
   }
