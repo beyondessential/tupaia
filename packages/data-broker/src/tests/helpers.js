@@ -27,8 +27,10 @@ const getServiceFromDataSource = {
 export const models = {
   getStub: ({ dataSources }) => ({
     dataSource: {
-      fetchFromDbOrDefault: code =>
-        dataSources.find(dataSource => dataSource.code === code) || null,
+      fetchFromDbOrDefault: ({ code, type }) =>
+        dataSources.find(
+          dataSource => dataSource.code === code && dataSource.service_type === type,
+        ) || null,
     },
   }),
 };
@@ -37,6 +39,7 @@ export const service = {
   getStub: () =>
     sinon.createStubInstance(Service, {
       push: sinon.stub(),
+      delete: sinon.stub(),
       pull: sinon.stub(),
     }),
 };
