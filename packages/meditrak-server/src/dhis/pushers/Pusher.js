@@ -4,7 +4,6 @@
  */
 
 import winston from 'winston';
-import { DataBroker } from '@tupaia/data-broker';
 
 /**
  * @typedef {PushResults}
@@ -15,11 +14,11 @@ import { DataBroker } from '@tupaia/data-broker';
  */
 
 export class Pusher {
-  constructor(models, change, dhisApi) {
+  constructor(models, change, dhisApi, dataBroker) {
     this.models = models;
     this.change = change;
     this.api = dhisApi;
-    this.dataBroker = new DataBroker();
+    this.dataBroker = dataBroker;
   }
 
   get recordId() {
@@ -42,7 +41,6 @@ export class Pusher {
   async push() {
     const results = await (this.changeType === 'update' ? this.createOrUpdate() : this.delete());
     await this.logResults(results); // await to avoid db lock between delete/update on event push
-
     return results.wasSuccessful;
   }
 

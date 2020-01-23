@@ -8,10 +8,12 @@ import { getServiceFromDataSource } from './services';
 import { getModels } from './getModels';
 
 export class DataBroker {
-  dataSourceTypes = modelClasses.DataSource.types;
-
   constructor() {
     this.models = getModels();
+  }
+
+  getDataSourceTypes() {
+    return modelClasses.DataSource.types;
   }
 
   async getService(dataSourceSpec) {

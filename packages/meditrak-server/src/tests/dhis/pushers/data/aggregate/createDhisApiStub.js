@@ -7,22 +7,13 @@ import { DhisApi } from '@tupaia/dhis-api';
 import { ORGANISATION_UNIT_ID } from './testData';
 
 // taken directly from a DHIS2 api call, with redundant info stripped out
-const IMPORT_DIAGNOSTICS = {
-  counts: {
-    imported: 1,
-    updated: 0,
-    ignored: 0,
-    deleted: 0,
-  },
+const SUCCESS_DIAGNOSTICS = {
+  wasSuccessful: true,
 };
 
-const DELETE_DIAGNOSTICS = {};
-
 const STUBBED_METHODS = {
-  postDataValueSets: IMPORT_DIAGNOSTICS,
-  postDataSetCompletion: IMPORT_DIAGNOSTICS,
-  deleteDataValue: DELETE_DIAGNOSTICS,
-  deleteDataSetCompletion: DELETE_DIAGNOSTICS,
+  postDataSetCompletion: SUCCESS_DIAGNOSTICS,
+  deleteDataSetCompletion: SUCCESS_DIAGNOSTICS,
   getDataSetByCode: null,
   getIdFromCode: ORGANISATION_UNIT_ID,
 };

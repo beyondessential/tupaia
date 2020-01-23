@@ -165,11 +165,11 @@ export const getDiagnosticsFromResponse = (response, isDelete) => {
 export function combineDiagnostics(primaryDiagnostics, ...additionalDiagnostics) {
   const allDiagnostics = [primaryDiagnostics, ...additionalDiagnostics];
   const wasSuccessful = allDiagnostics.every(d => d.wasSuccessful);
-  const errors = allDiagnostics.reduce((acc, d) => [...acc, ...d.errors], []);
+  const allErrors = allDiagnostics.reduce((acc, { errors = [] }) => [...acc, ...errors], []);
   return {
     ...primaryDiagnostics, // counts should come from the primary diagnostics
     wasSuccessful,
-    errors,
+    errors: allErrors,
   };
 }
 
