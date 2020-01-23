@@ -28,7 +28,7 @@ export const UNUSED_DATA_SOURCE = { code: 'UNUSED_01', ...BASIC_DATA_SOURCE };
 export const DATA_GROUP_DATA_SOURCE = {
   ...BASIC_DATA_SOURCE,
   type: 'dataGroup',
-  code: CODE_1, // intentionally teh same as data source 1, as they should be differentiated by type
+  code: CODE_1, // intentionally the same as data source 1, as they should be differentiated by type
 };
 
 export const DATA_VALUE_1 = { code: CODE_1, value: 1 };
