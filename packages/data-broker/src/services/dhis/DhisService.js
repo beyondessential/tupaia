@@ -30,14 +30,17 @@ export class DhisService extends Service {
    * @param {Object}     dataValue    The untranslated data value
    * @param {DataSource} dataSource   Note that this may not be the instance's primary data source
    */
-  translateDataValueCode = ({ code, ...restOfDataValue }, { config }) => {
-    const { dataElementCode, categoryOptionComboId } = config;
+  translateDataValueCode = async (api, { code, ...restOfDataValue }, { config }) => {
+    const { dataElementCode, categoryOptionComboCode } = config;
     const translatedDataValue = {
       dataElement: dataElementCode || code, // if no alternative mapping is specified, use its code
       ...restOfDataValue,
     };
-    if (categoryOptionComboId) {
-      translatedDataValue.categoryOptionCombo = categoryOptionComboId;
+    if (categoryOptionComboCode) {
+      translatedDataValue.categoryOptionCombo = await api.getIdFromCode(
+        api.getResourceTypes().CATEGORY_OPTION_COMBO,
+        categoryOptionComboCode,
+      );
     }
     return translatedDataValue;
   };
