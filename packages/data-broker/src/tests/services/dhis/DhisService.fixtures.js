@@ -13,25 +13,27 @@ export const BASIC_DATA_SOURCE = {
 
 export const CODE_1 = 'POP01';
 export const CODE_2 = 'POP02';
-export const DIFFERENT_CODE = 'DIFF_01';
 
 export const DATA_ELEMENT_CODE_TO_ID = {
-  [CODE_1]: 'id00001',
-  [CODE_2]: 'id00002',
-  [DIFFERENT_CODE]: 'id00003',
+  POP01: 'id000POP01',
+  POP02: 'id000POP02',
+  DIF01: 'id000DIF01',
 };
 
-export const DATA_SOURCE_1 = { code: CODE_1, ...BASIC_DATA_SOURCE };
-export const DATA_SOURCE_2 = { code: CODE_2, ...BASIC_DATA_SOURCE };
-export const UNUSED_DATA_SOURCE = { code: 'UNUSED_01', ...BASIC_DATA_SOURCE };
-
-export const DATA_GROUP_DATA_SOURCE = {
-  ...BASIC_DATA_SOURCE,
-  type: 'dataGroup',
-  code: CODE_1, // intentionally the same as data source 1, as they should be differentiated by type
+export const DATA_SOURCES = {
+  POP01: { code: 'POP01', ...BASIC_DATA_SOURCE },
+  POP02: { code: 'POP02', ...BASIC_DATA_SOURCE },
+  UNUSED01: { code: 'UNUSED01', ...BASIC_DATA_SOURCE },
+  POP01_GROUP: {
+    ...BASIC_DATA_SOURCE,
+    type: 'dataGroup',
+    code: CODE_1, // intentionally the same as data source 1, as they should be differentiated by type
+  },
 };
 
-export const DATA_VALUE_1 = { code: CODE_1, value: 1 };
-export const DATA_VALUE_2 = { code: CODE_2, value: 2 };
+export const DATA_VALUES = {
+  POP01: { code: 'POP01', value: 1 },
+  POP02: { code: 'POP02', value: 2 },
+};
 
 export const DHIS_REFERENCE = 'XXXYYY';

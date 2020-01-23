@@ -8,23 +8,16 @@ import { expect } from 'chai';
 import { DhisService } from '../../../services/dhis/DhisService';
 import { stubModels, stubDhisApi, cleanupDhisApiStub, setupDhisApiForStubbing } from './helpers';
 import {
-  CODE_1,
-  CODE_2,
-  DIFFERENT_CODE,
+  DATA_SOURCES,
+  DATA_VALUES,
   DHIS_REFERENCE,
   DATA_ELEMENT_CODE_TO_ID,
-  DATA_VALUE_1,
-  DATA_VALUE_2,
-  DATA_GROUP_DATA_SOURCE,
-  DATA_SOURCE_1,
-  DATA_SOURCE_2,
-  UNUSED_DATA_SOURCE,
   SERVER_NAME,
-} from './dhisService.fixtures';
+} from './DhisService.fixtures';
 
 let dhisApi;
 const modelsStub = stubModels({
-  dataSources: [DATA_GROUP_DATA_SOURCE, DATA_SOURCE_1, DATA_SOURCE_2, UNUSED_DATA_SOURCE],
+  dataSources: Object.values(DATA_SOURCES),
 });
 
 describe('DhisService', () => {
@@ -42,93 +35,100 @@ describe('DhisService', () => {
 
   describe('push()', () => {
     it('pushes a basic aggregate data element', async () => {
-      const translatedDataValue = { dataElement: CODE_1, value: DATA_VALUE_1.value };
-
-      await new DhisService(DATA_SOURCE_1, modelsStub).push(DATA_VALUE_1);
+      await new DhisService(DATA_SOURCES.POP01, modelsStub).push(DATA_VALUES.POP01);
       expect(dhisApi.postDataValueSets).to.have.been.called.calledOnceWithExactly([
-        translatedDataValue,
+        { dataElement: 'POP01', value: 1 },
       ]);
     });
 
     it('pushes an aggregate data element with a different dhis code', async () => {
-      const dataSource = {
-        ...DATA_SOURCE_1,
-        config: { ...DATA_SOURCE_1.config, dataElementCode: DIFFERENT_CODE },
+      const customDataSource = {
+        ...DATA_SOURCES.POP01,
+        config: { dataElementCode: 'DIF01' },
       };
-      const translatedDataValue = { dataElement: DIFFERENT_CODE, value: DATA_VALUE_1.value };
 
-      await new DhisService(dataSource, modelsStub).push(DATA_VALUE_1);
+      await new DhisService(customDataSource, modelsStub).push(DATA_VALUES.POP01);
       expect(dhisApi.postDataValueSets).to.have.been.called.calledOnceWithExactly([
-        translatedDataValue,
+        { dataElement: 'DIF01', value: 1 },
       ]);
     });
 
     it('pushes an event data group', async () => {
       const event = {
         otherField: 'otherValue',
-        dataValues: [DATA_VALUE_1, DATA_VALUE_2],
-      };
-      const translatedEvent = {
-        ...event,
-        dataValues: [
-          { dataElement: DATA_ELEMENT_CODE_TO_ID[CODE_1], value: DATA_VALUE_1.value },
-          { dataElement: DATA_ELEMENT_CODE_TO_ID[CODE_2], value: DATA_VALUE_2.value },
-        ],
+        dataValues: [DATA_VALUES.POP01, DATA_VALUES.POP02],
       };
 
-      await new DhisService(DATA_GROUP_DATA_SOURCE, modelsStub).push(event);
-      expect(dhisApi.postEvents).to.have.been.called.calledOnceWithExactly([translatedEvent]);
+      await new DhisService(DATA_SOURCES.POP01_GROUP, modelsStub).push(event);
+      expect(dhisApi.postEvents).to.have.been.called.calledOnceWithExactly([
+        {
+          ...event,
+          dataValues: [
+            { dataElement: DATA_ELEMENT_CODE_TO_ID.POP01, value: 1 },
+            { dataElement: DATA_ELEMENT_CODE_TO_ID.POP02, value: 2 },
+          ],
+        },
+      ]);
     });
 
     it('pushes an event data group with a different dhis code', async () => {
       const event = {
         otherField: 'otherValue',
-        dataValues: [DATA_VALUE_1, DATA_VALUE_2],
+        dataValues: [DATA_VALUES.POP01, DATA_VALUES.POP02],
       };
-      const translatedEvent = {
-        ...event,
-        dataValues: [
-          { dataElement: DATA_ELEMENT_CODE_TO_ID[CODE_1], value: DATA_VALUE_1.value },
-          { dataElement: DATA_ELEMENT_CODE_TO_ID[DIFFERENT_CODE], value: DATA_VALUE_2.value },
-        ],
-      };
-      const customDataSource2 = {
-        ...DATA_SOURCE_2,
-        config: { ...DATA_SOURCE_2.config, dataElementCode: DIFFERENT_CODE },
+      const customDataSource = {
+        ...DATA_SOURCES.POP01,
+        config: { dataElementCode: 'DIF01' },
       };
       const customModelsStub = stubModels({
-        dataSources: [DATA_GROUP_DATA_SOURCE, DATA_SOURCE_1, customDataSource2, UNUSED_DATA_SOURCE],
+        dataSources: Object.values({
+          ...DATA_SOURCES,
+          POP01: customDataSource,
+        }),
       });
-      await new DhisService(DATA_GROUP_DATA_SOURCE, customModelsStub).push(event);
-      expect(dhisApi.postEvents).to.have.been.called.calledOnceWithExactly([translatedEvent]);
+      await new DhisService(DATA_SOURCES.POP01_GROUP, customModelsStub).push(event);
+      expect(dhisApi.postEvents).to.have.been.called.calledOnceWithExactly([
+        {
+          ...event,
+          dataValues: [
+            {
+              dataElement: 'id000DIF01',
+              value: 1,
+            },
+            {
+              dataElement: 'id000POP02',
+              value: 2,
+            },
+          ],
+        },
+      ]);
     });
   });
 
   describe('delete()', () => {
     it('deletes a basic aggregate data element', async () => {
-      const translatedDataValue = { dataElement: CODE_1, value: DATA_VALUE_1.value };
-
-      await new DhisService(DATA_SOURCE_1, modelsStub).delete(DATA_VALUE_1, {
+      await new DhisService(DATA_SOURCES.POP01, modelsStub).delete(DATA_VALUES.POP01, {
         serverName: SERVER_NAME,
       });
-      expect(dhisApi.deleteDataValue).to.have.been.called.calledOnceWithExactly(
-        translatedDataValue,
-      );
+      expect(dhisApi.deleteDataValue).to.have.been.called.calledOnceWithExactly({
+        dataElement: 'POP01',
+        value: 1,
+      });
     });
 
     it('deletes an aggregate data element with a different dhis code', async () => {
-      const dataSource = {
-        ...DATA_SOURCE_1,
-        config: { ...DATA_SOURCE_1.config, dataElementCode: DIFFERENT_CODE },
+      const customDataSource = {
+        ...DATA_SOURCES.POP01,
+        config: { dataElementCode: 'DIF01' },
       };
-      const translatedDataValue = { dataElement: DIFFERENT_CODE, value: DATA_VALUE_1.value };
 
-      await new DhisService(dataSource, modelsStub).delete(DATA_VALUE_1, {
+      await new DhisService(customDataSource, modelsStub).delete(DATA_VALUES.POP01, {
         serverName: SERVER_NAME,
       });
-      expect(dhisApi.deleteDataValue).to.have.been.called.calledOnceWithExactly(
-        translatedDataValue,
-      );
+      expect(dhisApi.deleteDataValue).to.have.been.called.calledOnceWithExactly({
+        dataElement: 'DIF01',
+        value: 1,
+      });
     });
 
     it('deletes an event', async () => {
@@ -136,7 +136,7 @@ describe('DhisService', () => {
         dhisReference: DHIS_REFERENCE,
       };
 
-      await new DhisService(DATA_GROUP_DATA_SOURCE, modelsStub).delete(eventData, {
+      await new DhisService(DATA_SOURCES.POP01_GROUP, modelsStub).delete(eventData, {
         serverName: SERVER_NAME,
       });
       expect(dhisApi.deleteEvent).to.have.been.called.calledOnceWithExactly(DHIS_REFERENCE);
