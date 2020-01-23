@@ -28,8 +28,10 @@ import {
   DIALOG_PAGE_CHANGE_PASSWORD,
   DIALOG_PAGE_RESET_PASSWORD,
   DIALOG_PAGE_REQUEST_COUNTRY_ACCESS,
+  DIALOG_PAGE_VERIFICATION_PAGE,
 } from '../../actions';
 import { LoginForm } from '../LoginForm';
+import { EmailVerification, EmailVerifyNag } from '../EmailVerification';
 import { RequestResetPasswordForm } from '../RequestResetPasswordForm';
 import { SignupForm } from '../SignupForm';
 import { ChangePasswordForm } from '../ChangePasswordForm';
@@ -90,6 +92,9 @@ export class UserBar extends Component {
       case DIALOG_PAGE_REQUEST_COUNTRY_ACCESS:
         return 'Request access to countries';
 
+      case DIALOG_PAGE_VERIFICATION_PAGE:
+        return 'Please enter email address to re send';
+
       default:
         return '';
     }
@@ -129,7 +134,7 @@ export class UserBar extends Component {
   }
 
   renderDialogContent() {
-    const { dialogPage, onOpenUserPage } = this.props;
+    const { dialogPage, onOpenUserPage, onCloseUserDialog } = this.props;
 
     switch (dialogPage) {
       case DIALOG_PAGE_LOGIN:
@@ -144,7 +149,12 @@ export class UserBar extends Component {
         return <RequestResetPasswordForm onClickCancel={() => onOpenUserPage(DIALOG_PAGE_LOGIN)} />;
 
       case DIALOG_PAGE_SIGNUP:
-        return <SignupForm onClickLogin={() => onOpenUserPage(DIALOG_PAGE_LOGIN)} />;
+        return (
+          <SignupForm
+            onClickLogin={() => onOpenUserPage(DIALOG_PAGE_LOGIN)}
+            onClickResend={() => onOpenUserPage(DIALOG_PAGE_VERIFICATION_PAGE)}
+          />
+        );
 
       case DIALOG_PAGE_CHANGE_PASSWORD:
       case DIALOG_PAGE_RESET_PASSWORD:
@@ -166,6 +176,8 @@ export class UserBar extends Component {
           </LightFormTheme>
         );
 
+      case DIALOG_PAGE_VERIFICATION_PAGE:
+        return <EmailVerification onClose={() => onCloseUserDialog()} />;
       default:
         return '';
     }
@@ -178,6 +190,7 @@ export class UserBar extends Component {
       <div style={USER_BAR_STYLES.container}>
         <div style={USER_BAR_STYLES.userMenu}>
           <UserMenu openLandingPage={this.props.onOpenLandingPage} />
+          <EmailVerifyNag />
         </div>
         {form}
       </div>
@@ -197,6 +210,7 @@ UserBar.propTypes = {
     DIALOG_PAGE_REQUEST_RESET_PASSWORD,
     DIALOG_PAGE_RESET_PASSWORD,
     DIALOG_PAGE_REQUEST_COUNTRY_ACCESS,
+    DIALOG_PAGE_VERIFICATION_PAGE,
     '',
   ]).isRequired,
 };

@@ -101,7 +101,4 @@ const mapDispatchToProps = dispatch => ({
   onClose: () => dispatch(closeUserPage()),
 });
 
-export default connect(
-  null,
-  mapDispatchToProps,
-)(UserMenuOverlay);
+export default connect(null, mapDispatchToProps)(UserMenuOverlay);
