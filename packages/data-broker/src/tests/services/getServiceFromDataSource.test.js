@@ -8,7 +8,7 @@ import { expect } from 'chai';
 import { getServiceFromDataSource, TYPE_TO_SERVICE } from '../../services/getServiceFromDataSource';
 
 describe('getServiceFromDataSource()', () => {
-  const models = { dataSource: {} };
+  const models = { DataSource: { types: {} } };
 
   Object.entries(TYPE_TO_SERVICE).forEach(([serviceType, serviceClass]) => {
     const dataSource = { code: 'POP01', service_type: serviceType };

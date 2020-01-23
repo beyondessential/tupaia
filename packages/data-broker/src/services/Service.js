@@ -24,6 +24,14 @@ export class Service {
    * @abstract
    */
   // eslint-disable-next-line class-methods-use-this
+  delete() {
+    throw new Error('Any subclass of Service must implement the "delete" method');
+  }
+
+  /**
+   * @abstract
+   */
+  // eslint-disable-next-line class-methods-use-this
   pull() {
     throw new Error('Any subclass of Service must implement the "pull" method');
   }
