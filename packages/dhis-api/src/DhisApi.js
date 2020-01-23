@@ -35,13 +35,16 @@ const {
 const LATEST_LOOKBACK_PERIOD = '600d';
 
 export class DhisApi {
-  static resourceTypes = DHIS2_RESOURCE_TYPES;
-
   constructor(serverName, serverUrl) {
     this.serverName = serverName;
     this.serverUrl = serverUrl;
     this.fetcher = new DhisFetcher(serverName, serverUrl, this.constructError);
     this.deleteEvent = this.deleteEvent.bind(this);
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  getResourceTypes() {
+    return DHIS2_RESOURCE_TYPES;
   }
 
   /**

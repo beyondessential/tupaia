@@ -10,10 +10,10 @@ import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
 const DATA_SOURCE_TYPES = {
-  dataElement: 'dataElement',
-  dataGroup: 'dataGroup',
+  DATA_ELEMENT: 'dataElement',
+  DATA_GROUP: 'dataGroup',
 };
-const DEAFULT_DATA_SOURCE_TYPE = DATA_SOURCE_TYPES.dataElement; // default to a dataElement data source
+const DEFAULT_DATA_SOURCE_TYPE = DATA_SOURCE_TYPES.DATA_ELEMENT; // default to a dataElement data source
 
 class DataSourceType extends DatabaseType {
   static databaseType = TYPES.DATA_SOURCE;
@@ -32,7 +32,7 @@ class DataSourceType extends DatabaseType {
  * @param {DataSourceSpec} dataSourceSpec
  */
 function extractDetailsFromDataSourceSpec(dataSourceSpec) {
-  const { code, type = DEAFULT_DATA_SOURCE_TYPE } = dataSourceSpec;
+  const { code, type = DEFAULT_DATA_SOURCE_TYPE } = dataSourceSpec;
   if (!code) throw new Error('Data Source specs must provide a code');
   return { code, type };
 }
