@@ -3,44 +3,55 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { modelClasses } from '@tupaia/database';
 import { Service } from '../Service';
 import { getServerName, getDhisApiInstance } from './getDhisApiInstance';
-const { DataSource } = modelClasses;
 
 export class DhisService extends Service {
-  pushers = {
-    [DataSource.types.question]: this.pushAggregateData,
-    [DataSource.types.survey]: this.pushEvent,
-  };
+  constructor(...args) {
+    super(...args);
+    this.pushers = {
+      [this.models.DataSource.types.DATA_ELEMENT]: this.pushAggregateData.bind(this),
+      [this.models.DataSource.types.DATA_GROUP]: this.pushEvent.bind(this),
+    };
 
-  deleters = {
-    [DataSource.types.question]: this.deleteAggregateData,
-    [DataSource.types.survey]: (api, data) => api.deleteEvent(data.dhisReference),
-  };
+    this.deleters = {
+      [this.models.DataSource.types.DATA_ELEMENT]: this.deleteAggregateData.bind(this),
+      [this.models.DataSource.types.DATA_GROUP]: this.deleteEvent.bind(this),
+    };
+  }
 
   getApiForEntity(entityCode) {
     const serverName = getServerName(entityCode, this.dataSource.config.isDataRegional);
     return getDhisApiInstance({ serverName });
   }
 
-  async getDataElementId(code) {
-    // Using "id" id scheme, need to fetch the DHIS2 internal id
-    const dataElementId = await this.api.getIdFromCode(this.api.resourceTypes.DATA_ELEMENT, code);
-    if (!dataElementId) {
-      throw new Error(`No data element with code ${code}`);
-    }
-    return dataElementId;
-  }
-
   /**
    *
+   * @param {Object}     dataValue    The untranslated data value
    * @param {DataSource} dataSource   Note that this may not be the instance's primary data source
-   * @param {boolean}    isAggregate  Whether this translation is for an aggregate data value
    */
-  async translateDataElementIdentifier(dataSource, isAggregate = true) {
-    const dataElementCode = dataSource.config.dataElementCode || dataSource.code;
-    return isAggregate ? dataElementCode : this.getDataElementId(dataElementCode);
+  translateDataValueCode = ({ code, ...restOfDataValue }, dataSource) => ({
+    dataElement: dataSource.config.dataElementCode || dataSource.code,
+    ...restOfDataValue,
+  });
+
+  async translateEventDataValues(api, dataValues) {
+    const dataSources = await this.models.DataSource.fetchManyFromDbOrDefault(
+      dataValues.map(({ code }) => ({ code })),
+    );
+    const dataValuesWithCodeReplaced = dataValues.map((d, i) =>
+      this.translateDataValueCode(d, dataSources[i]),
+    );
+    const dataElementCodes = dataValuesWithCodeReplaced.map(({ dataElement }) => dataElement);
+    const dataElementIds = await api.getIdsFromCodes(
+      api.getResourceTypes().DATA_ELEMENT,
+      dataElementCodes,
+    );
+    const dataValuesWithIds = dataValuesWithCodeReplaced.map((d, i) => ({
+      ...d,
+      dataElement: dataElementIds[i],
+    }));
+    return dataValuesWithIds;
   }
 
   async push(data) {
@@ -50,24 +61,13 @@ export class DhisService extends Service {
     return { diagnostics, serverName: api.getServerName() };
   }
 
-  async pushAggregateData(api, { code, ...restOfDataValue }) {
-    const dataValue = {
-      dataElement: await this.translateDataElementIdentifier(api, this.dataSource),
-      ...restOfDataValue,
-    };
-    return api.postDataValueSets([dataValue]);
+  async pushAggregateData(api, dataValue) {
+    const translatedDataValue = await this.translateDataValueCode(dataValue, this.dataSource);
+    return api.postDataValueSets([translatedDataValue]);
   }
 
   async pushEvent(api, { dataValues, ...restOfEvent }) {
-    const translatedDataValues = await Promise.all(
-      dataValues.map(async ({ code, ...restOfValue }) => {
-        const dataSource = await this.models.dataSource.fetchFromDbOrDefault(code);
-        return {
-          dataElement: await this.translateDataElementIdentifier(api, dataSource, false),
-          ...restOfValue,
-        };
-      }),
-    );
+    const translatedDataValues = await this.translateEventDataValues(api, dataValues);
     const event = { dataValues: translatedDataValues, ...restOfEvent };
     return api.postEvents([event]);
   }
@@ -78,13 +78,12 @@ export class DhisService extends Service {
     return deleteData(api, data);
   }
 
-  async deleteAggregateData(api, { code, ...restOfDataValue }) {
-    const dataValue = {
-      dataElement: await this.translateDataElementIdentifier(api, this.dataSource),
-      ...restOfDataValue,
-    };
-    return api.deleteDataValue(dataValue);
+  async deleteAggregateData(api, dataValue) {
+    const translatedDataValue = this.translateDataValueCode(dataValue, this.dataSource);
+    return api.deleteDataValue(translatedDataValue);
   }
+
+  deleteEvent = async (api, data) => api.deleteEvent(data.dhisReference);
 
   async pull(metadata) {
     const api = this.getApiForEntity(metadata.entityCode);

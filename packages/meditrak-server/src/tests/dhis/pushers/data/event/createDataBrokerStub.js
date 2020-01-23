@@ -4,7 +4,7 @@
  */
 import sinon from 'sinon';
 import { DataBroker } from '@tupaia/data-broker';
-import { SERVER_NAME, DATA_SOURCE_TYPE_SURVEY } from './testData';
+import { SERVER_NAME, DATA_SOURCE_TYPE } from './testData';
 
 const DEFAULT_DIAGNOSTICS = {
   wasSuccessful: true,
@@ -14,7 +14,7 @@ const DEFAULT_DIAGNOSTICS = {
 const STUBBED_METHODS = {
   push: { diagnostics: DEFAULT_DIAGNOSTICS, serverName: SERVER_NAME },
   delete: DEFAULT_DIAGNOSTICS,
-  getDataSourceTypes: { survey: DATA_SOURCE_TYPE_SURVEY },
+  getDataSourceTypes: { DATA_GROUP: DATA_SOURCE_TYPE },
 };
 
 export const resetDataBrokerStubHistory = dhisApiStub =>

@@ -4,6 +4,7 @@
  */
 
 import winston from 'winston';
+import keyBy from 'lodash.keyby';
 
 import { utcMoment, getSortByKey } from '@tupaia/utils';
 import { DhisFetcher } from './DhisFetcher';
@@ -34,13 +35,16 @@ const {
 const LATEST_LOOKBACK_PERIOD = '600d';
 
 export class DhisApi {
-  static resourceTypes = DHIS2_RESOURCE_TYPES;
-
   constructor(serverName, serverUrl) {
     this.serverName = serverName;
     this.serverUrl = serverUrl;
     this.fetcher = new DhisFetcher(serverName, serverUrl, this.constructError);
     this.deleteEvent = this.deleteEvent.bind(this);
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  getResourceTypes() {
+    return DHIS2_RESOURCE_TYPES;
   }
 
   /**
@@ -175,9 +179,12 @@ export class DhisApi {
     const records = await this.getRecords({
       type: recordType,
       codes: recordCodes,
-      fields: ['id'],
+      fields: ['code', 'id'],
     });
-    return records && records.map(({ id }) => id);
+    if (!records) return null;
+    // return ids in same order as provided codes
+    const recordsByCode = keyBy(records, 'code');
+    return recordCodes.map(c => recordsByCode[c].id);
   }
 
   async getIdFromCode(recordType, recordCode) {
