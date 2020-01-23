@@ -23,6 +23,13 @@ export const ATTEMPT_CHANGE_PASSWORD = 'ATTEMPT_CHANGE_PASSWORD';
 export const ATTEMPT_LOGIN = 'ATTEMPT_LOGIN';
 export const ATTEMPT_LOGOUT = 'ATTEMPT_LOGOUT';
 export const ATTEMPT_RESET_PASSWORD = 'ATTEMPT_RESET_PASSWORD';
+export const RESEND_VERIFICATION_EMAIL = 'RESEND_VERIFICATION_EMAIL';
+export const FETCH_RESEND_VERIFICATION_EMAIL = 'FETCH_RESEND_VERIFICATION_EMAIL';
+export const FETCH_EMAIL_VERIFY_ERROR = 'FETCH_EMAIL_VERIFY_ERROR';
+export const FETCH_EMAIL_VERIFY_SUCCESS = 'FETCH_EMAIL_VERIFY_SUCCESS';
+export const SET_VERIFY_EMAIL_TOKEN = 'SET_VERIFY_EMAIL_TOKEN';
+export const FETCH_RESEND_EMAIL_ERROR = 'FETCH_RESEND_EMAIL_ERROR';
+export const DIALOG_PAGE_VERIFICATION_PAGE = 'DIALOG_PAGE_VERIFICATION_PAGE';
 export const ATTEMPT_REQUEST_COUNTRY_ACCESS = 'ATTEMPT_REQUEST_COUNTRY_ACCESS';
 export const ATTEMPT_SIGNUP = 'ATTEMPT_SIGNUP';
 export const CHANGE_DASHBOARD_GROUP = 'CHANGE_DASHBOARD_GROUP';
@@ -75,6 +82,7 @@ export const FETCH_REQUEST_COUNTRY_ACCESS_ERROR = 'FETCH_REQUEST_COUNTRY_ACCESS_
 export const FETCH_SEARCH_ERROR = 'FETCH_SEARCH_ERROR';
 export const FETCH_SEARCH_SUCCESS = 'FETCH_SEARCH_SUCCESS';
 export const FETCH_SIGNUP_ERROR = 'FETCH_SIGNUP_ERROR';
+export const SHOW_UNVERIFIED_LOGIN = 'SHOW_UNVERIFIED_LOGIN';
 export const FETCH_SIGNUP_SUCCESS = 'FETCH_SIGNUP_SUCCESS';
 export const FIND_USER_LOGGEDIN = 'FIND_USER_LOGGEDIN';
 export const FINISH_USER_SESSION = 'FINISH_USER_SESSION';
@@ -217,6 +225,7 @@ export function fetchUserLoginError(errors) {
   return {
     type: FETCH_LOGIN_ERROR,
     errors,
+    errorMessage: 'Wrong e-mail or password',
   };
 }
 
@@ -258,6 +267,47 @@ export function fetchUserLogoutError(errors) {
   return {
     type: FETCH_LOGOUT_ERROR,
     errors,
+  };
+}
+
+export function openEmailVerifiedPage() {
+  return {
+    type: FETCH_EMAIL_VERIFY_SUCCESS,
+    successMessage: 'Your e-mail was verified - Please login below',
+  };
+}
+
+export function fetchEmailVerifyError() {
+  return {
+    type: FETCH_EMAIL_VERIFY_ERROR,
+    messageFailLogin: 'Your email address could not be verified',
+  };
+}
+
+export function resendVerificationEmail(email) {
+  return {
+    type: FETCH_RESEND_VERIFICATION_EMAIL,
+    email,
+  };
+}
+
+export function openResendEmailSuccess() {
+  return {
+    type: RESEND_VERIFICATION_EMAIL,
+  };
+}
+
+export function fetchResendEmailError(errorMessage) {
+  return {
+    type: FETCH_RESEND_EMAIL_ERROR,
+    error: errorMessage,
+  };
+}
+
+export function setVerifyEmailToken(verifyEmailToken) {
+  return {
+    type: SET_VERIFY_EMAIL_TOKEN,
+    verifyEmailToken,
   };
 }
 
@@ -330,9 +380,9 @@ export function fetchUserSignupError(error) {
   };
 }
 
-export function fetchCountryAccessData() {
+export function displayUnverified() {
   return {
-    type: OPEN_USER_DIALOG,
+    type: SHOW_UNVERIFIED_LOGIN,
   };
 }
 
@@ -869,10 +919,11 @@ export function clearMeasureHierarchy() {
   };
 }
 
-export function findLoggedIn(shouldCloseDialog) {
+export function findLoggedIn(shouldCloseDialog, emailVerified) {
   return {
     type: FIND_USER_LOGGEDIN,
     shouldCloseDialog,
+    emailVerified,
   };
 }
 

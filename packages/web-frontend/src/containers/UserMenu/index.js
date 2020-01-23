@@ -195,8 +195,8 @@ const mapDispatchToProps = dispatch => {
     onToggleRequestCountryAccessPanel: () =>
       dispatch(closeDropdownOverlays()) &&
       dispatch(openUserPage(DIALOG_PAGE_REQUEST_COUNTRY_ACCESS)),
-    onRefreshCurrentUser: () => dispatch(findLoggedIn()),
     onAttemptUserLogout: () => dispatch(attemptUserLogout()),
+    onRefreshCurrentUser: () => dispatch(findLoggedIn()),
   };
 };
 
