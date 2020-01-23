@@ -28,9 +28,8 @@ export const models = {
   getStub: ({ dataSources }) => ({
     dataSource: {
       fetchFromDbOrDefault: ({ code, type }) =>
-        dataSources.find(
-          dataSource => dataSource.code === code && dataSource.service_type === type,
-        ) || null,
+        dataSources.find(dataSource => dataSource.code === code && dataSource.type === type) ||
+        null,
     },
   }),
 };

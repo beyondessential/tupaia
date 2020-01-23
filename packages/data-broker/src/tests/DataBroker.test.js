@@ -8,8 +8,8 @@ import { expect } from 'chai';
 import { DataBroker } from '../DataBroker';
 import { stubs } from './helpers';
 
-const dataSource = { code: 'POP01', service_type: 'testServiceType' };
-const dataSourceSpec = { code: dataSource.code, type: dataSource.service_type };
+const dataSource = { code: 'POP01', type: 'dataElement', service_type: 'testServiceType' };
+const dataSourceSpec = { code: dataSource.code, type: dataSource.type };
 
 describe('DataBroker', () => {
   let getServiceFromDataSourceStub;
