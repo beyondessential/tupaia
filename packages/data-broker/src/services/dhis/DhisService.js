@@ -10,13 +10,13 @@ export class DhisService extends Service {
   constructor(...args) {
     super(...args);
     this.pushers = {
-      [this.models.DataSource.types.dataElement]: this.pushAggregateData.bind(this),
-      [this.models.DataSource.types.dataGroup]: this.pushEvent.bind(this),
+      [this.models.DataSource.types.DATA_ELEMENT]: this.pushAggregateData.bind(this),
+      [this.models.DataSource.types.DATA_GROUP]: this.pushEvent.bind(this),
     };
 
     this.deleters = {
-      [this.models.DataSource.types.dataElement]: this.deleteAggregateData.bind(this),
-      [this.models.DataSource.types.dataGroup]: this.deleteEvent.bind(this),
+      [this.models.DataSource.types.DATA_ELEMENT]: this.deleteAggregateData.bind(this),
+      [this.models.DataSource.types.DATA_GROUP]: this.deleteEvent.bind(this),
     };
   }
 

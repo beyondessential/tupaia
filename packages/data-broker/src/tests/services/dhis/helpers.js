@@ -35,8 +35,8 @@ export const stubModels = ({ dataSources }) => ({
     fetchManyFromDbOrDefault: specs =>
       specs.map(({ code }) => dataSources.find(dataSource => dataSource.code === code)),
     types: {
-      dataElement: 'dataElement',
-      dataGroup: 'dataGroup',
+      DATA_ELEMENT: 'dataElement',
+      DATA_GROUP: 'dataGroup',
     },
   },
 });

@@ -14,7 +14,7 @@ const DEFAULT_DIAGNOSTICS = {
 const STUBBED_METHODS = {
   push: { diagnostics: DEFAULT_DIAGNOSTICS, serverName: SERVER_NAME },
   delete: DEFAULT_DIAGNOSTICS,
-  getDataSourceTypes: { dataGroup: DATA_SOURCE_TYPE },
+  getDataSourceTypes: { DATA_GROUP: DATA_SOURCE_TYPE },
 };
 
 export const resetDataBrokerStubHistory = dhisApiStub =>
