@@ -5,14 +5,11 @@
 
 export const SERVER_NAME = 'test server name';
 
-export const BASIC_DATA_SOURCE = {
+const BASIC_DATA_SOURCE = {
   type: 'dataElement',
   service_type: 'testServiceType',
   config: {},
 };
-
-export const CODE_1 = 'POP01';
-export const CODE_2 = 'POP02';
 
 export const DATA_ELEMENT_CODE_TO_ID = {
   POP01: 'id000POP01',
@@ -27,7 +24,7 @@ export const DATA_SOURCES = {
   POP01_GROUP: {
     ...BASIC_DATA_SOURCE,
     type: 'dataGroup',
-    code: CODE_1, // intentionally the same as data source 1, as they should be differentiated by type
+    code: 'POP01', // intentionally the same as data source 1, as they should be differentiated by type
   },
 };
 
