@@ -33,3 +33,5 @@ export const DATA_GROUP_DATA_SOURCE = {
 
 export const DATA_VALUE_1 = { code: CODE_1, value: 1 };
 export const DATA_VALUE_2 = { code: CODE_2, value: 2 };
+
+export const DHIS_REFERENCE = 'XXXYYY';

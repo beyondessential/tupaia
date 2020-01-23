@@ -31,8 +31,12 @@ export const cleanupDhisApiStub = () => {
 };
 
 export const stubModels = ({ dataSources }) => ({
-  dataSource: {
+  DataSource: {
     fetchManyFromDbOrDefault: specs =>
       specs.map(({ code }) => dataSources.find(dataSource => dataSource.code === code)),
+    types: {
+      dataElement: 'dataElement',
+      dataGroup: 'dataGroup',
+    },
   },
 });

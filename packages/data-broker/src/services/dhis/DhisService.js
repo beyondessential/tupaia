@@ -3,22 +3,20 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { modelClasses } from '@tupaia/database';
 import { Service } from '../Service';
 import { getServerName, getDhisApiInstance } from './getDhisApiInstance';
-const { DataSource } = modelClasses;
 
 export class DhisService extends Service {
   constructor(...args) {
     super(...args);
     this.pushers = {
-      [DataSource.types.dataElement]: this.pushAggregateData.bind(this),
-      [DataSource.types.dataGroup]: this.pushEvent.bind(this),
+      [this.models.DataSource.types.dataElement]: this.pushAggregateData.bind(this),
+      [this.models.DataSource.types.dataGroup]: this.pushEvent.bind(this),
     };
 
     this.deleters = {
-      [DataSource.types.dataElement]: this.deleteAggregateData.bind(this),
-      [DataSource.types.dataGroup]: this.deleteEvent.bind(this),
+      [this.models.DataSource.types.dataElement]: this.deleteAggregateData.bind(this),
+      [this.models.DataSource.types.dataGroup]: this.deleteEvent.bind(this),
     };
   }
 
@@ -38,7 +36,7 @@ export class DhisService extends Service {
   });
 
   async translateEventDataValues(api, dataValues) {
-    const dataSources = await this.models.dataSource.fetchManyFromDbOrDefault(
+    const dataSources = await this.models.DataSource.fetchManyFromDbOrDefault(
       dataValues.map(({ code }) => ({ code })),
     );
     const dataValuesWithCodeReplaced = dataValues.map((d, i) =>
