@@ -49,8 +49,8 @@ export class DhisService extends Service {
     const dataSources = await this.models.DataSource.fetchManyFromDbOrDefault(
       dataValues.map(({ code }) => ({ code })),
     );
-    const dataValuesWithCodeReplaced = dataValues.map((d, i) =>
-      this.translateDataValueCode(d, dataSources[i]),
+    const dataValuesWithCodeReplaced = await Promise.all(
+      dataValues.map(async (d, i) => this.translateDataValueCode(d, dataSources[i])),
     );
     const dataElementCodes = dataValuesWithCodeReplaced.map(({ dataElement }) => dataElement);
     const dataElementIds = await api.getIdsFromCodes(
@@ -89,7 +89,7 @@ export class DhisService extends Service {
   }
 
   async deleteAggregateData(api, dataValue) {
-    const translatedDataValue = this.translateDataValueCode(dataValue, this.dataSource);
+    const translatedDataValue = await this.translateDataValueCode(dataValue, this.dataSource);
     return api.deleteDataValue(translatedDataValue);
   }
 
