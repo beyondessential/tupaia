@@ -56,7 +56,7 @@ const MultiValueTooltip = ({
 const SingleValueTooltip = ({ valueType, payload, periodGranularity, labelType }) => {
   const data = payload[0].payload;
   const { name, value, timestamp } = data;
-  const metadata = data[`${name}_metadata`];
+  const metadata = data.value_metadata;
 
   const valueTypeForLabel = labelType || valueType;
 
