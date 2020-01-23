@@ -22,7 +22,9 @@ const convertToTableOfDataValuesSql = table => {
       cells: table.cells,
     })}'
   WHERE
-    id = '${table.id}';
+    id = '${
+      table.id
+    }' AND "dataBuilder" IN ('singleColumnTable', 'tableFromDataElementGroups', 'tableOfDataValues');
   `;
 };
 
