@@ -9,15 +9,18 @@ import { getServerName, getDhisApiInstance } from './getDhisApiInstance';
 const { DataSource } = modelClasses;
 
 export class DhisService extends Service {
-  pushers = {
-    [DataSource.types.dataElement]: this.pushAggregateData,
-    [DataSource.types.dataGroup]: this.pushEvent,
-  };
+  constructor(...args) {
+    super(...args);
+    this.pushers = {
+      [DataSource.types.dataElement]: this.pushAggregateData.bind(this),
+      [DataSource.types.dataGroup]: this.pushEvent.bind(this),
+    };
 
-  deleters = {
-    [DataSource.types.dataElement]: this.deleteAggregateData,
-    [DataSource.types.dataGroup]: (api, data) => api.deleteEvent(data.dhisReference),
-  };
+    this.deleters = {
+      [DataSource.types.dataElement]: this.deleteAggregateData.bind(this),
+      [DataSource.types.dataGroup]: this.deleteEvent.bind(this),
+    };
+  }
 
   getApiForEntity(entityCode) {
     const serverName = getServerName(entityCode, this.dataSource.config.isDataRegional);
@@ -63,7 +66,7 @@ export class DhisService extends Service {
   }
 
   async pushAggregateData(api, dataValue) {
-    const translatedDataValue = await this.translateDataValueCode(dataValue);
+    const translatedDataValue = await this.translateDataValueCode(dataValue, this.dataSource);
     return api.postDataValueSets([translatedDataValue]);
   }
 
@@ -80,9 +83,11 @@ export class DhisService extends Service {
   }
 
   async deleteAggregateData(api, dataValue) {
-    const translatedDataValue = this.translateDataValueCode(dataValue);
+    const translatedDataValue = this.translateDataValueCode(dataValue, this.dataSource);
     return api.deleteDataValue(translatedDataValue);
   }
+
+  deleteEvent = async (api, data) => api.deleteEvent(data.dhisReference);
 
   async pull(metadata) {
     const api = this.getApiForEntity(metadata.entityCode);
