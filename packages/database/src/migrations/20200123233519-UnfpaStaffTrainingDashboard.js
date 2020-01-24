@@ -16,20 +16,29 @@ exports.setup = function(options, seedLink) {
 
 exports.up = function(db) {
   return db.runSql(`
-    INSERT INTO "dashboardGroup" ("organisationLevel", "userGroup", "organisationUnitCode", "dashboardReports", "name", "code")
-    VALUES (
-      'Country',
-      'UNFPA',
-      'FM',
-      '{"UNFPA_Monthly_3_Methods_of_Contraception","UNFPA_Monthly_5_Methods_of_Contraception","UNFPA_Facilities_Offering_Services","UNFPA_Facilities_Offering_Delivery","UNFPA_RH_Stock_Cards"}',
-      'UNFPA',
-      'FM_Unfpa_Country'
+  INSERT INTO "dashboardReport" ("id", "dataBuilder", "dataBuilderConfig", "viewJson") VALUES (
+    'UNFPA_Staff_Trained_Matrix',
+    'tableOfEvents',
+    '{"columns": {
+      "RHS4UNFPA809": {}, "RHS3UNFPA5410": {}, "RHS2UNFPA291": {}, "RHS2UNFPA292": {}, "RHS2UNFPA240": {}, 
+      "$eventOrgUnitName": {"title": "Village", "sortOrder": 1}}}	',
+    '{"name": "Staff Trained Matrix", "type": "matrix", "placeholder": "/static/media/PEHSMatrixPlaceholder.png"}'
     );
-    `);
+
+    UPDATE "dashboardGroup"
+      SET "dashboardReports" = "dashboardReports" || '{UNFPA_Staff_Trained_Matrix}'
+        WHERE "userGroup" = 'UNFPA' AND "organisationLevel" = 'Facility';
+
+  `);
 };
 
 exports.down = function(db) {
-  return null;
+  return db.runSql(`
+    delete from "dashboardReport" where id = 'UNFPA_Staff_Trained_Matrix';
+    update "dashboardGroup"
+    SET "dashboardReports" = array_remove("dashboardReports", 'UNFPA_Staff_Trained_Matrix')
+      WHERE "userGroup" = 'UNFPA' AND "organisationLevel" = 'Facility';
+`);
 };
 
 exports._meta = {
