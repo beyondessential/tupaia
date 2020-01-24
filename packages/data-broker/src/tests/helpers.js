@@ -27,7 +27,7 @@ const getServiceFromDataSource = {
 export const models = {
   getStub: ({ dataSources }) => ({
     dataSource: {
-      fetchFromDbOrDefault: ({ code, type }) =>
+      findOneOrDefault: ({ code, type }) =>
         dataSources.find(dataSource => dataSource.code === code && dataSource.type === type) ||
         null,
     },

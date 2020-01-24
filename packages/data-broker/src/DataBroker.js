@@ -7,6 +7,14 @@ import { modelClasses } from '@tupaia/database';
 import { getServiceFromDataSource } from './services';
 import { getModels } from './getModels';
 
+/**
+ * Defines which data source should be selected from the `data_source` table
+ *
+ * @typedef {Object} DataSourceSpec
+ * @property {string} code  Matches on the code column
+ * @property {string} type  Matches on the type column
+ */
+
 export class DataBroker {
   constructor() {
     this.models = getModels();
@@ -17,7 +25,7 @@ export class DataBroker {
   }
 
   async getService(dataSourceSpec) {
-    const dataSource = await this.models.dataSource.fetchFromDbOrDefault(dataSourceSpec);
+    const dataSource = await this.models.dataSource.findOneOrDefault(dataSourceSpec);
     return getServiceFromDataSource(dataSource, this.models);
   }
 

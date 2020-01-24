@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 
-import { modelClasses, ModelRegistry } from '@tupaia/database';
+import { ModelRegistry } from '@tupaia/database';
+import { modelClasses } from '../modelClasses';
 import { getModels } from '../getModels';
 
 describe('getModels()', () => {
