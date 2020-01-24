@@ -22,7 +22,6 @@ import {
   CHANGE,
   DHIS_REFERENCE,
   SERVER_NAME,
-  DATA_SOURCE_TYPE,
 } from './testData';
 
 chai.use(chaiAsPromised);
@@ -108,7 +107,7 @@ describe('EventPusher', () => {
         expect(result).to.be.true;
         expect(dataBroker.delete).to.have.been.calledOnceWith(
           {
-            type: DATA_SOURCE_TYPE,
+            type: pusher.dataSourceTypes.EVENT,
             code: SURVEY.code,
           },
           { dhisReference: DHIS_REFERENCE },
@@ -140,7 +139,7 @@ describe('EventPusher', () => {
         expect(result).to.be.true;
         expect(dataBroker.delete).to.have.been.calledOnceWith(
           {
-            type: DATA_SOURCE_TYPE,
+            type: pusher.dataSourceTypes.EVENT,
             code: SURVEY.code,
           },
           { dhisReference: DHIS_REFERENCE },
