@@ -33,7 +33,7 @@ export const testCreateSurveyResponse = (dhisApi, models, dataBroker) => {
     const result = await pusher.push();
     expect(result).to.be.true;
     expect(dataBroker.push).to.have.been.calledOnceWith(
-      { code: SURVEY_RESPONSE_DATA_VALUE.code },
+      { code: SURVEY_RESPONSE_DATA_VALUE.code, type: pusher.dataSourceTypes.DATA_ELEMENT },
       SURVEY_RESPONSE_DATA_VALUE,
     );
     expect(dataBroker.delete).not.to.have.been.called;

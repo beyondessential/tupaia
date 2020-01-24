@@ -177,10 +177,7 @@ export class AggregateDataPusher extends DataPusher {
     const dataSetCompletionDiagnostics = await this.pushDataSetCompletionIfRequired();
 
     // sync the data across to DHIS2
-    const { diagnostics: updateDiagnostics, serverName } = await this.dataBroker.push(
-      { code: dataValue.code },
-      dataValue,
-    );
+    const { diagnostics: updateDiagnostics, serverName } = await this.pushDataValue(dataValue);
 
     // combine the diagnostics
     const diagnostics = combineDiagnostics(
@@ -230,6 +227,18 @@ export class AggregateDataPusher extends DataPusher {
       organisationUnit: orgUnitId,
       dataSet: dataSet.id,
     };
+  }
+
+  async pushDataValue(dataValue) {
+    const { code } = dataValue;
+    return this.dataBroker.push({ type: this.dataSourceTypes.DATA_ELEMENT, code }, dataValue);
+  }
+
+  async deleteDataValue(dataValue, serverName) {
+    const { code } = dataValue;
+    return this.dataBroker.delete({ code, type: this.dataSourceTypes.DATA_ELEMENT }, dataValue, {
+      serverName,
+    });
   }
 
   async pushDataSetCompletionIfRequired() {
@@ -358,7 +367,7 @@ export class AggregateDataPusher extends DataPusher {
     const syncLogData = this.extractDataFromSyncLog(syncLogRecord);
     const { orgUnit, code, period, serverName } = syncLogData;
     const dataToDelete = { orgUnit, code, period };
-    const deleteDiagnostics = await this.dataBroker.delete({ code }, dataToDelete, { serverName });
+    const deleteDiagnostics = await this.deleteDataValue(dataToDelete, serverName);
 
     // delete data set completion if required
     const dataSetCompletionDiagnostics = await this.deleteDataSetCompletionIfRequired(dataToDelete);

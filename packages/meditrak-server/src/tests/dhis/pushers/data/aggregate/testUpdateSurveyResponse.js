@@ -26,11 +26,14 @@ export const testUpdateSurveyResponse = (dhisApi, models, dataBroker) => {
     const result = await pusher.push();
     expect(result).to.be.true;
     expect(dataBroker.push).to.have.been.calledOnceWith(
-      { code: SURVEY_RESPONSE_DATA_VALUE.code },
+      { code: SURVEY_RESPONSE_DATA_VALUE.code, type: pusher.dataSourceTypes.DATA_ELEMENT },
       SURVEY_RESPONSE_DATA_VALUE,
     );
     expect(dataBroker.delete).to.have.been.calledWith(
-      { code: SURVEY_RESPONSE_DATA_VALUE_DIMENSIONS.code },
+      {
+        code: SURVEY_RESPONSE_DATA_VALUE_DIMENSIONS.code,
+        type: pusher.dataSourceTypes.DATA_ELEMENT,
+      },
       {
         ...SURVEY_RESPONSE_DATA_VALUE_DIMENSIONS,
         period: previouslySyncedPeriod,
@@ -49,11 +52,14 @@ export const testUpdateSurveyResponse = (dhisApi, models, dataBroker) => {
     const result = await pusher.push();
     expect(result).to.be.true;
     expect(dataBroker.push).to.have.been.calledOnceWith(
-      { code: SURVEY_RESPONSE_DATA_VALUE.code },
+      { code: SURVEY_RESPONSE_DATA_VALUE.code, type: pusher.dataSourceTypes.DATA_ELEMENT },
       SURVEY_RESPONSE_DATA_VALUE,
     );
     expect(dataBroker.delete).to.have.been.calledWith(
-      { code: SURVEY_RESPONSE_DATA_VALUE_DIMENSIONS.code },
+      {
+        code: SURVEY_RESPONSE_DATA_VALUE_DIMENSIONS.code,
+        type: pusher.dataSourceTypes.DATA_ELEMENT,
+      },
       {
         ...SURVEY_RESPONSE_DATA_VALUE_DIMENSIONS,
         orgUnit: previouslySyncedOrgUnit,

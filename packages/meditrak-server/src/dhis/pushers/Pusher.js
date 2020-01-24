@@ -33,6 +33,10 @@ export class Pusher {
     return this.change.type;
   }
 
+  get dataSourceTypes() {
+    return this.dataBroker.getDataSourceTypes();
+  }
+
   /**
    * @public
    *
