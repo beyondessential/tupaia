@@ -64,3 +64,5 @@ export const BASELINE_TEST_DATA = {
 };
 
 export const SERVER_NAME = 'test server';
+
+export const DATA_SOURCE_TYPE = 'test data source type';

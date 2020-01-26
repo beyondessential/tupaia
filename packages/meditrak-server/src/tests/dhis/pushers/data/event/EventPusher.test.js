@@ -107,7 +107,7 @@ describe('EventPusher', () => {
         expect(result).to.be.true;
         expect(dataBroker.delete).to.have.been.calledOnceWith(
           {
-            type: pusher.dataSourceTypes.EVENT,
+            type: pusher.dataSourceTypes.DATA_GROUP,
             code: SURVEY.code,
           },
           { dhisReference: DHIS_REFERENCE },
@@ -139,7 +139,7 @@ describe('EventPusher', () => {
         expect(result).to.be.true;
         expect(dataBroker.delete).to.have.been.calledOnceWith(
           {
-            type: pusher.dataSourceTypes.EVENT,
+            type: pusher.dataSourceTypes.DATA_GROUP,
             code: SURVEY.code,
           },
           { dhisReference: DHIS_REFERENCE },
