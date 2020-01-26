@@ -28,7 +28,7 @@ export const testPeriodsBasedOnDataSet = (dhisApi, models, dataBroker) => {
       expect(result).to.be.true;
       const expectedPeriod = moment(SURVEY_RESPONSE.submission_time).format(format);
       expect(dataBroker.push).to.have.been.calledOnceWith(
-        { code: ANSWER_DATA_VALUE.code },
+        { code: ANSWER_DATA_VALUE.code, type: pusher.dataSourceTypes.DATA_ELEMENT },
         { ...ANSWER_DATA_VALUE, period: expectedPeriod },
       );
       expect(dataBroker.delete).not.to.have.been.called;

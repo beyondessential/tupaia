@@ -24,7 +24,7 @@ export const testUpdateAnswer = (dhisApi, models, dataBroker) => {
     const result = await pusher.push();
     expect(result).to.be.true;
     expect(dataBroker.push).to.have.been.calledOnceWith(
-      { code: ANSWER_DATA_VALUE.code },
+      { code: ANSWER_DATA_VALUE.code, type: pusher.dataSourceTypes.DATA_ELEMENT },
       { ...ANSWER_DATA_VALUE, value: '4' },
     );
     expect(dataBroker.delete).not.to.have.been.called;
@@ -40,11 +40,11 @@ export const testUpdateAnswer = (dhisApi, models, dataBroker) => {
     const result = await pusher.push();
     expect(result).to.be.true;
     expect(dataBroker.push).to.have.been.calledOnceWith(
-      { code: ANSWER_DATA_VALUE.code },
+      { code: ANSWER_DATA_VALUE.code, type: pusher.dataSourceTypes.DATA_ELEMENT },
       ANSWER_DATA_VALUE,
     );
     expect(dataBroker.delete).to.have.been.calledWith(
-      { code: ANSWER_DATA_VALUE_DIMENSIONS.code },
+      { code: ANSWER_DATA_VALUE_DIMENSIONS.code, type: pusher.dataSourceTypes.DATA_ELEMENT },
       {
         ...ANSWER_DATA_VALUE_DIMENSIONS,
         period: previouslySyncedPeriod,
@@ -63,11 +63,11 @@ export const testUpdateAnswer = (dhisApi, models, dataBroker) => {
     const result = await pusher.push();
     expect(result).to.be.true;
     expect(dataBroker.push).to.have.been.calledOnceWith(
-      { code: ANSWER_DATA_VALUE.code },
+      { code: ANSWER_DATA_VALUE.code, type: pusher.dataSourceTypes.DATA_ELEMENT },
       ANSWER_DATA_VALUE,
     );
     expect(dataBroker.delete).to.have.been.calledWith(
-      { code: ANSWER_DATA_VALUE_DIMENSIONS.code },
+      { code: ANSWER_DATA_VALUE_DIMENSIONS.code, type: pusher.dataSourceTypes.DATA_ELEMENT },
       {
         ...ANSWER_DATA_VALUE_DIMENSIONS,
         orgUnit: previouslySyncedOrgUnit,

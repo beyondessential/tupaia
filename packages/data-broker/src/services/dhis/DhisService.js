@@ -10,14 +10,18 @@ export class DhisService extends Service {
   constructor(...args) {
     super(...args);
     this.pushers = {
-      [this.models.DataSource.types.DATA_ELEMENT]: this.pushAggregateData.bind(this),
-      [this.models.DataSource.types.DATA_GROUP]: this.pushEvent.bind(this),
+      [this.dataSourceTypes.DATA_ELEMENT]: this.pushAggregateData.bind(this),
+      [this.dataSourceTypes.DATA_GROUP]: this.pushEvent.bind(this),
     };
 
     this.deleters = {
-      [this.models.DataSource.types.DATA_ELEMENT]: this.deleteAggregateData.bind(this),
-      [this.models.DataSource.types.DATA_GROUP]: this.deleteEvent.bind(this),
+      [this.dataSourceTypes.DATA_ELEMENT]: this.deleteAggregateData.bind(this),
+      [this.dataSourceTypes.DATA_GROUP]: this.deleteEvent.bind(this),
     };
+  }
+
+  get dataSourceTypes() {
+    return this.models.DataSource.types;
   }
 
   getApiForEntity(entityCode) {
@@ -36,9 +40,10 @@ export class DhisService extends Service {
   });
 
   async translateEventDataValues(api, dataValues) {
-    const dataSources = await this.models.DataSource.fetchManyFromDbOrDefault(
-      dataValues.map(({ code }) => ({ code })),
-    );
+    const dataSources = await this.models.DataSource.findOrDefault({
+      code: dataValues.map(({ code }) => code),
+      type: this.dataSourceTypes.DATA_ELEMENT,
+    });
     const dataValuesWithCodeReplaced = dataValues.map((d, i) =>
       this.translateDataValueCode(d, dataSources[i]),
     );

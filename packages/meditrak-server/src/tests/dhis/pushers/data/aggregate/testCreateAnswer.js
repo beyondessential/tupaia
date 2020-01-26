@@ -25,7 +25,7 @@ export const testCreateAnswer = (dhisApi, models, dataBroker) => {
     const result = await pusher.push();
     expect(result).to.be.true;
     expect(dataBroker.push).to.have.been.calledOnceWith(
-      { code: ANSWER_DATA_VALUE.code },
+      { code: ANSWER_DATA_VALUE.code, type: pusher.dataSourceTypes.DATA_ELEMENT },
       ANSWER_DATA_VALUE,
     );
     expect(dataBroker.delete).not.to.have.been.called;

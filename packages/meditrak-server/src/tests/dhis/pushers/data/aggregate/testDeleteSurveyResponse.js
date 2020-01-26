@@ -54,7 +54,10 @@ export const testDeleteSurveyResponse = (dhisApi, models, dataBroker) => {
     expect(result).to.be.true;
     expect(dataBroker.push).not.to.have.been.called;
     expect(dataBroker.delete).to.have.been.calledWith(
-      { code: SURVEY_RESPONSE_DATA_VALUE_DIMENSIONS.code },
+      {
+        code: SURVEY_RESPONSE_DATA_VALUE_DIMENSIONS.code,
+        type: pusher.dataSourceTypes.DATA_ELEMENT,
+      },
       SURVEY_RESPONSE_DATA_VALUE_DIMENSIONS,
       { serverName: SERVER_NAME },
     );
@@ -115,7 +118,10 @@ export const testDeleteSurveyResponse = (dhisApi, models, dataBroker) => {
     expect(result).to.be.true;
     expect(dataBroker.push).not.to.have.been.called;
     expect(dataBroker.delete).to.have.been.calledWith(
-      { code: SURVEY_RESPONSE_DATA_VALUE_DIMENSIONS.code },
+      {
+        code: SURVEY_RESPONSE_DATA_VALUE_DIMENSIONS.code,
+        type: pusher.dataSourceTypes.DATA_ELEMENT,
+      },
       SURVEY_RESPONSE_DATA_VALUE_DIMENSIONS,
       { serverName: SERVER_NAME },
     );
