@@ -1,0 +1,23 @@
+{
+  "name": "export-chart-lambda",
+  "version": "1.0.0",
+  "description": "Lambda Function for Tupaia Chart Export",
+  "main": "index.js",
+  "scripts": {
+    "package": "npm run package-prepare && cd dist && zip -rq ../package.zip . && cd .. && rm -rf dist",
+    "package-prepare": "npm run babel && cp -r package.json dist && cd dist && yarn --production",
+    "babel": "rm -rf dist && mkdir dist && ./node_modules/.bin/babel src --out-dir dist",
+    "lint": "./node_modules/.bin/eslint src"
+  },
+  "dependencies": {
+    "core-worker": "^0.3.5",
+    "nodemailer": "^4.4.2",
+    "tar": "^4.0.1"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.6.0",
+    "eslint": "^4.6.1",
+    "eslint-config-google": "^0.9.1"
+  }
+}
