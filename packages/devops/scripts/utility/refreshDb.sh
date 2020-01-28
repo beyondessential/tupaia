@@ -3,7 +3,7 @@
 # Exit when any command fails
 set -e
 
-USAGE="usage: refreshDb dumpPath [-m --migrate]"
+USAGE="Usage: refreshDb dump_path [-m --migrate]"
 migrate=false
 db_dump_path=$1
 

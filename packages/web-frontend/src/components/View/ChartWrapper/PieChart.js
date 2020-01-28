@@ -173,7 +173,7 @@ export class PieChart extends PureComponent {
 
     const textAnchor = isLabelOnRight ? 'start' : 'end';
     const valueTypeForLabel = labelType || valueType;
-    const metadataForLabel = data.find(m => m.name === name).value_metadata;
+    const metadataForLabel = data.find(m => m.name === name)[`${name}_metadata`];
 
     return (
       <g>

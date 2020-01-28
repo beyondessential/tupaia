@@ -29,6 +29,7 @@ import {
   OPEN_USER_DIALOG,
   DIALOG_PAGE_REQUEST_COUNTRY_ACCESS,
   FINISH_USER_SESSION,
+  SET_VERIFY_EMAIL_TOKEN,
   changeMeasure,
   clearMeasure,
   clearMeasureHierarchy,
@@ -44,6 +45,7 @@ import {
   fetchUserLogoutSuccess,
   fetchUserLogoutError,
   fetchUserSignupSuccess,
+  displayUnverified,
   fetchUserSignupError,
   fetchOrgUnitSuccess,
   fetchOrgUnitError,
@@ -75,6 +77,12 @@ import {
   FETCH_MEASURES_SUCCESS,
   FETCH_ORG_UNIT_SUCCESS,
   addMapRegions,
+  openEmailVerifiedPage,
+  fetchEmailVerifyError,
+  openResendEmailSuccess,
+  fetchResendEmailError,
+  setOverlayComponent,
+  FETCH_RESEND_VERIFICATION_EMAIL,
   findUserLoginFailed,
   REQUEST_PROJECT_ACCESS,
 } from './actions';
@@ -90,22 +98,19 @@ import { INITIAL_MEASURE_ID } from './defaults';
  *
  */
 function* attemptChangePassword(action) {
-  const options = Object.assign(
-    {},
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        oldPassword: action.oldPassword,
-        password: action.password,
-        passwordConfirm: action.passwordConfirm,
-        oneTimeLoginToken: action.passwordResetToken,
-      }),
-      alwaysUseSuppliedErrorFunction: true,
+  const options = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
     },
-  );
+    body: JSON.stringify({
+      oldPassword: action.oldPassword,
+      password: action.password,
+      passwordConfirm: action.passwordConfirm,
+      oneTimeLoginToken: action.passwordResetToken,
+    }),
+    alwaysUseSuppliedErrorFunction: true,
+  };
 
   const requestResourceUrl = 'changePassword';
   try {
@@ -128,17 +133,14 @@ function* watchAttemptChangePasswordAndFetchIt() {
  *
  */
 function* attemptResetPassword(action) {
-  const options = Object.assign(
-    {},
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ emailAddress: action.email }),
-      alwaysUseSuppliedErrorFunction: true,
+  const options = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
     },
-  );
+    body: JSON.stringify({ emailAddress: action.email }),
+    alwaysUseSuppliedErrorFunction: true,
+  };
 
   const requestResourceUrl = 'resetPassword';
   try {
@@ -154,6 +156,28 @@ function* watchAttemptResetPasswordAndFetchIt() {
   yield takeLatest(ATTEMPT_RESET_PASSWORD, attemptResetPassword);
 }
 
+function* resendVerificationEmail(action) {
+  const options = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ emailAddress: action.email }),
+  };
+
+  const requestResourceUrl = 'resendEmail';
+  try {
+    yield call(request, requestResourceUrl, fetchResendEmailError, options);
+    yield put(openResendEmailSuccess());
+  } catch (error) {
+    const errorMessage = error.response ? yield error.response.json() : {};
+    yield put(fetchResendEmailError(errorMessage.details ? errorMessage.details : ''));
+  }
+}
+
+function* watchResendEmailVerificationAndFetchIt() {
+  yield takeLatest(FETCH_RESEND_VERIFICATION_EMAIL, resendVerificationEmail);
+}
 /**
  * attemptUserLogin
  *
@@ -161,19 +185,16 @@ function* watchAttemptResetPasswordAndFetchIt() {
  *
  */
 function* attemptUserLogin(action) {
-  const fetchOptions = Object.assign(
-    {},
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        emailAddress: action.emailAddress,
-        password: action.password,
-      }),
+  const fetchOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
     },
-  );
+    body: JSON.stringify({
+      emailAddress: action.emailAddress,
+      password: action.password,
+    }),
+  };
 
   const requestContext = {
     alwaysUseSuppliedErrorFunction: true,
@@ -181,7 +202,7 @@ function* attemptUserLogin(action) {
 
   const requestResourceUrl = 'login';
   try {
-    yield call(
+    const response = yield call(
       request,
       requestResourceUrl,
       fetchUserLoginError,
@@ -189,9 +210,12 @@ function* attemptUserLogin(action) {
       requestContext,
       false,
     );
-    yield put(findLoggedIn(true));
+    yield put(findLoggedIn(true, response.emailVerified));
   } catch (error) {
-    yield put(error.errorFunction(error));
+    const errorMessage = error.response ? yield error.response.json() : {};
+    if (errorMessage.details && errorMessage.details === 'Email address not yet verified') {
+      yield put(displayUnverified());
+    } else yield put(error.errorFunction(errorMessage));
   }
 }
 
@@ -208,16 +232,13 @@ function* watchAttemptUserLoginAndFetchIt() {
 function* attemptUserSignup(action) {
   const { fields } = action;
 
-  const fetchOptions = Object.assign(
-    {},
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(fields),
+  const fetchOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
     },
-  );
+    body: JSON.stringify(fields),
+  };
 
   const requestContext = {
     alwaysUseSuppliedErrorFunction: true,
@@ -264,22 +285,36 @@ function* watchAttemptUserLogout() {
   yield takeLatest(ATTEMPT_LOGOUT, attemptUserLogout);
 }
 
+function* attemptVerifyToken(action) {
+  const { verifyEmailToken } = action;
+  const requestResourceUrl = `verifyEmail?emailToken=${verifyEmailToken}`;
+  try {
+    yield call(request, requestResourceUrl);
+    yield put(openEmailVerifiedPage());
+    yield put(setOverlayComponent('landing'));
+  } catch (error) {
+    yield put(fetchEmailVerifyError());
+    yield put(setOverlayComponent('landing'));
+  }
+}
+
+function* watchSetVerifyEmailToken() {
+  yield takeLatest(SET_VERIFY_EMAIL_TOKEN, attemptVerifyToken);
+}
+
 function* attemptTokenLogin(action) {
   const { passwordResetToken } = action;
   const body = {
     token: passwordResetToken,
   };
 
-  const fetchOptions = Object.assign(
-    {},
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body),
+  const fetchOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
     },
-  );
+    body: JSON.stringify(body),
+  };
 
   const requestContext = {
     alwaysUseSuppliedErrorFunction: true,
@@ -295,7 +330,7 @@ function* attemptTokenLogin(action) {
       requestContext,
       false,
     );
-    yield put(findLoggedIn(false));
+    yield put(findLoggedIn(false, true)); //default to email verified for one time login to prevent a nag screen
   } catch (error) {
     yield put(error.errorFunction(error));
   }
@@ -315,21 +350,18 @@ function* attemptRequestCountryAccess(action) {
   const { message, userGroup } = action;
   const countryIds = action.countryIds ? Object.keys(action.countryIds) : [];
 
-  const options = Object.assign(
-    {},
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        countryIds: countryIds,
-        message,
-        userGroup,
-      }),
-      alwaysUseSuppliedErrorFunction: true,
+  const options = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
     },
-  );
+    body: JSON.stringify({
+      countryIds: countryIds,
+      message,
+      userGroup,
+    }),
+    alwaysUseSuppliedErrorFunction: true,
+  };
 
   const requestResourceUrl = 'requestCountryAccess';
   try {
@@ -916,6 +948,8 @@ export default [
   watchUserChangesAndUpdatePermissions,
   watchSetEnlargedDialogSelectedPeriodFilterAndRefreshViewContent,
   watchSetPasswordResetToken,
+  watchResendEmailVerificationAndFetchIt,
+  watchSetVerifyEmailToken,
   watchFetchMeasureSuccess,
   watchFetchOrgUnitSuccess,
   refreshBrowserWhenFinishingUserSession,
