@@ -1,6 +1,6 @@
 import { CustomError } from '@tupaia/utils';
-import { getDhisApiInstance } from '@tupaia/data-broker';
 import { getMeasureBuilder } from '/apiV1/measureBuilders/getMeasureBuilder';
+import { getDhisApiInstance } from '/dhis';
 import { DhisTranslationHandler, getOptionsForDataElement, getDateRange } from './utils';
 import { DATA_SOURCE_TYPES } from './dataBuilders/dataSourceTypes';
 

@@ -3,7 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { getDhisApiInstance } from '@tupaia/data-broker';
+import { getDhisApiInstance } from '/dhis';
 
 /**
  * Runs the provided `aggregation` callback in all DHIS instances,

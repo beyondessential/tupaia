@@ -4,7 +4,7 @@
  */
 
 import { Service } from '../Service';
-import { getServerName, getDhisApiInstance } from './getDhisApiInstance';
+import { getDhisApiInstance } from './getDhisApiInstance';
 
 export class DhisService extends Service {
   constructor(...args) {
@@ -25,8 +25,8 @@ export class DhisService extends Service {
   }
 
   getApiForEntity(entityCode) {
-    const serverName = getServerName(entityCode, this.dataSource.config.isDataRegional);
-    return getDhisApiInstance({ serverName });
+    const { isDataRegional } = this.dataSource.config;
+    return getDhisApiInstance({ entityCode, isDataRegional });
   }
 
   /**

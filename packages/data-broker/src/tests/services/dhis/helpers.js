@@ -10,7 +10,6 @@ import { SERVER_NAME, DATA_ELEMENT_CODE_TO_ID } from './DhisService.fixtures';
 
 export const setupDhisApiForStubbing = () => {
   sinon.stub(GetDhisApiInstance, 'getDhisApiInstance');
-  sinon.stub(GetDhisApiInstance, 'getServerName').returns(SERVER_NAME);
 };
 
 export const stubDhisApi = () => {
@@ -27,7 +26,6 @@ export const stubDhisApi = () => {
 
 export const cleanupDhisApiStub = () => {
   GetDhisApiInstance.getDhisApiInstance.restore();
-  GetDhisApiInstance.getServerName.restore();
 };
 
 export const stubModels = ({ dataSources }) => ({
