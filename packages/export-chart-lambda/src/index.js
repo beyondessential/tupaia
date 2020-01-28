@@ -159,7 +159,7 @@ exports.run = async browser => {
   await page.goto(chartUrl);
   console.log('Page visited', chartUrl);
   await page.setViewport({ width: 1000, height: 720 });
-  await page.waitForNavigation();
+  await page.waitForSelector('#chart-body');
 
   if (chartType === 'matrix') {
     await exportMatrix(page);
