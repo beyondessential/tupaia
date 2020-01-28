@@ -533,10 +533,10 @@ export const testTotals = () => {
           cells: [
             ['CD1', 'CD2', '$rowTotal'],
             ['CD3', 'CD4', '$rowTotal'],
-            ['$rowCategoryColumnTotal', '$rowCategoryColumnTotal', '$rowCategoryColumnTotal'],
+            ['$rowCategoryColumnTotal', '$rowCategoryColumnTotal', '$rowCategoryTotal'],
             ['CD5', 'CD6', '$rowTotal'],
             ['CD7', 'CD8', '$rowTotal'],
-            ['$rowCategoryColumnTotal', '$rowCategoryColumnTotal', '$rowCategoryColumnTotal'],
+            ['$rowCategoryColumnTotal', '$rowCategoryColumnTotal', '$rowCategoryTotal'],
           ],
         },
         {
@@ -631,10 +631,10 @@ export const testTotals = () => {
             [
               '$columnTotal',
               '$columnTotal',
-              '$columnCategoryRowTotal',
+              '$columnCategoryTotal',
               '$columnTotal',
               '$columnTotal',
-              '$columnCategoryRowTotal',
+              '$columnCategoryTotal',
             ],
           ],
         },
