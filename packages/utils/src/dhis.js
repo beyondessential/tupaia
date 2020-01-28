@@ -22,7 +22,7 @@ const getServerNameFromCountryCode = countryCode =>
 
 const getServerName = (entityCode, isDataRegional) => {
   if (isDataRegional) return REGIONAL_SERVER_NAME;
-  const countryCode = entityCode.substring(0, 2); // All organisation unit codes start with the two letter country code
+  const countryCode = entityCode.substring(0, 2); // All entity codes start with the two letter country code
   const countrySpecificServerName = getServerNameFromCountryCode(countryCode);
   return SERVER_NAMES.has(countrySpecificServerName)
     ? countrySpecificServerName
