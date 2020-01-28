@@ -515,6 +515,197 @@ export const testTotals = () => {
           ],
         },
       ));
+
+    it('whole row category total, and row totals', () =>
+      assertTableResults(
+        {
+          rows: [
+            {
+              rows: ['Antenatal', 'Postnatal', 'Totals'],
+              category: 'Clinic Visit Service Types',
+            },
+            {
+              rows: ['Antenatal', 'Postnatal', 'Totals'],
+              category: 'Home Visit Service Types',
+            },
+          ],
+          columns: ['New Visits', 'Visits', 'Totals'],
+          cells: [
+            ['CD1', 'CD2', '$rowTotal'],
+            ['CD3', 'CD4', '$rowTotal'],
+            ['$rowCategoryColumnTotal', '$rowCategoryColumnTotal', '$rowCategoryTotal'],
+            ['CD5', 'CD6', '$rowTotal'],
+            ['CD7', 'CD8', '$rowTotal'],
+            ['$rowCategoryColumnTotal', '$rowCategoryColumnTotal', '$rowCategoryTotal'],
+          ],
+        },
+        {
+          rows: [
+            {
+              dataElement: 'Antenatal',
+              categoryId: 'Clinic Visit Service Types',
+              Col1: 1,
+              Col2: 2,
+              Col3: 3,
+            },
+            {
+              dataElement: 'Postnatal',
+              categoryId: 'Clinic Visit Service Types',
+              Col1: 3,
+              Col2: 4,
+              Col3: 7,
+            },
+            {
+              dataElement: 'Totals',
+              categoryId: 'Clinic Visit Service Types',
+              Col1: 4,
+              Col2: 6,
+              Col3: 10,
+            },
+            {
+              dataElement: 'Antenatal',
+              categoryId: 'Home Visit Service Types',
+              Col1: 5,
+              Col2: 6,
+              Col3: 11,
+            },
+            {
+              dataElement: 'Postnatal',
+              categoryId: 'Home Visit Service Types',
+              Col1: 7,
+              Col2: 8,
+              Col3: 15,
+            },
+            {
+              dataElement: 'Totals',
+              categoryId: 'Home Visit Service Types',
+              Col1: 12,
+              Col2: 14,
+              Col3: 26,
+            },
+          ],
+          columns: [
+            {
+              key: 'Col1',
+              title: 'New Visits',
+            },
+            {
+              key: 'Col2',
+              title: 'Visits',
+            },
+            {
+              key: 'Col3',
+              title: 'Totals',
+            },
+          ],
+          categories: [
+            {
+              key: 'Clinic Visit Service Types',
+              title: 'Clinic Visit Service Types',
+            },
+            {
+              key: 'Home Visit Service Types',
+              title: 'Home Visit Service Types',
+            },
+          ],
+        },
+      ));
+
+    it('whole column category total, and column totals', () =>
+      assertTableResults(
+        {
+          rows: ['Antenatal', 'Postnatal', 'Totals'],
+          columns: [
+            {
+              columns: ['New Visits', 'Visits', 'Totals'],
+              category: 'Clinic Visit Service Types',
+            },
+            {
+              columns: ['New Visits', 'Visits', 'Totals'],
+              category: 'Home Visit Service Types',
+            },
+          ],
+          cells: [
+            ['CD1', 'CD2', '$columnCategoryRowTotal', 'CD3', 'CD4', '$columnCategoryRowTotal'],
+            ['CD5', 'CD6', '$columnCategoryRowTotal', 'CD7', 'CD8', '$columnCategoryRowTotal'],
+            [
+              '$columnTotal',
+              '$columnTotal',
+              '$columnCategoryTotal',
+              '$columnTotal',
+              '$columnTotal',
+              '$columnCategoryTotal',
+            ],
+          ],
+        },
+        {
+          rows: [
+            {
+              dataElement: 'Antenatal',
+              Col1: 1,
+              Col2: 2,
+              Col3: 3,
+              Col4: 3,
+              Col5: 4,
+              Col6: 7,
+            },
+            {
+              dataElement: 'Postnatal',
+              Col1: 5,
+              Col2: 6,
+              Col3: 11,
+              Col4: 7,
+              Col5: 8,
+              Col6: 15,
+            },
+            {
+              dataElement: 'Totals',
+              Col1: 6,
+              Col2: 8,
+              Col3: 14,
+              Col4: 10,
+              Col5: 12,
+              Col6: 22,
+            },
+          ],
+          columns: [
+            {
+              columns: [
+                {
+                  key: 'Col1',
+                  title: 'New Visits',
+                },
+                {
+                  key: 'Col2',
+                  title: 'Visits',
+                },
+                {
+                  key: 'Col3',
+                  title: 'Totals',
+                },
+              ],
+              category: 'Clinic Visit Service Types',
+            },
+            {
+              columns: [
+                {
+                  key: 'Col4',
+                  title: 'New Visits',
+                },
+                {
+                  key: 'Col5',
+                  title: 'Visits',
+                },
+                {
+                  key: 'Col6',
+                  title: 'Totals',
+                },
+              ],
+              category: 'Home Visit Service Types',
+            },
+          ],
+        },
+      ));
   });
 
   describe('total of missing cells', () => {
