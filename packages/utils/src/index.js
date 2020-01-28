@@ -4,6 +4,7 @@
  */
 
 export { getTimezoneNameFromTimestamp, utcMoment } from './datetime';
+export { getDhisConfig } from './dhis';
 export * from './errors';
 export { getCountryNameFromCode } from './getCountryNameFromCode';
 export { flattenToObject, getSortByKey, mapKeys, reduceToDictionary, reduceToSet } from './object';
