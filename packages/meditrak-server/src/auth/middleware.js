@@ -9,7 +9,13 @@ async function authenticateUser(req) {
     throw new UnauthenticatedError('No authorization header provided - must be Basic or Bearer');
   }
 
-  const preAuthenticationRoutes = ['/auth', '/auth/resetPassword', '/user'];
+  const preAuthenticationRoutes = [
+    '/auth',
+    '/auth/resetPassword',
+    '/user',
+    '/auth/verifyEmail',
+    '/auth/resendEmail',
+  ];
   const tokenUserID = authHeader.startsWith('Bearer') && getUserIDFromToken(authHeader);
 
   // Use the user account provided in the auth header if present

@@ -4,8 +4,8 @@
  */
 
 import formatLinkHeader from 'format-link-header';
-import { TYPES, JOIN_TYPES } from '@tupaia/database';
-import { respond, DatabaseError, DatabaseType, ValidationError } from '@tupaia/utils';
+import { TYPES, JOIN_TYPES, DatabaseType } from '@tupaia/database';
+import { respond, DatabaseError, ValidationError } from '@tupaia/utils';
 import {
   findQuestionsBySurvey,
   findAnswersBySurveyResponse,

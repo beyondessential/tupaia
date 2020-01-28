@@ -17,6 +17,7 @@ export const createUser = async (
     countryName,
     permissionGroupName,
     is_api_client: isApiClient,
+    verifiedEmail,
     ...restOfUser
   },
 ) => {
@@ -41,6 +42,7 @@ export const createUser = async (
         email: emailAddress,
         mobile_number: contactNumber,
         ...hashAndSaltPassword(password),
+        verified_email: verifiedEmail,
         ...restOfUser,
       });
 

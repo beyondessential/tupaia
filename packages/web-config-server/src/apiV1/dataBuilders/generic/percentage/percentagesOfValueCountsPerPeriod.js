@@ -19,6 +19,7 @@ class BaseBuilder extends PercentagesOfValueCountsBuilder {
 
       const key = Object.keys(this.config.dataClasses).length > 1 ? name : 'value';
       percentage[key] = divideValues(numerator, denominator);
+      percentage[`${key}_metadata`] = { numerator, denominator };
     });
     return [percentage];
   }

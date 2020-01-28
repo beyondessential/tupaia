@@ -4,8 +4,8 @@
   "main": "dist/index.js",
   "private": true,
   "scripts": {
-    "build": "babel src --out-dir dist --copy-files --ignore '**/migrations'",
-    "test": "nyc --reporter=lcov mocha",
+    "build": "babel src --out-dir dist --ignore '**/migrations','src/tests/**'",
+    "test": "mocha",
     "migrate": "babel-node ./src/migrate.js up --migrations-dir ./src/migrations -v",
     "migrate-down": "babel-node ./src/migrate.js  down --migrations-dir ./src/migrations -v",
     "migrate-create": "read -p \"Enter migration name: \" MIGRATION_NAME && babel-node ./src/migrate.js create ${MIGRATION_NAME} --migrations-dir ./src/migrations -v",

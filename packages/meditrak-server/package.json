@@ -76,14 +76,13 @@
   },
   "scripts": {
     "lint": "eslint --ext .js  --ignore-pattern __tests__/",
-    "test": "nyc --reporter=lcov mocha",
+    "test": "mocha",
     "test-coverage": "nyc mocha",
     "build": "babel-node src -s -D dist",
     "prestart": "npm run -s build",
     "start": "node dist",
     "start-dev": "nodemon -w src --exec \"babel-node src --inspect=9999\"",
     "start-verbose": "LOG_LEVEL=debug npm run start-dev",
-    "refresh-database": "../devops/scripts/utility/refreshDb.sh",
     "sync-organisation-unit-codes": "babel-node ./src/devops/importOrganisationUnitCodesFromWebsite.js",
     "validate": "babel-node scripts/validate/index.js"
   },

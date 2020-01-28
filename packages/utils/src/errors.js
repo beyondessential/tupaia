@@ -54,6 +54,12 @@ export class UnauthenticatedError extends RespondingError {
   }
 }
 
+export class UnverifiedError extends RespondingError {
+  constructor(message) {
+    super(message, 403);
+  }
+}
+
 export class UploadError extends RespondingError {
   constructor(originalError) {
     super(`File upload failed${originalError ? `: ${originalError.message}` : ''}`, 500);

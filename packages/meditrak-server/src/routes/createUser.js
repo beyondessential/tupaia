@@ -5,6 +5,7 @@
 import { respond, FormValidationError, UnauthenticatedError } from '@tupaia/utils';
 import { ObjectValidator, fieldHasContent, isEmail, isValidPassword } from '../validation';
 import { createUser as createUserAccessor } from '../dataAccessors';
+import { sendVerifyEmail, EMAIL_VERIFIED_STATUS } from './verifyEmail';
 import { hasNoAlphaLetters } from '../validation/validatorFunctions';
 
 const PERMISSION_GROUPS = {
@@ -75,6 +76,10 @@ export const createUser = async (req, res) => {
     password,
     countryName: DEMO_LAND_NAME,
     permissionGroupName: PERMISSION_GROUPS.PUBLIC,
+    verifiedEmail: EMAIL_VERIFIED_STATUS.NEW_USER,
   });
+
+  sendVerifyEmail(req, userId);
+
   respond(res, { userId });
 };

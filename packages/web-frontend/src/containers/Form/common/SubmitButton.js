@@ -14,5 +14,9 @@ export const SubmitButton = ({ text, handleClick }) => (
 
 SubmitButton.propTypes = {
   text: PropTypes.string.isRequired,
-  handleClick: PropTypes.func.isRequired,
+  handleClick: PropTypes.func,
+};
+
+SubmitButton.defaultProps = {
+  handleClick: () => {},
 };
