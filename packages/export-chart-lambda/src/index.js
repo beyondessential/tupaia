@@ -36,12 +36,10 @@ exports.handler = async (event, context, callback) => {
   emailSubject = event.emailSubject;
   cookies = event.cookies;
 
-  console.log(`Creating browser, headless=${chromium.headless}`);
   const browser = await chromium.puppeteer.launch({
     args: chromium.args,
-    defaultViewport: chromium.defaultViewport,
     executablePath: await chromium.executablePath,
-    headless: chromium.headless,
+    headless: true,
   });
   console.log('Created browser');
 
@@ -51,8 +49,11 @@ exports.handler = async (event, context, callback) => {
       .then(result => callback(null, result))
       .catch(err => callback(err));
   } finally {
+    console.log('Closing browser');
     await browser.close();
   }
+
+  return 'done';
 };
 
 const exportMatrix = async page => {
@@ -104,6 +105,7 @@ const exportPage = async page => {
       format: 'A4',
       printBackground: true,
       landscape: true,
+      pageRanges: '1',
     });
   } else if (fileType === 'png') {
     await page.screenshot({
@@ -159,7 +161,10 @@ exports.run = async browser => {
   await page.goto(chartUrl);
   console.log('Page visited', chartUrl);
   await page.setViewport({ width: 1000, height: 720 });
+
+  //A little hacky, we wait for the chart body to be displayed, and then wait another 5 seconds for good measure (incase components haven't fully loaded)
   await page.waitForSelector('#chart-body');
+  await page.waitFor(5000);
 
   if (chartType === 'matrix') {
     await exportMatrix(page);
