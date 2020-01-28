@@ -30,8 +30,8 @@ const getServerName = (entityCode, isDataRegional) => {
 };
 
 /**
- * Returns configuration for creating an api instance connected to the dhis server
- * The the country containing the given entityCode will be used. If either none is passed in or the data
+ * Returns configuration for creating an api instance connected to the dhis server.
+ * The country containing the given entityCode will be used. If either none is passed in or the data
  * is regional, the regional dhis server will be used.
  * Can also pass the `serverName` directly, to specify exactly which instance to use.
  *
@@ -44,7 +44,7 @@ export const getDhisConfig = ({
   serverName: serverNameInput,
   entityCode = '',
   isDataRegional = true,
-}) => {
+} = {}) => {
   const serverName = serverNameInput || getServerName(entityCode, isDataRegional);
   const serverUrl = getServerUrlFromName(serverName);
 

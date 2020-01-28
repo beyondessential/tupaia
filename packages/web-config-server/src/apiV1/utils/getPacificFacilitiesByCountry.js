@@ -1,5 +1,5 @@
 import { DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
-import { getDhisApiInstance } from '@tupaia/data-broker';
+import { getDhisApiInstance } from '/dhis';
 
 // Find every organisation units that are children of a country (will return facilities, district and sub-districts)
 const getFacilitiesWithinParent = async (dhisApi, countryCode) =>

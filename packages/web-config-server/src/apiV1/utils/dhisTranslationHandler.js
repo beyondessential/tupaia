@@ -1,5 +1,5 @@
 import { respond } from '@tupaia/utils';
-import { getDhisApiInstance } from '@tupaia/data-broker';
+import { getDhisApiInstance } from '/dhis';
 import { PermissionsChecker } from './PermissionsChecker';
 import { Entity } from '/models';
 
