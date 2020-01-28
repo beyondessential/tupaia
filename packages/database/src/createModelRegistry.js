@@ -7,7 +7,7 @@ import { TupaiaDatabase } from './TupaiaDatabase';
 import { ModelRegistry } from './ModelRegistry';
 
 // Sets up a TupaiaDatabase and a ModelRegistry with the common models stored in this package
-export function setupModelRegistry(modelClasses) {
+export function createModelRegistry(modelClasses) {
   const database = new TupaiaDatabase();
   const models = new ModelRegistry(database, modelClasses);
   return models;
