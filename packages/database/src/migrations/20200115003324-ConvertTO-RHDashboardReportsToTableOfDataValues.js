@@ -460,7 +460,7 @@ const tableMCH03 = {
       ],
       addRowTotal: true,
     }),
-    Array(tMCH03Cols.length).fill('$rowCategoryColumnTotal'),
+    ['$rowCategoryColumnTotal', '$rowCategoryColumnTotal', '$rowCategoryTotal'],
     ...build2DTableCells({
       prefix: 'MCH',
       numRows: tMCH03CategorisedRows[1].rows.length - 1,
@@ -473,7 +473,7 @@ const tableMCH03 = {
       ],
       addRowTotal: true,
     }),
-    Array(tMCH03Cols.length).fill('$rowCategoryColumnTotal'),
+    ['$rowCategoryColumnTotal', '$rowCategoryColumnTotal', '$rowCategoryTotal'],
   ],
   id: 'TO_RH_Validation_MCH03',
 };
