@@ -3,7 +3,6 @@ export { multiPercentagePerOrgUnit } from './multiPercentagePerOrgUnit';
 export { percentagesOfEventCounts } from './percentagesOfEventCounts';
 export { percentagesOfEventCountsPerPeriod } from './percentagesOfEventCountsPerPeriod';
 export { percentagesOfValueCounts } from './percentagesOfValueCounts';
-export { percentagesOfValueCountsPerOrgUnit } from './percentagesOfValueCountsPerOrgUnit';
 export { percentagesOfValueCountsPerPeriod } from './percentagesOfValueCountsPerPeriod';
 export { percentagesPerDataClass } from './percentagesPerDataClass';
 export { percentagesByNominatedPairs } from './percentagesByNominatedPairs';
