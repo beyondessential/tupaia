@@ -13,7 +13,6 @@ class TableOfDataValuesWithCalcBuilder extends TableOfDataValuesBuilder {
   async build() {
     await this.buildBaseLineQuery();
     const baseLine = await this.fetchResultsHeader();
-    console.log(baseLine);
     const baseLineDate = moment(baseLine[0].period, 'YYYYMMDD');
     await this.transformConfig();
     this.tableConfig = new TableConfig(this.config, baseLine);
