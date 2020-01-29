@@ -3,4 +3,5 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-export { tableOfDataValues } from './tableOfDataValues';
+export { tableOfDataValues, TableOfDataValuesBuilder } from './tableOfDataValues';
+export { TableOfDataValuesWithCalc } from './TableOfDataValuesWithCalc';
