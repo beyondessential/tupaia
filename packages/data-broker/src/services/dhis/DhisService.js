@@ -9,12 +9,19 @@ import { getDhisApiInstance } from './getDhisApiInstance';
 export class DhisService extends Service {
   constructor(...args) {
     super(...args);
-    this.pushers = {
+    this.pushers = this.getPushers();
+    this.deleters = this.getDeleters();
+  }
+
+  getPushers() {
+    return {
       [this.dataSourceTypes.DATA_ELEMENT]: this.pushAggregateData.bind(this),
       [this.dataSourceTypes.DATA_GROUP]: this.pushEvent.bind(this),
     };
+  }
 
-    this.deleters = {
+  getDeleters() {
+    return {
       [this.dataSourceTypes.DATA_ELEMENT]: this.deleteAggregateData.bind(this),
       [this.dataSourceTypes.DATA_GROUP]: this.deleteEvent.bind(this),
     };
