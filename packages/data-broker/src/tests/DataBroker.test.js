@@ -12,9 +12,16 @@ const dataSource = { code: 'POP01', type: 'dataElement', service_type: 'testServ
 const dataSourceSpec = { code: dataSource.code, type: dataSource.type };
 
 describe('DataBroker', () => {
-  let getServiceFromDataSourceStub;
+  let createServiceStub;
   let serviceStub;
   let modelsStub;
+
+  const assertCreateServiceWasInvokedCorrectly = () => {
+    expect(createServiceStub).to.have.been.calledOnceWithExactly(
+      modelsStub,
+      dataSource.service_type,
+    );
+  };
 
   before(() => {
     modelsStub = stubs.models.getStub({ dataSources: [dataSource] });
@@ -23,11 +30,11 @@ describe('DataBroker', () => {
 
   beforeEach(() => {
     serviceStub = stubs.service.getStub();
-    getServiceFromDataSourceStub = stubs.getServiceFromDataSource.stub(serviceStub);
+    createServiceStub = stubs.createService.stub(serviceStub);
   });
 
   afterEach(() => {
-    stubs.getServiceFromDataSource.restore();
+    stubs.createService.restore();
   });
 
   after(() => {
@@ -38,8 +45,8 @@ describe('DataBroker', () => {
     const data = { value: 2 };
 
     await new DataBroker().push(dataSourceSpec, data);
-    expect(getServiceFromDataSourceStub).to.have.been.calledOnceWithExactly(dataSource, modelsStub);
-    expect(serviceStub.push).to.have.been.calledOnceWithExactly(data);
+    assertCreateServiceWasInvokedCorrectly();
+    expect(serviceStub.push).to.have.been.calledOnceWithExactly(dataSource, data);
   });
 
   it('delete()', async () => {
@@ -47,15 +54,15 @@ describe('DataBroker', () => {
     const options = { ignoreErrors: true };
 
     await new DataBroker().delete(dataSourceSpec, data, options);
-    expect(getServiceFromDataSourceStub).to.have.been.calledOnceWithExactly(dataSource, modelsStub);
-    expect(serviceStub.delete).to.have.been.calledOnceWithExactly(data, options);
+    assertCreateServiceWasInvokedCorrectly();
+    expect(serviceStub.delete).to.have.been.calledOnceWithExactly(dataSource, data, options);
   });
 
   it('pull()', async () => {
     const metadata = { orgUnit: 'TO' };
 
     await new DataBroker().pull(dataSourceSpec, metadata);
-    expect(getServiceFromDataSourceStub).to.have.been.calledOnceWithExactly(dataSource, modelsStub);
-    expect(serviceStub.pull).to.have.been.calledOnceWithExactly(metadata);
+    assertCreateServiceWasInvokedCorrectly();
+    expect(serviceStub.pull).to.have.been.calledOnceWithExactly(dataSource, metadata);
   });
 });
