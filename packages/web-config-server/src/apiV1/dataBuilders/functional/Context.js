@@ -1,14 +1,17 @@
-export const functionalDataBuilder = async (
-  { dataBuilderConfig, query, organisationUnitInfo },
-  dhisApi,
-) => {
+const pipe = (...fns) => x => fns.reduce((y, f) => f(y), x);
+
+/**
+ * @param {[Function]} connections
+ */
+const buildPipeline = connections => pipe(...connections);
+
+export const buildContext = async ({ dataBuilderConfig, query, organisationUnitInfo }, dhisApi) => {
   const context = { dataBuilderConfig, query, dhisApi };
-  const pipe = (...fns) => x => fns.reduce((y, f) => f(y), x);
 
   // need to give each function this context
   const build = pipe(analyticsFetcher, perOrgFormatter, sumBuilder);
 
-  return builder.build();
+  return build();
 };
 
 function groupByKeyFormatter(r) {
