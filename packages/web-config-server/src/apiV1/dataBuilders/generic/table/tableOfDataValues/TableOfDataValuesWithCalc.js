@@ -3,7 +3,6 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import flatten from 'lodash.flatten';
 import moment from 'moment';
 
 import { TableOfDataValuesBuilder } from './tableOfDataValues';
@@ -14,6 +13,7 @@ class TableOfDataValuesWithCalcBuilder extends TableOfDataValuesBuilder {
   async build() {
     await this.buildBaseLineQuery();
     const baseLine = await this.fetchResultsHeader();
+    console.log(baseLine);
     const baseLineDate = moment(baseLine[0].period, 'YYYYMMDD');
     await this.transformConfig();
     this.tableConfig = new TableConfig(this.config, baseLine);
@@ -41,31 +41,36 @@ class TableOfDataValuesWithCalcBuilder extends TableOfDataValuesBuilder {
 
   async fetchResultsHeader() {
     const dataElementCodes = [];
-    const transformElementCodes = [];
+    let transformElementCodes = {};
 
     this.config.cells.forEach(arrayItem => {
       arrayItem.forEach(arrItem => {
-        if (arrItem.action) transformElementCodes.push(...new Set(flatten(arrItem.dataValues)));
+        if (arrItem.action) transformElementCodes = { ...transformElementCodes, arrItem };
         else dataElementCodes.push(arrItem.dataElement);
       });
     });
 
-    const transformResults = await this.fetchResults(transformElementCodes);
     const results = await this.fetchResults(dataElementCodes);
 
-    const sumResults = transformResults.reduce(
-      (accumulator, current) => {
-        return {
-          dataElement: current.dataElement,
-          organisationUnit: current.organisationUnit,
-          period: current.period,
-          value: accumulator.value + current.value,
-        };
-      },
-      { value: 0 },
-    );
+    const resultTasks = Object.values(transformElementCodes).map(async singleTransform => {
+      const transformResults = await this.fetchResults(singleTransform.dataValues);
 
-    return [sumResults, ...results];
+      return transformResults.reduce(
+        (accumulator, current) => {
+          return {
+            dataElement: current.dataElement,
+            organisationUnit: current.organisationUnit,
+            period: current.period,
+            value: accumulator.value + current.value,
+          };
+        },
+        { value: 0 },
+      );
+    });
+
+    const sumResults = await Promise.all(resultTasks);
+
+    return [...sumResults, ...results];
   }
 
   async fetchResults(dataElementCodes) {
