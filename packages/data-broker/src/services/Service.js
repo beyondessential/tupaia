@@ -7,8 +7,7 @@
  * @abstract
  */
 export class Service {
-  constructor(dataSource, models) {
-    this.dataSource = dataSource;
+  constructor(models) {
     this.models = models;
   }
 

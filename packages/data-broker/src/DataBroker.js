@@ -4,7 +4,7 @@
  */
 
 import { modelClasses } from '@tupaia/database';
-import { getServiceFromDataSource } from './services';
+import { createService } from './services';
 import { getModels } from './getModels';
 
 /**
@@ -24,23 +24,29 @@ export class DataBroker {
     return modelClasses.DataSource.types;
   }
 
-  async getService(dataSourceSpec) {
-    const dataSource = await this.models.dataSource.findOneOrDefault(dataSourceSpec);
-    return getServiceFromDataSource(dataSource, this.models);
+  fetchDataSource(spec) {
+    return this.models.dataSource.findOneOrDefault(spec);
+  }
+
+  createService(serviceType) {
+    return createService(this.models, serviceType);
   }
 
   async push(dataSourceSpec, data) {
-    const service = await this.getService(dataSourceSpec);
-    return service.push(data);
+    const dataSource = await this.fetchDataSource(dataSourceSpec);
+    const service = this.createService(dataSource.service_type);
+    return service.push(dataSource, data);
   }
 
   async delete(dataSourceSpec, data, options) {
-    const service = await this.getService(dataSourceSpec);
-    return service.delete(data, options);
+    const dataSource = await this.fetchDataSource(dataSourceSpec);
+    const service = this.createService(dataSource.service_type);
+    return service.delete(dataSource, data, options);
   }
 
   async pull(dataSourceSpec, metadata) {
-    const service = await this.getService(dataSourceSpec);
-    return service.pull(metadata);
+    const dataSource = await this.fetchDataSource(dataSourceSpec);
+    const service = this.createService(dataSource.service_type);
+    return service.pull(dataSource, metadata);
   }
 }

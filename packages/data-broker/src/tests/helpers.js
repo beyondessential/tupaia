@@ -6,7 +6,7 @@
 import sinon from 'sinon';
 
 import * as GetModels from '../getModels';
-import * as GetServiceFromDataSource from '../services/getServiceFromDataSource';
+import * as CreateService from '../services/createService';
 import { Service } from '../services/Service';
 
 const getModels = {
@@ -16,11 +16,10 @@ const getModels = {
   },
 };
 
-const getServiceFromDataSource = {
-  stub: service =>
-    sinon.stub(GetServiceFromDataSource, 'getServiceFromDataSource').returns(service),
+const createService = {
+  stub: service => sinon.stub(CreateService, 'createService').returns(service),
   restore: () => {
-    GetServiceFromDataSource.getServiceFromDataSource.restore();
+    CreateService.createService.restore();
   },
 };
 
@@ -45,7 +44,7 @@ export const service = {
 
 export const stubs = {
   getModels,
-  getServiceFromDataSource,
+  createService,
   models,
   service,
 };

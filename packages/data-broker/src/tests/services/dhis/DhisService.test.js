@@ -35,7 +35,7 @@ describe('DhisService', () => {
 
   describe('push()', () => {
     it('pushes a basic aggregate data element', async () => {
-      await new DhisService(DATA_SOURCES.POP01, modelsStub).push(DATA_VALUES.POP01);
+      await new DhisService(modelsStub).push(DATA_SOURCES.POP01, DATA_VALUES.POP01);
       expect(dhisApi.postDataValueSets).to.have.been.called.calledOnceWithExactly([
         { dataElement: 'POP01', value: 1 },
       ]);
@@ -47,7 +47,7 @@ describe('DhisService', () => {
         config: { dataElementCode: 'DIF01' },
       };
 
-      await new DhisService(customDataSource, modelsStub).push(DATA_VALUES.POP01);
+      await new DhisService(modelsStub).push(customDataSource, DATA_VALUES.POP01);
       expect(dhisApi.postDataValueSets).to.have.been.called.calledOnceWithExactly([
         { dataElement: 'DIF01', value: 1 },
       ]);
@@ -59,7 +59,7 @@ describe('DhisService', () => {
         dataValues: [DATA_VALUES.POP01, DATA_VALUES.POP02],
       };
 
-      await new DhisService(DATA_SOURCES.POP01_GROUP, modelsStub).push(event);
+      await new DhisService(modelsStub).push(DATA_SOURCES.POP01_GROUP, event);
       expect(dhisApi.postEvents).to.have.been.called.calledOnceWithExactly([
         {
           ...event,
@@ -86,7 +86,7 @@ describe('DhisService', () => {
           POP01: customDataSource,
         }),
       });
-      await new DhisService(DATA_SOURCES.POP01_GROUP, customModelsStub).push(event);
+      await new DhisService(customModelsStub).push(DATA_SOURCES.POP01_GROUP, event);
       expect(dhisApi.postEvents).to.have.been.called.calledOnceWithExactly([
         {
           ...event,
@@ -107,7 +107,7 @@ describe('DhisService', () => {
 
   describe('delete()', () => {
     it('deletes a basic aggregate data element', async () => {
-      await new DhisService(DATA_SOURCES.POP01, modelsStub).delete(DATA_VALUES.POP01, {
+      await new DhisService(modelsStub).delete(DATA_SOURCES.POP01, DATA_VALUES.POP01, {
         serverName: SERVER_NAME,
       });
       expect(dhisApi.deleteDataValue).to.have.been.called.calledOnceWithExactly({
@@ -122,7 +122,7 @@ describe('DhisService', () => {
         config: { dataElementCode: 'DIF01' },
       };
 
-      await new DhisService(customDataSource, modelsStub).delete(DATA_VALUES.POP01, {
+      await new DhisService(modelsStub).delete(customDataSource, DATA_VALUES.POP01, {
         serverName: SERVER_NAME,
       });
       expect(dhisApi.deleteDataValue).to.have.been.called.calledOnceWithExactly({
@@ -136,7 +136,7 @@ describe('DhisService', () => {
         dhisReference: DHIS_REFERENCE,
       };
 
-      await new DhisService(DATA_SOURCES.POP01_GROUP, modelsStub).delete(eventData, {
+      await new DhisService(modelsStub).delete(DATA_SOURCES.POP01_GROUP, eventData, {
         serverName: SERVER_NAME,
       });
       expect(dhisApi.deleteEvent).to.have.been.called.calledOnceWithExactly(DHIS_REFERENCE);

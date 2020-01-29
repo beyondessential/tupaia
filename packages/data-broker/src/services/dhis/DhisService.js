@@ -24,11 +24,6 @@ export class DhisService extends Service {
     return this.models.DataSource.types;
   }
 
-  getApiForEntity(entityCode) {
-    const { isDataRegional } = this.dataSource.config;
-    return getDhisApiInstance({ entityCode, isDataRegional });
-  }
-
   /**
    *
    * @param {Object}     dataValue    The untranslated data value
@@ -59,15 +54,16 @@ export class DhisService extends Service {
     return dataValuesWithIds;
   }
 
-  async push(data) {
-    const api = this.getApiForEntity(data.orgUnit);
-    const pushData = this.pushers[this.dataSource.type];
-    const diagnostics = await pushData(api, data);
+  async push(dataSource, data) {
+    const { isDataRegional } = dataSource;
+    const api = getDhisApiInstance({ entityCode: data.orgUnit, isDataRegional });
+    const pushData = this.pushers[dataSource.type];
+    const diagnostics = await pushData(api, data, dataSource);
     return { diagnostics, serverName: api.getServerName() };
   }
 
-  async pushAggregateData(api, dataValue) {
-    const translatedDataValue = await this.translateDataValueCode(dataValue, this.dataSource);
+  async pushAggregateData(api, dataValue, dataSource) {
+    const translatedDataValue = await this.translateDataValueCode(dataValue, dataSource);
     return api.postDataValueSets([translatedDataValue]);
   }
 
@@ -77,21 +73,20 @@ export class DhisService extends Service {
     return api.postEvents([event]);
   }
 
-  async delete(data, { serverName }) {
+  async delete(dataSource, data, { serverName }) {
     const api = getDhisApiInstance({ serverName });
-    const deleteData = this.deleters[this.dataSource.type];
-    return deleteData(api, data);
+    const deleteData = this.deleters[dataSource.type];
+    return deleteData(api, data, dataSource);
   }
 
-  async deleteAggregateData(api, dataValue) {
-    const translatedDataValue = this.translateDataValueCode(dataValue, this.dataSource);
+  async deleteAggregateData(api, dataValue, dataSource) {
+    const translatedDataValue = this.translateDataValueCode(dataValue, dataSource);
     return api.deleteDataValue(translatedDataValue);
   }
 
   deleteEvent = async (api, data) => api.deleteEvent(data.dhisReference);
 
-  async pull(metadata) {
-    const api = this.getApiForEntity(metadata.entityCode);
+  async pull(dataSource, metadata) {
     // TODO implement
   }
 }
