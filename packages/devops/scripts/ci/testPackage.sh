@@ -1,3 +1,2 @@
 #!/bin/bash
-cd ./packages/${CI_PACKAGE}
-yarn test
+yarn workspace @tupaia/${CI_PACKAGE} test

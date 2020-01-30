@@ -276,13 +276,14 @@ export class CartesianChart extends PureComponent {
 
   renderTooltip = () => {
     const { viewContent } = this.props;
-    const { chartConfig, valueType } = viewContent;
+    const { chartConfig, valueType, labelType } = viewContent;
 
     return (
       <Tooltip
         content={
           <CustomTooltip
             valueType={valueType}
+            labelType={labelType}
             periodGranularity={viewContent.periodGranularity}
             presentationOptions={chartConfig}
           />
@@ -459,7 +460,7 @@ export class CartesianChart extends PureComponent {
     const { chartType, data } = viewContent;
     const Chart = CHART_TYPE_TO_COMPONENT[chartType];
 
-    const responsiveStyle = !isEnlarged && !isMobile() && !isExporting ? '1.6' : undefined;
+    const responsiveStyle = !isEnlarged && !isMobile() && !isExporting ? 1.6 : undefined;
 
     return (
       <ResponsiveContainer width="100%" aspect={responsiveStyle}>

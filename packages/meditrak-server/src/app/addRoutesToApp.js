@@ -36,9 +36,11 @@ const {
   putRecord,
   getUserRewards,
   requestPasswordReset,
+  requestResendEmail,
   getCountryAccessList,
   surveyResponse,
   importDisaster,
+  verifyEmail,
 } = routes;
 
 const MINIMUM_API_VERSION = 2;
@@ -89,8 +91,10 @@ export function addRoutesToApp(app) {
    **/
   app.post('(/v[0-9]+)?/auth', authenticate);
   app.post('(/v[0-9]+)?/auth/resetPassword', requestPasswordReset);
+  app.post('(/v[0-9]+)?/auth/resendEmail', requestResendEmail);
   app.post('(/v[0-9]+)?/changes', postChanges);
   app.post('(/v[0-9]+)/import/entities', upload.single('entities'), importEntities);
+  app.post('(/v[0-9]+)/auth/verifyEmail', verifyEmail);
   app.post(
     '(/v[0-9]+)/import/striveLabResults',
     upload.single('striveLabResults'),
