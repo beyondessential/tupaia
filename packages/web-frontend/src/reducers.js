@@ -683,6 +683,7 @@ function chartExport(
         startDate: action.startDate,
         endDate: action.endDate,
         formats: action.formats,
+        isMatrix: action.isMatrix,
         selectedFormat: action.formats[0],
         chartType: action.chartType,
         extraConfig: action.extraConfig,

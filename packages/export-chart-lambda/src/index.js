@@ -156,7 +156,7 @@ exports.run = async (browser, config) => {
   await page.waitForSelector('#chart-body');
   await page.waitFor(5000);
 
-  if (chartType === 'matrix') {
+  if (config.isMatrix) {
     await exportMatrix(page, config);
   } else {
     await exportPage(page, config);

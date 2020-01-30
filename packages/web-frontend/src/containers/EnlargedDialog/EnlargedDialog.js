@@ -152,8 +152,8 @@ const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => ({
   onExport: extraConfig => {
     const { viewContent, organisationUnitName, startDate, endDate } = stateProps;
     const { viewId, organisationUnitCode, dashboardGroupId, chartType, exportConfig } = viewContent;
-
-    const formats = getIsMatrix(viewContent) ? ['pdf', 'xlsx'] : ['pdf', 'png'];
+    const isMatrix = getIsMatrix(viewContent);
+    const formats = isMatrix ? ['pdf', 'xlsx'] : ['pdf', 'png'];
 
     dispatch(
       openExportDialog({
@@ -162,6 +162,7 @@ const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => ({
         viewId,
         dashboardGroupId,
         formats,
+        isMatrix,
         startDate,
         endDate,
         chartType,
