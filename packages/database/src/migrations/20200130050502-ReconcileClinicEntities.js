@@ -1,8 +1,9 @@
 'use strict';
-import { DhisApi } from '../../../web-config-server/src/dhis/DhisApi';
+
 import { generateId } from '../utilities/generateId';
 import { newDistricts } from './20200130050502-ReconcileClinicEntities/districts';
 import { newCountries } from './20200130050502-ReconcileClinicEntities/countries';
+import districtGeography from './20200130050502-ReconcileClinicEntities/districtGeog.json';
 var dbm;
 var type;
 var seed;
@@ -17,8 +18,7 @@ exports.setup = function(options, seedLink) {
   seed = seedLink;
 };
 
-exports.up = async function(db) {
-  console.log('here');
+exports.up = async function up(db) {
   try {
     /*
     Remove the triggers so dhis_sync_queue don't get clogged
@@ -27,28 +27,10 @@ exports.up = async function(db) {
       DROP TRIGGER IF EXISTS dhis_sync_queue_trigger ON dhis_sync_queue;
       DROP TRIGGER IF EXISTS meditrak_sync_queue_trigger ON meditrak_sync_queue;
     `);
-    const getDHIS2Data = async code => {
-      const dhisApi = new DhisApi();
-      const {
-        organisationUnits: [organisationUnit],
-      } = await dhisApi.fetch('organisationUnits', {
-        fields: 'geometry,comment,description,id,code',
-        filter: `code:eq:${code}`,
-      });
-      if (!organisationUnit) return null;
-      const { description, geometry } = organisationUnit;
-      try {
-        const parsedDesc = JSON.parse(description);
-        if (parsedDesc && parsedDesc.photoUrl) {
-          organisationUnit.photoUrl = parsedDesc.photoUrl;
-        }
-        if (geometry && geometry.type === 'Polygon') {
-          geometry.type = 'MultiPolygon';
-          geometry.coordinates = [geometry.coordinates];
-        }
-      } catch (error) {}
-      console.log('here');
-      return organisationUnit;
+    const getDistrictGeo = async code => {
+      const district = districtGeography.find(x => x.code === code);
+      if (!district) return null;
+      return district.region;
     };
 
     /*
@@ -102,13 +84,12 @@ exports.up = async function(db) {
       );
       `;
     };
-    await Promise.all(
-      newCountries.map(async country => await db.runSql(await newCountryMap(country))),
-    );
+    await Promise.all(newCountries.map(async country => db.runSql(await newCountryMap(country))));
 
     const newDistrictMap = async district => {
       const { code } = district;
-      let parentCode, parentId;
+      let parentCode;
+      let parentId;
       const hierarchyBreadCrumbs = code.split('_');
       const getParentId = async (parentCode, newEntities) => {
         const parentEntity = newEntities.find(entity => entity.code === parentCode);
@@ -135,8 +116,7 @@ exports.up = async function(db) {
         parentCode = `${hierarchyBreadCrumbs[0]}_${hierarchyBreadCrumbs[1]}`;
         parentId = await getParentId(parentCode, newDistricts);
       }
-      const dhis2Data = await getDHIS2Data(district.code);
-      const { geometry } = dhis2Data || { photoUrl: null, geometry: null };
+      const region = getDistrictGeo(district.code);
       return `
       INSERT INTO "public"."entity"(
         "id",

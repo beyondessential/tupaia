@@ -1,4 +1,4 @@
-import { generateId } from '../../../../src/database/generateId';
+import { generateId } from '../../utilities/generateId';
 /*
     Now add the missing districts
   */

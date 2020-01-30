@@ -1,4 +1,4 @@
-import { generateId } from '../../../../src/database/generateId';
+import { generateId } from '../../utilities/generateId';
 export const newCountries = [
   {
     code: 'TL',
@@ -8,11 +8,6 @@ export const newCountries = [
   {
     code: 'KH',
     name: `Cambodia`,
-    id: generateId(),
-  },
-  {
-    code: 'WS',
-    name: `Samoa`,
     id: generateId(),
   },
 ];
