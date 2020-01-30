@@ -3,4 +3,5 @@ export { organisationUnitTable, organisationUnitTableMostRecent } from './organi
 export { singleColumnTable } from './singleColumnTable';
 export { tableFromDataElementGroups } from './tableFromDataElementGroups';
 export { tableOfDataValues } from './tableOfDataValues';
+export { matrixOfValuesForOrgUnits } from './matrixOfValuesForOrgUnits';
 export { tableOfEvents } from './tableOfEvents';
