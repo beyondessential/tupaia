@@ -9,28 +9,14 @@ import { TableOfDataValuesBuilder } from './tableOfDataValues';
 import { TableConfig } from './TableConfig';
 import { getValuesByCell } from './getValuesByCell';
 
-const add = async transformResults => {
+const add = transformResults => {
   return transformResults.reduce(
     (accumulator, current) => {
       return {
         dataElement: current.dataElement,
         organisationUnit: current.organisationUnit,
         period: current.period,
-        value: accumulator.value + current.value,
-      };
-    },
-    { value: 0 },
-  );
-};
-
-const naOnBlank = async transformElement => {
-  return transformElement.reduce(
-    (accumulator, current) => {
-      return {
-        dataElement: current.dataElement,
-        organisationUnit: current.organisationUnit,
-        period: current.period,
-        value: current.value ? current.value : 'N/A',
+        value: Number.parseInt(accumulator.value, 10) + Number.parseInt(current.value, 10),
       };
     },
     { value: 0 },
@@ -39,15 +25,13 @@ const naOnBlank = async transformElement => {
 
 const TRANSFORMATIONS = {
   SUM: add,
-  NA: naOnBlank,
 };
 
 class TableOfDataValuesWithCalcBuilder extends TableOfDataValuesBuilder {
   async build() {
     const baseLine = await this.fetchResults();
     const baseLineDate = moment(baseLine[0].period, 'YYYYMMDD');
-    await this.transformConfig(baseLine);
-    console.log(baseLine);
+    await this.transformConfig();
     this.tableConfig = new TableConfig(this.config, baseLine);
     this.tableConfig.columns[0] = `Base Line - ${baseLineDate.format('YYYY')}`;
     this.valuesByCell = getValuesByCell(this.tableConfig, baseLine);
@@ -63,7 +47,37 @@ class TableOfDataValuesWithCalcBuilder extends TableOfDataValuesBuilder {
     return data;
   }
 
-  async transformConfig(baseLine) {
+  transformResults(rawData) {
+    const dataElementCodes = [];
+
+    this.config.cells.forEach(arrayItem => {
+      arrayItem.forEach(arrItem => {
+        if (arrItem.action) {
+          const rawTransformData = rawData.filter(e => arrItem.dataValues.includes(e.dataElement));
+          if (rawTransformData.length > 0) {
+            const transformData = rawTransformData.map(x =>
+              this.formatSingleValue(rawData, x.dataElement),
+            );
+            dataElementCodes.push(TRANSFORMATIONS[arrItem.action](transformData));
+          }
+        } else if (rawData.some(e => e.dataElement === arrItem.dataElement)) {
+          dataElementCodes.push(this.formatSingleValue(rawData, arrItem.dataElement));
+        }
+      });
+    });
+    return dataElementCodes;
+  }
+
+  formatSingleValue(rawData, dataElementKey) {
+    return {
+      dataElement: dataElementKey,
+      organisationUnit: this.entity.code,
+      period: rawData.find(e => e.dataElement === dataElementKey).period,
+      value: rawData.find(e => e.dataElement === dataElementKey).value,
+    };
+  }
+
+  async transformConfig() {
     this.config.cells = this.config.cells.map(arrItem => {
       return arrItem.map(objItem => {
         return objItem.dataElement;
@@ -79,7 +93,8 @@ class TableOfDataValuesWithCalcBuilder extends TableOfDataValuesBuilder {
       organisationUnitCode: [this.entity.code],
     };
 
-    return this.dhisApi.getDataValuesInSets(dataElements);
+    const results = await this.dhisApi.getDataValuesInSets(dataElements);
+    return this.transformResults(results);
   }
 }
 

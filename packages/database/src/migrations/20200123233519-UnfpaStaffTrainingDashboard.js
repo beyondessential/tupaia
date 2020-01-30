@@ -20,29 +20,30 @@ exports.up = function(db) {
     'UNFPA_Staff_Trained_Matrix',
     'TableOfDataValuesWithCalc',
     '{
+		"dataElementGroupCode": "SRHStaffTraining",
 		"rows": [{
-			"rows": ["ANC (including part time staff)", "Staff trained in the provision of modern contraceptives",
-				"Staff trained in delivery services", "Service providers trained to detect, discuss, and refer clients to services that handle sexual and gender-based violence",
-				"Have any staff been trained to provide SRH services to adolescents and youth",
-				"Have any staff been trained to provide services to survivors of rape or other gender based violence?"
+			"rows": ["Staff trained in the provision of modern contraceptives", "ANC (including part time staff)",
+				 "Service providers trained to detect, discuss, and refer clients to services that handle sexual and gender-based violence", "Staff trained in delivery services",				
+				"Have any staff been trained to provide services to survivors of rape or other gender based violence?",
+				"Have any staff been trained to provide SRH services to adolescents and youth"
 			],
 			"category": "$orgUnit"
 		}],
 		"cells": [
+			[{"dataElement": "BAYUI37nJ27"}],
 			[{
-				"dataElement": "RHS1UNFPA61",
- 				"dataValues": ["RHS1UNFPA5601", "RHS1UNFPA57", "RHS1UNFPA5902", "RHS1UNFPA60", "RHS1UNFPA6001", "RHS1UNFPA61"],
+				"dataElement": "PVMX8m9KrgT",
+ 				"dataValues": ["xDT68q89i7J", "WGsYZDuaE2w", "QleUiYGlH2K", "GtrLIeauSmj", "PVMX8m9KrgT"],
 				"action":  "SUM"}
 			],
-			[{"dataElement": "RHS4UNFPA809"}],
-			[{"dataElement": "RHS3UNFPA5410"}],
-			[{"dataElement": "RHS2UNFPA292"}],
-			[{"dataElement": "RHS2UNFPA240"}],
-			[{"dataElement": "RHS2UNFPA291"}]
+			[{"dataElement": "YRdwZOXcj6s"}],
+			[{"dataElement": "pHp0X0JkZQH"}],
+			[{"dataElement": "JIvHqMTozrX"}],
+			[{"dataElement": "aoZkMRVLynz"}]
 		],
 		"columns": ["Base Line", "Q1", "Q2", "Q3", "Q4"],
-		"MaxBaseLine": "20200101",
-		"MinBaseLine": "20180101"
+		"MaxBaseLine": "2020-01-01",
+		"MinBaseLine": "2018-01-01"
 	}',
     '{"name": "SRH Staff Trained Matrix", "type": "matrix", "placeholder": "/static/media/PEHSMatrixPlaceholder.png", "periodGranularity": "one_year_at_a_time"}'
     );
