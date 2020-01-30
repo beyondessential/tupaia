@@ -98,7 +98,7 @@ export class RootScreen extends PureComponent {
 
     const Component = getIsMatrix(viewContent) ? MatrixWrapper : ChartWrapper;
     return (
-      <div style={styles.wrapper}>
+      <div id="chart-body" style={styles.wrapper}>
         <div style={styles.timestamp}>{`${getDateRangeString()}   ${getCurrentDateString()}`}</div>
         {this.renderTitle()}
         <div style={styles.chartWrapper}>
