@@ -102,7 +102,7 @@ const exportPage = async (page, { fileType, tmpFileName }) => {
 };
 
 const sendCompletionEmail = async ({
-  exportEmail,
+  email,
   emailSubject,
   emailMessage,
   exportFileName,
@@ -118,11 +118,11 @@ const sendCompletionEmail = async ({
     },
   });
 
-  console.log(`Emailing to ${exportEmail}`);
+  console.log(`Emailing to ${email}`);
 
   return transporter.sendMail({
     from: process.env.SITE_EMAIL_ADDRESS,
-    to: exportEmail,
+    to: email,
     subject: emailSubject,
     html: emailMessage,
     attachments: [
@@ -156,7 +156,7 @@ exports.run = async (browser, config) => {
   await page.waitForSelector('#chart-body');
   await page.waitFor(5000);
 
-  if (chartType === 'matrix') {
+  if (config.chartType === 'matrix') {
     await exportMatrix(page, config);
   } else {
     await exportPage(page, config);
