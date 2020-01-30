@@ -360,7 +360,6 @@ export class DhisApi {
     query.includeMetadataDetails = true;
 
     const response = await this.fetch('analytics/rawData.json', this.sanitizeAnalyticsQuery(query));
-
     const { results, metadata } = translateDataValueResponse(response);
     const aggregatedResults = aggregateResults(results, aggregationType, aggregationConfig);
 
