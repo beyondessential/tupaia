@@ -20,7 +20,12 @@ export class CountEventsPerOrgUnitBuilder extends DataPerOrgUnitBuilder {
   }
 }
 
-export const countEventsPerOrgUnit = async (dhisApi, query, measureBuilderConfig) => {
-  const builder = new CountEventsPerOrgUnitBuilder(dhisApi, measureBuilderConfig, query);
+export const countEventsPerOrgUnit = async (aggregator, dhisApi, query, measureBuilderConfig) => {
+  const builder = new CountEventsPerOrgUnitBuilder(
+    aggregator,
+    dhisApi,
+    measureBuilderConfig,
+    query,
+  );
   return builder.build();
 };

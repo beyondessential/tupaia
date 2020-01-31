@@ -1,3 +1,4 @@
+import { Aggregator } from '@tupaia/aggregator';
 import { CustomError } from '@tupaia/utils';
 import { getMeasureBuilder } from '/apiV1/measureBuilders/getMeasureBuilder';
 import { getDhisApiInstance } from '/dhis';
@@ -198,9 +199,11 @@ export default class extends DhisTranslationHandler {
     const organisationUnitGroupCode = shouldFetchSiblings
       ? await this.getCountryLevelOrgUnitCode()
       : this.entity.code;
+    const aggregator = new Aggregator();
     const dhisApi = getDhisApiInstance({ entityCode: this.entity.code, isDataRegional });
     const buildMeasure = getMeasureBuilder(measureBuilder);
     return buildMeasure(
+      aggregator,
       dhisApi,
       {
         ...query,

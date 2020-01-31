@@ -44,8 +44,13 @@ class ValueForOrgGroupMeasureBuilder extends DataBuilder {
   }
 }
 
-export const valueForOrgGroup = async (dhisApi, query, measureBuilderConfig = {}) => {
-  const builder = new ValueForOrgGroupMeasureBuilder(dhisApi, measureBuilderConfig, query);
+export const valueForOrgGroup = async (aggregator, dhisApi, query, measureBuilderConfig = {}) => {
+  const builder = new ValueForOrgGroupMeasureBuilder(
+    aggregator,
+    dhisApi,
+    measureBuilderConfig,
+    query,
+  );
   const responseObject = await builder.build();
 
   return responseObject;
