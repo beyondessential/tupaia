@@ -13,7 +13,7 @@
  */
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
-import MapControl from '../containers/MapControl';
+import { MapControl } from '../containers/MapControl';
 import MeasureLegend from '../containers/MeasureLegend';
 import MeasureBar from '../containers/MeasureBar';
 import { CONTROL_BAR_PADDING } from '../styles';

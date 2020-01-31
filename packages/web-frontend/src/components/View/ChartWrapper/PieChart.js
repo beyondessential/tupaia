@@ -173,7 +173,7 @@ export class PieChart extends PureComponent {
 
     const textAnchor = isLabelOnRight ? 'start' : 'end';
     const valueTypeForLabel = labelType || valueType;
-    const metadataForLabel = data.find(m => m.name === name).value_metadata;
+    const metadataForLabel = data.find(m => m.name === name)[`${name}_metadata`];
 
     return (
       <g>
@@ -226,7 +226,7 @@ export class PieChart extends PureComponent {
     const offsetStyle =
       isEnlarged && !isMobile() && !isExporting ? { position: 'relative', top: '-20px' } : null;
 
-    const responsiveStyle = !isEnlarged && !isMobile() && !isExporting ? '1.6' : undefined;
+    const responsiveStyle = !isEnlarged && !isMobile() && !isExporting ? 1.6 : undefined;
 
     return (
       <ResponsiveContainer width="100%" aspect={responsiveStyle}>

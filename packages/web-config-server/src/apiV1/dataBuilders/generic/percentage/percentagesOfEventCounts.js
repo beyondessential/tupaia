@@ -52,7 +52,7 @@ export class PercentagesOfEventCountsBuilder extends DataBuilder {
       return {
         name,
         value: divideValues(numerator, denominator),
-        value_metadata: {
+        [`${name}_metadata`]: {
           numerator,
           denominator,
         },
