@@ -625,7 +625,14 @@ const tableHPU_Validation_HP_08 = {
 
 //------------------------------------------------------------------------------
 
-const tHPU_Validation_HP_09AgeRows = ['10-19 years', '20-39 years', '40-59 years', '60 + years'];
+const tHPU_Validation_HP_09AgeRows = [
+  '10-19 years',
+  '20-29 years',
+  '30-39 years',
+  '40-49 years',
+  '50-59 years',
+  '60 + years',
+];
 
 const tHPU_Validation_HP_09Rows = [
   {
@@ -647,12 +654,21 @@ const tHPU_Validation_HP_09Cols = ['Male', 'Female'];
 const tableHPU_Validation_HP_09 = {
   rows: tHPU_Validation_HP_09Rows,
   columns: tHPU_Validation_HP_09Cols,
-  cells: build2DTableCells({
-    prefix: 'HP',
-    numRows: tHPU_Validation_HP_09Rows.reduce((total, row) => total + row.rows.length, 0),
-    numCols: tHPU_Validation_HP_09Cols.length,
-    startCell: 348,
-  }),
+  cells: [
+    ['HP348', 'HP349'],
+    ['HP350m', 'HP350f'],
+    ['HP351m', 'HP351f'],
+    ['HP352m', 'HP352f'],
+    ['HP353m', 'HP353f'],
+    ['HP354', 'HP355'],
+    ['HP356', 'HP357'],
+    ['HP358m', 'HP358f'],
+    ['HP359m', 'HP359f'],
+    ['HP360m', 'HP360f'],
+    ['HP361m', 'HP361f'],
+    ['HP362', 'HP363'],
+    ['HP364', 'HP365'],
+  ],
   id: 'TO_HPU_Validation_HP_09',
 };
 
