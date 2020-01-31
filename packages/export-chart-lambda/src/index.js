@@ -45,18 +45,11 @@ const exportMatrix = async (page, { fileType, extraConfig, tmpFileName }) => {
   // can be modified by the exporter.
   await page.evaluate(`window.tupaiaExportProps.initExporter(${JSON.stringify(extraConfig)})`);
 
-  const temporaryFilenamePrefix =
-    Math.random()
-      .toString(36)
-      .substring(2, 15) +
-    Math.random()
-      .toString(36)
-      .substring(2, 15);
   const files = [];
   let exportComplete = false;
   let pageCounter = 0;
   while (!exportComplete) {
-    const fileName = `/tmp/page${temporaryFilenamePrefix}${pageCounter}.pdf`;
+    const fileName = `/tmp/page-${pageCounter}.pdf`;
     files.push(fileName);
 
     await page.pdf({
