@@ -1,5 +1,3 @@
-'use strict';
-
 import { generateId } from '../utilities/generateId';
 import { newDistricts } from './20200130050502-ReconcileClinicEntities/districts';
 import { newCountries } from './20200130050502-ReconcileClinicEntities/countries';
@@ -166,96 +164,97 @@ exports.up = async function up(db) {
       await db.runSql(newDistrictText);
     }
 
-    //   /*
-    //     Now add the missing clinics
-    //   */
+    /*
+        Now add the missing clinics
+      */
 
-    //   const missingClinicsQuery = await db.runSql(`
-    //     SELECT ga.name AS parent_name, clinic.code AS code, clinic.name AS name
-    //       FROM clinic LEFT JOIN geographical_area AS ga ON clinic.geographical_area_id = ga.id
-    //       LEFT JOIN entity ON clinic.code = entity.code
-    //     WHERE entity.code IS NULL
-    //   `);
+    const missingClinicsQuery = await db.runSql(`
+        SELECT ga.name AS parent_name, clinic.code AS code, clinic.name AS name
+          FROM clinic LEFT JOIN geographical_area AS ga ON clinic.geographical_area_id = ga.id
+          LEFT JOIN entity ON clinic.code = entity.code
+        WHERE entity.code IS NULL
+      `);
 
-    //   const missingClinics = missingClinicsQuery.rows;
+    const missingClinics = missingClinicsQuery.rows;
 
-    //   const newClinic = async clinic => {
-    //     const { code, parent_name } = clinic;
-    //     const hierarchyBreadCrumbs = code.split('_');
-    //     const countryCode = hierarchyBreadCrumbs[0];
-    //     let parentId;
-    //     if (parent_name) {
-    //       parentId = (newDistricts.find(dist => dist.name === parent_name) || {}).id;
-    //     } else {
-    //       parentId = (
-    //         newCountries.find(({ code: newCountryCode }) => newCountryCode === countryCode) || {}
-    //       ).id;
-    //     }
-    //     if (!parentId) {
-    //       parentId = (
-    //         await db.runSql(`
-    //         SELECT id FROM entity WHERE code = '${countryCode}'`)
-    //       ).rows[0].id;
-    //     }
-    //     const dhis2Data = await getDHIS2Data(clinic.code);
-    //     const { photoUrl, geometry } = dhis2Data || { photoUrl: null, geometry: null };
-    //     const returnValue = `
-    //       INSERT INTO "public"."entity"(
-    //           "id",
-    //           "code",
-    //           "parent_id",
-    //           "name",
-    //           "type",
-    //           "point",
-    //           "region",
-    //           "image_url",
-    //           "country_code",
-    //           "bounds",
-    //           "metadata"
-    //         )
-    //           VALUES
-    //         (
-    //           E'${generateId()}',
-    //           E'${clinic.code}',
-    //           E'${parentId}',
-    //           E'${clinic.name.replace("'", "\\'")}',
-    //           E'facility',
-    //           ${geometry ? `ST_GeomFromGeoJSON('${JSON.stringify(geometry)}')` : 'NULL'},
-    //           NULL,
-    //           ${photoUrl ? `E'${photoUrl}'` : 'NULL'},
-    //           E'${countryCode}',
-    //           NULL,
-    //           NULL
-    //         );
-    //     `;
-    //     return returnValue;
-    //   };
-    //   for (let x = 0; x < missingClinics.length; x++) {
-    //     const clinic = missingClinics[x];
-    //     const newClinicText = await newClinic(clinic);
-    //     await db.runSql(newClinicText);
-    //   }
-    //   /*
-    //   Now update the survey responses missing entities
-    //   The join required for the update to view - just for reference is:
-    //   SELECT
-    //     CAST(data AS json) ->> 'orgUnit' AS organisation_unit_code,
-    //     sr.*,
-    //     e.id AS newEnityId
-    //     FROM dhis_sync_log AS dsl
-    //     INNER JOIN survey_response AS sr ON sr.id = dsl.record_id
-    //     INNER JOIN entity AS e ON e.code = CAST(data AS json) ->> 'orgUnit' AS organisation_unit_code
-    //       WHERE sr.entity_id IS NULL;
-    // */
-    //   await db.runSql(`
-    //     UPDATE survey_response AS sr
-    //   SET entity_id = e.id
-    //     FROM dhis_sync_log AS dsl,
-    //     entity AS e
-    //       WHERE sr.entity_id IS NULL AND
-    //     sr.id = dsl.record_id AND
-    //     e.code = CAST(data AS json) ->> 'orgUnit';
-    //   `);
+    const newClinic = async clinic => {
+      const { code, parent_name } = clinic;
+      const hierarchyBreadCrumbs = code.split('_');
+      const countryCode = hierarchyBreadCrumbs[0];
+      let parentId;
+      if (parent_name) {
+        parentId = (newDistricts.find(dist => dist.name === parent_name) || {}).id;
+      } else {
+        parentId = (
+          newCountries.find(({ code: newCountryCode }) => newCountryCode === countryCode) || {}
+        ).id;
+      }
+      if (!parentId) {
+        parentId = (
+          await db.runSql(`
+            SELECT id FROM entity WHERE code = '${countryCode}'`)
+        ).rows[0].id;
+      }
+      const dhis2Data = await getClinicsDHISData(clinic.code);
+      const { photoUrl = null, geometry = null } = dhis2Data || { photoUrl: null, geometry: null };
+      const returnValue = `
+          INSERT INTO "public"."entity"(
+              "id",
+              "code",
+              "parent_id",
+              "name",
+              "type",
+              "point",
+              "region",
+              "image_url",
+              "country_code",
+              "bounds",
+              "metadata"
+            )
+              VALUES
+            (
+              E'${generateId()}',
+              E'${clinic.code}',
+              E'${parentId}',
+              E'${clinic.name.replace("'", "\\'")}',
+              E'facility',
+              ${geometry ? `ST_GeomFromGeoJSON('${JSON.stringify(geometry)}')` : 'NULL'},
+              NULL,
+              ${photoUrl ? `E'${photoUrl}'` : 'NULL'},
+              E'${countryCode}',
+              NULL,
+              NULL
+            );
+        `;
+      return returnValue;
+    };
+    for (let x = 0; x < missingClinics.length; x++) {
+      const clinic = missingClinics[x];
+      const newClinicText = await newClinic(clinic);
+      console.log(newClinicText);
+      await db.runSql(newClinicText);
+    }
+    /*
+      Now update the survey responses missing entities
+      The join required for the update to view - just for reference is:
+      SELECT
+        CAST(data AS json) ->> 'orgUnit' AS organisation_unit_code,
+        sr.*,
+        e.id AS newEnityId
+        FROM dhis_sync_log AS dsl
+        INNER JOIN survey_response AS sr ON sr.id = dsl.record_id
+        INNER JOIN entity AS e ON e.code = CAST(data AS json) ->> 'orgUnit' AS organisation_unit_code
+          WHERE sr.entity_id IS NULL;
+    */
+    await db.runSql(`
+        UPDATE survey_response AS sr
+      SET entity_id = e.id
+        FROM dhis_sync_log AS dsl,
+        entity AS e
+          WHERE sr.entity_id IS NULL AND
+        sr.id = dsl.record_id AND
+        e.code = CAST(data AS json) ->> 'orgUnit';
+      `);
     /*
     And finally add non null constraint to
     entity_id on survey_response and read triggers
