@@ -5,6 +5,7 @@
 
 import moment from 'moment';
 
+import { CustomError } from '/errors';
 import { TableOfDataValuesBuilder } from './tableOfDataValues';
 import { TableConfig } from './TableConfig';
 import { getValuesByCell } from './getValuesByCell';
@@ -31,9 +32,8 @@ class TableOfDataValuesWithCalcBuilder extends TableOfDataValuesBuilder {
   async build() {
     const baseLine = await this.fetchResults();
     const baseLineDate = moment(baseLine[0].period, 'YYYYMMDD');
-    await this.transformConfig();
+    this.transformConfig(baseLineDate);
     this.tableConfig = new TableConfig(this.config, baseLine);
-    this.tableConfig.columns[0] = `Base Line - ${baseLineDate.format('YYYY')}`;
     this.valuesByCell = getValuesByCell(this.tableConfig, baseLine);
 
     const data = {
@@ -50,18 +50,25 @@ class TableOfDataValuesWithCalcBuilder extends TableOfDataValuesBuilder {
   transformResults(rawData) {
     const dataElementCodes = [];
 
-    this.config.cells.forEach(arrayItem => {
-      arrayItem.forEach(arrItem => {
-        if (arrItem.action) {
-          const rawTransformData = rawData.filter(e => arrItem.dataValues.includes(e.dataElement));
+    this.config.cells.forEach(row => {
+      row.forEach(cell => {
+        if (cell.action) {
+          const rawTransformData = rawData.filter(e => cell.dataValues.includes(e.dataElement));
           if (rawTransformData.length > 0) {
             const transformData = rawTransformData.map(x =>
               this.formatSingleValue(rawData, x.dataElement),
             );
-            dataElementCodes.push(TRANSFORMATIONS[arrItem.action](transformData));
+            try {
+              dataElementCodes.push(TRANSFORMATIONS[cell.action](transformData));
+            } catch (error) {
+              throw new CustomError({
+                type: 'DHIS Communication error',
+                description: `Transformation not found ${cell.action} not found`,
+              });
+            }
           }
-        } else if (rawData.some(e => e.dataElement === arrItem.dataElement)) {
-          dataElementCodes.push(this.formatSingleValue(rawData, arrItem.dataElement));
+        } else if (rawData.some(e => e.dataElement === cell)) {
+          dataElementCodes.push(this.formatSingleValue(rawData, cell));
         }
       });
     });
@@ -77,11 +84,17 @@ class TableOfDataValuesWithCalcBuilder extends TableOfDataValuesBuilder {
     };
   }
 
-  async transformConfig() {
-    this.config.cells = this.config.cells.map(arrItem => {
-      return arrItem.map(objItem => {
-        return objItem.dataElement;
+  transformConfig(baseLineDate) {
+    this.config.cells = this.config.cells.map(row => {
+      return row.map(cell => {
+        return cell.dataElement ? cell.dataElement : cell;
       });
+    });
+
+    this.config.columns = this.config.columns.map(header => {
+      return header.name && header.showYear
+        ? `${header.name} - ${baseLineDate.format('YYYY')}`
+        : header;
     });
   }
 
@@ -98,7 +111,7 @@ class TableOfDataValuesWithCalcBuilder extends TableOfDataValuesBuilder {
   }
 }
 
-export const TableOfDataValuesWithCalc = async ({ dataBuilderConfig, query, entity }, dhisApi) => {
+export const tableOfDataValuesWithCalc = async ({ dataBuilderConfig, query, entity }, dhisApi) => {
   const builder = new TableOfDataValuesWithCalcBuilder(dhisApi, dataBuilderConfig, query, entity);
   return builder.build();
 };

@@ -4,4 +4,4 @@
  */
 
 export { tableOfDataValues, TableOfDataValuesBuilder } from './tableOfDataValues';
-export { TableOfDataValuesWithCalc } from './TableOfDataValuesWithCalc';
+export { tableOfDataValuesWithCalc } from './TableOfDataValuesWithCalc';
