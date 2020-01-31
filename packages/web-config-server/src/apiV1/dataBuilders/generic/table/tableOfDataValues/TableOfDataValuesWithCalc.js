@@ -62,7 +62,7 @@ class TableOfDataValuesWithCalcBuilder extends TableOfDataValuesBuilder {
               dataElementCodes.push(TRANSFORMATIONS[cell.action](transformData));
             } catch (error) {
               throw new CustomError({
-                type: 'DHIS Communication error',
+                type: 'Transformation not found',
                 description: `Transformation not found ${cell.action} not found`,
               });
             }
