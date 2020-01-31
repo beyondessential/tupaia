@@ -26,19 +26,21 @@ const createDhisApiStub = dataValues => {
 };
 
 export const createAssertTableResults = availableDataValues => {
+  const aggregatorStub = {};
   const dhisApiStub = createDhisApiStub(availableDataValues);
 
   return async (dataBuilderConfig, expectedResults) =>
-    expect(tableOfDataValues({ dataBuilderConfig, query }, dhisApiStub)).to.eventually.deep.equal(
-      expectedResults,
-    );
+    expect(
+      tableOfDataValues({ dataBuilderConfig, query }, aggregatorStub, dhisApiStub),
+    ).to.eventually.deep.equal(expectedResults);
 };
 
 export const createAssertErrorIsThrown = availableDataValues => {
+  const aggregatorStub = {};
   const dhisApiStub = createDhisApiStub(availableDataValues);
 
   return async (dataBuilderConfig, expectedError) =>
     expect(
-      tableOfDataValues({ dataBuilderConfig, query }, dhisApiStub),
+      tableOfDataValues({ dataBuilderConfig, query }, aggregatorStub, dhisApiStub),
     ).to.eventually.be.rejectedWith(expectedError);
 };

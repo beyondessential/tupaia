@@ -2,7 +2,11 @@ import { aggregateOperationalFacilityValues, getFacilityStatuses } from '/apiV1/
 
 // Average Availability of Medicines across All Facilities
 // Current Stock on Hand across All Facilities
-export const percentInGroupByDataElement = async ({ dataBuilderConfig, query }, dhisApi) => {
+export const percentInGroupByDataElement = async (
+  { dataBuilderConfig, query },
+  aggregator,
+  dhisApi,
+) => {
   const { labels = {}, ...restOfDataBuilderConfig } = dataBuilderConfig;
   const { results, metadata } = await dhisApi.getAnalytics(restOfDataBuilderConfig, query);
 

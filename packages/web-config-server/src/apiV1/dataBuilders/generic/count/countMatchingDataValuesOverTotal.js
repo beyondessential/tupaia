@@ -6,7 +6,11 @@
 import { asynchronouslyFetchValuesForObject } from '@tupaia/utils';
 import { getOptionSetOptions } from '/apiV1/utils';
 
-export const countMatchingDataValuesOverTotal = async ({ dataBuilderConfig, query }, dhisApi) => {
+export const countMatchingDataValuesOverTotal = async (
+  { dataBuilderConfig, query },
+  aggregator,
+  dhisApi,
+) => {
   const { dataElementCodes, matchCriteria } = dataBuilderConfig;
   const { results, metadata } = await dhisApi.getAnalytics({ dataElementCodes }, query);
 

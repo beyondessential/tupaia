@@ -84,8 +84,13 @@ class SumPerSeriesDataBuilder extends DataBuilder {
   }
 }
 
-export const sumLatestPerSeries = async ({ dataBuilderConfig, query, entity }, dhisApi) => {
+export const sumLatestPerSeries = async (
+  { dataBuilderConfig, query, entity },
+  aggregator,
+  dhisApi,
+) => {
   const builder = new SumPerSeriesDataBuilder(
+    aggregator,
     dhisApi,
     dataBuilderConfig,
     query,

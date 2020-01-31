@@ -11,6 +11,7 @@ const periodToMonthTimestamp = period =>
 
 export const averageMonthlyValuesOverCount = async (
   { dataBuilderConfig, query, entity },
+  aggregator,
   dhisApi,
 ) => {
   const { results, period } = await dhisApi.getAnalytics(

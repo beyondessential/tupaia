@@ -6,7 +6,11 @@ import { regexLabel } from '/apiV1/utils';
 /* historical data within a matrix format compared to an 'Ideal' Value */
 const { FINAL_EACH_MONTH, MOST_RECENT } = AGGREGATION_TYPES;
 
-export const actualMonthlyValuesVsIdeal = async ({ dataBuilderConfig, query }, dhisApi) => {
+export const actualMonthlyValuesVsIdeal = async (
+  { dataBuilderConfig, query },
+  aggregator,
+  dhisApi,
+) => {
   const { pairs, labelRegex } = dataBuilderConfig;
 
   // Function to fetch analytics for a metric

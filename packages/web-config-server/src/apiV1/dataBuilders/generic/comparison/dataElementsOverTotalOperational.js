@@ -4,7 +4,11 @@ import {
   getFacilityStatusCounts,
 } from '/apiV1/utils';
 
-export const dataElementsOverTotalOperational = async ({ dataBuilderConfig, query }, dhisApi) => {
+export const dataElementsOverTotalOperational = async (
+  { dataBuilderConfig, query },
+  aggregator,
+  dhisApi,
+) => {
   const { labels = {}, ...restOfDataBuilderConfig } = dataBuilderConfig;
   const { results, metadata, period } = await dhisApi.getAnalytics(restOfDataBuilderConfig, query);
 

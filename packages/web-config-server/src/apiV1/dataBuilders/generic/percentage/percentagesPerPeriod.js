@@ -59,7 +59,12 @@ const getAggregationTypes = (periodType, fillEmptyDenominatorValues = false) => 
   }
 };
 
-const percentagesPerPeriod = async ({ dataBuilderConfig, query, entity }, dhisApi, periodType) => {
+const percentagesPerPeriod = async (
+  { dataBuilderConfig, query, entity },
+  aggregator,
+  dhisApi,
+  periodType,
+) => {
   // Function to fetch analytics for a metric
   const { fillEmptyDenominatorValues } = dataBuilderConfig;
   const aggregationTypes = getAggregationTypes(periodType, fillEmptyDenominatorValues);
@@ -172,8 +177,8 @@ const percentagesPerPeriod = async ({ dataBuilderConfig, query, entity }, dhisAp
   };
 };
 
-export const monthlyPercentages = async (queryConfig, dhisApi) =>
-  percentagesPerPeriod(queryConfig, dhisApi, MONTH);
+export const monthlyPercentages = async (queryConfig, aggregator, dhisApi) =>
+  percentagesPerPeriod(queryConfig, aggregator, dhisApi, MONTH);
 
-export const annualPercentages = async (queryConfig, dhisApi) =>
-  percentagesPerPeriod(queryConfig, dhisApi, YEAR);
+export const annualPercentages = async (queryConfig, aggregator, dhisApi) =>
+  percentagesPerPeriod(queryConfig, aggregator, dhisApi, YEAR);

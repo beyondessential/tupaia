@@ -189,6 +189,7 @@ const query = {
   period: null,
 };
 
+const aggregatorMockup = {};
 const dhisApiMockup = {
   getAnalytics: ({ dataElementCodes }) => {
     if (dataElementCodes.indexOf('FIJIINV011') !== -1) {
@@ -212,6 +213,7 @@ describe('actualMonthlyValuesVsIdeal', () => {
           dataBuilderConfig,
           query,
         },
+        aggregatorMockup,
         dhisApiMockup,
       );
       expect(result.columns[0].key).to.equal('ideal');
@@ -231,6 +233,7 @@ describe('actualMonthlyValuesVsIdeal', () => {
           dataBuilderConfig,
           query,
         },
+        aggregatorMockup,
         dhisApiMockup,
       );
       expect(result.rows[0]['20131113']).to.equal(80);
@@ -247,6 +250,7 @@ describe('actualMonthlyValuesVsIdeal', () => {
           dataBuilderConfig,
           query,
         },
+        aggregatorMockup,
         dhisApiMockup,
       );
       expect(result.rows.find(row => row.dataElement === 'Balloon dilators')['20131113']).to.equal(

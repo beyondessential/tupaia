@@ -2,7 +2,11 @@ import { aggregateOperationalFacilityValues, getFacilityStatuses, limitRange } f
 
 // % of clinics that have these items
 // % based on facilities surveys
-export const percentChildrenDataElement = async ({ dataBuilderConfig, query }, dhisApi) => {
+export const percentChildrenDataElement = async (
+  { dataBuilderConfig, query },
+  aggregator,
+  dhisApi,
+) => {
   const { labels = {}, range, ...restOfDataBuilderConfig } = dataBuilderConfig;
   const { results, metadata, period } = await dhisApi.getAnalytics(restOfDataBuilderConfig, query);
 

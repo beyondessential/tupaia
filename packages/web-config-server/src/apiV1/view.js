@@ -1,3 +1,4 @@
+import { Aggregator } from '@tupaia/aggregator';
 import { convertDateRangeToPeriods } from '@tupaia/dhis-api';
 import { DashboardReport } from '/models';
 import { getDhisApiInstance } from '/dhis';
@@ -55,7 +56,6 @@ export default class extends DhisTranslationHandler {
     if (!dashboardReport) {
       throw new CustomError(viewFail, noViewWithId, { viewId });
     }
-    const { viewJson, dataBuilderConfig, dataServices } = dashboardReport;
 
     this.query = {
       ...restOfQuery,
@@ -64,29 +64,40 @@ export default class extends DhisTranslationHandler {
       endDate: this.endDate,
     };
 
-    // process db response for row, create matching data builder and build the data
-    let { dataBuilder } = dashboardReport;
+    const { viewJson, dataBuilderConfig, dataBuilder, dataServices } = dashboardReport;
     this.viewJson = viewJson;
     this.dataBuilderConfig = dataBuilderConfig;
-    // if viewJson containes placeholder it can only be viewed in expanded view
+    this.dataServices = dataServices;
+
+    const dataBuilderData = await this.buildDataBuilderData(dataBuilder, req);
+    return this.addViewMetaData(dataBuilderData);
+  };
+
+  async buildDataBuilderData(dataBuilderName, req) {
+    const dataBuilder = this.getDataBuilder(dataBuilderName);
+    if (!dataBuilder) {
+      throw new CustomError(viewFail, noDataBuilder, { dataBuilder });
+    }
+
+    const dhisApiInstances = this.dataServices.map(({ isDataRegional }) =>
+      getDhisApiInstance(this.entity.code, isDataRegional),
+    );
+    const aggregator = new Aggregator();
+
+    return dataBuilder({ ...this, req }, aggregator, ...dhisApiInstances);
+  }
+
+  getDataBuilder(dataBuilderName) {
+    // if viewJson contains placeholder it can only be viewed in expanded view
     if (this.viewJson.placeholder && this.query.isExpanded !== 'true') {
-      dataBuilder = 'blankDataBuilder';
+      dataBuilderName = 'blankDataBuilder';
     } else {
       // remove placeholder, prevent front end from rendering it
       this.viewJson.placeholder = undefined;
     }
-    // Try to find matched data builder
-    const dataBuilderForView = getDataBuilder(dataBuilder);
-    if (!dataBuilderForView) {
-      throw new CustomError(viewFail, noDataBuilder, { dataBuilder });
-    }
-    // Build the data and return it
-    const dhisApiInstances = dataServices.map(({ isDataRegional }) =>
-      getDhisApiInstance({ entityCode: this.entity.code, isDataRegional }),
-    );
-    const builtData = await dataBuilderForView({ ...this, req }, ...dhisApiInstances);
-    return this.addViewMetaData(builtData);
-  };
+
+    return getDataBuilder(dataBuilderName);
+  }
 
   // common view translation (for all possible views)
   addViewMetaData = inJson => {

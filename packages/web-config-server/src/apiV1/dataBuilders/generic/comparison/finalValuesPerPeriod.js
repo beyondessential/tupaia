@@ -30,9 +30,10 @@ class FinalValuesPerPeriodBuilder extends DataBuilder {
   }
 }
 
-function finalValuesPerPeriod(queryConfig, dhisApi, aggregationType) {
+function finalValuesPerPeriod(queryConfig, aggregator, dhisApi, aggregationType) {
   const { dataBuilderConfig, query, entity } = queryConfig;
   const builder = new FinalValuesPerPeriodBuilder(
+    aggregator,
     dhisApi,
     dataBuilderConfig,
     query,
@@ -42,11 +43,11 @@ function finalValuesPerPeriod(queryConfig, dhisApi, aggregationType) {
   return builder.build();
 }
 
-export const finalValuesPerDay = async (queryConfig, dhisApi) =>
-  finalValuesPerPeriod(queryConfig, dhisApi, FINAL_EACH_DAY);
+export const finalValuesPerDay = async (queryConfig, aggregator, dhisApi) =>
+  finalValuesPerPeriod(queryConfig, aggregator, dhisApi, FINAL_EACH_DAY);
 
-export const finalValuesPerMonth = async (queryConfig, dhisApi) =>
-  finalValuesPerPeriod(queryConfig, dhisApi, FINAL_EACH_MONTH);
+export const finalValuesPerMonth = async (queryConfig, aggregator, dhisApi) =>
+  finalValuesPerPeriod(queryConfig, aggregator, dhisApi, FINAL_EACH_MONTH);
 
-export const finalValuesPerYear = async (queryConfig, dhisApi) =>
-  finalValuesPerPeriod(queryConfig, dhisApi, FINAL_EACH_YEAR);
+export const finalValuesPerYear = async (queryConfig, aggregator, dhisApi) =>
+  finalValuesPerPeriod(queryConfig, aggregator, dhisApi, FINAL_EACH_YEAR);

@@ -10,7 +10,11 @@
 import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
 import { getDataElementsInGroup } from '/apiV1/utils';
 
-export const latestDataValuesInGroup = async ({ dataBuilderConfig, query }, dhisApi) => {
+export const latestDataValuesInGroup = async (
+  { dataBuilderConfig, query },
+  aggregator,
+  dhisApi,
+) => {
   const { MOST_RECENT } = AGGREGATION_TYPES;
   const { dataElementGroupCode, dataElementCodes = [] } = dataBuilderConfig;
   const dataElementsById = await getDataElementsInGroup(dhisApi, dataElementGroupCode);

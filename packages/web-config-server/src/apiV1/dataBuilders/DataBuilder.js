@@ -19,13 +19,15 @@ const ANY_VALUE_CONDITION = '*';
 
 export class DataBuilder {
   /**
+   * @param {Aggregator} aggregator
    * @param {DhisApi} dhisApi
    * @param {?Object} config
    * @param {Object} query
    * @param {Entity} [entity]
    * @param {string} [aggregationType]
    */
-  constructor(dhisApi, config, query, entity, aggregationType) {
+  constructor(aggregator, dhisApi, config, query, entity, aggregationType) {
+    this.aggregator = aggregator;
     this.dhisApi = dhisApi;
     this.config = config || {};
     this.query = query;

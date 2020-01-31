@@ -163,8 +163,18 @@ class OrganisationUnitTableDataBuilder extends DataBuilder {
   }
 }
 
-export const organisationUnitTable = async ({ dataBuilderConfig, query, entity }, dhisApi) => {
-  const builder = new OrganisationUnitTableDataBuilder(dhisApi, dataBuilderConfig, query, entity);
+export const organisationUnitTable = async (
+  { dataBuilderConfig, query, entity },
+  aggregator,
+  dhisApi,
+) => {
+  const builder = new OrganisationUnitTableDataBuilder(
+    aggregator,
+    dhisApi,
+    dataBuilderConfig,
+    query,
+    entity,
+  );
 
   return builder.build();
 };

@@ -4,6 +4,7 @@ import { aggregateOperationalFacilityValues, getFacilityStatuses } from '/apiV1/
 // Example use: % clinics surveyed in last 6 months
 export const percentOperationalFacilitiesWithData = async (
   { dataBuilderConfig, query },
+  aggregator,
   ...dhisApiInstances
 ) => {
   const { dataElementGroupCode, monthsOfData } = dataBuilderConfig;

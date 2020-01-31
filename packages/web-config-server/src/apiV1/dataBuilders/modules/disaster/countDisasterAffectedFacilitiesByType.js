@@ -17,6 +17,7 @@ const FACILITY_STATUS_UNKNOWN = 'Unknown';
 // Number of Operational Facilities by Facility Type
 export const countDisasterAffectedFacilitiesByType = async (
   { dataBuilderConfig, query },
+  aggregator,
   dhisApi,
 ) => {
   const { organisationUnitCode, disasterStartDate, disasterEndDate } = query;

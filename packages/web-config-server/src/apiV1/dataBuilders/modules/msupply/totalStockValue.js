@@ -6,7 +6,7 @@ const countriesCentralStores = {
 };
 
 // Total stock value in central store
-export const totalStockValue = async ({ dataBuilderConfig, query }, dhisApi) => {
+export const totalStockValue = async ({ dataBuilderConfig, query }, aggregator, dhisApi) => {
   const { organisationUnitCode, ...restOfQuery } = query;
   const { results } = await dhisApi.getAnalytics(dataBuilderConfig, {
     ...restOfQuery,
