@@ -102,7 +102,7 @@ const exportPage = async (page, { fileType, tmpFileName }) => {
 };
 
 const sendCompletionEmail = async ({
-  exportEmail,
+  email,
   emailSubject,
   emailMessage,
   exportFileName,
@@ -118,11 +118,11 @@ const sendCompletionEmail = async ({
     },
   });
 
-  console.log(`Emailing to ${exportEmail}`);
+  console.log(`Emailing to ${email}`);
 
   return transporter.sendMail({
     from: process.env.SITE_EMAIL_ADDRESS,
-    to: exportEmail,
+    to: email,
     subject: emailSubject,
     html: emailMessage,
     attachments: [
