@@ -1,6 +1,6 @@
 {
   "name": "@tupaia/export-chart-lambda",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Lambda Function for Tupaia Chart Export",
   "main": "index.js",
   "scripts": {
