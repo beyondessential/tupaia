@@ -196,7 +196,6 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         dashboardGroupId,
         startDate,
         endDate,
-        isMatrix,
         chartType,
         extraConfig,
         selectedFormat,
@@ -211,7 +210,6 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
           dashboardGroupId,
           startDate,
           endDate,
-          isMatrix,
           chartType,
           extraConfig,
           exportFileName: chartType

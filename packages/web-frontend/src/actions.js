@@ -1016,7 +1016,6 @@ export function openExportDialog({
   startDate,
   endDate,
   formats = ['pdf', 'png'],
-  isMatrix = false,
   chartType,
   extraConfig = {},
 }) {
@@ -1029,7 +1028,6 @@ export function openExportDialog({
     startDate,
     endDate,
     formats,
-    isMatrix,
     chartType,
     extraConfig,
   };
@@ -1052,7 +1050,6 @@ export function attemptChartExport({
   organisationUnitName,
   dashboardGroupId,
   chartType,
-  isMatrix,
   startDate,
   endDate,
   selectedDisaster,
@@ -1066,7 +1063,6 @@ export function attemptChartExport({
     organisationUnitCode,
     organisationUnitName,
     dashboardGroupId,
-    isMatrix,
     chartType,
     startDate,
     endDate,
