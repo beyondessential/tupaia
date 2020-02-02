@@ -25,7 +25,7 @@ exports.up = function(db) {
 
     DELETE
     FROM dhis_sync_log
-    WHERE record_id_id IN (
+    WHERE record_id IN (
       SELECT id
       FROM survey_response
       WHERE survey_id = '5d12f4e0f013d62f09114d5a'
@@ -39,7 +39,7 @@ exports.up = function(db) {
 
     DELETE
     FROM dhis_sync_queue
-    WHERE record_id_id IN (
+    WHERE record_id IN (
       SELECT id
       FROM survey_response
       WHERE survey_id = '5d12f4e0f013d62f09114d5a'
