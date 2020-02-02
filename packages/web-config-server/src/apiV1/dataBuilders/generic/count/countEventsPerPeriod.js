@@ -40,7 +40,7 @@ export const countEventsPerPeriod = async (
   dhisApi,
 ) => {
   const builder = new CountEventsPerPeriodBuilder(
-    aggregatort,
+    aggregator,
     dhisApi,
     dataBuilderConfig,
     query,
