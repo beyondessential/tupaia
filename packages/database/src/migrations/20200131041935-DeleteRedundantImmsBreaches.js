@@ -15,7 +15,7 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = function(db) {
-  // Note that the relevant records on DHIS2 must be deleted first, see Edwin for
+  // Note that the relevant records on DHIS2 must be deleted first, see Edwin for the deletion sql
   return db.runSql(`
     -- Drop triggers so that all the deletes don't flood the sync queue - have taken care of them manually on dhis2
     DROP TRIGGER IF EXISTS survey_response_trigger
