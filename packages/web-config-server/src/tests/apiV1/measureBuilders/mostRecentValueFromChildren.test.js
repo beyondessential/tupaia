@@ -56,6 +56,7 @@ const analyticsData = [
   },
 ];
 
+const aggregatorMockup = {};
 const dhisApiMockup = {
   getOrganisationUnits: () => organisationUnitsResults,
   getAnalytics: () => ({
@@ -83,6 +84,7 @@ describe('mostRecentValueFromChildren', () => {
 
   it('should get the most recent period ', async () => {
     const result = await mostRecentValueFromChildren(
+      aggregatorMockup,
       dhisApiMockup,
       { dataElementCode, organisationUnitGroupCode },
       dataBuilderConfig,
@@ -97,6 +99,7 @@ describe('mostRecentValueFromChildren', () => {
 
   it('should handle a district with no facilities ', async () => {
     const result = await mostRecentValueFromChildren(
+      aggregatorMockup,
       dhisApiMockup,
       { dataElementCode, organisationUnitGroupCode },
       dataBuilderConfig,
@@ -113,6 +116,7 @@ describe('mostRecentValueFromChildren', () => {
 
   it('should handle a facilities with no data points ', async () => {
     const result = await mostRecentValueFromChildren(
+      aggregatorMockup,
       dhisApiMockup,
       { dataElementCode, organisationUnitGroupCode },
       dataBuilderConfig,
