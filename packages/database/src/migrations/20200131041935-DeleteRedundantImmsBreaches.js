@@ -37,19 +37,23 @@ exports.up = function(db) {
 
     DELETE
     FROM dhis_sync_log
-    WHERE record_id IN (SELECT id FROM duplicate_survey_response);
+    USING duplicate_survey_response
+    WHERE dhis_sync_log.record_id = duplicate_survey_response.id;
 
     DELETE
     FROM dhis_sync_queue
-    WHERE record_id IN (SELECT id FROM duplicate_survey_response);
+    USING duplicate_survey_response
+    WHERE dhis_sync_queue.record_id = duplicate_survey_response.id;
 
     DELETE
     FROM answer
-    WHERE survey_response_id IN (SELECT id FROM duplicate_survey_response);
+    USING duplicate_survey_response
+    WHERE answer.survey_response_id = duplicate_survey_response.id;
 
     DELETE
     FROM survey_response
-    WHERE id IN (SELECT id FROM duplicate_survey_response);
+    USING duplicate_survey_response
+    WHERE survey_response.id = duplicate_survey_response.id;
 
     -- Recreate triggers
     CREATE TRIGGER survey_response_trigger
