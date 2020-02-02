@@ -65,7 +65,7 @@ export default class extends DhisTranslationHandler {
     };
 
     const { viewJson, dataBuilderConfig, dataBuilder, dataServices } = dashboardReport;
-    this.viewJson = viewJson;
+    this.viewJson = this.translateViewJson(viewJson);
     this.dataBuilderConfig = dataBuilderConfig;
     this.dataServices = dataServices;
 
@@ -87,16 +87,14 @@ export default class extends DhisTranslationHandler {
     return dataBuilder({ ...this, req }, aggregator, ...dhisApiInstances);
   }
 
-  getDataBuilder(dataBuilderName) {
-    // if viewJson contains placeholder it can only be viewed in expanded view
-    if (this.viewJson.placeholder && this.query.isExpanded !== 'true') {
-      dataBuilderName = 'blankDataBuilder';
-    } else {
-      // remove placeholder, prevent front end from rendering it
-      this.viewJson.placeholder = undefined;
-    }
+  translateViewJson(viewJson) {
+    // if a dashboard is expanded, we remove any placeholder it may normally display
+    return this.query.isExpanded === 'true' ? { ...viewJson, placeholder: undefined } : viewJson;
+  }
 
-    return getDataBuilder(dataBuilderName);
+  getDataBuilder(dataBuilderName) {
+    // if there is a placeholder to display, don't build any data
+    return getDataBuilder(this.viewJson.placeholder ? 'blankDataBuilder' : dataBuilderName);
   }
 
   // common view translation (for all possible views)
