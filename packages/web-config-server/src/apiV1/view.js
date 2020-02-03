@@ -81,7 +81,7 @@ export default class extends DhisTranslationHandler {
 
     const aggregator = new Aggregator();
     const dhisApiInstances = this.dataServices.map(({ isDataRegional }) =>
-      getDhisApiInstance(this.entity.code, isDataRegional),
+      getDhisApiInstance({ entityCode: this.entity.code, isDataRegional }),
     );
 
     return dataBuilder({ ...this, req }, aggregator, ...dhisApiInstances);
