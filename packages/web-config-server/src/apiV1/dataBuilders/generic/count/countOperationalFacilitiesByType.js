@@ -8,7 +8,7 @@ import {
 } from '/apiV1/utils';
 
 // Number of Operational Facilities by Facility Type
-export const countOperationalFacilitiesByType = async ({ query }, dhisApi) => {
+export const countOperationalFacilitiesByType = async ({ query }, aggregator, dhisApi) => {
   // Retrieve organisation units and the groups they are in
   const organisationUnits = await dhisApi.getOrganisationUnits(
     {

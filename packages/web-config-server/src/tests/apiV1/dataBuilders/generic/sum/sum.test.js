@@ -25,6 +25,8 @@ const createDhisApiStub = ({ aggregateAnalytics = {}, eventAnalytics = {} }) =>
     getEventAnalytics: createGetAnalyticsStub(eventAnalytics),
   });
 
+const aggregatorStub = {};
+
 describe('SumBuilder', () => {
   const aggregationType = 'FINAL_EACH_MONTH';
   const entity = {};
@@ -32,7 +34,14 @@ describe('SumBuilder', () => {
   const codes = ['POP01', 'POP02'];
 
   const assertBuilderResponseIsCorrect = async (dhisApiStub, config, expectedResponse) => {
-    const builder = new SumBuilder(dhisApiStub, config, query, entity, aggregationType);
+    const builder = new SumBuilder(
+      aggregatorStub,
+      dhisApiStub,
+      config,
+      query,
+      entity,
+      aggregationType,
+    );
 
     return expect(builder.build()).to.eventually.deep.equal(expectedResponse);
   };
@@ -42,8 +51,8 @@ describe('SumBuilder', () => {
     const assertCorrectErrorIsThrown = async builder =>
       expect(builder.build()).to.eventually.be.rejectedWith('data source must');
 
-    await assertCorrectErrorIsThrown(new SumBuilder(dhisApiStub));
-    return assertCorrectErrorIsThrown(new SumBuilder(dhisApiStub, {}));
+    await assertCorrectErrorIsThrown(new SumBuilder(aggregatorStub, dhisApiStub));
+    return assertCorrectErrorIsThrown(new SumBuilder(aggregatorStub, dhisApiStub, {}));
   });
 
   it('should throw an error if a non supported data source type is provided', async () => {
@@ -51,9 +60,11 @@ describe('SumBuilder', () => {
     const assertCorrectErrorIsThrown = async builder =>
       expect(builder.build()).to.eventually.be.rejectedWith('source type');
 
-    await assertCorrectErrorIsThrown(new SumBuilder(dhisApiStub, { dataSource: { codes } }));
+    await assertCorrectErrorIsThrown(
+      new SumBuilder(aggregatorStub, dhisApiStub, { dataSource: { codes } }),
+    );
     return assertCorrectErrorIsThrown(
-      new SumBuilder(dhisApiStub, { dataSource: { codes, type: 'groupSet' } }),
+      new SumBuilder(aggregatorStub, dhisApiStub, { dataSource: { codes, type: 'groupSet' } }),
     );
   });
 

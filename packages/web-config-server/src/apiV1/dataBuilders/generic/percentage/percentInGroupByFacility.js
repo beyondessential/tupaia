@@ -10,7 +10,11 @@ import { ENTITY_TYPES } from '/models/Entity';
 
 // Medicines available by Clinic
 // Medicines available by Country
-export const percentInGroupByFacility = async ({ dataBuilderConfig, query, entity }, dhisApi) => {
+export const percentInGroupByFacility = async (
+  { dataBuilderConfig, query, entity },
+  aggregator,
+  dhisApi,
+) => {
   const { countries, range, ...restOfConfig } = dataBuilderConfig;
   const { results, period } = await dhisApi.getAnalytics(
     { outputIdScheme: countries ? 'uid' : 'code', ...restOfConfig },

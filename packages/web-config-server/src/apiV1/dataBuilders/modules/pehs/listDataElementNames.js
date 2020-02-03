@@ -22,7 +22,7 @@ const getNameOrValue = (useValueIfNameMatches, name, value) => {
   return name;
 };
 
-export const listDataElementNames = async ({ dataBuilderConfig, query }, dhisApi) => {
+export const listDataElementNames = async ({ dataBuilderConfig, query }, aggregator, dhisApi) => {
   const { useValueIfNameMatches } = dataBuilderConfig;
   const { results, metadata } = await dhisApi.getAnalytics(
     {

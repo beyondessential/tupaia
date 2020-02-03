@@ -80,8 +80,13 @@ class SingleColumnTableDataBuilder extends DataBuilder {
   }
 }
 
-export const singleColumnTable = async ({ dataBuilderConfig, query, entity }, dhisApi) => {
+export const singleColumnTable = async (
+  { dataBuilderConfig, query, entity },
+  aggregator,
+  dhisApi,
+) => {
   const builder = new SingleColumnTableDataBuilder(
+    aggregator,
     dhisApi,
     dataBuilderConfig,
     query,

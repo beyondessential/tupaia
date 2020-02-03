@@ -33,8 +33,14 @@ class SumPerPeriodBuilder extends DataBuilder {
   }
 }
 
-const sumPerPeriod = async ({ dataBuilderConfig, query, entity }, dhisApi, aggregationType) => {
+const sumPerPeriod = async (
+  { dataBuilderConfig, query, entity },
+  aggregator,
+  dhisApi,
+  aggregationType,
+) => {
   const builder = new SumPerPeriodBuilder(
+    aggregator,
     dhisApi,
     dataBuilderConfig,
     query,
@@ -44,8 +50,8 @@ const sumPerPeriod = async ({ dataBuilderConfig, query, entity }, dhisApi, aggre
   return builder.build();
 };
 
-export const sumPerWeek = (config, dhisApi) =>
-  sumPerPeriod(config, dhisApi, AGGREGATION_TYPES.FINAL_EACH_WEEK);
+export const sumPerWeek = (config, aggregator, dhisApi) =>
+  sumPerPeriod(config, aggregator, dhisApi, AGGREGATION_TYPES.FINAL_EACH_WEEK);
 
-export const sumPerMonth = (config, dhisApi) =>
-  sumPerPeriod(config, dhisApi, AGGREGATION_TYPES.FINAL_EACH_MONTH);
+export const sumPerMonth = (config, aggregator, dhisApi) =>
+  sumPerPeriod(config, aggregator, dhisApi, AGGREGATION_TYPES.FINAL_EACH_MONTH);

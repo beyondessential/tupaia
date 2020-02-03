@@ -187,8 +187,13 @@ class TableFromDataElementGroupsDataBuilder extends DataBuilder {
   }
 }
 
-export const tableFromDataElementGroups = async ({ dataBuilderConfig, query, entity }, dhisApi) => {
+export const tableFromDataElementGroups = async (
+  { dataBuilderConfig, query, entity },
+  aggregator,
+  dhisApi,
+) => {
   const builder = new TableFromDataElementGroupsDataBuilder(
+    aggregator,
     dhisApi,
     dataBuilderConfig,
     query,

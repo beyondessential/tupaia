@@ -5,7 +5,11 @@
 import { getDataSourceEntityType } from 'apiV1/dataBuilders/helpers';
 import { countByOrganisationUnitByValue, calculatePercentagesWithinRange } from '/apiV1/utils';
 
-export const percentPerValuePerOrgUnit = async ({ dataBuilderConfig, query, entity }, dhisApi) => {
+export const percentPerValuePerOrgUnit = async (
+  { dataBuilderConfig, query, entity },
+  aggregator,
+  dhisApi,
+) => {
   const { range, valuesOfInterest } = dataBuilderConfig;
   const { results } = await dhisApi.getAnalytics(
     { ...dataBuilderConfig, outputIdScheme: 'code' },

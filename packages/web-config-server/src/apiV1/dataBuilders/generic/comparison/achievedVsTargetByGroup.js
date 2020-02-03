@@ -1,7 +1,11 @@
 import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
 import { aggregateOperationalFacilityValues, getFacilityStatuses } from '/apiV1/utils';
 
-export const achievedVsTargetByGroup = async ({ dataBuilderConfig, query, entity }, dhisApi) => {
+export const achievedVsTargetByGroup = async (
+  { dataBuilderConfig, query, entity },
+  aggregator,
+  dhisApi,
+) => {
   const { groups } = dataBuilderConfig;
   const dataElementCodes = [];
   groups.forEach(({ achievedDataElementCode, targetDataElementCode }) =>

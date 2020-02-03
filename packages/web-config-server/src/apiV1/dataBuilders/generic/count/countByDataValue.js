@@ -24,8 +24,14 @@ class CountByDataValueBuilder extends DataBuilder {
   }
 }
 
-function countByDataValue({ dataBuilderConfig, query, entity }, dhisApi, aggregationType) {
+function countByDataValue(
+  { dataBuilderConfig, query, entity },
+  aggregator,
+  dhisApi,
+  aggregationType,
+) {
   const builder = new CountByDataValueBuilder(
+    aggregator,
     dhisApi,
     dataBuilderConfig,
     query,
@@ -35,8 +41,8 @@ function countByDataValue({ dataBuilderConfig, query, entity }, dhisApi, aggrega
   return builder.build();
 }
 
-export const countByLatestDataValues = async (queryConfig, dhisApi) =>
-  countByDataValue(queryConfig, dhisApi);
+export const countByLatestDataValues = async (queryConfig, aggregator, dhisApi) =>
+  countByDataValue(queryConfig, aggregator, dhisApi);
 
-export const countByAllDataValues = async (queryConfig, dhisApi) =>
-  countByDataValue(queryConfig, dhisApi, AGGREGATION_TYPES.RAW);
+export const countByAllDataValues = async (queryConfig, aggregator, dhisApi) =>
+  countByDataValue(queryConfig, aggregator, dhisApi, AGGREGATION_TYPES.RAW);

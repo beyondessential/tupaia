@@ -1,7 +1,7 @@
 import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
 import { sumResults } from '/apiV1/utils';
 
-const sumPerMetric = async ({ dataBuilderConfig, query }, dhisApi, AGGREGATION_TYPE) => {
+const sumPerMetric = async ({ dataBuilderConfig, query }, aggregator, dhisApi, aggregationType) => {
   const {
     labels = {},
     specialCases = {},
@@ -11,7 +11,7 @@ const sumPerMetric = async ({ dataBuilderConfig, query }, dhisApi, AGGREGATION_T
   const { results, metadata } = await dhisApi.getAnalytics(
     restOfDataBuilderConfig,
     query,
-    AGGREGATION_TYPE,
+    aggregationType,
   );
 
   // Don't process results into valid data for front-end if there are none.
@@ -84,8 +84,8 @@ const sumPerMetric = async ({ dataBuilderConfig, query }, dhisApi, AGGREGATION_T
   return { data };
 };
 
-export const sumLatestPerMetric = async (queryConfig, dhisApi) =>
-  sumPerMetric(queryConfig, dhisApi, AGGREGATION_TYPES.SUM_MOST_RECENT_PER_FACILITY);
+export const sumLatestPerMetric = async (queryConfig, aggregator, dhisApi) =>
+  sumPerMetric(queryConfig, aggregator, dhisApi, AGGREGATION_TYPES.SUM_MOST_RECENT_PER_FACILITY);
 
-export const sumAllPerMetric = async (queryConfig, dhisApi) =>
-  sumPerMetric(queryConfig, dhisApi, AGGREGATION_TYPES.SUM);
+export const sumAllPerMetric = async (queryConfig, aggregator, dhisApi) =>
+  sumPerMetric(queryConfig, aggregator, dhisApi, AGGREGATION_TYPES.SUM);

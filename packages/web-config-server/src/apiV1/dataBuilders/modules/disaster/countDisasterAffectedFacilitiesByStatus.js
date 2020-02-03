@@ -11,6 +11,7 @@ const TO_BE_COMPLETED = 'To be completed';
 
 export const countDisasterAffectedFacilitiesByStatus = async (
   { dataBuilderConfig, query },
+  aggregator,
   dhisApi,
 ) => {
   const { organisationUnitCode, disasterStartDate, disasterEndDate } = query;

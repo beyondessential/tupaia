@@ -158,6 +158,7 @@ const query = {
   period: null,
 };
 
+const aggregatorMockup = {};
 const dhisApiMockup = {
   getAnalytics: ({ dataElementCodes }) => {
     if (dataElementCodes.indexOf('FIJIINV011') !== -1) {
@@ -183,6 +184,7 @@ describe('percentagesByNominatedPairs', async () => {
         dataBuilderConfig,
         query,
       },
+      aggregatorMockup,
       dhisApiMockup,
     );
     data = response.data;

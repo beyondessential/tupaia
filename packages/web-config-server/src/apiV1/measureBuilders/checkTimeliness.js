@@ -53,8 +53,13 @@ class CheckTimelinessMeasureBuilder extends DataBuilder {
  * @param {Object} [measureBuilderConfig={}]
  * @returns {Promise<Object>}
  */
-export const checkTimeliness = async (dhisApi, query, measureBuilderConfig = {}) => {
-  const builder = new CheckTimelinessMeasureBuilder(dhisApi, measureBuilderConfig, query);
+export const checkTimeliness = async (aggregator, dhisApi, query, measureBuilderConfig = {}) => {
+  const builder = new CheckTimelinessMeasureBuilder(
+    aggregator,
+    dhisApi,
+    measureBuilderConfig,
+    query,
+  );
   const responseObject = await builder.build();
 
   return responseObject;

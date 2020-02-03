@@ -5,7 +5,11 @@
 
 import { getDataElementsInGroupSet } from '/apiV1/utils';
 
-export const countValuesByDataElementGroup = async ({ dataBuilderConfig, query }, dhisApi) => {
+export const countValuesByDataElementGroup = async (
+  { dataBuilderConfig, query },
+  aggregator,
+  dhisApi,
+) => {
   const { dataElementGroupSet } = dataBuilderConfig;
   const { dataElementGroups, dataElementToGroupMapping } = await getDataElementsInGroupSet(
     dhisApi,

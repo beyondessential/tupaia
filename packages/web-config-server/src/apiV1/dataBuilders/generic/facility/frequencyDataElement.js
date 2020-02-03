@@ -8,7 +8,7 @@ const FREQUENCY_VALUES = {
 };
 
 // Routine vaccination at facility
-export const frequencyDataElement = async ({ dataBuilderConfig, query }, dhisApi) => {
+export const frequencyDataElement = async ({ dataBuilderConfig, query }, aggregator, dhisApi) => {
   const { labels, ...restOfDataBuilderConfig } = dataBuilderConfig;
   const { results, metadata } = await dhisApi.getAnalytics(restOfDataBuilderConfig, query);
 

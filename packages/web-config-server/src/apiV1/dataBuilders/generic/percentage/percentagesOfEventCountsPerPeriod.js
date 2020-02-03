@@ -45,9 +45,11 @@ class PercentagesOfEventCountsPerPeriodBuilder extends DataPerPeriodBuilder {
 
 export const percentagesOfEventCountsPerPeriod = async (
   { dataBuilderConfig, query, entity },
+  aggregator,
   dhisApi,
 ) => {
   const builder = new PercentagesOfEventCountsPerPeriodBuilder(
+    aggregator,
     dhisApi,
     dataBuilderConfig,
     query,

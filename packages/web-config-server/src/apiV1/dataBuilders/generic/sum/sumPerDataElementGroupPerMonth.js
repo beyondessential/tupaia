@@ -9,7 +9,11 @@ import {
   PERIOD_TYPES,
 } from '@tupaia/dhis-api';
 
-export const sumPerDataElementGroupPerMonth = async ({ dataBuilderConfig, query }, dhisApi) => {
+export const sumPerDataElementGroupPerMonth = async (
+  { dataBuilderConfig, query },
+  aggregator,
+  dhisApi,
+) => {
   const monthlySums = {};
   await Promise.all(
     dataBuilderConfig.dataElementGroups.map(async dataElementGroupCode => {

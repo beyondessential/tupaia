@@ -1,6 +1,6 @@
 import { getDataBuilder } from '/apiV1/dataBuilders/getDataBuilder';
 
-export const fetchComposedData = async (config, dhisApi) => {
+export const fetchComposedData = async (config, aggregator, dhisApi) => {
   const { dataBuilderConfig, ...otherConfig } = config;
   const { dataBuilders } = dataBuilderConfig || {};
   if (!dataBuilders) {
@@ -13,6 +13,7 @@ export const fetchComposedData = async (config, dhisApi) => {
     const buildData = getDataBuilder(builderName);
     responses[builderKey] = await buildData(
       { ...otherConfig, dataBuilderConfig: builderConfig },
+      aggregator,
       dhisApi,
     );
   };
