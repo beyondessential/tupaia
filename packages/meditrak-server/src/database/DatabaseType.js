@@ -136,7 +136,7 @@ export class DatabaseType {
     if (this.id) {
       await this.model.updateById(this.id, data);
     } else {
-      const records = await this.model.create(data);
+      const records = await this.model.create(data); // TODO does this work? It looks like model.create returns a single record, not multiple
       this.id = records[0].id;
     }
   }

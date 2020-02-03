@@ -203,8 +203,7 @@ export class TupaiaDatabase {
     return parseInt(result[0].count, 10);
   }
 
-  async create(recordType, record, ...additionalRecords) {
-    // TODO could be more efficient to put all extra objects into one query
+  async create(recordType, record) {
     if (!record.id) {
       record.id = generateId();
     }
@@ -214,13 +213,15 @@ export class TupaiaDatabase {
       queryMethodParameter: record,
     });
 
-    if (additionalRecords.length === 0) {
-      return record;
-    }
+    return record;
+  }
 
-    const recordsCreated = [record];
-    for (const additionalRecord of additionalRecords) {
-      const recordCreated = await this.create(recordType, additionalRecord);
+  async createMany(recordType, records) {
+    // TODO could be more efficient to create all records in one query
+    const recordsCreated = [];
+    for (let i = 0; i < records.length; i++) {
+      const record = records[i];
+      const recordCreated = await this.create(recordType, record);
       recordsCreated.push(recordCreated);
     }
     return recordsCreated;

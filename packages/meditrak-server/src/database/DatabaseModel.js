@@ -169,7 +169,7 @@ export class DatabaseModel {
     const data = await Promise.all(recordsToCreate.map(this.getDatabaseSafeData));
     const instances = await Promise.all(data.map(this.generateInstance));
     await Promise.all(instances.map(i => i.assertValid()));
-    const records = await this.database.create(this.databaseType, ...data);
+    const records = await this.database.createMany(this.databaseType, data);
     return Promise.all(records.map(this.generateInstance));
   }
 
