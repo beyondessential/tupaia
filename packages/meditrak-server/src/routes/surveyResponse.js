@@ -68,51 +68,6 @@ async function validateResponse(models, userId, body) {
   await Promise.all(answerValidations);
 }
 
-async function submitResponse(models, userId, body) {
-  // assumes validateResponse has succeeded
-
-  const { entity_id, entity_code, timestamp, survey_id, answers } = body;
-
-  const entityId = entity_id || (await models.entity.findOne({ code: entity_code })).id;
-
-  const timezoneName = getTimezoneNameFromTimestamp(timestamp);
-  const time = new Date(timestamp).toISOString();
-
-  const user = await models.user.findOne({ id: userId });
-
-  // create new survey response
-  const surveyResponseModel = await models.surveyResponse.create({
-    survey_id,
-    user_id: userId,
-    entity_id: entityId,
-    submission_time: time,
-    start_time: time,
-    end_time: time,
-    timezone: timezoneName,
-    assessor_name: user.fullName,
-  });
-
-  const answerTasks = Object.entries(answers).map(async ([questionCode, value]) => {
-    const question = await models.question.findOne({ code: questionCode });
-
-    const answer = {
-      type: question.type,
-      survey_response_id: surveyResponseModel.id,
-      question_id: question.id,
-      text: value,
-    };
-    return models.answer.create(answer);
-  });
-
-  const answerResults = await Promise.all(answerTasks);
-  const answerIds = answerResults.map(a => a.id);
-
-  return {
-    surveyResponseId: surveyResponseModel.id,
-    answerIds,
-  };
-}
-
 export async function surveyResponse(req, res) {
   const { userId, body, models } = req;
 
@@ -122,6 +77,98 @@ export async function surveyResponse(req, res) {
     results = await submitResponses(transactingModels, userId, responses);
   });
   res.send({ count: responses.length, results });
+}
+
+function buildResponseRecord(user, entitiesByCode, body) {
+  // assumes validateResponse has succeeded
+  const { entity_id: entityId, entity_code: entityCode, timestamp, survey_id: surveyId } = body;
+
+  const timezoneName = getTimezoneNameFromTimestamp(timestamp);
+  const time = new Date(timestamp).toISOString();
+
+  return {
+    survey_id: surveyId,
+    user_id: user.id,
+    entity_id: entityId || entitiesByCode[entityCode].id,
+    submission_time: time,
+    start_time: time,
+    end_time: time,
+    timezone: timezoneName,
+    assessor_name: user.fullName,
+  };
+}
+
+async function getRecordsByCode(model, codes) {
+  const recordsByCode = {};
+  await Promise.all(
+    Array.from(codes).map(async code => {
+      const record = await model.findOne({ code });
+      if (!record) throw new ValidationError(`No record matching ${code}`);
+      recordsByCode[code] = record;
+    }),
+  );
+  return recordsByCode;
+}
+
+function buildAnswerRecords(responses, surveyResponses, questionsByCode) {
+  const answerRecords = [];
+  responses.forEach((r, i) =>
+    Object.entries(r.answers).forEach(([code, value]) => {
+      const question = questionsByCode[code];
+      answerRecords.push({
+        type: question.type,
+        survey_response_id: surveyResponses[i].id,
+        question_id: question.id,
+        text: value,
+      });
+    }),
+  );
+  return answerRecords;
+}
+
+async function getQuestionsByCode(models, responses) {
+  const questionCodes = new Set();
+  responses.forEach(r => Object.keys(r.answers).forEach(code => questionCodes.add(code)));
+  return getRecordsByCode(models.question, questionCodes);
+}
+
+async function getEntitiesByCode(models, responses) {
+  const entityCodes = new Set();
+  responses.forEach(({ entity_code: entityCode }) => entityCode && entityCodes.add(entityCode));
+  return getRecordsByCode(models.entity, entityCodes);
+}
+
+async function saveResponsesToDatabase(models, userId, responses) {
+  // pre-fetch some data that will be used by multiple responses/answers
+  const questionsByCode = await getQuestionsByCode(models, responses);
+  const entitiesByCode = await getEntitiesByCode(models, responses);
+  const user = await models.user.findById(userId);
+
+  // build the response records then persist them to the database
+  const responseRecords = responses.map(r => buildResponseRecord(user, entitiesByCode, r));
+  const surveyResponses = await models.surveyResponse.createMany(responseRecords);
+
+  // build the answer records then persist them to the database
+  const answerRecords = buildAnswerRecords(responses, surveyResponses, questionsByCode);
+  const answers = await models.answer.createMany(answerRecords);
+
+  // generate the data to return to the client, extracting the ids of the survey responses and
+  // answers created, preserving the order that they were provided in the POST body
+  const idsCreated = [];
+  let answerIndex = 0;
+  responses.forEach((r, i) => {
+    const numberOfAnswers = Object.keys(r.answers).length;
+    const answerIds = new Array(numberOfAnswers).fill(0).map(_ => {
+      const answerId = answers[answerIndex].id;
+      answerIndex++;
+      return answerId;
+    });
+    idsCreated.push({
+      surveyResponseId: surveyResponses[i].id,
+      answerIds,
+    });
+  });
+  return idsCreated;
 }
 
 export const submitResponses = async (models, userId, responses) => {
@@ -145,5 +192,5 @@ export const submitResponses = async (models, userId, responses) => {
     );
   }
 
-  return Promise.all(responses.map(r => submitResponse(models, userId, r)));
+  return saveResponsesToDatabase(models, userId, responses);
 };
