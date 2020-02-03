@@ -17,6 +17,10 @@ var _slicedToArray2 = require('babel-runtime/helpers/slicedToArray');
 
 var _slicedToArray3 = _interopRequireDefault(_slicedToArray2);
 
+var _getIterator2 = require('babel-runtime/core-js/get-iterator');
+
+var _getIterator3 = _interopRequireDefault(_getIterator2);
+
 var _keys = require('babel-runtime/core-js/object/keys');
 
 var _keys2 = _interopRequireDefault(_keys);
@@ -24,10 +28,6 @@ var _keys2 = _interopRequireDefault(_keys);
 var _stringify = require('babel-runtime/core-js/json/stringify');
 
 var _stringify2 = _interopRequireDefault(_stringify);
-
-var _getIterator2 = require('babel-runtime/core-js/get-iterator');
-
-var _getIterator3 = _interopRequireDefault(_getIterator2);
 
 var _extends2 = require('babel-runtime/helpers/extends');
 
@@ -574,17 +574,10 @@ var TupaiaDatabase = exports.TupaiaDatabase = function () {
     key: 'create',
     value: function () {
       var _ref13 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee12(recordType, record) {
-        for (var _len3 = arguments.length, additionalRecords = Array(_len3 > 2 ? _len3 - 2 : 0), _key3 = 2; _key3 < _len3; _key3++) {
-          additionalRecords[_key3 - 2] = arguments[_key3];
-        }
-
-        var recordsCreated, _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, additionalRecord, recordCreated;
-
         return _regenerator2.default.wrap(function _callee12$(_context12) {
           while (1) {
             switch (_context12.prev = _context12.next) {
               case 0:
-                // TODO could be more efficient to put all extra objects into one query
                 if (!record.id) {
                   record.id = (0, _generateId.generateId)();
                 }
@@ -596,84 +589,14 @@ var TupaiaDatabase = exports.TupaiaDatabase = function () {
                 });
 
               case 3:
-                if (!(additionalRecords.length === 0)) {
-                  _context12.next = 5;
-                  break;
-                }
-
                 return _context12.abrupt('return', record);
 
-              case 5:
-                recordsCreated = [record];
-                _iteratorNormalCompletion = true;
-                _didIteratorError = false;
-                _iteratorError = undefined;
-                _context12.prev = 9;
-                _iterator = (0, _getIterator3.default)(additionalRecords);
-
-              case 11:
-                if (_iteratorNormalCompletion = (_step = _iterator.next()).done) {
-                  _context12.next = 20;
-                  break;
-                }
-
-                additionalRecord = _step.value;
-                _context12.next = 15;
-                return this.create(recordType, additionalRecord);
-
-              case 15:
-                recordCreated = _context12.sent;
-
-                recordsCreated.push(recordCreated);
-
-              case 17:
-                _iteratorNormalCompletion = true;
-                _context12.next = 11;
-                break;
-
-              case 20:
-                _context12.next = 26;
-                break;
-
-              case 22:
-                _context12.prev = 22;
-                _context12.t0 = _context12['catch'](9);
-                _didIteratorError = true;
-                _iteratorError = _context12.t0;
-
-              case 26:
-                _context12.prev = 26;
-                _context12.prev = 27;
-
-                if (!_iteratorNormalCompletion && _iterator.return) {
-                  _iterator.return();
-                }
-
-              case 29:
-                _context12.prev = 29;
-
-                if (!_didIteratorError) {
-                  _context12.next = 32;
-                  break;
-                }
-
-                throw _iteratorError;
-
-              case 32:
-                return _context12.finish(29);
-
-              case 33:
-                return _context12.finish(26);
-
-              case 34:
-                return _context12.abrupt('return', recordsCreated);
-
-              case 35:
+              case 4:
               case 'end':
                 return _context12.stop();
             }
           }
-        }, _callee12, this, [[9, 22, 26, 34], [27,, 29, 33]]);
+        }, _callee12, this);
       }));
 
       function create(_x27, _x28) {
@@ -681,6 +604,56 @@ var TupaiaDatabase = exports.TupaiaDatabase = function () {
       }
 
       return create;
+    }()
+  }, {
+    key: 'createMany',
+    value: function () {
+      var _ref14 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee13(recordType, records) {
+        var recordsCreated, i, record, recordCreated;
+        return _regenerator2.default.wrap(function _callee13$(_context13) {
+          while (1) {
+            switch (_context13.prev = _context13.next) {
+              case 0:
+                // TODO could be more efficient to create all records in one query
+                recordsCreated = [];
+                i = 0;
+
+              case 2:
+                if (!(i < records.length)) {
+                  _context13.next = 11;
+                  break;
+                }
+
+                record = records[i];
+                _context13.next = 6;
+                return this.create(recordType, record);
+
+              case 6:
+                recordCreated = _context13.sent;
+
+                recordsCreated.push(recordCreated);
+
+              case 8:
+                i++;
+                _context13.next = 2;
+                break;
+
+              case 11:
+                return _context13.abrupt('return', recordsCreated);
+
+              case 12:
+              case 'end':
+                return _context13.stop();
+            }
+          }
+        }, _callee13, this);
+      }));
+
+      function createMany(_x29, _x30) {
+        return _ref14.apply(this, arguments);
+      }
+
+      return createMany;
     }()
 
     /**
@@ -693,40 +666,16 @@ var TupaiaDatabase = exports.TupaiaDatabase = function () {
   }, {
     key: 'update',
     value: function () {
-      var _ref14 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee13(recordType, where, updatedFields) {
-        return _regenerator2.default.wrap(function _callee13$(_context13) {
-          while (1) {
-            switch (_context13.prev = _context13.next) {
-              case 0:
-                return _context13.abrupt('return', this.query({
-                  recordType: recordType,
-                  queryMethod: QUERY_METHODS.UPDATE,
-                  queryMethodParameter: updatedFields
-                }, where));
-
-              case 1:
-              case 'end':
-                return _context13.stop();
-            }
-          }
-        }, _callee13, this);
-      }));
-
-      function update(_x29, _x30, _x31) {
-        return _ref14.apply(this, arguments);
-      }
-
-      return update;
-    }()
-  }, {
-    key: 'updateById',
-    value: function () {
-      var _ref15 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee14(recordType, id, updatedFields) {
+      var _ref15 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee14(recordType, where, updatedFields) {
         return _regenerator2.default.wrap(function _callee14$(_context14) {
           while (1) {
             switch (_context14.prev = _context14.next) {
               case 0:
-                return _context14.abrupt('return', this.update(recordType, { id: id }, updatedFields));
+                return _context14.abrupt('return', this.query({
+                  recordType: recordType,
+                  queryMethod: QUERY_METHODS.UPDATE,
+                  queryMethodParameter: updatedFields
+                }, where));
 
               case 1:
               case 'end':
@@ -736,8 +685,32 @@ var TupaiaDatabase = exports.TupaiaDatabase = function () {
         }, _callee14, this);
       }));
 
-      function updateById(_x32, _x33, _x34) {
+      function update(_x31, _x32, _x33) {
         return _ref15.apply(this, arguments);
+      }
+
+      return update;
+    }()
+  }, {
+    key: 'updateById',
+    value: function () {
+      var _ref16 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee15(recordType, id, updatedFields) {
+        return _regenerator2.default.wrap(function _callee15$(_context15) {
+          while (1) {
+            switch (_context15.prev = _context15.next) {
+              case 0:
+                return _context15.abrupt('return', this.update(recordType, { id: id }, updatedFields));
+
+              case 1:
+              case 'end':
+                return _context15.stop();
+            }
+          }
+        }, _callee15, this);
+      }));
+
+      function updateById(_x34, _x35, _x36) {
+        return _ref16.apply(this, arguments);
       }
 
       return updateById;
@@ -745,11 +718,11 @@ var TupaiaDatabase = exports.TupaiaDatabase = function () {
   }, {
     key: 'updateOrCreate',
     value: function () {
-      var _ref16 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee15(recordType, identifiers, updatedFields) {
+      var _ref17 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee16(recordType, identifiers, updatedFields) {
         var newId, updatedFieldsWithoutUndefined, newRecord, buildQueryList, columns, values, conflict, updates, allParameterBindings, result;
-        return _regenerator2.default.wrap(function _callee15$(_context15) {
+        return _regenerator2.default.wrap(function _callee16$(_context16) {
           while (1) {
-            switch (_context15.prev = _context15.next) {
+            switch (_context16.prev = _context16.next) {
               case 0:
                 // Put together the full new record that will be created, if no matching record exists
                 newId = (0, _generateId.generateId)(); // Generate a new id, in no id was provided
@@ -802,42 +775,14 @@ var TupaiaDatabase = exports.TupaiaDatabase = function () {
                 });
 
                 // Run the sql
-                _context15.next = 13;
+                _context16.next = 13;
                 return this.executeSql('\n        INSERT INTO :recordType: (' + columns + ')\n          VALUES (' + values + ')\n          ON CONFLICT (' + conflict + ') DO UPDATE\n            SET ' + updates + '\n          RETURNING *;\n      ', allParameterBindings);
 
               case 13:
-                result = _context15.sent;
-                return _context15.abrupt('return', result[0]);
+                result = _context16.sent;
+                return _context16.abrupt('return', result[0]);
 
               case 15:
-              case 'end':
-                return _context15.stop();
-            }
-          }
-        }, _callee15, this);
-      }));
-
-      function updateOrCreate(_x35, _x36, _x37) {
-        return _ref16.apply(this, arguments);
-      }
-
-      return updateOrCreate;
-    }()
-  }, {
-    key: 'delete',
-    value: function () {
-      var _ref17 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee16(recordType) {
-        var where = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-        return _regenerator2.default.wrap(function _callee16$(_context16) {
-          while (1) {
-            switch (_context16.prev = _context16.next) {
-              case 0:
-                return _context16.abrupt('return', this.query({
-                  recordType: recordType,
-                  queryMethod: QUERY_METHODS.DELETE
-                }, where));
-
-              case 1:
               case 'end':
                 return _context16.stop();
             }
@@ -845,21 +790,25 @@ var TupaiaDatabase = exports.TupaiaDatabase = function () {
         }, _callee16, this);
       }));
 
-      function _delete(_x38) {
+      function updateOrCreate(_x37, _x38, _x39) {
         return _ref17.apply(this, arguments);
       }
 
-      return _delete;
+      return updateOrCreate;
     }()
   }, {
-    key: 'deleteById',
+    key: 'delete',
     value: function () {
-      var _ref18 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee17(recordType, id) {
+      var _ref18 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee17(recordType) {
+        var where = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
         return _regenerator2.default.wrap(function _callee17$(_context17) {
           while (1) {
             switch (_context17.prev = _context17.next) {
               case 0:
-                return _context17.abrupt('return', this.delete(recordType, { id: id }));
+                return _context17.abrupt('return', this.query({
+                  recordType: recordType,
+                  queryMethod: QUERY_METHODS.DELETE
+                }, where));
 
               case 1:
               case 'end':
@@ -869,8 +818,32 @@ var TupaiaDatabase = exports.TupaiaDatabase = function () {
         }, _callee17, this);
       }));
 
-      function deleteById(_x40, _x41) {
+      function _delete(_x40) {
         return _ref18.apply(this, arguments);
+      }
+
+      return _delete;
+    }()
+  }, {
+    key: 'deleteById',
+    value: function () {
+      var _ref19 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee18(recordType, id) {
+        return _regenerator2.default.wrap(function _callee18$(_context18) {
+          while (1) {
+            switch (_context18.prev = _context18.next) {
+              case 0:
+                return _context18.abrupt('return', this.delete(recordType, { id: id }));
+
+              case 1:
+              case 'end':
+                return _context18.stop();
+            }
+          }
+        }, _callee18, this);
+      }));
+
+      function deleteById(_x42, _x43) {
+        return _ref19.apply(this, arguments);
       }
 
       return deleteById;
@@ -884,25 +857,25 @@ var TupaiaDatabase = exports.TupaiaDatabase = function () {
   }, {
     key: 'markAsChanged',
     value: function () {
-      var _ref19 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee18(recordType, where, options) {
-        var records, _iteratorNormalCompletion2, _didIteratorError2, _iteratorError2, _iterator2, _step2, record;
+      var _ref20 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee19(recordType, where, options) {
+        var records, _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, record;
 
-        return _regenerator2.default.wrap(function _callee18$(_context18) {
+        return _regenerator2.default.wrap(function _callee19$(_context19) {
           while (1) {
-            switch (_context18.prev = _context18.next) {
+            switch (_context19.prev = _context19.next) {
               case 0:
-                _context18.next = 2;
+                _context19.next = 2;
                 return this.find(recordType, where, options);
 
               case 2:
-                records = _context18.sent;
-                _iteratorNormalCompletion2 = true;
-                _didIteratorError2 = false;
-                _iteratorError2 = undefined;
-                _context18.prev = 6;
+                records = _context19.sent;
+                _iteratorNormalCompletion = true;
+                _didIteratorError = false;
+                _iteratorError = undefined;
+                _context19.prev = 6;
 
-                for (_iterator2 = (0, _getIterator3.default)(records); !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                  record = _step2.value;
+                for (_iterator = (0, _getIterator3.default)(records); !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                  record = _step.value;
 
                   this.changeListener.publish('change', {
                     change: {
@@ -913,52 +886,52 @@ var TupaiaDatabase = exports.TupaiaDatabase = function () {
                     record: record
                   });
                 }
-                _context18.next = 14;
+                _context19.next = 14;
                 break;
 
               case 10:
-                _context18.prev = 10;
-                _context18.t0 = _context18['catch'](6);
-                _didIteratorError2 = true;
-                _iteratorError2 = _context18.t0;
+                _context19.prev = 10;
+                _context19.t0 = _context19['catch'](6);
+                _didIteratorError = true;
+                _iteratorError = _context19.t0;
 
               case 14:
-                _context18.prev = 14;
-                _context18.prev = 15;
+                _context19.prev = 14;
+                _context19.prev = 15;
 
-                if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                  _iterator2.return();
+                if (!_iteratorNormalCompletion && _iterator.return) {
+                  _iterator.return();
                 }
 
               case 17:
-                _context18.prev = 17;
+                _context19.prev = 17;
 
-                if (!_didIteratorError2) {
-                  _context18.next = 20;
+                if (!_didIteratorError) {
+                  _context19.next = 20;
                   break;
                 }
 
-                throw _iteratorError2;
+                throw _iteratorError;
 
               case 20:
-                return _context18.finish(17);
+                return _context19.finish(17);
 
               case 21:
-                return _context18.finish(14);
+                return _context19.finish(14);
 
               case 22:
-                return _context18.abrupt('return', records);
+                return _context19.abrupt('return', records);
 
               case 23:
               case 'end':
-                return _context18.stop();
+                return _context19.stop();
             }
           }
-        }, _callee18, this, [[6, 10, 14, 22], [15,, 17, 21]]);
+        }, _callee19, this, [[6, 10, 14, 22], [15,, 17, 21]]);
       }));
 
-      function markAsChanged(_x42, _x43, _x44) {
-        return _ref19.apply(this, arguments);
+      function markAsChanged(_x44, _x45, _x46) {
+        return _ref20.apply(this, arguments);
       }
 
       return markAsChanged;
@@ -966,29 +939,29 @@ var TupaiaDatabase = exports.TupaiaDatabase = function () {
   }, {
     key: 'getSetting',
     value: function () {
-      var _ref20 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee19(key) {
+      var _ref21 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee20(key) {
         var setting;
-        return _regenerator2.default.wrap(function _callee19$(_context19) {
+        return _regenerator2.default.wrap(function _callee20$(_context20) {
           while (1) {
-            switch (_context19.prev = _context19.next) {
+            switch (_context20.prev = _context20.next) {
               case 0:
-                _context19.next = 2;
+                _context20.next = 2;
                 return this.findOne('setting', { key: key });
 
               case 2:
-                setting = _context19.sent;
-                return _context19.abrupt('return', setting ? setting.value : null);
+                setting = _context20.sent;
+                return _context20.abrupt('return', setting ? setting.value : null);
 
               case 4:
               case 'end':
-                return _context19.stop();
+                return _context20.stop();
             }
           }
-        }, _callee19, this);
+        }, _callee20, this);
       }));
 
-      function getSetting(_x45) {
-        return _ref20.apply(this, arguments);
+      function getSetting(_x47) {
+        return _ref21.apply(this, arguments);
       }
 
       return getSetting;
@@ -1025,20 +998,20 @@ var TupaiaDatabase = exports.TupaiaDatabase = function () {
   }, {
     key: 'sum',
     value: function () {
-      var _ref21 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee20(table) {
+      var _ref22 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee21(table) {
         var fields = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
         var where = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
         var query, result, processedResult;
-        return _regenerator2.default.wrap(function _callee20$(_context20) {
+        return _regenerator2.default.wrap(function _callee21$(_context21) {
           while (1) {
-            switch (_context20.prev = _context20.next) {
+            switch (_context21.prev = _context21.next) {
               case 0:
                 if (this.connection) {
-                  _context20.next = 3;
+                  _context21.next = 3;
                   break;
                 }
 
-                _context20.next = 3;
+                _context21.next = 3;
                 return this.connectionPromise;
 
               case 3:
@@ -1049,11 +1022,11 @@ var TupaiaDatabase = exports.TupaiaDatabase = function () {
                   query.sum(fieldToSum + ' as ' + fieldToSum);
                 });
 
-                _context20.next = 7;
+                _context21.next = 7;
                 return query.where(where);
 
               case 7:
-                result = _context20.sent;
+                result = _context21.sent;
                 processedResult = {};
 
                 // Convert counts to integers.
@@ -1062,18 +1035,18 @@ var TupaiaDatabase = exports.TupaiaDatabase = function () {
                   processedResult[sumKey] = parseInt(result[0][sumKey], 10);
                 });
 
-                return _context20.abrupt('return', processedResult);
+                return _context21.abrupt('return', processedResult);
 
               case 11:
               case 'end':
-                return _context20.stop();
+                return _context21.stop();
             }
           }
-        }, _callee20, this);
+        }, _callee21, this);
       }));
 
-      function sum(_x46) {
-        return _ref21.apply(this, arguments);
+      function sum(_x48) {
+        return _ref22.apply(this, arguments);
       }
 
       return sum;
@@ -1088,38 +1061,38 @@ var TupaiaDatabase = exports.TupaiaDatabase = function () {
   }, {
     key: 'executeSql',
     value: function () {
-      var _ref22 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee21(sqlString, parametersToBind) {
+      var _ref23 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee22(sqlString, parametersToBind) {
         var result;
-        return _regenerator2.default.wrap(function _callee21$(_context21) {
+        return _regenerator2.default.wrap(function _callee22$(_context22) {
           while (1) {
-            switch (_context21.prev = _context21.next) {
+            switch (_context22.prev = _context22.next) {
               case 0:
                 if (this.connection) {
-                  _context21.next = 3;
+                  _context22.next = 3;
                   break;
                 }
 
-                _context21.next = 3;
+                _context22.next = 3;
                 return this.connectionPromise;
 
               case 3:
-                _context21.next = 5;
+                _context22.next = 5;
                 return this.connection.raw(sqlString, parametersToBind);
 
               case 5:
-                result = _context21.sent;
-                return _context21.abrupt('return', result.rows);
+                result = _context22.sent;
+                return _context22.abrupt('return', result.rows);
 
               case 7:
               case 'end':
-                return _context21.stop();
+                return _context22.stop();
             }
           }
-        }, _callee21, this);
+        }, _callee22, this);
       }));
 
-      function executeSql(_x49, _x50) {
-        return _ref22.apply(this, arguments);
+      function executeSql(_x51, _x52) {
+        return _ref23.apply(this, arguments);
       }
 
       return executeSql;
@@ -1166,13 +1139,13 @@ function buildQuery(connection, queryConfig) {
 
   // Add sorting information if provided
   if (options.sort) {
-    var _iteratorNormalCompletion3 = true;
-    var _didIteratorError3 = false;
-    var _iteratorError3 = undefined;
+    var _iteratorNormalCompletion2 = true;
+    var _didIteratorError2 = false;
+    var _iteratorError2 = undefined;
 
     try {
-      for (var _iterator3 = (0, _getIterator3.default)(options.sort), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-        var sortKey = _step3.value;
+      for (var _iterator2 = (0, _getIterator3.default)(options.sort), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+        var sortKey = _step2.value;
 
         var _sortKey$split = sortKey.split(' '),
             _sortKey$split2 = (0, _slicedToArray3.default)(_sortKey$split, 2),
@@ -1182,16 +1155,16 @@ function buildQuery(connection, queryConfig) {
         query = query.orderBy(columnName, direction);
       }
     } catch (err) {
-      _didIteratorError3 = true;
-      _iteratorError3 = err;
+      _didIteratorError2 = true;
+      _iteratorError2 = err;
     } finally {
       try {
-        if (!_iteratorNormalCompletion3 && _iterator3.return) {
-          _iterator3.return();
+        if (!_iteratorNormalCompletion2 && _iterator2.return) {
+          _iterator2.return();
         }
       } finally {
-        if (_didIteratorError3) {
-          throw _iteratorError3;
+        if (_didIteratorError2) {
+          throw _iteratorError2;
         }
       }
     }
@@ -1226,10 +1199,10 @@ function addWhereClause(baseQuery, where) {
   if (!where) {
     return baseQuery;
   }
-  return (0, _entries2.default)(where).reduce(function (querySoFar, _ref23) {
-    var _ref24 = (0, _slicedToArray3.default)(_ref23, 2),
-        key = _ref24[0],
-        value = _ref24[1];
+  return (0, _entries2.default)(where).reduce(function (querySoFar, _ref24) {
+    var _ref25 = (0, _slicedToArray3.default)(_ref24, 2),
+        key = _ref25[0],
+        value = _ref25[1];
 
     // Providing the _and_ or the _or_ keys will use the contained criteria as a bracket wrapped
     // subsection of the broader WHERE clause
