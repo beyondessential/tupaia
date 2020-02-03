@@ -130,6 +130,17 @@ const setCookie = async (page, cookies) => {
   }
 };
 
+const isMultiPage = async page => {
+  try {
+    // Wait for muti page chart export handlers to be available (after the chart has finished loading).
+    await page.waitForFunction('window.tupaiaExportProps', { timeout: 5000 });
+    return true;
+  } catch (error) {
+    // Function did not appear, must be a single page chart
+    return false;
+  }
+};
+
 exports.run = async (browser, config) => {
   console.log('Begin running');
   const page = await browser.newPage();
@@ -142,21 +153,10 @@ exports.run = async (browser, config) => {
   console.log('Page visited', config.chartUrl);
   await page.setViewport({ width: 1000, height: 720 });
 
-  //A little hacky, we wait for the chart body to be displayed, and then wait another 5 seconds for good measure (incase components haven't fully loaded)
   await page.waitForSelector('#chart-body'); // Wait for the chart body to be displayed
   await page.waitFor(5000); // Wait another 5 seconds for good measure
 
-  let isMultiPage = false;
-  try {
-    // Wait for muti page chart export handlers to be available (after the chart has finished loading).
-    await page.waitForFunction('window.tupaiaExportProps', { timeout: 5000 });
-    isMultiPage = true;
-  } catch (error) {
-    // Function did not appear, must be a single page chart
-    isMultiPage = false;
-  }
-
-  if (isMultiPage) {
+  if (await isMultiPage(page)) {
     await exportMultiPage(page, config);
   } else {
     await exportSinglePage(page, config);
