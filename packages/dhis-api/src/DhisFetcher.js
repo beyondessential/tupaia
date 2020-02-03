@@ -117,7 +117,7 @@ export class DhisFetcher {
         return responseObject;
       } catch (error) {
         // deletes return an invalid body for json() to parse.
-        if (error.type === 'invalid-json' && customFetchConfig.method === 'DELETE') return {};
+        if (error.type === 'invalid-json' && config.method === 'DELETE') return {};
         if (response.statusText) throw this.constructError(response.statusText, url);
         throw this.constructError(error.message, url);
       }
