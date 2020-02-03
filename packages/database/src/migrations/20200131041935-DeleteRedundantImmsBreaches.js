@@ -29,11 +29,11 @@ exports.up = function(db) {
       FROM survey_response a JOIN (
         SELECT MIN(id) as id, entity_id, submission_time
         FROM survey_response
+        WHERE survey_id = '5d12f4e0f013d62f09114d5a'
         GROUP BY entity_id, submission_time HAVING COUNT(*) > 1
       ) b
       ON a.entity_id = b.entity_id AND a.submission_time = b.submission_time
       WHERE a.survey_id = '5d12f4e0f013d62f09114d5a'
-      AND b.survey_id = '5d12f4e0f013d62f09114d5a'
       AND a.id <> b.id;
 
 
