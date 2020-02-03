@@ -110,20 +110,16 @@ async function getRecordsByCode(model, codes) {
   return recordsByCode;
 }
 
-function buildAnswerRecords(responses, surveyResponses, questionsByCode) {
-  const answerRecords = [];
-  responses.forEach((r, i) =>
-    Object.entries(r.answers).forEach(([code, value]) => {
-      const question = questionsByCode[code];
-      answerRecords.push({
-        type: question.type,
-        survey_response_id: surveyResponses[i].id,
-        question_id: question.id,
-        text: value,
-      });
-    }),
-  );
-  return answerRecords;
+function buildAnswerRecords(answers, surveyResponseId, questionsByCode) {
+  return Object.entries(answers).map(([code, value]) => {
+    const question = questionsByCode[code];
+    return {
+      type: question.type,
+      survey_response_id: surveyResponseId,
+      question_id: question.id,
+      text: value,
+    };
+  });
 }
 
 async function getQuestionsByCode(models, responses) {
@@ -147,27 +143,25 @@ async function saveResponsesToDatabase(models, userId, responses) {
   // build the response records then persist them to the database
   const responseRecords = responses.map(r => buildResponseRecord(user, entitiesByCode, r));
   const surveyResponses = await models.surveyResponse.createMany(responseRecords);
+  const idsCreated = surveyResponses.map(r => ({ surveyResponseId: r.id }));
 
   // build the answer records then persist them to the database
-  const answerRecords = buildAnswerRecords(responses, surveyResponses, questionsByCode);
-  const answers = await models.answer.createMany(answerRecords);
+  // note that we could build all of the answers for all responses at once, and persist them in one
+  // big batch, but that approach resulted in occasional id clashes for POSTs of around 10k answers,
+  // (unexpectedly, doing them in series and smaller batches is also 5x faster on a macbook pro,
+  // though this is probably very dependent on the hardware - parallel should be faster if it didn't
+  // overwhelm postgres)
+  for (let i = 0; i < responses.length; i++) {
+    const response = responses[i];
+    const answerRecords = buildAnswerRecords(
+      response.answers,
+      surveyResponses[i].id,
+      questionsByCode,
+    );
+    const answers = await models.answer.createMany(answerRecords);
+    idsCreated[i].answerIds = answers.map(a => a.id);
+  }
 
-  // generate the data to return to the client, extracting the ids of the survey responses and
-  // answers created, preserving the order that they were provided in the POST body
-  const idsCreated = [];
-  let answerIndex = 0;
-  responses.forEach((r, i) => {
-    const numberOfAnswers = Object.keys(r.answers).length;
-    const answerIds = new Array(numberOfAnswers).fill(0).map(_ => {
-      const answerId = answers[answerIndex].id;
-      answerIndex++;
-      return answerId;
-    });
-    idsCreated.push({
-      surveyResponseId: surveyResponses[i].id,
-      answerIds,
-    });
-  });
   return idsCreated;
 }
 

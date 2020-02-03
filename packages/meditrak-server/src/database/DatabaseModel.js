@@ -163,9 +163,6 @@ export class DatabaseModel {
 
   /**
    * Bulk creates database records and returns DatabaseType instances representing them
-   * Note that unlike other create/update operations, this does not sanitise the data to strip out
-   * redundant or undefined values, as that takes time, and the intention of this bulk insert is to
-   * be fast with many records
    * @param {Array.<Object>} recordsToCreate
    */
   async createMany(recordsToCreate) {
