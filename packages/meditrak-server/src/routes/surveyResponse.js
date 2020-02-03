@@ -68,17 +68,6 @@ async function validateResponse(models, userId, body) {
   await Promise.all(answerValidations);
 }
 
-export async function surveyResponse(req, res) {
-  const { userId, body, models } = req;
-
-  let results;
-  const responses = Array.isArray(body) ? body : [body];
-  await models.wrapInTransaction(async transactingModels => {
-    results = await submitResponses(transactingModels, userId, responses);
-  });
-  res.send({ count: responses.length, results });
-}
-
 function buildResponseRecord(user, entitiesByCode, body) {
   // assumes validateResponse has succeeded
   const { entity_id: entityId, entity_code: entityCode, timestamp, survey_id: surveyId } = body;
@@ -188,3 +177,14 @@ export const submitResponses = async (models, userId, responses) => {
 
   return saveResponsesToDatabase(models, userId, responses);
 };
+
+export async function surveyResponse(req, res) {
+  const { userId, body, models } = req;
+
+  let results;
+  const responses = Array.isArray(body) ? body : [body];
+  await models.wrapInTransaction(async transactingModels => {
+    results = await submitResponses(transactingModels, userId, responses);
+  });
+  res.send({ count: responses.length, results });
+}
