@@ -14,16 +14,21 @@ import PropTypes from 'prop-types';
 
 import { SignupFormComponent } from './SignupFormComponent';
 import { SignupComplete } from './SignupComplete';
+import { EmailVerification } from '../EmailVerification';
 
 export const SignupComponent = ({
   signupFailedMessage,
   signupComplete,
   isRequestingSignup,
   onAttemptUserSignup,
-  handleLogin,
   className,
 }) => {
-  if (signupComplete) return <SignupComplete onClickLogin={handleLogin} />;
+  const [shouldShowVerifyForm, setVerifyForm] = React.useState(false);
+
+  const showVerifyForm = React.useCallback(() => setVerifyForm(true), []);
+
+  if (shouldShowVerifyForm) return <EmailVerification />;
+  else if (signupComplete) return <SignupComplete onClickResend={showVerifyForm} />;
 
   return (
     <div className={className}>
@@ -40,7 +45,6 @@ SignupComponent.propTypes = {
   isRequestingSignup: PropTypes.bool.isRequired,
   signupFailedMessage: PropTypes.string.isRequired,
   onAttemptUserSignup: PropTypes.func.isRequired,
-  handleLogin: PropTypes.func.isRequired,
   signupComplete: PropTypes.bool.isRequired,
   className: PropTypes.string,
 };

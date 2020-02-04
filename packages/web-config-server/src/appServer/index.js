@@ -6,5 +6,7 @@ export {
   appChangePassword,
   appRequestResetPassword,
   appGetCountryAccessList,
+  appResendEmail,
   appRequestCountryAccess,
+  appVerifyEmail,
 } from './routes';

@@ -8,6 +8,7 @@ export {
   DatabaseError,
   InternalServerError,
   UnauthenticatedError,
+  UnverifiedError,
   UploadError,
   ValidationError,
   MultiValidationError,
