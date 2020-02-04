@@ -23,57 +23,39 @@ exports.up = function(db) {
     DROP TRIGGER IF EXISTS answer_trigger
       ON answer;
 
-    DELETE
-    FROM dhis_sync_log
-    WHERE record_id IN (
-      SELECT id
-      FROM survey_response
-      WHERE survey_id = '5d12f4e0f013d62f09114d5a'
-      AND id NOT IN (
-        SELECT min(id)
+    CREATE TEMPORARY TABLE duplicate_survey_response (id text) ON COMMIT DROP;
+    INSERT INTO duplicate_survey_response (id)
+      SELECT a.id
+      FROM survey_response a JOIN (
+        SELECT MIN(id) as id, entity_id, submission_time
         FROM survey_response
         WHERE survey_id = '5d12f4e0f013d62f09114d5a'
-        GROUP BY entity_id, submission_time
-      )
-    );
+        GROUP BY entity_id, submission_time HAVING COUNT(*) > 1
+      ) b
+      ON a.entity_id = b.entity_id AND a.submission_time = b.submission_time
+      WHERE a.survey_id = '5d12f4e0f013d62f09114d5a'
+      AND a.id <> b.id;
+
+
+    DELETE
+    FROM dhis_sync_log
+    USING duplicate_survey_response
+    WHERE dhis_sync_log.record_id = duplicate_survey_response.id;
 
     DELETE
     FROM dhis_sync_queue
-    WHERE record_id IN (
-      SELECT id
-      FROM survey_response
-      WHERE survey_id = '5d12f4e0f013d62f09114d5a'
-      AND id NOT IN (
-        SELECT min(id)
-        FROM survey_response
-        WHERE survey_id = '5d12f4e0f013d62f09114d5a'
-        GROUP BY entity_id, submission_time
-      )
-    );
+    USING duplicate_survey_response
+    WHERE dhis_sync_queue.record_id = duplicate_survey_response.id;
 
     DELETE
     FROM answer
-    WHERE survey_response_id IN (
-      SELECT id
-      FROM survey_response
-      WHERE survey_id = '5d12f4e0f013d62f09114d5a'
-      AND id NOT IN (
-        SELECT min(id)
-        FROM survey_response
-        WHERE survey_id = '5d12f4e0f013d62f09114d5a'
-        GROUP BY entity_id, submission_time
-      )
-    );
+    USING duplicate_survey_response
+    WHERE answer.survey_response_id = duplicate_survey_response.id;
 
     DELETE
     FROM survey_response
-    WHERE survey_id = '5d12f4e0f013d62f09114d5a'
-    AND id NOT IN (
-      SELECT min(id)
-      FROM survey_response
-      WHERE survey_id = '5d12f4e0f013d62f09114d5a'
-      GROUP BY entity_id, submission_time
-    );
+    USING duplicate_survey_response
+    WHERE survey_response.id = duplicate_survey_response.id;
 
     -- Recreate triggers
     CREATE TRIGGER survey_response_trigger
