@@ -1,12 +1,15 @@
+import { CustomError } from '@tupaia/utils';
 import { getMeasureBuilder } from '/apiV1/measureBuilders/getMeasureBuilder';
 import { getDhisApiInstance } from '/dhis';
 import { DhisTranslationHandler, getOptionsForDataElement, getDateRange } from './utils';
-import { CustomError } from '/errors';
 import { DATA_SOURCE_TYPES } from './dataBuilders/dataSourceTypes';
 
 // NOTE: does not allow for actual number value measure, will be added when
 // all binary are added as optionSet
-const binaryOptionSet = [{ name: 'Yes', value: 1 }, { name: 'No', value: 0 }];
+const binaryOptionSet = [
+  { name: 'Yes', value: 1 },
+  { name: 'No', value: 0 },
+];
 
 const cannotFindCountryLevelInHierarchy = {
   type: 'Permission Error',

@@ -1,5 +1,5 @@
 import { DashboardGroup, MapOverlay, DashboardReport } from '/models';
-import { CustomError } from '/errors';
+import { CustomError } from '@tupaia/utils';
 // Permission fail messages, should unite responses in production mode
 const permissionFail = {
   type: 'Permission Error',

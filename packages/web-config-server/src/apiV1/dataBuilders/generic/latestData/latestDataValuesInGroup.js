@@ -7,8 +7,8 @@
  * for retrieving answers from FreeText question types.
  */
 
+import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
 import { getDataElementsInGroup } from '/apiV1/utils';
-import { AGGREGATION_TYPES } from '/dhis';
 
 export const latestDataValuesInGroup = async ({ dataBuilderConfig, query }, dhisApi) => {
   const { MOST_RECENT } = AGGREGATION_TYPES;

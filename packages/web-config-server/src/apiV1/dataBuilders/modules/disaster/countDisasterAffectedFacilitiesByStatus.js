@@ -1,6 +1,6 @@
+import { AGGREGATION_TYPES, convertDateRangeToPeriodString } from '@tupaia/dhis-api';
 import { Entity } from '/models';
-import { AGGREGATION_TYPES } from '/dhis';
-import { getOptionSetOptions, convertDateRangeToPeriodString } from '/apiV1/utils';
+import { getOptionSetOptions } from '/apiV1/utils';
 
 const { MOST_RECENT } = AGGREGATION_TYPES;
 

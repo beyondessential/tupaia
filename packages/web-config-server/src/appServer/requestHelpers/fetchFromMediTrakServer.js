@@ -1,7 +1,7 @@
-import { fetch, stringifyDhisQuery } from '/utils';
+import { fetchWithTimeout, stringifyQuery } from '@tupaia/utils';
 import { UserSession } from '/models';
 import { refreshAccessToken } from './refreshAccessToken';
-import { CustomError } from '/errors';
+import { CustomError } from '@tupaia/utils';
 
 const TUPAIA_CONFIG_SERVER_DEVICE_NAME = 'Tupaia Config Server';
 
@@ -18,8 +18,7 @@ const TUPAIA_CONFIG_SERVER_DEVICE_NAME = 'Tupaia Config Server';
  *   Any additional headers to send with the http request, e.g. can overwrite default Authorization
  */
 export const fetchFromMediTrakServer = async (endpoint, payload, queryParameters, headers = {}) => {
-  const queryString = queryParameters ? stringifyDhisQuery(queryParameters) : '';
-  const url = `${process.env.TUPAIA_APP_SERVER_URL}/${endpoint}${queryString}`;
+  const url = stringifyQuery(process.env.TUPAIA_APP_SERVER_URL, endpoint, queryParameters);
   const config = {
     method: payload ? 'POST' : 'GET',
     headers: {
@@ -32,7 +31,7 @@ export const fetchFromMediTrakServer = async (endpoint, payload, queryParameters
     config.body = JSON.stringify({ deviceName: TUPAIA_CONFIG_SERVER_DEVICE_NAME, ...payload });
   }
 
-  const response = await fetch(url, config);
+  const response = await fetchWithTimeout(url, config);
   if (response.ok) {
     if (response.headers.get('Content-Type').includes('application/json')) {
       return response.json();

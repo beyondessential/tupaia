@@ -4,7 +4,7 @@
  */
 
 import winston from 'winston';
-import { getDiagnosticsFromResponse } from '../responseUtils';
+import { getDiagnosticsFromResponse } from '@tupaia/dhis-api';
 
 /**
  * @typedef {PushResults}
