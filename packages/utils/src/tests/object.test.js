@@ -5,7 +5,14 @@
 
 import { expect } from 'chai';
 
-import { flattenToObject, mapKeys, reduceToDictionary, reduceToSet, getSortByKey } from '../object';
+import {
+  flattenToObject,
+  mapKeys,
+  mapValues,
+  reduceToDictionary,
+  reduceToSet,
+  getSortByKey,
+} from '../object';
 
 const object1 = {
   id: 'id1',
@@ -161,13 +168,71 @@ describe('object', () => {
       });
     });
 
-    it('should exclude keys not specified in the mapping from the result', () => {
+    it('should not default to existing keys by default', () => {
       const object = { a: 1, b: 2, c: 3 };
       const mapping = { a: 'alpha', c: 'gamma' };
 
-      expect(mapKeys(object, mapping)).to.deep.equal({
+      expect(mapKeys(object, mapping)).to.deep.equal(mapKeys(object, mapping, false));
+    });
+
+    it('should be able to default to existing keys', () => {
+      const object = { a: 1, b: 2, c: 3 };
+      const mapping = { a: 'alpha', c: 'gamma' };
+
+      expect(mapKeys(object, mapping, true)).to.deep.equal({
+        alpha: 1,
+        b: 2,
+        gamma: 3,
+      });
+    });
+
+    it('should be able to not default to existing keys ', () => {
+      const object = { a: 1, b: 2, c: 3 };
+      const mapping = { a: 'alpha', c: 'gamma' };
+
+      expect(mapKeys(object, mapping, false)).to.deep.equal({
         alpha: 1,
         gamma: 3,
+      });
+    });
+  });
+
+  describe('mapValues', () => {
+    it('should return a new object with mapped values', () => {
+      const object = { a: 1, b: 2 };
+      const mapping = { 1: 'alpha', 2: 'beta' };
+
+      expect(mapValues(object, mapping)).to.deep.equal({
+        a: 'alpha',
+        b: 'beta',
+      });
+    });
+
+    it('should not default to existing values by default', () => {
+      const object = { a: 1, b: 2, c: 3 };
+      const mapping = { 1: 'alpha', 3: 'gamma' };
+
+      expect(mapValues(object, mapping)).to.deep.equal(mapValues(object, mapping, false));
+    });
+
+    it('should be able to default to existing values', () => {
+      const object = { a: 1, b: 2, c: 3 };
+      const mapping = { 1: 'alpha', 3: 'gamma' };
+
+      expect(mapValues(object, mapping, true)).to.deep.equal({
+        a: 'alpha',
+        b: 2,
+        c: 'gamma',
+      });
+    });
+
+    it('should be able to not default to existing keys ', () => {
+      const object = { a: 1, b: 2, c: 3 };
+      const mapping = { 1: 'alpha', 3: 'gamma' };
+
+      expect(mapValues(object, mapping, false)).to.deep.equal({
+        a: 'alpha',
+        c: 'gamma',
       });
     });
   });
