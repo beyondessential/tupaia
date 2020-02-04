@@ -23,4 +23,6 @@ export class DataSourceModel extends DatabaseModel {
   get DatabaseTypeClass() {
     return DataSourceType;
   }
+
+  getTypes = () => DataSourceModel.types;
 }
