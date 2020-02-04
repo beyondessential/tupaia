@@ -13,7 +13,6 @@ import { modelClasses } from '@tupaia/database';
  * @typedef {Object} DataSourceSpec
  * @property {string|string[]} code  Matches on the code column
  * @property {string} type  Matches on the type column
- * @property {string} [service_type] Matches on the service_type column
  */
 
 const assertDataSourceSpecIsValid = dataSourceSpec => {
@@ -23,10 +22,10 @@ const assertDataSourceSpecIsValid = dataSourceSpec => {
 };
 
 export class DataSourceModel extends modelClasses.DataSource {
-  getDefault = ({ code, type, service_type: serviceType }) => ({
+  getDefault = ({ code, type }) => ({
     code,
     type,
-    service_type: serviceType || 'dhis',
+    service_type: 'dhis',
     config: {},
   });
 
