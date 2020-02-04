@@ -3,6 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 import autobind from 'react-autobind';
+import { getIsProductionEnvironment } from '../devops';
 
 const LOWEST_PRIORITY = 5;
 const BAD_REQUEST_LIMIT = 7;
@@ -63,16 +64,20 @@ export class ExternalApiSyncQueue {
    * awaited by the calling function.
    **/
   async get(numberToGet) {
-    const changes = await this.syncQueueModel.find(
-      {
-        is_dead_letter: false,
-        is_deleted: false,
-      },
-      {
-        sort: ['priority', 'change_time'],
-        limit: numberToGet,
-      },
-    );
+    const criteria = {
+      is_dead_letter: false,
+      is_deleted: false,
+    };
+    if (!getIsProductionEnvironment()) {
+      criteria.priority = {
+        comparator: '<',
+        comparisonValue: 5,
+      };
+    }
+    const changes = await this.syncQueueModel.find(criteria, {
+      sort: ['priority', 'change_time'],
+      limit: numberToGet,
+    });
     return changes.map(change => ({
       ...change,
       details: JSON.parse(change.details),
