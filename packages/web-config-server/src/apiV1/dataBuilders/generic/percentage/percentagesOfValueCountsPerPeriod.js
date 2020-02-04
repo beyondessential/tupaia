@@ -7,14 +7,44 @@ import { DataPerPeriodBuilder } from 'apiV1/dataBuilders/DataPerPeriodBuilder';
 import { PercentagesOfValueCountsBuilder } from '/apiV1/dataBuilders/generic/percentage/percentagesOfValueCounts';
 import { groupAnalyticsByPeriod } from '/dhis';
 import { divideValues } from '/apiV1/dataBuilders/helpers';
+import { Facility } from '/models';
+
+const filterFacility = async (analytics, conditions) => {
+  const facility = await Facility.find({
+    type: {
+      comparator: conditions.comparator,
+      comparisonValue: '1',
+    },
+    code: {
+      comparator: 'IN',
+      comparisonValue: analytics.map(a => a.organisationUnit),
+    },
+  });
+  return analytics.filter(el => {
+    return facility.map(a => a.code).includes(el.organisationUnit);
+  });
+};
+
+const TRANSFORMATIONS = {
+  ORG_UNIT: filterFacility,
+};
 
 class BaseBuilder extends PercentagesOfValueCountsBuilder {
-  buildData(analytics) {
+  async buildData(analytics) {
     const percentage = {};
+    let transformData = analytics;
+
+    if (this.config.transformation) {
+      transformData = await TRANSFORMATIONS[this.config.transformation.name](
+        analytics,
+        this.config.transformation,
+      );
+    }
+
     Object.entries(this.config.dataClasses).forEach(([name, dataClass]) => {
       const [numerator, denominator] = this.calculateFractionPartsForDataClass(
         dataClass,
-        analytics,
+        transformData,
       );
 
       const key = Object.keys(this.config.dataClasses).length > 1 ? name : 'value';

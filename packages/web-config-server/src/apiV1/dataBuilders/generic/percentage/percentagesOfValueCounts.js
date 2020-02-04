@@ -20,7 +20,7 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
    */
   async build() {
     const results = await this.fetchResults();
-    const data = this.buildData(results);
+    const data = await this.buildData(results);
 
     return { data: this.areDataAvailable(data) ? data : [] };
   }
@@ -33,7 +33,7 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
     return results;
   }
 
-  buildData(analytics) {
+  async buildData(analytics) {
     const dataClasses = [];
     Object.entries(this.config.dataClasses).forEach(([name, dataClass]) => {
       const [numerator, denominator] = this.calculateFractionPartsForDataClass(
