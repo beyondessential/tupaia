@@ -6,11 +6,18 @@
 import { Service } from '../Service';
 import { getDhisApiInstance } from './getDhisApiInstance';
 
+const dataSourceToElementCode = dataSource => dataSource.config.dataElementCode || dataSource.code;
+
 export class DhisService extends Service {
   constructor(...args) {
     super(...args);
     this.pushers = this.getPushers();
     this.deleters = this.getDeleters();
+    this.pullers = this.getPullers();
+  }
+
+  get dataSourceTypes() {
+    return this.models.dataSource.getTypes();
   }
 
   getPushers() {
@@ -27,22 +34,24 @@ export class DhisService extends Service {
     };
   }
 
-  get dataSourceTypes() {
-    return this.models.DataSource.types;
+  getPullers() {
+    return {
+      [this.dataSourceTypes.DATA_ELEMENT]: this.pullAggregateData.bind(this),
+      [this.dataSourceTypes.DATA_GROUP]: this.pullEvent.bind(this),
+    };
   }
 
   /**
-   *
    * @param {Object}     dataValue    The untranslated data value
    * @param {DataSource} dataSource   Note that this may not be the instance's primary data source
    */
   translateDataValueCode = ({ code, ...restOfDataValue }, dataSource) => ({
-    dataElement: dataSource.config.dataElementCode || dataSource.code,
+    dataElement: dataSourceToElementCode(dataSource),
     ...restOfDataValue,
   });
 
   async translateEventDataValues(api, dataValues) {
-    const dataSources = await this.models.DataSource.findOrDefault({
+    const dataSources = await this.models.dataSource.findOrDefault({
       code: dataValues.map(({ code }) => code),
       type: this.dataSourceTypes.DATA_ELEMENT,
     });
@@ -67,6 +76,7 @@ export class DhisService extends Service {
     const api = getDhisApiInstance({ entityCode, isDataRegional });
     const pushData = this.pushers[dataSource.type];
     const diagnostics = await pushData(api, data, dataSource);
+
     return { diagnostics, serverName: api.getServerName() };
   }
 
@@ -94,7 +104,85 @@ export class DhisService extends Service {
 
   deleteEvent = async (api, data) => api.deleteEvent(data.dhisReference);
 
-  async pull(dataSource, metadata) {
-    // TODO implement
+  async pull(dataSources, type, options) {
+    const { organisationUnitCode: entityCode, dataServices = [] } = options;
+    const pullData = this.pullers[type];
+    const apis = dataServices.map(({ isDataRegional }) =>
+      getDhisApiInstance({ entityCode, isDataRegional }),
+    );
+
+    return pullData(apis, dataSources, options);
   }
+
+  pullAggregateData = async (
+    apis,
+    dataSources,
+    { outputIdScheme, organisationUnitCode, period, startDate, endDate },
+  ) => {
+    const dataElementCodes = dataSources.map(dataSourceToElementCode);
+
+    const response = {
+      results: [],
+      metadata: {},
+    };
+    const pullForApi = async api => {
+      const { results, metadata } = await api.getAnalytics({
+        dataElementCodes,
+        outputIdScheme,
+        organisationUnitCode,
+        period,
+        startDate,
+        endDate,
+      });
+      response.results.push(...results);
+      Object.assign(response.metadata, metadata);
+    };
+
+    await Promise.all(apis.map(pullForApi));
+    return response;
+  };
+
+  pullEvent = async (
+    apis,
+    dataSources,
+    {
+      organisationUnitCode,
+      orgUnitIdScheme,
+      dataElementIdScheme,
+      startDate,
+      endDate,
+      eventId,
+      trackedEntityInstance,
+      dataValueFormat,
+    },
+  ) => {
+    if (dataSources.length > 1) {
+      throw new Error('Cannot pull from multiple programs at the same time');
+    }
+    if (dataSources.length === 0) {
+      return [];
+    }
+    const [dataSource] = dataSources;
+    const { code: programCode } = dataSource;
+
+    const response = [];
+    const pullForApi = async api => {
+      const events = await api.getEvents({
+        programCode,
+        organisationUnitCode,
+        orgUnitIdScheme,
+        dataElementIdScheme,
+        startDate,
+        endDate,
+        eventId,
+        trackedEntityInstance,
+        dataValueFormat,
+      });
+
+      response.push(...events);
+    };
+
+    await Promise.all(apis.map(pullForApi));
+    return response;
+  };
 }

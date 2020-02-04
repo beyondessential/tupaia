@@ -8,7 +8,11 @@ import { expect } from 'chai';
 import { createService, TYPE_TO_SERVICE } from '../../services/createService';
 
 describe('createService()', () => {
-  const models = { DataSource: { types: {} } };
+  const models = {
+    dataSource: {
+      getTypes: () => ({}),
+    },
+  };
 
   Object.entries(TYPE_TO_SERVICE).forEach(([serviceType, serviceClass]) => {
     it(`${serviceType} service`, () => {
