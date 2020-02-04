@@ -12,7 +12,9 @@ import { DATA_VALUES, ORG_UNITS } from './tableOfDataValues.fixtures';
 
 const assertTableResults = createAssertTableResults(
   // Sort results in DESC org unit order, to assert their ASC ordering in the results
-  DATA_VALUES.sort(getSortByKey('organisationUnit', { ascending: false })),
+  DATA_VALUES.filter(
+    ({ organisationUnit }) => organisationUnit === 'TO_Nukuhc' || organisationUnit === 'TO_Vainihc',
+  ).sort(getSortByKey('organisationUnit', { ascending: false })),
 );
 
 export const testOrgUnitCategories = () => {
