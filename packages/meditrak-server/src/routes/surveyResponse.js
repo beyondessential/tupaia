@@ -3,6 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
+import { keyBy } from 'lodash';
 import { ValidationError, MultiValidationError } from '../errors';
 import {
   ObjectValidator,
@@ -88,15 +89,8 @@ function buildResponseRecord(user, entitiesByCode, body) {
 }
 
 async function getRecordsByCode(model, codes) {
-  const recordsByCode = {};
-  await Promise.all(
-    Array.from(codes).map(async code => {
-      const record = await model.findOne({ code });
-      if (!record) throw new ValidationError(`No record matching ${code}`);
-      recordsByCode[code] = record;
-    }),
-  );
-  return recordsByCode;
+  const records = await model.find({ code: Array.from(codes) });
+  return keyBy(records, 'code');
 }
 
 function buildAnswerRecords(answers, surveyResponseId, questionsByCode) {
