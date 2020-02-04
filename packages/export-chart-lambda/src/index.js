@@ -33,30 +33,20 @@ exports.handler = async (event, context, callback) => {
   return 'done';
 };
 
-const exportMatrix = async (page, { fileType, extraConfig, tmpFileName }) => {
+const exportMultiPage = async (page, { fileType, extraConfig, tmpFileName }) => {
   if (fileType !== 'pdf') {
-    throw new Error('Matrix export must be pdf');
+    throw new Error('Multi page export must be pdf');
   }
 
-  // Wait for Matrix export handlers to be available (after the Matrix has finished loading).
-  await page.waitForFunction('window.tupaiaExportProps');
-
-  // Initialise the Matrix exporter. This turns the matrix into a clipped, pageable UI that
+  // Initialise the chart exporter. This turns the chart into a clipped, pageable UI that
   // can be modified by the exporter.
   await page.evaluate(`window.tupaiaExportProps.initExporter(${JSON.stringify(extraConfig)})`);
 
-  const temporaryFilenamePrefix =
-    Math.random()
-      .toString(36)
-      .substring(2, 15) +
-    Math.random()
-      .toString(36)
-      .substring(2, 15);
   const files = [];
   let exportComplete = false;
   let pageCounter = 0;
   while (!exportComplete) {
-    const fileName = `/tmp/page${temporaryFilenamePrefix}${pageCounter}.pdf`;
+    const fileName = `/tmp/page-${pageCounter}.pdf`;
     files.push(fileName);
 
     await page.pdf({
@@ -82,7 +72,7 @@ const exportMatrix = async (page, { fileType, extraConfig, tmpFileName }) => {
   console.log('Screenshot combining complete');
 };
 
-const exportPage = async (page, { fileType, tmpFileName }) => {
+const exportSinglePage = async (page, { fileType, tmpFileName }) => {
   if (fileType === 'pdf') {
     await page.pdf({
       path: tmpFileName,
@@ -140,6 +130,17 @@ const setCookie = async (page, cookies) => {
   }
 };
 
+const isMultiPage = async page => {
+  try {
+    // Wait for muti page chart export handlers to be available (after the chart has finished loading).
+    await page.waitForFunction('window.tupaiaExportProps', { timeout: 5000 });
+    return true;
+  } catch (error) {
+    // Function did not appear, must be a single page chart
+    return false;
+  }
+};
+
 exports.run = async (browser, config) => {
   console.log('Begin running');
   const page = await browser.newPage();
@@ -152,14 +153,13 @@ exports.run = async (browser, config) => {
   console.log('Page visited', config.chartUrl);
   await page.setViewport({ width: 1000, height: 720 });
 
-  //A little hacky, we wait for the chart body to be displayed, and then wait another 5 seconds for good measure (incase components haven't fully loaded)
-  await page.waitForSelector('#chart-body');
-  await page.waitFor(5000);
+  await page.waitForSelector('#chart-body'); // Wait for the chart body to be displayed
+  await page.waitFor(5000); // Wait another 5 seconds for good measure
 
-  if (config.chartType === 'matrix') {
-    await exportMatrix(page, config);
+  if (await isMultiPage(page)) {
+    await exportMultiPage(page, config);
   } else {
-    await exportPage(page, config);
+    await exportSinglePage(page, config);
   }
 
   console.log('Export complete');
