@@ -28,12 +28,10 @@ export const getDataElementsFromCodes = async (dhisApi, dataElementCodes, should
 
     dataElementsByCode[code] = { ...restOfDataElement, code };
     if (optionSet && optionSet.id) {
-      if (optionsBySetId[optionSet.id]) {
-        dataElementsByCode[code].options = optionsBySetId[optionSet.id];
-      } else {
+      if (!optionsBySetId[optionSet.id]) {
         optionsBySetId[optionSet.id] = await getOptionSetOptions(dhisApi, { id: optionSet.id });
-        dataElementsByCode[code].options = optionsBySetId[optionSet.id];
       }
+      dataElementsByCode[code].options = optionsBySetId[optionSet.id];
     }
   }
 
