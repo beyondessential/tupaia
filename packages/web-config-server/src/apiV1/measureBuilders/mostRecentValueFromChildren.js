@@ -4,6 +4,7 @@ import { Facility, Entity } from '/models';
 const { MOST_RECENT_PER_ORG_GROUP } = AGGREGATION_TYPES;
 
 export const mostRecentValueFromChildren = async (
+  aggregator,
   dhisApi,
   { organisationUnitGroupCode, dataElementCode },
   { organisationUnitLevel },

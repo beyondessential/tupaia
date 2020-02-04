@@ -7,7 +7,11 @@ const DATA_ELEMENT_CODES = {
   facilityAffectedStatus: ['DP_NEW008'],
 };
 
-export const disasterAffectedOrganisationOperationalData = async ({ query }, dhisApi) => {
+export const disasterAffectedOrganisationOperationalData = async (
+  { query },
+  aggregator,
+  dhisApi,
+) => {
   const { organisationUnitCode, disasterStartDate } = query;
   const { MOST_RECENT } = AGGREGATION_TYPES;
 

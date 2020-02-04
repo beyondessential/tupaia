@@ -1,6 +1,6 @@
 import { getOptionSetOptions } from '/apiV1/utils';
 
-export const villagesServicedByFacility = async ({ entity }, dhisApi) => {
+export const villagesServicedByFacility = async ({ entity }, aggregator, dhisApi) => {
   const code = `${entity.code}_villages`;
 
   try {

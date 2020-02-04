@@ -8,6 +8,7 @@ import sinon from 'sinon';
 
 import { tableOfDataValues } from '/apiV1/dataBuilders';
 import { DhisApi } from '/dhis/DhisApi';
+import groupBy from 'lodash.groupby';
 
 const query = { organisationUnitCode: 'TO' };
 
@@ -22,23 +23,55 @@ const createDhisApiStub = dataValues => {
       ),
     }));
 
-  return sinon.createStubInstance(DhisApi, { getAnalytics });
+  const fetch = sinon.stub();
+  fetch
+    .returns({ dataElements: [] })
+    .withArgs(
+      sinon.match('dataElements'),
+      sinon.match({
+        filter: sinon.match(/code:in:\[.*\]/),
+        fields: sinon.match('id,code,name,optionSet'),
+      }),
+    )
+    .callsFake((endpoint, { filter }) => {
+      const metadatas = [];
+      const codes = convertCodesFilterStringToArrayOfCodes(filter);
+      const dataValuesByCode = groupBy(dataValues, val => val.dataElement);
+      codes.forEach(code => {
+        const dataValue = dataValuesByCode[code] ? dataValuesByCode[code][0] : undefined;
+        if (dataValue && dataValue.metadata) {
+          metadatas.push(dataValue.metadata);
+        }
+      });
+      return { dataElements: metadatas };
+    });
+
+  return sinon.createStubInstance(DhisApi, { getAnalytics, fetch });
 };
 
 export const createAssertTableResults = availableDataValues => {
+  const aggregatorStub = {};
   const dhisApiStub = createDhisApiStub(availableDataValues);
 
   return async (dataBuilderConfig, expectedResults) =>
-    expect(tableOfDataValues({ dataBuilderConfig, query }, dhisApiStub)).to.eventually.deep.equal(
-      expectedResults,
-    );
+    expect(
+      tableOfDataValues({ dataBuilderConfig, query }, aggregatorStub, dhisApiStub),
+    ).to.eventually.deep.equal(expectedResults);
 };
 
 export const createAssertErrorIsThrown = availableDataValues => {
+  const aggregatorStub = {};
   const dhisApiStub = createDhisApiStub(availableDataValues);
 
   return async (dataBuilderConfig, expectedError) =>
     expect(
-      tableOfDataValues({ dataBuilderConfig, query }, dhisApiStub),
+      tableOfDataValues({ dataBuilderConfig, query }, aggregatorStub, dhisApiStub),
     ).to.eventually.be.rejectedWith(expectedError);
 };
+
+// Remove the opening 'code:in:[' and trailing ']' and split on commas
+const convertCodesFilterStringToArrayOfCodes = codesFilterString =>
+  codesFilterString
+    .substr(9)
+    .slice(0, -1)
+    .split(',');

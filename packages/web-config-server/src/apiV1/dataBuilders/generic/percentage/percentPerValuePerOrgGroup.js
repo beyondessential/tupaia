@@ -11,7 +11,11 @@ import {
 } from '/apiV1/utils';
 const { MOST_RECENT_PER_ORG_GROUP } = AGGREGATION_TYPES;
 
-export const percentPerValuePerOrgGroup = async ({ dataBuilderConfig, query }, dhisApi) => {
+export const percentPerValuePerOrgGroup = async (
+  { dataBuilderConfig, query },
+  aggregator,
+  dhisApi,
+) => {
   const { organisationUnitLevel, range, valuesOfInterest } = dataBuilderConfig;
   const { organisationUnitCode } = query;
 

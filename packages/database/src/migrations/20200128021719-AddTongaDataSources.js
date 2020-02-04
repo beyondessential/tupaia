@@ -22,10 +22,10 @@ exports.up = function(db) {
   const dataSourceValues = dataSourceCodes.map(code => {
     const specialConfig = specialConfigs[code] || {};
     const config = { ...specialConfig, isDataRegional: false };
-    return `('${generateId()}', '${code}', 'dhis', '${JSON.stringify(config)}')`;
+    return `('${generateId()}', '${code}', 'dataElement', 'dhis', '${JSON.stringify(config)}')`;
   });
   return db.runSql(`
-    INSERT INTO data_source (id, code, service, config) VALUES
+    INSERT INTO data_source (id, code, type, service_type, config) VALUES
     ${dataSourceValues.join(',\n')};
   `);
 };

@@ -18,7 +18,11 @@ import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
  *  "dataPairNames": ["Pair 1 Name", "Pair 2 Name", ...]
  * }
  */
-export const compareDataElementPairs = async ({ dataBuilderConfig, viewJson, query }, dhisApi) => {
+export const compareDataElementPairs = async (
+  { dataBuilderConfig, viewJson, query },
+  aggregator,
+  dhisApi,
+) => {
   const { organisationUnitCode } = query;
   const { dataElementPairs } = dataBuilderConfig;
   const { dataPairNames, leftColumn, rightColumn } = viewJson.presentationOptions;

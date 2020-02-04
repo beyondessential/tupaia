@@ -34,8 +34,18 @@ class CountEventsPerPeriodBuilder extends DataPerPeriodBuilder {
   }
 }
 
-export const countEventsPerPeriod = async ({ dataBuilderConfig, query, entity }, dhisApi) => {
-  const builder = new CountEventsPerPeriodBuilder(dhisApi, dataBuilderConfig, query, entity);
+export const countEventsPerPeriod = async (
+  { dataBuilderConfig, query, entity },
+  aggregator,
+  dhisApi,
+) => {
+  const builder = new CountEventsPerPeriodBuilder(
+    aggregator,
+    dhisApi,
+    dataBuilderConfig,
+    query,
+    entity,
+  );
 
   return builder.build();
 };

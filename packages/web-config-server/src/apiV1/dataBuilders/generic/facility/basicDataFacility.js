@@ -1,4 +1,4 @@
-export const basicDataFacility = async ({ dataBuilderConfig, query }, dhisApi) => {
+export const basicDataFacility = async ({ dataBuilderConfig, query }, aggregator, dhisApi) => {
   const { results } = await dhisApi.getAnalytics(dataBuilderConfig, query);
 
   const CATCHMENT_POPULATION = 'oxksRFlN3KF';

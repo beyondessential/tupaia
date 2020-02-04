@@ -11,7 +11,11 @@ import { buildCategories } from './buildCategories';
 
 const { MOST_RECENT_PER_ORG_GROUP } = AGGREGATION_TYPES;
 
-export const matrixMostRecentFromChildren = async ({ dataBuilderConfig, query }, dhisApi) => {
+export const matrixMostRecentFromChildren = async (
+  { dataBuilderConfig, query },
+  aggregator,
+  dhisApi,
+) => {
   const {
     dataElementGroupSet,
     dataElementGroup,

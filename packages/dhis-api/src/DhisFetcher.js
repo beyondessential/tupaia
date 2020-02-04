@@ -29,6 +29,8 @@ const CACHEABLE_ENDPOINTS = [
 const getIsCacheable = (endpoint, httpMethod) =>
   CACHEABLE_ENDPOINTS.includes(endpoint) && httpMethod === 'GET';
 
+const MAX_FETCH_WAIT_TIME = 120 * 1000; // 120 seconds allows longer running DHIS fetches to succeed
+
 /**
  * Handles auth, fetching, and caching the more stable responses from dhis2 endpoints
  */
@@ -102,7 +104,7 @@ export class DhisFetcher {
     if (cachedResponse) {
       return cachedResponse;
     }
-    const response = await fetchWithTimeout(url, fetchConfig);
+    const response = await fetchWithTimeout(url, fetchConfig, MAX_FETCH_WAIT_TIME);
 
     if (response.ok) {
       try {
@@ -117,7 +119,7 @@ export class DhisFetcher {
         return responseObject;
       } catch (error) {
         // deletes return an invalid body for json() to parse.
-        if (error.type === 'invalid-json' && customFetchConfig.method === 'DELETE') return {};
+        if (error.type === 'invalid-json' && config.method === 'DELETE') return {};
         if (response.statusText) throw this.constructError(response.statusText, url);
         throw this.constructError(error.message, url);
       }

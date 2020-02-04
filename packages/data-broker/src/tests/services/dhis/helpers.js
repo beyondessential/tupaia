@@ -2,6 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
+
 import sinon from 'sinon';
 import { DhisApi } from '@tupaia/dhis-api';
 
@@ -29,12 +30,9 @@ export const cleanupDhisApiStub = () => {
 };
 
 export const stubModels = ({ dataSources }) => ({
-  DataSource: {
+  dataSource: {
     findOrDefault: specs =>
       dataSources.filter(({ code, type }) => specs.code.includes(code) && specs.type === type),
-    types: {
-      DATA_ELEMENT: 'dataElement',
-      DATA_GROUP: 'dataGroup',
-    },
+    getTypes: () => ({ DATA_ELEMENT: 'dataElement', DATA_GROUP: 'dataGroup' }),
   },
 });

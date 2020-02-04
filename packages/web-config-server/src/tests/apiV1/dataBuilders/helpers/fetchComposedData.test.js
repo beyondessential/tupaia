@@ -23,6 +23,7 @@ const query = {
   startPeriod: '201910',
   endPeriod: '201911',
 };
+const aggregatorStub = {};
 const dhisApiStub = sinon.createStubInstance(DhisApi);
 
 const callFetchComposedData = async () => {
@@ -39,7 +40,7 @@ const callFetchComposedData = async () => {
     },
   };
 
-  return fetchComposedData({ dataBuilderConfig, query }, dhisApiStub);
+  return fetchComposedData({ dataBuilderConfig, query }, aggregatorStub, dhisApiStub);
 };
 
 describe('fetchComposedData()', () => {
@@ -63,10 +64,12 @@ describe('fetchComposedData()', () => {
 
     expect(DATA_BUILDERS.countBuilder.stub).to.have.been.calledOnceWith(
       { dataBuilderConfig: DATA_BUILDERS.countBuilder.config, query },
+      aggregatorStub,
       dhisApiStub,
     );
     expect(DATA_BUILDERS.percentageBuilder.stub).to.have.been.calledOnceWith(
       { dataBuilderConfig: DATA_BUILDERS.percentageBuilder.config, query },
+      aggregatorStub,
       dhisApiStub,
     );
   });

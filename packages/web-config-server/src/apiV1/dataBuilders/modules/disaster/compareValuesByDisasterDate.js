@@ -4,6 +4,7 @@ import { EARLIEST_DATA_DATE } from '/dhis';
 
 export const compareValuesByDisasterDate = async (
   { dataBuilderConfig, viewJson, query },
+  aggregator,
   dhisApi,
 ) => {
   const { organisationUnitCode, disasterStartDate, startDate } = query;
