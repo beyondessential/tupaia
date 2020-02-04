@@ -65,54 +65,35 @@ describe('DataBroker', () => {
   });
 
   describe('pull()', () => {
-    const assertNonExistingDataSourceErrorIsThrown = async dataSourceSpec =>
-      expect(new DataBroker().pull(dataSourceSpec, options)).to.eventually.be.rejectedWith(
-        /Please provide.*data source/,
-      );
-
-    const assertPullServiceWasInvokedCorrectly = async (dataSourceSpec, pullDataSources) => {
-      await new DataBroker().pull(dataSourceSpec, options);
-
-      assertCreateServiceWasInvokedCorrectly();
-      expect(serviceStub.pull).to.have.been.calledOnceWithExactly(
-        pullDataSources,
-        'dataElement',
-        options,
-      );
-    };
-
     it('should throw an error if no code is provided', async () =>
       Promise.all(
-        [{}, { type: 'dataElement' }, { code: '' }, { code: [] }].map(
-          assertNonExistingDataSourceErrorIsThrown,
+        [{}, { type: 'dataElement' }, { code: '' }, { code: [] }].map(dataSourceSpec =>
+          expect(new DataBroker().pull(dataSourceSpec, options)).to.eventually.be.rejectedWith(
+            /Please provide.*data source/,
+          ),
         ),
       ));
 
-    it('single code - existing', async () => {
-      assertPullServiceWasInvokedCorrectly(DATA_SOURCE_SPECS.POP01, [DATA_SOURCES.POP01]);
-    });
+    it('single code', async () => {
+      await new DataBroker().pull(DATA_SOURCE_SPECS.POP01, options);
 
-    it('single code - non existing', async () =>
-      assertNonExistingDataSourceErrorIsThrown({ code: 'invalidCode', type: 'dataElement' }));
-
-    it('multiple codes - all existing', async () => {
-      assertPullServiceWasInvokedCorrectly(
-        { code: ['POP01', 'POP02'], type: 'dataElement' },
-        dataSources,
-      );
-    });
-
-    it('multiple codes - some existing', async () => {
-      assertPullServiceWasInvokedCorrectly(
-        { code: ['POP01', 'invalidCode'], type: 'dataElement' },
+      assertCreateServiceWasInvokedCorrectly();
+      expect(serviceStub.pull).to.have.been.calledOnceWithExactly(
         [DATA_SOURCES.POP01],
+        'dataElement',
+        options,
       );
     });
 
-    it('multiple codes - none existing', async () =>
-      assertNonExistingDataSourceErrorIsThrown({
-        code: ['invalidCode1', 'invalidCode2'],
-        type: 'dataElement',
-      }));
+    it('multiple codes', async () => {
+      await new DataBroker().pull({ code: ['POP01', 'POP02'], type: 'dataElement' }, options);
+
+      assertCreateServiceWasInvokedCorrectly();
+      expect(serviceStub.pull).to.have.been.calledOnceWithExactly(
+        dataSources,
+        'dataElement',
+        options,
+      );
+    });
   });
 });

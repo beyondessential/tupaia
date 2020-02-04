@@ -27,7 +27,7 @@ export const models = {
   getStub: ({ dataSources }) => ({
     dataSource: {
       findOneOrDefault: spec =>
-        dataSources.find(({ code, type }) => spec.code === code && spec.type === type) || null,
+        dataSources.find(({ code, type }) => spec.code === code && spec.type === type),
       findOrDefault: spec =>
         dataSources.filter(({ code, type }) => spec.code.includes(code) && spec.type === type),
       getTypes: () => ({ DATA_ELEMENT: 'dataElement', DATA_GROUP: 'dataGroup' }),
