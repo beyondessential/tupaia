@@ -9,7 +9,7 @@ const AWS_LAMBDA_CONFIG = {
   // The specific lambda version to use. For testing changes to the lamba code you may set it to '$LATEST'.
   // However DO NOT commit '$LATEST' to dev/master!!! Create a new lamba version with your code instead.
   // See @tupaia/export-chart-lamba package for more information on lamba development and versioning.
-  lambdaVersion: '1',
+  lambdaVersion: '2',
 };
 
 /*

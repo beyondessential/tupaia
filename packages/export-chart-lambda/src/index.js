@@ -3,38 +3,15 @@ const { process: coreWorkerProcess } = require('core-worker');
 const fs = require('fs');
 const nodemailer = require('nodemailer');
 
-const temporaryFilenamePrefix =
-  Math.random()
-    .toString(36)
-    .substring(2, 15) +
-  Math.random()
-    .toString(36)
-    .substring(2, 15);
-
-// Set defaults (overriden by lambda event params but useful for testing).
-let chartUrl = 'http://localhost:3001/?organisationUnitCode=TO&viewId=12&dashboardGroupId=13';
-let chartType = 'other';
-let fileType = 'png';
-let exportEmail;
-let exportFilename = `/tmp/all${temporaryFilenamePrefix}.${fileType}`;
-let emailMessage = '';
-let emailSubject = '';
-let cookies = [];
-let extraConfig = {};
-
 exports.handler = async (event, context, callback) => {
   console.log('Start lambda method');
   // For keeping the browser launch
   context.callbackWaitsForEmptyEventLoop = false;
-  chartUrl = event.chartUrl;
-  chartType = event.chartType;
-  exportEmail = event.email;
-  fileType = event.fileType;
-  extraConfig = event.extraConfig;
-  exportFilename = `/tmp/all.${fileType}`;
-  emailMessage = event.emailMessage;
-  emailSubject = event.emailSubject;
-  cookies = event.cookies;
+
+  const config = {
+    ...event,
+    tmpFileName: `/tmp/all.${event.fileType}`,
+  };
 
   const browser = await chromium.puppeteer.launch({
     args: chromium.args,
@@ -45,7 +22,7 @@ exports.handler = async (event, context, callback) => {
 
   try {
     await exports
-      .run(browser)
+      .run(browser, config)
       .then(result => callback(null, result))
       .catch(err => callback(err));
   } finally {
@@ -56,7 +33,7 @@ exports.handler = async (event, context, callback) => {
   return 'done';
 };
 
-const exportMatrix = async page => {
+const exportMatrix = async (page, { fileType, extraConfig, tmpFileName }) => {
   if (fileType !== 'pdf') {
     throw new Error('Matrix export must be pdf');
   }
@@ -68,6 +45,13 @@ const exportMatrix = async page => {
   // can be modified by the exporter.
   await page.evaluate(`window.tupaiaExportProps.initExporter(${JSON.stringify(extraConfig)})`);
 
+  const temporaryFilenamePrefix =
+    Math.random()
+      .toString(36)
+      .substring(2, 15) +
+    Math.random()
+      .toString(36)
+      .substring(2, 15);
   const files = [];
   let exportComplete = false;
   let pageCounter = 0;
@@ -91,17 +75,17 @@ const exportMatrix = async page => {
 
   console.log('Screenshots complete');
   await coreWorkerProcess(
-    `/opt/bin/gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile=${exportFilename} ${files.join(
+    `/opt/bin/gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile=${tmpFileName} ${files.join(
       ' ',
     )}`,
   ).death();
   console.log('Screenshot combining complete');
 };
 
-const exportPage = async page => {
+const exportPage = async (page, { fileType, tmpFileName }) => {
   if (fileType === 'pdf') {
     await page.pdf({
-      path: exportFilename,
+      path: tmpFileName,
       format: 'A4',
       printBackground: true,
       landscape: true,
@@ -109,7 +93,7 @@ const exportPage = async page => {
     });
   } else if (fileType === 'png') {
     await page.screenshot({
-      path: exportFilename,
+      path: tmpFileName,
       fullPage: true,
     });
   } else {
@@ -117,7 +101,13 @@ const exportPage = async page => {
   }
 };
 
-const sendCompletionEmail = async () => {
+const sendCompletionEmail = async ({
+  email,
+  emailSubject,
+  emailMessage,
+  exportFileName,
+  tmpFileName,
+}) => {
   const transporter = nodemailer.createTransport({
     port: 465,
     host: process.env.SMTP_HOST,
@@ -128,53 +118,53 @@ const sendCompletionEmail = async () => {
     },
   });
 
-  console.log(`Emailing to ${exportEmail}`);
+  console.log(`Emailing to ${email}`);
 
   return transporter.sendMail({
     from: process.env.SITE_EMAIL_ADDRESS,
-    to: exportEmail,
+    to: email,
     subject: emailSubject,
     html: emailMessage,
     attachments: [
       {
-        filename: `tupaia-export-${chartType}.${fileType}`,
-        content: fs.createReadStream(exportFilename),
+        filename: exportFileName,
+        content: fs.createReadStream(tmpFileName),
       },
     ],
   });
 };
 
-const setCookie = async page => {
+const setCookie = async (page, cookies) => {
   for (let c = 0; c < cookies.length; c++) {
     await page.setCookie(cookies[c]);
   }
 };
 
-exports.run = async browser => {
+exports.run = async (browser, config) => {
   console.log('Begin running');
   const page = await browser.newPage();
   console.log('Browser launched');
 
-  await setCookie(page);
+  await setCookie(page, config.cookies);
   console.log('Set cookies');
 
-  await page.goto(chartUrl);
-  console.log('Page visited', chartUrl);
+  await page.goto(config.chartUrl);
+  console.log('Page visited', config.chartUrl);
   await page.setViewport({ width: 1000, height: 720 });
 
   //A little hacky, we wait for the chart body to be displayed, and then wait another 5 seconds for good measure (incase components haven't fully loaded)
   await page.waitForSelector('#chart-body');
   await page.waitFor(5000);
 
-  if (chartType === 'matrix') {
-    await exportMatrix(page);
+  if (config.chartType === 'matrix') {
+    await exportMatrix(page, config);
   } else {
-    await exportPage(page);
+    await exportPage(page, config);
   }
 
   console.log('Export complete');
 
-  await sendCompletionEmail();
+  await sendCompletionEmail(config);
   console.log('Email sent');
 
   await page.close();
