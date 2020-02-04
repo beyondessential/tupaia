@@ -7,21 +7,53 @@ import keyBy from 'lodash.keyby';
 
 import { modelClasses } from '@tupaia/database';
 
+/**
+ * Defines which data source(s) should be selected from the `data_source` table
+ *
+ * @typedef {Object} DataSourceSpec
+ * @property {string|string[]} code  Matches on the code column
+ * @property {string} type  Matches on the type column
+ */
+
+const assertDataSourceSpecIsValid = dataSourceSpec => {
+  if (!dataSourceSpec || !dataSourceSpec.code || !dataSourceSpec.type) {
+    throw new Error('Please provide a valid data source spec');
+  }
+};
+
 export class DataSourceModel extends modelClasses.DataSource {
-  getDefault = (code, type) => ({ code, type, service_type: 'dhis', config: {} });
+  getDefault = ({ code, type }) => ({
+    code,
+    type,
+    service_type: 'dhis',
+    config: {},
+  });
 
   /**
    * Find the matching data source, or default to 1:1 mapping with dhis, as only mappings
    * with non-standard rules are kept in the db
+   *
+   * @param {DataSourceSpec} dataSourceSpec
+   * @returns {Promise}
    */
-  async findOneOrDefault({ code, type }) {
-    const dataSourceRecord = await this.findOne({ code, type });
-    return dataSourceRecord || this.getDefault(code, type);
+  async findOneOrDefault(dataSourceSpec) {
+    assertDataSourceSpecIsValid(dataSourceSpec);
+    const dataSourceRecord = await this.findOne(dataSourceSpec);
+    return dataSourceRecord || this.getDefault(dataSourceSpec);
   }
 
-  async findOrDefault({ code: codes, type }) {
-    const records = await this.find({ code: codes, type });
+  /**
+   * @param {DataSourceSpec} dataSourceSpec
+   * @returns {Promise<Array>}
+   */
+  async findOrDefault(dataSourceSpec) {
+    assertDataSourceSpecIsValid(dataSourceSpec);
+
+    const records = await this.find(dataSourceSpec);
     const codeToRecord = keyBy(records, 'code');
-    return codes.map(code => codeToRecord[code] || this.getDefault(code, type));
+    const { code: codeInput } = dataSourceSpec;
+    const codes = Array.isArray(codeInput) ? codeInput : [codeInput];
+
+    return codes.map(code => codeToRecord[code] || this.getDefault({ ...dataSourceSpec, code }));
   }
 }

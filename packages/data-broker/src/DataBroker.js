@@ -3,17 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { modelClasses } from '@tupaia/database';
 import { createService } from './services';
 import { getModels } from './getModels';
-
-/**
- * Defines which data source should be selected from the `data_source` table
- *
- * @typedef {Object} DataSourceSpec
- * @property {string} code  Matches on the code column
- * @property {string} type  Matches on the type column
- */
 
 export class DataBroker {
   constructor() {
@@ -21,11 +12,15 @@ export class DataBroker {
   }
 
   getDataSourceTypes() {
-    return modelClasses.DataSource.types;
+    return this.models.dataSource.getTypes();
   }
 
-  fetchDataSource(spec) {
-    return this.models.dataSource.findOneOrDefault(spec);
+  async fetchDataSource(dataSourceSpec) {
+    return this.models.dataSource.findOneOrDefault(dataSourceSpec);
+  }
+
+  async fetchDataSources(dataSourceSpec) {
+    return this.models.dataSource.findOrDefault(dataSourceSpec);
   }
 
   createService(serviceType) {
@@ -44,9 +39,29 @@ export class DataBroker {
     return service.delete(dataSource, data, options);
   }
 
-  async pull(dataSourceSpec, metadata) {
-    const dataSource = await this.fetchDataSource(dataSourceSpec);
-    const service = this.createService(dataSource.service_type);
-    return service.pull(dataSource, metadata);
+  async fetchDataSourcesForPull(dataSourceSpec) {
+    const errorMessage = 'Please provide at least one existing data source code';
+
+    const { code } = dataSourceSpec;
+    if (!code || (Array.isArray(code) && code.length === 0)) {
+      throw new Error(errorMessage);
+    }
+    const dataSources = await this.fetchDataSources(dataSourceSpec);
+    if (dataSources.length === 0) {
+      throw new Error(errorMessage);
+    }
+
+    return dataSources;
+  }
+
+  async pull(dataSourceSpec, options) {
+    const dataSources = await this.fetchDataSourcesForPull(dataSourceSpec);
+
+    // `dataSourceSpec` is defined for a single `type` and `service_type`
+    // This way we avoid merging responses with incompatible data structures.
+    // It also means all fetched `dataSources` will have the same types
+    const { type, service_type: serviceType } = dataSources[0];
+    const service = this.createService(serviceType);
+    return service.pull(dataSources, type, options);
   }
 }
