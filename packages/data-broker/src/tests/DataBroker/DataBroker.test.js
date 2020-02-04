@@ -64,7 +64,7 @@ describe('DataBroker', () => {
     );
   });
 
-  describe('pul()', () => {
+  describe('pull()', () => {
     const assertNonExistingDataSourceErrorIsThrown = async dataSourceSpec =>
       expect(new DataBroker().pull(dataSourceSpec, options)).to.eventually.be.rejectedWith(
         /Please provide.*data source/,

@@ -39,17 +39,6 @@ export class DataBroker {
     return service.delete(dataSource, data, options);
   }
 
-  async pull(dataSourceSpec, options) {
-    const dataSources = await this.fetchDataSourcesForPull(dataSourceSpec);
-
-    // `dataSourceSpec` is defined for a single `type` and `service_type`
-    // This way we avoid merging responses with incompatible data structures.
-    // It also means all fetched `dataSources` will have the same types
-    const { type, service_type: serviceType } = dataSources[0];
-    const service = this.createService(serviceType);
-    return service.pull(dataSources, type, options);
-  }
-
   async fetchDataSourcesForPull(dataSourceSpec) {
     const errorMessage = 'Please provide at least one existing data source code';
 
@@ -63,5 +52,16 @@ export class DataBroker {
     }
 
     return dataSources;
+  }
+
+  async pull(dataSourceSpec, options) {
+    const dataSources = await this.fetchDataSourcesForPull(dataSourceSpec);
+
+    // `dataSourceSpec` is defined for a single `type` and `service_type`
+    // This way we avoid merging responses with incompatible data structures.
+    // It also means all fetched `dataSources` will have the same types
+    const { type, service_type: serviceType } = dataSources[0];
+    const service = this.createService(serviceType);
+    return service.pull(dataSources, type, options);
   }
 }

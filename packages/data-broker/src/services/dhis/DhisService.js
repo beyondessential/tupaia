@@ -135,7 +135,7 @@ export class DhisService extends Service {
         endDate,
       });
       response.results.push(...results);
-      Object.assign(response.metadata, metadata);
+      response.metadata = { ...response.metadata, ...metadata };
     };
 
     await Promise.all(apis.map(pullForApi));
@@ -158,9 +158,6 @@ export class DhisService extends Service {
   ) => {
     if (dataSources.length > 1) {
       throw new Error('Cannot pull from multiple programs at the same time');
-    }
-    if (dataSources.length === 0) {
-      return [];
     }
     const [dataSource] = dataSources;
     const { code: programCode } = dataSource;
