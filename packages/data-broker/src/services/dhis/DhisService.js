@@ -57,8 +57,7 @@ export class DhisService extends Service {
    * @param {Object}     dataValue    The untranslated data value
    * @param {DataSource} dataSource
    */
-  translateDataValue = async (api, dv, dataSource) => {
-    const { value, dataElement, ...restOfDataValue } = dv;
+  translateDataValue = async (api, { value, code, ...restOfDataValue }, dataSource) => {
     const dataElementCode = dataSourceToElementCode(dataSource);
     const valueToPush = await this.getValueToPush(api, dataElementCode, value);
     return {
