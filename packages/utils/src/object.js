@@ -91,7 +91,7 @@ export const reduceToSet = (objectCollection, property) => {
 };
 
 /**
- * Changes keys in `object` according to `mapping`.
+ * Changes keys in `object` according to `mapping`
  *
  * @param {Object<string, any>} object
  * @param {Object<string, string>} mapping `oldKey` => `newKey` mapping
@@ -114,7 +114,7 @@ export const mapKeys = (object, mapping, defaultToExistingKeys = false) => {
 };
 
 /**
- * Changes values in `object` according to `mapping`.
+ * Changes values in `object` according to `mapping`
  *
  * @param {Object<string, any>} object
  * @param {Object<string, string>} mapping `oldValue` => `newValue` mapping
