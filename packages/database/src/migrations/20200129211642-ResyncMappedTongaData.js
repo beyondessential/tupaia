@@ -15,49 +15,40 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = function(db) {
-  const eventBasedSurveysWithRemappedQuestions = `
-    SELECT id
-    FROM survey
-    WHERE code IN ('CD2','CD3a','CD3b','CD4','CD1','CD8')
-  `;
-
-  const surveyResponseIds = `
-    SELECT id
-    FROM survey_response
-    WHERE survey_id IN (${eventBasedSurveysWithRemappedQuestions})
-  `;
-
-  const dataSourcesWithCategoryCombos = `
-    SELECT code
-    FROM data_source
-    WHERE config ? 'categoryComboCode'
-  `;
-
-  const remappedAggregateQuestions = `
-    SELECT id
-    FROM question
-    WHERE code IN (${dataSourcesWithCategoryCombos})
-  `;
-
-  const answerIds = `
-    SELECT id
-    FROM answer
-    WHERE question_id IN (${remappedAggregateQuestions})
-  `;
-
   return db.runSql(`
     -- update survey responses and answers separately as too many at once causes duplicate change times
     UPDATE dhis_sync_queue
     SET is_deleted = false, priority = 1
-    WHERE record_id IN (${surveyResponseIds});
+    FROM survey_response, survey
+    WHERE record_type = 'survey_response'
+    AND record_id = survey_response.id
+    AND survey_response.survey_id = survey.id
+    AND survey.code IN ('CD2','CD3a','CD3b','CD4','CD1','CD8');
 
     UPDATE dhis_sync_queue
     SET is_deleted = false, priority = 1
-    WHERE record_id IN (${answerIds});
+    FROM answer, question, data_source
+    WHERE record_type = 'answer'
+    AND record_id = answer.id
+    AND answer.question_id = question.id
+    AND question.code = data_source.code
+    AND data_source.config ? 'categoryComboCode';
 
     -- delete all old sync log records as the data has been manually deleted from dhis2
     DELETE FROM dhis_sync_log
-    WHERE record_id IN (${surveyResponseIds}) OR record_id IN (${answerIds});
+    USING survey_response, survey
+    WHERE record_type = 'survey_response'
+    AND record_id = survey_response.id
+    AND survey_response.survey_id = survey.id
+    AND survey.code IN ('CD2','CD3a','CD3b','CD4','CD1','CD8');
+
+    DELETE FROM dhis_sync_log
+    USING answer, question, data_source
+    WHERE record_type = 'answer'
+    AND record_id = answer.id
+    AND answer.question_id = question.id
+    AND question.code = data_source.code
+    AND data_source.config ? 'categoryComboCode';
   `);
 };
 
