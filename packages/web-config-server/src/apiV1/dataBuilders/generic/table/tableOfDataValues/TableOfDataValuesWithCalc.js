@@ -5,7 +5,7 @@
 
 import moment from 'moment';
 
-import { CustomError } from '/errors';
+import { CustomError } from '@tupaia/utils';
 import { TableOfDataValuesBuilder } from './tableOfDataValues';
 import { TableConfig } from './TableConfig';
 import { getValuesByCell } from './getValuesByCell';
