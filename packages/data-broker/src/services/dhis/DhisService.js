@@ -41,24 +41,28 @@ export class DhisService extends Service {
     };
   }
 
+  getValueToPush = async (api, dataElementCode, value) => {
+    if (value === undefined) return value; // "delete" pushes don't include a value
+    const options = await api.getOptionsForDataElement(dataElementCode);
+    console.log(options);
+    if (!options) return value; // no option set associated with that data element, use raw value
+    const optionCode = options[value.toLowerCase()]; // Convert text to lower case so we can ignore case
+    if (!optionCode) {
+      throw new Error(`No option matching ${value} for data element ${dataElementCode}`);
+    }
+    return optionCode;
+  };
+
   /**
    * @param {Object}     dataValue    The untranslated data value
-   * @param {DataSource} dataSource   Note that this may not be the instance's primary data source
+   * @param {DataSource} dataSource
    */
-  translateDataValueCode = ({ code, ...restOfDataValue }, dataSource) => ({
-    dataElement: dataSourceToElementCode(dataSource),
-    ...restOfDataValue,
-  });
-
-  translateDataValueValue = async (api, { value, dataElement, ...restOfDataValue }) => {
-    const options = await api.getOptionsForDataElement(dataElement);
-    const optionCodeForAnswer = options[value.toLowerCase()]; // Convert text to lower case so we can ignore case
-    if (!optionCodeForAnswer) {
-      throw new Error(`No option matching ${value} for data element ${dataElement}`);
-    }
+  translateDataValue = async (api, { value, dataElement, ...restOfDataValue }, dataSource) => {
+    const dataElementCode = dataSourceToElementCode(dataSource);
+    const valueToPush = await this.getValueToPush(api, dataElementCode, value);
     return {
-      dataElement,
-      value: optionCodeForAnswer,
+      dataElement: dataElementCode,
+      value: valueToPush,
       ...restOfDataValue,
     };
   };
@@ -69,7 +73,7 @@ export class DhisService extends Service {
       type: this.dataSourceTypes.DATA_ELEMENT,
     });
     const dataValuesWithCodeReplaced = dataValues.map((d, i) =>
-      this.translateDataValueCode(d, dataSources[i]),
+      this.translateDataValue(api, d, dataSources[i]),
     );
     const dataElementCodes = dataValuesWithCodeReplaced.map(({ dataElement }) => dataElement);
     const dataElementIds = await api.getIdsFromCodes(
@@ -94,7 +98,7 @@ export class DhisService extends Service {
   }
 
   async pushAggregateData(api, dataValue, dataSource) {
-    const translatedDataValue = await this.translateDataValueCode(dataValue, dataSource);
+    const translatedDataValue = await this.translateDataValue(api, dataValue, dataSource);
     return api.postDataValueSets([translatedDataValue]);
   }
 
@@ -111,7 +115,7 @@ export class DhisService extends Service {
   }
 
   async deleteAggregateData(api, dataValue, dataSource) {
-    const translatedDataValue = this.translateDataValueCode(dataValue, dataSource);
+    const translatedDataValue = this.translateDataValue(api, dataValue, dataSource);
     return api.deleteDataValue(translatedDataValue);
   }
 
