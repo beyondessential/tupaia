@@ -33,12 +33,12 @@ exports.down = function(db) {
   return db.runSql(`
   UPDATE "dashboardReport" 
   SET "viewJson" = jsonb_set("viewJson", '{name}', '"Facilities Offering 3 Methods of Contraception"') ,
-      "dataBuilderConfig" = "dataBuilderConfig" - 'transformation'    
+      "dataBuilderConfig" = "dataBuilderConfig" - 'filter'    
   where id = 'UNFPA_Monthly_3_Methods_of_Contraception';
 
   UPDATE "dashboardReport" 
   SET "viewJson" = jsonb_set("viewJson", '{name}', '"Facilities Offering 5 Methods of Contraception"'),
-      "dataBuilderConfig" = "dataBuilderConfig" - 'transformation'    
+      "dataBuilderConfig" = "dataBuilderConfig" - 'filter'    
   where id = 'UNFPA_Monthly_5_Methods_of_Contraception';
 
   `);
