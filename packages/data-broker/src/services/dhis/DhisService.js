@@ -71,7 +71,7 @@ export class DhisService extends Service {
   }
 
   async push(dataSource, data) {
-    const { isDataRegional } = dataSource;
+    const { isDataRegional } = dataSource.config;
     const { orgUnit: entityCode } = data;
     const api = getDhisApiInstance({ entityCode, isDataRegional });
     const pushData = this.pushers[dataSource.type];
