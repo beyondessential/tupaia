@@ -1,4 +1,4 @@
-import { ValidationError } from '../../../errors';
+import { ValidationError } from '@tupaia/utils';
 
 export class BaseValidator {
   constructor(questions) {

@@ -3,6 +3,8 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
+import { DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
+
 /**
  * @typedef DataElementGroup
  * @property {string} code
@@ -17,7 +19,7 @@
  */
 export const getDataElementGroups = async (dhisApi, groupCodes) => {
   const results = await dhisApi.getRecords({
-    type: 'dataElementGroups',
+    type: DHIS2_RESOURCE_TYPES.DATA_ELEMENT_GROUP,
     codes: groupCodes,
     fields: 'code,name,dataElements[id,code]',
   });

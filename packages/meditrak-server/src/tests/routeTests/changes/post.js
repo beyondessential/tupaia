@@ -4,10 +4,9 @@
  */
 
 import { expect, assert } from 'chai';
-import fetch from 'node-fetch';
+import { fetchWithTimeout } from '@tupaia/utils';
+import { generateId, TYPES } from '@tupaia/database';
 
-import { generateId } from '@tupaia/database';
-import { TYPES } from '../../../database';
 import { TEST_IMAGE_DATA } from '../../testData';
 import {
   generateTestId,
@@ -295,7 +294,7 @@ export const testPostChanges = (app, models, syncQueue) =>
           const imagePostResponse = await app.post('changes', { body: [imageAction] });
           expect(imagePostResponse.statusCode).to.equal(200);
 
-          const uploadedImage = await fetch(IMAGE_URL);
+          const uploadedImage = await fetchWithTimeout(IMAGE_URL);
           const imageBuffer = await uploadedImage.buffer();
           const imageString = imageBuffer.toString('base64');
           expect(imageString).to.equal(TEST_IMAGE_DATA);
@@ -347,7 +346,7 @@ export const testPostChanges = (app, models, syncQueue) =>
           expect(numberOfAnswersAdded).to.equal(1);
           const answer = await models.answer.findById(imageAnswerObject.id);
           expect(answer.text).to.exist;
-          const imageResponse = await fetch(answer.text);
+          const imageResponse = await fetchWithTimeout(answer.text);
           const imageBuffer = await imageResponse.buffer();
           const imageString = imageBuffer.toString('base64');
           expect(imageString).to.equal(TEST_IMAGE_DATA);

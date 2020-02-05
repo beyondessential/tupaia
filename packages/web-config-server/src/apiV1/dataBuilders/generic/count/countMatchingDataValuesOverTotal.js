@@ -3,7 +3,8 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { asynchronouslyFetchValuesForObject, getOptionSetOptions } from '/apiV1/utils';
+import { asynchronouslyFetchValuesForObject } from '@tupaia/utils';
+import { getOptionSetOptions } from '/apiV1/utils';
 
 export const countMatchingDataValuesOverTotal = async ({ dataBuilderConfig, query }, dhisApi) => {
   const { dataElementCodes, matchCriteria } = dataBuilderConfig;

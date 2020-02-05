@@ -1,4 +1,4 @@
-import fetch from 'node-fetch';
+import { fetchWithTimeout } from '@tupaia/utils';
 
 const BASE_URL = process.env.CONFIG_SERVER_BASE_URL || 'http://localhost:8080/api/v1';
 
@@ -23,7 +23,7 @@ export const requestFromTupaiaConfigServer = async (
     const headers = {
       cookie: `${sessionCookieName}=${sessionCookie}`,
     };
-    const response = await fetch(
+    const response = await fetchWithTimeout(
       `${BASE_URL}/${endpoint}${queryParametersToString(queryParameters)}`,
       { headers },
     );

@@ -3,11 +3,12 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { CustomError } from '/errors';
+import { DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
+import { CustomError } from '@tupaia/utils';
 
 export const getDataElementGroupSets = async (dhisApi, groupSetCodes, useCodeAsKey = false) => {
   const results = await dhisApi.getRecords({
-    type: 'dataElementGroupSets',
+    type: DHIS2_RESOURCE_TYPES.DATA_ELEMENT_GROUP_SET,
     codes: groupSetCodes,
     fields: 'code,name,dataElementGroups[displayName, id, code, dataElements[id, code]]',
   });

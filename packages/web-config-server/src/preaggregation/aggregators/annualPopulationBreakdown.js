@@ -7,8 +7,8 @@ import get from 'lodash.get';
 import has from 'lodash.has';
 import setWith from 'lodash.setwith';
 import winston from 'winston';
+import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
 
-import { AGGREGATION_TYPES } from '/dhis';
 import { postDataValueSets } from '/preaggregation/postDataValueSets';
 import { runAggregationOnAllDhisInstances } from '/preaggregation/runAggregationOnAllDhisInstances';
 

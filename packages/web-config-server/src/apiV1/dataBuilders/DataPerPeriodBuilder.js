@@ -6,8 +6,7 @@
 /* eslint-disable class-methods-use-this */
 
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { periodToDisplayString, periodToTimestamp } from '/dhis';
-import { parsePeriodType } from '/dhis/periodTypes';
+import { parsePeriodType, periodToDisplayString, periodToTimestamp } from '@tupaia/dhis-api';
 
 /**
  * @abstract

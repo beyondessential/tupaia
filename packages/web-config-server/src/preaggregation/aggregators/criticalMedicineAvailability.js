@@ -1,5 +1,5 @@
 import winston from 'winston';
-import { AGGREGATION_TYPES } from '/dhis';
+import { AGGREGATION_TYPES, DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
 import { postDataValueSets } from '/preaggregation/postDataValueSets';
 
 /**
@@ -45,10 +45,13 @@ export const criticalMedicineAvailability = async dhisApi => {
     try {
       // Find all organisation unit groups representing facility types for this country (e.g. FacilityType_TO_1_Hospitals)
       const organisationUnitGroupCodePrefixForCountry = `${ORGANISATION_UNIT_GROUP_CODE_PREFIX}_${country.code}`;
-      const { organisationUnitGroups } = await dhisApi.fetch('organisationUnitGroups', {
-        filter: [{ code: organisationUnitGroupCodePrefixForCountry, comparator: 'like' }],
-        fields: 'code',
-      });
+      const { organisationUnitGroups } = await dhisApi.fetch(
+        DHIS2_RESOURCE_TYPES.ORGANISATION_UNIT_GROUP,
+        {
+          filter: [{ code: organisationUnitGroupCodePrefixForCountry, comparator: 'like' }],
+          fields: 'code',
+        },
+      );
 
       for (
         let organisationUnitGroupIndex = 0;
@@ -196,7 +199,7 @@ const getDataElementGroupForOrganisationUnitGroup = async (dhisApi, organisation
   // Go through from most specific to least specific, and return as soon as a matching group is found
   for (let i = 0; i < dataElementGroupCodes.length; i++) {
     const dataElementGroup = await dhisApi.getRecord({
-      type: 'dataElementGroups',
+      type: DHIS2_RESOURCE_TYPES.DATA_ELEMENT_GROUP,
       code: dataElementGroupCodes[i],
       fields: 'code,dataElements[code]',
     });

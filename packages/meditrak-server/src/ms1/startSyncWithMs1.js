@@ -3,12 +3,12 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  **/
 import { get } from 'lodash';
+import { HttpError } from '@tupaia/utils';
 
 import { ExternalApiSyncQueue } from '../database/ExternalApiSyncQueue';
 import { Ms1Api } from './api/Ms1Api';
 import { addToSyncLog } from './addToSyncLog';
 import { generateMs1VariableName } from './utilities/generateMs1VariableName';
-import { HttpError } from '../errors';
 import { findQuestionsBySurvey } from '../dataAccessors/findQuestionsBySurvey';
 import { generateChangeRecordAdditions } from './syncQueue';
 const PERIOD_BETWEEN_SYNCS = 1 * 60 * 1000; // 1 minute between syncs

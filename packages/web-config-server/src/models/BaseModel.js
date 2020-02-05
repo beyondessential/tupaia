@@ -3,7 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 /* eslint-disable no-underscore-dangle */
-import { DatabaseError } from '/errors';
+import { DatabaseError } from '@tupaia/utils';
 
 export class BaseModel {
   /**

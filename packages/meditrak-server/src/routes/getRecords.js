@@ -4,17 +4,14 @@
  */
 
 import formatLinkHeader from 'format-link-header';
-import { JOIN_TYPES } from '@tupaia/database';
-import { respond } from '../respond';
-import { DatabaseError, ValidationError } from '../errors';
-import { TYPES } from '../database';
+import { TYPES, JOIN_TYPES, DatabaseType } from '@tupaia/database';
+import { respond, DatabaseError, ValidationError } from '@tupaia/utils';
 import {
   findQuestionsBySurvey,
   findAnswersBySurveyResponse,
   findEditableFeedItems,
 } from '../dataAccessors';
 import { getApiUrl, resourceToRecordType } from '../utilities';
-import { DatabaseType } from '../database/DatabaseType';
 
 const GETTABLE_TYPES = [
   TYPES.ANSWER,

@@ -4,7 +4,7 @@
  */
 
 import jwt from 'jsonwebtoken';
-import { UnauthenticatedError } from '../errors';
+import { UnauthenticatedError } from '@tupaia/utils';
 import { getJwtToken } from '../utilities';
 
 /**

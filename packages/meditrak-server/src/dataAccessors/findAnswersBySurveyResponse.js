@@ -3,8 +3,7 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
 
-import { JOIN_TYPES } from '@tupaia/database';
-import { TYPES } from '../database';
+import { TYPES, JOIN_TYPES } from '@tupaia/database';
 
 /**
  * Returns the answers to a given survey response in the order they appear in the survey

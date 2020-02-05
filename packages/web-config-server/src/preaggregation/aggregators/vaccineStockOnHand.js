@@ -5,10 +5,9 @@
 import flatten from 'lodash.flatten';
 import winston from 'winston';
 
-import { utcMoment } from '/utils/utcMoment';
-import { getDataElementGroups, getDataElementsFromCodes, stripFromStart } from '/apiV1/utils';
-import { PERIOD_TYPES, momentToPeriod } from '/dhis/periodTypes';
-import { reduceToDictionary } from '/utils';
+import { PERIOD_TYPES, momentToPeriod } from '@tupaia/dhis-api';
+import { utcMoment, reduceToDictionary, stripFromStart } from '@tupaia/utils';
+import { getDataElementGroups, getDataElementsFromCodes } from '/apiV1/utils';
 import {
   FRIDGE_BREACH_PROGRAM_CODE,
   FRIDGE_DAILY_PROGRAM_CODE,
@@ -55,9 +54,9 @@ const buildVaccineMetadata = async (dhisApi, data) => {
     const facilityVaccineListCode = orgUnitVaccineListCode(facility);
     if (!orgUnitVaccineLists[facilityVaccineListCode]) continue;
 
-    const originalDataElementCodes = orgUnitVaccineLists[facilityVaccineListCode].dataElements.map(
-      de => stripFromStart(de.code, prependString),
-    );
+    const originalDataElementCodes = orgUnitVaccineLists[
+      facilityVaccineListCode
+    ].dataElements.map(de => stripFromStart(de.code, prependString));
     const originalDataElements = await getDataElementsFromCodes(dhisApi, originalDataElementCodes);
     metadata[facility] = originalDataElementCodes.reduce((codesById, code) => {
       return { ...codesById, [originalDataElements[code].id]: preaggregatedDataElementCode(code) };
