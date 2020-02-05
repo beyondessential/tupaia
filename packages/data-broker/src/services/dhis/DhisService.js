@@ -57,7 +57,8 @@ export class DhisService extends Service {
    * @param {Object}     dataValue    The untranslated data value
    * @param {DataSource} dataSource
    */
-  translateDataValue = async (api, { value, dataElement, ...restOfDataValue }, dataSource) => {
+  translateDataValue = async (api, dv, dataSource) => {
+    const { value, dataElement, ...restOfDataValue } = dv;
     const dataElementCode = dataSourceToElementCode(dataSource);
     const valueToPush = await this.getValueToPush(api, dataElementCode, value);
     return {
@@ -72,8 +73,8 @@ export class DhisService extends Service {
       code: dataValues.map(({ code }) => code),
       type: this.dataSourceTypes.DATA_ELEMENT,
     });
-    const dataValuesWithCodeReplaced = dataValues.map((d, i) =>
-      this.translateDataValue(api, d, dataSources[i]),
+    const dataValuesWithCodeReplaced = await Promise.all(
+      dataValues.map((d, i) => this.translateDataValue(api, d, dataSources[i])),
     );
     const dataElementCodes = dataValuesWithCodeReplaced.map(({ dataElement }) => dataElement);
     const dataElementIds = await api.getIdsFromCodes(
@@ -115,7 +116,7 @@ export class DhisService extends Service {
   }
 
   async deleteAggregateData(api, dataValue, dataSource) {
-    const translatedDataValue = this.translateDataValue(api, dataValue, dataSource);
+    const translatedDataValue = await this.translateDataValue(api, dataValue, dataSource);
     return api.deleteDataValue(translatedDataValue);
   }
 
