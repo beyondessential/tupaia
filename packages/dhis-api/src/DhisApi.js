@@ -184,7 +184,11 @@ export class DhisApi {
     if (!records) return null;
     // return ids in same order as provided codes
     const recordsByCode = keyBy(records, 'code');
-    return recordCodes.map(c => recordsByCode[c].id);
+    return recordCodes.map(c => {
+      const record = recordsByCode[c];
+      if (!record) throw new Error(`No ${recordType} matching ${c} on DHIS2`);
+      return record.id;
+    });
   }
 
   async getIdFromCode(recordType, recordCode) {
