@@ -33,7 +33,7 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
     return results;
   }
 
-  async buildData(analytics) {
+  buildData(analytics) {
     const dataClasses = [];
     Object.entries(this.config.dataClasses).forEach(([name, dataClass]) => {
       const [numerator, denominator] = this.calculateFractionPartsForDataClass(

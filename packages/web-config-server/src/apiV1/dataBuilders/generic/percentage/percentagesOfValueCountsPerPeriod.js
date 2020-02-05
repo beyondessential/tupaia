@@ -2,6 +2,7 @@
  * Tupaia Config Server
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
+import keyBy from 'lodash.keyBy';
 
 import { groupAnalyticsByPeriod } from '@tupaia/dhis-api';
 import { DataPerPeriodBuilder } from 'apiV1/dataBuilders/DataPerPeriodBuilder';
@@ -9,10 +10,10 @@ import { PercentagesOfValueCountsBuilder } from '/apiV1/dataBuilders/generic/per
 import { divideValues } from '/apiV1/dataBuilders/helpers';
 import { Facility } from '/models';
 
-const filterFacility = async (analytics, conditions) => {
-  const facility = await Facility.find({
+const filterFacility = async (filterCriteria, analytics) => {
+  const facilities = await Facility.find({
     type: {
-      comparator: conditions.comparator,
+      comparator: filterCriteria.comparator,
       comparisonValue: '1',
     },
     code: {
@@ -20,31 +21,28 @@ const filterFacility = async (analytics, conditions) => {
       comparisonValue: analytics.map(a => a.organisationUnit),
     },
   });
-  return analytics.filter(el => {
-    return facility.map(a => a.code).includes(el.organisationUnit);
-  });
+
+  const facilitiesByCode = keyBy(facilities, 'code');
+  return analytics.filter(({ organisationUnit: orgUnitCode }) => facilitiesByCode[orgUnitCode]);
 };
 
-const TRANSFORMATIONS = {
-  ORG_UNIT: filterFacility,
+const FILTERS = {
+  filterFacility,
 };
 
 class BaseBuilder extends PercentagesOfValueCountsBuilder {
   async buildData(analytics) {
     const percentage = {};
-    let transformData = analytics;
+    let filteredData = analytics;
 
-    if (this.config.transformation) {
-      transformData = await TRANSFORMATIONS[this.config.transformation.name](
-        analytics,
-        this.config.transformation,
-      );
+    if (this.config.filter) {
+      filteredData = await FILTERS[this.config.filter.name](this.config.filter, analytics);
     }
 
     Object.entries(this.config.dataClasses).forEach(([name, dataClass]) => {
       const [numerator, denominator] = this.calculateFractionPartsForDataClass(
         dataClass,
-        transformData,
+        filteredData,
       );
 
       const key = Object.keys(this.config.dataClasses).length > 1 ? name : 'value';

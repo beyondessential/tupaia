@@ -18,12 +18,12 @@ exports.up = function(db) {
   return db.runSql(`
 	UPDATE "dashboardReport" 
     SET "viewJson" = jsonb_set("viewJson", '{name}', '"Primary Facilities Offering 3 Methods of Contraception"'), 
-    	"dataBuilderConfig" = jsonb_set("dataBuilderConfig", '{transformation}', '{"name": "ORG_UNIT", "comparator": "<>"}')
+    	"dataBuilderConfig" = jsonb_set("dataBuilderConfig", '{filter}', '{"name": "filterFacility", "comparator": "<>"}')
     where id = 'UNFPA_Monthly_3_Methods_of_Contraception';
 
     UPDATE "dashboardReport" 
     SET "viewJson" = jsonb_set("viewJson", '{name}', '"Secondary Facilities Offering 5 Methods of Contraception"'), 
-    	"dataBuilderConfig" = jsonb_set("dataBuilderConfig", '{transformation}', '{"name": "ORG_UNIT", "comparator": "="}')
+    	"dataBuilderConfig" = jsonb_set("dataBuilderConfig", '{filter}', '{"name": "filterFacility", "comparator": "="}')
     where id = 'UNFPA_Monthly_5_Methods_of_Contraception';
 
     `);
