@@ -3,7 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 
-import { respond } from '../respond';
+import { respond } from '@tupaia/utils';
 
 /**
  * Legacy endpoint that is no longer required

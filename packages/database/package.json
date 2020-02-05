@@ -1,10 +1,10 @@
 {
   "name": "@tupaia/database",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "main": "dist/index.js",
   "private": true,
   "scripts": {
-    "build": "babel src --out-dir dist --copy-files --ignore '**/migrations'",
+    "build": "babel src --out-dir dist --ignore '**/migrations','src/tests/**'",
     "test": "mocha",
     "migrate": "babel-node ./src/migrate.js up --migrations-dir ./src/migrations -v",
     "migrate-down": "babel-node ./src/migrate.js  down --migrations-dir ./src/migrations -v",
@@ -12,6 +12,7 @@
     "update-test-data": ". .env && pg_dump -s -O $DB_NAME > src/tests/testData/testDataDump.sql && pg_dump -t migrations -c -O $DB_NAME >> src/tests/testData/testDataDump.sql"
   },
   "dependencies": {
+    "@tupaia/utils": "1.0.0",
     "db-migrate": "^0.11.5",
     "db-migrate-pg": "^0.4.0",
     "dotenv": "^5.0.1",

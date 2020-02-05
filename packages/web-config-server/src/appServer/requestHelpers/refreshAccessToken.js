@@ -1,6 +1,6 @@
+import { TupaiaAppAuthorisationError, TupaiaAppCommunicationError } from '@tupaia/utils';
 import { fetchFromMediTrakServer } from '/appServer/requestHelpers';
 import { UserSession } from '/models';
-import { TupaiaAppAuthorisationError, TupaiaAppCommunicationError } from '/errors';
 
 export const refreshAccessToken = async (refreshToken, userName) => {
   try {
