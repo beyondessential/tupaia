@@ -193,7 +193,7 @@ describe('object', () => {
       });
     });
 
-    it('should support an option to not default to existing keys ', () => {
+    it('should support an option to not default to existing keys', () => {
       const object = { a: 1, b: 2, c: 3 };
       const mapping = { a: 'alpha', c: 'gamma' };
 
@@ -239,7 +239,7 @@ describe('object', () => {
       });
     });
 
-    it('should support an option to not default to existing values ', () => {
+    it('should support an option to not default to existing values', () => {
       const object = { a: 1, b: 2, c: 3 };
       const mapping = { 1: 'alpha', 3: 'gamma' };
 
