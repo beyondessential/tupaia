@@ -18,7 +18,7 @@ exports.setup = function(options, seedLink) {
 // the same information is held in survey_response.submission_time
 exports.up = function(db) {
   return db.runSql(`
-    DELETE FROM answer WHERE question_id = (SELECT id FROM question WHERE code = 'CD2_2');
+    DELETE FROM answer WHERE question_id IN (SELECT id FROM question WHERE code IN ('CD2_2', 'CD3a_005'));
   `);
 };
 
