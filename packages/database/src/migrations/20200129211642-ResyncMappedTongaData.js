@@ -54,6 +54,10 @@ exports.up = function(db) {
     UPDATE dhis_sync_queue
     SET is_deleted = false, priority = 1
     WHERE record_id IN (${answerIds});
+
+    -- delete all old sync log records as the data has been manually deleted from dhis2
+    DELETE FROM dhis_sync_log
+    WHERE record_id IN (${surveyResponseIds}) OR record_id IN (${answerIds});
   `);
 };
 
