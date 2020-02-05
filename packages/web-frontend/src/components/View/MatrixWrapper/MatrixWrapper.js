@@ -94,6 +94,10 @@ const buildMatrixDataFromViewContent = viewContent => {
     rows: formattedRows.filter(row => row.categoryId === key),
   }));
 
+  const categoryData = categories.map(({ key }) => {
+    return rows.find(r => r.categoryKey === key);
+  });
+
   let columns = [];
   columnData.forEach(columnDefinition => {
     if (columnDefinition.columns) {
@@ -113,6 +117,7 @@ const buildMatrixDataFromViewContent = viewContent => {
 
   return {
     rows: rowsInCategories.length > 0 ? rowsInCategories : formattedRows,
+    categoryData,
     columns,
     maximumCellCharacters,
     maximumColumnWidth: calculatedStyles.CELL_WIDTH,
@@ -211,6 +216,7 @@ export class MatrixWrapper extends Component {
     const { expandedMatrixData, offsetWidth } = this.state;
     const {
       rows,
+      categoryData,
       columns,
       calculatedStyles,
       presentationOptions,
@@ -233,6 +239,7 @@ export class MatrixWrapper extends Component {
     return (
       <Matrix
         rows={rows}
+        categoryData={categoryData}
         columns={columns}
         numberOfColumnsPerPage={numberOfColumnsPerPage}
         calculatedStyles={calculatedStyles}

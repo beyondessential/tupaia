@@ -7,20 +7,19 @@ import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 
 class MatrixOfValuesForOrgUnitsBuilder extends DataBuilder {
   async build() {
-    const r = await this.buildRows();
-    const c = await this.buildColumns();
+    const data = {
+      rows: await this.buildRows(),
+      columns: await this.buildColumns(),
+    };
 
-    return { data: [] };
+    return data;
   }
 
   async buildRows() {
-    const { rows, columns, categories } = this.config;
-
+    const { rows, columns } = this.config;
     const dataElementCodes = rows.map(dx => dx.dataElement);
-    const organisationUnits = columns.map(ou => ou.code);
-
+    const dataCategories = new Map(rows.map(dx => [dx.dataElement, dx.categoryId]));
     const dataValues = [];
-    const rowData = [];
 
     for (const { code: organisationUnitCode } of columns) {
       const { results } = await this.getAnalytics({
@@ -32,7 +31,53 @@ class MatrixOfValuesForOrgUnitsBuilder extends DataBuilder {
       dataValues.push(results);
     }
 
-    console.log('TCL: MatrixOfValuesForOrgUnitsBuilder -> buildRows -> dataValues', dataValues);
+    const flattenedValues = [].concat(...dataValues);
+    const sortedValues = flattenedValues.reduce(
+      (valuesPerElement, { dataElement, value, organisationUnit }) => {
+        const existing = valuesPerElement[dataElement] || {};
+
+        return {
+          ...valuesPerElement,
+          [dataElement]: {
+            ...existing,
+            [organisationUnit]: value,
+            dataElement: dataElement,
+            categoryId: dataCategories.get(dataElement),
+          },
+        };
+      },
+      {},
+    );
+
+    const rowData = Object.values(sortedValues);
+
+    const columnKeys = columns.map(c => c.key);
+    const categoryRows = rowData.reduce((categoryValues, data) => {
+      const existing = categoryValues[data.categoryId] || {};
+      const newCategoryValues = {
+        ...categoryValues,
+        [data.categoryId]: { ...existing, dataElement: data.categoryId },
+      };
+
+      for (const key of columnKeys) {
+        newCategoryValues[data.categoryId][key]
+          ? newCategoryValues[data.categoryId][key].push(data[key])
+          : (newCategoryValues[data.categoryId][key] = [data[key]]);
+      }
+
+      return newCategoryValues;
+    }, {});
+
+    const categoryData = [];
+    for (const value of Object.values(categoryRows)) {
+      const row = { categoryKey: value.dataElement };
+      for (const key of columnKeys) {
+        row[key] = value[key].reduce((a, b) => a + b, 0) / value[key].length;
+      }
+      categoryData.push(row);
+    }
+
+    return [...rowData, ...categoryData];
   }
 
   async buildColumns() {
@@ -44,7 +89,7 @@ class MatrixOfValuesForOrgUnitsBuilder extends DataBuilder {
         filter: [{ code }],
         fields: 'id, name',
       });
-      columnData.push({ code, key, name: organisationUnit[0].name });
+      columnData.push({ code, key, title: organisationUnit[0].name });
     }
 
     return columnData;
@@ -57,73 +102,3 @@ export const matrixOfValuesForOrgUnits = async ({ dataBuilderConfig, query, enti
   const builder = new MatrixOfValuesForOrgUnitsBuilder(dhisApi, dataBuilderConfig, query, entity);
   return builder.build();
 };
-
-const config = {
-  columns: [{ code: 'country_code', key: 'country_code' }],
-  rows: [
-    {
-      dataElement: 'name of data',
-      category_id: 'category_key',
-      country_code: 0,
-      country_code: 0,
-      country_code: 0,
-      country_code: 0,
-      country_code: 0,
-    },
-  ],
-  categories: [
-    {
-      key: 'C1_Legislation_Financing',
-      title: 'Legislation and financing',
-      value: 'AVERAGE',
-    },
-    { key: 'C2_IHR_Coordination', title: 'IHR Coordination' },
-    { key: 'C3_Zoonotic_Events', title: 'Zoonotic events and the human-animal interface' },
-    { key: 'C4_Food_Safety', title: 'Food safety' },
-    { key: 'C5_Laboratory', title: 'Laboratory' },
-    { key: 'C6_Surveillance', title: 'Surveillance' },
-    { key: 'C7_Human_Resources', title: 'Human resources' },
-    { key: 'C8_Health_Emergency', title: 'National health emergency framework' },
-    { key: 'C9_Health_Service', title: 'Health service provision' },
-    { key: 'C10_Risk_Communication', title: 'Risk communication' },
-    { key: 'C11_Points_Of_Entry', title: 'Points of entry (poe)' },
-    { key: 'C12_Chemical_Events', title: 'Chemical events' },
-    { key: 'C13_Radiation_Emergencies', title: 'Radiation emergencies' },
-  ],
-};
-
-// const c = {
-//   columns: [{ code: 'country_code', key: 'country_code', title: 'country_name' }],
-//   rows: [
-//     {
-//       dataElement: 'name of data',
-//       name: '',
-//       category_id: category_key,
-//       country_code: value,
-//       country_code: value,
-//       country_code: value,
-//       country_code: value,
-//       country_code: value,
-//     },
-//     {},
-//   ],
-//   categories: [
-//     {
-//       key: 'C1_Legislation_Financing',
-//       title: 'Legislation and financing',
-//       cells: [col1Val, col2Val],
-//     },
-//     { key: 'C2_IHR_Coordination', title: 'IHR Coordination' },
-//     { key: 'C3_Zoonotic_Events', title: 'Zoonotic events and the human-animal interface' },
-//     { key: 'C4_Food_Safety', title: 'Food safety' },
-//     { key: 'C5_Laboratory', title: 'Laboratory' },
-//     { key: 'C6_Surveillance', title: 'Surveillance' },
-//     { key: 'C7_Human_Resources', title: 'Human resources' },
-//     { key: 'C8_Health_Emergency', title: 'National health emergency framework' },
-//     { key: 'C9_Health_Service', title: 'Health service provision' },
-//     { key: 'C10_Risk_Communication', title: 'Risk communication' },
-//     { key: 'C11_Points_Of_Entry', title: 'Points of entry (poe)' },
-//     { key: 'C12_Chemical_Events', title: 'Chemical events' },
-//     { key: 'C13_Radiation_Emergencies', title: 'Radiation emergencies' },
-//   ],
-// };

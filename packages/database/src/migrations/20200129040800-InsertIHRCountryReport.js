@@ -21,16 +21,46 @@ exports.up = function(db) {
         'WHO_IHR_Reports',
         'matrixOfValuesForOrgUnits',
         '{
-          "columns": [{ "code": 'TO', "key": 'TO' }],
-          "rows": [{ "dataElement": 'BCD1' }]
+          "columns" : [
+            {
+              "key" : "CK",
+              "code" : "CK"
+            },
+            {
+              "key" : "FJ",
+              "code" : "FJ"
+            }
+          ],
+          "rows" : [
+            {
+              "categoryId" : "C1",
+              "dataElement" : "SPAR002"
+            },
+            {
+              "categoryId" : "C1",
+              "dataElement" : "SPAR003"
+            }
+          ]
         }',
-        '{}'
+        '{
+          "placeholder" : "/static/media/PEHSMatrixPlaceholder.png",
+          "categories" : [
+            {
+              "key" : "C1",
+              "title" : "Legislation and financing"
+            }
+          ],
+          "name" : "IHR Reports",
+          "type" : "matrix"
+        }'
       );
   `);
 };
 
 exports.down = function(db) {
-  return null;
+  return db.runSql(`
+    DELETE FROM "dashboardReport" WHERE "id" = 'WHO_IHR_Reports';
+  `);
 };
 
 exports._meta = {

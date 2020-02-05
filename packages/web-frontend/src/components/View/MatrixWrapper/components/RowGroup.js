@@ -76,7 +76,9 @@ export default class RowGroup extends Component {
             <div
               style={column.isGroupHeader ? styles.gridCellChangerActive : styles.gridCell}
               key={`${rowId}-empty-${index}`}
-            />
+            >
+              {column.value}
+            </div>
           ))}
           <div style={styles.gridCellChangerActive} />
         </div>

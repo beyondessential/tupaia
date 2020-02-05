@@ -28,7 +28,9 @@ exports.up = function(db) {
 };
 
 exports.down = function(db) {
-  return null;
+  return db.runSql(`
+    DELETE FROM "dashboardGroup" WHERE "name" = 'IHR Report';
+  `);
 };
 
 exports._meta = {

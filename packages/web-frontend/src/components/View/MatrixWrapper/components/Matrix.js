@@ -340,7 +340,7 @@ export class Matrix extends PureComponent {
     return text.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1;
   }
 
-  recursivelyRenderRowData(rows, keyPrefix = '', depth = 1) {
+  recursivelyRenderRowData(rows, categoryData, keyPrefix = '', depth = 1) {
     const styles = this.props.calculatedStyles;
     const { startColumn, highlightedRow, highlightedColumn } = this.state;
     const { numberOfColumnsPerPage } = this.props;
@@ -355,7 +355,7 @@ export class Matrix extends PureComponent {
           const isRowExpandedByUser = this.isRowExpanded(key);
           const childRows =
             isSearchActive || isRowExpandedByUser
-              ? this.recursivelyRenderRowData(row.rows, key, depth + 1)
+              ? this.recursivelyRenderRowData(row.rows, categoryData, key, depth + 1)
               : [];
 
           const isEmpty = childRows.length === 0;
@@ -364,12 +364,19 @@ export class Matrix extends PureComponent {
             return null;
           }
           const isExpanded = isSearchActive || isRowExpandedByUser;
+          const categoryColumns = categoryData.find(
+            c => getCategoryKey(c.categoryKey, index) === key,
+          );
+
+          const categoryColumnData = Object.values(categoryColumns)
+            .filter(x => x !== row.categoryId)
+            .map(y => ({ value: y }));
 
           return (
             <RowGroup
               key={key}
               rowId={key}
-              columns={columns}
+              columns={categoryColumnData}
               isExpanded={isExpanded}
               depth={depth}
               indentSize={CATEGORY_INDENT}
@@ -487,9 +494,10 @@ export class Matrix extends PureComponent {
   }
 
   render() {
-    const { rows } = this.props;
+    const { rows, categoryData } = this.props;
     const styles = this.props.calculatedStyles;
-    const renderedRows = this.recursivelyRenderRowData(rows);
+
+    const renderedRows = this.recursivelyRenderRowData(rows, categoryData);
     const rowDisplay =
       renderedRows && renderedRows.length > 0 ? renderedRows : this.renderEmptyMessage();
 
