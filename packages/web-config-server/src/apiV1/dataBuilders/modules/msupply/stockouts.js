@@ -4,8 +4,9 @@
  */
 
 import keyBy from 'lodash.keyby';
+
+import { stripFromStart } from '@tupaia/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { stripFromStart } from '/apiV1/utils';
 import { ENTITY_TYPES } from '/models/Entity';
 
 class StockoutsDataBuilder extends DataBuilder {

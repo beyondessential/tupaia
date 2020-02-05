@@ -28,7 +28,7 @@ export const testDeleteAnswer = (dhisApi, models) => {
 
     const result = await pusher.push();
     expect(result).to.be.true;
-    expect(dhisApi.postDataValueSet).not.to.have.been.called;
+    expect(dhisApi.postDataValueSets).not.to.have.been.called;
     expect(dhisApi.deleteDataValue).not.to.have.been.called;
   });
   it('should mark as successful if the answer never successfully synced', async () => {
@@ -39,7 +39,7 @@ export const testDeleteAnswer = (dhisApi, models) => {
 
     const result = await pusher.push();
     expect(result).to.be.true;
-    expect(dhisApi.postDataValueSet).not.to.have.been.called;
+    expect(dhisApi.postDataValueSets).not.to.have.been.called;
     expect(dhisApi.deleteDataValue).not.to.have.been.called;
   });
   it('should delete if the answer previously synced successfully', async () => {
@@ -50,7 +50,7 @@ export const testDeleteAnswer = (dhisApi, models) => {
 
     const result = await pusher.push();
     expect(result).to.be.true;
-    expect(dhisApi.postDataValueSet).not.to.have.been.called;
+    expect(dhisApi.postDataValueSets).not.to.have.been.called;
     expect(dhisApi.deleteDataValue).to.have.been.calledWith(ANSWER_DATA_VALUE_DIMENSIONS);
   });
 
@@ -86,7 +86,7 @@ export const testDeleteAnswer = (dhisApi, models) => {
     const pusher = new AggregateDataPusher(models, change, dhisApi);
     const result = await pusher.push();
     expect(result).to.be.true;
-    expect(dhisApi.postDataValueSet).not.to.have.been.called;
+    expect(dhisApi.postDataValueSets).not.to.have.been.called;
     expect(dhisApi.deleteDataValue).to.have.been.calledWith(ANSWER_DATA_VALUE_DIMENSIONS);
 
     // the one we added earlier should now have been added to the sync queue as the other was deleted

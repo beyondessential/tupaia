@@ -47,7 +47,7 @@ web-config-server-testing:
   environment:
     CI_PACKAGE: web-config-server
 
-database-testing:
+internal-dependency-testing:
   build:
     dockerfile: full-testable-package.Dockerfile
     args:

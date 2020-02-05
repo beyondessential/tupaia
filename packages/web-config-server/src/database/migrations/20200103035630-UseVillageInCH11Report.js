@@ -4,6 +4,8 @@ var dbm;
 var type;
 var seed;
 
+import { build2DTableCells } from '../migrationUtilities';
+
 const ROWS = [
   {
     category: '$orgUnit',
@@ -43,41 +45,17 @@ const COLUMNS = [
   'Totals',
 ];
 
-const START_CELL = 452;
-
-const buildCells = () => {
-  const cells = [];
-
-  let i = START_CELL;
-  for (let row = 0; row < ROWS[0].rows.length; row++) {
-    const cellRow = [];
-    for (let column = 0; column < COLUMNS.length - 1; column++) {
-      cellRow.push(`CH${i}`);
-      i++;
-      if (i === 544) {
-        // Data element `CH544` does not exist
-        i++;
-      }
-    }
-    cellRow.push('$rowTotal');
-
-    cells.push(cellRow);
-  }
-
-  return cells;
-};
-
 /**
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   return db.runSql(`
     DELETE FROM "dashboardReport" WHERE id = 'TO_CH_Validation_CH_11' AND "drillDownLevel" = 1;
 
@@ -86,16 +64,23 @@ exports.up = async function(db) {
     SET
       "dataBuilder" = 'tableOfDataValues',
       "dataBuilderConfig" = '${JSON.stringify({
-        rows: ROWS,
-        columns: COLUMNS,
-        cells: buildCells(),
-      })}'
+    rows: ROWS,
+    columns: COLUMNS,
+    cells: build2DTableCells({
+      prefix: 'CH',
+      numRows: ROWS[0].rows.length,
+      numCols: COLUMNS.length,
+      startCell: 452,
+      skipCells: [544],
+      addRowTotal: true
+    }),
+  })}'
     WHERE
       id = 'TO_CH_Validation_CH_11';
   `);
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return null;
 };
 

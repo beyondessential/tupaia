@@ -3,8 +3,8 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 
+import { DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
 import { ORG_UNIT_ENTITY_TYPES } from '../../../database';
-import { DHIS2_RESOURCE_TYPES } from '../../api';
 import { EntityPusher } from './EntityPusher';
 
 const { ORGANISATION_UNIT, ORGANISATION_UNIT_GROUP } = DHIS2_RESOURCE_TYPES;

@@ -3,10 +3,11 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  **/
 
+import { TYPES } from '@tupaia/database';
 import { BaseModel } from './BaseModel';
 
 export class MapOverlay extends BaseModel {
-  static databaseType = 'mapOverlay';
+  static databaseType = TYPES.MAP_OVERLAY;
 
   static fields = [
     'id',

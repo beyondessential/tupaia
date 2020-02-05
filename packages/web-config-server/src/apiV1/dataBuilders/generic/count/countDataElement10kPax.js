@@ -1,5 +1,5 @@
+import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
 import { getFacilityStatusCounts } from '/apiV1/utils';
-import { AGGREGATION_TYPES } from '/dhis';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 
 const POPULATION = 'X09CcG0lHsP';

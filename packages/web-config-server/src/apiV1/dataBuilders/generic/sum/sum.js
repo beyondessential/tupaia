@@ -3,9 +3,9 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
+import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { DATA_SOURCE_TYPES } from '/apiV1/dataBuilders/dataSourceTypes';
-import { AGGREGATION_TYPES } from '/dhis';
 
 const { SINGLE, GROUP } = DATA_SOURCE_TYPES;
 

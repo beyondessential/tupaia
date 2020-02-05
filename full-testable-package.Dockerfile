@@ -19,11 +19,15 @@ RUN mkdir -p ./packages/${package}
 COPY packages/${package}/package.json ./packages/${package}
 
 # some packages also have internal dependencies loaded by yarn workspaces, so these internal
-# dependencies must exist during yarn install (currently just 'database')
+# dependencies must exist during yarn install (e.g. database, dhis-api)
 RUN mkdir -p ./packages/database
 COPY packages/database/. ./packages/database
+RUN mkdir -p ./packages/dhis-api
+COPY packages/dhis-api/. ./packages/dhis-api
+RUN mkdir -p ./packages/utils
+COPY packages/utils/. ./packages/utils
 
-# install internal and external dependencies
+# install internal and external dependencies (preinstall will build internal)
 RUN yarn install
 
 # copy everything else from the repo

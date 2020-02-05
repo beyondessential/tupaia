@@ -1,12 +1,12 @@
+import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
+import { asynchronouslyFetchValuesForObject } from '@tupaia/utils';
 import {
-  asynchronouslyFetchValuesForObject,
   getDataElementsInGroup,
   getDataElementsInGroupSet,
   getOptionSetOptions,
   getChildOrganisationUnits,
   mapOrgUnitIdsToGroupIds,
 } from '/apiV1/utils';
-import { AGGREGATION_TYPES } from '/dhis';
 import { buildCategories } from './buildCategories';
 
 const { MOST_RECENT_PER_ORG_GROUP } = AGGREGATION_TYPES;

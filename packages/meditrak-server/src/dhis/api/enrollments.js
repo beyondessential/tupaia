@@ -3,8 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { DHIS2_RESOURCE_TYPES } from './types';
-import { DHIS2_DIMENSIONS } from './dimensions';
+import { DHIS2_RESOURCE_TYPES, DHIS2_DIMENSIONS } from '@tupaia/dhis-api';
 
 export const { ENROLLMENT } = DHIS2_RESOURCE_TYPES;
 export const { ORGANISATION_UNIT } = DHIS2_DIMENSIONS;

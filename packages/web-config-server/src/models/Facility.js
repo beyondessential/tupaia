@@ -3,10 +3,11 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  **/
 
+import { TYPES } from '@tupaia/database';
 import { BaseModel } from './BaseModel';
 
 export class Facility extends BaseModel {
-  static databaseType = 'clinic';
+  static databaseType = TYPES.FACILITY;
 
   static fields = ['id', 'name', 'code', 'category_code', 'type_name'];
   get organisationUnitCode() {
