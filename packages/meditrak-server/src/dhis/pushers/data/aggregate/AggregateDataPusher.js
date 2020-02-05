@@ -277,7 +277,7 @@ export class AggregateDataPusher extends DataPusher {
           code: `${survey.code}SurveyDate`,
           value: formatDateForDHIS2(surveyResponse.timezoneAwareSubmissionTime()),
         }
-      : await generateDataValue(this.api, this.models, answer);
+      : await generateDataValue(this.models, answer);
 
     // Create an object containing information that is important to log after the record has synced,
     // as it will be used for processing any delete that occurs in future

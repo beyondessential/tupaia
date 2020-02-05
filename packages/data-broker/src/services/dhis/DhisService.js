@@ -50,6 +50,19 @@ export class DhisService extends Service {
     ...restOfDataValue,
   });
 
+  translateDataValueValue = async (api, { value, dataElement, ...restOfDataValue }) => {
+    const options = await api.getOptionsForDataElement(dataElement);
+    const optionCodeForAnswer = options[value.toLowerCase()]; // Convert text to lower case so we can ignore case
+    if (!optionCodeForAnswer) {
+      throw new Error(`No option matching ${value} for data element ${dataElement}`);
+    }
+    return {
+      dataElement,
+      value: optionCodeForAnswer,
+      ...restOfDataValue,
+    };
+  };
+
   async translateEventDataValues(api, dataValues) {
     const dataSources = await this.models.dataSource.findOrDefault({
       code: dataValues.map(({ code }) => code),

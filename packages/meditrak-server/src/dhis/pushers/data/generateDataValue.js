@@ -3,9 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 
-import { DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
 import { formatDateForDHIS2 } from './formatDateForDHIS2';
-import { convertAnswerToOptionSetValue } from './convertAnswerToOptionSetValue';
 import { ANSWER_TYPES } from '../../../database/models/Answer';
 const {
   BINARY,
@@ -22,9 +20,9 @@ const {
   PRIMARY_ENTITY,
 } = ANSWER_TYPES;
 
-export const generateDataValue = async (dhisApi, models, answer) => {
+export const generateDataValue = async (models, answer) => {
   const question = await models.question.findById(answer.question_id);
-  const answerValue = await generateAnswerValue(dhisApi, models, answer, question);
+  const answerValue = await generateAnswerValue(models, answer, question);
   return {
     code: question.code,
     value: answerValue,
@@ -39,7 +37,7 @@ const getEntityCodeFromAnswer = async (models, { text: entityId }) => {
   return entity.code;
 };
 
-const generateAnswerValue = async (dhisApi, models, answer, question) => {
+const generateAnswerValue = async (models, answer, question) => {
   switch (question.type) {
     case BINARY:
     case CHECKBOX:
@@ -49,15 +47,14 @@ const generateAnswerValue = async (dhisApi, models, answer, question) => {
     case MONTHS_SINCE:
     case YEARS_SINCE:
       return parseFloat(answer.text).toString();
-    case RADIO:
-    case AUTOCOMPLETE:
-      return convertAnswerToOptionSetValue(dhisApi, question.code, answer.text);
     case SUBMISSION_DATE:
     case DATE:
       return formatDateForDHIS2(answer.text);
     case ENTITY:
     case PRIMARY_ENTITY:
       return getEntityCodeFromAnswer(models, answer);
+    case RADIO:
+    case AUTOCOMPLETE:
     default:
       return answer.text;
   }
