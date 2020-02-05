@@ -95,10 +95,10 @@ export const reduceToSet = (objectCollection, property) => {
  *
  * @param {Object<string, any>} object
  * @param {Object<string, string>} mapping `oldKey` => `newKey` mapping
- * @param {boolean} defaultToExistingKeys
+ * @param {Object} options
  * @returns {Object<string, any>}
  */
-export const mapKeys = (object, mapping, defaultToExistingKeys = false) => {
+export const mapKeys = (object, mapping, { defaultToExistingKeys = false } = {}) => {
   const result = {};
 
   Object.entries(object).forEach(([key, value]) => {
@@ -118,10 +118,10 @@ export const mapKeys = (object, mapping, defaultToExistingKeys = false) => {
  *
  * @param {Object<string, any>} object
  * @param {Object<string, string>} mapping `oldValue` => `newValue` mapping
- * @param {boolean} defaultToExistingValues
+ * @param {Objcet} options
  * @returns {Object<string, any>}
  */
-export const mapValues = (object, mapping, defaultToExistingValues = false) => {
+export const mapValues = (object, mapping, { defaultToExistingValues = false } = {}) => {
   const result = {};
 
   Object.entries(object).forEach(([key, value]) => {
