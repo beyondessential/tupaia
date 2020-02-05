@@ -3,9 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  **/
 
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '..';
-import { DatabaseModel } from '../DatabaseModel';
+import { DatabaseType, TYPES, DatabaseModel } from '@tupaia/database';
 
 class DisasterEventType extends DatabaseType {
   static databaseType = TYPES.DISASTER_EVENT;
