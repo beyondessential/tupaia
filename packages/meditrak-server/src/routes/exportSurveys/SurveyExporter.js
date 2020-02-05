@@ -4,9 +4,9 @@
  */
 
 import xlsx from 'xlsx';
+import { DatabaseError } from '@tupaia/utils';
 
 import { findQuestionsBySurvey } from '../../dataAccessors';
-import { DatabaseError } from '../../errors';
 import { RowBuilder } from './RowBuilder';
 import { SurveyMetadataConfigCellBuilder } from './cellBuilders';
 

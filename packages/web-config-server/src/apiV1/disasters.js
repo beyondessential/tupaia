@@ -1,6 +1,6 @@
+import { respond } from '@tupaia/utils';
 import { Disaster, DisasterEvent, Entity } from '/models';
 import { translateBoundsForFrontend, translatePointForFrontend } from '/utils/geoJson';
-import { respond } from '/respond';
 
 // disaster event types (match disasterEvent.type enum in postgres)
 const DISASTER_EVENT_START = 'start';
@@ -75,9 +75,9 @@ async function addAdditionalDetails(disaster) {
 }
 
 export async function disasters(req, res) {
-  const data = (await Promise.all(
-    (await Disaster.getDisasters()).map(d => addAdditionalDetails(d)),
-  ))
+  const data = (
+    await Promise.all((await Disaster.getDisasters()).map(d => addAdditionalDetails(d)))
+  )
     .filter(d => d.status !== DISASTER_RESOLVED)
     .map(({ bounds, point, ...d }) => ({
       ...d,

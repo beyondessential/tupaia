@@ -1,7 +1,7 @@
+import { utcMoment } from '@tupaia/utils';
+import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 import { regexLabel } from '/apiV1/utils';
-import { AGGREGATION_TYPES } from '/dhis';
-import { utcMoment } from '/utils';
 
 /* historical data within a matrix format compared to an 'Ideal' Value */
 const { FINAL_EACH_MONTH, MOST_RECENT } = AGGREGATION_TYPES;

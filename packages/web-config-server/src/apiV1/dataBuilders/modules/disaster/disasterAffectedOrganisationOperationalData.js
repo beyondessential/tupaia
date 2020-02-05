@@ -1,5 +1,4 @@
-import { AGGREGATION_TYPES } from '/dhis';
-import { convertDateRangeToPeriodString } from '/apiV1/utils';
+import { AGGREGATION_TYPES, convertDateRangeToPeriodString } from '@tupaia/dhis-api';
 import { Entity } from '/models';
 
 const DATA_ELEMENT_CODES = {

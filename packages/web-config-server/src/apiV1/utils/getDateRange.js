@@ -1,7 +1,5 @@
 import moment from 'moment';
 
-import { GRANULARITY } from '/utils/convertDateRangeToPeriods';
-
 const DEFAULT_RANGE = 2;
 /**
  * Tupaia Config Server
@@ -22,7 +20,7 @@ export function getDateRange(
 ) {
   let startDate = passedStartDate;
   if (!startDate) {
-    startDate = moment(endDate).subtract(periodRange, GRANULARITY[periodGranularity]);
+    startDate = moment(endDate).subtract(periodRange, periodGranularity);
   }
   return { startDate, endDate };
 }

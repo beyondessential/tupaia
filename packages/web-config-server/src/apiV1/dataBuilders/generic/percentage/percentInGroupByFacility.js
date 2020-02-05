@@ -1,4 +1,5 @@
 import keyBy from 'lodash.keyby';
+import { getSortByKey } from '@tupaia/utils';
 import {
   aggregateOperationalFacilityValues,
   getFacilityStatuses,
@@ -6,7 +7,6 @@ import {
   limitRange,
 } from '/apiV1/utils';
 import { ENTITY_TYPES } from '/models/Entity';
-import { getSortByKey } from '/utils';
 
 // Medicines available by Clinic
 // Medicines available by Country

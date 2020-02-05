@@ -3,9 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 
-import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '..';
+import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
 import { cache, CACHE_KEY_GENERATORS } from '../../utilities';
 
 class UserRewardType extends DatabaseType {

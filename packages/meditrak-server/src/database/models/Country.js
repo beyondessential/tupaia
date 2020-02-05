@@ -3,9 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 
-import { DatabaseType } from '../DatabaseType';
-import { DatabaseModel } from '../DatabaseModel';
-import { TYPES } from '..';
+import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
 
 class CountryType extends DatabaseType {
   static databaseType = TYPES.COUNTRY;

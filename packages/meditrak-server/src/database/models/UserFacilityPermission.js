@@ -3,10 +3,8 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 
-import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '..';
-import { DatabaseError } from '../../errors';
+import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
+import { DatabaseError } from '@tupaia/utils';
 
 class UserFacilityPermissionType extends DatabaseType {
   static databaseType = TYPES.USER_FACILITY_PERMISSION;
@@ -63,7 +61,5 @@ export class UserFacilityPermissionModel extends DatabaseModel {
     return UserFacilityPermissionType;
   }
 
-  get isDeletable() {
-    return true;
-  }
+  isDeletableViaApi = true;
 }
