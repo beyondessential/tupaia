@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 
-import { ModelRegistry } from '../../database';
+import { ModelRegistry } from '@tupaia/database';
 import { getUniversalTypes } from '../../database/utilities';
 
 const modelsStub = sinon.createStubInstance(ModelRegistry, {

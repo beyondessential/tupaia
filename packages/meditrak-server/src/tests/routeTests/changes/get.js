@@ -5,7 +5,8 @@
 
 import { expect } from 'chai';
 
-import { SyncQueue, TYPES } from '../../../database';
+import { TYPES } from '@tupaia/database';
+import { SyncQueue } from '../../../database';
 import { upsertQuestion, randomIntBetween, oneSecondSleep } from '../../testUtilities';
 
 export const testGetChangesCount = (app, models) =>

@@ -5,7 +5,7 @@
 
 import { compareTwoStrings } from 'string-similarity';
 
-import { ImportValidationError } from '../../errors';
+import { ImportValidationError } from '@tupaia/utils';
 
 // Attempts to find and extract a tab name from a list of tab names.
 export const extractTabNameFromQuery = (tabName, requestedTabs) => {
