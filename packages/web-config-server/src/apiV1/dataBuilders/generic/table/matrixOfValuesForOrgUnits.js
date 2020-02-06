@@ -4,6 +4,7 @@
  */
 
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
+import { average } from '/apiV1/dataBuilders/helpers';
 
 class MatrixOfValuesForOrgUnitsBuilder extends DataBuilder {
   async build() {
@@ -18,16 +19,18 @@ class MatrixOfValuesForOrgUnitsBuilder extends DataBuilder {
   async buildRows() {
     const { rows, columns } = this.config;
     const dataElementCodes = rows.map(dx => dx.dataElement);
+    let dataElementCodesToName = {};
     const dataCategories = new Map(rows.map(dx => [dx.dataElement, dx.categoryId]));
     const dataValues = [];
 
     for (const { code: organisationUnitCode } of columns) {
-      const { results } = await this.getAnalytics({
+      const { results, metadata } = await this.getAnalytics({
         dataElementCodes,
         organisationUnitCode,
         outputIdScheme: 'code',
       });
 
+      dataElementCodesToName = metadata.dataElementCodeToName;
       dataValues.push(results);
     }
 
@@ -41,7 +44,7 @@ class MatrixOfValuesForOrgUnitsBuilder extends DataBuilder {
           [dataElement]: {
             ...existing,
             [organisationUnit]: value,
-            dataElement: dataElement,
+            dataElement: dataElementCodesToName[dataElement],
             categoryId: dataCategories.get(dataElement),
           },
         };
@@ -51,33 +54,8 @@ class MatrixOfValuesForOrgUnitsBuilder extends DataBuilder {
 
     const rowData = Object.values(sortedValues);
 
-    const columnKeys = columns.map(c => c.key);
-    const categoryRows = rowData.reduce((categoryValues, data) => {
-      const existing = categoryValues[data.categoryId] || {};
-      const newCategoryValues = {
-        ...categoryValues,
-        [data.categoryId]: { ...existing, dataElement: data.categoryId },
-      };
-
-      for (const key of columnKeys) {
-        newCategoryValues[data.categoryId][key]
-          ? newCategoryValues[data.categoryId][key].push(data[key])
-          : (newCategoryValues[data.categoryId][key] = [data[key]]);
-      }
-
-      return newCategoryValues;
-    }, {});
-
-    const categoryData = [];
-    for (const value of Object.values(categoryRows)) {
-      const row = { categoryKey: value.dataElement };
-      for (const key of columnKeys) {
-        row[key] = value[key].reduce((a, b) => a + b, 0) / value[key].length;
-      }
-      categoryData.push(row);
-    }
-
-    return [...rowData, ...categoryData];
+    if (this.config.showCategoryValues) return [...rowData, ...average(columns, rowData)];
+    return rowData;
   }
 
   async buildColumns() {

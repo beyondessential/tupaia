@@ -80,6 +80,7 @@ const buildMatrixDataFromViewContent = viewContent => {
   let maximumCellCharacters = 0;
   const formattedRows = rows.map(({ dataElement, code, categoryId, ...columns }) => {
     Object.values(columns).forEach(value => {
+      if (!value) return;
       maximumCellCharacters = Math.max(maximumCellCharacters, value.toString().length);
     });
     return {

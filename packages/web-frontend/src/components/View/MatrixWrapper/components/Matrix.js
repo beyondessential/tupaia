@@ -364,13 +364,16 @@ export class Matrix extends PureComponent {
             return null;
           }
           const isExpanded = isSearchActive || isRowExpandedByUser;
-          const categoryColumns = categoryData.find(
-            c => getCategoryKey(c.categoryKey, index) === key,
-          );
 
-          const categoryColumnData = Object.values(categoryColumns)
-            .filter(x => x !== row.categoryId)
-            .map(y => ({ value: y }));
+          const categoryColumns = categoryData
+            .filter(x => x)
+            .find(c => getCategoryKey(c.categoryKey, index) === key);
+
+          const categoryColumnData = categoryColumns
+            ? Object.values(categoryColumns)
+                .filter(x => x !== row.categoryId)
+                .map(y => ({ value: y }))
+            : [];
 
           return (
             <RowGroup
