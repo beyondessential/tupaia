@@ -69,6 +69,17 @@ CREATE TYPE public.entity_type AS ENUM (
 
 
 --
+-- Name: verified_email; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.verified_email AS ENUM (
+    'unverified',
+    'new_user',
+    'verified'
+);
+
+
+--
 -- Name: generate_object_id(); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -235,7 +246,7 @@ CREATE TABLE public.api_request_log (
     endpoint text NOT NULL,
     user_id text,
     request_time timestamp without time zone DEFAULT now(),
-    query jsonb DEFAULT '{}'::jsonb,
+    query jsonb,
     metadata jsonb DEFAULT '{}'::jsonb,
     refresh_token text
 );
@@ -797,15 +808,6 @@ CREATE TABLE public.survey_screen_component (
 
 
 --
--- Name: test; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.test (
-    id text
-);
-
-
---
 -- Name: userSession; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -833,7 +835,8 @@ CREATE TABLE public.user_account (
     "position" text,
     mobile_number text,
     password_hash text NOT NULL,
-    password_salt text NOT NULL
+    password_salt text NOT NULL,
+    verified_email public.verified_email DEFAULT 'new_user'::public.verified_email
 );
 
 
@@ -1979,13 +1982,6 @@ CREATE TRIGGER survey_trigger AFTER INSERT OR DELETE OR UPDATE ON public.survey 
 
 
 --
--- Name: test test_trigger; Type: TRIGGER; Schema: public; Owner: -
---
-
-CREATE TRIGGER test_trigger AFTER INSERT OR DELETE OR UPDATE ON public.test FOR EACH ROW EXECUTE PROCEDURE public.notification();
-
-
---
 -- Name: user_account user_account_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -2209,7 +2205,7 @@ ALTER TABLE ONLY public.question
 --
 
 ALTER TABLE ONLY public.refresh_token
-    ADD CONSTRAINT refresh_token_meditrak_device_id_fk FOREIGN KEY (meditrak_device_id) REFERENCES public.meditrak_device(id);
+    ADD CONSTRAINT refresh_token_meditrak_device_id_fk FOREIGN KEY (meditrak_device_id) REFERENCES public.meditrak_device(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
@@ -2935,13 +2931,32 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 499	/20191220004141-UpdateProjectUserGroups	2019-12-20 06:48:15.787
 500	/20191219040555-ShowEventOrgUnitInTongaCDReports	2019-12-23 22:58:29.845
 503	/20191221032822-UseOriginalTimezoneForDateAnswers	2019-12-29 22:12:32.173
-504	/20200102222808-AddTongaUNFPADashboardGroupsAndReports	2020-01-05 15:12:09.801
-505	/20200107214233-AddColumnsToApiRequestLog	2020-01-08 11:10:57.916
-506	/20200107214234-RenameAndCleanupInstallId	2020-01-08 11:10:58.277
-507	/20200107221246-AddColumnsToMeditrakDevice	2020-01-08 11:10:58.353
-508	/20200107221247-AddMeditrakDeviceIdToRefreshToken	2020-01-08 11:10:58.382
-509	/20200107221249-AddRefreshTokenToApiRequestLog	2020-01-08 11:10:58.404
-510	/20200107221249-Test	2020-01-08 11:10:58.427
+504	/20191230030956-UseVillageInCH4Report	2020-01-14 04:36:03.125
+505	/20200102222808-AddTongaUNFPADashboardGroupsAndReports	2020-01-14 04:36:03.199
+506	/20200103035630-UseVillageInCH11Report	2020-01-14 04:36:03.564
+507	/20200103041050-AddUNFPAStockCardReports	2020-01-14 04:36:03.63
+508	/20200103051018-MakeCHValidationReportIdsConsistent	2020-01-14 04:36:04.697
+509	/20200106033541-AddEntityTypeInCDOverlays	2020-01-14 04:36:04.805
+510	/20200107043937-RemoveColumnFromCD3aReport	2020-01-14 04:36:04.853
+511	/20200109052723-ConsolidatePNGCaseReportFormExportDateColumns	2020-01-16 19:28:42.56
+512	/20191218232516-EmailConfirmation	2020-01-21 21:03:51.508
+513	/20200109231002-AddLabelTypeToViewJsonOnReports	2020-01-21 21:03:51.571
+514	/20200114105007-PercentageEventCountsBuildersUseFractionAndPercentageLabel	2020-01-21 21:03:51.598
+515	/20200115052004-AddTongaAndMicronesiaToUnfpaProjectCountries	2020-01-21 21:03:51.764
+516	/20200114233039-AddFMUnfpaDashboardGroup	2020-01-23 04:41:01.57
+517	/20200110032903-ConvertSingleColumnTableTO-CHDashboardReportsToTableOfDataValues	2020-02-04 03:03:39.028
+518	/20200113052422-ConvertTableFromDataElementGroupsTO-CHDashboardReportsToTableOfDataValues	2020-02-04 03:03:39.084
+519	/20200115003324-ConvertTO-RHDashboardReportsToTableOfDataValues	2020-02-04 03:03:39.218
+520	/20200117042010-ConvertRemainingTODashboardReportsToTableOfDataValues	2020-02-04 03:03:39.325
+521	/20200129031634-ChangeNoCountryCode	2020-02-04 03:03:39.339
+522	/20200129031728-AddNewCountriesToEntityTable	2020-02-04 03:03:39.399
+523	/20200131041935-DeleteRedundantImmsBreaches	2020-02-04 03:05:23.343
+524	/20200202205145-DeleteTongaSpecificDashboardsFromDemoLand	2020-02-04 20:41:17.744
+525	/20200206214233-AddColumnsToApiRequestLog	2020-02-06 11:44:12.062
+526	/20200206214234-RenameAndCleanupInstallId	2020-02-06 11:44:12.47
+527	/20200206221246-AddColumnsToMeditrakDevice	2020-02-06 11:44:12.517
+528	/20200206221247-AddMeditrakDeviceIdToRefreshToken	2020-02-06 11:44:12.546
+529	/20200206221249-AddRefreshTokenToApiRequestLog	2020-02-06 11:44:12.574
 \.
 
 
@@ -2949,7 +2964,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 510, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 529, true);
 
 
 --
