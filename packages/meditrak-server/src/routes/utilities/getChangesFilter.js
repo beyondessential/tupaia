@@ -6,12 +6,17 @@
 import { get } from 'lodash';
 
 import { getHighestPossibleIdForGivenTime } from '@tupaia/database';
-import { ValidationError } from '@tupaia/utils';
+import { compareMeditrakVersions, ValidationError } from '@tupaia/utils';
 import { fetchRequestingMeditrakDevice } from './fetchRequestingMeditrakDevice';
+
+const isAppVersionGreaterThanMin = (version, minVersion) =>
+  compareMeditrakVersions(version, minVersion) >= 0;
 
 const getSupportedTypes = async (models, appVersion) => {
   const minAppVersionByType = models.getMinAppVersionByType();
-  return Object.keys(minAppVersionByType).filter(type => appVersion >= minAppVersionByType[type]);
+  return Object.keys(minAppVersionByType).filter(type =>
+    isAppVersionGreaterThanMin(appVersion, minAppVersionByType[type]),
+  );
 };
 
 const getRecordTypeFilter = async req => {
