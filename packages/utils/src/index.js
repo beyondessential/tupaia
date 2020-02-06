@@ -16,4 +16,5 @@ export {
 export { asynchronouslyFetchValuesForObject, fetchWithTimeout, stringifyQuery } from './request';
 export { respond } from './respond';
 export { singularise, stripFromStart } from './string';
+export { compareMeditrakVersions } from './version';
 export { WorkBookParser } from './WorkBookParser';
