@@ -1,5 +1,5 @@
 import winston from 'winston';
-import { AGGREGATION_TYPES } from '/dhis';
+import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
 
 /**
  * Tupaia Config Server

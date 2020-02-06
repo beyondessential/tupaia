@@ -1,6 +1,6 @@
+import { respond, UnverifiedError, FormValidationError } from '@tupaia/utils';
+
 import { sendEmail, encryptPassword } from '../utilities';
-import { respond } from '../respond';
-import { UnverifiedError, FormValidationError } from '../errors';
 
 export const EMAIL_VERIFIED_STATUS = {
   UNVERIFIED: 'unverified',

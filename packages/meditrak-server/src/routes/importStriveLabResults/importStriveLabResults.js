@@ -5,11 +5,9 @@
 
 import xlsx from 'xlsx';
 
-import { UploadError } from '../../errors';
-import { mapKeys, WorkBookParser } from '../../utilities';
+import { mapKeys, respond, WorkBookParser, UploadError } from '@tupaia/utils';
 import { SurveyResponseImporter } from '../utilities';
 import SURVEYS from './surveys';
-import { respond } from '../../respond';
 
 const ENTITY_CODE_KEY = 'entityCode';
 const SURVEY_NAMES = Object.keys(SURVEYS);

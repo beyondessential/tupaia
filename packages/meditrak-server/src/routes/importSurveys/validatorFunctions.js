@@ -1,4 +1,4 @@
-import { ValidationError } from '../../errors';
+import { ValidationError } from '@tupaia/utils';
 import { splitStringOnComma } from '../utilities';
 import { constructIsOneOf } from '../../validation';
 import { isYesOrNo } from './utilities';

@@ -4,7 +4,7 @@
  */
 
 import { keyBy } from 'lodash';
-import { ValidationError, MultiValidationError } from '../errors';
+import { getTimezoneNameFromTimestamp, ValidationError, MultiValidationError } from '@tupaia/utils';
 import {
   ObjectValidator,
   hasContent,
@@ -14,7 +14,6 @@ import {
   constructIsEmptyOr,
 } from '../validation';
 import { findQuestionsBySurvey } from '../dataAccessors';
-import { getTimezoneNameFromTimestamp } from '../utilities';
 
 const createSurveyResponseValidator = models =>
   new ObjectValidator({

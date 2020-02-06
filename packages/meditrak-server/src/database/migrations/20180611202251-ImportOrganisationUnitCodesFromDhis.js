@@ -3,7 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 
-import { DhisApi } from '../../dhis/api/DhisApi';
+import { DhisApi } from '@tupaia/dhis-api';
 import { models } from '../migrate';
 
 var dbm;
@@ -37,9 +37,7 @@ exports.up = async db => {
         ).length > 0;
       if (!shouldProceed) {
         console.warn(
-          `Skipping facility '${
-            facility.name
-          }', all ancestors already have organisation unit codes.`,
+          `Skipping facility '${facility.name}', all ancestors already have organisation unit codes.`,
         );
         continue;
       }
@@ -72,9 +70,7 @@ exports.up = async db => {
 
         if (!matchingDhisAncestorCode) {
           console.warn(
-            `No DHIS match for geographical area with name '${
-              geographicalArea.name
-            }' in ancestor tree.`,
+            `No DHIS match for geographical area with name '${geographicalArea.name}' in ancestor tree.`,
           );
           continue; // eslint-disable-line no-continue
         }
