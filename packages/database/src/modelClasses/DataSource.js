@@ -7,12 +7,14 @@ import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
+const DATA_ELEMENT = 'dataElement';
+const DATA_GROUP = 'dataGroup';
 const DATA_SOURCE_TYPES = {
-  DATA_ELEMENT: 'dataElement',
-  DATA_GROUP: 'dataGroup',
+  DATA_ELEMENT,
+  DATA_GROUP,
 };
 
-class DataSourceType extends DatabaseType {
+export class DataSourceType extends DatabaseType {
   static databaseType = TYPES.DATA_SOURCE;
 }
 
@@ -25,4 +27,19 @@ export class DataSourceModel extends DatabaseModel {
   }
 
   getTypes = () => DataSourceModel.types;
+
+  async getDataElementsInGroup(dataGroupCode) {
+    const dataGroup = this.find({ code: dataGroupCode, type: DATA_GROUP });
+    if (!dataGroup) {
+      throw new Error(`Could not find a data group with code ${dataGroupCode}`);
+    }
+    const dataElements = await this.otherModels.dataElementDataGroup.find({
+      data_group_id: this.id,
+    });
+
+    return this.find({
+      id: dataElements.map(({ id }) => id),
+      type: DATA_ELEMENT,
+    });
+  }
 }
