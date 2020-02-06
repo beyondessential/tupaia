@@ -57,7 +57,7 @@ export const testPull = () => {
         invocationArgs: sinon.match({ dataElementCodes: ['POP01'], organisationUnitCode: 'TO' }),
       }));
 
-    it('invokes the events api in DHIS for a multiple data groups', async () =>
+    it('invokes the events api in DHIS for multiple data groups', async () =>
       assertAnalyticsApiWasInvokedCorrectly({
         dataSources: [DATA_SOURCES.POP01, DATA_SOURCES.POP02],
         options: basicOptions,
