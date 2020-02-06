@@ -3,7 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { AGGREGATION_TYPES, periodToTimestamp, periodToDisplayString } from '/dhis';
+import { AGGREGATION_TYPES, periodToTimestamp, periodToDisplayString } from '@tupaia/dhis-api';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 
 class SumPerPeriodBuilder extends DataBuilder {

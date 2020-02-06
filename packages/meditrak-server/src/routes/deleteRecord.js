@@ -3,10 +3,8 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 
-import { respond } from '../respond';
-import { ValidationError, DatabaseError } from '../errors';
+import { respond, singularise, ValidationError, DatabaseError } from '@tupaia/utils';
 import { constructRecordExistsWithId } from '../validation';
-import { singularise } from '../utilities';
 
 /**
  * Responds to the DELETE requests by deleting the record with the given id
@@ -16,7 +14,7 @@ export async function deleteRecord(req, res) {
   const { resource: pluralResource, recordId } = params;
   const resource = singularise(pluralResource);
   const model = models[resource];
-  if (!model.isDeletable) {
+  if (!model.isDeletableViaApi) {
     throw new ValidationError(`${resource} is not a valid DELETE endpoint`);
   }
 

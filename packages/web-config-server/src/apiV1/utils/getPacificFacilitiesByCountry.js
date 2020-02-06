@@ -1,3 +1,4 @@
+import { DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
 import { getDhisApiInstance } from '/dhis';
 
 // Find every organisation units that are children of a country (will return facilities, district and sub-districts)
@@ -12,10 +13,13 @@ const getFacilitiesWithinParent = async (dhisApi, countryCode) =>
 // Get Pacific countries current in Tupaia
 const getPacificCountries = async dhisApi => {
   // Query DHIS2 organisationUnitGroups with code: Countries
-  const { organisationUnitGroups } = await dhisApi.fetch('organisationUnitGroups', {
-    filter: [{ code: 'Pacific_Countries' }],
-    fields: 'organisationUnits[code, name]',
-  });
+  const { organisationUnitGroups } = await dhisApi.fetch(
+    DHIS2_RESOURCE_TYPES.ORGANISATION_UNIT_GROUP,
+    {
+      filter: [{ code: 'Pacific_Countries' }],
+      fields: 'organisationUnits[code, name]',
+    },
+  );
   return organisationUnitGroups[0];
 };
 

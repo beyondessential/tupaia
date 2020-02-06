@@ -1,6 +1,6 @@
 import keyBy from 'lodash.keyby';
+import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
 import { aggregateOperationalFacilityValues, getFacilityStatuses } from '/apiV1/utils';
-import { AGGREGATION_TYPES } from '/dhis';
 import { ENTITY_TYPES } from '/models/Entity';
 
 export const achievedVsTargetByFacility = async ({ dataBuilderConfig, query, entity }, dhisApi) => {

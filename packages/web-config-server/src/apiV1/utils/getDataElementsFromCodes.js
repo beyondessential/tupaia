@@ -1,3 +1,4 @@
+import { DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
 import { getOptionSetOptions } from './getOptionSetOptions';
 
 /**
@@ -16,7 +17,7 @@ import { getOptionSetOptions } from './getOptionSetOptions';
  * @returns {Promise<Object<string, DataElement>>} A map of data element codes to data elements
  */
 export const getDataElementsFromCodes = async (dhisApi, dataElementCodes, shouldIncludeOptions) => {
-  const { dataElements } = await dhisApi.fetch('dataElements', {
+  const { dataElements } = await dhisApi.fetch(DHIS2_RESOURCE_TYPES.DATA_ELEMENT, {
     filter: `code:in:[${dataElementCodes}]`,
     fields: `id,code,name${shouldIncludeOptions ? ',optionSet' : ''}`,
   });

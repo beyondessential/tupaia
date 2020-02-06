@@ -3,8 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 import sinon from 'sinon';
-import { DhisApi } from '../../../../../dhis/api/DhisApi';
-import { RESPONSE_TYPES } from '../../../../../dhis/responseUtils';
+import { DhisApi, RESPONSE_TYPES } from '@tupaia/dhis-api';
 import { ORGANISATION_UNIT_ID } from './testData';
 
 // taken directly from a DHIS2 api call, with redundant info stripped out
@@ -23,7 +22,7 @@ const DELETE_SUMMARY = {
 };
 
 const STUBBED_METHODS = {
-  postDataValueSet: IMPORT_SUMMARY,
+  postDataValueSets: IMPORT_SUMMARY,
   postDataSetCompletion: IMPORT_SUMMARY,
   deleteDataValue: DELETE_SUMMARY,
   deleteDataSetCompletion: DELETE_SUMMARY,

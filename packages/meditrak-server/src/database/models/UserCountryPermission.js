@@ -3,10 +3,8 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 
-import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
+import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
 import { sendEmail } from '../../utilities';
-import { TYPES } from '..';
 
 class UserCountryPermissionType extends DatabaseType {
   static databaseType = TYPES.USER_COUNTRY_PERMISSION;
@@ -41,9 +39,7 @@ export class UserCountryPermissionModel extends DatabaseModel {
     return UserCountryPermissionType;
   }
 
-  get isDeletable() {
-    return true;
-  }
+  isDeletableViaApi = true;
 }
 
 /**

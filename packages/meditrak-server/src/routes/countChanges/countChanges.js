@@ -3,8 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 
-import { respond } from '../../respond';
-import { DatabaseError, UnauthenticatedError } from '../../errors';
+import { respond, DatabaseError, UnauthenticatedError } from '@tupaia/utils';
 import { getChangesFilter } from '../utilities';
 import { LegacyCountChangesHandler } from './LegacyCountChangesHandler';
 

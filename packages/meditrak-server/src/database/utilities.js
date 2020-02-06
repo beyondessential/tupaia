@@ -3,7 +3,7 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
 
-import { MIN_VERSION } from '../utilities/version';
+const MIN_APP_VERSION = '0.0.1';
 
 // Required for backwards compatibility for meditrak instances
 // that use clinic_id against SurveyResponse
@@ -28,5 +28,7 @@ export async function getEntityIdFromClinicId(models, clinicId) {
  */
 export const getUniversalTypes = models => {
   const minAppVersionByType = models.getMinAppVersionByType();
-  return Object.keys(minAppVersionByType).filter(type => minAppVersionByType[type] === MIN_VERSION);
+  return Object.keys(minAppVersionByType).filter(
+    type => minAppVersionByType[type] === MIN_APP_VERSION,
+  );
 };

@@ -51,5 +51,5 @@ export const exportChartToExcel = async (
   xlsx.writeFile(workbook, filePath);
 
   // Email it to the requester
-  emailExport(emailAddress, filePath, `tupaia-export-${chartType}.xlsx`);
+  emailExport(emailAddress, filePath, `${chartConfig.exportFileName}`);
 };

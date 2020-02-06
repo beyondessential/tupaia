@@ -6,7 +6,7 @@
 import { get } from 'lodash';
 
 import { getHighestPossibleIdForGivenTime } from '@tupaia/database';
-import { ValidationError } from '../../errors';
+import { ValidationError } from '@tupaia/utils';
 import { fetchRequestingMeditrakDevice } from './fetchRequestingMeditrakDevice';
 
 const getSupportedTypes = async (models, appVersion) => {

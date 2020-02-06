@@ -6,9 +6,10 @@
 import {} from 'dotenv/config'; // Load the environment variables into process.env
 
 import http from 'http';
-import { TupaiaDatabase } from '@tupaia/database';
+import { TupaiaDatabase, ModelRegistry } from '@tupaia/database';
 
-import { createMeditrakSyncQueue, ModelRegistry } from './database';
+import { createMeditrakSyncQueue } from './database';
+import * as modelClasses from './database/models';
 import { startSyncWithDhis } from './dhis';
 import { startSyncWithMs1 } from './ms1';
 import { startFeedScraper } from './social';
@@ -20,7 +21,7 @@ import winston from './log';
  * Set up database
  */
 const database = new TupaiaDatabase();
-const models = new ModelRegistry(database);
+const models = new ModelRegistry(database, modelClasses);
 
 /**
  * Set up change handlers e.g. for syncing

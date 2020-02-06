@@ -6,8 +6,7 @@
 import { keyBy } from 'lodash';
 import sinon from 'sinon';
 
-import { DhisApi } from '../../../../dhis/api/DhisApi';
-import { DHIS2_RESOURCE_TYPES } from '../../../../dhis/api/types';
+import { DhisApi, DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
 
 const { ORGANISATION_UNIT, TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_TYPE } = DHIS2_RESOURCE_TYPES;
 

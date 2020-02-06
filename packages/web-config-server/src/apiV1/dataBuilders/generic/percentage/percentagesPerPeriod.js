@@ -4,13 +4,18 @@
  */
 
 import {
+  AGGREGATION_TYPES,
+  PERIOD_TYPES,
+  convertToPeriod,
+  periodToTimestamp,
+} from '@tupaia/dhis-api';
+import {
   aggregateOperationalFacilityValues,
   getFacilityStatuses,
   getMatchedNumeratorsAndDenominators,
   timestampToPeriodName,
   limitRange,
 } from '/apiV1/utils';
-import { AGGREGATION_TYPES, PERIOD_TYPES, convertToPeriod, periodToTimestamp } from '/dhis';
 
 const {
   FINAL_EACH_MONTH,
