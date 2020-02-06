@@ -5,8 +5,8 @@
 
 import flatten from 'lodash.flatten';
 
+import { reduceToDictionary } from '@tupaia/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { reduceToDictionary } from '/utils';
 import { Entity } from '/models';
 import { getDataElementsFromCodes } from '/apiV1/utils';
 

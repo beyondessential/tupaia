@@ -14,7 +14,7 @@ export const testCreateAnswer = (dhisApi, models) => {
     change.record_id = 'does_not_exist_xxxxxxxxx';
     const pusher = new AggregateDataPusher(models, change, dhisApi);
     expect(pusher.push()).to.be.rejectedWith(`No answer found for ${change.record_id}`);
-    expect(dhisApi.postDataValueSet).not.to.have.been.called;
+    expect(dhisApi.postDataValueSets).not.to.have.been.called;
     expect(dhisApi.deleteDataValue).not.to.have.been.called;
   });
 
@@ -24,9 +24,7 @@ export const testCreateAnswer = (dhisApi, models) => {
 
     const result = await pusher.push();
     expect(result).to.be.true;
-    expect(dhisApi.postDataValueSet).to.have.been.calledOnceWith({
-      dataValues: [ANSWER_DATA_VALUE],
-    });
+    expect(dhisApi.postDataValueSets).to.have.been.calledOnceWith([ANSWER_DATA_VALUE]);
     expect(dhisApi.deleteDataValue).not.to.have.been.called;
   });
 
@@ -49,7 +47,7 @@ export const testCreateAnswer = (dhisApi, models) => {
     const pusher = new AggregateDataPusher(models, change, dhisApi);
     const result = await pusher.push();
     expect(result).to.be.true;
-    expect(dhisApi.postDataValueSet).not.to.have.been.called;
+    expect(dhisApi.postDataValueSets).not.to.have.been.called;
     expect(dhisApi.deleteDataValue).not.to.have.been.called;
   });
 };

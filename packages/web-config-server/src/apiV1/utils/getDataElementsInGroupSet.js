@@ -1,8 +1,9 @@
-import { CustomError } from '/errors';
+import { DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
+import { CustomError } from '@tupaia/utils';
 
 export const getDataElementsInGroupSet = async (dhisApi, groupSetCode, useCodeAsKey = false) => {
   const result = await dhisApi.getRecord({
-    type: 'dataElementGroupSets',
+    type: DHIS2_RESOURCE_TYPES.DATA_ELEMENT_GROUP_SET,
     code: groupSetCode,
     fields: 'name,dataElementGroups[displayName, id, code, dataElements[id, code]]',
   });

@@ -4,9 +4,9 @@
  */
 
 import { get } from 'lodash';
+import { DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
 
 import { enrollTrackedEntityInProgramIfNotEnrolled } from '../../../api';
-import { DHIS2_RESOURCE_TYPES } from '../../../api/types';
 import { generateDataValue } from '../generateDataValue';
 
 const { ORGANISATION_UNIT, PROGRAM } = DHIS2_RESOURCE_TYPES;

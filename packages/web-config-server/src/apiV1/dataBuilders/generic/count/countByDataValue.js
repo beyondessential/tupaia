@@ -1,5 +1,5 @@
+import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { AGGREGATION_TYPES } from '/dhis';
 
 class CountByDataValueBuilder extends DataBuilder {
   async build() {

@@ -5,10 +5,7 @@
 
 import { get, set } from 'lodash';
 
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
-import { DatabaseModel } from '../DatabaseModel';
-
+import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
 /**
  * Maximum number of parents an entity can have.
  * Used to avoid infinite loops while traversing the entity hierarchy
@@ -129,6 +126,10 @@ export class EntityModel extends DatabaseModel {
 
   async updatePointCoordinates(code, { longitude, latitude }) {
     const point = JSON.stringify({ coordinates: [longitude, latitude], type: 'Point' });
+    await this.updatePointCoordinatesFormatted(code, point);
+  }
+
+  async updatePointCoordinatesFormatted(code, point) {
     return this.database.executeSql(
       `
         UPDATE "entity"

@@ -5,8 +5,8 @@
 
 import sinon from 'sinon';
 
+import { getSortByKey } from '@tupaia/utils';
 import * as Entity from '/models/Entity';
-import { getSortByKey } from '/utils';
 import { createAssertTableResults } from './helpers';
 import { DATA_VALUES, ORG_UNITS } from './tableOfDataValues.fixtures';
 

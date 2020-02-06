@@ -1,0 +1,9 @@
+{
+  "all": true,
+  "extension": [".js"],
+  "exclude": ["src/tests/**"],
+  "include": ["src/**"],
+  "instrument": false,
+  "reporter": ["lcov", "text"],
+  "sourceMap": false
+}
