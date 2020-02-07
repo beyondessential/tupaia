@@ -29,6 +29,7 @@ import { getUserRewards } from './getUserRewards';
 import { requestPasswordReset } from './requestPasswordReset';
 import { getCountryAccessList } from './getCountryAccessList';
 import { surveyResponse } from './surveyResponse';
+import { importDisaster } from './importDisaster';
 import { verifyEmail, requestResendEmail } from './verifyEmail';
 
 /**
@@ -71,6 +72,7 @@ export default {
   requestPasswordReset: catchAsyncErrors(requestPasswordReset),
   getCountryAccessList: catchAsyncErrors(getCountryAccessList),
   surveyResponse: catchAsyncErrors(surveyResponse),
+  importDisaster: catchAsyncErrors(importDisaster),
   verifyEmail: catchAsyncErrors(verifyEmail),
   requestResendEmail: catchAsyncErrors(requestResendEmail),
 };

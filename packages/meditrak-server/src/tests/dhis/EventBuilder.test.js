@@ -5,11 +5,10 @@
 
 import { expect } from 'chai';
 import sinon from 'sinon';
+import { DhisApi, DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
 
 import { ENTITY_TYPES } from '../../database/models/Entity';
-import { DhisApi } from '../../dhis/api/DhisApi';
 import * as Enrollments from '../../dhis/api/enrollments';
-import { DHIS2_RESOURCE_TYPES } from '../../dhis/api/types';
 import { EventBuilder } from '../../dhis/pushers/data/event/EventBuilder';
 import {
   generateTestId,

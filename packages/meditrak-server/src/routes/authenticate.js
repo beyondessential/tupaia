@@ -6,8 +6,7 @@
 import jwt from 'jsonwebtoken';
 import randomToken from 'rand-token';
 
-import { respond } from '../respond';
-import { DatabaseError, UnauthenticatedError, UnverifiedError } from '../errors';
+import { respond, DatabaseError, UnauthenticatedError, UnverifiedError } from '@tupaia/utils';
 import { EMAIL_VERIFIED_STATUS } from './verifyEmail';
 
 const REFRESH_TOKEN_LENGTH = 40;

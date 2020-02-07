@@ -5,7 +5,7 @@
 
 import winston from 'winston';
 
-import { utcMoment } from '/utils';
+import { utcMoment } from '@tupaia/utils';
 
 /**
  * transform timestamp to period format

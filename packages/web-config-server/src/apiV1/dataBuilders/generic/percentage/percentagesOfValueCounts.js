@@ -6,11 +6,16 @@
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { divideValues } from '/apiV1/dataBuilders/helpers';
 
+const ORG_UNIT_COUNT = '$orgUnitCount';
+
 export class PercentagesOfValueCountsBuilder extends DataBuilder {
   getAllDataElementCodes() {
     return Object.values(this.config.dataClasses).reduce(
       (codes, { numerator, denominator }) =>
-        codes.concat(Object.keys(numerator.dataValues), Object.keys(denominator.dataValues)),
+        codes.concat(
+          Object.keys(numerator.dataValues),
+          denominator.hasOwnProperty('dataValues') && Object.keys(denominator.dataValues),
+        ),
       [],
     );
   }
@@ -30,6 +35,7 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
       dataElementCodes: this.getAllDataElementCodes(),
       outputIdScheme: 'code',
     });
+
     return results;
   }
 
@@ -59,7 +65,13 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
   calculateFractionPartsForDataClass(dataClass, analytics) {
     const { numerator, denominator } = dataClass;
     const numeratorValue = this.countAnalyticsThatSatisfyConditions(analytics, numerator);
-    const denominatorValue = this.countAnalyticsThatSatisfyConditions(analytics, denominator);
+    let denominatorValue;
+
+    if (denominator === ORG_UNIT_COUNT) {
+      denominatorValue = [...new Set(analytics.map(data => data.organisationUnit))].length;
+    } else {
+      denominatorValue = this.countAnalyticsThatSatisfyConditions(analytics, denominator);
+    }
 
     return [numeratorValue, denominatorValue];
   }

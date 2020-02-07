@@ -1,5 +1,10 @@
+import {
+  AGGREGATION_TYPES,
+  convertToPeriod,
+  periodToTimestamp,
+  PERIOD_TYPES,
+} from '@tupaia/dhis-api';
 import { aggregateOperationalFacilityValues, getFacilityStatuses } from '/apiV1/utils';
-import { AGGREGATION_TYPES, convertToPeriod, periodToTimestamp, PERIOD_TYPES } from '/dhis';
 
 const periodToMonthTimestamp = period =>
   periodToTimestamp(convertToPeriod(period, PERIOD_TYPES.MONTH));

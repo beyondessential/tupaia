@@ -3,7 +3,7 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
 
-import { TYPES } from '../database';
+import { TYPES } from '@tupaia/database';
 import { sendEmail } from '../utilities';
 
 const NOTIFIERS = [

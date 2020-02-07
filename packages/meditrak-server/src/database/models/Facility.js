@@ -3,9 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '..';
-import { DatabaseModel } from '../DatabaseModel';
+import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
 
 class FacilityType extends DatabaseType {
   static databaseType = TYPES.FACILITY;

@@ -32,9 +32,9 @@ export { SurveyScreenComponentModel as surveyScreenComponent } from './SurveyScr
 export { SurveyScreenModel as surveyScreen } from './SurveyScreen';
 export { UserCountryPermissionModel as userCountryPermission } from './UserCountryPermission';
 export { UserFacilityPermissionModel as userFacilityPermission } from './UserFacilityPermission';
-export {
-  UserGeographicalAreaPermissionModel as userGeographicalAreaPermission,
-} from './UserGeographicalAreaPermission';
+export { UserGeographicalAreaPermissionModel as userGeographicalAreaPermission } from './UserGeographicalAreaPermission';
 export { UserModel as user } from './User';
 export { UserRewardModel as userReward } from './UserReward';
 export { APIClientModel as apiClient } from './APIClient';
+export { DisasterModel as disaster } from './Disaster';
+export { DisasterEventModel as disasterEvent } from './DisasterEvent';

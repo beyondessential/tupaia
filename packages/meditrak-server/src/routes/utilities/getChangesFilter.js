@@ -4,7 +4,7 @@
  */
 
 import { getHighestPossibleIdForGivenTime } from '@tupaia/database';
-import { ValidationError } from '../../errors';
+import { ValidationError } from '@tupaia/utils';
 
 export const getChangesFilter = ({ since = 0, recordTypes = null }) => {
   since = parseFloat(since);
