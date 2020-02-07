@@ -20,6 +20,47 @@ export class ChangeValidator {
     this.models = models;
   }
 
+  queryValidSurveyResponseIds = async (surveyResponseIds, excludeEventBased = false) => {
+    const nonPublicDemoLandUsers = [
+      (
+        await this.models.database.executeSql(
+          `
+          SELECT DISTINCT user_id
+          FROM user_country_permission
+          JOIN country ON country.id = user_country_permission.country_id
+          JOIN permission_group ON permission_group.id = user_country_permission.permission_group_id
+          WHERE country.code = 'DL'
+          AND permission_group.name <> 'Public';
+        `,
+        )
+      ).map(r => r.user_id)[0],
+    ];
+    const results = await this.models.database.executeSql(
+      `
+        SELECT DISTINCT survey_response.id as id
+        FROM survey_response
+        JOIN survey ON survey_response.survey_id = survey.id
+        JOIN entity ON survey_response.entity_id = entity.id
+        WHERE survey.integration_metadata ? 'dhis2'
+        AND (
+          entity.country_code <> 'DL'
+          OR survey_response.user_id IN (${nonPublicDemoLandUsers.map(() => '?').join(',')})
+        )
+        ${
+          excludeEventBased
+            ? `
+              AND survey.can_repeat = FALSE
+              AND entity.type IN ('facility','region','country','world','village')
+              `
+            : ''
+        }
+        AND survey_response.id IN (${surveyResponseIds.map(() => '?').join(',')});
+      `,
+      [...nonPublicDemoLandUsers, ...surveyResponseIds],
+    );
+    return results.records.map(r => r.id);
+  };
+
   getValidDeletes = async changes => {
     // If there is a sync log or queue record with this record_id, the delete record must be
     // valid for the dhis sync queue
@@ -34,30 +75,16 @@ export class ChangeValidator {
     return validDeletes;
   };
 
-  getValidEntityUpdates = async entityIds => entityIds; // all entity updates are valid
-
   getValidAnswerUpdates = async answerIds => {
+    if (answerIds.length === 0) return [];
     const answers = await this.models.answer.find({
       id: answerIds,
     });
     const surveyResponseIds = getUniqueEntries(answers.map(a => a.survey_response_id));
-    const surveyResponses = await this.models.surveyResponse.find({
-      id: surveyResponseIds,
-    });
 
-    // event based answer changes are synced via the survey response, remove those response ids
-    const nonEventBasedSurveyResponseIds = (
-      await Promise.all(
-        surveyResponses.map(async surveyResponse => {
-          const isEventBased = await surveyResponse.isEventBased();
-          return isEventBased ? null : surveyResponse.id;
-        }),
-      )
-    ).filter(r => !!r);
-
-    // of the remaining responses, check which are valid
+    // check which survey responses are valid
     const validSurveyResponseIds = new Set(
-      await this.getValidSurveyResponseUpdates(nonEventBasedSurveyResponseIds),
+      await this.queryValidSurveyResponseIds(surveyResponseIds),
     );
 
     // return the answers that are part of a valid survey response
@@ -65,49 +92,18 @@ export class ChangeValidator {
   };
 
   getValidSurveyResponseUpdates = async surveyResponseIds => {
-    const surveyResponses = await this.models.surveyResponse.find({ id: surveyResponseIds });
-    const surveyIds = getUniqueEntries(surveyResponses.map(r => r.survey_id));
-    const surveys = await this.models.survey.find({ id: surveyIds });
-    const surveyIdsForDhis2 = new Set(
-      surveys.filter(s => !!s.integration_metadata.dhis2).map(s => s.id),
-    );
-    const surveyResponsesForDhis2 = surveyResponses.filter(r => surveyIdsForDhis2.has(r.survey_id));
-
-    const validSurveyResponseIds = [];
-    await Promise.all(
-      surveyResponsesForDhis2.map(async surveyResponse => {
-        // If the survey is logging data against world we don't need to check demo land
-        const surveyEntity = await surveyResponse.entity();
-        if (surveyEntity.type === ENTITY_TYPES.WORLD) {
-          validSurveyResponseIds.push(surveyResponse.id);
-          return;
-        }
-        const { id: countryId } = await surveyEntity.country();
-
-        const demoLand = await this.models.country.findOne({ name: 'Demo Land' });
-        const publicPermissionGroup = await this.models.permissionGroup.findOne({ name: 'Public' });
-        const userCountryPermission = await this.models.userCountryPermission.findOne({
-          user_id: surveyResponse.user_id,
-          country_id: countryId,
-          permission_group_id: publicPermissionGroup.id,
-        });
-        // ignore public demoland responses
-        if (countryId === demoLand.id && userCountryPermission) return;
-        validSurveyResponseIds.push(surveyResponse.id);
-      }),
-    );
-    return validSurveyResponseIds;
+    if (surveyResponseIds.length === 0) return [];
+    return this.queryValidSurveyResponseIds(surveyResponseIds);
   };
 
   getValidUpdates = async changes => {
     const updateChanges = getChangesOfType(changes, UPDATE);
-    const getValidIdsForModel = (validator, model) =>
-      validator(getRecordIds(getChangesForRecordType(updateChanges, model.databaseType)));
-    const validEntities = await getValidIdsForModel(this.getValidEntityUpdates, this.models.entity);
-    const validAnswers = await getValidIdsForModel(this.getValidAnswerUpdates, this.models.answer);
-    const validSurveyResponses = await getValidIdsForModel(
-      this.getValidSurveyResponseUpdates,
-      this.models.surveyResponse,
+    const getIdsFromChanges = model =>
+      getRecordIds(getChangesForRecordType(updateChanges, model.databaseType));
+    const validEntities = getIdsFromChanges(this.models.entity); // all entity updates are valid
+    const validAnswers = await this.getValidAnswerUpdates(getIdsFromChanges(this.models.answer));
+    const validSurveyResponses = await this.getValidSurveyResponseUpdates(
+      getIdsFromChanges(this.models.surveyResponse),
     );
     return [...validEntities, ...validAnswers, ...validSurveyResponses];
   };
