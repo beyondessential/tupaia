@@ -60,7 +60,6 @@ export class ExternalApiSyncQueue {
           change_time: Math.random(), // Force an update, after which point the trigger will update the change_time to more complicated now() + sequence
         },
       );
-      console.log(change.record_type);
     });
   }
 

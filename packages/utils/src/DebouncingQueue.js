@@ -5,66 +5,46 @@
 
 import { Multilock } from './Multilock';
 
-const DEBOUNCE_DURATION = 250;
+const DEBOUNCE_DURATION = 50;
 
 class SupercedableTask {
-  constructor(runTask) {
+  constructor(runTask, hash) {
+    this.hash = hash;
     this.runTask = runTask;
-    this.promise = new Promise(resolve => {
-      this.resolve = resolve;
-    });
     this.isSuperceded = false;
+    this.run = this.run.bind(this);
   }
 
   supercede() {
     this.isSuperceded = true;
   }
 
-  run() {
+  async run() {
     if (this.isSuperceded) {
-      this.resolve();
       return null;
     }
     return this.runTask();
   }
-
-  await() {
-    return this.promise;
-  }
 }
 
 export class DebouncingQueue {
-  constructor() {
-    this.taskQueue = [];
+  constructor(debounceDuration) {
+    this.debounceDuration = debounceDuration || DEBOUNCE_DURATION;
     this.tasksByHash = {};
-    this.isRunning = false;
     this.lock = new Multilock();
   }
 
   async runTask(hash, runTask) {
-    await this.lock.waitWithDebounce(DEBOUNCE_DURATION);
-    const unlock = this.lock.createLock();
     const existingTask = this.tasksByHash[hash];
     if (existingTask) {
       existingTask.supercede();
     }
-    const task = new SupercedableTask(runTask);
+    const task = new SupercedableTask(runTask, hash);
     this.tasksByHash[hash] = task;
-    this.addToQueue(task);
+    await this.lock.waitWithDebounce(this.debounceDuration);
+    const unlock = this.lock.createLock();
+    const result = await task.run();
     unlock();
-    return task.await();
-  }
-
-  addToQueue(task) {
-    this.taskQueue.push(task);
-    if (!this.isRunning) this.runNextTask();
-  }
-
-  async runNextTask() {
-    this.isRunning = true;
-    const task = this.taskQueue.shift();
-    await task.run();
-    if (this.taskQueue.length > 0) this.runNextTask();
-    else this.isRunning = false;
+    return result;
   }
 }
