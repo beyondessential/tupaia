@@ -2,8 +2,6 @@
  * Tupaia MediTrak
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
-import { ENTITY_TYPES } from '../database/models/Entity';
-
 const UPDATE = 'update';
 const DELETE = 'delete';
 
@@ -58,7 +56,7 @@ export class ChangeValidator {
       `,
       [...nonPublicDemoLandUsers, ...surveyResponseIds],
     );
-    return results.records.map(r => r.id);
+    return results.map(r => r.id);
   };
 
   getValidDeletes = async changes => {
@@ -84,7 +82,7 @@ export class ChangeValidator {
 
     // check which survey responses are valid
     const validSurveyResponseIds = new Set(
-      await this.queryValidSurveyResponseIds(surveyResponseIds),
+      await this.queryValidSurveyResponseIds(surveyResponseIds, true),
     );
 
     // return the answers that are part of a valid survey response
