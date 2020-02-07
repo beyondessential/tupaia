@@ -20,3 +20,6 @@ export * from './modules/imms';
 export * from './modules/msupply';
 export * from './modules/pehs';
 export * from './modules/tonga';
+
+/** Super cool awesome functional databuilders!! */
+export * from './functional';
