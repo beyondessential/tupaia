@@ -1,59 +1,30 @@
-// function pipe(...fns) {
-//   return arg => fns.reduce((prev, fn) => fn(prev), arg);
-// }
+import { basicFetch } from './fetchers/analytics';
+import { countValues } from './builders/count';
+import { formatForFrontend } from './formatters/values';
 
+/** pipe with async support */
 function pipe(...fns) {
   return arg => fns.reduce((chain, func) => chain.then(func), Promise.resolve(arg));
 }
 
-// const pipe = (...fns) => input => functions.reduce((chain, func) => chain.then(func), Promise.resolve(input));
-
+/** This would need to change to get the functions to pass the the pipe out of some config */
 export const superCoolFunctionalBuilder = (
   { dataBuilderConfig, query, organisationUnitInfo },
   dhisApi,
 ) => {
+  /** Looking into better ways to provide this data to the piped functions. */
   const context = { dataBuilderConfig, query, organisationUnitInfo, dhisApi };
 
   return pipe(
-    analyticsFetcher,
+    basicFetch,
     countValues(context.dataBuilderConfig.valuesOfInterest),
     formatForFrontend,
   )(context);
 };
 
-async function analyticsFetcher({ dataBuilderConfig, query, organisationUnitInfo, dhisApi }) {
-  const { results } = await dhisApi.getAnalytics(dataBuilderConfig, query);
-  return results;
-}
-
-/** Higher Order Functions with additional args */
-function countValues(valuesOfInterest) {
-  return results => {
-    return results.reduce((data, { value }) => {
-      if (valuesOfInterest && !valuesOfInterest.includes(value)) {
-        return { ...data }; // not interested in this value, ignore it
-      }
-
-      const existingValue = data[value];
-      if (!existingValue) {
-        const newValue = { value: 0, name: value };
-        return { ...data, [value]: newValue };
-      }
-
-      existingValue.value += 1;
-      return { ...data, [value]: existingValue };
-    }, {});
-  };
-}
-
-const formatForFrontend = data => {
-  return { data: Object.values(data) };
-};
-
-/** ---------------------- EXAMPLES ---------------------- */
-
-/** Higher Order Functions with additional args */
-function groupByKeyFormatter(key) {
+/** ---------------------- EXAMPLES OF OTHER FUNCTIONS ---------------------- */
+/** group results by any key */
+function groupByKeyFormatter(key = 'period') {
   return results =>
     results.reduce((a, c) => {
       const b = { ...a };
@@ -62,6 +33,7 @@ function groupByKeyFormatter(key) {
     }, {});
 }
 
+/** sum results */
 function sumBuilder(results) {
   return Object.entries(results).map(([k, v]) => {
     const summed = v.reduce((a, c) => (a += c.value), 0);
@@ -69,23 +41,18 @@ function sumBuilder(results) {
   });
 }
 
-/** Pipeable composition */
-
-// format
-function perPeriodFormatter(r) {
-  return r.reduce((a, c) => {
-    const b = { ...a };
-    b[c.period] ? (b[c.period] = [...b[c.period], c]) : (b[c.period] = [c]);
-    return b;
-  }, {});
+/** Pipeable composition!!! */
+function odds(array) {
+  return array.filter(x => x % 2 === 0);
 }
 
-function perOrgFormatter(r) {
-  return r.reduce((a, c) => {
-    const b = { ...a };
-    b[c.organisationUnit]
-      ? (b[c.organisationUnit] = [...b[c.organisationUnit], c])
-      : (b[c.organisationUnit] = [c]);
-    return b;
-  }, {});
+function multiplyBy(x) {
+  return array => array.map(n => n * x);
 }
+
+/**
+ * this can now be passed to the build pipeline!
+ * Real world example could be:
+ * const average = pipe(sumValues, divideBy(values.length));
+ */
+const tripleTheOdds = pipe(odds, multiplyBy(3));
