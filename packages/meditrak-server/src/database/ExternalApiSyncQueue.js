@@ -3,10 +3,12 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 import autobind from 'react-autobind';
+import { Multilock } from '@tupaia/utils';
 import { getIsProductionEnvironment } from '../devops';
 
 const LOWEST_PRIORITY = 5;
 const BAD_REQUEST_LIMIT = 7;
+const DEBOUNCE_DURATION = 50;
 
 export class ExternalApiSyncQueue {
   constructor(
@@ -21,6 +23,9 @@ export class ExternalApiSyncQueue {
     this.validator = validator;
     this.syncQueueModel = syncQueueModel;
     this.generateChangeRecordAdditions = generateChangeRecordAdditions;
+    this.unprocessedChanges = [];
+    this.lock = new Multilock();
+    this.isProcessing = false;
     subscriptionTypes.forEach(type => models.addChangeHandlerForCollection(type, this.add));
   }
 
@@ -28,35 +33,64 @@ export class ExternalApiSyncQueue {
    * Adds a change to the sync queue, ready to be synced to the aggregation server
    */
   async add(change, record) {
-    const isValid = await this.validator(change);
-    if (!isValid) {
-      // do not add an invalid survey response
-      return;
-    }
+    this.unprocessedChanges.push({ change, record });
+    if (!this.isProcessing) this.processChangesIntoDb();
+  }
 
-    const changeRecordAdditions = await this.generateChangeRecordAdditions({
-      models: this.models,
-      recordType: change.record_type,
-      changedRecord: record,
+  async processChangesIntoDb() {
+    this.isProcessing = true;
+    await this.lock.waitWithDebounce(DEBOUNCE_DURATION);
+    const start = new Date();
+    console.log(`Processing ${this.unprocessedChanges.length} changes`);
+    const unlock = this.lock.createLock();
+    const changes = this.unprocessedChanges;
+    this.unprocessedChanges = [];
+    const changesSeen = new Set();
+    const getChangeHash = ({ record_id: recordId, type }) => `${recordId}: ${type}`;
+    const uniqueChanges = changes.filter(({ change }) => {
+      const hash = getChangeHash(change);
+      if (changesSeen.has(hash)) return false;
+      changesSeen.add(hash);
+      return true;
     });
-    const modifiedChangeRecord = {
-      ...change,
-      ...changeRecordAdditions,
-    };
+    console.log(`${uniqueChanges.length} unique changes`);
+    const validationResults = await this.validator(uniqueChanges.map(({ change }) => change));
+    const validChanges = changes.filter((c, i) => validationResults[i]);
+    console.log(`${validChanges.length} valid changes`);
+    await Promise.all(
+      validChanges.map(async ({ change, record }) => {
+        const changeRecordAdditions = await this.generateChangeRecordAdditions({
+          models: this.models,
+          recordType: change.record_type,
+          changedRecord: record,
+        });
+        const modifiedChangeRecord = {
+          ...change,
+          ...changeRecordAdditions,
+        };
 
-    await this.syncQueueModel.updateOrCreate(
-      {
-        record_id: modifiedChangeRecord.record_id,
-      },
-      {
-        ...modifiedChangeRecord,
-        // Reset defaults in case this has already been on the sync queue for a while
-        is_deleted: false,
-        is_dead_letter: false,
-        priority: 1,
-        change_time: Math.random(), // Force an update, after which point the trigger will update the change_time to more complicated now() + sequence
-      },
+        await this.syncQueueModel.updateOrCreate(
+          {
+            record_id: modifiedChangeRecord.record_id,
+          },
+          {
+            ...modifiedChangeRecord,
+            // Reset defaults in case this has already been on the sync queue for a while
+            is_deleted: false,
+            is_dead_letter: false,
+            priority: 1,
+            change_time: Math.random(), // Force an update, after which point the trigger will update the change_time to more complicated now() + sequence
+          },
+        );
+      }),
     );
+    unlock();
+    if (this.unprocessedChanges.length > 0) {
+      this.processChangesIntoDb();
+    } else {
+      this.isProcessing = false;
+    }
+    console.log(`Processed ${changes.length} changes`, Date.now() - start);
   }
 
   /**
