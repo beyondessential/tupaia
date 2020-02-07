@@ -3,7 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 import autobind from 'react-autobind';
-import { Serialiser } from '@tupaia/utils';
+import { DebouncingQueue } from '@tupaia/utils';
 import { getIsProductionEnvironment } from '../devops';
 
 const LOWEST_PRIORITY = 5;
@@ -22,7 +22,7 @@ export class ExternalApiSyncQueue {
     this.validator = validator;
     this.syncQueueModel = syncQueueModel;
     this.generateChangeRecordAdditions = generateChangeRecordAdditions;
-    this.serialiser = new Serialiser();
+    this.taskQueue = new DebouncingQueue();
     subscriptionTypes.forEach(type => models.addChangeHandlerForCollection(type, this.add));
   }
 
@@ -30,7 +30,7 @@ export class ExternalApiSyncQueue {
    * Adds a change to the sync queue, ready to be synced to the aggregation server
    */
   async add(change, record) {
-    await this.serialiser.runTask(change.record_id, async () => {
+    await this.taskQueue.runTask(change.record_id, async () => {
       const isValid = await this.validator(change);
       if (!isValid) {
         // do not add an invalid survey response

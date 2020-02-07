@@ -5,7 +5,9 @@
 
 import { Multilock } from './Multilock';
 
-class Task {
+const DEBOUNCE_DURATION = 250;
+
+class SupercedableTask {
   constructor(runTask) {
     this.runTask = runTask;
     this.promise = new Promise(resolve => {
@@ -31,7 +33,7 @@ class Task {
   }
 }
 
-export class Serialiser {
+export class DebouncingQueue {
   constructor() {
     this.taskQueue = [];
     this.tasksByHash = {};
@@ -40,13 +42,13 @@ export class Serialiser {
   }
 
   async runTask(hash, runTask) {
-    await this.lock.waitWithDebounce();
+    await this.lock.waitWithDebounce(DEBOUNCE_DURATION);
     const unlock = this.lock.createLock();
     const existingTask = this.tasksByHash[hash];
     if (existingTask) {
       existingTask.supercede();
     }
-    const task = new Task(runTask);
+    const task = new SupercedableTask(runTask);
     this.tasksByHash[hash] = task;
     this.addToQueue(task);
     unlock();

@@ -9,6 +9,6 @@ export { Multilock } from './Multilock';
 export { flattenToObject, getSortByKey, mapKeys, reduceToDictionary, reduceToSet } from './object';
 export { asynchronouslyFetchValuesForObject, fetchWithTimeout, stringifyQuery } from './request';
 export { respond } from './respond';
-export { Serialiser } from './Serialiser';
+export { DebouncingQueue } from './DebouncingQueue';
 export { singularise, stripFromStart } from './string';
 export { WorkBookParser } from './WorkBookParser';
