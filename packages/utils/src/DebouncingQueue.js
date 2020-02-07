@@ -8,11 +8,9 @@ import { Multilock } from './Multilock';
 const DEBOUNCE_DURATION = 50;
 
 class SupercedableTask {
-  constructor(runTask, hash) {
-    this.hash = hash;
+  constructor(runTask) {
     this.runTask = runTask;
     this.isSuperceded = false;
-    this.run = this.run.bind(this);
   }
 
   supercede() {
@@ -39,7 +37,7 @@ export class DebouncingQueue {
     if (existingTask) {
       existingTask.supercede();
     }
-    const task = new SupercedableTask(runTask, hash);
+    const task = new SupercedableTask(runTask);
     this.tasksByHash[hash] = task;
     await this.lock.waitWithDebounce(this.debounceDuration);
     const unlock = this.lock.createLock();
