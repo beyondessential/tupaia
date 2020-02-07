@@ -7,10 +7,10 @@ import autobind from 'react-autobind';
 import knex from 'knex';
 import PGPubSub from 'pg-pubsub';
 import winston from 'winston';
+import { Multilock } from '@tupaia/utils';
 
 import { getConnectionConfig } from './getConnectionConfig';
 import { generateId } from './utilities/generateId';
-import { Multilock } from './utilities/multilock';
 
 const QUERY_METHODS = {
   COUNT: 'count',

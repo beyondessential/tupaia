@@ -3,6 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 import autobind from 'react-autobind';
+import { Serialiser } from '@tupaia/utils';
 import { getIsProductionEnvironment } from '../devops';
 
 const LOWEST_PRIORITY = 5;
@@ -21,6 +22,7 @@ export class ExternalApiSyncQueue {
     this.validator = validator;
     this.syncQueueModel = syncQueueModel;
     this.generateChangeRecordAdditions = generateChangeRecordAdditions;
+    this.serialiser = new Serialiser();
     subscriptionTypes.forEach(type => models.addChangeHandlerForCollection(type, this.add));
   }
 
@@ -28,35 +30,38 @@ export class ExternalApiSyncQueue {
    * Adds a change to the sync queue, ready to be synced to the aggregation server
    */
   async add(change, record) {
-    const isValid = await this.validator(change);
-    if (!isValid) {
-      // do not add an invalid survey response
-      return;
-    }
+    await this.serialiser.runTask(change.record_id, async () => {
+      const isValid = await this.validator(change);
+      if (!isValid) {
+        // do not add an invalid survey response
+        return;
+      }
 
-    const changeRecordAdditions = await this.generateChangeRecordAdditions({
-      models: this.models,
-      recordType: change.record_type,
-      changedRecord: record,
+      const changeRecordAdditions = await this.generateChangeRecordAdditions({
+        models: this.models,
+        recordType: change.record_type,
+        changedRecord: record,
+      });
+      const modifiedChangeRecord = {
+        ...change,
+        ...changeRecordAdditions,
+      };
+
+      await this.syncQueueModel.updateOrCreate(
+        {
+          record_id: modifiedChangeRecord.record_id,
+        },
+        {
+          ...modifiedChangeRecord,
+          // Reset defaults in case this has already been on the sync queue for a while
+          is_deleted: false,
+          is_dead_letter: false,
+          priority: 1,
+          change_time: Math.random(), // Force an update, after which point the trigger will update the change_time to more complicated now() + sequence
+        },
+      );
+      console.log(change.record_type);
     });
-    const modifiedChangeRecord = {
-      ...change,
-      ...changeRecordAdditions,
-    };
-
-    await this.syncQueueModel.updateOrCreate(
-      {
-        record_id: modifiedChangeRecord.record_id,
-      },
-      {
-        ...modifiedChangeRecord,
-        // Reset defaults in case this has already been on the sync queue for a while
-        is_deleted: false,
-        is_dead_letter: false,
-        priority: 1,
-        change_time: Math.random(), // Force an update, after which point the trigger will update the change_time to more complicated now() + sequence
-      },
-    );
   }
 
   /**
