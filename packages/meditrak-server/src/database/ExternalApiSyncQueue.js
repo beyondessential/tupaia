@@ -32,7 +32,6 @@ export class ExternalApiSyncQueue {
   };
 
   async persistToSyncQueue(changes, changeDetails) {
-    console.log(changes);
     await Promise.all(
       changes.map(async (change, i) => {
         const changeRecord = {

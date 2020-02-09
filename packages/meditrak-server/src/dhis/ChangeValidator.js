@@ -100,6 +100,7 @@ export class ChangeValidator {
     const validSurveyResponses = await this.getValidSurveyResponseUpdates(
       getIdsFromChanges(this.models.surveyResponse),
     );
-    return [...validEntities, ...validAnswers, ...validSurveyResponses];
+    const validChangeIds = new Set([...validEntities, ...validAnswers, ...validSurveyResponses]);
+    return changes.filter(c => validChangeIds.has(c.record_id));
   };
 }
