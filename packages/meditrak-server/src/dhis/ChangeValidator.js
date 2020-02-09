@@ -5,8 +5,6 @@
 const UPDATE = 'update';
 const DELETE = 'delete';
 
-const getHash = (recordId, type) => `${recordId}: ${type}`;
-const getHashForChange = ({ record_id: recordId, type }) => getHash(recordId, type);
 const getRecordIds = changes => changes.map(c => c.record_id);
 const getChangesOfType = (changes, type) => changes.filter(c => c.type === type);
 const getChangesForRecordType = (changes, recordType) =>
@@ -39,10 +37,10 @@ export class ChangeValidator {
         FROM survey_response
         JOIN survey ON survey_response.survey_id = survey.id
         JOIN entity ON survey_response.entity_id = entity.id
-        WHERE survey.integration_metadata ? 'dhis2'
+        WHERE survey.integration_metadata::text LIKE '%"dhis2":%'
         AND (
           entity.country_code <> 'DL'
-          OR survey_response.user_id IN (${nonPublicDemoLandUsers.map(() => '?').join(',')})
+          OR survey_response.user_id IN (${nonPublicDemoLandUsers.map(id => `'${id}'`).join(',')})
         )
         ${
           excludeEventBased
@@ -52,9 +50,8 @@ export class ChangeValidator {
               `
             : ''
         }
-        AND survey_response.id IN (${surveyResponseIds.map(() => '?').join(',')});
+        AND survey_response.id IN (${surveyResponseIds.map(id => `'${id}'`).join(',')});
       `,
-      [...nonPublicDemoLandUsers, ...surveyResponseIds],
     );
     return results.map(r => r.id);
   };
@@ -66,11 +63,11 @@ export class ChangeValidator {
     const recordIds = getRecordIds(deleteChanges);
     const syncLogRecords = await this.models.dhisSyncLog.find({ record_id: recordIds });
     const syncQueueRecords = await this.models.dhisSyncQueue.find({ record_id: recordIds });
-    const validDeletes = getUniqueEntries([
+    const validDeleteIds = new Set([
       ...syncLogRecords.map(r => r.record_id),
       ...syncQueueRecords.map(r => r.record_id),
     ]);
-    return validDeletes;
+    return changes.filter(c => validDeleteIds.has(c.record_id));
   };
 
   getValidAnswerUpdates = async answerIds => {
@@ -104,15 +101,5 @@ export class ChangeValidator {
       getIdsFromChanges(this.models.surveyResponse),
     );
     return [...validEntities, ...validAnswers, ...validSurveyResponses];
-  };
-
-  validate = async changes => {
-    const validDeletes = await this.getValidDeletes(changes);
-    const validUpdates = await this.getValidUpdates(changes);
-    const validChangeHashes = new Set([
-      ...validDeletes.map(id => getHash(id, DELETE)),
-      ...validUpdates.map(id => getHash(id, UPDATE)),
-    ]);
-    return changes.map(c => validChangeHashes.has(getHashForChange(c)));
   };
 }

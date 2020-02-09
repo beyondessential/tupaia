@@ -4,7 +4,7 @@
  **/
 
 import { ExternalApiSyncQueue } from '../database/ExternalApiSyncQueue';
-import { generateChangeRecordAdditions } from './syncQueue';
+import { ChangeDetailGenerator } from './syncQueue';
 import { pushLatest } from './pushLatest';
 import { ChangeValidator } from './ChangeValidator';
 
@@ -20,18 +20,20 @@ export async function startSyncWithDhis(models) {
     models.entity.databaseType,
   ];
   const validator = new ChangeValidator(models);
+  const detailGenerator = new ChangeDetailGenerator(models);
   const syncQueue = new ExternalApiSyncQueue(
     models,
     validator.validate,
     subscriptions,
-    generateChangeRecordAdditions,
+    detailGenerator.generateDetails,
     models.dhisSyncQueue,
   );
 
   // If an answer for an event based survey response is updated, mark its parent survey response as
   // having changed so that it syncs/resyncs along with its current answers
-  models.addChangeHandlerForCollection(models.answer.databaseType, async (change, record) => {
-    const surveyResponse = await models.surveyResponse.findById(record.survey_response_id);
+  models.addChangeHandlerForCollection(models.answer.databaseType, async change => {
+    const answer = await models.answer.findById(change.record_id);
+    const surveyResponse = await models.surveyResponse.findById(answer.survey_response_id);
     if (!surveyResponse) {
       // return early if the survey response has been deleted, as that delete will be on the sync
       // queue separately, and account for this change to an answer (which is presumably a delete!)
@@ -45,7 +47,7 @@ export async function startSyncWithDhis(models) {
 
   // Start recursive sync loop (enabled by default)
   if (process.env.DHIS_SYNC_DISABLE === 'true') {
-    console.log("DHIS2 sync is disabled")
+    console.log('DHIS2 sync is disabled');
   } else {
     syncWithDhis(models, syncQueue);
   }

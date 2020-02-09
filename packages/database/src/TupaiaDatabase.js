@@ -77,13 +77,13 @@ export class TupaiaDatabase {
     this.getChangeHandlersForCollection(collectionName).push(changeHandler);
   }
 
-  async notifyChangeHandlers({ change, record }) {
+  async notifyChangeHandlers({ change }) {
     const unlock = this.handlerLock.createLock(change.record_id);
     try {
       const changeHandlersForCollection = this.getChangeHandlersForCollection(change.record_type);
       for (let i = 0; i < changeHandlersForCollection.length; i++) {
         try {
-          await changeHandlersForCollection[i](change, record);
+          await changeHandlersForCollection[i](change);
         } catch (e) {
           winston.error(e);
         }
@@ -328,7 +328,6 @@ export class TupaiaDatabase {
           type: 'update',
           record_type: recordType,
         },
-        record,
       });
     }
     return records;
