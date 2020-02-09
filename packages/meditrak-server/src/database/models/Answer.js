@@ -38,10 +38,6 @@ class AnswerType extends DatabaseType {
 
   static hookQueue = new CallbackQueue();
 
-  static meditrakConfig = {
-    minAppVersion: '0.0.1',
-  };
-
   async surveyResponse() {
     return this.otherModels.surveyResponse.findById(this.survey_response_id);
   }
