@@ -5,7 +5,7 @@
 
 import { getName } from 'countrynames';
 import { kebab as convertToKebabCase, capital as capitaliseFirstLetters } from 'case';
-import { DhisApi, REGIONAL_SERVER_NAME } from './DhisApi';
+import { DhisApi, REGIONAL_SERVER_NAME } from '@tupaia/dhis-api';
 
 const dhisApiInstances = {};
 

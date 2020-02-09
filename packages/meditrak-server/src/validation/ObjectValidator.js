@@ -3,7 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 
-import { ValidationError } from '../errors';
+import { ValidationError } from '@tupaia/utils';
 
 /**
  * Allows a series of 'validator' functions to be run, e.g., across each row in an import file. The

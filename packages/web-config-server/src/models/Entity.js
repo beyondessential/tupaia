@@ -6,7 +6,8 @@
 import { capital } from 'case';
 import groupBy from 'lodash.groupby';
 
-import { reduceToDictionary } from '/utils';
+import { TYPES } from '@tupaia/database';
+import { reduceToDictionary } from '@tupaia/utils';
 import { BaseModel } from './BaseModel';
 
 const FACILITY = 'facility';
@@ -40,7 +41,7 @@ const constructTypesCriteria = (types, prefix) =>
   types.length > 0 ? `${prefix} type IN (${types.map(() => '?').join(',')})` : '';
 
 export class Entity extends BaseModel {
-  static databaseType = 'entity';
+  static databaseType = TYPES.ENTITY;
 
   static fields = ['id', 'code', 'type', 'parent_id', 'country_code', 'name', 'point', 'region'];
 

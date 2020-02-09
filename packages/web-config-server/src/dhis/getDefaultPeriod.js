@@ -1,4 +1,5 @@
-import { convertDateRangeToPeriods, utcMoment } from '/utils';
+import { utcMoment } from '@tupaia/utils';
+import { convertDateRangeToPeriods } from '@tupaia/dhis-api';
 
 export const EARLIEST_DATA_DATE = utcMoment('2017-05-03'); // First survey submitted to Tupaia
 const MAXIMUM_MONTHS_TO_LOOK_BACK = 60; // Last 5 years

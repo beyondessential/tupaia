@@ -4,7 +4,7 @@
  */
 
 import winston from 'winston';
-import { CustomError, InternalServerError } from '/errors';
+import { CustomError, InternalServerError } from '@tupaia/utils';
 
 export const handleError = (err, req, res, next) => {
   // Keep the default error handler, it will stop connection if response is already being

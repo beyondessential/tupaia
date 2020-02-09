@@ -4,9 +4,9 @@
  */
 
 import isPlainObject from 'lodash.isplainobject';
+import { getSortByKey } from '@tupaia/utils';
 
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
-import { getSortByKey } from '/utils';
 
 const OPERATOR_TO_VALUE_CHECK = {
   '>=': (value, target) => value >= target,

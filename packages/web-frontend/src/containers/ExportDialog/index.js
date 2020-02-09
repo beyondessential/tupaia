@@ -198,6 +198,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         endDate,
         chartType,
         extraConfig,
+        selectedFormat,
       } = stateProps;
 
       dispatch(
@@ -211,14 +212,13 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
           endDate,
           chartType,
           extraConfig,
+          exportFileName: chartType
+            ? `tupaia-export-${chartType}.${selectedFormat}`
+            : `tupaia-export.${selectedFormat}`,
         }),
       );
     },
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-  mergeProps,
-)(ExportDialog);
+export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(ExportDialog);

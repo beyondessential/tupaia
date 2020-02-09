@@ -6,7 +6,7 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 
-import { DhisApi } from '../../../dhis/api/DhisApi';
+import { DhisApi } from '@tupaia/dhis-api';
 import {
   enrollTrackedEntityInProgram,
   enrollTrackedEntityInProgramIfNotEnrolled,

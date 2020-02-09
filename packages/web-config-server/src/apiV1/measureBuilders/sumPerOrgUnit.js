@@ -2,10 +2,9 @@
  * Tupaia Config Server
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
-
+import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
 import { SumBuilder } from '/apiV1/dataBuilders/generic/sum/sum';
 import { DataPerOrgUnitBuilder } from './DataPerOrgUnitBuilder';
-import { AGGREGATION_TYPES } from '/dhis';
 
 export class SumPerOrgUnitBuilder extends DataPerOrgUnitBuilder {
   getBaseBuilderClass = () => SumBuilder;

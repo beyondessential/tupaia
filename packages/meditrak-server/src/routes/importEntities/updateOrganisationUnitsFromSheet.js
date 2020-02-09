@@ -6,7 +6,7 @@
 import xlsx from 'xlsx';
 import { getCode as getCountryIsoCode } from 'countrynames';
 import { ENTITY_TYPES } from '../../database';
-import { ImportValidationError } from '../../errors';
+import { ImportValidationError } from '@tupaia/utils';
 import { getEntityObjectValidator } from './getEntityObjectValidator';
 import { getOrCreateParentEntity } from './getOrCreateParentEntity';
 
