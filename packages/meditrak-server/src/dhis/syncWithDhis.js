@@ -23,7 +23,7 @@ export async function startSyncWithDhis(models) {
   const detailGenerator = new ChangeDetailGenerator(models);
   const syncQueue = new ExternalApiSyncQueue(
     models,
-    validator.validate,
+    validator,
     subscriptions,
     detailGenerator.generateDetails,
     models.dhisSyncQueue,

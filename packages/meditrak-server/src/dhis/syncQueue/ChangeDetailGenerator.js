@@ -42,14 +42,14 @@ export class ChangeDetailGenerator {
   async generateSurveyResponseDetails(surveyResponseIds) {
     const surveyResponses = await this.models.surveyResponse.find({ id: surveyResponseIds });
     const surveyIds = getUniqueEntries(surveyResponses.map(r => r.survey_id));
-    const surveys = await this.models.survey.fetch({ id: surveyIds });
+    const surveys = await this.models.survey.find({ id: surveyIds });
     const isDataRegionalBySurveyId = {};
     surveys.forEach(s => {
       isDataRegionalBySurveyId[s.id] = s.getIsDataForRegionalDhis2();
     });
 
     const entityIds = getUniqueEntries(surveyResponses.map(r => r.entity_id));
-    const entities = await this.models.entity.fetch({ id: entityIds });
+    const entities = await this.models.entity.find({ id: entityIds });
     const orgUnitByEntityId = {};
     await Promise.all(
       entities.map(async entity => {
@@ -57,7 +57,7 @@ export class ChangeDetailGenerator {
       }),
     );
     const changeDetailsById = {};
-    surveyResponses.map(surveyResponse => {
+    surveyResponses.forEach(surveyResponse => {
       // Check whether to use the regional or a country specific dhis2 instance
       const isDataRegional = isDataRegionalBySurveyId[surveyResponse.survey_id];
 
@@ -69,7 +69,7 @@ export class ChangeDetailGenerator {
     return changeDetailsById;
   }
 
-  async generateDetails(updateChanges) {
+  generateDetails = async updateChanges => {
     // entities
     const entityDetailsById = await this.generateEntityDetails(
       getIdsFromChanges(updateChanges, this.models.entity),
@@ -92,5 +92,5 @@ export class ChangeDetailGenerator {
     };
 
     return updateChanges.map(c => JSON.stringify(detailsByChangeId[c.record_id]));
-  }
+  };
 }

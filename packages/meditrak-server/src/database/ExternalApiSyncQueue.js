@@ -8,21 +8,15 @@ import { getIsProductionEnvironment } from '../devops';
 
 const LOWEST_PRIORITY = 5;
 const BAD_REQUEST_LIMIT = 7;
-const DEBOUNCE_DURATION = 50;
+const DEBOUNCE_DURATION = 100;
 
 export class ExternalApiSyncQueue {
-  constructor(
-    models,
-    validator,
-    subscriptionTypes = [],
-    generateChangeRecordAdditions,
-    syncQueueModel,
-  ) {
+  constructor(models, validator, subscriptionTypes = [], generateChangeDetails, syncQueueModel) {
     autobind(this);
     this.models = models;
     this.validator = validator;
     this.syncQueueModel = syncQueueModel;
-    this.generateChangeRecordAdditions = generateChangeRecordAdditions;
+    this.generateChangeDetails = generateChangeDetails;
     this.unprocessedChanges = [];
     this.lock = new Multilock();
     this.isProcessing = false;
@@ -32,12 +26,13 @@ export class ExternalApiSyncQueue {
   /**
    * Adds a change to the sync queue, ready to be synced to the aggregation server
    */
-  async add(change, record) {
-    this.unprocessedChanges.push({ change, record });
+  add = async change => {
+    this.unprocessedChanges.push(change);
     if (!this.isProcessing) this.processChangesIntoDb();
-  }
+  };
 
   async persistToSyncQueue(changes, changeDetails) {
+    console.log(changes);
     await Promise.all(
       changes.map(async (change, i) => {
         const changeRecord = {
@@ -69,6 +64,7 @@ export class ExternalApiSyncQueue {
 
   processUpdates = async changes => {
     const validUpdates = await this.validator.getValidUpdates(changes);
+    console.log(`${validUpdates.length} of ${changes.length} valid updates`);
     const changeDetails = await this.generateChangeDetails(validUpdates);
     return this.persistToSyncQueue(validUpdates, changeDetails);
   };
