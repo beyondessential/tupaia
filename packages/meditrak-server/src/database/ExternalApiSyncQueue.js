@@ -3,7 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 import autobind from 'react-autobind';
-import { Multilock } from '@tupaia/utils';
+import { Multilock } from '@tupaia/database';
 import { getIsProductionEnvironment } from '../devops';
 
 const LOWEST_PRIORITY = 5;
@@ -37,7 +37,43 @@ export class ExternalApiSyncQueue {
     if (!this.isProcessing) this.processChangesIntoDb();
   }
 
-  async processChangesIntoDb() {
+  async persistToSyncQueue(changes, changeDetails) {
+    await Promise.all(
+      changes.map(async (change, i) => {
+        const changeRecord = {
+          ...change,
+          // Reset defaults in case this has already been on the sync queue for a while
+          is_deleted: false,
+          is_dead_letter: false,
+          priority: 1,
+          change_time: Math.random(), // Force an update, after which point the trigger will update the change_time to more complicated now() + sequence
+        };
+        if (changeDetails) {
+          changeRecord.details = changeDetails[i];
+        }
+        await this.syncQueueModel.updateOrCreate(
+          {
+            record_id: change.record_id,
+          },
+          changeRecord,
+        );
+      }),
+    );
+  }
+
+  processDeletes = async changes => {
+    const validDeletes = await this.validator.getValidDeletes(changes);
+    console.log(`${validDeletes.length} of ${changes.length} valid deletes`);
+    return this.persistToSyncQueue(validDeletes);
+  };
+
+  processUpdates = async changes => {
+    const validUpdates = await this.validator.getValidUpdates(changes);
+    const changeDetails = await this.generateChangeDetails(validUpdates);
+    return this.persistToSyncQueue(validUpdates, changeDetails);
+  };
+
+  processChangesIntoDb = async () => {
     this.isProcessing = true;
     await this.lock.waitWithDebounce(DEBOUNCE_DURATION);
     const start = new Date();
@@ -47,43 +83,15 @@ export class ExternalApiSyncQueue {
     this.unprocessedChanges = [];
     const changesSeen = new Set();
     const getChangeHash = ({ record_id: recordId, type }) => `${recordId}: ${type}`;
-    const uniqueChanges = changes.filter(({ change }) => {
+    const uniqueChanges = changes.filter(change => {
       const hash = getChangeHash(change);
       if (changesSeen.has(hash)) return false;
       changesSeen.add(hash);
       return true;
     });
-    console.log(`${uniqueChanges.length} unique changes`);
-    const validationResults = await this.validator(uniqueChanges.map(({ change }) => change));
-    const validChanges = changes.filter((c, i) => validationResults[i]);
-    console.log(`${validChanges.length} valid changes`);
-    await Promise.all(
-      validChanges.map(async ({ change, record }) => {
-        const changeRecordAdditions = await this.generateChangeRecordAdditions({
-          models: this.models,
-          recordType: change.record_type,
-          changedRecord: record,
-        });
-        const modifiedChangeRecord = {
-          ...change,
-          ...changeRecordAdditions,
-        };
-
-        await this.syncQueueModel.updateOrCreate(
-          {
-            record_id: modifiedChangeRecord.record_id,
-          },
-          {
-            ...modifiedChangeRecord,
-            // Reset defaults in case this has already been on the sync queue for a while
-            is_deleted: false,
-            is_dead_letter: false,
-            priority: 1,
-            change_time: Math.random(), // Force an update, after which point the trigger will update the change_time to more complicated now() + sequence
-          },
-        );
-      }),
-    );
+    console.log(`${uniqueChanges.length} of ${changes.length} unique changes`);
+    await this.processDeletes(uniqueChanges);
+    await this.processUpdates(uniqueChanges);
     unlock();
     if (this.unprocessedChanges.length > 0) {
       this.processChangesIntoDb();
@@ -91,7 +99,7 @@ export class ExternalApiSyncQueue {
       this.isProcessing = false;
     }
     console.log(`Processed ${changes.length} changes`, Date.now() - start);
-  }
+  };
 
   /**
    * Returns the oldest changes on the sync queue, up to numberToGet. Returns a promise, which can be
