@@ -74,7 +74,7 @@ export class SurveyResponseModel extends DatabaseModel {
     if (change.type === 'delete') {
       model.otherModels.userReward.delete(modelDetails);
     } else {
-      const surveyResponse = await model.findById(change.record);
+      const surveyResponse = await model.findById(change.record_id);
       model.otherModels.userReward.updateOrCreate(modelDetails, {
         ...modelDetails,
         coconuts: 1,
