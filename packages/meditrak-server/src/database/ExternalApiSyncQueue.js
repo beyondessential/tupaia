@@ -52,7 +52,6 @@ export class ExternalApiSyncQueue {
           changeRecord,
         );
       }),
-    );
   }
 
   processDeletes = async changes => {
