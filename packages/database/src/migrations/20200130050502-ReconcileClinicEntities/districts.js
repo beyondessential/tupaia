@@ -5,6 +5,7 @@ import { generateId } from '../../utilities/generateId';
 export const newDistricts = [
   { name: 'Kampong Cham', countryCode: 'KH', id: generateId(), code: 'KH_KAMPONG' },
   { name: 'Tuamasaga', countryCode: 'WS', id: generateId(), code: 'WS_TUAMASAGA' },
+  { name: "Moto'otua", countryCode: 'WS', id: generateId(), code: 'WS_SAMOA_1' },
   { name: 'Phnom Penh', countryCode: 'KH', id: generateId(), code: 'KH_PHNOMPENH' },
   {
     id: generateId(),

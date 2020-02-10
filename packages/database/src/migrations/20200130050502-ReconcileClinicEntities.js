@@ -17,7 +17,7 @@ exports.setup = function(options, seedLink) {
   seed = seedLink;
 };
 
-exports.up = async function(db) {
+exports.up = async function up(db) {
   /*
     Remove the triggers so dhis_sync_queue don't get clogged
   */
@@ -43,7 +43,7 @@ exports.up = async function(db) {
   const entities = await db.runSql(`
     SELECT id FROM entity WHERE type = 'world';
   `);
-  const [world = {}] = entities.rows;
+  const [world] = entities.rows;
   let worldId = world.id;
   if (!worldId) {
     worldId = generateId();
@@ -58,7 +58,7 @@ exports.up = async function(db) {
       E'World');`);
   }
 
-  const newCountryMap = async country => {
+  const newCountryMap = country => {
     return `INSERT INTO "public"."entity"(
       "id",
       "code",
@@ -88,7 +88,7 @@ exports.up = async function(db) {
     );
     `;
   };
-  await Promise.all(newCountries.map(async country => db.runSql(await newCountryMap(country))));
+  await Promise.all(newCountries.map(async country => db.runSql(newCountryMap(country))));
 
   const newDistrictMap = async district => {
     const { code } = district;
@@ -100,20 +100,9 @@ exports.up = async function(db) {
       if (parentEntity) return parentEntity.id;
       const parentResults = await db.runSql(`
         SELECT id FROM entity WHERE code = '${parentCode}'`);
-      if (parentResults.rows.length > 0) {
-        return parentResults.rows[0].id;
-      }
-
-      const countryCode = newEntities[0].countryCode || parentCode.split('_')[0];
-      // just default to country Id
-      const countryResults = await db.runSql(`
-      SELECT id FROM entity WHERE code = '${countryCode}'`);
-      const firstCountryResult = countryResults.rows[0] || {};
-      parentId = firstCountryResult.id || worldId;
-
-      return parentId;
+      return parentResults.rows[0].id;
     };
-
+    console.log('341234123');
     if (hierarchyBreadCrumbs.length === 2) {
       parentCode = hierarchyBreadCrumbs[0];
       parentId = await getParentId(parentCode, newCountries);
@@ -177,22 +166,23 @@ exports.up = async function(db) {
   const missingClinics = missingClinicsQuery.rows;
 
   const newClinic = async clinic => {
-    const { code, parent_name } = clinic;
+    console.log({ clinic });
+    const { code, parent_name, name } = clinic;
     const hierarchyBreadCrumbs = code.split('_');
     const countryCode = hierarchyBreadCrumbs[0];
     let parentId;
     if (parent_name) {
       parentId = (newDistricts.find(dist => dist.name === parent_name) || {}).id;
-    } else {
-      parentId = (
-        newCountries.find(({ code: newCountryCode }) => newCountryCode === countryCode) || {}
-      ).id;
     }
     if (!parentId) {
-      parentId = (
-        await db.runSql(`
-          SELECT id FROM entity WHERE code = '${countryCode}'`)
-      ).rows[0].id;
+      const parentRows = await db.runSql(`
+          SELECT e.id AS entity_id, * FROM clinic c 
+            INNER JOIN geographical_area ga ON c.geographical_area_id = ga.id 
+            INNER JOIN entity e ON ga.code = e.code
+            WHERE c.code = '${code}' OR c.name = '${name.replace("'", "\\'")}';`);
+      console.log({ parent: parentRows.rows[0] });
+      parentId = parentRows.rows[0].entity_id;
+      console.log({ parentId });
     }
     const dhis2Data = await getClinicsDHISData(clinic.code);
     const { photoUrl = null, geometry = null } = dhis2Data || { photoUrl: null, geometry: null };
