@@ -40,11 +40,23 @@ export class DhisTranslator {
   translateOutboundDataValue = async (api, { code, value, ...restOfDataValue }, dataSource) => {
     const dataElementCode = this.dataSourceToElementCode(dataSource);
     const valueToPush = await this.getOutboundValue(api, dataElementCode, value);
-    return {
+
+    const outboundDataValue = {
       dataElement: dataElementCode,
       value: valueToPush,
       ...restOfDataValue,
     };
+
+    // add category option combo code if defined
+    const { categoryOptionComboCode } = dataSource;
+    if (categoryOptionComboCode) {
+      outboundDataValue.categoryOptionCombo = await api.getIdFromCode(
+        api.getResourceTypes().CATEGORY_OPTION_COMBO,
+        categoryOptionComboCode,
+      );
+    }
+
+    return outboundDataValue;
   };
 
   translateInboundDataValues = (dataValue, dataElementToSourceCode) =>
