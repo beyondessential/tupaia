@@ -5,8 +5,7 @@
 
 import { Service } from '../Service';
 import { getDhisApiInstance } from './getDhisApiInstance';
-
-const dataSourceToElementCode = dataSource => dataSource.config.dataElementCode || dataSource.code;
+import { DhisTranslator } from './DhisTranslator';
 
 export class DhisService extends Service {
   constructor(...args) {
@@ -14,6 +13,7 @@ export class DhisService extends Service {
     this.pushers = this.getPushers();
     this.deleters = this.getDeleters();
     this.pullers = this.getPullers();
+    this.translator = new DhisTranslator(this.models);
   }
 
   get dataSourceTypes() {
@@ -41,52 +41,6 @@ export class DhisService extends Service {
     };
   }
 
-  getValueToPush = async (api, dataElementCode, value) => {
-    if (value === undefined) return value; // "delete" pushes don't include a value
-    const options = await api.getOptionsForDataElement(dataElementCode);
-    console.log(options);
-    if (!options) return value; // no option set associated with that data element, use raw value
-    const optionCode = options[value.toLowerCase()]; // Convert text to lower case so we can ignore case
-    if (!optionCode) {
-      throw new Error(`No option matching ${value} for data element ${dataElementCode}`);
-    }
-    return optionCode;
-  };
-
-  /**
-   * @param {Object}     dataValue    The untranslated data value
-   * @param {DataSource} dataSource
-   */
-  translateDataValue = async (api, { value, code, ...restOfDataValue }, dataSource) => {
-    const dataElementCode = dataSourceToElementCode(dataSource);
-    const valueToPush = await this.getValueToPush(api, dataElementCode, value);
-    return {
-      dataElement: dataElementCode,
-      value: valueToPush,
-      ...restOfDataValue,
-    };
-  };
-
-  async translateEventDataValues(api, dataValues) {
-    const dataSources = await this.models.dataSource.findOrDefault({
-      code: dataValues.map(({ code }) => code),
-      type: this.dataSourceTypes.DATA_ELEMENT,
-    });
-    const dataValuesWithCodeReplaced = await Promise.all(
-      dataValues.map((d, i) => this.translateDataValue(api, d, dataSources[i])),
-    );
-    const dataElementCodes = dataValuesWithCodeReplaced.map(({ dataElement }) => dataElement);
-    const dataElementIds = await api.getIdsFromCodes(
-      api.getResourceTypes().DATA_ELEMENT,
-      dataElementCodes,
-    );
-    const dataValuesWithIds = dataValuesWithCodeReplaced.map((d, i) => ({
-      ...d,
-      dataElement: dataElementIds[i],
-    }));
-    return dataValuesWithIds;
-  }
-
   async push(dataSource, data) {
     const { isDataRegional } = dataSource.config;
     const { orgUnit: entityCode } = data;
@@ -98,14 +52,17 @@ export class DhisService extends Service {
   }
 
   async pushAggregateData(api, dataValue, dataSource) {
-    const translatedDataValue = await this.translateDataValue(api, dataValue, dataSource);
+    const translatedDataValue = await this.translator.translateOutboundDataValue(
+      api,
+      dataValue,
+      dataSource,
+    );
     return api.postDataValueSets([translatedDataValue]);
   }
 
-  async pushEvent(api, { dataValues, ...restOfEvent }) {
-    const translatedDataValues = await this.translateEventDataValues(api, dataValues);
-    const event = { dataValues: translatedDataValues, ...restOfEvent };
-    return api.postEvents([event]);
+  async pushEvent(api, event) {
+    const translatedEvent = await this.translator.translateOutboundEvent(api, event);
+    return api.postEvents([translatedEvent]);
   }
 
   async delete(dataSource, data, { serverName }) {
@@ -115,13 +72,17 @@ export class DhisService extends Service {
   }
 
   async deleteAggregateData(api, dataValue, dataSource) {
-    const translatedDataValue = await this.translateDataValue(api, dataValue, dataSource);
+    const translatedDataValue = this.translator.translateOutboundDataValue(
+      api,
+      dataValue,
+      dataSource,
+    );
     return api.deleteDataValue(translatedDataValue);
   }
 
   deleteEvent = async (api, data) => api.deleteEvent(data.dhisReference);
 
-  async pull(dataSources, type, options) {
+  async pull(dataSources, type, options = {}) {
     const { organisationUnitCode: entityCode, dataServices = [] } = options;
     const pullData = this.pullers[type];
     const apis = dataServices.map(({ isDataRegional }) =>
@@ -136,7 +97,7 @@ export class DhisService extends Service {
     dataSources,
     { outputIdScheme, organisationUnitCode, period, startDate, endDate },
   ) => {
-    const dataElementCodes = dataSources.map(dataSourceToElementCode);
+    const dataElementCodes = dataSources.map(this.translator.dataSourceToElementCode);
 
     const response = {
       results: [],
@@ -151,12 +112,13 @@ export class DhisService extends Service {
         startDate,
         endDate,
       });
+
       response.results.push(...results);
       response.metadata = { ...response.metadata, ...metadata };
     };
 
     await Promise.all(apis.map(pullForApi));
-    return response;
+    return this.translator.translateInboundAggregateData(response, dataSources);
   };
 
   pullEvent = async (
@@ -197,6 +159,6 @@ export class DhisService extends Service {
     };
 
     await Promise.all(apis.map(pullForApi));
-    return response;
+    return this.translator.translateInboundEvents(response, programCode);
   };
 }
