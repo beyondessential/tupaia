@@ -77,7 +77,7 @@ export class TupaiaDatabase {
     this.getChangeHandlersForCollection(collectionName).push(changeHandler);
   }
 
-  async notifyChangeHandlers({ change }) {
+  async notifyChangeHandlers(change) {
     const unlock = this.handlerLock.createLock(change.record_id);
     try {
       const changeHandlersForCollection = this.getChangeHandlersForCollection(change.record_type);
