@@ -3,7 +3,7 @@ import {
   constructAtMostOneItem,
   constructIsNotPresentOr,
 } from '../../validation/validatorFunctions';
-import { ImportValidationError } from '../../errors';
+import { ImportValidationError } from '@tupaia/utils';
 import { ObjectValidator } from '../../validation';
 import { JsonFieldValidator } from './Validator/JsonFieldValidator';
 

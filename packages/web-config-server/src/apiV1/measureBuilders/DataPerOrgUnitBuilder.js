@@ -5,11 +5,13 @@
 
 /* eslint-disable class-methods-use-this */
 
+import groupBy from 'lodash.groupby';
 import keyBy from 'lodash.keyby';
 
-import { Entity } from '/models/Entity';
+import { getDataSourceEntityType } from '/apiV1/dataBuilders/helpers/getDataSourceEntityType';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { formatFacilityDataForOverlay } from '/apiV1/utils';
+import { ENTITY_TYPES, Entity } from '/models/Entity';
 
 /**
  * @abstract
@@ -62,15 +64,15 @@ export class DataPerOrgUnitBuilder extends DataBuilder {
     );
   }
 
-  /**
-   * @abstract
-   * @param {Array} results
-   * @returns {Object<string, Array>}
-   */
-  groupResultsByOrgUnitCode(results) {
-    throw new Error(
-      'Any subclass of DataPerOrgUnitBuilder must implement the "groupResultsByOrgUnitCode" method',
-    );
+  async groupResultsByOrgUnitCode(results) {
+    const orgUnitKey = this.areEventResults(results) ? 'orgUnit' : 'organisationUnit';
+    if (getDataSourceEntityType(this.config) !== ENTITY_TYPES.VILLAGE) {
+      return groupBy(results, orgUnitKey);
+    }
+
+    const villageCodes = results.map(({ [orgUnitKey]: orgUnit }) => orgUnit);
+    const villageToFacilityCode = await Entity.fetchChildToParentCode(villageCodes);
+    return groupBy(results, ({ [orgUnitKey]: orgUnit }) => villageToFacilityCode[orgUnit]);
   }
 
   async fetchOrgUnitData() {
@@ -82,7 +84,7 @@ export class DataPerOrgUnitBuilder extends DataBuilder {
 
   async buildData(results) {
     const { dataElementCode } = this.query;
-    const resultsByOrgUnit = this.groupResultsByOrgUnitCode(results);
+    const resultsByOrgUnit = await this.groupResultsByOrgUnitCode(results);
     const baseBuilder = this.getBaseBuilder();
     const orgUnitData = await this.fetchOrgUnitData();
 

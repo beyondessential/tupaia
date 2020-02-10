@@ -30,7 +30,9 @@ import {
   setOverlayComponent,
   openMapPopup,
   setPasswordResetToken,
+  setVerifyEmailToken,
   openUserPage,
+  findLoggedIn,
 } from '../actions';
 
 import { gaPageView } from '.';
@@ -38,6 +40,7 @@ import { selectProject } from '../projects/actions';
 
 const DEFAULT_PROJECT = 'explore';
 const PASSWORD_RESET_PREFIX = 'reset-password';
+const VERIFY_EMAIL = 'verify-email';
 
 const DEFAULT_DASHBOARDS = {
   [DEFAULT_PROJECT]: 'General',
@@ -67,11 +70,13 @@ export function decodeUrl(pathname, search) {
     endDate,
     disasterStartDate,
     disasterEndDate,
+    verifyEmailToken,
   } = queryString.parse(search);
-
   switch (prefix) {
     case PASSWORD_RESET_PREFIX:
       return { userPage: prefix, passwordResetToken };
+    case VERIFY_EMAIL:
+      return { userPage: prefix, verifyEmailToken };
     default:
       return {
         organisationUnitCode,
@@ -182,6 +187,7 @@ function reactToHistory(location, store) {
   const {
     userPage,
     passwordResetToken,
+    verifyEmailToken,
     organisationUnitCode,
     dashboardId,
     measureId,
@@ -199,6 +205,10 @@ function reactToHistory(location, store) {
         dispatch(openUserPage(DIALOG_PAGE_RESET_PASSWORD));
         dispatch(changeOrgUnit()); // load world dashboard in background
         break;
+      case VERIFY_EMAIL:
+        dispatch(setVerifyEmailToken(verifyEmailToken));
+        dispatch(changeOrgUnit()); // load world dashboard in background
+        break;
       default:
         // we can only get here if this case was specifically added to decodeUrl
         console.error('Unhandled user page', userPage);
@@ -206,6 +216,8 @@ function reactToHistory(location, store) {
     }
     return;
   }
+
+  dispatch(findLoggedIn());
 
   if (organisationUnitCode !== state.global.currentOrganisationUnit.organisationUnitCode) {
     dispatch(changeOrgUnit({ organisationUnitCode }));

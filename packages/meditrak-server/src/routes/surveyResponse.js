@@ -3,7 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { ValidationError, MultiValidationError } from '../errors';
+import { getTimezoneNameFromTimestamp, ValidationError, MultiValidationError } from '@tupaia/utils';
 import {
   ObjectValidator,
   hasContent,
@@ -13,7 +13,6 @@ import {
   constructIsEmptyOr,
 } from '../validation';
 import { findQuestionsBySurvey } from '../dataAccessors';
-import { getTimezoneNameFromTimestamp } from '../utilities';
 
 const createSurveyResponseValidator = models =>
   new ObjectValidator({
@@ -116,11 +115,12 @@ async function submitResponse(models, userId, body) {
 export async function surveyResponse(req, res) {
   const { userId, body, models } = req;
 
+  let results;
   const responses = Array.isArray(body) ? body : [body];
   await models.wrapInTransaction(async transactingModels => {
-    const results = await submitResponses(transactingModels, userId, responses);
-    res.send({ count: responses.length, results });
+    results = await submitResponses(transactingModels, userId, responses);
   });
+  res.send({ count: responses.length, results });
 }
 
 export const submitResponses = async (models, userId, responses) => {

@@ -5,6 +5,9 @@
 
 import { capital } from 'case';
 import groupBy from 'lodash.groupby';
+
+import { TYPES } from '@tupaia/database';
+import { reduceToDictionary } from '@tupaia/utils';
 import { BaseModel } from './BaseModel';
 
 const FACILITY = 'facility';
@@ -38,7 +41,7 @@ const constructTypesCriteria = (types, prefix) =>
   types.length > 0 ? `${prefix} type IN (${types.map(() => '?').join(',')})` : '';
 
 export class Entity extends BaseModel {
-  static databaseType = 'entity';
+  static databaseType = TYPES.ENTITY;
 
   static fields = ['id', 'code', 'type', 'parent_id', 'country_code', 'name', 'point', 'region'];
 
@@ -273,6 +276,21 @@ export class Entity extends BaseModel {
   async getDescendantsOfType(entityType) {
     return Entity.getAllDescendants(this.id, [entityType]);
   }
+
+  static fetchChildToParentCode = async childrenCodes => {
+    const children = await Entity.find({ code: childrenCodes });
+    const parentIds = children.map(({ parent_id: parentId }) => parentId);
+    const parents = await Entity.find({ id: parentIds });
+    const parentIdToCode = reduceToDictionary(parents, 'id', 'code');
+
+    return children.reduce(
+      (map, { code, parent_id: parentId }) => ({
+        ...map,
+        [code]: parentIdToCode[parentId],
+      }),
+      {},
+    );
+  };
 
   getOrganisationLevel() {
     if (this.type === 'region') return 'Province'; // this is the exception to the rule, the rest are a simple case translation

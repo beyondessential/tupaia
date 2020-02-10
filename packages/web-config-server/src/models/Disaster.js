@@ -3,16 +3,17 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  **/
 
+import { TYPES } from '@tupaia/database';
 import { BaseModel } from './BaseModel';
 
 export class Disaster extends BaseModel {
-  static databaseType = 'disaster';
+  static databaseType = TYPES.DISASTER;
 
   static fields = ['id', 'type', 'description', 'name', 'countryCode'];
 
   static getDisasters() {
     return Disaster.database.executeSql(`
-      SELECT 
+      SELECT
         *,
         "disaster".type,
         ST_AsGeoJSON("point") as point,

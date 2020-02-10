@@ -2,7 +2,12 @@
  * Tupaia Config Server
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
-import { AGGREGATION_TYPES, convertToPeriod, periodToDisplayString, PERIOD_TYPES } from '/dhis';
+import {
+  AGGREGATION_TYPES,
+  convertToPeriod,
+  periodToDisplayString,
+  PERIOD_TYPES,
+} from '@tupaia/dhis-api';
 
 export const sumPerDataElementGroupPerMonth = async ({ dataBuilderConfig, query }, dhisApi) => {
   const monthlySums = {};

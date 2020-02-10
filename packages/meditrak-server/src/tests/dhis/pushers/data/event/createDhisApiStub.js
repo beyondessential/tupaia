@@ -3,8 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 import sinon from 'sinon';
-import { DhisApi } from '../../../../../dhis/api/DhisApi';
-import { RESPONSE_TYPES } from '../../../../../dhis/responseUtils';
+import { DhisApi, RESPONSE_TYPES } from '@tupaia/dhis-api';
 import { DHIS_REFERENCE } from './testData';
 
 const IMPORT_SUMMARY = {
@@ -30,7 +29,7 @@ const DELETE_SUMMARY = {
 };
 
 const STUBBED_METHODS = {
-  postEvent: IMPORT_SUMMARY,
+  postEvents: IMPORT_SUMMARY,
   deleteEvent: DELETE_SUMMARY,
 };
 

@@ -2,13 +2,13 @@
  * Tupaia Config Server
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
+import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
 import {
   getChildOrganisationUnits,
-  mapFacilityIdsToGroupCodes,
+  mapOrgUnitIdsToGroupCodes,
   countByOrganisationUnitByValue,
   calculatePercentagesWithinRange,
 } from '/apiV1/utils';
-import { AGGREGATION_TYPES } from '/dhis';
 const { MOST_RECENT_PER_ORG_GROUP } = AGGREGATION_TYPES;
 
 export const percentPerValuePerOrgGroup = async ({ dataBuilderConfig, query }, dhisApi) => {
@@ -22,13 +22,13 @@ export const percentPerValuePerOrgGroup = async ({ dataBuilderConfig, query }, d
     },
     dhisApi,
   );
-  const facilityIdsToGroupCodes = mapFacilityIdsToGroupCodes(organisationUnits);
+  const orgUnitIdsToGroupKeys = mapOrgUnitIdsToGroupCodes(organisationUnits);
 
   const { results } = await dhisApi.getAnalytics(
     dataBuilderConfig,
     query,
     MOST_RECENT_PER_ORG_GROUP,
-    { facilityIdsToGroupCodes },
+    { orgUnitIdsToGroupKeys },
   );
   const countsByOrganisationUnit = countByOrganisationUnitByValue(
     results,

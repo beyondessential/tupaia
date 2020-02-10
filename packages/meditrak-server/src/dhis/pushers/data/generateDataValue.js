@@ -3,9 +3,9 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 
+import { DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
 import { formatDateForDHIS2 } from './formatDateForDHIS2';
 import { convertAnswerToOptionSetValue } from './convertAnswerToOptionSetValue';
-import { DHIS2_RESOURCE_TYPES } from '../../api';
 import { ANSWER_TYPES } from '../../../database/models/Answer';
 const {
   BINARY,

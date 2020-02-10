@@ -1,6 +1,6 @@
+import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
 import { limitRange, regexLabel } from '/apiV1/utils';
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
-import { AGGREGATION_TYPES } from '/dhis';
 
 export const percentagesByNominatedPairs = async ({ dataBuilderConfig, query }, dhisApi) => {
   const {

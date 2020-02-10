@@ -1,5 +1,5 @@
 import winston from 'winston';
-import { AGGREGATION_TYPES } from '/dhis';
+import { AGGREGATION_TYPES, DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
 import { postDataValueSets } from '/preaggregation/postDataValueSets';
 
 /**
@@ -21,6 +21,8 @@ const DATA_ELEMENT_CODES = {
   expired: 'PercentageCriticalMedicinesExpired',
 };
 
+// LAST_12_MONTHS excludes the current month - this is intentional, to avoid misleading calculations
+// based on incomplete data in the current month
 const LOOKBACK_PERIOD = 'LAST_12_MONTHS';
 
 export const criticalMedicineAvailability = async dhisApi => {
@@ -42,13 +44,14 @@ export const criticalMedicineAvailability = async dhisApi => {
     // Find denominator group for each facility type within the country.
     try {
       // Find all organisation unit groups representing facility types for this country (e.g. FacilityType_TO_1_Hospitals)
-      const organisationUnitGroupCodePrefixForCountry = `${ORGANISATION_UNIT_GROUP_CODE_PREFIX}_${
-        country.code
-      }`;
-      const { organisationUnitGroups } = await dhisApi.fetch('organisationUnitGroups', {
-        filter: [{ code: organisationUnitGroupCodePrefixForCountry, comparator: 'like' }],
-        fields: 'code',
-      });
+      const organisationUnitGroupCodePrefixForCountry = `${ORGANISATION_UNIT_GROUP_CODE_PREFIX}_${country.code}`;
+      const { organisationUnitGroups } = await dhisApi.fetch(
+        DHIS2_RESOURCE_TYPES.ORGANISATION_UNIT_GROUP,
+        {
+          filter: [{ code: organisationUnitGroupCodePrefixForCountry, comparator: 'like' }],
+          fields: 'code',
+        },
+      );
 
       for (
         let organisationUnitGroupIndex = 0;
@@ -97,7 +100,7 @@ const aggregateCriticalMedicineAvailabilityForGroup = async (
       {
         dataElementGroupCode,
         period: LOOKBACK_PERIOD,
-        organisationUnitCode: organisationUnitGroupCode,
+        organisationUnitCode: `OU_GROUP-${organisationUnitGroupCode}`,
         inputIdScheme: 'code',
         outputIdScheme: 'code',
       },
@@ -196,7 +199,7 @@ const getDataElementGroupForOrganisationUnitGroup = async (dhisApi, organisation
   // Go through from most specific to least specific, and return as soon as a matching group is found
   for (let i = 0; i < dataElementGroupCodes.length; i++) {
     const dataElementGroup = await dhisApi.getRecord({
-      type: 'dataElementGroups',
+      type: DHIS2_RESOURCE_TYPES.DATA_ELEMENT_GROUP,
       code: dataElementGroupCodes[i],
       fields: 'code,dataElements[code]',
     });

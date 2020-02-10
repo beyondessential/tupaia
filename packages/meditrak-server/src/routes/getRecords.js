@@ -4,16 +4,15 @@
  */
 
 import formatLinkHeader from 'format-link-header';
-import { respond } from '../respond';
-import { DatabaseError, ValidationError } from '../errors';
-import { TYPES, JOIN_TYPES } from '../database';
+import { TYPES, JOIN_TYPES, DatabaseType } from '@tupaia/database';
+import { respond, DatabaseError, ValidationError } from '@tupaia/utils';
 import {
   findQuestionsBySurvey,
   findAnswersBySurveyResponse,
   findEditableFeedItems,
+  findFormattedDisasters,
 } from '../dataAccessors';
 import { getApiUrl, resourceToRecordType } from '../utilities';
-import { DatabaseType } from '../database/DatabaseType';
 
 const GETTABLE_TYPES = [
   TYPES.ANSWER,
@@ -33,12 +32,14 @@ const GETTABLE_TYPES = [
   TYPES.FEED_ITEM,
   TYPES.OPTION_SET,
   TYPES.OPTION,
+  TYPES.DISASTER,
 ];
 
 const CUSTOM_FINDERS = {
   [TYPES.QUESTION]: findQuestionsBySurvey,
   [TYPES.ANSWER]: findAnswersBySurveyResponse,
   [TYPES.FEED_ITEM]: findEditableFeedItems,
+  [TYPES.DISASTER]: findFormattedDisasters,
 };
 
 const MAX_RECORDS_PER_PAGE = 100;
@@ -115,7 +116,6 @@ export async function getRecords(req, res) {
     }
     const options = { multiJoin, columns, limit, offset, sort };
     const records = await findOrCountRecords(options);
-
     // Respond only with the data in each record, stripping out metadata from DatabaseType instances
     const getRecordData = async record =>
       record instanceof DatabaseType ? record.getData() : record;
@@ -185,6 +185,7 @@ function getQueryOptionsForColumns(columns, baseRecordType) {
     // is 'survey.name', split into 'survey' and 'name'
     const resourceName = columnsNeedingJoin[i].split('.')[0];
     const recordType = resourceToRecordType(resourceName);
+
     if (recordType !== baseRecordType && !recordTypesJoined.includes(recordType)) {
       multiJoin.push({
         joinType: JOIN_TYPES.LEFT_OUTER,

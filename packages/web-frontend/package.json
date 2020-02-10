@@ -1,6 +1,6 @@
 {
   "name": "@tupaia/web-frontend",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "@mapbox/polyline": "^0.2.0",
@@ -67,7 +67,6 @@
     "promise": "7.1.1",
     "react-dev-utils": "^3.0.0",
     "react-error-overlay": "^1.0.7",
-    "reflective-bind": "^0.2.2",
     "style-loader": "0.17.0",
     "sw-precache-webpack-plugin": "0.9.1",
     "url-loader": "0.5.8",

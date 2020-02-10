@@ -1,4 +1,5 @@
-import { getDefaultPeriod, EARLIEST_DATA_DATE, getDhisApiInstance, AGGREGATION_TYPES } from '/dhis';
+import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
+import { getDefaultPeriod, EARLIEST_DATA_DATE, getDhisApiInstance } from '/dhis';
 
 // Request to calculate number of operational facilities with new query
 const getFacilitiesData = async (
@@ -80,7 +81,7 @@ export const getFacilityStatusCounts = async (parentCode, period) => {
   };
 };
 
-// Operational facilities have value 0 (Open) or 1 (Temporarily Closed but Operational);
+// Operational facilities have value 0 (Fully Operational) or 1 (Operational But Closed This Week);
 const isFacilityOperational = value => value < 2;
 
 // Annual periods only have four characters, e.g. 2018

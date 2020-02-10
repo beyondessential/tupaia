@@ -1,7 +1,6 @@
+import { UnauthenticatedError } from '@tupaia/utils';
 import { getUserIDFromToken } from './userAuth';
 import { getAPIClientUser } from './clientAuth';
-
-import { UnauthenticatedError } from '../errors';
 
 async function authenticateUser(req) {
   const authHeader = req.headers.authorization || req.headers.Authorization;
@@ -10,7 +9,13 @@ async function authenticateUser(req) {
     throw new UnauthenticatedError('No authorization header provided - must be Basic or Bearer');
   }
 
-  const preAuthenticationRoutes = ['/auth', '/auth/resetPassword', '/user'];
+  const preAuthenticationRoutes = [
+    '/auth',
+    '/auth/resetPassword',
+    '/user',
+    '/auth/verifyEmail',
+    '/auth/resendEmail',
+  ];
   const tokenUserID = authHeader.startsWith('Bearer') && getUserIDFromToken(authHeader);
 
   // Use the user account provided in the auth header if present

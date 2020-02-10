@@ -1,4 +1,4 @@
-import { AGGREGATION_TYPES } from '/dhis';
+import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
 import { sumResults } from '/apiV1/utils';
 
 const sumPerMetric = async ({ dataBuilderConfig, query }, dhisApi, AGGREGATION_TYPE) => {

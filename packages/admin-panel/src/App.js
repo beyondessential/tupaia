@@ -55,6 +55,10 @@ const LEFT_LINKS = [
     label: 'Strive',
     path: '/strive',
   },
+  {
+    label: 'Disasters',
+    path: '/disaster',
+  },
 ];
 
 const App = props => {
@@ -102,7 +106,4 @@ const mapDispatchToProps = dispatch => ({
   onNavigate: href => dispatch(pushToPage(href)),
 });
 
-export const AppContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(App);
+export const AppContainer = connect(mapStateToProps, mapDispatchToProps)(App);

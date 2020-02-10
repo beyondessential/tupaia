@@ -8,10 +8,10 @@ import chaiAsPromised from 'chai-as-promised';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import winston from 'winston';
+import { DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
 
 import { Pusher } from '../../../../dhis/pushers/Pusher';
 
-import { DHIS2_RESOURCE_TYPES } from '../../../../dhis/api/types';
 import { TrackedEntityPusher } from '../../../../dhis/pushers/entity/TrackedEntityPusher';
 import { createEntityStub, createModelsStub, createDhisApiStub } from './helpers';
 

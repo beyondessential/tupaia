@@ -3,9 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 
-import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '..';
+import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
 
 class UserGeographicalAreaPermissionType extends DatabaseType {
   static databaseType = TYPES.USER_GEOGRAPHICAL_AREA_PERMISSION;
@@ -59,7 +57,5 @@ export class UserGeographicalAreaPermissionModel extends DatabaseModel {
     return UserGeographicalAreaPermissionType;
   }
 
-  get isDeletable() {
-    return true;
-  }
+  isDeletableViaApi = true;
 }

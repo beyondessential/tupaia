@@ -5,9 +5,7 @@
 import winston from 'winston';
 
 import { hasAccess } from '@beyondessential/tupaia-access-policy';
-import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '..';
+import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
 import { getUserPermissionGroups } from '../../dataAccessors';
 import { buildAccessPolicy, cache, CACHE_KEY_GENERATORS, encryptPassword } from '../../utilities';
 
@@ -58,7 +56,9 @@ class UserType extends DatabaseType {
     }
 
     if (!this.permissionGroups[countryIdentifier]) {
-      this.permissionGroups[countryIdentifier] = await cache.getOrElse(
+      this.permissionGroups[
+        countryIdentifier
+      ] = await cache.getOrElse(
         CACHE_KEY_GENERATORS.userPermissionGroups(this.id, countryIdentifier),
         () => getUserPermissionGroups(this.otherModels, this.id, countryIdentifier),
       );

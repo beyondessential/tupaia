@@ -96,9 +96,9 @@ export class RootScreen extends PureComponent {
       return <div style={styles.errorMessage}>{errorMessage}</div>;
     }
 
-    const Component = getIsMatrix() ? MatrixWrapper : ChartWrapper;
+    const Component = getIsMatrix(viewContent) ? MatrixWrapper : ChartWrapper;
     return (
-      <div style={styles.wrapper}>
+      <div id="chart-body" style={styles.wrapper}>
         <div style={styles.timestamp}>{`${getDateRangeString()}   ${getCurrentDateString()}`}</div>
         {this.renderTitle()}
         <div style={styles.chartWrapper}>
@@ -113,10 +113,7 @@ const mapStateToProps = ({ global }) => ({
   organisationUnitName: global.currentOrganisationUnit.name,
 });
 
-export default connect(
-  mapStateToProps,
-  null,
-)(RootScreen);
+export default connect(mapStateToProps, null)(RootScreen);
 
 const TIMESTAMP_HEIGHT = 20;
 

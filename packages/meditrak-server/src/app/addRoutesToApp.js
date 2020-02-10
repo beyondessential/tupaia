@@ -4,11 +4,11 @@
  */
 
 import multer from 'multer';
+import { InternalServerError, UnsupportedApiVersionError } from '@tupaia/utils';
 
 import { logApiRequest } from './logApiRequest';
 
 import { authenticationMiddleware } from '../auth';
-import { InternalServerError, UnsupportedApiVersionError } from '../errors';
 import routes from '../routes';
 
 const {
@@ -36,8 +36,11 @@ const {
   putRecord,
   getUserRewards,
   requestPasswordReset,
+  requestResendEmail,
   getCountryAccessList,
   surveyResponse,
+  importDisaster,
+  verifyEmail,
 } = routes;
 
 const MINIMUM_API_VERSION = 2;
@@ -88,8 +91,10 @@ export function addRoutesToApp(app) {
    **/
   app.post('(/v[0-9]+)?/auth', authenticate);
   app.post('(/v[0-9]+)?/auth/resetPassword', requestPasswordReset);
+  app.post('(/v[0-9]+)?/auth/resendEmail', requestResendEmail);
   app.post('(/v[0-9]+)?/changes', postChanges);
   app.post('(/v[0-9]+)/import/entities', upload.single('entities'), importEntities);
+  app.post('(/v[0-9]+)/auth/verifyEmail', verifyEmail);
   app.post(
     '(/v[0-9]+)/import/striveLabResults',
     upload.single('striveLabResults'),
@@ -101,6 +106,7 @@ export function addRoutesToApp(app) {
     upload.single('surveyResponses'),
     updateSurveyResponses,
   );
+  app.post('(/v[0-9]+)/import/disaster', upload.single('disaster'), importDisaster);
   app.post('(/v[0-9]+)/import/users', upload.single('users'), importUsers);
   app.post('(/v[0-9]+)/import/optionSets', upload.single('optionSets'), importOptionSets);
   app.post('(/v[0-9]+)/scratchpad', scratchpad);

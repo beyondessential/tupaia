@@ -4,9 +4,9 @@
  */
 
 import isPlainObject from 'lodash.isplainobject';
+import { getSortByKey } from '@tupaia/utils';
 
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
-import { getSortByKey } from '/utils';
 
 const OPERATOR_TO_VALUE_CHECK = {
   '>=': (value, target) => value >= target,
@@ -134,4 +134,6 @@ export class DataBuilder {
   sortDataByName = data => data.sort(getSortByKey('name'));
 
   areDataAvailable = data => data.some(({ value }) => value !== NO_DATA_AVAILABLE);
+
+  areEventResults = results => !!(results[0] && results[0].event);
 }

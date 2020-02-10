@@ -2,10 +2,10 @@
  * Tupaia MediTrak
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
+import { TYPES } from '@tupaia/database';
 
 import { generateValueOfType, generateTestId } from '../random';
 import { ENTITY_TYPES } from '../../../database/models/Entity';
-import { TYPES } from '../../../database/types';
 
 const { ENTITY, SURVEY_RESPONSE } = TYPES;
 

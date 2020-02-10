@@ -247,6 +247,7 @@ git clone git@github.com:beyondessential/tupaia.git
 ```
 cd ~
 npm i --global pm2
+pm2 install pm2-logrotate
 ```
 
 # aws

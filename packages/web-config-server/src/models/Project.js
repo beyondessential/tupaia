@@ -3,10 +3,11 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  **/
 
+import { TYPES } from '@tupaia/database';
 import { BaseModel } from './BaseModel';
 
 export class Project extends BaseModel {
-  static databaseType = 'project';
+  static databaseType = TYPES.PROJECT;
 
   static fields = [
     'id',

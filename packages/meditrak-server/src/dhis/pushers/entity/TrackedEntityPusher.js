@@ -4,9 +4,9 @@
  */
 
 import { capital as capitaliseFirstLetters } from 'case';
+import { DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
 
 import { getDhisIdFromEntityData } from '../../../database/models/Entity';
-import { DHIS2_RESOURCE_TYPES } from '../../api/types';
 import { EntityPusher } from './EntityPusher';
 
 const {
