@@ -5,7 +5,7 @@
 import moment from 'moment';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 
-class simpleTableOfEventsBuilder extends DataBuilder {
+class SimpleTableOfEventsBuilder extends DataBuilder {
   async build() {
     const events = await this.fetchEvents();
     const returnData = this.buildResponse(events);
@@ -26,7 +26,7 @@ class simpleTableOfEventsBuilder extends DataBuilder {
   async fetchEvents() {
     const { organisationUnitCode } = this.query;
     const events = await this.getEvents({
-      organisationUnitCode: organisationUnitCode,
+      organisationUnitCode,
       dataElementIdScheme: 'code',
       dataValueFormat: 'object',
     });
@@ -36,6 +36,6 @@ class simpleTableOfEventsBuilder extends DataBuilder {
 }
 
 export const simpleTableOfEvents = async ({ dataBuilderConfig, query, entity }, dhisApi) => {
-  const builder = new simpleTableOfEventsBuilder(dhisApi, dataBuilderConfig, query, entity);
+  const builder = new SimpleTableOfEventsBuilder(dhisApi, dataBuilderConfig, query, entity);
   return await builder.build();
 };

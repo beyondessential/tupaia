@@ -21,7 +21,6 @@ exports.up = function(db) {
     ('WHO_SURVEY',NULL,'simpleTableOfEvents',	'{"dataElementCode": "WHOSPAR", "programCode": "WSRS"}', 
     '{"name": "WHO SPAR Reporting Countries","type": "chart", "chartType": "bar", "valueType": "number"}','[{"isDataRegional": true}]');
 
-    update "dashboardGroup" set "dashboardReports" = "dashboardReports" || '{"WHO_SURVEY"}' WHERE name = 'IHR Report'
 
   `);
 };
