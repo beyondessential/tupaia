@@ -3,7 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 import autobind from 'react-autobind';
-import { Multilock } from '@tupaia/database';
+import { Multilock } from '@tupaia/utils';
 import { getIsProductionEnvironment } from '../devops';
 
 const LOWEST_PRIORITY = 5;
@@ -52,17 +52,16 @@ export class ExternalApiSyncQueue {
           changeRecord,
         );
       }),
+    );
   }
 
   processDeletes = async changes => {
     const validDeletes = await this.validator.getValidDeletes(changes);
-    console.log(`${validDeletes.length} of ${changes.length} valid deletes`);
     return this.persistToSyncQueue(validDeletes);
   };
 
   processUpdates = async changes => {
     const validUpdates = await this.validator.getValidUpdates(changes);
-    console.log(`${validUpdates.length} of ${changes.length} valid updates`);
     const changeDetails = await this.generateChangeDetails(validUpdates);
     return this.persistToSyncQueue(validUpdates, changeDetails);
   };
@@ -71,7 +70,6 @@ export class ExternalApiSyncQueue {
     this.isProcessing = true;
     await this.lock.waitWithDebounce(DEBOUNCE_DURATION);
     const start = new Date();
-    console.log(`Processing ${this.unprocessedChanges.length} changes`);
     const unlock = this.lock.createLock();
     const changes = this.unprocessedChanges;
     this.unprocessedChanges = [];
@@ -83,7 +81,6 @@ export class ExternalApiSyncQueue {
       changesSeen.add(hash);
       return true;
     });
-    console.log(`${uniqueChanges.length} of ${changes.length} unique changes`);
     await this.processDeletes(uniqueChanges);
     await this.processUpdates(uniqueChanges);
     unlock();
@@ -92,7 +89,10 @@ export class ExternalApiSyncQueue {
     } else {
       this.isProcessing = false;
     }
-    console.log(`Processed ${changes.length} changes`, Date.now() - start);
+    console.log(
+      `Processed ${uniqueChanges.length} of ${changes.length} unique changes`,
+      Date.now() - start,
+    );
   };
 
   /**
