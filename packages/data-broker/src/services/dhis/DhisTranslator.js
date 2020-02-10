@@ -84,33 +84,13 @@ export class DhisTranslator {
     };
   };
 
-  async translateEventDataValues(api, dataValues) {
-    const dataSources = await this.models.dataSource.findOrDefault({
-      code: dataValues.map(({ code }) => code),
-      type: this.dataSourceTypes.DATA_ELEMENT,
-    });
-    const dataValuesWithCodeReplaced = await Promise.all(
-      dataValues.map((d, i) => this.translateDataValue(api, d, dataSources[i])),
-    );
-    const dataElementCodes = dataValuesWithCodeReplaced.map(({ dataElement }) => dataElement);
-    const dataElementIds = await api.getIdsFromCodes(
-      api.getResourceTypes().DATA_ELEMENT,
-      dataElementCodes,
-    );
-    const dataValuesWithIds = dataValuesWithCodeReplaced.map((d, i) => ({
-      ...d,
-      dataElement: dataElementIds[i],
-    }));
-    return dataValuesWithIds;
-  }
-
   async translateOutboundEventDataValues(api, dataValues) {
     const dataSources = await this.models.dataSource.findOrDefault({
       code: dataValues.map(({ code }) => code),
       type: this.dataSourceTypes.DATA_ELEMENT,
     });
-    const outboundDataValues = dataValues.map((d, i) =>
-      this.translateOutboundDataValue(api, d, dataSources[i]),
+    const outboundDataValues = await Promise.all(
+      dataValues.map((d, i) => this.translateOutboundDataValue(api, d, dataSources[i])),
     );
     const dataElementCodes = outboundDataValues.map(({ dataElement }) => dataElement);
     const dataElementIds = await api.getIdsFromCodes(
