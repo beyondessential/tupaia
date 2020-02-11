@@ -730,8 +730,8 @@ function enlargedDialog(
         infoViewKey: action.infoViewKey,
         organisationUnitName: action.organisationUnitName,
         errorMessage: '',
-        startDate: '2010-01-01',
-        endDate: '2020-01-01',
+        startDate: null,
+        endDate: null,
       };
 
     case CLOSE_ENLARGED_DIALOG:

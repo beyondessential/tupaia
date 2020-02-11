@@ -19,58 +19,68 @@ const query = {
   viewId: 'WHO_SURVEY',
 };
 
-const metaData = [
-  {
-    program: 'WSRS',
-    event: 'DWXLuP9CXqm',
-    orgUnit: 'World',
-    status: 'ACTIVE',
-    orgUnitName: 'World',
-    eventDate: '2010-02-08T14:11:00.000',
-    dataValues: {
-      WHOSPAR: {
-        dataElement: 'WHOSPAR',
-        value: '13',
-      },
+const entity = {
+  code: 'World',
+  type: 'world',
+  country_code: 'Wo',
+  name: 'World',
+};
+
+const metaData = {
+  results: [
+    {
+      dataElement: 'RNhJHOhJeic',
+      organisationUnit: 'World',
+      period: '20100208',
+      value: 8,
     },
-  },
-  {
-    program: 'WSRS',
-    event: 'DWXLuP9CXqm',
-    orgUnit: 'World',
-    status: 'ACTIVE',
-    orgUnitName: 'World',
-    eventDate: '2011-02-08T14:11:00.000',
-    dataValues: {
-      WHOSPAR: {
-        dataElement: 'WHOSPAR',
-        value: '8',
-      },
+    {
+      dataElement: 'RNhJHOhJeic',
+      organisationUnit: 'World',
+      period: '20110208',
+      value: 7,
     },
+    {
+      dataElement: 'RNhJHOhJeic',
+      organisationUnit: 'World',
+      period: '20120208',
+      value: 13,
+    },
+  ],
+  metadata: {
+    organisationUnit: { World: 'World' },
+    dataElementCodeToName: { WHOSPAR: 'WHOSPAR' },
+    dataElementIdToCode: { RNhJHOhJeic: 'WHOSPAR' },
+    dataElement: { RNhJHOhJeic: 'WHOSPAR' },
   },
-];
+};
 
 const responseData = [
   {
+    dataElement: 'RNhJHOhJeic',
     organisationUnit: 'World',
-    period: undefined,
-    dataElementCode: 'DWXLuP9CXqm',
-    dataElementId: 'DWXLuP9CXqm',
+    period: '20100208',
+    value: 8,
     name: '2010',
-    value: '13',
   },
   {
+    dataElement: 'RNhJHOhJeic',
     organisationUnit: 'World',
-    period: undefined,
-    dataElementCode: 'DWXLuP9CXqm',
-    dataElementId: 'DWXLuP9CXqm',
+    period: '20110208',
+    value: 7,
     name: '2011',
-    value: '8',
+  },
+  {
+    dataElement: 'RNhJHOhJeic',
+    organisationUnit: 'World',
+    period: '20120208',
+    value: 13,
+    name: '2012',
   },
 ];
 
 const dhisApiMockup = {
-  getEvents: ({ organisationUnitCode }) => {
+  getEventAnalytics: dataElementCodes => {
     return Promise.resolve(metaData);
   },
 };
@@ -83,9 +93,11 @@ describe('simpleTableOfEvents', async () => {
       {
         dataBuilderConfig,
         query,
+        entity,
       },
       dhisApiMockup,
     );
+
     data = response.data;
   });
 
