@@ -77,6 +77,7 @@ const YearPickerRow = props => (
 export class DateRangePicker extends PureComponent {
   constructor(props) {
     super(props);
+    console.log(this.props);
     this.minMomentDate = moment('20150101');
     this.maxMomentDate = moment();
     this.defaultStartDate = this.isSingleDate ? moment() : this.minMomentDate;

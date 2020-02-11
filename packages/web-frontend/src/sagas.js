@@ -915,7 +915,7 @@ function* fetchEnlargedDialogViewContentForPeriod(action) {
 }
 
 function* watchSetEnlargedDialogSelectedPeriodFilterAndRefreshViewContent() {
-  yield takeLatest(SET_ENLARGED_DIALOG_DATE_RANGE, fetchEnlargedDialogViewContentForPeriod);
+  // yield takeLatest(SET_ENLARGED_DIALOG_DATE_RANGE, fetchEnlargedDialogViewContentForPeriod);
 }
 
 function* refreshBrowserWhenFinishingUserSession() {
