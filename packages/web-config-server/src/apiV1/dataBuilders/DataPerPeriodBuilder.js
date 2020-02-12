@@ -32,7 +32,6 @@ export class DataPerPeriodBuilder extends DataBuilder {
     if (this.baseBuilder !== null) {
       return this.baseBuilder;
     }
-
     const BaseBuilder = this.getBaseBuilderClass();
     const builder = new BaseBuilder(...this.constructorArgs);
 
@@ -77,7 +76,8 @@ export class DataPerPeriodBuilder extends DataBuilder {
 
     const data = [];
     const processResultsForPeriod = async ([period, resultsForPeriod]) => {
-      const newData = await baseBuilder.buildData(resultsForPeriod).map(dataItem => ({
+      const buildData = await baseBuilder.buildData(resultsForPeriod);
+      const newData = buildData.map(dataItem => ({
         ...dataItem,
         timestamp: periodToTimestamp(period),
         name: periodToDisplayString(period),
