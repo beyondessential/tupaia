@@ -176,11 +176,6 @@ export class Entity extends BaseModel {
   }
 
   static async getChildRegions(code) {
-    const region =
-      code === 'World'
-        ? 'ST_AsGeoJSON(st_simplify(ST_GeomFromGeoJSON(ST_AsGeoJSON(region)), 0.01)) as region'
-        : 'ST_AsGeoJSON(region) as region';
-
     return Entity.database.executeSql(
       `
       SELECT
@@ -189,7 +184,7 @@ export class Entity extends BaseModel {
         name,
         image_url,
         parent_id,
-        ${region},
+        ST_AsGeoJSON(region) as region,
         ST_AsGeoJSON(bounds) as bounds,
         type
       FROM entity
