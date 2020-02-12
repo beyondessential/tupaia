@@ -19,7 +19,7 @@ exports.up = function(db) {
   return db.runSql(`
   INSERT INTO public."dashboardReport" (id,"drillDownLevel","dataBuilder","dataBuilderConfig","viewJson","dataServices") VALUES
     ('WHO_SURVEY',NULL,'simpleTableOfEvents', '{"dataElementCode": "WHOSPAR", "programCode": "WSRS"}',
-    '{"name": "WHO SPAR Reporting Countries","type": "chart", "chartType": "bar", "valueType": "text", "startDate": "2010-01-01", "endDate": "2018-01-01"}','[{"isDataRegional": true}]');
+    '{"name": "WHO SPAR Reporting Countries","type": "chart", "chartType": "bar", "valueType": "text", "startDate": "2010-01-01", "endDate": "2018-01-01", "entityHeader": "Western Pacific Region"}','[{"isDataRegional": true}]');
 
     `);
 };
