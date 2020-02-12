@@ -3,12 +3,14 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 
-import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '..';
+import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
 
 class SurveyType extends DatabaseType {
   static databaseType = TYPES.SURVEY;
+
+  static meditrakConfig = {
+    minAppVersion: '0.0.1',
+  };
 
   async getPermissionGroup() {
     return this.otherModels.permissionGroup.findById(this.permission_group_id);
@@ -27,7 +29,5 @@ export class SurveyModel extends DatabaseModel {
     return SurveyType;
   }
 
-  get isDeletable() {
-    return true;
-  }
+  isDeletableViaApi = true;
 }

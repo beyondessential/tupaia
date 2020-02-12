@@ -4,17 +4,18 @@
  */
 
 import moment from 'moment';
-import { DataPusher } from '../DataPusher';
-import { generateDataValue } from '../generateDataValue';
-import { formatDateForDHIS2 } from '../formatDateForDHIS2';
-import { DHIS2_RESOURCE_TYPES } from '../../../api';
-import { RESPONSE_TYPES } from '../../../responseUtils';
 import {
+  DHIS2_RESOURCE_TYPES,
   DEFAULT_PERIOD_TYPE,
   periodToType,
   periodTypeToMomentUnit,
   periodTypeToFormat,
-} from './periodTypes';
+  dhisToTupaiaPeriodType,
+  RESPONSE_TYPES,
+} from '@tupaia/dhis-api';
+import { DataPusher } from '../DataPusher';
+import { generateDataValue } from '../generateDataValue';
+import { formatDateForDHIS2 } from '../formatDateForDHIS2';
 
 const { ORGANISATION_UNIT } = DHIS2_RESOURCE_TYPES;
 const { DIAGNOSTICS } = RESPONSE_TYPES;
@@ -90,7 +91,7 @@ export class AggregateDataPusher extends DataPusher {
 
   async fetchPeriodType() {
     const dataSet = await this.fetchDataSet();
-    return dataSet ? dataSet.periodType : DEFAULT_PERIOD_TYPE;
+    return dataSet ? dhisToTupaiaPeriodType(dataSet.periodType) : DEFAULT_PERIOD_TYPE;
   }
 
   async fetchPeriodBounds(period) {
@@ -182,9 +183,7 @@ export class AggregateDataPusher extends DataPusher {
     // check whether this update is redundant, i.e. there is a matching record later on the same day
     const matchingRecord = await this.findMoreRecentResponse();
     if (matchingRecord) {
-      const syncLogMessage = `Did not push ${this.recordId} to DHIS2 as there is a matching ${
-        matchingRecord.databaseType
-      } later on the same day (id: ${matchingRecord.id})`;
+      const syncLogMessage = `Did not push ${this.recordId} to DHIS2 as there is a matching ${matchingRecord.databaseType} later on the same day (id: ${matchingRecord.id})`;
       // mark this sync as successful so it is cleared from the queue
       return { ...SUCCESS_DIAGNOSTICS, errors: [syncLogMessage], dataToLog };
     }
@@ -193,8 +192,7 @@ export class AggregateDataPusher extends DataPusher {
     const dataSetCompletionResponse = await this.pushDataSetCompletionIfRequired();
 
     // sync the data across to DHIS2
-    const dataToAdd = { dataValues: [dataValue] };
-    const updateResponse = await this.api.postDataValueSet(dataToAdd);
+    const updateResponse = await this.api.postDataValueSets([dataValue]);
 
     // combine the diagnostics
     const diagnostics = this.getDiagnosticsForResponses(

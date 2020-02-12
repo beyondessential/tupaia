@@ -1,5 +1,5 @@
-import { AGGREGATION_TYPES } from '/dhis';
 import flatten from 'lodash.flatten';
+import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
 
 /**
  * dataPairNames must match the index order of pairs in dataElementPairs

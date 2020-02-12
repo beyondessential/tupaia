@@ -43,6 +43,8 @@ export const getValuesByCell = (config, results) => {
 
   return zipObject(
     Object.keys(groupedResults),
-    Object.values(groupedResults).map(([{ value }]) => value),
+    Object.values(groupedResults).map(([{ value, metadata }]) =>
+      metadata && metadata.options ? metadata.options[value] : value,
+    ),
   );
 };

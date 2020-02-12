@@ -3,7 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 
-import { DatabaseError, UploadError } from '../errors';
+import { DatabaseError, UploadError } from '@tupaia/utils';
 import { uploadImage } from '../s3';
 import { BUCKET_PATH, getImageFilePath } from '../s3/constants';
 import { getEntityIdFromClinicId } from '../database/utilities';

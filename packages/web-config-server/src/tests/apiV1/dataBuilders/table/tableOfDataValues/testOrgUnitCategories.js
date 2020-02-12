@@ -5,14 +5,16 @@
 
 import sinon from 'sinon';
 
+import { getSortByKey } from '@tupaia/utils';
 import * as Entity from '/models/Entity';
-import { getSortByKey } from '/utils';
 import { createAssertTableResults } from './helpers';
 import { DATA_VALUES, ORG_UNITS } from './tableOfDataValues.fixtures';
 
 const assertTableResults = createAssertTableResults(
   // Sort results in DESC org unit order, to assert their ASC ordering in the results
-  DATA_VALUES.sort(getSortByKey('organisationUnit', { ascending: false })),
+  DATA_VALUES.filter(
+    ({ organisationUnit }) => organisationUnit === 'TO_Nukuhc' || organisationUnit === 'TO_Vainihc',
+  ).sort(getSortByKey('organisationUnit', { ascending: false })),
 );
 
 export const testOrgUnitCategories = () => {
@@ -39,7 +41,10 @@ export const testOrgUnitCategories = () => {
             { dataElement: 'Smokers', categoryId: 'TO_Nukuhc', Col1: 1, Col2: 2 },
             { dataElement: 'Smokers', categoryId: 'TO_Vainihc', Col1: 10, Col2: 20 },
           ],
-          columns: [{ key: 'Col1', title: 'Female' }, { key: 'Col2', title: 'Male' }],
+          columns: [
+            { key: 'Col1', title: 'Female' },
+            { key: 'Col2', title: 'Male' },
+          ],
           categories: [
             { key: 'TO_Nukuhc', title: 'Nukunuku' },
             { key: 'TO_Vainihc', title: 'Vaini' },
@@ -55,7 +60,10 @@ export const testOrgUnitCategories = () => {
             { category: 'Risk Factor', columns: ['Smokers', 'Overweight'] },
             { category: 'CVD Risk', columns: ['Green', 'Red'] },
           ],
-          cells: [['CD1', 'CD3', 'CD5', 'CD7'], ['CD2', 'CD4', 'CD6', 'CD8']],
+          cells: [
+            ['CD1', 'CD3', 'CD5', 'CD7'],
+            ['CD2', 'CD4', 'CD6', 'CD8'],
+          ],
         },
         {
           rows: [
@@ -81,11 +89,17 @@ export const testOrgUnitCategories = () => {
           columns: [
             {
               category: 'Risk Factor',
-              columns: [{ key: 'Col1', title: 'Smokers' }, { key: 'Col2', title: 'Overweight' }],
+              columns: [
+                { key: 'Col1', title: 'Smokers' },
+                { key: 'Col2', title: 'Overweight' },
+              ],
             },
             {
               category: 'CVD Risk',
-              columns: [{ key: 'Col3', title: 'Green' }, { key: 'Col4', title: 'Red' }],
+              columns: [
+                { key: 'Col3', title: 'Green' },
+                { key: 'Col4', title: 'Red' },
+              ],
             },
           ],
           categories: [
@@ -130,7 +144,12 @@ export const testOrgUnitCategories = () => {
             { category: 'CVD Risk', rows: ['Green', 'Red'] },
           ],
           columns: [{ category: '$orgUnit', columns: ['Female', 'Male'] }],
-          cells: [['CD1', 'CD2'], ['CD3', 'CD4'], ['CD5', 'CD6'], ['CD7', 'CD8']],
+          cells: [
+            ['CD1', 'CD2'],
+            ['CD3', 'CD4'],
+            ['CD5', 'CD6'],
+            ['CD7', 'CD8'],
+          ],
         },
         {
           rows: [
@@ -170,11 +189,17 @@ export const testOrgUnitCategories = () => {
           columns: [
             {
               category: 'Nukunuku',
-              columns: [{ key: 'Col1', title: 'Female' }, { key: 'Col2', title: 'Male' }],
+              columns: [
+                { key: 'Col1', title: 'Female' },
+                { key: 'Col2', title: 'Male' },
+              ],
             },
             {
               category: 'Vaini',
-              columns: [{ key: 'Col3', title: 'Female' }, { key: 'Col4', title: 'Male' }],
+              columns: [
+                { key: 'Col3', title: 'Female' },
+                { key: 'Col4', title: 'Male' },
+              ],
             },
           ],
           categories: [

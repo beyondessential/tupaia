@@ -6,6 +6,7 @@
 import groupBy from 'lodash.groupby';
 import pick from 'lodash.pick';
 
+import { getSortByKey, utcMoment, reduceToDictionary, stripFromStart } from '@tupaia/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { transformObject } from '/apiV1/dataBuilders/transform';
 import {
@@ -13,8 +14,7 @@ import {
   isMetadataKey,
   metadataKeysToDataElementMap,
 } from '/apiV1/dataBuilders/helpers';
-import { getDataElementsFromCodes, stripFromStart } from '/apiV1/utils';
-import { getSortByKey, utcMoment, reduceToDictionary } from '/utils';
+import { getDataElementsFromCodes } from '/apiV1/utils';
 
 const DATE_FORMAT = 'DD-MM-YYYY';
 const TOTAL_KEY = 'Total';

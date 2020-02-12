@@ -3,9 +3,8 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 
-import { respond } from '../respond';
-import { DatabaseError } from '../errors';
-import { TYPES } from '../database';
+import { respond, DatabaseError } from '@tupaia/utils';
+import { TYPES } from '@tupaia/database';
 import { getChangesFilter, getColumnsForMeditrakApp } from './utilities';
 
 const MAX_CHANGES_RETURNED = 100;
@@ -35,8 +34,10 @@ async function getRecordForSync(record) {
 export async function getChanges(req, res) {
   const { database, models } = req;
   const { limit = MAX_CHANGES_RETURNED, offset = 0 } = req.query;
+
   try {
-    const changes = await database.find(TYPES.MEDITRAK_SYNC_QUEUE, getChangesFilter(req.query), {
+    const filter = await getChangesFilter(req);
+    const changes = await database.find(TYPES.MEDITRAK_SYNC_QUEUE, filter, {
       sort: ['change_time'],
       limit,
       offset,

@@ -4,6 +4,8 @@
  **/
 
 import { saveAs } from 'file-saver';
+
+import { stringifyQuery } from '@tupaia/utils';
 import {
   getAccessToken,
   getRefreshToken,
@@ -129,7 +131,7 @@ export class TupaiaApi {
   }
 
   async request(endpoint, queryParameters, fetchConfig, shouldReauthenticateIfUnauthorized = true) {
-    const queryUrl = buildQueryUrl(endpoint, queryParameters);
+    const queryUrl = stringifyQuery(process.env.REACT_APP_API_URL, endpoint, queryParameters);
     try {
       const response = await Promise.race([fetch(queryUrl, fetchConfig), createTimeoutPromise()]);
       // If server responded with 401, i.e. not authenticated, refresh token and try once more
@@ -188,24 +190,6 @@ export class TupaiaApi {
     return fetchConfig;
   }
 }
-
-const buildParameterString = (key, value) => {
-  if (Array.isArray(value)) {
-    return value.map(v => buildParameterString(key, v)).join('&');
-  }
-  return `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
-};
-
-const buildQueryUrl = (endpoint, queryParameters) => {
-  const baseUrl = process.env.REACT_APP_API_URL;
-
-  const queryString = Object.entries(queryParameters || {})
-    .filter(([key, value]) => value !== undefined)
-    .map(([key, value]) => buildParameterString(key, value))
-    .join('&');
-  const queryUrl = `${baseUrl}/${endpoint}${queryString && `?${queryString}`}`;
-  return queryUrl;
-};
 
 // Create a promise that rejects after the request has taken too long
 const createTimeoutPromise = () =>

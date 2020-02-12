@@ -5,9 +5,10 @@
 
 import flatten from 'lodash.flatten';
 
+import { reduceToDictionary } from '@tupaia/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { reduceToDictionary } from '/utils';
 import { Entity } from '/models';
+import { getDataElementsFromCodes } from '/apiV1/utils';
 
 import { TableConfig } from './TableConfig';
 import { getValuesByCell } from './getValuesByCell';
@@ -15,7 +16,7 @@ import { TotalCalculator } from './TotalCalculator';
 
 const getColumnKey = columnIndex => `Col${parseInt(columnIndex, 10) + 1}`;
 
-class TableOfDataValuesBuilder extends DataBuilder {
+export class TableOfDataValuesBuilder extends DataBuilder {
   async build() {
     const results = await this.fetchResults();
     this.tableConfig = new TableConfig(this.config, results);
@@ -36,8 +37,12 @@ class TableOfDataValuesBuilder extends DataBuilder {
   async fetchResults() {
     const dataElementCodes = [...new Set(flatten(this.config.cells))];
     const { results } = await this.getAnalytics({ dataElementCodes, outputIdScheme: 'code' });
+    const dataElements = await getDataElementsFromCodes(this.dhisApi, dataElementCodes, true);
 
-    return results;
+    return results.map(result => ({
+      ...result,
+      metadata: dataElements[result.dataElement] ? dataElements[result.dataElement] : {},
+    }));
   }
 
   async buildRows() {

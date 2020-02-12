@@ -2,7 +2,7 @@
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
-import { DatabaseError, UnauthenticatedError } from '../errors';
+import { DatabaseError, UnauthenticatedError } from '@tupaia/utils';
 
 export const getUserPermissionGroups = async (models, userId, countryIdentifierKey) => {
   // Get the permission group ids for each country the user has access to

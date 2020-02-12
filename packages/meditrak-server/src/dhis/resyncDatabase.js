@@ -3,7 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import { TYPES } from '../database';
+import { TYPES } from '@tupaia/database';
 
 const CURSOR_SETTINGS_KEY = 'dhisResyncCursor';
 const BATCH_SIZE = 10; // Process 10 survey responses

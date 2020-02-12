@@ -14,6 +14,7 @@ import {
   SurveyResponsesPage,
   SurveysPage,
   UsersPage,
+  DisasterResponsePage,
 } from './resources';
 import { PermissionDeniedPage } from './PermissionDeniedPage';
 import { StrivePage } from './StrivePage';
@@ -32,4 +33,5 @@ export const PAGES = {
   socialFeed: userIsAuthenticated(SocialFeedPage),
   optionSets: userIsAuthenticated(OptionSetsPage),
   strive: userIsAuthenticated(StrivePage),
+  disaster: userIsAuthenticated(DisasterResponsePage),
 };

@@ -3,9 +3,8 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 import keyBy from 'lodash.keyby';
+import { AGGREGATION_TYPES, periodToTimestamp } from '@tupaia/dhis-api';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { AGGREGATION_TYPES } from '/dhis';
-import { periodToTimestamp } from '/dhis/periodTypes';
 
 const { FINAL_EACH_DAY, FINAL_EACH_MONTH, FINAL_EACH_YEAR } = AGGREGATION_TYPES;
 

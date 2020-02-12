@@ -7,6 +7,7 @@ import { testCategories } from './testCategories';
 import { testNoCategories } from './testNoCategories';
 import { testOrgUnitCategories } from './testOrgUnitCategories';
 import { testTotals } from './testTotals';
+import { testOptions } from './testOptions';
 
 describe('tableOfDataValues', () => {
   describe('no categories', testNoCategories);
@@ -16,4 +17,6 @@ describe('tableOfDataValues', () => {
   describe('org unit categories', testOrgUnitCategories);
 
   describe('totals', testTotals);
+
+  describe('options', testOptions);
 });

@@ -1,7 +1,7 @@
-import { convertDateRangeToPeriods } from '/utils';
+import { convertDateRangeToPeriods } from '@tupaia/dhis-api';
 import { DashboardReport } from '/models';
 import { getDhisApiInstance } from '/dhis';
-import { CustomError } from '/errors';
+import { CustomError } from '@tupaia/utils';
 import { DhisTranslationHandler, isSingleValue } from './utils';
 import { getDataBuilder } from '/apiV1/dataBuilders/getDataBuilder';
 

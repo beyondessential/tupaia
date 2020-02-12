@@ -27,25 +27,20 @@ export { getDataElementGroups } from './getDataElementGroups';
 export { getDataElementGroupSets } from './getDataElementGroupSets';
 export { getDataElementsInGroupSet } from './getDataElementsInGroupSet';
 export { getDataElementsFromCodes } from './getDataElementsFromCodes';
-export { getEventDataValueMap } from './getEventDataValueMap';
 export { getOptionsForDataElement } from './getOptionsForDataElement';
 export { getOptionSetOptions } from './getOptionSetOptions';
 export isSingleValue from './isSingleValue';
-export { asynchronouslyFetchValuesForObject } from './asynchronouslyFetchValuesForObject';
 export {
   hasReportAccessToOrganisationUnit,
   getReportUserGroupAccessRightsForOrganisationUnit,
 } from './hasAccess';
 export { timestampToPeriod } from './timestampToPeriod';
-export { stripFromStart } from './stripFromStart';
 export { timestampToPeriodName } from './timestampToPeriodName';
 export { limitRange } from './limitRange';
 export { regexLabel } from './regexLabel';
-export { replaceElementIdsWithCodesInEvents } from './replaceElementIdsWithCodesInEvents';
 export { findLatestPeriod } from './findLatestPeriod';
 export { getDateRange } from './getDateRange';
 export { mapDataSourcesToElementCodes } from './mapDataSourcesToElementCodes';
 export { parseCoordinates } from './parseCoordinates';
-export { convertDateRangeToPeriodString } from './convertDateRangeToPeriodString';
 export { composeBuiltData } from './composeBuiltData';
 export { sumResults } from './sumResults';

@@ -6,12 +6,11 @@
 import jwt from 'jsonwebtoken';
 import randomToken from 'rand-token';
 
-import { respond } from '../respond';
-import { DatabaseError, UnauthenticatedError, UnverifiedError } from '../errors';
+import { respond, DatabaseError, UnauthenticatedError, UnverifiedError } from '@tupaia/utils';
 import { EMAIL_VERIFIED_STATUS } from './verifyEmail';
 
 const REFRESH_TOKEN_LENGTH = 40;
-const ACCESS_TOKEN_EXPIRY_SECONDS = 15 * 60; // User's access expires every 30 mins
+const ACCESS_TOKEN_EXPIRY_SECONDS = 15 * 60; // User's access expires every 15 mins
 const GRANT_TYPES = {
   PASSWORD: 'password',
   REFRESH_TOKEN: 'refresh_token',
@@ -51,25 +50,24 @@ const getAuthenticatedUser = async (models, { emailAddress, password, deviceName
   return user;
 };
 
-const getRefreshToken = async (models, { userId, deviceName }) => {
+const upsertRefreshToken = async (models, { userId, deviceName, meditrakDeviceId }) => {
   // Generate refresh token and save in db
   const refreshToken = randomToken.generate(REFRESH_TOKEN_LENGTH);
 
   try {
-    await models.refreshToken.updateOrCreate(
+    return models.refreshToken.updateOrCreate(
       {
         user_id: userId,
         device: deviceName,
       },
       {
         token: refreshToken,
+        meditrak_device_id: meditrakDeviceId,
       },
     );
   } catch (error) {
     throw new DatabaseError('storing refresh token', error);
   }
-
-  return refreshToken;
 };
 
 const getAuthorizationObject = async ({ refreshToken, user, countryIdentifier }) => {
@@ -77,6 +75,7 @@ const getAuthorizationObject = async ({ refreshToken, user, countryIdentifier })
   const accessToken = jwt.sign(
     {
       userId: user.id,
+      refreshToken: refreshToken.token,
       role: 'Admin', // TODO think about permissions more, how to decide whether user has permission for API resource endpoints
     },
     process.env.JWT_SECRET,
@@ -91,7 +90,7 @@ const getAuthorizationObject = async ({ refreshToken, user, countryIdentifier })
   // Assemble and return authorization object
   return {
     accessToken: accessToken,
-    refreshToken: refreshToken,
+    refreshToken: refreshToken.token,
     user: {
       id: user.id,
       name: user.fullName,
@@ -103,68 +102,73 @@ const getAuthorizationObject = async ({ refreshToken, user, countryIdentifier })
   };
 };
 
-const authenticatePassword = async (req, res) => {
-  let refreshToken;
-  const { models } = req;
+const saveMeditrakDeviceOnLogin = async (req, userId) => {
+  const { body, models, query } = req;
+  const { devicePlatform: platform, installId } = body || {};
+  const { appVersion } = query;
 
-  // Get user's email, password, and deviceName from the POST body
-  const {
-    emailAddress,
-    password,
-    deviceName,
-    devicePlatform,
-    installId,
-    countryIdentifier,
-  } = req.body ? req.body : {};
-
-  try {
-    const user = await getAuthenticatedUser(models, { emailAddress, password, deviceName });
-    refreshToken = await getRefreshToken(models, { userId: user.id, deviceName });
-
-    const authorizationObject = await getAuthorizationObject({
-      refreshToken,
-      user,
-      countryIdentifier,
-    });
-    if (installId) {
-      await models.installId.createForUser(user.id, installId, devicePlatform);
-    }
-
-    respond(res, authorizationObject);
-  } catch (error) {
-    throw error; // Throw up error
-  }
+  return models.meditrakDevice.updateOrCreate(
+    { install_id: installId },
+    {
+      user_id: userId,
+      install_id: installId,
+      platform,
+      app_version: appVersion,
+    },
+  );
 };
 
-const authenticateRefreshToken = async (req, res) => {
+const isMeditrakLogin = req => req.body && req.body.installId;
+
+const authenticatePassword = async req => {
+  const { body, models } = req;
+  // Get user's email, password, and deviceName from the POST body
+  const { emailAddress, password, deviceName } = body || {};
+
+  const user = await getAuthenticatedUser(models, { emailAddress, password, deviceName });
+  let meditrakDeviceId;
+  if (isMeditrakLogin(req)) {
+    const meditrakDevice = await saveMeditrakDeviceOnLogin(req, user.id);
+    meditrakDeviceId = meditrakDevice.id;
+  }
+  const refreshToken = await upsertRefreshToken(models, {
+    userId: user.id,
+    deviceName,
+    meditrakDeviceId,
+  });
+
+  return { refreshToken, user };
+};
+
+const authenticateRefreshToken = async req => {
   // Declare variables to be filled within specific switch cases
   const { models, body: requestBody } = req;
-  const { refreshToken, countryIdentifier } = requestBody;
+  const { refreshToken: token } = requestBody;
 
-  if (!refreshToken) {
+  if (!token) {
     throw new UnauthenticatedError('Please supply refreshToken in the POST body');
   }
 
   // Get the refresh token from the models
-  let refreshTokenResult;
+  let refreshToken;
   try {
-    refreshTokenResult = await models.refreshToken.findOne({ token: refreshToken });
+    refreshToken = await models.refreshToken.findOne({ token });
   } catch (error) {
     throw new DatabaseError('finding refresh token', error);
   }
 
   // If there wasn't a *valid* refresh token, tell the user to log in again
-  if (!refreshTokenResult || !refreshTokenResult.user_id || !refreshTokenResult.token) {
+  if (!refreshToken || !refreshToken.user_id || !refreshToken.token) {
     throw new UnauthenticatedError('Refresh token not valid, please log in again');
   }
 
   // If the refresh token has expired, tell the user to log in again
-  if (refreshTokenResult.expiry && refreshTokenResult.expiry < Date.now()) {
+  if (refreshToken.expiry && refreshToken.expiry < Date.now()) {
     throw new UnauthenticatedError('Refresh token has expired, please log in again');
   }
 
   // There was a valid refresh token, add permission groups and respond
-  const userId = refreshTokenResult.user_id;
+  const userId = refreshToken.user_id;
 
   let user;
   try {
@@ -173,18 +177,12 @@ const authenticateRefreshToken = async (req, res) => {
     throw new DatabaseError('finding user', error);
   }
 
-  const authorizationObject = await getAuthorizationObject({
-    refreshToken,
-    user,
-    countryIdentifier,
-  });
-
-  respond(res, authorizationObject);
+  return { refreshToken, user };
 };
 
-const authenticateOneTimeLogin = async (req, res) => {
+const authenticateOneTimeLogin = async req => {
   const { models, body: requestBody } = req;
-  const { token, countryIdentifier, deviceName } = requestBody;
+  const { token, deviceName } = requestBody;
 
   if (!token) {
     throw new UnauthenticatedError('Could not authenticate, token not provided.');
@@ -195,15 +193,21 @@ const authenticateOneTimeLogin = async (req, res) => {
   foundToken.save();
 
   const user = await models.user.findById(foundToken.user_id);
-  const refreshToken = await getRefreshToken(models, { userId: user.id, deviceName });
+  const refreshToken = await upsertRefreshToken(models, { userId: user.id, deviceName });
 
-  const authorizationObject = await getAuthorizationObject({
-    refreshToken,
-    user,
-    countryIdentifier,
-  });
+  return { refreshToken, user };
+};
 
-  respond(res, authorizationObject);
+const getAuthenticationMethod = grantType => {
+  switch (grantType) {
+    case GRANT_TYPES.REFRESH_TOKEN:
+      return authenticateRefreshToken;
+    case GRANT_TYPES.ONE_TIME_LOGIN:
+      return authenticateOneTimeLogin;
+    case GRANT_TYPES.PASSWORD:
+    default:
+      return authenticatePassword;
+  }
 };
 
 /**
@@ -217,20 +221,17 @@ const authenticateOneTimeLogin = async (req, res) => {
  * Override grants to do recursive authentication, for example when creating a new user.
  **/
 export async function authenticate(req, res) {
-  // Get the query parameters, and check whether this is using credentials or a refresh token
-  const grantType = req.query.grantType || GRANT_TYPES.PASSWORD;
-  switch (grantType) {
-    default:
-    case GRANT_TYPES.PASSWORD:
-      await authenticatePassword(req, res);
-      break;
+  const { body, query } = req;
+  const { grantType = GRANT_TYPES.PASSWORD } = query;
+  const authenticationMethod = getAuthenticationMethod(grantType);
 
-    case GRANT_TYPES.REFRESH_TOKEN:
-      await authenticateRefreshToken(req, res);
-      break;
+  const { refreshToken, user } = await authenticationMethod(req, res);
+  const { countryIdentifier } = body || {};
+  const authorizationObject = await getAuthorizationObject({
+    refreshToken,
+    user,
+    countryIdentifier,
+  });
 
-    case GRANT_TYPES.ONE_TIME_LOGIN:
-      await authenticateOneTimeLogin(req, res);
-      break;
-  }
+  respond(res, authorizationObject);
 }

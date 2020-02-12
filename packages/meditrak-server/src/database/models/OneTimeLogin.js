@@ -5,10 +5,8 @@
 import randomToken from 'rand-token';
 import moment from 'moment';
 
-import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '..';
-import { DatabaseError, UnauthenticatedError } from '../../errors';
+import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
+import { DatabaseError, UnauthenticatedError } from '@tupaia/utils';
 
 class OneTimeLoginType extends DatabaseType {
   static databaseType = TYPES.ONE_TIME_LOGIN;

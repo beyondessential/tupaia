@@ -66,7 +66,7 @@ describe('EventPusher', () => {
         expect(pusher.push()).to.be.rejectedWith(
           `No survey response found for ${change.record_id}`,
         );
-        expect(dhisApi.postEvent).not.to.have.been.called;
+        expect(dhisApi.postEvents).not.to.have.been.called;
         expect(dhisApi.deleteEvent).not.to.have.been.called;
       });
 
@@ -76,7 +76,7 @@ describe('EventPusher', () => {
 
         const result = await pusher.push();
         expect(result).to.be.true;
-        expect(dhisApi.postEvent).to.have.been.calledOnce;
+        expect(dhisApi.postEvents).to.have.been.calledOnce;
         expect(dhisApi.deleteEvent).not.to.have.been.called;
       });
     });
@@ -101,7 +101,7 @@ describe('EventPusher', () => {
         const result = await pusher.push();
         expect(result).to.be.true;
         expect(dhisApi.deleteEvent).to.have.been.calledOnceWith(DHIS_REFERENCE);
-        expect(dhisApi.postEvent).to.have.been.calledOnce;
+        expect(dhisApi.postEvents).to.have.been.calledOnce;
       });
     });
 
@@ -126,7 +126,7 @@ describe('EventPusher', () => {
         const result = await pusher.push();
         expect(result).to.be.true;
         expect(dhisApi.deleteEvent).to.have.been.calledOnceWith(DHIS_REFERENCE);
-        expect(dhisApi.postEvent).not.to.have.been.called;
+        expect(dhisApi.postEvents).not.to.have.been.called;
       });
     });
   });

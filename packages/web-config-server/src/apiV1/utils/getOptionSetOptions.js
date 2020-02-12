@@ -1,8 +1,9 @@
-import { CustomError } from '/errors';
+import { DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
+import { CustomError } from '@tupaia/utils';
 
 export const getOptionSetOptions = async (dhisApi, { code, id }) => {
   const result = await dhisApi.getRecord({
-    type: 'optionSets',
+    type: DHIS2_RESOURCE_TYPES.OPTION_SET,
     code,
     id,
     fields: 'options[code,name]',
