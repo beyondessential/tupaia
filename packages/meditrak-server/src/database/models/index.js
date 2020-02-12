@@ -11,6 +11,8 @@ export { ApiRequestLogModel as apiRequestLog } from './ApiRequestLog';
 export { CountryModel as country } from './Country';
 export { DhisSyncLogModel as dhisSyncLog } from './DhisSyncLog';
 export { DhisSyncQueueModel as dhisSyncQueue } from './DhisSyncQueue';
+export { DisasterEventModel as disasterEvent } from './DisasterEvent';
+export { DisasterModel as disaster } from './Disaster';
 export { EntityModel as entity } from './Entity';
 export { EntityRelationModel as entityRelation } from './EntityRelation';
 export { EntityRelationTypeModel as entityRelationType } from './EntityRelationType';

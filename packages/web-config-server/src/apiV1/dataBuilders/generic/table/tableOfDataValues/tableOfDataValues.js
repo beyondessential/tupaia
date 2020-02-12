@@ -16,7 +16,7 @@ import { TotalCalculator } from './TotalCalculator';
 
 const getColumnKey = columnIndex => `Col${parseInt(columnIndex, 10) + 1}`;
 
-class TableOfDataValuesBuilder extends DataBuilder {
+export class TableOfDataValuesBuilder extends DataBuilder {
   async build() {
     const results = await this.fetchResults();
     this.tableConfig = new TableConfig(this.config, results);
