@@ -10,6 +10,8 @@ import PropTypes from 'prop-types';
 import DropDownArrowIcon from 'material-ui/svg-icons/navigation/arrow-drop-down';
 import shallowEqual from 'shallowequal';
 
+import { Cell } from './Cell';
+
 export default class RowGroup extends Component {
   shouldComponentUpdate(nextProps) {
     const currentProps = this.props;
@@ -55,6 +57,13 @@ export default class RowGroup extends Component {
       numberOfColumnsPerPage,
       onToggleRowExpanded,
       styles,
+      onCellMouseEnter,
+      onCellMouseLeave,
+      onCellClick,
+      presentationOptions,
+      isUsingDots,
+      isRowHighlighted,
+      highlightedColumn,
     } = this.props;
 
     const displayedColumnCount = startColumn + numberOfColumnsPerPage;
@@ -72,14 +81,32 @@ export default class RowGroup extends Component {
             <span style={styles.collapsibleHeaderInner}>{categoryLabel}</span>
           </button>
           <div style={styles.gridCellChangerActive} />
-          {columns.slice(startColumn, displayedColumnCount).map((column, index) => (
-            <div
-              style={column.isGroupHeader ? styles.gridCellChangerActive : styles.gridCell}
-              key={`${rowId}-empty-${index}`}
-            >
-              {column.value}
-            </div>
-          ))}
+          {columns.slice(startColumn, displayedColumnCount).map((column, index) => {
+            const isCellActive = index === highlightedColumn && isRowHighlighted;
+
+            return (
+              <div
+                style={column.isGroupHeader ? styles.gridCellChangerActive : styles.gridCell}
+                key={`${rowId}-empty-${index}`}
+              >
+                <Cell
+                  key={index}
+                  cellKey={index}
+                  onMouseEnter={() => onCellMouseEnter(index, rowId)}
+                  onMouseLeave={() => onCellMouseLeave()}
+                  onClick={() => onCellClick(column.value.label, column.value.description)}
+                  color={column.value.color}
+                  value={column.value.value || ''}
+                  style={styles.gridCell}
+                  columnActiveStripStyle={styles.columnActiveStrip}
+                  isActive={isCellActive}
+                  dotStyle={styles.cellIndicator}
+                  dotStyleActive={styles.cellIndicatorActive}
+                  isUsingDots={isUsingDots}
+                />
+              </div>
+            );
+          })}
           <div style={styles.gridCellChangerActive} />
         </div>
         {children}

@@ -16,16 +16,24 @@ import { TotalCalculator } from './TotalCalculator';
 
 const getColumnKey = columnIndex => `Col${parseInt(columnIndex, 10) + 1}`;
 
+const GROUPING_KEYS = {
+  CATEGORY: 'category',
+  ORG_UNIT: 'organisationUnit',
+};
+
 class TableOfDataValuesBuilder extends DataBuilder {
   async build() {
     const results = await this.fetchResults();
+    const columnData = this.config.columnKey
+      ? await this.buildColumnsFromResults(results, this.config.columnKey)
+      : await this.buildColumns();
     this.tableConfig = new TableConfig(this.config, results);
     this.valuesByCell = getValuesByCell(this.tableConfig, results);
     this.totalCalculator = new TotalCalculator(this.tableConfig, this.valuesByCell);
 
     const data = {
       rows: await this.buildRows(),
-      columns: await this.buildColumns(),
+      columns: columnData,
     };
     if (this.tableConfig.hasRowCategories()) {
       data.categories = await this.buildRowCategories();
@@ -85,6 +93,16 @@ class TableOfDataValuesBuilder extends DataBuilder {
       : this.valuesByCell[cell];
   }
 
+  async buildColumnsFromResults(results, key) {
+    const columns = [...new Set(results.map(result => result[key]))].map(c => ({ title: c }));
+
+    if (key === GROUPING_KEYS.ORG_UNIT) {
+      const orgUnitNames = this.getOrgUnitKeyToTitle(columns, 'title');
+
+      return columns.map(col => ({ title: col }));
+    }
+  }
+
   async buildColumns() {
     const buildColumn = (column, index) => ({ key: getColumnKey(index), title: column });
 
@@ -112,18 +130,18 @@ class TableOfDataValuesBuilder extends DataBuilder {
 
   async getRowCategoryToTitle() {
     return this.tableConfig.hasOrgUnitRowCategories()
-      ? this.getOrgUnitCategoryToTitle(this.tableConfig.rows)
+      ? this.getOrgUnitKeyToTitle(this.tableConfig.rows, GROUPING_KEYS.CATEGORY)
       : key => key;
   }
 
   async getColumnCategoryToTitle() {
     return this.tableConfig.hasOrgUnitColumnCategories()
-      ? this.getOrgUnitCategoryToTitle(this.tableConfig.columns)
+      ? this.getOrgUnitKeyToTitle(this.tableConfig.columns, GROUPING_KEYS.CATEGORY)
       : key => key;
   }
 
-  getOrgUnitCategoryToTitle = async dimension => {
-    const orgUnitCodes = dimension.map(({ category }) => category);
+  getOrgUnitKeyToTitle = async (dimension, key) => {
+    const orgUnitCodes = dimension.map(d => d[key]);
     const orgUnits = await Entity.find({ code: orgUnitCodes });
     const orgUnitCodeToName = reduceToDictionary(orgUnits, 'code', 'name');
 

@@ -27,3 +27,8 @@ export const average = (columns, rowData) => {
 
   return categoryData;
 };
+
+export const getDotColorFromRange = (presentationOptions, value) =>
+  Object.values(presentationOptions).find(({ min, max }) => value >= min && value <= max) || {
+    color: '',
+  };
