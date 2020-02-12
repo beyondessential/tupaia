@@ -179,7 +179,7 @@ export class Entity extends BaseModel {
     const region =
       code === 'World'
         ? 'ST_AsGeoJSON(st_simplify(ST_GeomFromGeoJSON(ST_AsGeoJSON(region)), 0.01)) as region'
-        : 'ST_AsGeoJSON(region)';
+        : 'ST_AsGeoJSON(region) as region';
 
     return Entity.database.executeSql(
       `
