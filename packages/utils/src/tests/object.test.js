@@ -5,7 +5,14 @@
 
 import { expect } from 'chai';
 
-import { flattenToObject, mapKeys, reduceToDictionary, reduceToSet, getSortByKey } from '../object';
+import {
+  flattenToObject,
+  getKeysSortedByValues,
+  mapKeys,
+  reduceToDictionary,
+  reduceToSet,
+  getSortByKey,
+} from '../object';
 
 const object1 = {
   id: 'id1',
@@ -27,6 +34,48 @@ const assertSortingCorrectness = (sortingMethod, input, expectedValue) => {
 };
 
 describe('object', () => {
+  describe('getKeysSortedByValues', () => {
+    it('should sort the keys of an object containing string values', () => {
+      expect(
+        getKeysSortedByValues({ fourth: 'd', third: 'c', second: 'b' }, { asc: true }),
+      ).to.deep.equal(['second', 'third', 'fourth']);
+    });
+
+    it('should sort the keys of an object containing numeric string values', () => {
+      expect(
+        getKeysSortedByValues({ ten: '10', one: '1', two: '2' }, { asc: true }),
+      ).to.deep.equal(['one', 'two', 'ten']);
+    });
+
+    it('should sort the keys of an object containing number values', () => {
+      expect(getKeysSortedByValues({ five: 5, four: 4, one: 1 }, { asc: true })).to.deep.equal([
+        'one',
+        'four',
+        'five',
+      ]);
+    });
+
+    it('should use DESC direction if configured accordingly', () => {
+      expect(getKeysSortedByValues({ one: 1, five: 5, four: 4 }, { asc: false })).to.deep.equal([
+        'five',
+        'four',
+        'one',
+      ]);
+    });
+
+    it('should default to ASC direction for empty options', () => {
+      expect(getKeysSortedByValues({ five: 5, one: 1 }, {})).to.deep.equal(['one', 'five']);
+    });
+
+    it('should default to ASC direction for `undefined` options', () => {
+      expect(getKeysSortedByValues({ five: 5, one: 1 })).to.deep.equal(['one', 'five']);
+    });
+
+    it('should default to ASC direction for `null` options', () => {
+      expect(getKeysSortedByValues({ five: 5, one: 1 }), null).to.deep.equal(['one', 'five']);
+    });
+  });
+
   describe('getSortByKey()', () => {
     it('should return a method that sorts string values', () => {
       const alpha = { name: 'alpha' };

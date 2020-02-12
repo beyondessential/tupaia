@@ -2,7 +2,9 @@
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
+
 import crypto from 'crypto';
+import jwt from 'jsonwebtoken';
 import randomize from 'randomatic';
 import { hashPassword } from 'authentication-utilities';
 
@@ -38,3 +40,15 @@ export function getJwtToken(authHeader) {
 
   return authHeaderComponents[1];
 }
+
+const isJwtToken = authHeader => authHeader.startsWith('Bearer ');
+
+export const extractRefreshTokenFromReq = req => {
+  const authHeader = req.headers.authorization || req.headers.Authorization;
+  if (!isJwtToken(authHeader)) {
+    return undefined;
+  }
+
+  const jwtToken = getJwtToken(authHeader);
+  return jwt.verify(jwtToken, process.env.JWT_SECRET).refreshToken;
+};

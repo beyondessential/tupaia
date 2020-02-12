@@ -5,7 +5,14 @@
 
 export { getTimezoneNameFromTimestamp, utcMoment } from './datetime';
 export * from './errors';
-export { flattenToObject, getSortByKey, mapKeys, reduceToDictionary, reduceToSet } from './object';
+export {
+  flattenToObject,
+  getKeysSortedByValues,
+  getSortByKey,
+  mapKeys,
+  reduceToDictionary,
+  reduceToSet,
+} from './object';
 export { asynchronouslyFetchValuesForObject, fetchWithTimeout, stringifyQuery } from './request';
 export { respond } from './respond';
 export { singularise, stripFromStart } from './string';
