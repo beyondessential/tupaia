@@ -5,7 +5,7 @@
 
 export const getColumnsForMeditrakApp = async model => {
   const fields = await model.fetchFieldNames();
-  const { meditrakIgnorableFields } = model;
-  if (!meditrakIgnorableFields) return fields;
-  return fields.filter(field => !meditrakIgnorableFields.includes(field));
+  const { meditrakConfig = {} } = model;
+  const { ignorableFields = [] } = meditrakConfig;
+  return fields.filter(field => !ignorableFields.includes(field));
 };

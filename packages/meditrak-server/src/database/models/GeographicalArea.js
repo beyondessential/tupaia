@@ -8,6 +8,10 @@ import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
 class GeographicalAreaType extends DatabaseType {
   static databaseType = TYPES.GEOGRAPHICAL_AREA;
 
+  static meditrakConfig = {
+    minAppVersion: '0.0.23',
+  };
+
   // Exposed for access policy creation.
   get organisationUnitCode() {
     return this.code;

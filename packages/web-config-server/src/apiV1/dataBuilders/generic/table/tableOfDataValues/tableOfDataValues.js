@@ -16,12 +16,7 @@ import { TotalCalculator } from './TotalCalculator';
 
 const getColumnKey = columnIndex => `Col${parseInt(columnIndex, 10) + 1}`;
 
-const GROUPING_KEYS = {
-  CATEGORY: 'category',
-  ORG_UNIT: 'organisationUnit',
-};
-
-class TableOfDataValuesBuilder extends DataBuilder {
+export class TableOfDataValuesBuilder extends DataBuilder {
   async build() {
     const results = await this.fetchResults();
     const columnData = this.config.columnKey

@@ -9,6 +9,10 @@ import { hasContent } from './validatorFunctions';
 class OptionType extends DatabaseType {
   static databaseType = TYPES.OPTION;
 
+  static meditrakConfig = {
+    minAppVersion: '1.7.92',
+  };
+
   static fieldValidators = new Map()
     .set('value', [
       hasContent,
