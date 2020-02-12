@@ -31,10 +31,10 @@ export async function startSyncWithMs1(models) {
     if (!surveyResponse) return false;
 
     // If the survey is logging data against world we don't need to check demo land
-    const surveyEntity = await surveyResponse.entity();
-    if (surveyEntity.type !== ENTITY_TYPES.WORLD) {
+    const country = await surveyResponse.country();
+    if (country) {
       // ditch if demoland
-      const { id: countryId } = await surveyEntity.country();
+      const { id: countryId } = country;
       if (countryId === demoLand.id) return false;
     }
 

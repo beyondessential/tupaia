@@ -54,13 +54,15 @@ export class EnlargedDialogContent extends PureComponent {
 
   renderTitle() {
     const { viewContent, organisationUnitName } = this.props;
+    let titleText;
     if (getIsMatrix(viewContent)) {
       return null;
     }
 
     const { name, periodGranularity } = viewContent;
 
-    const titleText = `${name}${organisationUnitName ? `, ${organisationUnitName} ` : ''}`;
+    if (viewContent.entityHeader) titleText = `${name}, ${viewContent.entityHeader}`;
+    else titleText = `${name}${organisationUnitName ? `, ${organisationUnitName} ` : ''}`;
 
     return (
       <DialogTitle style={styles.title}>
