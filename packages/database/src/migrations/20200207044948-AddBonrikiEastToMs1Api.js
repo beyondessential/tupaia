@@ -16,14 +16,14 @@ exports.setup = function(options, seedLink) {
 
 exports.up = function(db) {
   return db.runSql(`
-    UPDATE entity SET metadata = '{"ms1": {"distributionId": "2516"}}'
+    UPDATE entity SET metadata = jsonb_set(metadata, '{ms1}', '{"distributionId": "2516"}')
       WHERE code = 'KI_BonE02';
   `);
 };
 
 exports.down = function(db) {
   return db.runSql(`
-    UPDATE entity SET metadata = '{"dhis": {"isDataRegional": true}}'
+    UPDATE entity SET metadata = metadata::jsonb - 'ms1'
       WHERE code = 'KI_BonE02';
   `);
 };
