@@ -40,11 +40,23 @@ export class DhisTranslator {
   translateOutboundDataValue = async (api, { code, value, ...restOfDataValue }, dataSource) => {
     const dataElementCode = this.dataSourceToElementCode(dataSource);
     const valueToPush = await this.getOutboundValue(api, dataElementCode, value);
-    return {
+
+    const outboundDataValue = {
       dataElement: dataElementCode,
       value: valueToPush,
       ...restOfDataValue,
     };
+
+    // add category option combo code if defined
+    const { categoryOptionComboCode } = dataSource;
+    if (categoryOptionComboCode) {
+      outboundDataValue.categoryOptionCombo = await api.getIdFromCode(
+        api.getResourceTypes().CATEGORY_OPTION_COMBO,
+        categoryOptionComboCode,
+      );
+    }
+
+    return outboundDataValue;
   };
 
   translateInboundDataValues = (dataValue, dataElementToSourceCode) =>
@@ -71,26 +83,6 @@ export class DhisTranslator {
       metadata: this.translateInboundMetadata(metadata, dataElementToSourceCode),
     };
   };
-
-  async translateEventDataValues(api, dataValues) {
-    const dataSources = await this.models.dataSource.findOrDefault({
-      code: dataValues.map(({ code }) => code),
-      type: this.dataSourceTypes.DATA_ELEMENT,
-    });
-    const dataValuesWithCodeReplaced = await Promise.all(
-      dataValues.map((d, i) => this.translateDataValue(api, d, dataSources[i])),
-    );
-    const dataElementCodes = dataValuesWithCodeReplaced.map(({ dataElement }) => dataElement);
-    const dataElementIds = await api.getIdsFromCodes(
-      api.getResourceTypes().DATA_ELEMENT,
-      dataElementCodes,
-    );
-    const dataValuesWithIds = dataValuesWithCodeReplaced.map((d, i) => ({
-      ...d,
-      dataElement: dataElementIds[i],
-    }));
-    return dataValuesWithIds;
-  }
 
   async translateOutboundEventDataValues(api, dataValues) {
     const dataSources = await this.models.dataSource.findOrDefault({
