@@ -45,10 +45,9 @@ export class ChangeValidator {
     const { integration_metadata: integrationMetadata } = survey;
     if (!integrationMetadata.dhis2) return false;
 
-    // If the survey is logging data against world we don't need to check demo land
-    const surveyEntity = await surveyResponse.entity();
-    if (surveyEntity.type === ENTITY_TYPES.WORLD) return true;
-    const { id: countryId } = await surveyEntity.country();
+    const country = await surveyResponse.country();
+    if (!country) return true; // e.g. world, or a region containing a group of countries
+    const { id: countryId } = country;
 
     const demoLand = await this.models.country.findOne({ name: 'Demo Land' });
     const publicPermissionGroup = await this.models.permissionGroup.findOne({ name: 'Public' });
