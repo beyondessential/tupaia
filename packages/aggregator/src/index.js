@@ -4,3 +4,4 @@
  */
 
 export { Aggregator } from './Aggregator';
+export { createAggregator } from './createAggregator';

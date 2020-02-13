@@ -10,4 +10,3 @@ export { TYPES } from './types';
 export { ModelRegistry } from './ModelRegistry';
 export { DatabaseModel } from './DatabaseModel';
 export { DatabaseType } from './DatabaseType';
-export { createModelRegistry } from './createModelRegistry';
