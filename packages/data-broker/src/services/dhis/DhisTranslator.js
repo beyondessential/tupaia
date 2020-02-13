@@ -59,8 +59,8 @@ export class DhisTranslator {
     return outboundDataValue;
   };
 
-  translateInboundDataValues = (dataValue, dataElementToSourceCode) =>
-    dataValue.map(({ dataElement, ...restOfResult }) => ({
+  translateInboundDataValues = (dataValues, dataElementToSourceCode) =>
+    dataValues.map(({ dataElement, ...restOfResult }) => ({
       ...restOfResult,
       dataElement: dataElementToSourceCode[dataElement],
     }));
@@ -75,7 +75,7 @@ export class DhisTranslator {
     };
   };
 
-  translateInboundAggregateData = ({ results, metadata }, dataSources) => {
+  translateInboundAnalytics = ({ results, metadata }, dataSources) => {
     const dataElementToSourceCode = this.getDataElementToSourceCode(dataSources);
 
     return {

@@ -15,8 +15,7 @@ import { replaceElementIdsWithCodesInEvents } from './replaceElementIdsWithCodes
 import { translateEventResponse } from './translateEventResponse';
 import { translateDataValueResponse } from './translateDataValueResponse';
 import { RESPONSE_TYPES, getDiagnosticsFromResponse } from './responseUtils';
-import { buildAnalyticsQuery } from './buildAnalyticsQuery';
-import { filterAnalyticsResults } from './filterAnalyticsResults';
+import { buildAnalyticQueries } from './buildAnalyticQueries';
 
 const {
   DATA_ELEMENT,
@@ -321,22 +320,30 @@ export class DhisApi {
     return getDiagnosticsFromResponse(response);
   }
 
-  async getAnalytics(originalQuery, aggregationType, aggregationConfig) {
-    const { measureCriteria, period } = originalQuery;
-    const query = buildAnalyticsQuery(originalQuery);
-    const response = await this.fetch('analytics/rawData.json', query);
-    const { results, metadata } = translateDataValueResponse(response);
-    const aggregatedResults = aggregateResults(results, aggregationType, aggregationConfig);
+  async getAnalytics(originalQuery) {
+    const queries = buildAnalyticQueries(originalQuery);
 
-    return {
-      results: filterAnalyticsResults(aggregatedResults, measureCriteria),
-      metadata,
-      period,
-    };
+    let headers;
+    let rows = [];
+    let metaData;
+    await Promise.all(
+      queries.map(async query => {
+        const { headers: newHeaders, rows: newRows, metaData: newMetadata } = await this.fetch(
+          'analytics/rawData.json',
+          query,
+        );
+
+        headers = newHeaders;
+        metaData = newMetadata;
+        rows = rows.concat(newRows);
+      }),
+    );
+
+    return translateDataValueResponse({ headers, rows, metaData });
   }
 
-  async getEventAnalytics(query, aggregationType, aggregationConfig = {}) {
-    const programCodes = query.programCodes || (query.programCode && [query.programCode]);
+  async getEventAnalytics(query) {
+    const { programCodes } = query;
 
     let events;
     if (programCodes) {
@@ -350,12 +357,7 @@ export class DhisApi {
     } else {
       events = await this.getEvents(query);
     }
-    const { results, metadata } = await translateEventResponse(this, events, query);
-
-    return {
-      results: aggregateResults(results, aggregationType, aggregationConfig),
-      metadata,
-    };
+    return translateEventResponse(this, events, query);
   }
 
   async buildDataValuesInSetsQuery(originalQuery) {
