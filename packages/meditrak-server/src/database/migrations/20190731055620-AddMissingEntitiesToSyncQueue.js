@@ -23,9 +23,8 @@ exports.up = async function(db) {
       const options = {
         columns: ['id', 'code', 'parent_id', 'name', 'type', 'point', 'image_url', 'country_code'],
       };
-      const MODELS_TO_SYNC_WITH_MEDITRAK = [models.entity];
       // will need to create the synch queue so that it is listening
-      new GenericSyncQueue(models, models.meditrakSyncQueue, MODELS_TO_SYNC_WITH_MEDITRAK);
+      new GenericSyncQueue(models, models.meditrakSyncQueue, ['entity']);
 
       const entities = await database.find(models.entity.databaseType);
       let changeCounter = entities.length;
