@@ -22,14 +22,42 @@ export class DhisTranslator {
       return { ...dataElementToSourceCode, [dataElementCode]: dataSource.code };
     }, {});
 
+  getOutboundValue = async (api, dataElementCode, value) => {
+    if (value === undefined) return value; // "delete" pushes don't include a value
+    const options = await api.getOptionsForDataElement(dataElementCode);
+    if (!options) return value; // no option set associated with that data element, use raw value
+    const optionCode = options[value.toLowerCase()]; // Convert text to lower case so we can ignore case
+    if (!optionCode) {
+      throw new Error(`No option matching ${value} for data element ${dataElementCode}`);
+    }
+    return optionCode;
+  };
+
   /**
    * @param {Object}     dataValue    The untranslated data value
-   * @param {DataSource} dataSource   Note that this may not be the instance's primary data source
+   * @param {DataSource} dataSource
    */
-  translateOutboundDataValue = ({ code, ...restOfDataValue }, dataSource) => ({
-    dataElement: this.dataSourceToElementCode(dataSource),
-    ...restOfDataValue,
-  });
+  translateOutboundDataValue = async (api, { code, value, ...restOfDataValue }, dataSource) => {
+    const dataElementCode = this.dataSourceToElementCode(dataSource);
+    const valueToPush = await this.getOutboundValue(api, dataElementCode, value);
+
+    const outboundDataValue = {
+      dataElement: dataElementCode,
+      value: valueToPush,
+      ...restOfDataValue,
+    };
+
+    // add category option combo code if defined
+    const { categoryOptionComboCode } = dataSource;
+    if (categoryOptionComboCode) {
+      outboundDataValue.categoryOptionCombo = await api.getIdFromCode(
+        api.getResourceTypes().CATEGORY_OPTION_COMBO,
+        categoryOptionComboCode,
+      );
+    }
+
+    return outboundDataValue;
+  };
 
   translateInboundDataValues = (dataValue, dataElementToSourceCode) =>
     dataValue.map(({ dataElement, ...restOfResult }) => ({
@@ -61,15 +89,15 @@ export class DhisTranslator {
       code: dataValues.map(({ code }) => code),
       type: this.dataSourceTypes.DATA_ELEMENT,
     });
-    const dataValuesWithCodeReplaced = dataValues.map((d, i) =>
-      this.translateOutboundDataValue(d, dataSources[i]),
+    const outboundDataValues = await Promise.all(
+      dataValues.map((d, i) => this.translateOutboundDataValue(api, d, dataSources[i])),
     );
-    const dataElementCodes = dataValuesWithCodeReplaced.map(({ dataElement }) => dataElement);
+    const dataElementCodes = outboundDataValues.map(({ dataElement }) => dataElement);
     const dataElementIds = await api.getIdsFromCodes(
       api.getResourceTypes().DATA_ELEMENT,
       dataElementCodes,
     );
-    const dataValuesWithIds = dataValuesWithCodeReplaced.map((d, i) => ({
+    const dataValuesWithIds = outboundDataValues.map((d, i) => ({
       ...d,
       dataElement: dataElementIds[i],
     }));

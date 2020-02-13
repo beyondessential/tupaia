@@ -4,6 +4,7 @@
  */
 
 // DHIS2 Resource Types
+const CATEGORY_OPTION_COMBO = 'categoryOptionCombos';
 const DATA_ELEMENT = 'dataElements';
 const DATA_ELEMENT_GROUP = 'dataElementGroups';
 const DATA_ELEMENT_GROUP_SET = 'dataElementGroupSets';
@@ -23,6 +24,7 @@ const TRACKED_ENTITY_INSTANCE = 'trackedEntityInstances';
 const TRACKED_ENTITY_TYPE = 'trackedEntityTypes';
 
 export const DHIS2_RESOURCE_TYPES = {
+  CATEGORY_OPTION_COMBO,
   DATA_ELEMENT_GROUP_SET,
   DATA_ELEMENT_GROUP,
   DATA_ELEMENT,

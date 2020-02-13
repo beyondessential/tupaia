@@ -424,7 +424,7 @@ export class DhisApi {
       optionSetResponse.dataElements.length === 0 ||
       !optionSetResponse.dataElements[0].optionSet
     ) {
-      throw new Error(`No option set found for data element ${dataElementCode}`);
+      return null;
     }
     const optionSetId = optionSetResponse.dataElements[0].optionSet.id;
     const response = await this.fetch(`${OPTION_SET}/${optionSetId}`, {
