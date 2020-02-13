@@ -1,12 +1,12 @@
-import { expect } from 'chai';
-import { it, describe } from 'mocha';
-
-import { simpleTableOfEvents } from '../../../../apiV1/dataBuilders/generic/table/simpleTableOfEvents';
-
 /**
  * Tupaia Config Server
  * Copyright (c) 2020 Beyond Essential Systems Pty Ltd
  */
+
+import { expect } from 'chai';
+import { it, describe } from 'mocha';
+
+import { simpleTableOfEvents } from '/apiV1/dataBuilders/generic/table/simpleTableOfEvents';
 
 const dataBuilderConfig = {
   dataElementCode: 'WHOSPAR',
@@ -79,10 +79,10 @@ const responseData = [
   },
 ];
 
+const aggregatorMockup = {};
+
 const dhisApiMockup = {
-  getEventAnalytics: dataElementCodes => {
-    return Promise.resolve(metaData);
-  },
+  getEventAnalytics: async dataElementCodes => metaData,
 };
 
 describe('simpleTableOfEvents', async () => {
@@ -95,6 +95,7 @@ describe('simpleTableOfEvents', async () => {
         query,
         entity,
       },
+      aggregatorMockup,
       dhisApiMockup,
     );
 
