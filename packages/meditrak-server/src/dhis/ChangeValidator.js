@@ -2,6 +2,7 @@
  * Tupaia MediTrak
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
+import { ENTITY_TYPES } from '../database/models/Entity';
 
 export class ChangeValidator {
   constructor(models) {
@@ -31,9 +32,7 @@ export class ChangeValidator {
       const answer = await this.models.answer.findOne({ id: change.record_id });
       if (!answer) {
         throw new Error(
-          `No answer found matching change record with record id ${
-            change.record_id
-          }, it has probably been updated then deleted in quick succession`,
+          `No answer found matching change record with record id ${change.record_id}, it has probably been updated then deleted in quick succession`,
         );
       }
       surveyResponse = await this.models.surveyResponse.findOne({ id: answer.survey_response_id });
@@ -46,7 +45,9 @@ export class ChangeValidator {
     const { integration_metadata: integrationMetadata } = survey;
     if (!integrationMetadata.dhis2) return false;
 
-    const { id: countryId } = await surveyResponse.country();
+    const country = await surveyResponse.country();
+    if (!country) return true; // e.g. world, or a region containing a group of countries
+    const { id: countryId } = country;
 
     const demoLand = await this.models.country.findOne({ name: 'Demo Land' });
     const publicPermissionGroup = await this.models.permissionGroup.findOne({ name: 'Public' });

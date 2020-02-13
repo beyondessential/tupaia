@@ -9,6 +9,7 @@ export * from './errors';
 export { getCountryNameFromCode } from './getCountryNameFromCode';
 export {
   flattenToObject,
+  getKeysSortedByValues,
   getSortByKey,
   mapKeys,
   mapValues,

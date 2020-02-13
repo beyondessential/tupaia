@@ -6,11 +6,14 @@
 import autobind from 'react-autobind';
 
 export class SyncQueue {
-  constructor(models, syncQueueModel, modelsToSync) {
+  constructor(models, syncQueueModel, typesToSync, modelValidator) {
     autobind(this);
     this.syncQueueModel = syncQueueModel;
-    modelsToSync.forEach(model => {
-      models.addChangeHandlerForCollection(model.databaseType, this.add);
+    typesToSync.forEach(type => {
+      if (modelValidator) {
+        modelValidator(models.getModelForDatabaseType(type));
+      }
+      models.addChangeHandlerForCollection(type, this.add);
     });
   }
 

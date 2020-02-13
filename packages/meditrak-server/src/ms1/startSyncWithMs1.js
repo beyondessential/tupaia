@@ -5,6 +5,7 @@
 import { get } from 'lodash';
 import { HttpError } from '@tupaia/utils';
 
+import { ENTITY_TYPES } from '../database/models/Entity';
 import { ExternalApiSyncQueue } from '../database/ExternalApiSyncQueue';
 import { Ms1Api } from './api/Ms1Api';
 import { addToSyncLog } from './addToSyncLog';
@@ -29,9 +30,13 @@ export async function startSyncWithMs1(models) {
     const surveyResponse = await models.surveyResponse.findOne({ id: change.record_id });
     if (!surveyResponse) return false;
 
-    // ditch if demoland
-    const { id: countryId } = await surveyResponse.country();
-    if (countryId === demoLand.id) return false;
+    // If the survey is logging data against world we don't need to check demo land
+    const country = await surveyResponse.country();
+    if (country) {
+      // ditch if demoland
+      const { id: countryId } = country;
+      if (countryId === demoLand.id) return false;
+    }
 
     // Get survey record
     const survey = await models.survey.findById(surveyResponse.survey_id);

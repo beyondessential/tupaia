@@ -39,6 +39,7 @@ const {
   requestResendEmail,
   getCountryAccessList,
   surveyResponse,
+  importDisaster,
   verifyEmail,
 } = routes;
 
@@ -105,6 +106,7 @@ export function addRoutesToApp(app) {
     upload.single('surveyResponses'),
     updateSurveyResponses,
   );
+  app.post('(/v[0-9]+)/import/disaster', upload.single('disaster'), importDisaster);
   app.post('(/v[0-9]+)/import/users', upload.single('users'), importUsers);
   app.post('(/v[0-9]+)/import/optionSets', upload.single('optionSets'), importOptionSets);
   app.post('(/v[0-9]+)/scratchpad', scratchpad);
