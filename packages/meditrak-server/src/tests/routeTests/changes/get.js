@@ -5,6 +5,7 @@
 
 import { expect } from 'chai';
 
+import { TYPES } from '@tupaia/database';
 import { SyncQueue } from '../../../database';
 import { upsertQuestion, randomIntBetween, oneSecondSleep } from '../../testUtilities';
 
@@ -12,7 +13,7 @@ export const testGetChangesCount = (app, models) =>
   function() {
     before(async function() {
       // Set up real sync queue for testing the /changes endpoint
-      const syncQueue = new SyncQueue(models, models.meditrakSyncQueue, [models.question]);
+      const syncQueue = new SyncQueue(models, models.meditrakSyncQueue, [TYPES.QUESTION]);
     });
 
     it('should return a number under the key "changeCount"', async function() {

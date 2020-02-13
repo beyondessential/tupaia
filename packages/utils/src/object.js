@@ -7,6 +7,34 @@
  * @typedef {Object[] | Object<string, Object>} ObjectCollection
  */
 
+const compareAsc = (a, b) => {
+  if (typeof a === 'string' && typeof b === 'string') {
+    return a.localeCompare(b, undefined, { numeric: true });
+  }
+
+  if (a < b) {
+    return -1;
+  }
+  return a > b ? 1 : 0;
+};
+
+const compareDesc = (a, b) => compareAsc(a, b) * -1;
+
+/**
+ * Sorts the keys in the provided object by their corresponding values
+ * Default direction: ASC
+ *
+ * @param {Object<string, Object>} object
+ * @param {{ asc: boolean }} options
+ * @returns {Array}
+ */
+export const getKeysSortedByValues = (object, options = {}) => {
+  const { asc = true } = options || {};
+  const comparator = asc ? compareAsc : compareDesc;
+
+  return Object.keys(object).sort((keyA, keyB) => comparator(object[keyA], object[keyB]));
+};
+
 /**
  * Returns a callback which compares two objects using the provided `key` .
  * Can be used in `Array.prototype.sort` for an array of objects
