@@ -26,15 +26,14 @@ import { formatDataValue } from '../../utils';
 
 export class SingleValueWrapper extends PureComponent {
   render() {
-    const { name, valueType, value, total } = this.props.viewContent;
-    const metadata = this.props.viewContent.value_metadata;
+    const { name, valueType, value, value_metadata, total } = this.props.viewContent;
     const { style } = this.props;
 
     return (
       <div style={VIEW_STYLES.viewContainer}>
         <div style={VIEW_STYLES.title}>{name}</div>
         <div style={{ ...VIEW_STYLES.data, ...(style ? style : {}) }}>
-          {formatDataValue(value, valueType, { ...metadata, total })}
+          {formatDataValue(value, valueType, { ...value_metadata, total })}
         </div>
       </div>
     );
