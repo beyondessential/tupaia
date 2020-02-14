@@ -34,7 +34,7 @@ exports.up = function(db) {
     ALTER TABLE project drop column name;   
     ALTER TABLE project add column entity_id text; 
     
-    insert into entity (id, code, parent_id, "name", type ) values ('${unfpaProjectId}', 'UNFPA', '5d3f8844a72aa231bf71977f', 'UNFPA', 'project');
+    insert into entity (id, code, parent_id, "name", type ) values ('${unfpaProjectId}', 'unfpa', '5d3f8844a72aa231bf71977f', 'UNFPA', 'project');
     insert into entity_relation ( 
             select '${generateId().slice(
               0,
@@ -114,9 +114,6 @@ exports.up = function(db) {
     update project set entity_id = '${exploreId}' where code ='explore';
 
     `,
-    error => {
-      if (error) console.log(error.message);
-    },
   );
 };
 
