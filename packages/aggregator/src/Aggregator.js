@@ -3,12 +3,19 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { aggregateResults } from './aggregation';
-import { filterAnalyticsResults } from './filterAnalyticsResults';
+import { aggregateAnalytics, filterAnalytics } from './analytics';
+import { AGGREGATION_TYPES } from './aggregationTypes';
 
 export class Aggregator {
+  static aggregationTypes = AGGREGATION_TYPES;
+
   constructor(dataBroker) {
     this.dataBroker = dataBroker;
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  get aggregationTypes() {
+    return Aggregator.aggregationTypes;
   }
 
   get dataSourceTypes() {
@@ -17,8 +24,8 @@ export class Aggregator {
 
   processAnalytics = (analytics, aggregationOptions) => {
     const { aggregationType, aggregationConfig, measureCriteria } = aggregationOptions;
-    const aggregatedAnalytics = aggregateResults(analytics, aggregationType, aggregationConfig);
-    return filterAnalyticsResults(aggregatedAnalytics, measureCriteria);
+    const aggregatedAnalytics = aggregateAnalytics(analytics, aggregationType, aggregationConfig);
+    return filterAnalytics(aggregatedAnalytics, measureCriteria);
   };
 
   async fetchAnalytics(codeInput, fetchOptions, aggregationOptions = {}) {

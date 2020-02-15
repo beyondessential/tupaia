@@ -1,18 +1,18 @@
 /**
- * Tupaia Config Server
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { findCoarsestPeriodType, periodToType } from '../periodTypes';
+import { findCoarsestPeriodType, periodToType } from '../../../periodTypes';
 
 /**
- * Returns which one of two DHIS periods is preferred for data aggregation
+ * Returns which one of two periods is preferred for data aggregation
  *
  * Selection algorithm:
  * 1. Calculate the preferred period type
  *   * By default, the coarsest period type among the provided periods is preferred, e.g. 'MONTH' over 'DAY'
  *   * User can override this by providing a preferred type. This is useful for example
- *     in Medicines Availability Aggregation, where we prefer MediTrak ('DAY') over mSupply ('MONTH') results
+ *     in Medicines Availability Aggregation, where we prefer MediTrak ('DAY') over mSupply ('MONTH') analytics
  * 2. Return the period that belongs to the preferred type. If both (or no) periods belong to
  * this type, then return the must recent one (e.g. is 20180412 preferred over 20180411)
  *
