@@ -1,6 +1,6 @@
 /**
- * Tupaia Config Server
- * * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
 import {
@@ -10,27 +10,23 @@ import {
   getCurrentPeriod,
   getPeriodsInRange,
   periodToType,
-} from '../periodTypes';
+} from '../../../periodTypes';
 import { getPreferredPeriod } from './getPreferredPeriod';
 
 /**
- * Cache of DHIS result values per dataElement, organisationUnit and period
+ * Cache of analytics per dataElement, organisationUnit and period
  * Used for effective aggregation of final values
  */
 class FinalValueCache {
-  /**
-   * @param {Object[]} results Results from DHIS query
-   * @param {string} aggregationPeriod
-   */
-  constructor(results, aggregationPeriod, preferredPeriodType) {
-    this.generateCache(results, aggregationPeriod, preferredPeriodType);
+  constructor(analytics, aggregationPeriod, preferredPeriodType) {
+    this.generateCache(analytics, aggregationPeriod, preferredPeriodType);
   }
 
-  generateCache = (results, aggregationPeriod, preferredPeriodType) => {
+  generateCache = (analytics, aggregationPeriod, preferredPeriodType) => {
     const periodTypes = [];
     const cache = {};
 
-    results.forEach(responseElement => {
+    analytics.forEach(responseElement => {
       const {
         dataElement: dataElementId,
         organisationUnit,
@@ -87,7 +83,7 @@ class FinalValueCache {
    *
    * @param {Function} callback A callback which receives the following arguments:
    *  * value: The currently iterated value
-   *  * keys: An object with { dataElement: {string}, organisationUnit: {string}, period: {number} } shape
+   *  * keys: An object with { dataElement, organisationUnit, period } shape
    *    which corresponds to the keys of the currently iterated value
    */
   iterate(callback) {
@@ -156,18 +152,18 @@ const defaultOptions = {
   preferredPeriodType: PERIOD_TYPES.YEAR,
 };
 
-export const getFinalValuePerPeriod = (results, aggregationPeriod, inOptions) => {
+export const getFinalValuePerPeriod = (analytics, aggregationPeriod, inOptions) => {
   const options = { ...defaultOptions, ...inOptions };
-  const cache = new FinalValueCache(results, aggregationPeriod, options.preferredPeriodType);
+  const cache = new FinalValueCache(analytics, aggregationPeriod, options.preferredPeriodType);
   const valueAggregator = new FinalValueAggregator(cache);
 
   if (options.fillEmptyValues) {
-    const periodsInResults = results.map(result =>
-      convertToPeriod(result.period, aggregationPeriod),
+    const periodsInAnalytics = analytics.map(analytic =>
+      convertToPeriod(analytic.period, aggregationPeriod),
     );
     const endPeriod = getCurrentPeriod(aggregationPeriod);
-    const startPeriod = periodsInResults.length
-      ? Math.min(...periodsInResults).toString()
+    const startPeriod = periodsInAnalytics.length
+      ? Math.min(...periodsInAnalytics).toString()
       : endPeriod;
 
     return valueAggregator.getContinuousValues(startPeriod, endPeriod);
