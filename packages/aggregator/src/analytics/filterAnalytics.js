@@ -11,7 +11,7 @@ const FILTER_TYPE_TO_METHOD = {
   LE: (analytic, filterValue) => analytic.value <= filterValue,
 };
 
-export const filterAnalytics = (analytics, filter) => {
+export const filterAnalytics = (analytics, filter = {}) => {
   let filteredAnalytics = analytics;
 
   Object.entries(filter).forEach(([type, filterValue]) => {
