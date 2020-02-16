@@ -56,7 +56,7 @@ class TableOfEventsBuilder extends DataBuilder {
 
   async fetchEvents() {
     const { organisationUnitCode, trackedEntityInstance } = this.query;
-    const events = await this.getEvents({
+    const events = await super.fetchEvents({
       organisationUnitCode: trackedEntityInstance ? null : organisationUnitCode,
       dataElementIdScheme: 'code',
       dataValueFormat: 'object',

@@ -2,25 +2,19 @@
  * Tupaia Config Server
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
-import {
-  AGGREGATION_TYPES,
-  convertToPeriod,
-  periodToDisplayString,
-  PERIOD_TYPES,
-} from '@tupaia/dhis-api';
+import { convertToPeriod, periodToDisplayString, PERIOD_TYPES } from '@tupaia/dhis-api';
 
-export const sumPerDataElementGroupPerMonth = async (
-  { dataBuilderConfig, query },
-  aggregator,
-  dhisApi,
-) => {
+export const sumPerDataGroupPerMonth = async ({ dataBuilderConfig, query }, aggregator) => {
   const monthlySums = {};
+  const { dataGroups, dataServices } = dataBuilderConfig;
+
   await Promise.all(
-    dataBuilderConfig.dataElementGroups.map(async dataElementGroupCode => {
-      const { results } = await dhisApi.getAnalytics(
-        { dataElementCodes: [dataElementGroupCode] },
+    Object.entries(dataGroups).map(async ([groupName, dataElementCodes]) => {
+      const { results } = await aggregator.fetchAnalytics(
+        dataElementCodes,
+        { dataServices },
         query,
-        AGGREGATION_TYPES.FINAL_EACH_MONTH,
+        { aggregationType: aggregator.aggregationTypes.FINAL_EACH_MONTH },
       );
       results.forEach(({ period, value }) => {
         const month = convertToPeriod(period, PERIOD_TYPES.MONTH);
@@ -28,13 +22,14 @@ export const sumPerDataElementGroupPerMonth = async (
           monthlySums[month] = {};
         }
         const sumsForMonth = monthlySums[month];
-        if (!sumsForMonth[dataElementGroupCode]) {
-          sumsForMonth[dataElementGroupCode] = 0;
+        if (!sumsForMonth[groupName]) {
+          sumsForMonth[groupName] = 0;
         }
-        sumsForMonth[dataElementGroupCode] += value;
+        sumsForMonth[groupName] += value;
       });
     }),
   );
+
   const returnData = [];
   Object.keys(monthlySums)
     .sort()

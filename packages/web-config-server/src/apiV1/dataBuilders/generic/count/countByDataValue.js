@@ -1,10 +1,10 @@
-import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
+import { getDataElementsInGroup } from '/apiV1/utils';
 
 class CountByDataValueBuilder extends DataBuilder {
   async build() {
     const { valuesOfInterest } = this.config;
-    const { results } = await this.getAnalytics(this.config);
+    const results = await this.fetchAnalytics();
 
     const returnJson = {};
     const returnDataJson = {};
@@ -21,6 +21,19 @@ class CountByDataValueBuilder extends DataBuilder {
 
     returnJson.data = Object.values(returnDataJson);
     return returnJson;
+  }
+
+  async fetchAnalytics() {
+    let { dataElementCodes } = this.config;
+
+    const { dataElementGroupCode } = this.config;
+    if (dataElementGroupCode) {
+      const dataElements = await getDataElementsInGroup(this.dhisApi, dataElementGroupCode, true);
+      dataElementCodes = Object.keys(dataElements);
+    }
+
+    const { results } = await super.fetchAnalytics(dataElementCodes);
+    return results;
   }
 }
 
@@ -45,4 +58,4 @@ export const countByLatestDataValues = async (queryConfig, aggregator, dhisApi) 
   countByDataValue(queryConfig, aggregator, dhisApi);
 
 export const countByAllDataValues = async (queryConfig, aggregator, dhisApi) =>
-  countByDataValue(queryConfig, aggregator, dhisApi, AGGREGATION_TYPES.RAW);
+  countByDataValue(queryConfig, aggregator, dhisApi, aggregator.aggregationTypes.RAW);

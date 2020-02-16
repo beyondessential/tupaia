@@ -2,31 +2,36 @@
  * Tupaia Config Server
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
-import keyBy from 'lodash.keyby';
-import { AGGREGATION_TYPES, periodToTimestamp } from '@tupaia/dhis-api';
-import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 
-const { FINAL_EACH_DAY, FINAL_EACH_MONTH, FINAL_EACH_YEAR } = AGGREGATION_TYPES;
+import { periodToTimestamp } from '@tupaia/dhis-api';
+import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 
 class FinalValuesPerPeriodBuilder extends DataBuilder {
   async build() {
-    const { series } = this.config;
-    const seriesByDataElementCode = keyBy(series, 'dataElementCode');
-    const dataElementCodes = Object.keys(seriesByDataElementCode);
-    const { results, metadata } = await this.getAnalytics({ dataElementCodes });
+    const dataElementToSeriesKey = this.getDataElementToSeriesKey();
+    const dataElementCodes = Object.keys(dataElementToSeriesKey);
+    const { results } = await this.fetchAnalytics(dataElementCodes);
     if (results.length === 0) return { data: results };
 
-    const { dataElementIdToCode } = metadata;
     const resultsPerPeriod = {};
     results.forEach(result => {
       const { period, value, dataElement } = result;
-      const { key: seriesKey } = seriesByDataElementCode[dataElementIdToCode[dataElement]];
+      const seriesKey = dataElementToSeriesKey[dataElement];
       if (!resultsPerPeriod[period]) {
         resultsPerPeriod[period] = { timestamp: periodToTimestamp(period) };
       }
       resultsPerPeriod[period][seriesKey] = value;
     });
     return { data: Object.values(resultsPerPeriod) };
+  }
+
+  getDataElementToSeriesKey() {
+    return Object.entries(this.config.series).reduce((result, [seriesKey, dataElementCodes]) => {
+      dataElementCodes.forEach(dataElementCode => {
+        result[dataElementCode] = seriesKey;
+      });
+      return result;
+    }, {});
   }
 }
 
@@ -44,10 +49,25 @@ function finalValuesPerPeriod(queryConfig, aggregator, dhisApi, aggregationType)
 }
 
 export const finalValuesPerDay = async (queryConfig, aggregator, dhisApi) =>
-  finalValuesPerPeriod(queryConfig, aggregator, dhisApi, FINAL_EACH_DAY);
+  finalValuesPerPeriod(
+    queryConfig,
+    aggregator,
+    dhisApi,
+    aggregator.aggregationTypes.FINAL_EACH_DAY,
+  );
 
 export const finalValuesPerMonth = async (queryConfig, aggregator, dhisApi) =>
-  finalValuesPerPeriod(queryConfig, aggregator, dhisApi, FINAL_EACH_MONTH);
+  finalValuesPerPeriod(
+    queryConfig,
+    aggregator,
+    dhisApi,
+    aggregator.aggregationTypes.FINAL_EACH_MONTH,
+  );
 
 export const finalValuesPerYear = async (queryConfig, aggregator, dhisApi) =>
-  finalValuesPerPeriod(queryConfig, aggregator, dhisApi, FINAL_EACH_YEAR);
+  finalValuesPerPeriod(
+    queryConfig,
+    aggregator,
+    dhisApi,
+    aggregator.aggregationTypes.FINAL_EACH_YEAR,
+  );

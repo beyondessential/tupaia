@@ -3,6 +3,8 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
 
+import { getDataElementsInGroup } from '/apiV1/utils';
+
 /**
  * Return either the data element name, or the value stored by the user if the name matches the
  * regex passed in.
@@ -23,21 +25,25 @@ const getNameOrValue = (useValueIfNameMatches, name, value) => {
 };
 
 export const listDataElementNames = async ({ dataBuilderConfig, query }, aggregator, dhisApi) => {
-  const { useValueIfNameMatches } = dataBuilderConfig;
-  const { results, metadata } = await dhisApi.getAnalytics(
-    {
-      dataElementGroupCode: '{dataElementCode}_suggestions',
-    },
+  const { dataServices, useValueIfNameMatches } = dataBuilderConfig;
+
+  const dataElementGroupCode = `${query.dataElementCode}_suggestions`;
+  const dataElements = await getDataElementsInGroup(dhisApi, dataElementGroupCode, true);
+  const dataElementCodes = Object.keys(dataElements);
+
+  const { results, metadata } = await aggregator.fetchAnalytics(
+    dataElementCodes,
+    { dataServices },
     query,
   );
 
   // Translate the json so that the data element names are the values
   const returnJson = {};
-  const { dataElementIdToCode, dataElementCodeToName } = metadata;
+  const { dataElementCodeToName } = metadata;
   returnJson.data = results
     .filter(({ value }) => value && value !== '0')
-    .map(({ dataElement: dataElementId, value }) => {
-      const dataElementName = dataElementCodeToName[dataElementIdToCode[dataElementId]];
+    .map(({ dataElement: dataElementCode, value }) => {
+      const dataElementName = dataElementCodeToName[dataElementCode];
       return {
         code: dataElementName,
         value: getNameOrValue(useValueIfNameMatches, dataElementName, value),

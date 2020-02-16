@@ -1,7 +1,6 @@
 import set from 'lodash.set';
 
 import { composeDataPerPeriod } from '/apiV1/dataBuilders/generic/compose/composeDataPerPeriod';
-import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 import { divideValues } from '/apiV1/dataBuilders/helpers';
 
 /**

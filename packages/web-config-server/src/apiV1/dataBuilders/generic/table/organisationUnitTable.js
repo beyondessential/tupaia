@@ -47,7 +47,7 @@ class OrganisationUnitTableDataBuilder extends DataBuilder {
       dataElementGroups,
       dataElementToGroupMapping,
     } = await this.getDataElementInfo();
-    const analytics = await this.getAnalytics(dataElementCodes);
+    const analytics = await this.fetchAnalytics(dataElementCodes);
 
     const responseObject = {
       rows: await this.buildRows(analytics, dataElementToGroupMapping),
@@ -82,18 +82,6 @@ class OrganisationUnitTableDataBuilder extends DataBuilder {
     }
 
     return { dataElementCodes: codes, dataElementGroups: [], dataElementToGroupMapping: null };
-  }
-
-  async getAnalytics(dataElementCodes) {
-    const { organisationUnitCode } = this.query;
-    const { programCodes } = this.config.dataSource;
-
-    return super.getAnalytics({
-      dataElementCodes,
-      organisationUnitCode,
-      outputIdScheme: 'code',
-      programCodes,
-    });
   }
 
   hasCategories() {

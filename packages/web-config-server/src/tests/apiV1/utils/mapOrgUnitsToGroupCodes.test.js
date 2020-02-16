@@ -5,7 +5,7 @@
 import { expect } from 'chai';
 import { it, describe } from 'mocha';
 
-import { mapOrgUnitIdsToGroupCodes } from '/apiV1/utils/mapOrgUnitIdsToGroupCodes';
+import { mapOrgUnitToGroupCodes } from '/apiV1/utils/mapOrgUnitToGroupCodes';
 
 const organisationUnits = [
   {
@@ -34,18 +34,18 @@ const organisationUnits = [
   },
 ];
 
-describe('mapOrgUnitIdsToGroupCodes', () => {
+describe('mapOrgUnitToGroupCodes', () => {
   it('should map org unit ids to group codes', () => {
-    expect(mapOrgUnitIdsToGroupCodes(organisationUnits)).to.deep.equal({
-      As8RCJJNVGC: 'SB_Guadalcanal Province',
-      IYRU3RH79ti: 'SB_Guadalcanal Province',
-      GqumUN45VC8: 'SB_Guadalcanal Province',
-      HxGTP4vnkfn: 'SB_Guadalcanal Province',
-      ODdaT8ncTzt: 'SB_Honiara',
-      yLzHFimWVVF: 'SB_Honiara',
-      iyd21zEg9jS: 'SB_Honiara',
-      xeNth7JPCGf: 'SB_Honiara',
-      UbnIMaXikNf: 'SB_Honiara',
+    expect(mapOrgUnitToGroupCodes(organisationUnits)).to.deep.equal({
+      'SB_Guadalcanal Province': 'SB_Guadalcanal Province',
+      SB_10503: 'SB_Guadalcanal Province',
+      SB_10203: 'SB_Guadalcanal Province',
+      SB_10601: 'SB_Guadalcanal Province',
+      SB_Honiara: 'SB_Honiara',
+      SB_90201: 'SB_Honiara',
+      SB_90301: 'SB_Honiara',
+      SB_90305: 'SB_Honiara',
+      SB_90205: 'SB_Honiara',
     });
   });
 });

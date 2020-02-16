@@ -1,15 +1,12 @@
-import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
 import { asynchronouslyFetchValuesForObject } from '@tupaia/utils';
 import {
   getDataElementsInGroup,
   getDataElementsInGroupSet,
   getOptionSetOptions,
   getChildOrganisationUnits,
-  mapOrgUnitIdsToGroupIds,
+  mapOrgUnitToGroupCodes,
 } from '/apiV1/utils';
 import { buildCategories } from './buildCategories';
-
-const { MOST_RECENT_PER_ORG_GROUP } = AGGREGATION_TYPES;
 
 export const matrixMostRecentFromChildren = async (
   { dataBuilderConfig, query },
@@ -19,6 +16,7 @@ export const matrixMostRecentFromChildren = async (
   const {
     dataElementGroupSet,
     dataElementGroup,
+    dataServices,
     optionSetCode,
     organisationUnitLevel,
   } = dataBuilderConfig;
@@ -34,21 +32,20 @@ export const matrixMostRecentFromChildren = async (
         },
         dhisApi,
       ),
-    dataElementsInfo: () => getDataElementsInGroup(dhisApi, dataElementGroup),
-    categoryMapping: () => getDataElementsInGroupSet(dhisApi, dataElementGroupSet),
+    dataElementsInfo: () => getDataElementsInGroup(dhisApi, dataElementGroup, true),
+    categoryMapping: () => getDataElementsInGroupSet(dhisApi, dataElementGroupSet, true),
     optionSetOptions: () => getOptionSetOptions(dhisApi, { code: optionSetCode }),
   });
 
   const { organisationUnits, categoryMapping, dataElementsInfo, optionSetOptions } = fetchedData;
 
-  const orgUnitIdsToGroupKeys = mapOrgUnitIdsToGroupIds(organisationUnits);
+  const orgUnitToGroupKeys = mapOrgUnitToGroupCodes(organisationUnits);
 
-  const { results } = await dhisApi.getAnalytics(
-    dataBuilderConfig,
-    query,
-    MOST_RECENT_PER_ORG_GROUP,
-    { orgUnitIdsToGroupKeys },
-  );
+  const dataElementCodes = Object.keys(dataElementsInfo);
+  const { results } = await aggregator.fetchAnalytics(dataElementCodes, { dataServices }, query, {
+    aggregationType: aggregator.aggregationTypes.MOST_RECENT_PER_ORG_GROUP,
+    aggregationConfig: { orgUnitToGroupKeys },
+  });
   const returnJson = {};
 
   // build columns and rows
@@ -65,20 +62,20 @@ export const matrixMostRecentFromChildren = async (
 
 const buildRows = (results, dataElementsInfo, dataElementToGroupMapping, optionSetOptions) => {
   const returnDataJson = {};
-  results.forEach(({ dataElement: dataElementId, organisationUnit, value }) => {
-    if (!returnDataJson[dataElementId]) {
-      returnDataJson[dataElementId] = {
-        dataElement: dataElementsInfo[dataElementId].name,
-        categoryId: dataElementToGroupMapping[dataElementId],
+  results.forEach(({ dataElement: dataElementCode, organisationUnit, value }) => {
+    if (!returnDataJson[dataElementCode]) {
+      returnDataJson[dataElementCode] = {
+        dataElement: dataElementsInfo[dataElementCode].name,
+        categoryId: dataElementToGroupMapping[dataElementCode],
       };
     }
-    returnDataJson[dataElementId][organisationUnit] = optionSetOptions[value];
+    returnDataJson[dataElementCode][organisationUnit] = optionSetOptions[value];
   });
   return Object.values(returnDataJson).sort((a, b) => a.dataElement.localeCompare(b.dataElement));
 };
 
 const buildColumns = organisationUnits =>
   organisationUnits.map(organisationUnit => ({
-    key: organisationUnit.id,
+    key: organisationUnit.code,
     title: organisationUnit.name,
   }));

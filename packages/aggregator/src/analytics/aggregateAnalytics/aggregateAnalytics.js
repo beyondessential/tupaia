@@ -19,12 +19,12 @@ export const aggregateAnalytics = (
   aggregationType = AGGREGATION_TYPES.MOST_RECENT,
   aggregationConfig = {},
 ) => {
-  const { orgUnitIdsToGroupKeys } = aggregationConfig;
+  const { orgUnitToGroupKeys } = aggregationConfig;
 
   switch (aggregationType) {
     case AGGREGATION_TYPES.MOST_RECENT:
     case AGGREGATION_TYPES.MOST_RECENT_PER_ORG_GROUP:
-      return filterLatest(analytics, orgUnitIdsToGroupKeys);
+      return filterLatest(analytics, orgUnitToGroupKeys);
     case AGGREGATION_TYPES.SUM:
       return sumAcrossPeriods(analytics);
     case AGGREGATION_TYPES.SUM_MOST_RECENT_PER_FACILITY:

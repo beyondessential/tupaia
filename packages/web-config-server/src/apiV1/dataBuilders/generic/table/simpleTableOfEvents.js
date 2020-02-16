@@ -2,7 +2,7 @@
  * Tupaia Config Server
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
-import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
+
 import moment from 'moment';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 
@@ -15,17 +15,9 @@ const buildResponse = rawData => {
 
 class SimpleTableOfEventsBuilder extends DataBuilder {
   async build() {
-    const events = await this.fetchEvents();
+    const events = await this.fetchAnalytics(this.config.dataElementCodes);
     const results = buildResponse(events.results);
     return { data: results };
-  }
-
-  async fetchEvents() {
-    const events = await this.getAnalytics({
-      dataElementCodes: this.config.dataElementCodes,
-    });
-
-    return events;
   }
 }
 
@@ -40,7 +32,7 @@ export const simpleTableOfEvents = async (
     dataBuilderConfig,
     query,
     entity,
-    AGGREGATION_TYPES.FINAL_EACH_YEAR,
+    aggregator.aggregationTypes.FINAL_EACH_YEAR,
   );
   return builder.build();
 };

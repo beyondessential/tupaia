@@ -30,7 +30,7 @@ class CountEventsPerPeriodBuilder extends DataPerPeriodBuilder {
   groupResultsByPeriod = groupEventsByPeriod;
 
   async fetchResults() {
-    return this.getEvents({ dataElementIdScheme: 'code', dataValueFormat: 'object' });
+    return this.fetchEvents({ dataValueFormat: 'object' });
   }
 }
 
