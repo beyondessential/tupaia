@@ -1,6 +1,5 @@
 export { DhisApi } from './DhisApi';
 export * from './periodTypes';
-export { AGGREGATION_TYPES } from './aggregation';
 export { groupAnalyticsByPeriod, groupEventsByPeriod, groupEventsByOrgUnit } from './groupResults';
 export {
   convertDateRangeToPeriods,

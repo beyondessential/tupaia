@@ -6,10 +6,10 @@
 import winston from 'winston';
 import keyBy from 'lodash.keyby';
 
+import { aggregateAnalytics } from '@tupaia/aggregator';
 import { utcMoment, getSortByKey } from '@tupaia/utils';
 import { DhisFetcher } from './DhisFetcher';
 import { DHIS2_RESOURCE_TYPES } from './types';
-import { aggregateResults } from './aggregation';
 import { getEventDataValueMap } from './getEventDataValueMap';
 import { replaceElementIdsWithCodesInEvents } from './replaceElementIdsWithCodesInEvents';
 import { translateEventResponse } from './translateEventResponse';
@@ -400,7 +400,7 @@ export class DhisApi {
     const response = await this.fetch(DATA_VALUE_SET, query);
     if (!response.dataValues) return [];
 
-    const aggregatedResults = aggregateResults(
+    const aggregatedResults = aggregateAnalytics(
       response.dataValues.map(result => ({ organisationUnit: result.orgUnit, ...result })),
       aggregationType,
       aggregationConfig,
