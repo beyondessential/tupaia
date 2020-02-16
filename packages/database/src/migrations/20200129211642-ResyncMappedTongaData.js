@@ -37,6 +37,7 @@ exports.up = function(db) {
     SET is_deleted = false, priority = 1
     FROM survey_response, survey
     WHERE record_type = 'survey_response'
+    AND type = 'update'
     AND record_id = survey_response.id
     AND survey_response.survey_id = survey.id
     AND survey.code IN ('CD2','CD3a','CD3b','CD4','CD1','CD8');
@@ -45,6 +46,7 @@ exports.up = function(db) {
     SET is_deleted = false, priority = 1
     FROM answer, question, data_source
     WHERE record_type = 'answer'
+    AND type = 'update'
     AND record_id = answer.id
     AND answer.question_id = question.id
     AND question.code = data_source.code
