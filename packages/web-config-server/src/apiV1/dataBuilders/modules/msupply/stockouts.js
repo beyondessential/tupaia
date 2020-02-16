@@ -11,10 +11,8 @@ import { ENTITY_TYPES } from '/models/Entity';
 
 class StockoutsDataBuilder extends DataBuilder {
   async build() {
-    const { results, metadata } = await this.getAnalytics({
-      outputIdScheme: 'code',
-      ...this.config,
-    });
+    const { dataElementCodes } = this.config;
+    const { results, metadata } = await this.fetchAnalytics(dataElementCodes);
     const stockoutData = this.entity.isFacility()
       ? this.getStockoutsList(results, metadata)
       : await this.getStockoutsByFacility(results, metadata);

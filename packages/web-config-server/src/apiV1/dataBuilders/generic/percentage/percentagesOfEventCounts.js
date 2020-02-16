@@ -39,7 +39,7 @@ export class PercentagesOfEventCountsBuilder extends DataBuilder {
    * @returns {DataValuesOutput}
    */
   async build() {
-    const events = await this.getEvents({ dataElementIdScheme: 'code', dataValueFormat: 'object' });
+    const events = await this.fetchEvents({ dataValueFormat: 'object' });
     const data = this.buildData(events);
 
     return { data: this.areDataAvailable(data) ? data : [] };

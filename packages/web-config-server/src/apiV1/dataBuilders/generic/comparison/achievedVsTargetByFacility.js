@@ -1,33 +1,24 @@
 import keyBy from 'lodash.keyby';
-import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
 import { aggregateOperationalFacilityValues, getFacilityStatuses } from '/apiV1/utils';
 import { ENTITY_TYPES } from '/models/Entity';
 
 export const achievedVsTargetByFacility = async (
   { dataBuilderConfig, query, entity },
   aggregator,
-  dhisApi,
 ) => {
-  const {
-    achievedDataElementGroupCode,
-    targetDataElementCode,
-    targetDataElementGroupCode,
-  } = dataBuilderConfig;
+  const { achievedDataElementCodes, targetDataElementCodes, dataServices } = dataBuilderConfig;
 
-  const { results: targetData } = await dhisApi.getAnalytics(
-    // Will use data element code if present, otherwise data element group code
-    {
-      dataElementCodes: targetDataElementCode && [targetDataElementCode],
-      dataElementGroupCode: targetDataElementGroupCode,
-      outputIdScheme: 'code',
-    },
+  const { results: targetData } = await aggregator.fetchAnalytics(
+    targetDataElementCodes,
+    { dataServices },
     query,
   );
 
-  const { results: achievedData } = await dhisApi.getAnalytics(
-    { dataElementGroupCode: achievedDataElementGroupCode, outputIdScheme: 'code' },
+  const { results: achievedData } = await aggregator.fetchAnalytics(
+    achievedDataElementCodes,
+    { dataServices },
     query,
-    AGGREGATION_TYPES.FINAL_EACH_MONTH,
+    { aggregationType: aggregator.aggregationTypes.FINAL_EACH_MONTH },
   );
 
   const facilities = await entity.getDescendantsOfType(ENTITY_TYPES.FACILITY);
@@ -54,10 +45,9 @@ export const achievedVsTargetByFacility = async (
   } else {
     // Aggregate the achieved and target per month, across all operational facilities
     const operationalFacilities = await getFacilityStatuses(
+      aggregator,
       query.organisationUnitCode,
       query.period,
-      false,
-      true,
     );
     aggregateOperationalFacilityValues(
       operationalFacilities,

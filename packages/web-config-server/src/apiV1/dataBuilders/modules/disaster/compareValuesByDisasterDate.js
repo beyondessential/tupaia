@@ -1,42 +1,32 @@
 import { utcMoment } from '@tupaia/utils';
-import { AGGREGATION_TYPES, convertDateRangeToPeriodString } from '@tupaia/dhis-api';
+import { convertDateRangeToPeriodString } from '@tupaia/dhis-api';
 import { EARLIEST_DATA_DATE } from '/dhis';
 
 export const compareValuesByDisasterDate = async (
   { dataBuilderConfig, viewJson, query },
   aggregator,
-  dhisApi,
 ) => {
-  const { organisationUnitCode, disasterStartDate, startDate } = query;
+  const { disasterStartDate, startDate } = query;
   const { dataElementCodes } = dataBuilderConfig;
   const { leftColumn, rightColumn } = viewJson.presentationOptions;
-  const { MOST_RECENT } = AGGREGATION_TYPES;
   const returnData = [];
 
-  const { results: baselineData, metadata: baselineMetadata } = await dhisApi.getAnalytics(
+  const { results: baselineData, metadata: baselineMetadata } = await aggregator.fetchAnalytics(
+    dataElementCodes,
     {
-      ...dataBuilderConfig,
-      dataElementCodes,
-    },
-    {
-      organisationUnitCode,
+      dataServices,
       period: convertDateRangeToPeriodString(
         startDate || EARLIEST_DATA_DATE,
         utcMoment(disasterStartDate).subtract(1, 'd'),
       ),
     },
-    MOST_RECENT,
   );
-  const { results: currentData, metadata: currentMetadata } = await dhisApi.getAnalytics(
+  const { results: currentData, metadata: currentMetadata } = await aggregator.fetchAnalytics(
+    dataElementCodes,
     {
-      ...dataBuilderConfig,
-      dataElementCodes,
-    },
-    {
-      organisationUnitCode,
+      dataServices,
       period: convertDateRangeToPeriodString(disasterStartDate, Date.now()),
     },
-    MOST_RECENT,
   );
 
   const baselineDataByCode = baselineData.reduce((valuesByCode, element) => {

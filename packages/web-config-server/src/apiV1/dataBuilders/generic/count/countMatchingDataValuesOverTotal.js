@@ -11,8 +11,12 @@ export const countMatchingDataValuesOverTotal = async (
   aggregator,
   dhisApi,
 ) => {
-  const { dataElementCodes, matchCriteria } = dataBuilderConfig;
-  const { results, metadata } = await dhisApi.getAnalytics({ dataElementCodes }, query);
+  const { dataElementCodes, dataServices, matchCriteria } = dataBuilderConfig;
+  const { results, metadata } = await aggregator.fetchAnalytics(
+    dataElementCodes,
+    { dataServices },
+    query,
+  );
 
   // Fetch option set options where an option set code is defined
   const optionSetTasks = {};
@@ -25,9 +29,8 @@ export const countMatchingDataValuesOverTotal = async (
 
   // Map all dataElement with summed values of only operational facilities
   const summedValuesByElement = {};
-  const { dataElementIdToCode, dataElementCodeToName } = metadata;
-  results.forEach(({ dataElement: dataElementId, value }) => {
-    const dataElementCode = dataElementIdToCode[dataElementId];
+  const { dataElementCodeToName } = metadata;
+  results.forEach(({ dataElement: dataElementCode, value }) => {
     if (!summedValuesByElement[dataElementCode]) {
       summedValuesByElement[dataElementCode] = { numberMatching: 0, total: 0 };
     }

@@ -17,7 +17,7 @@ export const percentOperationalFacilitiesWithData = async (
   }
 
   // Will count only data from operational facilities
-  const operationalFacilities = await getFacilityStatuses(query.organisationUnitCode);
+  const operationalFacilities = await getFacilityStatuses(aggregator, query.organisationUnitCode);
 
   // Count the number of facilities with data
   const facilitiesCounted = new Set(); // To avoid double counting facilities across dhis instances
