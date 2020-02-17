@@ -46,7 +46,7 @@ exports.up = function(db) {
     SET is_deleted = false, priority = 1
     FROM answer, question, data_source
     WHERE record_type = 'answer'
-    AND type = 'update'
+    AND dhis_sync_queue.type = 'update'
     AND record_id = answer.id
     AND answer.question_id = question.id
     AND question.code = data_source.code
