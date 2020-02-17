@@ -6,23 +6,36 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 
+import { Aggregator } from '/aggregator';
 import { tableOfDataValues } from '/apiV1/dataBuilders';
 import { DhisApi } from '/dhis/DhisApi';
 import groupBy from 'lodash.groupby';
 
 const query = { organisationUnitCode: 'TO' };
+const dataServices = [{ isDataRegional: false }];
 
-const createDhisApiStub = dataValues => {
-  const getAnalytics = sinon.stub();
-  getAnalytics
+const createAggregatorStub = dataValues => {
+  const fetchAnalytics = sinon.stub();
+  fetchAnalytics
     .returns({ results: [] })
-    .withArgs(sinon.match({ outputIdScheme: 'code' }), query)
-    .callsFake(({ dataElementCodes }) => ({
+    .withArgs(sinon.match.any, sinon.match({ dataServices }), sinon.match(query))
+    .callsFake(dataElementCodes => ({
       results: Object.values(dataValues).filter(({ dataElement }) =>
         dataElementCodes.includes(dataElement),
       ),
     }));
 
+  return sinon.createStubInstance(Aggregator, { fetchAnalytics });
+};
+
+// Remove the opening 'code:in:[' and trailing ']' and split on commas
+const convertCodesFilterStringToArrayOfCodes = codesFilterString =>
+  codesFilterString
+    .substr(9)
+    .slice(0, -1)
+    .split(',');
+
+const createDhisApiStub = dataValues => {
   const fetch = sinon.stub();
   fetch
     .returns({ dataElements: [] })
@@ -34,44 +47,42 @@ const createDhisApiStub = dataValues => {
       }),
     )
     .callsFake((endpoint, { filter }) => {
-      const metadatas = [];
+      const dataElements = [];
       const codes = convertCodesFilterStringToArrayOfCodes(filter);
       const dataValuesByCode = groupBy(dataValues, val => val.dataElement);
       codes.forEach(code => {
         const dataValue = dataValuesByCode[code] ? dataValuesByCode[code][0] : undefined;
         if (dataValue && dataValue.metadata) {
-          metadatas.push(dataValue.metadata);
+          dataElements.push(dataValue.metadata);
         }
       });
-      return { dataElements: metadatas };
+
+      return { dataElements };
     });
 
-  return sinon.createStubInstance(DhisApi, { getAnalytics, fetch });
+  return sinon.createStubInstance(DhisApi, { fetch });
 };
 
 export const createAssertTableResults = availableDataValues => {
-  const aggregatorStub = {};
-  const dhisApiStub = createDhisApiStub(availableDataValues);
+  const aggregator = createAggregatorStub(availableDataValues);
+  const dhisApi = createDhisApiStub(availableDataValues);
 
-  return async (dataBuilderConfig, expectedResults) =>
-    expect(
-      tableOfDataValues({ dataBuilderConfig, query }, aggregatorStub, dhisApiStub),
+  return async (tableConfig, expectedResults) => {
+    const dataBuilderConfig = { ...tableConfig, dataServices };
+    return expect(
+      tableOfDataValues({ dataBuilderConfig, query }, aggregator, dhisApi),
     ).to.eventually.deep.equal(expectedResults);
+  };
 };
 
 export const createAssertErrorIsThrown = availableDataValues => {
-  const aggregatorStub = {};
-  const dhisApiStub = createDhisApiStub(availableDataValues);
+  const aggregator = createAggregatorStub(availableDataValues);
+  const dhisApi = createDhisApiStub(availableDataValues);
 
-  return async (dataBuilderConfig, expectedError) =>
-    expect(
-      tableOfDataValues({ dataBuilderConfig, query }, aggregatorStub, dhisApiStub),
+  return async (tableConfig, expectedError) => {
+    const dataBuilderConfig = { ...tableConfig, dataServices };
+    return expect(
+      tableOfDataValues({ dataBuilderConfig, query }, aggregator, dhisApi),
     ).to.eventually.be.rejectedWith(expectedError);
+  };
 };
-
-// Remove the opening 'code:in:[' and trailing ']' and split on commas
-const convertCodesFilterStringToArrayOfCodes = codesFilterString =>
-  codesFilterString
-    .substr(9)
-    .slice(0, -1)
-    .split(',');
