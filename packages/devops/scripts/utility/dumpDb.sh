@@ -56,7 +56,7 @@ target_path="$(cd "$target_dir"; pwd)/$DUMP_FILE_NAME.gz"
 echo "Downloading dump file into '$target_path'..."
 scp -i $identity_file "$host:$dump_file_path.gz" $target_dir
 
-echo "Deleting temporary dump files in the server..."
+echo "Deleting temporary dump file in the server..."
 ssh -i $identity_file $host "sudo rm $dump_file_path.gz"
 
 echo "Unzipping local copy"
