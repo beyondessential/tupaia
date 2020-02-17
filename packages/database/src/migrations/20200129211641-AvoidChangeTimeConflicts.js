@@ -16,7 +16,8 @@ exports.setup = function(options, seedLink) {
 
 exports.up = function(db) {
   return db.runSql(`
-    ALTER SEQUENCE change_time_seq
+    ALTER SEQUENCE public.change_time_seq
+    START 100
     MINVALUE 100; -- because we use this as a decimal, 1 - 99 clash with later values e.g. 0.200 = 0.20 = 0.2
 
     CREATE OR REPLACE FUNCTION public.update_change_time() RETURNS trigger
