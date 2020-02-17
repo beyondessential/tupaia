@@ -74,12 +74,14 @@ const percentagesPerPeriod = async (
   };
 
   // If metrics is empty just use a single metric with the key 'value'
-  const metrics = dataBuilderConfig.series || {
-    value: {
+  const metrics = dataBuilderConfig.series || [];
+  if (metrics.length === 0) {
+    metrics.push({
+      key: 'value',
       numerator: dataBuilderConfig.numerator,
       denominator: dataBuilderConfig.denominator,
-    },
-  };
+    });
+  }
 
   // Function to increment a percentage by a  period, potentially across multiple metrics
   const metricDataByPeriod = {};
@@ -109,9 +111,8 @@ const percentagesPerPeriod = async (
     : await getFacilityStatuses(aggregator, query.organisationUnitCode, query.period);
 
   // Fetch analytics for each metric in series
-  const metricEntries = Object.entries(metrics);
-  for (let i = 0; i < metricEntries.length; i++) {
-    const [metricKey, metric] = metricEntries[i];
+  for (let i = 0; i < metrics.length; i++) {
+    const metric = metrics[i];
     const { numeratorResults, denominatorResults } = await fetchAnalytics(metric);
 
     const matchedData = getMatchedNumeratorsAndDenominators(
@@ -119,7 +120,7 @@ const percentagesPerPeriod = async (
       denominatorResults,
       periodType,
     );
-    const incrementMetric = result => incrementMetricByPeriod(result, metricKey);
+    const incrementMetric = result => incrementMetricByPeriod(result, metric.key);
 
     if (entity.isFacility()) {
       // Single facility, don't worry if it is operational or not

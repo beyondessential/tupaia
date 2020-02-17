@@ -26,9 +26,9 @@ class FinalValuesPerPeriodBuilder extends DataBuilder {
   }
 
   getDataElementToSeriesKey() {
-    return Object.entries(this.config.series).reduce((result, [seriesKey, dataElementCodes]) => {
+    return this.config.series.reduce((result, { key, dataElementCodes }) => {
       dataElementCodes.forEach(dataElementCode => {
-        result[dataElementCode] = seriesKey;
+        result[dataElementCode] = key;
       });
       return result;
     }, {});

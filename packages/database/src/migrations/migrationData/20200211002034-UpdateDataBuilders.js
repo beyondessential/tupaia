@@ -47,10 +47,18 @@ export const DATA_BUILDER_CONFIGS = [
     id: 'TO_RH_Descriptive_MCH05_01',
     new: {
       range: [0, 1],
-      series: {
-        '4 Months': { numerator: ['MCH60', 'MCH61'], denominator: ['MCH59', 'MCH58'] },
-        '6 Months': { numerator: ['MCH69', 'MCH68'], denominator: ['MCH67', 'MCH66'] },
-      },
+      series: [
+        {
+          key: '4 Months',
+          numerator: ['MCH60', 'MCH61'],
+          denominator: ['MCH59', 'MCH58'],
+        },
+        {
+          key: '6 Months',
+          numerator: ['MCH69', 'MCH68'],
+          denominator: ['MCH67', 'MCH66'],
+        },
+      ],
     },
     old: {
       range: [0, 1],
@@ -97,24 +105,28 @@ export const DATA_BUILDER_CONFIGS = [
     id: 'TO_CH_DM_HTN_Prevalence',
     new: {
       range: [0, 1],
-      series: {
-        'DM males': {
+      series: [
+        {
+          key: 'DM males',
           numerator: ['CH73', 'CH75', 'CH77', 'CH79', 'CH81', 'CH83', 'CH101', 'CH103', 'CH105', 'CH107', 'CH109', 'CH111'],
           denominator: MALES_25_PLUS,
         },
-        'HTN males': {
+        {
+          key: 'HTN males',
           numerator: ['CH87', 'CH89', 'CH91', 'CH93', 'CH95', 'CH97', 'CH101', 'CH103', 'CH105', 'CH107', 'CH109', 'CH111'],
           denominator: MALES_25_PLUS,
         },
-        'DM females': {
+        {
+          key: 'DM females',
           numerator: ['CH74', 'CH76', 'CH78', 'CH80', 'CH82', 'CH84', 'CH102', 'CH104', 'CH106', 'CH108', 'CH110', 'CH112'],
           denominator: FEMALES_25_PLUS,
         },
-        'HTN females': {
+        {
+          key: 'HTN females',
           numerator: ['CH88', 'CH90', 'CH92', 'CH94', 'CH96', 'CH98', 'CH102', 'CH104', 'CH106', 'CH108', 'CH110', 'CH112'],
           denominator: FEMALES_25_PLUS,
         },
-      },
+      ],
       fillEmptyDenominatorValues: true,
     },
     old: {
@@ -170,24 +182,28 @@ export const DATA_BUILDER_CONFIGS = [
     id: 'TO_CH_DM_HTN_Incidence',
     new: {
       range: [0, 1],
-      series: {
-        'DM males': {
+      series: [
+        {
+          key: 'DM males',
           numerator: ['CH69', 'CH67', 'CH65', 'CH37', 'CH63', 'CH61', 'CH35', 'CH41', 'CH59', 'CH31', 'CH33', 'CH39'],
           denominator: MALES_25_PLUS,
         },
-        'HTN males': {
+        {
+          key: 'HTN males',
           numerator: ['CH63', 'CH69', 'CH61', 'CH67', 'CH35', 'CH65', 'CH37', 'CH41', 'CH59', 'CH31', 'CH33', 'CH39'],
           denominator: MALES_25_PLUS,
         },
-        'DM females': {
+        {
+          key: 'DM females',
           numerator: ['CH42', 'CH66', 'CH70', 'CH32', 'CH38', 'CH36', 'CH62', 'CH64', 'CH40', 'CH68', 'CH34', 'CH60'],
           denominator: FEMALES_25_PLUS,
         },
-        'HTN females': {
+        {
+          key: 'HTN females',
           numerator: ['CH46', 'CH66', 'CH70', 'CH56', 'CH54', 'CH48', 'CH62', 'CH52', 'CH50', 'CH64', 'CH68', 'CH60'],
           denominator: FEMALES_25_PLUS,
         },
-      },
+      ],
       fillEmptyDenominatorValues: true,
     },
     old: {
@@ -220,7 +236,10 @@ export const DATA_BUILDER_CONFIGS = [
   {
     id: 'Imms_FridgeDailyTemperatures',
     new: {
-      series: { Max: ['FRIDGE_MAX_TEMP'], Min: ['FRIDGE_MIN_TEMP'] },
+      series: [
+        { key: 'Max', dataElementCodes: ['FRIDGE_MAX_TEMP'] },
+        { key: 'Min', dataElementCodes: ['FRIDGE_MIN_TEMP'] },
+      ],
       programCode: 'FRIDGE_DAILY',
     },
     old: {
