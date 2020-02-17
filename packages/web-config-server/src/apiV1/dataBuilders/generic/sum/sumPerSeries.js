@@ -40,7 +40,7 @@ class SumPerSeriesDataBuilder extends DataBuilder {
    */
   async build() {
     const results = await this.fetchResults();
-    const sumByDataElement = this.calculateSumByDataElement(results);
+    const sumByDataElement = keyBy(results, 'dataElement');
 
     const dataByClass = {};
     Object.entries(this.config.series).forEach(([seriesKey, dataClasses]) => {
@@ -66,15 +66,6 @@ class SumPerSeriesDataBuilder extends DataBuilder {
 
     return results;
   }
-
-  calculateSumByDataElement = results =>
-    results.reduce(
-      (sum, { dataElement, value }) => ({
-        ...sum,
-        [dataElement]: (sum[dataElement] || 0) + value,
-      }),
-      {},
-    );
 }
 
 export const sumLatestPerSeries = async (
