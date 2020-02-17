@@ -23,8 +23,6 @@ git checkout dev # Ensure we have dev as our default, if the specified branch do
 git checkout $BRANCH
 git pull
 yarn install
-echo "Migrating the database"
-yarn migrate
 
 # For each package, get the latest and deploy it
 for PACKAGE in "meditrak-server" "admin-panel" "web-frontend" "web-config-server"; do
@@ -61,3 +59,8 @@ for PACKAGE in "meditrak-server" "admin-panel" "web-frontend" "web-config-server
       yarn build
     fi
 done
+
+echo "Migrating the database"
+yarn migrate
+
+echo "Finished deploying latest"
