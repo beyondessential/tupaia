@@ -510,4 +510,9 @@ export const DATA_BUILDER_CONFIGS = [
       },
     },
   },
+  {
+    id: 'WHO_SURVEY',
+    new: { programCode: 'WSRS', dataElementCodes: ['WHOSPAR'] },
+    old: { programCode: 'WSRS', dataElementCode: 'WHOSPAR' },
+  }
 ];
