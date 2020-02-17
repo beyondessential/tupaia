@@ -41,7 +41,28 @@ describe('filterAnalytics()', () => {
       expect(filterAnalytics(analytics, { LE: 0 })).to.deep.equal([]);
     });
 
-    it('unknown filter type', () => {
+    describe('combines multiple types using AND logic', () => {
+      it('one type superset of the other', () => {
+        expect(filterAnalytics(analytics, { LE: 2, EQ: 2 })).to.deep.equal([{ value: 2 }]);
+        expect(filterAnalytics(analytics, { EQ: 2, LE: 2 })).to.deep.equal([{ value: 2 }]);
+      });
+
+      it('mutually exclusive types', () => {
+        expect(filterAnalytics(analytics, { EQ: 2, LT: 2 })).to.deep.equal([]);
+        expect(filterAnalytics(analytics, { LT: 2, EQ: 2 })).to.deep.equal([]);
+      });
+
+      it('known and unknown types', () => {
+        expect(filterAnalytics(analytics, { EQ: 2, unknownFilter: 3 })).to.deep.equal([
+          { value: 2 },
+        ]);
+        expect(filterAnalytics(analytics, { EQ: 2, unknownFilter: 3 })).to.deep.equal([
+          { value: 2 },
+        ]);
+      });
+    });
+
+    it('unknown type', () => {
       expect(filterAnalytics(analytics, { unknownFilter: 2 })).to.deep.equal([
         { value: 1 },
         { value: 2 },

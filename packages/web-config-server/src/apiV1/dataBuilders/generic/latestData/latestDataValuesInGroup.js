@@ -16,11 +16,7 @@ export const latestDataValuesInGroup = async (
 ) => {
   const { dataElementGroupCode, dataElementCodes = [] } = dataBuilderConfig;
   const dataElementsById = await getDataElementsInGroup(dhisApi, dataElementGroupCode);
-  const dataValues = await dhisApi.getDataValuesInSets(
-    dataBuilderConfig,
-    query,
-    aggregator.aggregationTypes.MOST_RECENT,
-  );
+  const dataValues = await dhisApi.getDataValuesInSets(dataBuilderConfig, query);
 
   let filteredResults;
   if (dataElementCodes.length > 0) {

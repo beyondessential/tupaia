@@ -15,7 +15,7 @@ export { getPacificFacilityStatuses } from './getPacificFacilityStatuses';
 export { getLevelIndex } from './getLevelIndex';
 export getChildOrganisationUnits from './getChildOrganisationUnits';
 export { getFacilityStatusCounts, getFacilityStatuses } from './getFacilityStatuses';
-export { getDataElementsInGroup } from './getDataElementsInGroup';
+export { getDataElementCodesInGroup, getDataElementsInGroup } from './getDataElementsInGroup';
 export { getDataElementFromId } from './getDataElementFromId';
 export {
   parseFacilityTypeData,

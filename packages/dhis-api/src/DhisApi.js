@@ -333,6 +333,7 @@ export class DhisApi {
           query,
         );
 
+        // Only the final batch's headers and metadata will be used in the result
         headers = newHeaders;
         metaData = newMetadata;
         rows = rows.concat(newRows);

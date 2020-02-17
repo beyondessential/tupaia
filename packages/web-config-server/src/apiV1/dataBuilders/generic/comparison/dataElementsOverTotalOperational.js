@@ -33,7 +33,6 @@ export const dataElementsOverTotalOperational = async (
     aggregator,
     query.organisationUnitCode,
     period,
-    false,
   );
   aggregateOperationalFacilityValues(operationalFacilities, results, addValueToSumByElement);
   const { numberOperational: totalOperationalFacilities } = await getFacilityStatusCounts(

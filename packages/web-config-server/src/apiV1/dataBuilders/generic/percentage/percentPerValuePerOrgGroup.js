@@ -4,7 +4,7 @@
  */
 import {
   getChildOrganisationUnits,
-  getDataElementsInGroup,
+  getDataElementCodesInGroup,
   mapOrgUnitToGroupCodes,
   countByOrganisationUnitByValue,
   calculatePercentagesWithinRange,
@@ -32,8 +32,7 @@ export const percentPerValuePerOrgGroup = async (
     dhisApi,
   );
 
-  const dataElements = await getDataElementsInGroup(dhisApi, dataElementGroupCode);
-  const dataElementCodes = Object.values(dataElements).map(({ code }) => code);
+  const dataElementCodes = getDataElementCodesInGroup(dhisApi, dataElementGroupCode);
   const orgUnitToGroupKeys = mapOrgUnitToGroupCodes(organisationUnits);
 
   const { results } = await aggregator.fetchAnalytics(dataElementCodes, { dataServices }, query, {

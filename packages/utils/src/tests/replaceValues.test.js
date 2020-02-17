@@ -35,7 +35,7 @@ describe('replaceValues()', () => {
       });
     });
 
-    it('key and replacement', () => {
+    it('key and value replacement', () => {
       expect(
         replaceValues(
           { '{targetKey}': '{targetValue}' },

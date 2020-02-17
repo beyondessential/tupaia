@@ -6,7 +6,7 @@ import { getDataSourceEntityType } from 'apiV1/dataBuilders/helpers';
 import {
   countByOrganisationUnitByValue,
   calculatePercentagesWithinRange,
-  getDataElementsInGroup,
+  getDataElementCodesInGroup,
 } from '/apiV1/utils';
 
 export const percentPerValuePerOrgUnit = async (
@@ -16,8 +16,7 @@ export const percentPerValuePerOrgUnit = async (
 ) => {
   const { dataElementGroupCode, dataServices, range, valuesOfInterest } = dataBuilderConfig;
 
-  const dataElements = await getDataElementsInGroup(dhisApi, dataElementGroupCode);
-  const dataElementCodes = Object.values(dataElements).map(({ code }) => code);
+  const dataElementCodes = getDataElementCodesInGroup(dhisApi, dataElementGroupCode);
   const { results } = await aggregator.fetchAnalytics(dataElementCodes, { dataServices }, query);
   const entities = await entity.getDescendantsOfType(getDataSourceEntityType(dataBuilderConfig));
   const countsByOrganisationUnit = countByOrganisationUnitByValue(

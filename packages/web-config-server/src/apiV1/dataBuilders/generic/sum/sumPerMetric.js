@@ -1,14 +1,10 @@
-import { getDataElementsInGroup, sumResults } from '/apiV1/utils';
+import { getDataElementCodesInGroup, sumResults } from '/apiV1/utils';
 
 const getDataElementCodes = async (dataBuilderConfig, dhisApi) => {
   const { dataElementCodes, dataElementGroupCode } = dataBuilderConfig;
-
-  if (dataElementGroupCode) {
-    const dataElements = await getDataElementsInGroup(dhisApi, dataElementGroupCode, true);
-    return Object.keys(dataElements);
-  }
-
-  return dataElementCodes;
+  return dataElementGroupCode
+    ? getDataElementCodesInGroup(dhisApi, dataElementGroupCode)
+    : dataElementCodes;
 };
 
 const sumPerMetric = async ({ dataBuilderConfig, query }, aggregator, dhisApi, aggregationType) => {

@@ -1,12 +1,12 @@
 export const mapOrgUnitToGroupCodes = orgUnitGroups => {
-  const orgUnitIdsToGroupCodes = {};
+  const orgUnitToGroupCodes = {};
   orgUnitGroups.forEach(orgUnitGroup => {
     const { children, code } = orgUnitGroup;
-    orgUnitIdsToGroupCodes[code] = code;
+    orgUnitToGroupCodes[code] = code;
     children.forEach(child => {
-      orgUnitIdsToGroupCodes[child.code] = code;
+      orgUnitToGroupCodes[child.code] = code;
     });
   });
 
-  return orgUnitIdsToGroupCodes;
+  return orgUnitToGroupCodes;
 };

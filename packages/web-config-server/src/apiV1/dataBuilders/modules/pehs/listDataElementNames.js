@@ -3,7 +3,7 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
 
-import { getDataElementsInGroup } from '/apiV1/utils';
+import { getDataElementCodesInGroup } from '/apiV1/utils';
 
 /**
  * Return either the data element name, or the value stored by the user if the name matches the
@@ -13,6 +13,7 @@ import { getDataElementsInGroup } from '/apiV1/utils';
  * from, e.g. "More training". The final "suggested improvement" is a free text box that they
  * can write any improvement they want, so on the front end in that case we want to show what
  * they wrote, rather than the question text.
+ *
  * @param {string} useValueIfNameMatches  Regex to test the data element name against
  * @param {string} name                   Data element name
  * @param {string} value                  Value stored by user against the data element
@@ -27,10 +28,10 @@ const getNameOrValue = (useValueIfNameMatches, name, value) => {
 export const listDataElementNames = async ({ dataBuilderConfig, query }, aggregator, dhisApi) => {
   const { dataServices, useValueIfNameMatches } = dataBuilderConfig;
 
-  const dataElementGroupCode = `${query.dataElementCode}_suggestions`;
-  const dataElements = await getDataElementsInGroup(dhisApi, dataElementGroupCode, true);
-  const dataElementCodes = Object.keys(dataElements);
-
+  const dataElementCodes = getDataElementCodesInGroup(
+    dhisApi,
+    `${query.dataElementCode}_suggestions`,
+  );
   const { results, metadata } = await aggregator.fetchAnalytics(
     dataElementCodes,
     { dataServices },

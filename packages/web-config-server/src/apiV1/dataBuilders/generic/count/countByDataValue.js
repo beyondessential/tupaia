@@ -1,10 +1,11 @@
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { getDataElementsInGroup } from '/apiV1/utils';
+import { getDataElementCodesInGroup } from '/apiV1/utils';
 
 class CountByDataValueBuilder extends DataBuilder {
   async build() {
     const { valuesOfInterest } = this.config;
-    const results = await this.fetchAnalytics();
+    const dataElementCodes = this.getDataElementCodes();
+    const { results } = await this.fetchAnalytics(dataElementCodes);
 
     const returnJson = {};
     const returnDataJson = {};
@@ -23,17 +24,11 @@ class CountByDataValueBuilder extends DataBuilder {
     return returnJson;
   }
 
-  async fetchAnalytics() {
-    let { dataElementCodes } = this.config;
-
-    const { dataElementGroupCode } = this.config;
-    if (dataElementGroupCode) {
-      const dataElements = await getDataElementsInGroup(this.dhisApi, dataElementGroupCode, true);
-      dataElementCodes = Object.keys(dataElements);
-    }
-
-    const { results } = await super.fetchAnalytics(dataElementCodes);
-    return results;
+  async getDataElementCodes() {
+    const { dataElementGroupCode, dataElementCodes } = this.config;
+    return dataElementGroupCode
+      ? getDataElementCodesInGroup(this.dhisApi, dataElementGroupCode)
+      : dataElementCodes;
   }
 }
 

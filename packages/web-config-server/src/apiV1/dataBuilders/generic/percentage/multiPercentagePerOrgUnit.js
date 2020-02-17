@@ -18,9 +18,8 @@ export const multiPercentagePerOrgUnit = async (
   { dataBuilderConfig, query, entity },
   aggregator,
 ) => {
-  const { dataElementCodes } = dataBuilderConfig;
-  const { dataServices } = query;
-  const { results } = await aggregator.fetchAnalytics(dataElementCodes, { dataServices });
+  const { dataElementCodes, dataServices } = dataBuilderConfig;
+  const { results } = await aggregator.fetchAnalytics(dataElementCodes, { dataServices }, query);
 
   const tempData = {};
   const entities = await entity.getDescendantsOfType(getDataSourceEntityType(dataBuilderConfig));
