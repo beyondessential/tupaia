@@ -20,7 +20,7 @@ import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 
 export class SumBuilder extends DataBuilder {
   async fetchResults() {
-    const { dataElementCodes } = this.dataBuilderConfig;
+    const { dataElementCodes } = this.config;
     const { results } = await this.fetchAnalytics(dataElementCodes);
 
     return results;
