@@ -24,5 +24,5 @@ export const getDataElementsInGroup = async (dhisApi, code, useCodeAsKey = false
 
 export const getDataElementCodesInGroup = async (dhisApi, dataElementGroupCode) => {
   const dataElements = await getDataElementsInGroup(dhisApi, dataElementGroupCode, true);
-  return Object.values(dataElements).map(({ code }) => code);
+  return Object.keys(dataElements);
 };
