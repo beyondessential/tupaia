@@ -70,7 +70,6 @@ const responseData = [
 
 const fetchAnalytics = sinon.stub();
 fetchAnalytics
-  .callsFake((...args) => console.log(args))
   .withArgs(['WHOSPAR'], { dataServices, programCodes: ['WSRS'] }, query, {
     aggregationType: 'FINAL_EACH_YEAR',
   })
