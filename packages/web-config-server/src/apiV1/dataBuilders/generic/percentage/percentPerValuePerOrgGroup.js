@@ -32,7 +32,7 @@ export const percentPerValuePerOrgGroup = async (
     dhisApi,
   );
 
-  const dataElementCodes = getDataElementCodesInGroup(dhisApi, dataElementGroupCode);
+  const dataElementCodes = await getDataElementCodesInGroup(dhisApi, dataElementGroupCode);
   const orgUnitToGroupKeys = mapOrgUnitToGroupCodes(organisationUnits);
 
   const { results } = await aggregator.fetchAnalytics(dataElementCodes, { dataServices }, query, {

@@ -4,7 +4,7 @@ import { getDataElementCodesInGroup } from '/apiV1/utils';
 class CountByDataValueBuilder extends DataBuilder {
   async build() {
     const { valuesOfInterest } = this.config;
-    const dataElementCodes = this.getDataElementCodes();
+    const dataElementCodes = await this.getDataElementCodes();
     const { results } = await this.fetchAnalytics(dataElementCodes);
 
     const returnJson = {};

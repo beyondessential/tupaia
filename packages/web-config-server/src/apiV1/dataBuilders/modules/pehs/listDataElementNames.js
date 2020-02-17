@@ -28,7 +28,7 @@ const getNameOrValue = (useValueIfNameMatches, name, value) => {
 export const listDataElementNames = async ({ dataBuilderConfig, query }, aggregator, dhisApi) => {
   const { dataServices, useValueIfNameMatches } = dataBuilderConfig;
 
-  const dataElementCodes = getDataElementCodesInGroup(
+  const dataElementCodes = await getDataElementCodesInGroup(
     dhisApi,
     `${query.dataElementCode}_suggestions`,
   );
