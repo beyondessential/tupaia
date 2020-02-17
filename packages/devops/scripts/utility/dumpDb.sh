@@ -45,8 +45,12 @@ dump_file_path="/var/lib/postgresql/$DUMP_FILE_NAME"
 
 echo "Creating dump file in $domain..."
 ssh -o StrictHostKeyChecking=no -i $identity_file $host \
-  "sudo -u postgres bash -c \"pg_dump tupaia > $dump_file_path\" \
-    && sudo gzip $dump_file_path"
+  "sudo -u postgres bash -c \"pg_dump tupaia > $dump_file_path\""
+
+
+echo "Compressing dump file"
+ssh -o StrictHostKeyChecking=no -i $identity_file $host \
+  "sudo gzip -f $dump_file_path"
 
 target_path="$(cd "$target_dir"; pwd)/$DUMP_FILE_NAME.gz"
 echo "Downloading dump file into '$target_path'..."
