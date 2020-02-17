@@ -10,7 +10,7 @@ import {
   getCurrentPeriod,
   getPeriodsInRange,
   periodToType,
-} from '../../../periodTypes';
+} from '@tupaia/dhis-api';
 import { getPreferredPeriod } from './getPreferredPeriod';
 
 /**
@@ -147,12 +147,12 @@ class FinalValueAggregator {
   }
 }
 
-const defaultOptions = {
-  fillEmptyValues: false,
-  preferredPeriodType: PERIOD_TYPES.YEAR,
-};
-
 export const getFinalValuePerPeriod = (analytics, aggregationPeriod, inOptions) => {
+  const defaultOptions = {
+    fillEmptyValues: false,
+    preferredPeriodType: PERIOD_TYPES.YEAR,
+  };
+
   const options = { ...defaultOptions, ...inOptions };
   const cache = new FinalValueCache(analytics, aggregationPeriod, options.preferredPeriodType);
   const valueAggregator = new FinalValueAggregator(cache);

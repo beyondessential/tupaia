@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { findCoarsestPeriodType, periodToType } from '../../../periodTypes';
+import { findCoarsestPeriodType, periodToType } from '@tupaia/dhis-api';
 
 /**
  * Returns which one of two periods is preferred for data aggregation

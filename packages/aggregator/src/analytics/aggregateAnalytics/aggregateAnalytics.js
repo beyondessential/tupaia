@@ -3,8 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { PERIOD_TYPES } from '@tupaia/dhis-api';
 import { AGGREGATION_TYPES } from '../../aggregationTypes';
-import { PERIOD_TYPES } from '../../periodTypes';
 import {
   filterLatest,
   getFinalValuePerPeriod,
@@ -12,13 +12,12 @@ import {
   sumEachDataElement,
 } from './aggregations';
 
-const { DAY, WEEK, MONTH, YEAR } = PERIOD_TYPES;
-
 export const aggregateAnalytics = (
   analytics,
   aggregationType = AGGREGATION_TYPES.MOST_RECENT,
   aggregationConfig = {},
 ) => {
+  const { DAY, WEEK, MONTH, YEAR } = PERIOD_TYPES;
   const { orgUnitToGroupKeys } = aggregationConfig;
 
   switch (aggregationType) {
