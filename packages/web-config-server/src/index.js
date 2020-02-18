@@ -1,9 +1,9 @@
 import winston from 'winston';
 import { createApp } from './app';
-import { runPreaggreagation } from './preaggregation/runPreaggregation';
+import { runPreaggregation } from './preaggregation/runPreaggregation';
 
 if (process.env.RUN_PREAGGREGATION) {
-  runPreaggreagation(process.env.RUN_PREAGGREGATION);
+  runPreaggregation(process.env.RUN_PREAGGREGATION);
 } else {
   var app = createApp();
 

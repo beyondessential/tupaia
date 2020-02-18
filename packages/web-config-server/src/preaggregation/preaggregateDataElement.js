@@ -1,19 +1,28 @@
-import winston from 'winston';
-import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
-
 /**
- * Tupaia Config Server
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- */
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ **/
 
-export const preaggregateDataElement = async (dhisApi, aggregatedDataElementCode, formula) => {
+import winston from 'winston';
+
+export const preaggregateDataElement = async (
+  aggregator,
+  dhisApi,
+  aggregatedDataElementCode,
+  formula,
+) => {
   winston.log('Preaggregating', { aggregatedDataElementCode, transactional: false });
   const query = {
     organisationUnitCode: 'World',
     dataElementCodes: Object.keys(formula),
     outputIdScheme: 'code',
   };
-  const { results } = await dhisApi.getAnalytics(query, {}, AGGREGATION_TYPES.FINAL_EACH_MONTH);
+  const { results } = await dhisApi.getAnalytics(
+    query,
+    {},
+    aggregator.aggregationTypes.FINAL_EACH_MONTH,
+  );
+
   const calculatedValues = {};
   results.forEach(
     ({ dataElement: dataElementCode, value, period, organisationUnit: organisationUnitCode }) => {

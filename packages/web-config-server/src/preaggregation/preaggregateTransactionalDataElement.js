@@ -1,13 +1,12 @@
 import winston from 'winston';
 
-import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
-
 /**
  * Tupaia Config Server
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
 
 export const preaggregateTransactionalDataElement = async (
+  aggregator,
   dhisApi,
   aggregatedDataElementCode,
   baselineDataElementCode,
@@ -19,7 +18,11 @@ export const preaggregateTransactionalDataElement = async (
     dataElementCodes: [baselineDataElementCode, changeDataElementCode],
     outputIdScheme: 'code',
   };
-  const { results } = await dhisApi.getAnalytics(query, {}, AGGREGATION_TYPES.FINAL_EACH_MONTH);
+  const { results } = await dhisApi.getAnalytics(
+    query,
+    {},
+    aggregator.aggregationTypes.FINAL_EACH_MONTH,
+  );
 
   const baselineValues = {};
   const changeValues = {};

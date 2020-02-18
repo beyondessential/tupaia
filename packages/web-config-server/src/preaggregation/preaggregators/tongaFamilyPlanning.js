@@ -5,7 +5,7 @@
 import { getDataElementsInGroupSet } from '/apiV1/utils/getDataElementsInGroupSet';
 import { preaggregateDataElement } from '/preaggregation/preaggregateDataElement';
 import { preaggregateTransactionalDataElement } from '/preaggregation/preaggregateTransactionalDataElement';
-import { runAggregationOnAllDhisInstances } from '/preaggregation/runAggregationOnAllDhisInstances';
+import { runPreaggregationOnAllDhisInstances } from '/preaggregation/runPreaggregationOnAllDhisInstances';
 
 const OPERATORS_FOR_CHANGE_TYPES = {
   FP_Change_Counts_1_New_Acceptors: '+', // New acceptors
@@ -31,7 +31,7 @@ const BASELINE_DATA_ELEMENTS = {
 };
 
 export const tongaFamilyPlanning = dhisApi =>
-  runAggregationOnAllDhisInstances(runAggregation, dhisApi);
+  runPreaggregationOnAllDhisInstances(runAggregation, dhisApi);
 
 const runAggregation = async dhisApi => {
   const { dataElementToGroupMapping: dataElementToChangeType } = await getDataElementsInGroupSet(
