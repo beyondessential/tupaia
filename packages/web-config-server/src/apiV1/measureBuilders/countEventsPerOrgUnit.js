@@ -12,8 +12,7 @@ export class CountEventsPerOrgUnitBuilder extends DataPerOrgUnitBuilder {
   async fetchResults() {
     const { organisationUnitGroupCode } = this.query;
 
-    return this.getEvents({
-      dataElementIdScheme: 'code',
+    return this.fetchEvents({
       dataValueFormat: 'object',
       organisationUnitCode: organisationUnitGroupCode,
     });

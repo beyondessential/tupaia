@@ -1,7 +1,8 @@
 import keyBy from 'lodash.keyby';
+
 import { Entity } from '/models/Entity';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { getDateRange, formatFacilityDataForOverlay } from '../utils';
+import { getDateRange, formatFacilityDataForOverlay } from '/apiV1/utils';
 
 class CheckTimelinessMeasureBuilder extends DataBuilder {
   async build() {
@@ -27,8 +28,8 @@ class CheckTimelinessMeasureBuilder extends DataBuilder {
     const dhisParameters = {
       dataElementGroupCode: dataElementCode,
       orgUnitIdScheme: 'code',
-      startDate,
-      endDate,
+      startDate: startDate.toISOString(),
+      endDate: endDate.toISOString(),
     };
     const query = {
       organisationUnitCode: organisationUnitGroupCode,

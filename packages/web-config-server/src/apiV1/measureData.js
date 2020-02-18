@@ -1,5 +1,6 @@
-import { Aggregator } from '@tupaia/aggregator';
+import { createAggregator } from '@tupaia/aggregator';
 import { CustomError } from '@tupaia/utils';
+import { Aggregator } from '/aggregator';
 import { getMeasureBuilder } from '/apiV1/measureBuilders/getMeasureBuilder';
 import { getDhisApiInstance } from '/dhis';
 import { DhisTranslationHandler, getOptionsForDataElement, getDateRange } from './utils';
@@ -199,18 +200,16 @@ export default class extends DhisTranslationHandler {
     const organisationUnitGroupCode = shouldFetchSiblings
       ? await this.getCountryLevelOrgUnitCode()
       : this.entity.code;
-    const aggregator = new Aggregator();
+    const aggregator = createAggregator(Aggregator);
+    const dataServices = [{ isDataRegional }];
     const dhisApi = getDhisApiInstance({ entityCode: this.entity.code, isDataRegional });
     const buildMeasure = getMeasureBuilder(measureBuilder);
+
     return buildMeasure(
       aggregator,
       dhisApi,
-      {
-        ...query,
-        organisationUnitGroupCode,
-        dataElementCode,
-      },
-      measureBuilderConfig,
+      { ...query, organisationUnitGroupCode, dataElementCode },
+      { ...measureBuilderConfig, dataServices },
     );
   }
 }
