@@ -2,7 +2,7 @@ import keyBy from 'lodash.keyby';
 
 import { Entity } from '/models/Entity';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { formatFacilityDataForOverlay } from '../utils';
+import { formatFacilityDataForOverlay } from '/apiV1/utils';
 
 const FACILITY_TYPE_CODE = 'facilityTypeCode';
 
@@ -27,10 +27,8 @@ class ValueForOrgGroupMeasureBuilder extends DataBuilder {
       return facilityData;
     }
 
-    const { results } = await this.getAnalytics({
+    const { results } = await this.fetchAnalytics([dataElementCode], {
       organisationUnitCode: organisationUnitGroupCode,
-      dataElementCodes: [dataElementCode],
-      outputIdScheme: 'code',
     });
     // annotate each facility with the corresponding data from dhis
     results.forEach(row => {

@@ -45,10 +45,7 @@ class PercentagesPerDataClassDataBuilder extends DataBuilder {
       return result.concat(currentCodes);
     }, []);
 
-    const { results } = await this.getDataValueAnalytics({
-      dataElementCodes,
-      outputIdScheme: 'code',
-    });
+    const { results } = await this.fetchAnalytics(dataElementCodes);
     const sumPerDataElementCode = await this.getSumPerDataElementCode(results);
 
     const { dataClasses } = this.config;
@@ -87,10 +84,9 @@ class PercentagesPerDataClassDataBuilder extends DataBuilder {
       // Aggregate the numerator and denominator per month, across all operational facilities
       const { organisationUnitCode, period } = this.query;
       const operationalFacilities = await getFacilityStatuses(
+        this.aggregator,
         organisationUnitCode,
         period,
-        false,
-        true,
       );
       aggregateOperationalFacilityValues(operationalFacilities, results, incrementTotals);
     }

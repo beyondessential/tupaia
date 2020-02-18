@@ -36,7 +36,7 @@ export class TableOfDataValuesBuilder extends DataBuilder {
 
   async fetchResults() {
     const dataElementCodes = [...new Set(flatten(this.config.cells))];
-    const { results } = await this.getAnalytics({ dataElementCodes, outputIdScheme: 'code' });
+    const { results } = await this.fetchAnalytics(dataElementCodes);
     const dataElements = await getDataElementsFromCodes(this.dhisApi, dataElementCodes, true);
 
     return results.map(result => ({

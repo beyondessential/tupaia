@@ -35,7 +35,7 @@ class PercentagesOfEventCountsPerPeriodBuilder extends DataPerPeriodBuilder {
   groupResultsByPeriod = groupEventsByPeriod;
 
   fetchResults() {
-    return this.getEvents({ dataElementIdScheme: 'code', dataValueFormat: 'object' });
+    return this.fetchEvents({ dataValueFormat: 'object' });
   }
 
   formatData(data) {

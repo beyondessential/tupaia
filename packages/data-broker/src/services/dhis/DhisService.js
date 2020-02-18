@@ -36,8 +36,8 @@ export class DhisService extends Service {
 
   getPullers() {
     return {
-      [this.dataSourceTypes.DATA_ELEMENT]: this.pullAggregateData.bind(this),
-      [this.dataSourceTypes.DATA_GROUP]: this.pullEvent.bind(this),
+      [this.dataSourceTypes.DATA_ELEMENT]: this.pullAnalytics.bind(this),
+      [this.dataSourceTypes.DATA_GROUP]: this.pullEvents.bind(this),
     };
   }
 
@@ -92,49 +92,83 @@ export class DhisService extends Service {
     return pullData(apis, dataSources, options);
   }
 
-  pullAggregateData = async (
-    apis,
-    dataSources,
-    { outputIdScheme, organisationUnitCode, period, startDate, endDate },
-  ) => {
+  getPullAnalyticsMethod = options => {
+    const { programCodes, eventId } = options;
+    return programCodes || eventId ? this.pullEventAnalytics : this.pullAggregateAnalytics;
+  };
+
+  pullEventAnalytics = (api, options) => {
+    const {
+      dataElementCodes,
+      organisationUnitCode,
+      period,
+      startDate,
+      endDate,
+      programCodes,
+      programCode,
+      eventId,
+      trackedEntityInstance,
+    } = options;
+
+    return api.getEventAnalytics({
+      dataElementCodes,
+      outputIdScheme: 'code',
+      organisationUnitCode,
+      period,
+      startDate,
+      endDate,
+      programCodes,
+      programCode,
+      eventId,
+      trackedEntityInstance,
+    });
+  };
+
+  pullAggregateAnalytics = async (api, options) => {
+    const { dataElementCodes, organisationUnitCode, period, startDate, endDate } = options;
+
+    return api.getAnalytics({
+      dataElementCodes,
+      outputIdScheme: 'code',
+      organisationUnitCode,
+      period,
+      startDate,
+      endDate,
+    });
+  };
+
+  pullAnalytics = async (apis, dataSources, options) => {
     const dataElementCodes = dataSources.map(this.translator.dataSourceToElementCode);
+    const pullMethod = this.getPullAnalyticsMethod(options);
 
     const response = {
       results: [],
-      metadata: {},
+      metadata: {
+        dataElementCodeToName: {},
+        dataElementIdToCode: {},
+      },
     };
     const pullForApi = async api => {
-      const { results, metadata } = await api.getAnalytics({
-        dataElementCodes,
-        outputIdScheme,
-        organisationUnitCode,
-        period,
-        startDate,
-        endDate,
-      });
-
+      const { results, metadata } = await pullMethod(api, { ...options, dataElementCodes });
       response.results.push(...results);
       response.metadata = { ...response.metadata, ...metadata };
     };
 
     await Promise.all(apis.map(pullForApi));
-    return this.translator.translateInboundAggregateData(response, dataSources);
+    return this.translator.translateInboundAnalytics(response, dataSources);
   };
 
-  pullEvent = async (
-    apis,
-    dataSources,
-    {
+  pullEvents = async (apis, dataSources, options) => {
+    const {
       organisationUnitCode,
       orgUnitIdScheme,
-      dataElementIdScheme,
       startDate,
       endDate,
       eventId,
       trackedEntityInstance,
       dataValueFormat,
-    },
-  ) => {
+    } = options;
+
     if (dataSources.length > 1) {
       throw new Error('Cannot pull from multiple programs at the same time');
     }
@@ -145,9 +179,9 @@ export class DhisService extends Service {
     const pullForApi = async api => {
       const events = await api.getEvents({
         programCode,
+        dataElementIdScheme: 'code',
         organisationUnitCode,
         orgUnitIdScheme,
-        dataElementIdScheme,
         startDate,
         endDate,
         eventId,

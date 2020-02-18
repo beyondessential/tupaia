@@ -2,7 +2,7 @@ import { getDataBuilder } from '/apiV1/dataBuilders/getDataBuilder';
 
 export const fetchComposedData = async (config, aggregator, dhisApi) => {
   const { dataBuilderConfig, ...otherConfig } = config;
-  const { dataBuilders } = dataBuilderConfig || {};
+  const { dataBuilders, dataServices } = dataBuilderConfig || {};
   if (!dataBuilders) {
     throw new Error('Data builders not provided');
   }
@@ -12,7 +12,7 @@ export const fetchComposedData = async (config, aggregator, dhisApi) => {
     const { dataBuilder: builderName, dataBuilderConfig: builderConfig } = builderData;
     const buildData = getDataBuilder(builderName);
     responses[builderKey] = await buildData(
-      { ...otherConfig, dataBuilderConfig: builderConfig },
+      { ...otherConfig, dataBuilderConfig: { ...builderConfig, dataServices } },
       aggregator,
       dhisApi,
     );

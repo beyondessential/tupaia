@@ -3,8 +3,10 @@
  * * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
-import { DATA_SOURCE_TYPES } from '/apiV1/dataBuilders/dataSourceTypes';
+import flattenDeep from 'lodash.flattendeep';
+import sumBy from 'lodash.sumby';
+import keyBy from 'lodash.keyby';
+
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 
 /**
@@ -18,14 +20,14 @@ import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
  *   series: {
  *     Males: {
  *       dataClasses: {
- *         Diabetes: { dataSource: { codes: ['DM_Males_25_plus'], type: 'group' } },
- *         Hypertension: { dataSource: { codes: ['HTN_Males_25_plus'], type: 'group' } },
+ *         Diabetes: ['CH60', 'CH61'],
+ *         Hypertension: ['CH62', 'CH63'],
  *       },
  *     },
  *     Females: {
  *       dataClasses: {
- *         Diabetes: { dataSource: { codes: ['DM_Females_25_plus'], type: 'group' } },
- *         Hypertension: { dataSource: { codes: ['HTN_Females_25_plus'], type: 'group' } },
+ *         Diabetes: ['CH64', 'CH65'],
+ *         Hypertension: ['CH66', 'CH67'],
  *       },
  *     },
  *   },
@@ -33,54 +35,37 @@ import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
  * ```
  */
 
-const { SUM_MOST_RECENT_PER_FACILITY } = AGGREGATION_TYPES;
-const { GROUP } = DATA_SOURCE_TYPES;
-
 class SumPerSeriesDataBuilder extends DataBuilder {
   /**
    * @returns {NamedValuesOutput}
    */
   async build() {
+    const results = await this.fetchResults();
+    const sumByDataElement = keyBy(results, 'dataElement');
+
     const dataByClass = {};
+    Object.entries(this.config.series).forEach(([seriesKey, dataClasses]) => {
+      Object.entries(dataClasses).forEach(([classKey, dataElements]) => {
+        if (!dataByClass[classKey]) {
+          dataByClass[classKey] = { name: classKey };
+        }
 
-    await Promise.all(
-      Object.entries(this.config.series).map(async ([seriesKey, { dataClasses }]) => {
-        const classData = await this.getDataForClasses(dataClasses);
-        Object.entries(classData).forEach(([classKey, sum]) => {
-          const dataItem = dataByClass[classKey] || { name: classKey };
-          dataByClass[classKey] = { ...dataItem, [seriesKey]: sum };
-        });
-      }),
-    );
+        const sum = sumBy(dataElements, dataElement => sumByDataElement[dataElement]) || 0;
+        dataByClass[classKey][seriesKey] = sum;
+      });
+    });
+
     const data = this.sortDataByName(Object.values(dataByClass));
-
     return { data };
   }
 
-  async getDataForClasses(classes) {
-    const data = {};
-    await Promise.all(
-      Object.entries(classes).map(async ([key, { dataSource }]) => {
-        data[key] = await this.fetchSumOfDataSource(dataSource);
-      }),
+  async fetchResults() {
+    const dataElements = flattenDeep(
+      Object.values(this.config.series).map(dataClasses => Object.values(dataClasses)),
     );
+    const { results } = await this.fetchAnalytics(dataElements);
 
-    return data;
-  }
-
-  fetchSumOfDataSource({ codes, type }) {
-    if (type !== GROUP) {
-      throw new Error(`Data source type ${type} not supported`);
-    }
-
-    return this.fetchSumOfDataElementGroup(codes);
-  }
-
-  async fetchSumOfDataElementGroup(dataElementGroupCodes) {
-    const { results } = await this.getDataValueAnalytics({ dataElementGroupCodes });
-
-    // Sum all 'value' properties
-    return Object.values(results).reduce((sum, { value }) => sum + value, 0);
+    return results;
   }
 }
 
@@ -95,7 +80,7 @@ export const sumLatestPerSeries = async (
     dataBuilderConfig,
     query,
     entity,
-    SUM_MOST_RECENT_PER_FACILITY,
+    aggregator.aggregationTypes.SUM_MOST_RECENT_PER_FACILITY,
   );
 
   return builder.build();

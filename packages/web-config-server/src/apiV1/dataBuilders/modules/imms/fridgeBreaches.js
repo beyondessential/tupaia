@@ -5,7 +5,7 @@
 
 import moment from 'moment';
 
-import { FRIDGE_BREACH_AGR_ELEMENT_CODES } from '/preaggregation/aggregators/immsFridgeBreaches';
+import { FRIDGE_BREACH_AGR_ELEMENT_CODES } from '/preaggregation/preaggregators/immsFridgeBreaches';
 import { tableOfEvents } from '/apiV1/dataBuilders/generic/table/tableOfEvents';
 
 const { BREACH_TEMP, BREACH_SOH_VALUE, BREACH_MINS } = FRIDGE_BREACH_AGR_ELEMENT_CODES;

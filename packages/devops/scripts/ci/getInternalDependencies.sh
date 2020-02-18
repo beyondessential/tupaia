@@ -1,2 +1,2 @@
 #!/bin/bash
-echo "database" "dhis-api" "utils" "aggregator" "data-broker"
+echo "aggregator" "database" "data-broker" "dhis-api" "utils"

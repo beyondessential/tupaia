@@ -1,10 +1,12 @@
-import { Aggregator } from '@tupaia/aggregator';
+import { createAggregator } from '@tupaia/aggregator';
 import { convertDateRangeToPeriods } from '@tupaia/dhis-api';
+import { replaceValues } from '@tupaia/utils';
 import { DashboardReport } from '/models';
 import { getDhisApiInstance } from '/dhis';
 import { CustomError } from '@tupaia/utils';
 import { DhisTranslationHandler, isSingleValue } from './utils';
 import { getDataBuilder } from '/apiV1/dataBuilders/getDataBuilder';
+import { Aggregator } from '/aggregator';
 
 const viewFail = {
   type: 'View Error',
@@ -66,30 +68,34 @@ export default class extends DhisTranslationHandler {
 
     const { viewJson, dataBuilderConfig, dataBuilder, dataServices } = dashboardReport;
     this.viewJson = this.translateViewJson(viewJson);
-    this.dataBuilderConfig = dataBuilderConfig;
-    this.dataServices = dataServices;
+    this.dataBuilderConfig = this.translateDataBuilderConfig(dataBuilderConfig, dataServices);
+    this.req = req;
 
-    const dataBuilderData = await this.buildDataBuilderData(dataBuilder, req);
+    const dataBuilderData = await this.buildDataBuilderData(dataBuilder);
     return this.addViewMetaData(dataBuilderData);
   };
 
-  async buildDataBuilderData(dataBuilderName, req) {
+  async buildDataBuilderData(dataBuilderName) {
     const dataBuilder = this.getDataBuilder(dataBuilderName);
     if (!dataBuilder) {
       throw new CustomError(viewFail, noDataBuilder, { dataBuilder });
     }
 
-    const aggregator = new Aggregator();
-    const dhisApiInstances = this.dataServices.map(({ isDataRegional }) =>
+    const dhisApiInstances = this.dataBuilderConfig.dataServices.map(({ isDataRegional }) =>
       getDhisApiInstance({ entityCode: this.entity.code, isDataRegional }),
     );
 
-    return dataBuilder({ ...this, req }, aggregator, ...dhisApiInstances);
+    return dataBuilder(this, createAggregator(Aggregator), ...dhisApiInstances);
   }
 
   translateViewJson(viewJson) {
     // if a dashboard is expanded, we remove any placeholder it may normally display
     return this.query.isExpanded === 'true' ? { ...viewJson, placeholder: undefined } : viewJson;
+  }
+
+  translateDataBuilderConfig(dataBuilderConfig, dataServices) {
+    const replacedConfig = replaceValues(dataBuilderConfig, this.query);
+    return { ...replacedConfig, dataServices };
   }
 
   getDataBuilder(dataBuilderName) {

@@ -17,9 +17,9 @@ const compareStrings = (stringA, stringB) => {
 export const multiPercentagePerOrgUnit = async (
   { dataBuilderConfig, query, entity },
   aggregator,
-  dhisApi,
 ) => {
-  const { results } = await dhisApi.getAnalytics(dataBuilderConfig, query);
+  const { dataElementCodes, dataServices } = dataBuilderConfig;
+  const { results } = await aggregator.fetchAnalytics(dataElementCodes, { dataServices }, query);
 
   const tempData = {};
   const entities = await entity.getDescendantsOfType(getDataSourceEntityType(dataBuilderConfig));
