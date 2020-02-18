@@ -30,8 +30,8 @@ const BASELINE_DATA_ELEMENTS = {
   FP_Method_Counts_K_Other: 'FP182',
 };
 
-export const tongaFamilyPlanning = dhisApi =>
-  runPreaggregationOnAllDhisInstances(runAggregation, dhisApi);
+export const tongaFamilyPlanning = (aggregator, dhisApi) =>
+  runPreaggregationOnAllDhisInstances(runAggregation, aggregator, dhisApi);
 
 const runAggregation = async dhisApi => {
   const { dataElementToGroupMapping: dataElementToChangeType } = await getDataElementsInGroupSet(

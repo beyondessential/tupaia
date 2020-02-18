@@ -8,11 +8,6 @@ import { Aggregator } from '/aggregator';
 import { getDhisApiInstance } from '/dhis';
 import * as preaggregators from './preaggregators';
 
-export const runPreaggregation = async preaggregationName => {
-  const preaggregatorsToRun = getPreaggregators(preaggregationName);
-  return runPreaggregators(preaggregatorsToRun);
-};
-
 const getPreaggregators = preaggregationName =>
   preaggregationName.toLowerCase() === 'all'
     ? Object.values(preaggregators)
@@ -26,4 +21,9 @@ const runPreaggregators = async preaggregatorsToRun => {
     await preaggregatorsToRun[i](aggregator, regionalDhisApiInstance); // Await each preaggregator as otherwise it will cause a huge spike in load
   }
   await regionalDhisApiInstance.updateAnalyticsTables();
+};
+
+export const runPreaggregation = async preaggregationName => {
+  const preaggregatorsToRun = getPreaggregators(preaggregationName);
+  return runPreaggregators(preaggregatorsToRun);
 };
