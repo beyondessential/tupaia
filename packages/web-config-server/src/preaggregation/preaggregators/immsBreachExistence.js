@@ -12,7 +12,7 @@ import {
   FRIDGE_BREACH_PROGRAM_CODE,
   FRIDGE_DAILY_PROGRAM_CODE,
   WORLD,
-} from '../vaccineFridgeConstants';
+} from './vaccineFridgeConstants';
 
 const { DAY } = PERIOD_TYPES;
 

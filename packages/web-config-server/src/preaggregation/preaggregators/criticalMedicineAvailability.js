@@ -1,5 +1,5 @@
 import winston from 'winston';
-import { AGGREGATION_TYPES, DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
+import { DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
 import { postDataValueSets } from '/preaggregation/postDataValueSets';
 
 /**
@@ -25,7 +25,7 @@ const DATA_ELEMENT_CODES = {
 // based on incomplete data in the current month
 const LOOKBACK_PERIOD = 'LAST_12_MONTHS';
 
-export const criticalMedicineAvailability = async dhisApi => {
+export const criticalMedicineAvailability = async (aggregator, dhisApi) => {
   winston.info('Starting to aggregate Critical Medicine Availability');
 
   // Find all countries, i.e. all level 2 organisation units
@@ -105,7 +105,7 @@ const aggregateCriticalMedicineAvailabilityForGroup = async (
         outputIdScheme: 'code',
       },
       {},
-      AGGREGATION_TYPES.FINAL_EACH_MONTH_PREFER_DAILY_PERIOD,
+      aggregator.aggregationTypes.FINAL_EACH_MONTH_PREFER_DAILY_PERIOD,
     );
 
     // Store facility values of the same group in the aggregatedValues object, building up an

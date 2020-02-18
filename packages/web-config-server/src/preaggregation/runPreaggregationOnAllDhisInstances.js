@@ -9,13 +9,17 @@ import { getDhisApiInstance } from '/dhis';
  * Runs the provided `aggregation` callback in all DHIS instances,
  * i.e. Regional and Tonga
  *
- * @param {Function} runAggregation
+ * @param {Function} runPreaggregation
  * @param {DhisApi} regionalDhisApi
  * @param {boolean} isDataRegional
  */
-export const runAggregationOnAllDhisInstances = (runAggregation, regionalDhisApi) => {
+export const runPreaggregationOnAllDhisInstances = (
+  runPreaggregation,
+  aggregator,
+  regionalDhisApi,
+) => {
   const tongaDhisApi = getDhisApiInstance({ entityCode: 'TO', isDataRegional: false });
 
-  runAggregation(regionalDhisApi);
-  runAggregation(tongaDhisApi);
+  runPreaggregation(aggregator, regionalDhisApi);
+  runPreaggregation(aggregator, tongaDhisApi);
 };

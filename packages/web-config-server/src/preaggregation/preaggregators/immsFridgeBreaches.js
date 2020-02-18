@@ -8,7 +8,7 @@ import keyBy from 'lodash.keyby';
 import invert from 'lodash.invert';
 import winston from 'winston';
 import { getSortByKey, reduceToDictionary } from '@tupaia/utils';
-import { AGGREGATION_TYPES, DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
+import { DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
 
 import { getDataElementsFromCodes } from '/apiV1/utils/getDataElementsFromCodes';
 import {
@@ -23,7 +23,7 @@ import {
   FRIDGE_BREACH_START_TIME,
   FRIDGE_BREACH_END_TIME,
   FRIDGE_BREACH_MINS,
-} from '../vaccineFridgeConstants';
+} from './vaccineFridgeConstants';
 
 /**
  * Example:
@@ -47,8 +47,6 @@ import {
  * @property {string} [FRIDGE_COLD_BREACH_TEMP]
  * @property {string} [FRIDGE_SOH_VALUE]
  */
-
-const { MOST_RECENT } = AGGREGATION_TYPES;
 
 const AGGREGATION_NAME = 'IMMS Fridge Breaches';
 
@@ -84,7 +82,8 @@ class FridgeBreachAggregator {
   /**
    * @param {DhisApi} dhisApi
    */
-  constructor(dhisApi) {
+  constructor(aggregator, dhisApi) {
+    this.aggregator = aggregator;
     this.dhisApi = dhisApi;
   }
 
@@ -162,7 +161,7 @@ class FridgeBreachAggregator {
         orgUnitIdScheme: 'uid',
       },
       {},
-      MOST_RECENT,
+      this.aggregator.aggregationTypes.MOST_RECENT,
     );
     const analyticsByOrgUnit = groupBy(results, 'organisationUnit');
 
@@ -327,7 +326,7 @@ const getEvents = async (dhisApi, programCode) =>
  * @param {DhisAPi} dhisApi
  * @returns {Promise<string>}
  */
-export const immsFridgeBreaches = async dhisApi => {
+export const immsFridgeBreaches = async (aggregator, dhisApi) => {
   winston.info(`Starting to aggregate ${AGGREGATION_NAME}`);
 
   const events = await getEvents(dhisApi, FRIDGE_BREACH_PROGRAM_CODE);
@@ -336,8 +335,8 @@ export const immsFridgeBreaches = async dhisApi => {
     return false;
   }
 
-  const aggregator = new FridgeBreachAggregator(dhisApi);
-  const aggregatedEvents = await aggregator.aggregate(events);
+  const breachAggregator = new FridgeBreachAggregator(aggregator, dhisApi);
+  const aggregatedEvents = await breachAggregator.aggregate(events);
 
   winston.info(`${AGGREGATION_NAME} aggregation done, pushing`);
   const pusher = new AggregatedEventPusher(dhisApi);

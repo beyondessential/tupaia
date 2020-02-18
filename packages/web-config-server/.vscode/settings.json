@@ -5,8 +5,12 @@
     "groupby",
     "imms",
     "keyby",
+    "preaggregate",
     "preaggregated",
+    "preaggregating",
     "preaggregation",
+    "preaggregator",
+    "preaggregators",
     "promisify",
     "tupaia",
     "upsert"

@@ -7,10 +7,9 @@ import get from 'lodash.get';
 import has from 'lodash.has';
 import setWith from 'lodash.setwith';
 import winston from 'winston';
-import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
 
 import { postDataValueSets } from '/preaggregation/postDataValueSets';
-import { runAggregationOnAllDhisInstances } from '/preaggregation/runAggregationOnAllDhisInstances';
+import { runPreaggregationOnAllDhisInstances } from '/preaggregation/runPreaggregationOnAllDhisInstances';
 
 /**
  * Map of POP01 to POP04 survey element codes for data elements that overlap each other
@@ -57,12 +56,12 @@ const POP_01_CODES = Object.keys(POP_01_TO_POP_04_CODES);
  *
  * @param {DhisApi} dhisApi
  */
-export const annualPopulationBreakdown = async dhisApi => {
+export const annualPopulationBreakdown = async (aggregator, dhisApi) => {
   winston.info('Starting to aggregate Annual Population Breakdown');
-  runAggregationOnAllDhisInstances(runAggregation, dhisApi);
+  runPreaggregationOnAllDhisInstances(runPreaggregation, aggregator, dhisApi);
 };
 
-const runAggregation = async dhisApi => {
+const runPreaggregation = async (aggregator, dhisApi) => {
   const { results } = await dhisApi.getAnalytics(
     {
       dataElementCodes: POP_01_CODES,
@@ -70,7 +69,7 @@ const runAggregation = async dhisApi => {
       outputIdScheme: 'code',
     },
     {},
-    AGGREGATION_TYPES.FINAL_EACH_YEAR,
+    aggregator.aggregationTypes.FINAL_EACH_YEAR,
   );
 
   const dataValues = createAggregatedDataValues(results);
