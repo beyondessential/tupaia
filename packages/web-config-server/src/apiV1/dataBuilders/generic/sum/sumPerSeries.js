@@ -5,6 +5,7 @@
 
 import flattenDeep from 'lodash.flattendeep';
 import sumBy from 'lodash.sumby';
+import keyBy from 'lodash.keyby';
 
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 
