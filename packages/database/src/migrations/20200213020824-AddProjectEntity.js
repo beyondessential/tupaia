@@ -16,11 +16,13 @@ exports.setup = function(options, seedLink) {
   seed = seedLink;
 };
 
-exports.up = function() {
+exports.up = async function() {
   const db = new TupaiaDatabase();
-  return db.executeSql(`
+  await db.executeSql(`
     ALTER TYPE public.entity_type ADD VALUE 'project';  
   `);
+  db.destroy();
+  return null;
 };
 
 exports.down = function(db) {
