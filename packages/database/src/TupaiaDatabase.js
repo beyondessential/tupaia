@@ -68,6 +68,13 @@ export class TupaiaDatabase {
     this.handlerLock = new Multilock();
   }
 
+  /**
+   * Checks to ensure we have a connection with the database
+   */
+  async checkConnection() {
+    return this.connection !== undefined || this.connectionPromise;
+  }
+
   destroy() {
     this.changeListener.close();
     this.connection.destroy();
@@ -112,7 +119,7 @@ export class TupaiaDatabase {
   }
 
   async fetchSchemaForTable(databaseType) {
-    await this.connectionPromise;
+    await this.checkConnection();
     return this.connection(databaseType).columnInfo();
   }
 
@@ -139,7 +146,7 @@ export class TupaiaDatabase {
    * Asynchronously await the database connection to be made, and then build the query as per normal
    */
   async queryWhenConnected(...args) {
-    await this.connectionPromise;
+    await this.checkConnection();
     return buildQuery(this.connection, ...args);
   }
 
@@ -365,9 +372,7 @@ export class TupaiaDatabase {
    * Conditions for the sum query.
    */
   async sum(table, fields = [], where = {}) {
-    if (!this.connection) {
-      await this.connectionPromise;
-    }
+    await this.checkConnection();
 
     const query = this.connection(table);
 
@@ -392,10 +397,7 @@ export class TupaiaDatabase {
    * Use only for situations in which Knex is not able to assemble a query.
    */
   async executeSql(sqlString, parametersToBind) {
-    if (!this.connection) {
-      await this.connectionPromise;
-    }
-
+    await this.checkConnection();
     const result = await this.connection.raw(sqlString, parametersToBind);
     return result.rows;
   }
