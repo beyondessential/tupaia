@@ -29,12 +29,16 @@ export class DataSourceModel extends DatabaseModel {
   getTypes = () => DataSourceModel.types;
 
   async getDataElementsInGroup(dataGroupCode) {
-    const dataGroup = this.find({ code: dataGroupCode, type: DATA_GROUP });
-    if (!dataGroup) {
-      throw new Error(`Could not find a data group with code ${dataGroupCode}`);
-    }
+    const dataGroup = this.find({
+      code: dataGroupCode,
+      type: DATA_GROUP,
+    });
+
+    // if the data group is not a defined data source, default to an empty array of elements
+    if (!dataGroup) return [];
+
     const dataElements = await this.otherModels.dataElementDataGroup.find({
-      data_group_id: this.id,
+      data_group_id: dataGroup.id,
     });
 
     return this.find({
