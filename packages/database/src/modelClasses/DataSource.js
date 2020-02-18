@@ -29,7 +29,7 @@ export class DataSourceModel extends DatabaseModel {
   getTypes = () => DataSourceModel.types;
 
   async getDataElementsInGroup(dataGroupCode) {
-    const dataGroup = this.find({
+    const dataGroup = await this.findOne({
       code: dataGroupCode,
       type: DATA_GROUP,
     });
@@ -42,7 +42,7 @@ export class DataSourceModel extends DatabaseModel {
     });
 
     return this.find({
-      id: dataElements.map(({ id }) => id),
+      id: dataElements.map(({ data_element_id: dataElementId }) => dataElementId),
       type: DATA_ELEMENT,
     });
   }
