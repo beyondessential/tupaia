@@ -27,7 +27,6 @@ exports.up = function(db) {
 
   return db.runSql(
     `
-    ALTER TYPE entity_type ADD VALUE 'project';
     ALTER TABLE entity_relation ALTER COLUMN entity_relation_type_code drop not null;
     ALTER TABLE entity_relation DROP CONSTRAINT entity_relation_entity_relation_type_code_fkey;
     ALTER TABLE project drop column entity_ids;
@@ -112,8 +111,7 @@ exports.up = function(db) {
             );
 
     update project set entity_id = '${exploreId}' where code ='explore';
-
-    `,
+  `,
   );
 };
 
