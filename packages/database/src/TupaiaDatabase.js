@@ -5,10 +5,10 @@
 
 import autobind from 'react-autobind';
 import knex from 'knex';
-import PGPubSub from 'pg-pubsub';
 import winston from 'winston';
 
 import { getConnectionConfig } from './getConnectionConfig';
+import { DatabaseChangeChannel } from './DatabaseChangeChannel';
 import { generateId } from './utilities/generateId';
 import { Multilock } from './utilities/multilock';
 
@@ -58,8 +58,8 @@ export class TupaiaDatabase {
           connection: getConnectionConfig(),
         }));
       if (this.isSingleton) {
-        this.changeListener = new PGPubSub(getConnectionConfig());
-        this.changeListener.addChannel('change', this.notifyChangeHandlers);
+        this.changeChannel = new DatabaseChangeChannel();
+        this.changeChannel.addChangeHandler(this.notifyChangeHandlers);
       }
       return true;
     };
@@ -69,7 +69,7 @@ export class TupaiaDatabase {
   }
 
   destroy() {
-    this.changeListener.close();
+    this.changeChannel.close();
     this.connection.destroy();
   }
 
@@ -321,16 +321,7 @@ export class TupaiaDatabase {
    */
   async markAsChanged(recordType, where, options) {
     const records = await this.find(recordType, where, options);
-    for (const record of records) {
-      this.changeListener.publish('change', {
-        change: {
-          record_id: record.id,
-          type: 'update',
-          record_type: recordType,
-        },
-        record,
-      });
-    }
+    this.changeChannel.publishRecordUpdates(recordType, records);
     return records;
   }
 
