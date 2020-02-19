@@ -24,6 +24,7 @@ export const generateId = () => {
     .slice(0, 4)
     .padStart(4, '0');
 
+  // generation of the counter differs from the original gist to reduce the chance of conflicts
   if (currentCounterValue === LARGEST_6_DIGIT_HEX) {
     currentCounterValue = 0;
   }
