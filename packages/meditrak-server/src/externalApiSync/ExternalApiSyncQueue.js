@@ -3,12 +3,10 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 import autobind from 'react-autobind';
-import { Multilock } from '@tupaia/utils';
 import { getIsProductionEnvironment } from '../devops';
 
 const LOWEST_PRIORITY = 5;
 const BAD_REQUEST_LIMIT = 7;
-const DEBOUNCE_DURATION = 100;
 
 export class ExternalApiSyncQueue {
   constructor(
@@ -26,7 +24,6 @@ export class ExternalApiSyncQueue {
     this.detailGenerator = detailGenerator;
     this.sideEffectHandler = sideEffectHandler;
     this.unprocessedChanges = [];
-    this.lock = new Multilock();
     this.isProcessing = false;
     subscriptionTypes.forEach(type => models.addChangeHandlerForCollection(type, this.add));
   }
@@ -82,8 +79,6 @@ export class ExternalApiSyncQueue {
 
   processChangesIntoDb = async () => {
     this.isProcessing = true;
-    await this.lock.waitWithDebounce(DEBOUNCE_DURATION);
-    const unlock = this.lock.createLock();
     const changes = this.unprocessedChanges;
     this.unprocessedChanges = [];
     const changesSeen = new Set();
@@ -97,7 +92,6 @@ export class ExternalApiSyncQueue {
     await this.triggerSideEffects(uniqueChanges);
     await this.processDeletes(uniqueChanges);
     await this.processUpdates(uniqueChanges);
-    unlock();
     if (this.unprocessedChanges.length > 0) {
       this.processChangesIntoDb();
     } else {
