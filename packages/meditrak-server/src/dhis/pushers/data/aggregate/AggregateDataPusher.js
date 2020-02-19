@@ -165,10 +165,10 @@ export class AggregateDataPusher extends DataPusher {
     // if org unit or period has changed from a prior sync, delete the old copy from dhis2
     const deleteDiagnostics = await this.deletePriorSyncIfSignificantChange(dataValue);
 
-    // check whether this update is redundant, i.e. there is a matching record later on the same day
+    // check whether this update is redundant, i.e. there is a matching record later in the same day/week/month/year
     const matchingRecord = await this.findMoreRecentResponse();
     if (matchingRecord) {
-      const syncLogMessage = `Did not push ${this.recordId} to DHIS2 as there is a matching ${matchingRecord.databaseType} later on the same day (id: ${matchingRecord.id})`;
+      const syncLogMessage = `Did not push ${this.recordId} to DHIS2 as there is a matching ${matchingRecord.databaseType} later in the same period (id: ${matchingRecord.id})`;
       // mark this sync as successful so it is cleared from the queue
       return { ...SUCCESS_DIAGNOSTICS, errors: [syncLogMessage], dataToLog };
     }
