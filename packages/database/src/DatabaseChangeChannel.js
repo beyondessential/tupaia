@@ -19,12 +19,9 @@ export class DatabaseChangeChannel extends PGPubSub {
   publishRecordUpdates(recordType, records) {
     records.forEach(record =>
       this.publish('change', {
-        change: {
-          record_id: record.id,
-          type: 'update',
-          record_type: recordType,
-        },
-        record,
+        record_id: record.id,
+        type: 'update',
+        record_type: recordType,
       }),
     );
   }
