@@ -11,12 +11,12 @@ const BAD_REQUEST_LIMIT = 7;
 const DEBOUNCE_DURATION = 100;
 
 export class ExternalApiSyncQueue {
-  constructor(models, validator, subscriptionTypes = [], generateChangeDetails, syncQueueModel) {
+  constructor(models, validator, subscriptionTypes = [], detailGenerator, syncQueueModel) {
     autobind(this);
     this.models = models;
     this.validator = validator;
     this.syncQueueModel = syncQueueModel;
-    this.generateChangeDetails = generateChangeDetails;
+    this.detailGenerator = detailGenerator;
     this.unprocessedChanges = [];
     this.lock = new Multilock();
     this.isProcessing = false;
@@ -62,7 +62,7 @@ export class ExternalApiSyncQueue {
 
   processUpdates = async changes => {
     const validUpdates = await this.validator.getValidUpdates(changes);
-    const changeDetails = await this.generateChangeDetails(validUpdates);
+    const changeDetails = await this.detailGenerator.generateDetails(validUpdates);
     return this.persistToSyncQueue(validUpdates, changeDetails);
   };
 

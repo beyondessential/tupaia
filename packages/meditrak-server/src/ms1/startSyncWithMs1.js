@@ -10,8 +10,9 @@ import { Ms1Api } from './api/Ms1Api';
 import { addToSyncLog } from './addToSyncLog';
 import { generateMs1VariableName } from './utilities/generateMs1VariableName';
 import { findQuestionsBySurvey } from '../dataAccessors/findQuestionsBySurvey';
-import { generateChangeRecordAdditions } from './syncQueue';
 import { Ms1ChangeValidator } from './Ms1ChangeValidator';
+import { Ms1ChangeDetailGenerator } from './Ms1ChangeDetailGenerator';
+
 const PERIOD_BETWEEN_SYNCS = 1 * 60 * 1000; // 1 minute between syncs
 const MAX_BATCH_SIZE = 10;
 const INVALID_HTTP_CODES = [400, 500];
@@ -20,13 +21,14 @@ const ENDPOINT_NOT_FOUND = 'Endpoint not found to send data to MS1';
 export async function startSyncWithMs1(models) {
   const subscriptions = [models.surveyResponse.databaseType];
   const validator = new Ms1ChangeValidator();
+  const detailGenerator = new Ms1ChangeDetailGenerator();
 
   // Syncs  changes to MS1 aggregation servers
   const syncQueue = new ExternalApiSyncQueue(
     models,
     validator,
     subscriptions,
-    generateChangeRecordAdditions,
+    detailGenerator,
     models.ms1SyncQueue,
   );
 

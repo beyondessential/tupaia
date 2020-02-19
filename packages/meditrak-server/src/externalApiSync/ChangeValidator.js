@@ -2,23 +2,9 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
+import { SyncQueueChangesManipulator } from './SyncQueueChangesManipulator';
 
-const UPDATE = 'update';
-const DELETE = 'delete';
-
-export class ChangeValidator {
-  constructor(models) {
-    this.models = models;
-  }
-
-  getRecordIds = changes => changes.map(c => c.record_id);
-
-  getChangesOfType = (changes, type) => changes.filter(c => c.type === type);
-
-  getDeleteChanges = changes => this.getChangesOfType(changes, DELETE);
-
-  getUpdateChanges = changes => this.getChangesOfType(changes, UPDATE);
-
+export class ChangeValidator extends SyncQueueChangesManipulator {
   filterChangesWithMatchingIds = (changes, validIds) => {
     const validIdSet = new Set(validIds);
     return changes.filter(c => validIdSet.has(c.record_id));

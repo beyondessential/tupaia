@@ -5,9 +5,9 @@
 
 import { DataBroker } from '@tupaia/data-broker';
 import { ExternalApiSyncQueue } from '../externalApiSync/ExternalApiSyncQueue';
-import { DhisChangeDetailGenerator } from './syncQueue';
 import { pushLatest } from './pushLatest';
 import { DhisChangeValidator } from './DhisChangeValidator';
+import { DhisChangeDetailGenerator } from './DhisChangeDetailGenerator';
 
 // Push one change per 1000 ms, i.e. 60 per minute
 const BATCH_SIZE = 1;
@@ -26,7 +26,7 @@ export async function startSyncWithDhis(models) {
     models,
     validator,
     subscriptions,
-    detailGenerator.generateDetails,
+    detailGenerator,
     models.dhisSyncQueue,
   );
 

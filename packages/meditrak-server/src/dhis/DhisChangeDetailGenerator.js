@@ -4,20 +4,10 @@
  **/
 
 import { get } from 'lodash';
-
-const getChangesForRecordType = (changes, recordType) =>
-  changes.filter(c => c.record_type === recordType);
-const getRecordIds = changes => changes.map(c => c.record_id);
-const getIdsFromChanges = (changes, model) =>
-  getRecordIds(getChangesForRecordType(changes, model.databaseType));
-const getUniqueEntries = entries => Array.from(new Set(entries));
+import { ChangeDetailGenerator } from '../externalApiSync';
 
 // Store certain details for faster sync processing
-export class DhisChangeDetailGenerator {
-  constructor(models) {
-    this.models = models;
-  }
-
+export class DhisChangeDetailGenerator extends ChangeDetailGenerator {
   async generateEntityDetails(entityIds) {
     const entities = await this.models.entity.find({ id: entityIds });
     const changeDetailsById = {};
@@ -30,7 +20,7 @@ export class DhisChangeDetailGenerator {
 
   async generateAnswerDetails(answerIds) {
     const answers = await this.models.answer.find({ id: answerIds });
-    const surveyResponseIds = getUniqueEntries(answers.map(a => a.survey_response_id));
+    const surveyResponseIds = this.this.getUniqueEntries(answers.map(a => a.survey_response_id));
     const surveyResponseDetailsById = await this.generateSurveyResponseDetails(surveyResponseIds);
     const changeDetailsById = {};
     answers.forEach(answer => {
@@ -41,14 +31,14 @@ export class DhisChangeDetailGenerator {
 
   async generateSurveyResponseDetails(surveyResponseIds) {
     const surveyResponses = await this.models.surveyResponse.find({ id: surveyResponseIds });
-    const surveyIds = getUniqueEntries(surveyResponses.map(r => r.survey_id));
+    const surveyIds = this.getUniqueEntries(surveyResponses.map(r => r.survey_id));
     const surveys = await this.models.survey.find({ id: surveyIds });
     const isDataRegionalBySurveyId = {};
     surveys.forEach(s => {
       isDataRegionalBySurveyId[s.id] = s.getIsDataForRegionalDhis2();
     });
 
-    const entityIds = getUniqueEntries(surveyResponses.map(r => r.entity_id));
+    const entityIds = this.getUniqueEntries(surveyResponses.map(r => r.entity_id));
     const entities = await this.models.entity.find({ id: entityIds });
     const orgUnitByEntityId = {};
     await Promise.all(
@@ -72,17 +62,17 @@ export class DhisChangeDetailGenerator {
   generateDetails = async updateChanges => {
     // entities
     const entityDetailsById = await this.generateEntityDetails(
-      getIdsFromChanges(updateChanges, this.models.entity),
+      this.getIdsFromChangesForModel(updateChanges, this.models.entity),
     );
 
     // answers
     const answerDetailsById = await this.generateAnswerDetails(
-      getIdsFromChanges(updateChanges, this.models.answer),
+      this.getIdsFromChangesForModel(updateChanges, this.models.answer),
     );
 
     // survey responses
     const surveyResponseDetailsById = await this.generateSurveyResponseDetails(
-      getIdsFromChanges(updateChanges, this.models.surveyResponse),
+      this.getIdsFromChangesForModel(updateChanges, this.models.surveyResponse),
     );
 
     const detailsByChangeId = {

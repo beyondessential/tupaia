@@ -5,10 +5,6 @@
 
 import { ChangeValidator } from '../externalApiSync';
 
-const getChangesForRecordType = (changes, recordType) =>
-  changes.filter(c => c.record_type === recordType);
-const getUniqueEntries = entries => Array.from(new Set(entries));
-
 export class DhisChangeValidator extends ChangeValidator {
   queryValidSurveyResponseIds = async (surveyResponseIds, excludeEventBased = false) => {
     const nonPublicDemoLandUsers = [
@@ -62,7 +58,7 @@ export class DhisChangeValidator extends ChangeValidator {
     const answers = await this.models.answer.find({
       id: answerIds,
     });
-    const surveyResponseIds = getUniqueEntries(answers.map(a => a.survey_response_id));
+    const surveyResponseIds = this.getUniqueEntries(answers.map(a => a.survey_response_id));
 
     // check which survey responses are valid
     const validSurveyResponseIds = new Set(
@@ -80,12 +76,12 @@ export class DhisChangeValidator extends ChangeValidator {
 
   getValidUpdates = async changes => {
     const updateChanges = this.getUpdateChanges(changes);
-    const getIdsFromChanges = model =>
-      this.getRecordIds(getChangesForRecordType(updateChanges, model.databaseType));
-    const validEntities = getIdsFromChanges(this.models.entity); // all entity updates are valid
-    const validAnswers = await this.getValidAnswerUpdates(getIdsFromChanges(this.models.answer));
+    const validEntities = this.getIdsFromChangesForModel(updateChanges, this.models.entity); // all entity updates are valid
+    const validAnswers = await this.getValidAnswerUpdates(
+      this.getIdsFromChangesForModel(updateChanges, this.models.answer),
+    );
     const validSurveyResponses = await this.getValidSurveyResponseUpdates(
-      getIdsFromChanges(this.models.surveyResponse),
+      this.getIdsFromChangesForModel(updateChanges, this.models.surveyResponse),
     );
     return this.filterChangesWithMatchingIds(changes, [
       ...validEntities,
