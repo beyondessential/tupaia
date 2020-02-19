@@ -24,7 +24,7 @@ export const generateId = () => {
   const counter = process
     .hrtime()[1]
     .toString(16)
-    .slice(0, 6)
+    .slice(1, 7) // this is edited from the original gist to avoid id clashes
     .padStart(6, '0');
 
   return seconds + machineId + processId + counter;
