@@ -100,6 +100,20 @@ export class DatabaseModel {
     return this.generateInstance(result);
   }
 
+  async findManyById(ids) {
+    if (!ids) {
+      throw new Error(`Cannot search for ${this.databaseType} by id without providing the ids`);
+    }
+    const records = [];
+    const batchSize = 2500; // errored at around 5000 during testing
+    for (let i = 0; i < ids.length; i += batchSize) {
+      const batchOfIds = ids.slice(i, i + batchSize);
+      const batchOfRecords = await this.find({ id: batchOfIds });
+      records.push(...batchOfRecords);
+    }
+    return records;
+  }
+
   async findOne(dbConditions, customQueryOptions = {}) {
     const queryOptions = await this.getQueryOptions(customQueryOptions);
     const result = await this.database.findOne(this.databaseType, dbConditions, queryOptions);

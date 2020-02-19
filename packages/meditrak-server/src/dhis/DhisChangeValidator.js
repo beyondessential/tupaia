@@ -57,15 +57,7 @@ export class DhisChangeValidator extends ChangeValidator {
   getValidAnswerUpdates = async answerIds => {
     if (answerIds.length === 0) return [];
     // can be a lot, so batch the finding of answers
-    const answers = [];
-    const batchSize = 2500; // was erroring at around 5000 during testing
-    for (let i = 0; i < answerIds.length; i += batchSize) {
-      const batchOfIds = answerIds.slice(i, i + batchSize);
-      const batchOfAnswers = await this.models.answer.find({
-        id: batchOfIds,
-      });
-      answers.push(...batchOfAnswers);
-    }
+    const answers = await this.models.answer.findManyById(answerIds);
     const surveyResponseIds = this.getUniqueEntries(answers.map(a => a.survey_response_id));
 
     // check which survey responses are valid
