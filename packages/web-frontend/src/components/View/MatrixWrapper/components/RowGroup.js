@@ -9,13 +9,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import DropDownArrowIcon from 'material-ui/svg-icons/navigation/arrow-drop-down';
 import shallowEqual from 'shallowequal';
+import { getDotColorFromRange } from '../../../../utils';
 
 import { Cell } from './Cell';
-
-const getDotColorFromRange = (presentationOptions, value) =>
-  Object.values(presentationOptions).find(({ min, max }) => value >= min && value <= max) || {
-    color: '',
-  };
 
 export default class RowGroup extends Component {
   shouldComponentUpdate(nextProps) {

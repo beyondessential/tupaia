@@ -474,7 +474,7 @@ export class Matrix extends PureComponent {
     return (
       <DescriptionOverlay
         header={presentationOptions.label}
-        body={selectedCellDescription || presentationOption.description}
+        body={`${presentationOption.description || ''} ${selectedCellDescription || ''}`}
         color={presentationOption.color}
         styles={this.props.calculatedStyles}
         onClose={() => this.onDescriptionOverlayClose()}
