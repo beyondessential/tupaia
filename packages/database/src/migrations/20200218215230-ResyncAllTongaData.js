@@ -18,10 +18,25 @@ exports.setup = function(options, seedLink) {
 
 const CHANGE_BATCH_SIZE = 1000;
 
-const markRecordsForResync = (changeChannel, recordType, records) => {
+const resolveAfterXChanges = (changeChannel, resolve, x) => {
+  if (x === 0) {
+    resolve();
+    return;
+  }
+  let changeCount = 0;
+  changeChannel.addChangeHandler(() => {
+    changeCount++;
+    if (changeCount === x) resolve();
+  });
+};
+
+const markRecordsForResync = async (changeChannel, recordType, records) => {
   for (let batchStartIndex = 0; batchStartIndex < records.length; batchStartIndex += 1000) {
-    const batchOfRecords = records.slice(batchStartIndex, batchStartIndex + CHANGE_BATCH_SIZE);
-    changeChannel.publishRecordUpdates(recordType, batchOfRecords);
+    await new Promise(resolve => {
+      const batchOfRecords = records.slice(batchStartIndex, batchStartIndex + CHANGE_BATCH_SIZE);
+      resolveAfterXChanges(changeChannel, resolve, batchOfRecords.length);
+      changeChannel.publishRecordUpdates(recordType, batchOfRecords);
+    });
   }
 };
 
@@ -44,31 +59,64 @@ exports.up = async function(db) {
     AND survey.integration_metadata->'dhis2'->'isDataRegional' = 'false';
   `);
 
-  // publish changes for every tonga specific survey response and answer
+  // publish changes for every tonga specific survey response and answer that isn't already in
+  // the sync queue
   // n.b. this requires a meditrak-server instance to be running and listening for the changes
   const changeChannel = new DatabaseChangeChannel();
-  const surveyResponses = (
+  const surveyResponsesNotAlreadyInSyncQueue = (
     await db.runSql(`
     SELECT survey_response.*
     FROM survey_response
     JOIN survey ON survey_response.survey_id = survey.id
-    WHERE survey.integration_metadata->'dhis2'->'isDataRegional' = 'false';
+    LEFT JOIN dhis_sync_queue ON survey_response.id = record_id
+    WHERE survey.integration_metadata->'dhis2'->'isDataRegional' = 'false'
+    AND dhis_sync_queue.id IS NULL;
   `)
   ).rows;
 
-  markRecordsForResync(changeChannel, 'survey_response', surveyResponses);
+  await markRecordsForResync(
+    changeChannel,
+    'survey_response',
+    surveyResponsesNotAlreadyInSyncQueue,
+  );
 
-  const answers = (
+  const answersNotAlreadyInSyncQueue = (
     await db.runSql(`
     SELECT answer.*
     FROM answer
     JOIN survey_response ON answer.survey_response_id = survey_response.id
     JOIN survey ON survey_response.survey_id = survey.id
-    WHERE survey.integration_metadata->'dhis2'->'isDataRegional' = 'false';
+    LEFT JOIN dhis_sync_queue ON answer.id = record_id
+    WHERE survey.integration_metadata->'dhis2'->'isDataRegional' = 'false'
+    AND dhis_sync_queue.id IS NULL;
   `)
   ).rows;
 
-  markRecordsForResync(changeChannel, 'answer', answers);
+  await markRecordsForResync(changeChannel, 'answer', answersNotAlreadyInSyncQueue);
+
+  changeChannel.close();
+
+  return db.runSql(`
+    -- update survey responses and answers separately as too many at once causes duplicate change times
+    UPDATE dhis_sync_queue
+    SET is_deleted = false, priority = 2 -- use priority 2 not to block up new data syncing through
+    FROM survey_response, survey
+    WHERE record_type = 'survey_response'
+    AND dhis_sync_queue.type = 'update'
+    AND dhis_sync_queue.record_id = survey_response.id
+    AND survey_response.survey_id = survey.id
+    AND survey.integration_metadata->'dhis2'->'isDataRegional' = 'false';
+
+    UPDATE dhis_sync_queue
+    SET is_deleted = false, priority = 2 -- use priority 2 not to block up new data syncing through
+    FROM answer, survey_response, survey
+    WHERE record_type = 'answer'
+    AND dhis_sync_queue.type = 'update'
+    AND dhis_sync_queue.record_id = answer.id
+    AND answer.survey_response_id = survey_response.id
+    AND survey_response.survey_id = survey.id
+    AND survey.integration_metadata->'dhis2'->'isDataRegional' = 'false';
+  `);
 };
 
 exports.down = function(db) {
