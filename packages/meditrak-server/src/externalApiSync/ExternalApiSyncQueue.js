@@ -88,7 +88,6 @@ export class ExternalApiSyncQueue {
     await this.processUpdates(uniqueChanges);
     console.log('u', new Date() - start);
     unlock();
-    console.log('d', new Date() - start);
     if (this.unprocessedChanges.length > 0) {
       this.processChangesIntoDb();
     } else {

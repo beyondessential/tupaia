@@ -27,7 +27,7 @@ export class DhisChangeValidator extends ChangeValidator {
         FROM survey_response
         JOIN survey ON survey_response.survey_id = survey.id
         JOIN entity ON survey_response.entity_id = entity.id
-        WHERE survey.integration_metadata::text LIKE '%"dhis2":%'
+        WHERE survey.integration_metadata \\? 'dhis2'
         AND (
           entity.country_code <> 'DL'
           OR survey_response.user_id IN (${nonPublicDemoLandUsers.map(id => `'${id}'`).join(',')})

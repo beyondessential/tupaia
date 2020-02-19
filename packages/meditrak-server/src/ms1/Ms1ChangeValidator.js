@@ -23,7 +23,7 @@ export class Ms1ChangeValidator extends ChangeValidator {
       const ms1Surveys = await this.models.database.executeSql(`
         SELECT id
         FROM survey
-        WHERE integration_metadata->'ms1' ? 'endpoint';
+        WHERE integration_metadata->'ms1' \\? 'endpoint';
       `);
       this.ms1SurveyIds = ms1Surveys.map(({ id }) => id);
     }
