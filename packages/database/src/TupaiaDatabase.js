@@ -66,7 +66,6 @@ export class TupaiaDatabase {
     this.connectionPromise = connectToDatabase();
 
     this.handlerLock = new Multilock();
-    this.idLock = new Multilock();
   }
 
   destroy() {
@@ -206,10 +205,7 @@ export class TupaiaDatabase {
 
   async create(recordType, record) {
     if (!record.id) {
-      await this.idLock.wait(); // avoid generating two ids at exactly the same time
-      const unlock = this.idLock.createLock();
       record.id = generateId();
-      unlock();
     }
     await this.query({
       recordType,

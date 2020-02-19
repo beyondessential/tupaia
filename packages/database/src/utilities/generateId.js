@@ -10,6 +10,8 @@ import crypto from 'crypto';
  * Generate and return a mongo style ID
  * Taken from https://gist.github.com/chrisveness/7975c33ac569c124e4ceb11490576c67
  **/
+const LARGEST_6_DIGIT_HEX = 16777215; // eqivalent to ffffff
+let currentCounterValue = 0;
 export const generateId = () => {
   const seconds = getSecondsStringFromTimestamp(new Date());
   const machineId = crypto
@@ -21,8 +23,12 @@ export const generateId = () => {
     .toString(16)
     .slice(0, 4)
     .padStart(4, '0');
-  const counter = process
-    .hrtime()[1]
+
+  if (currentCounterValue === LARGEST_6_DIGIT_HEX) {
+    currentCounterValue = 0;
+  }
+  const counterValue = ++currentCounterValue;
+  const counter = counterValue
     .toString(16)
     .slice(0, 6)
     .padStart(6, '0');
