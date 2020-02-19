@@ -18,7 +18,7 @@ import {
   FETCH_MEASURE_DATA_ERROR,
   FETCH_MEASURE_DATA_SUCCESS,
   CANCEL_FETCH_MEASURE_DATA,
-  FETCH_ORG_UNIT_SUCCESS,
+  CHANGE_ORG_UNIT_SUCCESS,
   SET_MAP_IS_ANIMATING,
   OPEN_MAP_POPUP,
   CLOSE_MAP_POPUP,
@@ -40,7 +40,7 @@ function position(state = { bounds: defaultBounds }, action) {
     }
 
     case CHANGE_ORG_UNIT:
-    case FETCH_ORG_UNIT_SUCCESS: {
+    case CHANGE_ORG_UNIT_SUCCESS: {
       if (action.shouldChangeMapBounds) {
         const { location } = action.organisationUnit;
         if (location) {
@@ -85,7 +85,7 @@ function innerAreas(state = [], action) {
     case CHANGE_ORG_UNIT: {
       return [];
     }
-    case FETCH_ORG_UNIT_SUCCESS: {
+    case CHANGE_ORG_UNIT_SUCCESS: {
       const { organisationUnit } = action;
       const { organisationUnitChildren } = organisationUnit;
       if (organisationUnitChildren && organisationUnitChildren.length > 0) {
@@ -217,7 +217,7 @@ function shouldSnapToPosition(state = true, action) {
       return true;
 
     case CHANGE_ORG_UNIT:
-    case FETCH_ORG_UNIT_SUCCESS:
+    case CHANGE_ORG_UNIT_SUCCESS:
       return action.shouldChangeMapBounds ? true : state;
 
     default:

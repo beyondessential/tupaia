@@ -48,6 +48,7 @@ import {
   displayUnverified,
   fetchUserSignupError,
   fetchOrgUnitSuccess,
+  changeOrgUnitSuccess,
   fetchOrgUnitError,
   fetchRegionError,
   fetchDashboardSuccess,
@@ -75,7 +76,7 @@ import {
   updateEnlargedDialog,
   updateEnlargedDialogError,
   FETCH_MEASURES_SUCCESS,
-  FETCH_ORG_UNIT_SUCCESS,
+  CHANGE_ORG_UNIT_SUCCESS,
   addMapRegions,
   openEmailVerifiedPage,
   fetchEmailVerifyError,
@@ -85,6 +86,7 @@ import {
   FETCH_RESEND_VERIFICATION_EMAIL,
   findUserLoginFailed,
   REQUEST_PROJECT_ACCESS,
+  FETCH_ORG_UNIT,
 } from './actions';
 import { isMobile, processMeasureInfo, formatDateForApi } from './utils';
 import { createUrlString } from './utils/historyNavigation';
@@ -411,23 +413,47 @@ function* watchFetchCountryAccessDataAndFetchItTEST() {
 /**
  * fetchOrgUnitData
  *
- * Fetch an org unit and call action on success/fail.
+ * Fetch an org unit and call action on success.
  *
  */
+function* requestOrgUnitData(action) {
+  const { organisationUnitCode } = action.organisationUnit;
+  const requestResourceUrl = `organisationUnit?organisationUnitCode=${organisationUnitCode}`;
+  yield call(request, requestResourceUrl, fetchOrgUnitError);
+}
+
 function* fetchOrgUnitData(action) {
   const { organisationUnitCode } = action.organisationUnit;
   const requestResourceUrl = `organisationUnit?organisationUnitCode=${organisationUnitCode}`;
 
   try {
     const orgUnitData = yield call(request, requestResourceUrl, fetchOrgUnitError);
-    yield put(fetchOrgUnitSuccess(orgUnitData, action.shouldChangeMapBounds));
+    yield put(fetchOrgUnitSuccess(orgUnitData));
   } catch (error) {
     yield put(error.errorFunction(error));
   }
 }
 
+function* fetchOrgUnitDataAndChangeOrgUnit(action) {
+  const { organisationUnitCode } = action.organisationUnit;
+  const requestResourceUrl = `organisationUnit?organisationUnitCode=${organisationUnitCode}`;
+
+  try {
+    // debugger;
+    const orgUnitData = yield call(request, requestResourceUrl, fetchOrgUnitError);
+    yield put(fetchOrgUnitSuccess(orgUnitData));
+    yield put(changeOrgUnitSuccess(orgUnitData, action.shouldChangeMapBounds));
+  } catch (error) {
+    yield put(error.errorFunction(error));
+  }
+}
+
+function* watchFetchOrgUnitAndFetchIt() {
+  yield takeEvery(FETCH_ORG_UNIT, fetchOrgUnitData);
+}
+
 function* watchOrgUnitChangeAndFetchIt() {
-  yield takeLatest(CHANGE_ORG_UNIT, fetchOrgUnitData);
+  yield takeLatest(CHANGE_ORG_UNIT, fetchOrgUnitDataAndChangeOrgUnit);
 }
 
 function* fetchOrgUnitRegionData(action) {
@@ -702,7 +728,7 @@ function* fetchCurrentMeasureInfo() {
 
 // Ensures current measure remains selected on new org unit fetch
 function* watchFetchOrgUnitSuccess() {
-  yield takeLatest(FETCH_ORG_UNIT_SUCCESS, fetchCurrentMeasureInfo);
+  yield takeLatest(CHANGE_ORG_UNIT_SUCCESS, fetchCurrentMeasureInfo);
 }
 
 // Ensures current measure remains selected in the case that the new org unit
@@ -933,6 +959,7 @@ export default [
   watchAttemptUserLogout,
   watchAttemptUserSignupAndFetchIt,
   watchFetchCountryAccessDataAndFetchIt,
+  watchFetchOrgUnitAndFetchIt,
   watchOrgUnitChangeAndFetchIt,
   watchOrgUnitChangeAndFetchRegions,
   watchOrgUnitChangeAndFetchDashboard,

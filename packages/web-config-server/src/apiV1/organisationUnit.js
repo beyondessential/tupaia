@@ -47,14 +47,7 @@ export async function getEntityByCode(entityCode, userHasAccess) {
   // know we have permission for at least one of its children)
   const { parent_id: parentId, id: entityId } = queriedEntity;
   const parentTask = parentId && Entity.getEntity(parentId);
-
-  // get children & remove those we don't have permission for
-  const childrenTask = Entity.getOrgUnitChildren(entityId);
-  const children = (await Promise.all(
-    (await childrenTask).map(async c => (await userHasAccess(c.code)) && c),
-  ))
-    .filter(c => c)
-    .map(translateForFrontend);
+  const children = await Promise.all(await getEntityChildren(entityId, userHasAccess));
 
   // assemble response
   const data = {
@@ -64,6 +57,27 @@ export async function getEntityByCode(entityCode, userHasAccess) {
   };
 
   return data;
+}
+
+/**
+ * Recursively get all children, filtering out those we don't have permission for
+ */
+async function getEntityChildren(entityId, userHasAccess) {
+  if (await !Entity.orgUnitHasChildren(entityId)) {
+    return [];
+  }
+
+  const childrenTask = Entity.getOrgUnitChildren(entityId);
+  const children = (
+    await Promise.all((await childrenTask).map(async c => (await userHasAccess(c.code)) && c))
+  )
+    .filter(c => c)
+    .map(async child => ({
+      ...translateForFrontend(child),
+      // organisationUnitChildren: await Promise.all(await getEntityChildren(child.id, userHasAccess)),
+    }));
+
+  return children;
 }
 
 export async function getOrganisationUnitHandler(req, res) {

@@ -269,6 +269,25 @@ export class Entity extends BaseModel {
     );
   }
 
+  static async countAllChildren(id, types = []) {
+    return Entity.database.executeSql(
+      `
+      SELECT 
+        COUNT(*)
+      FROM entity
+      WHERE
+        parent_id = ? ${constructTypesCriteria(types, 'AND')}
+      ORDER BY
+        name;
+    `,
+      [id, ...types],
+    );
+  }
+
+  static async orgUnitHasChildren(id) {
+    return Entity.countAllChildren(id, ORG_UNIT_TYPE_LIST) > 0;
+  }
+
   static async getOrgUnitChildren(id) {
     return Entity.getAllChildren(id, ORG_UNIT_TYPE_LIST);
   }

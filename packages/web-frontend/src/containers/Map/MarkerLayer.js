@@ -86,11 +86,11 @@ export class MarkerLayer extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    const { measureInfo, measureName, measureId, sidePanelWidth, hiddenMeasures } = this.props;
+    const { currentCountry, measureName, measureId, sidePanelWidth, hiddenMeasures } = this.props;
     if (
       nextProps.measureName !== measureName ||
       nextProps.measureId !== measureId ||
-      nextProps.measureInfo.currentCountry !== measureInfo.currentCountry ||
+      nextProps.currentCountry !== currentCountry ||
       nextProps.sidePanelWidth !== sidePanelWidth ||
       nextProps.hiddenMeasures !== hiddenMeasures
     ) {
@@ -144,14 +144,16 @@ export class MarkerLayer extends Component {
 
   renderMeasures() {
     const {
-      measureInfo,
+      measureData,
+      measureOptions,
+      hiddenMeasures,
       onChangeOrgUnit,
       sidePanelWidth,
       measureName,
       isMeasureLoading,
     } = this.props;
 
-    const { measureData, measureOptions, hiddenMeasures } = measureInfo;
+    // debugger;
     if (
       !measureData ||
       measureData.length < 1 ||
@@ -159,8 +161,10 @@ export class MarkerLayer extends Component {
     )
       return null;
     if (isMeasureLoading) return null;
+
+    // debugger;
     const processedData = measureData
-      .filter(data => data.coordinates.length === 2)
+      .filter(data => data.coordinates && data.coordinates.length === 2)
       .map(data => getMeasureDisplayInfo(data, measureOptions, hiddenMeasures))
       .filter(displayInfo => !displayInfo.isHidden);
 
@@ -169,7 +173,7 @@ export class MarkerLayer extends Component {
     const PopupChild = ({ data }) => (
       <MeasurePopup
         data={data}
-        measureOptions={measureInfo.measureOptions}
+        measureOptions={measureOptions}
         measureName={measureName}
         sidePanelWidth={sidePanelWidth}
         onOrgUnitClick={onChangeOrgUnit}
@@ -201,26 +205,31 @@ export class MarkerLayer extends Component {
 }
 
 MarkerLayer.propTypes = {
-  measureInfo: PropTypes.shape({}).isRequired,
+  // measureInfo: PropTypes.shape({}).isRequired,
 };
 
 const mapStateToProps = state => {
   const { isSidePanelExpanded } = state.global;
   const {
-    measureInfo,
+    measureInfo: { measureData, measureOptions, hiddenMeasures, measureId, currentCountry },
     popup,
     isMeasureLoading,
-    measureInfo: { hiddenMeasures },
   } = state.map;
   const { contractedWidth, expandedWidth } = state.dashboard;
 
+  const measureDataWithCoords = measureData.reduce([], (array, value) =>
+    array.concat([{ ...value, ...state.orgUnit.orgUnitMap[value.orgUnitCode] }]),
+  );
+
   return {
+    measureId,
     isMeasureLoading,
     hiddenMeasures,
-    measureInfo,
+    measureOptions,
+    currentCountry,
+    measureData: measureDataWithCoords,
     measureName: selectMeasureName(state),
     currentPopupId: popup,
-    measureId: measureInfo.measureId,
     sidePanelWidth: isSidePanelExpanded ? expandedWidth : contractedWidth,
   };
 };
@@ -233,7 +242,4 @@ const mapDispatchToProps = dispatch => ({
   onPopupClose: orgUnitCode => dispatch(closeMapPopup(orgUnitCode)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(MarkerLayer);
+export default connect(mapStateToProps, mapDispatchToProps)(MarkerLayer);

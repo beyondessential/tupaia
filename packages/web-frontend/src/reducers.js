@@ -19,6 +19,7 @@ import { combineReducers } from 'redux';
 import map from './reducers/mapReducers';
 import disaster from './disaster/reducers';
 import project from './projects/reducers';
+import orgUnit from './reducers/orgUnitReducers';
 import { getMeasureFromHierarchy, isMobile } from './utils';
 import { LANDING } from './containers/OverlayDiv';
 import { getUniqueViewId } from './utils/getUniqueViewId';
@@ -64,7 +65,7 @@ import {
   FETCH_MEASURES_ERROR,
   FETCH_MEASURES_SUCCESS,
   FETCH_ORG_UNIT_ERROR,
-  FETCH_ORG_UNIT_SUCCESS,
+  CHANGE_ORG_UNIT_SUCCESS,
   FETCH_RESET_PASSWORD_ERROR,
   FETCH_RESET_PASSWORD_SUCCESS,
   FETCH_REQUEST_COUNTRY_ACCESS_SUCCESS,
@@ -598,7 +599,7 @@ function global(
         ...state,
         loadingOrganisationUnit: action.organisationUnit,
       };
-    case FETCH_ORG_UNIT_SUCCESS:
+    case CHANGE_ORG_UNIT_SUCCESS:
       return {
         ...state,
         loadingOrganisationUnit: null,
@@ -902,4 +903,5 @@ export default combineReducers({
   drillDown,
   disaster,
   project,
+  orgUnit,
 });
