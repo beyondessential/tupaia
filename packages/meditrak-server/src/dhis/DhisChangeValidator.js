@@ -7,10 +7,9 @@ import { ChangeValidator } from '../externalApiSync';
 
 export class DhisChangeValidator extends ChangeValidator {
   queryValidSurveyResponseIds = async (surveyResponseIds, excludeEventBased = false) => {
-    const nonPublicDemoLandUsers = [
-      (
-        await this.models.database.executeSql(
-          `
+    const nonPublicDemoLandUsers = (
+      await this.models.database.executeSql(
+        `
           SELECT DISTINCT user_id
           FROM user_country_permission
           JOIN country ON country.id = user_country_permission.country_id
@@ -18,9 +17,8 @@ export class DhisChangeValidator extends ChangeValidator {
           WHERE country.code = 'DL'
           AND permission_group.name <> 'Public';
         `,
-        )
-      ).map(r => r.user_id),
-    ];
+      )
+    ).map(r => r.user_id);
     const results = await this.models.database.executeSql(
       `
         SELECT DISTINCT survey_response.id as id
