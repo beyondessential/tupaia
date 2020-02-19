@@ -5,7 +5,7 @@
 
 import { DataBroker } from '@tupaia/data-broker';
 import { ExternalApiSyncQueue } from '../externalApiSync/ExternalApiSyncQueue';
-import { ChangeDetailGenerator } from './syncQueue';
+import { DhisChangeDetailGenerator } from './syncQueue';
 import { pushLatest } from './pushLatest';
 import { DhisChangeValidator } from './DhisChangeValidator';
 
@@ -21,7 +21,7 @@ export async function startSyncWithDhis(models) {
     models.entity.databaseType,
   ];
   const validator = new DhisChangeValidator(models);
-  const detailGenerator = new ChangeDetailGenerator(models);
+  const detailGenerator = new DhisChangeDetailGenerator(models);
   const syncQueue = new ExternalApiSyncQueue(
     models,
     validator,

@@ -13,7 +13,7 @@ const getIdsFromChanges = (changes, model) =>
 const getUniqueEntries = entries => Array.from(new Set(entries));
 
 // Store certain details for faster sync processing
-export class ChangeDetailGenerator {
+export class DhisChangeDetailGenerator {
   constructor(models) {
     this.models = models;
   }
