@@ -31,22 +31,22 @@ export class Ms1ChangeValidator extends ChangeValidator {
   };
 
   getValidUpdates = async changes => {
-    const validations = await Promise.all(
-      changes.map(async change => {
-        const surveyResponse = await this.models.surveyResponse.findOne({ id: change.record_id });
-        if (!surveyResponse) return false;
-
-        // ditch if demoland
-        const demolandEntityIds = await this.fetchDemoLandEntityIds();
-        if (demolandEntityIds.includes(surveyResponse.entity_id)) return false;
-
-        // only include responses for ms1 surveys
-        const ms1SurveyIds = await this.fetchMs1SurveyIds();
-        if (!ms1SurveyIds.includes(surveyResponse.survey_id)) return false;
-
-        return true;
-      }),
+    const demolandEntityIds = await this.fetchDemoLandEntityIds();
+    const ms1SurveyIds = await this.fetchMs1SurveyIds();
+    const surveyResponses = await this.models.surveyResponse.findManyById(
+      this.getRecordIds(changes),
     );
-    return changes.filter((_, i) => validations[i]);
+    const validationById = {};
+    surveyResponses.forEach(surveyResponse => {
+      // ditch if demoland
+      if (demolandEntityIds.includes(surveyResponse.entity_id)) {
+        validationById[surveyResponse.id] = false;
+        return;
+      }
+
+      // valid if it was for an ms1 survey
+      validationById[surveyResponse.id] = ms1SurveyIds.includes(surveyResponse.survey_id);
+    });
+    return changes.filter(c => validationById[c.record_id]);
   };
 }
