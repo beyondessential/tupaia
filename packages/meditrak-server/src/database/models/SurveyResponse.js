@@ -65,20 +65,21 @@ export class SurveyResponseModel extends DatabaseModel {
 
   isDeletableViaApi = true;
 
-  static onChange = async (change, record, model) => {
+  static onChange = async (change, model) => {
     const modelDetails = {
       type: 'SurveyResponse',
-      record_id: record.id,
+      record_id: change.record_id,
     };
 
     if (change.type === 'delete') {
       model.otherModels.userReward.delete(modelDetails);
     } else {
+      const surveyResponse = await model.findById(change.record_id);
       model.otherModels.userReward.updateOrCreate(modelDetails, {
         ...modelDetails,
         coconuts: 1,
-        user_id: record.user_id,
-        creation_date: record.end_time,
+        user_id: surveyResponse.user_id,
+        creation_date: surveyResponse.end_time,
       });
     }
   };

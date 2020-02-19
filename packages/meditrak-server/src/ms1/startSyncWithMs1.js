@@ -18,31 +18,28 @@ const INVALID_HTTP_CODES = [400, 500];
 const ENDPOINT_NOT_FOUND = 'Endpoint not found to send data to MS1';
 
 export async function startSyncWithMs1(models) {
-  const demoLand = await models.country.findOne({ name: 'Demo Land' });
-  const validator = async change => {
+  const demolandEntityIds = (await models.entity.find({ country_code: 'DL' })).map(({ id }) => id);
+  const ms1SurveyIds = ['xx']; // TODO fetch from db using integration_metadata::text LIKE '%"ms1":%"endpoint":%`
+  const validator = async changes => {
     // Deal with the edge case of deletes first, as we don't have the usual information in the db
-    if (change.type === 'delete') {
-      const { record_id: recordId } = change;
-      const existingSyncQueueRecord = await models.ms1SyncQueue.findOne({ record_id: recordId });
-      // If there is a sync queue record with this record_id, the delete record must be valid for ms1
-      return !!existingSyncQueueRecord;
-    }
-    const surveyResponse = await models.surveyResponse.findOne({ id: change.record_id });
-    if (!surveyResponse) return false;
+    const validations = changes.map(async change => {
+      if (change.type === 'delete') {
+        const { record_id: recordId } = change;
+        const existingSyncQueueRecord = await models.ms1SyncQueue.findOne({ record_id: recordId });
+        // If there is a sync queue record with this record_id, the delete record must be valid for ms1
+        return !!existingSyncQueueRecord;
+      }
+      const surveyResponse = await models.surveyResponse.findOne({ id: change.record_id });
+      if (!surveyResponse) return false;
 
-    // If the survey is logging data against world we don't need to check demo land
-    const country = await surveyResponse.country();
-    if (country) {
       // ditch if demoland
-      const { id: countryId } = country;
-      if (countryId === demoLand.id) return false;
-    }
+      if (demolandEntityIds.includes(surveyResponse.entity_id)) return false;
 
-    // Get survey record
-    const survey = await models.survey.findById(surveyResponse.survey_id);
-    const { integration_metadata: integrationMetadata } = survey;
-    if (!integrationMetadata.ms1 || !integrationMetadata.ms1.endpoint) return false;
-    return true;
+      // only include responses for ms1 surveys
+      if (ms1SurveyIds.includes(surveyResponse.survey_id)) return false;
+      return true;
+    });
+    return Promise.all(validations);
   };
 
   const subscriptions = [models.surveyResponse.databaseType];
