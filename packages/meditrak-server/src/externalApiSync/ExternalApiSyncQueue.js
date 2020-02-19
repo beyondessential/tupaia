@@ -69,7 +69,9 @@ export class ExternalApiSyncQueue {
   processChangesIntoDb = async () => {
     this.isProcessing = true;
     await this.lock.waitWithDebounce(DEBOUNCE_DURATION);
+    const start = new Date(); // TODO remove when timing tests are finished
     const unlock = this.lock.createLock();
+    console.log('l', new Date() - start);
     const changes = this.unprocessedChanges;
     this.unprocessedChanges = [];
     const changesSeen = new Set();
@@ -80,14 +82,21 @@ export class ExternalApiSyncQueue {
       changesSeen.add(hash);
       return true;
     });
+    console.log('1', new Date() - start);
     await this.processDeletes(uniqueChanges);
+    console.log('d', new Date() - start);
     await this.processUpdates(uniqueChanges);
+    console.log('u', new Date() - start);
     unlock();
     if (this.unprocessedChanges.length > 0) {
       this.processChangesIntoDb();
     } else {
       this.isProcessing = false;
     }
+    console.log(
+      `Processed ${uniqueChanges.length} of ${changes.length} unique changes`,
+      Date.now() - start,
+    );
   };
 
   /**
