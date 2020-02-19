@@ -5,4 +5,4 @@
 
 export { tableOfDataValues, TableOfDataValuesBuilder } from './tableOfDataValues';
 export { tableOfDataValuesWithCalc } from './TableOfDataValuesWithCalc';
-export { tableOfValuesForOrgUnits } from './TableOfValuesForOrgUnits';
+export { tableOfValuesForOrgUnits } from './tableOfValuesForOrgUnits';
