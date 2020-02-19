@@ -19,7 +19,7 @@ export class DhisChangeValidator extends ChangeValidator {
           AND permission_group.name <> 'Public';
         `,
         )
-      ).map(r => r.user_id)[0],
+      ).map(r => r.user_id),
     ];
     const results = await this.models.database.executeSql(
       `
@@ -47,10 +47,11 @@ export class DhisChangeValidator extends ChangeValidator {
   };
 
   getValidDeletes = async changes => {
-    return this.getPreviouslySyncedDeletes(changes, [
+    return this.getPreviouslySyncedDeletes(
+      changes,
       this.models.dhisSyncQueue,
       this.models.dhisSyncLog,
-    ]);
+    );
   };
 
   getValidAnswerUpdates = async answerIds => {

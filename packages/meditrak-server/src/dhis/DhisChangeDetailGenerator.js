@@ -20,7 +20,7 @@ export class DhisChangeDetailGenerator extends ChangeDetailGenerator {
 
   async generateAnswerDetails(answerIds) {
     const answers = await this.models.answer.find({ id: answerIds });
-    const surveyResponseIds = this.this.getUniqueEntries(answers.map(a => a.survey_response_id));
+    const surveyResponseIds = this.getUniqueEntries(answers.map(a => a.survey_response_id));
     const surveyResponseDetailsById = await this.generateSurveyResponseDetails(surveyResponseIds);
     const changeDetailsById = {};
     answers.forEach(answer => {
