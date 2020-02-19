@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { mapKeys, mapValues } from '@tupaia/utils';
+import { mapKeys } from '@tupaia/utils';
 
 export class DhisTranslator {
   constructor(models) {
@@ -67,15 +67,9 @@ export class DhisTranslator {
         dataElement: dataElementToSourceCode[dataElement],
       }));
 
-  translateInboundMetadata = (metadata, dataElementToSourceCode) => {
-    const { dataElementCodeToName, dataElementIdToCode } = metadata;
-
-    return {
-      ...metadata,
-      dataElementCodeToName: mapKeys(dataElementCodeToName, dataElementToSourceCode),
-      dataElementIdToCode: mapValues(dataElementIdToCode, dataElementToSourceCode),
-    };
-  };
+  translateInboundMetadata = (metadata, dataElementToSourceCode) => ({
+    dataElementCodeToName: mapKeys(metadata.dataElementCodeToName, dataElementToSourceCode),
+  });
 
   translateInboundAnalytics = ({ results, metadata }, dataSources) => {
     const dataElementToSourceCode = this.getDataElementToSourceCode(dataSources);

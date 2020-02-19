@@ -20,7 +20,7 @@ export const setupDhisApiForStubbing = () => {
 
 const defaultAnalytics = {
   results: [],
-  metadata: { dataElementCodeToName: {}, dataElementIdToCode: {} },
+  metadata: { dataElementCodeToName: {} },
 };
 
 export const stubDhisApi = ({

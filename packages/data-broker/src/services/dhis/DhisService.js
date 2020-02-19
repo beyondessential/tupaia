@@ -160,7 +160,6 @@ export class DhisService extends Service {
       results: [],
       metadata: {
         dataElementCodeToName: {},
-        dataElementIdToCode: {},
       },
     };
     const pullForApi = async api => {

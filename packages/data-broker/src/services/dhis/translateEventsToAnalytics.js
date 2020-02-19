@@ -61,12 +61,9 @@ class EventToAnalyticsTranslator {
     });
   }
 
-  getMetadata = events => ({
-    organisationUnit: reduceToDictionary(events, 'orgUnit', 'orgUnitName'),
-    dataElementCodeToName: reduceToDictionary(this.dataElementsByCode, 'code', 'name'),
-    dataElementIdToCode: reduceToDictionary(this.dataElementsByCode, 'id', 'code'),
-    dataElement: reduceToDictionary(this.dataElementsByCode, 'id', 'name'),
-  });
+  getMetadata() {
+    return { dataElementCodeToName: reduceToDictionary(this.dataElementsByCode, 'code', 'name') };
+  }
 }
 
 export const translateEventsToAnalytics = async (dhisApi, events) => {
