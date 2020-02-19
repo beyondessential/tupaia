@@ -5,44 +5,22 @@
 import { get } from 'lodash';
 import { HttpError } from '@tupaia/utils';
 
-import { ENTITY_TYPES } from '../database/models/Entity';
-import { ExternalApiSyncQueue } from '../database/ExternalApiSyncQueue';
+import { ExternalApiSyncQueue } from '../externalApiSync';
 import { Ms1Api } from './api/Ms1Api';
 import { addToSyncLog } from './addToSyncLog';
 import { generateMs1VariableName } from './utilities/generateMs1VariableName';
 import { findQuestionsBySurvey } from '../dataAccessors/findQuestionsBySurvey';
 import { generateChangeRecordAdditions } from './syncQueue';
+import { Ms1ChangeValidator } from './Ms1ChangeValidator';
 const PERIOD_BETWEEN_SYNCS = 1 * 60 * 1000; // 1 minute between syncs
 const MAX_BATCH_SIZE = 10;
 const INVALID_HTTP_CODES = [400, 500];
 const ENDPOINT_NOT_FOUND = 'Endpoint not found to send data to MS1';
 
 export async function startSyncWithMs1(models) {
-  const demolandEntityIds = (await models.entity.find({ country_code: 'DL' })).map(({ id }) => id);
-  const ms1SurveyIds = ['xx']; // TODO fetch from db using integration_metadata::text LIKE '%"ms1":%"endpoint":%`
-  const validator = async changes => {
-    // Deal with the edge case of deletes first, as we don't have the usual information in the db
-    const validations = changes.map(async change => {
-      if (change.type === 'delete') {
-        const { record_id: recordId } = change;
-        const existingSyncQueueRecord = await models.ms1SyncQueue.findOne({ record_id: recordId });
-        // If there is a sync queue record with this record_id, the delete record must be valid for ms1
-        return !!existingSyncQueueRecord;
-      }
-      const surveyResponse = await models.surveyResponse.findOne({ id: change.record_id });
-      if (!surveyResponse) return false;
-
-      // ditch if demoland
-      if (demolandEntityIds.includes(surveyResponse.entity_id)) return false;
-
-      // only include responses for ms1 surveys
-      if (ms1SurveyIds.includes(surveyResponse.survey_id)) return false;
-      return true;
-    });
-    return Promise.all(validations);
-  };
-
   const subscriptions = [models.surveyResponse.databaseType];
+  const validator = new Ms1ChangeValidator();
+
   // Syncs  changes to MS1 aggregation servers
   const syncQueue = new ExternalApiSyncQueue(
     models,

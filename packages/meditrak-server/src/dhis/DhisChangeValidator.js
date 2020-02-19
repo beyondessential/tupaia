@@ -2,20 +2,14 @@
  * Tupaia MediTrak
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
-const UPDATE = 'update';
-const DELETE = 'delete';
 
-const getRecordIds = changes => changes.map(c => c.record_id);
-const getChangesOfType = (changes, type) => changes.filter(c => c.type === type);
+import { ChangeValidator } from '../externalApiSync';
+
 const getChangesForRecordType = (changes, recordType) =>
   changes.filter(c => c.record_type === recordType);
 const getUniqueEntries = entries => Array.from(new Set(entries));
 
-export class ChangeValidator {
-  constructor(models) {
-    this.models = models;
-  }
-
+export class DhisChangeValidator extends ChangeValidator {
   queryValidSurveyResponseIds = async (surveyResponseIds, excludeEventBased = false) => {
     const nonPublicDemoLandUsers = [
       (
@@ -57,17 +51,10 @@ export class ChangeValidator {
   };
 
   getValidDeletes = async changes => {
-    // If there is a sync log or queue record with this record_id, the delete record must be
-    // valid for the dhis sync queue
-    const deleteChanges = getChangesOfType(changes, DELETE);
-    const recordIds = getRecordIds(deleteChanges);
-    const syncLogRecords = await this.models.dhisSyncLog.find({ record_id: recordIds });
-    const syncQueueRecords = await this.models.dhisSyncQueue.find({ record_id: recordIds });
-    const validDeleteIds = new Set([
-      ...syncLogRecords.map(r => r.record_id),
-      ...syncQueueRecords.map(r => r.record_id),
+    return this.getPreviouslySyncedDeletes(changes, [
+      this.models.dhisSyncQueue,
+      this.models.dhisSyncLog,
     ]);
-    return changes.filter(c => validDeleteIds.has(c.record_id));
   };
 
   getValidAnswerUpdates = async answerIds => {
@@ -92,15 +79,18 @@ export class ChangeValidator {
   };
 
   getValidUpdates = async changes => {
-    const updateChanges = getChangesOfType(changes, UPDATE);
+    const updateChanges = this.getUpdateChanges(changes);
     const getIdsFromChanges = model =>
-      getRecordIds(getChangesForRecordType(updateChanges, model.databaseType));
+      this.getRecordIds(getChangesForRecordType(updateChanges, model.databaseType));
     const validEntities = getIdsFromChanges(this.models.entity); // all entity updates are valid
     const validAnswers = await this.getValidAnswerUpdates(getIdsFromChanges(this.models.answer));
     const validSurveyResponses = await this.getValidSurveyResponseUpdates(
       getIdsFromChanges(this.models.surveyResponse),
     );
-    const validChangeIds = new Set([...validEntities, ...validAnswers, ...validSurveyResponses]);
-    return changes.filter(c => validChangeIds.has(c.record_id));
+    return this.filterChangesWithMatchingIds(changes, [
+      ...validEntities,
+      ...validAnswers,
+      ...validSurveyResponses,
+    ]);
   };
 }
