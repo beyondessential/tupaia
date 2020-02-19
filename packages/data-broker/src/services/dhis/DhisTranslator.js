@@ -60,10 +60,12 @@ export class DhisTranslator {
   };
 
   translateInboundDataValues = (dataValues, dataElementToSourceCode) =>
-    dataValues.map(({ dataElement, ...restOfResult }) => ({
-      ...restOfResult,
-      dataElement: dataElementToSourceCode[dataElement],
-    }));
+    dataValues
+      .filter(({ dataElement }) => dataElementToSourceCode[dataElement])
+      .map(({ dataElement, ...restOfDataValue }) => ({
+        ...restOfDataValue,
+        dataElement: dataElementToSourceCode[dataElement],
+      }));
 
   translateInboundMetadata = (metadata, dataElementToSourceCode) => {
     const { dataElementCodeToName, dataElementIdToCode } = metadata;

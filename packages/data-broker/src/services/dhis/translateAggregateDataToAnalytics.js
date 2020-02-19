@@ -1,6 +1,6 @@
 /**
- * Tupaia Config Server
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
 import { sanitizeValue } from './sanitizeValue';
@@ -16,7 +16,7 @@ const DEFAULT_CONFIGURATION = {
  * @param {Object} translationConfiguration
  * @returns {{ results: AnalyticsResult[], metadata: (AnalyticsMetadata|undefined) }}
  */
-export const translateDataValueResponse = (response, translationConfiguration = {}) => {
+export const translateAggregateDataToAnalytics = (response, translationConfiguration = {}) => {
   const { sortOrder, includeAllHeaders, extraHeaders } = {
     ...DEFAULT_CONFIGURATION,
     ...translationConfiguration,
