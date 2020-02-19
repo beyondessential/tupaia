@@ -11,12 +11,20 @@ const BAD_REQUEST_LIMIT = 7;
 const DEBOUNCE_DURATION = 100;
 
 export class ExternalApiSyncQueue {
-  constructor(models, validator, subscriptionTypes = [], detailGenerator, syncQueueModel) {
+  constructor(
+    models,
+    validator,
+    subscriptionTypes = [],
+    detailGenerator,
+    syncQueueModel,
+    sideEffectHandler,
+  ) {
     autobind(this);
     this.models = models;
     this.validator = validator;
     this.syncQueueModel = syncQueueModel;
     this.detailGenerator = detailGenerator;
+    this.sideEffectHandler = sideEffectHandler;
     this.unprocessedChanges = [];
     this.lock = new Multilock();
     this.isProcessing = false;
@@ -55,6 +63,12 @@ export class ExternalApiSyncQueue {
     );
   }
 
+  triggerSideEffects = async changes => {
+    if (this.sideEffectHandler) {
+      await this.sideEffectHandler.triggerSideEffects(changes);
+    }
+  };
+
   processDeletes = async changes => {
     const validDeletes = await this.validator.getValidDeletes(changes);
     return this.persistToSyncQueue(validDeletes);
@@ -80,6 +94,7 @@ export class ExternalApiSyncQueue {
       changesSeen.add(hash);
       return true;
     });
+    await this.triggerSideEffects(uniqueChanges);
     await this.processDeletes(uniqueChanges);
     await this.processUpdates(uniqueChanges);
     unlock();

@@ -105,7 +105,7 @@ export class DatabaseModel {
       throw new Error(`Cannot search for ${this.databaseType} by id without providing the ids`);
     }
     const records = [];
-    const batchSize = 2500; // errored at around 5000 during testing
+    const batchSize = this.database.maxBindingsPerQuery;
     for (let i = 0; i < ids.length; i += batchSize) {
       const batchOfIds = ids.slice(i, i + batchSize);
       const batchOfRecords = await this.find({ id: batchOfIds });
@@ -218,6 +218,10 @@ export class DatabaseModel {
 
   async updateById(id, fieldsToUpdate) {
     return this.update(this.getIdClause(id), fieldsToUpdate);
+  }
+
+  async markRecordsAsChanged(records) {
+    return this.database.markRecordsAsChanged(this.databaseType, records);
   }
 
   async markAsChanged(...args) {

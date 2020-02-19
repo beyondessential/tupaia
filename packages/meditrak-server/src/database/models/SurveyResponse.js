@@ -40,15 +40,6 @@ class SurveyResponseType extends DatabaseType {
     return entity.isTrackedEntity();
   }
 
-  async isEventBased() {
-    const survey = await this.survey();
-    if (survey.can_repeat) {
-      return true;
-    }
-
-    return this.isForTrackedEntity();
-  }
-
   timezoneAwareSubmissionTime() {
     return momentTimezone(this.submission_time).tz(this.timezone);
   }
@@ -64,6 +55,53 @@ export class SurveyResponseModel extends DatabaseModel {
   }
 
   isDeletableViaApi = true;
+
+  /**
+   * Returns the SQL to inclue/exclude event based survey responses from a statement that has
+   * already JOINed both survey and entity
+   * @param {boolean} excludeEvents        Whether to query for non-event or event responses
+   * @param {boolean} [isFirstClause=true] If true the clause will start with WHERE, otherwise AND
+   */
+  getEventBasedQueryClause = (includeEvents, isFirstClause = false) => {
+    const orgUnitEntityTypes = Object.values(this.otherModels.entity.orgUnitEntityTypes);
+    if (includeEvents)
+      return `
+      ${isFirstClause ? 'WHERE' : 'AND'}
+        survey.can_repeat = ${includeEvents ? 'TRUE' : 'FALSE'}
+      AND
+        entity.type ${includeEvents ? 'NOT IN' : 'IN'} (${orgUnitEntityTypes
+        .map(t => `'${t}'`)
+        .join(',')})
+    `;
+  };
+
+  getOrgUnitEntityTypes = () => {
+    const orgUnitEntityTypes = Object.values(this.otherModels.entity.orgUnitEntityTypes);
+    return `(${orgUnitEntityTypes.map(t => `'${t}'`).join(',')})`;
+  };
+
+  getOnlyEventsQueryClause = () => `
+    (survey.can_repeat = 'TRUE' OR entity.type IN ${this.getOrgUnitEntityTypes()})
+  `;
+
+  getExcludeEventsQueryClause = () => `
+    (survey.can_repeat = 'FALSE' AND entity.type NOT IN ${this.getOrgUnitEntityTypes()})
+  `;
+
+  async checkIsEventBased(surveyResponseId) {
+    const result = await this.database.executeSql(
+      `
+      SELECT count(*)
+      FROM survey_response
+      JOIN survey ON survey.id = survey_response.survey_id
+      JOIN entity ON entity.id = survey_response.entity_id
+      WHERE survey_response.id = ?
+      AND ${this.getOnlyEventsQueryClause()}
+    `,
+      [surveyResponseId],
+    );
+    return result[0].count === 1;
+  }
 
   static onChange = async (change, model) => {
     const modelDetails = {

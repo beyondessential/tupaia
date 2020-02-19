@@ -42,6 +42,9 @@ export const JOIN_TYPES = {
 // keeping all the tests passing
 const HANDLER_DEBOUNCE_DURATION = 250;
 
+// some part of knex or node-pg struggles with too many bindings, so we batch them in some places
+const MAX_BINDINGS_PER_QUERY = 2500; // errors occurred at around 5000 bindings in testing
+
 export class TupaiaDatabase {
   constructor(transactingConnection) {
     autobind(this);
@@ -67,6 +70,8 @@ export class TupaiaDatabase {
 
     this.handlerLock = new Multilock();
   }
+
+  maxBindingsPerQuery = MAX_BINDINGS_PER_QUERY;
 
   destroy() {
     this.changeChannel.close();
@@ -316,13 +321,17 @@ export class TupaiaDatabase {
     return this.delete(recordType, { id });
   }
 
+  async markRecordsAsChanged(recordType, records) {
+    this.changeChannel.publishRecordUpdates(recordType, records);
+  }
+
   /**
    * Force a change to be recorded against the records matching the search criteria, and return
    * those records.
    */
   async markAsChanged(recordType, where, options) {
     const records = await this.find(recordType, where, options);
-    this.changeChannel.publishRecordUpdates(recordType, records);
+    this.markRecordsAsChanged(recordType, records);
     return records;
   }
 

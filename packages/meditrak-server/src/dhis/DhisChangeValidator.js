@@ -31,12 +31,7 @@ export class DhisChangeValidator extends ChangeValidator {
           OR survey_response.user_id IN (${nonPublicDemoLandUsers.map(id => `'${id}'`).join(',')})
         )
         ${
-          excludeEventBased
-            ? `
-              AND survey.can_repeat = FALSE
-              AND entity.type IN ('facility','region','country','world','village')
-              `
-            : ''
+          excludeEventBased ? `AND ${this.models.surveyResponse.getExcludeEventsQueryClause()}` : ''
         }
         AND survey_response.id IN (${surveyResponseIds.map(id => `'${id}'`).join(',')});
       `,
