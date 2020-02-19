@@ -81,11 +81,11 @@ export class SurveyResponseModel extends DatabaseModel {
   };
 
   getOnlyEventsQueryClause = () => `
-    (survey.can_repeat = 'TRUE' OR entity.type IN ${this.getOrgUnitEntityTypes()})
+    (survey.can_repeat = 'TRUE' OR entity.type NOT IN ${this.getOrgUnitEntityTypes()})
   `;
 
   getExcludeEventsQueryClause = () => `
-    (survey.can_repeat = 'FALSE' AND entity.type NOT IN ${this.getOrgUnitEntityTypes()})
+    (survey.can_repeat = 'FALSE' AND entity.type IN ${this.getOrgUnitEntityTypes()})
   `;
 
   async checkIsEventBased(surveyResponseId) {
