@@ -41,8 +41,10 @@ const markRecordsForResync = async (changeChannel, recordType, records) => {
 };
 
 exports.up = async function(db) {
-  // delete all Tonga specific sync log records, as the data has been manually deleted from dhis2
-  await db.runSql(`
+  const changeChannel = new DatabaseChangeChannel();
+  try {
+    // delete all Tonga specific sync log records, as the data has been manually deleted from dhis2
+    await db.runSql(`
     DELETE FROM dhis_sync_log
     USING survey_response, survey
     WHERE dhis_sync_log.record_type = 'survey_response'
@@ -59,12 +61,11 @@ exports.up = async function(db) {
     AND survey.integration_metadata->'dhis2'->'isDataRegional' = 'false';
   `);
 
-  // publish changes for every tonga specific survey response and answer that isn't already in
-  // the sync queue
-  // n.b. this requires a meditrak-server instance to be running and listening for the changes
-  const changeChannel = new DatabaseChangeChannel();
-  const surveyResponsesNotAlreadyInSyncQueue = (
-    await db.runSql(`
+    // publish changes for every tonga specific survey response and answer that isn't already in
+    // the sync queue
+    // n.b. this requires a meditrak-server instance to be running and listening for the changes
+    const surveyResponsesNotAlreadyInSyncQueue = (
+      await db.runSql(`
     SELECT survey_response.*
     FROM survey_response
     JOIN survey ON survey_response.survey_id = survey.id
@@ -72,16 +73,16 @@ exports.up = async function(db) {
     WHERE survey.integration_metadata->'dhis2'->'isDataRegional' = 'false'
     AND dhis_sync_queue.id IS NULL;
   `)
-  ).rows;
+    ).rows;
 
-  await markRecordsForResync(
-    changeChannel,
-    'survey_response',
-    surveyResponsesNotAlreadyInSyncQueue,
-  );
+    await markRecordsForResync(
+      changeChannel,
+      'survey_response',
+      surveyResponsesNotAlreadyInSyncQueue,
+    );
 
-  const answersNotAlreadyInSyncQueue = (
-    await db.runSql(`
+    const answersNotAlreadyInSyncQueue = (
+      await db.runSql(`
     SELECT answer.*
     FROM answer
     JOIN survey_response ON answer.survey_response_id = survey_response.id
@@ -92,13 +93,11 @@ exports.up = async function(db) {
     AND survey.code NOT IN ('CD3a', 'CD3b') -- non org unit entity surveys, event based
     AND dhis_sync_queue.id IS NULL;
   `)
-  ).rows;
+    ).rows;
 
-  await markRecordsForResync(changeChannel, 'answer', answersNotAlreadyInSyncQueue);
+    await markRecordsForResync(changeChannel, 'answer', answersNotAlreadyInSyncQueue);
 
-  changeChannel.close();
-
-  return db.runSql(`
+    await db.runSql(`
     -- update survey responses and answers separately as too many at once causes duplicate change times
     UPDATE dhis_sync_queue
     SET is_deleted = false, priority = 2 -- use priority 2 not to block up new data syncing through
@@ -119,6 +118,9 @@ exports.up = async function(db) {
     AND survey_response.survey_id = survey.id
     AND survey.integration_metadata->'dhis2'->'isDataRegional' = 'false';
   `);
+  } finally {
+    changeChannel.close();
+  }
 };
 
 exports.down = function(db) {
