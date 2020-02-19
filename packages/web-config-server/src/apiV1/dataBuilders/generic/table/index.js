@@ -6,3 +6,4 @@ export {
   tableOfValuesForOrgUnits,
 } from './tableOfDataValues';
 export { tableOfEvents } from './tableOfEvents';
+export { simpleTableOfEvents } from './simpleTableOfEvents';
