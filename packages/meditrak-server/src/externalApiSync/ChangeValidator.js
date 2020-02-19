@@ -14,6 +14,7 @@ export class ChangeValidator extends SyncQueueChangesManipulator {
     // If there is a sync log or queue record with this record_id, the delete record must be
     // valid for the dhis sync queue
     const deleteChanges = this.getDeleteChanges(changes);
+    if (deleteChanges.length === 0) return [];
     const recordIds = this.getRecordIds(deleteChanges);
     const validDeleteIds = [];
     await Promise.all(
