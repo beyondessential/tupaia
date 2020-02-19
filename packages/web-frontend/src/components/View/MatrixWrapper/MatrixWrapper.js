@@ -72,6 +72,7 @@ const buildMatrixDataFromViewContent = viewContent => {
   const {
     columns: columnData,
     rows,
+    categoryRows,
     categories = [],
     presentationOptions = {},
     categoryPresentationOptions = {},
@@ -96,10 +97,6 @@ const buildMatrixDataFromViewContent = viewContent => {
     rows: formattedRows.filter(row => row.categoryId === key),
   }));
 
-  const categoryData = categories.map(({ key }) => {
-    return rows.find(r => r.categoryKey === key);
-  });
-
   let columns = [];
   columnData.forEach(columnDefinition => {
     if (columnDefinition.columns) {
@@ -118,9 +115,9 @@ const buildMatrixDataFromViewContent = viewContent => {
   const calculatedStyles = getStyles(isExporting, maximumCellCharacters);
 
   return {
-    rows: rowsInCategories.length > 0 ? rowsInCategories : formattedRows,
-    categoryData,
     columns,
+    rows: rowsInCategories.length > 0 ? rowsInCategories : formattedRows,
+    categoryRows,
     maximumCellCharacters,
     maximumColumnWidth: calculatedStyles.CELL_WIDTH,
     calculatedStyles,
@@ -161,6 +158,7 @@ export class MatrixWrapper extends Component {
 
   componentDidUpdate(prevProps) {
     const { viewContent, isExporting } = this.props;
+
     if (prevProps.viewContent !== viewContent) {
       const expandedMatrixData = buildMatrixDataFromViewContent({ ...viewContent, isExporting });
       this.setState({
@@ -219,7 +217,7 @@ export class MatrixWrapper extends Component {
     const { expandedMatrixData, offsetWidth } = this.state;
     const {
       rows,
-      categoryData,
+      categoryRows,
       columns,
       calculatedStyles,
       presentationOptions,
@@ -243,7 +241,7 @@ export class MatrixWrapper extends Component {
     return (
       <Matrix
         rows={rows}
-        categoryData={categoryData}
+        categoryRows={categoryRows}
         columns={columns}
         numberOfColumnsPerPage={numberOfColumnsPerPage}
         calculatedStyles={calculatedStyles}

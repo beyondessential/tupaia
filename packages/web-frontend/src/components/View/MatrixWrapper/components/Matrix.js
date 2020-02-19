@@ -341,7 +341,7 @@ export class Matrix extends PureComponent {
     return text.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1;
   }
 
-  recursivelyRenderRowData(rows, categoryData, keyPrefix = '', depth = 1) {
+  recursivelyRenderRowData(rows, categoryRows, keyPrefix = '', depth = 1) {
     const styles = this.props.calculatedStyles;
     const { startColumn, highlightedRow, highlightedColumn } = this.state;
     const { numberOfColumnsPerPage } = this.props;
@@ -358,7 +358,7 @@ export class Matrix extends PureComponent {
           const isRowExpandedByUser = this.isRowExpanded(key);
           const childRows =
             isSearchActive || isRowExpandedByUser
-              ? this.recursivelyRenderRowData(row.rows, categoryData, key, depth + 1)
+              ? this.recursivelyRenderRowData(row.rows, categoryRows, key, depth + 1)
               : [];
 
           const isEmpty = childRows.length === 0;
@@ -368,21 +368,12 @@ export class Matrix extends PureComponent {
           }
           const isExpanded = isSearchActive || isRowExpandedByUser;
 
-          const categoryColumns = categoryData
-            .filter(x => x)
-            .find(c => getCategoryKey(c.categoryKey, index) === key);
-
-          const categoryColumnData = categoryColumns
-            ? Object.values(categoryColumns)
-                .filter(x => x !== row.categoryId)
-                .map(y => ({ value: y }))
-            : [];
-
           return (
             <RowGroup
               key={key}
               rowId={key}
-              columns={categoryColumnData}
+              columns={categoryRows}
+              columnTitles={columns}
               isExpanded={isExpanded}
               depth={depth}
               indentSize={CATEGORY_INDENT}
@@ -475,7 +466,6 @@ export class Matrix extends PureComponent {
     const { selectedCellType, selectedCellDescription } = this.state;
     const { presentationOptions, categoryPresentationOptions } = this.props;
     const allPresentationOptions = { ...presentationOptions, ...categoryPresentationOptions };
-
     const presentationOption = findByKey(allPresentationOptions, selectedCellType, false);
     if (!presentationOption) {
       return null;
@@ -505,9 +495,9 @@ export class Matrix extends PureComponent {
   }
 
   render() {
-    const { rows, categoryData } = this.props;
+    const { rows, categoryRows } = this.props;
     const styles = this.props.calculatedStyles;
-    const renderedRows = this.recursivelyRenderRowData(rows, categoryData);
+    const renderedRows = this.recursivelyRenderRowData(rows, categoryRows);
     const rowDisplay =
       renderedRows && renderedRows.length > 0 ? renderedRows : this.renderEmptyMessage();
 

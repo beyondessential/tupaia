@@ -12,6 +12,11 @@ import shallowEqual from 'shallowequal';
 
 import { Cell } from './Cell';
 
+const getDotColorFromRange = (presentationOptions, value) =>
+  Object.values(presentationOptions).find(({ min, max }) => value >= min && value <= max) || {
+    color: '',
+  };
+
 export default class RowGroup extends Component {
   shouldComponentUpdate(nextProps) {
     const currentProps = this.props;
@@ -48,13 +53,12 @@ export default class RowGroup extends Component {
     const {
       rowId,
       columns,
+      columnTitles,
       children,
       isExpanded,
       depth,
       indentSize,
       categoryLabel,
-      startColumn,
-      numberOfColumnsPerPage,
       onToggleRowExpanded,
       styles,
       onCellMouseEnter,
@@ -65,8 +69,6 @@ export default class RowGroup extends Component {
       isRowHighlighted,
       highlightedColumn,
     } = this.props;
-
-    const displayedColumnCount = startColumn + numberOfColumnsPerPage;
 
     return (
       <div style={isExpanded ? styles.categorySectionExpanded : null}>
@@ -81,8 +83,11 @@ export default class RowGroup extends Component {
             <span style={styles.collapsibleHeaderInner}>{categoryLabel}</span>
           </button>
           <div style={styles.gridCellChangerActive} />
-          {columns.slice(startColumn, displayedColumnCount).map((column, index) => {
+
+          {columnTitles.map((column, index) => {
             const isCellActive = index === highlightedColumn && isRowHighlighted;
+            const value = columns[categoryLabel][column.key] || '';
+            const color = getDotColorFromRange(presentationOptions, value);
 
             return (
               <div
@@ -94,9 +99,9 @@ export default class RowGroup extends Component {
                   cellKey={index}
                   onMouseEnter={() => onCellMouseEnter(index, rowId)}
                   onMouseLeave={() => onCellMouseLeave()}
-                  onClick={() => onCellClick(column.value.label, column.value.description)}
-                  color={column.value.color}
-                  value={column.value.value || ''}
+                  onClick={() => onCellClick(color.label, value.toString())}
+                  color={color.color}
+                  value={value}
                   style={styles.gridCell}
                   columnActiveStripStyle={styles.columnActiveStrip}
                   isActive={isCellActive}
@@ -117,7 +122,7 @@ export default class RowGroup extends Component {
 
 RowGroup.propTypes = {
   rowId: PropTypes.string,
-  columns: PropTypes.arrayOf(PropTypes.object),
+  columns: PropTypes.shape({}),
   children: PropTypes.node,
   isExpanded: PropTypes.bool,
   depth: PropTypes.number,
