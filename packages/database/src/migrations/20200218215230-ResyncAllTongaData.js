@@ -88,6 +88,8 @@ exports.up = async function(db) {
     JOIN survey ON survey_response.survey_id = survey.id
     LEFT JOIN dhis_sync_queue ON answer.id = record_id
     WHERE survey.integration_metadata->'dhis2'->'isDataRegional' = 'false'
+    AND survey.can_repeat = false -- repeating surveys are event based, don't need answers in sync queue
+    AND survey.code NOT IN ('CD3a', 'CD3b') -- non org unit entity surveys, event based
     AND dhis_sync_queue.id IS NULL;
   `)
   ).rows;
