@@ -321,7 +321,7 @@ export class TupaiaDatabase {
     return this.delete(recordType, { id });
   }
 
-  async markRecordsAsChanged(recordType, records) {
+  markRecordsAsChanged(recordType, records) {
     this.changeChannel.publishRecordUpdates(recordType, records);
   }
 

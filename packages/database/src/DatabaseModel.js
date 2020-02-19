@@ -220,7 +220,7 @@ export class DatabaseModel {
     return this.update(this.getIdClause(id), fieldsToUpdate);
   }
 
-  async markRecordsAsChanged(records) {
+  markRecordsAsChanged(records) {
     return this.database.markRecordsAsChanged(this.databaseType, records);
   }
 
