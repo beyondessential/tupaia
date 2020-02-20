@@ -164,7 +164,7 @@ export class MarkerLayer extends Component {
 
     // debugger;
     const processedData = measureData
-      .filter(data => data.coordinates && data.coordinates.length === 2)
+      .filter(data => data.location && data.location.point)
       .map(data => getMeasureDisplayInfo(data, measureOptions, hiddenMeasures))
       .filter(displayInfo => !displayInfo.isHidden);
 
@@ -191,6 +191,7 @@ export class MarkerLayer extends Component {
           key={code}
           markerRef={ref => this.addMarkerRef(code, ref)}
           radiusScaleFactor={radiusScaleFactor}
+          coordinates={data.location.point}
           {...data}
         >
           {popup}
@@ -217,9 +218,15 @@ const mapStateToProps = state => {
   } = state.map;
   const { contractedWidth, expandedWidth } = state.dashboard;
 
-  const measureDataWithCoords = measureData.reduce([], (array, value) =>
-    array.concat([{ ...value, ...state.orgUnit.orgUnitMap[value.orgUnitCode] }]),
-  );
+  const measureDataWithCoords = measureData
+    ? measureData.reduce(
+        (array, value) =>
+          array.concat([{ ...value, ...state.orgUnit.orgUnitMap[value.organisationUnitCode] }]),
+        [],
+      )
+    : [];
+
+  // debugger;
 
   return {
     measureId,

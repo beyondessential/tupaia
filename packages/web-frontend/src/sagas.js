@@ -672,6 +672,15 @@ function* fetchMeasureInfo(measureId, organisationUnitCode, oldOrganisationUnitC
     const measureInfo = processMeasureInfo(measureInfoResponse);
 
     yield put(fetchMeasureInfoSuccess(measureInfo, countryCode));
+
+    if (measureInfo.measureData) {
+      for (let i = 0; i < measureInfo.measureData.length; i++) {
+        const data = measureInfo.measureData[i];
+        yield fetchOrgUnitData({
+          organisationUnit: { organisationUnitCode: data.organisationUnitCode },
+        });
+      }
+    }
   } catch (error) {
     console.error(error);
     yield put(fetchMeasureInfoError(error));

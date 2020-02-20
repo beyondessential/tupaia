@@ -158,16 +158,8 @@ export class Entity extends BaseModel {
         JOIN   entity p ON p.parent_id = c.id
       )
         SELECT
-          children.id,
-          children.code,
-          ST_AsGeoJSON(children.point) AS point,
-          clinic.category_code,
-          clinic.type_name,
-          clinic.type,
-          children.name
+          children.code
         FROM children
-        INNER JOIN clinic
-          ON clinic.code = children.code
         WHERE
           children.type = ?;
     `,
