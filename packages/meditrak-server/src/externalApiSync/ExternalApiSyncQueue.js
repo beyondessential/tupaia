@@ -17,6 +17,7 @@ export class ExternalApiSyncQueue {
     detailGenerator,
     syncQueueModel,
     sideEffectHandler,
+    syncQueueKey,
   ) {
     autobind(this);
     this.models = models;
@@ -26,7 +27,9 @@ export class ExternalApiSyncQueue {
     this.sideEffectHandler = sideEffectHandler;
     this.unprocessedChanges = [];
     this.isProcessing = false;
-    subscriptionTypes.forEach(type => models.addChangeHandlerForCollection(type, this.add));
+    subscriptionTypes.forEach(type =>
+      models.addChangeHandlerForCollection(type, this.add, syncQueueKey),
+    );
   }
 
   /**

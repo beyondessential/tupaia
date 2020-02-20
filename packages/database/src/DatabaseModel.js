@@ -11,10 +11,9 @@ export class DatabaseModel {
     this.database = database;
     // Add change handler to database if defined (generally for the singleton instance of a model)
     if (onChange) {
-      this.database.addChangeHandlerForCollection(this.DatabaseTypeClass.databaseType, change => {
-        if (change.skipModelHooks) return;
-        onChange(change, this);
-      });
+      this.database.addChangeHandlerForCollection(this.DatabaseTypeClass.databaseType, change =>
+        onChange(change, this),
+      );
     }
 
     // this.schema contains information about the columns on the table in the database, e.g.:

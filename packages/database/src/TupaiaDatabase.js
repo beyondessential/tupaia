@@ -78,17 +78,25 @@ export class TupaiaDatabase {
     this.connection.destroy();
   }
 
-  addChangeHandlerForCollection(collectionName, changeHandler) {
-    this.getChangeHandlersForCollection(collectionName).push(changeHandler);
+  addChangeHandlerForCollection(collectionName, changeHandler, key = generateId()) {
+    this.getChangeHandlersForCollection(collectionName)[key] = changeHandler;
   }
 
   async notifyChangeHandlers(change) {
     const unlock = this.handlerLock.createLock(change.record_id);
+    const getHandlers = () => {
+      const { handler_key: specificHandlerKey, record_type: recordType } = change;
+      const handlersForCollection = this.getChangeHandlersForCollection(recordType);
+      if (specificHandlerKey) {
+        return [handlersForCollection[specificHandlerKey]];
+      }
+      return Object.values(handlersForCollection);
+    };
+    const handlers = getHandlers();
     try {
-      const changeHandlersForCollection = this.getChangeHandlersForCollection(change.record_type);
-      for (let i = 0; i < changeHandlersForCollection.length; i++) {
+      for (let i = 0; i < handlers.length; i++) {
         try {
-          await changeHandlersForCollection[i](change);
+          await handlers[i](change);
         } catch (e) {
           winston.error(e);
         }
@@ -105,7 +113,7 @@ export class TupaiaDatabase {
   getChangeHandlersForCollection(collectionName) {
     // Instantiate the array if no change handlers currently exist for the collection
     if (!this.changeHandlers[collectionName]) {
-      this.changeHandlers[collectionName] = [];
+      this.changeHandlers[collectionName] = {};
     }
     return this.changeHandlers[collectionName];
   }

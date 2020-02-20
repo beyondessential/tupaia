@@ -16,6 +16,7 @@ exports.setup = function(options, seedLink) {
   seed = seedLink;
 };
 
+const SYNC_QUEUE_KEY = 'dhisSyncQueue';
 const CHANGE_BATCH_SIZE = 1000;
 
 const resolveAfterXChanges = (changeChannel, resolve, x) => {
@@ -35,7 +36,7 @@ const markRecordsForResync = async (changeChannel, recordType, records) => {
     await new Promise(resolve => {
       const batchOfRecords = records.slice(batchStartIndex, batchStartIndex + CHANGE_BATCH_SIZE);
       resolveAfterXChanges(changeChannel, resolve, batchOfRecords.length);
-      changeChannel.publishRecordUpdates(recordType, batchOfRecords, { skipModelHooks: true });
+      changeChannel.publishRecordUpdates(recordType, batchOfRecords, SYNC_QUEUE_KEY);
     });
   }
 };
