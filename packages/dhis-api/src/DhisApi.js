@@ -12,8 +12,6 @@ import { DhisFetcher } from './DhisFetcher';
 import { DHIS2_RESOURCE_TYPES } from './types';
 import { getEventDataValueMap } from './getEventDataValueMap';
 import { replaceElementIdsWithCodesInEvents } from './replaceElementIdsWithCodesInEvents';
-import { translateEventResponse } from './translateEventResponse';
-import { translateDataValueResponse } from './translateDataValueResponse';
 import { RESPONSE_TYPES, getDiagnosticsFromResponse } from './responseUtils';
 import { buildAnalyticQueries } from './buildAnalyticQueries';
 
@@ -86,11 +84,14 @@ export class DhisApi {
   async getRecords({ type, ids, codes, filter, fields }) {
     const query = { fields, filter: filter || { comparator: 'in' } };
     if (codes) {
-      query.filter.code = `[${codes.join(',')}]`;
+      const uniqueCodes = [...new Set(codes)];
+      query.filter.code = `[${uniqueCodes.join(',')}]`;
     }
     if (ids) {
-      query.filter.id = `[${ids.join(',')}]`;
+      const uniqueIds = [...new Set(ids)];
+      query.filter.id = `[${uniqueIds.join(',')}]`;
     }
+
     const response = await this.fetch(type, query);
     return response[type];
   }
@@ -340,25 +341,7 @@ export class DhisApi {
       }),
     );
 
-    return translateDataValueResponse({ headers, rows, metaData });
-  }
-
-  async getEventAnalytics(query) {
-    const { programCodes } = query;
-
-    let events;
-    if (programCodes) {
-      const nestedEvents = [
-        ...(await Promise.all(
-          programCodes.map(programCode => this.getEvents({ ...query, programCode })),
-        )),
-      ];
-
-      events = [].concat(...nestedEvents); // Flatten all event results into a single array
-    } else {
-      events = await this.getEvents(query);
-    }
-    return translateEventResponse(this, events, query);
+    return { headers, rows, metaData };
   }
 
   async buildDataValuesInSetsQuery(originalQuery) {

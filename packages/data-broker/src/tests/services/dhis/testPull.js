@@ -17,10 +17,7 @@ const basicOptions = {
   dataServices: [{ isDataRegional: true }],
   organisationUnitCode: 'TO',
 };
-const basicMetadata = {
-  dataElementCodeToName: {},
-  dataElementIdToCode: {},
-};
+const basicMetadata = { dataElementCodeToName: {} };
 
 export const testPull = () => {
   beforeEach(() => {
@@ -102,12 +99,7 @@ export const testPull = () => {
       const getAnalyticsResponse = {
         results: [{ dataElement: 'DIF01_DHIS', value: 3 }],
         metadata: {
-          dataElementCodeToName: {
-            DIF01_DHIS: 'DIF01 Element',
-          },
-          dataElementIdToCode: {
-            [DATA_ELEMENT_CODE_TO_ID.DIF01_DHIS]: 'DIF01_DHIS',
-          },
+          dataElementCodeToName: { DIF01_DHIS: 'DIF01 Element' },
         },
       };
       dhisApi = stubDhisApi({ getAnalyticsResponse });
@@ -122,12 +114,7 @@ export const testPull = () => {
       return expect(response).to.deep.equal({
         results: [{ dataElement: 'DIF01', value: 3 }],
         metadata: {
-          dataElementCodeToName: {
-            DIF01: 'DIF01 Element',
-          },
-          dataElementIdToCode: {
-            [DATA_ELEMENT_CODE_TO_ID.DIF01_DHIS]: 'DIF01',
-          },
+          dataElementCodeToName: { DIF01: 'DIF01 Element' },
         },
       });
     });
