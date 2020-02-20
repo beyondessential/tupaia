@@ -39,7 +39,6 @@ const analytics = {
     },
   ],
   metadata: {
-    organisationUnit: { World: 'World' },
     dataElementCodeToName: { WHOSPAR: 'WHOSPAR' },
   },
 };

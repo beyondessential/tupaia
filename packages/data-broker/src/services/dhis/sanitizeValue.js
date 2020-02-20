@@ -1,4 +1,9 @@
 /**
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+
+/**
  * @see https://docs.dhis2.org/master/en/developer/html/webapi_csv_metadata_import.html#webapi_csv_data_elements
  */
 const VALUE_TYPES = {

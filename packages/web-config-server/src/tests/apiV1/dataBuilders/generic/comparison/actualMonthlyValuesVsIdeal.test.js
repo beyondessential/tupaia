@@ -99,9 +99,6 @@ const actualMetadata = {
     FIJIINV011: 'Endoscopy inventory: Haemoclips (Actual inventory)',
     FIJIINV023: 'Endoscopy inventory: Balloon dilators (Actual inventory)',
   },
-  organisationUnit: {
-    TO_VHP: 'Vaiola Hospital',
-  },
 };
 
 const idealResults = [
@@ -138,9 +135,6 @@ const idealMetadata = {
     ANZIDEAL020: 'Endoscopy inventory: Oesophageal stent (Ideal inventory)',
     ANZIDEAL099: 'Endoscopy inventory: Haemoclips (Ideal inventory)',
     ANZIDEAL000: 'Endoscopy inventory: Balloon dilators (Ideal inventory)',
-  },
-  organisationUnit: {
-    TO_VHP: 'Vaiola Hospital',
   },
 };
 
