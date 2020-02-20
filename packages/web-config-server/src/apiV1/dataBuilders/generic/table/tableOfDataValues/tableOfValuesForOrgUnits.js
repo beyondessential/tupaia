@@ -3,6 +3,8 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
+import { reduceToDictionary } from '@tupaia/utils';
+import { Entity } from '/models';
 import { TableOfDataValuesBuilder } from './tableOfDataValues';
 
 import { stripFromStart } from '@tupaia/utils';
@@ -104,16 +106,11 @@ class TableOfValuesForOrgUnitsBuilder extends TableOfDataValuesBuilder {
   }
 
   async replaceOrgUnitCodesWithNames(columns) {
-    const columnData = [];
-    for (const { title, key } of columns) {
-      const organisationUnit = await this.dhisApi.getOrganisationUnits({
-        filter: [{ code: title }],
-        fields: 'id, name',
-      });
-      columnData.push({ key, title: organisationUnit[0].name });
-    }
+    const orgUnitCodes = columns.map(c => c.title);
+    const orgUnits = await Entity.find({ code: orgUnitCodes });
+    const orgUnitCodesToName = reduceToDictionary(orgUnits, 'code', 'name');
 
-    return columnData;
+    return columns.map(({ title, key }) => ({ key, title: orgUnitCodesToName[title] }));
   }
 }
 

@@ -82,7 +82,7 @@ export default class RowGroup extends Component {
             <span style={styles.collapsibleHeaderInner}>{categoryLabel}</span>
           </button>
           <div style={styles.gridCellChangerActive} />
-          {/* columnTitles.map((column, index) => { */}
+
           {columns.slice(startColumn, displayedColumnCount).map((column, index) => {
             const isCellActive = index === highlightedColumn && isRowHighlighted;
             const value = columnData ? columnData[categoryLabel][column.key] : '';
