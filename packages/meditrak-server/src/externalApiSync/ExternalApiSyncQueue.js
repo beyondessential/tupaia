@@ -41,7 +41,6 @@ export class ExternalApiSyncQueue {
   };
 
   async persistToSyncQueue(changes, changeDetails) {
-    console.log('Persisting', changes.length);
     await Promise.all(
       changes.map(async (change, i) => {
         const changeRecord = {
@@ -73,15 +72,12 @@ export class ExternalApiSyncQueue {
 
   processDeletes = async changes => {
     const validDeletes = await this.validator.getValidDeletes(changes);
-    console.log('Got', validDeletes.length, 'valid deletes');
     return this.persistToSyncQueue(validDeletes);
   };
 
   processUpdates = async changes => {
     const validUpdates = await this.validator.getValidUpdates(changes);
-    console.log('Got', validUpdates.length, 'valid updates', validUpdates[0]);
     const changeDetails = await this.detailGenerator.generateDetails(validUpdates);
-    console.log('Generated', changeDetails.length, 'change details');
     return this.persistToSyncQueue(validUpdates, changeDetails);
   };
 
@@ -98,11 +94,8 @@ export class ExternalApiSyncQueue {
       return true;
     });
     await this.triggerSideEffects(uniqueChanges);
-    console.log('Going to process', uniqueChanges.length, changes.length);
     await this.processDeletes(uniqueChanges);
-    console.log('Processed deletes');
     await this.processUpdates(uniqueChanges);
-    console.log('Processed updates');
     if (this.unprocessedChanges.length > 0) {
       this.processChangesIntoDb();
     } else {
