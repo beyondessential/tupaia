@@ -48,12 +48,9 @@ export class DhisTranslator {
     };
 
     // add category option combo code if defined
-    const { categoryOptionComboCode } = dataSource;
-    if (categoryOptionComboCode) {
-      outboundDataValue.categoryOptionCombo = await api.getIdFromCode(
-        api.getResourceTypes().CATEGORY_OPTION_COMBO,
-        categoryOptionComboCode,
-      );
+    const { categoryOptionCombo } = dataSource.config;
+    if (categoryOptionCombo) {
+      outboundDataValue.categoryOptionCombo = categoryOptionCombo;
     }
 
     return outboundDataValue;
