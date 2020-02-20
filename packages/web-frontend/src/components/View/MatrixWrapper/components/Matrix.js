@@ -372,8 +372,8 @@ export class Matrix extends PureComponent {
             <RowGroup
               key={key}
               rowId={key}
-              columns={categoryRows}
-              columnTitles={columns}
+              columns={columns}
+              columnData={categoryRows}
               isExpanded={isExpanded}
               depth={depth}
               indentSize={CATEGORY_INDENT}

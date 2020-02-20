@@ -49,7 +49,7 @@ export default class RowGroup extends Component {
     const {
       rowId,
       columns,
-      columnTitles,
+      columnData,
       children,
       isExpanded,
       depth,
@@ -64,7 +64,10 @@ export default class RowGroup extends Component {
       isUsingDots,
       isRowHighlighted,
       highlightedColumn,
+      startColumn,
+      numberOfColumnsPerPage,
     } = this.props;
+    const displayedColumnCount = startColumn + numberOfColumnsPerPage;
 
     return (
       <div style={isExpanded ? styles.categorySectionExpanded : null}>
@@ -79,10 +82,10 @@ export default class RowGroup extends Component {
             <span style={styles.collapsibleHeaderInner}>{categoryLabel}</span>
           </button>
           <div style={styles.gridCellChangerActive} />
-
-          {columnTitles.map((column, index) => {
+          {/* columnTitles.map((column, index) => { */}
+          {columns.slice(startColumn, displayedColumnCount).map((column, index) => {
             const isCellActive = index === highlightedColumn && isRowHighlighted;
-            const value = columns[categoryLabel][column.key] || '';
+            const value = columnData ? columnData[categoryLabel][column.key] : '';
             const color = getDotColorFromRange(presentationOptions, value);
 
             return (
