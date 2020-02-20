@@ -88,7 +88,9 @@ export class TupaiaDatabase {
       const { handler_key: specificHandlerKey, record_type: recordType } = change;
       const handlersForCollection = this.getChangeHandlersForCollection(recordType);
       if (specificHandlerKey) {
-        return [handlersForCollection[specificHandlerKey]];
+        return handlersForCollection[specificHandlerKey]
+          ? [handlersForCollection[specificHandlerKey]]
+          : [];
       }
       return Object.values(handlersForCollection);
     };
