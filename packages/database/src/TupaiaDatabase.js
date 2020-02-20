@@ -46,6 +46,7 @@ export class TupaiaDatabase {
   constructor(transactingConnection) {
     autobind(this);
     this.changeHandlers = {};
+    this.pingListeners = {};
 
     // If this instance is not for a specific transaction, it is the singleton instance
     this.isSingleton = !transactingConnection;
@@ -60,6 +61,7 @@ export class TupaiaDatabase {
       if (this.isSingleton) {
         this.changeListener = new PGPubSub(getConnectionConfig());
         this.changeListener.addChannel('change', this.notifyChangeHandlers);
+        this.changeListener.addChannel('ping', this.notifyPingListeners);
       }
       return true;
     };
@@ -100,6 +102,39 @@ export class TupaiaDatabase {
     }
   }
 
+  async pingPubSub(timeout = 250, retries = 4) {
+    return new Promise((resolve, reject) => {
+      let tries = 0;
+      let nextRequest;
+      const id = generateId();
+      this.pingListeners[id] = result => {
+        delete this.pingListeners[id];
+        clearTimeout(nextRequest);
+        resolve(result);
+      };
+
+      const pingRequest = () => {
+        winston.info(`pubsub ping attempt: ${tries + 1} of ${retries}`);
+        this.executeSql("NOTIFY ping, 'true'");
+        if (tries < retries) {
+          nextRequest = setTimeout(pingRequest, timeout);
+        } else {
+          delete this.pingListeners[id];
+          reject(new Error(`pubsub ping timed out after ${tries} attempts of ${timeout}ms`));
+        }
+        tries++;
+      };
+
+      pingRequest();
+    });
+  }
+
+  notifyPingListeners(result) {
+    Object.values(this.pingListeners).forEach(listener => {
+      listener(result);
+    });
+  }
+
   async waitForAllChangeHandlers() {
     return this.handlerLock.waitWithDebounce(HANDLER_DEBOUNCE_DURATION);
   }
@@ -119,7 +154,9 @@ export class TupaiaDatabase {
   }
 
   async fetchSchemaForTable(databaseType) {
-    await this.checkConnection();
+    if (!this.connection) {
+      await this.connectionPromise;
+    }
     return this.connection(databaseType).columnInfo();
   }
 
@@ -146,7 +183,9 @@ export class TupaiaDatabase {
    * Asynchronously await the database connection to be made, and then build the query as per normal
    */
   async queryWhenConnected(...args) {
-    await this.checkConnection();
+    if (!this.connection) {
+      await this.connectionPromise;
+    }
     return buildQuery(this.connection, ...args);
   }
 
@@ -372,7 +411,9 @@ export class TupaiaDatabase {
    * Conditions for the sum query.
    */
   async sum(table, fields = [], where = {}) {
-    await this.checkConnection();
+    if (!this.connection) {
+      await this.connectionPromise;
+    }
 
     const query = this.connection(table);
 
@@ -397,7 +438,10 @@ export class TupaiaDatabase {
    * Use only for situations in which Knex is not able to assemble a query.
    */
   async executeSql(sqlString, parametersToBind) {
-    await this.checkConnection();
+    if (!this.connection) {
+      await this.connectionPromise;
+    }
+
     const result = await this.connection.raw(sqlString, parametersToBind);
     return result.rows;
   }

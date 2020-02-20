@@ -62,11 +62,13 @@ startFeedScraper(models);
  * Notify PM2 that we are ready
  * */
 if (process.send) {
-  database.checkConnection().then(success => {
-    if (success) {
+  database.pingPubSub().then(
+    () => {
+      winston.info('Successfully connected to pubsub service');
       process.send('ready');
-    } else {
-      winston.error('Database connection check failed');
-    }
-  });
+    },
+    reason => {
+      winston.error(reason.message);
+    },
+  );
 }
