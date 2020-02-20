@@ -70,13 +70,6 @@ export class TupaiaDatabase {
     this.handlerLock = new Multilock();
   }
 
-  /**
-   * Checks to ensure we have a connection with the database
-   */
-  async checkConnection() {
-    return this.connection !== undefined || this.connectionPromise;
-  }
-
   destroy() {
     this.changeListener.close();
     this.connection.destroy();
@@ -154,9 +147,7 @@ export class TupaiaDatabase {
   }
 
   async fetchSchemaForTable(databaseType) {
-    if (!this.connection) {
-      await this.connectionPromise;
-    }
+    await this.connectionPromise;
     return this.connection(databaseType).columnInfo();
   }
 
@@ -183,9 +174,7 @@ export class TupaiaDatabase {
    * Asynchronously await the database connection to be made, and then build the query as per normal
    */
   async queryWhenConnected(...args) {
-    if (!this.connection) {
-      await this.connectionPromise;
-    }
+    await this.connectionPromise;
     return buildQuery(this.connection, ...args);
   }
 
