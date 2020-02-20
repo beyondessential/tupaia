@@ -15,16 +15,16 @@ class EventToAnalyticsTranslator {
   }
 
   async translate(events) {
-    const dataElements = await this.getDataElementsInEvents(events);
+    const dataElements = await this.getDataElementsFromEvents(events);
     this.dataElementsByCode = keyBy(dataElements, 'code');
 
     return {
       results: this.transformResults(events),
-      metadata: this.getMetadata(events),
+      metadata: this.getMetadata(),
     };
   }
 
-  async getDataElementsInEvents(events) {
+  async getDataElementsFromEvents(events) {
     const codes = events.reduce(
       (allCodes, event) => allCodes.concat(event.dataValues.map(({ dataElement }) => dataElement)),
       [],
@@ -33,14 +33,13 @@ class EventToAnalyticsTranslator {
     return this.dhisApi.getRecords({
       codes,
       type: DHIS2_RESOURCE_TYPES.DATA_ELEMENT,
-      fields: 'id,code,name,valueType',
+      fields: ['id', 'code', 'name', 'valueType'],
     });
   }
 
   transformResults(events) {
     return events.reduce(
-      (results, event) =>
-        results.concat(this.transformResultsForEvent(event, this.dataElementsByCode)),
+      (results, event) => results.concat(this.transformResultsForEvent(event)),
       [],
     );
   }

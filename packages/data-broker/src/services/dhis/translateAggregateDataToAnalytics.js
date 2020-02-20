@@ -23,13 +23,18 @@ const DIMENSION_TYPES = {
  */
 export const translateAggregateDataToAnalytics = response => {
   const { headers, rows, metaData: metadata } = response;
-  const headerConfig = getHeaderConfig(headers);
+  const columnSpecs = getColumnSpecs(headers);
 
   const results = [];
   rows.forEach(row => {
     const result = {};
-    Object.entries(headerConfig).forEach(([dimension, { columnIndex, valueType }]) => {
-      const value = row[columnIndex];
+    row.forEach((value, columnIndex) => {
+      const { dimension, valueType } = columnSpecs[columnIndex];
+      // Fields that are not specified in our dimension translation are excluded from the results
+      if (!dimension) {
+        return;
+      }
+
       result[dimension] = sanitizeValue(value, valueType);
     });
 
@@ -42,16 +47,16 @@ export const translateAggregateDataToAnalytics = response => {
   };
 };
 
-const getHeaderConfig = headers => {
-  const translatedHeaders = {};
+const getColumnSpecs = headers => {
+  const columnSpecs = {};
   headers.forEach(({ name: dimension, valueType }, columnIndex) => {
     const translatedDimension = DIMENSION_TRANSLATION[dimension];
     if (translatedDimension) {
-      translatedHeaders[translatedDimension] = { columnIndex, valueType };
+      columnSpecs[columnIndex] = { dimension: translatedDimension, valueType };
     }
   });
 
-  return translatedHeaders;
+  return columnSpecs;
 };
 
 const translateMetadata = metadata => {
