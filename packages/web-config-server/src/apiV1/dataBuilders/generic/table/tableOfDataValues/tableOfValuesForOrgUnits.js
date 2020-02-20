@@ -44,18 +44,20 @@ class TableOfValuesForOrgUnitsBuilder extends TableOfDataValuesBuilder {
       (valuesPerElement, { dataElement, value, organisationUnit, metadata }) => {
         const dataElementName = stripFromStart(metadata.name, stripFromDataElementNames);
         const categoryId = rows.find(row => row.rows.includes(dataElementName)).category;
-        const columnKey = builtColumns.find(col => col.title === organisationUnit).key;
+        const orgUnit = builtColumns.find(col => col.title === organisationUnit);
 
-        const existing = valuesPerElement[dataElement] || {
+        const row = valuesPerElement[dataElement] || {
           dataElement: dataElementName,
           categoryId,
         };
 
+        // still want to populate rows without values to display no data
+        if (orgUnit) row[orgUnit.key] = value;
+
         return {
           ...valuesPerElement,
           [dataElement]: {
-            ...existing,
-            [columnKey]: value,
+            ...row,
           },
         };
       },
