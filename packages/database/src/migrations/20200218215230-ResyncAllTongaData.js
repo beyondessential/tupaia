@@ -35,7 +35,7 @@ const markRecordsForResync = async (changeChannel, recordType, records) => {
     await new Promise(resolve => {
       const batchOfRecords = records.slice(batchStartIndex, batchStartIndex + CHANGE_BATCH_SIZE);
       resolveAfterXChanges(changeChannel, resolve, batchOfRecords.length);
-      changeChannel.publishRecordUpdates(recordType, batchOfRecords);
+      changeChannel.publishRecordUpdates(recordType, batchOfRecords, { skipModelHooks: true });
     });
   }
 };

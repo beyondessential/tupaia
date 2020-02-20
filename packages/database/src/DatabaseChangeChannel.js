@@ -16,12 +16,13 @@ export class DatabaseChangeChannel extends PGPubSub {
     this.addChannel('change', handler);
   }
 
-  publishRecordUpdates(recordType, records) {
+  publishRecordUpdates(recordType, records, extraConfig) {
     records.forEach(record =>
       this.publish('change', {
         record_id: record.id,
         type: 'update',
         record_type: recordType,
+        ...extraConfig,
       }),
     );
   }
