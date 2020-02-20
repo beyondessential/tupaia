@@ -25,14 +25,13 @@ exports.up = async function(db) {
       ALTER TABLE project add column entity_id text;
     `);
 
-  await updateProject(db, 'unfpa', 'UNFPA', `'WS','MH','TO','FM'`, 'country');
-  await updateProject(db, 'imms', 'Immunization Module', `'VU','SB'`, 'country');
-  await updateProject(db, 'fanafana', 'Fanafana Ola', `'TO'`, 'country');
-  await updateProject(db, 'disaster', 'Disaster Response', `'Wo'`, 'world');
-  await updateProject(db, 'wish', 'WISH Fiji', `'FJ'`, 'country');
-  await updateProject(db, 'strive', 'STRIVE PNG', `'PG'`, 'country');
-  await updateProject(db, 'explore', 'General', `'Wo'`, 'world');
-  return null;
+  updateProject(db, 'unfpa', 'UNFPA', `'WS','MH','TO','FM'`, 'country');
+  updateProject(db, 'imms', 'Immunization Module', `'VU','SB'`, 'country');
+  updateProject(db, 'fanafana', 'Fanafana Ola', `'TO'`, 'country');
+  updateProject(db, 'disaster', 'Disaster Response', `'Wo'`, 'world');
+  updateProject(db, 'wish', 'WISH Fiji', `'FJ'`, 'country');
+  updateProject(db, 'strive', 'STRIVE PNG', `'PG'`, 'country');
+  return updateProject(db, 'explore', 'General', `'Wo'`, 'world');
 };
 
 const updateProject = (db, projectCode, projectDescription, countryCodes, type) => {
