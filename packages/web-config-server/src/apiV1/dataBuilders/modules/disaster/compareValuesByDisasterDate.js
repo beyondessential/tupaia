@@ -1,4 +1,4 @@
-import { utcMoment } from '@tupaia/utils';
+import { utcMoment, reduceToDictionary } from '@tupaia/utils';
 import { convertDateRangeToPeriodString } from '@tupaia/dhis-api';
 import { EARLIEST_DATA_DATE } from '/dhis';
 
@@ -7,7 +7,7 @@ export const compareValuesByDisasterDate = async (
   aggregator,
 ) => {
   const { disasterStartDate, startDate } = query;
-  const { dataElementCodes } = dataBuilderConfig;
+  const { dataElementCodes, dataServices } = dataBuilderConfig;
   const { leftColumn, rightColumn } = viewJson.presentationOptions;
   const returnData = [];
 
@@ -21,27 +21,13 @@ export const compareValuesByDisasterDate = async (
       ),
     },
   );
-  const { results: currentData, metadata: currentMetadata } = await aggregator.fetchAnalytics(
-    dataElementCodes,
-    {
-      dataServices,
-      period: convertDateRangeToPeriodString(disasterStartDate, Date.now()),
-    },
-  );
+  const { results: currentData } = await aggregator.fetchAnalytics(dataElementCodes, {
+    dataServices,
+    period: convertDateRangeToPeriodString(disasterStartDate, Date.now()),
+  });
 
-  const baselineDataByCode = baselineData.reduce((valuesByCode, element) => {
-    const { dataElement: dataElementId, value } = element;
-    const code = baselineMetadata.dataElementIdToCode[dataElementId];
-    valuesByCode[code] = value; // eslint-disable-line no-param-reassign
-    return valuesByCode;
-  }, {});
-
-  const currentDataByCode = currentData.reduce((valuesByCode, element) => {
-    const { dataElement: dataElementId, value } = element;
-    const code = currentMetadata.dataElementIdToCode[dataElementId];
-    valuesByCode[code] = value; // eslint-disable-line no-param-reassign
-    return valuesByCode;
-  }, {});
+  const baselineDataByCode = reduceToDictionary(baselineData, 'dataElement', 'value');
+  const currentDataByCode = reduceToDictionary(currentData, 'dataElement', 'value');
 
   dataElementCodes.forEach(code => {
     const name = baselineMetadata.dataElementCodeToName[code];

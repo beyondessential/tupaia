@@ -6,6 +6,8 @@
 import { Service } from '../Service';
 import { getDhisApiInstance } from './getDhisApiInstance';
 import { DhisTranslator } from './DhisTranslator';
+import { translateAggregateDataToAnalytics } from './translateAggregateDataToAnalytics';
+import { translateEventsToAnalytics } from './translateEventsToAnalytics';
 
 export class DhisService extends Service {
   constructor(...args) {
@@ -97,11 +99,21 @@ export class DhisService extends Service {
     return programCodes || eventId ? this.pullEventAnalytics : this.pullAggregateAnalytics;
   };
 
-  pullEventAnalytics = (api, options) => {
+  fetchEventsForPrograms = async (api, programCodes, query) => {
+    const events = [];
+    await Promise.all(
+      programCodes.map(async programCode => {
+        const newEvents = await api.getEvents({ ...query, programCode });
+        events.push(...newEvents);
+      }),
+    );
+
+    return events;
+  };
+
+  pullEventAnalytics = async (api, options) => {
     const {
-      dataElementCodes,
       organisationUnitCode,
-      period,
       startDate,
       endDate,
       programCodes,
@@ -110,24 +122,25 @@ export class DhisService extends Service {
       trackedEntityInstance,
     } = options;
 
-    return api.getEventAnalytics({
-      dataElementCodes,
-      outputIdScheme: 'code',
+    const query = {
       organisationUnitCode,
-      period,
+      dataElementIdScheme: 'code',
       startDate,
       endDate,
       programCodes,
       programCode,
       eventId,
       trackedEntityInstance,
-    });
+    };
+    const events = await this.fetchEventsForPrograms(api, programCodes || [programCode], query);
+
+    return translateEventsToAnalytics(api, events);
   };
 
   pullAggregateAnalytics = async (api, options) => {
     const { dataElementCodes, organisationUnitCode, period, startDate, endDate } = options;
 
-    return api.getAnalytics({
+    const response = await api.getAnalytics({
       dataElementCodes,
       outputIdScheme: 'code',
       organisationUnitCode,
@@ -135,6 +148,8 @@ export class DhisService extends Service {
       startDate,
       endDate,
     });
+
+    return translateAggregateDataToAnalytics(response);
   };
 
   pullAnalytics = async (apis, dataSources, options) => {
@@ -145,7 +160,6 @@ export class DhisService extends Service {
       results: [],
       metadata: {
         dataElementCodeToName: {},
-        dataElementIdToCode: {},
       },
     };
     const pullForApi = async api => {
