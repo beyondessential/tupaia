@@ -7,6 +7,7 @@ import { getIsProductionEnvironment } from '../devops';
 
 const LOWEST_PRIORITY = 5;
 const BAD_REQUEST_LIMIT = 7;
+const MAX_CHANGES_PER_BATCH = 20000; // breaks in production at around 50k changes
 
 export class ExternalApiSyncQueue {
   constructor(
@@ -83,8 +84,8 @@ export class ExternalApiSyncQueue {
 
   processChangesIntoDb = async () => {
     this.isProcessing = true;
-    const changes = this.unprocessedChanges;
-    this.unprocessedChanges = [];
+    const changes = this.unprocessedChanges.slice(0, MAX_CHANGES_PER_BATCH);
+    this.unprocessedChanges = this.unprocessedChanges.slice(MAX_CHANGES_PER_BATCH);
     const changesSeen = new Set();
     const getChangeHash = ({ record_id: recordId, type }) => `${recordId}: ${type}`;
     const uniqueChanges = changes.filter(change => {
