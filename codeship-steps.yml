@@ -1,7 +1,7 @@
 - type: parallel
   name: validate-and-test
   steps:
-    - type: parallel
+    - type: serial
       name: validate
       steps:
         - name: validate branch name
@@ -18,7 +18,7 @@
     - type: serial
       name: test
       steps:
-        - type: parallel # they're in containers, so even though they generally use one db, they're sandboxed
+        - type: serial # they're in containers, so even though they generally use one db, they're sandboxed
           name: test-all
           steps:
             - name: test-meditrak-server
