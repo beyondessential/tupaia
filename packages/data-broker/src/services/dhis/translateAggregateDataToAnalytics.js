@@ -30,8 +30,8 @@ export const translateAggregateDataToAnalytics = response => {
     const result = {};
     row.forEach((value, columnIndex) => {
       const { dimension, valueType } = columnSpecs[columnIndex];
-      // Fields that are not specified in our dimension translation are excluded from the results
       if (!dimension) {
+        // Fields that are not specified in our dimension translation are excluded from the results
         return;
       }
 
@@ -48,7 +48,7 @@ export const translateAggregateDataToAnalytics = response => {
 };
 
 const getColumnSpecs = headers => {
-  const columnSpecs = {};
+  const columnSpecs = new Array(headers.length).fill({});
   headers.forEach(({ name: dimension, valueType }, columnIndex) => {
     const translatedDimension = DIMENSION_TRANSLATION[dimension];
     if (translatedDimension) {
