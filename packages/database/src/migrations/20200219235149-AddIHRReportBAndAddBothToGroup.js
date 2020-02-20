@@ -25,13 +25,23 @@ exports.up = function(db) {
       );
 
       UPDATE "dashboardGroup"
-      SET "dashboardReports" = "dashboardReports" || '{WHO_IHR_SPAR_NST}'
+      SET "dashboardReports" = "dashboardReports" || '{WHO_IHR_SPAR_WPRO, WHO_IHR_SPAR_NST}'
       WHERE "name" = 'IHR Report';
   `);
 };
 
 exports.down = function(db) {
-  return null;
+  return db.runSql(`
+    UPDATE "dashboardGroup"
+    SET "dashboardReports" = array_remove("dashboardReports", 'WHO_IHR_SPAR_WPRO')
+    WHERE "name" = 'IHR Report';
+
+    UPDATE "dashboardGroup"
+    SET "dashboardReports" = array_remove("dashboardReports", 'WHO_IHR_SPAR_NST')
+    WHERE "name" = 'IHR Report';
+
+    DELETE FROM "dashboardReport" WHERE "id" = 'WHO_IHR_SPAR_NST';
+  `);
 };
 
 exports._meta = {

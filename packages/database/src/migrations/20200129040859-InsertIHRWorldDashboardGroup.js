@@ -21,7 +21,7 @@ exports.up = function(db) {
         'World',
         'Public',
         'World',
-        '{WHO_IHR_SPAR_WPRO, WHO_SURVEY}',
+        '{WHO_SURVEY}',
         'IHR Report'
       );
   `);
