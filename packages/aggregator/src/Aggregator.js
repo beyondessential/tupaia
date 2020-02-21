@@ -54,28 +54,19 @@ export class Aggregator {
   // TODO ultimately Aggregator should handle preaggregation internally - at that point this method
   // could be removed
   async pushAggregateData(data) {
-    return Promise.all(
-      data.map(dataValue => {
-        const dataSourceSpec = {
-          code: dataValue.code,
-          type: this.dataSourceTypes.DATA_ELEMENT,
-        };
-        return this.dataBroker.push(dataSourceSpec, dataValue);
-      }),
-    );
+    if (data.length === 0) return null;
+    const codes = data.map(dataValue => dataValue.code);
+    const dataSourceSpec = { code: codes, type: this.dataSourceTypes.DATA_ELEMENT };
+    return this.dataBroker.push(dataSourceSpec, data);
   }
 
   // TODO ultimately Aggregator should handle preaggregation internally - at that point this method
   // could be removed
-  async deleteAggregateData(data) {
-    return Promise.all(
-      data.map(dataValue => {
-        const dataSourceSpec = {
-          code: dataValue.code,
-          type: this.dataSourceTypes.DATA_ELEMENT,
-        };
-        return this.dataBroker.delete(dataSourceSpec, dataValue);
-      }),
-    );
+  async deleteAggregateDataValue(dataValue) {
+    const dataSourceSpec = {
+      code: dataValue.code,
+      type: this.dataSourceTypes.DATA_ELEMENT,
+    };
+    return this.dataBroker.delete(dataSourceSpec, dataValue);
   }
 }

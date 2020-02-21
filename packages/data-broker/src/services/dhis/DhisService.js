@@ -53,36 +53,55 @@ export class DhisService extends Service {
     };
   }
 
-  async push(dataSource, data) {
+  getApiForValue = (dataSource, dataValue) => {
     const { isDataRegional } = dataSource.config;
-    const { orgUnit: entityCode } = data;
-    const api = getDhisApiInstance({ entityCode, isDataRegional });
-    const pushData = this.pushers[dataSource.type];
-    const diagnostics = await pushData(api, data, dataSource);
+    const { orgUnit: entityCode } = dataValue;
+    return getDhisApiInstance({ entityCode, isDataRegional });
+  };
 
-    return { diagnostics, serverName: api.getServerName() };
+  validatePushData(dataSources, dataValues) {
+    if (dataSources.length !== dataValues.length) {
+      throw new Error('Different number of data sources and values provided to push');
+    }
+    const { serverName } = this.getApiForValue(dataSources[0], dataValues[0]);
+    if (
+      dataSources.some(
+        (dataSource, i) => this.getApiForValue(dataSource, dataValues[i]).serverName !== serverName,
+      )
+    ) {
+      throw new Error('All data being pushed must be for the same DHIS2 instance');
+    }
   }
 
-  async pushAggregateData(api, dataValue, dataSource) {
-    const translatedDataValue = await this.translator.translateOutboundDataValue(
-      api,
-      dataValue,
-      dataSource,
+  async push(dataSources, data) {
+    const pushData = this.pushers[dataSources[0].type]; // all are of the same type
+    const dataValues = Array.isArray(data) ? data : [data];
+    this.validatePushData(dataSources, data);
+    const api = this.getApiForValue(dataSources[0], dataValues[0]); // all are for the same instance
+    return pushData(api, dataValues, dataSources);
+  }
+
+  async pushAggregateData(api, dataValues, dataSources) {
+    const translatedDataValues = await Promise.all(
+      dataSources.map((dataSource, i) => {
+        const dataValue = dataValues[i];
+        return this.translator.translateOutboundDataValue(api, dataValue, dataSource);
+      }),
     );
-    return api.postDataValueSets([translatedDataValue]);
+    return api.postDataValueSets(translatedDataValues);
   }
 
-  async pushEvent(api, event) {
-    const translatedEvent = await this.translator.translateOutboundEvent(api, event);
-    return api.postEvents([translatedEvent]);
+  async pushEvent(api, events) {
+    const translatedEvents = await Promise.all(
+      events.map(event => this.translator.translateOutboundEvent(api, event)),
+    );
+    return api.postEvents(translatedEvents);
   }
 
   async delete(dataSource, data, { serverName } = {}) {
-    const { orgUnit: entityCode } = data;
-    const { isDataRegional } = dataSource;
     const api = serverName
       ? getDhisApiInstance({ serverName })
-      : getDhisApiInstance({ entityCode, isDataRegional });
+      : this.getApiForValue(dataSource, data);
     const deleteData = this.deleters[dataSource.type];
     return deleteData(api, data, dataSource);
   }

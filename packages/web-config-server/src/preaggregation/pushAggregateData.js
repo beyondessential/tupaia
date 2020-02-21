@@ -6,6 +6,7 @@
 import winston from 'winston';
 
 export const pushAggregateData = async (aggregator, dataValues) => {
+  if (dataValues.length === 0) return;
   try {
     const { counts } = await aggregator.pushAggregateData(dataValues);
     if (counts.imported + counts.updated !== dataValues.length) {

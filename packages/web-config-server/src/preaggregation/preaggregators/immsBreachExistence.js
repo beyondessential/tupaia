@@ -57,13 +57,11 @@ const immsBreachExistenceWithinPeriod = async (
   await Promise.all(
     results.map(
       async result =>
-        await aggregator.deleteAggregateData([
-          {
-            code: dataElementCode,
-            period: result.period,
-            orgUnit: result.organisationUnit,
-          },
-        ]),
+        await aggregator.deleteAggregateDataValue({
+          code: dataElementCode,
+          period: result.period,
+          orgUnit: result.organisationUnit,
+        }),
     ),
   );
 
@@ -81,7 +79,7 @@ const immsBreachExistenceWithinPeriod = async (
   winston.info(`${AGGREGATION_NAME} (${numberOfDays} days) done, pushing new data values...`);
   const {
     counts: { imported, updated, ignored },
-  } = await aggregator.pushAggregateData(dataValues);
+  } = (await aggregator.pushAggregateData(dataValues)) || {};
 
   if (imported) {
     winston.info(`${imported} data values imported successfully`);

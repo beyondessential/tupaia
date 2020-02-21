@@ -108,7 +108,7 @@ export const vaccineStockOnHand = async (aggregator, dhisApi) => {
 
   const {
     counts: { imported, updated, ignored },
-  } = await aggregator.pushAggregateData(dataValues);
+  } = (await aggregator.pushAggregateData(dataValues)) || {};
 
   if (imported) {
     winston.info(`${imported} data values imported successfully`);

@@ -31,19 +31,9 @@ export class DataSourceModel extends modelClasses.DataSource {
     });
 
   /**
-   * Find the matching data source, or default to 1:1 mapping with dhis, as only mappings
+   * Find the matching data sources or default to 1:1 mapping with dhis, as only mappings
    * with non-standard rules are kept in the db
    *
-   * @param {DataSourceSpec} dataSourceSpec
-   * @returns {Promise}
-   */
-  async findOneOrDefault(dataSourceSpec) {
-    assertDataSourceSpecIsValid(dataSourceSpec);
-    const dataSourceRecord = await this.findOne(dataSourceSpec);
-    return dataSourceRecord || this.getDefault(dataSourceSpec);
-  }
-
-  /**
    * @param {DataSourceSpec} dataSourceSpec
    * @returns {Promise<Array>}
    */
