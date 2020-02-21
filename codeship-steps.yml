@@ -64,4 +64,4 @@
   service: deployment
   steps:
     - name: run migrations
-      command: './packages/devops/scripts/ci/runMigrations.sh's
+      command: './packages/devops/scripts/ci/runMigrations.sh'
