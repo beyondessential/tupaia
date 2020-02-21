@@ -71,7 +71,6 @@ export const tongaFamilyPlanning = async (aggregator, dhisApi) => {
     const methodCode = methodCodes[i];
     await preaggregateDataElement(
       aggregator,
-      dhisApi,
       methodToNetChangeDataElement[methodCode],
       formulae[methodCode],
       ANALYTICS_QUERY,
@@ -84,7 +83,6 @@ export const tongaFamilyPlanning = async (aggregator, dhisApi) => {
     const methodCode = methodCodes[i];
     await preaggregateTransactionalDataElement(
       aggregator,
-      dhisApi,
       methodToAcceptorsDataElement[methodCode],
       BASELINE_DATA_ELEMENTS[methodCode],
       methodToNetChangeDataElement[methodCode],

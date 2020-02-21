@@ -1,6 +1,6 @@
 import winston from 'winston';
 import { DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
-import { postDataValueSets } from '/preaggregation/postDataValueSets';
+import { pushAggregateData } from '/preaggregation/pushAggregateData';
 
 /**
  * Tupaia Config Server
@@ -72,7 +72,7 @@ export const criticalMedicineAvailability = async (aggregator, dhisApi) => {
       }
 
       // Send the values to the DHIS2 server
-      await postAggregatedValues(dhisApi, aggregatedValues);
+      await postAggregatedValues(aggregator, aggregatedValues);
     } catch (error) {
       winston.error('Error while calculating critical availability', { country: country.name });
     }
@@ -162,13 +162,13 @@ const aggregateCriticalMedicineAvailabilityForGroup = async (
   }
 };
 
-const postAggregatedValues = async (dhisApi, aggregatedValues) => {
+const postAggregatedValues = async (aggregator, aggregatedValues) => {
   const dataValues = [];
   Object.entries(aggregatedValues).forEach(([organisationUnitCode, organisationUnit]) => {
     Object.entries(organisationUnit).forEach(([period, values]) => {
       Object.entries(values).forEach(([stockStatus, value]) => {
         dataValues.push({
-          dataElement: DATA_ELEMENT_CODES[stockStatus],
+          code: DATA_ELEMENT_CODES[stockStatus],
           orgUnit: organisationUnitCode,
           period: period.substring(0, 6), // Ensure it saves under the monthly period, rather than a specific date (e.g. 201802 rather than 20180214)
           value: Math.round(value * 1000) / 1000,
@@ -177,7 +177,7 @@ const postAggregatedValues = async (dhisApi, aggregatedValues) => {
     });
   });
 
-  await postDataValueSets(dhisApi, dataValues);
+  await pushAggregateData(aggregator, dataValues);
 };
 
 const getDataElementGroupForOrganisationUnitGroup = async (dhisApi, organisationUnitGroupCode) => {

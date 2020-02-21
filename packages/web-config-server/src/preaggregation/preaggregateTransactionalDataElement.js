@@ -7,18 +7,12 @@ import winston from 'winston';
 
 export const preaggregateTransactionalDataElement = async (
   aggregator,
-  dhisApi,
   aggregatedDataElementCode,
   baselineDataElementCode,
   changeDataElementCode,
   analyticsQuery,
 ) => {
   winston.log('Preaggregating', { aggregatedDataElementCode, transactional: true });
-  const query = {
-    organisationUnitCode: 'World',
-    dataElementCodes: ,
-    outputIdScheme: 'code',
-  };
   const { results } = await aggregator.fetchAnalytics(
     [baselineDataElementCode, changeDataElementCode],
     analyticsQuery,
@@ -71,7 +65,7 @@ export const preaggregateTransactionalDataElement = async (
       runningTotals[organisationUnitCode].push({
         orgUnit: organisationUnitCode,
         period: baselineValue.period,
-        dataElement: aggregatedDataElementCode,
+        code: aggregatedDataElementCode,
         value: calculatedValue,
       });
       for (; changeValueIndex < changeValuesForOrganisationUnit.length; changeValueIndex++) {
@@ -87,7 +81,7 @@ export const preaggregateTransactionalDataElement = async (
           runningTotals[organisationUnitCode].push({
             orgUnit: organisationUnitCode,
             period: changeValue.period,
-            dataElement: aggregatedDataElementCode,
+            code: aggregatedDataElementCode,
             value: calculatedValue,
           });
         }
@@ -100,6 +94,6 @@ export const preaggregateTransactionalDataElement = async (
     dataValues = dataValues.concat(valuesForOrganisationUnit);
   });
   if (dataValues.length > 0) {
-    await dhisApi.postDataValueSets(dataValues);
+    await aggregator.pushAggregateData(dataValues);
   }
 };

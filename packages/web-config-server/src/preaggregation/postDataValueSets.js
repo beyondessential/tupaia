@@ -5,9 +5,9 @@
 
 import winston from 'winston';
 
-export const postDataValueSets = async (dhisApi, dataValues) => {
+export const pushAggregateData = async (aggregator, dataValues) => {
   try {
-    const { counts } = await dhisApi.postDataValueSets(dataValues);
+    const { counts } = await aggregator.pushAggregateData(dataValues);
     if (counts.imported + counts.updated !== dataValues.length) {
       winston.warn('Failed to push values', {
         count: dataValues.length - (counts.imported + counts.updated),

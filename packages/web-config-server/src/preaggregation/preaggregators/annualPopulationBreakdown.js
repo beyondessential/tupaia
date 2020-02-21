@@ -7,7 +7,7 @@ import get from 'lodash.get';
 import has from 'lodash.has';
 import setWith from 'lodash.setwith';
 
-import { postDataValueSets } from '/preaggregation/postDataValueSets';
+import { pushAggregateData } from '/preaggregation/pushAggregateData';
 
 /**
  * Map of POP01 to POP04 survey element codes for data elements that overlap each other
@@ -53,7 +53,7 @@ const DATA_SERVICES = [{ isDataRegional: false }];
  * This aggregation converts all overlapping elements from POP01 to POP04,
  * so that POP04 can be the single source of truth in data aggregations.
  */
-export const annualPopulationBreakdown = async (aggregator, dhisApi) => {
+export const annualPopulationBreakdown = async aggregator => {
   const { results } = await aggregator.fetchAnalytics(
     POP_01_CODES,
     {
@@ -65,7 +65,7 @@ export const annualPopulationBreakdown = async (aggregator, dhisApi) => {
   );
 
   const dataValues = createAggregatedDataValues(results);
-  await postDataValueSets(dhisApi, dataValues);
+  await pushAggregateData(aggregator, dataValues);
 };
 
 const createAggregatedDataValues = apiResults => {
@@ -86,7 +86,7 @@ const createAggregatedDataValues = apiResults => {
       get(valueMap, itemPath).value += value;
     } else {
       const newItem = {
-        dataElement: pop04Code,
+        code: pop04Code,
         orgUnit: organisationUnitId,
         period,
         value,

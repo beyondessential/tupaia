@@ -50,4 +50,32 @@ export class Aggregator {
     const dataSourceSpec = { code: codes, type: this.dataSourceTypes.DATA_ELEMENT };
     return this.dataBroker.pullMetadata(dataSourceSpec, fetchOptions);
   }
+
+  // TODO ultimately Aggregator should handle preaggregation internally - at that point this method
+  // could be removed
+  async pushAggregateData(data) {
+    return Promise.all(
+      data.map(dataValue => {
+        const dataSourceSpec = {
+          code: dataValue.code,
+          type: this.dataSourceTypes.DATA_ELEMENT,
+        };
+        return this.dataBroker.push(dataSourceSpec, dataValue);
+      }),
+    );
+  }
+
+  // TODO ultimately Aggregator should handle preaggregation internally - at that point this method
+  // could be removed
+  async deleteAggregateData(data) {
+    return Promise.all(
+      data.map(dataValue => {
+        const dataSourceSpec = {
+          code: dataValue.code,
+          type: this.dataSourceTypes.DATA_ELEMENT,
+        };
+        return this.dataBroker.delete(dataSourceSpec, dataValue);
+      }),
+    );
+  }
 }

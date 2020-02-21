@@ -7,7 +7,6 @@ import winston from 'winston';
 
 export const preaggregateDataElement = async (
   aggregator,
-  dhisApi,
   aggregatedDataElementCode,
   formula,
   analyticsQuery,
@@ -48,12 +47,12 @@ export const preaggregateDataElement = async (
       dataValues.push({
         orgUnit: organisationUnitCode,
         period,
-        dataElement: aggregatedDataElementCode,
+        code: aggregatedDataElementCode,
         value: calculatedValue,
       });
     }),
   );
   if (dataValues.length > 0) {
-    await dhisApi.postDataValueSets(dataValues);
+    await aggregator.pushAggregateData(dataValues);
   }
 };

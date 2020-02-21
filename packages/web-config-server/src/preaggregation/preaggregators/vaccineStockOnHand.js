@@ -84,7 +84,7 @@ const buildDataValues = (metadata, data) => {
       const newData = event.dataValues
         .filter(value => metadataForOrgUnit[value.dataElement])
         .map(value => ({
-          dataElement: metadataForOrgUnit[value.dataElement],
+          code: metadataForOrgUnit[value.dataElement],
           period: momentToPeriod(utcMoment(event.eventDate), DAY),
           orgUnit: event.orgUnit,
           value: value.value,
@@ -108,7 +108,7 @@ export const vaccineStockOnHand = async (aggregator, dhisApi) => {
 
   const {
     counts: { imported, updated, ignored },
-  } = await dhisApi.postDataValueSets(dataValues);
+  } = await aggregator.pushAggregateData(dataValues);
 
   if (imported) {
     winston.info(`${imported} data values imported successfully`);

@@ -278,6 +278,7 @@ class AggregatedEventPusher {
 
     let importedCount = 0;
     try {
+      // TODO postEvents should be going via data-broker when preaggregation is handled by @tupaia/aggregator
       const { counts } = await this.dhisApi.postEvents(events);
       importedCount = counts.imported;
     } catch (error) {
@@ -294,6 +295,7 @@ class AggregatedEventPusher {
   async update(events) {
     winston.info('Updating existing events...');
 
+    // TODO updateEvents should be going via data-broker when preaggregation is handled by @tupaia/aggregator
     const { counts, errors } = await this.dhisApi.updateEvents(events);
     const { updated: updatedCount } = counts;
     errors.forEach(({ message }) => winston.error(message));
