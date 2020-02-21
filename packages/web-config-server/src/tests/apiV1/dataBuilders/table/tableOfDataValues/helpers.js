@@ -4,13 +4,11 @@
  */
 
 import { expect } from 'chai';
-import keyBy from 'lodash.keyby';
-import pickBy from 'lodash.pickBy';
+import pickBy from 'lodash.pickby';
 import sinon from 'sinon';
 
 import { Aggregator } from '/aggregator';
 import { tableOfDataValues } from '/apiV1/dataBuilders';
-import { DhisApi } from '/dhis/DhisApi';
 import { DATA_ELEMENTS } from './tableOfDataValues.fixtures';
 
 const query = { organisationUnitCode: 'TO' };
