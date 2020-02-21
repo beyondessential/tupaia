@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import { Multilock } from '../utilities/multilock';
+import { Multilock } from '../Multilock';
 
 describe('Multilock', () => {
   it('Should wait for one lock', async () => {
