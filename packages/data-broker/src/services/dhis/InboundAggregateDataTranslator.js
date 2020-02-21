@@ -12,7 +12,7 @@ const DIMENSIONS = {
   CATEGORY_OPTION_COMBO: 'co',
 };
 
-const createDataElementKey = (dataElement, categoryOptionCombo = '') =>
+const createDataElementKey = (dataElement, categoryOptionCombo) =>
   categoryOptionCombo ? `${dataElement}:${categoryOptionCombo}` : dataElement;
 
 export class InboundAggregateDataTranslator {
@@ -45,8 +45,8 @@ export class InboundAggregateDataTranslator {
 
   getDataElementKeyToSourceCode() {
     return this.dataSources.reduce((keyToSourceCode, dataSource) => {
-      const { dataElementCode } = dataSource;
-      const key = createDataElementKey(dataElementCode, dataSource.config.categoryOptionCombo);
+      const { dataElementCode, config } = dataSource;
+      const key = createDataElementKey(dataElementCode, config.categoryOptionCombo);
       return { ...keyToSourceCode, [key]: dataSource.code };
     }, {});
   }
