@@ -41,8 +41,6 @@
       command: chmod 600 /root/.ssh/id_rsa
     - name: pull latest and install dependencies
       command: './packages/devops/scripts/ci/pullLatest.sh'
-    - name: run migrations
-      command: './packages/devops/scripts/ci/runMigrations.sh'
 
 - type: parallel
   name: deploy-all
@@ -60,3 +58,7 @@
       command: './packages/devops/scripts/ci/deployBackend.sh web-config-server'
     - name: deploy-meditrak-server
       command: './packages/devops/scripts/ci/deployBackend.sh meditrak-server'
+
+- name: run db migrations
+  service: deployment
+  command: './packages/devops/scripts/ci/runMigrations.sh'
