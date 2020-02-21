@@ -19,7 +19,8 @@ exports.up = function(db) {
     UPDATE dhis_sync_log
     SET data = REPLACE(data, '"dataElement":', '"code":')
     WHERE data IS NOT NULL
-    AND record_type = 'answer';
+    AND (record_type = 'answer' OR record_type = 'survey_response')
+    AND dhis_reference IS NULL;
   `);
 };
 
@@ -28,7 +29,8 @@ exports.down = function(db) {
     UPDATE dhis_sync_log
     SET data = REPLACE(data, '"code":', '"dataElement":')
     WHERE data IS NOT NULL
-    AND record_type = 'answer';
+    AND (record_type = 'answer' OR record_type = 'survey_response')
+    AND dhis_reference IS NULL;
   `);
 };
 
