@@ -4,6 +4,7 @@
  */
 
 import groupBy from 'lodash.groupby';
+import keyBy from 'lodash.keyby';
 import pick from 'lodash.pick';
 
 import { getSortByKey, utcMoment, reduceToDictionary, stripFromStart } from '@tupaia/utils';
@@ -14,7 +15,6 @@ import {
   isMetadataKey,
   metadataKeysToDataElementMap,
 } from '/apiV1/dataBuilders/helpers';
-import { getDataElementsFromCodes } from '/apiV1/utils';
 
 const DATE_FORMAT = 'DD-MM-YYYY';
 const TOTAL_KEY = 'Total';
@@ -34,15 +34,13 @@ class TableOfEventsBuilder extends DataBuilder {
     };
   }
 
-  /**
-   * @returns {Promise<{ metadata: Array, dataElement: Array }>}
-   */
   async fetchDataSources() {
     const { dataElement: dataElementKeys, metadata: metadataKeys } = this.getKeysBySourceType();
-    const dataElements = await getDataElementsFromCodes(this.dhisApi, dataElementKeys, true);
-    const metadata = metadataKeysToDataElementMap(metadataKeys);
+    const dataElements = await this.fetchDataElements(dataElementKeys);
+    const codeToDataElement = keyBy(dataElements, 'code');
+    const metadataKeyToDataElement = metadataKeysToDataElementMap(metadataKeys);
 
-    return { ...dataElements, ...metadata };
+    return { ...codeToDataElement, ...metadataKeyToDataElement };
   }
 
   getKeysBySourceType() {

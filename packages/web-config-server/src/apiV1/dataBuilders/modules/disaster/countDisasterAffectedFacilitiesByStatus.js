@@ -1,6 +1,5 @@
 import { convertDateRangeToPeriodString } from '@tupaia/dhis-api';
 import { Entity } from '/models';
-import { getOptionSetOptions } from '/apiV1/utils';
 
 const AFFECTED_STATUS_DATA_ELEMENT_CODE = 'DP_NEW008';
 
@@ -19,7 +18,7 @@ export const countDisasterAffectedFacilitiesByStatus = async (
 
   const period = convertDateRangeToPeriodString(disasterStartDate, disasterEndDate || Date.now());
   const facilities = await Entity.getFacilityDescendantsWithCoordinates(organisationUnitCode);
-  const options = await getOptionSetOptions(dhisApi, { code: optionSetCode });
+  const options = await dhisApi.getOptionSetOptions({ code: optionSetCode });
   const { results } = await aggregator.fetchAnalytics([AFFECTED_STATUS_DATA_ELEMENT_CODE], {
     dataServices,
     period,

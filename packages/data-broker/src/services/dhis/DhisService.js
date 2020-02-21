@@ -15,6 +15,7 @@ export class DhisService extends Service {
     this.pushers = this.getPushers();
     this.deleters = this.getDeleters();
     this.pullers = this.getPullers();
+    this.dataSourcePullers = this.getDataSourcePullers();
     this.translator = new DhisTranslator(this.models);
   }
 
@@ -40,6 +41,12 @@ export class DhisService extends Service {
     return {
       [this.dataSourceTypes.DATA_ELEMENT]: this.pullAnalytics.bind(this),
       [this.dataSourceTypes.DATA_GROUP]: this.pullEvents.bind(this),
+    };
+  }
+
+  getDataSourcePullers() {
+    return {
+      [this.dataSourceTypes.DATA_ELEMENT]: this.pullDataElements.bind(this),
     };
   }
 
@@ -208,5 +215,57 @@ export class DhisService extends Service {
 
     await Promise.all(apis.map(pullForApi));
     return this.translator.translateInboundEvents(response, programCode);
+  };
+
+  async pullDataSources(dataSources, type, options) {
+    const { organisationUnitCode: entityCode, dataServices = [] } = options;
+    const pullDataSources = this.dataSourcePullers[type];
+    const apis = dataServices.map(({ isDataRegional }) =>
+      getDhisApiInstance({ entityCode, isDataRegional }),
+    );
+
+    const results = [];
+    const pullForApi = async api => {
+      const newResults = await pullDataSources(api, dataSources, options);
+      results.push(...newResults);
+    };
+    await Promise.all(apis.map(pullForApi));
+
+    return results;
+  }
+
+  async pullDataElements(api, dataSources, options) {
+    const { shouldIncludeOptions } = options;
+    const dataElementCodes = dataSources.map(this.translator.dataSourceToElementCode);
+    const dataElements = await this.fetchDataElements(api, dataElementCodes, shouldIncludeOptions);
+    const translatedDataElements = this.translator.translateInboundDataElements(
+      dataElements,
+      dataSources,
+    );
+
+    return Promise.all(
+      translatedDataElements.map(dataElement =>
+        this.addOptionsToDataElementIfTheyExist(api, dataElement),
+      ),
+    );
+  }
+
+  fetchDataElements = async (api, dataElementCodes, shouldIncludeOptions) => {
+    const { dataElements } = await api.fetch(api.getResourceTypes().DATA_ELEMENT, {
+      filter: `code:in:[${dataElementCodes}]`,
+      fields: `code,name${shouldIncludeOptions ? ',optionSet' : ''}`,
+    });
+
+    return dataElements;
+  };
+
+  addOptionsToDataElementIfTheyExist = async (api, dataElement) => {
+    const { code, optionSet, ...restOfDataElement } = dataElement;
+    const newDataElement = { code, ...restOfDataElement };
+    if (optionSet && optionSet.id) {
+      newDataElement.options = await api.getOptionSetOptions({ id: optionSet.id });
+    }
+
+    return newDataElement;
   };
 }

@@ -2,7 +2,6 @@ import { asynchronouslyFetchValuesForObject } from '@tupaia/utils';
 import {
   getDataElementsInGroup,
   getDataElementsInGroupSet,
-  getOptionSetOptions,
   getChildOrganisationUnits,
   mapOrgUnitToGroupCodes,
 } from '/apiV1/utils';
@@ -34,7 +33,7 @@ export const matrixMostRecentFromChildren = async (
       ),
     dataElementsInfo: () => getDataElementsInGroup(dhisApi, dataElementGroup, true),
     categoryMapping: () => getDataElementsInGroupSet(dhisApi, dataElementGroupSet, true),
-    optionSetOptions: () => getOptionSetOptions(dhisApi, { code: optionSetCode }),
+    optionSetOptions: () => dhisApi.getOptionSetOptions({ code: optionSetCode }),
   });
 
   const { organisationUnits, categoryMapping, dataElementsInfo, optionSetOptions } = fetchedData;

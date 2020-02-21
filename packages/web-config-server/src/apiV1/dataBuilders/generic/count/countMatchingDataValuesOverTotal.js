@@ -4,7 +4,6 @@
  */
 
 import { asynchronouslyFetchValuesForObject } from '@tupaia/utils';
-import { getOptionSetOptions } from '/apiV1/utils';
 
 export const countMatchingDataValuesOverTotal = async (
   { dataBuilderConfig, query },
@@ -22,7 +21,7 @@ export const countMatchingDataValuesOverTotal = async (
   const optionSetTasks = {};
   Object.entries(matchCriteria).forEach(([dataElementCode, { optionSetCode }]) => {
     if (optionSetCode) {
-      optionSetTasks[dataElementCode] = () => getOptionSetOptions(dhisApi, { code: optionSetCode });
+      optionSetTasks[dataElementCode] = () => dhisApi.getOptionSetOptions({ code: optionSetCode });
     }
   });
   const optionSetsByDataElementCode = await asynchronouslyFetchValuesForObject(optionSetTasks);

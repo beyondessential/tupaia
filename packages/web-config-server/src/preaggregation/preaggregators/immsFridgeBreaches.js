@@ -10,7 +10,6 @@ import winston from 'winston';
 import { getSortByKey, reduceToDictionary } from '@tupaia/utils';
 import { DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
 
-import { getDataElementsFromCodes } from '/apiV1/utils/getDataElementsFromCodes';
 import {
   WORLD,
   FRIDGE_DAILY_PROGRAM_CODE,
@@ -140,7 +139,9 @@ class FridgeBreachAggregator {
     const codes = Object.values(FRIDGE_BREACH_ELEMENT_CODES).concat(
       Object.values(FRIDGE_BREACH_AGR_ELEMENT_CODES),
     );
-    const dataElements = await getDataElementsFromCodes(this.dhisApi, codes);
+    const dataElements = await this.aggregator.fetchDataElements(codes, {
+      organisationUnitCode: WORLD,
+    });
 
     return reduceToDictionary(dataElements, 'code', 'id');
   }
