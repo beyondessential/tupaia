@@ -89,7 +89,8 @@ export class SurveyResponseModel extends DatabaseModel {
     `,
       [surveyResponseId],
     );
-    return result[0].count === 1;
+    if (result.length === 0) return false;
+    return result[0].count === '1';
   }
 
   static onChange = async (change, model) => {
