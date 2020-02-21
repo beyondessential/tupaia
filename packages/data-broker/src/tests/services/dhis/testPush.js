@@ -4,7 +4,6 @@
  */
 
 import { expect } from 'chai';
-import sinon from 'sinon';
 
 import { DhisService } from '../../../services/dhis/DhisService';
 import { DATA_SOURCES, DATA_VALUES } from './DhisService.fixtures';
