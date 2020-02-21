@@ -4,7 +4,7 @@
  */
 
 import { getSortByKey, reduceToSet, stripFromStart } from '@tupaia/utils';
-import { getDataElementGroupSets, getOptionSetOptions } from '/apiV1/utils';
+import { getDataElementGroupSets } from '/apiV1/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { DATA_SOURCE_TYPES } from '/apiV1/dataBuilders/dataSourceTypes';
 import { buildCategories } from './buildCategories';
@@ -116,7 +116,7 @@ class OrganisationUnitTableDataBuilder extends DataBuilder {
 
   async getOptionSetOptions() {
     const { optionSetCode } = this.config;
-    return optionSetCode ? getOptionSetOptions(this.dhisApi, { code: optionSetCode }) : null;
+    return optionSetCode ? this.dhisApi.getOptionSetOptions({ code: optionSetCode }) : null;
   }
 
   async buildColumns(analytics) {

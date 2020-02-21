@@ -64,4 +64,13 @@ export class DataBroker {
     const service = this.createService(serviceType);
     return service.pull(dataSources, type, options);
   }
+
+  async pullMetadata(dataSourceSpec, options) {
+    const dataSources = await this.fetchDataSourcesForPull(dataSourceSpec);
+    // `dataSourceSpec` is defined  for a single `type` and `service_type`
+    const { type, service_type: serviceType } = dataSources[0];
+    const service = this.createService(serviceType);
+
+    return service.pullMetadata(dataSources, type, options);
+  }
 }

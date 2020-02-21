@@ -78,6 +78,17 @@ export class DataBuilder {
     });
   }
 
+  async fetchDataElements(codes) {
+    const { dataServices } = this.config;
+    const { organisationUnitCode } = this.query;
+
+    return this.aggregator.fetchDataElements(codes, {
+      organisationUnitCode,
+      dataServices,
+      shouldIncludeOptions: true,
+    });
+  }
+
   /**
    * @param {Event[]} events
    * @param {Conditions} [conditions]

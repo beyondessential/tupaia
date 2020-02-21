@@ -15,6 +15,7 @@ export class DhisService extends Service {
     this.pushers = this.getPushers();
     this.deleters = this.getDeleters();
     this.pullers = this.getPullers();
+    this.dataSourcePullers = this.getDataSourcePullers();
     this.translator = new DhisTranslator(this.models);
   }
 
@@ -40,6 +41,12 @@ export class DhisService extends Service {
     return {
       [this.dataSourceTypes.DATA_ELEMENT]: this.pullAnalytics.bind(this),
       [this.dataSourceTypes.DATA_GROUP]: this.pullEvents.bind(this),
+    };
+  }
+
+  getDataSourcePullers() {
+    return {
+      [this.dataSourceTypes.DATA_ELEMENT]: this.pullDataElementMetadata.bind(this),
     };
   }
 
@@ -208,5 +215,61 @@ export class DhisService extends Service {
 
     await Promise.all(apis.map(pullForApi));
     return this.translator.translateInboundEvents(response, programCode);
+  };
+
+  async pullMetadata(dataSources, type, options) {
+    const { organisationUnitCode: entityCode, dataServices = [] } = options;
+    const pullMetadata = this.dataSourcePullers[type];
+    const apis = dataServices.map(({ isDataRegional }) =>
+      getDhisApiInstance({ entityCode, isDataRegional }),
+    );
+
+    const results = [];
+    const pullForApi = async api => {
+      const newResults = await pullMetadata(api, dataSources, options);
+      results.push(...newResults);
+    };
+    await Promise.all(apis.map(pullForApi));
+
+    return results;
+  }
+
+  async pullDataElementMetadata(api, dataSources, options) {
+    const { shouldIncludeOptions } = options;
+    const dataElementCodes = dataSources.map(this.translator.dataSourceToElementCode);
+    const dataElements = await this.fetchDataElements(api, dataElementCodes, shouldIncludeOptions);
+    const translatedDataElements = this.translator.translateInboundDataElements(
+      dataElements,
+      dataSources,
+    );
+
+    return Promise.all(
+      translatedDataElements.map(dataElement =>
+        this.addOptionsToDataElementIfTheyExist(api, dataElement),
+      ),
+    );
+  }
+
+  fetchDataElements = async (api, dataElementCodes, shouldIncludeOptions) => {
+    const fields = ['code', 'name'];
+    if (shouldIncludeOptions) {
+      fields.push('optionSet');
+    }
+    const { dataElements } = await api.getRecords(api.getResourceTypes().DATA_ELEMENT, {
+      codes: dataElementCodes,
+      fields,
+    });
+
+    return dataElements;
+  };
+
+  addOptionsToDataElementIfTheyExist = async (api, dataElement) => {
+    const { code, optionSet, ...restOfDataElement } = dataElement;
+    const newDataElement = { code, ...restOfDataElement };
+    if (optionSet && optionSet.id) {
+      newDataElement.options = await api.getOptionSetOptions({ id: optionSet.id });
+    }
+
+    return newDataElement;
   };
 }

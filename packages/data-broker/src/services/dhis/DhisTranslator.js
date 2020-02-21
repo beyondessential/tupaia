@@ -124,4 +124,16 @@ export class DhisTranslator {
       dataValues: this.translateInboundEventDataValues(dataValues, dataElementToSourceCode),
     }));
   }
+
+  translateInboundDataElements(dataElements, dataSources) {
+    const dataElementToSourceCode = this.getDataElementToSourceCode(dataSources);
+
+    return dataElements.map(({ code, ...restOfDataElement }) => {
+      const translatedDataElement = { ...restOfDataElement };
+      if (code) {
+        translatedDataElement.code = dataElementToSourceCode[code];
+      }
+      return translatedDataElement;
+    });
+  }
 }

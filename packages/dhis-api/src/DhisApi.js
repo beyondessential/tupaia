@@ -7,7 +7,7 @@ import winston from 'winston';
 import keyBy from 'lodash.keyby';
 
 import { aggregateAnalytics } from '@tupaia/aggregator';
-import { utcMoment, getSortByKey } from '@tupaia/utils';
+import { CustomError, utcMoment, getSortByKey } from '@tupaia/utils';
 import { DhisFetcher } from './DhisFetcher';
 import { DHIS2_RESOURCE_TYPES } from './types';
 import { getEventDataValueMap } from './getEventDataValueMap';
@@ -426,6 +426,28 @@ export class DhisApi {
     );
     return options;
   }
+
+  getOptionSetOptions = async ({ code, id }) => {
+    const result = await this.getRecord({
+      type: OPTION_SET,
+      code,
+      id,
+      fields: 'options[code,name]',
+    });
+    if (result === null || !result.options || result.options.length === 0) {
+      throw new CustomError({
+        type: 'DHIS Communication error',
+        description: 'Option set does not exist or has no options',
+        dataElementGroups: code,
+      });
+    }
+
+    const options = {};
+    result.options.forEach(({ name, code: optionCode }) => {
+      options[optionCode] = name.trim();
+    });
+    return options;
+  };
 
   async getDataSetByCode(code) {
     return this.getRecord({ type: DATA_SET, code });

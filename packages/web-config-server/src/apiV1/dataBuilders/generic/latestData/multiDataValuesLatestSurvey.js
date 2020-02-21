@@ -1,4 +1,4 @@
-import { getDataElementFromId, getOptionSetOptions, findLatestPeriod } from '/apiV1/utils';
+import { getDataElementFromId, findLatestPeriod } from '/apiV1/utils';
 
 export const multiDataValuesLatestSurvey = async (
   { dataBuilderConfig, query },
@@ -28,7 +28,7 @@ export const multiDataValuesLatestSurvey = async (
         );
         let valueToUse = value;
         if (optionSet && optionSet.id) {
-          const options = await getOptionSetOptions(dhisApi, { id: optionSet.id });
+          const options = await dhisApi.getOptionSetOptions({ id: optionSet.id });
           valueToUse = options[value];
         }
 

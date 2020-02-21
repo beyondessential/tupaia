@@ -1,9 +1,11 @@
+import { keyBy } from 'lodash.keyby';
+
 import { createAggregator } from '@tupaia/aggregator';
 import { CustomError } from '@tupaia/utils';
 import { Aggregator } from '/aggregator';
 import { getMeasureBuilder } from '/apiV1/measureBuilders/getMeasureBuilder';
 import { getDhisApiInstance } from '/dhis';
-import { DhisTranslationHandler, getOptionsForDataElement, getDateRange } from './utils';
+import { DhisTranslationHandler, getDateRange } from './utils';
 import { DATA_SOURCE_TYPES } from './dataBuilders/dataSourceTypes';
 
 // NOTE: does not allow for actual number value measure, will be added when
@@ -76,6 +78,11 @@ function updateLegendFromDisplayedValueKey(measureOption, dataElements) {
     return { name: getMostCommon(matchingElements) || name, value, ...rest };
   });
 }
+
+const createDataServices = mapOverlay => {
+  const { isDataRegional } = mapOverlay;
+  return [{ isDataRegional }];
+};
 
 export default class extends DhisTranslationHandler {
   buildData = async req => {
@@ -178,7 +185,7 @@ export default class extends DhisTranslationHandler {
     const dhisApi = getDhisApiInstance({ entityCode: code, isDataRegional });
     const options =
       dataSourceType === DATA_SOURCE_TYPES.SINGLE
-        ? await getOptionsForDataElement(dhisApi, dataElementCode)
+        ? await getOptionsForDataElement(dhisApi, dataElementCode, createDataServices(mapOverlay))
         : {};
     const translatedOptions = translateMeasureOptionSet(options, mapOverlay);
 
@@ -201,7 +208,7 @@ export default class extends DhisTranslationHandler {
       ? await this.getCountryLevelOrgUnitCode()
       : this.entity.code;
     const aggregator = createAggregator(Aggregator);
-    const dataServices = [{ isDataRegional }];
+    const dataServices = createDataServices(mapOvelay);
     const dhisApi = getDhisApiInstance({ entityCode: this.entity.code, isDataRegional });
     const buildMeasure = getMeasureBuilder(measureBuilder);
 
@@ -230,3 +237,16 @@ function translateMeasureOptionSet(measureOptions, mapOverlay) {
     return { name, value, color };
   });
 }
+
+const getOptionsForDataElement = async (aggregator, dataElementCode, dataServices) => {
+  const [dataElement] =
+    (await aggregator.fetchDataElements([dataElementCode], {
+      organisationUnitCode: this.entityCode,
+      dataServices,
+    })) || [];
+  if (!dataElement) {
+    throw new Error(`Data element with code ${dataElementCode} not found`);
+  }
+
+  return dataElement.options;
+};

@@ -3,11 +3,12 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 import flatten from 'lodash.flatten';
+import { keyBy } from 'lodash.keyby';
 import winston from 'winston';
 
 import { PERIOD_TYPES, momentToPeriod } from '@tupaia/dhis-api';
 import { utcMoment, reduceToDictionary, stripFromStart } from '@tupaia/utils';
-import { getDataElementGroups, getDataElementsFromCodes } from '/apiV1/utils';
+import { getDataElementGroups } from '/apiV1/utils';
 import {
   FRIDGE_BREACH_PROGRAM_CODE,
   FRIDGE_DAILY_PROGRAM_CODE,
@@ -57,9 +58,16 @@ const buildVaccineMetadata = async (dhisApi, data) => {
     const originalDataElementCodes = orgUnitVaccineLists[
       facilityVaccineListCode
     ].dataElements.map(de => stripFromStart(de.code, prependString));
-    const originalDataElements = await getDataElementsFromCodes(dhisApi, originalDataElementCodes);
+    const originalDataElements = await aggregator.fetchDataElements(originalDataElementCodes, {
+      organisationUnitCode: WORLD,
+    });
+    const originalDataElementByCode = keyBy(originalDataElements, 'code');
+
     metadata[facility] = originalDataElementCodes.reduce((codesById, code) => {
-      return { ...codesById, [originalDataElements[code].id]: preaggregatedDataElementCode(code) };
+      return {
+        ...codesById,
+        [originalDataElementByCode[code].id]: preaggregatedDataElementCode(code),
+      };
     }, {});
   }
 
@@ -92,7 +100,7 @@ const buildDataValues = (metadata, data) => {
   return flatten(Object.values(dataValuesByOrgUnit).map(x => x.data));
 };
 
-export const vaccineStockOnHand = async dhisApi => {
+export const vaccineStockOnHand = async (aggregator, dhisApi) => {
   winston.info('Starting vaccine stock on hand aggregation');
 
   const fridgeData = await fetchFridgeData(dhisApi);
