@@ -7,6 +7,7 @@ import get from 'lodash.get';
 import has from 'lodash.has';
 import setWith from 'lodash.setwith';
 
+import { getDhisApiInstance } from '/dhis';
 import { pushAggregateData } from '/preaggregation/pushAggregateData';
 
 /**
@@ -54,6 +55,8 @@ const DATA_SERVICES = [{ isDataRegional: false }];
  * so that POP04 can be the single source of truth in data aggregations.
  */
 export const annualPopulationBreakdown = async aggregator => {
+  const tongaDhisApi = getDhisApiInstance({ entityCode: 'TO', isDataRegional: false });
+  await tongaDhisApi.updateAnalyticsTables();
   const { results } = await aggregator.fetchAnalytics(
     POP_01_CODES,
     {
@@ -66,6 +69,7 @@ export const annualPopulationBreakdown = async aggregator => {
 
   const dataValues = createAggregatedDataValues(results);
   await pushAggregateData(aggregator, dataValues);
+  await tongaDhisApi.updateAnalyticsTables();
 };
 
 const createAggregatedDataValues = apiResults => {

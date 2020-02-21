@@ -2,6 +2,7 @@
  * Tupaia Config Server
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
+import { getDhisApiInstance } from '/dhis';
 import { getDataElementsInGroupSet } from '/apiV1/utils/getDataElementsInGroupSet';
 import { preaggregateDataElement } from '/preaggregation/preaggregateDataElement';
 import { preaggregateTransactionalDataElement } from '/preaggregation/preaggregateTransactionalDataElement';
@@ -34,14 +35,15 @@ const ANALYTICS_QUERY = {
   dataServices: [{ isDataRegional: false }],
 };
 
-export const tongaFamilyPlanning = async (aggregator, dhisApi) => {
+export const tongaFamilyPlanning = async aggregator => {
+  const tongaDhisApi = getDhisApiInstance({ entityCode: 'TO', isDataRegional: false });
   const { dataElementToGroupMapping: dataElementToChangeType } = await getDataElementsInGroupSet(
-    dhisApi,
+    tongaDhisApi,
     'FP_Change_Counts',
     'code',
   );
   const { dataElementToGroupMapping: dataElementToMethod } = await getDataElementsInGroupSet(
-    dhisApi,
+    tongaDhisApi,
     'FP_Method_Counts',
     'code',
   );
@@ -67,6 +69,7 @@ export const tongaFamilyPlanning = async (aggregator, dhisApi) => {
 
   // Aggregate the net change for each family planning method sequentially to avoid a spike in load
   const methodCodes = Object.keys(formulae);
+  await tongaDhisApi.updateAnalyticsTables();
   for (let i = 0; i < methodCodes.length; i++) {
     const methodCode = methodCodes[i];
     await preaggregateDataElement(
@@ -76,7 +79,7 @@ export const tongaFamilyPlanning = async (aggregator, dhisApi) => {
       ANALYTICS_QUERY,
     );
   }
-  await dhisApi.updateAnalyticsTables();
+  await tongaDhisApi.updateAnalyticsTables();
 
   // Aggregate the total acceptors for each family planning method sequentially to avoid a spike in load
   for (let i = 0; i < methodCodes.length; i++) {
@@ -89,5 +92,5 @@ export const tongaFamilyPlanning = async (aggregator, dhisApi) => {
       ANALYTICS_QUERY,
     );
   }
-  await dhisApi.updateAnalyticsTables();
+  await tongaDhisApi.updateAnalyticsTables();
 };
