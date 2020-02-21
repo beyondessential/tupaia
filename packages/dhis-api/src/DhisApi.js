@@ -7,10 +7,9 @@ import winston from 'winston';
 import keyBy from 'lodash.keyby';
 
 import { aggregateAnalytics } from '@tupaia/aggregator';
-import { CustomError, utcMoment, getSortByKey } from '@tupaia/utils';
+import { CustomError, getSortByKey, utcMoment } from '@tupaia/utils';
 import { DhisFetcher } from './DhisFetcher';
 import { DHIS2_RESOURCE_TYPES } from './types';
-import { getEventDataValueMap } from './getEventDataValueMap';
 import { replaceElementIdsWithCodesInEvents } from './replaceElementIdsWithCodesInEvents';
 import { RESPONSE_TYPES, getDiagnosticsFromResponse } from './responseUtils';
 import { buildAnalyticQueries } from './buildAnalyticQueries';
@@ -258,7 +257,7 @@ export class DhisApi {
     if (dataValueFormat === 'object') {
       events = events.map(event => ({
         ...event,
-        dataValues: getEventDataValueMap(event),
+        dataValues: keyBy(event.dataValues, 'dataElement'),
       }));
     }
     events.sort(getSortByKey('eventDate'));

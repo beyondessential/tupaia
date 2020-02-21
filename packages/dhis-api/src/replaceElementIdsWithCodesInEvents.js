@@ -22,7 +22,7 @@ export const replaceElementIdsWithCodesInEvents = async (dhisApi, events) => {
     ...restOfEvent,
     dataValues: dataValues.map(value => ({
       ...value,
-      dataElement: dataElementIdToCode[value.dataElement].code,
+      dataElement: dataElementIdToCode[value.dataElement],
     })),
   }));
 };
