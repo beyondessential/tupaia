@@ -208,7 +208,7 @@ export default class extends DhisTranslationHandler {
       ? await this.getCountryLevelOrgUnitCode()
       : this.entity.code;
     const aggregator = createAggregator(Aggregator);
-    const dataServices = createDataServices(mapOvelay);
+    const dataServices = createDataServices(mapOverlay);
     const dhisApi = getDhisApiInstance({ entityCode: this.entity.code, isDataRegional });
     const buildMeasure = getMeasureBuilder(measureBuilder);
 
