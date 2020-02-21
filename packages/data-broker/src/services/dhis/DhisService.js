@@ -251,9 +251,13 @@ export class DhisService extends Service {
   }
 
   fetchDataElements = async (api, dataElementCodes, shouldIncludeOptions) => {
+    const fields = ['code', 'name'];
+    if (shouldIncludeOptions) {
+      fields.push('optionSet');
+    }
     const { dataElements } = await api.getRecords(api.getResourceTypes().DATA_ELEMENT, {
       codes: dataElementCodes,
-      fields: `code,name${shouldIncludeOptions ? ',optionSet' : ''}`,
+      fields,
     });
 
     return dataElements;
