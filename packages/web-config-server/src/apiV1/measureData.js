@@ -243,7 +243,7 @@ const getOptionsForDataElement = async (aggregator, dataElementCode, dataService
     (await aggregator.fetchDataElements([dataElementCode], {
       organisationUnitCode: this.entityCode,
       dataServices,
-    })) || {};
+    })) || [];
   if (!dataElement) {
     throw new Error(`Data element with code ${dataElementCode} not found`);
   }
