@@ -28,6 +28,13 @@ export class DhisTranslator {
   };
 
   /**
+   * If a group of data elements is not defined for a program, we cannot create
+   * a `dataElementToSourceCode` mapping . In this case use the existing data value code
+   */
+  eventDataElementToSourceCode = (dataElement, dataElementToSourceCode) =>
+    dataElementToSourceCode[dataElement] || dataElement;
+
+  /**
    * @param {Object}     dataValue    The untranslated data value
    * @param {DataSource} dataSource
    */
@@ -79,14 +86,33 @@ export class DhisTranslator {
     return this.inboundAggregateDataTranslator.translate(response, dataSources);
   };
 
-  translateInboundEventDataValues = (dataValues, dataElementKeyToSourceCode) =>
-    // dataValues can be either an array or a hash
-    Array.isArray(dataValues)
-      ? dataValues.map(({ dataElement, ...restOfDataValue }) => ({
-          ...restOfDataValue,
-          dataElement: dataElementKeyToSourceCode[dataElement] || dataElement,
-        }))
-      : mapKeys(dataValues, dataElementKeyToSourceCode, { defaultToExistingKeys: true });
+  translateInboundEventDataValues = (dataValues, dataElementToSourceCode) => {
+    const translateEventDataValues = Array.isArray(dataValues)
+      ? this.translateInboundArrayEventDataValues
+      : this.translateInboundObjectEventDataValues;
+    return translateEventDataValues(dataValues, dataElementToSourceCode);
+  };
+
+  translateInboundArrayEventDataValues = (dataValues, dataElementToSourceCode) =>
+    dataValues.map(dataValue => this.translateInboundDataValue(dataValue, dataElementToSourceCode));
+
+  translateInboundObjectEventDataValues = (dataValues, dataElementToSourceCode) =>
+    Object.entries(dataValues).reduce((dataValueMap, [dataElement, dataValue]) => {
+      const dataSourceCode = this.eventDataElementToSourceCode(
+        dataElement,
+        dataElementToSourceCode,
+      );
+      const translatedDataValue = this.translateInboundDataValue(
+        dataValue,
+        dataElementToSourceCode,
+      );
+      return { ...dataValueMap, [dataSourceCode]: translatedDataValue };
+    }, {});
+
+  translateInboundDataValue = ({ dataElement, ...restOfDataValue }, dataElementToSourceCode) => ({
+    ...restOfDataValue,
+    dataElement: this.eventDataElementToSourceCode(dataElement, dataElementToSourceCode),
+  });
 
   async translateInboundEvents(events, dataGroupCode) {
     const dataElementsInGroup = await this.models.dataSource.getDataElementsInGroup(dataGroupCode);
