@@ -76,7 +76,7 @@ export class DhisService extends Service {
   async push(dataSources, data) {
     const pushData = this.pushers[dataSources[0].type]; // all are of the same type
     const dataValues = Array.isArray(data) ? data : [data];
-    this.validatePushData(dataSources, data);
+    this.validatePushData(dataSources, dataValues);
     const api = this.getApiForValue(dataSources[0], dataValues[0]); // all are for the same instance
     return pushData(api, dataValues, dataSources);
   }
