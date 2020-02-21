@@ -20,7 +20,7 @@ export class ChangeValidator extends SyncQueueChangesManipulator {
     await Promise.all(
       modelsToCheck.map(async model => {
         const previouslySynced = await model.find({ record_id: recordIds });
-        validDeleteIds.push(previouslySynced.map(r => r.record_id));
+        validDeleteIds.push(...previouslySynced.map(r => r.record_id));
       }),
     );
     return this.filterChangesWithMatchingIds(changes, validDeleteIds);
