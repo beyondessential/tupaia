@@ -10,7 +10,7 @@ import crypto from 'crypto';
  * Generate and return a mongo style ID
  * Taken from https://gist.github.com/chrisveness/7975c33ac569c124e4ceb11490576c67
  **/
-const LARGEST_6_DIGIT_HEX = 16777215; // eqivalent to ffffff
+const LARGEST_6_DIGIT_HEX = 0xffffff;
 let currentCounterValue = 0;
 export const generateId = () => {
   const seconds = getSecondsStringFromTimestamp(new Date());

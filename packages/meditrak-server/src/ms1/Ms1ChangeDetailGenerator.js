@@ -21,11 +21,9 @@ export class Ms1ChangeDetailGenerator extends ChangeDetailGenerator {
     const entityIds = this.getUniqueEntries(surveyResponses.map(r => r.entity_id));
     const entities = await this.models.entity.find({ id: entityIds });
     const orgUnitCodeByEntityId = {};
-    await Promise.all(
-      entities.map(async entity => {
-        orgUnitCodeByEntityId[entity.id] = entity.code;
-      }),
-    );
+    entities.forEach(entity => {
+      orgUnitCodeByEntityId[entity.id] = entity.code;
+    });
     const changeDetailsById = {};
     surveyResponses.forEach(surveyResponse => {
       changeDetailsById[surveyResponse.id] = {

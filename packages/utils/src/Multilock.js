@@ -1,5 +1,3 @@
-import randomize from 'randomatic';
-
 export class Multilock {
   constructor() {
     this.locks = new Set();
@@ -49,8 +47,8 @@ export class Multilock {
     this.resolve = null;
   }
 
-  createLock(id = randomize('*', 20)) {
-    const key = Symbol(id);
+  createLock(debugLabel) {
+    const key = Symbol(debugLabel);
     this.locks.add(key);
 
     const unlock = () => {

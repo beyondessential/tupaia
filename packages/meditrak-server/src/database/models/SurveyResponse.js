@@ -56,34 +56,23 @@ export class SurveyResponseModel extends DatabaseModel {
 
   isDeletableViaApi = true;
 
-  /**
-   * Returns the SQL to inclue/exclude event based survey responses from a statement that has
-   * already JOINed both survey and entity
-   * @param {boolean} excludeEvents        Whether to query for non-event or event responses
-   * @param {boolean} [isFirstClause=true] If true the clause will start with WHERE, otherwise AND
-   */
-  getEventBasedQueryClause = (includeEvents, isFirstClause = false) => {
-    const orgUnitEntityTypes = Object.values(this.otherModels.entity.orgUnitEntityTypes);
-    if (includeEvents)
-      return `
-      ${isFirstClause ? 'WHERE' : 'AND'}
-        survey.can_repeat = ${includeEvents ? 'TRUE' : 'FALSE'}
-      AND
-        entity.type ${includeEvents ? 'NOT IN' : 'IN'} (${orgUnitEntityTypes
-        .map(t => `'${t}'`)
-        .join(',')})
-    `;
-  };
-
   getOrgUnitEntityTypes = () => {
     const orgUnitEntityTypes = Object.values(this.otherModels.entity.orgUnitEntityTypes);
     return `(${orgUnitEntityTypes.map(t => `'${t}'`).join(',')})`;
   };
 
+  /**
+   * Returns the SQL to inclue only event based survey responses from a statement that has
+   * already JOINed both survey and entity
+   */
   getOnlyEventsQueryClause = () => `
     (survey.can_repeat = 'TRUE' OR entity.type NOT IN ${this.getOrgUnitEntityTypes()})
   `;
 
+  /**
+   * Returns the SQL to exclude event based survey responses from a statement that has
+   * already JOINed both survey and entity
+   */
   getExcludeEventsQueryClause = () => `
     (survey.can_repeat = 'FALSE' AND entity.type IN ${this.getOrgUnitEntityTypes()})
   `;

@@ -19,24 +19,33 @@ export class DhisChangeValidator extends ChangeValidator {
         `,
       )
     ).map(r => r.user_id);
-    const results = await this.models.database.executeSql(
-      `
-        SELECT DISTINCT survey_response.id as id
-        FROM survey_response
-        JOIN survey ON survey_response.survey_id = survey.id
-        JOIN entity ON survey_response.entity_id = entity.id
-        WHERE survey.integration_metadata \\? 'dhis2'
-        AND (
-          entity.country_code <> 'DL'
-          OR survey_response.user_id IN (${nonPublicDemoLandUsers.map(id => `'${id}'`).join(',')})
-        )
-        ${
-          excludeEventBased ? `AND ${this.models.surveyResponse.getExcludeEventsQueryClause()}` : ''
-        }
-        AND survey_response.id IN (${surveyResponseIds.map(id => `'${id}'`).join(',')});
-      `,
-    );
-    return results.map(r => r.id);
+    const validSurveyResponseIds = [];
+    const batchSize = this.models.database.maxBindingsPerQuery - nonPublicDemoLandUsers.length;
+    for (let i = 0; i < surveyResponseIds.length; i += batchSize) {
+      const batchOfSurveyResponseIds = surveyResponseIds.slice(i, i + batchSize);
+      const batchOfSurveyResponses = await this.models.database.executeSql(
+        `
+          SELECT DISTINCT survey_response.id as id
+          FROM survey_response
+          JOIN survey ON survey_response.survey_id = survey.id
+          JOIN entity ON survey_response.entity_id = entity.id
+          WHERE survey.integration_metadata \\? 'dhis2'
+          AND (
+            entity.country_code <> 'DL'
+            OR survey_response.user_id IN (${nonPublicDemoLandUsers.map(() => '?').join(',')})
+          )
+          ${
+            excludeEventBased
+              ? `AND ${this.models.surveyResponse.getExcludeEventsQueryClause()}`
+              : ''
+          }
+          AND survey_response.id IN (${batchOfSurveyResponseIds.map(() => '?').join(',')});
+        `,
+        [...nonPublicDemoLandUsers, ...batchOfSurveyResponseIds],
+      );
+      validSurveyResponseIds.push(...batchOfSurveyResponses.map(r => r.id));
+    }
+    return validSurveyResponseIds;
   };
 
   getValidDeletes = async changes => {

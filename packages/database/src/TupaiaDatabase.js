@@ -82,19 +82,20 @@ export class TupaiaDatabase {
     this.getChangeHandlersForCollection(collectionName)[key] = changeHandler;
   }
 
+  getHandlersForChange(change) {
+    const { handler_key: specificHandlerKey, record_type: recordType } = change;
+    const handlersForCollection = this.getChangeHandlersForCollection(recordType);
+    if (specificHandlerKey) {
+      return handlersForCollection[specificHandlerKey]
+        ? [handlersForCollection[specificHandlerKey]]
+        : [];
+    }
+    return Object.values(handlersForCollection);
+  }
+
   async notifyChangeHandlers(change) {
     const unlock = this.handlerLock.createLock(change.record_id);
-    const getHandlers = () => {
-      const { handler_key: specificHandlerKey, record_type: recordType } = change;
-      const handlersForCollection = this.getChangeHandlersForCollection(recordType);
-      if (specificHandlerKey) {
-        return handlersForCollection[specificHandlerKey]
-          ? [handlersForCollection[specificHandlerKey]]
-          : [];
-      }
-      return Object.values(handlersForCollection);
-    };
-    const handlers = getHandlers();
+    const handlers = this.getHandlersForChange(change);
     try {
       for (let i = 0; i < handlers.length; i++) {
         try {
