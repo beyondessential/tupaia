@@ -34,7 +34,7 @@ const buildAnalyticQuery = queryInput => {
     inputIdScheme,
     outputIdScheme,
     includeMetadataDetails,
-    dimension: [`dx:${dx.join(';')}`, `ou:${organisationUnitCode}`],
+    dimension: [`dx:${dx.join(';')}`, `ou:${organisationUnitCode}`, 'co'],
   };
 
   if (period) {

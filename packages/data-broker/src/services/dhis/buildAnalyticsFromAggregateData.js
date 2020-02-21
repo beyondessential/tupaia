@@ -21,7 +21,7 @@ const DIMENSION_TYPES = {
  * @param {Object} response
  * @returns {{ results: AnalyticsResult[], metadata: AnalyticsMetadata }}
  */
-export const translateAggregateDataToAnalytics = response => {
+export const buildAnalyticsFromAggregateData = response => {
   const { headers, rows, metaData: metadata } = response;
   const columnSpecs = getColumnSpecs(headers);
 

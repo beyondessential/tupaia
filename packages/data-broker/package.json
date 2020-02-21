@@ -13,7 +13,9 @@
     "@tupaia/dhis-api": "1.0.0",
     "@tupaia/utils": "1.0.0",
     "case": "^1.5.5",
+    "lodash.groupby": "^4.6.0",
     "lodash.keyby": "^4.6.0",
+    "lodash.pickby": "^4.6.0",
     "winston": "^3.1.0"
   },
   "devDependencies": {
