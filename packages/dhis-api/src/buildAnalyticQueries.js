@@ -34,7 +34,7 @@ const buildAnalyticQuery = queryInput => {
     inputIdScheme,
     outputIdScheme,
     includeMetadataDetails,
-    dimension: [`dx:${dx.join(';')}`, `ou:${organisationUnitCode}`],
+    dimension: [`dx:${dx.join(';')}`, `ou:${organisationUnitCode}`, 'co'],
   };
 
   if (period) {
@@ -49,11 +49,12 @@ const buildAnalyticQuery = queryInput => {
 
 export const buildAnalyticQueries = queryInput => {
   const dx = getDxDimension(queryInput);
+  const uniqueDx = [...new Set(dx)];
 
   // Fetch data in batches to avoid "Request-URI Too Large" errors
   const queries = [];
   for (let i = 0; i < dx.length; i += DX_BATCH_SIZE) {
-    queries.push(buildAnalyticQuery({ ...queryInput, dx: dx.slice(i, i + DX_BATCH_SIZE) }));
+    queries.push(buildAnalyticQuery({ ...queryInput, dx: uniqueDx.slice(i, i + DX_BATCH_SIZE) }));
   }
 
   return queries;

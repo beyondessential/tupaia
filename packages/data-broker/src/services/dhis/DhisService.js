@@ -6,8 +6,8 @@
 import { Service } from '../Service';
 import { getDhisApiInstance } from './getDhisApiInstance';
 import { DhisTranslator } from './DhisTranslator';
-import { translateAggregateDataToAnalytics } from './translateAggregateDataToAnalytics';
-import { translateEventsToAnalytics } from './translateEventsToAnalytics';
+import { buildAnalyticsFromAggregateData } from './buildAnalyticsFromAggregateData';
+import { buildAnalyticsFromEvents } from './buildAnalyticsFromEvents';
 
 export class DhisService extends Service {
   constructor(...args) {
@@ -15,7 +15,7 @@ export class DhisService extends Service {
     this.pushers = this.getPushers();
     this.deleters = this.getDeleters();
     this.pullers = this.getPullers();
-    this.dataSourcePullers = this.getDataSourcePullers();
+    this.metadataPullers = this.getMetadataPullers();
     this.translator = new DhisTranslator(this.models);
   }
 
@@ -44,7 +44,7 @@ export class DhisService extends Service {
     };
   }
 
-  getDataSourcePullers() {
+  getMetadataPullers() {
     return {
       [this.dataSourceTypes.DATA_ELEMENT]: this.pullDataElementMetadata.bind(this),
     };
@@ -118,7 +118,7 @@ export class DhisService extends Service {
     return events;
   };
 
-  pullEventAnalytics = async (api, options) => {
+  pullEventAnalytics = async (api, dataSources, options) => {
     const {
       organisationUnitCode,
       startDate,
@@ -140,14 +140,16 @@ export class DhisService extends Service {
       trackedEntityInstance,
     };
     const events = await this.fetchEventsForPrograms(api, programCodes || [programCode], query);
+    const translatedEvents = this.translator.translateInboundEvents(events, programCode);
 
-    return translateEventsToAnalytics(api, events);
+    return buildAnalyticsFromEvents(api, translatedEvents);
   };
 
-  pullAggregateAnalytics = async (api, options) => {
-    const { dataElementCodes, organisationUnitCode, period, startDate, endDate } = options;
+  pullAggregateAnalytics = async (api, dataSources, options) => {
+    const dataElementCodes = dataSources.map(({ dataElementCode }) => dataElementCode);
+    const { organisationUnitCode, period, startDate, endDate } = options;
 
-    const response = await api.getAnalytics({
+    const aggregateData = await api.getAnalytics({
       dataElementCodes,
       outputIdScheme: 'code',
       organisationUnitCode,
@@ -156,11 +158,15 @@ export class DhisService extends Service {
       endDate,
     });
 
-    return translateAggregateDataToAnalytics(response);
+    const translatedData = this.translator.translateInboundAggregateData(
+      aggregateData,
+      dataSources,
+    );
+
+    return buildAnalyticsFromAggregateData(translatedData);
   };
 
   pullAnalytics = async (apis, dataSources, options) => {
-    const dataElementCodes = dataSources.map(this.translator.dataSourceToElementCode);
     const pullMethod = this.getPullAnalyticsMethod(options);
 
     const response = {
@@ -170,13 +176,14 @@ export class DhisService extends Service {
       },
     };
     const pullForApi = async api => {
-      const { results, metadata } = await pullMethod(api, { ...options, dataElementCodes });
+      const { results, metadata } = await pullMethod(api, dataSources, options);
       response.results.push(...results);
-      response.metadata = { ...response.metadata, ...metadata };
+      // Only the final query's metadata will be used in the result
+      response.metadata = metadata;
     };
 
     await Promise.all(apis.map(pullForApi));
-    return this.translator.translateInboundAnalytics(response, dataSources);
+    return response;
   };
 
   pullEvents = async (apis, dataSources, options) => {
@@ -196,9 +203,9 @@ export class DhisService extends Service {
     const [dataSource] = dataSources;
     const { code: programCode } = dataSource;
 
-    const response = [];
+    const events = [];
     const pullForApi = async api => {
-      const events = await api.getEvents({
+      const newEvents = await api.getEvents({
         programCode,
         dataElementIdScheme: 'code',
         organisationUnitCode,
@@ -210,16 +217,16 @@ export class DhisService extends Service {
         dataValueFormat,
       });
 
-      response.push(...events);
+      events.push(...newEvents);
     };
 
     await Promise.all(apis.map(pullForApi));
-    return this.translator.translateInboundEvents(response, programCode);
+    return this.translator.translateInboundEvents(events, programCode);
   };
 
   async pullMetadata(dataSources, type, options) {
     const { organisationUnitCode: entityCode, dataServices = [] } = options;
-    const pullMetadata = this.dataSourcePullers[type];
+    const pullMetadata = this.metadataPullers[type];
     const apis = dataServices.map(({ isDataRegional }) =>
       getDhisApiInstance({ entityCode, isDataRegional }),
     );
@@ -236,7 +243,7 @@ export class DhisService extends Service {
 
   async pullDataElementMetadata(api, dataSources, options) {
     const { shouldIncludeOptions } = options;
-    const dataElementCodes = dataSources.map(this.translator.dataSourceToElementCode);
+    const dataElementCodes = dataSources.map(({ dataElementCode }) => dataElementCode);
     const dataElements = await this.fetchDataElements(api, dataElementCodes, shouldIncludeOptions);
     const translatedDataElements = this.translator.translateInboundDataElements(
       dataElements,
@@ -255,7 +262,8 @@ export class DhisService extends Service {
     if (shouldIncludeOptions) {
       fields.push('optionSet');
     }
-    const { dataElements } = await api.getRecords(api.getResourceTypes().DATA_ELEMENT, {
+    const dataElements = await api.getRecords({
+      type: api.getResourceTypes().DATA_ELEMENT,
       codes: dataElementCodes,
       fields,
     });

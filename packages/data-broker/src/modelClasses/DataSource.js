@@ -22,12 +22,13 @@ const assertDataSourceSpecIsValid = dataSourceSpec => {
 };
 
 export class DataSourceModel extends modelClasses.DataSource {
-  getDefault = ({ code, type }) => ({
-    code,
-    type,
-    service_type: 'dhis',
-    config: {},
-  });
+  getDefault = async ({ code, type }) =>
+    this.generateInstance({
+      code,
+      type,
+      service_type: 'dhis',
+      config: {},
+    });
 
   /**
    * Find the matching data source, or default to 1:1 mapping with dhis, as only mappings
@@ -54,6 +55,8 @@ export class DataSourceModel extends modelClasses.DataSource {
     const { code: codeInput } = dataSourceSpec;
     const codes = Array.isArray(codeInput) ? codeInput : [codeInput];
 
-    return codes.map(code => codeToRecord[code] || this.getDefault({ ...dataSourceSpec, code }));
+    return Promise.all(
+      codes.map(code => codeToRecord[code] || this.getDefault({ ...dataSourceSpec, code })),
+    );
   }
 }

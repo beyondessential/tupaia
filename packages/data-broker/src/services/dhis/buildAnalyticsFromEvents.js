@@ -9,7 +9,7 @@ import { DHIS2_RESOURCE_TYPES, PERIOD_TYPES, momentToPeriod } from '@tupaia/dhis
 import { utcMoment, reduceToDictionary } from '@tupaia/utils';
 import { sanitizeValue } from './sanitizeValue';
 
-class EventToAnalyticsTranslator {
+class AnalyticsFromEventsBuilder {
   constructor(dhisApi) {
     this.dhisApi = dhisApi;
   }
@@ -65,7 +65,7 @@ class EventToAnalyticsTranslator {
   }
 }
 
-export const translateEventsToAnalytics = async (dhisApi, events) => {
-  const translator = new EventToAnalyticsTranslator(dhisApi);
+export const buildAnalyticsFromEvents = async (dhisApi, events) => {
+  const translator = new AnalyticsFromEventsBuilder(dhisApi);
   return translator.translate(events);
 };

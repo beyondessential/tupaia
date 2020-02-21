@@ -16,6 +16,10 @@ const DATA_SOURCE_TYPES = {
 
 export class DataSourceType extends DatabaseType {
   static databaseType = TYPES.DATA_SOURCE;
+
+  get dataElementCode() {
+    return this.config.dataElementCode || this.code;
+  }
 }
 
 export class DataSourceModel extends DatabaseModel {

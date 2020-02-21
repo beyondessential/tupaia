@@ -3,24 +3,18 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { mapKeys } from '@tupaia/utils';
+import { mapKeys, reduceToDictionary } from '@tupaia/utils';
+import { InboundAggregateDataTranslator } from './InboundAggregateDataTranslator';
 
 export class DhisTranslator {
   constructor(models) {
     this.models = models;
+    this.inboundAggregateDataTranslator = new InboundAggregateDataTranslator();
   }
 
   get dataSourceTypes() {
     return this.models.dataSource.getTypes();
   }
-
-  dataSourceToElementCode = dataSource => dataSource.config.dataElementCode || dataSource.code;
-
-  getDataElementToSourceCode = dataSources =>
-    dataSources.reduce((dataElementToSourceCode, dataSource) => {
-      const dataElementCode = this.dataSourceToElementCode(dataSource);
-      return { ...dataElementToSourceCode, [dataElementCode]: dataSource.code };
-    }, {});
 
   getOutboundValue = async (api, dataElementCode, value) => {
     if (value === undefined) return value; // "delete" pushes don't include a value
@@ -38,7 +32,7 @@ export class DhisTranslator {
    * @param {DataSource} dataSource
    */
   translateOutboundDataValue = async (api, { code, value, ...restOfDataValue }, dataSource) => {
-    const dataElementCode = this.dataSourceToElementCode(dataSource);
+    const { dataElementCode } = dataSource;
     const valueToPush = await this.getOutboundValue(api, dataElementCode, value);
 
     const outboundDataValue = {
@@ -54,27 +48,6 @@ export class DhisTranslator {
     }
 
     return outboundDataValue;
-  };
-
-  translateInboundDataValues = (dataValues, dataElementToSourceCode) =>
-    dataValues
-      .filter(({ dataElement }) => dataElementToSourceCode[dataElement])
-      .map(({ dataElement, ...restOfDataValue }) => ({
-        ...restOfDataValue,
-        dataElement: dataElementToSourceCode[dataElement],
-      }));
-
-  translateInboundMetadata = (metadata, dataElementToSourceCode) => ({
-    dataElementCodeToName: mapKeys(metadata.dataElementCodeToName, dataElementToSourceCode),
-  });
-
-  translateInboundAnalytics = ({ results, metadata }, dataSources) => {
-    const dataElementToSourceCode = this.getDataElementToSourceCode(dataSources);
-
-    return {
-      results: this.translateInboundDataValues(results, dataElementToSourceCode),
-      metadata: this.translateInboundMetadata(metadata, dataElementToSourceCode),
-    };
   };
 
   async translateOutboundEventDataValues(api, dataValues) {
@@ -102,22 +75,26 @@ export class DhisTranslator {
     return { ...restOfEvent, dataValues: translatedDataValues };
   }
 
-  /**
-   * @param {(Array<{ dataElement }>|Object<string, string>} dataValues
-   * @returns {(Array<{ dataElement }>|Object<string, string>}
-   */
-  translateInboundEventDataValues = (dataValues, dataElementToSourceCode) => {
-    return Array.isArray(dataValues)
+  translateInboundAggregateData = (response, dataSources) => {
+    return this.inboundAggregateDataTranslator.translate(response, dataSources);
+  };
+
+  translateInboundEventDataValues = (dataValues, dataElementKeyToSourceCode) =>
+    // dataValues can be either an array or a hash
+    Array.isArray(dataValues)
       ? dataValues.map(({ dataElement, ...restOfDataValue }) => ({
           ...restOfDataValue,
-          dataElement: dataElementToSourceCode[dataElement] || dataElement,
+          dataElement: dataElementKeyToSourceCode[dataElement] || dataElement,
         }))
-      : mapKeys(dataValues, dataElementToSourceCode, { defaultToExistingKeys: true });
-  };
+      : mapKeys(dataValues, dataElementKeyToSourceCode, { defaultToExistingKeys: true });
 
   async translateInboundEvents(events, dataGroupCode) {
     const dataElementsInGroup = await this.models.dataSource.getDataElementsInGroup(dataGroupCode);
-    const dataElementToSourceCode = this.getDataElementToSourceCode(dataElementsInGroup);
+    const dataElementToSourceCode = reduceToDictionary(
+      dataElementsInGroup,
+      'dataElementCode',
+      'code',
+    );
 
     return events.map(({ dataValues, ...restOfEvent }) => ({
       ...restOfEvent,
@@ -125,8 +102,8 @@ export class DhisTranslator {
     }));
   }
 
-  translateInboundDataElements(dataElements, dataSources) {
-    const dataElementToSourceCode = this.getDataElementToSourceCode(dataSources);
+  translateInboundDataElements = (dataElements, dataSources) => {
+    const dataElementToSourceCode = reduceToDictionary(dataSources, 'dataElementCode', 'code');
 
     return dataElements.map(({ code, ...restOfDataElement }) => {
       const translatedDataElement = { ...restOfDataElement };
@@ -135,5 +112,5 @@ export class DhisTranslator {
       }
       return translatedDataElement;
     });
-  }
+  };
 }
