@@ -1,6 +1,4 @@
-
 export class Multilock {
-
   constructor() {
     this.locks = new Set();
     this.promise = null;
@@ -20,7 +18,7 @@ export class Multilock {
 
     // check if it got locked while debouncing, if so, start
     // the whole process again
-    if(this.isLocked()) {
+    if (this.isLocked()) {
       return this.waitWithDebounce(debounce);
     }
 
@@ -28,11 +26,11 @@ export class Multilock {
   }
 
   wait() {
-    if(!this.isLocked()) {
+    if (!this.isLocked()) {
       return Promise.resolve();
     }
 
-    if(!this.promise) {
+    if (!this.promise) {
       this.promise = new Promise((resolve, reject) => {
         this.resolve = resolve;
       });
@@ -42,25 +40,24 @@ export class Multilock {
   }
 
   finished() {
-    if(!this.resolve) return;
+    if (!this.resolve) return;
 
     this.resolve();
     this.promise = null;
     this.resolve = null;
   }
 
-  createLock(id) {
-    const key = Symbol(id);
+  createLock(debugLabel) {
+    const key = Symbol(debugLabel);
     this.locks.add(key);
 
     const unlock = () => {
       this.locks.delete(key);
-      if(this.resolve && this.locks.size === 0) {
+      if (this.resolve && this.locks.size === 0) {
         this.finished();
       }
     };
 
     return unlock;
   }
-
 }
