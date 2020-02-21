@@ -78,6 +78,10 @@ export class TupaiaDatabase {
     this.connection.destroy();
   }
 
+  async waitForChangeChannel(timeout = 250, retries = 4) {
+    return this.changeChannel.ping(timeout, retries);
+  }
+
   addChangeHandlerForCollection(collectionName, changeHandler, key = generateId()) {
     this.getChangeHandlersForCollection(collectionName)[key] = changeHandler;
   }
