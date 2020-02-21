@@ -61,6 +61,7 @@ export const criticalMedicineAvailability = async (aggregator, dhisApi) => {
         // Then it continues to next step: find values and facilities of group to aggregate
         const organisationUnitGroupCode = organisationUnitGroups[organisationUnitGroupIndex].code;
         const aggregatedValuesForDataElementGroup = await aggregateCriticalMedicineAvailabilityForGroup(
+          aggregator,
           dhisApi,
           organisationUnitGroupCode,
         );
@@ -79,6 +80,7 @@ export const criticalMedicineAvailability = async (aggregator, dhisApi) => {
 };
 
 const aggregateCriticalMedicineAvailabilityForGroup = async (
+  aggregator,
   dhisApi,
   organisationUnitGroupCode,
 ) => {
@@ -90,22 +92,16 @@ const aggregateCriticalMedicineAvailabilityForGroup = async (
   if (!dataElementGroup) {
     return {}; // If there is no matching data element group, this facility is of a type that doesn't need to have critical medicines aggregated
   }
-  const {
-    code: dataElementGroupCode,
-    dataElements: criticalMedicineDataElements,
-  } = dataElementGroup;
+  const { dataElements: criticalMedicineDataElements } = dataElementGroup;
 
   try {
-    const { results } = await dhisApi.getAnalytics(
+    const { results } = await aggregator.fetchAnalytics(
+      criticalMedicineDataElements.map(de => de.code),
       {
-        dataElementGroupCode,
         period: LOOKBACK_PERIOD,
         organisationUnitCode: `OU_GROUP-${organisationUnitGroupCode}`,
-        inputIdScheme: 'code',
-        outputIdScheme: 'code',
       },
-      {},
-      aggregator.aggregationTypes.FINAL_EACH_MONTH_PREFER_DAILY_PERIOD,
+      { aggregationType: aggregator.aggregationTypes.FINAL_EACH_MONTH_PREFER_DAILY_PERIOD },
     );
 
     // Store facility values of the same group in the aggregatedValues object, building up an

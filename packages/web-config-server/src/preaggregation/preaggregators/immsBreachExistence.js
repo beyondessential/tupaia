@@ -21,10 +21,9 @@ const AGGREGATION_NAME = 'IMMS Breach Existence';
 /**
  * Calculates whether a breach has occurred for each organisation unit
  * in `${OU_GROUP_CODE}` the last `${LOOKUP_PERIOD_IN_DAYS}` days
- *
- * @param {DhisApi} dhisApi
  */
 const immsBreachExistenceWithinPeriod = async (
+  aggregator,
   dhisApi,
   { orgUnitGroupCode, numberOfDays, dataElementCode },
 ) => {
@@ -38,20 +37,15 @@ const immsBreachExistenceWithinPeriod = async (
     endDate: utcMoment().format(),
   };
 
-  const breachEvents = await dhisApi.getEvents({
-    programCode: FRIDGE_BREACH_PROGRAM_CODE,
-    ...periodFetchConfig,
-  });
+  const breachEvents = await aggregator.fetchEvents(FRIDGE_BREACH_PROGRAM_CODE, periodFetchConfig);
 
-  const dailyFridgeDataEvents = await dhisApi.getEvents({
-    programCode: FRIDGE_DAILY_PROGRAM_CODE,
-    ...periodFetchConfig,
-  });
+  const dailyFridgeDataEvents = await aggregator.fetchEvents(
+    FRIDGE_DAILY_PROGRAM_CODE,
+    periodFetchConfig,
+  );
 
-  const { results } = await dhisApi.getAnalytics({
+  const { results } = await aggregator.fetchAnalytics(dataElementCode, {
     ...periodFetchConfig,
-    dataElementCodes: [dataElementCode],
-    outputIdScheme: 'code',
     startDate: null,
     endDate: null,
   });
@@ -102,14 +96,14 @@ const immsBreachExistenceWithinPeriod = async (
 const BREACH_LAST_30_DAYS = 'BREACH_LAST_30_DAYS';
 const BREACH_LAST_48_HOURS = 'BREACH_LAST_48_HOURS';
 
-export const immsBreachExistence = async dhisApi => {
-  await immsBreachExistenceWithinPeriod(dhisApi, {
+export const immsBreachExistence = async (aggregator, dhisApi) => {
+  await immsBreachExistenceWithinPeriod(aggregator, dhisApi, {
     orgUnitGroupCode: WORLD,
     numberOfDays: 30,
     dataElementCode: BREACH_LAST_30_DAYS,
   });
 
-  await immsBreachExistenceWithinPeriod(dhisApi, {
+  await immsBreachExistenceWithinPeriod(aggregator, dhisApi, {
     orgUnitGroupCode: WORLD,
     numberOfDays: 2,
     dataElementCode: BREACH_LAST_48_HOURS,

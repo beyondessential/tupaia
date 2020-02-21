@@ -14,7 +14,6 @@ const dhisService = new DhisService(stubModels());
 let dhisApi;
 
 const basicOptions = {
-  dataServices: [{ isDataRegional: true }],
   organisationUnitCode: 'TO',
 };
 const basicMetadata = { dataElementCodeToName: {} };
@@ -130,10 +129,7 @@ export const testPull = () => {
 
       return assertAnalyticsApiWasInvokedCorrectly({
         dataSources: [DATA_SOURCES.POP01],
-        options: {
-          dataServices: [{ isDataRegional: true }],
-          ...apiOptions,
-        },
+        options: apiOptions,
         invocationArgs: {
           dataElementCodes: ['POP01'],
           ...apiOptions,
@@ -259,10 +255,7 @@ export const testPull = () => {
 
       assertEventsApiWasInvokedCorrectly({
         dataSources: [DATA_SOURCES.POP01_GROUP],
-        options: {
-          dataServices: [{ isDataRegional: true }],
-          ...apiOptions,
-        },
+        options: apiOptions,
         invocationArgs: {
           programCode: 'POP01',
           ...apiOptions,

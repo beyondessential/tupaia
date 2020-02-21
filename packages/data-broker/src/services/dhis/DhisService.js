@@ -9,6 +9,8 @@ import { DhisTranslator } from './DhisTranslator';
 import { buildAnalyticsFromAggregateData } from './buildAnalyticsFromAggregateData';
 import { buildAnalyticsFromEvents } from './buildAnalyticsFromEvents';
 
+const DEFAULT_DATA_SERVICES = [{ isDataRegional: true }];
+
 export class DhisService extends Service {
   constructor(...args) {
     super(...args);
@@ -92,7 +94,7 @@ export class DhisService extends Service {
   deleteEvent = async (api, data) => api.deleteEvent(data.dhisReference);
 
   async pull(dataSources, type, options = {}) {
-    const { organisationUnitCode: entityCode, dataServices = [] } = options;
+    const { organisationUnitCode: entityCode, dataServices = DEFAULT_DATA_SERVICES } = options;
     const pullData = this.pullers[type];
     const apis = dataServices.map(({ isDataRegional }) =>
       getDhisApiInstance({ entityCode, isDataRegional }),
@@ -225,7 +227,7 @@ export class DhisService extends Service {
   };
 
   async pullMetadata(dataSources, type, options) {
-    const { organisationUnitCode: entityCode, dataServices = [] } = options;
+    const { organisationUnitCode: entityCode, dataServices = DEFAULT_DATA_SERVICES } = options;
     const pullMetadata = this.metadataPullers[type];
     const apis = dataServices.map(({ isDataRegional }) =>
       getDhisApiInstance({ entityCode, isDataRegional }),

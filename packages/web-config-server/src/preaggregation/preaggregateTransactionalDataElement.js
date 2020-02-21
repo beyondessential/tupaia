@@ -11,17 +11,18 @@ export const preaggregateTransactionalDataElement = async (
   aggregatedDataElementCode,
   baselineDataElementCode,
   changeDataElementCode,
+  analyticsQuery,
 ) => {
   winston.log('Preaggregating', { aggregatedDataElementCode, transactional: true });
   const query = {
     organisationUnitCode: 'World',
-    dataElementCodes: [baselineDataElementCode, changeDataElementCode],
+    dataElementCodes: ,
     outputIdScheme: 'code',
   };
-  const { results } = await dhisApi.getAnalytics(
-    query,
-    {},
-    aggregator.aggregationTypes.FINAL_EACH_MONTH,
+  const { results } = await aggregator.fetchAnalytics(
+    [baselineDataElementCode, changeDataElementCode],
+    analyticsQuery,
+    { aggergationType: aggregator.aggregationTypes.FINAL_EACH_MONTH },
   );
 
   const baselineValues = {};

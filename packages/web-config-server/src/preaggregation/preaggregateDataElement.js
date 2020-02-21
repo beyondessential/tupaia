@@ -10,18 +10,12 @@ export const preaggregateDataElement = async (
   dhisApi,
   aggregatedDataElementCode,
   formula,
+  analyticsQuery,
 ) => {
   winston.log('Preaggregating', { aggregatedDataElementCode, transactional: false });
-  const query = {
-    organisationUnitCode: 'World',
-    dataElementCodes: Object.keys(formula),
-    outputIdScheme: 'code',
-  };
-  const { results } = await dhisApi.getAnalytics(
-    query,
-    {},
-    aggregator.aggregationTypes.FINAL_EACH_MONTH,
-  );
+  const { results } = await aggregator.fetchAnalytics(Object.keys(formula), analyticsQuery, {
+    aggregationType: aggregator.aggregationTypes.FINAL_EACH_MONTH,
+  });
 
   const calculatedValues = {};
   results.forEach(

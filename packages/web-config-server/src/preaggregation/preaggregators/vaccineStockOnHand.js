@@ -22,7 +22,7 @@ const prependString = 'PREAGGREGATED_';
 const preaggregatedDataElementCode = dataElementCode => `${prependString}${dataElementCode}`;
 const orgUnitVaccineListCode = orgUnit => `${orgUnit}_vaccine_list`;
 
-const fetchFridgeData = async dhisApi => {
+const fetchFridgeData = async aggregator => {
   const fetchConfig = {
     organisationUnitCode: WORLD,
     startDate: utcMoment()
@@ -31,14 +31,11 @@ const fetchFridgeData = async dhisApi => {
     endDate: utcMoment().format(),
   };
 
-  const breachEvents = await dhisApi.getEvents({
-    programCode: FRIDGE_BREACH_PROGRAM_CODE,
-    ...fetchConfig,
-  });
-  const dailyFridgeDataEvents = await dhisApi.getEvents({
-    programCode: FRIDGE_DAILY_PROGRAM_CODE,
-    ...fetchConfig,
-  });
+  const breachEvents = await aggregator.fetchEvents(FRIDGE_BREACH_PROGRAM_CODE, fetchConfig);
+  const dailyFridgeDataEvents = await aggregator.fetchEvents(
+    FRIDGE_DAILY_PROGRAM_CODE,
+    fetchConfig,
+  );
 
   return [...breachEvents, ...dailyFridgeDataEvents];
 };
@@ -103,7 +100,7 @@ const buildDataValues = (metadata, data) => {
 export const vaccineStockOnHand = async (aggregator, dhisApi) => {
   winston.info('Starting vaccine stock on hand aggregation');
 
-  const fridgeData = await fetchFridgeData(dhisApi);
+  const fridgeData = await fetchFridgeData(aggregator);
   winston.info('Finished fetching fridge data: building data...');
 
   const metadata = await buildVaccineMetadata(dhisApi, fridgeData);

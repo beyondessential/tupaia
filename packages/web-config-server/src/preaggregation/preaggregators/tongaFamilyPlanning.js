@@ -5,7 +5,6 @@
 import { getDataElementsInGroupSet } from '/apiV1/utils/getDataElementsInGroupSet';
 import { preaggregateDataElement } from '/preaggregation/preaggregateDataElement';
 import { preaggregateTransactionalDataElement } from '/preaggregation/preaggregateTransactionalDataElement';
-import { runPreaggregationOnAllDhisInstances } from '/preaggregation/runPreaggregationOnAllDhisInstances';
 
 const OPERATORS_FOR_CHANGE_TYPES = {
   FP_Change_Counts_1_New_Acceptors: '+', // New acceptors
@@ -30,10 +29,12 @@ const BASELINE_DATA_ELEMENTS = {
   FP_Method_Counts_K_Other: 'FP182',
 };
 
-export const tongaFamilyPlanning = (aggregator, dhisApi) =>
-  runPreaggregationOnAllDhisInstances(runAggregation, aggregator, dhisApi);
+const ANALYTICS_QUERY = {
+  organisationUnitCode: 'TO',
+  dataServices: [{ isDataRegional: false }],
+};
 
-const runAggregation = async dhisApi => {
+export const tongaFamilyPlanning = async (aggregator, dhisApi) => {
   const { dataElementToGroupMapping: dataElementToChangeType } = await getDataElementsInGroupSet(
     dhisApi,
     'FP_Change_Counts',
@@ -69,9 +70,11 @@ const runAggregation = async dhisApi => {
   for (let i = 0; i < methodCodes.length; i++) {
     const methodCode = methodCodes[i];
     await preaggregateDataElement(
+      aggregator,
       dhisApi,
       methodToNetChangeDataElement[methodCode],
       formulae[methodCode],
+      ANALYTICS_QUERY,
     );
   }
   await dhisApi.updateAnalyticsTables();
@@ -80,10 +83,12 @@ const runAggregation = async dhisApi => {
   for (let i = 0; i < methodCodes.length; i++) {
     const methodCode = methodCodes[i];
     await preaggregateTransactionalDataElement(
+      aggregator,
       dhisApi,
       methodToAcceptorsDataElement[methodCode],
       BASELINE_DATA_ELEMENTS[methodCode],
       methodToNetChangeDataElement[methodCode],
+      ANALYTICS_QUERY,
     );
   }
   await dhisApi.updateAnalyticsTables();
