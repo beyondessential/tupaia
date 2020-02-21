@@ -78,7 +78,8 @@ export class DhisService extends Service {
     const dataValues = Array.isArray(data) ? data : [data];
     this.validatePushData(dataSources, dataValues);
     const api = this.getApiForValue(dataSources[0], dataValues[0]); // all are for the same instance
-    return pushData(api, dataValues, dataSources);
+    const diagnostics = await pushData(api, dataValues, dataSources);
+    return { diagnostics, serverName: api.getServerName() };
   }
 
   async pushAggregateData(api, dataValues, dataSources) {
