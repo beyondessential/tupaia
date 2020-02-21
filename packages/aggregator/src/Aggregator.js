@@ -57,7 +57,8 @@ export class Aggregator {
     if (data.length === 0) return null;
     const codes = data.map(dataValue => dataValue.code);
     const dataSourceSpec = { code: codes, type: this.dataSourceTypes.DATA_ELEMENT };
-    return this.dataBroker.push(dataSourceSpec, data);
+    const { diagnostics } = await this.dataBroker.push(dataSourceSpec, data);
+    return diagnostics;
   }
 
   // TODO ultimately Aggregator should handle preaggregation internally - at that point this method
