@@ -80,18 +80,6 @@ export class InboundAggregateDataTranslator {
     });
   }
 
-  translateRow(row, dataElementRowIndex, coComboCode) {
-    const categoryComboIsUsed = coComboCode !== 'default';
-
-    if (categoryComboIsUsed && dataElementRowIndex >= 0) {
-      const dataElement = row[dataElementRowIndex];
-      const dataElementKey = createDataElementKey(dataElement, coComboCode);
-      row.splice(dataElementRowIndex, 1, this.dataElementKeyToSourceCode[dataElementKey]);
-    }
-
-    return row;
-  }
-
   translateMetadata() {
     const { items, dx } = this.getTranslatedItemsAndDx();
     const dimensions = this.translateMetadataDimensions(dx);
