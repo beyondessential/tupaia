@@ -6,6 +6,7 @@
 export { getTimezoneNameFromTimestamp, utcMoment } from './datetime';
 export { getDhisConfig } from './dhis';
 export * from './errors';
+export { Multilock } from './Multilock';
 export { getCountryNameFromCode } from './getCountryNameFromCode';
 export {
   flattenToObject,

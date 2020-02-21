@@ -47,15 +47,18 @@ export class UserCountryPermissionModel extends DatabaseModel {
  * hold off and pool several changes for the same user (e.g. if they're being granted permission
  * to three countries at once), but this is good enough.
  */
-async function onUpsertSendPermissionGrantEmail(change, record, models) {
+async function onUpsertSendPermissionGrantEmail(change, models) {
   if (change.type === 'delete') {
     return; // Don't notify the user of permissions being taken away
   }
 
   // Get details of permission granted
-  const user = await models.user.findById(record.user_id);
-  const country = await models.country.findById(record.country_id);
-  const permissionGroup = await models.permissionGroup.findById(record.permission_group_id);
+  const userCountryPermission = await models.userCountryPermission.findById(change.record_id);
+  const user = await models.user.findById(userCountryPermission.user_id);
+  const country = await models.country.findById(userCountryPermission.country_id);
+  const permissionGroup = await models.permissionGroup.findById(
+    userCountryPermission.permission_group_id,
+  );
 
   // Compose message to send
   const message = `Hi ${user.first_name},

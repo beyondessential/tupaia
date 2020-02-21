@@ -35,8 +35,7 @@ async function checkIsEventBased(models, change) {
     );
   }
 
-  const surveyResponse = await models.surveyResponse.findById(change.record_id);
-  return surveyResponse.isEventBased();
+  return models.surveyResponse.checkIsEventBased(change.record_id);
 }
 
 const getPusher = async (models, change) => {
