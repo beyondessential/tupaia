@@ -64,20 +64,26 @@ export class InboundAggregateDataTranslator {
     }
 
     const coCombosById = keyBy(this.categoryOptionsCombos, 'uid');
-    return this.rows.map(row => {
-      const coComboId = row[coComboRowIndex];
-      const { code: coComboCode } = coCombosById[coComboId];
-      const categoryComboIsUsed = coComboCode !== 'default';
+    return this.rows
+      .map(row => {
+        const coComboId = row[coComboRowIndex];
+        const { code: coComboCode } = coCombosById[coComboId];
+        const categoryComboIsUsed = coComboCode !== 'default';
 
-      if (categoryComboIsUsed && dataElementRowIndex >= 0) {
-        const dataElement = row[dataElementRowIndex];
-        const dataElementKey = createDataElementKey(dataElement, coComboCode);
-        row.splice(dataElementRowIndex, 1, this.dataElementKeyToSourceCode[dataElementKey]);
-      }
+        if (categoryComboIsUsed && dataElementRowIndex >= 0) {
+          const dataElement = row[dataElementRowIndex];
+          const dataElementKey = createDataElementKey(dataElement, coComboCode);
+          const sourceCode = this.dataElementKeyToSourceCode[dataElementKey];
+          if (!sourceCode) {
+            return null; // no matching source code, this category option combo wasn't requested
+          }
+          row.splice(dataElementRowIndex, 1, sourceCode);
+        }
 
-      row.splice(coComboRowIndex, 1);
-      return row;
-    });
+        row.splice(coComboRowIndex, 1);
+        return row;
+      })
+      .filter(row => !!row); // drop those that weren't requested
   }
 
   translateMetadata() {
@@ -137,7 +143,6 @@ export class InboundAggregateDataTranslator {
       const translatedId = createDataElementKey(uid, coComboCode);
       translatedDx.push(translatedId);
       const dataElementKey = createDataElementKey(code, coComboCode);
-
       translatedItems[translatedId] = {
         ...item,
         uid: translatedId,
