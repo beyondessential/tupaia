@@ -15,7 +15,7 @@ export class DhisService extends Service {
     this.pushers = this.getPushers();
     this.deleters = this.getDeleters();
     this.pullers = this.getPullers();
-    this.dataSourcePullers = this.getDataSourcePullers();
+    this.metadataPullers = this.getMetadataPullers();
     this.translator = new DhisTranslator(this.models);
   }
 
@@ -44,7 +44,7 @@ export class DhisService extends Service {
     };
   }
 
-  getDataSourcePullers() {
+  getMetadataPullers() {
     return {
       [this.dataSourceTypes.DATA_ELEMENT]: this.pullDataElementMetadata.bind(this),
     };
@@ -226,7 +226,7 @@ export class DhisService extends Service {
 
   async pullMetadata(dataSources, type, options) {
     const { organisationUnitCode: entityCode, dataServices = [] } = options;
-    const pullMetadata = this.dataSourcePullers[type];
+    const pullMetadata = this.metadataPullers[type];
     const apis = dataServices.map(({ isDataRegional }) =>
       getDhisApiInstance({ entityCode, isDataRegional }),
     );
@@ -243,7 +243,7 @@ export class DhisService extends Service {
 
   async pullDataElementMetadata(api, dataSources, options) {
     const { shouldIncludeOptions } = options;
-    const dataElementCodes = dataSources.map(this.translator.dataSourceToElementCode);
+    const dataElementCodes = dataSources.map(({ dataElementCode }) => dataElementCode);
     const dataElements = await this.fetchDataElements(api, dataElementCodes, shouldIncludeOptions);
     const translatedDataElements = this.translator.translateInboundDataElements(
       dataElements,
@@ -262,7 +262,8 @@ export class DhisService extends Service {
     if (shouldIncludeOptions) {
       fields.push('optionSet');
     }
-    const { dataElements } = await api.getRecords(api.getResourceTypes().DATA_ELEMENT, {
+    const dataElements = await api.getRecords({
+      type: api.getResourceTypes().DATA_ELEMENT,
       codes: dataElementCodes,
       fields,
     });

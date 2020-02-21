@@ -90,7 +90,11 @@ export class DhisTranslator {
 
   async translateInboundEvents(events, dataGroupCode) {
     const dataElementsInGroup = await this.models.dataSource.getDataElementsInGroup(dataGroupCode);
-    const dataElementToSourceCode = this.getDataElementToSourceCode(dataElementsInGroup);
+    const dataElementToSourceCode = reduceToDictionary(
+      dataElementsInGroup,
+      'dataElementCode',
+      'code',
+    );
 
     return events.map(({ dataValues, ...restOfEvent }) => ({
       ...restOfEvent,
@@ -98,8 +102,8 @@ export class DhisTranslator {
     }));
   }
 
-  translateInboundDataElements(dataElements, dataSources) {
-    const dataElementToSourceCode = this.getDataElementToSourceCode(dataSources);
+  translateInboundDataElements = (dataElements, dataSources) => {
+    const dataElementToSourceCode = reduceToDictionary(dataSources, 'dataElementCode', 'code');
 
     return dataElements.map(({ code, ...restOfDataElement }) => {
       const translatedDataElement = { ...restOfDataElement };
@@ -108,5 +112,5 @@ export class DhisTranslator {
       }
       return translatedDataElement;
     });
-  }
+  };
 }
