@@ -48,6 +48,6 @@ export class Aggregator {
 
   async fetchDataElements(codes, fetchOptions) {
     const dataSourceSpec = { code: codes, type: this.dataSourceTypes.DATA_ELEMENT };
-    return this.dataBroker.pullDataSources(dataSourceSpec, fetchOptions);
+    return this.dataBroker.pullMetadata(dataSourceSpec, fetchOptions);
   }
 }

@@ -185,7 +185,7 @@ export default class extends DhisTranslationHandler {
     const dhisApi = getDhisApiInstance({ entityCode: code, isDataRegional });
     const options =
       dataSourceType === DATA_SOURCE_TYPES.SINGLE
-        ? await getOptionsForDataElement(dhisApi, dataElementCode, createDataServices(mapOvelay))
+        ? await getOptionsForDataElement(dhisApi, dataElementCode, createDataServices(mapOverlay))
         : {};
     const translatedOptions = translateMeasureOptionSet(options, mapOverlay);
 
@@ -239,17 +239,14 @@ function translateMeasureOptionSet(measureOptions, mapOverlay) {
 }
 
 const getOptionsForDataElement = async (aggregator, dataElementCode, dataServices) => {
-  const dataElements =
+  const [dataElement] =
     (await aggregator.fetchDataElements([dataElementCode], {
       organisationUnitCode: this.entityCode,
       dataServices,
     })) || {};
-  if (Object.keys(dataElementsMatchingCode).length !== 1) {
-    throw new Error(
-      `Should be exactly one data element matching code ${dataElementCode}, does it exist in DHIS2?`,
-    );
+  if (!dataElement) {
+    throw new Error(`Data element with code ${dataElementCode} not found`);
   }
-  const codeToDataElement = keyBy(dataElements, 'code');
 
-  return codeToDataElement[dataElementCode].options;
+  return dataElement.options;
 };

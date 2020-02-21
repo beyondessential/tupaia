@@ -46,7 +46,7 @@ export class DhisService extends Service {
 
   getDataSourcePullers() {
     return {
-      [this.dataSourceTypes.DATA_ELEMENT]: this.pullDataElements.bind(this),
+      [this.dataSourceTypes.DATA_ELEMENT]: this.pullDataElementMetadata.bind(this),
     };
   }
 
@@ -217,16 +217,16 @@ export class DhisService extends Service {
     return this.translator.translateInboundEvents(response, programCode);
   };
 
-  async pullDataSources(dataSources, type, options) {
+  async pullMetadata(dataSources, type, options) {
     const { organisationUnitCode: entityCode, dataServices = [] } = options;
-    const pullDataSources = this.dataSourcePullers[type];
+    const pullMetadata = this.dataSourcePullers[type];
     const apis = dataServices.map(({ isDataRegional }) =>
       getDhisApiInstance({ entityCode, isDataRegional }),
     );
 
     const results = [];
     const pullForApi = async api => {
-      const newResults = await pullDataSources(api, dataSources, options);
+      const newResults = await pullMetadata(api, dataSources, options);
       results.push(...newResults);
     };
     await Promise.all(apis.map(pullForApi));
@@ -234,7 +234,7 @@ export class DhisService extends Service {
     return results;
   }
 
-  async pullDataElements(api, dataSources, options) {
+  async pullDataElementMetadata(api, dataSources, options) {
     const { shouldIncludeOptions } = options;
     const dataElementCodes = dataSources.map(this.translator.dataSourceToElementCode);
     const dataElements = await this.fetchDataElements(api, dataElementCodes, shouldIncludeOptions);
@@ -251,8 +251,8 @@ export class DhisService extends Service {
   }
 
   fetchDataElements = async (api, dataElementCodes, shouldIncludeOptions) => {
-    const { dataElements } = await api.fetch(api.getResourceTypes().DATA_ELEMENT, {
-      filter: `code:in:[${dataElementCodes}]`,
+    const { dataElements } = await api.getRecords(api.getResourceTypes().DATA_ELEMENT, {
+      codes: dataElementCodes,
       fields: `code,name${shouldIncludeOptions ? ',optionSet' : ''}`,
     });
 
