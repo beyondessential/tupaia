@@ -40,7 +40,7 @@ const fetchFridgeData = async aggregator => {
   return [...breachEvents, ...dailyFridgeDataEvents];
 };
 
-const buildVaccineMetadata = async (dhisApi, data) => {
+const buildVaccineMetadata = async (aggregator, dhisApi, data) => {
   const metadataByFacility = reduceToDictionary(data, 'orgUnit', 'orgUnit');
   const vaccineListCodes = Object.values(metadataByFacility).map(orgUnit =>
     orgUnitVaccineListCode(orgUnit),
@@ -103,7 +103,7 @@ export const vaccineStockOnHand = async (aggregator, dhisApi) => {
   const fridgeData = await fetchFridgeData(aggregator);
   winston.info('Finished fetching fridge data: building data...');
 
-  const metadata = await buildVaccineMetadata(dhisApi, fridgeData);
+  const metadata = await buildVaccineMetadata(aggregator, dhisApi, fridgeData);
   const dataValues = buildDataValues(metadata, fridgeData);
 
   const {
