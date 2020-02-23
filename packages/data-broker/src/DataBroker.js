@@ -11,6 +11,10 @@ export class DataBroker {
     this.models = getModels();
   }
 
+  close() {
+    this.models.closeDatabaseConnections();
+  }
+
   getDataSourceTypes() {
     return this.models.dataSource.getTypes();
   }

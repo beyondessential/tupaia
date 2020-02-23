@@ -21,6 +21,7 @@ const runPreaggregators = async preaggregatorsToRun => {
     await preaggregatorsToRun[i](aggregator, regionalDhisApiInstance); // Await each preaggregator as otherwise it will cause a huge spike in load
   }
   await regionalDhisApiInstance.updateAnalyticsTables();
+  aggregator.close();
 };
 
 export const runPreaggregation = async preaggregationName => {

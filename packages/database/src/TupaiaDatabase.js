@@ -73,7 +73,7 @@ export class TupaiaDatabase {
 
   maxBindingsPerQuery = MAX_BINDINGS_PER_QUERY;
 
-  destroy() {
+  closeConnections() {
     this.changeChannel.close();
     this.connection.destroy();
   }
