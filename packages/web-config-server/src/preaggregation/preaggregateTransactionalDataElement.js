@@ -12,7 +12,7 @@ export const preaggregateTransactionalDataElement = async (
   changeDataElementCode,
   analyticsQuery,
 ) => {
-  winston.log('Preaggregating', { aggregatedDataElementCode, transactional: true });
+  winston.info('Preaggregating', { aggregatedDataElementCode, transactional: true });
   const { results } = await aggregator.fetchAnalytics(
     [baselineDataElementCode, changeDataElementCode],
     analyticsQuery,
