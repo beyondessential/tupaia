@@ -3,22 +3,31 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { mapKeys, reduceToDictionary } from '@tupaia/utils';
+import { reduceToDictionary } from '@tupaia/utils';
 import { InboundAggregateDataTranslator } from './InboundAggregateDataTranslator';
 
 export class DhisTranslator {
   constructor(models) {
     this.models = models;
     this.inboundAggregateDataTranslator = new InboundAggregateDataTranslator();
+    this.optionsByDataElementCode = {};
   }
 
   get dataSourceTypes() {
     return this.models.dataSource.getTypes();
   }
 
+  async getOptionsForDataElement(api, dataElementCode) {
+    if (this.optionsByDataElementCode[dataElementCode] === undefined) {
+      this.optionsByDataElementCode[dataElementCode] =
+        (await api.getOptionsForDataElement(dataElementCode)) || null;
+    }
+    return this.optionsByDataElementCode[dataElementCode];
+  }
+
   getOutboundValue = async (api, dataElementCode, value) => {
     if (value === undefined) return value; // "delete" pushes don't include a value
-    const options = await api.getOptionsForDataElement(dataElementCode);
+    const options = await this.getOptionsForDataElement(api, dataElementCode);
     if (!options) return value; // no option set associated with that data element, use raw value
     const optionCode = options[value.toLowerCase()]; // Convert text to lower case so we can ignore case
     if (!optionCode) {
@@ -55,6 +64,19 @@ export class DhisTranslator {
     }
 
     return outboundDataValue;
+  };
+
+  translateOutboundDataValues = async (api, dataValues, dataSources) => {
+    // prefetch options for unique data element codes so that DHIS2 doesn't get overwhelmed
+    const dataElementCodes = [...new Set(dataSources.map(d => d.dataElementCode))];
+    await Promise.all(dataElementCodes.map(code => this.getOptionsForDataElement(api, code)));
+    const translatedDataValues = await Promise.all(
+      dataSources.map((dataSource, i) => {
+        const dataValue = dataValues[i];
+        return this.translateOutboundDataValue(api, dataValue, dataSource);
+      }),
+    );
+    return translatedDataValues;
   };
 
   async translateOutboundEventDataValues(api, dataValues) {

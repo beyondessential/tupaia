@@ -83,11 +83,10 @@ export class DhisService extends Service {
   }
 
   async pushAggregateData(api, dataValues, dataSources) {
-    const translatedDataValues = await Promise.all(
-      dataSources.map((dataSource, i) => {
-        const dataValue = dataValues[i];
-        return this.translator.translateOutboundDataValue(api, dataValue, dataSource);
-      }),
+    const translatedDataValues = await this.translator.translateOutboundDataValues(
+      api,
+      dataValues,
+      dataSources,
     );
     return api.postDataValueSets(translatedDataValues);
   }
