@@ -63,6 +63,7 @@ export const annualPopulationBreakdown = async aggregator => {
       organisationUnitCode: 'TO', // this is a Tonga only preaggregtaion
       outputIdScheme: 'code',
       dataServices: DATA_SERVICES,
+      period: 'LAST_5_YEARS;THIS_YEAR',
     },
     { aggregationType: aggregator.aggregationTypes.FINAL_EACH_YEAR },
   );

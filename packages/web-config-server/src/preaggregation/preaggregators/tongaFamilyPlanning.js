@@ -33,6 +33,7 @@ const BASELINE_DATA_ELEMENTS = {
 const ANALYTICS_QUERY = {
   organisationUnitCode: 'TO',
   dataServices: [{ isDataRegional: false }],
+  period: 'LAST_5_YEARS;THIS_YEAR',
 };
 
 export const tongaFamilyPlanning = async aggregator => {
