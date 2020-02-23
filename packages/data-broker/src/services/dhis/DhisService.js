@@ -29,7 +29,7 @@ export class DhisService extends Service {
   getPushers() {
     return {
       [this.dataSourceTypes.DATA_ELEMENT]: this.pushAggregateData.bind(this),
-      [this.dataSourceTypes.DATA_GROUP]: this.pushEvent.bind(this),
+      [this.dataSourceTypes.DATA_GROUP]: this.pushEvents.bind(this),
     };
   }
 
@@ -91,7 +91,7 @@ export class DhisService extends Service {
     return api.postDataValueSets(translatedDataValues);
   }
 
-  async pushEvent(api, events) {
+  async pushEvents(api, events) {
     const translatedEvents = await Promise.all(
       events.map(event => this.translator.translateOutboundEvent(api, event)),
     );
