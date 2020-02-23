@@ -11,7 +11,7 @@ export const preaggregateDataElement = async (
   formula,
   analyticsQuery,
 ) => {
-  winston.info('Preaggregating', { aggregatedDataElementCode, transactional: false });
+  winston.info('Preaggregating', { aggregatedDataElementCode });
   const { results } = await aggregator.fetchAnalytics(Object.keys(formula), analyticsQuery, {
     aggregationType: aggregator.aggregationTypes.FINAL_EACH_MONTH,
   });

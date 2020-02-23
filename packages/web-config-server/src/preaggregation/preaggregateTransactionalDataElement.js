@@ -5,6 +5,24 @@ import winston from 'winston';
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
 
+const fetchMonthlyValuesByEntityCode = async (aggregator, code, analyticsQuery) => {
+  const { results } = await aggregator.fetchAnalytics(code, analyticsQuery, {
+    aggregationType: aggregator.aggregationTypes.FINAL_EACH_MONTH,
+  });
+
+  const valuesByEntityCode = {};
+  results.forEach(({ value, period, organisationUnit: entityCode }) => {
+    if (!valuesByEntityCode[entityCode]) {
+      valuesByEntityCode[entityCode] = [];
+    }
+    valuesByEntityCode[entityCode].push({
+      period,
+      value,
+    });
+  });
+  return valuesByEntityCode;
+};
+
 export const preaggregateTransactionalDataElement = async (
   aggregator,
   aggregatedDataElementCode,
@@ -17,34 +35,17 @@ export const preaggregateTransactionalDataElement = async (
     baselineDataElementCode,
     changeDataElementCode,
   });
-  const { results } = await aggregator.fetchAnalytics(
-    [baselineDataElementCode, changeDataElementCode],
+
+  const baselineValues = await fetchMonthlyValuesByEntityCode(
+    aggregator,
+    baselineDataElementCode,
     analyticsQuery,
-    { aggregationType: aggregator.aggregationTypes.FINAL_EACH_MONTH },
   );
 
-  const baselineValues = {};
-  const changeValues = {};
-  results.forEach(
-    ({ dataElement: dataElementCode, value, period, organisationUnit: organisationUnitCode }) => {
-      if (dataElementCode === baselineDataElementCode) {
-        if (!baselineValues[organisationUnitCode]) {
-          baselineValues[organisationUnitCode] = [];
-        }
-        baselineValues[organisationUnitCode].push({
-          period,
-          value,
-        });
-      } else {
-        if (!changeValues[organisationUnitCode]) {
-          changeValues[organisationUnitCode] = [];
-        }
-        changeValues[organisationUnitCode].push({
-          period,
-          value,
-        });
-      }
-    },
+  const changeValues = await fetchMonthlyValuesByEntityCode(
+    aggregator,
+    changeDataElementCode,
+    analyticsQuery,
   );
 
   const runningTotals = {};
