@@ -3,11 +3,10 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { reduceToDictionary } from '@tupaia/utils';
 import { Entity } from '/models';
 import { TableOfDataValuesBuilder } from './tableOfDataValues';
 
-import { stripFromStart } from '@tupaia/utils';
+import { stripFromStart, reduceToDictionary } from '@tupaia/utils';
 
 import { TableConfig } from './TableConfig';
 import { getValuesByCell } from './getValuesByCell';
@@ -41,30 +40,30 @@ class TableOfValuesForOrgUnitsBuilder extends TableOfDataValuesBuilder {
   }
 
   async buildRows(results, builtColumns) {
-    const { rows, stripFromDataElementNames } = this.config;
-    const rowData = results.reduce(
-      (valuesPerElement, { dataElement, value, organisationUnit, metadata }) => {
-        const dataElementName = stripFromStart(metadata.name, stripFromDataElementNames);
-        const categoryId = rows.find(row => row.rows.includes(dataElementName)).category;
-        const orgUnit = builtColumns.find(col => col.title === organisationUnit);
-
-        const row = valuesPerElement[dataElement] || {
-          dataElement: dataElementName,
-          categoryId,
-        };
-
-        // still want to populate rows without values to display no data
-        if (orgUnit) row[orgUnit.key] = value;
-
-        return {
-          ...valuesPerElement,
-          [dataElement]: {
-            ...row,
-          },
-        };
-      },
+    const { stripFromDataElementNames } = this.config;
+    const baseRows = this.buildBaseRows().reduce(
+      (base, { dataElement, categoryId }) => ({
+        ...base,
+        [dataElement]: { dataElement, categoryId },
+      }),
       {},
     );
+
+    const rowData = results.reduce((valuesPerElement, { value, organisationUnit, metadata }) => {
+      const dataElementName = stripFromStart(metadata.name, stripFromDataElementNames);
+      const orgUnit = builtColumns.find(col => col.title === organisationUnit);
+      const row = valuesPerElement[dataElementName];
+
+      // still want to populate rows without values to display no data
+      if (orgUnit) row[orgUnit.key] = value;
+
+      return {
+        ...valuesPerElement,
+        [dataElementName]: {
+          ...row,
+        },
+      };
+    }, baseRows);
 
     return Object.values(rowData);
   }
