@@ -4,7 +4,6 @@
  */
 
 import { createAggregator } from '@tupaia/aggregator';
-import { Aggregator } from '/aggregator';
 import { getDhisApiInstance } from '/dhis';
 import * as preaggregators from './preaggregators';
 
@@ -14,7 +13,7 @@ const getPreaggregators = preaggregationName =>
     : [preaggregators[preaggregationName]];
 
 const runPreaggregators = async preaggregatorsToRun => {
-  const aggregator = createAggregator(Aggregator);
+  const aggregator = createAggregator();
   const regionalDhisApiInstance = getDhisApiInstance();
   await regionalDhisApiInstance.updateAnalyticsTables();
   for (let i = 0; i < preaggregatorsToRun.length; i++) {
