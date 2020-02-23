@@ -77,9 +77,13 @@ const immsBreachExistenceWithinPeriod = async (
   }));
 
   winston.info(`${AGGREGATION_NAME} (${numberOfDays} days) done, pushing new data values...`);
+  if (dataValues.length === 0) {
+    winston.info('No new data to push');
+    return;
+  }
   const {
     counts: { imported, updated, ignored },
-  } = (await aggregator.pushAggregateData(dataValues)) || {};
+  } = await aggregator.pushAggregateData(dataValues);
 
   if (imported) {
     winston.info(`${imported} data values imported successfully`);
