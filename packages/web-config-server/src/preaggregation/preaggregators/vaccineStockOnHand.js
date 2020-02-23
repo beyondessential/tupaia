@@ -3,7 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 import flatten from 'lodash.flatten';
-import { keyBy } from 'lodash.keyby';
+import keyBy from 'lodash.keyby';
 import winston from 'winston';
 
 import { PERIOD_TYPES, momentToPeriod } from '@tupaia/dhis-api';
