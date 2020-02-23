@@ -106,9 +106,14 @@ export const vaccineStockOnHand = async (aggregator, dhisApi) => {
   const metadata = await buildVaccineMetadata(aggregator, dhisApi, fridgeData);
   const dataValues = buildDataValues(metadata, fridgeData);
 
+  if (dataValues.length === 0) {
+    winston.info('No new data to import');
+    return;
+  }
+
   const {
     counts: { imported, updated, ignored },
-  } = (await aggregator.pushAggregateData(dataValues)) || {};
+  } = await aggregator.pushAggregateData(dataValues);
 
   if (imported) {
     winston.info(`${imported} data values imported successfully`);
