@@ -20,7 +20,7 @@ export const preaggregateTransactionalDataElement = async (
   const { results } = await aggregator.fetchAnalytics(
     [baselineDataElementCode, changeDataElementCode],
     analyticsQuery,
-    { aggergationType: aggregator.aggregationTypes.FINAL_EACH_MONTH },
+    { aggregationType: aggregator.aggregationTypes.FINAL_EACH_MONTH },
   );
 
   const baselineValues = {};
