@@ -6,10 +6,9 @@
 import get from 'lodash.get';
 import has from 'lodash.has';
 import setWith from 'lodash.setwith';
-import winston from 'winston';
 
-import { postDataValueSets } from '/preaggregation/postDataValueSets';
-import { runPreaggregationOnAllDhisInstances } from '/preaggregation/runPreaggregationOnAllDhisInstances';
+import { getDhisApiInstance } from '/dhis';
+import { pushAggregateData } from '/preaggregation/pushAggregateData';
 
 /**
  * Map of POP01 to POP04 survey element codes for data elements that overlap each other
@@ -40,6 +39,7 @@ const POP_01_TO_POP_04_CODES = {
 };
 
 const POP_01_CODES = Object.keys(POP_01_TO_POP_04_CODES);
+const DATA_SERVICES = [{ isDataRegional: false }];
 
 /**
  * POP04 and POP01 are both Annual Population Breakdown surveys,
@@ -53,27 +53,24 @@ const POP_01_CODES = Object.keys(POP_01_TO_POP_04_CODES);
  *
  * This aggregation converts all overlapping elements from POP01 to POP04,
  * so that POP04 can be the single source of truth in data aggregations.
- *
- * @param {DhisApi} dhisApi
  */
-export const annualPopulationBreakdown = async (aggregator, dhisApi) => {
-  winston.info('Starting to aggregate Annual Population Breakdown');
-  runPreaggregationOnAllDhisInstances(runPreaggregation, aggregator, dhisApi);
-};
-
-const runPreaggregation = async (aggregator, dhisApi) => {
-  const { results } = await dhisApi.getAnalytics(
+export const annualPopulationBreakdown = async aggregator => {
+  const tongaDhisApi = getDhisApiInstance({ entityCode: 'TO', isDataRegional: false });
+  await tongaDhisApi.updateAnalyticsTables();
+  const { results } = await aggregator.fetchAnalytics(
+    POP_01_CODES,
     {
-      dataElementCodes: POP_01_CODES,
-      organisationUnitCode: 'World',
+      organisationUnitCode: 'TO', // this is a Tonga only preaggregtaion
       outputIdScheme: 'code',
+      dataServices: DATA_SERVICES,
+      period: 'LAST_5_YEARS;THIS_YEAR',
     },
-    {},
-    aggregator.aggregationTypes.FINAL_EACH_YEAR,
+    { aggregationType: aggregator.aggregationTypes.FINAL_EACH_YEAR },
   );
 
   const dataValues = createAggregatedDataValues(results);
-  await postDataValueSets(dhisApi, dataValues);
+  await pushAggregateData(aggregator, dataValues);
+  await tongaDhisApi.updateAnalyticsTables();
 };
 
 const createAggregatedDataValues = apiResults => {
@@ -94,7 +91,7 @@ const createAggregatedDataValues = apiResults => {
       get(valueMap, itemPath).value += value;
     } else {
       const newItem = {
-        dataElement: pop04Code,
+        code: pop04Code,
         orgUnit: organisationUnitId,
         period,
         value,

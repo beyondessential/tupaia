@@ -1,6 +1,6 @@
 import winston from 'winston';
 import { DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
-import { postDataValueSets } from '/preaggregation/postDataValueSets';
+import { pushAggregateData } from '/preaggregation/pushAggregateData';
 
 /**
  * Tupaia Config Server
@@ -61,6 +61,7 @@ export const criticalMedicineAvailability = async (aggregator, dhisApi) => {
         // Then it continues to next step: find values and facilities of group to aggregate
         const organisationUnitGroupCode = organisationUnitGroups[organisationUnitGroupIndex].code;
         const aggregatedValuesForDataElementGroup = await aggregateCriticalMedicineAvailabilityForGroup(
+          aggregator,
           dhisApi,
           organisationUnitGroupCode,
         );
@@ -71,7 +72,7 @@ export const criticalMedicineAvailability = async (aggregator, dhisApi) => {
       }
 
       // Send the values to the DHIS2 server
-      await postAggregatedValues(dhisApi, aggregatedValues);
+      await postAggregatedValues(aggregator, aggregatedValues);
     } catch (error) {
       winston.error('Error while calculating critical availability', { country: country.name });
     }
@@ -79,6 +80,7 @@ export const criticalMedicineAvailability = async (aggregator, dhisApi) => {
 };
 
 const aggregateCriticalMedicineAvailabilityForGroup = async (
+  aggregator,
   dhisApi,
   organisationUnitGroupCode,
 ) => {
@@ -90,22 +92,16 @@ const aggregateCriticalMedicineAvailabilityForGroup = async (
   if (!dataElementGroup) {
     return {}; // If there is no matching data element group, this facility is of a type that doesn't need to have critical medicines aggregated
   }
-  const {
-    code: dataElementGroupCode,
-    dataElements: criticalMedicineDataElements,
-  } = dataElementGroup;
+  const { dataElements: criticalMedicineDataElements } = dataElementGroup;
 
   try {
-    const { results } = await dhisApi.getAnalytics(
+    const { results } = await aggregator.fetchAnalytics(
+      criticalMedicineDataElements.map(de => de.code),
       {
-        dataElementGroupCode,
         period: LOOKBACK_PERIOD,
         organisationUnitCode: `OU_GROUP-${organisationUnitGroupCode}`,
-        inputIdScheme: 'code',
-        outputIdScheme: 'code',
       },
-      {},
-      aggregator.aggregationTypes.FINAL_EACH_MONTH_PREFER_DAILY_PERIOD,
+      { aggregationType: aggregator.aggregationTypes.FINAL_EACH_MONTH_PREFER_DAILY_PERIOD },
     );
 
     // Store facility values of the same group in the aggregatedValues object, building up an
@@ -166,13 +162,13 @@ const aggregateCriticalMedicineAvailabilityForGroup = async (
   }
 };
 
-const postAggregatedValues = async (dhisApi, aggregatedValues) => {
+const postAggregatedValues = async (aggregator, aggregatedValues) => {
   const dataValues = [];
   Object.entries(aggregatedValues).forEach(([organisationUnitCode, organisationUnit]) => {
     Object.entries(organisationUnit).forEach(([period, values]) => {
       Object.entries(values).forEach(([stockStatus, value]) => {
         dataValues.push({
-          dataElement: DATA_ELEMENT_CODES[stockStatus],
+          code: DATA_ELEMENT_CODES[stockStatus],
           orgUnit: organisationUnitCode,
           period: period.substring(0, 6), // Ensure it saves under the monthly period, rather than a specific date (e.g. 201802 rather than 20180214)
           value: Math.round(value * 1000) / 1000,
@@ -181,7 +177,7 @@ const postAggregatedValues = async (dhisApi, aggregatedValues) => {
     });
   });
 
-  await postDataValueSets(dhisApi, dataValues);
+  await pushAggregateData(aggregator, dataValues);
 };
 
 const getDataElementGroupForOrganisationUnitGroup = async (dhisApi, organisationUnitGroupCode) => {

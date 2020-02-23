@@ -7,21 +7,14 @@ import winston from 'winston';
 
 export const preaggregateDataElement = async (
   aggregator,
-  dhisApi,
   aggregatedDataElementCode,
   formula,
+  analyticsQuery,
 ) => {
-  winston.log('Preaggregating', { aggregatedDataElementCode, transactional: false });
-  const query = {
-    organisationUnitCode: 'World',
-    dataElementCodes: Object.keys(formula),
-    outputIdScheme: 'code',
-  };
-  const { results } = await dhisApi.getAnalytics(
-    query,
-    {},
-    aggregator.aggregationTypes.FINAL_EACH_MONTH,
-  );
+  winston.info('Preaggregating', { aggregatedDataElementCode });
+  const { results } = await aggregator.fetchAnalytics(Object.keys(formula), analyticsQuery, {
+    aggregationType: aggregator.aggregationTypes.FINAL_EACH_MONTH,
+  });
 
   const calculatedValues = {};
   results.forEach(
@@ -54,12 +47,12 @@ export const preaggregateDataElement = async (
       dataValues.push({
         orgUnit: organisationUnitCode,
         period,
-        dataElement: aggregatedDataElementCode,
+        code: aggregatedDataElementCode,
         value: calculatedValue,
       });
     }),
   );
   if (dataValues.length > 0) {
-    await dhisApi.postDataValueSets(dataValues);
+    await aggregator.pushAggregateData(dataValues);
   }
 };

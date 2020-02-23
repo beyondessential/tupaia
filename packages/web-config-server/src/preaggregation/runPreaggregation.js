@@ -4,7 +4,6 @@
  */
 
 import { createAggregator } from '@tupaia/aggregator';
-import { Aggregator } from '/aggregator';
 import { getDhisApiInstance } from '/dhis';
 import * as preaggregators from './preaggregators';
 
@@ -14,13 +13,14 @@ const getPreaggregators = preaggregationName =>
     : [preaggregators[preaggregationName]];
 
 const runPreaggregators = async preaggregatorsToRun => {
-  const aggregator = createAggregator(Aggregator);
+  const aggregator = createAggregator();
   const regionalDhisApiInstance = getDhisApiInstance();
   await regionalDhisApiInstance.updateAnalyticsTables();
   for (let i = 0; i < preaggregatorsToRun.length; i++) {
     await preaggregatorsToRun[i](aggregator, regionalDhisApiInstance); // Await each preaggregator as otherwise it will cause a huge spike in load
   }
   await regionalDhisApiInstance.updateAnalyticsTables();
+  aggregator.close();
 };
 
 export const runPreaggregation = async preaggregationName => {

@@ -3,7 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 import flatten from 'lodash.flatten';
-import { keyBy } from 'lodash.keyby';
+import keyBy from 'lodash.keyby';
 import winston from 'winston';
 
 import { PERIOD_TYPES, momentToPeriod } from '@tupaia/dhis-api';
@@ -22,7 +22,7 @@ const prependString = 'PREAGGREGATED_';
 const preaggregatedDataElementCode = dataElementCode => `${prependString}${dataElementCode}`;
 const orgUnitVaccineListCode = orgUnit => `${orgUnit}_vaccine_list`;
 
-const fetchFridgeData = async dhisApi => {
+const fetchFridgeData = async aggregator => {
   const fetchConfig = {
     organisationUnitCode: WORLD,
     startDate: utcMoment()
@@ -31,19 +31,16 @@ const fetchFridgeData = async dhisApi => {
     endDate: utcMoment().format(),
   };
 
-  const breachEvents = await dhisApi.getEvents({
-    programCode: FRIDGE_BREACH_PROGRAM_CODE,
-    ...fetchConfig,
-  });
-  const dailyFridgeDataEvents = await dhisApi.getEvents({
-    programCode: FRIDGE_DAILY_PROGRAM_CODE,
-    ...fetchConfig,
-  });
+  const breachEvents = await aggregator.fetchEvents(FRIDGE_BREACH_PROGRAM_CODE, fetchConfig);
+  const dailyFridgeDataEvents = await aggregator.fetchEvents(
+    FRIDGE_DAILY_PROGRAM_CODE,
+    fetchConfig,
+  );
 
   return [...breachEvents, ...dailyFridgeDataEvents];
 };
 
-const buildVaccineMetadata = async (dhisApi, data) => {
+const buildVaccineMetadata = async (aggregator, dhisApi, data) => {
   const metadataByFacility = reduceToDictionary(data, 'orgUnit', 'orgUnit');
   const vaccineListCodes = Object.values(metadataByFacility).map(orgUnit =>
     orgUnitVaccineListCode(orgUnit),
@@ -87,7 +84,7 @@ const buildDataValues = (metadata, data) => {
       const newData = event.dataValues
         .filter(value => metadataForOrgUnit[value.dataElement])
         .map(value => ({
-          dataElement: metadataForOrgUnit[value.dataElement],
+          code: metadataForOrgUnit[value.dataElement],
           period: momentToPeriod(utcMoment(event.eventDate), DAY),
           orgUnit: event.orgUnit,
           value: value.value,
@@ -103,15 +100,20 @@ const buildDataValues = (metadata, data) => {
 export const vaccineStockOnHand = async (aggregator, dhisApi) => {
   winston.info('Starting vaccine stock on hand aggregation');
 
-  const fridgeData = await fetchFridgeData(dhisApi);
+  const fridgeData = await fetchFridgeData(aggregator);
   winston.info('Finished fetching fridge data: building data...');
 
-  const metadata = await buildVaccineMetadata(dhisApi, fridgeData);
+  const metadata = await buildVaccineMetadata(aggregator, dhisApi, fridgeData);
   const dataValues = buildDataValues(metadata, fridgeData);
+
+  if (dataValues.length === 0) {
+    winston.info('No new data to import');
+    return;
+  }
 
   const {
     counts: { imported, updated, ignored },
-  } = await dhisApi.postDataValueSets(dataValues);
+  } = await aggregator.pushAggregateData(dataValues);
 
   if (imported) {
     winston.info(`${imported} data values imported successfully`);

@@ -78,9 +78,6 @@ export const FRIDGE_BREACH_AGR_ELEMENT_CODES = {
 };
 
 class FridgeBreachAggregator {
-  /**
-   * @param {DhisApi} dhisApi
-   */
   constructor(aggregator, dhisApi) {
     this.aggregator = aggregator;
     this.dhisApi = dhisApi;
@@ -154,16 +151,11 @@ class FridgeBreachAggregator {
     const {
       results,
       metadata: { dataElementIdToCode },
-    } = await this.dhisApi.getEventAnalytics(
-      {
-        programCode: FRIDGE_DAILY_PROGRAM_CODE,
-        dataElementCodes: [FRIDGE_THRESHOLD_MIN, FRIDGE_THRESHOLD_MAX],
-        organisationUnitCode: WORLD,
-        orgUnitIdScheme: 'uid',
-      },
-      {},
-      this.aggregator.aggregationTypes.MOST_RECENT,
-    );
+    } = await this.aggregator.fetchAnalytics([FRIDGE_THRESHOLD_MIN, FRIDGE_THRESHOLD_MAX], {
+      programCodes: [FRIDGE_DAILY_PROGRAM_CODE],
+      organisationUnitCode: WORLD,
+      orgUnitIdScheme: 'uid',
+    });
     const analyticsByOrgUnit = groupBy(results, 'organisationUnit');
 
     const temperaturesByOrgUnit = {};
@@ -239,10 +231,8 @@ class FridgeBreachAggregator {
 }
 
 class AggregatedEventPusher {
-  /**
-   * @param {DhisApi} dhisApi
-   */
-  constructor(dhisApi) {
+  constructor(aggregator, dhisApi) {
+    this.aggregator = aggregator;
     this.dhisApi = dhisApi;
   }
 
@@ -251,7 +241,7 @@ class AggregatedEventPusher {
    * @returns {Promise<string></string>}
    */
   async push(newEvents) {
-    const existingEvents = await getEvents(this.dhisApi, FRIDGE_BREACH_AGR_PROGRAM_CODE);
+    const existingEvents = await getEvents(this.aggregator, FRIDGE_BREACH_AGR_PROGRAM_CODE);
     const existingEventsByKey = keyBy(existingEvents, this.getEventKey);
 
     const eventsToImport = [];
@@ -288,6 +278,7 @@ class AggregatedEventPusher {
 
     let importedCount = 0;
     try {
+      // TODO postEvents should be going via data-broker when preaggregation is handled by @tupaia/aggregator
       const { counts } = await this.dhisApi.postEvents(events);
       importedCount = counts.imported;
     } catch (error) {
@@ -304,6 +295,7 @@ class AggregatedEventPusher {
   async update(events) {
     winston.info('Updating existing events...');
 
+    // TODO updateEvents should be going via data-broker when preaggregation is handled by @tupaia/aggregator
     const { counts, errors } = await this.dhisApi.updateEvents(events);
     const { updated: updatedCount } = counts;
     errors.forEach(({ message }) => winston.error(message));
@@ -316,21 +308,16 @@ class AggregatedEventPusher {
   }
 }
 
-const getEvents = async (dhisApi, programCode) =>
-  dhisApi.getEvents({
-    programCode,
+const getEvents = async (aggregator, programCode) =>
+  aggregator.fetchEvents(programCode, {
     organisationUnitCode: WORLD,
     orgUnitIdScheme: 'uid',
   });
 
-/**
- * @param {DhisAPi} dhisApi
- * @returns {Promise<string>}
- */
 export const immsFridgeBreaches = async (aggregator, dhisApi) => {
   winston.info(`Starting to aggregate ${AGGREGATION_NAME}`);
 
-  const events = await getEvents(dhisApi, FRIDGE_BREACH_PROGRAM_CODE);
+  const events = await getEvents(aggregator, FRIDGE_BREACH_PROGRAM_CODE);
   if (events.length === 0) {
     winston.info('No breaches found, skipping aggregation');
     return false;
@@ -340,6 +327,6 @@ export const immsFridgeBreaches = async (aggregator, dhisApi) => {
   const aggregatedEvents = await breachAggregator.aggregate(events);
 
   winston.info(`${AGGREGATION_NAME} aggregation done, pushing`);
-  const pusher = new AggregatedEventPusher(dhisApi);
+  const pusher = new AggregatedEventPusher(aggregator, dhisApi);
   return pusher.push(aggregatedEvents);
 };

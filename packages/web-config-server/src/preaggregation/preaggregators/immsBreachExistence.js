@@ -21,11 +21,9 @@ const AGGREGATION_NAME = 'IMMS Breach Existence';
 /**
  * Calculates whether a breach has occurred for each organisation unit
  * in `${OU_GROUP_CODE}` the last `${LOOKUP_PERIOD_IN_DAYS}` days
- *
- * @param {DhisApi} dhisApi
  */
 const immsBreachExistenceWithinPeriod = async (
-  dhisApi,
+  aggregator,
   { orgUnitGroupCode, numberOfDays, dataElementCode },
 ) => {
   winston.info(`Starting to aggregate ${AGGREGATION_NAME}: ${dataElementCode}`);
@@ -38,20 +36,15 @@ const immsBreachExistenceWithinPeriod = async (
     endDate: utcMoment().format(),
   };
 
-  const breachEvents = await dhisApi.getEvents({
-    programCode: FRIDGE_BREACH_PROGRAM_CODE,
-    ...periodFetchConfig,
-  });
+  const breachEvents = await aggregator.fetchEvents(FRIDGE_BREACH_PROGRAM_CODE, periodFetchConfig);
 
-  const dailyFridgeDataEvents = await dhisApi.getEvents({
-    programCode: FRIDGE_DAILY_PROGRAM_CODE,
-    ...periodFetchConfig,
-  });
+  const dailyFridgeDataEvents = await aggregator.fetchEvents(
+    FRIDGE_DAILY_PROGRAM_CODE,
+    periodFetchConfig,
+  );
 
-  const { results } = await dhisApi.getAnalytics({
+  const { results } = await aggregator.fetchAnalytics(dataElementCode, {
     ...periodFetchConfig,
-    dataElementCodes: [dataElementCode],
-    outputIdScheme: 'code',
     startDate: null,
     endDate: null,
   });
@@ -64,8 +57,8 @@ const immsBreachExistenceWithinPeriod = async (
   await Promise.all(
     results.map(
       async result =>
-        await dhisApi.deleteDataValue({
-          dataElement: dataElementCode,
+        await aggregator.deleteAggregateDataValue({
+          code: dataElementCode,
           period: result.period,
           orgUnit: result.organisationUnit,
         }),
@@ -77,16 +70,20 @@ const immsBreachExistenceWithinPeriod = async (
   const period = momentToPeriod(utcMoment(), DAY);
 
   const dataValues = orgUnitsWithFridgeData.map(orgUnit => ({
-    dataElement: dataElementCode,
+    code: dataElementCode,
     period,
     orgUnit,
     value: orgUnitsWithBreach.includes(orgUnit) ? 1 : 0,
   }));
 
   winston.info(`${AGGREGATION_NAME} (${numberOfDays} days) done, pushing new data values...`);
+  if (dataValues.length === 0) {
+    winston.info('No new data to push');
+    return;
+  }
   const {
     counts: { imported, updated, ignored },
-  } = await dhisApi.postDataValueSets(dataValues);
+  } = await aggregator.pushAggregateData(dataValues);
 
   if (imported) {
     winston.info(`${imported} data values imported successfully`);
@@ -102,14 +99,14 @@ const immsBreachExistenceWithinPeriod = async (
 const BREACH_LAST_30_DAYS = 'BREACH_LAST_30_DAYS';
 const BREACH_LAST_48_HOURS = 'BREACH_LAST_48_HOURS';
 
-export const immsBreachExistence = async dhisApi => {
-  await immsBreachExistenceWithinPeriod(dhisApi, {
+export const immsBreachExistence = async aggregator => {
+  await immsBreachExistenceWithinPeriod(aggregator, {
     orgUnitGroupCode: WORLD,
     numberOfDays: 30,
     dataElementCode: BREACH_LAST_30_DAYS,
   });
 
-  await immsBreachExistenceWithinPeriod(dhisApi, {
+  await immsBreachExistenceWithinPeriod(aggregator, {
     orgUnitGroupCode: WORLD,
     numberOfDays: 2,
     dataElementCode: BREACH_LAST_48_HOURS,

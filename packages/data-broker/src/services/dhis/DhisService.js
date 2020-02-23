@@ -9,6 +9,9 @@ import { DhisTranslator } from './DhisTranslator';
 import { buildAnalyticsFromAggregateData } from './buildAnalyticsFromAggregateData';
 import { buildAnalyticsFromEvents } from './buildAnalyticsFromEvents';
 
+const DEFAULT_DATA_SERVICE = { isDataRegional: true };
+const DEFAULT_DATA_SERVICES = [DEFAULT_DATA_SERVICE];
+
 export class DhisService extends Service {
   constructor(...args) {
     super(...args);
@@ -26,7 +29,7 @@ export class DhisService extends Service {
   getPushers() {
     return {
       [this.dataSourceTypes.DATA_ELEMENT]: this.pushAggregateData.bind(this),
-      [this.dataSourceTypes.DATA_GROUP]: this.pushEvent.bind(this),
+      [this.dataSourceTypes.DATA_GROUP]: this.pushEvents.bind(this),
     };
   }
 
@@ -50,32 +53,55 @@ export class DhisService extends Service {
     };
   }
 
-  async push(dataSource, data) {
+  getApiForValue = (dataSource, dataValue) => {
     const { isDataRegional } = dataSource.config;
-    const { orgUnit: entityCode } = data;
-    const api = getDhisApiInstance({ entityCode, isDataRegional });
-    const pushData = this.pushers[dataSource.type];
-    const diagnostics = await pushData(api, data, dataSource);
+    const { orgUnit: entityCode } = dataValue;
+    return getDhisApiInstance({ entityCode, isDataRegional });
+  };
 
+  validatePushData(dataSources, dataValues) {
+    if (dataSources.length !== dataValues.length) {
+      throw new Error('Different number of data sources and values provided to push');
+    }
+    const { serverName } = this.getApiForValue(dataSources[0], dataValues[0]);
+    if (
+      dataSources.some(
+        (dataSource, i) => this.getApiForValue(dataSource, dataValues[i]).serverName !== serverName,
+      )
+    ) {
+      throw new Error('All data being pushed must be for the same DHIS2 instance');
+    }
+  }
+
+  async push(dataSources, data) {
+    const pushData = this.pushers[dataSources[0].type]; // all are of the same type
+    const dataValues = Array.isArray(data) ? data : [data];
+    this.validatePushData(dataSources, dataValues);
+    const api = this.getApiForValue(dataSources[0], dataValues[0]); // all are for the same instance
+    const diagnostics = await pushData(api, dataValues, dataSources);
     return { diagnostics, serverName: api.getServerName() };
   }
 
-  async pushAggregateData(api, dataValue, dataSource) {
-    const translatedDataValue = await this.translator.translateOutboundDataValue(
+  async pushAggregateData(api, dataValues, dataSources) {
+    const translatedDataValues = await this.translator.translateOutboundDataValues(
       api,
-      dataValue,
-      dataSource,
+      dataValues,
+      dataSources,
     );
-    return api.postDataValueSets([translatedDataValue]);
+    return api.postDataValueSets(translatedDataValues);
   }
 
-  async pushEvent(api, event) {
-    const translatedEvent = await this.translator.translateOutboundEvent(api, event);
-    return api.postEvents([translatedEvent]);
+  async pushEvents(api, events) {
+    const translatedEvents = await Promise.all(
+      events.map(event => this.translator.translateOutboundEvent(api, event)),
+    );
+    return api.postEvents(translatedEvents);
   }
 
-  async delete(dataSource, data, { serverName }) {
-    const api = getDhisApiInstance({ serverName });
+  async delete(dataSource, data, { serverName } = {}) {
+    const api = serverName
+      ? getDhisApiInstance({ serverName })
+      : this.getApiForValue(dataSource, data);
     const deleteData = this.deleters[dataSource.type];
     return deleteData(api, data, dataSource);
   }
@@ -92,7 +118,7 @@ export class DhisService extends Service {
   deleteEvent = async (api, data) => api.deleteEvent(data.dhisReference);
 
   async pull(dataSources, type, options = {}) {
-    const { organisationUnitCode: entityCode, dataServices = [] } = options;
+    const { organisationUnitCode: entityCode, dataServices = DEFAULT_DATA_SERVICES } = options;
     const pullData = this.pullers[type];
     const apis = dataServices.map(({ isDataRegional }) =>
       getDhisApiInstance({ entityCode, isDataRegional }),
@@ -225,7 +251,7 @@ export class DhisService extends Service {
   };
 
   async pullMetadata(dataSources, type, options) {
-    const { organisationUnitCode: entityCode, dataServices = [] } = options;
+    const { organisationUnitCode: entityCode, dataServices = DEFAULT_DATA_SERVICES } = options;
     const pullMetadata = this.metadataPullers[type];
     const apis = dataServices.map(({ isDataRegional }) =>
       getDhisApiInstance({ entityCode, isDataRegional }),

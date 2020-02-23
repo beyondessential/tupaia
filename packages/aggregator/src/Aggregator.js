@@ -13,6 +13,10 @@ export class Aggregator {
     this.dataBroker = dataBroker;
   }
 
+  close() {
+    this.dataBroker.close();
+  }
+
   // eslint-disable-next-line class-methods-use-this
   get aggregationTypes() {
     return Aggregator.aggregationTypes;
@@ -49,5 +53,25 @@ export class Aggregator {
   async fetchDataElements(codes, fetchOptions) {
     const dataSourceSpec = { code: codes, type: this.dataSourceTypes.DATA_ELEMENT };
     return this.dataBroker.pullMetadata(dataSourceSpec, fetchOptions);
+  }
+
+  // TODO ultimately Aggregator should handle preaggregation internally - at that point this method
+  // could be removed
+  async pushAggregateData(data) {
+    if (data.length === 0) return null;
+    const codes = data.map(dataValue => dataValue.code);
+    const dataSourceSpec = { code: codes, type: this.dataSourceTypes.DATA_ELEMENT };
+    const { diagnostics } = await this.dataBroker.push(dataSourceSpec, data);
+    return diagnostics;
+  }
+
+  // TODO ultimately Aggregator should handle preaggregation internally - at that point this method
+  // could be removed
+  async deleteAggregateDataValue(dataValue) {
+    const dataSourceSpec = {
+      code: dataValue.code,
+      type: this.dataSourceTypes.DATA_ELEMENT,
+    };
+    return this.dataBroker.delete(dataSourceSpec, dataValue);
   }
 }

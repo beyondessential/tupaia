@@ -2,10 +2,10 @@
  * Tupaia Config Server
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
+import { getDhisApiInstance } from '/dhis';
 import { getDataElementsInGroupSet } from '/apiV1/utils/getDataElementsInGroupSet';
 import { preaggregateDataElement } from '/preaggregation/preaggregateDataElement';
 import { preaggregateTransactionalDataElement } from '/preaggregation/preaggregateTransactionalDataElement';
-import { runPreaggregationOnAllDhisInstances } from '/preaggregation/runPreaggregationOnAllDhisInstances';
 
 const OPERATORS_FOR_CHANGE_TYPES = {
   FP_Change_Counts_1_New_Acceptors: '+', // New acceptors
@@ -30,17 +30,21 @@ const BASELINE_DATA_ELEMENTS = {
   FP_Method_Counts_K_Other: 'FP182',
 };
 
-export const tongaFamilyPlanning = (aggregator, dhisApi) =>
-  runPreaggregationOnAllDhisInstances(runAggregation, aggregator, dhisApi);
+const ANALYTICS_QUERY = {
+  organisationUnitCode: 'TO',
+  dataServices: [{ isDataRegional: false }],
+  period: 'LAST_5_YEARS;THIS_YEAR',
+};
 
-const runAggregation = async dhisApi => {
+export const tongaFamilyPlanning = async aggregator => {
+  const tongaDhisApi = getDhisApiInstance({ entityCode: 'TO', isDataRegional: false });
   const { dataElementToGroupMapping: dataElementToChangeType } = await getDataElementsInGroupSet(
-    dhisApi,
+    tongaDhisApi,
     'FP_Change_Counts',
     'code',
   );
   const { dataElementToGroupMapping: dataElementToMethod } = await getDataElementsInGroupSet(
-    dhisApi,
+    tongaDhisApi,
     'FP_Method_Counts',
     'code',
   );
@@ -66,25 +70,28 @@ const runAggregation = async dhisApi => {
 
   // Aggregate the net change for each family planning method sequentially to avoid a spike in load
   const methodCodes = Object.keys(formulae);
+  await tongaDhisApi.updateAnalyticsTables();
   for (let i = 0; i < methodCodes.length; i++) {
     const methodCode = methodCodes[i];
     await preaggregateDataElement(
-      dhisApi,
+      aggregator,
       methodToNetChangeDataElement[methodCode],
       formulae[methodCode],
+      ANALYTICS_QUERY,
     );
   }
-  await dhisApi.updateAnalyticsTables();
+  await tongaDhisApi.updateAnalyticsTables();
 
   // Aggregate the total acceptors for each family planning method sequentially to avoid a spike in load
   for (let i = 0; i < methodCodes.length; i++) {
     const methodCode = methodCodes[i];
     await preaggregateTransactionalDataElement(
-      dhisApi,
+      aggregator,
       methodToAcceptorsDataElement[methodCode],
       BASELINE_DATA_ELEMENTS[methodCode],
       methodToNetChangeDataElement[methodCode],
+      ANALYTICS_QUERY,
     );
   }
-  await dhisApi.updateAnalyticsTables();
+  await tongaDhisApi.updateAnalyticsTables();
 };

@@ -15,9 +15,9 @@ export class ModelRegistry {
     this.generateModels(database.isSingleton);
   }
 
-  destroy() {
+  closeDatabaseConnections() {
     if (this.database.isSingleton) {
-      this.database.destroy();
+      this.database.closeConnections();
     }
   }
 
