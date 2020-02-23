@@ -7,8 +7,11 @@ import { modelClasses as baseModelClasses, ModelRegistry, TupaiaDatabase } from 
 
 import { modelClasses } from './modelClasses';
 
-const database = new TupaiaDatabase();
+let database;
 
 export const getModels = () => {
+  if (!database) {
+    database = new TupaiaDatabase();
+  }
   return new ModelRegistry(database, { ...baseModelClasses, ...modelClasses });
 };
