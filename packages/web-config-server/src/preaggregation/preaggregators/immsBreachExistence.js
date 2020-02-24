@@ -45,8 +45,7 @@ const immsBreachExistenceWithinPeriod = async (
 
   const { results } = await aggregator.fetchAnalytics(dataElementCode, {
     ...periodFetchConfig,
-    startDate: null,
-    endDate: null,
+    period: 'LAST_MONTH;THIS_MONTH',
   });
 
   // We want to delete all previous dataValues for this dataElement

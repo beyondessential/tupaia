@@ -155,6 +155,7 @@ class FridgeBreachAggregator {
       programCodes: [FRIDGE_DAILY_PROGRAM_CODE],
       organisationUnitCode: WORLD,
       orgUnitIdScheme: 'uid',
+      period: 'LAST_5_YEARS;THIS_YEAR',
     });
     const analyticsByOrgUnit = groupBy(results, 'organisationUnit');
 
