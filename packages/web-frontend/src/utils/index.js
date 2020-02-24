@@ -31,4 +31,4 @@ export { formatDateForApi } from './formatDateForApi';
 export { formatDataValue } from './formatters';
 export { findByKey } from './collection';
 export { areStringsEqual } from './string';
-export { hexToRgba } from './color';
+export { hexToRgba, getDotColorFromRange } from './color';
