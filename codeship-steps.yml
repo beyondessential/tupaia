@@ -2,7 +2,7 @@
   name: validate-and-test
   steps:
     - type: serial
-      name: validate
+      name: parallel
       steps:
         - name: validate branch name
           service: meditrak-server-validation
@@ -18,7 +18,7 @@
     - type: serial
       name: test
       steps:
-        - type: serial # they're in containers, so even though they generally use one db, they're sandboxed
+        - type: parallel # they're in containers, so even though they generally use one db, they're sandboxed
           name: test-all
           steps:
             - name: test-meditrak-server
