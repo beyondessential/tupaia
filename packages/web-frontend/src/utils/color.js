@@ -5,3 +5,11 @@ export const hexToRgba = (hex, opacity) => {
   const b = parseInt(hexString.substring(4, 6), 16);
   return `rgba(${r},${g},${b},${opacity})`;
 };
+
+export const getDotColorFromRange = (presentationOptions, value) => {
+  const option = Object.values(presentationOptions).find(
+    ({ min, max }) => value >= min && value <= max,
+  );
+  if (!value || !option) return { color: '' };
+  return option;
+};
