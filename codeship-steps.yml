@@ -1,8 +1,8 @@
 - type: parallel
   name: validate-and-test
   steps:
-    - type: serial
-      name: parallel
+    - type: parallel
+      name: validate
       steps:
         - name: validate branch name
           service: meditrak-server-validation
