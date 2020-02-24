@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import pickBy from 'lodash.pickby';
 import sinon from 'sinon';
 
 import { DhisApi } from '@tupaia/dhis-api';
@@ -31,9 +32,11 @@ export const stubDhisApi = ({
   const dhisApi = sinon.createStubInstance(DhisApi, {
     getAnalytics: getAnalyticsResponse,
     getEvents: getEventsResponse,
-    getIdsFromCodes: sinon
+    getCodeToId: sinon
       .stub()
-      .callsFake((_, codes) => codes.map(c => DATA_ELEMENT_CODE_TO_ID[c])),
+      .callsFake((_, codes) =>
+        pickBy(DATA_ELEMENT_CODE_TO_ID, (_id, code) => codes.includes(code)),
+      ),
     getServerName: SERVER_NAME,
     getResourceTypes: { DATA_ELEMENT: 'dataElement' },
   });

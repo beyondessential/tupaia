@@ -8,7 +8,7 @@ export const percentOperationalFacilitiesWithData = async (
   ...dhisApiInstances
 ) => {
   const { dataElementGroupCode, monthsOfData } = dataBuilderConfig;
-  const dhisParameters = { dataElementGroupCode };
+  const dhisParameters = { dataElementGroupCode, idScheme: 'code' };
   if (monthsOfData && !(query.startDate || query.endDate)) {
     dhisParameters.startDate = moment()
       .subtract(monthsOfData, 'months')
@@ -16,15 +16,14 @@ export const percentOperationalFacilitiesWithData = async (
     dhisParameters.endDate = moment().toISOString();
   }
 
-  // Will count only data from operational facilities
-  const operationalFacilities = await getFacilityStatuses(aggregator, query.organisationUnitCode);
-
   // Count the number of facilities with data
   const facilitiesCounted = new Set(); // To avoid double counting facilities across dhis instances
   const addFacilityToSet = ({ facilityId }) => facilitiesCounted.add(facilityId);
 
+  const operationalFacilities = await getFacilityStatuses(aggregator, query.organisationUnitCode);
   await Promise.all(
     dhisApiInstances.map(async dhisApi => {
+      // Will count only data from operational facilities
       const results = await dhisApi.getDataValuesInSets(dhisParameters, query);
       aggregateOperationalFacilityValues(operationalFacilities, results, addFacilityToSet);
     }),

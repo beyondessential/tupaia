@@ -7,7 +7,7 @@ import winston from 'winston';
 import keyBy from 'lodash.keyby';
 
 import { aggregateAnalytics } from '@tupaia/aggregator';
-import { CustomError, getSortByKey, utcMoment } from '@tupaia/utils';
+import { CustomError, getSortByKey, reduceToDictionary, utcMoment } from '@tupaia/utils';
 import { DhisFetcher } from './DhisFetcher';
 import { DHIS2_RESOURCE_TYPES } from './types';
 import { replaceElementIdsWithCodesInEvents } from './replaceElementIdsWithCodesInEvents';
@@ -171,7 +171,7 @@ export class DhisApi {
     }
   }
 
-  async getIdsFromCodes(recordType, recordCodes) {
+  async getCodeToId(recordType, recordCodes) {
     if (!recordCodes || recordCodes.length === 0) {
       throw this.constructError('Must provide codes to search for');
     }
@@ -180,14 +180,8 @@ export class DhisApi {
       codes: recordCodes,
       fields: ['code', 'id'],
     });
-    if (!records) return null;
-    // return ids in same order as provided codes
-    const recordsByCode = keyBy(records, 'code');
-    return recordCodes.map(c => {
-      const record = recordsByCode[c];
-      if (!record) throw new Error(`No ${recordType} matching ${c} on DHIS2`);
-      return record.id;
-    });
+
+    return reduceToDictionary(records, 'code', 'id');
   }
 
   async getIdFromCode(recordType, recordCode) {
@@ -352,9 +346,8 @@ export class DhisApi {
     }
 
     // Attach relevant information into the query
-    const organisationUnitIds = await this.getIdsFromCodes(
-      ORGANISATION_UNIT,
-      organisationUnitCodes,
+    const organisationUnitIds = Object.values(
+      await this.getCodeToId(ORGANISATION_UNIT, organisationUnitCodes),
     );
     query.orgUnit = organisationUnitIds;
     delete query.organisationUnitCodes;
