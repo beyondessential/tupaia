@@ -443,7 +443,7 @@ function* fetchOrgUnitRegionData(action) {
 }
 
 function* watchOrgUnitChangeAndFetchRegions() {
-  yield takeLatest(CHANGE_ORG_UNIT, fetchOrgUnitRegionData);
+  if (!isMobile()) yield takeLatest(CHANGE_ORG_UNIT, fetchOrgUnitRegionData);
 }
 
 /**

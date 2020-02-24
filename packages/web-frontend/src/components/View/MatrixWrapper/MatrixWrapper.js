@@ -72,14 +72,17 @@ const buildMatrixDataFromViewContent = viewContent => {
   const {
     columns: columnData,
     rows,
+    categoryRows,
     categories = [],
     presentationOptions = {},
+    categoryPresentationOptions = {},
     isExporting,
   } = viewContent;
 
   let maximumCellCharacters = 0;
   const formattedRows = rows.map(({ dataElement, code, categoryId, ...columns }) => {
     Object.values(columns).forEach(value => {
+      if (!value) return;
       maximumCellCharacters = Math.max(maximumCellCharacters, value.toString().length);
     });
     return {
@@ -112,12 +115,14 @@ const buildMatrixDataFromViewContent = viewContent => {
   const calculatedStyles = getStyles(isExporting, maximumCellCharacters);
 
   return {
-    rows: rowsInCategories.length > 0 ? rowsInCategories : formattedRows,
     columns,
+    rows: rowsInCategories.length > 0 ? rowsInCategories : formattedRows,
+    categoryRows,
     maximumCellCharacters,
     maximumColumnWidth: calculatedStyles.CELL_WIDTH,
     calculatedStyles,
     presentationOptions,
+    categoryPresentationOptions,
   };
 };
 
@@ -153,6 +158,7 @@ export class MatrixWrapper extends Component {
 
   componentDidUpdate(prevProps) {
     const { viewContent, isExporting } = this.props;
+
     if (prevProps.viewContent !== viewContent) {
       const expandedMatrixData = buildMatrixDataFromViewContent({ ...viewContent, isExporting });
       this.setState({
@@ -211,9 +217,11 @@ export class MatrixWrapper extends Component {
     const { expandedMatrixData, offsetWidth } = this.state;
     const {
       rows,
+      categoryRows,
       columns,
       calculatedStyles,
       presentationOptions,
+      categoryPresentationOptions,
       maximumColumnWidth,
     } = expandedMatrixData;
     const PeriodSelectorComponent = this.renderPeriodSelector();
@@ -233,10 +241,12 @@ export class MatrixWrapper extends Component {
     return (
       <Matrix
         rows={rows}
+        categoryRows={categoryRows}
         columns={columns}
         numberOfColumnsPerPage={numberOfColumnsPerPage}
         calculatedStyles={calculatedStyles}
         presentationOptions={presentationOptions}
+        categoryPresentationOptions={categoryPresentationOptions}
         isExporting={isExporting}
         title={`${viewContent.name}${organisationUnitName ? `, ${organisationUnitName}` : ''}`}
         onSearch={searchTerm => onChangeConfig({ search: searchTerm })}

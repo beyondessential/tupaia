@@ -9,6 +9,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import DropDownArrowIcon from 'material-ui/svg-icons/navigation/arrow-drop-down';
 import shallowEqual from 'shallowequal';
+import { getDotColorFromRange } from '../../../../utils';
+
+import { Cell } from './Cell';
 
 export default class RowGroup extends Component {
   shouldComponentUpdate(nextProps) {
@@ -46,17 +49,24 @@ export default class RowGroup extends Component {
     const {
       rowId,
       columns,
+      columnData,
       children,
       isExpanded,
       depth,
       indentSize,
       categoryLabel,
-      startColumn,
-      numberOfColumnsPerPage,
       onToggleRowExpanded,
       styles,
+      onCellMouseEnter,
+      onCellMouseLeave,
+      onCellClick,
+      presentationOptions,
+      isUsingDots,
+      isRowHighlighted,
+      highlightedColumn,
+      startColumn,
+      numberOfColumnsPerPage,
     } = this.props;
-
     const displayedColumnCount = startColumn + numberOfColumnsPerPage;
 
     return (
@@ -72,12 +82,35 @@ export default class RowGroup extends Component {
             <span style={styles.collapsibleHeaderInner}>{categoryLabel}</span>
           </button>
           <div style={styles.gridCellChangerActive} />
-          {columns.slice(startColumn, displayedColumnCount).map((column, index) => (
-            <div
-              style={column.isGroupHeader ? styles.gridCellChangerActive : styles.gridCell}
-              key={`${rowId}-empty-${index}`}
-            />
-          ))}
+
+          {columns.slice(startColumn, displayedColumnCount).map((column, index) => {
+            const isCellActive = index === highlightedColumn && isRowHighlighted;
+            const value = columnData ? columnData[categoryLabel][column.key] : '';
+            const color = getDotColorFromRange(presentationOptions, value);
+
+            return (
+              <div
+                style={column.isGroupHeader ? styles.gridCellChangerActive : styles.gridCell}
+                key={`${rowId}-empty-${index}`}
+              >
+                <Cell
+                  key={index}
+                  cellKey={index}
+                  onMouseEnter={() => onCellMouseEnter(index, rowId)}
+                  onMouseLeave={() => onCellMouseLeave()}
+                  onClick={() => onCellClick(color.label, value.toString())}
+                  color={color.color}
+                  value={value}
+                  style={styles.gridCell}
+                  columnActiveStripStyle={styles.columnActiveStrip}
+                  isActive={isCellActive}
+                  dotStyle={styles.cellIndicator}
+                  dotStyleActive={styles.cellIndicatorActive}
+                  isUsingDots={isUsingDots}
+                />
+              </div>
+            );
+          })}
           <div style={styles.gridCellChangerActive} />
         </div>
         {children}
@@ -88,7 +121,7 @@ export default class RowGroup extends Component {
 
 RowGroup.propTypes = {
   rowId: PropTypes.string,
-  columns: PropTypes.arrayOf(PropTypes.object),
+  columns: PropTypes.shape({}),
   children: PropTypes.node,
   isExpanded: PropTypes.bool,
   depth: PropTypes.number,
