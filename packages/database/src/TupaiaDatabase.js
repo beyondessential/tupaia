@@ -79,6 +79,7 @@ export class TupaiaDatabase {
   }
 
   async waitForChangeChannel(timeout = 250, retries = 4) {
+    await this.connectionPromise;
     return this.changeChannel.ping(timeout, retries);
   }
 
