@@ -88,13 +88,13 @@ export class DhisTranslator {
       dataValues.map((d, i) => this.translateOutboundDataValue(api, d, dataSources[i])),
     );
     const dataElementCodes = outboundDataValues.map(({ dataElement }) => dataElement);
-    const dataElementIds = await api.getIdsFromCodes(
+    const dataElementCodeToId = await api.getCodeToId(
       api.getResourceTypes().DATA_ELEMENT,
       dataElementCodes,
     );
     const dataValuesWithIds = outboundDataValues.map((d, i) => ({
       ...d,
-      dataElement: dataElementIds[i],
+      dataElement: dataElementCodeToId[i],
     }));
     return dataValuesWithIds;
   }
