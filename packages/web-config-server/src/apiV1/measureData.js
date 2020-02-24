@@ -85,6 +85,11 @@ const createDataServices = mapOverlay => {
 };
 
 export default class extends DhisTranslationHandler {
+  constructor(aggregator) {
+    super();
+    this.aggregator = aggregator;
+  }
+
   buildData = async req => {
     const { entity, overlays } = this;
     const { code } = entity;
@@ -181,15 +186,26 @@ export default class extends DhisTranslationHandler {
       return { ...baseOptions, values };
     }
     // values have not been provided locally - fetch them from DHIS2
-    const { code } = this.entity;
-    const dhisApi = getDhisApiInstance({ entityCode: code, isDataRegional });
     const options =
       dataSourceType === DATA_SOURCE_TYPES.SINGLE
-        ? await getOptionsForDataElement(dhisApi, dataElementCode, createDataServices(mapOverlay))
+        ? await this.getOptionsForDataElement(mapOverlay, dataElementCode)
         : {};
     const translatedOptions = translateMeasureOptionSet(options, mapOverlay);
 
     return { ...baseOptions, values: translatedOptions };
+  }
+
+  async getOptionsForDataElement(mapOverlay, dataElementCode) {
+    const dataServices = createDataServices(mapOverlay);
+    const [dataElement] = await this.aggregator.fetchDataElements([dataElementCode], {
+      organisationUnitCode: this.entityCode,
+      dataServices,
+    });
+    if (!dataElement) {
+      throw new Error(`Data element with code ${dataElementCode} not found`);
+    }
+
+    return dataElement.options;
   }
 
   async getCountryLevelOrgUnitCode() {
@@ -207,13 +223,12 @@ export default class extends DhisTranslationHandler {
     const organisationUnitGroupCode = shouldFetchSiblings
       ? await this.getCountryLevelOrgUnitCode()
       : this.entity.code;
-    const aggregator = createAggregator(Aggregator);
     const dataServices = createDataServices(mapOverlay);
     const dhisApi = getDhisApiInstance({ entityCode: this.entity.code, isDataRegional });
     const buildMeasure = getMeasureBuilder(measureBuilder);
 
     return buildMeasure(
-      aggregator,
+      this.aggregator,
       dhisApi,
       { ...query, organisationUnitGroupCode, dataElementCode },
       { ...measureBuilderConfig, dataServices },
@@ -237,16 +252,3 @@ function translateMeasureOptionSet(measureOptions, mapOverlay) {
     return { name, value, color };
   });
 }
-
-const getOptionsForDataElement = async (aggregator, dataElementCode, dataServices) => {
-  const [dataElement] =
-    (await aggregator.fetchDataElements([dataElementCode], {
-      organisationUnitCode: this.entityCode,
-      dataServices,
-    })) || [];
-  if (!dataElement) {
-    throw new Error(`Data element with code ${dataElementCode} not found`);
-  }
-
-  return dataElement.options;
-};
