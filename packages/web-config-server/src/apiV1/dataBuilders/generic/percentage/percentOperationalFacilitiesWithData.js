@@ -20,22 +20,16 @@ export const percentOperationalFacilitiesWithData = async (
   const facilitiesCounted = new Set(); // To avoid double counting facilities across dhis instances
   const addFacilityToSet = ({ facilityId }) => facilitiesCounted.add(facilityId);
 
-  const allOperationalFacilities = {};
+  const operationalFacilities = await getFacilityStatuses(aggregator, query.organisationUnitCode);
   await Promise.all(
     dhisApiInstances.map(async dhisApi => {
       // Will count only data from operational facilities
-      const newOperationalFacilities = await getFacilityStatuses(
-        aggregator,
-        query.organisationUnitCode,
-      );
-      Object.assign(allOperationalFacilities, newOperationalFacilities);
-
       const results = await dhisApi.getDataValuesInSets(dhisParameters, query);
-      aggregateOperationalFacilityValues(newOperationalFacilities, results, addFacilityToSet);
+      aggregateOperationalFacilityValues(operationalFacilities, results, addFacilityToSet);
     }),
   );
 
-  const numberOperational = Object.values(allOperationalFacilities).filter(
+  const numberOperational = Object.values(operationalFacilities).filter(
     isOperational => isOperational,
   ).length;
   const percentWithData = numberOperational === 0 ? 0 : facilitiesCounted.size / numberOperational;
