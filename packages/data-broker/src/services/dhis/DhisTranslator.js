@@ -92,9 +92,9 @@ export class DhisTranslator {
       api.getResourceTypes().DATA_ELEMENT,
       dataElementCodes,
     );
-    const dataValuesWithIds = outboundDataValues.map((d, i) => ({
-      ...d,
-      dataElement: dataElementCodeToId[i],
+    const dataValuesWithIds = outboundDataValues.map(({ dataElement, value }, i) => ({
+      dataElement: dataElementCodeToId[dataElement],
+      value,
     }));
     return dataValuesWithIds;
   }
