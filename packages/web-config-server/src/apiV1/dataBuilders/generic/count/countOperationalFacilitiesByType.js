@@ -9,10 +9,11 @@ import {
 
 // Number of Operational Facilities by Facility Type
 export const countOperationalFacilitiesByType = async ({ query }, aggregator, dhisApi) => {
+  const { organisationUnitCode } = query;
   // Retrieve organisation units and the groups they are in
   const organisationUnits = await dhisApi.getOrganisationUnits(
     {
-      filter: [{ 'ancestors.code': '{organisationUnitCode}' }],
+      filter: [{ 'ancestors.code': organisationUnitCode }],
       fields: 'code,organisationUnitGroups[code]',
     },
     query,
