@@ -143,6 +143,7 @@ export const tableOfDataValues = async (
     dataBuilderConfig,
     query,
     entity,
+    aggregator.aggregationTypes.SUM_MOST_RECENT_PER_FACILITY,
   );
   return builder.build();
 };
