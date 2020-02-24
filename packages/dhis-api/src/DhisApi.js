@@ -15,6 +15,7 @@ import { RESPONSE_TYPES, getDiagnosticsFromResponse } from './responseUtils';
 import { buildAnalyticQueries } from './buildAnalyticQueries';
 
 const {
+  CATEGORY_OPTION_COMBO,
   DATA_ELEMENT,
   DATA_ELEMENT_GROUP,
   DATA_SET,
@@ -477,7 +478,12 @@ export class DhisApi {
     }
   }
 
-  async deleteDataValue({ dataElement: dataElementCode, period, orgUnit: organisationUnitCode }) {
+  async deleteDataValue({
+    dataElement: dataElementCode,
+    period,
+    orgUnit: organisationUnitCode,
+    categoryOptionCombo: categoryOptionComboCode,
+  }) {
     const dataElementId = await this.getIdFromCode(DATA_ELEMENT, dataElementCode);
     if (!dataElementId) {
       throw new Error(`No data element with code ${dataElementCode}`);
@@ -492,6 +498,16 @@ export class DhisApi {
       pe: period,
       ou: organisationUnitId,
     };
+    if (categoryOptionComboCode) {
+      const categoryOptionComboId = await this.getIdFromCode(
+        CATEGORY_OPTION_COMBO,
+        categoryOptionComboCode,
+      );
+      if (!categoryOptionComboId) {
+        throw new Error(`Category option combo ${categoryOptionComboCode} does not exist`);
+      }
+      query.co = categoryOptionComboId;
+    }
     return this.deleteWithQuery(DATA_VALUE, query);
   }
 
