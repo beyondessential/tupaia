@@ -54,8 +54,17 @@ class TableOfEventsBuilder extends DataBuilder {
 
   async fetchEvents() {
     const { organisationUnitCode, trackedEntityInstance } = this.query;
+    const getOrganisationUnitCode = () => {
+      // if we're fetching all data for a specific tracked entity instance, just limit it by country
+      // as the data could have occurred within org units other than its direct parent
+      if (trackedEntityInstance) {
+        const countryCode = organisationUnitCode.substring(0, 2);
+        return countryCode;
+      }
+      return organisationUnitCode;
+    };
     const events = await super.fetchEvents({
-      organisationUnitCode: trackedEntityInstance ? null : organisationUnitCode,
+      organisationUnitCode: getOrganisationUnitCode(),
       dataValueFormat: 'object',
     });
 
