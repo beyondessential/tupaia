@@ -166,7 +166,7 @@ export class DhisService extends Service {
       trackedEntityInstance,
     };
     const events = await this.fetchEventsForPrograms(api, programCodes || [programCode], query);
-    const translatedEvents = this.translator.translateInboundEvents(events, programCode);
+    const translatedEvents = await this.translator.translateInboundEvents(events, programCode);
 
     return buildAnalyticsFromEvents(api, translatedEvents);
   };
