@@ -30,8 +30,11 @@ class TableOfValuesForOrgUnitsBuilder extends TableOfDataValuesBuilder {
     const data = {
       rows,
       columns: await this.replaceOrgUnitCodesWithNames(columns),
-      categoryRows: this.buildCategoryRows(rows),
     };
+
+    if (this.config.categoryAggregator) {
+      data.categoryRows = this.buildCategoryRows(rows);
+    }
     if (this.tableConfig.hasRowCategories()) {
       data.categories = await this.buildRowCategories();
     }
