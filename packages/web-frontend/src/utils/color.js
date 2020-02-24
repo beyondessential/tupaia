@@ -10,6 +10,8 @@ export const getDotColorFromRange = (presentationOptions, value) => {
   const option = Object.values(presentationOptions).find(
     ({ min, max }) => value >= min && value <= max,
   );
-  if (!value || !option) return { color: '' };
+  if (value === undefined || option === undefined) {
+    return { color: '' };
+  }
   return option;
 };
