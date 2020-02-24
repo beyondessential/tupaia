@@ -50,7 +50,10 @@ class SumPerSeriesDataBuilder extends DataBuilder {
           dataByClass[classKey] = { name: classKey };
         }
 
-        const sum = sumBy(dataElements, dataElement => sumByDataElement[dataElement]) || 0;
+        const sum = sumBy(dataElements, dataElement => {
+          const { value } = sumByDataElement[dataElement] || { value: 0 };
+          return value;
+        });
         dataByClass[classKey][seriesKey] = sum;
       });
     });
