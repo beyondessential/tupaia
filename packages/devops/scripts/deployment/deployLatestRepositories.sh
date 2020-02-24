@@ -59,10 +59,17 @@ for PACKAGE in "meditrak-server" "admin-panel" "web-frontend" "web-config-server
       echo "Building ${PACKAGE}"
       yarn build
     fi
-done
 
-	
-echo "Migrating the database"
-yarn migrate
+    # reset cwd back to `/tupaia`
+    cd ${HOME_DIRECTORY}
+
+    if [[ $PACKAGE == 'meditrak-server' ]];then
+      # now that meditrak-server is up and listening for changes, we can run any migrations
+      # if run earlier when meditrak-server isn't listening, changes will be missed from the
+      # sync queues
+      echo "Migrating the database"
+      yarn migrate
+    fi
+done
 
 echo "Finished deploying latest"
