@@ -56,6 +56,17 @@ export class SurveyResponseModel extends DatabaseModel {
 
   isDeletableViaApi = true;
 
+  updateById(id, fieldsToUpdate) {
+    // If the entity or date has changed, mark all answers as changed so they resync to DHIS2 with
+    // the new entity/date (no need to async/await, just set it going)
+    if (fieldsToUpdate.entity_id || fieldsToUpdate.submission_time) {
+      this.otherModels.answer.markAsChanged({
+        survey_response_id: id,
+      });
+    }
+    return super.updateById(id, fieldsToUpdate);
+  }
+
   getOrgUnitEntityTypes = () => {
     const orgUnitEntityTypes = Object.values(this.otherModels.entity.orgUnitEntityTypes);
     return `(${orgUnitEntityTypes.map(t => `'${t}'`).join(',')})`;
