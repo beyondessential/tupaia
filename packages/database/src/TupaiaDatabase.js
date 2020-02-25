@@ -5,12 +5,12 @@
 
 import autobind from 'react-autobind';
 import knex from 'knex';
-import PGPubSub from 'pg-pubsub';
 import winston from 'winston';
+import { Multilock } from '@tupaia/utils';
 
 import { getConnectionConfig } from './getConnectionConfig';
+import { DatabaseChangeChannel } from './DatabaseChangeChannel';
 import { generateId } from './utilities/generateId';
-import { Multilock } from './utilities/multilock';
 
 const QUERY_METHODS = {
   COUNT: 'count',
@@ -42,10 +42,14 @@ export const JOIN_TYPES = {
 // keeping all the tests passing
 const HANDLER_DEBOUNCE_DURATION = 250;
 
+// some part of knex or node-pg struggles with too many bindings, so we batch them in some places
+const MAX_BINDINGS_PER_QUERY = 2500; // errors occurred at around 5000 bindings in testing
+
 export class TupaiaDatabase {
   constructor(transactingConnection) {
     autobind(this);
     this.changeHandlers = {};
+    this.changeChannel = new DatabaseChangeChannel();
 
     // If this instance is not for a specific transaction, it is the singleton instance
     this.isSingleton = !transactingConnection;
@@ -58,8 +62,7 @@ export class TupaiaDatabase {
           connection: getConnectionConfig(),
         }));
       if (this.isSingleton) {
-        this.changeListener = new PGPubSub(getConnectionConfig());
-        this.changeListener.addChannel('change', this.notifyChangeHandlers);
+        this.changeChannel.addChangeHandler(this.notifyChangeHandlers);
       }
       return true;
     };
@@ -68,22 +71,39 @@ export class TupaiaDatabase {
     this.handlerLock = new Multilock();
   }
 
-  destroy() {
-    this.changeListener.close();
+  maxBindingsPerQuery = MAX_BINDINGS_PER_QUERY;
+
+  closeConnections() {
+    this.changeChannel.close();
     this.connection.destroy();
   }
 
-  addChangeHandlerForCollection(collectionName, changeHandler) {
-    this.getChangeHandlersForCollection(collectionName).push(changeHandler);
+  async waitForChangeChannel(timeout = 250, retries = 4) {
+    return this.changeChannel.ping(timeout, retries);
   }
 
-  async notifyChangeHandlers({ change, record }) {
+  addChangeHandlerForCollection(collectionName, changeHandler, key = generateId()) {
+    this.getChangeHandlersForCollection(collectionName)[key] = changeHandler;
+  }
+
+  getHandlersForChange(change) {
+    const { handler_key: specificHandlerKey, record_type: recordType } = change;
+    const handlersForCollection = this.getChangeHandlersForCollection(recordType);
+    if (specificHandlerKey) {
+      return handlersForCollection[specificHandlerKey]
+        ? [handlersForCollection[specificHandlerKey]]
+        : [];
+    }
+    return Object.values(handlersForCollection);
+  }
+
+  async notifyChangeHandlers(change) {
     const unlock = this.handlerLock.createLock(change.record_id);
+    const handlers = this.getHandlersForChange(change);
     try {
-      const changeHandlersForCollection = this.getChangeHandlersForCollection(change.record_type);
-      for (let i = 0; i < changeHandlersForCollection.length; i++) {
+      for (let i = 0; i < handlers.length; i++) {
         try {
-          await changeHandlersForCollection[i](change, record);
+          await handlers[i](change);
         } catch (e) {
           winston.error(e);
         }
@@ -100,7 +120,7 @@ export class TupaiaDatabase {
   getChangeHandlersForCollection(collectionName) {
     // Instantiate the array if no change handlers currently exist for the collection
     if (!this.changeHandlers[collectionName]) {
-      this.changeHandlers[collectionName] = [];
+      this.changeHandlers[collectionName] = {};
     }
     return this.changeHandlers[collectionName];
   }
@@ -203,8 +223,7 @@ export class TupaiaDatabase {
     return parseInt(result[0].count, 10);
   }
 
-  async create(recordType, record, ...additionalRecords) {
-    // TODO could be more efficient to put all extra objects into one query
+  async create(recordType, record) {
     if (!record.id) {
       record.id = generateId();
     }
@@ -214,13 +233,15 @@ export class TupaiaDatabase {
       queryMethodParameter: record,
     });
 
-    if (additionalRecords.length === 0) {
-      return record;
-    }
+    return record;
+  }
 
-    const recordsCreated = [record];
-    for (const additionalRecord of additionalRecords) {
-      const recordCreated = await this.create(recordType, additionalRecord);
+  async createMany(recordType, records) {
+    // TODO could be more efficient to create all records in one query
+    const recordsCreated = [];
+    for (let i = 0; i < records.length; i++) {
+      const record = records[i];
+      const recordCreated = await this.create(recordType, record);
       recordsCreated.push(recordCreated);
     }
     return recordsCreated;
@@ -315,22 +336,17 @@ export class TupaiaDatabase {
     return this.delete(recordType, { id });
   }
 
+  markRecordsAsChanged(recordType, records) {
+    this.changeChannel.publishRecordUpdates(recordType, records);
+  }
+
   /**
    * Force a change to be recorded against the records matching the search criteria, and return
    * those records.
    */
   async markAsChanged(recordType, where, options) {
     const records = await this.find(recordType, where, options);
-    for (const record of records) {
-      this.changeListener.publish('change', {
-        change: {
-          record_id: record.id,
-          type: 'update',
-          record_type: recordType,
-        },
-        record,
-      });
-    }
+    this.markRecordsAsChanged(recordType, records);
     return records;
   }
 

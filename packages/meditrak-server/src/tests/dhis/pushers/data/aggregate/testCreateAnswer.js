@@ -8,24 +8,27 @@ import { generateTestId, populateTestData } from '../../../../testUtilities';
 import { AggregateDataPusher } from '../../../../../dhis/pushers/data/aggregate/AggregateDataPusher';
 import { ANSWER_CHANGE, ANSWER, ANSWER_DATA_VALUE, SURVEY_RESPONSE } from './testData';
 
-export const testCreateAnswer = (dhisApi, models) => {
+export const testCreateAnswer = (dhisApi, models, dataBroker) => {
   it('should throw an error if the changed record was not found', async () => {
     const change = await models.dhisSyncQueue.findById(ANSWER_CHANGE.id);
     change.record_id = 'does_not_exist_xxxxxxxxx';
-    const pusher = new AggregateDataPusher(models, change, dhisApi);
+    const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
     expect(pusher.push()).to.be.rejectedWith(`No answer found for ${change.record_id}`);
-    expect(dhisApi.postDataValueSets).not.to.have.been.called;
-    expect(dhisApi.deleteDataValue).not.to.have.been.called;
+    expect(dataBroker.push).not.to.have.been.called;
+    expect(dataBroker.delete).not.to.have.been.called;
   });
 
   it('should create a data value representing this answer', async () => {
     const change = await models.dhisSyncQueue.findById(ANSWER_CHANGE.id);
-    const pusher = new AggregateDataPusher(models, change, dhisApi);
+    const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
 
     const result = await pusher.push();
     expect(result).to.be.true;
-    expect(dhisApi.postDataValueSets).to.have.been.calledOnceWith([ANSWER_DATA_VALUE]);
-    expect(dhisApi.deleteDataValue).not.to.have.been.called;
+    expect(dataBroker.push).to.have.been.calledOnceWith(
+      { code: ANSWER_DATA_VALUE.code, type: pusher.dataSourceTypes.DATA_ELEMENT },
+      ANSWER_DATA_VALUE,
+    );
+    expect(dataBroker.delete).not.to.have.been.called;
   });
 
   it('should respond true without posting data if there is existing, more recent data for the same period', async () => {
@@ -44,10 +47,10 @@ export const testCreateAnswer = (dhisApi, models) => {
       answer: [moreRecentAnswer],
     });
     const change = await models.dhisSyncQueue.findById(ANSWER_CHANGE.id);
-    const pusher = new AggregateDataPusher(models, change, dhisApi);
+    const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
     const result = await pusher.push();
     expect(result).to.be.true;
-    expect(dhisApi.postDataValueSets).not.to.have.been.called;
-    expect(dhisApi.deleteDataValue).not.to.have.been.called;
+    expect(dataBroker.push).not.to.have.been.called;
+    expect(dataBroker.delete).not.to.have.been.called;
   });
 };

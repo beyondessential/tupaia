@@ -1,16 +1,16 @@
-import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
 import { getFacilityStatusCounts } from '/apiV1/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 
-const POPULATION = 'X09CcG0lHsP';
-const NUMBER_OF_DOCTORS = 'jxodPel43S3';
-const NUMBER_OF_NURSES = 'VCLujRxNl0K';
+const POPULATION = 'POPULATION';
+const NUMBER_OF_DOCTORS = 'BCD46';
+const NUMBER_OF_NURSES = 'BCD48';
 
 // # of doctors, nurses and facilities per 10k people
 class CountDataElement10kPaxBuilder extends DataBuilder {
   async build() {
-    const { results } = await this.getAnalytics(this.config);
-    const { numberOperational } = await getFacilityStatusCounts(this.entity.code);
+    const { dataElementCodes } = this.config;
+    const { results } = await this.fetchAnalytics(dataElementCodes);
+    const { numberOperational } = await getFacilityStatusCounts(this.aggregator, this.entity.code);
     const returnData = [];
 
     const addRow = (dataElementValue, dataElementName) => {
@@ -43,13 +43,18 @@ class CountDataElement10kPaxBuilder extends DataBuilder {
   }
 }
 
-export const countDataElement10kPax = async ({ dataBuilderConfig, query, entity }, dhisApi) => {
+export const countDataElement10kPax = async (
+  { dataBuilderConfig, query, entity },
+  aggregator,
+  dhisApi,
+) => {
   const builder = new CountDataElement10kPaxBuilder(
+    aggregator,
     dhisApi,
     dataBuilderConfig,
     query,
     entity,
-    AGGREGATION_TYPES.SUM_MOST_RECENT_PER_FACILITY,
+    aggregator.aggregationTypes.SUM_MOST_RECENT_PER_FACILITY,
   );
   return builder.build();
 };

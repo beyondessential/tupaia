@@ -141,6 +141,7 @@ const expectedOutput = {
   ],
 };
 
+const aggregatorMockup = {};
 const dhisApiMockup = {
   getDataValuesInSets: ({ dataElementGroupCode }) => {
     if (dataElementGroupCode === 'DPSurveyDate')
@@ -159,6 +160,7 @@ describe('multiDataValuesLatestSurvey', () => {
           dataBuilderConfig,
           query,
         },
+        aggregatorMockup,
         dhisApiMockup,
       );
       expect(result.data.find(({ dataElement }) => dataElement === 'gH8Ka9ty1f2').name).to.equal(
@@ -177,6 +179,7 @@ describe('multiDataValuesLatestSurvey', () => {
           dataBuilderConfig,
           query,
         },
+        aggregatorMockup,
         dhisApiMockup,
       );
       expect(result.data.find(({ dataElement }) => dataElement === 'gH8Ka9ty1f2').value).to.equal(
@@ -195,6 +198,7 @@ describe('multiDataValuesLatestSurvey', () => {
           dataBuilderConfig,
           query,
         },
+        aggregatorMockup,
         dhisApiMockup,
       );
       expect(result.data.length).to.equal(5);
@@ -211,6 +215,7 @@ describe('multiDataValuesLatestSurvey', () => {
           dataBuilderConfig,
           query,
         },
+        aggregatorMockup,
         dhisApiMockup,
       );
       expect(result.data.find(({ dataElement }) => dataElement === 'YGxBoAYFWwt')).to.be.undefined;
@@ -227,6 +232,7 @@ describe('multiDataValuesLatestSurvey', () => {
           dataBuilderConfig,
           query,
         },
+        aggregatorMockup,
         dhisApiMockup,
       );
       expect(result.data.find(({ dataElement }) => dataElement === 'iv1g1ZlX4oj')).to.be.undefined;

@@ -29,23 +29,11 @@
  *     "MCH110": "Monthly Health Promotion: School Health",
  *     "MCH111": "Monthly Health Promotion: Family Planning",
  *   },
- *   "dataElementIdToCode": {
- *     "tCfZIdv1fkN": "MCH110",
- *     "ZaQqvfdUUSk": "MCH111",
- *   },
- *   "dataElement": {
- *     "tCfZIdv1fkN": "Monthly Health Promotion: School Health",
- *     "ZaQqvfdUUSk": "Monthly Health Promotion: Family Planning",
- *   },
- *   "organisationUnit": { "vQ5TA8iDGFL": "Haveluloto" }
  * }
  * ```
  *
  * @typedef {Object} AnalyticsMetadata
  * @property {Object<string, string>} dataElementCodeToName
- * @property {Object<string, string>} dataElementIdToCode
- * @property {Object<string, string>} dataElement Data element id to name
- * @property {Object<string, string>} organisationUnit Organisation unit id to name
  */
 
 /**

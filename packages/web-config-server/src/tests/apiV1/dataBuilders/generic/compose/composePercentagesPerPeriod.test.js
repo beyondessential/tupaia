@@ -19,10 +19,15 @@ describe('composePercentagesPerPeriod', () => {
   it('should call composeDataPerPeriod() with the correct arguments', async () => {
     const composeDataPerPeriodStub = stubComposeDataPerPeriod({ data: [] });
     const config = { dataBuilderConfig: { percentages: {} } };
+    const aggregatorStub = {};
     const dhisApiStub = {};
 
-    await composePercentagesPerPeriod(config, dhisApiStub);
-    expect(composeDataPerPeriodStub).to.have.been.calledOnceWith(config, dhisApiStub);
+    await composePercentagesPerPeriod(config, aggregatorStub, dhisApiStub);
+    expect(composeDataPerPeriodStub).to.have.been.calledOnceWith(
+      config,
+      aggregatorStub,
+      dhisApiStub,
+    );
   });
 
   it('should compose period data for a single percentage definition', async () => {

@@ -25,7 +25,7 @@ export class CountEventsBuilder extends DataBuilder {
    * @returns {DataValuesOutput}
    */
   async build() {
-    const events = await this.getEvents({ dataElementIdScheme: 'code', dataValueFormat: 'object' });
+    const events = await this.fetchEvents({ dataValueFormat: 'object' });
     const data = this.buildData(events);
 
     return { data };
@@ -39,7 +39,7 @@ export class CountEventsBuilder extends DataBuilder {
   }
 }
 
-export const countEvents = async ({ dataBuilderConfig, query, entity }, dhisApi) => {
-  const builder = new CountEventsBuilder(dhisApi, dataBuilderConfig, query, entity);
+export const countEvents = async ({ dataBuilderConfig, query, entity }, aggregator, dhisApi) => {
+  const builder = new CountEventsBuilder(aggregator, dhisApi, dataBuilderConfig, query, entity);
   return builder.build();
 };

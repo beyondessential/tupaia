@@ -17,20 +17,21 @@ import {
   YEARLY_DATA_SET,
 } from './testData';
 
-export const testPeriodsBasedOnDataSet = (dhisApi, models) => {
+export const testPeriodsBasedOnDataSet = (dhisApi, models, dataBroker) => {
   const testPeriodType = async (dataSet, format) => {
     try {
       dhisApi.getDataSetByCode = sinon.stub().returns(dataSet); // change to return valid data set
       const change = await models.dhisSyncQueue.findById(ANSWER_CHANGE.id);
-      const pusher = new AggregateDataPusher(models, change, dhisApi);
+      const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
 
       const result = await pusher.push();
       expect(result).to.be.true;
       const expectedPeriod = moment(SURVEY_RESPONSE.submission_time).format(format);
-      expect(dhisApi.postDataValueSets).to.have.been.calledOnceWith([
+      expect(dataBroker.push).to.have.been.calledOnceWith(
+        { code: ANSWER_DATA_VALUE.code, type: pusher.dataSourceTypes.DATA_ELEMENT },
         { ...ANSWER_DATA_VALUE, period: expectedPeriod },
-      ]);
-      expect(dhisApi.deleteDataValue).not.to.have.been.called;
+      );
+      expect(dataBroker.delete).not.to.have.been.called;
     } finally {
       dhisApi.getDataSetByCode = sinon.stub().returns(null); // switch back to returning null
     }

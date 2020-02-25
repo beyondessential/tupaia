@@ -1,10 +1,8 @@
-import { getOptionSetOptions } from '/apiV1/utils';
-
-export const villagesServicedByFacility = async ({ entity }, dhisApi) => {
+export const villagesServicedByFacility = async ({ entity }, aggregator, dhisApi) => {
   const code = `${entity.code}_villages`;
 
   try {
-    const options = await getOptionSetOptions(dhisApi, { code });
+    const options = await dhisApi.getOptionSetOptions({ code });
     const returnData = Object.values(options).map(option => ({ value: option }));
     return { data: returnData };
   } catch (error) {
