@@ -216,11 +216,7 @@ exports.up = function(db) {
             "category" : "Radiation emergencies"
           }
         ],
-        "columns" : [
-          "FM",
-          "NU",
-          "TV"
-        ],
+        "columns" : ["CK", "FJ", "KI", "MH", "FM", "NR", "NU", "PW", "PG", "WS", "SB", "TO", "TV", "VU"],
         "stripFromDataElementNames" : "JEE: "
       }',
       '{
