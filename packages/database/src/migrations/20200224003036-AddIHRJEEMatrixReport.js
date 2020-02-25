@@ -226,6 +226,7 @@ exports.up = function(db) {
       '{
         "placeholder" : "\/static\/media\/PEHSMatrixPlaceholder.png",
         "name" : "JEE (WPRO Countries)",
+        "entityHeader": "2018",
         "type" : "matrix",
         "presentationOptions" : {
           "type": "range",
