@@ -90,7 +90,6 @@ class FridgeBreachAggregator {
   async aggregate(events) {
     const eventsByOrgUnit = groupBy(events, 'orgUnit');
     const dataElementCodeToId = await this.getDataElementCodeToId();
-    const dataElementIdToCode = invert(dataElementCodeToId);
     const thresholdTempByOrgUnit = await this.getThresholdTemperaturesByOrgUnit();
     const targetProgramId = await this.dhisApi.getIdFromCode(
       DHIS2_RESOURCE_TYPES.PROGRAM,
@@ -107,7 +106,7 @@ class FridgeBreachAggregator {
         );
         return;
       }
-      const readings = this.getSortedBreachReadings(eventsForOrgUnit, dataElementIdToCode);
+      const readings = this.getSortedBreachReadings(eventsForOrgUnit);
 
       readings.forEach(readingsForBreach => {
         const dataValues = Object.values(FRIDGE_BREACH_AGR_ELEMENT_CODES).map(code => ({
@@ -148,23 +147,22 @@ class FridgeBreachAggregator {
    * threshold temperatures
    */
   async getThresholdTemperaturesByOrgUnit() {
-    const {
-      results,
-      metadata: { dataElementIdToCode },
-    } = await this.aggregator.fetchAnalytics([FRIDGE_THRESHOLD_MIN, FRIDGE_THRESHOLD_MAX], {
-      programCodes: [FRIDGE_DAILY_PROGRAM_CODE],
-      organisationUnitCode: WORLD,
-      orgUnitIdScheme: 'uid',
-      period: 'LAST_5_YEARS;THIS_YEAR',
-    });
+    const { results } = await this.aggregator.fetchAnalytics(
+      [FRIDGE_THRESHOLD_MIN, FRIDGE_THRESHOLD_MAX],
+      {
+        programCodes: [FRIDGE_DAILY_PROGRAM_CODE],
+        organisationUnitCode: WORLD,
+        orgUnitIdScheme: 'uid',
+        period: 'LAST_5_YEARS;THIS_YEAR',
+      },
+    );
     const analyticsByOrgUnit = groupBy(results, 'organisationUnit');
 
     const temperaturesByOrgUnit = {};
     Object.entries(analyticsByOrgUnit).forEach(([orgUnitId, analyticsForOrgUnit]) => {
       temperaturesByOrgUnit[orgUnitId] = {};
 
-      analyticsForOrgUnit.forEach(({ dataElement: dataElementId, value }) => {
-        const dataElementCode = dataElementIdToCode[dataElementId];
+      analyticsForOrgUnit.forEach(({ dataElement: dataElementCode, value }) => {
         temperaturesByOrgUnit[orgUnitId][dataElementCode] = value;
       });
     });
@@ -174,26 +172,22 @@ class FridgeBreachAggregator {
 
   /**
    * @param {Event[]} orgUnitEvents
-   * @param {Object<string, string>} dataElementIdToCode
    * @returns {Readings[][]} An array of reading groups, sorted by their `eventDate`. Each group of
    * readings constitutes a breach
    */
-  getSortedBreachReadings = (orgUnitEvents, dataElementIdToCode) => {
-    const allReadings = orgUnitEvents.map(event =>
-      this.getReadingsForEvent(event, dataElementIdToCode),
-    );
+  getSortedBreachReadings = orgUnitEvents => {
+    const allReadings = orgUnitEvents.map(event => this.getReadingsForEvent(event));
     const groupedReadings = Object.values(groupBy(allReadings, FRIDGE_BREACH_START_TIME));
     groupedReadings.forEach(readingsForBreach => readingsForBreach.sort(getSortByKey('eventDate')));
 
     return groupedReadings;
   };
 
-  getReadingsForEvent = (event, dataElementIdToCode) => {
+  getReadingsForEvent = event => {
     const { eventDate, dataValues } = event;
 
     const readings = { eventDate };
-    dataValues.forEach(({ dataElement: dataElementId, value }) => {
-      const dataElementCode = dataElementIdToCode[dataElementId];
+    dataValues.forEach(({ dataElement: dataElementCode, value }) => {
       if (!Object.values(FRIDGE_BREACH_ELEMENT_CODES).includes(dataElementCode)) {
         return;
       }
