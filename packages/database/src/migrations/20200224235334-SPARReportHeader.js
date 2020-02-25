@@ -23,7 +23,7 @@ exports.up = function(db) {
 
 exports.down = function(db) {
   return db.runSql(`
-    UPDATE "dashboardReport" SET "viewJson" = "viewJson" - 'entityHeader' where id in 'WHO_IHR_SPAR_NST' or id = 'WHO_IHR_SPAR_WPRO';  
+    UPDATE "dashboardReport" SET "viewJson" = "viewJson" - 'entityHeader' where id in ('WHO_IHR_SPAR_NST', 'WHO_IHR_SPAR_WPRO');  
   `);
 };
 
