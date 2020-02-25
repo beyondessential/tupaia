@@ -12,7 +12,7 @@ const SERVER_NAMES = new Set([REGIONAL_SERVER_NAME, 'tonga']);
 
 const getServerUrlFromName = serverName => {
   const isProduction = process.env.IS_PRODUCTION_ENVIRONMENT === 'true';
-  const devPrefix = isProduction ? '' : '22feb-';
+  const devPrefix = isProduction ? '' : 'dev-';
   const specificServerPrefix = '' || serverName === REGIONAL_SERVER_NAME ? '' : `${serverName}-`;
   return `https://${devPrefix}${specificServerPrefix}aggregation.tupaia.org`;
 };
