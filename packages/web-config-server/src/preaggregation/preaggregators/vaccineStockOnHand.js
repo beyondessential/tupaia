@@ -71,7 +71,6 @@ const buildDataValues = (metadata, data) => {
   const dataValuesByOrgUnit = {};
   for (const event of data) {
     const metadataForOrgUnit = metadata[event.orgUnit];
-    console.log(event.dataValues);
     // If there's no vaccine list set up on dhis2 for this org unit,
     // we assume it is safe to ignore.
     if (!metadataForOrgUnit) continue;
