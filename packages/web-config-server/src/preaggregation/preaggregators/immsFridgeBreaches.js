@@ -84,7 +84,7 @@ class FridgeBreachAggregator {
   }
 
   /**
-   * @param {Event[]} events A collection of events with `uid` used as organisation unit identifier
+   * @param {Event[]} events A collection of events
    * @returns {EventData[]}
    */
   async aggregate(events) {
@@ -152,18 +152,16 @@ class FridgeBreachAggregator {
       {
         programCodes: [FRIDGE_DAILY_PROGRAM_CODE],
         organisationUnitCode: WORLD,
-        orgUnitIdScheme: 'uid',
-        period: 'LAST_5_YEARS;THIS_YEAR',
       },
     );
     const analyticsByOrgUnit = groupBy(results, 'organisationUnit');
 
     const temperaturesByOrgUnit = {};
-    Object.entries(analyticsByOrgUnit).forEach(([orgUnitId, analyticsForOrgUnit]) => {
-      temperaturesByOrgUnit[orgUnitId] = {};
+    Object.entries(analyticsByOrgUnit).forEach(([orgUnitCode, analyticsForOrgUnit]) => {
+      temperaturesByOrgUnit[orgUnitCode] = {};
 
       analyticsForOrgUnit.forEach(({ dataElement: dataElementCode, value }) => {
-        temperaturesByOrgUnit[orgUnitId][dataElementCode] = value;
+        temperaturesByOrgUnit[orgUnitCode][dataElementCode] = value;
       });
     });
 
@@ -304,10 +302,7 @@ class AggregatedEventPusher {
 }
 
 const getEvents = async (aggregator, programCode) =>
-  aggregator.fetchEvents(programCode, {
-    organisationUnitCode: WORLD,
-    orgUnitIdScheme: 'uid',
-  });
+  aggregator.fetchEvents(programCode, { organisationUnitCode: WORLD });
 
 export const immsFridgeBreaches = async (aggregator, dhisApi) => {
   winston.info(`Starting to aggregate ${AGGREGATION_NAME}`);
