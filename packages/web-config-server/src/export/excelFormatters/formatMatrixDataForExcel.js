@@ -50,10 +50,7 @@ export const formatMatrixDataForExcel = (
       // Insert a separating empty row between categories
       formattedData.push({ [config.dataElementHeader]: rowCategoryTitle });
       // Add the data from all rows in this category
-      rows
-        .filter(({ categoryId }) => rowCategoryKey === categoryId)
-        .sort((a, b) => a.dataElement.localeCompare(b.dataElement))
-        .forEach(addRowToFormattedData);
+      rows.filter(({ categoryId }) => rowCategoryKey === categoryId).forEach(addRowToFormattedData);
     });
   } else {
     // This table has no row categories, just one set of rows
