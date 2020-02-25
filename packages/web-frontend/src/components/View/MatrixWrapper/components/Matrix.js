@@ -8,7 +8,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
-import { findByKey } from '../../../../utils';
 import { PRESENTATION_OPTIONS_SHAPE } from '../../propTypes';
 import HeaderRow from './HeaderRow';
 import DescriptionOverlay from './DescriptionOverlay';
@@ -43,7 +42,7 @@ export class Matrix extends PureComponent {
       areAllExpanded: false, // For exporting.
       isPrintMode: props.isExporting,
       selectedPresentationOption: null,
-      selectedPresentationValue: null,
+      selectedCellValue: null,
     };
 
     // Expand first category by default.
