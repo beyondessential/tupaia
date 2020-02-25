@@ -59,13 +59,6 @@ export const stubModels = () => ({
   },
 });
 
-export const buildAggregateDataRow = ({ dataElement, organisationUnit, period, value }) => [
-  dataElement,
-  organisationUnit,
-  period,
-  value,
-];
-
 /**
  * Reverse engineers the DHIS2 aggregate data response given the expected analytics
  */
