@@ -49,6 +49,7 @@ export class TupaiaDatabase {
   constructor(transactingConnection) {
     autobind(this);
     this.changeHandlers = {};
+    this.changeChannel = new DatabaseChangeChannel();
 
     // If this instance is not for a specific transaction, it is the singleton instance
     this.isSingleton = !transactingConnection;
@@ -61,7 +62,6 @@ export class TupaiaDatabase {
           connection: getConnectionConfig(),
         }));
       if (this.isSingleton) {
-        this.changeChannel = new DatabaseChangeChannel();
         this.changeChannel.addChangeHandler(this.notifyChangeHandlers);
       }
       return true;
@@ -79,7 +79,6 @@ export class TupaiaDatabase {
   }
 
   async waitForChangeChannel(timeout = 250, retries = 4) {
-    await this.connectionPromise;
     return this.changeChannel.ping(timeout, retries);
   }
 
