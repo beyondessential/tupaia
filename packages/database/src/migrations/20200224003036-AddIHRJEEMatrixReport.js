@@ -241,14 +241,14 @@ exports.up = function(db) {
             "min" : 4,
             "max" : 5,
             "label" : "green",
-            "description" : "Limited/Developed Capacity: ",
+            "description" : "Demonstrated/Susainable Capacity: ",
             "color" : "#33691e"
           },
           "yellow" : {
             "min" : 2,
             "max" : 3,
             "label" : "yellow",
-            "description" : "Demonstrated/Susainable Capacity: ",
+            "description" : "Limited/Developed Capacity:", 
             "color" : "#fdd835"
           }
         }

@@ -109,6 +109,9 @@ export class Matrix extends PureComponent {
   }
 
   onCellClick(selectedCellType, selectedCellDescription) {
+    console.log('TCL: Matrix -> onCellClick -> selectedCellType', selectedCellType);
+    console.log('TCL: Matrix -> onCellClick -> selectedCellDescription', selectedCellDescription);
+
     this.setState({
       selectedCellType,
       selectedCellDescription,
