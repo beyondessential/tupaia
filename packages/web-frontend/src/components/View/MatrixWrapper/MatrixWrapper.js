@@ -214,6 +214,7 @@ export class MatrixWrapper extends Component {
       onChangeConfig,
       onItemClick,
     } = this.props;
+    let titleText;
     const { expandedMatrixData, offsetWidth } = this.state;
     const {
       rows,
@@ -237,6 +238,9 @@ export class MatrixWrapper extends Component {
       const maxColumns = Math.floor(usableWidth / maximumColumnWidth);
       numberOfColumnsPerPage = maxColumns;
     }
+    if (viewContent.entityHeader) titleText = `${viewContent.name}, ${viewContent.entityHeader}`;
+    else
+      titleText = `${viewContent.name}${organisationUnitName ? `, ${organisationUnitName}` : ''}`;
 
     return (
       <Matrix
@@ -248,7 +252,7 @@ export class MatrixWrapper extends Component {
         presentationOptions={presentationOptions}
         categoryPresentationOptions={categoryPresentationOptions}
         isExporting={isExporting}
-        title={`${viewContent.name}${organisationUnitName ? `, ${organisationUnitName}` : ''}`}
+        title={titleText}
         onSearch={searchTerm => onChangeConfig({ search: searchTerm })}
         renderPeriodSelector={() => PeriodSelectorComponent}
         onRowClick={onItemClick}
