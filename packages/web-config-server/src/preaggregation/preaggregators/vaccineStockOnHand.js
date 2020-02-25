@@ -40,7 +40,7 @@ const fetchFridgeData = async aggregator => {
   return [...breachEvents, ...dailyFridgeDataEvents];
 };
 
-const buildVaccineMetadata = async (aggregator, dhisApi, data) => {
+const buildVaccineMetadata = async (dhisApi, data) => {
   const metadataByFacility = reduceToDictionary(data, 'orgUnit', 'orgUnit');
   const vaccineListCodes = Object.values(metadataByFacility).map(orgUnit =>
     orgUnitVaccineListCode(orgUnit),
@@ -55,15 +55,11 @@ const buildVaccineMetadata = async (aggregator, dhisApi, data) => {
     const originalDataElementCodes = orgUnitVaccineLists[
       facilityVaccineListCode
     ].dataElements.map(de => stripFromStart(de.code, prependString));
-    const originalDataElements = await aggregator.fetchDataElements(originalDataElementCodes, {
-      organisationUnitCode: WORLD,
-    });
-    const originalDataElementByCode = keyBy(originalDataElements, 'code');
 
-    metadata[facility] = originalDataElementCodes.reduce((codesById, code) => {
+    metadata[facility] = originalDataElementCodes.reduce((preaggregatedByOriginalCode, code) => {
       return {
-        ...codesById,
-        [originalDataElementByCode[code].id]: preaggregatedDataElementCode(code),
+        ...preaggregatedByOriginalCode,
+        [code]: preaggregatedDataElementCode(code),
       };
     }, {});
   }
@@ -75,6 +71,7 @@ const buildDataValues = (metadata, data) => {
   const dataValuesByOrgUnit = {};
   for (const event of data) {
     const metadataForOrgUnit = metadata[event.orgUnit];
+    console.log(event.dataValues);
     // If there's no vaccine list set up on dhis2 for this org unit,
     // we assume it is safe to ignore.
     if (!metadataForOrgUnit) continue;
@@ -103,7 +100,7 @@ export const vaccineStockOnHand = async (aggregator, dhisApi) => {
   const fridgeData = await fetchFridgeData(aggregator);
   winston.info('Finished fetching fridge data: building data...');
 
-  const metadata = await buildVaccineMetadata(aggregator, dhisApi, fridgeData);
+  const metadata = await buildVaccineMetadata(dhisApi, fridgeData);
   const dataValues = buildDataValues(metadata, fridgeData);
 
   if (dataValues.length === 0) {
