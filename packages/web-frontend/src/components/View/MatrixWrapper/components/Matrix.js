@@ -43,7 +43,7 @@ export class Matrix extends PureComponent {
       areAllExpanded: false, // For exporting.
       isPrintMode: props.isExporting,
       selectedCellType: null,
-      selectedCellDescription: '',
+      selectedCellDescription: null,
     };
 
     // Expand first category by default.
@@ -474,7 +474,7 @@ export class Matrix extends PureComponent {
     return (
       <DescriptionOverlay
         header={presentationOptions.label}
-        body={`${presentationOption.description || ''} ${selectedCellDescription}`}
+        body={`${presentationOption.description || ''} ${selectedCellDescription || ''}`}
         color={presentationOption.color}
         styles={this.props.calculatedStyles}
         onClose={() => this.onDescriptionOverlayClose()}
