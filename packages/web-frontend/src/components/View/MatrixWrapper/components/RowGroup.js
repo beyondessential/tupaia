@@ -98,8 +98,8 @@ export default class RowGroup extends Component {
                   cellKey={index}
                   onMouseEnter={() => onCellMouseEnter(index, rowId)}
                   onMouseLeave={() => onCellMouseLeave()}
-                  onClick={() => onCellClick(presentation.label, value.toString())}
-                  color={presentation.color}
+                  onClick={() => onCellClick(presentation, value)}
+                  color={presentation ? presentation.color : { color: '' }}
                   value={value}
                   style={styles.gridCell}
                   columnActiveStripStyle={styles.columnActiveStrip}

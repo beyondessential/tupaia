@@ -114,8 +114,8 @@ export default class Row extends Component {
               cellKey={index}
               onMouseEnter={() => onCellMouseEnter(index, rowKey)}
               onMouseLeave={() => onCellMouseLeave()}
-              onClick={() => onCellClick(presentation.label, cellValue)}
-              color={presentation.color}
+              onClick={() => onCellClick(presentation, cellValue)}
+              color={presentation ? presentation.color : { color: '' }}
               value={cellValue}
               style={styles.gridCell}
               columnActiveStripStyle={styles.columnActiveStrip}

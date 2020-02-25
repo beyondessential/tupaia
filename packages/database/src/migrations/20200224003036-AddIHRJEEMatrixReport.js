@@ -230,24 +230,25 @@ exports.up = function(db) {
         "type" : "matrix",
         "presentationOptions" : {
           "type": "range",
+          "showRawValue": true,
           "red" : {
             "min" : 0,
             "max" : 1,
-            "label" : "red",
+            "label" : "",
             "description" : "No capacity: ",
             "color" : "#b71c1c"
           },
           "green" : {
             "min" : 4,
             "max" : 5,
-            "label" : "green",
+            "label" : "",
             "description" : "Demonstrated/Susainable Capacity: ",
             "color" : "#33691e"
           },
           "yellow" : {
             "min" : 2,
             "max" : 3,
-            "label" : "yellow",
+            "label" : "",
             "description" : "Limited/Developed Capacity:", 
             "color" : "#fdd835"
           }
@@ -260,6 +261,20 @@ exports.up = function(db) {
     UPDATE "dashboardReport"
       SET "viewJson" = jsonb_set("viewJson", '{categoryPresentationOptions, type}', '"range"')
         WHERE "id" IN ('WHO_IHR_SPAR_WPRO', 'WHO_IHR_SPAR_NST');
+    
+    UPDATE "dashboardReport"
+      SET "viewJson" = jsonb_set("viewJson", '{categoryPresentationOptions, showRawValue}', 'true')
+        WHERE "id" IN ('WHO_IHR_SPAR_WPRO', 'WHO_IHR_SPAR_NST');
+
+    UPDATE "dashboardReport"
+      SET "viewJson" = jsonb_set("viewJson", '{categoryPresentationOptions, green, label}', '""')
+        WHERE "id" IN ('WHO_IHR_SPAR_WPRO', 'WHO_IHR_SPAR_NST');
+    UPDATE "dashboardReport"
+      SET "viewJson" = jsonb_set("viewJson", '{categoryPresentationOptions, red, label}', '""')
+        WHERE "id" IN ('WHO_IHR_SPAR_WPRO', 'WHO_IHR_SPAR_NST');
+    UPDATE "dashboardReport"
+      SET "viewJson" = jsonb_set("viewJson", '{categoryPresentationOptions, yellow, label}', '""')
+        WHERE "id" IN ('WHO_IHR_SPAR_WPRO', 'WHO_IHR_SPAR_NST');
   `);
 };
 
@@ -271,6 +286,10 @@ exports.down = function(db) {
 
     UPDATE "dashboardReport"
       SET "viewJson" = "viewJson" #- '{categoryPresentationOptions, type}'
+        WHERE "id" IN ('WHO_IHR_SPAR_WPRO', 'WHO_IHR_SPAR_NST');
+    
+    UPDATE "dashboardReport"
+      SET "viewJson" = "viewJson" #- '{categoryPresentationOptions, showRawValue}'
         WHERE "id" IN ('WHO_IHR_SPAR_WPRO', 'WHO_IHR_SPAR_NST');
   `);
 };

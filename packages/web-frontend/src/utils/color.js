@@ -15,14 +15,11 @@ const PRESENTATION_TYPES = {
 
 const getPresentationOptionFromRange = (options, value) => {
   const option = Object.values(options).find(({ min, max }) => value >= min && value <= max);
-  if (!value || !option) return { color: '' };
+  if (!value || !option) return null;
   return option;
 };
 
-const getPresentationOptionFromKey = (options, value) =>
-  findByKey(options, value, false) || {
-    color: '',
-  };
+const getPresentationOptionFromKey = (options, value) => findByKey(options, value, false) || null;
 
 export const getPresentationOption = (options, value) =>
   options.type === PRESENTATION_TYPES.RANGE

@@ -42,8 +42,8 @@ export class Matrix extends PureComponent {
       searchTerm: '',
       areAllExpanded: false, // For exporting.
       isPrintMode: props.isExporting,
-      selectedCellType: null,
-      selectedCellDescription: null,
+      selectedPresentationOption: null,
+      selectedPresentationValue: null,
     };
 
     // Expand first category by default.
@@ -108,15 +108,15 @@ export class Matrix extends PureComponent {
     });
   }
 
-  onCellClick(selectedCellType, selectedCellDescription) {
+  onCellClick(selectedPresentationOption, selectedCellValue) {
     this.setState({
-      selectedCellType,
-      selectedCellDescription,
+      selectedPresentationOption,
+      selectedCellValue,
     });
   }
 
   onDescriptionOverlayClose() {
-    this.setState({ selectedCellType: null, selectedCellDescription: null });
+    this.setState({ selectedPresentationOption: null, selectedCellValue: null });
   }
 
   onMoveColumnPress(distance) {
@@ -463,19 +463,24 @@ export class Matrix extends PureComponent {
   }
 
   renderDescriptionOverlay() {
-    const { selectedCellType, selectedCellDescription } = this.state;
-    const { presentationOptions, categoryPresentationOptions } = this.props;
-    const allPresentationOptions = { ...presentationOptions, ...categoryPresentationOptions };
-    const presentationOption = findByKey(allPresentationOptions, selectedCellType, false);
-    if (!presentationOption) {
+    const { selectedPresentationOption, selectedCellValue } = this.state;
+    if (!selectedPresentationOption) {
       return null;
     }
 
+    const allPresentationOptions = {
+      ...this.props.presentationOptions,
+      ...this.props.categoryPresentationOptions,
+    };
+    const { label, description, color } = selectedPresentationOption;
+
     return (
       <DescriptionOverlay
-        header={presentationOptions.label}
-        body={`${presentationOption.description || ''} ${selectedCellDescription || ''}`}
-        color={presentationOption.color}
+        header={label}
+        body={`${description || ''} ${
+          allPresentationOptions.showRawValue ? selectedCellValue : ''
+        }`}
+        color={color}
         styles={this.props.calculatedStyles}
         onClose={() => this.onDescriptionOverlayClose()}
       />
