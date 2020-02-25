@@ -1,7 +1,7 @@
 import { DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
 import { CustomError } from '@tupaia/utils';
 
-export const getDataElementsInGroup = async (dhisApi, code) => {
+export const getDataElementsInGroup = async (dhisApi, code, useCodeAsKey = false) => {
   const result = await dhisApi.getRecord({
     type: DHIS2_RESOURCE_TYPES.DATA_ELEMENT_GROUP,
     code,
@@ -14,9 +14,15 @@ export const getDataElementsInGroup = async (dhisApi, code) => {
       dataElementGroups: code,
     });
   }
-  const dataElementsById = {};
-  result.dataElements.forEach(({ id, ...restOfDataElement }) => {
-    dataElementsById[id] = restOfDataElement;
+  const dataElementsByKey = {};
+  const keyName = useCodeAsKey ? 'code' : 'id';
+  result.dataElements.forEach(({ [keyName]: key, ...restOfDataElement }) => {
+    dataElementsByKey[key] = restOfDataElement;
   });
-  return dataElementsById;
+  return dataElementsByKey;
+};
+
+export const getDataElementCodesInGroup = async (dhisApi, dataElementGroupCode) => {
+  const dataElements = await getDataElementsInGroup(dhisApi, dataElementGroupCode, true);
+  return Object.keys(dataElements);
 };

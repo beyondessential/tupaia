@@ -1,36 +1,17 @@
 /**
- * Tupaia Config Server
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import { kebab as convertToKebabCase } from 'case';
-import { REGIONAL_SERVER_NAME } from '@tupaia/dhis-api';
-import { getCountryNameFromCode } from '/utils';
+
 import { DhisApi } from './DhisApi';
+import { getDhisConfig } from '@tupaia/utils';
 
-const SUPPORTED_SERVERS = new Set([REGIONAL_SERVER_NAME, 'tonga']);
+const instances = {};
 
-const dhisApiInstances = {};
-
-/**
- * Returns an api instance connected to the dhis server for the country containing the given
- * organisationUnitCode, or the regional dhis server if either none is passed in, or the data
- * is regional
- * @param {*} organisationUnitCode
- * @param {*} isDataRegional
- */
-export const getDhisApiInstance = (organisationUnitCode = '', isDataRegional = true) => {
-  const countryCode = organisationUnitCode.substring(0, 2); // All organisation unit codes start with the two letter country code
-  const countrySpecificServerName = getServerNameFromCountryCode(countryCode);
-  const serverName =
-    isDataRegional || !SUPPORTED_SERVERS.has(countrySpecificServerName)
-      ? // If the country does not have a dhis2 server, or this is data stored regionally, use the regional server
-        REGIONAL_SERVER_NAME
-      : countrySpecificServerName;
-  if (!dhisApiInstances[serverName]) {
-    dhisApiInstances[serverName] = new DhisApi(serverName);
+export const getDhisApiInstance = options => {
+  const { serverName, serverUrl } = getDhisConfig(options);
+  if (!instances[serverName]) {
+    instances[serverName] = new DhisApi(serverName, serverUrl);
   }
-  return dhisApiInstances[serverName];
+  return instances[serverName];
 };
-
-const getServerNameFromCountryCode = countryCode =>
-  convertToKebabCase(getCountryNameFromCode(countryCode));

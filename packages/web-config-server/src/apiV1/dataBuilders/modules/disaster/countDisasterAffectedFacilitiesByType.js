@@ -1,9 +1,6 @@
 import keyBy from 'lodash.keyby';
-import { AGGREGATION_TYPES, convertDateRangeToPeriodString } from '@tupaia/dhis-api';
+import { convertDateRangeToPeriodString } from '@tupaia/dhis-api';
 import { Entity } from '/models';
-import { getOptionSetOptions } from '/apiV1/utils';
-
-const { MOST_RECENT } = AGGREGATION_TYPES;
 
 const AFFECTED_STATUS_DATA_ELEMENT_CODE = 'DP_NEW008';
 
@@ -17,24 +14,21 @@ const FACILITY_STATUS_UNKNOWN = 'Unknown';
 // Number of Operational Facilities by Facility Type
 export const countDisasterAffectedFacilitiesByType = async (
   { dataBuilderConfig, query },
+  aggregator,
   dhisApi,
 ) => {
   const { organisationUnitCode, disasterStartDate, disasterEndDate } = query;
-  const { optionSetCode } = dataBuilderConfig;
+  const { dataServices, optionSetCode } = dataBuilderConfig;
 
   if (!disasterStartDate) return { data: {} }; // show no data message in view.
-  const options = await getOptionSetOptions(dhisApi, { code: optionSetCode });
+  const options = await dhisApi.getOptionSetOptions({ code: optionSetCode });
   const period = convertDateRangeToPeriodString(disasterStartDate, disasterEndDate || Date.now());
   const facilities = await Entity.getFacilityDescendantsWithCoordinates(organisationUnitCode);
-  const { results } = await dhisApi.getAnalytics(
-    {
-      dataElementCodes: [AFFECTED_STATUS_DATA_ELEMENT_CODE],
-      outputIdScheme: 'code',
-      ...query,
-      period,
-    },
-    MOST_RECENT,
-  );
+  const { results } = await aggregator.fetchAnalytics([AFFECTED_STATUS_DATA_ELEMENT_CODE], {
+    ...query,
+    dataServices,
+    period,
+  });
 
   const facilitiesByCode = keyBy(facilities, 'code');
   const facilityStatuses = new Map(

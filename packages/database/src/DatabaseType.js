@@ -136,8 +136,8 @@ export class DatabaseType {
     if (this.id) {
       await this.model.updateById(this.id, data);
     } else {
-      const records = await this.model.create(data);
-      this.id = records[0].id;
+      const record = await this.model.create(data);
+      this.id = record.id;
     }
   }
 }

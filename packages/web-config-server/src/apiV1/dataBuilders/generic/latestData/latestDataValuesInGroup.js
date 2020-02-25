@@ -7,14 +7,16 @@
  * for retrieving answers from FreeText question types.
  */
 
-import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
 import { getDataElementsInGroup } from '/apiV1/utils';
 
-export const latestDataValuesInGroup = async ({ dataBuilderConfig, query }, dhisApi) => {
-  const { MOST_RECENT } = AGGREGATION_TYPES;
+export const latestDataValuesInGroup = async (
+  { dataBuilderConfig, query },
+  aggregator,
+  dhisApi,
+) => {
   const { dataElementGroupCode, dataElementCodes = [] } = dataBuilderConfig;
   const dataElementsById = await getDataElementsInGroup(dhisApi, dataElementGroupCode);
-  const dataValues = await dhisApi.getDataValuesInSets(dataBuilderConfig, query, MOST_RECENT);
+  const dataValues = await dhisApi.getDataValuesInSets(dataBuilderConfig, query);
 
   let filteredResults;
   if (dataElementCodes.length > 0) {

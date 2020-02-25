@@ -1,6 +1,10 @@
-import { getDataElementFromId, getOptionSetOptions, findLatestPeriod } from '/apiV1/utils';
+import { getDataElementFromId, findLatestPeriod } from '/apiV1/utils';
 
-export const multiDataValuesLatestSurvey = async ({ dataBuilderConfig, query }, dhisApi) => {
+export const multiDataValuesLatestSurvey = async (
+  { dataBuilderConfig, query },
+  aggregator,
+  dhisApi,
+) => {
   const { surveyDataElementCode } = dataBuilderConfig;
   const surveyDatesResponseDataValues = await dhisApi.getDataValuesInSets(
     { dataElementGroupCode: surveyDataElementCode },
@@ -24,7 +28,7 @@ export const multiDataValuesLatestSurvey = async ({ dataBuilderConfig, query }, 
         );
         let valueToUse = value;
         if (optionSet && optionSet.id) {
-          const options = await getOptionSetOptions(dhisApi, { id: optionSet.id });
+          const options = await dhisApi.getOptionSetOptions({ id: optionSet.id });
           valueToUse = options[value];
         }
 

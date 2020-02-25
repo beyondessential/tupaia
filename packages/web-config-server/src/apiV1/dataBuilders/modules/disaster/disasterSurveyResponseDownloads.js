@@ -4,6 +4,7 @@ import { latestDownloadLink } from '/apiV1/dataBuilders/generic/dataDownload';
 
 export const disasterSurveyResponseDownloads = async (
   { dataBuilderConfig, query, req, viewJson },
+  aggregator,
   dhisApi,
 ) => {
   const { preConfig, postConfig } = dataBuilderConfig;
@@ -15,6 +16,7 @@ export const disasterSurveyResponseDownloads = async (
       query,
       viewJson,
     },
+    aggregator,
     dhisApi,
   );
 
@@ -33,6 +35,7 @@ export const disasterSurveyResponseDownloads = async (
       query: postQuery,
       viewJson,
     },
+    aggregator,
     dhisApi,
   );
 

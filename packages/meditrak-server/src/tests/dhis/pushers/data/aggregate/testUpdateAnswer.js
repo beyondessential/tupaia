@@ -12,20 +12,22 @@ import {
   ANSWER_DATA_VALUE,
   ANSWER_DATA_VALUE_DIMENSIONS,
   getSyncLog,
+  SERVER_NAME,
 } from './testData';
 
-export const testUpdateAnswer = (dhisApi, models) => {
+export const testUpdateAnswer = (dhisApi, models, dataBroker) => {
   it('should update the value of the previously synced data value if only the value has changed', async () => {
     await models.answer.updateById(ANSWER.id, { text: '4' });
     const change = await models.dhisSyncQueue.findById(ANSWER_CHANGE.id);
-    const pusher = new AggregateDataPusher(models, change, dhisApi);
+    const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
 
     const result = await pusher.push();
     expect(result).to.be.true;
-    expect(dhisApi.postDataValueSets).to.have.been.calledOnceWith([
+    expect(dataBroker.push).to.have.been.calledOnceWith(
+      { code: ANSWER_DATA_VALUE.code, type: pusher.dataSourceTypes.DATA_ELEMENT },
       { ...ANSWER_DATA_VALUE, value: '4' },
-    ]);
-    expect(dhisApi.deleteDataValue).not.to.have.been.called;
+    );
+    expect(dataBroker.delete).not.to.have.been.called;
   });
   it('should delete the previously synced data values, and post new values if the period has changed', async () => {
     const change = await models.dhisSyncQueue.findById(ANSWER_CHANGE.id);
@@ -33,15 +35,22 @@ export const testUpdateAnswer = (dhisApi, models) => {
     const syncLogRecord = getSyncLog(change);
     syncLogRecord.data.period = previouslySyncedPeriod;
     await populateTestData({ dhisSyncLog: [syncLogRecord] });
-    const pusher = new AggregateDataPusher(models, change, dhisApi);
+    const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
 
     const result = await pusher.push();
     expect(result).to.be.true;
-    expect(dhisApi.postDataValueSets).to.have.been.calledOnceWith([ANSWER_DATA_VALUE]);
-    expect(dhisApi.deleteDataValue).to.have.been.calledWith({
-      ...ANSWER_DATA_VALUE_DIMENSIONS,
-      period: previouslySyncedPeriod,
-    });
+    expect(dataBroker.push).to.have.been.calledOnceWith(
+      { code: ANSWER_DATA_VALUE.code, type: pusher.dataSourceTypes.DATA_ELEMENT },
+      ANSWER_DATA_VALUE,
+    );
+    expect(dataBroker.delete).to.have.been.calledWith(
+      { code: ANSWER_DATA_VALUE_DIMENSIONS.code, type: pusher.dataSourceTypes.DATA_ELEMENT },
+      {
+        ...ANSWER_DATA_VALUE_DIMENSIONS,
+        period: previouslySyncedPeriod,
+      },
+      { serverName: SERVER_NAME },
+    );
   });
   it('should delete the previously synced data values, and post new values if the organisation unit has changed', async () => {
     const change = await models.dhisSyncQueue.findById(ANSWER_CHANGE.id);
@@ -49,14 +58,21 @@ export const testUpdateAnswer = (dhisApi, models) => {
     const syncLogRecord = getSyncLog(change);
     syncLogRecord.data.orgUnit = previouslySyncedOrgUnit;
     await populateTestData({ dhisSyncLog: [syncLogRecord] });
-    const pusher = new AggregateDataPusher(models, change, dhisApi);
+    const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
 
     const result = await pusher.push();
     expect(result).to.be.true;
-    expect(dhisApi.postDataValueSets).to.have.been.calledOnceWith([ANSWER_DATA_VALUE]);
-    expect(dhisApi.deleteDataValue).to.have.been.calledWith({
-      ...ANSWER_DATA_VALUE_DIMENSIONS,
-      orgUnit: previouslySyncedOrgUnit,
-    });
+    expect(dataBroker.push).to.have.been.calledOnceWith(
+      { code: ANSWER_DATA_VALUE.code, type: pusher.dataSourceTypes.DATA_ELEMENT },
+      ANSWER_DATA_VALUE,
+    );
+    expect(dataBroker.delete).to.have.been.calledWith(
+      { code: ANSWER_DATA_VALUE_DIMENSIONS.code, type: pusher.dataSourceTypes.DATA_ELEMENT },
+      {
+        ...ANSWER_DATA_VALUE_DIMENSIONS,
+        orgUnit: previouslySyncedOrgUnit,
+      },
+      { serverName: SERVER_NAME },
+    );
   });
 };

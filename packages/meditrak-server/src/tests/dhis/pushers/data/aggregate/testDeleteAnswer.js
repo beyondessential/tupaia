@@ -14,9 +14,10 @@ import {
   SURVEY_RESPONSE,
   getFailedSyncLog,
   getSyncLog,
+  SERVER_NAME,
 } from './testData';
 
-export const testDeleteAnswer = (dhisApi, models) => {
+export const testDeleteAnswer = (dhisApi, models, dataBroker) => {
   afterEach(async () => {
     // clean up temporary data
     await models.dhisSyncLog.delete({ id: { comparator: 'like', comparisonValue: '%_test%' } });
@@ -24,34 +25,38 @@ export const testDeleteAnswer = (dhisApi, models) => {
   it('should mark as successful if the answer never attempted to sync', async () => {
     const change = await models.dhisSyncQueue.findById(ANSWER_CHANGE.id);
     change.type = 'delete';
-    const pusher = new AggregateDataPusher(models, change, dhisApi);
+    const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
 
     const result = await pusher.push();
     expect(result).to.be.true;
-    expect(dhisApi.postDataValueSets).not.to.have.been.called;
-    expect(dhisApi.deleteDataValue).not.to.have.been.called;
+    expect(dataBroker.push).not.to.have.been.called;
+    expect(dataBroker.delete).not.to.have.been.called;
   });
   it('should mark as successful if the answer never successfully synced', async () => {
     const change = await models.dhisSyncQueue.findById(ANSWER_CHANGE.id);
     change.type = 'delete';
     await populateTestData({ dhisSyncLog: [getFailedSyncLog(change)] });
-    const pusher = new AggregateDataPusher(models, change, dhisApi);
+    const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
 
     const result = await pusher.push();
     expect(result).to.be.true;
-    expect(dhisApi.postDataValueSets).not.to.have.been.called;
-    expect(dhisApi.deleteDataValue).not.to.have.been.called;
+    expect(dataBroker.push).not.to.have.been.called;
+    expect(dataBroker.delete).not.to.have.been.called;
   });
   it('should delete if the answer previously synced successfully', async () => {
     const change = await models.dhisSyncQueue.findById(ANSWER_CHANGE.id);
     change.type = 'delete';
     await populateTestData({ dhisSyncLog: [getSyncLog(change)] });
-    const pusher = new AggregateDataPusher(models, change, dhisApi);
+    const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
 
     const result = await pusher.push();
     expect(result).to.be.true;
-    expect(dhisApi.postDataValueSets).not.to.have.been.called;
-    expect(dhisApi.deleteDataValue).to.have.been.calledWith(ANSWER_DATA_VALUE_DIMENSIONS);
+    expect(dataBroker.push).not.to.have.been.called;
+    expect(dataBroker.delete).to.have.been.calledWith(
+      { code: ANSWER_DATA_VALUE_DIMENSIONS.code, type: pusher.dataSourceTypes.DATA_ELEMENT },
+      ANSWER_DATA_VALUE_DIMENSIONS,
+      { serverName: SERVER_NAME },
+    );
   });
 
   it('should add "next most recent" records to sync queue', async () => {
@@ -83,11 +88,15 @@ export const testDeleteAnswer = (dhisApi, models) => {
     models.addChangeHandlerForCollection(models.answer.databaseType, syncQueue.add);
 
     // run the delete push
-    const pusher = new AggregateDataPusher(models, change, dhisApi);
+    const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
     const result = await pusher.push();
     expect(result).to.be.true;
-    expect(dhisApi.postDataValueSets).not.to.have.been.called;
-    expect(dhisApi.deleteDataValue).to.have.been.calledWith(ANSWER_DATA_VALUE_DIMENSIONS);
+    expect(dataBroker.push).not.to.have.been.called;
+    expect(dataBroker.delete).to.have.been.calledWith(
+      { code: ANSWER_DATA_VALUE_DIMENSIONS.code, type: pusher.dataSourceTypes.DATA_ELEMENT },
+      ANSWER_DATA_VALUE_DIMENSIONS,
+      { serverName: SERVER_NAME },
+    );
 
     // the one we added earlier should now have been added to the sync queue as the other was deleted
     const additionalChangeAfter = await syncQueue.getChange(nextMostRecentAnswer.id);

@@ -2,15 +2,18 @@ import { aggregateOperationalFacilityValues, getFacilityStatuses, limitRange } f
 
 // % of clinics that have these items
 // % based on facilities surveys
-export const percentChildrenDataElement = async ({ dataBuilderConfig, query }, dhisApi) => {
-  const { labels = {}, range, ...restOfDataBuilderConfig } = dataBuilderConfig;
-  const { results, metadata, period } = await dhisApi.getAnalytics(restOfDataBuilderConfig, query);
+export const percentChildrenDataElement = async ({ dataBuilderConfig, query }, aggregator) => {
+  const { dataElementCodes, dataServices, labels = {}, range } = dataBuilderConfig;
+  const { results, metadata, period } = await aggregator.fetchAnalytics(
+    dataElementCodes,
+    { dataServices },
+    query,
+  );
 
   // Get count of each percentage found in facilities with same dataElement
   const summedValuesByElement = {};
-  const { dataElementCodeToName, dataElementIdToCode } = metadata;
-  const addValueToSumByElement = ({ dataElement: dataElementId, value }) => {
-    const dataElementCode = dataElementIdToCode[dataElementId];
+  const { dataElementCodeToName } = metadata;
+  const addValueToSumByElement = ({ dataElement: dataElementCode, value }) => {
     if (!summedValuesByElement[dataElementCode]) {
       summedValuesByElement[dataElementCode] = { sum: 0, count: 0 };
     }
@@ -23,7 +26,11 @@ export const percentChildrenDataElement = async ({ dataBuilderConfig, query }, d
   };
 
   // Get the number of operational facilities that has each dataElement
-  const operationalFacilities = await getFacilityStatuses(query.organisationUnitCode, period);
+  const operationalFacilities = await getFacilityStatuses(
+    aggregator,
+    query.organisationUnitCode,
+    period,
+  );
   aggregateOperationalFacilityValues(operationalFacilities, results, addValueToSumByElement);
 
   // Return each proportion of all operational facilities for each dataElement

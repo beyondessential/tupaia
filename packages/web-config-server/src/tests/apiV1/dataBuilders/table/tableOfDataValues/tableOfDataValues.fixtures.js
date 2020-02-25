@@ -3,18 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-/**
- * CD1: 'Risk Factor: Smokers Female'
- * CD2: 'Risk Factor: Smokers Male'
- * CD3: 'Risk Factor: Overweight Female'
- * CD4: 'Risk Factor: Overweight Male'
- * CD5: 'CVD Risk: Green Female'
- * CD6: 'CVD Risk: Green Male'
- * CD7: 'CVD Risk: Red Female'
- * CD8: 'CVD Risk: Red Male'
- */
-
-export const OPTIONS = {
+const OPTIONS = {
   1: 'One',
   2: 'Two',
   3: 'Three',
@@ -23,6 +12,25 @@ export const OPTIONS = {
   6: 'Six',
   7: 'Seven',
   8: 'Eight',
+};
+
+export const DATA_ELEMENTS = {
+  CD1: { code: 'CD1', name: 'Risk Factor: Smokers Female' },
+  CD2: { code: 'CD2', name: 'Risk Factor: Smokers Male' },
+  CD3: { code: 'CD3', name: 'Risk Factor: Overweight Female' },
+  CD4: { code: 'CD4', name: 'Risk Factor: Overweight Male' },
+  CD5: { code: 'CD5', name: 'CVD Risk: Green Female' },
+  CD6: { code: 'CD6', name: 'CVD Risk: Green Male' },
+  CD7: { code: 'CD7', name: 'CVD Risk: Red Female' },
+  CD8: { code: 'CD8', name: 'CVD Risk: Red Male' },
+  HP1: { code: 'HP1', name: 'Fitness: 10-19 years - female', options: OPTIONS },
+  HP2: { code: 'HP2', name: 'Fitness: 10-19 years - male', options: OPTIONS },
+  HP3: { code: 'HP3', name: 'Fitness: 20-39 years - female', options: OPTIONS },
+  HP4: { code: 'HP4', name: 'Fitness: 20-39 years - male', options: OPTIONS },
+  HP5: { code: 'HP5', name: 'Fitness: 40-59 years - female', options: OPTIONS },
+  HP6: { code: 'HP6', name: 'Fitness: 40-59 years - male', options: OPTIONS },
+  HP7: { code: 'HP7', name: 'Fitness: 60+ years - female', options: OPTIONS },
+  HP8: { code: 'HP8', name: 'Fitness: 60+ years - male', options: OPTIONS },
 };
 
 export const DATA_VALUES = [
@@ -45,78 +53,14 @@ export const DATA_VALUES = [
   { dataElement: 'CD7', value: 70, organisationUnit: 'TO_Vainihc' },
   { dataElement: 'CD8', value: 80, organisationUnit: 'TO_Vainihc' },
   // Haveluloto (with Options)
-  {
-    dataElement: 'HP1',
-    value: 1,
-    organisationUnit: 'TO_HvlMCH',
-    metadata: {
-      code: 'HP1',
-      options: OPTIONS,
-    },
-  },
-  {
-    dataElement: 'HP2',
-    value: 2,
-    organisationUnit: 'TO_HvlMCH',
-    metadata: {
-      code: 'HP2',
-      options: OPTIONS,
-    },
-  },
-  {
-    dataElement: 'HP3',
-    value: 3,
-    organisationUnit: 'TO_HvlMCH',
-    metadata: {
-      code: 'HP3',
-      options: OPTIONS,
-    },
-  },
-  {
-    dataElement: 'HP4',
-    value: 4,
-    organisationUnit: 'TO_HvlMCH',
-    metadata: {
-      code: 'HP4',
-      options: OPTIONS,
-    },
-  },
-  {
-    dataElement: 'HP5',
-    value: 5,
-    organisationUnit: 'TO_HvlMCH',
-    metadata: {
-      code: 'HP5',
-      options: OPTIONS,
-    },
-  },
-  {
-    dataElement: 'HP6',
-    value: 6,
-    organisationUnit: 'TO_HvlMCH',
-    metadata: {
-      code: 'HP6',
-      options: OPTIONS,
-    },
-  },
-  {
-    dataElement: 'HP7',
-    value: 7,
-    organisationUnit: 'TO_HvlMCH',
-    metadata: {
-      code: 'HP7',
-      options: OPTIONS,
-    },
-  },
-  {
-    dataElement: 'HP8',
-    value: 8,
-    organisationUnit: 'TO_HvlMCH',
-    metadata: {
-      code: 'HP8',
-      options: OPTIONS,
-    },
-  },
+  { dataElement: 'HP1', value: 1, organisationUnit: 'TO_HvlMCH' },
+  { dataElement: 'HP2', value: 2, organisationUnit: 'TO_HvlMCH' },
+  { dataElement: 'HP3', value: 3, organisationUnit: 'TO_HvlMCH' },
+  { dataElement: 'HP4', value: 4, organisationUnit: 'TO_HvlMCH' },
+  { dataElement: 'HP5', value: 5, organisationUnit: 'TO_HvlMCH' },
+  { dataElement: 'HP6', value: 6, organisationUnit: 'TO_HvlMCH' },
+  { dataElement: 'HP7', value: 7, organisationUnit: 'TO_HvlMCH' },
+  { dataElement: 'HP8', value: 8, organisationUnit: 'TO_HvlMCH' },
 ];
 
 export const ORG_UNITS = [

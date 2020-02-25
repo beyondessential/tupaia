@@ -1,9 +1,4 @@
-import {
-  AGGREGATION_TYPES,
-  convertToPeriod,
-  periodToTimestamp,
-  PERIOD_TYPES,
-} from '@tupaia/dhis-api';
+import { convertToPeriod, periodToTimestamp, PERIOD_TYPES } from '@tupaia/dhis-api';
 import { aggregateOperationalFacilityValues, getFacilityStatuses } from '/apiV1/utils';
 
 const periodToMonthTimestamp = period =>
@@ -11,24 +6,26 @@ const periodToMonthTimestamp = period =>
 
 export const averageMonthlyValuesOverCount = async (
   { dataBuilderConfig, query, entity },
-  dhisApi,
+  aggregator,
 ) => {
-  const { results, period } = await dhisApi.getAnalytics(
-    dataBuilderConfig,
+  const { dataElementCodes, dataServices, period } = dataBuilderConfig;
+  const { results, period: resultPeriod } = await aggregator.fetchAnalytics(
+    dataElementCodes,
+    { dataServices, period },
     query,
-    AGGREGATION_TYPES.FINAL_EACH_MONTH,
+    { aggregationType: aggregator.aggregationTypes.FINAL_EACH_MONTH },
   );
 
   const returnJson = {};
   // build json from dhis response
   returnJson.data = entity.isFacility()
     ? await buildData(results)
-    : await buildAggregatedData(results, query.organisationUnitCode, period);
+    : await buildAggregatedData(aggregator, results, query.organisationUnitCode, resultPeriod);
   return returnJson;
 };
 // parse analytic response, aggregate only operational facilities
 // and convert to config api response
-const buildAggregatedData = async (results, organisationUnitCode, period) => {
+const buildAggregatedData = async (aggregator, results, organisationUnitCode, period) => {
   // Map all periods (YYYYMM) with summed values of only operational facilities
   const totalsByPeriod = {};
   const incrementTotalsByPeriod = ({ period: thisPeriod, value }) => {
@@ -38,7 +35,7 @@ const buildAggregatedData = async (results, organisationUnitCode, period) => {
   };
 
   // Will count only operational facilities
-  const operationalFacilities = await getFacilityStatuses(organisationUnitCode, period);
+  const operationalFacilities = await getFacilityStatuses(aggregator, organisationUnitCode, period);
   aggregateOperationalFacilityValues(operationalFacilities, results, incrementTotalsByPeriod);
 
   // Return each averaged value of all operational facilities for each month

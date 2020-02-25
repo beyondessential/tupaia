@@ -4,26 +4,32 @@
  */
 
 import { asynchronouslyFetchValuesForObject } from '@tupaia/utils';
-import { getOptionSetOptions } from '/apiV1/utils';
 
-export const countMatchingDataValuesOverTotal = async ({ dataBuilderConfig, query }, dhisApi) => {
-  const { dataElementCodes, matchCriteria } = dataBuilderConfig;
-  const { results, metadata } = await dhisApi.getAnalytics({ dataElementCodes }, query);
+export const countMatchingDataValuesOverTotal = async (
+  { dataBuilderConfig, query },
+  aggregator,
+  dhisApi,
+) => {
+  const { dataElementCodes, dataServices, matchCriteria } = dataBuilderConfig;
+  const { results, metadata } = await aggregator.fetchAnalytics(
+    dataElementCodes,
+    { dataServices },
+    query,
+  );
 
   // Fetch option set options where an option set code is defined
   const optionSetTasks = {};
   Object.entries(matchCriteria).forEach(([dataElementCode, { optionSetCode }]) => {
     if (optionSetCode) {
-      optionSetTasks[dataElementCode] = () => getOptionSetOptions(dhisApi, { code: optionSetCode });
+      optionSetTasks[dataElementCode] = () => dhisApi.getOptionSetOptions({ code: optionSetCode });
     }
   });
   const optionSetsByDataElementCode = await asynchronouslyFetchValuesForObject(optionSetTasks);
 
   // Map all dataElement with summed values of only operational facilities
   const summedValuesByElement = {};
-  const { dataElementIdToCode, dataElementCodeToName } = metadata;
-  results.forEach(({ dataElement: dataElementId, value }) => {
-    const dataElementCode = dataElementIdToCode[dataElementId];
+  const { dataElementCodeToName } = metadata;
+  results.forEach(({ dataElement: dataElementCode, value }) => {
     if (!summedValuesByElement[dataElementCode]) {
       summedValuesByElement[dataElementCode] = { numberMatching: 0, total: 0 };
     }
