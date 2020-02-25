@@ -3,14 +3,13 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import pickBy from 'lodash.pickby';
 import sinon from 'sinon';
 
 import { DhisApi } from '@tupaia/dhis-api';
 import * as GetDhisApiInstance from '../../../services/dhis/getDhisApiInstance';
 import {
   DATA_ELEMENTS_BY_GROUP,
-  DATA_ELEMENT_CODE_TO_ID,
+  DATA_ELEMENTS,
   DATA_SOURCES,
   SERVER_NAME,
 } from './DhisService.fixtures';
@@ -34,8 +33,9 @@ export const stubDhisApi = ({
     getEvents: getEventsResponse,
     getCodeToId: sinon
       .stub()
+      .withArgs('dataElements')
       .callsFake((_, codes) =>
-        pickBy(DATA_ELEMENT_CODE_TO_ID, (_id, code) => codes.includes(code)),
+        codes.reduce((codeToId, code) => ({ ...codeToId, [code]: DATA_ELEMENTS[code].uid }), {}),
       ),
     getServerName: SERVER_NAME,
     getResourceTypes: { DATA_ELEMENT: 'dataElement' },
@@ -58,3 +58,44 @@ export const stubModels = () => ({
     getTypes: () => ({ DATA_ELEMENT: 'dataElement', DATA_GROUP: 'dataGroup' }),
   },
 });
+
+export const buildAggregateDataRow = ({ dataElement, organisationUnit, period, value }) => [
+  dataElement,
+  organisationUnit,
+  period,
+  value,
+];
+
+/**
+ * Reverse engineers the DHIS2 aggregate data response given the expected analytics
+ */
+export const buildDhisAnalyticsResponse = analytics => {
+  const rows = analytics.map(({ dataElement, organisationUnit, period, value }) => [
+    dataElement,
+    organisationUnit,
+    period,
+    value,
+  ]);
+  const dataElementsInAnalytics = analytics.map(({ dataElement }) => dataElement);
+  const items = dataElementsInAnalytics
+    .map(dataElement => {
+      const { dataElementCode: dhisCode } = DATA_SOURCES[dataElement];
+      return DATA_ELEMENTS[dhisCode];
+    })
+    .reduce((itemAgg, { uid, code, name }) => {
+      const newItem = { uid, code, name, dimensionItemType: 'DATA_ELEMENT' };
+      return { ...itemAgg, [uid]: newItem };
+    }, {});
+  const dimensions = { dx: Object.keys(items), co: [] };
+
+  return {
+    headers: [
+      { name: 'dx', valueType: 'TEXT' },
+      { name: 'ou', valueType: 'TEXT' },
+      { name: 'pe', valueType: 'TEXT' },
+      { name: 'value', valueType: 'NUMBER' },
+    ],
+    rows,
+    metaData: { items, dimensions },
+  };
+};
