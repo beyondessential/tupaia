@@ -12,6 +12,7 @@ import { LayerGroup } from 'react-leaflet';
 import { changeOrgUnit, openMapPopup, closeMapPopup } from '../../actions';
 import { CircleProportionMarker, IconMarker, MeasurePopup } from '../../components/Marker';
 import { selectMeasureName } from '../../reducers/mapReducers';
+import { selectOrgUnit } from '../../reducers/orgUnitReducers';
 import { getMeasureDisplayInfo } from '../../utils';
 import { MEASURE_TYPE_SHADING } from '../../utils/measures';
 
@@ -221,7 +222,9 @@ const mapStateToProps = state => {
   const measureDataWithCoords = measureData
     ? measureData.reduce(
         (array, value) =>
-          array.concat([{ ...value, ...state.orgUnit.orgUnitMap[value.organisationUnitCode] }]),
+          array.concat([
+            { ...value, ...selectOrgUnit(value.organisationUnitCode, state.orgUnits) },
+          ]),
         [],
       )
     : [];

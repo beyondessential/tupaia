@@ -416,18 +416,14 @@ function* watchFetchCountryAccessDataAndFetchItTEST() {
  * Fetch an org unit and call action on success.
  *
  */
-function* requestOrgUnitData(action) {
-  const { organisationUnitCode } = action.organisationUnit;
+function requestOrgUnitData(organisationUnitCode) {
   const requestResourceUrl = `organisationUnit?organisationUnitCode=${organisationUnitCode}`;
-  yield call(request, requestResourceUrl, fetchOrgUnitError);
+  return call(request, requestResourceUrl, fetchOrgUnitError);
 }
 
 function* fetchOrgUnitData(action) {
-  const { organisationUnitCode } = action.organisationUnit;
-  const requestResourceUrl = `organisationUnit?organisationUnitCode=${organisationUnitCode}`;
-
   try {
-    const orgUnitData = yield call(request, requestResourceUrl, fetchOrgUnitError);
+    const orgUnitData = yield requestOrgUnitData(action.organisationUnit.organisationUnitCode);
     yield put(fetchOrgUnitSuccess(orgUnitData));
   } catch (error) {
     yield put(error.errorFunction(error));
@@ -435,12 +431,9 @@ function* fetchOrgUnitData(action) {
 }
 
 function* fetchOrgUnitDataAndChangeOrgUnit(action) {
-  const { organisationUnitCode } = action.organisationUnit;
-  const requestResourceUrl = `organisationUnit?organisationUnitCode=${organisationUnitCode}`;
-
   try {
     // debugger;
-    const orgUnitData = yield call(request, requestResourceUrl, fetchOrgUnitError);
+    const orgUnitData = yield requestOrgUnitData(action.organisationUnit.organisationUnitCode);
     yield put(fetchOrgUnitSuccess(orgUnitData));
     yield put(changeOrgUnitSuccess(orgUnitData, action.shouldChangeMapBounds));
   } catch (error) {

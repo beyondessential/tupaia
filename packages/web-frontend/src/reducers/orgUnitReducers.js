@@ -7,18 +7,10 @@
 
 import { combineReducers } from 'redux';
 
-import { FETCH_ORG_UNIT_SUCCESS, CHANGE_ORG_UNIT_SUCCESS, FETCH_ORG_UNIT } from '../actions';
+import { FETCH_ORG_UNIT_SUCCESS, CHANGE_ORG_UNIT_SUCCESS } from '../actions';
 
 function orgUnitMap(state = {}, action) {
   switch (action.type) {
-    // case FETCH_ORG_UNIT:
-    //   return {
-    //     ...state,
-    //     orgUnitMap: {
-    //       ...state.orgUnitMap,
-    //       [action.organisationUnit.organisationUnitCode]: { isLoading: true },
-    //     },
-    //   };
     case CHANGE_ORG_UNIT_SUCCESS:
       return {
         [action.organisationUnit.organisationUnitCode]: action.organisationUnit,
@@ -37,3 +29,7 @@ function orgUnitMap(state = {}, action) {
 export default combineReducers({
   orgUnitMap,
 });
+
+export const selectOrgUnit = (orgUnitCode, orgUnits) => orgUnits.orgUnitMap[orgUnitCode];
+export const selectOrgUnits = (orgUnitCodes, orgUnits) =>
+  orgUnitCodes.reduce((array, code) => array.concat([selectOrgUnit(code, orgUnits)]), []);

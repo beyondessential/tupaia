@@ -19,7 +19,7 @@ import { combineReducers } from 'redux';
 import map from './reducers/mapReducers';
 import disaster from './disaster/reducers';
 import project from './projects/reducers';
-import orgUnit from './reducers/orgUnitReducers';
+import orgUnits from './reducers/orgUnitReducers';
 import { getMeasureFromHierarchy, isMobile } from './utils';
 import { LANDING } from './containers/OverlayDiv';
 import { getUniqueViewId } from './utils/getUniqueViewId';
@@ -903,5 +903,5 @@ export default combineReducers({
   drillDown,
   disaster,
   project,
-  orgUnit,
+  orgUnits,
 });
