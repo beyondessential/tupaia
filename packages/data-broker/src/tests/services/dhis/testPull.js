@@ -7,8 +7,8 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 
 import { DhisService } from '../../../services/dhis/DhisService';
-import { DATA_ELEMENT_CODE_TO_ID, DATA_SOURCES } from './DhisService.fixtures';
-import { stubModels, stubDhisApi } from './helpers';
+import { DATA_SOURCES } from './DhisService.fixtures';
+import { buildDhisAnalyticsResponse, stubModels, stubDhisApi } from './helpers';
 
 const dhisService = new DhisService(stubModels());
 let dhisApi;
@@ -16,7 +16,6 @@ let dhisApi;
 const basicOptions = {
   organisationUnitCode: 'TO',
 };
-const basicMetadata = { dataElementCodeToName: {} };
 
 export const testPull = () => {
   beforeEach(() => {
@@ -25,144 +24,126 @@ export const testPull = () => {
   });
 
   describe('data element', () => {
-    const assertAnalyticsApiWasInvokedCorrectly = async ({
-      dataSources,
-      options,
-      invocationArgs,
-    }) => {
-      await dhisService.pull(dataSources, 'dataElement', options);
-      expect(dhisApi.getAnalytics).to.have.been.calledOnceWithExactly(invocationArgs);
-    };
+    describe('DHIS API invocation', () => {
+      const assertAnalyticsApiWasInvokedCorrectly = async ({
+        dataSources,
+        options,
+        invocationArgs,
+      }) => {
+        await dhisService.pull(dataSources, 'dataElement', options);
+        expect(dhisApi.getAnalytics).to.have.been.calledOnceWithExactly(invocationArgs);
+      };
 
-    const assertPullResultsAreCorrect = ({
-      dataSources,
-      options,
-      getAnalyticsResponse,
-      expectedResults,
-    }) => {
-      dhisApi = stubDhisApi({ getAnalyticsResponse });
-      return expect(dhisService.pull(dataSources, 'dataElement', options)).to.eventually.deep.equal(
-        expectedResults,
-      );
-    };
+      it('single data element', async () =>
+        assertAnalyticsApiWasInvokedCorrectly({
+          dataSources: [DATA_SOURCES.POP01],
+          options: basicOptions,
+          invocationArgs: sinon.match({ dataElementCodes: ['POP01'], organisationUnitCode: 'TO' }),
+        }));
 
-    it('invokes the events api in DHIS for a single data group', async () =>
-      assertAnalyticsApiWasInvokedCorrectly({
-        dataSources: [DATA_SOURCES.POP01],
-        options: basicOptions,
-        invocationArgs: sinon.match({ dataElementCodes: ['POP01'], organisationUnitCode: 'TO' }),
-      }));
+      it('single data element with different DHIS code', async () =>
+        assertAnalyticsApiWasInvokedCorrectly({
+          dataSources: [DATA_SOURCES.DIF01],
+          options: basicOptions,
+          invocationArgs: sinon.match({
+            dataElementCodes: ['DIF01_DHIS'],
+            organisationUnitCode: 'TO',
+          }),
+        }));
 
-    it('invokes the events api in DHIS for multiple data groups', async () =>
-      assertAnalyticsApiWasInvokedCorrectly({
-        dataSources: [DATA_SOURCES.POP01, DATA_SOURCES.POP02],
-        options: basicOptions,
-        invocationArgs: sinon.match({
-          dataElementCodes: ['POP01', 'POP02'],
+      it('multiple data elements', async () =>
+        assertAnalyticsApiWasInvokedCorrectly({
+          dataSources: [DATA_SOURCES.POP01, DATA_SOURCES.POP02],
+          options: basicOptions,
+          invocationArgs: sinon.match({
+            dataElementCodes: ['POP01', 'POP02'],
+            organisationUnitCode: 'TO',
+          }),
+        }));
+
+      it('supports various API options', async () => {
+        const apiOptions = {
+          outputIdScheme: 'code',
           organisationUnitCode: 'TO',
-        }),
-      }));
+          period: '20200822',
+          startDate: '20200731',
+          endDate: '20200904',
+        };
 
-    it('pulls a single aggregate data element', async () => {
-      const getAnalyticsResponse = {
-        results: [{ dataElement: 'POP01', value: 1 }],
-        metadata: basicMetadata,
-      };
-
-      return assertPullResultsAreCorrect({
-        dataSources: [DATA_SOURCES.POP01],
-        options: basicOptions,
-        getAnalyticsResponse,
-        expectedResults: getAnalyticsResponse,
+        return assertAnalyticsApiWasInvokedCorrectly({
+          dataSources: [DATA_SOURCES.POP01],
+          options: apiOptions,
+          invocationArgs: {
+            dataElementCodes: ['POP01'],
+            ...apiOptions,
+          },
+        });
       });
     });
 
-    it('pulls multiple aggregate data elements', async () => {
-      const getAnalyticsResponse = {
-        results: [
-          { dataElement: 'POP01', value: 1 },
-          { dataElement: 'POP02', value: 2 },
-        ],
-        metadata: basicMetadata,
+    describe('data pulling', () => {
+      const assertPullResultsAreCorrect = ({ dataSources, options, expectedResults }) => {
+        dhisApi = stubDhisApi({
+          getAnalyticsResponse: buildDhisAnalyticsResponse(expectedResults.results),
+        });
+        return expect(
+          dhisService.pull(dataSources, 'dataElement', options),
+        ).to.eventually.deep.equal(expectedResults);
       };
 
-      return assertPullResultsAreCorrect({
-        dataSources: [DATA_SOURCES.POP01, DATA_SOURCES.POP02],
-        options: basicOptions,
-        getAnalyticsResponse,
-        expectedResults: getAnalyticsResponse,
+      it('single data element', async () => {
+        const results = [
+          { dataElement: 'POP01', organisationUnit: 'TO', value: 1, period: '20200101' },
+        ];
+
+        return assertPullResultsAreCorrect({
+          dataSources: [DATA_SOURCES.POP01],
+          options: basicOptions,
+          expectedResults: {
+            results,
+            metadata: { dataElementCodeToName: { POP01: 'Population 1' } },
+          },
+        });
       });
-    });
 
-    it('pulls an aggregate data element with a different dhis code', async () => {
-      const getAnalyticsResponse = {
-        results: [{ dataElement: 'DIF01_DHIS', value: 3 }],
-        metadata: {
-          dataElementCodeToName: { DIF01_DHIS: 'DIF01 Element' },
-        },
-      };
-      dhisApi = stubDhisApi({ getAnalyticsResponse });
+      it('single data element with a different DHIS code', async () => {
+        const results = [
+          { dataElement: 'DIF01', organisationUnit: 'TO', value: 3, period: '20200103' },
+        ];
 
-      const response = await dhisService.pull([DATA_SOURCES.DIF01], 'dataElement', basicOptions);
-      expect(dhisApi.getAnalytics).to.have.been.calledOnceWithExactly(
-        sinon.match({
-          dataElementCodes: ['DIF01_DHIS'],
-          organisationUnitCode: 'TO',
-        }),
-      );
-      return expect(response).to.deep.equal({
-        results: [{ dataElement: 'DIF01', value: 3 }],
-        metadata: {
-          dataElementCodeToName: { DIF01: 'DIF01 Element' },
-        },
+        return assertPullResultsAreCorrect({
+          dataSources: [DATA_SOURCES.DIF01],
+          options: basicOptions,
+          expectedResults: {
+            results,
+            metadata: {
+              dataElementCodeToName: { DIF01: 'Different 1' },
+            },
+          },
+        });
       });
-    });
 
-    it('supports various API options', async () => {
-      const apiOptions = {
-        outputIdScheme: 'code',
-        organisationUnitCode: 'TO',
-        period: '20200822',
-        startDate: '20200731',
-        endDate: '20200904',
-      };
+      it('multiple data elements', async () => {
+        const results = [
+          { dataElement: 'POP01', organisationUnit: 'TO', value: 1, period: '20200101' },
+          { dataElement: 'POP02', organisationUnit: 'TO', value: 2, period: '20200102' },
+        ];
 
-      return assertAnalyticsApiWasInvokedCorrectly({
-        dataSources: [DATA_SOURCES.POP01],
-        options: apiOptions,
-        invocationArgs: {
-          dataElementCodes: ['POP01'],
-          ...apiOptions,
-        },
+        return assertPullResultsAreCorrect({
+          dataSources: [DATA_SOURCES.POP01, DATA_SOURCES.POP02],
+          options: basicOptions,
+          expectedResults: {
+            results,
+            metadata: {
+              dataElementCodeToName: { POP01: 'Population 1', POP02: 'Population 2' },
+            },
+          },
+        });
       });
     });
   });
 
   describe('data group', () => {
-    const assertEventsApiWasInvokedCorrectly = async ({ dataSources, options, invocationArgs }) => {
-      await dhisService.pull(dataSources, 'dataGroup', options);
-      expect(dhisApi.getEvents).to.have.been.calledOnceWithExactly(invocationArgs);
-    };
-
-    const assertPullResultsAreCorrect = ({
-      dataSources,
-      options,
-      expectedResults,
-      getEventsResponse,
-    }) => {
-      dhisApi = stubDhisApi({ getEventsResponse });
-      return expect(dhisService.pull(dataSources, 'dataGroup', options)).to.eventually.deep.equal(
-        expectedResults,
-      );
-    };
-
-    it('invokes the events api in DHIS for a single data group', async () =>
-      assertEventsApiWasInvokedCorrectly({
-        dataSources: [DATA_SOURCES.POP01_GROUP],
-        options: basicOptions,
-        invocationArgs: sinon.match({ programCode: 'POP01', organisationUnitCode: 'TO' }),
-      }));
-
     it('throws an error if multiple data groups are provided', async () =>
       expect(
         dhisService.pull(
@@ -172,27 +153,79 @@ export const testPull = () => {
         ),
       ).to.eventually.be.rejectedWith(/Cannot .*multiple programs/));
 
-    it('pulls a basic event data group', async () => {
-      const getEventsResponse = [
-        {
-          otherField: 'otherValue',
-          dataValues: [
-            { dataElement: 'POP01', value: 1 },
-            { dataElement: 'POP02', value: 2 },
-          ],
-        },
-      ];
+    describe('DHIS API invocation', () => {
+      const assertEventsApiWasInvokedCorrectly = async ({
+        dataSources,
+        options,
+        invocationArgs,
+      }) => {
+        await dhisService.pull(dataSources, 'dataGroup', options);
+        expect(dhisApi.getEvents).to.have.been.calledOnceWithExactly(invocationArgs);
+      };
 
-      return assertPullResultsAreCorrect({
-        dataSources: [DATA_SOURCES.POP01_GROUP],
-        options: basicOptions,
-        getEventsResponse,
-        expectedResults: getEventsResponse,
+      it('invokes the events api in DHIS for a single data group', async () =>
+        assertEventsApiWasInvokedCorrectly({
+          dataSources: [DATA_SOURCES.POP01_GROUP],
+          options: basicOptions,
+          invocationArgs: sinon.match({ programCode: 'POP01', organisationUnitCode: 'TO' }),
+        }));
+
+      it('supports various API options', async () => {
+        const apiOptions = {
+          organisationUnitCode: 'TO',
+          orgUnitIdScheme: 'code',
+          dataElementIdScheme: 'code',
+          startDate: '20200731',
+          endDate: '20200904',
+          eventId: '123456',
+          trackedEntityInstance: '654321',
+          dataValueFormat: 'object',
+        };
+
+        assertEventsApiWasInvokedCorrectly({
+          dataSources: [DATA_SOURCES.POP01_GROUP],
+          options: apiOptions,
+          invocationArgs: {
+            programCode: 'POP01',
+            ...apiOptions,
+          },
+        });
       });
     });
 
-    describe('pulls an event including array data values with different dhis codes', () => {
-      it('array data values', async () => {
+    describe('data pulling', () => {
+      const assertPullResultsAreCorrect = ({
+        dataSources,
+        options,
+        expectedResults,
+        getEventsResponse,
+      }) => {
+        dhisApi = stubDhisApi({ getEventsResponse });
+        return expect(dhisService.pull(dataSources, 'dataGroup', options)).to.eventually.deep.equal(
+          expectedResults,
+        );
+      };
+
+      it('basic event data group', async () => {
+        const getEventsResponse = [
+          {
+            otherField: 'otherValue',
+            dataValues: [
+              { dataElement: 'POP01', value: 1 },
+              { dataElement: 'POP02', value: 2 },
+            ],
+          },
+        ];
+
+        return assertPullResultsAreCorrect({
+          dataSources: [DATA_SOURCES.POP01_GROUP],
+          options: basicOptions,
+          getEventsResponse,
+          expectedResults: getEventsResponse,
+        });
+      });
+
+      it('array data values with different dhis codes', async () => {
         const getEventsResponse = [
           {
             otherField: 'otherValue',
@@ -219,11 +252,14 @@ export const testPull = () => {
         });
       });
 
-      it('object data values', async () => {
+      it('object data values with different dhis codes', async () => {
         const getEventsResponse = [
           {
             otherField: 'otherValue',
-            dataValues: { POP01: 1, DIF01_DHIS: 3 },
+            dataValues: {
+              POP01: { dataElement: 'POP01', value: 1 },
+              DIF01_DHIS: { dataElement: 'DIF01_DHIS', value: 3 },
+            },
           },
         ];
 
@@ -234,32 +270,13 @@ export const testPull = () => {
           expectedResults: [
             {
               otherField: 'otherValue',
-              dataValues: { POP01: 1, DIF01: 3 },
+              dataValues: {
+                POP01: { dataElement: 'POP01', value: 1 },
+                DIF01: { dataElement: 'DIF01', value: 3 },
+              },
             },
           ],
         });
-      });
-    });
-
-    it('supports various API options', async () => {
-      const apiOptions = {
-        organisationUnitCode: 'TO',
-        orgUnitIdScheme: 'code',
-        dataElementIdScheme: 'code',
-        startDate: '20200731',
-        endDate: '20200904',
-        eventId: '123456',
-        trackedEntityInstance: '654321',
-        dataValueFormat: 'object',
-      };
-
-      assertEventsApiWasInvokedCorrectly({
-        dataSources: [DATA_SOURCES.POP01_GROUP],
-        options: apiOptions,
-        invocationArgs: {
-          programCode: 'POP01',
-          ...apiOptions,
-        },
       });
     });
   });

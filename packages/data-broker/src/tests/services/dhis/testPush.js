@@ -20,14 +20,14 @@ export const testPush = () => {
 
   describe('data element', () => {
     it('basic aggregate data element', async () => {
-      await dhisService.push(DATA_SOURCES.POP01, DATA_VALUES.POP01);
+      await dhisService.push([DATA_SOURCES.POP01], DATA_VALUES.POP01);
       expect(dhisApi.postDataValueSets).to.have.been.calledOnceWithExactly([
         { dataElement: 'POP01', value: 1 },
       ]);
     });
 
     it('aggregate data element with a different dhis code', async () => {
-      await dhisService.push(DATA_SOURCES.DIF01, DATA_VALUES.POP01);
+      await dhisService.push([DATA_SOURCES.DIF01], DATA_VALUES.POP01);
       expect(dhisApi.postDataValueSets).to.have.been.calledOnceWithExactly([
         { dataElement: 'DIF01_DHIS', value: 1 },
       ]);
@@ -41,7 +41,7 @@ export const testPush = () => {
         dataValues: [DATA_VALUES.POP01, DATA_VALUES.POP02],
       };
 
-      await dhisService.push(DATA_SOURCES.POP01_GROUP, event);
+      await dhisService.push([DATA_SOURCES.POP01_GROUP], event);
       expect(dhisApi.postEvents).to.have.been.calledOnceWithExactly([
         {
           ...event,
@@ -59,7 +59,7 @@ export const testPush = () => {
         dataValues: [DATA_VALUES.POP01, DATA_VALUES.DIF01],
       };
 
-      await dhisService.push(DATA_SOURCES.POP01_GROUP, event);
+      await dhisService.push([DATA_SOURCES.POP01_GROUP], event);
       expect(dhisApi.postEvents).to.have.been.calledOnceWithExactly([
         {
           ...event,

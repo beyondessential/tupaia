@@ -49,7 +49,7 @@ describe('DataBroker', () => {
 
     await new DataBroker().push(DATA_SOURCE_SPECS.POP01, data);
     assertCreateServiceWasInvokedCorrectly();
-    expect(serviceStub.push).to.have.been.calledOnceWithExactly(DATA_SOURCES.POP01, data);
+    expect(serviceStub.push).to.have.been.calledOnceWithExactly([DATA_SOURCES.POP01], data);
   });
 
   it('delete()', async () => {
