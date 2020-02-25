@@ -8,17 +8,19 @@ import {
 } from '/apiV1/utils';
 
 // Number of Operational Facilities by Facility Type
-export const countOperationalFacilitiesByType = async ({ query }, dhisApi) => {
+export const countOperationalFacilitiesByType = async ({ query }, aggregator, dhisApi) => {
+  const { organisationUnitCode } = query;
   // Retrieve organisation units and the groups they are in
   const organisationUnits = await dhisApi.getOrganisationUnits(
     {
-      filter: [{ 'ancestors.code': '{organisationUnitCode}' }],
-      fields: 'id,organisationUnitGroups[code]',
+      filter: [{ 'ancestors.code': organisationUnitCode }],
+      fields: 'code,organisationUnitGroups[code]',
     },
     query,
   );
 
-  const facilityStatusesById = await getFacilityStatuses(
+  const facilityStatusesByCode = await getFacilityStatuses(
+    aggregator,
     query.organisationUnitCode,
     query.period,
     true,
@@ -26,7 +28,7 @@ export const countOperationalFacilitiesByType = async ({ query }, dhisApi) => {
 
   // exclude facilities that have not been surveyed -- if they're present in the
   // analytics result at all (whether true or false) then they've been surveyed
-  const checkSurveyed = ({ id }) => facilityStatusesById.hasOwnProperty(id);
+  const checkSurveyed = ({ code }) => facilityStatusesByCode.hasOwnProperty(code);
   const surveyedOrganisationUnits = organisationUnits.filter(checkSurveyed);
 
   // If we are running this for the world dashboard, exclude any facilities in countries that should

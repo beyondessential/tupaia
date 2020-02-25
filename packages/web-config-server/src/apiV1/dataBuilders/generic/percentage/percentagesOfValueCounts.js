@@ -9,7 +9,7 @@ import { divideValues } from '/apiV1/dataBuilders/helpers';
 const ORG_UNIT_COUNT = '$orgUnitCount';
 
 export class PercentagesOfValueCountsBuilder extends DataBuilder {
-  getAllDataElementCodes() {
+  getDataElementCodes() {
     return Object.values(this.config.dataClasses).reduce(
       (codes, { numerator, denominator }) =>
         codes.concat(
@@ -31,11 +31,8 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
   }
 
   async fetchResults() {
-    const { results } = await this.getAnalytics({
-      dataElementCodes: this.getAllDataElementCodes(),
-      outputIdScheme: 'code',
-    });
-
+    const dataElementCodes = this.getDataElementCodes();
+    const { results } = await this.fetchAnalytics(dataElementCodes);
     return results;
   }
 
@@ -79,9 +76,11 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
 
 export const percentagesOfValueCounts = async (
   { dataBuilderConfig, query, organisationUnitInfo },
+  aggregator,
   dhisApi,
 ) => {
   const builder = new PercentagesOfValueCountsBuilder(
+    aggregator,
     dhisApi,
     dataBuilderConfig,
     query,

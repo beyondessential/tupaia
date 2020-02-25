@@ -3,6 +3,8 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 
+import 'babel-polyfill';
+
 import {} from 'dotenv/config'; // Load the environment variables into process.env
 
 import http from 'http';
@@ -55,3 +57,18 @@ startSyncWithMs1(models);
  * Regularly sync actions that have happened on meditrak with the social feed.
  */
 startFeedScraper(models);
+
+/**
+ * Notify PM2 that we are ready
+ * */
+if (process.send) {
+  (async () => {
+    try {
+      await database.waitForChangeChannel();
+      winston.info('Successfully connected to pubsub service');
+      process.send('ready');
+    } catch (error) {
+      winston.error(error.message);
+    }
+  })();
+}

@@ -1,17 +1,18 @@
 /**
- * Tupaia MediTrak
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
+
 import { expect } from 'chai';
 import { it, describe } from 'mocha';
 import sinon from 'sinon';
 
-import { Entity, Facility } from '../../../models';
+import { Entity, Facility } from '/models';
 import { mostRecentValueFromChildren } from '/apiV1/measureBuilders/mostRecentValueFromChildren';
 
 const dataBuilderConfig = { level: 'District' };
 
-const dataElementCode = 'ssSlzCXlBFE';
+const dataElementCode = 'POP01';
 const organisationUnitGroupCode = 'TO';
 const organisationUnitsResults = [
   {
@@ -49,18 +50,21 @@ const organisationUnitsResults = [
 
 const analyticsData = [
   {
-    dataElement: 'ssSlzCXlBFE',
-    organisationUnit: 'pMdylWjFjFe',
+    dataElement: 'POP01',
+    organisationUnit: 'TO_Haapai',
     period: 20190320,
     value: 5,
   },
 ];
 
-const dhisApiMockup = {
-  getOrganisationUnits: () => organisationUnitsResults,
-  getAnalytics: () => ({
+const aggregatorMockup = {
+  aggregationTypes: { MOST_RECENT: 'MOST_RECENT' },
+  fetchAnalytics: () => ({
     results: analyticsData,
   }),
+};
+const dhisApiMockup = {
+  getOrganisationUnits: () => organisationUnitsResults,
 };
 
 describe('mostRecentValueFromChildren', () => {
@@ -83,6 +87,7 @@ describe('mostRecentValueFromChildren', () => {
 
   it('should get the most recent period ', async () => {
     const result = await mostRecentValueFromChildren(
+      aggregatorMockup,
       dhisApiMockup,
       { dataElementCode, organisationUnitGroupCode },
       dataBuilderConfig,
@@ -97,6 +102,7 @@ describe('mostRecentValueFromChildren', () => {
 
   it('should handle a district with no facilities ', async () => {
     const result = await mostRecentValueFromChildren(
+      aggregatorMockup,
       dhisApiMockup,
       { dataElementCode, organisationUnitGroupCode },
       dataBuilderConfig,
@@ -111,8 +117,9 @@ describe('mostRecentValueFromChildren', () => {
     /* eslint-enable no-unused-expressions */
   });
 
-  it('should handle a facilities with no data points ', async () => {
+  it('should handle a facility with no data points ', async () => {
     const result = await mostRecentValueFromChildren(
+      aggregatorMockup,
       dhisApiMockup,
       { dataElementCode, organisationUnitGroupCode },
       dataBuilderConfig,

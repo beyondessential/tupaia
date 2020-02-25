@@ -9,6 +9,7 @@ import sinon from 'sinon';
 import { composePercentagePerOrgUnit } from '/apiV1/measureBuilders';
 import * as FetchComposedData from '/apiV1/measureBuilders/helpers';
 
+const aggregator = {};
 const dhisApi = {};
 const config = {};
 const query = { dataElementCode: 'value' };
@@ -17,7 +18,7 @@ const stubFetchComposedData = expectedResults => {
   const fetchComposedDataStub = sinon.stub(FetchComposedData, 'fetchComposedData');
   fetchComposedDataStub
     .returns({})
-    .withArgs(dhisApi, query, config)
+    .withArgs(aggregator, dhisApi, query, config)
     .returns(expectedResults);
 };
 
@@ -38,7 +39,9 @@ describe('composePercentagePerOrgUnit', () => {
       ],
     });
 
-    return expect(composePercentagePerOrgUnit(dhisApi, query, config)).to.eventually.deep.equal([
+    return expect(
+      composePercentagePerOrgUnit(aggregator, dhisApi, query, config),
+    ).to.eventually.deep.equal([
       { name: 'Kolonga', organisationUnitCode: 'TO_KlongaHC', value: 0.5 },
       { name: 'Nukunuku', organisationUnitCode: 'TO_Nukuhc', value: 0.25 },
     ]);
@@ -56,7 +59,9 @@ describe('composePercentagePerOrgUnit', () => {
       ],
     });
 
-    return expect(composePercentagePerOrgUnit(dhisApi, query, config)).to.eventually.deep.equal([
+    return expect(
+      composePercentagePerOrgUnit(aggregator, dhisApi, query, config),
+    ).to.eventually.deep.equal([
       { name: 'Kolonga', organisationUnitCode: 'TO_KlongaHC', value: 0.5 },
     ]);
   });

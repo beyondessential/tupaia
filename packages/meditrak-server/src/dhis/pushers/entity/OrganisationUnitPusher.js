@@ -239,8 +239,7 @@ export class OrganisationUnitPusher extends EntityPusher {
         id: parentOrganisationUnitId,
       },
     };
-    const response = await this.api.updateRecord(ORGANISATION_UNIT, organisationUnitDetails);
-    const diagnostics = this.getDiagnostics(response);
+    const diagnostics = await this.api.updateRecord(ORGANISATION_UNIT, organisationUnitDetails);
     await this.addEntityToOrganisationUnitGroups(entity);
     const data = await entity.getData();
     return { ...diagnostics, data };
@@ -248,8 +247,7 @@ export class OrganisationUnitPusher extends EntityPusher {
 
   async delete() {
     const { code: organisationUnitCode } = await this.fetchDataFromSyncLog();
-    const response = await this.api.deleteRecord(ORGANISATION_UNIT, organisationUnitCode);
-    const diagnostics = this.getDiagnostics(response);
+    const diagnostics = await this.api.deleteRecord(ORGANISATION_UNIT, organisationUnitCode);
 
     // Delete organisation unit groups matching this organisation unit's code
     await this.deleteGroupsOwnedByOrganisationUnit(organisationUnitCode);

@@ -1,4 +1,4 @@
-import { AGGREGATION_TYPES, convertDateRangeToPeriodString } from '@tupaia/dhis-api';
+import { convertDateRangeToPeriodString } from '@tupaia/dhis-api';
 import { Entity } from '/models';
 
 const DATA_ELEMENT_CODES = {
@@ -7,45 +7,48 @@ const DATA_ELEMENT_CODES = {
   facilityAffectedStatus: ['DP_NEW008'],
 };
 
-export const disasterAffectedOrganisationOperationalData = async ({ query }, dhisApi) => {
+export const disasterAffectedOrganisationOperationalData = async (
+  { dataBuilderConfig, query },
+  aggregator,
+) => {
   const { organisationUnitCode, disasterStartDate } = query;
-  const { MOST_RECENT } = AGGREGATION_TYPES;
+  const { dataServices } = dataBuilderConfig;
 
   if (!disasterStartDate) return { data: [] };
 
   const facilitiesInOrgUnit = await Entity.getFacilityDescendantsWithCoordinates(
     organisationUnitCode,
   );
-  const { results: facilityStatusResults } = await dhisApi.getAnalytics(
+  const { results: facilityStatusResults } = await aggregator.fetchAnalytics(
+    DATA_ELEMENT_CODES.facilityAffectedStatus,
     {
-      dataElementCodes: DATA_ELEMENT_CODES.facilityAffectedStatus,
+      dataServices,
       period: convertDateRangeToPeriodString(disasterStartDate, Date.now()),
       organisationUnitCode,
     },
-    MOST_RECENT,
   );
   const operationalFacilities = facilityStatusResults.filter(
     result => result.value === 0 || result.value === 1,
   ); // 0 === 'Not affected', 1 === 'Partially affected'
-  const { results: operationalInpatientBedResults } = await dhisApi.getAnalytics(
+  const { results: operationalInpatientBedResults } = await aggregator.fetchAnalytics(
+    DATA_ELEMENT_CODES.currentBeds,
     {
-      dataElementCodes: DATA_ELEMENT_CODES.currentBeds,
+      dataServices,
       organisationUnitCode,
       period: convertDateRangeToPeriodString(disasterStartDate, Date.now()),
     },
-    MOST_RECENT,
   );
   const totalOperationalInpatientBeds = operationalInpatientBedResults.reduce(
     (total, orgUnit) => total + orgUnit.value,
     0,
   );
 
-  const { results: normalInpatientBedsResults } = await dhisApi.getAnalytics(
+  const { results: normalInpatientBedsResults } = await aggregator.fetchAnalytics(
+    DATA_ELEMENT_CODES.normalBeds,
     {
-      dataElementCodes: DATA_ELEMENT_CODES.normalBeds,
+      dataServices,
       organisationUnitCode,
     },
-    MOST_RECENT,
   );
   const totalNormalInpatientBeds = normalInpatientBedsResults.reduce(
     (total, orgUnit) => total + orgUnit.value,
