@@ -46,17 +46,15 @@ export const formatMatrixDataForExcel = (
   // Iterate through all rows and add them
   if (rowCategories) {
     // Add rows a category at a time, so all rows from the same category are grouped
-    rowCategories
-      .sort((a, b) => a.title.localeCompare(b.title))
-      .forEach(({ key: rowCategoryKey, title: rowCategoryTitle }) => {
-        // Insert a separating empty row between categories
-        formattedData.push({ [config.dataElementHeader]: rowCategoryTitle });
-        // Add the data from all rows in this category
-        rows
-          .filter(({ categoryId }) => rowCategoryKey === categoryId)
-          .sort((a, b) => a.dataElement.localeCompare(b.dataElement))
-          .forEach(addRowToFormattedData);
-      });
+    rowCategories.forEach(({ key: rowCategoryKey, title: rowCategoryTitle }) => {
+      // Insert a separating empty row between categories
+      formattedData.push({ [config.dataElementHeader]: rowCategoryTitle });
+      // Add the data from all rows in this category
+      rows
+        .filter(({ categoryId }) => rowCategoryKey === categoryId)
+        .sort((a, b) => a.dataElement.localeCompare(b.dataElement))
+        .forEach(addRowToFormattedData);
+    });
   } else {
     // This table has no row categories, just one set of rows
     rows.forEach(addRowToFormattedData);
