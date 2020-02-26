@@ -116,7 +116,17 @@ class TableOfValuesForOrgUnitsBuilder extends TableOfDataValuesBuilder {
   }
 }
 
-export const tableOfValuesForOrgUnits = async ({ dataBuilderConfig, query, entity }, dhisApi) => {
-  const builder = new TableOfValuesForOrgUnitsBuilder(dhisApi, dataBuilderConfig, query, entity);
+export const tableOfValuesForOrgUnits = async (
+  { dataBuilderConfig, query, entity },
+  aggregator,
+  dhisApi,
+) => {
+  const builder = new TableOfValuesForOrgUnitsBuilder(
+    aggregator,
+    dhisApi,
+    dataBuilderConfig,
+    query,
+    entity,
+  );
   return builder.build();
 };
