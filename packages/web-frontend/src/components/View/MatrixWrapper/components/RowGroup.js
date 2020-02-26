@@ -9,7 +9,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import DropDownArrowIcon from 'material-ui/svg-icons/navigation/arrow-drop-down';
 import shallowEqual from 'shallowequal';
-import { getDotColorFromRange } from '../../../../utils';
+import { getPresentationOption } from '../../../../utils';
 
 import { Cell } from './Cell';
 
@@ -86,7 +86,7 @@ export default class RowGroup extends Component {
           {columns.slice(startColumn, displayedColumnCount).map((column, index) => {
             const isCellActive = index === highlightedColumn && isRowHighlighted;
             const value = columnData ? columnData[categoryLabel][column.key] : '';
-            const color = getDotColorFromRange(presentationOptions, value);
+            const presentation = getPresentationOption(presentationOptions, value);
 
             return (
               <div
@@ -98,8 +98,8 @@ export default class RowGroup extends Component {
                   cellKey={index}
                   onMouseEnter={() => onCellMouseEnter(index, rowId)}
                   onMouseLeave={() => onCellMouseLeave()}
-                  onClick={() => onCellClick(color.label, value.toString())}
-                  color={color.color}
+                  onClick={() => onCellClick(presentation, value)}
+                  color={presentation ? presentation.color : { color: '' }}
                   value={value}
                   style={styles.gridCell}
                   columnActiveStripStyle={styles.columnActiveStrip}
