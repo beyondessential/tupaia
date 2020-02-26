@@ -61,7 +61,6 @@ export const annualPopulationBreakdown = async aggregator => {
     POP_01_CODES,
     {
       organisationUnitCode: 'TO', // this is a Tonga only preaggregtaion
-      outputIdScheme: 'code',
       dataServices: DATA_SERVICES,
       period: 'LAST_5_YEARS;THIS_YEAR',
     },
@@ -74,25 +73,25 @@ export const annualPopulationBreakdown = async aggregator => {
 };
 
 const createAggregatedDataValues = apiResults => {
-  // Values by dataElementCode, organisationUnitId and period
+  // Values by dataElementCode, organisationUnitCode and period
   const valueMap = {};
 
   apiResults.forEach(resultItem => {
     const {
       dataElement: pop01Code,
-      organisationUnit: organisationUnitId,
+      organisationUnit: organisationUnitCode,
       period,
       value,
     } = resultItem;
     const pop04Code = POP_01_TO_POP_04_CODES[pop01Code];
 
-    const itemPath = [pop04Code, organisationUnitId, period];
+    const itemPath = [pop04Code, organisationUnitCode, period];
     if (has(valueMap, itemPath)) {
       get(valueMap, itemPath).value += value;
     } else {
       const newItem = {
         code: pop04Code,
-        orgUnit: organisationUnitId,
+        orgUnit: organisationUnitCode,
         period,
         value,
       };
