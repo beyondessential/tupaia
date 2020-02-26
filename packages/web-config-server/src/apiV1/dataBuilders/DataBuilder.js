@@ -19,13 +19,15 @@ const ANY_VALUE_CONDITION = '*';
 
 export class DataBuilder {
   /**
+   * @param {Aggregator} aggregator
    * @param {DhisApi} dhisApi
    * @param {?Object} config
    * @param {Object} query
    * @param {Entity} [entity]
    * @param {string} [aggregationType]
    */
-  constructor(dhisApi, config, query, entity, aggregationType) {
+  constructor(aggregator, dhisApi, config, query, entity, aggregationType) {
+    this.aggregator = aggregator;
     this.dhisApi = dhisApi;
     this.config = config || {};
     this.query = query;
@@ -38,51 +40,52 @@ export class DataBuilder {
     throw new Error('Any subclass of DataBuilder must implement the "build" method');
   }
 
-  isForSpecificEvent() {
-    return !!this.query.eventId;
-  }
-
-  isForPrograms() {
+  getProgramCodesForAnalytics() {
     const { programCodes, programCode, dataSource = {} } = this.config;
-    return !!(programCodes || programCode || dataSource.programCodes || dataSource.programCode);
+    return (
+      programCodes ||
+      (programCode && [programCode]) ||
+      dataSource.programCodes ||
+      (dataSource.programCode && [dataSource.programCode])
+    );
   }
 
-  isEventBased() {
-    return this.isForSpecificEvent() || this.isForPrograms();
-  }
-
-  async getAnalytics(additionalQueryConfig) {
-    return this.isEventBased()
-      ? this.getEventAnalytics(additionalQueryConfig)
-      : this.getDataValueAnalytics(additionalQueryConfig);
-  }
-
-  async getDataValueAnalytics(additionalQueryConfig) {
-    return this.dhisApi.getAnalytics(additionalQueryConfig, this.query, this.aggregationType);
-  }
-
-  async getEventAnalytics(additionalQueryConfig) {
-    const { programCodes, programCode } = this.config;
-    const eventQueryConfig = {
-      programCodes,
-      programCode,
+  async fetchAnalytics(dataElementCodes, additionalQueryConfig) {
+    const { dataServices } = this.config;
+    const fetchOptions = {
+      programCodes: this.getProgramCodesForAnalytics(),
+      dataServices,
       ...additionalQueryConfig,
     };
-    return this.dhisApi.getEventAnalytics(eventQueryConfig, this.query, this.aggregationType);
+
+    return this.aggregator.fetchAnalytics(dataElementCodes, fetchOptions, this.query, {
+      aggregationType: this.aggregationType,
+    });
   }
 
-  async getEvents(additionalQueryConfig) {
-    const { programCode } = this.config;
+  async fetchEvents(additionalQueryConfig) {
+    const { programCode, dataServices } = this.config;
     const { organisationUnitCode, startDate, endDate, trackedEntityInstance, eventId } = this.query;
 
-    return this.dhisApi.getEvents({
-      programCode,
+    return this.aggregator.fetchEvents(programCode, {
+      dataServices,
       organisationUnitCode,
       startDate,
       endDate,
       trackedEntityInstance,
       eventId,
       ...additionalQueryConfig,
+    });
+  }
+
+  async fetchDataElements(codes) {
+    const { dataServices } = this.config;
+    const { organisationUnitCode } = this.query;
+
+    return this.aggregator.fetchDataElements(codes, {
+      organisationUnitCode,
+      dataServices,
+      shouldIncludeOptions: true,
     });
   }
 

@@ -1,7 +1,11 @@
+import { keyBy } from 'lodash.keyby';
+
+import { createAggregator } from '@tupaia/aggregator';
 import { CustomError } from '@tupaia/utils';
+import { Aggregator } from '/aggregator';
 import { getMeasureBuilder } from '/apiV1/measureBuilders/getMeasureBuilder';
 import { getDhisApiInstance } from '/dhis';
-import { DhisTranslationHandler, getOptionsForDataElement, getDateRange } from './utils';
+import { DhisTranslationHandler, getDateRange } from './utils';
 import { DATA_SOURCE_TYPES } from './dataBuilders/dataSourceTypes';
 
 // NOTE: does not allow for actual number value measure, will be added when
@@ -75,7 +79,17 @@ function updateLegendFromDisplayedValueKey(measureOption, dataElements) {
   });
 }
 
+const createDataServices = mapOverlay => {
+  const { isDataRegional } = mapOverlay;
+  return [{ isDataRegional }];
+};
+
 export default class extends DhisTranslationHandler {
+  constructor(aggregator) {
+    super();
+    this.aggregator = aggregator;
+  }
+
   buildData = async req => {
     const { entity, overlays } = this;
     const { code } = entity;
@@ -172,15 +186,27 @@ export default class extends DhisTranslationHandler {
       return { ...baseOptions, values };
     }
     // values have not been provided locally - fetch them from DHIS2
-    const { code } = this.entity;
-    const dhisApi = getDhisApiInstance(code, isDataRegional);
     const options =
       dataSourceType === DATA_SOURCE_TYPES.SINGLE
-        ? await getOptionsForDataElement(dhisApi, dataElementCode)
+        ? await this.getOptionsForDataElement(mapOverlay, dataElementCode)
         : {};
     const translatedOptions = translateMeasureOptionSet(options, mapOverlay);
 
     return { ...baseOptions, values: translatedOptions };
+  }
+
+  async getOptionsForDataElement(mapOverlay, dataElementCode) {
+    const dataServices = createDataServices(mapOverlay);
+    const [dataElement] = await this.aggregator.fetchDataElements([dataElementCode], {
+      organisationUnitCode: this.entityCode,
+      dataServices,
+      shouldIncludeOptions: true,
+    });
+    if (!dataElement) {
+      throw new Error(`Data element with code ${dataElementCode} not found`);
+    }
+
+    return dataElement.options;
   }
 
   async getCountryLevelOrgUnitCode() {
@@ -198,16 +224,15 @@ export default class extends DhisTranslationHandler {
     const organisationUnitGroupCode = shouldFetchSiblings
       ? await this.getCountryLevelOrgUnitCode()
       : this.entity.code;
-    const dhisApi = getDhisApiInstance(this.entity.code, isDataRegional);
+    const dataServices = createDataServices(mapOverlay);
+    const dhisApi = getDhisApiInstance({ entityCode: this.entity.code, isDataRegional });
     const buildMeasure = getMeasureBuilder(measureBuilder);
+
     return buildMeasure(
+      this.aggregator,
       dhisApi,
-      {
-        ...query,
-        organisationUnitGroupCode,
-        dataElementCode,
-      },
-      measureBuilderConfig,
+      { ...query, organisationUnitGroupCode, dataElementCode },
+      { ...measureBuilderConfig, dataServices },
     );
   }
 }

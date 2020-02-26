@@ -80,7 +80,7 @@ const PERIOD = moment(SURVEY_RESPONSE.submission_time).format('YYYYMMDD');
 const STORED_BY = `${USER.first_name} ${USER.last_name}`;
 
 export const ANSWER_DATA_VALUE_DIMENSIONS = {
-  dataElement: QUESTION.code,
+  code: QUESTION.code,
   orgUnit: ENTITY.code,
   period: PERIOD,
 };
@@ -97,7 +97,7 @@ export const ANSWER_SYNC_LOG_DATA = {
 };
 export const SURVEY_RESPONSE_DATA_VALUE_DIMENSIONS = {
   ...ANSWER_DATA_VALUE_DIMENSIONS,
-  dataElement: `${SURVEY.code}SurveyDate`,
+  code: `${SURVEY.code}SurveyDate`,
 };
 export const SURVEY_RESPONSE_DATA_VALUE = {
   ...ANSWER_DATA_VALUE,
@@ -118,6 +118,7 @@ export const DATA_SET_COMPLETION = {
   date: moment.utc(SURVEY_RESPONSE.end_time).format('YYYY-MM-DDTkk:mm:ss'),
   storedBy: STORED_BY,
 };
+export const SERVER_NAME = 'test server name';
 export const getSyncLog = change => ({
   id: change.record_id,
   record_id: change.record_id,
@@ -127,8 +128,8 @@ export const getSyncLog = change => ({
   ignored: 0,
   data:
     change.record_type === 'answer'
-      ? { ...ANSWER_SYNC_LOG_DATA }
-      : { ...SURVEY_RESPONSE_SYNC_LOG_DATA },
+      ? { ...ANSWER_SYNC_LOG_DATA, serverName: SERVER_NAME }
+      : { ...SURVEY_RESPONSE_SYNC_LOG_DATA, serverName: SERVER_NAME },
 });
 export const getFailedSyncLog = change => ({
   id: change.record_id,

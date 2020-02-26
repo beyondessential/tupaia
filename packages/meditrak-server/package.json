@@ -6,6 +6,7 @@
   "private": true,
   "dependencies": {
     "@beyondessential/tupaia-access-policy": "2.1.0",
+    "@tupaia/data-broker": "1.0.0",
     "@tupaia/database": "1.0.0",
     "@tupaia/dhis-api": "1.0.0",
     "@tupaia/utils": "1.0.0",
@@ -78,7 +79,7 @@
     "lint": "eslint --ext .js  --ignore-pattern __tests__/",
     "test": "mocha",
     "test-coverage": "nyc mocha",
-    "build": "babel-node src -s -D dist",
+    "build": "rm -rf dist && babel src -s --out-dir dist --ignore '**src/database/migrations','src/tests/**' --copy-files --no-copy-ignored",
     "prestart": "npm run -s build",
     "start": "node dist",
     "start-dev": "nodemon -w src --exec \"babel-node src --inspect=9999\"",

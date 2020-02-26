@@ -117,10 +117,10 @@ export class AnswerModel extends DatabaseModel {
     return AnswerType;
   }
 
-  static onChange = async (change, record, model) => {
+  static onChange = async (change, model) => {
     if (change.type === 'delete') return;
 
-    const answerObject = new AnswerType(model, record);
+    const answerObject = await model.findById(change.record_id);
     try {
       await answerObject.runHook();
     } catch (e) {

@@ -17,12 +17,12 @@ export class MeditrakDeviceModel extends DatabaseModel {
   }
 }
 
-const onUpsertSanitizeConfig = async (change, record, models) => {
+const onUpsertSanitizeConfig = async (change, models) => {
   if (change.type === 'delete') {
     return;
   }
 
-  const meditrakDevice = await models.meditrakDevice.findById(record.id);
+  const meditrakDevice = await models.meditrakDevice.findById(change.record_id);
   if (meditrakDevice.app_version && meditrakDevice.config.unsupportedTypes) {
     delete meditrakDevice.config.unsupportedTypes;
     await meditrakDevice.save();

@@ -39,7 +39,7 @@ export class PercentagesOfEventCountsBuilder extends DataBuilder {
    * @returns {DataValuesOutput}
    */
   async build() {
-    const events = await this.getEvents({ dataElementIdScheme: 'code', dataValueFormat: 'object' });
+    const events = await this.fetchEvents({ dataValueFormat: 'object' });
     const data = this.buildData(events);
 
     return { data: this.areDataAvailable(data) ? data : [] };
@@ -69,8 +69,18 @@ export class PercentagesOfEventCountsBuilder extends DataBuilder {
   }
 }
 
-export const percentagesOfEventCounts = async ({ dataBuilderConfig, query, entity }, dhisApi) => {
-  const builder = new PercentagesOfEventCountsBuilder(dhisApi, dataBuilderConfig, query, entity);
+export const percentagesOfEventCounts = async (
+  { dataBuilderConfig, query, entity },
+  aggregator,
+  dhisApi,
+) => {
+  const builder = new PercentagesOfEventCountsBuilder(
+    aggregator,
+    dhisApi,
+    dataBuilderConfig,
+    query,
+    entity,
+  );
 
   return builder.build();
 };

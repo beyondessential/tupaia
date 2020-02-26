@@ -2,15 +2,18 @@ import { aggregateOperationalFacilityValues, getFacilityStatuses } from '/apiV1/
 
 // Average Availability of Medicines across All Facilities
 // Current Stock on Hand across All Facilities
-export const percentInGroupByDataElement = async ({ dataBuilderConfig, query }, dhisApi) => {
-  const { labels = {}, ...restOfDataBuilderConfig } = dataBuilderConfig;
-  const { results, metadata } = await dhisApi.getAnalytics(restOfDataBuilderConfig, query);
+export const percentInGroupByDataElement = async ({ dataBuilderConfig, query }, aggregator) => {
+  const { dataElementCodes, dataServices, labels = {} } = dataBuilderConfig;
+  const { results, metadata } = await aggregator.fetchAnalytics(
+    dataElementCodes,
+    { dataServices },
+    query,
+  );
 
   // Map all dataElement with summed values of only operational facilities
   const summedValuesByElement = {};
-  const { dataElementCodeToName, dataElementIdToCode } = metadata;
-  const addValueToSumByElement = ({ dataElement: dataElementId, value }) => {
-    const dataElementCode = dataElementIdToCode[dataElementId];
+  const { dataElementCodeToName } = metadata;
+  const addValueToSumByElement = ({ dataElement: dataElementCode, value }) => {
     if (!summedValuesByElement[dataElementCode]) {
       summedValuesByElement[dataElementCode] = { sum: 0, count: 0 };
     }
@@ -19,7 +22,7 @@ export const percentInGroupByDataElement = async ({ dataBuilderConfig, query }, 
   };
 
   // Will count only operational facilities
-  const operationalFacilities = await getFacilityStatuses(query.organisationUnitCode);
+  const operationalFacilities = await getFacilityStatuses(aggregator, query.organisationUnitCode);
   aggregateOperationalFacilityValues(operationalFacilities, results, addValueToSumByElement);
 
   // Return each averaged value of all operational facilities for each data element

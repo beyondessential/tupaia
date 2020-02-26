@@ -3,7 +3,7 @@ export { aggregateOperationalFacilityValues } from './aggregateOperationalFacili
 export { countByOrganisationUnitByValue } from './countByOrganisationUnitByValue';
 export { calculatePercentagesWithinRange } from './calculatePercentagesWithinRange';
 export { mapOrgUnitIdsToGroupIds } from './mapOrgUnitIdsToGroupIds';
-export { mapOrgUnitIdsToGroupCodes } from './mapOrgUnitIdsToGroupCodes';
+export { mapOrgUnitToGroupCodes } from './mapOrgUnitToGroupCodes';
 export { formatFacilityDataForOverlay } from './formatFacilityDataForOverlay';
 export { getMatchedNumeratorsAndDenominators } from './getMatchedNumeratorsAndDenominators';
 export {
@@ -15,7 +15,7 @@ export { getPacificFacilityStatuses } from './getPacificFacilityStatuses';
 export { getLevelIndex } from './getLevelIndex';
 export getChildOrganisationUnits from './getChildOrganisationUnits';
 export { getFacilityStatusCounts, getFacilityStatuses } from './getFacilityStatuses';
-export { getDataElementsInGroup } from './getDataElementsInGroup';
+export { getDataElementCodesInGroup, getDataElementsInGroup } from './getDataElementsInGroup';
 export { getDataElementFromId } from './getDataElementFromId';
 export {
   parseFacilityTypeData,
@@ -26,9 +26,6 @@ export {
 export { getDataElementGroups } from './getDataElementGroups';
 export { getDataElementGroupSets } from './getDataElementGroupSets';
 export { getDataElementsInGroupSet } from './getDataElementsInGroupSet';
-export { getDataElementsFromCodes } from './getDataElementsFromCodes';
-export { getOptionsForDataElement } from './getOptionsForDataElement';
-export { getOptionSetOptions } from './getOptionSetOptions';
 export isSingleValue from './isSingleValue';
 export {
   hasReportAccessToOrganisationUnit,
