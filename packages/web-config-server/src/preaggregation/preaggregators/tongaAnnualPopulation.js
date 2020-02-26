@@ -54,7 +54,7 @@ const DATA_SERVICES = [{ isDataRegional: false }];
  * This aggregation converts all overlapping elements from POP01 to POP04,
  * so that POP04 can be the single source of truth in data aggregations.
  */
-export const annualPopulationBreakdown = async aggregator => {
+export const tongaAnnualPopulation = async aggregator => {
   const tongaDhisApi = getDhisApiInstance({ entityCode: 'TO', isDataRegional: false });
   await tongaDhisApi.updateAnalyticsTables();
   const { results } = await aggregator.fetchAnalytics(
