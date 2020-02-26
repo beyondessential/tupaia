@@ -27,6 +27,8 @@ export function translateForFrontend(entity) {
     name: entity.name,
     location: getEntityLocationForFrontend(entity),
     photoUrl: entity.image_url,
+    facilityTypeCode: entity.clinic_category_code,
+    facilityTypeName: entity.clinic_type_name,
   };
 }
 

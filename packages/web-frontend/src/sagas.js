@@ -729,7 +729,7 @@ function* fetchCurrentMeasureInfo() {
 }
 
 // Ensures current measure remains selected on new org unit fetch
-function* watchFetchOrgUnitSuccess() {
+function* watchChangeOrgUnitSuccess() {
   yield takeLatest(CHANGE_ORG_UNIT_SUCCESS, fetchCurrentMeasureInfo);
 }
 
@@ -980,7 +980,7 @@ export default [
   watchResendEmailVerificationAndFetchIt,
   watchSetVerifyEmailToken,
   watchFetchMeasureSuccess,
-  watchFetchOrgUnitSuccess,
+  watchChangeOrgUnitSuccess,
   refreshBrowserWhenFinishingUserSession,
   watchFetchCountryAccessDataAndFetchItTEST,
 ];

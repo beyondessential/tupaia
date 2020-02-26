@@ -196,19 +196,23 @@ export class Entity extends BaseModel {
     const result = await Entity.database.executeSql(
       `
       SELECT
-        id,
-        code,
-        country_code,
-        name,
-        image_url,
-        parent_id,
-        ST_AsGeoJSON(point) as point,
-        ST_AsGeoJSON(bounds) as bounds,
+        e.id,
+        e.code,
+        e.country_code,
+        e.name,
+        e.image_url,
+        e.parent_id,
+        ST_AsGeoJSON(e.point) as point,
+        ST_AsGeoJSON(e.bounds) as bounds,
         (region IS NOT NULL) as has_region,
-        type
-      FROM entity
+        e.type,
+        c.category_code as clinic_category_code,
+        c.type_name as clinic_type_name
+      FROM entity e
+      LEFT JOIN clinic c
+          ON c.code = e.code
       WHERE
-        code = ?;
+        e.code = ?;
     `,
       [code],
     );

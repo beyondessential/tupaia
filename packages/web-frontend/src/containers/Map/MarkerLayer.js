@@ -10,59 +10,16 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { LayerGroup } from 'react-leaflet';
 import { changeOrgUnit, openMapPopup, closeMapPopup } from '../../actions';
-import { CircleProportionMarker, IconMarker, MeasurePopup } from '../../components/Marker';
+import { MeasurePopup } from '../../components/Marker';
 import { selectMeasureName } from '../../reducers/mapReducers';
-import { selectOrgUnit } from '../../reducers/orgUnitReducers';
-import { getMeasureDisplayInfo } from '../../utils';
 import { MEASURE_TYPE_SHADING } from '../../utils/measures';
+import MeasureMarker from './MeasureMarker';
 
 export const MARKER_TYPES = {
   DOT_MARKER: 'dot',
   CIRCLE_MARKER: 'circle',
   CIRCLE_HEATMAP: 'circleHeatmap',
   SQUARE: 'square',
-};
-
-const MIN_RADIUS = 1;
-const MAX_ALLOWED_RADIUS = 1000;
-
-function calculateRadiusScaleFactor(processedDataSet) {
-  // Check if any of the radii in the dataset are larger than the max allowed
-  // radius, and scale everything down proportionally if so.
-  // (this needs to happen here instead of inside the circle marker component
-  // because it needs to operate on the dataset level, not the datapoint level)
-  const maxRadius = processedDataSet
-    .map(d => parseInt(d.radius, 10) || 1)
-    .reduce((state, current) => Math.max(state, current), 0);
-  return maxRadius < MAX_ALLOWED_RADIUS ? 1 : (1 / maxRadius) * MAX_ALLOWED_RADIUS;
-}
-
-const MeasureMarker = props => {
-  const { icon, radius } = props;
-
-  if (parseInt(radius, 10) === 0) {
-    if (icon) {
-      // we have an icon, so don't render the radius at all
-      return <IconMarker {...props} />;
-    }
-
-    // we have no icon and zero radius -- use minimum radius instead
-    return <CircleProportionMarker {...props} radius={MIN_RADIUS} />;
-  }
-
-  if (radius && icon) {
-    const { markerRef, ...otherProps } = props;
-    return (
-      <React.Fragment>
-        <CircleProportionMarker markerRef={() => null} {...otherProps} />
-        <IconMarker {...otherProps} markerRef={markerRef} />
-      </React.Fragment>
-    );
-  }
-  if (radius) {
-    return <CircleProportionMarker {...props} />;
-  }
-  return <IconMarker {...props} />;
 };
 
 /**
@@ -87,13 +44,13 @@ export class MarkerLayer extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    const { currentCountry, measureName, measureId, sidePanelWidth, hiddenMeasures } = this.props;
+    const { currentCountry, measureName, measureId, sidePanelWidth, measureData } = this.props;
     if (
       nextProps.measureName !== measureName ||
       nextProps.measureId !== measureId ||
       nextProps.currentCountry !== currentCountry ||
       nextProps.sidePanelWidth !== sidePanelWidth ||
-      nextProps.hiddenMeasures !== hiddenMeasures
+      nextProps.measureData !== measureData
     ) {
       return true;
     }
@@ -147,14 +104,12 @@ export class MarkerLayer extends Component {
     const {
       measureData,
       measureOptions,
-      hiddenMeasures,
       onChangeOrgUnit,
       sidePanelWidth,
       measureName,
       isMeasureLoading,
     } = this.props;
 
-    // debugger;
     if (
       !measureData ||
       measureData.length < 1 ||
@@ -162,14 +117,6 @@ export class MarkerLayer extends Component {
     )
       return null;
     if (isMeasureLoading) return null;
-
-    // debugger;
-    const processedData = measureData
-      .filter(data => data.location && data.location.point)
-      .map(data => getMeasureDisplayInfo(data, measureOptions, hiddenMeasures))
-      .filter(displayInfo => !displayInfo.isHidden);
-
-    const radiusScaleFactor = calculateRadiusScaleFactor(processedData);
 
     const PopupChild = ({ data }) => (
       <MeasurePopup
@@ -183,18 +130,12 @@ export class MarkerLayer extends Component {
       />
     );
 
-    return processedData.map(data => {
+    return measureData.map(data => {
       const popup = <PopupChild data={data} />;
       const code = data.organisationUnitCode;
 
       return (
-        <MeasureMarker
-          key={code}
-          markerRef={ref => this.addMarkerRef(code, ref)}
-          radiusScaleFactor={radiusScaleFactor}
-          coordinates={data.location.point}
-          {...data}
-        >
+        <MeasureMarker key={code} markerRef={ref => this.addMarkerRef(code, ref)} {...data}>
           {popup}
         </MeasureMarker>
       );
@@ -207,37 +148,24 @@ export class MarkerLayer extends Component {
 }
 
 MarkerLayer.propTypes = {
-  // measureInfo: PropTypes.shape({}).isRequired,
+  measureData: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 const mapStateToProps = state => {
   const { isSidePanelExpanded } = state.global;
   const {
-    measureInfo: { measureData, measureOptions, hiddenMeasures, measureId, currentCountry },
+    measureInfo: { measureData, measureOptions, measureId, currentCountry },
     popup,
     isMeasureLoading,
   } = state.map;
   const { contractedWidth, expandedWidth } = state.dashboard;
 
-  const measureDataWithCoords = measureData
-    ? measureData.reduce(
-        (array, value) =>
-          array.concat([
-            { ...value, ...selectOrgUnit(value.organisationUnitCode, state.orgUnits) },
-          ]),
-        [],
-      )
-    : [];
-
-  // debugger;
-
   return {
     measureId,
     isMeasureLoading,
-    hiddenMeasures,
     measureOptions,
     currentCountry,
-    measureData: measureDataWithCoords,
+    measureData: measureData || [],
     measureName: selectMeasureName(state),
     currentPopupId: popup,
     sidePanelWidth: isSidePanelExpanded ? expandedWidth : contractedWidth,
