@@ -32,6 +32,7 @@ export class DataPerPeriodBuilder extends DataBuilder {
     if (this.baseBuilder !== null) {
       return this.baseBuilder;
     }
+
     const BaseBuilder = this.getBaseBuilderClass();
     const builder = new BaseBuilder(...this.constructorArgs);
 

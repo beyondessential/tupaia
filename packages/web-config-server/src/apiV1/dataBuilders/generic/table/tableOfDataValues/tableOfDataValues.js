@@ -4,11 +4,11 @@
  */
 
 import flatten from 'lodash.flatten';
+import keyBy from 'lodash.keyby';
 
 import { reduceToDictionary } from '@tupaia/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { Entity } from '/models';
-import { getDataElementsFromCodes } from '/apiV1/utils';
 
 import { TableConfig } from './TableConfig';
 import { getValuesByCell } from './getValuesByCell';
@@ -36,12 +36,13 @@ export class TableOfDataValuesBuilder extends DataBuilder {
 
   async fetchResults() {
     const dataElementCodes = [...new Set(flatten(this.config.cells))];
-    const { results } = await this.getAnalytics({ dataElementCodes, outputIdScheme: 'code' });
-    const dataElements = await getDataElementsFromCodes(this.dhisApi, dataElementCodes, true);
+    const { results } = await this.fetchAnalytics(dataElementCodes);
+    const dataElements = await this.fetchDataElements(dataElementCodes);
+    const dataElementByCode = keyBy(dataElements, 'code');
 
     return results.map(result => ({
       ...result,
-      metadata: dataElements[result.dataElement] ? dataElements[result.dataElement] : {},
+      metadata: dataElementByCode[result.dataElement] || {},
     }));
   }
 
@@ -131,7 +132,18 @@ export class TableOfDataValuesBuilder extends DataBuilder {
   };
 }
 
-export const tableOfDataValues = async ({ dataBuilderConfig, query, entity }, dhisApi) => {
-  const builder = new TableOfDataValuesBuilder(dhisApi, dataBuilderConfig, query, entity);
+export const tableOfDataValues = async (
+  { dataBuilderConfig, query, entity },
+  aggregator,
+  dhisApi,
+) => {
+  const builder = new TableOfDataValuesBuilder(
+    aggregator,
+    dhisApi,
+    dataBuilderConfig,
+    query,
+    entity,
+    aggregator.aggregationTypes.SUM_MOST_RECENT_PER_FACILITY,
+  );
   return builder.build();
 };

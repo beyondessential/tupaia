@@ -14,8 +14,12 @@ const compareStrings = (stringA, stringB) => {
   return 0;
 };
 
-export const multiPercentagePerOrgUnit = async ({ dataBuilderConfig, query, entity }, dhisApi) => {
-  const { results } = await dhisApi.getAnalytics(dataBuilderConfig, query);
+export const multiPercentagePerOrgUnit = async (
+  { dataBuilderConfig, query, entity },
+  aggregator,
+) => {
+  const { dataElementCodes, dataServices } = dataBuilderConfig;
+  const { results } = await aggregator.fetchAnalytics(dataElementCodes, { dataServices }, query);
 
   const tempData = {};
   const entities = await entity.getDescendantsOfType(getDataSourceEntityType(dataBuilderConfig));

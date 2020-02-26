@@ -8,15 +8,18 @@ const FREQUENCY_VALUES = {
 };
 
 // Routine vaccination at facility
-export const frequencyDataElement = async ({ dataBuilderConfig, query }, dhisApi) => {
-  const { labels, ...restOfDataBuilderConfig } = dataBuilderConfig;
-  const { results, metadata } = await dhisApi.getAnalytics(restOfDataBuilderConfig, query);
+export const frequencyDataElement = async ({ dataBuilderConfig, query }, aggregator) => {
+  const { dataElementCodes, dataServices, labels } = dataBuilderConfig;
+  const { results, metadata } = await aggregator.fetchAnalytics(
+    dataElementCodes,
+    { dataServices },
+    query,
+  );
 
   // Translate parsed analytic to [{ name: , value: }]
   const returnData = [];
-  const { dataElementIdToCode, dataElementCodeToName } = metadata;
-  results.forEach(({ dataElement: dataElementId, value }) => {
-    const dataElementCode = dataElementIdToCode[dataElementId];
+  const { dataElementCodeToName } = metadata;
+  results.forEach(({ dataElement: dataElementCode, value }) => {
     const returnedRow = {
       // Get the element name through explicit translation if it exists, otherwise from the response data
       name: labels[dataElementCode] || dataElementCodeToName[dataElementCode],

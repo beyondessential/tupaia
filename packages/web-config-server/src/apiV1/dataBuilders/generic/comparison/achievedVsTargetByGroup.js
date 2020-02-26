@@ -1,24 +1,19 @@
-import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
 import { aggregateOperationalFacilityValues, getFacilityStatuses } from '/apiV1/utils';
 
-export const achievedVsTargetByGroup = async ({ dataBuilderConfig, query, entity }, dhisApi) => {
-  const { groups } = dataBuilderConfig;
+export const achievedVsTargetByGroup = async ({ dataBuilderConfig, query, entity }, aggregator) => {
+  const { groups, dataServices } = dataBuilderConfig;
   const dataElementCodes = [];
   groups.forEach(({ achievedDataElementCode, targetDataElementCode }) =>
     dataElementCodes.push(achievedDataElementCode, targetDataElementCode),
   );
 
-  const { results, metadata } = await dhisApi.getAnalytics(
-    { dataElementCodes },
-    query,
-    AGGREGATION_TYPES.FINAL_EACH_MONTH,
-  );
-  const { dataElementIdToCode } = metadata;
+  const { results } = await aggregator.fetchAnalytics(dataElementCodes, { dataServices }, query, {
+    aggregationType: aggregator.aggregationTypes.FINAL_EACH_MONTH,
+  });
 
   // Set up data structure to be aggregated (potentially acrosss multiple facilities)
   const totalsPerDataElement = {};
-  const incrementTotals = ({ dataElement: dataElementId, value }) => {
-    const dataElementCode = dataElementIdToCode[dataElementId];
+  const incrementTotals = ({ dataElement: dataElementCode, value }) => {
     totalsPerDataElement[dataElementCode] = (totalsPerDataElement[dataElementCode] || 0) + value;
   };
 
@@ -28,6 +23,7 @@ export const achievedVsTargetByGroup = async ({ dataBuilderConfig, query, entity
   } else {
     // Aggregate the achieved and target per month, across all operational facilities
     const operationalFacilities = await getFacilityStatuses(
+      aggregator,
       query.organisationUnitCode,
       query.period,
     );

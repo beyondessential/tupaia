@@ -1,12 +1,11 @@
-import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
-import { getChildOrganisationUnits, mapOrgUnitIdsToGroupIds } from '/apiV1/utils';
+import { getChildOrganisationUnits, mapOrgUnitToGroupCodes } from '/apiV1/utils';
 import { Facility, Entity } from '/models';
-const { MOST_RECENT_PER_ORG_GROUP } = AGGREGATION_TYPES;
 
 export const mostRecentValueFromChildren = async (
+  aggregator,
   dhisApi,
   { organisationUnitGroupCode, dataElementCode },
-  { organisationUnitLevel },
+  { organisationUnitLevel, dataServices },
 ) => {
   const organisationUnits = await getChildOrganisationUnits(
     {
@@ -15,15 +14,18 @@ export const mostRecentValueFromChildren = async (
     },
     dhisApi,
   );
-  const jsonQueryData = {
-    dataElementCodes: [dataElementCode],
-    organisationUnitCode: organisationUnitGroupCode,
-  };
-  const orgUnitIdsToGroupKeys = mapOrgUnitIdsToGroupIds(organisationUnits);
-  const { results } = await dhisApi.getAnalytics(jsonQueryData, {}, MOST_RECENT_PER_ORG_GROUP, {
-    orgUnitIdsToGroupKeys,
-  });
-  const orgUnitValuePromises = organisationUnits.map(async ({ id, code }) => {
+
+  const orgUnitToGroupKeys = mapOrgUnitToGroupCodes(organisationUnits);
+  const { results } = await aggregator.fetchAnalytics(
+    [dataElementCode],
+    { dataServices, organisationUnitCode: organisationUnitGroupCode },
+    {},
+    {
+      aggregationType: aggregator.aggregationTypes.MOST_RECENT_PER_ORG_GROUP,
+      aggregationConfig: { orgUnitToGroupKeys },
+    },
+  );
+  const orgUnitValuePromises = organisationUnits.map(async ({ code }) => {
     const entity = await Entity.findOne({ code });
     const entityMetadata = {
       name: entity.name,
@@ -36,7 +38,7 @@ export const mostRecentValueFromChildren = async (
       entityMetadata.facilityTypeCode = facility.type;
     }
     const { value = null, period = null } =
-      results.find(result => result.organisationUnit === id) || {};
+      results.find(result => result.organisationUnit === code) || {};
     return {
       [dataElementCode]: value,
       ...entityMetadata,

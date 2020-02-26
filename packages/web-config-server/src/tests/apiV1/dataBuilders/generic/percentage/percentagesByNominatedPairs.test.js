@@ -29,32 +29,32 @@ const dataBuilderConfig = {
 
 const numeratorResults = [
   {
-    dataElement: 'BCaFfnX6P4G',
-    organisationUnit: 'XyDJfD67g4M',
+    dataElement: 'FIJIINV047',
+    organisationUnit: 'TO_VHP',
     period: 20181113,
     value: 300,
   },
   {
-    dataElement: 'q7BvvDN5nUO',
-    organisationUnit: 'XyDJfD67g4M',
+    dataElement: 'FIJIINV014',
+    organisationUnit: 'TO_VHP',
     period: 20181113,
     value: 40,
   },
   {
-    dataElement: 'Moaj59PRXXL',
-    organisationUnit: 'XyDJfD67g4M',
+    dataElement: 'FIJIINV029',
+    organisationUnit: 'TO_VHP',
     period: 20181113,
     value: 5,
   },
   {
-    dataElement: 'Moaj59PRXXL',
-    organisationUnit: 'XyDJfD67g4M',
+    dataElement: 'FIJIINV029',
+    organisationUnit: 'TO_VHP',
     period: 20181113,
     value: 5,
   },
   {
-    dataElement: 'aEUhkBmEO29',
-    organisationUnit: 'XyDJfD67g4M',
+    dataElement: 'FIJIINV011',
+    organisationUnit: 'TO_VHP',
     period: 20181113,
     value: 999,
   },
@@ -68,51 +68,30 @@ const numeratorMetadata = {
     FIJIINV011: 'Endoscopy inventory: Haemoclips (Actual inventory)',
     FIJIINV023: 'Endoscopy inventory: Balloon dilators (Actual inventory)',
   },
-  dataElementIdToCode: {
-    q7BvvDN5nUO: 'FIJIINV014',
-    BCaFfnX6P4G: 'FIJIINV047',
-    aEUhkBmEO29: 'FIJIINV011',
-    Moaj59PRXXL: 'FIJIINV029',
-    ZH5j6XNpDC6: 'FIJIINV023',
-  },
-  dataElement: {
-    q7BvvDN5nUO: 'Endoscopy inventory: Sclerotherapy needle (Actual inventory)',
-    BCaFfnX6P4G: 'Endoscopy inventory: PEG tubes (Actual inventory)',
-    Moaj59PRXXL: 'Endoscopy inventory: Oesophageal stent (Actual inventory)',
-    aEUhkBmEO29: 'Endoscopy inventory: Haemoclips (Actual inventory)',
-    ZH5j6XNpDC6: 'Endoscopy inventory: Balloon dilators (Actual inventory)',
-  },
-  period: {},
-  organisationUnit: {
-    XyDJfD67g4M: 'Vaiola Hospital',
-  },
-  undefined: {
-    HllvX50cXC0: 'default',
-  },
 };
 
 const denominatorResults = [
   {
-    dataElement: 'ELrx8mpCRvn',
-    organisationUnit: 'XyDJfD67g4M',
+    dataElement: 'ANZIDEAL032',
+    organisationUnit: 'TO_VHP',
     period: 20181113,
     value: 30,
   },
   {
-    dataElement: 'uGRpXGDAB07',
-    organisationUnit: 'XyDJfD67g4M',
+    dataElement: 'ANZIDEAL009',
+    organisationUnit: 'TO_VHP',
     period: 20181113,
     value: 400,
   },
   {
-    dataElement: 'Arr04LSf5kR',
-    organisationUnit: 'XyDJfD67g4M',
+    dataElement: 'ANZIDEAL020',
+    organisationUnit: 'TO_VHP',
     period: 20181113,
     value: 10,
   },
   {
-    dataElement: 'Shhcxkooksa',
-    organisationUnit: 'XyDJfD67g4M',
+    dataElement: 'ANZIDEAL000',
+    organisationUnit: 'TO_VHP',
     period: 20181113,
     value: 10,
   },
@@ -126,27 +105,6 @@ const denominatorMetadata = {
     ANZIDEAL099: 'Endoscopy inventory: Haemoclips (Ideal inventory)',
     ANZIDEAL000: 'Endoscopy inventory: Balloon dilators (Ideal inventory)',
   },
-  dataElementIdToCode: {
-    uGRpXGDAB07: 'ANZIDEAL009',
-    ELrx8mpCRvn: 'ANZIDEAL032',
-    Arr04LSf5kR: 'ANZIDEAL020',
-    AKjsdncosks: 'ANZIDEAL099',
-    Shhcxkooksa: 'ANZIDEAL000',
-  },
-  dataElement: {
-    uGRpXGDAB07: 'Endoscopy inventory: Sclerotherapy needle (Ideal inventory)',
-    ELrx8mpCRvn: 'Endoscopy inventory: PEG tubes (Ideal inventory)',
-    XN2DTWKq2nw: 'Endoscopy inventory: Variceal bander (Ideal inventory)',
-    AKjsdncosks: 'Endoscopy inventory: Haemoclips (Ideal inventory)',
-    Shhcxkooksa: 'Endoscopy inventory: Balloon dilators (Ideal inventory)',
-  },
-  period: {},
-  organisationUnit: {
-    XyDJfD67g4M: 'Vaiola Hospital',
-  },
-  undefined: {
-    HllvX50cXC0: 'default',
-  },
 };
 
 const query = {
@@ -154,24 +112,17 @@ const query = {
   organisationUnitCode: 'TO_VHP',
   dashboardGroupId: '26',
   cacheBreaker: 'pe8rac324243',
-  organisationUnitId: 'XyDJfD67g4M',
+  organisationUnitCode: 'TO_VHP',
   period: null,
 };
 
-const dhisApiMockup = {
-  getAnalytics: ({ dataElementCodes }) => {
-    if (dataElementCodes.indexOf('FIJIINV011') !== -1) {
-      return Promise.resolve({
-        results: numeratorResults,
-        metadata: numeratorMetadata,
-      });
-    }
-    return Promise.resolve({
-      results: denominatorResults,
-      metadata: denominatorMetadata,
-    });
-  },
+const aggregatorMockup = {
+  fetchAnalytics: async dataElementCodes =>
+    dataElementCodes.includes('FIJIINV011')
+      ? { results: numeratorResults, metadata: numeratorMetadata }
+      : { results: denominatorResults, metadata: denominatorMetadata },
 };
+const dhisApiMockup = {};
 
 describe('percentagesByNominatedPairs', async () => {
   let data;
@@ -183,6 +134,7 @@ describe('percentagesByNominatedPairs', async () => {
         dataBuilderConfig,
         query,
       },
+      aggregatorMockup,
       dhisApiMockup,
     );
     data = response.data;

@@ -1,24 +1,34 @@
-import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
-import { sumResults } from '/apiV1/utils';
+import { getDataElementCodesInGroup, sumResults } from '/apiV1/utils';
 
-const sumPerMetric = async ({ dataBuilderConfig, query }, dhisApi, AGGREGATION_TYPE) => {
+const getDataElementCodes = async (dataBuilderConfig, dhisApi) => {
+  const { dataElementCodes, dataElementGroupCode } = dataBuilderConfig;
+  return dataElementGroupCode
+    ? getDataElementCodesInGroup(dhisApi, dataElementGroupCode)
+    : dataElementCodes;
+};
+
+const sumPerMetric = async ({ dataBuilderConfig, query }, aggregator, dhisApi, aggregationType) => {
   const {
     labels = {},
     specialCases = {},
     dataElementsToSum,
-    ...restOfDataBuilderConfig
+    measureCriteria,
+    dataServices,
   } = dataBuilderConfig;
-  const { results, metadata } = await dhisApi.getAnalytics(
-    restOfDataBuilderConfig,
+
+  const dataElementCodes = await getDataElementCodes(dataBuilderConfig, dhisApi);
+  const { results, metadata } = await aggregator.fetchAnalytics(
+    dataElementCodes,
+    { dataServices },
     query,
-    AGGREGATION_TYPE,
+    { aggregationType, measureCriteria },
   );
 
   // Don't process results into valid data for front-end if there are none.
   if (results.length === 0) return { data: results };
 
   const returnData = {};
-  const { dataElementIdToCode, dataElementCodeToName } = metadata;
+  const { dataElementCodeToName } = metadata;
 
   const calculateValueToAdd = (dataElementValue, dataElementCode) => {
     if (specialCases[dataElementCode] && specialCases[dataElementCode] === 'complement') {
@@ -41,13 +51,11 @@ const sumPerMetric = async ({ dataBuilderConfig, query }, dhisApi, AGGREGATION_T
   };
 
   results
-    .map(({ dataElement: dataElementId, ...result }) => {
-      const dataElementCode = dataElementIdToCode[dataElementId];
+    .map(({ dataElement: dataElementCode, ...result }) => {
       const name = labels[dataElementCode] || dataElementCodeToName[dataElementCode];
       return {
         ...result,
         dataElementCode,
-        dataElementId,
         name,
       };
     })
@@ -58,16 +66,14 @@ const sumPerMetric = async ({ dataBuilderConfig, query }, dhisApi, AGGREGATION_T
     });
 
   const data = Object.values(returnData);
-  data
-    .sort((a, b) => {
-      // preserve order of dataElementCodes in dataBuilderConfig
+  if (dataBuilderConfig.dataElementCodes) {
+    // Preserve order of dataElementCodes in dataBuilderConfig
+    data.sort((a, b) => {
       const indexA = dataBuilderConfig.dataElementCodes.indexOf(a.dataElementCode);
       const indexB = dataBuilderConfig.dataElementCodes.indexOf(b.dataElementCode);
       return indexA - indexB;
-    })
-    .map(({ dataElementCode, ...r }) => ({
-      ...r,
-    }));
+    });
+  }
 
   // allow summing of certain elements to use as total, or sum all by defaut.
   if (dataBuilderConfig.includeTotal) {
@@ -84,8 +90,13 @@ const sumPerMetric = async ({ dataBuilderConfig, query }, dhisApi, AGGREGATION_T
   return { data };
 };
 
-export const sumLatestPerMetric = async (queryConfig, dhisApi) =>
-  sumPerMetric(queryConfig, dhisApi, AGGREGATION_TYPES.SUM_MOST_RECENT_PER_FACILITY);
+export const sumLatestPerMetric = async (queryConfig, aggregator, dhisApi) =>
+  sumPerMetric(
+    queryConfig,
+    aggregator,
+    dhisApi,
+    aggregator.aggregationTypes.SUM_MOST_RECENT_PER_FACILITY,
+  );
 
-export const sumAllPerMetric = async (queryConfig, dhisApi) =>
-  sumPerMetric(queryConfig, dhisApi, AGGREGATION_TYPES.SUM);
+export const sumAllPerMetric = async (queryConfig, aggregator, dhisApi) =>
+  sumPerMetric(queryConfig, aggregator, dhisApi, aggregator.aggregationTypes.SUM);

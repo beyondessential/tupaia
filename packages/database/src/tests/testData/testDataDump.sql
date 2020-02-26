@@ -30,6 +30,16 @@ COMMENT ON EXTENSION postgis IS 'PostGIS geometry, geography, and raster spatial
 
 
 --
+-- Name: data_source_type; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.data_source_type AS ENUM (
+    'dataElement',
+    'dataGroup'
+);
+
+
+--
 -- Name: disaster_event_type; Type: TYPE; Schema: public; Owner: -
 --
 
@@ -65,6 +75,15 @@ CREATE TYPE public.entity_type AS ENUM (
     'world',
     'village',
     'case'
+);
+
+
+--
+-- Name: service_type; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.service_type AS ENUM (
+    'dhis'
 );
 
 
@@ -112,83 +131,38 @@ CREATE FUNCTION public.generate_object_id() RETURNS character varying
 CREATE FUNCTION public.notification() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
-    DECLARE 
-    json_record TEXT;
     BEGIN
     IF TG_OP = 'UPDATE' AND OLD = NEW THEN
       RETURN NULL;
     END IF;
     IF TG_OP = 'INSERT' OR TG_OP = 'UPDATE' THEN
-      json_record := to_jsonb(NEW);
       PERFORM pg_notify(
-        'change',
-        json_build_object(
-          'change',
-          json_build_object(
-            'record_type',
-            TG_TABLE_NAME,
-            'record_id',
-            NEW.id,
-            'type',
-            'update'
-          ),
-          'record',
-          public.scrub_geo_data(
-            json_record::jsonb,
-            TG_TABLE_NAME
-          )
-        )::text
-    );
-      RETURN NEW;
-    END IF;
-    IF TG_OP = 'DELETE' THEN
-      json_record := to_jsonb(OLD);
-      PERFORM pg_notify(
-      'change',
-      json_build_object(
         'change',
         json_build_object(
           'record_type',
           TG_TABLE_NAME,
           'record_id',
-          OLD.id,
+          NEW.id,
           'type',
-          'delete'
-        ),
-        'record',
-        public.scrub_geo_data(
-          json_record::jsonb,
-          TG_TABLE_NAME
-        )
-    )::text);
+          'update'
+        )::text
+    );
+      RETURN NEW;
+    END IF;
+    IF TG_OP = 'DELETE' THEN
+      PERFORM pg_notify(
+      'change',
+      json_build_object(
+        'record_type',
+        TG_TABLE_NAME,
+        'record_id',
+        OLD.id,
+        'type',
+        'delete'
+      )::text
+    );
       RETURN OLD;
     END IF;
-    END;
-    $$;
-
-
---
--- Name: scrub_geo_data(jsonb, name); Type: FUNCTION; Schema: public; Owner: -
---
-
-CREATE FUNCTION public.scrub_geo_data(current_record jsonb DEFAULT NULL::jsonb, tg_table_name name DEFAULT NULL::name) RETURNS json
-    LANGUAGE plpgsql
-    AS $$
-    DECLARE 
-      geo_entities RECORD;
-    BEGIN
-      IF current_record IS NULL THEN
-        RETURN '{}';
-      END IF;
-      FOR geo_entities IN 
-        SELECT f_table_name, f_geography_column 
-        FROM geography_columns
-        WHERE type in ('Polygon', 'MultiPolygon')
-        AND f_table_name = TG_TABLE_NAME LOOP
-          -- will remove columns with geo data
-          current_record := current_record::jsonb - geo_entities.f_geography_column;
-      END LOOP;
-    RETURN current_record;
     END;
     $$;
 
@@ -200,11 +174,11 @@ CREATE FUNCTION public.scrub_geo_data(current_record jsonb DEFAULT NULL::jsonb, 
 CREATE FUNCTION public.update_change_time() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
-BEGIN
-  NEW.change_time = floor(extract(epoch from clock_timestamp()) * 1000) + (CAST (nextval('change_time_seq') AS FLOAT)/100);
-  RETURN NEW;
-END;
-$$;
+    BEGIN
+      NEW.change_time = floor(extract(epoch from clock_timestamp()) * 1000) + (CAST (nextval('change_time_seq') AS FLOAT)/1000);
+      RETURN NEW;
+    END;
+    $$;
 
 
 SET default_tablespace = '';
@@ -257,9 +231,9 @@ CREATE TABLE public.api_request_log (
 --
 
 CREATE SEQUENCE public.change_time_seq
-    START WITH 1
+    START WITH 100
     INCREMENT BY 1
-    NO MINVALUE
+    MINVALUE 100
     MAXVALUE 999
     CACHE 1
     CYCLE;
@@ -337,6 +311,30 @@ CREATE TABLE public."dashboardReport" (
     "dataBuilderConfig" jsonb,
     "viewJson" jsonb,
     "dataServices" jsonb DEFAULT '[{"isDataRegional": true}]'::jsonb
+);
+
+
+--
+-- Name: data_element_data_group; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.data_element_data_group (
+    id text NOT NULL,
+    data_element_id text NOT NULL,
+    data_group_id text NOT NULL
+);
+
+
+--
+-- Name: data_source; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.data_source (
+    id text NOT NULL,
+    code text NOT NULL,
+    type public.data_source_type NOT NULL,
+    service_type public.service_type NOT NULL,
+    config jsonb NOT NULL
 );
 
 
@@ -999,6 +997,30 @@ ALTER TABLE ONLY public."dashboardGroup"
 
 ALTER TABLE ONLY public."dashboardGroup"
     ADD CONSTRAINT "dashboardGroup_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: data_element_data_group data_element_data_group_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.data_element_data_group
+    ADD CONSTRAINT data_element_data_group_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: data_source data_source_code_type_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.data_source
+    ADD CONSTRAINT data_source_code_type_key UNIQUE (code, type);
+
+
+--
+-- Name: data_source data_source_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.data_source
+    ADD CONSTRAINT data_source_pkey PRIMARY KEY (id);
 
 
 --
@@ -1800,6 +1822,20 @@ CREATE TRIGGER dashboardreport_trigger AFTER INSERT OR DELETE OR UPDATE ON publi
 
 
 --
+-- Name: data_element_data_group data_element_data_group_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER data_element_data_group_trigger AFTER INSERT OR DELETE OR UPDATE ON public.data_element_data_group FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
+-- Name: data_source data_source_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER data_source_trigger AFTER INSERT OR DELETE OR UPDATE ON public.data_source FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
 -- Name: dhis_sync_queue dhis_sync_queue_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -2062,6 +2098,22 @@ ALTER TABLE ONLY public.clinic
 
 ALTER TABLE ONLY public.clinic
     ADD CONSTRAINT clinic_geographical_area_id_fkey FOREIGN KEY (geographical_area_id) REFERENCES public.geographical_area(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+--
+-- Name: data_element_data_group data_element_data_group_data_element_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.data_element_data_group
+    ADD CONSTRAINT data_element_data_group_data_element_id_fk FOREIGN KEY (data_element_id) REFERENCES public.data_source(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: data_element_data_group data_element_data_group_data_group_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.data_element_data_group
+    ADD CONSTRAINT data_element_data_group_data_group_id_fk FOREIGN KEY (data_group_id) REFERENCES public.data_source(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
@@ -2952,11 +3004,31 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 522	/20200129031728-AddNewCountriesToEntityTable	2020-02-04 03:03:39.399
 523	/20200131041935-DeleteRedundantImmsBreaches	2020-02-04 03:05:23.343
 524	/20200202205145-DeleteTongaSpecificDashboardsFromDemoLand	2020-02-04 20:41:17.744
-525	/20200206214233-AddColumnsToApiRequestLog	2020-02-06 11:44:12.062
-526	/20200206214234-RenameAndCleanupInstallId	2020-02-06 11:44:12.47
-527	/20200206221246-AddColumnsToMeditrakDevice	2020-02-06 11:44:12.517
-528	/20200206221247-AddMeditrakDeviceIdToRefreshToken	2020-02-06 11:44:12.546
-529	/20200206221249-AddRefreshTokenToApiRequestLog	2020-02-06 11:44:12.574
+525	/20200128054247-UsePerOrgUnitDataBuilderForUNFPAStockCardsReport	2020-02-06 22:32:27.446
+526	/20200123233519-UnfpaStaffTrainingDashboard	2020-02-13 01:01:20.644
+527	/20200129040859-InsertIHRWorldDashboardGroup	2020-02-13 01:01:20.708
+528	/20200131023339-ContraceptionDashboardUpdate	2020-02-13 01:01:20.767
+529	/20200205015401-DeleteCD2-2Answers	2020-02-13 01:01:20.979
+530	/20200206214233-AddColumnsToApiRequestLog	2020-02-13 01:01:41.369
+531	/20200206214234-RenameAndCleanupInstallId	2020-02-13 01:01:42.451
+532	/20200206221246-AddColumnsToMeditrakDevice	2020-02-13 01:01:42.58
+533	/20200206221247-AddMeditrakDeviceIdToRefreshToken	2020-02-13 01:01:42.728
+534	/20200206221249-AddRefreshTokenToApiRequestLog	2020-02-13 01:01:42.825
+535	/20200207044948-AddBonrikiEastToMs1Api	2020-02-13 01:01:42.858
+536	/20200207045423-IHRSparReportingCountries	2020-02-13 01:01:42.884
+537	/20200210233650-SwitchRowsAndColsForTongaFP01	2020-02-13 01:01:43.71
+538	/20200214025142-UpdateStriveWeeklyMRDTPositiveConfig	2020-02-14 04:29:20.453
+539	/20200116211310-AddDataSourceTable	2020-02-21 10:12:52.022
+540	/20200122003753-ConvertDataElementToCodeInSyncLog	2020-02-21 10:14:08.565
+541	/20200128021719-AddTongaDataSources	2020-02-21 10:14:09.301
+542	/20200129211641-AvoidChangeTimeConflicts	2020-02-21 10:14:09.338
+543	/20200204005927-AddDataElementDataGroupTable	2020-02-21 10:14:09.404
+544	/20200205004208-AddTongaSurveysToDataSource	2020-02-21 10:14:09.455
+545	/20200210004010-SimplifyChangeNotification	2020-02-21 10:14:09.492
+546	/20200211002034-UpdateDataBuilders	2020-02-21 10:14:09.673
+547	/20200218001344-UpdateMapOverlays	2020-02-21 10:14:09.717
+548	/20200218025613-AddDataGroupsToDataSource	2020-02-21 10:14:09.948
+549	/20200218215230-ResyncAllTongaData	2020-02-21 10:15:11.488
 \.
 
 
@@ -2964,7 +3036,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 529, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 549, true);
 
 
 --

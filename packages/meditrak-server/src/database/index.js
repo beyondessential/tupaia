@@ -4,6 +4,5 @@
  **/
 
 export { ORG_UNIT_ENTITY_TYPES, ENTITY_TYPES } from './models/Entity';
-export { ExternalApiSyncQueue } from './ExternalApiSyncQueue';
 export { SyncQueue } from './SyncQueue';
 export { createMeditrakSyncQueue } from './createMeditrakSyncQueue';

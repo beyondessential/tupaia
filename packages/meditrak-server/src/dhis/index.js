@@ -4,5 +4,4 @@
  **/
 
 export { startSyncWithDhis } from './syncWithDhis';
-export { SyncQueue } from './syncQueue';
 export { resyncDatabase } from './resyncDatabase';

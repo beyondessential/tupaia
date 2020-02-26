@@ -17,18 +17,19 @@ import {
   SURVEY_RESPONSE_DATA_VALUE_DIMENSIONS,
   SURVEY_RESPONSE,
   SURVEY,
+  SERVER_NAME,
 } from './testData';
 
-export const testDeleteSurveyResponse = (dhisApi, models) => {
+export const testDeleteSurveyResponse = (dhisApi, models, dataBroker) => {
   it('should mark as successful if the survey response never attempted to sync', async () => {
     const change = await models.dhisSyncQueue.findById(SURVEY_RESPONSE_CHANGE.id);
     change.type = 'delete';
-    const pusher = new AggregateDataPusher(models, change, dhisApi);
+    const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
 
     const result = await pusher.push();
     expect(result).to.be.true;
-    expect(dhisApi.postDataValueSets).not.to.have.been.called;
-    expect(dhisApi.deleteDataValue).not.to.have.been.called;
+    expect(dataBroker.push).not.to.have.been.called;
+    expect(dataBroker.delete).not.to.have.been.called;
   });
 
   it('should mark as successful if the survey response never successfully synced', async () => {
@@ -36,23 +37,30 @@ export const testDeleteSurveyResponse = (dhisApi, models) => {
     change.type = 'delete';
     await populateTestData({ dhisSyncLog: [getFailedSyncLog(change)] });
 
-    const pusher = new AggregateDataPusher(models, change, dhisApi);
+    const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
     const result = await pusher.push();
     expect(result).to.be.true;
-    expect(dhisApi.postDataValueSets).not.to.have.been.called;
-    expect(dhisApi.deleteDataValue).not.to.have.been.called;
+    expect(dataBroker.push).not.to.have.been.called;
+    expect(dataBroker.delete).not.to.have.been.called;
   });
 
   it('should delete if the survey response previously synced successfully', async () => {
     const change = await models.dhisSyncQueue.findById(SURVEY_RESPONSE_CHANGE.id);
     change.type = 'delete';
     await populateTestData({ dhisSyncLog: [getSyncLog(change)] });
-    const pusher = new AggregateDataPusher(models, change, dhisApi);
+    const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
 
     const result = await pusher.push();
     expect(result).to.be.true;
-    expect(dhisApi.postDataValueSets).not.to.have.been.called;
-    expect(dhisApi.deleteDataValue).to.have.been.calledWith(SURVEY_RESPONSE_DATA_VALUE_DIMENSIONS);
+    expect(dataBroker.push).not.to.have.been.called;
+    expect(dataBroker.delete).to.have.been.calledWith(
+      {
+        code: SURVEY_RESPONSE_DATA_VALUE_DIMENSIONS.code,
+        type: pusher.dataSourceTypes.DATA_ELEMENT,
+      },
+      SURVEY_RESPONSE_DATA_VALUE_DIMENSIONS,
+      { serverName: SERVER_NAME },
+    );
   });
   it('should delete the data set complete registration if one exists', async () => {
     try {
@@ -60,7 +68,7 @@ export const testDeleteSurveyResponse = (dhisApi, models) => {
       const change = await models.dhisSyncQueue.findById(SURVEY_RESPONSE_CHANGE.id);
       change.type = 'delete';
       await populateTestData({ dhisSyncLog: [getSyncLog(change)] });
-      const pusher = new AggregateDataPusher(models, change, dhisApi);
+      const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
 
       const result = await pusher.push();
       expect(result).to.be.true;
@@ -77,7 +85,7 @@ export const testDeleteSurveyResponse = (dhisApi, models) => {
     const change = await models.dhisSyncQueue.findById(SURVEY_RESPONSE_CHANGE.id);
     change.type = 'delete';
     await populateTestData({ dhisSyncLog: [getSyncLog(change)] });
-    const pusher = new AggregateDataPusher(models, change, dhisApi);
+    const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
 
     const result = await pusher.push();
     expect(result).to.be.true;
@@ -105,11 +113,18 @@ export const testDeleteSurveyResponse = (dhisApi, models) => {
     models.addChangeHandlerForCollection(models.surveyResponse.databaseType, syncQueue.add);
 
     // run the delete push
-    const pusher = new AggregateDataPusher(models, change, dhisApi);
+    const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
     const result = await pusher.push();
     expect(result).to.be.true;
-    expect(dhisApi.postDataValueSets).not.to.have.been.called;
-    expect(dhisApi.deleteDataValue).to.have.been.calledWith(SURVEY_RESPONSE_DATA_VALUE_DIMENSIONS);
+    expect(dataBroker.push).not.to.have.been.called;
+    expect(dataBroker.delete).to.have.been.calledWith(
+      {
+        code: SURVEY_RESPONSE_DATA_VALUE_DIMENSIONS.code,
+        type: pusher.dataSourceTypes.DATA_ELEMENT,
+      },
+      SURVEY_RESPONSE_DATA_VALUE_DIMENSIONS,
+      { serverName: SERVER_NAME },
+    );
 
     // the one we added earlier should now have been added to the sync queue as the other was deleted
     const additionalChangeAfter = await syncQueue.getChange(nextMostRecentSurveyResponse.id);

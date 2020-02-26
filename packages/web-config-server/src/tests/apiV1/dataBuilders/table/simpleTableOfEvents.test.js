@@ -1,77 +1,65 @@
-import { expect } from 'chai';
-import { it, describe } from 'mocha';
-
-import { simpleTableOfEvents } from '../../../../apiV1/dataBuilders/generic/table/simpleTableOfEvents';
-
 /**
  * Tupaia Config Server
  * Copyright (c) 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { expect } from 'chai';
+import sinon from 'sinon';
+
+import { simpleTableOfEvents } from '/apiV1/dataBuilders/generic/table/simpleTableOfEvents';
+
+const dataServices = [{ isDataRegional: true }];
 const dataBuilderConfig = {
-  dataElementCode: 'WHOSPAR',
+  dataElementCodes: ['WHOSPAR'],
   programCode: 'WSRS',
+  dataServices,
 };
+const query = { organisationUnitCode: 'World' };
+const entity = {};
 
-const query = {
-  dashboardGroupId: '87',
-  organisationUnitCode: 'World',
-  viewId: 'WHO_SURVEY',
-};
-
-const entity = {
-  code: 'World',
-  type: 'world',
-  country_code: 'Wo',
-  name: 'World',
-};
-
-const metaData = {
+const analytics = {
   results: [
     {
-      dataElement: 'RNhJHOhJeic',
+      dataElement: 'WHOSPAR',
       organisationUnit: 'World',
       period: '20100208',
       value: 8,
     },
     {
-      dataElement: 'RNhJHOhJeic',
+      dataElement: 'WHOSPAR',
       organisationUnit: 'World',
       period: '20110208',
       value: 7,
     },
     {
-      dataElement: 'RNhJHOhJeic',
+      dataElement: 'WHOSPAR',
       organisationUnit: 'World',
       period: '20120208',
       value: 13,
     },
   ],
   metadata: {
-    organisationUnit: { World: 'World' },
     dataElementCodeToName: { WHOSPAR: 'WHOSPAR' },
-    dataElementIdToCode: { RNhJHOhJeic: 'WHOSPAR' },
-    dataElement: { RNhJHOhJeic: 'WHOSPAR' },
   },
 };
 
 const responseData = [
   {
-    dataElement: 'RNhJHOhJeic',
+    dataElement: 'WHOSPAR',
     organisationUnit: 'World',
     period: '20100208',
     value: 8,
     name: '2010',
   },
   {
-    dataElement: 'RNhJHOhJeic',
+    dataElement: 'WHOSPAR',
     organisationUnit: 'World',
     period: '20110208',
     value: 7,
     name: '2011',
   },
   {
-    dataElement: 'RNhJHOhJeic',
+    dataElement: 'WHOSPAR',
     organisationUnit: 'World',
     period: '20120208',
     value: 13,
@@ -79,29 +67,22 @@ const responseData = [
   },
 ];
 
-const dhisApiMockup = {
-  getEventAnalytics: dataElementCodes => {
-    return Promise.resolve(metaData);
-  },
+const fetchAnalytics = sinon.stub();
+fetchAnalytics
+  .withArgs(['WHOSPAR'], { dataServices, programCodes: ['WSRS'] }, query, {
+    aggregationType: 'FINAL_EACH_YEAR',
+  })
+  .returns(analytics);
+
+const aggregator = {
+  fetchAnalytics,
+  aggregationTypes: { FINAL_EACH_YEAR: 'FINAL_EACH_YEAR' },
 };
+const dhisApi = {};
 
 describe('simpleTableOfEvents', async () => {
-  let data;
-
-  before(async () => {
-    const response = await simpleTableOfEvents(
-      {
-        dataBuilderConfig,
-        query,
-        entity,
-      },
-      dhisApiMockup,
-    );
-
-    data = response.data;
-  });
-
-  it('should return expected data', () => {
-    return expect(data).to.deep.equal(responseData);
-  });
+  it('should return expected data', () =>
+    expect(
+      simpleTableOfEvents({ dataBuilderConfig, query, entity }, aggregator, dhisApi),
+    ).to.eventually.deep.equal({ data: responseData }));
 });

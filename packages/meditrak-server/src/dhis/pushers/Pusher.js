@@ -4,7 +4,6 @@
  */
 
 import winston from 'winston';
-import { getDiagnosticsFromResponse } from '@tupaia/dhis-api';
 
 /**
  * @typedef {PushResults}
@@ -15,10 +14,11 @@ import { getDiagnosticsFromResponse } from '@tupaia/dhis-api';
  */
 
 export class Pusher {
-  constructor(models, change, dhisApi) {
+  constructor(models, change, dhisApi, dataBroker) {
     this.models = models;
     this.change = change;
     this.api = dhisApi;
+    this.dataBroker = dataBroker;
   }
 
   get recordId() {
@@ -33,6 +33,10 @@ export class Pusher {
     return this.change.type;
   }
 
+  get dataSourceTypes() {
+    return this.dataBroker.getDataSourceTypes();
+  }
+
   /**
    * @public
    *
@@ -41,7 +45,6 @@ export class Pusher {
   async push() {
     const results = await (this.changeType === 'update' ? this.createOrUpdate() : this.delete());
     await this.logResults(results); // await to avoid db lock between delete/update on event push
-
     return results.wasSuccessful;
   }
 
@@ -87,10 +90,6 @@ export class Pusher {
     }
 
     return this.extractDataFromSyncLog(dhisSyncLog);
-  }
-
-  getDiagnostics(response) {
-    return getDiagnosticsFromResponse(response, this.change);
   }
 
   /**

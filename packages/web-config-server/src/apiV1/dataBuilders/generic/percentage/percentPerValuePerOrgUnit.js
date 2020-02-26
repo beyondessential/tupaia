@@ -3,14 +3,21 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
 import { getDataSourceEntityType } from 'apiV1/dataBuilders/helpers';
-import { countByOrganisationUnitByValue, calculatePercentagesWithinRange } from '/apiV1/utils';
+import {
+  countByOrganisationUnitByValue,
+  calculatePercentagesWithinRange,
+  getDataElementCodesInGroup,
+} from '/apiV1/utils';
 
-export const percentPerValuePerOrgUnit = async ({ dataBuilderConfig, query, entity }, dhisApi) => {
-  const { range, valuesOfInterest } = dataBuilderConfig;
-  const { results } = await dhisApi.getAnalytics(
-    { ...dataBuilderConfig, outputIdScheme: 'code' },
-    query,
-  );
+export const percentPerValuePerOrgUnit = async (
+  { dataBuilderConfig, query, entity },
+  aggregator,
+  dhisApi,
+) => {
+  const { dataElementGroupCode, dataServices, range, valuesOfInterest } = dataBuilderConfig;
+
+  const dataElementCodes = await getDataElementCodesInGroup(dhisApi, dataElementGroupCode);
+  const { results } = await aggregator.fetchAnalytics(dataElementCodes, { dataServices }, query);
   const entities = await entity.getDescendantsOfType(getDataSourceEntityType(dataBuilderConfig));
   const countsByOrganisationUnit = countByOrganisationUnitByValue(
     results,
