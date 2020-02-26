@@ -8,11 +8,14 @@ export const hexToRgba = (hex, opacity) => {
   return `rgba(${r},${g},${b},${opacity})`;
 };
 
-export const getDotColorFromRange = (presentationOptions, value) => {
-  const option = Object.values(presentationOptions).find(
-    ({ min, max }) => value >= min && value <= max,
-  );
-  if (value === undefined || option === undefined) return null;
+/** Functions used to get matrix chart dot colors from presentation options */
+const PRESENTATION_TYPES = {
+  RANGE: 'range',
+};
+
+const getPresentationOptionFromRange = (options, value) => {
+  const option = Object.values(options).find(({ min, max }) => value >= min && value <= max);
+  if (value === undefined || value === '' || option === undefined) return null;
   return option;
 };
 
