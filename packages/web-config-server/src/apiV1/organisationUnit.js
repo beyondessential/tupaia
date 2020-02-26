@@ -29,63 +29,86 @@ export function translateForFrontend(entity) {
     photoUrl: entity.image_url,
     facilityTypeCode: entity.clinic_category_code,
     facilityTypeName: entity.clinic_type_name,
+    parent: entity.parent_code,
   };
 }
 
-export async function getEntityByCode(entityCode, userHasAccess) {
+export async function getEntityAndChildrenByCode(entityCode, userHasAccess) {
   // query our base entity
-  const queriedEntity = await Entity.getEntityByCode(entityCode);
-  if (!queriedEntity) {
+  const entity = await Entity.getEntityByCode(entityCode);
+  if (!entity) {
     throw new Error(`Entity ${entityCode} not found`);
   }
 
   // check permission
-  const hasAccess = await userHasAccess(queriedEntity.code);
+  const hasAccess = await userHasAccess(entity.code);
   if (!hasAccess) {
-    throw new Error(`No access to ${queriedEntity.code}`);
+    throw new Error(`No access to ${entity.code}`);
   }
 
   // fetch parent if one exists - don't check permission (as we already
   // know we have permission for at least one of its children)
-  const { parent_id: parentId, id: entityId } = queriedEntity;
-  const parentTask = parentId && Entity.getEntity(parentId);
-  const children = await Promise.all(await getEntityChildren(entityId, userHasAccess));
+  const entityParent = entity.parent_id && (await Entity.getEntity(entity.parent_id));
+  const children = await fetchAndFilterForAccess(
+    Entity.getOrgUnitChildren(entity.id),
+    userHasAccess,
+  );
 
   // assemble response
   const data = {
-    ...translateForFrontend(queriedEntity),
-    parent: translateForFrontend(await parentTask),
-    organisationUnitChildren: children,
+    ...translateForFrontend(entity),
+    parent: translateForFrontend(entityParent),
+    organisationUnitChildren: children.map(child => translateForFrontend(child)),
+  };
+
+  return data;
+}
+
+export async function getEntityAndDescendantsByCode(entityCode, userHasAccess) {
+  const entityAndDescendants = await fetchAndFilterForAccess(
+    Entity.getAllDescendantsWithCoordinates(entityCode),
+    userHasAccess,
+  );
+  const entity = entityAndDescendants.shift(); // First entry should be the original entity
+  if (!entity) {
+    throw new Error(`Entity ${entityCode} not found`);
+  } else if (entity.code !== entityCode) {
+    throw new Error(`No access to ${entity.code}`);
+  }
+
+  const entityParent = entity.parent_code && (await Entity.getEntityByCode(entity.parent_code));
+
+  // assemble response
+  const data = {
+    ...translateForFrontend(entity),
+    parent: translateForFrontend(entityParent),
+    descendants: entityAndDescendants.map(descendant => translateForFrontend(descendant)),
   };
 
   return data;
 }
 
 /**
- * Recursively get all children, filtering out those we don't have permission for
+ * Fetch all org units and filter for those that have access
+ * @param {Function to fetch org units} orgUnitFetcher
+ * @param {Function to determine org unit access} userHasAccess
  */
-async function getEntityChildren(entityId, userHasAccess) {
-  if (await !Entity.orgUnitHasChildren(entityId)) {
-    return [];
-  }
+const fetchAndFilterForAccess = async (orgUnitFetcher, userHasAccess) => {
+  const orgUnits = (
+    await Promise.all(
+      (await orgUnitFetcher).map(async orgUnit => (await userHasAccess(orgUnit.code)) && orgUnit),
+    )
+  ).filter(orgUnit => orgUnit);
 
-  const childrenTask = Entity.getOrgUnitChildren(entityId);
-  const children = (
-    await Promise.all((await childrenTask).map(async c => (await userHasAccess(c.code)) && c))
-  )
-    .filter(c => c)
-    .map(async child => ({
-      ...translateForFrontend(child),
-      // organisationUnitChildren: await Promise.all(await getEntityChildren(child.id, userHasAccess)),
-    }));
-
-  return children;
-}
+  return orgUnits;
+};
 
 export async function getOrganisationUnitHandler(req, res) {
-  const { organisationUnitCode } = req.query;
-
-  const data = await getEntityByCode(organisationUnitCode, req.userHasAccess);
+  const { organisationUnitCode, descendants } = req.query;
+  const data =
+    descendants === 'true'
+      ? await getEntityAndDescendantsByCode(organisationUnitCode, req.userHasAccess)
+      : await getEntityAndChildrenByCode(organisationUnitCode, req.userHasAccess);
 
   res.send(data);
 }

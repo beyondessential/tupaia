@@ -73,7 +73,7 @@ export const FETCH_MEASURE_DATA_SUCCESS = 'FETCH_MEASURE_DATA_SUCCESS';
 export const CANCEL_FETCH_MEASURE_DATA = 'CANCEL_FETCH_MEASURE_DATA';
 export const FETCH_MEASURES_ERROR = 'FETCH_MEASURES_ERROR';
 export const FETCH_MEASURES_SUCCESS = 'FETCH_MEASURES_SUCCESS';
-export const FETCH_ORG_UNIT_ERROR = 'FETCH_ORG_UNIT_ERROR';
+export const CHANGE_ORG_UNIT_ERROR = 'CHANGE_ORG_UNIT_ERROR';
 export const FETCH_REGION_ERROR = 'FETCH_REGION_ERROR';
 export const FETCH_ORG_UNIT_SUCCESS = 'FETCH_ORG_UNIT_SUCCESS';
 export const CHANGE_ORG_UNIT_SUCCESS = 'CHANGE_ORG_UNIT_SUCCESS';
@@ -598,32 +598,20 @@ export function changeOrgUnitSuccess(organisationUnit, shouldChangeMapBounds = t
  * @param {object} organisationUnit organisationUnit from saga on successful fetch
  */
 export function fetchOrgUnitSuccess(organisationUnit) {
-  const parentOrganisationUnitCode = organisationUnit.parent.organisationUnitCode;
-  const siblings = getSiblingItems(
-    parentOrganisationUnitCode,
-    organisationUnit.organisationUnitCode,
-  );
-
-  storeSiblingItems(
-    organisationUnit.organisationUnitCode,
-    organisationUnit.organisationUnitChildren,
-  );
-
   return {
     type: FETCH_ORG_UNIT_SUCCESS,
     organisationUnit,
-    organisationUnitSiblings: siblings,
   };
 }
 
 /**
  * Changes state to communicate error to user appropriately.
  *
- * @param {object} error  response from saga on failed fetch
+ * @param {object} error  response from saga on failed orgUnit change
  */
-export function fetchOrgUnitError(error) {
+export function changeOrgUnitError(error) {
   return {
-    type: FETCH_ORG_UNIT_ERROR,
+    type: CHANGE_ORG_UNIT_ERROR,
     error,
   };
 }

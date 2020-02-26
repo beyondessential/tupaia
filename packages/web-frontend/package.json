@@ -23,6 +23,7 @@
     "prop-types": "^15.6.2",
     "query-string": "^5.0.1",
     "radium": "^0.19.5",
+    "re-reselect": "^3.4.0",
     "react": "^16.10.2",
     "react-animations": "^1.0.0",
     "react-dom": "^16.10.2",

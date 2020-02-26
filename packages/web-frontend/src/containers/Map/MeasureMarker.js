@@ -1,8 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { selectOrgUnit } from '../../reducers/orgUnitReducers';
-import { CircleProportionMarker, IconMarker } from '../../components/Marker';
-import { getMeasureDisplayInfo } from '../../utils';
+import {
+  selectRadiusScaleFactor,
+  cachedSelectMeasureWithDisplayInfo,
+} from '../../reducers/mapReducers';
+import { changeOrgUnit } from '../../actions';
+import { CircleProportionMarker, IconMarker, MeasurePopup } from '../../components/Marker';
 
 /**
  * Tupaia Web
@@ -10,68 +14,79 @@ import { getMeasureDisplayInfo } from '../../utils';
  * This source code is licensed under the AGPL-3.0 license
  * found in the LICENSE file in the root directory of this source tree.
  */
-
+const MIN_RADIUS = 1;
 const MeasureMarker = props => {
   const { coordinates } = props;
   if (!coordinates || coordinates.length < 2) {
     return null;
   }
-  const processedProps = getMeasureDisplayInfo(props, props.measureOptions, props.hiddenMeasures);
-  const { icon, radius } = processedProps;
 
-  if (processedProps.isHidden) {
+  if (props.isHidden) {
     return null;
   }
 
-  processedProps.radiusScaleFactor = calculateRadiusScaleFactor(processedProps);
+  const popupChild = (
+    <MeasurePopup
+      data={props}
+      measureOptions={props.measureOptions}
+      onOrgUnitClick={props.onChangeOrgUnit}
+    />
+  );
+
+  const { icon, radius } = props;
 
   if (parseInt(radius, 10) === 0) {
     if (icon) {
       // we have an icon, so don't render the radius at all
-      return <IconMarker {...processedProps} />;
+      return <IconMarker {...props}>{popupChild}</IconMarker>;
     }
 
     // we have no icon and zero radius -- use minimum radius instead
-    return <CircleProportionMarker {...processedProps} radius={MIN_RADIUS} />;
+    return (
+      <CircleProportionMarker {...props} radius={MIN_RADIUS}>
+        {popupChild}
+      </CircleProportionMarker>
+    );
   }
 
   if (radius && icon) {
-    const { markerRef, ...otherProps } = processedProps;
+    const { markerRef, ...otherProps } = props;
     return (
       <React.Fragment>
         <CircleProportionMarker markerRef={() => null} {...otherProps} />
         <IconMarker {...otherProps} markerRef={markerRef} />
+        {popupChild}
       </React.Fragment>
     );
   }
   if (radius) {
-    return <CircleProportionMarker {...processedProps} />;
+    return <CircleProportionMarker {...props}>{popupChild}</CircleProportionMarker>;
   }
-  return <IconMarker {...processedProps} />;
-};
-
-const MIN_RADIUS = 1;
-const MAX_ALLOWED_RADIUS = 1000;
-
-const calculateRadiusScaleFactor = processedDataSet => {
-  // Check if any of the radii in the dataset are larger than the max allowed
-  // radius, and scale everything down proportionally if so.
-  // (this needs to happen here instead of inside the circle marker component
-  // because it needs to operate on the dataset level, not the datapoint level)
-  // const maxRadius = processedDataSet
-  //   .map(d => parseInt(d.radius, 10) || 1)
-  //   .reduce((state, current) => Math.max(state, current), 0);
-  // return maxRadius < MAX_ALLOWED_RADIUS ? 1 : (1 / maxRadius) * MAX_ALLOWED_RADIUS;
-  return 10;
+  return <IconMarker {...props}>{popupChild}</IconMarker>;
 };
 
 const mapStateToProps = (state, ownProps) => {
-  const orgUnit = selectOrgUnit(ownProps.organisationUnitCode, state.orgUnits);
+  const measureOptions = state.map.measureInfo.measureOptions;
+  const orgUnit = selectOrgUnit(state, ownProps.organisationUnitCode);
   const coordinates = orgUnit && orgUnit.location ? orgUnit.location.point : [];
-  const {
-    measureInfo: { measureOptions, hiddenMeasures },
-  } = state.map;
-  return { ...orgUnit, coordinates, measureOptions, hiddenMeasures };
+  const radiusScaleFactor = selectRadiusScaleFactor(state);
+  const measureDataAndDisplayInfo = cachedSelectMeasureWithDisplayInfo(
+    state,
+    ownProps.organisationUnitCode,
+  );
+  return {
+    ...measureDataAndDisplayInfo,
+    ...orgUnit,
+    coordinates,
+    radiusScaleFactor,
+    measureOptions,
+  };
 };
 
-export default connect(mapStateToProps)(MeasureMarker);
+const mapDispatchToProps = dispatch => ({
+  onChangeOrgUnit: (organisationUnit, shouldChangeMapBounds = false) => {
+    dispatch(changeOrgUnit(organisationUnit, shouldChangeMapBounds));
+  },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(MeasureMarker);

@@ -9,8 +9,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { LayerGroup } from 'react-leaflet';
-import { changeOrgUnit, openMapPopup, closeMapPopup } from '../../actions';
-import { MeasurePopup } from '../../components/Marker';
 import { selectMeasureName } from '../../reducers/mapReducers';
 import { MEASURE_TYPE_SHADING } from '../../utils/measures';
 import MeasureMarker from './MeasureMarker';
@@ -66,18 +64,6 @@ export class MarkerLayer extends Component {
     }
   }
 
-  onPopup(organisationUnitCode, open = true) {
-    const { onPopupOpen, onPopupClose } = this.props;
-
-    if (open) {
-      this.activePopupId = organisationUnitCode;
-      onPopupOpen(organisationUnitCode);
-    } else {
-      this.activePopupId = this.activePopupId === organisationUnitCode ? null : this.activePopupId;
-      onPopupClose(organisationUnitCode);
-    }
-  }
-
   addMarkerRef(organisationUnitCode, ref) {
     this.markerRefs[organisationUnitCode] = ref;
 
@@ -101,14 +87,7 @@ export class MarkerLayer extends Component {
   }
 
   renderMeasures() {
-    const {
-      measureData,
-      measureOptions,
-      onChangeOrgUnit,
-      sidePanelWidth,
-      measureName,
-      isMeasureLoading,
-    } = this.props;
+    const { measureData, measureOptions, isMeasureLoading } = this.props;
 
     if (
       !measureData ||
@@ -118,26 +97,15 @@ export class MarkerLayer extends Component {
       return null;
     if (isMeasureLoading) return null;
 
-    const PopupChild = ({ data }) => (
-      <MeasurePopup
-        data={data}
-        measureOptions={measureOptions}
-        measureName={measureName}
-        sidePanelWidth={sidePanelWidth}
-        onOrgUnitClick={onChangeOrgUnit}
-        onOpen={() => this.onPopup(data.organisationUnitCode)}
-        onClose={() => this.onPopup(data.organisationUnitCode, false)}
-      />
-    );
-
     return measureData.map(data => {
-      const popup = <PopupChild data={data} />;
       const code = data.organisationUnitCode;
 
       return (
-        <MeasureMarker key={code} markerRef={ref => this.addMarkerRef(code, ref)} {...data}>
-          {popup}
-        </MeasureMarker>
+        <MeasureMarker
+          key={code}
+          organisationUnitCode={code}
+          markerRef={ref => this.addMarkerRef(code, ref)}
+        />
       );
     });
   }
@@ -172,12 +140,4 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => ({
-  onChangeOrgUnit: (organisationUnit, shouldChangeMapBounds = false) => {
-    dispatch(changeOrgUnit(organisationUnit, shouldChangeMapBounds));
-  },
-  onPopupOpen: orgUnitCode => dispatch(openMapPopup(orgUnitCode)),
-  onPopupClose: orgUnitCode => dispatch(closeMapPopup(orgUnitCode)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(MarkerLayer);
+export default connect(mapStateToProps)(MarkerLayer);

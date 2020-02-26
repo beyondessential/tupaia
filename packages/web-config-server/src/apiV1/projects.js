@@ -1,7 +1,7 @@
 import { respond } from '@tupaia/utils';
 import { Project, Entity } from '/models';
 import { calculateBoundsFromEntities } from '/utils/geoJson';
-import { translateForFrontend, getEntityByCode } from '/apiV1/organisationUnit';
+import { translateForFrontend, getEntityAndChildrenByCode } from '/apiV1/organisationUnit';
 
 async function fetchEntitiesWithProjectAccess(req, entities, userGroups) {
   return Promise.all(
@@ -44,7 +44,7 @@ async function buildProjectDataForFrontend(project, req) {
   const hasAccess = entitiesWithAccess.length > 0; // equivalent to accessByEntity.some(e => e.hasAccess)
   const parent =
     entitiesWithAccess.length > 1
-      ? await getEntityByCode('World', req.userHasAccess)
+      ? await getEntityAndChildrenByCode('World', req.userHasAccess)
       : translateForFrontend(entitiesWithAccess[0]);
 
   return {

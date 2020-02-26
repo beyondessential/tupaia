@@ -6,6 +6,9 @@
  */
 
 import { combineReducers } from 'redux';
+import { createSelector } from 'reselect';
+import createCachedSelector from 're-reselect';
+import { selectOrgUnit } from './orgUnitReducers';
 
 import {
   GO_HOME,
@@ -28,6 +31,7 @@ import {
 } from '../actions';
 import { getMeasureFromHierarchy } from '../utils/getMeasureFromHierarchy';
 import { MARKER_TYPES } from '../containers/Map/MarkerLayer';
+import { getMeasureDisplayInfo, calculateRadiusScaleFactor } from '../utils/measures';
 
 import { initialOrgUnit } from '../defaults';
 
@@ -279,3 +283,36 @@ export function selectMeasureName(state = {}) {
   const selectedMeasure = getMeasureFromHierarchy(measureHierarchy, selectedMeasureId);
   return selectedMeasure ? selectedMeasure.name : '';
 }
+
+export const selectMeasureDataByCode = createSelector(
+  [state => state.map.measureInfo.measureData, (_, code) => code],
+  (data, code) => data.find(val => val.organisationUnitCode === code),
+);
+
+export const cachedSelectMeasureWithDisplayInfo = createCachedSelector(
+  [
+    selectMeasureDataByCode,
+    state => state.map.measureInfo.measureOptions,
+    state => state.map.measureInfo.hiddenMeasures,
+    selectOrgUnit,
+  ],
+  (data, options, hiddenMeasures, orgUnit) => {
+    return {
+      ...data,
+      ...getMeasureDisplayInfo({ ...data, ...orgUnit }, options, hiddenMeasures),
+    };
+  },
+)((_, orgUnitCode) => orgUnitCode);
+
+export const selectAllMeasuresWithDisplayInfo = createSelector(
+  [state => state, state => state.map.measureInfo.measureData],
+  (state, allData) =>
+    allData.map(data => ({
+      ...cachedSelectMeasureWithDisplayInfo(state, data.organisationUnitCode),
+    })),
+);
+
+export const selectRadiusScaleFactor = createSelector(
+  [selectAllMeasuresWithDisplayInfo],
+  calculateRadiusScaleFactor,
+);

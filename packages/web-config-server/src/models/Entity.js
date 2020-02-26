@@ -167,6 +167,41 @@ export class Entity extends BaseModel {
     );
   }
 
+  static async getAllDescendantsWithCoordinates(code) {
+    return Entity.database.executeSql(
+      `
+      WITH RECURSIVE children AS (
+        SELECT id, code, country_code, name, image_url, parent_id, point, bounds, region, type, 0 AS generation
+        FROM   entity
+        WHERE  code = ?
+        UNION  ALL
+        SELECT p.id, p.code, p.country_code, p.name, p.image_url, p.parent_id, p.point, p.bounds, p.region, p.type, c.generation + 1
+        FROM   children      c
+        JOIN   entity p ON p.parent_id = c.id
+      )
+      SELECT
+        children.id,
+        children.code,
+        children.country_code,
+        children.name,
+        children.image_url,
+        p.code as parent_code,
+        ST_AsGeoJSON(children.point) as point,
+        ST_AsGeoJSON(children.bounds) as bounds,
+        (children.region IS NOT NULL) as has_region,
+        children.type,
+        c.category_code as clinic_category_code,
+        c.type_name as clinic_type_name
+      FROM children
+      left join entity p
+      	on p.id = children.parent_id 
+      LEFT JOIN clinic c
+        ON c.code = children.code
+    `,
+      [code],
+    );
+  }
+
   static async getChildRegions(code) {
     return Entity.database.executeSql(
       `
@@ -263,25 +298,6 @@ export class Entity extends BaseModel {
     `,
       [id, ...types],
     );
-  }
-
-  static async countAllChildren(id, types = []) {
-    return Entity.database.executeSql(
-      `
-      SELECT 
-        COUNT(*)
-      FROM entity
-      WHERE
-        parent_id = ? ${constructTypesCriteria(types, 'AND')}
-      ORDER BY
-        name;
-    `,
-      [id, ...types],
-    );
-  }
-
-  static async orgUnitHasChildren(id) {
-    return Entity.countAllChildren(id, ORG_UNIT_TYPE_LIST) > 0;
   }
 
   static async getOrgUnitChildren(id) {

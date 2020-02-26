@@ -64,7 +64,7 @@ import {
   FETCH_LOGOUT_SUCCESS,
   FETCH_MEASURES_ERROR,
   FETCH_MEASURES_SUCCESS,
-  FETCH_ORG_UNIT_ERROR,
+  CHANGE_ORG_UNIT_ERROR,
   CHANGE_ORG_UNIT_SUCCESS,
   FETCH_RESET_PASSWORD_ERROR,
   FETCH_RESET_PASSWORD_SUCCESS,
@@ -612,7 +612,7 @@ function global(
         ...state,
         highlightedOrganisationUnit: action.organisationUnit,
       };
-    case FETCH_ORG_UNIT_ERROR:
+    case CHANGE_ORG_UNIT_ERROR:
       return { ...state, loadingOrganisationUnit: null };
     case FETCH_DASHBOARD_CONFIG_SUCCESS: {
       const { dashboardConfig } = action;
