@@ -49,7 +49,7 @@ export class TupaiaDatabase {
   constructor(transactingConnection) {
     autobind(this);
     this.changeHandlers = {};
-    this.changeChannel = new DatabaseChangeChannel();
+    this.changeChannel = null; // changeChannel is lazily instantiated - not every database needs it
 
     // If this instance is not for a specific transaction, it is the singleton instance
     this.isSingleton = !transactingConnection;
@@ -61,9 +61,6 @@ export class TupaiaDatabase {
           client: 'pg',
           connection: getConnectionConfig(),
         }));
-      if (this.isSingleton) {
-        this.changeChannel.addChangeHandler(this.notifyChangeHandlers);
-      }
       return true;
     };
     this.connectionPromise = connectToDatabase();
@@ -74,15 +71,26 @@ export class TupaiaDatabase {
   maxBindingsPerQuery = MAX_BINDINGS_PER_QUERY;
 
   closeConnections() {
-    this.changeChannel.close();
+    if (this.changeChannel) {
+      this.changeChannel.close();
+    }
     this.connection.destroy();
   }
 
+  getOrCreateChangeChannel() {
+    if (!this.changeChannel) {
+      this.changeChannel = new DatabaseChangeChannel();
+    }
+    return this.changeChannel;
+  }
+
   async waitForChangeChannel(timeout = 250, retries = 4) {
-    return this.changeChannel.ping(timeout, retries);
+    return this.getOrCreateChangeChannel().ping(timeout, retries);
   }
 
   addChangeHandlerForCollection(collectionName, changeHandler, key = generateId()) {
+    // if a change handler is being added, this db needs a change channel - make sure it's instantiated
+    this.getOrCreateChangeChannel();
     this.getChangeHandlersForCollection(collectionName)[key] = changeHandler;
   }
 
@@ -337,7 +345,7 @@ export class TupaiaDatabase {
   }
 
   markRecordsAsChanged(recordType, records) {
-    this.changeChannel.publishRecordUpdates(recordType, records);
+    this.getOrCreateChangeChannel().publishRecordUpdates(recordType, records);
   }
 
   /**
