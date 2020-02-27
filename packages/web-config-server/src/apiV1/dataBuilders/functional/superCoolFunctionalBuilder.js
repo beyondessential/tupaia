@@ -1,4 +1,4 @@
-import { basicFetch } from './fetchers/analytics';
+import { fetchAnalytics, fetchDataElementCodesFromGroup } from './fetchers/analytics';
 import { countValues } from './builders/count';
 import { formatForFrontend } from './formatters/values';
 
@@ -9,14 +9,16 @@ function pipe(...fns) {
 
 /** This would need to change to get the functions to pass the the pipe out of some config */
 export const superCoolFunctionalBuilder = (
-  { dataBuilderConfig, query, organisationUnitInfo },
+  { dataBuilderConfig, query, entity, dataSource },
+  aggregator,
   dhisApi,
 ) => {
   /** Looking into better ways to provide this data to the piped functions. */
-  const context = { dataBuilderConfig, query, organisationUnitInfo, dhisApi };
+  const context = { dataBuilderConfig, query, dhisApi, aggregator, entity, dataSource };
 
   return pipe(
-    basicFetch,
+    fetchDataElementCodesFromGroup,
+    fetchAnalytics,
     countValues(context.dataBuilderConfig.valuesOfInterest),
     formatForFrontend,
   )(context);
