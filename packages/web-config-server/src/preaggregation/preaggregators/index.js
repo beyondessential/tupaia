@@ -4,7 +4,7 @@
  */
 
 export { vaccineStockOnHand } from './vaccineStockOnHand';
-export { annualPopulationBreakdown } from './annualPopulationBreakdown';
+export { tongaAnnualPopulation } from './tongaAnnualPopulation';
 export { tongaFamilyPlanning } from './tongaFamilyPlanning';
 export { criticalMedicineAvailability } from './criticalMedicineAvailability';
 export { immsFridgeBreaches } from './immsFridgeBreaches';
