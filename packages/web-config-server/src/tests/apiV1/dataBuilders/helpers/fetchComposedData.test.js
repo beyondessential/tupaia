@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 
+import { Aggregator } from '@tupaia/aggregator';
 import { DhisApi } from '/dhis/DhisApi';
 import { fetchComposedData } from '/apiV1/dataBuilders/helpers/fetchComposedData';
 import * as GetDataBuilder from '/apiV1/dataBuilders/getDataBuilder';
@@ -23,7 +24,9 @@ const query = {
   startPeriod: '201910',
   endPeriod: '201911',
 };
-const dhisApiStub = sinon.createStubInstance(DhisApi);
+const dataServices = [{ isDataRegional: true }];
+const aggregator = sinon.createStubInstance(Aggregator);
+const dhisApi = sinon.createStubInstance(DhisApi);
 
 const callFetchComposedData = async () => {
   const dataBuilderConfig = {
@@ -37,9 +40,10 @@ const callFetchComposedData = async () => {
         dataBuilderConfig: DATA_BUILDERS.percentageBuilder.config,
       },
     },
+    dataServices,
   };
 
-  return fetchComposedData({ dataBuilderConfig, query }, dhisApiStub);
+  return fetchComposedData({ dataBuilderConfig, query }, aggregator, dhisApi);
 };
 
 describe('fetchComposedData()', () => {
@@ -62,12 +66,14 @@ describe('fetchComposedData()', () => {
     await callFetchComposedData();
 
     expect(DATA_BUILDERS.countBuilder.stub).to.have.been.calledOnceWith(
-      { dataBuilderConfig: DATA_BUILDERS.countBuilder.config, query },
-      dhisApiStub,
+      { dataBuilderConfig: { ...DATA_BUILDERS.countBuilder.config, dataServices }, query },
+      aggregator,
+      dhisApi,
     );
     expect(DATA_BUILDERS.percentageBuilder.stub).to.have.been.calledOnceWith(
-      { dataBuilderConfig: DATA_BUILDERS.percentageBuilder.config, query },
-      dhisApiStub,
+      { dataBuilderConfig: { ...DATA_BUILDERS.percentageBuilder.config, dataServices }, query },
+      aggregator,
+      dhisApi,
     );
   });
 

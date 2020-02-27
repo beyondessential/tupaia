@@ -39,9 +39,7 @@ describe('pushChange()', () => {
     it(
       'should use an event push handler for an event based survey response',
       test(async function() {
-        this.stub(models.surveyResponse, 'findById').callsFake(() => ({
-          isEventBased: () => true,
-        }));
+        this.stub(models.surveyResponse, 'checkIsEventBased').returns(true);
 
         await pushChange(models, { record_type: SURVEY_RESPONSE });
         expect(EventPusher.prototype.push).to.have.callCount(1);
@@ -56,9 +54,7 @@ describe('pushChange()', () => {
     it(
       'should use a data value push handler for a non event based survey response',
       test(async function() {
-        this.stub(models.surveyResponse, 'findById').callsFake(() => ({
-          isEventBased: () => false,
-        }));
+        this.stub(models.surveyResponse, 'checkIsEventBased').returns(false);
 
         await pushChange(models, { record_type: SURVEY_RESPONSE });
         expect(AggregateDataPusher.prototype.push).to.have.callCount(1);

@@ -4,9 +4,21 @@
  */
 
 export { getTimezoneNameFromTimestamp, utcMoment } from './datetime';
+export { getDhisConfig } from './dhis';
 export * from './errors';
-export { flattenToObject, getSortByKey, mapKeys, reduceToDictionary, reduceToSet } from './object';
+export { Multilock } from './Multilock';
+export { getCountryNameFromCode } from './getCountryNameFromCode';
+export {
+  flattenToObject,
+  getKeysSortedByValues,
+  getSortByKey,
+  mapKeys,
+  mapValues,
+  reduceToDictionary,
+  reduceToSet,
+} from './object';
 export { asynchronouslyFetchValuesForObject, fetchWithTimeout, stringifyQuery } from './request';
+export { replaceValues } from './replaceValues';
 export { respond } from './respond';
 export { singularise, stripFromStart } from './string';
 export { WorkBookParser } from './WorkBookParser';

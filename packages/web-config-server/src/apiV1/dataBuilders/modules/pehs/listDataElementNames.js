@@ -3,6 +3,8 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
 
+import { getDataElementCodesInGroup } from '/apiV1/utils';
+
 /**
  * Return either the data element name, or the value stored by the user if the name matches the
  * regex passed in.
@@ -11,6 +13,7 @@
  * from, e.g. "More training". The final "suggested improvement" is a free text box that they
  * can write any improvement they want, so on the front end in that case we want to show what
  * they wrote, rather than the question text.
+ *
  * @param {string} useValueIfNameMatches  Regex to test the data element name against
  * @param {string} name                   Data element name
  * @param {string} value                  Value stored by user against the data element
@@ -22,22 +25,26 @@ const getNameOrValue = (useValueIfNameMatches, name, value) => {
   return name;
 };
 
-export const listDataElementNames = async ({ dataBuilderConfig, query }, dhisApi) => {
-  const { useValueIfNameMatches } = dataBuilderConfig;
-  const { results, metadata } = await dhisApi.getAnalytics(
-    {
-      dataElementGroupCode: '{dataElementCode}_suggestions',
-    },
+export const listDataElementNames = async ({ dataBuilderConfig, query }, aggregator, dhisApi) => {
+  const { dataServices, useValueIfNameMatches } = dataBuilderConfig;
+
+  const dataElementCodes = await getDataElementCodesInGroup(
+    dhisApi,
+    `${query.dataElementCode}_suggestions`,
+  );
+  const { results, metadata } = await aggregator.fetchAnalytics(
+    dataElementCodes,
+    { dataServices },
     query,
   );
 
   // Translate the json so that the data element names are the values
   const returnJson = {};
-  const { dataElementIdToCode, dataElementCodeToName } = metadata;
+  const { dataElementCodeToName } = metadata;
   returnJson.data = results
     .filter(({ value }) => value && value !== '0')
-    .map(({ dataElement: dataElementId, value }) => {
-      const dataElementName = dataElementCodeToName[dataElementIdToCode[dataElementId]];
+    .map(({ dataElement: dataElementCode, value }) => {
+      const dataElementName = dataElementCodeToName[dataElementCode];
       return {
         code: dataElementName,
         value: getNameOrValue(useValueIfNameMatches, dataElementName, value),

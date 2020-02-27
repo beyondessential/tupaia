@@ -1,14 +1,14 @@
-import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
 import { limitRange, regexLabel } from '/apiV1/utils';
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 
-export const percentagesByNominatedPairs = async ({ dataBuilderConfig, query }, dhisApi) => {
+export const percentagesByNominatedPairs = async ({ dataBuilderConfig, query }, aggregator) => {
   const {
     pairs,
     includeAggregateLine,
     range,
     numeratorLabelRegex,
     aggregationTypes,
+    dataServices,
   } = dataBuilderConfig;
 
   // Function to fetch analytics for a metric
@@ -16,16 +16,21 @@ export const percentagesByNominatedPairs = async ({ dataBuilderConfig, query }, 
     const {
       results: denominatorResults,
       metadata: denominatorMetadata,
-    } = await dhisApi.getAnalytics(
-      { dataElementCodes: metric.denominatorDataElementCodes },
+    } = await aggregator.fetchAnalytics(
+      metric.denominatorDataElementCodes,
+      { dataServices },
       query,
-      AGGREGATION_TYPES[aggregationTypes.denominator],
+      aggregationTypes.denominator,
     );
 
-    const { results: numeratorResults, metadata: numeratorMetadata } = await dhisApi.getAnalytics(
-      { dataElementCodes: metric.numeratorDataElementCodes },
+    const {
+      results: numeratorResults,
+      metadata: numeratorMetadata,
+    } = await aggregator.fetchAnalytics(
+      metric.numeratorDataElementCodes,
+      { dataServices },
       query,
-      AGGREGATION_TYPES[aggregationTypes.numerator],
+      aggregationTypes.numerator,
     );
     return {
       denominatorResults,
@@ -35,22 +40,17 @@ export const percentagesByNominatedPairs = async ({ dataBuilderConfig, query }, 
     };
   };
 
-  const numeratorsByDataElementId = {};
-  const denominatorsByDataElementId = {};
+  const numeratorsByDataElement = {};
+  const denominatorsByDataElement = {};
   const metric = {
     key: 'value',
     numeratorDataElementCodes: Object.keys(pairs),
     denominatorDataElementCodes: Object.values(pairs),
   };
-  const {
-    numeratorResults,
-    denominatorResults,
-    numeratorMetadata,
-    denominatorMetadata,
-  } = await fetchAnalytics(metric);
+  const { numeratorResults, denominatorResults, numeratorMetadata } = await fetchAnalytics(metric);
 
   const resultKeysWithDenominator = {};
-  denominatorResults.forEach(({ period, organisationUnit }) => {
+  denominatorResults.forEach(({ organisationUnit }) => {
     resultKeysWithDenominator[organisationUnit] = true;
   });
   // Removes numerator values that don't exist in the denominator
@@ -60,50 +60,43 @@ export const percentagesByNominatedPairs = async ({ dataBuilderConfig, query }, 
 
   // Function to increment a numerator/denominator collection by month
   // (potentially across multiple metrics)
-  const incrementForDataElementId = (obj, dataElementId, value) => {
-    if (!obj[dataElementId]) {
-      obj[dataElementId] = 0;
+  const incrementForDataElement = (obj, dataElement, value) => {
+    if (!obj[dataElement]) {
+      obj[dataElement] = 0;
     }
-    obj[dataElementId] = (obj[dataElementId] || 0) + value;
+    obj[dataElement] = (obj[dataElement] || 0) + value;
   };
 
   // Set up numerator to be aggregated
-  const incrementNumeratorByDataElementId = ({ value, dataElement }) => {
-    incrementForDataElementId(numeratorsByDataElementId, dataElement, value);
+  const incrementNumeratorByDataElement = ({ value, dataElement }) => {
+    incrementForDataElement(numeratorsByDataElement, dataElement, value);
   };
 
   // Set up denominator to be aggregated
-  const incrementDenominatorByDataElementId = ({ value, dataElement }) => {
-    incrementForDataElementId(denominatorsByDataElementId, dataElement, value);
+  const incrementDenominatorByDataElement = ({ value, dataElement }) => {
+    incrementForDataElement(denominatorsByDataElement, dataElement, value);
   };
 
   // Single facility, don't worry if it is operational or not
-  cleanedNumeratorResults.forEach(incrementNumeratorByDataElementId);
-  denominatorResults.forEach(incrementDenominatorByDataElementId);
+  cleanedNumeratorResults.forEach(incrementNumeratorByDataElement);
+  denominatorResults.forEach(incrementDenominatorByDataElement);
 
   // Calculate the percentages (represented as 0.0 - 1.0) based on the numerator
   // and denominator for each month
-  const percentageData = Object.keys(numeratorMetadata.dataElementIdToCode).map(
-    numeratorDataElementId => {
-      const numerator = numeratorsByDataElementId[numeratorDataElementId];
+  const percentageData = Object.keys(numeratorMetadata.dataElementCodeToName).map(
+    numeratorDataElement => {
+      const numerator = numeratorsByDataElement[numeratorDataElement];
       const name = regexLabel(
-        numeratorMetadata.dataElement[numeratorDataElementId],
+        numeratorMetadata.dataElementCodeToName[numeratorDataElement],
         numeratorLabelRegex,
       );
       const result = {
         name,
       };
-      const denominatorDataCode =
-        pairs[numeratorMetadata.dataElementIdToCode[numeratorDataElementId]];
-      const foundCodes = Object.entries(denominatorMetadata.dataElementIdToCode).find(
-        ([elementId, code]) => denominatorDataCode === code,
-      );
+      const denominatorDataElement = pairs[numeratorDataElement];
       let denominator;
-      if (numerator !== null && numerator !== undefined && foundCodes && foundCodes.length) {
-        const denominatorElementId = foundCodes[0];
-        if (denominatorElementId && denominatorsByDataElementId[denominatorElementId]) {
-          denominator = denominatorsByDataElementId[denominatorElementId];
-        }
+      if (numerator !== null && numerator !== undefined) {
+        denominator = denominatorDataElement && denominatorsByDataElement[denominatorDataElement];
       }
 
       // get result for instances where numerator and denominator are missing

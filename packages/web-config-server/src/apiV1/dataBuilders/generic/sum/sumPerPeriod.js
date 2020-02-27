@@ -3,7 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { AGGREGATION_TYPES, periodToTimestamp, periodToDisplayString } from '@tupaia/dhis-api';
+import { periodToTimestamp, periodToDisplayString } from '@tupaia/dhis-api';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 
 class SumPerPeriodBuilder extends DataBuilder {
@@ -12,9 +12,7 @@ class SumPerPeriodBuilder extends DataBuilder {
    */
   async build() {
     const { dataSource } = this.config;
-    const { results } = await this.getAnalytics({
-      dataElementCodes: dataSource.codes,
-    });
+    const { results } = await this.fetchAnalytics(dataSource.codes);
     const dataByPeriod = {};
     results.forEach(({ period, value }) => {
       dataByPeriod[period] = (dataByPeriod[period] || 0) + value;
@@ -33,8 +31,14 @@ class SumPerPeriodBuilder extends DataBuilder {
   }
 }
 
-const sumPerPeriod = async ({ dataBuilderConfig, query, entity }, dhisApi, aggregationType) => {
+const sumPerPeriod = async (
+  { dataBuilderConfig, query, entity },
+  aggregator,
+  dhisApi,
+  aggregationType,
+) => {
   const builder = new SumPerPeriodBuilder(
+    aggregator,
     dhisApi,
     dataBuilderConfig,
     query,
@@ -44,8 +48,8 @@ const sumPerPeriod = async ({ dataBuilderConfig, query, entity }, dhisApi, aggre
   return builder.build();
 };
 
-export const sumPerWeek = (config, dhisApi) =>
-  sumPerPeriod(config, dhisApi, AGGREGATION_TYPES.FINAL_EACH_WEEK);
+export const sumPerWeek = (config, aggregator, dhisApi) =>
+  sumPerPeriod(config, aggregator, dhisApi, aggregator.aggregationTypes.FINAL_EACH_WEEK);
 
-export const sumPerMonth = (config, dhisApi) =>
-  sumPerPeriod(config, dhisApi, AGGREGATION_TYPES.FINAL_EACH_MONTH);
+export const sumPerMonth = (config, aggregator, dhisApi) =>
+  sumPerPeriod(config, aggregator, dhisApi, aggregator.aggregationTypes.FINAL_EACH_MONTH);

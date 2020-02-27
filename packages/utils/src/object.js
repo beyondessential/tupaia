@@ -7,6 +7,34 @@
  * @typedef {Object[] | Object<string, Object>} ObjectCollection
  */
 
+const compareAsc = (a, b) => {
+  if (typeof a === 'string' && typeof b === 'string') {
+    return a.localeCompare(b, undefined, { numeric: true });
+  }
+
+  if (a < b) {
+    return -1;
+  }
+  return a > b ? 1 : 0;
+};
+
+const compareDesc = (a, b) => compareAsc(a, b) * -1;
+
+/**
+ * Sorts the keys in the provided object by their corresponding values
+ * Default direction: ASC
+ *
+ * @param {Object<string, Object>} object
+ * @param {{ asc: boolean }} options
+ * @returns {Array}
+ */
+export const getKeysSortedByValues = (object, options = {}) => {
+  const { asc = true } = options || {};
+  const comparator = asc ? compareAsc : compareDesc;
+
+  return Object.keys(object).sort((keyA, keyB) => comparator(object[keyA], object[keyB]));
+};
+
 /**
  * Returns a callback which compares two objects using the provided `key` .
  * Can be used in `Array.prototype.sort` for an array of objects
@@ -91,19 +119,45 @@ export const reduceToSet = (objectCollection, property) => {
 };
 
 /**
- * Changes keys in `object` according to `mapping`. Keys that
- * do not exist in `mapping` will not be included in the result
+ * Changes keys in `object` according to `mapping`
  *
  * @param {Object<string, any>} object
  * @param {Object<string, string>} mapping `oldKey` => `newKey` mapping
+ * @param {Object} options
+ * @returns {Object<string, any>}
  */
-export const mapKeys = (object, mapping) => {
+export const mapKeys = (object, mapping, { defaultToExistingKeys = false } = {}) => {
   const result = {};
 
   Object.entries(object).forEach(([key, value]) => {
-    const newKey = mapping[key];
-    if (newKey) {
+    if (mapping.hasOwnProperty(key)) {
+      const newKey = mapping[key];
       result[newKey] = value;
+    } else if (defaultToExistingKeys) {
+      result[key] = value;
+    }
+  });
+
+  return result;
+};
+
+/**
+ * Changes values in `object` according to `mapping`
+ *
+ * @param {Object<string, any>} object
+ * @param {Object<string, string>} mapping `oldValue` => `newValue` mapping
+ * @param {Objcet} options
+ * @returns {Object<string, any>}
+ */
+export const mapValues = (object, mapping, { defaultToExistingValues = false } = {}) => {
+  const result = {};
+
+  Object.entries(object).forEach(([key, value]) => {
+    if (mapping.hasOwnProperty(value)) {
+      const newValue = mapping[value];
+      result[key] = newValue;
+    } else if (defaultToExistingValues) {
+      result[key] = value;
     }
   });
 

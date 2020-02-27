@@ -11,10 +11,8 @@ import { ENTITY_TYPES } from '/models/Entity';
 
 class StockoutsDataBuilder extends DataBuilder {
   async build() {
-    const { results, metadata } = await this.getAnalytics({
-      outputIdScheme: 'code',
-      ...this.config,
-    });
+    const { dataElementCodes } = this.config;
+    const { results, metadata } = await this.fetchAnalytics(dataElementCodes);
     const stockoutData = this.entity.isFacility()
       ? this.getStockoutsList(results, metadata)
       : await this.getStockoutsByFacility(results, metadata);
@@ -67,7 +65,7 @@ class StockoutsDataBuilder extends DataBuilder {
   };
 }
 
-export const stockouts = async ({ dataBuilderConfig, query, entity }, dhisApi) => {
-  const builder = new StockoutsDataBuilder(dhisApi, dataBuilderConfig, query, entity);
+export const stockouts = async ({ dataBuilderConfig, query, entity }, aggregator, dhisApi) => {
+  const builder = new StockoutsDataBuilder(aggregator, dhisApi, dataBuilderConfig, query, entity);
   return builder.build();
 };

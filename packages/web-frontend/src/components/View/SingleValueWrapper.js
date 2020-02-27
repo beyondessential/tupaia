@@ -26,8 +26,8 @@ import { formatDataValue } from '../../utils';
 
 export class SingleValueWrapper extends PureComponent {
   render() {
-    const { name, valueType, value, total } = this.props.viewContent;
-    const metadata = this.props.viewContent[`${name}_metadata`];
+    const { name, valueType, value, total, value_metadata } = this.props.viewContent;
+    const metadata = value_metadata || this.props.viewContent[`${name}_metadata`];
     const { style } = this.props;
 
     return (

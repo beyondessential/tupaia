@@ -3,14 +3,19 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import { TYPES } from '@tupaia/database';
+import { extractRefreshTokenFromReq } from '../utilities';
 
 export const logApiRequest = async (req, res, next) => {
-  const apiRequestLog = await req.database.create(TYPES.API_REQUEST_LOG, {
+  const refreshToken = await extractRefreshTokenFromReq(req);
+  const { id: apiRequestLogId } = await req.models.apiRequestLog.create({
     version: req.version,
     endpoint: req.endpoint,
     user_id: req.userId,
+    query: req.query,
+    refresh_token: refreshToken,
   });
-  req.apiRequestLogId = apiRequestLog.id;
+  req.apiRequestLogId = apiRequestLogId;
+  req.refreshToken = refreshToken;
+
   next();
 };

@@ -55,7 +55,7 @@ export class EventBuilder {
     const dataValues = [];
     for (let i = 0; i < answers.length; i++) {
       const answer = answers[i];
-      const dataValue = await generateDataValue(this.api, this.models, answer, true);
+      const dataValue = await generateDataValue(this.models, answer);
       dataValues.push(dataValue);
     }
 

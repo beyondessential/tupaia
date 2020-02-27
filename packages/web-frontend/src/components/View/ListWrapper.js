@@ -14,7 +14,7 @@
     "type": "view",
     "viewType": "list",
     "name": "Suggestions",
-    "data": [{"dataElementId" : "foo", "value": "Staff training required"},
+    "data": [{"dataElementCode" : "foo", "value": "Staff training required"},
              ... ],
   }
  * @return {React Component} a view with a list of values
@@ -47,21 +47,21 @@ export class ListWrapper extends PureComponent {
     }
 
     const items = data.map(item => {
-      let { dataElementId: dataElementId, value } = item;
+      let { dataElementCode, value } = item;
       if (valueTranslationOptions) {
         const { match, replace } = valueTranslationOptions;
         value = value.replace(new RegExp(match), replace);
       }
       const rowStyle =
-        this.state.hoveredRow === dataElementId
+        this.state.hoveredRow === dataElementCode
           ? { ...styles.row, ...styles.rowHovered }
           : styles.row;
 
       return (
         <div
-          key={dataElementId}
+          key={dataElementCode}
           style={rowStyle}
-          onMouseEnter={() => this.setState({ hoveredRow: dataElementId })}
+          onMouseEnter={() => this.setState({ hoveredRow: dataElementCode })}
           onMouseLeave={() => this.setState({ hoveredRow: null })}
           onClick={() => onItemClick(item)}
         >

@@ -3,18 +3,19 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 
+import 'babel-polyfill';
+
 import {} from 'dotenv/config'; // Load the environment variables into process.env
 
 import http from 'http';
 import { TupaiaDatabase, ModelRegistry } from '@tupaia/database';
 
-import { SyncQueue as GenericSyncQueue } from './database';
+import { createMeditrakSyncQueue } from './database';
 import * as modelClasses from './database/models';
 import { startSyncWithDhis } from './dhis';
 import { startSyncWithMs1 } from './ms1';
 import { startFeedScraper } from './social';
 import { createApp } from './app';
-import { initialiseNotifiers } from './notifications/notifiers';
 
 import winston from './log';
 
@@ -27,27 +28,8 @@ const models = new ModelRegistry(database, modelClasses);
 /**
  * Set up change handlers e.g. for syncing
  */
-const MODELS_TO_SYNC_WITH_MEDITRAK = [
-  models.facility,
-  models.permissionGroup,
-  models.country,
-  models.geographicalArea,
-  models.question,
-  models.survey,
-  models.surveyGroup,
-  models.surveyScreen,
-  models.surveyScreenComponent,
-  models.option,
-  models.optionSet,
-  models.entity,
-];
-
-const meditrakSyncQueue = new GenericSyncQueue( // Syncs changes to the data collection app
-  models,
-  models.meditrakSyncQueue,
-  MODELS_TO_SYNC_WITH_MEDITRAK,
-);
-initialiseNotifiers(models); // Notifies users of relevant changes, e.g. permissions granted
+createMeditrakSyncQueue(models);
+models.initialiseNotifiers(); // Notifies users of relevant changes, e.g. permissions granted
 
 /**
  * Set up actual app with routes etc.
@@ -75,3 +57,18 @@ startSyncWithMs1(models);
  * Regularly sync actions that have happened on meditrak with the social feed.
  */
 startFeedScraper(models);
+
+/**
+ * Notify PM2 that we are ready
+ * */
+if (process.send) {
+  (async () => {
+    try {
+      await database.waitForChangeChannel();
+      winston.info('Successfully connected to pubsub service');
+      process.send('ready');
+    } catch (error) {
+      winston.error(error.message);
+    }
+  })();
+}

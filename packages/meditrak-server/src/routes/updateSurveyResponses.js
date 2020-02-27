@@ -211,10 +211,9 @@ async function updateSubmissionTimeIfRequired(models, surveyResponseId, newSubmi
   const newSubmissionTimeInUtc = newSubmissionTimeWithTimezone.utc().format();
 
   if (!moment(currentSubmissionTime).isSame(newSubmissionTimeInUtc, 'minute')) {
-    await models.surveyResponse.update(
-      { id: surveyResponseId },
-      { submission_time: newSubmissionTimeInUtc },
-    );
+    await models.surveyResponse.updateById(surveyResponseId, {
+      submission_time: newSubmissionTimeInUtc,
+    });
   }
 }
 

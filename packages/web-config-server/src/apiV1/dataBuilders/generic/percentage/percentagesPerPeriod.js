@@ -3,12 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import {
-  AGGREGATION_TYPES,
-  PERIOD_TYPES,
-  convertToPeriod,
-  periodToTimestamp,
-} from '@tupaia/dhis-api';
+import { PERIOD_TYPES, convertToPeriod, periodToTimestamp } from '@tupaia/dhis-api';
 import {
   aggregateOperationalFacilityValues,
   getFacilityStatuses,
@@ -16,13 +11,6 @@ import {
   timestampToPeriodName,
   limitRange,
 } from '/apiV1/utils';
-
-const {
-  FINAL_EACH_MONTH,
-  FINAL_EACH_MONTH_FILL_EMPTY_MONTHS,
-  FINAL_EACH_YEAR,
-  FINAL_EACH_YEAR_FILL_EMPTY_YEARS,
-} = AGGREGATION_TYPES;
 
 const { MONTH, YEAR } = PERIOD_TYPES;
 
@@ -38,43 +26,49 @@ const { MONTH, YEAR } = PERIOD_TYPES;
  * @param {boolean} fillEmptyDenominatorValues
  * @returns {Object} An object with { numerator: {string}, denominator: {string} } shape
  */
-const getAggregationTypes = (periodType, fillEmptyDenominatorValues = false) => {
+const getAggregationTypes = (aggregator, periodType, fillEmptyDenominatorValues = false) => {
   switch (periodType) {
     case MONTH:
       return {
-        numerator: FINAL_EACH_MONTH,
+        numerator: aggregator.aggregationTypes.FINAL_EACH_MONTH,
         denominator: fillEmptyDenominatorValues
-          ? FINAL_EACH_MONTH_FILL_EMPTY_MONTHS
-          : FINAL_EACH_MONTH,
+          ? aggregator.aggregationTypes.FINAL_EACH_MONTH_FILL_EMPTY_MONTHS
+          : aggregator.aggregationTypes.FINAL_EACH_MONTH,
       };
     case YEAR:
       return {
-        numerator: FINAL_EACH_YEAR,
+        numerator: aggregator.aggregationTypes.FINAL_EACH_YEAR,
         denominator: fillEmptyDenominatorValues
-          ? FINAL_EACH_YEAR_FILL_EMPTY_YEARS
-          : FINAL_EACH_YEAR,
+          ? aggregator.aggregationTypes.FINAL_EACH_YEAR_FILL_EMPTY_YEARS
+          : aggregator.aggregationTypes.FINAL_EACH_YEAR,
       };
     default:
       throw new Error('Unsupported aggregation type');
   }
 };
 
-const percentagesPerPeriod = async ({ dataBuilderConfig, query, entity }, dhisApi, periodType) => {
+const percentagesPerPeriod = async (
+  { dataBuilderConfig, query, entity },
+  aggregator,
+  periodType,
+) => {
   // Function to fetch analytics for a metric
-  const { fillEmptyDenominatorValues } = dataBuilderConfig;
-  const aggregationTypes = getAggregationTypes(periodType, fillEmptyDenominatorValues);
+  const { fillEmptyDenominatorValues, dataServices } = dataBuilderConfig;
+  const aggregationTypes = getAggregationTypes(aggregator, periodType, fillEmptyDenominatorValues);
 
   const fetchAnalytics = async metric => {
-    const { results: denominatorResults } = await dhisApi.getAnalytics(
-      { dataElementGroupCode: metric.denominatorDataElementGroupCode },
+    const { results: denominatorResults } = await aggregator.fetchAnalytics(
+      metric.denominator,
+      { dataServices },
       fillEmptyDenominatorValues ? { ...query, period: undefined } : query,
-      aggregationTypes.denominator,
+      { aggregationType: aggregationTypes.denominator },
     );
 
-    const { results: numeratorResults } = await dhisApi.getAnalytics(
-      { dataElementGroupCode: metric.numeratorDataElementGroupCode },
+    const { results: numeratorResults } = await aggregator.fetchAnalytics(
+      metric.numerator,
+      { dataServices },
       query,
-      aggregationTypes.numerator,
+      { aggregationType: aggregationTypes.numerator },
     );
     return { denominatorResults, numeratorResults };
   };
@@ -84,8 +78,8 @@ const percentagesPerPeriod = async ({ dataBuilderConfig, query, entity }, dhisAp
   if (metrics.length === 0) {
     metrics.push({
       key: 'value',
-      numeratorDataElementGroupCode: dataBuilderConfig.numeratorDataElementGroupCode,
-      denominatorDataElementGroupCode: dataBuilderConfig.denominatorDataElementGroupCode,
+      numerator: dataBuilderConfig.numerator,
+      denominator: dataBuilderConfig.denominator,
     });
   }
 
@@ -114,7 +108,7 @@ const percentagesPerPeriod = async ({ dataBuilderConfig, query, entity }, dhisAp
   // Get facility statuses if we're looking at more than one facility
   const operationalFacilities = entity.isFacility()
     ? null
-    : await getFacilityStatuses(query.organisationUnitCode, query.period);
+    : await getFacilityStatuses(aggregator, query.organisationUnitCode, query.period);
 
   // Fetch analytics for each metric in series
   for (let i = 0; i < metrics.length; i++) {
@@ -172,8 +166,8 @@ const percentagesPerPeriod = async ({ dataBuilderConfig, query, entity }, dhisAp
   };
 };
 
-export const monthlyPercentages = async (queryConfig, dhisApi) =>
-  percentagesPerPeriod(queryConfig, dhisApi, MONTH);
+export const monthlyPercentages = async (queryConfig, aggregator) =>
+  percentagesPerPeriod(queryConfig, aggregator, MONTH);
 
-export const annualPercentages = async (queryConfig, dhisApi) =>
-  percentagesPerPeriod(queryConfig, dhisApi, YEAR);
+export const annualPercentages = async (queryConfig, aggregator) =>
+  percentagesPerPeriod(queryConfig, aggregator, YEAR);

@@ -1,7 +1,10 @@
 import { getFacilityStatusCounts } from '/apiV1/utils';
-// Number of operational faciiticies
-export const countOperationalFacilities = async ({ query }) => {
-  const { numberOperational, total } = await getFacilityStatusCounts(query.organisationUnitCode);
+
+export const countOperationalFacilities = async ({ query }, aggregator) => {
+  const { numberOperational, total } = await getFacilityStatusCounts(
+    aggregator,
+    query.organisationUnitCode,
+  );
   return {
     value: numberOperational,
     total,

@@ -1,11 +1,19 @@
 /**
- * Tupaia MediTrak
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
 import { expect } from 'chai';
 
-import { flattenToObject, mapKeys, reduceToDictionary, reduceToSet, getSortByKey } from '../object';
+import {
+  flattenToObject,
+  getKeysSortedByValues,
+  mapKeys,
+  mapValues,
+  reduceToDictionary,
+  reduceToSet,
+  getSortByKey,
+} from '../object';
 
 const object1 = {
   id: 'id1',
@@ -27,6 +35,48 @@ const assertSortingCorrectness = (sortingMethod, input, expectedValue) => {
 };
 
 describe('object', () => {
+  describe('getKeysSortedByValues', () => {
+    it('should sort the keys of an object containing string values', () => {
+      expect(
+        getKeysSortedByValues({ fourth: 'd', third: 'c', second: 'b' }, { asc: true }),
+      ).to.deep.equal(['second', 'third', 'fourth']);
+    });
+
+    it('should sort the keys of an object containing numeric string values', () => {
+      expect(
+        getKeysSortedByValues({ ten: '10', one: '1', two: '2' }, { asc: true }),
+      ).to.deep.equal(['one', 'two', 'ten']);
+    });
+
+    it('should sort the keys of an object containing number values', () => {
+      expect(getKeysSortedByValues({ five: 5, four: 4, one: 1 }, { asc: true })).to.deep.equal([
+        'one',
+        'four',
+        'five',
+      ]);
+    });
+
+    it('should use DESC direction if configured accordingly', () => {
+      expect(getKeysSortedByValues({ one: 1, five: 5, four: 4 }, { asc: false })).to.deep.equal([
+        'five',
+        'four',
+        'one',
+      ]);
+    });
+
+    it('should default to ASC direction for empty options', () => {
+      expect(getKeysSortedByValues({ five: 5, one: 1 }, {})).to.deep.equal(['one', 'five']);
+    });
+
+    it('should default to ASC direction for `undefined` options', () => {
+      expect(getKeysSortedByValues({ five: 5, one: 1 })).to.deep.equal(['one', 'five']);
+    });
+
+    it('should default to ASC direction for `null` options', () => {
+      expect(getKeysSortedByValues({ five: 5, one: 1 }), null).to.deep.equal(['one', 'five']);
+    });
+  });
+
   describe('getSortByKey()', () => {
     it('should return a method that sorts string values', () => {
       const alpha = { name: 'alpha' };
@@ -151,6 +201,10 @@ describe('object', () => {
   });
 
   describe('mapKeys', () => {
+    it('options parameter should be optional', () => {
+      expect(mapKeys({}, {})).to.be.an('object');
+    });
+
     it('should return a new object with mapped keys', () => {
       const object = { a: 1, b: 2 };
       const mapping = { a: 'alpha', b: 'beta' };
@@ -161,13 +215,80 @@ describe('object', () => {
       });
     });
 
-    it('should exclude keys not specified in the mapping from the result', () => {
+    it('should not default to existing keys by default', () => {
+      const object = { a: 1, b: 2, c: 3 };
+      const mapping = { a: 'alpha', c: 'gamma' };
+      const expectedResults = { alpha: 1, gamma: 3 };
+
+      expect(mapKeys(object, mapping)).to.deep.equal(expectedResults);
+      expect(mapKeys(object, mapping, undefined)).to.deep.equal(expectedResults);
+      expect(mapKeys(object, mapping, {})).to.deep.equal(expectedResults);
+    });
+
+    it('should support an option to default to existing keys', () => {
       const object = { a: 1, b: 2, c: 3 };
       const mapping = { a: 'alpha', c: 'gamma' };
 
-      expect(mapKeys(object, mapping)).to.deep.equal({
+      expect(mapKeys(object, mapping, { defaultToExistingKeys: true })).to.deep.equal({
+        alpha: 1,
+        b: 2,
+        gamma: 3,
+      });
+    });
+
+    it('should support an option to not default to existing keys', () => {
+      const object = { a: 1, b: 2, c: 3 };
+      const mapping = { a: 'alpha', c: 'gamma' };
+
+      expect(mapKeys(object, mapping, { defaultToExistingKeys: false })).to.deep.equal({
         alpha: 1,
         gamma: 3,
+      });
+    });
+  });
+
+  describe('mapValues', () => {
+    it('options parameter should be optional', () => {
+      expect(mapKeys({}, {})).to.be.an('object');
+    });
+
+    it('should return a new object with mapped values', () => {
+      const object = { a: 1, b: 2 };
+      const mapping = { 1: 'alpha', 2: 'beta' };
+
+      expect(mapValues(object, mapping)).to.deep.equal({
+        a: 'alpha',
+        b: 'beta',
+      });
+    });
+
+    it('should not default to existing values by default', () => {
+      const object = { a: 1, b: 2, c: 3 };
+      const mapping = { 1: 'alpha', 3: 'gamma' };
+      const expectedResults = { a: 'alpha', c: 'gamma' };
+
+      expect(mapValues(object, mapping)).to.deep.equal(expectedResults);
+      expect(mapValues(object, mapping, {})).to.deep.equal(expectedResults);
+    });
+
+    it('should support an option to default to existing values', () => {
+      const object = { a: 1, b: 2, c: 3 };
+      const mapping = { 1: 'alpha', 3: 'gamma' };
+
+      expect(mapValues(object, mapping, { defaultToExistingValues: true })).to.deep.equal({
+        a: 'alpha',
+        b: 2,
+        c: 'gamma',
+      });
+    });
+
+    it('should support an option to not default to existing values', () => {
+      const object = { a: 1, b: 2, c: 3 };
+      const mapping = { 1: 'alpha', 3: 'gamma' };
+
+      expect(mapValues(object, mapping, { defaultToExistingValues: false })).to.deep.equal({
+        a: 'alpha',
+        c: 'gamma',
       });
     });
   });

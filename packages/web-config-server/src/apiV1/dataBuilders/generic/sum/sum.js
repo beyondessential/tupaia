@@ -3,50 +3,25 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { DATA_SOURCE_TYPES } from '/apiV1/dataBuilders/dataSourceTypes';
-
-const { SINGLE, GROUP } = DATA_SOURCE_TYPES;
 
 /**
  * Configuration schema
  * @typedef {Object} SumConfig
- * @property {DataSource} dataSource
+ * @property {string[]} dataElementCodes
  *
  * Example:
  * ```
  * {
- *   dataSource: {
- *     type: 'single',
- *     codes: ['POP01', 'POP02']
- *   }
+ *   dataElementCodes: ['POP01', 'POP02']
  * }
  * ```
  */
 
 export class SumBuilder extends DataBuilder {
-  getAnalyticsQueryConfig() {
-    const { dataSource } = this.config;
-    if (!dataSource) {
-      throw new Error('A data source must be provided');
-    }
-    const { type, codes } = dataSource;
-
-    switch (type) {
-      case SINGLE: {
-        return { dataElementCodes: codes };
-      }
-      case GROUP:
-        return { dataElementGroupCodes: codes };
-      default:
-        throw new Error(`Data source type must be one of ${[SINGLE, GROUP]}`);
-    }
-  }
-
   async fetchResults() {
-    const analyticsQueryConfig = this.getAnalyticsQueryConfig();
-    const { results } = await this.getAnalytics(analyticsQueryConfig);
+    const { dataElementCodes } = this.config;
+    const { results } = await this.fetchAnalytics(dataElementCodes);
 
     return results;
   }
@@ -64,13 +39,7 @@ export class SumBuilder extends DataBuilder {
   }
 }
 
-export const sumLatest = async ({ dataBuilderConfig, query, entity }, dhisApi) => {
-  const builder = new SumBuilder(
-    dhisApi,
-    dataBuilderConfig,
-    query,
-    entity,
-    AGGREGATION_TYPES.MOST_RECENT,
-  );
+export const sumLatest = async ({ dataBuilderConfig, query, entity }, aggregator, dhisApi) => {
+  const builder = new SumBuilder(aggregator, dhisApi, dataBuilderConfig, query, entity);
   return builder.build();
 };

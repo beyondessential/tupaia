@@ -2,17 +2,26 @@
  * Tupaia Config Server
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
-import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
 import {
   getChildOrganisationUnits,
-  mapOrgUnitIdsToGroupCodes,
+  getDataElementCodesInGroup,
+  mapOrgUnitToGroupCodes,
   countByOrganisationUnitByValue,
   calculatePercentagesWithinRange,
 } from '/apiV1/utils';
-const { MOST_RECENT_PER_ORG_GROUP } = AGGREGATION_TYPES;
 
-export const percentPerValuePerOrgGroup = async ({ dataBuilderConfig, query }, dhisApi) => {
-  const { organisationUnitLevel, range, valuesOfInterest } = dataBuilderConfig;
+export const percentPerValuePerOrgGroup = async (
+  { dataBuilderConfig, query },
+  aggregator,
+  dhisApi,
+) => {
+  const {
+    dataElementGroupCode,
+    dataServices,
+    organisationUnitLevel,
+    range,
+    valuesOfInterest,
+  } = dataBuilderConfig;
   const { organisationUnitCode } = query;
 
   const organisationUnits = await getChildOrganisationUnits(
@@ -22,14 +31,14 @@ export const percentPerValuePerOrgGroup = async ({ dataBuilderConfig, query }, d
     },
     dhisApi,
   );
-  const orgUnitIdsToGroupKeys = mapOrgUnitIdsToGroupCodes(organisationUnits);
 
-  const { results } = await dhisApi.getAnalytics(
-    dataBuilderConfig,
-    query,
-    MOST_RECENT_PER_ORG_GROUP,
-    { orgUnitIdsToGroupKeys },
-  );
+  const dataElementCodes = await getDataElementCodesInGroup(dhisApi, dataElementGroupCode);
+  const orgUnitToGroupKeys = mapOrgUnitToGroupCodes(organisationUnits);
+
+  const { results } = await aggregator.fetchAnalytics(dataElementCodes, { dataServices }, query, {
+    aggregationType: aggregator.aggregationTypes.MOST_RECENT_PER_ORG_GROUP,
+    aggregationConfig: { orgUnitToGroupKeys },
+  });
   const countsByOrganisationUnit = countByOrganisationUnitByValue(
     results,
     organisationUnits,

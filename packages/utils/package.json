@@ -8,6 +8,8 @@
     "test": "nyc --reporter=lcov mocha"
   },
   "dependencies": {
+    "case": "^1.5.5",
+    "countrynames": "^0.1.1",
     "lodash.pickby": "^4.6.0",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.25",
