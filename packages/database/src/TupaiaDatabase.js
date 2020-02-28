@@ -95,6 +95,7 @@ export class TupaiaDatabase {
   }
 
   async waitForChangeChannel() {
+    this.getOrCreateChangeChannel();
     return this.changeChannelPromise;
   }
 
