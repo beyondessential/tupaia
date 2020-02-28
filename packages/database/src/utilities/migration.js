@@ -20,31 +20,8 @@ class RequiredParameterError extends Error {
   }
 }
 
-export const rejectOnError = (resolve, reject, error) => {
-  if (error) {
-    console.error(error);
-    reject(error);
-  } else {
-    resolve();
-  }
-};
-
-export function insertMultipleObjects(db, table, objects) {
-  var chain = Promise.resolve();
-  objects.map(o => {
-    chain = chain.then(() => insertObject(db, table, o));
-  });
-  return chain;
-}
-
-export function insertObject(db, table, data) {
-  const entries = Object.entries(data);
-  const keys = entries.map(([k, v]) => k);
-  const values = entries.map(([k, v]) => v);
-  return new Promise((resolve, reject) => {
-    return db.insert(table, keys, values, error => rejectOnError(resolve, reject, error));
-  });
-}
+export const insertObject = async (db, table, data, onError) =>
+  db.insert(table, Object.keys(data), Object.values(data), onError);
 
 export const arrayToDbString = array => array.map(item => `'${item}'`).join(', ');
 

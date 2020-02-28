@@ -6,7 +6,7 @@
 import chai, { expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
-import { removeArrayValue, replaceArrayValue, updateValues } from '../utilities/migration';
+import { removeArrayValue, replaceArrayValue, updateValues } from '../../utilities/migration';
 
 chai.use(chaiAsPromised);
 
