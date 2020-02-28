@@ -15,6 +15,9 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = function(db) {
+  // Match entity with autocomplete answers on "name", then use those entity ids for the associated
+  // survey response (rather than its current facility entity, from the old survey version)
+  // Finally, delete the PrimaryEntity answers as the same info is now stored as metadata (entity_id)
   return db.runSql(`
     UPDATE survey_response
     SET entity_id = entity.id
