@@ -49,7 +49,8 @@ export class TupaiaDatabase {
   constructor(transactingConnection) {
     autobind(this);
     this.changeHandlers = {};
-    this.changeChannel = new DatabaseChangeChannel();
+    this.changeChannel = null; // changeChannel is lazily instantiated - not every database needs it
+    this.changeChannelPromise = null;
 
     // If this instance is not for a specific transaction, it is the singleton instance
     this.isSingleton = !transactingConnection;
@@ -61,9 +62,6 @@ export class TupaiaDatabase {
           client: 'pg',
           connection: getConnectionConfig(),
         }));
-      if (this.isSingleton) {
-        this.changeChannel.addChangeHandler(this.notifyChangeHandlers);
-      }
       return true;
     };
     this.connectionPromise = connectToDatabase();
@@ -74,15 +72,36 @@ export class TupaiaDatabase {
   maxBindingsPerQuery = MAX_BINDINGS_PER_QUERY;
 
   closeConnections() {
-    this.changeChannel.close();
+    if (this.changeChannel) {
+      this.changeChannel.close();
+    }
     this.connection.destroy();
   }
 
-  async waitForChangeChannel(timeout = 250, retries = 4) {
-    return this.changeChannel.ping(timeout, retries);
+  getOrCreateChangeChannel() {
+    if (!this.changeChannel) {
+      this.changeChannel = new DatabaseChangeChannel();
+      this.changeChannel.addChangeHandler(this.notifyChangeHandlers);
+      this.changeChannelPromise = this.changeChannel.ping();
+    }
+    return this.changeChannel;
+  }
+
+  async waitUntilConnected() {
+    await this.connectionPromise;
+    if (this.changeChannel) {
+      await this.waitForChangeChannel();
+    }
+  }
+
+  async waitForChangeChannel() {
+    this.getOrCreateChangeChannel();
+    return this.changeChannelPromise;
   }
 
   addChangeHandlerForCollection(collectionName, changeHandler, key = generateId()) {
+    // if a change handler is being added, this db needs a change channel - make sure it's instantiated
+    this.getOrCreateChangeChannel();
     this.getChangeHandlersForCollection(collectionName)[key] = changeHandler;
   }
 
@@ -132,7 +151,7 @@ export class TupaiaDatabase {
   }
 
   async fetchSchemaForTable(databaseType) {
-    await this.connectionPromise;
+    await this.waitUntilConnected();
     return this.connection(databaseType).columnInfo();
   }
 
@@ -159,7 +178,7 @@ export class TupaiaDatabase {
    * Asynchronously await the database connection to be made, and then build the query as per normal
    */
   async queryWhenConnected(...args) {
-    await this.connectionPromise;
+    await this.waitUntilConnected();
     return buildQuery(this.connection, ...args);
   }
 
@@ -337,7 +356,7 @@ export class TupaiaDatabase {
   }
 
   markRecordsAsChanged(recordType, records) {
-    this.changeChannel.publishRecordUpdates(recordType, records);
+    this.getOrCreateChangeChannel().publishRecordUpdates(recordType, records);
   }
 
   /**
@@ -382,7 +401,7 @@ export class TupaiaDatabase {
    */
   async sum(table, fields = [], where = {}) {
     if (!this.connection) {
-      await this.connectionPromise;
+      await this.waitUntilConnected();
     }
 
     const query = this.connection(table);
@@ -409,7 +428,7 @@ export class TupaiaDatabase {
    */
   async executeSql(sqlString, parametersToBind) {
     if (!this.connection) {
-      await this.connectionPromise;
+      await this.waitUntilConnected();
     }
 
     const result = await this.connection.raw(sqlString, parametersToBind);
