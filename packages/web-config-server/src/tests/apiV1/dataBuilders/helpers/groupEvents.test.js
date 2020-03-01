@@ -9,8 +9,13 @@ import { groupEvents } from '/apiV1/dataBuilders/helpers/groupEvents';
 import * as Models from '/models/Entity';
 
 const EVENTS = [
-  { orgUnit: 'TO_Tongatapu', orgUnitName: 'Tongatapu', dataValues: [] },
-  { orgUnit: 'TO_Niuas', orgUnitName: 'Niuas', dataValues: [] },
+  {
+    orgUnit: 'TO_Tongatapu',
+    orgUnitName: 'Tongatapu',
+    dataValues: [{ dataElement: 'A', value: '1' }],
+  },
+  { orgUnit: 'TO_Niuas', orgUnitName: 'Niuas', dataValues: [{ dataElement: 'A', value: '2' }] },
+  { orgUnit: 'TO_Niuas', orgUnitName: 'Niuas', dataValues: [{ dataElement: 'A', value: '3' }] },
 ];
 const PARENT_ORG_UNIT = {
   code: 'TO',
@@ -51,8 +56,25 @@ describe('groupEvents()', () => {
         options: { parentCode: 'TO', type: 'district' },
       }),
     ).to.eventually.deep.equal({
-      Tongatapu: [{ orgUnit: 'TO_Tongatapu', orgUnitName: 'Tongatapu', dataValues: [] }],
-      Niuas: [{ orgUnit: 'TO_Niuas', orgUnitName: 'Niuas', dataValues: [] }],
+      Tongatapu: [
+        {
+          orgUnit: 'TO_Tongatapu',
+          orgUnitName: 'Tongatapu',
+          dataValues: [{ dataElement: 'A', value: '1' }],
+        },
+      ],
+      Niuas: [
+        {
+          orgUnit: 'TO_Niuas',
+          orgUnitName: 'Niuas',
+          dataValues: [{ dataElement: 'A', value: '2' }],
+        },
+        {
+          orgUnit: 'TO_Niuas',
+          orgUnitName: 'Niuas',
+          dataValues: [{ dataElement: 'A', value: '3' }],
+        },
+      ],
       Haapai: [],
     }));
 
