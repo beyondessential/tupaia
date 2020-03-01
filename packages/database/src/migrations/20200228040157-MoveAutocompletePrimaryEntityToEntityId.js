@@ -25,6 +25,7 @@ exports.up = function(db) {
     JOIN answer ON entity.name = answer.text
     JOIN question ON answer.question_id = question.id
     WHERE survey_response.id = answer.survey_response_id
+    AND entity.type = 'village'
     AND question.type = 'PrimaryEntity';
 
     DELETE FROM answer
