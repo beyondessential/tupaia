@@ -22,7 +22,6 @@ export class QuestionModel extends DatabaseModel {
 
   async getHooksByQuestionId() {
     return this.runCachedFunction(HOOKS_BY_ID_CACHE_KEY, async () => {
-      console.log('running cached function');
       const questionsWithHooks = await this.database.executeSql(`
         SELECT id, hook
         FROM question
