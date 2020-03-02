@@ -20,6 +20,8 @@ exports.up = async function(db) {
   await db.runSql(`
       ALTER TABLE entity_relation ALTER COLUMN entity_relation_type_code drop not null;
       ALTER TABLE entity_relation DROP CONSTRAINT entity_relation_entity_relation_type_code_fkey;
+      ALTER TABLE entity_relation DROP column entity_relation_type_code;
+      DROP TABLE entity_relation_type;
       ALTER TABLE project drop column entity_ids;
       ALTER TABLE project drop column name;
       ALTER TABLE project add column entity_id text;
