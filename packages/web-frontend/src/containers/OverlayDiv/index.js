@@ -21,7 +21,7 @@ import CloseIcon from 'material-ui/svg-icons/navigation/close';
 import styled from 'styled-components';
 import { isMobile } from '../../utils';
 import { DARK_BLUE, DIALOG_Z_INDEX } from '../../styles';
-import { setOverlayComponent, changeOrgUnit } from '../../actions';
+import { setOverlayComponent, changeOrgUnit, changeProjectUnit } from '../../actions';
 import { selectProject } from '../../projects/actions';
 import { LandingPage } from './components/LandingPage';
 import { RequestProjectAccess } from './components/RequestProjectAccess';
@@ -124,7 +124,8 @@ const mapDispatchToProps = dispatch => {
     onSelectProject: project => {
       dispatch(selectProject(project));
       dispatch(setOverlayComponent(null));
-      dispatch(changeOrgUnit(project.parent, false));
+      console.log(project);
+      dispatch(changeProjectUnit(project, false));
     },
     closeOverlay: () => {
       dispatch(setOverlayComponent(null));
@@ -132,7 +133,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(OverlayDiv);
+export default connect(mapStateToProps, mapDispatchToProps)(OverlayDiv);

@@ -39,6 +39,7 @@ export const CHANGE_SIDE_BAR_EXPANDED_WIDTH = 'CHANGE_SIDE_BAR_EXPANDED_WIDTH';
 export const CLEAR_MEASURE_HIERARCHY = 'CLEAR_MEASURE_HIERARCHY';
 export const CHANGE_MEASURE = 'CHANGE_MEASURE';
 export const CHANGE_ORG_UNIT = 'CHANGE_ORG_UNIT';
+export const CHANGE_PROJECT_UNIT = 'CHANGE_PROJECT_UNIT';
 export const CHANGE_POSITION = 'CHANGE_POSITION';
 export const CHANGE_BOUNDS = 'CHANGE_BOUNDS';
 export const CHANGE_SEARCH = 'CHANGE_SEARCH';
@@ -73,6 +74,7 @@ export const CANCEL_FETCH_MEASURE_DATA = 'CANCEL_FETCH_MEASURE_DATA';
 export const FETCH_MEASURES_ERROR = 'FETCH_MEASURES_ERROR';
 export const FETCH_MEASURES_SUCCESS = 'FETCH_MEASURES_SUCCESS';
 export const FETCH_ORG_UNIT_ERROR = 'FETCH_ORG_UNIT_ERROR';
+export const FETCH_PROJECT_UNIT_SUCCESS = 'FETCH_PROJECT_UNIT_SUCCESS';
 export const FETCH_REGION_ERROR = 'FETCH_REGION_ERROR';
 export const FETCH_ORG_UNIT_SUCCESS = 'FETCH_ORG_UNIT_SUCCESS';
 export const FETCH_RESET_PASSWORD_ERROR = 'FETCH_RESET_PASSWORD_ERROR';
@@ -449,6 +451,20 @@ export function changeOrgUnit(organisationUnit = initialOrgUnit, shouldChangeMap
   return {
     type: CHANGE_ORG_UNIT,
     organisationUnit,
+    shouldChangeMapBounds,
+  };
+}
+
+/**
+ * Changes current Project Level and Map view. Will trigger sagas affecting state for
+ * map and the current dashboard.
+ *
+ * @param {object} organisationUnit
+ */
+export function changeProjectUnit(projectUnit, shouldChangeMapBounds = true) {
+  return {
+    type: CHANGE_PROJECT_UNIT,
+    projectUnit,
     shouldChangeMapBounds,
   };
 }

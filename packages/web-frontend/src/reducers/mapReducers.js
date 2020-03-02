@@ -11,6 +11,7 @@ import {
   GO_HOME,
   CHANGE_MEASURE,
   CHANGE_ORG_UNIT,
+  CHANGE_PROJECT_UNIT,
   CHANGE_POSITION,
   CHANGE_BOUNDS,
   CHANGE_TILE_SET,
@@ -19,6 +20,7 @@ import {
   FETCH_MEASURE_DATA_SUCCESS,
   CANCEL_FETCH_MEASURE_DATA,
   FETCH_ORG_UNIT_SUCCESS,
+  FETCH_PROJECT_UNIT_SUCCESS,
   SET_MAP_IS_ANIMATING,
   OPEN_MAP_POPUP,
   CLOSE_MAP_POPUP,
@@ -41,6 +43,27 @@ function position(state = { bounds: defaultBounds }, action) {
 
     case CHANGE_ORG_UNIT:
     case FETCH_ORG_UNIT_SUCCESS: {
+      if (action.shouldChangeMapBounds) {
+        const { location } = action.organisationUnit;
+        if (location) {
+          if (location.bounds) {
+            return {
+              bounds: location.bounds,
+            };
+          }
+          if (location.type === 'point') {
+            return {
+              center: location.coordinates,
+              zoom: 10,
+            };
+          }
+        }
+      }
+      return state;
+    }
+
+    case CHANGE_PROJECT_UNIT:
+    case FETCH_PROJECT_UNIT_SUCCESS: {
       if (action.shouldChangeMapBounds) {
         const { location } = action.organisationUnit;
         if (location) {

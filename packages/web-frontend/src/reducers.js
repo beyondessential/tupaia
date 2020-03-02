@@ -38,6 +38,7 @@ import {
   CHANGE_MEASURE,
   CLEAR_MEASURE_HIERARCHY,
   CHANGE_ORG_UNIT,
+  CHANGE_PROJECT_UNIT,
   CHANGE_SEARCH,
   CLEAR_MEASURE,
   FETCH_CHANGE_PASSWORD_ERROR,
@@ -65,6 +66,7 @@ import {
   FETCH_MEASURES_SUCCESS,
   FETCH_ORG_UNIT_ERROR,
   FETCH_ORG_UNIT_SUCCESS,
+  FETCH_PROJECT_UNIT_SUCCESS,
   FETCH_RESET_PASSWORD_ERROR,
   FETCH_RESET_PASSWORD_SUCCESS,
   FETCH_REQUEST_COUNTRY_ACCESS_SUCCESS,
@@ -577,6 +579,7 @@ function global(
     dashboardConfig: {},
     viewConfigs: {},
     loadingOrganisationUnit: null,
+    loadingProjectUnit: null,
   },
   action,
 ) {
@@ -599,6 +602,19 @@ function global(
         loadingOrganisationUnit: action.organisationUnit,
       };
     case FETCH_ORG_UNIT_SUCCESS:
+      return {
+        ...state,
+        loadingOrganisationUnit: null,
+        currentOrganisationUnit: action.organisationUnit,
+        currentOrganisationUnitSiblings: action.organisationUnitSiblings,
+        highlightedOrganisationUnit: {},
+      };
+    case CHANGE_PROJECT_UNIT:
+      return {
+        ...state,
+        loadingProjectUnit: action.projectUnit,
+      };
+    case FETCH_PROJECT_UNIT_SUCCESS:
       return {
         ...state,
         loadingOrganisationUnit: null,
