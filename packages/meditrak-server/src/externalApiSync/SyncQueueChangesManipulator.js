@@ -25,5 +25,10 @@ export class SyncQueueChangesManipulator {
   getIdsFromChangesForModel = (changes, model) =>
     this.getRecordIds(this.getChangesForRecordType(changes, model.databaseType));
 
+  getRecords = changes => changes.map(c => c.record);
+
+  getRecordsFromChangesForModel = (changes, model) =>
+    this.getRecords(this.getChangesForRecordType(changes, model.databaseType));
+
   getUniqueEntries = entries => Array.from(new Set(entries));
 }

@@ -33,9 +33,7 @@ export class Ms1ChangeValidator extends ChangeValidator {
   getValidUpdates = async changes => {
     const demolandEntityIds = await this.fetchDemoLandEntityIds();
     const ms1SurveyIds = await this.fetchMs1SurveyIds();
-    const surveyResponses = await this.models.surveyResponse.findManyById(
-      this.getRecordIds(changes),
-    );
+    const surveyResponses = this.getRecords(changes);
     const validationById = {};
     surveyResponses.forEach(surveyResponse => {
       // ditch if demoland

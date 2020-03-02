@@ -77,7 +77,11 @@ class AnswerType extends DatabaseType {
     return !result[0].exists;
   }
 
-  async runHook(hookId) {
+  async runHook() {
+    const hooksByQuestionId = await this.otherModels.question.getHooksByQuestionId();
+    const hookId = hooksByQuestionId[this.question_id];
+    if (!hookId) return; // no hook to run for this answer
+
     const surveyResponse = await this.surveyResponse();
     if (!surveyResponse) {
       throw new Error(`No survey response with id: ${this.survey_response_id}`);
@@ -109,15 +113,12 @@ export class AnswerModel extends DatabaseModel {
     return AnswerType;
   }
 
-  static onChange = async (change, model) => {
-    if (change.type === 'delete') return;
+  static onChange = async ({ type: changeType, record }, model) => {
+    if (changeType === 'delete') return;
 
-    const answer = await model.findById(change.record_id);
-    const hooksByQuestionId = await model.otherModels.question.getHooksByQuestionId();
-    const hookId = hooksByQuestionId[answer.question_id];
-    if (!hookId) return; // no hook to run for this answer
+    const answer = new AnswerType(model, record);
     try {
-      await answer.runHook(hookId);
+      await answer.runHook();
     } catch (e) {
       winston.error(e);
     }
