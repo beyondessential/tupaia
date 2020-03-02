@@ -1,17 +1,17 @@
 import { getDataElementsInGroup } from '/apiV1/utils/getDataElementsInGroup';
 
-export const fetchAnalytics = async ({ result, context }) => {
+export const fetchAnalytics = async (codes, context) => {
   const { query, aggregator } = context;
-  const { results } = await aggregator.fetchAnalytics(result, {}, query);
+  const { results } = await aggregator.fetchAnalytics(codes, {}, query);
   return results;
 };
 
-export const fetchDataElementCodesFromGroup = async context => {
+export const fetchDataElementCodesFromGroup = async (_, context) => {
   const { dataBuilderConfig, dhisApi } = context;
   const dataElements = await getDataElementsInGroup(
     dhisApi,
     dataBuilderConfig.dataElementGroupCode,
     true,
   );
-  return { result: Object.keys(dataElements), context };
+  return Object.keys(dataElements);
 };
