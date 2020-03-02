@@ -77,14 +77,7 @@ class AnswerType extends DatabaseType {
     return !result[0].exists;
   }
 
-  async runHook() {
-    const question = await this.question();
-    if (!question) {
-      throw new Error(`No question with id: ${this.question_id}`);
-    }
-
-    if (!question.hook) return; // no hook to run! we're done here
-
+  async runHook(hookId) {
     const surveyResponse = await this.surveyResponse();
     if (!surveyResponse) {
       throw new Error(`No survey response with id: ${this.survey_response_id}`);
@@ -93,10 +86,10 @@ class AnswerType extends DatabaseType {
     // check if we already have more current data
     if (!(await this.isLatestAnswer())) return;
 
-    const hook = getHook(question.hook);
+    const hook = getHook(hookId);
 
     if (!hook) {
-      throw new Error(`No hook with id: ${question.hook}`);
+      throw new Error(`No hook with id: ${hookId}`);
     }
 
     await AnswerType.hookQueue.add(
@@ -104,10 +97,9 @@ class AnswerType extends DatabaseType {
         hook({
           answer: this,
           models: this.otherModels,
-          question,
           surveyResponse,
         }),
-      `${question.hook}:${this.id}`,
+      `${hookId}:${this.id}`,
     );
   }
 }
@@ -120,9 +112,12 @@ export class AnswerModel extends DatabaseModel {
   static onChange = async (change, model) => {
     if (change.type === 'delete') return;
 
-    const answerObject = await model.findById(change.record_id);
+    const answer = await model.findById(change.record_id);
+    const hooksByQuestionId = await model.otherModels.question.getHooksByQuestionId();
+    const hookId = hooksByQuestionId[answer.question_id];
+    if (!hookId) return; // no hook to run for this answer
     try {
-      await answerObject.runHook();
+      await answer.runHook(hookId);
     } catch (e) {
       winston.error(e);
     }

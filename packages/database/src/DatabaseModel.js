@@ -21,6 +21,11 @@ export class DatabaseModel {
     // it will be populated on the first call to this.fetchSchema(), and should not be accessed
     // directly
     this.schema = null;
+
+    this.cache = {};
+    this.database.addChangeHandlerForCollection(this.DatabaseTypeClass.databaseType, () => {
+      this.cache = {}; // invalidate cache on any change
+    });
   }
 
   async fetchSchema() {
@@ -226,5 +231,12 @@ export class DatabaseModel {
 
   async markAsChanged(...args) {
     return this.database.markAsChanged(this.databaseType, ...args);
+  }
+
+  runCachedFunction(cacheKey, fn) {
+    if (!this.cache[cacheKey]) {
+      this.cache[cacheKey] = fn(); // may be async, in which case we cache the promise to be awaited
+    }
+    return this.cache[cacheKey];
   }
 }
