@@ -71,6 +71,11 @@ const styles = {
   },
 };
 
+const ICON_BY_ORG_UNIT_TYPE = {
+  Facility: FacilityIcon,
+};
+const LEAF_ORG_UNIT_TYPE = 'Village';
+
 export class SearchBar extends PureComponent {
   constructor(props) {
     super(props);
@@ -137,8 +142,8 @@ export class SearchBar extends PureComponent {
             label={orgUnit.name}
             nestedMargin={nestedMargin}
             nestedItems={nestedItems}
-            hasNestedItems={orgUnit.type !== 'Facility'}
-            LeafIcon={FacilityIcon}
+            hasNestedItems={orgUnit.type !== LEAF_ORG_UNIT_TYPE}
+            Icon={ICON_BY_ORG_UNIT_TYPE[orgUnit.type]}
             onClick={() => onOrgUnitClick(orgUnit)}
             onMouseEnter={() => onOrgHighlight(orgUnit)}
             onMouseLeave={() => onOrgHighlight()}

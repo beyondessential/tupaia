@@ -15,7 +15,7 @@
  * @prop {array}  nestedItems An array of nested items to render as children. Will render iteractive expand arrow on left if provided.
  * @prop {boolean} isSelected True - render checked box on right; False - render unchecked box on right; null - render neither.
  * @prop {boolean} hasNestedItems Manually tell element to render left side arrow.
- * @prop {function} LeafIcon When there are no nested items, render LeafIcon on left if provided.
+ * @prop {function} Icon Custom icon for the hierarchy item
  * @prop {function} willMountFunc Called on componentWillMount
  * All additional props go to material-ui FlatButton component.
  * @return {element} a HierarchyItem react component.
@@ -46,33 +46,33 @@ export class HierarchyItem extends Component {
     this.setState({ isOpen: !this.state.isOpen });
   }
 
+  renderBeforeIcon() {
+    const { nestedItems, hasNestedItems } = this.props;
+    const { isOpen } = this.state;
+
+    const hasChildren = hasNestedItems || (Array.isArray(nestedItems) && nestedItems.length > 0);
+    if (!hasChildren) {
+      return null;
+    }
+
+    const IconComponent = isOpen ? OpenIcon : ClosedIcon;
+    return <IconComponent style={styles.buttonIcon} />;
+  }
+
   render() {
     const {
       label,
       style,
       nestedMargin,
       nestedItems,
-      hasNestedItems,
       isSelected,
-      LeafIcon,
+      Icon,
       willMountFunc,
       onClick,
       ...otherProps
     } = this.props;
     const { isOpen } = this.state;
-    const hasChildren = hasNestedItems || (Array.isArray(nestedItems) && nestedItems.length > 0);
-    let beforeIcon;
     let selectionIcon;
-
-    if (hasChildren) {
-      beforeIcon = isOpen ? (
-        <OpenIcon style={styles.buttonIcon} />
-      ) : (
-        <ClosedIcon style={styles.buttonIcon} />
-      );
-    } else {
-      beforeIcon = LeafIcon && <LeafIcon style={styles.buttonIcon} />;
-    }
 
     if (isSelected != null) {
       // Check isSelected specifically for null or undefined, !isSelected would be anything falsy.
@@ -91,7 +91,8 @@ export class HierarchyItem extends Component {
           style={{ minHeight: 36, height: 'auto', padding: '5px 0' }}
         >
           <div style={styles.buttonContentContainer}>
-            {beforeIcon}
+            {this.renderBeforeIcon()}
+            {Icon && <Icon style={styles.buttonIcon} />}
             {selectionIcon}
             <div style={styles.buttonLabel}>{label}</div>
             <div style={styles.spacer} />
@@ -143,7 +144,7 @@ HierarchyItem.propTypes = {
   nestedMargin: PropTypes.string,
   isSelected: PropTypes.bool,
   hasNestedItems: PropTypes.bool,
-  LeafIcon: PropTypes.func,
+  Icon: PropTypes.func,
   willMountFunc: PropTypes.func,
 };
 
