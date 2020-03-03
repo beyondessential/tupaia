@@ -38,9 +38,11 @@ export async function getEntityByCode(entityCode, userHasAccess) {
   }
 
   // check permission
-  const hasAccess = await userHasAccess(queriedEntity.code);
-  if (!hasAccess) {
-    throw new Error(`No access to ${queriedEntity.code}`);
+  if (queriedEntity.type !== 'project') {
+    const hasAccess = await userHasAccess(queriedEntity.code);
+    if (!hasAccess) {
+      throw new Error(`No access to ${queriedEntity.code}`);
+    }
   }
 
   // fetch parent if one exists - don't check permission (as we already
@@ -50,9 +52,9 @@ export async function getEntityByCode(entityCode, userHasAccess) {
 
   // get children & remove those we don't have permission for
   const childrenTask = Entity.getOrgUnitChildren(entityId);
-  const children = (await Promise.all(
-    (await childrenTask).map(async c => (await userHasAccess(c.code)) && c),
-  ))
+  const children = (
+    await Promise.all((await childrenTask).map(async c => (await userHasAccess(c.code)) && c))
+  )
     .filter(c => c)
     .map(translateForFrontend);
 

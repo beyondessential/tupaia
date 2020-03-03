@@ -441,7 +441,9 @@ function* watchOrgUnitChangeAndFetchIt() {
  *
  */
 function* fetchProjectUnitData(action) {
-  const { projectUnit } = action.projectUnit;
+  console.log(action);
+  const { projectUnit } = action;
+
   const requestResourceUrl = `organisationUnit?organisationUnitCode=${projectUnit}`;
 
   try {
