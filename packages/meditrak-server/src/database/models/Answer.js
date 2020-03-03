@@ -116,7 +116,7 @@ export class AnswerModel extends DatabaseModel {
   static onChange = async ({ type: changeType, record }, model) => {
     if (changeType === 'delete') return;
 
-    const answer = new AnswerType(model, record);
+    const answer = await model.generateInstance(record);
     try {
       await answer.runHook();
     } catch (e) {
