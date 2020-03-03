@@ -27,10 +27,13 @@ export class QuestionModel extends DatabaseModel {
         FROM question
         WHERE hook IS NOT NULL;
       `);
-      return questionsWithHooks.reduce((hooksByQuestionId, { id: questionId, hook }) => ({
-        ...hooksByQuestionId,
-        [questionId]: hook,
-      }));
+      return questionsWithHooks.reduce(
+        (hooksByQuestionId, { id: questionId, hook }) => ({
+          ...hooksByQuestionId,
+          [questionId]: hook,
+        }),
+        {},
+      );
     });
   }
 }
