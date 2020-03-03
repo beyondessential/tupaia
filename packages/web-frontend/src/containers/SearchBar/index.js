@@ -127,7 +127,7 @@ export class SearchBar extends PureComponent {
         // HierarchyItems only fetch their children data on componentWillMount
         const nestedItems = recurseOrgUnits(orgUnit.organisationUnitChildren);
         let willMountFunc;
-        if ((!nestedItems || nestedItems.length < 1) && orgUnit.type !== 'Facility') {
+        if (!nestedItems || nestedItems.length < 1) {
           willMountFunc = () => getNestedOrgUnits(orgUnit.organisationUnitCode);
         }
 
@@ -215,7 +215,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(SearchBar);
+export default connect(mapStateToProps, mapDispatchToProps)(SearchBar);
