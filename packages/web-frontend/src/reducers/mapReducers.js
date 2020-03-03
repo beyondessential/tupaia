@@ -42,27 +42,8 @@ function position(state = { bounds: defaultBounds }, action) {
     }
 
     case CHANGE_ORG_UNIT:
-    case FETCH_ORG_UNIT_SUCCESS: {
-      if (action.shouldChangeMapBounds) {
-        const { location } = action.organisationUnit;
-        if (location) {
-          if (location.bounds) {
-            return {
-              bounds: location.bounds,
-            };
-          }
-          if (location.type === 'point') {
-            return {
-              center: location.coordinates,
-              zoom: 10,
-            };
-          }
-        }
-      }
-      return state;
-    }
-
     case CHANGE_PROJECT_UNIT:
+    case FETCH_ORG_UNIT_SUCCESS:
     case FETCH_PROJECT_UNIT_SUCCESS: {
       if (action.shouldChangeMapBounds) {
         const { location } = action.organisationUnit;
