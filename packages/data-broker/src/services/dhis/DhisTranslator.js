@@ -45,7 +45,7 @@ export class DhisTranslator {
 
   /**
    * @param {Object}     dataValue    The untranslated data value
-   * @param {DataSource} dataSource
+   * @param {DataSourceType} dataSource
    */
   translateOutboundDataValue = async (api, { code, value, ...restOfDataValue }, dataSource) => {
     const { dataElementCode } = dataSource;

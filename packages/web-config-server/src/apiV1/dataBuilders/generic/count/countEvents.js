@@ -11,7 +11,7 @@ import { groupEvents } from '/apiV1/dataBuilders/helpers/groupEvents';
  * Configuration schema
  * @typedef {Object} CountEventsConfig
  * @property {string} programCode
- * @property {Object<string, DataValueCondition>} [dataValues]
+ * @property {Object<string, (string|object)>} [dataValues]
  * @property {string} [groupBy]
  *
  * Example
@@ -25,9 +25,6 @@ import { groupEvents } from '/apiV1/dataBuilders/helpers/groupEvents';
  */
 
 export class CountEventsBuilder extends DataBuilder {
-  /**
-   * @returns {DataValuesOutput}
-   */
   async build() {
     const events = await this.fetchEvents({ dataValueFormat: 'object' });
     const data = await this.buildData(events);
