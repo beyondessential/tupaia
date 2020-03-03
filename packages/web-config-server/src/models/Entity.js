@@ -192,9 +192,9 @@ export class Entity extends BaseModel {
       SELECT ${Entity.translatedFields} FROM entity
       WHERE
         region IS NOT NULL AND
-        parent_id IN (SELECT id FROM entity WHERE code = ?);
+        parent_id = ?;
     `,
-      [this.code],
+      [this.id],
     );
   }
 
@@ -206,7 +206,15 @@ export class Entity extends BaseModel {
     return records[0] && Entity.load(records[0]);
   }
 
-  static async getEntity(id) {
+  static async findById(id, loadOptions, queryOptions) {
+    // Check for usage of incompatible params defined in the parent class method signature
+    if (loadOptions) {
+      throw new Error('"loadOptions" parameter is not supported by Entity.findById()');
+    }
+    if (queryOptions) {
+      throw new Error('"queryOptions" parameter is not supported by Entity.findById()');
+    }
+
     const records = await Entity.database.executeSql(
       `SELECT ${Entity.translatedFields} FROM entity WHERE id = ?;`,
       [id],
@@ -271,6 +279,6 @@ export class Entity extends BaseModel {
   }
 
   async parent() {
-    return Entity.getEntity(this.parent_id);
+    return Entity.findById(this.parent_id);
   }
 }

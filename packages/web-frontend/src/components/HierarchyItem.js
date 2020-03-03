@@ -46,7 +46,7 @@ export class HierarchyItem extends Component {
     this.setState({ isOpen: !this.state.isOpen });
   }
 
-  renderBeforeIcon() {
+  renderOpenClosedIcon() {
     const { nestedItems, hasNestedItems } = this.props;
     const { isOpen } = this.state;
 
@@ -91,7 +91,7 @@ export class HierarchyItem extends Component {
           style={{ minHeight: 36, height: 'auto', padding: '5px 0' }}
         >
           <div style={styles.buttonContentContainer}>
-            {this.renderBeforeIcon()}
+            {this.renderOpenClosedIcon()}
             {Icon && <Icon style={styles.buttonIcon} />}
             {selectionIcon}
             <div style={styles.buttonLabel}>{label}</div>
