@@ -1,21 +1,25 @@
 /**
- * Tupaia Config Server
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
+import { getSortByKey } from '@tupaia/utils/dist/object';
+import { groupEvents } from '/apiV1/dataBuilders/helpers/groupEvents';
 
 /**
  * Configuration schema
  * @typedef {Object} CountEventsConfig
  * @property {string} programCode
  * @property {Object<string, DataValueCondition>} [dataValues]
+ * @property {string} [groupBy]
  *
  * Example
  * ```js
  * {
  *   programCode: 'SCRF',
  *   dataValues: { STR_CRF125: '1' }
+ *   groupBy: { type: 'allOrgUnitNames', options: { type: 'village' } }
  * }
  * ```
  */
@@ -26,16 +30,33 @@ export class CountEventsBuilder extends DataBuilder {
    */
   async build() {
     const events = await this.fetchEvents({ dataValueFormat: 'object' });
-    const data = this.buildData(events);
+    const data = await this.buildData(events);
 
     return { data };
   }
 
-  buildData(events) {
+  async buildData(events) {
+    const eventGroups = await this.groupEvents(events);
+
+    return Object.entries(eventGroups)
+      .reduce(
+        (result, [groupName, eventsForGroup]) =>
+          result.concat(this.buildDataForGroup(eventsForGroup, groupName)),
+        [],
+      )
+      .sort(getSortByKey('name'));
+  }
+
+  async groupEvents(events) {
+    const { groupBy } = this.config;
+    return groupBy ? groupEvents(events, groupBy) : { value: events };
+  }
+
+  buildDataForGroup(events, name = 'countEvents') {
     const { dataValues } = this.config;
     const value = this.countEventsThatSatisfyConditions(events, { dataValues });
 
-    return [{ name: 'countEvents', value }];
+    return [{ name, value }];
   }
 }
 
