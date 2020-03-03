@@ -73,9 +73,10 @@ export const FETCH_MEASURE_DATA_SUCCESS = 'FETCH_MEASURE_DATA_SUCCESS';
 export const CANCEL_FETCH_MEASURE_DATA = 'CANCEL_FETCH_MEASURE_DATA';
 export const FETCH_MEASURES_ERROR = 'FETCH_MEASURES_ERROR';
 export const FETCH_MEASURES_SUCCESS = 'FETCH_MEASURES_SUCCESS';
-export const FETCH_ORG_UNIT_ERROR = 'FETCH_ORG_UNIT_ERROR';
 export const FETCH_PROJECT_UNIT_SUCCESS = 'FETCH_PROJECT_UNIT_SUCCESS';
+export const FETCH_PROJECT_UNIT_ERROR = 'FETCH_PROJECT_UNIT_ERROR';
 export const FETCH_REGION_ERROR = 'FETCH_REGION_ERROR';
+export const FETCH_ORG_UNIT_ERROR = 'FETCH_ORG_UNIT_ERROR';
 export const FETCH_ORG_UNIT_SUCCESS = 'FETCH_ORG_UNIT_SUCCESS';
 export const FETCH_RESET_PASSWORD_ERROR = 'FETCH_RESET_PASSWORD_ERROR';
 export const FETCH_RESET_PASSWORD_SUCCESS = 'FETCH_RESET_PASSWORD_SUCCESS';
@@ -459,7 +460,7 @@ export function changeOrgUnit(organisationUnit = initialOrgUnit, shouldChangeMap
  * Changes current Project Level and Map view. Will trigger sagas affecting state for
  * map and the current dashboard.
  *
- * @param {object} organisationUnit
+ * @param {object} projectUnit
  */
 export function changeProjectUnit(projectUnit, shouldChangeMapBounds = true) {
   return {
@@ -602,6 +603,37 @@ export function fetchOrgUnitSuccess(organisationUnit, shouldChangeMapBounds = tr
 export function fetchOrgUnitError(error) {
   return {
     type: FETCH_ORG_UNIT_ERROR,
+    error,
+  };
+}
+
+/**
+ * Changes the current projectUnit. Should update markers/polygons on map.
+ *
+ * @param {object} projectUnit projectUnit from saga on successful fetch
+ */
+export function fetchProjectUnitSuccess(projectUnit, shouldChangeMapBounds = true) {
+  const parentProjectUnitCode = projectUnit.parent.projectUnitCode;
+  const siblings = getSiblingItems(parentprojectUnitCode, projectUnit.projectUnitCode);
+
+  storeSiblingItems(projectUnit.projectUnitCode, projectUnit.projectUnitChildren);
+
+  return {
+    type: FETCH_PROJECT_UNIT_SUCCESS,
+    projectUnit,
+    projectUnitSiblings: siblings,
+    shouldChangeMapBounds,
+  };
+}
+
+/**
+ * Changes state to communicate error to user appropriately.
+ *
+ * @param {object} error  response from saga on failed fetch
+ */
+export function fetchProjectUnitError(error) {
+  return {
+    type: FETCH_PROJECT_UNIT_ERROR,
     error,
   };
 }

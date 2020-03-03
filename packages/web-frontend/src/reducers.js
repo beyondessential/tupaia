@@ -617,10 +617,8 @@ function global(
     case FETCH_PROJECT_UNIT_SUCCESS:
       return {
         ...state,
-        loadingOrganisationUnit: null,
-        currentOrganisationUnit: action.organisationUnit,
-        currentOrganisationUnitSiblings: action.organisationUnitSiblings,
-        highlightedOrganisationUnit: {},
+        loadingProjectUnit: null,
+        currentProjectUnit: action.projectUnit,
       };
     case HIGHLIGHT_ORG_UNIT:
       return {
