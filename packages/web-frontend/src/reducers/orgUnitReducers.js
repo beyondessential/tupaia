@@ -72,10 +72,7 @@ const addOrgUnitToTree = (state, orgUnit) => {
 
   if (descendants) {
     descendants.forEach(descendant => {
-      result = insertOrgUnit(
-        result,
-        normaliseForMap(descendant, orgUnit.organisationUnitCode, true),
-      );
+      result = insertOrgUnit(result, normaliseForMap(descendant, descendant.parent, true));
     });
   }
 
