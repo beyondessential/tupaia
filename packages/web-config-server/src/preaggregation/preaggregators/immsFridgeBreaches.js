@@ -83,10 +83,6 @@ class FridgeBreachAggregator {
     this.dhisApi = dhisApi;
   }
 
-  /**
-   * @param {Event[]} events A collection of events
-   * @returns {EventData[]}
-   */
   async aggregate(events) {
     const eventsByOrgUnit = groupBy(events, 'orgUnit');
     const dataElementCodeToId = await this.getDataElementCodeToId();
@@ -169,7 +165,7 @@ class FridgeBreachAggregator {
   }
 
   /**
-   * @param {Event[]} orgUnitEvents
+   * @param {Object[]} orgUnitEvents
    * @returns {Readings[][]} An array of reading groups, sorted by their `eventDate`. Each group of
    * readings constitutes a breach
    */
@@ -229,10 +225,6 @@ class AggregatedEventPusher {
     this.dhisApi = dhisApi;
   }
 
-  /**
-   * @param {EventData[]} newEvents
-   * @returns {Promise<string></string>}
-   */
   async push(newEvents) {
     const existingEvents = await getEvents(this.aggregator, FRIDGE_BREACH_AGR_PROGRAM_CODE);
     const existingEventsByKey = keyBy(existingEvents, this.getEventKey);
@@ -256,7 +248,7 @@ class AggregatedEventPusher {
   }
 
   /**
-   * @param {EventData} event
+   * @param {Object} event
    * @returns {string} A organisation unit & event date combination that uniquely identifies an event
    */
   getEventKey = event => {

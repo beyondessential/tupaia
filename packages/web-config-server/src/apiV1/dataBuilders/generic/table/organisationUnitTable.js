@@ -14,7 +14,7 @@ const { SINGLE, GROUP_SET } = DATA_SOURCE_TYPES;
 /**
  * Configuration schema
  * @typedef {Object} OrganisationUnitTableConfig
- * @property {DataSource} dataSource
+ * @property {Object} dataSource
  * @property {string} [columnTitle]
  * @property {string} [optionSetCode]
  *
@@ -33,9 +33,6 @@ const { SINGLE, GROUP_SET } = DATA_SOURCE_TYPES;
  */
 
 class OrganisationUnitTableDataBuilder extends DataBuilder {
-  /**
-   * @returns {TableOutput}
-   */
   async build() {
     const { type } = this.config.dataSource;
     if (![SINGLE, GROUP_SET].includes(type)) {
