@@ -8,8 +8,7 @@ import { ChangeDetailGenerator } from '../externalApiSync';
 
 // Store certain details for faster sync processing
 export class DhisChangeDetailGenerator extends ChangeDetailGenerator {
-  async generateEntityDetails(entityIds) {
-    const entities = await this.models.entity.find({ id: entityIds });
+  async generateEntityDetails(entities) {
     const changeDetailsById = {};
     entities.forEach(entity => {
       const isDataRegional = get(entity, 'metadata.dhis.isDataRegional', true);
@@ -18,10 +17,10 @@ export class DhisChangeDetailGenerator extends ChangeDetailGenerator {
     return changeDetailsById;
   }
 
-  async generateAnswerDetails(answerIds) {
-    const answers = await this.models.answer.findManyById(answerIds);
+  async generateAnswerDetails(answers) {
     const surveyResponseIds = this.getUniqueEntries(answers.map(a => a.survey_response_id));
-    const surveyResponseDetailsById = await this.generateSurveyResponseDetails(surveyResponseIds);
+    const surveyResponses = await this.models.surveyResponse.find({ id: surveyResponseIds });
+    const surveyResponseDetailsById = await this.generateSurveyResponseDetails(surveyResponses);
     const changeDetailsById = {};
     answers.forEach(answer => {
       changeDetailsById[answer.id] = surveyResponseDetailsById[answer.survey_response_id];
@@ -29,8 +28,7 @@ export class DhisChangeDetailGenerator extends ChangeDetailGenerator {
     return changeDetailsById;
   }
 
-  async generateSurveyResponseDetails(surveyResponseIds) {
-    const surveyResponses = await this.models.surveyResponse.find({ id: surveyResponseIds });
+  async generateSurveyResponseDetails(surveyResponses) {
     const surveyIds = this.getUniqueEntries(surveyResponses.map(r => r.survey_id));
     const surveys = await this.models.survey.find({ id: surveyIds });
     const isDataRegionalBySurveyId = {};
@@ -62,17 +60,17 @@ export class DhisChangeDetailGenerator extends ChangeDetailGenerator {
   generateDetails = async updateChanges => {
     // entities
     const entityDetailsById = await this.generateEntityDetails(
-      this.getIdsFromChangesForModel(updateChanges, this.models.entity),
+      this.getRecordsFromChangesForModel(updateChanges, this.models.entity),
     );
 
     // answers
     const answerDetailsById = await this.generateAnswerDetails(
-      this.getIdsFromChangesForModel(updateChanges, this.models.answer),
+      this.getRecordsFromChangesForModel(updateChanges, this.models.answer),
     );
 
     // survey responses
     const surveyResponseDetailsById = await this.generateSurveyResponseDetails(
-      this.getIdsFromChangesForModel(updateChanges, this.models.surveyResponse),
+      this.getRecordsFromChangesForModel(updateChanges, this.models.surveyResponse),
     );
 
     const detailsByChangeId = {
