@@ -186,11 +186,11 @@ export class Entity extends BaseModel {
     return Entity.database.executeSql(
       `
       WITH RECURSIVE children AS (
-        SELECT ${Entity.translatedFields()}, 0 AS generation
+        SELECT ${Entity.fields}, 0 AS generation
         FROM   entity
         WHERE  code = ?
         UNION  ALL
-        SELECT ${Entity.translatedFields('p')}, c.generation + 1
+        SELECT ${Entity.fields.map(field => `p.${field}`)}, c.generation + 1
         FROM   children      c
         JOIN   entity p ON p.parent_id = c.id
       )

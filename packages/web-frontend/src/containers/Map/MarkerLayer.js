@@ -196,9 +196,7 @@ export class MarkerLayer extends Component {
   }
 }
 
-MarkerLayer.propTypes = {
-  measureInfo: PropTypes.shape({}).isRequired,
-};
+MarkerLayer.propTypes = {};
 
 const mapStateToProps = state => {
   const { isSidePanelExpanded } = state.global;
