@@ -35,11 +35,11 @@ const MultiValueTooltip = ({
   const data = payload[0].payload;
   const { name: headline, timestamp } = data;
 
-  if(chartType){
-    if(chartType === CHART_TYPES.BAR){
+  if (chartType) {
+    if (chartType === CHART_TYPES.BAR) {
       payload.reverse();
     }
-    if(chartType === CHART_TYPES.LINE){
+    if (chartType === CHART_TYPES.LINE) {
       payload.sort((obj1, obj2) => {
         return obj1.value - obj2.value;
       });
