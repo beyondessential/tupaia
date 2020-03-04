@@ -10,32 +10,23 @@ import { TYPES } from '@tupaia/database';
 import { reduceToDictionary } from '@tupaia/utils';
 import { BaseModel } from './BaseModel';
 
+const CASE = 'case';
+const COUNTRY = 'country';
+const DISASTER = 'disaster';
 const FACILITY = 'facility';
 const REGION = 'region';
-const COUNTRY = 'country';
-const WORLD = 'world';
-const CASE = 'case';
-const DISASTER = 'disaster';
 const VILLAGE = 'village';
+const WORLD = 'world';
 
 export const ENTITY_TYPES = {
-  FACILITY,
-  REGION,
-  COUNTRY,
-  WORLD,
   CASE,
+  COUNTRY,
   DISASTER,
-  VILLAGE,
-};
-
-export const ORG_UNIT_ENTITY_TYPES = {
   FACILITY,
   REGION,
-  COUNTRY,
+  VILLAGE,
   WORLD,
 };
-
-const ORG_UNIT_TYPE_LIST = Object.values(ORG_UNIT_ENTITY_TYPES);
 
 const constructTypesCriteria = (types, prefix) =>
   types.length > 0 ? `${prefix} type IN (${types.map(() => '?').join(',')})` : '';
@@ -43,7 +34,27 @@ const constructTypesCriteria = (types, prefix) =>
 export class Entity extends BaseModel {
   static databaseType = TYPES.ENTITY;
 
-  static fields = ['id', 'code', 'type', 'parent_id', 'country_code', 'name', 'point', 'region'];
+  static fields = [
+    'id',
+    'code',
+    'type',
+    'parent_id',
+    'country_code',
+    'name',
+    'point',
+    'region',
+    'bounds',
+    'image_url',
+  ];
+
+  static geoFields = ['point', 'region', 'bounds'];
+
+  static translatedFields = (alias = 'entity') =>
+    Entity.fields.map(field =>
+      Entity.geoFields.includes(field)
+        ? `ST_AsGeoJSON(${alias}.${field}) as ${field}`
+        : `${alias}.${field}`,
+    );
 
   static FACILITY = FACILITY;
 
@@ -54,6 +65,14 @@ export class Entity extends BaseModel {
   static DISASTER = DISASTER;
 
   static WORLD = WORLD;
+
+  static orgUnitEntityTypes = {
+    WORLD,
+    COUNTRY,
+    REGION,
+    FACILITY,
+    VILLAGE,
+  };
 
   constructor() {
     super();
@@ -112,10 +131,6 @@ export class Entity extends BaseModel {
     return ancestors.map(({ code }) => code);
   }
 
-  async getOrgUnitAncestors(includeWorld = false) {
-    return Entity.getAllAncestors(this.id, includeWorld, ORG_UNIT_TYPE_LIST);
-  }
-
   async getCountry() {
     if (this.type === COUNTRY) return this;
     const ancestors = await Entity.getAllAncestors(this.id, false, [COUNTRY]);
@@ -171,30 +186,23 @@ export class Entity extends BaseModel {
     return Entity.database.executeSql(
       `
       WITH RECURSIVE children AS (
-        SELECT id, code, country_code, name, image_url, parent_id, point, bounds, region, type, 0 AS generation
+        SELECT ${Entity.translatedFields()}, 0 AS generation
         FROM   entity
         WHERE  code = ?
         UNION  ALL
-        SELECT p.id, p.code, p.country_code, p.name, p.image_url, p.parent_id, p.point, p.bounds, p.region, p.type, c.generation + 1
+        SELECT ${Entity.translatedFields('p')}, c.generation + 1
         FROM   children      c
         JOIN   entity p ON p.parent_id = c.id
       )
       SELECT
-        children.id,
-        children.code,
-        children.country_code,
-        children.name,
-        children.image_url,
-        p.code as parent_code,
-        ST_AsGeoJSON(children.point) as point,
-        ST_AsGeoJSON(children.bounds) as bounds,
+        ${Entity.translatedFields('children')},
         (children.region IS NOT NULL) as has_region,
-        children.type,
+        p.code as parent_code,
         c.category_code as clinic_category_code,
         c.type_name as clinic_type_name
       FROM children
-      left join entity p
-      	on p.id = children.parent_id 
+      LEFT JOIN entity p
+      	ON p.id = children.parent_id 
       LEFT JOIN clinic c
         ON c.code = children.code
     `,
@@ -202,106 +210,65 @@ export class Entity extends BaseModel {
     );
   }
 
-  static async getChildRegions(code) {
-    return Entity.database.executeSql(
+  async getChildRegions() {
+    return this.database.executeSql(
       `
-      SELECT
-        id,
-        code,
-        name,
-        image_url,
-        parent_id,
-        ST_AsGeoJSON(region) as region,
-        ST_AsGeoJSON(bounds) as bounds,
-        type
-      FROM entity
+      SELECT ${Entity.translatedFields()} FROM entity
       WHERE
-        region IS NOT NULL
-        AND parent_id IN (
-          SELECT id
-            FROM entity
-            WHERE code = ?
-        );
+        region IS NOT NULL AND
+        parent_id = ?;
     `,
-      [code],
+      [this.id],
     );
   }
 
   static async getEntityByCode(code) {
-    const result = await Entity.database.executeSql(
-      `
-      SELECT
-        e.id,
-        e.code,
-        e.country_code,
-        e.name,
-        e.image_url,
-        e.parent_id,
-        ST_AsGeoJSON(e.point) as point,
-        ST_AsGeoJSON(e.bounds) as bounds,
-        (region IS NOT NULL) as has_region,
-        e.type,
+    const records = await Entity.database.executeSql(
+      `SELECT 
+        ${Entity.translatedFields('e')},
+        (e.region IS NOT NULL) as has_region,
         c.category_code as clinic_category_code,
-        c.type_name as clinic_type_name
+        c.type_name as clinic_type_name 
       FROM entity e
       LEFT JOIN clinic c
           ON c.code = e.code
       WHERE
         e.code = ?;
-    `,
+      `,
       [code],
     );
-    return result[0];
+    return records[0] && Entity.load(records[0]);
   }
 
-  static async getEntity(id) {
-    const result = await Entity.database.executeSql(
-      `
-      SELECT
-        id,
-        code,
-        country_code,
-        name,
-        image_url,
-        parent_id,
-        ST_AsGeoJSON(point) as point,
-        ST_AsGeoJSON(bounds) as bounds,
-        (region IS NOT NULL) as has_region,
-        type
-      FROM entity
-      WHERE
-        id = ?;
-    `,
+  static async findById(id, loadOptions, queryOptions) {
+    // Check for usage of incompatible params defined in the parent class method signature
+    if (loadOptions) {
+      throw new Error('"loadOptions" parameter is not supported by Entity.findById()');
+    }
+    if (queryOptions) {
+      throw new Error('"queryOptions" parameter is not supported by Entity.findById()');
+    }
+
+    const records = await Entity.database.executeSql(
+      `SELECT ${Entity.translatedFields()} FROM entity WHERE id = ?;`,
       [id],
     );
-    return result[0];
+    return records[0] && Entity.load(records[0]);
   }
 
-  static async getAllChildren(id, types = []) {
+  async getOrgUnitChildren() {
+    const types = Object.values(Entity.orgUnitEntityTypes);
+
     return Entity.database.executeSql(
       `
-      SELECT
-        id,
-        code,
-        country_code,
-        name,
-        image_url,
-        parent_id,
-        ST_AsGeoJSON(point) as point,
-        ST_AsGeoJSON(bounds) as bounds,
-        type
-      FROM entity
+      SELECT ${Entity.translatedFields()} FROM entity
       WHERE
-        parent_id = ? ${constructTypesCriteria(types, 'AND')}
-      ORDER BY
-        name;
+        parent_id = ?
+        ${constructTypesCriteria(types, 'AND')}
+      ORDER BY name;
     `,
-      [id, ...types],
+      [this.id, ...types],
     );
-  }
-
-  static async getOrgUnitChildren(id) {
-    return Entity.getAllChildren(id, ORG_UNIT_TYPE_LIST);
   }
 
   async getDescendantsOfType(entityType) {
@@ -343,5 +310,9 @@ export class Entity extends BaseModel {
   async getFacilitiesByType() {
     const facilityDescendants = await Entity.getFacilityDescendantsWithCoordinates(this.code);
     return groupBy(facilityDescendants, 'type_name');
+  }
+
+  async parent() {
+    return Entity.findById(this.parent_id);
   }
 }

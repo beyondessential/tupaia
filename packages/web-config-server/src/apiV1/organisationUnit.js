@@ -1,15 +1,16 @@
 import { Entity } from '/models';
-
 import { getEntityLocationForFrontend } from './utils/getEntityLocationForFrontend';
 
 function getOrganisationUnitTypeForFrontend(type) {
   switch (type) {
-    case 'region':
-      return 'Region';
     case 'country':
       return 'Country';
+    case 'region':
+      return 'Region';
     case 'facility':
       return 'Facility';
+    case 'village':
+      return 'Village';
     default:
       return 'Other';
   }
@@ -49,10 +50,7 @@ export async function getEntityAndChildrenByCode(entityCode, userHasAccess) {
   // fetch parent if one exists - don't check permission (as we already
   // know we have permission for at least one of its children)
   const entityParent = entity.parent_id && (await Entity.getEntity(entity.parent_id));
-  const children = await fetchAndFilterForAccess(
-    Entity.getOrgUnitChildren(entity.id),
-    userHasAccess,
-  );
+  const children = await fetchAndFilterForAccess(entity.getOrgUnitChildren(), userHasAccess);
 
   // assemble response
   const data = {
