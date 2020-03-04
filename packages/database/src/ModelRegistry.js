@@ -12,7 +12,7 @@ export class ModelRegistry {
   constructor(database, modelClasses) {
     this.database = database;
     this.modelClasses = modelClasses;
-    this.generateModels(database.isSingleton);
+    this.generateModels();
   }
 
   closeDatabaseConnections() {
@@ -25,15 +25,14 @@ export class ModelRegistry {
     return this.database.connectionPromise;
   }
 
-  generateModels(isSingleton) {
+  generateModels() {
     // Add models
     Object.entries(this.modelClasses).forEach(([modelName, ModelClass]) => {
       // Create a singleton instance of each model, passing through the change handler if there is
       // one statically defined on the ModelClass and this is the singleton (non transacting)
       // database instance
-      const onChange = isSingleton ? ModelClass.onChange : null;
       const modelKey = getModelKey(modelName);
-      this[modelKey] = new ModelClass(this.database, onChange);
+      this[modelKey] = new ModelClass(this.database);
     });
     // Inject other models into each model
     Object.keys(this.modelClasses).forEach(modelName => {

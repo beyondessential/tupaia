@@ -7,10 +7,11 @@ import { DatabaseError } from '@tupaia/utils';
 export class DatabaseModel {
   otherModels = {};
 
-  constructor(database, onChange) {
+  constructor(database) {
     this.database = database;
-    // Add change handler to database if defined (generally for the singleton instance of a model)
-    if (onChange) {
+    // Add change handler to database if defined, and this is the singleton instance of the model
+    const onChange = this.constructor.onChange;
+    if (this.database.isSingleton && onChange) {
       this.database.addChangeHandlerForCollection(this.DatabaseTypeClass.databaseType, change =>
         onChange(change, this),
       );
@@ -21,6 +22,17 @@ export class DatabaseModel {
     // it will be populated on the first call to this.fetchSchema(), and should not be accessed
     // directly
     this.schema = null;
+
+    this.cache = {};
+    // If this model uses the singleton database, it is probably long running, so be sure to
+    // invalidate the cache any time a change is detected. Non-singleton models are those created
+    // during transactions, so are short lived and unlikely to need cache invalidation - thus we
+    // avoid making an additional connection to pubsub and just leave their cache untouched
+    if (this.database.isSingleton) {
+      this.database.addChangeHandlerForCollection(this.DatabaseTypeClass.databaseType, () => {
+        this.cache = {}; // invalidate cache on any change
+      });
+    }
   }
 
   async fetchSchema() {
@@ -226,5 +238,12 @@ export class DatabaseModel {
 
   async markAsChanged(...args) {
     return this.database.markAsChanged(this.databaseType, ...args);
+  }
+
+  runCachedFunction(cacheKey, fn) {
+    if (!this.cache[cacheKey]) {
+      this.cache[cacheKey] = fn(); // may be async, in which case we cache the promise to be awaited
+    }
+    return this.cache[cacheKey];
   }
 }
