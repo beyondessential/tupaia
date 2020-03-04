@@ -160,7 +160,7 @@ export class OrganisationUnitPusher extends EntityPusher {
         constructGroupDetails,
         organisationUnitId,
       );
-      ancestor = await this.models.entity.findById(ancestor.parent_id);
+      ancestor = ancestor.parent_id && (await this.models.entity.findById(ancestor.parent_id));
     }
 
     // Add to the facility type organisation unit group for the country
