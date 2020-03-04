@@ -144,6 +144,17 @@ export function processMeasureInfo(response) {
         max: endDate,
       };
     }
+    if (type === 'spectrum' && scaleType === SCALE_TYPES.PERFORMANCE) {
+      const flattenedMeasureData = flattenNumericalMeasureData(measureData, key);
+      return {
+        ...measureOption,
+        values,
+        valueMapping,
+        min: 0,
+        max: 1,
+        noDataColour: UNKNOWN_COLOR,
+      };
+    }
     if (type === 'spectrum') {
       const flattenedMeasureData = flattenNumericalMeasureData(measureData, key);
       return {
@@ -267,7 +278,6 @@ export function getMeasureDisplayInfo(orgUnitData, measureOptions, hiddenMeasure
           displayInfo.color = valueInfo.color;
           break;
       }
-
       if (valueInfo.isHidden) {
         displayInfo.isHidden = true;
       }
