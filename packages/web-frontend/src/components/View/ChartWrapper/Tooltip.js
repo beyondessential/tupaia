@@ -13,6 +13,7 @@ import { VIEW_STYLES } from '../../../styles';
 import { formatDataValue } from '../../../utils';
 import { VALUE_TYPES } from '../constants';
 import { PRESENTATION_OPTIONS_SHAPE } from '../propTypes';
+import { CHART_TYPES } from './chartTypes';
 import { formatTimestampForChart, getIsTimeSeries } from './helpers';
 
 function formatLabelledValue(label, value, valueType, metadata) {
@@ -29,9 +30,22 @@ const MultiValueTooltip = ({
   payload,
   periodGranularity,
   labelType,
+  chartType,
 }) => {
   const data = payload[0].payload;
   const { name: headline, timestamp } = data;
+
+  if(chartType){
+    if(chartType === CHART_TYPES.BAR){
+      payload.reverse();
+    }
+    if(chartType === CHART_TYPES.LINE){
+      payload.sort((obj1, obj2) => {
+        return obj1.value - obj2.value;
+      });
+    }
+  }
+
   const valueLabels = payload.map(({ dataKey, value }) => {
     const options = presentationOptions && presentationOptions[dataKey];
     const label = (options && options.label) || dataKey;
