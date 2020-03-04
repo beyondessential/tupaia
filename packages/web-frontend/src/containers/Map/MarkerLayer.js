@@ -78,21 +78,19 @@ export class MarkerLayer extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    const {
-      measureData,
-      currentCountry,
-      measureName,
-      measureId,
-      sidePanelWidth,
-      hiddenMeasures,
-    } = this.props;
+    const { measureData, currentCountry, measureName, measureId, sidePanelWidth } = this.props;
     if (
       nextProps.measureName !== measureName ||
       nextProps.measureId !== measureId ||
       nextProps.currentCountry !== currentCountry ||
       nextProps.sidePanelWidth !== sidePanelWidth ||
-      nextProps.hiddenMeasures !== hiddenMeasures ||
-      nextProps.measureData !== measureData
+      nextProps.measureData.length !== measureData.length ||
+      nextProps.measureData.find(
+        (data, index) =>
+          data.organisationUnitCode !== measureData[index].organisationUnitCode ||
+          data.coordinates !== measureData[index].coordinates ||
+          data.isHidden !== measureData[index].isHidden,
+      )
     ) {
       return true;
     }
@@ -208,7 +206,6 @@ const mapStateToProps = state => {
     measureInfo: { measureOptions, measureId, currentCountry },
     popup,
     isMeasureLoading,
-    measureInfo: { hiddenMeasures },
   } = state.map;
 
   const { contractedWidth, expandedWidth } = state.dashboard;
@@ -221,7 +218,6 @@ const mapStateToProps = state => {
 
   return {
     isMeasureLoading,
-    hiddenMeasures,
     measureOptions,
     measureId,
     currentCountry,
