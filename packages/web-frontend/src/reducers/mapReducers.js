@@ -11,7 +11,6 @@ import {
   GO_HOME,
   CHANGE_MEASURE,
   CHANGE_ORG_UNIT,
-  CHANGE_PROJECT_UNIT,
   CHANGE_POSITION,
   CHANGE_BOUNDS,
   CHANGE_TILE_SET,
@@ -42,9 +41,7 @@ function position(state = { bounds: defaultBounds }, action) {
     }
 
     case CHANGE_ORG_UNIT:
-    case CHANGE_PROJECT_UNIT:
-    case FETCH_ORG_UNIT_SUCCESS:
-    case FETCH_PROJECT_UNIT_SUCCESS: {
+    case FETCH_ORG_UNIT_SUCCESS: {
       if (action.shouldChangeMapBounds) {
         const { location } = action.organisationUnit;
         if (location) {

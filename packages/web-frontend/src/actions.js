@@ -39,7 +39,6 @@ export const CHANGE_SIDE_BAR_EXPANDED_WIDTH = 'CHANGE_SIDE_BAR_EXPANDED_WIDTH';
 export const CLEAR_MEASURE_HIERARCHY = 'CLEAR_MEASURE_HIERARCHY';
 export const CHANGE_MEASURE = 'CHANGE_MEASURE';
 export const CHANGE_ORG_UNIT = 'CHANGE_ORG_UNIT';
-export const CHANGE_PROJECT_UNIT = 'CHANGE_PROJECT_UNIT';
 export const CHANGE_POSITION = 'CHANGE_POSITION';
 export const CHANGE_BOUNDS = 'CHANGE_BOUNDS';
 export const CHANGE_SEARCH = 'CHANGE_SEARCH';
@@ -457,20 +456,6 @@ export function changeOrgUnit(organisationUnit = initialOrgUnit, shouldChangeMap
 }
 
 /**
- * Changes current Project Level and Map view. Will trigger sagas affecting state for
- * map and the current dashboard.
- *
- * @param {object} projectUnit
- */
-export function changeProjectUnit(projectUnit, shouldChangeMapBounds = true) {
-  return {
-    type: CHANGE_PROJECT_UNIT,
-    projectUnit,
-    shouldChangeMapBounds,
-  };
-}
-
-/**
  * Changes currently highlighed org unit on the map without changing the selected org unit.
  *
  * @param {object} organisationUnit Use null to reset and display all org units
@@ -603,37 +588,6 @@ export function fetchOrgUnitSuccess(organisationUnit, shouldChangeMapBounds = tr
 export function fetchOrgUnitError(error) {
   return {
     type: FETCH_ORG_UNIT_ERROR,
-    error,
-  };
-}
-
-/**
- * Changes the current projectUnit. Should update markers/polygons on map.
- *
- * @param {object} projectUnit projectUnit from saga on successful fetch
- */
-export function fetchProjectUnitSuccess(projectUnit, shouldChangeMapBounds = true) {
-  const parentProjectUnitCode = projectUnit.parent.projectUnitCode;
-  const siblings = getSiblingItems(parentprojectUnitCode, projectUnit.projectUnitCode);
-
-  storeSiblingItems(projectUnit.projectUnitCode, projectUnit.projectUnitChildren);
-
-  return {
-    type: FETCH_PROJECT_UNIT_SUCCESS,
-    projectUnit,
-    projectUnitSiblings: siblings,
-    shouldChangeMapBounds,
-  };
-}
-
-/**
- * Changes state to communicate error to user appropriately.
- *
- * @param {object} error  response from saga on failed fetch
- */
-export function fetchProjectUnitError(error) {
-  return {
-    type: FETCH_PROJECT_UNIT_ERROR,
     error,
   };
 }

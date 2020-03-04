@@ -18,7 +18,6 @@ import {
   ATTEMPT_CHART_EXPORT,
   ATTEMPT_DRILL_DOWN,
   CHANGE_ORG_UNIT,
-  CHANGE_PROJECT_UNIT,
   FETCH_INFO_VIEW_DATA,
   CHANGE_SEARCH,
   CHANGE_MEASURE,
@@ -50,8 +49,6 @@ import {
   fetchUserSignupError,
   fetchOrgUnitSuccess,
   fetchOrgUnitError,
-  fetchProjectUnitSuccess,
-  fetchProjectUnitError,
   fetchRegionError,
   fetchDashboardSuccess,
   fetchDashboardError,
@@ -89,6 +86,7 @@ import {
   FETCH_RESEND_VERIFICATION_EMAIL,
   findUserLoginFailed,
   REQUEST_PROJECT_ACCESS,
+  SET_PROJECT,
 } from './actions';
 import { isMobile, processMeasureInfo, formatDateForApi } from './utils';
 import { createUrlString } from './utils/historyNavigation';
@@ -434,30 +432,6 @@ function* watchOrgUnitChangeAndFetchIt() {
   yield takeLatest(CHANGE_ORG_UNIT, fetchOrgUnitData);
 }
 
-/**
- * fetchOrgUnitData
- *
- * Fetch an org unit and call action on success/fail.
- *
- */
-function* fetchProjectUnitData(action) {
-  console.log(action);
-  const { projectUnit } = action;
-
-  const requestResourceUrl = `organisationUnit?organisationUnitCode=${projectUnit}`;
-
-  try {
-    const projectUnitData = yield call(request, requestResourceUrl, fetchProjectUnitError);
-    yield put(fetchProjectUnitSuccess(projectUnitData, action.shouldChangeMapBounds));
-  } catch (error) {
-    yield put(error.errorFunction(error));
-  }
-}
-
-function* watchProjectUnitChangeAndFetchIt() {
-  yield takeLatest(CHANGE_PROJECT_UNIT, fetchProjectUnitData);
-}
-
 function* fetchOrgUnitRegionData(action) {
   const { organisationUnitCode } = action.organisationUnit;
   const requestResourceUrl = `regions/${organisationUnitCode}`;
@@ -733,10 +707,6 @@ function* watchFetchOrgUnitSuccess() {
   yield takeLatest(FETCH_ORG_UNIT_SUCCESS, fetchCurrentMeasureInfo);
 }
 
-function* watchFetchProjectUnitSuccess() {
-  yield takeLatest(FETCH_PROJECT_UNIT_SUCCESS, fetchCurrentMeasureInfo);
-}
-
 // Ensures current measure remains selected in the case that the new org unit
 // was selected before measures finished fetching
 function* watchFetchMeasureSuccess() {
@@ -986,6 +956,4 @@ export default [
   watchFetchOrgUnitSuccess,
   refreshBrowserWhenFinishingUserSession,
   watchFetchCountryAccessDataAndFetchItTEST,
-  watchProjectUnitChangeAndFetchIt,
-  watchFetchProjectUnitSuccess,
 ];

@@ -70,12 +70,13 @@ export class Dashboard extends Component {
     if (!visible) return;
     const { contractedWidth } = this.props;
 
-    const { currentOrganisationUnit } = this.props;
+    const { currentOrganisationUnit, project } = this.props;
     if (!currentOrganisationUnit) {
       return;
     }
 
-    const { location } = currentOrganisationUnit;
+    if (project.active.code !== 'explore') {
+    }
 
     // If the organisation is the redux default, the location contains a point coordinate,
     // instead of bounds, or the current org unit is the world render the default world map.
@@ -135,7 +136,6 @@ export class Dashboard extends Component {
 
   renderMetaMedia() {
     const { currentOrganisationUnit, contractedWidth } = this.props;
-
     // Important: Overhead of inserting a leaflet map into the DOM is high, therefore
     // css display properties are used to show and hide the map when needed and the
     // map is only inserted once.
@@ -157,9 +157,11 @@ export class Dashboard extends Component {
   }
 
   renderFloatingHeader() {
-    const { currentOrganisationUnit, contractedWidth, isSidePanelExpanded } = this.props;
+    const { currentOrganisationUnit, contractedWidth, isSidePanelExpanded, project } = this.props;
     const { showFloatingHeader } = this.state;
 
+    const header =
+      project.active.code === 'explore' ? currentOrganisationUnit.name : project.active.name;
     return (
       <div
         ref={element => {
@@ -171,7 +173,7 @@ export class Dashboard extends Component {
           visibility: showFloatingHeader && !isSidePanelExpanded ? 'visible' : 'hidden',
         }}
       >
-        <h2 style={DASHBOARD_STYLES.title}>{currentOrganisationUnit.name}</h2>
+        <h2 style={DASHBOARD_STYLES.title}>{header}</h2>
       </div>
     );
   }
@@ -212,12 +214,15 @@ export class Dashboard extends Component {
   }
 
   renderHeader() {
-    const { currentOrganisationUnit } = this.props;
+    const { currentOrganisationUnit, project } = this.props;
+
+    const header =
+      project.active.code === 'explore' ? currentOrganisationUnit.name : project.active.name;
 
     return (
       <div style={DASHBOARD_STYLES.meta}>
         {this.renderMetaMedia()}
-        <h2 style={DASHBOARD_STYLES.title}>{currentOrganisationUnit.name}</h2>
+        <h2 style={DASHBOARD_STYLES.title}>{header}</h2>
       </div>
     );
   }
@@ -254,6 +259,7 @@ Dashboard.propTypes = {
   mapIsAnimating: PropTypes.bool,
   isSidePanelExpanded: PropTypes.bool.isRequired,
   contractedWidth: PropTypes.number,
+  project: PropTypes.object,
 };
 
 const mapStateToProps = state => {
@@ -263,10 +269,9 @@ const mapStateToProps = state => {
     loadingOrganisationUnit,
     dashboardConfig,
     isSidePanelExpanded,
-    project,
   } = state.global;
   const { contractedWidth } = state.dashboard;
-
+  const { project } = state;
   return {
     currentOrganisationUnit,
     sections: dashboardConfig,
@@ -287,7 +292,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(Dashboard);
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

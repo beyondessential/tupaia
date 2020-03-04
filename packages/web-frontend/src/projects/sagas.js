@@ -8,8 +8,9 @@ import {
   FETCH_INITIAL_DATA,
   SELECT_PROJECT,
   changeBounds,
-  changeDashboardGroup,
   FETCH_LOGIN_SUCCESS,
+  fetchDashboardSuccess,
+  fetchDashboardError,
 } from '../actions';
 import { INITIAL_PROJECT_CODE } from '../defaults';
 
@@ -36,7 +37,19 @@ function* watchSelectProjectAndLoadProjectState() {
   yield takeLatest(SELECT_PROJECT, function*(action) {
     yield put(changeBounds(action.project.bounds));
     yield put(setProjectDefaults(action.project));
-    yield put(changeDashboardGroup(action.project.dashboardGroupName));
+    console.log(action);
+    const { code } = action.project;
+    if (code !== 'General' && code !== 'explore' && code !== 'disaster') {
+      console.log(code);
+      const requestResourceUrl = `dashboard?organisationUnitCode=${code}`;
+
+      try {
+        const dashboard = yield call(request, requestResourceUrl, fetchDashboardError);
+        yield put(fetchDashboardSuccess(dashboard));
+      } catch (error) {
+        yield put(error.errorFunction(error));
+      }
+    }
   });
 }
 

@@ -13,6 +13,7 @@ export default function projects(
     active: {},
     requestingAccess: null,
     error: '',
+    loading: null,
   },
   action,
 ) {
@@ -21,11 +22,13 @@ export default function projects(
       return {
         ...state,
         active: action.project,
+        loading: true,
       };
     case SET_PROJECT_DATA:
       return {
         ...state,
         projects: action.data,
+        loading: false,
       };
     case REQUEST_PROJECT_ACCESS:
       return {

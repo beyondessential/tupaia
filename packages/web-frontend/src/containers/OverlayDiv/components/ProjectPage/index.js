@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 
 import { REQUEST_PROJECT_ACCESS } from '../../index';
 import { selectProject, setRequestingAccess } from '../../../../projects/actions';
-import { setOverlayComponent, changeProjectUnit } from '../../../../actions';
+import { setOverlayComponent } from '../../../../actions';
 import { ProjectCard } from './ProjectCard';
 
 // code for general explore mode project.
@@ -84,7 +84,7 @@ const mapDispatchToProps = dispatch => ({
   onSelectProject: project => {
     dispatch(selectProject(project));
     dispatch(setOverlayComponent(null));
-    dispatch(changeProjectUnit(project.code, false));
+    // dispatch(changeProjectUnit(project.code, false));
   },
   onRequestProjectAccess: project => {
     dispatch(setRequestingAccess(project));

@@ -124,7 +124,6 @@ const mapDispatchToProps = dispatch => {
     onSelectProject: project => {
       dispatch(selectProject(project));
       dispatch(setOverlayComponent(null));
-      dispatch(changeProjectUnit(project, false));
     },
     closeOverlay: () => {
       dispatch(setOverlayComponent(null));
