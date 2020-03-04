@@ -307,9 +307,11 @@ export const cachedSelectMeasureWithDisplayInfo = createCachedSelector(
 export const selectAllMeasuresWithDisplayInfo = createSelector(
   [state => state, state => state.map.measureInfo.measureData],
   (state, allData) =>
-    allData.map(data => ({
-      ...cachedSelectMeasureWithDisplayInfo(state, data.organisationUnitCode),
-    })),
+    allData
+      ? allData.map(data => ({
+          ...cachedSelectMeasureWithDisplayInfo(state, data.organisationUnitCode),
+        }))
+      : [],
 );
 
 export const selectRadiusScaleFactor = createSelector(

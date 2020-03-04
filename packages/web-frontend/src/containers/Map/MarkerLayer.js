@@ -9,15 +9,51 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { LayerGroup } from 'react-leaflet';
-import { selectMeasureName } from '../../reducers/mapReducers';
+import { changeOrgUnit, openMapPopup, closeMapPopup } from '../../actions';
+import { CircleProportionMarker, IconMarker, MeasurePopup } from '../../components/Marker';
+import {
+  selectMeasureName,
+  selectAllMeasuresWithDisplayInfo,
+  selectRadiusScaleFactor,
+} from '../../reducers/mapReducers';
+import { selectOrgUnit } from '../../reducers/orgUnitReducers';
 import { MEASURE_TYPE_SHADING } from '../../utils/measures';
-import MeasureMarker from './MeasureMarker';
 
 export const MARKER_TYPES = {
   DOT_MARKER: 'dot',
   CIRCLE_MARKER: 'circle',
   CIRCLE_HEATMAP: 'circleHeatmap',
   SQUARE: 'square',
+};
+
+const MIN_RADIUS = 1;
+
+const MeasureMarker = props => {
+  const { icon, radius } = props;
+
+  if (parseInt(radius, 10) === 0) {
+    if (icon) {
+      // we have an icon, so don't render the radius at all
+      return <IconMarker {...props} />;
+    }
+
+    // we have no icon and zero radius -- use minimum radius instead
+    return <CircleProportionMarker {...props} radius={MIN_RADIUS} />;
+  }
+
+  if (radius && icon) {
+    const { markerRef, ...otherProps } = props;
+    return (
+      <React.Fragment>
+        <CircleProportionMarker markerRef={() => null} {...otherProps} />
+        <IconMarker {...otherProps} markerRef={markerRef} />
+      </React.Fragment>
+    );
+  }
+  if (radius) {
+    return <CircleProportionMarker {...props} />;
+  }
+  return <IconMarker {...props} />;
 };
 
 /**
@@ -42,12 +78,20 @@ export class MarkerLayer extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    const { currentCountry, measureName, measureId, sidePanelWidth, measureData } = this.props;
+    const {
+      measureData,
+      currentCountry,
+      measureName,
+      measureId,
+      sidePanelWidth,
+      hiddenMeasures,
+    } = this.props;
     if (
       nextProps.measureName !== measureName ||
       nextProps.measureId !== measureId ||
       nextProps.currentCountry !== currentCountry ||
       nextProps.sidePanelWidth !== sidePanelWidth ||
+      nextProps.hiddenMeasures !== hiddenMeasures ||
       nextProps.measureData !== measureData
     ) {
       return true;
@@ -61,6 +105,18 @@ export class MarkerLayer extends Component {
     // Re-open popups after a measure update.
     if (prevProps.measureId !== measureId) {
       this.openPopup(currentPopupId);
+    }
+  }
+
+  onPopup(organisationUnitCode, open = true) {
+    const { onPopupOpen, onPopupClose } = this.props;
+
+    if (open) {
+      this.activePopupId = organisationUnitCode;
+      onPopupOpen(organisationUnitCode);
+    } else {
+      this.activePopupId = this.activePopupId === organisationUnitCode ? null : this.activePopupId;
+      onPopupClose(organisationUnitCode);
     }
   }
 
@@ -87,7 +143,15 @@ export class MarkerLayer extends Component {
   }
 
   renderMeasures() {
-    const { measureData, measureOptions, isMeasureLoading } = this.props;
+    const {
+      measureData,
+      measureOptions,
+      onChangeOrgUnit,
+      sidePanelWidth,
+      measureName,
+      isMeasureLoading,
+      radiusScaleFactor,
+    } = this.props;
 
     if (
       !measureData ||
@@ -96,16 +160,35 @@ export class MarkerLayer extends Component {
     )
       return null;
     if (isMeasureLoading) return null;
+    const processedData = measureData
+      .filter(data => data.coordinates && data.coordinates.length === 2)
+      .filter(displayInfo => !displayInfo.isHidden);
 
-    return measureData.map(data => {
+    const PopupChild = ({ data }) => (
+      <MeasurePopup
+        data={data}
+        measureOptions={measureOptions}
+        measureName={measureName}
+        sidePanelWidth={sidePanelWidth}
+        onOrgUnitClick={onChangeOrgUnit}
+        onOpen={() => this.onPopup(data.organisationUnitCode)}
+        onClose={() => this.onPopup(data.organisationUnitCode, false)}
+      />
+    );
+
+    return processedData.map(data => {
+      const popup = <PopupChild data={data} />;
       const code = data.organisationUnitCode;
 
       return (
         <MeasureMarker
           key={code}
-          organisationUnitCode={code}
           markerRef={ref => this.addMarkerRef(code, ref)}
-        />
+          radiusScaleFactor={radiusScaleFactor}
+          {...data}
+        >
+          {popup}
+        </MeasureMarker>
       );
     });
   }
@@ -116,28 +199,46 @@ export class MarkerLayer extends Component {
 }
 
 MarkerLayer.propTypes = {
-  measureData: PropTypes.arrayOf(PropTypes.object).isRequired,
+  measureInfo: PropTypes.shape({}).isRequired,
 };
 
 const mapStateToProps = state => {
   const { isSidePanelExpanded } = state.global;
   const {
-    measureInfo: { measureData, measureOptions, measureId, currentCountry },
+    measureInfo: { measureOptions, measureId, currentCountry },
     popup,
     isMeasureLoading,
+    measureInfo: { hiddenMeasures },
   } = state.map;
+
   const { contractedWidth, expandedWidth } = state.dashboard;
+  const measureData = selectAllMeasuresWithDisplayInfo(state)
+    .map(data => ({
+      ...data,
+      ...selectOrgUnit(state, data.organisationUnitCode),
+    }))
+    .map(data => ({ ...data, coordinates: data.location && data.location.point }));
 
   return {
-    measureId,
     isMeasureLoading,
+    hiddenMeasures,
     measureOptions,
+    measureId,
     currentCountry,
-    measureData: measureData || [],
+    measureData,
     measureName: selectMeasureName(state),
+    radiusScaleFactor: selectRadiusScaleFactor(state),
     currentPopupId: popup,
     sidePanelWidth: isSidePanelExpanded ? expandedWidth : contractedWidth,
   };
 };
 
-export default connect(mapStateToProps)(MarkerLayer);
+const mapDispatchToProps = dispatch => ({
+  onChangeOrgUnit: (organisationUnit, shouldChangeMapBounds = false) => {
+    dispatch(changeOrgUnit(organisationUnit, shouldChangeMapBounds));
+  },
+  onPopupOpen: orgUnitCode => dispatch(openMapPopup(orgUnitCode)),
+  onPopupClose: orgUnitCode => dispatch(closeMapPopup(orgUnitCode)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(MarkerLayer);
