@@ -3,9 +3,20 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import keyBy from 'lodash.keyby';
 import { reduceToDictionary } from '@tupaia/utils';
 import { InboundAggregateDataTranslator } from './InboundAggregateDataTranslator';
+import { formatDateForDHIS2 } from './formatDateForDHIS2';
+
+// data element value types, taken from https://docs.dhis2.org/2.33/en/developer/html/dhis2_developer_manual_full.html#webapi_csv_data_elements
+const INTEGER = 'INTEGER';
+const NUMBER = 'NUMBER';
+const UNIT_INTERVAL = 'UNIT_INTERVAL';
+const PERCENTAGE = 'PERCENTAGE';
 const INTEGER_POSITIVE = 'INTEGER_POSITIVE';
+const INTEGER_NEGATIVE = 'INTEGER_NEGATIVE';
+const INTEGER_ZERO_OR_POSITIVE = 'INTEGER_ZERO_OR_POSITIVE';
+const FILE_RESOURCE = 'FILE_RESOURCE';
 const COORDINATE = 'COORDINATE';
 const TEXT = 'TEXT';
 const LONG_TEXT = 'LONG_TEXT';
@@ -13,6 +24,7 @@ const LETTER = 'LETTER';
 const PHONE_NUMBER = 'PHONE_NUMBER';
 const EMAIL = 'EMAIL';
 const BOOLEAN = 'BOOLEAN';
+const TRUE_ONLY = 'TRUE_ONLY';
 const DATE = 'DATE';
 const DATETIME = 'DATETIME';
 
