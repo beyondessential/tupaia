@@ -12,7 +12,7 @@ import { CountEventsBuilder } from '/apiV1/dataBuilders/generic/count/countEvent
  * @typedef {Object} CountEventsConfig
  * @property {string} programCode
  * @property {string} periodType
- * @property {Object<string, DataValueCondition>} [dataValues]
+ * @property {Object<string, (string|Object)>} [dataValues]
  *
  * Example
  * ```js

@@ -89,11 +89,6 @@ export class DataBuilder {
     });
   }
 
-  /**
-   * @param {Event[]} events
-   * @param {Conditions} [conditions]
-   * @returns {number}
-   */
   countEventsThatSatisfyConditions = (events, conditions) => {
     const { dataValues: valueConditions = {} } = conditions || {};
     const eventHasTargetValues = ({ dataValues }) =>
@@ -105,11 +100,6 @@ export class DataBuilder {
     return events.filter(eventHasTargetValues).length;
   };
 
-  /**
-   * @param {AnalyticsResult[]} analytics
-   * @param {Conditions} [conditions]
-   * @returns {number}
-   */
   countAnalyticsThatSatisfyConditions = (analytics, conditions) => {
     const { dataValues: valueConditions = {} } = conditions || {};
     const analyticHasTargetValue = ({ dataElement, value }) => {

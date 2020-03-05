@@ -12,7 +12,7 @@ import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 /**
  * Configuration schema
  * @typedef {Object} SumPerSeriesConfig
- * @property {Object<string, { dataClasses: Object<string, DataSourceDescriptor> }} series
+ * @property {Object<string, { dataClasses: Object<string, string[]> }} series
  *
  * Example:
  * ```js
