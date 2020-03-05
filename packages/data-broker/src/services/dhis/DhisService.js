@@ -268,28 +268,9 @@ export class DhisService extends Service {
   }
 
   async pullDataElementMetadata(api, dataSources, options) {
-    const { includeOptions } = options;
     const dataElementCodes = dataSources.map(({ dataElementCode }) => dataElementCode);
+    const { includeOptions } = options;
     const dataElements = await api.fetchDataElements(dataElementCodes, { includeOptions });
-    const translatedDataElements = this.translator.translateInboundDataElements(
-      dataElements,
-      dataSources,
-    );
-
-    return Promise.all(
-      translatedDataElements.map(dataElement =>
-        this.addOptionsToDataElementIfTheyExist(api, dataElement),
-      ),
-    );
+    return this.translator.translateInboundDataElements(dataElements, dataSources);
   }
-
-  addOptionsToDataElementIfTheyExist = async (api, dataElement) => {
-    const { code, optionSet, ...restOfDataElement } = dataElement;
-    const newDataElement = { code, ...restOfDataElement };
-    if (optionSet && optionSet.id) {
-      newDataElement.options = await api.getOptionSetOptions({ id: optionSet.id });
-    }
-
-    return newDataElement;
-  };
 }

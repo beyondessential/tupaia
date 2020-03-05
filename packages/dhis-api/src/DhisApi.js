@@ -378,45 +378,39 @@ export class DhisApi {
     return query.paging ? { organisationUnits, pager } : organisationUnits;
   }
 
-  async fetchDataElements(dataElementCodes, { includeOptions }) {
-    const fields = ['id', 'code', 'name'];
-    if (includeOptions) {
-      fields.push('optionSet');
-    }
-    return this.getRecords({
+  async fetchDataElements(dataElementCodes, { additionalFields = [], includeOptions } = {}) {
+    const fields = ['id', 'code', 'name', ...additionalFields];
+    if (includeOptions) fields.push('optionSet');
+    const dataElements = await this.getRecords({
       type: DATA_ELEMENT,
       codes: dataElementCodes,
       fields,
     });
-  }
+    if (includeOptions) {
+      const optionSetIds = [
+        ...new Set(dataElements.filter(d => !!d.optionSet).map(d => !!d.optionSet.id)),
+      ];
+      const optionSets = await this.getRecords({
+        type: OPTION_SET,
+        id: optionSetIds,
+        fields: 'options[code,name]',
+      });
+      const optionSetOptionsById = {};
+      optionSets.forEach(({ id, ...restOfOptionSet }) => {
+        optionSetOptionsById[id] = this.buildOptionsFromOptionSet(restOfOptionSet);
+      });
 
-  async getOptionsForDataElement(dataElementCode) {
-    const query = {
-      filter: `code:eq:${dataElementCode}`,
-      fields: 'optionSet',
-    };
-    const optionSetResponse = await this.fetch(DATA_ELEMENT, query);
-    if (
-      !optionSetResponse ||
-      !optionSetResponse.dataElements ||
-      optionSetResponse.dataElements.length === 0 ||
-      !optionSetResponse.dataElements[0].optionSet
-    ) {
-      return null;
+      return dataElements.map(({ optionSet, ...restOfDataElement }) => {
+        if (optionSet) {
+          return {
+            options: optionSetOptionsById[optionSet.id],
+            ...restOfDataElement,
+          };
+        }
+        return restOfDataElement;
+      });
     }
-    const optionSetId = optionSetResponse.dataElements[0].optionSet.id;
-    const response = await this.fetch(`${OPTION_SET}/${optionSetId}`, {
-      fields: '[options]',
-    });
-    const options = {};
-    await Promise.all(
-      response.options.map(async ({ id: optionId }) => {
-        const option = await this.fetch(`${OPTION}/${optionId}`, { fields: '[name,code]' });
-        const { name: optionText, code: optionCode } = option;
-        options[optionText.toLowerCase()] = optionCode; // Convert text to lower case so we can ignore case
-      }),
-    );
-    return options;
+    return dataElements;
   }
 
   getOptionSetOptions = async ({ code, id }) => {
@@ -433,9 +427,12 @@ export class DhisApi {
         dataElementGroups: code,
       });
     }
+    return this.buildOptionsFromOptionSet(result);
+  };
 
+  buildOptionsFromOptionSet = optionSet => {
     const options = {};
-    result.options.forEach(({ name, code: optionCode }) => {
+    optionSet.options.forEach(({ name, code: optionCode }) => {
       options[optionCode] = name.trim();
     });
     return options;
