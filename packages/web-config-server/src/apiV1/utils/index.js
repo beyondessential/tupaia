@@ -10,7 +10,6 @@ export {
   getBasicFacilityTypeName,
   getBasicFacilityTypeNamePlural,
 } from './facilityTypeTranslation';
-export { geoJsonToFrontEndCoordinates } from './geoJsonToFrontEndCoordinates';
 export { getPacificFacilityStatuses } from './getPacificFacilityStatuses';
 export { getLevelIndex } from './getLevelIndex';
 export getChildOrganisationUnits from './getChildOrganisationUnits';
