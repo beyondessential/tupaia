@@ -5,9 +5,9 @@
 
 import { translateBoundsForFrontend } from '/utils/geoJson';
 
-export function getEntityLocationForFrontend({ point, has_region: hasRegion, region, bounds }) {
+export function getEntityLocationForFrontend({ point, region, bounds }) {
   const type = (() => {
-    if (hasRegion || region) return 'area';
+    if (region) return 'area';
     if (point) return 'point';
     return 'no-coordinates';
   })();

@@ -1,15 +1,16 @@
 import { Entity } from '/models';
-
 import { getEntityLocationForFrontend } from './utils/getEntityLocationForFrontend';
 
 function getOrganisationUnitTypeForFrontend(type) {
   switch (type) {
-    case 'region':
-      return 'Region';
     case 'country':
       return 'Country';
+    case 'region':
+      return 'Region';
     case 'facility':
       return 'Facility';
+    case 'village':
+      return 'Village';
     default:
       return 'Other';
   }
@@ -43,23 +44,19 @@ export async function getEntityByCode(entityCode, userHasAccess) {
     throw new Error(`No access to ${queriedEntity.code}`);
   }
 
-  // fetch parent if one exists - don't check permission (as we already
-  // know we have permission for at least one of its children)
-  const { parent_id: parentId, id: entityId } = queriedEntity;
-  const parentTask = parentId && Entity.getEntity(parentId);
-
   // get children & remove those we don't have permission for
-  const childrenTask = Entity.getOrgUnitChildren(entityId);
-  const children = (await Promise.all(
-    (await childrenTask).map(async c => (await userHasAccess(c.code)) && c),
-  ))
+  const childrenTask = queriedEntity.getOrgUnitChildren();
+  const children = (
+    await Promise.all((await childrenTask).map(async c => (await userHasAccess(c.code)) && c))
+  )
     .filter(c => c)
     .map(translateForFrontend);
 
   // assemble response
   const data = {
     ...translateForFrontend(queriedEntity),
-    parent: translateForFrontend(await parentTask),
+    // no need to check permissions for the parent, since we have permission for one of its children
+    parent: translateForFrontend(await queriedEntity.parent()),
     organisationUnitChildren: children,
   };
 
