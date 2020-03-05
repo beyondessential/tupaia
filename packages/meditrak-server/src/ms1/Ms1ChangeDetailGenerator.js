@@ -7,10 +7,7 @@ import { ChangeDetailGenerator } from '../externalApiSync';
 
 export class Ms1ChangeDetailGenerator extends ChangeDetailGenerator {
   generateDetails = async updateChanges => {
-    const surveyResponses = await this.models.surveyResponse.findManyById(
-      this.getRecordIds(updateChanges),
-    );
-
+    const surveyResponses = this.getRecords(updateChanges);
     const surveyIds = this.getUniqueEntries(surveyResponses.map(r => r.survey_id));
     const surveys = await this.models.survey.findManyById(surveyIds);
     const surveyCodeById = {};

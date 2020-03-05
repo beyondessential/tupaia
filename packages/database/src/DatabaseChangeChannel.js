@@ -26,6 +26,7 @@ export class DatabaseChangeChannel extends PGPubSub {
         type: 'update',
         record_type: recordType,
         handler_key: specificHandlerKey,
+        record,
       }),
     );
   }
