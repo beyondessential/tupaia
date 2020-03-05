@@ -1,6 +1,9 @@
 import { expect } from 'chai';
 
-import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
+import {
+  countEventsThatSatisfyConditions,
+  countAnalyticsThatSatisfyConditions,
+} from '/apiV1/dataBuilders/helpers';
 
 const buildEvent = dataValueMap => ({
   dataValues: Object.entries(dataValueMap).reduce((results, [dataElement, value]) => {
@@ -17,9 +20,7 @@ describe('DataBuilder', () => {
       buildEvent({ temperature: '2', result: 'Negative' }),
     ];
     const assertCountOfEventsForConditions = (conditions, expectedResult) =>
-      expect(new DataBuilder().countEventsThatSatisfyConditions(events, conditions)).to.equal(
-        expectedResult,
-      );
+      expect(countEventsThatSatisfyConditions(events, conditions)).to.equal(expectedResult);
 
     it('should return the event count when no conditions are specified', () => {
       assertCountOfEventsForConditions({}, events.length);
@@ -96,9 +97,7 @@ describe('DataBuilder', () => {
       { dataElement: 'result', value: 'Negative' },
     ];
     const assertCountOfAnalyticsForConditions = (conditions, expectedResult) =>
-      expect(new DataBuilder().countAnalyticsThatSatisfyConditions(analytics, conditions)).to.equal(
-        expectedResult,
-      );
+      expect(countAnalyticsThatSatisfyConditions(analytics, conditions)).to.equal(expectedResult);
 
     it('should return 0 when no conditions are specified', () => {
       assertCountOfAnalyticsForConditions({}, 0);

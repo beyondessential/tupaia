@@ -4,6 +4,7 @@
  */
 
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
+import { countEventsThatSatisfyConditions } from '/apiV1/dataBuilders/helpers';
 
 /**
  * Configuration schema
@@ -33,7 +34,7 @@ export class CountEventsBuilder extends DataBuilder {
 
   buildData(events) {
     const { dataValues } = this.config;
-    const value = this.countEventsThatSatisfyConditions(events, { dataValues });
+    const value = countEventsThatSatisfyConditions(events, { dataValues });
 
     return [{ name: 'countEvents', value }];
   }
