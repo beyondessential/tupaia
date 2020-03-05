@@ -107,10 +107,10 @@ export class DhisService extends Service {
   }
 
   async deleteAggregateData(api, dataValue, dataSource) {
-    const translatedDataValue = await this.translator.translateOutboundDataValue(
+    const [translatedDataValue] = await this.translator.translateOutboundDataValues(
       api,
-      dataValue,
-      dataSource,
+      [dataValue],
+      [dataSource],
     );
     return api.deleteDataValue(translatedDataValue);
   }

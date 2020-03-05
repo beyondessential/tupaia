@@ -59,6 +59,10 @@ export class DhisTranslator {
       case INTEGER_POSITIVE:
       case INTEGER_NEGATIVE:
       case INTEGER_ZERO_OR_POSITIVE:
+        // handle special case where a binary/checkbox question is sent to a number data element
+        // in future, this should be removed
+        if (value === 'Yes') return '1';
+        if (value === 'No') return '0';
         return parseFloat(value).toString();
 
       // booleans
@@ -145,7 +149,7 @@ export class DhisTranslator {
 
   translateOutboundDataValues = async (api, dataValues, dataSources) => {
     // prefetch options and types for unique data element codes so that DHIS2 doesn't get overwhelmed
-    const dataElementsByCode = await this.fetchOutboundDataElementsByCode(dataSources);
+    const dataElementsByCode = await this.fetchOutboundDataElementsByCode(api, dataSources);
     const translatedDataValues = dataSources.map((dataSource, i) => {
       const dataValue = dataValues[i];
       return this.translateOutboundDataValue(
