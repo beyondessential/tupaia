@@ -15,7 +15,7 @@ import { divideValues } from '/apiV1/dataBuilders/helpers';
 /**
  * Configuration schema
  * @typedef {Object} PercentagesPerDataClassConfig
- * @property {Object<string, ValuePercentage>} dataClasses
+ * @property {Object<string, { numerator, denominator }>} dataClasses
  * @property {number[]} [range]
  *
  * Example:
@@ -36,9 +36,6 @@ import { divideValues } from '/apiV1/dataBuilders/helpers';
  */
 
 class PercentagesPerDataClassDataBuilder extends DataBuilder {
-  /**
-   * @returns {DataValuesOutput}
-   */
   async build() {
     const dataElementMap = await this.getDataElementMap();
     const dataElementCodes = Object.values(dataElementMap).reduce((result, currentCodes) => {

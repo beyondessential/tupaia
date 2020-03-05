@@ -131,11 +131,14 @@ CREATE FUNCTION public.generate_object_id() RETURNS character varying
 CREATE FUNCTION public.notification() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
+    DECLARE
+    json_record TEXT;
     BEGIN
     IF TG_OP = 'UPDATE' AND OLD = NEW THEN
       RETURN NULL;
     END IF;
     IF TG_OP = 'INSERT' OR TG_OP = 'UPDATE' THEN
+      json_record := to_jsonb(NEW);
       PERFORM pg_notify(
         'change',
         json_build_object(
@@ -144,12 +147,18 @@ CREATE FUNCTION public.notification() RETURNS trigger
           'record_id',
           NEW.id,
           'type',
-          'update'
+          'update',
+          'record',
+          public.scrub_geo_data(
+            json_record::jsonb,
+            TG_TABLE_NAME
+          )
         )::text
     );
       RETURN NEW;
     END IF;
     IF TG_OP = 'DELETE' THEN
+      json_record := to_jsonb(OLD);
       PERFORM pg_notify(
       'change',
       json_build_object(
@@ -158,11 +167,41 @@ CREATE FUNCTION public.notification() RETURNS trigger
         'record_id',
         OLD.id,
         'type',
-        'delete'
-      )::text
-    );
+        'delete',
+        'record',
+        public.scrub_geo_data(
+          json_record::jsonb,
+          TG_TABLE_NAME
+        )
+    )::text);
       RETURN OLD;
     END IF;
+    END;
+    $$;
+
+
+--
+-- Name: scrub_geo_data(jsonb, name); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.scrub_geo_data(current_record jsonb DEFAULT NULL::jsonb, tg_table_name name DEFAULT NULL::name) RETURNS json
+    LANGUAGE plpgsql
+    AS $$
+    DECLARE
+      geo_entities RECORD;
+    BEGIN
+      IF current_record IS NULL THEN
+        RETURN '{}';
+      END IF;
+      FOR geo_entities IN
+        SELECT f_table_name, f_geography_column
+        FROM geography_columns
+        WHERE type in ('Polygon', 'MultiPolygon')
+        AND f_table_name = TG_TABLE_NAME LOOP
+          -- will remove columns with geo data
+          current_record := current_record::jsonb - geo_entities.f_geography_column;
+      END LOOP;
+    RETURN current_record;
     END;
     $$;
 
@@ -3018,17 +3057,27 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 536	/20200207045423-IHRSparReportingCountries	2020-02-13 01:01:42.884
 537	/20200210233650-SwitchRowsAndColsForTongaFP01	2020-02-13 01:01:43.71
 538	/20200214025142-UpdateStriveWeeklyMRDTPositiveConfig	2020-02-14 04:29:20.453
-539	/20200116211310-AddDataSourceTable	2020-02-21 10:12:52.022
-540	/20200122003753-ConvertDataElementToCodeInSyncLog	2020-02-21 10:14:08.565
-541	/20200128021719-AddTongaDataSources	2020-02-21 10:14:09.301
-542	/20200129211641-AvoidChangeTimeConflicts	2020-02-21 10:14:09.338
-543	/20200204005927-AddDataElementDataGroupTable	2020-02-21 10:14:09.404
-544	/20200205004208-AddTongaSurveysToDataSource	2020-02-21 10:14:09.455
-545	/20200210004010-SimplifyChangeNotification	2020-02-21 10:14:09.492
-546	/20200211002034-UpdateDataBuilders	2020-02-21 10:14:09.673
-547	/20200218001344-UpdateMapOverlays	2020-02-21 10:14:09.717
-548	/20200218025613-AddDataGroupsToDataSource	2020-02-21 10:14:09.948
-549	/20200218215230-ResyncAllTongaData	2020-02-21 10:15:11.488
+539	/20200212220350-optimiseWorldFetchData	2020-02-21 01:49:23.321
+540	/20200220231953-DeleteSubmissionDateColumnsCD1CD2	2020-02-21 01:49:23.504
+541	/20200129040800-InsertIHRCountryReport	2020-02-25 02:34:20.799
+542	/20200219235149-AddIHRReportBAndAddBothToGroup	2020-02-25 02:34:20.871
+543	/20200224235334-SPARReportHeader	2020-02-25 02:34:20.912
+544	/20200116211310-AddDataSourceTable	2020-02-25 06:32:54.799
+545	/20200122003753-ConvertDataElementToCodeInSyncLog	2020-02-25 06:34:46.657
+546	/20200128021719-AddTongaDataSources	2020-02-25 06:34:52.487
+547	/20200129211641-AvoidChangeTimeConflicts	2020-02-25 06:35:32.595
+548	/20200204005927-AddDataElementDataGroupTable	2020-02-25 06:35:33.014
+549	/20200205004208-AddTongaSurveysToDataSource	2020-02-25 06:35:34.554
+550	/20200210004010-SimplifyChangeNotification	2020-02-25 06:35:34.635
+551	/20200211002034-UpdateDataBuilders	2020-02-25 06:35:35.82
+552	/20200218001344-UpdateMapOverlays	2020-02-25 06:35:36.08
+553	/20200218025613-AddDataGroupsToDataSource	2020-02-25 06:35:36.393
+554	/20200218215230-ResyncAllTongaData	2020-02-25 06:38:31.217
+555	/20200224063900-UseSingleDataElementForDMHTNDenominator	2020-02-25 06:38:31.776
+556	/20200224003036-AddIHRJEEMatrixReport	2020-02-26 06:05:41.669
+557	/20200228013730-DeleteRedundantImmsBreaches	2020-02-28 02:41:25.468
+558	/20200228040157-MoveAutocompletePrimaryEntityToEntityId	2020-03-03 12:57:55.47
+559	/20200302202141-ReinstateBuildingRecordInChangeNotifier	2020-03-03 12:57:55.604
 \.
 
 
@@ -3036,7 +3085,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 549, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 559, true);
 
 
 --

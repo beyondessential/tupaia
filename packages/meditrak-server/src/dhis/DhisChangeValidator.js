@@ -56,10 +56,9 @@ export class DhisChangeValidator extends ChangeValidator {
     );
   };
 
-  getValidAnswerUpdates = async answerIds => {
-    if (answerIds.length === 0) return [];
-    // can be a lot, so batch the finding of answers
-    const answers = await this.models.answer.findManyById(answerIds);
+  getValidAnswerUpdates = async updateChanges => {
+    const answers = this.getRecordsFromChangesForModel(updateChanges, this.models.answer);
+    if (answers.length === 0) return [];
     const surveyResponseIds = this.getUniqueEntries(answers.map(a => a.survey_response_id));
 
     // check which survey responses are valid
@@ -71,24 +70,24 @@ export class DhisChangeValidator extends ChangeValidator {
     return answers.filter(a => validSurveyResponseIds.has(a.survey_response_id)).map(a => a.id);
   };
 
-  getValidSurveyResponseUpdates = async surveyResponseIds => {
+  getValidSurveyResponseUpdates = async updateChanges => {
+    const surveyResponseIds = this.getIdsFromChangesForModel(
+      updateChanges,
+      this.models.surveyResponse,
+    );
     if (surveyResponseIds.length === 0) return [];
     return this.queryValidSurveyResponseIds(surveyResponseIds);
   };
 
   getValidUpdates = async changes => {
     const updateChanges = this.getUpdateChanges(changes);
-    const validEntities = this.getIdsFromChangesForModel(updateChanges, this.models.entity); // all entity updates are valid
-    const validAnswers = await this.getValidAnswerUpdates(
-      this.getIdsFromChangesForModel(updateChanges, this.models.answer),
-    );
-    const validSurveyResponses = await this.getValidSurveyResponseUpdates(
-      this.getIdsFromChangesForModel(updateChanges, this.models.surveyResponse),
-    );
+    const validEntityIds = this.getIdsFromChangesForModel(updateChanges, this.models.entity); // all entity updates are valid
+    const validAnswerIds = await this.getValidAnswerUpdates(updateChanges);
+    const validSurveyResponseIds = await this.getValidSurveyResponseUpdates(updateChanges);
     return this.filterChangesWithMatchingIds(changes, [
-      ...validEntities,
-      ...validAnswers,
-      ...validSurveyResponses,
+      ...validEntityIds,
+      ...validAnswerIds,
+      ...validSurveyResponseIds,
     ]);
   };
 }

@@ -104,21 +104,20 @@ export class SurveyResponseModel extends DatabaseModel {
     return result[0].count === '1';
   }
 
-  static onChange = async (change, model) => {
+  static onChange = async ({ type: changeType, record }, model) => {
     const modelDetails = {
       type: 'SurveyResponse',
-      record_id: change.record_id,
+      record_id: record.id,
     };
 
-    if (change.type === 'delete') {
+    if (changeType === 'delete') {
       model.otherModels.userReward.delete(modelDetails);
     } else {
-      const surveyResponse = await model.findById(change.record_id);
       model.otherModels.userReward.updateOrCreate(modelDetails, {
         ...modelDetails,
         coconuts: 1,
-        user_id: surveyResponse.user_id,
-        creation_date: surveyResponse.end_time,
+        user_id: record.user_id,
+        creation_date: record.end_time,
       });
     }
   };

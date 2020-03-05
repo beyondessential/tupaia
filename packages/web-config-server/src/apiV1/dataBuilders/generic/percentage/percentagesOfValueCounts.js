@@ -24,9 +24,6 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
     );
   }
 
-  /**
-   * @returns {DataValuesOutput}
-   */
   async build() {
     const results = await this.fetchResults();
     const data = await this.buildData(results);

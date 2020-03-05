@@ -10,7 +10,7 @@ import { divideValues, countEventsThatSatisfyConditions } from '/apiV1/dataBuild
  * Configuration schema
  * @typedef {Object} PercentagesOfEventCountsConfig
  * @property {string} programCode
- * @property {Object<string, EventPercentage>} dataClasses
+ * @property {Object<string, { numerator, denominator }>} dataClasses
  *
  * Example
  * ```js
@@ -35,9 +35,6 @@ import { divideValues, countEventsThatSatisfyConditions } from '/apiV1/dataBuild
  */
 
 export class PercentagesOfEventCountsBuilder extends DataBuilder {
-  /**
-   * @returns {DataValuesOutput}
-   */
   async build() {
     const events = await this.fetchEvents({ dataValueFormat: 'object' });
     const data = this.buildData(events);

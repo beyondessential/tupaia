@@ -83,22 +83,20 @@ export class TrackedEntityPusher extends EntityPusher {
    */
   entityToTypeName = entity => capitaliseFirstLetters(entity.type);
 
-  /**
-   * Example:
-   * `new_type` => `NEW_TYPE_NAME`
-   */
-  entityToNameAttributeCode = entity => `${entity.type.toUpperCase()}_NAME`;
-
   async buildAttributes(entity) {
+    const attributeFields = ['name', 'code'];
     const attributes = [];
-
-    const nameAttribute = await this.api.getRecord({
-      type: TRACKED_ENTITY_ATTRIBUTE,
-      code: this.entityToNameAttributeCode(entity),
-    });
-    if (nameAttribute) {
-      attributes.push({ attribute: nameAttribute.id, value: entity.name });
-    }
+    await Promise.all(
+      attributeFields.map(async fieldName => {
+        const attribute = await this.api.getRecord({
+          type: TRACKED_ENTITY_ATTRIBUTE,
+          code: fieldName.toUpperCase(), // name -> NAME
+        });
+        if (attribute) {
+          attributes.push({ attribute: attribute.id, value: entity[fieldName] });
+        }
+      }),
+    );
 
     return attributes;
   }

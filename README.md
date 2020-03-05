@@ -53,3 +53,14 @@ so if you've updated the environment variables here, you probably also need to p
 - ssh into the aws instance (cannot be run locally at this stage)
 - update the .env file (if it hasn't been updated automatically by the CI/CD process)
 - run `ENVIRONMENT=dev yarn update-paramater-store-env-vars` (setting environment to either dev or production)
+
+## Tests
+
+Most of the packages support the following scripts for testing:
+
+```
+yarn test # runs the tests
+yarn test-coverage # runs the tests and displays code coverage
+```
+
+See also the docs page on [Test setup (mocha)](https://docs.beyondessential.com.au/books/software-development/page/test-setup-%28mocha%29)
