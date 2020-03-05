@@ -14,13 +14,14 @@ const checkValueSatisfiesCondition = (value, condition) => {
     return condition === ANY_VALUE_CONDITION || value === condition;
   }
 
-  const { operator, value: targetValue } = condition;
-  const checkValue = OPERATOR_TO_VALUE_CHECK[operator];
+  const { operator, value: targetValue, valueOfInterest } = condition;
+
+  const checkValue = OPERATOR_TO_VALUE_CHECK[operator || valueOfInterest.operator];
   if (!checkValue) {
-    throw new Error(`Unknown operator: '${operator}'`);
+    throw new Error(`Unknown operator: '${operator || valueOfInterest.operator}'`);
   }
 
-  return checkValue(value, targetValue);
+  return checkValue(value, targetValue || valueOfInterest.value);
 };
 
 /**
@@ -45,7 +46,7 @@ export const countEventsThatSatisfyConditions = (events, conditions) => {
  * @returns {number}
  */
 export const countAnalyticsThatSatisfyConditions = (analytics, conditions) => {
-  const { dataValues, valueOfInterest } = conditions || {};
+  const { dataValues = [], valueOfInterest } = conditions || {};
   const analyticHasTargetValue = ({ dataElement, value }) => {
     if (!dataValues.includes(dataElement)) return false;
     return valueOfInterest && checkValueSatisfiesCondition(value, valueOfInterest);
