@@ -31,7 +31,7 @@ export const superCoolFunctionalBuilder = (
   return superCoolRecursivePipe(
     [
       fetchDataElementCodesFromGroup,
-      fetchAnalytics,
+      fetchAnalytics(aggregator.aggregationTypes.MOST_RECENT),
       countValues,
       superCoolNodeTrace('counted values: '),
       formatForFrontend,

@@ -1,8 +1,10 @@
 import { getDataElementsInGroup } from '/apiV1/utils/getDataElementsInGroup';
 
-export const fetchAnalytics = async (codes, context) => {
+export const fetchAnalytics = aggregationType => async (codes, context) => {
   const { query, aggregator } = context;
-  const { results } = await aggregator.fetchAnalytics(codes, {}, query);
+  const { results } = await aggregator.fetchAnalytics(codes, {}, query, {
+    aggregationType,
+  });
   return results;
 };
 
