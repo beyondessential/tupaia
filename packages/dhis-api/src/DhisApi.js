@@ -378,6 +378,18 @@ export class DhisApi {
     return query.paging ? { organisationUnits, pager } : organisationUnits;
   }
 
+  async fetchDataElements(dataElementCodes, { includeOptions }) {
+    const fields = ['id', 'code', 'name'];
+    if (includeOptions) {
+      fields.push('optionSet');
+    }
+    return this.getRecords({
+      type: DATA_ELEMENT,
+      codes: dataElementCodes,
+      fields,
+    });
+  }
+
   async getOptionsForDataElement(dataElementCode) {
     const query = {
       filter: `code:eq:${dataElementCode}`,

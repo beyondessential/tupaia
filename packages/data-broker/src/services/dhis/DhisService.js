@@ -268,9 +268,9 @@ export class DhisService extends Service {
   }
 
   async pullDataElementMetadata(api, dataSources, options) {
-    const { shouldIncludeOptions } = options;
+    const { includeOptions } = options;
     const dataElementCodes = dataSources.map(({ dataElementCode }) => dataElementCode);
-    const dataElements = await this.fetchDataElements(api, dataElementCodes, shouldIncludeOptions);
+    const dataElements = await api.fetchDataElements(dataElementCodes, { includeOptions });
     const translatedDataElements = this.translator.translateInboundDataElements(
       dataElements,
       dataSources,
@@ -282,20 +282,6 @@ export class DhisService extends Service {
       ),
     );
   }
-
-  fetchDataElements = async (api, dataElementCodes, shouldIncludeOptions) => {
-    const fields = ['id', 'code', 'name'];
-    if (shouldIncludeOptions) {
-      fields.push('optionSet');
-    }
-    const dataElements = await api.getRecords({
-      type: api.getResourceTypes().DATA_ELEMENT,
-      codes: dataElementCodes,
-      fields,
-    });
-
-    return dataElements;
-  };
 
   addOptionsToDataElementIfTheyExist = async (api, dataElement) => {
     const { code, optionSet, ...restOfDataElement } = dataElement;
