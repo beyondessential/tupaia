@@ -6,10 +6,10 @@
  */
 
 import moment from 'moment';
-import { BREWER_PALETTE } from '../../styles';
+import { BREWER_PALETTE, MAP_COLORS } from '../../styles';
 import { SCALE_TYPES } from '../../utils/measures';
 
-const HEATMAP_UNKNOWN_COLOR = '#000';
+const HEATMAP_UNKNOWN_COLOR = MAP_COLORS.NO_DATA;
 /**
  * Helper function just to point the spectrum type to the correct colours
  *
@@ -22,14 +22,17 @@ const HEATMAP_UNKNOWN_COLOR = '#000';
  * @returns {style} css hsl string, e.g. `hsl(value, 100%, 50%)`
  */
 export function resolveSpectrumColour(scaleType, value, min, max, noDataColour) {
+  if (value === null || (isNaN(value) && scaleType !== SCALE_TYPES.TIME))
+    return noDataColour || HEATMAP_UNKNOWN_COLOR;
+
   switch (scaleType) {
     default:
       return getHeatmapColor(value && normaliseToPercentage(value, min, max));
     case SCALE_TYPES.PERFORMANCE:
-      return getPerformanceHeatmapColor(value, noDataColour);
+      return getPerformanceHeatmapColor(value);
     case SCALE_TYPES.PERFORMANCE_DESC: {
       const percentage = value || value === 0 ? 1 - normaliseToPercentage(value, min, max) : null;
-      return getPerformanceHeatmapColor(percentage, noDataColour);
+      return getPerformanceHeatmapColor(percentage);
     }
     case SCALE_TYPES.TIME:
       // if the value passed is a date locate it in the [min, max] range
@@ -48,8 +51,7 @@ const normaliseToPercentage = (value, min, max) => {
  * @param {number} value Number in range [0..1] representing percentage
  * @returns {style} css hsl string, e.g. `hsl(value, 100%, 50%)`
  */
-export function getPerformanceHeatmapColor(value, noDataColour) {
-  if (value === null) return noDataColour || HEATMAP_UNKNOWN_COLOR;
+export function getPerformanceHeatmapColor(value) {
   return `hsl(${Math.floor(value * 100)}, 100%, 50%)`;
 }
 
@@ -81,7 +83,6 @@ export function getTimeHeatmapColor(value, noDataColour) {
  * @returns {style} css rgb string, e.g. `rgb(0,0,0)`
  */
 export function getHeatmapColor(value) {
-  if (value === null) return HEATMAP_UNKNOWN_COLOR;
   let rgb = [0, 0, 0];
 
   if (value < 0.15) rgb = [255, 255, 204];
