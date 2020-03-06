@@ -123,46 +123,49 @@ function getFormattedValue(value, type, valueInfo, scaleType, valueType) {
   }
 }
 
+const getSpectrumScaleValues = (measureData, measureOption) => {
+  const { key, scaleType, startDate, endDate } = measureOption;
+
+  switch (scaleType) {
+    case SCALE_TYPES.TIME:
+      return { min: startDate, max: endDate };
+    case SCALE_TYPES.PERFORMANCE:
+      return { min: 0, max: 1 };
+    default: {
+      const flattenedMeasureData = flattenNumericalMeasureData(measureData, key);
+      return {
+        min: Math.min(...flattenedMeasureData),
+        max: Math.max(...flattenedMeasureData),
+      };
+    }
+  }
+};
+
 export function processMeasureInfo(response) {
   const { measureOptions, measureData, ...rest } = response;
   const hiddenMeasures = {};
   const processedOptions = measureOptions.map(measureOption => {
-    const { values: mapOptionValues, key, type, scaleType, startDate, endDate } = measureOption;
+    const { values: mapOptionValues, type, scaleType } = measureOption;
     const values = autoAssignColors(mapOptionValues);
     const valueMapping = createValueMapping(values, type);
 
     hiddenMeasures[measureOption.key] = measureOption.hideByDefault;
 
-    // for each spectrum, include the minimum and maximum values for
-    // use in the legend scale labels.
-    if (type === 'spectrum' && scaleType === SCALE_TYPES.TIME) {
-      return {
-        ...measureOption,
-        values,
-        valueMapping,
-        min: startDate,
-        max: endDate,
-      };
-    }
-    if (type === 'spectrum' && scaleType === SCALE_TYPES.PERFORMANCE) {
-      const flattenedMeasureData = flattenNumericalMeasureData(measureData, key);
-      return {
-        ...measureOption,
-        values,
-        valueMapping,
-        min: 0,
-        max: 1,
-        noDataColour: UNKNOWN_COLOR,
-      };
-    }
     if (type === 'spectrum') {
-      const flattenedMeasureData = flattenNumericalMeasureData(measureData, key);
+      // for each spectrum, include the minimum and maximum values for
+      // use in the legend scale labels.
+      const { min, max } = getSpectrumScaleValues(measureData, measureOption);
+
+      // A grey no data colour looks like part of the population scale
+      const noDataColour = scaleType === SCALE_TYPES.POPULATION ? 'black' : MAP_COLORS.NO_DATA;
+
       return {
         ...measureOption,
         values,
         valueMapping,
-        min: Math.min(...flattenedMeasureData),
-        max: Math.max(...flattenedMeasureData),
+        min,
+        max,
+        noDataColour,
       };
     }
 
