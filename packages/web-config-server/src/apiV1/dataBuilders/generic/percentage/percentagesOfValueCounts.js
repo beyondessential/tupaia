@@ -67,7 +67,7 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
       }
 
       // Is straight forward to add support for just counting non-grouped analytics, but is not currently a requirement.
-      if (fraction.groupBy) {
+      if (!fraction.groupBy) {
         throw new Error('percentagesOfValueCounts missing config field: groupBy');
       }
 
