@@ -75,7 +75,7 @@ export async function updateOrganisationUnitsFromSheet(transactingModels, countr
       image_url: imageUrl,
       longitude,
       latitude,
-      region,
+      geojson,
       type_name: typeName,
       category_code: categoryCode,
       facility_type: facilityType,
@@ -132,8 +132,8 @@ export async function updateOrganisationUnitsFromSheet(transactingModels, countr
     if (longitude && latitude) {
       await transactingModels.entity.updatePointCoordinates(code, { longitude, latitude });
     }
-    if (region) {
-      await transactingModels.entity.updateRegionCoordinates(code, JSON.parse(region));
+    if (geojson) {
+      await transactingModels.entity.updateRegionCoordinates(code, JSON.parse(geojson));
     }
   }
   return country;
