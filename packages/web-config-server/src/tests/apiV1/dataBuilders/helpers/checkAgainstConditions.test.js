@@ -11,7 +11,7 @@ const buildEvent = dataValueMap => ({
   }, {}),
 });
 
-describe('DataBuilder', () => {
+describe('checkAgainstConditions()', () => {
   describe('countEventsThatSatisfyConditions', () => {
     const events = [
       buildEvent({ temperature: '2', result: 'Positive' }),

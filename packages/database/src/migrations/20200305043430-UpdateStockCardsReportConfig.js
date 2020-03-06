@@ -41,7 +41,7 @@ exports.up = function(db) {
                 "RHS6UNFPA1301"
               ]
             ],
-            "groupResultsBy" : "organisationUnit"
+            "groupBy" : "organisationUnit"
           },
           "denominator" : "$orgUnitCount"
         },
@@ -67,7 +67,7 @@ exports.up = function(db) {
                 "RHS6UNFPA1302"
               ]
             ],
-            "groupResultsBy" : "organisationUnit"
+            "groupBy" : "organisationUnit"
           },
           "denominator" : "$orgUnitCount"
         }

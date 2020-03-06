@@ -58,40 +58,48 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
     return dataClasses;
   }
 
-  calculateFraction(fraction, analytics) {
+  calculateFraction = (fraction, analytics) => {
     if (fraction.compare === COMPARISON_TYPES.COUNT) {
       if (fraction.dataValues.length !== 2) {
         throw new Error(
-          'nested array passed to: percentagesOfValueCounts must have exactly 2 sub-arrays for comparsion',
+          'nested array passed to: percentagesOfValueCounts must have exactly 2 sub-arrays for comparison',
         );
       }
 
-      const [values, valuesToCompare] = fraction.dataValues;
-      if (fraction.groupResultsBy) {
-        const groupedAnalytics = groupBy(analytics, fraction.groupResultsBy);
-        return Object.values(groupedAnalytics).reduce((count, results) => {
-          const set1 = results.filter(r => values.includes(r.dataElement));
-          const set2 = results.filter(r => valuesToCompare.includes(r.dataElement));
-
-          const set1Count = countAnalyticsThatSatisfyConditions(set1, {
-            dataValues: values,
-            valueOfInterest: fraction.valueOfInterest,
-          });
-
-          const count2Count = countAnalyticsThatSatisfyConditions(set2, {
-            dataValues: valuesToCompare,
-            valueOfInterest: fraction.valueOfInterest,
-          });
-
-          return set1Count > 0 && set1Count === count2Count ? count + 1 : count;
-        }, 0);
+      // Is straight forward to add support for just counting non-grouped analytics, but is not currently a requirement.
+      if (fraction.groupBy) {
+        throw new Error('percentagesOfValueCounts missing config field: groupBy');
       }
+
+      const [values, valuesToCompare] = fraction.dataValues;
+      const countsAreEqual = results => {
+        const set1 = results.filter(r => values.includes(r.dataElement));
+        const set2 = results.filter(r => valuesToCompare.includes(r.dataElement));
+
+        const set1Count = countAnalyticsThatSatisfyConditions(set1, {
+          dataValues: values,
+          valueOfInterest: fraction.valueOfInterest,
+        });
+
+        const count2Count = countAnalyticsThatSatisfyConditions(set2, {
+          dataValues: valuesToCompare,
+          valueOfInterest: fraction.valueOfInterest,
+        });
+
+        return set1Count > 0 && set1Count === count2Count;
+      };
+
+      const groupedAnalytics = groupBy(analytics, fraction.groupBy);
+      return Object.values(groupedAnalytics).reduce(
+        (count, results) => (countsAreEqual(results) ? count + 1 : count),
+        0,
+      );
     } else if (fraction === ORG_UNIT_COUNT) {
       return [...new Set(analytics.map(data => data.organisationUnit))].length;
-    } else {
-      return countAnalyticsThatSatisfyConditions(analytics, fraction);
     }
-  }
+
+    return countAnalyticsThatSatisfyConditions(analytics, fraction);
+  };
 }
 
 export const percentagesOfValueCounts = async (
