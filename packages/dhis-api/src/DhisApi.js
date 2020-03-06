@@ -172,19 +172,6 @@ export class DhisApi {
     }
   }
 
-  async getCodeToId(recordType, recordCodes) {
-    if (!recordCodes || recordCodes.length === 0) {
-      throw this.constructError('Must provide codes to search for');
-    }
-    const records = await this.getRecords({
-      type: recordType,
-      codes: recordCodes,
-      fields: ['code', 'id'],
-    });
-
-    return reduceToDictionary(records, 'code', 'id');
-  }
-
   async getIdFromCode(recordType, recordCode) {
     if (!recordCode) {
       throw this.constructError('Must provide a code to search for');
@@ -334,9 +321,13 @@ export class DhisApi {
     }
 
     // Attach relevant information into the query
-    const organisationUnitIds = Object.values(
-      await this.getCodeToId(ORGANISATION_UNIT, organisationUnitCodes),
-    );
+    const organisationUnitIds = (
+      await this.getRecords({
+        type: ORGANISATION_UNIT,
+        codes: organisationUnitCodes,
+        fields: ['id'],
+      })
+    ).map(o => o.id);
     query.orgUnit = organisationUnitIds;
     delete query.organisationUnitCodes;
     if (dataElementGroupCode) {

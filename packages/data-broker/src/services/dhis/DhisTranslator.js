@@ -150,15 +150,13 @@ export class DhisTranslator {
   translateOutboundDataValues = async (api, dataValues, dataSources) => {
     // prefetch options and types for unique data element codes so that DHIS2 doesn't get overwhelmed
     const dataElementsByCode = await this.fetchOutboundDataElementsByCode(api, dataSources);
-    const translatedDataValues = dataSources.map((dataSource, i) => {
-      const dataValue = dataValues[i];
-      return this.translateOutboundDataValue(
-        dataValue,
+    return dataSources.map((dataSource, i) =>
+      this.translateOutboundDataValue(
+        dataValues[i],
         dataSource,
         dataElementsByCode[dataSource.dataElementCode],
-      );
-    });
-    return translatedDataValues;
+      ),
+    );
   };
 
   async translateOutboundEventDataValues(api, dataValues) {
@@ -166,16 +164,24 @@ export class DhisTranslator {
       code: dataValues.map(({ code }) => code),
       type: this.dataSourceTypes.DATA_ELEMENT,
     });
-    const outboundDataValues = await this.translateOutboundDataValues(api, dataValues, dataSources);
-    const dataElementCodes = outboundDataValues.map(({ dataElement }) => dataElement);
-    const dataElementCodeToId = await api.getCodeToId(
-      api.getResourceTypes().DATA_ELEMENT,
-      dataElementCodes,
+    const dataElementsByCode = await this.fetchOutboundDataElementsByCode(api, dataSources);
+    const outboundDataValues = dataSources.map((dataSource, i) =>
+      this.translateOutboundDataValue(
+        dataValues[i],
+        dataSource,
+        dataElementsByCode[dataSource.dataElementCode],
+      ),
     );
-    const dataValuesWithIds = outboundDataValues.map(({ dataElement, value }) => ({
-      dataElement: dataElementCodeToId[dataElement],
-      value,
-    }));
+    const dataValuesWithIds = outboundDataValues.map(({ dataElement: dataElementCode, value }) => {
+      const dataElement = dataElementsByCode[dataElementCode];
+      if (!dataElement) {
+        throw new Error(`Missing id for data element ${dataElementCode} in event push`);
+      }
+      return {
+        dataElement: dataElement.id,
+        value,
+      };
+    });
     return dataValuesWithIds;
   }
 
