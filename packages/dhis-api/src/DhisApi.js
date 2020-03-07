@@ -379,12 +379,13 @@ export class DhisApi {
     });
     if (includeOptions) {
       const optionSetIds = [
-        ...new Set(dataElements.filter(d => !!d.optionSet).map(d => !!d.optionSet.id)),
+        ...new Set(dataElements.filter(d => !!d.optionSet).map(d => d.optionSet.id)),
       ];
+      if (optionSetIds.length === 0) return dataElements;
       const optionSets = await this.getRecords({
         type: OPTION_SET,
-        id: optionSetIds,
-        fields: 'options[code,name]',
+        ids: optionSetIds,
+        fields: 'id,options[code,name]',
       });
       const optionSetOptionsById = {};
       optionSets.forEach(({ id, ...restOfOptionSet }) => {
