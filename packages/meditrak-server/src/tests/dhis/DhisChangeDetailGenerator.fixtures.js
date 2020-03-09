@@ -41,7 +41,7 @@ const STUBBED_MODEL_DATA = {
 
 const stubFind = type => ({ id: ids }) => STUBBED_MODEL_DATA[type].filter(r => ids.includes(r.id));
 
-const MODELS = {
+export const MODELS = {
   entity: {
     databaseType: ENTITY,
     find: stubFind(ENTITY),
