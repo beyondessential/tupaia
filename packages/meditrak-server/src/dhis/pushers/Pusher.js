@@ -43,9 +43,14 @@ export class Pusher {
    * @returns {Promise<boolean>}
    */
   async push() {
-    const results = await (this.changeType === 'update' ? this.createOrUpdate() : this.delete());
-    await this.logResults(results); // await to avoid db lock between delete/update on event push
-    return results.wasSuccessful;
+    try {
+      const results = await (this.changeType === 'update' ? this.createOrUpdate() : this.delete());
+      await this.logResults(results); // await to avoid db lock between delete/update on event push
+      return results.wasSuccessful;
+    } catch (error) {
+      await this.logResults({ errors: [error.message] });
+      return false;
+    }
   }
 
   /**
