@@ -418,7 +418,7 @@ function* watchFetchCountryAccessDataAndFetchItTEST() {
  *
  */
 function requestOrgUnitData(organisationUnitCode) {
-  const requestResourceUrl = `organisationUnit?organisationUnitCode=${organisationUnitCode}&descendants=${organisationUnitCode !==
+  const requestResourceUrl = `organisationUnit?organisationUnitCode=${organisationUnitCode}&includeDescendants=${organisationUnitCode !==
     'World'}`;
   return call(request, requestResourceUrl);
 }
@@ -466,16 +466,16 @@ function* fetchOrgUnitDataAndChangeOrgUnit(action) {
 }
 
 const normaliseDescendantOrgUnitData = orgUnitData => {
-  if (!orgUnitData.descendants) {
+  const { descendants, ...restOfOrgUnit } = orgUnitData;
+  if (!descendants) {
     return orgUnitData;
   }
 
   return {
-    ...orgUnitData,
-    organisationUnitChildren: orgUnitData.descendants.filter(
+    ...restOfOrgUnit,
+    organisationUnitChildren: descendants.filter(
       descendant => descendant.parent === orgUnitData.organisationUnitCode,
     ),
-    descendants: undefined,
   };
 };
 

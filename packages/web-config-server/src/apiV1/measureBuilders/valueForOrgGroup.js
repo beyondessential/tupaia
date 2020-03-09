@@ -2,7 +2,6 @@ import keyBy from 'lodash.keyby';
 
 import { Entity } from '/models/Entity';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { formatFacilityDataForOverlay } from '/apiV1/utils';
 
 const FACILITY_TYPE_CODE = 'facilityTypeCode';
 
@@ -10,17 +9,19 @@ class ValueForOrgGroupMeasureBuilder extends DataBuilder {
   async build() {
     const facilitiesByCode = await this.getFacilityDataByCode();
 
-    return Object.values(facilitiesByCode).map(formatFacilityDataForOverlay);
+    return Object.values(facilitiesByCode);
   }
 
   async getFacilityDataByCode() {
     const { dataElementCode, organisationUnitGroupCode } = this.query;
 
     // create index of all facilities
-    const facilityEntities = await Entity.getFacilityDescendantsWithCoordinates(
-      organisationUnitGroupCode,
+    const facilityCodes = (await Entity.getFacilitiesOfOrgUnit(organisationUnitGroupCode)).map(
+      facility => ({
+        organisationUnitCode: facility.code,
+      }),
     );
-    const facilityData = keyBy(facilityEntities, 'code');
+    const facilityData = keyBy(facilityCodes, 'organisationUnitCode');
 
     // 'facilityTypeCode' signifies a special case which is handled internally
     if (dataElementCode === FACILITY_TYPE_CODE) {

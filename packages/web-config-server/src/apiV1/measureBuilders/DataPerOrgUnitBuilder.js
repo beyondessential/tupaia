@@ -10,7 +10,6 @@ import keyBy from 'lodash.keyby';
 
 import { getDataSourceEntityType } from '/apiV1/dataBuilders/helpers/getDataSourceEntityType';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { formatFacilityDataForOverlay } from '/apiV1/utils';
 import { ENTITY_TYPES, Entity } from '/models/Entity';
 
 /**
@@ -77,9 +76,13 @@ export class DataPerOrgUnitBuilder extends DataBuilder {
 
   async fetchOrgUnitData() {
     const { organisationUnitGroupCode } = this.query;
-    const orgUnits = await Entity.getFacilityDescendantsWithCoordinates(organisationUnitGroupCode);
+    const facilityCodes = (await Entity.getFacilitiesOfOrgUnit(organisationUnitGroupCode)).map(
+      facility => ({
+        organisationUnitCode: facility.code,
+      }),
+    );
 
-    return keyBy(orgUnits, 'code');
+    return keyBy(facilityCodes, 'organisationUnitCode');
   }
 
   async buildData(results) {
@@ -121,6 +124,6 @@ export class DataPerOrgUnitBuilder extends DataBuilder {
     const results = await this.fetchResults();
     const data = await this.buildData(results);
 
-    return this.formatData(data).map(formatFacilityDataForOverlay);
+    return this.formatData(data);
   }
 }

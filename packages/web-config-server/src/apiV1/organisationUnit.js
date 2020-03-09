@@ -28,8 +28,8 @@ export function translateForFrontend(entity) {
     name: entity.name,
     location: getEntityLocationForFrontend(entity),
     photoUrl: entity.image_url,
-    facilityTypeCode: entity.clinic_category_code,
-    facilityTypeName: entity.clinic_type_name,
+    facilityTypeCode: entity.facility_category_code,
+    facilityTypeName: entity.facility_type_name,
     parent: entity.parent_code,
   };
 }
@@ -39,36 +39,37 @@ export async function getEntityAndChildrenByCode(entityCode, userHasAccess) {
   checkExistsAndHasAccess(entity, entityCode, userHasAccess);
 
   // Don't check parent permission (as we already know we have permission for at least one of its children)
-  const entityParent = entity.parent_id && (await Entity.getEntity(entity.parent_id));
+  const parent = entity.parent_id && (await Entity.findById(entity.parent_id));
   const children = await filterForAccess(await entity.getOrgUnitChildren(), userHasAccess);
 
   return {
     ...translateForFrontend(entity),
-    parent: translateForFrontend(entityParent),
-    organisationUnitChildren: children.map(child => translateForFrontend(child)),
+    parent: translateForFrontend(parent),
+    organisationUnitChildren: children.map(translateForFrontend),
   };
 }
 
 export async function getEntityAndDescendantsByCode(entityCode, userHasAccess) {
-  const entityAndDescendants = await Entity.getAllDescendantsWithCoordinates(entityCode);
-  const entity = entityAndDescendants.shift(); // First entry should be the original entity
+  const entity = await Entity.getEntityByCode(entityCode);
   checkExistsAndHasAccess(entity, entityCode, userHasAccess);
 
   // Don't check parent permission (as we already know we have permission for at least one of its children)
-  const entityParent = entity.parent_code && (await Entity.getEntityByCode(entity.parent_code));
-  const descendants = await filterForAccess(entityAndDescendants, userHasAccess);
+  const parent = entity.parent_id && (await Entity.findById(entity.parent_id));
+  const descendants = await filterForAccess(await entity.getDescendants(), userHasAccess);
 
   return {
     ...translateForFrontend(entity),
-    parent: translateForFrontend(entityParent),
-    descendants: descendants.map(descendant => translateForFrontend(descendant)),
+    parent: translateForFrontend(parent),
+    descendants: descendants.map(translateForFrontend),
   };
 }
 
 const checkExistsAndHasAccess = async (entity, entityCode, userHasAccess) => {
   if (!entity) {
     throw new Error(`Entity ${entityCode} not found`);
-  } else if (!(await userHasAccess(entity.code))) {
+  }
+
+  if (!(await userHasAccess(entity.code))) {
     throw new Error(`No access to ${entity.code}`);
   }
 };
@@ -80,9 +81,9 @@ const filterForAccess = async (orgUnits, userHasAccess) => {
 };
 
 export async function getOrganisationUnitHandler(req, res) {
-  const { organisationUnitCode, descendants } = req.query;
+  const { organisationUnitCode, includeDescendants } = req.query;
   const data =
-    descendants === 'true'
+    includeDescendants === 'true'
       ? await getEntityAndDescendantsByCode(organisationUnitCode, req.userHasAccess)
       : await getEntityAndChildrenByCode(organisationUnitCode, req.userHasAccess);
 

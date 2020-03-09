@@ -23,7 +23,7 @@ export const countDisasterAffectedFacilitiesByType = async (
   if (!disasterStartDate) return { data: {} }; // show no data message in view.
   const options = await dhisApi.getOptionSetOptions({ code: optionSetCode });
   const period = convertDateRangeToPeriodString(disasterStartDate, disasterEndDate || Date.now());
-  const facilities = await Entity.getFacilityDescendantsWithCoordinates(organisationUnitCode);
+  const facilities = await Entity.getFacilitiesOfOrgUnit(organisationUnitCode);
   const { results } = await aggregator.fetchAnalytics([AFFECTED_STATUS_DATA_ELEMENT_CODE], {
     ...query,
     dataServices,
@@ -45,18 +45,18 @@ export const countDisasterAffectedFacilitiesByType = async (
 
   const statusCountsByFacilityType = {};
   facilities.forEach(facility => {
-    const { type_name: typeName, name } = facility;
+    const { facility_type_name: facilityTypeName, name } = facility;
     const facilityAffectedStatus = facilityStatuses.get(name) || FACILITY_STATUS_UNKNOWN;
 
-    if (!statusCountsByFacilityType[typeName]) {
-      statusCountsByFacilityType[typeName] = {
-        name: typeName,
+    if (!statusCountsByFacilityType[facilityTypeName]) {
+      statusCountsByFacilityType[facilityTypeName] = {
+        name: facilityTypeName,
         [FACILITY_UNAFFECTED]: 0,
         [FACILITY_STATUS_UNKNOWN]: 0,
         [FACILITY_AFFECTED]: 0,
       };
     }
-    statusCountsByFacilityType[typeName][facilityAffectedStatus]++;
+    statusCountsByFacilityType[facilityTypeName][facilityAffectedStatus]++;
   });
 
   return { data: Array.from(Object.values(statusCountsByFacilityType)) };

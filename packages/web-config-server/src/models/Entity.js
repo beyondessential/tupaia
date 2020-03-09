@@ -4,7 +4,7 @@
  **/
 
 import { capital } from 'case';
-import groupBy from 'lodash.groupby';
+import tail from 'lodash.tail';
 
 import { TYPES } from '@tupaia/database';
 import { reduceToDictionary } from '@tupaia/utils';
@@ -137,76 +137,34 @@ export class Entity extends BaseModel {
     return ancestors.length > 0 ? ancestors[0] : null;
   }
 
-  static async getAllDescendants(id, types = []) {
-    return Entity.database.executeSql(
-      `
-      WITH RECURSIVE descendants AS (
-        SELECT *, 0 AS generation
-          FROM entity
-          WHERE id = ?
+  async getDescendants() {
+    return tail(
+      await this.database.executeSql(
+        `
+        WITH RECURSIVE descendants AS (
+          SELECT *, 0 AS generation
+            FROM entity
+            WHERE code = ?
 
-        UNION ALL
-        SELECT c.*, d.generation + 1
-          FROM descendants d
-          JOIN entity c ON c.parent_id = d.id
-      )
-      SELECT id, code, "name", parent_id, type
-        FROM descendants
-        ${constructTypesCriteria(types, 'WHERE')}
-        ORDER BY generation ASC;
-    `,
-      [id, ...types],
-    );
-  }
-
-  static async getFacilityDescendantsWithCoordinates(code) {
-    return Entity.database.executeSql(
-      `
-      WITH RECURSIVE children AS (
-        SELECT id, code, name, point, type, 0 AS generation
-        FROM   entity
-        WHERE  code = ?
-
-        UNION  ALL
-        SELECT p.id, p.code, p.name, p.point, p.type, c.generation + 1
-        FROM   children      c
-        JOIN   entity p ON p.parent_id = c.id
-      )
+          UNION ALL
+          SELECT c.*, d.generation + 1
+            FROM descendants d
+            JOIN entity c ON c.parent_id = d.id
+        )
         SELECT
-          children.code
-        FROM children
-        WHERE
-          children.type = ?;
+          ${Entity.translatedFields('descendants')},
+          p.code as parent_code,
+          c.category_code as facility_category_code,
+          c.type_name as facility_type_name,
+          c.type as facility_type
+        FROM descendants
+        LEFT JOIN entity p
+          ON p.id = descendants.parent_id 
+        LEFT JOIN clinic c
+          ON c.code = descendants.code
     `,
-      [code, FACILITY],
-    );
-  }
-
-  static async getAllDescendantsWithCoordinates(code) {
-    return Entity.database.executeSql(
-      `
-      WITH RECURSIVE children AS (
-        SELECT ${Entity.fields}, 0 AS generation
-        FROM   entity
-        WHERE  code = ?
-        UNION  ALL
-        SELECT ${Entity.fields.map(field => `p.${field}`)}, c.generation + 1
-        FROM   children      c
-        JOIN   entity p ON p.parent_id = c.id
-      )
-      SELECT
-        ${Entity.translatedFields('children')},
-        (children.region IS NOT NULL) as has_region,
-        p.code as parent_code,
-        c.category_code as clinic_category_code,
-        c.type_name as clinic_type_name
-      FROM children
-      LEFT JOIN entity p
-      	ON p.id = children.parent_id 
-      LEFT JOIN clinic c
-        ON c.code = children.code
-    `,
-      [code],
+        [this.code],
+      ),
     );
   }
 
@@ -226,9 +184,9 @@ export class Entity extends BaseModel {
     const records = await Entity.database.executeSql(
       `SELECT 
         ${Entity.translatedFields('e')},
-        (e.region IS NOT NULL) as has_region,
-        c.category_code as clinic_category_code,
-        c.type_name as clinic_type_name 
+        c.category_code as facility_category_code,
+        c.type_name as facility_type_name,
+        c.type as facility_type
       FROM entity e
       LEFT JOIN clinic c
           ON c.code = e.code
@@ -271,8 +229,13 @@ export class Entity extends BaseModel {
     );
   }
 
+  static async getFacilitiesOfOrgUnit(organisationUnitCode) {
+    const entity = await Entity.getEntityByCode(organisationUnitCode);
+    return entity ? entity.getDescendantsOfType(ENTITY_TYPES.FACILITY) : [];
+  }
+
   async getDescendantsOfType(entityType) {
-    return Entity.getAllDescendants(this.id, [entityType]);
+    return (await this.getDescendants()).filter(descendant => descendant.type === entityType);
   }
 
   static fetchChildToParentCode = async childrenCodes => {
@@ -305,11 +268,6 @@ export class Entity extends BaseModel {
 
   isFacility() {
     return this.type === FACILITY;
-  }
-
-  async getFacilitiesByType() {
-    const facilityDescendants = await Entity.getFacilityDescendantsWithCoordinates(this.code);
-    return groupBy(facilityDescendants, 'type_name');
   }
 
   async parent() {

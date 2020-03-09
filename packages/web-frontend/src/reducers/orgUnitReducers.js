@@ -13,7 +13,7 @@ import { FETCH_ORG_UNIT_SUCCESS } from '../actions';
 function orgUnitMap(state = {}, action) {
   switch (action.type) {
     case FETCH_ORG_UNIT_SUCCESS:
-      return addOrgUnitToTree(state, action.organisationUnit);
+      return addOrgUnitToMap(state, action.organisationUnit);
     default: {
       return state;
     }
@@ -34,11 +34,13 @@ export const cachedSelectOrgUnitChildren = createCachedSelector(
 )((state, code) => code);
 
 // Data management utility functions
-const normaliseForMap = (orgUnit, parentOrganisationUnitCode, isComplete) => ({
-  ...orgUnit,
+const normaliseForMap = (
+  { organisationUnitChildren, descendant, ...restOfOrgUnit },
+  parentOrganisationUnitCode,
+  isComplete,
+) => ({
+  ...restOfOrgUnit,
   parent: parentOrganisationUnitCode,
-  organisationUnitChildren: undefined,
-  descendants: undefined,
   isComplete: isComplete,
 });
 
@@ -51,30 +53,23 @@ const insertOrgUnit = (state, orgUnit) => {
   return { ...state, [orgUnit.organisationUnitCode]: orgUnit };
 };
 
-const addOrgUnitToTree = (state, orgUnit) => {
-  let result = { ...state };
-  const parent = orgUnit.parent;
-  const children = orgUnit.organisationUnitChildren;
-  const descendants = orgUnit.descendants;
+const addOrgUnitToMap = (state, orgUnit) => {
+  const { parent = {}, organisationUnitChildren: children = [], descendants = [] } = orgUnit;
 
-  if (parent && parent.organisationUnitCode) {
+  let result = { ...state };
+  if (parent.organisationUnitCode) {
     result = insertOrgUnit(result, normaliseForMap(parent, undefined, false));
   }
-  result = insertOrgUnit(
-    result,
-    normaliseForMap(orgUnit, parent ? parent.organisationUnitCode || parent : undefined, true),
-  );
-  if (children) {
-    children.forEach(child => {
-      result = insertOrgUnit(result, normaliseForMap(child, orgUnit.organisationUnitCode, false));
-    });
-  }
 
-  if (descendants) {
-    descendants.forEach(descendant => {
-      result = insertOrgUnit(result, normaliseForMap(descendant, descendant.parent, true));
-    });
-  }
+  result = insertOrgUnit(result, normaliseForMap(orgUnit, parent.organisationUnitCode, true));
+
+  children.forEach(child => {
+    result = insertOrgUnit(result, normaliseForMap(child, orgUnit.organisationUnitCode, false));
+  });
+
+  descendants.forEach(descendant => {
+    result = insertOrgUnit(result, normaliseForMap(descendant, descendant.parent, true));
+  });
 
   return result;
 };

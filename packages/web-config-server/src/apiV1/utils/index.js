@@ -4,7 +4,6 @@ export { countByOrganisationUnitByValue } from './countByOrganisationUnitByValue
 export { calculatePercentagesWithinRange } from './calculatePercentagesWithinRange';
 export { mapOrgUnitIdsToGroupIds } from './mapOrgUnitIdsToGroupIds';
 export { mapOrgUnitToGroupCodes } from './mapOrgUnitToGroupCodes';
-export { formatFacilityDataForOverlay } from './formatFacilityDataForOverlay';
 export { getMatchedNumeratorsAndDenominators } from './getMatchedNumeratorsAndDenominators';
 export {
   getBasicFacilityTypeName,

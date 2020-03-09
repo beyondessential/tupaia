@@ -284,12 +284,12 @@ export function selectMeasureName(state = {}) {
   return selectedMeasure ? selectedMeasure.name : '';
 }
 
-export const selectMeasureDataByCode = createSelector(
+const selectMeasureDataByCode = createSelector(
   [state => state.map.measureInfo.measureData, (_, code) => code],
   (data, code) => data.find(val => val.organisationUnitCode === code),
 );
 
-export const cachedSelectMeasureWithDisplayInfo = createCachedSelector(
+const cachedSelectMeasureWithDisplayInfo = createCachedSelector(
   [
     selectMeasureDataByCode,
     state => state.map.measureInfo.measureOptions,
@@ -306,12 +306,10 @@ export const cachedSelectMeasureWithDisplayInfo = createCachedSelector(
 
 export const selectAllMeasuresWithDisplayInfo = createSelector(
   [state => state, state => state.map.measureInfo.measureData],
-  (state, allData) =>
-    allData
-      ? allData.map(data => ({
-          ...cachedSelectMeasureWithDisplayInfo(state, data.organisationUnitCode),
-        }))
-      : [],
+  (state, allData = []) =>
+    allData.map(data => ({
+      ...cachedSelectMeasureWithDisplayInfo(state, data.organisationUnitCode),
+    })),
 );
 
 export const selectRadiusScaleFactor = createSelector(
