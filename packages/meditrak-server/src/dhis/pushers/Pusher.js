@@ -98,7 +98,7 @@ export class Pusher {
    * @param {PushResults}
    * @returns {Promise<>}
    */
-  async logResults({ counts, errors, data, reference, references = [] }) {
+  async logResults({ counts, errors = [], data, reference, references = [] }) {
     if (errors.length > 0) {
       winston.warn(errors);
     }
