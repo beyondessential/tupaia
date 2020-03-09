@@ -86,7 +86,7 @@ import {
   FETCH_RESEND_VERIFICATION_EMAIL,
   findUserLoginFailed,
   REQUEST_PROJECT_ACCESS,
-  SET_PROJECT,
+  SELECT_PROJECT,
 } from './actions';
 import { isMobile, processMeasureInfo, formatDateForApi } from './utils';
 import { createUrlString } from './utils/historyNavigation';
@@ -446,6 +446,30 @@ function* fetchOrgUnitRegionData(action) {
 
 function* watchOrgUnitChangeAndFetchRegions() {
   if (!isMobile()) yield takeLatest(CHANGE_ORG_UNIT, fetchOrgUnitRegionData);
+}
+
+function* fetchBreadCrumb(action) {
+  const project = action.organisationUnit ? true : false;
+  const code = action.organisationUnit
+    ? action.organisationUnit.organisationUnitCode
+    : action.project.code;
+  const requestResourceUrl = `regions/${code}`;
+
+  try {
+    // const response = yield call(request, requestResourceUrl, fetchBreadcrumbError);
+    // yield put(addMapRegions(response.regions));
+    console.log(code);
+  } catch (error) {
+    yield put(error.errorFunction(error));
+  }
+}
+
+function* watchOrgUnitChangeAndBreadCrumb() {
+  if (!isMobile()) yield takeLatest(CHANGE_ORG_UNIT, fetchBreadCrumb);
+}
+
+function* watchProjectChangeAndBreadCrumb() {
+  if (!isMobile()) yield takeLatest(SELECT_PROJECT, fetchBreadCrumb);
 }
 
 /**
@@ -956,4 +980,6 @@ export default [
   watchFetchOrgUnitSuccess,
   refreshBrowserWhenFinishingUserSession,
   watchFetchCountryAccessDataAndFetchItTEST,
+  watchOrgUnitChangeAndBreadCrumb,
+  watchProjectChangeAndBreadCrumb,
 ];

@@ -37,10 +37,8 @@ function* watchSelectProjectAndLoadProjectState() {
   yield takeLatest(SELECT_PROJECT, function*(action) {
     yield put(changeBounds(action.project.bounds));
     yield put(setProjectDefaults(action.project));
-    console.log(action);
     const { code } = action.project;
     if (code !== 'General' && code !== 'explore' && code !== 'disaster') {
-      console.log(code);
       const requestResourceUrl = `dashboard?organisationUnitCode=${code}`;
 
       try {

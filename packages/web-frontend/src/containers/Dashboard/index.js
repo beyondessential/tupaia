@@ -161,7 +161,9 @@ export class Dashboard extends Component {
     const { showFloatingHeader } = this.state;
 
     const header =
-      project.active.code === 'explore' ? currentOrganisationUnit.name : project.active.name;
+      project.active.code === 'explore' || project.projectSelected === false
+        ? currentOrganisationUnit.name
+        : project.active.name;
     return (
       <div
         ref={element => {
@@ -173,6 +175,7 @@ export class Dashboard extends Component {
           visibility: showFloatingHeader && !isSidePanelExpanded ? 'visible' : 'hidden',
         }}
       >
+        <h2 style={DASHBOARD_STYLES.title}>World</h2>
         <h2 style={DASHBOARD_STYLES.title}>{header}</h2>
       </div>
     );
@@ -213,15 +216,26 @@ export class Dashboard extends Component {
     );
   }
 
+  renderBreadcrumb() {
+    return (
+      <p>
+        <small>&nbsp;World</small>
+      </p>
+    );
+  }
+
   renderHeader() {
     const { currentOrganisationUnit, project } = this.props;
 
     const header =
-      project.active.code === 'explore' ? currentOrganisationUnit.name : project.active.name;
+      project.active.code === 'explore' || project.projectSelected === false
+        ? currentOrganisationUnit.name
+        : project.active.name;
 
     return (
       <div style={DASHBOARD_STYLES.meta}>
         {this.renderMetaMedia()}
+        {this.renderBreadcrumb()}
         <h2 style={DASHBOARD_STYLES.title}>{header}</h2>
       </div>
     );

@@ -45,6 +45,7 @@ export class DashboardGroup extends BaseModel {
         dashboardGroups[name][userGroup] = dashboardGroup;
       }
     });
+    console.log(dashboardGroups);
 
     return dashboardGroups;
   }
