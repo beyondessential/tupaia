@@ -9,6 +9,7 @@ import { ChangeDetailGenerator } from '../externalApiSync';
 // Store certain details for faster sync processing
 export class DhisChangeDetailGenerator extends ChangeDetailGenerator {
   async generateEntityDetails(entities) {
+    if (entities.length === 0) return {};
     const changeDetailsById = {};
     entities.forEach(entity => {
       const isDataRegional = get(entity, 'metadata.dhis.isDataRegional', true);
@@ -18,6 +19,7 @@ export class DhisChangeDetailGenerator extends ChangeDetailGenerator {
   }
 
   async generateAnswerDetails(answers) {
+    if (answers.length === 0) return {};
     const surveyResponseIds = this.getUniqueEntries(answers.map(a => a.survey_response_id));
     const surveyResponses = await this.models.surveyResponse.find({ id: surveyResponseIds });
     const surveyResponseDetailsById = await this.generateSurveyResponseDetails(surveyResponses);
@@ -29,6 +31,7 @@ export class DhisChangeDetailGenerator extends ChangeDetailGenerator {
   }
 
   async generateSurveyResponseDetails(surveyResponses) {
+    if (surveyResponses.length === 0) return {};
     const surveyIds = this.getUniqueEntries(surveyResponses.map(r => r.survey_id));
     const surveys = await this.models.survey.find({ id: surveyIds });
     const isDataRegionalBySurveyId = {};
@@ -79,6 +82,6 @@ export class DhisChangeDetailGenerator extends ChangeDetailGenerator {
       ...surveyResponseDetailsById,
     };
 
-    return updateChanges.map(c => JSON.stringify(detailsByChangeId[c.record_id]));
+    return updateChanges.map(c => JSON.stringify(detailsByChangeId[c.record.id]));
   };
 }
