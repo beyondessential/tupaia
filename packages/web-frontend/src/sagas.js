@@ -54,6 +54,7 @@ import {
   fetchDashboardError,
   fetchDashboardItemDataSuccess,
   fetchDashboardItemDataError,
+  displayBreadCrumbs,
   fetchSearchSuccess,
   fetchSearchError,
   fetchHierarchyNestedItems,
@@ -76,7 +77,6 @@ import {
   updateEnlargedDialogError,
   FETCH_MEASURES_SUCCESS,
   FETCH_ORG_UNIT_SUCCESS,
-  FETCH_PROJECT_UNIT_SUCCESS,
   addMapRegions,
   openEmailVerifiedPage,
   fetchEmailVerifyError,
@@ -456,8 +456,8 @@ function* fetchBreadCrumb(action) {
   const requestResourceUrl = `regions/${code}`;
 
   try {
-    // const response = yield call(request, requestResourceUrl, fetchBreadcrumbError);
-    // yield put(addMapRegions(response.regions));
+    const response = yield call(request, requestResourceUrl);
+    yield put(displayBreadCrumbs(response.crumbs));
     console.log(code);
   } catch (error) {
     yield put(error.errorFunction(error));

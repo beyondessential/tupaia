@@ -74,6 +74,7 @@ export const FETCH_MEASURES_ERROR = 'FETCH_MEASURES_ERROR';
 export const FETCH_MEASURES_SUCCESS = 'FETCH_MEASURES_SUCCESS';
 export const FETCH_PROJECT_UNIT_SUCCESS = 'FETCH_PROJECT_UNIT_SUCCESS';
 export const FETCH_PROJECT_UNIT_ERROR = 'FETCH_PROJECT_UNIT_ERROR';
+export const DISPLAY_BREAD_CRUMBS = 'DISPLAY_BREAD_CRUMBS';
 export const FETCH_REGION_ERROR = 'FETCH_REGION_ERROR';
 export const FETCH_ORG_UNIT_ERROR = 'FETCH_ORG_UNIT_ERROR';
 export const FETCH_ORG_UNIT_SUCCESS = 'FETCH_ORG_UNIT_SUCCESS';
@@ -1237,5 +1238,12 @@ export function setExploreMode() {
   return {
     type: SET_PROJECT,
     project: 'explore',
+  };
+}
+
+export function displayBreadCrumbs(display) {
+  return {
+    type: DISPLAY_BREAD_CRUMBS,
+    display,
   };
 }

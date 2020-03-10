@@ -84,7 +84,6 @@ const mapDispatchToProps = dispatch => ({
   onSelectProject: project => {
     dispatch(selectProject(project));
     dispatch(setOverlayComponent(null));
-    // dispatch(changeProjectUnit(project.code, false));
   },
   onRequestProjectAccess: project => {
     dispatch(setRequestingAccess(project));
