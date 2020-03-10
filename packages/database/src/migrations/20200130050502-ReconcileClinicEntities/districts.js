@@ -4,6 +4,17 @@ import { generateId } from '../../utilities/generateId';
   */
 export const newDistricts = [
   { name: 'Kampong Cham', countryCode: 'KH', id: generateId(), code: 'KH_KAMPONG' },
+  { name: 'Dang Koa', countryCode: 'KH', id: generateId(), code: 'KH_Dang Kao Hospital' },
+  { name: 'Bassak', countryCode: 'KH', id: generateId(), code: 'KH_Mean Chey Hospital' },
+  { name: 'Stueng Trang', countryCode: 'KH', id: generateId(), code: 'KH_Hun Sen Stung Trang' },
+  { name: 'Sen Sok', countryCode: 'KH', id: generateId(), code: 'KH_Sen Sok Hospital' },
+  { name: 'Chamkar Leu', countryCode: 'KH', id: generateId(), code: 'KH_Chamkar Leu' },
+  {
+    name: 'Municipal Hospital_PH',
+    countryCode: 'KH',
+    id: generateId(),
+    code: 'KH_Municipal Hospital',
+  },
   { name: 'Tuamasaga', countryCode: 'WS', id: generateId(), code: 'WS_TUAMASAGA' },
   { name: "Moto'otua", countryCode: 'WS', id: generateId(), code: 'WS_SAMOA_1' },
   { name: 'Phnom Penh', countryCode: 'KH', id: generateId(), code: 'KH_PHNOMPENH' },

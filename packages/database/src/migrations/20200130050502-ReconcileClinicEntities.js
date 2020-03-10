@@ -1,8 +1,10 @@
 import { generateId } from '../utilities/generateId';
 import { newDistricts } from './20200130050502-ReconcileClinicEntities/districts';
 import { newCountries } from './20200130050502-ReconcileClinicEntities/countries';
+import countryDHIS2Data from './20200130050502-ReconcileClinicEntities/missingCountryDHIS2Data.json';
 import districtDHIS2Data from './20200130050502-ReconcileClinicEntities/missingDistrictDHIS2Data.json';
 import facilityDHIS2Data from './20200130050502-ReconcileClinicEntities/missingFacilityDHIS2Data.json';
+
 var dbm;
 var type;
 var seed;
@@ -25,16 +27,10 @@ exports.up = async function up(db) {
     DROP TRIGGER IF EXISTS dhis_sync_queue_trigger ON dhis_sync_queue;
     DROP TRIGGER IF EXISTS meditrak_sync_queue_trigger ON meditrak_sync_queue;
   `);
-  const getDistrictDHISData = code => {
-    const district = districtDHIS2Data.find(x => x.code === code);
-    if (!district) return null;
-    return district.region;
-  };
-
-  const getClinicsDHISData = code => {
-    const facility = facilityDHIS2Data.find(x => x.code === code);
-    if (!facility) return null;
-    return facility;
+  const getDHISData = (code, importedJSON) => {
+    const dataOut = importedJSON.find(x => x.code === code);
+    if (!dataOut) return null;
+    return dataOut;
   };
 
   /*
@@ -44,21 +40,10 @@ exports.up = async function up(db) {
     SELECT id FROM entity WHERE type = 'world';
   `);
   const [world] = entities.rows;
-  let worldId = world.id;
-  if (!worldId) {
-    worldId = generateId();
-    await db.runSql(`INSERT INTO "public"."entity"(
-      "id",
-      "code",
-      "name"
-    ) VALUES
-    (
-      E'${worldId}',
-      E'Wo',
-      E'World');`);
-  }
+  const worldId = world.id;
 
   const newCountryMap = country => {
+    const { region: regionGeometry } = getDHISData(country.code, countryDHIS2Data) || {};
     return `INSERT INTO "public"."entity"(
       "id",
       "code",
@@ -80,10 +65,14 @@ exports.up = async function up(db) {
       E'${country.name}',
       E'country',
       NULL,
-      NULL,
+      ${regionGeometry ? `ST_GeomFromGeoJSON('${JSON.stringify(regionGeometry)}')` : 'NULL'},
       NULL,
       E'${country.code}',
-      NULL,
+      ${
+        regionGeometry
+          ? `ST_Envelope(ST_GeomFromGeoJSON('${JSON.stringify(regionGeometry)}')::geometry)`
+          : 'NULL'
+      },
       NULL
     );
     `;
@@ -100,9 +89,13 @@ exports.up = async function up(db) {
       if (parentEntity) return parentEntity.id;
       const parentResults = await db.runSql(`
         SELECT id FROM entity WHERE code = '${parentCode}'`);
-      return parentResults.rows[0].id;
+
+      if (parentResults.rowsCount > 0) return parentResults.rows[0].id;
+      const country = await db.runSql(`
+        SELECT id FROM entity WHERE code = '${parentCode.split('_')[0]}'`);
+      console.log({ countryId: country.rows[0].id, countryCode: parentCode.split('_')[0] });
+      return country.rows[0].id;
     };
-    console.log('341234123');
     if (hierarchyBreadCrumbs.length === 2) {
       parentCode = hierarchyBreadCrumbs[0];
       parentId = await getParentId(parentCode, newCountries);
@@ -110,7 +103,8 @@ exports.up = async function up(db) {
       parentCode = `${hierarchyBreadCrumbs[0]}_${hierarchyBreadCrumbs[1]}`;
       parentId = await getParentId(parentCode, newDistricts);
     }
-    const regionGeometry = getDistrictDHISData(district.code);
+    const { region: regionGeometry } = getDHISData(code, districtDHIS2Data) || {};
+    console.log(regionGeometry);
     return `
     INSERT INTO "public"."entity"(
       "id",
@@ -130,7 +124,7 @@ exports.up = async function up(db) {
       E'${district.id}',
       E'${district.code}',
       E'${parentId}',
-      E'${district.name}',
+      E'${district.name.replace("'", "\\'")}',
       E'region',
       NULL,
       ${regionGeometry ? `ST_GeomFromGeoJSON('${JSON.stringify(regionGeometry)}')` : 'NULL'},
@@ -145,13 +139,11 @@ exports.up = async function up(db) {
     );
     `;
   };
-
   for (let x = 0; x < newDistricts.length; x++) {
     const district = newDistricts[x];
     const newDistrictText = await newDistrictMap(district);
     await db.runSql(newDistrictText);
   }
-
   /*
       Now add the missing clinics
     */
@@ -180,11 +172,9 @@ exports.up = async function up(db) {
             INNER JOIN geographical_area ga ON c.geographical_area_id = ga.id 
             INNER JOIN entity e ON ga.code = e.code
             WHERE c.code = '${code}' OR c.name = '${name.replace("'", "\\'")}';`);
-      console.log({ parent: parentRows.rows[0] });
-      parentId = parentRows.rows[0].entity_id;
-      console.log({ parentId });
+      if (parentRows.rowCount > 0) parentId = parentRows.rows[0].entity_id;
     }
-    const dhis2Data = await getClinicsDHISData(clinic.code);
+    const dhis2Data = await getDHISData(clinic.code, facilityDHIS2Data);
     const { photoUrl = null, geometry = null } = dhis2Data || { photoUrl: null, geometry: null };
     const returnValue = `
         INSERT INTO "public"."entity"(
