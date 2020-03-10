@@ -4,8 +4,8 @@
  */
 
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
+import { countEventsThatSatisfyConditions, groupEvents } from '/apiV1/dataBuilders/helpers';
 import { getSortByKey } from '@tupaia/utils/dist/object';
-import { groupEvents } from '/apiV1/dataBuilders/helpers/groupEvents';
 
 /**
  * Configuration schema
@@ -51,7 +51,7 @@ export class CountEventsBuilder extends DataBuilder {
 
   buildDataForGroup(events, name = 'countEvents') {
     const { dataValues } = this.config;
-    const value = this.countEventsThatSatisfyConditions(events, { dataValues });
+    const value = countEventsThatSatisfyConditions(events, { dataValues });
 
     return [{ name, value }];
   }
