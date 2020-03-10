@@ -15,11 +15,23 @@ class ValueForOrgGroupMeasureBuilder extends DataBuilder {
   async getFacilityDataByCode() {
     const { dataElementCode, organisationUnitGroupCode } = this.query;
 
+    const formatFacilityEntities = facility => {
+      if (dataElementCode === FACILITY_TYPE_CODE) {
+        return {
+          organisationUnitCode: facility.code,
+          facilityTypeCode: facility.facility_category_code,
+          facilityTypeName: facility.facility_type_name,
+        };
+      }
+
+      return {
+        organisationUnitCode: facility.code,
+      };
+    };
+
     // create index of all facilities
     const facilityCodes = (await Entity.getFacilitiesOfOrgUnit(organisationUnitGroupCode)).map(
-      facility => ({
-        organisationUnitCode: facility.code,
-      }),
+      formatFacilityEntities,
     );
     const facilityData = keyBy(facilityCodes, 'organisationUnitCode');
 

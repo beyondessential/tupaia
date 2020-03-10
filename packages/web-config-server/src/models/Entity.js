@@ -183,15 +183,10 @@ export class Entity extends BaseModel {
   static async getEntityByCode(code) {
     const records = await Entity.database.executeSql(
       `SELECT 
-        ${Entity.translatedFields('e')},
-        c.category_code as facility_category_code,
-        c.type_name as facility_type_name,
-        c.type as facility_type
-      FROM entity e
-      LEFT JOIN clinic c
-          ON c.code = e.code
+        ${Entity.translatedFields()}
+      FROM entity
       WHERE
-        e.code = ?;
+        code = ?;
       `,
       [code],
     );

@@ -28,8 +28,6 @@ export function translateForFrontend(entity) {
     name: entity.name,
     location: getEntityLocationForFrontend(entity),
     photoUrl: entity.image_url,
-    facilityTypeCode: entity.facility_category_code,
-    facilityTypeName: entity.facility_type_name,
     parent: entity.parent_code,
   };
 }
