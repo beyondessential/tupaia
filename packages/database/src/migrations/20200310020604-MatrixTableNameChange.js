@@ -18,7 +18,7 @@ exports.up = function(db) {
   return db.runSql(`
     update "dashboardReport" set "viewJson" = jsonb_set("viewJson", '{name}', '"JEE (Pacific Island Countries)"') where id = 'WHO_IHR_JEE_WPRO';
     update "dashboardReport" set "viewJson" = jsonb_set("viewJson", '{name}', '"SPAR (Pacific Island Countries)"') where id = 'WHO_IHR_SPAR_WPRO';
-    update "dashboardReport" set "viewJson" = jsonb_set("viewJson", '{name}', '"Total number of Pacific States Parties submitting the IHR self-assessment annual report since 2010on"') where id = 'WHO_SURVEY';
+    update "dashboardReport" set "viewJson" = jsonb_set("viewJson", '{name}', '"Total number of Pacific States Parties submitting the IHR self-assessment annual report since 2010"') where id = 'WHO_SURVEY';
     update "dashboardReport" set "viewJson" = jsonb_set("viewJson", '{entityHeader}', '""') where id = 'WHO_SURVEY';
     update "dashboardReport" set "viewJson" = "viewJson" || '{"presentationOptions": {"hideAverage": true}}' where id = 'WHO_SURVEY';
     update "dashboardReport" set "viewJson" = "viewJson" || '{"entityHeader": "Pacific territories"}' where id = 'WHO_IHR_SPAR_NST';
