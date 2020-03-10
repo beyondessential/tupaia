@@ -40,9 +40,7 @@ const MultiValueTooltip = ({
       payload.reverse();
     }
     if (chartType === CHART_TYPES.LINE) {
-      payload.sort((obj1, obj2) => {
-        return obj1.value - obj2.value;
-      });
+      payload.sort((obj1, obj2) => obj2.value - obj1.value);
     }
   }
 
