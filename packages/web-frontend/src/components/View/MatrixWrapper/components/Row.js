@@ -11,54 +11,9 @@ import PrevIcon from 'material-ui/svg-icons/navigation/chevron-left';
 import NextIcon from 'material-ui/svg-icons/navigation/chevron-right';
 import shallowEqual from 'shallowequal';
 
-import { findByKey } from '../../../../utils';
+import { Cell } from './Cell';
+import { getPresentationOption } from '../../../../utils';
 import { PRESENTATION_OPTIONS_SHAPE } from '../../propTypes';
-
-const Cell = ({
-  onMouseEnter,
-  onMouseLeave,
-  onClick,
-  style,
-  columnActiveStripStyle,
-  dotStyle,
-  dotStyleActive,
-  color,
-  isActive,
-  cellKey,
-  value = '',
-  isUsingDots,
-}) => {
-  const linesOfText = value.toString().split('\n');
-  const contents = isUsingDots ? (
-    <span
-      style={{
-        ...(isActive ? dotStyleActive : dotStyle),
-        backgroundColor: color || 'transparent',
-      }}
-    />
-  ) : (
-    linesOfText.map((text, i) => (
-      <span key={i}>
-        {text}
-        <br />
-      </span>
-    ))
-  );
-  const activeIndicator = isActive ? <span style={columnActiveStripStyle} /> : null;
-
-  return (
-    <div
-      style={style}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-      onClick={onClick}
-      key={cellKey}
-    >
-      {activeIndicator}
-      {contents}
-    </div>
-  );
-};
 
 export default class Row extends Component {
   shouldComponentUpdate(nextProps) {
@@ -151,9 +106,7 @@ export default class Row extends Component {
             return <div style={style} key={index} />;
           }
 
-          const presentation = findByKey(presentationOptions, cellValue, false) || {
-            color: '',
-          };
+          const presentation = getPresentationOption(presentationOptions, cellValue);
 
           return (
             <Cell
@@ -161,8 +114,8 @@ export default class Row extends Component {
               cellKey={index}
               onMouseEnter={() => onCellMouseEnter(index, rowKey)}
               onMouseLeave={() => onCellMouseLeave()}
-              onClick={() => onCellClick(cellValue)}
-              color={presentation.color}
+              onClick={() => onCellClick(presentation, cellValue)}
+              color={presentation ? presentation.color : { color: '' }}
               value={cellValue}
               style={styles.gridCell}
               columnActiveStripStyle={styles.columnActiveStrip}

@@ -112,7 +112,17 @@ class TableOfDataValuesWithCalcBuilder extends TableOfDataValuesBuilder {
   }
 }
 
-export const tableOfDataValuesWithCalc = async ({ dataBuilderConfig, query, entity }, dhisApi) => {
-  const builder = new TableOfDataValuesWithCalcBuilder(dhisApi, dataBuilderConfig, query, entity);
+export const tableOfDataValuesWithCalc = async (
+  { dataBuilderConfig, query, entity },
+  aggregator,
+  dhisApi,
+) => {
+  const builder = new TableOfDataValuesWithCalcBuilder(
+    aggregator,
+    dhisApi,
+    dataBuilderConfig,
+    query,
+    entity,
+  );
   return builder.build();
 };

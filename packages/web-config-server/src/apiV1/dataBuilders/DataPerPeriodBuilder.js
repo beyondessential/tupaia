@@ -32,6 +32,7 @@ export class DataPerPeriodBuilder extends DataBuilder {
     if (this.baseBuilder !== null) {
       return this.baseBuilder;
     }
+
     const BaseBuilder = this.getBaseBuilderClass();
     const builder = new BaseBuilder(...this.constructorArgs);
 
@@ -99,10 +100,6 @@ export class DataPerPeriodBuilder extends DataBuilder {
     return data;
   }
 
-  /**
-   * @public
-   * @returns {DataValuesOutput}
-   */
   async build() {
     const results = await this.fetchResults();
     const data = await this.buildData(results);

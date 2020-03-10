@@ -3,7 +3,7 @@ import { fetchComposedData } from '/apiV1/dataBuilders/helpers';
 /**
  * Configuration schema
  * @typedef {Object} ComposePercentagesPerPeriodConfig
- * @property {Object<string, DataBuilder>} dataBuilders
+ * @property {Object<string, { dataBuilder, dataBuilderConfig }>} dataBuilders
  *
  * Example:
  * ```
@@ -20,8 +20,8 @@ import { fetchComposedData } from '/apiV1/dataBuilders/helpers';
  * ```
  */
 
-export const composeDataPerPeriod = async (config, dhisApi) => {
-  const responses = await fetchComposedData(config, dhisApi);
+export const composeDataPerPeriod = async (config, aggregator, dhisApi) => {
+  const responses = await fetchComposedData(config, aggregator, dhisApi);
 
   const dataByTimestamp = {};
   const processDataItem = (builderKey, dataItem) => {

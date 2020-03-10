@@ -8,6 +8,7 @@ const getFacilitiesWithinParent = async (dhisApi, countryCode) =>
       { 'ancestors.code': countryCode },
       { description: '"level":"Facility"', comparator: 'like' },
     ],
+    fields: ['id', 'displayName', 'code'],
   });
 
 // Get Pacific countries current in Tupaia

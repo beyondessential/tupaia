@@ -4,7 +4,7 @@
  */
 
 import { getSortByKey, reduceToSet, stripFromStart } from '@tupaia/utils';
-import { getDataElementGroupSets, getOptionSetOptions } from '/apiV1/utils';
+import { getDataElementGroupSets } from '/apiV1/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { DATA_SOURCE_TYPES } from '/apiV1/dataBuilders/dataSourceTypes';
 import { buildCategories } from './buildCategories';
@@ -14,7 +14,7 @@ const { SINGLE, GROUP_SET } = DATA_SOURCE_TYPES;
 /**
  * Configuration schema
  * @typedef {Object} OrganisationUnitTableConfig
- * @property {DataSource} dataSource
+ * @property {Object} dataSource
  * @property {string} [columnTitle]
  * @property {string} [optionSetCode]
  *
@@ -33,9 +33,6 @@ const { SINGLE, GROUP_SET } = DATA_SOURCE_TYPES;
  */
 
 class OrganisationUnitTableDataBuilder extends DataBuilder {
-  /**
-   * @returns {TableOutput}
-   */
   async build() {
     const { type } = this.config.dataSource;
     if (![SINGLE, GROUP_SET].includes(type)) {
@@ -47,7 +44,7 @@ class OrganisationUnitTableDataBuilder extends DataBuilder {
       dataElementGroups,
       dataElementToGroupMapping,
     } = await this.getDataElementInfo();
-    const analytics = await this.getAnalytics(dataElementCodes);
+    const analytics = await this.fetchAnalytics(dataElementCodes);
 
     const responseObject = {
       rows: await this.buildRows(analytics, dataElementToGroupMapping),
@@ -84,18 +81,6 @@ class OrganisationUnitTableDataBuilder extends DataBuilder {
     return { dataElementCodes: codes, dataElementGroups: [], dataElementToGroupMapping: null };
   }
 
-  async getAnalytics(dataElementCodes) {
-    const { organisationUnitCode } = this.query;
-    const { programCodes } = this.config.dataSource;
-
-    return super.getAnalytics({
-      dataElementCodes,
-      organisationUnitCode,
-      outputIdScheme: 'code',
-      programCodes,
-    });
-  }
-
   hasCategories() {
     const { dataSource } = this.config;
     return dataSource.type === GROUP_SET;
@@ -128,7 +113,7 @@ class OrganisationUnitTableDataBuilder extends DataBuilder {
 
   async getOptionSetOptions() {
     const { optionSetCode } = this.config;
-    return optionSetCode ? getOptionSetOptions(this.dhisApi, { code: optionSetCode }) : null;
+    return optionSetCode ? this.dhisApi.getOptionSetOptions({ code: optionSetCode }) : null;
   }
 
   async buildColumns(analytics) {
@@ -163,8 +148,18 @@ class OrganisationUnitTableDataBuilder extends DataBuilder {
   }
 }
 
-export const organisationUnitTable = async ({ dataBuilderConfig, query, entity }, dhisApi) => {
-  const builder = new OrganisationUnitTableDataBuilder(dhisApi, dataBuilderConfig, query, entity);
+export const organisationUnitTable = async (
+  { dataBuilderConfig, query, entity },
+  aggregator,
+  dhisApi,
+) => {
+  const builder = new OrganisationUnitTableDataBuilder(
+    aggregator,
+    dhisApi,
+    dataBuilderConfig,
+    query,
+    entity,
+  );
 
   return builder.build();
 };

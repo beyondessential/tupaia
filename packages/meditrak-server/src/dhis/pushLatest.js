@@ -6,7 +6,7 @@
 import { pushChange } from './pushChange';
 import { getDhisApiInstanceForChange } from './api';
 
-export async function pushLatest(models, syncQueue, batchSize) {
+export async function pushLatest(models, syncQueue, dataBroker, batchSize) {
   // Get the latest changes for this aggregation server
   const latestChanges = await syncQueue.get(batchSize);
   const pushedChanges = [];
@@ -15,7 +15,7 @@ export async function pushLatest(models, syncQueue, batchSize) {
       const change = latestChanges[i];
       // Get appropriate aggregation server api, or create it if this is the first use
       const dhisApi = getDhisApiInstanceForChange(change);
-      const successfullyPushed = await pushChange(models, change, dhisApi);
+      const successfullyPushed = await pushChange(models, change, dhisApi, dataBroker);
       // If it has synced to DHIS2, remove the change from the sync queue
       if (successfullyPushed) {
         await syncQueue.use(change);

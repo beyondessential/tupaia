@@ -12,7 +12,7 @@ import { CountEventsBuilder } from '/apiV1/dataBuilders/generic/count/countEvent
  * @typedef {Object} CountEventsConfig
  * @property {string} programCode
  * @property {string} periodType
- * @property {Object<string, DataValueCondition>} [dataValues]
+ * @property {Object<string, (string|Object)>} [dataValues]
  *
  * Example
  * ```js
@@ -30,12 +30,22 @@ class CountEventsPerPeriodBuilder extends DataPerPeriodBuilder {
   groupResultsByPeriod = groupEventsByPeriod;
 
   async fetchResults() {
-    return this.getEvents({ dataElementIdScheme: 'code', dataValueFormat: 'object' });
+    return this.fetchEvents({ dataValueFormat: 'object' });
   }
 }
 
-export const countEventsPerPeriod = async ({ dataBuilderConfig, query, entity }, dhisApi) => {
-  const builder = new CountEventsPerPeriodBuilder(dhisApi, dataBuilderConfig, query, entity);
+export const countEventsPerPeriod = async (
+  { dataBuilderConfig, query, entity },
+  aggregator,
+  dhisApi,
+) => {
+  const builder = new CountEventsPerPeriodBuilder(
+    aggregator,
+    dhisApi,
+    dataBuilderConfig,
+    query,
+    entity,
+  );
 
   return builder.build();
 };

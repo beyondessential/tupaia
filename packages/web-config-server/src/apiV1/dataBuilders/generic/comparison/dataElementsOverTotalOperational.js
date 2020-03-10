@@ -4,15 +4,21 @@ import {
   getFacilityStatusCounts,
 } from '/apiV1/utils';
 
-export const dataElementsOverTotalOperational = async ({ dataBuilderConfig, query }, dhisApi) => {
-  const { labels = {}, ...restOfDataBuilderConfig } = dataBuilderConfig;
-  const { results, metadata, period } = await dhisApi.getAnalytics(restOfDataBuilderConfig, query);
+export const dataElementsOverTotalOperational = async (
+  { dataBuilderConfig, query },
+  aggregator,
+) => {
+  const { dataElementCodes, dataServices, labels = {} } = dataBuilderConfig;
+  const { results, metadata, period } = await aggregator.fetchAnalytics(
+    dataElementCodes,
+    { dataServices },
+    query,
+  );
 
   // Map all dataElement with summed values of only operational facilities
   const summedValuesByElement = {};
-  const { dataElementIdToCode, dataElementCodeToName } = metadata;
-  const addValueToSumByElement = ({ dataElement: dataElementId, value }) => {
-    const dataElementCode = dataElementIdToCode[dataElementId];
+  const { dataElementCodeToName } = metadata;
+  const addValueToSumByElement = ({ dataElement: dataElementCode, value }) => {
     if (!summedValuesByElement[dataElementCode]) {
       summedValuesByElement[dataElementCode] = 0;
     }
@@ -23,9 +29,14 @@ export const dataElementsOverTotalOperational = async ({ dataBuilderConfig, quer
   };
 
   // Will count only operational facilities
-  const operationalFacilities = await getFacilityStatuses(query.organisationUnitCode, period);
+  const operationalFacilities = await getFacilityStatuses(
+    aggregator,
+    query.organisationUnitCode,
+    period,
+  );
   aggregateOperationalFacilityValues(operationalFacilities, results, addValueToSumByElement);
   const { numberOperational: totalOperationalFacilities } = await getFacilityStatusCounts(
+    aggregator,
     query.organisationUnitCode,
     period,
   );

@@ -5,16 +5,19 @@
 
 const MAX_APP_VERSION = '999.999.999';
 
+// Converts e.g. PermissionGroup -> permissionGroup
+const getModelKey = modelName => `${modelName.charAt(0).toLowerCase()}${modelName.slice(1)}`;
+
 export class ModelRegistry {
   constructor(database, modelClasses) {
     this.database = database;
     this.modelClasses = modelClasses;
-    this.generateModels(database.isSingleton);
+    this.generateModels();
   }
 
-  destroy() {
+  closeDatabaseConnections() {
     if (this.database.isSingleton) {
-      this.database.destroy();
+      this.database.closeConnections();
     }
   }
 
@@ -22,19 +25,21 @@ export class ModelRegistry {
     return this.database.connectionPromise;
   }
 
-  generateModels(isSingleton) {
+  generateModels() {
     // Add models
     Object.entries(this.modelClasses).forEach(([modelName, ModelClass]) => {
       // Create a singleton instance of each model, passing through the change handler if there is
       // one statically defined on the ModelClass and this is the singleton (non transacting)
       // database instance
-      const onChange = isSingleton ? ModelClass.onChange : null;
-      this[modelName] = new ModelClass(this.database, onChange);
+      const modelKey = getModelKey(modelName);
+      this[modelKey] = new ModelClass(this.database);
     });
     // Inject other models into each model
     Object.keys(this.modelClasses).forEach(modelName => {
+      const modelKey = getModelKey(modelName);
       Object.keys(this.modelClasses).forEach(otherModelName => {
-        this[modelName].otherModels[otherModelName] = this[otherModelName];
+        const otherModelKey = getModelKey(otherModelName);
+        this[modelKey].otherModels[otherModelKey] = this[otherModelKey];
       });
     });
   }

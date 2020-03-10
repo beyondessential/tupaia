@@ -7,13 +7,13 @@ import { DatabaseError } from '@tupaia/utils';
 export class DatabaseModel {
   otherModels = {};
 
-  constructor(database, onChange) {
+  constructor(database) {
     this.database = database;
-    // Add change handler to database if defined (generally for the singleton instance of a model)
-    if (onChange) {
-      this.database.addChangeHandlerForCollection(
-        this.DatabaseTypeClass.databaseType,
-        (change, record) => onChange(change, record, this),
+    // Add change handler to database if defined, and this is the singleton instance of the model
+    const onChange = this.constructor.onChange;
+    if (this.database.isSingleton && onChange) {
+      this.database.addChangeHandlerForCollection(this.DatabaseTypeClass.databaseType, change =>
+        onChange(change, this),
       );
     }
 
@@ -22,6 +22,17 @@ export class DatabaseModel {
     // it will be populated on the first call to this.fetchSchema(), and should not be accessed
     // directly
     this.schema = null;
+
+    this.cache = {};
+    // If this model uses the singleton database, it is probably long running, so be sure to
+    // invalidate the cache any time a change is detected. Non-singleton models are those created
+    // during transactions, so are short lived and unlikely to need cache invalidation - thus we
+    // avoid making an additional connection to pubsub and just leave their cache untouched
+    if (this.database.isSingleton) {
+      this.database.addChangeHandlerForCollection(this.DatabaseTypeClass.databaseType, () => {
+        this.cache = {}; // invalidate cache on any change
+      });
+    }
   }
 
   async fetchSchema() {
@@ -32,8 +43,11 @@ export class DatabaseModel {
   }
 
   async fetchFieldNames() {
-    const schema = await this.fetchSchema();
-    return Object.keys(schema);
+    if (!this.fieldNames) {
+      const schema = await this.fetchSchema();
+      this.fieldNames = Object.keys(schema);
+    }
+    return this.fieldNames;
   }
 
   // This method must be overridden by every subclass, so that the model knows what DatabaseType to
@@ -98,6 +112,20 @@ export class DatabaseModel {
     return this.generateInstance(result);
   }
 
+  async findManyById(ids) {
+    if (!ids) {
+      throw new Error(`Cannot search for ${this.databaseType} by id without providing the ids`);
+    }
+    const records = [];
+    const batchSize = this.database.maxBindingsPerQuery;
+    for (let i = 0; i < ids.length; i += batchSize) {
+      const batchOfIds = ids.slice(i, i + batchSize);
+      const batchOfRecords = await this.find({ id: batchOfIds });
+      records.push(...batchOfRecords);
+    }
+    return records;
+  }
+
   async findOne(dbConditions, customQueryOptions = {}) {
     const queryOptions = await this.getQueryOptions(customQueryOptions);
     const result = await this.database.findOne(this.databaseType, dbConditions, queryOptions);
@@ -121,7 +149,7 @@ export class DatabaseModel {
     return this.find({}, queryOptions);
   }
 
-  async generateInstance(fields = {}) {
+  generateInstance = async (fields = {}) => {
     const data = await this.getDatabaseSafeData(fields);
     this.joins.forEach(({ fields: joinFields }) => {
       Object.values(joinFields).forEach(fieldName => {
@@ -130,11 +158,11 @@ export class DatabaseModel {
     });
 
     return new this.DatabaseTypeClass(this, data);
-  }
+  };
 
   // Read the field values and convert them to database friendly representations
   // ready to save to the record.
-  async getDatabaseSafeData(fieldValues) {
+  getDatabaseSafeData = async fieldValues => {
     const data = {};
     const fieldNames = await this.fetchFieldNames();
     fieldNames.forEach(fieldName => {
@@ -145,7 +173,7 @@ export class DatabaseModel {
       }
     });
     return data;
-  }
+  };
 
   async create(fields) {
     const data = await this.getDatabaseSafeData(fields);
@@ -154,6 +182,18 @@ export class DatabaseModel {
     const fieldValues = await this.database.create(this.databaseType, data);
 
     return this.generateInstance(fieldValues);
+  }
+
+  /**
+   * Bulk creates database records and returns DatabaseType instances representing them
+   * @param {Array.<Object>} recordsToCreate
+   */
+  async createMany(recordsToCreate) {
+    const data = await Promise.all(recordsToCreate.map(this.getDatabaseSafeData));
+    const instances = await Promise.all(data.map(this.generateInstance));
+    await Promise.all(instances.map(i => i.assertValid()));
+    const records = await this.database.createMany(this.databaseType, data);
+    return Promise.all(records.map(this.generateInstance));
   }
 
   async delete(whereConditions) {
@@ -192,7 +232,18 @@ export class DatabaseModel {
     return this.update(this.getIdClause(id), fieldsToUpdate);
   }
 
+  markRecordsAsChanged(records) {
+    return this.database.markRecordsAsChanged(this.databaseType, records);
+  }
+
   async markAsChanged(...args) {
     return this.database.markAsChanged(this.databaseType, ...args);
+  }
+
+  runCachedFunction(cacheKey, fn) {
+    if (!this.cache[cacheKey]) {
+      this.cache[cacheKey] = fn(); // may be async, in which case we cache the promise to be awaited
+    }
+    return this.cache[cacheKey];
   }
 }

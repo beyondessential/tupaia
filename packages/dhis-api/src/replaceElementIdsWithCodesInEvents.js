@@ -1,32 +1,28 @@
 /**
- * Tupaia Config Server
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { reduceToDictionary } from '@tupaia/utils';
+import { DHIS2_RESOURCE_TYPES } from '../dist';
+
 export const replaceElementIdsWithCodesInEvents = async (dhisApi, events) => {
-  const programStageIdSet = new Set(events.map(({ programStage }) => programStage));
-  const programStages = await dhisApi.getRecords({
-    type: 'programStages',
-    ids: Array.from(programStageIdSet),
-    fields: ['programStageDataElements[dataElement[id,code]]'],
+  const ids = events.reduce(
+    (allIds, event) => allIds.concat(event.dataValues.map(({ dataElement }) => dataElement)),
+    [],
+  );
+  const dataElements = await dhisApi.getRecords({
+    ids,
+    fields: ['id', 'code'],
+    type: DHIS2_RESOURCE_TYPES.DATA_ELEMENT,
   });
+  const dataElementIdToCode = reduceToDictionary(dataElements, 'id', 'code');
 
-  const dataElementIdToCode = {};
-  programStages.forEach(({ programStageDataElements }) => {
-    programStageDataElements.forEach(({ dataElement }) => {
-      const { id, code } = dataElement;
-      dataElementIdToCode[id] = code;
-    });
-  });
-
-  const mapDataValues = dataValues =>
-    dataValues.map(value => ({
+  return events.map(({ dataValues, ...restOfEvent }) => ({
+    ...restOfEvent,
+    dataValues: dataValues.map(value => ({
       ...value,
       dataElement: dataElementIdToCode[value.dataElement],
-    }));
-
-  return events.map(event => ({
-    ...event,
-    dataValues: mapDataValues(event.dataValues),
+    })),
   }));
 };

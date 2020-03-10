@@ -5,6 +5,9 @@
 
 import apicache from 'apicache';
 import { Router } from 'express';
+
+import { createAggregator } from '@tupaia/aggregator';
+import { Aggregator } from '/aggregator';
 import {
   appSignup,
   appLogin,
@@ -55,12 +58,24 @@ export const getRoutesForApiV1 = () => {
     '/organisationUnitSearch',
     catchAsyncErrors((...params) => new OrgUnitSearchHandler().execute(...params)),
   );
-  api.get('/dashboard', catchAsyncErrors((...params) => new DashBoardHandler().execute(...params)));
-  api.get('/view', catchAsyncErrors((...params) => new ViewHandler().execute(...params)));
-  api.get('/measures', catchAsyncErrors((...params) => new MeasuresHandler().execute(...params)));
+  api.get(
+    '/dashboard',
+    catchAsyncErrors((...params) => new DashBoardHandler().execute(...params)),
+  );
+  api.get(
+    '/view',
+    catchAsyncErrors((...params) => new ViewHandler().execute(...params)),
+  );
+  api.get(
+    '/measures',
+    catchAsyncErrors((...params) => new MeasuresHandler().execute(...params)),
+  );
   api.get(
     '/measureData',
-    catchAsyncErrors((...params) => new MeasuresDataHandler().execute(...params)),
+    catchAsyncErrors((...params) => {
+      const aggregator = createAggregator(Aggregator);
+      return new MeasuresDataHandler(aggregator).execute(...params);
+    }),
   );
   api.get('/disasters', catchAsyncErrors(disasters));
   api.get('/regions/:code', catchAsyncErrors(getRegions));

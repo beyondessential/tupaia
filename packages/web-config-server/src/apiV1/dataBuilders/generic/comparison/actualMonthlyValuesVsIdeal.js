@@ -1,30 +1,27 @@
 import { utcMoment } from '@tupaia/utils';
-import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 import { regexLabel } from '/apiV1/utils';
 
 /* historical data within a matrix format compared to an 'Ideal' Value */
-const { FINAL_EACH_MONTH, MOST_RECENT } = AGGREGATION_TYPES;
-
-export const actualMonthlyValuesVsIdeal = async ({ dataBuilderConfig, query }, dhisApi) => {
-  const { pairs, labelRegex } = dataBuilderConfig;
+export const actualMonthlyValuesVsIdeal = async ({ dataBuilderConfig, query }, aggregator) => {
+  const { pairs, labelRegex, dataServices } = dataBuilderConfig;
 
   // Function to fetch analytics for a metric
   const fetchAnalytics = async metric => {
-    const { results: idealResults, metadata: idealMetadata } = await dhisApi.getAnalytics(
-      { dataElementCodes: metric.idealDataElementCodes },
+    const { results: idealResults, metadata: idealMetadata } = await aggregator.fetchAnalytics(
+      metric.idealDataElementCodes,
+      { dataServices },
       query,
-      MOST_RECENT,
     );
-    const { results: actualResults, metadata: actualMetadata } = await dhisApi.getAnalytics(
-      { dataElementCodes: metric.actualDataElementCodes },
+    const { results: actualResults } = await aggregator.fetchAnalytics(
+      metric.actualDataElementCodes,
+      { dataServices },
       query,
-      FINAL_EACH_MONTH,
+      aggregator.aggregationTypes.FINAL_EACH_MONTH,
     );
     return {
       idealResults,
       actualResults,
-      actualMetadata,
       idealMetadata,
     };
   };
@@ -34,9 +31,7 @@ export const actualMonthlyValuesVsIdeal = async ({ dataBuilderConfig, query }, d
     actualDataElementCodes: Object.keys(pairs),
     idealDataElementCodes: Object.values(pairs),
   };
-  const { actualResults, idealResults, actualMetadata, idealMetadata } = await fetchAnalytics(
-    metric,
-  );
+  const { actualResults, idealResults, idealMetadata } = await fetchAnalytics(metric);
   const finalResult = {};
   finalResult.labels = {};
   Object.keys(idealMetadata.dataElementCodeToName).forEach(key => {
@@ -66,12 +61,10 @@ export const actualMonthlyValuesVsIdeal = async ({ dataBuilderConfig, query }, d
     return `${columnKey}_${dataElementCode}`;
   };
   const valueHashtable = {};
-  idealResults.forEach(({ dataElement, value }) => {
-    const dataElementCode = idealMetadata.dataElementIdToCode[dataElement];
+  idealResults.forEach(({ dataElement: dataElementCode, value }) => {
     valueHashtable[getResultKey('ideal', dataElementCode)] = value;
   });
-  actualResults.forEach(({ dataElement, period, value }) => {
-    const actualDataElementCode = actualMetadata.dataElementIdToCode[dataElement];
+  actualResults.forEach(({ dataElement: actualDataElementCode, period, value }) => {
     const idealDataElementCode = pairs[actualDataElementCode];
     valueHashtable[getResultKey(period, idealDataElementCode)] = value;
   });

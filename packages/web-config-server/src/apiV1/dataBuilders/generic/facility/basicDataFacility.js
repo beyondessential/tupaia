@@ -1,10 +1,11 @@
-export const basicDataFacility = async ({ dataBuilderConfig, query }, dhisApi) => {
-  const { results } = await dhisApi.getAnalytics(dataBuilderConfig, query);
+const CATCHMENT_POPULATION = 'FF7';
+const WEEKDAY = 'BCD39';
+const SATURDAY = 'BCD41';
+const SUNDAY = 'BCD39';
 
-  const CATCHMENT_POPULATION = 'oxksRFlN3KF';
-  const WEEKDAY = 'mkBl6ZBuNOA';
-  const SATURDAY = 'H50hUe6UrlH';
-  const SUNDAY = 'mkBl6ZBuNOA';
+export const basicDataFacility = async ({ dataBuilderConfig, query }, aggregator) => {
+  const { dataElementCodes, dataServices } = dataBuilderConfig;
+  const { results } = await aggregator.fetchAnalytics(dataElementCodes, { dataServices }, query);
 
   const returnData = [];
 
