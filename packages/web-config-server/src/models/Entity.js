@@ -153,15 +153,10 @@ export class Entity extends BaseModel {
         )
         SELECT
           ${Entity.translatedFields('descendants')},
-          p.code as parent_code,
-          c.category_code as facility_category_code,
-          c.type_name as facility_type_name,
-          c.type as facility_type
+          p.code as parent_code
         FROM descendants
         LEFT JOIN entity p
-          ON p.id = descendants.parent_id 
-        LEFT JOIN clinic c
-          ON c.code = descendants.code
+          ON p.id = descendants.parent_id
     `,
         [this.code],
       ),

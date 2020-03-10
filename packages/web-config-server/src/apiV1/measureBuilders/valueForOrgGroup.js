@@ -1,6 +1,6 @@
 import keyBy from 'lodash.keyby';
 
-import { Entity } from '/models/Entity';
+import { Entity, Facility } from '/models';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 
 const FACILITY_TYPE_CODE = 'facilityTypeCode';
@@ -15,28 +15,25 @@ class ValueForOrgGroupMeasureBuilder extends DataBuilder {
   async getFacilityDataByCode() {
     const { dataElementCode, organisationUnitGroupCode } = this.query;
 
-    const formatFacilityEntities = facility => {
-      if (dataElementCode === FACILITY_TYPE_CODE) {
-        return {
-          organisationUnitCode: facility.code,
-          facilityTypeCode: facility.facility_category_code,
-          facilityTypeName: facility.facility_type_name,
-        };
-      }
-
-      return {
-        organisationUnitCode: facility.code,
-      };
-    };
-
     // create index of all facilities
     const facilityCodes = (await Entity.getFacilitiesOfOrgUnit(organisationUnitGroupCode)).map(
-      formatFacilityEntities,
+      facility => ({
+        organisationUnitCode: facility.code,
+      }),
     );
     const facilityData = keyBy(facilityCodes, 'organisationUnitCode');
 
     // 'facilityTypeCode' signifies a special case which is handled internally
     if (dataElementCode === FACILITY_TYPE_CODE) {
+      const facilityMetaDatas = await Facility.find({ code: Object.keys(facilityData) });
+      facilityMetaDatas.forEach(metadata => {
+        facilityData[metadata.code] = {
+          organisationUnitCode: metadata.code,
+          facilityTypeCode: metadata.category_code,
+          facilityTypeName: metadata.type_name,
+        };
+        return true;
+      });
       return facilityData;
     }
 
