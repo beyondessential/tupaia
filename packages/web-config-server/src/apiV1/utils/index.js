@@ -4,13 +4,11 @@ export { countByOrganisationUnitByValue } from './countByOrganisationUnitByValue
 export { calculatePercentagesWithinRange } from './calculatePercentagesWithinRange';
 export { mapOrgUnitIdsToGroupIds } from './mapOrgUnitIdsToGroupIds';
 export { mapOrgUnitToGroupCodes } from './mapOrgUnitToGroupCodes';
-export { formatFacilityDataForOverlay } from './formatFacilityDataForOverlay';
 export { getMatchedNumeratorsAndDenominators } from './getMatchedNumeratorsAndDenominators';
 export {
   getBasicFacilityTypeName,
   getBasicFacilityTypeNamePlural,
 } from './facilityTypeTranslation';
-export { geoJsonToFrontEndCoordinates } from './geoJsonToFrontEndCoordinates';
 export { getPacificFacilityStatuses } from './getPacificFacilityStatuses';
 export { getLevelIndex } from './getLevelIndex';
 export getChildOrganisationUnits from './getChildOrganisationUnits';

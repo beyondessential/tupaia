@@ -8,6 +8,7 @@
 import { call, put, delay, takeEvery, takeLatest, select } from 'redux-saga/effects';
 import queryString from 'query-string';
 import request from './utils/request';
+import { selectOrgUnit, cachedSelectOrgUnitChildren } from './reducers/orgUnitReducers';
 import {
   ATTEMPT_CHANGE_PASSWORD,
   ATTEMPT_LOGIN,
@@ -48,7 +49,8 @@ import {
   displayUnverified,
   fetchUserSignupError,
   fetchOrgUnitSuccess,
-  fetchOrgUnitError,
+  changeOrgUnitSuccess,
+  changeOrgUnitError,
   fetchRegionError,
   fetchDashboardSuccess,
   fetchDashboardError,
@@ -75,7 +77,7 @@ import {
   updateEnlargedDialog,
   updateEnlargedDialogError,
   FETCH_MEASURES_SUCCESS,
-  FETCH_ORG_UNIT_SUCCESS,
+  CHANGE_ORG_UNIT_SUCCESS,
   addMapRegions,
   openEmailVerifiedPage,
   fetchEmailVerifyError,
@@ -85,6 +87,7 @@ import {
   FETCH_RESEND_VERIFICATION_EMAIL,
   findUserLoginFailed,
   REQUEST_PROJECT_ACCESS,
+  FETCH_ORG_UNIT,
 } from './actions';
 import { isMobile, processMeasureInfo, formatDateForApi } from './utils';
 import { createUrlString } from './utils/historyNavigation';
@@ -411,23 +414,77 @@ function* watchFetchCountryAccessDataAndFetchItTEST() {
 /**
  * fetchOrgUnitData
  *
- * Fetch an org unit and call action on success/fail.
+ * Fetch an org unit.
  *
  */
+function requestOrgUnitData(organisationUnitCode) {
+  const requestResourceUrl = `organisationUnit?organisationUnitCode=${organisationUnitCode}&includeDescendants=${organisationUnitCode !==
+    'World'}`;
+  return call(request, requestResourceUrl);
+}
+
 function* fetchOrgUnitData(action) {
-  const { organisationUnitCode } = action.organisationUnit;
-  const requestResourceUrl = `organisationUnit?organisationUnitCode=${organisationUnitCode}`;
+  const state = yield select();
+  const orgUnit = selectOrgUnit(state, action.organisationUnit.organisationUnitCode);
+  if (orgUnit && orgUnit.isComplete) {
+    return; // If we already have the complete org unit in reduxStore, just exit early
+  }
 
   try {
-    const orgUnitData = yield call(request, requestResourceUrl, fetchOrgUnitError);
-    yield put(fetchOrgUnitSuccess(orgUnitData, action.shouldChangeMapBounds));
+    const orgUnitData = yield requestOrgUnitData(action.organisationUnit.organisationUnitCode);
+    yield put(fetchOrgUnitSuccess(orgUnitData));
   } catch (error) {
     yield put(error.errorFunction(error));
   }
 }
 
+function* fetchOrgUnitDataAndChangeOrgUnit(action) {
+  const state = yield select();
+  const orgUnit = selectOrgUnit(state, action.organisationUnit.organisationUnitCode);
+  if (orgUnit && orgUnit.isComplete) {
+    const orgUnitAndChildren = {
+      ...orgUnit,
+      parent: selectOrgUnit(state, orgUnit.parent) || {},
+      organisationUnitChildren: cachedSelectOrgUnitChildren(state, orgUnit.organisationUnitCode),
+    };
+    yield put(changeOrgUnitSuccess(orgUnitAndChildren, action.shouldChangeMapBounds));
+    return; // If we already have the org unit in reduxStore, just exit early
+  }
+
+  try {
+    const orgUnitData = yield requestOrgUnitData(action.organisationUnit.organisationUnitCode);
+    yield put(fetchOrgUnitSuccess(orgUnitData));
+    yield put(
+      changeOrgUnitSuccess(
+        normaliseDescendantOrgUnitData(orgUnitData),
+        action.shouldChangeMapBounds,
+      ),
+    );
+  } catch (error) {
+    yield put(changeOrgUnitError(error));
+  }
+}
+
+const normaliseDescendantOrgUnitData = orgUnitData => {
+  const { descendants, ...restOfOrgUnit } = orgUnitData;
+  if (!descendants) {
+    return orgUnitData;
+  }
+
+  return {
+    ...restOfOrgUnit,
+    organisationUnitChildren: descendants.filter(
+      descendant => descendant.parent === orgUnitData.organisationUnitCode,
+    ),
+  };
+};
+
+function* watchFetchOrgUnitAndFetchIt() {
+  yield takeEvery(FETCH_ORG_UNIT, fetchOrgUnitData);
+}
+
 function* watchOrgUnitChangeAndFetchIt() {
-  yield takeLatest(CHANGE_ORG_UNIT, fetchOrgUnitData);
+  yield takeLatest(CHANGE_ORG_UNIT, fetchOrgUnitDataAndChangeOrgUnit);
 }
 
 function* fetchOrgUnitRegionData(action) {
@@ -647,7 +704,7 @@ function* fetchMeasureInfo(measureId, organisationUnitCode, oldOrganisationUnitC
 
     yield put(fetchMeasureInfoSuccess(measureInfo, countryCode));
   } catch (error) {
-    console.error(error);
+    console.log(error);
     yield put(fetchMeasureInfoError(error));
   }
 }
@@ -701,8 +758,8 @@ function* fetchCurrentMeasureInfo() {
 }
 
 // Ensures current measure remains selected on new org unit fetch
-function* watchFetchOrgUnitSuccess() {
-  yield takeLatest(FETCH_ORG_UNIT_SUCCESS, fetchCurrentMeasureInfo);
+function* watchChangeOrgUnitSuccess() {
+  yield takeLatest(CHANGE_ORG_UNIT_SUCCESS, fetchCurrentMeasureInfo);
 }
 
 // Ensures current measure remains selected in the case that the new org unit
@@ -933,6 +990,7 @@ export default [
   watchAttemptUserLogout,
   watchAttemptUserSignupAndFetchIt,
   watchFetchCountryAccessDataAndFetchIt,
+  watchFetchOrgUnitAndFetchIt,
   watchOrgUnitChangeAndFetchIt,
   watchOrgUnitChangeAndFetchRegions,
   watchOrgUnitChangeAndFetchDashboard,
@@ -951,7 +1009,7 @@ export default [
   watchResendEmailVerificationAndFetchIt,
   watchSetVerifyEmailToken,
   watchFetchMeasureSuccess,
-  watchFetchOrgUnitSuccess,
+  watchChangeOrgUnitSuccess,
   refreshBrowserWhenFinishingUserSession,
   watchFetchCountryAccessDataAndFetchItTEST,
 ];

@@ -6,6 +6,9 @@
  */
 
 import { combineReducers } from 'redux';
+import { createSelector } from 'reselect';
+import createCachedSelector from 're-reselect';
+import { selectOrgUnit } from './orgUnitReducers';
 
 import {
   GO_HOME,
@@ -18,7 +21,7 @@ import {
   FETCH_MEASURE_DATA_ERROR,
   FETCH_MEASURE_DATA_SUCCESS,
   CANCEL_FETCH_MEASURE_DATA,
-  FETCH_ORG_UNIT_SUCCESS,
+  CHANGE_ORG_UNIT_SUCCESS,
   SET_MAP_IS_ANIMATING,
   OPEN_MAP_POPUP,
   CLOSE_MAP_POPUP,
@@ -28,6 +31,7 @@ import {
 } from '../actions';
 import { getMeasureFromHierarchy } from '../utils/getMeasureFromHierarchy';
 import { MARKER_TYPES } from '../containers/Map/MarkerLayer';
+import { getMeasureDisplayInfo, calculateRadiusScaleFactor } from '../utils/measures';
 
 import { initialOrgUnit } from '../defaults';
 
@@ -40,7 +44,7 @@ function position(state = { bounds: defaultBounds }, action) {
     }
 
     case CHANGE_ORG_UNIT:
-    case FETCH_ORG_UNIT_SUCCESS: {
+    case CHANGE_ORG_UNIT_SUCCESS: {
       if (action.shouldChangeMapBounds) {
         const { location } = action.organisationUnit;
         if (location) {
@@ -85,7 +89,7 @@ function innerAreas(state = [], action) {
     case CHANGE_ORG_UNIT: {
       return [];
     }
-    case FETCH_ORG_UNIT_SUCCESS: {
+    case CHANGE_ORG_UNIT_SUCCESS: {
       const { organisationUnit } = action;
       const { organisationUnitChildren } = organisationUnit;
       if (organisationUnitChildren && organisationUnitChildren.length > 0) {
@@ -217,7 +221,7 @@ function shouldSnapToPosition(state = true, action) {
       return true;
 
     case CHANGE_ORG_UNIT:
-    case FETCH_ORG_UNIT_SUCCESS:
+    case CHANGE_ORG_UNIT_SUCCESS:
       return action.shouldChangeMapBounds ? true : state;
 
     default:
@@ -279,3 +283,36 @@ export function selectMeasureName(state = {}) {
   const selectedMeasure = getMeasureFromHierarchy(measureHierarchy, selectedMeasureId);
   return selectedMeasure ? selectedMeasure.name : '';
 }
+
+const selectMeasureDataByCode = createSelector(
+  [state => state.map.measureInfo.measureData, (_, code) => code],
+  (data, code) => data.find(val => val.organisationUnitCode === code),
+);
+
+const cachedSelectMeasureWithDisplayInfo = createCachedSelector(
+  [
+    selectMeasureDataByCode,
+    state => state.map.measureInfo.measureOptions,
+    state => state.map.measureInfo.hiddenMeasures,
+    selectOrgUnit,
+  ],
+  (data, options, hiddenMeasures, orgUnit) => {
+    return {
+      ...data,
+      ...getMeasureDisplayInfo({ ...data, ...orgUnit }, options, hiddenMeasures),
+    };
+  },
+)((_, orgUnitCode) => orgUnitCode);
+
+export const selectAllMeasuresWithDisplayInfo = createSelector(
+  [state => state, state => state.map.measureInfo.measureData],
+  (state, allData = []) =>
+    allData.map(data => ({
+      ...cachedSelectMeasureWithDisplayInfo(state, data.organisationUnitCode),
+    })),
+);
+
+export const selectRadiusScaleFactor = createSelector(
+  [selectAllMeasuresWithDisplayInfo],
+  calculateRadiusScaleFactor,
+);

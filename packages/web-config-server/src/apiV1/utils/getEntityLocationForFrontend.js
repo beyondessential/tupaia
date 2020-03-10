@@ -3,7 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { translateBoundsForFrontend } from '/utils/geoJson';
+import { translateBoundsForFrontend, translatePointForFrontend } from '/utils/geoJson';
 
 export function getEntityLocationForFrontend({ point, region, bounds }) {
   const type = (() => {
@@ -14,6 +14,7 @@ export function getEntityLocationForFrontend({ point, region, bounds }) {
 
   return {
     type,
+    point: translatePointForFrontend(point),
     bounds: translateBoundsForFrontend(bounds),
   };
 }
