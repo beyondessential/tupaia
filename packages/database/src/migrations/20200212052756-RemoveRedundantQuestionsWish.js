@@ -41,20 +41,10 @@ exports.setup = function(options, seedLink) {
   seed = seedLink;
 };
 
-exports.up = async function(db) {
-  await db.runSql(`
+exports.up = function(db) {
+  return db.runSql(`
     DELETE FROM answer
       WHERE question_id IN (${questionIds});
-  `);
-
-  await db.runSql(`
-    DELETE FROM survey_screen_component
-      WHERE question_id IN (${questionIds});
-  `);
-
-  return db.runSql(`
-    DELETE FROM question
-      WHERE id IN (${questionIds});
   `);
 };
 
