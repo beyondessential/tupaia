@@ -37,7 +37,7 @@ import { SignupForm } from '../SignupForm';
 import { ChangePasswordForm } from '../ChangePasswordForm';
 import { RequestCountryAccessForm } from '../RequestCountryAccessForm';
 import UserMenu from '../UserMenu';
-import { LANDING } from '../OverlayDiv';
+import { LANDING } from '../OverlayDiv/constants';
 import { USER_BAR_STYLES, DARK_BLUE, ERROR, FORM_BLUE, WHITE } from '../../styles';
 
 const LightFormTheme = styled.div`
@@ -248,7 +248,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(UserBar);
+export default connect(mapStateToProps, mapDispatchToProps)(UserBar);

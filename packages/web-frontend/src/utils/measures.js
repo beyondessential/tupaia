@@ -5,7 +5,6 @@
  * found in the LICENSE file in the root directory of this source tree.
  */
 
-import numeral from 'numeral';
 import {
   YES_COLOR,
   NO_COLOR,
@@ -16,6 +15,7 @@ import {
 import { SPECTRUM_ICON, DEFAULT_ICON, UNKNOWN_ICON } from '../components/Marker/markerIcons';
 import { MAP_COLORS } from '../styles';
 import { formatDataValue } from './formatters';
+import { SCALE_TYPES } from '../constants';
 
 // At a few places throughout this module we're iterating over a collection
 // while modifying an object, which trips up the eslint rule that expects inline
@@ -34,13 +34,6 @@ export const MEASURE_TYPE_SHADING = 'shading';
 
 export const MEASURE_VALUE_OTHER = 'other';
 export const MEASURE_VALUE_NULL = 'null';
-
-export const SCALE_TYPES = {
-  PERFORMANCE: 'performance',
-  PERFORMANCE_DESC: 'performanceDesc',
-  POPULATION: 'population',
-  TIME: 'time',
-};
 
 export function autoAssignColors(values) {
   if (!values) return [];
@@ -319,5 +312,6 @@ export function getMeasureAsShade(organisationUnitCode, { measureData, measureOp
 // Take a measureData array where the [key]: value is a number
 // and filters NaN values (e.g. undefined).
 export function flattenNumericalMeasureData(measureData, key) {
+  // eslint-disable-next-line no-restricted-globals
   return measureData.map(v => parseInt(v[key], 10)).filter(x => !isNaN(x));
 }

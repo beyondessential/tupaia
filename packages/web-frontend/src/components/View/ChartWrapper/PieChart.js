@@ -39,6 +39,23 @@ const chartColorAtIndex = (colorArray, index) => {
 };
 
 export class PieChart extends PureComponent {
+  // Disable tapping charts to reveal legend labels on mobile as they do not fit and are awkwardly cropped
+  handleMouseEnter = isMobile()
+    ? null
+    : (object, index) => {
+        this.setState({
+          activeIndex: index,
+        });
+      };
+
+  handleMouseOut = isMobile()
+    ? null
+    : () => {
+        this.setState({
+          activeIndex: -1,
+        });
+      };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -72,11 +89,10 @@ export class PieChart extends PureComponent {
           ...VIEW_STYLES.legend,
         },
       };
-    } else {
-      return {
-        wrapperStyle: VIEW_STYLES.legend,
-      };
     }
+    return {
+      wrapperStyle: VIEW_STYLES.legend,
+    };
   }
 
   getValidData = () => {
@@ -105,23 +121,6 @@ export class PieChart extends PureComponent {
     const { presentationOptions } = this.props.viewContent;
     return presentationOptions && presentationOptions[key] && presentationOptions[key][option];
   };
-
-  // Disable tapping charts to reveal legend labels on mobile as they do not fit and are awkwardly cropped
-  handleMouseEnter = isMobile()
-    ? null
-    : (object, index) => {
-        this.setState({
-          activeIndex: index,
-        });
-      };
-
-  handleMouseOut = isMobile()
-    ? null
-    : (object, index) => {
-        this.setState({
-          activeIndex: -1,
-        });
-      };
 
   renderActiveShape = props => {
     const { valueType, labelType } = this.props.viewContent;
@@ -248,8 +247,8 @@ export class PieChart extends PureComponent {
               const fill =
                 this.getPresentationOption(entry.originalItem.name, 'color') ||
                 chartColorAtIndex(chartColors, index);
-
-              return <Cell key={`cell-${index}`} fill={fill} stroke={OFF_WHITE} />;
+              // CHECK: There isn't some hacky way the index was being used?
+              return <Cell key={`cell-${entry.dataElementCode}`} fill={fill} stroke={OFF_WHITE} />;
             })}
           </Pie>
           <Legend

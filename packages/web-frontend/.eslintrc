@@ -8,7 +8,29 @@
   "rules": {
     "react/jsx-boolean-value": ["error", "never"],
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
-    "react/jsx-wrap-multilines": ["error", { "prop": "ignore" }]
+    "react/jsx-wrap-multilines": ["error", { "prop": "ignore" }],
+    "react/prop-types": 0, // 173
+    "react/forbid-prop-types": 0, // 30
+    "react/require-default-props": 0, // 68
+    "import/no-extraneous-dependencies": ["error", {
+      // Tupaia's folder structure doesn't follow the standards here
+      // https://github.com/airbnb/javascript/blob/master/packages/eslint-config-airbnb-base/rules/imports.js#L70
+      "devDependencies": [
+        "config/**",
+        "**/test.js",
+        "**/scripts/**"
+      ],
+      "optionalDependencies": false
+    }],
+    //Below this comment are worth fixing
+    "import/no-named-as-default": 0, // Fix ready but needs checking
+    "jsx-a11y/no-static-element-interactions": 0, //10
+    "jsx-a11y/click-events-have-key-events": 0,
+
+    "react/no-array-index-key": 0,
+    "jsx-a11y/no-noninteractive-element-interactions": 0,
+    //"import/no-cycle": 0,
+    "jsx-a11y/mouse-events-have-key-events": 0
   },
   "overrides": [
     {

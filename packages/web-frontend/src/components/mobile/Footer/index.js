@@ -6,18 +6,18 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import { DARK_BLUE, WHITE } from '../../../styles';
 import appStoreButton from '../../../images/app-store-button.png';
 import playStoreButton from '../../../images/play-store-button.png';
 
+// TODO
 const Footer = () => (
   <div>
     <div style={styles.wrapper}>
       <h2 style={styles.header}>Interested in learning more?</h2>
       <ul style={styles.content}>
         <li style={styles.listItem}>
-          Learn about{' '}
+          {'Learn about '}
           <a
             href="http://info.tupaia.org/"
             rel="noopener noreferrer"
@@ -25,11 +25,11 @@ const Footer = () => (
             style={styles.link}
           >
             the project
-          </a>{' '}
-          and how Tupaia is crowd sourcing clinic data from around the world.
+          </a>
+          {' and how Tupaia is crowd sourcing clinic data from around the world.'}
         </li>
         <li style={styles.listItem}>
-          Access free{' '}
+          {'Access free '}
           <a
             href="http://info.tupaia.org/procurement/"
             rel="noopener noreferrer"
@@ -41,7 +41,7 @@ const Footer = () => (
           .
         </li>
         <li style={styles.listItem}>
-          Discover the little-known (completely fake) country called{' '}
+          {'Discover the little-known (completely fake) country called '}
           <a
             href="http://info.tupaia.org/demo-land/"
             rel="noopener noreferrer"
@@ -77,7 +77,7 @@ const Footer = () => (
     <div style={styles.wrapper}>
       <p style={styles.smallParagraph}>© 2017 Beyond Essential Systems</p>
       <p style={styles.smallParagraph}>
-        Map used on this site: ©{' '}
+        {'Map used on this site: © '}
         <a
           href="https://www.mapbox.com/about/maps/"
           style={styles.link}
@@ -85,8 +85,8 @@ const Footer = () => (
           rel="noreferrer noopener"
         >
           Mapbox
-        </a>{' '}
-        ©{' '}
+        </a>
+        {' © '}
         <a
           href="http://www.openstreetmap.org/copyright"
           style={styles.link}

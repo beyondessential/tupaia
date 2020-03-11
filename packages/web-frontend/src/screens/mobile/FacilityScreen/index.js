@@ -31,6 +31,8 @@ class FacilityScreen extends PureComponent {
     }
   }
 
+  //TODO
+  // eslint-disable-next-line class-methods-use-this
   init() {
     window.scrollTo(0, 0);
   }
@@ -78,7 +80,8 @@ class FacilityScreen extends PureComponent {
 
     return (
       <a href={getMapUrl(orgUnit)} style={styles.mapLink} target="_blank" rel="noreferrer noopener">
-        Open Map <MapOpenIcon style={styles.mapLinkIcon} />
+        Open Map
+        <MapOpenIcon style={styles.mapLinkIcon} />
       </a>
     );
   }
@@ -205,7 +208,4 @@ const mapDispatchToProps = dispatch => ({
   onChangeDashboardGroup: name => dispatch(changeDashboardGroup(name)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(FacilityScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(FacilityScreen);

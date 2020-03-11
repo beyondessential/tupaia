@@ -24,7 +24,8 @@ import { WHITE } from '../../../styles';
 import { getCurrentDashboardKey } from '../../../selectors';
 
 class HomeScreen extends PureComponent {
-  componentWillMount(props) {
+  // TODO
+  componentWillMount() {
     const { hierarchyData, getNestedOrgUnits } = this.props;
     if (!hierarchyData || !Array.isArray(hierarchyData) || hierarchyData.length < 1) {
       getNestedOrgUnits('World');
@@ -57,8 +58,8 @@ class HomeScreen extends PureComponent {
           handleFilterChange={name => onChangeDashboardGroup(name)}
         />
         <ExpandableList
-          title={'Countries'}
-          expandedByDefault={true}
+          title="Countries"
+          expandedByDefault
           items={mobileListItems.map(item => (
             <SelectListItem onSelect={onChangeOrgUnit} item={item} key={item.key} />
           ))}
@@ -118,7 +119,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(HomeScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);

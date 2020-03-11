@@ -12,3 +12,17 @@ export const ENTITY_TYPE = {
   DISASTER: 'Disaster',
   OTHER: 'Other',
 };
+
+export const SCALE_TYPES = {
+  PERFORMANCE: 'performance',
+  PERFORMANCE_DESC: 'performanceDesc',
+  POPULATION: 'population',
+  TIME: 'time',
+};
+
+export const MARKER_TYPES = {
+  DOT_MARKER: 'dot',
+  CIRCLE_MARKER: 'circle',
+  CIRCLE_HEATMAP: 'circleHeatmap',
+  SQUARE: 'square',
+};

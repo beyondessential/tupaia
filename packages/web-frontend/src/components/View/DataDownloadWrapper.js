@@ -43,6 +43,8 @@ export class DataDownloadWrapper extends PureComponent {
   getDownloadLink = () => {
     const { viewContent } = this.props;
     const selectedSurveyCodes = Object.entries(this.state.selectedSurveys)
+      // eslint-disable-next-line no-unused-vars
+      // TODO
       .filter(([surveyCode, isSelected]) => isSelected)
       .map(([surveyCode]) => surveyCode);
     return `${viewContent.downloadUrl}&surveyCodes=${selectedSurveyCodes}`;

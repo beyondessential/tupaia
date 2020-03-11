@@ -22,6 +22,8 @@ export default function register() {
       navigator.serviceWorker
         .register(swUrl)
         .then(registration => {
+          //TODO
+          // eslint-disable-next-line no-param-reassign
           registration.onupdatefound = () => {
             const installingWorker = registration.installing;
             installingWorker.onstatechange = () => {

@@ -10,6 +10,7 @@ import PropTypes from 'prop-types';
 import RaisedButton from 'material-ui/RaisedButton';
 import Markdown from 'markdown-to-jsx';
 
+// TODO
 const DescriptionOverlay = ({ header, body, color, styles, onClose }) => (
   <div style={styles.descriptionOverlay} onClick={onClose}>
     <div onClick={e => e.stopPropagation()}>
@@ -20,7 +21,7 @@ const DescriptionOverlay = ({ header, body, color, styles, onClose }) => (
       ) : null}
       {header ? <strong style={styles.descriptionOverlayHeader}>{header}</strong> : null}
       <div style={styles.descriptionOverlayBody}>
-        <Markdown children={body.replace(/\\n/g, '\n\n')} />
+        <Markdown>{body.replace(/\\n/g, '\n\n')}</Markdown>
       </div>
     </div>
     <RaisedButton

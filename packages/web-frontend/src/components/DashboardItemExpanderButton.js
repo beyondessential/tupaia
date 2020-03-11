@@ -70,7 +70,9 @@ export class DashboardItemExpanderButton extends Component {
         onMouseOut={this.mouseOut}
         onBlur={this.mouseOut}
         onClick={onEnlarge}
-        role="Button"
+        role="button"
+        // CHECK (more than 1 like this)
+        // https://www.w3schools.com/TAGs/att_button_type.asp
         tabIndex={0}
       >
         <ZoomIcon style={VIEW_STYLES.expandButtonIcon} />

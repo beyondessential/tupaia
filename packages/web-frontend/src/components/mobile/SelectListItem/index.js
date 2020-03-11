@@ -10,9 +10,11 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { darken } from 'polished';
 
+import SelectIcon from 'material-ui/svg-icons/navigation/chevron-right';
 import { delayMobileTapCallback } from '../../../utils';
 import { LIGHT_GREY, WHITE } from '../../../styles';
-import SelectIcon from 'material-ui/svg-icons/navigation/chevron-right';
+
+//TODO
 const ListItem = styled.button`
   background: ${WHITE};
   color: #000;
@@ -23,7 +25,7 @@ const ListItem = styled.button`
   padding: 10px 0;
   justify-content: space-between;
   &:active {
-    background: ${p => darken(0.2, WHITE)};
+    background: ${darken(0.2, WHITE)};
     width: 108%;
     left: -3%;
     padding-left: 3%;
@@ -60,6 +62,5 @@ SelectListItem.propTypes = {
     data: PropTypes.shape({}),
     title: PropTypes.string,
   }),
-  color: PropTypes.string,
-  background: PropTypes.string,
+  //TODO
 };

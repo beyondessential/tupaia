@@ -57,7 +57,7 @@ class ConnectedPolygon extends Component {
   }
 
   getTooltip(organisationUnitCode, area) {
-    const { measureInfo, measureName, highlightedOrganisationUnit, isChildArea } = this.props;
+    const { measureInfo, highlightedOrganisationUnit, isChildArea } = this.props;
     const highlightedCode = highlightedOrganisationUnit.organisationUnitCode;
     const getHighlight = code => {
       if (code === highlightedCode) {
@@ -195,7 +195,4 @@ const mapDispatchToProps = dispatch => ({
   highlightOrgUnit: organisationUnitCode => dispatch(highlightOrgUnit(organisationUnitCode)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(ConnectedPolygon);
+export default connect(mapStateToProps, mapDispatchToProps)(ConnectedPolygon);

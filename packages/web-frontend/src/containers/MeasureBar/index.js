@@ -27,7 +27,8 @@ import { HierarchyItem } from '../../components/HierarchyItem';
 import TupaiaIcon from '../../images/TupaiaIcon.svg';
 import { MAP_OVERLAY_SELECTOR } from '../../styles';
 
-export class MeasureBar extends Component {
+//CHECK: not exporting this won't cause any issues.
+class MeasureBar extends Component {
   constructor(props) {
     super(props);
 

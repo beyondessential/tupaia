@@ -27,8 +27,7 @@ import { LandingPage } from './components/LandingPage';
 import { RequestProjectAccess } from './components/RequestProjectAccess';
 import Disaster from './components/Disaster';
 import { getProjectByCode } from '../../projects/selectors';
-
-export const OVERLAY_PADDING = `35px ${isMobile() ? '35px' : '64px'}`;
+import { OVERLAY_PADDING, LANDING, DISASTER, REQUEST_PROJECT_ACCESS } from './constants';
 
 const styles = {
   dialogContainer: {
@@ -57,10 +56,6 @@ const Wrapper = styled.div`
   position: relative;
   overflow-x: hidden;
 `;
-
-export const LANDING = 'landing';
-export const DISASTER = 'disaster';
-export const REQUEST_PROJECT_ACCESS = 'requestProjectAccess';
 
 export class OverlayDiv extends PureComponent {
   render() {
@@ -132,7 +127,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(OverlayDiv);
+export default connect(mapStateToProps, mapDispatchToProps)(OverlayDiv);

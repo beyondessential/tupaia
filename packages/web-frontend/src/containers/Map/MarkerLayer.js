@@ -15,13 +15,6 @@ import { selectMeasureName } from '../../reducers/mapReducers';
 import { getMeasureDisplayInfo } from '../../utils';
 import { MEASURE_TYPE_SHADING } from '../../utils/measures';
 
-export const MARKER_TYPES = {
-  DOT_MARKER: 'dot',
-  CIRCLE_MARKER: 'circle',
-  CIRCLE_HEATMAP: 'circleHeatmap',
-  SQUARE: 'square',
-};
-
 const MIN_RADIUS = 1;
 const MAX_ALLOWED_RADIUS = 1000;
 
@@ -233,7 +226,4 @@ const mapDispatchToProps = dispatch => ({
   onPopupClose: orgUnitCode => dispatch(closeMapPopup(orgUnitCode)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(MarkerLayer);
+export default connect(mapStateToProps, mapDispatchToProps)(MarkerLayer);

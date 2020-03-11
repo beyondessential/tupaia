@@ -27,7 +27,7 @@ import {
   ADD_MAP_REGIONS,
 } from '../actions';
 import { getMeasureFromHierarchy } from '../utils/getMeasureFromHierarchy';
-import { MARKER_TYPES } from '../containers/Map/MarkerLayer';
+import { MARKER_TYPES } from '../constants';
 
 import { initialOrgUnit } from '../defaults';
 

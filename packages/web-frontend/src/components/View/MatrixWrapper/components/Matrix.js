@@ -64,6 +64,8 @@ export class Matrix extends PureComponent {
   componentDidUpdate(prevProps) {
     this.columnKeys = null;
     if (prevProps.numberOfColumnsPerPage !== this.props.numberOfColumnsPerPage) {
+      // TODO
+      // eslint-disable-next-line react/no-did-update-set-state
       this.setState({
         startColumn: 0,
       });
@@ -138,6 +140,8 @@ export class Matrix extends PureComponent {
     return this.columnKeys;
   }
 
+  // TODO
+  // eslint-disable-next-line class-methods-use-this
   getIsUsingDots(presentationOptions) {
     return Object.keys(presentationOptions).length > 0;
   }
@@ -162,7 +166,7 @@ export class Matrix extends PureComponent {
       currentPresentationOption: 0,
       presentationOptions: Object.keys(presentationOptions),
       rowElements: [],
-      initExporter: function(extraConfig) {
+      initExporter: extraConfig => {
         /* eslint-disable-line */ // Used by aws lambda
         if (extraConfig.search) {
           this.search(extraConfig.search);
@@ -173,10 +177,9 @@ export class Matrix extends PureComponent {
         this.changeXPage(0);
         this.openAll();
         this.rowElements = this.getOrderedRowElements();
-        this.setPrintMode(true);
         this.fitToViewport();
       },
-      moveToNextExportPage: function() {
+      moveToNextExportPage: () => {
         /* eslint-disable-line */ // Used by aws lambda, needs es5
         const totalXPages = window.tupaiaExportProps.getXPageCount();
         this.currentExportXPage++;
@@ -198,7 +201,6 @@ export class Matrix extends PureComponent {
         }
 
         if (this.currentPresentationOption < this.presentationOptions.length) {
-          this.showPresentationOption(this.presentationOptions[this.currentPresentationOption]);
           this.currentPresentationOption++;
           return true;
         }
@@ -281,10 +283,7 @@ export class Matrix extends PureComponent {
 
         this.forceUpdate();
       },
-      setPrintMode: isPrintMode => this.setState({ isPrintMode }),
-      showPresentationOption: presentationOption => {
-        this.setState({ selectedCellType: presentationOption });
-      },
+      //TODO
       openAll: () => this.setState({ areAllExpanded: true }),
       search: searchTerm => this.setState({ searchTerm }),
     };

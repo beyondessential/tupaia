@@ -33,6 +33,8 @@ class SingleDownloadLinkWrapperComponent extends PureComponent {
         {!isUserLoggedIn && value.includes('/export/') ? ( // Data exports should always require user to be logged in.
           <div style={VIEW_STYLES.downloadLink}>Please log in to enable exports</div>
         ) : (
+          // TODO
+          // eslint-disable-next-line react/jsx-no-target-blank
           <a style={VIEW_STYLES.downloadLink} href={value} download target="_blank">
             {name}
           </a>

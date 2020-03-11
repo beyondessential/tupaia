@@ -1,3 +1,4 @@
+/* eslint-disable func-names */
 /**
  * Tupaia Web
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd.
@@ -14,16 +15,13 @@ import { fetchDisastersError, setDisastersData, selectDisaster } from './actions
 import {
   SELECT_DISASTER,
   VIEW_DISASTER,
-  SET_PROJECT,
   SET_DISASTERS_DATA,
   FETCH_INITIAL_DATA,
   changeBounds,
-  changeDashboardGroup,
   setOverlayComponent,
   changeOrgUnit,
-  setMobileDashboardExpanded,
 } from '../actions';
-import { DISASTER } from '../containers/OverlayDiv';
+import { DISASTER } from '../containers/OverlayDiv/constants';
 import { formatDateForApi } from '../utils';
 
 // As a module that requires extra data for its dashboard item data fetches, the 'disaster' sagas
@@ -79,6 +77,7 @@ function* watchFetchInitialDataAndFetchDisasters() {
 }
 
 function* watchViewDisasterAndZoomToBounds() {
+  // TODO: This is a bit above my paygrade
   yield takeLatest(VIEW_DISASTER, function*(action) {
     const { disaster } = action;
     const { bounds } = disaster;

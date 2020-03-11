@@ -33,6 +33,7 @@ export class DropDownMenu extends PureComponent {
   handleOpenMenu(event) {
     this.setState({ anchorEl: event.currentTarget });
   }
+
   handleCloseMenu() {
     this.setState({ anchorEl: null });
   }

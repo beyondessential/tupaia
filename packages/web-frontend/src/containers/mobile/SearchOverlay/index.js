@@ -152,8 +152,4 @@ const mergeProps = (
   },
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-  mergeProps,
-)(SearchOverlay);
+export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(SearchOverlay);

@@ -16,10 +16,10 @@ import PropTypes from 'prop-types';
 import { isNull } from 'lodash';
 import { connect } from 'react-redux';
 import { List, ListItem } from 'material-ui/List';
-import { ControlBar } from '../../components/ControlBar';
-import { HierarchyItem } from '../../components/HierarchyItem';
 import FacilityIcon from 'material-ui/svg-icons/maps/local-hospital';
 import SearchIcon from 'material-ui/svg-icons/action/search';
+import { ControlBar } from '../../components/ControlBar';
+import { HierarchyItem } from '../../components/HierarchyItem';
 import {
   changeSearch,
   toggleSearchExpand,
@@ -80,7 +80,9 @@ export class SearchBar extends PureComponent {
     };
   }
 
+  // eslint-disable-next-line no-unused-vars
   componentWillMount(props) {
+    // TODO: use props or this.props?
     const { hierarchyData, getNestedOrgUnits } = this.props;
     if (!hierarchyData || !Array.isArray(hierarchyData) || hierarchyData.length < 1) {
       getNestedOrgUnits('World');
@@ -118,7 +120,8 @@ export class SearchBar extends PureComponent {
     if (isNull(hierarchyData))
       return <div style={styles.searchResponseText}>Loading countries...</div>;
     if (!Array.isArray(hierarchyData)) return <h2>Server error, try refresh</h2>;
-    if (hierarchyData.length < 1) return;
+    //TODO
+    if (hierarchyData.length < 1) return null;
 
     const recurseOrgUnits = (orgUnits, nestedMargin) => {
       if (!orgUnits || orgUnits.length < 1) return []; // OrgUnits with no children are our recursive base case
@@ -167,7 +170,7 @@ export class SearchBar extends PureComponent {
           hintText="Search Location"
           style={styles.controlBar}
           icon={<SearchIcon />}
-          inTopBar={true}
+          inTopBar
         >
           <div
             onMouseLeave={() => this.setState({ isSafeToCloseResults: true })}
@@ -202,7 +205,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     onSearchChange: event => dispatch(changeSearch(event.target.value)),
-    onSearchFocus: event => dispatch(toggleSearchExpand(true)),
+    onSearchFocus: () => dispatch(toggleSearchExpand(true)),
     onExpandClick: () => dispatch(toggleSearchExpand()),
     onSearchBlur: (isExpanded, isSafeToCloseResults) =>
       isExpanded && isSafeToCloseResults && dispatch(toggleSearchExpand()),
@@ -215,7 +218,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(SearchBar);
+export default connect(mapStateToProps, mapDispatchToProps)(SearchBar);

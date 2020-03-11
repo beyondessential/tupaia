@@ -29,6 +29,7 @@ import { initialOrgUnit } from '../defaults';
 const ga = window.ga || (() => {});
 
 if (!ga) {
+  // eslint-disable-next-line no-console
   console.warn('Google Analytics library not found');
 }
 
@@ -36,7 +37,7 @@ export const gaEvent = (category, action, label) => ga('send', 'event', category
 
 export const gaPageView = pagePath => ga('send', 'pageview', pagePath);
 
-export const gaMiddleware = ({ getState, dispatch }) => next => action => {
+export const gaMiddleware = () => next => action => {
   try {
     switch (action.type) {
       case ATTEMPT_LOGIN:
@@ -116,6 +117,7 @@ export const gaMiddleware = ({ getState, dispatch }) => next => action => {
     gaEvent('Error', error.message);
   } finally {
     // Continue the redux chain, the entire app will not function without returning this.
+    //TODO
     return next(action);
   }
 };

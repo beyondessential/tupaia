@@ -133,7 +133,7 @@ class RegionScreen extends PureComponent {
             items={mobileListItems.map(item => (
               <SelectListItem onSelect={onChangeOrgUnit} item={item} key={item.key} />
             ))}
-            expandedByDefault={true}
+            expandedByDefault
             title={title}
             onSelectItem={unit => onChangeOrgUnit(unit)}
             filterTitle="Measures"
@@ -259,7 +259,7 @@ const mapStateToProps = state => {
   const { currentOrganisationUnit, dashboardConfig, loadingOrganisationUnit } = state.global;
   const { measureHierarchy, currentMeasure, isExpanded } = state.measureBar;
   const { measureInfo, isMeasureLoading } = state.map;
-  const { isGroupSelectExpanded, currentDashboardKey } = state.dashboard;
+  const { isGroupSelectExpanded } = state.dashboard;
   const hasSelectedMeasureId = currentMeasure !== undefined;
 
   const mobileListItems = getListItemsFromOrganisationUnitChildren(
@@ -310,8 +310,4 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-  mergeProps,
-)(RegionScreen);
+export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(RegionScreen);

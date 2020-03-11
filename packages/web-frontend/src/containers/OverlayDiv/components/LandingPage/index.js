@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-one-expression-per-line */
 /**
  * Tupaia Web
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd.
@@ -48,7 +49,7 @@ export const LandingPage = ({ activateExploreMode, isUserLoggedIn }) => {
         <Logo src={logo} alt="Tupaia logo" />
         <TagLine>Health resource and supply chain mapping for the Asia Pacific region</TagLine>
         <ExploreModeButton onClick={activateExploreMode} variant="outlined">
-          <ExploreIcon /> I just want to explore!
+          <ExploreIcon />I just want to explore!
         </ExploreModeButton>
       </div>
       <OverlayContent isUserLoggedIn={isUserLoggedIn} />

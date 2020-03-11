@@ -68,7 +68,4 @@ const mapDispatchToProps = dispatch => ({
   setMapIsAnimating: isAnimating => dispatch(setMapIsAnimating(isAnimating)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(CustomMap);
+export default connect(mapStateToProps, mapDispatchToProps)(CustomMap);
