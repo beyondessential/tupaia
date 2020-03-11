@@ -1,12 +1,11 @@
-import { createAggregator } from '@tupaia/aggregator';
 import { convertDateRangeToPeriods } from '@tupaia/dhis-api';
 import { replaceValues } from '@tupaia/utils';
 import { DashboardReport } from '/models';
 import { getDhisApiInstance } from '/dhis';
 import { CustomError } from '@tupaia/utils';
-import { DhisTranslationHandler, isSingleValue } from './utils';
+import { isSingleValue } from './utils';
+import { DataAggregatingRouteHandler } from './DataAggregatingRouteHandler';
 import { getDataBuilder } from '/apiV1/dataBuilders/getDataBuilder';
-import { Aggregator } from '/aggregator';
 
 const viewFail = {
   type: 'View Error',
@@ -43,8 +42,8 @@ const getIsValidDate = dateString => !Number.isNaN(Date.parse(dateString));
 
 /* View implementation now delegates data builder to corresponding view data builder
  */
-export default class extends DhisTranslationHandler {
-  buildData = async req => {
+export default class extends DataAggregatingRouteHandler {
+  buildResponse = async req => {
     const { startDate, endDate, ...restOfQuery } = req.query;
     if (getIsValidDate(startDate)) this.startDate = startDate;
     if (getIsValidDate(endDate)) this.endDate = endDate;
@@ -85,7 +84,7 @@ export default class extends DhisTranslationHandler {
       getDhisApiInstance({ entityCode: this.entity.code, isDataRegional }),
     );
 
-    return dataBuilder(this, createAggregator(Aggregator), ...dhisApiInstances);
+    return dataBuilder(this, this.aggregator, ...dhisApiInstances);
   }
 
   translateViewJson(viewJson) {

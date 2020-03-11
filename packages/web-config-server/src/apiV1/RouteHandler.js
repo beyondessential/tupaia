@@ -1,14 +1,14 @@
 import { respond } from '@tupaia/utils';
 import { getDhisApiInstance } from '/dhis';
-import { PermissionsChecker } from './PermissionsChecker';
+import { PermissionsChecker } from './utils/PermissionsChecker';
 import { Entity } from '/models';
 
 /**
- * Interface class for handling in-out translations..
- * buildData must be implemented
+ * Interface class for handling permission checked endpoints
+ * buildResponse must be implemented
  */
-export class DhisTranslationHandler {
-  async execute(req, res) {
+export class RouteHandler {
+  async handleRequest(req, res) {
     // Fetch permissions
     const regionalDhisApi = getDhisApiInstance();
     const { organisationUnitCode } = req.query;
@@ -21,7 +21,7 @@ export class DhisTranslationHandler {
       this.userLevel = userLevel;
       this.overlays = overlays;
     }
-    const builtData = await this.buildData(req);
-    respond(res, builtData);
+    const response = await this.buildResponse(req);
+    respond(res, response);
   }
 }

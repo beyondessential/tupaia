@@ -1,11 +1,8 @@
-import { keyBy } from 'lodash.keyby';
-
-import { createAggregator } from '@tupaia/aggregator';
 import { CustomError } from '@tupaia/utils';
-import { Aggregator } from '/aggregator';
 import { getMeasureBuilder } from '/apiV1/measureBuilders/getMeasureBuilder';
 import { getDhisApiInstance } from '/dhis';
-import { DhisTranslationHandler, getDateRange } from './utils';
+import { getDateRange } from './utils';
+import { DataAggregatingRouteHandler } from './DataAggregatingRouteHandler';
 import { DATA_SOURCE_TYPES } from './dataBuilders/dataSourceTypes';
 
 // NOTE: does not allow for actual number value measure, will be added when
@@ -84,13 +81,8 @@ const createDataServices = mapOverlay => {
   return [{ isDataRegional }];
 };
 
-export default class extends DhisTranslationHandler {
-  constructor(aggregator) {
-    super();
-    this.aggregator = aggregator;
-  }
-
-  buildData = async req => {
+export default class extends DataAggregatingRouteHandler {
+  buildResponse = async req => {
     const { entity, overlays } = this;
     const { code } = entity;
     const { query } = req;
