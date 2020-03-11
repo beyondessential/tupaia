@@ -18,7 +18,6 @@ import { connect } from 'react-redux';
 import StaticMap from '../../components/StaticMap';
 import shallowEqual from 'shallowequal';
 import Dialog from '@material-ui/core/Dialog';
-import { PrimaryButton } from '../../components/Buttons';
 
 import { initialOrgUnit } from '../../defaults';
 import { DASHBOARD_STYLES, DASHBOARD_META_MARGIN } from '../../styles';
