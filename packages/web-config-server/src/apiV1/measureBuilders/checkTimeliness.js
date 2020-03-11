@@ -1,16 +1,8 @@
-import keyBy from 'lodash.keyby';
-
-import { Entity } from '/models/Entity';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { getDateRange } from '/apiV1/utils';
 
 class CheckTimelinessMeasureBuilder extends DataBuilder {
   async build() {
-    const facilitiesByCode = await this.getFacilityDataByCode();
-    return Object.values(facilitiesByCode);
-  }
-
-  async getFacilityDataByCode() {
     const { periodGranularity } = this.config;
     const {
       dataElementCode,
@@ -20,13 +12,6 @@ class CheckTimelinessMeasureBuilder extends DataBuilder {
     } = this.query;
     const { startDate, endDate } = getDateRange(periodGranularity, passedStartDate, passedEndDate);
 
-    // create index of all facilities
-    const facilityCodes = (await Entity.getFacilitiesOfOrgUnit(organisationUnitGroupCode)).map(
-      facility => ({
-        organisationUnitCode: facility.code,
-      }),
-    );
-    const facilityData = keyBy(facilityCodes, 'organisationUnitCode');
     const dhisParameters = {
       dataElementGroupCode: dataElementCode,
       orgUnitIdScheme: 'code',
@@ -43,8 +28,6 @@ class CheckTimelinessMeasureBuilder extends DataBuilder {
       organisationUnitCode: row.organisationUnit,
       [dataElementCode]: row.value,
     }));
-
-    return facilityData;
   }
 }
 

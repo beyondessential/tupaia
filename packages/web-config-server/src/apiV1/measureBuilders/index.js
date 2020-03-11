@@ -11,7 +11,7 @@ import {
   mostRecentValueFromChildren,
   getLevel as mostRecentValueFromChildrenGetLevel,
 } from './mostRecentValueFromChildren';
-import { sumLatestPerOrgUnit } from './sumPerOrgUnit';
+import { sumLatestPerOrgUnit, getLevel as sumLatestPerOrgUnitGetLevel } from './sumPerOrgUnit';
 import { valueForOrgGroup, getLevel as valueForOrgGroupGetLevel } from './valueForOrgGroup';
 
 export const measureBuilders = {
@@ -28,5 +28,6 @@ export const getLevels = {
   composePercentagePerOrgUnit: composePercentagePerOrgUnitGetLevel,
   countEventsPerOrgUnit: countEventsPerOrgUnitGetLevel,
   mostRecentValueFromChildren: mostRecentValueFromChildrenGetLevel,
+  sumLatestPerOrgUnit: sumLatestPerOrgUnitGetLevel,
   valueForOrgGroup: valueForOrgGroupGetLevel,
 };

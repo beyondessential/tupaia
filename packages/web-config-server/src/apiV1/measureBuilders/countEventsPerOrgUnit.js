@@ -29,4 +29,4 @@ export const countEventsPerOrgUnit = async (aggregator, dhisApi, query, measureB
   return builder.build();
 };
 
-export const getLevel = measureBuilderConfig => measureBuilderConfig.dataSourceEntityType;
+export { getLevel } from './DataPerOrgUnitBuilder';
