@@ -18,6 +18,7 @@ import { connect } from 'react-redux';
 import StaticMap from '../../components/StaticMap';
 import shallowEqual from 'shallowequal';
 import Dialog from '@material-ui/core/Dialog';
+import { PrimaryButton } from '../../components/Buttons';
 
 import { initialOrgUnit } from '../../defaults';
 import { DASHBOARD_STYLES, DASHBOARD_META_MARGIN } from '../../styles';
@@ -216,14 +217,6 @@ export class Dashboard extends Component {
     );
   }
 
-  renderBreadcrumb() {
-    return (
-      <p>
-        <small>&nbsp;World</small>
-      </p>
-    );
-  }
-
   renderHeader() {
     const { currentOrganisationUnit, project } = this.props;
 
@@ -235,7 +228,6 @@ export class Dashboard extends Component {
     return (
       <div style={DASHBOARD_STYLES.meta}>
         {this.renderMetaMedia()}
-        {this.renderBreadcrumb()}
         <h2 style={DASHBOARD_STYLES.title}>{header}</h2>
       </div>
     );

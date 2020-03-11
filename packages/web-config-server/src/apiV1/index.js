@@ -29,12 +29,10 @@ import { disasters } from './disasters';
 import { getOrganisationUnitHandler } from './organisationUnit';
 import { getRegions } from './regions';
 import { getProjects } from './projects';
-import { getBreadcrumbs } from './breadcrumbs';
 
 export const getRoutesForApiV1 = () => {
   const api = Router();
   // mount the routes
-  api.get('/breadcrumblist', catchAsyncErrors(getBreadcrumbs()));
   api.get('/getUser', catchAsyncErrors(getUser()));
   api.post('/login', catchAsyncErrors(appLogin()));
   api.post('/login/oneTimeLogin', catchAsyncErrors(appOneTimeLogin()));

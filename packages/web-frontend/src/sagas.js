@@ -54,7 +54,6 @@ import {
   fetchDashboardError,
   fetchDashboardItemDataSuccess,
   fetchDashboardItemDataError,
-  displayBreadCrumbs,
   fetchSearchSuccess,
   fetchSearchError,
   fetchHierarchyNestedItems,
@@ -446,30 +445,6 @@ function* fetchOrgUnitRegionData(action) {
 
 function* watchOrgUnitChangeAndFetchRegions() {
   if (!isMobile()) yield takeLatest(CHANGE_ORG_UNIT, fetchOrgUnitRegionData);
-}
-
-function* fetchBreadCrumb(action) {
-  const project = action.organisationUnit ? true : false;
-  const code = action.organisationUnit
-    ? action.organisationUnit.organisationUnitCode
-    : action.project.code;
-  const requestResourceUrl = `regions/${code}`;
-
-  try {
-    const response = yield call(request, requestResourceUrl);
-    yield put(displayBreadCrumbs(response.crumbs));
-    console.log(code);
-  } catch (error) {
-    yield put(error.errorFunction(error));
-  }
-}
-
-function* watchOrgUnitChangeAndBreadCrumb() {
-  if (!isMobile()) yield takeLatest(CHANGE_ORG_UNIT, fetchBreadCrumb);
-}
-
-function* watchProjectChangeAndBreadCrumb() {
-  if (!isMobile()) yield takeLatest(SELECT_PROJECT, fetchBreadCrumb);
 }
 
 /**
@@ -980,6 +955,4 @@ export default [
   watchFetchOrgUnitSuccess,
   refreshBrowserWhenFinishingUserSession,
   watchFetchCountryAccessDataAndFetchItTEST,
-  watchOrgUnitChangeAndBreadCrumb,
-  watchProjectChangeAndBreadCrumb,
 ];

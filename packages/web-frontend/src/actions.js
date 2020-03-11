@@ -1240,10 +1240,3 @@ export function setExploreMode() {
     project: 'explore',
   };
 }
-
-export function displayBreadCrumbs(display) {
-  return {
-    type: DISPLAY_BREAD_CRUMBS,
-    display,
-  };
-}
