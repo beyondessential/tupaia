@@ -14,7 +14,7 @@
     "start-verbose": "LOG_LEVEL=debug npm run start-dev",
     "prestart": "npm run -s build",
     "test": "mocha",
-    "test-coverage": "nyc mocha",
+    "test-coverage": "cross-env NODE_ENV=test nyc mocha",
     "validate": "babel-node scripts/validate/index.js"
   },
   "repository": {
@@ -84,6 +84,7 @@
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "chai-like": "^1.1.1",
+    "cross-env": "^7.0.1",
     "csvtojson": "^1.1.5",
     "eslint-config-prettier": "^4.3.0",
     "eslint-import-resolver-babel-module": "^4.0.0",

@@ -11,7 +11,7 @@ import { fetchComposedData } from '/apiV1/measureBuilders/helpers';
 /**
  * Configuration schema
  * @typedef {Object} composePercentagePerOrgUnitConfig
- * @property {{ numerator: DataBuilder, denominator: DataBuilder}} dataBuilders
+ * @property {{ numerator, denominator}} measureBuilders
  *
  * Example
  * ```js

@@ -15,7 +15,7 @@ export class DataElementMapper {
   }
 
   /**
-   * @param {Object<string, DataSource>} dataSources
+   * @param {Object<string, Object>} dataSources
    * @returns {Object<string, string[]>} A map of data source keys to data element codes
    */
   async getMapFromDataSources(dataSources) {

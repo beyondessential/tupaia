@@ -1,9 +1,8 @@
 {
   "all": true,
   "extension": [".js"],
-  "exclude": ["src/tests/**"],
+  "exclude": ["src/database/migrations/**", "src/tests/**"],
   "include": ["src/**"],
   "instrument": false,
-  "reporter": ["lcov", "text"],
   "sourceMap": false
 }

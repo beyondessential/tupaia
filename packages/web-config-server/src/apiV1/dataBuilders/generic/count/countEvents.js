@@ -4,14 +4,14 @@
  */
 
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
+import { countEventsThatSatisfyConditions, groupEvents } from '/apiV1/dataBuilders/helpers';
 import { getSortByKey } from '@tupaia/utils/dist/object';
-import { groupEvents } from '/apiV1/dataBuilders/helpers/groupEvents';
 
 /**
  * Configuration schema
  * @typedef {Object} CountEventsConfig
  * @property {string} programCode
- * @property {Object<string, DataValueCondition>} [dataValues]
+ * @property {Object<string, (string|object)>} [dataValues]
  * @property {string} [groupBy]
  *
  * Example
@@ -25,9 +25,6 @@ import { groupEvents } from '/apiV1/dataBuilders/helpers/groupEvents';
  */
 
 export class CountEventsBuilder extends DataBuilder {
-  /**
-   * @returns {DataValuesOutput}
-   */
   async build() {
     const events = await this.fetchEvents({ dataValueFormat: 'object' });
     const data = await this.buildData(events);
@@ -54,7 +51,7 @@ export class CountEventsBuilder extends DataBuilder {
 
   buildDataForGroup(events, name = 'countEvents') {
     const { dataValues } = this.config;
-    const value = this.countEventsThatSatisfyConditions(events, { dataValues });
+    const value = countEventsThatSatisfyConditions(events, { dataValues });
 
     return [{ name, value }];
   }

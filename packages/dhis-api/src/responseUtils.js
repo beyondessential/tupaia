@@ -41,20 +41,12 @@ const getZeroCounts = () => ({
   deleted: 0,
 });
 
-/**
- * @param {DhisResponse} response
- * @returns {DhisResponseDetails}
- */
 const getResponseDetails = response => {
   // Sometimes DHIS returns the response details nested in the original response,
   // while other times the response itself contains the details
   return response.response || response;
 };
 
-/**
- * @param {boolean} isDelete
- * @returns {Diagnostics}
- */
 const getDefaultDiagnostics = isDelete => {
   const counts = getZeroCounts();
   if (isDelete) {
@@ -66,10 +58,6 @@ const getDefaultDiagnostics = isDelete => {
   return { counts, errors: [], wasSuccessful: true };
 };
 
-/**
- * @param {ImportSummaryResponseDetails} responseDetails
- * @returns {Diagnostics}
- */
 const getImportSummaryDiagnostics = responseDetails => {
   const { importCount: counts, errors: generalErrors = [], conflicts = [] } = responseDetails;
   const conflictErrors = conflicts.map(conflictToErrorString);
@@ -82,10 +70,6 @@ const getImportSummaryDiagnostics = responseDetails => {
   };
 };
 
-/**
- * @param {ImportSummariesResponseDetails} responseDetails
- * @returns {Diagnostics}
- */
 const getImportSummariesDiagnostics = responseDetails => {
   const { imported, updated, deleted, ignored, importSummaries = [] } = responseDetails;
   const counts = { imported, updated, deleted, ignored };
@@ -106,11 +90,6 @@ const getImportSummariesDiagnostics = responseDetails => {
   return { counts, errors, references, wasSuccessful: errors.length === 0 && ignored === 0 };
 };
 
-/**
- * @param {ObjectReportResponse} response
- * @param {boolean} isDelete
- * @returns {Diagnostics}
- */
 const getObjectReportDiagnostics = (response, isDelete) => {
   const counts = getZeroCounts();
   if (response.httpStatus === 'Created') {
@@ -124,10 +103,6 @@ const getObjectReportDiagnostics = (response, isDelete) => {
   return { counts, errors: [], wasSuccessful: true };
 };
 
-/**
- * @param {{ errors: string[] }} response
- * @returns {Diagnostics}
- */
 const getDeleteDataValueDiagnostics = ({ errors = [] }) => {
   const counts = getZeroCounts();
   const wasSuccessful = errors.length === 0;
@@ -138,11 +113,6 @@ const getDeleteDataValueDiagnostics = ({ errors = [] }) => {
   return { counts, errors, wasSuccessful };
 };
 
-/**
- * @param {DhisResponse} response
- * @param {string} isDelete   True if this is a delete, false if it's an update
- * @returns {Diagnostics}
- */
 export const getDiagnosticsFromResponse = (response, isDelete) => {
   const responseDetails = getResponseDetails(response);
   const { responseType } = responseDetails;
@@ -173,10 +143,6 @@ export function combineDiagnostics(primaryDiagnostics, ...additionalDiagnostics)
   };
 }
 
-/**
- * @param {DhisResponse} response
- * @returns {boolean}
- */
 export const checkIsImportResponse = response => {
   const responseDetails = getResponseDetails(response);
   return Object.values(IMPORT_SUMMARY_RESPONSE_TYPES).includes(responseDetails.responseType);

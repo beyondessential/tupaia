@@ -260,29 +260,16 @@ export class DhisApi {
     return events;
   }
 
-  /**
-   * @param {EventData[]} events
-   * @returns {Promise<string>}
-   */
   async postEvents(events) {
     const response = await this.postData(EVENT, { events });
     return getDiagnosticsFromResponse(response);
   }
 
-  /**
-   * @param {string} eventId
-   * @param {EventData} event
-   * @returns {Promise<string>}
-   */
   async updateEvent(eventId, event) {
     const response = await this.put(`events/${eventId}`, event);
     return getDiagnosticsFromResponse(response);
   }
 
-  /**
-   * @param {Event[]} events
-   * @returns {Promise<{ updated: number, errors: string[] }>}
-   */
   async updateEvents(events) {
     const errors = [];
     let totalUpdatedCount = 0;
