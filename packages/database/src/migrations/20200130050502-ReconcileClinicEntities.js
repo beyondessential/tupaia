@@ -93,7 +93,6 @@ exports.up = async function up(db) {
       if (parentResults.rowsCount > 0) return parentResults.rows[0].id;
       const country = await db.runSql(`
         SELECT id FROM entity WHERE code = '${parentCode.split('_')[0]}'`);
-      console.log({ countryId: country.rows[0].id, countryCode: parentCode.split('_')[0] });
       return country.rows[0].id;
     };
     if (hierarchyBreadCrumbs.length === 2) {
@@ -104,7 +103,6 @@ exports.up = async function up(db) {
       parentId = await getParentId(parentCode, newDistricts);
     }
     const { region: regionGeometry } = getDHISData(code, districtDHIS2Data) || {};
-    console.log(regionGeometry);
     return `
     INSERT INTO "public"."entity"(
       "id",
@@ -158,13 +156,21 @@ exports.up = async function up(db) {
   const missingClinics = missingClinicsQuery.rows;
 
   const newClinic = async clinic => {
-    console.log({ clinic });
     const { code, parent_name, name } = clinic;
     const hierarchyBreadCrumbs = code.split('_');
     const countryCode = hierarchyBreadCrumbs[0];
     let parentId;
     if (parent_name) {
-      parentId = (newDistricts.find(dist => dist.name === parent_name) || {}).id;
+      // Cambodia doesn't follow normal naming conventions and sometimes
+      // adds ` Hospital` or ` Municipality ` to the region
+      parentId = (
+        newDistricts.find(
+          dist =>
+            dist.name === parent_name ||
+            `${dist.name} Hospital` === parent_name ||
+            `${dist.name} Municipality `,
+        ) || {}
+      ).id;
     }
     if (!parentId) {
       const parentRows = await db.runSql(`

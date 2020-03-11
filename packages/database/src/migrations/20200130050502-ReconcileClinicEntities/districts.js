@@ -4,11 +4,20 @@ import { generateId } from '../../utilities/generateId';
   */
 export const newDistricts = [
   { name: 'Kampong Cham', countryCode: 'KH', id: generateId(), code: 'KH_KAMPONG' },
-  { name: 'Dang Koa', countryCode: 'KH', id: generateId(), code: 'KH_Dang Kao Hospital' },
-  { name: 'Bassak', countryCode: 'KH', id: generateId(), code: 'KH_Mean Chey Hospital' },
+  { name: 'Mekong', countryCode: 'KH', id: generateId(), code: 'KH_Samdech Ov' },
+  { name: 'Dang Koa', countryCode: 'KH', id: generateId(), code: 'KH_Dang Kao' },
+  { name: 'Bassak', countryCode: 'KH', id: generateId(), code: 'KH_Mean Chey' },
   { name: 'Stueng Trang', countryCode: 'KH', id: generateId(), code: 'KH_Hun Sen Stung Trang' },
-  { name: 'Sen Sok', countryCode: 'KH', id: generateId(), code: 'KH_Sen Sok Hospital' },
+  { name: 'Batheay', countryCode: 'KH', id: generateId(), code: 'KH_Batheay' },
+  { name: 'Sen Sok', countryCode: 'KH', id: generateId(), code: 'KH_Sen Sok' },
   { name: 'Chamkar Leu', countryCode: 'KH', id: generateId(), code: 'KH_Chamkar Leu' },
+  { name: 'Choeung Prey', countryCode: 'KH', id: generateId(), code: 'KH_Choeung Prey' },
+  { name: 'Prey Chhor', countryCode: 'KH', id: generateId(), code: 'KH_Prey Chhor' },
+  { name: 'Por Senchey', countryCode: 'KH', id: generateId(), code: 'KH_Pochentong' },
+  { name: 'Preaek Phnov', countryCode: 'KH', id: generateId(), code: 'KH_Prek Pnov' },
+  { name: 'Chaktomouk', countryCode: 'KH', id: generateId(), code: 'KH_Chamkar Morn' },
+  { name: 'Srey Santhor', countryCode: 'KH', id: generateId(), code: 'KH_Srey Santhor' },
+  { name: 'Srey Santhor', countryCode: 'KH', id: generateId(), code: 'KH_Srey Santhor' },
   {
     name: 'Municipal Hospital_PH',
     countryCode: 'KH',
