@@ -60,3 +60,6 @@ export const composePercentagePerOrgUnit = async (aggregator, dhisApi, query, co
 
   return Object.values(fractionsByOrgUnit);
 };
+
+export const getLevel = measureBuilderConfig =>
+  measureBuilderConfig.measureBuilders.numerator.measureBuilderConfig.dataSourceEntityType;

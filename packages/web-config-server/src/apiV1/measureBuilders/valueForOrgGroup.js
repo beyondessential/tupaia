@@ -41,14 +41,10 @@ class ValueForOrgGroupMeasureBuilder extends DataBuilder {
       organisationUnitCode: organisationUnitGroupCode,
     });
     // annotate each facility with the corresponding data from dhis
-    results.forEach(row => {
-      const data = facilityData[row.organisationUnit];
-      if (data) {
-        data[dataElementCode] = row.value === undefined ? '' : row.value.toString();
-      }
-    });
-
-    return facilityData;
+    return results.map(row => ({
+      organisationUnitCode: row.organisationUnit,
+      [dataElementCode]: row.value,
+    }));
   }
 }
 
@@ -63,3 +59,6 @@ export const valueForOrgGroup = async (aggregator, dhisApi, query, measureBuilde
 
   return responseObject;
 };
+
+export const getLevel = measureBuilderConfig =>
+  measureBuilderConfig.level || measureBuilderConfig.organisationLevel;

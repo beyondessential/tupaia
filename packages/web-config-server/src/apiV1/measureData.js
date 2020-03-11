@@ -1,11 +1,7 @@
-import { keyBy } from 'lodash.keyby';
-
-import { createAggregator } from '@tupaia/aggregator';
 import { CustomError } from '@tupaia/utils';
-import { Aggregator } from '/aggregator';
-import { getMeasureBuilder } from '/apiV1/measureBuilders/getMeasureBuilder';
+import { getMeasureBuilder, getLevel } from '/apiV1/measureBuilders/getMeasureBuilder';
 import { getDhisApiInstance } from '/dhis';
-import { DhisTranslationHandler, getDateRange } from './utils';
+import { DhisTranslationHandler, getDateRange, getOrganisationUnitTypeForFrontend } from './utils';
 import { DATA_SOURCE_TYPES } from './dataBuilders/dataSourceTypes';
 
 // NOTE: does not allow for actual number value measure, will be added when
@@ -148,6 +144,10 @@ export default class extends DhisTranslationHandler {
 
     return {
       measureId: overlays.map(o => o.id).join(','),
+      measureLevel: overlays
+        .map(o => getLevel(o.measureBuilder, o.measureBuilderConfig))
+        .map(getOrganisationUnitTypeForFrontend)
+        .join(','),
       measureOptions,
       measureData,
     };

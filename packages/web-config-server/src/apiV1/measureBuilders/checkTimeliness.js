@@ -39,12 +39,10 @@ class CheckTimelinessMeasureBuilder extends DataBuilder {
     const results = await this.dhisApi.getDataValuesInSets(dhisParameters, query);
 
     // annotate each facility with the corresponding data from dhis
-    results.forEach(row => {
-      const data = facilityData[row.organisationUnit];
-      if (data) {
-        data[dataElementCode] = row.value === undefined ? '' : row.value.toString();
-      }
-    });
+    return results.map(row => ({
+      organisationUnitCode: row.organisationUnit,
+      [dataElementCode]: row.value,
+    }));
 
     return facilityData;
   }
@@ -67,3 +65,5 @@ export const checkTimeliness = async (aggregator, dhisApi, query, measureBuilder
 
   return responseObject;
 };
+
+export const getLevel = measureBuilderConfig => measureBuilderConfig.level;
