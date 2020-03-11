@@ -107,10 +107,10 @@ export class DhisService extends Service {
   }
 
   async deleteAggregateData(api, dataValue, dataSource) {
-    const translatedDataValue = await this.translator.translateOutboundDataValue(
+    const [translatedDataValue] = await this.translator.translateOutboundDataValues(
       api,
-      dataValue,
-      dataSource,
+      [dataValue],
+      [dataSource],
     );
     return api.deleteDataValue(translatedDataValue);
   }
@@ -268,42 +268,9 @@ export class DhisService extends Service {
   }
 
   async pullDataElementMetadata(api, dataSources, options) {
-    const { shouldIncludeOptions } = options;
     const dataElementCodes = dataSources.map(({ dataElementCode }) => dataElementCode);
-    const dataElements = await this.fetchDataElements(api, dataElementCodes, shouldIncludeOptions);
-    const translatedDataElements = this.translator.translateInboundDataElements(
-      dataElements,
-      dataSources,
-    );
-
-    return Promise.all(
-      translatedDataElements.map(dataElement =>
-        this.addOptionsToDataElementIfTheyExist(api, dataElement),
-      ),
-    );
+    const { includeOptions } = options;
+    const dataElements = await api.fetchDataElements(dataElementCodes, { includeOptions });
+    return this.translator.translateInboundDataElements(dataElements, dataSources);
   }
-
-  fetchDataElements = async (api, dataElementCodes, shouldIncludeOptions) => {
-    const fields = ['id', 'code', 'name'];
-    if (shouldIncludeOptions) {
-      fields.push('optionSet');
-    }
-    const dataElements = await api.getRecords({
-      type: api.getResourceTypes().DATA_ELEMENT,
-      codes: dataElementCodes,
-      fields,
-    });
-
-    return dataElements;
-  };
-
-  addOptionsToDataElementIfTheyExist = async (api, dataElement) => {
-    const { code, optionSet, ...restOfDataElement } = dataElement;
-    const newDataElement = { code, ...restOfDataElement };
-    if (optionSet && optionSet.id) {
-      newDataElement.options = await api.getOptionSetOptions({ id: optionSet.id });
-    }
-
-    return newDataElement;
-  };
 }

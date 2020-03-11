@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { formatDateForDHIS2 } from '../../../../dhis/pushers/data/formatDateForDHIS2';
+import { formatDateForDHIS2 } from '../../../services/dhis/formatDateForDHIS2';
 
 describe('formatDateForDHIS2()', () => {
   it('should format the date without converting it to a different timezone', () => {
