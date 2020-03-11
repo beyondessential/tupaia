@@ -4,12 +4,12 @@
  */
 
 import { Entity, ORG_UNIT_ENTITY_TYPES } from '/models/Entity';
-import { DhisTranslationHandler } from './utils';
+import { RouteHandler } from './RouteHandler';
 import { getEntityLocationForFrontend } from './utils/getEntityLocationForFrontend';
 
 const DEFAULT_LIMIT = 20;
 
-export default class extends DhisTranslationHandler {
+export default class extends RouteHandler {
   getNextResults = async (filter, limit, pageNumber = 0) => {
     const sort = ['name'];
     return Entity.find(filter, {}, { sort, limit, offset: pageNumber * limit });
@@ -87,7 +87,7 @@ export default class extends DhisTranslationHandler {
     );
   };
 
-  buildData = async req => {
+  buildResponse = async req => {
     this.req = req;
     const { limit = DEFAULT_LIMIT, criteria: searchString } = req.query;
     const results = await this.getResults(searchString, limit);

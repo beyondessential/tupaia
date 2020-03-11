@@ -1,10 +1,10 @@
 import { MapOverlay } from '/models';
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
-import { DhisTranslationHandler } from './utils';
+import { RouteHandler } from './RouteHandler';
 const { AND, RAW } = QUERY_CONJUNCTIONS;
 
-export default class extends DhisTranslationHandler {
-  buildData = async req => {
+export default class extends RouteHandler {
+  buildResponse = async req => {
     const { entity } = this;
     const { code: entityCode, name: entityName } = entity;
     const userGroups = await req.getUserGroups(entityCode);
