@@ -17,7 +17,6 @@ export const newDistricts = [
   { name: 'Preaek Phnov', countryCode: 'KH', id: generateId(), code: 'KH_Prek Pnov' },
   { name: 'Chaktomouk', countryCode: 'KH', id: generateId(), code: 'KH_Chamkar Morn' },
   { name: 'Srey Santhor', countryCode: 'KH', id: generateId(), code: 'KH_Srey Santhor' },
-  { name: 'Srey Santhor', countryCode: 'KH', id: generateId(), code: 'KH_Srey Santhor' },
   {
     name: 'Municipal Hospital_PH',
     countryCode: 'KH',
