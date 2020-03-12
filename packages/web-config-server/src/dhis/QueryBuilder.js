@@ -18,8 +18,9 @@ export class QueryBuilder {
   }
 
   // Ensure the standard dimensions of period, start/end date, and organisation unit are set up
-  makeDimensionReplacements() {
+  build() {
     this.makePeriodReplacements();
+    this.makeEventReplacements();
     this.query.organisationUnitCode = this.getQueryParameter('organisationUnitCode');
     return this.query;
   }
