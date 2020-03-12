@@ -44,7 +44,7 @@ export class DataPerOrgUnitBuilder extends DataBuilder {
     }
     if (typeof builder.buildData !== 'function') {
       throw new Error(
-        'The base builder for a period builder must implement the "buildData" method',
+        'The base builder for an org unit builder must implement the "buildData" method',
       );
     }
 
