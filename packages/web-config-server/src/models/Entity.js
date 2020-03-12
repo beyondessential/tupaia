@@ -9,7 +9,9 @@ import groupBy from 'lodash.groupby';
 import { TYPES } from '@tupaia/database';
 import { reduceToDictionary } from '@tupaia/utils';
 import { BaseModel } from './BaseModel';
+import { EntityRelation } from './EntityRelation';
 
+// entity types
 const FACILITY = 'facility';
 const REGION = 'region';
 const COUNTRY = 'country';
@@ -17,6 +19,7 @@ const WORLD = 'world';
 const CASE = 'case';
 const DISASTER = 'disaster';
 const VILLAGE = 'village';
+const PROJECT = 'project';
 
 export const ENTITY_TYPES = {
   FACILITY,
@@ -26,6 +29,7 @@ export const ENTITY_TYPES = {
   CASE,
   DISASTER,
   VILLAGE,
+  PROJECT,
 };
 
 export const ORG_UNIT_ENTITY_TYPES = {
@@ -36,6 +40,10 @@ export const ORG_UNIT_ENTITY_TYPES = {
 };
 
 const ORG_UNIT_TYPE_LIST = Object.values(ORG_UNIT_ENTITY_TYPES);
+
+const ENTITY_TYPE_TO_HIERARCHY = {
+  [PROJECT]: 'project',
+};
 
 const constructTypesCriteria = (types, prefix) =>
   types.length > 0 ? `${prefix} type IN (${types.map(() => '?').join(',')})` : '';
@@ -122,7 +130,7 @@ export class Entity extends BaseModel {
     return ancestors.length > 0 ? ancestors[0] : null;
   }
 
-  static async getAllDescendants(id, types = []) {
+  static async getCanonicalDescendants(id, types = []) {
     return Entity.database.executeSql(
       `
       WITH RECURSIVE descendants AS (
@@ -141,6 +149,55 @@ export class Entity extends BaseModel {
         ORDER BY generation ASC;
     `,
       [id, ...types],
+    );
+  }
+
+  static async getNextGeneration(parentIds, hierarchyName) {
+    // get any matching alternative hierarchy relationships leading out of these parents
+    const alternativeHierarchyLinks = await EntityRelation.find({
+      parent_id: parentIds,
+      hierarchy: hierarchyName,
+    });
+    const childIds = alternativeHierarchyLinks.map(l => l.child_id);
+
+    // if no alternative hierarchy links for this generation, follow the canonical relationships
+    if (childIds.length === 0) {
+      return Entity.getEntities(`parentId IN (${parentIds.map(() => '?').join(',')})`, parentIds);
+    }
+
+    return Entity.getEntities(`id IN (${childIds.map(() => '?').join(',')})`, childIds);
+  }
+
+  /**
+   * Recursively traverse the alternative hierarchy that begins with the specified parents.
+   * At each generation, choose children via 'entity_relation' if any exist, or the canonical
+   * entity.parent_id if none do
+   * Assumptions:
+   *  - All entities of a given type exist at the same level down the hierarchy, so if we see any of
+   *    the given type, we don't need to search any deeper for others
+   * @param {string[]} parentIds     The ids of the entities to start at
+   * @param {string} hierarchyName   The specific hierarchy to follow through entity_relation
+   * @param {string} entityType      The type of descendant entity required
+   */
+  static async getAlternativeHierarchyDescendants(parentIds, hierarchyName, entityType) {
+    const children = await Entity.getNextGeneration(parentIds, hierarchyName);
+
+    // if we've made it to the leaf nodes, no descendants of the specified type exist
+    if (children.length === 0) {
+      return [];
+    }
+
+    // if we've reached the level with descendants of the correct type, return them
+    const childrenOfType = children.filter(c => c.type === entityType);
+    if (childrenOfType.length > 0) {
+      return childrenOfType;
+    }
+
+    // didn't find children of the right type at this level, keep recursing down the hierarchy
+    return Entity.getAlternativeHierarchyDescendants(
+      children.map(c => c.id),
+      hierarchyName,
+      entityType,
     );
   }
 
@@ -246,6 +303,28 @@ export class Entity extends BaseModel {
     return result[0];
   }
 
+  // todo replace with a more ORM style `find` function after merging with rohan's work
+  static async getEntities(where, substitutions) {
+    return Entity.database.executeSql(
+      `
+      SELECT
+        id,
+        code,
+        country_code,
+        name,
+        image_url,
+        parent_id,
+        ST_AsGeoJSON(point) as point,
+        ST_AsGeoJSON(bounds) as bounds,
+        (region IS NOT NULL) as has_region,
+        type
+      FROM entity
+      WHERE ${where};
+    `,
+      substitutions,
+    );
+  }
+
   static async getAllChildren(id, types = []) {
     return Entity.database.executeSql(
       `
@@ -274,7 +353,14 @@ export class Entity extends BaseModel {
   }
 
   async getDescendantsOfType(entityType) {
-    return Entity.getAllDescendants(this.id, [entityType]);
+    const hierarchyName = ENTITY_TYPE_TO_HIERARCHY[this.type];
+    // if no alternative hierarchy was specified, we can return the canonical descendants in a
+    // single query
+    if (!hierarchyName) {
+      return Entity.getCanonicalDescendants(id, [entityType]);
+    }
+
+    return Entity.getAlternativeHierarchyDescendants(this.id, hierarchyName, entityType);
   }
 
   static fetchChildToParentCode = async childrenCodes => {
