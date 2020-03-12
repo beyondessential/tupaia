@@ -15,7 +15,7 @@ import { divideValues } from '/apiV1/dataBuilders/helpers';
 /**
  * Configuration schema
  * @typedef {Object} PercentagesPerDataClassConfig
- * @property {Object<string, ValuePercentage>} dataClasses
+ * @property {Object<string, { numerator, denominator }>} dataClasses
  * @property {number[]} [range]
  *
  * Example:
@@ -36,19 +36,13 @@ import { divideValues } from '/apiV1/dataBuilders/helpers';
  */
 
 class PercentagesPerDataClassDataBuilder extends DataBuilder {
-  /**
-   * @returns {DataValuesOutput}
-   */
   async build() {
     const dataElementMap = await this.getDataElementMap();
     const dataElementCodes = Object.values(dataElementMap).reduce((result, currentCodes) => {
       return result.concat(currentCodes);
     }, []);
 
-    const { results } = await this.getDataValueAnalytics({
-      dataElementCodes,
-      outputIdScheme: 'code',
-    });
+    const { results } = await this.fetchAnalytics(dataElementCodes);
     const sumPerDataElementCode = await this.getSumPerDataElementCode(results);
 
     const { dataClasses } = this.config;
@@ -87,10 +81,9 @@ class PercentagesPerDataClassDataBuilder extends DataBuilder {
       // Aggregate the numerator and denominator per month, across all operational facilities
       const { organisationUnitCode, period } = this.query;
       const operationalFacilities = await getFacilityStatuses(
+        this.aggregator,
         organisationUnitCode,
         period,
-        false,
-        true,
       );
       aggregateOperationalFacilityValues(operationalFacilities, results, incrementTotals);
     }
@@ -115,8 +108,18 @@ class PercentagesPerDataClassDataBuilder extends DataBuilder {
   }
 }
 
-export const percentagesPerDataClass = async ({ dataBuilderConfig, query, entity }, dhisApi) => {
-  const builder = new PercentagesPerDataClassDataBuilder(dhisApi, dataBuilderConfig, query, entity);
+export const percentagesPerDataClass = async (
+  { dataBuilderConfig, query, entity },
+  aggregator,
+  dhisApi,
+) => {
+  const builder = new PercentagesPerDataClassDataBuilder(
+    aggregator,
+    dhisApi,
+    dataBuilderConfig,
+    query,
+    entity,
+  );
 
   return builder.build();
 };

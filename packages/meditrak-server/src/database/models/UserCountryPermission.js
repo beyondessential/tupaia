@@ -47,8 +47,8 @@ export class UserCountryPermissionModel extends DatabaseModel {
  * hold off and pool several changes for the same user (e.g. if they're being granted permission
  * to three countries at once), but this is good enough.
  */
-async function onUpsertSendPermissionGrantEmail(change, record, models) {
-  if (change.type === 'delete') {
+async function onUpsertSendPermissionGrantEmail({ type: changeType, record }, models) {
+  if (changeType === 'delete') {
     return; // Don't notify the user of permissions being taken away
   }
 

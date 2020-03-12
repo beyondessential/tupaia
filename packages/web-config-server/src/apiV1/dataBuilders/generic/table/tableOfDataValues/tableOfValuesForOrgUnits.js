@@ -30,8 +30,11 @@ class TableOfValuesForOrgUnitsBuilder extends TableOfDataValuesBuilder {
     const data = {
       rows,
       columns: await this.replaceOrgUnitCodesWithNames(columns),
-      categoryRows: this.buildCategoryRows(rows),
     };
+
+    if (this.config.categoryAggregator) {
+      data.categoryRows = this.buildCategoryRows(rows);
+    }
     if (this.tableConfig.hasRowCategories()) {
       data.categories = await this.buildRowCategories();
     }
@@ -113,7 +116,17 @@ class TableOfValuesForOrgUnitsBuilder extends TableOfDataValuesBuilder {
   }
 }
 
-export const tableOfValuesForOrgUnits = async ({ dataBuilderConfig, query, entity }, dhisApi) => {
-  const builder = new TableOfValuesForOrgUnitsBuilder(dhisApi, dataBuilderConfig, query, entity);
+export const tableOfValuesForOrgUnits = async (
+  { dataBuilderConfig, query, entity },
+  aggregator,
+  dhisApi,
+) => {
+  const builder = new TableOfValuesForOrgUnitsBuilder(
+    aggregator,
+    dhisApi,
+    dataBuilderConfig,
+    query,
+    entity,
+  );
   return builder.build();
 };

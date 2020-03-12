@@ -16,24 +16,27 @@ import {
   DATA_SET_COMPLETION,
 } from './testData';
 
-export const testCreateSurveyResponse = (dhisApi, models) => {
+export const testCreateSurveyResponse = (dhisApi, models, dataBroker) => {
   it('should throw an error if the changed record was not found', async () => {
     const change = await models.dhisSyncQueue.findById(SURVEY_RESPONSE_CHANGE.id);
     change.record_id = 'does_not_exist_xxxxxxxxx';
-    const pusher = new AggregateDataPusher(models, change, dhisApi);
+    const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
     expect(pusher.push()).to.be.rejectedWith(`No survey response found for ${change.record_id}`);
-    expect(dhisApi.postDataValueSets).not.to.have.been.called;
-    expect(dhisApi.deleteDataValue).not.to.have.been.called;
+    expect(dataBroker.push).not.to.have.been.called;
+    expect(dataBroker.delete).not.to.have.been.called;
   });
 
   it('should create a data value against the SurveyDate data element', async () => {
     const change = await models.dhisSyncQueue.findById(SURVEY_RESPONSE_CHANGE.id);
-    const pusher = new AggregateDataPusher(models, change, dhisApi);
+    const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
 
     const result = await pusher.push();
     expect(result).to.be.true;
-    expect(dhisApi.postDataValueSets).to.have.been.calledOnceWith([SURVEY_RESPONSE_DATA_VALUE]);
-    expect(dhisApi.deleteDataValue).not.to.have.been.called;
+    expect(dataBroker.push).to.have.been.calledOnceWith(
+      { code: SURVEY_RESPONSE_DATA_VALUE.code, type: pusher.dataSourceTypes.DATA_ELEMENT },
+      SURVEY_RESPONSE_DATA_VALUE,
+    );
+    expect(dataBroker.delete).not.to.have.been.called;
   });
 
   it('should respond true without posting data if there is existing, more recent data for the same period', async () => {
@@ -44,18 +47,18 @@ export const testCreateSurveyResponse = (dhisApi, models) => {
     };
     await populateTestData({ surveyResponse: [moreRecentSurveyResponse] });
     const change = await models.dhisSyncQueue.findById(SURVEY_RESPONSE_CHANGE.id);
-    const pusher = new AggregateDataPusher(models, change, dhisApi);
+    const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
     const result = await pusher.push();
     expect(result).to.be.true;
-    expect(dhisApi.postDataValueSets).not.to.have.been.called;
-    expect(dhisApi.deleteDataValue).not.to.have.been.called;
+    expect(dataBroker.push).not.to.have.been.called;
+    expect(dataBroker.delete).not.to.have.been.called;
   });
 
   it('should create a data set complete registration if survey has a matching set', async () => {
     try {
       dhisApi.getDataSetByCode = sinon.stub().returns(DATA_SET); // change to return valid data set
       const change = await models.dhisSyncQueue.findById(SURVEY_RESPONSE_CHANGE.id);
-      const pusher = new AggregateDataPusher(models, change, dhisApi);
+      const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
 
       const result = await pusher.push();
       expect(result).to.be.true;
@@ -68,7 +71,7 @@ export const testCreateSurveyResponse = (dhisApi, models) => {
 
   it('should not create a data set complete registration if no matching data set', async () => {
     const change = await models.dhisSyncQueue.findById(SURVEY_RESPONSE_CHANGE.id);
-    const pusher = new AggregateDataPusher(models, change, dhisApi);
+    const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
 
     const result = await pusher.push();
     expect(result).to.be.true;

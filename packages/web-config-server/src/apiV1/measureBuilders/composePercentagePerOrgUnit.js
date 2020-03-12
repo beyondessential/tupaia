@@ -11,7 +11,7 @@ import { fetchComposedData } from '/apiV1/measureBuilders/helpers';
 /**
  * Configuration schema
  * @typedef {Object} composePercentagePerOrgUnitConfig
- * @property {{ numerator: DataBuilder, denominator: DataBuilder}} dataBuilders
+ * @property {{ numerator, denominator}} measureBuilders
  *
  * Example
  * ```js
@@ -35,11 +35,11 @@ import { fetchComposedData } from '/apiV1/measureBuilders/helpers';
  * ```
  */
 
-export const composePercentagePerOrgUnit = async (dhisApi, query, config) => {
+export const composePercentagePerOrgUnit = async (aggregator, dhisApi, query, config) => {
   const { fractionType } = config;
   const { dataElementCode } = query;
 
-  const responses = await fetchComposedData(dhisApi, query, config);
+  const responses = await fetchComposedData(aggregator, dhisApi, query, config);
   const numeratorsByOrgUnit = keyBy(responses.numerator, 'organisationUnitCode');
   const denominatorsByOrgUnit = keyBy(responses.denominator, 'organisationUnitCode');
 

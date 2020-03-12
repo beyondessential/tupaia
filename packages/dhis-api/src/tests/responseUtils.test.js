@@ -58,9 +58,6 @@ const createConflictsAndMessages = (count = 1) => {
   };
 };
 
-const updateChange = { type: 'update' };
-const deleteChange = { type: 'delete' };
-
 describe('responseUtils', () => {
   before(() => {
     // Suppress logging while running the tests
@@ -76,7 +73,7 @@ describe('responseUtils', () => {
       it('should return diagnostics for a creating an item', () => {
         const response = createObjectReportResponse({ httpStatus: 'Created' });
 
-        expect(getDiagnosticsFromResponse(response, updateChange)).to.deep.equal({
+        expect(getDiagnosticsFromResponse(response)).to.deep.equal({
           counts: { imported: 1, updated: 0, deleted: 0, ignored: 0 },
           errors: [],
           wasSuccessful: true,
@@ -86,7 +83,7 @@ describe('responseUtils', () => {
       it('should return diagnostics for updating an item', () => {
         const response = createObjectReportResponse({ httpStatus: 'Ok' });
 
-        expect(getDiagnosticsFromResponse(response, updateChange)).to.deep.equal({
+        expect(getDiagnosticsFromResponse(response)).to.deep.equal({
           counts: { imported: 0, updated: 1, deleted: 0, ignored: 0 },
           errors: [],
           wasSuccessful: true,
@@ -96,7 +93,7 @@ describe('responseUtils', () => {
       it('should return diagnostics for deleting an item', () => {
         const response = createObjectReportResponse({ httpStatus: 'Ok' });
 
-        expect(getDiagnosticsFromResponse(response, deleteChange)).to.deep.equal({
+        expect(getDiagnosticsFromResponse(response, true)).to.deep.equal({
           counts: { imported: 0, updated: 0, deleted: 1, ignored: 0 },
           errors: [],
           wasSuccessful: true,
@@ -109,7 +106,7 @@ describe('responseUtils', () => {
         const counts = { imported: 1, updated: 0, ignored: 0, deleted: 0 };
         const response = createImportSummaryResponse({ importCount: counts });
 
-        expect(getDiagnosticsFromResponse(response, updateChange)).to.deep.equal({
+        expect(getDiagnosticsFromResponse(response)).to.deep.equal({
           counts,
           errors: [],
           wasSuccessful: true,
@@ -120,7 +117,7 @@ describe('responseUtils', () => {
         const counts = { imported: 0, updated: 1, ignored: 0, deleted: 0 };
         const response = createImportSummaryResponse({ importCount: counts });
 
-        expect(getDiagnosticsFromResponse(response, updateChange)).to.deep.equal({
+        expect(getDiagnosticsFromResponse(response)).to.deep.equal({
           counts,
           errors: [],
           wasSuccessful: true,
@@ -131,11 +128,8 @@ describe('responseUtils', () => {
         const counts = { imported: 1, updated: 0, ignored: 0, deleted: 0 };
         const response = createImportSummaryResponse({ importCount: counts });
 
-        const responseDiagnostics = getDiagnosticsFromResponse(response, updateChange);
-        const responseDetailsDiagnostics = getDiagnosticsFromResponse(
-          response.response,
-          updateChange,
-        );
+        const responseDiagnostics = getDiagnosticsFromResponse(response);
+        const responseDetailsDiagnostics = getDiagnosticsFromResponse(response.response);
         expect(responseDiagnostics).to.deep.equal(responseDetailsDiagnostics);
       });
 
@@ -143,7 +137,7 @@ describe('responseUtils', () => {
         const counts = { imported: 0, updated: 0, ignored: 0, deleted: 1 };
         const response = createImportSummaryResponse({ importCount: counts });
 
-        expect(getDiagnosticsFromResponse(response, updateChange)).to.deep.equal({
+        expect(getDiagnosticsFromResponse(response)).to.deep.equal({
           counts,
           errors: [],
           wasSuccessful: true,
@@ -155,7 +149,7 @@ describe('responseUtils', () => {
         const errors = ['Test error'];
         const response = createImportSummaryResponse({ importCount: counts, errors });
 
-        expect(getDiagnosticsFromResponse(response, updateChange)).to.deep.equal({
+        expect(getDiagnosticsFromResponse(response)).to.deep.equal({
           counts,
           errors,
           wasSuccessful: false,
@@ -170,7 +164,7 @@ describe('responseUtils', () => {
           conflicts: [conflicts[0]],
         });
 
-        expect(getDiagnosticsFromResponse(response, updateChange)).to.deep.equal({
+        expect(getDiagnosticsFromResponse(response)).to.deep.equal({
           counts,
           errors: [conflictMessages[0]],
           wasSuccessful: false,
@@ -186,7 +180,7 @@ describe('responseUtils', () => {
           importSummaries: [{ counts, reference: DHIS_REFERENCE }],
         });
 
-        expect(getDiagnosticsFromResponse(response, updateChange)).to.deep.equal({
+        expect(getDiagnosticsFromResponse(response)).to.deep.equal({
           counts,
           errors: [],
           wasSuccessful: true,
@@ -201,11 +195,8 @@ describe('responseUtils', () => {
           importSummaries: [{ counts, reference: DHIS_REFERENCE }],
         });
 
-        const responseDiagnostics = getDiagnosticsFromResponse(response, updateChange);
-        const responseDetailsDiagnostics = getDiagnosticsFromResponse(
-          response.response,
-          updateChange,
-        );
+        const responseDiagnostics = getDiagnosticsFromResponse(response);
+        const responseDetailsDiagnostics = getDiagnosticsFromResponse(response.response);
         expect(responseDiagnostics).to.deep.equal(responseDetailsDiagnostics);
       });
 
@@ -221,7 +212,7 @@ describe('responseUtils', () => {
           ],
         });
 
-        expect(getDiagnosticsFromResponse(response, updateChange)).to.deep.equal({
+        expect(getDiagnosticsFromResponse(response)).to.deep.equal({
           counts: countsTotal,
           errors: [],
           wasSuccessful: true,
@@ -236,7 +227,7 @@ describe('responseUtils', () => {
           importSummaries: [{ counts, status: ERROR, description: ERROR_MESSAGE }],
         });
 
-        expect(getDiagnosticsFromResponse(response, updateChange)).to.deep.equal({
+        expect(getDiagnosticsFromResponse(response)).to.deep.equal({
           counts,
           errors: [ERROR_MESSAGE],
           wasSuccessful: false,
@@ -256,7 +247,7 @@ describe('responseUtils', () => {
           ],
         });
 
-        expect(getDiagnosticsFromResponse(response, updateChange)).to.deep.equal({
+        expect(getDiagnosticsFromResponse(response)).to.deep.equal({
           counts: countsTotal,
           errors: [ERROR_MESSAGE, errorMessage2],
           wasSuccessful: false,
@@ -272,7 +263,7 @@ describe('responseUtils', () => {
           importSummaries: [{ counts, status: ERROR, conflicts: [conflicts[0]] }],
         });
 
-        expect(getDiagnosticsFromResponse(response, updateChange)).to.deep.equal({
+        expect(getDiagnosticsFromResponse(response)).to.deep.equal({
           counts,
           errors: [conflictMessages[0]],
           wasSuccessful: false,
@@ -293,7 +284,7 @@ describe('responseUtils', () => {
           ],
         });
 
-        expect(getDiagnosticsFromResponse(response, updateChange)).to.deep.equal({
+        expect(getDiagnosticsFromResponse(response)).to.deep.equal({
           counts: countsTotal,
           errors: [conflictMessages[0], `${conflictMessages[1]}, ${conflictMessages[2]}`],
           wasSuccessful: false,
@@ -306,7 +297,7 @@ describe('responseUtils', () => {
       const response = { response: { responseType: 'Random type' } };
 
       it('should return diagnostics for an update change', () => {
-        expect(getDiagnosticsFromResponse(response, updateChange)).to.deep.equal({
+        expect(getDiagnosticsFromResponse(response)).to.deep.equal({
           counts: { imported: 0, updated: 1, ignored: 0, deleted: 0 },
           errors: [],
           wasSuccessful: true,
@@ -314,7 +305,7 @@ describe('responseUtils', () => {
       });
 
       it('should return diagnostics for a delete change', () => {
-        expect(getDiagnosticsFromResponse(response, deleteChange)).to.deep.equal({
+        expect(getDiagnosticsFromResponse(response, true)).to.deep.equal({
           counts: { imported: 0, updated: 0, ignored: 0, deleted: 1 },
           errors: [],
           wasSuccessful: true,

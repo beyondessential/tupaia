@@ -23,15 +23,13 @@ export class TrackedEntityPusher extends EntityPusher {
   async createOrUpdate() {
     const entity = await this.fetchEntity();
     const record = await this.buildRecord(entity);
-    const response = await this.api.updateRecord(TRACKED_ENTITY_INSTANCE, record);
+    const diagnostics = await this.api.updateRecord(TRACKED_ENTITY_INSTANCE, record);
 
     if (!entity.hasDhisId()) {
-      const { response: responseDetails } = response;
-      const dhisId = responseDetails.importSummaries[0].reference;
+      const dhisId = diagnostics.references[0];
       await entity.setDhisId(dhisId);
     }
 
-    const diagnostics = this.getDiagnostics(response);
     const data = await entity.getData();
     return { ...diagnostics, data };
   }
@@ -42,8 +40,7 @@ export class TrackedEntityPusher extends EntityPusher {
   async delete() {
     const entityData = await this.fetchDataFromSyncLog();
     const dhisId = getDhisIdFromEntityData(entityData);
-    const response = await this.api.deleteRecordById(TRACKED_ENTITY_INSTANCE, dhisId);
-    const diagnostics = this.getDiagnostics(response);
+    const diagnostics = await this.api.deleteRecordById(TRACKED_ENTITY_INSTANCE, dhisId);
 
     return diagnostics;
   }
@@ -86,22 +83,20 @@ export class TrackedEntityPusher extends EntityPusher {
    */
   entityToTypeName = entity => capitaliseFirstLetters(entity.type);
 
-  /**
-   * Example:
-   * `new_type` => `NEW_TYPE_NAME`
-   */
-  entityToNameAttributeCode = entity => `${entity.type.toUpperCase()}_NAME`;
-
   async buildAttributes(entity) {
+    const attributeFields = ['name', 'code'];
     const attributes = [];
-
-    const nameAttribute = await this.api.getRecord({
-      type: TRACKED_ENTITY_ATTRIBUTE,
-      code: this.entityToNameAttributeCode(entity),
-    });
-    if (nameAttribute) {
-      attributes.push({ attribute: nameAttribute.id, value: entity.name });
-    }
+    await Promise.all(
+      attributeFields.map(async fieldName => {
+        const attribute = await this.api.getRecord({
+          type: TRACKED_ENTITY_ATTRIBUTE,
+          code: fieldName.toUpperCase(), // name -> NAME
+        });
+        if (attribute) {
+          attributes.push({ attribute: attribute.id, value: entity[fieldName] });
+        }
+      }),
+    );
 
     return attributes;
   }

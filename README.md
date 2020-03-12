@@ -17,8 +17,10 @@
 See also https://docs.beyondessential.com.au/books/software-development/page/internal-dependencies
 
 - [access-policy](https://github.com/beyondessential/tupaia/blob/dev/packages/access-policy/README.md)
-- [devops](https://github.com/beyondessential/tupaia/blob/dev/packages/devops/README.md)
+- [aggregator](https://github.com/beyondessential/tupaia/blob/dev/packages/aggregator/README.md)
 - [database](https://github.com/beyondessential/tupaia/blob/dev/packages/database/README.md)
+- [data-broker](https://github.com/beyondessential/tupaia/blob/dev/packages/data-broker/README.md)
+- [devops](https://github.com/beyondessential/tupaia/blob/dev/packages/devops/README.md)
 - [dhis-api](https://github.com/beyondessential/tupaia/blob/dev/packages/dhis-api/README.md)
 - [utils](https://github.com/beyondessential/tupaia/blob/dev/packages/utils/README.md)
 
@@ -51,3 +53,14 @@ so if you've updated the environment variables here, you probably also need to p
 - ssh into the aws instance (cannot be run locally at this stage)
 - update the .env file (if it hasn't been updated automatically by the CI/CD process)
 - run `ENVIRONMENT=dev yarn update-paramater-store-env-vars` (setting environment to either dev or production)
+
+## Tests
+
+Most of the packages support the following scripts for testing:
+
+```
+yarn test # runs the tests
+yarn test-coverage # runs the tests and displays code coverage
+```
+
+See also the docs page on [Test setup (mocha)](https://docs.beyondessential.com.au/books/software-development/page/test-setup-%28mocha%29)

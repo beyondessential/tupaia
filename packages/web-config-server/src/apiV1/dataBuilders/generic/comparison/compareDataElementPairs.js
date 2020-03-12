@@ -1,5 +1,4 @@
 import flatten from 'lodash.flatten';
-import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
 
 /**
  * dataPairNames must match the index order of pairs in dataElementPairs
@@ -18,28 +17,25 @@ import { AGGREGATION_TYPES } from '@tupaia/dhis-api';
  *  "dataPairNames": ["Pair 1 Name", "Pair 2 Name", ...]
  * }
  */
-export const compareDataElementPairs = async ({ dataBuilderConfig, viewJson, query }, dhisApi) => {
+export const compareDataElementPairs = async (
+  { dataBuilderConfig, viewJson, query },
+  aggregator,
+) => {
   const { organisationUnitCode } = query;
-  const { dataElementPairs } = dataBuilderConfig;
+  const { dataElementPairs, dataServices } = dataBuilderConfig;
   const { dataPairNames, leftColumn, rightColumn } = viewJson.presentationOptions;
-  const { MOST_RECENT } = AGGREGATION_TYPES;
 
   const dataElementCodes = flatten(dataElementPairs);
 
-  const { results, metadata } = await dhisApi.getAnalytics(
-    {
-      ...dataBuilderConfig,
-      dataElementCodes,
-    },
-    {
-      organisationUnitCode,
-    },
-    MOST_RECENT,
+  const { results } = await aggregator.fetchAnalytics(
+    dataElementCodes,
+    { dataServices },
+    { organisationUnitCode },
   );
 
   const resultsByCode = {};
-  results.forEach(result => {
-    resultsByCode[metadata.dataElementIdToCode[result.dataElement]] = result.value;
+  results.forEach(({ dataElement: dataElementCode, value }) => {
+    resultsByCode[dataElementCode] = value;
   });
 
   /* eslint-disable no-param-reassign */

@@ -7,10 +7,10 @@ import winston from 'winston';
 
 import { getPusherForEntity, EventPusher, AggregateDataPusher } from './pushers';
 
-export async function pushChange(models, change, dhisApi) {
+export async function pushChange(models, change, dhisApi, dataBroker) {
   try {
     const Pusher = await getPusher(models, change);
-    const pusher = new Pusher(models, change, dhisApi);
+    const pusher = new Pusher(models, change, dhisApi, dataBroker);
     const wasSuccessful = await pusher.push();
     return wasSuccessful;
   } catch (error) {
@@ -35,8 +35,7 @@ async function checkIsEventBased(models, change) {
     );
   }
 
-  const surveyResponse = await models.surveyResponse.findById(change.record_id);
-  return surveyResponse.isEventBased();
+  return models.surveyResponse.checkIsEventBased(change.record_id);
 }
 
 const getPusher = async (models, change) => {

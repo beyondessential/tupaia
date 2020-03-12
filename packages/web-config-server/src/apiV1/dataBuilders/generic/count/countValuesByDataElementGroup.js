@@ -5,17 +5,22 @@
 
 import { getDataElementsInGroupSet } from '/apiV1/utils';
 
-export const countValuesByDataElementGroup = async ({ dataBuilderConfig, query }, dhisApi) => {
-  const { dataElementGroupSet } = dataBuilderConfig;
+export const countValuesByDataElementGroup = async (
+  { dataBuilderConfig, query },
+  aggregator,
+  dhisApi,
+) => {
+  const { dataElementGroupSet, dataServices } = dataBuilderConfig;
   const { dataElementGroups, dataElementToGroupMapping } = await getDataElementsInGroupSet(
     dhisApi,
     dataElementGroupSet,
+    true,
   );
-  const dataElementCodes = Object.values(dataElementGroups).map(({ code }) => `DE_GROUP-${code}`);
-  const { results } = await dhisApi.getAnalytics({ dataElementCodes }, query);
+  const dataElementCodes = Object.keys(dataElementToGroupMapping);
+  const { results } = await aggregator.fetchAnalytics(dataElementCodes, { dataServices }, query);
   const dataElementGroupCounts = {};
-  results.forEach(({ dataElement: dataElementId, value }) => {
-    const dataElementGroupId = dataElementToGroupMapping[dataElementId];
+  results.forEach(({ dataElement: dataElementCode, value }) => {
+    const dataElementGroupId = dataElementToGroupMapping[dataElementCode];
     if (!dataElementGroupCounts[dataElementGroupId]) {
       dataElementGroupCounts[dataElementGroupId] = 0;
     }

@@ -4,13 +4,13 @@
  */
 
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { divideValues } from '/apiV1/dataBuilders/helpers';
+import { divideValues, countEventsThatSatisfyConditions } from '/apiV1/dataBuilders/helpers';
 
 /**
  * Configuration schema
  * @typedef {Object} PercentagesOfEventCountsConfig
  * @property {string} programCode
- * @property {Object<string, EventPercentage>} dataClasses
+ * @property {Object<string, { numerator, denominator }>} dataClasses
  *
  * Example
  * ```js
@@ -35,11 +35,8 @@ import { divideValues } from '/apiV1/dataBuilders/helpers';
  */
 
 export class PercentagesOfEventCountsBuilder extends DataBuilder {
-  /**
-   * @returns {DataValuesOutput}
-   */
   async build() {
-    const events = await this.getEvents({ dataElementIdScheme: 'code', dataValueFormat: 'object' });
+    const events = await this.fetchEvents({ dataValueFormat: 'object' });
     const data = this.buildData(events);
 
     return { data: this.areDataAvailable(data) ? data : [] };
@@ -62,15 +59,25 @@ export class PercentagesOfEventCountsBuilder extends DataBuilder {
 
   calculateFractionPartsForDataClass(dataClass, events) {
     const { numerator, denominator } = dataClass;
-    const numeratorValue = this.countEventsThatSatisfyConditions(events, numerator);
-    const denominatorValue = this.countEventsThatSatisfyConditions(events, denominator);
+    const numeratorValue = countEventsThatSatisfyConditions(events, numerator);
+    const denominatorValue = countEventsThatSatisfyConditions(events, denominator);
 
     return [numeratorValue, denominatorValue];
   }
 }
 
-export const percentagesOfEventCounts = async ({ dataBuilderConfig, query, entity }, dhisApi) => {
-  const builder = new PercentagesOfEventCountsBuilder(dhisApi, dataBuilderConfig, query, entity);
+export const percentagesOfEventCounts = async (
+  { dataBuilderConfig, query, entity },
+  aggregator,
+  dhisApi,
+) => {
+  const builder = new PercentagesOfEventCountsBuilder(
+    aggregator,
+    dhisApi,
+    dataBuilderConfig,
+    query,
+    entity,
+  );
 
   return builder.build();
 };

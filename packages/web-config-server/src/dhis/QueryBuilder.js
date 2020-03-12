@@ -18,8 +18,9 @@ export class QueryBuilder {
   }
 
   // Ensure the standard dimensions of period, start/end date, and organisation unit are set up
-  makeDimensionReplacements() {
+  build() {
     this.makePeriodReplacements();
+    this.makeEventReplacements();
     this.query.organisationUnitCode = this.getQueryParameter('organisationUnitCode');
     return this.query;
   }
@@ -62,27 +63,6 @@ export class QueryBuilder {
       // If no period defined anywhere, use the default
       query.period = getDefaultPeriod();
     }
-    return this.query;
-  }
-
-  makeCustomReplacements() {
-    if (!this.replacementValues || Object.keys(this.replacementValues).length === 0) {
-      return this.query;
-    }
-    let queryString = JSON.stringify(this.query);
-
-    // Replace all custom replacements (marked by curly braces in the queryJson, e.g. "{replaceThis}")
-    Object.entries(this.replacementValues).forEach(([key, value]) => {
-      if (queryString.indexOf(`{${key}}`) !== -1) {
-        queryString = queryString.replace(
-          new RegExp(`\{${key}\}`, 'g'), // eslint-disable-line no-useless-escape,max-len
-          value,
-        );
-      }
-    });
-
-    // Parse query string back into object
-    this.query = JSON.parse(queryString);
     return this.query;
   }
 }

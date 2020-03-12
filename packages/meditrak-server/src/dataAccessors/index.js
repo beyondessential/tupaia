@@ -5,7 +5,6 @@
 
 export { addSurveyImage } from './addSurveyImage';
 export { editUserAccount } from './editUserAccount';
-export { editSurveyResponse } from './editSurveyResponse';
 export { editOption } from './editOption';
 export { editOptionSet } from './editOptionSet';
 export { findQuestionsBySurvey } from './findQuestionsBySurvey';

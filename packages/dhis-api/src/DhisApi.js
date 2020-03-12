@@ -4,20 +4,18 @@
  */
 
 import winston from 'winston';
+import keyBy from 'lodash.keyby';
 
-import { utcMoment, getSortByKey } from '@tupaia/utils';
+import { aggregateAnalytics } from '@tupaia/aggregator';
+import { CustomError, getSortByKey, reduceToDictionary, utcMoment } from '@tupaia/utils';
 import { DhisFetcher } from './DhisFetcher';
 import { DHIS2_RESOURCE_TYPES } from './types';
-import { aggregateResults } from './aggregation';
-import { getEventDataValueMap } from './getEventDataValueMap';
 import { replaceElementIdsWithCodesInEvents } from './replaceElementIdsWithCodesInEvents';
-import { translateEventResponse } from './translateEventResponse';
-import { translateDataValueResponse } from './translateDataValueResponse';
-import { RESPONSE_TYPES } from './responseUtils';
-import { buildAnalyticsQuery } from './buildAnalyticsQuery';
-import { filterAnalyticsResults } from './filterAnalyticsResults';
+import { RESPONSE_TYPES, getDiagnosticsFromResponse } from './responseUtils';
+import { buildAnalyticQueries } from './buildAnalyticQueries';
 
 const {
+  CATEGORY_OPTION_COMBO,
   DATA_ELEMENT,
   DATA_ELEMENT_GROUP,
   DATA_SET,
@@ -31,22 +29,19 @@ const {
   PROGRAM,
 } = DHIS2_RESOURCE_TYPES;
 
-export const REGIONAL_SERVER_NAME = 'regional';
 const LATEST_LOOKBACK_PERIOD = '600d';
 
-const getServerUrlFromName = serverName => {
-  const isProduction = process.env.IS_PRODUCTION_ENVIRONMENT === 'true';
-  const devPrefix = isProduction ? '' : 'dev-';
-  const specificServerPrefix = '' || serverName === REGIONAL_SERVER_NAME ? '' : `${serverName}-`;
-  return `https://${devPrefix}${specificServerPrefix}aggregation.tupaia.org`;
-};
-
 export class DhisApi {
-  constructor(serverName = REGIONAL_SERVER_NAME) {
+  constructor(serverName, serverUrl) {
     this.serverName = serverName;
-    const serverUrl = getServerUrlFromName(serverName);
+    this.serverUrl = serverUrl;
     this.fetcher = new DhisFetcher(serverName, serverUrl, this.constructError);
     this.deleteEvent = this.deleteEvent.bind(this);
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  getResourceTypes() {
+    return DHIS2_RESOURCE_TYPES;
   }
 
   /**
@@ -89,11 +84,14 @@ export class DhisApi {
   async getRecords({ type, ids, codes, filter, fields }) {
     const query = { fields, filter: filter || { comparator: 'in' } };
     if (codes) {
-      query.filter.code = `[${codes.join(',')}]`;
+      const uniqueCodes = [...new Set(codes)];
+      query.filter.code = `[${uniqueCodes.join(',')}]`;
     }
     if (ids) {
-      query.filter.id = `[${ids.join(',')}]`;
+      const uniqueIds = [...new Set(ids)];
+      query.filter.id = `[${uniqueIds.join(',')}]`;
     }
+
     const response = await this.fetch(type, query);
     return response[type];
   }
@@ -146,11 +144,15 @@ export class DhisApi {
   }
 
   async postDataValueSets(data) {
-    return this.postData(DATA_VALUE_SET, { dataValues: data });
+    const response = await this.postData(DATA_VALUE_SET, { dataValues: data });
+    return getDiagnosticsFromResponse(response);
   }
 
   async postDataSetCompletion(data) {
-    return this.postData(DATA_SET_COMPLETION, { completeDataSetRegistrations: [data] });
+    const response = await this.postData(DATA_SET_COMPLETION, {
+      completeDataSetRegistrations: [data],
+    });
+    return getDiagnosticsFromResponse(response);
   }
 
   async updateAnalyticsTables() {
@@ -168,18 +170,6 @@ export class DhisApi {
     } else {
       setTimeout(() => this.waitForAnalyticsToComplete(statusEndpoint, resolve), 1000);
     }
-  }
-
-  async getIdsFromCodes(recordType, recordCodes) {
-    if (!recordCodes || recordCodes.length === 0) {
-      throw this.constructError('Must provide codes to search for');
-    }
-    const records = await this.getRecords({
-      type: recordType,
-      codes: recordCodes,
-      fields: ['id'],
-    });
-    return records && records.map(({ id }) => id);
   }
 
   async getIdFromCode(recordType, recordCode) {
@@ -249,7 +239,7 @@ export class DhisApi {
     if (dataValueFormat === 'object') {
       events = events.map(event => ({
         ...event,
-        dataValues: getEventDataValueMap(event),
+        dataValues: keyBy(event.dataValues, 'dataElement'),
       }));
     }
     events.sort(getSortByKey('eventDate'));
@@ -257,46 +247,32 @@ export class DhisApi {
     return events;
   }
 
-  /**
-   * @param {EventData[]} events
-   * @returns {Promise<string>}
-   */
   async postEvents(events) {
-    return this.postData(EVENT, { events });
+    const response = await this.postData(EVENT, { events });
+    return getDiagnosticsFromResponse(response);
   }
 
-  /**
-   * @param {string} eventId
-   * @param {EventData} event
-   * @returns {Promise<string>}
-   */
   async updateEvent(eventId, event) {
-    return this.put(`events/${eventId}`, event);
+    const response = await this.put(`events/${eventId}`, event);
+    return getDiagnosticsFromResponse(response);
   }
 
-  /**
-   * @param {Event[]} events
-   * @returns {Promise<{ updated: number, errors: string[] }>}
-   */
   async updateEvents(events) {
     const errors = [];
     let totalUpdatedCount = 0;
 
     for (let i = 0; i < events.length; i++) {
-      let updated = 0;
       const eventId = events[i].event;
 
       try {
-        const { response } = await this.updateEvent(eventId, events[i]);
-        updated = parseInt(response.importCount.updated, 10);
+        const { counts } = await this.updateEvent(eventId, events[i]);
+        totalUpdatedCount += counts.updated;
       } catch (error) {
         errors.push(error.message);
       }
-
-      totalUpdatedCount += updated;
     }
 
-    return { updated: totalUpdatedCount, errors };
+    return { counts: { updated: totalUpdatedCount }, errors };
   }
 
   async updateRecord(resourceType, record) {
@@ -306,46 +282,34 @@ export class DhisApi {
     }
     // If the resource already exists on DHIS2, update the existing one
     if (existingId) {
-      return this.put(`${resourceType}/${existingId}`, record);
+      const response = await this.put(`${resourceType}/${existingId}`, record);
+      return getDiagnosticsFromResponse(response);
     }
-    return this.post(resourceType, record);
+    const response = await this.post(resourceType, record);
+    return getDiagnosticsFromResponse(response);
   }
 
-  async getAnalytics(originalQuery, aggregationType, aggregationConfig) {
-    const { measureCriteria, period } = originalQuery;
-    const query = buildAnalyticsQuery(originalQuery);
-    const response = await this.fetch('analytics/rawData.json', query);
-    const { results, metadata } = translateDataValueResponse(response);
-    const aggregatedResults = aggregateResults(results, aggregationType, aggregationConfig);
+  async getAnalytics(originalQuery) {
+    const queries = buildAnalyticQueries(originalQuery);
 
-    return {
-      results: filterAnalyticsResults(aggregatedResults, measureCriteria),
-      metadata,
-      period,
-    };
-  }
+    let headers;
+    let rows = [];
+    let metaData;
+    await Promise.all(
+      queries.map(async query => {
+        const { headers: newHeaders, rows: newRows, metaData: newMetadata } = await this.fetch(
+          'analytics/rawData.json',
+          query,
+        );
 
-  async getEventAnalytics(query, aggregationType, aggregationConfig = {}) {
-    const programCodes = query.programCodes || (query.programCode && [query.programCode]);
+        // Only the final batch's headers and metadata will be used in the result
+        headers = newHeaders;
+        metaData = newMetadata;
+        rows = rows.concat(newRows);
+      }),
+    );
 
-    let events;
-    if (programCodes) {
-      const nestedEvents = [
-        ...(await Promise.all(
-          programCodes.map(programCode => this.getEvents({ ...query, programCode })),
-        )),
-      ];
-
-      events = [].concat(...nestedEvents); // Flatten all event results into a single array
-    } else {
-      events = await this.getEvents(query);
-    }
-    const { results, metadata } = await translateEventResponse(this, events, query);
-
-    return {
-      results: aggregateResults(results, aggregationType, aggregationConfig),
-      metadata,
-    };
+    return { headers, rows, metaData };
   }
 
   async buildDataValuesInSetsQuery(originalQuery) {
@@ -357,10 +321,13 @@ export class DhisApi {
     }
 
     // Attach relevant information into the query
-    const organisationUnitIds = await this.getIdsFromCodes(
-      ORGANISATION_UNIT,
-      organisationUnitCodes,
-    );
+    const organisationUnitIds = (
+      await this.getRecords({
+        type: ORGANISATION_UNIT,
+        codes: organisationUnitCodes,
+        fields: ['id'],
+      })
+    ).map(o => o.id);
     query.orgUnit = organisationUnitIds;
     delete query.organisationUnitCodes;
     if (dataElementGroupCode) {
@@ -388,7 +355,7 @@ export class DhisApi {
     const response = await this.fetch(DATA_VALUE_SET, query);
     if (!response.dataValues) return [];
 
-    const aggregatedResults = aggregateResults(
+    const aggregatedResults = aggregateAnalytics(
       response.dataValues.map(result => ({ organisationUnit: result.orgUnit, ...result })),
       aggregationType,
       aggregationConfig,
@@ -402,34 +369,66 @@ export class DhisApi {
     return query.paging ? { organisationUnits, pager } : organisationUnits;
   }
 
-  async getOptionsForDataElement(dataElementCode) {
-    const query = {
-      filter: `code:eq:${dataElementCode}`,
-      fields: 'optionSet',
-    };
-    const optionSetResponse = await this.fetch(DATA_ELEMENT, query);
-    if (
-      !optionSetResponse ||
-      !optionSetResponse.dataElements ||
-      optionSetResponse.dataElements.length === 0 ||
-      !optionSetResponse.dataElements[0].optionSet
-    ) {
-      throw new Error(`No option set found for data element ${dataElementCode}`);
-    }
-    const optionSetId = optionSetResponse.dataElements[0].optionSet.id;
-    const response = await this.fetch(`${OPTION_SET}/${optionSetId}`, {
-      fields: '[options]',
+  async fetchDataElements(dataElementCodes, { additionalFields = [], includeOptions } = {}) {
+    const fields = ['id', 'code', 'name', ...additionalFields];
+    if (includeOptions) fields.push('optionSet');
+    const dataElements = await this.getRecords({
+      type: DATA_ELEMENT,
+      codes: dataElementCodes,
+      fields,
     });
-    const options = {};
-    await Promise.all(
-      response.options.map(async ({ id: optionId }) => {
-        const option = await this.fetch(`${OPTION}/${optionId}`, { fields: '[name,code]' });
-        const { name: optionText, code: optionCode } = option;
-        options[optionText.toLowerCase()] = optionCode; // Convert text to lower case so we can ignore case
-      }),
-    );
-    return options;
+    if (includeOptions) {
+      const optionSetIds = [
+        ...new Set(dataElements.filter(d => !!d.optionSet).map(d => d.optionSet.id)),
+      ];
+      if (optionSetIds.length === 0) return dataElements;
+      const optionSets = await this.getRecords({
+        type: OPTION_SET,
+        ids: optionSetIds,
+        fields: 'id,options[code,name]',
+      });
+      const optionSetOptionsById = {};
+      optionSets.forEach(({ id, ...restOfOptionSet }) => {
+        optionSetOptionsById[id] = this.buildOptionsFromOptionSet(restOfOptionSet);
+      });
+
+      return dataElements.map(({ optionSet, ...restOfDataElement }) => {
+        if (optionSet) {
+          return {
+            options: optionSetOptionsById[optionSet.id],
+            ...restOfDataElement,
+          };
+        }
+        return restOfDataElement;
+      });
+    }
+    return dataElements;
   }
+
+  getOptionSetOptions = async ({ code, id }) => {
+    const result = await this.getRecord({
+      type: OPTION_SET,
+      code,
+      id,
+      fields: 'options[code,name]',
+    });
+    if (result === null || !result.options || result.options.length === 0) {
+      throw new CustomError({
+        type: 'DHIS Communication error',
+        description: 'Option set does not exist or has no options',
+        dataElementGroups: code,
+      });
+    }
+    return this.buildOptionsFromOptionSet(result);
+  };
+
+  buildOptionsFromOptionSet = optionSet => {
+    const options = {};
+    optionSet.options.forEach(({ name, code: optionCode }) => {
+      options[optionCode] = name.trim();
+    });
+    return options;
+  };
 
   async getDataSetByCode(code) {
     return this.getRecord({ type: DATA_SET, code });
@@ -444,23 +443,35 @@ export class DhisApi {
   }
 
   async deleteRecordById(resourceType, id) {
-    return this.delete(`${resourceType}/${id}`);
+    const response = await this.delete(`${resourceType}/${id}`);
+    return getDiagnosticsFromResponse(response, true);
   }
 
   async deleteWithQuery(endpoint, query) {
     try {
       // dhis2 returns empty response if successful, throws an error (409 status code) if it fails
       await this.delete(endpoint, query);
-      return { responseType: RESPONSE_TYPES.DELETE };
+      return getDiagnosticsFromResponse({ responseType: RESPONSE_TYPES.DELETE }, true);
     } catch (error) {
       if (error.status === 409) {
-        return { responseType: RESPONSE_TYPES.DELETE, errors: [error.message] };
+        return getDiagnosticsFromResponse(
+          {
+            responseType: RESPONSE_TYPES.DELETE,
+            errors: [error.message],
+          },
+          true,
+        );
       }
       throw error;
     }
   }
 
-  async deleteDataValue({ dataElement: dataElementCode, period, orgUnit: organisationUnitCode }) {
+  async deleteDataValue({
+    dataElement: dataElementCode,
+    period,
+    orgUnit: organisationUnitCode,
+    categoryOptionCombo: categoryOptionComboCode,
+  }) {
     const dataElementId = await this.getIdFromCode(DATA_ELEMENT, dataElementCode);
     if (!dataElementId) {
       throw new Error(`No data element with code ${dataElementCode}`);
@@ -475,11 +486,22 @@ export class DhisApi {
       pe: period,
       ou: organisationUnitId,
     };
+    if (categoryOptionComboCode) {
+      const categoryOptionComboId = await this.getIdFromCode(
+        CATEGORY_OPTION_COMBO,
+        categoryOptionComboCode,
+      );
+      if (!categoryOptionComboId) {
+        throw new Error(`Category option combo ${categoryOptionComboCode} does not exist`);
+      }
+      query.co = categoryOptionComboId;
+    }
     return this.deleteWithQuery(DATA_VALUE, query);
   }
 
   async deleteEvent(eventReference) {
-    return this.delete(`${EVENT}/${eventReference}`);
+    const response = await this.delete(`${EVENT}/${eventReference}`, true);
+    return getDiagnosticsFromResponse(response);
   }
 
   async deleteDataSetCompletion({ dataSet, period, organisationUnit }) {

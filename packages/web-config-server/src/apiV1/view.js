@@ -1,9 +1,12 @@
+import { createAggregator } from '@tupaia/aggregator';
 import { convertDateRangeToPeriods } from '@tupaia/dhis-api';
+import { replaceValues } from '@tupaia/utils';
 import { DashboardReport } from '/models';
 import { getDhisApiInstance } from '/dhis';
 import { CustomError } from '@tupaia/utils';
 import { DhisTranslationHandler, isSingleValue } from './utils';
 import { getDataBuilder } from '/apiV1/dataBuilders/getDataBuilder';
+import { Aggregator } from '/aggregator';
 
 const viewFail = {
   type: 'View Error',
@@ -55,7 +58,6 @@ export default class extends DhisTranslationHandler {
     if (!dashboardReport) {
       throw new CustomError(viewFail, noViewWithId, { viewId });
     }
-    const { viewJson, dataBuilderConfig, dataServices } = dashboardReport;
 
     this.query = {
       ...restOfQuery,
@@ -64,29 +66,42 @@ export default class extends DhisTranslationHandler {
       endDate: this.endDate,
     };
 
-    // process db response for row, create matching data builder and build the data
-    let { dataBuilder } = dashboardReport;
-    this.viewJson = viewJson;
-    this.dataBuilderConfig = dataBuilderConfig;
-    // if viewJson containes placeholder it can only be viewed in expanded view
-    if (this.viewJson.placeholder && this.query.isExpanded !== 'true') {
-      dataBuilder = 'blankDataBuilder';
-    } else {
-      // remove placeholder, prevent front end from rendering it
-      this.viewJson.placeholder = undefined;
-    }
-    // Try to find matched data builder
-    const dataBuilderForView = getDataBuilder(dataBuilder);
-    if (!dataBuilderForView) {
+    const { viewJson, dataBuilderConfig, dataBuilder, dataServices } = dashboardReport;
+    this.viewJson = this.translateViewJson(viewJson);
+    this.dataBuilderConfig = this.translateDataBuilderConfig(dataBuilderConfig, dataServices);
+    this.req = req;
+
+    const dataBuilderData = await this.buildDataBuilderData(dataBuilder);
+    return this.addViewMetaData(dataBuilderData);
+  };
+
+  async buildDataBuilderData(dataBuilderName) {
+    const dataBuilder = this.getDataBuilder(dataBuilderName);
+    if (!dataBuilder) {
       throw new CustomError(viewFail, noDataBuilder, { dataBuilder });
     }
-    // Build the data and return it
-    const dhisApiInstances = dataServices.map(({ isDataRegional }) =>
-      getDhisApiInstance(this.entity.code, isDataRegional),
+
+    const dhisApiInstances = this.dataBuilderConfig.dataServices.map(({ isDataRegional }) =>
+      getDhisApiInstance({ entityCode: this.entity.code, isDataRegional }),
     );
-    const builtData = await dataBuilderForView({ ...this, req }, ...dhisApiInstances);
-    return this.addViewMetaData(builtData);
-  };
+
+    return dataBuilder(this, createAggregator(Aggregator), ...dhisApiInstances);
+  }
+
+  translateViewJson(viewJson) {
+    // if a dashboard is expanded, we remove any placeholder it may normally display
+    return this.query.isExpanded === 'true' ? { ...viewJson, placeholder: undefined } : viewJson;
+  }
+
+  translateDataBuilderConfig(dataBuilderConfig, dataServices) {
+    const replacedConfig = replaceValues(dataBuilderConfig, this.query);
+    return { ...replacedConfig, dataServices };
+  }
+
+  getDataBuilder(dataBuilderName) {
+    // if there is a placeholder to display, don't build any data
+    return getDataBuilder(this.viewJson.placeholder ? 'blankDataBuilder' : dataBuilderName);
+  }
 
   // common view translation (for all possible views)
   addViewMetaData = inJson => {

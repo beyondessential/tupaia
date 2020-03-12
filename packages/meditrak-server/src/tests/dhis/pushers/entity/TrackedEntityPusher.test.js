@@ -23,24 +23,22 @@ const { TRACKED_ENTITY_INSTANCE } = DHIS2_RESOURCE_TYPES;
 const DHIS_ID = 'dhisId';
 const ENTITY_ID = 'entityId';
 const ENTITY_NAME = 'entityName';
+const ENTITY_CODE = 'entityCode';
 const ENTITY_TYPE_ID = 'entityTypeId';
 const ORGANISATION_UNIT_ID = 'orgUnitId';
 const ORGANISATION_UNIT_CODE = 'orgUnitCode';
 const NAME_ATTRIBUTE_ID = 'nameAttributeId';
+const CODE_ATTRIBUTE_ID = 'codeAttributeId';
 
 const DEFAULT_DHIS_API_STUB_PROPS = {
   entityType: { id: ENTITY_TYPE_ID, displayName: 'Type' },
   organisationUnit: { id: ORGANISATION_UNIT_ID, code: ORGANISATION_UNIT_CODE },
   updateRecord: {
-    response: {
-      responseType: 'importSummaries',
-      importSummaries: [{ reference: DHIS_ID }],
-    },
+    references: [DHIS_ID],
+    wasSuccessful: true,
   },
   deleteRecordById: {
-    response: {
-      responseType: 'importSummary',
-    },
+    wasSuccessful: true,
   },
 };
 
@@ -75,10 +73,17 @@ describe('TrackedEntityPusher', () => {
       Pusher.prototype.logResults.restore();
     });
 
+    afterEach(() => {
+      Pusher.prototype.logResults.resetHistory();
+    });
+
     describe('create/update an entity', () => {
-      it('should throw an error if the changed record was not found', async () => {
+      it('should log an error if the changed record was not found', async () => {
         const pusher = new TrackedEntityPusher(createModelsStub(), { type: 'update' }, {});
-        return expect(pusher.push()).to.be.rejectedWith(/entity .*not found/i);
+        await pusher.push();
+        return expect(pusher.logResults).to.have.been.calledWithMatch(
+          sinon.match({ errors: [sinon.match(/entity .*not found/i)] }),
+        );
       });
 
       it('should create a DHIS tracked entity when a DB entity is created', async () => {
@@ -114,23 +119,30 @@ describe('TrackedEntityPusher', () => {
         expect(result).to.equal(true);
       });
 
-      it('should use a name attribute when one is provided', async () => {
+      it('should use name and code attributes when they are provided', async () => {
         const entity = createEntityStub(ENTITY_ID, {
           closestOrgUnit: getClosestOrgUnit(),
           type: 'type',
           name: ENTITY_NAME,
+          code: ENTITY_CODE,
         });
         const models = createModelsStub({ entityRecords: [entity] });
         const dhisApiStub = createDhisApiStub({
           ...DEFAULT_DHIS_API_STUB_PROPS,
-          entityAttributes: [{ id: NAME_ATTRIBUTE_ID, code: 'TYPE_NAME' }],
+          entityAttributes: [
+            { id: NAME_ATTRIBUTE_ID, code: 'NAME' },
+            { id: CODE_ATTRIBUTE_ID, code: 'CODE' },
+          ],
         });
         const pusher = new TrackedEntityPusher(models, getChange(), dhisApiStub);
 
         await pusher.push();
         expect(dhisApiStub.updateRecord).to.have.been.calledOnceWith(
           TRACKED_ENTITY_INSTANCE,
-          sinon.match.has('attributes', [{ attribute: NAME_ATTRIBUTE_ID, value: ENTITY_NAME }]),
+          sinon.match.has('attributes', [
+            { attribute: NAME_ATTRIBUTE_ID, value: ENTITY_NAME },
+            { attribute: CODE_ATTRIBUTE_ID, value: ENTITY_CODE },
+          ]),
         );
       });
 
@@ -138,29 +150,10 @@ describe('TrackedEntityPusher', () => {
         const entity = createEntityStub(ENTITY_ID);
         const models = createModelsStub({ entityRecords: [entity] });
         const pusher = new TrackedEntityPusher(models, getChange(), {});
-
-        return expect(pusher.push()).to.be.rejectedWith('entity type is required');
-      });
-
-      it('should handle entity types with more than one word', async () => {
-        const entity = createEntityStub(ENTITY_ID, {
-          closestOrgUnit: getClosestOrgUnit(),
-          type: 'multiple_words_type',
-          name: ENTITY_NAME,
-        });
-        const models = createModelsStub({ entityRecords: [entity] });
-        const dhisApiStub = createDhisApiStub({
-          ...DEFAULT_DHIS_API_STUB_PROPS,
-          entityType: { id: ENTITY_TYPE_ID, displayName: 'Multiple Words Type' },
-          entityAttributes: [{ id: NAME_ATTRIBUTE_ID, code: 'MULTIPLE_WORDS_TYPE_NAME' }],
-        });
-        const pusher = new TrackedEntityPusher(models, getChange(), dhisApiStub);
-
         await pusher.push();
-        expect(dhisApiStub.updateRecord).to.have.been.calledOnceWith(
-          TRACKED_ENTITY_INSTANCE,
-          sinon.match.has('attributes', [{ attribute: NAME_ATTRIBUTE_ID, value: ENTITY_NAME }]),
-        );
+        return expect(pusher.logResults).to.have.been.calledWithExactly({
+          errors: ['Tracked entity type is required'],
+        });
       });
     });
 
@@ -186,8 +179,11 @@ describe('TrackedEntityPusher', () => {
       it('should throw an error if the deletable entity has not been synced', async () => {
         const modelsStub = createModelsStub({ dhisSyncLogRecords: [] });
         const pusher = new TrackedEntityPusher(modelsStub, change, getDhisApiStub());
+        await pusher.push();
 
-        return expect(pusher.push()).to.be.rejectedWith(/sync log .*not found/i);
+        return expect(pusher.logResults).to.have.been.calledWithMatch(
+          sinon.match({ errors: [sinon.match(/sync log .*not found/i)] }),
+        );
       });
     });
   });
