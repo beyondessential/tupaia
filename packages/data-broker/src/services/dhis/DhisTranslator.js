@@ -3,37 +3,38 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import keyBy from 'lodash.keyby';
 import { reduceToDictionary } from '@tupaia/utils';
 import { InboundAggregateDataTranslator } from './InboundAggregateDataTranslator';
+import { parseValueForDhis } from './parseValueForDhis';
 
 export class DhisTranslator {
   constructor(models) {
     this.models = models;
     this.inboundAggregateDataTranslator = new InboundAggregateDataTranslator();
-    this.optionsByDataElementCode = {};
+    this.dataElementsByCode = {};
   }
 
   get dataSourceTypes() {
     return this.models.dataSource.getTypes();
   }
 
-  async getOptionsForDataElement(api, dataElementCode) {
-    if (this.optionsByDataElementCode[dataElementCode] === undefined) {
-      this.optionsByDataElementCode[dataElementCode] =
-        (await api.getOptionsForDataElement(dataElementCode)) || null;
-    }
-    return this.optionsByDataElementCode[dataElementCode];
-  }
-
-  getOutboundValue = async (api, dataElementCode, value) => {
+  getOutboundValue = (dataElement, value) => {
     if (value === undefined) return value; // "delete" pushes don't include a value
-    const options = await this.getOptionsForDataElement(api, dataElementCode);
-    if (!options) return value; // no option set associated with that data element, use raw value
-    const optionCode = options[value.toLowerCase()]; // Convert text to lower case so we can ignore case
-    if (!optionCode) {
-      throw new Error(`No option matching ${value} for data element ${dataElementCode}`);
+    const { options, code: dataElementCode, valueType } = dataElement;
+    if (options) {
+      const optionCode = options[value.toLowerCase()]; // Convert text to lower case so we can ignore case
+      if (!optionCode) {
+        throw new Error(`No option matching ${value} for data element ${dataElementCode}`);
+      }
+      return optionCode;
     }
-    return optionCode;
+    // not using an option set, parse the value according to the data element type
+    try {
+      return parseValueForDhis(value, valueType);
+    } catch (error) {
+      throw new Error(`Could not parse ${dataElementCode}: ${error.message}`);
+    }
   };
 
   /**
@@ -43,16 +44,43 @@ export class DhisTranslator {
   eventDataElementToSourceCode = (dataElement, dataElementToSourceCode) =>
     dataElementToSourceCode[dataElement] || dataElement;
 
+  fetchOutboundDataElementsByCode = async (api, dataSources) => {
+    const dataElementCodes = [...new Set(dataSources.map(d => d.dataElementCode))];
+    const dataElements = await api.fetchDataElements(dataElementCodes, {
+      includeOptions: true,
+      additionalFields: ['valueType'],
+    });
+    if (dataElements.length !== dataElementCodes.length) {
+      throw new Error('Not all data elements attempting to be pushed could be found on DHIS2');
+    }
+    // invert options from { code: name } to { name: code }, and transform the name to lower case,
+    // because that's the way they're used during outbound translation
+    const dataElementsWithTranslatedOptions = dataElements.map(
+      ({ options, ...restOfDataElement }) => ({
+        options:
+          options &&
+          Object.entries(options).reduce(
+            (translatedOptions, [code, name]) => ({
+              ...translatedOptions,
+              [name.toLowerCase()]: code,
+            }),
+            {},
+          ),
+        ...restOfDataElement,
+      }),
+    );
+    return keyBy(dataElementsWithTranslatedOptions, 'code');
+  };
+
   /**
    * @param {Object}     dataValue    The untranslated data value
    * @param {DataSourceType} dataSource
    */
-  translateOutboundDataValue = async (api, { code, value, ...restOfDataValue }, dataSource) => {
-    const { dataElementCode } = dataSource;
-    const valueToPush = await this.getOutboundValue(api, dataElementCode, value);
+  translateOutboundDataValue = ({ code, value, ...restOfDataValue }, dataSource, dataElement) => {
+    const valueToPush = this.getOutboundValue(dataElement, value);
 
     const outboundDataValue = {
-      dataElement: dataElementCode,
+      dataElement: dataElement.code,
       value: valueToPush,
       ...restOfDataValue,
     };
@@ -67,16 +95,15 @@ export class DhisTranslator {
   };
 
   translateOutboundDataValues = async (api, dataValues, dataSources) => {
-    // prefetch options for unique data element codes so that DHIS2 doesn't get overwhelmed
-    const dataElementCodes = [...new Set(dataSources.map(d => d.dataElementCode))];
-    await Promise.all(dataElementCodes.map(code => this.getOptionsForDataElement(api, code)));
-    const translatedDataValues = await Promise.all(
-      dataSources.map((dataSource, i) => {
-        const dataValue = dataValues[i];
-        return this.translateOutboundDataValue(api, dataValue, dataSource);
-      }),
+    // prefetch options and types for unique data element codes so that DHIS2 doesn't get overwhelmed
+    const dataElementsByCode = await this.fetchOutboundDataElementsByCode(api, dataSources);
+    return dataSources.map((dataSource, i) =>
+      this.translateOutboundDataValue(
+        dataValues[i],
+        dataSource,
+        dataElementsByCode[dataSource.dataElementCode],
+      ),
     );
-    return translatedDataValues;
   };
 
   async translateOutboundEventDataValues(api, dataValues) {
@@ -84,18 +111,24 @@ export class DhisTranslator {
       code: dataValues.map(({ code }) => code),
       type: this.dataSourceTypes.DATA_ELEMENT,
     });
-    const outboundDataValues = await Promise.all(
-      dataValues.map((d, i) => this.translateOutboundDataValue(api, d, dataSources[i])),
+    const dataElementsByCode = await this.fetchOutboundDataElementsByCode(api, dataSources);
+    const outboundDataValues = dataSources.map((dataSource, i) =>
+      this.translateOutboundDataValue(
+        dataValues[i],
+        dataSource,
+        dataElementsByCode[dataSource.dataElementCode],
+      ),
     );
-    const dataElementCodes = outboundDataValues.map(({ dataElement }) => dataElement);
-    const dataElementCodeToId = await api.getCodeToId(
-      api.getResourceTypes().DATA_ELEMENT,
-      dataElementCodes,
-    );
-    const dataValuesWithIds = outboundDataValues.map(({ dataElement, value }) => ({
-      dataElement: dataElementCodeToId[dataElement],
-      value,
-    }));
+    const dataValuesWithIds = outboundDataValues.map(({ dataElement: dataElementCode, value }) => {
+      const dataElement = dataElementsByCode[dataElementCode];
+      if (!dataElement) {
+        throw new Error(`Missing id for data element ${dataElementCode} in event push`);
+      }
+      return {
+        dataElement: dataElement.id,
+        value,
+      };
+    });
     return dataValuesWithIds;
   }
 

@@ -33,7 +33,7 @@ const createAggregatorStub = dataValues => {
       sinon.match({
         organisationUnitCode: query.organisationUnitCode,
         dataServices,
-        shouldIncludeOptions: true,
+        includeOptions: true,
       }),
     )
     .callsFake(codes => pickBy(DATA_ELEMENTS, ({ code }) => codes.includes(code)));
