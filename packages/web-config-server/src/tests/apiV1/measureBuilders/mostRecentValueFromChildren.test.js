@@ -79,7 +79,7 @@ const createDhisApi = () => {
 };
 
 describe('mostRecentValueFromChildren', () => {
-  it('should get the most recent period ', async () => {
+  it('should return the most recent value for each org unit of the specified aggregation entity type', async () => {
     const results = await mostRecentValueFromChildren(
       createAggregator(),
       createDhisApi(),
