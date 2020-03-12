@@ -18,25 +18,32 @@ exports.setup = function(options, seedLink) {
 
 exports.up = async function(db) {
   await db.runSql(`
-      ALTER TABLE entity_relation ALTER COLUMN entity_relation_type_code drop not null;
-      ALTER TABLE entity_relation DROP CONSTRAINT entity_relation_entity_relation_type_code_fkey;
-      ALTER TABLE entity_relation DROP column entity_relation_type_code;
+      DROP TABLE entity_relation;
       DROP TABLE entity_relation_type;
+      CREATE TYPE entity_hierarchy_type AS ENUM('project', 'water_catchment');
+      CREATE TABLE public.entity_relation (
+        id TEXT PRIMARY KEY,
+        parent_id TEXT NOT NULL,
+        child_id TEXT NOT NULL,
+        hierarchy_type entity_hierarchy_type NOT NULL,
+        FOREIGN KEY (parent_id) REFERENCES entity (id),
+        FOREIGN KEY (child_id) REFERENCES entity (id)
+      );
       ALTER TABLE project drop column entity_ids;
       ALTER TABLE project drop column name;
       ALTER TABLE project add column entity_id text;
     `);
 
-  updateProject(db, 'unfpa', 'UNFPA', `'WS','MH','TO','FM'`, 'country');
-  updateProject(db, 'imms', 'Immunization Module', `'VU','SB'`, 'country');
-  updateProject(db, 'fanafana', 'Fanafana Ola', `'TO'`, 'country');
-  updateProject(db, 'disaster', 'Disaster Response', `'Wo'`, 'world');
-  updateProject(db, 'wish', 'WISH Fiji', `'FJ'`, 'country');
-  updateProject(db, 'strive', 'STRIVE PNG', `'PG'`, 'country');
+  await updateProject(db, 'unfpa', 'UNFPA', `'WS','MH','TO','FM'`, 'country');
+  await updateProject(db, 'imms', 'Immunization Module', `'VU','SB'`, 'country');
+  await updateProject(db, 'fanafana', 'Fanafana Ola', `'TO'`, 'country');
+  await updateProject(db, 'disaster', 'Disaster Response', `'Wo'`, 'world');
+  await updateProject(db, 'wish', 'WISH Fiji', `'FJ'`, 'country');
+  await updateProject(db, 'strive', 'STRIVE PNG', `'PG'`, 'country');
   return updateProject(db, 'explore', 'General', `'Wo'`, 'world');
 };
 
-const updateProject = (db, projectCode, projectDescription, countryCodes, type) => {
+const updateProject = (db, projectCode, projectDescription, countryCodes, entityType) => {
   const projectId = generateId();
 
   return db.runSql(`
@@ -46,10 +53,10 @@ const updateProject = (db, projectCode, projectDescription, countryCodes, type) 
               '${generateId().slice(
                 0,
                 -1,
-              )}' || LPAD(row_number() OVER()::text, 1, '0'), '${projectId}',  id, ''
+              )}' || LPAD(row_number() OVER()::text, 1, '0'), '${projectId}',  id, 'project'
             from "entity"
             where country_code in (${countryCodes})
-             and  type in ('${type}'));
+             and  type in ('${entityType}'));
 
     update "project" set "entity_id" = '${projectId}' where "code" ='${projectCode}';
   `);
@@ -57,8 +64,24 @@ const updateProject = (db, projectCode, projectDescription, countryCodes, type) 
 
 exports.down = function(db) {
   return db.runSql(`
-    delete from entity_relation;
-    delete from entity e2 where e2."type" = 'project';  
+    DROP TABLE entity_relation;
+
+    CREATE TABLE entity_relation_type (
+      code TEXT PRIMARY KEY,
+      description TEXT
+    );
+
+    CREATE TABLE entity_relation (
+      id TEXT PRIMARY KEY,
+      from_id TEXT NOT NULL,
+      to_id TEXT NOT NULL,
+      entity_relation_type_code TEXT NOT NULL,
+      FOREIGN KEY (entity_relation_type_code) REFERENCES entity_relation_type (code),
+      FOREIGN KEY (from_id) REFERENCES entity (id),
+      FOREIGN KEY (to_id) REFERENCES entity (id)
+    );
+
+    DELETE FROM entity WHERE type = 'project';
   `);
 };
 
