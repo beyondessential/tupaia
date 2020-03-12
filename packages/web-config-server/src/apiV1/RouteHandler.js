@@ -8,12 +8,17 @@ import { Entity } from '/models';
  * buildResponse must be implemented
  */
 export class RouteHandler {
-  async handleRequest(req, res) {
+  constructor(req, res) {
+    this.req = req;
+    this.res = res;
+  }
+
+  async handleRequest() {
     // Fetch permissions
     const regionalDhisApi = getDhisApiInstance();
-    const { organisationUnitCode } = req.query;
+    const { organisationUnitCode } = this.req.query;
     this.entity = await Entity.findOne({ code: organisationUnitCode });
-    const permissionsChecker = new PermissionsChecker(req, regionalDhisApi, this.entity);
+    const permissionsChecker = new PermissionsChecker(this.req, regionalDhisApi, this.entity);
     const permissionJson = await permissionsChecker.getPermissionsOrThrowError();
     if (permissionJson) {
       // Join userLevel and overlays to this
@@ -21,7 +26,7 @@ export class RouteHandler {
       this.userLevel = userLevel;
       this.overlays = overlays;
     }
-    const response = await this.buildResponse(req);
-    respond(res, response);
+    const response = await this.buildResponse(this.req);
+    respond(this.res, response);
   }
 }

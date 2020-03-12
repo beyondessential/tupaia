@@ -96,6 +96,9 @@ export default class extends DataAggregatingRouteHandler {
       }),
     );
 
+    // store permission groups so that data can be built for the correct entities
+    this.setPermissionGroups([...new Set(overlays.map(o => o.userGroup))]);
+
     // start fetching options
     const optionsTasks = overlays.map(o => this.fetchMeasureOptions(o, query));
 

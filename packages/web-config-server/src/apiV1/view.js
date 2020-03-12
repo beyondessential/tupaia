@@ -19,6 +19,13 @@ const noViewWithId = {
   },
 };
 
+const viewNotInGroup = {
+  responseText: {
+    status: 'viewError',
+    details: 'Dashboard group does not contain view',
+  },
+};
+
 const noDataBuilder = {
   responseText: {
     status: 'viewError',
@@ -48,7 +55,7 @@ export default class extends DataAggregatingRouteHandler {
     if (getIsValidDate(startDate)) this.startDate = startDate;
     if (getIsValidDate(endDate)) this.endDate = endDate;
 
-    const { viewId, drillDownLevel } = req.query;
+    const { viewId, drillDownLevel, dashboardGroupId } = req.query;
     // If drillDownLevel is undefined, send it through as null instead so it's not dropped from the object.
     const dashboardReport = await DashboardReport.findOne({
       id: viewId,
@@ -57,6 +64,13 @@ export default class extends DataAggregatingRouteHandler {
     if (!dashboardReport) {
       throw new CustomError(viewFail, noViewWithId, { viewId });
     }
+
+    // Find and set permissions to be used in working out which entities to use when fetching data
+    const dashboardGroup = await DashboardGroup.findById(dashboardGroupId);
+    if (!dashboardGroup || !dashboardGroup.dashboardReports.includes(viewId)) {
+      throw new CustomError(viewFail, viewNotInGroup, { dashboardGroupId, viewId });
+    }
+    this.setPermissionGroups([dashboardGroup.userGroup]);
 
     this.query = {
       ...restOfQuery,
