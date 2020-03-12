@@ -30,7 +30,27 @@ export const selectOrgUnit = (state, orgUnitCode) => state.orgUnits.orgUnitMap[o
 
 export const cachedSelectOrgUnitChildren = createCachedSelector(
   [state => state.orgUnits.orgUnitMap, (_, code) => code],
-  (state, code) => Object.values(state).filter(orgUnit => orgUnit.parent === code),
+  (orgUnitMapArg, code) => Object.values(orgUnitMapArg).filter(orgUnit => orgUnit.parent === code),
+)((state, code) => code);
+
+export const cachedSelectOrgUnitAndDescendants = createCachedSelector(
+  [state => state, (_, code) => code],
+  (state, code) => {
+    const orgUnit = selectOrgUnit(state, code);
+    const children = cachedSelectOrgUnitChildren(state, code);
+    if (children.length < 1) {
+      return [orgUnit];
+    }
+
+    const descendants = children.reduce(
+      (array, child) => [
+        ...array,
+        ...cachedSelectOrgUnitAndDescendants(state, child.organisationUnitCode),
+      ],
+      [],
+    );
+    return [orgUnit, ...descendants];
+  },
 )((state, code) => code);
 
 // Data management utility functions

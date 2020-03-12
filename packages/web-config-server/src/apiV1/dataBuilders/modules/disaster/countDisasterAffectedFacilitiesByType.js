@@ -1,6 +1,6 @@
 import keyBy from 'lodash.keyby';
 import { convertDateRangeToPeriodString } from '@tupaia/dhis-api';
-import { Entity } from '/models';
+import { Entity, Facility } from '/models';
 
 const AFFECTED_STATUS_DATA_ELEMENT_CODE = 'DP_NEW008';
 
@@ -24,6 +24,9 @@ export const countDisasterAffectedFacilitiesByType = async (
   const options = await dhisApi.getOptionSetOptions({ code: optionSetCode });
   const period = convertDateRangeToPeriodString(disasterStartDate, disasterEndDate || Date.now());
   const facilities = await Entity.getFacilitiesOfOrgUnit(organisationUnitCode);
+  const facilityMetadatas = await Facility.find({
+    code: facilities.map(facility => facility.code),
+  });
   const { results } = await aggregator.fetchAnalytics([AFFECTED_STATUS_DATA_ELEMENT_CODE], {
     ...query,
     dataServices,
@@ -31,6 +34,7 @@ export const countDisasterAffectedFacilitiesByType = async (
   });
 
   const facilitiesByCode = keyBy(facilities, 'code');
+  const facilityMetadatasByCode = keyBy(facilityMetadatas, 'code');
   const facilityStatuses = new Map(
     results.map(result => {
       const { organisationUnit: facilityCode } = result;
@@ -45,7 +49,8 @@ export const countDisasterAffectedFacilitiesByType = async (
 
   const statusCountsByFacilityType = {};
   facilities.forEach(facility => {
-    const { facility_type_name: facilityTypeName, name } = facility;
+    const { name, code } = facility;
+    const { type_name: facilityTypeName } = facilityMetadatasByCode[code];
     const facilityAffectedStatus = facilityStatuses.get(name) || FACILITY_STATUS_UNKNOWN;
 
     if (!statusCountsByFacilityType[facilityTypeName]) {

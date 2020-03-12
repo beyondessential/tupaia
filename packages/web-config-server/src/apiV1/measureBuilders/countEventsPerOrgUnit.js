@@ -28,3 +28,5 @@ export const countEventsPerOrgUnit = async (aggregator, dhisApi, query, measureB
   );
   return builder.build();
 };
+
+export { getLevel } from './DataPerOrgUnitBuilder';

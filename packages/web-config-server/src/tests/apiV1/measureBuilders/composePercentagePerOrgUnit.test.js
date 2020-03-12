@@ -6,7 +6,7 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 
-import { composePercentagePerOrgUnit } from '/apiV1/measureBuilders';
+import { composePercentagePerOrgUnit } from '/apiV1/measureBuilders/composePercentagePerOrgUnit';
 import * as FetchComposedData from '/apiV1/measureBuilders/helpers';
 
 const aggregator = {};

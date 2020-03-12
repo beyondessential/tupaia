@@ -48,3 +48,5 @@ export const mostRecentValueFromChildren = async (
   });
   return Promise.all(orgUnitValuePromises);
 };
+
+export const getLevel = measureBuilderConfig => measureBuilderConfig.organisationUnitLevel;

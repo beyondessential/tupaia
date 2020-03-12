@@ -1,16 +1,8 @@
-import keyBy from 'lodash.keyby';
-
-import { Entity } from '/models/Entity';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { getDateRange } from '/apiV1/utils';
 
 class CheckTimelinessMeasureBuilder extends DataBuilder {
   async build() {
-    const facilitiesByCode = await this.getFacilityDataByCode();
-    return Object.values(facilitiesByCode);
-  }
-
-  async getFacilityDataByCode() {
     const { periodGranularity } = this.config;
     const {
       dataElementCode,
@@ -20,13 +12,6 @@ class CheckTimelinessMeasureBuilder extends DataBuilder {
     } = this.query;
     const { startDate, endDate } = getDateRange(periodGranularity, passedStartDate, passedEndDate);
 
-    // create index of all facilities
-    const facilityCodes = (await Entity.getFacilitiesOfOrgUnit(organisationUnitGroupCode)).map(
-      facility => ({
-        organisationUnitCode: facility.code,
-      }),
-    );
-    const facilityData = keyBy(facilityCodes, 'organisationUnitCode');
     const dhisParameters = {
       dataElementGroupCode: dataElementCode,
       orgUnitIdScheme: 'code',
@@ -39,14 +24,10 @@ class CheckTimelinessMeasureBuilder extends DataBuilder {
     const results = await this.dhisApi.getDataValuesInSets(dhisParameters, query);
 
     // annotate each facility with the corresponding data from dhis
-    results.forEach(row => {
-      const data = facilityData[row.organisationUnit];
-      if (data) {
-        data[dataElementCode] = row.value === undefined ? '' : row.value.toString();
-      }
-    });
-
-    return facilityData;
+    return results.map(row => ({
+      organisationUnitCode: row.organisationUnit,
+      [dataElementCode]: row.value === undefined ? '' : row.value.toString(),
+    }));
   }
 }
 
@@ -67,3 +48,5 @@ export const checkTimeliness = async (aggregator, dhisApi, query, measureBuilder
 
   return responseObject;
 };
+
+export const getLevel = measureBuilderConfig => measureBuilderConfig.level;

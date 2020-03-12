@@ -1,20 +1,5 @@
 import { Entity } from '/models';
-import { getEntityLocationForFrontend } from './utils/getEntityLocationForFrontend';
-
-function getOrganisationUnitTypeForFrontend(type) {
-  switch (type) {
-    case 'country':
-      return 'Country';
-    case 'region':
-      return 'Region';
-    case 'facility':
-      return 'Facility';
-    case 'village':
-      return 'Village';
-    default:
-      return 'Other';
-  }
-}
+import { getEntityLocationForFrontend, getOrganisationUnitTypeForFrontend } from './utils';
 
 export function translateForFrontend(entity) {
   // Sometimes we'll end up with a null entity (eg getting a top-level entity's parent).

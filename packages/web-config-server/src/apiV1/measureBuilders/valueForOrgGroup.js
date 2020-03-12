@@ -1,6 +1,4 @@
-import keyBy from 'lodash.keyby';
-
-import { Entity } from '/models/Entity';
+import { Entity, Facility } from '/models';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 
 const FACILITY_TYPE_CODE = 'facilityTypeCode';
@@ -15,43 +13,34 @@ class ValueForOrgGroupMeasureBuilder extends DataBuilder {
   async getFacilityDataByCode() {
     const { dataElementCode, organisationUnitGroupCode } = this.query;
 
-    const formatFacilityEntities = facility => {
-      if (dataElementCode === FACILITY_TYPE_CODE) {
-        return {
-          organisationUnitCode: facility.code,
-          facilityTypeCode: facility.facility_category_code,
-          facilityTypeName: facility.facility_type_name,
-        };
-      }
-
-      return {
-        organisationUnitCode: facility.code,
-      };
-    };
-
-    // create index of all facilities
-    const facilityCodes = (await Entity.getFacilitiesOfOrgUnit(organisationUnitGroupCode)).map(
-      formatFacilityEntities,
-    );
-    const facilityData = keyBy(facilityCodes, 'organisationUnitCode');
-
     // 'facilityTypeCode' signifies a special case which is handled internally
     if (dataElementCode === FACILITY_TYPE_CODE) {
-      return facilityData;
+      // create index of all facilities
+      const facilityCodes = (await Entity.getFacilitiesOfOrgUnit(organisationUnitGroupCode)).map(
+        facility => facility.code,
+      );
+      const facilityMetaDatas = await Facility.find({ code: facilityCodes });
+      return facilityMetaDatas.reduce(
+        (array, metadata) => [
+          ...array,
+          {
+            organisationUnitCode: metadata.code,
+            facilityTypeCode: metadata.category_code,
+            facilityTypeName: metadata.type_name,
+          },
+        ],
+        [],
+      );
     }
 
     const { results } = await this.fetchAnalytics([dataElementCode], {
       organisationUnitCode: organisationUnitGroupCode,
     });
     // annotate each facility with the corresponding data from dhis
-    results.forEach(row => {
-      const data = facilityData[row.organisationUnit];
-      if (data) {
-        data[dataElementCode] = row.value === undefined ? '' : row.value.toString();
-      }
-    });
-
-    return facilityData;
+    return results.map(row => ({
+      organisationUnitCode: row.organisationUnit,
+      [dataElementCode]: row.value === undefined ? '' : row.value.toString(),
+    }));
   }
 }
 
@@ -66,3 +55,6 @@ export const valueForOrgGroup = async (aggregator, dhisApi, query, measureBuilde
 
   return responseObject;
 };
+
+export const getLevel = measureBuilderConfig =>
+  measureBuilderConfig.level || measureBuilderConfig.organisationUnitLevel;

@@ -8,7 +8,7 @@
 import { combineReducers } from 'redux';
 import { createSelector } from 'reselect';
 import createCachedSelector from 're-reselect';
-import { selectOrgUnit } from './orgUnitReducers';
+import { cachedSelectOrgUnitAndDescendants } from './orgUnitReducers';
 
 import {
   GO_HOME,
@@ -291,25 +291,37 @@ const selectMeasureDataByCode = createSelector(
 
 const cachedSelectMeasureWithDisplayInfo = createCachedSelector(
   [
+    (_, organisationUnitCode) => organisationUnitCode,
     selectMeasureDataByCode,
     state => state.map.measureInfo.measureOptions,
     state => state.map.measureInfo.hiddenMeasures,
-    selectOrgUnit,
   ],
-  (data, options, hiddenMeasures, orgUnit) => {
+  (organisationUnitCode, data, options, hiddenMeasures) => {
     return {
+      organisationUnitCode,
       ...data,
-      ...getMeasureDisplayInfo({ ...data, ...orgUnit }, options, hiddenMeasures),
+      ...getMeasureDisplayInfo({ ...data }, options, hiddenMeasures),
     };
   },
 )((_, orgUnitCode) => orgUnitCode);
 
 export const selectAllMeasuresWithDisplayInfo = createSelector(
-  [state => state, state => state.map.measureInfo.measureData],
-  (state, allData = []) =>
-    allData.map(data => ({
-      ...cachedSelectMeasureWithDisplayInfo(state, data.organisationUnitCode),
-    })),
+  [state => state, state => state.map.measureInfo],
+  (state, measureInfoParam) => {
+    const { measureData, currentCountry, measureLevel } = measureInfoParam;
+    if (!measureLevel || !currentCountry || !measureData) {
+      return [];
+    }
+
+    const listOfMeasureLevels = measureLevel.split(',');
+    const allOrgUnits = cachedSelectOrgUnitAndDescendants(state, currentCountry).filter(orgUnit =>
+      listOfMeasureLevels.includes(orgUnit.type),
+    );
+
+    return allOrgUnits.map(orgUnit =>
+      cachedSelectMeasureWithDisplayInfo(state, orgUnit.organisationUnitCode),
+    );
+  },
 );
 
 export const selectRadiusScaleFactor = createSelector(
