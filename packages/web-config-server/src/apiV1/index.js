@@ -54,23 +54,23 @@ export const getRoutesForApiV1 = () => {
   );
   api.get(
     '/organisationUnitSearch',
-    catchAsyncErrors((...params) => new OrgUnitSearchHandler().handleRequest(...params)),
+    catchAsyncErrors((...params) => new OrgUnitSearchHandler(...params).handleRequest()),
   );
   api.get(
     '/dashboard',
-    catchAsyncErrors((...params) => new DashBoardHandler().handleRequest(...params)),
+    catchAsyncErrors((...params) => new DashBoardHandler(...params).handleRequest()),
   );
   api.get(
     '/view',
-    catchAsyncErrors((...params) => new ViewHandler().handleRequest(...params)),
+    catchAsyncErrors((...params) => new ViewHandler(...params).handleRequest()),
   );
   api.get(
     '/measures',
-    catchAsyncErrors((...params) => new MeasuresHandler().handleRequest(...params)),
+    catchAsyncErrors((...params) => new MeasuresHandler(...params).handleRequest()),
   );
   api.get(
     '/measureData',
-    catchAsyncErrors((...params) => new MeasuresDataHandler().handleRequest(...params)),
+    catchAsyncErrors((...params) => new MeasuresDataHandler(...params).handleRequest()),
   );
   api.get('/disasters', catchAsyncErrors(disasters));
   api.get('/regions/:code', catchAsyncErrors(getRegions));

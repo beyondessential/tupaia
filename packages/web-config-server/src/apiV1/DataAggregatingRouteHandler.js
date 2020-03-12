@@ -12,12 +12,14 @@ import { Aggregator } from '../aggregator';
  * buildResponse must be implemented
  */
 export class DataAggregatingRouteHandler extends RouteHandler {
-  constructor() {
-    super();
+  constructor(req, res) {
+    super(req, res);
     this.aggregator = createAggregator(Aggregator);
   }
 
-  async handleRequest(req, res) {
-    return super.handleRequest(req, res);
+  setPermissionGroups(permissionGroups) {
+    this.aggregator.injectCheckEntityAccess(entityCode =>
+      Promise.all(permissionGroups.map(p => this.req.userHasAccess(entityCode, p))),
+    );
   }
 }

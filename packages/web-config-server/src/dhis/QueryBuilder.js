@@ -8,9 +8,10 @@ import { getDefaultPeriod } from './getDefaultPeriod';
 import { Entity } from '/models';
 
 export class QueryBuilder {
-  constructor(originalQuery, replacementValues = {}) {
+  constructor(originalQuery, replacementValues = {}, checkEntityAccess) {
     this.query = { ...originalQuery };
     this.replacementValues = replacementValues;
+    this.checkEntityAccess = checkEntityAccess;
   }
 
   getQueryParameter(parameterKey) {
@@ -20,8 +21,8 @@ export class QueryBuilder {
   // Ensure the standard dimensions of period, start/end date, and organisation unit are set up
   build() {
     this.makePeriodReplacements();
+    this.buildOrganisationUnitCodes();
     this.makeEventReplacements();
-    this.query.organisationUnitCode = this.getQueryParameter('organisationUnitCode');
     return this.query;
   }
 
@@ -32,7 +33,7 @@ export class QueryBuilder {
   }
 
   // Builds the organisation unit codes for all organisation units data should be fetched from,
-  // using the facility level children of the selected organisation unit
+  // using the descendents of the selected organisation of the appropriate type (defaults to facility)
   async buildOrganisationUnitCodes() {
     const organisationUnitCode = this.getQueryParameter('organisationUnitCode');
     const entity = await Entity.findOne({ code: organisationUnitCode });
@@ -42,7 +43,9 @@ export class QueryBuilder {
       return this.query;
     }
     const dataSourceEntities = await entity.getDescendantsOfType(dataSourceEntityType);
-    this.query.organisationUnitCodes = dataSourceEntities.map(e => e.code);
+    const entityCodes = dataSourceEntities.map(e => e.code);
+    const entityAccessList = await Promise.all(entityCodes.map(this.checkEntityAccess));
+    this.query.organisationUnitCodes = entityCodes.filter((_, i) => entityAccessList[i]);
     delete this.query.organisationUnitCode;
     return this.query;
   }
