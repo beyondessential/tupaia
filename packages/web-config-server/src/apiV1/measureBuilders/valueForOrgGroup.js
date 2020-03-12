@@ -39,7 +39,7 @@ class ValueForOrgGroupMeasureBuilder extends DataBuilder {
     // annotate each facility with the corresponding data from dhis
     return results.map(row => ({
       organisationUnitCode: row.organisationUnit,
-      [dataElementCode]: row.value,
+      [dataElementCode]: row.value === undefined ? '' : row.value.toString(),
     }));
   }
 }

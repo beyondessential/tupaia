@@ -46,8 +46,8 @@ export const composePercentagePerOrgUnit = async (aggregator, dhisApi, query, co
 
   const fractionsByOrgUnit = {};
   Object.keys(numeratorsByOrgUnit).forEach(orgUnit => {
-    const numeratorValue = numeratorsByOrgUnit[orgUnit][dataElementCode];
-    const denominatorValue = denominatorsByOrgUnit[orgUnit][dataElementCode];
+    const { [dataElementCode]: numeratorValue } = numeratorsByOrgUnit[orgUnit] || {};
+    const { [dataElementCode]: denominatorValue } = denominatorsByOrgUnit[orgUnit] || {};
     const fraction = divideValues(numeratorValue, denominatorValue, fractionType);
 
     // eslint-disable-next-line no-restricted-globals
