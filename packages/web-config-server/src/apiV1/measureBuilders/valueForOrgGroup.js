@@ -55,6 +55,3 @@ export const valueForOrgGroup = async (aggregator, dhisApi, query, measureBuilde
 
   return responseObject;
 };
-
-export const getLevel = measureBuilderConfig =>
-  measureBuilderConfig.level || measureBuilderConfig.organisationUnitLevel;

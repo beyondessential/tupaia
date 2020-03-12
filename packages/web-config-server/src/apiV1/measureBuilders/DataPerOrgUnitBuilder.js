@@ -112,11 +112,3 @@ export class DataPerOrgUnitBuilder extends DataBuilder {
     return this.formatData(data);
   }
 }
-
-export const getLevel = measureBuilderConfig => {
-  const entityType = getDataSourceEntityType(measureBuilderConfig);
-  if (entityType !== ENTITY_TYPES.VILLAGE) {
-    return entityType;
-  }
-  return ENTITY_TYPES.FACILITY;
-};
