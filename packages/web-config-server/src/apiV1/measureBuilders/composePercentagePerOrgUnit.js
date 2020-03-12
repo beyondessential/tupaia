@@ -5,7 +5,6 @@
 
 import keyBy from 'lodash.keyby';
 
-import { getLevel as getNumeratorLevel } from '/apiV1/measureBuilders/getMeasureBuilder';
 import { divideValues } from '/apiV1/dataBuilders/helpers';
 import { fetchComposedData } from '/apiV1/measureBuilders/helpers';
 
@@ -60,12 +59,4 @@ export const composePercentagePerOrgUnit = async (aggregator, dhisApi, query, co
   });
 
   return Object.values(fractionsByOrgUnit);
-};
-
-export const getLevel = measureBuilderConfig => {
-  const {
-    measureBuilder: numeratorMeasureBuilder,
-    measureBuilderConfig: numeratorMeasureBuilderConfig,
-  } = measureBuilderConfig.measureBuilders.numerator;
-  return getNumeratorLevel(numeratorMeasureBuilder, numeratorMeasureBuilderConfig);
 };

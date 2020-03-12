@@ -1,5 +1,5 @@
 import { CustomError } from '@tupaia/utils';
-import { getMeasureBuilder, getLevel } from '/apiV1/measureBuilders/getMeasureBuilder';
+import { getMeasureBuilder } from '/apiV1/measureBuilders/getMeasureBuilder';
 import { getDhisApiInstance } from '/dhis';
 import { DhisTranslationHandler, getDateRange, getOrganisationUnitTypeForFrontend } from './utils';
 import { DATA_SOURCE_TYPES } from './dataBuilders/dataSourceTypes';
@@ -80,6 +80,13 @@ const createDataServices = mapOverlay => {
   return [{ isDataRegional }];
 };
 
+const getMeasureLevel = mapOverlays => {
+  const aggregationTypes = mapOverlays.map(({ measureBuilderConfig }) =>
+    getOrganisationUnitTypeForFrontend(measureBuilderConfig.aggregationEntityType),
+  );
+  return [...new Set(aggregationTypes)].join(',');
+};
+
 export default class extends DhisTranslationHandler {
   constructor(aggregator) {
     super();
@@ -144,10 +151,7 @@ export default class extends DhisTranslationHandler {
 
     return {
       measureId: overlays.map(o => o.id).join(','),
-      measureLevel: overlays
-        .map(o => getLevel(o.measureBuilder, o.measureBuilderConfig))
-        .map(getOrganisationUnitTypeForFrontend)
-        .join(','),
+      measureLevel: getMeasureLevel(overlays),
       measureOptions,
       measureData,
     };

@@ -48,5 +48,3 @@ export const checkTimeliness = async (aggregator, dhisApi, query, measureBuilder
 
   return responseObject;
 };
-
-export const getLevel = measureBuilderConfig => measureBuilderConfig.level;

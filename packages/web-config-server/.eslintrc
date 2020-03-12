@@ -10,6 +10,15 @@
     "import/no-extraneous-dependencies": ["error", { "devDependencies": ["src/tests/**"] }],
     "module-resolver/use-alias": "warn"
   },
+  "overrides": [
+    {
+      "files": "src/tests/**",
+      "rules": {
+        "func-names": "off",
+        "no-unused-expressions": "off"
+      }
+    }
+  ],
   "settings": {
     "import/resolver": {
       "babel-module": {}

@@ -31,5 +31,3 @@ export const sumLatestPerOrgUnit = async (aggregator, dhisApi, query, measureBui
   );
   return builder.build();
 };
-
-export { getLevel } from './DataPerOrgUnitBuilder';
