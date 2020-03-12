@@ -63,8 +63,6 @@ export const TopBar = ({
         <img src={logo} alt="Tupaia logo" width="70" height="30" />
       </a>
       <Toolbar>
-        <h1>World</h1>
-
         <ToolbarButton onClick={onToggleSearchExpand}>
           <SearchIcon />
         </ToolbarButton>

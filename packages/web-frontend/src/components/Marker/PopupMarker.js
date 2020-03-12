@@ -54,7 +54,6 @@ const PopupDataItemList = ({ measureOptions, data }) =>
 PopupDataItemList.propTypes = {
   data: MarkerDataPropType.isRequired,
   measureOptions: MeasureOptionsGroupPropType.isRequired,
-  defaultMeasureName: PropTypes.string.isRequired,
 };
 
 export class PopupMarker extends PureComponent {
