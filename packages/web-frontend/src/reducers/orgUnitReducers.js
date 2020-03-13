@@ -74,21 +74,28 @@ const insertOrgUnit = (state, orgUnit) => {
 };
 
 const addOrgUnitToMap = (state, orgUnit) => {
-  const { parent = {}, organisationUnitChildren: children = [], descendants = [] } = orgUnit;
-
+  const { countryHierarchy, parent = {}, organisationUnitChildren: children = [] } = orgUnit;
   let result = { ...state };
+
   if (parent.organisationUnitCode) {
     result = insertOrgUnit(result, normaliseForMap(parent, undefined, false));
   }
 
-  result = insertOrgUnit(result, normaliseForMap(orgUnit, parent.organisationUnitCode, true));
+  if (countryHierarchy) {
+    countryHierarchy.forEach(descendant => {
+      result = insertOrgUnit(result, normaliseForMap(descendant, descendant.parent, true));
+    });
+    // Country hierarchy includes all relevant data (including requested orgUnit), so once it's been loaded we can exit
+    return result;
+  }
+
+  result = insertOrgUnit(
+    result,
+    normaliseForMap(orgUnit, parent && parent.organisationUnitCode, true),
+  );
 
   children.forEach(child => {
     result = insertOrgUnit(result, normaliseForMap(child, orgUnit.organisationUnitCode, false));
-  });
-
-  descendants.forEach(descendant => {
-    result = insertOrgUnit(result, normaliseForMap(descendant, descendant.parent, true));
   });
 
   return result;

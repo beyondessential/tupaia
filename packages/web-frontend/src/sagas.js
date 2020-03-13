@@ -418,8 +418,8 @@ function* watchFetchCountryAccessDataAndFetchItTEST() {
  *
  */
 function requestOrgUnitData(organisationUnitCode) {
-  const requestResourceUrl = `organisationUnit?organisationUnitCode=${organisationUnitCode}&includeDescendants=${organisationUnitCode !==
-    'World'}`;
+  const shouldIncludeCountryData = organisationUnitCode !== 'World'; // We should pull in all country data if we are within a country (ie. not World)
+  const requestResourceUrl = `organisationUnit?organisationUnitCode=${organisationUnitCode}&includeCountryHierarchy=${shouldIncludeCountryData}`;
   return call(request, requestResourceUrl);
 }
 
@@ -456,7 +456,7 @@ function* fetchOrgUnitDataAndChangeOrgUnit(action) {
     yield put(fetchOrgUnitSuccess(orgUnitData));
     yield put(
       changeOrgUnitSuccess(
-        normaliseDescendantOrgUnitData(orgUnitData),
+        normaliseCountryHierarchyOrgUnitData(orgUnitData),
         action.shouldChangeMapBounds,
       ),
     );
@@ -465,15 +465,30 @@ function* fetchOrgUnitDataAndChangeOrgUnit(action) {
   }
 }
 
-const normaliseDescendantOrgUnitData = orgUnitData => {
-  const { descendants, ...restOfOrgUnit } = orgUnitData;
-  if (!descendants) {
+const normaliseCountryHierarchyOrgUnitData = orgUnitData => {
+  const { countryHierarchy, ...restOfOrgUnit } = orgUnitData;
+  if (!countryHierarchy) {
     return orgUnitData;
   }
 
+  const findParentInHierarchy = () => {
+    const hierarchyOrgUnitItem = countryHierarchy.find(
+      hierarchyItem => hierarchyItem.organisationUnitCode === orgUnitData.organisationUnitCode,
+    );
+
+    if (!hierarchyOrgUnitItem) {
+      return {};
+    }
+
+    return countryHierarchy.find(
+      hierarchyItem => hierarchyItem.organisationUnitCode === hierarchyOrgUnitItem.parent,
+    );
+  };
+
   return {
+    parent: orgUnitData.parent || findParentInHierarchy(),
     ...restOfOrgUnit,
-    organisationUnitChildren: descendants.filter(
+    organisationUnitChildren: countryHierarchy.filter(
       descendant => descendant.parent === orgUnitData.organisationUnitCode,
     ),
   };
