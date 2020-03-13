@@ -110,10 +110,13 @@ export class PermissionsChecker {
       throw new CustomError(permissionFail, organisationUnitDoesNotExist);
     }
 
-    if (this.entity.type !== 'project') {
-      if (this.entity.code !== 'World' && !(await this.userHasAccess(this.entity))) {
-        throw new CustomError(permissionFail, noAccessToOrganisationUnit);
-      }
+    if (
+      this.entity.code !== 'World' &&
+      this.entity.code !== 'explore' &&
+      this.entity.code !== 'disaster' &&
+      !(await this.userHasAccess(this.entity))
+    ) {
+      throw new CustomError(permissionFail, noAccessToOrganisationUnit);
     }
     return this.checkForPermissions();
   }

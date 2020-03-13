@@ -37,4 +37,15 @@ export class Project extends BaseModel {
           on p.entity_id = sub.from_id
     `);
   }
+
+  static async getChildIds(id) {
+    return Project.database.executeSql(
+      `
+      select ep.to_id as childId
+      from entity_relation ep
+      where ep.from_id = ?    
+      `,
+      id,
+    );
+  }
 }

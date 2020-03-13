@@ -38,11 +38,9 @@ export async function getEntityByCode(entityCode, userHasAccess) {
   }
 
   // check permission
-  if (queriedEntity.type !== 'project') {
-    const hasAccess = await userHasAccess(queriedEntity.code);
-    if (!hasAccess) {
-      throw new Error(`No access to ${queriedEntity.code}`);
-    }
+  const hasAccess = await userHasAccess(queriedEntity.code);
+  if (!hasAccess) {
+    throw new Error(`No access to ${queriedEntity.code}`);
   }
 
   // fetch parent if one exists - don't check permission (as we already

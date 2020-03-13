@@ -45,11 +45,7 @@ function* watchSelectProjectAndLoadProjectState() {
 
     try {
       const dashboard = yield call(request, requestResourceUrl, fetchDashboardError);
-      if (Object.keys(dashboard).length === 0) {
-        const worldResourceUrl = `dashboard?organisationUnitCode=World`;
-        const worldDashboard = yield call(request, worldResourceUrl, fetchDashboardError);
-        yield put(fetchDashboardSuccess(worldDashboard));
-      } else yield put(fetchDashboardSuccess(dashboard));
+      yield put(fetchDashboardSuccess(dashboard));
     } catch (error) {
       yield put(error.errorFunction(error));
     }

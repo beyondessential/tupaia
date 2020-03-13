@@ -1,4 +1,5 @@
 import {} from 'dotenv/config'; // Load the environment variables into process.env
+import flatten from 'lodash.flatten';
 import session from 'client-sessions';
 import {
   hasReportAccessToOrganisationUnit,
@@ -6,7 +7,7 @@ import {
 } from '/apiV1/utils';
 import { getAccessPolicyForUser } from './getAccessPolicyForUser';
 import { PUBLIC_USER_NAME } from './publicAccess';
-import { Entity } from '/models';
+import { Entity, Project } from '/models';
 
 const allowedUnauthRoutes = ['/login', '/version'];
 
@@ -41,6 +42,17 @@ const getUserAccessPolicyFromSession = async req => {
   return getAccessPolicyForUser(userName);
 };
 
+const getProjectAncestors = async entity => {
+  let ancestorCodes;
+  const childids = await Project.getChildIds(entity.id);
+  const childEntities = await Entity.find({ id: childids.map(a => a.childid) });
+  const promiseAncestorCodes = await childEntities.map(x => x.getAncestorCodes());
+  await Promise.all(promiseAncestorCodes).then(response => {
+    ancestorCodes = flatten(response);
+  });
+  return ancestorCodes;
+};
+
 export const setSession = (req, userInfo) => {
   req.session = { userJson: { ...userInfo } };
   req.lastuser = { userName: userInfo.userName };
@@ -54,7 +66,7 @@ export const addUserAccessHelper = (req, res, next) => {
         : entityOrCode;
 
     // Assume user always has access to all world items.
-    if (entity.code === 'World') {
+    if (entity.code === 'World' || entity.code === 'explore' || entity.code === 'disaster') {
       return true;
     }
 
@@ -63,7 +75,10 @@ export const addUserAccessHelper = (req, res, next) => {
       return false;
     }
 
-    const ancestorCodes = await entity.getAncestorCodes();
+    const ancestorCodes =
+      entity.type === 'project'
+        ? await getProjectAncestors(entity)
+        : await entity.getAncestorCodes();
 
     return hasReportAccessToOrganisationUnit(accessPolicy, entity.code, ancestorCodes, userGroup);
   };
@@ -75,7 +90,11 @@ export const addUserAccessHelper = (req, res, next) => {
     }
 
     const entity = await Entity.findOne({ code: entityCode });
-    const ancestorCodes = await entity.getAncestorCodes();
+
+    const ancestorCodes =
+      entity.type === 'project'
+        ? await getProjectAncestors(entity)
+        : await entity.getAncestorCodes();
 
     return getReportUserGroupAccessRightsForOrganisationUnit(
       accessPolicy,
@@ -85,7 +104,7 @@ export const addUserAccessHelper = (req, res, next) => {
   };
 
   req.getUserGroups = async entityCode => {
-    if (entityCode === 'World') {
+    if (entityCode === 'World' || entityCode === 'explore' || entityCode === 'disaster') {
       return ['Public']; // At this stage, all users have Public access to the World dashboard
     }
     const userGroupAccessRights = await req.getUserGroupAccessRights(entityCode);
