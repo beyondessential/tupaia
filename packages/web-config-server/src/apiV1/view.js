@@ -1,6 +1,6 @@
 import { convertDateRangeToPeriods } from '@tupaia/dhis-api';
 import { replaceValues } from '@tupaia/utils';
-import { DashboardReport } from '/models';
+import { DashboardReport, DashboardGroup } from '/models';
 import { getDhisApiInstance } from '/dhis';
 import { CustomError } from '@tupaia/utils';
 import { isSingleValue } from './utils';
