@@ -19,9 +19,9 @@ exports.setup = function(options, seedLink) {
 exports.up = async function() {
   const db = new TupaiaDatabase();
   await db.executeSql(`
-    ALTER TYPE public.entity_type ADD VALUE 'project';  
+    ALTER TYPE public.entity_type ADD VALUE 'project';
   `);
-  db.destroy();
+  db.closeConnections();
   return null;
 };
 
