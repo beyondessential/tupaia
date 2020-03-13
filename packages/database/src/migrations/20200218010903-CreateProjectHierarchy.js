@@ -33,9 +33,8 @@ exports.up = async function(db) {
       ALTER TABLE project drop column name;
       ALTER TABLE project add column entity_id text;
     `);
-
   await updateProject(db, 'unfpa', 'UNFPA', `'WS','MH','TO','FM'`, 'country');
-  await updateProject(db, 'imms', 'Immunization Module', `'VU','SB'`, 'country');
+  await updateProject(db, 'imms', 'Immunization Module', `'VU','SB'`, 'country'); // todo migration is failing on this line
   await updateProject(db, 'fanafana', 'Fanafana Ola', `'TO'`, 'country');
   await updateProject(db, 'disaster', 'Disaster Response', `'Wo'`, 'world');
   await updateProject(db, 'wish', 'WISH Fiji', `'FJ'`, 'country');
@@ -43,21 +42,28 @@ exports.up = async function(db) {
   return updateProject(db, 'explore', 'General', `'Wo'`, 'world');
 };
 
-const updateProject = (db, projectCode, projectDescription, countryCodes, entityType) => {
+const updateProject = async (db, projectCode, projectDescription, entityCodes, entityType) => {
   const projectId = generateId();
+
+  const childEntities = (
+    await db.runSql(`
+    select id from entity
+    where country_code in (${entityCodes})
+    and type = '${entityType}'
+  `)
+  ).rows;
+
+  const valuesToInsert = childEntities
+    .map(
+      e => `
+    ('${generateId()}', '${projectId}', '${e.id}', 'project')
+  `,
+    )
+    .join(',\n');
 
   return db.runSql(`
     insert into "entity" ("id", "code", "parent_id", "name", "type" ) values ('${projectId}', '${projectCode}', '5d3f8844a72aa231bf71977f', '${projectDescription}', 'project');
-    insert into "entity_relation" (
-          select
-              '${generateId().slice(
-                0,
-                -1,
-              )}' || LPAD(row_number() OVER()::text, 1, '0'), '${projectId}',  id, 'project'
-            from "entity"
-            where country_code in (${countryCodes})
-             and  type in ('${entityType}'));
-
+    insert into "entity_relation" ("id", "parent_id", "child_id", "hierarchy_type") values ${valuesToInsert};
     update "project" set "entity_id" = '${projectId}' where "code" ='${projectCode}';
   `);
 };
