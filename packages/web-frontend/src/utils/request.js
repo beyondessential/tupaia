@@ -28,7 +28,6 @@ function getStatus(error, defaultStatus = 500) {
  */
 function assignErrorAction(error, defaultErrorFunction, alwaysUseSuppliedErrorFunction = false) {
   const status = getStatus(error);
-  //TODO
   const modifiedError = error;
 
   if (alwaysUseSuppliedErrorFunction) {

@@ -22,6 +22,5 @@ export const VIEW_CONTENT_SHAPE = {
 
 export const PRESENTATION_OPTIONS_SHAPE = {
   color: PropTypes.string,
-  // TODO
   description: PropTypes.string,
 };

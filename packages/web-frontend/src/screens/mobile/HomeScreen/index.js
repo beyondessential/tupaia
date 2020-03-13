@@ -24,8 +24,7 @@ import { WHITE } from '../../../styles';
 import { getCurrentDashboardKey } from '../../../selectors';
 
 class HomeScreen extends PureComponent {
-  // TODO
-  componentWillMount() {
+  componentWillMount(props) {
     const { hierarchyData, getNestedOrgUnits } = this.props;
     if (!hierarchyData || !Array.isArray(hierarchyData) || hierarchyData.length < 1) {
       getNestedOrgUnits('World');

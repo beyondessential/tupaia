@@ -13,10 +13,9 @@ import { connect } from 'react-redux';
 import { changeOrgUnit } from '../../../actions';
 import { DARK_BLUE, MOBILE_MARGIN_SIZE, WHITE } from '../../../styles';
 
-// TODO
 const BackButton = ({ orgUnit, onSelectParent }) => (
   <div style={styles.wrapper}>
-    <button type="submit" onClick={() => onSelectParent(orgUnit)} style={styles.button}>
+    <button type="button" onClick={() => onSelectParent(orgUnit)} style={styles.button}>
       <BackIcon style={styles.icon} color={DARK_BLUE} />
       Back
     </button>
@@ -55,8 +54,7 @@ function getParentOrgCode(orgUnit) {
   if (orgUnit.parent) {
     return orgUnit.parent;
   }
-  // TODO
-  return null;
+  return undefined;
 }
 
 export default connect(null, dispatch => ({

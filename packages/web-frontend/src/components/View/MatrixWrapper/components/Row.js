@@ -34,7 +34,6 @@ export default class Row extends Component {
 
         return a === b;
       }
-      // TODO
       return undefined;
     });
   }
@@ -153,7 +152,6 @@ export default class Row extends Component {
 Row.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.object),
   isRowHighlighted: PropTypes.bool,
-  //TODO
   highlightedColumn: PropTypes.number,
   depth: PropTypes.number,
   categoryIndent: PropTypes.number,

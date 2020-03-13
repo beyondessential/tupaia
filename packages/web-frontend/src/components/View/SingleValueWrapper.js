@@ -1,5 +1,3 @@
-/* eslint-disable camelcase */
-//TODO (line 31)
 /**
  * Tupaia Web
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd.
@@ -45,5 +43,4 @@ export class SingleValueWrapper extends PureComponent {
 
 SingleValueWrapper.propTypes = {
   viewContent: PropTypes.object.isRequired,
-  //TODO
 };

@@ -160,8 +160,6 @@ export class MatrixWrapper extends Component {
 
     if (prevProps.viewContent !== viewContent) {
       const expandedMatrixData = buildMatrixDataFromViewContent({ ...viewContent, isExporting });
-      // TODO
-      // eslint-disable-next-line react/no-did-update-set-state
       this.setState({
         expandedMatrixData,
         isLoading: !expandedMatrixData,

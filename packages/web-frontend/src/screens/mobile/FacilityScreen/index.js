@@ -31,8 +31,6 @@ class FacilityScreen extends PureComponent {
     }
   }
 
-  //TODO
-  // eslint-disable-next-line class-methods-use-this
   init() {
     window.scrollTo(0, 0);
   }

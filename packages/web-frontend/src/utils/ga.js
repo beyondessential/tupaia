@@ -117,7 +117,6 @@ export const gaMiddleware = () => next => action => {
     gaEvent('Error', error.message);
   } finally {
     // Continue the redux chain, the entire app will not function without returning this.
-    //TODO
     return next(action);
   }
 };

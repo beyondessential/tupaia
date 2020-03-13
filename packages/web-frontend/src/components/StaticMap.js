@@ -87,7 +87,6 @@ StaticMap.defaultProps = {
   polygonBounds: [],
   alt: '',
   style: {},
-  //TODO
   zoom: 2,
   zoomOutWhenPast180: true,
   showAttribution: true,

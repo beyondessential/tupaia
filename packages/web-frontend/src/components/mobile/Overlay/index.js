@@ -13,7 +13,6 @@ import Radium from 'radium';
 
 import { DARK_BLUE, MOBILE_HEADER_HEIGHT, MOBILE_MARGIN_SIZE, WHITE } from '../../../styles';
 
-// TODO
 const Overlay = ({ titleText, titleElement, children, onClose, contentStyle }) => (
   <div style={styles.overlay}>
     <div style={styles.header}>

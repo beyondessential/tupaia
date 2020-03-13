@@ -64,8 +64,6 @@ export class Matrix extends PureComponent {
   componentDidUpdate(prevProps) {
     this.columnKeys = null;
     if (prevProps.numberOfColumnsPerPage !== this.props.numberOfColumnsPerPage) {
-      // TODO
-      // eslint-disable-next-line react/no-did-update-set-state
       this.setState({
         startColumn: 0,
       });
@@ -140,8 +138,6 @@ export class Matrix extends PureComponent {
     return this.columnKeys;
   }
 
-  // TODO
-  // eslint-disable-next-line class-methods-use-this
   getIsUsingDots(presentationOptions) {
     return Object.keys(presentationOptions).length > 0;
   }
@@ -283,7 +279,6 @@ export class Matrix extends PureComponent {
 
         this.forceUpdate();
       },
-      //TODO
       openAll: () => this.setState({ areAllExpanded: true }),
       search: searchTerm => this.setState({ searchTerm }),
     };

@@ -1,4 +1,3 @@
-/* eslint-disable func-names */
 /**
  * Tupaia Web
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd.
@@ -77,7 +76,6 @@ function* watchFetchInitialDataAndFetchDisasters() {
 }
 
 function* watchViewDisasterAndZoomToBounds() {
-  // TODO: This is a bit above my paygrade
   yield takeLatest(VIEW_DISASTER, function*(action) {
     const { disaster } = action;
     const { bounds } = disaster;

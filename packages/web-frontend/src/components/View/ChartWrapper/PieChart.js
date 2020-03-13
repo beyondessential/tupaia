@@ -247,8 +247,7 @@ export class PieChart extends PureComponent {
               const fill =
                 this.getPresentationOption(entry.originalItem.name, 'color') ||
                 chartColorAtIndex(chartColors, index);
-              // CHECK: There isn't some hacky way the index was being used?
-              return <Cell key={`cell-${entry.dataElementCode}`} fill={fill} stroke={OFF_WHITE} />;
+              return <Cell key={`cell-${index}`} fill={fill} stroke={OFF_WHITE} />;
             })}
           </Pie>
           <Legend

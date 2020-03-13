@@ -38,7 +38,6 @@ export default class RowGroup extends Component {
 
         return a === b;
       }
-      // TODO
       return undefined;
     });
   }
@@ -71,7 +70,6 @@ export default class RowGroup extends Component {
     } = this.props;
     const displayedColumnCount = startColumn + numberOfColumnsPerPage;
 
-    // TODO
     return (
       <div style={isExpanded ? styles.categorySectionExpanded : null}>
         <div
@@ -81,7 +79,6 @@ export default class RowGroup extends Component {
           }}
         >
           <button
-            type="button"
             onClick={() => onToggleRowExpanded(rowId)}
             style={{ paddingLeft: depth * indentSize, ...styles.collapsibleHeader }}
           >
@@ -139,6 +136,5 @@ RowGroup.propTypes = {
   startColumn: PropTypes.number,
   numberOfColumnsPerPage: PropTypes.number,
   onToggleRowExpanded: PropTypes.func,
-  // TODO
   styles: PropTypes.object,
 };

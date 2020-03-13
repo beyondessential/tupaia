@@ -1,5 +1,3 @@
-/* eslint-disable no-param-reassign */
-//TODO
 const fs = require('fs');
 const path = require('path');
 const paths = require('./paths');
@@ -27,7 +25,6 @@ const dotenvFiles = [
 // if this file is missing. dotenv will never modify any environment variables
 // that have already been set.
 // https://github.com/motdotla/dotenv
-// TODO
 dotenvFiles.forEach(dotenvFile => {
   if (fs.existsSync(dotenvFile)) {
     require('dotenv').config({

@@ -26,7 +26,6 @@ export default function disasters(
         selectedDisaster: action.disaster,
       };
     case CHANGE_ORG_UNIT: {
-      //TODO
       // De-select disaster when user views a different country.
       const { type, organisationUnitCode } = action.organisationUnit;
       if (!state.selectedDisaster) return state;

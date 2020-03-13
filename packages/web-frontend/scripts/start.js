@@ -66,7 +66,7 @@ choosePort(HOST, DEFAULT_PORT)
     devServer.listen(port, HOST, err => {
       if (err) {
         console.log(err);
-        return; // CHECK
+        return;
         // https://www.w3schools.com/nodejs/met_server_listen.asp
       }
       if (isInteractive) {

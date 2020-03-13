@@ -14,7 +14,6 @@ import SelectIcon from 'material-ui/svg-icons/navigation/chevron-right';
 import { delayMobileTapCallback } from '../../../utils';
 import { LIGHT_GREY, WHITE } from '../../../styles';
 
-//TODO
 const ListItem = styled.button`
   background: ${WHITE};
   color: #000;
@@ -62,5 +61,4 @@ SelectListItem.propTypes = {
     data: PropTypes.shape({}),
     title: PropTypes.string,
   }),
-  //TODO
 };

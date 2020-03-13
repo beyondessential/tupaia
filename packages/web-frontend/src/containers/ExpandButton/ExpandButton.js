@@ -43,7 +43,7 @@ ExpandButton.propTypes = {
   isSidePanelExpanded: PropTypes.bool,
   onExpandClick: PropTypes.func.isRequired,
 };
-//TODO
+
 const mapStateToProps = state => {
   const { isSidePanelExpanded } = state.global;
   return {

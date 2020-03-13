@@ -11,13 +11,6 @@ import { isMobile } from '../utils';
 import Overlay from './mobile/Overlay';
 import { DARK_BLUE, MOBILE_MARGIN_SIZE } from '../styles';
 
-/* CHECK: Online says that parents and children
- * "shouldn’t care whether [a Component] is defined as a function or a class"
- * but just make sure we don't.
- * Also airbnb says don't use arrow functions here but I went with what was already in the code.
- * https://github.com/airbnb/javascript/tree/master/react#class-vs-reactcreateclass-vs-stateless
- */
-//export function FormWrapper(props) {
 export const FormWrapper = props => {
   const { titleText, onClose, style } = props;
 

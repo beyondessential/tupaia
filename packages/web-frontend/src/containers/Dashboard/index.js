@@ -67,7 +67,6 @@ export class Dashboard extends Component {
   }
 
   renderMiniMap(visible) {
-    // TODO
     if (!visible) return null;
     const { contractedWidth } = this.props;
 

@@ -60,7 +60,6 @@ const Content = styled.div`
 
 export class DashboardItemInfoButton extends Component {
   state = {
-    //TODO
     shouldShowText: false,
   };
 

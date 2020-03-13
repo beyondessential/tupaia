@@ -10,7 +10,6 @@ import PropTypes from 'prop-types';
 import RaisedButton from 'material-ui/RaisedButton';
 import Markdown from 'markdown-to-jsx';
 
-// TODO
 const DescriptionOverlay = ({ header, body, color, styles, onClose }) => (
   <div style={styles.descriptionOverlay} onClick={onClose}>
     <div onClick={e => e.stopPropagation()}>

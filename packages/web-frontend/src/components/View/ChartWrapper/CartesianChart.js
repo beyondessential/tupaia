@@ -335,9 +335,7 @@ export class CartesianChart extends PureComponent {
     const { chartConfig = {} } = viewContent;
 
     const referenceLines = Object.entries(chartConfig)
-      //.filter(([dataKey, { referenceValue }]) => referenceValue)
-      // TODO: which is better or is there a third way?
-      .filter(dataPoint => dataPoint[1].referenceValue)
+      .filter(([, { referenceValue }]) => referenceValue)
       .map(([dataKey, { referenceValue, yAxisOrientation }]) => ({
         key: `reference_line_${dataKey}`, // Use prefix to distinguish from curve key
         y: referenceValue,

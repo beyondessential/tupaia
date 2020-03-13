@@ -80,9 +80,7 @@ export class SearchBar extends PureComponent {
     };
   }
 
-  // eslint-disable-next-line no-unused-vars
   componentWillMount(props) {
-    // TODO: use props or this.props?
     const { hierarchyData, getNestedOrgUnits } = this.props;
     if (!hierarchyData || !Array.isArray(hierarchyData) || hierarchyData.length < 1) {
       getNestedOrgUnits('World');
@@ -120,7 +118,6 @@ export class SearchBar extends PureComponent {
     if (isNull(hierarchyData))
       return <div style={styles.searchResponseText}>Loading countries...</div>;
     if (!Array.isArray(hierarchyData)) return <h2>Server error, try refresh</h2>;
-    //TODO
     if (hierarchyData.length < 1) return null;
 
     const recurseOrgUnits = (orgUnits, nestedMargin) => {

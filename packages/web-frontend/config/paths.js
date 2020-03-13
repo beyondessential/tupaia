@@ -19,7 +19,6 @@ function ensureSlash(pathToCheck, needsSlash) {
   return pathToCheck;
 }
 
-// CHECK: This is needed for dev vs prod
 // eslint-disable-next-line import/no-dynamic-require
 const getPublicUrl = appPackageJson => envPublicUrl || require(appPackageJson).homepage;
 

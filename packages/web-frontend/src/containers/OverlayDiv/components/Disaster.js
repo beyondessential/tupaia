@@ -106,8 +106,6 @@ const renderResourceList = resources => {
   );
 };
 
-// TODO
-// eslint-disable-next-line react/prefer-stateless-function
 class Disaster extends Component {
   render() {
     const {
