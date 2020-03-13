@@ -118,10 +118,15 @@ export class DhisService extends Service {
   deleteEvent = async (api, data) => api.deleteEvent(data.dhisReference);
 
   async pull(dataSources, type, options = {}) {
-    const { organisationUnitCode: entityCode, dataServices = DEFAULT_DATA_SERVICES } = options;
+    const {
+      organisationUnitCode,
+      organisationUnitCodes,
+      dataServices = DEFAULT_DATA_SERVICES,
+    } = options;
+    const entityCodes = organisationUnitCodes || [organisationUnitCode];
     const pullData = this.pullers[type];
     const apis = dataServices.map(({ isDataRegional }) =>
-      getDhisApiInstance({ entityCode, isDataRegional }),
+      getDhisApiInstance({ entityCodes, isDataRegional }),
     );
 
     return pullData(apis, dataSources, options);
@@ -173,12 +178,12 @@ export class DhisService extends Service {
 
   pullAggregateAnalytics = async (api, dataSources, options) => {
     const dataElementCodes = dataSources.map(({ dataElementCode }) => dataElementCode);
-    const { organisationUnitCode, period, startDate, endDate } = options;
+    const { organisationUnitCodes, period, startDate, endDate } = options;
 
     const aggregateData = await api.getAnalytics({
       dataElementCodes,
       outputIdScheme: 'code',
-      organisationUnitCode,
+      organisationUnitCodes,
       period,
       startDate,
       endDate,
