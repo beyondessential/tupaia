@@ -2,27 +2,28 @@
  * Tupaia Config Server
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
-
+import flatten from 'lodash.flatten';
+import groupBy from 'lodash.groupby';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { divideValues } from '/apiV1/dataBuilders/helpers';
+import { divideValues, countAnalyticsThatSatisfyConditions } from '/apiV1/dataBuilders/helpers';
 
 const ORG_UNIT_COUNT = '$orgUnitCount';
+const COMPARISON_TYPES = {
+  COUNT: '$count',
+};
 
 export class PercentagesOfValueCountsBuilder extends DataBuilder {
   getDataElementCodes() {
     return Object.values(this.config.dataClasses).reduce(
       (codes, { numerator, denominator }) =>
         codes.concat(
-          Object.keys(numerator.dataValues),
-          denominator.hasOwnProperty('dataValues') && Object.keys(denominator.dataValues),
+          flatten(numerator.dataValues),
+          denominator.hasOwnProperty('dataValues') && denominator.dataValues,
         ),
       [],
     );
   }
 
-  /**
-   * @returns {DataValuesOutput}
-   */
   async build() {
     const results = await this.fetchResults();
     const data = await this.buildData(results);
@@ -39,10 +40,8 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
   buildData(analytics) {
     const dataClasses = [];
     Object.entries(this.config.dataClasses).forEach(([name, dataClass]) => {
-      const [numerator, denominator] = this.calculateFractionPartsForDataClass(
-        dataClass,
-        analytics,
-      );
+      const numerator = this.calculateFraction(dataClass.numerator, analytics);
+      const denominator = this.calculateFraction(dataClass.denominator, analytics);
 
       const data = {
         value: divideValues(numerator, denominator),
@@ -59,19 +58,48 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
     return dataClasses;
   }
 
-  calculateFractionPartsForDataClass(dataClass, analytics) {
-    const { numerator, denominator } = dataClass;
-    const numeratorValue = this.countAnalyticsThatSatisfyConditions(analytics, numerator);
-    let denominatorValue;
+  calculateFraction = (fraction, analytics) => {
+    if (fraction.compare === COMPARISON_TYPES.COUNT) {
+      if (fraction.dataValues.length !== 2) {
+        throw new Error(
+          'nested array passed to: percentagesOfValueCounts must have exactly 2 sub-arrays for comparison',
+        );
+      }
 
-    if (denominator === ORG_UNIT_COUNT) {
-      denominatorValue = [...new Set(analytics.map(data => data.organisationUnit))].length;
-    } else {
-      denominatorValue = this.countAnalyticsThatSatisfyConditions(analytics, denominator);
+      // Is straight forward to add support for just counting non-grouped analytics, but is not currently a requirement.
+      if (!fraction.groupBy) {
+        throw new Error('percentagesOfValueCounts missing config field: groupBy');
+      }
+
+      const [values, valuesToCompare] = fraction.dataValues;
+      const countsAreEqual = results => {
+        const set1 = results.filter(r => values.includes(r.dataElement));
+        const set2 = results.filter(r => valuesToCompare.includes(r.dataElement));
+
+        const set1Count = countAnalyticsThatSatisfyConditions(set1, {
+          dataValues: values,
+          valueOfInterest: fraction.valueOfInterest,
+        });
+
+        const count2Count = countAnalyticsThatSatisfyConditions(set2, {
+          dataValues: valuesToCompare,
+          valueOfInterest: fraction.valueOfInterest,
+        });
+
+        return set1Count > 0 && set1Count === count2Count;
+      };
+
+      const groupedAnalytics = groupBy(analytics, fraction.groupBy);
+      return Object.values(groupedAnalytics).reduce(
+        (count, results) => (countsAreEqual(results) ? count + 1 : count),
+        0,
+      );
+    } else if (fraction === ORG_UNIT_COUNT) {
+      return [...new Set(analytics.map(data => data.organisationUnit))].length;
     }
 
-    return [numeratorValue, denominatorValue];
-  }
+    return countAnalyticsThatSatisfyConditions(analytics, fraction);
+  };
 }
 
 export const percentagesOfValueCounts = async (

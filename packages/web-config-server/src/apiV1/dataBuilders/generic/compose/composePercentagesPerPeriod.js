@@ -6,7 +6,7 @@ import { divideValues } from '/apiV1/dataBuilders/helpers';
 /**
  * Configuration schema
  * @typedef {Object} ComposePercentagesPerPeriodConfig
- * @property {Object<string, DataBuilder>} dataBuilders
+ * @property {Object<string, { dataBuilder, dataBuilderConfig }>} dataBuilders
  * @property {Object<string, { numerator: string, denominator: string }>} percentages
  *
  * Example:

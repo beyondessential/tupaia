@@ -6,6 +6,10 @@
 import { getSortByKey, reduceToDictionary } from '@tupaia/utils';
 import { sanitizeValue } from './sanitizeValue';
 
+/*
+ * @typedef {{ dataElement, organisationUnit, period, value }} Analytic
+ */
+
 const DIMENSION_TRANSLATION = {
   dx: 'dataElement',
   ou: 'organisationUnit',
@@ -19,7 +23,7 @@ const DIMENSION_TYPES = {
 
 /**
  * @param {Object} response
- * @returns {{ results: AnalyticsResult[], metadata: AnalyticsMetadata }}
+ * @returns {{ results: Analytic[], metadata: { dataElementCodeToName } }}
  */
 export const buildAnalyticsFromAggregateData = response => {
   const { headers, rows, metaData: metadata } = response;

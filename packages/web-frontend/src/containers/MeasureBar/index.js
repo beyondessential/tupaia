@@ -76,23 +76,20 @@ export class MeasureBar extends Component {
 
     const items = Object.entries(measureHierarchy).map(([categoryName, children]) => {
       if (!Array.isArray(children)) return null;
-      const nestedItems = children
-        .filter(measure => measure.measureId !== currentMeasure.measureId)
-        .map(measure => {
-          const onClick =
-            measure.measureId === currentMeasure.measureId
-              ? () => onClearMeasure()
-              : () =>
-                  this.handleSelectMeasure(measure, currentOrganisationUnit.organisationUnitCode);
-          return (
-            <HierarchyItem
-              label={measure.name}
-              isSelected={measure.measureId === currentMeasure.measureId}
-              key={measure.measureId}
-              onClick={onClick}
-            />
-          );
-        });
+      const nestedItems = children.map(measure => {
+        const onClick =
+          measure.measureId === currentMeasure.measureId
+            ? () => onClearMeasure()
+            : () => this.handleSelectMeasure(measure, currentOrganisationUnit.organisationUnitCode);
+        return (
+          <HierarchyItem
+            label={measure.name}
+            isSelected={measure.measureId === currentMeasure.measureId}
+            key={measure.measureId}
+            onClick={onClick}
+          />
+        );
+      });
       if (nestedItems.length === 0) return null;
       return (
         <HierarchyItem
@@ -201,7 +198,4 @@ const mapDispatchToProps = dispatch => ({
     dispatch(changeMeasure(measure.measureId, orgUnitCode)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(MeasureBar);
+export default connect(mapStateToProps, mapDispatchToProps)(MeasureBar);

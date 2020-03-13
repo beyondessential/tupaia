@@ -4,6 +4,14 @@
     {
       "plugins": ["transform-runtime", "syntax-async-functions"]
     },
-    { "passPerPreset": false, "presets": ["es2015", "stage-0"] }
-  ]
+    {
+      "passPerPreset": false,
+      "presets": ["es2015", "stage-0"]
+    }
+  ],
+  "env": {
+    "test": {
+      "plugins": ["istanbul"]
+    }
+  }
 }

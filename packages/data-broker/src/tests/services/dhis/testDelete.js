@@ -25,7 +25,7 @@ export const testDelete = () => {
       });
       expect(dhisApi.deleteDataValue).to.have.been.calledOnceWithExactly({
         dataElement: 'POP01',
-        value: 1,
+        value: '1',
       });
     });
 
@@ -35,7 +35,7 @@ export const testDelete = () => {
       });
       expect(dhisApi.deleteDataValue).to.have.been.calledOnceWithExactly({
         dataElement: 'DIF01_DHIS',
-        value: 1,
+        value: '1',
       });
     });
   });

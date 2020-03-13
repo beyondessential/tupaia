@@ -61,7 +61,9 @@ export class EnlargedDialogContent extends PureComponent {
 
     const { name, periodGranularity } = viewContent;
 
-    if (viewContent.entityHeader) titleText = `${name}, ${viewContent.entityHeader}`;
+    if (viewContent.entityHeader === '') titleText = `${viewContent.name}`;
+    else if (viewContent.entityHeader)
+      titleText = `${viewContent.name}, ${viewContent.entityHeader}`;
     else titleText = `${name}${organisationUnitName ? `, ${organisationUnitName} ` : ''}`;
 
     return (

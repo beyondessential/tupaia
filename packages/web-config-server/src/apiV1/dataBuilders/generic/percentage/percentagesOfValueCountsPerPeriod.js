@@ -40,11 +40,8 @@ class BaseBuilder extends PercentagesOfValueCountsBuilder {
     }
 
     Object.entries(this.config.dataClasses).forEach(([name, dataClass]) => {
-      const [numerator, denominator] = this.calculateFractionPartsForDataClass(
-        dataClass,
-        filteredData,
-      );
-
+      const numerator = this.calculateFraction(dataClass.numerator, filteredData);
+      const denominator = this.calculateFraction(dataClass.denominator, filteredData);
       const key = Object.keys(this.config.dataClasses).length > 1 ? name : 'value';
       percentage[key] = divideValues(numerator, denominator);
       percentage[`${key}_metadata`] = { numerator, denominator };

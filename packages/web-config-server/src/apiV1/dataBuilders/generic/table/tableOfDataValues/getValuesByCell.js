@@ -28,7 +28,7 @@ const groupByMetadata = (groupedResults, metadataField) => {
  * if metadata categories are used, the keys also include metadata information
  *
  * @param {Config} config
- * @param {AnalyticsResult[]} results
+ * @param {Object[]} results
  * @returns {Object<string, (number|string)>}
  */
 export const getValuesByCell = (config, results) => {

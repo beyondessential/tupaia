@@ -15,7 +15,6 @@ import {
 } from '@tupaia/dhis-api';
 import { DataPusher } from '../DataPusher';
 import { generateDataValue } from '../generateDataValue';
-import { formatDateForDHIS2 } from '../formatDateForDHIS2';
 
 const { ORGANISATION_UNIT } = DHIS2_RESOURCE_TYPES;
 const SUCCESS_DIAGNOSTICS = {
@@ -93,16 +92,16 @@ export class AggregateDataPusher extends DataPusher {
   }
 
   async fetchPeriodBounds(period) {
-    const getSubmissionTime = async () => {
-      if (period) return moment(period);
-      const surveyResponse = await this.fetchSurveyResponse();
-      return surveyResponse.timezoneAwareSubmissionTime();
-    };
     const getPeriodType = async () => {
       if (period) return periodToType(period);
       return this.fetchPeriodType();
     };
     const periodType = await getPeriodType();
+    const getSubmissionTime = async () => {
+      if (period) return moment(period, periodTypeToFormat(periodType));
+      const surveyResponse = await this.fetchSurveyResponse();
+      return surveyResponse.timezoneAwareSubmissionTime();
+    };
     const momentUnit = periodTypeToMomentUnit(periodType);
     const submissionTime = await getSubmissionTime();
     const minimumTime = submissionTime
@@ -275,7 +274,7 @@ export class AggregateDataPusher extends DataPusher {
     const baseDataValue = this.isSurveyResponse
       ? {
           code: `${survey.code}SurveyDate`,
-          value: formatDateForDHIS2(surveyResponse.timezoneAwareSubmissionTime()),
+          value: surveyResponse.timezoneAwareSubmissionTime().format(),
         }
       : await generateDataValue(this.models, answer);
 

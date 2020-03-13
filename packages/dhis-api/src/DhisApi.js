@@ -172,19 +172,6 @@ export class DhisApi {
     }
   }
 
-  async getCodeToId(recordType, recordCodes) {
-    if (!recordCodes || recordCodes.length === 0) {
-      throw this.constructError('Must provide codes to search for');
-    }
-    const records = await this.getRecords({
-      type: recordType,
-      codes: recordCodes,
-      fields: ['code', 'id'],
-    });
-
-    return reduceToDictionary(records, 'code', 'id');
-  }
-
   async getIdFromCode(recordType, recordCode) {
     if (!recordCode) {
       throw this.constructError('Must provide a code to search for');
@@ -260,29 +247,16 @@ export class DhisApi {
     return events;
   }
 
-  /**
-   * @param {EventData[]} events
-   * @returns {Promise<string>}
-   */
   async postEvents(events) {
     const response = await this.postData(EVENT, { events });
     return getDiagnosticsFromResponse(response);
   }
 
-  /**
-   * @param {string} eventId
-   * @param {EventData} event
-   * @returns {Promise<string>}
-   */
   async updateEvent(eventId, event) {
     const response = await this.put(`events/${eventId}`, event);
     return getDiagnosticsFromResponse(response);
   }
 
-  /**
-   * @param {Event[]} events
-   * @returns {Promise<{ updated: number, errors: string[] }>}
-   */
   async updateEvents(events) {
     const errors = [];
     let totalUpdatedCount = 0;
@@ -347,9 +321,13 @@ export class DhisApi {
     }
 
     // Attach relevant information into the query
-    const organisationUnitIds = Object.values(
-      await this.getCodeToId(ORGANISATION_UNIT, organisationUnitCodes),
-    );
+    const organisationUnitIds = (
+      await this.getRecords({
+        type: ORGANISATION_UNIT,
+        codes: organisationUnitCodes,
+        fields: ['id'],
+      })
+    ).map(o => o.id);
     query.orgUnit = organisationUnitIds;
     delete query.organisationUnitCodes;
     if (dataElementGroupCode) {
@@ -391,33 +369,40 @@ export class DhisApi {
     return query.paging ? { organisationUnits, pager } : organisationUnits;
   }
 
-  async getOptionsForDataElement(dataElementCode) {
-    const query = {
-      filter: `code:eq:${dataElementCode}`,
-      fields: 'optionSet',
-    };
-    const optionSetResponse = await this.fetch(DATA_ELEMENT, query);
-    if (
-      !optionSetResponse ||
-      !optionSetResponse.dataElements ||
-      optionSetResponse.dataElements.length === 0 ||
-      !optionSetResponse.dataElements[0].optionSet
-    ) {
-      return null;
-    }
-    const optionSetId = optionSetResponse.dataElements[0].optionSet.id;
-    const response = await this.fetch(`${OPTION_SET}/${optionSetId}`, {
-      fields: '[options]',
+  async fetchDataElements(dataElementCodes, { additionalFields = [], includeOptions } = {}) {
+    const fields = ['id', 'code', 'name', ...additionalFields];
+    if (includeOptions) fields.push('optionSet');
+    const dataElements = await this.getRecords({
+      type: DATA_ELEMENT,
+      codes: dataElementCodes,
+      fields,
     });
-    const options = {};
-    await Promise.all(
-      response.options.map(async ({ id: optionId }) => {
-        const option = await this.fetch(`${OPTION}/${optionId}`, { fields: '[name,code]' });
-        const { name: optionText, code: optionCode } = option;
-        options[optionText.toLowerCase()] = optionCode; // Convert text to lower case so we can ignore case
-      }),
-    );
-    return options;
+    if (includeOptions) {
+      const optionSetIds = [
+        ...new Set(dataElements.filter(d => !!d.optionSet).map(d => d.optionSet.id)),
+      ];
+      if (optionSetIds.length === 0) return dataElements;
+      const optionSets = await this.getRecords({
+        type: OPTION_SET,
+        ids: optionSetIds,
+        fields: 'id,options[code,name]',
+      });
+      const optionSetOptionsById = {};
+      optionSets.forEach(({ id, ...restOfOptionSet }) => {
+        optionSetOptionsById[id] = this.buildOptionsFromOptionSet(restOfOptionSet);
+      });
+
+      return dataElements.map(({ optionSet, ...restOfDataElement }) => {
+        if (optionSet) {
+          return {
+            options: optionSetOptionsById[optionSet.id],
+            ...restOfDataElement,
+          };
+        }
+        return restOfDataElement;
+      });
+    }
+    return dataElements;
   }
 
   getOptionSetOptions = async ({ code, id }) => {
@@ -434,9 +419,12 @@ export class DhisApi {
         dataElementGroups: code,
       });
     }
+    return this.buildOptionsFromOptionSet(result);
+  };
 
+  buildOptionsFromOptionSet = optionSet => {
     const options = {};
-    result.options.forEach(({ name, code: optionCode }) => {
+    optionSet.options.forEach(({ name, code: optionCode }) => {
       options[optionCode] = name.trim();
     });
     return options;
