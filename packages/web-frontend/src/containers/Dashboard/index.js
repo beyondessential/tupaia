@@ -75,9 +75,6 @@ export class Dashboard extends Component {
       return;
     }
 
-    if (project.active.code !== 'explore') {
-    }
-
     // If the organisation is the redux default, the location contains a point coordinate,
     // instead of bounds, or the current org unit is the world render the default world map.
     const useWorldBounds =
