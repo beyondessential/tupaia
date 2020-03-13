@@ -4,10 +4,11 @@ import { QueryBuilder } from '/dhis/QueryBuilder';
 export class Aggregator extends BaseAggregator {
   constructor(dataBroker) {
     super(dataBroker);
-    this.checkEntityAccess = () =>
+    this.checkEntityAccess = () => {
       throw new Error(
         'A "checkEntityAccess" function should be injected before Aggregator is used to fetch data',
       );
+    };
   }
 
   injectCheckEntityAccess(checkEntityAccess) {
