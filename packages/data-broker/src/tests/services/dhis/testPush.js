@@ -22,14 +22,14 @@ export const testPush = () => {
     it('basic aggregate data element', async () => {
       await dhisService.push([DATA_SOURCES.POP01], DATA_VALUES.POP01);
       expect(dhisApi.postDataValueSets).to.have.been.calledOnceWithExactly([
-        { dataElement: 'POP01', value: 1 },
+        { dataElement: 'POP01', value: '1' },
       ]);
     });
 
     it('aggregate data element with a different dhis code', async () => {
       await dhisService.push([DATA_SOURCES.DIF01], DATA_VALUES.POP01);
       expect(dhisApi.postDataValueSets).to.have.been.calledOnceWithExactly([
-        { dataElement: 'DIF01_DHIS', value: 1 },
+        { dataElement: 'DIF01_DHIS', value: '1' },
       ]);
     });
   });
@@ -46,8 +46,8 @@ export const testPush = () => {
         {
           ...event,
           dataValues: [
-            { dataElement: 'id000POP01', value: 1 },
-            { dataElement: 'id000POP02', value: 2 },
+            { dataElement: 'id000POP01', value: '1' },
+            { dataElement: 'id000POP02', value: '2' },
           ],
         },
       ]);
@@ -66,11 +66,11 @@ export const testPush = () => {
           dataValues: [
             {
               dataElement: 'id000POP01',
-              value: 1,
+              value: '1',
             },
             {
               dataElement: 'id000DIF01_DHIS',
-              value: 3,
+              value: '3',
             },
           ],
         },

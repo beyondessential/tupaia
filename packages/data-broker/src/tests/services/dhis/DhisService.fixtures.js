@@ -33,9 +33,9 @@ export const DATA_SOURCES = {
 };
 
 export const DATA_VALUES = {
-  POP01: { code: 'POP01', value: 1 },
-  POP02: { code: 'POP02', value: 2 },
-  DIF01: { code: 'DIF01', value: 3 },
+  POP01: { code: 'POP01', value: '1' },
+  POP02: { code: 'POP02', value: '2' },
+  DIF01: { code: 'DIF01', value: '3' },
 };
 
 export const DATA_ELEMENTS = {

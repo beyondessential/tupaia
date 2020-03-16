@@ -238,7 +238,10 @@ export class MatrixWrapper extends Component {
       const maxColumns = Math.floor(usableWidth / maximumColumnWidth);
       numberOfColumnsPerPage = maxColumns;
     }
-    if (viewContent.entityHeader) titleText = `${viewContent.name}, ${viewContent.entityHeader}`;
+
+    if (viewContent.entityHeader === '') titleText = `${viewContent.name}`;
+    else if (viewContent.entityHeader)
+      titleText = `${viewContent.name}, ${viewContent.entityHeader}`;
     else
       titleText = `${viewContent.name}${organisationUnitName ? `, ${organisationUnitName}` : ''}`;
 

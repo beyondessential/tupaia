@@ -1,11 +1,7 @@
-import { keyBy } from 'lodash.keyby';
-
-import { createAggregator } from '@tupaia/aggregator';
 import { CustomError } from '@tupaia/utils';
-import { Aggregator } from '/aggregator';
 import { getMeasureBuilder } from '/apiV1/measureBuilders/getMeasureBuilder';
 import { getDhisApiInstance } from '/dhis';
-import { DhisTranslationHandler, getDateRange } from './utils';
+import { DhisTranslationHandler, getDateRange, getOrganisationUnitTypeForFrontend } from './utils';
 import { DATA_SOURCE_TYPES } from './dataBuilders/dataSourceTypes';
 
 // NOTE: does not allow for actual number value measure, will be added when
@@ -84,6 +80,13 @@ const createDataServices = mapOverlay => {
   return [{ isDataRegional }];
 };
 
+const getMeasureLevel = mapOverlays => {
+  const aggregationTypes = mapOverlays.map(({ measureBuilderConfig }) =>
+    getOrganisationUnitTypeForFrontend(measureBuilderConfig.aggregationEntityType),
+  );
+  return [...new Set(aggregationTypes)].join(',');
+};
+
 export default class extends DhisTranslationHandler {
   constructor(aggregator) {
     super();
@@ -148,6 +151,7 @@ export default class extends DhisTranslationHandler {
 
     return {
       measureId: overlays.map(o => o.id).join(','),
+      measureLevel: getMeasureLevel(overlays),
       measureOptions,
       measureData,
     };
@@ -200,7 +204,7 @@ export default class extends DhisTranslationHandler {
     const [dataElement] = await this.aggregator.fetchDataElements([dataElementCode], {
       organisationUnitCode: this.entityCode,
       dataServices,
-      shouldIncludeOptions: true,
+      includeOptions: true,
     });
     if (!dataElement) {
       throw new Error(`Data element with code ${dataElementCode} not found`);
