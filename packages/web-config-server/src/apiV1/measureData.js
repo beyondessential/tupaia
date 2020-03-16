@@ -1,7 +1,7 @@
 import { CustomError } from '@tupaia/utils';
 import { getMeasureBuilder } from '/apiV1/measureBuilders/getMeasureBuilder';
 import { getDhisApiInstance } from '/dhis';
-import { getDateRange } from './utils';
+import { getDateRange, getOrganisationUnitTypeForFrontend } from './utils';
 import { DataAggregatingRouteHandler } from './DataAggregatingRouteHandler';
 import { DATA_SOURCE_TYPES } from './dataBuilders/dataSourceTypes';
 
@@ -81,6 +81,13 @@ const createDataServices = mapOverlay => {
   return [{ isDataRegional }];
 };
 
+const getMeasureLevel = mapOverlays => {
+  const aggregationTypes = mapOverlays.map(({ measureBuilderConfig }) =>
+    getOrganisationUnitTypeForFrontend(measureBuilderConfig.aggregationEntityType),
+  );
+  return [...new Set(aggregationTypes)].join(',');
+};
+
 export default class extends DataAggregatingRouteHandler {
   buildResponse = async req => {
     const { entity, overlays } = this;
@@ -143,6 +150,7 @@ export default class extends DataAggregatingRouteHandler {
 
     return {
       measureId: overlays.map(o => o.id).join(','),
+      measureLevel: getMeasureLevel(overlays),
       measureOptions,
       measureData,
     };

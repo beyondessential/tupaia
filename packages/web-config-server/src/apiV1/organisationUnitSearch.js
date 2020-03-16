@@ -3,9 +3,8 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { Entity, ORG_UNIT_ENTITY_TYPES } from '/models/Entity';
+import { Entity } from '/models/Entity';
 import { RouteHandler } from './RouteHandler';
-import { getEntityLocationForFrontend } from './utils/getEntityLocationForFrontend';
 
 const DEFAULT_LIMIT = 20;
 
@@ -21,7 +20,7 @@ export default class extends RouteHandler {
     const comparisonValue = shouldMatchStart ? `${searchString}%` : `%${searchString}%`;
     const filter = {
       name: { comparator: 'ilike', comparisonValue },
-      type: Object.values(ORG_UNIT_ENTITY_TYPES),
+      type: Object.values(Entity.orgUnitEntityTypes),
       code: { comparator: '<>', comparisonValue: 'World' },
     };
     if (alreadyFetchedIds) {
@@ -77,11 +76,9 @@ export default class extends RouteHandler {
     return Promise.all(
       entities.map(async entity => {
         const displayName = await entity.buildDisplayName();
-        const location = getEntityLocationForFrontend(entity);
         return {
           organisationUnitCode: entity.code,
           displayName,
-          location,
         };
       }),
     );

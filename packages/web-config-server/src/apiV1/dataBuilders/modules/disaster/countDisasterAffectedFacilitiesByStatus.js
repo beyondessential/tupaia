@@ -17,7 +17,7 @@ export const countDisasterAffectedFacilitiesByStatus = async (
   if (!disasterStartDate) return { data: [] }; // show no data message in view.
 
   const period = convertDateRangeToPeriodString(disasterStartDate, disasterEndDate || Date.now());
-  const facilities = await Entity.getFacilityDescendantsWithCoordinates(organisationUnitCode);
+  const facilities = await Entity.getFacilitiesOfOrgUnit(organisationUnitCode);
   const options = await dhisApi.getOptionSetOptions({ code: optionSetCode });
   const { results } = await aggregator.fetchAnalytics([AFFECTED_STATUS_DATA_ELEMENT_CODE], {
     dataServices,

@@ -1,8 +1,5 @@
-import keyBy from 'lodash.keyby';
-
-import { Entity } from '/models/Entity';
+import { Entity, Facility } from '/models';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { formatFacilityDataForOverlay } from '/apiV1/utils';
 
 const FACILITY_TYPE_CODE = 'facilityTypeCode';
 
@@ -10,35 +7,40 @@ class ValueForOrgGroupMeasureBuilder extends DataBuilder {
   async build() {
     const facilitiesByCode = await this.getFacilityDataByCode();
 
-    return Object.values(facilitiesByCode).map(formatFacilityDataForOverlay);
+    return Object.values(facilitiesByCode);
   }
 
   async getFacilityDataByCode() {
     const { dataElementCode, organisationUnitGroupCode } = this.query;
 
-    // create index of all facilities
-    const facilityEntities = await Entity.getFacilityDescendantsWithCoordinates(
-      organisationUnitGroupCode,
-    );
-    const facilityData = keyBy(facilityEntities, 'code');
-
     // 'facilityTypeCode' signifies a special case which is handled internally
     if (dataElementCode === FACILITY_TYPE_CODE) {
-      return facilityData;
+      // create index of all facilities
+      const facilityCodes = (await Entity.getFacilitiesOfOrgUnit(organisationUnitGroupCode)).map(
+        facility => facility.code,
+      );
+      const facilityMetaDatas = await Facility.find({ code: facilityCodes });
+      return facilityMetaDatas.reduce(
+        (array, metadata) => [
+          ...array,
+          {
+            organisationUnitCode: metadata.code,
+            facilityTypeCode: metadata.category_code,
+            facilityTypeName: metadata.type_name,
+          },
+        ],
+        [],
+      );
     }
 
     const { results } = await this.fetchAnalytics([dataElementCode], {
       organisationUnitCode: organisationUnitGroupCode,
     });
     // annotate each facility with the corresponding data from dhis
-    results.forEach(row => {
-      const data = facilityData[row.organisationUnit];
-      if (data) {
-        data[dataElementCode] = row.value === undefined ? '' : row.value.toString();
-      }
-    });
-
-    return facilityData;
+    return results.map(row => ({
+      organisationUnitCode: row.organisationUnit,
+      [dataElementCode]: row.value === undefined ? '' : row.value.toString(),
+    }));
   }
 }
 
