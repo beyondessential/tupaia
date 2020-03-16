@@ -471,22 +471,16 @@ const normaliseCountryHierarchyOrgUnitData = orgUnitData => {
     return orgUnitData;
   }
 
-  const findParentInHierarchy = () => {
-    const hierarchyOrgUnitItem = countryHierarchy.find(
-      hierarchyItem => hierarchyItem.organisationUnitCode === orgUnitData.organisationUnitCode,
-    );
+  const hierarchyOrgUnitItem = countryHierarchy.find(
+    hierarchyItem => hierarchyItem.organisationUnitCode === orgUnitData.organisationUnitCode,
+  );
 
-    if (!hierarchyOrgUnitItem) {
-      return {};
-    }
-
-    return countryHierarchy.find(
-      hierarchyItem => hierarchyItem.organisationUnitCode === hierarchyOrgUnitItem.parent,
-    );
-  };
+  const parent = countryHierarchy.find(
+    hierarchyItem => hierarchyItem.organisationUnitCode === hierarchyOrgUnitItem.parent,
+  );
 
   return {
-    parent: orgUnitData.parent || findParentInHierarchy(),
+    parent,
     ...restOfOrgUnit,
     organisationUnitChildren: countryHierarchy.filter(
       descendant => descendant.parent === orgUnitData.organisationUnitCode,

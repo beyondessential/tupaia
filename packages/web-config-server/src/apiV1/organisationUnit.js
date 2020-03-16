@@ -43,13 +43,16 @@ export async function getEntityAndCountryHierarchyByCode(entityCode, userHasAcce
 
   const entityIsCountry = entity.type === ENTITY_TYPES.COUNTRY;
 
-  const country = entityIsCountry ? entity : await Entity.getEntityByCode(entityCode.country_code);
-  const countryDescendants = await filterForAccess(await country.getDescendants(), userHasAccess);
-  countryDescendants.unshift(country); // getDescendants() is missing root entity, so push it to the front of the array
+  const country = entityIsCountry ? entity : await Entity.getEntityByCode(entity.country_code);
+  const countryDescendants = await filterForAccess(
+    await country.getDescendantsAndSelf(),
+    userHasAccess,
+  );
+  const world = await Entity.getEntityByCode('World');
+  countryDescendants.unshift(world); // Hierarchy is missing world entity, so push it to the front of the array
 
   return {
     ...translateForFrontend(entity),
-    parent: entityIsCountry ? translateForFrontend(await entity.parent()) : undefined,
     countryHierarchy: countryDescendants.map(translateDescendantForFrontEnd),
   };
 }

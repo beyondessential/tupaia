@@ -138,9 +138,12 @@ export class Entity extends BaseModel {
   }
 
   async getDescendants() {
-    return tail(
-      await this.database.executeSql(
-        `
+    return tail(await this.getDescendantsAndSelf());
+  }
+
+  async getDescendantsAndSelf() {
+    return this.database.executeSql(
+      `
         WITH RECURSIVE descendants AS (
           SELECT *, 0 AS generation
             FROM entity
@@ -158,8 +161,7 @@ export class Entity extends BaseModel {
         LEFT JOIN entity p
           ON p.id = descendants.parent_id
     `,
-        [this.code],
-      ),
+      [this.code],
     );
   }
 
