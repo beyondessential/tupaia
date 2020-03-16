@@ -59,9 +59,16 @@ const getDefaultDiagnostics = isDelete => {
 };
 
 const getImportSummaryDiagnostics = responseDetails => {
-  const { importCount: counts, errors: generalErrors = [], conflicts = [] } = responseDetails;
+  const {
+    importCount: counts,
+    errors: generalErrors = [],
+    conflicts = [],
+    status,
+    description,
+  } = responseDetails;
   const conflictErrors = conflicts.map(conflictToErrorString);
-  const errors = generalErrors.concat(conflictErrors);
+  const errors =
+    status === ERROR && description ? [description] : generalErrors.concat(conflictErrors);
 
   return {
     counts,
