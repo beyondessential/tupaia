@@ -10,6 +10,7 @@ import { TYPES } from '@tupaia/database';
 import { reduceToDictionary } from '@tupaia/utils';
 import { BaseModel } from './BaseModel';
 import { EntityRelation } from './EntityRelation';
+import { MAX_ENTITY_HIERARCHY_LEVELS } from '../../../meditrak-server/src/database/models/Entity';
 
 // entity types
 const FACILITY = 'facility';
@@ -130,8 +131,8 @@ export class Entity extends BaseModel {
     return ancestors.length > 0 ? ancestors[0] : null;
   }
 
-  static async getCanonicalDescendants(id, types = []) {
-    return Entity.database.executeSql(
+  static async getNearestCanonicalDescendantsOfType(id, types) {
+    const allDescendentsOfType = await Entity.database.executeSql(
       `
       WITH RECURSIVE descendants AS (
         SELECT *, 0 AS generation
@@ -143,13 +144,21 @@ export class Entity extends BaseModel {
           FROM descendants d
           JOIN entity c ON c.parent_id = d.id
       )
-      SELECT id, code, "name", parent_id, type
+      SELECT id, code, "name", parent_id, type, generation
         FROM descendants
         ${constructTypesCriteria(types, 'WHERE')}
         ORDER BY generation ASC;
     `,
       [id, ...types],
     );
+    // restrict to just the nearest generation that matched
+    const minGeneration = allDescendentsOfType.reduce(
+      (minSoFar, d) => (d.generation < minSoFar ? d.generation : minSoFar),
+      MAX_ENTITY_HIERARCHY_LEVELS,
+    );
+    return allDescendentsOfType
+      .filter(d => d.generation === minGeneration)
+      .map(({ generation, ...restOfDescendant }) => restOfDescendant);
   }
 
   static async getNextGeneration(parentIds, hierarchyName) {
@@ -177,9 +186,9 @@ export class Entity extends BaseModel {
    *    the given type, we don't need to search any deeper for others
    * @param {string[]} parentIds     The ids of the entities to start at
    * @param {string} hierarchyName   The specific hierarchy to follow through entity_relation
-   * @param {string} entityType      The type of descendant entity required
+   * @param {string} entityTypes     The types of descendant entity accepted
    */
-  static async getAlternativeHierarchyDescendants(parentIds, hierarchyName, entityType) {
+  static async getNearestDescendantsOfType(parentIds, hierarchyName, entityTypes) {
     const children = await Entity.getNextGeneration(parentIds, hierarchyName);
 
     // if we've made it to the leaf nodes, no descendants of the specified type exist
@@ -188,16 +197,16 @@ export class Entity extends BaseModel {
     }
 
     // if we've reached the level with descendants of the correct type, return them
-    const childrenOfType = children.filter(c => c.type === entityType);
+    const childrenOfType = children.filter(c => entityTypes.includes(c.type));
     if (childrenOfType.length > 0) {
       return childrenOfType;
     }
 
     // didn't find children of the right type at this level, keep recursing down the hierarchy
-    return Entity.getAlternativeHierarchyDescendants(
+    return Entity.getNearestDescendantsOfType(
       children.map(c => c.id),
       hierarchyName,
-      entityType,
+      entityTypes,
     );
   }
 
@@ -352,15 +361,21 @@ export class Entity extends BaseModel {
     return Entity.getAllChildren(id, ORG_UNIT_TYPE_LIST);
   }
 
-  async getDescendantsOfType(entityType) {
+  async getDescendantsOfType(...entityTypes) {
+    if (entityTypes.includes(this.type)) return [this];
+
     const hierarchyName = ENTITY_TYPE_TO_HIERARCHY[this.type];
     // if no alternative hierarchy was specified, we can return the canonical descendants in a
     // single query
     if (!hierarchyName) {
-      return Entity.getCanonicalDescendants(this.id, [entityType]);
+      return Entity.getNearestCanonicalDescendantsOfType(this.id, entityTypes);
     }
 
-    return Entity.getAlternativeHierarchyDescendants(this.id, hierarchyName, entityType);
+    return Entity.getNearestDescendantsOfType(this.id, hierarchyName, entityTypes);
+  }
+
+  async getNearestOrgUnitDescendants() {
+    return this.getDescendantsOfType(...ORG_UNIT_TYPE_LIST);
   }
 
   static fetchChildToParentCode = async childrenCodes => {
