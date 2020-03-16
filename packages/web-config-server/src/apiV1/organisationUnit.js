@@ -1,5 +1,4 @@
 import { Entity } from '/models';
-import { ENTITY_TYPES } from '/models/Entity';
 import { getEntityLocationForFrontend, getOrganisationUnitTypeForFrontend } from './utils';
 
 export function translateForFrontend(entity) {
@@ -41,19 +40,18 @@ export async function getEntityAndCountryHierarchyByCode(entityCode, userHasAcce
   const entity = await Entity.getEntityByCode(entityCode);
   checkExistsAndHasAccess(entity, entityCode, userHasAccess);
 
-  const entityIsCountry = entity.type === ENTITY_TYPES.COUNTRY;
+  const entityIsCountry = entity.type === Entity.COUNTRY;
 
   const country = entityIsCountry ? entity : await Entity.getEntityByCode(entity.country_code);
-  const countryDescendants = await filterForAccess(
+  const countryAndDescendants = await filterForAccess(
     await country.getDescendantsAndSelf(),
     userHasAccess,
   );
-  const world = await Entity.getEntityByCode('World');
-  countryDescendants.unshift(world); // Hierarchy is missing world entity, so push it to the front of the array
+  countryAndDescendants.unshift(await Entity.getEntityByCode('World')); // Hierarchy is missing world entity, so push it to the front of the array
 
   return {
     ...translateForFrontend(entity),
-    countryHierarchy: countryDescendants.map(translateDescendantForFrontEnd),
+    countryHierarchy: countryAndDescendants.map(translateDescendantForFrontEnd),
   };
 }
 

@@ -480,8 +480,8 @@ const normaliseCountryHierarchyOrgUnitData = orgUnitData => {
   );
 
   return {
-    parent,
     ...restOfOrgUnit,
+    parent,
     organisationUnitChildren: countryHierarchy.filter(
       descendant => descendant.parent === orgUnitData.organisationUnitCode,
     ),
