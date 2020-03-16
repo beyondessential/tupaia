@@ -357,7 +357,7 @@ export class Entity extends BaseModel {
     // if no alternative hierarchy was specified, we can return the canonical descendants in a
     // single query
     if (!hierarchyName) {
-      return Entity.getCanonicalDescendants(id, [entityType]);
+      return Entity.getCanonicalDescendants(this.id, [entityType]);
     }
 
     return Entity.getAlternativeHierarchyDescendants(this.id, hierarchyName, entityType);

@@ -16,8 +16,8 @@ export class Aggregator extends BaseAggregator {
   }
 
   async fetchAnalytics(dataElementCodes, originalQuery, replacementValues, ...otherParams) {
-    const queryBuilder = new QueryBuilder(originalQuery, replacementValues, this.hasEntityAccess);
-    const query = queryBuilder.build();
+    const queryBuilder = new QueryBuilder(originalQuery, replacementValues, this.checkEntityAccess);
+    const query = await queryBuilder.build();
 
     return super.fetchAnalytics(dataElementCodes, query, ...otherParams);
   }

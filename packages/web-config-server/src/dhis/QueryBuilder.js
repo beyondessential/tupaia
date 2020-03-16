@@ -19,9 +19,9 @@ export class QueryBuilder {
   }
 
   // Ensure the standard dimensions of period, start/end date, and organisation unit are set up
-  build() {
+  async build() {
     this.makePeriodReplacements();
-    this.buildOrganisationUnitCodes();
+    await this.buildOrganisationUnitCodes();
     this.makeEventReplacements();
     return this.query;
   }
