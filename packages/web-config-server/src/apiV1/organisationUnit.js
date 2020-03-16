@@ -13,9 +13,13 @@ export function translateForFrontend(entity) {
     name: entity.name,
     location: getEntityLocationForFrontend(entity),
     photoUrl: entity.image_url,
-    parent: entity.parent_code,
   };
 }
+
+const translateDescendantForFrontEnd = descendant => ({
+  ...translateForFrontend(descendant),
+  parent: descendant.parent_code,
+});
 
 export async function getEntityAndChildrenByCode(entityCode, userHasAccess) {
   const entity = await Entity.getEntityByCode(entityCode);
@@ -32,18 +36,22 @@ export async function getEntityAndChildrenByCode(entityCode, userHasAccess) {
   };
 }
 
-export async function getEntityAndDescendantsByCode(entityCode, userHasAccess) {
+export async function getEntityAndCountryHierarchyByCode(entityCode, userHasAccess) {
   const entity = await Entity.getEntityByCode(entityCode);
   checkExistsAndHasAccess(entity, entityCode, userHasAccess);
 
-  // Don't check parent permission (as we already know we have permission for at least one of its children)
-  const parent = entity.parent_id && (await Entity.findById(entity.parent_id));
-  const descendants = await filterForAccess(await entity.getDescendants(), userHasAccess);
+  const entityIsCountry = entity.type === Entity.COUNTRY;
+
+  const country = entityIsCountry ? entity : await Entity.getEntityByCode(entity.country_code);
+  const countryAndDescendants = await filterForAccess(
+    await country.getDescendantsAndSelf(),
+    userHasAccess,
+  );
+  countryAndDescendants.unshift(await Entity.getEntityByCode('World')); // Hierarchy is missing world entity, so push it to the front of the array
 
   return {
     ...translateForFrontend(entity),
-    parent: translateForFrontend(parent),
-    descendants: descendants.map(translateForFrontend),
+    countryHierarchy: countryAndDescendants.map(translateDescendantForFrontEnd),
   };
 }
 
@@ -64,10 +72,10 @@ const filterForAccess = async (orgUnits, userHasAccess) => {
 };
 
 export async function getOrganisationUnitHandler(req, res) {
-  const { organisationUnitCode, includeDescendants } = req.query;
+  const { organisationUnitCode, includeCountryHierarchy } = req.query;
   const data =
-    includeDescendants === 'true'
-      ? await getEntityAndDescendantsByCode(organisationUnitCode, req.userHasAccess)
+    includeCountryHierarchy === 'true'
+      ? await getEntityAndCountryHierarchyByCode(organisationUnitCode, req.userHasAccess)
       : await getEntityAndChildrenByCode(organisationUnitCode, req.userHasAccess);
 
   res.send(data);
