@@ -135,8 +135,7 @@ export class BaseModel {
       this.getQueryOptions(queryOptions),
     );
 
-    const models = await Promise.all(dbResults.map(result => this.load(result, loadOptions)));
-
+    const models = dbResults.map(result => this.load(result, loadOptions));
     return models;
   }
 
@@ -144,7 +143,7 @@ export class BaseModel {
     return this.find({}, loadOptions, this.getQueryOptions(queryOptions));
   }
 
-  static async load(fields, loadOptions) {
+  static load(fields) {
     const model = new this();
 
     this.fields.forEach(field => {
@@ -199,8 +198,7 @@ export class BaseModel {
     const databaseFields = this.processFieldsForDatabase(fields);
     const modelFields = await this.database.create(this.databaseType, databaseFields);
 
-    const model = await this.load(modelFields, loadOptions);
-
+    const model = this.load(modelFields, loadOptions);
     return model;
   }
 
@@ -220,8 +218,7 @@ export class BaseModel {
       databaseFields,
     );
 
-    const model = await this.load(modelFields, loadOptions);
-
+    const model = this.load(modelFields, loadOptions);
     return model;
   }
 }
