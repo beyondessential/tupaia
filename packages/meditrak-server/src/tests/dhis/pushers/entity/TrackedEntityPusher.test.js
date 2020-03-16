@@ -73,10 +73,17 @@ describe('TrackedEntityPusher', () => {
       Pusher.prototype.logResults.restore();
     });
 
+    afterEach(() => {
+      Pusher.prototype.logResults.resetHistory();
+    });
+
     describe('create/update an entity', () => {
-      it('should throw an error if the changed record was not found', async () => {
+      it('should log an error if the changed record was not found', async () => {
         const pusher = new TrackedEntityPusher(createModelsStub(), { type: 'update' }, {});
-        return expect(pusher.push()).to.be.rejectedWith(/entity .*not found/i);
+        await pusher.push();
+        return expect(pusher.logResults).to.have.been.calledWithMatch(
+          sinon.match({ errors: [sinon.match(/entity .*not found/i)] }),
+        );
       });
 
       it('should create a DHIS tracked entity when a DB entity is created', async () => {
@@ -143,8 +150,10 @@ describe('TrackedEntityPusher', () => {
         const entity = createEntityStub(ENTITY_ID);
         const models = createModelsStub({ entityRecords: [entity] });
         const pusher = new TrackedEntityPusher(models, getChange(), {});
-
-        return expect(pusher.push()).to.be.rejectedWith('entity type is required');
+        await pusher.push();
+        return expect(pusher.logResults).to.have.been.calledWithExactly({
+          errors: ['Tracked entity type is required'],
+        });
       });
     });
 
@@ -170,8 +179,11 @@ describe('TrackedEntityPusher', () => {
       it('should throw an error if the deletable entity has not been synced', async () => {
         const modelsStub = createModelsStub({ dhisSyncLogRecords: [] });
         const pusher = new TrackedEntityPusher(modelsStub, change, getDhisApiStub());
+        await pusher.push();
 
-        return expect(pusher.push()).to.be.rejectedWith(/sync log .*not found/i);
+        return expect(pusher.logResults).to.have.been.calledWithMatch(
+          sinon.match({ errors: [sinon.match(/sync log .*not found/i)] }),
+        );
       });
     });
   });

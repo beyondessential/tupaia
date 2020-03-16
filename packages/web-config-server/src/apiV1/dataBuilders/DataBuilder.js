@@ -74,7 +74,7 @@ export class DataBuilder {
     return this.aggregator.fetchDataElements(codes, {
       organisationUnitCode,
       dataServices,
-      shouldIncludeOptions: true,
+      includeOptions: true,
     });
   }
 

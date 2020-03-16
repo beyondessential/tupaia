@@ -204,7 +204,7 @@ export default class extends DhisTranslationHandler {
     const [dataElement] = await this.aggregator.fetchDataElements([dataElementCode], {
       organisationUnitCode: this.entityCode,
       dataServices,
-      shouldIncludeOptions: true,
+      includeOptions: true,
     });
     if (!dataElement) {
       throw new Error(`Data element with code ${dataElementCode} not found`);

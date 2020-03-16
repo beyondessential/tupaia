@@ -37,11 +37,11 @@ export const cachedSelectOrgUnitAndDescendants = createCachedSelector(
   [state => state, (_, code) => code],
   (state, code) => {
     const orgUnit = selectOrgUnit(state, code);
-    const children = cachedSelectOrgUnitChildren(state, code);
-    if (children.length < 1) {
-      return [orgUnit];
+    if (!orgUnit) {
+      return [];
     }
 
+    const children = cachedSelectOrgUnitChildren(state, code);
     const descendants = children.reduce(
       (array, child) => [
         ...array,

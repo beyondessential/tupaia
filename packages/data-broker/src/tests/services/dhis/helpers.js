@@ -31,11 +31,10 @@ export const stubDhisApi = ({
   const dhisApi = sinon.createStubInstance(DhisApi, {
     getAnalytics: getAnalyticsResponse,
     getEvents: getEventsResponse,
-    getCodeToId: sinon
+    fetchDataElements: sinon
       .stub()
-      .withArgs('dataElements')
-      .callsFake((_, codes) =>
-        codes.reduce((codeToId, code) => ({ ...codeToId, [code]: DATA_ELEMENTS[code].uid }), {}),
+      .callsFake(codes =>
+        codes.map(code => ({ code, id: DATA_ELEMENTS[code].uid, valueType: 'NUMBER' }), {}),
       ),
     getServerName: SERVER_NAME,
     getResourceTypes: { DATA_ELEMENT: 'dataElement' },
