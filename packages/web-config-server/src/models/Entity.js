@@ -28,8 +28,8 @@ export const ENTITY_TYPES = {
   WORLD,
 };
 
-const constructTypesCriteria = (types, prefix) =>
-  types.length > 0 ? `${prefix} type IN (${types.map(() => '?').join(',')})` : '';
+const constructTypesCriteria = (types, { prefix = 'AND', alias = 'entity' } = {}) =>
+  types.length > 0 ? `${prefix} ${alias}.type IN (${types.map(() => '?').join(',')})` : '';
 
 export class Entity extends BaseModel {
   static databaseType = TYPES.ENTITY;
@@ -101,7 +101,7 @@ export class Entity extends BaseModel {
       )
       SELECT *
         FROM children
-        ${constructTypesCriteria(types, 'WHERE')}
+        ${constructTypesCriteria(types, { prefix: 'WHERE', alias: 'children' })}
         ORDER BY generation DESC;
     `,
       [id, ...types],
@@ -211,13 +211,20 @@ export class Entity extends BaseModel {
 
     return Entity.database.executeSql(
       `
-      SELECT ${Entity.translatedFields()} FROM entity
+      SELECT
+        ${Entity.translatedFields()}, count(children.id) > 0 as has_children
+      FROM
+        entity
+      LEFT JOIN
+        entity as children on children.parent_id = entity.id
+        ${constructTypesCriteria(types, { alias: 'children' })}
       WHERE
-        parent_id = ?
-        ${constructTypesCriteria(types, 'AND')}
+        entity.parent_id = ?
+        ${constructTypesCriteria(types)}
+      GROUP BY entity.id
       ORDER BY name;
     `,
-      [this.id, ...types],
+      [...types, this.id, ...types],
     );
   }
 

@@ -52,7 +52,7 @@ export class HierarchyItem extends Component {
 
     const hasChildren = hasNestedItems || (Array.isArray(nestedItems) && nestedItems.length > 0);
     if (!hasChildren) {
-      return null;
+      return <span style={styles.buttonIcon} />;
     }
 
     const IconComponent = isOpen ? OpenIcon : ClosedIcon;
@@ -129,6 +129,7 @@ const styles = {
   },
   buttonIcon: {
     flexShrink: 0,
+    width: '24px', // material-ui icon size
   },
   spacer: {
     flexGrow: 1,

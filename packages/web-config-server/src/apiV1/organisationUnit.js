@@ -13,6 +13,7 @@ export function translateForFrontend(entity) {
     name: entity.name,
     location: getEntityLocationForFrontend(entity),
     photoUrl: entity.image_url,
+    hasChildren: entity.has_children,
   };
 }
 
