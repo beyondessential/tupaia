@@ -7,6 +7,8 @@ import { getSortByKey } from '@tupaia/utils';
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 
 export class DataBuilder {
+  static NO_DATA_AVAILABLE = NO_DATA_AVAILABLE;
+
   /**
    * @param {Aggregator} aggregator
    * @param {DhisApi} dhisApi

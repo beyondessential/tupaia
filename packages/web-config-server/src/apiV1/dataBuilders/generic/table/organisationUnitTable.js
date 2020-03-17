@@ -3,11 +3,14 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
+import groupBy from 'lodash.groupby';
+
 import { getSortByKey, reduceToSet, stripFromStart } from '@tupaia/utils';
 import { getDataElementGroupSets } from '/apiV1/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { DATA_SOURCE_TYPES } from '/apiV1/dataBuilders/dataSourceTypes';
 import { buildCategories } from './buildCategories';
+import { ENTITY_TYPES } from '../../../../models/Entity';
 
 const { SINGLE, GROUP_SET } = DATA_SOURCE_TYPES;
 
@@ -117,7 +120,10 @@ class OrganisationUnitTableDataBuilder extends DataBuilder {
   }
 
   async buildColumns(analytics) {
-    const facilitiesByType = await this.entity.getFacilitiesByType();
+    const facilitiesByType = groupBy(
+      await this.entity.getDescendantsOfType(ENTITY_TYPES.FACILITY),
+      'facility_type_name',
+    );
     const fixedColumnTitle = (this.entity.isFacility() && this.config.columnTitle) || null;
     const orgUnitsWithData = reduceToSet(analytics.results, 'organisationUnit');
 
