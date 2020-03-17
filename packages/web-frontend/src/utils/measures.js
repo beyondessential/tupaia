@@ -268,7 +268,7 @@ export function getMeasureDisplayInfo(orgUnitData, measureOptions, hiddenMeasure
         case MEASURE_TYPE_SPECTRUM:
           displayInfo.color = resolveSpectrumColour(
             scaleType,
-            valueInfo.value || valueInfo.value === 0 ? valueInfo.value : null,
+            valueInfo.value || (valueInfo.value === 0 ? 0 : null),
             min,
             max,
             noDataColour,
