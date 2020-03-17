@@ -40,21 +40,6 @@ const chartColorAtIndex = (colorArray, index) => {
 
 export class PieChart extends PureComponent {
   // Disable tapping charts to reveal legend labels on mobile as they do not fit and are awkwardly cropped
-  handleMouseEnter = isMobile()
-    ? null
-    : (object, index) => {
-        this.setState({
-          activeIndex: index,
-        });
-      };
-
-  handleMouseOut = isMobile()
-    ? null
-    : () => {
-        this.setState({
-          activeIndex: -1,
-        });
-      };
 
   constructor(props) {
     super(props);
@@ -94,6 +79,22 @@ export class PieChart extends PureComponent {
       wrapperStyle: VIEW_STYLES.legend,
     };
   }
+
+  handleMouseEnter = (object, index) => {
+    if (!isMobile()) {
+      this.setState({
+        activeIndex: index,
+      });
+    }
+  };
+
+  handleMouseEnter = () => {
+    if (!isMobile()) {
+      this.setState({
+        activeIndex: -1,
+      });
+    }
+  };
 
   getValidData = () => {
     const { data, valueType } = this.props.viewContent;
