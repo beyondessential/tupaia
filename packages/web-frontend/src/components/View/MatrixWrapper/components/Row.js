@@ -34,7 +34,7 @@ export default class Row extends Component {
 
         return a === b;
       }
-      return undefined;
+      return false;
     });
   }
 

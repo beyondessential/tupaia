@@ -38,7 +38,7 @@ export default class RowGroup extends Component {
 
         return a === b;
       }
-      return undefined;
+      return false;
     });
   }
 
