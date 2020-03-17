@@ -6,11 +6,9 @@
 /* eslint-disable class-methods-use-this */
 
 import groupBy from 'lodash.groupby';
-import keyBy from 'lodash.keyby';
 
 import { getDataSourceEntityType } from '/apiV1/dataBuilders/helpers/getDataSourceEntityType';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { formatFacilityDataForOverlay } from '/apiV1/utils';
 import { ENTITY_TYPES, Entity } from '/models/Entity';
 
 /**
@@ -46,7 +44,7 @@ export class DataPerOrgUnitBuilder extends DataBuilder {
     }
     if (typeof builder.buildData !== 'function') {
       throw new Error(
-        'The base builder for a period builder must implement the "buildData" method',
+        'The base builder for an org unit builder must implement the "buildData" method',
       );
     }
 
@@ -75,34 +73,24 @@ export class DataPerOrgUnitBuilder extends DataBuilder {
     return groupBy(results, ({ [orgUnitKey]: orgUnit }) => villageToFacilityCode[orgUnit]);
   }
 
-  async fetchOrgUnitData() {
-    const { organisationUnitGroupCode } = this.query;
-    const orgUnits = await Entity.getFacilityDescendantsWithCoordinates(organisationUnitGroupCode);
-
-    return keyBy(orgUnits, 'code');
-  }
-
   async buildData(results) {
     const { dataElementCode } = this.query;
     const resultsByOrgUnit = await this.groupResultsByOrgUnitCode(results);
     const baseBuilder = this.getBaseBuilder();
-    const orgUnitData = await this.fetchOrgUnitData();
 
-    const processResultsForOrgUnit = async orgUnitCode => {
-      const resultsForOrgUnit = resultsByOrgUnit[orgUnitCode];
-      if (!resultsForOrgUnit) {
+    const processResultsForOrgUnit = async ([organisationUnitCode, result]) => {
+      if (!result) {
         return;
       }
 
-      const data = await baseBuilder.buildData(resultsForOrgUnit);
+      const data = await baseBuilder.buildData(result);
       if (data.length !== 1) {
         throw new Error('The base data builder should return a single element array');
       }
-      orgUnitData[orgUnitCode][dataElementCode] = data[0][dataElementCode];
-    };
-    await Promise.all(Object.keys(orgUnitData).map(processResultsForOrgUnit));
 
-    return Object.values(orgUnitData);
+      return { organisationUnitCode, [dataElementCode]: data[0][dataElementCode] };
+    };
+    return Promise.all(Object.entries(resultsByOrgUnit).map(processResultsForOrgUnit));
   }
 
   /**
@@ -121,6 +109,6 @@ export class DataPerOrgUnitBuilder extends DataBuilder {
     const results = await this.fetchResults();
     const data = await this.buildData(results);
 
-    return this.formatData(data).map(formatFacilityDataForOverlay);
+    return this.formatData(data);
   }
 }

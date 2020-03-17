@@ -276,7 +276,7 @@ export class CartesianChart extends PureComponent {
 
   renderTooltip = () => {
     const { viewContent } = this.props;
-    const { chartConfig, valueType, labelType } = viewContent;
+    const { chartType, chartConfig, valueType, labelType } = viewContent;
 
     return (
       <Tooltip
@@ -286,6 +286,7 @@ export class CartesianChart extends PureComponent {
             labelType={labelType}
             periodGranularity={viewContent.periodGranularity}
             presentationOptions={chartConfig}
+            chartType={chartType}
           />
         }
       />
@@ -403,7 +404,6 @@ export class CartesianChart extends PureComponent {
     const { isEnlarged, isExporting, viewContent } = this.props;
     const { chartConfig, valueType } = viewContent;
     const labelOffset = chartConfig ? -15 : -12;
-
     return (
       <Bar
         key={dataKey}
