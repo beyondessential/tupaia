@@ -9,5 +9,5 @@ import { BaseModel } from './BaseModel';
 export class EntityRelation extends BaseModel {
   static databaseType = TYPES.ENTITY_RELATION;
 
-  static fields = ['id', 'parent_id', 'child_id'];
+  static fields = ['id', 'parent_id', 'child_id', 'hierarchy'];
 }

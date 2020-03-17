@@ -20,12 +20,11 @@ exports.up = async function(db) {
   await db.runSql(`
       DROP TABLE entity_relation;
       DROP TABLE entity_relation_type;
-      CREATE TYPE entity_hierarchy_type AS ENUM('project', 'water_catchment');
       CREATE TABLE public.entity_relation (
         id TEXT PRIMARY KEY,
         parent_id TEXT NOT NULL,
         child_id TEXT NOT NULL,
-        hierarchy_type entity_hierarchy_type NOT NULL,
+        hierarchy TEXT NOT NULL,
         FOREIGN KEY (parent_id) REFERENCES entity (id),
         FOREIGN KEY (child_id) REFERENCES entity (id)
       );
@@ -56,14 +55,14 @@ const updateProject = async (db, projectCode, projectDescription, entityCodes, e
   const valuesToInsert = childEntities
     .map(
       e => `
-    ('${generateId()}', '${projectId}', '${e.id}', 'project')
+    ('${generateId()}', '${projectId}', '${e.id}', '${projectCode}')
   `,
     )
     .join(',\n');
 
   return db.runSql(`
     insert into "entity" ("id", "code", "parent_id", "name", "type" ) values ('${projectId}', '${projectCode}', '5d3f8844a72aa231bf71977f', '${projectDescription}', 'project');
-    insert into "entity_relation" ("id", "parent_id", "child_id", "hierarchy_type") values ${valuesToInsert};
+    insert into "entity_relation" ("id", "parent_id", "child_id", "hierarchy") values ${valuesToInsert};
     update "project" set "entity_id" = '${projectId}' where "code" ='${projectCode}';
   `);
 };

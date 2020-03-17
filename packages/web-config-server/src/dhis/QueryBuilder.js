@@ -37,15 +37,17 @@ export class QueryBuilder {
   async buildOrganisationUnitCodes(defaultEntityType) {
     const organisationUnitCode = this.getQueryParameter('organisationUnitCode');
     const entity = await Entity.findOne({ code: organisationUnitCode });
-    // if a specific type was speicified in either the query or the function parameter, build org
+    // if a specific type was specified in either the query or the function parameter, build org
     // units of that type (otherwise we just use the nearest org unit descendants)
     const dataSourceEntityType = this.query.dataSourceEntityType || defaultEntityType;
+    // if this entity is a project, follow the alternative hierarchy matching its name
+    const hierarchyName = entity.isProject() ? (await entity.project()).name : null;
     const dataSourceEntities = dataSourceEntityType
-      ? await entity.getDescendantsOfType(dataSourceEntityType)
-      : await entity.getNearestOrgUnitDescendants();
+      ? await entity.getDescendantsOfType(dataSourceEntityType, hierarchyName)
+      : await entity.getNearestOrgUnitDescendants(hierarchyName);
     const entityCodes = dataSourceEntities.map(e => e.code);
-    const entityAccessList = await Promise.all(entityCodes.map(this.checkEntityAccess));
-    this.query.organisationUnitCodes = entityCodes.filter((_, i) => entityAccessList[i]);
+    // const entityAccessList = await Promise.all(entityCodes.map(this.checkEntityAccess));
+    this.query.organisationUnitCodes = entityCodes; // entityCodes.filter((_, i) => entityAccessList[i]);
     delete this.query.organisationUnitCode;
     return this.query;
   }
