@@ -1,15 +1,14 @@
 import { getChildOrganisationUnits, mapOrgUnitToGroupCodes } from '/apiV1/utils';
-import { Facility, Entity } from '/models';
 
 export const mostRecentValueFromChildren = async (
   aggregator,
   dhisApi,
   { organisationUnitGroupCode, dataElementCode },
-  { organisationUnitLevel, dataServices },
+  { aggregationEntityType, dataServices },
 ) => {
   const organisationUnits = await getChildOrganisationUnits(
     {
-      level: organisationUnitLevel,
+      level: aggregationEntityType,
       organisationUnitGroupCode,
     },
     dhisApi,
@@ -25,26 +24,9 @@ export const mostRecentValueFromChildren = async (
       aggregationConfig: { orgUnitToGroupKeys },
     },
   );
-  const orgUnitValuePromises = organisationUnits.map(async ({ code }) => {
-    const entity = await Entity.findOne({ code });
-    const entityMetadata = {
-      name: entity.name,
-      photoUrl: entity.photo_url,
-      orgUnitLevel: entity.getOrganisationLevel(),
-    };
-    const facility = await Facility.findOne({ code });
-    if (facility) {
-      entityMetadata.facilityTypeName = facility.type_name;
-      entityMetadata.facilityTypeCode = facility.type;
-    }
-    const { value = null, period = null } =
-      results.find(result => result.organisationUnit === code) || {};
-    return {
-      [dataElementCode]: value,
-      ...entityMetadata,
-      organisationUnitCode: code,
-      period,
-    };
-  });
-  return Promise.all(orgUnitValuePromises);
+
+  return results.map(({ organisationUnit: organisationUnitCode, value }) => ({
+    organisationUnitCode,
+    [dataElementCode]: value,
+  }));
 };
