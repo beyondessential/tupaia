@@ -7,7 +7,10 @@
 
 import groupBy from 'lodash.groupby';
 
-import { getDataSourceEntityType } from '/apiV1/dataBuilders/helpers/getDataSourceEntityType';
+import {
+  getDataSourceEntityType,
+  getAggregationEntityType,
+} from '/apiV1/dataBuilders/helpers/getDataSourceEntityType';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { ENTITY_TYPES, Entity } from '/models/Entity';
 
@@ -64,7 +67,10 @@ export class DataPerOrgUnitBuilder extends DataBuilder {
 
   async groupResultsByOrgUnitCode(results) {
     const orgUnitKey = this.areEventResults(results) ? 'orgUnit' : 'organisationUnit';
-    if (getDataSourceEntityType(this.config) !== ENTITY_TYPES.VILLAGE) {
+    if (
+      getDataSourceEntityType(this.config) !== ENTITY_TYPES.VILLAGE ||
+      getDataSourceEntityType(this.config) === getAggregationEntityType(this.config)
+    ) {
       return groupBy(results, orgUnitKey);
     }
 

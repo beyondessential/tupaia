@@ -7,6 +7,14 @@ export function flipLatLng(coord) {
   return [lat, (360 + lng) % 360];
 }
 
+const flipLatLngRecursive = coords => {
+  if (typeof coords[0] === 'number') {
+    return flipLatLng(coords);
+  }
+
+  return coords.map(flipLatLngRecursive);
+};
+
 // swap from geojson polygon to [[lat, lng], [lat, lng]]
 export function translateBoundsForFrontend(bounds) {
   if (!bounds) return [];
@@ -42,3 +50,13 @@ export function calculateBoundsFromEntities(entities) {
     return box;
   }, null);
 }
+
+export const translateRegionForFrontEnd = region => {
+  if (!region) return null;
+
+  const data = JSON.parse(region);
+  if (data.type !== 'MultiPolygon') return null;
+
+  // need to recurse into data structure and flip all coordinate arrays
+  return flipLatLngRecursive(data.coordinates);
+};

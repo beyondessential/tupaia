@@ -15,8 +15,10 @@ import { AreaTooltip } from './AreaTooltip';
 import { MAP_COLORS } from '../../styles';
 import { HIGHLIGHT_TYPES } from './constants';
 import { changeOrgUnit, highlightOrgUnit } from '../../actions';
-import { getMeasureAsShade } from '../../utils';
-import { selectMeasureName } from '../../reducers/mapReducers';
+import {
+  selectHasPolygonMeasure,
+  selectAllMeasuresWithDisplayInfo,
+} from '../../reducers/mapReducers';
 import ActivePolygon from './ActivePolygon';
 
 const { POLYGON_BLUE, POLYGON_HIGHLIGHT } = MAP_COLORS;
@@ -32,7 +34,7 @@ const BasicPolygon = styled(Polygon)`
   }
 `;
 
-const ShadedPolygon = styled(Polygon)`
+export const ShadedPolygon = styled(Polygon)`
   weight: 1;
   fill-opacity: 0.5;
   :hover {
@@ -47,17 +49,17 @@ const ShadedPolygon = styled(Polygon)`
  */
 class ConnectedPolygon extends Component {
   shouldComponentUpdate(nextProps) {
-    const { isHighlighted, measureInfo, highlightedOrganisationUnit, area, regions } = this.props;
+    const { isHighlighted, measureId, highlightedOrganisationUnit, area, regions } = this.props;
     const { organisationUnitCode } = area;
     if (nextProps.highlightedOrganisationUnit !== highlightedOrganisationUnit) return true;
     if (nextProps.isHighlighted !== isHighlighted) return true;
-    if (nextProps.measureInfo.measureId !== measureInfo.measureId) return true;
+    if (nextProps.measureId !== measureId) return true;
     if (regions[organisationUnitCode] !== nextProps.regions[organisationUnitCode]) return true;
     return false;
   }
 
   getTooltip(organisationUnitCode, area) {
-    const { measureInfo, measureName, highlightedOrganisationUnit, isChildArea } = this.props;
+    const { highlightedOrganisationUnit, isChildArea, hasMeasureData } = this.props;
     const highlightedCode = highlightedOrganisationUnit.organisationUnitCode;
     const getHighlight = code => {
       if (code === highlightedCode) {
@@ -70,10 +72,8 @@ class ConnectedPolygon extends Component {
     };
     const highlight = getHighlight(organisationUnitCode);
 
-    const hasMeasureInfo = measureInfo.measureData && measureInfo.measureData.length > 0;
-
     // don't render tooltips if we have a measure loaded
-    return hasMeasureInfo ? null : (
+    return hasMeasureData ? null : (
       <AreaTooltip
         highlight={highlight}
         permanent={isChildArea}
@@ -87,8 +87,8 @@ class ConnectedPolygon extends Component {
   }
 
   render() {
-    const { measureInfo, onChangeOrgUnit, area, isActive, regions } = this.props;
-    const { organisationUnitCode, organisationUnitChildren } = area;
+    const { onChangeOrgUnit, area, isActive, regions, shade, hasShadedChildren } = this.props;
+    const { organisationUnitCode } = area;
     const tooltip = this.getTooltip(organisationUnitCode, area);
 
     const region = regions[organisationUnitCode] || {};
@@ -96,19 +96,9 @@ class ConnectedPolygon extends Component {
     if (!coordinates) return null;
 
     if (isActive) {
-      const measureShade = getMeasureAsShade(organisationUnitCode, measureInfo);
-      const hasChildren = organisationUnitChildren && organisationUnitChildren.length > 0;
-      // Check if first child is shaded - this is safe to use as a stand-in for the
-      // whole set of children as we don't have a case where some regions in a country (or
-      // some districts in a province) are included in a dataset but some aren't. (of course
-      // some org units will have "no data" but that still counts as shaded)
-      const hasShadedChildren =
-        hasChildren &&
-        getMeasureAsShade(organisationUnitChildren[0].organisationUnitCode, measureInfo);
-
       return (
         <ActivePolygon
-          shade={measureShade}
+          shade={shade}
           areChildrenShaded={hasShadedChildren}
           coordinates={coordinates}
           // Randomize key to ensure polygon appears at top. This is still imporatant even
@@ -128,11 +118,10 @@ class ConnectedPolygon extends Component {
       onClick: () => onChangeOrgUnit(area),
     };
 
-    const measureShade = getMeasureAsShade(organisationUnitCode, measureInfo);
-    if (measureShade) {
+    if (shade) {
       // Work around: color should go through the styled components
       // but there is a rendering bug between Styled Components + Leaflet
-      return <ShadedPolygon {...defaultProps} color={measureShade} />;
+      return <ShadedPolygon {...defaultProps} color={shade} />;
     }
 
     return <BasicPolygon {...defaultProps}>{tooltip}</BasicPolygon>;
@@ -144,21 +133,20 @@ ConnectedPolygon.propTypes = {
     name: PropTypes.string,
     type: PropTypes.string,
   }).isRequired,
-  measureInfo: PropTypes.shape({
-    measureData: PropTypes.array,
-    measureOptions: PropTypes.array,
-  }).isRequired,
   highlightedOrganisationUnit: PropTypes.shape({
     type: PropTypes.string,
     organisationUnitCode: PropTypes.string,
   }).isRequired,
-  measureName: PropTypes.string,
+  measureId: PropTypes.string,
   isActive: PropTypes.bool,
   isChildArea: PropTypes.bool,
   onChangeOrgUnit: PropTypes.func,
   highlightOrgUnit: PropTypes.func,
   regions: PropTypes.shape({}).isRequired,
   isHighlighted: PropTypes.bool,
+  hasMeasureData: PropTypes.bool,
+  hasShadedChildren: PropTypes.bool,
+  shade: PropTypes.string,
 };
 
 ConnectedPolygon.defaultProps = {
@@ -167,10 +155,14 @@ ConnectedPolygon.defaultProps = {
   isChildArea: false,
   highlightOrgUnit: () => {},
   onChangeOrgUnit: () => {},
-  measureName: '',
+  measureId: '',
+  hasMeasureData: false,
+  hasShadedChildren: false,
+  shade: undefined,
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, givenProps) => {
+  const { organisationUnitCode, organisationUnitChildren } = givenProps.area;
   const { measureInfo, regions } = state.map;
 
   const {
@@ -178,13 +170,31 @@ const mapStateToProps = state => {
     currentOrganisationUnit,
     currentOrganisationUnitSiblings,
   } = state.global;
+
+  const measureOrgUnits = selectAllMeasuresWithDisplayInfo(state);
+  const measureOrgUnitCodes = measureOrgUnits.map(orgUnit => orgUnit.organisationUnitCode);
+
+  const hasShadedChildren =
+    selectHasPolygonMeasure(state) &&
+    organisationUnitChildren &&
+    organisationUnitChildren.some(child =>
+      measureOrgUnitCodes.includes(child.organisationUnitCode),
+    );
+
+  const shade =
+    selectHasPolygonMeasure(state) &&
+    measureOrgUnitCodes.includes(organisationUnitCode) &&
+    measureOrgUnits.find(orgUnit => orgUnit.organisationUnitCode === organisationUnitCode).color;
+
   return {
-    measureInfo,
-    measureName: selectMeasureName(state),
     highlightedOrganisationUnit,
     currentOrganisationUnit,
     currentOrganisationUnitSiblings,
     regions,
+    shade,
+    hasShadedChildren,
+    measureId: measureInfo.measureId,
+    hasMeasureData: measureInfo.measureData && measureInfo.measureData.length > 0,
   };
 };
 
@@ -195,7 +205,4 @@ const mapDispatchToProps = dispatch => ({
   highlightOrgUnit: organisationUnitCode => dispatch(highlightOrgUnit(organisationUnitCode)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(ConnectedPolygon);
+export default connect(mapStateToProps, mapDispatchToProps)(ConnectedPolygon);
