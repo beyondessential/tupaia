@@ -94,14 +94,13 @@ export default class RowGroup extends Component {
                 key={`${rowId}-empty-${index}`}
               >
                 <Cell
-                  key={index}
+                  key={`${rowId}-empty-${index}`}
                   cellKey={index}
                   onMouseEnter={() => onCellMouseEnter(index, rowId)}
                   onMouseLeave={() => onCellMouseLeave()}
                   onClick={() => onCellClick(presentation, value)}
                   color={presentation ? presentation.color : { color: '' }}
                   value={value}
-                  style={styles.gridCell}
                   columnActiveStripStyle={styles.columnActiveStrip}
                   isActive={isCellActive}
                   dotStyle={styles.cellIndicator}
