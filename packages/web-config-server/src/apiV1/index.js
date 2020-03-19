@@ -18,7 +18,7 @@ import {
   appVerifyEmail,
   appResendEmail,
 } from '/appServer';
-import { exportChart, exportSurveyResponses } from '/export';
+import { exportChart, ExportSurveyResponsesHandler } from '/export';
 import { getUser } from './getUser';
 import ViewHandler from './view';
 import DashBoardHandler from './dashboard';
@@ -30,6 +30,9 @@ import { disasters } from './disasters';
 import { getOrganisationUnitHandler } from './organisationUnit';
 import { getRegions } from './regions';
 import { getProjects } from './projects';
+
+const handleWith = Handler =>
+  catchAsyncErrors((...params) => new Handler(...params).handleRequest());
 
 export const getRoutesForApiV1 = () => {
   const api = Router();
@@ -46,32 +49,17 @@ export const getRoutesForApiV1 = () => {
   api.get('/verifyEmail', catchAsyncErrors(appVerifyEmail()));
   api.post('/resendEmail', catchAsyncErrors(appResendEmail()));
   api.post('/export/chart', catchAsyncErrors(exportChart()));
-  api.get('/export/surveyResponses', catchAsyncErrors(exportSurveyResponses()));
+  api.get('/export/surveyResponses', handleWith(ExportSurveyResponsesHandler));
   api.get(
     '/organisationUnit',
     apicache.middleware(process.env.ORGANISATION_UNIT_CACHE_PERIOD),
     catchAsyncErrors(getOrganisationUnitHandler),
   );
-  api.get(
-    '/organisationUnitSearch',
-    catchAsyncErrors((...params) => new OrgUnitSearchHandler(...params).handleRequest()),
-  );
-  api.get(
-    '/dashboard',
-    catchAsyncErrors((...params) => new DashBoardHandler(...params).handleRequest()),
-  );
-  api.get(
-    '/view',
-    catchAsyncErrors((...params) => new ViewHandler(...params).handleRequest()),
-  );
-  api.get(
-    '/measures',
-    catchAsyncErrors((...params) => new MeasuresHandler(...params).handleRequest()),
-  );
-  api.get(
-    '/measureData',
-    catchAsyncErrors((...params) => new MeasuresDataHandler(...params).handleRequest()),
-  );
+  api.get('/organisationUnitSearch', handleWith(OrgUnitSearchHandler));
+  api.get('/dashboard', handleWith(DashBoardHandler));
+  api.get('/view', handleWith(ViewHandler));
+  api.get('/measures', handleWith(MeasuresHandler));
+  api.get('/measureData', handleWith(MeasuresDataHandler));
   api.get('/disasters', catchAsyncErrors(disasters));
   api.get('/regions/:code', catchAsyncErrors(getRegions));
   api.get('/projects', catchAsyncErrors(getProjects));

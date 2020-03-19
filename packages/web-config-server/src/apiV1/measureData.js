@@ -3,6 +3,7 @@ import { getMeasureBuilder } from '/apiV1/measureBuilders/getMeasureBuilder';
 import { getDhisApiInstance } from '/dhis';
 import { getDateRange, getOrganisationUnitTypeForFrontend } from './utils';
 import { DataAggregatingRouteHandler } from './DataAggregatingRouteHandler';
+import { MapOverlayPermissionsChecker } from './permissions';
 import { DATA_SOURCE_TYPES } from './dataBuilders/dataSourceTypes';
 
 // NOTE: does not allow for actual number value measure, will be added when
@@ -89,6 +90,8 @@ const getMeasureLevel = mapOverlays => {
 };
 
 export default class extends DataAggregatingRouteHandler {
+  static PermissionsChecker = MapOverlayPermissionsChecker;
+
   buildResponse = async req => {
     const { entity, overlays } = this;
     const { code } = entity;

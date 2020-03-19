@@ -5,6 +5,7 @@ import { getDhisApiInstance } from '/dhis';
 import { CustomError } from '@tupaia/utils';
 import { isSingleValue } from './utils';
 import { DataAggregatingRouteHandler } from './DataAggregatingRouteHandler';
+import { DashboardPermissionsChecker } from './permissions';
 import { getDataBuilder } from '/apiV1/dataBuilders/getDataBuilder';
 
 const viewFail = {
@@ -50,6 +51,8 @@ const getIsValidDate = dateString => !Number.isNaN(Date.parse(dateString));
 /* View implementation now delegates data builder to corresponding view data builder
  */
 export default class extends DataAggregatingRouteHandler {
+  static PermissionsChecker = DashboardPermissionsChecker;
+
   buildResponse = async req => {
     const { startDate, endDate, ...restOfQuery } = req.query;
     if (getIsValidDate(startDate)) this.startDate = startDate;

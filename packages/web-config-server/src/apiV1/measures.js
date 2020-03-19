@@ -1,9 +1,12 @@
 import { MapOverlay } from '/models';
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { RouteHandler } from './RouteHandler';
+import { PermissionsChecker } from './permissions';
 const { AND, RAW } = QUERY_CONJUNCTIONS;
 
 export default class extends RouteHandler {
+  static PermissionsChecker = PermissionsChecker;
+
   buildResponse = async req => {
     const { entity } = this;
     const { code: entityCode, name: entityName } = entity;
