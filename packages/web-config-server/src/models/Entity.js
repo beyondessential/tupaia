@@ -241,19 +241,19 @@ export class Entity extends BaseModel {
    * @param {string[]} parents      The entities to start at
    * @param {string} hierarchyId  The specific hierarchy to follow through entity_relation
    */
-  static async getNearestDescendantsMatchingTypes(parents, hierarchyId, entityTypes) {
-    const children = await Entity.getNextGeneration(parents, hierarchyId);
-
+  static async getNearestDescendantsMatchingTypes(entities, hierarchyId, entityTypes) {
     // if we've made it to the leaf nodes, return an empty array
-    if (children.length === 0) {
+    if (entities.length === 0) {
       return [];
     }
 
     // if we've reached the level with descendants of the correct type, return them
-    const childrenOfType = children.filter(c => entityTypes.includes(c.type));
-    if (childrenOfType.length > 0) {
-      return childrenOfType;
+    const entitiesOfType = entities.filter(e => entityTypes.includes(e.type));
+    if (entitiesOfType.length > 0) {
+      return entitiesOfType;
     }
+
+    const children = await Entity.getNextGeneration(entities, hierarchyId);
 
     // keep recursing down the hierarchy
     return Entity.getNearestDescendantsMatchingTypes(children, hierarchyId, entityTypes);
