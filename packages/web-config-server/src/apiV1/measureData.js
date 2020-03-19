@@ -109,11 +109,11 @@ export default class extends DataAggregatingRouteHandler {
     );
 
     // start fetching options
-    const optionsTasks = overlays.map(o => this.fetchMeasureOptions(o, query));
+    const optionsTasks = overlays.map(o => this.fetchMeasureOptions(o, this.query));
 
     // start fetching actual data
-    const shouldFetchSiblings = query.shouldShowAllParentCountryResults === 'true';
-    const dataTasks = overlays.map(o => this.fetchMeasureData(o, shouldFetchSiblings, query));
+    const shouldFetchSiblings = this.query.shouldShowAllParentCountryResults === 'true';
+    const dataTasks = overlays.map(o => this.fetchMeasureData(o, shouldFetchSiblings, this.query));
 
     // wait for fetches to complete
     const measureOptions = await Promise.all(optionsTasks);
@@ -158,7 +158,7 @@ export default class extends DataAggregatingRouteHandler {
     };
   };
 
-  async fetchMeasureOptions(mapOverlay, query) {
+  async fetchMeasureOptions(mapOverlay) {
     const {
       id,
       groupName,
@@ -174,9 +174,8 @@ export default class extends DataAggregatingRouteHandler {
 
     const { dataSourceType = DATA_SOURCE_TYPES.SINGLE, periodGranularity } =
       measureBuilderConfig || {};
-    const dates = periodGranularity
-      ? getDateRange(periodGranularity, query.startDate, query.endDate)
-      : {};
+    const { startDate, endDate } = this.query;
+    const dates = periodGranularity ? getDateRange(periodGranularity, startDate, endDate) : {};
 
     const baseOptions = {
       ...presentationOptions,
@@ -224,7 +223,7 @@ export default class extends DataAggregatingRouteHandler {
     return country.code;
   }
 
-  async fetchMeasureData(mapOverlay, shouldFetchSiblings, query) {
+  async fetchMeasureData(mapOverlay, shouldFetchSiblings) {
     const { dataElementCode, isDataRegional, measureBuilderConfig, measureBuilder } = mapOverlay;
     const organisationUnitGroupCode = shouldFetchSiblings
       ? await this.getCountryLevelOrgUnitCode()
@@ -237,7 +236,7 @@ export default class extends DataAggregatingRouteHandler {
     return buildMeasure(
       this.aggregator,
       dhisApi,
-      { ...query, organisationUnitGroupCode, dataElementCode },
+      { ...this.query, organisationUnitGroupCode, dataElementCode },
       { ...measureBuilderConfig, dataServices },
     );
   }

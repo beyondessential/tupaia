@@ -8,13 +8,17 @@ import { PermissionsError } from '@tupaia/utils';
 import { PermissionsChecker } from './PermissionsChecker';
 
 export class MapOverlayPermissionsChecker extends PermissionsChecker {
+  getMeasureIds() {
+    const { measureId } = this.query;
+    if (!measureId) {
+      throw new Error('No measure id was provided');
+    }
+    return measureId.split(',');
+  }
+
   async fetchAndCacheOverlays() {
     if (!this.overlays) {
-      const { measureId } = this.query;
-      if (!measureId) {
-        throw new Error('No measure id was provided');
-      }
-      this.overlays = await MapOverlay.find({ id: measureId.split(',') });
+      this.overlays = await MapOverlay.find({ id: this.getMeasureIds() });
     }
     return this.overlays;
   }
@@ -34,7 +38,7 @@ export class MapOverlayPermissionsChecker extends PermissionsChecker {
     }
 
     const overlays = await this.fetchAndCacheOverlays();
-    if (overlays.length !== measureId.split(',').length) {
+    if (overlays.length !== this.getMeasureIds().length) {
       throw new Error('Not all overlays requested could be found in the database');
     }
 
