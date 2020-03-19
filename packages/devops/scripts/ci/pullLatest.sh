@@ -9,7 +9,8 @@ if curl --output /dev/null --silent --head --fail $DEPLOYMENT_URL; then
     git stash
     git fetch
     git checkout ${CI_BRANCH}
-    git pull
+    git fetch --all
+    git reset --hard origin/${CI_BRANCH}
     git stash pop
     yarn
   "

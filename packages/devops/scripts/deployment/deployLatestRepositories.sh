@@ -21,7 +21,8 @@ cd ${HOME_DIRECTORY}
 git fetch
 git checkout dev # Ensure we have dev as our default, if the specified branch doesn't exist
 git checkout $BRANCH
-git pull
+git fetch --all
+git reset --hard origin/${BRANCH}
 yarn install
 
 # For each package, get the latest and deploy it

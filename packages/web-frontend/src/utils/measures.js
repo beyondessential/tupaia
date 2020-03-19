@@ -268,7 +268,7 @@ export function getMeasureDisplayInfo(orgUnitData, measureOptions, hiddenMeasure
         case MEASURE_TYPE_SPECTRUM:
           displayInfo.color = resolveSpectrumColour(
             scaleType,
-            valueInfo.value || null,
+            valueInfo.value || (valueInfo.value === 0 ? 0 : null),
             min,
             max,
             noDataColour,
@@ -295,11 +295,20 @@ export function getMeasureDisplayInfo(orgUnitData, measureOptions, hiddenMeasure
     displayInfo.color = UNKNOWN_COLOR;
   }
 
-  return {
-    ...orgUnitData,
-    ...displayInfo,
-  };
+  return displayInfo;
 }
+
+const MAX_ALLOWED_RADIUS = 1000;
+export const calculateRadiusScaleFactor = measureData => {
+  // Check if any of the radii in the dataset are larger than the max allowed
+  // radius, and scale everything down proportionally if so.
+  // (this needs to happen here instead of inside the circle marker component
+  // because it needs to operate on the dataset level, not the datapoint level)
+  const maxRadius = measureData
+    .map(d => parseInt(d.radius, 10) || 1)
+    .reduce((state, current) => Math.max(state, current), 0);
+  return maxRadius < MAX_ALLOWED_RADIUS ? 1 : (1 / maxRadius) * MAX_ALLOWED_RADIUS;
+};
 
 // when we pass in an organisationUnitCode does one of the measures shade it?
 export function getMeasureAsShade(organisationUnitCode, { measureData, measureOptions }) {
