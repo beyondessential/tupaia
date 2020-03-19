@@ -1,6 +1,7 @@
 import { CustomError } from '@tupaia/utils';
 import { getMeasureBuilder } from '/apiV1/measureBuilders/getMeasureBuilder';
 import { getDhisApiInstance } from '/dhis';
+import { MapOverlay } from '/models';
 import { getDateRange, getOrganisationUnitTypeForFrontend } from './utils';
 import { DataAggregatingRouteHandler } from './DataAggregatingRouteHandler';
 import { MapOverlayPermissionsChecker } from './permissions';
@@ -93,9 +94,12 @@ export default class extends DataAggregatingRouteHandler {
   static PermissionsChecker = MapOverlayPermissionsChecker;
 
   buildResponse = async req => {
-    const { entity, overlays } = this;
+    const { entity } = this;
     const { code } = entity;
     const { query } = req;
+    const { measureId } = query;
+    const overlays = await MapOverlay.find({ id: measureId.split(',') });
+
     // check permission
     await Promise.all(
       overlays.map(async ({ userGroup }) => {

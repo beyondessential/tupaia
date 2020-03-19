@@ -22,23 +22,20 @@ export class MapOverlayPermissionsChecker extends PermissionsChecker {
       throw new PermissionsError('No measure id was provided');
     }
 
-    const overlayQueries = measureId.split(',').map(async id => {
-      const overlay = await MapOverlay.findById(id);
+    await Promise.all(
+      measureId.split(',').map(async id => {
+        const overlay = await MapOverlay.findById(id);
 
-      if (!overlay) {
-        throw new PermissionsError(`Measure with the id ${id} does not exist`);
-      }
+        if (!overlay) {
+          throw new PermissionsError(`Measure with the id ${id} does not exist`);
+        }
 
-      try {
-        await this.matchUserGroupToOrganisationUnit(overlay.userGroup);
-      } catch (error) {
-        throw new Error(`Measure with the id ${id} is not allowed for given organisation unit`);
-      }
-
-      return overlay;
-    });
-
-    const overlays = await Promise.all(overlayQueries);
-    return { overlays };
+        try {
+          await this.matchUserGroupToOrganisationUnit(overlay.userGroup);
+        } catch (error) {
+          throw new Error(`Measure with the id ${id} is not allowed for given organisation unit`);
+        }
+      }),
+    );
   }
 }
