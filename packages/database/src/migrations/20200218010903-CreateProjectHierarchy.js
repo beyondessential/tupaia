@@ -20,13 +20,18 @@ exports.up = async function(db) {
   await db.runSql(`
       DROP TABLE entity_relation;
       DROP TABLE entity_relation_type;
+      CREATE TABLE public.entity_hierarchy (
+        id TEXT PRIMARY KEY,
+        name TEXT UNIQUE NOT NULL
+      );
       CREATE TABLE public.entity_relation (
         id TEXT PRIMARY KEY,
         parent_id TEXT NOT NULL,
         child_id TEXT NOT NULL,
-        hierarchy TEXT NOT NULL,
+        entity_hierarchy_id TEXT NOT NULL,
         FOREIGN KEY (parent_id) REFERENCES entity (id),
-        FOREIGN KEY (child_id) REFERENCES entity (id)
+        FOREIGN KEY (child_id) REFERENCES entity (id),
+        FOREIGN KEY (entity_hierarchy_id) REFERENCES entity_hierarchy (id)
       );
       ALTER TABLE project drop column entity_ids;
       ALTER TABLE project drop column name;
@@ -52,17 +57,20 @@ const updateProject = async (db, projectCode, projectDescription, entityCodes, e
   `)
   ).rows;
 
+  const hierarchyId = generateId();
+
   const valuesToInsert = childEntities
     .map(
       e => `
-    ('${generateId()}', '${projectId}', '${e.id}', '${projectCode}')
+    ('${generateId()}', '${projectId}', '${e.id}', '${hierarchyId}')
   `,
     )
     .join(',\n');
 
   return db.runSql(`
     insert into "entity" ("id", "code", "parent_id", "name", "type" ) values ('${projectId}', '${projectCode}', '5d3f8844a72aa231bf71977f', '${projectDescription}', 'project');
-    insert into "entity_relation" ("id", "parent_id", "child_id", "hierarchy") values ${valuesToInsert};
+    insert into "entity_hierarchy" ("id", "name") values ('${hierarchyId}', '${projectCode}');
+    insert into "entity_relation" ("id", "parent_id", "child_id", "entity_hierarchy_id") values ${valuesToInsert};
     update "project" set "entity_id" = '${projectId}' where "code" ='${projectCode}';
   `);
 };
@@ -70,6 +78,7 @@ const updateProject = async (db, projectCode, projectDescription, entityCodes, e
 exports.down = function(db) {
   return db.runSql(`
     DROP TABLE entity_relation;
+    DROP TABLE entity_hierarchy;
 
     CREATE TABLE entity_relation_type (
       code TEXT PRIMARY KEY,

@@ -151,9 +151,9 @@ export class Entity extends BaseModel {
     return ancestors.length > 0 ? ancestors[0] : null;
   }
 
-  async getDescendantsAndSelf(hierarchyName) {
-    if (hierarchyName) {
-      const descendants = await Entity.getDescendantsNonCanonically([this], hierarchyName);
+  async getDescendantsAndSelf(hierarchyId) {
+    if (hierarchyId) {
+      const descendants = await Entity.getDescendantsNonCanonically([this], hierarchyId);
       const parent = await Entity.findById(this.parent_id);
       this.parent_code = parent.code;
       return [this, ...descendants];
@@ -166,11 +166,11 @@ export class Entity extends BaseModel {
    * Recursively traverse the alternative hierarchy that begins with the specified parents.
    * At each generation, choose children via 'entity_relation' if any exist, or the canonical
    * entity.parent_id if none do
-   * @param {string[]} parents        The entities to start at
-   * @param {string} hierarchyName    The specific hierarchy to follow through entity_relation
+   * @param {string[]} parents      The entities to start at
+   * @param {string} hierarchyId    The specific hierarchy to follow through entity_relation
    */
-  static async getDescendantsNonCanonically(parents, hierarchyName) {
-    const children = await Entity.getNextGeneration(parents, hierarchyName);
+  static async getDescendantsNonCanonically(parents, hierarchyId) {
+    const children = await Entity.getNextGeneration(parents, hierarchyId);
 
     // if we've made it to the leaf nodes, return an empty array
     if (children.length === 0) {
@@ -178,17 +178,17 @@ export class Entity extends BaseModel {
     }
 
     // keep recursing down the hierarchy
-    const descendants = await Entity.getDescendantsNonCanonically(children, hierarchyName);
+    const descendants = await Entity.getDescendantsNonCanonically(children, hierarchyId);
     return [...children, ...descendants];
   }
 
-  static async getNextGeneration(parents, hierarchyName) {
+  static async getNextGeneration(parents, hierarchyId) {
     // get any matching alternative hierarchy relationships leading out of these parents
     const parentIds = parents.map(p => p.id);
-    const alternativeHierarchyLinks = hierarchyName
+    const alternativeHierarchyLinks = hierarchyId
       ? await EntityRelation.find({
           parent_id: parentIds,
-          hierarchy: hierarchyName,
+          entity_hierarchy_id: hierarchyId,
         })
       : [];
     const childIds = alternativeHierarchyLinks.map(l => l.child_id);
@@ -239,10 +239,10 @@ export class Entity extends BaseModel {
    *   countries there are two layers of district/sub-district, which are both of type 'region'.
    *   In practice, this isn't a big deal, as we generally just want the first layer we come to :-)
    * @param {string[]} parents      The entities to start at
-   * @param {string} hierarchyName  The specific hierarchy to follow through entity_relation
+   * @param {string} hierarchyId  The specific hierarchy to follow through entity_relation
    */
-  static async getNearestDescendantsMatchingTypes(parents, hierarchyName, entityTypes) {
-    const children = await Entity.getNextGeneration(parents, hierarchyName);
+  static async getNearestDescendantsMatchingTypes(parents, hierarchyId, entityTypes) {
+    const children = await Entity.getNextGeneration(parents, hierarchyId);
 
     // if we've made it to the leaf nodes, return an empty array
     if (children.length === 0) {
@@ -256,7 +256,7 @@ export class Entity extends BaseModel {
     }
 
     // keep recursing down the hierarchy
-    return Entity.getNearestDescendantsMatchingTypes(children, hierarchyName, entityTypes);
+    return Entity.getNearestDescendantsMatchingTypes(children, hierarchyId, entityTypes);
   }
 
   static async getFacilitiesOfOrgUnit(organisationUnitCode) {
@@ -265,13 +265,13 @@ export class Entity extends BaseModel {
   }
 
   // assumes all entities of the given type are found at the same level in the hierarchy tree
-  async getDescendantsOfType(entityType, hierarchyName) {
-    return Entity.getNearestDescendantsMatchingTypes([this], hierarchyName, [entityType]);
+  async getDescendantsOfType(entityType, hierarchyId) {
+    return Entity.getNearestDescendantsMatchingTypes([this], hierarchyId, [entityType]);
   }
 
-  async getNearestOrgUnitDescendants(hierarchyName) {
+  async getNearestOrgUnitDescendants(hierarchyId) {
     const validTypes = Object.values(Entity.orgUnitEntityTypes);
-    return Entity.getNearestDescendantsMatchingTypes([this], hierarchyName, validTypes);
+    return Entity.getNearestDescendantsMatchingTypes([this], hierarchyId, validTypes);
   }
 
   async getChildRegions() {

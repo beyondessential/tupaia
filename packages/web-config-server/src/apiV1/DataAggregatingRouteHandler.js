@@ -24,10 +24,10 @@ export class DataAggregatingRouteHandler extends RouteHandler {
     // units of that type (otherwise we just use the nearest org unit descendants)
     const dataSourceEntityType = this.query.dataSourceEntityType || defaultEntityType;
     // if this entity is a project, follow the alternative hierarchy matching its name
-    const hierarchyName = entity.isProject() ? (await entity.project()).name : null;
+    const hierarchyId = entity.isProject() ? (await entity.project()).entity_hierarchy_id : null;
     const dataSourceEntities = dataSourceEntityType
-      ? await entity.getDescendantsOfType(dataSourceEntityType, hierarchyName)
-      : await entity.getNearestOrgUnitDescendants(hierarchyName);
+      ? await entity.getDescendantsOfType(dataSourceEntityType, hierarchyId)
+      : await entity.getNearestOrgUnitDescendants(hierarchyId);
     const entityAccessList = await Promise.all(
       dataSourceEntities.map(({ code }) => this.permissionsChecker.checkHasEntityAccess(code)),
     );
