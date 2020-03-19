@@ -25,7 +25,6 @@ exports.up = async function up(db) {
   */
   await db.runSql(`
     DROP TRIGGER IF EXISTS dhis_sync_queue_trigger ON dhis_sync_queue;
-    DROP TRIGGER IF EXISTS meditrak_sync_queue_trigger ON meditrak_sync_queue;
   `);
   const getDHISData = (code, importedJSON) => {
     const dataOut = importedJSON.find(x => x.code === code);
@@ -147,7 +146,7 @@ exports.up = async function up(db) {
     */
 
   const missingClinicsQuery = await db.runSql(`
-      SELECT ga.name AS parent_name, clinic.code AS code, clinic.name AS name
+      SELECT ga.name AS parent_name, clinic.code AS code, clinic.name AS name, clinic.id as id
         FROM clinic LEFT JOIN geographical_area AS ga ON clinic.geographical_area_id = ga.id
         LEFT JOIN entity ON clinic.code = entity.code
       WHERE entity.code IS NULL
@@ -156,7 +155,7 @@ exports.up = async function up(db) {
   const missingClinics = missingClinicsQuery.rows;
 
   const newClinic = async clinic => {
-    const { code, parent_name, name } = clinic;
+    const { id, code, parent_name, name } = clinic;
     const hierarchyBreadCrumbs = code.split('_');
     const countryCode = hierarchyBreadCrumbs[0];
     let parentId;
@@ -177,7 +176,7 @@ exports.up = async function up(db) {
           SELECT e.id AS entity_id, * FROM clinic c 
             INNER JOIN geographical_area ga ON c.geographical_area_id = ga.id 
             INNER JOIN entity e ON ga.code = e.code
-            WHERE c.code = '${code}' OR c.name = '${name.replace("'", "\\'")}';`);
+            WHERE c.id = '${id}';`);
       if (parentRows.rowCount > 0) parentId = parentRows.rows[0].entity_id;
     }
     const dhis2Data = await getDHISData(clinic.code, facilityDHIS2Data);
@@ -207,7 +206,13 @@ exports.up = async function up(db) {
             NULL,
             ${photoUrl ? `E'${photoUrl}'` : 'NULL'},
             E'${countryCode}',
-            NULL,
+            ${
+              geometry
+                ? `ST_Expand(ST_Envelope(ST_GeomFromGeoJSON('${JSON.stringify(
+                    geometry,
+                  )}')::geometry), 1)`
+                : 'NULL'
+            },
             NULL
           );
       `;
@@ -248,9 +253,6 @@ exports.up = async function up(db) {
       ALTER COLUMN entity_id SET NOT NULL;
       CREATE TRIGGER dhis_sync_queue_trigger
         BEFORE INSERT OR UPDATE ON public.dhis_sync_queue
-        FOR EACH ROW EXECUTE PROCEDURE public.update_change_time();
-      CREATE TRIGGER meditrak_sync_queue_trigger
-        BEFORE INSERT OR UPDATE ON public.meditrak_sync_queue
         FOR EACH ROW EXECUTE PROCEDURE public.update_change_time();
   `);
 };
