@@ -38,6 +38,7 @@ export const CHANGE_SIDE_BAR_CONTRACTED_WIDTH = 'CHANGE_SIDE_BAR_CONTRACTED_WIDT
 export const CHANGE_SIDE_BAR_EXPANDED_WIDTH = 'CHANGE_SIDE_BAR_EXPANDED_WIDTH';
 export const CLEAR_MEASURE_HIERARCHY = 'CLEAR_MEASURE_HIERARCHY';
 export const CHANGE_MEASURE = 'CHANGE_MEASURE';
+export const FETCH_ORG_UNIT = 'FETCH_ORG_UNIT';
 export const CHANGE_ORG_UNIT = 'CHANGE_ORG_UNIT';
 export const CHANGE_POSITION = 'CHANGE_POSITION';
 export const CHANGE_BOUNDS = 'CHANGE_BOUNDS';
@@ -72,9 +73,10 @@ export const FETCH_MEASURE_DATA_SUCCESS = 'FETCH_MEASURE_DATA_SUCCESS';
 export const CANCEL_FETCH_MEASURE_DATA = 'CANCEL_FETCH_MEASURE_DATA';
 export const FETCH_MEASURES_ERROR = 'FETCH_MEASURES_ERROR';
 export const FETCH_MEASURES_SUCCESS = 'FETCH_MEASURES_SUCCESS';
-export const FETCH_ORG_UNIT_ERROR = 'FETCH_ORG_UNIT_ERROR';
+export const CHANGE_ORG_UNIT_ERROR = 'CHANGE_ORG_UNIT_ERROR';
 export const FETCH_REGION_ERROR = 'FETCH_REGION_ERROR';
 export const FETCH_ORG_UNIT_SUCCESS = 'FETCH_ORG_UNIT_SUCCESS';
+export const CHANGE_ORG_UNIT_SUCCESS = 'CHANGE_ORG_UNIT_SUCCESS';
 export const FETCH_RESET_PASSWORD_ERROR = 'FETCH_RESET_PASSWORD_ERROR';
 export const FETCH_RESET_PASSWORD_SUCCESS = 'FETCH_RESET_PASSWORD_SUCCESS';
 export const FETCH_REQUEST_COUNTRY_ACCESS_SUCCESS = 'FETCH_REQUEST_COUNTRY_ACCESS_SUCCESS';
@@ -440,6 +442,18 @@ export function fetchRequestCountryAccessError(errorMessage) {
 }
 
 /**
+ * Fetches an org unit by code. Will update the orgUnitTree.
+ *
+ * @param {object} organisationUnit
+ */
+export function fetchOrgUnit(organisationUnit = initialOrgUnit) {
+  return {
+    type: FETCH_ORG_UNIT,
+    organisationUnit,
+  };
+}
+
+/**
  * Changes current Organisational Unit and Map view. Will trigger sagas affecting state for
  * map and the current dashboard.
  *
@@ -558,7 +572,7 @@ export function setOverlayComponent(component) {
  *
  * @param {object} organisationUnit organisationUnit from saga on successful fetch
  */
-export function fetchOrgUnitSuccess(organisationUnit, shouldChangeMapBounds = true) {
+export function changeOrgUnitSuccess(organisationUnit, shouldChangeMapBounds = true) {
   const parentOrganisationUnitCode = organisationUnit.parent.organisationUnitCode;
   const siblings = getSiblingItems(
     parentOrganisationUnitCode,
@@ -571,7 +585,7 @@ export function fetchOrgUnitSuccess(organisationUnit, shouldChangeMapBounds = tr
   );
 
   return {
-    type: FETCH_ORG_UNIT_SUCCESS,
+    type: CHANGE_ORG_UNIT_SUCCESS,
     organisationUnit,
     organisationUnitSiblings: siblings,
     shouldChangeMapBounds,
@@ -579,13 +593,25 @@ export function fetchOrgUnitSuccess(organisationUnit, shouldChangeMapBounds = tr
 }
 
 /**
+ * Flags a succesful org unit fetch.
+ *
+ * @param {object} organisationUnit organisationUnit from saga on successful fetch
+ */
+export function fetchOrgUnitSuccess(organisationUnit) {
+  return {
+    type: FETCH_ORG_UNIT_SUCCESS,
+    organisationUnit,
+  };
+}
+
+/**
  * Changes state to communicate error to user appropriately.
  *
- * @param {object} error  response from saga on failed fetch
+ * @param {object} error  response from saga on failed orgUnit change
  */
-export function fetchOrgUnitError(error) {
+export function changeOrgUnitError(error) {
   return {
-    type: FETCH_ORG_UNIT_ERROR,
+    type: CHANGE_ORG_UNIT_ERROR,
     error,
   };
 }

@@ -9,16 +9,17 @@ export const FACILITY_INDEX = 5;
 export function getLevelIndex(level) {
   if (!level) return UNKNOWN_LEVEL;
 
-  switch (level) {
-    case 'World':
+  switch (level.toLowerCase()) {
+    case 'world':
       return WORLD_INDEX;
-    case 'Country':
+    case 'country':
       return COUNTRY_INDEX;
-    case 'District':
+    case 'district':
+    case 'region':
       return DISTRICT_INDEX;
-    case 'Subdistrict':
+    case 'subdistrict':
       return SUBDISTRICT_INDEX;
-    case 'Facility':
+    case 'facility':
       return FACILITY_INDEX;
     default:
       throw new Error(`Unknown Organisational Unit Level: ${level}`);
