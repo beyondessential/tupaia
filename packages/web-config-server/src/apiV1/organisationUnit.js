@@ -71,6 +71,7 @@ const filterForAccess = async (orgUnits, userHasAccess) => {
   ).filter(orgUnit => orgUnit);
 };
 
+// todo transform into a RouteHandler class
 export async function getOrganisationUnitHandler(req, res) {
   const { organisationUnitCode, includeCountryHierarchy } = req.query;
   const data =

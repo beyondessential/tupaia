@@ -6,7 +6,7 @@ export class ExportSurveyResponsesHandler extends RouteHandler {
   static PermissionsChecker = ExportSurveyResponsesPermissionsChecker;
 
   async handleRequest() {
-    await super();
+    await super.handleRequest();
     const {
       organisationUnitCode,
       surveyCodes,
@@ -14,7 +14,7 @@ export class ExportSurveyResponsesHandler extends RouteHandler {
       startDate,
       endDate,
       easyReadingMode,
-    } = req.query;
+    } = this.query;
     const meditrakServerEndpoint = 'export/surveyResponses';
     const queryParameters = {
       latest,

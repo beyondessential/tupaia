@@ -8,34 +8,36 @@ import { PermissionsError } from '@tupaia/utils';
 import { PermissionsChecker } from './PermissionsChecker';
 
 export class MapOverlayPermissionsChecker extends PermissionsChecker {
+  async fetchAndCacheOverlays() {
+    if (!this.overlays) {
+      const { measureId } = this.query;
+      if (!measureId) {
+        throw new Error('No measure id was provided');
+      }
+      this.overlays = await MapOverlay.find({ id: measureId.split(',') });
+    }
+    return this.overlays;
+  }
+
+  async fetchPermissionGroups() {
+    const overlays = await this.fetchAndCacheOverlays();
+    return overlays.map(o => o.userGroup);
+  }
+
   async checkPermissions() {
     // run standard permission checks against entity
     await super.checkPermissions();
 
     // get measure by id from db, check it matches user permissions
-    const { measureId } = this.query;
     if (this.entity.getOrganisationLevel() === 'World') {
       throw new PermissionsError('Measures data not allowed for world');
     }
 
-    if (!measureId) {
-      throw new PermissionsError('No measure id was provided');
+    const overlays = await this.fetchAndCacheOverlays();
+    if (overlays.length !== measureId.split(',').length) {
+      throw new Error('Not all overlays requested could be found in the database');
     }
 
-    await Promise.all(
-      measureId.split(',').map(async id => {
-        const overlay = await MapOverlay.findById(id);
-
-        if (!overlay) {
-          throw new PermissionsError(`Measure with the id ${id} does not exist`);
-        }
-
-        try {
-          await this.matchUserGroupToOrganisationUnit(overlay.userGroup);
-        } catch (error) {
-          throw new Error(`Measure with the id ${id} is not allowed for given organisation unit`);
-        }
-      }),
-    );
+    await this.checkHasEntityAccess(this.entity.code);
   }
 }

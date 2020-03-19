@@ -8,13 +8,25 @@ import { PermissionsError } from '@tupaia/utils';
 import { PermissionsChecker } from './PermissionsChecker';
 
 export class DashboardPermissionsChecker extends PermissionsChecker {
+  async fetchAndCacheDashboardGroup() {
+    if (!this.dashboardGroup) {
+      // get dashboardGroup based on id from db, and check it matches user permissions
+      const { dashboardGroupId } = this.query;
+      this.dashboardGroup = await DashboardGroup.findById(dashboardGroupId);
+    }
+    return this.dashboardGroup;
+  }
+
+  async fetchPermissionGroups() {
+    const dashboardGroup = await this.fetchAndCacheDashboardGroup();
+    return [dashboardGroup.userGroup];
+  }
+
   async checkPermissions() {
     // run standard permission checks against entity
     await super.checkPermissions();
 
-    // get dashboardGroup based on id from db, and check it matches user permissions
-    const { dashboardGroupId } = this.query;
-    const dashboardGroup = await DashboardGroup.findById(dashboardGroupId);
+    const dashboardGroup = await this.fetchAndCacheDashboardGroup();
     if (!dashboardGroup) {
       throw new PermissionsError(`Dashboard group with the id ${dashboardGroupId} does not exist`);
     }
@@ -25,9 +37,8 @@ export class DashboardPermissionsChecker extends PermissionsChecker {
       );
     }
 
-    try {
-      await this.matchUserGroupToOrganisationUnit(dashboardGroup.userGroup);
-    } catch (error) {
+    const hasEntityAccess = await this.checkHasEntityAccess(this.entity.code);
+    if (!hasEntityAccess) {
       throw new PermissionsError(
         `Dashboard group with the id ${dashboardGroupId} is not allowed for entith ${this.entity.code}`,
       );

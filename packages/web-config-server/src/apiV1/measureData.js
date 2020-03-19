@@ -93,25 +93,20 @@ const getMeasureLevel = mapOverlays => {
 export default class extends DataAggregatingRouteHandler {
   static PermissionsChecker = MapOverlayPermissionsChecker;
 
-  buildResponse = async req => {
-    const { entity } = this;
-    const { code } = entity;
-    const { query } = req;
-    const { measureId } = query;
+  buildResponse = async () => {
+    const { code } = this.entity;
+    const { measureId } = this.query;
     const overlays = await MapOverlay.find({ id: measureId.split(',') });
 
     // check permission
     await Promise.all(
       overlays.map(async ({ userGroup }) => {
-        const isUserAllowedMeasure = await req.userHasAccess(code, userGroup);
+        const isUserAllowedMeasure = await this.req.userHasAccess(code, userGroup);
         if (!isUserAllowedMeasure) {
           throw new CustomError(accessDeniedForMeasure);
         }
       }),
     );
-
-    // store permission groups so that data can be built for the correct entities
-    this.setPermissionGroups([...new Set(overlays.map(o => o.userGroup))]);
 
     // start fetching options
     const optionsTasks = overlays.map(o => this.fetchMeasureOptions(o, query));
@@ -236,6 +231,7 @@ export default class extends DataAggregatingRouteHandler {
       : this.entity.code;
     const dataServices = createDataServices(mapOverlay);
     const dhisApi = getDhisApiInstance({ entityCode: this.entity.code, isDataRegional });
+    dhisApi.injectFetchDataSourceEntities(this.fetchDataSourceEntities);
     const buildMeasure = getMeasureBuilder(measureBuilder);
 
     return buildMeasure(

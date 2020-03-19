@@ -5,11 +5,11 @@ import { PermissionsChecker } from './permissions';
 export default class extends RouteHandler {
   static PermissionsChecker = PermissionsChecker;
 
-  buildResponse = async req => {
+  buildResponse = async () => {
     const { entity } = this;
     const { code: entityCode, name: entityName } = entity;
     const organisationLevel = entity.getOrganisationLevel();
-    const userGroups = await req.getUserGroups(entityCode);
+    const userGroups = await this.req.getUserGroups(entityCode);
     // based on organisationLevel, organisationUnit, userGroups and ancestors
     // return all matching userGroup and dashboard group name configs
     // (can have same userGroup in different dashboard group names)

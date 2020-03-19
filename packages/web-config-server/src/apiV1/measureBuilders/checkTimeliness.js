@@ -18,10 +18,7 @@ class CheckTimelinessMeasureBuilder extends DataBuilder {
       startDate: startDate.toISOString(),
       endDate: endDate.toISOString(),
     };
-    const query = {
-      organisationUnitCode: organisationUnitGroupCode,
-    };
-    const results = await this.dhisApi.getDataValuesInSets(dhisParameters, query);
+    const results = await this.dhisApi.getDataValuesInSets(dhisParameters, this.entity);
 
     // annotate each facility with the corresponding data from dhis
     return results.map(row => ({

@@ -7,10 +7,10 @@ const { AND, RAW } = QUERY_CONJUNCTIONS;
 export default class extends RouteHandler {
   static PermissionsChecker = PermissionsChecker;
 
-  buildResponse = async req => {
+  buildResponse = async () => {
     const { entity } = this;
     const { code: entityCode, name: entityName } = entity;
-    const userGroups = await req.getUserGroups(entityCode);
+    const userGroups = await this.req.getUserGroups(entityCode);
 
     // will return undefined if no country level ancestor organisationUnit (e.g. World)
     const { code: countryCode } = (await entity.getCountry()) || {};

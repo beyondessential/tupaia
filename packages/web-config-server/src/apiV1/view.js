@@ -53,12 +53,12 @@ const getIsValidDate = dateString => !Number.isNaN(Date.parse(dateString));
 export default class extends DataAggregatingRouteHandler {
   static PermissionsChecker = DashboardPermissionsChecker;
 
-  buildResponse = async req => {
-    const { startDate, endDate, ...restOfQuery } = req.query;
+  buildResponse = async () => {
+    const { startDate, endDate, ...restOfQuery } = this.query;
     if (getIsValidDate(startDate)) this.startDate = startDate;
     if (getIsValidDate(endDate)) this.endDate = endDate;
 
-    const { viewId, drillDownLevel, dashboardGroupId } = req.query;
+    const { viewId, drillDownLevel, dashboardGroupId } = this.query;
     // If drillDownLevel is undefined, send it through as null instead so it's not dropped from the object.
     const dashboardReport = await DashboardReport.findOne({
       id: viewId,
@@ -67,13 +67,6 @@ export default class extends DataAggregatingRouteHandler {
     if (!dashboardReport) {
       throw new CustomError(viewFail, noViewWithId, { viewId });
     }
-
-    // Find and set permissions to be used in working out which entities to use when fetching data
-    const dashboardGroup = await DashboardGroup.findById(dashboardGroupId);
-    if (!dashboardGroup || !dashboardGroup.dashboardReports.includes(viewId)) {
-      throw new CustomError(viewFail, viewNotInGroup, { dashboardGroupId, viewId });
-    }
-    this.setPermissionGroups([dashboardGroup.userGroup]);
 
     this.query = {
       ...restOfQuery,
@@ -85,7 +78,6 @@ export default class extends DataAggregatingRouteHandler {
     const { viewJson, dataBuilderConfig, dataBuilder, dataServices } = dashboardReport;
     this.viewJson = this.translateViewJson(viewJson);
     this.dataBuilderConfig = this.translateDataBuilderConfig(dataBuilderConfig, dataServices);
-    this.req = req;
 
     const dataBuilderData = await this.buildDataBuilderData(dataBuilder);
     return this.addViewMetaData(dataBuilderData);
@@ -97,9 +89,11 @@ export default class extends DataAggregatingRouteHandler {
       throw new CustomError(viewFail, noDataBuilder, { dataBuilder });
     }
 
-    const dhisApiInstances = this.dataBuilderConfig.dataServices.map(({ isDataRegional }) =>
-      getDhisApiInstance({ entityCode: this.entity.code, isDataRegional }),
-    );
+    const dhisApiInstances = this.dataBuilderConfig.dataServices.map(({ isDataRegional }) => {
+      const dhisApi = getDhisApiInstance({ entityCode: this.entity.code, isDataRegional });
+      dhisApi.injectFetchDataSourceEntities(this.fetchDataSourceEntities);
+      return dhisApi;
+    });
 
     return dataBuilder(this, this.aggregator, ...dhisApiInstances);
   }

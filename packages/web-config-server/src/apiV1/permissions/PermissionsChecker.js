@@ -20,18 +20,15 @@ export class PermissionsChecker {
     }
   }
 
-  // Will check to see if userGroup exists in user permissions, will then see if
-  // current organisation unit or ancestors are within user configs for the given
-  // user group.
-  async matchUserGroupToOrganisationUnit(userGroup) {
-    const { code } = this.entity;
-    const doesUserHaveAccess = await this.userHasAccess(code, userGroup);
+  fetchPermissionGroups() {
+    throw new Error('This PermissionChecker does not implement "fetchPermissionsGroups"');
+  }
 
-    // All users always have access to 'World' dashboard reports.
-    if (code !== 'World' && !doesUserHaveAccess) {
-      throw new PermissionsError(
-        `User does not have access to ${userGroup} for the entity ${code}`,
-      );
+  async checkHasEntityAccess(entityCode) {
+    if (entityCode === 'World') {
+      return true; // currently, all users have access to everything at world level
     }
+    const permissionGroups = await this.fetchPermissionGroups();
+    return Promise.all(permissionGroups.map(p => this.userHasAccess(entityCode, p)));
   }
 }

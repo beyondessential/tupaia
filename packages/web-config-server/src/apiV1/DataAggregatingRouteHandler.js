@@ -14,12 +14,23 @@ import { Aggregator } from '../aggregator';
 export class DataAggregatingRouteHandler extends RouteHandler {
   constructor(req, res) {
     super(req, res);
-    this.aggregator = createAggregator(Aggregator);
+    this.aggregator = createAggregator(Aggregator, this.fetchDataSourceEntities);
   }
 
-  setPermissionGroups(permissionGroups) {
-    this.aggregator.injectCheckEntityAccess(entityCode =>
-      Promise.all(permissionGroups.map(p => this.req.userHasAccess(entityCode, p))),
+  // Builds the list of entities data should be fetched from, using org unit descendents of the
+  // selected entity (optionally of a specific entity type)
+  fetchDataSourceEntities = async (entity, defaultEntityType) => {
+    // if a specific type was specified in either the query or the function parameter, build org
+    // units of that type (otherwise we just use the nearest org unit descendants)
+    const dataSourceEntityType = this.query.dataSourceEntityType || defaultEntityType;
+    // if this entity is a project, follow the alternative hierarchy matching its name
+    const hierarchyName = entity.isProject() ? (await entity.project()).name : null;
+    const dataSourceEntities = dataSourceEntityType
+      ? await entity.getDescendantsOfType(dataSourceEntityType, hierarchyName)
+      : await entity.getNearestOrgUnitDescendants(hierarchyName);
+    const entityAccessList = await Promise.all(
+      dataSourceEntities.map(({ code }) => this.permissionsChecker.checkHasEntityAccess(code)),
     );
-  }
+    return dataSourceEntities.filter((_, i) => entityAccessList[i]);
+  };
 }

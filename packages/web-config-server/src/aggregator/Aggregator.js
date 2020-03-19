@@ -1,22 +1,18 @@
 import { Aggregator as BaseAggregator } from '@tupaia/aggregator';
-import { QueryBuilder } from '/dhis/QueryBuilder';
+import { QueryBuilder } from './QueryBuilder';
 
 export class Aggregator extends BaseAggregator {
-  constructor(dataBroker) {
+  constructor(dataBroker, fetchDataSourceEntities) {
     super(dataBroker);
-    this.checkEntityAccess = () => {
-      throw new Error(
-        'A "checkEntityAccess" function should be injected before Aggregator is used to fetch data',
-      );
-    };
-  }
-
-  injectCheckEntityAccess(checkEntityAccess) {
-    this.checkEntityAccess = checkEntityAccess;
+    this.fetchDataSourceEntities = fetchDataSourceEntities;
   }
 
   async fetchAnalytics(dataElementCodes, originalQuery, replacementValues, ...otherParams) {
-    const queryBuilder = new QueryBuilder(originalQuery, replacementValues, this.checkEntityAccess);
+    const queryBuilder = new QueryBuilder(
+      originalQuery,
+      replacementValues,
+      this.fetchDataSourceEntities,
+    );
     const query = await queryBuilder.build();
 
     return super.fetchAnalytics(dataElementCodes, query, ...otherParams);
