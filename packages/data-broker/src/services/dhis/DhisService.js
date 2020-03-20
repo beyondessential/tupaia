@@ -178,12 +178,12 @@ export class DhisService extends Service {
 
   pullAggregateAnalytics = async (api, dataSources, options) => {
     const dataElementCodes = dataSources.map(({ dataElementCode }) => dataElementCode);
-    const { organisationUnitCodes, period, startDate, endDate } = options;
+    const { organisationUnitCode, organisationUnitCodes, period, startDate, endDate } = options;
 
     const aggregateData = await api.getAnalytics({
       dataElementCodes,
       outputIdScheme: 'code',
-      organisationUnitCodes,
+      organisationUnitCodes: organisationUnitCode ? [organisationUnitCode] : organisationUnitCodes,
       period,
       startDate,
       endDate,
