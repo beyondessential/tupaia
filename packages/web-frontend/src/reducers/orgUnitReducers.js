@@ -26,7 +26,8 @@ export default combineReducers({
 
 // Public Selectors
 
-export const selectOrgUnit = (state, orgUnitCode) => state.orgUnits.orgUnitMap[orgUnitCode];
+export const selectOrgUnit = (state, orgUnitCode) =>
+  state.orgUnits ? state.orgUnits.orgUnitMap[orgUnitCode] : undefined;
 
 export const cachedSelectOrgUnitChildren = createCachedSelector(
   [state => state.orgUnits.orgUnitMap, (_, code) => code],
