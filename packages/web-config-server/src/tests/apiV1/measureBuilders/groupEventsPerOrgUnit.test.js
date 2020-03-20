@@ -136,4 +136,19 @@ describe('groupEventsPerOrgUnit', () => {
       { organisationUnitCode: 'fourEventLand', value: 'threeOrMore', originalValue: 4 },
     ]);
   });
+
+  it('should throw an error if there is no grouping check defined for operator', async () => {
+    const newConfig = {
+      ...config,
+      groups: {
+        noOp: {
+          value: 3,
+          operator: 'no-op',
+        },
+      },
+    };
+    return expect(
+      groupEventsPerOrgUnit(createAggregator(), {}, query, newConfig),
+    ).to.eventually.be.rejectedWith('No function defined for operator: no-op');
+  });
 });

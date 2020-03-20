@@ -28,11 +28,13 @@ export const fetchComposedData = async (aggregator, dhisApi, query, config) => {
 
 export const mapMeasureValuesToGroups = (measureValue, dataElementGroupCode, groups) => {
   const { organisationUnitCode, [dataElementGroupCode]: originalValue } = measureValue;
-  const valueGroup = Object.entries(groups).find(
-    ([groupName, groupConfig]) =>
-      OPERATOR_TO_VALUE_CHECK[groupConfig.operator] &&
-      OPERATOR_TO_VALUE_CHECK[groupConfig.operator](originalValue, groupConfig.value),
-  );
+  const valueGroup = Object.entries(groups).find(([groupName, groupConfig]) => {
+    const groupCheck = OPERATOR_TO_VALUE_CHECK[groupConfig.operator];
+    if (!groupCheck) {
+      throw new Error(`No function defined for operator: ${groupConfig.operator}`);
+    }
+    return groupCheck(originalValue, groupConfig.value);
+  });
 
   return {
     organisationUnitCode,

@@ -6,7 +6,7 @@
 import {
   translateBoundsForFrontend,
   translatePointForFrontend,
-  translateRegionForFrontEnd,
+  translateRegionForFrontend,
 } from '/utils/geoJson';
 
 export function getEntityLocationForFrontend({ point, region, bounds }) {
@@ -20,6 +20,6 @@ export function getEntityLocationForFrontend({ point, region, bounds }) {
     type,
     point: translatePointForFrontend(point),
     bounds: translateBoundsForFrontend(bounds),
-    region: translateRegionForFrontEnd(region),
+    region: translateRegionForFrontend(region),
   };
 }

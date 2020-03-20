@@ -160,7 +160,7 @@ export class MarkerLayer extends Component {
       displayPolygons,
     } = this.props;
 
-    if (!measureData || measureData.length < 1) return null;
+    if (!measureData || !measureData.length) return null;
 
     if (isMeasureLoading) return null;
     const processedData = measureData

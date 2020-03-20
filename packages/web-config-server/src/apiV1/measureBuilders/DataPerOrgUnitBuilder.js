@@ -67,16 +67,29 @@ export class DataPerOrgUnitBuilder extends DataBuilder {
 
   async groupResultsByOrgUnitCode(results) {
     const orgUnitKey = this.areEventResults(results) ? 'orgUnit' : 'organisationUnit';
-    if (
-      getDataSourceEntityType(this.config) !== ENTITY_TYPES.VILLAGE ||
-      getDataSourceEntityType(this.config) === getAggregationEntityType(this.config)
-    ) {
-      return groupBy(results, orgUnitKey);
-    }
 
-    const villageCodes = results.map(({ [orgUnitKey]: orgUnit }) => orgUnit);
-    const villageToFacilityCode = await Entity.fetchChildToParentCode(villageCodes);
-    return groupBy(results, ({ [orgUnitKey]: orgUnit }) => villageToFacilityCode[orgUnit]);
+    const dataSourceToAggregateMapper = async () => {
+      // This functionalilty should be developed upon into a generic dataSource -> aggregation Entity mapping
+      // eg. village -> facility, facility -> country, etc.
+      // For now it only supports mapping to self, and mapping village -> facility
+      const dataSourceEntityType = getDataSourceEntityType(this.config);
+      const aggregationEntityType = getAggregationEntityType(this.config);
+      if (
+        dataSourceEntityType !== ENTITY_TYPES.VILLAGE ||
+        dataSourceEntityType === aggregationEntityType
+      ) {
+        // No mapping required, mapper just returns original orgUnitCode
+        return orgUnitCode => orgUnitCode;
+      }
+
+      // Create village -> facility mapper
+      const villageCodes = results.map(({ [orgUnitKey]: orgUnit }) => orgUnit);
+      const villageToFacilityCode = await Entity.fetchChildToParentCode(villageCodes);
+      return orgUnitCode => villageToFacilityCode[orgUnitCode];
+    };
+
+    const mapper = await dataSourceToAggregateMapper();
+    return groupBy(results, ({ [orgUnitKey]: orgUnitCode }) => mapper(orgUnitCode));
   }
 
   async buildData(results) {
