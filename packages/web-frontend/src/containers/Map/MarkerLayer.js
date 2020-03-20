@@ -36,7 +36,7 @@ const MeasureMarker = props => {
       return <ShadedPolygon positions={region} {...props} />;
     }
 
-    return null;
+    return <IconMarker {...props} />;
   }
 
   if (parseInt(radius, 10) === 0) {
