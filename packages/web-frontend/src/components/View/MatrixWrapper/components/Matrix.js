@@ -1,3 +1,93 @@
+const columnValues_test = {
+  Col10: 100,
+  Col9: 20,
+  Col4: 20,
+  Col12: 40,
+  Col11: 40,
+  Col2: 100,
+  Col3: 80,
+  Col14: 20,
+  Col6: 20,
+  Col13: 100,
+  Col8: 60,
+  Col7: 60,
+  Col1: 60,
+};
+
+const viewContent_test = {
+  rows: [
+    // top level category row
+    {
+      categoryId: null,
+      category: 'Parent Category',
+      ...columnValues_test,
+    },
+    // nested category row
+    {
+      categoryId: 'Parent Category',
+      category: 'Sub Category',
+      ...columnValues_test,
+    },
+    {
+      categoryId: 'Sub Category',
+      category: 'SUB SUB Category!',
+      ...columnValues_test,
+    },
+    // data element for top level category row
+    {
+      categoryId: 'Parent Category',
+      dataElement: '1.1 :: Data Element',
+      ...columnValues_test,
+    },
+    // data element for sub category
+    {
+      categoryId: 'Sub Category',
+      dataElement: '1.2 :: Data Element',
+      ...columnValues_test,
+    },
+    {
+      categoryId: 'SUB SUB Category!',
+      dataElement: '1.3 :: Data Element',
+      ...columnValues_test,
+    },
+    {
+      categoryId: null,
+      dataElement: '1.0 :: Data Element',
+      ...columnValues_test,
+    },
+    {
+      categoryId: 'Sub Category',
+      category: 'SUB SUB Category 2!',
+      ...columnValues_test,
+    },
+    {
+      categoryId: '1.2 :: Data Element',
+      dataElement: '1.554 :: Data Element',
+      ...columnValues_test,
+    },
+    {
+      categoryId: 'SUB SUB Category 2!',
+      category: 'SUB SUB SUB Category 2!',
+      ...columnValues_test,
+    },
+    {
+      categoryId: 'SUB SUB SUB Category 2!',
+      dataElement: '2.554 :: Data Element',
+      ...columnValues_test,
+    },
+    {
+      categoryId: 'SUB SUB SUB Category 2!',
+      category: 'SUB SUB SUB SUB Category 2!',
+      ...columnValues_test,
+    },
+    {
+      categoryId: 'SUB SUB SUB SUB Category 2!',
+      dataElement: '3.554 :: Data Element',
+      ...columnValues_test,
+    },
+  ],
+};
+
 /**
  * Tupaia Web
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd.
@@ -7,6 +97,7 @@
 
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import { partition } from 'lodash';
 
 import { PRESENTATION_OPTIONS_SHAPE } from '../../propTypes';
 import HeaderRow from './HeaderRow';
@@ -340,7 +431,102 @@ export class Matrix extends PureComponent {
     return text.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1;
   }
 
-  recursivelyRenderRowData(rows, categoryRows, keyPrefix = '', depth = 1) {
+  recursivelyRenderRowData(rows, depth = 1, parent = null) {
+    const styles = this.props.calculatedStyles;
+    const isSearchActive = this.isSearchActive();
+    const { startColumn, highlightedRow, highlightedColumn } = this.state;
+    const { numberOfColumnsPerPage } = this.props;
+    const { columns, presentationOptions, onRowClick, categoryPresentationOptions } = this.props;
+    const [rootRows, childRows] = partition(rows, { categoryId: parent });
+
+    return rootRows.map(({ dataElement, category, categoryId, ...cellData }, index) => {
+      const rowKey = `${dataElement}_${index}`;
+      const isRowHighlighted = rowKey === highlightedRow;
+
+      if (category) {
+        const key = getCategoryKey(categoryId, index);
+        const isRowExpandedByUser = this.isRowExpanded(key);
+        const children =
+          isSearchActive || isRowExpandedByUser
+            ? this.recursivelyRenderRowData(childRows, depth + 1, category)
+            : [];
+
+        const isEmpty = children.length === 0;
+
+        if (isSearchActive && isEmpty) {
+          return null;
+        }
+        const isExpanded = isSearchActive || isRowExpandedByUser;
+
+        return (
+          <RowGroup
+            key={key}
+            rowId={key}
+            columns={columns}
+            columnData={cellData}
+            isExpanded={isExpanded}
+            depth={depth}
+            indentSize={CATEGORY_INDENT}
+            categoryLabel={category}
+            startColumn={startColumn}
+            numberOfColumnsPerPage={numberOfColumnsPerPage}
+            onToggleRowExpanded={this.onToggleRowExpanded}
+            ref={this.setRowRef}
+            styles={styles}
+            isRowHighlighted={isRowHighlighted}
+            highlightedColumn={highlightedColumn}
+            onCellMouseEnter={this.onCellMouseEnter}
+            onCellMouseLeave={this.onCellMouseLeave}
+            onCellClick={this.onCellClick}
+            presentationOptions={categoryPresentationOptions}
+            isUsingDots={this.getIsUsingDots(categoryPresentationOptions)}
+          >
+            {children}
+          </RowGroup>
+        );
+      }
+
+      if (isSearchActive && !this.doesMatchSearch(row.description)) {
+        return null;
+      }
+
+      const rowData = columns.map(({ key, isGroupHeader }) => ({
+        value: cellData[key],
+        isGroupBoundary: isGroupHeader,
+      }));
+
+      const onTitleClick = () => onRowClick(cellData);
+
+      return (
+        <Row
+          key={rowKey}
+          rowKey={rowKey}
+          ref={this.setRowRef}
+          columns={rowData}
+          isRowHighlighted={isRowHighlighted}
+          highlightedColumn={highlightedColumn}
+          startColumn={startColumn}
+          numberOfColumnsPerPage={numberOfColumnsPerPage}
+          depth={depth}
+          categoryIndent={CATEGORY_INDENT}
+          description={dataElement}
+          onCellMouseEnter={this.onCellMouseEnter}
+          onCellMouseLeave={this.onCellMouseLeave}
+          onCellClick={this.onCellClick}
+          onTitleClick={onTitleClick}
+          onMoveColumnPress={this.onMoveColumnPress}
+          onMoveColumnRelease={this.onMoveColumnRelease}
+          presentationOptions={presentationOptions}
+          isNextColumnEnabled={this.isNextColumnEnabled()}
+          isPreviousColumnEnabled={this.isPreviousColumnEnabled()}
+          isUsingDots={this.getIsUsingDots(presentationOptions)}
+          styles={styles}
+        />
+      );
+    });
+  }
+
+  recursivelyRenderRowData2(rows, categoryRows, keyPrefix = '', depth = 1) {
     const styles = this.props.calculatedStyles;
     const { startColumn, highlightedRow, highlightedColumn } = this.state;
     const { numberOfColumnsPerPage } = this.props;
@@ -352,6 +538,7 @@ export class Matrix extends PureComponent {
         // Is a category object.
         const rowKey = `${keyPrefix}-${row.description}_${index}`;
         const isRowHighlighted = rowKey === highlightedRow;
+
         if (row.category) {
           const key = getCategoryKey(row.categoryId, index);
           const isRowExpandedByUser = this.isRowExpanded(key);
@@ -501,7 +688,7 @@ export class Matrix extends PureComponent {
   render() {
     const { rows, categoryRows } = this.props;
     const styles = this.props.calculatedStyles;
-    const renderedRows = this.recursivelyRenderRowData(rows, categoryRows);
+    const renderedRows = this.recursivelyRenderRowData(viewContent_test.rows);
     const rowDisplay =
       renderedRows && renderedRows.length > 0 ? renderedRows : this.renderEmptyMessage();
 
