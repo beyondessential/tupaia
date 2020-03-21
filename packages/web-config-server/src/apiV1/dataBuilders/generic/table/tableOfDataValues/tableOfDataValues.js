@@ -59,9 +59,18 @@ export class TableOfDataValuesBuilder extends DataBuilder {
   buildBaseRows() {
     return this.tableConfig.hasRowCategories()
       ? flatten(
-          this.tableConfig.rows.map(({ category: categoryId, rows }) =>
-            rows.map(dataElement => ({ dataElement, categoryId })),
-          ),
+          this.tableConfig.rows.map(({ category: categoryId, rows }) => {
+            return rows.map(dataElement => {
+              if (dataElement.category) {
+                return {
+                  category: dataElement.category,
+                  categoryId,
+                  rows: dataElement.rows || rows,
+                };
+              }
+              return { dataElement, categoryId };
+            });
+          }),
         )
       : this.tableConfig.rows.map(dataElement => ({ dataElement }));
   }
@@ -102,13 +111,34 @@ export class TableOfDataValuesBuilder extends DataBuilder {
     }));
   }
 
-  async buildRowCategories() {
+  /**
+   * Recursively builds an array of categories, including sub categories,
+   * no matter how deeply they are nested.
+   *
+   * @param {Array} rows
+   * @param {Array} categories
+   */
+  async buildRowCategories(rows = this.tableConfig.rows, categories = []) {
+    if (rows.length === 0) return categories;
     const categoryToTitle = await this.getRowCategoryToTitle();
 
-    return this.tableConfig.rows.map(({ category }) => ({
-      key: category,
-      title: categoryToTitle(category),
-    }));
+    const row = rows[0];
+    const categoryName = row.category;
+
+    if (row.rows) {
+      const subCategories = row.rows
+        .filter(r => typeof r !== 'string')
+        .map(r => ({ ...r, parent: categoryName }));
+
+      const category = { key: categoryName, title: categoryToTitle(categoryName) };
+      if (row.parent) category.parent = row.parent;
+      return this.buildRowCategories(
+        [...rows.slice(1), ...subCategories],
+        [...categories, category],
+      );
+    }
+
+    return this.buildRowCategories(rows.slice(1), [...categories]);
   }
 
   async getRowCategoryToTitle() {

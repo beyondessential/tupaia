@@ -85,7 +85,8 @@ export default class RowGroup extends Component {
 
           {columns.slice(startColumn, displayedColumnCount).map((column, index) => {
             const isCellActive = index === highlightedColumn && isRowHighlighted;
-            const value = columnData ? columnData[categoryLabel][column.key] : '';
+            const value =
+              columnData && columnData[categoryLabel] ? columnData[categoryLabel][column.key] : '';
             const presentation = getPresentationOption(presentationOptions, value);
 
             return (

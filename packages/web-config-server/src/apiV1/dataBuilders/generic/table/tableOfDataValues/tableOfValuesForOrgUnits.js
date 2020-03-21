@@ -23,17 +23,16 @@ class TableOfValuesForOrgUnitsBuilder extends TableOfDataValuesBuilder {
     this.tableConfig = new TableConfig(this.config, results);
     this.valuesByCell = getValuesByCell(this.tableConfig, results);
     this.totalCalculator = new TotalCalculator(this.tableConfig, this.valuesByCell);
-
+    this.baseRows = this.buildBaseRows();
     const columns = await this.buildColumns();
-    const rows = await this.buildRows(results, columns);
-
+    this.rowData = this.buildRowData(results, columns);
     const data = {
-      rows,
+      rows: Object.values(this.rowData),
       columns: await this.replaceOrgUnitCodesWithNames(columns),
     };
 
     if (this.config.categoryAggregator) {
-      data.categoryRows = this.buildCategoryRows(rows);
+      data.categoryRows = this.buildCategoryRows(Object.values(this.rowData));
     }
     if (this.tableConfig.hasRowCategories()) {
       data.categories = await this.buildRowCategories();
@@ -42,19 +41,54 @@ class TableOfValuesForOrgUnitsBuilder extends TableOfDataValuesBuilder {
     return data;
   }
 
-  async buildRows(results, builtColumns) {
-    const { stripFromDataElementNames } = this.config;
-    const baseRows = this.buildBaseRows().reduce(
-      (base, { dataElement, categoryId }) => ({
+  //   'C.1.3 Financing mechanism and funds for the timely response to public health emergencies':
+  //   { dataElement:
+  //      'C.1.3 Financing mechanism and funds for the timely response to public health emergencies',
+  //     categoryId: 'Legislation and financing' },
+  //  'Nested category':
+  //   { categoryId: 'Legislation and financing',
+  //     rows: [ 'C.10.1 Capacity for emergency risk communications' ] }
+  buildBaseRows() {
+    return super.buildBaseRows().reduce((base, { dataElement, categoryId, category, rows }) => {
+      if (category) {
+        return {
+          ...base,
+          [category]: { categoryId, rows },
+        };
+      }
+      return {
         ...base,
         [dataElement]: { dataElement, categoryId },
-      }),
-      {},
-    );
+      };
+    }, {});
+  }
 
-    const rowData = results.reduce((valuesPerElement, { value, organisationUnit, metadata }) => {
+  //   { dataElement:
+  //     'C.1.3 Financing mechanism and funds for the timely response to public health emergencies',
+  //    categoryId: 'Legislation and financing',
+  //    Col3: 40,
+  //    Col2: 100,
+  //    Col12: 100,
+  //    Col10: 100,
+  //    Col4: 100,
+  //    Col6: 0,
+  //    Col11: 20,
+  //    Col14: 20,
+  //    Col9: 20,
+  //    Col7: 80,
+  //    Col8: 60,
+  //    Col13: 80,
+  //    Col1: 100 },
+  // 'Nested category':
+  //  { categoryId: 'Legislation and financing',
+  //    rows: [ 'C.10.1 Capacity for emergency risk communications' ] },
+  buildRowData(results, columns) {
+    const { stripFromDataElementNames } = this.config;
+
+    return results.reduce((valuesPerElement, { value, organisationUnit, metadata }) => {
+      console.log(valuesPerElement);
       const dataElementName = stripFromStart(metadata.name, stripFromDataElementNames);
-      const orgUnit = builtColumns.find(col => col.title === organisationUnit);
+      const orgUnit = columns.find(col => col.title === organisationUnit);
       const row = valuesPerElement[dataElementName];
 
       // still want to populate rows without values to display no data
@@ -66,10 +100,12 @@ class TableOfValuesForOrgUnitsBuilder extends TableOfDataValuesBuilder {
           ...row,
         },
       };
-    }, baseRows);
-
-    return Object.values(rowData);
+    }, this.baseRows);
   }
+
+  // async buildRows() {
+  //   return Object.values(this.rowData);
+  // }
 
   buildCategoryRows(rows) {
     const totals = this.calculateCategoryTotals(rows);
