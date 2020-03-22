@@ -4,7 +4,6 @@
  **/
 
 import { capital } from 'case';
-import tail from 'lodash.tail';
 
 import { TYPES } from '@tupaia/database';
 import { reduceToDictionary } from '@tupaia/utils';
