@@ -111,11 +111,8 @@ class RegionScreen extends PureComponent {
       isMeasureLoading,
       currentDashboardKey,
       onChangeDashboardGroup,
+      title,
     } = this.props;
-
-    const title = mobileListItems.some(i => i.data && i.data.type === ENTITY_TYPE.FACILITY)
-      ? 'Facilities'
-      : 'Districts';
 
     return (
       <div>
@@ -131,11 +128,10 @@ class RegionScreen extends PureComponent {
         <div>
           <ExpandableList
             items={mobileListItems.map(item => (
-              <SelectListItem onSelect={onChangeOrgUnit} item={item} key={item.key} />
+              <SelectListItem onSelect={onChangeOrgUnit} {...item} />
             ))}
             expandedByDefault={true}
             title={title}
-            onSelectItem={unit => onChangeOrgUnit(unit)}
             filterTitle="Measures"
             filters={measureFilters}
             currentFilter={selectedFilter}
@@ -237,11 +233,12 @@ const getListItemsFromOrganisationUnitChildren = (
           return getSingleFormattedValue(dataItem, measureOptions);
         };
 
-  return organisationUnitChildren.map(item => ({
-    title: item.name,
-    key: item.organisationUnitCode,
-    data: item,
-    subTitle: getSubtitle(item.organisationUnitCode),
+  return organisationUnitChildren.map(({ name, organisationUnitCode, type }) => ({
+    title: name,
+    key: organisationUnitCode,
+    data: organisationUnitCode,
+    subTitle: getSubtitle(organisationUnitCode),
+    type,
   }));
 };
 
@@ -259,7 +256,7 @@ const mapStateToProps = state => {
   const { currentOrganisationUnit, dashboardConfig, loadingOrganisationUnit } = state.global;
   const { measureHierarchy, currentMeasure, isExpanded } = state.measureBar;
   const { measureInfo, isMeasureLoading } = state.map;
-  const { isGroupSelectExpanded, currentDashboardKey } = state.dashboard;
+  const { isGroupSelectExpanded } = state.dashboard;
   const hasSelectedMeasureId = currentMeasure !== undefined;
 
   const mobileListItems = getListItemsFromOrganisationUnitChildren(
@@ -267,6 +264,10 @@ const mapStateToProps = state => {
     isMeasureLoading,
     measureInfo,
   );
+
+  const title = mobileListItems.some(i => i && i.type === ENTITY_TYPE.FACILITY)
+    ? 'Facilities'
+    : 'Districts';
 
   const measureFilters = getMeasureFiltersForHierarchy(measureHierarchy);
 
@@ -285,6 +286,7 @@ const mapStateToProps = state => {
     dashboardFilterIsExpanded: isGroupSelectExpanded,
     isLoading: !!loadingOrganisationUnit,
     isMeasureLoading,
+    title,
   };
 };
 
@@ -293,7 +295,7 @@ const mapDispatchToProps = dispatch => ({
   onClearMeasure: () => dispatch(clearMeasure()),
   onToggleMeasureExpand: () => dispatch(toggleMeasureExpand()),
   onToggleDashboardSelectExpand: () => dispatch(toggleDashboardSelectExpand()),
-  onChangeOrgUnit: orgUnit => dispatch(changeOrgUnit(orgUnit, false)),
+  onChangeOrgUnit: organisationUnitCode => dispatch(changeOrgUnit(organisationUnitCode, false)),
   onChangeDashboardGroup: name => dispatch(changeDashboardGroup(name)),
 });
 
@@ -310,8 +312,4 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-  mergeProps,
-)(RegionScreen);
+export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(RegionScreen);

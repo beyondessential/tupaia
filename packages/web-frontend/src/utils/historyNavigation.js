@@ -220,7 +220,7 @@ function reactToHistory(location, store) {
   dispatch(findLoggedIn());
 
   if (organisationUnitCode !== state.global.currentOrganisationUnit.organisationUnitCode) {
-    dispatch(changeOrgUnit({ organisationUnitCode }));
+    dispatch(changeOrgUnit(organisationUnitCode));
     dispatch(openMapPopup(organisationUnitCode));
   }
 

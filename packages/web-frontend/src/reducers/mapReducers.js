@@ -43,7 +43,6 @@ function position(state = { bounds: defaultBounds }, action) {
       return { bounds: defaultBounds };
     }
 
-    case CHANGE_ORG_UNIT:
     case CHANGE_ORG_UNIT_SUCCESS: {
       if (action.shouldChangeMapBounds) {
         const { location } = action.organisationUnit;
@@ -106,7 +105,7 @@ function innerAreas(state = [], action) {
 function measureInfo(state = {}, action) {
   switch (action.type) {
     case CHANGE_ORG_UNIT:
-      if (action.organisationUnit.organisationUnitCode === 'World') {
+      if (action.organisationUnitCode === 'World') {
         // clear measures when returning to world view
         return {};
       }
@@ -173,7 +172,7 @@ function isMeasureLoading(state = false, action) {
 
 function focussedOrganisationUnit(state = {}, action) {
   switch (action.type) {
-    case CHANGE_ORG_UNIT:
+    case CHANGE_ORG_UNIT_SUCCESS:
       return action.organisationUnit;
 
     default:

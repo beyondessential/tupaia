@@ -597,7 +597,7 @@ function global(
     case CHANGE_ORG_UNIT:
       return {
         ...state,
-        loadingOrganisationUnit: action.organisationUnit,
+        loadingOrganisationUnit: action.organisationUnit, // todo
       };
     case CHANGE_ORG_UNIT_SUCCESS:
       return {

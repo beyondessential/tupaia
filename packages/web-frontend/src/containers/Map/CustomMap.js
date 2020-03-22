@@ -105,7 +105,7 @@ export class CustomMap extends Component {
         // Now check if we're at a reasonable zoom level to switch to that parent
         const difference = checkBoundsDifference(parentOrg.location.bounds, bounds);
         if (difference > CHANGE_TO_PARENT_PERCENTAGE) {
-          changeOrgUnit(parentOrg, false);
+          changeOrgUnit(parentOrg.organisationUnitCode, false);
         }
       }
     }

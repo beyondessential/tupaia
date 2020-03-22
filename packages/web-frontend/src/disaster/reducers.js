@@ -27,9 +27,13 @@ export default function disasters(
       };
     case CHANGE_ORG_UNIT:
       // De-select disaster when user views a different country.
-      const { type, organisationUnitCode } = action.organisationUnit;
+      const { organisationUnitCode } = action;
       if (!state.selectedDisaster) return state;
-      if (type === 'Country' && organisationUnitCode !== state.selectedDisaster.countryCode) {
+      // todo currently the only entities with 2 character codes are countries, and all countries
+      // use a two character ISO code, but we should really pull from state and check the actual
+      // org unit type
+      const isCountry = organisationUnitCode.length === 2;
+      if (isCountry && organisationUnitCode !== state.selectedDisaster.countryCode) {
         return {
           ...state,
           selectedDisaster: null,

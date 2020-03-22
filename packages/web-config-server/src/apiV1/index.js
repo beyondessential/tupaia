@@ -25,9 +25,9 @@ import DashBoardHandler from './dashboard';
 import MeasuresHandler from './measures';
 import MeasuresDataHandler from './measureData';
 import OrgUnitSearchHandler from './organisationUnitSearch';
+import OrganisationUnitHandler from './organisationUnit';
 import { disasters } from './disasters';
 
-import { getOrganisationUnitHandler } from './organisationUnit';
 import { getRegions } from './regions';
 import { getProjects } from './projects';
 
@@ -53,7 +53,7 @@ export const getRoutesForApiV1 = () => {
   api.get(
     '/organisationUnit',
     apicache.middleware(process.env.ORGANISATION_UNIT_CACHE_PERIOD),
-    catchAsyncErrors(getOrganisationUnitHandler),
+    handleWith(OrganisationUnitHandler),
   );
   api.get('/organisationUnitSearch', handleWith(OrgUnitSearchHandler));
   api.get('/dashboard', handleWith(DashBoardHandler));

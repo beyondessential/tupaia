@@ -1,6 +1,7 @@
 import { respond } from '@tupaia/utils';
 import { Entity } from '/models';
 import { PermissionsError } from '@tupaia/utils';
+import { ValidationError } from '@tupaia/utils/dist/errors';
 
 /**
  * Interface class for handling permission checked endpoints
@@ -38,6 +39,9 @@ export class RouteHandler {
     // Fetch permissions
     const { organisationUnitCode } = this.query;
     this.entity = await Entity.findOne({ code: organisationUnitCode });
+    if (!this.entity) {
+      throw new ValidationError(`Entity ${organisationUnitCode} could not be found`);
+    }
     await this.checkPermissions();
     // if a 'buildResponse' is defined by the subclass, run it and respond, otherwise assume the
     // subclass will override handleRequest directly and respond itself
