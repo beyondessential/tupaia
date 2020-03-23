@@ -39,8 +39,9 @@ exports.up = async function(db) {
   `);
 };
 
-exports.down = function(db) {
-  return null;
+exports.down = async function(db) {
+  await db.runSql(`UPDATE "project" SET sort_order=1 WHERE "code"='unfpa';`);
+  return db.runSql(`DELETE FROM "project" WHERE "code"='covidau';`);
 };
 
 exports._meta = {
