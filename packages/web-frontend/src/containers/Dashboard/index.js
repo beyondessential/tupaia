@@ -260,7 +260,7 @@ const mapStateToProps = state => {
   const { isAnimating } = state.map;
   const {
     currentOrganisationUnit,
-    loadingOrganisationUnit,
+    isLoadingOrganisationUnit,
     dashboardConfig,
     isSidePanelExpanded,
     project,
@@ -272,7 +272,7 @@ const mapStateToProps = state => {
     sections: dashboardConfig,
     currentDashboardKey: getCurrentDashboardKey(state),
     mapIsAnimating: isAnimating,
-    isLoading: !!loadingOrganisationUnit,
+    isLoading: isLoadingOrganisationUnit,
     isSidePanelExpanded,
     contractedWidth,
     project,

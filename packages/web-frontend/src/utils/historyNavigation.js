@@ -97,8 +97,7 @@ export function createUrlForAppState(state) {
   const dashboardId = state.dashboard.currentDashboardKey;
   const measureId = state.measureBar.currentMeasure.measureId;
 
-  const focusedOrganisationUnit =
-    state.global.loadingOrganisationUnit || state.global.currentOrganisationUnit;
+  const focusedOrganisationUnit = state.global.currentOrganisationUnit;
 
   const { organisationUnitCode } = focusedOrganisationUnit;
   const reportId = state.enlargedDialog.viewContent.viewId;

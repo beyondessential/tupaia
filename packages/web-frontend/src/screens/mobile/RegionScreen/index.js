@@ -253,7 +253,7 @@ const getMeasureFiltersForHierarchy = measureHierarchy =>
   }));
 
 const mapStateToProps = state => {
-  const { currentOrganisationUnit, dashboardConfig, loadingOrganisationUnit } = state.global;
+  const { currentOrganisationUnit, dashboardConfig, isLoadingOrganisationUnit } = state.global;
   const { measureHierarchy, currentMeasure, isExpanded } = state.measureBar;
   const { measureInfo, isMeasureLoading } = state.map;
   const { isGroupSelectExpanded } = state.dashboard;
@@ -284,7 +284,7 @@ const mapStateToProps = state => {
     selectedFilter,
     measureFilterIsExpanded: isExpanded,
     dashboardFilterIsExpanded: isGroupSelectExpanded,
-    isLoading: !!loadingOrganisationUnit,
+    isLoading: isLoadingOrganisationUnit,
     isMeasureLoading,
     title,
   };

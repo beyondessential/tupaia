@@ -800,8 +800,8 @@ function* watchOrgUnitChangeAndFetchMeasureInfo() {
  *
  */
 function* fetchMeasures(action) {
-  if (action.organisationUnit.organisationUnitCode === 'World') yield put(clearMeasure());
-  const { organisationUnitCode } = action.organisationUnit;
+  const { organisationUnitCode } = action;
+  if (organisationUnitCode === 'World') yield put(clearMeasure());
   const requestResourceUrl = `measures?organisationUnitCode=${organisationUnitCode}`;
   try {
     const measures = yield call(request, requestResourceUrl);
