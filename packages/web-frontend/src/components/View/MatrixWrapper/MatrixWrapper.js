@@ -88,8 +88,8 @@ const buildMatrixDataFromViewContent = viewContent => {
     });
     return {
       description: dataElement,
-      values: columns,
       categoryId,
+      ...columns,
     };
   });
 

@@ -431,7 +431,7 @@ export class Matrix extends PureComponent {
     return text.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1;
   }
 
-  recursivelyRenderRowData(rows, depth = 1, parent = null) {
+  recursivelyRenderRowData(rows, depth = 1, parent = undefined) {
     const styles = this.props.calculatedStyles;
     const isSearchActive = this.isSearchActive();
     const { startColumn, highlightedRow, highlightedColumn } = this.state;
@@ -439,131 +439,35 @@ export class Matrix extends PureComponent {
     const { columns, presentationOptions, onRowClick, categoryPresentationOptions } = this.props;
     const [rootRows, childRows] = partition(rows, { categoryId: parent });
 
-    return rootRows.map(({ dataElement, category, categoryId, ...cellData }, index) => {
-      const rowKey = `${dataElement}_${index}`;
-      const isRowHighlighted = rowKey === highlightedRow;
-
-      if (category) {
-        const key = getCategoryKey(categoryId, index);
-        const isRowExpandedByUser = this.isRowExpanded(key);
-        const children =
-          isSearchActive || isRowExpandedByUser
-            ? this.recursivelyRenderRowData(childRows, depth + 1, category)
-            : [];
-
-        const isEmpty = children.length === 0;
-
-        if (isSearchActive && isEmpty) {
-          return null;
-        }
-        const isExpanded = isSearchActive || isRowExpandedByUser;
-
-        return (
-          <RowGroup
-            key={key}
-            rowId={key}
-            columns={columns}
-            columnData={cellData}
-            isExpanded={isExpanded}
-            depth={depth}
-            indentSize={CATEGORY_INDENT}
-            categoryLabel={category}
-            startColumn={startColumn}
-            numberOfColumnsPerPage={numberOfColumnsPerPage}
-            onToggleRowExpanded={this.onToggleRowExpanded}
-            ref={this.setRowRef}
-            styles={styles}
-            isRowHighlighted={isRowHighlighted}
-            highlightedColumn={highlightedColumn}
-            onCellMouseEnter={this.onCellMouseEnter}
-            onCellMouseLeave={this.onCellMouseLeave}
-            onCellClick={this.onCellClick}
-            presentationOptions={categoryPresentationOptions}
-            isUsingDots={this.getIsUsingDots(categoryPresentationOptions)}
-          >
-            {children}
-          </RowGroup>
-        );
-      }
-
-      if (isSearchActive && !this.doesMatchSearch(row.description)) {
-        return null;
-      }
-
-      const rowData = columns.map(({ key, isGroupHeader }) => ({
-        value: cellData[key],
-        isGroupBoundary: isGroupHeader,
-      }));
-
-      const onTitleClick = () => onRowClick(cellData);
-
-      return (
-        <Row
-          key={rowKey}
-          rowKey={rowKey}
-          ref={this.setRowRef}
-          columns={rowData}
-          isRowHighlighted={isRowHighlighted}
-          highlightedColumn={highlightedColumn}
-          startColumn={startColumn}
-          numberOfColumnsPerPage={numberOfColumnsPerPage}
-          depth={depth}
-          categoryIndent={CATEGORY_INDENT}
-          description={dataElement}
-          onCellMouseEnter={this.onCellMouseEnter}
-          onCellMouseLeave={this.onCellMouseLeave}
-          onCellClick={this.onCellClick}
-          onTitleClick={onTitleClick}
-          onMoveColumnPress={this.onMoveColumnPress}
-          onMoveColumnRelease={this.onMoveColumnRelease}
-          presentationOptions={presentationOptions}
-          isNextColumnEnabled={this.isNextColumnEnabled()}
-          isPreviousColumnEnabled={this.isPreviousColumnEnabled()}
-          isUsingDots={this.getIsUsingDots(presentationOptions)}
-          styles={styles}
-        />
-      );
-    });
-  }
-
-  recursivelyRenderRowData2(rows, categoryRows, keyPrefix = '', depth = 1) {
-    const styles = this.props.calculatedStyles;
-    const { startColumn, highlightedRow, highlightedColumn } = this.state;
-    const { numberOfColumnsPerPage } = this.props;
-    const { columns, presentationOptions, onRowClick, categoryPresentationOptions } = this.props;
-    const isSearchActive = this.isSearchActive();
-
-    return rows
-      .map((row, index) => {
-        // Is a category object.
-        const rowKey = `${keyPrefix}-${row.description}_${index}`;
+    return rootRows
+      .map(({ description, category, categoryId, ...cellData }, index) => {
+        const rowKey = `${description}_${index}`;
         const isRowHighlighted = rowKey === highlightedRow;
 
-        if (row.category) {
-          const key = getCategoryKey(row.categoryId, index);
+        if (category) {
+          const key = getCategoryKey(categoryId, index);
           const isRowExpandedByUser = this.isRowExpanded(key);
-          const childRows =
+          const children =
             isSearchActive || isRowExpandedByUser
-              ? this.recursivelyRenderRowData(row.rows, categoryRows, key, depth + 1)
+              ? this.recursivelyRenderRowData(childRows, depth + 1, category)
               : [];
 
-          const isEmpty = childRows.length === 0;
+          const isEmpty = children.length === 0;
 
           if (isSearchActive && isEmpty) {
             return null;
           }
           const isExpanded = isSearchActive || isRowExpandedByUser;
-
           return (
             <RowGroup
               key={key}
               rowId={key}
               columns={columns}
-              columnData={categoryRows}
+              columnData={cellData}
               isExpanded={isExpanded}
               depth={depth}
               indentSize={CATEGORY_INDENT}
-              categoryLabel={row.category}
+              categoryLabel={category}
               startColumn={startColumn}
               numberOfColumnsPerPage={numberOfColumnsPerPage}
               onToggleRowExpanded={this.onToggleRowExpanded}
@@ -577,35 +481,35 @@ export class Matrix extends PureComponent {
               presentationOptions={categoryPresentationOptions}
               isUsingDots={this.getIsUsingDots(categoryPresentationOptions)}
             >
-              {childRows}
+              {children}
             </RowGroup>
           );
         }
 
-        if (isSearchActive && !this.doesMatchSearch(row.description)) {
+        if (isSearchActive && !this.doesMatchSearch(row.dataElement)) {
           return null;
         }
 
         const rowData = columns.map(({ key, isGroupHeader }) => ({
-          value: row.values[key],
+          value: cellData[key],
           isGroupBoundary: isGroupHeader,
         }));
 
-        const onTitleClick = () => onRowClick(row.values);
+        const onTitleClick = () => onRowClick(cellData);
 
         return (
           <Row
             key={rowKey}
+            rowKey={rowKey}
             ref={this.setRowRef}
             columns={rowData}
             isRowHighlighted={isRowHighlighted}
             highlightedColumn={highlightedColumn}
-            rowKey={rowKey}
             startColumn={startColumn}
             numberOfColumnsPerPage={numberOfColumnsPerPage}
             depth={depth}
             categoryIndent={CATEGORY_INDENT}
-            description={row.description}
+            description={description}
             onCellMouseEnter={this.onCellMouseEnter}
             onCellMouseLeave={this.onCellMouseLeave}
             onCellClick={this.onCellClick}
@@ -686,9 +590,9 @@ export class Matrix extends PureComponent {
   }
 
   render() {
-    const { rows, categoryRows } = this.props;
     const styles = this.props.calculatedStyles;
-    const renderedRows = this.recursivelyRenderRowData(viewContent_test.rows);
+    console.log(this.props.rows);
+    const renderedRows = this.recursivelyRenderRowData(this.props.rows);
     const rowDisplay =
       renderedRows && renderedRows.length > 0 ? renderedRows : this.renderEmptyMessage();
 
