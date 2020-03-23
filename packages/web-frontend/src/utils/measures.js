@@ -236,7 +236,7 @@ export function getSingleFormattedValue(orgUnitData, measureOptions) {
   return getFormattedInfo(orgUnitData, measureOptions[0]).value;
 }
 
-export function getMeasureDisplayInfo(orgUnitData, measureOptions, hiddenMeasures = {}) {
+export function getMeasureDisplayInfo(measureData, measureOptions, hiddenMeasures = {}) {
   const displayInfo = {};
 
   measureOptions.forEach(({ color, icon, radius }) => {
@@ -252,7 +252,7 @@ export function getMeasureDisplayInfo(orgUnitData, measureOptions, hiddenMeasure
   });
   measureOptions.forEach(
     ({ key, type, valueMapping, noDataColour, scaleType, min, max, hideByDefault }) => {
-      const valueInfo = getValueInfo(orgUnitData[key], valueMapping, {
+      const valueInfo = getValueInfo(measureData[key], valueMapping, {
         ...hideByDefault,
         ...hiddenMeasures[key],
       });
@@ -276,6 +276,8 @@ export function getMeasureDisplayInfo(orgUnitData, measureOptions, hiddenMeasure
           displayInfo.icon = SPECTRUM_ICON;
           break;
         case MEASURE_TYPE_SHADING:
+          displayInfo.color = MAP_COLORS[valueInfo.color] || MAP_COLORS.NO_DATA;
+          break;
         case MEASURE_TYPE_COLOR:
         default:
           displayInfo.color = valueInfo.color;
@@ -309,21 +311,6 @@ export const calculateRadiusScaleFactor = measureData => {
     .reduce((state, current) => Math.max(state, current), 0);
   return maxRadius < MAX_ALLOWED_RADIUS ? 1 : (1 / maxRadius) * MAX_ALLOWED_RADIUS;
 };
-
-// when we pass in an organisationUnitCode does one of the measures shade it?
-export function getMeasureAsShade(organisationUnitCode, { measureData, measureOptions }) {
-  if (!measureData || !measureOptions || !measureData.length) return null;
-
-  // check if this org unit exists in the set at all
-  // (return null here instead of NO_DATA -- NO_DATA indicates "this org unit has not responded
-  // to this question" rather than "this org unit is not part of the requested data set")
-  const currentDatapoint = measureData.find(md => md.organisationUnitCode === organisationUnitCode);
-  if (!currentDatapoint) return null;
-
-  const { color } = getMeasureDisplayInfo(currentDatapoint, measureOptions);
-  if (color) return MAP_COLORS[color];
-  return MAP_COLORS.NO_DATA;
-}
 
 // Take a measureData array where the [key]: value is a number
 // and filters NaN values (e.g. undefined).

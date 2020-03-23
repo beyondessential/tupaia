@@ -11,6 +11,7 @@ import createSagaMiddleware from 'redux-saga';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
 import rootReducer from './reducers';
+import { sanitizers } from './sanitizers';
 import { historyMiddleware, gaMiddleware } from './utils';
 
 import globalSagas from './sagas';
@@ -20,10 +21,11 @@ import projectSagas from './projects/sagas';
 export default function configureStore(initialState) {
   const sagaMiddleware = createSagaMiddleware();
 
+  const composeEnhancers = composeWithDevTools({ ...sanitizers });
   const store = createStore(
     rootReducer,
     initialState,
-    composeWithDevTools(applyMiddleware(sagaMiddleware, historyMiddleware, gaMiddleware)),
+    composeEnhancers(applyMiddleware(sagaMiddleware, historyMiddleware, gaMiddleware)),
   );
 
   const addSagas = sagas => sagas.map(sagaMiddleware.run);
