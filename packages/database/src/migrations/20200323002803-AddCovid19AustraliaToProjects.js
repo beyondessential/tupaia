@@ -19,9 +19,8 @@ exports.up = async function(db) {
   const australia = await db.runSql(`select id from entity where code = 'AU'`);
 
   await db.runSql(`
-    UPDATE "project"
-    sort_order = 2
-    WHERE code = 'unfpa';
+  UPDATE "project" SET "sort_order"=2 WHERE "code"='unpa';
+
   `);
 
   return db.runSql(`
