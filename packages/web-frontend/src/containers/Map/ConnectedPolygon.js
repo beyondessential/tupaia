@@ -125,7 +125,7 @@ class ConnectedPolygon extends Component {
       onBlur: () => highlightOrgUnit(),
       onMouseOver: () => highlightOrgUnit(area),
       onMouseOut: () => highlightOrgUnit(),
-      onClick: () => onChangeOrgUnit(area),
+      onClick: () => onChangeOrgUnit(organisationUnitCode),
     };
 
     const measureShade = getMeasureAsShade(organisationUnitCode, measureInfo);
@@ -195,7 +195,4 @@ const mapDispatchToProps = dispatch => ({
   highlightOrgUnit: organisationUnitCode => dispatch(highlightOrgUnit(organisationUnitCode)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(ConnectedPolygon);
+export default connect(mapStateToProps, mapDispatchToProps)(ConnectedPolygon);

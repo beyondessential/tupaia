@@ -4,11 +4,12 @@
  **/
 
 import { capital } from 'case';
-import tail from 'lodash.tail';
 
 import { TYPES } from '@tupaia/database';
 import { reduceToDictionary } from '@tupaia/utils';
 import { BaseModel } from './BaseModel';
+import { EntityRelation } from './EntityRelation';
+import { Project } from './Project';
 
 const CASE = 'case';
 const COUNTRY = 'country';
@@ -17,6 +18,7 @@ const FACILITY = 'facility';
 const REGION = 'region';
 const VILLAGE = 'village';
 const WORLD = 'world';
+const PROJECT = 'project';
 
 export const ENTITY_TYPES = {
   CASE,
@@ -26,6 +28,7 @@ export const ENTITY_TYPES = {
   REGION,
   VILLAGE,
   WORLD,
+  PROJECT,
 };
 
 const constructTypesCriteria = (types, prefix) =>
@@ -49,12 +52,22 @@ export class Entity extends BaseModel {
 
   static geoFields = ['point', 'region', 'bounds'];
 
-  static translatedFields = (alias = 'entity') =>
-    Entity.fields.map(field =>
-      Entity.geoFields.includes(field)
-        ? `ST_AsGeoJSON(${alias}.${field}) as ${field}`
-        : `${alias}.${field}`,
-    );
+  static getColumnSpecs = tableAlias => {
+    const tableAliasPrefix = tableAlias ? `${tableAlias}.` : '';
+    return Entity.fields.map(field => {
+      if (Entity.geoFields.includes(field)) {
+        return { [field]: `ST_AsGeoJSON(${tableAliasPrefix}${field})` };
+      } else {
+        return { [field]: `${tableAliasPrefix}${field}` };
+      }
+    });
+  };
+
+  static getSqlForColumns = tableAlias =>
+    Entity.getColumnSpecs(tableAlias).map(columnSpec => {
+      const [fieldAlias, selector] = Object.entries(columnSpec)[0];
+      return `${selector} as ${fieldAlias}`;
+    });
 
   static FACILITY = FACILITY;
 
@@ -137,17 +150,67 @@ export class Entity extends BaseModel {
     return ancestors.length > 0 ? ancestors[0] : null;
   }
 
-  async getDescendants() {
-    return tail(await this.getDescendantsAndSelf());
+  async getDescendantsAndSelf(hierarchyId) {
+    if (hierarchyId) {
+      const descendants = await Entity.getDescendantsNonCanonically([this], hierarchyId);
+      const parent = await Entity.findById(this.parent_id);
+      this.parent_code = parent.code;
+      return [this, ...descendants];
+    }
+    // no alternative hierarchy prescribed, use the faster all-in-one sql query
+    return this.getDescendantsAndSelfCanonically();
   }
 
-  async getDescendantsAndSelf() {
+  /**
+   * Recursively traverse the alternative hierarchy that begins with the specified parents.
+   * At each generation, choose children via 'entity_relation' if any exist, or the canonical
+   * entity.parent_id if none do
+   * @param {string[]} parents      The entities to start at
+   * @param {string} hierarchyId    The specific hierarchy to follow through entity_relation
+   */
+  static async getDescendantsNonCanonically(parents, hierarchyId) {
+    const children = await Entity.getNextGeneration(parents, hierarchyId);
+
+    // if we've made it to the leaf nodes, return an empty array
+    if (children.length === 0) {
+      return [];
+    }
+
+    // keep recursing down the hierarchy
+    const descendants = await Entity.getDescendantsNonCanonically(children, hierarchyId);
+    return [...children, ...descendants];
+  }
+
+  static async getNextGeneration(parents, hierarchyId) {
+    // get any matching alternative hierarchy relationships leading out of these parents
+    const parentIds = parents.map(p => p.id);
+    const alternativeHierarchyLinks = hierarchyId
+      ? await EntityRelation.find({
+          parent_id: parentIds,
+          entity_hierarchy_id: hierarchyId,
+        })
+      : [];
+    const childIds = alternativeHierarchyLinks.map(l => l.child_id);
+
+    // if no alternative hierarchy links for this generation, follow the canonical relationships
+    const children =
+      childIds.length > 0
+        ? await Entity.find({ id: childIds })
+        : await Entity.find({ parent_id: parentIds });
+
+    const parentIdsToCode = reduceToDictionary(parents, 'id', 'code');
+    children.forEach(c => (c.parent_code = parentIdsToCode[c.parent_id]));
+
+    return children;
+  }
+
+  async getDescendantsAndSelfCanonically() {
     return this.database.executeSql(
       `
         WITH RECURSIVE descendants AS (
           SELECT *, 0 AS generation
             FROM entity
-            WHERE code = ?
+            WHERE id = ?
 
           UNION ALL
           SELECT c.*, d.generation + 1
@@ -155,20 +218,65 @@ export class Entity extends BaseModel {
             JOIN entity c ON c.parent_id = d.id
         )
         SELECT
-          ${Entity.translatedFields('descendants')},
+          ${Entity.getSqlForColumns('descendants')},
           p.code as parent_code
         FROM descendants
         LEFT JOIN entity p
           ON p.id = descendants.parent_id
     `,
-      [this.code],
+      [this.id],
     );
+  }
+
+  /**
+   * Recursively traverse the alternative hierarchy that begins with the specified parents.
+   * At each generation, choose children via 'entity_relation' if any exist, or the canonical
+   * entity.parent_id if none do
+   * Assumptions:
+   * - All entities of a given type occupy the same generation, e.g. all villages sit within a
+   *   single generation below facilities. This is not true for 'region' entity types - in several
+   *   countries there are two layers of district/sub-district, which are both of type 'region'.
+   *   In practice, this isn't a big deal, as we generally just want the first layer we come to :-)
+   * @param {string[]} parents      The entities to start at
+   * @param {string} hierarchyId  The specific hierarchy to follow through entity_relation
+   */
+  static async getNearestDescendantsMatchingTypes(entities, hierarchyId, entityTypes) {
+    // if we've made it to the leaf nodes, return an empty array
+    if (entities.length === 0) {
+      return [];
+    }
+
+    // if we've reached the level with descendants of the correct type, return them
+    const entitiesOfType = entities.filter(e => entityTypes.includes(e.type));
+    if (entitiesOfType.length > 0) {
+      return entitiesOfType;
+    }
+
+    const children = await Entity.getNextGeneration(entities, hierarchyId);
+
+    // keep recursing down the hierarchy
+    return Entity.getNearestDescendantsMatchingTypes(children, hierarchyId, entityTypes);
+  }
+
+  static async getFacilitiesOfOrgUnit(organisationUnitCode) {
+    const entity = await Entity.findOne({ code: organisationUnitCode });
+    return entity ? entity.getDescendantsOfType(ENTITY_TYPES.FACILITY) : [];
+  }
+
+  // assumes all entities of the given type are found at the same level in the hierarchy tree
+  async getDescendantsOfType(entityType, hierarchyId) {
+    return Entity.getNearestDescendantsMatchingTypes([this], hierarchyId, [entityType]);
+  }
+
+  async getNearestOrgUnitDescendants(hierarchyId) {
+    const validTypes = Object.values(Entity.orgUnitEntityTypes);
+    return Entity.getNearestDescendantsMatchingTypes([this], hierarchyId, validTypes);
   }
 
   async getChildRegions() {
     return this.database.executeSql(
       `
-      SELECT ${Entity.translatedFields()} FROM entity
+      SELECT ${Entity.getSqlForColumns()} FROM entity
       WHERE
         region IS NOT NULL AND
         parent_id = ?;
@@ -177,33 +285,25 @@ export class Entity extends BaseModel {
     );
   }
 
-  static async getEntityByCode(code) {
-    const records = await Entity.database.executeSql(
-      `SELECT 
-        ${Entity.translatedFields()}
-      FROM entity
-      WHERE
-        code = ?;
-      `,
-      [code],
-    );
-    return records[0] && Entity.load(records[0]);
+  static async findOne(conditions, loadOptions, queryOptions) {
+    return super.findOne(conditions, loadOptions, {
+      ...queryOptions,
+      columns: Entity.getColumnSpecs(),
+    });
+  }
+
+  static async find(conditions, loadOptions, queryOptions) {
+    return super.find(conditions, loadOptions, {
+      ...queryOptions,
+      columns: Entity.getColumnSpecs(),
+    });
   }
 
   static async findById(id, loadOptions, queryOptions) {
-    // Check for usage of incompatible params defined in the parent class method signature
-    if (loadOptions) {
-      throw new Error('"loadOptions" parameter is not supported by Entity.findById()');
-    }
-    if (queryOptions) {
-      throw new Error('"queryOptions" parameter is not supported by Entity.findById()');
-    }
-
-    const records = await Entity.database.executeSql(
-      `SELECT ${Entity.translatedFields()} FROM entity WHERE id = ?;`,
-      [id],
-    );
-    return records[0] && Entity.load(records[0]);
+    return super.findById(id, loadOptions, {
+      ...queryOptions,
+      columns: Entity.getColumnSpecs(),
+    });
   }
 
   async getOrgUnitChildren() {
@@ -211,7 +311,7 @@ export class Entity extends BaseModel {
 
     return Entity.database.executeSql(
       `
-      SELECT ${Entity.translatedFields()} FROM entity
+      SELECT ${Entity.getSqlForColumns()} FROM entity
       WHERE
         parent_id = ?
         ${constructTypesCriteria(types, 'AND')}
@@ -219,15 +319,6 @@ export class Entity extends BaseModel {
     `,
       [this.id, ...types],
     );
-  }
-
-  static async getFacilitiesOfOrgUnit(organisationUnitCode) {
-    const entity = await Entity.getEntityByCode(organisationUnitCode);
-    return entity ? entity.getDescendantsOfType(ENTITY_TYPES.FACILITY) : [];
-  }
-
-  async getDescendantsOfType(entityType) {
-    return (await this.getDescendants()).filter(descendant => descendant.type === entityType);
   }
 
   static fetchChildToParentCode = async childrenCodes => {
@@ -258,8 +349,20 @@ export class Entity extends BaseModel {
       .join(', ');
   }
 
+  isCountry() {
+    return this.type === COUNTRY;
+  }
+
   isFacility() {
     return this.type === FACILITY;
+  }
+
+  isProject() {
+    return this.type === PROJECT;
+  }
+
+  async project() {
+    return Project.findOne({ entity_id: this.id });
   }
 
   async parent() {
