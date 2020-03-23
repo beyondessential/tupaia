@@ -259,7 +259,7 @@ export class Entity extends BaseModel {
   }
 
   static async getFacilitiesOfOrgUnit(organisationUnitCode) {
-    const entity = await Entity.getEntityByCode(organisationUnitCode);
+    const entity = await Entity.findOne({ code: organisationUnitCode });
     return entity ? entity.getDescendantsOfType(ENTITY_TYPES.FACILITY) : [];
   }
 
@@ -285,17 +285,11 @@ export class Entity extends BaseModel {
     );
   }
 
-  static async getEntityByCode(code) {
-    const records = await Entity.database.executeSql(
-      `SELECT
-        ${Entity.getSqlForColumns()}
-      FROM entity
-      WHERE
-        code = ?;
-      `,
-      [code],
-    );
-    return records[0] && Entity.load(records[0]);
+  static async findOne(conditions, loadOptions, queryOptions) {
+    return super.findOne(conditions, loadOptions, {
+      ...queryOptions,
+      columns: Entity.getColumnSpecs(),
+    });
   }
 
   static async find(conditions, loadOptions, queryOptions) {
@@ -353,6 +347,10 @@ export class Entity extends BaseModel {
       .reverse()
       .map(ancestor => ancestor.name)
       .join(', ');
+  }
+
+  isCountry() {
+    return this.type === COUNTRY;
   }
 
   isFacility() {

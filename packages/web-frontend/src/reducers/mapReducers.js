@@ -43,7 +43,6 @@ function position(state = { bounds: defaultBounds }, action) {
       return { bounds: defaultBounds };
     }
 
-    case CHANGE_ORG_UNIT:
     case CHANGE_ORG_UNIT_SUCCESS: {
       if (action.shouldChangeMapBounds) {
         const { location } = action.organisationUnit;
@@ -106,7 +105,7 @@ function innerAreas(state = [], action) {
 function measureInfo(state = {}, action) {
   switch (action.type) {
     case CHANGE_ORG_UNIT:
-      if (action.organisationUnit.organisationUnitCode === 'World') {
+      if (action.organisationUnitCode === 'World') {
         // clear measures when returning to world view
         return {};
       }
@@ -166,16 +165,6 @@ function isMeasureLoading(state = false, action) {
     case FETCH_MEASURE_DATA_SUCCESS:
     case CANCEL_FETCH_MEASURE_DATA:
       return false;
-    default:
-      return state;
-  }
-}
-
-function focussedOrganisationUnit(state = {}, action) {
-  switch (action.type) {
-    case CHANGE_ORG_UNIT:
-      return action.organisationUnit;
-
     default:
       return state;
   }
@@ -268,7 +257,6 @@ export default combineReducers({
   innerAreas,
   measureInfo,
   tileSet,
-  focussedOrganisationUnit,
   isAnimating,
   popup,
   shouldSnapToPosition,

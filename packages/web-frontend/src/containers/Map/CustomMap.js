@@ -47,7 +47,6 @@ export class CustomMap extends Component {
       measureInfo,
       currentOrganisationUnit,
       highlightedOrganisationUnit,
-      focussedOrganisationUnit,
       tileSet,
       position,
       innerAreas,
@@ -67,12 +66,6 @@ export class CustomMap extends Component {
     if (
       nextProps.highlightedOrganisationUnit.organisationUnitCode !==
       highlightedOrganisationUnit.organisationUnitCode
-    ) {
-      return true;
-    }
-    if (
-      nextProps.focussedOrganisationUnit.organisationUnitCode !==
-      focussedOrganisationUnit.organisationUnitCode
     ) {
       return true;
     }
@@ -105,7 +98,7 @@ export class CustomMap extends Component {
         // Now check if we're at a reasonable zoom level to switch to that parent
         const difference = checkBoundsDifference(parentOrg.location.bounds, bounds);
         if (difference > CHANGE_TO_PARENT_PERCENTAGE) {
-          changeOrgUnit(parentOrg, false);
+          changeOrgUnit(parentOrg.organisationUnitCode, false);
         }
       }
     }

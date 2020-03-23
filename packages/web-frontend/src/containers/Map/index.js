@@ -30,7 +30,6 @@ const mapStateToProps = state => {
     isAnimating,
     shouldSnapToPosition,
     position,
-    focussedOrganisationUnit,
     innerAreas,
     measureInfo,
     tileSet,
@@ -51,7 +50,6 @@ const mapStateToProps = state => {
     currentOrganisationUnitSiblings,
     measureInfo,
     tileSet,
-    focussedOrganisationUnit: focussedOrganisationUnit,
     isAnimating,
     shouldSnapToPosition,
     sidePanelWidth: isSidePanelExpanded ? expandedWidth : contractedWidth,
@@ -68,7 +66,4 @@ const mapDispatchToProps = dispatch => ({
   setMapIsAnimating: isAnimating => dispatch(setMapIsAnimating(isAnimating)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(CustomMap);
+export default connect(mapStateToProps, mapDispatchToProps)(CustomMap);
