@@ -5,7 +5,7 @@
  * found in the LICENSE file in the root directory of this source tree.
  */
 
-import { SET_DISASTERS_DATA, SELECT_DISASTER, CHANGE_ORG_UNIT } from '../actions';
+import { SET_DISASTERS_DATA, SELECT_DISASTER, CHANGE_ORG_UNIT_SUCCESS } from '../actions';
 
 export default function disasters(
   state = {
@@ -25,15 +25,11 @@ export default function disasters(
         ...state,
         selectedDisaster: action.disaster,
       };
-    case CHANGE_ORG_UNIT:
+    case CHANGE_ORG_UNIT_SUCCESS:
       // De-select disaster when user views a different country.
-      const { organisationUnitCode } = action;
+      const { organisationUnitCode, type } = action.organisationUnit;
       if (!state.selectedDisaster) return state;
-      // todo currently the only entities with 2 character codes are countries, and all countries
-      // use a two character ISO code, but we should really pull from state and check the actual
-      // org unit type
-      const isCountry = organisationUnitCode.length === 2;
-      if (isCountry && organisationUnitCode !== state.selectedDisaster.countryCode) {
+      if (type === 'Country' && organisationUnitCode !== state.selectedDisaster.countryCode) {
         return {
           ...state,
           selectedDisaster: null,
