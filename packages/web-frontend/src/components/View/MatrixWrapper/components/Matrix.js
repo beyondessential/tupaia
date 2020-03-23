@@ -1,93 +1,3 @@
-const columnValues_test = {
-  Col10: 100,
-  Col9: 20,
-  Col4: 20,
-  Col12: 40,
-  Col11: 40,
-  Col2: 100,
-  Col3: 80,
-  Col14: 20,
-  Col6: 20,
-  Col13: 100,
-  Col8: 60,
-  Col7: 60,
-  Col1: 60,
-};
-
-const viewContent_test = {
-  rows: [
-    // top level category row
-    {
-      categoryId: null,
-      category: 'Parent Category',
-      ...columnValues_test,
-    },
-    // nested category row
-    {
-      categoryId: 'Parent Category',
-      category: 'Sub Category',
-      ...columnValues_test,
-    },
-    {
-      categoryId: 'Sub Category',
-      category: 'SUB SUB Category!',
-      ...columnValues_test,
-    },
-    // data element for top level category row
-    {
-      categoryId: 'Parent Category',
-      dataElement: '1.1 :: Data Element',
-      ...columnValues_test,
-    },
-    // data element for sub category
-    {
-      categoryId: 'Sub Category',
-      dataElement: '1.2 :: Data Element',
-      ...columnValues_test,
-    },
-    {
-      categoryId: 'SUB SUB Category!',
-      dataElement: '1.3 :: Data Element',
-      ...columnValues_test,
-    },
-    {
-      categoryId: null,
-      dataElement: '1.0 :: Data Element',
-      ...columnValues_test,
-    },
-    {
-      categoryId: 'Sub Category',
-      category: 'SUB SUB Category 2!',
-      ...columnValues_test,
-    },
-    {
-      categoryId: '1.2 :: Data Element',
-      dataElement: '1.554 :: Data Element',
-      ...columnValues_test,
-    },
-    {
-      categoryId: 'SUB SUB Category 2!',
-      category: 'SUB SUB SUB Category 2!',
-      ...columnValues_test,
-    },
-    {
-      categoryId: 'SUB SUB SUB Category 2!',
-      dataElement: '2.554 :: Data Element',
-      ...columnValues_test,
-    },
-    {
-      categoryId: 'SUB SUB SUB Category 2!',
-      category: 'SUB SUB SUB SUB Category 2!',
-      ...columnValues_test,
-    },
-    {
-      categoryId: 'SUB SUB SUB SUB Category 2!',
-      dataElement: '3.554 :: Data Element',
-      ...columnValues_test,
-    },
-  ],
-};
-
 /**
  * Tupaia Web
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd.
@@ -591,7 +501,6 @@ export class Matrix extends PureComponent {
 
   render() {
     const styles = this.props.calculatedStyles;
-    console.log(this.props.rows);
     const renderedRows = this.recursivelyRenderRowData(this.props.rows);
     const rowDisplay =
       renderedRows && renderedRows.length > 0 ? renderedRows : this.renderEmptyMessage();
