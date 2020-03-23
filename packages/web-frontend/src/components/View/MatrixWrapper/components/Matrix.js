@@ -467,7 +467,7 @@ export class Matrix extends PureComponent {
               isExpanded={isExpanded}
               depth={depth}
               indentSize={CATEGORY_INDENT}
-              categoryLabel={category}
+              categoryLabel={description || category}
               startColumn={startColumn}
               numberOfColumnsPerPage={numberOfColumnsPerPage}
               onToggleRowExpanded={this.onToggleRowExpanded}

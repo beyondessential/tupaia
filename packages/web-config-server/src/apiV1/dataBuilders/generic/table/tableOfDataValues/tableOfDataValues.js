@@ -28,9 +28,10 @@ export class TableOfDataValuesBuilder extends DataBuilder {
       columns: await this.buildColumns(),
     };
     if (this.tableConfig.hasRowCategories()) {
-      data.categories = await this.buildRowCategories();
+      const categories = await this.buildRowCategories();
+      data.rows = [...data.rows, ...categories];
     }
-    console.log(data.rows, data.categories);
+
     return data;
   }
 
@@ -130,8 +131,8 @@ export class TableOfDataValuesBuilder extends DataBuilder {
         .filter(r => typeof r !== 'string')
         .map(r => ({ ...r, parent: categoryName }));
 
-      const category = { key: categoryName, title: categoryToTitle(categoryName) };
-      if (row.parent) category.parent = row.parent;
+      const category = { category: categoryToTitle(categoryName) };
+      if (row.parent) category.categoryId = row.parent;
       return this.buildRowCategories(
         [...rows.slice(1), ...subCategories],
         [...categories, category],
