@@ -3,13 +3,13 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { getUniqueEntries } from '@tupaia/utils';
+
 const DX_BATCH_SIZE = 400;
 const OU_BATCH_SIZE = 400;
 
 const formatGroupCodes = groupCodes =>
   groupCodes.map(groupCode => `DE_GROUP-${groupCode}`).join(';');
-
-const getUniqueEntries = entries => [...new Set(entries)];
 
 const getDxDimension = query => {
   const { dataElementCodes, dataElementGroupCodes, dataElementGroupCode } = query;
