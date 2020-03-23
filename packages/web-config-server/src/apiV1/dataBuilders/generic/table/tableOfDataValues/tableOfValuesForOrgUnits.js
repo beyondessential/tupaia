@@ -31,23 +31,20 @@ class TableOfValuesForOrgUnitsBuilder extends TableOfDataValuesBuilder {
       columns: await this.replaceOrgUnitCodesWithNames(columns),
     };
 
-    if (this.config.categoryAggregator) {
-      data.categoryRows = this.buildCategoryRows(Object.values(this.rowData));
-    }
     if (this.tableConfig.hasRowCategories()) {
-      data.categories = await this.buildRowCategories();
+      const categories = await this.buildRowCategories();
+
+      if (this.config.categoryAggregator) {
+        const categoryData = this.buildCategoryData(Object.values(this.rowData));
+        data.rows = [...data.rows, ...categories.map(c => ({ ...c, ...categoryData[c.category] }))];
+      } else {
+        data.rows = [...data.rows, ...categories];
+      }
     }
 
     return data;
   }
 
-  //   'C.1.3 Financing mechanism and funds for the timely response to public health emergencies':
-  //   { dataElement:
-  //      'C.1.3 Financing mechanism and funds for the timely response to public health emergencies',
-  //     categoryId: 'Legislation and financing' },
-  //  'Nested category':
-  //   { categoryId: 'Legislation and financing',
-  //     rows: [ 'C.10.1 Capacity for emergency risk communications' ] }
   buildBaseRows() {
     return super.buildBaseRows().reduce((base, { dataElement, categoryId, category, rows }) => {
       if (category) {
@@ -63,25 +60,6 @@ class TableOfValuesForOrgUnitsBuilder extends TableOfDataValuesBuilder {
     }, {});
   }
 
-  //   { dataElement:
-  //     'C.1.3 Financing mechanism and funds for the timely response to public health emergencies',
-  //    categoryId: 'Legislation and financing',
-  //    Col3: 40,
-  //    Col2: 100,
-  //    Col12: 100,
-  //    Col10: 100,
-  //    Col4: 100,
-  //    Col6: 0,
-  //    Col11: 20,
-  //    Col14: 20,
-  //    Col9: 20,
-  //    Col7: 80,
-  //    Col8: 60,
-  //    Col13: 80,
-  //    Col1: 100 },
-  // 'Nested category':
-  //  { categoryId: 'Legislation and financing',
-  //    rows: [ 'C.10.1 Capacity for emergency risk communications' ] },
   buildRowData(results, columns) {
     const { stripFromDataElementNames } = this.config;
 
@@ -102,11 +80,7 @@ class TableOfValuesForOrgUnitsBuilder extends TableOfDataValuesBuilder {
     }, this.baseRows);
   }
 
-  // async buildRows() {
-  //   return Object.values(this.rowData);
-  // }
-
-  buildCategoryRows(rows) {
+  buildCategoryData(rows) {
     const totals = this.calculateCategoryTotals(rows);
 
     if (this.config.categoryAggregator === CATEGORY_AGGREGATION_TYPES.AVERAGE) {

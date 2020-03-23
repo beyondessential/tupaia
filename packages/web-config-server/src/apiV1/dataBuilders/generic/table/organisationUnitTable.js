@@ -54,7 +54,7 @@ class OrganisationUnitTableDataBuilder extends DataBuilder {
       columns: await this.buildColumns(analytics),
     };
     if (this.hasCategories()) {
-      responseObject.categories = buildCategories(dataElementGroups);
+      responseObject.rows = [...responseObject.rows, ...buildCategories(dataElementGroups)];
     }
 
     return responseObject;
