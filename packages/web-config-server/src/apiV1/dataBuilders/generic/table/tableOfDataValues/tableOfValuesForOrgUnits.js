@@ -86,7 +86,6 @@ class TableOfValuesForOrgUnitsBuilder extends TableOfDataValuesBuilder {
     const { stripFromDataElementNames } = this.config;
 
     return results.reduce((valuesPerElement, { value, organisationUnit, metadata }) => {
-      console.log(valuesPerElement);
       const dataElementName = stripFromStart(metadata.name, stripFromDataElementNames);
       const orgUnit = columns.find(col => col.title === organisationUnit);
       const row = valuesPerElement[dataElementName];

@@ -30,7 +30,7 @@ export class TableOfDataValuesBuilder extends DataBuilder {
     if (this.tableConfig.hasRowCategories()) {
       data.categories = await this.buildRowCategories();
     }
-
+    console.log(data.rows, data.categories);
     return data;
   }
 
