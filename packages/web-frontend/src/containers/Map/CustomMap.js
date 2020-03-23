@@ -47,7 +47,6 @@ export class CustomMap extends Component {
       measureInfo,
       currentOrganisationUnit,
       highlightedOrganisationUnit,
-      focusedOrganisationUnitCode,
       tileSet,
       position,
       innerAreas,
@@ -68,9 +67,6 @@ export class CustomMap extends Component {
       nextProps.highlightedOrganisationUnit.organisationUnitCode !==
       highlightedOrganisationUnit.organisationUnitCode
     ) {
-      return true;
-    }
-    if (nextProps.focusedOrganisationUnitCode !== focusedOrganisationUnitCode) {
       return true;
     }
 

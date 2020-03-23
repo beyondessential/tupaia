@@ -170,16 +170,6 @@ function isMeasureLoading(state = false, action) {
   }
 }
 
-function focusedOrganisationUnitCode(state = {}, action) {
-  switch (action.type) {
-    case CHANGE_ORG_UNIT:
-      return action.organisationUnitCode;
-
-    default:
-      return state;
-  }
-}
-
 function popup(state = null, action) {
   switch (action.type) {
     case OPEN_MAP_POPUP:
@@ -267,7 +257,6 @@ export default combineReducers({
   innerAreas,
   measureInfo,
   tileSet,
-  focusedOrganisationUnitCode,
   isAnimating,
   popup,
   shouldSnapToPosition,
