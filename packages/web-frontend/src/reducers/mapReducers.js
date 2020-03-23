@@ -170,10 +170,10 @@ function isMeasureLoading(state = false, action) {
   }
 }
 
-function focussedOrganisationUnit(state = {}, action) {
+function focusedOrganisationUnitCode(state = {}, action) {
   switch (action.type) {
-    case CHANGE_ORG_UNIT_SUCCESS:
-      return action.organisationUnit;
+    case CHANGE_ORG_UNIT:
+      return action.organisationUnitCode;
 
     default:
       return state;
@@ -267,7 +267,7 @@ export default combineReducers({
   innerAreas,
   measureInfo,
   tileSet,
-  focussedOrganisationUnit,
+  focusedOrganisationUnitCode,
   isAnimating,
   popup,
   shouldSnapToPosition,
