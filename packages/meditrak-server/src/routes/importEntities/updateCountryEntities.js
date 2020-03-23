@@ -1,12 +1,12 @@
 /**
- * Tupaia MediTrak
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
- **/
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
 
-import xlsx from 'xlsx';
 import { getCode as getCountryIsoCode } from 'countrynames';
-import { ENTITY_TYPES } from '../../database';
+
 import { ImportValidationError } from '@tupaia/utils';
+import { ENTITY_TYPES } from '../../database';
 import { getEntityObjectValidator } from './getEntityObjectValidator';
 import { getOrCreateParentEntity } from './getOrCreateParentEntity';
 
@@ -38,8 +38,7 @@ function getCountryCode(countryName, entityObjects) {
   return country;
 }
 
-export async function updateOrganisationUnitsFromSheet(transactingModels, countryName, sheet) {
-  const entityObjects = xlsx.utils.sheet_to_json(sheet);
+export async function updateCountryEntities(transactingModels, countryName, entityObjects) {
   const countryCode = getCountryCode(countryName, entityObjects);
   const country = await transactingModels.country.findOrCreate(
     { name: countryName },
@@ -133,7 +132,11 @@ export async function updateOrganisationUnitsFromSheet(transactingModels, countr
       await transactingModels.entity.updatePointCoordinates(code, { longitude, latitude });
     }
     if (geojson) {
-      await transactingModels.entity.updateRegionCoordinates(code, JSON.parse(geojson));
+      const translatedGeojson =
+        geojson.type === 'Polygon'
+          ? { type: 'MultiPolygon', coordinates: [geojson.coordinates] }
+          : geojson;
+      await transactingModels.entity.updateRegionCoordinates(code, translatedGeojson);
     }
   }
   return country;
