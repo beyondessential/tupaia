@@ -35,7 +35,7 @@ exports.up = function(db) {
       'Public',
       'AU',
       'COVID-19',
-      'AU_Covid_National'
+      'AU_Covid_Country'
     );`,
   );
 };
@@ -44,7 +44,7 @@ exports.down = function(db) {
   return db.runSql(`
     DELETE FROM "dashboardGroup" 
     WHERE "code" = 'AU_Covid_Province' 
-    OR "code" = 'AU_Covid_National';
+    OR "code" = 'AU_Covid_Country';
   `);
 };
 
