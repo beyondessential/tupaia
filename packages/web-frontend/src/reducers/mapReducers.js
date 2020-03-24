@@ -31,7 +31,11 @@ import {
 } from '../actions';
 import { getMeasureFromHierarchy } from '../utils/getMeasureFromHierarchy';
 import { MARKER_TYPES } from '../containers/Map/MarkerLayer';
-import { getMeasureDisplayInfo, calculateRadiusScaleFactor } from '../utils/measures';
+import {
+  getMeasureDisplayInfo,
+  calculateRadiusScaleFactor,
+  MEASURE_TYPE_SHADING,
+} from '../utils/measures';
 
 import { initialOrgUnit } from '../defaults';
 
@@ -284,9 +288,19 @@ export function selectMeasureName(state = {}) {
   return selectedMeasure ? selectedMeasure.name : '';
 }
 
+export const selectHasPolygonMeasure = createSelector(
+  [state => state.map.measureInfo],
+  (stateMeasureInfo = {}) => {
+    return (
+      stateMeasureInfo.measureOptions &&
+      stateMeasureInfo.measureOptions.some(option => option.type === MEASURE_TYPE_SHADING)
+    );
+  },
+);
+
 const selectMeasureDataByCode = createSelector(
   [state => state.map.measureInfo.measureData, (_, code) => code],
-  (data, code) => data.find(val => val.organisationUnitCode === code),
+  (data = [], code) => data.find(val => val.organisationUnitCode === code),
 );
 
 const cachedSelectMeasureWithDisplayInfo = createCachedSelector(
@@ -296,7 +310,7 @@ const cachedSelectMeasureWithDisplayInfo = createCachedSelector(
     state => state.map.measureInfo.measureOptions,
     state => state.map.measureInfo.hiddenMeasures,
   ],
-  (organisationUnitCode, data, options, hiddenMeasures) => {
+  (organisationUnitCode, data, options = [], hiddenMeasures) => {
     return {
       organisationUnitCode,
       ...data,
