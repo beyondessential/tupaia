@@ -31,6 +31,7 @@ export const MEASURE_TYPE_COLOR = 'color';
 export const MEASURE_TYPE_RADIUS = 'radius';
 export const MEASURE_TYPE_SPECTRUM = 'spectrum';
 export const MEASURE_TYPE_SHADING = 'shading';
+export const MEASURE_TYPE_SHADED_SPECTRUM = 'shaded-spectrum';
 
 export const MEASURE_VALUE_OTHER = 'other';
 export const MEASURE_VALUE_NULL = 'null';
@@ -93,6 +94,7 @@ export function createValueMapping(valueObjects, type) {
         mapping.null = { name: 'No data' };
         break;
       case MEASURE_TYPE_SPECTRUM:
+      case MEASURE_TYPE_SHADED_SPECTRUM:
         mapping.null = { name: 'No data' };
         break;
       default:
@@ -106,6 +108,7 @@ export function createValueMapping(valueObjects, type) {
 function getFormattedValue(value, type, valueInfo, scaleType, valueType) {
   switch (type) {
     case MEASURE_TYPE_SPECTRUM:
+    case MEASURE_TYPE_SHADED_SPECTRUM:
       if ([SCALE_TYPES.PERFORMANCE, SCALE_TYPES.PERFORMANCE_DESC].includes(scaleType)) {
         return formatDataValue(value, valueType);
       }
@@ -151,7 +154,7 @@ export function processMeasureInfo(response) {
 
     hiddenMeasures[measureOption.key] = measureOption.hideByDefault;
 
-    if (type === 'spectrum') {
+    if (type === MEASURE_TYPE_SPECTRUM || type === MEASURE_TYPE_SHADED_SPECTRUM) {
       // for each spectrum, include the minimum and maximum values for
       // use in the legend scale labels.
       const { min, max } = getSpectrumScaleValues(measureData, measureOption);
@@ -266,6 +269,7 @@ export function getMeasureDisplayInfo(measureData, measureOptions, hiddenMeasure
           displayInfo.color = displayInfo.color || valueInfo.color;
           break;
         case MEASURE_TYPE_SPECTRUM:
+        case MEASURE_TYPE_SHADED_SPECTRUM:
           displayInfo.color = resolveSpectrumColour(
             scaleType,
             valueInfo.value || (valueInfo.value === 0 ? 0 : null),
