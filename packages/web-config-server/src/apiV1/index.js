@@ -30,7 +30,6 @@ import OrgUnitSearchHandler from './organisationUnitSearch';
 import { disasters } from './disasters';
 
 import { getOrganisationUnitHandler } from './organisationUnit';
-import { getRegions } from './regions';
 import { getProjects } from './projects';
 
 export const getRoutesForApiV1 = () => {
@@ -78,7 +77,6 @@ export const getRoutesForApiV1 = () => {
     }),
   );
   api.get('/disasters', catchAsyncErrors(disasters));
-  api.get('/regions/:code', catchAsyncErrors(getRegions));
   api.get('/projects', catchAsyncErrors(getProjects));
 
   return api;

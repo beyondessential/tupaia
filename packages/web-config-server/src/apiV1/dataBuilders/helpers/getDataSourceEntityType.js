@@ -9,3 +9,7 @@ const DEFAULT_ENTITY_TYPE = ENTITY_TYPES.FACILITY;
 export function getDataSourceEntityType(config) {
   return config.dataSourceEntityType || DEFAULT_ENTITY_TYPE;
 }
+
+export const getAggregationEntityType = config => {
+  return config.aggregationEntityType || DEFAULT_ENTITY_TYPE;
+};
