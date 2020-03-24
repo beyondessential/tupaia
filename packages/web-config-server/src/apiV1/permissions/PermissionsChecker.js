@@ -2,6 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
+import { PermissionsError } from '@tupaia/utils';
 
 export class PermissionsChecker {
   constructor(query, userHasAccess, entity) {
