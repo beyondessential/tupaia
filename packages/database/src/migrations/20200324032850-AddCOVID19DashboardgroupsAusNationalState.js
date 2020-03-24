@@ -43,8 +43,8 @@ exports.up = function(db) {
 exports.down = function(db) {
   return db.runSql(`
     DELETE FROM "dashboardGroup" 
-    WHERE "code" = 'Covid_Aus_general_state' 
-    OR "code" = 'Covid_Aus_general_national';
+    WHERE "code" = 'AU_Covid_Province' 
+    OR "code" = 'AU_Covid_National';
   `);
 };
 
