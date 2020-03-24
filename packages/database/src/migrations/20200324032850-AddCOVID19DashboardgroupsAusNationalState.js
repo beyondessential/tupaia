@@ -27,15 +27,15 @@ exports.up = function(db) {
     'Province',
     'Public',
     'AU',
-    'Covid-19 General',
-    'Covid_general_state'
+    'COVID-19',
+    'AU_Covid_Province'
     ),
     (
       'Country',
       'Public',
       'AU',
-      'Covid-19 General',
-      'Covid_general_national'
+      'COVID-19',
+      'AU_Covid_National'
     );`,
   );
 };
@@ -43,8 +43,8 @@ exports.up = function(db) {
 exports.down = function(db) {
   return db.runSql(`
     DELETE FROM "dashboardGroup" 
-    WHERE "code" = 'Covid_general_state' 
-    OR "code" = 'Covid_general_national';
+    WHERE "code" = 'Covid_Aus_general_state' 
+    OR "code" = 'Covid_Aus_general_national';
   `);
 };
 
