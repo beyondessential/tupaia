@@ -165,18 +165,6 @@ export class Entity extends BaseModel {
     );
   }
 
-  async getChildRegions() {
-    return this.database.executeSql(
-      `
-      SELECT ${Entity.translatedFields()} FROM entity
-      WHERE
-        region IS NOT NULL AND
-        parent_id = ?;
-    `,
-      [this.id],
-    );
-  }
-
   static async getEntityByCode(code) {
     const records = await Entity.database.executeSql(
       `SELECT 
