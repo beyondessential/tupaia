@@ -13,8 +13,6 @@ class SumByOrgUnitBuilder extends DataBuilder {
     const { dataElementCodes, labels } = this.config;
 
     const { results } = await this.fetchAnalytics(dataElementCodes);
-    console.log(labels);
-
     const dataByOrgUnit = {};
     results.forEach(({ organisationUnit, value }) => {
       dataByOrgUnit[organisationUnit] = (dataByOrgUnit[organisationUnit] || 0) + value;
