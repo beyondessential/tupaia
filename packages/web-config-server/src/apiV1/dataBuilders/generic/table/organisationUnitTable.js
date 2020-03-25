@@ -4,6 +4,8 @@
  */
 
 import groupBy from 'lodash.groupby';
+var fs = require('fs');
+import { inspect } from 'util';
 
 import { getSortByKey, reduceToSet, stripFromStart } from '@tupaia/utils';
 import { getDataElementGroupSets } from '/apiV1/utils';
@@ -77,6 +79,12 @@ class OrganisationUnitTableDataBuilder extends DataBuilder {
         const newCodes = dataElements.map(({ code }) => code);
         dataElementCodes.push(...newCodes);
       });
+
+      for (const v of Object.values(dataElementGroups)) {
+        const analytics = await this.fetchAnalytics(v.dataElements.map(x => x.code));
+        // const codeNames = analytics.metadata.dataElementCodeToName;
+        console.log(v.name, analytics.metadata.dataElementCodeToName);
+      }
 
       return { dataElementCodes, dataElementGroups, dataElementToGroupMapping };
     }
