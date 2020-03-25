@@ -20,6 +20,7 @@ export const latestAchievedVsTargetPercentage = async (
       target: 0,
     },
   );
+  if (totals.target === 0) return { data: [] };
 
   const percentAchieved = totals.achieved / totals.target;
   const percentRemainder = 1 - percentAchieved;

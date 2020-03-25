@@ -4,6 +4,7 @@
  */
 
 import { getMeasureBuilder } from './getMeasureBuilder';
+import { OPERATOR_TO_VALUE_CHECK } from '../dataBuilders/helpers/checkAgainstConditions';
 
 export const fetchComposedData = async (aggregator, dhisApi, query, config) => {
   const { measureBuilders, dataServices } = config || {};
@@ -23,4 +24,21 @@ export const fetchComposedData = async (aggregator, dhisApi, query, config) => {
   await Promise.all(Object.entries(measureBuilders).map(addResponse));
 
   return responses;
+};
+
+export const mapMeasureValuesToGroups = (measureValue, dataElementGroupCode, groups) => {
+  const { organisationUnitCode, [dataElementGroupCode]: originalValue } = measureValue;
+  const valueGroup = Object.entries(groups).find(([groupName, groupConfig]) => {
+    const groupCheck = OPERATOR_TO_VALUE_CHECK[groupConfig.operator];
+    if (!groupCheck) {
+      throw new Error(`No function defined for operator: ${groupConfig.operator}`);
+    }
+    return groupCheck(originalValue, groupConfig.value);
+  });
+
+  return {
+    organisationUnitCode,
+    originalValue,
+    [dataElementGroupCode]: valueGroup ? valueGroup[0] : originalValue,
+  };
 };
