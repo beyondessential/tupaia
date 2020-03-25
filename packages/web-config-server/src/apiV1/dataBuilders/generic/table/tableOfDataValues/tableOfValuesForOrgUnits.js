@@ -6,13 +6,14 @@
 import { Entity } from '/models';
 import { TableOfDataValuesBuilder } from './tableOfDataValues';
 
-import { stripFromStart, reduceToDictionary } from '@tupaia/utils';
+import { stripFromStart, reduceToDictionary, reduceToSet } from '@tupaia/utils';
 
 import { TableConfig } from './TableConfig';
 import { getValuesByCell } from './getValuesByCell';
 import { TotalCalculator } from './TotalCalculator';
 
 const ROW_KEYS_TO_IGNORE = ['dataElement', 'categoryId'];
+const BUILD_ORGS_FROM_RESULTS = '$orgUnit';
 const CATEGORY_AGGREGATION_TYPES = {
   AVERAGE: '$average',
 };
@@ -24,7 +25,10 @@ class TableOfValuesForOrgUnitsBuilder extends TableOfDataValuesBuilder {
     this.valuesByCell = getValuesByCell(this.tableConfig, results);
     this.totalCalculator = new TotalCalculator(this.tableConfig, this.valuesByCell);
     this.baseRows = this.buildBaseRows();
+
+    if (this.tableConfig.columns === BUILD_ORGS_FROM_RESULTS) this.buildOrgsFromResults(results);
     const columns = await this.buildColumns();
+
     this.rowData = this.buildRowData(results, columns);
     const data = {
       rows: Object.values(this.rowData),
@@ -46,6 +50,7 @@ class TableOfValuesForOrgUnitsBuilder extends TableOfDataValuesBuilder {
   }
 
   buildBaseRows() {
+    const { stripFromDataElementNames } = this.config;
     return super.buildBaseRows().reduce((base, { dataElement, categoryId, category, rows }) => {
       if (category) {
         return {
@@ -53,9 +58,10 @@ class TableOfValuesForOrgUnitsBuilder extends TableOfDataValuesBuilder {
           [category]: { categoryId, rows },
         };
       }
+      // const strippedName = stripFromStart(dataElement, stripFromDataElementNames);
       return {
         ...base,
-        [dataElement]: { dataElement, categoryId },
+        [stripFromStart(dataElement, stripFromDataElementNames)]: { dataElement, categoryId },
       };
     }, {});
   }
@@ -75,6 +81,7 @@ class TableOfValuesForOrgUnitsBuilder extends TableOfDataValuesBuilder {
         ...valuesPerElement,
         [dataElementName]: {
           ...row,
+          dataElement: dataElementName,
         },
       };
     }, this.baseRows);
@@ -114,6 +121,11 @@ class TableOfValuesForOrgUnitsBuilder extends TableOfDataValuesBuilder {
 
       return { ...columnAggregates, [categoryId]: categoryCols };
     }, {});
+  }
+
+  buildOrgsFromResults(results) {
+    const orgUnitsWithData = reduceToSet(results, 'organisationUnit');
+    this.tableConfig.columns = Array.from(orgUnitsWithData);
   }
 
   async replaceOrgUnitCodesWithNames(columns) {

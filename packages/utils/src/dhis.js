@@ -14,7 +14,8 @@ const getServerUrlFromName = serverName => {
   const isProduction = process.env.IS_PRODUCTION_ENVIRONMENT === 'true';
   const devPrefix = isProduction ? '' : 'dev-';
   const specificServerPrefix = '' || serverName === REGIONAL_SERVER_NAME ? '' : `${serverName}-`;
-  return `https://${devPrefix}${specificServerPrefix}aggregation.tupaia.org`;
+  return `https://fridaytest-${specificServerPrefix}aggregation.tupaia.org`;
+  // return `https://${devPrefix}${specificServerPrefix}aggregation.tupaia.org`;
 };
 
 const getServerNameFromCountryCode = countryCode =>
