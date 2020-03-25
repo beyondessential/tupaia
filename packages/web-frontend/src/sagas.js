@@ -78,7 +78,6 @@ import {
   updateEnlargedDialogError,
   FETCH_MEASURES_SUCCESS,
   CHANGE_ORG_UNIT_SUCCESS,
-  addMapRegions,
   openEmailVerifiedPage,
   fetchEmailVerifyError,
   openResendEmailSuccess,
@@ -494,22 +493,6 @@ function* watchFetchOrgUnitAndFetchIt() {
 
 function* watchOrgUnitChangeAndFetchIt() {
   yield takeLatest(CHANGE_ORG_UNIT, fetchOrgUnitDataAndChangeOrgUnit);
-}
-
-function* fetchOrgUnitRegionData(action) {
-  const { organisationUnitCode } = action.organisationUnit;
-  const requestResourceUrl = `regions/${organisationUnitCode}`;
-
-  try {
-    const response = yield call(request, requestResourceUrl, fetchRegionError);
-    yield put(addMapRegions(response.regions));
-  } catch (error) {
-    yield put(error.errorFunction(error));
-  }
-}
-
-function* watchOrgUnitChangeAndFetchRegions() {
-  if (!isMobile()) yield takeLatest(CHANGE_ORG_UNIT, fetchOrgUnitRegionData);
 }
 
 /**
@@ -1001,7 +984,6 @@ export default [
   watchFetchCountryAccessDataAndFetchIt,
   watchFetchOrgUnitAndFetchIt,
   watchOrgUnitChangeAndFetchIt,
-  watchOrgUnitChangeAndFetchRegions,
   watchOrgUnitChangeAndFetchDashboard,
   watchOrgUnitChangeAndFetchMeasureInfo,
   watchViewFetchRequests,
