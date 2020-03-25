@@ -37,7 +37,6 @@ exports.up = function(db) {
           "AU_TAS": "TAS",
           "AU_VIC": "VIC"
         },
-        "orgUnitLevel": "Province",
         "dataElementCodes": [
           "dailysurvey003"
         ]
