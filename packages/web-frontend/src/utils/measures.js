@@ -270,6 +270,7 @@ export function getMeasureDisplayInfo(measureData, measureOptions, hiddenMeasure
           break;
         case MEASURE_TYPE_SPECTRUM:
         case MEASURE_TYPE_SHADED_SPECTRUM:
+          displayInfo.originalValue = valueInfo.value || 'No data';
           displayInfo.color = resolveSpectrumColour(
             scaleType,
             valueInfo.value || (valueInfo.value === 0 ? 0 : null),

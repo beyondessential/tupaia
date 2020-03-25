@@ -317,14 +317,11 @@ export const selectAllMeasuresWithDisplayInfo = createSelector(
       return [];
     }
 
-    const parentCodes = [
-      ...measureData.reduce(
-        (set, data) => set.add(selectOrgUnit(state, data.organisationUnitCode)),
-        new Set(),
-      ),
-    ]
+    const parentCodes = measureData
+      .map(data => selectOrgUnit(state, data.organisationUnitCode))
       .filter(orgUnit => orgUnit)
-      .map(orgUnit => orgUnit.parent);
+      .map(orgUnit => orgUnit.parent)
+      .filter((parentCode, index, self) => self.indexOf(parentCode) === index); //Filters for uniqueness
 
     const allSiblingOrgUnits = parentCodes.reduce(
       (arr, parentCode) => [...arr, ...cachedSelectOrgUnitChildren(state, parentCode)],
