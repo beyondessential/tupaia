@@ -8,7 +8,7 @@
 import { combineReducers } from 'redux';
 import { createSelector } from 'reselect';
 import createCachedSelector from 're-reselect';
-import { cachedSelectOrgUnitAndDescendants } from './orgUnitReducers';
+import { cachedSelectOrgUnitChildren, selectOrgUnit } from './orgUnitReducers';
 
 import {
   GO_HOME,
@@ -317,12 +317,21 @@ export const selectAllMeasuresWithDisplayInfo = createSelector(
       return [];
     }
 
-    const listOfMeasureLevels = measureLevel.split(',');
-    const allOrgUnits = cachedSelectOrgUnitAndDescendants(state, currentCountry).filter(orgUnit =>
-      listOfMeasureLevels.includes(orgUnit.type),
+    const parentCodes = [
+      ...measureData.reduce(
+        (set, data) => set.add(selectOrgUnit(state, data.organisationUnitCode)),
+        new Set(),
+      ),
+    ]
+      .filter(orgUnit => orgUnit)
+      .map(orgUnit => orgUnit.parent);
+
+    const allSiblingOrgUnits = parentCodes.reduce(
+      (arr, parentCode) => [...arr, ...cachedSelectOrgUnitChildren(state, parentCode)],
+      [],
     );
 
-    return allOrgUnits.map(orgUnit =>
+    return allSiblingOrgUnits.map(orgUnit =>
       cachedSelectMeasureWithDisplayInfo(state, orgUnit.organisationUnitCode),
     );
   },

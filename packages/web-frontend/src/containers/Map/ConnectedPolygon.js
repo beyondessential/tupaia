@@ -14,7 +14,7 @@ import styled from 'styled-components';
 import { AreaTooltip } from './AreaTooltip';
 import { MAP_COLORS } from '../../styles';
 import { HIGHLIGHT_TYPES } from './constants';
-import { changeOrgUnit, highlightOrgUnit } from '../../actions';
+import { changeOrgUnit } from '../../actions';
 import {
   selectHasPolygonMeasure,
   selectAllMeasuresWithDisplayInfo,
@@ -74,20 +74,20 @@ class ConnectedPolygon extends Component {
 
     // don't render tooltips if we have a measure loaded
     return hasMeasureData ? null : (
-      <AreaTooltip
-        highlight={highlight}
-        permanent={isChildArea}
-        onFocus={() => highlightOrgUnit(area)}
-        onBlur={() => highlightOrgUnit()}
-        onMouseOver={() => highlightOrgUnit(area)}
-        onMouseOut={() => highlightOrgUnit()}
-        text={area.name}
-      />
+      <AreaTooltip highlight={highlight} permanent={isChildArea} text={area.name} />
     );
   }
 
   render() {
-    const { onChangeOrgUnit, area, isActive, coordinates, shade, hasShadedChildren } = this.props;
+    const {
+      onChangeOrgUnit,
+      area,
+      isActive,
+      coordinates,
+      shade,
+      hasChildren,
+      hasShadedChildren,
+    } = this.props;
     const { organisationUnitCode } = area;
     const tooltip = this.getTooltip(organisationUnitCode, area);
 
@@ -97,7 +97,8 @@ class ConnectedPolygon extends Component {
       return (
         <ActivePolygon
           shade={shade}
-          areChildrenShaded={hasShadedChildren}
+          hasChildren={hasChildren}
+          hasShadedChildren={hasShadedChildren}
           coordinates={coordinates}
           // Randomize key to ensure polygon appears at top. This is still imporatant even
           // though the polygon is in a LayerGroup due to issues with react-leaflet that
@@ -109,10 +110,6 @@ class ConnectedPolygon extends Component {
 
     const defaultProps = {
       positions: coordinates,
-      onFocus: () => highlightOrgUnit(area),
-      onBlur: () => highlightOrgUnit(),
-      onMouseOver: () => highlightOrgUnit(area),
-      onMouseOut: () => highlightOrgUnit(),
       onClick: () => onChangeOrgUnit(area),
     };
 
@@ -139,12 +136,12 @@ ConnectedPolygon.propTypes = {
   isActive: PropTypes.bool,
   isChildArea: PropTypes.bool,
   onChangeOrgUnit: PropTypes.func,
-  highlightOrgUnit: PropTypes.func,
   coordinates: PropTypes.arrayOf(
     PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number))),
   ),
   isHighlighted: PropTypes.bool,
   hasMeasureData: PropTypes.bool,
+  hasChildren: PropTypes.bool,
   hasShadedChildren: PropTypes.bool,
   shade: PropTypes.string,
 };
@@ -153,10 +150,10 @@ ConnectedPolygon.defaultProps = {
   isActive: false,
   isHighlighted: false,
   isChildArea: false,
-  highlightOrgUnit: () => {},
   onChangeOrgUnit: () => {},
   measureId: '',
   hasMeasureData: false,
+  hasChildren: false,
   hasShadedChildren: false,
   shade: undefined,
   coordinates: undefined,
@@ -191,13 +188,14 @@ const mapStateToProps = (state, givenProps) => {
   const coordinates = orgUnit ? orgUnit.location.region : undefined;
 
   return {
+    measureId,
     highlightedOrganisationUnit,
     currentOrganisationUnit,
     currentOrganisationUnitSiblings,
     coordinates,
     hasShadedChildren,
-    measureId,
     shade: shade || undefined,
+    hasChildren: organisationUnitChildren && organisationUnitChildren.length > 0,
     hasMeasureData: measureData && measureData.length > 0,
   };
 };
@@ -206,7 +204,6 @@ const mapDispatchToProps = dispatch => ({
   onChangeOrgUnit: (organisationUnitCode, shouldChangeMapBounds = true) => {
     dispatch(changeOrgUnit(organisationUnitCode, shouldChangeMapBounds));
   },
-  highlightOrgUnit: organisationUnitCode => dispatch(highlightOrgUnit(organisationUnitCode)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ConnectedPolygon);
