@@ -41,7 +41,7 @@ export const sumByOrgUnit = async (
     dataBuilderConfig,
     query,
     entity,
-    aggregationType,
+    dataBuilderConfig.aggregationType || aggregationType,
   );
   return builder.build();
 };
