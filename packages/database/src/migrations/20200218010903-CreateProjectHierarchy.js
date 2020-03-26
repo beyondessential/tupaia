@@ -38,7 +38,7 @@ exports.up = async function(db) {
       ALTER TABLE project add column entity_id text;
     `);
   await updateProject(db, 'unfpa', 'UNFPA', `'WS','MH','TO','FM'`, 'country');
-  await updateProject(db, 'imms', 'Immunization Module', `'VU','SB'`, 'country'); // todo migration is failing on this line
+  await updateProject(db, 'imms', 'Immunization Module', `'VU','SB'`, 'country');
   await updateProject(db, 'fanafana', 'Fanafana Ola', `'TO'`, 'country');
   await updateProject(db, 'disaster', 'Disaster Response', `'Wo'`, 'world');
   await updateProject(db, 'wish', 'WISH Fiji', `'FJ'`, 'country');
