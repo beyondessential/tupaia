@@ -32,9 +32,9 @@ class FinalValuesPerPeriodByOrgUnitBuilder extends DataBuilder {
       (previousData, [period, periodData]) => [
         ...previousData,
         {
-          ...periodData,
           name: periodToDisplayString(period),
           timestamp: periodToTimestamp(period),
+          ...periodData,
         },
       ],
       [],
