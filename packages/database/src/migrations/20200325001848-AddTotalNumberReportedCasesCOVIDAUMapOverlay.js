@@ -51,7 +51,7 @@ exports.up = function(db) {
     false,
     NULL,
     '0',
-    '{"dataSourceEntityType":"region","aggregationEntityType":"region"}',
+    '{"dataSourceEntityType":"region","aggregationEntityType":"region","aggregatorType": "SUM"}',
     'valueForOrgGroup',
     '{"scaleType": "performanceDesc"}',
     '{AU}');
