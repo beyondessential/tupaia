@@ -8,7 +8,7 @@ import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 
 class FinalValuesPerPeriodByOrgUnitBuilder extends DataBuilder {
   async build() {
-    const { dataElementCodes, includeTotal, labels = {} } = this.config;
+    const { dataElementCodes, includeTotal } = this.config;
     const { results } = await this.fetchAnalytics(dataElementCodes);
     if (results.length === 0) return { data: results };
 
@@ -16,15 +16,13 @@ class FinalValuesPerPeriodByOrgUnitBuilder extends DataBuilder {
     results.forEach(result => {
       const { period, value, organisationUnit } = result;
 
-      const dataKey = labels[organisationUnit] || organisationUnit;
-      resultsPerPeriod[period] = { ...resultsPerPeriod[period], [dataKey]: value };
+      resultsPerPeriod[period] = { ...resultsPerPeriod[period], [organisationUnit]: value };
     });
 
     if (includeTotal) {
       Object.entries(resultsPerPeriod).forEach(([key, data]) => {
         const total = Object.values(data).reduce((count, dataValue) => count + dataValue, 0);
-        const dataKey = labels.total || 'total';
-        resultsPerPeriod[key][dataKey] = total;
+        resultsPerPeriod[key].total = total;
       });
     }
 
