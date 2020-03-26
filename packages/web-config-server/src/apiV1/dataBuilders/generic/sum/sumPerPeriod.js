@@ -48,6 +48,9 @@ const sumPerPeriod = async (
   return builder.build();
 };
 
+export const sumPerDay = (config, aggregator, dhisApi) =>
+  sumPerPeriod(config, aggregator, dhisApi, aggregator.aggregationTypes.FINAL_EACH_DAY);
+
 export const sumPerWeek = (config, aggregator, dhisApi) =>
   sumPerPeriod(config, aggregator, dhisApi, aggregator.aggregationTypes.FINAL_EACH_WEEK);
 
