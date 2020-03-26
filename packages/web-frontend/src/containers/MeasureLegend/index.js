@@ -45,6 +45,12 @@ import {
   MeasureOptionsGroupPropType,
 } from '../../components/Marker/propTypes';
 
+const coloredMeasureTypes = [
+  MEASURE_TYPE_COLOR,
+  MEASURE_TYPE_SPECTRUM,
+  MEASURE_TYPE_SHADED_SPECTRUM,
+];
+
 const LegendOuterFrame = styled.div`
   width: 100%;
   display: flex;
@@ -170,11 +176,7 @@ function isHiddenOtherIcon({ value, icon }) {
 }
 
 function getLegendColor(value, type, hasColorLayer) {
-  if (
-    type === MEASURE_TYPE_COLOR ||
-    type === MEASURE_TYPE_SPECTRUM ||
-    type === MEASURE_TYPE_SHADED_SPECTRUM
-  ) {
+  if (coloredMeasureTypes.includes(type)) {
     // if this layer is providing color, of course show the color
     return value.color;
   } else if (hasColorLayer) {
@@ -292,12 +294,7 @@ const MultiLegend = ({ measureOptions, isMeasureLoading }) => {
 
   const hasIconLayer = measureOptions.some(l => l.type === MEASURE_TYPE_ICON);
   const hasRadiusLayer = measureOptions.some(l => l.type === MEASURE_TYPE_RADIUS);
-  const hasColorLayer = measureOptions.some(
-    l =>
-      l.type === MEASURE_TYPE_COLOR ||
-      l.type === MEASURE_TYPE_SPECTRUM ||
-      l.type === MEASURE_TYPE_SHADED_SPECTRUM,
-  );
+  const hasColorLayer = measureOptions.some(l => coloredMeasureTypes.includes(l.type));
 
   const displayedLegends = measureOptions.filter(({ type }) => type !== MEASURE_TYPE_RADIUS);
 
