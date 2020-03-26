@@ -17,6 +17,9 @@ exports.setup = function(options, seedLink) {
 
 exports.up = async function(db) {
   const australia = await db.runSql(`select id from entity where code = 'AU'`);
+  if (australia.rows.length === 0) {
+    throw new Error('Please import Australia first!');
+  }
 
   await db.runSql(`
   UPDATE "project" SET "sort_order"=2 WHERE "code"='unpa';
