@@ -57,9 +57,8 @@ export class Entity extends BaseModel {
     return Entity.fields.map(field => {
       if (Entity.geoFields.includes(field)) {
         return { [field]: `ST_AsGeoJSON(${tableAliasPrefix}${field})` };
-      } else {
-        return { [field]: `${tableAliasPrefix}${field}` };
       }
+      return { [field]: `${tableAliasPrefix}${field}` };
     });
   };
 
@@ -199,7 +198,9 @@ export class Entity extends BaseModel {
         : await Entity.find({ parent_id: parentIds });
 
     const parentIdsToCode = reduceToDictionary(parents, 'id', 'code');
-    children.forEach(c => (c.parent_code = parentIdsToCode[c.parent_id]));
+    children.forEach(c => {
+      c.parent_code = parentIdsToCode[c.parent_id];
+    });
 
     return children;
   }
