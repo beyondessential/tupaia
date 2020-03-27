@@ -3,16 +3,18 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import groupBy from 'lodash.groupby';
 import { convertToPeriod } from '@tupaia/dhis-api';
 import { getContinuousPeriodsForAnalytics } from './utils';
 
 export const sumPreviousPerPeriod = (analytics, aggregationPeriod) => {
   const periods = getContinuousPeriodsForAnalytics(analytics, aggregationPeriod);
+  const analyticsByPeriod = groupBy(analytics, analytic =>
+    convertToPeriod(analytic.period, aggregationPeriod),
+  );
 
-  const periodGroupedAnalytics = periods.reduce((summedAnalytics, period) => {
-    const analyticsForPeriod = analytics.filter(
-      analytic => convertToPeriod(analytic.period, aggregationPeriod) === period,
-    );
+  const summedAnalyticsInPeriods = periods.reduce((summedAnalytics, period) => {
+    const analyticsForPeriod = analyticsByPeriod[period] || [];
 
     if (!summedAnalytics.length) {
       return [analyticsForPeriod]; //First period, just add analytics
@@ -36,5 +38,5 @@ export const sumPreviousPerPeriod = (analytics, aggregationPeriod) => {
     return [...summedAnalytics, analyticsForPeriod];
   }, []);
 
-  return [].concat(...periodGroupedAnalytics); //Flatten array
+  return [].concat(...summedAnalyticsInPeriods); //Flatten array
 };

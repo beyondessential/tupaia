@@ -30,7 +30,7 @@ const addDefaultsColorsToConfig = (chartType, chartConfig) => {
 
 const sortChartConfigByLegendOrder = chartConfig => {
   return Object.entries(chartConfig)
-    .sort(([_, cfg1], [__, cfg2]) => {
+    .sort(([, cfg1], [, cfg2]) => {
       if (Number.isNaN(cfg1.legendOrder) && Number.isNaN(cfg2.legendOrder)) return 0;
       if (Number.isNaN(cfg1.legendOrder)) return -1;
       if (Number.isNaN(cfg2.legendOrder)) return 1;
