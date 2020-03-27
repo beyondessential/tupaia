@@ -9,6 +9,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 
 const DAY = 'day';
+const SINGLE_DAY = 'one_day_at_a_time';
 const WEEK = 'week';
 const SINGLE_WEEK = 'one_week_at_a_time';
 const MONTH = 'month';
@@ -49,6 +50,7 @@ const CONFIG = {
 
 export const GRANULARITIES = {
   DAY,
+  SINGLE_DAY,
   WEEK,
   SINGLE_WEEK,
   MONTH,
@@ -59,6 +61,7 @@ export const GRANULARITIES = {
 
 export const GRANULARITY_CONFIG = {
   [DAY]: CONFIG[DAY],
+  [SINGLE_DAY]: CONFIG[DAY],
   [WEEK]: CONFIG[WEEK],
   [SINGLE_WEEK]: CONFIG[WEEK],
   [MONTH]: CONFIG[MONTH],
@@ -67,10 +70,11 @@ export const GRANULARITY_CONFIG = {
   [SINGLE_YEAR]: CONFIG[YEAR],
 };
 
-export const GRANULARITIES_WITH_ONE_DATE = [SINGLE_WEEK, SINGLE_MONTH, SINGLE_YEAR];
+export const GRANULARITIES_WITH_ONE_DATE = [SINGLE_DAY, SINGLE_WEEK, SINGLE_MONTH, SINGLE_YEAR];
 
 export const GRANULARITY_SHAPE = PropTypes.oneOf([
   DAY,
+  SINGLE_DAY,
   WEEK,
   SINGLE_WEEK,
   MONTH,

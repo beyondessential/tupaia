@@ -8,8 +8,8 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-const REPORT_ID = 'COVID_Cases_By_State';
-const DASHBOARD_GROUP = 'AU_Covid_Country';
+const REPORT_ID = 'COVID_Daily_Cases_By_Type';
+const DASHBOARD_GROUP = 'AU_Covid_Province';
 
 exports.setup = function(options, seedLink) {
   dbm = options.dbmigrate;
@@ -18,7 +18,20 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = function(db) {
+  //First delete the old entry, then create a new one
   return db.runSql(`
+    DELETE FROM 
+      "dashboardReport"
+    WHERE 
+      id='${REPORT_ID}';
+
+    UPDATE
+      "dashboardGroup"
+    SET
+      "dashboardReports" = array_remove("dashboardReports", '${REPORT_ID}')
+    WHERE
+      "code"='${DASHBOARD_GROUP}';
+
     INSERT INTO "dashboardReport" (
       "id",
       "dataBuilder",
@@ -27,24 +40,24 @@ exports.up = function(db) {
       )
       VALUES (
       '${REPORT_ID}',
-      'sumByOrgUnit',
-      '{
-        "labels": {
-          "AU_SA": "SA",
-          "AU_WA": "WA",
-          "AU_NSW": "NSW",
-          "AU_QLD": "QLD",
-          "AU_TAS": "TAS",
-          "AU_VIC": "VIC"
+      'sumLatestPerMetric',
+      '{"labels": {
+          "dailysurvey003": "New confirmed cases today",
+          "dailysurvey004": "New deaths today",
+          "dailysurvey005": "New confirmed recoveries today"
         },
-        "dataElementCodes": [
-          "dailysurvey003"
+      "dataElementCodes": [
+          "dailysurvey003",
+          "dailysurvey004",
+          "dailysurvey005"
         ]
       }',
       '{
-        "name": "COVID-19 Total Confirmed Cases by State",
-        "type": "chart",
-        "chartType": "bar"
+        "name": "COVID-19 New Case Numbers",
+        "type": "view",
+        "viewType": "multiValue",
+        "valueType": "text",
+        "periodGranularity": "one_day_at_a_time"
       }'
       );
     UPDATE
