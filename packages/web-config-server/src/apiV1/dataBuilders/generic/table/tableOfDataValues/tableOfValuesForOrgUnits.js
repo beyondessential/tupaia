@@ -9,8 +9,6 @@ import { TableOfDataValuesBuilder } from './tableOfDataValues';
 import { stripFromStart, reduceToDictionary, reduceToSet } from '@tupaia/utils';
 
 import { TableConfig } from './TableConfig';
-import { getValuesByCell } from './getValuesByCell';
-import { TotalCalculator } from './TotalCalculator';
 
 const ROW_KEYS_TO_IGNORE = ['dataElement', 'categoryId'];
 const BUILD_ORGS_FROM_RESULTS = '$orgUnit';
@@ -21,17 +19,16 @@ const CATEGORY_AGGREGATION_TYPES = {
 class TableOfValuesForOrgUnitsBuilder extends TableOfDataValuesBuilder {
   async build() {
     const results = await this.fetchResults();
+
     this.tableConfig = new TableConfig(this.config, results);
-    this.valuesByCell = getValuesByCell(this.tableConfig, results);
-    this.totalCalculator = new TotalCalculator(this.tableConfig, this.valuesByCell);
-    this.baseRows = this.buildBaseRows();
+    this.baseRows = this.buildBaseRows(this.tableConfig.rows);
 
     if (this.tableConfig.columns === BUILD_ORGS_FROM_RESULTS) this.buildOrgsFromResults(results);
     const columns = await this.buildColumns();
 
     this.rowData = this.buildRowData(results, columns);
     const data = {
-      rows: Object.values(this.rowData),
+      rows: this.rowData,
       columns: await this.replaceOrgUnitCodesWithNames(columns),
     };
 
@@ -49,32 +46,30 @@ class TableOfValuesForOrgUnitsBuilder extends TableOfDataValuesBuilder {
     return data;
   }
 
-  buildBaseRows() {
+  /**
+   * @returns {{ dataElement: string, categoryId: (string:undefined) }}
+   */
+
+  buildBaseRows(rows, parent = undefined) {
     const { stripFromDataElementNames } = this.config;
-    return super.buildBaseRows().reduce((base, { dataElement, categoryId, category, rows }) => {
-      if (category) {
-        return {
-          ...base,
-          [category]: { categoryId, rows },
-        };
+    return rows.reduce((baseRows, row) => {
+      if (typeof row === 'string') {
+        const dataElement = stripFromStart(row, stripFromDataElementNames);
+        return { ...baseRows, [dataElement]: { dataElement, categoryId: parent } };
       }
-      // const strippedName = stripFromStart(dataElement, stripFromDataElementNames);
-      return {
-        ...base,
-        [stripFromStart(dataElement, stripFromDataElementNames)]: { dataElement, categoryId },
-      };
+
+      const next = this.buildBaseRows(row.rows, row.category);
+      return { ...baseRows, ...next };
     }, {});
   }
 
   buildRowData(results, columns) {
-    const { stripFromDataElementNames } = this.config;
-
-    return results.reduce((valuesPerElement, { value, organisationUnit, metadata }) => {
+    const { stripFromDataElementNames, filterEmptyRows } = this.config;
+    const rowData = results.reduce((valuesPerElement, { value, organisationUnit, metadata }) => {
       const dataElementName = stripFromStart(metadata.name, stripFromDataElementNames);
       const orgUnit = columns.find(col => col.title === organisationUnit);
       const row = valuesPerElement[dataElementName];
 
-      // still want to populate rows without values to display no data
       if (orgUnit) row[orgUnit.key] = value;
 
       return {
@@ -85,6 +80,13 @@ class TableOfValuesForOrgUnitsBuilder extends TableOfDataValuesBuilder {
         },
       };
     }, this.baseRows);
+
+    if (filterEmptyRows) {
+      const cols = columns.map(c => c.key);
+      return Object.values(rowData).filter(r => cols.some(x => r[x]));
+    }
+
+    return Object.values(rowData);
   }
 
   buildCategoryData(rows) {
