@@ -1,0 +1,43 @@
+{
+  "folders": [
+	{
+		"path": "packages/admin-panel"
+	},
+	{
+		"path": "packages/aggregator"
+	},
+	{
+		"path": "packages/data-broker"
+	},
+	{
+		"path": "packages/database"
+	},
+	{
+		"path": "packages/devops"
+	},
+	{
+		"path": "packages/dhis-api"
+	},
+	{
+		"path": "packages/export-chart-lambda"
+	},
+	{
+		"path": "packages/meditrak-app"
+	},
+	{
+		"path": "packages/meditrak-server"
+	},
+	{
+		"path": "packages/utils"
+	},
+	{
+		"path": "packages/web-config-server"
+	},
+	{
+		"path": "packages/web-frontend"
+	},
+	{
+		"path": "packages/access-policy"
+	}
+]
+}
