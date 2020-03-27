@@ -19,28 +19,28 @@ exports.setup = function(options, seedLink) {
 const DASHBOARD_GROUP_CODE = 'AU_Covid_Country';
 
 const REPORT = {
-  id: 'COVID_AU_Daily_Cases_Each_State_Over_Time',
-  dataBuilder: 'finalValuesPerDayByOrgUnit',
+  id: 'COVID_AU_Total_Cases_Each_State_Per_Day',
+  dataBuilder: 'sumPreviousValuesPerDayByOrgUnit',
   dataBuilderConfig: {
     includeTotal: 'true',
     dataElementCodes: ['dailysurvey003'],
   },
   viewJson: {
-    name: 'COVID-19 New confirmed cases, daily count by State',
+    name: 'COVID-19 Total confirmed cases, daily count by State',
     type: 'chart',
     chartType: 'line',
     chartConfig: {
-      AU_ACT: { label: 'ACT' },
-      AU_NSW: { label: 'NSW' },
-      AU_NT: { label: 'NT' },
-      AU_QLD: { label: 'QLD' },
-      AU_SA: { label: 'SA' },
-      AU_TAS: { label: 'TAS' },
-      AU_VIC: { label: 'VIC' },
-      AU_WA: { label: 'WA' },
-      total: { label: 'Total' },
+      AU_ACT: { legendOrder: 0, label: 'ACT' },
+      AU_NSW: { legendOrder: 1, label: 'NSW' },
+      AU_NT: { legendOrder: 2, label: 'NT' },
+      AU_QLD: { legendOrder: 3, label: 'QLD' },
+      AU_SA: { legendOrder: 4, label: 'SA' },
+      AU_TAS: { legendOrder: 5, label: 'TAS' },
+      AU_VIC: { legendOrder: 6, label: 'VIC' },
+      AU_WA: { legendOrder: 7, label: 'WA' },
+      total: { legendOrder: 8, label: 'Total' },
     },
-    description: 'Confirmed cases reported each day for each State and Territory',
+    description: 'Total confirmed cases each day for each State and Territory',
     periodGranularity: 'day',
   },
 };

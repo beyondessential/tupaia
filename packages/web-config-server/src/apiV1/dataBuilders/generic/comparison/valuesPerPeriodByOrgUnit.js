@@ -6,7 +6,7 @@
 import { periodToTimestamp, periodToDisplayString } from '@tupaia/dhis-api';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 
-class FinalValuesPerPeriodByOrgUnitBuilder extends DataBuilder {
+class ValuesPerPeriodByOrgUnitBuilder extends DataBuilder {
   async build() {
     const { dataElementCodes, includeTotal } = this.config;
     const { results } = await this.fetchAnalytics(dataElementCodes);
@@ -42,9 +42,9 @@ class FinalValuesPerPeriodByOrgUnitBuilder extends DataBuilder {
   }
 }
 
-function finalValuesPerPeriodByOrgUnit(queryConfig, aggregator, dhisApi, aggregationType) {
+function valuesPerPeriodByOrgUnit(queryConfig, aggregator, dhisApi, aggregationType) {
   const { dataBuilderConfig, query, entity } = queryConfig;
-  const builder = new FinalValuesPerPeriodByOrgUnitBuilder(
+  const builder = new ValuesPerPeriodByOrgUnitBuilder(
     aggregator,
     dhisApi,
     dataBuilderConfig,
@@ -55,10 +55,10 @@ function finalValuesPerPeriodByOrgUnit(queryConfig, aggregator, dhisApi, aggrega
   return builder.build();
 }
 
-export const finalValuesPerDayByOrgUnit = async (queryConfig, aggregator, dhisApi) =>
-  finalValuesPerPeriodByOrgUnit(
+export const sumPreviousValuesPerDayByOrgUnit = async (queryConfig, aggregator, dhisApi) =>
+  valuesPerPeriodByOrgUnit(
     queryConfig,
     aggregator,
     dhisApi,
-    aggregator.aggregationTypes.FINAL_EACH_DAY,
+    aggregator.aggregationTypes.SUM_PREVIOUS_EACH_DAY,
   );
