@@ -94,7 +94,6 @@ export default class RowGroup extends Component {
                 key={`${rowId}-empty-${index}`}
               >
                 <Cell
-                  key={`${rowId}-empty-${index}`}
                   cellKey={index}
                   onMouseEnter={() => onCellMouseEnter(index, rowId)}
                   onMouseLeave={() => onCellMouseLeave()}
