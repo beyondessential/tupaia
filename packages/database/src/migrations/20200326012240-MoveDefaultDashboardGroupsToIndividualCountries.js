@@ -34,7 +34,6 @@ const COUNTRIES_WITH_WORLD_DASHBOARDS = [
 
 const addDashboardGroupsToCountry = (db, dashboardGroups, countryCode) =>
   Promise.all(
-    // dashboardGroups.map(({ id, dashboardReports, ...dashboardGroup }) => {
     dashboardGroups.map(dashboardGroup => {
       const { organisationLevel, userGroup, dashboardReports, name } = dashboardGroup;
 
