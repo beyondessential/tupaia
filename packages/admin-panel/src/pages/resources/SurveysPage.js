@@ -6,25 +6,6 @@
 import React from 'react';
 import { ResourcePage } from './ResourcePage';
 
-/*
- * A component that adds a custom select filter to a table column.
- * Makes boolean fields work with the database filter
- * https://github.com/tannerlinsley/react-table/tree/v6/examples/custom-filtering
- */
-const BooleanSelectTableFilter = ({ filter, onChange }) => {
-  return (
-    <select
-      onChange={event => onChange(event.target.value)}
-      style={{ width: '100%' }}
-      value={filter ? filter.value : ''}
-    >
-      <option value="">Show All</option>
-      <option value="true">Yes</option>
-      <option value="false">No</option>
-    </select>
-  );
-};
-
 const SURVEY_FIELDS = [
   {
     Header: 'Name',
@@ -52,7 +33,6 @@ const SURVEY_FIELDS = [
     Header: 'Repeating',
     source: 'can_repeat',
     type: 'boolean',
-    Filter: BooleanSelectTableFilter,
     editConfig: {
       type: 'boolean',
     },
