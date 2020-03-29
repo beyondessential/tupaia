@@ -29,9 +29,9 @@ exports.up = function(db) {
       '${REPORT_ID}',
       'sumLatestPerMetric',
       '{"labels": {
-          "dailysurvey003": "Number of new confirmed cases",
-          "dailysurvey004": "Number of new deaths",
-          "dailysurvey005": "Number of new confirmed recoveries"
+          "dailysurvey003": "Number of confirmed cases",
+          "dailysurvey004": "Number of deaths",
+          "dailysurvey005": "Number of confirmed recoveries"
         },
       "dataElementCodes": [
           "dailysurvey003",
@@ -40,7 +40,7 @@ exports.up = function(db) {
         ]
       }',
       '{
-        "name": "COVID-19 New Case Numbers",
+        "name": "COVID-19 Case Numbers",
         "type": "view",
         "viewType": "multiValue",
         "valueType": "text"
