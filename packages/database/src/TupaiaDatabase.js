@@ -528,7 +528,8 @@ function addWhereClause(baseQuery, where) {
       ignoreCase = false,
     } = value;
     if (ignoreCase) {
-      return querySoFar.whereRaw(`LOWER(:key:) ${comparator} LOWER(:comparisonValue)`, {
+      // When manipulating case, cast the field as text
+      return querySoFar.whereRaw(`LOWER(${key}::text) ${comparator} LOWER('${comparisonValue}')`, {
         key,
         comparisonValue,
       });
