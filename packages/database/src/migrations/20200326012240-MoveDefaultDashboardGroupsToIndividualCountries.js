@@ -18,6 +18,7 @@ exports.setup = function(options, seedLink) {
 
 const COUNTRIES_WITH_WORLD_DASHBOARDS = [
   'CK',
+  'DL',
   'FJ',
   'KI',
   'LA',
@@ -57,19 +58,6 @@ const addDashboardGroupsToCountry = (db, dashboardGroups, countryCode) =>
     }),
   );
 
-// 'DL' already has a country specific General dashboard
-const updateDemoLandCodes = async db =>
-  db.runSql(
-    `UPDATE
-      "dashboardGroup"
-    SET
-      code = concat('DL_General_', dg."organisationLevel", '_', dg."userGroup")
-    FROM
-      "dashboardGroup" dg
-    WHERE
-      "dashboardGroup".id = dg.id AND dg.name = 'General' AND dg."organisationUnitCode" = 'DL';`,
-  );
-
 const hasWorldDashboard = `"organisationLevel" <> 'World' AND "organisationUnitCode" = 'World'`;
 
 exports.up = async function(db) {
@@ -77,14 +65,16 @@ exports.up = async function(db) {
     `SELECT * from "dashboardGroup" WHERE ${hasWorldDashboard};`,
   );
 
-  await db.runSql(`DELETE FROM "dashboardGroup" WHERE ${hasWorldDashboard};`);
+  // DemoLand already has a country specific 'General' dashboard group
+  await db.runSql(`
+    DELETE FROM "dashboardGroup"
+    WHERE (${hasWorldDashboard}) OR ("name" = 'General' AND "organisationUnitCode" = 'DL');
+  `);
   await Promise.all(
     COUNTRIES_WITH_WORLD_DASHBOARDS.map(countryCode =>
       addDashboardGroupsToCountry(db, dashboardGroups, countryCode),
     ),
   );
-  // For consistency with the other country specific General dashboards
-  await updateDemoLandCodes(db);
 };
 
 exports.down = async function(db) {
