@@ -1,6 +1,6 @@
 {
   "name": "@tupaia/access-policy",
-  "version": "2.5.0",
+  "version": "3.0.0",
   "description": "Methods for parsing Tupaia access policy",
   "main": "dist/index.js",
   "dependencies": {
