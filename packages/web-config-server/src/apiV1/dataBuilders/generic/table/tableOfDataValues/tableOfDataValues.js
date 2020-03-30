@@ -79,10 +79,10 @@ export class TableOfDataValuesBuilder extends DataBuilder {
   /**
    * @returns {{ dataElement: string, categoryId: (string:undefined) }}
    */
-  buildBaseRows(rows) {
+  buildBaseRows() {
     return this.tableConfig.hasRowCategories()
       ? flatten(
-          rows.map(({ category: categoryId, rows }) => {
+          this.tableConfig.rows.map(({ category: categoryId, rows }) => {
             return rows.map(dataElement => {
               if (dataElement.category) {
                 return {
@@ -95,7 +95,7 @@ export class TableOfDataValuesBuilder extends DataBuilder {
             });
           }),
         )
-      : rows.map(dataElement => ({ dataElement }));
+      : this.tableConfig.rows.map(dataElement => ({ dataElement }));
   }
 
   buildRowValues(rowIndex) {
