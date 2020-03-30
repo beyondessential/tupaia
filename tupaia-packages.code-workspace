@@ -1,43 +1,56 @@
 {
   "folders": [
-	{
-		"path": "packages/admin-panel"
-	},
-	{
-		"path": "packages/aggregator"
-	},
-	{
-		"path": "packages/data-broker"
-	},
-	{
-		"path": "packages/database"
-	},
-	{
-		"path": "packages/devops"
-	},
-	{
-		"path": "packages/dhis-api"
-	},
-	{
-		"path": "packages/export-chart-lambda"
-	},
-	{
-		"path": "packages/meditrak-app"
-	},
-	{
-		"path": "packages/meditrak-server"
-	},
-	{
-		"path": "packages/utils"
-	},
-	{
-		"path": "packages/web-config-server"
-	},
-	{
-		"path": "packages/web-frontend"
-	},
-	{
-		"path": "packages/access-policy"
-	}
-]
+    {
+      "name": "access-policy",
+      "path": "packages/access-policy"
+    },
+    {
+      "name": "admin-panel",
+      "path": "packages/admin-panel"
+    },
+    {
+      "name": "aggregator",
+      "path": "packages/aggregator"
+    },
+    {
+      "name": "data-broker",
+      "path": "packages/data-broker"
+    },
+    {
+      "name": "database",
+      "path": "packages/database"
+    },
+    {
+      "name": "devops",
+      "path": "packages/devops"
+    },
+    {
+      "name": "dhis-api",
+      "path": "packages/dhis-api"
+    },
+    {
+      "name": "export-chart-lambda",
+      "path": "packages/export-chart-lambda"
+    },
+    {
+      "name": "meditrak-app",
+      "path": "packages/meditrak-app"
+    },
+    {
+      "name": "meditrak-server",
+      "path": "packages/meditrak-server"
+    },
+    {
+      "name": "utils",
+      "path": "packages/utils"
+    },
+    {
+      "name": "web-config-server",
+      "path": "packages/web-config-server"
+    },
+    {
+      "name": "web-frontend",
+      "path": "packages/web-frontend"
+    }
+  ]
 }
