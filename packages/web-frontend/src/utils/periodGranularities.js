@@ -90,3 +90,17 @@ export function roundStartEndDates(granularity, startDate = moment(), endDate = 
     endDate: endDate.clone().endOf(momentUnit),
   };
 }
+
+export function getDefaultDates(state, infoViewKey) {
+  const { periodGranularity, defaultTimePeriod } = state.global.viewConfigs[infoViewKey];
+  const isSingleDate = GRANULARITIES_WITH_ONE_DATE.includes(periodGranularity);
+  let startDate = moment();
+  let endDate = startDate;
+  if (defaultTimePeriod && defaultTimePeriod.format === 'days') {
+    if (isSingleDate) {
+      startDate = moment().add(defaultTimePeriod.value, 'days');
+      endDate = startDate;
+    }
+  }
+  return isSingleDate ? roundStartEndDates(periodGranularity, startDate, endDate) : {};
+}
