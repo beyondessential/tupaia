@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import { RequestCountryAccessPage } from './RequestCountryAccessPage';
 import { COUNTRY_REQUEST_STATUSES } from './constants';
 import { sendCountryAccessRequest, setCountryAccessFormFieldValues } from './actions';
+import { AccessPolicy } from '@tupaia/access-policy';
 
 function mapStateToProps({ country, authentication }) {
   const { requestCountryStatus, requestCountryErrorMessage, requestCountryFieldValues } = country;
@@ -19,7 +20,7 @@ function mapStateToProps({ country, authentication }) {
     isComplete: requestCountryStatus === COUNTRY_REQUEST_STATUSES.COUNTRY_REQUEST_SUCCESS,
     errorMessage: requestCountryErrorMessage,
     formFieldValues: requestCountryFieldValues,
-    accessPolicy,
+    accessPolicy: new AccessPolicy(accessPolicy),
   };
 }
 

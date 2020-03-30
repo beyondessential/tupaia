@@ -84,8 +84,8 @@ export const loadCountriesFromDatabase = () => (dispatch, getState, { database }
 
   countries.forEach(country => {
     if (
-      currentUser.hasCountryAccess(country) ||
-      currentUser.hasPermissionsForItemsWithinCountry(country)
+      currentUser.hasAccessToSomeEntity([country]) ||
+      currentUser.hasAccessToSomeEntity(database.getDescendantsOfCountry(country))
     ) {
       availableCountries.push(country);
     } else {

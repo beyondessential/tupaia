@@ -63,7 +63,7 @@ export const initialiseSurveys = () => (dispatch, getState, { database }) => {
   const currentUser = database.getCurrentUser();
   const country = database.getCountry(countryId);
   surveyList
-    .filter(survey => currentUser.hasAccessToSurveyInCountry(survey, country))
+    .filter(survey => currentUser.hasAccessToSurveyInEntity(survey, country))
     .forEach(survey => {
       surveys[survey.id] = survey.getReduxStoreData();
     });
