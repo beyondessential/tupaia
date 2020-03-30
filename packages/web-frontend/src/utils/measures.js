@@ -127,7 +127,7 @@ function getFormattedValue(value, type, valueInfo, scaleType, valueType) {
 }
 
 const getSpectrumScaleValues = (measureData, measureOption) => {
-  const { key, scaleType, startDate, endDate } = measureOption;
+  const { key, scaleType, scaleMin, scaleMax, startDate, endDate } = measureOption;
 
   switch (scaleType) {
     case SCALE_TYPES.TIME:
@@ -136,9 +136,15 @@ const getSpectrumScaleValues = (measureData, measureOption) => {
       return { min: 0, max: 1 };
     default: {
       const flattenedMeasureData = flattenNumericalMeasureData(measureData, key);
+      const hasScaleMin = scaleMin !== undefined;
+      const hasScaleMax = scaleMax !== undefined;
       return {
-        min: Math.min(...flattenedMeasureData),
-        max: Math.max(...flattenedMeasureData),
+        min: hasScaleMin
+          ? Math.min(scaleMin, ...flattenedMeasureData)
+          : Math.min(...flattenedMeasureData),
+        max: hasScaleMax
+          ? Math.max(scaleMax, ...flattenedMeasureData)
+          : Math.max(...flattenedMeasureData),
       };
     }
   }
