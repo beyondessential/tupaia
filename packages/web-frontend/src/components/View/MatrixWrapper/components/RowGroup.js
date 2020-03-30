@@ -120,7 +120,7 @@ export default class RowGroup extends Component {
 
 RowGroup.propTypes = {
   rowId: PropTypes.string,
-  columns: PropTypes.shape({}),
+  columns: PropTypes.arrayOf(PropTypes.shape({})),
   children: PropTypes.node,
   isExpanded: PropTypes.bool,
   depth: PropTypes.number,
