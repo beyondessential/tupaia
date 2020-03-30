@@ -90,7 +90,7 @@ import {
 } from './actions';
 import { isMobile, processMeasureInfo, formatDateForApi } from './utils';
 import { createUrlString } from './utils/historyNavigation';
-import { GRANULARITIES_WITH_ONE_DATE, roundStartEndDates } from './utils/periodGranularities';
+import { getDefaultDates } from './utils/periodGranularities';
 import { INITIAL_MEASURE_ID } from './defaults';
 
 /**
@@ -519,19 +519,11 @@ function* watchOrgUnitChangeAndFetchDashboard() {
 
 function* fetchViewData(parameters, errorHandler) {
   const { infoViewKey } = parameters;
-
-  const getDefaultDates = state => {
-    const { periodGranularity } = state.global.viewConfigs[infoViewKey];
-    if (GRANULARITIES_WITH_ONE_DATE.includes(periodGranularity)) {
-      return roundStartEndDates(periodGranularity);
-    }
-    return {};
-  };
-
   // If the view should be constrained to a date range and isn't, constrain it
   const { startDate, endDate } =
-    parameters.startDate || parameters.endDate ? parameters : getDefaultDates(yield select());
-
+    parameters.startDate || parameters.endDate
+      ? parameters
+      : getDefaultDates(yield select(), infoViewKey);
   // Build the request url
   const {
     organisationUnitCode,
