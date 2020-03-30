@@ -76,6 +76,7 @@ export async function updateCountryEntities(transactingModels, countryName, enti
       latitude,
       geojson,
       type_name: typeName,
+      screen_bounds: screenBounds,
       category_code: categoryCode,
       facility_type: facilityType,
     } = entityObject;
@@ -130,6 +131,9 @@ export async function updateCountryEntities(transactingModels, countryName, enti
     );
     if (longitude && latitude) {
       await transactingModels.entity.updatePointCoordinates(code, { longitude, latitude });
+    }
+    if (screenBounds) {
+      await transactingModels.entity.updateBoundsCoordinates(code, screenBounds);
     }
     if (geojson) {
       const translatedGeojson =
