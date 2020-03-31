@@ -11,15 +11,17 @@
  * Container providing all the controls for user: login, logout, info, account
  */
 
+import FacilityIcon from 'material-ui/svg-icons/maps/local-hospital';
+import SearchIcon from 'material-ui/svg-icons/action/search';
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { isNull } from 'lodash';
 import { connect } from 'react-redux';
 import { List, ListItem } from 'material-ui/List';
+
 import { ControlBar } from '../../components/ControlBar';
 import { HierarchyItem } from '../../components/HierarchyItem';
-import FacilityIcon from 'material-ui/svg-icons/maps/local-hospital';
-import SearchIcon from 'material-ui/svg-icons/action/search';
+import { selectParentOrgUnitCodes } from '../../reducers/orgUnitReducers';
 import {
   changeSearch,
   toggleSearchExpand,
@@ -123,7 +125,7 @@ export class SearchBar extends PureComponent {
       onOrgUnitClick,
       onOrgHighlight,
       getNestedOrgUnits,
-      orgUnitsWithChildren,
+      parentOrgUnitCodes,
     } = this.props;
     if (isNull(hierarchyData))
       return <div style={styles.searchResponseText}>Loading countries...</div>;
@@ -141,7 +143,7 @@ export class SearchBar extends PureComponent {
           willMountFunc = () => getNestedOrgUnits(orgUnit.organisationUnitCode);
         }
         const hasNestedItems =
-          nestedItems.length > 0 || orgUnitsWithChildren.includes(orgUnit.organisationUnitCode);
+          nestedItems.length > 0 || parentOrgUnitCodes.includes(orgUnit.organisationUnitCode);
 
         return (
           <HierarchyItem
@@ -203,20 +205,19 @@ SearchBar.propTypes = {
   onOrgUnitClick: PropTypes.func.isRequired,
   onOrgHighlight: PropTypes.func.isRequired,
   getNestedOrgUnits: PropTypes.func.isRequired,
-  orgUnitsWithChildren: PropTypes.arrayOf(PropTypes.string).isRequired,
+  parentOrgUnitCodes: PropTypes.arrayOf(PropTypes.string).isRequired,
   onSearchFocus: PropTypes.func,
 };
 
 const mapStateToProps = state => {
   const { isExpanded, searchResponse, searchString, hierarchyData } = state.searchBar;
-  const orgUnitsWithChildren = Object.values(state.orgUnits.orgUnitMap).map(({ parent }) => parent);
 
   return {
     isExpanded,
     searchResponse,
     searchString,
     hierarchyData,
-    orgUnitsWithChildren,
+    parentOrgUnitCodes: selectParentOrgUnitCodes(state),
   };
 };
 
