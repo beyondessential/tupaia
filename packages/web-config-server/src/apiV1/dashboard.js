@@ -1,9 +1,23 @@
 import { DashboardGroup, DashboardReport } from '/models';
 import { DhisTranslationHandler } from './utils';
 
+// TODO Temporary code, remove after distrcit and sub_district entity types are added
+const checkIsLGA = async entity => {
+  if (entity.code.startsWith('AU_') && entity.type === 'region') {
+    const parent = await entity.parent();
+    return parent.name !== 'Australia';
+  }
+
+  return false;
+};
+
 export default class extends DhisTranslationHandler {
   buildData = async req => {
     const { entity } = this;
+    if (await checkIsLGA(entity)) {
+      return {};
+    }
+
     const { code: entityCode, name: entityName } = entity;
     const organisationLevel = entity.getOrganisationLevel();
     const userGroups = await req.getUserGroups(entityCode);
