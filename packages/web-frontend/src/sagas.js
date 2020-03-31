@@ -672,11 +672,6 @@ function* fetchMeasureInfo(measureId, organisationUnitCode, oldOrganisationUnitC
     // Don't try and fetch null measures
     yield put(cancelFetchMeasureData());
 
-    if (!organisationUnitCode) {
-      // if we've selected a null unit (somehow) clear out the measure hierarchy as well
-      yield put(clearMeasureHierarchy());
-    }
-
     return;
   }
 
