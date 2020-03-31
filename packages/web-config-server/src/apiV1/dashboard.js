@@ -1,7 +1,7 @@
 import { DashboardGroup, DashboardReport } from '/models';
 import { DhisTranslationHandler } from './utils';
 
-// TODO Temporary code, remove after distrcit and sub_district entity types are added
+// TODO Temporary code, remove after district and sub_district entity types are added
 const checkIsLGA = async entity => {
   if (entity.code.startsWith('AU_') && entity.type === 'region') {
     const parent = await entity.parent();
