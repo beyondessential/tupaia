@@ -74,7 +74,6 @@ const styles = {
 const ICON_BY_ORG_UNIT_TYPE = {
   Facility: FacilityIcon,
 };
-const LEAF_ORG_UNIT_TYPE = 'Village';
 
 export class SearchBar extends PureComponent {
   constructor(props) {
@@ -119,7 +118,13 @@ export class SearchBar extends PureComponent {
   }
 
   renderHierarchy() {
-    const { hierarchyData, onOrgUnitClick, onOrgHighlight, getNestedOrgUnits } = this.props;
+    const {
+      hierarchyData,
+      onOrgUnitClick,
+      onOrgHighlight,
+      getNestedOrgUnits,
+      orgUnitsWithChildren,
+    } = this.props;
     if (isNull(hierarchyData))
       return <div style={styles.searchResponseText}>Loading countries...</div>;
     if (!Array.isArray(hierarchyData)) return <h2>Server error, try refresh</h2>;
@@ -132,9 +137,11 @@ export class SearchBar extends PureComponent {
         // HierarchyItems only fetch their children data on componentWillMount
         const nestedItems = recurseOrgUnits(orgUnit.organisationUnitChildren);
         let willMountFunc;
-        if (!nestedItems || nestedItems.length < 1) {
+        if (nestedItems.length < 1) {
           willMountFunc = () => getNestedOrgUnits(orgUnit.organisationUnitCode);
         }
+        const hasNestedItems =
+          nestedItems.length > 0 || orgUnitsWithChildren.includes(orgUnit.organisationUnitCode);
 
         return (
           <HierarchyItem
@@ -142,7 +149,7 @@ export class SearchBar extends PureComponent {
             label={orgUnit.name}
             nestedMargin={nestedMargin}
             nestedItems={nestedItems}
-            hasNestedItems={orgUnit.type !== LEAF_ORG_UNIT_TYPE}
+            hasNestedItems={hasNestedItems}
             Icon={ICON_BY_ORG_UNIT_TYPE[orgUnit.type]}
             onClick={() => onOrgUnitClick(orgUnit)}
             onMouseEnter={() => onOrgHighlight(orgUnit)}
@@ -196,12 +203,21 @@ SearchBar.propTypes = {
   onOrgUnitClick: PropTypes.func.isRequired,
   onOrgHighlight: PropTypes.func.isRequired,
   getNestedOrgUnits: PropTypes.func.isRequired,
+  orgUnitsWithChildren: PropTypes.arrayOf(PropTypes.string).isRequired,
   onSearchFocus: PropTypes.func,
 };
 
 const mapStateToProps = state => {
   const { isExpanded, searchResponse, searchString, hierarchyData } = state.searchBar;
-  return { isExpanded, searchResponse, searchString, hierarchyData };
+  const orgUnitsWithChildren = Object.values(state.orgUnits.orgUnitMap).map(({ parent }) => parent);
+
+  return {
+    isExpanded,
+    searchResponse,
+    searchString,
+    hierarchyData,
+    orgUnitsWithChildren,
+  };
 };
 
 const mapDispatchToProps = dispatch => {
