@@ -261,6 +261,7 @@ export class CartesianChart extends PureComponent {
     return (
       <YAxis
         key={yAxisId}
+        ticks={viewContent.ticks}
         yAxisId={yAxisId}
         orientation={orientation}
         domain={[0, 'auto']}
