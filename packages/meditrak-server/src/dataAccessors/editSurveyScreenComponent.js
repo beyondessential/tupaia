@@ -5,11 +5,14 @@
 
 export const editSurveyScreenComponent = async (models, id, updatedData) => {
   const screenComponentFields = await models.surveyScreenComponent.fetchFieldNames();
-  const updatedScreenComponentData = screenComponentFields.reduce(
-    (current, fieldName) =>
-      updatedData[fieldName] ? { ...current, [fieldName]: updatedData[fieldName] } : current,
-    {},
-  );
+  const updatedScreenComponentData = screenComponentFields.reduce((current, fieldName) => {
+    if (!updatedData[fieldName]) {
+      return current;
+    } else if (fieldName === 'config') {
+      return { ...current, config: JSON.stringify(updatedData.config) };
+    }
+    return { ...current, [fieldName]: updatedData[fieldName] };
+  }, {});
   const questionFields = await models.question.fetchFieldNames();
   const updatedQuestionData = questionFields.reduce(
     (current, fieldName) =>
