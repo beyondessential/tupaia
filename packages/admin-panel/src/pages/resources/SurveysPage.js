@@ -147,15 +147,80 @@ const QUESTION_FIELDS = [
   },
 ];
 
+const questionIdDefinitionString = '{"label":"Question Id","fieldName":"questionId"}';
+
 const QUESTION_COLUMNS = [
   ...QUESTION_FIELDS,
+  {
+    Header: 'Config',
+    source: 'config',
+  },
   {
     Header: 'Edit',
     type: 'edit',
     source: 'id',
     actionConfig: {
       editEndpoint: 'surveyScreenComponent',
-      fields: QUESTION_FIELDS,
+      fields: [
+        ...QUESTION_FIELDS,
+        {
+          Header: 'Config',
+          source: 'config',
+          editConfig: {
+            type: 'json',
+            getJsonFieldSchema: () => [
+              {
+                label: 'Entity',
+                fieldName: 'entity',
+                type: 'json',
+                csvFields: ['type'],
+                getJsonFieldSchema: () => [
+                  {
+                    label: 'Type (comma separated values)',
+                    fieldName: 'type',
+                  },
+                  {
+                    label: 'Create New',
+                    fieldName: 'createNew',
+                    type: 'boolean',
+                  },
+                  {
+                    label: 'Parent Id',
+                    fieldName: 'parentId',
+                    key: 'parentId1',
+                    type: 'json',
+                    getJsonFieldSchema: () => [JSON.parse(questionIdDefinitionString)],
+                  },
+                  {
+                    label: 'Name',
+                    fieldName: 'parentId',
+                    key: 'parentId2',
+                    type: 'json',
+                    getJsonFieldSchema: () => [JSON.parse(questionIdDefinitionString)],
+                  },
+                  {
+                    label: 'Code',
+                    fieldName: 'parentId',
+                    key: 'parentId3',
+                    type: 'json',
+                    getJsonFieldSchema: () => [JSON.parse(questionIdDefinitionString)],
+                  },
+                ],
+              },
+              {
+                label: 'Code Generator',
+                fieldName: 'codeGenerator',
+                type: 'json',
+                getJsonFieldSchema: () => [
+                  { label: 'Type', fieldName: 'type' },
+                  { label: 'Prefix', fieldName: 'prefix' },
+                  { label: 'Length', fieldName: 'length' },
+                ],
+              },
+            ],
+          },
+        },
+      ],
     },
   },
 ];

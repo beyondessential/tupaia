@@ -12,9 +12,14 @@ const DEFAULT_FIELD_TYPE = 'textarea';
 
 export class JsonInputField extends PureComponent {
   onFieldValueChange(fieldName, fieldValue) {
-    const { onChange } = this.props;
+    const { onChange, csvFields } = this.props;
+
+    const updatedFieldValue = csvFields.includes(fieldName)
+      ? fieldValue.split(',').map(value => value.trim())
+      : fieldValue;
+
     const jsonFieldValues = this.getJsonFieldValues();
-    onChange({ ...jsonFieldValues, [fieldName]: fieldValue });
+    onChange({ ...jsonFieldValues, [fieldName]: updatedFieldValue });
   }
 
   getJsonFieldValues() {
@@ -69,9 +74,11 @@ JsonInputField.propTypes = {
   onChange: PropTypes.func.isRequired,
   value: PropTypes.oneOf(PropTypes.string, PropTypes.object),
   disabled: PropTypes.bool,
+  csvFields: PropTypes.array,
 };
 
 JsonInputField.defaultProps = {
   value: {},
   disabled: false,
+  csvFields: [],
 };

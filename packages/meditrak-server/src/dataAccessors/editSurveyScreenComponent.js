@@ -7,7 +7,7 @@ export const editSurveyScreenComponent = async (models, id, updatedData) => {
   /* eslint-disable camelcase */
   const updates = [];
   const updatedScreenComponentData = {};
-  const { question_label, detail_label, ...updatedQuestionData } = updatedData;
+  const { question_label, detail_label, config, ...updatedQuestionData } = updatedData;
 
   if (question_label) {
     updatedScreenComponentData.question_label = question_label;
@@ -15,6 +15,10 @@ export const editSurveyScreenComponent = async (models, id, updatedData) => {
 
   if (detail_label) {
     updatedScreenComponentData.detail_label = detail_label;
+  }
+
+  if (config) {
+    updatedScreenComponentData.config = JSON.stringify(config);
   }
 
   const screenComponent = await models.surveyScreenComponent.findById(id);
