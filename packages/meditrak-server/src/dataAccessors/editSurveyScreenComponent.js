@@ -4,30 +4,25 @@
  */
 
 export const editSurveyScreenComponent = async (models, id, updatedData) => {
-  /* eslint-disable camelcase */
+  const screenComponentFields = await models.surveyScreenComponent.fetchFieldNames();
+  const updatedScreenComponentData = screenComponentFields.reduce(
+    (current, fieldName) =>
+      updatedData[fieldName] ? { ...current, [fieldName]: updatedData[fieldName] } : current,
+    {},
+  );
+  const questionFields = await models.question.fetchFieldNames();
+  const updatedQuestionData = questionFields.reduce(
+    (current, fieldName) =>
+      updatedData[fieldName] ? { ...current, [fieldName]: updatedData[fieldName] } : current,
+    {},
+  );
   const updates = [];
-  const updatedScreenComponentData = {};
-  const { question_label, detail_label, ...updatedQuestionData } = updatedData;
-
-  if (question_label) {
-    updatedScreenComponentData.question_label = question_label;
-  }
-
-  if (detail_label) {
-    updatedScreenComponentData.detail_label = detail_label;
-  }
-
-  const screenComponent = await models.surveyScreenComponent.findById(id);
-  const screenComponentData = await screenComponent.getData();
-  const question = await models.question.findById(screenComponentData.question_id);
-
   if (Object.entries(updatedScreenComponentData).length > 0) {
-    updates.push(
-      models.surveyScreenComponent.updateById(screenComponent.id, updatedScreenComponentData),
-    );
+    updates.push(models.surveyScreenComponent.updateById(id, updatedScreenComponentData));
   }
-
   if (Object.entries(updatedQuestionData).length > 0) {
+    const screenComponent = await models.surveyScreenComponent.findById(id);
+    const question = await screenComponent.question();
     updates.push(models.question.updateById(question.id, updatedQuestionData));
   }
 

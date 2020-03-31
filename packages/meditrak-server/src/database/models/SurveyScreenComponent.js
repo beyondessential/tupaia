@@ -11,6 +11,10 @@ class SurveyScreenComponentType extends DatabaseType {
   static meditrakConfig = {
     minAppVersion: '0.0.1',
   };
+
+  async question() {
+    return this.otherModels.question.findById(this.question_id);
+  }
 }
 
 export class SurveyScreenComponentModel extends DatabaseModel {
