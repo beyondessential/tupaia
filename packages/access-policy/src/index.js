@@ -13,65 +13,61 @@ export class AccessPolicy {
     if (!this.policy) {
       throw new Error('Cannot instantiate an AccessPolicy without providing the policy details');
     }
-    const entityLists = Object.values(this.policy);
-    if (entityLists.length === 0) {
-      throw new Error('At least one permission group should be specified in an access policy');
+    const roleLists = Object.values(this.policy);
+    if (roleLists.length === 0) {
+      throw new Error('At least one entity should be specified in an access policy');
     }
-    if (entityLists.some(entities => !Array.isArray(entities))) {
-      throw new Error(
-        'Each permission group should contain an array of entities for which the user has access',
-      );
+    if (roleLists.some(roles => !Array.isArray(roles))) {
+      throw new Error('Each entity should contain an array of roles for which the user has access');
     }
   }
 
   /**
-   * Check if the user has access to a given permission group for the given entity
+   * Check if the user has access to a given role for the given entity
    *
    * @param {string} entity
-   * @param {string} [permissionGroup]
+   * @param {string} [role]
    *
    * @returns boolean Whether or not the user has access to any of the entities, optionally for
-   *                  the given permission group
+   *                  the given role
    */
-  allows(entity, permissionGroup) {
-    return this.allowsSome([entity], permissionGroup);
+  allows(entity, role) {
+    return this.allowsSome([entity], role);
   }
 
   /**
-   * Check if the user has access to a given permission group for any of a given set of entities e.g.
+   * Check if the user has access to a given role for any of a given set of entities e.g.
    * - accessPolicy.allows(['DL', 'DL_North'], 'Donor');
    * - accessPolicy.allows(['DL']);
    *
    * @param {string[]} entities
-   * @param {string} [permissionGroup]
+   * @param {string} [role]
    *
    * @returns boolean Whether or not the user has access to any of the entities, optionally for
-   *                  the given permission group
+   *                  the given role
    */
-  allowsSome(entities = [], permissionGroup) {
-    if (!permissionGroup) {
-      return Object.keys(this.policy).some(permGroup => this.allowsSome(entities, permGroup));
+  allowsSome(entities = [], role) {
+    if (!role) {
+      return entities.some(entityCode => !!this.policy[entityCode]);
     }
-    const allowedEntities = this.policy[permissionGroup];
-    return !!allowedEntities && entities.some(entity => allowedEntities.includes(entity));
+
+    const allowedRoles = this.getRoles(entities);
+    return allowedRoles.has(role);
   }
 
   /**
-   * Return permission groups the user has access to for the given entities (or all permission groups
-   * they can access if no entities provided)
+   * Return roles the user has access to for the given entities (or all roles they can access if no
+   * entities provided)
    *
    * @param {string[]} [entities]
    *
-   * @returns string[] The permission groups, e.g ['Admin', 'Donor']
+   * @returns string[] The roles, e.g ['Admin', 'Donor']
    */
-  getPermissionGroups(entities) {
-    const allPermissionGroups = Object.keys(this.policy);
-    if (!entities || entities.length === 0) {
-      return allPermissionGroups;
-    }
-    return allPermissionGroups.filter(permissionGroup => {
-      const allowedEntities = this.policy[permissionGroup];
-      return entities.some(entity => allowedEntities.includes(entity));
-    });
+  getRoles(entities = Object.keys(this.policy)) {
+    const roles = new Set();
+    entities.forEach(
+      entityCode => this.policy[entityCode] && this.policy[entityCode].forEach(r => roles.add(r)),
+    );
+    return roles;
   }
 }
