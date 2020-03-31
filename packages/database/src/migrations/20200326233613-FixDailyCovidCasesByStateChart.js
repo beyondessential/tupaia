@@ -43,14 +43,14 @@ exports.up = function(db) {
       'sumByOrgUnit',
       '{
         "labels": {
-          "AU_SA": "SA",
-          "AU_WA": "WA",
-          "AU_NSW": "NSW",
-          "AU_QLD": "QLD",
-          "AU_TAS": "TAS",
-          "AU_VIC": "VIC",
-          "AU_NT": "NT",
-          "AU_ACT": "ACT"
+          "AU_South Australia": "SA",
+          "AU_Western Australia": "WA",
+          "AU_New South Wales": "NSW",
+          "AU_Queensland": "QLD",
+          "AU_Tasmania": "TAS",
+          "AU_Victoria": "VIC",
+          "AU_Northern Territory": "NT",
+          "AU_Australian Capital Territory": "ACT"
         },
         "dataElementCodes": [
           "dailysurvey003"
