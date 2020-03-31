@@ -137,6 +137,14 @@ const QUESTION_FIELDS = [
     Header: 'Detail',
     source: 'detail',
   },
+  {
+    Header: 'Question Label',
+    source: 'question_label',
+  },
+  {
+    Header: 'Detail Label',
+    source: 'detail_label',
+  },
 ];
 
 const QUESTION_COLUMNS = [
@@ -146,7 +154,7 @@ const QUESTION_COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      editEndpoint: 'question',
+      editEndpoint: 'surveyScreenComponent',
       fields: QUESTION_FIELDS,
     },
   },
@@ -155,7 +163,7 @@ const QUESTION_COLUMNS = [
 const EXPANSION_CONFIG = [
   {
     title: 'Questions',
-    endpoint: 'questions',
+    endpoint: 'surveyScreenComponents',
     columns: QUESTION_COLUMNS,
     joinFrom: 'id',
     joinTo: 'survey_id',

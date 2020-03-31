@@ -16,3 +16,5 @@ export { updateOrCreateSurveyResponse } from './updateOrCreateSurveyResponse';
 export { getUserPermissionGroups } from './userPermissionGroups';
 export { findEditableFeedItems } from './findEditableFeedItems';
 export { findFormattedDisasters } from './findFormattedDisasters';
+export { editSurveyScreenComponent } from './editSurveyScreenComponent';
+export { findSurveyScreenComponentsBySurvey } from './findSurveyScreenComponentsBySurvey';
