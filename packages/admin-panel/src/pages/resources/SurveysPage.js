@@ -147,8 +147,6 @@ const QUESTION_FIELDS = [
   },
 ];
 
-const questionIdDefinitionString = '{"label":"Question Id","fieldName":"questionId"}';
-
 const QUESTION_COLUMNS = [
   ...QUESTION_FIELDS,
   {
@@ -187,23 +185,20 @@ const QUESTION_COLUMNS = [
                   {
                     label: 'Parent Id',
                     fieldName: 'parentId',
-                    key: 'parentId1',
                     type: 'json',
-                    getJsonFieldSchema: () => [JSON.parse(questionIdDefinitionString)],
+                    getJsonFieldSchema: () => [{ label: 'Question Id', fieldName: 'questionId' }],
                   },
                   {
                     label: 'Name',
-                    fieldName: 'parentId',
-                    key: 'parentId2',
+                    fieldName: 'name',
                     type: 'json',
-                    getJsonFieldSchema: () => [JSON.parse(questionIdDefinitionString)],
+                    getJsonFieldSchema: () => [{ label: 'Question Id', fieldName: 'questionId' }],
                   },
                   {
                     label: 'Code',
-                    fieldName: 'parentId',
-                    key: 'parentId3',
+                    fieldName: 'code',
                     type: 'json',
-                    getJsonFieldSchema: () => [JSON.parse(questionIdDefinitionString)],
+                    getJsonFieldSchema: () => [{ label: 'Question Id', fieldName: 'questionId' }],
                   },
                 ],
               },
