@@ -187,6 +187,7 @@ export class View extends Component {
         <OverlayView>
           {title}
           <ViewWrapper viewContent={viewContent} />
+          <p>This is a footer 2</p>
           {showDescription}
           {showInfoIcon}
           {expandButton}
