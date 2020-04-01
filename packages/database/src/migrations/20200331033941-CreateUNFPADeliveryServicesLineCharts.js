@@ -29,7 +29,7 @@ const createDataClass = dataElement => {
 const dataBuilderConfig = {
   dataClasses: {
     'Oxytocin 10IU/1mL injection': createDataClass('SOH_555c04bf'),
-    'Oxytocin 5UI Ampoules': createDataClass('SOH_4790d43e'),
+    'Oxytocin 5IU Ampoules': createDataClass('SOH_4790d43e'),
     'Magnesium (sulfate) 0.5g/mL (2mL) equivalent to 1g/2mL; 50%w/v': createDataClass(
       'SOH_51b474bf',
     ),
@@ -54,7 +54,7 @@ const viewConfig = {
   valueType: 'percentage',
   chartConfig: {
     'Oxytocin 10IU/1mL injection': {},
-    'Oxytocin 5UI Ampoules': {},
+    'Oxytocin 5IU Ampoules': {},
     'Magnesium (sulfate) 0.5g/mL (2mL) equivalent to 1g/2mL; 50%w/v': {},
     'Magnesium (sulfate) 0.5g/mL (10mL) equivalent to 5g/10mL; 50%w/v': {},
     'Ferrous salt equivalent to 60mg tablet': {},
