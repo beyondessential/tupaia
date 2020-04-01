@@ -878,38 +878,14 @@ CREATE TABLE public.user_account (
 
 
 --
--- Name: user_clinic_permission; Type: TABLE; Schema: public; Owner: -
+-- Name: user_entity_permission; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.user_clinic_permission (
+CREATE TABLE public.user_entity_permission (
     id text NOT NULL,
-    user_id text NOT NULL,
-    clinic_id text NOT NULL,
-    permission_group_id text NOT NULL
-);
-
-
---
--- Name: user_country_permission; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.user_country_permission (
-    id text NOT NULL,
-    user_id text NOT NULL,
-    country_id text NOT NULL,
-    permission_group_id text NOT NULL
-);
-
-
---
--- Name: user_geographical_area_permission; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.user_geographical_area_permission (
-    id text NOT NULL,
-    user_id text NOT NULL,
-    geographical_area_id text NOT NULL,
-    permission_group_id text NOT NULL
+    user_id text,
+    entity_id text,
+    permission_group_id text
 );
 
 
@@ -1471,27 +1447,11 @@ ALTER TABLE ONLY public.user_account
 
 
 --
--- Name: user_clinic_permission user_clinic_permission_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: user_entity_permission user_entity_permission_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.user_clinic_permission
-    ADD CONSTRAINT user_clinic_permission_pkey PRIMARY KEY (id);
-
-
---
--- Name: user_country_permission user_country_permission_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.user_country_permission
-    ADD CONSTRAINT user_country_permission_pkey PRIMARY KEY (id);
-
-
---
--- Name: user_geographical_area_permission user_geographical_area_permission_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.user_geographical_area_permission
-    ADD CONSTRAINT user_geographical_area_permission_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.user_entity_permission
+    ADD CONSTRAINT user_entity_permission_pkey PRIMARY KEY (id);
 
 
 --
@@ -1798,24 +1758,24 @@ CREATE INDEX user_account_last_name_idx ON public.user_account USING btree (last
 
 
 --
--- Name: user_country_permission_country_id_idx; Type: INDEX; Schema: public; Owner: -
+-- Name: user_entity_permission_entity_id_idx; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX user_country_permission_country_id_idx ON public.user_country_permission USING btree (country_id);
-
-
---
--- Name: user_country_permission_permission_group_id_idx; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX user_country_permission_permission_group_id_idx ON public.user_country_permission USING btree (permission_group_id);
+CREATE INDEX user_entity_permission_entity_id_idx ON public.user_entity_permission USING btree (entity_id);
 
 
 --
--- Name: user_country_permission_user_id_idx; Type: INDEX; Schema: public; Owner: -
+-- Name: user_entity_permission_permission_group_id_idx; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX user_country_permission_user_id_idx ON public.user_country_permission USING btree (user_id);
+CREATE INDEX user_entity_permission_permission_group_id_idx ON public.user_entity_permission USING btree (permission_group_id);
+
+
+--
+-- Name: user_entity_permission_user_id_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX user_entity_permission_user_id_idx ON public.user_entity_permission USING btree (user_id);
 
 
 --
@@ -2064,24 +2024,10 @@ CREATE TRIGGER user_account_trigger AFTER INSERT OR DELETE OR UPDATE ON public.u
 
 
 --
--- Name: user_clinic_permission user_clinic_permission_trigger; Type: TRIGGER; Schema: public; Owner: -
+-- Name: user_entity_permission user_entity_permission_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER user_clinic_permission_trigger AFTER INSERT OR DELETE OR UPDATE ON public.user_clinic_permission FOR EACH ROW EXECUTE PROCEDURE public.notification();
-
-
---
--- Name: user_country_permission user_country_permission_trigger; Type: TRIGGER; Schema: public; Owner: -
---
-
-CREATE TRIGGER user_country_permission_trigger AFTER INSERT OR DELETE OR UPDATE ON public.user_country_permission FOR EACH ROW EXECUTE PROCEDURE public.notification();
-
-
---
--- Name: user_geographical_area_permission user_geographical_area_permission_trigger; Type: TRIGGER; Schema: public; Owner: -
---
-
-CREATE TRIGGER user_geographical_area_permission_trigger AFTER INSERT OR DELETE OR UPDATE ON public.user_geographical_area_permission FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER user_entity_permission_trigger AFTER INSERT OR DELETE OR UPDATE ON public.user_entity_permission FOR EACH ROW EXECUTE PROCEDURE public.notification();
 
 
 --
@@ -2372,75 +2318,27 @@ ALTER TABLE ONLY public.survey
 
 
 --
--- Name: user_clinic_permission user_clinic_permission_clinic_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: user_entity_permission user_entity_permission_entity_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.user_clinic_permission
-    ADD CONSTRAINT user_clinic_permission_clinic_id_fk FOREIGN KEY (clinic_id) REFERENCES public.clinic(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: user_clinic_permission user_clinic_permission_permission_group_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.user_clinic_permission
-    ADD CONSTRAINT user_clinic_permission_permission_group_id_fk FOREIGN KEY (permission_group_id) REFERENCES public.permission_group(id) ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE ONLY public.user_entity_permission
+    ADD CONSTRAINT user_entity_permission_entity_id_fkey FOREIGN KEY (entity_id) REFERENCES public.entity(id);
 
 
 --
--- Name: user_clinic_permission user_clinic_permission_user_account_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: user_entity_permission user_entity_permission_permission_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.user_clinic_permission
-    ADD CONSTRAINT user_clinic_permission_user_account_id_fk FOREIGN KEY (user_id) REFERENCES public.user_account(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: user_country_permission user_country_permission_country_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.user_country_permission
-    ADD CONSTRAINT user_country_permission_country_id_fkey FOREIGN KEY (country_id) REFERENCES public.country(id) ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE ONLY public.user_entity_permission
+    ADD CONSTRAINT user_entity_permission_permission_group_id_fkey FOREIGN KEY (permission_group_id) REFERENCES public.permission_group(id);
 
 
 --
--- Name: user_country_permission user_country_permission_permission_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: user_entity_permission user_entity_permission_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.user_country_permission
-    ADD CONSTRAINT user_country_permission_permission_group_id_fkey FOREIGN KEY (permission_group_id) REFERENCES public.permission_group(id) ON UPDATE CASCADE ON DELETE RESTRICT;
-
-
---
--- Name: user_country_permission user_country_permission_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.user_country_permission
-    ADD CONSTRAINT user_country_permission_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user_account(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: user_geographical_area_permission user_geographical_area_permission_geographical_area_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.user_geographical_area_permission
-    ADD CONSTRAINT user_geographical_area_permission_geographical_area_id_fk FOREIGN KEY (geographical_area_id) REFERENCES public.geographical_area(id) ON UPDATE RESTRICT ON DELETE CASCADE;
-
-
---
--- Name: user_geographical_area_permission user_geographical_area_permission_permission_group_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.user_geographical_area_permission
-    ADD CONSTRAINT user_geographical_area_permission_permission_group_id_fk FOREIGN KEY (permission_group_id) REFERENCES public.permission_group(id) ON UPDATE RESTRICT ON DELETE CASCADE;
-
-
---
--- Name: user_geographical_area_permission user_geographical_area_permission_user_account_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.user_geographical_area_permission
-    ADD CONSTRAINT user_geographical_area_permission_user_account_id_fk FOREIGN KEY (user_id) REFERENCES public.user_account(id) ON UPDATE RESTRICT ON DELETE CASCADE;
+ALTER TABLE ONLY public.user_entity_permission
+    ADD CONSTRAINT user_entity_permission_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user_account(id);
 
 
 --
@@ -3076,8 +2974,49 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 555	/20200224063900-UseSingleDataElementForDMHTNDenominator	2020-02-25 06:38:31.776
 556	/20200224003036-AddIHRJEEMatrixReport	2020-02-26 06:05:41.669
 557	/20200228013730-DeleteRedundantImmsBreaches	2020-02-28 02:41:25.468
-558	/20200228040157-MoveAutocompletePrimaryEntityToEntityId	2020-03-03 12:57:55.47
-559	/20200302202141-ReinstateBuildingRecordInChangeNotifier	2020-03-03 12:57:55.604
+558	/20200227001738-AddWeeklyNumberOfFebrileIllnessCasesByVillageReport	2020-03-03 01:20:17.167
+559	/20200228040157-MoveAutocompletePrimaryEntityToEntityId	2020-03-03 01:20:17.278
+560	/20200302202141-ReinstateBuildingRecordInChangeNotifier	2020-03-05 08:54:21.288
+561	/20200305051343-ClearNullSyncQueueDetails	2020-03-05 08:54:22.972
+562	/20200305053046-AddDataSourceForCD3b-014b-C19-9	2020-03-05 08:54:31.999
+563	/20200303043257-PercentageOfValueCountsSplitCodesFromValueConfig	2020-03-11 04:55:06.369
+564	/20200305043430-UpdateStockCardsReportConfig	2020-03-11 04:55:06.448
+565	/20200310020604-MatrixTableNameChange	2020-03-11 04:55:06.488
+566	/20200311003701-UpdateMatrixHeader	2020-03-11 04:55:06.547
+567	/20200311013245-AddProgramCodeToHP05DrillDown	2020-03-11 04:55:06.65
+568	/20200312003031-AddAggregationEntityTypeInMapOverlays	2020-03-17 02:50:54.528
+569	/20200312223135-AddWeeklyReportedFebrileIllnessCasesToVillages	2020-03-17 02:50:55.835
+570	/20200313000357-AddGeneralDashboardGroupToVillages	2020-03-17 02:50:56.013
+571	/20200316010349-AddWeeklyNumberOfFebrileIllnessReportsNational	2020-03-24 05:41:33.358
+572	/20200316022146-AddStriveRegionalDashboardGroup	2020-03-24 05:41:33.414
+573	/20200316022217-AddWeeklyNumberOfFebrileIllnessReportsRegional	2020-03-24 05:41:33.527
+574	/20200318223935-DeleteErroneousStriveSurveyData	2020-03-30 15:06:02.992
+575	/20200323002803-AddCovid19AustraliaToProjects	2020-03-31 04:46:50.348
+576	/20200324032850-AddCOVID19DashboardgroupsAusNationalState	2020-03-31 04:46:50.422
+577	/20200324050422-AddCovid19StateDashboardReport	2020-03-31 04:46:50.461
+578	/20200324053202-AddCasesByStateReportCovidAus	2020-03-31 04:46:50.508
+579	/20200325001848-AddTotalNumberReportedCasesCOVIDAUMapOverlay	2020-03-31 04:46:50.558
+580	/20200326012240-MoveDefaultDashboardGroupsToIndividualCountries	2020-03-31 04:46:51.358
+581	/20200326032657-AddTotalCasesByStateAus	2020-03-31 04:46:51.395
+582	/20200326034630-AddTotalCovidCasesByTypeReport	2020-03-31 04:46:51.42
+583	/20200326043343-AddCovidNewCasesByDayBarChartStateAus	2020-03-31 04:46:51.458
+584	/20200326045458-AddCovid19NationalDailyCasesOverTimeEachStateAndTotalDashboard	2020-03-31 04:46:51.507
+585	/20200326225508-FixDailyCovidStateNumbersReportAus	2020-03-31 04:46:51.531
+586	/20200326233613-FixDailyCovidCasesByStateChart	2020-03-31 04:46:51.553
+587	/20200327014704-AddNationalNewCovidCasesByDayAus	2020-03-31 04:46:51.586
+588	/20200327052900-UpdateCovidAuTotalConfirmedCasesMapOverlayScaleMin	2020-03-31 04:46:51.599
+589	/20200327055605-UpdateCovidAuTotalConfirmedCasesOverTimeByStateWordings	2020-03-31 04:46:51.615
+590	/20200330013822-ChangeGeographicalBoundsOfWorld	2020-03-31 04:46:51.628
+591	/20200330014731-MoveDefaultMapOverlaysToIndividualCountries	2020-03-31 04:46:51.702
+592	/20200330023425-AddDailyToCovid19Reports	2020-03-31 04:46:51.736
+593	/20200330025955-ChangeIdOfDashboardReportToRemoveState	2020-03-31 04:46:51.755
+594	/20200330034009-AddSubDistrictAndFacilityLevelDashboardGroups	2020-03-31 04:46:51.768
+595	/20200330034023-AddLinkToSourcesCovidAllOrgLevels	2020-03-31 04:46:51.784
+596	/20200330041343-RemoveRecoveriesFromDashboardCovid	2020-03-31 04:46:51.798
+597	/20200330233911-ChangeDefaultDataToYesterdayCovidReports	2020-03-31 04:46:51.818
+598	/20200316042719-AddMRDTDashboardReportToNationalAndProvincial	2020-03-31 05:38:08.954
+599	/20200316055056-Add2YAxisMRDTFebrileIllnessDashboardReportToNationalAndProvincialStrive	2020-03-31 05:38:09.218
+600	/20200330213702-EntityBasedPermissions	2020-04-02 11:44:55.819
 \.
 
 
@@ -3085,7 +3024,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 559, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 600, true);
 
 
 --
