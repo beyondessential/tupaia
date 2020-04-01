@@ -8,8 +8,8 @@ Methods for parsing the access policy that is received by Tupaia projects during
 // Create access policy instance
 const accessPolicy = new AccessPolicy(policy); // where `policy` is a JSON string to parse
 
-// Returns whether or not the access policy grants access to the 'Donor' role for the DL_North area,
-// or its ancestor DL
+// Returns whether or not the access policy grants access to the 'Donor' permissionGroup for the
+// DL_North area, or its ancestor DL
 accessPolicy.allowsSome(['DL', 'DL_North'], 'Donor');
 
 // Returns whether or not the access policy grants any access to Demo Land
@@ -20,8 +20,8 @@ accessPolicy.allows('DL');
 
 ```
 {
-  "EntityCode": ["RoleName", "RoleName"],
-  "EntityCode": ["RoleName"]
+  "EntityCode": ["PermissionGroupName", "PermissionGroupName"],
+  "EntityCode": ["PermissionGroupName"]
 };
 ```
 
