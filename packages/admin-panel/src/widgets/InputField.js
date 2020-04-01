@@ -25,7 +25,6 @@ export const InputField = ({
   type,
   canCreateNewOptions,
   disabled,
-  csvFields,
   getJsonFieldSchema,
 }) => {
   const inputType = optionsEndpoint ? 'autocomplete' : type;
@@ -59,7 +58,6 @@ export const InputField = ({
           value={value}
           onChange={inputValue => onChange(inputKey, inputValue)}
           disabled={disabled}
-          csvFields={csvFields}
           getJsonFieldSchema={getJsonFieldSchema}
         />
       );
@@ -134,7 +132,6 @@ InputField.propTypes = {
   canCreateNewOptions: PropTypes.bool,
   disabled: PropTypes.bool,
   type: PropTypes.string,
-  csvFields: PropTypes.array,
   getJsonFieldSchema: PropTypes.func,
 };
 
@@ -147,6 +144,5 @@ InputField.defaultProps = {
   canCreateNewOptions: false,
   disabled: false,
   type: 'text',
-  csvFields: [],
   getJsonFieldSchema: () => [],
 };

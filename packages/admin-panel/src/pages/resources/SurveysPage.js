@@ -171,11 +171,11 @@ const QUESTION_COLUMNS = [
                 label: 'Entity',
                 fieldName: 'entity',
                 type: 'json',
-                csvFields: ['type'],
                 getJsonFieldSchema: () => [
                   {
-                    label: 'Type (comma separated values)',
+                    label: 'Accepted Types (comma separated values)',
                     fieldName: 'type',
+                    csv: true,
                   },
                   {
                     label: 'Create New',
@@ -183,7 +183,7 @@ const QUESTION_COLUMNS = [
                     type: 'boolean',
                   },
                   {
-                    label: 'Parent Id',
+                    label: 'Parent Entity',
                     fieldName: 'parentId',
                     type: 'json',
                     getJsonFieldSchema: () => [{ label: 'Question Id', fieldName: 'questionId' }],
