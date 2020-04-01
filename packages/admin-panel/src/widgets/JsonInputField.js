@@ -74,11 +74,9 @@ JsonInputField.propTypes = {
   onChange: PropTypes.func.isRequired,
   value: PropTypes.oneOf(PropTypes.string, PropTypes.object),
   disabled: PropTypes.bool,
-  csvFields: PropTypes.array,
 };
 
 JsonInputField.defaultProps = {
   value: {},
   disabled: false,
-  csvFields: [],
 };
