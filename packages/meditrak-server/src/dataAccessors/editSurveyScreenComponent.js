@@ -8,7 +8,8 @@ export const editSurveyScreenComponent = async (models, id, updatedData) => {
   const updatedScreenComponentData = screenComponentFields.reduce((current, fieldName) => {
     if (!updatedData[fieldName]) {
       return current;
-    } else if (fieldName === 'config') {
+    }
+    if (fieldName === 'config') {
       return { ...current, config: JSON.stringify(updatedData.config) };
     }
     return { ...current, [fieldName]: updatedData[fieldName] };
