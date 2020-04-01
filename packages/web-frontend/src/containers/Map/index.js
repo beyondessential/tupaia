@@ -19,7 +19,6 @@ import { CustomMap } from './CustomMap';
 
 import {
   changeOrgUnit,
-  highlightOrgUnit,
   changePosition,
   closeDropdownOverlays,
   setMapIsAnimating,
@@ -60,7 +59,6 @@ const mapDispatchToProps = dispatch => ({
   changeOrgUnit: (organisationUnitCode, shouldChangeMapBounds = true) => {
     dispatch(changeOrgUnit(organisationUnitCode, shouldChangeMapBounds));
   },
-  highlightOrgUnit: organisationUnitCode => dispatch(highlightOrgUnit(organisationUnitCode)),
   changePosition: (center, zoom) => dispatch(changePosition(center, zoom)),
   closeDropdownOverlays: () => dispatch(closeDropdownOverlays()),
   setMapIsAnimating: isAnimating => dispatch(setMapIsAnimating(isAnimating)),

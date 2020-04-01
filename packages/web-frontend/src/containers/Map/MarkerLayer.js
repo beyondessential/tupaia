@@ -12,12 +12,12 @@ import { LayerGroup } from 'react-leaflet';
 import { changeOrgUnit, openMapPopup, closeMapPopup } from '../../actions';
 import { CircleProportionMarker, IconMarker, MeasurePopup } from '../../components/Marker';
 import {
-  selectMeasureName,
+  selectHasPolygonMeasure,
   selectAllMeasuresWithDisplayInfo,
   selectRadiusScaleFactor,
 } from '../../reducers/mapReducers';
 import { selectOrgUnit } from '../../reducers/orgUnitReducers';
-import { MEASURE_TYPE_SHADING } from '../../utils/measures';
+import { ShadedPolygon } from './ConnectedPolygon';
 
 export const MARKER_TYPES = {
   DOT_MARKER: 'dot',
@@ -29,7 +29,15 @@ export const MARKER_TYPES = {
 const MIN_RADIUS = 1;
 
 const MeasureMarker = props => {
-  const { icon, radius } = props;
+  const { icon, radius, region, displayPolygons } = props;
+
+  if (displayPolygons) {
+    if (region) {
+      return <ShadedPolygon positions={region} {...props} />;
+    }
+
+    return <IconMarker {...props} />;
+  }
 
   if (parseInt(radius, 10) === 0) {
     if (icon) {
@@ -78,9 +86,8 @@ export class MarkerLayer extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    const { measureData, currentCountry, measureName, measureId, sidePanelWidth } = this.props;
+    const { measureData, currentCountry, measureId, sidePanelWidth } = this.props;
     if (
-      nextProps.measureName !== measureName ||
       nextProps.measureId !== measureId ||
       nextProps.currentCountry !== currentCountry ||
       nextProps.sidePanelWidth !== sidePanelWidth ||
@@ -89,6 +96,7 @@ export class MarkerLayer extends Component {
         (data, index) =>
           data.organisationUnitCode !== measureData[index].organisationUnitCode ||
           data.coordinates !== measureData[index].coordinates ||
+          data.color !== measureData[index].color ||
           data.isHidden !== measureData[index].isHidden,
       )
     ) {
@@ -149,14 +157,11 @@ export class MarkerLayer extends Component {
       measureName,
       isMeasureLoading,
       radiusScaleFactor,
+      displayPolygons,
     } = this.props;
 
-    if (
-      !measureData ||
-      measureData.length < 1 ||
-      !measureOptions.find(mo => mo.type !== MEASURE_TYPE_SHADING)
-    )
-      return null;
+    if (!measureData || !measureData.length) return null;
+
     if (isMeasureLoading) return null;
     const processedData = measureData
       .filter(data => data.coordinates && data.coordinates.length === 2)
@@ -183,6 +188,7 @@ export class MarkerLayer extends Component {
           key={code}
           markerRef={ref => this.addMarkerRef(code, ref)}
           radiusScaleFactor={radiusScaleFactor}
+          displayPolygons={displayPolygons}
           {...data}
         >
           {popup}
@@ -212,7 +218,11 @@ const mapStateToProps = state => {
       ...data,
       ...selectOrgUnit(state, data.organisationUnitCode),
     }))
-    .map(data => ({ ...data, coordinates: data.location && data.location.point }));
+    .map(({ location, ...otherData }) => ({
+      ...otherData,
+      coordinates: location && location.point,
+      region: location && location.region,
+    }));
 
   return {
     isMeasureLoading,
@@ -220,8 +230,8 @@ const mapStateToProps = state => {
     measureId,
     currentCountry,
     measureData,
-    measureName: selectMeasureName(state),
     radiusScaleFactor: selectRadiusScaleFactor(state),
+    displayPolygons: selectHasPolygonMeasure(state),
     currentPopupId: popup,
     sidePanelWidth: isSidePanelExpanded ? expandedWidth : contractedWidth,
   };

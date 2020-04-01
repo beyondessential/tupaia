@@ -78,7 +78,6 @@ import {
   updateEnlargedDialogError,
   FETCH_MEASURES_SUCCESS,
   CHANGE_ORG_UNIT_SUCCESS,
-  addMapRegions,
   openEmailVerifiedPage,
   fetchEmailVerifyError,
   openResendEmailSuccess,
@@ -91,7 +90,7 @@ import {
 } from './actions';
 import { isMobile, processMeasureInfo, formatDateForApi } from './utils';
 import { createUrlString } from './utils/historyNavigation';
-import { GRANULARITIES_WITH_ONE_DATE, roundStartEndDates } from './utils/periodGranularities';
+import { getDefaultDates } from './utils/periodGranularities';
 import { INITIAL_MEASURE_ID } from './defaults';
 
 /**
@@ -497,22 +496,6 @@ function* watchOrgUnitChangeAndFetchIt() {
   yield takeLatest(CHANGE_ORG_UNIT, fetchOrgUnitDataAndChangeOrgUnit);
 }
 
-function* fetchOrgUnitRegionData(action) {
-  const { organisationUnitCode } = action;
-  const requestResourceUrl = `regions/${organisationUnitCode}`;
-
-  try {
-    const response = yield call(request, requestResourceUrl, fetchRegionError);
-    yield put(addMapRegions(response.regions));
-  } catch (error) {
-    yield put(error.errorFunction(error));
-  }
-}
-
-function* watchOrgUnitChangeAndFetchRegions() {
-  if (!isMobile()) yield takeLatest(CHANGE_ORG_UNIT, fetchOrgUnitRegionData);
-}
-
 /**
  * fetchDashboard
  *
@@ -537,19 +520,11 @@ function* watchOrgUnitChangeAndFetchDashboard() {
 
 function* fetchViewData(parameters, errorHandler) {
   const { infoViewKey } = parameters;
-
-  const getDefaultDates = state => {
-    const { periodGranularity } = state.global.viewConfigs[infoViewKey];
-    if (GRANULARITIES_WITH_ONE_DATE.includes(periodGranularity)) {
-      return roundStartEndDates(periodGranularity);
-    }
-    return {};
-  };
-
   // If the view should be constrained to a date range and isn't, constrain it
   const { startDate, endDate } =
-    parameters.startDate || parameters.endDate ? parameters : getDefaultDates(yield select());
-
+    parameters.startDate || parameters.endDate
+      ? parameters
+      : getDefaultDates(yield select(), infoViewKey);
   // Build the request url
   const {
     organisationUnitCode,
@@ -689,11 +664,6 @@ function* fetchMeasureInfo(measureId, organisationUnitCode, oldOrganisationUnitC
   if (!measureId || !organisationUnitCode) {
     // Don't try and fetch null measures
     yield put(cancelFetchMeasureData());
-
-    if (!organisationUnitCode) {
-      // if we've selected a null unit (somehow) clear out the measure hierarchy as well
-      yield put(clearMeasureHierarchy());
-    }
 
     return;
   }
@@ -1003,7 +973,6 @@ export default [
   watchFetchCountryAccessDataAndFetchIt,
   watchFetchOrgUnitAndFetchIt,
   watchOrgUnitChangeAndFetchIt,
-  watchOrgUnitChangeAndFetchRegions,
   watchOrgUnitChangeAndFetchDashboard,
   watchOrgUnitChangeAndFetchMeasureInfo,
   watchViewFetchRequests,

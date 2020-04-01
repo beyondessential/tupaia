@@ -7,3 +7,4 @@ export { filterLatest } from './filterLatest';
 export { getFinalValuePerPeriod } from './getFinalValuePerPeriod';
 export { sumAcrossPeriods } from './sumAcrossPeriods';
 export { sumEachDataElement } from './sumEachDataElement';
+export { sumPreviousPerPeriod } from './sumPreviousPerPeriod';

@@ -247,7 +247,7 @@ export class AggregateDataPusher extends DataPusher {
 
     // get the date the survey was completed
     const surveyResponse = await this.fetchSurveyResponse();
-    const completionDate = surveyResponse.timezoneAwareEndTime().format('YYYY-MM-DDTkk:mm:ss');
+    const completionDate = surveyResponse.timezoneAwareEndTime().format('YYYY-MM-DDTHH:mm:ss');
 
     // get the submitting user's name
     const storedBy = await this.fetchStoredBy();
