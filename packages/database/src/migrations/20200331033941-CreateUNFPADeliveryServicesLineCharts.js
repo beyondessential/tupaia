@@ -14,13 +14,13 @@ exports.setup = function(options, seedLink) {
   seed = seedLink;
 };
 
-const createDataClass = dx => {
+const createDataClass = dataElement => {
   return {
     numerator: {
       groupBy: 'organisationUnit',
       operation: 'GT',
       operand: 0,
-      dataValues: [dx],
+      dataValues: [dataElement],
     },
     denominator: { dataValues: ['RHS3UNFPA536'], valueOfInterest: 1 },
   };

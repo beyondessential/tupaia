@@ -68,42 +68,9 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
         throw new Error('percentagesOfValueCounts missing config field: groupBy');
       }
 
-      let calculation;
-      if (fraction.compare) {
-        if (fraction.dataValues.length !== 2) {
-          throw new Error(
-            'nested array passed to: percentagesOfValueCounts must have exactly 2 sub-arrays for comparison',
-          );
-        }
+      const calculator = buildCalculator(fraction);
 
-        const [values, valuesToCompare] = fraction.dataValues;
-        calculation = results => {
-          const set1 = results.filter(r => values.includes(r.dataElement));
-          const set2 = results.filter(r => valuesToCompare.includes(r.dataElement));
-
-          const set1Count = countAnalyticsThatSatisfyConditions(set1, {
-            dataValues: values,
-            valueOfInterest: fraction.valueOfInterest,
-          });
-
-          const count2Count = countAnalyticsThatSatisfyConditions(set2, {
-            dataValues: valuesToCompare,
-            valueOfInterest: fraction.valueOfInterest,
-          });
-
-          return set1Count > 0 && set1Count === count2Count;
-        };
-      }
-
-      if (fraction.operation) {
-        calculation = results => {
-          return results.every(r => {
-            OPERATION_TYPES[fraction.operation](r.value, fraction.operand);
-          });
-        };
-      }
-
-      if (!calculation) {
+      if (!calculator) {
         throw new Error('Could not create cacluation from percentagesOfValueCounts config');
       }
 
@@ -112,7 +79,7 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
       );
       const groupedAnalytics = groupBy(filteredAnalytics, fraction.groupBy);
       return Object.values(groupedAnalytics).reduce(
-        (count, results) => (calculation(results) ? count + 1 : count),
+        (count, results) => (calculator(results) ? count + 1 : count),
         0,
       );
     } else if (fraction === ORG_UNIT_COUNT) {
@@ -121,6 +88,42 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
 
     return countAnalyticsThatSatisfyConditions(analytics, fraction);
   };
+
+  buildCalculator(fraction) {
+    if (fraction.compare) {
+      if (fraction.dataValues.length !== 2) {
+        throw new Error(
+          'nested array passed to: percentagesOfValueCounts must have exactly 2 sub-arrays for comparison',
+        );
+      }
+
+      const [values, valuesToCompare] = fraction.dataValues;
+      return results => {
+        const set1 = results.filter(r => values.includes(r.dataElement));
+        const set2 = results.filter(r => valuesToCompare.includes(r.dataElement));
+
+        const set1Count = countAnalyticsThatSatisfyConditions(set1, {
+          dataValues: values,
+          valueOfInterest: fraction.valueOfInterest,
+        });
+
+        const count2Count = countAnalyticsThatSatisfyConditions(set2, {
+          dataValues: valuesToCompare,
+          valueOfInterest: fraction.valueOfInterest,
+        });
+
+        return set1Count > 0 && set1Count === count2Count;
+      };
+    }
+
+    if (fraction.operation) {
+      return results => {
+        return results.every(r => {
+          OPERATION_TYPES[fraction.operation](r.value, fraction.operand);
+        });
+      };
+    }
+  }
 }
 
 export const percentagesOfValueCounts = async (
