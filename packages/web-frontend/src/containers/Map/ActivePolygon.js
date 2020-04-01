@@ -16,6 +16,7 @@ const StyledPolygon = styled(Polygon)`
   stroke: ${props => props.shade || POLYGON_HIGHLIGHT};
   opacity: 1;
   fill: ${props => props.shade || 'none'};
+  pointer-events: ${props => (props.hasChildren ? 'none !important' : 'auto')} 
   stroke-width: ${props => {
     let weight = 2;
     if (props.areChildrenShaded) weight = 0;
@@ -27,19 +28,28 @@ const StyledPolygon = styled(Polygon)`
 /**
  * ActivePolygon: The polygon that is selected on the map. This handles the style logic
  */
-const ActivePolygon = ({ coordinates, shade, areChildrenShaded }) => (
-  <StyledPolygon positions={coordinates} shade={shade} areChildrenShaded={areChildrenShaded} />
+const ActivePolygon = ({ coordinates, shade, hasChildren, hasShadedChildren }) => (
+  <StyledPolygon
+    positions={coordinates}
+    shade={shade}
+    hasChildren={hasChildren}
+    hasShadedChildren={hasShadedChildren}
+  />
 );
 
 ActivePolygon.propTypes = {
-  coordinates: PropTypes.array.isRequired,
+  coordinates: PropTypes.arrayOf(
+    PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number))),
+  ).isRequired,
   shade: PropTypes.string,
-  areChildrenShaded: PropTypes.bool,
+  hasChildren: PropTypes.bool,
+  hasShadedChildren: PropTypes.bool,
 };
 
 ActivePolygon.defaultProps = {
   shade: null,
-  areChildrenShaded: false,
+  hasChildren: false,
+  hasShadedChildren: false,
 };
 
 export default ActivePolygon;

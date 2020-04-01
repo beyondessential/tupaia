@@ -28,7 +28,6 @@ import OrgUnitSearchHandler from './organisationUnitSearch';
 import OrganisationUnitHandler from './organisationUnit';
 import { disasters } from './disasters';
 
-import { getRegions } from './regions';
 import { getProjects } from './projects';
 
 const handleWith = Handler =>
@@ -61,7 +60,6 @@ export const getRoutesForApiV1 = () => {
   api.get('/measures', handleWith(MeasuresHandler));
   api.get('/measureData', handleWith(MeasuresDataHandler));
   api.get('/disasters', catchAsyncErrors(disasters));
-  api.get('/regions/:code', catchAsyncErrors(getRegions));
   api.get('/projects', catchAsyncErrors(getProjects));
 
   return api;

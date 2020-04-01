@@ -1,6 +1,6 @@
 import isPlainObject from 'lodash.isplainobject';
 
-const OPERATOR_TO_VALUE_CHECK = {
+export const OPERATOR_TO_VALUE_CHECK = {
   '>=': (value, target) => value >= target,
   '<': (value, target) => value < target,
   range: (value, target) => target[0] <= value && value <= target[1],

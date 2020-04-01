@@ -50,6 +50,8 @@ export const valueForOrgGroup = async (aggregator, dhisApi, query, measureBuilde
     dhisApi,
     measureBuilderConfig,
     query,
+    undefined,
+    measureBuilderConfig.aggregationType,
   );
   const responseObject = await builder.build();
 

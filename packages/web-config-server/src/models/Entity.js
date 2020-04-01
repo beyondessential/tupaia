@@ -274,18 +274,6 @@ export class Entity extends BaseModel {
     return Entity.getNearestDescendantsMatchingTypes([this], hierarchyId, validTypes);
   }
 
-  async getChildRegions() {
-    return this.database.executeSql(
-      `
-      SELECT ${Entity.getSqlForColumns()} FROM entity
-      WHERE
-        region IS NOT NULL AND
-        parent_id = ?;
-    `,
-      [this.id],
-    );
-  }
-
   static async findOne(conditions, loadOptions, queryOptions) {
     return super.findOne(conditions, loadOptions, {
       ...queryOptions,

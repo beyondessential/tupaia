@@ -117,7 +117,7 @@ export const DATA_SET_COMPLETION_DIMENSIONS = {
 };
 export const DATA_SET_COMPLETION = {
   ...DATA_SET_COMPLETION_DIMENSIONS,
-  date: moment.utc(SURVEY_RESPONSE.end_time).format('YYYY-MM-DDTkk:mm:ss'),
+  date: moment.utc(SURVEY_RESPONSE.end_time).format('YYYY-MM-DDTHH:mm:ss'),
   storedBy: STORED_BY,
 };
 export const SERVER_NAME = 'test server name';
