@@ -51,7 +51,7 @@ exports.up = function(db) {
       return Promise.all(
         allData.map(report => {
           const { id, dataBuilder, dataBuilderConfig } = report;
-          const dbCommand = `
+          return db.runSql(`
           update "dashboardReport"
           set "dataBuilder" = 'composeWithLastUpdated',
             "dataBuilderConfig" = '{
@@ -66,9 +66,7 @@ exports.up = function(db) {
               }
             }'
           where "id" = '${id}';
-          `;
-          console.log(dbCommand, JSON.stringify(dataBuilderConfig));
-          return db.runSql(dbCommand);
+          `);
         }),
       );
     });
@@ -88,14 +86,12 @@ exports.down = function(db) {
         allData.map(report => {
           const { id } = report;
           const { dataBuilder, dataBuilderConfig } = report.dataBuilderConfig.dataBuilders.data;
-          const dbCommand = `
+          return db.runSql(`
           update "dashboardReport"
           set "dataBuilder" = '${dataBuilder}',
             "dataBuilderConfig" = '${JSON.stringify(dataBuilderConfig)}'
           where "id" = '${id}';
-          `;
-          console.log(dbCommand, JSON.stringify(dataBuilderConfig));
-          return db.runSql(dbCommand);
+          `);
         }),
       );
     });
