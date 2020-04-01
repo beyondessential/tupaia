@@ -23,7 +23,6 @@ const translateDescendantForFrontEnd = descendant => ({
   parent: descendant.parent_code,
 });
 
-// todo transform into a RouteHandler class
 export default class extends RouteHandler {
   static PermissionsChecker = PermissionsChecker; // checks the user has access to requested entity
 
