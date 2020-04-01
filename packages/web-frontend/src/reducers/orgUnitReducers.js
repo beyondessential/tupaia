@@ -53,6 +53,29 @@ export const cachedSelectOrgUnitAndDescendants = createCachedSelector(
   },
 )((state, code) => code);
 
+export const cachedSelectLastAncestorOfLevel = createCachedSelector(
+  [state => state, (_, code) => code, (_, __, level) => level],
+  (state, code, level) => {
+    const orgUnit = selectOrgUnit(state, code);
+    if (!orgUnit) {
+      return undefined;
+    }
+
+    let lastAncestorOfLevel = orgUnit.type === level ? orgUnit : undefined;
+    let latestOrgUnit = orgUnit;
+    while (latestOrgUnit && latestOrgUnit.parent) {
+      if (latestOrgUnit.type === level) {
+        lastAncestorOfLevel = latestOrgUnit;
+      } else if (lastAncestorOfLevel) {
+        return lastAncestorOfLevel;
+      }
+      latestOrgUnit = selectOrgUnit(state, latestOrgUnit.parent);
+    }
+
+    return lastAncestorOfLevel;
+  },
+)((state, code, level) => `${code}_${level}`);
+
 // Data management utility functions
 const normaliseForMap = (
   { organisationUnitChildren, descendant, ...restOfOrgUnit },

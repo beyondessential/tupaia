@@ -13,7 +13,7 @@ import { changeOrgUnit, openMapPopup, closeMapPopup } from '../../actions';
 import { CircleProportionMarker, IconMarker, MeasurePopup } from '../../components/Marker';
 import {
   selectHasPolygonMeasure,
-  selectAllMeasuresWithDisplayInfo,
+  selectRenderedMeasuresWithDisplayInfo,
   selectRadiusScaleFactor,
 } from '../../reducers/mapReducers';
 import { selectOrgUnit } from '../../reducers/orgUnitReducers';
@@ -86,8 +86,9 @@ export class MarkerLayer extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    const { measureData, currentCountry, measureId, sidePanelWidth } = this.props;
+    const { isMeasureLoading, measureData, currentCountry, measureId, sidePanelWidth } = this.props;
     if (
+      nextProps.isMeasureLoading !== isMeasureLoading ||
       nextProps.measureId !== measureId ||
       nextProps.currentCountry !== currentCountry ||
       nextProps.sidePanelWidth !== sidePanelWidth ||
@@ -213,7 +214,7 @@ const mapStateToProps = state => {
   } = state.map;
 
   const { contractedWidth, expandedWidth } = state.dashboard;
-  const measureData = selectAllMeasuresWithDisplayInfo(state)
+  const measureData = selectRenderedMeasuresWithDisplayInfo(state)
     .map(data => ({
       ...data,
       ...selectOrgUnit(state, data.organisationUnitCode),

@@ -8,7 +8,12 @@
 import { combineReducers } from 'redux';
 import { createSelector } from 'reselect';
 import createCachedSelector from 're-reselect';
-import { cachedSelectOrgUnitChildren, selectOrgUnit } from './orgUnitReducers';
+import {
+  cachedSelectOrgUnitChildren,
+  selectOrgUnit,
+  cachedSelectLastAncestorOfLevel,
+  cachedSelectOrgUnitAndDescendants,
+} from './orgUnitReducers';
 
 import {
   GO_HOME,
@@ -330,6 +335,44 @@ export const selectAllMeasuresWithDisplayInfo = createSelector(
 
     return allSiblingOrgUnits.map(orgUnit =>
       cachedSelectMeasureWithDisplayInfo(state, orgUnit.organisationUnitCode),
+    );
+  },
+);
+
+export const selectRenderedMeasuresWithDisplayInfo = createSelector(
+  [
+    state => state,
+    state => selectAllMeasuresWithDisplayInfo(state),
+    state => state.global.currentOrganisationUnit,
+    state => state.map.measureInfo.measureOptions,
+  ],
+  (state, allMeasuresWithMeasureInfo, currentOrgUnit = {}, measureOptions = []) => {
+    if (!currentOrgUnit.organisationUnitCode) {
+      return [];
+    }
+
+    const displayOnLevel = measureOptions.map(option => option.displayOnLevel).find(level => level);
+    if (!displayOnLevel) {
+      return allMeasuresWithMeasureInfo;
+    }
+
+    const lastDisplaylevelAncestor = cachedSelectLastAncestorOfLevel(
+      state,
+      currentOrgUnit.organisationUnitCode,
+      displayOnLevel,
+    );
+
+    if (!lastDisplaylevelAncestor) {
+      return [];
+    }
+
+    const allDescendantCodesOfAncestor = cachedSelectOrgUnitAndDescendants(
+      state,
+      lastDisplaylevelAncestor.organisationUnitCode,
+    ).map(descendant => descendant.organisationUnitCode);
+
+    return allMeasuresWithMeasureInfo.filter(measure =>
+      allDescendantCodesOfAncestor.includes(measure.organisationUnitCode),
     );
   },
 );
