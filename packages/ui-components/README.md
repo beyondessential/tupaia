@@ -6,8 +6,7 @@ In the project directory, you can run:
 
 ### `yarn storybook`
 
-Runs the storybook app and pulls components from the `src` directory.<br />
-Open [http://localhost:65352](http://localhost:65352/) to view it in the browser.
+Runs the storybook app and pulls stories from the `src` directory which have a .stories.js suffix.<br />
 
 The page will reload if you make edits.<br />
 
