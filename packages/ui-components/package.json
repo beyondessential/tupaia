@@ -6,15 +6,26 @@
   "author": "Tom Caiger",
   "license": "MIT",
   "scripts": {
-    "storybook": "start-storybook"
+    "storybook": "start-storybook -p 6006"
   },
   "dependencies": {
     "@babel/core": "^7.9.0",
+    "@quickbaseoss/babel-plugin-styled-components-css-namespace": "^1.0.0-rc4",
     "@storybook/addon-actions": "^5.3.17",
     "@storybook/addon-links": "^5.3.17",
     "@storybook/react": "^5.3.17",
     "babel-loader": "^8.1.0",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "react-dom": "^16.13.1",
+    "semantic-ui-css": "^2.4.1",
+    "semantic-ui-react": "^0.88.2"
+  },
+  "babel": {
+    "plugins": [
+      [
+        "@quickbaseoss/babel-plugin-styled-components-css-namespace",
+        {"cssNamespace": "#root"}
+      ]
+    ]
   }
 }
