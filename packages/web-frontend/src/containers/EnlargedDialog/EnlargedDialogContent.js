@@ -168,6 +168,20 @@ export class EnlargedDialogContent extends PureComponent {
     );
   }
 
+  renderFooter() {
+    const { viewContent } = this.props;
+    const { date } = viewContent;
+    if (date) {
+      return null;
+    }
+    return (
+      <DialogContentText style={styles.description}>
+        {'Last updated: '}
+        {date}
+      </DialogContentText>
+    );
+  }
+
   render() {
     const isMatrix = getIsMatrix(this.props.viewContent);
     const contentStyle = {
