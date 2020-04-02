@@ -47,7 +47,7 @@ export default class extends RouteHandler {
     const orgUnitHierarchy = [await Entity.findOne({ code: WORLD })];
     const countryAndDescendants = await this.filterForAccess(await country.getDescendantsAndSelf());
     orgUnitHierarchy.push(...countryAndDescendants);
-    const entityIdToCode = reduceToDictionary(countryAndDescendants, 'id', 'code');
+    const entityIdToCode = reduceToDictionary(orgUnitHierarchy, 'id', 'code');
     return {
       ...translateForFrontend(this.entity),
       countryHierarchy: orgUnitHierarchy.map(e =>
