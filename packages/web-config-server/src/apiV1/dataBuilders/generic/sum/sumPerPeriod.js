@@ -12,7 +12,7 @@ class SumPerPeriodBuilder extends DataBuilder {
    */
   async build() {
     const { dataSource } = this.config;
-    const { results } = await this.fetchAnalytics(dataSource.codes);
+    const { results, dataPeriod } = await this.fetchAnalytics(dataSource.codes);
     const dataByPeriod = {};
     results.forEach(({ period, value }) => {
       dataByPeriod[period] = (dataByPeriod[period] || 0) + value;
@@ -27,6 +27,7 @@ class SumPerPeriodBuilder extends DataBuilder {
           timestamp: periodToTimestamp(period),
           value: dataByPeriod[period],
         })),
+      dataPeriod,
     };
   }
 }

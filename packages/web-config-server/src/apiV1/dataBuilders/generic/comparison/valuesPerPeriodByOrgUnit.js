@@ -9,7 +9,7 @@ import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 class ValuesPerPeriodByOrgUnitBuilder extends DataBuilder {
   async build() {
     const { dataElementCodes, includeTotal } = this.config;
-    const { results } = await this.fetchAnalytics(dataElementCodes);
+    const { results, dataPeriod } = await this.fetchAnalytics(dataElementCodes);
     if (results.length === 0) return { data: results };
 
     const resultsPerPeriod = {};
@@ -38,7 +38,7 @@ class ValuesPerPeriodByOrgUnitBuilder extends DataBuilder {
       [],
     );
 
-    return { data };
+    return { data, dataPeriod };
   }
 }
 
