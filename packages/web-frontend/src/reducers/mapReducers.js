@@ -11,7 +11,7 @@ import createCachedSelector from 're-reselect';
 import {
   cachedSelectOrgUnitChildren,
   selectOrgUnit,
-  cachedSelectLastAncestorOfLevel,
+  cachedSelectAncestorOfLevel,
   cachedSelectOrgUnitAndDescendants,
 } from './orgUnitReducers';
 
@@ -356,20 +356,38 @@ export const selectRenderedMeasuresWithDisplayInfo = createSelector(
       return allMeasuresWithMeasureInfo;
     }
 
-    const lastDisplaylevelAncestor = cachedSelectLastAncestorOfLevel(
+    const displaylevelAncestor = cachedSelectAncestorOfLevel(
       state,
       currentOrgUnit.organisationUnitCode,
       displayOnLevel,
     );
 
-    if (!lastDisplaylevelAncestor) {
+    if (!displaylevelAncestor) {
       return [];
     }
 
-    const allDescendantCodesOfAncestor = cachedSelectOrgUnitAndDescendants(
+    const allDescendantsOfAncestor = cachedSelectOrgUnitAndDescendants(
       state,
-      lastDisplaylevelAncestor.organisationUnitCode,
-    ).map(descendant => descendant.organisationUnitCode);
+      displaylevelAncestor.organisationUnitCode,
+    );
+
+    // NOTE: BELOW IS A HACK:
+    // Due to Australia currently having two levels of 'Region' entityTypes, we need to ignore if we are looking at the higher level
+    // see: https://github.com/beyondessential/tupaia-backlog/issues/295
+    if (
+      allDescendantsOfAncestor.some(
+        descendant =>
+          descendant.organisationUnitCode !== displaylevelAncestor.organisationUnitCode &&
+          descendant.type === displayOnLevel,
+      )
+    ) {
+      return [];
+    }
+    // NOTE: ABOVE IS A HACK
+
+    const allDescendantCodesOfAncestor = allDescendantsOfAncestor.map(
+      descendant => descendant.organisationUnitCode,
+    );
 
     return allMeasuresWithMeasureInfo.filter(measure =>
       allDescendantCodesOfAncestor.includes(measure.organisationUnitCode),

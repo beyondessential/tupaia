@@ -53,7 +53,7 @@ export const cachedSelectOrgUnitAndDescendants = createCachedSelector(
   },
 )((state, code) => code);
 
-export const cachedSelectLastAncestorOfLevel = createCachedSelector(
+export const cachedSelectAncestorOfLevel = createCachedSelector(
   [state => state, (_, code) => code, (_, __, level) => level],
   (state, code, level) => {
     const orgUnit = selectOrgUnit(state, code);
@@ -61,18 +61,20 @@ export const cachedSelectLastAncestorOfLevel = createCachedSelector(
       return undefined;
     }
 
-    let lastAncestorOfLevel = orgUnit.type === level ? orgUnit : undefined;
+    if (orgUnit.type === level) {
+      return orgUnit;
+    }
+
     let latestOrgUnit = orgUnit;
     while (latestOrgUnit && latestOrgUnit.parent) {
       if (latestOrgUnit.type === level) {
-        lastAncestorOfLevel = latestOrgUnit;
-      } else if (lastAncestorOfLevel) {
-        return lastAncestorOfLevel;
+        return latestOrgUnit;
       }
+
       latestOrgUnit = selectOrgUnit(state, latestOrgUnit.parent);
     }
 
-    return lastAncestorOfLevel;
+    return undefined;
   },
 )((state, code, level) => `${code}_${level}`);
 

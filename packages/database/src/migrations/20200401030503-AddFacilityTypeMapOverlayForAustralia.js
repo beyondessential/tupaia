@@ -47,7 +47,7 @@ exports.up = function(db) {
     'color',
     NULL,
     true,
-    '[{"name": "Public Hospital", "color": "yellow", "value": 1}, {"name": "Private Hospital", "color": "teal", "value": 2}, {"name": "Pharmacy", "color": "green", "value": 3}, {"name": "COVID-19 Testing site", "color": "orange", "value": 4}, {"name": "Other", "color": "purple", "value": "other"}]',
+    '[{"name": "Public Hospital", "color": "seagreen", "value": 1}, {"name": "Private Hospital", "color": "dodgerblue", "value": 2}, {"name": "Pharmacy", "color": "darkgoldenrod", "value": 3}, {"name": "COVID-19 Testing site", "color": "firebrick", "value": 4}, {"name": "Other", "color": "purple", "value": "other"}]',
     false,
     false,
     false,
