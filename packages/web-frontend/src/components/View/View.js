@@ -101,6 +101,12 @@ export class View extends Component {
     return name && (getIsMatrix(viewContent) || type === 'chart');
   }
 
+  getHasDataPeriod() {
+    const { viewContent } = this.props;
+    const { dataPeriod } = viewContent;
+    return dataPeriod;
+  }
+
   mouseOut() {
     this.setState({ isHovered: false });
   }
@@ -182,12 +188,15 @@ export class View extends Component {
 
     const title = this.getHasTitle() && <div style={VIEW_STYLES.title}>{viewContent.name}</div>;
 
+    const showDataPeriod =
+      true || (this.getHasDataPeriod() && <div style={VIEW_STYLES.description}>Some date</div>);
+
     return (
       <div style={getContainerStyle(viewContainerStyle, viewContent)}>
         <OverlayView>
           {title}
           <ViewWrapper viewContent={viewContent} />
-          <p>This is a footer 2</p>
+          {showDataPeriod}
           {showDescription}
           {showInfoIcon}
           {expandButton}
