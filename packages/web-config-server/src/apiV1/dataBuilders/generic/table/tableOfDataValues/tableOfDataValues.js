@@ -30,19 +30,18 @@ export class TableOfDataValuesBuilder extends DataBuilder {
     this.valuesByCell = getValuesByCell(this.tableConfig, this.results);
     this.totalCalculator = new TotalCalculator(this.tableConfig, this.valuesByCell);
 
-    const data = {
-      columns: await this.buildColumns(),
-    };
-    data.rows = await this.buildRows(data.columns);
+    const columns = await this.buildColumns();
+    const rows = await this.buildRows(columns);
+    const data = { columns, rows };
 
     if (this.tableConfig.hasRowCategories()) {
       const categories = await this.buildRowCategories();
 
       if (this.config.categoryAggregator) {
-        const categoryData = this.buildCategoryData(Object.values(data.rows));
-        data.rows = [...data.rows, ...categories.map(c => ({ ...c, ...categoryData[c.category] }))];
+        const categoryData = this.buildCategoryData(Object.values(rows));
+        data.rows = [...rows, ...categories.map(c => ({ ...c, ...categoryData[c.category] }))];
       } else {
-        data.rows = [...data.rows, ...categories];
+        data.rows = [...rows, ...categories];
       }
     }
 
