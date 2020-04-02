@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { aggregateAnalytics, filterAnalytics } from './analytics';
+import { aggregateAnalytics, filterAnalytics, periodFromAnalytics } from './analytics';
 import { AGGREGATION_TYPES } from './aggregationTypes';
 
 export class Aggregator {
@@ -37,11 +37,15 @@ export class Aggregator {
     const dataSourceSpec = { code, type: this.dataSourceTypes.DATA_ELEMENT };
     const { period } = fetchOptions;
     const { results, metadata } = await this.dataBroker.pull(dataSourceSpec, fetchOptions);
+    let dataPeriod = periodFromAnalytics(results);
+    console.log(dataPeriod);
+    dataPeriod = 'hi';
 
     return {
       results: this.processAnalytics(results, aggregationOptions),
       metadata,
       period,
+      dataPeriod,
     };
   }
 
