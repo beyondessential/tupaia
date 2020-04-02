@@ -1,6 +1,8 @@
 import React from 'react';
-import { addDecorator, configure } from '@storybook/react';
+import { addDecorator } from '@storybook/react';
 import { StylesProvider } from "@material-ui/styles";
-import 'semantic-ui-css/semantic.min.css'
+import { ThemeProvider } from '@material-ui/core/styles';
+import theme from '../src/theme';
 
 addDecorator(storyFn => <StylesProvider injectFirst>{storyFn()}</StylesProvider>);
+addDecorator(storyFn => <ThemeProvider theme={theme}>{storyFn()}</ThemeProvider>);

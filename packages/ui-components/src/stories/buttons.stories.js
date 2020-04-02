@@ -1,7 +1,6 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
 import { Button, GradientButton } from '../components/Button';
-import { SuiPrimaryButton, SuiSecondaryButton } from '../components/Semantic-UI-Button';
 
 export default {
   title: 'Button',
@@ -15,6 +14,12 @@ export const Default = () => (
 
 export const Primary = () => (
   <Button color="primary" onClick={action('Primary button clicked')} variant="contained">
+    Primary
+  </Button>
+);
+
+export const Outlined = () => (
+  <Button color="primary" variant="outlined" onClick={action('Primary button clicked')}>
     Primary
   </Button>
 );
@@ -36,7 +41,7 @@ export const Gradient = () => (
 );
 
 export const GradientLoading = () => (
-  <GradientButton isSubmitting={true} onClick={action('Gradient button clicked')}>
+  <GradientButton isSubmitting onClick={action('Gradient button clicked')}>
     Gradient
   </GradientButton>
 );
@@ -50,10 +55,4 @@ export const Combined = () => (
       Gradient
     </GradientButton>
   </>
-);
-
-export const SemanticUIPrimary = () => <SuiPrimaryButton>Semantic UI Button</SuiPrimaryButton>;
-
-export const SemanticUISecondary = () => (
-  <SuiSecondaryButton isSubmitting>Semantic UI Button</SuiSecondaryButton>
 );

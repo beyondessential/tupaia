@@ -7,17 +7,17 @@
 import React from 'react';
 import styled from 'styled-components';
 import MuiButton from '@material-ui/core/Button';
-import { WHITE, PRIMARY_BLUE, BREWER_PALETTE } from '../styles';
+import { WHITE } from '../theme/colors';
 
 export const Button = ({ children, isSubmitting = false, disabled, ...props }) => {
   return (
-    <MuiButton {...props} disabled={isSubmitting} variant="contained">
+    <MuiButton variant="contained" {...props} disabled={isSubmitting}>
       {isSubmitting ? 'Loading...' : children}
     </MuiButton>
   );
 };
 
-const GradientStyles = styled(MuiButton)`
+const StyledButton = styled(Button)`
   border: 0;
   color: ${WHITE};
   box-shadow: 0 3px 5px 2px rgba(255, 105, 135, 0.3);
@@ -27,10 +27,6 @@ const GradientStyles = styled(MuiButton)`
   }
 `;
 
-export const GradientButton = ({ children, isSubmitting = false, disabled, ...props }) => {
-  return (
-    <GradientStyles {...props} disabled={isSubmitting} variant="contained">
-      {isSubmitting ? 'Loading...' : children}
-    </GradientStyles>
-  );
+export const GradientButton = ({ children, ...props }) => {
+  return <StyledButton {...props}>{children}</StyledButton>;
 };
