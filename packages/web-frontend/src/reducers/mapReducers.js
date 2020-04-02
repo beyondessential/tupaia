@@ -8,7 +8,7 @@
 import { combineReducers } from 'redux';
 import { createSelector } from 'reselect';
 import createCachedSelector from 're-reselect';
-import { cachedSelectOrgUnitAndDescendants } from './orgUnitReducers';
+import { cachedSelectOrgUnitChildren, selectOrgUnit } from './orgUnitReducers';
 
 import {
   GO_HOME,
@@ -34,6 +34,7 @@ import {
   getMeasureDisplayInfo,
   calculateRadiusScaleFactor,
   MEASURE_TYPE_SHADING,
+  MEASURE_TYPE_SHADED_SPECTRUM,
 } from '../utils/measures';
 
 import { initialOrgUnit } from '../defaults';
@@ -279,7 +280,10 @@ export const selectHasPolygonMeasure = createSelector(
   (stateMeasureInfo = {}) => {
     return (
       stateMeasureInfo.measureOptions &&
-      stateMeasureInfo.measureOptions.some(option => option.type === MEASURE_TYPE_SHADING)
+      stateMeasureInfo.measureOptions.some(
+        option =>
+          option.type === MEASURE_TYPE_SHADING || option.type === MEASURE_TYPE_SHADED_SPECTRUM,
+      )
     );
   },
 );
@@ -313,12 +317,18 @@ export const selectAllMeasuresWithDisplayInfo = createSelector(
       return [];
     }
 
-    const listOfMeasureLevels = measureLevel.split(',');
-    const allOrgUnits = cachedSelectOrgUnitAndDescendants(state, currentCountry).filter(orgUnit =>
-      listOfMeasureLevels.includes(orgUnit.type),
+    const parentCodes = measureData
+      .map(data => selectOrgUnit(state, data.organisationUnitCode))
+      .filter(orgUnit => orgUnit)
+      .map(orgUnit => orgUnit.parent)
+      .filter((parentCode, index, self) => self.indexOf(parentCode) === index); //Filters for uniqueness
+
+    const allSiblingOrgUnits = parentCodes.reduce(
+      (arr, parentCode) => [...arr, ...cachedSelectOrgUnitChildren(state, parentCode)],
+      [],
     );
 
-    return allOrgUnits.map(orgUnit =>
+    return allSiblingOrgUnits.map(orgUnit =>
       cachedSelectMeasureWithDisplayInfo(state, orgUnit.organisationUnitCode),
     );
   },

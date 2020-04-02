@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { getPreferredPeriod } from './getPreferredPeriod';
+import { getPreferredPeriod } from './utils';
 
 /**
  * Filter to get latest period analytics from analytics
