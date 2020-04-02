@@ -16,7 +16,7 @@ import { TotalCalculator } from './TotalCalculator';
 
 const getColumnKey = columnIndex => `Col${parseInt(columnIndex, 10) + 1}`;
 
-const ROW_KEYS_TO_IGNORE = ['dataElement', 'categoryId'];
+const METADATA_ROW_KEYS = ['dataElement', 'categoryId'];
 const ORG_UNIT_COL_KEY = '$orgUnit';
 const CATEGORY_AGGREGATION_TYPES = {
   AVERAGE: '$average',
@@ -24,24 +24,16 @@ const CATEGORY_AGGREGATION_TYPES = {
 
 export class TableOfDataValuesBuilder extends DataBuilder {
   async build() {
-    const data = {};
     this.results = await this.fetchResults();
     this.tableConfig = new TableConfig(this.config, this.results);
-    this.baseRows = this.buildBaseRows(this.tableConfig.rows);
+    this.baseRows = this.buildBaseRows();
     this.valuesByCell = getValuesByCell(this.tableConfig, this.results);
     this.totalCalculator = new TotalCalculator(this.tableConfig, this.valuesByCell);
-    if (this.tableConfig.columns === ORG_UNIT_COL_KEY) this.buildOrgsFromResults();
-    this.columns = await this.buildColumns();
-    data.rows = await this.buildRows();
 
-    if (
-      this.tableConfig.columns === ORG_UNIT_COL_KEY ||
-      this.tableConfig.columnType === ORG_UNIT_COL_KEY
-    ) {
-      data.columns = await this.replaceOrgUnitCodesWithNames();
-    } else {
-      data.columns = this.columns;
-    }
+    const data = {
+      columns: await this.buildColumns(),
+      rows: await this.buildRows(data.columns),
+    };
 
     if (this.tableConfig.hasRowCategories()) {
       const categories = await this.buildRowCategories();
@@ -121,6 +113,7 @@ export class TableOfDataValuesBuilder extends DataBuilder {
   async buildColumns() {
     const buildColumn = (column, index) => ({ key: getColumnKey(index), title: column });
 
+    if (this.tableConfig.columns === ORG_UNIT_COL_KEY) this.buildOrgsFromResults();
     if (!this.tableConfig.hasColumnCategories()) {
       return this.tableConfig.columns.map(buildColumn);
     }
@@ -128,10 +121,18 @@ export class TableOfDataValuesBuilder extends DataBuilder {
     const categoryKeyToTitle = await this.getColumnCategoryToTitle();
 
     let index = 0;
-    return this.tableConfig.columns.map(({ category, columns }) => ({
+    const builtColumns = this.tableConfig.columns.map(({ category, columns }) => ({
       category: categoryKeyToTitle(category),
       columns: columns.map(column => buildColumn(column, index++)),
     }));
+
+    if (
+      this.tableConfig.columns === ORG_UNIT_COL_KEY ||
+      this.tableConfig.columnType === ORG_UNIT_COL_KEY
+    ) {
+      return this.replaceOrgUnitCodesWithNames(builtColumns);
+    }
+    return builtColumns;
   }
 
   /**
@@ -207,16 +208,17 @@ export class TableOfDataValuesBuilder extends DataBuilder {
   }
 
   calculateCategoryTotals(rows) {
+    const rowKeysToIgnore = new Set(METADATA_ROW_KEYS);
     return rows.reduce((columnAggregates, row) => {
       const categoryId = row.categoryId;
-      const categoryCols = columnAggregates[categoryId] || {};
+      const categoryTotals = columnAggregates[categoryId] || {};
       Object.keys(row).forEach(key => {
-        if (!ROW_KEYS_TO_IGNORE.includes(key)) {
-          categoryCols[key] = (categoryCols[key] || 0) + (row[key] || 0);
+        if (!rowKeysToIgnore.has(key)) {
+          categoryTotals[key] = (categoryTotals[key] || 0) + (row[key] || 0);
         }
       });
 
-      return { ...columnAggregates, [categoryId]: categoryCols };
+      return { ...columnAggregates, [categoryId]: categoryTotals };
     }, {});
   }
 
@@ -225,12 +227,12 @@ export class TableOfDataValuesBuilder extends DataBuilder {
     this.tableConfig.columns = Array.from(orgUnitsWithData);
   }
 
-  async replaceOrgUnitCodesWithNames() {
-    const orgUnitCodes = this.columns.map(c => c.title);
+  async replaceOrgUnitCodesWithNames(columns) {
+    const orgUnitCodes = columns.map(c => c.title);
     const orgUnits = await Entity.find({ code: orgUnitCodes });
     const orgUnitCodesToName = reduceToDictionary(orgUnits, 'code', 'name');
 
-    return this.columns.map(({ title, key }) => ({ key, title: orgUnitCodesToName[title] }));
+    return columns.map(({ title, key }) => ({ key, title: orgUnitCodesToName[title] }));
   }
 }
 

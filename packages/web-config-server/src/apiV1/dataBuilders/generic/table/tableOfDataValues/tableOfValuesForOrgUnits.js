@@ -14,7 +14,7 @@ class TableOfValuesForOrgUnitsBuilder extends TableOfDataValuesBuilder {
    * }
    */
 
-  buildBaseRows(rows, parent = undefined) {
+  buildBaseRows(rows = this.tableConfig.rows, parent = undefined) {
     const { stripFromDataElementNames } = this.config;
     return rows.reduce((baseRows, row) => {
       if (typeof row === 'string') {
@@ -27,29 +27,17 @@ class TableOfValuesForOrgUnitsBuilder extends TableOfDataValuesBuilder {
     }, {});
   }
 
-  buildRows() {
+  buildRows(columns) {
     const { stripFromDataElementNames, filterEmptyRows } = this.config;
-    const rowData = this.results.reduce(
-      (valuesPerElement, { value, organisationUnit, metadata }) => {
-        const dataElementName = stripFromStart(metadata.name, stripFromDataElementNames);
-        const orgUnit = this.columns.find(col => col.title === organisationUnit);
-        const row = valuesPerElement[dataElementName];
-
-        if (orgUnit) row[orgUnit.key] = value;
-
-        return {
-          ...valuesPerElement,
-          [dataElementName]: {
-            ...row,
-            dataElement: dataElementName,
-          },
-        };
-      },
-      this.baseRows,
-    );
+    const rowData = { ...this.baseRows };
+    this.results.forEach(({ value, organisationUnit, metadata }) => {
+      const dataElementName = stripFromStart(metadata.name, stripFromDataElementNames);
+      const orgUnit = this.columns.find(col => col.title === organisationUnit);
+      if (orgUnit) rowData[dataElementName][orgUnit.key] = value;
+    });
 
     if (filterEmptyRows) {
-      const cols = this.columns.map(c => c.key);
+      const cols = columns.map(c => c.key);
       return Object.values(rowData).filter(r => cols.some(x => r[x]));
     }
 
