@@ -152,8 +152,6 @@ export class Entity extends BaseModel {
   async getDescendantsAndSelf(hierarchyId) {
     if (hierarchyId) {
       const descendants = await Entity.getDescendantsNonCanonically([this], hierarchyId);
-      const parent = await Entity.findById(this.parent_id);
-      this.parent_code = parent.code;
       return [this, ...descendants];
     }
     // no alternative hierarchy prescribed, use the faster all-in-one sql query
@@ -197,11 +195,6 @@ export class Entity extends BaseModel {
         ? await Entity.find({ id: childIds })
         : await Entity.find({ parent_id: parentIds });
 
-    const parentIdsToCode = reduceToDictionary(parents, 'id', 'code');
-    children.forEach(c => {
-      c.parent_code = parentIdsToCode[c.parent_id];
-    });
-
     return children;
   }
 
@@ -218,12 +211,8 @@ export class Entity extends BaseModel {
             FROM descendants d
             JOIN entity c ON c.parent_id = d.id
         )
-        SELECT
-          ${Entity.getSqlForColumns('descendants')},
-          p.code as parent_code
-        FROM descendants
-        LEFT JOIN entity p
-          ON p.id = descendants.parent_id
+        SELECT ${Entity.getSqlForColumns('descendants')}
+        FROM descendants;
     `,
       [this.id],
     );
