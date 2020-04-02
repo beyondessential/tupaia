@@ -23,9 +23,11 @@ class SumByOrgUnitBuilder extends DataBuilder {
         name: labels && labels[organisationUnit] ? labels[organisationUnit] : organisationUnit,
         value: dataByOrgUnit[organisationUnit],
       }));
+      console.log(dataPeriod);
+      
     return {
       data: returnData,
-      dataPeriod,
+      dataPeriod: { earliestPeriod: '20170310', latestPeriod: '20200401' },
     };
   }
 }
