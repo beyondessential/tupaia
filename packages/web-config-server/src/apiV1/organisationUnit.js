@@ -31,6 +31,16 @@ const translateDescendantForFrontEnd = (descendant, entityIdToCode) => ({
   parent: entityIdToCode[descendant.parent_id],
 });
 
+const mapEntityIdToCode = entities => {
+  const entityIdToCode = {};
+  // Usage of `reduce` resulted in 200-2000x more execution time for 5000 entities
+  entities.forEach(({ id, code }) => {
+    entityIdToCode[id] = code;
+  });
+
+  return entityIdToCode;
+};
+
 export default class extends RouteHandler {
   static PermissionsChecker = PermissionsChecker; // checks the user has access to requested entity
 
@@ -47,11 +57,11 @@ export default class extends RouteHandler {
     const orgUnitHierarchy = [await Entity.findOne({ code: WORLD })];
     const countryAndDescendants = await this.filterForAccess(await country.getDescendantsAndSelf());
     orgUnitHierarchy.push(...countryAndDescendants);
-    const entityIdToCode = reduceToDictionary(countryAndDescendants, 'id', 'code');
+
     return {
       ...translateForFrontend(this.entity),
       countryHierarchy: orgUnitHierarchy.map(e =>
-        translateDescendantForFrontEnd(e, entityIdToCode),
+        translateDescendantForFrontEnd(e, mapEntityIdToCode(orgUnitHierarchy)),
       ),
     };
   }
