@@ -26,7 +26,7 @@ function translateForFrontend(entity) {
 
 const translateDescendantForFrontEnd = (descendant, entityIdToCode) => ({
   ...translateForFrontend(descendant),
-  parent: entityIdToCode(descendant.parent_id),
+  parent: entityIdToCode[descendant.parent_id],
 });
 
 export default class extends RouteHandler {
