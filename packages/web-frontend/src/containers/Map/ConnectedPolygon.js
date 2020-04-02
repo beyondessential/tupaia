@@ -115,7 +115,7 @@ class ConnectedPolygon extends Component {
 
     const defaultProps = {
       positions: coordinates,
-      onClick: () => onChangeOrgUnit(area),
+      onClick: () => onChangeOrgUnit(organisationUnitCode),
     };
 
     if (shade) {
