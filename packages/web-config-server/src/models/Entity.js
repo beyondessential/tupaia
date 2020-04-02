@@ -199,7 +199,7 @@ export class Entity extends BaseModel {
   }
 
   async getDescendantsAndSelfCanonically() {
-    return this.database.executeSql(
+    const records = await this.database.executeSql(
       `
         WITH RECURSIVE descendants AS (
           SELECT *, 0 AS generation
@@ -216,6 +216,12 @@ export class Entity extends BaseModel {
     `,
       [this.id],
     );
+
+    return records.map(record => {
+      const entity = Entity.load(record);
+      entity.parent_code = record.parent_code;
+      return entity;
+    });
   }
 
   /**
@@ -287,7 +293,7 @@ export class Entity extends BaseModel {
   async getOrgUnitChildren() {
     const types = Object.values(Entity.orgUnitEntityTypes);
 
-    return Entity.database.executeSql(
+    const records = await Entity.database.executeSql(
       `
       SELECT ${Entity.getSqlForColumns()} FROM entity
       WHERE
@@ -297,6 +303,7 @@ export class Entity extends BaseModel {
     `,
       [this.id, ...types],
     );
+    return records.map(record => Entity.load(record));
   }
 
   static fetchChildToParentCode = async childrenCodes => {
@@ -345,5 +352,9 @@ export class Entity extends BaseModel {
 
   async parent() {
     return Entity.findById(this.parent_id);
+  }
+
+  async countryEntity() {
+    return this.type === COUNTRY ? this : Entity.findOne({ code: this.entity.country_code });
   }
 }
