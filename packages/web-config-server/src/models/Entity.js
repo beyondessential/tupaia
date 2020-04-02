@@ -298,7 +298,7 @@ export class Entity extends BaseModel {
   async getOrgUnitChildren() {
     const types = Object.values(Entity.orgUnitEntityTypes);
 
-    return Entity.database.executeSql(
+    const records = await Entity.database.executeSql(
       `
       SELECT ${Entity.getSqlForColumns()} FROM entity
       WHERE
@@ -308,6 +308,7 @@ export class Entity extends BaseModel {
     `,
       [this.id, ...types],
     );
+    return records.map(record => Entity.load(record));
   }
 
   static fetchChildToParentCode = async childrenCodes => {
@@ -356,5 +357,9 @@ export class Entity extends BaseModel {
 
   async parent() {
     return Entity.findById(this.parent_id);
+  }
+
+  async countryEntity() {
+    return this.type === COUNTRY ? this : Entity.findOne({ code: this.entity.country_code });
   }
 }

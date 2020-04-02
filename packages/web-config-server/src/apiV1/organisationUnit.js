@@ -3,7 +3,9 @@ import { getEntityLocationForFrontend, getOrganisationUnitTypeForFrontend } from
 import { RouteHandler } from './RouteHandler';
 import { PermissionsChecker } from './permissions';
 
-function translateForFrontend(entity) {
+const WORLD = 'World';
+
+export const translateForFrontend = entity => {
   // Sometimes we'll end up with a null entity (eg getting a top-level entity's parent).
   // Frontend expects an empty object rather than null.
   if (!entity) return {};
@@ -16,7 +18,7 @@ function translateForFrontend(entity) {
     location: getEntityLocationForFrontend(entity),
     photoUrl: entity.image_url,
   };
-}
+};
 
 const translateDescendantForFrontEnd = descendant => ({
   ...translateForFrontend(descendant),
@@ -34,22 +36,22 @@ export default class extends RouteHandler {
   }
 
   async getEntityAndCountryHierarchyByCode() {
-    const country = this.entity.isCountry()
-      ? this.entity
-      : await Entity.findOne({ code: this.entity.country_code });
-    const countryAndDescendants = await this.filterForAccess(await country.getDescendantsAndSelf());
-    countryAndDescendants.unshift(await Entity.findOne({ code: 'World' })); // Hierarchy is missing world entity, so push it to the front of the array
+    const country = await this.entity.countryEntity();
+
+    const orgUnitHierarchy = [await Entity.findOne({ code: WORLD })];
+    const countryAndDescendants = await country.getDescendantsAndSelf();
+    orgUnitHierarchy.push(...countryAndDescendants);
 
     return {
       ...translateForFrontend(this.entity),
-      countryHierarchy: countryAndDescendants.map(translateDescendantForFrontEnd),
+      countryHierarchy: orgUnitHierarchy.map(translateDescendantForFrontEnd),
     };
   }
 
   async getEntityAndChildrenByCode() {
     // Don't check parent permission (as we already know we have permission for at least one of its children)
     const parent = await this.entity.parent();
-    const children = await this.filterForAccess(await this.entity.getOrgUnitChildren());
+    const children = await this.getOrgUnitChildrenWithAccess();
 
     return {
       ...translateForFrontend(this.entity),
@@ -58,12 +60,16 @@ export default class extends RouteHandler {
     };
   }
 
-  async filterForAccess(orgUnits) {
+  async getOrgUnitChildrenWithAccess() {
     const { userHasAccess } = this.req;
-    return (
-      await Promise.all(
-        orgUnits.map(async orgUnit => (await userHasAccess(orgUnit.code)) && orgUnit),
-      )
-    ).filter(orgUnit => orgUnit);
+    const children = await this.entity.getOrgUnitChildren();
+
+    if (this.entity.code === WORLD) {
+      return (
+        await Promise.all(children.map(async child => (await userHasAccess(child)) && child))
+      ).filter(child => child);
+    }
+
+    return children;
   }
 }
