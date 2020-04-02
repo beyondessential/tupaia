@@ -217,11 +217,7 @@ export class Entity extends BaseModel {
       [this.id],
     );
 
-    return records.map(record => {
-      const entity = Entity.load(record);
-      entity.parent_code = record.parent_code;
-      return entity;
-    });
+    return records.map(record => Entity.load(record));
   }
 
   /**
