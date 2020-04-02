@@ -32,8 +32,8 @@ export class TableOfDataValuesBuilder extends DataBuilder {
 
     const data = {
       columns: await this.buildColumns(),
-      rows: await this.buildRows(data.columns),
     };
+    data.rows = await this.buildRows(data.columns);
 
     if (this.tableConfig.hasRowCategories()) {
       const categories = await this.buildRowCategories();
