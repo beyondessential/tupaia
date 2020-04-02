@@ -1,3 +1,9 @@
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+
+import { reduceToDictionary } from '@tupaia/utils';
 import { Entity } from '/models';
 import { getEntityLocationForFrontend, getOrganisationUnitTypeForFrontend } from './utils';
 import { RouteHandler } from './RouteHandler';
@@ -20,9 +26,9 @@ export const translateForFrontend = entity => {
   };
 };
 
-const translateDescendantForFrontEnd = descendant => ({
+const translateDescendantForFrontEnd = (descendant, entityIdToCode) => ({
   ...translateForFrontend(descendant),
-  parent: descendant.parent_code,
+  parent: entityIdToCode[descendant.parent_id],
 });
 
 export default class extends RouteHandler {
@@ -41,10 +47,12 @@ export default class extends RouteHandler {
     const orgUnitHierarchy = [await Entity.findOne({ code: WORLD })];
     const countryAndDescendants = await this.filterForAccess(await country.getDescendantsAndSelf());
     orgUnitHierarchy.push(...countryAndDescendants);
-
+    const entityIdToCode = reduceToDictionary(countryAndDescendants, 'id', 'code');
     return {
       ...translateForFrontend(this.entity),
-      countryHierarchy: orgUnitHierarchy.map(translateDescendantForFrontEnd),
+      countryHierarchy: orgUnitHierarchy.map(e =>
+        translateDescendantForFrontEnd(e, entityIdToCode),
+      ),
     };
   }
 

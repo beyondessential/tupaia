@@ -37,6 +37,7 @@ exports.up = async function(db) {
       ALTER TABLE project drop column name;
       ALTER TABLE project add column entity_id text;
     `);
+  await updateProject(db, 'covidau', 'COVID-19 Australia', `'AU'`, 'country');
   await updateProject(db, 'unfpa', 'UNFPA', `'WS','MH','TO','FM'`, 'country');
   await updateProject(db, 'imms', 'Immunization Module', `'VU','SB'`, 'country');
   await updateProject(db, 'fanafana', 'Fanafana Ola', `'TO'`, 'country');
@@ -46,7 +47,7 @@ exports.up = async function(db) {
   return updateProject(db, 'explore', 'General', `'Wo'`, 'world');
 };
 
-const updateProject = async (db, projectCode, projectDescription, entityCodes, entityType) => {
+const updateProject = async (db, projectCode, projectName, entityCodes, entityType) => {
   const projectId = generateId();
 
   const childEntities = (
@@ -68,7 +69,7 @@ const updateProject = async (db, projectCode, projectDescription, entityCodes, e
     .join(',\n');
 
   return db.runSql(`
-    insert into "entity" ("id", "code", "parent_id", "name", "type" ) values ('${projectId}', '${projectCode}', '5d3f8844a72aa231bf71977f', '${projectDescription}', 'project');
+    insert into "entity" ("id", "code", "parent_id", "name", "type" ) values ('${projectId}', '${projectCode}', '5d3f8844a72aa231bf71977f', '${projectName}', 'project');
     insert into "entity_hierarchy" ("id", "name") values ('${hierarchyId}', '${projectCode}');
     insert into "entity_relation" ("id", "parent_id", "child_id", "entity_hierarchy_id") values ${valuesToInsert};
     update "project" set "entity_id" = '${projectId}' where "code" ='${projectCode}';
