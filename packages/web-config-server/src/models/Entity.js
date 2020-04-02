@@ -206,7 +206,7 @@ export class Entity extends BaseModel {
   }
 
   async getDescendantsAndSelfCanonically() {
-    return this.database.executeSql(
+    const records = await this.database.executeSql(
       `
         WITH RECURSIVE descendants AS (
           SELECT *, 0 AS generation
@@ -227,6 +227,12 @@ export class Entity extends BaseModel {
     `,
       [this.id],
     );
+
+    return records.map(record => {
+      const entity = Entity.load(record);
+      entity.parent_code = record.parent_code;
+      return entity;
+    });
   }
 
   /**

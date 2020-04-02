@@ -39,7 +39,7 @@ export default class extends RouteHandler {
     const country = await this.entity.countryEntity();
 
     const orgUnitHierarchy = [await Entity.findOne({ code: WORLD })];
-    const countryAndDescendants = await country.getDescendantsAndSelf();
+    const countryAndDescendants = await this.filterForAccess(await country.getDescendantsAndSelf());
     orgUnitHierarchy.push(...countryAndDescendants);
 
     return {
@@ -51,7 +51,7 @@ export default class extends RouteHandler {
   async getEntityAndChildrenByCode() {
     // Don't check parent permission (as we already know we have permission for at least one of its children)
     const parent = await this.entity.parent();
-    const children = await this.getOrgUnitChildrenWithAccess();
+    const children = await this.filterForAccess(await this.entity.getOrgUnitChildren());
 
     return {
       ...translateForFrontend(this.entity),
@@ -60,16 +60,19 @@ export default class extends RouteHandler {
     };
   }
 
-  async getOrgUnitChildrenWithAccess() {
-    const { userHasAccess } = this.req;
-    const children = await this.entity.getOrgUnitChildren();
-
-    if (this.entity.code === WORLD) {
-      return (
-        await Promise.all(children.map(async child => (await userHasAccess(child)) && child))
-      ).filter(child => child);
-    }
-
-    return children;
+  async filterForAccess(entities) {
+    return (
+      await Promise.all(
+        entities.map(async entity => (await this.checkUserHasEntityAccess(entity)) && entity),
+      )
+    ).filter(entity => entity);
   }
+
+  checkUserHasEntityAccess = async entity => {
+    const { userHasAccess } = this.req;
+    if (entity.isCountry()) {
+      return userHasAccess(entity);
+    }
+    return true; // temporarily only checking access at the country level (permissions currently defined for country only)
+  };
 }
