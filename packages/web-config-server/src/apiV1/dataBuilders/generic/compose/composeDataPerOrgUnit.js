@@ -8,12 +8,14 @@ import { fetchComposedData } from '/apiV1/dataBuilders/helpers';
  * Example:
  * ```
  * {
- *   dataBuilders: {
- *     febrile: {
- *       dataBuilder: "countEvents",
- *       dataBuilderConfig: {
- *         dataValues: { STR_CRF169: { operator: "regex", value: "Positive" } }
- *       }
+ *   "dataBuilders": {
+ *    "RDT positive cases": {
+ *     "dataBuilder": "countEvents",
+ *       "dataBuilderConfig": "<CONFIG1>",
+ *     },
+ *     "# febrile illness cases": {
+ *       "dataBuilder": "countEvents",
+ *       "dataBuilderConfig": "<CONFIG2>"
  *     }
  *   }
  * }
