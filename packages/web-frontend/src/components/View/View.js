@@ -15,6 +15,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import CircularProgress from 'material-ui/CircularProgress';
+import moment from 'moment';
 
 import { VIEW_STYLES } from '../../styles';
 import { OverlayView } from '../../utils';
@@ -80,6 +81,15 @@ const getContainerStyle = (baseStyle, viewContent) => {
   return baseStyle;
 };
 
+const formatDate = value => {
+  return `Latest available data: ${moment(value).format('DD/MM/YY')}`;
+};
+
+const formatDataPeriod = dataPeriod => {
+  //TODO: add range if applicable
+  return formatDate(dataPeriod.latestPeriod);
+};
+
 export class View extends Component {
   state = {
     isHovered: false,
@@ -103,8 +113,9 @@ export class View extends Component {
 
   getHasDataPeriod() {
     const { viewContent } = this.props;
-    const { dataPeriod } = viewContent;
-    return dataPeriod;
+    console.log(viewContent);
+    const { dataPeriod, showDataPeriod } = viewContent;
+    return showDataPeriod && dataPeriod && dataPeriod.latestPeriod;
   }
 
   mouseOut() {
@@ -188,8 +199,9 @@ export class View extends Component {
 
     const title = this.getHasTitle() && <div style={VIEW_STYLES.title}>{viewContent.name}</div>;
 
-    const showDataPeriod =
-      true || (this.getHasDataPeriod() && <div style={VIEW_STYLES.description}>Some date</div>);
+    const showDataPeriod = this.getHasDataPeriod() && (
+      <div style={VIEW_STYLES.dataPeriod}>{formatDataPeriod(viewContent.dataPeriod)}</div>
+    );
 
     return (
       <div style={getContainerStyle(viewContainerStyle, viewContent)}>

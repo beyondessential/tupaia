@@ -11,6 +11,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DefaultCloseIcon from 'material-ui/svg-icons/navigation/close';
 import DownloadIcon from 'material-ui/svg-icons/file/file-download';
 import IconButton from 'material-ui/IconButton';
+import moment from 'moment';
 import { DateRangePicker } from '../../components/DateRangePicker';
 
 import { DIALOG_Z_INDEX, DARK_BLUE, OFF_WHITE } from '../../styles';
@@ -168,16 +169,18 @@ export class EnlargedDialogContent extends PureComponent {
     );
   }
 
-  renderFooter() {
+  renderDataPeriod() {
     const { viewContent } = this.props;
-    const { date } = viewContent;
-    if (date) {
+    const { dataPeriod, showDataPeriod } = viewContent;
+
+    if (showDataPeriod !== 'all' || !dataPeriod || !dataPeriod.latestPeriod) {
       return null;
     }
+
     return (
-      <DialogContentText style={styles.description}>
-        {'Last updated: '}
-        {date}
+      <DialogContentText style={styles.dataPeriod}>
+        {'Latest available data: '}
+        {moment(dataPeriod.latestPeriod).format('DD/MM/YY')}
       </DialogContentText>
     );
   }
@@ -196,6 +199,7 @@ export class EnlargedDialogContent extends PureComponent {
           {this.renderToolbar()}
           {this.renderDescription()}
           {this.renderBody()}
+          {this.renderDataPeriod()}
         </DialogContent>
       </React.Fragment>
     );
@@ -264,6 +268,9 @@ const styles = {
     // Ensure date dialog is above enlarged dialog.
     zIndex: DIALOG_Z_INDEX + 1,
   },
+  dataPeriod: {
+    fontSize: 10,
+  }
 };
 
 EnlargedDialogContent.propTypes = {
