@@ -10,6 +10,12 @@ export class EntityHierarchyBuilder {
       entityRelation: entityRelationModel,
     };
     this.cachedPromises = {};
+    entityModel.addChangeHandler(this.invalidateCache);
+    entityRelationModel.addChangeHandler(this.invalidateCache);
+  }
+
+  invalidateCache() {
+    this.cachedPromises = {};
   }
 
   getCacheKey = (entityId, hierarchyId = 'canonical') => `${entityId}_${hierarchyId}`;
