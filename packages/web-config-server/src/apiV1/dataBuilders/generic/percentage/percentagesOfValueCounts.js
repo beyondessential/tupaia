@@ -68,7 +68,7 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
         throw new Error('percentagesOfValueCounts missing config field: groupBy');
       }
 
-      const calculator = buildCalculator(fraction);
+      const calculator = this.buildCalculator(fraction);
 
       if (!calculator) {
         throw new Error('Could not create cacluation from percentagesOfValueCounts config');
