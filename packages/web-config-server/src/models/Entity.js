@@ -10,6 +10,7 @@ import { reduceToDictionary } from '@tupaia/utils';
 import { BaseModel } from './BaseModel';
 import { EntityRelation } from './EntityRelation';
 import { Project } from './Project';
+import { EntityHierarchyBuilder } from './helpers/EntityHierarchyBuilder';
 
 const CASE = 'case';
 const COUNTRY = 'country';
@@ -86,6 +87,8 @@ export class Entity extends BaseModel {
     VILLAGE,
   };
 
+  static hierarchyBuilder = new EntityHierarchyBuilder(Entity, EntityRelation);
+
   constructor() {
     super();
     this.cache = {};
@@ -150,74 +153,7 @@ export class Entity extends BaseModel {
   }
 
   async getDescendants(hierarchyId) {
-    if (hierarchyId) {
-      return Entity.getDescendantsNonCanonically([this], hierarchyId);
-    }
-    // no alternative hierarchy prescribed, use the faster all-in-one sql query
-    return this.getDescendantsCanonically();
-  }
-
-  /**
-   * Recursively traverse the alternative hierarchy that begins with the specified parents.
-   * At each generation, choose children via 'entity_relation' if any exist, or the canonical
-   * entity.parent_id if none do
-   * @param {string[]} parents      The entities to start at
-   * @param {string} hierarchyId    The specific hierarchy to follow through entity_relation
-   */
-  static async getDescendantsNonCanonically(parents, hierarchyId) {
-    const children = await Entity.getNextGeneration(parents, hierarchyId);
-
-    // if we've made it to the leaf nodes, return an empty array
-    if (children.length === 0) {
-      return [];
-    }
-
-    // keep recursing down the hierarchy
-    const descendants = await Entity.getDescendantsNonCanonically(children, hierarchyId);
-    return [...children, ...descendants];
-  }
-
-  static async getNextGeneration(parents, hierarchyId) {
-    // get any matching alternative hierarchy relationships leading out of these parents
-    const parentIds = parents.map(p => p.id);
-    const alternativeHierarchyLinks = hierarchyId
-      ? await EntityRelation.find({
-          parent_id: parentIds,
-          entity_hierarchy_id: hierarchyId,
-        })
-      : [];
-    const childIds = alternativeHierarchyLinks.map(l => l.child_id);
-
-    // if no alternative hierarchy links for this generation, follow the canonical relationships
-    const children =
-      childIds.length > 0
-        ? await Entity.find({ id: childIds })
-        : await Entity.find({ parent_id: parentIds });
-
-    return children;
-  }
-
-  async getDescendantsCanonically() {
-    const records = await this.database.executeSql(
-      `
-        WITH RECURSIVE descendants AS (
-          SELECT *, 0 AS generation
-            FROM entity
-            WHERE parent_id = ?
-
-          UNION ALL
-          SELECT c.*, d.generation + 1
-            FROM descendants d
-            JOIN entity c ON c.parent_id = d.id
-        )
-        SELECT ${Entity.getSqlForColumns('descendants')}
-        FROM descendants
-        ORDER BY generation;
-    `,
-      [this.id],
-    );
-
-    return records.map(record => Entity.load(record));
+    return Entity.hierarchyBuilder.getDescendants(this.id, hierarchyId);
   }
 
   static async getFacilitiesOfOrgUnit(organisationUnitCode) {
