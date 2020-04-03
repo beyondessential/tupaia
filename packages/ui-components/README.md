@@ -30,3 +30,7 @@ In order to use Prettier in **Visual Studio Code**:
 1. Install the `Prettier` plugin
 2. Enable the `Editor: Format on Save` setting.
 3. You can now format a file either by saving it, or by using the `Format Document` command
+
+### Notes on approach
+ - Use styled components to customise components
+ - Avoid hard coding children and allow them to be passed in as JSX as much as possible. 

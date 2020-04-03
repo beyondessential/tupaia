@@ -1,3 +1,8 @@
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+
 import { createMuiTheme } from '@material-ui/core/styles';
 import * as COLORS from './colors';
 
@@ -10,11 +15,11 @@ const palette = {
     main: COLORS.RED,
   },
   text: {
-    primary: COLORS.GREY_72,
-    secondary: COLORS.GREY_44,
+    primary: COLORS.TEXTGREY,
+    secondary: COLORS.TEXTGREY,
   },
   background: {
-    default: COLORS.LIGHTGREY,
+    default: 'transparent', // use background addon to switch colors
     paper: COLORS.WHITE,
   },
 };

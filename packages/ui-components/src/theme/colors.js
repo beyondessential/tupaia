@@ -1,3 +1,8 @@
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+
 // Color naming based loosely on material ui guidelines
 // https://material-ui.com/customization/color/
 
