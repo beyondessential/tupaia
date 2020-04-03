@@ -13,16 +13,14 @@ const StyledButton = styled(MuiButton)`
   min-width: 120px;
 `;
 
-export const Button = ({ children, isSubmitting = false, disabled, ...props }) => {
-  return (
-    <StyledButton
-      classes={{ disabled: 'test' }}
-      variant="contained"
-      color="primary"
-      {...props}
-      disabled={isSubmitting}
-    >
-      {isSubmitting ? 'Loading...' : children}
-    </StyledButton>
-  );
-};
+export const Button = ({ children, isSubmitting = false, disabled, ...props }) => (
+  <StyledButton
+    classes={{ disabled: 'test' }}
+    variant="contained"
+    color="primary"
+    {...props}
+    disabled={isSubmitting}
+  >
+    {isSubmitting ? 'Loading...' : children}
+  </StyledButton>
+);

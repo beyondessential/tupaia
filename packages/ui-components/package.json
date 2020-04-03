@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "@babel/core": "^7.9.0",
+    "@material-ui/lab": "^4.0.0-alpha.47",
     "@storybook/addon-actions": "^5.3.17",
+    "@storybook/addon-backgrounds": "^5.3.18",
     "@storybook/addon-links": "^5.3.17",
     "@storybook/react": "^5.3.17",
     "babel-loader": "^8.1.0",
