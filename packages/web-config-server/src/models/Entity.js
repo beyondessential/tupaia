@@ -149,13 +149,12 @@ export class Entity extends BaseModel {
     return ancestors.length > 0 ? ancestors[0] : null;
   }
 
-  async getDescendantsAndSelf(hierarchyId) {
+  async getDescendants(hierarchyId) {
     if (hierarchyId) {
-      const descendants = await Entity.getDescendantsNonCanonically([this], hierarchyId);
-      return [this, ...descendants];
+      return Entity.getDescendantsNonCanonically([this], hierarchyId);
     }
     // no alternative hierarchy prescribed, use the faster all-in-one sql query
-    return this.getDescendantsAndSelfCanonically();
+    return this.getDescendantsCanonically();
   }
 
   /**
@@ -198,13 +197,13 @@ export class Entity extends BaseModel {
     return children;
   }
 
-  async getDescendantsAndSelfCanonically() {
+  async getDescendantsCanonically() {
     const records = await this.database.executeSql(
       `
         WITH RECURSIVE descendants AS (
           SELECT *, 0 AS generation
             FROM entity
-            WHERE id = ?
+            WHERE parent_id = ?
 
           UNION ALL
           SELECT c.*, d.generation + 1
@@ -212,42 +211,13 @@ export class Entity extends BaseModel {
             JOIN entity c ON c.parent_id = d.id
         )
         SELECT ${Entity.getSqlForColumns('descendants')}
-        FROM descendants;
+        FROM descendants
+        ORDER BY generation;
     `,
       [this.id],
     );
 
     return records.map(record => Entity.load(record));
-  }
-
-  /**
-   * Recursively traverse the alternative hierarchy that begins with the specified parents.
-   * At each generation, choose children via 'entity_relation' if any exist, or the canonical
-   * entity.parent_id if none do
-   * Assumptions:
-   * - All entities of a given type occupy the same generation, e.g. all villages sit within a
-   *   single generation below facilities. This is not true for 'region' entity types - in several
-   *   countries there are two layers of district/sub-district, which are both of type 'region'.
-   *   In practice, this isn't a big deal, as we generally just want the first layer we come to :-)
-   * @param {string[]} parents      The entities to start at
-   * @param {string} hierarchyId  The specific hierarchy to follow through entity_relation
-   */
-  static async getNearestDescendantsMatchingTypes(entities, hierarchyId, entityTypes) {
-    // if we've made it to the leaf nodes, return an empty array
-    if (entities.length === 0) {
-      return [];
-    }
-
-    // if we've reached the level with descendants of the correct type, return them
-    const entitiesOfType = entities.filter(e => entityTypes.includes(e.type));
-    if (entitiesOfType.length > 0) {
-      return entitiesOfType;
-    }
-
-    const children = await Entity.getNextGeneration(entities, hierarchyId);
-
-    // keep recursing down the hierarchy
-    return Entity.getNearestDescendantsMatchingTypes(children, hierarchyId, entityTypes);
   }
 
   static async getFacilitiesOfOrgUnit(organisationUnitCode) {
@@ -257,12 +227,15 @@ export class Entity extends BaseModel {
 
   // assumes all entities of the given type are found at the same level in the hierarchy tree
   async getDescendantsOfType(entityType, hierarchyId) {
-    return Entity.getNearestDescendantsMatchingTypes([this], hierarchyId, [entityType]);
+    const descendants = await this.getDescendants(hierarchyId);
+    return descendants.filter(d => d.type === entityType);
   }
 
   async getNearestOrgUnitDescendants(hierarchyId) {
-    const validTypes = Object.values(Entity.orgUnitEntityTypes);
-    return Entity.getNearestDescendantsMatchingTypes([this], hierarchyId, validTypes);
+    const descendants = await this.getDescendants(hierarchyId);
+    // rely on descendants being returned in order, with those higher in the hierarchy first
+    const nearestOrgUnitType = descendants.find(d => !!Entity.orgUnitEntityTypes(d.type)).type;
+    return descendants.filter(d => d.type === nearestOrgUnitType);
   }
 
   static async findOne(conditions, loadOptions, queryOptions) {
