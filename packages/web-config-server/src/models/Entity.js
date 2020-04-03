@@ -232,9 +232,10 @@ export class Entity extends BaseModel {
   }
 
   async getNearestOrgUnitDescendants(hierarchyId) {
+    const orgUnitEntityTypes = new Set(Object.values(Entity.orgUnitEntityTypes));
     const descendants = await this.getDescendants(hierarchyId);
     // rely on descendants being returned in order, with those higher in the hierarchy first
-    const nearestOrgUnitType = descendants.find(d => !!Entity.orgUnitEntityTypes(d.type)).type;
+    const nearestOrgUnitType = descendants.find(d => orgUnitEntityTypes.has(d.type)).type;
     return descendants.filter(d => d.type === nearestOrgUnitType);
   }
 
