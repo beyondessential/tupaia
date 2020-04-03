@@ -12,9 +12,37 @@ import {
 } from './constants';
 
 export const openImportDialog = ({ importEndpoint }) => ({
-  type: IMPORT_DIALOG_OPEN,
-  importEndpoint,
+    type: IMPORT_DIALOG_OPEN,
+    importEndpoint,
 });
+
+export const openFilteredExportDialog = (actionConfig, recordId, row) => async (
+  dispatch,
+  getState,
+  { api },
+) => {
+  console.log('openFilteredExportDialog');
+  console.log('ACTION CONFIG', actionConfig);
+  console.log('ROW', row);
+
+  const response = await api.get(`${actionConfig.filterEndpoint}`, {
+    columns: JSON.stringify(['name', 'code']),
+    filter: JSON.stringify({
+      code: { comparator: 'LIKE', comparisonValue: `${row.code}%`, ignoreCase: true },
+    }),
+  });
+
+  console.log('RESPONSE', response);
+
+  /*
+  @TODO
+
+  use dispatch to call the modal with the response data.
+  the modal should list the names and code for the user
+  to pick which ones will be used to filter in the export
+  after the selection, call the existing exportData
+  */
+};
 
 export const importData = (recordType, file, queryParameters) => async (
   dispatch,

@@ -23,9 +23,10 @@ const COLUMNS = [
   {
     Header: 'Export Survey Responses',
     source: 'id',
-    type: 'export',
+    type: 'filteredExport',
     width: 200,
     actionConfig: {
+      filterEndpoint: 'entities',
       exportEndpoint: 'surveyResponses',
       queryParameter: 'countryId',
       fileName: '{name} Survey Responses',
@@ -58,5 +59,6 @@ export const CountriesPage = () => (
     columns={COLUMNS}
     expansionTabs={EXPANSION_CONFIG}
     createConfig={CREATE_CONFIG}
+    filteredExportConfig={{ title: 'Export Surveys' }}
   />
 );

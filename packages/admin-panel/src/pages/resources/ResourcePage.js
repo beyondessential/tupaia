@@ -7,7 +7,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { DataFetchingTable } from '../../table';
-import { ImportExportModal, ImportButton } from '../../importExport';
+import { ImportExportModal, ImportButton, FilteredExportModal } from '../../importExport';
 import { EditModal, CreateButton } from '../../editor';
 import { Body, Header, HeaderButtons, Title, Page } from '../Page';
 
@@ -20,6 +20,7 @@ export const ResourcePage = ({
   importConfig,
   onProcessDataForSave,
   title,
+  filteredExportConfig,
 }) => (
   <Page>
     <Header>
@@ -39,6 +40,7 @@ export const ResourcePage = ({
     </Body>
     <ImportExportModal {...importConfig} />
     <EditModal {...editConfig} onProcessDataForSave={onProcessDataForSave} />
+    {filteredExportConfig && <FilteredExportModal {...filteredExportConfig} />}
   </Page>
 );
 
@@ -60,6 +62,7 @@ ResourcePage.propTypes = {
   ),
   importConfig: PropTypes.object,
   title: PropTypes.string.isRequired,
+  filteredExportConfig: PropTypes.object,
 };
 
 ResourcePage.defaultProps = {
@@ -68,4 +71,5 @@ ResourcePage.defaultProps = {
   expansionTabs: null,
   importConfig: null,
   onProcessDataForSave: null,
+  filteredExportConfig: null,
 };
