@@ -62,7 +62,7 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
   }
 
   calculateFraction = (fraction, analytics) => {
-    if (COMPARISON_TYPES[fraction.compare] || OPERATION_TYPES[fraction.operation]) {
+    if (fraction.compare || fraction.operation) {
       // Is straight forward to add support for just counting non-grouped analytics, but is not currently a requirement.
       if (!fraction.groupBy) {
         throw new Error('percentagesOfValueCounts missing config field: groupBy');
@@ -75,7 +75,7 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
       }
 
       const filteredAnalytics = analytics.filter(analytic =>
-        fraction.dataValues.includes(analytic.dataElement),
+        flatten(fraction.dataValues).includes(analytic.dataElement),
       );
       const groupedAnalytics = groupBy(filteredAnalytics, fraction.groupBy);
       return Object.values(groupedAnalytics).reduce(
@@ -90,7 +90,7 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
   };
 
   buildCalculator(fraction) {
-    if (fraction.compare) {
+    if (fraction.compare === COMPARISON_TYPES.COUNT) {
       if (fraction.dataValues.length !== 2) {
         throw new Error(
           'nested array passed to: percentagesOfValueCounts must have exactly 2 sub-arrays for comparison',
