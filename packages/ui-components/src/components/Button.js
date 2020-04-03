@@ -7,26 +7,22 @@
 import React from 'react';
 import styled from 'styled-components';
 import MuiButton from '@material-ui/core/Button';
-import { WHITE } from '../theme/colors';
+
+const StyledButton = styled(MuiButton)`
+  padding: 0.5rem 1.5rem;
+  min-width: 120px;
+`;
 
 export const Button = ({ children, isSubmitting = false, disabled, ...props }) => {
   return (
-    <MuiButton variant="contained" {...props} disabled={isSubmitting}>
+    <StyledButton
+      classes={{ disabled: 'test' }}
+      variant="contained"
+      color="primary"
+      {...props}
+      disabled={isSubmitting}
+    >
       {isSubmitting ? 'Loading...' : children}
-    </MuiButton>
+    </StyledButton>
   );
-};
-
-const StyledButton = styled(Button)`
-  border: 0;
-  color: ${WHITE};
-  box-shadow: 0 3px 5px 2px rgba(255, 105, 135, 0.3);
-  background: linear-gradient(45deg, #fe6b8b 30%, #ff8e53 90%);
-  &:disabled {
-    color: ${WHITE};
-  }
-`;
-
-export const GradientButton = ({ children, ...props }) => {
-  return <StyledButton {...props}>{children}</StyledButton>;
 };
