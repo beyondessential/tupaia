@@ -22,25 +22,17 @@ exports.up = async function(db) {
   const HP35nId  = generateId();
   const HP36nId = generateId();
 
-// The below two arrays store the remaining new HP02 question codes and their associated id for the database
+// The below array stores the remaining new HP02 question codes
   const HP02QuestionCodesWithNoSpecificConfiguration = [
     'HP31n', 'HP32n', 'HP33n', 'HP34n', 'HP30n',
     'HP45n', 'HP65n', 'HP75n', 'HP115n', 'HP135n',
     'HP155n', 'HP165n', 'HP175n', 'HP195n', 'HP_KnownYes1n'];
-
-  const HP02GeneratedIds = HP02QuestionCodesWithNoSpecificConfiguration.map(function(questionCode){
-    return questionCode = generateId();
-  });
   
-// The below two arrays store new HP01 question codes and their associated id for the database
+// The below array stores the new HP01 question codes
   const HP01QuestionCodesWithNoSpecificConfiguration = [
     'HP12n', 'HP13n', 'HP13a', 'HP13b', 'HP14n',
     'HP15n', 'HP15a', 'HP15b', 'HP22n', 'HP23n',
     'HP23a', 'HP23b', 'HP24n', 'HP25n', 'HP25a', 'HP25b'];
-
-  const HP01GeneratedIds = HP01QuestionCodesWithNoSpecificConfiguration.map(function(questionCode){
-      return questionCode = generateId();
-    });
 
 // The below array contains the codes for all the questions that have been deleted from HP01 and HP02
   const removedHP01andHP02QuestionCodes = [
@@ -64,10 +56,9 @@ exports.up = async function(db) {
     'HP153', 'HP111', 'HP34', 'HP140', 'HP104', 'HP180', 'HP195', 'HP91', 'HP133', 'HP146','HP170',
     'HP99', 'HP72', 'HP158', 'HP61', 'HP90', 'HP203', 'HP_KnownNo1', 'HP32', 'HP73', 'HP66', 'HP189',
     'HP177', 'HP149', 'HP_KnownYes10', 'HP74', 'HP56', 'HP47', 'HP166', 'HP30', 'HP78', 'HP31',
-    'HP_KnownNo8', 'HP150', 'HP123'
-  ];
+    'HP_KnownNo8', 'HP150', 'HP123'];
 
-// This inserts the two new questions with specific dataElementCode configurations into the data_source table
+// This inserts the two new questions with specific dataElementCode configurations into the data_source and data_element_data_group tables
   await db.runSql(`
   INSERT INTO "data_source" ("id", "code", "type", "service_type", "config")
   VALUES 
@@ -84,63 +75,53 @@ exports.up = async function(db) {
     'dataElement',
     'dhis',
     '{"isDataRegional": false, "dataElementCode": "Gender"}'
-  )`);
+  );
 
-// This inserts the remaining new HP02 questions into the data_source table
-  HP02QuestionCodesWithNoSpecificConfiguration.forEach(async function(questionCode, index){
-     const generatedId = HP02GeneratedIds[index];
+  INSERT INTO data_element_data_group (id, data_element_id, data_group_id)
+  SELECT '${generateId()}', '${HP35nId}', id
+  FROM data_source WHERE type = 'dataGroup' AND code = 'HP02';
+
+  INSERT INTO data_element_data_group (id, data_element_id, data_group_id)
+  SELECT '${generateId()}', '${HP36nId}', id
+  FROM data_source WHERE type = 'dataGroup' AND code = 'HP02';
+  `);
+
+// This inserts the remaining new HP02 questions into the data_source and data_element_data_group tables
+  HP02QuestionCodesWithNoSpecificConfiguration.forEach(async function(questionCode){
+     const dataSourceId = generateId();
       await db.runSql(`
         INSERT INTO "data_source" ("id", "code", "type", "service_type", "config")
          VALUES 
           (
-            '${generatedId}',
+            '${dataSourceId}',
             '${questionCode}',
             'dataElement',
             'dhis',
             '{"isDataRegional": false}'
-          )`);
+          );
+
+        INSERT INTO data_element_data_group (id, data_element_id, data_group_id)
+        SELECT '${generateId()}', '${dataSourceId}', id
+        FROM data_source WHERE type = 'dataGroup' AND code = 'HP02';       
+      `);
   });
 
-// This inserts the new HP01 questions into the data_source table
-  HP01QuestionCodesWithNoSpecificConfiguration.forEach(async function(questionCode, index){
-    const generatedId = HP01GeneratedIds[index];
+// This inserts the new HP01 questions into the data_source and data_element_data_group tables
+  HP01QuestionCodesWithNoSpecificConfiguration.forEach(async function(questionCode){
+    const dataSourceId = generateId();
      await db.runSql(`
-       INSERT INTO "data_source" ("id", "code", "type", "service_type", "config")
+      INSERT INTO "data_source" ("id", "code", "type", "service_type", "config")
         VALUES 
          (
-           '${generatedId}',
+           '${dataSourceId}',
            '${questionCode}',
            'dataElement',
            'dhis',
            '{"isDataRegional": false}'
-         )`);
-  });
-
-// This inserts the two new HP02 questions with specific dataElementCode configuration into the data_element_data_group table
-  await db.runSql(`
-    INSERT INTO data_element_data_group (id, data_element_id, data_group_id)
-    SELECT '${generateId()}', '${HP35nId}', id
-    FROM data_source WHERE type = 'dataGroup' AND code = 'HP02';
-
-    INSERT INTO data_element_data_group (id, data_element_id, data_group_id)
-    SELECT '${generateId()}', '${HP36nId}', id
-    FROM data_source WHERE type = 'dataGroup' AND code = 'HP02';
-  `);
-
-// This inserts the remaining new HP02 questions into the data_element_data_group table
-  HP02GeneratedIds.forEach(async function(generatedId){
-    await db.runSql(`
+         );
+      
       INSERT INTO data_element_data_group (id, data_element_id, data_group_id)
-      SELECT '${generateId()}', '${generatedId}', id
-      FROM data_source WHERE type = 'dataGroup' AND code = 'HP02';
-    `);
-  });
-
-// This inserts the new HP01 questions into the data_element_data_group table
-  HP01GeneratedIds.forEach(async function(generatedId){
-    await db.runSql(`
-      INSERT INTO data_element_data_group (id, data_element_id, data_group_id)
-      SELECT '${generateId()}', '${generatedId}', id
+      SELECT '${generateId()}', '${dataSourceId}', id
       FROM data_source WHERE type = 'dataGroup' AND code = 'HP01';
     `);
   });
