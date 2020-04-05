@@ -22,7 +22,6 @@ import {
   FETCH_INFO_VIEW_DATA,
   CHANGE_SEARCH,
   CHANGE_MEASURE,
-  FETCH_HIERARCHY_NESTED_ITEMS,
   FIND_USER_LOGGEDIN,
   FETCH_LOGOUT_SUCCESS,
   FETCH_LOGIN_SUCCESS,
@@ -51,16 +50,12 @@ import {
   fetchOrgUnitSuccess,
   changeOrgUnitSuccess,
   changeOrgUnitError,
-  fetchRegionError,
   fetchDashboardSuccess,
   fetchDashboardError,
   fetchDashboardItemDataSuccess,
   fetchDashboardItemDataError,
   fetchSearchSuccess,
   fetchSearchError,
-  fetchHierarchyNestedItems,
-  fetchHierarchyNestedItemsSuccess,
-  fetchHierarchyNestedItemsError,
   fetchMeasureInfoSuccess,
   fetchMeasureInfoError,
   cancelFetchMeasureData,
@@ -86,7 +81,9 @@ import {
   FETCH_RESEND_VERIFICATION_EMAIL,
   findUserLoginFailed,
   REQUEST_PROJECT_ACCESS,
-  FETCH_ORG_UNIT,
+  fetchOrgUnitError,
+  fetchOrgUnit,
+  REQUEST_ORG_UNIT,
 } from './actions';
 import { isMobile, processMeasureInfo, formatDateForApi } from './utils';
 import { createUrlString } from './utils/historyNavigation';
@@ -416,25 +413,30 @@ function* watchFetchCountryAccessDataAndFetchItTEST() {
  * Fetch an org unit.
  *
  */
-function requestOrgUnitData(organisationUnitCode) {
-  const shouldIncludeCountryData = organisationUnitCode !== 'World'; // We should pull in all country data if we are within a country (ie. not World)
-  const requestResourceUrl = `organisationUnit?organisationUnitCode=${organisationUnitCode}&includeCountryHierarchy=${shouldIncludeCountryData}`;
-  return call(request, requestResourceUrl);
+function* fetchOrgUnitData(organisationUnitCode) {
+  let orgUnitData;
+  try {
+    yield put(fetchOrgUnit(organisationUnitCode));
+    const shouldIncludeCountryData = organisationUnitCode !== 'World'; // We should pull in all country data if we are within a country (ie. not World)
+    const requestResourceUrl = `organisationUnit?organisationUnitCode=${organisationUnitCode}&includeCountryHierarchy=${shouldIncludeCountryData}`;
+    orgUnitData = yield call(request, requestResourceUrl);
+    yield put(fetchOrgUnitSuccess(orgUnitData));
+  } catch (error) {
+    yield put(fetchOrgUnitError(organisationUnitCode, error.message));
+    throw error;
+  }
+  yield orgUnitData;
 }
 
-function* fetchOrgUnitData(action) {
+function* requestOrgUnit(action) {
+  const { organisationUnitCode } = action.organisationUnit;
   const state = yield select();
-  const orgUnit = selectOrgUnit(state, action.organisationUnit.organisationUnitCode);
+  const orgUnit = selectOrgUnit(state, organisationUnitCode);
   if (orgUnit && orgUnit.isComplete) {
     return; // If we already have the complete org unit in reduxStore, just exit early
   }
 
-  try {
-    const orgUnitData = yield requestOrgUnitData(action.organisationUnit.organisationUnitCode);
-    yield put(fetchOrgUnitSuccess(orgUnitData));
-  } catch (error) {
-    yield put(error.errorFunction(error));
-  }
+  yield fetchOrgUnitData(organisationUnitCode);
 }
 
 function* fetchOrgUnitDataAndChangeOrgUnit(action) {
@@ -451,7 +453,7 @@ function* fetchOrgUnitDataAndChangeOrgUnit(action) {
   }
 
   try {
-    const orgUnitData = yield requestOrgUnitData(action.organisationUnit.organisationUnitCode);
+    const orgUnitData = yield fetchOrgUnitData(action.organisationUnit.organisationUnitCode);
     yield put(fetchOrgUnitSuccess(orgUnitData));
     yield put(
       changeOrgUnitSuccess(
@@ -487,8 +489,8 @@ const normaliseCountryHierarchyOrgUnitData = orgUnitData => {
   };
 };
 
-function* watchFetchOrgUnitAndFetchIt() {
-  yield takeEvery(FETCH_ORG_UNIT, fetchOrgUnitData);
+function* watchRequestOrgUnitAndFetchIt() {
+  yield takeEvery(REQUEST_ORG_UNIT, requestOrgUnit);
 }
 
 function* watchOrgUnitChangeAndFetchIt() {
@@ -622,28 +624,6 @@ function* fetchSearchData(action) {
 
 function* watchSearchChange() {
   yield takeLatest(CHANGE_SEARCH, fetchSearchData);
-}
-
-/**
- * fetchHierarchyData
- *
- * Fetches an orgUnit according to given code and calls actions to manage response
- *
- */
-function* fetchHierarchyData(action) {
-  const { organisationUnitCode } = action;
-  const requestResourceUrl = `organisationUnit?organisationUnitCode=${organisationUnitCode}`;
-
-  try {
-    const orgUnitData = yield call(request, requestResourceUrl);
-    yield put(fetchHierarchyNestedItemsSuccess(orgUnitData));
-  } catch (error) {
-    yield put(fetchHierarchyNestedItemsError(error));
-  }
-}
-
-function* watchLocationHierarchyEvents() {
-  yield takeEvery(FETCH_HIERARCHY_NESTED_ITEMS, fetchHierarchyData);
 }
 
 /**
@@ -911,7 +891,7 @@ function* watchAttemptAttemptDrillDown() {
 
 function* updatePermissionsToMatchUser() {
   // Update the location navigation hierarchy to match countries available to this user
-  yield put(fetchHierarchyNestedItems('World'));
+  yield put(fetchOrgUnit({ organisationUnitCode: 'World' }));
 
   // Refresh current organisation unit so that dashboards, measures etc. will
   // match current user permissions
@@ -969,13 +949,12 @@ export default [
   watchAttemptUserLogout,
   watchAttemptUserSignupAndFetchIt,
   watchFetchCountryAccessDataAndFetchIt,
-  watchFetchOrgUnitAndFetchIt,
+  watchRequestOrgUnitAndFetchIt,
   watchOrgUnitChangeAndFetchIt,
   watchOrgUnitChangeAndFetchDashboard,
   watchOrgUnitChangeAndFetchMeasureInfo,
   watchViewFetchRequests,
   watchSearchChange,
-  watchLocationHierarchyEvents,
   watchMeasureChange,
   watchOrgUnitChangeAndFetchMeasures,
   watchFindUserCurrentLoggedIn,

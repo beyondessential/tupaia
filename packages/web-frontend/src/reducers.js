@@ -47,9 +47,6 @@ import {
   FETCH_COUNTRY_ACCESS_DATA_ERROR,
   FETCH_DASHBOARD_CONFIG_ERROR,
   FETCH_DASHBOARD_CONFIG_SUCCESS,
-  FETCH_HIERARCHY_NESTED_ITEMS,
-  FETCH_HIERARCHY_NESTED_ITEMS_ERROR,
-  FETCH_HIERARCHY_NESTED_ITEMS_SUCCESS,
   FETCH_INFO_VIEW_DATA_ERROR,
   FETCH_INFO_VIEW_DATA_SUCCESS,
   FETCH_INFO_VIEW_DATA,
@@ -510,14 +507,6 @@ function searchBar(
       return { ...state, searchResponse: null, searchString: action.searchString };
     case FETCH_SEARCH_ERROR:
       return { ...state, searchResponse: action.error };
-    case FETCH_HIERARCHY_NESTED_ITEMS:
-      return { ...state };
-    case FETCH_HIERARCHY_NESTED_ITEMS_SUCCESS: {
-      const updatedHierarchy = nestOrgUnitInHierarchy(action.response, state.hierarchyData);
-      return { ...state, hierarchyData: updatedHierarchy };
-    }
-    case FETCH_HIERARCHY_NESTED_ITEMS_ERROR:
-      return { ...state, hierarchyData: action.error };
     case CLOSE_DROPDOWN_OVERLAYS:
       return { ...state, isExpanded: false };
     default:

@@ -15,10 +15,10 @@ import { ExpandableList } from '../../../components/mobile/ExpandableList';
 import { SelectListItem } from '../../../components/mobile/SelectListItem';
 import { Dashboard } from '../../../components/mobile/Dashboard';
 import {
-  fetchHierarchyNestedItems,
   changeOrgUnit,
   toggleDashboardSelectExpand,
   changeDashboardGroup,
+  requestOrgUnit,
 } from '../../../actions';
 import { WHITE } from '../../../styles';
 import { getCurrentDashboardKey } from '../../../selectors';
@@ -111,14 +111,11 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    getNestedOrgUnits: orgUnitCode => dispatch(fetchHierarchyNestedItems(orgUnitCode)),
+    getNestedOrgUnits: organisationUnitCode => dispatch(requestOrgUnit({ organisationUnitCode })),
     onChangeOrgUnit: orgUnit => dispatch(changeOrgUnit(orgUnit, false)),
     onToggleDashboardSelectExpand: () => dispatch(toggleDashboardSelectExpand()),
     onChangeDashboardGroup: name => dispatch(changeDashboardGroup(name)),
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(HomeScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);

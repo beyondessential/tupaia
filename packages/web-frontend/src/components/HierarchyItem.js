@@ -28,6 +28,7 @@ import ClosedIcon from 'material-ui/svg-icons/navigation/chevron-right';
 import OpenIcon from 'material-ui/svg-icons/navigation/expand-more';
 import SelectedIcon from 'material-ui/svg-icons/toggle/radio-button-checked';
 import UnSelectedIcon from 'material-ui/svg-icons/toggle/radio-button-unchecked';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 export class HierarchyItem extends Component {
   constructor(props) {
@@ -38,7 +39,7 @@ export class HierarchyItem extends Component {
   }
 
   componentWillMount() {
-    if (this.props.willMountFunc) this.props.willMountFunc();
+    // if (this.props.willMountFunc) this.props.willMountFunc();
   }
 
   onClick() {
@@ -69,6 +70,7 @@ export class HierarchyItem extends Component {
       Icon,
       willMountFunc,
       onClick,
+      isLoading,
       ...otherProps
     } = this.props;
     const { isOpen } = this.state;
@@ -83,6 +85,8 @@ export class HierarchyItem extends Component {
       );
     }
 
+    const loadingSpinner = <CircularProgress style={styles.buttonIcon} size={24} thickness={3} />;
+    const childItem = isLoading ? loadingSpinner : nestedItems;
     return (
       <div style={{ ...styles.nestedContainer, ...style, marginLeft: nestedMargin }}>
         <FlatButton
@@ -98,7 +102,7 @@ export class HierarchyItem extends Component {
             <div style={styles.spacer} />
           </div>
         </FlatButton>
-        {isOpen ? nestedItems : null}
+        {isOpen ? childItem : null}
       </div>
     );
   }
@@ -144,6 +148,7 @@ HierarchyItem.propTypes = {
   nestedMargin: PropTypes.string,
   isSelected: PropTypes.bool,
   hasNestedItems: PropTypes.bool,
+  isLoading: PropTypes.bool,
   Icon: PropTypes.func,
   willMountFunc: PropTypes.func,
 };
