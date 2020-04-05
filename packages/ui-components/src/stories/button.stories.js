@@ -28,12 +28,12 @@ export const Default = () => (
 export const Secondary = () => (
   <>
     <Box m={3}>
-      <Button color="secondary" onClick={action('Default button clicked')}>
+      <Button color="secondary" onClick={action('Secondary button clicked')}>
         Secondary
       </Button>
     </Box>
     <Box m={3}>
-      <Button color="secondary" onClick={action('Default button clicked')} isSubmitting>
+      <Button color="secondary" onClick={action('Secondary button clicked')} isSubmitting>
         Secondary
       </Button>
     </Box>
@@ -43,7 +43,7 @@ export const Secondary = () => (
 export const Outlined = () => (
   <>
     <Box m={3}>
-      <Button variant="outlined" onClick={action('Default button clicked')}>
+      <Button variant="outlined" onClick={action('Outlined button clicked')}>
         Outlined
       </Button>
     </Box>

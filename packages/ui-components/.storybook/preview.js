@@ -5,7 +5,6 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import theme from '../src/theme';
 import * as COLORS from '../src/theme/colors';
 
-// addDecorator(storyFn => <ThemeProvider theme={theme}>{storyFn()}</ThemeProvider>);
 addParameters({
   backgrounds: [
     { name: 'Paper', value: COLORS.WHITE, default: true },

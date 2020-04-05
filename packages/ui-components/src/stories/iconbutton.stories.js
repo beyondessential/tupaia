@@ -48,7 +48,6 @@ export const LightArrows = () => (
 );
 
 LightArrows.story = {
-
   parameters: {
     backgrounds: [
       { name: 'Header', value: COLORS.BLUE, default: true }
