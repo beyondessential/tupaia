@@ -1,3 +1,8 @@
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+
 import { createMuiTheme } from '@material-ui/core/styles';
 import * as COLORS from './colors';
 
