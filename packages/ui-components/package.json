@@ -20,6 +20,7 @@
     "@babel/core": "^7.9.0",
     "@material-ui/core": "^4.9.8",
     "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.47",
     "@storybook/addon-actions": "^5.3.17",
     "@storybook/addon-backgrounds": "^5.3.18",
     "@storybook/addon-links": "^5.3.17",
