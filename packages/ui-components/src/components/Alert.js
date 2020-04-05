@@ -12,26 +12,27 @@ const StyledAlert = styled(MuiAlert)`
   padding: 6px 30px;
 `;
 
+const BaseAlert = ({ children, ...props }) => (
+  <StyledAlert variant="filled" {...props} children={children} />
+);
+
 export const ErrorAlert = ({ children, ...props }) => (
-  <StyledAlert variant="filled" icon={<Warning fontSize="inherit" />} severity="error" {...props}>
-    {children}
-  </StyledAlert>
+  <BaseAlert
+    icon={<Warning fontSize="inherit" />}
+    severity="error"
+    {...props}
+    children={children}
+  />
 );
 
 export const WarningAlert = ({ children, ...props }) => (
-  <StyledAlert variant="filled" severity="warning" {...props}>
-    {children}
-  </StyledAlert>
+  <BaseAlert severity="warning" {...props} children={children} />
 );
 
 export const InfoAlert = ({ children, ...props }) => (
-  <StyledAlert variant="filled" severity="info" {...props}>
-    {children}
-  </StyledAlert>
+  <BaseAlert severity="info" {...props} children={children} />
 );
 
 export const SuccessAlert = ({ children, ...props }) => (
-  <StyledAlert variant="filled" severity="success" {...props}>
-    {children}
-  </StyledAlert>
+  <BaseAlert severity="success" {...props} children={children} />
 );
