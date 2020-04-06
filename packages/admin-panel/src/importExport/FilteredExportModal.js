@@ -7,77 +7,50 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import autobind from 'react-autobind';
 import { connect } from 'react-redux';
-import { importData, dismissDialog } from './actions';
-import {
-  getIsProcessing,
-  getIsPreparingImport,
-  getImportRecordType,
-  getErrorMessage,
-} from './selectors';
+import { selectSurvey, dismissDialog } from './actions';
+import { getErrorMessage } from './selectors';
 import { AsyncModal, InputField } from '../widgets';
 
 export class FilteredExportModalComponent extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      file: null,
-      queryParameter: {},
-    };
     autobind(this);
   }
 
-  handleFiles({ target }) {
-    this.setState({ file: target.files[0] });
-  }
-
-  handleQueryParameterChange(parameterKey, value) {
-    this.setState({
-      queryParameters: {
-        ...this.state.queryParameters,
-        [parameterKey]: value,
-      },
-    });
-  }
-
   renderContent() {
-    console.log(this.state);
-    //const h = event => this.handleFiles(event);
-    //return <div>hello world</div>;
+    const { surveyData, onSelectSurvey } = this.props;
+
+    if (surveyData && surveyData.length > 0) {
+      return (
+        <div className="FilteredExportModal">
+          {surveyData.map(row => (
+            <InputField
+              type="checkbox"
+              inputKey={row.code}
+              key={row.code}
+              onChange={(inputKey, value, target) => onSelectSurvey(value, target.checked)}
+              label={row.name}
+              value={row.code}
+              placeholder=""
+            />
+          ))}
+        </div>
+      );
+    }
 
     return null;
-
-    /*
-    const { isPreparingImport, queryParameters, instruction } = this.props;
-    return isPreparingImport ? (
-      <div>
-        <p>{instruction}</p>
-        {queryParameters.map(queryParameter => (
-          <InputField
-            key={queryParameter.parameterKey}
-            inputKey={queryParameter.parameterKey}
-            {...queryParameter}
-            onChange={this.handleQueryParameterChange}
-            label={queryParameter.instruction}
-            placeholder={queryParameter.label}
-          />
-        ))}
-        <input type="file" onChange={event => this.handleFiles(event)} />
-      </div>
-    ) : null;
-    */
   }
 
   render() {
-    const { isLoading, errorMessage, onImport, onDismiss, title } = this.props;
-    const { file, queryParameters } = this.state;
+    const { isLoading, errorMessage, onSave, onDismiss, title } = this.props;
     return (
       <AsyncModal
         isLoading={isLoading}
         errorMessage={errorMessage}
         renderContent={this.renderContent}
-        isConfirmDisabled={!file}
-        onConfirm={() => onImport(file, queryParameters)}
-        confirmLabel="Import"
+        isConfirmDisabled={false}
+        onConfirm={onSave}
+        confirmLabel="Export"
         onDismiss={onDismiss}
         title={title}
       />
@@ -87,35 +60,49 @@ export class FilteredExportModalComponent extends React.Component {
 
 FilteredExportModalComponent.propTypes = {
   errorMessage: PropTypes.string,
-  isPreparingImport: PropTypes.bool.isRequired,
   isLoading: PropTypes.bool.isRequired,
+  onSelectSurvey: PropTypes.func.isRequired,
+  onSave: PropTypes.func.isRequired,
   onDismiss: PropTypes.func.isRequired,
-  onImport: PropTypes.func.isRequired,
   title: PropTypes.string,
-  queryParameters: PropTypes.array,
-  instruction: PropTypes.string,
+  surveyData: PropTypes.array,
+  selectedSurveyCodes: PropTypes.object,
 };
 
 FilteredExportModalComponent.defaultProps = {
   errorMessage: null,
   title: null,
-  queryParameters: [],
-  instruction: '',
+  surveyData: [],
+  selectedSurveyCodes: {},
 };
 
-const mapStateToProps = state => ({
-  isPreparingImport: getIsPreparingImport(state),
-  isLoading: getIsProcessing(state),
-  errorMessage: getErrorMessage(state),
-  importEndpoint: getImportRecordType(state),
-});
+const mapStateToProps = state => {
+  const {
+    importExport: { surveyData, selectedSurveyCodes },
+  } = state;
 
-const mergeProps = ({ importEndpoint, ...restOfStateProps }, { dispatch }, ownProps) => ({
-  ...restOfStateProps,
-  ...ownProps,
-  onDismiss: () => dispatch(dismissDialog()),
-  onImport: (...args) => dispatch(importData(importEndpoint, ...args)),
-});
+  return {
+    isLoading: false,
+    surveyData,
+    selectedSurveyCodes,
+    errorMessage: getErrorMessage(state),
+  };
+};
+
+const mergeProps = (state, { dispatch }, ownProps) => {
+  const { selectedSurveyCodes, ...stateProps } = state;
+  return {
+    ...stateProps,
+    ...ownProps,
+    onSelectSurvey: (surveyCode, checked) => dispatch(selectSurvey(surveyCode, checked)),
+    onSave: () => {
+      console.log('SELECTED SURVEY CODES');
+      console.log(selectedSurveyCodes);
+      // dispatch();
+    },
+    onDismiss: () => dispatch(dismissDialog()),
+  };
+};
 
 export const FilteredExportModal = connect(
   mapStateToProps,

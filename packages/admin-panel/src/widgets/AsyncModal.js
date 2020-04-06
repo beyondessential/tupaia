@@ -56,7 +56,7 @@ export class AsyncModal extends React.Component {
         </React.Fragment>
       );
     }
-    
+
     return null;
   }
 

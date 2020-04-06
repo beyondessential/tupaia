@@ -5,7 +5,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FormGroup, Input } from 'reactstrap';
+import { FormGroup, Label, Input } from 'reactstrap';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -94,7 +94,7 @@ export const InputField = ({
       inputComponent = (
         <Input
           value={processValue(value, type) || ''}
-          onChange={event => onChange(inputKey, event.target.value)}
+          onChange={event => onChange(inputKey, event.target.value, event.target)}
           disabled={disabled}
           type={type}
         />
@@ -102,7 +102,14 @@ export const InputField = ({
       break;
   }
 
-  return (
+  return type === 'checkbox' ? (
+    <FormGroup check>
+      <Label check>
+        {inputComponent}
+        {` ${label}`}
+      </Label>
+    </FormGroup>
+  ) : (
     <FormGroup>
       <p>{label}</p>
       {inputComponent}

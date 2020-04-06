@@ -9,11 +9,15 @@ import {
   IMPORT_EXPORT_SUCCESS,
   IMPORT_DIALOG_OPEN,
   IMPORT_EXPORT_DISMISS,
+  FILTERED_EXPORT_FETCH_BEGIN,
+  FILTERED_EXPORT_FETCH_SUCCESS,
+  FILTERED_EXPORT_TOGGLE,
+  FILTERED_EXPORT_ERROR,
 } from './constants';
 
 export const openImportDialog = ({ importEndpoint }) => ({
-    type: IMPORT_DIALOG_OPEN,
-    importEndpoint,
+  type: IMPORT_DIALOG_OPEN,
+  importEndpoint,
 });
 
 export const openFilteredExportDialog = (actionConfig, recordId, row) => async (
@@ -21,28 +25,35 @@ export const openFilteredExportDialog = (actionConfig, recordId, row) => async (
   getState,
   { api },
 ) => {
-  console.log('openFilteredExportDialog');
-  console.log('ACTION CONFIG', actionConfig);
-  console.log('ROW', row);
-
-  const response = await api.get(`${actionConfig.filterEndpoint}`, {
-    columns: JSON.stringify(['name', 'code']),
-    filter: JSON.stringify({
-      code: { comparator: 'LIKE', comparisonValue: `${row.code}%`, ignoreCase: true },
-    }),
+  dispatch({
+    type: FILTERED_EXPORT_FETCH_BEGIN,
+    endpoint: actionConfig.filterEndpoint,
   });
 
-  console.log('RESPONSE', response);
-
-  /*
-  @TODO
-
-  use dispatch to call the modal with the response data.
-  the modal should list the names and code for the user
-  to pick which ones will be used to filter in the export
-  after the selection, call the existing exportData
-  */
+  try {
+    const response = await api.get(`${actionConfig.filterEndpoint}`, {
+      columns: JSON.stringify(['name', 'code']),
+      filter: JSON.stringify({
+        code: { comparator: 'LIKE', comparisonValue: `${row.code}%`, ignoreCase: true },
+      }),
+    });
+    dispatch({
+      type: FILTERED_EXPORT_FETCH_SUCCESS,
+      surveyData: response.body,
+    });
+  } catch (error) {
+    dispatch({
+      type: FILTERED_EXPORT_ERROR,
+      errorMessage: error.message,
+    });
+  }
 };
+
+export const selectSurvey = (selectedSurveyCode, checked) => ({
+  type: FILTERED_EXPORT_TOGGLE,
+  selectedSurveyCode,
+  checked,
+});
 
 export const importData = (recordType, file, queryParameters) => async (
   dispatch,

@@ -10,14 +10,6 @@ import { IconButton } from '../widgets';
 import { openFilteredExportDialog } from './actions';
 
 export const FilteredExportButtonComponent = ({ dispatch, value: recordId, row, actionConfig }) => {
-  console.log('FilteredExportButton');
-  console.log('PROPS', {
-    dispatch,
-    value: recordId,
-    row,
-    actionConfig,
-  });
-
   return (
     <IconButton
       icon="download"
