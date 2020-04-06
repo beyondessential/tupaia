@@ -85,9 +85,9 @@ const formatDate = value => {
   return `Latest available data: ${moment(value).format('DD/MM/YY')}`;
 };
 
-const formatDataPeriod = dataPeriod => {
+const formatPeriodRange = period => {
   //TODO: add range if applicable
-  return formatDate(dataPeriod.latestPeriod);
+  return formatDate(period.latestAvailable);
 };
 
 export class View extends Component {
@@ -111,11 +111,10 @@ export class View extends Component {
     return name && (getIsMatrix(viewContent) || type === 'chart');
   }
 
-  getHasDataPeriod() {
+  getHasPeriod() {
     const { viewContent } = this.props;
-    console.log(viewContent);
-    const { dataPeriod, showDataPeriod } = viewContent;
-    return showDataPeriod && dataPeriod && dataPeriod.latestPeriod;
+    const { period, showPeriodRange } = viewContent;
+    return showPeriodRange && period && period.latestAvailable;
   }
 
   mouseOut() {
@@ -199,8 +198,8 @@ export class View extends Component {
 
     const title = this.getHasTitle() && <div style={VIEW_STYLES.title}>{viewContent.name}</div>;
 
-    const showDataPeriod = this.getHasDataPeriod() && (
-      <div style={VIEW_STYLES.dataPeriod}>{formatDataPeriod(viewContent.dataPeriod)}</div>
+    const showPeriodRange = this.getHasPeriod() && (
+      <div style={VIEW_STYLES.periodRange}>{formatPeriodRange(viewContent.period)}</div>
     );
 
     return (
@@ -208,7 +207,7 @@ export class View extends Component {
         <OverlayView>
           {title}
           <ViewWrapper viewContent={viewContent} />
-          {showDataPeriod}
+          {showPeriodRange}
           {showDescription}
           {showInfoIcon}
           {expandButton}

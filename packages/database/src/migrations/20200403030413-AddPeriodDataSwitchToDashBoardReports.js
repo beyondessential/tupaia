@@ -30,11 +30,11 @@ const arrayToDbString = array => array.map(item => `'${item}'`).join(', ');
 exports.up = function(db) {
   return db.runSql(`
       UPDATE "dashboardReport" 
-        SET "viewJson" = jsonb_set("viewJson", '{showDataPeriod}', '"dashboardOnly"')
+        SET "viewJson" = jsonb_set("viewJson", '{showPeriodRange}', '"dashboardOnly"')
         where "id" IN (${arrayToDbString(reportIdsforDashboardOnly)});
     
       UPDATE "dashboardReport" 
-        SET "viewJson" = jsonb_set("viewJson", '{showDataPeriod}', '"all"')
+        SET "viewJson" = jsonb_set("viewJson", '{showPeriodRange}', '"all"')
         where "id" IN (${arrayToDbString(reportIdsforEnlargeDialogue)});
     `);
 };
@@ -42,11 +42,11 @@ exports.up = function(db) {
 exports.down = function(db) {
   return db.runSql(`
     UPDATE "dashboardReport" 
-      SET "viewJson" = "viewJson" - 'showDataPeriod'
+      SET "viewJson" = "viewJson" - 'showPeriodRange'
       where "id" IN (${arrayToDbString(reportIdsforDashboardOnly)});
 
     UPDATE "dashboardReport" 
-      SET "viewJson" = "viewJson" - 'showDataPeriod'
+      SET "viewJson" = "viewJson" - 'showPeriodRange'
       where "id" IN (${arrayToDbString(reportIdsforEnlargeDialogue)});
 `);
 };

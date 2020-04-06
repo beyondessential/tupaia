@@ -19,7 +19,7 @@ const sumPerMetric = async ({ dataBuilderConfig, query }, aggregator, dhisApi, a
   } = dataBuilderConfig;
 
   const dataElementCodes = await getDataElementCodes(dataBuilderConfig, dhisApi);
-  const { results, metadata, dataPeriod } = await aggregator.fetchAnalytics(
+  const { results, metadata, period } = await aggregator.fetchAnalytics(
     dataElementCodes,
     { dataServices },
     query,
@@ -102,7 +102,7 @@ const sumPerMetric = async ({ dataBuilderConfig, query }, aggregator, dhisApi, a
     }
   });
 
-  return { data, dataPeriod };
+  return { data, period };
 };
 
 export const sumLatestPerMetric = async (queryConfig, aggregator, dhisApi) =>

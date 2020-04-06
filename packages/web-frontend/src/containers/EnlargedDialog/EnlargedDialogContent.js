@@ -169,18 +169,18 @@ export class EnlargedDialogContent extends PureComponent {
     );
   }
 
-  renderDataPeriod() {
+  renderPeriodRange() {
     const { viewContent } = this.props;
-    const { dataPeriod, showDataPeriod } = viewContent;
+    const { period, showPeriodRange } = viewContent;
 
-    if (showDataPeriod !== 'all' || !dataPeriod || !dataPeriod.latestPeriod) {
+    if (showPeriodRange !== 'all' || !period || !period.latestAvailable) {
       return null;
     }
 
     return (
-      <DialogContentText style={styles.dataPeriod}>
+      <DialogContentText style={styles.periodRange}>
         {'Latest available data: '}
-        {moment(dataPeriod.latestPeriod).format('DD/MM/YY')}
+        {moment(period.latestAvailable).format('DD/MM/YY')}
       </DialogContentText>
     );
   }
@@ -199,7 +199,7 @@ export class EnlargedDialogContent extends PureComponent {
           {this.renderToolbar()}
           {this.renderDescription()}
           {this.renderBody()}
-          {this.renderDataPeriod()}
+          {this.renderPeriodRange()}
         </DialogContent>
       </React.Fragment>
     );
@@ -268,9 +268,9 @@ const styles = {
     // Ensure date dialog is above enlarged dialog.
     zIndex: DIALOG_Z_INDEX + 1,
   },
-  dataPeriod: {
+  periodRange: {
     fontSize: 10,
-  }
+  },
 };
 
 EnlargedDialogContent.propTypes = {

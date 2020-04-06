@@ -348,7 +348,7 @@ export const VIEW_STYLES = {
     lineHeight: '130%',
     textAlign: 'center',
   },
-  dataPeriod: {
+  periodRange: {
     position: 'relative',
     color: darkWhite,
     marginTop: 5,

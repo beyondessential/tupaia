@@ -2,18 +2,23 @@ import { getPreferredPeriod } from './aggregateAnalytics/aggregations/utils';
 
 const MAX_LATEST_DATE = '99991230';
 
-export const periodFromAnalytics = analytics => {
-  return analytics.reduce(
+export const periodFromAnalytics = (analytics, { period: requestedPeriod }) => {
+  const returnPeriod = analytics.reduce(
     (currentDateRange, dataPoint) => {
-      const { latestPeriod } = currentDateRange;
-      const earliestPeriod = currentDateRange.earliestPeriod || MAX_LATEST_DATE;
+      const { latestAvailable } = currentDateRange;
+      const earliestAvailable = currentDateRange.earliestAvailable || MAX_LATEST_DATE;
       const { period } = dataPoint;
       return {
-        earliestPeriod:
-          period && period === getPreferredPeriod(period, earliestPeriod) ? earliestPeriod : period,
-        latestPeriod: period === getPreferredPeriod(period, latestPeriod) ? period : latestPeriod,
+        earliestAvailable:
+          period && period === getPreferredPeriod(period, earliestAvailable)
+            ? earliestAvailable
+            : period,
+        latestAvailable:
+          period === getPreferredPeriod(period, latestAvailable) ? period : latestAvailable,
       };
     },
-    { earliestPeriod: null, latestPeriod: null },
+    { earliestAvailable: null, latestAvailable: null },
   );
+
+  return { requested: requestedPeriod, ...returnPeriod };
 };

@@ -35,15 +35,13 @@ export class Aggregator {
   async fetchAnalytics(codeInput, fetchOptions, aggregationOptions = {}) {
     const code = Array.isArray(codeInput) ? codeInput : [codeInput];
     const dataSourceSpec = { code, type: this.dataSourceTypes.DATA_ELEMENT };
-    const { period } = fetchOptions;
     const { results, metadata } = await this.dataBroker.pull(dataSourceSpec, fetchOptions);
-    const dataPeriod = periodFromAnalytics(results);
+    const period = periodFromAnalytics(results, fetchOptions);
 
     return {
       results: this.processAnalytics(results, aggregationOptions),
       metadata,
       period,
-      dataPeriod,
     };
   }
 

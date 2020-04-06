@@ -32,13 +32,13 @@ export const dataElementsOverTotalOperational = async (
   const operationalFacilities = await getFacilityStatuses(
     aggregator,
     query.organisationUnitCode,
-    period,
+    period.requested,
   );
   aggregateOperationalFacilityValues(operationalFacilities, results, addValueToSumByElement);
   const { numberOperational: totalOperationalFacilities } = await getFacilityStatusCounts(
     aggregator,
     query.organisationUnitCode,
-    period,
+    period.requested,
   );
 
   // Return proportion of operational facilities with each dataElement over total operational facilities
