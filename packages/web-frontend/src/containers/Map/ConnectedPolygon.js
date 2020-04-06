@@ -182,22 +182,20 @@ const mapStateToProps = (state, givenProps) => {
 
   let shade;
   let measureValue;
-  let hasShadedChildren;
+  let hasShadedChildren = false;
   if (selectHasPolygonMeasure(state)) {
     const measureOrgUnits = selectAllMeasuresWithDisplayInfo(state);
     const measureOrgUnitCodes = measureOrgUnits.map(orgUnit => orgUnit.organisationUnitCode);
 
     hasShadedChildren =
-      selectHasPolygonMeasure(state) &&
       organisationUnitChildren &&
       organisationUnitChildren.some(child =>
         measureOrgUnitCodes.includes(child.organisationUnitCode),
       );
 
-    const orgUnitMeasureData =
-      selectHasPolygonMeasure(state) && measureOrgUnitCodes.includes(organisationUnitCode)
-        ? measureOrgUnits.find(orgUnit => orgUnit.organisationUnitCode === organisationUnitCode)
-        : {};
+    const orgUnitMeasureData = measureOrgUnitCodes.includes(organisationUnitCode)
+      ? measureOrgUnits.find(orgUnit => orgUnit.organisationUnitCode === organisationUnitCode)
+      : {};
 
     shade = orgUnitMeasureData.color;
     measureValue = orgUnitMeasureData.originalValue;

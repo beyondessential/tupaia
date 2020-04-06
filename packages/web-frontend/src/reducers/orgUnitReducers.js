@@ -41,11 +41,11 @@ const recursiveBuildDescendantHierarchy = (state, code) => {
 
   const children = cachedSelectOrgUnitChildren(state, code);
 
-  const descendants = children.map(child =>
-    recursiveBuildDescendantHierarchy(state, child.organisationUnitCode),
+  const descendants = [orgUnit];
+  children.forEach(child =>
+    descendants.push(...recursiveBuildDescendantHierarchy(state, child.organisationUnitCode)),
   );
-  const returnVal = [].concat([orgUnit], ...descendants);
-  return returnVal;
+  return descendants;
 };
 
 export const cachedSelectOrgUnitAndDescendants = createCachedSelector(
