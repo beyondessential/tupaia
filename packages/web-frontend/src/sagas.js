@@ -92,6 +92,7 @@ import { isMobile, processMeasureInfo, formatDateForApi } from './utils';
 import { createUrlString } from './utils/historyNavigation';
 import { getDefaultDates } from './utils/periodGranularities';
 import { INITIAL_MEASURE_ID } from './defaults';
+import { cachedSelectMeasureBarItemById } from './selectors';
 
 /**
  * attemptChangePassword
@@ -520,10 +521,11 @@ function* watchOrgUnitChangeAndFetchDashboard() {
 function* fetchViewData(parameters, errorHandler) {
   const { infoViewKey } = parameters;
   // If the view should be constrained to a date range and isn't, constrain it
+  const state = yield select();
   const { startDate, endDate } =
     parameters.startDate || parameters.endDate
       ? parameters
-      : getDefaultDates(yield select(), infoViewKey);
+      : getDefaultDates(state.global.viewConfigs[infoViewKey]);
   // Build the request url
   const {
     organisationUnitCode,
@@ -675,7 +677,23 @@ function* fetchMeasureInfo(measureId, organisationUnitCode, oldOrganisationUnitC
     }
   }
 
-  const requestResourceUrl = `measureData?organisationUnitCode=${organisationUnitCode}&measureId=${measureId}&shouldShowAllParentCountryResults=${!isMobile()}`;
+  const state = yield select();
+  const measureParams = cachedSelectMeasureBarItemById(state, measureId) || {};
+
+  // If the view should be constrained to a date range and isn't, constrain it
+  const { startDate, endDate } =
+    measureParams.startDate || measureParams.endDate
+      ? measureParams
+      : getDefaultDates(measureParams);
+
+  const urlParameters = {
+    measureId,
+    organisationUnitCode,
+    startDate: formatDateForApi(startDate),
+    endDate: formatDateForApi(endDate),
+    shouldShowAllParentCountryResults: !isMobile(),
+  };
+  const requestResourceUrl = `measureData?${queryString.stringify(urlParameters)}`;
 
   try {
     const measureInfoResponse = yield call(request, requestResourceUrl);
