@@ -26,10 +26,21 @@ const palette = {
 const typography = {
   fontSize: 14,
   button: {
-    textTransform: "none",
-    letterSpacing: "0.035em"
-  }
+    textTransform: 'none',
+    letterSpacing: '0.035em',
+  },
 };
 const shape = { borderRadius: 3 };
-
-export default createMuiTheme({ palette, themeName, typography, shape });
+const overrides = {
+  MuiCard: {
+    root: {
+      borderColor: COLORS.GREY_DE,
+    },
+  },
+  MuiTabs: {
+    indicator: {
+      display: 'none',
+    },
+  },
+};
+export default createMuiTheme({ palette, themeName, typography, shape, overrides });
