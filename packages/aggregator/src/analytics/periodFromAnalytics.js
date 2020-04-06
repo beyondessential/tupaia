@@ -1,12 +1,12 @@
 import { getPreferredPeriod } from './aggregateAnalytics/aggregations/utils';
 
-const LATEST_DATE = '99991230';
+const MAX_LATEST_DATE = '99991230';
 
 export const periodFromAnalytics = analytics => {
   return analytics.reduce(
     (currentDateRange, dataPoint) => {
       const { latestPeriod } = currentDateRange;
-      const earliestPeriod = currentDateRange.earliestPeriod || LATEST_DATE;
+      const earliestPeriod = currentDateRange.earliestPeriod || MAX_LATEST_DATE;
       const { period } = dataPoint;
       return {
         earliestPeriod:
