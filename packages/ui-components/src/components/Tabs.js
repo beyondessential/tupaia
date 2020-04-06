@@ -3,31 +3,45 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
-import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
+import React, { useState } from 'react';
+import { ErrorOutline, NotificationImportant } from '@material-ui/icons';
+import Card from '@material-ui/core/Card';
+import MuiTabs from '@material-ui/core/Tabs';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
+import MuiTab from '@material-ui/core/Tab';
+import styled from 'styled-components';
+import * as COLORS from '../theme/colors';
+import PropTypes from 'prop-types';
 
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
+const Tab = styled(({ ...rest }) => <MuiTab classes={{ selected: 'selected' }} {...rest} />)`
+  border-right: 1px solid ${COLORS.GREY_DE};
+  border-bottom: 1px solid ${COLORS.GREY_DE};
+  background: ${COLORS.GREY_FB};
 
-  return (
-    <Typography
-      component="div"
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && <Box p={3}>{children}</Box>}
-    </Typography>
-  );
-}
+  &:last-child {
+    border-right: none;
+  }
+
+  &.selected {
+    background: white;
+    color: ${props => props.theme.palette.primary.main};
+    border-bottom: 1px solid transparent;
+  }
+`;
+
+const TabPanel = ({ children, value, index, ...props }) => (
+  <Typography
+    component="div"
+    role="tabpanel"
+    hidden={value !== index}
+    id={`simple-tabpanel-${index}`}
+    aria-labelledby={`simple-tab-${index}`}
+    {...props}
+  >
+    {value === index && <Box p={3}>{children}</Box>}
+  </Typography>
+);
 
 TabPanel.propTypes = {
   children: PropTypes.node,
@@ -35,46 +49,25 @@ TabPanel.propTypes = {
   value: PropTypes.any.isRequired,
 };
 
-function a11yProps(index) {
-  return {
-    id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
-  };
-}
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-    backgroundColor: theme.palette.background.paper,
-  },
-}));
-
-export const SimpleTabs = () => {
-  const classes = useStyles();
-  const [value, setValue] = React.useState(0);
+export const Tabs = ({ data }) => {
+  const [value, setValue] = useState(0);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
   return (
-    <div className={classes.root}>
-      <AppBar position="static">
-        <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
-          <Tab label="Item One" {...a11yProps(0)} />
-          <Tab label="Item Two" {...a11yProps(1)} />
-          <Tab label="Item Three" {...a11yProps(2)} />
-        </Tabs>
-      </AppBar>
-      <TabPanel value={value} index={0}>
-        Item One
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        Item Two
-      </TabPanel>
-      <TabPanel value={value} index={2}>
-        Item Three
-      </TabPanel>
-    </div>
+    <Card variant="outlined">
+      <MuiTabs value={value} onChange={handleChange} variant="fullWidth" textColor="secondary">
+        {data.map(({content, ...props}, index) => (
+          <Tab key={index} {...props} />
+        ))}
+      </MuiTabs>
+      {data.map((tab, index) => (
+        <TabPanel key={index} value={value} index={index}>
+          {tab.content}
+        </TabPanel>
+      ))}
+    </Card>
   );
-}
+};
