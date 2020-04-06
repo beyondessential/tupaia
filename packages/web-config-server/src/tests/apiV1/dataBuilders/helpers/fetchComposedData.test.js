@@ -20,6 +20,9 @@ const DATA_BUILDERS = {
     config: { limitRange: [0, 1] },
   },
 };
+const ENTITY = {
+  code: 'VU',
+};
 const query = {
   startPeriod: '201910',
   endPeriod: '201911',
@@ -43,7 +46,7 @@ const callFetchComposedData = async () => {
     dataServices,
   };
 
-  return fetchComposedData({ dataBuilderConfig, query }, aggregator, dhisApi);
+  return fetchComposedData({ dataBuilderConfig, query }, aggregator, dhisApi, ENTITY);
 };
 
 describe('fetchComposedData()', () => {
@@ -69,11 +72,13 @@ describe('fetchComposedData()', () => {
       { dataBuilderConfig: { ...DATA_BUILDERS.countBuilder.config, dataServices }, query },
       aggregator,
       dhisApi,
+      ENTITY,
     );
     expect(DATA_BUILDERS.percentageBuilder.stub).to.have.been.calledOnceWith(
       { dataBuilderConfig: { ...DATA_BUILDERS.percentageBuilder.config, dataServices }, query },
       aggregator,
       dhisApi,
+      ENTITY,
     );
   });
 

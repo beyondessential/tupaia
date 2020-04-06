@@ -5,7 +5,9 @@
 
 import { ENTITY_TYPES } from '/models/Entity';
 
-export function getDataSourceEntityType(config, defaultEntityType = ENTITY_TYPES.FACILITY) {
+const DEFAULT_ENTITY_TYPE = ENTITY_TYPES.FACILITY;
+
+export function getDataSourceEntityType(config, defaultEntityType = DEFAULT_ENTITY_TYPE) {
   return config.dataSourceEntityType || defaultEntityType;
 }
 
