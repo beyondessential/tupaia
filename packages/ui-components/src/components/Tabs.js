@@ -3,71 +3,108 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
-import { ErrorOutline, NotificationImportant } from '@material-ui/icons';
-import Card from '@material-ui/core/Card';
+import React, { useState, createContext, useContext, Children } from 'react';
 import MuiTabs from '@material-ui/core/Tabs';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import MuiTab from '@material-ui/core/Tab';
 import styled from 'styled-components';
 import * as COLORS from '../theme/colors';
-import PropTypes from 'prop-types';
 
-const Tab = styled(({ ...rest }) => <MuiTab classes={{ selected: 'selected' }} {...rest} />)`
+/*
+ * Tabs
+ */
+const TabsContext = createContext();
+
+/**
+ * Tabs are composable using `Tabs`, `TabList`, `Tab`, `TabPanels` and `TabPanel`.
+ * An alternative `DataTabs` api can be used to pass in labels and panels in an array.
+ */
+export const Tabs = ({ children }) => {
+  const [activeIndex, setActiveIndex] = useState(0);
+  return (
+    <TabsContext.Provider value={{ activeIndex, setActiveIndex }}>{children}</TabsContext.Provider>
+  );
+};
+
+/*
+ * Tab List
+ */
+export const TabList = ({ children }) => {
+  const { activeIndex, setActiveIndex } = useContext(TabsContext);
+  const handleChange = (event, newValue) => {
+    setActiveIndex(newValue);
+  };
+  return (
+    <MuiTabs
+      value={activeIndex}
+      onChange={handleChange}
+      variant="fullWidth"
+      aria-label="full width tabs example"
+    >
+      {children}
+    </MuiTabs>
+  );
+};
+
+/*
+ * Tab
+ */
+const StyledTab = styled(MuiTab)`
   border-right: 1px solid ${COLORS.GREY_DE};
   border-bottom: 1px solid ${COLORS.GREY_DE};
   background: ${COLORS.GREY_FB};
+  color: ${COLORS.GREY_9F};
+  padding: 16px 12px;
 
   &:last-child {
     border-right: none;
   }
 
-  &.selected {
+  &.Mui-selected {
     background: white;
     color: ${props => props.theme.palette.primary.main};
     border-bottom: 1px solid transparent;
   }
 `;
 
-const TabPanel = ({ children, value, index, ...props }) => (
-  <Typography
-    component="div"
-    role="tabpanel"
-    hidden={value !== index}
-    id={`simple-tabpanel-${index}`}
-    aria-labelledby={`simple-tab-${index}`}
-    {...props}
-  >
-    {value === index && <Box p={3}>{children}</Box>}
+export const Tab = ({ children, ...rest }) => <StyledTab {...rest} label={children} />;
+
+/*
+ * Tab Panels
+ */
+export const TabPanels = ({ children }) => {
+  const { activeIndex } = useContext(TabsContext);
+  return children[activeIndex];
+};
+
+/*
+ * Tab Panel
+ */
+export const TabPanel = ({ children, ...props }) => (
+  <Typography component="div" {...props}>
+    <Box p={3}>{children}</Box>
   </Typography>
 );
 
-TabPanel.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.any.isRequired,
-  value: PropTypes.any.isRequired,
-};
-
-export const Tabs = ({ data }) => {
-  const [value, setValue] = useState(0);
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
+/*
+ * Data tabs
+ *
+ * Tabs with an array api
+ */
+export const DataTabs = ({ data }) => {
   return (
-    <Card variant="outlined">
-      <MuiTabs value={value} onChange={handleChange} variant="fullWidth" textColor="secondary">
-        {data.map(({content, ...props}, index) => (
-          <Tab key={index} {...props} />
+    <Tabs>
+      <TabList>
+        {data.map((tab, index) => (
+          <Tab key={index}>{tab.label}</Tab>
         ))}
-      </MuiTabs>
-      {data.map((tab, index) => (
-        <TabPanel key={index} value={value} index={index}>
-          {tab.content}
-        </TabPanel>
-      ))}
-    </Card>
+      </TabList>
+      <TabPanels>
+        {data.map((tab, index) => (
+          <TabPanel key={index}>{tab.content}</TabPanel>
+        ))}
+      </TabPanels>
+    </Tabs>
   );
 };
