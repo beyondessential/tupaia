@@ -87,7 +87,7 @@ exports.up = async function(db) {
   `);
 
 // This inserts the remaining new HP02 questions into the data_source and data_element_data_group tables
-  HP02QuestionCodesWithNoSpecificConfiguration.forEach(async function(questionCode){
+  await Promise.all(HP02QuestionCodesWithNoSpecificConfiguration.map(async function(questionCode){
      const dataSourceId = generateId();
       await db.runSql(`
         INSERT INTO "data_source" ("id", "code", "type", "service_type", "config")
@@ -104,10 +104,10 @@ exports.up = async function(db) {
         SELECT '${generateId()}', '${dataSourceId}', id
         FROM data_source WHERE type = 'dataGroup' AND code = 'HP02';       
       `);
-  });
+  }));
 
 // This inserts the new HP01 questions into the data_source and data_element_data_group tables
-  HP01QuestionCodesWithNoSpecificConfiguration.forEach(async function(questionCode){
+  await Promise.all(HP01QuestionCodesWithNoSpecificConfiguration.map(async function(questionCode){
     const dataSourceId = generateId();
      await db.runSql(`
       INSERT INTO "data_source" ("id", "code", "type", "service_type", "config")
@@ -124,14 +124,14 @@ exports.up = async function(db) {
       SELECT '${generateId()}', '${dataSourceId}', id
       FROM data_source WHERE type = 'dataGroup' AND code = 'HP01';
     `);
-  });
+  }));
 
 // This deletes all the questions that have been removed from the HP01 and HP02 surveys
-  removedHP01andHP02QuestionCodes.forEach(async function(questionCode){
+  await Promise.all(removedHP01andHP02QuestionCodes.map(async function(questionCode){
     await db.runSql(`
      DELETE FROM "data_source" where "code" = '${questionCode}' AND "type" = 'dataElement';
     `);
-  });
+  }));
 
 return null;
 };
