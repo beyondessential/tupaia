@@ -20,11 +20,11 @@ exports.setup = function(options, seedLink) {
 exports.up = function(db) {
   return db.runSql(`
     update "dashboardReport"
-    set "dataBuilderConfig" = jsonb_set("dataBuilderConfig", '{dataBuilders,data,dataBuilderConfig,labels,dailysurvey003}', '"New confirmed cases"')
+    set "dataBuilderConfig" = jsonb_set("dataBuilderConfig", '{labels,dailysurvey003}', '"New confirmed cases"')
     where "id" = '${REPORT_ID}';
 
     update "dashboardReport"
-    set "dataBuilderConfig" = jsonb_set("dataBuilderConfig", '{dataBuilders,data,dataBuilderConfig,labels,dailysurvey004}', '"New deaths"')
+    set "dataBuilderConfig" = jsonb_set("dataBuilderConfig", '{labels,dailysurvey004}', '"New deaths"')
     where "id" = '${REPORT_ID}'
   `);
 };
@@ -32,11 +32,11 @@ exports.up = function(db) {
 exports.down = function(db) {
   return db.runSql(`
     update "dashboardReport"
-    set "dataBuilderConfig" = jsonb_set("dataBuilderConfig", '{dataBuilders,data,dataBuilderConfig,labels,dailysurvey003}', '"New confirmed cases today"')
+    set "dataBuilderConfig" = jsonb_set("dataBuilderConfig", '{labels,dailysurvey003}', '"New confirmed cases today"')
     where "id" = '${REPORT_ID}';
 
     update "dashboardReport"
-    set "dataBuilderConfig" = jsonb_set("dataBuilderConfig", '{dataBuilders,data,dataBuilderConfig,labels,dailysurvey004}', '"New deaths today"')
+    set "dataBuilderConfig" = jsonb_set("dataBuilderConfig", '{labels,dailysurvey004}', '"New deaths today"')
     where "id" = '${REPORT_ID}'
   `);
 };

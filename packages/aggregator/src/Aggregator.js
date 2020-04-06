@@ -38,7 +38,6 @@ export class Aggregator {
     const { period } = fetchOptions;
     const { results, metadata } = await this.dataBroker.pull(dataSourceSpec, fetchOptions);
     const dataPeriod = periodFromAnalytics(results);
-    console.log(dataPeriod);
 
     return {
       results: this.processAnalytics(results, aggregationOptions),
