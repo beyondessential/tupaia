@@ -119,7 +119,6 @@ export class TableOfDataValuesBuilder extends DataBuilder {
     }
 
     const categoryKeyToTitle = await this.getColumnCategoryToTitle();
-    console.log("categoryKeyToTitle", categoryKeyToTitle);
 
     let index = 0;
     const builtColumns = this.tableConfig.columns.map(({ category, columns }) => ({
