@@ -37,10 +37,5 @@ const overrides = {
       borderColor: COLORS.GREY_DE,
     },
   },
-  MuiTabs: {
-    indicator: {
-      display: 'none',
-    },
-  },
 };
 export default createMuiTheme({ palette, themeName, typography, shape, overrides });

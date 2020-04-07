@@ -277,7 +277,7 @@ exports.up = function(db, callback) {
       db.insert(
         'mapOverlay',
         ['groupName', 'userGroup', 'name', 'dataElementCode', 'displayType'],
-        ['Medicines & Consumables', 'Admin', 'Enalapril 5mg Tabs', 'ENPL0050TAB000', ''],
+        ['Medicines & Consumables', 'Admin', 'Enalapril 5mg CardTabs', 'ENPL0050TAB000', ''],
         error => rejectOnError(resolve, reject, error),
       ),
     ),
@@ -323,7 +323,7 @@ exports.up = function(db, callback) {
       db.insert(
         'mapOverlay',
         ['groupName', 'userGroup', 'name', 'dataElementCode', 'displayType'],
-        ['Medicines & Consumables', 'Admin', 'Glibenclamide 5mg Tabs', 'GLIB0050TAB000', ''],
+        ['Medicines & Consumables', 'Admin', 'Glibenclamide 5mg CardTabs', 'GLIB0050TAB000', ''],
         error => rejectOnError(resolve, reject, error),
       ),
     ),
@@ -353,7 +353,7 @@ exports.up = function(db, callback) {
       db.insert(
         'mapOverlay',
         ['groupName', 'userGroup', 'name', 'dataElementCode', 'displayType'],
-        ['Medicines & Consumables', 'Admin', 'Hydrochlorothiazide 25mg Tabs', 'HTHZ0250SOD000', ''],
+        ['Medicines & Consumables', 'Admin', 'Hydrochlorothiazide 25mg CardTabs', 'HTHZ0250SOD000', ''],
         error => rejectOnError(resolve, reject, error),
       ),
     ),
@@ -416,7 +416,7 @@ exports.up = function(db, callback) {
         [
           'Medicines & Consumables',
           'Admin',
-          'Levonorgestrel 750mcg or 1.5mg Tabs',
+          'Levonorgestrel 750mcg or 1.5mg CardTabs',
           'LVGLXXXXTAB000',
           '',
         ],
@@ -427,7 +427,7 @@ exports.up = function(db, callback) {
       db.insert(
         'mapOverlay',
         ['groupName', 'userGroup', 'name', 'dataElementCode', 'displayType'],
-        ['Medicines & Consumables', 'Admin', 'Metformin 500mg Tabs', 'MTFN0500TAB001', ''],
+        ['Medicines & Consumables', 'Admin', 'Metformin 500mg CardTabs', 'MTFN0500TAB001', ''],
         error => rejectOnError(resolve, reject, error),
       ),
     ),
@@ -435,7 +435,7 @@ exports.up = function(db, callback) {
       db.insert(
         'mapOverlay',
         ['groupName', 'userGroup', 'name', 'dataElementCode', 'displayType'],
-        ['Medicines & Consumables', 'Admin', 'Methyldopa 250mg Tabs', 'MDPA2500TAB000', ''],
+        ['Medicines & Consumables', 'Admin', 'Methyldopa 250mg CardTabs', 'MDPA2500TAB000', ''],
         error => rejectOnError(resolve, reject, error),
       ),
     ),
@@ -481,7 +481,7 @@ exports.up = function(db, callback) {
       db.insert(
         'mapOverlay',
         ['groupName', 'userGroup', 'name', 'dataElementCode', 'displayType'],
-        ['Medicines & Consumables', 'Admin', 'Nifedipine Tabs', 'NFPNXXXXCIR000', ''],
+        ['Medicines & Consumables', 'Admin', 'Nifedipine CardTabs', 'NFPNXXXXCIR000', ''],
         error => rejectOnError(resolve, reject, error),
       ),
     ),

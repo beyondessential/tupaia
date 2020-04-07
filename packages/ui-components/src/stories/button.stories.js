@@ -5,8 +5,11 @@
 
 import React from 'react';
 import { action } from '@storybook/addon-actions';
-import { Button } from '../components/Button';
+import { Button, LightOutlinedButton } from '../components/Button';
 import Box from '@material-ui/core/Box';
+import * as COLORS from '../theme/colors';
+import { lightTabs } from './tabs.stories';
+import { FlightLandOutlined } from '@material-ui/icons';
 
 export default {
   title: 'Button',
@@ -54,3 +57,19 @@ export const Outlined = () => (
     </Box>
   </>
 );
+
+export const LightOutlined = () => (
+  <>
+    <Box m={3}>
+      <LightOutlinedButton onClick={action('Outlined button clicked')}>
+        Outlined
+      </LightOutlinedButton>
+    </Box>
+  </>
+);
+
+LightOutlined.story = {
+  parameters: {
+    backgrounds: [{ name: 'Header', value: COLORS.BLUE, default: true }],
+  },
+};
