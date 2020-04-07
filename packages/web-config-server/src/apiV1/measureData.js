@@ -237,7 +237,7 @@ export default class extends DataAggregatingRouteHandler {
     return buildMeasure(
       this.aggregator,
       dhisApi,
-      { ...this.query, organisationUnitGroupCode: entityCode, dataElementCode },
+      { ...this.query, dataElementCode },
       { ...measureBuilderConfig, dataServices },
       entity,
     );
