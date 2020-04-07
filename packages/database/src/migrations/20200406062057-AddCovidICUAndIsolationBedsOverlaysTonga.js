@@ -13,7 +13,7 @@ var seed;
 
 const BASE_OVERLAY = {
   groupName: 'COVID-19 Tonga',
-  userGroup: 'Admin',
+  userGroup: 'COVID-19',
   dataElementCode: 'value',
   displayType: 'radius',
   isDataRegional: true,
