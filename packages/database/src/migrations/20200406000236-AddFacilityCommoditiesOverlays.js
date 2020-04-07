@@ -120,21 +120,19 @@ exports.up = async function(db) {
   const isPositiveCondition = { condition: { operator: '>', value: 0 } };
 
   await Promise.all(
-    DATA_ELEMENTS.map(
-      ({ idSuffix, code: dataElementCode, name, measureBuilder, measureBuilderConfig }, i) => {
-        const extraConfig = measureBuilder === 'checkConditions' ? isPositiveCondition : {};
+    DATA_ELEMENTS.map(({ idSuffix, code: dataElementCode, name, measureBuilder }, i) => {
+      const extraConfig = measureBuilder === 'checkConditions' ? isPositiveCondition : {};
 
-        return insertObject(db, 'mapOverlay', {
-          ...BASE_OVERLAY,
-          id: `${BASE_ID}_${idSuffix}`,
-          name,
-          dataElementCode,
-          sortOrder: i + 1,
-          measureBuilder,
-          measureBuilderConfig: { ...measureBuilderConfig, ...extraConfig },
-        });
-      },
-    ),
+      return insertObject(db, 'mapOverlay', {
+        ...BASE_OVERLAY,
+        id: `${BASE_ID}_${idSuffix}`,
+        name,
+        dataElementCode,
+        sortOrder: i + 1,
+        measureBuilder,
+        measureBuilderConfig: { ...BASE_OVERLAY.measureBuilderConfig, ...extraConfig },
+      });
+    }),
   );
 };
 
