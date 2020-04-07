@@ -8,7 +8,7 @@
 /**
  * Component for Login Form
  */
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
@@ -32,35 +32,44 @@ export const LoginFormComponent = ({
   successMessage,
   emailVerified,
 }) => {
-  const [shouldShowVerifyForm, setVerifyForm] = React.useState(false);
+  const [shouldShowVerifyForm, setVerifyForm] = useState(false);
 
-  const showVerifyForm = React.useCallback(() => setVerifyForm(true), []);
+  const showVerifyForm = useCallback(() => setVerifyForm(true), []);
 
   if (shouldShowVerifyForm) return <EmailVerification />;
   else if (emailVerified === EMAIL_VERIFIED_STATUS.NEW_USER)
     return <SignupComplete onClickResend={showVerifyForm} />;
 
+  const onSubmit = useCallback(({ email, password }) => onAttemptUserLogin(email, password), [
+    onAttemptUserLogin,
+  ]);
+
+  const renderForm = useCallback(
+    submitForm => (
+      <React.Fragment>
+        <TextField fullWidth label="E-mail" name="email" validators={[emailAddress]} required />
+        <PasswordField
+          fullWidth
+          label="Password"
+          name="password"
+          type="password"
+          required
+          onKeyPress={e => e.key === 'Enter' && submitForm()}
+        />
+        <ForgotPassword handleClick={onClickResetPassword} />
+        <SubmitButton text="Sign in" handleClick={submitForm} />
+      </React.Fragment>
+    ),
+    [onClickResetPassword],
+  );
+
   return (
     <Form
-      onSubmit={({ email, password }) => onAttemptUserLogin(email, password)}
+      onSubmit={onSubmit}
       isLoading={isRequestingLogin}
       formError={loginFailedMessage}
       formSuccess={successMessage}
-      render={submitForm => (
-        <React.Fragment>
-          <TextField fullWidth label="E-mail" name="email" validators={[emailAddress]} required />
-          <PasswordField
-            fullWidth
-            label="Password"
-            name="password"
-            type="password"
-            required
-            onKeyPress={e => e.key === 'Enter' && submitForm()}
-          />
-          <ForgotPassword handleClick={onClickResetPassword} />
-          <SubmitButton text="Sign in" handleClick={submitForm} />
-        </React.Fragment>
-      )}
+      render={renderForm}
     />
   );
 };
