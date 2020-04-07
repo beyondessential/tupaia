@@ -25,7 +25,6 @@ export const checkConditions = async (aggregator, dhisApi, query, measureBuilder
     undefined,
     measureBuilderConfig.aggregationType,
   );
-  const responseObject = await builder.build();
 
-  return responseObject;
+  return builder.build();
 };
