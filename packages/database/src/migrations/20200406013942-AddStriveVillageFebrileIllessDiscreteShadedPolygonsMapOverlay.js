@@ -8,13 +8,13 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function (options, seedLink) {
+exports.setup = function(options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
 
-exports.up = function (db) {
+exports.up = function(db) {
   return db.runSql(
     `
     INSERT INTO "mapOverlay" (
@@ -46,7 +46,7 @@ exports.up = function (db) {
       'shading',
       'Red,Orange,Yellow,Lime,Green',
       true,
-      '[{"name": "> 20", "color": "Red", "value": "0"}, {"name": "19 - 15", "color": "Orange", "value": "1"}, {"name": "14 - 10", "color": "Yellow", "value": "2"}, {"name": "9 - 6", "color": "Lime", "value": "3"}, {"name": "5 - 1", "color": "Green", "value": "4"}]',
+      '[{"name": "> 20", "color": "Red", "value": "0"}, {"name": "19 - 15", "color": "Orange", "value": "1"}, {"name": "14 - 10", "color": "Yellow", "value": "2"}, {"name": "9 - 6", "color": "Lime", "value": "3"}, {"name": "5 - 1", "color": "Green", "value": "4"}, {"name": "0", "color": "Grey", "value": "null"}]',
       false,
       false,
       false,
@@ -60,7 +60,7 @@ exports.up = function (db) {
   );
 };
 
-exports.down = function (db) {
+exports.down = function(db) {
   return db.runSql(
     `
     DELETE FROM "mapOverlay" WHERE "id" = 'STRIVE_FIS_Village_Number_Reported_Cases_In_Week';
