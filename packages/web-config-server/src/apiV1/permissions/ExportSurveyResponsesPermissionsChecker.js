@@ -15,9 +15,9 @@ export class ExportSurveyResponsesPermissionsChecker extends DashboardPermission
     // check that the selected surveys sits within the report
     const { reportId, surveyCodes } = this.query;
     const { dataBuilderConfig } = await DashboardReport.findById(reportId);
-    const surveyCodesMatchDashboardReport = surveyCodes.every(surveyCode =>
-      dataBuilderConfig.surveyCodes.some(({ code }) => code === surveyCode),
-    );
+    const surveyCodesMatchDashboardReport = surveyCodes
+      .split(',')
+      .every(surveyCode => dataBuilderConfig.surveyCodes.some(({ code }) => code === surveyCode));
     if (!surveyCodesMatchDashboardReport) {
       throw new PermissionsError(`Survey codes do not match the report ${reportId}`);
     }
