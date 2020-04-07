@@ -37,7 +37,7 @@ const Container = styled.div`
   grid-auto-flow: row;
 `;
 
-const HeaderBar = props => {
+const HeaderBar = React.memo(props => {
   const {
     isUserLoggedIn,
     searchIsExpanded,
@@ -86,7 +86,7 @@ const HeaderBar = props => {
       {requestCountryAccessIsExpanded && <RequestCountryAccessForm />}
     </Container>
   );
-};
+});
 
 HeaderBar.propTypes = {
   searchIsExpanded: PropTypes.bool,
