@@ -51,7 +51,7 @@ const sumPerMetric = async ({ dataBuilderConfig, query }, aggregator, dhisApi, a
 
     return returnData[name];
   };
-  
+
   const dataElementsWithData = [];
   results
     .map(({ dataElement: dataElementCode, ...result }) => {
@@ -93,7 +93,7 @@ const sumPerMetric = async ({ dataBuilderConfig, query }, aggregator, dhisApi, a
   }
   dataBuilderConfig.dataElementCodes.forEach(dataElementCode => {
     const name = labels[dataElementCode] || dataElementCodeToName[dataElementCode];
-    if(!dataElementsWithData.includes(dataElementCode)){
+    if (!dataElementsWithData.includes(dataElementCode)) {
       data.push({
         name,
         dataElementCode,
@@ -101,7 +101,6 @@ const sumPerMetric = async ({ dataBuilderConfig, query }, aggregator, dhisApi, a
       });
     }
   });
-
 
   return { data };
 };
