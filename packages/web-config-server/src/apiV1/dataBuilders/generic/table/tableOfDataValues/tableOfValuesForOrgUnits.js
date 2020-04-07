@@ -32,7 +32,7 @@ class TableOfValuesForOrgUnitsBuilder extends TableOfDataValuesBuilder {
     const rowData = { ...this.baseRows };
     this.results.forEach(({ value, organisationUnit, metadata }) => {
       const dataElementName = stripFromStart(metadata.name, stripFromDataElementNames);
-      const orgUnit = this.columns.find(col => col.title === organisationUnit);
+      const orgUnit = columns.find(col => col.title === organisationUnit);
       if (orgUnit) rowData[dataElementName][orgUnit.key] = value;
     });
 
