@@ -17,7 +17,7 @@ exports.setup = function(options, seedLink) {
   seed = seedLink;
 };
 
-const DASHBOARD_GROUP_CODES = ['PG_Strive_PNG_Facility', 'PG_Strive_PNG_Country'];
+const DASHBOARD_GROUP_CODES = ['PG_Strive_PNG_Facility'];
 
 const REPORT = {
   id: 'PG_Strive_PNG_Positive_RDT_By_Result_Over_Time',
@@ -33,25 +33,35 @@ const REPORT = {
     type: 'chart',
     chartType: 'bar',
     chartConfig: {
-      'Positive Pf': {
-        label: 'Pf positive',
+      'Not done': {
+        label: 'Not done',
         stackId: 1,
-      },
-      'Positive Non-Pf': {
-        label: 'Non Pf positive',
-        stackId: 1,
-      },
-      'Positive Mixed': {
-        label: 'Mixed positive',
-        stackId: 1,
+        legendOrder: 1,
+        color: '#888888',
       },
       Negative: {
         label: 'Negative',
         stackId: 1,
+        legendOrder: 2,
+        color: '#8214A0',
       },
-      'Not done': {
-        label: 'Not done',
+      'Positive Pf': {
+        label: 'Pf positive',
         stackId: 1,
+        legendOrder: 3,
+        color: '#e3f2fd',
+      },
+      'Positive Mixed': {
+        label: 'Mixed positive',
+        stackId: 1,
+        legendOrder: 4,
+        color: '#2196f3',
+      },
+      'Positive Non-Pf': {
+        label: 'Non Pf positive',
+        stackId: 1,
+        legendOrder: 5,
+        color: '#bbdefb',
       },
     },
     periodGranularity: 'week',
