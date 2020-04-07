@@ -114,10 +114,12 @@ export class TableOfDataValuesBuilder extends DataBuilder {
 
     if (this.tableConfig.columns === ORG_UNIT_COL_KEY) this.buildOrgsFromResults();
     if (!this.tableConfig.hasColumnCategories()) {
-      return this.tableConfig.columns.map(buildColumn);
+      const builtColumns = this.tableConfig.columns.map(buildColumn);
+      return this.replaceOrgUnitCodesWithNames(builtColumns);
     }
 
     const categoryKeyToTitle = await this.getColumnCategoryToTitle();
+    console.log("categoryKeyToTitle", categoryKeyToTitle);
 
     let index = 0;
     const builtColumns = this.tableConfig.columns.map(({ category, columns }) => ({
