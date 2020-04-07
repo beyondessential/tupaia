@@ -53,8 +53,8 @@ exports.up = function (db) {
 
 exports.down = function (db) {
   return db.runSql(`
-    DELETE FROM "dashboardGroup" where code = 'Disaster_Response_Province_DL';
-    DELETE FROM "dashboardGroup" where code = 'Disaster_Response_Country_DL';
+    DELETE FROM "dashboardGroup" where code = 'Disaster_Response_Province_VU';
+    DELETE FROM "dashboardGroup" where code = 'Disaster_Response_Country_VU';
     DELETE FROM "dashboardGroup" where code = 'Disaster_Response_Facility_VU';
   `);
 };
