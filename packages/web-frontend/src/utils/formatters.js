@@ -52,6 +52,11 @@ const boolean = (value, { presentationOptions = {} }) => {
 };
 
 const percentage = value => {
+  // eslint-disable-next-line no-restricted-globals
+  if (isNaN(value)) {
+    return value;
+  }
+
   const percentageValue = value * 100;
 
   let decimalPrecision = 0;
