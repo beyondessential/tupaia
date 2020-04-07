@@ -3,13 +3,14 @@ import { getChildOrganisationUnits, mapOrgUnitToGroupCodes } from '/apiV1/utils'
 export const mostRecentValueFromChildren = async (
   aggregator,
   dhisApi,
-  { organisationUnitGroupCode, dataElementCode },
+  { dataElementCode },
   { aggregationEntityType, dataServices },
+  entity,
 ) => {
   const organisationUnits = await getChildOrganisationUnits(
     {
       level: aggregationEntityType,
-      organisationUnitGroupCode,
+      organisationUnitGroupCode: entity.code,
     },
     dhisApi,
   );
@@ -17,7 +18,7 @@ export const mostRecentValueFromChildren = async (
   const orgUnitToGroupKeys = mapOrgUnitToGroupCodes(organisationUnits);
   const { results } = await aggregator.fetchAnalytics(
     [dataElementCode],
-    { dataServices, organisationUnitCode: organisationUnitGroupCode },
+    { dataServices, organisationUnitCode: entity.code },
     {},
     {
       aggregationType: aggregator.aggregationTypes.MOST_RECENT_PER_ORG_GROUP,
