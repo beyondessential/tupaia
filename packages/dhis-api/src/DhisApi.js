@@ -184,13 +184,19 @@ export class DhisApi {
     return record && record.id;
   }
 
+  // when fetching events, look back a max of 5 years - DHIS2 gets overwhelmed when requesting
+  // events for all time
+  MAXIMUM_MONTHS_OF_EVENTS = 60;
+
   async getEvents({
     programCode,
     organisationUnitCode,
     orgUnitIdScheme = 'code',
     dataElementIdScheme = 'uid',
-    startDate,
-    endDate,
+    startDate = utcMoment()
+      .subtract(this.MAXIMUM_MONTHS_OF_EVENTS, 'month')
+      .format(),
+    endDate = utcMoment().format(),
     eventId,
     trackedEntityInstance,
     dataValueFormat = 'array', // ('array'|'object')
@@ -201,38 +207,17 @@ export class DhisApi {
       );
     }
 
-    const programId = programCode && (await this.getIdFromCode(PROGRAM, programCode));
-    if (programCode && !programId) {
-      throw this.constructError(`Program not found: ${programCode}`);
-    }
-    const organisationUnitId = organisationUnitCode
-      ? await this.getIdFromCode(ORGANISATION_UNIT, organisationUnitCode)
-      : null;
+    let events = eventId
+      ? [await this.fetch(`${EVENT}/${eventId}`)]
+      : await this.fetchEventsInBatches({
+          programCode,
+          organisationUnitCode,
+          orgUnitIdScheme,
+          startDate,
+          endDate,
+          trackedEntityInstance,
+        });
 
-    const queryParameters = {
-      program: programId,
-      orgUnit: organisationUnitId,
-      programIdScheme: 'code',
-      orgUnitIdScheme,
-      ouMode: 'DESCENDANTS',
-      trackedEntityInstance,
-    };
-
-    // Format dates
-    if (startDate) {
-      queryParameters.startDate = utcMoment(startDate).format('YYYY-MM-DD');
-    }
-    if (endDate) {
-      queryParameters.endDate = utcMoment(endDate).format('YYYY-MM-DD');
-    }
-
-    const endpoint = `events${eventId ? `/${eventId}` : ''}`;
-
-    const response = eventId
-      ? await this.fetch(endpoint, queryParameters)
-      : await this.fetchAllPages(endpoint, queryParameters);
-
-    let events = eventId ? [response] : response.events;
     if (dataElementIdScheme === 'code') {
       events = await replaceElementIdsWithCodesInEvents(this, events);
     }
@@ -244,6 +229,65 @@ export class DhisApi {
     }
     events.sort(getSortByKey('eventDate'));
 
+    return events;
+  }
+
+  /**
+   * Fetches events a year at a time rather than all at once, to avoid overloading DHIS2
+   */
+  async fetchEventsInBatches({
+    programCode,
+    organisationUnitCode,
+    orgUnitIdScheme,
+    trackedEntityInstance,
+    startDate,
+    endDate,
+  }) {
+    const programId = programCode && (await this.getIdFromCode(PROGRAM, programCode));
+    if (programCode && !programId) {
+      throw this.constructError(`Program not found: ${programCode}`);
+    }
+    const organisationUnitId = organisationUnitCode
+      ? await this.getIdFromCode(ORGANISATION_UNIT, organisationUnitCode)
+      : null;
+
+    const baseQueryParameters = {
+      program: programId,
+      orgUnit: organisationUnitId,
+      programIdScheme: 'code',
+      orgUnitIdScheme,
+      ouMode: 'DESCENDANTS',
+      trackedEntityInstance,
+    };
+
+    // build a query per year - 1 per year is just a first attempt, and should be hand tuned
+    const periodBatchIncrement = 1;
+    const periodBatchUnit = 'year';
+    const startDateForBatch = utcMoment(startDate);
+    const endDateForBatch = startDateForBatch
+      .clone()
+      .add(periodBatchIncrement, periodBatchUnit)
+      .subtract(1, 'day');
+    const finalEndDate = utcMoment(endDate);
+    const events = [];
+    // iterate through sequentially, rather than in parallel, to avoid overwhelming DHIS2
+    while (startDateForBatch.isSameOrBefore(finalEndDate)) {
+      const queryParameters = {
+        ...baseQueryParameters,
+        startDate: startDateForBatch.format('YYYY-MM-DD'),
+        endDate:
+          finalEndDate < endDateForBatch
+            ? finalEndDate.format('YYYY-MM-DD')
+            : endDateForBatch.format('YYYY-MM-DD'),
+      };
+      const response = await this.fetchAllPages(EVENT, queryParameters);
+      events.push(...response.events);
+
+      // increment date range for next batch - moment is most performant when using its mutating
+      // functions, rather than instantiating new moments
+      startDateForBatch.add(periodBatchIncrement, periodBatchUnit);
+      endDateForBatch.add(periodBatchIncrement, periodBatchUnit);
+    }
     return events;
   }
 
