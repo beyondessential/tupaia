@@ -60,6 +60,7 @@ const REPORT = {
         label: 'Deaths',
         chartType: 'bar',
         color: '#2194F9',
+        YAxisScale: 2,
       },
     },
     periodGranularity: 'day',

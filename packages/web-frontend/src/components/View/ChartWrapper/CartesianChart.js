@@ -236,11 +236,14 @@ export class CartesianChart extends PureComponent {
       [Y_AXIS_IDS.right]: { yAxisId: Y_AXIS_IDS.right, dataKeys: [], orientation: 'right' },
     };
     Object.entries(chartConfig).forEach(
-      ([dataKey, { yAxisOrientation: orientation, valueType }]) => {
+      ([dataKey, { yAxisOrientation: orientation, valueType, YAxisScale }]) => {
         const axisId = Y_AXIS_IDS[orientation] || DEFAULT_Y_AXIS.id;
         axisPropsById[axisId].dataKeys.push(dataKey);
         if (valueType) {
           axisPropsById[axisId].valueType = valueType;
+        }
+        if (YAxisScale) {
+          axisPropsById[axisId].YAxisScale = YAxisScale;
         }
       },
     );
@@ -253,6 +256,7 @@ export class CartesianChart extends PureComponent {
   renderYAxis = ({
     yAxisId = DEFAULT_Y_AXIS.id,
     orientation = DEFAULT_Y_AXIS.orientation,
+    YAxisScale,
     valueType: axisValueType,
   } = {}) => {
     const { isExporting, viewContent } = this.props;
@@ -263,7 +267,7 @@ export class CartesianChart extends PureComponent {
         key={yAxisId}
         yAxisId={yAxisId}
         orientation={orientation}
-        domain={[0, 'auto']}
+        domain={YAxisScale ? [0, dataMax => dataMax * YAxisScale] : [0, 'auto']}
         allowDataOverflow={valueType === PERCENTAGE}
         // The above 2 props stop floating point imprecision making Y axis go above 100% in stacked charts.
         label={data.yName}
