@@ -429,7 +429,7 @@ function* fetchOrgUnitData(organisationUnitCode) {
 }
 
 function* requestOrgUnit(action) {
-  const { organisationUnitCode } = action.organisationUnit;
+  const { organisationUnitCode } = action;
   const state = yield select();
   const orgUnit = selectOrgUnit(state, organisationUnitCode);
   if (orgUnit && orgUnit.isComplete) {

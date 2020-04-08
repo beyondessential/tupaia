@@ -245,7 +245,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(openMapPopup(organisationUnitCode));
     },
     onOrgHighlight: orgUnit => dispatch(highlightOrgUnit(orgUnit)),
-    getNestedOrgUnits: organisationUnitCode => dispatch(requestOrgUnit({ organisationUnitCode })),
+    getNestedOrgUnits: organisationUnitCode => dispatch(requestOrgUnit(organisationUnitCode)),
   };
 };
 

@@ -444,10 +444,10 @@ export function fetchRequestCountryAccessError(errorMessage) {
  *
  * @param {object} organisationUnit
  */
-export function requestOrgUnit(organisationUnit = initialOrgUnit) {
+export function requestOrgUnit(organisationUnitCode = initialOrgUnit.organisationUnitCode) {
   return {
     type: REQUEST_ORG_UNIT,
-    organisationUnit,
+    organisationUnitCode,
   };
 }
 
