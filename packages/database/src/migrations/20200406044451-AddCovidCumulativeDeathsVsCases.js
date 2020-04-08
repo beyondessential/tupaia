@@ -58,7 +58,7 @@ const REPORT = {
       },
       deaths: {
         label: 'Deaths',
-        chartType: 'bar',
+        chartType: 'line',
         color: '#2194F9',
       },
     },
