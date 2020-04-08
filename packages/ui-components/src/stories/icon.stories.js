@@ -19,6 +19,7 @@ import {
   Dashboard,
   Expand,
   Export,
+  Home,
   Minimize,
   Outbreaks,
   Sort,
@@ -40,6 +41,7 @@ export const icons = () => (
       <Dashboard />
       <Expand />
       <Export />
+      <Home />
       <Minimize />
       <Outbreaks />
       <Sort />

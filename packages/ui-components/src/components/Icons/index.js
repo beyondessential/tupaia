@@ -9,6 +9,7 @@ export * from './Cases';
 export * from './Dashboard';
 export * from './Expand';
 export * from './Export';
+export * from './Home';
 export * from './Minimize';
 export * from './Outbreaks';
 export * from './Sort';

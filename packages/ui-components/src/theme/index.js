@@ -12,7 +12,18 @@ const palette = {
     main: COLORS.BLUE,
   },
   secondary: {
+    main: COLORS.DARK_BLUE,
+  },
+  error: {
     main: COLORS.RED,
+  },
+  warning: {
+    main: COLORS.RED,
+    dark: COLORS.DARK_RED,
+  },
+  success: {
+    main: COLORS.GREEN,
+    dark: COLORS.DARK_GREEN,
   },
   text: {
     primary: COLORS.TEXTGREY,

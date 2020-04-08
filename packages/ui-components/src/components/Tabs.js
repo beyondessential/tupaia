@@ -3,20 +3,30 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useCallback } from 'react';
 import MuiTabs from '@material-ui/core/Tabs';
 import MuiTab from '@material-ui/core/Tab';
 import styled from 'styled-components';
+import * as COLORS from '../theme/colors';
 
 /*
  * Tabs
  */
+export const StyledTabs = styled(MuiTabs)`
+  .MuiTabs-indicator {
+    height: 3px;
+  }
+`;
+
 export const Tabs = props => {
   const [value, setValue] = React.useState(0);
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-  return <MuiTabs {...props} value={value} onChange={handleChange} />;
+  const handleChange = useCallback(
+    (event, newValue) => {
+      setValue(newValue);
+    },
+    [setValue],
+  );
+  return <StyledTabs {...props} value={value} onChange={handleChange} />;
 };
 
 /*
@@ -55,7 +65,7 @@ export const LightTabs = styled(Tabs)`
  * Light Tab
  */
 export const LightTab = styled(Tab)`
-  color: rgba(255, 255, 255, 0.7);
+  color: ${COLORS.TRANSPARENT_BLUE};
 
   &.Mui-selected {
     color: ${props => props.theme.palette.primary.contrastText};

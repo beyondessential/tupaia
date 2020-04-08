@@ -6,9 +6,9 @@ import React from 'react';
 import MuiBreadcrumbs from '@material-ui/core/Breadcrumbs';
 import Link from '@material-ui/core/Link';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-import Home from '@material-ui/icons/Home';
 import Typography from '@material-ui/core/Typography';
 import * as COLORS from '../theme/colors';
+import { Home } from '../components/Icons';
 import styled from 'styled-components';
 
 function handleClick(event) {
@@ -16,38 +16,20 @@ function handleClick(event) {
   console.info('You clicked a breadcrumb.');
 }
 
-export const Breadcrumbs = props => (
-  <MuiBreadcrumbs separator={<NavigateNextIcon />} {...props}>
-    <Link color="inherit" href="/dashboard" onClick={handleClick}>
-      <Home/> Dashboard
-    </Link>
-    <Typography>Outbreaks</Typography>
-  </MuiBreadcrumbs>
-);
-
-/*
- * Light Outlined Button
- */
-export const LightBreadcrumbs = styled(Breadcrumbs)`
+const StyledBreadcrumbs = styled(MuiBreadcrumbs)`
   font-weight: 500;
-  font-size: 12px;
-  line-height: 14px;
-  color: rgba(255, 255, 255, 0.7);
-  margin-bottom: 5px;
-
-  p {
-    font-weight: 500;
-    font-size: 12px;
-    line-height: 14px;
-    color: rgba(255, 255, 255, 0.7);
-  }
+  font-size: 0.75rem;
+  line-height: 0.875rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
   
   .MuiLink-root {
     display: flex;
     align-items: center;
     
     svg {
-      margin-right: 5px;
+      font-size: 1rem;
+      margin-right: 0.5rem;
     }
   }
 
@@ -59,8 +41,28 @@ export const LightBreadcrumbs = styled(Breadcrumbs)`
       font-size: 1rem;
     }
   }
+`;
 
+export const Breadcrumbs = props => (
+  <StyledBreadcrumbs separator={<NavigateNextIcon />} {...props}>
+    <Link color="inherit" href="/dashboard" onClick={handleClick}>
+      <Home/> Dashboard
+    </Link>
+    <span>Outbreaks</span>
+  </StyledBreadcrumbs>
+);
+
+/*
+ * Light Outlined Button
+ */
+export const LightBreadcrumbs = styled(Breadcrumbs)`
+  color: ${COLORS.LIGHT_BLUE};
+
+  p {
+    color: ${COLORS.LIGHT_BLUE};
+  }
+  
   &:hover {
-    color: rgba(255, 255, 255, 0.7);
+    color: ${COLORS.LIGHT_BLUE};
   }
 `;

@@ -26,30 +26,30 @@ export const Calendar = () => (
     <path
       d="M2.23352 9.05962C2.23352 7.75583 3.23 6.70337 4.46446 6.70337H33.4666C34.7011 6.70337 35.6975 7.75583 35.6975 9.05962V34.9783C35.6975 36.2821 34.7011 37.3346 33.4666 37.3346H4.46446C3.23 37.3346 2.23352 36.2821 2.23352 34.9783V9.05962Z"
       stroke="#697074"
-      stroke-width="3"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="3"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M2.23352 16.1284H35.6975"
       stroke="#697074"
-      stroke-width="3"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="3"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M11.157 10.2378V1.99097"
       stroke="#697074"
-      stroke-width="3"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="3"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M26.7737 10.2378V1.99097"
       stroke="#697074"
-      stroke-width="3"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="3"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </StyledSVG>
 );

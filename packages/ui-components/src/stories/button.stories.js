@@ -5,86 +5,95 @@
 
 import React from 'react';
 import { action } from '@storybook/addon-actions';
-import { Button, LightOutlinedButton, ProfileButton } from '../components/Button';
-import Box from '@material-ui/core/Box';
+import {
+  Button,
+  SmallButton,
+  SuccessButton,
+  WarningButton,
+  LightOutlinedButton,
+  ProfileButton,
+} from '../components/Button';
+import MuiBox from '@material-ui/core/Box';
 import * as COLORS from '../theme/colors';
 import { SystemUpdateAlt } from '@material-ui/icons';
 import Avatar from '@material-ui/core/Avatar';
+import styled from 'styled-components';
 
 export default {
   title: 'Button',
 };
 
-export const Default = () => (
-  <>
-    <Box m={3}>
-      <Button m={4} onClick={action('Default button clicked')}>
-        Default
-      </Button>
-    </Box>
-    <Box m={3}>
-      <Button isSubmitting>Default</Button>
-    </Box>
-  </>
+const Container = styled(MuiBox)`
+  max-width: 1200px;
+  padding: 1rem;
+`;
+
+export const primary = () => (
+  <Container>
+    <Button onClick={action('Primary button clicked')}>Button</Button>
+  </Container>
 );
 
-export const Secondary = () => (
-  <>
-    <Box m={3}>
-      <Button color="secondary" onClick={action('Secondary button clicked')}>
-        Secondary
-      </Button>
-    </Box>
-    <Box m={3}>
-      <Button color="secondary" onClick={action('Secondary button clicked')} isSubmitting>
-        Secondary
-      </Button>
-    </Box>
-  </>
+export const secondary = () => (
+  <Container>
+    <Button color="secondary">
+      Secondary
+    </Button>
+  </Container>
 );
 
-export const Outlined = () => (
-  <>
-    <Box m={3}>
-      <Button variant="outlined" onClick={action('Outlined button clicked')}>
-        Outlined
-      </Button>
-    </Box>
-    <Box m={3}>
-      <Button variant="outlined" isSubmitting>
-        Outlined
-      </Button>
-    </Box>
-  </>
+export const warning = () => (
+  <Container>
+    <WarningButton>Warning</WarningButton>
+  </Container>
 );
 
-export const LightOutlined = () => (
-  <Box m={3}>
-    <LightOutlinedButton
-      endIcon={<SystemUpdateAlt />}
-      onClick={action('Light Outlined button clicked')}
-    >
+export const success = () => (
+  <Container>
+    <SuccessButton>Success</SuccessButton>
+  </Container>
+);
+
+export const outlined = () => (
+  <Container>
+    <Button variant="outlined">
       Outlined
-    </LightOutlinedButton>
-  </Box>
+    </Button>
+  </Container>
 );
 
-LightOutlined.story = {
-  parameters: {
-    backgrounds: [{ name: 'Header', value: COLORS.BLUE, default: true }],
-  },
-};
-
-export const Profile = () => (
-  <Box m={3}>
-    <ProfileButton startIcon={<Avatar>T</Avatar>} onClick={action('Profile button clicked')}>
-      Tom
-    </ProfileButton>
-  </Box>
+export const lightOutlined = () => (
+  <Container bgcolor={COLORS.BLUE}>
+    <LightOutlinedButton endIcon={<SystemUpdateAlt />}>Outlined</LightOutlinedButton>
+  </Container>
 );
 
-Profile.story = {
-  parameters: {
-    backgrounds: [{ name: 'Header', value: COLORS.BLUE, default: true }],
-  },
-};
+export const large = () => (
+  <Container>
+    <Button fullWidth>Large</Button>
+  </Container>
+);
+
+export const medium = () => (
+  <Container>
+    <Button>Medium</Button>
+  </Container>
+);
+
+export const small = () => (
+  <Container>
+    <SmallButton>Small</SmallButton>
+  </Container>
+);
+
+export const loading = () => (
+  <Container>
+    <Button isSubmitting>Default</Button>
+  </Container>
+);
+
+export const profile = () => (
+  <Container bgcolor={COLORS.BLUE}>
+    <ProfileButton startIcon={<Avatar>T</Avatar>}>Tom</ProfileButton>
+  </Container>
+);

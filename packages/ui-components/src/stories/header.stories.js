@@ -5,18 +5,16 @@
 
 import React from 'react';
 // import { Header } from '../components/Header';
+import { NavBar } from '../components/NavBar';
 import Container from '@material-ui/core/Container';
 import * as COLORS from '../theme/colors';
 import styled from 'styled-components';
-import { LightTab, LightTabs } from '../components/Tabs';
-import { Dashboard, NewReleases, Warning, SystemUpdateAlt } from '@material-ui/icons';
-import Box from '@material-ui/core/Box';
-import { Button, LightOutlinedButton, ProfileButton } from '../components/Button';
+import { SystemUpdateAlt } from '@material-ui/icons';
+import { LightOutlinedButton } from '../components/Button';
 import Typography from '@material-ui/core/Typography';
 import { LightBreadcrumbs } from '../components/Breadcrumbs';
 import MuiButton from '@material-ui/core/Button';
 import MuiButtonGroup from '@material-ui/core/ButtonGroup';
-import Avatar from '@material-ui/core/Avatar';
 
 export default {
   title: 'Header',
@@ -25,16 +23,6 @@ export default {
 const Header = styled.header`
   background-color: ${COLORS.BLUE};
   color: ${COLORS.WHITE};
-`;
-
-const NavBar = styled.nav`
-  display: flex;
-  justify-content: space-between;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.7);
-  
-  img {
-    margin-right: 60px;
-  }
 `;
 
 const HeaderMain = styled.nav`
@@ -78,30 +66,9 @@ const Toolbar = styled.div`
 
 export const header = () => (
   <div>
+    <NavBar />
     <Header>
       <Container maxWidth="lg">
-        <NavBar>
-          <Box display="flex">
-            <img src="/psss-logo.svg" alt="psss logo" />
-            <LightTabs>
-              <LightTab>
-                <Dashboard />
-                Dashboard
-              </LightTab>
-              <LightTab>
-                <Warning />
-                Alerts
-              </LightTab>
-              <LightTab>
-                <NewReleases />
-                Outbreaks
-              </LightTab>
-            </LightTabs>
-          </Box>
-          <ProfileButton startIcon={<Avatar>T</Avatar>}>
-            Tom
-          </ProfileButton>
-        </NavBar>
         <HeaderMain>
           <div>
             <LightBreadcrumbs />

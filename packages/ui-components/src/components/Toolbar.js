@@ -30,7 +30,7 @@ export const Toolbar = () => {
   return (
     <div className={classes.root}>
       <MuiToolbar>
-        <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+        <IconButton edge="start" className={classes.menuButton} color="inherit">
           <MenuIcon />
         </IconButton>
         <Typography variant="h6" className={classes.title}>

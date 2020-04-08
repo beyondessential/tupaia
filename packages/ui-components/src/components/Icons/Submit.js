@@ -25,16 +25,16 @@ export const Submit = () => (
     <path
       d="M10.486 21.5949L14.3708 27.0614C14.6721 27.5013 15.1637 27.7683 15.7028 27.7997C16.2419 27.8154 16.7494 27.5798 17.0823 27.1557L29.514 11.5416"
       stroke="#697074"
-      stroke-width="3"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="3"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M20 37.3347C29.847 37.3347 37.8388 29.4177 37.8388 19.6628C37.8388 9.90796 29.847 1.99097 20 1.99097C10.153 1.99097 2.16125 9.90796 2.16125 19.6628C2.16125 29.4177 10.153 37.3347 20 37.3347Z"
       stroke="#697074"
-      stroke-width="3"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="3"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </StyledSVG>
 );

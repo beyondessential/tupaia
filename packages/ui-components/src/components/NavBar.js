@@ -4,42 +4,60 @@
  */
 
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
+import MuiBox from '@material-ui/core/Box';
+import MuiContainer from '@material-ui/core/Container';
+import { LightTab, LightTabs } from './Tabs';
+import { Dashboard, NewReleases, Warning } from '@material-ui/icons';
+import { ProfileButton } from './Button';
+import Avatar from '@material-ui/core/Avatar';
+import styled from 'styled-components';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-  title: {
-    flexGrow: 1,
-  },
-}));
+const Wrapper = styled.nav`
+  background-color: ${props => props.theme.palette.primary.main};
+`;
 
-export const NavBar = () => {
-  const classes = useStyles();
+const Inner = styled(MuiBox)`
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 
-  return (
-    <div className={classes.root}>
-      <AppBar position="static">
-        <Toolbar>
-          <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" className={classes.title}>
-            News
-          </Typography>
-          <Button color="inherit">Login</Button>
-        </Toolbar>
-      </AppBar>
-    </div>
-  );
-};
+  .MuiTabs-root {
+    margin-bottom: -1px; // This is needed to align the indicator with the border
+  }
+`;
+
+const NavLinks = styled(MuiBox)`
+  display: flex;
+  justify-content: flex-start;
+
+  img {
+    margin-right: 4rem;
+  }
+`;
+
+export const NavBar = () => (
+  <Wrapper>
+    <MuiContainer>
+      <Inner>
+        <NavLinks>
+          <img src="/psss-logo.svg" alt="psss logo" />
+          <LightTabs>
+            <LightTab>
+              <Dashboard />
+              Dashboard
+            </LightTab>
+            <LightTab>
+              <Warning />
+              Alerts
+            </LightTab>
+            <LightTab>
+              <NewReleases />
+              Outbreaks
+            </LightTab>
+          </LightTabs>
+        </NavLinks>
+        <ProfileButton startIcon={<Avatar>T</Avatar>}>Tom</ProfileButton>
+      </Inner>
+    </MuiContainer>
+  </Wrapper>
+);

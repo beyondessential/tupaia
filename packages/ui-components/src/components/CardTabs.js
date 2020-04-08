@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState, createContext, useContext, Children } from 'react';
+import React, { useState, createContext, useContext, useCallback } from 'react';
 import MuiTabs from '@material-ui/core/Tabs';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
@@ -38,9 +38,12 @@ const StyledTabs = styled(MuiTabs)`
 
 export const CardTabList = ({ children }) => {
   const { activeIndex, setActiveIndex } = useContext(TabsContext);
-  const handleChange = (event, newValue) => {
-    setActiveIndex(newValue);
-  };
+  const handleChange = useCallback(
+    (event, newValue) => {
+      setActiveIndex(newValue);
+    },
+    [setActiveIndex],
+  );
   return (
     <StyledTabs value={activeIndex} onChange={handleChange} variant="fullWidth">
       {children}
@@ -90,7 +93,7 @@ export const CardTabPanel = ({ children, ...props }) => (
 /*
  * DataTabs
  *
- * CardTabs with an array api
+ * CardTabs with an array api. Each entry in 'data' should contain 'label' and 'content' fields.
  */
 export const DataCardTabs = ({ data }) => {
   return (

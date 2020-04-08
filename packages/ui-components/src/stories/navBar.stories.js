@@ -10,6 +10,6 @@ export default {
   title: 'NavBar',
 };
 
-export const SimpleNavBar = () => (
+export const navBar = () => (
   <NavBar />
 );

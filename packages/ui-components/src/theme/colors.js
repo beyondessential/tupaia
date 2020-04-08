@@ -3,13 +3,11 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-// Color naming based loosely on material ui guidelines
-// https://material-ui.com/customization/color/
-
-// Primary colors / hues
+// Primary & Secondary colors
 export const WHITE = '#FFFFFF';
 export const BLACK = '#000000';
 export const BLUE = '#3884B8';
+export const DARK_BLUE = '#1F5880';
 export const YELLOW = '#FFCC24';
 export const RED = '#E21818';
 export const GREEN = '#08C95C';
@@ -29,9 +27,13 @@ export const GREY_FB = '#FBF9F9';
 
 // Blues
 export const WHITE_BLUE = '#DDF1FF';
+export const TRANSPARENT_BLUE = 'rgba(255, 255, 255, 0.7)';
 export const LIGHT_BLUE = '#9ACAEB';
-export const DARK_BLUE = '#1F5880';
 export const BLUE_ACCENT = '#2E6F9C';
 
 // Reds
 export const LIGHT_RED = '#FED9D9';
+export const DARK_RED = '#A70000';
+
+// Greens
+export const DARK_GREEN = '#00972E';

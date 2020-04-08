@@ -6,6 +6,13 @@
 import React from 'react';
 import { Breadcrumbs, LightBreadcrumbs } from '../components/Breadcrumbs';
 import * as COLORS from '../theme/colors';
+import styled from 'styled-components';
+import MuiBox from '@material-ui/core/Box';
+
+const Container = styled(MuiBox)`
+  max-width: 1200px;
+  padding: 1rem;
+`;
 
 export default {
   title: 'Breadcrumbs',
@@ -13,15 +20,13 @@ export default {
 };
 
 export const breadcrumbs = () => (
-  <Breadcrumbs />
+  <Container>
+    <Breadcrumbs />
+  </Container>
 );
 
 export const lightBreadcrumbs = () => (
-  <LightBreadcrumbs />
+  <Container bgcolor={COLORS.BLUE}>
+    <LightBreadcrumbs />
+  </Container>
 );
-
-  lightBreadcrumbs.story = {
-  parameters: {
-    backgrounds: [{ name: 'Header', value: COLORS.BLUE, default: true }],
-  },
-};
