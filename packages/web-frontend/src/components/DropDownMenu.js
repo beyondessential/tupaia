@@ -33,6 +33,7 @@ export class DropDownMenu extends PureComponent {
   handleOpenMenu(event) {
     this.setState({ anchorEl: event.currentTarget });
   }
+
   handleCloseMenu() {
     this.setState({ anchorEl: null });
   }
@@ -42,33 +43,56 @@ export class DropDownMenu extends PureComponent {
     this.props.onChange(newSelectedOption);
   }
 
+  renderListComponent(props) {
+    const { options, selectedOption, iconStyle } = props;
+
+    return options.length > 1 ? (
+      <List component="nav">
+        <ListItem button onClick={this.handleOpenMenu}>
+          <ListItemText primary={selectedOption} />
+          <DropDownIcon style={iconStyle} />
+        </ListItem>
+      </List>
+    ) : (
+      <List component="nav">
+        <ListItem>
+          <ListItemText primary={selectedOption} />
+        </ListItem>
+      </List>
+    );
+  }
+
+  renderMenuComponent(props, state) {
+    const { options, selectedOption, menuListStyle } = props;
+    const { anchorEl } = state;
+
+    if (options.length < 1) return null;
+
+    return options.length > 1 ? (
+      <Menu
+        open={!!anchorEl}
+        anchorEl={anchorEl}
+        onClose={this.handleCloseMenu}
+        MenuListProps={{ style: menuListStyle }}
+      >
+        {options.map(option => (
+          <MenuItem
+            key={option}
+            onClick={() => this.handleChangeSelection(option)}
+            selected={option === selectedOption}
+          >
+            {option}
+          </MenuItem>
+        ))}
+      </Menu>
+    ) : null;
+  }
+
   render() {
-    const { options, selectedOption, menuListStyle, iconStyle } = this.props;
-    const { anchorEl } = this.state;
     return (
       <div>
-        <List component="nav">
-          <ListItem button onClick={this.handleOpenMenu}>
-            <ListItemText primary={selectedOption} />
-            <DropDownIcon style={iconStyle} />
-          </ListItem>
-        </List>
-        <Menu
-          open={!!anchorEl}
-          anchorEl={anchorEl}
-          onClose={this.handleCloseMenu}
-          MenuListProps={{ style: menuListStyle }}
-        >
-          {options.map(option => (
-            <MenuItem
-              key={option}
-              onClick={() => this.handleChangeSelection(option)}
-              selected={option === selectedOption}
-            >
-              {option}
-            </MenuItem>
-          ))}
-        </Menu>
+        {this.renderListComponent(this.props)}
+        {this.renderMenuComponent(this.props, this.state)}
       </div>
     );
   }

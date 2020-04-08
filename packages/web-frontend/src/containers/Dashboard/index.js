@@ -15,9 +15,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import StaticMap from '../../components/StaticMap';
 import shallowEqual from 'shallowequal';
 import Dialog from '@material-ui/core/Dialog';
+import StaticMap from '../../components/StaticMap';
 
 import { initialOrgUnit } from '../../defaults';
 import { DASHBOARD_STYLES, DASHBOARD_META_MARGIN } from '../../styles';
@@ -199,14 +199,6 @@ export class Dashboard extends Component {
 
     if (groupNames.length < 1) {
       return null;
-    }
-
-    if (groupNames.length === 1) {
-      return (
-        <div>
-          <h4 style={DASHBOARD_STYLES.subtitle}>{currentDashboardKey}</h4>
-        </div>
-      );
     }
 
     return (
