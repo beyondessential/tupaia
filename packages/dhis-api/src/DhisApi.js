@@ -267,11 +267,11 @@ export class DhisApi {
     const endDateForBatch = startDateForBatch
       .clone()
       .add(periodBatchIncrement, periodBatchUnit)
-      .subtract(1, 'day');
+      .add(1, 'day'); // startDate/endDate are exclusive - add an extra day so it doesn't get missed on both ends
     const finalEndDate = utcMoment(endDate);
     const events = [];
     // iterate through sequentially, rather than in parallel, to avoid overwhelming DHIS2
-    while (startDateForBatch.isSameOrBefore(finalEndDate)) {
+    while (startDateForBatch.isSameOrBefore(finalEndDate, 'day')) {
       const queryParameters = {
         ...baseQueryParameters,
         startDate: startDateForBatch.format('YYYY-MM-DD'),
