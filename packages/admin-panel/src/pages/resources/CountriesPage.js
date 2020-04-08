@@ -59,6 +59,6 @@ export const CountriesPage = () => (
     columns={COLUMNS}
     expansionTabs={EXPANSION_CONFIG}
     createConfig={CREATE_CONFIG}
-    filteredExportConfig={{ title: 'Export Surveys' }}
+    filteredExportConfig={{ title: 'Export Survey Responses' }}
   />
 );
