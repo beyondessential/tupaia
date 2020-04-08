@@ -16,7 +16,6 @@
  * @prop {boolean} isSelected True - render checked box on right; False - render unchecked box on right; null - render neither.
  * @prop {boolean} hasNestedItems Manually tell element to render left side arrow.
  * @prop {function} Icon Custom icon for the hierarchy item
- * @prop {function} willMountFunc Called on componentWillMount
  * All additional props go to material-ui FlatButton component.
  * @return {element} a HierarchyItem react component.
  */
@@ -36,10 +35,6 @@ export class HierarchyItem extends Component {
     this.state = {
       isOpen: false,
     };
-  }
-
-  componentWillMount() {
-    // if (this.props.willMountFunc) this.props.willMountFunc();
   }
 
   onClick() {
@@ -68,7 +63,6 @@ export class HierarchyItem extends Component {
       nestedItems,
       isSelected,
       Icon,
-      willMountFunc,
       onClick,
       isLoading,
       ...otherProps
@@ -150,7 +144,6 @@ HierarchyItem.propTypes = {
   hasNestedItems: PropTypes.bool,
   isLoading: PropTypes.bool,
   Icon: PropTypes.func,
-  willMountFunc: PropTypes.func,
 };
 
 HierarchyItem.defaultProps = {

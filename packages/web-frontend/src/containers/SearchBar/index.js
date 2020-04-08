@@ -122,13 +122,7 @@ export class SearchBar extends PureComponent {
   }
 
   renderHierarchy() {
-    const {
-      hierarchyData,
-      onOrgUnitClick,
-      onOrgHighlight,
-      getNestedOrgUnits,
-      orgUnitFetchError,
-    } = this.props;
+    const { hierarchyData, onOrgUnitClick, onOrgHighlight, orgUnitFetchError } = this.props;
 
     if (isNull(hierarchyData))
       return <div style={styles.searchResponseText}>Loading countries...</div>;
@@ -143,10 +137,6 @@ export class SearchBar extends PureComponent {
         // Recursively generate the children for this OrgUnit, will not recurse whole tree as
         // HierarchyItems only fetch their children data on componentWillMount
         const nestedItems = recurseOrgUnits(organisationUnitChildren);
-        let willMountFunc;
-        if (!nestedItems || nestedItems.length < 1) {
-          willMountFunc = () => getNestedOrgUnits(organisationUnitCode);
-        }
 
         return (
           <HierarchyItem
@@ -160,7 +150,6 @@ export class SearchBar extends PureComponent {
             onClick={() => onOrgUnitClick(organisationUnitCode)}
             onMouseEnter={() => onOrgHighlight(orgUnit)}
             onMouseLeave={() => onOrgHighlight()}
-            willMountFunc={willMountFunc}
           />
         );
       });
