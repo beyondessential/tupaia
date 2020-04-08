@@ -18,9 +18,10 @@ exports.setup = function(options, seedLink) {
 
 exports.up = function() {
   const db = new TupaiaDatabase();
-  return db.executeSql(`
+  await db.executeSql(`
     ALTER TYPE public.entity_type ADD VALUE 'contact_case';
   `);
+  return db.closeConnections();
 };
 
 exports.down = function(db) {
