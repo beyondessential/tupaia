@@ -11,6 +11,7 @@ import { reduceToDictionary } from '@tupaia/utils';
 import { BaseModel } from './BaseModel';
 
 const CASE = 'case';
+const CASE_CONTACT = 'case_contact';
 const COUNTRY = 'country';
 const DISASTER = 'disaster';
 const FACILITY = 'facility';
@@ -20,6 +21,7 @@ const WORLD = 'world';
 
 export const ENTITY_TYPES = {
   CASE,
+  CASE_CONTACT,
   COUNTRY,
   DISASTER,
   FACILITY,
