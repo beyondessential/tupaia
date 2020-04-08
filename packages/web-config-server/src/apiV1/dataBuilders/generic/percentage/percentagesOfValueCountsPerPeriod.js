@@ -10,6 +10,8 @@ import { PercentagesOfValueCountsBuilder } from '/apiV1/dataBuilders/generic/per
 import { divideValues } from '/apiV1/dataBuilders/helpers';
 import { Facility } from '/models';
 
+const IGNORE_DENOMINATOR_PERIOD = 'ignorePeriodForDenominator';
+
 const filterFacility = async (filterCriteria, analytics) => {
   const facilities = await Facility.find({
     type: {
@@ -31,17 +33,19 @@ const FILTERS = {
 };
 
 class BaseBuilder extends PercentagesOfValueCountsBuilder {
-  async buildData(analytics) {
+  async buildData(resultsForPeriod, allResults) {
     const percentage = {};
-    let filteredData = analytics;
+    let numeratorData = resultsForPeriod;
+    let denominatorData = this.config[IGNORE_DENOMINATOR_PERIOD] ? allResults : resultsForPeriod;
 
     if (this.config.filter) {
-      filteredData = await FILTERS[this.config.filter.name](this.config.filter, analytics);
+      numeratorData = await FILTERS[this.config.filter.name](this.config.filter, resultsForPeriod);
+      denominatorData = await FILTERS[this.config.filter.name](this.config.filter, denominatorData);
     }
 
     Object.entries(this.config.dataClasses).forEach(([name, dataClass]) => {
-      const numerator = this.calculateFraction(dataClass.numerator, filteredData);
-      const denominator = this.calculateFraction(dataClass.denominator, filteredData);
+      const numerator = this.calculateFraction(dataClass.numerator, numeratorData);
+      const denominator = this.calculateFraction(dataClass.denominator, denominatorData);
       const key = Object.keys(this.config.dataClasses).length > 1 ? name : 'value';
       percentage[key] = divideValues(numerator, denominator);
       percentage[`${key}_metadata`] = { numerator, denominator };
