@@ -20,7 +20,7 @@ export const changeSelection = (reduxId, selection) => ({
   reduxId,
 });
 
-export const changeSearchTerm = (reduxId, endpoint, column, searchTerm) => async (
+export const changeSearchTerm = (reduxId, endpoint, column, searchTerm, searchTermFilter) => async (
   dispatch,
   getState,
   { api },
@@ -33,7 +33,8 @@ export const changeSearchTerm = (reduxId, endpoint, column, searchTerm) => async
     fetchId,
   });
   try {
-    const filter = convertFilterToString({ [column]: searchTerm });
+    const filter = convertFilterToString({ [column]: searchTerm, ...searchTermFilter });
+    console.log('FILTER', filter);
     const response = await api.get(endpoint, { filter, pageSize: MAX_AUTOCOMPLETE_RESULTS });
     dispatch({
       type: AUTOCOMPLETE_RESULTS_CHANGE,

@@ -10,6 +10,7 @@ import {
   IMPORT_EXPORT_SUCCESS,
   IMPORT_EXPORT_DISMISS,
   IMPORT_DIALOG_OPEN,
+  FILTERED_EXPORT_DIALOG_OPEN,
   FILTERED_EXPORT_OPTIONS_FETCH_BEGIN,
   FILTERED_EXPORT_OPTIONS_FETCH_SUCCESS,
   FILTERED_EXPORT_OPTIONS_TOGGLE,
@@ -19,7 +20,9 @@ import {
 const defaultState = {
   importEndpoint: null,
   isLoading: false,
-  surveyData: [],
+  filter: {},
+  export: {},
+  recordId: '',
   selectedSurveyCodes: {},
   errorMessage: null,
 };
@@ -37,8 +40,15 @@ const stateChanges = {
   [IMPORT_DIALOG_OPEN]: ({ importEndpoint }) => ({
     importEndpoint,
   }),
+  [FILTERED_EXPORT_DIALOG_OPEN]: ({ filter, export: exportConfig, row }) => {
+    return {
+      filter,
+      export: exportConfig,
+      row,
+    };
+  },
   [FILTERED_EXPORT_OPTIONS_FETCH_BEGIN]: () => ({}),
-  [FILTERED_EXPORT_OPTIONS_FETCH_SUCCESS]: state => ({ surveyData: state.surveyData }),
+  [FILTERED_EXPORT_OPTIONS_FETCH_SUCCESS]: state => ({ ...state }),
   [FILTERED_EXPORT_OPTIONS_TOGGLE]: ({ selectedSurveyCode, checked }, { selectedSurveyCodes }) => {
     return {
       selectedSurveyCodes: {

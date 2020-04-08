@@ -9,19 +9,16 @@ import { connect } from 'react-redux';
 import { IconButton } from '../widgets';
 import { openFilteredExportDialog } from './actions';
 
-export const FilteredExportButtonComponent = ({ dispatch, value: recordId, row, actionConfig }) => {
-  return (
-    <IconButton
-      icon="download"
-      onClick={() => dispatch(openFilteredExportDialog(actionConfig, recordId, row))}
-    />
-  );
-};
+export const FilteredExportButtonComponent = ({ dispatch, actionConfig, row }) => (
+  <IconButton
+    icon="download"
+    onClick={() => dispatch(openFilteredExportDialog(actionConfig, row))}
+  />
+);
 
 FilteredExportButtonComponent.propTypes = {
   actionConfig: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
-  value: PropTypes.string.isRequired,
   row: PropTypes.object.isRequired,
 };
 

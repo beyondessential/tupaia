@@ -9,6 +9,7 @@ import {
   IMPORT_EXPORT_SUCCESS,
   IMPORT_DIALOG_OPEN,
   IMPORT_EXPORT_DISMISS,
+  FILTERED_EXPORT_DIALOG_OPEN,
   FILTERED_EXPORT_OPTIONS_FETCH_BEGIN,
   FILTERED_EXPORT_OPTIONS_FETCH_SUCCESS,
   FILTERED_EXPORT_OPTIONS_TOGGLE,
@@ -20,7 +21,15 @@ export const openImportDialog = ({ importEndpoint }) => ({
   importEndpoint,
 });
 
-export const openFilteredExportDialog = (actionConfig, recordId, row) => async (
+export const openFilteredExportDialog = ({ filter, export: exportConfig }, row) => ({
+  type: FILTERED_EXPORT_DIALOG_OPEN,
+  filter,
+  export: exportConfig,
+  row,
+});
+
+/*
+export const openFilteredExportDialog2 = (actionConfig, recordId, row) => async (
   dispatch,
   getState,
   { api },
@@ -48,6 +57,7 @@ export const openFilteredExportDialog = (actionConfig, recordId, row) => async (
     });
   }
 };
+*/
 
 export const selectSurvey = (selectedSurveyCode, checked) => ({
   type: FILTERED_EXPORT_OPTIONS_TOGGLE,

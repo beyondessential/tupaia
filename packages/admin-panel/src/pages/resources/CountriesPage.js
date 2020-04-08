@@ -26,9 +26,9 @@ const COLUMNS = [
     type: 'filteredExport',
     width: 200,
     actionConfig: {
-      filterEndpoint: 'entities',
-      exportEndpoint: 'surveyResponses',
-      queryParameter: 'countryId',
+      filter: { endpoint: 'surveys', _raw_: '[id] = ANY(country_ids)' },
+      export: { endpoint: 'surveyResponses' },
+      //queryParameter: 'countryId',
       fileName: '{name} Survey Responses',
     },
   },
@@ -52,6 +52,24 @@ const CREATE_CONFIG = {
   },
 };
 
+const FILTERED_EXPORT_CONFIG = {
+  title: 'Export Survey Responses',
+  actionConfig: {
+    importEndpoint: 'surveys',
+  },
+  queryParameters: [
+    {
+      label: 'Surveys',
+      instruction: 'Select the surveys to get the exported responses.',
+      parameterKey: 'surveyNames',
+      optionsEndpoint: 'surveys',
+      optionValueKey: 'name',
+      allowMultipleValues: true,
+      canCreateNewOptions: false,
+    },
+  ],
+};
+
 export const CountriesPage = () => (
   <ResourcePage
     title="Countries"
@@ -59,6 +77,6 @@ export const CountriesPage = () => (
     columns={COLUMNS}
     expansionTabs={EXPANSION_CONFIG}
     createConfig={CREATE_CONFIG}
-    filteredExportConfig={{ title: 'Export Survey Responses' }}
+    filteredExportConfig={FILTERED_EXPORT_CONFIG}
   />
 );
