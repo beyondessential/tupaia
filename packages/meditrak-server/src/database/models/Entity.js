@@ -17,6 +17,7 @@ const REGION = 'region';
 const COUNTRY = 'country';
 const WORLD = 'world';
 const CASE = 'case';
+const CASE_CONTACT = 'case_contact';
 const DISASTER = 'disaster';
 const VILLAGE = 'village';
 
@@ -26,6 +27,7 @@ export const ENTITY_TYPES = {
   COUNTRY,
   WORLD,
   CASE,
+  CASE_CONTACT,
   DISASTER,
   VILLAGE,
 };
