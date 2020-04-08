@@ -197,8 +197,16 @@ export class Dashboard extends Component {
       return names;
     }, []);
 
-    if (groupNames.length < 2) {
+    if (groupNames.length < 1) {
       return null;
+    }
+
+    if (groupNames.length === 1) {
+      return (
+        <div>
+          <h4 style={DASHBOARD_STYLES.subtitle}>{currentDashboardKey}</h4>
+        </div>
+      );
     }
 
     return (

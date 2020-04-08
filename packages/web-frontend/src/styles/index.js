@@ -237,6 +237,14 @@ export const DASHBOARD_STYLES = {
     alignItems: 'center',
     padding: `3px ${DASHBOARD_META_MARGIN}px 0px`,
   },
+  subtitle: {
+    fontSize: '16px',
+    fontWeight: 'normal',
+    margin: '18px 0',
+    color: fullWhite,
+    alignItems: 'center',
+    padding: `3px ${DASHBOARD_META_MARGIN}px 0px`,
+  },
   loading: {
     opacity: 0.5,
   },
