@@ -211,6 +211,10 @@ const processColumnSelectorKeys = (object, recordType) => {
 };
 
 const processColumnSelector = (unprocessedColumnSelector, baseRecordType) => {
+  if (unprocessedColumnSelector === '_raw_') {
+    return '_raw_';
+  }
+
   if (unprocessedColumnSelector.includes('.')) {
     const [recordType, column] = unprocessedColumnSelector.split('.');
     return `${resourceToRecordType(recordType)}.${column}`;
