@@ -26,41 +26,6 @@ const Container = styled.div`
   margin: 1rem;
 `;
 
-export const tabs = () => {
-  return (
-    <Container>
-      <Card variant="outlined">
-        <CardTabs>
-          <CardTabList>
-            <CardTab>
-              <ErrorOutline /> 3 Active Alerts
-            </CardTab>
-            <CardTab>
-              <NotificationImportant /> 1 Active Outbreak
-            </CardTab>
-          </CardTabList>
-          <CardTabPanels>
-            <CardTabPanel>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                incididunt ut labore et dolore magna aliqua.
-              </p>
-            </CardTabPanel>
-            <CardTabPanel>
-              <p>Sed ut perspiciatis unde omnis iste natus error sit </p>
-              <ul>
-                <li>voluptatem accusantium</li>
-                <li>doloremque laudantium</li>
-                <li>voluptatem accusantium</li>
-              </ul>
-            </CardTabPanel>
-          </CardTabPanels>
-        </CardTabs>
-      </Card>
-    </Container>
-  );
-};
-
 const Tab1Label = () => (
   <>
     <ErrorOutline /> 3 Active Alerts
@@ -71,8 +36,88 @@ const Tab2Label = () => (
     <NotificationImportant /> 1 Active Outbreak
   </>
 );
-const Tab1Content = () => <div>Tab 1 Content</div>;
-const Tab2Content = () => <div>Tab 2 Content</div>;
+const Tab1Content = () => (
+  <p>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+    labore et dolore magna aliqua.
+  </p>
+);
+const Tab2Content = () => (
+  <>
+    <p>Sed ut perspiciatis unde omnis iste natus error sit </p>
+    <ul>
+      <li>voluptatem accusantium</li>
+      <li>doloremque laudantium</li>
+      <li>voluptatem accusantium</li>
+    </ul>
+  </>
+);
+
+export const simple = () => {
+  return (
+    <Container style={{maxWidth: '500px'}}>
+      <Card variant="outlined">
+        <CardTabs>
+          <CardTabList>
+            <CardTab>
+              Notes
+            </CardTab>
+            <CardTab>
+              Documents
+            </CardTab>
+            <CardTab>
+              Activity
+            </CardTab>
+            <CardTab>
+              Affected Sites
+            </CardTab>
+          </CardTabList>
+          <CardTabPanels>
+            <CardTabPanel>
+              Notes...
+            </CardTabPanel>
+            <CardTabPanel>
+              Documents...
+            </CardTabPanel>
+            <CardTabPanel>
+              Activity...
+            </CardTabPanel>
+            <CardTabPanel>
+              Affected Sites...
+            </CardTabPanel>
+          </CardTabPanels>
+        </CardTabs>
+      </Card>
+    </Container>
+  );
+};
+
+export const icons = () => {
+  return (
+    <Container>
+      <Card variant="outlined">
+        <CardTabs>
+          <CardTabList>
+            <CardTab>
+              <Tab1Label />
+            </CardTab>
+            <CardTab>
+              <Tab2Label />
+            </CardTab>
+          </CardTabList>
+          <CardTabPanels>
+            <CardTabPanel>
+              <Tab1Content />
+            </CardTabPanel>
+            <CardTabPanel>
+              <Tab2Content />
+            </CardTabPanel>
+          </CardTabPanels>
+        </CardTabs>
+      </Card>
+    </Container>
+  );
+};
 
 const tabData = [
   {
@@ -85,7 +130,7 @@ const tabData = [
   },
 ];
 
-export const dataTabs = () => (
+export const data = () => (
   <Container>
     <Card variant="outlined">
       <DataCardTabs data={tabData} />

@@ -25,6 +25,12 @@ const palette = {
 };
 const typography = {
   fontSize: 14,
+  h1: {
+    fontSize: '3.125rem',
+    fontWeight: 500,
+    lineHeight: 1.167,
+    letterSpacing: '-0.01562em',
+  },
   button: {
     textTransform: 'none',
     letterSpacing: '0.035em',

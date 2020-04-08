@@ -5,11 +5,11 @@
 
 import React from 'react';
 import { action } from '@storybook/addon-actions';
-import { Button, LightOutlinedButton } from '../components/Button';
+import { Button, LightOutlinedButton, ProfileButton } from '../components/Button';
 import Box from '@material-ui/core/Box';
 import * as COLORS from '../theme/colors';
-import { lightTabs } from './tabs.stories';
-import { FlightLandOutlined } from '@material-ui/icons';
+import { SystemUpdateAlt } from '@material-ui/icons';
+import Avatar from '@material-ui/core/Avatar';
 
 export default {
   title: 'Button',
@@ -59,16 +59,31 @@ export const Outlined = () => (
 );
 
 export const LightOutlined = () => (
-  <>
-    <Box m={3}>
-      <LightOutlinedButton onClick={action('Outlined button clicked')}>
-        Outlined
-      </LightOutlinedButton>
-    </Box>
-  </>
+  <Box m={3}>
+    <LightOutlinedButton
+      endIcon={<SystemUpdateAlt />}
+      onClick={action('Light Outlined button clicked')}
+    >
+      Outlined
+    </LightOutlinedButton>
+  </Box>
 );
 
 LightOutlined.story = {
+  parameters: {
+    backgrounds: [{ name: 'Header', value: COLORS.BLUE, default: true }],
+  },
+};
+
+export const Profile = () => (
+  <Box m={3}>
+    <ProfileButton startIcon={<Avatar>T</Avatar>} onClick={action('Profile button clicked')}>
+      Tom
+    </ProfileButton>
+  </Box>
+);
+
+Profile.story = {
   parameters: {
     backgrounds: [{ name: 'Header', value: COLORS.BLUE, default: true }],
   },

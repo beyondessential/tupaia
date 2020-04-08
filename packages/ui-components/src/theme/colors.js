@@ -30,7 +30,7 @@ export const GREY_FB = '#FBF9F9';
 // Blues
 export const WHITE_BLUE = '#DDF1FF';
 export const LIGHT_BLUE = '#9ACAEB';
-export const DARK_BLUE = '#286793';
+export const DARK_BLUE = '#1F5880';
 export const BLUE_ACCENT = '#2E6F9C';
 
 // Reds

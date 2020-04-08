@@ -7,6 +7,7 @@ import React from 'react';
 import { Tabs, Tab, LightTabs, LightTab } from '../components/Tabs';
 import styled from 'styled-components';
 import { Dashboard, Warning, NewReleases } from '@material-ui/icons';
+import MuiBox from '@material-ui/core/Box';
 import * as COLORS from '../theme/colors';
 
 export default {
@@ -14,9 +15,9 @@ export default {
   component: Tabs,
 };
 
-const Container = styled.div`
+const Container = styled(MuiBox)`
   max-width: 1200px;
-  margin: 1rem;
+  padding: 1rem;
 `;
 
 export const tabs = () => (
@@ -28,27 +29,31 @@ export const tabs = () => (
   </Container>
 );
 
-export const lightTabs = () => (
+export const iconTabs = () => (
   <Container>
+    <Tabs indicatorColor="primary" textColor="primary">
+      <Tab>
+        <Dashboard /> Dashboard
+      </Tab>
+      <Tab>
+        <Warning /> Alerts
+      </Tab>
+    </Tabs>
+  </Container>
+);
+
+export const lightTabs = () => (
+  <Container bgcolor={COLORS.BLUE}>
     <LightTabs>
       <LightTab>
-        <Dashboard />
-        Dashboard
+        <Dashboard /> Dashboard
       </LightTab>
       <LightTab>
-        <Warning />
-        Alerts
+        <Warning /> Alerts
       </LightTab>
       <LightTab>
-        <NewReleases />
-        Outbreaks
+        <NewReleases /> Outbreaks
       </LightTab>
     </LightTabs>
   </Container>
 );
-
-lightTabs.story = {
-  parameters: {
-    backgrounds: [{ name: 'Header', value: COLORS.BLUE, default: true }],
-  },
-};

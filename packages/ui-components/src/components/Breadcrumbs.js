@@ -33,6 +33,7 @@ export const LightBreadcrumbs = styled(Breadcrumbs)`
   font-size: 12px;
   line-height: 14px;
   color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 5px;
 
   p {
     font-weight: 500;

@@ -42,11 +42,7 @@ export const CardTabList = ({ children }) => {
     setActiveIndex(newValue);
   };
   return (
-    <StyledTabs
-      value={activeIndex}
-      onChange={handleChange}
-      variant="fullWidth"
-    >
+    <StyledTabs value={activeIndex} onChange={handleChange} variant="fullWidth">
       {children}
     </StyledTabs>
   );
@@ -55,12 +51,13 @@ export const CardTabList = ({ children }) => {
 /*
  * CardTab
  */
-const StyledTab = styled(MuiTab)`
+export const CardTab = styled(({ children, ...rest }) => <MuiTab {...rest} label={children} />)`
   border-right: 1px solid ${COLORS.GREY_DE};
   border-bottom: 1px solid ${COLORS.GREY_DE};
   background: ${COLORS.GREY_FB};
   color: ${COLORS.GREY_9F};
-  padding: 16px 12px;
+  padding: 1rem 0.75rem;
+  min-width: 5rem;
 
   &:last-child {
     border-right: none;
@@ -72,8 +69,6 @@ const StyledTab = styled(MuiTab)`
     border-bottom: 1px solid transparent;
   }
 `;
-
-export const CardTab = ({ children, ...rest }) => <StyledTab {...rest} label={children} />;
 
 /*
  * CardTab Panels

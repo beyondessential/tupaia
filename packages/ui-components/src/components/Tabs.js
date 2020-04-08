@@ -7,7 +7,6 @@ import React from 'react';
 import MuiTabs from '@material-ui/core/Tabs';
 import MuiTab from '@material-ui/core/Tab';
 import styled from 'styled-components';
-import * as COLORS from '../theme/colors';
 
 /*
  * Tabs
@@ -23,49 +22,42 @@ export const Tabs = props => {
 /*
  * Tab
  */
-const StyledTab = styled(MuiTab)`
-  padding: 16px 12px;
-
-  &.Mui-selected {
-    color: ${props => props.theme.palette.primary.main};
-  }
-`;
-
-export const Tab = ({ children, ...rest }) => <StyledTab {...rest} label={children} />;
-
-/*
- * Light Tabs
- */
-const StyledLightTabs = styled(Tabs)`
-  .MuiTabs-indicator {
-    background-color: ${props => props.theme.palette.primary.contrastText};
-  }
-`;
-
-export const LightTabs = props => <StyledLightTabs {...props} />;
-
-/*
- * Light Tab
- */
-const StyledLightTab = styled(MuiTab)`
+export const Tab = styled(({ children, ...rest }) => <MuiTab {...rest} label={children} />)`
   min-width: auto;
-  padding: 16px 0;
-  margin: 0 2rem;
-  color: rgba(255, 255, 255, 0.7);
+  padding: 1rem 0;
+  margin: 0 1.25rem;
   text-transform: uppercase;
 
   .MuiTab-wrapper {
     flex-direction: row;
     justify-content: flex-start;
   }
-  
+
   svg {
-    margin-right: 0.5rem;
+    margin-right: 0.625rem;
   }
+
+  &.Mui-selected {
+    color: ${props => props.theme.palette.primary.main};
+  }
+`;
+
+/*
+ * Light Tabs
+ */
+export const LightTabs = styled(Tabs)`
+  .MuiTabs-indicator {
+    background-color: ${props => props.theme.palette.primary.contrastText};
+  }
+`;
+
+/*
+ * Light Tab
+ */
+export const LightTab = styled(Tab)`
+  color: rgba(255, 255, 255, 0.7);
 
   &.Mui-selected {
     color: ${props => props.theme.palette.primary.contrastText};
   }
 `;
-
-export const LightTab = ({ children, ...rest }) => <StyledLightTab {...rest} label={children} />;
