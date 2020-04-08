@@ -10,10 +10,10 @@ import {
   IMPORT_EXPORT_SUCCESS,
   IMPORT_EXPORT_DISMISS,
   IMPORT_DIALOG_OPEN,
-  FILTERED_EXPORT_FETCH_BEGIN,
-  FILTERED_EXPORT_FETCH_SUCCESS,
-  FILTERED_EXPORT_TOGGLE,
-  FILTERED_EXPORT_ERROR,
+  FILTERED_EXPORT_OPTIONS_FETCH_BEGIN,
+  FILTERED_EXPORT_OPTIONS_FETCH_SUCCESS,
+  FILTERED_EXPORT_OPTIONS_TOGGLE,
+  FILTERED_EXPORT_OPTIONS_ERROR,
 } from './constants';
 
 const defaultState = {
@@ -37,9 +37,9 @@ const stateChanges = {
   [IMPORT_DIALOG_OPEN]: ({ importEndpoint }) => ({
     importEndpoint,
   }),
-  [FILTERED_EXPORT_FETCH_BEGIN]: () => ({}),
-  [FILTERED_EXPORT_FETCH_SUCCESS]: state => ({ surveyData: state.surveyData }),
-  [FILTERED_EXPORT_TOGGLE]: ({ selectedSurveyCode, checked }, { selectedSurveyCodes }) => {
+  [FILTERED_EXPORT_OPTIONS_FETCH_BEGIN]: () => ({}),
+  [FILTERED_EXPORT_OPTIONS_FETCH_SUCCESS]: state => ({ surveyData: state.surveyData }),
+  [FILTERED_EXPORT_OPTIONS_TOGGLE]: ({ selectedSurveyCode, checked }, { selectedSurveyCodes }) => {
     return {
       selectedSurveyCodes: {
         ...selectedSurveyCodes,

@@ -9,10 +9,10 @@ import {
   IMPORT_EXPORT_SUCCESS,
   IMPORT_DIALOG_OPEN,
   IMPORT_EXPORT_DISMISS,
-  FILTERED_EXPORT_FETCH_BEGIN,
-  FILTERED_EXPORT_FETCH_SUCCESS,
-  FILTERED_EXPORT_TOGGLE,
-  FILTERED_EXPORT_ERROR,
+  FILTERED_EXPORT_OPTIONS_FETCH_BEGIN,
+  FILTERED_EXPORT_OPTIONS_FETCH_SUCCESS,
+  FILTERED_EXPORT_OPTIONS_TOGGLE,
+  FILTERED_EXPORT_OPTIONS_ERROR,
 } from './constants';
 
 export const openImportDialog = ({ importEndpoint }) => ({
@@ -26,7 +26,7 @@ export const openFilteredExportDialog = (actionConfig, recordId, row) => async (
   { api },
 ) => {
   dispatch({
-    type: FILTERED_EXPORT_FETCH_BEGIN,
+    type: FILTERED_EXPORT_OPTIONS_FETCH_BEGIN,
     endpoint: actionConfig.filterEndpoint,
   });
 
@@ -38,19 +38,19 @@ export const openFilteredExportDialog = (actionConfig, recordId, row) => async (
       }),
     });
     dispatch({
-      type: FILTERED_EXPORT_FETCH_SUCCESS,
+      type: FILTERED_EXPORT_OPTIONS_FETCH_SUCCESS,
       surveyData: response.body,
     });
   } catch (error) {
     dispatch({
-      type: FILTERED_EXPORT_ERROR,
+      type: FILTERED_EXPORT_OPTIONS_ERROR,
       errorMessage: error.message,
     });
   }
 };
 
 export const selectSurvey = (selectedSurveyCode, checked) => ({
-  type: FILTERED_EXPORT_TOGGLE,
+  type: FILTERED_EXPORT_OPTIONS_TOGGLE,
   selectedSurveyCode,
   checked,
 });
@@ -82,6 +82,11 @@ export const exportData = ({ exportEndpoint, queryParameter, fileName }, id, row
   getState,
   { api },
 ) => {
+  console.log('EXPORT DATA');
+  console.log({ exportEndpoint, queryParameter, fileName });
+
+  return;
+
   dispatch({
     type: IMPORT_EXPORT_START,
   });
