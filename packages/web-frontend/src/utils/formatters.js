@@ -79,10 +79,8 @@ const percentage = value => {
 };
 
 const number = (value, { presentationOptions = {} }) => {
-  if (presentationOptions.valueFormat) {
-    return numeral(value).format(presentationOptions.valueFormat);
-  }
-  return numeral(value).format('0,0');
+ const { valueFormat = '0,0' } = presentationOptions;
+ return numeral(value).format(valueFormat);
 };
 
 const defaultFormatter = input => (Number.isNaN(input) ? input : truncateDecimalToPlace(2)(input));
