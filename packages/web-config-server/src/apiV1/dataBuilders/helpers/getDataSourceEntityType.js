@@ -5,9 +5,8 @@
 
 import { ENTITY_TYPES } from '/models/Entity';
 
-const DEFAULT_ENTITY_TYPE = ENTITY_TYPES.FACILITY;
-export function getDataSourceEntityType(config) {
-  return config.dataSourceEntityType || DEFAULT_ENTITY_TYPE;
+export function getDataSourceEntityType(config, defaultEntityType = ENTITY_TYPES.FACILITY) {
+  return config.dataSourceEntityType || defaultEntityType;
 }
 
 export const getAggregationEntityType = config => {
