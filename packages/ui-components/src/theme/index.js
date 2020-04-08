@@ -12,7 +12,18 @@ const palette = {
     main: COLORS.BLUE,
   },
   secondary: {
+    main: COLORS.DARK_BLUE,
+  },
+  error: {
     main: COLORS.RED,
+  },
+  warning: {
+    main: COLORS.RED,
+    dark: COLORS.DARK_RED,
+  },
+  success: {
+    main: COLORS.GREEN,
+    dark: COLORS.DARK_GREEN,
   },
   text: {
     primary: COLORS.TEXTGREY,
@@ -25,6 +36,12 @@ const palette = {
 };
 const typography = {
   fontSize: 14,
+  h1: {
+    fontSize: '3.125rem',
+    fontWeight: 500,
+    lineHeight: 1.167,
+    letterSpacing: '-0.01562em',
+  },
   button: {
     textTransform: 'none',
     letterSpacing: '0.035em',
@@ -35,11 +52,6 @@ const overrides = {
   MuiCard: {
     root: {
       borderColor: COLORS.GREY_DE,
-    },
-  },
-  MuiTabs: {
-    indicator: {
-      display: 'none',
     },
   },
 };

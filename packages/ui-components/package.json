@@ -14,7 +14,7 @@
   },
   "homepage": "https://github.com/beyondessential/tupaia",
   "scripts": {
-    "storybook": "start-storybook -p 6006"
+    "storybook": "start-storybook -s ./public -p 6006"
   },
   "dependencies": {
     "@babel/core": "^7.9.0",
