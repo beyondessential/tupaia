@@ -73,4 +73,8 @@ export class AccessPolicy {
     );
     return permissionGroups;
   }
+
+  getRawPolicy() {
+    return this.policy;
+  }
 }

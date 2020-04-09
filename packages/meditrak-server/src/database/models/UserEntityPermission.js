@@ -19,7 +19,7 @@ class UserEntityPermissionType extends DatabaseType {
     },
     {
       fields: {
-        code: 'permission_group_name',
+        name: 'permission_group_name',
       },
       joinWith: TYPES.PERMISSION_GROUP,
       joinCondition: [

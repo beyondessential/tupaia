@@ -4,7 +4,7 @@
  */
 
 export const buildAccessPolicy = async (models, userId) => {
-  const userEntityPermissions = models.userEntityPermission.find({ user_id: userId });
+  const userEntityPermissions = await models.userEntityPermission.find({ user_id: userId });
   const permissionGroupToChildren = {};
   const permissionGroupsByEntityCode = {};
   await Promise.all(

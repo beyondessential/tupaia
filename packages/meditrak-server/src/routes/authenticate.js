@@ -38,7 +38,7 @@ const getAuthorizationObject = async ({ refreshToken, user }) => {
       name: user.fullName,
       email: user.email,
       verifiedEmail: user.verified_email,
-      accessPolicy: accessPolicy.getJSON(),
+      accessPolicy: accessPolicy.getRawPolicy(),
     },
   };
 };
