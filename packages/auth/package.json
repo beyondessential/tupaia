@@ -8,7 +8,10 @@
     "test": "mocha",
     "test-coverage": "cross-env NODE_ENV=test nyc mocha"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@tupaia/utils": "1.0.0",
+    "rand-token": "^1.0.1"
+  },
   "devDependencies": {
     "babel-cli": "^6.24.1",
     "babel-core": "^6.23.1",

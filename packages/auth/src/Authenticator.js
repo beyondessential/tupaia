@@ -5,7 +5,6 @@
 import randomToken from 'rand-token';
 
 import { DatabaseError, UnauthenticatedError, UnverifiedError } from '@tupaia/utils';
-import { EMAIL_VERIFIED_STATUS } from './verifyEmail';
 
 const REFRESH_TOKEN_LENGTH = 40;
 
@@ -88,7 +87,7 @@ export class Authenticator {
       throw new UnauthenticatedError('Incorrect email or password');
     }
 
-    if (user.verified_email === EMAIL_VERIFIED_STATUS.NEW_USER) {
+    if (user.checkIsEmailUnverified()) {
       throw new UnverifiedError('Email address not yet verified');
     }
     return user;

@@ -14,7 +14,7 @@ const GRANT_TYPES = {
 };
 const ACCESS_TOKEN_EXPIRY_SECONDS = 15 * 60; // User's access expires every 15 mins
 
-const getAuthorizationObject = async ({ refreshToken, user, accessPolicy, countryIdentifier }) => {
+const getAuthorizationObject = async ({ refreshToken, user, countryIdentifier }) => {
   // Generate JWT
   const accessToken = jwt.sign(
     {
@@ -29,6 +29,7 @@ const getAuthorizationObject = async ({ refreshToken, user, accessPolicy, countr
   );
 
   const permissionGroups = await user.getPermissionGroups(countryIdentifier);
+  const accessPolicy = await user.getAccessPolicy();
 
   // Assemble and return authorization object
   return {
@@ -40,7 +41,7 @@ const getAuthorizationObject = async ({ refreshToken, user, accessPolicy, countr
       email: user.email,
       verifiedEmail: user.verified_email,
       permissionGroups,
-      accessPolicy: accessPolicy.getSignedJSON(),
+      accessPolicy: accessPolicy.getJSON(),
     },
   };
 };
@@ -86,10 +87,9 @@ const checkAuthentication = async req => {
  * Override grants to do recursive authentication, for example when creating a new user.
  **/
 export async function authenticate(req, res) {
-  const { refreshToken, user, accessPolicy } = await checkAuthentication(req);
+  const { refreshToken, user } = await checkAuthentication(req);
   const { countryIdentifier } = req.body || {};
   const authorizationObject = await getAuthorizationObject({
-    accessPolicy,
     refreshToken,
     user,
     countryIdentifier,

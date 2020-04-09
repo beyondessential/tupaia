@@ -6,11 +6,12 @@
 import { expect } from 'chai';
 
 import { TestableApp, getAuthorizationHeader } from './TestableApp';
-import { randomEmail, EMAIL_VERIFIED_STATUS } from './testUtilities';
+import { randomEmail } from './testUtilities';
 
 describe('Access Policy', () => {
   const app = new TestableApp();
   const models = app.models;
+  const { VERIFIED } = models.user.emailVerifiedStatuses;
 
   const dummyFields = {
     firstName: 'Automated test',
@@ -40,7 +41,9 @@ describe('Access Policy', () => {
       });
       userId = userResponse.body.userId;
 
-      await models.user.updateById(userId, { verified_email: EMAIL_VERIFIED_STATUS.VERIFIED });
+      await models.user.updateById(userId, {
+        verified_email: VERIFIED,
+      });
 
       const authResponse = await app.post('auth', {
         headers,
@@ -81,7 +84,7 @@ describe('Access Policy', () => {
       });
       userId = userResponse.body.userId;
 
-      await models.user.updateById(userId, { verified_email: EMAIL_VERIFIED_STATUS.VERIFIED });
+      await models.user.updateById(userId, { verified_email: VERIFIED });
 
       const adminPermissionGroup = await models.permissionGroup.findOne({
         name: 'Admin',
@@ -151,7 +154,7 @@ describe('Access Policy', () => {
       });
       userId = userResponse.body.userId;
 
-      await models.user.updateById(userId, { verified_email: EMAIL_VERIFIED_STATUS.VERIFIED });
+      await models.user.updateById(userId, { verified_email: VERIFIED });
 
       const adminPermissionGroup = await models.permissionGroup.findOne({
         name: 'Admin',

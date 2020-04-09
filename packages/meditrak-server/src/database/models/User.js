@@ -71,10 +71,20 @@ class UserType extends DatabaseType {
   checkPassword(password) {
     return encryptPassword(password, this.password_salt) === this.password_hash;
   }
+
+  checkIsEmailUnverified() {
+    return this.verified_email === UserModel.emailVerifiedStatuses.NEW_USER;
+  }
 }
 
 export class UserModel extends DatabaseModel {
   get DatabaseTypeClass() {
     return UserType;
   }
+
+  emailVerifiedStatuses = {
+    UNVERIFIED: 'unverified',
+    VERIFIED: 'verified',
+    NEW_USER: 'new_user',
+  };
 }
