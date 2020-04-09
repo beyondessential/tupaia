@@ -189,13 +189,13 @@ FacilityScreen.propTypes = {
 };
 
 const mapStateToProps = state => {
-  const { currentOrganisationUnit, dashboardConfig, loadingOrganisationUnit } = state.global;
+  const { currentOrganisationUnit, dashboardConfig, isLoadingOrganisationUnit } = state.global;
   const { isGroupSelectExpanded } = state.dashboard;
 
   return {
     dashboardConfig,
     orgUnit: currentOrganisationUnit,
-    isLoading: !!loadingOrganisationUnit,
+    isLoading: isLoadingOrganisationUnit,
     dashboardFilterIsExpanded: isGroupSelectExpanded,
     currentDashboardKey: getCurrentDashboardKey(state),
   };

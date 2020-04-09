@@ -2,7 +2,14 @@
 
 > This is a [mono-repo](https://github.com/babel/babel/blob/master/doc/design/monorepo.md)
 
+It is set up using `yarn workspaces`, meaning any command you would normally run inside a package can
+be run from the root directory using `yarn workspace @tupaia/package-name command`, e.g.
+`yarn workspace @tupaia/meditrak-server start-dev`
+
 ## Packages
+
+The easiest way to open the packages in vscode is to double click 'tupaia-packages.code-workspace'.
+This opens all packages as roots in the workspace, and means linting etc. will work correctly.
 
 ### Main packages
 

@@ -52,7 +52,7 @@ BackButton.propTypes = {
 
 function getParentOrgCode(orgUnit) {
   if (orgUnit.parent) {
-    return orgUnit.parent;
+    return orgUnit.parent.organisationUnitCode;
   }
   return undefined;
 }

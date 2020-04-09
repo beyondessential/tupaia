@@ -19,7 +19,6 @@ import { CustomMap } from './CustomMap';
 
 import {
   changeOrgUnit,
-  highlightOrgUnit,
   changePosition,
   closeDropdownOverlays,
   setMapIsAnimating,
@@ -30,7 +29,6 @@ const mapStateToProps = state => {
     isAnimating,
     shouldSnapToPosition,
     position,
-    focussedOrganisationUnit,
     innerAreas,
     measureInfo,
     tileSet,
@@ -51,7 +49,6 @@ const mapStateToProps = state => {
     currentOrganisationUnitSiblings,
     measureInfo,
     tileSet,
-    focussedOrganisationUnit: focussedOrganisationUnit,
     isAnimating,
     shouldSnapToPosition,
     sidePanelWidth: isSidePanelExpanded ? expandedWidth : contractedWidth,
@@ -62,7 +59,6 @@ const mapDispatchToProps = dispatch => ({
   changeOrgUnit: (organisationUnitCode, shouldChangeMapBounds = true) => {
     dispatch(changeOrgUnit(organisationUnitCode, shouldChangeMapBounds));
   },
-  highlightOrgUnit: organisationUnitCode => dispatch(highlightOrgUnit(organisationUnitCode)),
   changePosition: (center, zoom) => dispatch(changePosition(center, zoom)),
   closeDropdownOverlays: () => dispatch(closeDropdownOverlays()),
   setMapIsAnimating: isAnimating => dispatch(setMapIsAnimating(isAnimating)),

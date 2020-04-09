@@ -35,7 +35,7 @@ class HomeScreen extends PureComponent {
 
   render() {
     const {
-      mobileListItems,
+      organisationUnits,
       isLoading,
       onChangeOrgUnit,
       currentOrganisationUnit,
@@ -57,12 +57,16 @@ class HomeScreen extends PureComponent {
           handleFilterChange={name => onChangeDashboardGroup(name)}
         />
         <ExpandableList
-          title="Countries"
-          expandedByDefault
-          items={mobileListItems.map(item => (
-            <SelectListItem onSelect={onChangeOrgUnit} item={item} key={item.key} />
+          title={'Countries'}
+          expandedByDefault={true}
+          items={organisationUnits.map(({ organisationUnitCode, name }) => (
+            <SelectListItem
+              onSelect={onChangeOrgUnit}
+              title={name}
+              key={organisationUnitCode}
+              data={organisationUnitCode}
+            />
           ))}
-          onSelectItem={orgUnit => onChangeOrgUnit(orgUnit)}
           theme={{ background: WHITE, color: '#000' }}
         />
         {isLoading && (
@@ -96,11 +100,7 @@ const mapStateToProps = state => {
   const { currentOrganisationUnit, dashboardConfig } = state.global;
 
   return {
-    mobileListItems: (hierarchyData || []).map(item => ({
-      title: item.name,
-      key: item.organisationUnitCode,
-      data: item,
-    })),
+    organisationUnits: hierarchyData || [],
     isLoading,
     currentOrganisationUnit,
     dashboardFilterIsExpanded: isGroupSelectExpanded,
@@ -112,7 +112,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     getNestedOrgUnits: orgUnitCode => dispatch(fetchHierarchyNestedItems(orgUnitCode)),
-    onChangeOrgUnit: orgUnit => dispatch(changeOrgUnit(orgUnit, false)),
+    onChangeOrgUnit: organisationUnitCode => dispatch(changeOrgUnit(organisationUnitCode, false)),
     onToggleDashboardSelectExpand: () => dispatch(toggleDashboardSelectExpand()),
     onChangeDashboardGroup: name => dispatch(changeDashboardGroup(name)),
   };

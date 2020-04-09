@@ -43,8 +43,16 @@ const getServerName = (entityCode, isDataRegional) => {
 export const getDhisConfig = ({
   serverName: serverNameInput,
   entityCode = '',
+  entityCodes,
   isDataRegional = true,
 } = {}) => {
+  if (entityCodes) {
+    const configs = entityCodes.map(code => getDhisConfig({ entityCode: code, isDataRegional }));
+    if (configs.some(config => config.serverName !== configs[0].serverName)) {
+      throw new Error('All entities must use the same DHIS2 instance');
+    }
+    return configs[0];
+  }
   const serverName = serverNameInput || getServerName(entityCode, isDataRegional);
   const serverUrl = getServerUrlFromName(serverName);
 

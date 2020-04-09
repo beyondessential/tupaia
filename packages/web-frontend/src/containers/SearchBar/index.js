@@ -105,13 +105,13 @@ export class SearchBar extends PureComponent {
     }
     return (
       <List style={styles.searchResultList}>
-        {searchResponse.map(orgUnit => (
+        {searchResponse.map(({ displayName, organisationUnitCode }) => (
           <ListItem
             style={{ display: 'flex' }}
             innerDivStyle={styles.searchResultItem}
-            primaryText={orgUnit.displayName}
-            onClick={() => onOrgUnitClick(orgUnit)}
-            key={orgUnit.displayName}
+            primaryText={displayName}
+            onClick={() => onOrgUnitClick(organisationUnitCode)}
+            key={displayName}
           />
         ))}
       </List>
@@ -128,23 +128,25 @@ export class SearchBar extends PureComponent {
     const recurseOrgUnits = (orgUnits, nestedMargin) => {
       if (!orgUnits || orgUnits.length < 1) return []; // OrgUnits with no children are our recursive base case
       return orgUnits.map(orgUnit => {
+        const { organisationUnitCode, name, type, organisationUnitChildren } = orgUnit;
+
         // Recursively generate the children for this OrgUnit, will not recurse whole tree as
         // HierarchyItems only fetch their children data on componentWillMount
-        const nestedItems = recurseOrgUnits(orgUnit.organisationUnitChildren);
+        const nestedItems = recurseOrgUnits(organisationUnitChildren);
         let willMountFunc;
         if (!nestedItems || nestedItems.length < 1) {
-          willMountFunc = () => getNestedOrgUnits(orgUnit.organisationUnitCode);
+          willMountFunc = () => getNestedOrgUnits(organisationUnitCode);
         }
 
         return (
           <HierarchyItem
-            key={orgUnit.organisationUnitCode}
-            label={orgUnit.name}
+            key={organisationUnitCode}
+            label={name}
             nestedMargin={nestedMargin}
             nestedItems={nestedItems}
-            hasNestedItems={orgUnit.type !== LEAF_ORG_UNIT_TYPE}
-            Icon={ICON_BY_ORG_UNIT_TYPE[orgUnit.type]}
-            onClick={() => onOrgUnitClick(orgUnit)}
+            hasNestedItems={type !== LEAF_ORG_UNIT_TYPE}
+            Icon={ICON_BY_ORG_UNIT_TYPE[type]}
+            onClick={() => onOrgUnitClick(organisationUnitCode)}
             onMouseEnter={() => onOrgHighlight(orgUnit)}
             onMouseLeave={() => onOrgHighlight()}
             willMountFunc={willMountFunc}
@@ -211,9 +213,9 @@ const mapDispatchToProps = dispatch => {
     onExpandClick: () => dispatch(toggleSearchExpand()),
     onSearchBlur: (isExpanded, isSafeToCloseResults) =>
       isExpanded && isSafeToCloseResults && dispatch(toggleSearchExpand()),
-    onOrgUnitClick: orgUnit => {
-      dispatch(changeOrgUnit(orgUnit));
-      dispatch(openMapPopup(orgUnit.organisationUnitCode));
+    onOrgUnitClick: organisationUnitCode => {
+      dispatch(changeOrgUnit(organisationUnitCode));
+      dispatch(openMapPopup(organisationUnitCode));
     },
     onOrgHighlight: orgUnit => dispatch(highlightOrgUnit(orgUnit)),
     getNestedOrgUnits: orgUnitCode => dispatch(fetchHierarchyNestedItems(orgUnitCode)),

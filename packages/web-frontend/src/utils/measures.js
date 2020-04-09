@@ -31,6 +31,7 @@ export const MEASURE_TYPE_COLOR = 'color';
 export const MEASURE_TYPE_RADIUS = 'radius';
 export const MEASURE_TYPE_SPECTRUM = 'spectrum';
 export const MEASURE_TYPE_SHADING = 'shading';
+export const MEASURE_TYPE_SHADED_SPECTRUM = 'shaded-spectrum';
 
 export const MEASURE_VALUE_OTHER = 'other';
 export const MEASURE_VALUE_NULL = 'null';
@@ -86,6 +87,7 @@ export function createValueMapping(valueObjects, type) {
         mapping.null = { name: 'No data' };
         break;
       case MEASURE_TYPE_SPECTRUM:
+      case MEASURE_TYPE_SHADED_SPECTRUM:
         mapping.null = { name: 'No data' };
         break;
       default:
@@ -99,6 +101,7 @@ export function createValueMapping(valueObjects, type) {
 function getFormattedValue(value, type, valueInfo, scaleType, valueType) {
   switch (type) {
     case MEASURE_TYPE_SPECTRUM:
+    case MEASURE_TYPE_SHADED_SPECTRUM:
       if ([SCALE_TYPES.PERFORMANCE, SCALE_TYPES.PERFORMANCE_DESC].includes(scaleType)) {
         return formatDataValue(value, valueType);
       }
@@ -117,7 +120,7 @@ function getFormattedValue(value, type, valueInfo, scaleType, valueType) {
 }
 
 const getSpectrumScaleValues = (measureData, measureOption) => {
-  const { key, scaleType, startDate, endDate } = measureOption;
+  const { key, scaleType, scaleMin, scaleMax, startDate, endDate } = measureOption;
 
   switch (scaleType) {
     case SCALE_TYPES.TIME:
@@ -126,9 +129,15 @@ const getSpectrumScaleValues = (measureData, measureOption) => {
       return { min: 0, max: 1 };
     default: {
       const flattenedMeasureData = flattenNumericalMeasureData(measureData, key);
+      const hasScaleMin = scaleMin !== undefined;
+      const hasScaleMax = scaleMax !== undefined;
       return {
-        min: Math.min(...flattenedMeasureData),
-        max: Math.max(...flattenedMeasureData),
+        min: hasScaleMin
+          ? Math.min(scaleMin, ...flattenedMeasureData)
+          : Math.min(...flattenedMeasureData),
+        max: hasScaleMax
+          ? Math.max(scaleMax, ...flattenedMeasureData)
+          : Math.max(...flattenedMeasureData),
       };
     }
   }
@@ -144,7 +153,7 @@ export function processMeasureInfo(response) {
 
     hiddenMeasures[measureOption.key] = measureOption.hideByDefault;
 
-    if (type === 'spectrum') {
+    if (type === MEASURE_TYPE_SPECTRUM || type === MEASURE_TYPE_SHADED_SPECTRUM) {
       // for each spectrum, include the minimum and maximum values for
       // use in the legend scale labels.
       const { min, max } = getSpectrumScaleValues(measureData, measureOption);
@@ -259,6 +268,8 @@ export function getMeasureDisplayInfo(measureData, measureOptions, hiddenMeasure
           displayInfo.color = displayInfo.color || valueInfo.color;
           break;
         case MEASURE_TYPE_SPECTRUM:
+        case MEASURE_TYPE_SHADED_SPECTRUM:
+          displayInfo.originalValue = valueInfo.value || 'No data';
           displayInfo.color = resolveSpectrumColour(
             scaleType,
             valueInfo.value || (valueInfo.value === 0 ? 0 : null),

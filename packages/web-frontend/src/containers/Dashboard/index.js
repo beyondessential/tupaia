@@ -21,7 +21,7 @@ import StaticMap from '../../components/StaticMap';
 
 import { initialOrgUnit } from '../../defaults';
 import { DASHBOARD_STYLES, DASHBOARD_META_MARGIN } from '../../styles';
-import { changeDashboardGroup, closeDropdownOverlays, changeOrgUnit } from '../../actions';
+import { changeDashboardGroup, closeDropdownOverlays } from '../../actions';
 import DashboardGroup from '../DashboardGroup';
 import { getFacilityThumbnailUrl } from '../../utils';
 import { DropDownMenu } from '../../components/DropDownMenu';
@@ -259,7 +259,7 @@ const mapStateToProps = state => {
   const { isAnimating } = state.map;
   const {
     currentOrganisationUnit,
-    loadingOrganisationUnit,
+    isLoadingOrganisationUnit,
     dashboardConfig,
     isSidePanelExpanded,
     project,
@@ -271,7 +271,7 @@ const mapStateToProps = state => {
     sections: dashboardConfig,
     currentDashboardKey: getCurrentDashboardKey(state),
     mapIsAnimating: isAnimating,
-    isLoading: !!loadingOrganisationUnit,
+    isLoading: isLoadingOrganisationUnit,
     isSidePanelExpanded,
     contractedWidth,
     project,
@@ -280,7 +280,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onChangeOrgUnit: organisationUnit => dispatch(changeOrgUnit(organisationUnit, true)),
     onChangeDashboardGroup: name => dispatch(changeDashboardGroup(name)),
     onDashboardClicked: () => dispatch(closeDropdownOverlays()),
   };
