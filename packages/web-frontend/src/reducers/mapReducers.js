@@ -11,7 +11,7 @@ import createCachedSelector from 're-reselect';
 import {
   cachedSelectOrgUnitChildren,
   selectOrgUnit,
-  cachedSelectOrgUnitAndDescendants,
+  selectCountryAndDescendants,
 } from './orgUnitReducers';
 
 import {
@@ -332,10 +332,9 @@ export const selectAllMeasuresWithDisplayInfo = createSelector(
     // Ideally, we should be using the below code instead for all orgUnits
 
     const listOfMeasureLevels = measureLevel.split(',');
-    const allOrgUnitsOfLevel = cachedSelectOrgUnitAndDescendants(
-      state,
-      currentCountry,
-    ).filter(orgUnit => listOfMeasureLevels.includes(orgUnit.type));
+    const allOrgUnitsOfLevel = selectCountryAndDescendants(state, currentCountry).filter(orgUnit =>
+      listOfMeasureLevels.includes(orgUnit.type),
+    );
     return allOrgUnitsOfLevel.map(orgUnit =>
       cachedSelectMeasureWithDisplayInfo(state, orgUnit.organisationUnitCode),
     );

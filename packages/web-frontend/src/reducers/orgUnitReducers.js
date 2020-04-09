@@ -83,25 +83,10 @@ export const cachedSelectOrgUnitChildren = (state, code) => {
   return selectOrgUnitChildrenFromHierarchy(countryHierarchy, code);
 };
 
-const recursiveBuildDescendants = (state, code) => {
-  const orgUnit = selectOrgUnit(state, code);
-  if (!orgUnit) {
-    return [];
-  }
-
-  const children = cachedSelectOrgUnitChildren(state, code);
-
-  const descendants = [orgUnit];
-  children.forEach(child =>
-    descendants.push(...recursiveBuildDescendants(state, child.organisationUnitCode)),
-  );
-  return descendants;
-};
-
-export const cachedSelectOrgUnitAndDescendants = createCachedSelector(
-  [state => state, (_, code) => code],
-  recursiveBuildDescendants,
-)((state, code) => code);
+export const selectCountryAndDescendants = createCachedSelector(
+  [(state, countryCode) => state.orgUnits.orgUnitMap[countryCode] || {}],
+  countryHierarchy => Object.values(countryHierarchy),
+)((state, countryCode) => countryCode);
 
 const recursiveBuildHierarchy = (state, orgUnit, parent) => ({
   ...orgUnit,
