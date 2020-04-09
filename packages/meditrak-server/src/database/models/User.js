@@ -4,7 +4,7 @@
  **/
 import winston from 'winston';
 
-import { hasAccess } from '@beyondessential/tupaia-access-policy';
+import { AccessPolicy } from '@tupaia/access-policy';
 import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
 import { getUserPermissionGroups } from '../../dataAccessors';
 import { buildAccessPolicy, cache, CACHE_KEY_GENERATORS, encryptPassword } from '../../utilities';
@@ -22,25 +22,25 @@ class UserType extends DatabaseType {
 
   /**
    * Check if the user has access to an item. eg
-   * user.hasAccess('surveys', ['DL', 'DL_North'], 'Donor'); or user.hasAccess('reports', [DL']);
+   * user.hasAccessToSomeEntity(['DL', 'DL_North'], 'Donor'); or user.hasAccessToSomeEntity(['DL']);
    *
-   * @param {string} accessObjectType
-   * @param {array} accessTreePath
-   * @param {string} accessLevel
+   * @param {array} entities
+   * @param {string} permissionGroup
    *
    * @returns {boolean} Whether or not the user has permission to the resource.
    */
-  async hasAccess(accessObjectType, accessTreePath = [], accessLevel = '') {
+  async hasAccessToSomeEntity(entities = [], permissionGroup = '') {
     const accessPolicy = await this.getAccessPolicy();
-
-    return hasAccess(accessPolicy, accessObjectType, accessTreePath, accessLevel);
+    return accessPolicy.allowsSome(entities, permissionGroup);
   }
 
   async getAccessPolicy() {
     if (!this.accessPolicy) {
       try {
-        this.accessPolicy = await cache.getOrElse(CACHE_KEY_GENERATORS.accessPolicy(this.id), () =>
-          buildAccessPolicy(this.otherModels, this.id),
+        this.accessPolicy = new AccessPolicy(
+          await cache.getOrElse(CACHE_KEY_GENERATORS.accessPolicy(this.id), () =>
+            buildAccessPolicy(this.otherModels, this.id),
+          ),
         );
       } catch (e) {
         winston.error(e);

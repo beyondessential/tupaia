@@ -97,7 +97,7 @@ const getAuthorizationObject = async ({ refreshToken, user, countryIdentifier })
       email: user.email,
       verifiedEmail: user.verified_email,
       permissionGroups,
-      accessPolicy,
+      accessPolicy: accessPolicy.getSignedJSON(),
     },
   };
 };
