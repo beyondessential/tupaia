@@ -455,13 +455,14 @@ export function fetchOrgUnit(organisationUnit = initialOrgUnit) {
 /**
  * Changes current Organisational Unit and Map view. Will trigger sagas affecting state for
  * map and the current dashboard.
- *
- * @param {object} organisationUnit
  */
-export function changeOrgUnit(organisationUnit = initialOrgUnit, shouldChangeMapBounds = true) {
+export function changeOrgUnit(
+  organisationUnitCode = initialOrgUnit.organisationUnitCode,
+  shouldChangeMapBounds = true,
+) {
   return {
     type: CHANGE_ORG_UNIT,
-    organisationUnit,
+    organisationUnitCode,
     shouldChangeMapBounds,
   };
 }

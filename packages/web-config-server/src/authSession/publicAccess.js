@@ -14,4 +14,16 @@ export const PUBLIC_USER_BASE_ACCESS_POLICY = {
     },
   },
 };
-export const PUBLIC_COUNTRY_CODES = ['DL', 'KI', 'SB', 'TO', 'VU', 'TL', 'TK', 'WS', 'CK', 'VE'];
+export const PUBLIC_COUNTRY_CODES = [
+  'AU',
+  'DL',
+  'KI',
+  'SB',
+  'TO',
+  'VU',
+  'TL',
+  'TK',
+  'WS',
+  'CK',
+  'VE',
+];
