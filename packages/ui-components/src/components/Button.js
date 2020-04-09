@@ -10,11 +10,11 @@ import Avatar from '@material-ui/core/Avatar';
 import * as COLORS from '../theme/colors';
 
 const StyledButton = styled(MuiButton)`
-  font-size: 0.9375rem;
+  font-size: 0.9375rem; // maybe move this to theme
+  line-height: 1; // maybe move this to theme
+  letter-spacing: 0; // maybe move this to theme
   padding: 1em 1.5em;
-  line-height: 1;
   min-width: 8em;
-  letter-spacing: 0;
   box-shadow: none;
 `;
 
