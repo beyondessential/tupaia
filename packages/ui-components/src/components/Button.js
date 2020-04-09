@@ -12,12 +12,7 @@ const StyledButton = styled(MuiButton)`
 `;
 
 export const Button = ({ children, isSubmitting = false, disabled, ...props }) => (
-  <StyledButton
-    variant="contained"
-    color="primary"
-    {...props}
-    disabled={isSubmitting}
-  >
+  <StyledButton variant="contained" color="primary" {...props} disabled={isSubmitting}>
     {isSubmitting ? 'Loading...' : children}
   </StyledButton>
 );
