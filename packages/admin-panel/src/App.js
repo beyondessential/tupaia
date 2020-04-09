@@ -24,6 +24,10 @@ const LEFT_LINKS = [
     path: '/surveys',
   },
   {
+    label: 'Questions',
+    path: '/questions',
+  },
+  {
     label: 'Survey Responses',
     path: '/survey-responses',
   },
