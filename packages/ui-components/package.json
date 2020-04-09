@@ -14,7 +14,7 @@
   },
   "homepage": "https://github.com/beyondessential/tupaia",
   "scripts": {
-    "storybook": "start-storybook -p 6006"
+    "storybook": "start-storybook -s ./public -p 6006"
   },
   "dependencies": {
     "@babel/core": "^7.9.0",
@@ -23,10 +23,13 @@
     "@material-ui/lab": "^4.0.0-alpha.47",
     "@storybook/addon-actions": "^5.3.17",
     "@storybook/addon-backgrounds": "^5.3.18",
+    "@storybook/addon-docs": "^5.3.18",
     "@storybook/addon-links": "^5.3.17",
+    "@storybook/addon-storysource": "^5.3.18",
     "@storybook/react": "^5.3.17",
     "babel-loader": "^8.1.0",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "react-dom": "^16.13.1",
+    "styled-components": "^5.0.1"
   }
 }

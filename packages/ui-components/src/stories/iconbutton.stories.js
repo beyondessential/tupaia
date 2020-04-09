@@ -5,13 +5,13 @@
 
 import React from 'react';
 import { IconButton, LightIconButton } from '../components/IconButton';
-import * as COLORS from '../../src/theme/colors'
+import * as COLORS from '../../src/theme/colors';
 import {
   AddBoxOutlined,
   IndeterminateCheckBox,
   Autorenew,
   ChevronRight,
-  ChevronLeft
+  ChevronLeft,
 } from '@material-ui/icons';
 
 export default {
@@ -49,8 +49,6 @@ export const LightArrows = () => (
 
 LightArrows.story = {
   parameters: {
-    backgrounds: [
-      { name: 'Header', value: COLORS.BLUE, default: true }
-    ]
-  }
+    backgrounds: [{ name: 'Header', value: COLORS.BLUE, default: true }],
+  },
 };
