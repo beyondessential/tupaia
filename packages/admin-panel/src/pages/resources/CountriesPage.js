@@ -23,13 +23,8 @@ const COLUMNS = [
   {
     Header: 'Export Survey Responses',
     source: 'id',
-    type: 'export',
+    type: 'filteredExport',
     width: 200,
-    actionConfig: {
-      exportEndpoint: 'surveyResponses',
-      queryParameter: 'countryId',
-      fileName: '{name} Survey Responses',
-    },
   },
 ];
 
@@ -51,6 +46,26 @@ const CREATE_CONFIG = {
   },
 };
 
+const FILTERED_EXPORT_CONFIG = {
+  title: 'Export Survey Responses for Country',
+  actionConfig: {
+    exportEndpoint: 'surveyResponses',
+    rowIdQueryParameter: 'countryId',
+    fileName: '{name} Survey Responses',
+  },
+  queryParameters: [
+    {
+      label: 'Surveys to Include',
+      instruction: 'Please enter the names of the surveys to be exported.',
+      parameterKey: 'surveyCodes',
+      optionsEndpoint: 'surveys',
+      optionValueKey: 'code',
+      optionsFilter: 'countryId',
+      allowMultipleValues: true,
+    },
+  ],
+};
+
 export const CountriesPage = () => (
   <ResourcePage
     title="Countries"
@@ -58,5 +73,6 @@ export const CountriesPage = () => (
     columns={COLUMNS}
     expansionTabs={EXPANSION_CONFIG}
     createConfig={CREATE_CONFIG}
+    filteredExportConfig={FILTERED_EXPORT_CONFIG}
   />
 );

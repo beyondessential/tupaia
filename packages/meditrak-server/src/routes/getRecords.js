@@ -11,6 +11,7 @@ import {
   findAnswersBySurveyResponse,
   findEditableFeedItems,
   findFormattedDisasters,
+  findSurveysInCountry,
   findSurveyScreenComponentsBySurvey,
 } from '../dataAccessors';
 import { getApiUrl, resourceToRecordType } from '../utilities';
@@ -43,6 +44,7 @@ const CUSTOM_FINDERS = {
   [TYPES.ANSWER]: findAnswersBySurveyResponse,
   [TYPES.FEED_ITEM]: findEditableFeedItems,
   [TYPES.DISASTER]: findFormattedDisasters,
+  [TYPES.SURVEY]: findSurveysInCountry,
 };
 
 const MAX_RECORDS_PER_PAGE = 100;

@@ -5,4 +5,4 @@
 
 export * from './createReducer';
 export { createNestedReducer } from './createNestedReducer';
-export { convertFilterToString } from './convertFilterToString';
+export { convertSearchTermToFilter } from './convertSearchTermToFilter';

@@ -7,13 +7,18 @@ import {
   IMPORT_EXPORT_START,
   IMPORT_EXPORT_ERROR,
   IMPORT_EXPORT_SUCCESS,
-  IMPORT_DIALOG_OPEN,
   IMPORT_EXPORT_DISMISS,
+  IMPORT_DIALOG_OPEN,
+  EXPORT_DIALOG_OPEN,
 } from './constants';
 
-export const openImportDialog = ({ importEndpoint }) => ({
+export const openFilteredExportDialog = parentRecord => ({
+  type: EXPORT_DIALOG_OPEN,
+  parentRecord,
+});
+
+export const openImportDialog = () => ({
   type: IMPORT_DIALOG_OPEN,
-  importEndpoint,
 });
 
 export const importData = (recordType, file, queryParameters) => async (
@@ -38,18 +43,34 @@ export const importData = (recordType, file, queryParameters) => async (
   }
 };
 
-export const exportData = ({ exportEndpoint, queryParameter, fileName }, id, rowData) => async (
-  dispatch,
-  getState,
-  { api },
-) => {
+const buildExportQueryParameters = (rowIdQueryParameter, rowData, filterQueryParameters) => {
+  if (!rowIdQueryParameter && !filterQueryParameters) return null;
+  const queryParameters = rowIdQueryParameter ? { [rowIdQueryParameter]: rowData.id } : {};
+  if (filterQueryParameters) {
+    return { ...queryParameters, ...filterQueryParameters };
+  }
+  return queryParameters;
+};
+
+export const exportData = (
+  { exportEndpoint, rowIdQueryParameter, fileName },
+  rowData,
+  filterQueryParameters,
+) => async (dispatch, getState, { api }) => {
   dispatch({
     type: IMPORT_EXPORT_START,
   });
-  const endpoint = `export/${exportEndpoint}${!queryParameter && id ? `/${id}` : ''}`;
+  const queryParameters = buildExportQueryParameters(
+    rowIdQueryParameter,
+    rowData,
+    filterQueryParameters,
+  );
+  const endpoint = `export/${exportEndpoint}${
+    !queryParameters && rowData.id ? `/${rowData.id}` : ''
+  }`;
   const processedFileName = processFileName(fileName, rowData);
   try {
-    await api.download(endpoint, queryParameter ? { [queryParameter]: id } : {}, processedFileName);
+    await api.download(endpoint, queryParameters, processedFileName);
     dispatch({
       type: IMPORT_EXPORT_SUCCESS,
     });

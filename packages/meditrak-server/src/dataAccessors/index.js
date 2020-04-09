@@ -7,6 +7,7 @@ export { addSurveyImage } from './addSurveyImage';
 export { editUserAccount } from './editUserAccount';
 export { editOption } from './editOption';
 export { editOptionSet } from './editOptionSet';
+export { findSurveysInCountry } from './findSurveysInCountry';
 export { findQuestionsBySurvey } from './findQuestionsBySurvey';
 export { findAnswersBySurveyResponse } from './findAnswersBySurveyResponse';
 export { deleteScreensForSurvey } from './deleteScreensForSurvey';

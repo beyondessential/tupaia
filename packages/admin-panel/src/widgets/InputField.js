@@ -21,11 +21,13 @@ export const InputField = ({
   optionsEndpoint,
   optionLabelKey,
   optionValueKey,
+  optionsFilter,
   onChange,
   type,
   canCreateNewOptions,
   disabled,
   getJsonFieldSchema,
+  parentRecord,
 }) => {
   const inputType = optionsEndpoint ? 'autocomplete' : type;
   let inputComponent = null;
@@ -49,6 +51,8 @@ export const InputField = ({
           canCreateNewOptions={canCreateNewOptions}
           disabled={disabled}
           allowMultipleValues={allowMultipleValues}
+          parentRecord={parentRecord}
+          optionsFilter={optionsFilter}
         />
       );
       break;
@@ -133,6 +137,7 @@ InputField.propTypes = {
   disabled: PropTypes.bool,
   type: PropTypes.string,
   getJsonFieldSchema: PropTypes.func,
+  parentRecord: PropTypes.object,
 };
 
 InputField.defaultProps = {
@@ -145,4 +150,5 @@ InputField.defaultProps = {
   disabled: false,
   type: 'text',
   getJsonFieldSchema: () => [],
+  parentRecord: {},
 };

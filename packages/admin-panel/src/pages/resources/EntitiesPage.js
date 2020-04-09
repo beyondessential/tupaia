@@ -27,7 +27,7 @@ export const ENTITIES_COLUMNS = [
     width: 200,
     actionConfig: {
       exportEndpoint: 'surveyResponses',
-      queryParameter: 'entityIds',
+      rowIdQueryParameter: 'entityIds',
       fileName: '{name} Survey Responses',
     },
   },

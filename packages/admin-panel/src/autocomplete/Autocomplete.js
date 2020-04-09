@@ -81,17 +81,26 @@ const mapStateToProps = (state, { reduxId }) => ({
   ...getAutocompleteState(state, reduxId),
 });
 
-const mapDispatchToProps = (dispatch, { endpoint, optionLabelKey, reduxId, onChange }) => ({
+const mapDispatchToProps = (
+  dispatch,
+  { endpoint, optionLabelKey, reduxId, onChange, optionsFilter, parentRecord },
+) => ({
   onChangeSelection: newSelection => {
     onChange(newSelection);
     dispatch(changeSelection(reduxId, newSelection));
   },
   onChangeSearchTerm: newSearchTerm =>
-    dispatch(changeSearchTerm(reduxId, endpoint, optionLabelKey, newSearchTerm)),
+    dispatch(
+      changeSearchTerm(
+        reduxId,
+        endpoint,
+        optionLabelKey,
+        newSearchTerm,
+        optionsFilter,
+        parentRecord,
+      ),
+    ),
   onClearState: () => dispatch(clearState(reduxId)),
 });
 
-export const Autocomplete = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(AutocompleteComponent);
+export const Autocomplete = connect(mapStateToProps, mapDispatchToProps)(AutocompleteComponent);
