@@ -75,7 +75,6 @@ import {
   FIND_USER_LOGGEDIN,
   FIND_USER_LOGIN_FAILED,
   GO_HOME,
-  HIGHLIGHT_ORG_UNIT,
   CLOSE_DROPDOWN_OVERLAYS,
   SHOW_SERVER_UNREACHABLE_ERROR,
   SHOW_SESSION_EXPIRED_ERROR,
@@ -563,7 +562,6 @@ function global(
     overlay: !isMobile() && LANDING,
     currentOrganisationUnit: {},
     currentOrganisationUnitSiblings: [],
-    highlightedOrganisationUnit: {},
     dashboardConfig: {},
     viewConfigs: {},
     isLoadingOrganisationUnit: false,
@@ -594,12 +592,6 @@ function global(
         isLoadingOrganisationUnit: false,
         currentOrganisationUnit: action.organisationUnit,
         currentOrganisationUnitSiblings: action.organisationUnitSiblings,
-        highlightedOrganisationUnit: {},
-      };
-    case HIGHLIGHT_ORG_UNIT:
-      return {
-        ...state,
-        highlightedOrganisationUnit: action.organisationUnit,
       };
     case CHANGE_ORG_UNIT_ERROR:
       return { ...state, isLoadingOrganisationUnit: false };

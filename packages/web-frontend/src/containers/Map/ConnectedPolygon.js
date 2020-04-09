@@ -13,7 +13,6 @@ import styled from 'styled-components';
 
 import { AreaTooltip } from './AreaTooltip';
 import { MAP_COLORS } from '../../styles';
-import { HIGHLIGHT_TYPES } from './constants';
 import { changeOrgUnit } from '../../actions';
 import {
   selectHasPolygonMeasure,
@@ -50,33 +49,19 @@ export const ShadedPolygon = styled(Polygon)`
  */
 class ConnectedPolygon extends Component {
   shouldComponentUpdate(nextProps) {
-    const { isHighlighted, measureId, highlightedOrganisationUnit, coordinates } = this.props;
-    if (nextProps.highlightedOrganisationUnit !== highlightedOrganisationUnit) return true;
-    if (nextProps.isHighlighted !== isHighlighted) return true;
+    const { measureId, coordinates } = this.props;
     if (nextProps.measureId !== measureId) return true;
     if (coordinates !== nextProps.coordinates) return true;
     return false;
   }
 
   getTooltip(organisationUnitCode, area) {
-    const { highlightedOrganisationUnit, isChildArea, hasMeasureData, measureValue } = this.props;
-    const highlightedCode = highlightedOrganisationUnit.organisationUnitCode;
-    const getHighlight = code => {
-      if (code === highlightedCode) {
-        return HIGHLIGHT_TYPES.HIGHLIGHT;
-      }
-      if (highlightedCode) {
-        return HIGHLIGHT_TYPES.LOWLIGHT;
-      }
-      return HIGHLIGHT_TYPES.NONE;
-    };
-    const highlight = getHighlight(organisationUnitCode);
+    const { isChildArea, hasMeasureData, measureValue } = this.props;
     const hasMeasureValue = !!measureValue;
 
     // don't render tooltips if we have a measure loaded
     return hasMeasureData && !hasMeasureValue ? null : (
       <AreaTooltip
-        highlight={highlight}
         permanent={isChildArea && !hasMeasureValue}
         text={`${area.name}${measureValue ? `: ${measureValue}` : ''}`}
       />
@@ -137,10 +122,6 @@ ConnectedPolygon.propTypes = {
     name: PropTypes.string,
     type: PropTypes.string,
   }).isRequired,
-  highlightedOrganisationUnit: PropTypes.shape({
-    type: PropTypes.string,
-    organisationUnitCode: PropTypes.string,
-  }).isRequired,
   measureId: PropTypes.string,
   isActive: PropTypes.bool,
   isChildArea: PropTypes.bool,
@@ -148,7 +129,6 @@ ConnectedPolygon.propTypes = {
   coordinates: PropTypes.arrayOf(
     PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number))),
   ),
-  isHighlighted: PropTypes.bool,
   hasMeasureData: PropTypes.bool,
   hasChildren: PropTypes.bool,
   hasShadedChildren: PropTypes.bool,
@@ -162,7 +142,6 @@ ConnectedPolygon.defaultProps = {
   isChildArea: false,
   onChangeOrgUnit: () => {},
   coordinates: undefined,
-  isHighlighted: false,
   hasMeasureData: false,
   hasChildren: false,
   hasShadedChildren: false,
@@ -174,11 +153,7 @@ const mapStateToProps = (state, givenProps) => {
   const { organisationUnitCode, organisationUnitChildren } = givenProps.area;
   const { measureId, measureData } = state.map.measureInfo;
 
-  const {
-    highlightedOrganisationUnit,
-    currentOrganisationUnit,
-    currentOrganisationUnitSiblings,
-  } = state.global;
+  const { currentOrganisationUnit, currentOrganisationUnitSiblings } = state.global;
 
   let shade;
   let measureValue;
@@ -206,7 +181,6 @@ const mapStateToProps = (state, givenProps) => {
 
   return {
     measureId,
-    highlightedOrganisationUnit,
     currentOrganisationUnit,
     currentOrganisationUnitSiblings,
     coordinates,

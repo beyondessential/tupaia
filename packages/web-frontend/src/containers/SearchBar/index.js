@@ -27,7 +27,6 @@ import {
   changeSearch,
   toggleSearchExpand,
   changeOrgUnit,
-  highlightOrgUnit,
   openMapPopup,
   requestOrgUnit,
 } from '../../actions';
@@ -122,7 +121,7 @@ export class SearchBar extends PureComponent {
   }
 
   renderHierarchy() {
-    const { hierarchyData, onOrgUnitClick, onOrgHighlight, orgUnitFetchError } = this.props;
+    const { hierarchyData, onOrgUnitClick, orgUnitFetchError } = this.props;
 
     if (isNull(hierarchyData))
       return <div style={styles.searchResponseText}>Loading countries...</div>;
@@ -148,8 +147,6 @@ export class SearchBar extends PureComponent {
             isLoading={isLoading}
             Icon={ICON_BY_ORG_UNIT_TYPE[type]}
             onClick={() => onOrgUnitClick(organisationUnitCode)}
-            onMouseEnter={() => onOrgHighlight(orgUnit)}
-            onMouseLeave={() => onOrgHighlight()}
           />
         );
       });
@@ -192,7 +189,6 @@ export class SearchBar extends PureComponent {
 SearchBar.propTypes = {
   onExpandClick: PropTypes.func.isRequired,
   onOrgUnitClick: PropTypes.func.isRequired,
-  onOrgHighlight: PropTypes.func.isRequired,
   getNestedOrgUnits: PropTypes.func.isRequired,
   isExpanded: PropTypes.bool,
   searchResponse: PropTypes.arrayOf(PropTypes.object),
@@ -233,7 +229,6 @@ const mapDispatchToProps = dispatch => {
       dispatch(changeOrgUnit(organisationUnitCode));
       dispatch(openMapPopup(organisationUnitCode));
     },
-    onOrgHighlight: orgUnit => dispatch(highlightOrgUnit(orgUnit)),
     getNestedOrgUnits: organisationUnitCode => dispatch(requestOrgUnit(organisationUnitCode)),
   };
 };

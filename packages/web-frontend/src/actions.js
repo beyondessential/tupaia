@@ -88,7 +88,6 @@ export const FETCH_SIGNUP_SUCCESS = 'FETCH_SIGNUP_SUCCESS';
 export const FIND_USER_LOGGEDIN = 'FIND_USER_LOGGEDIN';
 export const FINISH_USER_SESSION = 'FINISH_USER_SESSION';
 export const GO_HOME = 'GO_HOME';
-export const HIGHLIGHT_ORG_UNIT = 'HIGHLIGHT_ORG_UNIT';
 export const CLOSE_DROPDOWN_OVERLAYS = 'CLOSE_DROPDOWN_OVERLAYS';
 export const SET_MAP_IS_ANIMATING = 'SET_MAP_IS_ANIMATING';
 export const SHOW_SERVER_UNREACHABLE_ERROR = 'SHOW_SERVER_UNREACHABLE_ERROR';
@@ -475,18 +474,6 @@ export function changeOrgUnit(
     type: CHANGE_ORG_UNIT,
     organisationUnitCode,
     shouldChangeMapBounds,
-  };
-}
-
-/**
- * Changes currently highlighed org unit on the map without changing the selected org unit.
- *
- * @param {object} organisationUnit Use null to reset and display all org units
- */
-export function highlightOrgUnit(organisationUnit = {}) {
-  return {
-    type: HIGHLIGHT_ORG_UNIT,
-    organisationUnit,
   };
 }
 
