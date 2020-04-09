@@ -101,14 +101,14 @@ class TableOfDataValuesWithCalcBuilder extends TableOfDataValuesBuilder {
   }
 
   async fetchResults() {
-    const results = await this.dhisApi.getDataValuesInSets(
-      {
-        dataElementGroupCode: this.config.dataElementGroupCode,
-        startDate: this.config.MinBaseLine,
-        endDate: this.config.MaxBaseLine,
-      },
-      this.entity,
-    );
+    const dataElements = {
+      dataElementGroupCode: this.config.dataElementGroupCode,
+      startDate: this.config.MinBaseLine,
+      endDate: this.config.MaxBaseLine,
+      organisationUnitCode: [this.entity.code],
+    };
+
+    const results = await this.dhisApi.getDataValuesInSets(dataElements);
     return this.transformResults(results);
   }
 }

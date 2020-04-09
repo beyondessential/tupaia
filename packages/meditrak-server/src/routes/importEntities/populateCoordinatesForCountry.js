@@ -122,7 +122,7 @@ export async function populateCoordinatesForCountry(transactingModels, countryCo
     const openStreetMapsId = get(metadata, 'openStreetMaps.id');
     await addCoordinatesToEntity(transactingModels, countryName, name, code, openStreetMapsId);
   }
-  if (!countryEntity.region) {
+  if (!countryEntity.bounds) {
     await addCoordinatesToEntity(transactingModels, countryName, countryName, countryEntity.code);
   }
 }

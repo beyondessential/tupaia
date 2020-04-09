@@ -51,10 +51,13 @@ BackButton.propTypes = {
 
 function getParentOrgCode(orgUnit) {
   if (orgUnit.parent) {
-    return orgUnit.parent.organisationUnitCode;
+    return orgUnit.parent;
   }
 }
 
-export default connect(null, dispatch => ({
-  onSelectParent: orgUnit => dispatch(changeOrgUnit(getParentOrgCode(orgUnit))),
-}))(BackButton);
+export default connect(
+  null,
+  dispatch => ({
+    onSelectParent: orgUnit => dispatch(changeOrgUnit(getParentOrgCode(orgUnit))),
+  }),
+)(BackButton);

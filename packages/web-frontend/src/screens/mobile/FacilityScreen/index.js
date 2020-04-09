@@ -188,13 +188,13 @@ FacilityScreen.propTypes = {
 };
 
 const mapStateToProps = state => {
-  const { currentOrganisationUnit, dashboardConfig, isLoadingOrganisationUnit } = state.global;
+  const { currentOrganisationUnit, dashboardConfig, loadingOrganisationUnit } = state.global;
   const { isGroupSelectExpanded } = state.dashboard;
 
   return {
     dashboardConfig,
     orgUnit: currentOrganisationUnit,
-    isLoading: isLoadingOrganisationUnit,
+    isLoading: !!loadingOrganisationUnit,
     dashboardFilterIsExpanded: isGroupSelectExpanded,
     currentDashboardKey: getCurrentDashboardKey(state),
   };
@@ -205,4 +205,7 @@ const mapDispatchToProps = dispatch => ({
   onChangeDashboardGroup: name => dispatch(changeDashboardGroup(name)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(FacilityScreen);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(FacilityScreen);

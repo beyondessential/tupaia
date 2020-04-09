@@ -6,7 +6,7 @@
 import { getMeasureBuilder } from './getMeasureBuilder';
 import { OPERATOR_TO_VALUE_CHECK } from '../dataBuilders/helpers/checkAgainstConditions';
 
-export const fetchComposedData = async (aggregator, dhisApi, query, config, entity) => {
+export const fetchComposedData = async (aggregator, dhisApi, query, config) => {
   const { measureBuilders, dataServices } = config || {};
   if (!measureBuilders) {
     throw new Error('Measure builders not provided');
@@ -16,16 +16,10 @@ export const fetchComposedData = async (aggregator, dhisApi, query, config, enti
   const addResponse = async ([builderKey, builderData]) => {
     const { measureBuilder: builderName, measureBuilderConfig: builderConfig } = builderData;
     const buildMeasure = getMeasureBuilder(builderName);
-    responses[builderKey] = await buildMeasure(
-      aggregator,
-      dhisApi,
-      query,
-      {
-        ...builderConfig,
-        dataServices,
-      },
-      entity,
-    );
+    responses[builderKey] = await buildMeasure(aggregator, dhisApi, query, {
+      ...builderConfig,
+      dataServices,
+    });
   };
   await Promise.all(Object.entries(measureBuilders).map(addResponse));
 

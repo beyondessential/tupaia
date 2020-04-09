@@ -12,8 +12,11 @@ const organisationUnitCode = 'PG';
 const programCode = 'SCRF';
 const dataServices = [{ isDataRegional: true }];
 
-const query = { dataElementCode: 'value' };
-const entity = { code: organisationUnitCode };
+const query = {
+  organisationUnitCode,
+  organisationUnitGroupCode: organisationUnitCode,
+  dataElementCode: 'value',
+};
 
 const groups = {
   fourOrMore: {
@@ -105,7 +108,7 @@ const createAggregator = () => {
 describe('groupEventsPerOrgUnit', () => {
   it('should group counts of events into buckets', async () => {
     return expect(
-      groupEventsPerOrgUnit(createAggregator(), {}, query, config, entity),
+      groupEventsPerOrgUnit(createAggregator(), {}, query, config),
     ).to.eventually.deep.equal([
       { organisationUnitCode: 'oneEventLand', value: 'lessThanTwo', originalValue: 1 },
       { organisationUnitCode: 'twoEventLand', value: 'twoToThree', originalValue: 2 },
@@ -125,7 +128,7 @@ describe('groupEventsPerOrgUnit', () => {
       },
     };
     return expect(
-      groupEventsPerOrgUnit(createAggregator(), {}, query, newConfig, entity),
+      groupEventsPerOrgUnit(createAggregator(), {}, query, newConfig),
     ).to.eventually.deep.equal([
       { organisationUnitCode: 'oneEventLand', value: 1, originalValue: 1 },
       { organisationUnitCode: 'twoEventLand', value: 2, originalValue: 2 },
@@ -145,7 +148,7 @@ describe('groupEventsPerOrgUnit', () => {
       },
     };
     return expect(
-      groupEventsPerOrgUnit(createAggregator(), {}, query, newConfig, entity),
+      groupEventsPerOrgUnit(createAggregator(), {}, query, newConfig),
     ).to.eventually.be.rejectedWith('No function defined for operator: no-op');
   });
 });

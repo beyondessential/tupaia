@@ -1,12 +1,12 @@
 /**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
+ * Tupaia MediTrak
+ * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
+ **/
 
+import xlsx from 'xlsx';
 import { respond, DatabaseError, UploadError } from '@tupaia/utils';
+import { updateOrganisationUnitsFromSheet } from './updateOrganisationUnitsFromSheet';
 import { populateCoordinatesForCountry } from './populateCoordinatesForCountry';
-import { updateCountryEntities } from './updateCountryEntities';
-import { extractEntitiesByCountryName } from './extractEntitiesByCountryName';
 
 /**
  * Responds to POST requests to the /import/entities endpoint
@@ -14,19 +14,20 @@ import { extractEntitiesByCountryName } from './extractEntitiesByCountryName';
 export async function importEntities(req, res) {
   try {
     const { models } = req;
-    let entitiesByCountryName;
-    try {
-      entitiesByCountryName = extractEntitiesByCountryName(req.file.path);
-    } catch (error) {
-      throw new UploadError(error);
+    if (!req.file) {
+      throw new UploadError();
     }
-
+    const workbook = xlsx.readFile(req.file.path);
     await models.wrapInTransaction(async transactingModels => {
-      for (const countryEntries of Object.entries(entitiesByCountryName)) {
-        const [countryName, entities] = countryEntries;
+      for (const countryFacilities of Object.entries(workbook.Sheets)) {
+        const [countryName, sheet] = countryFacilities;
 
         // Create the entities, along with matching country, geographical_area, and clinic records
-        const country = await updateCountryEntities(transactingModels, countryName, entities);
+        const country = await updateOrganisationUnitsFromSheet(
+          transactingModels,
+          countryName,
+          sheet,
+        );
 
         // Go through country and all district/subdistricts, and if any are missing coordinates,
         // attempt to fetch them and populate the database

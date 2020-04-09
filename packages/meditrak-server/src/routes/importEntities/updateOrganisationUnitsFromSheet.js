@@ -1,12 +1,12 @@
 /**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
+ * Tupaia MediTrak
+ * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
+ **/
 
+import xlsx from 'xlsx';
 import { getCode as getCountryIsoCode } from 'countrynames';
-
-import { ImportValidationError } from '@tupaia/utils';
 import { ENTITY_TYPES } from '../../database';
+import { ImportValidationError } from '@tupaia/utils';
 import { getEntityObjectValidator } from './getEntityObjectValidator';
 import { getOrCreateParentEntity } from './getOrCreateParentEntity';
 
@@ -38,7 +38,8 @@ function getCountryCode(countryName, entityObjects) {
   return country;
 }
 
-export async function updateCountryEntities(transactingModels, countryName, entityObjects) {
+export async function updateOrganisationUnitsFromSheet(transactingModels, countryName, sheet) {
+  const entityObjects = xlsx.utils.sheet_to_json(sheet);
   const countryCode = getCountryCode(countryName, entityObjects);
   const country = await transactingModels.country.findOrCreate(
     { name: countryName },
@@ -76,7 +77,6 @@ export async function updateCountryEntities(transactingModels, countryName, enti
       latitude,
       geojson,
       type_name: typeName,
-      screen_bounds: screenBounds,
       category_code: categoryCode,
       facility_type: facilityType,
     } = entityObject;
@@ -132,15 +132,8 @@ export async function updateCountryEntities(transactingModels, countryName, enti
     if (longitude && latitude) {
       await transactingModels.entity.updatePointCoordinates(code, { longitude, latitude });
     }
-    if (screenBounds) {
-      await transactingModels.entity.updateBoundsCoordinates(code, screenBounds);
-    }
     if (geojson) {
-      const translatedGeojson =
-        geojson.type === 'Polygon'
-          ? { type: 'MultiPolygon', coordinates: [geojson.coordinates] }
-          : geojson;
-      await transactingModels.entity.updateRegionCoordinates(code, translatedGeojson);
+      await transactingModels.entity.updateRegionCoordinates(code, JSON.parse(geojson));
     }
   }
   return country;

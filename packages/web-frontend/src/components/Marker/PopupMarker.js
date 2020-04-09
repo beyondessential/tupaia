@@ -98,14 +98,21 @@ export class PopupMarker extends PureComponent {
 }
 
 export const MeasurePopup = ({ data, measureOptions, onOrgUnitClick }) => {
-  const { name, coordinates, organisationUnitCode } = data;
+  const { name, coordinates, organisationUnitCode, photoUrl } = data;
 
   return (
     <PopupMarker
       headerText={name}
       buttonText="See Dashboard"
       coordinates={coordinates}
-      onDetailButtonClick={() => onOrgUnitClick(organisationUnitCode)}
+      onDetailButtonClick={() =>
+        onOrgUnitClick({
+          type: 'Facility',
+          location: { type: 'point', coordinates },
+          organisationUnitCode,
+          photoUrl,
+        })
+      }
     >
       <PopupDataItemList data={data} measureOptions={measureOptions} />
     </PopupMarker>

@@ -34,14 +34,14 @@ const SearchOverlay = ({
   >
     <List
       title={getSearchResponseMessage(searchString, searchResponse, isLoading)}
-      items={searchResponse.map(({ displayName, organisationUnitCode }) => ({
-        title: displayName,
-        key: organisationUnitCode,
-        data: organisationUnitCode,
+      items={searchResponse.map(orgUnit => ({
+        title: orgUnit.displayName,
+        key: orgUnit.organisationUnitCode,
+        data: orgUnit,
       }))}
-      onSelectItem={organisationUnitCode => {
+      onSelectItem={orgUnit => {
         onToggleSearchExpand();
-        onChangeOrgUnit(organisationUnitCode);
+        onChangeOrgUnit(orgUnit);
       }}
     />
   </Overlay>
@@ -142,8 +142,8 @@ const mergeProps = (
   ...stateProps,
   ...dispatchProps,
   ...ownProps,
-  onChangeOrgUnit: organisationUnitCode => {
-    dispatch(changeOrgUnit(organisationUnitCode));
+  onChangeOrgUnit: orgUnit => {
+    dispatch(changeOrgUnit(orgUnit));
 
     // Close any pages that are open.
     if (isOverlayOpen) {
@@ -152,4 +152,8 @@ const mergeProps = (
   },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(SearchOverlay);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps,
+)(SearchOverlay);

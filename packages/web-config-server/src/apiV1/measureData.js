@@ -1,10 +1,7 @@
 import { CustomError } from '@tupaia/utils';
 import { getMeasureBuilder } from '/apiV1/measureBuilders/getMeasureBuilder';
 import { getDhisApiInstance } from '/dhis';
-import { Entity, MapOverlay } from '/models';
-import { getDateRange, getOrganisationUnitTypeForFrontend } from './utils';
-import { DataAggregatingRouteHandler } from './DataAggregatingRouteHandler';
-import { MapOverlayPermissionsChecker } from './permissions';
+import { DhisTranslationHandler, getDateRange, getOrganisationUnitTypeForFrontend } from './utils';
 import { DATA_SOURCE_TYPES } from './dataBuilders/dataSourceTypes';
 
 // NOTE: does not allow for actual number value measure, will be added when
@@ -90,18 +87,20 @@ const getMeasureLevel = mapOverlays => {
   return [...new Set(aggregationTypes)].join(',');
 };
 
-export default class extends DataAggregatingRouteHandler {
-  static PermissionsChecker = MapOverlayPermissionsChecker;
+export default class extends DhisTranslationHandler {
+  constructor(aggregator) {
+    super();
+    this.aggregator = aggregator;
+  }
 
-  buildResponse = async () => {
-    const { code } = this.entity;
-    const { measureId } = this.query;
-    const overlays = await MapOverlay.find({ id: measureId.split(',') });
-
+  buildData = async req => {
+    const { entity, overlays } = this;
+    const { code } = entity;
+    const { query } = req;
     // check permission
     await Promise.all(
       overlays.map(async ({ userGroup }) => {
-        const isUserAllowedMeasure = await this.req.userHasAccess(code, userGroup);
+        const isUserAllowedMeasure = await req.userHasAccess(code, userGroup);
         if (!isUserAllowedMeasure) {
           throw new CustomError(accessDeniedForMeasure);
         }
@@ -109,11 +108,11 @@ export default class extends DataAggregatingRouteHandler {
     );
 
     // start fetching options
-    const optionsTasks = overlays.map(o => this.fetchMeasureOptions(o, this.query));
+    const optionsTasks = overlays.map(o => this.fetchMeasureOptions(o, query));
 
     // start fetching actual data
-    const shouldFetchSiblings = this.query.shouldShowAllParentCountryResults === 'true';
-    const dataTasks = overlays.map(o => this.fetchMeasureData(o, shouldFetchSiblings));
+    const shouldFetchSiblings = query.shouldShowAllParentCountryResults === 'true';
+    const dataTasks = overlays.map(o => this.fetchMeasureData(o, shouldFetchSiblings, query));
 
     // wait for fetches to complete
     const measureOptions = await Promise.all(optionsTasks);
@@ -158,7 +157,7 @@ export default class extends DataAggregatingRouteHandler {
     };
   };
 
-  async fetchMeasureOptions(mapOverlay) {
+  async fetchMeasureOptions(mapOverlay, query) {
     const {
       id,
       groupName,
@@ -174,8 +173,9 @@ export default class extends DataAggregatingRouteHandler {
 
     const { dataSourceType = DATA_SOURCE_TYPES.SINGLE, periodGranularity } =
       measureBuilderConfig || {};
-    const { startDate, endDate } = this.query;
-    const dates = periodGranularity ? getDateRange(periodGranularity, startDate, endDate) : {};
+    const dates = periodGranularity
+      ? getDateRange(periodGranularity, query.startDate, query.endDate)
+      : {};
 
     const baseOptions = {
       ...presentationOptions,
@@ -223,23 +223,20 @@ export default class extends DataAggregatingRouteHandler {
     return country.code;
   }
 
-  async fetchMeasureData(mapOverlay, shouldFetchSiblings) {
+  async fetchMeasureData(mapOverlay, shouldFetchSiblings, query) {
     const { dataElementCode, isDataRegional, measureBuilderConfig, measureBuilder } = mapOverlay;
-    const entityCode = shouldFetchSiblings
+    const organisationUnitGroupCode = shouldFetchSiblings
       ? await this.getCountryLevelOrgUnitCode()
       : this.entity.code;
-    const entity = await Entity.findOne({ code: entityCode });
     const dataServices = createDataServices(mapOverlay);
     const dhisApi = getDhisApiInstance({ entityCode: this.entity.code, isDataRegional });
-    dhisApi.injectFetchDataSourceEntities(this.fetchDataSourceEntities);
     const buildMeasure = getMeasureBuilder(measureBuilder);
 
     return buildMeasure(
       this.aggregator,
       dhisApi,
-      { ...this.query, dataElementCode },
+      { ...query, organisationUnitGroupCode, dataElementCode },
       { ...measureBuilderConfig, dataServices },
-      entity,
     );
   }
 }

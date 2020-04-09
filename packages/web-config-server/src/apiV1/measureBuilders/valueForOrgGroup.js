@@ -12,12 +12,14 @@ class ValueForOrgGroupMeasureBuilder extends DataBuilder {
   }
 
   async getFacilityDataByCode() {
-    const { dataElementCode } = this.query;
+    const { dataElementCode, organisationUnitGroupCode } = this.query;
 
     // 'facilityTypeCode' signifies a special case which is handled internally
     if (dataElementCode === FACILITY_TYPE_CODE) {
       // create index of all facilities
-      const facilityCodes = (await this.entity.getFacilities()).map(facility => facility.code);
+      const facilityCodes = (await Entity.getFacilitiesOfOrgUnit(organisationUnitGroupCode)).map(
+        facility => facility.code,
+      );
       const facilityMetaDatas = await Facility.find({ code: facilityCodes });
       return facilityMetaDatas.reduce(
         (array, metadata) => [
@@ -33,7 +35,7 @@ class ValueForOrgGroupMeasureBuilder extends DataBuilder {
     }
 
     const { results } = await this.fetchAnalytics([dataElementCode], {
-      organisationUnitCode: this.entity.code,
+      organisationUnitCode: organisationUnitGroupCode,
     });
     const analytics = results.map(result => ({
       ...result,
@@ -43,20 +45,12 @@ class ValueForOrgGroupMeasureBuilder extends DataBuilder {
   }
 }
 
-export const valueForOrgGroup = async (
-  aggregator,
-  dhisApi,
-  query,
-  measureBuilderConfig = {},
-  entity,
-) => {
+export const valueForOrgGroup = async (aggregator, dhisApi, query, measureBuilderConfig = {}) => {
   const builder = new ValueForOrgGroupMeasureBuilder(
     aggregator,
     dhisApi,
     measureBuilderConfig,
     query,
-    entity,
-    measureBuilderConfig.aggregationType,
   );
   const responseObject = await builder.build();
 

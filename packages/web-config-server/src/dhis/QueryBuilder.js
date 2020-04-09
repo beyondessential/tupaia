@@ -2,14 +2,15 @@
  * Tupaia Config Server
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
-import { getDefaultPeriod } from '/dhis/getDefaultPeriod';
+
+import { getDataSourceEntityType } from 'apiV1/dataBuilders/helpers';
+import { getDefaultPeriod } from './getDefaultPeriod';
 import { Entity } from '/models';
 
 export class QueryBuilder {
-  constructor(originalQuery, replacementValues = {}, fetchDataSourceEntities) {
+  constructor(originalQuery, replacementValues = {}) {
     this.query = { ...originalQuery };
     this.replacementValues = replacementValues;
-    this.fetchDataSourceEntities = fetchDataSourceEntities;
   }
 
   getQueryParameter(parameterKey) {
@@ -17,10 +18,10 @@ export class QueryBuilder {
   }
 
   // Ensure the standard dimensions of period, start/end date, and organisation unit are set up
-  async build() {
+  build() {
     this.makePeriodReplacements();
-    await this.fetchAndReplaceOrgUnitCodes();
     this.makeEventReplacements();
+    this.query.organisationUnitCode = this.getQueryParameter('organisationUnitCode');
     return this.query;
   }
 
@@ -30,27 +31,38 @@ export class QueryBuilder {
     this.query.programCode = this.getQueryParameter('programCode');
   }
 
-  async fetchAndReplaceOrgUnitCodes() {
+  // Builds the organisation unit codes for all organisation units data should be fetched from,
+  // using the facility level children of the selected organisation unit
+  async buildOrganisationUnitCodes() {
     const organisationUnitCode = this.getQueryParameter('organisationUnitCode');
     const entity = await Entity.findOne({ code: organisationUnitCode });
-    const dataSourceEntities = await this.fetchDataSourceEntities(entity);
+    const dataSourceEntityType = getDataSourceEntityType(this.query);
+    if (entity.type === dataSourceEntityType) {
+      this.query.organisationUnitCodes = [organisationUnitCode];
+      return this.query;
+    }
+    const dataSourceEntities = await entity.getDescendantsOfType(dataSourceEntityType);
     this.query.organisationUnitCodes = dataSourceEntities.map(e => e.code);
     delete this.query.organisationUnitCode;
+    return this.query;
   }
 
   // Adds standard period, start date and end date
   makePeriodReplacements() {
+    const { query, replacementValues } = this;
+
     // Make standard replacements if required
-    this.query.startDate = this.getQueryParameter('startDate');
-    this.query.endDate = this.getQueryParameter('endDate');
+    query.startDate = this.getQueryParameter('startDate');
+    query.endDate = this.getQueryParameter('endDate');
 
     // Define the period, based on the query, the preconfigured period, or the default
-    if (this.replacementValues.period) {
+    if (replacementValues.period) {
       // If a the api consumer defined a period to use in query parameters, use that
-      this.query.period = this.replacementValues.period;
-    } else if (!this.query.period) {
+      query.period = replacementValues.period;
+    } else if (!query.period) {
       // If no period defined anywhere, use the default
-      this.query.period = getDefaultPeriod();
+      query.period = getDefaultPeriod();
     }
+    return this.query;
   }
 }

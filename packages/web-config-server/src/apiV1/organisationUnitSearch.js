@@ -4,15 +4,11 @@
  */
 
 import { Entity } from '/models/Entity';
-import { RouteHandler } from './RouteHandler';
-import { NoPermissionRequiredChecker } from './permissions';
+import { DhisTranslationHandler } from './utils';
 
 const DEFAULT_LIMIT = 20;
 
-export default class extends RouteHandler {
-  // allow passing straight through, results are limited by permissions
-  static PermissionsChecker = NoPermissionRequiredChecker;
-
+export default class extends DhisTranslationHandler {
   getNextResults = async (filter, limit, pageNumber = 0) => {
     const sort = ['name'];
     return Entity.find(filter, {}, { sort, limit, offset: pageNumber * limit });
@@ -88,11 +84,9 @@ export default class extends RouteHandler {
     );
   };
 
-  buildResponse = async () => {
-    const { limit = DEFAULT_LIMIT, criteria: searchString } = this.req.query;
-    if (!searchString || searchString === '' || isNaN(parseInt(limit, 10))) {
-      throw new Error('Query parameters must match "criteria" (text) and "limit" (number)');
-    }
+  buildData = async req => {
+    this.req = req;
+    const { limit = DEFAULT_LIMIT, criteria: searchString } = req.query;
     const results = await this.getResults(searchString, limit);
     return this.formatForResponse(results);
   };

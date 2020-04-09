@@ -5,4 +5,3 @@ export { actualMonthlyValuesVsIdeal } from './actualMonthlyValuesVsIdeal';
 export { dataElementsOverTotalOperational } from './dataElementsOverTotalOperational';
 export { latestAchievedVsTargetPercentage } from './latestAchievedVsTargetPercentage';
 export { finalValuesPerYear, finalValuesPerMonth, finalValuesPerDay } from './finalValuesPerPeriod';
-export { sumPreviousValuesPerDayByOrgUnit } from './valuesPerPeriodByOrgUnit';

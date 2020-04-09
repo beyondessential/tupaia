@@ -1,12 +1,12 @@
+import { createAggregator } from '@tupaia/aggregator';
 import { convertDateRangeToPeriods } from '@tupaia/dhis-api';
 import { replaceValues } from '@tupaia/utils';
-import { DashboardReport, DashboardGroup } from '/models';
+import { DashboardReport } from '/models';
 import { getDhisApiInstance } from '/dhis';
 import { CustomError } from '@tupaia/utils';
-import { isSingleValue } from './utils';
-import { DataAggregatingRouteHandler } from './DataAggregatingRouteHandler';
-import { DashboardPermissionsChecker } from './permissions';
+import { DhisTranslationHandler, isSingleValue } from './utils';
 import { getDataBuilder } from '/apiV1/dataBuilders/getDataBuilder';
+import { Aggregator } from '/aggregator';
 
 const viewFail = {
   type: 'View Error',
@@ -17,13 +17,6 @@ const noViewWithId = {
   responseText: {
     status: 'viewError',
     details: 'No view with corresponding id',
-  },
-};
-
-const viewNotInGroup = {
-  responseText: {
-    status: 'viewError',
-    details: 'Dashboard group does not contain view',
   },
 };
 
@@ -50,15 +43,13 @@ const getIsValidDate = dateString => !Number.isNaN(Date.parse(dateString));
 
 /* View implementation now delegates data builder to corresponding view data builder
  */
-export default class extends DataAggregatingRouteHandler {
-  static PermissionsChecker = DashboardPermissionsChecker;
-
-  buildResponse = async () => {
-    const { startDate, endDate, ...restOfQuery } = this.query;
+export default class extends DhisTranslationHandler {
+  buildData = async req => {
+    const { startDate, endDate, ...restOfQuery } = req.query;
     if (getIsValidDate(startDate)) this.startDate = startDate;
     if (getIsValidDate(endDate)) this.endDate = endDate;
 
-    const { viewId, drillDownLevel, dashboardGroupId } = this.query;
+    const { viewId, drillDownLevel } = req.query;
     // If drillDownLevel is undefined, send it through as null instead so it's not dropped from the object.
     const dashboardReport = await DashboardReport.findOne({
       id: viewId,
@@ -78,6 +69,7 @@ export default class extends DataAggregatingRouteHandler {
     const { viewJson, dataBuilderConfig, dataBuilder, dataServices } = dashboardReport;
     this.viewJson = this.translateViewJson(viewJson);
     this.dataBuilderConfig = this.translateDataBuilderConfig(dataBuilderConfig, dataServices);
+    this.req = req;
 
     const dataBuilderData = await this.buildDataBuilderData(dataBuilder);
     return this.addViewMetaData(dataBuilderData);
@@ -89,13 +81,11 @@ export default class extends DataAggregatingRouteHandler {
       throw new CustomError(viewFail, noDataBuilder, { dataBuilder });
     }
 
-    const dhisApiInstances = this.dataBuilderConfig.dataServices.map(({ isDataRegional }) => {
-      const dhisApi = getDhisApiInstance({ entityCode: this.entity.code, isDataRegional });
-      dhisApi.injectFetchDataSourceEntities(this.fetchDataSourceEntities);
-      return dhisApi;
-    });
+    const dhisApiInstances = this.dataBuilderConfig.dataServices.map(({ isDataRegional }) =>
+      getDhisApiInstance({ entityCode: this.entity.code, isDataRegional }),
+    );
 
-    return dataBuilder(this, this.aggregator, ...dhisApiInstances);
+    return dataBuilder(this, createAggregator(Aggregator), ...dhisApiInstances);
   }
 
   translateViewJson(viewJson) {

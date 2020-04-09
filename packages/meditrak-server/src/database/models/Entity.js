@@ -149,36 +149,14 @@ export class EntityModel extends DatabaseModel {
     );
   }
 
-  async updateBoundsCoordinates(code, bounds) {
-    return this.database.executeSql(
-      `
-        UPDATE "entity"
-        SET "bounds" = ?
-        WHERE "code" = ?;
-      `,
-      [bounds, code],
-    );
-  }
-
   async updateRegionCoordinates(code, geojson) {
-    const shouldSetBounds =
-      (
-        await this.find({
-          code,
-          bounds: null,
-        })
-      ).length > 0;
-    const boundsString = shouldSetBounds
-      ? ', "bounds" =  ST_Envelope(ST_GeomFromGeoJSON(?)::geometry)'
-      : '';
-
     return this.database.executeSql(
       `
         UPDATE "entity"
-        SET "region" = ST_GeomFromGeoJSON(?) ${boundsString}
+        SET "region" = ST_GeomFromGeoJSON(?), "bounds" = ST_Envelope(ST_GeomFromGeoJSON(?)::geometry)
         WHERE "code" = ?;
       `,
-      shouldSetBounds ? [geojson, geojson, code] : [geojson, code],
+      [geojson, geojson, code],
     );
   }
 }
