@@ -1,5 +1,7 @@
 import { getDataElementCodesInGroup, sumResults } from '/apiV1/utils';
 
+import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
+
 const getDataElementCodes = async (dataBuilderConfig, dhisApi) => {
   const { dataElementCodes, dataElementGroupCode } = dataBuilderConfig;
   return dataElementGroupCode
@@ -49,7 +51,8 @@ const sumPerMetric = async ({ dataBuilderConfig, query }, aggregator, dhisApi, a
 
     return returnData[name];
   };
-
+  
+  const dataElementsWithData = [];
   results
     .map(({ dataElement: dataElementCode, ...result }) => {
       const name = labels[dataElementCode] || dataElementCodeToName[dataElementCode];
@@ -61,6 +64,7 @@ const sumPerMetric = async ({ dataBuilderConfig, query }, aggregator, dhisApi, a
     })
     .forEach(resultObject => {
       const { value, dataElementCode } = resultObject;
+      dataElementsWithData.push(dataElementCode);
       const returnDataObject = getOrCreateReturnData(resultObject);
       returnDataObject.value += calculateValueToAdd(value, dataElementCode);
     });
@@ -87,6 +91,18 @@ const sumPerMetric = async ({ dataBuilderConfig, query }, aggregator, dhisApi, a
       data.unshift(sumResults(data));
     }
   }
+  dataBuilderConfig.dataElementCodes.forEach(dataElementCode => {
+    const name = labels[dataElementCode] || dataElementCodeToName[dataElementCode];
+    if(!dataElementsWithData.includes(dataElementCode)){
+      data.push({
+        name,
+        dataElementCode,
+        value: NO_DATA_AVAILABLE,
+      });
+    }
+  });
+
+
   return { data };
 };
 
