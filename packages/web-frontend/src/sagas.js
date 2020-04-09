@@ -90,7 +90,7 @@ import {
 } from './actions';
 import { isMobile, processMeasureInfo, formatDateForApi } from './utils';
 import { createUrlString } from './utils/historyNavigation';
-import { getDefaultDates } from './utils/periodGranularities';
+import { GRANULARITIES_WITH_ONE_DATE, roundStartEndDates } from './utils/periodGranularities';
 import { INITIAL_MEASURE_ID } from './defaults';
 
 /**
@@ -439,25 +439,24 @@ function* fetchOrgUnitData(action) {
 
 function* fetchOrgUnitDataAndChangeOrgUnit(action) {
   const state = yield select();
-  const { organisationUnitCode, shouldChangeMapBounds } = action;
-  const orgUnit = selectOrgUnit(state, organisationUnitCode);
+  const orgUnit = selectOrgUnit(state, action.organisationUnit.organisationUnitCode);
   if (orgUnit && orgUnit.isComplete) {
     const orgUnitAndChildren = {
       ...orgUnit,
       parent: selectOrgUnit(state, orgUnit.parent) || {},
-      organisationUnitChildren: cachedSelectOrgUnitChildren(state, organisationUnitCode),
+      organisationUnitChildren: cachedSelectOrgUnitChildren(state, orgUnit.organisationUnitCode),
     };
-    yield put(changeOrgUnitSuccess(orgUnitAndChildren, shouldChangeMapBounds));
+    yield put(changeOrgUnitSuccess(orgUnitAndChildren, action.shouldChangeMapBounds));
     return; // If we already have the org unit in reduxStore, just exit early
   }
 
   try {
-    const orgUnitData = yield requestOrgUnitData(organisationUnitCode);
+    const orgUnitData = yield requestOrgUnitData(action.organisationUnit.organisationUnitCode);
     yield put(fetchOrgUnitSuccess(orgUnitData));
     yield put(
       changeOrgUnitSuccess(
         normaliseCountryHierarchyOrgUnitData(orgUnitData),
-        shouldChangeMapBounds,
+        action.shouldChangeMapBounds,
       ),
     );
   } catch (error) {
@@ -503,7 +502,7 @@ function* watchOrgUnitChangeAndFetchIt() {
  *
  */
 function* fetchDashboard(action) {
-  const { organisationUnitCode } = action;
+  const { organisationUnitCode } = action.organisationUnit;
   const requestResourceUrl = `dashboard?organisationUnitCode=${organisationUnitCode}`;
 
   try {
@@ -520,11 +519,19 @@ function* watchOrgUnitChangeAndFetchDashboard() {
 
 function* fetchViewData(parameters, errorHandler) {
   const { infoViewKey } = parameters;
+
+  const getDefaultDates = state => {
+    const { periodGranularity } = state.global.viewConfigs[infoViewKey];
+    if (GRANULARITIES_WITH_ONE_DATE.includes(periodGranularity)) {
+      return roundStartEndDates(periodGranularity);
+    }
+    return {};
+  };
+
   // If the view should be constrained to a date range and isn't, constrain it
   const { startDate, endDate } =
-    parameters.startDate || parameters.endDate
-      ? parameters
-      : getDefaultDates(yield select(), infoViewKey);
+    parameters.startDate || parameters.endDate ? parameters : getDefaultDates(yield select());
+
   // Build the request url
   const {
     organisationUnitCode,
@@ -665,6 +672,11 @@ function* fetchMeasureInfo(measureId, organisationUnitCode, oldOrganisationUnitC
     // Don't try and fetch null measures
     yield put(cancelFetchMeasureData());
 
+    if (!organisationUnitCode) {
+      // if we've selected a null unit (somehow) clear out the measure hierarchy as well
+      yield put(clearMeasureHierarchy());
+    }
+
     return;
   }
 
@@ -749,13 +761,13 @@ function* watchFetchMeasureSuccess() {
 }
 
 function* fetchMeasureInfoForNewOrgUnit(action) {
-  const { organisationUnitCode } = action;
+  const { organisationUnit } = action;
   const { measureId, oldOrgUnitCode } = yield select(state => ({
     measureId: state.map.measureInfo.measureId,
     oldOrgUnitCode: state.measureBar.currentMeasureOrganisationUnitCode,
   }));
   if (measureId) {
-    yield fetchMeasureInfo(measureId, organisationUnitCode, oldOrgUnitCode);
+    yield fetchMeasureInfo(measureId, organisationUnit.organisationUnitCode, oldOrgUnitCode);
   }
 }
 
@@ -770,8 +782,8 @@ function* watchOrgUnitChangeAndFetchMeasureInfo() {
  *
  */
 function* fetchMeasures(action) {
-  const { organisationUnitCode } = action;
-  if (organisationUnitCode === 'World') yield put(clearMeasure());
+  if (action.organisationUnit.organisationUnitCode === 'World') yield put(clearMeasure());
+  const { organisationUnitCode } = action.organisationUnit;
   const requestResourceUrl = `measures?organisationUnitCode=${organisationUnitCode}`;
   try {
     const measures = yield call(request, requestResourceUrl);
@@ -918,12 +930,11 @@ function* updatePermissionsToMatchUser() {
   // match current user permissions
   const state = yield select();
   const { currentOrganisationUnit } = state.global;
-  const { organisationUnitCode } = currentOrganisationUnit;
 
   // By default the current organisation does not have an org unit code as it
   // is an empty object, so must not be loaded.
-  if (organisationUnitCode) {
-    yield put(changeOrgUnit(organisationUnitCode, false));
+  if (currentOrganisationUnit.organisationUnitCode) {
+    yield put(changeOrgUnit(state.global.currentOrganisationUnit, false));
   }
 }
 

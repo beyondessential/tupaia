@@ -81,7 +81,7 @@ export const periodTypeToMomentUnit = createAccessor('momentUnit');
 export const periodToType = (period = '') => LENGTH_TO_PERIOD_TYPE[period.length];
 
 export const parsePeriodType = periodTypeString => {
-  const error = new Error(`Period type must be one of ${Object.values(PERIOD_TYPES)}`);
+  const error = new Error(`Period type must be one of ${PERIOD_TYPES}`);
 
   if (!(typeof periodTypeString === 'string')) {
     throw error;

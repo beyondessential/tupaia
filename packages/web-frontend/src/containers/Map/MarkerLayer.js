@@ -238,8 +238,8 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  onChangeOrgUnit: (organisationUnitCode, shouldChangeMapBounds = false) => {
-    dispatch(changeOrgUnit(organisationUnitCode, shouldChangeMapBounds));
+  onChangeOrgUnit: (organisationUnit, shouldChangeMapBounds = false) => {
+    dispatch(changeOrgUnit(organisationUnit, shouldChangeMapBounds));
   },
   onPopupOpen: orgUnitCode => dispatch(openMapPopup(orgUnitCode)),
   onPopupClose: orgUnitCode => dispatch(closeMapPopup(orgUnitCode)),

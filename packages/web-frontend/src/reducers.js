@@ -577,7 +577,7 @@ function global(
     highlightedOrganisationUnit: {},
     dashboardConfig: {},
     viewConfigs: {},
-    isLoadingOrganisationUnit: false,
+    loadingOrganisationUnit: null,
   },
   action,
 ) {
@@ -597,12 +597,12 @@ function global(
     case CHANGE_ORG_UNIT:
       return {
         ...state,
-        isLoadingOrganisationUnit: true,
+        loadingOrganisationUnit: action.organisationUnit,
       };
     case CHANGE_ORG_UNIT_SUCCESS:
       return {
         ...state,
-        isLoadingOrganisationUnit: false,
+        loadingOrganisationUnit: null,
         currentOrganisationUnit: action.organisationUnit,
         currentOrganisationUnitSiblings: action.organisationUnitSiblings,
         highlightedOrganisationUnit: {},
@@ -613,7 +613,7 @@ function global(
         highlightedOrganisationUnit: action.organisationUnit,
       };
     case CHANGE_ORG_UNIT_ERROR:
-      return { ...state, isLoadingOrganisationUnit: false };
+      return { ...state, loadingOrganisationUnit: null };
     case FETCH_DASHBOARD_CONFIG_SUCCESS: {
       const { dashboardConfig } = action;
       const viewConfigs = extractViewsFromAllDashboards(dashboardConfig);

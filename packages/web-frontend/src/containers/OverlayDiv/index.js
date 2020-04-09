@@ -124,7 +124,7 @@ const mapDispatchToProps = dispatch => {
     onSelectProject: project => {
       dispatch(selectProject(project));
       dispatch(setOverlayComponent(null));
-      dispatch(changeOrgUnit(project.parentCode, false));
+      dispatch(changeOrgUnit(project.parent, false));
     },
     closeOverlay: () => {
       dispatch(setOverlayComponent(null));
@@ -132,4 +132,7 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(OverlayDiv);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(OverlayDiv);

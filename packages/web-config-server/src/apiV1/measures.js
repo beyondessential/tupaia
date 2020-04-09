@@ -1,16 +1,13 @@
 import { MapOverlay } from '/models';
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
-import { RouteHandler } from './RouteHandler';
-import { PermissionsChecker } from './permissions';
+import { DhisTranslationHandler } from './utils';
 const { AND, RAW } = QUERY_CONJUNCTIONS;
 
-export default class extends RouteHandler {
-  static PermissionsChecker = PermissionsChecker;
-
-  buildResponse = async () => {
+export default class extends DhisTranslationHandler {
+  buildData = async req => {
     const { entity } = this;
     const { code: entityCode, name: entityName } = entity;
-    const userGroups = await this.req.getUserGroups(entityCode);
+    const userGroups = await req.getUserGroups(entityCode);
 
     // will return undefined if no country level ancestor organisationUnit (e.g. World)
     const { code: countryCode } = (await entity.getCountry()) || {};

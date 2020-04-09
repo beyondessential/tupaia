@@ -52,8 +52,8 @@ export const gaMiddleware = ({ getState, dispatch }) => next => action => {
         break;
 
       case CHANGE_ORG_UNIT:
-        if (action.organisationUnitCode !== initialOrgUnit.organisationUnitCode) {
-          gaEvent('Organisation Unit', 'Change', action.organisationUnitCode);
+        if (action.organisationUnit !== initialOrgUnit) {
+          gaEvent('Organisation Unit', 'Change', action.organisationUnit.organisationUnitCode);
         }
         break;
 

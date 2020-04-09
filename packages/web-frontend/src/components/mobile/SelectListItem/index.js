@@ -41,7 +41,9 @@ const ListItemSubTitle = styled(Title)`
   font-size: 14px;
 `;
 
-export const SelectListItem = ({ onSelect, title, subTitle, data }) => {
+export const SelectListItem = ({ onSelect, item }) => {
+  const { title, subTitle, data } = item;
+
   return (
     <ListItem onClick={() => delayMobileTapCallback(() => onSelect(data))}>
       <Title>{title}</Title>
@@ -53,9 +55,11 @@ export const SelectListItem = ({ onSelect, title, subTitle, data }) => {
 
 SelectListItem.propTypes = {
   onSelect: PropTypes.func,
-  data: PropTypes.shape({}),
-  title: PropTypes.string,
-  subTitle: PropTypes.string,
+  item: PropTypes.shape({
+    key: PropTypes.string,
+    data: PropTypes.shape({}),
+    title: PropTypes.string,
+  }),
   color: PropTypes.string,
   background: PropTypes.string,
 };

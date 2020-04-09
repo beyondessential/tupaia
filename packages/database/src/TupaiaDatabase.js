@@ -461,14 +461,7 @@ function buildQuery(connection, queryConfig, where = {}, options = {}) {
   }
 
   // Add filtering (or WHERE) details if provided
-  const columns =
-    options.columns &&
-    options.columns.map(columnSpec => {
-      if (typeof columnSpec === 'string') return columnSpec;
-      const [alias, selector] = Object.entries(columnSpec)[0];
-      return { [alias]: connection.raw(selector) };
-    });
-  query = addWhereClause(query[queryMethod](queryMethodParameter || columns), where);
+  query = addWhereClause(query[queryMethod](queryMethodParameter || options.columns), where);
 
   // Add sorting information if provided
   if (options.sort) {

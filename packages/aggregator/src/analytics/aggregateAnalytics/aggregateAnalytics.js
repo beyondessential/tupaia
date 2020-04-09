@@ -10,7 +10,6 @@ import {
   getFinalValuePerPeriod,
   sumAcrossPeriods,
   sumEachDataElement,
-  sumPreviousPerPeriod,
 } from './aggregations';
 
 export const aggregateAnalytics = (
@@ -45,8 +44,6 @@ export const aggregateAnalytics = (
       return getFinalValuePerPeriod(analytics, YEAR);
     case AGGREGATION_TYPES.FINAL_EACH_YEAR_FILL_EMPTY_YEARS:
       return getFinalValuePerPeriod(analytics, YEAR, { fillEmptyValues: true });
-    case AGGREGATION_TYPES.SUM_PREVIOUS_EACH_DAY:
-      return sumPreviousPerPeriod(analytics, DAY);
     case AGGREGATION_TYPES.RAW:
     default:
       return analytics;

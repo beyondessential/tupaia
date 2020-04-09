@@ -1,17 +1,7 @@
-/**
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
-
-import { reduceToDictionary } from '@tupaia/utils';
 import { Entity } from '/models';
 import { getEntityLocationForFrontend, getOrganisationUnitTypeForFrontend } from './utils';
-import { RouteHandler } from './RouteHandler';
-import { PermissionsChecker } from './permissions';
 
-const WORLD = 'World';
-
-export const translateForFrontend = entity => {
+export function translateForFrontend(entity) {
   // Sometimes we'll end up with a null entity (eg getting a top-level entity's parent).
   // Frontend expects an empty object rather than null.
   if (!entity) return {};
@@ -24,62 +14,69 @@ export const translateForFrontend = entity => {
     location: getEntityLocationForFrontend(entity),
     photoUrl: entity.image_url,
   };
-};
+}
 
-const translateDescendantForFrontEnd = (descendant, entityIdToCode) => ({
+const translateDescendantForFrontEnd = descendant => ({
   ...translateForFrontend(descendant),
-  parent: entityIdToCode[descendant.parent_id],
+  parent: descendant.parent_code,
 });
 
-export default class extends RouteHandler {
-  static PermissionsChecker = PermissionsChecker; // checks the user has access to requested entity
+export async function getEntityAndChildrenByCode(entityCode, userHasAccess) {
+  const entity = await Entity.getEntityByCode(entityCode);
+  checkExistsAndHasAccess(entity, entityCode, userHasAccess);
 
-  async buildResponse() {
-    const { includeCountryHierarchy } = this.query;
-    return includeCountryHierarchy === 'true'
-      ? this.getEntityAndCountryHierarchyByCode()
-      : this.getEntityAndChildrenByCode();
-  }
+  // Don't check parent permission (as we already know we have permission for at least one of its children)
+  const parent = entity.parent_id && (await Entity.findById(entity.parent_id));
+  const children = await filterForAccess(await entity.getOrgUnitChildren(), userHasAccess);
 
-  async getEntityAndCountryHierarchyByCode() {
-    const world = await Entity.findOne({ code: WORLD });
-    const country = await this.entity.countryEntity();
-    const countryDescendants = await country.getDescendants();
-    const orgUnitHierarchy = await this.filterForAccess([world, country, ...countryDescendants]);
-    const entityIdToCode = reduceToDictionary(orgUnitHierarchy, 'id', 'code');
-    return {
-      ...translateForFrontend(this.entity),
-      countryHierarchy: orgUnitHierarchy.map(e =>
-        translateDescendantForFrontEnd(e, entityIdToCode),
-      ),
-    };
-  }
-
-  async getEntityAndChildrenByCode() {
-    // Don't check parent permission (as we already know we have permission for at least one of its children)
-    const parent = await this.entity.parent();
-    const children = await this.filterForAccess(await this.entity.getOrgUnitChildren());
-
-    return {
-      ...translateForFrontend(this.entity),
-      parent: translateForFrontend(parent),
-      organisationUnitChildren: children.map(translateForFrontend),
-    };
-  }
-
-  async filterForAccess(entities) {
-    return (
-      await Promise.all(
-        entities.map(async entity => (await this.checkUserHasEntityAccess(entity)) && entity),
-      )
-    ).filter(entity => entity);
-  }
-
-  checkUserHasEntityAccess = async entity => {
-    const { userHasAccess } = this.req;
-    if (entity.isCountry()) {
-      return userHasAccess(entity);
-    }
-    return true; // temporarily only checking access at the country level (permissions currently defined for country only)
+  return {
+    ...translateForFrontend(entity),
+    parent: translateForFrontend(parent),
+    organisationUnitChildren: children.map(translateForFrontend),
   };
+}
+
+export async function getEntityAndCountryHierarchyByCode(entityCode, userHasAccess) {
+  const entity = await Entity.getEntityByCode(entityCode);
+  checkExistsAndHasAccess(entity, entityCode, userHasAccess);
+
+  const entityIsCountry = entity.type === Entity.COUNTRY;
+
+  const country = entityIsCountry ? entity : await Entity.getEntityByCode(entity.country_code);
+  const countryAndDescendants = await filterForAccess(
+    await country.getDescendantsAndSelf(),
+    userHasAccess,
+  );
+  countryAndDescendants.unshift(await Entity.getEntityByCode('World')); // Hierarchy is missing world entity, so push it to the front of the array
+
+  return {
+    ...translateForFrontend(entity),
+    countryHierarchy: countryAndDescendants.map(translateDescendantForFrontEnd),
+  };
+}
+
+const checkExistsAndHasAccess = async (entity, entityCode, userHasAccess) => {
+  if (!entity) {
+    throw new Error(`Entity ${entityCode} not found`);
+  }
+
+  if (!(await userHasAccess(entity.code))) {
+    throw new Error(`No access to ${entity.code}`);
+  }
+};
+
+const filterForAccess = async (orgUnits, userHasAccess) => {
+  return (
+    await Promise.all(orgUnits.map(async orgUnit => (await userHasAccess(orgUnit.code)) && orgUnit))
+  ).filter(orgUnit => orgUnit);
+};
+
+export async function getOrganisationUnitHandler(req, res) {
+  const { organisationUnitCode, includeCountryHierarchy } = req.query;
+  const data =
+    includeCountryHierarchy === 'true'
+      ? await getEntityAndCountryHierarchyByCode(organisationUnitCode, req.userHasAccess)
+      : await getEntityAndChildrenByCode(organisationUnitCode, req.userHasAccess);
+
+  res.send(data);
 }

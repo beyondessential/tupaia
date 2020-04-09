@@ -84,7 +84,7 @@ const mapDispatchToProps = dispatch => ({
   onSelectProject: project => {
     dispatch(selectProject(project));
     dispatch(setOverlayComponent(null));
-    dispatch(changeOrgUnit(project.parentCode, false));
+    dispatch(changeOrgUnit(project.parent, false));
   },
   onRequestProjectAccess: project => {
     dispatch(setRequestingAccess(project));
@@ -92,4 +92,7 @@ const mapDispatchToProps = dispatch => ({
   },
 });
 
-export const ProjectPage = connect(mapStateToProps, mapDispatchToProps)(ProjectPageComponent);
+export const ProjectPage = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(ProjectPageComponent);

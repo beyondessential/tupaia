@@ -49,14 +49,7 @@ export function addRoutesToApp(app) {
   /**
    * Create upload handler
    **/
-  const upload = multer({
-    storage: multer.diskStorage({
-      destination: './uploads/',
-      filename: (req, file, callback) => {
-        callback(null, `${Date.now()}_${file.originalname}`);
-      },
-    }),
-  });
+  const upload = multer({ dest: './uploads/' });
 
   app.use(extractApiVersion);
 

@@ -11,26 +11,22 @@ export class SumPerOrgUnitBuilder extends DataPerOrgUnitBuilder {
 
   async fetchResults() {
     const { dataElementCodes } = this.config;
+    const { organisationUnitGroupCode } = this.query;
+
     const { results } = await this.fetchAnalytics(dataElementCodes, {
-      organisationUnitCode: this.entity.code,
+      organisationUnitCode: organisationUnitGroupCode,
     });
     return results;
   }
 }
 
-export const sumLatestPerOrgUnit = async (
-  aggregator,
-  dhisApi,
-  query,
-  measureBuilderConfig,
-  entity,
-) => {
+export const sumLatestPerOrgUnit = async (aggregator, dhisApi, query, measureBuilderConfig) => {
   const builder = new SumPerOrgUnitBuilder(
     aggregator,
     dhisApi,
     measureBuilderConfig,
     query,
-    entity,
+    null,
     aggregator.aggregationTypes.MOST_RECENT,
   );
   return builder.build();

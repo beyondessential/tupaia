@@ -35,11 +35,11 @@ import { fetchComposedData } from '/apiV1/measureBuilders/helpers';
  * ```
  */
 
-export const composePercentagePerOrgUnit = async (aggregator, dhisApi, query, config, entity) => {
+export const composePercentagePerOrgUnit = async (aggregator, dhisApi, query, config) => {
   const { fractionType } = config;
   const { dataElementCode } = query;
 
-  const responses = await fetchComposedData(aggregator, dhisApi, query, config, entity);
+  const responses = await fetchComposedData(aggregator, dhisApi, query, config);
   const numeratorsByOrgUnit = keyBy(responses.numerator, 'organisationUnitCode');
   const denominatorsByOrgUnit = keyBy(responses.denominator, 'organisationUnitCode');
 

@@ -35,7 +35,7 @@ class HomeScreen extends PureComponent {
 
   render() {
     const {
-      organisationUnits,
+      mobileListItems,
       isLoading,
       onChangeOrgUnit,
       currentOrganisationUnit,
@@ -59,14 +59,10 @@ class HomeScreen extends PureComponent {
         <ExpandableList
           title={'Countries'}
           expandedByDefault={true}
-          items={organisationUnits.map(({ organisationUnitCode, name }) => (
-            <SelectListItem
-              onSelect={onChangeOrgUnit}
-              title={name}
-              key={organisationUnitCode}
-              data={organisationUnitCode}
-            />
+          items={mobileListItems.map(item => (
+            <SelectListItem onSelect={onChangeOrgUnit} item={item} key={item.key} />
           ))}
+          onSelectItem={orgUnit => onChangeOrgUnit(orgUnit)}
           theme={{ background: WHITE, color: '#000' }}
         />
         {isLoading && (
@@ -100,7 +96,11 @@ const mapStateToProps = state => {
   const { currentOrganisationUnit, dashboardConfig } = state.global;
 
   return {
-    organisationUnits: hierarchyData || [],
+    mobileListItems: (hierarchyData || []).map(item => ({
+      title: item.name,
+      key: item.organisationUnitCode,
+      data: item,
+    })),
     isLoading,
     currentOrganisationUnit,
     dashboardFilterIsExpanded: isGroupSelectExpanded,
@@ -112,10 +112,13 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     getNestedOrgUnits: orgUnitCode => dispatch(fetchHierarchyNestedItems(orgUnitCode)),
-    onChangeOrgUnit: organisationUnitCode => dispatch(changeOrgUnit(organisationUnitCode, false)),
+    onChangeOrgUnit: orgUnit => dispatch(changeOrgUnit(orgUnit, false)),
     onToggleDashboardSelectExpand: () => dispatch(toggleDashboardSelectExpand()),
     onChangeDashboardGroup: name => dispatch(changeDashboardGroup(name)),
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(HomeScreen);

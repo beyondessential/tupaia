@@ -14,7 +14,7 @@ const dataElementCode = 'POP01';
 const dataServices = [{ isDataRegional: true }];
 const aggregationEntityType = 'region';
 
-const entityCode = 'TO';
+const organisationUnitGroupCode = 'TO';
 const organisationUnitsResults = [
   { code: 'TO_Niuas', name: 'Niuas', children: [] },
   { code: 'TO_Eua', name: "'Eua", children: [{ code: 'TO_Neikihp' }] },
@@ -46,7 +46,7 @@ const createAggregator = () => {
     .resolves({ results: [] })
     .withArgs(
       [dataElementCode],
-      { dataServices, organisationUnitCode: entityCode },
+      { dataServices, organisationUnitCode: organisationUnitGroupCode },
       {},
       {
         aggregationType: 'MOST_RECENT_PER_ORG_GROUP',
@@ -67,7 +67,7 @@ const createDhisApi = () => {
     .returns([])
     .withArgs(
       sinon.match({
-        filter: { 'ancestors.code': entityCode },
+        filter: { 'ancestors.code': organisationUnitGroupCode },
         level: DISTRICT_INDEX,
       }),
     )
@@ -83,9 +83,8 @@ describe('mostRecentValueFromChildren', () => {
     const results = await mostRecentValueFromChildren(
       createAggregator(),
       createDhisApi(),
-      { dataElementCode },
+      { dataElementCode, organisationUnitGroupCode },
       { aggregationEntityType, dataServices },
-      { code: entityCode },
     );
 
     expect(results).to.deep.equal([{ POP01: 5, organisationUnitCode: 'TO_Haapai' }]);

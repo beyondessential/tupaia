@@ -3,7 +3,7 @@ import { aggregateOperationalFacilityValues, getFacilityStatuses } from '/apiV1/
 
 // Example use: % clinics surveyed in last 6 months
 export const percentOperationalFacilitiesWithData = async (
-  { dataBuilderConfig, query, entity },
+  { dataBuilderConfig, query },
   aggregator,
   ...dhisApiInstances
 ) => {
@@ -20,11 +20,11 @@ export const percentOperationalFacilitiesWithData = async (
   const facilitiesCounted = new Set(); // To avoid double counting facilities across dhis instances
   const addFacilityToSet = ({ facilityId }) => facilitiesCounted.add(facilityId);
 
-  const operationalFacilities = await getFacilityStatuses(aggregator, entity.code);
+  const operationalFacilities = await getFacilityStatuses(aggregator, query.organisationUnitCode);
   await Promise.all(
     dhisApiInstances.map(async dhisApi => {
       // Will count only data from operational facilities
-      const results = await dhisApi.getDataValuesInSets(dhisParameters, entity);
+      const results = await dhisApi.getDataValuesInSets(dhisParameters, query);
       aggregateOperationalFacilityValues(operationalFacilities, results, addFacilityToSet);
     }),
   );

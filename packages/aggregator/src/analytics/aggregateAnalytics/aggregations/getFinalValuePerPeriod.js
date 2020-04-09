@@ -7,9 +7,11 @@ import {
   PERIOD_TYPES,
   convertToPeriod,
   findCoarsestPeriodType,
+  getCurrentPeriod,
+  getPeriodsInRange,
   periodToType,
 } from '@tupaia/dhis-api';
-import { getPreferredPeriod, getContinuousPeriodsForAnalytics } from './utils';
+import { getPreferredPeriod } from './getPreferredPeriod';
 
 /**
  * Cache of analytics per dataElement, organisationUnit and period
@@ -112,8 +114,8 @@ class FinalValueAggregator {
     this.cache = cache;
   }
 
-  getContinuousValues(analytics, aggregationPeriod) {
-    const periods = getContinuousPeriodsForAnalytics(analytics, aggregationPeriod);
+  getContinuousValues(startPeriod, endPeriod) {
+    const periods = getPeriodsInRange(startPeriod, endPeriod);
 
     const values = [];
     this.cache.iterateOrganisationUnitCache(organisationUnitCache => {
@@ -155,7 +157,17 @@ export const getFinalValuePerPeriod = (analytics, aggregationPeriod, inOptions) 
   const cache = new FinalValueCache(analytics, aggregationPeriod, options.preferredPeriodType);
   const valueAggregator = new FinalValueAggregator(cache);
 
-  return options.fillEmptyValues
-    ? valueAggregator.getContinuousValues(analytics, aggregationPeriod)
-    : valueAggregator.getDistinctValues();
+  if (options.fillEmptyValues) {
+    const periodsInAnalytics = analytics.map(analytic =>
+      convertToPeriod(analytic.period, aggregationPeriod),
+    );
+    const endPeriod = getCurrentPeriod(aggregationPeriod);
+    const startPeriod = periodsInAnalytics.length
+      ? Math.min(...periodsInAnalytics).toString()
+      : endPeriod;
+
+    return valueAggregator.getContinuousValues(startPeriod, endPeriod);
+  }
+
+  return valueAggregator.getDistinctValues();
 };
