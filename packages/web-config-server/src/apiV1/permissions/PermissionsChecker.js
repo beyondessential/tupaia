@@ -30,6 +30,9 @@ export class PermissionsChecker {
       return true; // currently, all users have access to everything at world level
     }
     const permissionGroups = await this.fetchPermissionGroups();
-    return Promise.all(permissionGroups.map(p => this.userHasAccess(entityCode, p)));
+    const accessToPermissionGroups = await Promise.all(
+      permissionGroups.map(p => this.userHasAccess(entityCode, p)),
+    );
+    return accessToPermissionGroups.some(a => a);
   }
 }

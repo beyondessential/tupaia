@@ -1,7 +1,7 @@
 import { CustomError } from '@tupaia/utils';
 import { getMeasureBuilder } from '/apiV1/measureBuilders/getMeasureBuilder';
 import { getDhisApiInstance } from '/dhis';
-import { MapOverlay } from '/models';
+import { Entity, MapOverlay } from '/models';
 import { getDateRange, getOrganisationUnitTypeForFrontend } from './utils';
 import { DataAggregatingRouteHandler } from './DataAggregatingRouteHandler';
 import { MapOverlayPermissionsChecker } from './permissions';
@@ -113,7 +113,7 @@ export default class extends DataAggregatingRouteHandler {
 
     // start fetching actual data
     const shouldFetchSiblings = this.query.shouldShowAllParentCountryResults === 'true';
-    const dataTasks = overlays.map(o => this.fetchMeasureData(o, shouldFetchSiblings, this.query));
+    const dataTasks = overlays.map(o => this.fetchMeasureData(o, shouldFetchSiblings));
 
     // wait for fetches to complete
     const measureOptions = await Promise.all(optionsTasks);
@@ -225,9 +225,10 @@ export default class extends DataAggregatingRouteHandler {
 
   async fetchMeasureData(mapOverlay, shouldFetchSiblings) {
     const { dataElementCode, isDataRegional, measureBuilderConfig, measureBuilder } = mapOverlay;
-    const organisationUnitGroupCode = shouldFetchSiblings
+    const entityCode = shouldFetchSiblings
       ? await this.getCountryLevelOrgUnitCode()
       : this.entity.code;
+    const entity = await Entity.findOne({ code: entityCode });
     const dataServices = createDataServices(mapOverlay);
     const dhisApi = getDhisApiInstance({ entityCode: this.entity.code, isDataRegional });
     dhisApi.injectFetchDataSourceEntities(this.fetchDataSourceEntities);
@@ -236,8 +237,9 @@ export default class extends DataAggregatingRouteHandler {
     return buildMeasure(
       this.aggregator,
       dhisApi,
-      { ...this.query, organisationUnitGroupCode, dataElementCode },
+      { ...this.query, dataElementCode },
       { ...measureBuilderConfig, dataServices },
+      entity,
     );
   }
 }

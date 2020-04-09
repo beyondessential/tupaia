@@ -1,6 +1,6 @@
 import { fetchFromMeditrakServerUsingTokens } from '/appServer/requestHelpers';
-import { RouteHandler } from '../apiV1/RouteHandler';
-import { ExportSurveyResponsesPermissionsChecker } from '../apiV1/permissions';
+import { RouteHandler } from '/apiV1/RouteHandler';
+import { ExportSurveyResponsesPermissionsChecker } from '/apiV1/permissions';
 
 export class ExportSurveyResponsesHandler extends RouteHandler {
   static PermissionsChecker = ExportSurveyResponsesPermissionsChecker;
@@ -38,13 +38,13 @@ export class ExportSurveyResponsesHandler extends RouteHandler {
         null,
         queryParameters,
         {},
-        req.session.userJson.userName,
+        this.req.session.userJson.userName,
       );
     } catch (error) {
       throw error;
     }
 
-    pipeSurveyResponseToClient(response, res);
+    pipeSurveyResponseToClient(response, this.res);
   }
 }
 

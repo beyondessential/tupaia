@@ -156,9 +156,13 @@ export class Entity extends BaseModel {
     return Entity.hierarchyBuilder.getDescendants(this.id, hierarchyId);
   }
 
+  async getFacilities(hierarchyId) {
+    return this.getDescendantsOfType(ENTITY_TYPES.FACILITY, hierarchyId);
+  }
+
   static async getFacilitiesOfOrgUnit(organisationUnitCode) {
     const entity = await Entity.findOne({ code: organisationUnitCode });
-    return entity ? entity.getDescendantsOfType(ENTITY_TYPES.FACILITY) : [];
+    return entity ? entity.getFacilities() : [];
   }
 
   // assumes all entities of the given type are found at the same level in the hierarchy tree

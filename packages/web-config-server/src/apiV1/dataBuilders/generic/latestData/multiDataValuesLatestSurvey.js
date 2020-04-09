@@ -1,7 +1,7 @@
 import { getDataElementFromId, findLatestPeriod } from '/apiV1/utils';
 
 export const multiDataValuesLatestSurvey = async (
-  { dataBuilderConfig, entity, query },
+  { dataBuilderConfig, entity },
   aggregator,
   dhisApi,
 ) => {
