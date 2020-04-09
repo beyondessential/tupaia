@@ -145,7 +145,7 @@ export class SearchBar extends PureComponent {
           willMountFunc = () => getNestedOrgUnits(organisationUnitCode);
         }
         const hasNestedItems =
-          nestedItems.length > 0 || parentOrgUnitCodes.includes(orgUnit.organisationUnitCode);
+          nestedItems.length > 0 || parentOrgUnitCodes.includes(organisationUnitCode);
 
         return (
           <HierarchyItem
