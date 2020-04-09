@@ -41,11 +41,37 @@ export default combineReducers({
 
 // Public Selectors
 
-export const selectOrgUnit = (state, orgUnitCode) => state.orgUnits.orgUnitMap[orgUnitCode];
+const cachedSelectOrgUnitCountry = createCachedSelector(
+  [state => state.orgUnits.orgUnitMap, (_, code) => code],
+  (orgUnitMapArg, code) => {
+    if (orgUnitMapArg[code]) {
+      // It's a country, or World
+      return orgUnitMapArg[code];
+    }
+
+    Object.values(orgUnitMapArg).forEach(countryHierarchy => {
+      if (countryHierarchy[code]) {
+        return countryHierarchy;
+      }
+    });
+
+    return undefined;
+  },
+)((state, code) => code);
+
+export const selectOrgUnit = createCachedSelector(
+  [cachedSelectOrgUnitCountry, (_, code) => code],
+  (country, code) => {
+    if (country === undefined) {
+      return undefined;
+    }
+    return country[code];
+  },
+)((state, code) => code);
 
 export const cachedSelectOrgUnitChildren = createCachedSelector(
-  [state => state.orgUnits.orgUnitMap, (_, code) => code],
-  (orgUnitMapArg, code) => Object.values(orgUnitMapArg).filter(orgUnit => orgUnit.parent === code),
+  [cachedSelectOrgUnitCountry, (_, code) => code],
+  (country, code) => Object.values(country).filter(orgUnit => orgUnit.parent === code),
 )((state, code) => code);
 
 export const cachedSelectOrgUnitAndDescendants = createCachedSelector(
@@ -115,54 +141,54 @@ const normaliseForMap = (
   isComplete: isComplete,
 });
 
-const insertOrgUnit = (state, orgUnit) => {
-  const existing = state[orgUnit.organisationUnitCode];
-  if (existing && existing.isComplete) {
-    return state;
-  }
-
-  state[orgUnit.organisationUnitCode] = orgUnit;
-  return state;
-};
-
 const addOrgUnitToMap = (state, orgUnit) => {
-  const start = Date.now();
-  let count = 0;
-  const { countryHierarchy, parent = {}, organisationUnitChildren: children = [] } = orgUnit;
-  let result = { ...state };
+  const { countryHierarchy, organisationUnitChildren: countries = [] } = orgUnit;
+  let result = state;
 
   if (countryHierarchy) {
-    countryHierarchy.forEach(hierarchyItem => {
-      count++;
-      result = insertOrgUnit(
-        result,
-        normaliseForMap(
-          hierarchyItem,
-          hierarchyItem.parent,
-          hierarchyItem.organisationUnitCode !== 'World',
-        ),
-      );
-    });
-    // Country hierarchy includes all relevant data (including requested orgUnit), so once it's been loaded we can exit
-    const end = Date.now();
-    console.log(`Insert of ${orgUnit.organisationUnitCode} (${count}) took: ${end - start}ms`);
-    return result;
+    const country = orgUnit.countryCode;
+    if (result[country] && result[country][country].isComplete) {
+      return result;
+    }
+
+    const world = countryHierarchy.splice(
+      countryHierarchy.findIndex(countryOrgUnit => countryOrgUnit.organisationUnitCode === 'World'),
+      1,
+    )[0];
+
+    if (!result.World) {
+      result = { ...result, World: { World: normaliseForMap(world, undefined, false) } };
+    }
+
+    return { ...result, [orgUnit.countryCode]: buildCountryHierarchy(countryHierarchy) };
   }
 
-  if (parent.organisationUnitCode) {
-    count++;
-    result = insertOrgUnit(result, normaliseForMap(parent, undefined, false));
-  }
+  // Inserting 'World' fetch
+  result = { ...result };
+  const world = orgUnit;
+  result.World = { World: normaliseForMap(world, undefined, true) };
 
-  count++;
-  result = insertOrgUnit(result, normaliseForMap(orgUnit, parent.organisationUnitCode, true));
-
-  children.forEach(child => {
-    count++;
-    result = insertOrgUnit(result, normaliseForMap(child, orgUnit.organisationUnitCode, false));
+  countries.forEach(country => {
+    const countryCode = country.organisationUnitCode;
+    if (!result[countryCode] || !result[countryCode][countryCode].isComplete) {
+      result[countryCode] = {
+        [countryCode]: normaliseForMap(country, world.organisationUnitCode, false),
+      };
+    }
   });
 
+  return result;
+};
+
+const buildCountryHierarchy = countryHierarchy => {
+  const start = Date.now();
+  const result = {};
+  let count = 0;
+  countryHierarchy.forEach(orgUnit => {
+    count++;
+    result[orgUnit.organisationUnitCode] = normaliseForMap(orgUnit, orgUnit.parent, true);
+  });
   const end = Date.now();
-  console.log(`Insert of ${orgUnit.organisationUnitCode} (${count}) took: ${end - start}ms`);
+  console.log(`Insert of country (${count}) took: ${end - start}ms`);
   return result;
 };
