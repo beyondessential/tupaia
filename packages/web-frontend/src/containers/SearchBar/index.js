@@ -217,8 +217,8 @@ SearchBar.defaultProps = {
 
 const mapStateToProps = state => {
   const { isExpanded, searchResponse, searchString } = state.searchBar;
-  const { orgUnitFetchError } = state.orgUnits;
-  const hierarchyData = selectOrgUnitsAsHierarchy(state).organisationUnitChildren || [];
+  const { orgUnitFetchError, orgUnitMap } = state.orgUnits;
+  const hierarchyData = orgUnitMap ? selectOrgUnitsAsHierarchy(state).organisationUnitChildren : [];
   return { isExpanded, searchResponse, searchString, hierarchyData, orgUnitFetchError };
 };
 

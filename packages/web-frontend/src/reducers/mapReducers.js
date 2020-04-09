@@ -336,7 +336,6 @@ export const selectAllMeasuresWithDisplayInfo = createSelector(
       state,
       currentCountry,
     ).filter(orgUnit => listOfMeasureLevels.includes(orgUnit.type));
-
     return allOrgUnitsOfLevel.map(orgUnit =>
       cachedSelectMeasureWithDisplayInfo(state, orgUnit.organisationUnitCode),
     );

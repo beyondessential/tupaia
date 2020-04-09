@@ -20,7 +20,7 @@ const stateSanitizer = state => {
   return state.orgUnits
     ? {
         ...state,
-        // orgUnits: { ...state.orgUnits, orgUnitMap: tooLargeForDevToolsSerializationWarning },
+        orgUnits: { ...state.orgUnits, orgUnitMap: tooLargeForDevToolsSerializationWarning },
       }
     : state;
 };

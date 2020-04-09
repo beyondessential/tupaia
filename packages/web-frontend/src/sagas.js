@@ -425,7 +425,7 @@ function* fetchOrgUnitData(organisationUnitCode) {
     yield put(fetchOrgUnitError(organisationUnitCode, error.message));
     throw error;
   }
-  yield orgUnitData;
+  return orgUnitData;
 }
 
 function* requestOrgUnit(action) {
@@ -463,6 +463,7 @@ function* fetchOrgUnitDataAndChangeOrgUnit(action) {
       ),
     );
   } catch (error) {
+    console.log(error);
     yield put(changeOrgUnitError(error));
   }
 }
