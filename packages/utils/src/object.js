@@ -95,13 +95,12 @@ export const flattenToObject = objectCollection => {
 export const reduceToDictionary = (objectCollection, keyProperty, valueProperty) => {
   const objects = collectionToArray(objectCollection);
 
-  return objects.reduce(
-    (dictionary, { [keyProperty]: key, [valueProperty]: value }) => ({
-      ...dictionary,
-      [key]: value,
-    }),
-    {},
-  );
+  const dictionary = {};
+  // Using `forEach` is much quicker than using `reduce` with a spread operator on the accumulator
+  objects.forEach(({ [keyProperty]: key, [valueProperty]: value }) => {
+    dictionary[key] = value;
+  });
+  return dictionary;
 };
 
 /**
