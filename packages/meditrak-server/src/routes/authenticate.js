@@ -14,13 +14,12 @@ const GRANT_TYPES = {
 };
 const ACCESS_TOKEN_EXPIRY_SECONDS = 15 * 60; // User's access expires every 15 mins
 
-const getAuthorizationObject = async ({ refreshToken, user, countryIdentifier }) => {
+const getAuthorizationObject = async ({ refreshToken, user }) => {
   // Generate JWT
   const accessToken = jwt.sign(
     {
       userId: user.id,
       refreshToken: refreshToken.token,
-      role: 'Admin', // TODO think about permissions more, how to decide whether user has permission for API resource endpoints
     },
     process.env.JWT_SECRET,
     {
@@ -28,7 +27,6 @@ const getAuthorizationObject = async ({ refreshToken, user, countryIdentifier })
     },
   );
 
-  const permissionGroups = await user.getPermissionGroups(countryIdentifier);
   const accessPolicy = await user.getAccessPolicy();
 
   // Assemble and return authorization object
@@ -40,7 +38,6 @@ const getAuthorizationObject = async ({ refreshToken, user, countryIdentifier })
       name: user.fullName,
       email: user.email,
       verifiedEmail: user.verified_email,
-      permissionGroups,
       accessPolicy: accessPolicy.getJSON(),
     },
   };
@@ -67,12 +64,12 @@ const checkAuthentication = async req => {
   const authenticator = new Authenticator(models);
   switch (query.grantType) {
     case GRANT_TYPES.REFRESH_TOKEN:
-      return authenticator.authenticateRefreshToken(query);
+      return authenticator.authenticateRefreshToken(body);
     case GRANT_TYPES.ONE_TIME_LOGIN:
       return authenticator.authenticateOneTimeLogin(body);
     case GRANT_TYPES.PASSWORD:
     default:
-      return authenticator.authenticatePassword(query, getMeditrakDeviceDetails(req));
+      return authenticator.authenticatePassword(body, getMeditrakDeviceDetails(req));
   }
 };
 

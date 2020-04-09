@@ -6,7 +6,6 @@ import winston from 'winston';
 
 import { AccessPolicy } from '@tupaia/access-policy';
 import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
-import { getUserPermissionGroups } from '../../dataAccessors';
 import { buildAccessPolicy, cache, CACHE_KEY_GENERATORS, encryptPassword } from '../../utilities';
 
 class UserType extends DatabaseType {
@@ -50,30 +49,13 @@ class UserType extends DatabaseType {
     return this.accessPolicy;
   }
 
-  async getPermissionGroups(countryIdentifier) {
-    if (!this.permissionGroups) {
-      this.permissionGroups = {};
-    }
-
-    if (!this.permissionGroups[countryIdentifier]) {
-      this.permissionGroups[
-        countryIdentifier
-      ] = await cache.getOrElse(
-        CACHE_KEY_GENERATORS.userPermissionGroups(this.id, countryIdentifier),
-        () => getUserPermissionGroups(this.otherModels, this.id, countryIdentifier),
-      );
-    }
-
-    return this.permissionGroups[countryIdentifier];
-  }
-
   // Checks if the provided non-encrypted password corresponds to this user
   checkPassword(password) {
     return encryptPassword(password, this.password_salt) === this.password_hash;
   }
 
   checkIsEmailUnverified() {
-    return this.verified_email === UserModel.emailVerifiedStatuses.NEW_USER;
+    return this.verified_email === this.model.emailVerifiedStatuses.NEW_USER;
   }
 }
 
