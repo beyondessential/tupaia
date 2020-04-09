@@ -89,7 +89,7 @@ export class SearchBar extends PureComponent {
 
   componentWillMount() {
     const { hierarchyData, getNestedOrgUnits } = this.props;
-    if (!hierarchyData || !Array.isArray(hierarchyData) || hierarchyData.length < 1) {
+    if (!hierarchyData || !Array.isArray(hierarchyData) || hierarchyData.length < 2) {
       getNestedOrgUnits('World');
     }
   }
@@ -152,6 +152,12 @@ export class SearchBar extends PureComponent {
       });
     };
 
+    //Sort countries alphabetically, this may not be the case if one country was loaded first
+    hierarchyData.sort((data1, data2) => {
+      if (data1.name > data2.name) return 1;
+      if (data1.name < data2.name) return -1;
+      return 0;
+    });
     const hierarchy = recurseOrgUnits(hierarchyData, '0px');
     return <List style={styles.heirarchyItem}>{hierarchy}</List>;
   }
