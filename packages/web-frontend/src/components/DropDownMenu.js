@@ -43,8 +43,8 @@ export class DropDownMenu extends PureComponent {
     this.props.onChange(newSelectedOption);
   }
 
-  renderListComponent(props) {
-    const { options, selectedOption, iconStyle } = props;
+  renderListComponent() {
+    const { options, selectedOption, iconStyle } = this.props;
 
     return options.length > 1 ? (
       <List component="nav">
@@ -62,11 +62,9 @@ export class DropDownMenu extends PureComponent {
     );
   }
 
-  renderMenuComponent(props, state) {
-    const { options, selectedOption, menuListStyle } = props;
-    const { anchorEl } = state;
-
-    if (options.length < 1) return null;
+  renderMenuComponent() {
+    const { options, selectedOption, menuListStyle } = this.props;
+    const { anchorEl } = this.state;
 
     return options.length > 1 ? (
       <Menu
@@ -91,8 +89,8 @@ export class DropDownMenu extends PureComponent {
   render() {
     return (
       <div>
-        {this.renderListComponent(this.props)}
-        {this.renderMenuComponent(this.props, this.state)}
+        {this.renderListComponent()}
+        {this.renderMenuComponent()}
       </div>
     );
   }
