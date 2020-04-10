@@ -11,11 +11,10 @@ import {
   DialogActions,
   DialogContentText,
 } from '../components/Dialog';
-import { Button } from '../components/Button';
+import { Button, TextButton } from '../components/Button';
 import styled from 'styled-components';
+import { CircleTick } from '../components/Icons';
 import * as COLORS from '../theme/colors';
-import MuiButton from '@material-ui/core/Button';
-import CheckCircleOutline from '@material-ui/icons/CheckCircleOutline';
 import Typography from '@material-ui/core/Typography';
 
 export default {
@@ -108,8 +107,12 @@ const StyledContent = styled.div`
 
   h5 {
     display: inline-block;
-    max-width: 340px;
-    color: #727d84;
+    max-width: 400px;
+    color: ${COLORS.GREY_72};
+  }
+  
+  button {
+    margin-left: 1rem;
   }
 `;
 
@@ -126,11 +129,11 @@ export const customContent = () => {
 
   return (
     <Container>
-      <Dialog onClose={handleClose} open={open}>
+      <Dialog disableBackdropClick onClose={handleClose} open={open}>
         <DialogTitle onClose={handleClose}>Outbreak</DialogTitle>
         <DialogContent>
           <StyledContent>
-            <CheckCircleOutline fontSize="large" color="primary" />
+            <CircleTick />
             <Typography variant="h2" gutterBottom>
               Outbreak successfully confirmed
             </Typography>
@@ -140,6 +143,7 @@ export const customContent = () => {
           </StyledContent>
         </DialogContent>
         <DialogActions>
+          <TextButton>Stay on Alerts</TextButton>
           <Button onClick={handleClose}>Go to Outbreaks</Button>
         </DialogActions>
       </Dialog>

@@ -7,6 +7,7 @@ import React from 'react';
 import { action } from '@storybook/addon-actions';
 import {
   Button,
+  TextButton,
   SmallButton,
   SuccessButton,
   WarningButton,
@@ -83,6 +84,12 @@ export const medium = () => (
 export const small = () => (
   <Container>
     <SmallButton>Small</SmallButton>
+  </Container>
+);
+
+export const text = () => (
+  <Container>
+    <TextButton>Text button</TextButton>
   </Container>
 );
 

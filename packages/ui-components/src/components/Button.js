@@ -18,11 +18,24 @@ const StyledButton = styled(MuiButton)`
   box-shadow: none;
 `;
 
+/*
+ * Button
+ *
+ * Default button is styled as material ui contained with the primary color
+ */
 export const Button = ({ children, isSubmitting = false, disabled, ...props }) => (
   <StyledButton variant="contained" color="primary" {...props} disabled={isSubmitting}>
     {isSubmitting ? 'Loading...' : children}
   </StyledButton>
 );
+
+/*
+ * Text Button
+ */
+export const TextButton = styled(MuiButton)`
+  font-size: 0.8125rem;
+  font-weight: 400;
+`;
 
 /*
  * Warning Button

@@ -6,6 +6,7 @@
 export * from './Alerts';
 export * from './Calendar';
 export * from './Cases';
+export * from './CircleTick';
 export * from './Dashboard';
 export * from './Expand';
 export * from './Export';

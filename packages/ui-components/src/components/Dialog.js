@@ -26,6 +26,10 @@ export const Dialog = styled(({ children, ...props }) => (
   .MuiPaper-root {
     border-radius: 0;
   }
+
+  .MuiBackdrop-root {
+    background: rgba(31, 88, 128, 0.72);
+  }
 `;
 
 Dialog.propTypes = {
@@ -68,7 +72,7 @@ DialogTitle.propTypes = {
  */
 export const DialogContent = styled(MuiDialogContent)`
   padding: 1.5rem 1.5rem 1.5rem 2rem;
-  background-color: ${props => props.greyBackground ? COLORS.GREY_FB : COLORS.WHITE};
+  background-color: ${props => (props.greyBackground ? COLORS.GREY_FB : COLORS.WHITE)};
 `;
 
 DialogContent.propTypes = {
@@ -82,6 +86,10 @@ export const DialogActions = styled(MuiDialogActions)`
   padding: 1.5rem 1.5rem 1.5rem 2rem;
   background-color: ${COLORS.GREY_FB};
   border-top: 1px solid ${COLORS.GREY_E2};
+
+  > :not(:first-child) {
+    margin-left: 1rem;
+  }
 `;
 
 /*

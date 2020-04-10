@@ -1,72 +1,73 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd 
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
-import FormControl from '@material-ui/core/FormControl';
-import InputBase from '@material-ui/core/InputBase';
-import InputLabel from '@material-ui/core/InputLabel';
-import {
-  fade,
-  withStyles,
-  makeStyles,
-} from '@material-ui/core/styles';
+import MuiFormControl from '@material-ui/core/FormControl';
+import MuiInputBase from '@material-ui/core/InputBase';
+import MuiInputLabel from '@material-ui/core/InputLabel';
+import MuiTextField from '@material-ui/core/TextField';
+import styled from 'styled-components';
 
-const BootstrapInput = withStyles((theme) => ({
-  root: {
-    'label + &': {
-      marginTop: theme.spacing(3),
-    },
-  },
-  input: {
-    borderRadius: 4,
-    position: 'relative',
-    backgroundColor: theme.palette.common.white,
-    border: '1px solid #ced4da',
-    fontSize: 16,
-    width: 'auto',
-    padding: '10px 12px',
-    transition: theme.transitions.create(['border-color', 'box-shadow']),
-    // Use the system font instead of the default Roboto font.
-    fontFamily: [
-      '-apple-system',
-      'BlinkMacSystemFont',
-      '"Segoe UI"',
-      'Roboto',
-      '"Helvetica Neue"',
-      'Arial',
-      'sans-serif',
-      '"Apple Color Emoji"',
-      '"Segoe UI Emoji"',
-      '"Segoe UI Symbol"',
-    ].join(','),
-    '&:focus': {
-      boxShadow: `${fade(theme.palette.primary.main, 0.25)} 0 0 0 0.2rem`,
-      borderColor: theme.palette.primary.main,
-    },
-  },
-}))(InputBase);
+/*
+ * TextField
+ */
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
-  margin: {
-    margin: theme.spacing(1),
-  },
-}));
+export const TextField = styled(props => <MuiTextField {...props} variant="outlined" />)`
+  width: 100%;
+  margin-bottom: 1rem;
 
-export const TextField = () => {
-  const classes = useStyles();
+  .MuiInputBase-root {
+    display: flex;
+    margin-top: 30px;
+  }
 
-  return (
-    <FormControl className={classes.margin}>
-      <InputLabel shrink htmlFor="bootstrap-input">
-        Bootstrap
-      </InputLabel>
-      <BootstrapInput defaultValue="react-bootstrap" id="bootstrap-input" />
-    </FormControl>
-  )
-};
+  .MuiInputBase-input {
+    background: #ffffff;
+    border-radius: 3px;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 18px;
+    padding: 21px 15px;
+    color: #727d84;
+    width: 100%;
+  }
+
+  .MuiOutlinedInput-notchedOutline {
+    top: 0;
+    border-color: #dedee0;
+    
+    legend {
+      display: none;
+    }
+  }
+
+  /* Override MaterialUI which hides the placeholder due to conflict with it's floating labels */
+  &&&& {
+    .MuiInputBase-input::placeholder {
+      opacity: 1 !important;
+    }
+  }
+
+  .MuiInput-underline:before,
+  .MuiInput-underline:after {
+    display: none;
+  }
+
+  .MuiFormLabel-root {
+    transform: none;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 19px;
+  }
+
+  /* Small */
+  .MuiInputBase-inputMarginDense {
+    padding: 10px 10px;
+  }
+`;
+
+// export const TextField = ({ field, ...props }) => (
+//   <TextInput name={field.name} value={field.value || ''} onChange={field.onChange} {...props} />
+// );
