@@ -21,7 +21,7 @@ const Container = styled.div`
 
 export const textField = () => (
   <Container>
-    <TextField name="simpleText" label="Simple text field" />
+    <TextField name="simpleText" label="Simple text field" autocomplete="off" />
     <TextField name="defaultValue" label="Default Value" defaultValue="Default Value" />
     <TextField name="required" label="Required field" required />
     <TextField name="disabled" label="Disabled" disabled />
@@ -39,6 +39,11 @@ export const textField = () => (
     <TextField name="number" label="Number" type="number" />
     <TextField name="email" type="email" label="Email" />
     <TextField name="password" label="Password" type="password" />
+  </Container>
+);
+
+export const textArea = () => (
+  <Container>
     <TextField name="textArea" label="TextArea" multiline rows="4" />
   </Container>
 );
