@@ -77,6 +77,11 @@ class DataFetchingTableComponent extends React.Component {
       expansionTabStates,
       onExpandedTabChange,
     } = this.props;
+
+    if (!expansionTabs && data.length === 0) {
+      return 'No Data';
+    }
+
     return (
       <ReactTable
         columns={columns}

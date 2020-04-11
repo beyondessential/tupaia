@@ -24,10 +24,18 @@ const QUESTION_FIELDS = [
     Header: 'Question',
     source: 'text',
   },
-  //{ Header: 'Options', source: 'options' },
+  {
+    Header: 'Legacy Options',
+    source: 'options',
+  },
   {
     Header: 'Detail',
     source: 'detail',
+  },
+  {
+    Header: 'Option Set Id',
+    source: 'option_set_id',
+    show: false,
   },
 ];
 
@@ -44,49 +52,43 @@ const QUESTION_COLUMNS = [
   },
 ];
 
-const IMPORT_CONFIG = {
-  title: 'Import Questions',
-  actionConfig: {
-    importEndpoint: 'questions',
+const OPTION_FIELDS = [
+  {
+    Header: 'Value',
+    source: 'value',
   },
-  queryParameters: [
-    {
-      label: 'Survey Names',
-      instruction:
-        'Please enter the names of the surveys to be imported. These should match the tab names in the file.',
-      parameterKey: 'surveyNames',
-      optionsEndpoint: 'surveys',
-      optionValueKey: 'name',
-      allowMultipleValues: true,
-      canCreateNewOptions: true,
+  {
+    Header: 'Label',
+    source: 'label',
+  },
+  {
+    Header: 'Sort Order',
+    source: 'sort_order',
+  },
+];
+
+const OPTION_COLUMNS = [
+  ...OPTION_FIELDS,
+  {
+    Header: 'Edit',
+    type: 'edit',
+    source: 'id',
+    actionConfig: {
+      editEndpoint: 'option',
+      fields: OPTION_FIELDS,
     },
-    {
-      label: 'Countries',
-      instruction:
-        'Select the countries this survey should be available in, or leave blank for all',
-      parameterKey: 'countryIds',
-      optionsEndpoint: 'countries',
-      allowMultipleValues: true,
-    },
-    {
-      label: 'Permission Group',
-      instruction:
-        'Select the permission group this survey should be available for, or leave blank for Public',
-      parameterKey: 'permissionGroup',
-      optionsEndpoint: 'permissionGroups',
-      optionValueKey: 'name',
-    },
-    {
-      label: 'Survey Group',
-      instruction:
-        'Select the survey group this survey should be a part of, or leave blank for none',
-      parameterKey: 'surveyGroup',
-      optionsEndpoint: 'surveyGroups',
-      canCreateNewOptions: true,
-      optionValueKey: 'name',
-    },
-  ],
-};
+  },
+];
+
+const EXPANSION_CONFIG = [
+  {
+    title: 'Options',
+    endpoint: 'options',
+    columns: OPTION_COLUMNS,
+    joinFrom: 'option_set_id',
+    joinTo: 'option_set_id',
+  },
+];
 
 const EDIT_CONFIG = {
   title: 'Edit Question',
@@ -97,7 +99,7 @@ export const QuestionsPage = () => (
     title="Questions"
     endpoint="questions"
     columns={QUESTION_COLUMNS}
-    importConfig={IMPORT_CONFIG}
+    expansionTabs={EXPANSION_CONFIG}
     editConfig={EDIT_CONFIG}
   />
 );
