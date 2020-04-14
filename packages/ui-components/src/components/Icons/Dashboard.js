@@ -3,26 +3,10 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import styled from 'styled-components';
-
-const StyledSVG = styled.svg`
-  fill: currentColor;
-  width: 1em;
-  height: 1em;
-  display: inline-block;
-  font-size: 1.5rem;
-  transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-  flex-shrink: 0;
-  user-select: none;
-
-  path {
-    fill: currentColor;
-    stroke: none;
-  }
-`;
+import BaseIcon from './BaseIcon';
 
 export const Dashboard = () => (
-  <StyledSVG viewBox="-2 -2 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <BaseIcon viewBox="-2 -2 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g>
       <path
         d="M16.1874 14.3548H3.06239C1.3737 14.3548 0 13.0138 0 11.365V3.67747C0 2.02898 1.3737 0.687988 3.06239 0.687988H16.1874C17.8764 0.687988 19.2501 2.02898 19.2501 3.67747V11.365C19.2501 13.0138 17.8764 14.3548 16.1874 14.3548ZM3.06239 3.25049C2.82111 3.25049 2.625 3.44193 2.625 3.67747V11.365C2.625 11.6008 2.82111 11.7923 3.06239 11.7923H16.1874C16.429 11.7923 16.6251 11.6008 16.6251 11.365V3.67747C16.6251 3.44193 16.429 3.25049 16.1874 3.25049H3.06239Z"
@@ -41,5 +25,5 @@ export const Dashboard = () => (
         fill="#697074"
       />
     </g>
-  </StyledSVG>
+  </BaseIcon>
 );
