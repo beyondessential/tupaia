@@ -150,12 +150,72 @@ const QUESTION_FIELDS = [
 const QUESTION_COLUMNS = [
   ...QUESTION_FIELDS,
   {
+    Header: 'Config',
+    source: 'config',
+  },
+  {
     Header: 'Edit',
     type: 'edit',
     source: 'id',
     actionConfig: {
       editEndpoint: 'surveyScreenComponent',
-      fields: QUESTION_FIELDS,
+      fields: [
+        ...QUESTION_FIELDS,
+        {
+          Header: 'Config',
+          source: 'config',
+          editConfig: {
+            type: 'json',
+            getJsonFieldSchema: () => [
+              {
+                label: 'Entity',
+                fieldName: 'entity',
+                type: 'json',
+                getJsonFieldSchema: () => [
+                  {
+                    label: 'Accepted Types (comma separated values)',
+                    fieldName: 'type',
+                    csv: true,
+                  },
+                  {
+                    label: 'Create New',
+                    fieldName: 'createNew',
+                    type: 'boolean',
+                  },
+                  {
+                    label: 'Parent Entity',
+                    fieldName: 'parentId',
+                    type: 'json',
+                    getJsonFieldSchema: () => [{ label: 'Question Id', fieldName: 'questionId' }],
+                  },
+                  {
+                    label: 'Name',
+                    fieldName: 'name',
+                    type: 'json',
+                    getJsonFieldSchema: () => [{ label: 'Question Id', fieldName: 'questionId' }],
+                  },
+                  {
+                    label: 'Code',
+                    fieldName: 'code',
+                    type: 'json',
+                    getJsonFieldSchema: () => [{ label: 'Question Id', fieldName: 'questionId' }],
+                  },
+                ],
+              },
+              {
+                label: 'Code Generator',
+                fieldName: 'codeGenerator',
+                type: 'json',
+                getJsonFieldSchema: () => [
+                  { label: 'Type', fieldName: 'type' },
+                  { label: 'Prefix', fieldName: 'prefix' },
+                  { label: 'Length', fieldName: 'length' },
+                ],
+              },
+            ],
+          },
+        },
+      ],
     },
   },
 ];
