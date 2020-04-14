@@ -1,6 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd 
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
@@ -13,7 +13,7 @@ export default {
 
 export const Palette = () => {
   return (
-    <Grid container spacing={2} style={{maxWidth: 320}}>
+    <Grid container spacing={2} style={{ maxWidth: 320 }}>
       <Grid item xs={12}>
         <Box bgcolor="primary.main" color="primary.contrastText" p={5} borderRadius={4}>
           primary.main
@@ -61,4 +61,4 @@ export const Palette = () => {
       </Grid>
     </Grid>
   );
-}
+};
