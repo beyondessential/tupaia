@@ -258,7 +258,9 @@ export class CartesianChart extends PureComponent {
       ([dataKey, { yAxisOrientation: orientation, valueType, yAxisDomain }]) => {
         const axisId = Y_AXIS_IDS[orientation] || DEFAULT_Y_AXIS.id;
         axisPropsById[axisId].dataKeys.push(dataKey);
-        axisPropsById[axisId].valueType = valueType;
+        if (valueType) {
+          axisPropsById[axisId].valueType = valueType;
+        }
         axisPropsById[axisId].yAxisDomain = yAxisDomain;
       },
     );
