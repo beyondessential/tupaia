@@ -4,24 +4,16 @@
  */
 import React from 'react';
 import styled from 'styled-components';
+import BaseIcon from './BaseIcon';
 
-const StyledSVG = styled.svg`
-  fill: currentColor;
-  width: 1em;
-  height: 1em;
-  display: inline-block;
-  font-size: 1.5rem;
-  transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-  flex-shrink: 0;
-  user-select: none;
-  
+const StyledSVG = styled(BaseIcon)`
   path {
     fill: none;
     stroke: currentColor;
   }
 `;
 
-export const Cases = () => (
+export const Clipboard = () => (
   <StyledSVG viewBox="0 0 37 42" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
       d="M11.0733 7.01721H4.37166C2.98105 7.01721 1.85852 8.13975 1.85852 9.53035V37.1748C1.85852 38.5654 2.98105 39.688 4.37166 39.688H32.0161C33.4067 39.688 34.5293 38.5654 34.5293 37.1748V9.53035C34.5293 8.13975 33.4067 7.01721 32.0161 7.01721H25.3144"
