@@ -88,9 +88,9 @@ const ZebraTableRow = styled(TableRow)`
   &:nth-of-type(even) {
     background-color: #efefef;
   }
-  
+
   .MuiTableCell-root {
-      border: none;  
+    border: none;
   }
 `;
 

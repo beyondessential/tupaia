@@ -10,6 +10,4 @@ export default {
   title: 'Toolbar',
 };
 
-export const toolbar = () => (
-  <Toolbar />
-);
+export const toolbar = () => <Toolbar />;

@@ -110,7 +110,7 @@ const StyledContent = styled.div`
     max-width: 400px;
     color: ${COLORS.GREY_72};
   }
-  
+
   button {
     margin-left: 1rem;
   }

@@ -37,9 +37,7 @@ export const primary = () => (
 
 export const secondary = () => (
   <Container>
-    <Button color="secondary">
-      Secondary
-    </Button>
+    <Button color="secondary">Secondary</Button>
   </Container>
 );
 
@@ -57,9 +55,7 @@ export const success = () => (
 
 export const outlined = () => (
   <Container>
-    <Button variant="outlined">
-      Outlined
-    </Button>
+    <Button variant="outlined">Outlined</Button>
   </Container>
 );
 

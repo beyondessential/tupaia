@@ -20,19 +20,19 @@ export const Card = styled(MuiCard)`
 /*
  * Card Header
  */
-export const CardHeader = styled(props => <div {...props}/>)`
+export const CardHeader = styled(props => <div {...props} />)`
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 0 1.5rem;
   margin-bottom: 1.5rem;
-  border-bottom: 1px solid #E7E7E7;
+  border-bottom: 1px solid #e7e7e7;
   font-size: 14px;
-  font-weight: 500; 
-  
+  font-weight: 500;
+
   p {
     font-size: 14px;
-    font-weight: 500; 
+    font-weight: 500;
   }
 `;
 
@@ -40,15 +40,15 @@ export const CardHeader = styled(props => <div {...props}/>)`
  * Card Content
  */
 export const CardContent = styled(MuiCardContent)`
-    padding: 1.5rem 1.5rem 2rem;
+  padding: 1.5rem 1.5rem 2rem;
 `;
 
 /*
  * Card Footer
  */
 export const CardFooter = styled(props => <div {...props} />)`
-    border-top: 1px solid #E7E7E7;
-    padding: 1.5rem 1.5rem 2rem;
+  border-top: 1px solid #e7e7e7;
+  padding: 1.5rem 1.5rem 2rem;
 `;
 
 /*

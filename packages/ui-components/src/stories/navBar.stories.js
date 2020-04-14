@@ -1,6 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd 
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
@@ -10,6 +10,4 @@ export default {
   title: 'NavBar',
 };
 
-export const navBar = () => (
-  <NavBar />
-);
+export const navBar = () => <NavBar />;

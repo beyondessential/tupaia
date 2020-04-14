@@ -46,7 +46,7 @@ const Toolbar = styled.div`
     letter-spacing: 0;
     padding: 9px 32px;
   }
-  
+
   .active {
     color: white;
   }

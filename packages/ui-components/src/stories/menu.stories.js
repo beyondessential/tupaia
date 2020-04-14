@@ -10,6 +10,4 @@ export default {
   title: 'Menu',
 };
 
-export const menu = () => (
-  <Menu />
-);
+export const menu = () => <Menu />;

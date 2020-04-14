@@ -12,4 +12,3 @@ const StyledDiv = styled.div`
 `;
 
 export const Header = () => <StyledDiv />;
-

@@ -96,7 +96,7 @@ export const examples = () => (
         <Typography variant="subtitle2" gutterBottom>
           Feb 25, 2020 - Mar 1, 2020
         </Typography>
-        <br/>
+        <br />
         <Button fullWidth>Submit now</Button>
       </CardContent>
       <CardFooter>Sites reported: 22/30</CardFooter>

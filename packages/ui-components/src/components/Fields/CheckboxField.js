@@ -1,6 +1,6 @@
 /*
  * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd 
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
 import React from 'react';
@@ -9,7 +9,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 export const CheckboxField = () => {
   const [checked, setChecked] = React.useState(true);
 
-  const handleChange = (event) => {
+  const handleChange = event => {
     setChecked(event.target.checked);
   };
 
@@ -45,4 +45,4 @@ export const CheckboxField = () => {
       />
     </div>
   );
-}
+};

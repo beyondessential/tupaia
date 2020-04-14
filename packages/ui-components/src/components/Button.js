@@ -94,7 +94,7 @@ export const ProfileButton = styled(props => (
   <MuiButton endIcon={<ExpandMore />} startIcon={<Avatar />} {...props} />
 ))`
   color: ${COLORS.WHITE};
-  
+
   .MuiAvatar-root {
     height: 30px;
     width: 30px;

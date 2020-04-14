@@ -11,7 +11,7 @@ import styled from 'styled-components';
 
 export default {
   title: 'List',
-  component: List
+  component: List,
 };
 
 const Container = styled.div`

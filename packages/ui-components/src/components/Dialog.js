@@ -28,14 +28,9 @@ export const Dialog = styled(({ children, ...props }) => (
   }
 
   .MuiBackdrop-root {
-    background: rgba(31, 88, 128, 0.72);
+    background: ${COLORS.BLUE_BACKDROP};
   }
 `;
-
-Dialog.propTypes = {
-  onClose: PropTypes.func.isRequired,
-  open: PropTypes.bool.isRequired,
-};
 
 const StyledDialogTitle = styled(MuiDialogTitle)`
   display: flex;
@@ -70,7 +65,9 @@ DialogTitle.propTypes = {
 /*
  * DialogContent
  */
-export const DialogContent = styled(MuiDialogContent)`
+export const DialogContent = styled(({ greyBackground, ...props }) => (
+  <MuiDialogContent {...props} />
+))`
   padding: 1.5rem 1.5rem 1.5rem 2rem;
   background-color: ${props => (props.greyBackground ? COLORS.GREY_FB : COLORS.WHITE)};
 `;

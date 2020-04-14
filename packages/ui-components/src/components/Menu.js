@@ -11,7 +11,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 export const Menu = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
-  const handleClick = (event) => {
+  const handleClick = event => {
     setAnchorEl(event.currentTarget);
   };
 
