@@ -21,5 +21,5 @@ export {
 export { asynchronouslyFetchValuesForObject, fetchWithTimeout, stringifyQuery } from './request';
 export { replaceValues } from './replaceValues';
 export { respond } from './respond';
-export { singularise, stripFromEnds } from './string';
+export { singularise, stripFromString } from './string';
 export { WorkBookParser } from './WorkBookParser';
