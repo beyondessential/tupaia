@@ -20,8 +20,6 @@ exports.up = function(db) {
   UPDATE answer SET text = 'Fully Operational' 
   WHERE id in (
     SELECT answer.id FROM answer 
-      JOIN survey_response on answer.survey_response_id = survey_response.id 
-      JOIN entity on survey_response.entity_id = entity.id 
       JOIN question on answer.question_id = question.id 
     WHERE question.code = 'BCD1' 
       AND (answer.text = 'Open' 
@@ -31,8 +29,6 @@ exports.up = function(db) {
   UPDATE answer SET text = 'Operational but closed this week' 
   WHERE id in (
     SELECT answer.id FROM answer 
-      JOIN survey_response on answer.survey_response_id = survey_response.id 
-      JOIN entity on survey_response.entity_id = entity.id 
       JOIN question on answer.question_id = question.id 
     WHERE question.code = 'BCD1' 
       AND answer.text = 'Operational but closed today');
