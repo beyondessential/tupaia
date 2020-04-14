@@ -11,6 +11,7 @@ import {
   findAnswersBySurveyResponse,
   findEditableFeedItems,
   findFormattedDisasters,
+  findSurveyScreenComponentsBySurvey,
 } from '../dataAccessors';
 import { getApiUrl, resourceToRecordType } from '../utilities';
 
@@ -24,6 +25,7 @@ const GETTABLE_TYPES = [
   TYPES.SURVEY_RESPONSE,
   TYPES.USER_ACCOUNT,
   TYPES.QUESTION,
+  TYPES.SURVEY_SCREEN_COMPONENT,
   TYPES.USER_COUNTRY_PERMISSION,
   TYPES.USER_FACILITY_PERMISSION,
   TYPES.USER_GEOGRAPHICAL_AREA_PERMISSION,
@@ -37,6 +39,7 @@ const GETTABLE_TYPES = [
 
 const CUSTOM_FINDERS = {
   [TYPES.QUESTION]: findQuestionsBySurvey,
+  [TYPES.SURVEY_SCREEN_COMPONENT]: findSurveyScreenComponentsBySurvey,
   [TYPES.ANSWER]: findAnswersBySurveyResponse,
   [TYPES.FEED_ITEM]: findEditableFeedItems,
   [TYPES.DISASTER]: findFormattedDisasters,

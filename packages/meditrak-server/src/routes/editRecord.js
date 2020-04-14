@@ -7,12 +7,18 @@ import { respond, ValidationError } from '@tupaia/utils';
 import { TYPES } from '@tupaia/database';
 import { ObjectValidator, constructRecordExistsWithId } from '../validation';
 import { resourceToRecordType } from '../utilities';
-import { editUserAccount, editOption, editOptionSet } from '../dataAccessors';
+import {
+  editUserAccount,
+  editOption,
+  editOptionSet,
+  editSurveyScreenComponent,
+} from '../dataAccessors';
 
 const EDITABLE_RECORD_TYPES = [
   TYPES.USER_ACCOUNT,
   TYPES.SURVEY_RESPONSE,
   TYPES.SURVEY,
+  TYPES.SURVEY_SCREEN_COMPONENT,
   TYPES.USER_COUNTRY_PERMISSION,
   TYPES.USER_FACILITY_PERMISSION,
   TYPES.USER_GEOGRAPHICAL_AREA_PERMISSION,
@@ -27,6 +33,7 @@ const CUSTOM_RECORD_UPDATERS = {
   [TYPES.USER_ACCOUNT]: editUserAccount,
   [TYPES.OPTION_SET]: editOptionSet,
   [TYPES.OPTION]: editOption,
+  [TYPES.SURVEY_SCREEN_COMPONENT]: editSurveyScreenComponent,
 };
 
 /**
