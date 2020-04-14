@@ -7,6 +7,7 @@ export class AccessPolicy {
   constructor(policy) {
     this.policy = typeof policy === 'string' ? JSON.parse(policy) : policy;
     this.validate();
+    this.cachedPermissionGroupSets = {};
   }
 
   validate() {
@@ -66,12 +67,17 @@ export class AccessPolicy {
    * @returns string[] The permission groups, e.g ['Admin', 'Donor']
    */
   getPermissionGroups(entities = Object.keys(this.policy)) {
-    const permissionGroups = new Set();
-    entities.forEach(
-      entityCode =>
-        this.policy[entityCode] && this.policy[entityCode].forEach(r => permissionGroups.add(r)),
-    );
-    return permissionGroups;
+    // cache this part, as it is run often and is the most expensive operation
+    const cacheKey = entities.join('_');
+    if (!this.cachedPermissionGroupSets[cacheKey]) {
+      const permissionGroups = new Set();
+      entities.forEach(
+        entityCode =>
+          this.policy[entityCode] && this.policy[entityCode].forEach(r => permissionGroups.add(r)),
+      );
+      this.cachedPermissionGroupSets[cacheKey] = permissionGroups;
+    }
+    return this.cachedPermissionGroupSets[cacheKey];
   }
 
   getRawPolicy() {
