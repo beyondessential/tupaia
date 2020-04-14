@@ -234,7 +234,6 @@ export class TableOfDataValuesBuilder extends DataBuilder {
     const orgUnitCodes = columns.map(c => c.title);
     const orgUnits = await Entity.find({ code: orgUnitCodes });
     const orgUnitCodesToName = reduceToDictionary(orgUnits, 'code', 'name');
-    console.log("orgUnitCodesToName: ", orgUnitCodesToName);
 
     return columns.map(({ title, key }) => ({ key, title: orgUnitCodesToName[title] }));
   }
