@@ -55,36 +55,20 @@ const Tab2Content = () => (
 
 export const simple = () => {
   return (
-    <Container style={{maxWidth: '500px'}}>
+    <Container style={{ maxWidth: '500px' }}>
       <Card variant="outlined">
         <CardTabs>
           <CardTabList>
-            <CardTab>
-              Notes
-            </CardTab>
-            <CardTab>
-              Documents
-            </CardTab>
-            <CardTab>
-              Activity
-            </CardTab>
-            <CardTab>
-              Affected Sites
-            </CardTab>
+            <CardTab>Notes</CardTab>
+            <CardTab>Documents</CardTab>
+            <CardTab>Activity</CardTab>
+            <CardTab>Affected Sites</CardTab>
           </CardTabList>
           <CardTabPanels>
-            <CardTabPanel>
-              Notes...
-            </CardTabPanel>
-            <CardTabPanel>
-              Documents...
-            </CardTabPanel>
-            <CardTabPanel>
-              Activity...
-            </CardTabPanel>
-            <CardTabPanel>
-              Affected Sites...
-            </CardTabPanel>
+            <CardTabPanel>Notes...</CardTabPanel>
+            <CardTabPanel>Documents...</CardTabPanel>
+            <CardTabPanel>Activity...</CardTabPanel>
+            <CardTabPanel>Affected Sites...</CardTabPanel>
           </CardTabPanels>
         </CardTabs>
       </Card>
