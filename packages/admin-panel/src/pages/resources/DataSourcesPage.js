@@ -22,15 +22,16 @@ const TABS = {
     fields: [
       {
         Header: 'Code',
-        source: 'data_source.code',
+        source: 'code',
       },
       {
         Header: 'Service Type',
-        source: 'data_source.service_type',
+        source: 'service_type',
       },
       {
         Header: 'Config',
-        source: 'data_source.config',
+        source: 'config',
+        accessor: rowData => JSON.stringify(rowData),
         editConfig: {
           type: 'json',
           getJsonFieldSchema: () => [
@@ -58,11 +59,11 @@ const TABS = {
     fields: [
       {
         Header: 'Code',
-        source: 'data_source.code',
+        source: 'code',
       },
       {
         Header: 'Service Type',
-        source: 'data_source.service_type',
+        source: 'service_type',
       },
     ],
   },
