@@ -4,3 +4,5 @@
  */
 
 export { Authenticator } from './Authenticator';
+export { AccessPolicyBuilder } from './AccessPolicyBuilder';
+export * from './utils';

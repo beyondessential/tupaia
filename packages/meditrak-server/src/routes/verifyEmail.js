@@ -1,6 +1,7 @@
 import { respond, UnverifiedError, FormValidationError } from '@tupaia/utils';
+import { encryptPassword } from '@tupaia/auth';
 
-import { sendEmail, encryptPassword } from '../utilities';
+import { sendEmail } from '../utilities';
 
 export const sendVerifyEmail = async (req, userId) => {
   const { models } = req;

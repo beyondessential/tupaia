@@ -5,12 +5,14 @@
 import randomToken from 'rand-token';
 
 import { DatabaseError, UnauthenticatedError, UnverifiedError } from '@tupaia/utils';
+import { AccessPolicyBuilder } from './AccessPolicyBuilder';
 
 const REFRESH_TOKEN_LENGTH = 40;
 
 export class Authenticator {
   constructor(models) {
     this.models = models;
+    this.accessPolicyBuilder = new AccessPolicyBuilder(models);
   }
 
   async authenticatePassword({ emailAddress, password, deviceName }, meditrakDeviceDetails) {
@@ -21,8 +23,9 @@ export class Authenticator {
       deviceName,
       meditrakDeviceId,
     });
+    const accessPolicy = await this.accessPolicyBuilder.getPolicyForUser(user.id);
 
-    return { refreshToken, user };
+    return { refreshToken, user, accessPolicy };
   }
 
   async authenticateRefreshToken({ refreshToken: token }) {
@@ -46,8 +49,9 @@ export class Authenticator {
     // There was a valid refresh token, find the user and respond
     const userId = refreshToken.user_id;
     const user = await this.models.user.findById(userId);
+    const accessPolicy = await this.accessPolicyBuilder.getPolicyForUser(user.id);
 
-    return { refreshToken, user };
+    return { refreshToken, user, accessPolicy };
   }
 
   async authenticateOneTimeLogin({ token, deviceName }) {
@@ -61,8 +65,9 @@ export class Authenticator {
 
     const user = await this.models.user.findById(foundToken.user_id);
     const refreshToken = await this.upsertRefreshToken({ userId: user.id, deviceName });
+    const accessPolicy = await this.accessPolicyBuilder.getPolicyForUser(user.id);
 
-    return { refreshToken, user };
+    return { refreshToken, user, accessPolicy };
   }
 
   async getAuthenticatedUser({ emailAddress, password, deviceName }) {

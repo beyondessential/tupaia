@@ -4,7 +4,8 @@
  **/
 
 import { DatabaseError } from '@tupaia/utils';
-import { hashAndSaltPassword, encryptPassword, generateSecretKey } from '../utilities';
+import { hashAndSaltPassword, encryptPassword } from '@tupaia/auth';
+import { generateSecretKey } from '../utilities';
 
 export const createUser = async (
   models,

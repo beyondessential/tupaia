@@ -4,7 +4,6 @@
  */
 
 import jwt from 'jsonwebtoken';
-import { Authenticator } from '@tupaia/auth';
 import { respond } from '@tupaia/utils';
 
 const GRANT_TYPES = {
@@ -14,7 +13,7 @@ const GRANT_TYPES = {
 };
 const ACCESS_TOKEN_EXPIRY_SECONDS = 15 * 60; // User's access expires every 15 mins
 
-const getAuthorizationObject = async ({ refreshToken, user }) => {
+const getAuthorizationObject = async ({ accessPolicy, refreshToken, user }) => {
   // Generate JWT
   const accessToken = jwt.sign(
     {
@@ -27,8 +26,6 @@ const getAuthorizationObject = async ({ refreshToken, user }) => {
     },
   );
 
-  const accessPolicy = await user.getAccessPolicy();
-
   // Assemble and return authorization object
   return {
     accessToken: accessToken,
@@ -38,7 +35,7 @@ const getAuthorizationObject = async ({ refreshToken, user }) => {
       name: user.fullName,
       email: user.email,
       verifiedEmail: user.verified_email,
-      accessPolicy: accessPolicy.getRawPolicy(),
+      accessPolicy,
     },
   };
 };
@@ -60,8 +57,7 @@ const getMeditrakDeviceDetails = req => {
 };
 
 const checkAuthentication = async req => {
-  const { models, body, query } = req;
-  const authenticator = new Authenticator(models);
+  const { body, query, authenticator } = req;
   switch (query.grantType) {
     case GRANT_TYPES.REFRESH_TOKEN:
       return authenticator.authenticateRefreshToken(body);
@@ -84,12 +80,13 @@ const checkAuthentication = async req => {
  * Override grants to do recursive authentication, for example when creating a new user.
  **/
 export async function authenticate(req, res) {
-  const { refreshToken, user } = await checkAuthentication(req);
+  const { refreshToken, user, accessPolicy } = await checkAuthentication(req);
   const { countryIdentifier } = req.body || {};
   const authorizationObject = await getAuthorizationObject({
     refreshToken,
     user,
     countryIdentifier,
+    accessPolicy,
   });
 
   respond(res, authorizationObject);

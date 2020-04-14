@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "@tupaia/utils": "1.0.0",
-    "rand-token": "^1.0.1"
+    "crypto": "^1.0.1",
+    "rand-token": "^1.0.1",
+    "sha256": "^0.2.0"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
