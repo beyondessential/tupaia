@@ -414,18 +414,17 @@ function* watchFetchCountryAccessDataAndFetchItTEST() {
  *
  */
 function* fetchOrgUnitData(organisationUnitCode) {
-  let orgUnitData;
   try {
     yield put(fetchOrgUnit(organisationUnitCode));
     const shouldIncludeCountryData = organisationUnitCode !== 'World'; // We should pull in all country data if we are within a country (ie. not World)
     const requestResourceUrl = `organisationUnit?organisationUnitCode=${organisationUnitCode}&includeCountryHierarchy=${shouldIncludeCountryData}`;
-    orgUnitData = yield call(request, requestResourceUrl);
+    const orgUnitData = yield call(request, requestResourceUrl);
     yield put(fetchOrgUnitSuccess(orgUnitData));
+    return orgUnitData;
   } catch (error) {
     yield put(fetchOrgUnitError(organisationUnitCode, error.message));
     throw error;
   }
-  return orgUnitData;
 }
 
 function* requestOrgUnit(action) {
