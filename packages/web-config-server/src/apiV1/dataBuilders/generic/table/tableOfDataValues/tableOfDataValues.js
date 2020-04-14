@@ -6,7 +6,7 @@
 import flatten from 'lodash.flatten';
 import keyBy from 'lodash.keyby';
 
-import { reduceToDictionary } from '@tupaia/utils';
+import { reduceToDictionary, reduceToSet } from '@tupaia/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { Entity } from '/models';
 
@@ -16,20 +16,33 @@ import { TotalCalculator } from './TotalCalculator';
 
 const getColumnKey = columnIndex => `Col${parseInt(columnIndex, 10) + 1}`;
 
+const METADATA_ROW_KEYS = ['dataElement', 'categoryId'];
+const ORG_UNIT_COL_KEY = '$orgUnit';
+const CATEGORY_AGGREGATION_TYPES = {
+  AVERAGE: '$average',
+};
+
 export class TableOfDataValuesBuilder extends DataBuilder {
   async build() {
-    const results = await this.fetchResults();
-    this.tableConfig = new TableConfig(this.config, results);
-    this.valuesByCell = getValuesByCell(this.tableConfig, results);
+    this.results = await this.fetchResults();
+    this.tableConfig = new TableConfig(this.config, this.results);
+    this.baseRows = this.buildBaseRows();
+    this.valuesByCell = getValuesByCell(this.tableConfig, this.results);
     this.totalCalculator = new TotalCalculator(this.tableConfig, this.valuesByCell);
 
-    const data = {
-      rows: await this.buildRows(),
-      columns: await this.buildColumns(),
-    };
+    const columns = await this.buildColumns();
+    const rows = await this.buildRows(columns);
+    const data = { columns, rows };
+
     if (this.tableConfig.hasRowCategories()) {
       const categories = await this.buildRowCategories();
-      data.rows = [...data.rows, ...categories];
+
+      if (this.config.categoryAggregator) {
+        const categoryData = this.buildCategoryData(Object.values(rows));
+        data.rows = [...rows, ...categories.map(c => ({ ...c, ...categoryData[c.category] }))];
+      } else {
+        data.rows = [...rows, ...categories];
+      }
     }
 
     return data;
@@ -99,6 +112,7 @@ export class TableOfDataValuesBuilder extends DataBuilder {
   async buildColumns() {
     const buildColumn = (column, index) => ({ key: getColumnKey(index), title: column });
 
+    if (this.tableConfig.columns === ORG_UNIT_COL_KEY) this.buildOrgsFromResults();
     if (!this.tableConfig.hasColumnCategories()) {
       return this.tableConfig.columns.map(buildColumn);
     }
@@ -106,10 +120,18 @@ export class TableOfDataValuesBuilder extends DataBuilder {
     const categoryKeyToTitle = await this.getColumnCategoryToTitle();
 
     let index = 0;
-    return this.tableConfig.columns.map(({ category, columns }) => ({
+    const builtColumns = this.tableConfig.columns.map(({ category, columns }) => ({
       category: categoryKeyToTitle(category),
       columns: columns.map(column => buildColumn(column, index++)),
     }));
+
+    if (
+      this.tableConfig.columns === ORG_UNIT_COL_KEY ||
+      this.tableConfig.columnType === ORG_UNIT_COL_KEY
+    ) {
+      return this.replaceOrgUnitCodesWithNames(builtColumns);
+    }
+    return builtColumns;
   }
 
   /**
@@ -161,6 +183,56 @@ export class TableOfDataValuesBuilder extends DataBuilder {
 
     return code => orgUnitCodeToName[code];
   };
+
+  buildCategoryData(rows) {
+    const totals = this.calculateCategoryTotals(rows);
+
+    if (this.config.categoryAggregator === CATEGORY_AGGREGATION_TYPES.AVERAGE) {
+      const categoryRowLengths = rows.reduce(
+        (lengths, row) => ({ ...lengths, [row.categoryId]: lengths[row.categoryId] + 1 || 1 }),
+        {},
+      );
+
+      return Object.entries(totals).reduce((averages, [category, columns]) => {
+        const averagedColumns = {};
+        for (const column in columns) {
+          averagedColumns[column] = Math.round(columns[column] / categoryRowLengths[category]);
+        }
+
+        return { ...averages, [category]: averagedColumns };
+      }, {});
+    }
+
+    return totals;
+  }
+
+  calculateCategoryTotals(rows) {
+    const rowKeysToIgnore = new Set(METADATA_ROW_KEYS);
+    return rows.reduce((columnAggregates, row) => {
+      const categoryId = row.categoryId;
+      const categoryTotals = columnAggregates[categoryId] || {};
+      Object.keys(row).forEach(key => {
+        if (!rowKeysToIgnore.has(key)) {
+          categoryTotals[key] = (categoryTotals[key] || 0) + (row[key] || 0);
+        }
+      });
+
+      return { ...columnAggregates, [categoryId]: categoryTotals };
+    }, {});
+  }
+
+  buildOrgsFromResults() {
+    const orgUnitsWithData = reduceToSet(this.results, 'organisationUnit');
+    this.tableConfig.columns = Array.from(orgUnitsWithData);
+  }
+
+  async replaceOrgUnitCodesWithNames(columns) {
+    const orgUnitCodes = columns.map(c => c.title);
+    const orgUnits = await Entity.find({ code: orgUnitCodes });
+    const orgUnitCodesToName = reduceToDictionary(orgUnits, 'code', 'name');
+
+    return columns.map(({ title, key }) => ({ key, title: orgUnitCodesToName[title] }));
+  }
 }
 
 export const tableOfDataValues = async (
