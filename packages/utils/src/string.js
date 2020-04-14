@@ -18,5 +18,5 @@ export function singularise(word) {
   return singularWord;
 }
 
-export const stripFromEnds = (originalString, toStripOff = '') =>
+export const stripFromString = (originalString, toStripOff = '') =>
   originalString.replace(new RegExp(`(${toStripOff})`), '').trim();

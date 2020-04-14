@@ -5,7 +5,7 @@
 
 import { TableOfDataValuesBuilder } from './tableOfDataValues';
 
-import { stripFromEnds } from '@tupaia/utils';
+import { stripFromString } from '@tupaia/utils';
 
 class TableOfValuesForOrgUnitsBuilder extends TableOfDataValuesBuilder {
   /**
@@ -18,7 +18,7 @@ class TableOfValuesForOrgUnitsBuilder extends TableOfDataValuesBuilder {
     const { stripFromDataElementNames } = this.config;
     return rows.reduce((baseRows, row) => {
       if (typeof row === 'string') {
-        const dataElement = stripFromEnds(row, stripFromDataElementNames);
+        const dataElement = stripFromString(row, stripFromDataElementNames);
         return { ...baseRows, [dataElement]: { dataElement, categoryId: parent } };
       }
 
@@ -31,7 +31,7 @@ class TableOfValuesForOrgUnitsBuilder extends TableOfDataValuesBuilder {
     const { stripFromDataElementNames, filterEmptyRows } = this.config;
     const rowData = { ...this.baseRows };
     this.results.forEach(({ value, organisationUnit, metadata }) => {
-      const dataElementName = stripFromEnds(metadata.name, stripFromDataElementNames);
+      const dataElementName = stripFromString(metadata.name, stripFromDataElementNames);
       const orgUnit = columns.find(col => col.title === organisationUnit);
       if (orgUnit) rowData[dataElementName][orgUnit.key] = value;
     });
