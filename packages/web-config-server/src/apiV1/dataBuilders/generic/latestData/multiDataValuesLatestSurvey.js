@@ -1,23 +1,23 @@
 import { getDataElementFromId, findLatestPeriod } from '/apiV1/utils';
 
 export const multiDataValuesLatestSurvey = async (
-  { dataBuilderConfig, query },
+  { dataBuilderConfig, entity },
   aggregator,
   dhisApi,
 ) => {
   const { surveyDataElementCode } = dataBuilderConfig;
   const surveyDatesResponseDataValues = await dhisApi.getDataValuesInSets(
     { dataElementGroupCode: surveyDataElementCode },
-    query,
+    entity,
   );
   const latestPeriod = findLatestPeriod(surveyDatesResponseDataValues);
   if (!latestPeriod) {
     return null;
   }
-  const dataValues = await dhisApi.getDataValuesInSets(dataBuilderConfig, {
-    ...query,
-    period: latestPeriod,
-  });
+  const dataValues = await dhisApi.getDataValuesInSets(
+    { ...dataBuilderConfig, period: latestPeriod },
+    entity,
+  );
   const returnData = [];
   if (dataValues) {
     await Promise.all(
