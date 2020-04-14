@@ -9,6 +9,7 @@ export { PermissionsPage } from './PermissionsPage';
 export { PermissionGroupsPage } from './PermissionGroupsPage';
 export { SurveyResponsesPage } from './SurveyResponsesPage';
 export { SurveysPage } from './SurveysPage';
+export { QuestionsPage } from './QuestionsPage';
 export { OptionSetsPage } from './OptionSetsPage';
 export { UsersPage } from './UsersPage';
 export { SocialFeedPage } from './SocialFeedPage';
