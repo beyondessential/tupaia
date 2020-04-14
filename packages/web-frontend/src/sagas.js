@@ -8,7 +8,7 @@
 import { call, put, delay, takeEvery, takeLatest, select } from 'redux-saga/effects';
 import queryString from 'query-string';
 import request from './utils/request';
-import { selectOrgUnit, cachedSelectOrgUnitChildren } from './reducers/orgUnitReducers';
+import { selectOrgUnit, cachedSelectOrgUnitChildren } from './selectors';
 import {
   ATTEMPT_CHANGE_PASSWORD,
   ATTEMPT_LOGIN,

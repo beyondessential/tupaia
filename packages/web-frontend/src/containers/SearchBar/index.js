@@ -21,7 +21,7 @@ import SearchIcon from 'material-ui/svg-icons/action/search';
 import { ControlBar } from '../../components/ControlBar';
 import { HierarchyItem } from '../../components/HierarchyItem';
 
-import { selectOrgUnitsAsHierarchy } from '../../reducers/orgUnitReducers';
+import { selectOrgUnitsAsHierarchy } from '../../selectors';
 
 import {
   changeSearch,

@@ -12,7 +12,7 @@ import {
   cachedSelectOrgUnitChildren,
   selectOrgUnit,
   selectCountryAndDescendants,
-} from './orgUnitReducers';
+} from '../selectors';
 
 import {
   GO_HOME,

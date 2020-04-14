@@ -18,7 +18,7 @@ import {
   selectHasPolygonMeasure,
   selectAllMeasuresWithDisplayInfo,
 } from '../../reducers/mapReducers';
-import { selectOrgUnit } from '../../reducers/orgUnitReducers';
+import { selectOrgUnit } from '../../selectors';
 import ActivePolygon from './ActivePolygon';
 
 const { POLYGON_BLUE, POLYGON_HIGHLIGHT } = MAP_COLORS;

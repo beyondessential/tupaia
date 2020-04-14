@@ -16,7 +16,7 @@ import {
   selectAllMeasuresWithDisplayInfo,
   selectRadiusScaleFactor,
 } from '../../reducers/mapReducers';
-import { selectOrgUnit } from '../../reducers/orgUnitReducers';
+import { selectOrgUnit } from '../../selectors';
 import { ShadedPolygon } from './ConnectedPolygon';
 
 export const MARKER_TYPES = {
