@@ -119,7 +119,41 @@ export default class extends DataAggregatingRouteHandler {
 
     // wait for fetches to complete
     const measureOptions = await Promise.all(optionsTasks);
-    const measureDataResponses = await Promise.all(dataTasks);
+    const measureDataResponsesByMeasureId = (await Promise.all(dataTasks)).reduce((dataResponse, current) => ({...dataResponse, ...current}));
+
+    const measureDataResponses = overlays.map(({ id, dataElementCode }) => {
+      const measureDataResponse = measureDataResponsesByMeasureId[id];
+      measureDataResponse.forEach(obj => {
+        obj[id] = obj[dataElementCode];
+        delete obj[dataElementCode];
+      });
+      return measureDataResponse;
+    });
+
+    // Data arrives as an array of responses (one for each measure) containing an array of org
+    // units. We need to rearrange it so that it's a 1D array of objects with the values
+    // assigned to the appropriate keys.
+    //
+    // RESPONSE: [
+    //  [
+    //    { organisationUnitCode: 'OrgA', measureZ: 0 },
+    //    { organisationUnitCode: 'OrgB', measureZ: 1 }
+    //  ],
+    //  [
+    //    { organisationUnitCode: 'OrgA', measureY: 100 },
+    //    { organisationUnitCode: 'OrgB', measureY: -100 }
+    //  ],
+    // ]
+    //
+    // COMPILED: {
+    //  OrgA: { organisationUnitCode: 'OrgA', measureY: 100, measureZ: 0 },
+    //  OrgB: { organisationUnitCode: 'OrgB', measureY: -100, measureZ: 1 },
+    // }
+    //
+    // RETURN: [
+    //  { organisationUnitCode: 'OrgA', measureY: 100, measureZ: 0 },
+    //  { organisationUnitCode: 'OrgB', measureY: -100, measureZ: 1 },
+    // ]
     const measureData = buildMeasureData(measureDataResponses);
 
     measureOptions
@@ -161,7 +195,7 @@ export default class extends DataAggregatingRouteHandler {
       ...presentationOptions,
       ...restOfMapOverlay,
       type: displayType,
-      key: dataElementCode,
+      key: id,
       periodGranularity,
       ...dates,
     };
@@ -204,7 +238,13 @@ export default class extends DataAggregatingRouteHandler {
   }
 
   async fetchMeasureData(mapOverlay, shouldFetchSiblings) {
-    const { dataElementCode, isDataRegional, measureBuilderConfig, measureBuilder } = mapOverlay;
+    const {
+      id,
+      dataElementCode,
+      isDataRegional,
+      measureBuilderConfig,
+      measureBuilder,
+    } = mapOverlay;
     const entityCode = shouldFetchSiblings
       ? await this.getCountryLevelOrgUnitCode()
       : this.entity.code;
@@ -212,9 +252,12 @@ export default class extends DataAggregatingRouteHandler {
     const dataServices = createDataServices(mapOverlay);
     const dhisApi = getDhisApiInstance({ entityCode: this.entity.code, isDataRegional });
     dhisApi.injectFetchDataSourceEntities(this.fetchDataSourceEntities);
-    const buildMeasure = getMeasureBuilder(measureBuilder);
+    const buildMeasure = async (measureId, ...args) => ({
+      [measureId]: await getMeasureBuilder(measureBuilder)(...args),
+    });
 
     return buildMeasure(
+      id,
       this.aggregator,
       dhisApi,
       { ...this.query, dataElementCode },
