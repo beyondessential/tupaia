@@ -115,7 +115,10 @@ export class TableOfDataValuesBuilder extends DataBuilder {
     if (this.tableConfig.columns === ORG_UNIT_COL_KEY) this.buildOrgsFromResults();
     if (!this.tableConfig.hasColumnCategories()) {
       const builtColumns = this.tableConfig.columns.map(buildColumn);
-      return this.replaceOrgUnitCodesWithNames(builtColumns);
+      return this.tableConfig.columns === ORG_UNIT_COL_KEY ||
+        this.tableConfig.columnType === ORG_UNIT_COL_KEY
+        ? this.replaceOrgUnitCodesWithNames(builtColumns)
+        : builtColumns;
     }
 
     const categoryKeyToTitle = await this.getColumnCategoryToTitle();
@@ -231,6 +234,7 @@ export class TableOfDataValuesBuilder extends DataBuilder {
     const orgUnitCodes = columns.map(c => c.title);
     const orgUnits = await Entity.find({ code: orgUnitCodes });
     const orgUnitCodesToName = reduceToDictionary(orgUnits, 'code', 'name');
+    console.log("orgUnitCodesToName: ", orgUnitCodesToName);
 
     return columns.map(({ title, key }) => ({ key, title: orgUnitCodesToName[title] }));
   }
