@@ -6,7 +6,7 @@
 import React from 'react';
 import Box from '@material-ui/core/Box';
 import { Autorenew, Alarm, CalendarToday, ChevronRight, ChevronLeft } from '@material-ui/icons';
-import { Alerts, Cases, Dashboard, Home, Outbreaks } from '../components/Icons';
+import { WarningCloud, Clipboard, Dashboard, Home, Virus } from '../components/Icons';
 
 export default {
   title: 'Icon',
@@ -14,11 +14,11 @@ export default {
 
 export const icons = () => (
   <Box p={4}>
-    <Alerts />
-    <Cases />
+    <WarningCloud />
+    <Clipboard />
     <Dashboard />
     <Home />
-    <Outbreaks />
+    <Virus />
     <Alarm />
     <CalendarToday />
     <Autorenew />

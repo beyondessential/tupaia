@@ -3,8 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-export * from './Alerts';
-export * from './Cases';
+export * from './Clipboard';
 export * from './Dashboard';
 export * from './Home';
-export * from './Outbreaks';
+export * from './Virus';
+export * from './WarningCloud';
