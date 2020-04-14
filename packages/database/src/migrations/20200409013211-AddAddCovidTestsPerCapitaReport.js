@@ -19,7 +19,7 @@ exports.setup = function(options, seedLink) {
 exports.up = function(db) {
   return db.runSql(`
     insert into "dashboardReport" ("id", "dataBuilder", "dataBuilderConfig", "viewJson")
-    VALUES (
+    values (
       'COVID_Tests_Per_Capita',
       'percentagesByNominatedPairs',
       '{
