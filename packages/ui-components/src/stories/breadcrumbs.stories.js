@@ -7,7 +7,7 @@ import React from 'react';
 import { Breadcrumbs, LightBreadcrumbs } from '../components/Breadcrumbs';
 import styled from 'styled-components';
 import MuiBox from '@material-ui/core/Box';
-import Provider from '../RouterProvider.js';
+import { RouterProvider } from '../RouterProvider.js';
 import { Link as RouterLink } from 'react-router-dom';
 import { Tabs, Tab, LightTabs, LightTab } from '../components/Tabs';
 import * as COLORS from '../theme/colors';
@@ -23,7 +23,7 @@ const Container = styled(MuiBox)`
 
 export default {
   title: 'Breadcrumbs',
-  decorators: [story => <Provider>{story()}</Provider>],
+  decorators: [story => <RouterProvider>{story()}</RouterProvider>],
 };
 
 export const example = () => {
