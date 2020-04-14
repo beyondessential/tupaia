@@ -8,7 +8,11 @@
 import { combineReducers } from 'redux';
 import { createSelector } from 'reselect';
 import createCachedSelector from 're-reselect';
-import { cachedSelectOrgUnitChildren, selectOrgUnit } from './orgUnitReducers';
+import {
+  cachedSelectOrgUnitChildren,
+  selectOrgUnit,
+  cachedSelectOrgUnitAndDescendants,
+} from './orgUnitReducers';
 
 import {
   GO_HOME,
@@ -47,7 +51,6 @@ function position(state = { bounds: defaultBounds }, action) {
       return { bounds: defaultBounds };
     }
 
-    case CHANGE_ORG_UNIT:
     case CHANGE_ORG_UNIT_SUCCESS: {
       if (action.shouldChangeMapBounds) {
         const { location } = action.organisationUnit;
@@ -110,7 +113,7 @@ function innerAreas(state = [], action) {
 function measureInfo(state = {}, action) {
   switch (action.type) {
     case CHANGE_ORG_UNIT:
-      if (action.organisationUnit.organisationUnitCode === 'World') {
+      if (action.organisationUnitCode === 'World') {
         // clear measures when returning to world view
         return {};
       }
@@ -170,16 +173,6 @@ function isMeasureLoading(state = false, action) {
     case FETCH_MEASURE_DATA_SUCCESS:
     case CANCEL_FETCH_MEASURE_DATA:
       return false;
-    default:
-      return state;
-  }
-}
-
-function focussedOrganisationUnit(state = {}, action) {
-  switch (action.type) {
-    case CHANGE_ORG_UNIT:
-      return action.organisationUnit;
-
     default:
       return state;
   }
@@ -260,7 +253,6 @@ export default combineReducers({
   innerAreas,
   measureInfo,
   tileSet,
-  focussedOrganisationUnit,
   isAnimating,
   popup,
   shouldSnapToPosition,
@@ -317,18 +309,35 @@ export const selectAllMeasuresWithDisplayInfo = createSelector(
       return [];
     }
 
-    const parentCodes = measureData
-      .map(data => selectOrgUnit(state, data.organisationUnitCode))
-      .filter(orgUnit => orgUnit)
-      .map(orgUnit => orgUnit.parent)
-      .filter((parentCode, index, self) => self.indexOf(parentCode) === index); //Filters for uniqueness
+    // WARNING: Very hacky code to get measureMarker rendering correctly for AU
+    // This is due to AU having two levels of 'Region' entities (see: https://github.com/beyondessential/tupaia-backlog/issues/295)
+    // START OF HACK
+    if (currentCountry === 'AU') {
+      const parentCodes = measureData
+        .map(data => selectOrgUnit(state, data.organisationUnitCode))
+        .filter(orgUnit => orgUnit)
+        .map(orgUnit => orgUnit.parent)
+        .filter((parentCode, index, self) => self.indexOf(parentCode) === index); //Filters for uniqueness
 
-    const allSiblingOrgUnits = parentCodes.reduce(
-      (arr, parentCode) => [...arr, ...cachedSelectOrgUnitChildren(state, parentCode)],
-      [],
-    );
+      const allSiblingOrgUnits = parentCodes.reduce(
+        (arr, parentCode) => [...arr, ...cachedSelectOrgUnitChildren(state, parentCode)],
+        [],
+      );
 
-    return allSiblingOrgUnits.map(orgUnit =>
+      return allSiblingOrgUnits.map(orgUnit =>
+        cachedSelectMeasureWithDisplayInfo(state, orgUnit.organisationUnitCode),
+      );
+    }
+    // END OF HACK
+    // Ideally, we should be using the below code instead for all orgUnits
+
+    const listOfMeasureLevels = measureLevel.split(',');
+    const allOrgUnitsOfLevel = cachedSelectOrgUnitAndDescendants(
+      state,
+      currentCountry,
+    ).filter(orgUnit => listOfMeasureLevels.includes(orgUnit.type));
+
+    return allOrgUnitsOfLevel.map(orgUnit =>
       cachedSelectMeasureWithDisplayInfo(state, orgUnit.organisationUnitCode),
     );
   },
