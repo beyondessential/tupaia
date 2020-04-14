@@ -7,7 +7,7 @@ import MuiBreadcrumbs from '@material-ui/core/Breadcrumbs';
 import MuiLink from '@material-ui/core/Link';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import * as COLORS from '../theme/colors';
-import { Home } from '../components/Icons';
+import { Home as HomeIcon } from '../components/Icons';
 import { Route, Link as RouterLink } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -51,7 +51,7 @@ export const Breadcrumbs = ({ home = 'Dashboard', ...props }) => (
       return (
         <StyledBreadcrumbs separator={<NavigateNextIcon />} {...props}>
           <Link color="inherit" to="/">
-            <Home /> {home}
+            <HomeIcon /> {home}
           </Link>
           {pathnames.map((value, index) => {
             const last = index === pathnames.length - 1;
