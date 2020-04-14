@@ -35,12 +35,65 @@ const palette = {
   },
 };
 const typography = {
-  fontSize: 14,
   h1: {
     fontSize: '3.125rem',
     fontWeight: 500,
-    lineHeight: 1.167,
-    letterSpacing: '-0.01562em',
+    lineHeight: 1.18,
+    letterSpacing: 0,
+  },
+  h2: {
+    fontSize: '2rem',
+    fontWeight: 600,
+    lineHeight: 1.18,
+    letterSpacing: 0,
+  },
+  h3: {
+    fontSize: '1.5rem',
+    fontWeight: 600,
+    lineHeight: 1.18,
+    letterSpacing: 0,
+  },
+  h4: {
+    fontSize: '1.3125rem',
+    fontWeight: 600,
+    lineHeight: 1.18,
+    letterSpacing: 0,
+  },
+  h5: {
+    fontSize: '1.3125rem',
+    fontWeight: 500,
+    lineHeight: 1.18,
+    letterSpacing: 0,
+  },
+  h6: {
+    fontSize: '1.125rem',
+    fontWeight: 500,
+    lineHeight: 1.18,
+    letterSpacing: 0,
+  },
+  subtitle1: {
+    fontSize: '1.125rem',
+    fontWeight: 500,
+    lineHeight: 1.18,
+    letterSpacing: 0,
+  },
+  subtitle2: {
+    fontSize: '0.8125rem',
+    fontWeight: 600,
+    lineHeight: 1.18,
+    letterSpacing: 0,
+  },
+  body1: {
+    fontSize: '0.9375rem',
+    fontWeight: 400,
+    lineHeight: 1.18,
+    letterSpacing: 0,
+  },
+  body2: {
+    fontSize: '0.875rem',
+    fontWeight: 400,
+    lineHeight: 1.18,
+    letterSpacing: 0,
   },
   button: {
     textTransform: 'none',
