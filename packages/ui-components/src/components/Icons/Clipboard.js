@@ -13,8 +13,8 @@ const StyledSVG = styled(BaseIcon)`
   }
 `;
 
-export const Clipboard = () => (
-  <StyledSVG viewBox="0 0 37 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+export const Clipboard = props => (
+  <StyledSVG {...props} viewBox="0 0 37 42" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
       d="M11.0733 7.01721H4.37166C2.98105 7.01721 1.85852 8.13975 1.85852 9.53035V37.1748C1.85852 38.5654 2.98105 39.688 4.37166 39.688H32.0161C33.4067 39.688 34.5293 38.5654 34.5293 37.1748V9.53035C34.5293 8.13975 33.4067 7.01721 32.0161 7.01721H25.3144"
       stroke="#697074"

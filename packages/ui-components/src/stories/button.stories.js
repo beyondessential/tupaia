@@ -5,6 +5,9 @@
 
 import React from 'react';
 import { action } from '@storybook/addon-actions';
+import MuiBox from '@material-ui/core/Box';
+import { SystemUpdateAlt } from '@material-ui/icons';
+import styled from 'styled-components';
 import {
   Button,
   TextButton,
@@ -13,11 +16,7 @@ import {
   WarningButton,
   LightOutlinedButton,
 } from '../components/Button';
-import MuiBox from '@material-ui/core/Box';
 import * as COLORS from '../theme/colors';
-import { SystemUpdateAlt } from '@material-ui/icons';
-import Avatar from '@material-ui/core/Avatar';
-import styled from 'styled-components';
 
 export default {
   title: 'Button',

@@ -5,8 +5,8 @@
 import React from 'react';
 import BaseIcon from './BaseIcon';
 
-export const WarningCloud = () => (
-  <BaseIcon viewBox="0 0 41 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+export const WarningCloud = props => (
+  <BaseIcon {...props} viewBox="0 0 41 42" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g>
       <g>
         <path

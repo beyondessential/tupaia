@@ -4,6 +4,8 @@
  */
 
 import React, { useState } from 'react';
+import styled from 'styled-components';
+import Typography from '@material-ui/core/Typography';
 import {
   Dialog,
   DialogTitle,
@@ -12,10 +14,8 @@ import {
   DialogContentText,
 } from '../components/Dialog';
 import { Button, TextButton } from '../components/Button';
-import styled from 'styled-components';
 import { CircleTick } from '../components/Icons';
 import * as COLORS from '../theme/colors';
-import Typography from '@material-ui/core/Typography';
 
 export default {
   title: 'Modal',
@@ -94,26 +94,22 @@ export const TwoTone = () => {
 const StyledContent = styled.div`
   padding: 2rem 1rem;
   text-align: center;
+`;
 
-  svg {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-    color: ${props => props.theme.palette.success.main};
-  }
+const StyledCircleTick = styled(CircleTick)`
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: ${props => props.theme.palette.success.main};
+`;
 
-  h2 {
-    margin-bottom: 1.5rem;
-  }
+const StyledH2 = styled(Typography)`
+  margin-bottom: 1.5rem;
+`;
 
-  h5 {
-    display: inline-block;
-    max-width: 400px;
-    color: ${COLORS.GREY_72};
-  }
-
-  button {
-    margin-left: 1rem;
-  }
+const StyledH5 = styled(Typography)`
+  display: inline-block;
+  max-width: 400px;
+  color: ${COLORS.GREY_72};
 `;
 
 export const customContent = () => {
@@ -133,13 +129,13 @@ export const customContent = () => {
         <DialogTitle onClose={handleClose}>Outbreak</DialogTitle>
         <DialogContent>
           <StyledContent>
-            <CircleTick />
-            <Typography variant="h2" gutterBottom>
+            <StyledCircleTick />
+            <StyledH2 variant="h2" gutterBottom>
               Outbreak successfully confirmed
-            </Typography>
-            <Typography variant="h5" gutterBottom>
+            </StyledH2>
+            <StyledH5 variant="h5" gutterBottom>
               Please note this information has been moved to the outbreak section
-            </Typography>
+            </StyledH5>
           </StyledContent>
         </DialogContent>
         <DialogActions>

@@ -13,8 +13,8 @@ const StyledSVG = styled(BaseIcon)`
   }
 `;
 
-export const Home = () => (
-  <StyledSVG viewBox="0 0 14 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+export const Home = props => (
+  <StyledSVG {...props} viewBox="0 0 14 12" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g>
       <path
         d="M2.88171 7.06396V11.5886H6.13171V8.29797C6.13171 7.84276 6.49463 7.4753 6.94421 7.4753H7.75671C8.2063 7.4753 8.56921 7.84276 8.56921 8.29797V11.5886H11.8192V7.06396"

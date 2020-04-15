@@ -5,8 +5,8 @@
 import React from 'react';
 import BaseIcon from './BaseIcon';
 
-export const Virus = () => (
-  <BaseIcon viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+export const Virus = props => (
+  <BaseIcon {...props} viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g>
       <g>
         <path

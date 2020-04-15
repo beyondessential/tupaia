@@ -5,6 +5,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import MuiButton from '@material-ui/core/Button';
+import PropTypes from 'prop-types';
 import * as COLORS from '../theme/colors';
 
 const StyledButton = styled(MuiButton)`
@@ -21,11 +22,22 @@ const StyledButton = styled(MuiButton)`
  *
  * Default button is styled as material ui contained with the primary color
  */
-export const Button = ({ children, isSubmitting = false, disabled, ...props }) => (
+export const Button = ({ children, isSubmitting, disabled, ...props }) => (
   <StyledButton variant="contained" color="primary" {...props} disabled={isSubmitting}>
     {isSubmitting ? 'Loading...' : children}
   </StyledButton>
 );
+
+Button.propTypes = {
+  children: PropTypes.node.isRequired,
+  isSubmitting: PropTypes.bool,
+  disabled: PropTypes.bool,
+};
+
+Button.defaultProps = {
+  isSubmitting: false,
+  disabled: false,
+};
 
 /*
  * Text Button
@@ -67,7 +79,9 @@ export const SmallButton = styled(Button)`
 /*
  * Light Outlined Button
  */
-export const LightOutlinedButton = styled(props => <Button {...props} variant="outlined" />)`
+const OutlinedButton = props => <Button {...props} variant="outlined" />;
+
+export const LightOutlinedButton = styled(OutlinedButton)`
   color: ${COLORS.WHITE};
   border-color: ${COLORS.GREY_DE};
   justify-content: space-between;
