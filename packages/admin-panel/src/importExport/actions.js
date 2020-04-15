@@ -11,6 +11,7 @@ import {
   IMPORT_DIALOG_OPEN,
   EXPORT_DIALOG_OPEN,
 } from './constants';
+import { makeSubstitutionsInString } from '../utilities';
 
 export const openFilteredExportDialog = parentRecord => ({
   type: EXPORT_DIALOG_OPEN,
@@ -83,12 +84,7 @@ export const exportData = (
 };
 
 const processFileName = (unprocessedFileName, rowData) => {
-  const segmentsToSubstitute = unprocessedFileName.match(/(\{[^}]*\})/g) || [];
-  let fileName = unprocessedFileName;
-  for (let i = 0; i < segmentsToSubstitute.length; i++) {
-    const segment = segmentsToSubstitute[i];
-    fileName = fileName.replace(segment, rowData[segment.substring(1, segment.length - 1)]);
-  }
+  const fileName = makeSubstitutionsInString(unprocessedFileName, rowData);
   return `${fileName}.xlsx`;
 };
 

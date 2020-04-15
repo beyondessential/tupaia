@@ -55,8 +55,6 @@ ResourcePage.propTypes = {
       title: PropTypes.string.isRequired,
       endpoint: PropTypes.string,
       columns: PropTypes.array,
-      joinFrom: PropTypes.string,
-      joinTo: PropTypes.string,
       expansionTabs: PropTypes.array, // For nested expansions, uses same shape.
     }),
   ),

@@ -86,7 +86,7 @@ ImportExportModalComponent.propTypes = {
   isConfirmDisabled: PropTypes.bool,
   onConfirm: PropTypes.func.isRequired,
   confirmLabel: PropTypes.string.isRequired,
-  children: PropTypes.element.isRequired,
+  children: PropTypes.element,
   parentRecord: PropTypes.object,
   isOpen: PropTypes.bool.isRequired,
 };
@@ -98,6 +98,7 @@ ImportExportModalComponent.defaultProps = {
   instruction: '',
   isConfirmDisabled: false,
   parentRecord: {},
+  children: null,
 };
 
 const mapStateToProps = ({ importExport: importExportState }, { onConfirm }) => {
