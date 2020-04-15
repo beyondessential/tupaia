@@ -20,9 +20,11 @@ export const testCategories = () => {
           cells: [['CD1']],
         },
         {
-          rows: [{ dataElement: 'Smokers', categoryId: 'Risk Factors', Col1: 1 }],
+          rows: [
+            { dataElement: 'Smokers', categoryId: 'Risk Factors', Col1: 1 },
+            { category: 'Risk Factors' },
+          ],
           columns: [{ key: 'Col1', title: 'Female' }],
-          categories: [{ key: 'Risk Factors', title: 'Risk Factors' }],
         },
       ));
 
@@ -37,9 +39,9 @@ export const testCategories = () => {
           rows: [
             { dataElement: 'Smokers', categoryId: 'Risk Factors', Col1: 1 },
             { dataElement: 'Overweight', categoryId: 'Risk Factors', Col1: 3 },
+            { category: 'Risk Factors' },
           ],
           columns: [{ key: 'Col1', title: 'Female' }],
-          categories: [{ key: 'Risk Factors', title: 'Risk Factors' }],
         },
       ));
 
@@ -57,12 +59,10 @@ export const testCategories = () => {
           rows: [
             { dataElement: 'Smokers', categoryId: 'Risk Factors', Col1: 1 },
             { dataElement: 'Green', categoryId: 'CVD Risk', Col1: 5 },
+            { category: 'Risk Factors' },
+            { category: 'CVD Risk' },
           ],
           columns: [{ key: 'Col1', title: 'Female' }],
-          categories: [
-            { key: 'Risk Factors', title: 'Risk Factors' },
-            { key: 'CVD Risk', title: 'CVD Risk' },
-          ],
         },
       ));
 
@@ -82,12 +82,10 @@ export const testCategories = () => {
             { dataElement: 'Overweight', categoryId: 'Risk Factors', Col1: 3 },
             { dataElement: 'Green', categoryId: 'CVD Risk', Col1: 5 },
             { dataElement: 'Red', categoryId: 'CVD Risk', Col1: 7 },
+            { category: 'Risk Factors' },
+            { category: 'CVD Risk' },
           ],
           columns: [{ key: 'Col1', title: 'Female' }],
-          categories: [
-            { key: 'Risk Factors', title: 'Risk Factors' },
-            { key: 'CVD Risk', title: 'CVD Risk' },
-          ],
         },
       ));
 
@@ -102,9 +100,9 @@ export const testCategories = () => {
           rows: [
             { dataElement: 'Female', categoryId: 'Risk Factors', Col1: 1 },
             { dataElement: 'Female', categoryId: 'Risk Factors', Col1: 3 },
+            { category: 'Risk Factors' },
           ],
           columns: [{ key: 'Col1', title: 'Count' }],
-          categories: [{ key: 'Risk Factors', title: 'Risk Factors' }],
         },
       ));
 
@@ -122,9 +120,10 @@ export const testCategories = () => {
           rows: [
             { dataElement: 'Smokers', categoryId: 'Female', Col1: 1 },
             { dataElement: 'Smokers', categoryId: 'Male', Col1: 2 },
+            { category: 'Female' },
+            { category: 'Male' },
           ],
           columns: [{ key: 'Col1', title: 'Count' }],
-          categories: [{ key: 'Female', title: 'Female' }, { key: 'Male', title: 'Male' }],
         },
       ));
   });
@@ -160,7 +159,10 @@ export const testCategories = () => {
           columns: [
             {
               category: 'Risk Factors',
-              columns: [{ key: 'Col1', title: 'Smokers' }, { key: 'Col2', title: 'Overweight' }],
+              columns: [
+                { key: 'Col1', title: 'Smokers' },
+                { key: 'Col2', title: 'Overweight' },
+              ],
             },
           ],
         },
@@ -206,11 +208,17 @@ export const testCategories = () => {
           columns: [
             {
               category: 'Risk Factors',
-              columns: [{ key: 'Col1', title: 'Smokers' }, { key: 'Col2', title: 'Overweight' }],
+              columns: [
+                { key: 'Col1', title: 'Smokers' },
+                { key: 'Col2', title: 'Overweight' },
+              ],
             },
             {
               category: 'CVD Risk',
-              columns: [{ key: 'Col3', title: 'Green' }, { key: 'Col4', title: 'Red' }],
+              columns: [
+                { key: 'Col3', title: 'Green' },
+                { key: 'Col4', title: 'Red' },
+              ],
             },
           ],
         },
@@ -228,7 +236,10 @@ export const testCategories = () => {
           columns: [
             {
               category: 'Risk Factors',
-              columns: [{ key: 'Col1', title: 'Female' }, { key: 'Col2', title: 'Female' }],
+              columns: [
+                { key: 'Col1', title: 'Female' },
+                { key: 'Col2', title: 'Female' },
+              ],
             },
           ],
         },
@@ -269,14 +280,16 @@ export const testCategories = () => {
           cells: [['CD1']],
         },
         {
-          rows: [{ dataElement: 'Smokers', categoryId: 'Risk Factors', Col1: 1 }],
+          rows: [
+            { dataElement: 'Smokers', categoryId: 'Risk Factors', Col1: 1 },
+            { category: 'Risk Factors' },
+          ],
           columns: [
             {
               category: 'By Gender',
               columns: [{ key: 'Col1', title: 'Female' }],
             },
           ],
-          categories: [{ key: 'Risk Factors', title: 'Risk Factors' }],
         },
       ));
 
@@ -288,7 +301,12 @@ export const testCategories = () => {
             { category: 'CVD Risk', rows: ['Green', 'Red'] },
           ],
           columns: [{ category: 'By Gender', columns: ['Female', 'Male'] }],
-          cells: [['CD1', 'CD2'], ['CD3', 'CD4'], ['CD5', 'CD6'], ['CD7', 'CD8']],
+          cells: [
+            ['CD1', 'CD2'],
+            ['CD3', 'CD4'],
+            ['CD5', 'CD6'],
+            ['CD7', 'CD8'],
+          ],
         },
         {
           rows: [
@@ -296,16 +314,17 @@ export const testCategories = () => {
             { dataElement: 'Overweight', categoryId: 'Risk Factors', Col1: 3, Col2: 4 },
             { dataElement: 'Green', categoryId: 'CVD Risk', Col1: 5, Col2: 6 },
             { dataElement: 'Red', categoryId: 'CVD Risk', Col1: 7, Col2: 8 },
+            { category: 'Risk Factors' },
+            { category: 'CVD Risk' },
           ],
           columns: [
             {
               category: 'By Gender',
-              columns: [{ key: 'Col1', title: 'Female' }, { key: 'Col2', title: 'Male' }],
+              columns: [
+                { key: 'Col1', title: 'Female' },
+                { key: 'Col2', title: 'Male' },
+              ],
             },
-          ],
-          categories: [
-            { key: 'Risk Factors', title: 'Risk Factors' },
-            { key: 'CVD Risk', title: 'CVD Risk' },
           ],
         },
       ));
