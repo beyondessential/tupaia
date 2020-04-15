@@ -4,6 +4,7 @@
  */
 
 export * from './Clipboard';
+export * from './CircleTick';
 export * from './Dashboard';
 export * from './Home';
 export * from './Virus';
