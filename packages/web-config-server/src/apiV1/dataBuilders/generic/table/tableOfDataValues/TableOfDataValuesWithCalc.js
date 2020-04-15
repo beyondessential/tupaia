@@ -42,7 +42,8 @@ class TableOfDataValuesWithCalcBuilder extends TableOfDataValuesBuilder {
       columns: await this.buildColumns(),
     };
     if (this.tableConfig.hasRowCategories()) {
-      data.categories = await this.buildRowCategories();
+      const categories = await this.buildRowCategories();
+      data.rows = [...data.rows, ...categories];
     }
 
     return data;
