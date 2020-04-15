@@ -92,6 +92,7 @@ const getTabPage = tabName => {
     title,
     component: (
       <ResourcePage
+        key={tabName}
         title={title}
         endpoint={endpoint}
         columns={[
