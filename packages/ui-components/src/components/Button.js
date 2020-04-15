@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import MuiButton from '@material-ui/core/Button';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import Avatar from '@material-ui/core/Avatar';
+import PropTypes from 'prop-types';
 import * as COLORS from '../theme/colors';
 
 const StyledButton = styled(MuiButton)`
@@ -23,11 +24,22 @@ const StyledButton = styled(MuiButton)`
  *
  * Default button is styled as material ui contained with the primary color
  */
-export const Button = ({ children, isSubmitting = false, disabled, ...props }) => (
+export const Button = ({ children, isSubmitting, disabled, ...props }) => (
   <StyledButton variant="contained" color="primary" {...props} disabled={isSubmitting}>
     {isSubmitting ? 'Loading...' : children}
   </StyledButton>
 );
+
+Button.propTypes = {
+  children: PropTypes.node.isRequired,
+  isSubmitting: PropTypes.bool,
+  disabled: PropTypes.bool,
+};
+
+Button.defaultProps = {
+  isSubmitting: false,
+  disabled: false,
+};
 
 /*
  * Text Button

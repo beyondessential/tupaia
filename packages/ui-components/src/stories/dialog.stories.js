@@ -4,6 +4,8 @@
  */
 
 import React, { useState } from 'react';
+import styled from 'styled-components';
+import Typography from '@material-ui/core/Typography';
 import {
   Dialog,
   DialogTitle,
@@ -12,10 +14,8 @@ import {
   DialogContentText,
 } from '../components/Dialog';
 import { Button, TextButton } from '../components/Button';
-import styled from 'styled-components';
 import { CircleTick } from '../components/Icons';
 import * as COLORS from '../theme/colors';
-import Typography from '@material-ui/core/Typography';
 
 export default {
   title: 'Modal',

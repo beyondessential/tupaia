@@ -17,7 +17,7 @@ export const TEXTGREY = '#44535C'; // text
 
 // Greys (based on first 2 letters of hex code)
 export const GREY_28 = DARKGREY;
-export const GREY_44 = '#44535C';
+export const GREY_44 = TEXTGREY;
 export const GREY_72 = '#727D84';
 export const GREY_9F = '#9FA6AA';
 export const GREY_DE = '#DEDEE0'; // use for border colors of cards

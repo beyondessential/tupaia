@@ -11,47 +11,47 @@ import * as COLORS from '../../theme/colors';
 /*
  * TextField
  */
-export const TextField = styled(props => <MuiTextField {...props} variant="outlined" />)`
-  width: 100%;
-  margin-bottom: 1rem;
+export const TextField = styled(props => <MuiTextField fullWidth {...props} variant="outlined" />)`
+  margin-bottom: 1.5rem;
 
   .MuiInputBase-root {
-    margin-top: 30px;
+    margin-top: 32px;
   }
 
   // The actual input field
   .MuiInputBase-input {
-    background: #ffffff;
+    background: ${COLORS.WHITE};
+    color: ${COLORS.GREY_72};
     font-weight: 400;
     font-size: 15px;
     line-height: 18px;
     padding: 21px 15px;
-    color: #727d84;
-    width: 100%;
     border-radius: 3px;
   }
 
   // The border
   .MuiOutlinedInput-notchedOutline {
-    top: 0;
     border-color: ${COLORS.GREY_DE};
+    top: 0;
 
     legend {
       display: none;
     }
   }
 
-  //.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
-  //  border-color: #44535C;
-  //}
+  // Hover state
+  .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+    border-color: ${COLORS.GREY_72};
+  }
 
+  // Focused state
   .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-    border-color: ${COLORS.DARK_BLUE};
+    border-color: ${COLORS.GREY_72};
     border-width: 1px;
   }
 
   .MuiFormLabel-root.Mui-focused {
-    color: ${COLORS.DARK_BLUE};
+    color: ${COLORS.TEXTGREY};
   }
 
   // The label
@@ -135,7 +135,3 @@ export const TextField = styled(props => <MuiTextField {...props} variant="outli
     padding: 10px;
   }
 `;
-
-// export const TextField = ({ field, ...props }) => (
-//   <TextInput name={field.name} value={field.value || ''} onChange={field.onChange} {...props} />
-// );

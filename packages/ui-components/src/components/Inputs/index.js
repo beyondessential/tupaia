@@ -4,4 +4,6 @@
  */
 
 export * from './TextField';
-export * from './CheckboxField';
+export * from './Checkbox';
+export * from './AutoComplete';
+export * from './Select';

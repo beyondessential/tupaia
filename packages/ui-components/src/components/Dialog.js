@@ -10,9 +10,9 @@ import MuiDialogTitle from '@material-ui/core/DialogTitle';
 import MuiDialogContent from '@material-ui/core/DialogContent';
 import MuiDialogActions from '@material-ui/core/DialogActions';
 import MuiDialogContentText from '@material-ui/core/DialogContentText';
-import { LightIconButton } from '../components/IconButton';
 import Close from '@material-ui/icons/Close';
 import styled from 'styled-components';
+import { LightIconButton } from './IconButton';
 import * as COLORS from '../theme/colors';
 
 /*
@@ -59,7 +59,12 @@ export const DialogTitle = ({ children, ...props }) => (
 );
 
 DialogTitle.propTypes = {
+  children: PropTypes.node.isRequired,
   onClose: PropTypes.func,
+};
+
+DialogTitle.defaultProps = {
+  onClose: null,
 };
 
 /*

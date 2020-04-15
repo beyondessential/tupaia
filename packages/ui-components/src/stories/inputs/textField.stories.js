@@ -3,15 +3,14 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
-import { action } from '@storybook/addon-actions';
+import React, { useState } from 'react';
 import { CalendarToday, KeyboardArrowDown, Visibility } from '@material-ui/icons';
-import { TextField, CheckboxField } from '../components/Fields';
+import { TextField, Checkbox } from '../../components/Inputs';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import styled from 'styled-components';
 
 export default {
-  title: 'Fields',
+  title: 'Inputs/TextField',
 };
 
 const Container = styled.div`
@@ -119,11 +118,41 @@ export const sizes = () => (
   </Container>
 );
 
+const FlexContainer = styled.div`
+  display: flex;
+  max-width: 750px;
+  padding: 2rem;
+
+  .MuiTextField-root {
+    flex: 1;
+
+    &:first-child {
+      margin-right: 1rem;
+    }
+
+    &:last-child {
+      margin-left: 1rem;
+    }
+  }
+`;
+
 export const layout = () => (
-  <Container>
-    <TextField name="fullWidth" label="Full width" />
-    <TextField name="inline" label="Inline" />
-  </Container>
+  <FlexContainer>
+    <TextField name="field1" label="Field 1" />
+    <TextField name="field2" label="Field 2" />
+  </FlexContainer>
 );
 
-export const checkboxField = () => <CheckboxField />;
+export const controlled = () => {
+  const [value, setValue] = useState('Foo');
+
+  const handleChange = event => {
+    setValue(event.target.value);
+  };
+
+  return (
+    <Container>
+      <TextField name="controlled" label="Controlled" value={value} onChange={handleChange} />
+    </Container>
+  );
+};
