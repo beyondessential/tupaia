@@ -29,7 +29,7 @@ export const percentChildrenDataElement = async ({ dataBuilderConfig, query }, a
   const operationalFacilities = await getFacilityStatuses(
     aggregator,
     query.organisationUnitCode,
-    period,
+    period.requested,
   );
   aggregateOperationalFacilityValues(operationalFacilities, results, addValueToSumByElement);
 
