@@ -6,8 +6,6 @@
 import apicache from 'apicache';
 import { Router } from 'express';
 
-import { createAggregator } from '@tupaia/aggregator';
-import { Aggregator } from '/aggregator';
 import {
   appSignup,
   appLogin,
@@ -20,17 +18,20 @@ import {
   appVerifyEmail,
   appResendEmail,
 } from '/appServer';
-import { exportChart, exportSurveyResponses } from '/export';
+import { exportChart, ExportSurveyResponsesHandler } from '/export';
 import { getUser } from './getUser';
 import ViewHandler from './view';
 import DashBoardHandler from './dashboard';
 import MeasuresHandler from './measures';
 import MeasuresDataHandler from './measureData';
 import OrgUnitSearchHandler from './organisationUnitSearch';
+import OrganisationUnitHandler from './organisationUnit';
 import { disasters } from './disasters';
 
-import { getOrganisationUnitHandler } from './organisationUnit';
 import { getProjects } from './projects';
+
+const handleWith = Handler =>
+  catchAsyncErrors((...params) => new Handler(...params).handleRequest());
 
 export const getRoutesForApiV1 = () => {
   const api = Router();
@@ -47,35 +48,17 @@ export const getRoutesForApiV1 = () => {
   api.get('/verifyEmail', catchAsyncErrors(appVerifyEmail()));
   api.post('/resendEmail', catchAsyncErrors(appResendEmail()));
   api.post('/export/chart', catchAsyncErrors(exportChart()));
-  api.get('/export/surveyResponses', catchAsyncErrors(exportSurveyResponses()));
+  api.get('/export/surveyResponses', handleWith(ExportSurveyResponsesHandler));
   api.get(
     '/organisationUnit',
     apicache.middleware(process.env.ORGANISATION_UNIT_CACHE_PERIOD),
-    catchAsyncErrors(getOrganisationUnitHandler),
+    handleWith(OrganisationUnitHandler),
   );
-  api.get(
-    '/organisationUnitSearch',
-    catchAsyncErrors((...params) => new OrgUnitSearchHandler().execute(...params)),
-  );
-  api.get(
-    '/dashboard',
-    catchAsyncErrors((...params) => new DashBoardHandler().execute(...params)),
-  );
-  api.get(
-    '/view',
-    catchAsyncErrors((...params) => new ViewHandler().execute(...params)),
-  );
-  api.get(
-    '/measures',
-    catchAsyncErrors((...params) => new MeasuresHandler().execute(...params)),
-  );
-  api.get(
-    '/measureData',
-    catchAsyncErrors((...params) => {
-      const aggregator = createAggregator(Aggregator);
-      return new MeasuresDataHandler(aggregator).execute(...params);
-    }),
-  );
+  api.get('/organisationUnitSearch', handleWith(OrgUnitSearchHandler));
+  api.get('/dashboard', handleWith(DashBoardHandler));
+  api.get('/view', handleWith(ViewHandler));
+  api.get('/measures', handleWith(MeasuresHandler));
+  api.get('/measureData', handleWith(MeasuresDataHandler));
   api.get('/disasters', catchAsyncErrors(disasters));
   api.get('/projects', catchAsyncErrors(getProjects));
 
