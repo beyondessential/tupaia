@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import {
@@ -28,13 +28,13 @@ const Container = styled.div`
 export const modal = () => {
   const [open, setOpen] = useState(true);
 
-  const handleClickOpen = () => {
+  const handleClickOpen = useCallback(() => {
     setOpen(true);
-  };
+  }, [setOpen]);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setOpen(false);
-  };
+  }, [setOpen]);
 
   return (
     <Container>
@@ -58,13 +58,13 @@ export const modal = () => {
 export const TwoTone = () => {
   const [open, setOpen] = useState(true);
 
-  const handleClickOpen = () => {
+  const handleClickOpen = useCallback(() => {
     setOpen(true);
-  };
+  }, [setOpen]);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setOpen(false);
-  };
+  }, [setOpen]);
 
   return (
     <Container>
@@ -115,13 +115,13 @@ const StyledH5 = styled(Typography)`
 export const customContent = () => {
   const [open, setOpen] = useState(true);
 
-  const handleClickOpen = () => {
+  const handleClickOpen = useCallback(() => {
     setOpen(true);
-  };
+  }, [setOpen]);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setOpen(false);
-  };
+  }, [setOpen]);
 
   return (
     <Container>

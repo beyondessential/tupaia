@@ -19,7 +19,7 @@ import * as COLORS from '../theme/colors';
  * Dialog
  */
 export const Dialog = styled(({ children, ...props }) => (
-  <MuiDialog fullWidth maxWidth={'sm'} {...props}>
+  <MuiDialog fullWidth maxWidth="sm" {...props}>
     {children}
   </MuiDialog>
 ))`

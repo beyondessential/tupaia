@@ -4,10 +4,10 @@
  */
 
 import React from 'react';
-import { Tabs, Tab, LightTabs, LightTab } from '../components/Tabs';
 import styled from 'styled-components';
 import { Dashboard, Warning, NewReleases } from '@material-ui/icons';
 import MuiBox from '@material-ui/core/Box';
+import { Tabs, Tab, LightTabs, LightTab } from '../components/Tabs';
 import * as COLORS from '../theme/colors';
 
 export default {
