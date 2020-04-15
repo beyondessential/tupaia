@@ -264,7 +264,7 @@ export class CartesianChart extends PureComponent {
         ticks={viewContent.ticks}
         yAxisId={yAxisId}
         orientation={orientation}
-        domain={[0, 'auto']}
+        domain={valueType === PERCENTAGE ? [0, 'dataMax'] : [0, 'auto']}
         allowDataOverflow={valueType === PERCENTAGE}
         // The above 2 props stop floating point imprecision making Y axis go above 100% in stacked charts.
         label={data.yName}

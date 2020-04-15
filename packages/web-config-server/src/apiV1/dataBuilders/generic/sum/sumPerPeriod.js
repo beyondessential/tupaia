@@ -12,7 +12,7 @@ class SumPerPeriodBuilder extends DataBuilder {
    */
   async build() {
     const { dataSource } = this.config;
-    const { results } = await this.fetchAnalytics(dataSource.codes);
+    const { results, period } = await this.fetchAnalytics(dataSource.codes);
     const dataByPeriod = {};
     results.forEach(({ period, value }) => {
       dataByPeriod[period] = (dataByPeriod[period] || 0) + value;
@@ -27,6 +27,7 @@ class SumPerPeriodBuilder extends DataBuilder {
           timestamp: periodToTimestamp(period),
           value: dataByPeriod[period],
         })),
+      period,
     };
   }
 }
@@ -47,6 +48,9 @@ const sumPerPeriod = async (
   );
   return builder.build();
 };
+
+export const sumPerDay = (config, aggregator, dhisApi) =>
+  sumPerPeriod(config, aggregator, dhisApi, aggregator.aggregationTypes.FINAL_EACH_DAY);
 
 export const sumPerWeek = (config, aggregator, dhisApi) =>
   sumPerPeriod(config, aggregator, dhisApi, aggregator.aggregationTypes.FINAL_EACH_WEEK);
