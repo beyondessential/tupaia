@@ -14,7 +14,6 @@ import {
   SmallButton,
   SuccessButton,
   WarningButton,
-  ProfileButton,
   LightOutlinedButton,
 } from '../components/Button';
 import * as COLORS from '../theme/colors';
@@ -94,8 +93,8 @@ export const loading = () => (
   </Container>
 );
 
-export const profile = () => (
-  <Container bgcolor={COLORS.BLUE}>
-    <ProfileButton startIcon={<Avatar>T</Avatar>}>Tom</ProfileButton>
-  </Container>
-);
+// export const profile = () => (
+//   <Container bgcolor={COLORS.BLUE}>
+//     <ProfileButton startIcon={<Avatar>T</Avatar>}>Tom</ProfileButton>
+//   </Container>
+// );
