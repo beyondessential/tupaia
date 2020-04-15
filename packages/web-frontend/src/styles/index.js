@@ -241,7 +241,7 @@ export const DASHBOARD_STYLES = {
     opacity: 0.5,
   },
   floatingHeader: {
-    position: 'fixed',
+    position: 'absolute',
     background: DARK_BLUE,
     boxSizing: 'border-box',
     color: WHITE,
