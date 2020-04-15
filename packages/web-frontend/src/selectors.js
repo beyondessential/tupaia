@@ -41,7 +41,7 @@ const countryCache = createCachedSelector(
 
 const allCountryOrgUnitsCache = createCachedSelector([country => country], country =>
   Object.values(country),
-)(country => country.countryCode);
+)(country => country && country.countryCode);
 
 const orgUnitChildrenCache = createCachedSelector(
   [country => country, (_, code) => code],
@@ -51,7 +51,7 @@ const orgUnitChildrenCache = createCachedSelector(
 const countryAsHierarchyObjectCache = createCachedSelector(
   [country => country, (_, world) => world],
   (country, world) => recursiveBuildHierarchy(country, country[country.countryCode], world),
-)((country, world) => country.countryCode);
+)((country, world) => country && country.countryCode);
 
 const measureWithDisplayInfoCache = createCachedSelector(
   [
