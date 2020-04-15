@@ -26,8 +26,9 @@ const OVERLAY = {
     { color: 'blue', value: 'other' },
     { color: 'grey', value: null },
   ],
-  measureBuilder: 'sumAllPerOrgUnit',
+  measureBuilder: 'valueForOrgGroup',
   measureBuilderConfig: {
+    aggregationType: 'SUM',
     aggregationEntityType: 'facility',
   },
   countryCodes: '{"PG"}',
