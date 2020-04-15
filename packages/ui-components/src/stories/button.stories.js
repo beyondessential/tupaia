@@ -7,7 +7,6 @@ import React from 'react';
 import { action } from '@storybook/addon-actions';
 import MuiBox from '@material-ui/core/Box';
 import { SystemUpdateAlt } from '@material-ui/icons';
-import Avatar from '@material-ui/core/Avatar';
 import styled from 'styled-components';
 import {
   Button,
@@ -15,8 +14,8 @@ import {
   SmallButton,
   SuccessButton,
   WarningButton,
-  LightOutlinedButton,
   ProfileButton,
+  LightOutlinedButton,
 } from '../components/Button';
 import * as COLORS from '../theme/colors';
 

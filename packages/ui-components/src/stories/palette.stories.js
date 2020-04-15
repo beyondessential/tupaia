@@ -7,9 +7,7 @@ import React from 'react';
 import MuiBox from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import styled from 'styled-components';
-import MuiButton from '@material-ui/core/Button';
 import * as COLORS from '../theme/colors';
-import Typography from '@material-ui/core/Typography';
 
 export default {
   title: 'Palette',

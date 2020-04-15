@@ -4,13 +4,13 @@
  */
 
 import React from 'react';
-import { Breadcrumbs, LightBreadcrumbs } from '../components/Breadcrumbs';
 import styled from 'styled-components';
 import MuiBox from '@material-ui/core/Box';
-import { RouterProvider } from '../RouterProvider.js';
 import { Link as RouterLink } from 'react-router-dom';
 import { Tabs, Tab, LightTabs, LightTab } from '../components/Tabs';
 import * as COLORS from '../theme/colors';
+import { RouterProvider } from '../RouterProvider';
+import { Breadcrumbs, LightBreadcrumbs } from '../components/Breadcrumbs';
 
 const Container = styled(MuiBox)`
   max-width: 1200px;

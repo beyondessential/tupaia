@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import {
@@ -28,13 +28,13 @@ const Container = styled.div`
 export const modal = () => {
   const [open, setOpen] = useState(true);
 
-  const handleClickOpen = () => {
+  const handleClickOpen = useCallback(() => {
     setOpen(true);
-  };
+  }, [setOpen]);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setOpen(false);
-  };
+  }, [setOpen]);
 
   return (
     <Container>
@@ -58,13 +58,13 @@ export const modal = () => {
 export const TwoTone = () => {
   const [open, setOpen] = useState(true);
 
-  const handleClickOpen = () => {
+  const handleClickOpen = useCallback(() => {
     setOpen(true);
-  };
+  }, [setOpen]);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setOpen(false);
-  };
+  }, [setOpen]);
 
   return (
     <Container>
@@ -94,38 +94,34 @@ export const TwoTone = () => {
 const StyledContent = styled.div`
   padding: 2rem 1rem;
   text-align: center;
+`;
 
-  svg {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-    color: ${props => props.theme.palette.success.main};
-  }
+const StyledCircleTick = styled(CircleTick)`
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: ${props => props.theme.palette.success.main};
+`;
 
-  h2 {
-    margin-bottom: 1.5rem;
-  }
+const StyledH2 = styled(Typography)`
+  margin-bottom: 1.5rem;
+`;
 
-  h5 {
-    display: inline-block;
-    max-width: 400px;
-    color: ${COLORS.GREY_72};
-  }
-
-  button {
-    margin-left: 1rem;
-  }
+const StyledH5 = styled(Typography)`
+  display: inline-block;
+  max-width: 400px;
+  color: ${COLORS.GREY_72};
 `;
 
 export const customContent = () => {
   const [open, setOpen] = useState(true);
 
-  const handleClickOpen = () => {
+  const handleClickOpen = useCallback(() => {
     setOpen(true);
-  };
+  }, [setOpen]);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setOpen(false);
-  };
+  }, [setOpen]);
 
   return (
     <Container>
@@ -133,13 +129,13 @@ export const customContent = () => {
         <DialogTitle onClose={handleClose}>Outbreak</DialogTitle>
         <DialogContent>
           <StyledContent>
-            <CircleTick />
-            <Typography variant="h2" gutterBottom>
+            <StyledCircleTick />
+            <StyledH2 variant="h2" gutterBottom>
               Outbreak successfully confirmed
-            </Typography>
-            <Typography variant="h5" gutterBottom>
+            </StyledH2>
+            <StyledH5 variant="h5" gutterBottom>
               Please note this information has been moved to the outbreak section
-            </Typography>
+            </StyledH5>
           </StyledContent>
         </DialogContent>
         <DialogActions>

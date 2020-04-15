@@ -2,10 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-/*
- * Tupaia
- * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
- */
+
 import React from 'react';
 import styled from 'styled-components';
 import BaseIcon from './BaseIcon';
@@ -17,8 +14,8 @@ const StyledSVG = styled(BaseIcon)`
   }
 `;
 
-export const CircleTick = () => (
-  <StyledSVG viewBox="0 0 41 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+export const CircleTick = props => (
+  <StyledSVG {...props} viewBox="0 0 41 42" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g>
       <path
         d="M10.25 23.4888L14.4354 29.4338C14.76 29.9121 15.2896 30.2025 15.8704 30.2367C16.4513 30.2538 16.9979 29.9975 17.3567 29.5363L30.75 12.5554"

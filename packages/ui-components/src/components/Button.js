@@ -11,9 +11,9 @@ import PropTypes from 'prop-types';
 import * as COLORS from '../theme/colors';
 
 const StyledButton = styled(MuiButton)`
-  font-size: 0.9375rem; // maybe move this to theme
-  line-height: 1; // maybe move this to theme
-  letter-spacing: 0; // maybe move this to theme
+  font-size: 0.9375rem;
+  line-height: 1;
+  letter-spacing: 0;
   padding: 1em 1.5em;
   min-width: 8em;
   box-shadow: none;
@@ -81,7 +81,9 @@ export const SmallButton = styled(Button)`
 /*
  * Light Outlined Button
  */
-export const LightOutlinedButton = styled(props => <Button {...props} variant="outlined" />)`
+const OutlinedButton = props => <Button {...props} variant="outlined" />;
+
+export const LightOutlinedButton = styled(OutlinedButton)`
   color: ${COLORS.WHITE};
   border-color: ${COLORS.GREY_DE};
   justify-content: space-between;
@@ -100,7 +102,7 @@ export const LightOutlinedButton = styled(props => <Button {...props} variant="o
 `;
 
 /*
- * Light Outlined Button
+ * Profile button
  */
 export const ProfileButton = styled(props => (
   <MuiButton endIcon={<ExpandMore />} startIcon={<Avatar />} {...props} />
