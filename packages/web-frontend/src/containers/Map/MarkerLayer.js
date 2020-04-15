@@ -93,7 +93,6 @@ export class MarkerLayer extends Component {
       nextProps.sidePanelWidth !== sidePanelWidth ||
       nextProps.measureData !== measureData
     ) {
-      console.log('re-rendering marker layer');
       return true;
     }
     return false;

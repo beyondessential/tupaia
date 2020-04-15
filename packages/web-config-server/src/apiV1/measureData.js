@@ -151,7 +151,10 @@ export default class extends DataAggregatingRouteHandler {
       .map(mo => updateLegendFromDisplayedValueKey(mo, measureData));
 
     return {
-      measureId: overlays.map(o => o.id).join(','),
+      measureId: overlays
+        .map(o => o.id)
+        .sort()
+        .join(','),
       measureLevel: getMeasureLevel(overlays),
       measureOptions,
       measureData,

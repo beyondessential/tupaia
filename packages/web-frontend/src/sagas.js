@@ -633,7 +633,7 @@ function* watchSearchChange() {
  * Fetches data for a measure and write it to map state by calling fetchMeasureSuccess.
  *
  */
-function* fetchMeasureInfo(measureId, organisationUnitCode, oldOrganisationUnitCode = null) {
+function* fetchMeasureInfo(measureId, organisationUnitCode, oldOrgUnitCountry = null) {
   if (organisationUnitCode === 'World') {
     // Never want to fetch measures for World org code.
     yield put(cancelFetchMeasureData());
@@ -649,10 +649,12 @@ function* fetchMeasureInfo(measureId, organisationUnitCode, oldOrganisationUnitC
   }
 
   const countryCode = organisationUnitCode.substring(0, 2);
-  if (oldOrganisationUnitCode) {
-    const oldCountryCode = oldOrganisationUnitCode.substring(0, 2);
-    if (oldCountryCode !== countryCode) {
+  if (oldOrgUnitCountry) {
+    if (oldOrgUnitCountry !== countryCode) {
       yield put(clearMeasureHierarchy());
+    } else {
+      // We are in the same country as before, no need to refetch measureData
+      return;
     }
   }
 
@@ -734,12 +736,12 @@ function* watchFetchMeasureSuccess() {
 
 function* fetchMeasureInfoForNewOrgUnit(action) {
   const { organisationUnitCode } = action;
-  const { measureId, oldOrgUnitCode } = yield select(state => ({
+  const { measureId, oldOrgUnitCountry } = yield select(state => ({
     measureId: state.map.measureInfo.measureId,
-    oldOrgUnitCode: state.measureBar.currentMeasureOrganisationUnitCode,
+    oldOrgUnitCountry: state.map.measureInfo.currentCountry,
   }));
   if (measureId) {
-    yield fetchMeasureInfo(measureId, organisationUnitCode, oldOrgUnitCode);
+    yield fetchMeasureInfo(measureId, organisationUnitCode, oldOrgUnitCountry);
   }
 }
 
