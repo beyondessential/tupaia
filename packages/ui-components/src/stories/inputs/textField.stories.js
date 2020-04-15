@@ -3,11 +3,11 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { CalendarToday, KeyboardArrowDown, Visibility } from '@material-ui/icons';
-import { TextField, Checkbox } from '../../components/Inputs';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import styled from 'styled-components';
+import { TextField } from '../../components/Inputs';
 
 export default {
   title: 'Inputs/TextField',
@@ -20,7 +20,7 @@ const Container = styled.div`
 
 export const textField = () => (
   <Container>
-    <TextField name="simpleText" label="Simple text field" autocomplete="off" />
+    <TextField name="simpleText" label="Simple text field" autoComplete="off" />
     <TextField name="defaultValue" label="Default Value" defaultValue="Default Value" />
     <TextField name="required" label="Required field" required />
     <TextField name="disabled" label="Disabled" disabled />
@@ -122,33 +122,36 @@ const FlexContainer = styled.div`
   display: flex;
   max-width: 750px;
   padding: 2rem;
+`;
 
-  .MuiTextField-root {
-    flex: 1;
+const FlexTextField = styled(TextField)`
+  flex: 1;
 
-    &:first-child {
-      margin-right: 1rem;
-    }
+  &:first-child {
+    margin-right: 1rem;
+  }
 
-    &:last-child {
-      margin-left: 1rem;
-    }
+  &:last-child {
+    margin-left: 1rem;
   }
 `;
 
 export const layout = () => (
   <FlexContainer>
-    <TextField name="field1" label="Field 1" />
-    <TextField name="field2" label="Field 2" />
+    <FlexTextField name="field1" label="Field 1" />
+    <FlexTextField name="field2" label="Field 2" />
   </FlexContainer>
 );
 
 export const controlled = () => {
   const [value, setValue] = useState('Foo');
 
-  const handleChange = event => {
-    setValue(event.target.value);
-  };
+  const handleChange = useCallback(
+    event => {
+      setValue(event.target.value);
+    },
+    [setValue],
+  );
 
   return (
     <Container>

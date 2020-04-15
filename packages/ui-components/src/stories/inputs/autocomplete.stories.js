@@ -4,8 +4,8 @@
  */
 
 import React from 'react';
-import { AutoComplete } from '../../components/Inputs';
 import styled from 'styled-components';
+import { AutoComplete } from '../../components/Inputs';
 
 export default {
   title: 'Inputs/Autocomplete',

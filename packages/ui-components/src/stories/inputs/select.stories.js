@@ -4,8 +4,8 @@
  */
 
 import React from 'react';
-import { Select, NativeSelect } from '../../components/Inputs';
 import styled from 'styled-components';
+import { Select, NativeSelect } from '../../components/Inputs';
 
 export default {
   title: 'Inputs/Select',

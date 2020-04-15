@@ -11,7 +11,9 @@ import * as COLORS from '../../theme/colors';
 /*
  * TextField
  */
-export const TextField = styled(props => <MuiTextField fullWidth {...props} variant="outlined" />)`
+const BaseTextField = props => <MuiTextField fullWidth {...props} variant="outlined" />;
+
+export const TextField = styled(BaseTextField)`
   margin-bottom: 1.5rem;
 
   .MuiInputBase-root {

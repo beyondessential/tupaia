@@ -5,6 +5,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import MuiButton from '@material-ui/core/Button';
+import ExpandMore from '@material-ui/icons/ExpandMore';
+import Avatar from '@material-ui/core/Avatar';
 import PropTypes from 'prop-types';
 import * as COLORS from '../theme/colors';
 
@@ -102,14 +104,14 @@ export const LightOutlinedButton = styled(OutlinedButton)`
 // /*
 //  * Profile button
 //  */
-// export const ProfileButton = styled(props => (
-//   <MuiButton endIcon={<ExpandMore />} startIcon={<Avatar />} {...props} />
-// ))`
-//   color: ${COLORS.WHITE};
-//
-//   .MuiAvatar-root {
-//     height: 30px;
-//     width: 30px;
-//     color: white;
-//   }
-// `;
+export const ProfileButton = styled(props => (
+  <MuiButton endIcon={<ExpandMore />} startIcon={<Avatar />} {...props} />
+))`
+  color: ${COLORS.WHITE};
+
+  .MuiAvatar-root {
+    height: 30px;
+    width: 30px;
+    color: white;
+  }
+`;

@@ -3,19 +3,18 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import MuiMenuItem from '@material-ui/core/MenuItem';
-import { TextField } from './TextField';
 import { KeyboardArrowDown } from '@material-ui/icons';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { TextField } from './TextField';
 import * as COLORS from '../../theme/colors';
-import { DialogTitle } from '../Dialog';
 
 const SelectField = styled(({ SelectProps, ...props }) => (
   <TextField
     SelectProps={{
-      IconComponent: props => <KeyboardArrowDown {...props} />,
+      IconComponent: iconProps => <KeyboardArrowDown {...iconProps} />,
       ...SelectProps,
     }}
     {...props}
@@ -44,12 +43,15 @@ const SelectField = styled(({ SelectProps, ...props }) => (
 /**
  * Select field
  */
-export const Select = ({ options, placeholder = 'Please select', ...props }) => {
-  const [value, setValue] = useState('');
+export const Select = ({ options, placeholder, defaultValue, ...props }) => {
+  const [value, setValue] = useState(defaultValue);
 
-  const handleChange = event => {
-    setValue(event.target.value);
-  };
+  const handleChange = useCallback(
+    event => {
+      setValue(event.target.value);
+    },
+    [setValue],
+  );
 
   return (
     <SelectField
@@ -74,17 +76,27 @@ export const Select = ({ options, placeholder = 'Please select', ...props }) => 
 
 Select.propTypes = {
   options: PropTypes.array.isRequired,
+  placeholder: PropTypes.string,
+  defaultValue: PropTypes.any,
+};
+
+Select.defaultProps = {
+  placeholder: 'Please select',
+  defaultValue: '',
 };
 
 /**
  * Native Select field
  */
-export const NativeSelect = ({ options, placeholder = 'Please select', ...props }) => {
+export const NativeSelect = ({ options, placeholder, defaultValue, ...props }) => {
   const [value, setValue] = useState('');
 
-  const handleChange = event => {
-    setValue(event.target.value);
-  };
+  const handleChange = useCallback(
+    event => {
+      setValue(event.target.value);
+    },
+    [setValue],
+  );
 
   return (
     <SelectField
@@ -109,4 +121,11 @@ export const NativeSelect = ({ options, placeholder = 'Please select', ...props 
 
 NativeSelect.propTypes = {
   options: PropTypes.array.isRequired,
+  placeholder: PropTypes.string,
+  defaultValue: PropTypes.any,
+};
+
+NativeSelect.defaultProps = {
+  placeholder: 'Please select',
+  defaultValue: '',
 };
