@@ -21,20 +21,48 @@ exports.up = function(db) {
     insert into "dashboardReport" ("id", "dataBuilder", "dataBuilderConfig", "viewJson")
     values (
       'COVID_Tests_Per_Capita',
-      'percentagesByNominatedPairs',
+      'sumPreviousValuesPer100kPerDayByOrgUnit',
+      '{"divisor": "AU_POP002", "dataElementCodes": ["dailysurvey006"]}',
       '{
-        "pairs": {"dailysurvey006": "AU_POP002"},
-        "aggregationTypes": {
-          "numerator": "${AGGREGATION_TYPES.SUM}",
-          "denominator": "${AGGREGATION_TYPES.FINAL_EACH_DAY_FILL_EMPTY_DAYS}"
-        }
-      }',
-      '{
-        "name":"COVID-19 Tests per capita",
-        "type": "chart",
-        "chartType": "line",
-        "valueType": "percentage",
-        "periodGranularity": "day"
+        "periodGranularity" : "day",
+        "chartConfig" : {
+          "AU_Australian Capital Territory" : {
+            "label" : "ACT",
+            "legendOrder" : 0
+          },
+          "AU_New South Wales" : {
+            "label" : "NSW",
+            "legendOrder" : 1
+          },
+          "AU_Northern Territory" : {
+            "label" : "NT",
+            "legendOrder" : 2
+          },
+          "AU_Queensland" : {
+            "label" : "QLD",
+            "legendOrder" : 3
+          },
+          "AU_South Australia" : {
+            "label" : "SA",
+            "legendOrder" : 4
+          },
+          "AU_Tasmania" : {
+            "label" : "TAS",
+            "legendOrder" : 5
+          },
+          "AU_Victoria" : {
+            "label" : "VIC",
+            "legendOrder" : 6
+          },
+          "AU_Western Australia" : {
+            "label" : "WA",
+            "legendOrder" : 7
+          }
+        },
+        "chartType" : "line",
+        "name" : "COVID-19 Total tests per capita",
+        "type" : "chart",
+        "description" : "Total tests per 100k"
       }'
     );
 
