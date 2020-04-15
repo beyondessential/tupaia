@@ -8,12 +8,31 @@ import React from 'react';
 import { ResourcePage } from './ResourcePage';
 import { TabsPage } from '../TabsPage';
 
+const localStyles = {
+  config: {
+    dt: {
+      float: 'left',
+      clear: 'left',
+      width: '175px',
+      'text-align': 'right',
+      'margin-right': '5px',
+    },
+  },
+};
+
+const dataSourceConfigView = row => {
+  const entries = Object.entries(row.value).map(([key, value]) => (
+    <React.Fragment key={key}>
+      <dt style={localStyles.config.dt}>{key}:</dt>
+      <dd>{value.toString()}</dd>
+    </React.Fragment>
+  ));
+
+  return <dl>{entries}</dl>;
+};
+
 const DATA_ELEMENTS = 'DATA_ELEMENTS';
 const PROGRAMS = 'PROGRAMS';
-
-const EDIT_CONFIG = {
-  title: 'Edit Data Source',
-};
 
 const TABS = {
   [DATA_ELEMENTS]: {
@@ -31,7 +50,7 @@ const TABS = {
       {
         Header: 'Config',
         source: 'config',
-        accessor: rowData => JSON.stringify(rowData),
+        Cell: row => dataSourceConfigView(row),
         editConfig: {
           type: 'json',
           getJsonFieldSchema: () => [
@@ -88,12 +107,12 @@ const getTabPage = tabName => {
             type: 'edit',
             source: 'id',
             actionConfig: {
-              editEndpoint: 'data_sources',
+              editEndpoint: 'data_source',
               fields: fields,
             },
           },
         ]}
-        editConfig={EDIT_CONFIG}
+        editConfig={{ title: 'Edit Data Source' }}
       />
     ),
   };
