@@ -24,7 +24,7 @@ const RADIUS_OVERLAY = {
   dataElementCode: 'SSWT1072',
   displayType: 'radius',
   isDataRegional: false,
-  hideFromMenu: false,
+  hideFromMenu: true,
   hideFromPopup: false,
   hideFromLegend: true,
   values: [
@@ -65,7 +65,7 @@ const SHOWN_OVERLAY = {
       numerator: {
         measureBuilder: 'sumAllPerOrgUnit',
         measureBuilderConfig: {
-          dataElementCodes: ['SSWT1021', 'SSWT1022', 'SSWT1023', 'SSWT1024'],
+          dataElementCodes: ['SSWT1021', 'SSWT1022', 'SSWT1023'],
         },
       },
       denominator: {

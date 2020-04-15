@@ -86,7 +86,7 @@ const OVERLAY_2 = {
 
 const OVERLAY_3 = {
   id: 'STRIVE_CRF_Positive_Non_Pf_Percentage',
-  name: 'Positive Non Pf',
+  name: 'Positive Non-Pf',
   value: 'Positive Non-Pf',
 };
 
