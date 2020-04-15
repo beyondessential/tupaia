@@ -1,5 +1,10 @@
 import createCachedSelector from 're-reselect';
 import { createSelector } from 'reselect';
+import {
+  POLYGON_MEASURE_TYPES,
+  getMeasureDisplayInfo,
+  calculateRadiusScaleFactor,
+} from './utils/measures';
 
 // Attempt to use previously set tab name, revert to first tab if not available for this org unit.
 export const getCurrentDashboardKey = ({ dashboard, global }) => {
@@ -48,7 +53,31 @@ const countryAsHierarchyObjectCache = createCachedSelector(
   (country, world) => recursiveBuildHierarchy(country, country[country.countryCode], world),
 )((country, world) => country.countryCode);
 
+const measureWithDisplayInfoCache = createCachedSelector(
+  [
+    measureOptions => measureOptions,
+    (_, hiddenMeasures) => hiddenMeasures,
+    (_, __, data) => data,
+    (_, __, ___, organisationUnitCode) => organisationUnitCode,
+  ],
+  (options = [], hiddenMeasures, data, organisationUnitCode) => {
+    return {
+      organisationUnitCode,
+      ...data,
+      ...getMeasureDisplayInfo({ ...data }, options, hiddenMeasures),
+    };
+  },
+)((_, __, ___, organisationUnitCode) => organisationUnitCode);
+
 // Private utility functions
+
+const safeGet = (cache, args) => {
+  if (!cache.keySelector(...args)) {
+    return undefined;
+  }
+
+  return cache(...args);
+};
 
 const selectCountriesAsOrgUnits = createSelector([state => state.orgUnits.orgUnitMap], orgUnitMap =>
   Object.entries(orgUnitMap)
@@ -56,38 +85,44 @@ const selectCountriesAsOrgUnits = createSelector([state => state.orgUnits.orgUni
     .filter(country => country.organisationUnitCode !== 'World'),
 );
 
-const recursiveBuildHierarchy = (state, orgUnit, parent) => ({
+const recursiveBuildHierarchy = (country, orgUnit, parent) => ({
   ...orgUnit,
   parent,
-  organisationUnitChildren: orgUnitChildrenCache(state, orgUnit.organisationUnitCode).map(child =>
-    recursiveBuildHierarchy(state, child, orgUnit),
-  ),
+  organisationUnitChildren: safeGet(orgUnitChildrenCache, [
+    country,
+    orgUnit.organisationUnitCode,
+  ]).map(child => recursiveBuildHierarchy(country, child, orgUnit)),
 });
+
+const getOrgUnitFromMeasureData = (measureData, code) =>
+  measureData.find(val => val.organisationUnitCode === code);
+
+const getOrgUnitFromCountry = (country, code) => {
+  if (country === undefined) {
+    return undefined;
+  }
+  return country[code];
+};
 
 // Public Selectors
 export const selectOrgUnit = createSelector(
-  [(state, code) => countryCache(state.orgUnits.orgUnitMap, code), (_, code) => code],
-  (country, code) => {
-    if (country === undefined) {
-      return undefined;
-    }
-    return country[code];
-  },
+  [(state, code) => safeGet(countryCache, [state.orgUnits.orgUnitMap, code]), (_, code) => code],
+  getOrgUnitFromCountry,
 );
 
-export const cachedSelectOrgUnitChildren = createSelector(
+export const selectOrgUnitChildren = createSelector(
   [
     state => selectCountriesAsOrgUnits(state),
-    (state, code) => countryCache(state.orgUnits.orgUnitMap, code),
+    (state, code) => safeGet(countryCache, [state.orgUnits.orgUnitMap, code]),
     (_, code) => code,
   ],
   (countriesAsOrgUnits, country, code) =>
-    code === 'World' ? countriesAsOrgUnits : orgUnitChildrenCache(country, code),
+    code === 'World' ? countriesAsOrgUnits : safeGet(orgUnitChildrenCache, [country, code]),
 );
 
 export const selectCountryAndDescendants = createSelector(
-  [(state, countryCode) => countryCache(state.orgUnits.orgUnitMap, countryCode)],
-  allCountryOrgUnitsCache,
+  [(state, countryCode) => safeGet(countryCache, [state.orgUnits.orgUnitMap, countryCode])],
+  country => safeGet(allCountryOrgUnitsCache, [country]),
 );
 
 export const selectOrgUnitsAsHierarchy = createSelector(
@@ -101,9 +136,97 @@ export const selectOrgUnitsAsHierarchy = createSelector(
     const hierarchy = {
       ...world,
       organisationUnitChildren: countriesAsOrgUnits.map(countryOrgUnit =>
-        countryAsHierarchyObjectCache(orgUnitMap[countryOrgUnit.organisationUnitCode], world),
+        safeGet(countryAsHierarchyObjectCache, [
+          orgUnitMap[countryOrgUnit.organisationUnitCode],
+          world,
+        ]),
       ),
     };
     return hierarchy;
   },
+);
+
+export const selectHasPolygonMeasure = createSelector(
+  [state => state.map.measureInfo],
+  (measureInfo = {}) => {
+    return (
+      measureInfo.measureOptions &&
+      measureInfo.measureOptions.some(option => POLYGON_MEASURE_TYPES.includes(option.type))
+    );
+  },
+);
+
+export const selectAllMeasuresWithDisplayInfo = createSelector(
+  [
+    state =>
+      safeGet(countryCache, [state.orgUnits.orgUnitMap, state.map.measureInfo.currentCountry]),
+    state => state.map.measureInfo.measureData,
+    state => state.map.measureInfo.currentCountry,
+    state => state.map.measureInfo.measureLevel,
+    state => state.map.measureInfo.measureOptions,
+    state => state.map.measureInfo.hiddenMeasures,
+  ],
+  (country, measureData, currentCountry, measureLevel, measureOptions, hiddenMeasures) => {
+    if (!measureLevel || !currentCountry || !measureData || currentCountry === 'World') {
+      return [];
+    }
+
+    // WARNING: Very hacky code to get measureMarker rendering correctly for AU
+    // This is due to AU having two levels of 'Region' entities (see: https://github.com/beyondessential/tupaia-backlog/issues/295)
+    // START OF HACK
+    if (currentCountry === 'AU') {
+      const parentCodes = measureData
+        .map(data => getOrgUnitFromCountry(country, data.organisationUnitCode))
+        .filter(orgUnit => orgUnit)
+        .map(orgUnit => orgUnit.parent)
+        .filter((parentCode, index, self) => self.indexOf(parentCode) === index); //Filters for uniqueness
+
+      const allSiblingOrgUnits = parentCodes.reduce(
+        (arr, parentCode) => [...arr, ...safeGet(orgUnitChildrenCache, [country, parentCode])],
+        [],
+      );
+
+      return allSiblingOrgUnits.map(orgUnit =>
+        safeGet(measureWithDisplayInfoCache, [
+          measureOptions,
+          hiddenMeasures,
+          getOrgUnitFromMeasureData(measureData, orgUnit.organisationUnitCode),
+          orgUnit.organisationUnitCode,
+        ]),
+      );
+    }
+    // END OF HACK
+    // Ideally, we should be using the below code instead for all orgUnits
+
+    const listOfMeasureLevels = measureLevel.split(',');
+    const allOrgUnitsOfLevel = safeGet(allCountryOrgUnitsCache, [country]).filter(orgUnit =>
+      listOfMeasureLevels.includes(orgUnit.type),
+    );
+    return allOrgUnitsOfLevel.map(orgUnit =>
+      safeGet(measureWithDisplayInfoCache, [
+        measureOptions,
+        hiddenMeasures,
+        getOrgUnitFromMeasureData(measureData, orgUnit.organisationUnitCode),
+        orgUnit.organisationUnitCode,
+      ]),
+    );
+  },
+);
+
+export const selectAllMeasuresWithDisplayAndOrgUnitData = createSelector(
+  [
+    state =>
+      safeGet(countryCache, [state.orgUnits.orgUnitMap, state.map.measureInfo.currentCountry]),
+    selectAllMeasuresWithDisplayInfo,
+  ],
+  (country, allMeasureData) =>
+    allMeasureData.map(data => ({
+      ...data,
+      ...getOrgUnitFromCountry(country, data.organisationUnitCode),
+    })),
+);
+
+export const selectRadiusScaleFactor = createSelector(
+  [selectAllMeasuresWithDisplayInfo],
+  calculateRadiusScaleFactor,
 );

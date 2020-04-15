@@ -6,13 +6,6 @@
  */
 
 import { combineReducers } from 'redux';
-import { createSelector } from 'reselect';
-import createCachedSelector from 're-reselect';
-import {
-  cachedSelectOrgUnitChildren,
-  selectOrgUnit,
-  selectCountryAndDescendants,
-} from '../selectors';
 
 import {
   GO_HOME,
@@ -32,14 +25,7 @@ import {
   HIDE_MAP_MEASURE,
   UNHIDE_MAP_MEASURE,
 } from '../actions';
-import { getMeasureFromHierarchy } from '../utils/getMeasureFromHierarchy';
 import { MARKER_TYPES } from '../containers/Map/MarkerLayer';
-import {
-  getMeasureDisplayInfo,
-  calculateRadiusScaleFactor,
-  MEASURE_TYPE_SHADING,
-  MEASURE_TYPE_SHADED_SPECTRUM,
-} from '../utils/measures';
 
 import { initialOrgUnit } from '../defaults';
 
@@ -258,90 +244,3 @@ export default combineReducers({
   shouldSnapToPosition,
   isMeasureLoading,
 });
-
-// Public selectors
-
-export function selectMeasureName(state = {}) {
-  const { measureHierarchy, selectedMeasureId } = state.measureBar;
-  const selectedMeasure = getMeasureFromHierarchy(measureHierarchy, selectedMeasureId);
-  return selectedMeasure ? selectedMeasure.name : '';
-}
-
-export const selectHasPolygonMeasure = createSelector(
-  [state => state.map.measureInfo],
-  (stateMeasureInfo = {}) => {
-    return (
-      stateMeasureInfo.measureOptions &&
-      stateMeasureInfo.measureOptions.some(
-        option =>
-          option.type === MEASURE_TYPE_SHADING || option.type === MEASURE_TYPE_SHADED_SPECTRUM,
-      )
-    );
-  },
-);
-
-const selectMeasureDataByCode = createSelector(
-  [state => state.map.measureInfo.measureData, (_, code) => code],
-  (data = [], code) => data.find(val => val.organisationUnitCode === code),
-);
-
-const cachedSelectMeasureWithDisplayInfo = createCachedSelector(
-  [
-    (_, organisationUnitCode) => organisationUnitCode,
-    selectMeasureDataByCode,
-    state => state.map.measureInfo.measureOptions,
-    state => state.map.measureInfo.hiddenMeasures,
-  ],
-  (organisationUnitCode, data, options = [], hiddenMeasures) => {
-    return {
-      organisationUnitCode,
-      ...data,
-      ...getMeasureDisplayInfo({ ...data }, options, hiddenMeasures),
-    };
-  },
-)((_, orgUnitCode) => orgUnitCode);
-
-export const selectAllMeasuresWithDisplayInfo = createSelector(
-  [state => state, state => state.map.measureInfo],
-  (state, measureInfoParam) => {
-    const { measureData, currentCountry, measureLevel } = measureInfoParam;
-    if (!measureLevel || !currentCountry || !measureData) {
-      return [];
-    }
-
-    // WARNING: Very hacky code to get measureMarker rendering correctly for AU
-    // This is due to AU having two levels of 'Region' entities (see: https://github.com/beyondessential/tupaia-backlog/issues/295)
-    // START OF HACK
-    if (currentCountry === 'AU') {
-      const parentCodes = measureData
-        .map(data => selectOrgUnit(state, data.organisationUnitCode))
-        .filter(orgUnit => orgUnit)
-        .map(orgUnit => orgUnit.parent)
-        .filter((parentCode, index, self) => self.indexOf(parentCode) === index); //Filters for uniqueness
-
-      const allSiblingOrgUnits = parentCodes.reduce(
-        (arr, parentCode) => [...arr, ...cachedSelectOrgUnitChildren(state, parentCode)],
-        [],
-      );
-
-      return allSiblingOrgUnits.map(orgUnit =>
-        cachedSelectMeasureWithDisplayInfo(state, orgUnit.organisationUnitCode),
-      );
-    }
-    // END OF HACK
-    // Ideally, we should be using the below code instead for all orgUnits
-
-    const listOfMeasureLevels = measureLevel.split(',');
-    const allOrgUnitsOfLevel = selectCountryAndDescendants(state, currentCountry).filter(orgUnit =>
-      listOfMeasureLevels.includes(orgUnit.type),
-    );
-    return allOrgUnitsOfLevel.map(orgUnit =>
-      cachedSelectMeasureWithDisplayInfo(state, orgUnit.organisationUnitCode),
-    );
-  },
-);
-
-export const selectRadiusScaleFactor = createSelector(
-  [selectAllMeasuresWithDisplayInfo],
-  calculateRadiusScaleFactor,
-);

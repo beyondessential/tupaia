@@ -15,10 +15,10 @@ import { AreaTooltip } from './AreaTooltip';
 import { MAP_COLORS } from '../../styles';
 import { changeOrgUnit } from '../../actions';
 import {
+  selectOrgUnit,
   selectHasPolygonMeasure,
   selectAllMeasuresWithDisplayInfo,
-} from '../../reducers/mapReducers';
-import { selectOrgUnit } from '../../selectors';
+} from '../../selectors';
 import ActivePolygon from './ActivePolygon';
 
 const { POLYGON_BLUE, POLYGON_HIGHLIGHT } = MAP_COLORS;

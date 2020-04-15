@@ -8,7 +8,7 @@
 import { call, put, delay, takeEvery, takeLatest, select } from 'redux-saga/effects';
 import queryString from 'query-string';
 import request from './utils/request';
-import { selectOrgUnit, cachedSelectOrgUnitChildren } from './selectors';
+import { selectOrgUnit, selectOrgUnitChildren } from './selectors';
 import {
   ATTEMPT_CHANGE_PASSWORD,
   ATTEMPT_LOGIN,
@@ -446,7 +446,7 @@ function* fetchOrgUnitDataAndChangeOrgUnit(action) {
     const orgUnitAndChildren = {
       ...orgUnit,
       parent: selectOrgUnit(state, orgUnit.parent) || {},
-      organisationUnitChildren: cachedSelectOrgUnitChildren(state, organisationUnitCode),
+      organisationUnitChildren: selectOrgUnitChildren(state, organisationUnitCode),
     };
     yield put(changeOrgUnitSuccess(orgUnitAndChildren, shouldChangeMapBounds));
     return; // If we already have the org unit in reduxStore, just exit early
@@ -706,7 +706,11 @@ function* fetchCurrentMeasureInfo() {
         activeProject,
       );
 
-      yield put(changeMeasure(newMeasure, organisationUnitCode));
+      if (newMeasure !== measureId) {
+        console.log(newMeasure);
+        console.log(measureId);
+        yield put(changeMeasure(newMeasure, organisationUnitCode));
+      }
     } else {
       /** Ensure measure is selected if there is a current measure selected in the case
        * it is not selected through the measureBar UI
