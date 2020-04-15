@@ -23,7 +23,7 @@ const RADIUS_OVERLAY = {
   userGroup: 'STRIVE User',
   dataElementCode: 'SSWT1072',
   displayType: 'radius',
-  isDataRegional: false,
+  isDataRegional: true,
   hideFromMenu: true,
   hideFromPopup: false,
   hideFromLegend: true,

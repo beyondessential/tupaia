@@ -27,7 +27,7 @@ const OVERLAY = {
   userGroup: 'STRIVE User',
   dataElementCode: 'value',
   displayType: 'radius',
-  isDataRegional: false,
+  isDataRegional: true,
   hideFromMenu: true,
   hideFromPopup: false,
   hideFromLegend: true,
