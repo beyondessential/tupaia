@@ -11,11 +11,9 @@ export class GroupEventsPerOrgUnitBuilder extends DataPerOrgUnitBuilder {
   getBaseBuilderClass = () => CountEventsBuilder;
 
   async fetchResults() {
-    const { organisationUnitGroupCode } = this.query;
-
     return this.fetchEvents({
       dataValueFormat: 'object',
-      organisationUnitCode: organisationUnitGroupCode,
+      organisationUnitCode: this.entity.code,
     });
   }
 
@@ -27,12 +25,19 @@ export class GroupEventsPerOrgUnitBuilder extends DataPerOrgUnitBuilder {
   }
 }
 
-export const groupEventsPerOrgUnit = async (aggregator, dhisApi, query, measureBuilderConfig) => {
+export const groupEventsPerOrgUnit = async (
+  aggregator,
+  dhisApi,
+  query,
+  measureBuilderConfig,
+  entity,
+) => {
   const builder = new GroupEventsPerOrgUnitBuilder(
     aggregator,
     dhisApi,
     measureBuilderConfig,
     query,
+    entity,
   );
   return builder.build();
 };
