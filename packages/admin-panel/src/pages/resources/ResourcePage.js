@@ -21,6 +21,7 @@ export const ResourcePage = ({
   filteredExportConfig,
   onProcessDataForSave,
   title,
+  baseFilter,
 }) => (
   <Page>
     <Header>
@@ -36,6 +37,7 @@ export const ResourcePage = ({
         endpoint={endpoint}
         expansionTabs={expansionTabs}
         reduxId={endpoint}
+        baseFilter={baseFilter}
       />
     </Body>
     {importConfig && <ImportModal {...importConfig} />}
@@ -61,6 +63,7 @@ ResourcePage.propTypes = {
   importConfig: PropTypes.object,
   filteredExportConfig: PropTypes.object,
   title: PropTypes.string.isRequired,
+  baseFilter: PropTypes.object,
 };
 
 ResourcePage.defaultProps = {
@@ -70,4 +73,5 @@ ResourcePage.defaultProps = {
   importConfig: null,
   filteredExportConfig: null,
   onProcessDataForSave: null,
+  baseFilter: {},
 };

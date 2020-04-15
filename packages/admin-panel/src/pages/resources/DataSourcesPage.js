@@ -14,8 +14,8 @@ const localStyles = {
       float: 'left',
       clear: 'left',
       width: '175px',
-      'text-align': 'right',
-      'margin-right': '5px',
+      textAlign: 'right',
+      marginRight: '5px',
     },
   },
 };
@@ -33,63 +33,57 @@ const dataSourceConfigView = row => {
 
 const DATA_ELEMENTS = 'DATA_ELEMENTS';
 const PROGRAMS = 'PROGRAMS';
+const DATA_SOURCE_FIELDS = [
+  {
+    Header: 'Code',
+    source: 'code',
+  },
+  {
+    Header: 'Service Type',
+    source: 'service_type',
+  },
+  {
+    Header: 'Config',
+    source: 'config',
+    Cell: row => dataSourceConfigView(row),
+    editConfig: {
+      type: 'json',
+      getJsonFieldSchema: () => [
+        {
+          label: 'Regional Data',
+          fieldName: 'isDataRegional',
+          type: 'boolean',
+        },
+        {
+          label: 'Data Element Code',
+          fieldName: 'dataElementCode',
+        },
+        {
+          label: 'Category Option Combo',
+          fieldName: 'categoryOptionCombo',
+        },
+      ],
+    },
+  },
+];
 
 const TABS = {
   [DATA_ELEMENTS]: {
     title: 'Data Elements',
     endpoint: 'data_source',
-    fields: [
-      {
-        Header: 'Code',
-        source: 'code',
-      },
-      {
-        Header: 'Service Type',
-        source: 'service_type',
-      },
-      {
-        Header: 'Config',
-        source: 'config',
-        Cell: row => dataSourceConfigView(row),
-        editConfig: {
-          type: 'json',
-          getJsonFieldSchema: () => [
-            {
-              label: 'Regional Data',
-              fieldName: 'isDataRegional',
-              type: 'boolean',
-            },
-            {
-              label: 'Data Element Code',
-              fieldName: 'dataElementCode',
-            },
-            {
-              label: 'Category Option Combo',
-              fieldName: 'categoryOptionCombo',
-            },
-          ],
-        },
-      },
-    ],
+    baseFilter: { type: 'dataElement' },
+    fields: DATA_SOURCE_FIELDS,
   },
   [PROGRAMS]: {
     title: 'Programs',
     endpoint: 'data_source',
-    fields: [
-      {
-        Header: 'Code',
-        source: 'code',
-      },
-      {
-        Header: 'Service Type',
-        source: 'service_type',
-      },
-    ],
+    baseFilter: { type: 'dataGroup' },
+    fields: DATA_SOURCE_FIELDS,
   },
 };
 
 const getTabPage = tabName => {
-  const { title, endpoint, fields } = TABS[tabName];
+  const { title, endpoint, fields, baseFilter } = TABS[tabName];
   if (!TABS[tabName]) {
     console.warn(`No tab with name '${tabName}' found.`); // eslint-disable-line no-console
   }
@@ -113,6 +107,7 @@ const getTabPage = tabName => {
           },
         ]}
         editConfig={{ title: 'Edit Data Source' }}
+        baseFilter={baseFilter}
       />
     ),
   };
