@@ -83,10 +83,8 @@ const OPTION_COLUMNS = [
 const EXPANSION_CONFIG = [
   {
     title: 'Options',
-    endpoint: 'options',
+    endpoint: 'optionSet/{option_set_id}/options',
     columns: OPTION_COLUMNS,
-    joinFrom: 'option_set_id',
-    joinTo: 'option_set_id',
   },
 ];
 

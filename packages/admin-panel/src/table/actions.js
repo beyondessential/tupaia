@@ -25,7 +25,7 @@ import {
   SORTING_CHANGE,
 } from './constants';
 import { getTableState } from './selectors';
-import { convertFilterToString } from '../utilities';
+import { convertSearchTermToFilter } from '../utilities';
 
 export const changePage = (reduxId, pageIndex) => ({
   type: PAGE_INDEX_CHANGE,
@@ -83,7 +83,7 @@ export const refreshData = (reduxId, endpoint, columns, baseFilter, tableState) 
   filters.forEach(({ id, value }) => {
     filterObject[id] = value;
   });
-  const filterString = convertFilterToString(filterObject);
+  const filterString = JSON.stringify(convertSearchTermToFilter(filterObject));
 
   // Set up sort
   const sortObjects = sorting.map(({ id, desc }) => {
