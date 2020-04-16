@@ -79,11 +79,18 @@ const TABS = {
     endpoint: 'data_source',
     baseFilter: { type: 'dataGroup' },
     fields: DATA_SOURCE_FIELDS,
+    expansionTabs: [
+      {
+        title: 'Data Elements',
+        endpoint: 'data_source/{id}/data_source',
+        columns: DATA_SOURCE_FIELDS,
+      },
+    ],
   },
 };
 
 const getTabPage = tabName => {
-  const { title, endpoint, fields, baseFilter } = TABS[tabName];
+  const { title, endpoint, fields, baseFilter, expansionTabs } = TABS[tabName];
   if (!TABS[tabName]) {
     console.warn(`No tab with name '${tabName}' found.`); // eslint-disable-line no-console
   }
@@ -107,6 +114,7 @@ const getTabPage = tabName => {
             },
           },
         ]}
+        expansionTabs={expansionTabs}
         editConfig={{ title: 'Edit Data Source' }}
         baseFilter={baseFilter}
       />
