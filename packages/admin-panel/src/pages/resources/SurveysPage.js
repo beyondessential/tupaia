@@ -223,10 +223,8 @@ const QUESTION_COLUMNS = [
 const EXPANSION_CONFIG = [
   {
     title: 'Questions',
-    endpoint: 'surveyScreenComponents',
+    endpoint: 'survey/{id}/surveyScreenComponents',
     columns: QUESTION_COLUMNS,
-    joinFrom: 'id',
-    joinTo: 'survey_id',
   },
 ];
 

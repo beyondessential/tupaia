@@ -76,22 +76,16 @@ const EXPANSION_CONFIG = [
     title: 'Country Permissions',
     endpoint: 'userCountryPermissions',
     columns: COUNTRY_PERMISSION_COLUMNS,
-    joinFrom: 'id',
-    joinTo: 'user_id',
   },
   {
     title: 'Geographical Area Permissions',
     endpoint: 'userGeographicalAreaPermissions',
     columns: GEOGRAPHICAL_AREA_PERMISSION_COLUMNS,
-    joinFrom: 'id',
-    joinTo: 'user_id',
   },
   {
     title: 'Facility Permissions',
     endpoint: 'userClinicPermissions',
     columns: FACILITY_PERMISSION_COLUMNS,
-    joinFrom: 'id',
-    joinTo: 'user_id',
   },
 ];
 

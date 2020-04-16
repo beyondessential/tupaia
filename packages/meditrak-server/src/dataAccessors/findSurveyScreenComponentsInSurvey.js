@@ -5,13 +5,13 @@
 
 import { TYPES } from '@tupaia/database';
 
-export const findSurveyScreenComponentsBySurvey = async (
+export const findSurveyScreenComponentsInSurvey = async (
   models,
+  surveyId,
   criteria,
   options = {},
   findOrCount = 'find',
 ) => {
-  const { survey_id: surveyId } = criteria;
   const columns = [
     { id: `${TYPES.SURVEY_SCREEN_COMPONENT}.id` },
     'code',
@@ -26,23 +26,20 @@ export const findSurveyScreenComponentsBySurvey = async (
     'question_label',
     'detail_label',
     'config',
+    'screen_number',
   ];
-  const sort = ['component_number'];
+  const sort = ['screen_number', 'component_number'];
   const multiJoin = [
     {
       joinWith: TYPES.QUESTION,
       joinCondition: [`${TYPES.QUESTION}.id`, `${TYPES.SURVEY_SCREEN_COMPONENT}.question_id`],
     },
-  ];
-
-  if (surveyId) {
-    columns.push('screen_number');
-    sort.unshift('screen_number');
-    multiJoin.push({
+    {
       joinWith: TYPES.SURVEY_SCREEN,
       joinCondition: [`${TYPES.SURVEY_SCREEN}.id`, `${TYPES.SURVEY_SCREEN_COMPONENT}.screen_id`],
-    });
-  }
+    },
+  ];
+
   const findOnlyOptions =
     findOrCount === 'find'
       ? {
@@ -52,8 +49,12 @@ export const findSurveyScreenComponentsBySurvey = async (
         }
       : {};
 
-  return models.database[findOrCount](TYPES.SURVEY_SCREEN_COMPONENT, criteria, {
-    ...findOnlyOptions,
-    multiJoin,
-  });
+  return models.database[findOrCount](
+    TYPES.SURVEY_SCREEN_COMPONENT,
+    { ...criteria, survey_id: surveyId },
+    {
+      ...findOnlyOptions,
+      multiJoin,
+    },
+  );
 };

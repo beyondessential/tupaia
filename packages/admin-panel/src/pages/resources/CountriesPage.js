@@ -31,10 +31,8 @@ const COLUMNS = [
 const EXPANSION_CONFIG = [
   {
     title: 'Entities',
-    endpoint: 'entities',
+    endpoint: 'country/{id}/entities',
     columns: ENTITIES_COLUMNS,
-    joinFrom: 'code',
-    joinTo: 'code',
   },
 ];
 
@@ -58,9 +56,8 @@ const FILTERED_EXPORT_CONFIG = {
       label: 'Surveys to Include',
       instruction: 'Please enter the names of the surveys to be exported.',
       parameterKey: 'surveyCodes',
-      optionsEndpoint: 'surveys',
+      optionsEndpoint: 'country/{id}/surveys',
       optionValueKey: 'code',
-      optionsFilter: 'countryId',
       allowMultipleValues: true,
     },
   ],

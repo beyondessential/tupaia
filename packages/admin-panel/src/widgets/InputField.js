@@ -21,7 +21,6 @@ export const InputField = ({
   optionsEndpoint,
   optionLabelKey,
   optionValueKey,
-  optionsFilter,
   onChange,
   type,
   canCreateNewOptions,
@@ -52,7 +51,6 @@ export const InputField = ({
           disabled={disabled}
           allowMultipleValues={allowMultipleValues}
           parentRecord={parentRecord}
-          optionsFilter={optionsFilter}
         />
       );
       break;
@@ -133,7 +131,6 @@ InputField.propTypes = {
   onChange: PropTypes.func.isRequired,
   optionLabelKey: PropTypes.string,
   optionValueKey: PropTypes.string,
-  optionsFilter: PropTypes.object,
   canCreateNewOptions: PropTypes.bool,
   disabled: PropTypes.bool,
   type: PropTypes.string,
@@ -147,7 +144,6 @@ InputField.defaultProps = {
   optionsEndpoint: null,
   optionLabelKey: 'name',
   optionValueKey: 'id',
-  optionsFilter: {},
   canCreateNewOptions: false,
   disabled: false,
   type: 'text',

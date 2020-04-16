@@ -6,7 +6,7 @@ const columns = {
   country: 'country.name',
 };
 
-export const findFormattedDisasters = async (models, criteria, options, findOrCount = 'find') => {
+export const findFormattedDisasters = async (models, criteria) => {
   let where = ' where ';
   let whereClause = '';
   const bindParams = [];
@@ -26,7 +26,7 @@ export const findFormattedDisasters = async (models, criteria, options, findOrCo
   });
 
   return models.database.executeSql(
-    `SELECT 
+    `SELECT
       "disaster".id, "disaster".type, description, "disaster"."name", "country".name as country,
       ST_AsGeoJSON("point") as point,
       ST_AsGeoJSON("bounds") as bounds

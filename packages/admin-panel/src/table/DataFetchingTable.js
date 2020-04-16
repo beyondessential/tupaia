@@ -24,6 +24,7 @@ import {
 import { getTableState, getIsFetchingData } from './selectors';
 import { generateConfigForColumnType } from './columnTypes';
 import { getIsChangingDataOnServer } from '../dataChangeListener';
+import { makeSubstitutionsInString } from '../utilities';
 
 class DataFetchingTableComponent extends React.Component {
   componentWillMount() {
@@ -110,8 +111,7 @@ class DataFetchingTableComponent extends React.Component {
             const { id } = rowData;
             const expansionTab = expansionTabStates[id] || 0;
             const expansionItem = expansionTabs[expansionTab];
-            const { joinFrom, joinTo, title, ...restOfProps } = expansionItem;
-            const filter = { [joinTo]: rowData[joinFrom] };
+            const { title, endpoint, ...restOfProps } = expansionItem;
             // Each table needs a unique id so that we can keep track of state separately in redux
             return (
               <div style={localStyles.expansion}>
@@ -125,7 +125,7 @@ class DataFetchingTableComponent extends React.Component {
                 />
                 <DataFetchingTable
                   reduxId={`${reduxId}_${index}_${expansionTab}`}
-                  baseFilter={filter}
+                  endpoint={makeSubstitutionsInString(endpoint, rowData)}
                   key={expansionTab} // Triggers refresh of data.
                   {...restOfProps}
                 />
@@ -159,8 +159,6 @@ DataFetchingTableComponent.propTypes = {
       title: PropTypes.string.isRequired,
       endpoint: PropTypes.string,
       columns: PropTypes.array,
-      joinFrom: PropTypes.string,
-      joinTo: PropTypes.string,
       expansionTabs: PropTypes.array, // For nested expansions, uses same shape.
     }),
   ),

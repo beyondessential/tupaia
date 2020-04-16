@@ -83,23 +83,14 @@ const mapStateToProps = (state, { reduxId }) => ({
 
 const mapDispatchToProps = (
   dispatch,
-  { endpoint, optionLabelKey, reduxId, onChange, optionsFilter, parentRecord },
+  { endpoint, optionLabelKey, reduxId, onChange, parentRecord },
 ) => ({
   onChangeSelection: newSelection => {
     onChange(newSelection);
     dispatch(changeSelection(reduxId, newSelection));
   },
   onChangeSearchTerm: newSearchTerm =>
-    dispatch(
-      changeSearchTerm(
-        reduxId,
-        endpoint,
-        optionLabelKey,
-        newSearchTerm,
-        optionsFilter,
-        parentRecord,
-      ),
-    ),
+    dispatch(changeSearchTerm(reduxId, endpoint, optionLabelKey, newSearchTerm, parentRecord)),
   onClearState: () => dispatch(clearState(reduxId)),
 });
 

@@ -4,7 +4,7 @@
  */
 
 import generateId from 'uuid/v1';
-import { convertSearchTermToFilter } from '../utilities';
+import { convertSearchTermToFilter, makeSubstitutionsInString } from '../utilities';
 import {
   AUTOCOMPLETE_INPUT_CHANGE,
   AUTOCOMPLETE_RESULTS_CHANGE,
@@ -20,14 +20,11 @@ export const changeSelection = (reduxId, selection) => ({
   reduxId,
 });
 
-export const changeSearchTerm = (
-  reduxId,
-  endpoint,
-  column,
-  searchTerm,
-  parentFilterKey,
-  parentRecord,
-) => async (dispatch, getState, { api }) => {
+export const changeSearchTerm = (reduxId, endpoint, column, searchTerm, parentRecord) => async (
+  dispatch,
+  getState,
+  { api },
+) => {
   const fetchId = generateId();
   dispatch({
     type: AUTOCOMPLETE_INPUT_CHANGE,
@@ -37,10 +34,7 @@ export const changeSearchTerm = (
   });
   try {
     const filter = convertSearchTermToFilter({ [column]: searchTerm });
-    if (parentFilterKey) {
-      filter[parentFilterKey] = parentRecord.id;
-    }
-    const response = await api.get(endpoint, {
+    const response = await api.get(makeSubstitutionsInString(endpoint, parentRecord), {
       filter: JSON.stringify(filter),
       pageSize: MAX_AUTOCOMPLETE_RESULTS,
     });

@@ -6,17 +6,20 @@
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 const { RAW } = QUERY_CONJUNCTIONS;
 
-export const findSurveysInCountry = async (models, criteria = {}, options = {}) => {
-  const { countryId, ...restOfCriteria } = criteria;
-  if (countryId) {
-    return models.survey.find({
-      ...restOfCriteria,
+export const findSurveysInCountry = async (
+  models,
+  countryId,
+  criteria = {},
+  options = {},
+  findOrCount = 'find',
+) =>
+  models.survey[findOrCount](
+    {
+      criteria,
       [RAW]: {
         sql: `country_ids = '{}' OR ? = ANY(country_ids)`,
         parameters: [countryId],
       },
-    });
-  }
-  // simple find
-  return models.survey.find(restOfCriteria, options);
-};
+    },
+    options,
+  );
