@@ -81,6 +81,8 @@ export const Select = ({ options, placeholder, defaultValue, ...props }) => {
 };
 
 Select.propTypes = {
+  id: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
   options: PropTypes.array.isRequired,
   placeholder: PropTypes.string,
   defaultValue: PropTypes.any,
@@ -126,6 +128,8 @@ export const NativeSelect = ({ options, placeholder, defaultValue, ...props }) =
 };
 
 NativeSelect.propTypes = {
+  id: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
   options: PropTypes.array.isRequired,
   placeholder: PropTypes.string,
   defaultValue: PropTypes.any,

@@ -8,3 +8,4 @@ export * from './Checkbox';
 export * from './AutoComplete';
 export * from './DatePicker';
 export * from './Select';
+export * from './DatePicker';
