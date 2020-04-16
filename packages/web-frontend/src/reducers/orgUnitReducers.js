@@ -93,7 +93,7 @@ const addOrgUnitToMap = (state, orgUnit) => {
   // Inserting 'World' fetch
   result = { ...result };
   const world = orgUnit;
-  result.World = { World: normaliseForMap(world, undefined, true) };
+  result.World = { World: normaliseForMap(world, undefined, true), countryCode: 'World' };
 
   countries.forEach(country => {
     const countryCode = country.organisationUnitCode;

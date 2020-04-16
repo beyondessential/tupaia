@@ -25,7 +25,7 @@ import { changeDashboardGroup, closeDropdownOverlays } from '../../actions';
 import DashboardGroup from '../DashboardGroup';
 import { getFacilityThumbnailUrl } from '../../utils';
 import { DropDownMenu } from '../../components/DropDownMenu';
-import { getCurrentDashboardKey } from '../../selectors';
+import { selectCurrentDashboardKey } from '../../selectors';
 
 const IMAGE_HEIGHT_RATIO = 0.5;
 
@@ -270,7 +270,7 @@ const mapStateToProps = state => {
   return {
     currentOrganisationUnit,
     sections: dashboardConfig,
-    currentDashboardKey: getCurrentDashboardKey(state),
+    currentDashboardKey: selectCurrentDashboardKey(state),
     mapIsAnimating: isAnimating,
     isLoading: isLoadingOrganisationUnit,
     isSidePanelExpanded,

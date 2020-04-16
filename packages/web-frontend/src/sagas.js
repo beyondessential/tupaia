@@ -709,8 +709,6 @@ function* fetchCurrentMeasureInfo() {
       );
 
       if (newMeasure !== measureId) {
-        console.log(newMeasure);
-        console.log(measureId);
         yield put(changeMeasure(newMeasure, organisationUnitCode));
       }
     } else {
