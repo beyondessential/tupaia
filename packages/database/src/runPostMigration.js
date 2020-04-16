@@ -12,6 +12,7 @@ const EXCLUDED_TABLES_FROM_TRIGGER_CREATION = [
   "'feed_item'",
   "'userSession'",
   "'spatial_ref_sys'", // Reference table provided by postgis
+  "'dashboardReport'",
 ];
 
 export const runPostMigration = async driver => {
