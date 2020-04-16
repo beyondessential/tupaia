@@ -48,7 +48,7 @@ const orgUnitChildrenCache = createCachedSelector(
 const countryAsHierarchyObjectCache = createCachedSelector(
   [country => country, (_, world) => world],
   (country, world) => recursiveBuildHierarchy(country, country[country.countryCode], world),
-)((country, world) => country && country.countryCode);
+)(country => country && country.countryCode);
 
 const displayInfoCache = createCachedSelector(
   [
@@ -71,13 +71,7 @@ const displayInfoCache = createCachedSelector(
 /**
  * Should be used as a wrapper when accessing caches, to ensure we aren't caching invalid lookups
  */
-const safeGet = (cache, args) => {
-  if (!cache.keySelector(...args)) {
-    return undefined;
-  }
-
-  return cache(...args);
-};
+const safeGet = (cache, args) => (cache.keySelector(...args) ? cache(...args) : undefined);
 
 const selectCountriesAsOrgUnits = createSelector([state => state.orgUnits.orgUnitMap], orgUnitMap =>
   Object.entries(orgUnitMap)
@@ -97,12 +91,7 @@ const recursiveBuildHierarchy = (country, orgUnit, parent) => ({
 const getOrgUnitFromMeasureData = (measureData, code) =>
   measureData.find(val => val.organisationUnitCode === code);
 
-const getOrgUnitFromCountry = (country, code) => {
-  if (country === undefined) {
-    return undefined;
-  }
-  return country[code];
-};
+const getOrgUnitFromCountry = (country, code) => (country ? country[code] : undefined);
 
 /**
  * Public Selectors
@@ -123,11 +112,6 @@ export const selectOrgUnitChildren = createSelector(
   ],
   (countriesAsOrgUnits, country, code) =>
     code === 'World' ? countriesAsOrgUnits : safeGet(orgUnitChildrenCache, [country, code]),
-);
-
-export const selectCountryAndDescendants = createSelector(
-  [(state, countryCode) => safeGet(countryCache, [state.orgUnits.orgUnitMap, countryCode])],
-  country => safeGet(allCountryOrgUnitsCache, [country]),
 );
 
 export const selectOrgUnitsAsHierarchy = createSelector(

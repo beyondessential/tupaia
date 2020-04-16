@@ -650,12 +650,12 @@ function* fetchMeasureInfo(measureId, organisationUnitCode, oldOrgUnitCountry = 
 
   const countryCode = organisationUnitCode.substring(0, 2);
   if (oldOrgUnitCountry) {
-    if (oldOrgUnitCountry !== countryCode) {
-      yield put(clearMeasureHierarchy());
-    } else {
+    if (oldOrgUnitCountry === countryCode) {
       // We are in the same country as before, no need to refetch measureData
       return;
     }
+
+    yield put(clearMeasureHierarchy());
   }
 
   const requestResourceUrl = `measureData?organisationUnitCode=${organisationUnitCode}&measureId=${measureId}&shouldShowAllParentCountryResults=${!isMobile()}`;
