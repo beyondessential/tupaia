@@ -18,6 +18,6 @@ const Container = styled.div`
 
 export const datePicker = () => (
   <Container>
-    <DatePicker />
+    <DatePicker label="Basic example" />
   </Container>
 );
