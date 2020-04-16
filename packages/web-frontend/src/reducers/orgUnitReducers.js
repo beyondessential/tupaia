@@ -28,29 +28,32 @@ export default combineReducers({
 
 export const selectOrgUnit = (state, orgUnitCode) => state.orgUnits.orgUnitMap[orgUnitCode];
 
+export const selectParentOrgUnitCodes = state =>
+  Object.values(state.orgUnits.orgUnitMap).map(({ parent }) => parent);
+
 export const cachedSelectOrgUnitChildren = createCachedSelector(
   [state => state.orgUnits.orgUnitMap, (_, code) => code],
   (orgUnitMapArg, code) => Object.values(orgUnitMapArg).filter(orgUnit => orgUnit.parent === code),
 )((state, code) => code);
 
+const recursiveBuildDescendantHierarchy = (state, code) => {
+  const orgUnit = selectOrgUnit(state, code);
+  if (!orgUnit) {
+    return [];
+  }
+
+  const children = cachedSelectOrgUnitChildren(state, code);
+
+  const descendants = [orgUnit];
+  children.forEach(child =>
+    descendants.push(...recursiveBuildDescendantHierarchy(state, child.organisationUnitCode)),
+  );
+  return descendants;
+};
+
 export const cachedSelectOrgUnitAndDescendants = createCachedSelector(
   [state => state, (_, code) => code],
-  (state, code) => {
-    const orgUnit = selectOrgUnit(state, code);
-    if (!orgUnit) {
-      return [];
-    }
-
-    const children = cachedSelectOrgUnitChildren(state, code);
-    const descendants = children.reduce(
-      (array, child) => [
-        ...array,
-        ...cachedSelectOrgUnitAndDescendants(state, child.organisationUnitCode),
-      ],
-      [],
-    );
-    return [orgUnit, ...descendants];
-  },
+  recursiveBuildDescendantHierarchy,
 )((state, code) => code);
 
 export const cachedSelectAncestorOfLevel = createCachedSelector(
