@@ -5,29 +5,20 @@
 
 import React, { useState, useCallback } from 'react';
 import MuiMenuItem from '@material-ui/core/MenuItem';
-import { KeyboardArrowDown } from '@material-ui/icons';
+import { KeyboardArrowDown as MuiKeyboardArrowDown } from '@material-ui/icons';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { TextField } from './TextField';
 import * as COLORS from '../../theme/colors';
 
-const SelectField = styled(({ SelectProps, ...props }) => (
-  <TextField
-    SelectProps={{
-      IconComponent: iconProps => <KeyboardArrowDown {...iconProps} />,
-      ...SelectProps,
-    }}
-    {...props}
-    select
-  />
-))`
-  svg {
-    color: ${COLORS.GREY_72};
-    font-size: 28px;
-    top: calc(50% - 14px);
-    right: 16px;
-  }
+const KeyboardArrowDown = styled(MuiKeyboardArrowDown)`
+  color: ${COLORS.GREY_72};
+  font-size: 28px;
+  top: calc(50% - 14px);
+  right: 16px;
+`;
 
+const StyledTextField = styled(TextField)`
   .MuiSelect-root {
     &:before {
       position: absolute;
@@ -39,6 +30,21 @@ const SelectField = styled(({ SelectProps, ...props }) => (
     }
   }
 `;
+
+const SelectField = ({ SelectProps, ...props }) => (
+  <StyledTextField
+    SelectProps={{
+      IconComponent: iconProps => <KeyboardArrowDown {...iconProps} />,
+      ...SelectProps,
+    }}
+    {...props}
+    select
+  />
+);
+
+SelectField.propTypes = {
+  SelectProps: PropTypes.object.isRequired,
+};
 
 /**
  * Select field
