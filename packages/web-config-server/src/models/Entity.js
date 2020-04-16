@@ -18,6 +18,7 @@ import { Project } from './Project';
 import { EntityHierarchyBuilder } from './helpers/EntityHierarchyBuilder';
 
 const CASE = 'case';
+const CASE_CONTACT = 'case_contact';
 const COUNTRY = 'country';
 const DISASTER = 'disaster';
 const DISTRICT = 'district';
@@ -29,6 +30,7 @@ const PROJECT = 'project';
 
 export const ENTITY_TYPES = {
   CASE,
+  CASE_CONTACT,
   COUNTRY,
   DISASTER,
   DISTRICT,

@@ -13,6 +13,7 @@ import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
 export const MAX_ENTITY_HIERARCHY_LEVELS = 100;
 
 const CASE = 'case';
+const CASE_CONTACT = 'case_contact';
 const COUNTRY = 'country';
 const DISASTER = 'disaster';
 const DISTRICT = 'district';
@@ -23,6 +24,7 @@ const WORLD = 'world';
 
 export const ENTITY_TYPES = {
   CASE,
+  CASE_CONTACT,
   COUNTRY,
   DISASTER,
   DISTRICT,
