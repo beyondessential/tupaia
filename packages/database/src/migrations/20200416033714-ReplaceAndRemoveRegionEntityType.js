@@ -19,7 +19,17 @@ exports.setup = function(options, seedLink) {
 };
 
 const entityTypes = {
-  old: ['world', 'project', 'country', 'region', 'facility', 'village', 'case', 'disaster'],
+  old: [
+    'world',
+    'project',
+    'country',
+    'region',
+    'facility',
+    'village',
+    'case',
+    'case_contact',
+    'disaster',
+  ],
   new: [
     'world',
     'project',
@@ -29,6 +39,7 @@ const entityTypes = {
     'facility',
     'village',
     'case',
+    'case_contact',
     'disaster',
   ],
 };
