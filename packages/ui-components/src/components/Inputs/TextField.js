@@ -82,7 +82,7 @@ export const TextField = styled(BaseTextField)`
     padding-right: 18px;
   }
 
-  /* Override MaterialUI which hides the placeholder due to conflict with it's floating labels */
+  /* Override MaterialUI which hides the placeholder due to conflict with its floating labels */
   &&&& {
     .MuiInputBase-input::placeholder {
       opacity: 1 !important;

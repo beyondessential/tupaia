@@ -36,7 +36,7 @@ export const textField = () => (
     <TextField name="errorState" label="Error state" error />
     <TextField name="errorMessage" label="Error message" error helperText="Incorrect entry" />
     <TextField name="number" label="Number" type="number" />
-    <TextField name="email" type="email" label="Email" />
+    <TextField name="email" label="Email" type="email" />
     <TextField name="password" label="Password" type="password" />
   </Container>
 );
