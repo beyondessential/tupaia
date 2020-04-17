@@ -34,14 +34,15 @@ const checkAllowedUnauthRoutes = req =>
   allowedUnauthRoutes.some(allowedRoute => req.originalUrl.endsWith(allowedRoute));
 
 const getUserAccessPolicyFromSession = async req => {
-  if (!req.session.accessPolicy) {
+  if (!req.accessPolicy) {
     const { userName } = req.session.userJson;
-    req.session.accessPolicy = getAccessPolicyForUser(userName);
+    req.accessPolicy = getAccessPolicyForUser(userName);
   }
-  return req.session.accessPolicy;
+  return req.accessPolicy;
 };
 
 export const setSession = (req, userInfo) => {
+  req.accessPolicy = null; // reset access policy cache so it is rebuilt
   req.session = { userJson: { ...userInfo } };
   req.lastuser = { userName: userInfo.userName };
 };

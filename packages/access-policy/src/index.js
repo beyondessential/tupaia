@@ -54,7 +54,7 @@ export class AccessPolicy {
       return entities.some(entityCode => !!this.policy[entityCode]);
     }
 
-    const allowedPermissionGroups = this.getPermissionGroups(entities);
+    const allowedPermissionGroups = this.getPermissionGroupsSet(entities);
     return allowedPermissionGroups.has(permissionGroup);
   }
 
@@ -67,6 +67,10 @@ export class AccessPolicy {
    * @returns string[] The permission groups, e.g ['Admin', 'Donor']
    */
   getPermissionGroups(entities = Object.keys(this.policy)) {
+    return [...this.getPermissionGroupsSet(entities)];
+  }
+
+  getPermissionGroupsSet(entities) {
     // cache this part, as it is run often and is the most expensive operation
     const cacheKey = entities.join('_');
     if (!this.cachedPermissionGroupSets[cacheKey]) {

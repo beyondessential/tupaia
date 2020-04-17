@@ -13,6 +13,7 @@ const respondWithError = (res, errorMessage) => {
 
 const processLogin = (sessionDetails, req, res) => {
   setSession(req, sessionDetails); // store new session
+  req.session = { userJson: sessionDetails };
   res.send({
     authenticated: true,
     name: req.session.userJson.name,
@@ -35,7 +36,6 @@ const authenticateUsingFunction = async (req, res, authenticate) => {
         userName,
         email,
         verifiedEmail,
-        accessPolicy,
       },
       req,
       res,
@@ -55,7 +55,7 @@ export const oneTimeLogin = async (req, res) => {
   await authenticateUsingFunction(req, res, authenticator.authenticateOneTimeLogin);
 };
 
-export const logout = () => (req, res) => {
+export const logout = (req, res) => {
   if (req.session && req.session.userJson && req.session.userJson.userName) req.session.reset();
   if (req.lastuser && req.lastuser.userName) req.lastuser.reset();
   res.send({ loggedout: true });
