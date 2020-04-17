@@ -6,5 +6,6 @@
 export * from './TextField';
 export * from './Checkbox';
 export * from './Autocomplete';
+export * from './AsyncAutocomplete';
 export * from './Select';
 export * from './DatePicker';

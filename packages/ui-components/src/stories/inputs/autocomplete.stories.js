@@ -5,7 +5,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { Autocomplete, FancyAutocomplete } from '../../components/Inputs';
+import { Autocomplete, NavAutocomplete } from '../../components/Inputs';
 
 export default {
   title: 'Inputs/Autocomplete',
@@ -22,29 +22,24 @@ export const autoComplete = () => (
   </Container>
 );
 
-export const asyncAutoComplete = () => (
+export const navAutoComplete = () => (
   <Container>
-    <Autocomplete label="Simple Auto Complete" options={options} />
-  </Container>
-);
-
-export const fancyAutoComplete = () => (
-  <Container>
-    <FancyAutocomplete label="Fancy Auto Complete" options={options} />
+    <NavAutocomplete label="Fancy Auto Complete" options={options} />
   </Container>
 );
 
 const options = [
-  { title: 'Sentinel Site One', code: 1 },
-  { title: 'Sentinel Site Two', code: 2 },
-  { title: 'Sentinel Site Three', code: 3 },
-  { title: 'Sentinel Site Four', code: 4 },
-  { title: 'Sentinel Site Five', code: 5 },
-  { title: 'Sentinel Site Six', code: 6 },
-  { title: 'Sentinel Site Seven', code: 7 },
-  { title: 'Sentinel Site Eight', code: 8 },
-  { title: 'Sentinel Site Nine', code: 9 },
-  { title: 'Sentinel Site Ten', code: 10 },
-  { title: 'Sentinel Site Eleven', code: 11 },
-  { title: 'Sentinel Site Twelve', code: 12 },
+  { id: 1, name: 'Sentinel Site One' },
+  { id: 2, name: 'Sentinel Site Two' },
+  { id: 3, name: 'Sentinel Site Three' },
+  { id: 4, name: 'Sentinel Site Four' },
+  { id: 5, name: 'Sentinel Site Five' },
+  { id: 6, name: 'Sentinel Site Six' },
+  { id: 7, name: 'Sentinel Site Seven' },
+  { id: 8, name: 'Sentinel Site Eight' },
+  { id: 9, name: 'Sentinel Site Nine' },
+  { id: 10, name: 'Sentinel Site Ten' },
+  { id: 11, name: 'Sentinel Site Eleven' },
+  { id: 12, name: 'Sentinel Site Twelve' },
 ];
+

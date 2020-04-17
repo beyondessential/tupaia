@@ -15,8 +15,8 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import * as COLORS from '../../theme/colors';
 import { TextField } from './TextField';
-import { AddBoxOutlined } from '@material-ui/icons';
 import { IconButton } from '../IconButton';
+
 
 const KeyboardArrowDown = styled(MuiKeyboardArrowDown)`
   color: ${COLORS.GREY_72};
@@ -36,11 +36,12 @@ const StyledPaper = styled(Paper)`
 /**
  * Autocomplete
  */
-export const Autocomplete = ({ label, options, ...props }) => {
+export const Autocomplete = ({ label, labelKey, options, ...props }) => {
   return (
     <MuiAutocomplete
       options={options}
-      getOptionLabel={option => option.title}
+      getOptionSelected={(option, value) => option[labelKey] === value[labelKey]}
+      getOptionLabel={option => option[labelKey]}
       popupIcon={<KeyboardArrowDown />}
       PaperComponent={StyledPaper}
       renderInput={params => <TextField {...params} label={label} />}
@@ -54,8 +55,12 @@ Autocomplete.propTypes = {
   options: PropTypes.array.isRequired,
 };
 
+Autocomplete.defaultProps = {
+  labelKey: 'name',
+};
+
 /*
- * Fancy Autocomplete
+ * NavAutocomplete components
  */
 const ChevronLeft = styled(MuiChevronLeft)`
   color: ${COLORS.GREY_72};
@@ -65,7 +70,7 @@ const ChevronRight = styled(MuiChevronRight)`
   color: ${COLORS.GREY_72};
 `;
 
-const FancyInput = ({ InputProps, handlePrev, handleNext, ...props }) => {
+export const NavInput = ({ InputProps, handlePrev, handleNext, ...props }) => {
   /* Extract the Mui icon buttons for  re-use in different part of the input */
   const Cross = () => InputProps.endAdornment.props.children[0];
   const Menu = () => InputProps.endAdornment.props.children[1];
@@ -100,7 +105,7 @@ const Menu = styled(MuiMenu)`
   color: ${COLORS.GREY_72};
 `;
 
-const StyledAutoComplete = styled(MuiAutocomplete)`
+export const StyledAutoComplete = styled(Autocomplete)`
   /*
   * Adornments
   */
@@ -127,12 +132,15 @@ const StyledAutoComplete = styled(MuiAutocomplete)`
   }
 `;
 
-export const FancyAutocomplete = ({ label, options, ...props }) => {
+/*
+ * NavAutocomplete
+ */
+export const NavAutocomplete = ({ options, ...props }) => {
   const [value, setValue] = useState(null);
 
   const indexedOptions = options.map((option, index) => ({ ...option, index }));
 
-  const handlePrev = event => {
+  const handlePrev = () => {
     if (value === null) {
       const newValue = indexedOptions[indexedOptions.length - 1];
       setValue(newValue);
@@ -142,7 +150,7 @@ export const FancyAutocomplete = ({ label, options, ...props }) => {
     }
   };
 
-  const handleNext = event => {
+  const handleNext = () => {
     if (value === null) {
       const newValue = indexedOptions[0];
       setValue(newValue);
@@ -161,18 +169,12 @@ export const FancyAutocomplete = ({ label, options, ...props }) => {
       value={value}
       onChange={handleChange}
       options={indexedOptions}
-      getOptionLabel={option => option.title}
       popupIcon={<Menu />}
-      PaperComponent={StyledPaper}
       renderInput={params => (
-        <FancyInput {...params} label={label} handlePrev={handlePrev} handleNext={handleNext} />
+        <NavInput {...params} label={props.label}       placeholder="Search..."
+                  handlePrev={handlePrev} handleNext={handleNext} />
       )}
       {...props}
     />
   );
-};
-
-FancyAutocomplete.propTypes = {
-  label: PropTypes.string.isRequired,
-  options: PropTypes.array.isRequired,
 };
