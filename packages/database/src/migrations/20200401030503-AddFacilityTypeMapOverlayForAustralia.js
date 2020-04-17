@@ -40,7 +40,7 @@ exports.up = function(db) {
      
     VALUES (
     '${MAP_OVERLAY_ID}',
-    'Health Services',
+    'Health Facilities',
     'COVID-19 Australia',
     'Public',
     'facilityTypeCode',
