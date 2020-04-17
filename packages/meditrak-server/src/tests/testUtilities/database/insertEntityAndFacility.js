@@ -1,8 +1,5 @@
-import { ENTITY_TYPES } from '../../../database/models/Entity';
 import { TestableApp } from '../../TestableApp';
 import { upsertEntity, upsertFacility } from './upsertRecord';
-
-const { FACILITY } = ENTITY_TYPES;
 
 const testModels = new TestableApp().models;
 
@@ -11,7 +8,7 @@ export const insertEntityAndFacility = async (
   models = testModels,
 ) => {
   const country = await models.country.findOne();
-  const entity = await upsertEntity({ ...entityData, type: FACILITY });
+  const entity = await upsertEntity({ ...entityData, type: models.entity.types.FACILITY });
   const area = await models.geographicalArea.findOne({ country_id: country.id });
   const facility = await upsertFacility({
     ...facilityData,

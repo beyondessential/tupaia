@@ -9,8 +9,7 @@ import {
   constructIsOneOf,
   constructThisOrThatHasContent,
 } from '../../validation';
-import { ENTITY_TYPES } from '../../database';
-const ENTITY_FIELD_VALIDATORS = {
+const constructEntityFieldValidators = models => ({
   parent_code: [constructThisOrThatHasContent('district')],
   district: [constructThisOrThatHasContent('parent_code')],
   sub_district: [],
@@ -19,28 +18,33 @@ const ENTITY_FIELD_VALIDATORS = {
   entity_type: [
     hasContent,
     cellValue => {
-      const checkIsOneOf = constructIsOneOf(Object.values(ENTITY_TYPES));
+      const checkIsOneOf = constructIsOneOf(Object.values(models.entity.types));
       checkIsOneOf(cellValue);
     },
   ],
+});
+
+const constructSpecificEntityTypeValidators = (entityType, models) => {
+  switch (entityType) {
+    case models.entity.types.FACILITY:
+      return {
+        facility_type: [
+          hasContent,
+          cellValue => {
+            const checkIsOneOf = constructIsOneOf(['1', '2', '3', '4']);
+            checkIsOneOf(cellValue.substring(0, 1));
+          },
+        ],
+      };
+    default:
+      return null;
+  }
 };
 
-const SPECIFIC_ENTITY_TYPE_VALIDATORS = {
-  [ENTITY_TYPES.FACILITY]: {
-    facility_type: [
-      hasContent,
-      cellValue => {
-        const checkIsOneOf = constructIsOneOf(['1', '2', '3', '4']);
-        checkIsOneOf(cellValue.substring(0, 1));
-      },
-    ],
-  },
-};
-
-export function getEntityObjectValidator(entityType) {
+export function getEntityObjectValidator(entityType, models) {
   const validators = {
-    ...ENTITY_FIELD_VALIDATORS,
-    ...SPECIFIC_ENTITY_TYPE_VALIDATORS[entityType],
+    ...constructEntityFieldValidators(models),
+    ...constructSpecificEntityTypeValidators(entityType, models),
   };
   return new ObjectValidator(validators);
 }

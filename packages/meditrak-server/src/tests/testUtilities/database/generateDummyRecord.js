@@ -5,13 +5,12 @@
 import { TYPES } from '@tupaia/database';
 
 import { generateValueOfType, generateTestId } from '../random';
-import { ENTITY_TYPES } from '../../../database/models/Entity';
 
 const { ENTITY, SURVEY_RESPONSE } = TYPES;
 
 const CUSTOM_DUMMY_VALUES = {
   [ENTITY]: {
-    type: ENTITY_TYPES.FACILITY, // default testing entity should be facility
+    type: 'facility', // default testing entity should be facility
     country_code: 'DL', // use demo land by default in testing
   },
   [SURVEY_RESPONSE]: {

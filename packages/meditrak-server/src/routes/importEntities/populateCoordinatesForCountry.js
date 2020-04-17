@@ -7,7 +7,6 @@ import { get } from 'lodash';
 import winston from 'winston';
 import { writeFileSync, existsSync, readFileSync, mkdirSync } from 'fs';
 import { fetchWithTimeout, HttpError } from '@tupaia/utils';
-import { ENTITY_TYPES } from '../../database';
 
 const BASE_PATH = 'uploads/geojson';
 
@@ -114,7 +113,7 @@ export async function populateCoordinatesForCountry(transactingModels, countryCo
   const countryName = countryEntity.name;
   const regionsWithoutCoordinates = await transactingModels.entity.find({
     country_code: countryCode,
-    type: ENTITY_TYPES.REGION,
+    type: transactingModels.entity.types.REGION,
     region: null, // Only bother with entities that don't already have their region coordinates set
   });
   for (let i = 0; i < regionsWithoutCoordinates.length; i++) {

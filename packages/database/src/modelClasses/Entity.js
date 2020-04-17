@@ -16,7 +16,7 @@ import { TYPES } from '../types';
  * Maximum number of parents an entity can have.
  * Used to avoid infinite loops while traversing the entity hierarchy
  */
-export const MAX_ENTITY_HIERARCHY_LEVELS = 100;
+const MAX_ENTITY_HIERARCHY_LEVELS = 100;
 
 const FACILITY = 'facility';
 const REGION = 'region';
@@ -26,7 +26,7 @@ const CASE = 'case';
 const DISASTER = 'disaster';
 const VILLAGE = 'village';
 
-export const ENTITY_TYPES = {
+const ENTITY_TYPES = {
   FACILITY,
   REGION,
   COUNTRY,
@@ -36,26 +36,13 @@ export const ENTITY_TYPES = {
   VILLAGE,
 };
 
-export const ORG_UNIT_ENTITY_TYPES = {
+const ORG_UNIT_ENTITY_TYPES = {
   FACILITY,
   REGION,
   COUNTRY,
   WORLD,
   VILLAGE,
 };
-
-/**
- * @param {string} type
- * @param {boolean}
- */
-export const isOrganisationUnitType = type => Object.values(ORG_UNIT_ENTITY_TYPES).includes(type);
-
-/**
- * @param {Object<string, any>} data
- * @returns {(string|undefined)}
- */
-export const getDhisIdFromEntityData = data =>
-  data.metadata && data.metadata.dhis && data.metadata.dhis.id;
 
 class EntityType extends DatabaseType {
   static databaseType = TYPES.ENTITY;
@@ -74,8 +61,16 @@ class EntityType extends DatabaseType {
     return this.otherModels.country.findOne({ code: this.country_code });
   }
 
+  isFacility() {
+    return this.type === FACILITY;
+  }
+
+  isWorld() {
+    return this.type === WORLD;
+  }
+
   isOrganisationUnit() {
-    return isOrganisationUnitType(this.type);
+    return Object.values(ORG_UNIT_ENTITY_TYPES).includes(this.type);
   }
 
   isTrackedEntity() {
@@ -83,7 +78,7 @@ class EntityType extends DatabaseType {
   }
 
   getDhisId() {
-    return getDhisIdFromEntityData(this);
+    return this.metadata && this.metadata.dhis && this.metadata.dhis.id;
   }
 
   async setDhisId(dhisId) {
@@ -137,6 +132,10 @@ export class EntityModel extends DatabaseModel {
   }
 
   orgUnitEntityTypes = ORG_UNIT_ENTITY_TYPES;
+
+  types = ENTITY_TYPES;
+
+  isOrganisationUnitType = type => Object.values(ORG_UNIT_ENTITY_TYPES).includes(type);
 
   async updatePointCoordinates(code, { longitude, latitude }) {
     const point = JSON.stringify({ coordinates: [longitude, latitude], type: 'Point' });

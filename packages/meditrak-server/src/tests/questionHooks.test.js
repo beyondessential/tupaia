@@ -2,8 +2,6 @@ import { expect } from 'chai';
 
 import { TestableApp } from './TestableApp';
 
-import { ENTITY_TYPES } from '../database/models/Entity';
-
 import { registerHook } from '../hooks';
 
 const ENTITY_ID = 'test-hook-entity-0000000';
@@ -68,7 +66,7 @@ describe('Question hooks', () => {
       id: ENTITY_ID,
       code: ENTITY_ID,
       name: 'test entity',
-      type: ENTITY_TYPES.FACILITY,
+      type: models.entity.types.FACILITY,
     });
 
     testSurveyScreen = await models.surveyScreen.create({

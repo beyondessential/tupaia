@@ -4,60 +4,62 @@
  **/
 
 import { DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
-import { ORG_UNIT_ENTITY_TYPES } from '../../../database';
 import { EntityPusher } from './EntityPusher';
 
 const { ORGANISATION_UNIT, ORGANISATION_UNIT_GROUP } = DHIS2_RESOURCE_TYPES;
-const { COUNTRY, REGION, FACILITY, WORLD, VILLAGE } = ORG_UNIT_ENTITY_TYPES;
 const MAXIMUM_SHORT_NAME_LENGTH = 50;
 
-const LEVEL_DETAILS_ACCESSORS_BY_SERVER = {
-  regional: {
-    [COUNTRY]: () => ({
-      dhisLevelIndex: 2,
-      levelName: 'Country',
-    }),
-    [FACILITY]: () => ({
-      dhisLevelIndex: 5,
-      levelName: 'Facility',
-    }),
-    [VILLAGE]: () => ({
-      dhisLevelIndex: 6,
-      levelName: 'Village',
-    }),
-    [REGION]: async entity => {
-      // Within regions, we have both districts and subdistricts. If the parent is the country, it
-      // must be a district
-      if (await entity.hasCountryParent()) {
+const getLevelDetailsAccessorsForServer = (models, serverName) => {
+  const { COUNTRY, REGION, FACILITY, VILLAGE } = models.entity.types;
+  const levelDetailsAccessorsByServer = {
+    regional: {
+      [COUNTRY]: () => ({
+        dhisLevelIndex: 2,
+        levelName: 'Country',
+      }),
+      [FACILITY]: () => ({
+        dhisLevelIndex: 5,
+        levelName: 'Facility',
+      }),
+      [VILLAGE]: () => ({
+        dhisLevelIndex: 6,
+        levelName: 'Village',
+      }),
+      [REGION]: async entity => {
+        // Within regions, we have both districts and subdistricts. If the parent is the country, it
+        // must be a district
+        if (await entity.hasCountryParent()) {
+          return {
+            dhisLevelIndex: 3,
+            levelName: 'District',
+          };
+        }
         return {
-          dhisLevelIndex: 3,
-          levelName: 'District',
+          dhisLevelIndex: 4,
+          levelName: 'Subdistrict',
         };
-      }
-      return {
-        dhisLevelIndex: 4,
-        levelName: 'Subdistrict',
-      };
+      },
     },
-  },
-  tonga: {
-    [COUNTRY]: () => ({
-      dhisLevelIndex: 2,
-      levelName: 'Country',
-    }),
-    [REGION]: () => ({
-      dhisLevelIndex: 3,
-      levelName: 'Island Group',
-    }),
-    [FACILITY]: () => ({
-      dhisLevelIndex: 4,
-      levelName: 'Facility',
-    }),
-    [VILLAGE]: () => ({
-      dhisLevelIndex: 5,
-      levelName: 'Village',
-    }),
-  },
+    tonga: {
+      [COUNTRY]: () => ({
+        dhisLevelIndex: 2,
+        levelName: 'Country',
+      }),
+      [REGION]: () => ({
+        dhisLevelIndex: 3,
+        levelName: 'Island Group',
+      }),
+      [FACILITY]: () => ({
+        dhisLevelIndex: 4,
+        levelName: 'Facility',
+      }),
+      [VILLAGE]: () => ({
+        dhisLevelIndex: 5,
+        levelName: 'Village',
+      }),
+    },
+  };
+  return levelDetailsAccessorsByServer[serverName];
 };
 
 function getFacilityTypeCollectionName(typeName) {
@@ -154,7 +156,7 @@ export class OrganisationUnitPusher extends EntityPusher {
     //     regional dashboard)
     const shouldBeAddedToWorld = await this.getIsInPacific(entity);
     let ancestor = await this.models.entity.findById(entity.parent_id);
-    while (ancestor && (ancestor.type !== WORLD || shouldBeAddedToWorld)) {
+    while (ancestor && (!ancestor.isWorld() || shouldBeAddedToWorld)) {
       await this.addFacilityToOrganisationUnitGroup(
         ancestor.code,
         constructGroupDetails,
@@ -172,8 +174,7 @@ export class OrganisationUnitPusher extends EntityPusher {
    * @param {object} entity
    */
   async addEntityToOrganisationUnitGroups(entity) {
-    const { type } = entity;
-    if (type !== FACILITY) {
+    if (!entity.isFacility()) {
       // Only facilities need to be added to organisation unit groups
       return;
     }
@@ -204,7 +205,7 @@ export class OrganisationUnitPusher extends EntityPusher {
 
   async getLevelDetails(entity) {
     const serverName = this.api.getServerName();
-    const levelDetailsAccessors = LEVEL_DETAILS_ACCESSORS_BY_SERVER[serverName];
+    const levelDetailsAccessors = getLevelDetailsAccessorsForServer(this.models, serverName);
     if (!levelDetailsAccessors) {
       throw new Error(`Unsupported server for entity sync ${serverName}`);
     }
