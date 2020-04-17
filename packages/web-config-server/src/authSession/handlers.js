@@ -35,6 +35,7 @@ const authenticateUsingFunction = async (req, res, authenticate) => {
         userName,
         email,
         verifiedEmail,
+        accessPolicy,
       },
       req,
       res,

@@ -25,10 +25,6 @@ export { getDataElementGroups } from './getDataElementGroups';
 export { getDataElementGroupSets } from './getDataElementGroupSets';
 export { getDataElementsInGroupSet } from './getDataElementsInGroupSet';
 export isSingleValue from './isSingleValue';
-export {
-  hasReportAccessToOrganisationUnit,
-  getReportUserGroupAccessRightsForOrganisationUnit,
-} from './hasAccess';
 export { timestampToPeriod } from './timestampToPeriod';
 export { timestampToPeriodName } from './timestampToPeriodName';
 export { limitRange } from './limitRange';

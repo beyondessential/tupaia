@@ -79,8 +79,4 @@ export class AccessPolicy {
     }
     return this.cachedPermissionGroupSets[cacheKey];
   }
-
-  getRawPolicy() {
-    return this.policy;
-  }
 }
