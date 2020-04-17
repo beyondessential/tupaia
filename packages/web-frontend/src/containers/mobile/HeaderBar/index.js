@@ -37,7 +37,7 @@ const Container = styled.div`
   grid-auto-flow: row;
 `;
 
-const HeaderBar = props => {
+const HeaderBar = React.memo(props => {
   const {
     isUserLoggedIn,
     searchIsExpanded,
@@ -58,8 +58,8 @@ const HeaderBar = props => {
     if (!isRequestingLogin) props.onRefreshCurrentUser();
   }, []);
 
-  const handleOpenSignupOverlay = () => openSignupOverlay(true);
-  const handleCloseSignupOverlay = () => openSignupOverlay(false);
+  const handleOpenSignupOverlay = React.useCallback(() => openSignupOverlay(true), []);
+  const handleCloseSignupOverlay = React.useCallback(() => openSignupOverlay(false), []);
   const handleToggleUserMenuExpand = React.useCallback(() => toggleMenuExpanded(!isLoginExpanded), [
     isLoginExpanded,
   ]);
@@ -86,7 +86,7 @@ const HeaderBar = props => {
       {requestCountryAccessIsExpanded && <RequestCountryAccessForm />}
     </Container>
   );
-};
+});
 
 HeaderBar.propTypes = {
   searchIsExpanded: PropTypes.bool,
@@ -163,8 +163,4 @@ const mergeProps = (
   ...ownProps,
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-  mergeProps,
-)(HeaderBar);
+export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(HeaderBar);
