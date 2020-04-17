@@ -20,7 +20,7 @@ export const averageMonthlyValuesOverCount = async (
   // build json from dhis response
   returnJson.data = entity.isFacility()
     ? await buildData(results)
-    : await buildAggregatedData(aggregator, results, query.organisationUnitCode, resultPeriod);
+    : await buildAggregatedData(aggregator, results, query.organisationUnitCode, resultPeriod.requested);
   return returnJson;
 };
 // parse analytic response, aggregate only operational facilities

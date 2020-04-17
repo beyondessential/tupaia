@@ -49,13 +49,17 @@ export const matrixMostRecentFromChildren = async (
 
   // build columns and rows
   returnJson.columns = buildColumns(organisationUnits);
-  returnJson.categories = buildCategories(categoryMapping.dataElementGroups);
-  returnJson.rows = buildRows(
-    results,
-    dataElementsInfo,
-    categoryMapping.dataElementToGroupMapping,
-    optionSetOptions,
-  );
+  const categories = buildCategories(categoryMapping.dataElementGroups);
+  returnJson.rows = [
+    ...buildRows(
+      results,
+      dataElementsInfo,
+      categoryMapping.dataElementToGroupMapping,
+      optionSetOptions,
+    ),
+    ...categories,
+  ];
+
   return returnJson;
 };
 

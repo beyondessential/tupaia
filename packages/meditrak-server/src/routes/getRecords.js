@@ -177,6 +177,11 @@ function getQueryOptionsForColumns(columns, baseRecordType) {
   if (!columns) {
     return { sort };
   }
+  if (columns.some(c => c.startsWith('_'))) {
+    throw new ValidationError(
+      'No columns start with "_", and conjunction operators are reserved for internal use only',
+    );
+  }
   const columnsNeedingJoin = columns.filter(column => column.includes('.'));
   const multiJoin = [];
   const recordTypesJoined = [];

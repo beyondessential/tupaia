@@ -60,7 +60,7 @@ class RootScreen extends Component {
 
 const mapStateToProps = state => ({
   currentOrganisationUnit: state.global.currentOrganisationUnit,
-  isLoading: !!state.global.loadingOrganisationUnit,
+  isLoading: state.global.isLoadingOrganisationUnit,
   isUserLoggedIn: state.authentication.isUserLoggedIn,
 });
 
