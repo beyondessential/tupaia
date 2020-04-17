@@ -1,11 +1,17 @@
 /**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
 
-import { get, set } from 'lodash';
+import { DatabaseModel } from '../DatabaseModel';
+import { DatabaseType } from '../DatabaseType';
+import { TYPES } from '../types';
 
-import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
+/**
+ * BIG NOTE: This version of Entity.js comes from meditrak-server, which does not include any of the
+ * a) alternative hierarchy logic, or b) optimisations that are in the version in web-config-server
+ */
+
 /**
  * Maximum number of parents an entity can have.
  * Used to avoid infinite loops while traversing the entity hierarchy
@@ -48,7 +54,8 @@ export const isOrganisationUnitType = type => Object.values(ORG_UNIT_ENTITY_TYPE
  * @param {Object<string, any>} data
  * @returns {(string|undefined)}
  */
-export const getDhisIdFromEntityData = data => get(data, 'metadata.dhis.id');
+export const getDhisIdFromEntityData = data =>
+  data.metadata && data.metadata.dhis && data.metadata.dhis.id;
 
 class EntityType extends DatabaseType {
   static databaseType = TYPES.ENTITY;
@@ -80,7 +87,13 @@ class EntityType extends DatabaseType {
   }
 
   async setDhisId(dhisId) {
-    set(this, 'metadata.dhis.id', dhisId);
+    if (!this.metadata) {
+      this.metadata = {};
+    }
+    if (!this.metadata.dhis) {
+      this.metadata.dhis = {};
+    }
+    this.metadata.dhis.id = dhisId;
     return this.save();
   }
 
@@ -95,10 +108,6 @@ class EntityType extends DatabaseType {
   async hasCountryParent() {
     const parent = await this.fetchParent();
     return parent.type === COUNTRY;
-  }
-
-  async country() {
-    return this.otherModels.country.findOne({ code: this.country_code });
   }
 
   /**

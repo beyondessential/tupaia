@@ -1,53 +1,14 @@
 /**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
 
-import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
+import { modelClasses } from '@tupaia/database';
+
 import { sendEmail } from '../../utilities';
 
-class UserEntityPermissionType extends DatabaseType {
-  static databaseType = TYPES.USER_ENTITY_PERMISSION;
-
-  static joins = [
-    {
-      fields: {
-        code: 'entity_code',
-      },
-      joinWith: TYPES.ENTITY,
-      joinCondition: [`${TYPES.ENTITY}.id`, `${TYPES.USER_ENTITY_PERMISSION}.entity_id`],
-    },
-    {
-      fields: {
-        name: 'permission_group_name',
-      },
-      joinWith: TYPES.PERMISSION_GROUP,
-      joinCondition: [
-        `${TYPES.PERMISSION_GROUP}.id`,
-        `${TYPES.USER_ENTITY_PERMISSION}.permission_group_id`,
-      ],
-    },
-  ];
-
-  async entity() {
-    return this.otherModels.entity.findById(this.entity_id);
-  }
-
-  async user() {
-    return this.otherModels.user.findById(this.user_id);
-  }
-
-  async permissionGroup() {
-    return this.otherModels.permissionGroup.findById(this.permission_group_id);
-  }
-}
-
-export class UserEntityPermissionModel extends DatabaseModel {
+export class UserEntityPermissionModel extends modelClasses.UserEntityPermission {
   notifiers = [onUpsertSendPermissionGrantEmail];
-
-  get DatabaseTypeClass() {
-    return UserEntityPermissionType;
-  }
 
   isDeletableViaApi = true;
 
