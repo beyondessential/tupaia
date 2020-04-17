@@ -18,7 +18,7 @@ const getAuthorizationObject = async ({ accessPolicy, refreshToken, user }) => {
   const accessToken = jwt.sign(
     {
       userId: user.id,
-      refreshToken: refreshToken.token,
+      refreshToken,
     },
     process.env.JWT_SECRET,
     {
@@ -29,7 +29,7 @@ const getAuthorizationObject = async ({ accessPolicy, refreshToken, user }) => {
   // Assemble and return authorization object
   return {
     accessToken: accessToken,
-    refreshToken: refreshToken.token,
+    refreshToken,
     user: {
       id: user.id,
       name: user.fullName,

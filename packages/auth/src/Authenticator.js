@@ -15,7 +15,7 @@ export class Authenticator {
     this.accessPolicyBuilder = new AccessPolicyBuilder(models);
   }
 
-  async authenticatePassword({ emailAddress, password, deviceName }, meditrakDeviceDetails) {
+  authenticatePassword = async ({ emailAddress, password, deviceName }, meditrakDeviceDetails) => {
     const user = await this.getAuthenticatedUser({ emailAddress, password, deviceName });
     const meditrakDeviceId = await this.saveMeditrakDevice(meditrakDeviceDetails);
     const refreshToken = await this.upsertRefreshToken({
@@ -25,10 +25,10 @@ export class Authenticator {
     });
     const accessPolicy = await this.accessPolicyBuilder.getPolicyForUser(user.id);
 
-    return { refreshToken, user, accessPolicy };
-  }
+    return { refreshToken: refreshToken.token, user, accessPolicy };
+  };
 
-  async authenticateRefreshToken({ refreshToken: token }) {
+  authenticateRefreshToken = async ({ refreshToken: token }) => {
     if (!token) {
       throw new UnauthenticatedError('Please supply refreshToken');
     }
@@ -52,9 +52,9 @@ export class Authenticator {
     const accessPolicy = await this.accessPolicyBuilder.getPolicyForUser(user.id);
 
     return { refreshToken, user, accessPolicy };
-  }
+  };
 
-  async authenticateOneTimeLogin({ token, deviceName }) {
+  authenticateOneTimeLogin = async ({ token, deviceName }) => {
     if (!token) {
       throw new UnauthenticatedError('Could not authenticate, token not provided.');
     }
@@ -68,7 +68,7 @@ export class Authenticator {
     const accessPolicy = await this.accessPolicyBuilder.getPolicyForUser(user.id);
 
     return { refreshToken, user, accessPolicy };
-  }
+  };
 
   async getAuthenticatedUser({ emailAddress, password, deviceName }) {
     if (!emailAddress || !password || !deviceName) {
