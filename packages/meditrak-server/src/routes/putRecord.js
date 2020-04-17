@@ -97,6 +97,13 @@ const constructValidationRules = (models, recordType) => {
         name: [hasContent],
         parent_id: [constructIsEmptyOr(constructRecordExistsWithId(models.permissionGroup))],
       };
+    case TYPES.DATA_SOURCE:
+      return {
+        code: [hasContent],
+        type: [hasContent],
+        service_type: [hasContent],
+        config: [hasContent],
+      };
     default:
       throw new ValidationError(`${recordType} is not a valid PUT endpoint`);
   }

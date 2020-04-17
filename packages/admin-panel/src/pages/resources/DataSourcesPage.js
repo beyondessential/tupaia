@@ -61,6 +61,8 @@ const DATA_SOURCE_FIELDS = [
   {
     Header: 'Service Type',
     source: 'service_type',
+    accessor: ({ service_type: serviceType }) => serviceType || 'dhis',
+    editConfig: { default: 'dhis' },
   },
   {
     Header: 'Config',
@@ -68,18 +70,19 @@ const DATA_SOURCE_FIELDS = [
     Cell: row => dataSourceConfigView(row),
     editConfig: {
       type: 'json',
+      default: '{}',
       getJsonFieldSchema: () => [
         {
-          label: 'Regional Data',
+          label: 'Regional Server (Choose "No" if stored on country specific server)',
           fieldName: 'isDataRegional',
           type: 'boolean',
         },
         {
-          label: 'Data Element Code',
+          label: 'Data element code',
           fieldName: 'dataElementCode',
         },
         {
-          label: 'Category Option Combo',
+          label: 'Category option combo code',
           fieldName: 'categoryOptionCombo',
         },
       ],
@@ -93,6 +96,21 @@ const TABS = {
     endpoint: 'data_source',
     baseFilter: { type: 'dataElement' },
     fields: DATA_SOURCE_FIELDS,
+    createConfig: {
+      title: 'New Data Element',
+      actionConfig: {
+        editEndpoint: 'data_source',
+        fields: [
+          ...DATA_SOURCE_FIELDS,
+          {
+            Header: 'Type',
+            source: 'type',
+            editConfig: { default: 'dataElement' },
+            show: false,
+          },
+        ],
+      },
+    },
   },
   [PROGRAMS]: {
     title: 'Programs',
@@ -110,7 +128,7 @@ const TABS = {
 };
 
 const getTabPage = tabName => {
-  const { title, endpoint, fields, baseFilter, expansionTabs } = TABS[tabName];
+  const { title, endpoint, fields, baseFilter, expansionTabs, createConfig } = TABS[tabName];
   if (!TABS[tabName]) {
     console.warn(`No tab with name '${tabName}' found.`); // eslint-disable-line no-console
   }
@@ -126,6 +144,7 @@ const getTabPage = tabName => {
         expansionTabs={expansionTabs}
         editConfig={{ title: 'Edit Data Source' }}
         baseFilter={baseFilter}
+        createConfig={createConfig}
       />
     ),
   };
