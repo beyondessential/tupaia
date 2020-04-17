@@ -85,7 +85,7 @@ export default class RowGroup extends Component {
 
           {columns.slice(startColumn, displayedColumnCount).map((column, index) => {
             const isCellActive = index === highlightedColumn && isRowHighlighted;
-            const value = columnData ? columnData[categoryLabel][column.key] : '';
+            const value = columnData ? columnData[column.key] : '';
             const presentation = getPresentationOption(presentationOptions, value);
 
             return (
@@ -94,14 +94,12 @@ export default class RowGroup extends Component {
                 key={`${rowId}-empty-${index}`}
               >
                 <Cell
-                  key={index}
                   cellKey={index}
                   onMouseEnter={() => onCellMouseEnter(index, rowId)}
                   onMouseLeave={() => onCellMouseLeave()}
                   onClick={() => onCellClick(presentation, value)}
                   color={presentation ? presentation.color : { color: '' }}
                   value={value}
-                  style={styles.gridCell}
                   columnActiveStripStyle={styles.columnActiveStrip}
                   isActive={isCellActive}
                   dotStyle={styles.cellIndicator}
@@ -121,7 +119,7 @@ export default class RowGroup extends Component {
 
 RowGroup.propTypes = {
   rowId: PropTypes.string,
-  columns: PropTypes.shape({}),
+  columns: PropTypes.arrayOf(PropTypes.shape({})),
   children: PropTypes.node,
   isExpanded: PropTypes.bool,
   depth: PropTypes.number,
