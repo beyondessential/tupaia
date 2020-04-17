@@ -117,7 +117,7 @@ export const selectOrgUnitChildren = createSelector(
 export const selectOrgUnitsAsHierarchy = createSelector(
   [state => state.orgUnits.orgUnitMap, selectCountriesAsOrgUnits],
   (orgUnitMap, countriesAsOrgUnits) => {
-    const world = orgUnitMap.World;
+    const world = orgUnitMap.World && orgUnitMap.World.World;
     if (!world) {
       return {};
     }
