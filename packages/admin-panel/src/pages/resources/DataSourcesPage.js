@@ -31,6 +31,26 @@ const dataSourceConfigView = row => {
   return <dl>{entries}</dl>;
 };
 
+const getButtonsConfig = fields => [
+  {
+    Header: 'Edit',
+    type: 'edit',
+    source: 'id',
+    actionConfig: {
+      editEndpoint: 'data_source',
+      fields: fields,
+    },
+  },
+  {
+    Header: 'Delete',
+    source: 'id',
+    type: 'delete',
+    actionConfig: {
+      endpoint: 'dataSource',
+    },
+  },
+];
+
 const DATA_ELEMENTS = 'DATA_ELEMENTS';
 const PROGRAMS = 'PROGRAMS';
 const DATA_SOURCE_FIELDS = [
@@ -83,7 +103,7 @@ const TABS = {
       {
         title: 'Data Elements',
         endpoint: 'data_source/{id}/data_source',
-        columns: DATA_SOURCE_FIELDS,
+        columns: [...DATA_SOURCE_FIELDS, ...getButtonsConfig(DATA_SOURCE_FIELDS)],
       },
     ],
   },
@@ -102,18 +122,7 @@ const getTabPage = tabName => {
         key={tabName}
         title={title}
         endpoint={endpoint}
-        columns={[
-          ...fields,
-          {
-            Header: 'Edit',
-            type: 'edit',
-            source: 'id',
-            actionConfig: {
-              editEndpoint: 'data_source',
-              fields: fields,
-            },
-          },
-        ]}
+        columns={[...fields, ...getButtonsConfig(fields)]}
         expansionTabs={expansionTabs}
         editConfig={{ title: 'Edit Data Source' }}
         baseFilter={baseFilter}
