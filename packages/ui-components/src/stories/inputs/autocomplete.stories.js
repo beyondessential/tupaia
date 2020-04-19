@@ -42,4 +42,3 @@ const options = [
   { id: 11, name: 'Sentinel Site Eleven' },
   { id: 12, name: 'Sentinel Site Twelve' },
 ];
-

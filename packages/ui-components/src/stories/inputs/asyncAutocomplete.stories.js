@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
@@ -24,6 +24,9 @@ function sleep(delay = 0) {
   });
 }
 
+/*
+ * Mock api service layer. For demo purposes.
+ */
 const api = () => {
   const fetchData = async () => {
     const response = await fetch('https://country.register.gov.uk/records.json?page-size=5000');
@@ -43,9 +46,12 @@ const api = () => {
 export const asyncAutoComplete = () => {
   const [value, setValue] = useState(null);
 
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
+  const handleChange = useCallback(
+    (event, newValue) => {
+      setValue(newValue);
+    },
+    [setValue],
+  );
 
   return (
     <Container>
@@ -66,9 +72,12 @@ export const asyncAutoComplete = () => {
 export const asyncNavAutoComplete = () => {
   const [value, setValue] = useState(null);
 
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
+  const handleChange = useCallback(
+    (event, newValue) => {
+      setValue(newValue);
+    },
+    [setValue],
+  );
 
   return (
     <Container>

@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import MuiAutocomplete from '@material-ui/lab/Autocomplete';
 import MuiPaper from '@material-ui/core/Paper';
 import MuiKeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
@@ -42,7 +42,9 @@ export const Autocomplete = ({ options, labelKey, ...props }) => (
     getOptionLabel={option => option[labelKey]}
     popupIcon={<KeyboardArrowDown />}
     PaperComponent={StyledPaper}
-    renderInput={params => <TextField {...params} label={props.label} placeholder={props.placeholder} />}
+    renderInput={params => (
+      <TextField {...params} label={props.label} placeholder={props.placeholder} />
+    )}
     {...props}
   />
 );
@@ -146,7 +148,7 @@ export const NavAutocomplete = ({ options, onChange, ...props }) => {
 
   const indexedOptions = options.map((option, index) => ({ ...option, index }));
 
-  const handlePrev = () => {
+  const handlePrev = useCallback(() => {
     if (value === null) {
       const newValue = indexedOptions[indexedOptions.length - 1];
       setValue(newValue);
@@ -154,9 +156,9 @@ export const NavAutocomplete = ({ options, onChange, ...props }) => {
       const newValue = indexedOptions[value.index - 1];
       setValue(newValue);
     }
-  };
+  }, [setValue, indexedOptions]);
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     if (value === null) {
       const newValue = indexedOptions[0];
       setValue(newValue);
@@ -164,15 +166,18 @@ export const NavAutocomplete = ({ options, onChange, ...props }) => {
       const newValue = indexedOptions[value.index + 1];
       setValue(newValue);
     }
-  };
+  }, [setValue, indexedOptions]);
 
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
+  const handleChange = useCallback(
+    (event, newValue) => {
+      setValue(newValue);
 
-    if (typeof onChange === 'function') {
-      onChange(event, newValue);
-    }
-  };
+      if (typeof onChange === 'function') {
+        onChange(event, newValue);
+      }
+    },
+    [setValue, onChange],
+  );
 
   return (
     <StyledAutoComplete
