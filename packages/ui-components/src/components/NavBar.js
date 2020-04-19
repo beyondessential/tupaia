@@ -15,10 +15,12 @@ const Wrapper = styled.nav`
   background-color: ${props => props.theme.palette.primary.main};
 `;
 
+const borderColor = 'rgba(255, 255, 255, 0.2)';
+
 const Inner = styled(MuiBox)`
   display: flex;
   justify-content: space-between;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1px solid ${borderColor};
 
   .MuiTabs-root {
     margin-bottom: -1px; // This is needed to align the indicator with the border
@@ -30,7 +32,7 @@ const NavLinks = styled(MuiBox)`
   justify-content: flex-start;
 
   img {
-    margin-right: 4rem;
+    margin-right: 3rem;
   }
 `;
 

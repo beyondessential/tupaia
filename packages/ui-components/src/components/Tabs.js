@@ -34,9 +34,10 @@ export const Tabs = props => {
  */
 export const Tab = styled(({ children, ...rest }) => <MuiTab {...rest} label={children} />)`
   min-width: auto;
-  padding: 1rem 0;
-  margin: 0 1.25rem;
+  padding: 1.1rem 0;
+  margin: 0 1.2rem;
   text-transform: uppercase;
+  letter-spacing: 0;
 
   .MuiTab-wrapper {
     flex-direction: row;
@@ -44,7 +45,7 @@ export const Tab = styled(({ children, ...rest }) => <MuiTab {...rest} label={ch
   }
 
   svg {
-    margin-right: 0.625rem;
+    margin-right: 0.5rem;
   }
 
   &.Mui-selected {
@@ -65,7 +66,7 @@ export const LightTabs = styled(Tabs)`
  * Light Tab
  */
 export const LightTab = styled(Tab)`
-  color: ${COLORS.TRANSPARENT_BLUE};
+  color: ${COLORS.LIGHT_BLUE};
 
   &.Mui-selected {
     color: ${props => props.theme.palette.primary.contrastText};

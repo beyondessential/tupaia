@@ -10,12 +10,18 @@ import styled from 'styled-components';
 
 const StyledLink = styled(MuiLink)`
   display: flex;
+  align-items: center;
+`;
+
+const StyledImg = styled.img`
+  height: 32px;
+  width: auto;
 `;
 
 const Link = props => <StyledLink color="inherit" {...props} component={RouterLink} />;
 
 export const HomeButton = () => (
   <Link to="/">
-    <img src="/psss-logo.svg" alt="psss logo" />
+    <StyledImg src="/psss-logo-white.svg" alt="psss logo" />
   </Link>
 );
