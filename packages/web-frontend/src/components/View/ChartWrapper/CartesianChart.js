@@ -273,11 +273,15 @@ export class CartesianChart extends PureComponent {
   renderYAxis = ({
     yAxisId = DEFAULT_Y_AXIS.id,
     orientation = DEFAULT_Y_AXIS.orientation,
-    yAxisDomain = DEFAULT_Y_AXIS.domain,
+    yAxisDomain = DEFAULT_Y_AXIS.yAxisDomain,
     valueType: axisValueType,
   } = {}) => {
     const { isExporting, viewContent } = this.props;
     const { data, valueType } = viewContent;
+    if (valueType === PERCENTAGE) {
+      console.log(DEFAULT_Y_AXIS.yAxisDomain, yAxisDomain);
+      yAxisDomain.max.value = 'dataMax';
+    }
 
     return (
       <YAxis
