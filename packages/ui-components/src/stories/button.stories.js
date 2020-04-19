@@ -92,9 +92,3 @@ export const loading = () => (
     <Button isSubmitting>Default</Button>
   </Container>
 );
-
-// export const profile = () => (
-//   <Container bgcolor={COLORS.BLUE}>
-//     <ProfileButton startIcon={<Avatar>T</Avatar>}>Tom</ProfileButton>
-//   </Container>
-// );

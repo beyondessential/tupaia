@@ -18,13 +18,13 @@ const Container = styled.div`
 
 export const autoComplete = () => (
   <Container>
-    <Autocomplete label="Simple Auto Complete" options={options} />
+    <Autocomplete label="Simple Auto Complete" options={options} placeholder="Search..." />
   </Container>
 );
 
 export const navAutoComplete = () => (
   <Container>
-    <NavAutocomplete label="Fancy Auto Complete" options={options} />
+    <NavAutocomplete label="Nav Auto Complete" options={options} placeholder="Search..." />
   </Container>
 );
 

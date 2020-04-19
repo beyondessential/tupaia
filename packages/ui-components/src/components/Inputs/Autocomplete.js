@@ -17,7 +17,6 @@ import * as COLORS from '../../theme/colors';
 import { TextField } from './TextField';
 import { IconButton } from '../IconButton';
 
-
 const KeyboardArrowDown = styled(MuiKeyboardArrowDown)`
   color: ${COLORS.GREY_72};
   font-size: 28px;
@@ -36,27 +35,28 @@ const StyledPaper = styled(Paper)`
 /**
  * Autocomplete
  */
-export const Autocomplete = ({ label, labelKey, options, ...props }) => {
-  return (
-    <MuiAutocomplete
-      options={options}
-      getOptionSelected={(option, value) => option[labelKey] === value[labelKey]}
-      getOptionLabel={option => option[labelKey]}
-      popupIcon={<KeyboardArrowDown />}
-      PaperComponent={StyledPaper}
-      renderInput={params => <TextField {...params} label={label} />}
-      {...props}
-    />
-  );
-};
+export const Autocomplete = ({ options, labelKey, ...props }) => (
+  <MuiAutocomplete
+    options={options}
+    getOptionSelected={(option, value) => option[labelKey] === value[labelKey]}
+    getOptionLabel={option => option[labelKey]}
+    popupIcon={<KeyboardArrowDown />}
+    PaperComponent={StyledPaper}
+    renderInput={params => <TextField {...params} label={props.label} placeholder={props.placeholder} />}
+    {...props}
+  />
+);
 
 Autocomplete.propTypes = {
   label: PropTypes.string.isRequired,
   options: PropTypes.array.isRequired,
+  labelKey: PropTypes.string,
+  placeholder: PropTypes.string,
 };
 
 Autocomplete.defaultProps = {
   labelKey: 'name',
+  placeholder: '',
 };
 
 /*
@@ -70,7 +70,7 @@ const ChevronRight = styled(MuiChevronRight)`
   color: ${COLORS.GREY_72};
 `;
 
-export const NavInput = ({ InputProps, handlePrev, handleNext, ...props }) => {
+const NavInput = ({ InputProps, handlePrev, handleNext, ...props }) => {
   /* Extract the Mui icon buttons for  re-use in different part of the input */
   const Cross = () => InputProps.endAdornment.props.children[0];
   const Menu = () => InputProps.endAdornment.props.children[1];
@@ -101,11 +101,17 @@ export const NavInput = ({ InputProps, handlePrev, handleNext, ...props }) => {
   );
 };
 
+NavInput.propTypes = {
+  InputProps: PropTypes.object.isRequired,
+  handlePrev: PropTypes.func.isRequired,
+  handleNext: PropTypes.func.isRequired,
+};
+
 const Menu = styled(MuiMenu)`
   color: ${COLORS.GREY_72};
 `;
 
-export const StyledAutoComplete = styled(Autocomplete)`
+const StyledAutoComplete = styled(Autocomplete)`
   /*
   * Adornments
   */
@@ -135,7 +141,7 @@ export const StyledAutoComplete = styled(Autocomplete)`
 /*
  * NavAutocomplete
  */
-export const NavAutocomplete = ({ options, ...props }) => {
+export const NavAutocomplete = ({ options, onChange, ...props }) => {
   const [value, setValue] = useState(null);
 
   const indexedOptions = options.map((option, index) => ({ ...option, index }));
@@ -162,6 +168,10 @@ export const NavAutocomplete = ({ options, ...props }) => {
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+
+    if (typeof onChange === 'function') {
+      onChange(event, newValue);
+    }
   };
 
   return (
@@ -171,10 +181,27 @@ export const NavAutocomplete = ({ options, ...props }) => {
       options={indexedOptions}
       popupIcon={<Menu />}
       renderInput={params => (
-        <NavInput {...params} label={props.label}       placeholder="Search..."
-                  handlePrev={handlePrev} handleNext={handleNext} />
+        <NavInput
+          {...params}
+          label={props.label}
+          placeholder={props.placeholder}
+          handlePrev={handlePrev}
+          handleNext={handleNext}
+        />
       )}
       {...props}
     />
   );
+};
+
+NavAutocomplete.propTypes = {
+  options: PropTypes.array.isRequired,
+  label: PropTypes.string.isRequired,
+  onChange: PropTypes.func,
+  placeholder: PropTypes.string,
+};
+
+NavAutocomplete.defaultProps = {
+  onChange: null,
+  placeholder: '',
 };

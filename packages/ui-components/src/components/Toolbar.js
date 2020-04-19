@@ -4,40 +4,51 @@
  */
 
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import MuiToolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
+import MuiButton from '@material-ui/core/Button';
+import styled from 'styled-components';
+import Container from '@material-ui/core/Container';
+import MuiButtonGroup from '@material-ui/core/ButtonGroup';
+import * as COLORS from '../theme/colors';
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    flexGrow: 1,
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-  title: {
-    flexGrow: 1,
-  },
-}));
+const StyledDiv = styled.div`
+  background-color: ${COLORS.DARK_BLUE};
+  color: ${COLORS.WHITE};
+  padding: 12px 0;
+  letter-spacing: 0;
 
-export const Toolbar = () => {
-  const classes = useStyles();
+  .MuiButton-root {
+    color: #97b7ce;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 1;
+    letter-spacing: 0;
+    padding: 9px 32px;
+  }
 
-  return (
-    <div className={classes.root}>
-      <MuiToolbar>
-        <IconButton edge="start" className={classes.menuButton} color="inherit">
-          <MenuIcon />
-        </IconButton>
-        <Typography variant="h6" className={classes.title}>
-          News
-        </Typography>
-        <Button color="inherit">Login</Button>
-      </MuiToolbar>
-    </div>
-  );
-};
+  .active {
+    color: white;
+  }
+
+  .MuiButtonGroup-groupedText:not(:last-child) {
+    border-color: #7ea7c3;
+  }
+
+  .MuiButtonGroup-groupedText:last-child {
+    padding-right: 0;
+  }
+
+  .MuiButtonGroup-groupedText:first-child {
+    padding-left: 0;
+  }
+`;
+
+export const Toolbar = () => (
+  <StyledDiv>
+    <Container maxWidth="lg">
+      <MuiButtonGroup variant="text">
+        <MuiButton className="active">Weekly Case Data</MuiButton>
+        <MuiButton>Event-based Data</MuiButton>
+      </MuiButtonGroup>
+    </Container>
+  </StyledDiv>
+);

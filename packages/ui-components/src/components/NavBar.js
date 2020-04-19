@@ -3,14 +3,13 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import MuiBox from '@material-ui/core/Box';
 import MuiContainer from '@material-ui/core/Container';
-import { LightTab, LightTabs } from './Tabs';
-import { Dashboard, NewReleases, Warning } from '@material-ui/icons';
-import { ProfileButton } from './Button';
-import Avatar from '@material-ui/core/Avatar';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
+import { LightTabs, LightTab } from './Tabs';
 
 const Wrapper = styled.nav`
   background-color: ${props => props.theme.palette.primary.main};
@@ -35,29 +34,45 @@ const NavLinks = styled(MuiBox)`
   }
 `;
 
-export const NavBar = () => (
-  <Wrapper>
-    <MuiContainer>
-      <Inner>
-        <NavLinks>
-          <img src="/psss-logo.svg" alt="psss logo" />
-          <LightTabs>
-            <LightTab>
-              <Dashboard />
-              Dashboard
-            </LightTab>
-            <LightTab>
-              <Warning />
-              Alerts
-            </LightTab>
-            <LightTab>
-              <NewReleases />
-              Outbreaks
-            </LightTab>
-          </LightTabs>
-        </NavLinks>
-        <ProfileButton startIcon={<Avatar>T</Avatar>}>Tom</ProfileButton>
-      </Inner>
-    </MuiContainer>
-  </Wrapper>
-);
+const Link = props => <LightTab {...props} component={RouterLink} />;
+
+Link.propTypes = {
+  to: PropTypes.string.isRequired,
+};
+
+export const NavBar = ({ HomeButton, Profile, links }) => {
+  const location = useLocation();
+  const [value, setValue] = useState(false);
+
+  useEffect(() => {
+    const newValue = links.some(link => link.to === location.pathname) ? location.pathname : false;
+    setValue(newValue);
+  }, [location]);
+
+  return (
+    <Wrapper>
+      <MuiContainer>
+        <Inner>
+          <NavLinks>
+            <HomeButton />
+            <LightTabs value={value}>
+              {links.map(({ label, to, icon }) => (
+                <Link key={to} to={to} value={to}>
+                  {icon}
+                  {label}
+                </Link>
+              ))}
+            </LightTabs>
+          </NavLinks>
+          <Profile />
+        </Inner>
+      </MuiContainer>
+    </Wrapper>
+  );
+};
+
+NavBar.propTypes = {
+  HomeButton: PropTypes.any.isRequired,
+  links: PropTypes.any.isRequired,
+  Profile: PropTypes.any.isRequired,
+};

@@ -6,8 +6,8 @@
 import React, { useState } from 'react';
 
 import styled from 'styled-components';
-import { AsyncAutocomplete, AsyncNavAutocomplete } from '../../components/Inputs';
 import Typography from '@material-ui/core/Typography';
+import { AsyncAutocomplete, AsyncNavAutocomplete } from '../../components/Inputs';
 
 export default {
   title: 'Inputs/AsyncAutocomplete',
@@ -37,11 +37,14 @@ const api = () => {
   };
 };
 
+/**
+ * Async Autocomplete
+ */
 export const asyncAutoComplete = () => {
   const [value, setValue] = useState(null);
 
-  const handleChange = (event, value) => {
-    setValue(value);
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
   };
 
   return (
@@ -50,19 +53,21 @@ export const asyncAutoComplete = () => {
         label="Async Auto Complete"
         fetchOptions={api().get}
         onChange={handleChange}
+        placeholder="Search..."
       />
-      <Typography>
-        Selected Value: {value ? value.name : 'none'}
-      </Typography>
+      <Typography>Selected Value: {value ? value.name : 'none'}</Typography>
     </Container>
   );
 };
 
+/**
+ * Async NavAutocomplete. Gets options from a resource and allows navigating them
+ */
 export const asyncNavAutoComplete = () => {
   const [value, setValue] = useState(null);
 
-  const handleChange = (event, value) => {
-    setValue(value);
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
   };
 
   return (
@@ -70,10 +75,10 @@ export const asyncNavAutoComplete = () => {
       <AsyncNavAutocomplete
         label="Async Auto Complete"
         fetchOptions={api().get}
+        onChange={handleChange}
+        placeholder="Search..."
       />
-      <Typography>
-        Selected Value: {value ? value.name : 'none'}
-      </Typography>
+      <Typography>Selected Value: {value ? value.name : 'none'}</Typography>
     </Container>
   );
 };

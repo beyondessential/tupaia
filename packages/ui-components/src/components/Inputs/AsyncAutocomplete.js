@@ -4,12 +4,15 @@
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { TextField } from './TextField';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { Autocomplete, StyledAutoComplete, NavInput, NavAutocomplete } from './Autocomplete';
+import PropTypes from 'prop-types';
+import { TextField } from './TextField';
+import { Autocomplete, NavAutocomplete } from './Autocomplete';
 
-
-function useOptions(fetchOptions) {
+/**
+ * Custom hook to fetch autocomplete options given a callback function
+ */
+const useOptions = fetchOptions => {
   const [options, setOptions] = useState([]);
 
   useEffect(() => {
@@ -30,11 +33,10 @@ function useOptions(fetchOptions) {
   }, []);
 
   return options;
-}
+};
 
-
-/*
- * Async Autocomplete
+/**
+ * Async Autocomplete. Gets options from a resource
  */
 export const AsyncAutocomplete = ({ fetchOptions, ...props }) => {
   const options = useOptions(fetchOptions);
@@ -60,13 +62,14 @@ export const AsyncAutocomplete = ({ fetchOptions, ...props }) => {
         <TextField
           {...params}
           label={props.label}
+          placeholder={props.placeholder}
           InputProps={{
             ...params.InputProps,
             endAdornment: (
-              <>
+              <React.Fragment>
                 {loading ? <CircularProgress color="inherit" size={20} /> : null}
                 {params.InputProps.endAdornment}
-              </>
+              </React.Fragment>
             ),
           }}
         />
@@ -76,8 +79,18 @@ export const AsyncAutocomplete = ({ fetchOptions, ...props }) => {
   );
 };
 
+AsyncAutocomplete.propTypes = {
+  fetchOptions: PropTypes.func.isRequired,
+  label: PropTypes.string.isRequired,
+  placeholder: PropTypes.string,
+};
+
+AsyncAutocomplete.defaultProps = {
+  placeholder: '',
+};
+
 /*
- * Async NavAutocomplete
+ * Async NavAutocomplete. Gets options from a resource and allows navigating them
  */
 export const AsyncNavAutocomplete = ({ fetchOptions, ...props }) => {
   const options = useOptions(fetchOptions);
@@ -102,4 +115,8 @@ export const AsyncNavAutocomplete = ({ fetchOptions, ...props }) => {
       {...props}
     />
   );
+};
+
+AsyncNavAutocomplete.propTypes = {
+  fetchOptions: PropTypes.func.isRequired,
 };
