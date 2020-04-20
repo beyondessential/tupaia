@@ -6,7 +6,6 @@
     "mocha": true
   },
   "rules": {
-    "react/jsx-one-expression-per-line": "off",
     "react/jsx-filename-extension": "off",
     "react/forbid-prop-types": "off",
     "jsx-a11y/href-no-hash": "off",
