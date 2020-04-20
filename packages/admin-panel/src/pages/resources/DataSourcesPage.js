@@ -61,7 +61,6 @@ const DATA_SOURCE_FIELDS = [
   {
     Header: 'Service Type',
     source: 'service_type',
-    accessor: ({ service_type: serviceType }) => serviceType || 'dhis',
     editConfig: { default: 'dhis' },
   },
   {
