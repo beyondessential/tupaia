@@ -8,7 +8,7 @@
 import { selectOrgUnit, selectOrgUnitChildren, selectOrgUnitsAsHierarchy } from '../selectors';
 import { state } from './selectors.test.state';
 
-describe.only('selectors', () => {
+describe('selectors', () => {
   describe('memoization', () => {
     describe('selectOrgUnit', () => {
       it('recomputes by country', () => {
