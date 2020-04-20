@@ -26,9 +26,7 @@ class ValuesPer100kPerPeriodByOrgUnitBuilder extends DataBuilder {
 
     if (results.length === 0) return { data: results };
 
-    const populationResultsGroupedByPeriod = this.convertPopulationResultsToDictionary(
-      populationResults,
-    );
+    const populationResultsGroupedByPeriod = this.groupPopulationResultsByPeriod(populationResults);
 
     //Get an array of all the population result periods and sort them desc
     const sortedPopulationPeriodsDesc = Object.keys(populationResultsGroupedByPeriod).sort(
@@ -96,7 +94,7 @@ class ValuesPer100kPerPeriodByOrgUnitBuilder extends DataBuilder {
    * }
    * @param {Array} populationResults Array of all the population results
    */
-  convertPopulationResultsToDictionary = populationResults => {
+  groupPopulationResultsByPeriod = populationResults => {
     //Group the population results array by 'period'
     const populationResultsGroupedByPeriod = groupBy(populationResults, 'period');
 
