@@ -46,7 +46,7 @@ const getDistrictGroupsForCountries = async (db, countries) => {
   return districtGroups;
 };
 
-const replaceDistrictWithSubDistrictInGroups = async (db, dashboardGroups) =>
+const addSubDistrictGroupsMatchingDistrict = async (db, dashboardGroups) =>
   Promise.all(
     dashboardGroups.map(({ id, code, dashboardReports, ...otherProps }) =>
       insertObject(db, 'dashboardGroup', {
@@ -62,7 +62,7 @@ exports.up = async function(db) {
   await replaceOrganisationLevel(db, 'Province', 'District');
   const countriesWithSubDistricts = await getCountriesWithSubDistricts(db);
   const dashboardGroups = await getDistrictGroupsForCountries(db, countriesWithSubDistricts);
-  await replaceDistrictWithSubDistrictInGroups(db, dashboardGroups);
+  await addSubDistrictGroupsMatchingDistrict(db, dashboardGroups);
 
   // We don't want reports in the SubDistrict level for Australia
   await db.runSql(`
