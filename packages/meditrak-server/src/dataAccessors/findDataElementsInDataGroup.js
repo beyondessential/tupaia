@@ -16,14 +16,10 @@ export const findDataElementsInDataGroup = async (
     { data_group_id: dataSourceId, ...criteria },
     {
       ...options,
-      multiJoin: [
-        {
-          joinWith: TYPES.DATA_ELEMENT_DATA_GROUP,
-          joinCondition: [
-            `${TYPES.DATA_SOURCE}.id`,
-            `${TYPES.DATA_ELEMENT_DATA_GROUP}.data_element_id`,
-          ],
-        },
+      joinWith: TYPES.DATA_ELEMENT_DATA_GROUP,
+      joinCondition: [
+        `${TYPES.DATA_SOURCE}.id`,
+        `${TYPES.DATA_ELEMENT_DATA_GROUP}.data_element_id`,
       ],
     },
   );
