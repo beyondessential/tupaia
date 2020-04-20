@@ -5,7 +5,7 @@
 
 import keyBy from 'lodash.keyby';
 
-import { stripFromStart } from '@tupaia/utils';
+import { stripFromString } from '@tupaia/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { ENTITY_TYPES } from '/models/Entity';
 
@@ -33,7 +33,7 @@ class StockoutsDataBuilder extends DataBuilder {
       const orgUnitName = facilitiesByCode[vaccine.organisationUnit].name;
       const stockout =
         vaccine.value === 0 &&
-        stripFromStart(
+        stripFromString(
           dataElementCodeToName[vaccine.dataElement],
           this.config.stripFromDataElementNames,
         );
@@ -57,7 +57,7 @@ class StockoutsDataBuilder extends DataBuilder {
     return results
       .filter(({ value }) => value === 0)
       .map(({ dataElement: dataElementCode }) => ({
-        value: stripFromStart(
+        value: stripFromString(
           metadata.dataElementCodeToName[dataElementCode],
           this.config.stripFromDataElementNames,
         ),
