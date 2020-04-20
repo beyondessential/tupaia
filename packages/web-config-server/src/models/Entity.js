@@ -272,6 +272,6 @@ export class Entity extends BaseModel {
   }
 
   async countryEntity() {
-    return this.type === COUNTRY ? this : Entity.findOne({ code: this.entity.country_code });
+    return this.type === COUNTRY ? this : Entity.findOne({ code: this.country_code });
   }
 }
