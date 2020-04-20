@@ -5,7 +5,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { Autocomplete, NavAutocomplete } from '../../components/Inputs';
+import { Autocomplete } from '../../components/Inputs';
 
 export default {
   title: 'Inputs/Autocomplete',
@@ -15,18 +15,6 @@ const Container = styled.div`
   max-width: 400px;
   padding: 2rem;
 `;
-
-export const autoComplete = () => (
-  <Container>
-    <Autocomplete label="Simple Auto Complete" options={options} placeholder="Search..." />
-  </Container>
-);
-
-export const navAutoComplete = () => (
-  <Container>
-    <NavAutocomplete label="Nav Auto Complete" options={options} placeholder="Search..." />
-  </Container>
-);
 
 const options = [
   { id: 1, name: 'Sentinel Site One' },
@@ -42,3 +30,9 @@ const options = [
   { id: 11, name: 'Sentinel Site Eleven' },
   { id: 12, name: 'Sentinel Site Twelve' },
 ];
+
+export const autoComplete = () => (
+  <Container>
+    <Autocomplete label="Simple Auto Complete" options={options} placeholder="Search..." />
+  </Container>
+);

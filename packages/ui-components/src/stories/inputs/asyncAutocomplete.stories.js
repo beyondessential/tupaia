@@ -7,7 +7,7 @@ import React, { useState, useCallback } from 'react';
 
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
-import { AsyncAutocomplete, AsyncNavAutocomplete } from '../../components/Inputs';
+import { AsyncAutocomplete } from '../../components/Inputs';
 
 export default {
   title: 'Inputs/AsyncAutocomplete',
@@ -56,32 +56,6 @@ export const asyncAutoComplete = () => {
   return (
     <Container>
       <AsyncAutocomplete
-        label="Async Auto Complete"
-        fetchOptions={api().get}
-        onChange={handleChange}
-        placeholder="Search..."
-      />
-      <Typography>Selected Value: {value ? value.name : 'none'}</Typography>
-    </Container>
-  );
-};
-
-/**
- * Async NavAutocomplete. Gets options from a resource and allows navigating them
- */
-export const asyncNavAutoComplete = () => {
-  const [value, setValue] = useState(null);
-
-  const handleChange = useCallback(
-    (event, newValue) => {
-      setValue(newValue);
-    },
-    [setValue],
-  );
-
-  return (
-    <Container>
-      <AsyncNavAutocomplete
         label="Async Auto Complete"
         fetchOptions={api().get}
         onChange={handleChange}
