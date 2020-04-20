@@ -20,7 +20,7 @@ const localStyles = {
   },
 };
 
-const dataSourceConfigView = row => {
+const DataSourceConfigView = row => {
   const entries = Object.entries(row.value).map(([key, value]) => (
     <React.Fragment key={key}>
       <dt style={localStyles.config.dt}>{key}:</dt>
