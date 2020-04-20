@@ -13,6 +13,7 @@ import { Project } from './Project';
 import { EntityHierarchyBuilder } from './helpers/EntityHierarchyBuilder';
 
 const CASE = 'case';
+const CASE_CONTACT = 'case_contact';
 const COUNTRY = 'country';
 const DISASTER = 'disaster';
 const FACILITY = 'facility';
@@ -23,6 +24,7 @@ const PROJECT = 'project';
 
 export const ENTITY_TYPES = {
   CASE,
+  CASE_CONTACT,
   COUNTRY,
   DISASTER,
   FACILITY,
@@ -270,6 +272,6 @@ export class Entity extends BaseModel {
   }
 
   async countryEntity() {
-    return this.type === COUNTRY ? this : Entity.findOne({ code: this.entity.country_code });
+    return this.type === COUNTRY ? this : Entity.findOne({ code: this.country_code });
   }
 }

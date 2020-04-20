@@ -14,7 +14,9 @@ const PRESENTATION_TYPES = {
 };
 
 const getPresentationOptionFromRange = (options, value) => {
-  const option = Object.values(options).find(({ min, max }) => value >= min && value <= max);
+  const option = Object.values(options).find(
+    ({ min, max }) => value >= min && (max === undefined || value <= max),
+  );
   if (value === undefined || value === '' || option === undefined) return null;
   return option;
 };
