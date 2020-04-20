@@ -114,7 +114,7 @@ const TABS = {
   },
   [PROGRAMS]: {
     title: 'Programs',
-    endpoint: 'data_source',
+    endpoint: 'dataSources',
     baseFilter: { type: 'dataGroup' },
     fields: DATA_SOURCE_FIELDS,
     expansionTabs: [
