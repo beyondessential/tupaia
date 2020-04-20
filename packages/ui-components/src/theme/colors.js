@@ -27,8 +27,7 @@ export const GREY_FB = '#FBF9F9';
 
 // Blues
 export const WHITE_BLUE = '#DDF1FF';
-export const TRANSPARENT_BLUE = 'rgba(255, 255, 255, 0.7)';
-export const LIGHT_BLUE = '#9ACAEB';
+export const LIGHT_BLUE = '#99D6FF';
 export const BLUE_ACCENT = '#2E6F9C';
 export const BLUE_BACKDROP = 'rgba(31, 88, 128, 0.72)';
 

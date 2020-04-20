@@ -2,11 +2,12 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import MuiBreadcrumbs from '@material-ui/core/Breadcrumbs';
 import MuiLink from '@material-ui/core/Link';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-import { Route, Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import * as COLORS from '../theme/colors';
 import { Home as HomeIcon } from './Icons';
@@ -44,32 +45,43 @@ const Link = props => <MuiLink color="inherit" {...props} component={RouterLink}
 /**
  * Breadcrumbs
  */
-export const Breadcrumbs = ({ home = 'Dashboard', ...props }) => (
-  <Route>
-    {({ location }) => {
-      const pathnames = location.pathname.split('/').filter(x => x);
-      return (
-        <StyledBreadcrumbs separator={<NavigateNextIcon />} {...props}>
-          <Link color="inherit" to="/">
-            <HomeIcon /> {home}
-          </Link>
-          {pathnames.map((value, index) => {
-            const last = index === pathnames.length - 1;
-            const to = `${pathnames.slice(0, index + 1).join('/')}`;
+export const Breadcrumbs = ({ home, ...props }) => {
+  const location = useLocation();
+  const [pathnames, setPathnames] = useState([]);
 
-            return last ? (
-              <span key={to}>{value}</span>
-            ) : (
-              <Link color="inherit" to={to} key={to}>
-                {value}
-              </Link>
-            );
-          })}
-        </StyledBreadcrumbs>
-      );
-    }}
-  </Route>
-);
+  useEffect(() => {
+    const newPathnames = location.pathname.split('/').filter(x => x);
+    setPathnames(newPathnames);
+  }, [location]);
+
+  return (
+    <StyledBreadcrumbs separator={<NavigateNextIcon />} {...props}>
+      <Link to="/">
+        <HomeIcon /> {home}
+      </Link>
+      {pathnames.map((value, index) => {
+        const last = index === pathnames.length - 1;
+        const to = `${pathnames.slice(0, index + 1).join('/')}`;
+
+        return last ? (
+          <span key={to}>{value}</span>
+        ) : (
+          <Link to={to} key={to}>
+            {value}
+          </Link>
+        );
+      })}
+    </StyledBreadcrumbs>
+  );
+};
+
+Breadcrumbs.propTypes = {
+  home: PropTypes.string,
+};
+
+Breadcrumbs.defaultProps = {
+  home: 'Dashboard',
+};
 
 /*
  * Light Breadcrumbs
