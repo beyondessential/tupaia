@@ -8,7 +8,23 @@
 import { selectOrgUnit, selectOrgUnitChildren, selectOrgUnitsAsHierarchy } from '../selectors';
 import { state } from './selectors.test.state';
 
-describe('selectors', () => {
+const insertOrgUnit = (testState, country, orgUnit) => {
+  return {
+    ...testState,
+    orgUnits: {
+      ...testState.orgUnits,
+      orgUnitMap: {
+        ...testState.orgUnits.orgUnitMap,
+        [country]: {
+          ...testState.orgUnits.orgUnitMap[country],
+          [orgUnit.organisationUnitCode]: orgUnit,
+        },
+      },
+    },
+  };
+};
+
+describe.only('selectors', () => {
   describe('memoization', () => {
     describe('selectOrgUnit', () => {
       it('recomputes by country', () => {
@@ -19,34 +35,18 @@ describe('selectors', () => {
         selectOrgUnit(testState, 'TO');
         expect(selectOrgUnit.recomputations()).toEqual(1);
 
-        testState = {
-          ...testState,
-          orgUnits: {
-            ...testState.orgUnits,
-            orgUnitMap: {
-              ...testState.orgUnits.orgUnitMap,
-              PG: { PG: { organisationUnitCode: 'PG', name: 'Papua New Guinea' } },
-            },
-          },
-        };
+        testState = insertOrgUnit(testState, 'PG', {
+          organisationUnitCode: 'PG',
+          name: 'Papua New Guinea',
+        });
 
         selectOrgUnit(testState, 'TO');
         expect(selectOrgUnit.recomputations()).toEqual(1); // Country has not changed, so don't recompute
 
-        testState = {
-          ...testState,
-          orgUnits: {
-            ...testState.orgUnits,
-            orgUnitMap: {
-              ...testState.orgUnits.orgUnitMap,
-              TO: {
-                ...testState.orgUnits.orgUnitMap.TO,
-                TO: { organisationUnitCode: 'TO', name: 'Tonga 2' },
-                TO_HfevaHC: { organisationUnitCode: 'TO_HfevaHC', name: "Ha'afeva" },
-              },
-            },
-          },
-        };
+        testState = insertOrgUnit(testState, 'TO', {
+          organisationUnitCode: 'TO_HfevaHC',
+          name: "Ha'afeva",
+        });
 
         selectOrgUnit(testState, 'TO');
         expect(selectOrgUnit.recomputations()).toEqual(2); // Country has changed, recompute
@@ -62,16 +62,10 @@ describe('selectors', () => {
         selectOrgUnitChildren(testState, 'TO');
         expect(selectOrgUnitChildren.recomputations()).toEqual(1);
 
-        testState = {
-          ...testState,
-          orgUnits: {
-            ...testState.orgUnits,
-            orgUnitMap: {
-              ...testState.orgUnits.orgUnitMap,
-              PG: { PG: { organisationUnitCode: 'PG', name: 'Papua New Guinea' } },
-            },
-          },
-        };
+        testState = insertOrgUnit(testState, 'PG', {
+          organisationUnitCode: 'PG',
+          name: 'Papua New Guinea',
+        });
 
         selectOrgUnitChildren(testState, 'TO');
         expect(selectOrgUnitChildren.recomputations()).toEqual(2); //OrgUnitMap has changed, so recompute
@@ -87,16 +81,10 @@ describe('selectors', () => {
         selectOrgUnitsAsHierarchy(testState);
         expect(selectOrgUnitsAsHierarchy.recomputations()).toEqual(1);
 
-        testState = {
-          ...testState,
-          orgUnits: {
-            ...testState.orgUnits,
-            orgUnitMap: {
-              ...testState.orgUnits.orgUnitMap,
-              PG: { PG: { organisationUnitCode: 'PG', name: 'Papua New Guinea' } },
-            },
-          },
-        };
+        testState = insertOrgUnit(testState, 'PG', {
+          organisationUnitCode: 'PG',
+          name: 'Papua New Guinea',
+        });
 
         selectOrgUnitsAsHierarchy(testState);
         expect(selectOrgUnitsAsHierarchy.recomputations()).toEqual(2); //OrgUnitMap has changed, so recompute
