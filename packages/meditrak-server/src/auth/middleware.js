@@ -1,4 +1,5 @@
 import { UnauthenticatedError } from '@tupaia/utils';
+import { AccessPolicy } from '@tupaia/access-policy';
 import { getUserIDFromToken } from './userAuth';
 import { getAPIClientUser } from './clientAuth';
 
@@ -43,7 +44,11 @@ async function authenticateUser(req) {
 
 export const authenticationMiddleware = async (req, res, next) => {
   try {
-    req.userId = await authenticateUser(req);
+    const userId = await authenticateUser(req);
+    if (userId) {
+      const { authenticator } = req;
+      req.accessPolicy = new AccessPolicy(authenticator.getAccessPolicyForUser(userId));
+    }
     next();
   } catch (error) {
     next(error);

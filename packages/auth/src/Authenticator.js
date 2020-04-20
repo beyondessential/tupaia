@@ -23,7 +23,7 @@ export class Authenticator {
       deviceName,
       meditrakDeviceId,
     });
-    const accessPolicy = await this.accessPolicyBuilder.getPolicyForUser(user.id);
+    const accessPolicy = await this.getRawAccessPolicyForUser(user.id);
 
     return { refreshToken: refreshToken.token, user, accessPolicy };
   };
@@ -49,7 +49,7 @@ export class Authenticator {
     // There was a valid refresh token, find the user and respond
     const userId = refreshToken.user_id;
     const user = await this.models.user.findById(userId);
-    const accessPolicy = await this.accessPolicyBuilder.getPolicyForUser(user.id);
+    const accessPolicy = await this.getRawAccessPolicyForUser(user.id);
 
     return { refreshToken, user, accessPolicy };
   };
@@ -65,7 +65,7 @@ export class Authenticator {
 
     const user = await this.models.user.findById(foundToken.user_id);
     const refreshToken = await this.upsertRefreshToken({ userId: user.id, deviceName });
-    const accessPolicy = await this.accessPolicyBuilder.getPolicyForUser(user.id);
+    const accessPolicy = await this.getRawAccessPolicyForUser(user.id);
 
     return { refreshToken, user, accessPolicy };
   };
@@ -96,6 +96,22 @@ export class Authenticator {
       throw new UnverifiedError('Email address not yet verified');
     }
     return user;
+  }
+
+  /**
+   * Returns a plain old javascript object representation of the user's policy
+   */
+  async getRawAccessPolicyForUser(userId) {
+    const accessPolicy = await this.getAccessPolicyForUser(userId);
+    return accessPolicy.getRawPolicy();
+  }
+
+  /**
+   * Returns a plain old javascript object representation of the user's policy. Consumers should
+   * parse into an instance of AccessPolicy to use functions like `accessPolicy.allowsSome`
+   */
+  async getAccessPolicyForUser(userId) {
+    return this.accessPolicyBuilder.getPolicyForUser(userId);
   }
 
   async saveMeditrakDevice(meditrakDeviceDetails, user) {
