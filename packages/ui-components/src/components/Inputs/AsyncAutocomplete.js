@@ -7,7 +7,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import PropTypes from 'prop-types';
 import { TextField } from './TextField';
-import { Autocomplete, NavAutocomplete } from './Autocomplete';
+import { Autocomplete } from './Autocomplete';
 
 /**
  * Custom hook to fetch autocomplete options given a callback function
@@ -87,36 +87,4 @@ AsyncAutocomplete.propTypes = {
 
 AsyncAutocomplete.defaultProps = {
   placeholder: '',
-};
-
-/*
- * Async NavAutocomplete. Gets options from a resource and allows navigating them
- */
-export const AsyncNavAutocomplete = ({ fetchOptions, ...props }) => {
-  const options = useOptions(fetchOptions);
-  const [open, setOpen] = useState(false);
-  const loading = open && options.length === 0;
-
-  const handleClose = useCallback(() => {
-    setOpen(false);
-  }, [setOpen]);
-
-  const handleOpen = useCallback(() => {
-    setOpen(true);
-  }, [setOpen]);
-
-  return (
-    <NavAutocomplete
-      options={options}
-      open={open}
-      loading={loading}
-      onOpen={handleOpen}
-      onClose={handleClose}
-      {...props}
-    />
-  );
-};
-
-AsyncNavAutocomplete.propTypes = {
-  fetchOptions: PropTypes.func.isRequired,
 };

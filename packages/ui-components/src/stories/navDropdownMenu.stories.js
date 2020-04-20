@@ -4,17 +4,7 @@
  */
 
 import React from 'react';
-import styled from 'styled-components';
-import { Autocomplete } from '../../components/Inputs';
-
-export default {
-  title: 'Inputs/Autocomplete',
-};
-
-const Container = styled.div`
-  max-width: 400px;
-  padding: 2rem;
-`;
+import { NavDropdownMenu } from '../components/NavDropdownMenu';
 
 const options = [
   { id: 1, name: 'Sentinel Site One' },
@@ -31,8 +21,6 @@ const options = [
   { id: 12, name: 'Sentinel Site Twelve' },
 ];
 
-export const autoComplete = () => (
-  <Container>
-    <Autocomplete label="Simple Auto Complete" options={options} placeholder="Search..." />
-  </Container>
+export const navDropdownMenu = (
+  <NavDropdownMenu label="Nav Auto Complete" options={options} placeholder="Search..." />
 );
