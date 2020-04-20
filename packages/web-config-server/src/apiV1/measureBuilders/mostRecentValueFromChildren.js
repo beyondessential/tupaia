@@ -1,4 +1,5 @@
 import { getChildOrganisationUnits, mapOrgUnitToGroupCodes } from '/apiV1/utils';
+import { analyticsToMeasureData } from './helpers';
 
 export const mostRecentValueFromChildren = async (
   aggregator,
@@ -26,8 +27,5 @@ export const mostRecentValueFromChildren = async (
     },
   );
 
-  return results.map(({ organisationUnit: organisationUnitCode, value }) => ({
-    organisationUnitCode,
-    [dataElementCode]: value,
-  }));
+  return analyticsToMeasureData(results);
 };

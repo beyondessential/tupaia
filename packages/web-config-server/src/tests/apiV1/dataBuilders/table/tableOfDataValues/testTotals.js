@@ -200,12 +200,12 @@ export const testTotals = () => {
             { dataElement: 'Smokers', categoryId: 'Risk Factors', Col1: 1, Col2: 2 },
             { dataElement: 'Overweight', categoryId: 'Risk Factors', Col1: 3, Col2: 4 },
             { dataElement: 'Totals', categoryId: 'Risk Factors', Col1: 4, Col2: 6 },
+            { category: 'Risk Factors' },
           ],
           columns: [
             { key: 'Col1', title: 'Female' },
             { key: 'Col2', title: 'Male' },
           ],
-          categories: [{ key: 'Risk Factors', title: 'Risk Factors' }],
         },
       ));
 
@@ -234,14 +234,12 @@ export const testTotals = () => {
             { dataElement: 'Green', categoryId: 'CVD Risk', Col1: 5, Col2: 6 },
             { dataElement: 'Red', categoryId: 'CVD Risk', Col1: 7, Col2: 8 },
             { dataElement: 'Totals', categoryId: 'CVD Risk', Col1: 12, Col2: 14 },
+            { category: 'Risk Factors' },
+            { category: 'CVD Risk' },
           ],
           columns: [
             { key: 'Col1', title: 'Female' },
             { key: 'Col2', title: 'Male' },
-          ],
-          categories: [
-            { key: 'Risk Factors', title: 'Risk Factors' },
-            { key: 'CVD Risk', title: 'CVD Risk' },
           ],
         },
       ));
@@ -355,6 +353,8 @@ export const testTotals = () => {
             { dataElement: 'Green', categoryId: 'CVD Risk', Col1: 5, Col2: 6, Col3: 11 },
             { dataElement: 'Red', categoryId: 'CVD Risk', Col1: 7, Col2: 8, Col3: 15 },
             { dataElement: 'Totals', categoryId: 'CVD Risk', Col1: 12, Col2: 14 },
+            { category: 'Risk Factors' },
+            { category: 'CVD Risk' },
           ],
           columns: [
             {
@@ -365,10 +365,6 @@ export const testTotals = () => {
                 { key: 'Col3', title: 'Totals' },
               ],
             },
-          ],
-          categories: [
-            { key: 'Risk Factors', title: 'Risk Factors' },
-            { key: 'CVD Risk', title: 'CVD Risk' },
           ],
         },
       ));
@@ -427,14 +423,12 @@ export const testTotals = () => {
             { dataElement: 'Red', categoryId: 'CVD Risk', Col1: 7, Col2: 8 },
             { dataElement: 'CVD Risk Totals', categoryId: 'CVD Risk', Col1: 12, Col2: 14 },
             { dataElement: 'Totals', categoryId: 'CVD Risk', Col1: 16, Col2: 20 },
+            { category: 'Risk Factors' },
+            { category: 'CVD Risk' },
           ],
           columns: [
             { key: 'Col1', title: 'Female' },
             { key: 'Col2', title: 'Male' },
-          ],
-          categories: [
-            { key: 'Risk Factors', title: 'Risk Factors' },
-            { key: 'CVD Risk', title: 'CVD Risk' },
           ],
         },
       ));
@@ -583,6 +577,12 @@ export const testTotals = () => {
               Col2: 14,
               Col3: 26,
             },
+            {
+              category: 'Clinic Visit Service Types',
+            },
+            {
+              category: 'Home Visit Service Types',
+            },
           ],
           columns: [
             {
@@ -596,16 +596,6 @@ export const testTotals = () => {
             {
               key: 'Col3',
               title: 'Totals',
-            },
-          ],
-          categories: [
-            {
-              key: 'Clinic Visit Service Types',
-              title: 'Clinic Visit Service Types',
-            },
-            {
-              key: 'Home Visit Service Types',
-              title: 'Home Visit Service Types',
             },
           ],
         },

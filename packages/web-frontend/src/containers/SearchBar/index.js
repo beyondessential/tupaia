@@ -11,18 +11,16 @@
  * Container providing all the controls for user: login, logout, info, account
  */
 
+import FacilityIcon from 'material-ui/svg-icons/maps/local-hospital';
+import SearchIcon from 'material-ui/svg-icons/action/search';
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { isNull } from 'lodash';
 import { connect } from 'react-redux';
 import { List, ListItem } from 'material-ui/List';
-import FacilityIcon from 'material-ui/svg-icons/maps/local-hospital';
-import SearchIcon from 'material-ui/svg-icons/action/search';
 import { ControlBar } from '../../components/ControlBar';
 import { HierarchyItem } from '../../components/HierarchyItem';
-
 import { selectOrgUnitsAsHierarchy } from '../../selectors';
-
 import {
   changeSearch,
   toggleSearchExpand,
@@ -76,7 +74,6 @@ const styles = {
 const ICON_BY_ORG_UNIT_TYPE = {
   Facility: FacilityIcon,
 };
-const LEAF_ORG_UNIT_TYPE = 'Village';
 
 export class SearchBar extends PureComponent {
   constructor(props) {
@@ -136,14 +133,15 @@ export class SearchBar extends PureComponent {
         // Recursively generate the children for this OrgUnit, will not recurse whole tree as
         // HierarchyItems only fetch their children data on componentWillMount
         const nestedItems = recurseOrgUnits(organisationUnitChildren);
-
         return (
           <HierarchyItem
             key={organisationUnitCode}
             label={name}
             nestedMargin={nestedMargin}
             nestedItems={nestedItems}
-            hasNestedItems={type !== LEAF_ORG_UNIT_TYPE}
+            hasNestedItems={
+              type === 'Country' || (organisationUnitChildren && organisationUnitChildren.length)
+            }
             isLoading={isLoading}
             Icon={ICON_BY_ORG_UNIT_TYPE[type]}
             onClick={() => onOrgUnitClick(organisationUnitCode)}
