@@ -99,7 +99,7 @@ const TABS = {
     createConfig: {
       title: 'New Data Element',
       actionConfig: {
-        editEndpoint: 'data_source',
+        editEndpoint: 'dataSource',
         fields: [
           ...DATA_SOURCE_FIELDS,
           {
