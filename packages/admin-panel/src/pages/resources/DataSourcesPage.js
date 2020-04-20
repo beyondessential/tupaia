@@ -37,7 +37,7 @@ const getButtonsConfig = fields => [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      editEndpoint: 'data_source',
+      editEndpoint: 'dataSource',
       fields: fields,
     },
   },
@@ -93,13 +93,13 @@ const DATA_SOURCE_FIELDS = [
 const TABS = {
   [DATA_ELEMENTS]: {
     title: 'Data Elements',
-    endpoint: 'data_source',
+    endpoint: 'dataSources',
     baseFilter: { type: 'dataElement' },
     fields: DATA_SOURCE_FIELDS,
     createConfig: {
       title: 'New Data Element',
       actionConfig: {
-        editEndpoint: 'data_source',
+        editEndpoint: 'dataSource',
         fields: [
           ...DATA_SOURCE_FIELDS,
           {
