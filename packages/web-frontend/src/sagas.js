@@ -8,7 +8,7 @@
 import { call, put, delay, takeEvery, takeLatest, select } from 'redux-saga/effects';
 import queryString from 'query-string';
 import request from './utils/request';
-import { selectOrgUnit, cachedSelectOrgUnitChildren } from './reducers/orgUnitReducers';
+import { selectOrgUnit, selectOrgUnitChildren } from './selectors';
 import {
   ATTEMPT_CHANGE_PASSWORD,
   ATTEMPT_LOGIN,
@@ -446,7 +446,7 @@ function* fetchOrgUnitDataAndChangeOrgUnit(action) {
     const orgUnitAndChildren = {
       ...orgUnit,
       parent: selectOrgUnit(state, orgUnit.parent) || {},
-      organisationUnitChildren: cachedSelectOrgUnitChildren(state, organisationUnitCode),
+      organisationUnitChildren: selectOrgUnitChildren(state, organisationUnitCode),
     };
     yield put(changeOrgUnitSuccess(orgUnitAndChildren, shouldChangeMapBounds));
     return; // If we already have the org unit in reduxStore, just exit early
@@ -633,7 +633,7 @@ function* watchSearchChange() {
  * Fetches data for a measure and write it to map state by calling fetchMeasureSuccess.
  *
  */
-function* fetchMeasureInfo(measureId, organisationUnitCode, oldOrganisationUnitCode = null) {
+function* fetchMeasureInfo(measureId, organisationUnitCode, oldOrgUnitCountry = null) {
   if (organisationUnitCode === 'World') {
     // Never want to fetch measures for World org code.
     yield put(cancelFetchMeasureData());
@@ -649,11 +649,13 @@ function* fetchMeasureInfo(measureId, organisationUnitCode, oldOrganisationUnitC
   }
 
   const countryCode = organisationUnitCode.substring(0, 2);
-  if (oldOrganisationUnitCode) {
-    const oldCountryCode = oldOrganisationUnitCode.substring(0, 2);
-    if (oldCountryCode !== countryCode) {
-      yield put(clearMeasureHierarchy());
+  if (oldOrgUnitCountry) {
+    if (oldOrgUnitCountry === countryCode) {
+      // We are in the same country as before, no need to refetch measureData
+      return;
     }
+
+    yield put(clearMeasureHierarchy());
   }
 
   const requestResourceUrl = `measureData?organisationUnitCode=${organisationUnitCode}&measureId=${measureId}&shouldShowAllParentCountryResults=${!isMobile()}`;
@@ -706,7 +708,9 @@ function* fetchCurrentMeasureInfo() {
         activeProject,
       );
 
-      yield put(changeMeasure(newMeasure, organisationUnitCode));
+      if (newMeasure !== measureId) {
+        yield put(changeMeasure(newMeasure, organisationUnitCode));
+      }
     } else {
       /** Ensure measure is selected if there is a current measure selected in the case
        * it is not selected through the measureBar UI
@@ -730,12 +734,12 @@ function* watchFetchMeasureSuccess() {
 
 function* fetchMeasureInfoForNewOrgUnit(action) {
   const { organisationUnitCode } = action;
-  const { measureId, oldOrgUnitCode } = yield select(state => ({
+  const { measureId, oldOrgUnitCountry } = yield select(state => ({
     measureId: state.map.measureInfo.measureId,
-    oldOrgUnitCode: state.measureBar.currentMeasureOrganisationUnitCode,
+    oldOrgUnitCountry: state.map.measureInfo.currentCountry,
   }));
   if (measureId) {
-    yield fetchMeasureInfo(measureId, organisationUnitCode, oldOrgUnitCode);
+    yield fetchMeasureInfo(measureId, organisationUnitCode, oldOrgUnitCountry);
   }
 }
 

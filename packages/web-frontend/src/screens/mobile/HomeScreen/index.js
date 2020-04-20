@@ -21,7 +21,7 @@ import {
   requestOrgUnit,
 } from '../../../actions';
 import { WHITE } from '../../../styles';
-import { getCurrentDashboardKey } from '../../../selectors';
+import { selectCurrentDashboardKey } from '../../../selectors';
 
 class HomeScreen extends PureComponent {
   componentWillMount(props) {
@@ -105,7 +105,7 @@ const mapStateToProps = state => {
     currentOrganisationUnit,
     dashboardFilterIsExpanded: isGroupSelectExpanded,
     dashboardConfig,
-    currentDashboardKey: getCurrentDashboardKey(state),
+    currentDashboardKey: selectCurrentDashboardKey(state),
   };
 };
 

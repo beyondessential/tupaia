@@ -20,7 +20,7 @@ import { connect } from 'react-redux';
 import { List, ListItem } from 'material-ui/List';
 import { ControlBar } from '../../components/ControlBar';
 import { HierarchyItem } from '../../components/HierarchyItem';
-import { selectOrgUnitsAsHierarchy } from '../../reducers/orgUnitReducers';
+import { selectOrgUnitsAsHierarchy } from '../../selectors';
 import {
   changeSearch,
   toggleSearchExpand,
