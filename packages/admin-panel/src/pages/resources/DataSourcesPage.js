@@ -67,7 +67,7 @@ const DATA_SOURCE_FIELDS = [
   {
     Header: 'Config',
     source: 'config',
-    Cell: row => dataSourceConfigView(row),
+    Cell: row => DataSourceConfigView(row),
     editConfig: {
       type: 'json',
       default: '{}',

@@ -18,6 +18,7 @@ import {
 import { resourceToRecordType } from '../utilities';
 import { createUser } from '../dataAccessors';
 import { FEED_ITEM_TYPES } from '../database/models/FeedItem';
+import { DATA_SOURCE_SERVICE_TYPES } from '../database/models/DataSource';
 
 const CUSTOM_RECORD_CREATORS = {
   [TYPES.USER_ACCOUNT]: createUser,
@@ -101,7 +102,7 @@ const constructValidationRules = (models, recordType) => {
       return {
         code: [hasContent],
         type: [hasContent],
-        service_type: [hasContent],
+        service_type: [constructIsOneOf(DATA_SOURCE_SERVICE_TYPES)],
         config: [hasContent],
       };
     default:
