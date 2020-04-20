@@ -31,4 +31,6 @@ const links = [
   },
 ];
 
-export const navBar = () => <NavBar HomeButton={HomeButton} Profile={Profile} links={links} />;
+const Home = () => <HomeButton source="/psss-logo-white.svg" />;
+
+export const navBar = () => <NavBar HomeButton={Home} Profile={Profile} links={links} />;
