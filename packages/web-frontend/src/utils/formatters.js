@@ -25,6 +25,7 @@ const truncateDecimalToPlace = decimalPlace => number => {
 
 const currency = value => numeral(value).format('$0.00a');
 const fraction = (value, { total }) => {
+  if (isNaN(total)) return 'No data';
   return `${String(value)}/${String(total)}`;
 };
 const fractionAndPercentage = (value, { numerator, denominator }) => {
