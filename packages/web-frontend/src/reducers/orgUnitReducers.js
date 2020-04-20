@@ -47,6 +47,9 @@ const selectCountries = createSelector([state => state.orgUnits.orgUnitMap], org
     .filter(country => country.organisationUnitCode !== 'World'),
 );
 
+export const selectParentOrgUnitCodes = state =>
+  Object.values(state.orgUnits.orgUnitMap).map(({ parent }) => parent);
+
 const cachedSelectCountryHierarchy = createCachedSelector(
   [state => state.orgUnits.orgUnitMap, (_, code) => code],
   (orgUnitMapArg, code) => {
