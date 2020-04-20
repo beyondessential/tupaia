@@ -46,7 +46,7 @@ const HeaderInner = styled.nav`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 30px 0 38px;
+  padding: 55px 0 65px;
 `;
 
 export const Header = ({ Toolbar, children, ...props }) => (
@@ -56,12 +56,11 @@ export const Header = ({ Toolbar, children, ...props }) => (
       <Container maxWidth="lg">
         <HeaderInner>
           <div>
-            <LightBreadcrumbs />
             <Typography variant="h1" component="h1">
-              American Samoa
+              Countries
             </Typography>
           </div>
-          <LightOutlinedButton endIcon={<SystemUpdateAlt />}>Export Data</LightOutlinedButton>
+          <LightOutlinedButton startIcon={<SystemUpdateAlt />}>Export Data</LightOutlinedButton>
         </HeaderInner>
       </Container>
     </HeaderMain>

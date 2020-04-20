@@ -85,12 +85,7 @@ export const LightOutlinedButton = styled(OutlinedButton)`
   color: ${COLORS.WHITE};
   border-color: ${COLORS.GREY_DE};
   justify-content: space-between;
-  padding: 0.5rem 1rem;
-
-  .MuiButton-endIcon {
-    margin-left: 1.5rem;
-    margin-right: 0;
-  }
+  padding: 0.8rem 2rem;
 
   &:hover {
     background-color: ${COLORS.WHITE};

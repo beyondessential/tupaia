@@ -4,51 +4,87 @@
  */
 
 import React from 'react';
-import MuiButton from '@material-ui/core/Button';
 import styled from 'styled-components';
 import Container from '@material-ui/core/Container';
-import MuiButtonGroup from '@material-ui/core/ButtonGroup';
+import { PhotoAlbum, CalendarToday } from '@material-ui/icons';
+import Typography from '@material-ui/core/Typography';
 import * as COLORS from '../theme/colors';
+import { LightTab, LightTabs } from './Tabs';
 
-const StyledDiv = styled.div`
+const ToolbarOuter = styled.div`
+  display: flex;
+  align-items: center;
+  height: 65px;
   background-color: ${COLORS.DARK_BLUE};
   color: ${COLORS.WHITE};
-  padding: 12px 0;
-  letter-spacing: 0;
+`;
 
-  .MuiButton-root {
-    color: #97b7ce;
-    font-weight: 500;
-    font-size: 18px;
-    line-height: 1;
-    letter-spacing: 0;
-    padding: 9px 32px;
-  }
+const BaseToolbar = ({ children, ...props }) => (
+  <ToolbarOuter {...props}>
+    <Container maxWidth="lg">{children}</Container>
+  </ToolbarOuter>
+);
 
-  .active {
-    color: white;
-  }
+const Week = styled(Typography)`
+  margin-right: 1.5rem;
+`;
 
-  .MuiButtonGroup-groupedText:not(:last-child) {
-    border-color: #7ea7c3;
-  }
+const Date = styled(Typography)`
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 
-  .MuiButtonGroup-groupedText:last-child {
-    padding-right: 0;
-  }
-
-  .MuiButtonGroup-groupedText:first-child {
-    padding-left: 0;
+  svg {
+    margin-right: 0.5rem;
   }
 `;
 
-export const Toolbar = () => (
-  <StyledDiv>
-    <Container maxWidth="lg">
-      <MuiButtonGroup variant="text">
-        <MuiButton className="active">Weekly Case Data</MuiButton>
-        <MuiButton>Event-based Data</MuiButton>
-      </MuiButtonGroup>
-    </Container>
-  </StyledDiv>
+const FlexContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+`;
+
+/*
+ * Date Toolbar
+ */
+export const DateToolbar = () => (
+  <BaseToolbar>
+    <FlexContainer>
+      <Week variant="h5">Week 10</Week>
+      <Date variant="h6">
+        <CalendarToday /> Feb 25 2020 - Mar 1, 2020
+      </Date>
+    </FlexContainer>
+  </BaseToolbar>
+);
+
+/*
+ * Tabs Toolbar
+ */
+
+const TabsOuter = styled(BaseToolbar)`
+  align-items: flex-end;
+  text-transform: none !important;
+`;
+
+const ToolbarTab = styled(LightTab)`
+  text-transform: none !important;
+  font-size: 18px;
+  line-height: 21px;
+  padding-bottom: 21px;
+`;
+
+export const TabsToolbar = () => (
+  <TabsOuter>
+    <LightTabs>
+      <ToolbarTab>
+        <CalendarToday /> Weekly Case Data
+      </ToolbarTab>
+      <ToolbarTab>
+        <PhotoAlbum /> Event-based Data
+      </ToolbarTab>
+    </LightTabs>
+  </TabsOuter>
 );

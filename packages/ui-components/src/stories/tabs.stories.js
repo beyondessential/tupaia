@@ -9,11 +9,10 @@ import { Dashboard, Warning, NewReleases } from '@material-ui/icons';
 import MuiBox from '@material-ui/core/Box';
 import { Tabs, Tab, LightTabs, LightTab } from '../components/Tabs';
 import * as COLORS from '../theme/colors';
-import { RouterProvider } from '../RouterProvider';
 
 export default {
   title: 'Tabs',
-  decorators: [story => <RouterProvider>{story()}</RouterProvider>],
+  component: Tabs,
 };
 
 const Container = styled(MuiBox)`

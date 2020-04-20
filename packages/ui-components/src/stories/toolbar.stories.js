@@ -4,10 +4,12 @@
  */
 
 import React from 'react';
-import { Toolbar } from '../components/Toolbar';
+import { DateToolbar, TabsToolbar } from '../components/Toolbar';
 
 export default {
   title: 'Toolbar',
 };
 
-export const toolbar = () => <Toolbar />;
+export const dateToolbar = () => <DateToolbar />;
+
+export const tabsToolbar = () => <TabsToolbar />;
