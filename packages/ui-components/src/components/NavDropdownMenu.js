@@ -3,210 +3,177 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState, useCallback } from 'react';
-import MuiAutocomplete from '@material-ui/lab/Autocomplete';
-import MuiPaper from '@material-ui/core/Paper';
-import MuiKeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
+import React, { useState, useEffect, useCallback } from 'react';
 import MuiMenu from '@material-ui/icons/Menu';
 import MuiChevronRight from '@material-ui/icons/ChevronRight';
 import MuiChevronLeft from '@material-ui/icons/ChevronLeft';
-import InputAdornment from '@material-ui/core/InputAdornment';
+import MuiInputAdornment from '@material-ui/core/InputAdornment';
+import MuiMenuItem from '@material-ui/core/MenuItem';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import * as COLORS from '../theme/colors';
 import { TextField } from './Inputs';
 import { IconButton } from './IconButton';
 
-const KeyboardArrowDown = styled(MuiKeyboardArrowDown)`
-  color: ${COLORS.GREY_72};
-  font-size: 28px;
-  top: calc(50% - 14px);
-  right: 16px;
-`;
-
-const Paper = props => <MuiPaper {...props} variant="outlined" elevation={0} />;
-
-const StyledPaper = styled(Paper)`
-  .MuiAutocomplete-option {
-    padding: 10px 20px;
-  }
-`;
-
-/**
- * Autocomplete
- */
-export const Autocomplete = ({ options, labelKey, ...props }) => (
-  <MuiAutocomplete
-    options={options}
-    getOptionSelected={(option, value) => option[labelKey] === value[labelKey]}
-    getOptionLabel={option => option[labelKey]}
-    popupIcon={<KeyboardArrowDown />}
-    PaperComponent={StyledPaper}
-    renderInput={params => (
-      <TextField {...params} label={props.label} placeholder={props.placeholder} />
-    )}
-    {...props}
-  />
-);
-
-Autocomplete.propTypes = {
-  label: PropTypes.string.isRequired,
-  options: PropTypes.array.isRequired,
-  labelKey: PropTypes.string,
-  placeholder: PropTypes.string,
-};
-
-Autocomplete.defaultProps = {
-  labelKey: 'name',
-  placeholder: '',
-};
-
-/*
- * NavAutocomplete components
- */
 const ChevronLeft = styled(MuiChevronLeft)`
-  color: ${COLORS.GREY_72};
+  color: ${COLORS.TEXT_LIGHTGREY};
 `;
 
 const ChevronRight = styled(MuiChevronRight)`
-  color: ${COLORS.GREY_72};
+  color: ${COLORS.TEXT_LIGHTGREY};
 `;
 
-const NavInput = ({ InputProps, handlePrev, handleNext, ...props }) => {
-  /* Extract the Mui icon buttons for  re-use in different part of the input */
-  const Cross = () => InputProps.endAdornment.props.children[0];
-  const Menu = () => InputProps.endAdornment.props.children[1];
+const boxShadow = '0 0 6px rgba(0, 0, 0, 0.15)';
 
-  return (
-    <TextField
-      InputProps={{
-        ...InputProps,
-        startAdornment: (
-          <InputAdornment position="start">
-            <Menu />
-          </InputAdornment>
-        ),
-        endAdornment: (
-          <InputAdornment position="end">
-            <Cross />
-            <IconButton onClick={handlePrev}>
-              <ChevronLeft />
-            </IconButton>
-            <IconButton onClick={handleNext}>
-              <ChevronRight />
-            </IconButton>
-          </InputAdornment>
-        ),
-      }}
-      {...props}
-    />
-  );
-};
+const StyledTextField = styled(TextField)`
+  .MuiSelect-root {
+    padding-left: 3.5rem;
+  }
 
-NavInput.propTypes = {
-  InputProps: PropTypes.object.isRequired,
-  handlePrev: PropTypes.func.isRequired,
-  handleNext: PropTypes.func.isRequired,
-};
+  .MuiInputBase-input {
+    color: ${COLORS.TEXT_DARKGREY};
+  }
 
-const Menu = styled(MuiMenu)`
-  color: ${COLORS.GREY_72};
-`;
+  .MuiOutlinedInput-notchedOutline {
+    box-shadow: ${boxShadow};
+  }
 
-const StyledAutoComplete = styled(Autocomplete)`
-  /*
-  * Adornments
-  */
   .MuiInputAdornment-positionEnd {
     position: absolute;
-    right: 5px;
-    color: ${COLORS.GREY_72};
-
-    .MuiSvgIcon-root {
-      font-size: 20px;
-    }
+    right: 0;
+    height: 100%;
+    max-height: 100%;
 
     &:before {
-      position: absolute;
-      right: 28px;
-      content: '';
-      border-left: 1px solid ${COLORS.GREY_DE};
-      height: 30px;
+      content: none;
     }
   }
 
   .MuiOutlinedInput-adornedEnd {
-    padding-right: 18px;
+    padding-right: 0;
+  }
+
+  /*
+  * Menu styles
+  */
+  .MuiMenu-paper {
+    max-height: 20rem;
+  }
+
+  .MuiMenuItem-root {
+    padding: 0.6rem 1.25rem;
   }
 `;
 
-/*
- * NavAutocomplete
+const Counter = styled.div`
+  color: ${COLORS.TEXT_LIGHTGREY};
+`;
+
+const Menu = styled(MuiMenu)`
+  color: ${COLORS.TEXT_LIGHTGREY};
+  font-size: 1.5rem;
+  top: calc(50% - 0.75rem);
+  left: 1.2rem;
+`;
+
+/**
+ * Select field
  */
-export const NavDropdownMenu = ({ options, onChange, ...props }) => {
-  const [value, setValue] = useState(null);
+export const NavSelect = ({ options, placeholder, defaultValue, onChange, ...props }) => {
+  const [value, setValue] = useState(defaultValue);
+  const [index, setIndex] = useState(null);
 
-  const indexedOptions = options.map((option, index) => ({ ...option, index }));
+  useEffect(() => {
+    setValue(options[0].id);
+  }, []);
 
-  const handlePrev = useCallback(() => {
-    if (value === null) {
-      const newValue = indexedOptions[indexedOptions.length - 1];
-      setValue(newValue);
-    } else if (value.index > 0) {
-      const newValue = indexedOptions[value.index - 1];
-      setValue(newValue);
+  useEffect(() => {
+    const newIndex = options.findIndex(option => option.id === value);
+    setIndex(newIndex);
+
+    if (typeof onChange === 'function') {
+      onChange(options[newIndex]);
     }
-  }, [setValue, indexedOptions]);
+  }, [value]);
 
-  const handleNext = useCallback(() => {
-    if (value === null) {
-      const newValue = indexedOptions[0];
-      setValue(newValue);
-    } else if (value.index < indexedOptions.length - 1) {
-      const newValue = indexedOptions[value.index + 1];
-      setValue(newValue);
-    }
-  }, [setValue, indexedOptions]);
+  const handlePrev = () => {
+    const newIndex = value === '' || index === 0 ? options.length - 1 : index - 1;
+    const newValue = options[newIndex];
+    setValue(newValue.id);
+  };
+
+  const handleNext = () => {
+    const newIndex = value === '' || index === options.length - 1 ? 0 : index + 1;
+    const newValue = options[newIndex];
+    setValue(newValue.id);
+  };
 
   const handleChange = useCallback(
-    (event, newValue) => {
+    event => {
+      const newValue = event.target.value;
       setValue(newValue);
-
-      if (typeof onChange === 'function') {
-        onChange(event, newValue);
-      }
     },
     [setValue, onChange],
   );
 
   return (
-    <StyledAutoComplete
+    <StyledTextField
       value={value}
       onChange={handleChange}
-      options={indexedOptions}
-      popupIcon={<Menu />}
-      renderInput={params => (
-        <NavInput
-          {...params}
-          label={props.label}
-          placeholder={props.placeholder}
-          handlePrev={handlePrev}
-          handleNext={handleNext}
-        />
-      )}
+      SelectProps={{
+        displayEmpty: true,
+        IconComponent: iconProps => <Menu {...iconProps} />,
+        MenuProps: {
+          disablePortal: true,
+          anchorOrigin: {
+            vertical: 'bottom',
+            horizontal: 'left',
+          },
+          getContentAnchorEl: null,
+          PaperProps: {
+            elevation: 0,
+            variant: 'outlined',
+          },
+        },
+      }}
+      InputProps={{
+        endAdornment: (
+          <MuiInputAdornment position="end">
+            <IconButton onClick={handlePrev}>
+              <ChevronLeft />
+            </IconButton>
+            <Counter>
+              {index + 1}/{options.length}
+            </Counter>
+            <IconButton onClick={handleNext}>
+              <ChevronRight />
+            </IconButton>
+          </MuiInputAdornment>
+        ),
+      }}
       {...props}
-    />
+      select
+    >
+      {options.map(option => (
+        <MuiMenuItem key={option.id} value={option.id}>
+          {option.name}
+        </MuiMenuItem>
+      ))}
+    </StyledTextField>
   );
 };
 
-NavDropdownMenu.propTypes = {
-  options: PropTypes.array.isRequired,
+NavSelect.propTypes = {
+  id: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
-  onChange: PropTypes.func,
+  options: PropTypes.array.isRequired,
   placeholder: PropTypes.string,
+  defaultValue: PropTypes.any,
+  onChange: PropTypes.func,
 };
 
-NavDropdownMenu.defaultProps = {
+NavSelect.defaultProps = {
+  placeholder: 'Please select',
+  defaultValue: '',
   onChange: null,
-  placeholder: '',
 };

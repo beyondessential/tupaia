@@ -26,8 +26,8 @@ const palette = {
     dark: COLORS.DARK_GREEN,
   },
   text: {
-    primary: COLORS.TEXTGREY,
-    secondary: COLORS.TEXTGREY,
+    primary: COLORS.TEXT_DARKGREY,
+    secondary: COLORS.TEXT_DARKGREY,
   },
   background: {
     default: 'transparent', // use background addon to switch colors
