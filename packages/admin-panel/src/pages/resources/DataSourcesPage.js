@@ -93,7 +93,7 @@ const DATA_SOURCE_FIELDS = [
 const TABS = {
   [DATA_ELEMENTS]: {
     title: 'Data Elements',
-    endpoint: 'data_source',
+    endpoint: 'dataSources',
     baseFilter: { type: 'dataElement' },
     fields: DATA_SOURCE_FIELDS,
     createConfig: {
