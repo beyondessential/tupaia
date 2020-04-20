@@ -151,5 +151,9 @@ HierarchyItem.propTypes = {
 };
 
 HierarchyItem.defaultProps = {
+  willMountFunc: undefined,
+};
+
+HierarchyItem.defaultProps = {
   nestedMargin: '24px',
 };
