@@ -45,6 +45,7 @@ export const AsyncAutocomplete = ({
   onChange,
   labelKey,
   placeholder,
+  ...props
 }) => {
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
@@ -69,11 +70,9 @@ export const AsyncAutocomplete = ({
   return (
     <Autocomplete
       options={options}
-      label={label}
       labelKey={labelKey}
       value={value}
       onChange={onChange}
-      placeholder={placeholder}
       open={open}
       loading={loading}
       onInputChange={handleInputChange}
@@ -82,6 +81,8 @@ export const AsyncAutocomplete = ({
       renderInput={params => (
         <TextField
           {...params}
+          label={label}
+          placeholder={placeholder}
           InputProps={{
             ...params.InputProps,
             endAdornment: (
@@ -93,6 +94,7 @@ export const AsyncAutocomplete = ({
           }}
         />
       )}
+      {...props}
     />
   );
 };

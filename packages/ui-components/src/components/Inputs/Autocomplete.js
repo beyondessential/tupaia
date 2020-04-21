@@ -34,22 +34,31 @@ const StyledAutocomplete = styled(MuiAutocomplete)`
 /**
  * Autocomplete
  */
-export const Autocomplete = ({ label, options, labelKey, value, onChange, placeholder }) => (
+export const Autocomplete = ({
+  label,
+  options,
+  labelKey,
+  value,
+  onChange,
+  placeholder,
+  ...props
+}) => (
   <StyledAutocomplete
     options={options}
     value={value}
     onChange={onChange}
-    getOptionSelected={(option, value) => option[labelKey] === value[labelKey]}
+    getOptionSelected={(option, selected) => option[labelKey] === selected[labelKey]}
     getOptionLabel={option => (option ? option[labelKey] : '')}
     popupIcon={<KeyboardArrowDown />}
     PaperComponent={StyledPaper}
     renderInput={params => <TextField {...params} label={label} placeholder={placeholder} />}
+    {...props}
   />
 );
 
 Autocomplete.propTypes = {
-  label: PropTypes.string.isRequired,
   options: PropTypes.array.isRequired,
+  label: PropTypes.string,
   value: PropTypes.any,
   onChange: PropTypes.func,
   labelKey: PropTypes.string,
@@ -57,6 +66,7 @@ Autocomplete.propTypes = {
 };
 
 Autocomplete.defaultProps = {
+  label: '',
   value: undefined,
   onChange: undefined,
   labelKey: 'name',
