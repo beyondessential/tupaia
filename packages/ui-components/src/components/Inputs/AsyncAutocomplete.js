@@ -5,6 +5,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import throttle from 'lodash.throttle';
 import PropTypes from 'prop-types';
 import { TextField } from './TextField';
 import { Autocomplete } from './Autocomplete';
@@ -12,25 +13,24 @@ import { Autocomplete } from './Autocomplete';
 /**
  * Custom hook to fetch autocomplete options given a callback function
  */
-const useOptions = fetchOptions => {
+const useOptions = (callback, query) => {
   const [options, setOptions] = useState([]);
 
   useEffect(() => {
     let active = true;
 
     (async () => {
-      const data = await fetchOptions();
-      const indexedOptions = data.map((option, index) => ({ ...option, index }));
+      const data = await callback(query);
 
       if (active) {
-        setOptions(indexedOptions);
+        setOptions(data);
       }
     })();
 
     return () => {
       active = false;
     };
-  }, []);
+  }, [callback, query]);
 
   return options;
 };
@@ -38,10 +38,25 @@ const useOptions = fetchOptions => {
 /**
  * Async Autocomplete. Gets options from a resource
  */
-export const AsyncAutocomplete = ({ fetchOptions, ...props }) => {
-  const options = useOptions(fetchOptions);
+export const AsyncAutocomplete = ({
+  label,
+  fetchOptions,
+  value,
+  onChange,
+  labelKey,
+  placeholder,
+}) => {
+  const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
+  const options = useOptions(fetchOptions, query);
   const loading = open && options.length === 0;
+
+  const handleInputChange = useCallback(
+    throttle((event, newValue) => {
+      setQuery(newValue);
+    }, 200),
+    [setQuery],
+  );
 
   const handleClose = useCallback(() => {
     setOpen(false);
@@ -54,15 +69,19 @@ export const AsyncAutocomplete = ({ fetchOptions, ...props }) => {
   return (
     <Autocomplete
       options={options}
+      label={label}
+      labelKey={labelKey}
+      value={value}
+      onChange={onChange}
+      placeholder={placeholder}
       open={open}
       loading={loading}
+      onInputChange={handleInputChange}
       onOpen={handleOpen}
       onClose={handleClose}
       renderInput={params => (
         <TextField
           {...params}
-          label={props.label}
-          placeholder={props.placeholder}
           InputProps={{
             ...params.InputProps,
             endAdornment: (
@@ -74,7 +93,6 @@ export const AsyncAutocomplete = ({ fetchOptions, ...props }) => {
           }}
         />
       )}
-      {...props}
     />
   );
 };
@@ -82,9 +100,15 @@ export const AsyncAutocomplete = ({ fetchOptions, ...props }) => {
 AsyncAutocomplete.propTypes = {
   fetchOptions: PropTypes.func.isRequired,
   label: PropTypes.string.isRequired,
+  value: PropTypes.any,
+  onChange: PropTypes.func,
+  labelKey: PropTypes.string,
   placeholder: PropTypes.string,
 };
 
 AsyncAutocomplete.defaultProps = {
+  value: undefined,
+  onChange: undefined,
   placeholder: '',
+  labelKey: 'name',
 };

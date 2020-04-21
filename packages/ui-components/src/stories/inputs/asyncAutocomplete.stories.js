@@ -4,7 +4,6 @@
  */
 
 import React, { useState, useCallback } from 'react';
-
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import { AsyncAutocomplete } from '../../components/Inputs';
@@ -18,21 +17,14 @@ const Container = styled.div`
   padding: 2rem;
 `;
 
-function sleep(delay = 0) {
-  return new Promise(resolve => {
-    setTimeout(resolve, delay);
-  });
-}
-
 /*
  * Mock api service layer. For demo purposes.
  */
 const api = () => {
-  const fetchData = async () => {
-    const response = await fetch('https://country.register.gov.uk/records.json?page-size=5000');
-    await sleep(500); // For demo purposes.
+  const fetchData = async query => {
+    const response = await fetch(`https://swapi.dev/api/people/?search=${query}`);
     const data = await response.json();
-    return Object.keys(data).map(key => data[key].item[0]);
+    return data.results;
   };
 
   return {
@@ -40,10 +32,20 @@ const api = () => {
   };
 };
 
-/**
- * Async Autocomplete
- */
-export const asyncAutoComplete = () => {
+export const simple = () => {
+  const fetchOptions = useCallback(api().get, [api().get]);
+  return (
+    <Container>
+      <AsyncAutocomplete
+        label="Async Auto Complete"
+        fetchOptions={fetchOptions}
+        placeholder="Search..."
+      />
+    </Container>
+  );
+};
+
+export const controlled = () => {
   const [value, setValue] = useState(null);
 
   const handleChange = useCallback(
@@ -53,12 +55,15 @@ export const asyncAutoComplete = () => {
     [setValue],
   );
 
+  const fetchOptions = useCallback(api().get, [api().get]);
+
   return (
     <Container>
       <AsyncAutocomplete
         label="Async Auto Complete"
-        fetchOptions={api().get}
         onChange={handleChange}
+        value={value}
+        fetchOptions={fetchOptions}
         placeholder="Search..."
       />
       <Typography>Selected Value: {value ? value.name : 'none'}</Typography>
