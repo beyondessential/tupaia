@@ -34,7 +34,48 @@ const options = [
 
 export const simple = () => (
   <Container>
-    <Autocomplete label="Simple Auto Complete" options={options} placeholder="Search..." />
+    <Autocomplete
+      id="simple-autocomplete"
+      label="Simple Auto Complete"
+      options={options}
+      placeholder="Search..."
+    />
+  </Container>
+);
+
+export const disabled = () => (
+  <Container>
+    <Autocomplete label="Simple Auto Complete" options={options} placeholder="Search..." disabeld />
+  </Container>
+);
+
+export const noLabel = () => (
+  <Container>
+    <Autocomplete options={options} placeholder="Search..." />
+  </Container>
+);
+
+export const helperText = () => (
+  <Container>
+    <Autocomplete
+      label="Helper Text Example"
+      options={options}
+      placeholder="Search..."
+      helperText="This field is required"
+      required
+    />
+  </Container>
+);
+
+export const error = () => (
+  <Container>
+    <Autocomplete
+      label="Simple Auto Complete"
+      options={options}
+      placeholder="Search..."
+      helperText="Please try again!"
+      error
+    />
   </Container>
 );
 
@@ -61,3 +102,17 @@ export const controlled = () => {
     </Container>
   );
 };
+
+export const muiProps = () => (
+  <Container>
+    <Autocomplete
+      label="Mui Props Example"
+      options={options}
+      placeholder="Search..."
+      helperText="Type free text or select an option"
+      muiProps={{
+        freeSolo: true,
+      }}
+    />
+  </Container>
+);
