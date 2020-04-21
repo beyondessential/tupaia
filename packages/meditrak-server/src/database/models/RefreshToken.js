@@ -1,13 +1,14 @@
 /**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
 
-import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
+import {
+  RefreshTokenType as CommonRefreshTokenType,
+  RefreshTokenModel as CommonRefreshTokenModel,
+} from '@tupaia/database';
 
-class RefreshTokenType extends DatabaseType {
-  static databaseType = TYPES.REFRESH_TOKEN;
-
+class RefreshTokenType extends CommonRefreshTokenType {
   async meditrakDevice() {
     return (
       this.meditrak_device_id && this.otherModels.meditrakDevice.findById(this.meditrak_device_id)
@@ -15,7 +16,7 @@ class RefreshTokenType extends DatabaseType {
   }
 }
 
-export class RefreshTokenModel extends DatabaseModel {
+export class RefreshTokenModel extends CommonRefreshTokenModel {
   get DatabaseTypeClass() {
     return RefreshTokenType;
   }
