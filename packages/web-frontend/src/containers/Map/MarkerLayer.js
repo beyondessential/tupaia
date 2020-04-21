@@ -18,6 +18,7 @@ import {
 } from '../../reducers/mapReducers';
 import { selectOrgUnit } from '../../reducers/orgUnitReducers';
 import { ShadedPolygon } from './ConnectedPolygon';
+import { MEASURE_TYPE_RADIUS } from '../../utils/measures';
 
 export const MARKER_TYPES = {
   DOT_MARKER: 'dot',
@@ -63,6 +64,8 @@ const MeasureMarker = props => {
   }
   return <IconMarker {...props} />;
 };
+
+const hasRadiusLayer = measureOptions => measureOptions.some(l => l.type === MEASURE_TYPE_RADIUS);
 
 /**
  * MarkerLayer - Component to render measures
@@ -168,7 +171,7 @@ export class MarkerLayer extends Component {
       .filter(displayInfo => !displayInfo.isHidden);
 
     //for radius overlay sort desc radius to place smaller circles over larger circles
-    if (measureOptions && measureOptions[0].type === 'radius') {
+    if (hasRadiusLayer(measureOptions)) {
       processedData.sort((a, b) => {
         return Number(b.radius) - Number(a.radius);
       });
