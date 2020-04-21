@@ -3,26 +3,30 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { CountryModel as Country } from './Country';
-import { DataElementDataGroupModel as DataElementDataGroup } from './DataElementDataGroup';
-import { DataSourceModel as DataSource } from './DataSource';
-import { EntityModel as Entity } from './Entity';
-import { MeditrakDeviceModel as MeditrakDevice } from './MeditrakDevice';
-import { OneTimeLoginModel as OneTimeLogin } from './OneTimeLogin';
-import { PermissionGroupModel as PermissionGroup } from './PermissionGroup';
-import { RefreshTokenModel as RefreshToken } from './RefreshToken';
-import { UserEntityPermissionModel as UserEntityPermission } from './UserEntityPermission';
-import { UserModel as User } from './User';
+import { CountryModel } from './Country';
+import { DataElementDataGroupModel } from './DataElementDataGroup';
+import { DataSourceModel } from './DataSource';
+import { EntityModel } from './Entity';
+import { MeditrakDeviceModel } from './MeditrakDevice';
+import { OneTimeLoginModel } from './OneTimeLogin';
+import { PermissionGroupModel } from './PermissionGroup';
+import { RefreshTokenModel } from './RefreshToken';
+import { UserEntityPermissionModel } from './UserEntityPermission';
+import { UserModel } from './User';
 
+// export all models to be used in constructing a ModelRegistry
 export const modelClasses = {
-  Country,
-  DataElementDataGroup,
-  DataSource,
-  Entity,
-  MeditrakDevice,
-  OneTimeLogin,
-  PermissionGroup,
-  RefreshToken,
-  User,
-  UserEntityPermission,
+  Country: CountryModel,
+  DataElementDataGroup: DataElementDataGroupModel,
+  DataSource: DataSourceModel,
+  Entity: EntityModel,
+  MeditrakDevice: MeditrakDeviceModel,
+  OneTimeLogin: OneTimeLoginModel,
+  PermissionGroup: PermissionGroupModel,
+  RefreshToken: RefreshTokenModel,
+  User: UserModel,
+  UserEntityPermission: UserEntityPermissionModel,
 };
+
+// export any models and types that are extended in other packages
+export { UserEntityPermissionModel } from './UserEntityPermission';

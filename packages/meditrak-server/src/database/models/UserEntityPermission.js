@@ -3,11 +3,11 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { modelClasses } from '@tupaia/database';
+import { UserEntityPermissionModel as CommonUserEntityPermissionModel } from '@tupaia/database';
 
 import { sendEmail } from '../../utilities';
 
-export class UserEntityPermissionModel extends modelClasses.UserEntityPermission {
+export class UserEntityPermissionModel extends CommonUserEntityPermissionModel {
   notifiers = [onUpsertSendPermissionGrantEmail];
 
   isDeletableViaApi = true;
