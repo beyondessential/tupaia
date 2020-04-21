@@ -11,9 +11,9 @@ import MuiInputAdornment from '@material-ui/core/InputAdornment';
 import MuiMenuItem from '@material-ui/core/MenuItem';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import * as COLORS from '../theme/colors';
-import { TextField } from './Inputs';
-import { IconButton } from './IconButton';
+import * as COLORS from '../../theme/colors';
+import { TextField } from './TextField';
+import { IconButton } from '../IconButton';
 
 const ChevronLeft = styled(MuiChevronLeft)`
   color: ${COLORS.TEXT_LIGHTGREY};
@@ -77,23 +77,36 @@ const Menu = styled(MuiMenu)`
 `;
 
 /**
- * Select field
+ * Button Select Field
  */
-export const NavSelect = ({ options, placeholder, defaultValue, onChange, ...props }) => {
+export const ButtonSelect = ({ options, defaultValue, controlValue, ...props }) => {
   const [value, setValue] = useState(defaultValue);
   const [index, setIndex] = useState(null);
 
+  /*
+   * Set the first value as default if no default is set
+   */
   useEffect(() => {
-    setValue(options[0].id);
-  }, []);
+    if (!defaultValue) {
+      setValue(options[0].id);
+    }
+  }, [defaultValue]);
 
+  /*
+   * Set internal value based on parent control value
+   */
+  useEffect(() => {
+    if (controlValue) {
+      setValue(controlValue);
+    }
+  }, [controlValue]);
+
+  /*
+   * Set index based on value
+   */
   useEffect(() => {
     const newIndex = options.findIndex(option => option.id === value);
     setIndex(newIndex);
-
-    if (typeof onChange === 'function') {
-      onChange(options[newIndex]);
-    }
   }, [value]);
 
   const handlePrev = () => {
@@ -113,7 +126,7 @@ export const NavSelect = ({ options, placeholder, defaultValue, onChange, ...pro
       const newValue = event.target.value;
       setValue(newValue);
     },
-    [setValue, onChange],
+    [setValue],
   );
 
   return (
@@ -163,17 +176,15 @@ export const NavSelect = ({ options, placeholder, defaultValue, onChange, ...pro
   );
 };
 
-NavSelect.propTypes = {
+ButtonSelect.propTypes = {
   id: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   options: PropTypes.array.isRequired,
-  placeholder: PropTypes.string,
   defaultValue: PropTypes.any,
-  onChange: PropTypes.func,
+  controlValue: PropTypes.string,
 };
 
-NavSelect.defaultProps = {
-  placeholder: 'Please select',
+ButtonSelect.defaultProps = {
   defaultValue: '',
-  onChange: null,
+  controlValue: undefined,
 };

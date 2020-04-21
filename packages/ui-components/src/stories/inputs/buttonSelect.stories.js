@@ -3,14 +3,14 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import MuiBox from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
-import { NavSelect } from '../components/NavDropdownMenu';
+import { ButtonSelect } from '../../components/Inputs/ButtonSelect';
 
 export default {
-  title: 'NavDropdownMenu',
+  title: 'Inputs/ButtonSelect',
 };
 
 const options = [
@@ -51,26 +51,32 @@ const Container = styled(MuiBox)`
   padding: 1rem;
 `;
 
-export const navSelectField = () => {
-  const [value, setValue] = useState(null);
+export const simple = () => (
+  <Container>
+    <ButtonSelect id="button-select" label="Button Select Field" options={options} />
+  </Container>
+);
 
-  const handleChange = useCallback(
-    newValue => {
-      setValue(newValue);
-    },
-    [setValue],
-  );
+export const controlled = () => {
+  const [controlValue, setControlValue] = useState(options[4].id);
+
+  const handleChange = event => {
+    const newValue = event.target.value;
+    setControlValue(newValue);
+  };
+
+  const selectedOption = options.find(option => option.id === controlValue);
 
   return (
     <Container>
-      <NavSelect
-        id="nav-select"
-        label="Nav Select Field"
+      <ButtonSelect
+        id="button-select"
+        label="Button Select Field"
         options={options}
         onChange={handleChange}
-        placeholder="Select one"
+        controlValue={controlValue}
       />
-      <Typography>Selected Value: {value ? value.name : 'none'}</Typography>
+      <Typography>Selected Value: {selectedOption.name}</Typography>
     </Container>
   );
 };
