@@ -13,45 +13,62 @@ import * as COLORS from '../../theme/colors';
 import { TextField } from './TextField';
 
 const KeyboardArrowDown = styled(MuiKeyboardArrowDown)`
-  color: ${COLORS.GREY_72};
-  font-size: 28px;
-  top: calc(50% - 14px);
-  right: 16px;
+  color: ${COLORS.GREY_9F};
+  font-size: 1.75rem;
 `;
 
 const Paper = props => <MuiPaper {...props} variant="outlined" elevation={0} />;
 
 const StyledPaper = styled(Paper)`
   .MuiAutocomplete-option {
-    padding: 10px 20px;
+    padding: 0.6rem 1.2rem;
+  }
+`;
+
+const StyledAutocomplete = styled(MuiAutocomplete)`
+  .MuiAutocomplete-endAdornment {
+    padding-right: 0.5rem;
   }
 `;
 
 /**
  * Autocomplete
  */
-export const Autocomplete = ({ options, labelKey, ...props }) => (
-  <MuiAutocomplete
+export const Autocomplete = ({
+  label,
+  options,
+  labelKey,
+  value,
+  onChange,
+  placeholder,
+  ...props
+}) => (
+  <StyledAutocomplete
     options={options}
-    getOptionSelected={(option, value) => option[labelKey] === value[labelKey]}
-    getOptionLabel={option => option[labelKey]}
+    value={value}
+    onChange={onChange}
+    getOptionSelected={(option, selected) => option[labelKey] === selected[labelKey]}
+    getOptionLabel={option => (option ? option[labelKey] : '')}
     popupIcon={<KeyboardArrowDown />}
     PaperComponent={StyledPaper}
-    renderInput={params => (
-      <TextField {...params} label={props.label} placeholder={props.placeholder} />
-    )}
+    renderInput={params => <TextField {...params} label={label} placeholder={placeholder} />}
     {...props}
   />
 );
 
 Autocomplete.propTypes = {
-  label: PropTypes.string.isRequired,
   options: PropTypes.array.isRequired,
+  label: PropTypes.string,
+  value: PropTypes.any,
+  onChange: PropTypes.func,
   labelKey: PropTypes.string,
   placeholder: PropTypes.string,
 };
 
 Autocomplete.defaultProps = {
+  label: '',
+  value: undefined,
+  onChange: undefined,
   labelKey: 'name',
   placeholder: '',
 };

@@ -3,7 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useState, useCallback } from 'react';
+import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
 import { Autocomplete } from '../../components/Inputs';
 
@@ -31,8 +32,32 @@ const options = [
   { id: 12, name: 'Sentinel Site Twelve' },
 ];
 
-export const autoComplete = () => (
+export const simple = () => (
   <Container>
     <Autocomplete label="Simple Auto Complete" options={options} placeholder="Search..." />
   </Container>
 );
+
+export const controlled = () => {
+  const [value, setValue] = useState(null);
+
+  const handleChange = useCallback(
+    (event, newValue) => {
+      setValue(newValue);
+    },
+    [setValue],
+  );
+
+  return (
+    <Container>
+      <Autocomplete
+        label="Controlled Auto Complete"
+        options={options}
+        onChange={handleChange}
+        value={value}
+        placeholder="Search..."
+      />
+      <Typography>Selected Value: {value ? value.name : 'none'}</Typography>
+    </Container>
+  );
+};
