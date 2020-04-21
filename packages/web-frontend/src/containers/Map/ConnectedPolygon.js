@@ -115,7 +115,7 @@ class ConnectedPolygon extends Component {
 
     const defaultProps = {
       positions: coordinates,
-      onClick: () => onChangeOrgUnit(area),
+      onClick: () => onChangeOrgUnit(organisationUnitCode),
     };
 
     if (shade) {
@@ -180,22 +180,27 @@ const mapStateToProps = (state, givenProps) => {
     currentOrganisationUnitSiblings,
   } = state.global;
 
-  const measureOrgUnits = selectAllMeasuresWithDisplayInfo(state);
-  const measureOrgUnitCodes = measureOrgUnits.map(orgUnit => orgUnit.organisationUnitCode);
+  let shade;
+  let measureValue;
+  let hasShadedChildren = false;
+  if (selectHasPolygonMeasure(state)) {
+    const measureOrgUnits = selectAllMeasuresWithDisplayInfo(state);
+    const measureOrgUnitCodes = measureOrgUnits.map(orgUnit => orgUnit.organisationUnitCode);
 
-  const hasShadedChildren =
-    selectHasPolygonMeasure(state) &&
-    organisationUnitChildren &&
-    organisationUnitChildren.some(child =>
-      measureOrgUnitCodes.includes(child.organisationUnitCode),
-    );
+    hasShadedChildren =
+      organisationUnitChildren &&
+      organisationUnitChildren.some(child =>
+        measureOrgUnitCodes.includes(child.organisationUnitCode),
+      );
 
-  const orgUnitMeasureData =
-    selectHasPolygonMeasure(state) && measureOrgUnitCodes.includes(organisationUnitCode)
+    const orgUnitMeasureData = measureOrgUnitCodes.includes(organisationUnitCode)
       ? measureOrgUnits.find(orgUnit => orgUnit.organisationUnitCode === organisationUnitCode)
       : {};
 
-  const { color: shade, originalValue: measureValue } = orgUnitMeasureData;
+    shade = orgUnitMeasureData.color;
+    measureValue = orgUnitMeasureData.originalValue;
+  }
+
   const orgUnit = selectOrgUnit(state, organisationUnitCode);
   const coordinates = orgUnit ? orgUnit.location.region : undefined;
 
