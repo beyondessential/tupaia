@@ -17,7 +17,7 @@ export const matrixMostRecentFromChildren = async (
     dataElementGroup,
     dataServices,
     optionSetCode,
-    organisationUnitLevel,
+    organisationUnitType,
   } = dataBuilderConfig;
 
   const { organisationUnitCode } = query;
@@ -27,7 +27,7 @@ export const matrixMostRecentFromChildren = async (
       getChildOrganisationUnits(
         {
           organisationUnitGroupCode: organisationUnitCode,
-          level: organisationUnitLevel,
+          type: organisationUnitType,
         },
         dhisApi,
       ),
