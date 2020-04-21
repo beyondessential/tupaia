@@ -16,7 +16,7 @@ exports.setup = function(options, seedLink) {
   seed = seedLink;
 };
 
-const DASHBOARD_GROUP_CODES = ['AU_Covid_Province', 'AU_Covid_Country'];
+const DASHBOARD_GROUP_CODES = ['AU_Covid_District', 'AU_Covid_Country'];
 
 const arrayToDbString = array => array.map(item => `'${item}'`).join(', ');
 
