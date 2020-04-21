@@ -24,9 +24,9 @@ const CUSTOM_RECORD_CREATORS = {
 };
 
 /**
- * Responds to the PUT requests by adding a record
+ * Responds to the POST requests by adding a record
  **/
-export async function putRecord(req, res) {
+export async function addRecord(req, res) {
   const { database, models, params, body: recordData } = req;
   const { resource } = params;
   const recordType = resourceToRecordType(resource);
