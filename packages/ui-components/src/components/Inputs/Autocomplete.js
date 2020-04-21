@@ -21,7 +21,7 @@ const Paper = props => <MuiPaper {...props} variant="outlined" elevation={0} />;
 
 const StyledPaper = styled(Paper)`
   .MuiAutocomplete-option {
-    padding: 10px 20px;
+    padding: 0.6rem 1.2rem;
   }
 `;
 
