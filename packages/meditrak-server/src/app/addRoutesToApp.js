@@ -121,8 +121,8 @@ export function addRoutesToApp(app) {
   app.post('(/v[0-9]+)?/user', createUser);
   app.post('(/v[0-9]+)/me/requestCountryAccess', requestCountryAccess);
   app.post('(/v[0-9]+)/me/changePassword', changePassword);
-  app.post('(/v[0-9]+)/:resource', addRecord);
   app.post('(/v[0-9]+)/surveyResponse', surveyResponse);
+  app.post('(/v[0-9]+)/:resource', addRecord);
 
   /**
    * PUT routes
