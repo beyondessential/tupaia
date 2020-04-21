@@ -25,7 +25,7 @@ export default function disasters(
         ...state,
         selectedDisaster: action.disaster,
       };
-    case CHANGE_ORG_UNIT_SUCCESS:
+    case CHANGE_ORG_UNIT_SUCCESS: {
       // De-select disaster when user views a different country.
       const { organisationUnitCode, type } = action.organisationUnit;
       if (!state.selectedDisaster) return state;
@@ -36,7 +36,7 @@ export default function disasters(
         };
       }
     }
-    //falls through
+    // falls through
     default:
       return state;
   }
