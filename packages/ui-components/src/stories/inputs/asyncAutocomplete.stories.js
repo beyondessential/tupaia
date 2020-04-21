@@ -17,12 +17,19 @@ const Container = styled.div`
   padding: 2rem;
 `;
 
+function sleep(delay = 0) {
+  return new Promise(resolve => {
+    setTimeout(resolve, delay);
+  });
+}
+
 /*
  * Mock api service layer. For demo purposes.
  */
 const api = () => {
   const fetchData = async query => {
     const response = await fetch(`https://swapi.dev/api/people/?search=${query}`);
+    await sleep(500); // For demoing loading state
     const data = await response.json();
     return data.results;
   };
@@ -33,13 +40,71 @@ const api = () => {
 };
 
 export const simple = () => {
-  const fetchOptions = useCallback(api().get, [api().get]);
+  const fetchOptions = useCallback(api().get, []);
   return (
     <Container>
       <AsyncAutocomplete
+        id="simple-autocomplete"
         label="Async Auto Complete"
         fetchOptions={fetchOptions}
         placeholder="Search..."
+      />
+    </Container>
+  );
+};
+
+export const disabled = () => {
+  const fetchOptions = useCallback(api().get, []);
+
+  return (
+    <Container>
+      <AsyncAutocomplete
+        label="Simple Auto Complete"
+        fetchOptions={fetchOptions}
+        placeholder="Search..."
+        disabeld
+      />
+    </Container>
+  );
+};
+
+export const noLabel = () => {
+  const fetchOptions = useCallback(api().get, []);
+
+  return (
+    <Container>
+      <AsyncAutocomplete fetchOptions={fetchOptions} placeholder="Search..." />
+    </Container>
+  );
+};
+
+export const helperText = () => {
+  const fetchOptions = useCallback(api().get, []);
+
+  return (
+    <Container>
+      <AsyncAutocomplete
+        label="Helper Text Example"
+        fetchOptions={fetchOptions}
+        placeholder="Search..."
+        helperText="This field is required"
+        required
+      />
+    </Container>
+  );
+};
+
+export const error = () => {
+  const fetchOptions = useCallback(api().get, []);
+
+  return (
+    <Container>
+      <AsyncAutocomplete
+        label="Simple Auto Complete"
+        fetchOptions={fetchOptions}
+        placeholder="Search..."
+        helperText="Please try again!"
+        error
       />
     </Container>
   );
@@ -55,7 +120,7 @@ export const controlled = () => {
     [setValue],
   );
 
-  const fetchOptions = useCallback(api().get, [api().get]);
+  const fetchOptions = useCallback(api().get, []);
 
   return (
     <Container>
@@ -67,6 +132,24 @@ export const controlled = () => {
         placeholder="Search..."
       />
       <Typography>Selected Value: {value ? value.name : 'none'}</Typography>
+    </Container>
+  );
+};
+
+export const muiProps = () => {
+  const fetchOptions = useCallback(api().get, []);
+
+  return (
+    <Container>
+      <AsyncAutocomplete
+        label="Mui Props Example"
+        fetchOptions={fetchOptions}
+        placeholder="Search..."
+        helperText="Type free text or select an option"
+        muiProps={{
+          freeSolo: true,
+        }}
+      />
     </Container>
   );
 };

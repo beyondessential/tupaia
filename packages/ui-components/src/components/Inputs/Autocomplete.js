@@ -7,6 +7,7 @@ import React from 'react';
 import MuiAutocomplete from '@material-ui/lab/Autocomplete';
 import MuiPaper from '@material-ui/core/Paper';
 import MuiKeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import * as COLORS from '../../theme/colors';
@@ -35,40 +36,85 @@ const StyledAutocomplete = styled(MuiAutocomplete)`
  * Autocomplete
  */
 export const Autocomplete = ({
-  label,
   options,
+  id,
+  label,
   labelKey,
   value,
   onChange,
+  loading,
   placeholder,
-  ...props
+  error,
+  disabled,
+  required,
+  helperText,
+  onInputChange,
+  muiProps,
 }) => (
   <StyledAutocomplete
+    id={id}
     options={options}
     value={value}
+    disabled={disabled}
     onChange={onChange}
+    loading={loading}
+    onInputChange={onInputChange}
     getOptionSelected={(option, selected) => option[labelKey] === selected[labelKey]}
     getOptionLabel={option => (option ? option[labelKey] : '')}
     popupIcon={<KeyboardArrowDown />}
     PaperComponent={StyledPaper}
-    renderInput={params => <TextField {...params} label={label} placeholder={placeholder} />}
-    {...props}
+    renderInput={params => (
+      <TextField
+        {...params}
+        label={label}
+        placeholder={placeholder}
+        error={error}
+        required={required}
+        helperText={helperText}
+        InputProps={{
+          ...params.InputProps,
+          endAdornment: (
+            <React.Fragment>
+              {loading ? <CircularProgress color="inherit" size={20} /> : null}
+              {params.InputProps.endAdornment}
+            </React.Fragment>
+          ),
+        }}
+      />
+    )}
+    {...muiProps}
   />
 );
 
 Autocomplete.propTypes = {
   options: PropTypes.array.isRequired,
   label: PropTypes.string,
+  id: PropTypes.string,
+  required: PropTypes.bool,
+  error: PropTypes.bool,
+  loading: PropTypes.bool,
+  disabled: PropTypes.string,
+  helperText: PropTypes.string,
   value: PropTypes.any,
   onChange: PropTypes.func,
   labelKey: PropTypes.string,
   placeholder: PropTypes.string,
+  onInputChange: PropTypes.func,
+  muiProps: PropTypes.object,
 };
 
 Autocomplete.defaultProps = {
   label: '',
-  value: undefined,
-  onChange: undefined,
   labelKey: 'name',
   placeholder: '',
+  required: false,
+  loading: false,
+  error: false,
+  id: undefined,
+  disabled: undefined,
+  helperText: undefined,
+  value: undefined,
+  onChange: undefined,
+  onInputChange: undefined,
+  muiProps: undefined,
 };

@@ -4,53 +4,57 @@
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import throttle from 'lodash.throttle';
 import PropTypes from 'prop-types';
-import { TextField } from './TextField';
 import { Autocomplete } from './Autocomplete';
 
 /**
  * Custom hook to fetch autocomplete options given a callback function
  */
-const useOptions = (callback, query) => {
+const useOptions = (fetchOptions, query) => {
   const [options, setOptions] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     let active = true;
 
     (async () => {
-      const data = await callback(query);
+      setLoading(true);
+      const data = await fetchOptions(query);
 
       if (active) {
         setOptions(data);
+        setLoading(false);
       }
     })();
 
     return () => {
       active = false;
     };
-  }, [callback, query]);
+  }, [fetchOptions, query]);
 
-  return options;
+  return [options, loading];
 };
 
 /**
  * Async Autocomplete. Gets options from a resource
  */
 export const AsyncAutocomplete = ({
-  label,
   fetchOptions,
+  id,
+  label,
   value,
   onChange,
   labelKey,
   placeholder,
-  ...props
+  error,
+  disabled,
+  required,
+  helperText,
+  muiProps,
 }) => {
   const [query, setQuery] = useState('');
-  const [open, setOpen] = useState(false);
-  const options = useOptions(fetchOptions, query);
-  const loading = open && options.length === 0;
+  const [options, loading] = useOptions(fetchOptions, query);
 
   const handleInputChange = useCallback(
     throttle((event, newValue) => {
@@ -59,58 +63,51 @@ export const AsyncAutocomplete = ({
     [setQuery],
   );
 
-  const handleClose = useCallback(() => {
-    setOpen(false);
-  }, [setOpen]);
-
-  const handleOpen = useCallback(() => {
-    setOpen(true);
-  }, [setOpen]);
-
   return (
     <Autocomplete
+      id={id}
       options={options}
+      label={label}
       labelKey={labelKey}
       value={value}
+      disabled={disabled}
       onChange={onChange}
-      open={open}
+      placeholder={placeholder}
+      error={error}
+      required={required}
+      helperText={helperText}
       loading={loading}
       onInputChange={handleInputChange}
-      onOpen={handleOpen}
-      onClose={handleClose}
-      renderInput={params => (
-        <TextField
-          {...params}
-          label={label}
-          placeholder={placeholder}
-          InputProps={{
-            ...params.InputProps,
-            endAdornment: (
-              <React.Fragment>
-                {loading ? <CircularProgress color="inherit" size={20} /> : null}
-                {params.InputProps.endAdornment}
-              </React.Fragment>
-            ),
-          }}
-        />
-      )}
-      {...props}
+      muiProps={muiProps}
     />
   );
 };
 
 AsyncAutocomplete.propTypes = {
   fetchOptions: PropTypes.func.isRequired,
-  label: PropTypes.string.isRequired,
+  label: PropTypes.string,
   value: PropTypes.any,
+  id: PropTypes.string,
+  required: PropTypes.bool,
+  error: PropTypes.bool,
+  disabled: PropTypes.string,
+  helperText: PropTypes.string,
   onChange: PropTypes.func,
   labelKey: PropTypes.string,
   placeholder: PropTypes.string,
+  muiProps: PropTypes.object,
 };
 
 AsyncAutocomplete.defaultProps = {
+  label: '',
+  labelKey: 'name',
+  placeholder: '',
+  required: false,
+  error: false,
   value: undefined,
   onChange: undefined,
-  placeholder: '',
-  labelKey: 'name',
+  muiProps: undefined,
+  id: undefined,
+  disabled: undefined,
+  helperText: undefined,
 };
