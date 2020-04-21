@@ -2,6 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
+import { modelClasses as baseModelClasses } from './modelClasses';
 
 const MAX_APP_VERSION = '999.999.999';
 
@@ -9,9 +10,12 @@ const MAX_APP_VERSION = '999.999.999';
 const getModelKey = modelName => `${modelName.charAt(0).toLowerCase()}${modelName.slice(1)}`;
 
 export class ModelRegistry {
-  constructor(database, modelClasses) {
+  constructor(database, extraModelClasses) {
     this.database = database;
-    this.modelClasses = modelClasses;
+    this.modelClasses = {
+      ...baseModelClasses,
+      ...extraModelClasses,
+    };
     this.generateModels();
   }
 

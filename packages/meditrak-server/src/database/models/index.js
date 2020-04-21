@@ -26,7 +26,6 @@ export { OptionModel as Option } from './Option';
 export { OptionSetModel as OptionSet } from './OptionSet';
 export { PermissionGroupModel as PermissionGroup } from './PermissionGroup';
 export { QuestionModel as Question } from './Question';
-export { RefreshTokenModel as RefreshToken } from './RefreshToken';
 export { SurveyGroupModel as SurveyGroup } from './SurveyGroup';
 export { SurveyModel as Survey } from './Survey';
 export { SurveyResponseModel as SurveyResponse } from './SurveyResponse';
