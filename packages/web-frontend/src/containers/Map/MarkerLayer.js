@@ -153,6 +153,13 @@ export class MarkerLayer extends Component {
       .filter(data => data.coordinates && data.coordinates.length === 2)
       .filter(displayInfo => !displayInfo.isHidden);
 
+    //for radius overlay sort desc radius to place smaller circles over larger circles
+    if (measureOptions && measureOptions[0].type === 'radius') {
+      processedData.sort((a, b) => {
+        return Number(b.radius) - Number(a.radius);
+      });
+    }
+
     const PopupChild = ({ data }) => (
       <MeasurePopup
         data={data}
