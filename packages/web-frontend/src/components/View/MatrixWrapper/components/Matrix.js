@@ -401,7 +401,7 @@ export class Matrix extends PureComponent {
         }
 
         const rowData = columns.map(({ key, isGroupHeader }) => ({
-          value: cellData[key],
+          value: isNaN(cellData[key]) ? cellData[key] : Math.round(cellData[key] * 1000) / 1000, //round the numeric values UP TO 3 decimal places
           isGroupBoundary: isGroupHeader,
         }));
 
@@ -472,10 +472,11 @@ export class Matrix extends PureComponent {
       ...this.props.presentationOptions,
       ...this.props.categoryPresentationOptions,
     };
-    const { label, description, color } = selectedPresentationOption;
+    const { mainTitle, label, description, color } = selectedPresentationOption;
 
     return (
       <DescriptionOverlay
+        mainTitle={mainTitle}
         header={label}
         body={`${description || ''} ${
           allPresentationOptions.showRawValue ? selectedCellValue : ''

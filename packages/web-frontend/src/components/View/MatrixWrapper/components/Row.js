@@ -106,7 +106,10 @@ export default class Row extends Component {
             return <div style={style} key={index} />;
           }
 
-          const presentation = getPresentationOption(presentationOptions, cellValue);
+          const presentation = {
+            ...getPresentationOption(presentationOptions, cellValue),
+            mainTitle: description,
+          };
 
           return (
             <Cell
