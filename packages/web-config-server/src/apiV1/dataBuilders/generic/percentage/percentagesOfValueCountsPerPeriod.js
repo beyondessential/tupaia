@@ -79,17 +79,11 @@ class BaseBuilder extends PercentagesOfValueCountsBuilder {
       {},
       numeratorAggregationType,
     );
-    // const { results: denominatorResults } = await this.fetchAnalytics(
-    //   denominatorCodes,
-    //   {},
-    //   denominatorAggregationType,
-    // );
-
-    const denominatorResults = numeratorResults.map(x => ({
-      ...x,
-      value: 6,
-      dataElement: denominatorCodes[0][0],
-    }));
+    const { results: denominatorResults } = await this.fetchAnalytics(
+      denominatorCodes,
+      {},
+      denominatorAggregationType,
+    );
 
     return [...denominatorResults, ...numeratorResults];
   }
@@ -104,10 +98,7 @@ class BaseBuilder extends PercentagesOfValueCountsBuilder {
 
     Object.entries(this.config.dataClasses).forEach(([name, dataClass]) => {
       const numerator = this.calculateFraction(dataClass.numerator, filteredData);
-      // console.log('buildData -> numerator', numerator);
-
       const denominator = this.calculateFraction(dataClass.denominator, filteredData);
-      // console.log('buildData -> denominator', denominator);
       const key = Object.keys(this.config.dataClasses).length > 1 ? name : 'value';
       percentage[key] = divideValues(numerator, denominator);
       percentage[`${key}_metadata`] = { numerator, denominator };

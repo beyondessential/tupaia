@@ -78,14 +78,13 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
         flatten(fraction.dataValues).includes(analytic.dataElement),
       );
       const groupedAnalytics = groupBy(filteredAnalytics, fraction.groupBy);
-      console.log('==== percentagesOfValueCounts:85 ====');
-      console.log(groupedAnalytics);
-      console.log('--------------------------------------');
-      const a = Object.values(groupedAnalytics).reduce(
-        (count, results) => (calculator(results) ? count + 1 : count),
-        0,
-      );
-      return a;
+
+      let result = 0;
+      Object.values(groupedAnalytics).forEach(analytic => {
+        if (calculator(analytic)) result += 1;
+      });
+
+      return result;
     } else if (fraction === ORG_UNIT_COUNT) {
       return [...new Set(analytics.map(data => data.organisationUnit))].length;
     }
@@ -123,7 +122,7 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
     if (fraction.operation) {
       return results => {
         return results.every(r => {
-          OPERATION_TYPES[fraction.operation](r.value, fraction.operand);
+          return OPERATION_TYPES[fraction.operation](r.value, fraction.operand);
         });
       };
     }
