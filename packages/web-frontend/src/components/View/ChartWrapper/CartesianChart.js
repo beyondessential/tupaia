@@ -124,17 +124,19 @@ export class CartesianChart extends PureComponent {
 
   getXAxisPadding = () => {
     const { isEnlarged, viewContent } = this.props;
-    const { chartConfig = {}, data } = viewContent;
-    const hasBars = Object.values(chartConfig).some(({ chartType }) => chartType === BAR);
+    const { chartType, chartConfig = {}, data } = viewContent;
+    const hasBars =
+      chartType === BAR ||
+      Object.values(chartConfig).some(({ chartType: composedType }) => composedType === BAR);
 
-    if (!this.isComposedChart() || !hasBars || data.length < 2) {
-      return { left: 0, right: 0 };
+    if (hasBars && data.length > 1 && getIsTimeSeries(data)) {
+      const paddingKey = isEnlarged ? 'enlarged' : 'preview';
+      const { dataLengthThreshold, base, offset, minimum } = X_AXIS_PADDING[paddingKey];
+      const padding = Math.max(minimum, (dataLengthThreshold - data.length) * base + offset);
+      return { left: padding, right: padding };
     }
 
-    const paddingKey = isEnlarged ? 'enlarged' : 'preview';
-    const { dataLengthThreshold, base, offset, minimum } = X_AXIS_PADDING[paddingKey];
-    const padding = Math.max(minimum, (dataLengthThreshold - data.length) * base + offset);
-    return { left: padding, right: padding };
+    return { left: 0, right: 0 };
   };
 
   getXAxisTickMethod = () => {
