@@ -24,4 +24,3 @@ export const modelClasses = {
 export { CountryModel } from './Country';
 export { GeographicalAreaModel } from './GeographicalArea';
 export { MeditrakDeviceModel } from './MeditrakDevice';
-export { RefreshTokenModel, RefreshTokenType } from './RefreshToken';
