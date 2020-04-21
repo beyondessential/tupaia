@@ -15,6 +15,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import CircularProgress from 'material-ui/CircularProgress';
+import moment from 'moment';
 
 import { VIEW_STYLES } from '../../styles';
 import { OverlayView } from '../../utils';
@@ -80,6 +81,15 @@ const getContainerStyle = (baseStyle, viewContent) => {
   return baseStyle;
 };
 
+const formatDate = value => {
+  return `Latest available data: ${moment(value).format('DD/MM/YY')}`;
+};
+
+const formatPeriodRange = period => {
+  //TODO: add range if applicable
+  return formatDate(period.latestAvailable);
+};
+
 export class View extends Component {
   state = {
     isHovered: false,
@@ -99,6 +109,12 @@ export class View extends Component {
     const { viewContent } = this.props;
     const { name, type } = viewContent;
     return name && (getIsMatrix(viewContent) || type === 'chart');
+  }
+
+  getHasPeriod() {
+    const { viewContent } = this.props;
+    const { period, showPeriodRange } = viewContent;
+    return showPeriodRange && period && period.latestAvailable;
   }
 
   mouseOut() {
@@ -182,11 +198,16 @@ export class View extends Component {
 
     const title = this.getHasTitle() && <div style={VIEW_STYLES.title}>{viewContent.name}</div>;
 
+    const showPeriodRange = this.getHasPeriod() && (
+      <div style={VIEW_STYLES.periodRange}>{formatPeriodRange(viewContent.period)}</div>
+    );
+
     return (
       <div style={getContainerStyle(viewContainerStyle, viewContent)}>
         <OverlayView>
           {title}
           <ViewWrapper viewContent={viewContent} />
+          {showPeriodRange}
           {showDescription}
           {showInfoIcon}
           {expandButton}
