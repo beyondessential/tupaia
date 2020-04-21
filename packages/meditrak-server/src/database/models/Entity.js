@@ -12,31 +12,34 @@ import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
  */
 export const MAX_ENTITY_HIERARCHY_LEVELS = 100;
 
-const FACILITY = 'facility';
-const REGION = 'region';
-const COUNTRY = 'country';
-const WORLD = 'world';
 const CASE = 'case';
 const CASE_CONTACT = 'case_contact';
+const COUNTRY = 'country';
 const DISASTER = 'disaster';
+const DISTRICT = 'district';
+const FACILITY = 'facility';
+const SUB_DISTRICT = 'sub_district';
 const VILLAGE = 'village';
+const WORLD = 'world';
 
 export const ENTITY_TYPES = {
-  FACILITY,
-  REGION,
-  COUNTRY,
-  WORLD,
   CASE,
   CASE_CONTACT,
+  COUNTRY,
   DISASTER,
+  DISTRICT,
+  FACILITY,
+  SUB_DISTRICT,
   VILLAGE,
+  WORLD,
 };
 
 export const ORG_UNIT_ENTITY_TYPES = {
-  FACILITY,
-  REGION,
-  COUNTRY,
   WORLD,
+  COUNTRY,
+  DISTRICT,
+  SUB_DISTRICT,
+  FACILITY,
   VILLAGE,
 };
 
