@@ -47,7 +47,8 @@ export const authenticationMiddleware = async (req, res, next) => {
     const userId = await authenticateUser(req);
     if (userId) {
       const { authenticator } = req;
-      req.accessPolicy = new AccessPolicy(authenticator.getAccessPolicyForUser(userId));
+      const accessPolicy = await authenticator.getAccessPolicyForUser(userId);
+      req.accessPolicy = new AccessPolicy(accessPolicy);
     }
     next();
   } catch (error) {
