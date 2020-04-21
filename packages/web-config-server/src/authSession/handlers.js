@@ -22,10 +22,10 @@ const processLogin = (sessionDetails, req, res) => {
   });
 };
 
-const authenticateUsingFunction = async (req, res, authenticate) => {
-  const { body } = req;
+const authenticateUsingMethod = async (req, res, authenticationMethod) => {
+  const { authenticator, body } = req;
   try {
-    const { user, accessPolicy, refreshToken } = await authenticate({
+    const { user, accessPolicy, refreshToken } = await authenticator[authenticationMethod]({
       ...body,
       deviceName: TUPAIA_CONFIG_SERVER_DEVICE_NAME,
     });
@@ -46,13 +46,11 @@ const authenticateUsingFunction = async (req, res, authenticate) => {
 };
 
 export const login = async (req, res) => {
-  const { authenticator } = req;
-  await authenticateUsingFunction(req, res, authenticator.authenticatePassword);
+  await authenticateUsingMethod(req, res, 'authenticatePassword');
 };
 
 export const oneTimeLogin = async (req, res) => {
-  const { authenticator } = req;
-  await authenticateUsingFunction(req, res, authenticator.authenticateOneTimeLogin);
+  await authenticateUsingMethod(req, res, 'authenticateOneTimeLogin');
 };
 
 export const logout = (req, res) => {
