@@ -34,6 +34,7 @@ import {
   getMeasureDisplayInfo,
   calculateRadiusScaleFactor,
   MEASURE_TYPE_SHADING,
+  MEASURE_TYPE_SHADED_SPECTRUM,
 } from '../utils/measures';
 
 import { initialOrgUnit } from '../defaults';
@@ -46,7 +47,6 @@ function position(state = { bounds: defaultBounds }, action) {
       return { bounds: defaultBounds };
     }
 
-    case CHANGE_ORG_UNIT:
     case CHANGE_ORG_UNIT_SUCCESS: {
       if (action.shouldChangeMapBounds) {
         const { location } = action.organisationUnit;
@@ -109,7 +109,7 @@ function innerAreas(state = [], action) {
 function measureInfo(state = {}, action) {
   switch (action.type) {
     case CHANGE_ORG_UNIT:
-      if (action.organisationUnit.organisationUnitCode === 'World') {
+      if (action.organisationUnitCode === 'World') {
         // clear measures when returning to world view
         return {};
       }
@@ -169,16 +169,6 @@ function isMeasureLoading(state = false, action) {
     case FETCH_MEASURE_DATA_SUCCESS:
     case CANCEL_FETCH_MEASURE_DATA:
       return false;
-    default:
-      return state;
-  }
-}
-
-function focussedOrganisationUnit(state = {}, action) {
-  switch (action.type) {
-    case CHANGE_ORG_UNIT:
-      return action.organisationUnit;
-
     default:
       return state;
   }
@@ -259,7 +249,6 @@ export default combineReducers({
   innerAreas,
   measureInfo,
   tileSet,
-  focussedOrganisationUnit,
   isAnimating,
   popup,
   shouldSnapToPosition,
@@ -279,7 +268,10 @@ export const selectHasPolygonMeasure = createSelector(
   (stateMeasureInfo = {}) => {
     return (
       stateMeasureInfo.measureOptions &&
-      stateMeasureInfo.measureOptions.some(option => option.type === MEASURE_TYPE_SHADING)
+      stateMeasureInfo.measureOptions.some(
+        option =>
+          option.type === MEASURE_TYPE_SHADING || option.type === MEASURE_TYPE_SHADED_SPECTRUM,
+      )
     );
   },
 );
@@ -314,11 +306,12 @@ export const selectAllMeasuresWithDisplayInfo = createSelector(
     }
 
     const listOfMeasureLevels = measureLevel.split(',');
-    const allOrgUnits = cachedSelectOrgUnitAndDescendants(state, currentCountry).filter(orgUnit =>
-      listOfMeasureLevels.includes(orgUnit.type),
-    );
+    const allOrgUnitsOfLevel = cachedSelectOrgUnitAndDescendants(
+      state,
+      currentCountry,
+    ).filter(orgUnit => listOfMeasureLevels.includes(orgUnit.type));
 
-    return allOrgUnits.map(orgUnit =>
+    return allOrgUnitsOfLevel.map(orgUnit =>
       cachedSelectMeasureWithDisplayInfo(state, orgUnit.organisationUnitCode),
     );
   },

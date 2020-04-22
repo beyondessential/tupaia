@@ -24,7 +24,8 @@ const CATEGORY_AGGREGATION_TYPES = {
 
 export class TableOfDataValuesBuilder extends DataBuilder {
   async build() {
-    this.results = await this.fetchResults();
+    const { results, period } = await this.fetchAnalyticsAndMetadata();
+    this.results = results;
     this.tableConfig = new TableConfig(this.config, this.results);
     this.baseRows = this.buildBaseRows();
     this.valuesByCell = getValuesByCell(this.tableConfig, this.results);
@@ -32,7 +33,7 @@ export class TableOfDataValuesBuilder extends DataBuilder {
 
     const columns = await this.buildColumns();
     const rows = await this.buildRows(columns);
-    const data = { columns, rows };
+    const data = { columns, rows, period };
 
     if (this.tableConfig.hasRowCategories()) {
       const categories = await this.buildRowCategories();
@@ -48,16 +49,17 @@ export class TableOfDataValuesBuilder extends DataBuilder {
     return data;
   }
 
-  async fetchResults() {
+  async fetchAnalyticsAndMetadata() {
     const dataElementCodes = [...new Set(flatten(this.config.cells))];
-    const { results } = await this.fetchAnalytics(dataElementCodes);
+    const { results, period } = await this.fetchAnalytics(dataElementCodes);
     const dataElements = await this.fetchDataElements(dataElementCodes);
     const dataElementByCode = keyBy(dataElements, 'code');
-
-    return results.map(result => ({
+    const resultsWithMetadata = results.map(result => ({
       ...result,
       metadata: dataElementByCode[result.dataElement] || {},
     }));
+
+    return { results: resultsWithMetadata, period };
   }
 
   async buildRows() {
@@ -210,7 +212,7 @@ export class TableOfDataValuesBuilder extends DataBuilder {
     return totals;
   }
 
-  calculateCategoryTotals(rows) {
+  calculateCategoryTotals = rows => {
     const rowKeysToIgnore = new Set(METADATA_ROW_KEYS);
     return rows.reduce((columnAggregates, row) => {
       const categoryId = row.categoryId;
@@ -223,20 +225,20 @@ export class TableOfDataValuesBuilder extends DataBuilder {
 
       return { ...columnAggregates, [categoryId]: categoryTotals };
     }, {});
-  }
+  };
 
   buildOrgsFromResults() {
     const orgUnitsWithData = reduceToSet(this.results, 'organisationUnit');
     this.tableConfig.columns = Array.from(orgUnitsWithData);
   }
 
-  async replaceOrgUnitCodesWithNames(columns) {
+  replaceOrgUnitCodesWithNames = async columns => {
     const orgUnitCodes = columns.map(c => c.title);
     const orgUnits = await Entity.find({ code: orgUnitCodes });
     const orgUnitCodesToName = reduceToDictionary(orgUnits, 'code', 'name');
 
     return columns.map(({ title, key }) => ({ key, title: orgUnitCodesToName[title] }));
-  }
+  };
 }
 
 export const tableOfDataValues = async (

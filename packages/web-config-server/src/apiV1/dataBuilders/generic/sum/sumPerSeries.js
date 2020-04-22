@@ -40,7 +40,7 @@ class SumPerSeriesDataBuilder extends DataBuilder {
    * @returns {NamedValuesOutput}
    */
   async build() {
-    const results = await this.fetchResults();
+    const { results, period } = await this.fetchResults();
     const sumByDataElement = keyBy(results, 'dataElement');
 
     const dataByClass = {};
@@ -59,16 +59,16 @@ class SumPerSeriesDataBuilder extends DataBuilder {
     });
 
     const data = this.sortDataByName(Object.values(dataByClass));
-    return { data };
+    return { data, period };
   }
 
   async fetchResults() {
     const dataElements = flattenDeep(
       Object.values(this.config.series).map(dataClasses => Object.values(dataClasses)),
     );
-    const { results } = await this.fetchAnalytics(dataElements);
+    const analyticsResults = await this.fetchAnalytics(dataElements);
 
-    return results;
+    return analyticsResults;
   }
 }
 
