@@ -50,9 +50,9 @@ const getMeditrakDeviceDetails = req => {
   const { appVersion } = query;
 
   return {
-    install_id: installId,
+    installId,
     platform,
-    app_version: appVersion,
+    appVersion,
   };
 };
 
@@ -64,8 +64,10 @@ const checkAuthentication = async req => {
     case GRANT_TYPES.ONE_TIME_LOGIN:
       return authenticator.authenticateOneTimeLogin(body);
     case GRANT_TYPES.PASSWORD:
-    default:
-      return authenticator.authenticatePassword(body, getMeditrakDeviceDetails(req));
+    default: {
+      const meditrakDeviceDetails = getMeditrakDeviceDetails(req);
+      return authenticator.authenticatePassword(body, meditrakDeviceDetails);
+    }
   }
 };
 

@@ -3,6 +3,10 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+/**
+ * Builds a user's access policy in the format
+ * { entityCode1: ['permissionGroup1', 'permissionGroup2'], entityCode2: ['permissionGroup1'] }
+ */
 export const buildAccessPolicy = async (models, userId) => {
   const userEntityPermissions = await models.userEntityPermission.find({ user_id: userId });
   const permissionGroupToChildren = {};

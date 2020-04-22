@@ -12,10 +12,11 @@ export class UserEntityPermissionModel extends CommonUserEntityPermissionModel {
 
   isDeletableViaApi = true;
 
+  // used to build legacy access policy for meditrak app pre 1.8.107
   async fetchCountryPermissionGroups(userId) {
-    const results = await this.database.executeSql(
+    return this.database.executeSql(
       `
-      SELECT user_entity_permission.*, permission_group.name as permission_group_name, entity.code as entity_code
+      SELECT permission_group.name as permission_group_name, entity.code as country_code
       FROM user_entity_permission
       JOIN permission_group ON user_entity_permission.permission_group_id = permission_group.id
       JOIN entity ON user_entity_permission.entity_id = entity.id
@@ -24,7 +25,6 @@ export class UserEntityPermissionModel extends CommonUserEntityPermissionModel {
       `,
       [userId],
     );
-    return Promise.all(results.map(this.generateInstance));
   }
 }
 
