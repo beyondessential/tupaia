@@ -7,12 +7,12 @@ import winston from 'winston';
 import keyBy from 'lodash.keyby';
 
 import { aggregateAnalytics } from '@tupaia/aggregator';
-import { CustomError, getSortByKey, reduceToDictionary, utcMoment } from '@tupaia/utils';
+import { CustomError, getSortByKey, utcMoment } from '@tupaia/utils';
 import { DhisFetcher } from './DhisFetcher';
 import { DHIS2_RESOURCE_TYPES } from './types';
 import { replaceElementIdsWithCodesInEvents } from './replaceElementIdsWithCodesInEvents';
 import { RESPONSE_TYPES, getDiagnosticsFromResponse } from './responseUtils';
-import { buildAnalyticQueries } from './buildAnalyticQueries';
+import { buildDataValueAnalyticsQueries, buildEventAnalyticsQuery } from './buildAnalyticsQuery';
 
 const {
   CATEGORY_OPTION_COMBO,
@@ -24,7 +24,6 @@ const {
   DATA_VALUE,
   EVENT,
   OPTION_SET,
-  OPTION,
   ORGANISATION_UNIT,
   PROGRAM,
 } = DHIS2_RESOURCE_TYPES;
@@ -94,6 +93,15 @@ export class DhisApi {
 
     const response = await this.fetch(type, query);
     return response[type];
+  }
+
+  async codesToIds(type, codes) {
+    if (!codes || codes.length === 0) {
+      return [];
+    }
+
+    const records = await this.getRecords({ type, codes, fields: ['id'] });
+    return records.map(({ id }) => id);
   }
 
   async fetchAllPages(endpoint, queryParameters) {
@@ -184,6 +192,14 @@ export class DhisApi {
     return record && record.id;
   }
 
+  async programCodeToId(programCode) {
+    const programId = await this.getIdFromCode(PROGRAM, programCode);
+    if (!programId) {
+      throw this.constructError(`Program not found: ${programCode}`);
+    }
+    return programId;
+  }
+
   async getEvents({
     programCode,
     organisationUnitCode,
@@ -201,10 +217,7 @@ export class DhisApi {
       );
     }
 
-    const programId = programCode && (await this.getIdFromCode(PROGRAM, programCode));
-    if (programCode && !programId) {
-      throw this.constructError(`Program not found: ${programCode}`);
-    }
+    const programId = programCode && (await this.programCodeToId(programCode));
     const organisationUnitId = organisationUnitCode
       ? await this.getIdFromCode(ORGANISATION_UNIT, organisationUnitCode)
       : null;
@@ -290,7 +303,7 @@ export class DhisApi {
   }
 
   async getAnalytics(originalQuery) {
-    const queries = buildAnalyticQueries(originalQuery);
+    const queries = buildDataValueAnalyticsQueries(originalQuery);
 
     let headers;
     let rows = [];
@@ -310,6 +323,15 @@ export class DhisApi {
     );
 
     return { headers, rows, metaData };
+  }
+
+  async getEventAnalytics(originalQuery) {
+    const query = await buildEventAnalyticsQuery(this, originalQuery);
+    const { programCode } = query;
+    const programId = await this.programCodeToId(programCode);
+    const endpoint = `analytics/events/query/${programId}`;
+
+    return this.fetch(endpoint, query);
   }
 
   async buildDataValuesInSetsQuery(originalQuery) {
