@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { getUniqueEntries } from '@tupaia/utils';
 import { ChangeSideEffectHandler } from '../externalApiSync';
 
 export class DhisChangeSideEffectHandler extends ChangeSideEffectHandler {
@@ -10,7 +11,7 @@ export class DhisChangeSideEffectHandler extends ChangeSideEffectHandler {
     // If an event based answer is added, updated, or deleted, trigger an update to its parent
     // survey response, as event based answers sync to dhis2 as a whole response
     const allAnswers = this.getRecordsFromChangesForModel(changes, this.models.answer);
-    const allSurveyResponseIds = this.getUniqueEntries(allAnswers.map(a => a.survey_response_id));
+    const allSurveyResponseIds = getUniqueEntries(allAnswers.map(a => a.survey_response_id));
     const responsesToMarkAsChangedById = {};
     const batchSize = this.models.database.maxBindingsPerQuery;
     for (let i = 0; i < allSurveyResponseIds.length; i += batchSize) {

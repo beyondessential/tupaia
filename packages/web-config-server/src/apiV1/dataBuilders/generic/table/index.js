@@ -1,5 +1,4 @@
 export { matrixMostRecentFromChildren } from './matrixMostRecentFromChildren';
-export { organisationUnitTable } from './organisationUnitTable';
 export {
   tableOfDataValues,
   tableOfDataValuesWithCalc,
