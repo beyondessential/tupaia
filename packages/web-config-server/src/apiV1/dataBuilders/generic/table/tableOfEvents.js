@@ -7,7 +7,7 @@ import groupBy from 'lodash.groupby';
 import keyBy from 'lodash.keyby';
 import pick from 'lodash.pick';
 
-import { getSortByKey, utcMoment, reduceToDictionary, stripFromStart } from '@tupaia/utils';
+import { getSortByKey, utcMoment, reduceToDictionary, stripFromString } from '@tupaia/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { transformObject } from '/apiV1/dataBuilders/transform';
 import {
@@ -159,7 +159,7 @@ class TableOfEventsBuilder extends DataBuilder {
 
   buildColumns() {
     const getDefaultTitle = key =>
-      stripFromStart(this.dataSources[key].name, this.config.stripFromColumnNames);
+      stripFromString(this.dataSources[key].name, this.config.stripFromColumnNames);
 
     return this.getSortedColumnConfig().map(({ key, title }) => ({
       key,

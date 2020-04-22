@@ -2,7 +2,7 @@ import { CustomError } from '@tupaia/utils';
 import { getMeasureBuilder } from '/apiV1/measureBuilders/getMeasureBuilder';
 import { getDhisApiInstance } from '/dhis';
 import { Entity, MapOverlay } from '/models';
-import { getDateRange, getOrganisationUnitTypeForFrontend } from './utils';
+import { getDateRange } from './utils';
 import { DataAggregatingRouteHandler } from './DataAggregatingRouteHandler';
 import { MapOverlayPermissionsChecker } from './permissions';
 import { DATA_SOURCE_TYPES } from './dataBuilders/dataSourceTypes';
@@ -87,7 +87,7 @@ const createDataServices = mapOverlay => {
 
 const getMeasureLevel = mapOverlays => {
   const aggregationTypes = mapOverlays.map(({ measureBuilderConfig }) =>
-    getOrganisationUnitTypeForFrontend(measureBuilderConfig.aggregationEntityType),
+    Entity.translateTypeForFrontend(measureBuilderConfig.aggregationEntityType),
   );
   return [...new Set(aggregationTypes)].join(',');
 };

@@ -18,5 +18,8 @@ export function singularise(word) {
   return singularWord;
 }
 
-export const stripFromStart = (originalString, toStripOff = '') =>
-  originalString.replace(new RegExp(`^${toStripOff}`), '').trim();
+export const stripFromString = (originalString, toStripOff = '') =>
+  originalString
+    .replace(new RegExp(toStripOff), '') // strip toStripOff from anywhere in the string
+    .replace(new RegExp(' {2,}'), ' ') // replace any double spaces left in middle of string with a single space
+    .trim();

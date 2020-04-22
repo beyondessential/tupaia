@@ -35,7 +35,9 @@ export const fridgeBreaches = async (queryConfig, aggregator, dhisApi) => {
       [BREACH_SOH_VALUE]: sohValue,
     } = row;
 
-    categories[organisationUnitName] = { title: organisationUnitName, key: organisationUnitName };
+    categories[organisationUnitName] = {
+      category: organisationUnitName,
+    };
     const resultRow = {
       dataElement: eventDate,
       categoryId: organisationUnitName,
@@ -48,7 +50,7 @@ export const fridgeBreaches = async (queryConfig, aggregator, dhisApi) => {
   });
 
   if (entity.isFacility()) return { rows, columns };
-  return { rows, columns, categories: Object.values(categories) };
+  return { rows: [...rows, ...Object.values(categories)], columns };
 };
 
 /**
