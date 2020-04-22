@@ -107,24 +107,31 @@ describe('buildAnalyticsQuery', () => {
       assertArrayHasDimensionWithMembers(results.dimension, 'ou', ['pg_dhisId', 'to_dhisId']);
     });
 
+    it('period provided', () =>
+      expect(
+        buildEventAnalyticsQuery(dhisApi, { organisationUnitCodes: ['TO'], period: '202004' }),
+      ).to.eventually.have.deep.property('dimension', ['ou:to_dhisId', `pe:202004`]));
+
+    it('period not provided', () => {
+      const startDate = '20200422';
+      const endDate = '20200425';
+
+      return expect(
+        buildEventAnalyticsQuery(dhisApi, { organisationUnitCodes: ['TO'], startDate, endDate }),
+      ).to.eventually.deep.include({ dimension: ['ou:to_dhisId'], startDate, endDate });
+    });
+
     it('combination of various dimensions', async () => {
       const results = await buildEventAnalyticsQuery(dhisApi, {
         dataElementCodes: ['POP01', 'POP02'],
         organisationUnitCodes: ['TO', 'PG'],
+        period: '20200422',
       });
 
       expect(results).to.have.property('dimension');
-      expect(results.dimension).to.have.lengthOf(3);
-      expect(results.dimension).to.include.members(['pop01_dhisId', 'pop02_dhisId']);
+      expect(results.dimension).to.have.lengthOf(4);
+      expect(results.dimension).to.include.members(['pop01_dhisId', 'pop02_dhisId', 'pe:20200422']);
       assertArrayHasDimensionWithMembers(results.dimension, 'ou', ['pg_dhisId', 'to_dhisId']);
-    });
-
-    it('should use code as `dataIdScheme` by default', async () => {
-      const results = await buildEventAnalyticsQuery(dhisApi, {
-        organisationUnitCodes: ['TO'],
-      });
-
-      expect(results).to.have.property('dataIdScheme', 'code');
     });
   });
 });

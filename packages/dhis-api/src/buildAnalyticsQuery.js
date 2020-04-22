@@ -30,13 +30,10 @@ const getOuDimension = query => {
   return organisationUnitCode ? [organisationUnitCode] : getUniqueEntries(organisationUnitCodes);
 };
 
-const addTemporalDimension = query => {
-  const { period, startDate, endDate } = query;
-
-  return period
+const addTemporalDimension = (query, { period, startDate, endDate }) =>
+  period
     ? { ...query, dimension: (query.dimension || []).concat(`pe:${period}`) }
     : { ...query, startDate, endDate };
-};
 
 const buildDataValueAnalyticsQuery = queryInput => {
   const {
@@ -53,7 +50,7 @@ const buildDataValueAnalyticsQuery = queryInput => {
     includeMetadataDetails,
     dimension: [`dx:${dx.join(';')}`, `ou:${ou.join(';')}`, 'co'],
   };
-  return addTemporalDimension(query);
+  return addTemporalDimension(query, queryInput);
 };
 
 export const buildDataValueAnalyticsQueries = queryInput => {
@@ -78,7 +75,7 @@ export const buildDataValueAnalyticsQueries = queryInput => {
 };
 
 export const buildEventAnalyticsQuery = async (dhisApi, queryInput) => {
-  const { dataElementCodes = [], organisationUnitCodes, dataIdScheme = 'code' } = queryInput;
+  const { dataElementCodes = [], organisationUnitCodes } = queryInput;
   if (!organisationUnitCodes || organisationUnitCodes.length === 0) {
     throw new Error('Event analytics require at least one organisation unit code');
   }
@@ -86,6 +83,6 @@ export const buildEventAnalyticsQuery = async (dhisApi, queryInput) => {
   const dxDimensions = await dhisApi.codesToIds(DATA_ELEMENT, dataElementCodes);
   const orgUnitIds = await dhisApi.codesToIds(ORGANISATION_UNIT, organisationUnitCodes);
 
-  const query = { dimension: [...dxDimensions, `ou:${orgUnitIds.join(';')}`], dataIdScheme };
-  return addTemporalDimension(query);
+  const query = { dimension: [...dxDimensions, `ou:${orgUnitIds.join(';')}`] };
+  return addTemporalDimension(query, queryInput);
 };
