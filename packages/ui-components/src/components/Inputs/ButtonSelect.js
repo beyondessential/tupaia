@@ -79,7 +79,18 @@ const Menu = styled(MuiMenu)`
 /**
  * Button Select Field
  */
-export const ButtonSelect = ({ options, defaultValue, controlValue, ...props }) => {
+export const ButtonSelect = ({
+  id,
+  label,
+  options,
+  labelKey,
+  valueKey,
+  controlValue,
+  onChange,
+  defaultValue,
+  disabled,
+  muiProps,
+}) => {
   const [value, setValue] = useState(defaultValue);
   const [index, setIndex] = useState(null);
 
@@ -88,7 +99,7 @@ export const ButtonSelect = ({ options, defaultValue, controlValue, ...props }) 
    */
   useEffect(() => {
     if (!defaultValue) {
-      setValue(options[0].id);
+      setValue(options[0][valueKey]);
     }
   }, [defaultValue]);
 
@@ -105,34 +116,34 @@ export const ButtonSelect = ({ options, defaultValue, controlValue, ...props }) 
    * Set index based on value
    */
   useEffect(() => {
-    const newIndex = options.findIndex(option => option.id === value);
+    const newIndex = options.findIndex(option => option[valueKey] === value);
     setIndex(newIndex);
   }, [value]);
 
   const handlePrev = () => {
     const newIndex = value === '' || index === 0 ? options.length - 1 : index - 1;
     const newValue = options[newIndex];
-    setValue(newValue.id);
+    // setValue(newValue[valueKey]);
   };
 
   const handleNext = () => {
     const newIndex = value === '' || index === options.length - 1 ? 0 : index + 1;
     const newValue = options[newIndex];
-    setValue(newValue.id);
+    // setValue(newValue[valueKey]);
   };
 
-  const handleChange = useCallback(
-    event => {
-      const newValue = event.target.value;
-      setValue(newValue);
-    },
-    [setValue],
-  );
+  const handleChange = event => {
+    const newValue = event.target.value;
+    setValue(newValue);
+  };
 
   return (
     <StyledTextField
+      id={id}
+      label={label}
       value={value}
-      onChange={handleChange}
+      onChange={onChange || handleChange}
+      disabled={disabled}
       SelectProps={{
         displayEmpty: true,
         IconComponent: iconProps => <Menu {...iconProps} />,
@@ -164,12 +175,12 @@ export const ButtonSelect = ({ options, defaultValue, controlValue, ...props }) 
           </MuiInputAdornment>
         ),
       }}
-      {...props}
       select
+      {...muiProps}
     >
       {options.map(option => (
-        <MuiMenuItem key={option.id} value={option.id}>
-          {option.name}
+        <MuiMenuItem key={option[valueKey]} value={option[valueKey]}>
+          {option[labelKey]}
         </MuiMenuItem>
       ))}
     </StyledTextField>
@@ -180,11 +191,21 @@ ButtonSelect.propTypes = {
   id: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   options: PropTypes.array.isRequired,
-  defaultValue: PropTypes.any,
   controlValue: PropTypes.string,
+  onChange: PropTypes.func,
+  defaultValue: PropTypes.any,
+  disabled: PropTypes.bool,
+  labelKey: PropTypes.string,
+  valueKey: PropTypes.string,
+  muiProps: PropTypes.object,
 };
 
 ButtonSelect.defaultProps = {
   defaultValue: '',
+  labelKey: 'name',
+  valueKey: 'id',
   controlValue: undefined,
+  onChange: undefined,
+  disabled: false,
+  muiProps: undefined,
 };

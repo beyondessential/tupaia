@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import MuiBox from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import { ButtonSelect } from '../../components/Inputs/ButtonSelect';
+import { Autocomplete } from '../../components/Inputs';
 
 export default {
   title: 'Inputs/ButtonSelect',
@@ -57,11 +58,29 @@ export const simple = () => (
   </Container>
 );
 
+export const disabled = () => (
+  <Container>
+    <ButtonSelect id="button-select" label="Button Select Field" options={options} disabled />
+  </Container>
+);
+
+export const muiProps = () => (
+  <Container>
+    <ButtonSelect
+      id="button-select"
+      label="Button Select Field"
+      options={options}
+      muiProps={{ error: true }}
+    />
+  </Container>
+);
+
 export const controlled = () => {
   const [controlValue, setControlValue] = useState(options[4].id);
 
   const handleChange = event => {
     const newValue = event.target.value;
+    console.log('new value', newValue);
     setControlValue(newValue);
   };
 
