@@ -4,5 +4,7 @@
  */
 
 export * from './TextField';
+export * from './Autocomplete';
+export * from './AsyncAutocomplete';
 export * from './Select';
 export * from './DatePicker';
