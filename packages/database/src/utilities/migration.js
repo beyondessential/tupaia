@@ -112,7 +112,27 @@ export async function replaceArrayValue(db, table, column, oldValue, newValueInp
 }
 
 /**
- * Use to calculate "bounds" for all entities of type "region" or "facility".
+ * PostgreSQL does not supporting removing values from an enum,
+ * so instead of that we can replace an existing enum with a new one
+ *
+ * @param {TupaiaDatabase} db
+ * @param {string} enumName
+ * @param {string[]} enumValues
+ */
+export const replaceEnum = (db, enumName, enumValues) => {
+  const enumNameTemp = `${enumName}_temp$`;
+
+  // Caution! `db` here should be our internal database, not the db provided by `db-migrate`
+  return db.executeSql(`
+      ALTER TYPE ${enumName} RENAME TO ${enumNameTemp};
+      CREATE TYPE ${enumName} AS ENUM(${arrayToDbString(enumValues)});
+      ALTER TABLE entity ALTER COLUMN type TYPE ${enumName} USING type::text::${enumName};
+      DROP TYPE ${enumNameTemp};
+    `);
+};
+
+/**
+ * Use to calculate "bounds" for all entities with a region
  * Will only calculate for entities with NULL bounds, i.e. use this for newly
  * added entities, not for updating entities with existing bounds.
  *
