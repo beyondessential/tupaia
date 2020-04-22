@@ -13,6 +13,7 @@ import {
   SocialFeedPage,
   SurveyResponsesPage,
   SurveysPage,
+  QuestionsPage,
   UsersPage,
   DisasterResponsePage,
 } from './resources';
@@ -29,6 +30,7 @@ export const PAGES = {
   permissionGroups: userIsAuthenticated(PermissionGroupsPage),
   surveyResponses: userIsAuthenticated(SurveyResponsesPage),
   surveys: userIsAuthenticated(SurveysPage),
+  questions: userIsAuthenticated(QuestionsPage),
   users: userIsAuthenticated(UsersPage),
   socialFeed: userIsAuthenticated(SocialFeedPage),
   optionSets: userIsAuthenticated(OptionSetsPage),

@@ -58,11 +58,6 @@ export const getDhisIdFromEntityData = data => get(data, 'metadata.dhis.id');
 class EntityType extends DatabaseType {
   static databaseType = TYPES.ENTITY;
 
-  static meditrakConfig = {
-    ignorableFields: ['region', 'bounds'],
-    minAppVersion: '1.7.102',
-  };
-
   // Exposed for access policy creation.
   get organisationUnitCode() {
     return this.code;
@@ -131,6 +126,11 @@ export class EntityModel extends DatabaseModel {
   get DatabaseTypeClass() {
     return EntityType;
   }
+
+  meditrakConfig = {
+    ignorableFields: ['region', 'bounds'],
+    minAppVersion: '1.7.102',
+  };
 
   orgUnitEntityTypes = ORG_UNIT_ENTITY_TYPES;
 

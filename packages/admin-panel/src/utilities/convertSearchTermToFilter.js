@@ -3,7 +3,7 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
 
-export const convertFilterToString = (unprocessedFilterObject = {}) => {
+export const convertSearchTermToFilter = (unprocessedFilterObject = {}) => {
   const filterObject = {};
   Object.entries(unprocessedFilterObject).forEach(([key, value]) => {
     filterObject[key] = {
@@ -12,5 +12,5 @@ export const convertFilterToString = (unprocessedFilterObject = {}) => {
       ignoreCase: true,
     };
   });
-  return JSON.stringify(filterObject);
+  return filterObject;
 };

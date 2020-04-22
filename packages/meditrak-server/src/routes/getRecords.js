@@ -7,10 +7,11 @@ import formatLinkHeader from 'format-link-header';
 import { TYPES, JOIN_TYPES, DatabaseType } from '@tupaia/database';
 import { respond, DatabaseError, ValidationError } from '@tupaia/utils';
 import {
-  findQuestionsBySurvey,
-  findAnswersBySurveyResponse,
-  findEditableFeedItems,
+  findAnswersInSurveyResponse,
+  findEntitiesInCountry,
   findFormattedDisasters,
+  findSurveyScreenComponentsInSurvey,
+  findSurveysInCountry,
 } from '../dataAccessors';
 import { getApiUrl, resourceToRecordType } from '../utilities';
 
@@ -24,6 +25,7 @@ const GETTABLE_TYPES = [
   TYPES.SURVEY_RESPONSE,
   TYPES.USER_ACCOUNT,
   TYPES.QUESTION,
+  TYPES.SURVEY_SCREEN_COMPONENT,
   TYPES.USER_COUNTRY_PERMISSION,
   TYPES.USER_FACILITY_PERMISSION,
   TYPES.USER_GEOGRAPHICAL_AREA_PERMISSION,
@@ -35,11 +37,25 @@ const GETTABLE_TYPES = [
   TYPES.DISASTER,
 ];
 
+const createMultiResourceKey = (...recordTypes) => recordTypes.filter(x => x).join('/');
 const CUSTOM_FINDERS = {
-  [TYPES.QUESTION]: findQuestionsBySurvey,
-  [TYPES.ANSWER]: findAnswersBySurveyResponse,
-  [TYPES.FEED_ITEM]: findEditableFeedItems,
-  [TYPES.DISASTER]: findFormattedDisasters,
+  [TYPES.DISASTER]: (models, parentRecordId, criteria) => findFormattedDisasters(models, criteria),
+  [createMultiResourceKey(
+    TYPES.SURVEY,
+    TYPES.SURVEY_SCREEN_COMPONENT,
+  )]: findSurveyScreenComponentsInSurvey,
+  [createMultiResourceKey(TYPES.SURVEY_RESPONSE, TYPES.ANSWER)]: findAnswersInSurveyResponse,
+  [createMultiResourceKey(TYPES.COUNTRY, TYPES.SURVEY)]: findSurveysInCountry,
+  [createMultiResourceKey(TYPES.COUNTRY, TYPES.ENTITY)]: findEntitiesInCountry,
+};
+const CUSTOM_FOREIGN_KEYS = {
+  [createMultiResourceKey(TYPES.USER_COUNTRY_PERMISSION, TYPES.USER_ACCOUNT)]: 'user_id',
+  [createMultiResourceKey(TYPES.USER_GEOGRAPHICAL_AREA_PERMISSION, TYPES.USER_ACCOUNT)]: 'user_id',
+  [createMultiResourceKey(TYPES.USER_FACILITY_PERMISSION, TYPES.USER_ACCOUNT)]: 'user_id',
+};
+const getForeignKeyColumn = (recordType, parentRecordType) => {
+  const key = createMultiResourceKey(recordType, parentRecordType);
+  return CUSTOM_FOREIGN_KEYS[key] || `${parentRecordType}_id`;
 };
 
 const MAX_RECORDS_PER_PAGE = 100;
@@ -57,14 +73,17 @@ const MAX_RECORDS_PER_PAGE = 100;
  *       Get all countries, sorted alphabetically by name in reverse order
  *     https://api.tupaia.org/v2/surveyResponse/5a5d1c66ae07fb3fb025c3a3
  *       Get a specific survey response
+ *     https://api.tupaia.org/v2/surveyResponse/5a5d1c66ae07fb3fb025c3a3/answers
+ *       Get the answers of a specific survey response
  *     https://api.tupaia.org/v2/answers?pageSize=100&page=3&filter={survey_response_id:5a5d1c66ae07fb3fb025c3a3}
  *       Get the fourth page of 100 answers for a given survey response
  */
 export async function getRecords(req, res) {
   const { database, models, params, query } = req;
-  const { resource, recordId } = params;
+  const { parentResource, parentRecordId, resource, recordId } = params;
   const shouldReturnSingleRecord = !!recordId;
   const recordType = resourceToRecordType(resource);
+  const parentRecordType = resourceToRecordType(parentResource);
   if (!GETTABLE_TYPES.includes(recordType)) {
     throw new ValidationError(`${recordType} is not a valid GET endpoint`);
   }
@@ -80,16 +99,23 @@ export async function getRecords(req, res) {
     // Set up the finder for this record type (sometimes custom, mostly generic)
     const findOrCountRecords = (options, findOrCount = 'find') => {
       const filter = filterString ? JSON.parse(filterString) : {};
-      let criteria = CUSTOM_FINDERS[recordType]
-        ? filter
-        : processColumnSelectorKeys(filter, recordType);
+      const customFinder = CUSTOM_FINDERS[createMultiResourceKey(parentRecordType, recordType)];
+      let criteria = customFinder ? filter : processColumnSelectorKeys(filter, recordType);
       // If a specific record was requested through the route, just find that
       if (shouldReturnSingleRecord) {
         criteria = { [`${recordType}.id`]: recordId };
       }
-      return CUSTOM_FINDERS[recordType]
-        ? CUSTOM_FINDERS[recordType](models, criteria, options, findOrCount)
-        : database[findOrCount](recordType, criteria, options);
+      if (customFinder) {
+        return customFinder(models, parentRecordId, criteria, options, findOrCount);
+      }
+      if (parentRecordType) {
+        return database[findOrCount](
+          recordType,
+          { ...criteria, [getForeignKeyColumn(recordType, parentRecordType)]: parentRecordId },
+          options,
+        );
+      }
+      return database[findOrCount](recordType, criteria, options);
     };
 
     // First find out how many records there are and generate the pagination headers
