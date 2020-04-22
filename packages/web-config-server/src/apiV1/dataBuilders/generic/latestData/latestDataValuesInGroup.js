@@ -10,13 +10,13 @@
 import { getDataElementsInGroup } from '/apiV1/utils';
 
 export const latestDataValuesInGroup = async (
-  { dataBuilderConfig, query },
+  { dataBuilderConfig, entity },
   aggregator,
   dhisApi,
 ) => {
   const { dataElementGroupCode, dataElementCodes = [] } = dataBuilderConfig;
   const dataElementsById = await getDataElementsInGroup(dhisApi, dataElementGroupCode);
-  const dataValues = await dhisApi.getDataValuesInSets(dataBuilderConfig, query);
+  const dataValues = await dhisApi.getDataValuesInSets(dataBuilderConfig, entity);
 
   let filteredResults;
   if (dataElementCodes.length > 0) {

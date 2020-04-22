@@ -85,9 +85,9 @@ function* watchViewDisasterAndZoomToBounds() {
 
     if (bounds.length > 0) {
       yield put(changeBounds(bounds));
-      yield put(changeOrgUnit({ organisationUnitCode: disaster.countryCode }, false));
+      yield put(changeOrgUnit(disaster.countryCode, false));
     } else {
-      yield put(changeOrgUnit({ organisationUnitCode: disaster.countryCode }, true));
+      yield put(changeOrgUnit(disaster.countryCode, true));
     }
   });
 }

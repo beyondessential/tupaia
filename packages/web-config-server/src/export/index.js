@@ -5,4 +5,4 @@
 
 export { buildExportUrl } from './buildExportUrl';
 export { exportChart } from './exportChart';
-export { exportSurveyResponses } from './exportSurveyResponses';
+export { ExportSurveyResponsesHandler } from './ExportSurveyResponsesHandler';
