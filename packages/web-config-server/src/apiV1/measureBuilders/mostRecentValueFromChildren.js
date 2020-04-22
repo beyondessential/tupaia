@@ -10,7 +10,7 @@ export const mostRecentValueFromChildren = async (
 ) => {
   const organisationUnits = await getChildOrganisationUnits(
     {
-      level: aggregationEntityType,
+      type: aggregationEntityType,
       organisationUnitGroupCode: entity.code,
     },
     dhisApi,
