@@ -38,7 +38,7 @@ const CUSTOM_RECORD_UPDATERS = {
 };
 
 /**
- * Responds to POST requests by editing a record
+ * Responds to PUT requests by editing a record
  **/
 export async function editRecord(req, res) {
   const { database, params, body: updatedFields, models } = req;

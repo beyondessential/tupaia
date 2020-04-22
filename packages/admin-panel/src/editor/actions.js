@@ -83,9 +83,9 @@ export const saveEdits = (endpoint, editedFields, isNew) => async (dispatch, get
   });
   try {
     if (isNew) {
-      await api.put(endpoint, null, editedFields);
-    } else {
       await api.post(endpoint, null, editedFields);
+    } else {
+      await api.put(endpoint, null, editedFields);
     }
     dispatch({
       type: EDITOR_DATA_EDIT_SUCCESS,
