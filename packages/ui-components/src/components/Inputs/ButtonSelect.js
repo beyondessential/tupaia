@@ -113,6 +113,15 @@ export const ButtonSelect = ({
   }, [controlValue]);
 
   /*
+   * Call on Change handler when value changes
+   */
+  useEffect(() => {
+    if (onChange) {
+      onChange(value);
+    }
+  }, [value]);
+
+  /*
    * Set index based on value
    */
   useEffect(() => {
@@ -120,29 +129,32 @@ export const ButtonSelect = ({
     setIndex(newIndex);
   }, [value]);
 
-  const handlePrev = () => {
+  const handlePrev = useCallback(() => {
     const newIndex = value === '' || index === 0 ? options.length - 1 : index - 1;
     const newValue = options[newIndex];
-    // setValue(newValue[valueKey]);
-  };
+    setValue(newValue[valueKey]);
+  }, [setValue, value, index, options]);
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     const newIndex = value === '' || index === options.length - 1 ? 0 : index + 1;
     const newValue = options[newIndex];
-    // setValue(newValue[valueKey]);
-  };
+    setValue(newValue[valueKey]);
+  }, [setValue, value, index, options]);
 
-  const handleChange = event => {
-    const newValue = event.target.value;
-    setValue(newValue);
-  };
+  const handleChange = useCallback(
+    event => {
+      const newValue = event.target.value;
+      setValue(newValue);
+    },
+    [setValue],
+  );
 
   return (
     <StyledTextField
       id={id}
       label={label}
       value={value}
-      onChange={onChange || handleChange}
+      onChange={handleChange}
       disabled={disabled}
       SelectProps={{
         displayEmpty: true,

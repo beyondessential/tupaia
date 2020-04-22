@@ -78,11 +78,12 @@ export const muiProps = () => (
 export const controlled = () => {
   const [controlValue, setControlValue] = useState(options[4].id);
 
-  const handleChange = event => {
-    const newValue = event.target.value;
-    console.log('new value', newValue);
-    setControlValue(newValue);
-  };
+  const handleChange = useCallback(
+    newValue => {
+      setControlValue(newValue);
+    },
+    [setControlValue],
+  );
 
   const selectedOption = options.find(option => option.id === controlValue);
 
@@ -95,7 +96,7 @@ export const controlled = () => {
         onChange={handleChange}
         controlValue={controlValue}
       />
-      <Typography>Selected Value: {selectedOption.name}</Typography>
+      <Typography>Selected Value: {selectedOption ? selectedOption.name : 'none'}</Typography>
     </Container>
   );
 };
