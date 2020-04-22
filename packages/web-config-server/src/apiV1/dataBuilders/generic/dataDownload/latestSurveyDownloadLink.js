@@ -14,7 +14,6 @@ export const latestSurveyDownloadLink = async (
   );
 
   if (dateJson.data[0].value) {
-    console.log(dateJson.data[0].value);
     const downloadLinkBuiltData = await latestDownloadLink({ dataBuilderConfig, query, req });
     return composeBuiltData(dateJson, downloadLinkBuiltData);
   }
