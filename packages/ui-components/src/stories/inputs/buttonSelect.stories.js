@@ -3,12 +3,11 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
 import MuiBox from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import { ButtonSelect } from '../../components/Inputs/ButtonSelect';
-import { Autocomplete } from '../../components/Inputs';
 
 export default {
   title: 'Inputs/ButtonSelect',
