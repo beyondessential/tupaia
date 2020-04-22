@@ -32,7 +32,7 @@ const StyledButton = styled(MuiButton)`
   }
 
   .MuiAvatar-root {
-    color: ${COLORS.TEXTGREY};
+    color: ${COLORS.TEXT_DARKGREY};
   }
 `;
 
