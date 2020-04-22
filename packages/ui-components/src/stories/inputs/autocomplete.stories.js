@@ -45,7 +45,7 @@ export const simple = () => (
 
 export const disabled = () => (
   <Container>
-    <Autocomplete label="Simple Auto Complete" options={options} placeholder="Search..." disabeld />
+    <Autocomplete label="Simple Auto Complete" options={options} placeholder="Search..." disabled />
   </Container>
 );
 
