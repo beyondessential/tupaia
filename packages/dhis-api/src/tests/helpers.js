@@ -10,7 +10,7 @@ import { expect } from 'chai';
  * For example, `ou:ouCode1;ouCode2` is equivalent to `ou:ouCode2;ouCode1`
  */
 export const assertDhisDimensionHasMembers = (dimensionString, targetMembers) => {
-  const [, membersString = []] = dimensionString.split(':');
+  const [, membersString = ''] = dimensionString.split(':');
   const foundMembers = membersString.split(';');
   expect(foundMembers).to.have.members(
     targetMembers,

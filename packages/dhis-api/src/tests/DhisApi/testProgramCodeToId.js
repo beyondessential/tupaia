@@ -12,6 +12,7 @@ const PROGRAM = { code: 'PROGRAM_CODE', id: 'program_dhisId' };
 
 const fetchStub = sinon.stub();
 fetchStub
+  .resolves({ programs: [] })
   .withArgs('programs', {
     fields: sinon.match.array.contains(['id']),
     filter: { code: PROGRAM.code },
