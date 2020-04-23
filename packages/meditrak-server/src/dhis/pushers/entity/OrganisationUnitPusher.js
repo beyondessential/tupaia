@@ -8,55 +8,22 @@ import { ORG_UNIT_ENTITY_TYPES } from '../../../database';
 import { EntityPusher } from './EntityPusher';
 
 const { ORGANISATION_UNIT, ORGANISATION_UNIT_GROUP } = DHIS2_RESOURCE_TYPES;
-const { COUNTRY, REGION, FACILITY, WORLD, VILLAGE } = ORG_UNIT_ENTITY_TYPES;
+const { COUNTRY, DISTRICT, SUB_DISTRICT, FACILITY, WORLD, VILLAGE } = ORG_UNIT_ENTITY_TYPES;
 const MAXIMUM_SHORT_NAME_LENGTH = 50;
 
-const LEVEL_DETAILS_ACCESSORS_BY_SERVER = {
+const LEVEL_BY_SERVER_AND_TYPE = {
   regional: {
-    [COUNTRY]: () => ({
-      dhisLevelIndex: 2,
-      levelName: 'Country',
-    }),
-    [FACILITY]: () => ({
-      dhisLevelIndex: 5,
-      levelName: 'Facility',
-    }),
-    [VILLAGE]: () => ({
-      dhisLevelIndex: 6,
-      levelName: 'Village',
-    }),
-    [REGION]: async entity => {
-      // Within regions, we have both districts and subdistricts. If the parent is the country, it
-      // must be a district
-      if (await entity.hasCountryParent()) {
-        return {
-          dhisLevelIndex: 3,
-          levelName: 'District',
-        };
-      }
-      return {
-        dhisLevelIndex: 4,
-        levelName: 'Subdistrict',
-      };
-    },
+    [COUNTRY]: 'Country',
+    [DISTRICT]: 'District',
+    [SUB_DISTRICT]: 'Subdistrict',
+    [FACILITY]: 'Facility',
+    [VILLAGE]: 'Village',
   },
   tonga: {
-    [COUNTRY]: () => ({
-      dhisLevelIndex: 2,
-      levelName: 'Country',
-    }),
-    [REGION]: () => ({
-      dhisLevelIndex: 3,
-      levelName: 'Island Group',
-    }),
-    [FACILITY]: () => ({
-      dhisLevelIndex: 4,
-      levelName: 'Facility',
-    }),
-    [VILLAGE]: () => ({
-      dhisLevelIndex: 5,
-      levelName: 'Village',
-    }),
+    [COUNTRY]: 'Country',
+    [DISTRICT]: 'Island Group',
+    [FACILITY]: 'Facility',
+    [VILLAGE]: 'Village',
   },
 };
 
@@ -202,17 +169,17 @@ export class OrganisationUnitPusher extends EntityPusher {
     );
   }
 
-  async getLevelDetails(entity) {
+  async getLevel(entity) {
     const serverName = this.api.getServerName();
-    const levelDetailsAccessors = LEVEL_DETAILS_ACCESSORS_BY_SERVER[serverName];
-    if (!levelDetailsAccessors) {
+    const levelByType = LEVEL_BY_SERVER_AND_TYPE[serverName];
+    if (!levelByType) {
       throw new Error(`Unsupported server for entity sync ${serverName}`);
     }
-    const levelDetailsAccessor = levelDetailsAccessors[entity.type];
-    if (!levelDetailsAccessor) {
+    const level = levelByType[entity.type];
+    if (!level) {
       throw new Error(`Unsupported entity type ${entity.type} being pushed to DHIS2`);
     }
-    return levelDetailsAccessor(entity);
+    return level;
   }
 
   async createOrUpdate() {
@@ -227,13 +194,12 @@ export class OrganisationUnitPusher extends EntityPusher {
     }
 
     // Compose the body of the POST to dhis2
-    const { dhisLevelIndex, levelName } = await this.getLevelDetails(entity);
+    const level = await this.getLevel(entity);
     const organisationUnitDetails = {
-      level: dhisLevelIndex,
       name,
       shortName: name,
       code,
-      description: JSON.stringify({ level: levelName }),
+      description: JSON.stringify({ level }),
       openingDate: '2017-01-01T00:00:00.000', // Set the opening date to before Tupaia existed
       parent: {
         id: parentOrganisationUnitId,
