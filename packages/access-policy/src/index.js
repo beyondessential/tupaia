@@ -28,28 +28,34 @@ export class AccessPolicy {
   /**
    * Check if the user has access to a given permission group for the given entity
    *
-   * @param {string} entity
+   * @param {string} [entity]
    * @param {string} [permissionGroup]
    *
    * @returns boolean Whether or not the user has access to any of the entities, optionally for
    *                  the given permission group
    */
-  allows(entity, permissionGroup) {
+  allows({ entity, permissionGroup }) {
     return this.allowsSome([entity], permissionGroup);
   }
 
   /**
    * Check if the user has access to a given permission group for any of a given set of entities e.g.
-   * - accessPolicy.allows(['DL', 'DL_North'], 'Donor');
-   * - accessPolicy.allows(['DL']);
+   * - has access to some of the given entities with the given permission group
+   *   accessPolicy.allowsSome(['DL', 'DL_North'], 'Donor');
    *
-   * @param {string[]} entities
+   * - has access to the given entities with some permission group
+   *   accessPolicy.allowsSome(['DL']);
+   *
+   * - some entity has access to Donor
+   *   accessPolicy.allowsSome([], 'Donor');
+   *
+   * @param {string[]} [entities]
    * @param {string} [permissionGroup]
    *
    * @returns boolean Whether or not the user has access to any of the entities, optionally for
    *                  the given permission group
    */
-  allowsSome(entities = [], permissionGroup) {
+  allowsSome(entities, permissionGroup) {
     if (!permissionGroup) {
       return entities.some(entityCode => !!this.policy[entityCode]);
     }
@@ -66,11 +72,13 @@ export class AccessPolicy {
    *
    * @returns string[] The permission groups, e.g ['Admin', 'Donor']
    */
-  getPermissionGroups(entities = Object.keys(this.policy)) {
+  getPermissionGroups(entities) {
     return [...this.getPermissionGroupsSet(entities)];
   }
 
-  getPermissionGroupsSet(entities) {
+  getPermissionGroupsSet(requestedEntities) {
+    // if no specific entities were requested, fetch the permissions for all of them
+    const entities = requestedEntities || Object.keys(this.policy);
     // cache this part, as it is run often and is the most expensive operation
     const cacheKey = entities.join('_');
     if (!this.cachedPermissionGroupSets[cacheKey]) {

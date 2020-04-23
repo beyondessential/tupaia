@@ -26,6 +26,8 @@ exports.up = function(db) {
       FOREIGN KEY (permission_group_id) REFERENCES permission_group (id)
     );
 
+    -- Note that these inserts won't send out emails to users, as user_entity_permission is a new table,
+    -- so the change notification trigger won't exist until this set of migrations is completed
     INSERT INTO user_entity_permission (id, user_id, entity_id, permission_group_id)
     SELECT user_country_permission.id, user_country_permission.user_id, entity.id, user_country_permission.permission_group_id
     FROM user_country_permission
