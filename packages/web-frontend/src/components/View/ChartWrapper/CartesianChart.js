@@ -66,6 +66,12 @@ const DEFAULT_Y_AXIS = {
     max: { type: 'string', value: 'auto' },
   },
 };
+
+const PERCENTAGE_Y_DOMAIN = {
+  min: { type: 'number', value: 0 },
+  max: { type: 'string', value: 'dataMax' },
+};
+
 const orientationToYAxisId = orientation => Y_AXIS_IDS[orientation] || DEFAULT_Y_AXIS.id;
 
 // Used to layer line charts on top of bar charts for composed charts.
@@ -169,6 +175,14 @@ export class CartesianChart extends PureComponent {
   formatLegend = (value, { color }) => {
     const { viewContent } = this.props;
     return <span style={{ color }}>{viewContent.chartConfig[value].label || value}</span>;
+  };
+
+  getDefaultYAxisDomain = () => {
+    const yAxisDomain = DEFAULT_Y_AXIS.yAxisDomain;
+    if (this.props.viewContent.valueType === PERCENTAGE) {
+      yAxisDomain.max.value = 'dataMax';
+    }
+    return yAxisDomain;
   };
 
   calculateYAxisDomain = ({ min, max }) => {
@@ -275,15 +289,11 @@ export class CartesianChart extends PureComponent {
   renderYAxis = ({
     yAxisId = DEFAULT_Y_AXIS.id,
     orientation = DEFAULT_Y_AXIS.orientation,
-    yAxisDomain = DEFAULT_Y_AXIS.yAxisDomain,
+    yAxisDomain = this.getDefaultYAxisDomain(),
     valueType: axisValueType,
   } = {}) => {
     const { isExporting, viewContent } = this.props;
     const { data, valueType } = viewContent;
-    if (valueType === PERCENTAGE) {
-      console.log(DEFAULT_Y_AXIS.yAxisDomain, yAxisDomain);
-      yAxisDomain.max.value = 'dataMax';
-    }
 
     return (
       <YAxis
