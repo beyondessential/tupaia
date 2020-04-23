@@ -11,12 +11,22 @@ import { ResourcePage } from './ResourcePage';
 export const PERMISSIONS_ENDPOINT = 'userEntityPermissions';
 export const PERMISSIONS_COLUMNS = [
   {
+    Header: 'Entity',
+    source: 'entity.name',
+    editConfig: {
+      optionsEndpoint: 'entities',
+    },
+  },
+  {
     Header: 'Permission Group',
     source: 'permission_group.name',
     editConfig: {
       optionsEndpoint: 'permissionGroups',
     },
   },
+];
+
+const FIELDS = [
   {
     Header: 'User',
     source: 'user.first_name',
@@ -27,9 +37,6 @@ export const PERMISSIONS_COLUMNS = [
     source: 'user.last_name',
     show: false,
   },
-];
-
-const FIELDS = [
   ...PERMISSIONS_COLUMNS,
   {
     Header: 'Edit',
