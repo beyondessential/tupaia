@@ -7,7 +7,8 @@ import { convertToPeriod, getCurrentPeriod, getPeriodsInRange } from '@tupaia/dh
 
 /**
  * Calculates an array of continuous period strings from the first period in the analytics until the last
- * Periods are broken down by aggregationPeriod granularity
+ * Periods are broken down by aggregationPeriod granularity.
+ * If continueTilCurrentPeriod is true, the end period will be the current period.
  * @param {} analytics
  * @param {*} aggregationPeriod
  * @param {*} continueTilCurrentPeriod
