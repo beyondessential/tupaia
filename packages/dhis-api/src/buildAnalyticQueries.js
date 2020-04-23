@@ -62,17 +62,16 @@ export const buildAnalyticQueries = queryInput => {
 
   // Fetch data in batches to avoid "Request-URI Too Large" errors
   const queries = [];
-  for (let i = 0; i < dx.length; i += DX_BATCH_SIZE) {
-    for (let j = 0; j < ou.length; j += OU_BATCH_SIZE) {
+  for (let dxIndex = 0; dxIndex < dx.length; dxIndex += DX_BATCH_SIZE) {
+    for (let ouIndex = 0; ouIndex < ou.length; ouIndex += OU_BATCH_SIZE) {
       queries.push(
         buildAnalyticQuery({
           ...queryInput,
-          dx: dx.slice(i, i + DX_BATCH_SIZE),
-          ou: ou.slice(i, i + OU_BATCH_SIZE),
+          dx: dx.slice(dxIndex, dxIndex + DX_BATCH_SIZE),
+          ou: ou.slice(ouIndex, ouIndex + OU_BATCH_SIZE),
         }),
       );
     }
   }
-
   return queries;
 };
