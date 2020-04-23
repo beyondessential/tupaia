@@ -15,18 +15,26 @@ export const ORGANISATION_UNITS = [
   { id: 'pg_dhisId', code: 'PG' },
 ];
 
+/**
+ * Represents the query at its various stages during the method's execution.
+ * Useful for stubs and assertions
+ */
 export const QUERY = {
+  // The query as passed in by the method's consumers
   originalInput: {
     programCode: PROGRAM.code,
     dataElementCodes: ['FEMALE_POPULATION', 'MALE_POPULATION'],
     organisationUnitCodes: ['TO', 'PG'],
     period: '20200101',
   },
+  // Data element ids have been replaced by their codes by a helper method
+  // (not part of the unit test)
   idsReplacedWithCodes: {
     dataElementIds: ['femalePopulation_dhisId', 'malePopulation_dhisId'],
     organisationUnitIds: ['to_dhisId', 'pg_dhisId'],
     period: '20200101',
   },
+  // The final format that should be passed in to the fetch method (part of the unit test)
   fetch: {
     dimension: [
       'femalePopulation_dhisId',
