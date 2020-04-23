@@ -18,13 +18,12 @@ fi
 # Get latest code and dependencies
 echo "Checking out ${BRANCH}, or dev if that doesn't exist"
 cd ${HOME_DIRECTORY}
-git fetch
+git fetch --all
 git checkout dev # Ensure we have dev as our default, if the specified branch doesn't exist
-git checkout $BRANCH
-git pull
+git reset --hard origin/dev
+git checkout $BRANCH # Now try the requested branch
+git reset --hard origin/${BRANCH}
 yarn install
-echo "Migrating the database"
-yarn migrate
 
 # For each package, get the latest and deploy it
 for PACKAGE in "meditrak-server" "admin-panel" "web-frontend" "web-config-server"; do
@@ -54,10 +53,24 @@ for PACKAGE in "meditrak-server" "admin-panel" "web-frontend" "web-config-server
     if [[ $PACKAGE == *server ]];then
       # It's a server, start the pm2 process
       echo "Starting ${PACKAGE}"
-      pm2 start --name $PACKAGE "yarn start"
+      yarn build
+      pm2 start --name $PACKAGE dist --wait-ready --listen-timeout 15000
     else
       # It's a static site, build it
       echo "Building ${PACKAGE}"
       yarn build
     fi
+
+    # reset cwd back to `/tupaia`
+    cd ${HOME_DIRECTORY}
+
+    if [[ $PACKAGE == 'meditrak-server' ]];then
+      # now that meditrak-server is up and listening for changes, we can run any migrations
+      # if run earlier when meditrak-server isn't listening, changes will be missed from the
+      # sync queues
+      echo "Migrating the database"
+      yarn migrate
+    fi
 done
+
+echo "Finished deploying latest"

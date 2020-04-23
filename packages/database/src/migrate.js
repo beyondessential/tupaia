@@ -9,7 +9,7 @@ import { runPostMigration } from './runPostMigration';
 import { getConnectionConfig } from './getConnectionConfig';
 
 const exitWithError = error => {
-  console.error(`Migration error: ${error.message}`);
+  console.error(error.message);
   process.exit(1);
 };
 
@@ -25,20 +25,21 @@ const migrationInstance = DBMigrate.getInstance(
       },
     },
   },
-  async migrator => {
-    const { driver } = migrator;
+  async (migrator, internals, originalError, migrationError) => {
+    if (originalError) {
+      exitWithError(new Error(`db-migrate error: ${migrationError.message}`));
+    }
+    if (migrationError) {
+      exitWithError(new Error(`Migration error: ${migrationError.message}`));
+    }
 
     try {
+      const { driver } = migrator;
       await runPostMigration(driver);
-      console.log('Migration complete');
     } catch (error) {
-      exitWithError(error);
+      exitWithError(new Error(`Post migration error: ${error.message}`));
     }
   },
 );
 
-try {
-  migrationInstance.run();
-} catch (error) {
-  exitWithError(error);
-}
+migrationInstance.run();

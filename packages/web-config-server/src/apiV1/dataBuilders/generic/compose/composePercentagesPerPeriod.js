@@ -1,13 +1,12 @@
 import set from 'lodash.set';
 
 import { composeDataPerPeriod } from '/apiV1/dataBuilders/generic/compose/composeDataPerPeriod';
-import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 import { divideValues } from '/apiV1/dataBuilders/helpers';
 
 /**
  * Configuration schema
  * @typedef {Object} ComposePercentagesPerPeriodConfig
- * @property {Object<string, DataBuilder>} dataBuilders
+ * @property {Object<string, { dataBuilder, dataBuilderConfig }>} dataBuilders
  * @property {Object<string, { numerator: string, denominator: string }>} percentages
  *
  * Example:
@@ -48,8 +47,8 @@ const getValueKeyMap = percentages =>
 const removeEmptyPercentages = (dataKeys, data) =>
   data.filter(dataItem => Object.keys(dataItem).some(key => dataKeys.includes(key)));
 
-export const composePercentagesPerPeriod = async (config, dhisApi) => {
-  const { data: rawDataPerPeriod } = await composeDataPerPeriod(config, dhisApi);
+export const composePercentagesPerPeriod = async (config, aggregator, dhisApi) => {
+  const { data: rawDataPerPeriod } = await composeDataPerPeriod(config, aggregator, dhisApi);
   const { percentages } = config.dataBuilderConfig;
   const valueKeyMap = getValueKeyMap(percentages);
 

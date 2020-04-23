@@ -30,6 +30,16 @@ COMMENT ON EXTENSION postgis IS 'PostGIS geometry, geography, and raster spatial
 
 
 --
+-- Name: data_source_type; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.data_source_type AS ENUM (
+    'dataElement',
+    'dataGroup'
+);
+
+
+--
 -- Name: disaster_event_type; Type: TYPE; Schema: public; Owner: -
 --
 
@@ -58,13 +68,35 @@ CREATE TYPE public.disaster_type AS ENUM (
 --
 
 CREATE TYPE public.entity_type AS ENUM (
-    'facility',
-    'region',
-    'country',
-    'disaster',
     'world',
+    'project',
+    'country',
+    'district',
+    'sub_district',
+    'facility',
     'village',
-    'case'
+    'case',
+    'disaster'
+);
+
+
+--
+-- Name: service_type; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.service_type AS ENUM (
+    'dhis'
+);
+
+
+--
+-- Name: verified_email; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.verified_email AS ENUM (
+    'unverified',
+    'new_user',
+    'verified'
 );
 
 
@@ -101,7 +133,7 @@ CREATE FUNCTION public.generate_object_id() RETURNS character varying
 CREATE FUNCTION public.notification() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
-    DECLARE 
+    DECLARE
     json_record TEXT;
     BEGIN
     IF TG_OP = 'UPDATE' AND OLD = NEW THEN
@@ -112,15 +144,12 @@ CREATE FUNCTION public.notification() RETURNS trigger
       PERFORM pg_notify(
         'change',
         json_build_object(
-          'change',
-          json_build_object(
-            'record_type',
-            TG_TABLE_NAME,
-            'record_id',
-            NEW.id,
-            'type',
-            'update'
-          ),
+          'record_type',
+          TG_TABLE_NAME,
+          'record_id',
+          NEW.id,
+          'type',
+          'update',
           'record',
           public.scrub_geo_data(
             json_record::jsonb,
@@ -135,15 +164,12 @@ CREATE FUNCTION public.notification() RETURNS trigger
       PERFORM pg_notify(
       'change',
       json_build_object(
-        'change',
-        json_build_object(
-          'record_type',
-          TG_TABLE_NAME,
-          'record_id',
-          OLD.id,
-          'type',
-          'delete'
-        ),
+        'record_type',
+        TG_TABLE_NAME,
+        'record_id',
+        OLD.id,
+        'type',
+        'delete',
         'record',
         public.scrub_geo_data(
           json_record::jsonb,
@@ -163,14 +189,14 @@ CREATE FUNCTION public.notification() RETURNS trigger
 CREATE FUNCTION public.scrub_geo_data(current_record jsonb DEFAULT NULL::jsonb, tg_table_name name DEFAULT NULL::name) RETURNS json
     LANGUAGE plpgsql
     AS $$
-    DECLARE 
+    DECLARE
       geo_entities RECORD;
     BEGIN
       IF current_record IS NULL THEN
         RETURN '{}';
       END IF;
-      FOR geo_entities IN 
-        SELECT f_table_name, f_geography_column 
+      FOR geo_entities IN
+        SELECT f_table_name, f_geography_column
         FROM geography_columns
         WHERE type in ('Polygon', 'MultiPolygon')
         AND f_table_name = TG_TABLE_NAME LOOP
@@ -189,11 +215,11 @@ CREATE FUNCTION public.scrub_geo_data(current_record jsonb DEFAULT NULL::jsonb, 
 CREATE FUNCTION public.update_change_time() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
-BEGIN
-  NEW.change_time = floor(extract(epoch from clock_timestamp()) * 1000) + (CAST (nextval('change_time_seq') AS FLOAT)/100);
-  RETURN NEW;
-END;
-$$;
+    BEGIN
+      NEW.change_time = floor(extract(epoch from clock_timestamp()) * 1000) + (CAST (nextval('change_time_seq') AS FLOAT)/1000);
+      RETURN NEW;
+    END;
+    $$;
 
 
 SET default_tablespace = '';
@@ -234,7 +260,10 @@ CREATE TABLE public.api_request_log (
     version double precision NOT NULL,
     endpoint text NOT NULL,
     user_id text,
-    request_time timestamp without time zone DEFAULT now()
+    request_time timestamp without time zone DEFAULT now(),
+    query jsonb,
+    metadata jsonb DEFAULT '{}'::jsonb,
+    refresh_token text
 );
 
 
@@ -243,9 +272,9 @@ CREATE TABLE public.api_request_log (
 --
 
 CREATE SEQUENCE public.change_time_seq
-    START WITH 1
+    START WITH 100
     INCREMENT BY 1
-    NO MINVALUE
+    MINVALUE 100
     MAXVALUE 999
     CACHE 1
     CYCLE;
@@ -323,6 +352,30 @@ CREATE TABLE public."dashboardReport" (
     "dataBuilderConfig" jsonb,
     "viewJson" jsonb,
     "dataServices" jsonb DEFAULT '[{"isDataRegional": true}]'::jsonb
+);
+
+
+--
+-- Name: data_element_data_group; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.data_element_data_group (
+    id text NOT NULL,
+    data_element_id text NOT NULL,
+    data_group_id text NOT NULL
+);
+
+
+--
+-- Name: data_source; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.data_source (
+    id text NOT NULL,
+    code text NOT NULL,
+    type public.data_source_type NOT NULL,
+    service_type public.service_type NOT NULL,
+    config jsonb NOT NULL
 );
 
 
@@ -408,24 +461,24 @@ CREATE TABLE public.entity (
 
 
 --
+-- Name: entity_hierarchy; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.entity_hierarchy (
+    id text NOT NULL,
+    name text NOT NULL
+);
+
+
+--
 -- Name: entity_relation; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.entity_relation (
     id text NOT NULL,
-    from_id text NOT NULL,
-    to_id text NOT NULL,
-    entity_relation_type_code text NOT NULL
-);
-
-
---
--- Name: entity_relation_type; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.entity_relation_type (
-    code text NOT NULL,
-    description text
+    parent_id text NOT NULL,
+    child_id text NOT NULL,
+    entity_hierarchy_id text NOT NULL
 );
 
 
@@ -475,18 +528,6 @@ CREATE TABLE public.geographical_area (
 
 
 --
--- Name: install_id; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.install_id (
-    id text NOT NULL,
-    user_id text NOT NULL,
-    install_id text NOT NULL,
-    platform character varying DEFAULT ''::character varying
-);
-
-
---
 -- Name: mapOverlay; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -529,6 +570,20 @@ CREATE SEQUENCE public."mapOverlay_id_seq"
 --
 
 ALTER SEQUENCE public."mapOverlay_id_seq" OWNED BY public."mapOverlay".id;
+
+
+--
+-- Name: meditrak_device; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.meditrak_device (
+    id text NOT NULL,
+    user_id text NOT NULL,
+    install_id text NOT NULL,
+    platform character varying DEFAULT ''::character varying,
+    app_version text,
+    config jsonb DEFAULT '{}'::jsonb
+);
 
 
 --
@@ -661,15 +716,14 @@ CREATE TABLE public.permission_group (
 CREATE TABLE public.project (
     id text NOT NULL,
     code text NOT NULL,
-    entity_ids text[] NOT NULL,
-    name text NOT NULL,
     description text,
     sort_order integer,
     image_url text,
     default_measure text DEFAULT '126,171'::text,
     dashboard_group_name text DEFAULT 'General'::text,
     user_groups text[],
-    logo_url text
+    logo_url text,
+    entity_id text
 );
 
 
@@ -700,7 +754,8 @@ CREATE TABLE public.refresh_token (
     user_id text NOT NULL,
     device text,
     token text NOT NULL,
-    expiry double precision
+    expiry double precision,
+    meditrak_device_id text
 );
 
 
@@ -818,7 +873,8 @@ CREATE TABLE public.user_account (
     "position" text,
     mobile_number text,
     password_hash text NOT NULL,
-    password_salt text NOT NULL
+    password_salt text NOT NULL,
+    verified_email public.verified_email DEFAULT 'new_user'::public.verified_email
 );
 
 
@@ -984,6 +1040,30 @@ ALTER TABLE ONLY public."dashboardGroup"
 
 
 --
+-- Name: data_element_data_group data_element_data_group_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.data_element_data_group
+    ADD CONSTRAINT data_element_data_group_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: data_source data_source_code_type_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.data_source
+    ADD CONSTRAINT data_source_code_type_key UNIQUE (code, type);
+
+
+--
+-- Name: data_source data_source_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.data_source
+    ADD CONSTRAINT data_source_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: dhis_sync_log dhis_sync_log_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1048,6 +1128,22 @@ ALTER TABLE ONLY public.entity
 
 
 --
+-- Name: entity_hierarchy entity_hierarchy_name_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.entity_hierarchy
+    ADD CONSTRAINT entity_hierarchy_name_key UNIQUE (name);
+
+
+--
+-- Name: entity_hierarchy entity_hierarchy_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.entity_hierarchy
+    ADD CONSTRAINT entity_hierarchy_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: entity entity_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1061,14 +1157,6 @@ ALTER TABLE ONLY public.entity
 
 ALTER TABLE ONLY public.entity_relation
     ADD CONSTRAINT entity_relation_pkey PRIMARY KEY (id);
-
-
---
--- Name: entity_relation_type entity_relation_type_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.entity_relation_type
-    ADD CONSTRAINT entity_relation_type_pkey PRIMARY KEY (code);
 
 
 --
@@ -1096,10 +1184,10 @@ ALTER TABLE ONLY public.geographical_area
 
 
 --
--- Name: install_id install_id_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: meditrak_device install_id_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.install_id
+ALTER TABLE ONLY public.meditrak_device
     ADD CONSTRAINT install_id_pkey PRIMARY KEY (id);
 
 
@@ -1109,6 +1197,14 @@ ALTER TABLE ONLY public.install_id
 
 ALTER TABLE ONLY public."mapOverlay"
     ADD CONSTRAINT "mapOverlay_id_key" UNIQUE (id);
+
+
+--
+-- Name: meditrak_device meditrak_device_install_id_unique; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.meditrak_device
+    ADD CONSTRAINT meditrak_device_install_id_unique UNIQUE (install_id);
 
 
 --
@@ -1229,14 +1325,6 @@ ALTER TABLE ONLY public.permission_group
 
 ALTER TABLE ONLY public.project
     ADD CONSTRAINT project_code_key UNIQUE (code);
-
-
---
--- Name: project project_name_key; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.project
-    ADD CONSTRAINT project_name_key UNIQUE (name);
 
 
 --
@@ -1767,10 +1855,17 @@ CREATE TRIGGER dashboardgroup_trigger AFTER INSERT OR DELETE OR UPDATE ON public
 
 
 --
--- Name: dashboardReport dashboardreport_trigger; Type: TRIGGER; Schema: public; Owner: -
+-- Name: data_element_data_group data_element_data_group_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER dashboardreport_trigger AFTER INSERT OR DELETE OR UPDATE ON public."dashboardReport" FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER data_element_data_group_trigger AFTER INSERT OR DELETE OR UPDATE ON public.data_element_data_group FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
+-- Name: data_source data_source_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER data_source_trigger AFTER INSERT OR DELETE OR UPDATE ON public.data_source FOR EACH ROW EXECUTE PROCEDURE public.notification();
 
 
 --
@@ -1795,17 +1890,17 @@ CREATE TRIGGER disasterevent_trigger AFTER INSERT OR DELETE OR UPDATE ON public.
 
 
 --
+-- Name: entity_hierarchy entity_hierarchy_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER entity_hierarchy_trigger AFTER INSERT OR DELETE OR UPDATE ON public.entity_hierarchy FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
 -- Name: entity_relation entity_relation_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
 CREATE TRIGGER entity_relation_trigger AFTER INSERT OR DELETE OR UPDATE ON public.entity_relation FOR EACH ROW EXECUTE PROCEDURE public.notification();
-
-
---
--- Name: entity_relation_type entity_relation_type_trigger; Type: TRIGGER; Schema: public; Owner: -
---
-
-CREATE TRIGGER entity_relation_type_trigger AFTER INSERT OR DELETE OR UPDATE ON public.entity_relation_type FOR EACH ROW EXECUTE PROCEDURE public.notification();
 
 
 --
@@ -1823,10 +1918,10 @@ CREATE TRIGGER geographical_area_trigger AFTER INSERT OR DELETE OR UPDATE ON pub
 
 
 --
--- Name: install_id install_id_trigger; Type: TRIGGER; Schema: public; Owner: -
+-- Name: meditrak_device install_id_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER install_id_trigger AFTER INSERT OR DELETE OR UPDATE ON public.install_id FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER install_id_trigger AFTER INSERT OR DELETE OR UPDATE ON public.meditrak_device FOR EACH ROW EXECUTE PROCEDURE public.notification();
 
 
 --
@@ -1834,6 +1929,13 @@ CREATE TRIGGER install_id_trigger AFTER INSERT OR DELETE OR UPDATE ON public.ins
 --
 
 CREATE TRIGGER mapoverlay_trigger AFTER INSERT OR DELETE OR UPDATE ON public."mapOverlay" FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
+-- Name: meditrak_device meditrak_device_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER meditrak_device_trigger AFTER INSERT OR DELETE OR UPDATE ON public.meditrak_device FOR EACH ROW EXECUTE PROCEDURE public.notification();
 
 
 --
@@ -2032,6 +2134,22 @@ ALTER TABLE ONLY public.clinic
 
 
 --
+-- Name: data_element_data_group data_element_data_group_data_element_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.data_element_data_group
+    ADD CONSTRAINT data_element_data_group_data_element_id_fk FOREIGN KEY (data_element_id) REFERENCES public.data_source(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: data_element_data_group data_element_data_group_data_group_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.data_element_data_group
+    ADD CONSTRAINT data_element_data_group_data_group_id_fk FOREIGN KEY (data_group_id) REFERENCES public.data_source(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
 -- Name: disasterEvent disaster_event_disaster_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2048,27 +2166,27 @@ ALTER TABLE ONLY public.entity
 
 
 --
--- Name: entity_relation entity_relation_entity_relation_type_code_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: entity_relation entity_relation_child_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.entity_relation
-    ADD CONSTRAINT entity_relation_entity_relation_type_code_fkey FOREIGN KEY (entity_relation_type_code) REFERENCES public.entity_relation_type(code);
+    ADD CONSTRAINT entity_relation_child_id_fkey FOREIGN KEY (child_id) REFERENCES public.entity(id);
 
 
 --
--- Name: entity_relation entity_relation_from_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.entity_relation
-    ADD CONSTRAINT entity_relation_from_id_fkey FOREIGN KEY (from_id) REFERENCES public.entity(id);
-
-
---
--- Name: entity_relation entity_relation_to_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: entity_relation entity_relation_entity_hierarchy_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.entity_relation
-    ADD CONSTRAINT entity_relation_to_id_fkey FOREIGN KEY (to_id) REFERENCES public.entity(id);
+    ADD CONSTRAINT entity_relation_entity_hierarchy_id_fkey FOREIGN KEY (entity_hierarchy_id) REFERENCES public.entity_hierarchy(id);
+
+
+--
+-- Name: entity_relation entity_relation_parent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.entity_relation
+    ADD CONSTRAINT entity_relation_parent_id_fkey FOREIGN KEY (parent_id) REFERENCES public.entity(id);
 
 
 --
@@ -2128,10 +2246,10 @@ ALTER TABLE ONLY public.geographical_area
 
 
 --
--- Name: install_id install_id_user_account_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: meditrak_device install_id_user_account_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.install_id
+ALTER TABLE ONLY public.meditrak_device
     ADD CONSTRAINT install_id_user_account_id_fk FOREIGN KEY (user_id) REFERENCES public.user_account(id) ON UPDATE RESTRICT ON DELETE CASCADE;
 
 
@@ -2165,6 +2283,14 @@ ALTER TABLE ONLY public.permission_group
 
 ALTER TABLE ONLY public.question
     ADD CONSTRAINT question_option_set_id_fk FOREIGN KEY (option_set_id) REFERENCES public.option_set(id) ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: refresh_token refresh_token_meditrak_device_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.refresh_token
+    ADD CONSTRAINT refresh_token_meditrak_device_id_fk FOREIGN KEY (meditrak_device_id) REFERENCES public.meditrak_device(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
@@ -2890,6 +3016,123 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 499	/20191220004141-UpdateProjectUserGroups	2019-12-20 06:48:15.787
 500	/20191219040555-ShowEventOrgUnitInTongaCDReports	2019-12-23 22:58:29.845
 503	/20191221032822-UseOriginalTimezoneForDateAnswers	2019-12-29 22:12:32.173
+504	/20191230030956-UseVillageInCH4Report	2020-01-14 04:36:03.125
+505	/20200102222808-AddTongaUNFPADashboardGroupsAndReports	2020-01-14 04:36:03.199
+506	/20200103035630-UseVillageInCH11Report	2020-01-14 04:36:03.564
+507	/20200103041050-AddUNFPAStockCardReports	2020-01-14 04:36:03.63
+508	/20200103051018-MakeCHValidationReportIdsConsistent	2020-01-14 04:36:04.697
+509	/20200106033541-AddEntityTypeInCDOverlays	2020-01-14 04:36:04.805
+510	/20200107043937-RemoveColumnFromCD3aReport	2020-01-14 04:36:04.853
+511	/20200109052723-ConsolidatePNGCaseReportFormExportDateColumns	2020-01-16 19:28:42.56
+512	/20191218232516-EmailConfirmation	2020-01-21 21:03:51.508
+513	/20200109231002-AddLabelTypeToViewJsonOnReports	2020-01-21 21:03:51.571
+514	/20200114105007-PercentageEventCountsBuildersUseFractionAndPercentageLabel	2020-01-21 21:03:51.598
+515	/20200115052004-AddTongaAndMicronesiaToUnfpaProjectCountries	2020-01-21 21:03:51.764
+516	/20200114233039-AddFMUnfpaDashboardGroup	2020-01-23 04:41:01.57
+517	/20200110032903-ConvertSingleColumnTableTO-CHDashboardReportsToTableOfDataValues	2020-02-04 03:03:39.028
+518	/20200113052422-ConvertTableFromDataElementGroupsTO-CHDashboardReportsToTableOfDataValues	2020-02-04 03:03:39.084
+519	/20200115003324-ConvertTO-RHDashboardReportsToTableOfDataValues	2020-02-04 03:03:39.218
+520	/20200117042010-ConvertRemainingTODashboardReportsToTableOfDataValues	2020-02-04 03:03:39.325
+521	/20200129031634-ChangeNoCountryCode	2020-02-04 03:03:39.339
+522	/20200129031728-AddNewCountriesToEntityTable	2020-02-04 03:03:39.399
+523	/20200131041935-DeleteRedundantImmsBreaches	2020-02-04 03:05:23.343
+524	/20200202205145-DeleteTongaSpecificDashboardsFromDemoLand	2020-02-04 20:41:17.744
+525	/20200128054247-UsePerOrgUnitDataBuilderForUNFPAStockCardsReport	2020-02-06 22:32:27.446
+526	/20200123233519-UnfpaStaffTrainingDashboard	2020-02-13 01:01:20.644
+527	/20200129040859-InsertIHRWorldDashboardGroup	2020-02-13 01:01:20.708
+528	/20200131023339-ContraceptionDashboardUpdate	2020-02-13 01:01:20.767
+529	/20200205015401-DeleteCD2-2Answers	2020-02-13 01:01:20.979
+530	/20200206214233-AddColumnsToApiRequestLog	2020-02-13 01:01:41.369
+531	/20200206214234-RenameAndCleanupInstallId	2020-02-13 01:01:42.451
+532	/20200206221246-AddColumnsToMeditrakDevice	2020-02-13 01:01:42.58
+533	/20200206221247-AddMeditrakDeviceIdToRefreshToken	2020-02-13 01:01:42.728
+534	/20200206221249-AddRefreshTokenToApiRequestLog	2020-02-13 01:01:42.825
+535	/20200207044948-AddBonrikiEastToMs1Api	2020-02-13 01:01:42.858
+536	/20200207045423-IHRSparReportingCountries	2020-02-13 01:01:42.884
+537	/20200210233650-SwitchRowsAndColsForTongaFP01	2020-02-13 01:01:43.71
+538	/20200214025142-UpdateStriveWeeklyMRDTPositiveConfig	2020-02-14 04:29:20.453
+539	/20200212220350-optimiseWorldFetchData	2020-02-21 01:49:23.321
+540	/20200220231953-DeleteSubmissionDateColumnsCD1CD2	2020-02-21 01:49:23.504
+541	/20200129040800-InsertIHRCountryReport	2020-02-25 02:34:20.799
+542	/20200219235149-AddIHRReportBAndAddBothToGroup	2020-02-25 02:34:20.871
+543	/20200224235334-SPARReportHeader	2020-02-25 02:34:20.912
+544	/20200116211310-AddDataSourceTable	2020-02-25 06:32:54.799
+545	/20200122003753-ConvertDataElementToCodeInSyncLog	2020-02-25 06:34:46.657
+546	/20200128021719-AddTongaDataSources	2020-02-25 06:34:52.487
+547	/20200129211641-AvoidChangeTimeConflicts	2020-02-25 06:35:32.595
+548	/20200204005927-AddDataElementDataGroupTable	2020-02-25 06:35:33.014
+549	/20200205004208-AddTongaSurveysToDataSource	2020-02-25 06:35:34.554
+550	/20200210004010-SimplifyChangeNotification	2020-02-25 06:35:34.635
+551	/20200211002034-UpdateDataBuilders	2020-02-25 06:35:35.82
+552	/20200218001344-UpdateMapOverlays	2020-02-25 06:35:36.08
+553	/20200218025613-AddDataGroupsToDataSource	2020-02-25 06:35:36.393
+554	/20200218215230-ResyncAllTongaData	2020-02-25 06:38:31.217
+555	/20200224063900-UseSingleDataElementForDMHTNDenominator	2020-02-25 06:38:31.776
+556	/20200224003036-AddIHRJEEMatrixReport	2020-02-26 06:05:41.669
+557	/20200228013730-DeleteRedundantImmsBreaches	2020-02-28 02:41:25.468
+558	/20200227001738-AddWeeklyNumberOfFebrileIllnessCasesByVillageReport	2020-03-03 01:20:17.167
+559	/20200228040157-MoveAutocompletePrimaryEntityToEntityId	2020-03-03 01:20:17.278
+560	/20200302202141-ReinstateBuildingRecordInChangeNotifier	2020-03-05 08:54:21.288
+561	/20200305051343-ClearNullSyncQueueDetails	2020-03-05 08:54:22.972
+562	/20200305053046-AddDataSourceForCD3b-014b-C19-9	2020-03-05 08:54:31.999
+563	/20200303043257-PercentageOfValueCountsSplitCodesFromValueConfig	2020-03-11 04:55:06.369
+564	/20200305043430-UpdateStockCardsReportConfig	2020-03-11 04:55:06.448
+565	/20200310020604-MatrixTableNameChange	2020-03-11 04:55:06.488
+566	/20200311003701-UpdateMatrixHeader	2020-03-11 04:55:06.547
+567	/20200311013245-AddProgramCodeToHP05DrillDown	2020-03-11 04:55:06.65
+568	/20200312003031-AddAggregationEntityTypeInMapOverlays	2020-03-17 02:50:54.528
+569	/20200312223135-AddWeeklyReportedFebrileIllnessCasesToVillages	2020-03-17 02:50:55.835
+570	/20200313000357-AddGeneralDashboardGroupToVillages	2020-03-17 02:50:56.013
+571	/20200316010349-AddWeeklyNumberOfFebrileIllnessReportsNational	2020-03-24 05:41:33.358
+572	/20200316022146-AddStriveRegionalDashboardGroup	2020-03-24 05:41:33.414
+573	/20200316022217-AddWeeklyNumberOfFebrileIllnessReportsRegional	2020-03-24 05:41:33.527
+574	/20200316042719-AddMRDTDashboardReportToNationalAndProvincial	2020-03-31 07:11:24.146
+575	/20200316055056-Add2YAxisMRDTFebrileIllnessDashboardReportToNationalAndProvincialStrive	2020-03-31 07:11:24.247
+576	/20200318223935-DeleteErroneousStriveSurveyData	2020-03-31 07:11:24.303
+577	/20200323002803-AddCovid19AustraliaToProjects	2020-03-31 07:20:42.006
+578	/20200324032850-AddCOVID19DashboardgroupsAusNationalState	2020-03-31 07:20:42.109
+579	/20200324050422-AddCovid19StateDashboardReport	2020-03-31 07:20:42.167
+580	/20200324053202-AddCasesByStateReportCovidAus	2020-03-31 07:20:42.238
+581	/20200325001848-AddTotalNumberReportedCasesCOVIDAUMapOverlay	2020-03-31 07:20:42.27
+582	/20200326012240-MoveDefaultDashboardGroupsToIndividualCountries	2020-03-31 07:20:42.62
+583	/20200326032657-AddTotalCasesByStateAus	2020-03-31 07:20:42.685
+584	/20200326034630-AddTotalCovidCasesByTypeReport	2020-03-31 07:20:42.741
+585	/20200326043343-AddCovidNewCasesByDayBarChartStateAus	2020-03-31 07:20:42.813
+586	/20200326045458-AddCovid19NationalDailyCasesOverTimeEachStateAndTotalDashboard	2020-03-31 07:20:42.922
+587	/20200326225508-FixDailyCovidStateNumbersReportAus	2020-03-31 07:20:42.968
+588	/20200326233613-FixDailyCovidCasesByStateChart	2020-03-31 07:20:43.004
+589	/20200327014704-AddNationalNewCovidCasesByDayAus	2020-03-31 07:20:43.106
+590	/20200327052900-UpdateCovidAuTotalConfirmedCasesMapOverlayScaleMin	2020-03-31 07:20:43.126
+591	/20200327055605-UpdateCovidAuTotalConfirmedCasesOverTimeByStateWordings	2020-03-31 07:20:43.177
+592	/20200330013822-ChangeGeographicalBoundsOfWorld	2020-03-31 07:20:43.211
+593	/20200330014731-MoveDefaultMapOverlaysToIndividualCountries	2020-03-31 07:20:43.315
+594	/20200330023425-AddDailyToCovid19Reports	2020-03-31 07:20:43.343
+595	/20200330025955-ChangeIdOfDashboardReportToRemoveState	2020-03-31 07:20:43.392
+596	/20200330034009-AddSubDistrictAndFacilityLevelDashboardGroups	2020-03-31 07:20:43.429
+597	/20200330034023-AddLinkToSourcesCovidAllOrgLevels	2020-03-31 07:20:43.463
+598	/20200330041343-RemoveRecoveriesFromDashboardCovid	2020-03-31 07:20:43.489
+599	/20200330233911-ChangeDefaultDataToYesterdayCovidReports	2020-03-31 07:20:43.515
+600	/20200317055123-AddStriveReportsToVillages	2020-04-07 04:56:55.638
+601	/20200325044717-MakeFebrileIllnessCaseCalculationConsistent	2020-04-07 04:56:55.711
+602	/20200403020133-UpdateDataSourcetoReflectHP01andHP02Changes	2020-04-07 04:56:56.472
+603	/20200407021657-AddDisasterDashboardGroupForVanutatu	2020-04-07 04:56:56.557
+604	/20200324034720-CreateMSupplyUNFPAMatrices	2020-04-16 11:40:36.812
+605	/20200325002500-RefactorOrganisationUnitTableReportsToTableOfValueForOrgUnits	2020-04-16 11:40:36.893
+606	/20200330044935-AddConfigToIHRReportsForOrgUnitColumns	2020-04-16 11:40:36.907
+607	/20200401220823-RemoveWordTodayFromCovidReports	2020-04-16 11:40:36.925
+608	/20200402024847-AddProjectEntity	2020-04-16 11:40:37.799
+609	/20200402024848-CreateProjectHierarchy	2020-04-16 11:40:37.955
+610	/20200403015828-AddCovidRawDataDownloadTonga	2020-04-16 11:40:37.971
+611	/20200403030413-AddPeriodDataSwitchToDashBoardReports	2020-04-16 11:40:37.983
+612	/20200406000236-AddFacilityCommoditiesOverlays	2020-04-16 11:40:38.217
+613	/20200407031923-ReplaceProvinceInDashboardGroup	2020-04-16 11:40:38.348
+614	/20200407050822-ReplaceAndRemoveRegionEntityType	2020-04-16 11:40:39.881
+615	/20200407052132-AddSOHandAMCMatricesToUNFPA	2020-04-16 11:40:39.952
+616	/20200407225206-ReplaceRegionInMapOverlays	2020-04-16 11:40:40.008
+617	/20200408015910-UseLowercaseOrgUnitLevel	2020-04-16 11:40:40.046
+618	/20200408031952-ReplaceRegionInSurveyScreenComponent	2020-04-16 11:40:41.22
+619	/20200408071456-RenameOrganisationUnitLevelInDashboardReport	2020-04-16 11:40:41.254
+620	/20200409065901-AddStripFromDataElementNamesForUNFPAMatrices	2020-04-16 11:40:41.264
 \.
 
 
@@ -2897,7 +3140,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 503, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 620, true);
 
 
 --

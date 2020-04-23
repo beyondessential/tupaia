@@ -81,7 +81,7 @@ export class RootScreen extends PureComponent {
 
     return (
       <h1 style={styles.title}>
-        {viewContent.name} {organisationUnitName ? `(${organisationUnitName})` : ''}
+        {viewContent.name} {organisationUnitName ? `, ${organisationUnitName}` : ''}
       </h1>
     );
   }

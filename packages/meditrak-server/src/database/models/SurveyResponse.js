@@ -5,9 +5,7 @@
 
 import momentTimezone from 'moment-timezone';
 
-import { DatabaseModel } from '../DatabaseModel';
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '..';
+import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
 class SurveyResponseType extends DatabaseType {
   static databaseType = TYPES.SURVEY_RESPONSE;
 
@@ -42,15 +40,6 @@ class SurveyResponseType extends DatabaseType {
     return entity.isTrackedEntity();
   }
 
-  async isEventBased() {
-    const survey = await this.survey();
-    if (survey.can_repeat) {
-      return true;
-    }
-
-    return this.isForTrackedEntity();
-  }
-
   timezoneAwareSubmissionTime() {
     return momentTimezone(this.submission_time).tz(this.timezone);
   }
@@ -65,17 +54,63 @@ export class SurveyResponseModel extends DatabaseModel {
     return SurveyResponseType;
   }
 
-  get isDeletable() {
-    return true;
+  isDeletableViaApi = true;
+
+  updateById(id, fieldsToUpdate) {
+    // If the entity or date has changed, mark all answers as changed so they resync to DHIS2 with
+    // the new entity/date (no need to async/await, just set it going)
+    if (fieldsToUpdate.entity_id || fieldsToUpdate.submission_time) {
+      this.otherModels.answer.markAsChanged({
+        survey_response_id: id,
+      });
+    }
+    return super.updateById(id, fieldsToUpdate);
   }
 
-  static onChange = async (change, record, model) => {
+  getOrgUnitEntityTypes = () => {
+    const orgUnitEntityTypes = Object.values(this.otherModels.entity.orgUnitEntityTypes);
+    return `(${orgUnitEntityTypes.map(t => `'${t}'`).join(',')})`;
+  };
+
+  /**
+   * Returns the SQL to inclue only event based survey responses from a statement that has
+   * already JOINed both survey and entity
+   */
+  getOnlyEventsQueryClause = () => `
+    (survey.can_repeat = 'TRUE' OR entity.type NOT IN ${this.getOrgUnitEntityTypes()})
+  `;
+
+  /**
+   * Returns the SQL to exclude event based survey responses from a statement that has
+   * already JOINed both survey and entity
+   */
+  getExcludeEventsQueryClause = () => `
+    (survey.can_repeat = 'FALSE' AND entity.type IN ${this.getOrgUnitEntityTypes()})
+  `;
+
+  async checkIsEventBased(surveyResponseId) {
+    const result = await this.database.executeSql(
+      `
+      SELECT count(*)
+      FROM survey_response
+      JOIN survey ON survey.id = survey_response.survey_id
+      JOIN entity ON entity.id = survey_response.entity_id
+      WHERE survey_response.id = ?
+      AND ${this.getOnlyEventsQueryClause()}
+    `,
+      [surveyResponseId],
+    );
+    if (result.length === 0) return false;
+    return result[0].count === '1';
+  }
+
+  static onChange = async ({ type: changeType, record }, model) => {
     const modelDetails = {
       type: 'SurveyResponse',
       record_id: record.id,
     };
 
-    if (change.type === 'delete') {
+    if (changeType === 'delete') {
       model.otherModels.userReward.delete(modelDetails);
     } else {
       model.otherModels.userReward.updateOrCreate(modelDetails, {

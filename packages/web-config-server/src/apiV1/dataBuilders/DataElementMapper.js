@@ -2,8 +2,8 @@
  * Tupaia Config Server
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
+import { CustomError } from '@tupaia/utils';
 
-import { CustomError } from '/errors';
 import { getDataElementGroups } from '/apiV1/utils';
 import { DATA_SOURCE_TYPES } from './dataSourceTypes';
 
@@ -15,7 +15,7 @@ export class DataElementMapper {
   }
 
   /**
-   * @param {Object<string, DataSource>} dataSources
+   * @param {Object<string, Object>} dataSources
    * @returns {Object<string, string[]>} A map of data source keys to data element codes
    */
   async getMapFromDataSources(dataSources) {

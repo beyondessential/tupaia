@@ -19,6 +19,7 @@ import { combineReducers } from 'redux';
 import map from './reducers/mapReducers';
 import disaster from './disaster/reducers';
 import project from './projects/reducers';
+import orgUnits from './reducers/orgUnitReducers';
 import { getMeasureFromHierarchy, isMobile } from './utils';
 import { LANDING } from './containers/OverlayDiv';
 import { getUniqueViewId } from './utils/getUniqueViewId';
@@ -63,8 +64,8 @@ import {
   FETCH_LOGOUT_SUCCESS,
   FETCH_MEASURES_ERROR,
   FETCH_MEASURES_SUCCESS,
-  FETCH_ORG_UNIT_ERROR,
-  FETCH_ORG_UNIT_SUCCESS,
+  CHANGE_ORG_UNIT_ERROR,
+  CHANGE_ORG_UNIT_SUCCESS,
   FETCH_RESET_PASSWORD_ERROR,
   FETCH_RESET_PASSWORD_SUCCESS,
   FETCH_REQUEST_COUNTRY_ACCESS_SUCCESS,
@@ -576,7 +577,7 @@ function global(
     highlightedOrganisationUnit: {},
     dashboardConfig: {},
     viewConfigs: {},
-    loadingOrganisationUnit: null,
+    isLoadingOrganisationUnit: false,
   },
   action,
 ) {
@@ -596,12 +597,12 @@ function global(
     case CHANGE_ORG_UNIT:
       return {
         ...state,
-        loadingOrganisationUnit: action.organisationUnit,
+        isLoadingOrganisationUnit: true,
       };
-    case FETCH_ORG_UNIT_SUCCESS:
+    case CHANGE_ORG_UNIT_SUCCESS:
       return {
         ...state,
-        loadingOrganisationUnit: null,
+        isLoadingOrganisationUnit: false,
         currentOrganisationUnit: action.organisationUnit,
         currentOrganisationUnitSiblings: action.organisationUnitSiblings,
         highlightedOrganisationUnit: {},
@@ -611,8 +612,8 @@ function global(
         ...state,
         highlightedOrganisationUnit: action.organisationUnit,
       };
-    case FETCH_ORG_UNIT_ERROR:
-      return { ...state, loadingOrganisationUnit: null };
+    case CHANGE_ORG_UNIT_ERROR:
+      return { ...state, isLoadingOrganisationUnit: false };
     case FETCH_DASHBOARD_CONFIG_SUCCESS: {
       const { dashboardConfig } = action;
       const viewConfigs = extractViewsFromAllDashboards(dashboardConfig);
@@ -902,4 +903,5 @@ export default combineReducers({
   drillDown,
   disaster,
   project,
+  orgUnits,
 });

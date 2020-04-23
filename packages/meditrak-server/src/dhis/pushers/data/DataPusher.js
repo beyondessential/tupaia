@@ -2,7 +2,6 @@
  * Tupaia MediTrak
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
-import { getDhisApiInstance } from '../../api';
 import { Pusher } from '../Pusher';
 
 export class DataPusher extends Pusher {
@@ -11,9 +10,4 @@ export class DataPusher extends Pusher {
     (syncLogRecord.imported || syncLogRecord.updated) &&
     !syncLogRecord.deleted &&
     syncLogRecord.data;
-
-  getDhisApiInstance(syncLogRecord) {
-    const originalData = this.extractDataFromSyncLog(syncLogRecord);
-    return getDhisApiInstance(originalData.serverName);
-  }
 }

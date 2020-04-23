@@ -1,4 +1,5 @@
 import keyBy from 'lodash.keyby';
+import { getSortByKey } from '@tupaia/utils';
 import {
   aggregateOperationalFacilityValues,
   getFacilityStatuses,
@@ -6,26 +7,41 @@ import {
   limitRange,
 } from '/apiV1/utils';
 import { ENTITY_TYPES } from '/models/Entity';
-import { getSortByKey } from '/utils';
 
 // Medicines available by Clinic
 // Medicines available by Country
-export const percentInGroupByFacility = async ({ dataBuilderConfig, query, entity }, dhisApi) => {
-  const { countries, range, ...restOfConfig } = dataBuilderConfig;
-  const { results, period } = await dhisApi.getAnalytics(
-    { outputIdScheme: countries ? 'uid' : 'code', ...restOfConfig },
+export const percentInGroupByFacility = async (
+  { dataBuilderConfig, query, entity },
+  aggregator,
+) => {
+  const { dataElementCodes, dataServices, countries, range } = dataBuilderConfig;
+  const { results, period } = await aggregator.fetchAnalytics(
+    dataElementCodes,
+    { dataServices },
     query,
   );
 
   const returnJson = {};
   returnJson.data = countries
-    ? await buildDataForPacificCountries(results, query.organisationUnitCode, period, range)
-    : await buildData(results, query.organisationUnitCode, period, entity, range);
+    ? await buildDataForPacificCountries(
+        aggregator,
+        results,
+        query.organisationUnitCode,
+        period.requested,
+        range,
+      )
+    : await buildData(aggregator, results, query.organisationUnitCode, period.requested, entity, range);
 
   return returnJson;
 };
 
-const buildDataForPacificCountries = async (results, organisationUnitCode, period, range) => {
+const buildDataForPacificCountries = async (
+  aggregator,
+  results,
+  organisationUnitCode,
+  period,
+  range,
+) => {
   // Map operational facilities by country with summed values and total number
   const summedValuesByCountry = {};
   const addValueToSumByCountry = ({ countryCode, value }) => {
@@ -41,7 +57,11 @@ const buildDataForPacificCountries = async (results, organisationUnitCode, perio
   };
 
   // Aggregate results by operational facilities and country
-  const operationalFacilities = await getPacificFacilityStatuses(organisationUnitCode, period);
+  const operationalFacilities = await getPacificFacilityStatuses(
+    aggregator,
+    organisationUnitCode,
+    period.requested,
+  );
   aggregateOperationalFacilityValues(operationalFacilities, results, addValueToSumByCountry);
 
   // Array with alphabet used in case names need to be anonymised on the chart
@@ -63,7 +83,7 @@ const buildDataForPacificCountries = async (results, organisationUnitCode, perio
 };
 
 // parse analytic response and convert to config api response
-const buildData = async (results, organisationUnitCode, period, entity, range) => {
+const buildData = async (aggregator, results, organisationUnitCode, period, entity, range) => {
   const averagedValues = [];
   const facilities = await entity.getDescendantsOfType(ENTITY_TYPES.FACILITY);
   const facilitiesByCode = keyBy(facilities, 'code');
@@ -75,12 +95,7 @@ const buildData = async (results, organisationUnitCode, period, entity, range) =
   };
 
   // Will count only operational facilities
-  const operationalFacilities = await getFacilityStatuses(
-    organisationUnitCode,
-    period,
-    false,
-    true,
-  );
+  const operationalFacilities = await getFacilityStatuses(aggregator, organisationUnitCode, period.requested);
   aggregateOperationalFacilityValues(operationalFacilities, results, addToAveragedValues);
 
   // Return the result array sorted by name

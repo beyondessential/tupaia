@@ -5,39 +5,41 @@
 
 import { get, set } from 'lodash';
 
-import { DatabaseType } from '../DatabaseType';
-import { TYPES } from '../types';
-import { DatabaseModel } from '../DatabaseModel';
-
+import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
 /**
  * Maximum number of parents an entity can have.
  * Used to avoid infinite loops while traversing the entity hierarchy
  */
 export const MAX_ENTITY_HIERARCHY_LEVELS = 100;
 
-const FACILITY = 'facility';
-const REGION = 'region';
-const COUNTRY = 'country';
-const WORLD = 'world';
 const CASE = 'case';
+const CASE_CONTACT = 'case_contact';
+const COUNTRY = 'country';
 const DISASTER = 'disaster';
+const DISTRICT = 'district';
+const FACILITY = 'facility';
+const SUB_DISTRICT = 'sub_district';
 const VILLAGE = 'village';
+const WORLD = 'world';
 
 export const ENTITY_TYPES = {
-  FACILITY,
-  REGION,
-  COUNTRY,
-  WORLD,
   CASE,
+  CASE_CONTACT,
+  COUNTRY,
   DISASTER,
+  DISTRICT,
+  FACILITY,
+  SUB_DISTRICT,
   VILLAGE,
+  WORLD,
 };
 
 export const ORG_UNIT_ENTITY_TYPES = {
-  FACILITY,
-  REGION,
-  COUNTRY,
   WORLD,
+  COUNTRY,
+  DISTRICT,
+  SUB_DISTRICT,
+  FACILITY,
   VILLAGE,
 };
 
@@ -56,7 +58,10 @@ export const getDhisIdFromEntityData = data => get(data, 'metadata.dhis.id');
 class EntityType extends DatabaseType {
   static databaseType = TYPES.ENTITY;
 
-  static meditrakIgnorableFields = ['region', 'bounds'];
+  static meditrakConfig = {
+    ignorableFields: ['region', 'bounds'],
+    minAppVersion: '1.7.102',
+  };
 
   // Exposed for access policy creation.
   get organisationUnitCode() {
@@ -127,8 +132,14 @@ export class EntityModel extends DatabaseModel {
     return EntityType;
   }
 
+  orgUnitEntityTypes = ORG_UNIT_ENTITY_TYPES;
+
   async updatePointCoordinates(code, { longitude, latitude }) {
     const point = JSON.stringify({ coordinates: [longitude, latitude], type: 'Point' });
+    await this.updatePointCoordinatesFormatted(code, point);
+  }
+
+  async updatePointCoordinatesFormatted(code, point) {
     return this.database.executeSql(
       `
         UPDATE "entity"
@@ -141,18 +152,36 @@ export class EntityModel extends DatabaseModel {
     );
   }
 
-  get meditrakIgnorableFields() {
-    return this.DatabaseTypeClass.meditrakIgnorableFields;
-  }
-
-  async updateRegionCoordinates(code, geojson) {
+  async updateBoundsCoordinates(code, bounds) {
     return this.database.executeSql(
       `
         UPDATE "entity"
-        SET "region" = ST_GeomFromGeoJSON(?), "bounds" = ST_Envelope(ST_GeomFromGeoJSON(?)::geometry)
+        SET "bounds" = ?
         WHERE "code" = ?;
       `,
-      [geojson, geojson, code],
+      [bounds, code],
+    );
+  }
+
+  async updateRegionCoordinates(code, geojson) {
+    const shouldSetBounds =
+      (
+        await this.find({
+          code,
+          bounds: null,
+        })
+      ).length > 0;
+    const boundsString = shouldSetBounds
+      ? ', "bounds" =  ST_Envelope(ST_GeomFromGeoJSON(?)::geometry)'
+      : '';
+
+    return this.database.executeSql(
+      `
+        UPDATE "entity"
+        SET "region" = ST_GeomFromGeoJSON(?) ${boundsString}
+        WHERE "code" = ?;
+      `,
+      shouldSetBounds ? [geojson, geojson, code] : [geojson, code],
     );
   }
 }

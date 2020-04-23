@@ -6,9 +6,7 @@ import winston from 'winston';
 
 /* eslint-disable camelcase */
 
-import { DatabaseType } from '../DatabaseType';
-import { DatabaseModel } from '../DatabaseModel';
-import { TYPES } from '..';
+import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
 
 import { getHook } from '../../hooks';
 import { CallbackQueue } from '../../utilities/CallbackQueue';
@@ -80,12 +78,9 @@ class AnswerType extends DatabaseType {
   }
 
   async runHook() {
-    const question = await this.question();
-    if (!question) {
-      throw new Error(`No question with id: ${this.question_id}`);
-    }
-
-    if (!question.hook) return; // no hook to run! we're done here
+    const hooksByQuestionId = await this.otherModels.question.getHooksByQuestionId();
+    const hookId = hooksByQuestionId[this.question_id];
+    if (!hookId) return; // no hook to run for this answer
 
     const surveyResponse = await this.surveyResponse();
     if (!surveyResponse) {
@@ -95,10 +90,10 @@ class AnswerType extends DatabaseType {
     // check if we already have more current data
     if (!(await this.isLatestAnswer())) return;
 
-    const hook = getHook(question.hook);
+    const hook = getHook(hookId);
 
     if (!hook) {
-      throw new Error(`No hook with id: ${question.hook}`);
+      throw new Error(`No hook with id: ${hookId}`);
     }
 
     await AnswerType.hookQueue.add(
@@ -106,10 +101,9 @@ class AnswerType extends DatabaseType {
         hook({
           answer: this,
           models: this.otherModels,
-          question,
           surveyResponse,
         }),
-      `${question.hook}:${this.id}`,
+      `${hookId}:${this.id}`,
     );
   }
 }
@@ -119,12 +113,14 @@ export class AnswerModel extends DatabaseModel {
     return AnswerType;
   }
 
-  static onChange = async (change, record, model) => {
-    if (change.type === 'delete') return;
+  types = ANSWER_TYPES;
 
-    const answerObject = new AnswerType(model, record);
+  static onChange = async ({ type: changeType, record }, model) => {
+    if (changeType === 'delete') return;
+
+    const answer = await model.generateInstance(record);
     try {
-      await answerObject.runHook();
+      await answer.runHook();
     } catch (e) {
       winston.error(e);
     }

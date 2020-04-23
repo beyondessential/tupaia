@@ -8,13 +8,15 @@
  */
 
 import { getDataElementsInGroup } from '/apiV1/utils';
-import { AGGREGATION_TYPES } from '/dhis';
 
-export const latestDataValuesInGroup = async ({ dataBuilderConfig, query }, dhisApi) => {
-  const { MOST_RECENT } = AGGREGATION_TYPES;
+export const latestDataValuesInGroup = async (
+  { dataBuilderConfig, entity },
+  aggregator,
+  dhisApi,
+) => {
   const { dataElementGroupCode, dataElementCodes = [] } = dataBuilderConfig;
   const dataElementsById = await getDataElementsInGroup(dhisApi, dataElementGroupCode);
-  const dataValues = await dhisApi.getDataValuesInSets(dataBuilderConfig, query, MOST_RECENT);
+  const dataValues = await dhisApi.getDataValuesInSets(dataBuilderConfig, entity);
 
   let filteredResults;
   if (dataElementCodes.length > 0) {

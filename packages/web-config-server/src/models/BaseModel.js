@@ -3,7 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 /* eslint-disable no-underscore-dangle */
-import { DatabaseError } from '/errors';
+import { DatabaseError } from '@tupaia/utils';
 
 export class BaseModel {
   /**
@@ -63,8 +63,11 @@ export class BaseModel {
   */
   static joins = [];
 
+  static functionsPendingDatabaseInjection = [];
+
   static set database(database) {
     this._database = database;
+    this.functionsPendingDatabaseInjection.forEach(fn => fn(database));
   }
 
   static get database() {
@@ -79,6 +82,26 @@ export class BaseModel {
 
   set database(value) {
     throw new Error('should not attempt to re-set model database instance variable');
+  }
+
+  /**
+   * Run a function immediately if the database is available, or as soon as a database instance is
+   * injected
+   * @param {function} functionToRun  Takes 'database' as its only argument
+   */
+  static runWithDatabase(functionToRun) {
+    if (this.database) {
+      functionToRun(this.database);
+    } else {
+      // line this up to be run when the database has been injected
+      this.functionsPendingDatabaseInjection.push(functionToRun);
+    }
+  }
+
+  static addChangeHandler(handler) {
+    this.runWithDatabase(database =>
+      database.addChangeHandlerForCollection(this.databaseType, handler),
+    );
   }
 
   static getQueryOptions(customQueryOptions = {}) {
@@ -135,8 +158,7 @@ export class BaseModel {
       this.getQueryOptions(queryOptions),
     );
 
-    const models = await Promise.all(dbResults.map(result => this.load(result, loadOptions)));
-
+    const models = dbResults.map(result => this.load(result, loadOptions));
     return models;
   }
 
@@ -144,7 +166,7 @@ export class BaseModel {
     return this.find({}, loadOptions, this.getQueryOptions(queryOptions));
   }
 
-  static async load(fields, loadOptions) {
+  static load(fields) {
     const model = new this();
 
     this.fields.forEach(field => {
@@ -199,8 +221,7 @@ export class BaseModel {
     const databaseFields = this.processFieldsForDatabase(fields);
     const modelFields = await this.database.create(this.databaseType, databaseFields);
 
-    const model = await this.load(modelFields, loadOptions);
-
+    const model = this.load(modelFields, loadOptions);
     return model;
   }
 
@@ -220,8 +241,7 @@ export class BaseModel {
       databaseFields,
     );
 
-    const model = await this.load(modelFields, loadOptions);
-
+    const model = this.load(modelFields, loadOptions);
     return model;
   }
 }

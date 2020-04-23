@@ -4,11 +4,11 @@
  */
 
 import multer from 'multer';
+import { InternalServerError, UnsupportedApiVersionError } from '@tupaia/utils';
 
 import { logApiRequest } from './logApiRequest';
 
 import { authenticationMiddleware } from '../auth';
-import { InternalServerError, UnsupportedApiVersionError } from '../errors';
 import routes from '../routes';
 
 const {
@@ -39,6 +39,7 @@ const {
   requestResendEmail,
   getCountryAccessList,
   surveyResponse,
+  importDisaster,
   verifyEmail,
 } = routes;
 
@@ -48,7 +49,14 @@ export function addRoutesToApp(app) {
   /**
    * Create upload handler
    **/
-  const upload = multer({ dest: './uploads/' });
+  const upload = multer({
+    storage: multer.diskStorage({
+      destination: './uploads/',
+      filename: (req, file, callback) => {
+        callback(null, `${Date.now()}_${file.originalname}`);
+      },
+    }),
+  });
 
   app.use(extractApiVersion);
 
@@ -105,6 +113,7 @@ export function addRoutesToApp(app) {
     upload.single('surveyResponses'),
     updateSurveyResponses,
   );
+  app.post('(/v[0-9]+)/import/disaster', upload.single('disaster'), importDisaster);
   app.post('(/v[0-9]+)/import/users', upload.single('users'), importUsers);
   app.post('(/v[0-9]+)/import/optionSets', upload.single('optionSets'), importOptionSets);
   app.post('(/v[0-9]+)/scratchpad', scratchpad);

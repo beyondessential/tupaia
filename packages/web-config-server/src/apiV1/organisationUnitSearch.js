@@ -3,13 +3,16 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { Entity, ORG_UNIT_ENTITY_TYPES } from '/models/Entity';
-import { DhisTranslationHandler } from './utils';
-import { getEntityLocationForFrontend } from './utils/getEntityLocationForFrontend';
+import { Entity } from '/models/Entity';
+import { RouteHandler } from './RouteHandler';
+import { NoPermissionRequiredChecker } from './permissions';
 
 const DEFAULT_LIMIT = 20;
 
-export default class extends DhisTranslationHandler {
+export default class extends RouteHandler {
+  // allow passing straight through, results are limited by permissions
+  static PermissionsChecker = NoPermissionRequiredChecker;
+
   getNextResults = async (filter, limit, pageNumber = 0) => {
     const sort = ['name'];
     return Entity.find(filter, {}, { sort, limit, offset: pageNumber * limit });
@@ -21,7 +24,7 @@ export default class extends DhisTranslationHandler {
     const comparisonValue = shouldMatchStart ? `${searchString}%` : `%${searchString}%`;
     const filter = {
       name: { comparator: 'ilike', comparisonValue },
-      type: Object.values(ORG_UNIT_ENTITY_TYPES),
+      type: Object.values(Entity.orgUnitEntityTypes),
       code: { comparator: '<>', comparisonValue: 'World' },
     };
     if (alreadyFetchedIds) {
@@ -77,19 +80,19 @@ export default class extends DhisTranslationHandler {
     return Promise.all(
       entities.map(async entity => {
         const displayName = await entity.buildDisplayName();
-        const location = getEntityLocationForFrontend(entity);
         return {
           organisationUnitCode: entity.code,
           displayName,
-          location,
         };
       }),
     );
   };
 
-  buildData = async req => {
-    this.req = req;
-    const { limit = DEFAULT_LIMIT, criteria: searchString } = req.query;
+  buildResponse = async () => {
+    const { limit = DEFAULT_LIMIT, criteria: searchString } = this.req.query;
+    if (!searchString || searchString === '' || isNaN(parseInt(limit, 10))) {
+      throw new Error('Query parameters must match "criteria" (text) and "limit" (number)');
+    }
     const results = await this.getResults(searchString, limit);
     return this.formatForResponse(results);
   };

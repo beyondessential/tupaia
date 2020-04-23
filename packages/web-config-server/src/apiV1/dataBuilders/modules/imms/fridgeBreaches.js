@@ -5,7 +5,7 @@
 
 import moment from 'moment';
 
-import { FRIDGE_BREACH_AGR_ELEMENT_CODES } from '/preaggregation/aggregators/immsFridgeBreaches';
+import { FRIDGE_BREACH_AGR_ELEMENT_CODES } from '/preaggregation/preaggregators/immsFridgeBreaches';
 import { tableOfEvents } from '/apiV1/dataBuilders/generic/table/tableOfEvents';
 
 const { BREACH_TEMP, BREACH_SOH_VALUE, BREACH_MINS } = FRIDGE_BREACH_AGR_ELEMENT_CODES;
@@ -15,8 +15,8 @@ const { BREACH_TEMP, BREACH_SOH_VALUE, BREACH_MINS } = FRIDGE_BREACH_AGR_ELEMENT
  * @param {DhisApi} dhisApi
  * @returns {Promise<{ rows: Array<Object<string, string>, columns: Array<{ key, title }> }}
  */
-export const fridgeBreaches = async (queryConfig, dhisApi) => {
-  const eventTable = await tableOfEvents(queryConfig, dhisApi);
+export const fridgeBreaches = async (queryConfig, aggregator, dhisApi) => {
+  const eventTable = await tableOfEvents(queryConfig, aggregator, dhisApi);
   const { entity } = queryConfig;
 
   const columns = [
@@ -35,7 +35,9 @@ export const fridgeBreaches = async (queryConfig, dhisApi) => {
       [BREACH_SOH_VALUE]: sohValue,
     } = row;
 
-    categories[organisationUnitName] = { title: organisationUnitName, key: organisationUnitName };
+    categories[organisationUnitName] = {
+      category: organisationUnitName,
+    };
     const resultRow = {
       dataElement: eventDate,
       categoryId: organisationUnitName,
@@ -48,7 +50,7 @@ export const fridgeBreaches = async (queryConfig, dhisApi) => {
   });
 
   if (entity.isFacility()) return { rows, columns };
-  return { rows, columns, categories: Object.values(categories) };
+  return { rows: [...rows, ...Object.values(categories)], columns };
 };
 
 /**

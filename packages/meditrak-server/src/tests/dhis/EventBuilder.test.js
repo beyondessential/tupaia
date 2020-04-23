@@ -5,11 +5,10 @@
 
 import { expect } from 'chai';
 import sinon from 'sinon';
+import { DhisApi, DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
 
 import { ENTITY_TYPES } from '../../database/models/Entity';
-import { DhisApi } from '../../dhis/api/DhisApi';
 import * as Enrollments from '../../dhis/api/enrollments';
-import { DHIS2_RESOURCE_TYPES } from '../../dhis/api/types';
 import { EventBuilder } from '../../dhis/pushers/data/event/EventBuilder';
 import {
   generateTestId,
@@ -116,7 +115,6 @@ const getDhisApiStub = surveyData => {
     .returns([{ program: surveyData.program.id }]);
 
   return sinon.createStubInstance(DhisApi, {
-    getIdFromCode: QUESTION_DATA_ELEMENT_ID,
     getRecord: getRecordStub,
     getRecords: getRecordsStub,
     post: params => params,
@@ -184,7 +182,7 @@ describe('EventBuilder', () => {
         program: SURVEYS.default.survey.code,
         orgUnit: ENTITIES.orgUnit.code,
         eventDate: EVENT_DATE,
-        dataValues: [{ dataElement: QUESTION_DATA_ELEMENT_ID, value: SURVEYS.default.answer }],
+        dataValues: [{ code: SURVEYS.default.question.code, value: SURVEYS.default.answer }],
       });
     });
 
@@ -199,7 +197,7 @@ describe('EventBuilder', () => {
         program: SURVEYS.default.survey.code,
         orgUnit: ENTITIES.orgUnit.code,
         eventDate: EVENT_DATE,
-        dataValues: [{ dataElement: QUESTION_DATA_ELEMENT_ID, value: SURVEYS.default.answer }],
+        dataValues: [{ code: SURVEYS.default.question.code, value: SURVEYS.default.answer }],
         trackedEntityInstance: TRACKED_ENTITY_ID,
         programStage: SURVEYS.default.program.programStages[0].id,
       });

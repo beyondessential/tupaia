@@ -8,6 +8,7 @@
 import { call, put, delay, takeEvery, takeLatest, select } from 'redux-saga/effects';
 import queryString from 'query-string';
 import request from './utils/request';
+import { selectOrgUnit, cachedSelectOrgUnitChildren } from './reducers/orgUnitReducers';
 import {
   ATTEMPT_CHANGE_PASSWORD,
   ATTEMPT_LOGIN,
@@ -48,7 +49,8 @@ import {
   displayUnverified,
   fetchUserSignupError,
   fetchOrgUnitSuccess,
-  fetchOrgUnitError,
+  changeOrgUnitSuccess,
+  changeOrgUnitError,
   fetchRegionError,
   fetchDashboardSuccess,
   fetchDashboardError,
@@ -75,8 +77,7 @@ import {
   updateEnlargedDialog,
   updateEnlargedDialogError,
   FETCH_MEASURES_SUCCESS,
-  FETCH_ORG_UNIT_SUCCESS,
-  addMapRegions,
+  CHANGE_ORG_UNIT_SUCCESS,
   openEmailVerifiedPage,
   fetchEmailVerifyError,
   openResendEmailSuccess,
@@ -85,10 +86,11 @@ import {
   FETCH_RESEND_VERIFICATION_EMAIL,
   findUserLoginFailed,
   REQUEST_PROJECT_ACCESS,
+  FETCH_ORG_UNIT,
 } from './actions';
 import { isMobile, processMeasureInfo, formatDateForApi } from './utils';
 import { createUrlString } from './utils/historyNavigation';
-import { GRANULARITIES_WITH_ONE_DATE, roundStartEndDates } from './utils/periodGranularities';
+import { getDefaultDates } from './utils/periodGranularities';
 import { INITIAL_MEASURE_ID } from './defaults';
 
 /**
@@ -411,39 +413,87 @@ function* watchFetchCountryAccessDataAndFetchItTEST() {
 /**
  * fetchOrgUnitData
  *
- * Fetch an org unit and call action on success/fail.
+ * Fetch an org unit.
  *
  */
+function requestOrgUnitData(organisationUnitCode) {
+  const shouldIncludeCountryData = organisationUnitCode !== 'World'; // We should pull in all country data if we are within a country (ie. not World)
+  const requestResourceUrl = `organisationUnit?organisationUnitCode=${organisationUnitCode}&includeCountryHierarchy=${shouldIncludeCountryData}`;
+  return call(request, requestResourceUrl);
+}
+
 function* fetchOrgUnitData(action) {
-  const { organisationUnitCode } = action.organisationUnit;
-  const requestResourceUrl = `organisationUnit?organisationUnitCode=${organisationUnitCode}`;
+  const state = yield select();
+  const orgUnit = selectOrgUnit(state, action.organisationUnit.organisationUnitCode);
+  if (orgUnit && orgUnit.isComplete) {
+    return; // If we already have the complete org unit in reduxStore, just exit early
+  }
 
   try {
-    const orgUnitData = yield call(request, requestResourceUrl, fetchOrgUnitError);
-    yield put(fetchOrgUnitSuccess(orgUnitData, action.shouldChangeMapBounds));
+    const orgUnitData = yield requestOrgUnitData(action.organisationUnit.organisationUnitCode);
+    yield put(fetchOrgUnitSuccess(orgUnitData));
   } catch (error) {
     yield put(error.errorFunction(error));
   }
+}
+
+function* fetchOrgUnitDataAndChangeOrgUnit(action) {
+  const state = yield select();
+  const { organisationUnitCode, shouldChangeMapBounds } = action;
+  const orgUnit = selectOrgUnit(state, organisationUnitCode);
+  if (orgUnit && orgUnit.isComplete) {
+    const orgUnitAndChildren = {
+      ...orgUnit,
+      parent: selectOrgUnit(state, orgUnit.parent) || {},
+      organisationUnitChildren: cachedSelectOrgUnitChildren(state, organisationUnitCode),
+    };
+    yield put(changeOrgUnitSuccess(orgUnitAndChildren, shouldChangeMapBounds));
+    return; // If we already have the org unit in reduxStore, just exit early
+  }
+
+  try {
+    const orgUnitData = yield requestOrgUnitData(organisationUnitCode);
+    yield put(fetchOrgUnitSuccess(orgUnitData));
+    yield put(
+      changeOrgUnitSuccess(
+        normaliseCountryHierarchyOrgUnitData(orgUnitData),
+        shouldChangeMapBounds,
+      ),
+    );
+  } catch (error) {
+    yield put(changeOrgUnitError(error));
+  }
+}
+
+const normaliseCountryHierarchyOrgUnitData = orgUnitData => {
+  const { countryHierarchy, ...restOfOrgUnit } = orgUnitData;
+  if (!countryHierarchy) {
+    return orgUnitData;
+  }
+
+  const hierarchyOrgUnitItem = countryHierarchy.find(
+    hierarchyItem => hierarchyItem.organisationUnitCode === orgUnitData.organisationUnitCode,
+  );
+
+  const parent = countryHierarchy.find(
+    hierarchyItem => hierarchyItem.organisationUnitCode === hierarchyOrgUnitItem.parent,
+  );
+
+  return {
+    ...restOfOrgUnit,
+    parent,
+    organisationUnitChildren: countryHierarchy.filter(
+      descendant => descendant.parent === orgUnitData.organisationUnitCode,
+    ),
+  };
+};
+
+function* watchFetchOrgUnitAndFetchIt() {
+  yield takeEvery(FETCH_ORG_UNIT, fetchOrgUnitData);
 }
 
 function* watchOrgUnitChangeAndFetchIt() {
-  yield takeLatest(CHANGE_ORG_UNIT, fetchOrgUnitData);
-}
-
-function* fetchOrgUnitRegionData(action) {
-  const { organisationUnitCode } = action.organisationUnit;
-  const requestResourceUrl = `regions/${organisationUnitCode}`;
-
-  try {
-    const response = yield call(request, requestResourceUrl, fetchRegionError);
-    yield put(addMapRegions(response.regions));
-  } catch (error) {
-    yield put(error.errorFunction(error));
-  }
-}
-
-function* watchOrgUnitChangeAndFetchRegions() {
-  yield takeLatest(CHANGE_ORG_UNIT, fetchOrgUnitRegionData);
+  yield takeLatest(CHANGE_ORG_UNIT, fetchOrgUnitDataAndChangeOrgUnit);
 }
 
 /**
@@ -453,7 +503,7 @@ function* watchOrgUnitChangeAndFetchRegions() {
  *
  */
 function* fetchDashboard(action) {
-  const { organisationUnitCode } = action.organisationUnit;
+  const { organisationUnitCode } = action;
   const requestResourceUrl = `dashboard?organisationUnitCode=${organisationUnitCode}`;
 
   try {
@@ -470,19 +520,11 @@ function* watchOrgUnitChangeAndFetchDashboard() {
 
 function* fetchViewData(parameters, errorHandler) {
   const { infoViewKey } = parameters;
-
-  const getDefaultDates = state => {
-    const { periodGranularity } = state.global.viewConfigs[infoViewKey];
-    if (GRANULARITIES_WITH_ONE_DATE.includes(periodGranularity)) {
-      return roundStartEndDates(periodGranularity);
-    }
-    return {};
-  };
-
   // If the view should be constrained to a date range and isn't, constrain it
   const { startDate, endDate } =
-    parameters.startDate || parameters.endDate ? parameters : getDefaultDates(yield select());
-
+    parameters.startDate || parameters.endDate
+      ? parameters
+      : getDefaultDates(yield select(), infoViewKey);
   // Build the request url
   const {
     organisationUnitCode,
@@ -623,11 +665,6 @@ function* fetchMeasureInfo(measureId, organisationUnitCode, oldOrganisationUnitC
     // Don't try and fetch null measures
     yield put(cancelFetchMeasureData());
 
-    if (!organisationUnitCode) {
-      // if we've selected a null unit (somehow) clear out the measure hierarchy as well
-      yield put(clearMeasureHierarchy());
-    }
-
     return;
   }
 
@@ -647,7 +684,7 @@ function* fetchMeasureInfo(measureId, organisationUnitCode, oldOrganisationUnitC
 
     yield put(fetchMeasureInfoSuccess(measureInfo, countryCode));
   } catch (error) {
-    console.error(error);
+    console.log(error);
     yield put(fetchMeasureInfoError(error));
   }
 }
@@ -701,8 +738,8 @@ function* fetchCurrentMeasureInfo() {
 }
 
 // Ensures current measure remains selected on new org unit fetch
-function* watchFetchOrgUnitSuccess() {
-  yield takeLatest(FETCH_ORG_UNIT_SUCCESS, fetchCurrentMeasureInfo);
+function* watchChangeOrgUnitSuccess() {
+  yield takeLatest(CHANGE_ORG_UNIT_SUCCESS, fetchCurrentMeasureInfo);
 }
 
 // Ensures current measure remains selected in the case that the new org unit
@@ -712,13 +749,13 @@ function* watchFetchMeasureSuccess() {
 }
 
 function* fetchMeasureInfoForNewOrgUnit(action) {
-  const { organisationUnit } = action;
+  const { organisationUnitCode } = action;
   const { measureId, oldOrgUnitCode } = yield select(state => ({
     measureId: state.map.measureInfo.measureId,
     oldOrgUnitCode: state.measureBar.currentMeasureOrganisationUnitCode,
   }));
   if (measureId) {
-    yield fetchMeasureInfo(measureId, organisationUnit.organisationUnitCode, oldOrgUnitCode);
+    yield fetchMeasureInfo(measureId, organisationUnitCode, oldOrgUnitCode);
   }
 }
 
@@ -733,8 +770,8 @@ function* watchOrgUnitChangeAndFetchMeasureInfo() {
  *
  */
 function* fetchMeasures(action) {
-  if (action.organisationUnit.organisationUnitCode === 'World') yield put(clearMeasure());
-  const { organisationUnitCode } = action.organisationUnit;
+  const { organisationUnitCode } = action;
+  if (organisationUnitCode === 'World') yield put(clearMeasure());
   const requestResourceUrl = `measures?organisationUnitCode=${organisationUnitCode}`;
   try {
     const measures = yield call(request, requestResourceUrl);
@@ -791,6 +828,7 @@ function* exportChart(action) {
     organisationUnitCode,
     organisationUnitName,
     selectedFormat,
+    exportFileName,
     chartType,
     startDate,
     endDate,
@@ -825,6 +863,7 @@ function* exportChart(action) {
         organisationUnitCode,
         organisationUnitName,
         selectedFormat,
+        exportFileName,
         chartType,
         extraConfig,
       }),
@@ -879,11 +918,12 @@ function* updatePermissionsToMatchUser() {
   // match current user permissions
   const state = yield select();
   const { currentOrganisationUnit } = state.global;
+  const { organisationUnitCode } = currentOrganisationUnit;
 
   // By default the current organisation does not have an org unit code as it
   // is an empty object, so must not be loaded.
-  if (currentOrganisationUnit.organisationUnitCode) {
-    yield put(changeOrgUnit(state.global.currentOrganisationUnit, false));
+  if (organisationUnitCode) {
+    yield put(changeOrgUnit(organisationUnitCode, false));
   }
 }
 
@@ -931,8 +971,8 @@ export default [
   watchAttemptUserLogout,
   watchAttemptUserSignupAndFetchIt,
   watchFetchCountryAccessDataAndFetchIt,
+  watchFetchOrgUnitAndFetchIt,
   watchOrgUnitChangeAndFetchIt,
-  watchOrgUnitChangeAndFetchRegions,
   watchOrgUnitChangeAndFetchDashboard,
   watchOrgUnitChangeAndFetchMeasureInfo,
   watchViewFetchRequests,
@@ -949,7 +989,7 @@ export default [
   watchResendEmailVerificationAndFetchIt,
   watchSetVerifyEmailToken,
   watchFetchMeasureSuccess,
-  watchFetchOrgUnitSuccess,
+  watchChangeOrgUnitSuccess,
   refreshBrowserWhenFinishingUserSession,
   watchFetchCountryAccessDataAndFetchItTEST,
 ];

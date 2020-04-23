@@ -6,8 +6,7 @@
 import xlsx from 'xlsx';
 import moment from 'moment';
 import momentTimezone from 'moment-timezone';
-import { respond } from '../respond';
-import { DatabaseError, ImportValidationError, UploadError } from '../errors';
+import { respond, DatabaseError, ImportValidationError, UploadError } from '@tupaia/utils';
 import { ANSWER_TYPES } from '../database/models/Answer';
 import {
   ObjectValidator,
@@ -212,10 +211,9 @@ async function updateSubmissionTimeIfRequired(models, surveyResponseId, newSubmi
   const newSubmissionTimeInUtc = newSubmissionTimeWithTimezone.utc().format();
 
   if (!moment(currentSubmissionTime).isSame(newSubmissionTimeInUtc, 'minute')) {
-    await models.surveyResponse.update(
-      { id: surveyResponseId },
-      { submission_time: newSubmissionTimeInUtc },
-    );
+    await models.surveyResponse.updateById(surveyResponseId, {
+      submission_time: newSubmissionTimeInUtc,
+    });
   }
 }
 

@@ -3,9 +3,9 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
+import { groupEventsByPeriod } from '@tupaia/dhis-api';
 import { DataPerPeriodBuilder } from 'apiV1/dataBuilders/DataPerPeriodBuilder';
 import { PercentagesOfEventCountsBuilder } from '/apiV1/dataBuilders/generic/percentage/percentagesOfEventCounts';
-import { groupEventsByPeriod } from '/dhis';
 
 /**
  * Configuration schema
@@ -35,7 +35,7 @@ class PercentagesOfEventCountsPerPeriodBuilder extends DataPerPeriodBuilder {
   groupResultsByPeriod = groupEventsByPeriod;
 
   fetchResults() {
-    return this.getEvents({ dataElementIdScheme: 'code', dataValueFormat: 'object' });
+    return this.fetchEvents({ dataValueFormat: 'object' });
   }
 
   formatData(data) {
@@ -45,9 +45,11 @@ class PercentagesOfEventCountsPerPeriodBuilder extends DataPerPeriodBuilder {
 
 export const percentagesOfEventCountsPerPeriod = async (
   { dataBuilderConfig, query, entity },
+  aggregator,
   dhisApi,
 ) => {
   const builder = new PercentagesOfEventCountsPerPeriodBuilder(
+    aggregator,
     dhisApi,
     dataBuilderConfig,
     query,

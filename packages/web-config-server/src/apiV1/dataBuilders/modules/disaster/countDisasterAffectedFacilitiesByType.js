@@ -1,9 +1,6 @@
 import keyBy from 'lodash.keyby';
-import { Entity } from '/models';
-import { AGGREGATION_TYPES } from '/dhis';
-import { getOptionSetOptions, convertDateRangeToPeriodString } from '/apiV1/utils';
-
-const { MOST_RECENT } = AGGREGATION_TYPES;
+import { convertDateRangeToPeriodString } from '@tupaia/dhis-api';
+import { Entity, Facility } from '/models';
 
 const AFFECTED_STATUS_DATA_ELEMENT_CODE = 'DP_NEW008';
 
@@ -17,26 +14,27 @@ const FACILITY_STATUS_UNKNOWN = 'Unknown';
 // Number of Operational Facilities by Facility Type
 export const countDisasterAffectedFacilitiesByType = async (
   { dataBuilderConfig, query },
+  aggregator,
   dhisApi,
 ) => {
   const { organisationUnitCode, disasterStartDate, disasterEndDate } = query;
-  const { optionSetCode } = dataBuilderConfig;
+  const { dataServices, optionSetCode } = dataBuilderConfig;
 
   if (!disasterStartDate) return { data: {} }; // show no data message in view.
-  const options = await getOptionSetOptions(dhisApi, { code: optionSetCode });
+  const options = await dhisApi.getOptionSetOptions({ code: optionSetCode });
   const period = convertDateRangeToPeriodString(disasterStartDate, disasterEndDate || Date.now());
-  const facilities = await Entity.getFacilityDescendantsWithCoordinates(organisationUnitCode);
-  const { results } = await dhisApi.getAnalytics(
-    {
-      dataElementCodes: [AFFECTED_STATUS_DATA_ELEMENT_CODE],
-      outputIdScheme: 'code',
-      ...query,
-      period,
-    },
-    MOST_RECENT,
-  );
+  const facilities = await Entity.getFacilitiesOfOrgUnit(organisationUnitCode);
+  const facilityMetadatas = await Facility.find({
+    code: facilities.map(facility => facility.code),
+  });
+  const { results } = await aggregator.fetchAnalytics([AFFECTED_STATUS_DATA_ELEMENT_CODE], {
+    ...query,
+    dataServices,
+    period,
+  });
 
   const facilitiesByCode = keyBy(facilities, 'code');
+  const facilityMetadatasByCode = keyBy(facilityMetadatas, 'code');
   const facilityStatuses = new Map(
     results.map(result => {
       const { organisationUnit: facilityCode } = result;
@@ -51,18 +49,19 @@ export const countDisasterAffectedFacilitiesByType = async (
 
   const statusCountsByFacilityType = {};
   facilities.forEach(facility => {
-    const { type_name: typeName, name } = facility;
+    const { name, code } = facility;
+    const { type_name: facilityTypeName } = facilityMetadatasByCode[code];
     const facilityAffectedStatus = facilityStatuses.get(name) || FACILITY_STATUS_UNKNOWN;
 
-    if (!statusCountsByFacilityType[typeName]) {
-      statusCountsByFacilityType[typeName] = {
-        name: typeName,
+    if (!statusCountsByFacilityType[facilityTypeName]) {
+      statusCountsByFacilityType[facilityTypeName] = {
+        name: facilityTypeName,
         [FACILITY_UNAFFECTED]: 0,
         [FACILITY_STATUS_UNKNOWN]: 0,
         [FACILITY_AFFECTED]: 0,
       };
     }
-    statusCountsByFacilityType[typeName][facilityAffectedStatus]++;
+    statusCountsByFacilityType[facilityTypeName][facilityAffectedStatus]++;
   });
 
   return { data: Array.from(Object.values(statusCountsByFacilityType)) };

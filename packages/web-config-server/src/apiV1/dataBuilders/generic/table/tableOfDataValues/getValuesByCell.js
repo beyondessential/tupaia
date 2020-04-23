@@ -28,7 +28,7 @@ const groupByMetadata = (groupedResults, metadataField) => {
  * if metadata categories are used, the keys also include metadata information
  *
  * @param {Config} config
- * @param {AnalyticsResult[]} results
+ * @param {Object[]} results
  * @returns {Object<string, (number|string)>}
  */
 export const getValuesByCell = (config, results) => {
@@ -43,6 +43,8 @@ export const getValuesByCell = (config, results) => {
 
   return zipObject(
     Object.keys(groupedResults),
-    Object.values(groupedResults).map(([{ value }]) => value),
+    Object.values(groupedResults).map(([{ value, metadata }]) =>
+      metadata && metadata.options ? metadata.options[value] : value,
+    ),
   );
 };

@@ -120,17 +120,19 @@ export class CartesianChart extends PureComponent {
 
   getXAxisPadding = () => {
     const { isEnlarged, viewContent } = this.props;
-    const { chartConfig = {}, data } = viewContent;
-    const hasBars = Object.values(chartConfig).some(({ chartType }) => chartType === BAR);
+    const { chartType, chartConfig = {}, data } = viewContent;
+    const hasBars =
+      chartType === BAR ||
+      Object.values(chartConfig).some(({ chartType: composedType }) => composedType === BAR);
 
-    if (!this.isComposedChart() || !hasBars || data.length < 2) {
-      return { left: 0, right: 0 };
+    if (hasBars && data.length > 1 && getIsTimeSeries(data)) {
+      const paddingKey = isEnlarged ? 'enlarged' : 'preview';
+      const { dataLengthThreshold, base, offset, minimum } = X_AXIS_PADDING[paddingKey];
+      const padding = Math.max(minimum, (dataLengthThreshold - data.length) * base + offset);
+      return { left: padding, right: padding };
     }
 
-    const paddingKey = isEnlarged ? 'enlarged' : 'preview';
-    const { dataLengthThreshold, base, offset, minimum } = X_AXIS_PADDING[paddingKey];
-    const padding = Math.max(minimum, (dataLengthThreshold - data.length) * base + offset);
-    return { left: padding, right: padding };
+    return { left: 0, right: 0 };
   };
 
   getXAxisTickMethod = () => {
@@ -263,7 +265,7 @@ export class CartesianChart extends PureComponent {
         key={yAxisId}
         yAxisId={yAxisId}
         orientation={orientation}
-        domain={[0, 'auto']}
+        domain={valueType === PERCENTAGE ? [0, 'dataMax'] : [0, 'auto']}
         allowDataOverflow={valueType === PERCENTAGE}
         // The above 2 props stop floating point imprecision making Y axis go above 100% in stacked charts.
         label={data.yName}
@@ -276,7 +278,7 @@ export class CartesianChart extends PureComponent {
 
   renderTooltip = () => {
     const { viewContent } = this.props;
-    const { chartConfig, valueType, labelType } = viewContent;
+    const { chartType, chartConfig, valueType, labelType } = viewContent;
 
     return (
       <Tooltip
@@ -286,6 +288,7 @@ export class CartesianChart extends PureComponent {
             labelType={labelType}
             periodGranularity={viewContent.periodGranularity}
             presentationOptions={chartConfig}
+            chartType={chartType}
           />
         }
       />
@@ -403,7 +406,6 @@ export class CartesianChart extends PureComponent {
     const { isEnlarged, isExporting, viewContent } = this.props;
     const { chartConfig, valueType } = viewContent;
     const labelOffset = chartConfig ? -15 : -12;
-
     return (
       <Bar
         key={dataKey}

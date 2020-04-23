@@ -13,4 +13,4 @@
  * @returns {boolean}
  */
 export const areStringsEqual = (a, b, caseSensitive = true) =>
-  a.localeCompare(b, undefined, caseSensitive ? {} : { sensitivity: 'accent' }) === 0;
+  a.toString().localeCompare(b, undefined, caseSensitive ? {} : { sensitivity: 'accent' }) === 0;

@@ -3,7 +3,8 @@ import { latestDataValueDate } from '/apiV1/dataBuilders/generic/latestData';
 import { latestDownloadLink } from '/apiV1/dataBuilders/generic/dataDownload';
 
 export const disasterSurveyResponseDownloads = async (
-  { dataBuilderConfig, query, req, viewJson },
+  { dataBuilderConfig, query, entity, req, viewJson },
+  aggregator,
   dhisApi,
 ) => {
   const { preConfig, postConfig } = dataBuilderConfig;
@@ -12,9 +13,10 @@ export const disasterSurveyResponseDownloads = async (
   const preDisasterSurveyData = await latestDataValueDate(
     {
       dataBuilderConfig: preConfig,
-      query,
+      entity,
       viewJson,
     },
+    aggregator,
     dhisApi,
   );
 
@@ -30,9 +32,10 @@ export const disasterSurveyResponseDownloads = async (
   const postDisasterSurveyData = await latestDataValueDate(
     {
       dataBuilderConfig: postConfig,
-      query: postQuery,
+      entity,
       viewJson,
     },
+    aggregator,
     dhisApi,
   );
 

@@ -3,11 +3,12 @@ import { aggregateOperationalFacilityValues, getFacilityStatuses } from '/apiV1/
 
 // Example use: % clinics surveyed in last 6 months
 export const percentOperationalFacilitiesWithData = async (
-  { dataBuilderConfig, query },
+  { dataBuilderConfig, query, entity },
+  aggregator,
   ...dhisApiInstances
 ) => {
   const { dataElementGroupCode, monthsOfData } = dataBuilderConfig;
-  const dhisParameters = { dataElementGroupCode };
+  const dhisParameters = { dataElementGroupCode, idScheme: 'code' };
   if (monthsOfData && !(query.startDate || query.endDate)) {
     dhisParameters.startDate = moment()
       .subtract(monthsOfData, 'months')
@@ -15,16 +16,15 @@ export const percentOperationalFacilitiesWithData = async (
     dhisParameters.endDate = moment().toISOString();
   }
 
-  // Will count only data from operational facilities
-  const operationalFacilities = await getFacilityStatuses(query.organisationUnitCode);
-
   // Count the number of facilities with data
   const facilitiesCounted = new Set(); // To avoid double counting facilities across dhis instances
   const addFacilityToSet = ({ facilityId }) => facilitiesCounted.add(facilityId);
 
+  const operationalFacilities = await getFacilityStatuses(aggregator, entity.code);
   await Promise.all(
     dhisApiInstances.map(async dhisApi => {
-      const results = await dhisApi.getDataValuesInSets(dhisParameters, query);
+      // Will count only data from operational facilities
+      const results = await dhisApi.getDataValuesInSets(dhisParameters, entity);
       aggregateOperationalFacilityValues(operationalFacilities, results, addFacilityToSet);
     }),
   );

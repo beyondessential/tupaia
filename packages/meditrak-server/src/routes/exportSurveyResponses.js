@@ -7,8 +7,8 @@ import xlsx from 'xlsx';
 import moment from 'moment';
 import fs from 'fs';
 import { truncateString } from 'sussol-utilities';
+import { DatabaseError, ValidationError } from '@tupaia/utils';
 
-import { DatabaseError, ValidationError } from '../errors';
 import { findAnswersBySurveyResponse, findQuestionsBySurvey } from '../dataAccessors';
 const FILE_LOCATION = 'exports';
 const FILE_PREFIX = 'survey_response_export';

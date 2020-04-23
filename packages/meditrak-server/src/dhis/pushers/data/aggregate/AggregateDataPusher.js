@@ -4,22 +4,20 @@
  */
 
 import moment from 'moment';
-import { DataPusher } from '../DataPusher';
-import { generateDataValue } from '../generateDataValue';
-import { formatDateForDHIS2 } from '../formatDateForDHIS2';
-import { DHIS2_RESOURCE_TYPES } from '../../../api';
-import { RESPONSE_TYPES } from '../../../responseUtils';
 import {
+  DHIS2_RESOURCE_TYPES,
   DEFAULT_PERIOD_TYPE,
   periodToType,
   periodTypeToMomentUnit,
   periodTypeToFormat,
-} from './periodTypes';
+  dhisToTupaiaPeriodType,
+  combineDiagnostics,
+} from '@tupaia/dhis-api';
+import { DataPusher } from '../DataPusher';
+import { generateDataValue } from '../generateDataValue';
 
 const { ORGANISATION_UNIT } = DHIS2_RESOURCE_TYPES;
-const { DIAGNOSTICS } = RESPONSE_TYPES;
 const SUCCESS_DIAGNOSTICS = {
-  responseType: DIAGNOSTICS,
   wasSuccessful: true,
   counts: {},
   errors: [],
@@ -90,20 +88,20 @@ export class AggregateDataPusher extends DataPusher {
 
   async fetchPeriodType() {
     const dataSet = await this.fetchDataSet();
-    return dataSet ? dataSet.periodType : DEFAULT_PERIOD_TYPE;
+    return dataSet ? dhisToTupaiaPeriodType(dataSet.periodType) : DEFAULT_PERIOD_TYPE;
   }
 
   async fetchPeriodBounds(period) {
-    const getSubmissionTime = async () => {
-      if (period) return moment(period);
-      const surveyResponse = await this.fetchSurveyResponse();
-      return surveyResponse.timezoneAwareSubmissionTime();
-    };
     const getPeriodType = async () => {
       if (period) return periodToType(period);
       return this.fetchPeriodType();
     };
     const periodType = await getPeriodType();
+    const getSubmissionTime = async () => {
+      if (period) return moment(period, periodTypeToFormat(periodType));
+      const surveyResponse = await this.fetchSurveyResponse();
+      return surveyResponse.timezoneAwareSubmissionTime();
+    };
     const momentUnit = periodTypeToMomentUnit(periodType);
     const submissionTime = await getSubmissionTime();
     const minimumTime = submissionTime
@@ -156,19 +154,6 @@ export class AggregateDataPusher extends DataPusher {
     });
   }
 
-  getDiagnosticsForResponses(primaryResponse, ...additionalResponses) {
-    const primaryDiagnostics = this.getDiagnostics(primaryResponse);
-    const additionalDiagnostics = additionalResponses.map(r => this.getDiagnostics(r));
-    const allDiagnostics = [primaryDiagnostics, ...additionalDiagnostics];
-    const wasSuccessful = allDiagnostics.every(d => d.wasSuccessful);
-    const errors = allDiagnostics.reduce((acc, d) => [...acc, ...d.errors], []);
-    return {
-      ...primaryDiagnostics, // counts should come from the primary diagnostics
-      wasSuccessful,
-      errors,
-    };
-  }
-
   /**
    * @returns {Promise<PushResults>}
    */
@@ -177,34 +162,34 @@ export class AggregateDataPusher extends DataPusher {
     const dataToLog = { ...dataValue, ...extraDataToLog };
 
     // if org unit or period has changed from a prior sync, delete the old copy from dhis2
-    const deleteResponse = await this.deletePriorSyncIfSignificantChange(dataValue);
+    const deleteDiagnostics = await this.deletePriorSyncIfSignificantChange(dataValue);
 
-    // check whether this update is redundant, i.e. there is a matching record later on the same day
+    // check whether this update is redundant, i.e. there is a matching record later in the same day/week/month/year
     const matchingRecord = await this.findMoreRecentResponse();
     if (matchingRecord) {
-      const syncLogMessage = `Did not push ${this.recordId} to DHIS2 as there is a matching ${
-        matchingRecord.databaseType
-      } later on the same day (id: ${matchingRecord.id})`;
+      const syncLogMessage = `Did not push ${this.recordId} to DHIS2 as there is a matching ${matchingRecord.databaseType} later in the same period (id: ${matchingRecord.id})`;
       // mark this sync as successful so it is cleared from the queue
       return { ...SUCCESS_DIAGNOSTICS, errors: [syncLogMessage], dataToLog };
     }
 
     // if this is a survey response, sync across a data set completion
-    const dataSetCompletionResponse = await this.pushDataSetCompletionIfRequired();
+    const dataSetCompletionDiagnostics = await this.pushDataSetCompletionIfRequired();
 
     // sync the data across to DHIS2
-    const dataToAdd = { dataValues: [dataValue] };
-    const updateResponse = await this.api.postDataValueSet(dataToAdd);
+    const { diagnostics: updateDiagnostics, serverName } = await this.pushDataValue(dataValue);
 
     // combine the diagnostics
-    const diagnostics = this.getDiagnosticsForResponses(
-      updateResponse,
-      deleteResponse,
-      dataSetCompletionResponse,
+    const diagnostics = combineDiagnostics(
+      updateDiagnostics,
+      deleteDiagnostics,
+      dataSetCompletionDiagnostics,
     );
     return {
       ...diagnostics,
-      data: dataToLog,
+      data: {
+        ...dataToLog,
+        serverName,
+      },
     };
   }
 
@@ -243,6 +228,18 @@ export class AggregateDataPusher extends DataPusher {
     };
   }
 
+  async pushDataValue(dataValue) {
+    const { code } = dataValue;
+    return this.dataBroker.push({ type: this.dataSourceTypes.DATA_ELEMENT, code }, dataValue);
+  }
+
+  async deleteDataValue(dataValue, serverName) {
+    const { code } = dataValue;
+    return this.dataBroker.delete({ code, type: this.dataSourceTypes.DATA_ELEMENT }, dataValue, {
+      serverName,
+    });
+  }
+
   async pushDataSetCompletionIfRequired() {
     if (!this.isSurveyResponse) return SUCCESS_DIAGNOSTICS;
     const baseDataSetCompletion = await this.buildBaseDataSetCompletion();
@@ -250,7 +247,7 @@ export class AggregateDataPusher extends DataPusher {
 
     // get the date the survey was completed
     const surveyResponse = await this.fetchSurveyResponse();
-    const completionDate = surveyResponse.timezoneAwareEndTime().format('YYYY-MM-DDTkk:mm:ss');
+    const completionDate = surveyResponse.timezoneAwareEndTime().format('YYYY-MM-DDTHH:mm:ss');
 
     // get the submitting user's name
     const storedBy = await this.fetchStoredBy();
@@ -274,12 +271,12 @@ export class AggregateDataPusher extends DataPusher {
     const answer = await this.fetchAnswer();
     const surveyResponse = await this.fetchSurveyResponse();
     const survey = await this.fetchSurvey();
-    const baseDataElement = this.isSurveyResponse
+    const baseDataValue = this.isSurveyResponse
       ? {
-          dataElement: `${survey.code}SurveyDate`,
-          value: formatDateForDHIS2(surveyResponse.timezoneAwareSubmissionTime()),
+          code: `${survey.code}SurveyDate`,
+          value: surveyResponse.timezoneAwareSubmissionTime().format(),
         }
-      : await generateDataValue(this.api, this.models, answer);
+      : await generateDataValue(this.models, answer);
 
     // Create an object containing information that is important to log after the record has synced,
     // as it will be used for processing any delete that occurs in future
@@ -293,7 +290,7 @@ export class AggregateDataPusher extends DataPusher {
     const period = await this.calculatePeriod();
     const storedBy = await this.fetchStoredBy();
     const dataValue = {
-      ...baseDataElement,
+      ...baseDataValue,
       orgUnit: organisationUnit.code,
       period,
       storedBy,
@@ -367,18 +364,17 @@ export class AggregateDataPusher extends DataPusher {
     }
 
     const syncLogData = this.extractDataFromSyncLog(syncLogRecord);
-    const dhisApiForDeletion = this.getDhisApiInstance(syncLogRecord);
-    const { orgUnit, dataElement, period } = syncLogData;
-    const dataToDelete = { orgUnit, dataElement, period };
-    const deleteResponse = await dhisApiForDeletion.deleteDataValue(dataToDelete);
+    const { orgUnit, code, period, serverName } = syncLogData;
+    const dataToDelete = { orgUnit, code, period };
+    const deleteDiagnostics = await this.deleteDataValue(dataToDelete, serverName);
 
     // delete data set completion if required
-    const dataSetCompletionResponse = await this.deleteDataSetCompletionIfRequired(dataToDelete);
+    const dataSetCompletionDiagnostics = await this.deleteDataSetCompletionIfRequired(dataToDelete);
 
     // Set up any duplicate information to resync, so that it is not lost from DHIS2
     await this.addMatchingRecordsToSyncQueue(syncLogData);
 
-    return this.getDiagnosticsForResponses(deleteResponse, dataSetCompletionResponse);
+    return combineDiagnostics(deleteDiagnostics, dataSetCompletionDiagnostics);
   }
 
   /**

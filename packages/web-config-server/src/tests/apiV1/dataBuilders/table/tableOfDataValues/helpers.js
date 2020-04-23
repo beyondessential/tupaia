@@ -4,41 +4,69 @@
  */
 
 import { expect } from 'chai';
+import pickBy from 'lodash.pickby';
 import sinon from 'sinon';
 
+import { Aggregator } from '/aggregator';
 import { tableOfDataValues } from '/apiV1/dataBuilders';
-import { DhisApi } from '/dhis/DhisApi';
+import { DATA_ELEMENTS } from './tableOfDataValues.fixtures';
 
 const query = { organisationUnitCode: 'TO' };
+const dataServices = [{ isDataRegional: false }];
+const period = {
+  requested: '202001;202002;202003;202004',
+  earliestAvailable: '20200105',
+  latestAvailable: '20200406',
+};
 
-const createDhisApiStub = dataValues => {
-  const getAnalytics = sinon.stub();
-  getAnalytics
+const createAggregatorStub = dataValues => {
+  const fetchAnalytics = sinon.stub();
+  fetchAnalytics
     .returns({ results: [] })
-    .withArgs(sinon.match({ outputIdScheme: 'code' }), query)
-    .callsFake(({ dataElementCodes }) => ({
+    .withArgs(sinon.match.any, sinon.match({ dataServices }), sinon.match(query))
+    .callsFake(dataElementCodes => ({
       results: Object.values(dataValues).filter(({ dataElement }) =>
         dataElementCodes.includes(dataElement),
       ),
+      period,
     }));
 
-  return sinon.createStubInstance(DhisApi, { getAnalytics });
+  const fetchDataElements = sinon.stub();
+  fetchDataElements
+    .returns({ dataElements: [] })
+    .withArgs(
+      sinon.match.any,
+      sinon.match({
+        organisationUnitCode: query.organisationUnitCode,
+        dataServices,
+        includeOptions: true,
+      }),
+    )
+    .callsFake(codes => pickBy(DATA_ELEMENTS, ({ code }) => codes.includes(code)));
+
+  return sinon.createStubInstance(Aggregator, { fetchAnalytics, fetchDataElements });
 };
 
 export const createAssertTableResults = availableDataValues => {
-  const dhisApiStub = createDhisApiStub(availableDataValues);
+  const aggregator = createAggregatorStub(availableDataValues);
+  const dhisApi = {};
 
-  return async (dataBuilderConfig, expectedResults) =>
-    expect(tableOfDataValues({ dataBuilderConfig, query }, dhisApiStub)).to.eventually.deep.equal(
-      expectedResults,
-    );
+  return async (tableConfig, expectedResults) => {
+    const dataBuilderConfig = { ...tableConfig, dataServices };
+    return expect(
+      tableOfDataValues({ dataBuilderConfig, query }, aggregator, dhisApi),
+    ).to.eventually.deep.equal({ period, ...expectedResults });
+  };
 };
 
 export const createAssertErrorIsThrown = availableDataValues => {
-  const dhisApiStub = createDhisApiStub(availableDataValues);
+  const aggregator = createAggregatorStub(availableDataValues);
+  const dhisApi = {};
 
-  return async (dataBuilderConfig, expectedError) =>
-    expect(
-      tableOfDataValues({ dataBuilderConfig, query }, dhisApiStub),
+  return async (tableConfig, expectedError) => {
+    const dataBuilderConfig = { ...tableConfig, dataServices };
+    return expect(
+      tableOfDataValues({ dataBuilderConfig, query }, aggregator, dhisApi),
     ).to.eventually.be.rejectedWith(expectedError);
+  };
 };

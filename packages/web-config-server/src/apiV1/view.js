@@ -1,8 +1,11 @@
-import { convertDateRangeToPeriods } from '/utils';
-import { DashboardReport } from '/models';
+import { convertDateRangeToPeriods } from '@tupaia/dhis-api';
+import { replaceValues } from '@tupaia/utils';
+import { DashboardReport, DashboardGroup } from '/models';
 import { getDhisApiInstance } from '/dhis';
-import { CustomError } from '/errors';
-import { DhisTranslationHandler, isSingleValue } from './utils';
+import { CustomError } from '@tupaia/utils';
+import { isSingleValue } from './utils';
+import { DataAggregatingRouteHandler } from './DataAggregatingRouteHandler';
+import { DashboardPermissionsChecker } from './permissions';
 import { getDataBuilder } from '/apiV1/dataBuilders/getDataBuilder';
 
 const viewFail = {
@@ -14,6 +17,13 @@ const noViewWithId = {
   responseText: {
     status: 'viewError',
     details: 'No view with corresponding id',
+  },
+};
+
+const viewNotInGroup = {
+  responseText: {
+    status: 'viewError',
+    details: 'Dashboard group does not contain view',
   },
 };
 
@@ -40,13 +50,15 @@ const getIsValidDate = dateString => !Number.isNaN(Date.parse(dateString));
 
 /* View implementation now delegates data builder to corresponding view data builder
  */
-export default class extends DhisTranslationHandler {
-  buildData = async req => {
-    const { startDate, endDate, ...restOfQuery } = req.query;
+export default class extends DataAggregatingRouteHandler {
+  static PermissionsChecker = DashboardPermissionsChecker;
+
+  buildResponse = async () => {
+    const { startDate, endDate, ...restOfQuery } = this.query;
     if (getIsValidDate(startDate)) this.startDate = startDate;
     if (getIsValidDate(endDate)) this.endDate = endDate;
 
-    const { viewId, drillDownLevel } = req.query;
+    const { viewId, drillDownLevel, dashboardGroupId } = this.query;
     // If drillDownLevel is undefined, send it through as null instead so it's not dropped from the object.
     const dashboardReport = await DashboardReport.findOne({
       id: viewId,
@@ -55,7 +67,6 @@ export default class extends DhisTranslationHandler {
     if (!dashboardReport) {
       throw new CustomError(viewFail, noViewWithId, { viewId });
     }
-    const { viewJson, dataBuilderConfig, dataServices } = dashboardReport;
 
     this.query = {
       ...restOfQuery,
@@ -64,29 +75,43 @@ export default class extends DhisTranslationHandler {
       endDate: this.endDate,
     };
 
-    // process db response for row, create matching data builder and build the data
-    let { dataBuilder } = dashboardReport;
-    this.viewJson = viewJson;
-    this.dataBuilderConfig = dataBuilderConfig;
-    // if viewJson containes placeholder it can only be viewed in expanded view
-    if (this.viewJson.placeholder && this.query.isExpanded !== 'true') {
-      dataBuilder = 'blankDataBuilder';
-    } else {
-      // remove placeholder, prevent front end from rendering it
-      this.viewJson.placeholder = undefined;
-    }
-    // Try to find matched data builder
-    const dataBuilderForView = getDataBuilder(dataBuilder);
-    if (!dataBuilderForView) {
+    const { viewJson, dataBuilderConfig, dataBuilder, dataServices } = dashboardReport;
+    this.viewJson = this.translateViewJson(viewJson);
+    this.dataBuilderConfig = this.translateDataBuilderConfig(dataBuilderConfig, dataServices);
+
+    const dataBuilderData = await this.buildDataBuilderData(dataBuilder);
+    return this.addViewMetaData(dataBuilderData);
+  };
+
+  async buildDataBuilderData(dataBuilderName) {
+    const dataBuilder = this.getDataBuilder(dataBuilderName);
+    if (!dataBuilder) {
       throw new CustomError(viewFail, noDataBuilder, { dataBuilder });
     }
-    // Build the data and return it
-    const dhisApiInstances = dataServices.map(({ isDataRegional }) =>
-      getDhisApiInstance(this.entity.code, isDataRegional),
-    );
-    const builtData = await dataBuilderForView({ ...this, req }, ...dhisApiInstances);
-    return this.addViewMetaData(builtData);
-  };
+
+    const dhisApiInstances = this.dataBuilderConfig.dataServices.map(({ isDataRegional }) => {
+      const dhisApi = getDhisApiInstance({ entityCode: this.entity.code, isDataRegional });
+      dhisApi.injectFetchDataSourceEntities(this.fetchDataSourceEntities);
+      return dhisApi;
+    });
+
+    return dataBuilder(this, this.aggregator, ...dhisApiInstances);
+  }
+
+  translateViewJson(viewJson) {
+    // if a dashboard is expanded, we remove any placeholder it may normally display
+    return this.query.isExpanded === 'true' ? { ...viewJson, placeholder: undefined } : viewJson;
+  }
+
+  translateDataBuilderConfig(dataBuilderConfig, dataServices) {
+    const replacedConfig = replaceValues(dataBuilderConfig, this.query);
+    return { ...replacedConfig, dataServices };
+  }
+
+  getDataBuilder(dataBuilderName) {
+    // if there is a placeholder to display, don't build any data
+    return getDataBuilder(this.viewJson.placeholder ? 'blankDataBuilder' : dataBuilderName);
+  }
 
   // common view translation (for all possible views)
   addViewMetaData = inJson => {

@@ -11,7 +11,7 @@ import { fetchComposedData } from '/apiV1/measureBuilders/helpers';
 /**
  * Configuration schema
  * @typedef {Object} composePercentagePerOrgUnitConfig
- * @property {{ numerator: DataBuilder, denominator: DataBuilder}} dataBuilders
+ * @property {{ numerator, denominator}} measureBuilders
  *
  * Example
  * ```js
@@ -35,18 +35,18 @@ import { fetchComposedData } from '/apiV1/measureBuilders/helpers';
  * ```
  */
 
-export const composePercentagePerOrgUnit = async (dhisApi, query, config) => {
+export const composePercentagePerOrgUnit = async (aggregator, dhisApi, query, config, entity) => {
   const { fractionType } = config;
   const { dataElementCode } = query;
 
-  const responses = await fetchComposedData(dhisApi, query, config);
+  const responses = await fetchComposedData(aggregator, dhisApi, query, config, entity);
   const numeratorsByOrgUnit = keyBy(responses.numerator, 'organisationUnitCode');
   const denominatorsByOrgUnit = keyBy(responses.denominator, 'organisationUnitCode');
 
   const fractionsByOrgUnit = {};
-  Object.keys(denominatorsByOrgUnit).forEach(orgUnit => {
-    const numeratorValue = numeratorsByOrgUnit[orgUnit][dataElementCode];
-    const denominatorValue = denominatorsByOrgUnit[orgUnit][dataElementCode];
+  Object.keys(numeratorsByOrgUnit).forEach(orgUnit => {
+    const { [dataElementCode]: numeratorValue } = numeratorsByOrgUnit[orgUnit] || {};
+    const { [dataElementCode]: denominatorValue } = denominatorsByOrgUnit[orgUnit] || {};
     const fraction = divideValues(numeratorValue, denominatorValue, fractionType);
 
     // eslint-disable-next-line no-restricted-globals

@@ -6,9 +6,8 @@
 import { get } from 'lodash';
 import winston from 'winston';
 import { writeFileSync, existsSync, readFileSync, mkdirSync } from 'fs';
-import { fetchWithTimeout } from '../../utilities';
+import { fetchWithTimeout, HttpError } from '@tupaia/utils';
 import { ENTITY_TYPES } from '../../database';
-import { HttpError } from '../../errors';
 
 const BASE_PATH = 'uploads/geojson';
 
@@ -35,7 +34,7 @@ function extractBestMatch(data) {
   return data.filter(x => x.class === 'boundary' && x.type === 'administrative')[0];
 }
 
-async function searchGeojsonForRegion(name, countryName) {
+async function searchGeojson(name, countryName) {
   const search = getLatin1(`${name}, ${countryName}`);
   const url = `http://nominatim.openstreetmap.org/search?polygon_geojson=1&format=json&q=${search}`;
   const response = await fetchWithTimeout(url);
@@ -62,10 +61,10 @@ async function fetchGeojsonForOsmId(openStreetMapsId) {
   return results.geometries[0];
 }
 
-async function fetchGeojsonForRegion(name, countryName, openStreetMapsId) {
+async function fetchGeojson(name, countryName, openStreetMapsId) {
   const geojson = await (openStreetMapsId
     ? fetchGeojsonForOsmId(openStreetMapsId)
-    : searchGeojsonForRegion(name, countryName));
+    : searchGeojson(name, countryName));
 
   if (geojson.type === 'Polygon') {
     geojson.type = 'MultiPolygon';
@@ -85,20 +84,18 @@ async function addCoordinatesToEntity(
   const directoryPath = `${BASE_PATH}/${countryName}`;
   const filePath = `${directoryPath}/${code}.geojson`;
 
-  // Download the geojson for this region if we haven't done so before (may have been done
+  // Download the geojson for this entity if we haven't done so before (may have been done
   // outside of the import process if geojson needed manual tweaking, for example)
   if (!existsSync(filePath)) {
     try {
-      const geojson = await fetchGeojsonForRegion(name, countryName, openStreetMapsId);
+      const geojson = await fetchGeojson(name, countryName, openStreetMapsId);
       if (!existsSync(directoryPath)) {
         mkdirSync(directoryPath, { recursive: true });
       }
       writeFileSync(filePath, JSON.stringify(geojson));
     } catch (error) {
       throw new Error(
-        `Failed to write geojson file for ${name}, ${countryName}. Download manually and save as ${filePath}, or resolve the error: ${
-          error.message
-        }`,
+        `Failed to write geojson file for ${name}, ${countryName}. Download manually and save as ${filePath}, or resolve the error: ${error.message}`,
       );
     }
   }
@@ -115,17 +112,17 @@ async function addCoordinatesToEntity(
 export async function populateCoordinatesForCountry(transactingModels, countryCode) {
   const countryEntity = await transactingModels.entity.findOne({ code: countryCode });
   const countryName = countryEntity.name;
-  const regionsWithoutCoordinates = await transactingModels.entity.find({
+  const entitiesWithoutCoordinates = await transactingModels.entity.find({
     country_code: countryCode,
-    type: ENTITY_TYPES.REGION,
+    type: [ENTITY_TYPES.DISTRICT, ENTITY_TYPES.SUB_DISTRICT],
     region: null, // Only bother with entities that don't already have their region coordinates set
   });
-  for (let i = 0; i < regionsWithoutCoordinates.length; i++) {
-    const { name, code, metadata } = regionsWithoutCoordinates[i];
+  for (let i = 0; i < entitiesWithoutCoordinates.length; i++) {
+    const { name, code, metadata } = entitiesWithoutCoordinates[i];
     const openStreetMapsId = get(metadata, 'openStreetMaps.id');
     await addCoordinatesToEntity(transactingModels, countryName, name, code, openStreetMapsId);
   }
-  if (!countryEntity.bounds) {
+  if (!countryEntity.region) {
     await addCoordinatesToEntity(transactingModels, countryName, countryName, countryEntity.code);
   }
 }

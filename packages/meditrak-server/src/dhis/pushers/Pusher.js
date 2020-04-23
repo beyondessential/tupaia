@@ -4,7 +4,6 @@
  */
 
 import winston from 'winston';
-import { getDiagnosticsFromResponse } from '../responseUtils';
 
 /**
  * @typedef {PushResults}
@@ -15,10 +14,11 @@ import { getDiagnosticsFromResponse } from '../responseUtils';
  */
 
 export class Pusher {
-  constructor(models, change, dhisApi) {
+  constructor(models, change, dhisApi, dataBroker) {
     this.models = models;
     this.change = change;
     this.api = dhisApi;
+    this.dataBroker = dataBroker;
   }
 
   get recordId() {
@@ -33,16 +33,24 @@ export class Pusher {
     return this.change.type;
   }
 
+  get dataSourceTypes() {
+    return this.dataBroker.getDataSourceTypes();
+  }
+
   /**
    * @public
    *
    * @returns {Promise<boolean>}
    */
   async push() {
-    const results = await (this.changeType === 'update' ? this.createOrUpdate() : this.delete());
-    await this.logResults(results); // await to avoid db lock between delete/update on event push
-
-    return results.wasSuccessful;
+    try {
+      const results = await (this.changeType === 'update' ? this.createOrUpdate() : this.delete());
+      await this.logResults(results); // await to avoid db lock between delete/update on event push
+      return results.wasSuccessful;
+    } catch (error) {
+      await this.logResults({ errors: [error.message] });
+      return false;
+    }
   }
 
   /**
@@ -89,17 +97,13 @@ export class Pusher {
     return this.extractDataFromSyncLog(dhisSyncLog);
   }
 
-  getDiagnostics(response) {
-    return getDiagnosticsFromResponse(response, this.change);
-  }
-
   /**
    * @protected
    *
    * @param {PushResults}
    * @returns {Promise<>}
    */
-  async logResults({ counts, errors, data, reference, references = [] }) {
+  async logResults({ counts, errors = [], data, reference, references = [] }) {
     if (errors.length > 0) {
       winston.warn(errors);
     }

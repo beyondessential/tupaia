@@ -4,32 +4,41 @@
  */
 import {
   getChildOrganisationUnits,
-  mapOrgUnitIdsToGroupCodes,
+  getDataElementCodesInGroup,
+  mapOrgUnitToGroupCodes,
   countByOrganisationUnitByValue,
   calculatePercentagesWithinRange,
 } from '/apiV1/utils';
-import { AGGREGATION_TYPES } from '/dhis';
-const { MOST_RECENT_PER_ORG_GROUP } = AGGREGATION_TYPES;
 
-export const percentPerValuePerOrgGroup = async ({ dataBuilderConfig, query }, dhisApi) => {
-  const { organisationUnitLevel, range, valuesOfInterest } = dataBuilderConfig;
+export const percentPerValuePerOrgGroup = async (
+  { dataBuilderConfig, query },
+  aggregator,
+  dhisApi,
+) => {
+  const {
+    dataElementGroupCode,
+    dataServices,
+    organisationUnitType,
+    range,
+    valuesOfInterest,
+  } = dataBuilderConfig;
   const { organisationUnitCode } = query;
 
   const organisationUnits = await getChildOrganisationUnits(
     {
       organisationUnitGroupCode: organisationUnitCode,
-      level: organisationUnitLevel,
+      type: organisationUnitType,
     },
     dhisApi,
   );
-  const orgUnitIdsToGroupKeys = mapOrgUnitIdsToGroupCodes(organisationUnits);
 
-  const { results } = await dhisApi.getAnalytics(
-    dataBuilderConfig,
-    query,
-    MOST_RECENT_PER_ORG_GROUP,
-    { orgUnitIdsToGroupKeys },
-  );
+  const dataElementCodes = await getDataElementCodesInGroup(dhisApi, dataElementGroupCode);
+  const orgUnitToGroupKeys = mapOrgUnitToGroupCodes(organisationUnits);
+
+  const { results } = await aggregator.fetchAnalytics(dataElementCodes, { dataServices }, query, {
+    aggregationType: aggregator.aggregationTypes.MOST_RECENT_PER_ORG_GROUP,
+    aggregationConfig: { orgUnitToGroupKeys },
+  });
   const countsByOrganisationUnit = countByOrganisationUnitByValue(
     results,
     organisationUnits,

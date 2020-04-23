@@ -6,6 +6,9 @@
  */
 
 import { combineReducers } from 'redux';
+import { createSelector } from 'reselect';
+import createCachedSelector from 're-reselect';
+import { cachedSelectOrgUnitAndDescendants } from './orgUnitReducers';
 
 import {
   GO_HOME,
@@ -18,16 +21,21 @@ import {
   FETCH_MEASURE_DATA_ERROR,
   FETCH_MEASURE_DATA_SUCCESS,
   CANCEL_FETCH_MEASURE_DATA,
-  FETCH_ORG_UNIT_SUCCESS,
+  CHANGE_ORG_UNIT_SUCCESS,
   SET_MAP_IS_ANIMATING,
   OPEN_MAP_POPUP,
   CLOSE_MAP_POPUP,
   HIDE_MAP_MEASURE,
   UNHIDE_MAP_MEASURE,
-  ADD_MAP_REGIONS,
 } from '../actions';
 import { getMeasureFromHierarchy } from '../utils/getMeasureFromHierarchy';
 import { MARKER_TYPES } from '../containers/Map/MarkerLayer';
+import {
+  getMeasureDisplayInfo,
+  calculateRadiusScaleFactor,
+  MEASURE_TYPE_SHADING,
+  MEASURE_TYPE_SHADED_SPECTRUM,
+} from '../utils/measures';
 
 import { initialOrgUnit } from '../defaults';
 
@@ -39,8 +47,7 @@ function position(state = { bounds: defaultBounds }, action) {
       return { bounds: defaultBounds };
     }
 
-    case CHANGE_ORG_UNIT:
-    case FETCH_ORG_UNIT_SUCCESS: {
+    case CHANGE_ORG_UNIT_SUCCESS: {
       if (action.shouldChangeMapBounds) {
         const { location } = action.organisationUnit;
         if (location) {
@@ -85,7 +92,7 @@ function innerAreas(state = [], action) {
     case CHANGE_ORG_UNIT: {
       return [];
     }
-    case FETCH_ORG_UNIT_SUCCESS: {
+    case CHANGE_ORG_UNIT_SUCCESS: {
       const { organisationUnit } = action;
       const { organisationUnitChildren } = organisationUnit;
       if (organisationUnitChildren && organisationUnitChildren.length > 0) {
@@ -102,7 +109,7 @@ function innerAreas(state = [], action) {
 function measureInfo(state = {}, action) {
   switch (action.type) {
     case CHANGE_ORG_UNIT:
-      if (action.organisationUnit.organisationUnitCode === 'World') {
+      if (action.organisationUnitCode === 'World') {
         // clear measures when returning to world view
         return {};
       }
@@ -167,16 +174,6 @@ function isMeasureLoading(state = false, action) {
   }
 }
 
-function focussedOrganisationUnit(state = {}, action) {
-  switch (action.type) {
-    case CHANGE_ORG_UNIT:
-      return action.organisationUnit;
-
-    default:
-      return state;
-  }
-}
-
 function popup(state = null, action) {
   switch (action.type) {
     case OPEN_MAP_POPUP:
@@ -217,7 +214,7 @@ function shouldSnapToPosition(state = true, action) {
       return true;
 
     case CHANGE_ORG_UNIT:
-    case FETCH_ORG_UNIT_SUCCESS:
+    case CHANGE_ORG_UNIT_SUCCESS:
       return action.shouldChangeMapBounds ? true : state;
 
     default:
@@ -247,29 +244,15 @@ function tileSet(state, action) {
   }
 }
 
-function regions(state = {}, action) {
-  switch (action.type) {
-    case ADD_MAP_REGIONS:
-      return {
-        ...state,
-        ...action.regionData,
-      };
-    default:
-      return state;
-  }
-}
-
 export default combineReducers({
   position,
   innerAreas,
   measureInfo,
   tileSet,
-  focussedOrganisationUnit,
   isAnimating,
   popup,
   shouldSnapToPosition,
   isMeasureLoading,
-  regions,
 });
 
 // Public selectors
@@ -279,3 +262,62 @@ export function selectMeasureName(state = {}) {
   const selectedMeasure = getMeasureFromHierarchy(measureHierarchy, selectedMeasureId);
   return selectedMeasure ? selectedMeasure.name : '';
 }
+
+export const selectHasPolygonMeasure = createSelector(
+  [state => state.map.measureInfo],
+  (stateMeasureInfo = {}) => {
+    return (
+      stateMeasureInfo.measureOptions &&
+      stateMeasureInfo.measureOptions.some(
+        option =>
+          option.type === MEASURE_TYPE_SHADING || option.type === MEASURE_TYPE_SHADED_SPECTRUM,
+      )
+    );
+  },
+);
+
+const selectMeasureDataByCode = createSelector(
+  [state => state.map.measureInfo.measureData, (_, code) => code],
+  (data = [], code) => data.find(val => val.organisationUnitCode === code),
+);
+
+const cachedSelectMeasureWithDisplayInfo = createCachedSelector(
+  [
+    (_, organisationUnitCode) => organisationUnitCode,
+    selectMeasureDataByCode,
+    state => state.map.measureInfo.measureOptions,
+    state => state.map.measureInfo.hiddenMeasures,
+  ],
+  (organisationUnitCode, data, options = [], hiddenMeasures) => {
+    return {
+      organisationUnitCode,
+      ...data,
+      ...getMeasureDisplayInfo({ ...data }, options, hiddenMeasures),
+    };
+  },
+)((_, orgUnitCode) => orgUnitCode);
+
+export const selectAllMeasuresWithDisplayInfo = createSelector(
+  [state => state, state => state.map.measureInfo],
+  (state, measureInfoParam) => {
+    const { measureData, currentCountry, measureLevel } = measureInfoParam;
+    if (!measureLevel || !currentCountry || !measureData) {
+      return [];
+    }
+
+    const listOfMeasureLevels = measureLevel.split(',');
+    const allOrgUnitsOfLevel = cachedSelectOrgUnitAndDescendants(
+      state,
+      currentCountry,
+    ).filter(orgUnit => listOfMeasureLevels.includes(orgUnit.type));
+
+    return allOrgUnitsOfLevel.map(orgUnit =>
+      cachedSelectMeasureWithDisplayInfo(state, orgUnit.organisationUnitCode),
+    );
+  },
+);
+
+export const selectRadiusScaleFactor = createSelector(
+  [selectAllMeasuresWithDisplayInfo],
+  calculateRadiusScaleFactor,
+);

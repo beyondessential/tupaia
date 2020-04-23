@@ -5,7 +5,6 @@
 
 export { addSurveyImage } from './addSurveyImage';
 export { editUserAccount } from './editUserAccount';
-export { editSurveyResponse } from './editSurveyResponse';
 export { editOption } from './editOption';
 export { editOptionSet } from './editOptionSet';
 export { findQuestionsBySurvey } from './findQuestionsBySurvey';
@@ -16,3 +15,4 @@ export { createUser } from './createUser';
 export { updateOrCreateSurveyResponse } from './updateOrCreateSurveyResponse';
 export { getUserPermissionGroups } from './userPermissionGroups';
 export { findEditableFeedItems } from './findEditableFeedItems';
+export { findFormattedDisasters } from './findFormattedDisasters';

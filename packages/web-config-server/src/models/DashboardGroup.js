@@ -3,10 +3,11 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  **/
 
+import { TYPES } from '@tupaia/database';
 import { BaseModel } from './BaseModel';
 
 export class DashboardGroup extends BaseModel {
-  static databaseType = 'dashboardGroup';
+  static databaseType = TYPES.DASHBOARD_GROUP;
 
   static fields = [
     'id',

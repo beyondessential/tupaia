@@ -1,48 +1,51 @@
 import winston from 'winston';
 
-import { AGGREGATION_TYPES } from '/dhis';
-
 /**
  * Tupaia Config Server
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
 
+const fetchMonthlyValuesByEntityCode = async (aggregator, code, analyticsQuery) => {
+  const { results } = await aggregator.fetchAnalytics(code, analyticsQuery, {
+    aggregationType: aggregator.aggregationTypes.FINAL_EACH_MONTH,
+  });
+
+  const valuesByEntityCode = {};
+  results.forEach(({ value, period, organisationUnit: entityCode }) => {
+    if (!valuesByEntityCode[entityCode]) {
+      valuesByEntityCode[entityCode] = [];
+    }
+    valuesByEntityCode[entityCode].push({
+      period,
+      value,
+    });
+  });
+  return valuesByEntityCode;
+};
+
 export const preaggregateTransactionalDataElement = async (
-  dhisApi,
+  aggregator,
   aggregatedDataElementCode,
   baselineDataElementCode,
   changeDataElementCode,
+  analyticsQuery,
 ) => {
-  winston.log('Preaggregating', { aggregatedDataElementCode, transactional: true });
-  const query = {
-    organisationUnitCode: 'World',
-    dataElementCodes: [baselineDataElementCode, changeDataElementCode],
-    outputIdScheme: 'code',
-  };
-  const { results } = await dhisApi.getAnalytics(query, {}, AGGREGATION_TYPES.FINAL_EACH_MONTH);
+  winston.info('Transactional preaggregation', {
+    aggregatedDataElementCode,
+    baselineDataElementCode,
+    changeDataElementCode,
+  });
 
-  const baselineValues = {};
-  const changeValues = {};
-  results.forEach(
-    ({ dataElement: dataElementCode, value, period, organisationUnit: organisationUnitCode }) => {
-      if (dataElementCode === baselineDataElementCode) {
-        if (!baselineValues[organisationUnitCode]) {
-          baselineValues[organisationUnitCode] = [];
-        }
-        baselineValues[organisationUnitCode].push({
-          period,
-          value,
-        });
-      } else {
-        if (!changeValues[organisationUnitCode]) {
-          changeValues[organisationUnitCode] = [];
-        }
-        changeValues[organisationUnitCode].push({
-          period,
-          value,
-        });
-      }
-    },
+  const baselineValues = await fetchMonthlyValuesByEntityCode(
+    aggregator,
+    baselineDataElementCode,
+    analyticsQuery,
+  );
+
+  const changeValues = await fetchMonthlyValuesByEntityCode(
+    aggregator,
+    changeDataElementCode,
+    analyticsQuery,
   );
 
   const runningTotals = {};
@@ -67,7 +70,7 @@ export const preaggregateTransactionalDataElement = async (
       runningTotals[organisationUnitCode].push({
         orgUnit: organisationUnitCode,
         period: baselineValue.period,
-        dataElement: aggregatedDataElementCode,
+        code: aggregatedDataElementCode,
         value: calculatedValue,
       });
       for (; changeValueIndex < changeValuesForOrganisationUnit.length; changeValueIndex++) {
@@ -83,7 +86,7 @@ export const preaggregateTransactionalDataElement = async (
           runningTotals[organisationUnitCode].push({
             orgUnit: organisationUnitCode,
             period: changeValue.period,
-            dataElement: aggregatedDataElementCode,
+            code: aggregatedDataElementCode,
             value: calculatedValue,
           });
         }
@@ -96,6 +99,6 @@ export const preaggregateTransactionalDataElement = async (
     dataValues = dataValues.concat(valuesForOrganisationUnit);
   });
   if (dataValues.length > 0) {
-    await dhisApi.postDataValueSets(dataValues);
+    await aggregator.pushAggregateData(dataValues);
   }
 };

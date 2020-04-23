@@ -4,6 +4,12 @@ import winston from 'winston';
 const AWS_LAMBDA_CONFIG = {
   region: 'ap-southeast-2',
   apiVersion: '2015-03-31',
+  lambdaName: 'export-charts-v2',
+
+  // The specific lambda version to use. For testing changes to the lamba code you may set it to '$LATEST'.
+  // However DO NOT commit '$LATEST' to dev/master!!! Create a new lamba version with your code instead.
+  // See @tupaia/export-chart-lamba package for more information on lamba development and versioning.
+  lambdaVersion: '3',
 };
 
 /*
@@ -15,7 +21,7 @@ export const exportChartScreenshot = async (
   sessionValue,
   email,
 ) => {
-  const { region, apiVersion } = AWS_LAMBDA_CONFIG;
+  const { region, apiVersion, lambdaName, lambdaVersion } = AWS_LAMBDA_CONFIG;
 
   AWS.config.update({ region });
 
@@ -36,7 +42,7 @@ export const exportChartScreenshot = async (
   const chartUrl = `${process.env.EXPORT_URL}/${exportUrl}`;
   winston.info(`Exporting chart ${exportUrl}`);
   const pullParams = {
-    FunctionName: 'export-charts-v2',
+    FunctionName: `${lambdaName}:${lambdaVersion}`,
     InvocationType: 'Event',
     LogType: 'None',
     Payload: JSON.stringify({

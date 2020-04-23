@@ -3,12 +3,14 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 
-import { DatabaseType } from '../DatabaseType';
-import { DatabaseModel } from '../DatabaseModel';
-import { TYPES } from '..';
+import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
 
 class GeographicalAreaType extends DatabaseType {
   static databaseType = TYPES.GEOGRAPHICAL_AREA;
+
+  static meditrakConfig = {
+    minAppVersion: '0.0.23',
+  };
 
   // Exposed for access policy creation.
   get organisationUnitCode() {

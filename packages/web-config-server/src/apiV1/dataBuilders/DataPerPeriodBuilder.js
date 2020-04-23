@@ -6,8 +6,7 @@
 /* eslint-disable class-methods-use-this */
 
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { periodToDisplayString, periodToTimestamp } from '/dhis';
-import { parsePeriodType } from '/dhis/periodTypes';
+import { parsePeriodType, periodToDisplayString, periodToTimestamp } from '@tupaia/dhis-api';
 
 /**
  * @abstract
@@ -78,7 +77,8 @@ export class DataPerPeriodBuilder extends DataBuilder {
 
     const data = [];
     const processResultsForPeriod = async ([period, resultsForPeriod]) => {
-      const newData = await baseBuilder.buildData(resultsForPeriod).map(dataItem => ({
+      const buildData = await baseBuilder.buildData(resultsForPeriod);
+      const newData = buildData.map(dataItem => ({
         ...dataItem,
         timestamp: periodToTimestamp(period),
         name: periodToDisplayString(period),
@@ -100,10 +100,6 @@ export class DataPerPeriodBuilder extends DataBuilder {
     return data;
   }
 
-  /**
-   * @public
-   * @returns {DataValuesOutput}
-   */
   async build() {
     const results = await this.fetchResults();
     const data = await this.buildData(results);

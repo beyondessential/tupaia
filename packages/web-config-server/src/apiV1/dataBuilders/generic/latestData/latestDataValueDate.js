@@ -1,5 +1,9 @@
-export const latestDataValueDate = async ({ dataBuilderConfig, query, viewJson }, dhisApi) => {
-  const dataValues = await dhisApi.getDataValuesInSets(dataBuilderConfig, query);
+export const latestDataValueDate = async (
+  { dataBuilderConfig, entity, viewJson },
+  aggregator,
+  dhisApi,
+) => {
+  const dataValues = await dhisApi.getDataValuesInSets(dataBuilderConfig, entity);
   const dateJson = {
     viewType: 'singleDate',
     name: viewJson.name,

@@ -1,49 +1,25 @@
-import keyBy from 'lodash.keyby';
-import { Entity } from '/models/Entity';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { getDateRange, formatFacilityDataForOverlay } from '../utils';
+import { getDateRange } from '/apiV1/utils';
 
 class CheckTimelinessMeasureBuilder extends DataBuilder {
   async build() {
-    const facilitiesByCode = await this.getFacilityDataByCode();
-    return Object.values(facilitiesByCode).map(formatFacilityDataForOverlay);
-  }
-
-  async getFacilityDataByCode() {
     const { periodGranularity } = this.config;
-    const {
-      dataElementCode,
-      organisationUnitGroupCode,
-      startDate: passedStartDate,
-      endDate: passedEndDate,
-    } = this.query;
+    const { dataElementCode, startDate: passedStartDate, endDate: passedEndDate } = this.query;
     const { startDate, endDate } = getDateRange(periodGranularity, passedStartDate, passedEndDate);
 
-    // create index of all facilities
-    const facilityEntities = await Entity.getFacilityDescendantsWithCoordinates(
-      organisationUnitGroupCode,
-    );
-    const facilityData = keyBy(facilityEntities, 'code');
     const dhisParameters = {
       dataElementGroupCode: dataElementCode,
       orgUnitIdScheme: 'code',
-      startDate,
-      endDate,
+      startDate: startDate.toISOString(),
+      endDate: endDate.toISOString(),
     };
-    const query = {
-      organisationUnitCode: organisationUnitGroupCode,
-    };
-    const results = await this.dhisApi.getDataValuesInSets(dhisParameters, query);
+    const results = await this.dhisApi.getDataValuesInSets(dhisParameters, this.entity);
 
     // annotate each facility with the corresponding data from dhis
-    results.forEach(row => {
-      const data = facilityData[row.organisationUnit];
-      if (data) {
-        data[dataElementCode] = row.value === undefined ? '' : row.value.toString();
-      }
-    });
-
-    return facilityData;
+    return results.map(row => ({
+      organisationUnitCode: row.organisationUnit,
+      [dataElementCode]: row.value === undefined ? '' : row.value.toString(),
+    }));
   }
 }
 
@@ -53,8 +29,20 @@ class CheckTimelinessMeasureBuilder extends DataBuilder {
  * @param {Object} [measureBuilderConfig={}]
  * @returns {Promise<Object>}
  */
-export const checkTimeliness = async (dhisApi, query, measureBuilderConfig = {}) => {
-  const builder = new CheckTimelinessMeasureBuilder(dhisApi, measureBuilderConfig, query);
+export const checkTimeliness = async (
+  aggregator,
+  dhisApi,
+  query,
+  measureBuilderConfig = {},
+  entity,
+) => {
+  const builder = new CheckTimelinessMeasureBuilder(
+    aggregator,
+    dhisApi,
+    measureBuilderConfig,
+    query,
+    entity,
+  );
   const responseObject = await builder.build();
 
   return responseObject;

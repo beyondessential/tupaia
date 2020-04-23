@@ -1,1 +1,1 @@
-export { runPreaggreagation } from './runPreaggregation';
+export { runPreaggregation } from './runPreaggregation';

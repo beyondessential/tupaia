@@ -4,8 +4,10 @@
  */
 
 import groupBy from 'lodash.groupby';
+import keyBy from 'lodash.keyby';
 import pick from 'lodash.pick';
 
+import { getSortByKey, utcMoment, reduceToDictionary, stripFromString } from '@tupaia/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { transformObject } from '/apiV1/dataBuilders/transform';
 import {
@@ -13,8 +15,6 @@ import {
   isMetadataKey,
   metadataKeysToDataElementMap,
 } from '/apiV1/dataBuilders/helpers';
-import { getDataElementsFromCodes, stripFromStart } from '/apiV1/utils';
-import { getSortByKey, utcMoment, reduceToDictionary } from '/utils';
 
 const DATE_FORMAT = 'DD-MM-YYYY';
 const TOTAL_KEY = 'Total';
@@ -34,15 +34,13 @@ class TableOfEventsBuilder extends DataBuilder {
     };
   }
 
-  /**
-   * @returns {Promise<{ metadata: Array, dataElement: Array }>}
-   */
   async fetchDataSources() {
     const { dataElement: dataElementKeys, metadata: metadataKeys } = this.getKeysBySourceType();
-    const dataElements = await getDataElementsFromCodes(this.dhisApi, dataElementKeys, true);
-    const metadata = metadataKeysToDataElementMap(metadataKeys);
+    const dataElements = await this.fetchDataElements(dataElementKeys);
+    const codeToDataElement = keyBy(dataElements, 'code');
+    const metadataKeyToDataElement = metadataKeysToDataElementMap(metadataKeys);
 
-    return { ...dataElements, ...metadata };
+    return { ...codeToDataElement, ...metadataKeyToDataElement };
   }
 
   getKeysBySourceType() {
@@ -56,9 +54,17 @@ class TableOfEventsBuilder extends DataBuilder {
 
   async fetchEvents() {
     const { organisationUnitCode, trackedEntityInstance } = this.query;
-    const events = await this.getEvents({
-      organisationUnitCode: trackedEntityInstance ? null : organisationUnitCode,
-      dataElementIdScheme: 'code',
+    const getOrganisationUnitCode = () => {
+      // if we're fetching all data for a specific tracked entity instance, just limit it by country
+      // as the data could have occurred within org units other than its direct parent
+      if (trackedEntityInstance) {
+        const countryCode = organisationUnitCode.substring(0, 2);
+        return countryCode;
+      }
+      return organisationUnitCode;
+    };
+    const events = await super.fetchEvents({
+      organisationUnitCode: getOrganisationUnitCode(),
       dataValueFormat: 'object',
     });
 
@@ -153,7 +159,7 @@ class TableOfEventsBuilder extends DataBuilder {
 
   buildColumns() {
     const getDefaultTitle = key =>
-      stripFromStart(this.dataSources[key].name, this.config.stripFromColumnNames);
+      stripFromString(this.dataSources[key].name, this.config.stripFromColumnNames);
 
     return this.getSortedColumnConfig().map(({ key, title }) => ({
       key,
@@ -180,7 +186,7 @@ class TableOfEventsBuilder extends DataBuilder {
   }
 }
 
-export const tableOfEvents = async ({ dataBuilderConfig, query, entity }, dhisApi) => {
-  const builder = new TableOfEventsBuilder(dhisApi, dataBuilderConfig, query, entity);
+export const tableOfEvents = async ({ dataBuilderConfig, query, entity }, aggregator, dhisApi) => {
+  const builder = new TableOfEventsBuilder(aggregator, dhisApi, dataBuilderConfig, query, entity);
   return builder.build();
 };

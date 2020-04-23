@@ -5,32 +5,33 @@
 
 import { SumBuilder } from '/apiV1/dataBuilders/generic/sum/sum';
 import { DataPerOrgUnitBuilder } from './DataPerOrgUnitBuilder';
-import { AGGREGATION_TYPES } from '/dhis';
 
 export class SumPerOrgUnitBuilder extends DataPerOrgUnitBuilder {
   getBaseBuilderClass = () => SumBuilder;
 
   async fetchResults() {
-    const { organisationUnitGroupCode } = this.query;
-
-    const analyticsQueryConfig = this.getBaseBuilder().getAnalyticsQueryConfig();
-    const { results } = await this.getAnalytics({
-      ...analyticsQueryConfig,
-      outputIdScheme: 'code',
-      organisationUnitCode: organisationUnitGroupCode,
+    const { dataElementCodes } = this.config;
+    const { results } = await this.fetchAnalytics(dataElementCodes, {
+      organisationUnitCode: this.entity.code,
     });
-
     return results;
   }
 }
 
-export const sumLatestPerOrgUnit = async (dhisApi, query, measureBuilderConfig) => {
+export const sumLatestPerOrgUnit = async (
+  aggregator,
+  dhisApi,
+  query,
+  measureBuilderConfig,
+  entity,
+) => {
   const builder = new SumPerOrgUnitBuilder(
+    aggregator,
     dhisApi,
     measureBuilderConfig,
     query,
-    null,
-    AGGREGATION_TYPES.MOST_RECENT,
+    entity,
+    aggregator.aggregationTypes.MOST_RECENT,
   );
   return builder.build();
 };

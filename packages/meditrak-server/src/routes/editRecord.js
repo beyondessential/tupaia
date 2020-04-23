@@ -3,12 +3,11 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 
-import { respond } from '../respond';
-import { TYPES } from '../database';
-import { ValidationError } from '../errors';
+import { respond, ValidationError } from '@tupaia/utils';
+import { TYPES } from '@tupaia/database';
 import { ObjectValidator, constructRecordExistsWithId } from '../validation';
 import { resourceToRecordType } from '../utilities';
-import { editUserAccount, editSurveyResponse, editOption, editOptionSet } from '../dataAccessors';
+import { editUserAccount, editOption, editOptionSet } from '../dataAccessors';
 
 const EDITABLE_RECORD_TYPES = [
   TYPES.USER_ACCOUNT,
@@ -26,7 +25,6 @@ const EDITABLE_RECORD_TYPES = [
 
 const CUSTOM_RECORD_UPDATERS = {
   [TYPES.USER_ACCOUNT]: editUserAccount,
-  [TYPES.SURVEY_RESPONSE]: editSurveyResponse,
   [TYPES.OPTION_SET]: editOptionSet,
   [TYPES.OPTION]: editOption,
 };
@@ -52,7 +50,7 @@ export async function editRecord(req, res) {
   if (CUSTOM_RECORD_UPDATERS[recordType]) {
     await CUSTOM_RECORD_UPDATERS[recordType](models, id, updatedFields);
   } else {
-    await database.updateById(recordType, id, updatedFields);
+    await models.getModelForDatabaseType(recordType).updateById(id, updatedFields);
   }
   respond(res, { message: `Successfully updated ${resource}` });
 }

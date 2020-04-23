@@ -4,16 +4,15 @@
  */
 
 import keyBy from 'lodash.keyby';
+
+import { stripFromString } from '@tupaia/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { stripFromStart } from '/apiV1/utils';
 import { ENTITY_TYPES } from '/models/Entity';
 
 class StockoutsDataBuilder extends DataBuilder {
   async build() {
-    const { results, metadata } = await this.getAnalytics({
-      outputIdScheme: 'code',
-      ...this.config,
-    });
+    const { dataElementCodes } = this.config;
+    const { results, metadata } = await this.fetchAnalytics(dataElementCodes);
     const stockoutData = this.entity.isFacility()
       ? this.getStockoutsList(results, metadata)
       : await this.getStockoutsByFacility(results, metadata);
@@ -34,7 +33,7 @@ class StockoutsDataBuilder extends DataBuilder {
       const orgUnitName = facilitiesByCode[vaccine.organisationUnit].name;
       const stockout =
         vaccine.value === 0 &&
-        stripFromStart(
+        stripFromString(
           dataElementCodeToName[vaccine.dataElement],
           this.config.stripFromDataElementNames,
         );
@@ -58,7 +57,7 @@ class StockoutsDataBuilder extends DataBuilder {
     return results
       .filter(({ value }) => value === 0)
       .map(({ dataElement: dataElementCode }) => ({
-        value: stripFromStart(
+        value: stripFromString(
           metadata.dataElementCodeToName[dataElementCode],
           this.config.stripFromDataElementNames,
         ),
@@ -66,7 +65,7 @@ class StockoutsDataBuilder extends DataBuilder {
   };
 }
 
-export const stockouts = async ({ dataBuilderConfig, query, entity }, dhisApi) => {
-  const builder = new StockoutsDataBuilder(dhisApi, dataBuilderConfig, query, entity);
+export const stockouts = async ({ dataBuilderConfig, query, entity }, aggregator, dhisApi) => {
+  const builder = new StockoutsDataBuilder(aggregator, dhisApi, dataBuilderConfig, query, entity);
   return builder.build();
 };

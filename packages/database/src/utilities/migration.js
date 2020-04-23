@@ -20,31 +20,8 @@ class RequiredParameterError extends Error {
   }
 }
 
-export const rejectOnError = (resolve, reject, error) => {
-  if (error) {
-    console.error(error);
-    reject(error);
-  } else {
-    resolve();
-  }
-};
-
-export function insertMultipleObjects(db, table, objects) {
-  var chain = Promise.resolve();
-  objects.map(o => {
-    chain = chain.then(() => insertObject(db, table, o));
-  });
-  return chain;
-}
-
-export function insertObject(db, table, data) {
-  const entries = Object.entries(data);
-  const keys = entries.map(([k, v]) => k);
-  const values = entries.map(([k, v]) => v);
-  return new Promise((resolve, reject) => {
-    return db.insert(table, keys, values, error => rejectOnError(resolve, reject, error));
-  });
-}
+export const insertObject = async (db, table, data, onError) =>
+  db.insert(table, Object.keys(data), Object.values(data), onError);
 
 export const arrayToDbString = array => array.map(item => `'${item}'`).join(', ');
 
@@ -135,7 +112,27 @@ export async function replaceArrayValue(db, table, column, oldValue, newValueInp
 }
 
 /**
- * Use to calculate "bounds" for all entities of type "region" or "facility".
+ * PostgreSQL does not supporting removing values from an enum,
+ * so instead of that we can replace an existing enum with a new one
+ *
+ * @param {TupaiaDatabase} db
+ * @param {string} enumName
+ * @param {string[]} enumValues
+ */
+export const replaceEnum = (db, enumName, enumValues) => {
+  const enumNameTemp = `${enumName}_temp$`;
+
+  // Caution! `db` here should be our internal database, not the db provided by `db-migrate`
+  return db.executeSql(`
+      ALTER TYPE ${enumName} RENAME TO ${enumNameTemp};
+      CREATE TYPE ${enumName} AS ENUM(${arrayToDbString(enumValues)});
+      ALTER TABLE entity ALTER COLUMN type TYPE ${enumName} USING type::text::${enumName};
+      DROP TYPE ${enumNameTemp};
+    `);
+};
+
+/**
+ * Use to calculate "bounds" for all entities with a region
  * Will only calculate for entities with NULL bounds, i.e. use this for newly
  * added entities, not for updating entities with existing bounds.
  *
@@ -209,3 +206,113 @@ function deleteReport(db, reportId) {
 async function updateBuilderConfigByReportId(db, newConfig, reportId) {
   return updateValues(db, 'dashboardReport', { dataBuilderConfig: newConfig }, { id: reportId });
 }
+
+const convertToTableOfDataValuesSql = table => {
+  return `
+  UPDATE
+      "dashboardReport"
+  SET
+    "dataBuilder" = 'tableOfDataValues',
+    "dataBuilderConfig" = '${JSON.stringify({
+      rows: table.category ? { category: table.category, rows: table.rows } : table.rows,
+      columns: table.columns,
+      cells: table.cells,
+    })}'
+  WHERE
+    id = '${table.id}';
+  `;
+};
+
+export const buildSingleColumnTableCells = ({
+  prefix = '',
+  start = 0,
+  end = 0,
+  skipCells = [],
+  addColumnTotal = false,
+} = {}) => {
+  const cells = [];
+  for (let i = start; i <= end; i++) {
+    if (skipCells.includes(i)) {
+      continue;
+    }
+    cells.push([`${prefix}${i}`]);
+  }
+
+  if (addColumnTotal) {
+    cells.push(['$columnTotal']);
+  }
+
+  return cells;
+};
+
+export const build2DTableCells = ({
+  prefix = '',
+  numRows = 0,
+  numCols = 0,
+  startCell = 0,
+  skipCells = [],
+  insertCells = [],
+  addRowTotal = false,
+  addColumnTotal = false,
+} = {}) => {
+  const cells = [];
+
+  let i = startCell;
+  for (let row = 0; row < numRows - (addColumnTotal ? 1 : 0); row++) {
+    const cellRow = [];
+    for (let column = 0; column < numCols - (addRowTotal ? 1 : 0); column++) {
+      const insertCell = insertCells.find(cell => {
+        return cell.rowIndex === row && cell.colIndex === column;
+      });
+
+      if (insertCell) {
+        cellRow.push(insertCell.name);
+      } else {
+        cellRow.push(`${prefix}${i}`);
+        i++;
+        while (skipCells.includes(i)) {
+          // Data element does not exist, skip
+          i++;
+        }
+      }
+    }
+    if (addRowTotal) {
+      cellRow.push('$rowTotal');
+    }
+
+    cells.push(cellRow);
+  }
+
+  if (addColumnTotal) {
+    cells.push(
+      Object.keys(new Array(numCols).fill(null)).map(index => {
+        if (addRowTotal && index == numCols - 1) {
+          return '$total'; // If both rowTotal and colTotal, mark as tableTotal
+        }
+
+        return '$columnTotal';
+      }),
+    );
+  }
+
+  return cells;
+};
+
+export const build2dTableStringFormatCells = (format, rows, cols, { addRowTotal = false } = {}) => {
+  const cells = [];
+
+  rows.forEach(row => {
+    const cellRow = [];
+    cols.forEach(col => {
+      cellRow.push(format(row, col));
+    });
+
+    if (addRowTotal) {
+      cellRow.push('$rowTotal');
+    }
+
+    cells.push(cellRow);
+  });
+
+  return cells;
+};

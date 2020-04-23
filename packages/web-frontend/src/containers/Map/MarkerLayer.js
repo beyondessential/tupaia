@@ -11,9 +11,13 @@ import { connect } from 'react-redux';
 import { LayerGroup } from 'react-leaflet';
 import { changeOrgUnit, openMapPopup, closeMapPopup } from '../../actions';
 import { CircleProportionMarker, IconMarker, MeasurePopup } from '../../components/Marker';
-import { selectMeasureName } from '../../reducers/mapReducers';
-import { getMeasureDisplayInfo } from '../../utils';
-import { MEASURE_TYPE_SHADING } from '../../utils/measures';
+import {
+  selectHasPolygonMeasure,
+  selectAllMeasuresWithDisplayInfo,
+  selectRadiusScaleFactor,
+} from '../../reducers/mapReducers';
+import { selectOrgUnit } from '../../reducers/orgUnitReducers';
+import { ShadedPolygon } from './ConnectedPolygon';
 
 export const MARKER_TYPES = {
   DOT_MARKER: 'dot',
@@ -23,21 +27,17 @@ export const MARKER_TYPES = {
 };
 
 const MIN_RADIUS = 1;
-const MAX_ALLOWED_RADIUS = 1000;
-
-function calculateRadiusScaleFactor(processedDataSet) {
-  // Check if any of the radii in the dataset are larger than the max allowed
-  // radius, and scale everything down proportionally if so.
-  // (this needs to happen here instead of inside the circle marker component
-  // because it needs to operate on the dataset level, not the datapoint level)
-  const maxRadius = processedDataSet
-    .map(d => parseInt(d.radius, 10) || 1)
-    .reduce((state, current) => Math.max(state, current), 0);
-  return maxRadius < MAX_ALLOWED_RADIUS ? 1 : (1 / maxRadius) * MAX_ALLOWED_RADIUS;
-}
 
 const MeasureMarker = props => {
-  const { icon, radius } = props;
+  const { icon, radius, region, displayPolygons } = props;
+
+  if (displayPolygons) {
+    if (region) {
+      return <ShadedPolygon positions={region} {...props} />;
+    }
+
+    return <IconMarker {...props} />;
+  }
 
   if (parseInt(radius, 10) === 0) {
     if (icon) {
@@ -86,13 +86,19 @@ export class MarkerLayer extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    const { measureInfo, measureName, measureId, sidePanelWidth, hiddenMeasures } = this.props;
+    const { measureData, currentCountry, measureId, sidePanelWidth } = this.props;
     if (
-      nextProps.measureName !== measureName ||
       nextProps.measureId !== measureId ||
-      nextProps.measureInfo.currentCountry !== measureInfo.currentCountry ||
+      nextProps.currentCountry !== currentCountry ||
       nextProps.sidePanelWidth !== sidePanelWidth ||
-      nextProps.hiddenMeasures !== hiddenMeasures
+      nextProps.measureData.length !== measureData.length ||
+      nextProps.measureData.find(
+        (data, index) =>
+          data.organisationUnitCode !== measureData[index].organisationUnitCode ||
+          data.coordinates !== measureData[index].coordinates ||
+          data.color !== measureData[index].color ||
+          data.isHidden !== measureData[index].isHidden,
+      )
     ) {
       return true;
     }
@@ -144,32 +150,27 @@ export class MarkerLayer extends Component {
 
   renderMeasures() {
     const {
-      measureInfo,
+      measureData,
+      measureOptions,
       onChangeOrgUnit,
       sidePanelWidth,
       measureName,
       isMeasureLoading,
+      radiusScaleFactor,
+      displayPolygons,
     } = this.props;
 
-    const { measureData, measureOptions, hiddenMeasures } = measureInfo;
-    if (
-      !measureData ||
-      measureData.length < 1 ||
-      !measureOptions.find(mo => mo.type !== MEASURE_TYPE_SHADING)
-    )
-      return null;
+    if (!measureData || !measureData.length) return null;
+
     if (isMeasureLoading) return null;
     const processedData = measureData
-      .filter(data => data.coordinates.length === 2)
-      .map(data => getMeasureDisplayInfo(data, measureOptions, hiddenMeasures))
+      .filter(data => data.coordinates && data.coordinates.length === 2)
       .filter(displayInfo => !displayInfo.isHidden);
-
-    const radiusScaleFactor = calculateRadiusScaleFactor(processedData);
 
     const PopupChild = ({ data }) => (
       <MeasurePopup
         data={data}
-        measureOptions={measureInfo.measureOptions}
+        measureOptions={measureOptions}
         measureName={measureName}
         sidePanelWidth={sidePanelWidth}
         onOrgUnitClick={onChangeOrgUnit}
@@ -187,6 +188,7 @@ export class MarkerLayer extends Component {
           key={code}
           markerRef={ref => this.addMarkerRef(code, ref)}
           radiusScaleFactor={radiusScaleFactor}
+          displayPolygons={displayPolygons}
           {...data}
         >
           {popup}
@@ -200,40 +202,47 @@ export class MarkerLayer extends Component {
   }
 }
 
-MarkerLayer.propTypes = {
-  measureInfo: PropTypes.shape({}).isRequired,
-};
+MarkerLayer.propTypes = {};
 
 const mapStateToProps = state => {
   const { isSidePanelExpanded } = state.global;
   const {
-    measureInfo,
+    measureInfo: { measureOptions, measureId, currentCountry },
     popup,
     isMeasureLoading,
-    measureInfo: { hiddenMeasures },
   } = state.map;
+
   const { contractedWidth, expandedWidth } = state.dashboard;
+  const measureData = selectAllMeasuresWithDisplayInfo(state)
+    .map(data => ({
+      ...data,
+      ...selectOrgUnit(state, data.organisationUnitCode),
+    }))
+    .map(({ location, ...otherData }) => ({
+      ...otherData,
+      coordinates: location && location.point,
+      region: location && location.region,
+    }));
 
   return {
     isMeasureLoading,
-    hiddenMeasures,
-    measureInfo,
-    measureName: selectMeasureName(state),
+    measureOptions,
+    measureId,
+    currentCountry,
+    measureData,
+    radiusScaleFactor: selectRadiusScaleFactor(state),
+    displayPolygons: selectHasPolygonMeasure(state),
     currentPopupId: popup,
-    measureId: measureInfo.measureId,
     sidePanelWidth: isSidePanelExpanded ? expandedWidth : contractedWidth,
   };
 };
 
 const mapDispatchToProps = dispatch => ({
-  onChangeOrgUnit: (organisationUnit, shouldChangeMapBounds = false) => {
-    dispatch(changeOrgUnit(organisationUnit, shouldChangeMapBounds));
+  onChangeOrgUnit: (organisationUnitCode, shouldChangeMapBounds = false) => {
+    dispatch(changeOrgUnit(organisationUnitCode, shouldChangeMapBounds));
   },
   onPopupOpen: orgUnitCode => dispatch(openMapPopup(orgUnitCode)),
   onPopupClose: orgUnitCode => dispatch(closeMapPopup(orgUnitCode)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(MarkerLayer);
+export default connect(mapStateToProps, mapDispatchToProps)(MarkerLayer);
