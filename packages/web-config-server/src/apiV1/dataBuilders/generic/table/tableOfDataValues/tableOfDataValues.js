@@ -116,7 +116,11 @@ export class TableOfDataValuesBuilder extends DataBuilder {
 
     if (this.tableConfig.columns === ORG_UNIT_COL_KEY) this.buildOrgsFromResults();
     if (!this.tableConfig.hasColumnCategories()) {
-      return this.tableConfig.columns.map(buildColumn);
+      const builtColumns = this.tableConfig.columns.map(buildColumn);
+      return this.tableConfig.columns === ORG_UNIT_COL_KEY ||
+        this.tableConfig.columnType === ORG_UNIT_COL_KEY
+        ? this.replaceOrgUnitCodesWithNames(builtColumns)
+        : builtColumns;
     }
 
     const categoryKeyToTitle = await this.getColumnCategoryToTitle();
@@ -226,6 +230,7 @@ export class TableOfDataValuesBuilder extends DataBuilder {
   buildOrgsFromResults() {
     const orgUnitsWithData = reduceToSet(this.results, 'organisationUnit');
     this.tableConfig.columns = Array.from(orgUnitsWithData);
+    this.tableConfig.columnType = this.tableConfig.columnType || ORG_UNIT_COL_KEY;
   }
 
   replaceOrgUnitCodesWithNames = async columns => {
