@@ -18,45 +18,27 @@ class ValuesPer100kPerPeriodByOrgUnitBuilder extends DataBuilder {
   async build() {
     const { dataElementCodes, divisor: populationDataElement } = this.config;
     const { results } = await this.fetchAnalytics(dataElementCodes);
+
     const { results: populationResults } = await this.fetchAnalytics(
       [populationDataElement],
       {},
-      this.aggregator.aggregationTypes.RAW,
+      this.aggregator.aggregationTypes.FINAL_EACH_DAY_FILL_EMPTY_DAYS,
+      { fillEmptyValuesTilCurrentPeriod: true },
     );
 
     if (results.length === 0) return { data: results };
 
     const populationResultsGroupedByPeriod = this.groupPopulationResultsByPeriod(populationResults);
 
-    //Get an array of all the population result periods and sort them desc
-    const sortedPopulationPeriodsDesc = Object.keys(populationResultsGroupedByPeriod).sort(
-      (period1, period2) => period2 - period1,
-    );
-
     const resultsPerPeriod = {};
-
-    //Store a map {period -> populationPeriod} so that if we already process one and cached, we don't have to do it again.
-    const cachedClosestPopulationPeriod = {};
 
     results.forEach(result => {
       const { period, value, organisationUnit } = result;
 
-      //See if the closest population period is already found
-      let closestPopulationPeriod = cachedClosestPopulationPeriod[period];
+      //Assume that we always have population result available for a period.
+      const populationResultByOrg = populationResultsGroupedByPeriod[period];
 
-      if (!closestPopulationPeriod) {
-        closestPopulationPeriod = this.getClosestPopulationResultPeriod(
-          populationResultsGroupedByPeriod,
-          sortedPopulationPeriodsDesc,
-          period,
-        );
-
-        cachedClosestPopulationPeriod[period] = closestPopulationPeriod;
-      }
-
-      const calcResultsByOrg = populationResultsGroupedByPeriod[closestPopulationPeriod];
-
-      const valuePer100k = Math.round((value / calcResultsByOrg[organisationUnit]) * 100000);
+      const valuePer100k = Math.round((value / populationResultByOrg[organisationUnit]) * 100000);
 
       resultsPerPeriod[period] = {
         ...resultsPerPeriod[period],
@@ -108,38 +90,6 @@ class ValuesPer100kPerPeriodByOrgUnitBuilder extends DataBuilder {
     });
 
     return populationResultsGroupedByPeriod;
-  };
-
-  /**
-   * Get the closest period of population results that match with the period of the data.
-   * We assume that sortedPopulationPeriodsDesc array has at least 1 period. Otherwise, we have a bigger problem.
-   * @param {Object} populationResultsGroupedByPeriod Population results grouped by period.
-   * @param {Object} sortedPopulationPeriodsDesc Array of all the population periods, sort in descending order.
-   * @param {string} dataPeriod The period of the current processing result.
-   */
-  getClosestPopulationResultPeriod = (
-    populationResultsGroupedByPeriod,
-    sortedPopulationPeriodsDesc,
-    dataPeriod,
-  ) => {
-    //If we have the exact period of the population result, great!
-    if (populationResultsGroupedByPeriod[dataPeriod]) {
-      return dataPeriod;
-    }
-
-    if (sortedPopulationPeriodsDesc && sortedPopulationPeriodsDesc.length === 1) {
-      return sortedPopulationPeriodsDesc[0];
-    }
-
-    //eg: sortedPopulationPeriodsDesc = [20200406, 20200401, 20200326]; dataPeriod = 20200328. 20200326 will be picked.
-    const closestPopulationPeriod = sortedPopulationPeriodsDesc.find(period => period < dataPeriod);
-
-    //If we cannot pick the closestPopulationPeriod, it means that all the population periods are after the data period,
-    //choose the closest one which is the last period of the array.
-    //eg: sortedPopulationPeriodsDesc = [20200406, 20200401, 20200326]; dataPeriod = 20200323. 20200326 will be picked.
-    return (
-      closestPopulationPeriod || sortedPopulationPeriodsDesc[sortedPopulationPeriodsDesc.length - 1]
-    );
   };
 }
 

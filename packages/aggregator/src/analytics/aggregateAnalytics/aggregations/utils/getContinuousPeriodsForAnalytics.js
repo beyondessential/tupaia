@@ -10,14 +10,20 @@ import { convertToPeriod, getCurrentPeriod, getPeriodsInRange } from '@tupaia/dh
  * Periods are broken down by aggregationPeriod granularity
  * @param {} analytics
  * @param {*} aggregationPeriod
+ * @param {*} continueTilCurrentPeriod
  */
-export const getContinuousPeriodsForAnalytics = (analytics, aggregationPeriod) => {
+export const getContinuousPeriodsForAnalytics = (
+  analytics,
+  aggregationPeriod,
+  continueTilCurrentPeriod,
+) => {
   const periodsInAnalytics = analytics.map(analytic =>
     convertToPeriod(analytic.period, aggregationPeriod),
   );
-  const endPeriod = periodsInAnalytics.length
-    ? Math.max(...periodsInAnalytics).toString()
-    : getCurrentPeriod(aggregationPeriod);
+  const endPeriod =
+    !continueTilCurrentPeriod && periodsInAnalytics.length
+      ? Math.max(...periodsInAnalytics).toString()
+      : getCurrentPeriod(aggregationPeriod);
 
   const startPeriod = periodsInAnalytics.length
     ? Math.min(...periodsInAnalytics).toString()

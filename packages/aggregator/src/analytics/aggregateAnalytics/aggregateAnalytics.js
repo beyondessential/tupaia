@@ -19,7 +19,7 @@ export const aggregateAnalytics = (
   aggregationConfig = {},
 ) => {
   const { DAY, WEEK, MONTH, YEAR } = PERIOD_TYPES;
-  const { orgUnitToGroupKeys } = aggregationConfig;
+  const { orgUnitToGroupKeys, fillEmptyValuesTilCurrentPeriod } = aggregationConfig;
 
   switch (aggregationType) {
     case AGGREGATION_TYPES.MOST_RECENT:
@@ -32,7 +32,10 @@ export const aggregateAnalytics = (
     case AGGREGATION_TYPES.FINAL_EACH_DAY:
       return getFinalValuePerPeriod(analytics, DAY);
     case AGGREGATION_TYPES.FINAL_EACH_DAY_FILL_EMPTY_DAYS:
-      return getFinalValuePerPeriod(analytics, DAY, { fillEmptyValues: true });
+      return getFinalValuePerPeriod(analytics, DAY, {
+        fillEmptyValues: true,
+        fillEmptyValuesTilCurrentPeriod,
+      });
     case AGGREGATION_TYPES.FINAL_EACH_WEEK:
       return getFinalValuePerPeriod(analytics, WEEK);
     case AGGREGATION_TYPES.FINAL_EACH_MONTH:
