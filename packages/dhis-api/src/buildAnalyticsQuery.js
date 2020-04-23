@@ -5,6 +5,10 @@
 
 import { getUniqueEntries } from '@tupaia/utils';
 
+import { DHIS2_RESOURCE_TYPES } from './types';
+
+const { DATA_ELEMENT, ORGANISATION_UNIT } = DHIS2_RESOURCE_TYPES;
+
 const DX_BATCH_SIZE = 400;
 const OU_BATCH_SIZE = 400;
 
@@ -23,20 +27,21 @@ const getDxDimension = query => {
 
 const getOuDimension = query => {
   const { organisationUnitCode, organisationUnitCodes } = query;
-
   return organisationUnitCode ? [organisationUnitCode] : getUniqueEntries(organisationUnitCodes);
 };
 
-const buildAnalyticQuery = queryInput => {
+const addTemporalDimension = (query, { period, startDate, endDate }) =>
+  period
+    ? { ...query, dimension: (query.dimension || []).concat(`pe:${period}`) }
+    : { ...query, startDate, endDate };
+
+const buildDataValueAnalyticsQuery = queryInput => {
   const {
     dx,
     ou,
     inputIdScheme = 'code',
     outputIdScheme = 'uid',
     includeMetadataDetails = true,
-    period,
-    startDate,
-    endDate,
   } = queryInput;
 
   const query = {
@@ -45,18 +50,10 @@ const buildAnalyticQuery = queryInput => {
     includeMetadataDetails,
     dimension: [`dx:${dx.join(';')}`, `ou:${ou.join(';')}`, 'co'],
   };
-
-  if (period) {
-    query.dimension.push(`pe:${period}`);
-  } else {
-    query.startDate = startDate;
-    query.endDate = endDate;
-  }
-
-  return query;
+  return addTemporalDimension(query, queryInput);
 };
 
-export const buildAnalyticQueries = queryInput => {
+export const buildDataValueAnalyticsQueries = queryInput => {
   const dx = getDxDimension(queryInput);
   const ou = getOuDimension(queryInput);
 
@@ -65,7 +62,7 @@ export const buildAnalyticQueries = queryInput => {
   for (let i = 0; i < dx.length; i += DX_BATCH_SIZE) {
     for (let j = 0; j < ou.length; j += OU_BATCH_SIZE) {
       queries.push(
-        buildAnalyticQuery({
+        buildDataValueAnalyticsQuery({
           ...queryInput,
           dx: dx.slice(i, i + DX_BATCH_SIZE),
           ou: ou.slice(i, i + OU_BATCH_SIZE),
@@ -75,4 +72,17 @@ export const buildAnalyticQueries = queryInput => {
   }
 
   return queries;
+};
+
+export const buildEventAnalyticsQuery = async (dhisApi, queryInput) => {
+  const { dataElementCodes = [], organisationUnitCodes } = queryInput;
+  if (!organisationUnitCodes || organisationUnitCodes.length === 0) {
+    throw new Error('Event analytics require at least one organisation unit code');
+  }
+
+  const dxDimensions = await dhisApi.codesToIds(DATA_ELEMENT, dataElementCodes);
+  const orgUnitIds = await dhisApi.codesToIds(ORGANISATION_UNIT, organisationUnitCodes);
+
+  const query = { dimension: [...dxDimensions, `ou:${orgUnitIds.join(';')}`] };
+  return addTemporalDimension(query, queryInput);
 };
