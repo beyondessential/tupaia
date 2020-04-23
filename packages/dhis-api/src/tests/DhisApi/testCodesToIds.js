@@ -31,7 +31,7 @@ export const testCodesToIds = () => {
     fetchStub
       .withArgs('dataElements', {
         fields: sinon.match.array.contains(['id']),
-        filter: { comparator: 'in', code: '[POP01,POP02]' },
+        filter: { comparator: 'in', code: sinon.match.in(['[POP01,POP02]', '[POP02,POP01]']) },
       })
       .resolves({ dataElements: DATA_ELEMENTS.map(({ id, code }) => ({ id, code })) });
 

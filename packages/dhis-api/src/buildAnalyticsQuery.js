@@ -5,10 +5,6 @@
 
 import { getUniqueEntries } from '@tupaia/utils';
 
-import { DHIS2_RESOURCE_TYPES } from './types';
-
-const { DATA_ELEMENT, ORGANISATION_UNIT } = DHIS2_RESOURCE_TYPES;
-
 const DX_BATCH_SIZE = 400;
 const OU_BATCH_SIZE = 400;
 
@@ -74,15 +70,12 @@ export const buildDataValueAnalyticsQueries = queryInput => {
   return queries;
 };
 
-export const buildEventAnalyticsQuery = async (dhisApi, queryInput) => {
-  const { dataElementCodes = [], organisationUnitCodes } = queryInput;
-  if (!organisationUnitCodes || organisationUnitCodes.length === 0) {
-    throw new Error('Event analytics require at least one organisation unit code');
+export const buildEventAnalyticsQuery = queryInput => {
+  const { dataElementIds = [], organisationUnitIds } = queryInput;
+  if (!organisationUnitIds || organisationUnitIds.length === 0) {
+    throw new Error('Event analytics require at least one organisation unit id');
   }
 
-  const dxDimensions = await dhisApi.codesToIds(DATA_ELEMENT, dataElementCodes);
-  const orgUnitIds = await dhisApi.codesToIds(ORGANISATION_UNIT, organisationUnitCodes);
-
-  const query = { dimension: [...dxDimensions, `ou:${orgUnitIds.join(';')}`] };
+  const query = { dimension: [...dataElementIds, `ou:${organisationUnitIds.join(';')}`] };
   return addTemporalDimension(query, queryInput);
 };

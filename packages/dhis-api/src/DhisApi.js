@@ -7,10 +7,13 @@ import winston from 'winston';
 import keyBy from 'lodash.keyby';
 
 import { aggregateAnalytics } from '@tupaia/aggregator';
-import { CustomError, getSortByKey, utcMoment } from '@tupaia/utils';
+import { CustomError, getSortByKey, reduceToDictionary, utcMoment } from '@tupaia/utils';
 import { DhisFetcher } from './DhisFetcher';
 import { DHIS2_RESOURCE_TYPES } from './types';
-import { replaceElementIdsWithCodesInEvents } from './replaceElementIdsWithCodesInEvents';
+import {
+  translateElementIdsToCodesInEvents,
+  translateElementIdsToCodesInEventAnalytics,
+} from './translateElementIdsToCodes';
 import { RESPONSE_TYPES, getDiagnosticsFromResponse } from './responseUtils';
 import { buildDataValueAnalyticsQueries, buildEventAnalyticsQuery } from './buildAnalyticsQuery';
 
@@ -247,7 +250,7 @@ export class DhisApi {
 
     let events = eventId ? [response] : response.events;
     if (dataElementIdScheme === 'code') {
-      events = await replaceElementIdsWithCodesInEvents(this, events);
+      events = await translateElementIdsToCodesInEvents(this, events);
     }
     if (dataValueFormat === 'object') {
       events = events.map(event => ({
@@ -326,12 +329,40 @@ export class DhisApi {
   }
 
   async getEventAnalytics(originalQuery) {
-    const query = await buildEventAnalyticsQuery(this, originalQuery);
-    const { programCode } = query;
-    const programId = await this.programCodeToId(programCode);
-    const endpoint = `analytics/events/query/${programId}`;
+    const {
+      programCode,
+      dataElementCodes,
+      organisationUnitCodes,
+      dataElementIdScheme = 'code',
+      period,
+      startDate,
+      endDate,
+    } = originalQuery;
 
-    return this.fetch(endpoint, query);
+    const endpoint = await this.buildEventAnalyticsEndpoint(programCode);
+    const dataElements = await this.fetchDataElements(dataElementCodes);
+    const dataElementIds = dataElements.map(({ id }) => id);
+    const organisationUnitIds = await this.codesToIds(ORGANISATION_UNIT, organisationUnitCodes);
+    const query = await buildEventAnalyticsQuery({
+      dataElementIds,
+      organisationUnitIds,
+      period,
+      startDate,
+      endDate,
+    });
+
+    const response = await this.fetch(endpoint, query);
+    if (dataElementIdScheme !== 'code') {
+      return response;
+    }
+
+    const dataElementIdToCode = reduceToDictionary(dataElements, 'id', 'code');
+    return translateElementIdsToCodesInEventAnalytics(response, dataElementIdToCode);
+  }
+
+  async buildEventAnalyticsEndpoint(programCode) {
+    const programId = await this.programCodeToId(programCode);
+    return `analytics/events/query/${programId}`;
   }
 
   async buildDataValuesInSetsQuery(originalQuery) {

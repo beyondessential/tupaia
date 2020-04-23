@@ -4,32 +4,9 @@
  */
 
 import { expect } from 'chai';
-import sinon from 'sinon';
 
-import { DhisApi } from '../DhisApi';
 import { buildEventAnalyticsQuery } from '../buildAnalyticsQuery';
 import { assertDhisDimensionHasMembers } from './helpers';
-
-const CODE_TO_ID_BY_RESOURCE_TYPE = {
-  dataElements: {
-    POP01: 'pop01_dhisId',
-    POP02: 'pop02_dhisId',
-  },
-  organisationUnits: {
-    TO: 'to_dhisId',
-    PG: 'pg_dhisId',
-  },
-};
-
-const dhisApi = sinon.createStubInstance(DhisApi, {
-  codesToIds: sinon.stub().callsFake(async (resourceType, codes) => {
-    const codeToId = CODE_TO_ID_BY_RESOURCE_TYPE[resourceType];
-
-    return Object.keys(codeToId)
-      .filter(code => codes.includes(code))
-      .map(code => codeToId[code]);
-  }),
-});
 
 const assertArrayHasDimensionWithMembers = (array, dimensionKey, members) => {
   const errorMessage = `Array does not include a '${dimensionKey}' dimension with the target members`;
@@ -51,56 +28,50 @@ const assertArrayHasDimensionWithMembers = (array, dimensionKey, members) => {
 
 describe('buildAnalyticsQuery', () => {
   describe('buildEventAnalyticsQuery()', () => {
-    it('should throw an error if an organisation unit is not specified', () => {
-      expect(buildEventAnalyticsQuery(dhisApi, {})).to.eventually.be.rejectedWith(
-        'organisation unit',
-      );
+    it('should throw an error if an organisation unit is not specified', () =>
+      expect(() => buildEventAnalyticsQuery({})).to.throw('organisation unit'));
+
+    it('should allow empty data elements', () => {
+      const expectMethodToNotThrowError = dataElementIds =>
+        expect(() =>
+          buildEventAnalyticsQuery({ dataElementIds, organisationUnitIds: ['to_dhisId'] }),
+        ).to.not.throw();
+
+      return [undefined, []].map(expectMethodToNotThrowError);
     });
 
-    it('should allow empty data element codes', async () => {
-      const expectMethodToNotThrowError = async dataElementCodes =>
-        expect(
-          buildEventAnalyticsQuery(dhisApi, {
-            dataElementCodes,
-            organisationUnitCodes: ['TO'],
-          }),
-        ).to.eventually.not.be.rejected;
-
-      return Promise.all([undefined, []].map(expectMethodToNotThrowError));
-    });
-
-    it('single data element code', async () => {
-      const results = await buildEventAnalyticsQuery(dhisApi, {
-        dataElementCodes: ['POP01'],
-        organisationUnitCodes: ['TO'],
+    it('single data element', () => {
+      const results = buildEventAnalyticsQuery({
+        dataElementIds: ['pop01_dhisId'],
+        organisationUnitIds: ['to_dhisId'],
       });
 
       expect(results).to.have.property('dimension');
       expect(results.dimension).to.include.members(['pop01_dhisId']);
     });
 
-    it('multiple data element codes', async () => {
-      const results = await buildEventAnalyticsQuery(dhisApi, {
-        dataElementCodes: ['POP01', 'POP02'],
-        organisationUnitCodes: ['TO'],
+    it('multiple data elements', () => {
+      const results = buildEventAnalyticsQuery({
+        dataElementIds: ['pop01_dhisId', 'pop02_dhisId'],
+        organisationUnitIds: ['to_dhisId'],
       });
 
       expect(results).to.have.property('dimension');
       expect(results.dimension).to.include.members(['pop01_dhisId', 'pop02_dhisId']);
     });
 
-    it('single organisation unit', async () => {
-      const results = await buildEventAnalyticsQuery(dhisApi, {
-        organisationUnitCodes: ['TO'],
+    it('single organisation unit', () => {
+      const results = buildEventAnalyticsQuery({
+        organisationUnitIds: ['to_dhisId'],
       });
 
       expect(results).to.have.property('dimension');
       expect(results.dimension).to.include.members(['ou:to_dhisId']);
     });
 
-    it('multiple organisation units', async () => {
-      const results = await buildEventAnalyticsQuery(dhisApi, {
-        organisationUnitCodes: ['TO', 'PG'],
+    it('multiple organisation units', () => {
+      const results = buildEventAnalyticsQuery({
+        organisationUnitIds: ['to_dhisId', 'pg_dhisId'],
       });
 
       expect(results).to.have.property('dimension');
@@ -109,22 +80,22 @@ describe('buildAnalyticsQuery', () => {
 
     it('period provided', () =>
       expect(
-        buildEventAnalyticsQuery(dhisApi, { organisationUnitCodes: ['TO'], period: '202004' }),
-      ).to.eventually.have.deep.property('dimension', ['ou:to_dhisId', `pe:202004`]));
+        buildEventAnalyticsQuery({ organisationUnitIds: ['to_dhisId'], period: '202004' }),
+      ).to.have.deep.property('dimension', ['ou:to_dhisId', `pe:202004`]));
 
     it('period not provided', () => {
       const startDate = '20200422';
       const endDate = '20200425';
 
       return expect(
-        buildEventAnalyticsQuery(dhisApi, { organisationUnitCodes: ['TO'], startDate, endDate }),
-      ).to.eventually.deep.include({ dimension: ['ou:to_dhisId'], startDate, endDate });
+        buildEventAnalyticsQuery({ organisationUnitIds: ['to_dhisId'], startDate, endDate }),
+      ).to.deep.include({ dimension: ['ou:to_dhisId'], startDate, endDate });
     });
 
-    it('combination of various dimensions', async () => {
-      const results = await buildEventAnalyticsQuery(dhisApi, {
-        dataElementCodes: ['POP01', 'POP02'],
-        organisationUnitCodes: ['TO', 'PG'],
+    it('combination of various dimensions', () => {
+      const results = buildEventAnalyticsQuery({
+        dataElementIds: ['pop01_dhisId', 'pop02_dhisId'],
+        organisationUnitIds: ['to_dhisId', 'pg_dhisId'],
         period: '20200422',
       });
 
