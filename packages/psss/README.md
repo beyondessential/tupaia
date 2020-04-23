@@ -1,10 +1,13 @@
+# @tupaia/psss
+Pacific Syndromic Surveillance System project.
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
 
 In the project directory, you can run:
 
-### `yarn start`
+### `yarn start-dev`
 
 Runs the app in the development mode.<br />
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
@@ -37,32 +40,19 @@ Instead, it will copy all the configuration files and the transitive dependencie
 
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
-## Learn More
+## Code Style
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+We use [Eslint](https://eslint.org/) to indicate quality and formatting errors in the codebase.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Code quality
 
-### Code Splitting
+The [Airbnb Style Guide](https://github.com/airbnb/javascript) is used for code quality, other than formatting which is handled by Prettier. Modifications to the default rules are defined in our custom `@beyondessential/eslint-config-beyondessential` package.
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+### Formatting style
 
-### Analyzing the Bundle Size
+[Prettier](https://prettier.io/) is used for formatting style. `.prettierrc` defines modification to the default rules.
+In order to use Prettier in **Visual Studio Code**:
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `yarn build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+1. Install the `Prettier` plugin
+2. Enable the `Editor: Format on Save` setting.
+3. You can now format a fi

@@ -2,11 +2,10 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-
 import { createMuiTheme } from '@material-ui/core/styles';
 import * as COLORS from './colors';
 
-const themeName = 'Tupaia-Storybook';
+const themeName = 'Tupaia';
 const palette = {
   primary: {
     main: COLORS.BLUE,
@@ -108,4 +107,5 @@ const overrides = {
     },
   },
 };
-export default createMuiTheme({ palette, themeName, typography, shape, overrides });
+
+export const theme = createMuiTheme({ palette, themeName, typography, shape, overrides });
