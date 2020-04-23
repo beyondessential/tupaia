@@ -102,7 +102,6 @@ export function createUrlForAppState(state) {
   const userPage = '';
 
   const project = state.project.active;
-  console.log(project);
   return createUrl({
     dashboardId,
     measureId,
