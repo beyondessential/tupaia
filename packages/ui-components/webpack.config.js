@@ -21,6 +21,7 @@ module.exports = {
         commonjs: ['react'],
         amd: 'react',
       },
+      'styled-components': 'styled-components',
     },
     /@material-ui\/core\/.*/,
   ],
@@ -28,7 +29,7 @@ module.exports = {
     rules: [
       {
         test: /\.(js|jsx)$/,
-        exclude: /(node_modules|stories|theme)/,
+        exclude: /(node_modules)/,
         use: {
           loader: 'babel-loader',
         },
