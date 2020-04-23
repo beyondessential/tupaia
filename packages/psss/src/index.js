@@ -7,7 +7,6 @@ import ReactDOM from 'react-dom';
 import { MuiThemeProvider, StylesProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { ThemeProvider } from 'styled-components';
-// import { theme } from '@tupaia/ui-components';
 import { theme } from './theme';
 import App from './App';
 
