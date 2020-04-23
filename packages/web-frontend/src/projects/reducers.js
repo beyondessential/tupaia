@@ -10,7 +10,7 @@ import { SET_PROJECT_DATA, SELECT_PROJECT, REQUEST_PROJECT_ACCESS } from '../act
 export default function projects(
   state = {
     projects: [],
-    active: {},
+    active: '',
     requestingAccess: null,
     error: '',
   },

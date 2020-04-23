@@ -101,8 +101,8 @@ export function createUrlForAppState(state) {
   const reportId = state.enlargedDialog.viewContent.viewId;
   const userPage = '';
 
-  const project = state.project.active.code;
-
+  const project = state.project.active;
+  console.log(project);
   return createUrl({
     dashboardId,
     measureId,
@@ -229,8 +229,8 @@ function reactToHistory(location, store) {
     }
   }
 
-  if (project !== state.project.active.code) {
-    dispatch(selectProject({ code: project }));
+  if (project.code !== state.project.active) {
+    dispatch(selectProject(project.code));
   }
 }
 

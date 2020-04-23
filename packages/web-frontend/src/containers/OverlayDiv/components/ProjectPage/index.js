@@ -72,17 +72,11 @@ ProjectPageComponent.defaultProps = {
   projects: [],
 };
 
-const mapStateToProps = state => {
-  const { projects } = state.project;
-
-  return {
-    projects,
-  };
-};
+const mapStateToProps = state => ({ projects: state.project.projects });
 
 const mapDispatchToProps = dispatch => ({
   onSelectProject: project => {
-    dispatch(selectProject(project));
+    dispatch(selectProject(project.code));
     dispatch(setOverlayComponent(null));
     dispatch(changeOrgUnit(project.homeEntityCode, false));
   },

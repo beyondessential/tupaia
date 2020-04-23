@@ -26,6 +26,7 @@ import DashboardGroup from '../DashboardGroup';
 import { getFacilityThumbnailUrl } from '../../utils';
 import { DropDownMenu } from '../../components/DropDownMenu';
 import { getCurrentDashboardKey } from '../../selectors';
+import { getProjectByCode } from '../../projects/selectors';
 
 const IMAGE_HEIGHT_RATIO = 0.5;
 
@@ -263,9 +264,9 @@ const mapStateToProps = state => {
     isLoadingOrganisationUnit,
     dashboardConfig,
     isSidePanelExpanded,
-    project,
   } = state.global;
   const { contractedWidth } = state.dashboard;
+  const project = getProjectByCode(state, state.project.active);
 
   return {
     currentOrganisationUnit,

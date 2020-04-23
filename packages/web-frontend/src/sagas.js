@@ -92,6 +92,7 @@ import { isMobile, processMeasureInfo, formatDateForApi } from './utils';
 import { createUrlString } from './utils/historyNavigation';
 import { getDefaultDates } from './utils/periodGranularities';
 import { INITIAL_MEASURE_ID } from './defaults';
+import { getProjectByCode } from './projects/selectors';
 
 /**
  * attemptChangePassword
@@ -710,10 +711,12 @@ function getSelectedMeasureFromHierarchy(measureHierarchy, selectedMeasureId, pr
 function* fetchCurrentMeasureInfo() {
   const state = yield select();
   const { currentOrganisationUnit } = state.global;
-  const { active: activeProject } = state.project;
+  const { active: activeProjectCode } = state.project;
   const { organisationUnitCode } = currentOrganisationUnit;
   const { measureId } = state.map.measureInfo;
   const { measureHierarchy, selectedMeasureId } = state.measureBar;
+
+  const activeProject = getProjectByCode(state, activeProjectCode);
 
   if (organisationUnitCode && organisationUnitCode !== 'World') {
     const isHeirarchyPopulated = Object.keys(measureHierarchy).length;

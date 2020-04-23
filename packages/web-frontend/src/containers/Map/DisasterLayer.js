@@ -42,14 +42,11 @@ class DisasterLayer extends Component {
 
 const mapStateToProps = ({ disaster, project }) => ({
   disasters: Object.values(disaster.disasters || {}),
-  isInDisasterMode: project.active.code === 'disaster',
+  isInDisasterMode: project.active === 'disaster',
 });
 
 const mapDispatchToProps = dispatch => ({
   onSelectDisaster: d => dispatch(selectDisaster(d)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(DisasterLayer);
+export default connect(mapStateToProps, mapDispatchToProps)(DisasterLayer);

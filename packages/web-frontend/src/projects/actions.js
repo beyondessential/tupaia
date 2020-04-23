@@ -34,7 +34,7 @@ export function fetchProjectsError(error) {
 export function setProjectDefaults(project) {
   return {
     type: SET_PROJECT,
-    project: project.code,
+    project,
   };
 }
 
