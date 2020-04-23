@@ -98,5 +98,5 @@ export const DialogActions = styled(MuiDialogActions)`
  * DialogContentText
  */
 export const DialogContentText = styled(MuiDialogContentText)`
-  color: ${COLORS.TEXTGREY};
+  color: ${COLORS.TEXT_DARKGREY};
 `;

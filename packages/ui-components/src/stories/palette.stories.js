@@ -73,7 +73,7 @@ export const DesignColors = () => (
   <MuiBox p={5} style={{ background: COLORS.LIGHTGREY }}>
     <Grid container spacing={4}>
       <Grid item xs={6} sm={4} md={3} lg={2} xl={1}>
-        <Box bgcolor={COLORS.TEXTGREY} />
+        <Box bgcolor={COLORS.TEXT_DARKGREY} />
       </Grid>
       <Grid item xs={6} sm={4} md={3} lg={2} xl={1}>
         <Box bgcolor={COLORS.GREY_72} />
