@@ -18,12 +18,16 @@ class ValuesPer100kPerPeriodByOrgUnitBuilder extends DataBuilder {
   async build() {
     const { dataElementCodes, divisor } = this.config;
     const { results } = await this.fetchAnalytics(dataElementCodes);
-    const { results: calcResults } = await this.aggregator.fetchAnalytics(
+    // TODO: You should be able to specify period in additionalQueryConfig
+    // for fetchAnalytics to avoid this hack.
+    const originalQueryPeriod = this.query.period;
+    this.query.period = getDefaultPeriod();
+    const { results: calcResults } = await this.fetchAnalytics(
       [divisor],
-      { dataServices: this.config.dataServices },
-      { ...this.query, period: getDefaultPeriod() },
-      { aggregationType: this.aggregator.aggregationTypes.MOST_RECENT },
+      {},
+      this.aggregator.aggregationTypes.MOST_RECENT,
     );
+    this.query.period = originalQueryPeriod;
     if (results.length === 0) return { data: results };
 
     const resultsPerPeriod = {};
