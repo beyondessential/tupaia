@@ -4,12 +4,7 @@ import { getDateRange } from '/apiV1/utils';
 class CheckTimelinessMeasureBuilder extends DataBuilder {
   async build() {
     const { periodGranularity } = this.config;
-    const {
-      dataElementCode,
-      organisationUnitGroupCode,
-      startDate: passedStartDate,
-      endDate: passedEndDate,
-    } = this.query;
+    const { dataElementCode, startDate: passedStartDate, endDate: passedEndDate } = this.query;
     const { startDate, endDate } = getDateRange(periodGranularity, passedStartDate, passedEndDate);
 
     const dhisParameters = {
@@ -18,10 +13,7 @@ class CheckTimelinessMeasureBuilder extends DataBuilder {
       startDate: startDate.toISOString(),
       endDate: endDate.toISOString(),
     };
-    const query = {
-      organisationUnitCode: organisationUnitGroupCode,
-    };
-    const results = await this.dhisApi.getDataValuesInSets(dhisParameters, query);
+    const results = await this.dhisApi.getDataValuesInSets(dhisParameters, this.entity);
 
     // annotate each facility with the corresponding data from dhis
     return results.map(row => ({
@@ -37,12 +29,19 @@ class CheckTimelinessMeasureBuilder extends DataBuilder {
  * @param {Object} [measureBuilderConfig={}]
  * @returns {Promise<Object>}
  */
-export const checkTimeliness = async (aggregator, dhisApi, query, measureBuilderConfig = {}) => {
+export const checkTimeliness = async (
+  aggregator,
+  dhisApi,
+  query,
+  measureBuilderConfig = {},
+  entity,
+) => {
   const builder = new CheckTimelinessMeasureBuilder(
     aggregator,
     dhisApi,
     measureBuilderConfig,
     query,
+    entity,
   );
   const responseObject = await builder.build();
 

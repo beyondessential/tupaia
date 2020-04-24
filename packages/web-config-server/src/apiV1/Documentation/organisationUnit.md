@@ -2,30 +2,31 @@
 
 Organisation Unit and Immediate children info
 
-* ###### URL
+- ###### URL
 
- `/organisationUnit`
+`/organisationUnit`
 
-* ###### METHOD
+- ###### METHOD
 
   `GET`
 
-* ###### URL PARAMS
+- ###### URL PARAMS
 
   ```
   organisationUnitCode: ${organisationUnitCode}
   ```
 
-* ###### SAMPLE request
+- ###### SAMPLE request
 
- `/api/v1/organisationUnit?organisationUnitCode=World`
+`/api/v1/organisationUnit?organisationUnitCode=World`
 
-* ###### ON SUCCESS
-  * code:  `200`
-  * content:
+- ###### ON SUCCESS
+  - code: `200`
+  - content:
+
 ```
   {
-      type: Country|Province|Facility,
+      type: Country|District|Facility,
       photoUrl: {if facility type === Facility and has photo record}
       organisationUnitCode: org_unit_code,
       name: org_unit_name,
@@ -49,7 +50,7 @@ Organisation Unit and Immediate children info
   }
    // or for a bottom level facility
   {
-      type: Country|Province|Facility,
+      type: Country|District|Facility,
       organisationUnitCode: org_unit_code,
       photoUrl: {if facility type === Facility and has photo record}
       name: org_unit_name,
@@ -60,11 +61,10 @@ Organisation Unit and Immediate children info
   }
 ```
 
-* ###### ON FAIL
- * code: `401` content: `{ status: permissionFail, details: Organisation unit does not exist }` if organisation unit is invalid or no url parameter organisationUnitCode
- * common responses as per `./Index.md`
-
+- ###### ON FAIL
+- code: `401` content: `{ status: permissionFail, details: Organisation unit does not exist }` if organisation unit is invalid or no url parameter organisationUnitCode
+- common responses as per `./Index.md`
 
 * ###### NOTES
 
- No permission checks, as public user will have access to all organisation units
+No permission checks, as public user will have access to all organisation units

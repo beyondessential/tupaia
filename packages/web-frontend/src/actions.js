@@ -136,7 +136,6 @@ export const SELECT_DISASTER = 'SELECT_DISASTER';
 export const VIEW_DISASTER = 'VIEW_DISASTER';
 export const TOGGLE_DASHBOARD_SELECT_EXPAND = 'TOGGLE_DASHBOARD_SELECT_EXPAND';
 export const SET_MOBILE_DASHBOARD_EXPAND = 'SET_MOBILE_DASHBOARD_EXPAND';
-export const ADD_MAP_REGIONS = 'ADD_MAP_REGIONS';
 export const SET_PROJECT = 'SET_PROJECT';
 export const SET_PROJECT_DATA = 'SET_PROJECT_DATA';
 export const SELECT_PROJECT = 'SELECT_PROJECT';
@@ -456,13 +455,14 @@ export function fetchOrgUnit(organisationUnit = initialOrgUnit) {
 /**
  * Changes current Organisational Unit and Map view. Will trigger sagas affecting state for
  * map and the current dashboard.
- *
- * @param {object} organisationUnit
  */
-export function changeOrgUnit(organisationUnit = initialOrgUnit, shouldChangeMapBounds = true) {
+export function changeOrgUnit(
+  organisationUnitCode = initialOrgUnit.organisationUnitCode,
+  shouldChangeMapBounds = true,
+) {
   return {
     type: CHANGE_ORG_UNIT,
-    organisationUnit,
+    organisationUnitCode,
     shouldChangeMapBounds,
   };
 }
@@ -1219,41 +1219,6 @@ export function updateEnlargedDialogError(errorMessage) {
   return {
     type: UPDATE_ENLARGED_DIALOG_ERROR,
     errorMessage,
-  };
-}
-
-function flipCoordinatesRecursive(array) {
-  if (typeof array[0] === 'number') {
-    return [array[1], (array[0] + 360) % 360];
-  }
-
-  return array.map(flipCoordinatesRecursive);
-}
-
-function replaceGeoJsonWithCoordinateArray({ region, ...rest }) {
-  const data = JSON.parse(region);
-  if (data.type !== 'MultiPolygon') return rest;
-
-  // need to recurse into data structure and flip all coordinate arrays
-  const coordinates = flipCoordinatesRecursive(data.coordinates);
-
-  return {
-    coordinates,
-    ...rest,
-  };
-}
-
-export function addMapRegions(regions) {
-  const regionData = regions.reduce(
-    (data, region) => ({
-      ...data,
-      [region.code]: replaceGeoJsonWithCoordinateArray(region),
-    }),
-    {},
-  );
-  return {
-    type: 'ADD_MAP_REGIONS',
-    regionData,
   };
 }
 

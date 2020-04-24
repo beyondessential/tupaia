@@ -1,12 +1,15 @@
 import { DashboardGroup, DashboardReport } from '/models';
-import { DhisTranslationHandler } from './utils';
+import { RouteHandler } from './RouteHandler';
+import { PermissionsChecker } from './permissions';
 
-export default class extends DhisTranslationHandler {
-  buildData = async req => {
+export default class extends RouteHandler {
+  static PermissionsChecker = PermissionsChecker;
+
+  buildResponse = async () => {
     const { entity } = this;
     const { code: entityCode, name: entityName } = entity;
     const organisationLevel = entity.getOrganisationLevel();
-    const userGroups = await req.getUserGroups(entityCode);
+    const userGroups = await this.req.getUserGroups(entityCode);
     // based on organisationLevel, organisationUnit, userGroups and ancestors
     // return all matching userGroup and dashboard group name configs
     // (can have same userGroup in different dashboard group names)
@@ -63,94 +66,6 @@ export default class extends DhisTranslationHandler {
 }
 
 /*
-userGroups: [ 'Public', 'Donor', 'Admin' ]
-
-*******************************************************************************
-Raw result in query (DashboardGroups.getDashboardGroups)
-[ anonymous {
-    userGroup: 'Public',
-    organisationLevel: 'Country',
-    organisationUnitCode: 'World',
-    dashboardReports: [1, 4, 15],
-    dashboardGroupId: 11,
-    dashboardGroupName: 'General' },
-  anonymous {
-    userGroup: 'Donor',
-    organisationLevel: 'Country',
-    organisationUnitCode: 'World',
-    dashboardReports: [1, 4, 15],
-    dashboardGroupId: 12,
-    dashboardGroupName: 'General' },
-  anonymous {
-    userGroup: 'Donor',
-    organisationLevel: 'Country',
-    organisationUnitCode: 'DL',
-    dashboardReports: [1, 4, 15],
-    dashboardGroupId: 13,
-    dashboardGroupName: 'General' },
-  anonymous {
-    userGroup: 'Admin',
-    organisationLevel: 'Country',
-    organisationUnitCode: 'World',
-    dashboardReports: [1, 4, 15],
-    dashboardGroupId: 14,
-    dashboardGroupName: 'General' },
-  anonymous {
-    userGroup: 'Admin',
-    organisationLevel: 'Country',
-    organisationUnitCode: 'DL',
-    dashboardReports: [1, 4, 15],
-    dashboardGroupId: 15,
-    dashboardGroupName: 'General' },
-  anonymous {
-    userGroup: 'Admin',
-    organisationLevel: 'Country',
-    organisationUnitCode: 'World',
-    dashboardReports: [1, 4, 15],
-    dashboardGroupId: 16,
-    dashboardGroupName: 'Clinical' } ]
-
-*******************************************************************************
-before data builder (dashboardGroups from DashboardGroup.getDashboardGroups)
-{
-  General: {
-    Public:
-      anonymous {
-        userGroup: 'Public',
-        organisationLevel: 'Country',
-        organisationUnitCode: 'World',
-        dashboardReports: [1, 15, 3],
-        dashboardGroupId: 11,
-        dashboardGroupName: 'General' },
-     Donor:
-      anonymous {
-        userGroup: 'Donor',
-        organisationLevel: 'Country',
-        organisationUnitCode: 'DL',
-        dashboardReports: [1, 15, 3],
-        dashboardGroupId: 13,
-        dashboardGroupName: 'General' },
-     Admin:
-      anonymous {
-        userGroup: 'Admin',
-        organisationLevel: 'Country',
-        organisationUnitCode: 'DL',
-        dashboardReports: [1, 15, 3],
-        dashboardGroupId: 15,
-        dashboardGroupName: 'General' } },
-  Clinical:
-   { Admin:
-      anonymous {
-        userGroup: 'Admin',
-        organisationLevel: 'Country',
-        organisationUnitCode: 'World',
-        dashboardReports: [1, 15, 3],
-        dashboardGroupId: 16,
-        dashboardGroupName: 'Clinical'
-      }
-    }
-  }
-*******************************************************************************\
 api response:
 { General:
    { Public:

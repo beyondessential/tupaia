@@ -18,12 +18,8 @@ export async function getOrCreateParentEntity(transactingModels, entityObject, c
     parent_code: parentCode,
   } = entityObject;
   const countryEntity = await transactingModels.entity.findOrCreate(
-    {
-      code: country.code,
-    },
-    {
-      name: `Unnamed country ${country.code}`,
-    },
+    { code: country.code },
+    { name: `Unnamed country ${country.code}` },
   );
 
   let district;
@@ -46,7 +42,7 @@ export async function getOrCreateParentEntity(transactingModels, entityObject, c
       },
       {
         name: districtName,
-        type: ENTITY_TYPES.REGION,
+        type: ENTITY_TYPES.DISTRICT,
         parent_id: countryEntity.id,
         country_code: country.code,
         metadata: {
@@ -67,7 +63,7 @@ export async function getOrCreateParentEntity(transactingModels, entityObject, c
     };
     const subDistrictEntityObject = {
       name: subDistrictName,
-      type: ENTITY_TYPES.REGION,
+      type: ENTITY_TYPES.SUB_DISTRICT,
       parent_id: countryEntity.id,
       country_code: country.code,
       metadata: {
