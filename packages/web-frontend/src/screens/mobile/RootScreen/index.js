@@ -5,6 +5,7 @@
  * found in the LICENSE file in the root directory of this source tree.
  */
 
+import { PropTypes } from 'prop-types';
 import React, { Component } from 'react';
 import { StyleRoot } from 'radium';
 import { connect } from 'react-redux';
@@ -17,24 +18,24 @@ import RegionScreen from '../RegionScreen';
 import FacilityScreen from '../FacilityScreen';
 import { LoadingScreen } from '../LoadingScreen';
 import Footer from '../../../components/mobile/Footer';
+import { ENTITY_TYPE } from '../../../constants';
 import OverlayDiv from '../../../containers/OverlayDiv';
+
+const ORG_UNIT_TYPE_TO_COMPONENT = {
+  [ENTITY_TYPE.COUNTRY]: RegionScreen,
+  [ENTITY_TYPE.DISTRICT]: RegionScreen,
+  [ENTITY_TYPE.SUB_DISTRICT]: RegionScreen,
+  [ENTITY_TYPE.FACILITY]: FacilityScreen,
+  [ENTITY_TYPE.VILLAGE]: RegionScreen,
+};
+
+const getPageComponent = orgUnitType => ORG_UNIT_TYPE_TO_COMPONENT[orgUnitType] || HomeScreen;
 
 class RootScreen extends Component {
   renderPage() {
     const { currentOrganisationUnit } = this.props;
-
-    switch (currentOrganisationUnit.type) {
-      case 'Region':
-      case 'Province':
-      case 'Country':
-        return <RegionScreen />;
-
-      case 'Facility':
-        return <FacilityScreen />;
-
-      default:
-        return <HomeScreen />;
-    }
+    const PageComponent = getPageComponent(currentOrganisationUnit.type);
+    return <PageComponent />;
   }
 
   render() {
@@ -57,6 +58,12 @@ class RootScreen extends Component {
     );
   }
 }
+
+RootScreen.propTypes = {
+  currentOrganisationUnit: PropTypes.shape({ type: PropTypes.string }).isRequired,
+  isLoading: PropTypes.bool.isRequired,
+  isUserLoggedIn: PropTypes.bool.isRequired,
+};
 
 const mapStateToProps = state => ({
   currentOrganisationUnit: state.global.currentOrganisationUnit,

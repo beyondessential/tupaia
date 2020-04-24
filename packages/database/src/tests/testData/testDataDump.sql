@@ -68,13 +68,15 @@ CREATE TYPE public.disaster_type AS ENUM (
 --
 
 CREATE TYPE public.entity_type AS ENUM (
-    'facility',
-    'region',
-    'country',
-    'disaster',
     'world',
+    'project',
+    'country',
+    'district',
+    'sub_district',
+    'facility',
     'village',
-    'case'
+    'case',
+    'disaster'
 );
 
 
@@ -459,24 +461,24 @@ CREATE TABLE public.entity (
 
 
 --
+-- Name: entity_hierarchy; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.entity_hierarchy (
+    id text NOT NULL,
+    name text NOT NULL
+);
+
+
+--
 -- Name: entity_relation; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.entity_relation (
     id text NOT NULL,
-    from_id text NOT NULL,
-    to_id text NOT NULL,
-    entity_relation_type_code text NOT NULL
-);
-
-
---
--- Name: entity_relation_type; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.entity_relation_type (
-    code text NOT NULL,
-    description text
+    parent_id text NOT NULL,
+    child_id text NOT NULL,
+    entity_hierarchy_id text NOT NULL
 );
 
 
@@ -714,15 +716,14 @@ CREATE TABLE public.permission_group (
 CREATE TABLE public.project (
     id text NOT NULL,
     code text NOT NULL,
-    entity_ids text[] NOT NULL,
-    name text NOT NULL,
     description text,
     sort_order integer,
     image_url text,
     default_measure text DEFAULT '126,171'::text,
     dashboard_group_name text DEFAULT 'General'::text,
     user_groups text[],
-    logo_url text
+    logo_url text,
+    entity_id text
 );
 
 
@@ -1103,6 +1104,22 @@ ALTER TABLE ONLY public.entity
 
 
 --
+-- Name: entity_hierarchy entity_hierarchy_name_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.entity_hierarchy
+    ADD CONSTRAINT entity_hierarchy_name_key UNIQUE (name);
+
+
+--
+-- Name: entity_hierarchy entity_hierarchy_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.entity_hierarchy
+    ADD CONSTRAINT entity_hierarchy_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: entity entity_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1116,14 +1133,6 @@ ALTER TABLE ONLY public.entity
 
 ALTER TABLE ONLY public.entity_relation
     ADD CONSTRAINT entity_relation_pkey PRIMARY KEY (id);
-
-
---
--- Name: entity_relation_type entity_relation_type_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.entity_relation_type
-    ADD CONSTRAINT entity_relation_type_pkey PRIMARY KEY (code);
 
 
 --
@@ -1292,14 +1301,6 @@ ALTER TABLE ONLY public.permission_group
 
 ALTER TABLE ONLY public.project
     ADD CONSTRAINT project_code_key UNIQUE (code);
-
-
---
--- Name: project project_name_key; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.project
-    ADD CONSTRAINT project_name_key UNIQUE (name);
 
 
 --
@@ -1814,13 +1815,6 @@ CREATE TRIGGER dashboardgroup_trigger AFTER INSERT OR DELETE OR UPDATE ON public
 
 
 --
--- Name: dashboardReport dashboardreport_trigger; Type: TRIGGER; Schema: public; Owner: -
---
-
-CREATE TRIGGER dashboardreport_trigger AFTER INSERT OR DELETE OR UPDATE ON public."dashboardReport" FOR EACH ROW EXECUTE PROCEDURE public.notification();
-
-
---
 -- Name: data_element_data_group data_element_data_group_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -1856,17 +1850,17 @@ CREATE TRIGGER disasterevent_trigger AFTER INSERT OR DELETE OR UPDATE ON public.
 
 
 --
+-- Name: entity_hierarchy entity_hierarchy_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER entity_hierarchy_trigger AFTER INSERT OR DELETE OR UPDATE ON public.entity_hierarchy FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
 -- Name: entity_relation entity_relation_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
 CREATE TRIGGER entity_relation_trigger AFTER INSERT OR DELETE OR UPDATE ON public.entity_relation FOR EACH ROW EXECUTE PROCEDURE public.notification();
-
-
---
--- Name: entity_relation_type entity_relation_type_trigger; Type: TRIGGER; Schema: public; Owner: -
---
-
-CREATE TRIGGER entity_relation_type_trigger AFTER INSERT OR DELETE OR UPDATE ON public.entity_relation_type FOR EACH ROW EXECUTE PROCEDURE public.notification();
 
 
 --
@@ -2118,27 +2112,27 @@ ALTER TABLE ONLY public.entity
 
 
 --
--- Name: entity_relation entity_relation_entity_relation_type_code_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: entity_relation entity_relation_child_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.entity_relation
-    ADD CONSTRAINT entity_relation_entity_relation_type_code_fkey FOREIGN KEY (entity_relation_type_code) REFERENCES public.entity_relation_type(code);
+    ADD CONSTRAINT entity_relation_child_id_fkey FOREIGN KEY (child_id) REFERENCES public.entity(id);
 
 
 --
--- Name: entity_relation entity_relation_from_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.entity_relation
-    ADD CONSTRAINT entity_relation_from_id_fkey FOREIGN KEY (from_id) REFERENCES public.entity(id);
-
-
---
--- Name: entity_relation entity_relation_to_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: entity_relation entity_relation_entity_hierarchy_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.entity_relation
-    ADD CONSTRAINT entity_relation_to_id_fkey FOREIGN KEY (to_id) REFERENCES public.entity(id);
+    ADD CONSTRAINT entity_relation_entity_hierarchy_id_fkey FOREIGN KEY (entity_hierarchy_id) REFERENCES public.entity_hierarchy(id);
+
+
+--
+-- Name: entity_relation entity_relation_parent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.entity_relation
+    ADD CONSTRAINT entity_relation_parent_id_fkey FOREIGN KEY (parent_id) REFERENCES public.entity(id);
 
 
 --
@@ -2990,33 +2984,53 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 571	/20200316010349-AddWeeklyNumberOfFebrileIllnessReportsNational	2020-03-24 05:41:33.358
 572	/20200316022146-AddStriveRegionalDashboardGroup	2020-03-24 05:41:33.414
 573	/20200316022217-AddWeeklyNumberOfFebrileIllnessReportsRegional	2020-03-24 05:41:33.527
-574	/20200318223935-DeleteErroneousStriveSurveyData	2020-03-30 15:06:02.992
-575	/20200323002803-AddCovid19AustraliaToProjects	2020-03-31 04:46:50.348
-576	/20200324032850-AddCOVID19DashboardgroupsAusNationalState	2020-03-31 04:46:50.422
-577	/20200324050422-AddCovid19StateDashboardReport	2020-03-31 04:46:50.461
-578	/20200324053202-AddCasesByStateReportCovidAus	2020-03-31 04:46:50.508
-579	/20200325001848-AddTotalNumberReportedCasesCOVIDAUMapOverlay	2020-03-31 04:46:50.558
-580	/20200326012240-MoveDefaultDashboardGroupsToIndividualCountries	2020-03-31 04:46:51.358
-581	/20200326032657-AddTotalCasesByStateAus	2020-03-31 04:46:51.395
-582	/20200326034630-AddTotalCovidCasesByTypeReport	2020-03-31 04:46:51.42
-583	/20200326043343-AddCovidNewCasesByDayBarChartStateAus	2020-03-31 04:46:51.458
-584	/20200326045458-AddCovid19NationalDailyCasesOverTimeEachStateAndTotalDashboard	2020-03-31 04:46:51.507
-585	/20200326225508-FixDailyCovidStateNumbersReportAus	2020-03-31 04:46:51.531
-586	/20200326233613-FixDailyCovidCasesByStateChart	2020-03-31 04:46:51.553
-587	/20200327014704-AddNationalNewCovidCasesByDayAus	2020-03-31 04:46:51.586
-588	/20200327052900-UpdateCovidAuTotalConfirmedCasesMapOverlayScaleMin	2020-03-31 04:46:51.599
-589	/20200327055605-UpdateCovidAuTotalConfirmedCasesOverTimeByStateWordings	2020-03-31 04:46:51.615
-590	/20200330013822-ChangeGeographicalBoundsOfWorld	2020-03-31 04:46:51.628
-591	/20200330014731-MoveDefaultMapOverlaysToIndividualCountries	2020-03-31 04:46:51.702
-592	/20200330023425-AddDailyToCovid19Reports	2020-03-31 04:46:51.736
-593	/20200330025955-ChangeIdOfDashboardReportToRemoveState	2020-03-31 04:46:51.755
-594	/20200330034009-AddSubDistrictAndFacilityLevelDashboardGroups	2020-03-31 04:46:51.768
-595	/20200330034023-AddLinkToSourcesCovidAllOrgLevels	2020-03-31 04:46:51.784
-596	/20200330041343-RemoveRecoveriesFromDashboardCovid	2020-03-31 04:46:51.798
-597	/20200330233911-ChangeDefaultDataToYesterdayCovidReports	2020-03-31 04:46:51.818
-598	/20200316042719-AddMRDTDashboardReportToNationalAndProvincial	2020-03-31 05:38:08.954
-599	/20200316055056-Add2YAxisMRDTFebrileIllnessDashboardReportToNationalAndProvincialStrive	2020-03-31 05:38:09.218
-600	/20200330213702-EntityBasedPermissions	2020-04-02 11:44:55.819
+574	/20200316042719-AddMRDTDashboardReportToNationalAndProvincial	2020-03-31 07:11:24.146
+575	/20200316055056-Add2YAxisMRDTFebrileIllnessDashboardReportToNationalAndProvincialStrive	2020-03-31 07:11:24.247
+576	/20200318223935-DeleteErroneousStriveSurveyData	2020-03-31 07:11:24.303
+577	/20200323002803-AddCovid19AustraliaToProjects	2020-03-31 07:20:42.006
+578	/20200324032850-AddCOVID19DashboardgroupsAusNationalState	2020-03-31 07:20:42.109
+579	/20200324050422-AddCovid19StateDashboardReport	2020-03-31 07:20:42.167
+580	/20200324053202-AddCasesByStateReportCovidAus	2020-03-31 07:20:42.238
+581	/20200325001848-AddTotalNumberReportedCasesCOVIDAUMapOverlay	2020-03-31 07:20:42.27
+582	/20200326012240-MoveDefaultDashboardGroupsToIndividualCountries	2020-03-31 07:20:42.62
+583	/20200326032657-AddTotalCasesByStateAus	2020-03-31 07:20:42.685
+584	/20200326034630-AddTotalCovidCasesByTypeReport	2020-03-31 07:20:42.741
+585	/20200326043343-AddCovidNewCasesByDayBarChartStateAus	2020-03-31 07:20:42.813
+586	/20200326045458-AddCovid19NationalDailyCasesOverTimeEachStateAndTotalDashboard	2020-03-31 07:20:42.922
+587	/20200326225508-FixDailyCovidStateNumbersReportAus	2020-03-31 07:20:42.968
+588	/20200326233613-FixDailyCovidCasesByStateChart	2020-03-31 07:20:43.004
+589	/20200327014704-AddNationalNewCovidCasesByDayAus	2020-03-31 07:20:43.106
+590	/20200327052900-UpdateCovidAuTotalConfirmedCasesMapOverlayScaleMin	2020-03-31 07:20:43.126
+591	/20200327055605-UpdateCovidAuTotalConfirmedCasesOverTimeByStateWordings	2020-03-31 07:20:43.177
+592	/20200330013822-ChangeGeographicalBoundsOfWorld	2020-03-31 07:20:43.211
+593	/20200330014731-MoveDefaultMapOverlaysToIndividualCountries	2020-03-31 07:20:43.315
+594	/20200330023425-AddDailyToCovid19Reports	2020-03-31 07:20:43.343
+595	/20200330025955-ChangeIdOfDashboardReportToRemoveState	2020-03-31 07:20:43.392
+596	/20200330034009-AddSubDistrictAndFacilityLevelDashboardGroups	2020-03-31 07:20:43.429
+597	/20200330034023-AddLinkToSourcesCovidAllOrgLevels	2020-03-31 07:20:43.463
+598	/20200330041343-RemoveRecoveriesFromDashboardCovid	2020-03-31 07:20:43.489
+599	/20200330233911-ChangeDefaultDataToYesterdayCovidReports	2020-03-31 07:20:43.515
+600	/20200317055123-AddStriveReportsToVillages	2020-04-07 04:56:55.638
+601	/20200325044717-MakeFebrileIllnessCaseCalculationConsistent	2020-04-07 04:56:55.711
+602	/20200403020133-UpdateDataSourcetoReflectHP01andHP02Changes	2020-04-07 04:56:56.472
+603	/20200407021657-AddDisasterDashboardGroupForVanutatu	2020-04-07 04:56:56.557
+604	/20200324034720-CreateMSupplyUNFPAMatrices	2020-04-16 11:40:36.812
+605	/20200325002500-RefactorOrganisationUnitTableReportsToTableOfValueForOrgUnits	2020-04-16 11:40:36.893
+606	/20200330044935-AddConfigToIHRReportsForOrgUnitColumns	2020-04-16 11:40:36.907
+607	/20200401220823-RemoveWordTodayFromCovidReports	2020-04-16 11:40:36.925
+608	/20200402024847-AddProjectEntity	2020-04-16 11:40:37.799
+609	/20200402024848-CreateProjectHierarchy	2020-04-16 11:40:37.955
+610	/20200403015828-AddCovidRawDataDownloadTonga	2020-04-16 11:40:37.971
+611	/20200403030413-AddPeriodDataSwitchToDashBoardReports	2020-04-16 11:40:37.983
+612	/20200406000236-AddFacilityCommoditiesOverlays	2020-04-16 11:40:38.217
+613	/20200407031923-ReplaceProvinceInDashboardGroup	2020-04-16 11:40:38.348
+614	/20200407050822-ReplaceAndRemoveRegionEntityType	2020-04-16 11:40:39.881
+615	/20200407052132-AddSOHandAMCMatricesToUNFPA	2020-04-16 11:40:39.952
+616	/20200407225206-ReplaceRegionInMapOverlays	2020-04-16 11:40:40.008
+617	/20200408015910-UseLowercaseOrgUnitLevel	2020-04-16 11:40:40.046
+618	/20200408031952-ReplaceRegionInSurveyScreenComponent	2020-04-16 11:40:41.22
+619	/20200408071456-RenameOrganisationUnitLevelInDashboardReport	2020-04-16 11:40:41.254
+620	/20200409065901-AddStripFromDataElementNamesForUNFPAMatrices	2020-04-16 11:40:41.264
 \.
 
 
@@ -3024,7 +3038,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 600, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 620, true);
 
 
 --
