@@ -88,7 +88,7 @@ export class PieChart extends PureComponent {
     }
   };
 
-  handleMouseEnter = () => {
+  handleMouseOut = (object, index) => {
     if (!isMobile()) {
       this.setState({
         activeIndex: -1,
