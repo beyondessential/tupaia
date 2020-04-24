@@ -23,11 +23,15 @@ const dataServices = [{ isDataRegional: false }];
 const entity = {};
 const query = { organisationUnitCode: 'TO' };
 const aggregationType = 'FINAL_EACH_MONTH';
+const aggregationConfig = {};
 
 const fetchAnalytics = sinon.stub();
 fetchAnalytics
   .returns({ results: [] })
-  .withArgs(sinon.match.any, sinon.match({ dataServices }), query, { aggregationType })
+  .withArgs(sinon.match.any, sinon.match({ dataServices }), query, {
+    aggregationType,
+    aggregationConfig,
+  })
   .callsFake((dataElementCodes, { programCodes }) => {
     const getAnalyticsToUse = () => {
       if (programCodes) {
