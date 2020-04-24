@@ -263,6 +263,7 @@ export class CartesianChart extends PureComponent {
     return (
       <YAxis
         key={yAxisId}
+        ticks={viewContent.ticks}
         yAxisId={yAxisId}
         orientation={orientation}
         domain={valueType === PERCENTAGE ? [0, 'dataMax'] : [0, 'auto']}
