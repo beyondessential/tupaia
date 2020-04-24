@@ -73,7 +73,8 @@ const insertOrgUnit = (state, orgUnit) => {
     return state;
   }
 
-  return { ...state, [orgUnit.organisationUnitCode]: orgUnit };
+  state[orgUnit.organisationUnitCode] = orgUnit;
+  return state;
 };
 
 const addOrgUnitToMap = (state, orgUnit) => {
