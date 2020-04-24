@@ -177,13 +177,10 @@ export class CartesianChart extends PureComponent {
     return <span style={{ color }}>{viewContent.chartConfig[value].label || value}</span>;
   };
 
-  getDefaultYAxisDomain = () => {
-    const yAxisDomain = DEFAULT_Y_AXIS.yAxisDomain;
-    if (this.props.viewContent.valueType === PERCENTAGE) {
-      yAxisDomain.max.value = 'dataMax';
-    }
-    return yAxisDomain;
-  };
+  getDefaultYAxisDomain = () =>
+    this.props.viewContent.valueType === PERCENTAGE
+      ? PERCENTAGE_Y_DOMAIN
+      : DEFAULT_Y_AXIS.yAxisDomain;
 
   calculateYAxisDomain = ({ min, max }) => {
     return [this.parseDomainConfig(min), this.parseDomainConfig(max)];
