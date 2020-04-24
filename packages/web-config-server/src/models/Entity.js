@@ -3,10 +3,15 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  **/
 
-import { capital } from 'case';
+import { pascal } from 'case';
 
 import { TYPES } from '@tupaia/database';
 import { reduceToDictionary } from '@tupaia/utils';
+import {
+  translateBoundsForFrontend,
+  translatePointForFrontend,
+  translateRegionForFrontend,
+} from '/utils/geoJson';
 import { BaseModel } from './BaseModel';
 import { EntityRelation } from './EntityRelation';
 import { Project } from './Project';
@@ -16,8 +21,9 @@ const CASE = 'case';
 const CASE_CONTACT = 'case_contact';
 const COUNTRY = 'country';
 const DISASTER = 'disaster';
+const DISTRICT = 'district';
 const FACILITY = 'facility';
-const REGION = 'region';
+const SUB_DISTRICT = 'sub_district';
 const VILLAGE = 'village';
 const WORLD = 'world';
 const PROJECT = 'project';
@@ -27,11 +33,21 @@ export const ENTITY_TYPES = {
   CASE_CONTACT,
   COUNTRY,
   DISASTER,
+  DISTRICT,
   FACILITY,
-  REGION,
+  SUB_DISTRICT,
   VILLAGE,
   WORLD,
   PROJECT,
+};
+
+const ORG_UNIT_TYPE_LEVELS = {
+  [WORLD]: 1,
+  [COUNTRY]: 2,
+  [DISTRICT]: 3,
+  [SUB_DISTRICT]: 4,
+  [FACILITY]: 5,
+  [VILLAGE]: 6,
 };
 
 const constructTypesCriteria = (types, prefix) =>
@@ -75,7 +91,9 @@ export class Entity extends BaseModel {
 
   static COUNTRY = COUNTRY;
 
-  static REGION = REGION;
+  static DISTRICT = DISTRICT;
+
+  static SUB_DISTRICT = SUB_DISTRICT;
 
   static DISASTER = DISASTER;
 
@@ -84,7 +102,8 @@ export class Entity extends BaseModel {
   static orgUnitEntityTypes = {
     WORLD,
     COUNTRY,
-    REGION,
+    DISTRICT,
+    SUB_DISTRICT,
     FACILITY,
     VILLAGE,
   };
@@ -238,9 +257,17 @@ export class Entity extends BaseModel {
     );
   };
 
+  static getDhisLevel(type) {
+    const level = ORG_UNIT_TYPE_LEVELS[type];
+    if (!level) {
+      throw new Error(`${type} is not an organisational unit type`);
+    }
+
+    return level;
+  }
+
   getOrganisationLevel() {
-    if (this.type === 'region') return 'Province'; // this is the exception to the rule, the rest are a simple case translation
-    return capital(this.type); // facility -> Facility
+    return pascal(this.type); // sub_district -> SubDistrict
   }
 
   async buildDisplayName() {
@@ -253,6 +280,36 @@ export class Entity extends BaseModel {
 
   isCountry() {
     return this.type === COUNTRY;
+  }
+
+  static translateTypeForFrontend = type => pascal(type);
+
+  translateForFrontend() {
+    return {
+      type: Entity.translateTypeForFrontend(this.type),
+      organisationUnitCode: this.code,
+      countryCode: this.country_code,
+      name: this.name,
+      location: this.translateLocationForFrontend(),
+      photoUrl: this.image_url,
+    };
+  }
+
+  translateLocationForFrontend() {
+    const { point, region, bounds } = this;
+
+    const type = (() => {
+      if (region) return 'area';
+      if (point) return 'point';
+      return 'no-coordinates';
+    })();
+
+    return {
+      type,
+      point: translatePointForFrontend(point),
+      bounds: translateBoundsForFrontend(bounds),
+      region: translateRegionForFrontend(region),
+    };
   }
 
   isFacility() {
