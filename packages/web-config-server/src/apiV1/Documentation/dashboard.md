@@ -2,39 +2,40 @@
 
 Dashboard layout and report contents
 
-* ###### URL
+- ###### URL
 
- `/dashboard`
+`/dashboard`
 
-* ###### METHOD
+- ###### METHOD
 
   `GET`
 
-* ###### URL PARAMS
+- ###### URL PARAMS
 
   ```
   organisationUnitCode: ${organisationUnitCode}
   ```
 
-* ###### SAMPLE request
+- ###### SAMPLE request
 
- `/api/v1/dashboard?organisationUnitCode=World`
+`/api/v1/dashboard?organisationUnitCode=World`
 
-* ###### ON SUCCESS
-  * code:  `200`
-  * content:
+- ###### ON SUCCESS
+  - code: `200`
+  - content:
+
 ```
 {
   "General": {
       "Public": {
-        "organisationUnitType": "Province",
+        "organisationUnitType": "Facility",
         "organisationUnitCode": "rXCRwvytBu3",
         "name": "DistrictThree",
         "views": [ { "viewId": "1" }, ...],
         "dashboardGroupId": 1
       },
       "Admin": {
-        "organisationUnitType": "Province",
+        "organisationUnitType": "Facility",
         "organisationUnitCode": "rXCRwvytBu3",
         "name": "DistrictThree",
         "views": [ { "viewId": "1" }, ...],
@@ -44,11 +45,10 @@ Dashboard layout and report contents
 }
 ```
 
-* ###### ON FAIL
- * code: `401` content: `{ status: permissionFail, details: Organisation unit does not exist }` if organisation unit is invalid or no url parameter organisationUnitCode
- * common responses as per `./Index.md`
-
+- ###### ON FAIL
+- code: `401` content: `{ status: permissionFail, details: Organisation unit does not exist }` if organisation unit is invalid or no url parameter organisationUnitCode
+- common responses as per `./Index.md`
 
 * ###### NOTES
 
- Will return all dashboards for current organisation unit base currently logged in user
+Will return all dashboards for current organisation unit base currently logged in user
