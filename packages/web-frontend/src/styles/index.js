@@ -348,6 +348,13 @@ export const VIEW_STYLES = {
     lineHeight: '130%',
     textAlign: 'center',
   },
+  periodRange: {
+    position: 'relative',
+    color: darkWhite,
+    marginTop: 5,
+    textAlign: 'center',
+    fontSize: 9,
+  },
   data: isMobile()
     ? {
         fontSize: '50px',

@@ -134,7 +134,7 @@ class Disaster extends Component {
      */
     const tupaiaResource = {
       title: `${location} Disaster Response Information`,
-      url: `https://info.tupaia.org/disaster-response-${countryCode}/`,
+      url: 'https://sdd.spc.int/disasters-data',
     };
 
     return (

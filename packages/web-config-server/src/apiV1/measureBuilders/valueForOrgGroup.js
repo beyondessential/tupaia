@@ -1,5 +1,6 @@
 import { Entity, Facility } from '/models';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
+import { analyticsToMeasureData } from './helpers';
 
 const FACILITY_TYPE_CODE = 'facilityTypeCode';
 
@@ -34,11 +35,11 @@ class ValueForOrgGroupMeasureBuilder extends DataBuilder {
     const { results } = await this.fetchAnalytics([dataElementCode], {
       organisationUnitCode: this.entity.code,
     });
-    // annotate each facility with the corresponding data from dhis
-    return results.map(row => ({
-      organisationUnitCode: row.organisationUnit,
-      [dataElementCode]: row.value === undefined ? '' : row.value.toString(),
+    const analytics = results.map(result => ({
+      ...result,
+      value: result.value === undefined ? '' : result.value.toString(),
     }));
+    return analyticsToMeasureData(analytics);
   }
 }
 

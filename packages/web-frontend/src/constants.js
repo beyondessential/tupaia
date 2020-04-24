@@ -6,11 +6,11 @@
  */
 
 export const ENTITY_TYPE = {
-  FACILITY: 'Facility',
-  REGION: 'Region',
   COUNTRY: 'Country',
+  DISTRICT: 'District',
+  SUB_DISTRICT: 'SubDistrict',
+  FACILITY: 'Facility',
   DISASTER: 'Disaster',
-  OTHER: 'Other',
 };
 
 export const SCALE_TYPES = {

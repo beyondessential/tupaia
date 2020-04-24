@@ -196,7 +196,7 @@ export class Dashboard extends Component {
       return names;
     }, []);
 
-    if (groupNames.length < 2) {
+    if (groupNames.length < 1) {
       return null;
     }
 
