@@ -266,7 +266,7 @@ const mapStateToProps = state => {
     isSidePanelExpanded,
   } = state.global;
   const { contractedWidth } = state.dashboard;
-  const project = getProjectByCode(state, state.project.active);
+  const project = getProjectByCode(state, state.project.activeProjectCode);
 
   return {
     currentOrganisationUnit,

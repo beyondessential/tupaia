@@ -42,7 +42,7 @@ class DisasterLayer extends Component {
 
 const mapStateToProps = ({ disaster, project }) => ({
   disasters: Object.values(disaster.disasters || {}),
-  isInDisasterMode: project.active === 'disaster',
+  isInDisasterMode: project.activeProjectCode === 'disaster',
 });
 
 const mapDispatchToProps = dispatch => ({
