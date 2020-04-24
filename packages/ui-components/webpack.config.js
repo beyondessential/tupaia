@@ -22,6 +22,8 @@ module.exports = {
         amd: 'react',
       },
       'styled-components': 'styled-components',
+      'react-router-dom': 'react-router-dom',
+      'react-router': 'react-router',
     },
     /@material-ui\/core\/.*/,
   ],
