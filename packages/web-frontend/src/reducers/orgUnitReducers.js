@@ -28,6 +28,9 @@ export default combineReducers({
 
 export const selectOrgUnit = (state, orgUnitCode) => state.orgUnits.orgUnitMap[orgUnitCode];
 
+export const selectParentOrgUnitCodes = state =>
+  Object.values(state.orgUnits.orgUnitMap).map(({ parent }) => parent);
+
 export const cachedSelectOrgUnitChildren = createCachedSelector(
   [state => state.orgUnits.orgUnitMap, (_, code) => code],
   (orgUnitMapArg, code) => Object.values(orgUnitMapArg).filter(orgUnit => orgUnit.parent === code),
@@ -70,7 +73,8 @@ const insertOrgUnit = (state, orgUnit) => {
     return state;
   }
 
-  return { ...state, [orgUnit.organisationUnitCode]: orgUnit };
+  state[orgUnit.organisationUnitCode] = orgUnit;
+  return state;
 };
 
 const addOrgUnitToMap = (state, orgUnit) => {

@@ -8,6 +8,7 @@ export { getDhisConfig } from './dhis';
 export * from './errors';
 export { Multilock } from './Multilock';
 export { getCountryNameFromCode } from './getCountryNameFromCode';
+export { getUniqueEntries } from './getUniqueEntries';
 export {
   flattenToObject,
   getKeysSortedByValues,
@@ -20,5 +21,5 @@ export {
 export { asynchronouslyFetchValuesForObject, fetchWithTimeout, stringifyQuery } from './request';
 export { replaceValues } from './replaceValues';
 export { respond } from './respond';
-export { singularise, stripFromStart } from './string';
+export { singularise, stripFromString } from './string';
 export { WorkBookParser } from './WorkBookParser';
