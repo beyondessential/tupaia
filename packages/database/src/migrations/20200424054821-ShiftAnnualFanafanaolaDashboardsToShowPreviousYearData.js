@@ -62,6 +62,7 @@ INNER JOIN "dashboardGroup"
 ON "dashboardGroup"."organisationUnitCode" = 'TO'
 AND "dashboardGroup".name IN (${arrayToDbString(HEALTH_SECTIONS_TO_UPDATE)})
 AND "dashboardReport".id = ANY("dashboardGroup"."dashboardReports")
+AND "dashboardReport"."drillDownLevel" IS NULL
 AND "dashboardReport"."viewJson" @> '{"periodGranularity": "${PERIOD_GRANULARITY}"}'`;
 
 exports._meta = {
