@@ -8,10 +8,6 @@ import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
 class PermissionGroupType extends DatabaseType {
   static databaseType = TYPES.PERMISSION_GROUP;
 
-  static meditrakConfig = {
-    minAppVersion: '1.7.86',
-  };
-
   async parent() {
     if (this.parent_id) {
       return this.model.findById(this.parent_id);
@@ -41,4 +37,8 @@ export class PermissionGroupModel extends DatabaseModel {
   get DatabaseTypeClass() {
     return PermissionGroupType;
   }
+
+  meditrakConfig = {
+    minAppVersion: '1.7.86',
+  };
 }

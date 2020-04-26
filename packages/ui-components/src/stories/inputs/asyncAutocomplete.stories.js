@@ -62,7 +62,7 @@ export const disabled = () => {
         label="Simple Auto Complete"
         fetchOptions={fetchOptions}
         placeholder="Search..."
-        disabeld
+        disabled
       />
     </Container>
   );
