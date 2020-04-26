@@ -42,7 +42,7 @@ const REPORT = {
       'Pulse oximiter',
       'Ventilator',
     ],
-    columns: ['% of facilities with commodity in stock'],
+    columns: ['% with commodity in stock'],
     cells: [
       [
         {
@@ -167,7 +167,7 @@ const REPORT = {
     ],
   },
   viewJson: {
-    name: '% of facilities with IPC commodities in stock',
+    name: '% of surveyed facilities with IPC commodities in stock',
     type: 'matrix',
     placeholder: '/static/media/PEHSMatrixPlaceholder.png',
     valueType: 'percentage',
