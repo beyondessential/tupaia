@@ -559,7 +559,7 @@ function global(
   state = {
     isSidePanelExpanded: false,
     overlay: !isMobile() && LANDING,
-    currentOrganisationUnit: {},
+    currentOrganisationUnitCode: null,
     currentOrganisationUnitSiblings: [],
     dashboardConfig: {},
     viewConfigs: {},
@@ -589,7 +589,7 @@ function global(
       return {
         ...state,
         isLoadingOrganisationUnit: false,
-        currentOrganisationUnit: action.organisationUnit,
+        currentOrganisationUnitCode: action.organisationUnit.organisationUnitCode,
         currentOrganisationUnitSiblings: action.organisationUnitSiblings,
       };
     case CHANGE_ORG_UNIT_ERROR:

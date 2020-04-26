@@ -153,7 +153,7 @@ const mapStateToProps = (state, givenProps) => {
   const { organisationUnitCode, organisationUnitChildren } = givenProps.area;
   const { measureId, measureData } = state.map.measureInfo;
 
-  const { currentOrganisationUnit, currentOrganisationUnitSiblings } = state.global;
+  const { currentOrganisationUnitCode, currentOrganisationUnitSiblings } = state.global;
 
   let shade;
   let measureValue;
@@ -178,6 +178,7 @@ const mapStateToProps = (state, givenProps) => {
 
   const orgUnit = selectOrgUnit(state, organisationUnitCode);
   const coordinates = orgUnit ? orgUnit.location.region : undefined;
+  const currentOrganisationUnit = selectOrgUnit(state, currentOrganisationUnitCode);
 
   return {
     measureId,

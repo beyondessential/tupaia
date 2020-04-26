@@ -29,7 +29,7 @@ import { DARK_BLUE, MOBILE_MARGIN_SIZE, WHITE } from '../../../styles';
 import { getMapUrl } from '../../../utils';
 import { getSingleFormattedValue } from '../../../utils/measures';
 import { ENTITY_TYPE } from '../../../constants';
-import { selectCurrentDashboardKey } from '../../../selectors';
+import { selectCurrentDashboardKey, selectOrgUnit } from '../../../selectors';
 
 const MAP_WIDTH = 420;
 const MAP_HEIGHT = 250;
@@ -253,14 +253,15 @@ const getMeasureFiltersForHierarchy = measureHierarchy =>
   }));
 
 const mapStateToProps = state => {
-  const { currentOrganisationUnit, dashboardConfig, isLoadingOrganisationUnit } = state.global;
+  const { currentOrganisationUnitCode, dashboardConfig, isLoadingOrganisationUnit } = state.global;
   const { measureHierarchy, currentMeasure, isExpanded } = state.measureBar;
   const { measureInfo, isMeasureLoading } = state.map;
   const { isGroupSelectExpanded } = state.dashboard;
   const hasSelectedMeasureId = currentMeasure !== undefined;
+  const currentOrganisationUnit = selectOrgUnit(state, currentOrganisationUnitCode) || {};
 
   const mobileListItems = getListItemsFromOrganisationUnitChildren(
-    currentOrganisationUnit.organisationUnitChildren,
+    currentOrganisationUnit.organisationUnitChildren, // TODO
     isMeasureLoading,
     measureInfo,
   );

@@ -18,7 +18,7 @@ import BackButton from '../../../components/mobile/BackButton';
 import { DARK_BLUE, MOBILE_MARGIN_SIZE, WHITE } from '../../../styles';
 import { getFacilityThumbnailUrl, getMapUrl } from '../../../utils';
 import { toggleDashboardSelectExpand, changeDashboardGroup } from '../../../actions';
-import { selectCurrentDashboardKey } from '../../../selectors';
+import { selectCurrentDashboardKey, selectOrgUnit } from '../../../selectors';
 
 class FacilityScreen extends PureComponent {
   componentWillMount() {
@@ -189,8 +189,9 @@ FacilityScreen.propTypes = {
 };
 
 const mapStateToProps = state => {
-  const { currentOrganisationUnit, dashboardConfig, isLoadingOrganisationUnit } = state.global;
+  const { currentOrganisationUnitCode, dashboardConfig, isLoadingOrganisationUnit } = state.global;
   const { isGroupSelectExpanded } = state.dashboard;
+  const currentOrganisationUnit = selectOrgUnit(state, currentOrganisationUnitCode) || {};
 
   return {
     dashboardConfig,

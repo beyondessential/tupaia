@@ -21,6 +21,7 @@ import { ChartWrapper, getIsMatrix, MatrixWrapper } from '../../../components/Vi
 import { request } from '../../../utils';
 import { decodeUrl, getInitialLocation } from '../../../utils/historyNavigation';
 import { DARK_BLUE, WHITE } from '../../../styles';
+import { selectOrgUnit } from '../../../selectors';
 
 const initialLocation = getInitialLocation();
 const {
@@ -110,9 +111,14 @@ export class RootScreen extends PureComponent {
   }
 }
 
-const mapStateToProps = ({ global }) => ({
-  organisationUnitName: global.currentOrganisationUnit.name,
-});
+const mapStateToProps = state => {
+  const { currentOrganisationUnitCode } = state.global;
+  const currentOrganisationUnit = selectOrgUnit(state, currentOrganisationUnitCode) || {};
+
+  return {
+    organisationUnitName: currentOrganisationUnit.name,
+  };
+};
 
 export default connect(mapStateToProps, null)(RootScreen);
 
