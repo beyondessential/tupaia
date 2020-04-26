@@ -101,7 +101,10 @@ const getOrgUnitFromCountry = (country, code) => (country ? country[code] : unde
  */
 export const selectOrgUnit = createSelector(
   [(state, code) => safeGet(countryCache, [state.orgUnits.orgUnitMap, code]), (_, code) => code],
-  getOrgUnitFromCountry,
+  (country, code) => {
+    //console.log('recalculated: ', code);
+    return getOrgUnitFromCountry(country, code);
+  },
 );
 
 export const selectOrgUnitChildren = createSelector(
@@ -159,6 +162,7 @@ export const selectAllMeasuresWithDisplayInfo = createSelector(
     if (!measureLevel || !currentCountry || !measureData || currentCountry === 'World') {
       return [];
     }
+    console.log(allCountryOrgUnitsCache, [country]);
 
     const listOfMeasureLevels = measureLevel.split(',');
     const allOrgUnitsOfLevel = safeGet(allCountryOrgUnitsCache, [country]).filter(orgUnit =>

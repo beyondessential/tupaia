@@ -75,17 +75,16 @@ export class CustomMap extends Component {
   };
 
   checkZoomOutToParentOrgUnit(bounds) {
-    const { currentOrganisationUnit, changeOrgUnit } = this.props;
+    const { currentOrganisationUnit, currentParent, changeOrgUnit } = this.props;
 
     // Maybe we need to zoom out to a parent!
     // First, check if there's a valid parent to zoom out to
-    if (currentOrganisationUnit && currentOrganisationUnit.parent) {
-      const parentOrg = currentOrganisationUnit.parent;
-      if (parentOrg.location && parentOrg.location.bounds) {
+    if (currentParent) {
+      if (currentParent.location && currentParent.location.bounds) {
         // Now check if we're at a reasonable zoom level to switch to that parent
-        const difference = checkBoundsDifference(parentOrg.location.bounds, bounds);
+        const difference = checkBoundsDifference(currentParent.location.bounds, bounds);
         if (difference > CHANGE_TO_PARENT_PERCENTAGE) {
-          changeOrgUnit(parentOrg.organisationUnitCode, false);
+          changeOrgUnit(currentParent.organisationUnitCode, false);
         }
       }
     }

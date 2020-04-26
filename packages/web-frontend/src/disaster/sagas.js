@@ -25,6 +25,7 @@ import {
 } from '../actions';
 import { DISASTER } from '../containers/OverlayDiv';
 import { formatDateForApi } from '../utils';
+import { selectOrgUnit } from '../selectors';
 
 // As a module that requires extra data for its dashboard item data fetches, the 'disaster' sagas
 // file must export this generator function to allow the global fetchDashboardItemData saga to
@@ -39,7 +40,9 @@ export function* prepareForDashboardItemDataFetch() {
   if (!selectedDisaster) {
     // User can still see disaster dashboard without selecting disaster,
     // set most current active disaster as selectedDisaster and show user dialog
-    const { currentOrganisationUnit } = state.global;
+    const { currentOrganisationUnitCode } = state.global;
+    const currentOrganisationUnit = selectOrgUnit(state, currentOrganisationUnitCode) || {};
+
     const mostCurrentDisaster =
       Object.values(disasters)
         .sort((a, b) => a.startDate - b.startDate)

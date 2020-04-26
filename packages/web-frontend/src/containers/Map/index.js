@@ -16,6 +16,7 @@
 import { connect } from 'react-redux';
 
 import { CustomMap } from './CustomMap';
+import { selectOrgUnit } from '../../selectors';
 
 import {
   changeOrgUnit,
@@ -34,16 +35,19 @@ const mapStateToProps = state => {
     tileSet,
   } = state.map;
   const {
-    currentOrganisationUnit,
+    currentOrganisationUnitCode,
     currentOrganisationUnitSiblings,
     isSidePanelExpanded,
   } = state.global;
   const { contractedWidth, expandedWidth } = state.dashboard;
+  const currentOrganisationUnit = selectOrgUnit(state, currentOrganisationUnitCode) || {};
+  const currentParent = selectOrgUnit(state, currentOrganisationUnit.parent) || null;
 
   return {
     position,
     innerAreas,
     currentOrganisationUnit,
+    currentParent,
     currentOrganisationUnitSiblings,
     measureInfo,
     tileSet,

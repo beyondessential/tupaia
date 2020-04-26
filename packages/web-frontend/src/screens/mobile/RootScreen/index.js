@@ -20,6 +20,7 @@ import { LoadingScreen } from '../LoadingScreen';
 import Footer from '../../../components/mobile/Footer';
 import { ENTITY_TYPE } from '../../../constants';
 import OverlayDiv from '../../../containers/OverlayDiv';
+import { selectOrgUnit } from '../../../selectors';
 
 const ORG_UNIT_TYPE_TO_COMPONENT = {
   [ENTITY_TYPE.COUNTRY]: RegionScreen,
@@ -65,10 +66,15 @@ RootScreen.propTypes = {
   isUserLoggedIn: PropTypes.bool.isRequired,
 };
 
-const mapStateToProps = state => ({
-  currentOrganisationUnit: state.global.currentOrganisationUnit,
-  isLoading: state.global.isLoadingOrganisationUnit,
-  isUserLoggedIn: state.authentication.isUserLoggedIn,
-});
+const mapStateToProps = state => {
+  const { currentOrganisationUnitCode } = state.global;
+  const currentOrganisationUnit = selectOrgUnit(state, currentOrganisationUnitCode) || {};
+
+  return {
+    currentOrganisationUnit,
+    isLoading: state.global.isLoadingOrganisationUnit,
+    isUserLoggedIn: state.authentication.isUserLoggedIn,
+  };
+};
 
 export default connect(mapStateToProps)(RootScreen);

@@ -25,7 +25,7 @@ import { changeDashboardGroup, closeDropdownOverlays } from '../../actions';
 import DashboardGroup from '../DashboardGroup';
 import { getFacilityThumbnailUrl } from '../../utils';
 import { DropDownMenu } from '../../components/DropDownMenu';
-import { selectCurrentDashboardKey } from '../../selectors';
+import { selectCurrentDashboardKey, selectOrgUnit } from '../../selectors';
 
 const IMAGE_HEIGHT_RATIO = 0.5;
 
@@ -120,7 +120,7 @@ export class Dashboard extends Component {
 
     return (
       <Dialog
-        open={true}
+        open
         onClose={() => this.setState({ isPhotoEnlarged: false })}
         style={DASHBOARD_STYLES.metaImageDialog}
       >
@@ -159,6 +159,7 @@ export class Dashboard extends Component {
   renderFloatingHeader() {
     const { currentOrganisationUnit, contractedWidth, isSidePanelExpanded } = this.props;
     const { showFloatingHeader } = this.state;
+    console.log(currentOrganisationUnit);
 
     return (
       <div
@@ -259,13 +260,16 @@ Dashboard.propTypes = {
 const mapStateToProps = state => {
   const { isAnimating } = state.map;
   const {
-    currentOrganisationUnit,
+    currentOrganisationUnitCode,
     isLoadingOrganisationUnit,
     dashboardConfig,
     isSidePanelExpanded,
     project,
   } = state.global;
   const { contractedWidth } = state.dashboard;
+
+  const currentOrganisationUnit = selectOrgUnit(state, currentOrganisationUnitCode) || {};
+  console.log(currentOrganisationUnitCode, currentOrganisationUnit);
 
   return {
     currentOrganisationUnit,

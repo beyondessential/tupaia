@@ -21,7 +21,7 @@ import {
   requestOrgUnit,
 } from '../../../actions';
 import { WHITE } from '../../../styles';
-import { selectCurrentDashboardKey } from '../../../selectors';
+import { selectCurrentDashboardKey, selectOrgUnit } from '../../../selectors';
 
 class HomeScreen extends PureComponent {
   componentWillMount(props) {
@@ -57,8 +57,8 @@ class HomeScreen extends PureComponent {
           handleFilterChange={name => onChangeDashboardGroup(name)}
         />
         <ExpandableList
-          title={'Countries'}
-          expandedByDefault={true}
+          title="Countries"
+          expandedByDefault
           items={organisationUnits.map(({ organisationUnitCode, name }) => (
             <SelectListItem
               onSelect={onChangeOrgUnit}
@@ -97,7 +97,8 @@ const mapStateToProps = state => {
 
   const { isGroupSelectExpanded } = state.dashboard;
 
-  const { currentOrganisationUnit, dashboardConfig } = state.global;
+  const { currentOrganisationUnitCode, dashboardConfig } = state.global;
+  const currentOrganisationUnit = selectOrgUnit(state, currentOrganisationUnitCode) || {};
 
   return {
     organisationUnits: hierarchyData || [],

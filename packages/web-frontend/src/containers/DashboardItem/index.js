@@ -43,6 +43,7 @@ import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 import { View } from '../../components/View';
 import { fetchDashboardItemData, openEnlargedDialog } from '../../actions';
+import { selectOrgUnit } from '../../selectors';
 
 export class DashboardItem extends Component {
   componentWillMount() {
@@ -112,7 +113,9 @@ DashboardItem.defaultProps = {
 
 const mapStateToProps = (state, { infoViewKey }) => {
   const { viewResponses } = state.dashboard;
-  const { currentOrganisationUnit } = state.global;
+  const { currentOrganisationUnitCode } = state.global;
+  const currentOrganisationUnit = selectOrgUnit(state, currentOrganisationUnitCode) || {};
+
   return {
     viewContent: viewResponses[infoViewKey],
     organisationUnit: currentOrganisationUnit, // Necessary for merge props.
@@ -130,7 +133,4 @@ const mapDispatchToProps = dispatch => ({
   dispatch, // Necessary for merge props.
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(DashboardItem);
+export default connect(mapStateToProps, mapDispatchToProps)(DashboardItem);
