@@ -340,6 +340,7 @@ export class DhisApi {
     } = originalQuery;
 
     const endpoint = await this.buildEventAnalyticsEndpoint(programCode);
+    // We use `fetchDataElements()` to leverage data element caching
     const dataElements = await this.fetchDataElements(dataElementCodes);
     const dataElementIds = dataElements.map(({ id }) => id);
     const organisationUnitIds = await this.codesToIds(ORGANISATION_UNIT, organisationUnitCodes);
