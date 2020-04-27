@@ -5,30 +5,55 @@
 
 import { periodToTimestamp, periodToDisplayString } from '@tupaia/dhis-api';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
+import flattenDeep from 'lodash.flattendeep';
 
 class SumPerPeriodBuilder extends DataBuilder {
   /**
    * @returns {SumAggregateSeriesOutput}
    */
   async build() {
-    const { dataSource } = this.config;
-    const { results, period } = await this.fetchAnalytics(dataSource.codes);
+    const { results, period } = await this.fetchResults();
+    const dataElementToDataClass = this.getDataElementToDataClass();
     const dataByPeriod = {};
-    results.forEach(({ period, value }) => {
-      dataByPeriod[period] = (dataByPeriod[period] || 0) + value;
+
+    results.forEach(({ period: dataPeriod, value, dataElement }) => {
+      const dataClass = dataElementToDataClass[dataElement];
+
+      if (!dataByPeriod[dataPeriod]) {
+        dataByPeriod[dataPeriod] = { timestamp: periodToTimestamp(dataPeriod) };
+        dataByPeriod[dataPeriod].name = periodToDisplayString(dataPeriod);
+      }
+
+      dataByPeriod[dataPeriod][dataClass] = (dataByPeriod[dataPeriod][dataClass] || 0) + value;
     });
 
-    // Structure the response data
-    return {
-      data: Object.keys(dataByPeriod)
-        .sort()
-        .map(period => ({
-          name: periodToDisplayString(period),
-          timestamp: periodToTimestamp(period),
-          value: dataByPeriod[period],
-        })),
-      period,
-    };
+    return { data: Object.values(dataByPeriod), period };
+  }
+
+  /**
+   * Get a map of the data element to its associated data class
+   */
+  getDataElementToDataClass() {
+    const dataElementToDataClass = {};
+
+    Object.entries(this.config.dataClasses).forEach(([key, value]) => {
+      value.codes.forEach(code => {
+        dataElementToDataClass[code] = key;
+      });
+    });
+
+    return dataElementToDataClass;
+  }
+
+  /**
+   * Flatten all the data elements and use them to fetch analytics.
+   */
+  async fetchResults() {
+    const dataElements = flattenDeep(
+      Object.values(this.config.dataClasses).map(dataCodes => Object.values(dataCodes)),
+    );
+
+    return this.fetchAnalytics(dataElements);
   }
 }
 
