@@ -3,12 +3,10 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { CountryLayout } from '../layouts/CountryLayout';
-import { CountriesLayout } from '../layouts/CountriesLayout';
-import { AlertsLayout } from '../layouts/AlertsLayout';
-import { TableLayout } from '../layouts/TableLayout';
-
-export const HOME_ALIAS = 'country';
+import { CountryLayout } from './layouts/CountryLayout';
+import { CountriesLayout } from './layouts/CountriesLayout';
+import { AlertsLayout } from './layouts/AlertsLayout';
+import { TableLayout } from './layouts/TableLayout';
 
 export const ROUTES = [
   {

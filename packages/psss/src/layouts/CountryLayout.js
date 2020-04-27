@@ -7,10 +7,10 @@ import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
 import { PhotoAlbum, CalendarToday } from '@material-ui/icons';
 import PropTypes from 'prop-types';
+import { useParams } from 'react-router-dom';
 import { TabsToolbar } from '../components/Toolbar';
 import { RouterView } from '../router';
 import { Header } from '../components/Header';
-import { useParams } from 'react-router-dom';
 
 const Main = styled.main`
   background: lightgray;

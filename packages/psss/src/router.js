@@ -3,9 +3,13 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { HOME_ALIAS } from './routes';
 import { Redirect, Route, Switch } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
+/**
+ * Render a route with potential sub routes
+ * https://reacttraining.com/react-router/web/example/route-config
+ */
 export const RouteWithSubRoutes = route => {
   return (
     <Route
@@ -19,15 +23,13 @@ export const RouteWithSubRoutes = route => {
 };
 
 /**
- * Use this component for any new section of routes (any config object that has a "routes" property
+ * Renders a section of routes
  */
-// eslint-disable-next-line react/prop-types
 export const RouterView = ({ routes }) => {
   const fallback = routes.find(route => route.fallback);
   return (
     <Switch>
       {routes.map((route, i) => {
-        // eslint-disable-next-line react/no-array-index-key
         return <RouteWithSubRoutes key={i} {...route} />;
       })}
       {fallback && <Redirect to={fallback.path} />}
@@ -36,6 +38,18 @@ export const RouterView = ({ routes }) => {
   );
 };
 
+RouterView.propTypes = {
+  routes: PropTypes.array.isRequired,
+};
+
+/*
+ * This ensures that the link to the home page is active for sub-urls of country (eg. /country/samoa)
+ */
+export const HOME_ALIAS = 'country';
+
+/*
+ * Used to determine if a router link is active
+ */
 export const isActive = (match, location) => {
   if (!match) {
     return false;

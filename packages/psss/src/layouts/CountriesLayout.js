@@ -6,6 +6,7 @@ import React from 'react';
 import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import { TableLayout } from './TableLayout';
 import { DateToolbar } from '../components/Toolbar';
 import { Header } from '../components/Header';
@@ -45,4 +46,8 @@ export const CountriesLayout = ({ metaData }) => {
       </Container>
     </Main>
   );
+};
+
+CountriesLayout.propTypes = {
+  metaData: PropTypes.array.isRequired,
 };

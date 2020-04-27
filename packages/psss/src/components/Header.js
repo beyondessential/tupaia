@@ -6,11 +6,10 @@ import React from 'react';
 import MuiContainer from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import { SystemUpdateAlt } from '@material-ui/icons';
 import { LightOutlinedButton } from '@tupaia/ui-components';
 import * as COLORS from '../theme/colors';
-import PropTypes from 'prop-types';
-import { CountryLayout } from '../layouts/CountryLayout';
 
 const HeaderMain = styled.header`
   background-color: ${COLORS.BLUE};

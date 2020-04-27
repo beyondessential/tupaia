@@ -1,10 +1,15 @@
 import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import Avatar from '@material-ui/core/Avatar';
-import { Dashboard, HomeButton, LightProfileButton, WarningCloud } from '@tupaia/ui-components';
-import { NavBar } from './components/NavBar';
+import {
+  Dashboard,
+  HomeButton,
+  LightProfileButton,
+  WarningCloud,
+  NavBar,
+} from '@tupaia/ui-components';
 import { Footer } from './components/Footer';
-import { RouterView, ROUTES } from './router';
+import { RouterView, ROUTES, isActive } from './router';
 
 const links = [
   {
@@ -27,7 +32,7 @@ const App = () => {
   return (
     <Router>
       <div>
-        <NavBar HomeButton={Home} links={links} Profile={Profile} />
+        <NavBar HomeButton={Home} links={links} Profile={Profile} isActive={isActive} />
         <RouterView routes={ROUTES} />
         <Footer />
       </div>

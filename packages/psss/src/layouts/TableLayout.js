@@ -4,6 +4,7 @@
  */
 import React from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
 const Section = styled.section`
   background: white;
@@ -22,4 +23,8 @@ export const TableLayout = ({ metaData }) => {
       <h3>Table Layout: {metaData.resource}</h3>
     </Section>
   );
+};
+
+TableLayout.propTypes = {
+  metaData: PropTypes.array.isRequired,
 };
