@@ -3,16 +3,29 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { periodToTimestamp, periodToDisplayString } from '@tupaia/dhis-api';
+import { periodToTimestamp, periodToDisplayString, parsePeriodType } from '@tupaia/dhis-api';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import flattenDeep from 'lodash.flattendeep';
 
+/**
+ * Sample dataBuilderConfig:
+ * {
+ *    dataClasses: {
+ *        population: {
+ *            codes: ['MALE_POP', 'FEMALE_POP']
+ *        }
+ *    },
+ *    periodType: 'month'
+ * }
+}
+ */
 class SumPerPeriodBuilder extends DataBuilder {
   /**
    * @returns {SumAggregateSeriesOutput}
    */
   async build() {
-    const { results, period } = await this.fetchResults();
+    const dataElements = this.getAllDataElements();
+    const { results, period } = await this.fetchAnalytics(dataElements);
     const dataElementToDataClass = this.getDataElementToDataClass();
     const dataByPeriod = {};
 
@@ -20,8 +33,11 @@ class SumPerPeriodBuilder extends DataBuilder {
       const dataClass = dataElementToDataClass[dataElement];
 
       if (!dataByPeriod[dataPeriod]) {
+        const configPeriodType = this.config.periodType
+          ? parsePeriodType(this.config.periodType)
+          : null;
         dataByPeriod[dataPeriod] = { timestamp: periodToTimestamp(dataPeriod) };
-        dataByPeriod[dataPeriod].name = periodToDisplayString(dataPeriod);
+        dataByPeriod[dataPeriod].name = periodToDisplayString(dataPeriod, configPeriodType);
       }
 
       dataByPeriod[dataPeriod][dataClass] = (dataByPeriod[dataPeriod][dataClass] || 0) + value;
@@ -48,12 +64,10 @@ class SumPerPeriodBuilder extends DataBuilder {
   /**
    * Flatten all the data elements and use them to fetch analytics.
    */
-  async fetchResults() {
-    const dataElements = flattenDeep(
+  getAllDataElements() {
+    return flattenDeep(
       Object.values(this.config.dataClasses).map(dataCodes => Object.values(dataCodes)),
     );
-
-    return this.fetchAnalytics(dataElements);
   }
 }
 

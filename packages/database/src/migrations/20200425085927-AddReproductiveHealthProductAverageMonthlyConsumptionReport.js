@@ -14,145 +14,162 @@ exports.setup = function(options, seedLink) {
   seed = seedLink;
 };
 
-exports.up = function(db) {
-  return db.runSql(`
+const UNFPA_RH_AMC_DATA_CLASSES = {
+  "UNFPA_RH_Male_condoms": {
+    "codes": ["AMC_3b3444bf"]
+  },
+  "UNFPA_RH_Male_condoms_varied": {
+    "codes": ["AMC_a162942e"]
+  },
+  "UNFPA_RH_Female_condoms": {
+    "codes": ["AMC_bf4be518"]
+  },
+  "UNFPA_RH_COCs": {
+    "codes": ["AMC_402924bf"]
+  },
+  "UNFPA_RH_POP": {
+    "codes": ["AMC_47d584bf"]
+  },
+  "UNFPA_RH_Implant_Contraceptives": {
+    "codes": ["AMC_3ff944bf"]
+  },
+  "UNFPA_RH_Jadelle": {
+    "codes": ["AMC_d2d28620"]
+  },
+  "UNFPA_RH_EC_2_dose": {
+    "codes": ["AMC_47fb04bf"]
+  },
+  "UNFPA_RH_EC_single_dose": {
+    "codes": ["ACM_47fe44bf"]
+  },
+  "UNFPA_RH_Depot": {
+    "codes": ["AMC_53d014bf"]
+  },
+  "UNFPA_RH_SAYANA_Press": {
+    "codes": ["AMC_4752843e"]
+  },
+  "UNFPA_RH_Norethisterone": {
+    "codes": ["AMC_542a34bf"]
+  },
+  "UNFPA_RH_IUD": {
+    "codes": ["AMC_4718f43e"]
+  },
+  "UNFPA_RH_Copper_IUD": {
+    "codes": ["AMC_3b3994bf"]
+  }
+};
+
+const UNFPA_RH_AMC_CHART_CONFIG = {
+  "UNFPA_RH_Male_condoms": {
+    "label": "Male condoms",
+    "legendOrder" : 0
+  },
+  "UNFPA_RH_Male_condoms_varied": {
+    "label": "Male condoms, varied",
+    "legendOrder" : 1
+  },
+  "UNFPA_RH_Female_condoms": {
+    "label": "Female condoms",
+    "legendOrder" : 2
+  },
+  "UNFPA_RH_COCs": {
+    "label": "COCs",
+    "legendOrder" : 3
+  },
+  "UNFPA_RH_POP": {
+    "label": "POP",
+    "legendOrder" : 4
+  },
+  "UNFPA_RH_Implant_Contraceptives": {
+    "label": "Implant Contraceptives",
+    "legendOrder" : 5
+  },
+  "UNFPA_RH_Jadelle": {
+    "label": "Jadelle",
+    "legendOrder" : 6
+  },
+  "UNFPA_RH_EC_2_dose": {
+    "label": "EC (2 dose)",
+    "legendOrder" : 7
+  },
+  "UNFPA_RH_EC_single_dose": {
+    "label": "EC (single dose)",
+    "legendOrder" : 8
+  },
+  "UNFPA_RH_Depot": {
+    "label": "Depot",
+    "legendOrder" : 9
+  },
+  "UNFPA_RH_SAYANA_Press": {
+    "label": "SAYANA Press",
+    "legendOrder" : 10
+  },
+  "UNFPA_RH_Norethisterone": {
+    "label": "Norethisterone",
+    "legendOrder" : 11
+  },
+  "UNFPA_RH_IUD": {
+    "label": "IUD",
+    "legendOrder" : 11
+  },
+  "UNFPA_RH_Copper_IUD": {
+    "label": "Copper IUD",
+    "legendOrder" : 12
+  }
+};
+
+//Update COVID_New_Cases_By_Day report to work with new 'sumPerPeriod' data builder
+const NEW_COVID_NEW_CASES_BY_DAY_REPORT_DATA_BUILDER = {
+  "dataClasses": {
+      "value": {
+        "codes": [
+          "dailysurvey003"
+        ]
+      }
+  }
+};
+
+//Old COVID_New_Cases_By_Day report dataBuilderConfig to revert back
+const OLD_COVID_NEW_CASES_BY_DAY_REPORT_DATA_BUILDER = {
+  "dataSource": {
+      "codes": [
+          "dailysurvey003"
+      ]
+  }
+};
+
+exports.up = async function(db) {
+  await db.runSql(`
     INSERT INTO "dashboardReport" ("id", "dataBuilder", "dataBuilderConfig", "viewJson")
     VALUES (
       'UNFPA_Reproductive_Health_Product_AMC',
       'sumPerMonth',
       '{
-        "dataClasses": {
-          "Male condoms": {
-            "codes": ["AMC_3b3444bf"]
-          },
-          "Male condoms, varied": {
-            "codes": ["AMC_a162942e"]
-          },
-          "Female condoms": {
-            "codes": ["AMC_bf4be518"]
-          },
-          "COCs": {
-            "codes": ["AMC_402924bf"]
-          },
-          "POP": {
-            "codes": ["AMC_47d584bf"]
-          },
-          "Implant Contraceptives": {
-            "codes": ["AMC_3ff944bf"]
-          },
-          "Jadelle": {
-            "codes": ["AMC_d2d28620"]
-          },
-          "EC (2 dose)": {
-            "codes": ["AMC_47fb04bf"]
-          },
-          "EC (single dose)": {
-            "codes": ["ACM_47fe44bf"]
-          },
-          "Depot": {
-            "codes": ["AMC_53d014bf"]
-          },
-          "SAYANA Press": {
-            "codes": ["AMC_4752843e"]
-          },
-          "Norethisterone": {
-            "codes": ["AMC_542a34bf"]
-          },
-          "IUD": {
-            "codes": ["AMC_4718f43e"]
-          },
-          "Copper IUD": {
-            "codes": ["AMC_3b3994bf"]
-          }
-        }
+        "dataClasses": ${JSON.stringify(UNFPA_RH_AMC_DATA_CLASSES)},
+        "periodType" : "month"
       }',
       '{
         "name": "Reproductive Health Product Average Monthly Consumption (AMC)",
         "type": "chart",
         "chartType": "line",
         "valueType": "text",
-        "chartConfig": {
-          "Male condoms": {
-            "label": "Male condoms",
-            "legendOrder" : 0
-          },
-          "Male condoms, varied": {
-            "label": "Male condoms, varied",
-            "legendOrder" : 1
-          },
-          "Female condoms": {
-            "label": "Female condoms",
-            "legendOrder" : 2
-          },
-          "COCs": {
-            "label": "COCs",
-            "legendOrder" : 3
-          },
-          "POP": {
-            "label": "POP",
-            "legendOrder" : 4
-          },
-          "Implant Contraceptives": {
-            "label": "Implant Contraceptives",
-            "legendOrder" : 5
-          },
-          "Jadelle": {
-            "label": "Jadelle",
-            "legendOrder" : 6
-          },
-          "EC (2 dose)": {
-            "label": "EC (2 dose)",
-            "legendOrder" : 7
-          },
-          "EC (single dose)": {
-            "label": "EC (single dose)",
-            "legendOrder" : 8
-          },
-          "Depot": {
-            "label": "Depot",
-            "legendOrder" : 9
-          },
-          "SAYANA Press": {
-            "label": "SAYANA Press",
-            "legendOrder" : 10
-          },
-          "Norethisterone": {
-            "label": "Norethisterone",
-            "legendOrder" : 11
-          },
-          "IUD": {
-            "label": "IUD",
-            "legendOrder" : 11
-          },
-          "Copper IUD": {
-            "label": "Copper IUD",
-            "legendOrder" : 12
-          }
-        },
+        "chartConfig": ${JSON.stringify(UNFPA_RH_AMC_CHART_CONFIG)},
         "periodGranularity": "month"
       }'
     );
 
-  UPDATE "dashboardGroup"
+    UPDATE "dashboardGroup"
     SET "dashboardReports" = "dashboardReports" || '{UNFPA_Reproductive_Health_Product_AMC}'
     WHERE code = 'DL_Unfpa_Country';
 
-  UPDATE "dashboardReport"
-    SET "dataBuilderConfig" = '{
-      "dataClasses": {
-          "value": {
-            "codes": [
-              "dailysurvey003"
-            ]
-          }
-      }
-    }'
+    UPDATE "dashboardReport"
+    SET "dataBuilderConfig" = '${JSON.stringify(NEW_COVID_NEW_CASES_BY_DAY_REPORT_DATA_BUILDER)}'
     WHERE id = 'COVID_New_Cases_By_Day';
   `);
 };
 
-exports.down = function(db) {
-  return db.runSql(`
+exports.down = async function(db) {
+  await db.runSql(`
     DELETE FROM "dashboardReport" WHERE id = 'UNFPA_Reproductive_Health_Product_AMC';
 
     UPDATE "dashboardGroup"
@@ -160,13 +177,7 @@ exports.down = function(db) {
     WHERE code = 'DL_Unfpa_Country';
 
     UPDATE "dashboardReport"
-    SET "dataBuilderConfig" = '{
-      "dataSource": {
-          "codes": [
-              "dailysurvey003"
-          ]
-      }
-    }'
+    SET "dataBuilderConfig" = '${JSON.stringify(OLD_COVID_NEW_CASES_BY_DAY_REPORT_DATA_BUILDER)}'
     WHERE id = 'COVID_New_Cases_By_Day';
   `);
 };
