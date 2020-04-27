@@ -162,7 +162,7 @@ export function processMeasureInfo(response) {
 
     hiddenMeasures[measureOption.key] = measureOption.hideByDefault;
 
-    if (POLYGON_MEASURE_TYPES.includes(type)) {
+    if (POLYGON_MEASURE_TYPES.includes(type) || type === MEASURE_TYPE_SPECTRUM) {
       // for each spectrum, include the minimum and maximum values for
       // use in the legend scale labels.
       const { min, max } = getSpectrumScaleValues(measureData, measureOption);
