@@ -159,7 +159,6 @@ export class Dashboard extends Component {
   renderFloatingHeader() {
     const { currentOrganisationUnit, contractedWidth, isSidePanelExpanded } = this.props;
     const { showFloatingHeader } = this.state;
-    console.log(currentOrganisationUnit);
 
     return (
       <div
@@ -224,6 +223,7 @@ export class Dashboard extends Component {
   }
 
   render() {
+    console.log('dashboard rerender');
     const { onDashboardClicked, isLoading, sections, currentDashboardKey } = this.props;
 
     return (
@@ -257,6 +257,9 @@ Dashboard.propTypes = {
   contractedWidth: PropTypes.number,
 };
 
+// This can't exist. How do I get rid of it?
+const EMTPY_ARRAY = {};
+
 const mapStateToProps = state => {
   const { isAnimating } = state.map;
   const {
@@ -268,8 +271,7 @@ const mapStateToProps = state => {
   } = state.global;
   const { contractedWidth } = state.dashboard;
 
-  const currentOrganisationUnit = selectOrgUnit(state, currentOrganisationUnitCode) || {};
-  console.log(currentOrganisationUnitCode, currentOrganisationUnit);
+  const currentOrganisationUnit = selectOrgUnit(state, currentOrganisationUnitCode) || EMTPY_ARRAY;
 
   return {
     currentOrganisationUnit,
