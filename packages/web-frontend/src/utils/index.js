@@ -11,7 +11,6 @@
 export { default as request } from './request';
 export { default as checkBoundsDifference } from './checkBoundsDifference';
 export { organisationUnitIsArea } from './organisation';
-export { getSiblingItems, storeSiblingItems } from './orgUnitSiblingCache';
 export { isMobile, delayMobileTapCallback } from './mobile';
 export { getCenterAndZoomForBounds } from './getCenterAndZoomForBounds';
 export { mapBoxToken } from './mapbox';
