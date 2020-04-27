@@ -27,10 +27,10 @@ const dataBroker = sinon.createStubInstance(DataBroker, {
 });
 let aggregator;
 
-const fetchOptions = { period: '20200214' };
+const fetchOptions = { startDate: '20200214', endDate: '20200215', period: '20200214;20200215' };
 const aggregationOptions = {
   aggregationType: 'MOST_RECENT',
-  aggregationConfig: { orgUnitToGroupKeys: [] },
+  aggregationConfig: { orgUnitToGroupKeys: [], requestedPeriod: '20200214;20200215' },
   measureCriteria: { EQ: 3 },
 };
 
