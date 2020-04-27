@@ -74,10 +74,29 @@ const selectCountriesAsOrgUnits = createSelector([state => state.orgUnits.orgUni
     .filter(country => country.organisationUnitCode !== 'World'),
 );
 
+const selectOrgUnitSiblingsAndSelf = createSelector(
+  [
+    (state, code) => getOrgUnitParent(selectOrgUnit(state, code)),
+    state => selectCountriesAsOrgUnits(state),
+    (state, code) => safeGet(countryCache, [state.orgUnits.orgUnitMap, code]),
+  ],
+  (parentCode, countriesAsOrgUnits, country) => {
+    if (!parentCode) {
+      return [];
+    }
+    console.log('recalulting big one');
+    return parentCode === 'World'
+      ? countriesAsOrgUnits
+      : safeGet(orgUnitChildrenCache, [country, parentCode]);
+  },
+);
+
 const getOrgUnitFromMeasureData = (measureData, code) =>
   measureData.find(val => val.organisationUnitCode === code);
 
 const getOrgUnitFromCountry = (country, code) => (country ? country[code] : undefined);
+
+const getOrgUnitParent = orgUnit => (orgUnit ? orgUnit.parent : undefined);
 
 /**
  * Public Selectors
@@ -87,10 +106,7 @@ const getOrgUnitFromCountry = (country, code) => (country ? country[code] : unde
  */
 export const selectOrgUnit = createSelector(
   [(state, code) => safeGet(countryCache, [state.orgUnits.orgUnitMap, code]), (_, code) => code],
-  (country, code) => {
-    //console.log('recalculated: ', code);
-    return getOrgUnitFromCountry(country, code);
-  },
+  getOrgUnitFromCountry,
 );
 
 export const selectOrgUnitCountry = createSelector(
@@ -106,6 +122,35 @@ export const selectOrgUnitChildren = createSelector(
   ],
   (countriesAsOrgUnits, country, code) =>
     code === 'World' ? countriesAsOrgUnits : safeGet(orgUnitChildrenCache, [country, code]),
+);
+
+export const selectOrgUnitsAsHierarchy = createSelector(
+  [state => state.orgUnits.orgUnitMap, selectCountriesAsOrgUnits],
+  (orgUnitMap, countriesAsOrgUnits) => {
+    const world = orgUnitMap.World;
+    if (!world) {
+      return {};
+    }
+
+    const hierarchy = {
+      ...world,
+      organisationUnitChildren: countriesAsOrgUnits.map(countryOrgUnit =>
+        safeGet(countryAsHierarchyObjectCache, [
+          orgUnitMap[countryOrgUnit.organisationUnitCode],
+          world,
+        ]),
+      ),
+    };
+    return hierarchy;
+  },
+);
+
+export const selectOrgUnitSiblings = createSelector(
+  [selectOrgUnitSiblingsAndSelf, (_, code) => code],
+  (siblings, code) => {
+    console.log('Recalculating');
+    return siblings.filter(orgUnit => orgUnit.organisationUnitCode !== code);
+  },
 );
 
 export const selectHasPolygonMeasure = createSelector(
@@ -138,13 +183,38 @@ export const selectAllMeasuresWithDisplayInfo = createSelector(
     ) {
       return [];
     }
-    console.log(allCountryOrgUnitsCache, [country]);
+
+    // WARNING: Very hacky code to get measureMarker rendering correctly for AU
+    // This is due to AU having two levels of 'Region' entities (see: https://github.com/beyondessential/tupaia-backlog/issues/295)
+    // START OF HACK
+    if (currentCountry === 'AU') {
+      const parentCodes = measureData
+        .map(data => getOrgUnitFromCountry(country, data.organisationUnitCode))
+        .filter(orgUnit => orgUnit)
+        .map(orgUnit => orgUnit.parent)
+        .filter((parentCode, index, self) => self.indexOf(parentCode) === index); //Filters for uniqueness
+
+      const allSiblingOrgUnits = parentCodes.reduce(
+        (arr, parentCode) => [...arr, ...safeGet(orgUnitChildrenCache, [country, parentCode])],
+        [],
+      );
+
+      return allSiblingOrgUnits.map(orgUnit =>
+        safeGet(displayInfoCache, [
+          measureOptions,
+          hiddenMeasures,
+          getOrgUnitFromMeasureData(measureData, orgUnit.organisationUnitCode),
+          orgUnit.organisationUnitCode,
+        ]),
+      );
+    }
+    // END OF HACK
+    // Ideally, we should be using the below code instead for all orgUnits
 
     const listOfMeasureLevels = measureLevel.split(',');
     const allOrgUnitsOfLevel = safeGet(allCountryOrgUnitsCache, [country]).filter(orgUnit =>
       listOfMeasureLevels.includes(orgUnit.type),
     );
-
     return allOrgUnitsOfLevel.map(orgUnit =>
       safeGet(displayInfoCache, [
         measureOptions,
