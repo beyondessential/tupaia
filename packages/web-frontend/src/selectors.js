@@ -89,7 +89,6 @@ const selectOrgUnitSiblingsAndSelf = createSelector(
     if (!parentCode) {
       return [];
     }
-    console.log('recalulting big one');
     return parentCode === 'World'
       ? countriesAsOrgUnits
       : safeGet(orgUnitChildrenCache, [country, parentCode]);
@@ -157,7 +156,6 @@ export const selectOrgUnitsAsHierarchy = createSelector(
 export const selectOrgUnitSiblings = createSelector(
   [selectOrgUnitSiblingsAndSelf, (_, code) => code],
   (siblings, code) => {
-    console.log('Recalculating');
     return siblings.filter(orgUnit => orgUnit.organisationUnitCode !== code);
   },
 );

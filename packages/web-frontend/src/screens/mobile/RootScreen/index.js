@@ -34,8 +34,8 @@ const getPageComponent = orgUnitType => ORG_UNIT_TYPE_TO_COMPONENT[orgUnitType] 
 
 class RootScreen extends Component {
   renderPage() {
-    const { currentOrganisationUnit } = this.props;
-    const PageComponent = getPageComponent(currentOrganisationUnit.type);
+    const { currentOrganisationUnitType } = this.props;
+    const PageComponent = getPageComponent(currentOrganisationUnitType);
     return <PageComponent />;
   }
 
@@ -61,17 +61,18 @@ class RootScreen extends Component {
 }
 
 RootScreen.propTypes = {
-  currentOrganisationUnit: PropTypes.shape({ type: PropTypes.string }).isRequired,
+  currentOrganisationUnitType: PropTypes.string.isRequired,
   isLoading: PropTypes.bool.isRequired,
   isUserLoggedIn: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = state => {
   const { currentOrganisationUnitCode } = state.global;
-  const currentOrganisationUnit = selectOrgUnit(state, currentOrganisationUnitCode) || {};
+  const { type: currentOrganisationUnitType } =
+    selectOrgUnit(state, currentOrganisationUnitCode) || {};
 
   return {
-    currentOrganisationUnit,
+    currentOrganisationUnitType,
     isLoading: state.global.isLoadingOrganisationUnit,
     isUserLoggedIn: state.authentication.isUserLoggedIn,
   };

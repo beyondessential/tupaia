@@ -112,10 +112,10 @@ export class RootScreen extends PureComponent {
 
 const mapStateToProps = state => {
   const { currentOrganisationUnitCode } = state.global;
-  const currentOrganisationUnit = selectOrgUnit(state, currentOrganisationUnitCode) || {};
+  const { name: organisationUnitName } = selectOrgUnit(state, currentOrganisationUnitCode) || {};
 
   return {
-    organisationUnitName: currentOrganisationUnit.name,
+    organisationUnitName,
   };
 };
 
