@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Container from '@material-ui/core/Container';
 import { PhotoAlbum, CalendarToday } from '@material-ui/icons';
-import {LightTab, LightTabs } from '@tupaia/ui-components';
+import { LightTab, LightTabs } from '@tupaia/ui-components';
 import { Link as RouterLink, useLocation, useRouteMatch } from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
 import * as COLORS from '../theme/colors';
@@ -78,7 +78,7 @@ const ToolbarTab = styled(LightTab)`
   padding-bottom: 21px;
 `;
 
-const Link = props => <ToolbarTab {...props} component={RouterLink} />;
+const TabLink = props => <ToolbarTab {...props} component={RouterLink} />;
 
 export const TabsToolbar = ({ links }) => {
   const location = useLocation();
@@ -86,20 +86,24 @@ export const TabsToolbar = ({ links }) => {
   const [value, setValue] = useState(false);
 
   useEffect(() => {
-    const newValue = links.some(link => link.to === location.pathname) ? location.pathname : false;
-    setValue(newValue);
-  }, [location]);
+    const valid = links.find(link => location.pathname === `${match.url}${link.to}`);
+    if (valid) {
+      setValue(location.pathname);
+    }
+  }, [location, match]);
 
   return (
     <TabsOuter>
-      <LightTabs value={value}>
-        {links.map(({ label, to, icon }) => (
-          <Link key={to} to={`${match.url}${to}`} value={`${match.url}${to}`}>
-            {icon}
-            {label}
-          </Link>
-        ))}
-      </LightTabs>
+      {value && (
+        <LightTabs value={value}>
+          {links.map(({ label, to, icon }) => (
+            <TabLink key={to} to={`${match.url}${to}`} value={`${match.url}${to}`}>
+              {icon}
+              {label}
+            </TabLink>
+          ))}
+        </LightTabs>
+      )}
     </TabsOuter>
   );
 };

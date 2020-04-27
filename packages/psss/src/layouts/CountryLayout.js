@@ -8,7 +8,9 @@ import MuiContainer from '@material-ui/core/Container';
 import { PhotoAlbum, CalendarToday } from '@material-ui/icons';
 import PropTypes from 'prop-types';
 import { TabsToolbar } from '../components/Toolbar';
-import { RenderRoutes } from '../routes';
+import { RouterView } from '../router';
+import { Header } from '../components/Header';
+import { useParams } from 'react-router-dom';
 
 const Main = styled.main`
   background: lightgray;
@@ -31,15 +33,15 @@ const links = [
   },
 ];
 
-export const CountryLayout = ({ match, routes, ...props }) => {
-  console.log('props', props);
-
+export const CountryLayout = ({ routes, match }) => {
+  const { countryId } = useParams();
   return (
     <Main>
+      <Header title={countryId} />
       <TabsToolbar links={links} />
       <Container>
         <h2>{`Country: ${match.params.countryId}`}</h2>
-        <RenderRoutes routes={routes} />
+        <RouterView routes={routes} />
       </Container>
     </Main>
   );
@@ -47,4 +49,5 @@ export const CountryLayout = ({ match, routes, ...props }) => {
 
 CountryLayout.propTypes = {
   routes: PropTypes.array.isRequired,
+  match: PropTypes.any.isRequired,
 };

@@ -8,7 +8,7 @@ import MuiBox from '@material-ui/core/Box';
 import MuiContainer from '@material-ui/core/Container';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
+import { Link as RouterLink, useLocation, useRouteMatch } from 'react-router-dom';
 import { LightTabs, LightTab } from './Tabs';
 
 const Wrapper = styled.nav`
@@ -43,10 +43,12 @@ Link.propTypes = {
 };
 
 export const NavBar = ({ HomeButton, Profile, links }) => {
+  const match = useRouteMatch();
   const location = useLocation();
   const [value, setValue] = useState(false);
 
   useEffect(() => {
+    console.log('match', match);
     const newValue = links.some(link => link.to === location.pathname) ? location.pathname : false;
     setValue(newValue);
   }, [location]);

@@ -15,7 +15,7 @@ import Paper from '@material-ui/core/Paper';
 import styled from 'styled-components';
 
 /*
- * Simple Table
+ * Simple TableLayout
  */
 const useStyles = makeStyles({
   table: {
@@ -69,7 +69,7 @@ export const SimpleTable = () => {
 };
 
 /*
- * Zebra Table
+ * Zebra TableLayout
  */
 function createZebraData(name, sites, afr, dia, ili, pf, dli, status) {
   return { name, sites, afr, dia, ili, pf, dli, status };
@@ -139,7 +139,7 @@ export const ZebraTable = () => (
 );
 
 /*
- * Card Table
+ * Card TableLayout
  */
 export const CardTable = () => (
   <Table>

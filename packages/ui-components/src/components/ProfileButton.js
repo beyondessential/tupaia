@@ -66,7 +66,7 @@ export const ProfileButton = props => {
       />
       <Menu keepMounted anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
         <MuiList subheader={<MuiListSubheader>Profile</MuiListSubheader>}>
-          <ListItemLink to="/profile">
+          <ListItemLink to="/alerts/profile">
             <MuiListItemIcon>
               <AccountCircleIcon />
             </MuiListItemIcon>

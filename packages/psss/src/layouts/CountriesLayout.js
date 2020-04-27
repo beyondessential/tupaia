@@ -5,16 +5,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link,
-  useRouteMatch,
-  useParams,
-} from 'react-router-dom';
-import { Table } from '../components/Table';
+import { Link } from 'react-router-dom';
+import { TableLayout } from './TableLayout';
 import { DateToolbar } from '../components/Toolbar';
+import { Header } from '../components/Header';
 
 const Main = styled.main`
   background: lightgray;
@@ -33,9 +27,10 @@ const countries = [
   { name: 'Vanuatu', url: 'vanuatu' },
 ];
 
-export const CountriesLayout = () => {
+export const CountriesLayout = ({ metaData }) => {
   return (
     <Main>
+      <Header title="All Countries" />
       <DateToolbar />
       <Container>
         <h2>Countries Layout</h2>
@@ -46,7 +41,7 @@ export const CountriesLayout = () => {
             </li>
           ))}
         </ul>
-        <Table />
+        <TableLayout metaData={metaData} />
       </Container>
     </Main>
   );
