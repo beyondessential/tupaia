@@ -132,7 +132,9 @@ export class SearchBar extends PureComponent {
 
         // Recursively generate the children for this OrgUnit, will not recurse whole tree as
         // HierarchyItems only fetch their children data on componentWillMount
-        const nestedItems = recurseOrgUnits(organisationUnitChildren);
+        const nestedItems = recurseOrgUnits(
+          sortOrgUnitsAlphabeticallyByName(organisationUnitChildren),
+        );
         return (
           <HierarchyItem
             key={organisationUnitCode}
@@ -150,13 +152,7 @@ export class SearchBar extends PureComponent {
       });
     };
 
-    //Sort countries alphabetically, this may not be the case if one country was loaded first
-    hierarchyData.sort((data1, data2) => {
-      if (data1.name > data2.name) return 1;
-      if (data1.name < data2.name) return -1;
-      return 0;
-    });
-    const hierarchy = recurseOrgUnits(hierarchyData, '0px');
+    const hierarchy = recurseOrgUnits(sortOrgUnitsAlphabeticallyByName(hierarchyData), '0px');
     return <List style={styles.heirarchyItem}>{hierarchy}</List>;
   }
 
@@ -189,6 +185,15 @@ export class SearchBar extends PureComponent {
     );
   }
 }
+
+const sortOrgUnitsAlphabeticallyByName = orgUnits => {
+  //Sort countries alphabetically, this may not be the case if one country was loaded first
+  return orgUnits.concat().sort((data1, data2) => {
+    if (data1.name > data2.name) return 1;
+    if (data1.name < data2.name) return -1;
+    return 0;
+  });
+};
 
 SearchBar.propTypes = {
   onExpandClick: PropTypes.func.isRequired,
