@@ -51,8 +51,8 @@ export class CustomMap extends Component {
     if (nextProps.innerAreas !== innerAreas) return true;
 
     if (
-      nextProps.currentOrganisationUnit.organisationUnitCode !==
-      currentOrganisationUnit.organisationUnitCode
+      (nextProps.currentOrganisationUnit || {}).organisationUnitCode !==
+      (currentOrganisationUnit || {}).organisationUnitCode
     ) {
       return true;
     }
@@ -75,7 +75,7 @@ export class CustomMap extends Component {
   };
 
   checkZoomOutToParentOrgUnit(bounds) {
-    const { currentOrganisationUnit, currentParent, changeOrgUnit } = this.props;
+    const { currentParent, changeOrgUnit } = this.props;
 
     // Maybe we need to zoom out to a parent!
     // First, check if there's a valid parent to zoom out to
@@ -108,7 +108,7 @@ export class CustomMap extends Component {
     const { currentOrganisationUnit } = this.props;
 
     // Render the currentOrgUnit polygon perimeter if it is an area (i.e. not a facility)
-    if (organisationUnitIsArea(currentOrganisationUnit)) {
+    if (currentOrganisationUnit && organisationUnitIsArea(currentOrganisationUnit)) {
       return (
         <ConnectedPolygon
           area={currentOrganisationUnit}

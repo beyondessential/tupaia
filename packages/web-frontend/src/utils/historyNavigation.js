@@ -215,7 +215,6 @@ function reactToHistory(location, store) {
   dispatch(findLoggedIn());
 
   if (organisationUnitCode !== state.global.currentOrganisationUnitCode) {
-    console.log('dispatching');
     dispatch(changeOrgUnit(organisationUnitCode));
     dispatch(openMapPopup(organisationUnitCode));
   }

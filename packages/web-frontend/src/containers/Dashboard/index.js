@@ -222,7 +222,6 @@ export class Dashboard extends Component {
   }
 
   render() {
-    console.log('dashboard rerender');
     const { onDashboardClicked, isLoading, sections, currentDashboardKey } = this.props;
 
     return (
@@ -256,8 +255,8 @@ Dashboard.propTypes = {
   contractedWidth: PropTypes.number,
 };
 
-// This can't exist. How do I get rid of it?
-const EMTPY_ARRAY = {};
+// To avoid rerendering, the default org unit is a constant
+const EMPTY_OBJ = {};
 
 const mapStateToProps = state => {
   const { isAnimating } = state.map;
@@ -270,8 +269,7 @@ const mapStateToProps = state => {
   } = state.global;
   const { contractedWidth } = state.dashboard;
 
-  const currentOrganisationUnit = selectOrgUnit(state, currentOrganisationUnitCode) || EMTPY_ARRAY;
-
+  const currentOrganisationUnit = selectOrgUnit(state, currentOrganisationUnitCode) || EMPTY_OBJ;
   return {
     currentOrganisationUnit,
     sections: dashboardConfig,

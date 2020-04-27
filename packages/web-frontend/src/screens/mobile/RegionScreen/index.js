@@ -29,7 +29,11 @@ import { DARK_BLUE, MOBILE_MARGIN_SIZE, WHITE } from '../../../styles';
 import { getMapUrl } from '../../../utils';
 import { getSingleFormattedValue } from '../../../utils/measures';
 import { ENTITY_TYPE } from '../../../constants';
-import { selectCurrentDashboardKey, selectOrgUnit } from '../../../selectors';
+import {
+  selectCurrentDashboardKey,
+  selectOrgUnit,
+  selectOrgUnitChildren,
+} from '../../../selectors';
 
 const MAP_WIDTH = 420;
 const MAP_HEIGHT = 250;
@@ -252,16 +256,19 @@ const getMeasureFiltersForHierarchy = measureHierarchy =>
     })),
   }));
 
+// To avoid rerendering, the default org unit is a constant
+const EMPTY_OBJ = {};
+
 const mapStateToProps = state => {
   const { currentOrganisationUnitCode, dashboardConfig, isLoadingOrganisationUnit } = state.global;
   const { measureHierarchy, currentMeasure, isExpanded } = state.measureBar;
   const { measureInfo, isMeasureLoading } = state.map;
   const { isGroupSelectExpanded } = state.dashboard;
   const hasSelectedMeasureId = currentMeasure !== undefined;
-  const currentOrganisationUnit = selectOrgUnit(state, currentOrganisationUnitCode) || {};
+  const currentOrganisationUnit = selectOrgUnit(state, currentOrganisationUnitCode) || EMPTY_OBJ;
 
   const mobileListItems = getListItemsFromOrganisationUnitChildren(
-    currentOrganisationUnit.organisationUnitChildren, // TODO
+    selectOrgUnitChildren(state, currentOrganisationUnitCode),
     isMeasureLoading,
     measureInfo,
   );

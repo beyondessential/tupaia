@@ -36,8 +36,8 @@ const mapStateToProps = state => {
   } = state.map;
   const { currentOrganisationUnitCode, isSidePanelExpanded } = state.global;
   const { contractedWidth, expandedWidth } = state.dashboard;
-  const currentOrganisationUnit = selectOrgUnit(state, currentOrganisationUnitCode) || {};
-  const currentParent = selectOrgUnit(state, currentOrganisationUnit.parent) || null;
+  const currentOrganisationUnit = selectOrgUnit(state, currentOrganisationUnitCode);
+  const currentParent = selectOrgUnit(state, (currentOrganisationUnit || {}).parent);
 
   return {
     position,

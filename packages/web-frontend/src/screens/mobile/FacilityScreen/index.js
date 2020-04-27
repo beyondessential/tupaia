@@ -188,10 +188,13 @@ FacilityScreen.propTypes = {
   isLoading: PropTypes.bool,
 };
 
+// To avoid rerendering, the default org unit is a constant
+const EMPTY_OBJ = {};
+
 const mapStateToProps = state => {
   const { currentOrganisationUnitCode, dashboardConfig, isLoadingOrganisationUnit } = state.global;
   const { isGroupSelectExpanded } = state.dashboard;
-  const currentOrganisationUnit = selectOrgUnit(state, currentOrganisationUnitCode) || {};
+  const currentOrganisationUnit = selectOrgUnit(state, currentOrganisationUnitCode) || EMPTY_OBJ;
 
   return {
     dashboardConfig,

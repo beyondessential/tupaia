@@ -77,12 +77,15 @@ HomeScreen.propTypes = {
   onChangeOrgUnit: PropTypes.func.isRequired,
 };
 
+// To avoid rerendering, the default org unit is a constant
+const EMPTY_OBJ = {};
+
 const mapStateToProps = state => {
   const { isGroupSelectExpanded } = state.dashboard;
 
-  const { currentOrganisationUnitCode,dashboardConfig } = state.global;
+  const { currentOrganisationUnitCode, dashboardConfig } = state.global;
   const organisationUnits = selectOrgUnitChildren(state, 'World') || [];
-  const currentOrganisationUnit = selectOrgUnit(state, currentOrganisationUnitCode) || {};
+  const currentOrganisationUnit = selectOrgUnit(state, currentOrganisationUnitCode) || EMPTY_OBJ;
 
   return {
     organisationUnits,
