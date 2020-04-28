@@ -11,4 +11,5 @@ export const ENTITY_TYPE = {
   SUB_DISTRICT: 'SubDistrict',
   FACILITY: 'Facility',
   DISASTER: 'Disaster',
+  CASE: 'Case',
 };

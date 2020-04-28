@@ -21,6 +21,7 @@ import { List, ListItem } from 'material-ui/List';
 import { ControlBar } from '../../components/ControlBar';
 import { HierarchyItem } from '../../components/HierarchyItem';
 import { selectOrgUnitsAsHierarchy } from '../../selectors';
+import { ENTITY_TYPE } from '../../constants';
 import {
   changeSearch,
   toggleSearchExpand,
@@ -129,11 +130,13 @@ export class SearchBar extends PureComponent {
       if (!orgUnits || orgUnits.length < 1) return []; // OrgUnits with no children are our recursive base case
       return orgUnits.map(orgUnit => {
         const { organisationUnitCode, name, type, isLoading, organisationUnitChildren } = orgUnit;
-
+        const displayedOrganisationUnitChildren = organisationUnitChildren.filter(
+          ou => ou.type !== ENTITY_TYPE.CASE,
+        );
         // Recursively generate the children for this OrgUnit, will not recurse whole tree as
         // HierarchyItems only fetch their children data on componentWillMount
         const nestedItems = recurseOrgUnits(
-          sortOrgUnitsAlphabeticallyByName(organisationUnitChildren),
+          sortOrgUnitsAlphabeticallyByName(displayedOrganisationUnitChildren),
         );
         return (
           <HierarchyItem
@@ -142,7 +145,8 @@ export class SearchBar extends PureComponent {
             nestedMargin={nestedMargin}
             nestedItems={nestedItems}
             hasNestedItems={
-              type === 'Country' || (organisationUnitChildren && organisationUnitChildren.length)
+              type === 'Country' ||
+              (displayedOrganisationUnitChildren && displayedOrganisationUnitChildren.length)
             }
             isLoading={isLoading}
             Icon={ICON_BY_ORG_UNIT_TYPE[type]}
@@ -171,7 +175,7 @@ export class SearchBar extends PureComponent {
           hintText="Search Location"
           style={styles.controlBar}
           icon={<SearchIcon />}
-          inTopBar={true}
+          inTopBar
         >
           <div
             onMouseLeave={() => this.setState({ isSafeToCloseResults: true })}
