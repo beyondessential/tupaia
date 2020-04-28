@@ -5,6 +5,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import Typography from '@material-ui/core/Typography';
 
 const Section = styled.section`
   background: white;
@@ -20,7 +21,9 @@ const Section = styled.section`
 export const TableLayout = ({ metaData }) => {
   return (
     <Section>
-      <h3>Table Layout: {metaData.resource}</h3>
+      <Typography variant="h2" gutterBottom>
+        Table Layout: {metaData.resource}
+      </Typography>
     </Section>
   );
 };

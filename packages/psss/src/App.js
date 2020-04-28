@@ -32,11 +32,9 @@ const Profile = () => <LightProfileButton startIcon={<Avatar>T</Avatar>}>Tom</Li
 const App = () => {
   return (
     <Router>
-      <div>
-        <NavBar HomeButton={Home} links={links} Profile={Profile} isActive={isActive} />
-        <RouterView routes={ROUTES} />
-        <Footer />
-      </div>
+      <NavBar HomeButton={Home} links={links} Profile={Profile} isActive={isActive} />
+      <RouterView routes={ROUTES} />
+      <Footer />
     </Router>
   );
 };

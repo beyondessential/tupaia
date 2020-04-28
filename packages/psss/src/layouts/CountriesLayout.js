@@ -7,10 +7,12 @@ import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import Typography from '@material-ui/core/Typography';
 import { TableLayout } from './TableLayout';
 
 const Main = styled.main`
   background: lightgray;
+  padding-top: 1rem;
 `;
 
 const Container = styled(MuiContainer)`
@@ -30,7 +32,9 @@ export const CountriesLayout = ({ metaData }) => {
   return (
     <Main>
       <Container>
-        <h2>Countries Layout</h2>
+        <Typography variant="h2" gutterBottom>
+          Countries Layout
+        </Typography>
         <ul>
           {countries.map(country => (
             <li key={country.url}>
