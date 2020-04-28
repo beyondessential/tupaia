@@ -16,6 +16,7 @@ import {
   QuestionsPage,
   UsersPage,
   DisasterResponsePage,
+  DataSourcesPage,
 } from './resources';
 import { PermissionDeniedPage } from './PermissionDeniedPage';
 import { StrivePage } from './StrivePage';
@@ -36,4 +37,5 @@ export const PAGES = {
   optionSets: userIsAuthenticated(OptionSetsPage),
   strive: userIsAuthenticated(StrivePage),
   disaster: userIsAuthenticated(DisasterResponsePage),
+  dataSources: userIsAuthenticated(DataSourcesPage),
 };

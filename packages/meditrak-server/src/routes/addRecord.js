@@ -18,6 +18,7 @@ import {
 import { resourceToRecordType } from '../utilities';
 import { createUser } from '../dataAccessors';
 import { FEED_ITEM_TYPES } from '../database/models/FeedItem';
+import { DATA_SOURCE_SERVICE_TYPES } from '../database/models/DataSource';
 
 const CUSTOM_RECORD_CREATORS = {
   [TYPES.USER_ACCOUNT]: createUser,
@@ -96,6 +97,13 @@ const constructValidationRules = (models, recordType) => {
       return {
         name: [hasContent],
         parent_id: [constructIsEmptyOr(constructRecordExistsWithId(models.permissionGroup))],
+      };
+    case TYPES.DATA_SOURCE:
+      return {
+        code: [hasContent],
+        type: [hasContent],
+        service_type: [constructIsOneOf(DATA_SOURCE_SERVICE_TYPES)],
+        config: [hasContent],
       };
     default:
       throw new ValidationError(`${recordType} is not a valid PUT endpoint`);

@@ -12,6 +12,7 @@ import {
   findFormattedDisasters,
   findSurveyScreenComponentsInSurvey,
   findSurveysInCountry,
+  findDataElementsInDataGroup,
 } from '../dataAccessors';
 import { getApiUrl, resourceToRecordType } from '../utilities';
 
@@ -35,6 +36,7 @@ const GETTABLE_TYPES = [
   TYPES.OPTION_SET,
   TYPES.OPTION,
   TYPES.DISASTER,
+  TYPES.DATA_SOURCE,
 ];
 
 const createMultiResourceKey = (...recordTypes) => recordTypes.filter(x => x).join('/');
@@ -47,6 +49,7 @@ const CUSTOM_FINDERS = {
   [createMultiResourceKey(TYPES.SURVEY_RESPONSE, TYPES.ANSWER)]: findAnswersInSurveyResponse,
   [createMultiResourceKey(TYPES.COUNTRY, TYPES.SURVEY)]: findSurveysInCountry,
   [createMultiResourceKey(TYPES.COUNTRY, TYPES.ENTITY)]: findEntitiesInCountry,
+  [createMultiResourceKey(TYPES.DATA_SOURCE, TYPES.DATA_SOURCE)]: findDataElementsInDataGroup,
 };
 const CUSTOM_FOREIGN_KEYS = {
   [createMultiResourceKey(TYPES.USER_COUNTRY_PERMISSION, TYPES.USER_ACCOUNT)]: 'user_id',
