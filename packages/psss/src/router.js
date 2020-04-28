@@ -29,8 +29,8 @@ export const RouterView = ({ routes }) => {
   const fallback = routes.find(route => route.fallback);
   return (
     <Switch>
-      {routes.map((route, i) => {
-        return <RouteWithSubRoutes key={i} {...route} />;
+      {routes.map(route => {
+        return <RouteWithSubRoutes key={route.path} {...route} />;
       })}
       {fallback && <Redirect to={fallback.path} />}
       <Route component={() => <h1>Not Found!</h1>} />
