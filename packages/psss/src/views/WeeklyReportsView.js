@@ -6,9 +6,8 @@ import React from 'react';
 import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
 import { Link } from 'react-router-dom';
-import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
-import { TableLayout } from './TableLayout';
+import { TableView } from './TableView';
 
 const Main = styled.main`
   background: lightgray;
@@ -28,7 +27,11 @@ const countries = [
   { name: 'Vanuatu', url: 'vanuatu' },
 ];
 
-export const WeeklyReportsLayout = ({ metadata }) => {
+const config = {
+  resource: 'base-url/resources/home-page',
+};
+
+export const WeeklyReportsView = () => {
   return (
     <Main>
       <Container>
@@ -42,12 +45,8 @@ export const WeeklyReportsLayout = ({ metadata }) => {
             </li>
           ))}
         </ul>
-        <TableLayout metadata={metadata} />
+        <TableView config={config} />
       </Container>
     </Main>
   );
-};
-
-WeeklyReportsLayout.propTypes = {
-  metadata: PropTypes.object.isRequired,
 };

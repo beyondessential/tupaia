@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import MuiContainer from '@material-ui/core/Container';
 import { Link } from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
-import { RouterView } from '../router';
+import { AlertsRoutes } from '../routes/AlertsRoutes';
 
 const Main = styled.main`
   background: lightgray;
@@ -19,7 +19,7 @@ const Container = styled(MuiContainer)`
   min-height: 800px;
 `;
 
-export const AlertsLayout = ({ routes, match }) => {
+export const AlertsView = ({ match }) => {
   return (
     <Main>
       <Container>
@@ -37,13 +37,12 @@ export const AlertsLayout = ({ routes, match }) => {
             <Link to={`${match.url}/archive`}>Archive</Link>
           </li>
         </ul>
-        <RouterView routes={routes} />
+        <AlertsRoutes match={match} />
       </Container>
     </Main>
   );
 };
 
-AlertsLayout.propTypes = {
-  routes: PropTypes.array.isRequired,
+AlertsView.propTypes = {
   match: PropTypes.any.isRequired,
 };

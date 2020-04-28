@@ -8,7 +8,7 @@ import MuiContainer from '@material-ui/core/Container';
 import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import { Link } from 'react-router-dom';
-import { RouterView } from '../router';
+import { WeeklyReportsRoutes } from '../routes/WeeklyReportsRoutes';
 
 const Main = styled.main`
   background: lightgray;
@@ -19,7 +19,7 @@ const Container = styled(MuiContainer)`
   min-height: 800px;
 `;
 
-export const CountryWeeklyReportsLayout = ({ routes, match }) => {
+export const WeeklyReportsCountryView = ({ match }) => {
   return (
     <Main>
       <Container>
@@ -34,13 +34,12 @@ export const CountryWeeklyReportsLayout = ({ routes, match }) => {
             <Link to={`${match.url}/event-based`}>Event-based Data</Link>
           </li>
         </ul>
-        <RouterView routes={routes} />
+        <WeeklyReportsRoutes match={match} />
       </Container>
     </Main>
   );
 };
 
-CountryWeeklyReportsLayout.propTypes = {
-  routes: PropTypes.array.isRequired,
+WeeklyReportsCountryView.propTypes = {
   match: PropTypes.any.isRequired,
 };
