@@ -16,7 +16,7 @@ export const RouteWithSubRoutes = route => {
       path={route.path}
       exact={route.exact}
       render={props => (
-        <route.component {...props} routes={route.routes} metaData={route.metaData} />
+        <route.component {...props} routes={route.routes} metadata={route.metadata} />
       )}
     />
   );
@@ -45,7 +45,7 @@ RouterView.propTypes = {
 /*
  * This ensures that the link to the home page is active for sub-urls of country (eg. /country/samoa)
  */
-export const HOME_ALIAS = 'country';
+export const HOME_ALIAS = 'weekly-reports';
 
 /*
  * Used to determine if a router link is active

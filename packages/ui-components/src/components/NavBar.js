@@ -40,7 +40,7 @@ const StyledTab = styled(LightTab)`
   }
 `;
 
-export const NavBar = ({ HomeButton, Profile, links, isActive }) => (
+export const NavBar = ({ HomeButton, Profile, links, isTabActive }) => (
   <Wrapper>
     <MuiContainer>
       <Inner>
@@ -48,7 +48,7 @@ export const NavBar = ({ HomeButton, Profile, links, isActive }) => (
           <HomeButton />
           {links.map(({ label, to, icon }) => (
             <StyledTab
-              isActive={isActive}
+              isActive={isTabActive}
               activeClassName="Mui-selected"
               component={NavLink}
               key={to}
@@ -70,5 +70,5 @@ NavBar.propTypes = {
   HomeButton: PropTypes.any.isRequired,
   links: PropTypes.any.isRequired,
   Profile: PropTypes.any.isRequired,
-  isActive: PropTypes.func.isRequired,
+  isTabActive: PropTypes.func.isRequired,
 };

@@ -19,7 +19,7 @@ const Container = styled(MuiContainer)`
   min-height: 800px;
 `;
 
-export const CountryLayout = ({ routes, match }) => {
+export const CountryWeeklyReportsLayout = ({ routes, match }) => {
   return (
     <Main>
       <Container>
@@ -40,7 +40,7 @@ export const CountryLayout = ({ routes, match }) => {
   );
 };
 
-CountryLayout.propTypes = {
+CountryWeeklyReportsLayout.propTypes = {
   routes: PropTypes.array.isRequired,
   match: PropTypes.any.isRequired,
 };

@@ -28,7 +28,7 @@ const countries = [
   { name: 'Vanuatu', url: 'vanuatu' },
 ];
 
-export const CountriesLayout = ({ metaData }) => {
+export const WeeklyReportsLayout = ({ metadata }) => {
   return (
     <Main>
       <Container>
@@ -38,16 +38,16 @@ export const CountriesLayout = ({ metaData }) => {
         <ul>
           {countries.map(country => (
             <li key={country.url}>
-              <Link to={`/country/${country.url}`}>{country.name}</Link>
+              <Link to={`weekly-reports/${country.url}`}>{country.name}</Link>
             </li>
           ))}
         </ul>
-        <TableLayout metaData={metaData} />
+        <TableLayout metadata={metadata} />
       </Container>
     </Main>
   );
 };
 
-CountriesLayout.propTypes = {
-  metaData: PropTypes.object.isRequired,
+WeeklyReportsLayout.propTypes = {
+  metadata: PropTypes.object.isRequired,
 };

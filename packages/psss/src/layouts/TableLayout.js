@@ -18,16 +18,16 @@ const Section = styled.section`
   align-items: center;
 `;
 
-export const TableLayout = ({ metaData }) => {
+export const TableLayout = ({ metadata }) => {
   return (
     <Section>
       <Typography variant="h2" gutterBottom>
-        Table Layout: {metaData.resource}
+        Table Layout: {metadata.resource}
       </Typography>
     </Section>
   );
 };
 
 TableLayout.propTypes = {
-  metaData: PropTypes.object.isRequired,
+  metadata: PropTypes.object.isRequired,
 };

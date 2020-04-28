@@ -19,7 +19,7 @@ const Container = styled(MuiContainer)`
   min-height: 800px;
 `;
 
-export const AlertsLayout = ({ routes }) => {
+export const AlertsLayout = ({ routes, match }) => {
   return (
     <Main>
       <Container>
@@ -28,13 +28,13 @@ export const AlertsLayout = ({ routes }) => {
         </Typography>
         <ul>
           <li>
-            <Link to="/alerts">Alerts</Link>
+            <Link to={`${match.url}`}>Alerts</Link>
           </li>
           <li>
-            <Link to="/alerts/outbreaks">Outbreaks</Link>
+            <Link to={`${match.url}/outbreaks`}>Outbreaks</Link>
           </li>
           <li>
-            <Link to="/alerts/archive">Archive</Link>
+            <Link to={`${match.url}/archive`}>Archive</Link>
           </li>
         </ul>
         <RouterView routes={routes} />
@@ -45,4 +45,5 @@ export const AlertsLayout = ({ routes }) => {
 
 AlertsLayout.propTypes = {
   routes: PropTypes.array.isRequired,
+  match: PropTypes.any.isRequired,
 };
