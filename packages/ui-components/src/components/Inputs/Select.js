@@ -31,7 +31,7 @@ const StyledTextField = styled(TextField)`
   }
 `;
 
-const SelectField = ({ SelectProps, ...props }) => (
+export const SelectField = ({ SelectProps, ...props }) => (
   <StyledTextField
     SelectProps={{
       IconComponent: iconProps => <KeyboardArrowDown {...iconProps} />,

@@ -53,7 +53,7 @@ export const TextField = styled(BaseTextField)`
   }
 
   .MuiFormLabel-root.Mui-focused {
-    color: ${COLORS.TEXTGREY};
+    color: ${COLORS.TEXT_DARKGREY};
   }
 
   // The label

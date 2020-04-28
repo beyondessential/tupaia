@@ -4,6 +4,7 @@
  */
 
 export * from './TextField';
+export * from './ButtonSelect';
 export * from './Autocomplete';
 export * from './AsyncAutocomplete';
 export * from './Select';
