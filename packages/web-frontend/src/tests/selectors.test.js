@@ -60,13 +60,13 @@ describe.only('selectors', () => {
     });
 
     describe('selectCurrentOrgUnit', () => {
-      it('recomputes by country', () => {
+      it('recomputes by org unit', () => {
         let testState = {
           global: { currentOrganisationUnitCode: 'TO' },
           orgUnits: { orgUnitMap: { TO: { TO: { organisationUnitCode: 'TO', name: 'Tonga' } } } },
         };
 
-        selectCurrentOrgUnit(testState, 'TO');
+        selectCurrentOrgUnit(testState);
         expect(selectCurrentOrgUnit.recomputations()).toEqual(1);
 
         testState = insertOrgUnit(testState, 'PG', {
@@ -74,7 +74,7 @@ describe.only('selectors', () => {
           name: 'Papua New Guinea',
         });
 
-        selectCurrentOrgUnit(testState, 'TO');
+        selectCurrentOrgUnit(testState);
         expect(selectCurrentOrgUnit.recomputations()).toEqual(1); // Country has not changed, so don't recompute
 
         testState = insertOrgUnit(testState, 'TO', {
@@ -82,8 +82,19 @@ describe.only('selectors', () => {
           name: "Ha'afeva",
         });
 
-        selectCurrentOrgUnit(testState, 'TO');
-        expect(selectCurrentOrgUnit.recomputations()).toEqual(2); // Country has changed, recompute
+        selectCurrentOrgUnit(testState);
+        expect(selectCurrentOrgUnit.recomputations()).toEqual(1); // Country has changed, but not org unit, so don't recompute
+
+        selectCurrentOrgUnit({ ...testState, global: { currentOrganisationUnitCode: 'PG' } });
+        expect(selectCurrentOrgUnit.recomputations()).toEqual(2); // Org unit has changed, recompute
+
+        testState = insertOrgUnit(testState, 'TO', {
+          organisationUnitCode: 'TO',
+          name: 'New Tonga Name',
+        });
+
+        selectCurrentOrgUnit(testState);
+        expect(selectCurrentOrgUnit.recomputations()).toEqual(3); // Org unit has changed, recompute
       });
     });
 
@@ -162,14 +173,7 @@ describe.only('selectors', () => {
 
     describe('selectCurrentOrgUnit', () => {
       it('can select from state', () => {
-        expect(
-          selectCurrentOrgUnit({
-            ...state,
-            global: {
-              currentOrganisationUnitCode: 'TO',
-            },
-          }),
-        ).toEqual(state.orgUnits.orgUnitMap.TO.TO);
+        expect(selectCurrentOrgUnit(state)).toEqual(state.orgUnits.orgUnitMap.TO.TO);
       });
       it('can select if code is undefined', () => {
         expect(selectCurrentOrgUnit({ ...state, global: {} })).toEqual({});
@@ -177,11 +181,11 @@ describe.only('selectors', () => {
       it('Empty org unit is always shallowly equal', () => {
         const orgUnit1 = selectCurrentOrgUnit({
           ...state,
-          global: { organisationUnitCode: undefined },
+          global: { currentOrganisationUnitCode: undefined },
         });
         const orgUnit2 = selectCurrentOrgUnit({
           ...state,
-          global: { organisationUnitCode: 'DOES_NOT_EXIST' },
+          global: { currentOrganisationUnitCode: 'DOES_NOT_EXIST' },
         });
         expect(orgUnit1).toBe(orgUnit2);
       });
