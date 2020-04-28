@@ -14,42 +14,38 @@ const dhisService = new DhisService(stubModels());
 let dhisApi;
 
 export const testPullEvents_Deprecated = () => {
-  const basicOptions = {
-    organisationUnitCode: 'TO',
-  };
-
   beforeEach(() => {
     // recreate stub so spy calls are reset
     dhisApi = stubDhisApi();
   });
 
-  it('throws an error if multiple data groups are provided', async () =>
-    expect(
-      dhisService.pull(
-        [DATA_SOURCES.POP01_GROUP, DATA_SOURCES.POP02_GROUP],
-        'dataGroup',
-        basicOptions,
-      ),
-    ).to.eventually.be.rejectedWith(/Cannot .*multiple programs/));
-
   describe('DHIS API invocation', () => {
-    const assertEventsApiWasInvokedCorrectly = async ({ dataSources, options, invocationArgs }) => {
+    const assertEventsApiWasInvokedCorrectly = async ({
+      dataSources,
+      options = {},
+      invocationArgs,
+    }) => {
       await dhisService.pull(dataSources, 'dataGroup', options);
       expect(dhisApi.getEvents).to.have.been.calledOnceWithExactly(invocationArgs);
     };
 
-    it('invokes the events api in DHIS for a single data group', async () =>
+    it('uses the provided data source as `programCode` option', async () =>
       assertEventsApiWasInvokedCorrectly({
         dataSources: [DATA_SOURCES.POP01_GROUP],
-        options: basicOptions,
-        invocationArgs: sinon.match({ programCode: 'POP01', organisationUnitCode: 'TO' }),
+        invocationArgs: sinon.match({ programCode: 'POP01' }),
+      }));
+
+    it('forces `dataElementIdScheme` option to `code`', async () =>
+      assertEventsApiWasInvokedCorrectly({
+        dataSources: [DATA_SOURCES.POP01_GROUP],
+        options: { dataElementIdScheme: 'id' },
+        invocationArgs: sinon.match({ dataElementIdScheme: 'code' }),
       }));
 
     it('supports various API options', async () => {
-      const apiOptions = {
+      const options = {
         organisationUnitCode: 'TO',
         orgUnitIdScheme: 'code',
-        dataElementIdScheme: 'code',
         startDate: '20200731',
         endDate: '20200904',
         eventId: '123456',
@@ -57,13 +53,10 @@ export const testPullEvents_Deprecated = () => {
         dataValueFormat: 'object',
       };
 
-      assertEventsApiWasInvokedCorrectly({
+      return assertEventsApiWasInvokedCorrectly({
         dataSources: [DATA_SOURCES.POP01_GROUP],
-        options: apiOptions,
-        invocationArgs: {
-          programCode: 'POP01',
-          ...apiOptions,
-        },
+        options,
+        invocationArgs: sinon.match(options),
       });
     });
   });
@@ -71,7 +64,7 @@ export const testPullEvents_Deprecated = () => {
   describe('data pulling', () => {
     const assertPullResultsAreCorrect = ({
       dataSources,
-      options,
+      options = {},
       expectedResults,
       getEventsResponse,
     }) => {
@@ -94,7 +87,6 @@ export const testPullEvents_Deprecated = () => {
 
       return assertPullResultsAreCorrect({
         dataSources: [DATA_SOURCES.POP01_GROUP],
-        options: basicOptions,
         getEventsResponse,
         expectedResults: getEventsResponse,
       });
@@ -113,7 +105,7 @@ export const testPullEvents_Deprecated = () => {
 
       return assertPullResultsAreCorrect({
         dataSources: [DATA_SOURCES.DIFF_GROUP],
-        options: { ...basicOptions, dataValueFormat: 'array' },
+        options: { dataValueFormat: 'array' },
         getEventsResponse,
         expectedResults: [
           {
@@ -140,7 +132,7 @@ export const testPullEvents_Deprecated = () => {
 
       return assertPullResultsAreCorrect({
         dataSources: [DATA_SOURCES.DIFF_GROUP],
-        options: { ...basicOptions, dataValueFormat: 'object' },
+        options: { dataValueFormat: 'object' },
         getEventsResponse,
         expectedResults: [
           {

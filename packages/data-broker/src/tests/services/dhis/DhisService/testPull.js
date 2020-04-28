@@ -21,13 +21,10 @@ export const testPull = () => {
   });
 
   describe('data element', () => {
-    const basicOptions = {
-      organisationUnitCodes: ['TO'],
-    };
     describe('DHIS API invocation', () => {
       const assertAnalyticsApiWasInvokedCorrectly = async ({
         dataSources,
-        options,
+        options = {},
         invocationArgs,
       }) => {
         await dhisService.pull(dataSources, 'dataElement', options);
@@ -37,35 +34,23 @@ export const testPull = () => {
       it('single data element', async () =>
         assertAnalyticsApiWasInvokedCorrectly({
           dataSources: [DATA_SOURCES.POP01],
-          options: basicOptions,
-          invocationArgs: sinon.match({
-            dataElementCodes: ['POP01'],
-            organisationUnitCodes: ['TO'],
-          }),
+          invocationArgs: sinon.match({ dataElementCodes: ['POP01'] }),
         }));
 
       it('single data element with different DHIS code', async () =>
         assertAnalyticsApiWasInvokedCorrectly({
           dataSources: [DATA_SOURCES.DIF01],
-          options: basicOptions,
-          invocationArgs: sinon.match({
-            dataElementCodes: ['DIF01_DHIS'],
-            organisationUnitCodes: ['TO'],
-          }),
+          invocationArgs: sinon.match({ dataElementCodes: ['DIF01_DHIS'] }),
         }));
 
       it('multiple data elements', async () =>
         assertAnalyticsApiWasInvokedCorrectly({
           dataSources: [DATA_SOURCES.POP01, DATA_SOURCES.POP02],
-          options: basicOptions,
-          invocationArgs: sinon.match({
-            dataElementCodes: ['POP01', 'POP02'],
-            organisationUnitCodes: ['TO'],
-          }),
+          invocationArgs: sinon.match({ dataElementCodes: ['POP01', 'POP02'] }),
         }));
 
       it('supports various API options', async () => {
-        const apiOptions = {
+        const options = {
           outputIdScheme: 'code',
           organisationUnitCodes: ['TO'],
           period: '20200822',
@@ -75,16 +60,20 @@ export const testPull = () => {
 
         return assertAnalyticsApiWasInvokedCorrectly({
           dataSources: [DATA_SOURCES.POP01],
-          options: apiOptions,
+          options: options,
           invocationArgs: {
             dataElementCodes: ['POP01'],
-            ...apiOptions,
+            ...options,
           },
         });
       });
     });
 
     describe('data pulling', () => {
+      const basicOptions = {
+        organisationUnitCodes: ['TO'],
+      };
+
       const assertPullResultsAreCorrect = ({ dataSources, options, expectedResults }) => {
         dhisApi = stubDhisApi({
           getAnalyticsResponse: buildDhisAnalyticsResponse(expectedResults.results),
