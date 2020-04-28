@@ -1,5 +1,7 @@
 'use strict';
 
+import { arrayToDbString } from '../utilities';
+
 var dbm;
 var type;
 var seed;
