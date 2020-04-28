@@ -21,7 +21,7 @@ import {
   requestOrgUnit,
 } from '../../../actions';
 import { WHITE } from '../../../styles';
-import { selectCurrentDashboardKey, selectOrgUnit } from '../../../selectors';
+import { selectCurrentDashboardKey, selectCurrentOrgUnit } from '../../../selectors';
 
 class HomeScreen extends PureComponent {
   componentWillMount(props) {
@@ -92,21 +92,17 @@ HomeScreen.propTypes = {
   onChangeOrgUnit: PropTypes.func.isRequired,
 };
 
-// To avoid rerendering, the default org unit is a constant
-const EMPTY_OBJ = {};
-
 const mapStateToProps = state => {
   const { hierarchyData, isLoading } = state.searchBar;
 
   const { isGroupSelectExpanded } = state.dashboard;
 
-  const { currentOrganisationUnitCode, dashboardConfig } = state.global;
-  const currentOrganisationUnit = selectOrgUnit(state, currentOrganisationUnitCode) || EMPTY_OBJ;
+  const { dashboardConfig } = state.global;
 
   return {
     organisationUnits: hierarchyData || [],
     isLoading,
-    currentOrganisationUnit,
+    currentOrganisationUnit: selectCurrentOrgUnit(state),
     dashboardFilterIsExpanded: isGroupSelectExpanded,
     dashboardConfig,
     currentDashboardKey: selectCurrentDashboardKey(state),

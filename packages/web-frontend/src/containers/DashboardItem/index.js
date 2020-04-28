@@ -43,7 +43,7 @@ import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 import { View } from '../../components/View';
 import { fetchDashboardItemData, openEnlargedDialog } from '../../actions';
-import { selectOrgUnit } from '../../selectors';
+import { selectCurrentOrgUnit } from '../../selectors';
 
 export class DashboardItem extends Component {
   componentWillMount() {
@@ -111,13 +111,9 @@ DashboardItem.defaultProps = {
   onEnlarge: () => {},
 };
 
-// To avoid rerendering, the default org unit is a constant
-const EMPTY_OBJ = {};
-
 const mapStateToProps = (state, { infoViewKey }) => {
   const { viewResponses } = state.dashboard;
-  const { currentOrganisationUnitCode } = state.global;
-  const currentOrganisationUnit = selectOrgUnit(state, currentOrganisationUnitCode) || EMPTY_OBJ;
+  const currentOrganisationUnit = selectCurrentOrgUnit(state);
 
   return {
     viewContent: viewResponses[infoViewKey],

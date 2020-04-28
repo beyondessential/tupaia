@@ -5,7 +5,13 @@
  * found in the LICENSE file in the root directory of this source tree.
  */
 
-import { selectOrgUnit, selectOrgUnitChildren, selectOrgUnitsAsHierarchy } from '../selectors';
+import {
+  selectOrgUnit,
+  selectOrgUnitChildren,
+  selectOrgUnitsAsHierarchy,
+  selectCurrentOrgUnit,
+  selectOrgUnitSiblings,
+} from '../selectors';
 import { state } from './selectors.test.state';
 
 const insertOrgUnit = (testState, country, orgUnit) => {
@@ -53,6 +59,34 @@ describe.only('selectors', () => {
       });
     });
 
+    describe('selectCurrentOrgUnit', () => {
+      it('recomputes by country', () => {
+        let testState = {
+          global: { currentOrganisationUnitCode: 'TO' },
+          orgUnits: { orgUnitMap: { TO: { TO: { organisationUnitCode: 'TO', name: 'Tonga' } } } },
+        };
+
+        selectCurrentOrgUnit(testState, 'TO');
+        expect(selectCurrentOrgUnit.recomputations()).toEqual(1);
+
+        testState = insertOrgUnit(testState, 'PG', {
+          organisationUnitCode: 'PG',
+          name: 'Papua New Guinea',
+        });
+
+        selectCurrentOrgUnit(testState, 'TO');
+        expect(selectCurrentOrgUnit.recomputations()).toEqual(1); // Country has not changed, so don't recompute
+
+        testState = insertOrgUnit(testState, 'TO', {
+          organisationUnitCode: 'TO_HfevaHC',
+          name: "Ha'afeva",
+        });
+
+        selectCurrentOrgUnit(testState, 'TO');
+        expect(selectCurrentOrgUnit.recomputations()).toEqual(2); // Country has changed, recompute
+      });
+    });
+
     describe('selectOrgUnitChildren', () => {
       it('recomputes by orgUnitMap', () => {
         let testState = {
@@ -69,6 +103,25 @@ describe.only('selectors', () => {
 
         selectOrgUnitChildren(testState, 'TO');
         expect(selectOrgUnitChildren.recomputations()).toEqual(2); //OrgUnitMap has changed, so recompute
+      });
+    });
+
+    describe('selectOrgUnitSiblings', () => {
+      it('recomputes by orgUnitMap', () => {
+        let testState = {
+          orgUnits: { orgUnitMap: { TO: { TO: { organisationUnitCode: 'TO', name: 'Tonga' } } } },
+        };
+
+        selectOrgUnitSiblings(testState, 'TO');
+        expect(selectOrgUnitSiblings.recomputations()).toEqual(1);
+
+        testState = insertOrgUnit(testState, 'PG', {
+          organisationUnitCode: 'PG',
+          name: 'Papua New Guinea',
+        });
+
+        selectOrgUnitSiblings(testState, 'TO');
+        expect(selectOrgUnitSiblings.recomputations()).toEqual(2); //OrgUnitMap has changed, so recompute
       });
     });
 
@@ -107,6 +160,33 @@ describe.only('selectors', () => {
       });
     });
 
+    describe('selectCurrentOrgUnit', () => {
+      it('can select from state', () => {
+        expect(
+          selectCurrentOrgUnit({
+            ...state,
+            global: {
+              currentOrganisationUnitCode: 'TO',
+            },
+          }),
+        ).toEqual(state.orgUnits.orgUnitMap.TO.TO);
+      });
+      it('can select if code is undefined', () => {
+        expect(selectCurrentOrgUnit({ ...state, global: {} })).toEqual({});
+      });
+      it('Empty org unit is always shallowly equal', () => {
+        const orgUnit1 = selectCurrentOrgUnit({
+          ...state,
+          global: { organisationUnitCode: undefined },
+        });
+        const orgUnit2 = selectCurrentOrgUnit({
+          ...state,
+          global: { organisationUnitCode: 'DOES_NOT_EXIST' },
+        });
+        expect(orgUnit1).toBe(orgUnit2);
+      });
+    });
+
     describe('selectOrgUnitChildren', () => {
       it('can select children of world', () => {
         expect(selectOrgUnitChildren(state, 'World')).toContain(state.orgUnits.orgUnitMap.TO.TO);
@@ -123,6 +203,33 @@ describe.only('selectors', () => {
       });
       it('can select children of undefined', () => {
         expect(selectOrgUnitChildren(state, undefined)).toEqual(undefined);
+      });
+    });
+
+    describe('selectOrgUnitSiblings', () => {
+      it('can select siblings of world', () => {
+        expect(selectOrgUnitSiblings(state, 'World')).toEqual([]);
+      });
+      it('can select siblings of country', () => {
+        expect(selectOrgUnitSiblings(state, 'TO')).toEqual([state.orgUnits.orgUnitMap.PG.PG]);
+      });
+      it('can select siblings of district, including facility', () => {
+        expect(selectOrgUnitSiblings(state, 'PG_district_1')).toEqual([
+          state.orgUnits.orgUnitMap.PG.PG_district_2,
+          state.orgUnits.orgUnitMap.PG.PG_facility_1,
+        ]);
+      });
+      it('can select multiple siblings of facility', () => {
+        expect(selectOrgUnitSiblings(state, 'PG_facility_2')).toEqual([
+          state.orgUnits.orgUnitMap.PG.PG_facility_3,
+          state.orgUnits.orgUnitMap.PG.PG_facility_5,
+        ]);
+      });
+      it('can select siblings of facility with no siblings', () => {
+        expect(selectOrgUnitSiblings(state, 'PG_facility_4')).toEqual([]);
+      });
+      it('can select siblings of undefined', () => {
+        expect(selectOrgUnitSiblings(state, undefined)).toEqual([]);
       });
     });
 

@@ -18,7 +18,7 @@ import BackButton from '../../../components/mobile/BackButton';
 import { DARK_BLUE, MOBILE_MARGIN_SIZE, WHITE } from '../../../styles';
 import { getFacilityThumbnailUrl, getMapUrl } from '../../../utils';
 import { toggleDashboardSelectExpand, changeDashboardGroup } from '../../../actions';
-import { selectCurrentDashboardKey, selectOrgUnit } from '../../../selectors';
+import { selectCurrentDashboardKey, selectCurrentOrgUnit } from '../../../selectors';
 
 class FacilityScreen extends PureComponent {
   componentWillMount() {
@@ -187,17 +187,13 @@ FacilityScreen.propTypes = {
   isLoading: PropTypes.bool,
 };
 
-// To avoid rerendering, the default org unit is a constant
-const EMPTY_OBJ = {};
-
 const mapStateToProps = state => {
-  const { currentOrganisationUnitCode, dashboardConfig, isLoadingOrganisationUnit } = state.global;
+  const { dashboardConfig, isLoadingOrganisationUnit } = state.global;
   const { isGroupSelectExpanded } = state.dashboard;
-  const currentOrganisationUnit = selectOrgUnit(state, currentOrganisationUnitCode) || EMPTY_OBJ;
 
   return {
     dashboardConfig,
-    orgUnit: currentOrganisationUnit,
+    orgUnit: selectCurrentOrgUnit(state),
     isLoading: isLoadingOrganisationUnit,
     dashboardFilterIsExpanded: isGroupSelectExpanded,
     currentDashboardKey: selectCurrentDashboardKey(state),
