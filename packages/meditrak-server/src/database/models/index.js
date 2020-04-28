@@ -36,3 +36,4 @@ export { UserFacilityPermissionModel as UserFacilityPermission } from './UserFac
 export { UserGeographicalAreaPermissionModel as UserGeographicalAreaPermission } from './UserGeographicalAreaPermission';
 export { UserModel as User } from './User';
 export { UserRewardModel as UserReward } from './UserReward';
+export { DataSourceModel as DataSource } from './DataSource';
