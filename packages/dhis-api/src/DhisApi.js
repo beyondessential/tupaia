@@ -12,8 +12,8 @@ import { DhisFetcher } from './DhisFetcher';
 import { DHIS2_RESOURCE_TYPES } from './types';
 import {
   translateElementIdsToCodesInEvents,
-  translateElementIdsToCodesInEventAnalytics,
-} from './translateElementIdsToCodes';
+  translateElementKeysInEventAnalytics,
+} from './translateDataElementKeys';
 import { RESPONSE_TYPES, getDiagnosticsFromResponse } from './responseUtils';
 import { buildDataValueAnalyticsQueries, buildEventAnalyticsQuery } from './buildAnalyticsQuery';
 
@@ -358,7 +358,7 @@ export class DhisApi {
     }
 
     const dataElementIdToCode = reduceToDictionary(dataElements, 'id', 'code');
-    return translateElementIdsToCodesInEventAnalytics(response, dataElementIdToCode);
+    return translateElementKeysInEventAnalytics(response, dataElementIdToCode);
   }
 
   async buildEventAnalyticsEndpoint(programCode) {
