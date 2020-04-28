@@ -6,7 +6,7 @@
 import sinon from 'sinon';
 
 import { DhisApi } from '@tupaia/dhis-api';
-import * as GetDhisApiInstance from '../../../services/dhis/getDhisApiInstance';
+import * as GetDhisApiInstance from '../../../../services/dhis/getDhisApiInstance';
 import {
   DATA_ELEMENTS_BY_GROUP,
   DATA_ELEMENTS,

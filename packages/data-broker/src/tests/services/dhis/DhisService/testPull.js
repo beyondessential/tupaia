@@ -6,7 +6,7 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 
-import { DhisService } from '../../../services/dhis/DhisService';
+import { DhisService } from '../../../../services/dhis/DhisService';
 import { DATA_SOURCES } from './DhisService.fixtures';
 import { buildDhisAnalyticsResponse, stubModels, stubDhisApi } from './helpers';
 
