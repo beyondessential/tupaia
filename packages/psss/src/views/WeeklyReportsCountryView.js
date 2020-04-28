@@ -19,6 +19,7 @@ const Main = styled.main`
 
 const Container = styled(MuiContainer)`
   min-height: 800px;
+  padding-top: 1rem;
 `;
 
 const links = [

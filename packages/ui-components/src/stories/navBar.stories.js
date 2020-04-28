@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useCallback } from 'react';
+import React from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import { HomeButton } from '../components/HomeButton';
 import { NavBar } from '../components/NavBar';
@@ -35,7 +35,7 @@ const Home = () => <HomeButton source="/psss-logo-white.svg" />;
 
 const HOME_ALIAS = 'country';
 
-const isTabActive = useCallback((match, location) => {
+const isTabActive = (match, location) => {
   if (!match) {
     return false;
   } else if (match.url === '') {
@@ -43,7 +43,7 @@ const isTabActive = useCallback((match, location) => {
     return newPathnames[0] === HOME_ALIAS;
   }
   return location.pathname.indexOf(match.url) !== -1;
-}, []);
+};
 
 export const navBar = () => (
   <NavBar HomeButton={Home} Profile={Profile} links={links} isTabActive={isTabActive} />

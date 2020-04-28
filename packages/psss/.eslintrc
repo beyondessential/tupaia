@@ -11,6 +11,5 @@
     "react/forbid-prop-types": "off",
     "jsx-a11y/href-no-hash": "off",
     "no-restricted-syntax": ["error", "ForInStatement", "LabeledStatement", "WithStatement"],
-    "import/no-extraneous-dependencies": ["error", {"devDependencies":  true}]
   }
 }

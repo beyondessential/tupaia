@@ -7,8 +7,8 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Container from '@material-ui/core/Container';
 import PropTypes from 'prop-types';
-import { LightTab, LightTabs } from '@tupaia/ui-components';
 import { Link as RouterLink, useLocation, useRouteMatch } from 'react-router-dom';
+import { LightTab, LightTabs } from './Tabs';
 import * as COLORS from '../theme/colors';
 
 const toolbarHeight = '65px';

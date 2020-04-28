@@ -5,7 +5,7 @@
 
 import React from 'react';
 import { Header } from '../containers/Header';
-import { DateToolbar, TabsToolbar } from '../components/Toolbar';
+import { BaseToolbar, TabsToolbar } from '../components/Toolbar';
 import { RouterProvider } from '../RouterProvider';
 
 export default {
@@ -13,6 +13,6 @@ export default {
   decorators: [story => <RouterProvider>{story()}</RouterProvider>],
 };
 
-export const homeHeader = () => <Header Toolbar={<DateToolbar />} />;
+export const homeHeader = () => <Header Toolbar={<BaseToolbar />} />;
 
 export const countryHeader = () => <Header Toolbar={<TabsToolbar />} />;
