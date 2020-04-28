@@ -1,6 +1,6 @@
 import { getPreferredPeriod } from './aggregateAnalytics/aggregations/utils';
 
-const MAX_LATEST_DATE = '99991230';
+const MAX_LATEST_DATE = '9999';
 
 export const periodFromAnalytics = (analytics, { period: requestedPeriod }) => {
   const returnPeriod = analytics.reduce(
