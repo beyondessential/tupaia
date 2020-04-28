@@ -8,7 +8,7 @@
 import { call, put, delay, takeEvery, takeLatest, select } from 'redux-saga/effects';
 import queryString from 'query-string';
 import request from './utils/request';
-import { selectOrgUnit, selectOrgUnitChildren } from './selectors';
+import { selectOrgUnit, selectOrgUnitChildren, selectOrgUnitCountry } from './selectors';
 import {
   ATTEMPT_CHANGE_PASSWORD,
   ATTEMPT_LOGIN,
@@ -648,7 +648,8 @@ function* fetchMeasureInfo(measureId, organisationUnitCode, oldOrgUnitCountry = 
     return;
   }
 
-  const countryCode = organisationUnitCode.substring(0, 2);
+  const country = selectOrgUnitCountry(yield select(), organisationUnitCode);
+  const countryCode = country ? country.organisationUnitCode : undefined;
   if (oldOrgUnitCountry) {
     if (oldOrgUnitCountry === countryCode) {
       // We are in the same country as before, no need to refetch measureData

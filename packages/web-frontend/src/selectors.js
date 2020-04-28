@@ -127,6 +127,11 @@ export const selectCurrentOrgUnit = createSelector(
   currentOrgUnit => currentOrgUnit || {},
 );
 
+export const selectOrgUnitCountry = createSelector(
+  [(state, code) => safeGet(countryCache, [state.orgUnits.orgUnitMap, code]), (_, code) => code],
+  country => (country ? country[country.countryCode] : undefined),
+);
+
 export const selectOrgUnitChildren = createSelector(
   [
     state => selectCountriesAsOrgUnits(state),

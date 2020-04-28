@@ -30,7 +30,7 @@ const insertOrgUnit = (testState, country, orgUnit) => {
   };
 };
 
-describe.only('selectors', () => {
+describe('selectors', () => {
   describe('memoization', () => {
     describe('selectOrgUnit', () => {
       it('recomputes by country', () => {
