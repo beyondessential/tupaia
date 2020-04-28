@@ -6,10 +6,10 @@ import React from 'react';
 import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
 import { Link } from 'react-router-dom';
-import PropTypes from 'prop-types';
+import Typography from '@material-ui/core/Typography';
 import { BaseToolbar } from '@tupaia/ui-components';
-import { TableLayout } from './TableLayout';
 import { Header } from '../components/Header';
+import { TableView } from './TableView';
 
 const Main = styled.main`
   background: lightgray;
@@ -28,26 +28,28 @@ const countries = [
   { name: 'Vanuatu', url: 'vanuatu' },
 ];
 
-export const CountriesLayout = ({ metaData }) => {
+const config = {
+  resource: 'base-url/resources/home-page',
+};
+
+export const WeeklyReportsView = () => {
   return (
     <Main>
       <Header title="All Countries" />
       <BaseToolbar />
       <Container>
-        <h2>Countries Layout</h2>
+        <Typography variant="h2" gutterBottom>
+          Countries Layout
+        </Typography>
         <ul>
           {countries.map(country => (
             <li key={country.url}>
-              <Link to={`/country/${country.url}`}>{country.name}</Link>
+              <Link to={`weekly-reports/${country.url}`}>{country.name}</Link>
             </li>
           ))}
         </ul>
-        <TableLayout metaData={metaData} />
+        <TableView config={config} />
       </Container>
     </Main>
   );
-};
-
-CountriesLayout.propTypes = {
-  metaData: PropTypes.object.isRequired,
 };

@@ -7,10 +7,11 @@ import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
 import { PhotoAlbum, CalendarToday } from '@material-ui/icons';
 import PropTypes from 'prop-types';
+import Typography from '@material-ui/core/Typography';
 import { useParams } from 'react-router-dom';
 import { TabsToolbar } from '@tupaia/ui-components';
-import { RouterView } from '../router';
 import { Header } from '../components/Header';
+import { WeeklyReportsRoutes } from '../routes/WeeklyReportsRoutes';
 
 const Main = styled.main`
   background: lightgray;
@@ -33,21 +34,22 @@ const links = [
   },
 ];
 
-export const CountryLayout = ({ routes, match }) => {
+export const WeeklyReportsCountryView = ({ match }) => {
   const { countryId } = useParams();
   return (
     <Main>
       <Header title={countryId} />
       <TabsToolbar links={links} />
       <Container>
-        <h2>{`Country: ${match.params.countryId}`}</h2>
-        <RouterView routes={routes} />
+        <Typography variant="h2" gutterBottom>
+          {`Country: ${match.params.countryId}`}
+        </Typography>
+        <WeeklyReportsRoutes match={match} />
       </Container>
     </Main>
   );
 };
 
-CountryLayout.propTypes = {
-  routes: PropTypes.array.isRequired,
+WeeklyReportsCountryView.propTypes = {
   match: PropTypes.any.isRequired,
 };
