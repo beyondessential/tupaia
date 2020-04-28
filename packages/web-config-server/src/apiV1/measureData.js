@@ -124,6 +124,7 @@ export default class extends DataAggregatingRouteHandler {
 
     measureOptions
       .filter(mo => mo.displayedValueKey)
+      .filter(mo => !mo.disableRenameLegend)
       .map(mo => updateLegendFromDisplayedValueKey(mo, measureData));
 
     return {
