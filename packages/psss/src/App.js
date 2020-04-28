@@ -1,15 +1,40 @@
 import React from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { Header } from './components/Header';
+import { BrowserRouter as Router } from 'react-router-dom';
+import Avatar from '@material-ui/core/Avatar';
+import {
+  Dashboard,
+  HomeButton,
+  LightProfileButton,
+  WarningCloud,
+  NavBar,
+} from '@tupaia/ui-components';
 import { Footer } from './components/Footer';
-import ROUTES, { RenderRoutes } from './routes';
+import { RouterView, isActive } from './router';
+import { ROUTES } from './routes';
+
+const links = [
+  {
+    label: 'Weekly Reports',
+    to: '/',
+    icon: <Dashboard />,
+  },
+  {
+    label: 'Alerts & Outbreaks',
+    to: '/alerts',
+    icon: <WarningCloud />,
+  },
+];
+
+const Home = () => <HomeButton source="/psss-logo-white.svg" />;
+
+const Profile = () => <LightProfileButton startIcon={<Avatar>T</Avatar>}>Tom</LightProfileButton>;
 
 const App = () => {
   return (
     <Router>
       <div>
-        <Header />
-        <RenderRoutes routes={ROUTES} />
+        <NavBar HomeButton={Home} links={links} Profile={Profile} isActive={isActive} />
+        <RouterView routes={ROUTES} />
         <Footer />
       </div>
     </Router>

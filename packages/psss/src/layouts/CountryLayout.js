@@ -5,10 +5,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
-import { PhotoAlbum, CalendarToday } from '@material-ui/icons';
 import PropTypes from 'prop-types';
-import { TabsToolbar } from '../components/Toolbar';
-import { RenderRoutes } from '../routes';
+import { RouterView } from '../router';
 
 const Main = styled.main`
   background: lightgray;
@@ -18,28 +16,12 @@ const Container = styled(MuiContainer)`
   min-height: 800px;
 `;
 
-const links = [
-  {
-    label: 'Weekly Case Data',
-    to: '',
-    icon: <PhotoAlbum />,
-  },
-  {
-    label: 'Event-based Data',
-    to: '/event-based',
-    icon: <CalendarToday />,
-  },
-];
-
-export const CountryLayout = ({ match, routes, ...props }) => {
-  console.log('props', props);
-
+export const CountryLayout = ({ routes, match }) => {
   return (
     <Main>
-      <TabsToolbar links={links} />
       <Container>
         <h2>{`Country: ${match.params.countryId}`}</h2>
-        <RenderRoutes routes={routes} />
+        <RouterView routes={routes} />
       </Container>
     </Main>
   );
@@ -47,4 +29,5 @@ export const CountryLayout = ({ match, routes, ...props }) => {
 
 CountryLayout.propTypes = {
   routes: PropTypes.array.isRequired,
+  match: PropTypes.any.isRequired,
 };
