@@ -1,3 +1,6 @@
+// import the build chain webpack config and merge it with storybook config
+const custom = require('../webpack.config.js');
+
 module.exports = {
   stories: ['../src/**/*.stories.js'],
   addons: [
@@ -7,4 +10,7 @@ module.exports = {
     '@storybook/addon-storysource',
     '@storybook/addon-docs',
   ],
+  webpackFinal: (config) => {
+    return { ...config, module: { ...config.module, rules: custom.module.rules } };
+  },
 };

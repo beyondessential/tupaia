@@ -63,6 +63,10 @@ const LEFT_LINKS = [
     label: 'Disasters',
     path: '/disaster',
   },
+  {
+    label: 'Data Sources',
+    path: '/data-sources',
+  },
 ];
 
 const App = props => {
