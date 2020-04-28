@@ -1,4 +1,4 @@
-// import the build chaing webpack config and merge it with storybook config
+// import the build chain webpack config and merge it with storybook config
 const custom = require('../webpack.config.js');
 
 module.exports = {
