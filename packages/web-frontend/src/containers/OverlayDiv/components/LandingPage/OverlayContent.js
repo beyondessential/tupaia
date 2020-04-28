@@ -71,7 +71,7 @@ const ContentContainer = styled.div`
   transition: height 0.4 linear;
 `;
 
-export const OverlayContent = ({ isUserLoggedIn }) => {
+export const OverlayContent = ({ shouldShowProjects, hideProjects, isUserLoggedIn }) => {
   const contentMargin = OVERLAY_PADDING.split(' ')
     .map(x => `-${x}`)
     .join(' ');
@@ -84,7 +84,8 @@ export const OverlayContent = ({ isUserLoggedIn }) => {
   const handleChange = React.useCallback((_, newValue) => setValue(newValue));
   const handleLogin = React.useCallback(() => setValue(1));
 
-  if (isUserLoggedIn) return <ProjectPage />;
+  if (isUserLoggedIn || shouldShowProjects)
+    return <ProjectPage isUserLoggedIn={isUserLoggedIn} onLogin={hideProjects} />;
 
   return (
     <ContentContainer margin={contentMargin}>

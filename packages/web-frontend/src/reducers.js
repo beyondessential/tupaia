@@ -112,6 +112,7 @@ import {
   SET_MOBILE_DASHBOARD_EXPAND,
   REQUEST_PROJECT_ACCESS,
 } from './actions';
+import { initialOrgUnit } from './defaults';
 
 function authentication(
   state = {
@@ -588,6 +589,7 @@ function global(
       return {
         ...state,
         isSidePanelExpanded: false,
+        overlay: !isMobile() && LANDING,
       };
     case SHOW_TUPAIA_INFO:
       return {

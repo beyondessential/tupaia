@@ -16,6 +16,9 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { goHome, changeOrgUnit } from '../../actions';
 import logo from '../../images/tupaia-logo-white.png';
+import { selectProject } from '../../projects/actions';
+import { INITIAL_PROJECT_CODE } from '../../defaults';
+import { getProjectByCode } from '../../projects/selectors';
 
 const styles = {
   logo: {
@@ -34,7 +37,12 @@ export class TupaiaHome extends Component {
   render() {
     return (
       <div style={styles.logo}>
-        <img src={logo} alt="Tupaia logo" style={styles.logoImage} onClick={this.props.goHome} />
+        <img
+          src={logo}
+          alt="Tupaia logo"
+          style={styles.logoImage}
+          onClick={() => this.props.goHome(this.props.exploreProject)}
+        />
       </div>
     );
   }
@@ -45,19 +53,21 @@ TupaiaHome.propTypes = {
 };
 
 const mapStateToProps = state => {
-  return {};
+  const exploreProject = getProjectByCode(state, INITIAL_PROJECT_CODE);
+
+  return {
+    exploreProject,
+  };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    goHome: () => {
+    goHome: project => {
       dispatch(goHome());
+      dispatch(selectProject(project));
       dispatch(changeOrgUnit());
     },
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(TupaiaHome);
+export default connect(mapStateToProps, mapDispatchToProps)(TupaiaHome);

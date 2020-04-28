@@ -29,9 +29,9 @@ const TagLine = styled.p`
   margin: 10px 0 40px;
 `;
 
-const ExploreModeButton = styled(Button)`
+const ViewProjectsButton = styled(Button)`
   margin-bottom: 16px;
-  width: 250px;
+  width: 225px;
   height: 50px;
   border-radius: 3px;
   font-size: 13px;
@@ -41,17 +41,27 @@ const ExploreModeButton = styled(Button)`
   }
 `;
 
-export const LandingPage = ({ activateExploreMode, isUserLoggedIn }) => {
+export const LandingPage = ({ isUserLoggedIn }) => {
+  const [renderProjectPage, setRenderProjectPage] = React.useState(false);
+  const renderProjects = React.useCallback(() => setRenderProjectPage(true));
+  const hideProjects = React.useCallback(() => setRenderProjectPage(false));
+
   return (
     <Container>
       <div>
         <Logo src={logo} alt="Tupaia logo" />
         <TagLine>Health resource and supply chain mapping for the Asia Pacific region</TagLine>
-        <ExploreModeButton onClick={activateExploreMode} variant="outlined">
-          <ExploreIcon /> I just want to explore!
-        </ExploreModeButton>
+        {!isUserLoggedIn && !renderProjectPage && (
+          <ViewProjectsButton onClick={renderProjects} variant="outlined">
+            <ExploreIcon /> View projects
+          </ViewProjectsButton>
+        )}
       </div>
-      <OverlayContent isUserLoggedIn={isUserLoggedIn} />
+      <OverlayContent
+        isUserLoggedIn={isUserLoggedIn}
+        hideProjects={hideProjects}
+        shouldShowProjects={renderProjectPage}
+      />
     </Container>
   );
 };

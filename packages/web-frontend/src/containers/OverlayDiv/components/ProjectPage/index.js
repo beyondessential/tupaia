@@ -39,7 +39,13 @@ const renderProjectsWithFilter = (projects, accessType, action, actionText) =>
       />
     ));
 
-const ProjectPageComponent = ({ onSelectProject, onRequestProjectAccess, projects }) => {
+const ProjectPageComponent = ({
+  onSelectProject,
+  onRequestProjectAccess,
+  onLogin,
+  isUserLoggedIn,
+  projects,
+}) => {
   const projectsWithAccess = renderProjectsWithFilter(
     projects,
     true,
@@ -47,11 +53,13 @@ const ProjectPageComponent = ({ onSelectProject, onRequestProjectAccess, project
     'View project',
   );
 
+  const noAccessAction = isUserLoggedIn ? onRequestProjectAccess : onLogin;
+  const noAccessText = isUserLoggedIn ? 'Request access' : 'Log in';
   const projectsWithoutAccess = renderProjectsWithFilter(
     projects,
     false,
-    onRequestProjectAccess,
-    'Request access',
+    noAccessAction,
+    noAccessText,
   );
 
   return (

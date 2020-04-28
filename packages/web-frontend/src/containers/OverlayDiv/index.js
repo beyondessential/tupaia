@@ -27,6 +27,7 @@ import { LandingPage } from './components/LandingPage';
 import { RequestProjectAccess } from './components/RequestProjectAccess';
 import Disaster from './components/Disaster';
 import { getProjectByCode } from '../../projects/selectors';
+import { INITIAL_PROJECT_CODE } from '../../defaults';
 
 export const OVERLAY_PADDING = `35px ${isMobile() ? '35px' : '64px'}`;
 
@@ -66,13 +67,7 @@ export class OverlayDiv extends PureComponent {
   render() {
     const { overlay, closeOverlay, onSelectProject, isUserLoggedIn, exploreProject } = this.props;
     const components = {
-      [LANDING]: () => (
-        <LandingPage
-          activateExploreMode={() => onSelectProject(exploreProject)}
-          isUserLoggedIn={isUserLoggedIn}
-          transition
-        />
-      ),
+      [LANDING]: () => <LandingPage isUserLoggedIn={isUserLoggedIn} transition />,
       [DISASTER]: Disaster,
       [REQUEST_PROJECT_ACCESS]: RequestProjectAccess,
     };
@@ -110,7 +105,7 @@ OverlayDiv.defaultProps = {
 };
 
 const mapStateToProps = state => {
-  const exploreProject = getProjectByCode(state, 'explore');
+  const exploreProject = getProjectByCode(state, INITIAL_PROJECT_CODE);
 
   return {
     overlay: state.global.overlay,
