@@ -17,98 +17,119 @@ exports.setup = function(options, seedLink) {
   seed = seedLink;
 };
 
-const DASHBOARD_GROUP_CODES = ['DL_Unfpa_Facility']; //not yet a group
+// not yet a group as this migration was created before the one to add this group:
+// will need to add it in a later migration
+const DASHBOARD_GROUP_CODES = ['DL_Unfpa_Facility'];
 
 const REPORT_BASE = {
-  id: 'PG_Strive_PNG_Positive_RDT_By_Result_Over_Time',
-  dataBuilder: 'countEventsPerPeriodByDataValue',
+  id: 'UNFPA_RH_Products_MOS',
+  dataBuilder: 'sumPerMonth',
 };
 
 const VIEW_JSON_BASE = {
   name: 'Reproductive Health Stock Status: Months Of Stock (mSupply)',
   type: 'chart',
-  chartType: 'bar',
+  chartType: 'line',
   periodGranularity: 'month',
 };
 
+const CONFIG_BASE = { periodType: 'month' };
+
+const COLORS = [
+  '#FC1D26',
+  '#FD9155',
+  '#FEDD64',
+  '#81D75E',
+  '#0F7F3B',
+  '#20C2CA',
+  '#40B7FC',
+  '#0A4EAB',
+  '#8C5AFB',
+  '#FD6AC4',
+  '#D9D9D9',
+];
+
 const PRODUCTS = [
   {
+    dataElementCodes: ['MOS_3b3444bf', 'MOS_a162942e'],
     name: 'Condoms, male',
-    id: 'UNFPA_RH_Condoms_male',
-    dataElementCodes: ['MOS_3b3444bf'],
+    id: 'UNFPA_RH_Condoms_male_MOS',
   },
   {
-    name: 'Condoms, male, varied',
-    id: 'UNFPA_RH_Condoms_male_varied',
-    dataElementCodes: ['MOS_a162942e'],
+    dataElementCodes: ['MOS_bf4be518'],
+    name: 'Condoms, female',
+    id: 'UNFPA_RH_Condoms_female_MOS',
   },
-  { dataElementCodes: ['MOS_bf4be518'], name: 'Condoms, female', id: 'UNFPA_RH_Condoms_female' },
   {
     dataElementCodes: ['MOS_402924bf'],
-    name: 'Ethinylestradiol & levonorgestrel 30mcg & 150mcg tablet',
-    id: 'UNFPA_RH_Ethinylestradiol_levonorgestrel_30mcg_and_150mcg_tablet',
+    name: 'COC',
+    id: 'UNFPA_RH_Ethinylestradiol_levonorgestrel_30mcg_and_150mcg_tablet_MOS',
   },
   {
     dataElementCodes: ['MOS_47d584bf'],
-    name: 'Levonorgestrel 30mcg tablet',
-    id: 'UNFPA_RH_Levonorgestrel_30mcg_tablet',
+    name: 'POP',
+    id: 'UNFPA_RH_Levonorgestrel_30mcg_tablet_MOS',
   },
   {
     dataElementCodes: ['MOS_3ff944bf'],
-    name: 'Etonogestrel-releasing implant',
-    id: 'UNFPA_RH_Etonogestrel-releasing_implant',
+    name: 'Implant',
+    id: 'UNFPA_RH_Etonogestrel-releasing_implant_MOS',
   },
   {
     dataElementCodes: ['MOS_d2d28620'],
-    name: 'Jadelle Contraceptive Implant',
-    id: 'UNFPA_RH_Jadelle_Contraceptive_Implant',
+    name: 'Jadelle',
+    id: 'UNFPA_RH_Jadelle_Contraceptive_Implant_MOS',
   },
   {
-    dataElementCodes: ['MOS_47fb04bf'],
-    name: 'Levonorgestrel 750mcg tablet (pack of two)',
-    id: 'UNFPA_RH_Levonorgestrel_750mcg_tablet_pack_of_two',
+    dataElementCodes: ['MOS_47fb04bf', 'MOS_47fe44bf'],
+    name: 'EC',
+    id: 'UNFPA_RH_Levonorgestrel_750mcg_tablet_pack_of_two_MOS',
   },
   {
-    dataElementCodes: ['MOS_47fe44bf'],
-    name: 'Levonorgestrel 1.5mg tablet',
-    id: 'UNFPA_RH_Levonorgestrel_1500mcg_tablet',
+    dataElementCodes: ['MOS_53d014bf'],
+    name: 'DMPA',
+    id: 'UNFPA_RH_DMPA_injection_MOS',
   },
-  { dataElementCodes: ['MOS_53d014bf'], name: 'DMPA injection', id: 'UNFPA_RH_DMPA_injection' },
-  { dataElementCodes: ['MOS_4752843e'], name: 'SAYANA Press', id: 'UNFPA_RH_SAYANA_Press' },
+  {
+    dataElementCodes: ['MOS_4752843e'],
+    name: 'SAYANA Press',
+    id: 'UNFPA_RH_SAYANA_Press_MOS',
+  },
   {
     dataElementCodes: ['MOS_542a34bf'],
     name: 'Norethisterone amp',
-    id: 'UNFPA_RH_Norethisterone_amp',
+    id: 'UNFPA_RH_Norethisterone_amp_MOS',
   },
   {
-    dataElementCodes: ['MOS_4718f43e'],
-    name: 'Intra Uterine Device',
-    id: 'UNFPA_RH_Intra_Uterine_Device',
+    dataElementCodes: ['MOS_4718f43e', 'MOS_3b3994bf'],
+    name: 'IUD',
+    id: 'UNFPA_RH_IUD_MOS',
   },
-  {
-    dataElementCodes: ['MOS_3b3994bf'],
-    name: 'Copper containing device',
-    id: 'UNFPA_RH_Copper_containing_device',
-  },
-].map(p => ({ ...p, id: `${p.id}_MOS` }));
+];
 
 exports.up = async function(db) {
-  const viewJson = {
-    ...VIEW_JSON_BASE,
-    chartConfig: PRODUCTS.map((product, index) => {
-      const { name } = product;
-      return {
-        [name]: {
-          label: name,
-          stackId: index,
-          legendOrder: index,
-        },
-      };
-    }),
+  const chartConfig = {};
+  const dataClasses = {};
+  PRODUCTS.forEach((product, index) => {
+    const { id, name, dataElementCodes } = product;
+    chartConfig[id] = {
+      label: name,
+      stackId: index,
+      legendOrder: index,
+      color: COLORS[index],
+    };
+    dataClasses[id] = {
+      codes: dataElementCodes,
+    };
+  });
+
+  const REPORT = {
+    ...REPORT_BASE,
+    viewJson: { ...VIEW_JSON_BASE, chartConfig },
+    dataBuilderConfig: { ...CONFIG_BASE, dataClasses },
   };
 
-  const REPORT = { ...REPORT_BASE, viewJson }; //add actual data
-  await insertObject(db, 'dashboardReport', REPORT_BASE);
+  await insertObject(db, 'dashboardReport', REPORT);
 
   return db.runSql(`
      UPDATE
