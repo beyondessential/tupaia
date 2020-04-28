@@ -14,6 +14,7 @@ import {
   getCurrentPeriod,
   getPeriodsInRange,
   periodToType,
+  dateToPeriod,
   momentToPeriod,
   periodToDisplayString,
   parsePeriodType,
@@ -111,6 +112,33 @@ context('periodTypes', () => {
 
     it('day', () => {
       expect(momentToPeriod(momentStub, DAY)).to.equal('YYYYMMDD');
+    });
+  });
+
+  describe('dateToPeriod', () => {
+    it('should use `day` by default', () => {
+      expect(dateToPeriod('2020-02-15')).to.equal(dateToPeriod('2020-02-15', DAY));
+    });
+
+    it('should convert compatible date formats', () => {
+      expect(dateToPeriod('2020-02-15')).to.equal('20200215');
+      expect(dateToPeriod('2020-02-15 10:18:00')).to.equal('20200215');
+    });
+
+    it('year', () => {
+      expect(dateToPeriod('2020-02-15', YEAR)).to.equal('2020');
+    });
+
+    it('month', () => {
+      expect(dateToPeriod('2020-02-15', MONTH)).to.equal('202002');
+    });
+
+    it('week', () => {
+      expect(dateToPeriod('2020-02-15', WEEK)).to.equal('2020W07');
+    });
+
+    it('day', () => {
+      expect(dateToPeriod('2020-02-15', DAY)).to.equal('20200215');
     });
   });
 
