@@ -1,4 +1,7 @@
 export const state = {
+  global: {
+    currentOrganisationUnitCode: 'TO',
+  },
   orgUnits: {
     orgUnitMap: {
       World: {
