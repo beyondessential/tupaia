@@ -52,6 +52,9 @@ const sumPerPeriod = async (
 export const sumPerDay = (config, aggregator, dhisApi) =>
   sumPerPeriod(config, aggregator, dhisApi, aggregator.aggregationTypes.FINAL_EACH_DAY);
 
+export const sumAllPreviousPerDay = (config, aggregator, dhisApi) =>
+  sumPerPeriod(config, aggregator, dhisApi, aggregator.aggregationTypes.SUM_PREVIOUS_EACH_DAY);
+
 export const sumPerWeek = (config, aggregator, dhisApi) =>
   sumPerPeriod(config, aggregator, dhisApi, aggregator.aggregationTypes.FINAL_EACH_WEEK);
 

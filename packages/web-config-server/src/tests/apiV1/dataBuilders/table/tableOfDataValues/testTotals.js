@@ -5,12 +5,13 @@
 
 import { createAssertTableResults, createAssertErrorIsThrown } from './helpers';
 import { DATA_VALUES } from './tableOfDataValues.fixtures';
+import { tableOfDataValues } from '/apiV1/dataBuilders';
 
 const dataValues = DATA_VALUES.filter(({ organisationUnit }) => organisationUnit === 'TO_Nukuhc');
 
-const assertTableResults = createAssertTableResults(dataValues);
+const assertTableResults = createAssertTableResults(tableOfDataValues, dataValues);
 
-const assertErrorIsThrown = createAssertErrorIsThrown(dataValues);
+const assertErrorIsThrown = createAssertErrorIsThrown(tableOfDataValues, dataValues);
 
 export const testTotals = () => {
   it('table total', () =>
