@@ -26,7 +26,7 @@ import { changeMeasure, clearMeasure, toggleMeasureExpand } from '../../actions'
 import { HierarchyItem } from '../../components/HierarchyItem';
 import TupaiaIcon from '../../images/TupaiaIcon.svg';
 import { MAP_OVERLAY_SELECTOR } from '../../styles';
-import { selectOrgUnit } from '../../selectors';
+import { selectCurrentOrgUnit } from '../../selectors';
 
 export class MeasureBar extends Component {
   constructor(props) {
@@ -181,8 +181,6 @@ const mapStateToProps = state => {
   const { currentMeasure, measureHierarchy, isExpanded } = state.measureBar;
   const { isMeasureLoading } = state.map;
   const { currentOrganisationUnitCode } = state.global;
-  const { name: currentOrganisationUnitName } =
-    selectOrgUnit(state, currentOrganisationUnitCode) || {};
 
   return {
     currentMeasure,
@@ -190,7 +188,7 @@ const mapStateToProps = state => {
     isExpanded,
     isMeasureLoading,
     currentOrganisationUnitCode,
-    currentOrganisationUnitName,
+    currentOrganisationUnitName: selectCurrentOrgUnit(state).name,
   };
 };
 

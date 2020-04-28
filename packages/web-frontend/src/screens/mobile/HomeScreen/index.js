@@ -15,7 +15,11 @@ import { SelectListItem } from '../../../components/mobile/SelectListItem';
 import { Dashboard } from '../../../components/mobile/Dashboard';
 import { changeOrgUnit, toggleDashboardSelectExpand, changeDashboardGroup } from '../../../actions';
 import { WHITE } from '../../../styles';
-import { selectOrgUnitChildren, selectCurrentDashboardKey, selectOrgUnit } from '../../../selectors';
+import {
+  selectOrgUnitChildren,
+  selectCurrentDashboardKey,
+  selectCurrentOrgUnit,
+} from '../../../selectors';
 
 class HomeScreen extends PureComponent {
   componentWillMount() {
@@ -46,7 +50,7 @@ class HomeScreen extends PureComponent {
         />
         <ExpandableList
           title="Countries"
-          expandedByDefault={true}
+          expandedByDefault
           items={sortOrgUnitsAlphabeticallyByName(organisationUnits).map(
             ({ organisationUnitCode, name }) => (
               <SelectListItem
@@ -77,19 +81,15 @@ HomeScreen.propTypes = {
   onChangeOrgUnit: PropTypes.func.isRequired,
 };
 
-// To avoid rerendering, the default org unit is a constant
-const EMPTY_OBJ = {};
-
 const mapStateToProps = state => {
   const { isGroupSelectExpanded } = state.dashboard;
 
-  const { currentOrganisationUnitCode, dashboardConfig } = state.global;
+  const { dashboardConfig } = state.global;
   const organisationUnits = selectOrgUnitChildren(state, 'World') || [];
-  const currentOrganisationUnit = selectOrgUnit(state, currentOrganisationUnitCode) || EMPTY_OBJ;
 
   return {
     organisationUnits,
-    currentOrganisationUnit,
+    currentOrganisationUnit: selectCurrentOrgUnit(state),
     dashboardFilterIsExpanded: isGroupSelectExpanded,
     dashboardConfig,
     currentDashboardKey: selectCurrentDashboardKey(state),

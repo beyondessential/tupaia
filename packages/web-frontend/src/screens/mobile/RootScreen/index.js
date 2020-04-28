@@ -20,7 +20,7 @@ import { LoadingScreen } from '../LoadingScreen';
 import Footer from '../../../components/mobile/Footer';
 import { ENTITY_TYPE } from '../../../constants';
 import OverlayDiv from '../../../containers/OverlayDiv';
-import { selectOrgUnit } from '../../../selectors';
+import { selectCurrentOrgUnit } from '../../../selectors';
 
 const ORG_UNIT_TYPE_TO_COMPONENT = {
   [ENTITY_TYPE.COUNTRY]: RegionScreen,
@@ -67,12 +67,8 @@ RootScreen.propTypes = {
 };
 
 const mapStateToProps = state => {
-  const { currentOrganisationUnitCode } = state.global;
-  const { type: currentOrganisationUnitType } =
-    selectOrgUnit(state, currentOrganisationUnitCode) || {};
-
   return {
-    currentOrganisationUnitType,
+    currentOrganisationUnitType: selectCurrentOrgUnit(state).type,
     isLoading: state.global.isLoadingOrganisationUnit,
     isUserLoggedIn: state.authentication.isUserLoggedIn,
   };

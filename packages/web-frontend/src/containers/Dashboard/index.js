@@ -25,7 +25,7 @@ import { changeDashboardGroup, closeDropdownOverlays } from '../../actions';
 import DashboardGroup from '../DashboardGroup';
 import { getFacilityThumbnailUrl } from '../../utils';
 import { DropDownMenu } from '../../components/DropDownMenu';
-import { selectCurrentDashboardKey, selectOrgUnit } from '../../selectors';
+import { selectCurrentDashboardKey, selectCurrentOrgUnit } from '../../selectors';
 
 const IMAGE_HEIGHT_RATIO = 0.5;
 
@@ -255,23 +255,13 @@ Dashboard.propTypes = {
   contractedWidth: PropTypes.number,
 };
 
-// To avoid rerendering, the default org unit is a constant
-const EMPTY_OBJ = {};
-
 const mapStateToProps = state => {
   const { isAnimating } = state.map;
-  const {
-    currentOrganisationUnitCode,
-    isLoadingOrganisationUnit,
-    dashboardConfig,
-    isSidePanelExpanded,
-    project,
-  } = state.global;
+  const { isLoadingOrganisationUnit, dashboardConfig, isSidePanelExpanded, project } = state.global;
   const { contractedWidth } = state.dashboard;
 
-  const currentOrganisationUnit = selectOrgUnit(state, currentOrganisationUnitCode) || EMPTY_OBJ;
   return {
-    currentOrganisationUnit,
+    currentOrganisationUnit: selectCurrentOrgUnit(state),
     sections: dashboardConfig,
     currentDashboardKey: selectCurrentDashboardKey(state),
     mapIsAnimating: isAnimating,
