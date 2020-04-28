@@ -8,7 +8,7 @@ import MuiContainer from '@material-ui/core/Container';
 import { PhotoAlbum, CalendarToday } from '@material-ui/icons';
 import PropTypes from 'prop-types';
 import { useParams } from 'react-router-dom';
-import { TabsToolbar } from '../components/Toolbar';
+import { TabsToolbar } from '@tupaia/ui-components';
 import { RouterView } from '../router';
 import { Header } from '../components/Header';
 
@@ -24,12 +24,12 @@ const links = [
   {
     label: 'Weekly Case Data',
     to: '',
-    icon: <PhotoAlbum />,
+    icon: <CalendarToday />,
   },
   {
     label: 'Event-based Data',
     to: '/event-based',
-    icon: <CalendarToday />,
+    icon: <PhotoAlbum />,
   },
 ];
 

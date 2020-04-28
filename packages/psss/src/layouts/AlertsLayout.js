@@ -5,9 +5,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { CalendarToday, PhotoAlbum } from '@material-ui/icons';
+import { WarningCloud, Clipboard, TabsToolbar } from '@tupaia/ui-components';
+import { Alarm } from '@material-ui/icons';
 import MuiContainer from '@material-ui/core/Container';
-import { TabsToolbar } from '../components/Toolbar';
 import { RouterView } from '../router';
 import { Header } from '../components/Header';
 
@@ -23,17 +23,17 @@ const links = [
   {
     label: 'Alerts',
     to: '',
-    icon: <PhotoAlbum />,
+    icon: <Alarm />,
   },
   {
     label: 'Outbreak',
     to: '/outbreaks',
-    icon: <CalendarToday />,
+    icon: <WarningCloud />,
   },
   {
     label: 'Archive',
     to: '/archive',
-    icon: <CalendarToday />,
+    icon: <Clipboard />,
   },
 ];
 

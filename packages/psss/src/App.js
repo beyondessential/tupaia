@@ -9,7 +9,8 @@ import {
   NavBar,
 } from '@tupaia/ui-components';
 import { Footer } from './components/Footer';
-import { RouterView, ROUTES, isActive } from './router';
+import { RouterView, isActive } from './router';
+import { ROUTES } from './routes';
 
 const links = [
   {
