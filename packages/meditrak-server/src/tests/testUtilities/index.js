@@ -18,6 +18,7 @@ export {
   upsertSurveyResponse,
   upsertSurveyScreen,
   upsertSurveyScreenComponent,
+  createAlert,
 } from './database';
 export {
   generateTestId,
