@@ -34,7 +34,7 @@ export class DatabaseAccess extends SyncingDatabase {
   }
 
   getDescendantsOfCountry(country) {
-    return this.objects('Entity').filtered(`countryCode = ${country.code}`);
+    return this.objects('Entity').filtered(`countryCode = "${country.code}"`);
   }
 
   getCountry(id) {

@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@tupaia/utils": "1.0.0",
-    "crypto": "^1.0.1",
     "rand-token": "^1.0.1",
     "semver-compare": "^1.0.0",
     "sha256": "^0.2.0"

@@ -12,11 +12,6 @@ export class User extends RealmObject {
     this.accessPolicy = new AccessPolicy(this.accessPolicyData);
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  set accessPolicy(data) {
-    throw new Error('Cannot change user access policy');
-  }
-
   hasAccessToSomeEntity(entities) {
     return this.accessPolicy.allowsSome(entities.map(e => e.code));
   }
