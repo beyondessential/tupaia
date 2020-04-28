@@ -3,10 +3,12 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
 
+export { AlertModel as Alert } from './Alert';
 export { AnswerModel as Answer } from './Answer';
 export { APIClientModel as ApiClient } from './APIClient';
 export { ApiRequestLogModel as ApiRequestLog } from './ApiRequestLog';
 export { CountryModel as Country } from './Country';
+export { DataSourceModel as DataSource } from './DataSource';
 export { DhisSyncLogModel as DhisSyncLog } from './DhisSyncLog';
 export { DhisSyncQueueModel as DhisSyncQueue } from './DhisSyncQueue';
 export { DisasterEventModel as DisasterEvent } from './DisasterEvent';
@@ -36,4 +38,3 @@ export { UserFacilityPermissionModel as UserFacilityPermission } from './UserFac
 export { UserGeographicalAreaPermissionModel as UserGeographicalAreaPermission } from './UserGeographicalAreaPermission';
 export { UserModel as User } from './User';
 export { UserRewardModel as UserReward } from './UserReward';
-export { DataSourceModel as DataSource } from './DataSource';

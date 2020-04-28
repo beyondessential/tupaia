@@ -14,6 +14,7 @@ import {
   constructIsEmptyOr,
   constructIsOneOf,
   isValidPassword,
+  takesDateForm,
 } from '../validation';
 import { resourceToRecordType } from '../utilities';
 import { createUser } from '../dataAccessors';
@@ -105,7 +106,13 @@ const constructValidationRules = (models, recordType) => {
         service_type: [constructIsOneOf(DATA_SOURCE_SERVICE_TYPES)],
         config: [hasContent],
       };
+    case TYPES.ALERT:
+      return {
+        entity_id: [constructRecordExistsWithId(models.entity)],
+        data_element_id: [constructRecordExistsWithId(models.dataSource)],
+        start_time: [hasContent, takesDateForm],
+      };
     default:
-      throw new ValidationError(`${recordType} is not a valid PUT endpoint`);
+      throw new ValidationError(`${recordType} is not a valid POST endpoint`);
   }
 };
