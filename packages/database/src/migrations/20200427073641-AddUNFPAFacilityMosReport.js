@@ -17,10 +17,6 @@ exports.setup = function(options, seedLink) {
   seed = seedLink;
 };
 
-// not yet a group as this migration was created before the one to add this group:
-// will need to add it in a later migration
-const DASHBOARD_GROUP_CODES = ['DL_Unfpa_Facility'];
-
 const REPORT_BASE = {
   id: 'UNFPA_RH_Products_MOS',
   dataBuilder: 'sumPerMonth',
@@ -130,26 +126,11 @@ exports.up = async function(db) {
   };
 
   await insertObject(db, 'dashboardReport', REPORT);
-
-  return db.runSql(`
-     UPDATE
-       "dashboardGroup"
-     SET
-       "dashboardReports" = "dashboardReports" || '{ ${REPORT_BASE.id} }'
-     WHERE
-       "code" in (${arrayToDbString(DASHBOARD_GROUP_CODES)});
-   `);
 };
 
 exports.down = function(db) {
   return db.runSql(`
      DELETE FROM "dashboardReport" WHERE id = '${REPORT_BASE.id}';
-     UPDATE
-       "dashboardGroup"
-     SET
-       "dashboardReports" = array_remove("dashboardReports", '${REPORT_BASE.id}')
-     WHERE
-       "code" in (${arrayToDbString(DASHBOARD_GROUP_CODES)});
    `);
 };
 
