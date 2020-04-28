@@ -118,24 +118,14 @@ const UNFPA_RH_AMC_CHART_CONFIG = {
   }
 };
 
-//Update COVID_New_Cases_By_Day report to work with new 'sumPerPeriod' data builder
-const NEW_COVID_NEW_CASES_BY_DAY_REPORT_DATA_BUILDER = {
-  "dataClasses": {
-      "value": {
-        "codes": [
-          "dailysurvey003"
-        ]
-      }
-  }
-};
+const ORG_UNIT_CODES = [
+  'TO_CPMS', 'KI_GEN', 'VU_1180_20', 'SB_500092', 'DL_2'
+];
 
-//Old COVID_New_Cases_By_Day report dataBuilderConfig to revert back
-const OLD_COVID_NEW_CASES_BY_DAY_REPORT_DATA_BUILDER = {
-  "dataSource": {
-      "codes": [
-          "dailysurvey003"
-      ]
-  }
+const FILTER = {
+  organisationUnit: {
+    in: ORG_UNIT_CODES
+  },
 };
 
 exports.up = async function(db) {
@@ -146,6 +136,7 @@ exports.up = async function(db) {
       'sumPerMonth',
       '{
         "dataClasses": ${JSON.stringify(UNFPA_RH_AMC_DATA_CLASSES)},
+        "filter": ${JSON.stringify(FILTER)},
         "periodType" : "month"
       }',
       '{
@@ -160,11 +151,13 @@ exports.up = async function(db) {
 
     UPDATE "dashboardGroup"
     SET "dashboardReports" = "dashboardReports" || '{UNFPA_Reproductive_Health_Product_AMC}'
-    WHERE code = 'DL_Unfpa_Country';
+    WHERE code = 'DL_Unfpa_Country'
+    AND "organisationLevel" = 'Country';
 
-    UPDATE "dashboardReport"
-    SET "dataBuilderConfig" = '${JSON.stringify(NEW_COVID_NEW_CASES_BY_DAY_REPORT_DATA_BUILDER)}'
-    WHERE id = 'COVID_New_Cases_By_Day';
+    UPDATE "dashboardGroup"
+    SET "dashboardReports" = "dashboardReports" || '{UNFPA_Reproductive_Health_Product_AMC}'
+    WHERE code = 'TO_Unfpa_Country'
+    AND "organisationLevel" = 'Country';
   `);
 };
 
@@ -173,12 +166,14 @@ exports.down = async function(db) {
     DELETE FROM "dashboardReport" WHERE id = 'UNFPA_Reproductive_Health_Product_AMC';
 
     UPDATE "dashboardGroup"
-    SET "dashboardReports" = array_remove("dashboardReports", '"UNFPA_Reproductive_Health_Product_AMC"')
-    WHERE code = 'DL_Unfpa_Country';
+    SET "dashboardReports" = array_remove("dashboardReports", 'UNFPA_Reproductive_Health_Product_AMC')
+    WHERE code = 'DL_Unfpa_Country'
+    AND "organisationLevel" = 'Country';
 
-    UPDATE "dashboardReport"
-    SET "dataBuilderConfig" = '${JSON.stringify(OLD_COVID_NEW_CASES_BY_DAY_REPORT_DATA_BUILDER)}'
-    WHERE id = 'COVID_New_Cases_By_Day';
+    UPDATE "dashboardGroup"
+    SET "dashboardReports" = array_remove("dashboardReports", 'UNFPA_Reproductive_Health_Product_AMC')
+    WHERE code = 'TO_Unfpa_Country'
+    AND "organisationLevel" = 'Country';
   `);
 };
 
