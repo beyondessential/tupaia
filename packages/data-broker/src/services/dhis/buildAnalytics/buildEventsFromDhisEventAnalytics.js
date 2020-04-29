@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { dateToPeriod } from '@tupaia/dhis-api';
+import { dateStringToPeriod } from '@tupaia/dhis-api';
 import { getSortByKey } from '@tupaia/utils';
 import { sanitizeValue } from './sanitizeValue';
 
@@ -34,7 +34,7 @@ export const buildEventsFromDhisEventAnalytics = (response, dataElementCodes = [
 
   const events = [];
   rows.forEach(row => {
-    const event = {};
+    const event = { values: {} };
     row.forEach((value, columnIndex) => {
       const { dimension, valueType } = columnSpecs[columnIndex];
       if (!dimension) {
@@ -43,7 +43,7 @@ export const buildEventsFromDhisEventAnalytics = (response, dataElementCodes = [
 
       const formattedValue = formatValue({ dimension, value, valueType });
       if (dataElementCodes.includes(dimension)) {
-        event.values = { ...event.values, [dimension]: formattedValue };
+        event.values[dimension] = formattedValue;
       } else {
         event[dimension] = formattedValue;
       }
@@ -56,7 +56,7 @@ export const buildEventsFromDhisEventAnalytics = (response, dataElementCodes = [
 };
 
 const formatValue = ({ dimension, value, valueType }) =>
-  dimension === 'period' ? dateToPeriod(value) : sanitizeValue(value, valueType);
+  dimension === 'period' ? dateStringToPeriod(value) : sanitizeValue(value, valueType);
 
 const getColumnSpecs = (headers, dataElementCodes) => {
   const columnSpecs = new Array(headers.length).fill({});

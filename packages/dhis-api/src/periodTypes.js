@@ -105,7 +105,7 @@ export const momentToPeriod = (moment, periodType) => moment.format(periodTypeTo
  * @param {string} date Should start with a YYYY-MM-DD date (eg '2020-02-15', '2020-02-15 10:18:00')
  * @param {string} periodType
  */
-export const dateToPeriod = (date, periodType = DAY) => {
+export const dateStringToPeriod = (date, periodType = DAY) => {
   const dayPeriod = date.substring(0, 10).replace(/-/g, '');
   return periodType === DAY ? dayPeriod : convertToPeriod(dayPeriod, periodType);
 };

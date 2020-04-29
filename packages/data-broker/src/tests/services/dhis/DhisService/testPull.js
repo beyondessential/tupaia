@@ -186,7 +186,7 @@ export const testPull = () => {
             }),
           ).to.not.be.rejected;
 
-        return Promise.all([undefined].map(assertErrorIsNotThrown));
+        return Promise.all([undefined, []].map(assertErrorIsNotThrown));
       });
 
       it('supports various API options', async () => {
