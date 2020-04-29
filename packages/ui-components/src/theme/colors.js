@@ -28,6 +28,7 @@ export const GREY_9F = '#9FA6AA';
 export const GREY_DE = '#DEDEE0'; // use for border colors of cards
 export const GREY_E2 = '#E2E2E2';
 export const GREY_FB = '#FBF9F9';
+export const GREY_F9 = '#F9F9F9';
 
 // Blues
 export const WHITE_BLUE = '#DDF1FF';
