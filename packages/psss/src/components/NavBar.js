@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
+import React, { useCallback } from 'react';
 import {
   Dashboard,
   HomeButton,
@@ -37,7 +37,7 @@ export const HOME_ALIAS = 'weekly-reports';
 /*
  * Used to determine if a router link is active
  */
-const isActive = (match, location) => {
+const isTabActive = (match, location) => {
   if (!match) {
     return false;
   } else if (match.url === '') {
@@ -47,6 +47,14 @@ const isActive = (match, location) => {
   return location.pathname.indexOf(match.url) !== -1;
 };
 
-export const NavBar = () => (
-  <BaseNavBar HomeButton={Home} links={links} Profile={Profile} isActive={isActive} />
-);
+export const NavBar = () => {
+  const isTabActiveCallback = useCallback(isTabActive, []);
+  return (
+    <BaseNavBar
+      HomeButton={Home}
+      links={links}
+      Profile={Profile}
+      isTabActive={isTabActiveCallback}
+    />
+  );
+};
