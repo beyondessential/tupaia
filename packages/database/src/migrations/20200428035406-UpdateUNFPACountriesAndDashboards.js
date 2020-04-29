@@ -46,6 +46,7 @@ const msupplyDashboardIds = [
 
 const generalCountryCodes = ['MH', 'WS', 'FM', 'FJ'];
 const msupplyCountryCodes = ['TO', 'VU', 'SB', 'KI'];
+const countriesWithSubdistricts = ['KI', 'VU'];
 
 exports.up = async function(db) {
   /** Updating project entity relations */
@@ -68,7 +69,8 @@ exports.up = async function(db) {
 
   // first insert the new dashboardGroups
   for (const code of countriesToAddToProject) {
-    for (const level of ['Country', 'District', 'Facility']) {
+    for (const level of ['Country', 'District', 'SubDistrict', 'Facility']) {
+      if (!countriesWithSubdistricts.includes(code) && level === 'SubDistrict') continue;
       await db.runSql(`
         insert into "dashboardGroup" ("organisationLevel", "userGroup", "organisationUnitCode", "dashboardReports", "name", "code")
         values (
@@ -100,11 +102,11 @@ exports.up = async function(db) {
   )});
   `);
 
-  // Msupply Country / District level groups
+  // Msupply Country / District and SubDistrict (VU/KI) level groups
   return db.runSql(`
     update "dashboardGroup"
     set "dashboardReports" = '{${[...generalDashboardIds, ...msupplyDashboardIds].join(',')}}'
-    where "name" = '${DASHBOARD_CODE}' and "organisationLevel" in ('Country', 'District') and "organisationUnitCode" in (${arrayToDbString(
+    where "name" = '${DASHBOARD_CODE}' and "organisationLevel" in ('Country', 'SubDistrict', 'District') and "organisationUnitCode" in (${arrayToDbString(
     msupplyCountryCodes,
   )});
   `);
