@@ -27,10 +27,10 @@ const dataBroker = sinon.createStubInstance(DataBroker, {
 });
 let aggregator;
 
-const fetchOptions = { period: '20200214' };
+const fetchOptions = { startDate: '20200214', endDate: '20200215', period: '20200214;20200215' };
 const aggregationOptions = {
   aggregationType: 'MOST_RECENT',
-  aggregationConfig: { orgUnitToGroupKeys: [] },
+  aggregationConfig: { orgUnitToGroupKeys: [], requestedPeriod: '20200214;20200215' },
   filter: { value: 3 },
 };
 
@@ -67,10 +67,10 @@ describe('Aggregator', () => {
 
     it('`aggregationOptions` parameter is optional', async () => {
       const assertErrorIsNotThrown = async emptyAggregationOptions =>
-        expect(aggregator.fetchAnalytics('POP01', fetchOptions, emptyAggregationOptions)).to
-          .eventually.not.be.rejected;
+        expect(aggregator.fetchAnalytics('POP01', fetchOptions, emptyAggregationOptions)).to.not.be
+          .rejected;
 
-      return Promise.all([undefined, null, {}].map(assertErrorIsNotThrown));
+      return Promise.all([undefined, {}].map(assertErrorIsNotThrown));
     });
 
     it('supports string code input', async () => {
@@ -107,16 +107,20 @@ describe('Aggregator', () => {
       );
     });
 
-    it('returns a response with processed results, metadata and the provided period', async () => {
+    it('returns a response with processed results, metadata and period data', async () => {
       const { metadata } = RESPONSE_BY_SOURCE_TYPE[DATA_ELEMENT];
       const period = '20160214';
 
-      expect(
+      return expect(
         aggregator.fetchAnalytics(['POP01', 'POP02'], { period }, aggregationOptions),
       ).to.eventually.deep.equal({
         results: FILTERED_ANALYTICS,
         metadata,
-        period,
+        period: {
+          earliestAvailable: '20200214',
+          latestAvailable: '20200214',
+          requested: '20160214',
+        },
       });
     });
   });
