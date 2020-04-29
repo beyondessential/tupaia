@@ -226,20 +226,8 @@ export class Entity extends BaseModel {
     });
   }
 
-  async getOrgUnitChildren() {
-    const types = Object.values(Entity.orgUnitEntityTypes);
-
-    const records = await Entity.database.executeSql(
-      `
-      SELECT ${Entity.getSqlForColumns()} FROM entity
-      WHERE
-        parent_id = ?
-        ${constructTypesCriteria(types, 'AND')}
-      ORDER BY name;
-    `,
-      [this.id, ...types],
-    );
-    return records.map(record => Entity.load(record));
+  async getOrgUnitChildren(hierarchyId) {
+    return Entity.hierarchyBuilder.getChildren(this.id, hierarchyId);
   }
 
   static fetchChildToParentCode = async childrenCodes => {

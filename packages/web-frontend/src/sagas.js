@@ -416,9 +416,14 @@ function* watchFetchCountryAccessDataAndFetchItTEST() {
  * Fetch an org unit.
  *
  */
-function requestOrgUnitData(organisationUnitCode) {
-  const shouldIncludeCountryData = organisationUnitCode !== 'World'; // We should pull in all country data if we are within a country (ie. not World)
-  const requestResourceUrl = `organisationUnit?organisationUnitCode=${organisationUnitCode}&includeCountryHierarchy=${shouldIncludeCountryData}`;
+function requestOrgUnitData(organisationUnitCode, projectCode) {
+  // Build the request url
+  const urlParameters = {
+    organisationUnitCode,
+    projectCode,
+    includeCountryData: organisationUnitCode !== 'World', // We should pull in all country data if we are within a country (ie. not World)
+  };
+  const requestResourceUrl = `organisationUnit?${queryString.stringify(urlParameters)}`;
   return call(request, requestResourceUrl);
 }
 
@@ -430,7 +435,10 @@ function* fetchOrgUnitData(action) {
   }
 
   try {
-    const orgUnitData = yield requestOrgUnitData(action.organisationUnit.organisationUnitCode);
+    const orgUnitData = yield requestOrgUnitData(
+      action.organisationUnit.organisationUnitCode,
+      state.project.active.code,
+    );
     yield put(fetchOrgUnitSuccess(orgUnitData));
   } catch (error) {
     yield put(error.errorFunction(error));
@@ -452,7 +460,7 @@ function* fetchOrgUnitDataAndChangeOrgUnit(action) {
   }
 
   try {
-    const orgUnitData = yield requestOrgUnitData(organisationUnitCode);
+    const orgUnitData = yield requestOrgUnitData(organisationUnitCode, state.project.active.code);
     yield put(fetchOrgUnitSuccess(orgUnitData));
     yield put(
       changeOrgUnitSuccess(

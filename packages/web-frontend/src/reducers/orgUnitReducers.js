@@ -8,10 +8,12 @@
 import { combineReducers } from 'redux';
 import createCachedSelector from 're-reselect';
 
-import { FETCH_ORG_UNIT_SUCCESS } from '../actions';
+import { FETCH_ORG_UNIT_SUCCESS, SELECT_PROJECT } from '../actions';
 
 function orgUnitMap(state = {}, action) {
   switch (action.type) {
+    case SELECT_PROJECT:
+      return {};
     case FETCH_ORG_UNIT_SUCCESS:
       return addOrgUnitToMap(state, action.organisationUnit);
     default: {
