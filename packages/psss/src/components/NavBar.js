@@ -37,16 +37,16 @@ export const HOME_ALIAS = 'weekly-reports';
 /*
  * Used to determine if a router link is active
  */
-const isActive = (match, location) => {
+const isTabActive = (match, location) => {
   if (!match) {
     return false;
   } else if (match.url === '') {
-    const pathSegments = location.pathname.split('/').filter(x => x);
-    return pathSegments[0] === HOME_ALIAS;
+    const apthSegments = location.pathname.split('/').filter(x => x);
+    return apthSegments[0] === HOME_ALIAS;
   }
   return location.pathname.indexOf(match.url) !== -1;
 };
 
 export const NavBar = () => (
-  <BaseNavBar HomeButton={Home} links={links} Profile={Profile} isActive={isActive} />
+  <BaseNavBar HomeButton={Home} links={links} Profile={Profile} isTabActive={isTabActive} />
 );

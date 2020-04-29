@@ -5,38 +5,49 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import MuiContainer from '@material-ui/core/Container';
-import { Link } from 'react-router-dom';
+import { WarningCloud, Clipboard, TabsToolbar } from '@tupaia/ui-components';
 import Typography from '@material-ui/core/Typography';
+import { Alarm } from '@material-ui/icons';
+import MuiContainer from '@material-ui/core/Container';
+import { Header } from '../components/Header';
 import { AlertsRoutes } from '../routes/AlertsRoutes';
 
 const Main = styled.main`
   background: lightgray;
-  padding-top: 1rem;
 `;
 
 const Container = styled(MuiContainer)`
   min-height: 800px;
+  padding-top: 1rem;
 `;
+
+const links = [
+  {
+    label: 'Alerts',
+    to: '',
+    icon: <Alarm />,
+  },
+  {
+    label: 'Outbreak',
+    to: '/outbreaks',
+    icon: <WarningCloud />,
+  },
+  {
+    label: 'Archive',
+    to: '/archive',
+    icon: <Clipboard />,
+  },
+];
 
 export const AlertsView = ({ match }) => {
   return (
     <Main>
+      <Header title="Alerts" />
+      <TabsToolbar links={links} />
       <Container>
         <Typography variant="h2" gutterBottom>
           Alerts Layout
         </Typography>
-        <ul>
-          <li>
-            <Link to={`${match.url}`}>Alerts</Link>
-          </li>
-          <li>
-            <Link to={`${match.url}/outbreaks`}>Outbreaks</Link>
-          </li>
-          <li>
-            <Link to={`${match.url}/archive`}>Archive</Link>
-          </li>
-        </ul>
         <AlertsRoutes match={match} />
       </Container>
     </Main>
