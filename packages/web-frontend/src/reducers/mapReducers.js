@@ -25,8 +25,8 @@ import {
   HIDE_MAP_MEASURE,
   UNHIDE_MAP_MEASURE,
 } from '../actions';
-import { MARKER_TYPES } from '../containers/Map/MarkerLayer';
 
+import { MARKER_TYPES } from '../constants';
 import { initialOrgUnit } from '../defaults';
 
 const defaultBounds = initialOrgUnit.location.bounds;

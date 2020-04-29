@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-one-expression-per-line */
 /**
  * Tupaia Web
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd.
@@ -6,7 +7,6 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import { DARK_BLUE, WHITE } from '../../../styles';
 import appStoreButton from '../../../images/app-store-button.png';
 import playStoreButton from '../../../images/play-store-button.png';

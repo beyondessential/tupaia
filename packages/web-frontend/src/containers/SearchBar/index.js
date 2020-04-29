@@ -171,7 +171,7 @@ export class SearchBar extends PureComponent {
           hintText="Search Location"
           style={styles.controlBar}
           icon={<SearchIcon />}
-          inTopBar={true}
+          inTopBar
         >
           <div
             onMouseLeave={() => this.setState({ isSafeToCloseResults: true })}
