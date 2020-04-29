@@ -32,12 +32,12 @@ const Profile = () => <LightProfileButton startIcon={<Avatar>T</Avatar>}>Tom</Li
 /*
  * This ensures that the link to the home page is active for sub-urls of country (eg. /weekly-reports/samoa)
  */
-export const HOME_ALIAS = 'weekly-reports';
+const HOME_ALIAS = 'weekly-reports';
 
 /*
  * Used to determine if a router link is active
  */
-const isActive = (match, location) => {
+const isTabActive = (match, location) => {
   if (!match) {
     return false;
   } else if (match.url === '') {
@@ -48,5 +48,5 @@ const isActive = (match, location) => {
 };
 
 export const NavBar = () => (
-  <BaseNavBar HomeButton={Home} links={links} Profile={Profile} isActive={isActive} />
+  <BaseNavBar HomeButton={Home} links={links} Profile={Profile} isTabActive={isTabActive} />
 );

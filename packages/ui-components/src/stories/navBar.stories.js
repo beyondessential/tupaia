@@ -25,7 +25,7 @@ const links = [
     icon: <Dashboard />,
   },
   {
-    label: 'AlertsView & Outbreaks',
+    label: 'Alerts & Outbreaks',
     to: '/alerts',
     icon: <WarningCloud />,
   },

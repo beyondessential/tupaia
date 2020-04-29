@@ -13,11 +13,13 @@ export default {
   title: 'Toolbar',
   decorators: [story => <RouterProvider>{story()}</RouterProvider>],
 };
-
+/**
+ * links are slightly adjusted to work with storybook.
+ */
 const links = [
   {
     label: 'Alerts',
-    to: '',
+    to: 'iframe.html',
     icon: <Alarm />,
   },
   {
