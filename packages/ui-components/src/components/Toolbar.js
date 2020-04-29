@@ -40,7 +40,7 @@ const ToolbarTab = styled(LightTab)`
 `;
 
 /*
- * Toolbar
+ * TabsToolbar
  * a component for navigating to router links
  */
 export const TabsToolbar = ({ links }) => {
@@ -50,9 +50,8 @@ export const TabsToolbar = ({ links }) => {
 
   useEffect(() => {
     const valid = links.find(link => location.pathname === `${match.url}${link.to}`);
-    if (valid) {
-      setValue(location.pathname);
-    }
+    const newValue = valid ? location.pathname : `${match.url}${links[0].to}`;
+    setValue(newValue);
   }, [location, match]);
 
   return (

@@ -12,7 +12,7 @@ import { CountryView } from '../views/CountryView';
 export const PageRoutes = React.memo(() => (
   <Switch>
     <Route exact path="/" component={WeeklyReportsView} />
-    <Route path="/weekly-reports/:countryId" component={CountryView} />
+    <Route path="/weekly-reports/:countryName" component={CountryView} />
     <Route path="/alerts" component={AlertsView} />
     <Redirect to="/" />
   </Switch>
