@@ -21,9 +21,9 @@ exports.up = function(db) {
       user_id TEXT,
       entity_id TEXT,
       permission_group_id TEXT,
-      FOREIGN KEY (user_id) REFERENCES user_account (id),
-      FOREIGN KEY (entity_id) REFERENCES entity (id),
-      FOREIGN KEY (permission_group_id) REFERENCES permission_group (id)
+      FOREIGN KEY (user_id) REFERENCES user_account (id) ON UPDATE CASCADE ON DELETE CASCADE,
+      FOREIGN KEY (entity_id) REFERENCES entity (id) ON UPDATE CASCADE ON DELETE CASCADE,
+      FOREIGN KEY (permission_group_id) REFERENCES permission_group (id) ON UPDATE CASCADE ON DELETE CASCADE
     );
 
     -- Note that these inserts won't send out emails to users, as user_entity_permission is a new table,
@@ -51,9 +51,9 @@ exports.down = function(db) {
       user_id TEXT,
       country_id TEXT,
       permission_group_id TEXT,
-      FOREIGN KEY (user_id) REFERENCES user_account (id),
-      FOREIGN KEY (country_id) REFERENCES country (id),
-      FOREIGN KEY (permission_group_id) REFERENCES permission_group (id)
+      FOREIGN KEY (user_id) REFERENCES user_account (id) ON UPDATE CASCADE ON DELETE CASCADE,
+      FOREIGN KEY (country_id) REFERENCES country (id) ON UPDATE CASCADE ON DELETE CASCADE,
+      FOREIGN KEY (permission_group_id) REFERENCES permission_group (id) ON UPDATE CASCADE ON DELETE CASCADE
     );
 
     CREATE TABLE user_clinic_permission (
@@ -61,9 +61,9 @@ exports.down = function(db) {
       user_id TEXT,
       clinic_id TEXT,
       permission_group_id TEXT,
-      FOREIGN KEY (user_id) REFERENCES user_account (id),
-      FOREIGN KEY (clinic_id) REFERENCES clinic (id),
-      FOREIGN KEY (permission_group_id) REFERENCES permission_group (id)
+      FOREIGN KEY (user_id) REFERENCES user_account (id) ON UPDATE CASCADE ON DELETE CASCADE,
+      FOREIGN KEY (clinic_id) REFERENCES clinic (id) ON UPDATE CASCADE ON DELETE CASCADE,
+      FOREIGN KEY (permission_group_id) REFERENCES permission_group (id) ON UPDATE CASCADE ON DELETE CASCADE
     );
 
     CREATE INDEX user_clinic_permission_user_id_idx ON user_clinic_permission USING btree (user_id);
@@ -75,9 +75,9 @@ exports.down = function(db) {
       user_id TEXT,
       geographical_area_id TEXT,
       permission_group_id TEXT,
-      FOREIGN KEY (user_id) REFERENCES user_account (id),
-      FOREIGN KEY (geographical_area_id) REFERENCES geographical_area (id),
-      FOREIGN KEY (permission_group_id) REFERENCES permission_group (id)
+      FOREIGN KEY (user_id) REFERENCES user_account (id) ON UPDATE CASCADE ON DELETE CASCADE,
+      FOREIGN KEY (geographical_area_id) REFERENCES geographical_area (id) ON UPDATE CASCADE ON DELETE CASCADE,
+      FOREIGN KEY (permission_group_id) REFERENCES permission_group (id) ON UPDATE CASCADE ON DELETE CASCADE
     );
 
     CREATE INDEX user_geographical_area_permission_user_id_idx ON user_geographical_area_permission USING btree (user_id);
