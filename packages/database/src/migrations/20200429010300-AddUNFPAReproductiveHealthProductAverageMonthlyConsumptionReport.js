@@ -14,6 +14,8 @@ exports.setup = function(options, seedLink) {
   seed = seedLink;
 };
 
+const arrayToDbString = array => array.map(item => `'${item}'`).join(', ');
+
 const UNFPA_RH_AMC_DATA_CLASSES = {
   "UNFPA_RH_AMC_Male_condoms": {
     "codes": ["AMC_3b3444bf", "AMC_a162942e"]
@@ -118,6 +120,10 @@ const FILTER = {
   },
 };
 
+const DASHBOARD_GROUP_CODES_TO_ADD = [
+  'DL_Unfpa_Country', 'TO_Unfpa_Country', 'VU_Unfpa_Country', 'SB_Unfpa_Country', 'KI_Unfpa_Country'
+]
+
 exports.up = async function(db) {
   await db.runSql(`
     INSERT INTO "dashboardReport" ("id", "dataBuilder", "dataBuilderConfig", "viewJson")
@@ -141,27 +147,7 @@ exports.up = async function(db) {
 
     UPDATE "dashboardGroup"
     SET "dashboardReports" = "dashboardReports" || '{UNFPA_Reproductive_Health_Product_AMC}'
-    WHERE code = 'DL_Unfpa_Country'
-    AND "organisationLevel" = 'Country';
-
-    UPDATE "dashboardGroup"
-    SET "dashboardReports" = "dashboardReports" || '{UNFPA_Reproductive_Health_Product_AMC}'
-    WHERE code = 'TO_Unfpa_Country'
-    AND "organisationLevel" = 'Country';
-
-    UPDATE "dashboardGroup"
-    SET "dashboardReports" = "dashboardReports" || '{UNFPA_Reproductive_Health_Product_AMC}'
-    WHERE code = 'VU_Unfpa_Country'
-    AND "organisationLevel" = 'Country';
-
-    UPDATE "dashboardGroup"
-    SET "dashboardReports" = "dashboardReports" || '{UNFPA_Reproductive_Health_Product_AMC}'
-    WHERE code = 'SB_Unfpa_Country'
-    AND "organisationLevel" = 'Country';
-
-    UPDATE "dashboardGroup"
-    SET "dashboardReports" = "dashboardReports" || '{UNFPA_Reproductive_Health_Product_AMC}'
-    WHERE code = 'KI_Unfpa_Country'
+    WHERE code IN (${arrayToDbString(DASHBOARD_GROUP_CODES_TO_ADD)})
     AND "organisationLevel" = 'Country';
   `);
 };
@@ -172,27 +158,7 @@ exports.down = async function(db) {
 
     UPDATE "dashboardGroup"
     SET "dashboardReports" = array_remove("dashboardReports", 'UNFPA_Reproductive_Health_Product_AMC')
-    WHERE code = 'DL_Unfpa_Country'
-    AND "organisationLevel" = 'Country';
-
-    UPDATE "dashboardGroup"
-    SET "dashboardReports" = array_remove("dashboardReports", 'UNFPA_Reproductive_Health_Product_AMC')
-    WHERE code = 'TO_Unfpa_Country'
-    AND "organisationLevel" = 'Country';
-
-    UPDATE "dashboardGroup"
-    SET "dashboardReports" = array_remove("dashboardReports", 'UNFPA_Reproductive_Health_Product_AMC')
-    WHERE code = 'VU_Unfpa_Country'
-    AND "organisationLevel" = 'Country';
-
-    UPDATE "dashboardGroup"
-    SET "dashboardReports" = array_remove("dashboardReports", 'UNFPA_Reproductive_Health_Product_AMC')
-    WHERE code = 'SB_Unfpa_Country'
-    AND "organisationLevel" = 'Country';
-
-    UPDATE "dashboardGroup"
-    SET "dashboardReports" = array_remove("dashboardReports", 'UNFPA_Reproductive_Health_Product_AMC')
-    WHERE code = 'KI_Unfpa_Country'
+    WHERE code IN (${arrayToDbString(DASHBOARD_GROUP_CODES_TO_ADD)})
     AND "organisationLevel" = 'Country';
   `);
 };
