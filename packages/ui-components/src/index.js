@@ -15,6 +15,7 @@ export * from './components/Breadcrumbs';
 export * from './components/Button';
 export * from './components/CardTabs';
 export * from './components/Dialog';
+export * from './components/Drawer';
 export * from './components/HomeButton';
 export * from './components/IconButton';
 export * from './components/NavBar';

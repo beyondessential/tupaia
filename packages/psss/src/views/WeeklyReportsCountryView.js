@@ -14,7 +14,7 @@ import { Header } from '../components/Header';
 import { WeeklyReportsRoutes } from '../routes/WeeklyReportsRoutes';
 
 const Main = styled.main`
-  background: lightgray;
+  // nothing
 `;
 
 const Container = styled(MuiContainer)`
@@ -38,7 +38,7 @@ const links = [
 export const WeeklyReportsCountryView = ({ match }) => {
   const { countryId } = useParams();
   return (
-    <Main>
+    <React.Segment>
       <Header title={countryId} />
       <TabsToolbar links={links} />
       <Container>
@@ -47,7 +47,7 @@ export const WeeklyReportsCountryView = ({ match }) => {
         </Typography>
         <WeeklyReportsRoutes match={match} />
       </Container>
-    </Main>
+    </React.Segment>
   );
 };
 

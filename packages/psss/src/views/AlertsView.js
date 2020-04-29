@@ -13,7 +13,7 @@ import { Header } from '../components/Header';
 import { AlertsRoutes } from '../routes/AlertsRoutes';
 
 const Main = styled.main`
-  background: lightgray;
+  //background: lightgray;
 `;
 
 const Container = styled(MuiContainer)`
