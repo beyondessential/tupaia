@@ -12,7 +12,8 @@ import Button from '@material-ui/core/Button';
 import ExploreIcon from '@material-ui/icons/ExploreOutlined';
 
 import logo from '../../../../images/tupaia-logo-white.png';
-import { OverlayContent } from './OverlayContent';
+import { LoginPage } from './LoginPage';
+import { ProjectPage } from '../ProjectPage';
 
 const Container = styled.div`
   display: grid;
@@ -42,26 +43,28 @@ const ViewProjectsButton = styled(Button)`
 `;
 
 export const LandingPage = ({ isUserLoggedIn }) => {
-  const [renderProjectPage, setRenderProjectPage] = React.useState(false);
-  const renderProjects = React.useCallback(() => setRenderProjectPage(true));
-  const hideProjects = React.useCallback(() => setRenderProjectPage(false));
+  const [isProjectsPageVisible, setIsProjectsPageVisible] = React.useState(false);
+  const showProjects = React.useCallback(() => setIsProjectsPageVisible(true));
+  const hideProjects = React.useCallback(() => setIsProjectsPageVisible(false));
+
+  const isLoginPageVisible = !isUserLoggedIn && !isProjectsPageVisible;
 
   return (
     <Container>
       <div>
         <Logo src={logo} alt="Tupaia logo" />
         <TagLine>Health resource and supply chain mapping for the Asia Pacific region</TagLine>
-        {!isUserLoggedIn && !renderProjectPage && (
-          <ViewProjectsButton onClick={renderProjects} variant="outlined">
+        {!isUserLoggedIn && !isProjectsPageVisible && (
+          <ViewProjectsButton onClick={showProjects} variant="outlined">
             <ExploreIcon /> View projects
           </ViewProjectsButton>
         )}
       </div>
-      <OverlayContent
-        isUserLoggedIn={isUserLoggedIn}
-        hideProjects={hideProjects}
-        shouldShowProjects={renderProjectPage}
-      />
+      {isLoginPageVisible ? (
+        <LoginPage isUserLoggedIn={isUserLoggedIn} />
+      ) : (
+        <ProjectPage openLoginDialog={hideProjects} isUserLoggedIn={isUserLoggedIn} />
+      )}
     </Container>
   );
 };

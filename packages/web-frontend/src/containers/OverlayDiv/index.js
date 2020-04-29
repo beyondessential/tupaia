@@ -26,8 +26,6 @@ import { selectProject } from '../../projects/actions';
 import { LandingPage } from './components/LandingPage';
 import { RequestProjectAccess } from './components/RequestProjectAccess';
 import Disaster from './components/Disaster';
-import { getProjectByCode } from '../../projects/selectors';
-import { INITIAL_PROJECT_CODE } from '../../defaults';
 
 export const OVERLAY_PADDING = `35px ${isMobile() ? '35px' : '64px'}`;
 
@@ -65,7 +63,7 @@ export const REQUEST_PROJECT_ACCESS = 'requestProjectAccess';
 
 export class OverlayDiv extends PureComponent {
   render() {
-    const { overlay, closeOverlay, onSelectProject, isUserLoggedIn, exploreProject } = this.props;
+    const { overlay, closeOverlay, isUserLoggedIn } = this.props;
     const components = {
       [LANDING]: () => <LandingPage isUserLoggedIn={isUserLoggedIn} transition />,
       [DISASTER]: Disaster,
@@ -96,23 +94,16 @@ OverlayDiv.propTypes = {
   closeOverlay: PropTypes.func.isRequired,
   onSelectProject: PropTypes.func.isRequired,
   isUserLoggedIn: PropTypes.bool.isRequired,
-  exploreProject: PropTypes.shape({}),
 };
 
 OverlayDiv.defaultProps = {
   overlay: null,
-  exploreProject: {},
 };
 
-const mapStateToProps = state => {
-  const exploreProject = getProjectByCode(state, INITIAL_PROJECT_CODE);
-
-  return {
-    overlay: state.global.overlay,
-    isUserLoggedIn: state.authentication.isUserLoggedIn,
-    exploreProject,
-  };
-};
+const mapStateToProps = state => ({
+  overlay: state.global.overlay,
+  isUserLoggedIn: state.authentication.isUserLoggedIn,
+});
 
 const mapDispatchToProps = dispatch => {
   return {

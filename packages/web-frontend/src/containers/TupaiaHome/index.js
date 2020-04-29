@@ -11,14 +11,11 @@
  * Home button for the app, center top of map.
  */
 
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { goHome, changeOrgUnit } from '../../actions';
 import logo from '../../images/tupaia-logo-white.png';
-import { selectProject } from '../../projects/actions';
-import { INITIAL_PROJECT_CODE } from '../../defaults';
-import { getProjectByCode } from '../../projects/selectors';
 
 const styles = {
   logo: {
@@ -33,41 +30,26 @@ const styles = {
   },
 };
 
-export class TupaiaHome extends Component {
-  render() {
-    return (
-      <div style={styles.logo}>
-        <img
-          src={logo}
-          alt="Tupaia logo"
-          style={styles.logoImage}
-          onClick={() => this.props.goHome(this.props.exploreProject)}
-        />
-      </div>
-    );
-  }
-}
+export const TupaiaHomeComponent = ({ goHome }) => {
+  return (
+    <div style={styles.logo}>
+      <img src={logo} alt="Tupaia logo" style={styles.logoImage} onClick={goHome} />
+    </div>
+  );
+};
 
-TupaiaHome.propTypes = {
+TupaiaHomeComponent.propTypes = {
   goHome: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = state => {
-  const exploreProject = getProjectByCode(state, INITIAL_PROJECT_CODE);
-
+const mergeProps = (state, { dispatch }, ownProps) => {
   return {
-    exploreProject,
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    goHome: project => {
+    ...ownProps,
+    goHome: () => {
       dispatch(goHome());
-      dispatch(selectProject(project));
       dispatch(changeOrgUnit());
     },
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TupaiaHome);
+export default connect(null, null, mergeProps)(TupaiaHomeComponent);

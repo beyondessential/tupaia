@@ -107,12 +107,10 @@ import {
   SET_ENLARGED_DIALOG_DATE_RANGE,
   UPDATE_ENLARGED_DIALOG_ERROR,
   SET_PASSWORD_RESET_TOKEN,
-  SET_PROJECT,
   TOGGLE_DASHBOARD_SELECT_EXPAND,
   SET_MOBILE_DASHBOARD_EXPAND,
   REQUEST_PROJECT_ACCESS,
 } from './actions';
-import { initialOrgUnit } from './defaults';
 
 function authentication(
   state = {

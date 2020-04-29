@@ -17,7 +17,6 @@ import Box from '@material-ui/core/Box';
 import { LoginForm } from '../../../LoginForm';
 import { SignupForm } from '../../../SignupForm';
 import { RequestResetPasswordForm } from '../../../RequestResetPasswordForm';
-import { ProjectPage } from '../ProjectPage';
 import { OVERLAY_PADDING } from '../..';
 import { DARK_BLUE, LIGHTENED_DARK_BLUE, PRIMARY_BLUE } from '../../../../styles';
 
@@ -71,7 +70,7 @@ const ContentContainer = styled.div`
   transition: height 0.4 linear;
 `;
 
-export const OverlayContent = ({ shouldShowProjects, hideProjects, isUserLoggedIn }) => {
+export const LoginPage = ({ shouldShowProjects, hideProjects, isUserLoggedIn }) => {
   const contentMargin = OVERLAY_PADDING.split(' ')
     .map(x => `-${x}`)
     .join(' ');
@@ -83,9 +82,6 @@ export const OverlayContent = ({ shouldShowProjects, hideProjects, isUserLoggedI
   const [value, setValue] = React.useState(1);
   const handleChange = React.useCallback((_, newValue) => setValue(newValue));
   const handleLogin = React.useCallback(() => setValue(1));
-
-  if (isUserLoggedIn || shouldShowProjects)
-    return <ProjectPage isUserLoggedIn={isUserLoggedIn} onLogin={hideProjects} />;
 
   return (
     <ContentContainer margin={contentMargin}>
@@ -116,6 +112,6 @@ export const OverlayContent = ({ shouldShowProjects, hideProjects, isUserLoggedI
   );
 };
 
-OverlayContent.propTypes = {
+LoginPage.propTypes = {
   isUserLoggedIn: PropTypes.bool.isRequired,
 };

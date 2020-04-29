@@ -17,11 +17,6 @@ export default function projects(
   action,
 ) {
   switch (action.type) {
-    case GO_HOME:
-      return {
-        ...state,
-        active: {},
-      };
     case SELECT_PROJECT:
       return {
         ...state,
