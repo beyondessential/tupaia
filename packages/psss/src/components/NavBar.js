@@ -41,8 +41,8 @@ const isTabActive = (match, location) => {
   if (!match) {
     return false;
   } else if (match.url === '') {
-    const apthSegments = location.pathname.split('/').filter(x => x);
-    return apthSegments[0] === HOME_ALIAS;
+    const pathSegments = location.pathname.split('/').filter(x => x);
+    return pathSegments[0] === HOME_ALIAS;
   }
   return location.pathname.indexOf(match.url) !== -1;
 };
