@@ -10,9 +10,9 @@ import { PermissionsChecker } from './permissions';
 
 const WORLD = 'World';
 
-const translateDescendantForFrontEnd = (descendant, entityIdToCode) => ({
+const translateDescendantForFrontEnd = (descendant, childIdToParentId, entityIdToCode) => ({
   ...descendant.translateForFrontend(),
-  parent: entityIdToCode[descendant.parent_id],
+  parent: entityIdToCode[childIdToParentId[descendant.id]],
 });
 
 export default class extends RouteHandler {
@@ -29,13 +29,18 @@ export default class extends RouteHandler {
   async getEntityAndCountryHierarchyByCode(hierarchyId) {
     const world = await Entity.findOne({ code: WORLD });
     const country = await this.entity.countryEntity();
-    const countryDescendants = await country.getDescendants(hierarchyId);
+    const countryHierarchySelection = await country.getDescendants(hierarchyId);
+    const countryDescendants = countryHierarchySelection.getEntities();
     const orgUnitHierarchy = await this.filterForAccess([world, country, ...countryDescendants]);
     const entityIdToCode = reduceToDictionary(orgUnitHierarchy, 'id', 'code');
+    const childIdToParentId = {
+      [country.id]: world.id,
+      ...countryHierarchySelection.getChildToParentMap(),
+    };
     return {
       ...this.entity.translateForFrontend(),
       countryHierarchy: orgUnitHierarchy.map(e =>
-        translateDescendantForFrontEnd(e, entityIdToCode),
+        translateDescendantForFrontEnd(e, childIdToParentId, entityIdToCode),
       ),
     };
   }

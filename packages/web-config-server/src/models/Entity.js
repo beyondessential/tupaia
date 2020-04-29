@@ -189,7 +189,7 @@ export class Entity extends BaseModel {
   // assumes all entities of the given type are found at the same level in the hierarchy tree
   async getDescendantsOfType(entityType, hierarchyId) {
     if (this.type === entityType) return [this];
-    const descendants = await this.getDescendants(hierarchyId);
+    const descendants = (await this.getDescendants(hierarchyId)).getEntities();
     return descendants.filter(d => d.type === entityType);
   }
 
@@ -200,7 +200,7 @@ export class Entity extends BaseModel {
 
     // get descendants and return all of the first type that is an org unit type
     // we rely on descendants being returned in order, with those higher in the hierarchy first
-    const descendants = await this.getDescendants(hierarchyId);
+    const descendants = (await this.getDescendants(hierarchyId)).getEntities();
     const nearestOrgUnitType = descendants.find(d => orgUnitEntityTypes.has(d.type)).type;
     return descendants.filter(d => d.type === nearestOrgUnitType);
   }
