@@ -33,4 +33,18 @@ const links = [
 
 const Home = () => <HomeButton source="/psss-logo-white.svg" />;
 
-export const navBar = () => <NavBar HomeButton={Home} Profile={Profile} links={links} />;
+const HOME_ALIAS = 'country';
+
+const isTabActive = (match, location) => {
+  if (!match) {
+    return false;
+  } else if (match.url === '') {
+    const newPathnames = location.pathname.split('/').filter(x => x);
+    return newPathnames[0] === HOME_ALIAS;
+  }
+  return location.pathname.indexOf(match.url) !== -1;
+};
+
+export const navBar = () => (
+  <NavBar HomeButton={Home} Profile={Profile} links={links} isTabActive={isTabActive} />
+);
