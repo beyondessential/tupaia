@@ -21,7 +21,6 @@ import { List, ListItem } from 'material-ui/List';
 import { ControlBar } from '../../components/ControlBar';
 import { HierarchyItem } from '../../components/HierarchyItem';
 import { selectOrgUnitsAsHierarchy } from '../../selectors';
-import { ENTITY_TYPE } from '../../constants';
 import {
   changeSearch,
   toggleSearchExpand,
@@ -130,13 +129,10 @@ export class SearchBar extends PureComponent {
       if (!orgUnits || orgUnits.length < 1) return []; // OrgUnits with no children are our recursive base case
       return orgUnits.map(orgUnit => {
         const { organisationUnitCode, name, type, isLoading, organisationUnitChildren } = orgUnit;
-        const displayedOrganisationUnitChildren = organisationUnitChildren.filter(
-          ou => ou.type !== ENTITY_TYPE.CASE,
-        );
         // Recursively generate the children for this OrgUnit, will not recurse whole tree as
         // HierarchyItems only fetch their children data on componentWillMount
         const nestedItems = recurseOrgUnits(
-          sortOrgUnitsAlphabeticallyByName(displayedOrganisationUnitChildren),
+          sortOrgUnitsAlphabeticallyByName(organisationUnitChildren),
         );
         return (
           <HierarchyItem
@@ -145,8 +141,7 @@ export class SearchBar extends PureComponent {
             nestedMargin={nestedMargin}
             nestedItems={nestedItems}
             hasNestedItems={
-              type === 'Country' ||
-              (displayedOrganisationUnitChildren && displayedOrganisationUnitChildren.length)
+              type === 'Country' || (organisationUnitChildren && organisationUnitChildren.length)
             }
             isLoading={isLoading}
             Icon={ICON_BY_ORG_UNIT_TYPE[type]}
