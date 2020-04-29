@@ -3,23 +3,14 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { WarningCloud, Clipboard, TabsToolbar } from '@tupaia/ui-components';
 import Typography from '@material-ui/core/Typography';
 import { Alarm } from '@material-ui/icons';
 import MuiContainer from '@material-ui/core/Container';
 import { Header } from '../components/Header';
+import { Main } from '../components';
 import { AlertsRoutes } from '../routes/AlertsRoutes';
-
-const Main = styled.main`
-  //background: lightgray;
-`;
-
-const Container = styled(MuiContainer)`
-  min-height: 800px;
-  padding-top: 1rem;
-`;
 
 const links = [
   {
@@ -41,16 +32,18 @@ const links = [
 
 export const AlertsView = ({ match }) => {
   return (
-    <Main>
+    <React.Fragment>
       <Header title="Alerts" />
       <TabsToolbar links={links} />
-      <Container>
-        <Typography variant="h2" gutterBottom>
-          Alerts Layout
-        </Typography>
-        <AlertsRoutes match={match} />
-      </Container>
-    </Main>
+      <MuiContainer>
+        <Main>
+          <Typography variant="h2" gutterBottom>
+            Alerts Layout
+          </Typography>
+          <AlertsRoutes match={match} />
+        </Main>
+      </MuiContainer>
+    </React.Fragment>
   );
 };
 
