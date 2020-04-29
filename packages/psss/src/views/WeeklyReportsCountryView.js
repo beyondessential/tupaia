@@ -36,14 +36,14 @@ const links = [
 ];
 
 export const WeeklyReportsCountryView = ({ match }) => {
-  const { countryId } = useParams();
+  const { countryName } = useParams();
   return (
     <Main>
-      <Header title={countryId} />
+      <Header title={countryName} />
       <TabsToolbar links={links} />
       <Container>
         <Typography variant="h2" gutterBottom>
-          {`Country: ${match.params.countryId}`}
+          {`Country: ${match.params.countryName}`}
         </Typography>
         <WeeklyReportsRoutes match={match} />
       </Container>
