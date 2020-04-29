@@ -895,26 +895,15 @@ function* watchAttemptAttemptDrillDown() {
   yield takeLatest(ATTEMPT_DRILL_DOWN, fetchDrillDownData);
 }
 
-function* updatePermissionsToMatchUser() {
-  // Update the location navigation hierarchy to match countries available to this user
-  yield put(fetchOrgUnit({ organisationUnitCode: 'World' }));
-
-  // Refresh current organisation unit so that dashboards, measures etc. will
-  // match current user permissions
-  const state = yield select();
-  const { currentOrganisationUnit } = state.global;
-  const { organisationUnitCode } = currentOrganisationUnit;
-
-  // By default the current organisation does not have an org unit code as it
-  // is an empty object, so must not be loaded.
-  if (organisationUnitCode) {
-    yield put(changeOrgUnit(organisationUnitCode, false));
-  }
+function* navigateToWorldOnUserChange() {
+  // On user login/logout, we should just navigate back to world, as we don't know if they have permissions
+  // to the currently selected orgUnit
+  yield put(changeOrgUnit('World', true));
 }
 
 function* watchUserChangesAndUpdatePermissions() {
-  yield takeLatest(FETCH_LOGOUT_SUCCESS, updatePermissionsToMatchUser);
-  yield takeLatest(FETCH_LOGIN_SUCCESS, updatePermissionsToMatchUser);
+  yield takeLatest(FETCH_LOGOUT_SUCCESS, navigateToWorldOnUserChange);
+  yield takeLatest(FETCH_LOGIN_SUCCESS, navigateToWorldOnUserChange);
 }
 
 function* fetchEnlargedDialogViewContentForPeriod(action) {
