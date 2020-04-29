@@ -7,7 +7,13 @@
 
 import { combineReducers } from 'redux';
 
-import { FETCH_ORG_UNIT, FETCH_ORG_UNIT_SUCCESS, FETCH_ORG_UNIT_ERROR } from '../actions';
+import {
+  FETCH_ORG_UNIT,
+  FETCH_ORG_UNIT_SUCCESS,
+  FETCH_ORG_UNIT_ERROR,
+  FETCH_LOGIN_SUCCESS,
+  FETCH_LOGOUT_SUCCESS,
+} from '../actions';
 
 function orgUnitMap(state = {}, action) {
   switch (action.type) {
@@ -17,6 +23,10 @@ function orgUnitMap(state = {}, action) {
       return addOrgUnitToMap(state, action.organisationUnit);
     case FETCH_ORG_UNIT_ERROR:
       return updateLoading(state, action.organisationUnitCode, false);
+    case FETCH_LOGIN_SUCCESS:
+      return {}; // Clear org units on login incase of permission change
+    case FETCH_LOGOUT_SUCCESS:
+      return {}; // Clear org units on logout incase of permission change
     default: {
       return state;
     }
@@ -25,6 +35,8 @@ function orgUnitMap(state = {}, action) {
 
 function orgUnitFetchError(state = '', action) {
   switch (action.type) {
+    case FETCH_ORG_UNIT_SUCCESS:
+      return '';
     case FETCH_ORG_UNIT_ERROR:
       return action.errorMessage;
     default:
