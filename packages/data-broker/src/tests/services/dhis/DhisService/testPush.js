@@ -5,7 +5,7 @@
 
 import { expect } from 'chai';
 
-import { DhisService } from '../../../services/dhis/DhisService';
+import { DhisService } from '../../../../services/dhis/DhisService';
 import { DATA_SOURCES, DATA_VALUES } from './DhisService.fixtures';
 import { stubModels, stubDhisApi } from './helpers';
 

@@ -27,15 +27,15 @@ export const translateElementIdsToCodesInEvents = async (dhisApi, events) => {
   }));
 };
 
-export const translateElementIdsToCodesInEventAnalytics = async (
+export const translateElementKeysInEventAnalytics = async (
   eventAnalytics,
-  dataElementIdToCode,
+  dataElementKeyMapping,
 ) => {
   const { headers, metaData, ...otherProps } = eventAnalytics;
 
   const translatedHeaders = headers.map(({ name, ...otherHeaderProps }) => {
-    const isDataElement = !!dataElementIdToCode[name];
-    const translatedName = isDataElement ? dataElementIdToCode[name] : name;
+    const isDataElement = !!dataElementKeyMapping[name];
+    const translatedName = isDataElement ? dataElementKeyMapping[name] : name;
 
     return {
       ...otherHeaderProps,
@@ -45,10 +45,10 @@ export const translateElementIdsToCodesInEventAnalytics = async (
 
   const translatedMetaData = {
     ...metaData,
-    items: mapKeys(metaData.items, dataElementIdToCode, {
+    items: mapKeys(metaData.items, dataElementKeyMapping, {
       defaultToExistingKeys: true,
     }),
-    dimensions: mapKeys(metaData.dimensions, dataElementIdToCode, {
+    dimensions: mapKeys(metaData.dimensions, dataElementKeyMapping, {
       defaultToExistingKeys: true,
     }),
   };
