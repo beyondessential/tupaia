@@ -67,12 +67,12 @@ export class Dashboard extends Component {
   }
 
   renderMiniMap(visible) {
-    if (!visible) return;
+    if (!visible) return null;
     const { contractedWidth } = this.props;
 
     const { currentOrganisationUnit } = this.props;
     if (!currentOrganisationUnit) {
-      return;
+      return null;
     }
 
     const { location } = currentOrganisationUnit;
@@ -82,7 +82,6 @@ export class Dashboard extends Component {
     const useWorldBounds =
       !(location && location.bounds) || currentOrganisationUnit.organisationUnitCode === 'World';
     const mapWidth = contractedWidth - DASHBOARD_META_MARGIN * 2;
-
     return (
       <StaticMap
         polygonBounds={useWorldBounds ? initialOrgUnit.location.bounds : location.bounds}
@@ -120,7 +119,7 @@ export class Dashboard extends Component {
 
     return (
       <Dialog
-        open={true}
+        open
         onClose={() => this.setState({ isPhotoEnlarged: false })}
         style={DASHBOARD_STYLES.metaImageDialog}
       >

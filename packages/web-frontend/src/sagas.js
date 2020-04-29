@@ -574,9 +574,12 @@ function* fetchDashboardItemData(action) {
   // data, allow the module to handle that work and return any extra url parameters
   let prepareForDashboardItemDataFetch;
   try {
+    // eslint-disable-next-line import/no-dynamic-require
     const moduleSagas = require(`./${dashboardItemProject}/sagas`);
     prepareForDashboardItemDataFetch = moduleSagas.prepareForDashboardItemDataFetch;
-  } catch (error) {} // the project is not associated with a module handling its own sagas, ignore
+  } catch (error) {
+    // the project is not associated with a module handling its own sagas, ignore
+  }
 
   // Run preparation saga if it exists to collect module specific url parameters
   let extraUrlParameters = {};
