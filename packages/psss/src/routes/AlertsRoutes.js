@@ -8,33 +8,20 @@ import { Redirect, Route, Switch } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { TableView } from '../views/TableView';
 
-const alertsConfig = {
-  resource: 'base-url/resources/alerts',
-};
+const routedTableView = endpoint =>
+  React.memo(props => (
+    <TableView {...props} config={{ resource: `base-url/resources/${endpoint}` }} />
+  ));
 
-const outbreaksConfig = {
-  resource: 'base-url/resources/outbreaks',
-};
-
-const archiveConfig = {
-  resource: 'base-url/resources/archive',
-};
+const AlertsView = routedTableView('alerts');
+const OutbreaksView = routedTableView('outbreaks');
+const ArchiveView = routedTableView('archive');
 
 export const AlertsRoutes = React.memo(({ match }) => (
   <Switch>
-    <Route
-      exact
-      path={match.path}
-      render={props => <TableView {...props} config={alertsConfig} />}
-    />
-    <Route
-      path={`${match.path}/outbreaks`}
-      render={props => <TableView {...props} config={outbreaksConfig} />}
-    />
-    <Route
-      path={`${match.path}/archive`}
-      render={props => <TableView {...props} config={archiveConfig} />}
-    />
+    <Route exact path={match.path} component={AlertsView} />
+    <Route path={`${match.path}/outbreaks`} component={OutbreaksView} />
+    <Route path={`${match.path}/archive`} component={ArchiveView} />
     <Redirect to={match.path} />
   </Switch>
 ));
