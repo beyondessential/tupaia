@@ -6,9 +6,9 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 
-import { DhisService } from '../../../../services/dhis/DhisService';
-import { DATA_SOURCES } from './DhisService.fixtures';
-import { stubModels, stubDhisApi } from './helpers';
+import { DhisService } from '../../../../../services/dhis/DhisService';
+import { DATA_SOURCES } from '../DhisService.fixtures';
+import { stubModels, stubDhisApi } from '../helpers';
 
 const dhisService = new DhisService(stubModels());
 let dhisApi;
