@@ -3,6 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 import { reduceToDictionary } from '@tupaia/utils';
+import { getDefaultPeriod } from '/dhis/getDefaultPeriod';
 import { periodToTimestamp, periodToDisplayString } from '@tupaia/dhis-api';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 
@@ -17,11 +18,16 @@ class ValuesPer100kPerPeriodByOrgUnitBuilder extends DataBuilder {
   async build() {
     const { dataElementCodes, divisor } = this.config;
     const { results } = await this.fetchAnalytics(dataElementCodes);
+    // TODO: You should be able to specify period in additionalQueryConfig
+    // for fetchAnalytics to avoid this hack.
+    const originalQueryPeriod = this.query.period;
+    this.query.period = getDefaultPeriod();
     const { results: calcResults } = await this.fetchAnalytics(
       [divisor],
       {},
       this.aggregator.aggregationTypes.MOST_RECENT,
     );
+    this.query.period = originalQueryPeriod;
     if (results.length === 0) return { data: results };
 
     const resultsPerPeriod = {};
