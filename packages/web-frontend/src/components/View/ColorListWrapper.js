@@ -51,14 +51,14 @@ ColorListItem.propTypes = {
   presentationOptions: PropTypes.shape(PRESENTATION_OPTIONS_SHAPE).isRequired,
 };
 
-export function ColorListWrapper(props) {
+export const ColorListWrapper = props => {
   const { viewContent } = props;
   const { presentationOptions } = viewContent;
   const renderItem = ({ name, value }) => (
     <ColorListItem name={name} value={value} presentationOptions={presentationOptions} />
   );
   return <ListWrapper {...props} renderItem={renderItem} />;
-}
+};
 
 const styles = {
   nameColumn: {

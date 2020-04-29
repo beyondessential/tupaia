@@ -70,7 +70,7 @@ export class DashboardItemExpanderButton extends Component {
         onMouseOut={this.mouseOut}
         onBlur={this.mouseOut}
         onClick={onEnlarge}
-        role="Button"
+        role="button"
         tabIndex={0}
       >
         <ZoomIcon style={VIEW_STYLES.expandButtonIcon} />

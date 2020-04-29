@@ -130,7 +130,7 @@ class RegionScreen extends PureComponent {
             items={mobileListItems.map(item => (
               <SelectListItem onSelect={onChangeOrgUnit} {...item} />
             ))}
-            expandedByDefault={true}
+            expandedByDefault
             title={title}
             filterTitle="Measures"
             filters={measureFilters}

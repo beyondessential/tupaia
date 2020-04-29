@@ -19,13 +19,6 @@ import {
 import { selectOrgUnit } from '../../reducers/orgUnitReducers';
 import { ShadedPolygon } from './ConnectedPolygon';
 
-export const MARKER_TYPES = {
-  DOT_MARKER: 'dot',
-  CIRCLE_MARKER: 'circle',
-  CIRCLE_HEATMAP: 'circleHeatmap',
-  SQUARE: 'square',
-};
-
 const MIN_RADIUS = 1;
 
 const MeasureMarker = props => {
