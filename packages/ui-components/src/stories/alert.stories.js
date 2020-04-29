@@ -12,7 +12,7 @@ export default {
 };
 
 export const AllAlerts = () => (
-  <>
+  <React.Fragment>
     <Box mb={2}>
       <ErrorAlert>ILI Above Threshold. Please review and verify data.</ErrorAlert>
     </Box>
@@ -25,5 +25,5 @@ export const AllAlerts = () => (
     <Box mb={2}>
       <SuccessAlert>ILI Above Threshold. Please review and verify data.</SuccessAlert>
     </Box>
-  </>
+  </React.Fragment>
 );

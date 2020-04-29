@@ -7,15 +7,17 @@ import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
 import { Link } from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
+import { BaseToolbar } from '@tupaia/ui-components';
+import { Header } from '../components/Header';
 import { TableView } from './TableView';
 
 const Main = styled.main`
   background: lightgray;
-  padding-top: 1rem;
 `;
 
 const Container = styled(MuiContainer)`
   min-height: 800px;
+  padding-top: 1rem;
 `;
 
 const countries = [
@@ -34,6 +36,8 @@ const config = {
 export const WeeklyReportsView = () => {
   return (
     <Main>
+      <Header title="All Countries" />
+      <BaseToolbar />
       <Container>
         <Typography variant="h2" gutterBottom>
           Countries Layout
