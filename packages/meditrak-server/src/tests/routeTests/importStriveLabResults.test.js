@@ -5,9 +5,10 @@
 
 import chai, { expect } from 'chai';
 import deepEqualInAnyOrder from 'deep-equal-in-any-order';
+import { generateTestId } from '@tupaia/database';
 
 import { TestableApp } from '../TestableApp';
-import { upsertEntity, insertSurveyAndScreens, generateTestId } from '../testUtilities';
+import { upsertEntity, insertSurveyAndScreens } from '../testUtilities';
 
 chai.use(deepEqualInAnyOrder);
 

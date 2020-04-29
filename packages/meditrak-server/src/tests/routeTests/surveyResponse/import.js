@@ -4,8 +4,8 @@
  */
 
 import { expect } from 'chai';
-
-import { oneSecondSleep, upsertEntity, generateTestId } from '../../testUtilities';
+import { generateTestId } from '@tupaia/database';
+import { oneSecondSleep, upsertEntity } from '../../testUtilities';
 
 const TEST_DATA_FOLDER = 'src/tests/testData';
 

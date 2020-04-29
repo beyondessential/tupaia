@@ -1,10 +1,10 @@
 /**
- * Tupaia MediTrak
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import { TYPES } from '@tupaia/database';
 
-import { generateValueOfType, generateTestId } from '../random';
+import { TYPES } from '../types';
+import { generateValueOfType, generateTestId } from './random';
 
 const { ENTITY, SURVEY_RESPONSE } = TYPES;
 
@@ -35,7 +35,7 @@ const processDefaultValue = defaultValue => {
   }
 };
 
-export const generateDummyRecord = async (model, overrides = {}) => {
+const generateDummyRecord = async (model, overrides = {}) => {
   const schema = await model.fetchSchema();
   const dummyRecord = {};
   Object.entries(schema).forEach(([fieldName, columnInfo]) => {
@@ -62,4 +62,9 @@ export const generateDummyRecord = async (model, overrides = {}) => {
     dummyRecord[fieldName] = getValue();
   });
   return dummyRecord;
+};
+
+export const upsertDummyRecord = async (model, data) => {
+  const generatedData = await generateDummyRecord(model, data);
+  return model.updateOrCreate({ id: generatedData.id }, generatedData);
 };

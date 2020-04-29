@@ -6,15 +6,11 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 import { DhisApi, DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
+import { generateTestId } from '@tupaia/database';
 
 import * as Enrollments from '../../dhis/api/enrollments';
 import { EventBuilder } from '../../dhis/pushers/data/event/EventBuilder';
-import {
-  generateTestId,
-  insertSurveyAndScreens,
-  insertSurveyResponse,
-  upsertEntity,
-} from '../testUtilities';
+import { insertSurveyAndScreens, insertSurveyResponse, upsertEntity } from '../testUtilities';
 import { TestableApp } from '../TestableApp';
 
 const { ENROLLMENT, ORGANISATION_UNIT, PROGRAM } = DHIS2_RESOURCE_TYPES;

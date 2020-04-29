@@ -8,8 +8,9 @@ import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
 /**
- * BIG NOTE: This version of Entity.js comes from meditrak-server, which does not include any of the
+ * TODO: This version of Entity.js comes from meditrak-server, which does not include any of the
  * a) alternative hierarchy logic, or b) optimisations that are in the version in web-config-server
+ * https://github.com/beyondessential/tupaia-backlog/issues/427
  */
 
 /**
@@ -102,7 +103,7 @@ class EntityType extends DatabaseType {
   }
 
   async fetchParent() {
-    return this.otherModels.entity.findById(this.parent_id);
+    return this.model.findById(this.parent_id);
   }
 
   async hasCountryParent() {
