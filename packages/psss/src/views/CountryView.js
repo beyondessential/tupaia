@@ -24,10 +24,10 @@ const links = [
 ];
 
 export const CountryView = ({ match }) => {
-  const { countryId } = useParams();
+  const { countryName } = useParams();
   return (
     <React.Fragment>
-      <Header title={countryId} />
+      <Header title={countryName} />
       <TabsToolbar links={links} />
       <CountryRoutes match={match} />
     </React.Fragment>
