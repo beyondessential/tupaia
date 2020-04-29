@@ -16,10 +16,7 @@ exports.setup = function(options, seedLink) {
 
 const UNFPA_RH_AMC_DATA_CLASSES = {
   "UNFPA_RH_AMC_Male_condoms": {
-    "codes": ["AMC_3b3444bf"]
-  },
-  "UNFPA_RH_AMC_Male_condoms_varied": {
-    "codes": ["AMC_a162942e"]
+    "codes": ["AMC_3b3444bf", "AMC_a162942e"]
   },
   "UNFPA_RH_AMC_Female_condoms": {
     "codes": ["AMC_bf4be518"]
@@ -37,10 +34,7 @@ const UNFPA_RH_AMC_DATA_CLASSES = {
     "codes": ["AMC_d2d28620"]
   },
   "UNFPA_RH_AMC_EC_2_dose": {
-    "codes": ["AMC_47fb04bf"]
-  },
-  "UNFPA_RH_AMC_EC_single_dose": {
-    "codes": ["ACM_47fe44bf"]
+    "codes": ["AMC_47fb04bf", "ACM_47fe44bf"]
   },
   "UNFPA_RH_AMC_Depot": {
     "codes": ["AMC_53d014bf"]
@@ -52,69 +46,65 @@ const UNFPA_RH_AMC_DATA_CLASSES = {
     "codes": ["AMC_542a34bf"]
   },
   "UNFPA_RH_AMC_IUD": {
-    "codes": ["AMC_4718f43e"]
+    "codes": ["AMC_4718f43e", "AMC_3b3994bf"]
   },
-  "UNFPA_RH_AMC_Copper_IUD": {
-    "codes": ["AMC_3b3994bf"]
-  }
 };
 
 const UNFPA_RH_AMC_CHART_CONFIG = {
   "UNFPA_RH_AMC_Male_condoms": {
     "label": "Male condoms",
-    "legendOrder" : 0
-  },
-  "UNFPA_RH_AMC_Male_condoms_varied": {
-    "label": "Male condoms, varied",
-    "legendOrder" : 1
+    "legendOrder" : 0,
+    "color": '#FC1D26'
   },
   "UNFPA_RH_AMC_Female_condoms": {
     "label": "Female condoms",
-    "legendOrder" : 2
+    "legendOrder" : 1,
+    "color": '#FD9155'
   },
   "UNFPA_RH_AMC_COCs": {
     "label": "COCs",
-    "legendOrder" : 3
+    "legendOrder" : 2,
+    "color": '#FEDD64'
   },
   "UNFPA_RH_AMC_POP": {
     "label": "POP",
-    "legendOrder" : 4
+    "legendOrder" : 3,
+    "color": '#81D75E'
   },
   "UNFPA_RH_AMC_Implant_Contraceptives": {
     "label": "Implant Contraceptives",
-    "legendOrder" : 5
+    "legendOrder" : 4,
+    "color": '#0F7F3B'
   },
   "UNFPA_RH_AMC_Jadelle": {
     "label": "Jadelle",
-    "legendOrder" : 6
+    "legendOrder" : 5,
+    "color": '#20C2CA'
   },
   "UNFPA_RH_AMC_EC_2_dose": {
-    "label": "EC (2 dose)",
-    "legendOrder" : 7
-  },
-  "UNFPA_RH_AMC_EC_single_dose": {
-    "label": "EC (single dose)",
-    "legendOrder" : 8
+    "label": "EC",
+    "legendOrder" : 6,
+    "color": '#40B7FC'
   },
   "UNFPA_RH_AMC_Depot": {
     "label": "Depot",
-    "legendOrder" : 9
+    "legendOrder" : 7,
+    "color": '#0A4EAB'
   },
   "UNFPA_RH_AMC_SAYANA_Press": {
     "label": "SAYANA Press",
-    "legendOrder" : 10
+    "legendOrder" : 8,
+    "color": '#8C5AFB'
   },
   "UNFPA_RH_AMC_Norethisterone": {
     "label": "Norethisterone",
-    "legendOrder" : 11
+    "legendOrder" : 9,
+    "color": '#FD6AC4'
   },
   "UNFPA_RH_AMC_IUD": {
     "label": "IUD",
-    "legendOrder" : 11
-  },
-  "UNFPA_RH_AMC_Copper_IUD": {
-    "label": "Copper IUD",
-    "legendOrder" : 12
+    "legendOrder" : 10,
+    "color": '#D9D9D9'
   }
 };
 
@@ -158,6 +148,21 @@ exports.up = async function(db) {
     SET "dashboardReports" = "dashboardReports" || '{UNFPA_Reproductive_Health_Product_AMC}'
     WHERE code = 'TO_Unfpa_Country'
     AND "organisationLevel" = 'Country';
+
+    UPDATE "dashboardGroup"
+    SET "dashboardReports" = "dashboardReports" || '{UNFPA_Reproductive_Health_Product_AMC}'
+    WHERE code = 'VU_Unfpa_Country'
+    AND "organisationLevel" = 'Country';
+
+    UPDATE "dashboardGroup"
+    SET "dashboardReports" = "dashboardReports" || '{UNFPA_Reproductive_Health_Product_AMC}'
+    WHERE code = 'SB_Unfpa_Country'
+    AND "organisationLevel" = 'Country';
+
+    UPDATE "dashboardGroup"
+    SET "dashboardReports" = "dashboardReports" || '{UNFPA_Reproductive_Health_Product_AMC}'
+    WHERE code = 'KI_Unfpa_Country'
+    AND "organisationLevel" = 'Country';
   `);
 };
 
@@ -173,6 +178,21 @@ exports.down = async function(db) {
     UPDATE "dashboardGroup"
     SET "dashboardReports" = array_remove("dashboardReports", 'UNFPA_Reproductive_Health_Product_AMC')
     WHERE code = 'TO_Unfpa_Country'
+    AND "organisationLevel" = 'Country';
+
+    UPDATE "dashboardGroup"
+    SET "dashboardReports" = array_remove("dashboardReports", 'UNFPA_Reproductive_Health_Product_AMC')
+    WHERE code = 'VU_Unfpa_Country'
+    AND "organisationLevel" = 'Country';
+
+    UPDATE "dashboardGroup"
+    SET "dashboardReports" = array_remove("dashboardReports", 'UNFPA_Reproductive_Health_Product_AMC')
+    WHERE code = 'SB_Unfpa_Country'
+    AND "organisationLevel" = 'Country';
+
+    UPDATE "dashboardGroup"
+    SET "dashboardReports" = array_remove("dashboardReports", 'UNFPA_Reproductive_Health_Product_AMC')
+    WHERE code = 'KI_Unfpa_Country'
     AND "organisationLevel" = 'Country';
   `);
 };
