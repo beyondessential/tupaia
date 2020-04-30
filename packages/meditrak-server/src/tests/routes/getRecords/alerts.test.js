@@ -99,7 +99,7 @@ describe('Alerts CRUD', () => {
       expect(statusCode).to.equal(200);
       expect(body).to.deep.equal({ message: 'Successfully updated alerts' });
 
-      const createdAlert = (await models.alert.find({ id: alert.id })).pop();
+      const createdAlert = await models.alert.findById(alert.id);
       expect(createdAlert.end_time).is.not.null;
       expect(createdAlert.archived).to.be.true;
     });
