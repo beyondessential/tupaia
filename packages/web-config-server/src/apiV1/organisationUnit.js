@@ -5,29 +5,13 @@
 
 import { reduceToDictionary } from '@tupaia/utils';
 import { Entity } from '/models';
-import { getEntityLocationForFrontend, getOrganisationUnitTypeForFrontend } from './utils';
 import { RouteHandler } from './RouteHandler';
 import { PermissionsChecker } from './permissions';
 
 const WORLD = 'World';
 
-export const translateForFrontend = entity => {
-  // Sometimes we'll end up with a null entity (eg getting a top-level entity's parent).
-  // Frontend expects an empty object rather than null.
-  if (!entity) return {};
-
-  return {
-    type: getOrganisationUnitTypeForFrontend(entity.type),
-    organisationUnitCode: entity.code,
-    countryCode: entity.country_code,
-    name: entity.name,
-    location: getEntityLocationForFrontend(entity),
-    photoUrl: entity.image_url,
-  };
-};
-
 const translateDescendantForFrontEnd = (descendant, entityIdToCode) => ({
-  ...translateForFrontend(descendant),
+  ...descendant.translateForFrontend(),
   parent: entityIdToCode[descendant.parent_id],
 });
 
@@ -44,11 +28,11 @@ export default class extends RouteHandler {
   async getEntityAndCountryHierarchyByCode() {
     const world = await Entity.findOne({ code: WORLD });
     const country = await this.entity.countryEntity();
-    const countryDescendants = await country.getDescendants();
+    const countryDescendants = await country.getOrgUnitDescendants();
     const orgUnitHierarchy = await this.filterForAccess([world, country, ...countryDescendants]);
     const entityIdToCode = reduceToDictionary(orgUnitHierarchy, 'id', 'code');
     return {
-      ...translateForFrontend(this.entity),
+      ...this.entity.translateForFrontend(),
       countryHierarchy: orgUnitHierarchy.map(e =>
         translateDescendantForFrontEnd(e, entityIdToCode),
       ),
@@ -61,9 +45,10 @@ export default class extends RouteHandler {
     const children = await this.filterForAccess(await this.entity.getOrgUnitChildren());
 
     return {
-      ...translateForFrontend(this.entity),
-      parent: translateForFrontend(parent),
-      organisationUnitChildren: children.map(translateForFrontend),
+      ...this.entity.translateForFrontend(),
+      // parent may be `null` (eg getting a top-level entity's parent)
+      parent: parent ? parent.translateForFrontend() : {},
+      organisationUnitChildren: children.map(child => child.translateForFrontend()),
     };
   }
 

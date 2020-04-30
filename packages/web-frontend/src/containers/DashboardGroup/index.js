@@ -77,7 +77,11 @@ export default class DashboardGroup extends Component {
     const GridWrapper = compressed ? GridCompressed : Grid;
 
     return (
-      <GridWrapper innerRef={gridElement => (this.gridElement = gridElement)}>
+      <GridWrapper
+        innerRef={gridElement => {
+          this.gridElement = gridElement;
+        }}
+      >
         {this.renderDashboardItems()}
       </GridWrapper>
     );

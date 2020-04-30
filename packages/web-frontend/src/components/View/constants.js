@@ -12,4 +12,5 @@ export const VALUE_TYPES = {
   PERCENTAGE: 'percentage',
   FRACTION_AND_PERCENTAGE: 'fractionAndPercentage',
   TEXT: 'text',
+  NUMBER: 'number',
 };

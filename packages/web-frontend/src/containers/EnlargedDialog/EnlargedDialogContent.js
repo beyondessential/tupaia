@@ -270,6 +270,7 @@ const styles = {
   },
   periodRange: {
     fontSize: 10,
+    marginLeft: 20,
   },
 };
 

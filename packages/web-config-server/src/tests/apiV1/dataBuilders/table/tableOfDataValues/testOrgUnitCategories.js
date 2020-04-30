@@ -9,8 +9,10 @@ import { getSortByKey } from '@tupaia/utils';
 import * as Entity from '/models/Entity';
 import { createAssertTableResults } from './helpers';
 import { DATA_VALUES, ORG_UNITS } from './tableOfDataValues.fixtures';
+import { tableOfDataValues } from '/apiV1/dataBuilders';
 
 const assertTableResults = createAssertTableResults(
+  tableOfDataValues,
   // Sort results in DESC org unit order, to assert their ASC ordering in the results
   DATA_VALUES.filter(
     ({ organisationUnit }) => organisationUnit === 'TO_Nukuhc' || organisationUnit === 'TO_Vainihc',
