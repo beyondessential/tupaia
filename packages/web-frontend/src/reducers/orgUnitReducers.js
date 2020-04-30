@@ -6,57 +6,71 @@
  */
 
 import { combineReducers } from 'redux';
-import createCachedSelector from 're-reselect';
 
-import { FETCH_ORG_UNIT_SUCCESS } from '../actions';
+import {
+  FETCH_ORG_UNIT,
+  FETCH_ORG_UNIT_SUCCESS,
+  FETCH_ORG_UNIT_ERROR,
+  FETCH_LOGIN_SUCCESS,
+  FETCH_LOGOUT_SUCCESS,
+} from '../actions';
 
 function orgUnitMap(state = {}, action) {
   switch (action.type) {
+    case FETCH_ORG_UNIT:
+      return updateLoading(state, action.organisationUnitCode, true);
     case FETCH_ORG_UNIT_SUCCESS:
       return addOrgUnitToMap(state, action.organisationUnit);
+    case FETCH_ORG_UNIT_ERROR:
+      return updateLoading(state, action.organisationUnitCode, false);
+    case FETCH_LOGIN_SUCCESS:
+      return {}; // Clear org units on login incase of permission change
+    case FETCH_LOGOUT_SUCCESS:
+      return {}; // Clear org units on logout incase of permission change
     default: {
       return state;
     }
   }
 }
 
+function orgUnitFetchError(state = '', action) {
+  switch (action.type) {
+    case FETCH_ORG_UNIT_SUCCESS:
+      return '';
+    case FETCH_ORG_UNIT_ERROR:
+      return action.errorMessage;
+    default:
+      return state;
+  }
+}
+
 export default combineReducers({
   orgUnitMap,
+  orgUnitFetchError,
 });
 
-// Public Selectors
+// Data management utility functions
 
-export const selectOrgUnit = (state, orgUnitCode) => state.orgUnits.orgUnitMap[orgUnitCode];
-
-export const selectParentOrgUnitCodes = state =>
-  Object.values(state.orgUnits.orgUnitMap).map(({ parent }) => parent);
-
-export const cachedSelectOrgUnitChildren = createCachedSelector(
-  [state => state.orgUnits.orgUnitMap, (_, code) => code],
-  (orgUnitMapArg, code) => Object.values(orgUnitMapArg).filter(orgUnit => orgUnit.parent === code),
-)((state, code) => code);
-
-const recursiveBuildDescendantHierarchy = (state, code) => {
-  const orgUnit = selectOrgUnit(state, code);
-  if (!orgUnit) {
-    return [];
+const updateLoading = (state, organisationUnitCode, isLoading) => {
+  const existingCountry = state[organisationUnitCode];
+  const existing = existingCountry && existingCountry[organisationUnitCode];
+  if (!existing) {
+    return state;
   }
 
-  const children = cachedSelectOrgUnitChildren(state, code);
+  if (existing.isComplete) {
+    return state;
+  }
 
-  const descendants = [orgUnit];
-  children.forEach(child =>
-    descendants.push(...recursiveBuildDescendantHierarchy(state, child.organisationUnitCode)),
-  );
-  return descendants;
+  return {
+    ...state,
+    [organisationUnitCode]: {
+      ...existingCountry,
+      [organisationUnitCode]: { ...existing, isLoading },
+    },
+  };
 };
 
-export const cachedSelectOrgUnitAndDescendants = createCachedSelector(
-  [state => state, (_, code) => code],
-  recursiveBuildDescendantHierarchy,
-)((state, code) => code);
-
-// Data management utility functions
 const normaliseForMap = (
   { organisationUnitChildren, descendant, ...restOfOrgUnit },
   parentOrganisationUnitCode,
@@ -67,43 +81,54 @@ const normaliseForMap = (
   isComplete: isComplete,
 });
 
-const insertOrgUnit = (state, orgUnit) => {
-  const existing = state[orgUnit.organisationUnitCode];
-  if (existing && existing.isComplete) {
-    return state;
-  }
-
-  return { ...state, [orgUnit.organisationUnitCode]: orgUnit };
-};
-
 const addOrgUnitToMap = (state, orgUnit) => {
-  const { countryHierarchy, parent = {}, organisationUnitChildren: children = [] } = orgUnit;
-  let result = { ...state };
+  const { countryHierarchy, organisationUnitChildren: countries = [] } = orgUnit;
+  let result = state;
 
   if (countryHierarchy) {
-    countryHierarchy.forEach(hierarchyItem => {
-      result = insertOrgUnit(
-        result,
-        normaliseForMap(
-          hierarchyItem,
-          hierarchyItem.parent,
-          hierarchyItem.organisationUnitCode !== 'World',
-        ),
-      );
-    });
-    // Country hierarchy includes all relevant data (including requested orgUnit), so once it's been loaded we can exit
-    return result;
+    const country = orgUnit.countryCode;
+    if (result[country] && result[country][country].isComplete) {
+      return result;
+    }
+
+    const world = countryHierarchy.find(
+      hierarchyItem => hierarchyItem.organisationUnitCode === 'World',
+    );
+
+    if (!result.World) {
+      result = { ...result, World: { World: normaliseForMap(world, undefined, false) } };
+    }
+
+    return { ...result, [orgUnit.countryCode]: buildCountryHierarchy(countryHierarchy) };
   }
 
-  if (parent.organisationUnitCode) {
-    result = insertOrgUnit(result, normaliseForMap(parent, undefined, false));
-  }
+  // Inserting 'World' fetch
+  result = { ...result };
+  const world = orgUnit;
+  result.World = { World: normaliseForMap(world, undefined, true), countryCode: 'World' };
 
-  result = insertOrgUnit(result, normaliseForMap(orgUnit, parent.organisationUnitCode, true));
-
-  children.forEach(child => {
-    result = insertOrgUnit(result, normaliseForMap(child, orgUnit.organisationUnitCode, false));
+  countries.forEach(country => {
+    const countryCode = country.organisationUnitCode;
+    if (!result[countryCode] || !result[countryCode][countryCode].isComplete) {
+      result[countryCode] = {
+        [countryCode]: normaliseForMap(country, world.organisationUnitCode, false),
+        countryCode,
+      };
+    }
   });
 
+  return result;
+};
+
+const buildCountryHierarchy = countryHierarchy => {
+  const result = {};
+  countryHierarchy.forEach(orgUnit => {
+    if (orgUnit.organisationUnitCode !== 'World') {
+      if (orgUnit.type === 'Country') {
+        result.countryCode = orgUnit.organisationUnitCode;
+      }
+      result[orgUnit.organisationUnitCode] = normaliseForMap(orgUnit, orgUnit.parent, true);
+    }
+  });
   return result;
 };

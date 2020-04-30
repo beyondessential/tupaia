@@ -34,6 +34,7 @@ export default class Row extends Component {
 
         return a === b;
       }
+      return false;
     });
   }
 
@@ -70,7 +71,9 @@ export default class Row extends Component {
         style={isRowHighlighted ? { ...styles.row, ...styles.rowHighlighted } : styles.row}
         onMouseEnter={() => onCellMouseEnter(null, rowKey)}
         onMouseLeave={() => onCellMouseLeave()}
-        ref={element => (this.rowElement = element)}
+        ref={element => {
+          this.rowElement = element;
+        }}
       >
         <div
           style={{
@@ -149,9 +152,6 @@ export default class Row extends Component {
 Row.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.object),
   isRowHighlighted: PropTypes.bool,
-  onMouseEnter: PropTypes.func,
-  onMouseLeave: PropTypes.func,
-  cellToolTip: PropTypes.node,
   highlightedColumn: PropTypes.number,
   depth: PropTypes.number,
   categoryIndent: PropTypes.number,
@@ -159,7 +159,6 @@ Row.propTypes = {
   onCellMouseLeave: PropTypes.func,
   onCellClick: PropTypes.func,
   onTitleClick: PropTypes.func,
-  onMoveColumn: PropTypes.func,
   styles: PropTypes.object.isRequired,
   presentationOptions: PropTypes.shape(PRESENTATION_OPTIONS_SHAPE),
   isPreviousColumnEnabled: PropTypes.bool,

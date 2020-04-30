@@ -17,8 +17,6 @@ import PropTypes from 'prop-types';
 
 import { Tooltip } from 'react-leaflet';
 
-import { HIGHLIGHT_TYPES } from './constants';
-
 export class AreaTooltip extends Component {
   constructor(props) {
     super(props);
@@ -36,20 +34,6 @@ export class AreaTooltip extends Component {
     }
   }
 
-  componentDidUpdate(prevProps) {
-    // Some parameters cannot be updated just through props changes once
-    // the component has been rendered due to a limitation in react-leaflet.
-    // So, we grab a ref to the leaflet element and update it here.
-
-    if (prevProps.highlight !== this.props.highlight) {
-      this.ref.leafletElement.setOpacity(this.getOpacity());
-    }
-  }
-
-  getOpacity() {
-    return this.props.highlight === HIGHLIGHT_TYPES.LOWLIGHT ? 0.7 : 1;
-  }
-
   render() {
     const { permanent, onMouseOver, onMouseOut, text } = this.props;
 
@@ -57,7 +41,7 @@ export class AreaTooltip extends Component {
       <Tooltip
         pane="tooltipPane"
         direction="auto"
-        opacity={this.getOpacity()}
+        opacity={1}
         permanent={permanent}
         interactive={permanent}
         onMouseOver={onMouseOver}
@@ -75,7 +59,6 @@ export class AreaTooltip extends Component {
 }
 
 AreaTooltip.propTypes = {
-  highlight: PropTypes.oneOf(Object.values(HIGHLIGHT_TYPES)),
   permanent: PropTypes.bool,
   text: PropTypes.string.isRequired,
   onMouseOver: PropTypes.func,
@@ -83,7 +66,6 @@ AreaTooltip.propTypes = {
 };
 
 AreaTooltip.defaultProps = {
-  highlight: 'none',
   permanent: false,
   onMouseOver: undefined,
   onMouseOut: undefined,
