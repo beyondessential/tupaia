@@ -28,6 +28,7 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
       [],
     );
 
+    //Remove duplicated data element codes if there's any
     return [...new Set(dataElementCodes)];
   }
 
@@ -88,6 +89,8 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
   countAnalyticsWithCalculator = (analytics, calculator, fractionGroupBy) => {
     let result = 0;
 
+    //If there's groupBy set for analytics, try group the analytics before applying calculator.
+    //If not, apply calculator to the raw analytics.
     if (fractionGroupBy) {
       const groupedAnalytics = groupBy(analytics, fractionGroupBy);
 
