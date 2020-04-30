@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-one-expression-per-line */
 /**
  * Tupaia Web
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd.
@@ -34,8 +35,8 @@
 
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { darkWhite } from '../../styles';
 import styled from 'styled-components';
+import { darkWhite } from '../../styles';
 
 export class MultiValueRowWrapper extends PureComponent {
   render() {
@@ -72,12 +73,14 @@ export class MultiValueRowWrapper extends PureComponent {
               )}
               {middleOptions !== undefined && (
                 <Cell color={middleOptions.color}>
-                  <div>{row[middleOptions.header]}</div> {middleOptions.label || ''}
+                  <div>{row[middleOptions.header]}</div>
+                  {middleOptions.label || ''}
                 </Cell>
               )}
               {rightOptions !== undefined && (
                 <Cell color={rightOptions.color}>
-                  <div>{row[rightOptions.header]}</div> {rightOptions.label || ''}
+                  <div>{row[rightOptions.header]}</div>
+                  {rightOptions.label || ''}
                 </Cell>
               )}
             </Row>

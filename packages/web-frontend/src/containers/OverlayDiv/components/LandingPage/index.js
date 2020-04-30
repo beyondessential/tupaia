@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-one-expression-per-line */
 /**
  * Tupaia Web
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd.
@@ -54,7 +55,7 @@ export const LandingPage = ({ isUserLoggedIn }) => {
       <div>
         <Logo src={logo} alt="Tupaia logo" />
         <TagLine>Health resource and supply chain mapping for the Asia Pacific region</TagLine>
-        {!isUserLoggedIn && !isProjectsPageVisible && (
+        {isLoginPageVisible && (
           <ViewProjectsButton onClick={showProjects} variant="outlined">
             <ExploreIcon /> View projects
           </ViewProjectsButton>

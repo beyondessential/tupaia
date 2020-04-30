@@ -6,9 +6,9 @@
  */
 
 import React from 'react';
-import TupaiaHome from '../../containers/TupaiaHome';
-import SearchBar from '../../containers/SearchBar';
-import UserBar from '../../containers/UserBar';
+import TupaiaHome from '../TupaiaHome';
+import SearchBar from '../SearchBar';
+import UserBar from '../UserBar';
 import { TOP_BAR_HEIGHT } from '../../styles';
 
 const styles = {

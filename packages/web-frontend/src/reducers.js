@@ -21,7 +21,7 @@ import disaster from './disaster/reducers';
 import project from './projects/reducers';
 import orgUnits from './reducers/orgUnitReducers';
 import { getMeasureFromHierarchy, isMobile } from './utils';
-import { LANDING } from './containers/OverlayDiv';
+import { LANDING } from './containers/OverlayDiv/constants';
 import { getUniqueViewId } from './utils/getUniqueViewId';
 import { EMAIL_VERIFIED_STATUS } from './containers/EmailVerification';
 
@@ -465,11 +465,12 @@ function dashboard(
       viewResponses[infoViewKey] = response;
       return { ...state, viewResponses };
     }
-    case FETCH_INFO_VIEW_DATA_ERROR:
+    case FETCH_INFO_VIEW_DATA_ERROR: {
       const { infoViewKey, error } = action;
       const viewResponses = { ...state.viewResponses };
       viewResponses[infoViewKey] = { error };
       return { ...state, viewResponses };
+    }
     case CHANGE_SIDE_BAR_CONTRACTED_WIDTH:
       return { ...state, contractedWidth: action.contractedWidth };
     case CHANGE_SIDE_BAR_EXPANDED_WIDTH:

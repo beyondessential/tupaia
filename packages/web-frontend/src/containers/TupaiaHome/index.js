@@ -42,7 +42,7 @@ TupaiaHomeComponent.propTypes = {
   goHome: PropTypes.func.isRequired,
 };
 
-const mergeProps = (state, { dispatch }, ownProps) => {
+const mapDispatchToProps = dispatch => {
   return {
     ...ownProps,
     goHome: () => {
@@ -52,4 +52,4 @@ const mergeProps = (state, { dispatch }, ownProps) => {
   };
 };
 
-export default connect(null, null, mergeProps)(TupaiaHomeComponent);
+export default connect(null, mapDispatchToProps)(TupaiaHomeComponent);

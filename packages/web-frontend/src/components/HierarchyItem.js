@@ -42,8 +42,10 @@ export class HierarchyItem extends Component {
   }
 
   onClick() {
-    this.props.onClick && this.props.onClick();
-    this.setState({ isOpen: !this.state.isOpen });
+    if (this.props.onClick) {
+      this.props.onClick();
+    }
+    this.setState(state => ({ isOpen: !state.isOpen }));
   }
 
   renderOpenClosedIcon() {

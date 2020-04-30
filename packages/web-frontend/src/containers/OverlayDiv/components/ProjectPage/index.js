@@ -12,7 +12,7 @@ import styled from 'styled-components';
 import Button from '@material-ui/core/Button';
 import ExploreIcon from '@material-ui/icons/ExploreOutlined';
 
-import { REQUEST_PROJECT_ACCESS } from '../../index';
+import { REQUEST_PROJECT_ACCESS } from '../../constants';
 import { selectProject, setRequestingAccess } from '../../../../projects/actions';
 import { setOverlayComponent, changeOrgUnit } from '../../../../actions';
 import { ProjectCard } from './ProjectCard';

@@ -130,7 +130,7 @@ export class SearchBar extends PureComponent {
     if (isNull(hierarchyData))
       return <div style={styles.searchResponseText}>Loading countries...</div>;
     if (!Array.isArray(hierarchyData)) return <h2>Server error, try refresh</h2>;
-    if (hierarchyData.length < 1) return;
+    if (hierarchyData.length < 1) return null;
 
     const recurseOrgUnits = (orgUnits, nestedMargin) => {
       if (!orgUnits || orgUnits.length < 1) return []; // OrgUnits with no children are our recursive base case
@@ -183,7 +183,7 @@ export class SearchBar extends PureComponent {
           hintText="Search Location"
           style={styles.controlBar}
           icon={<SearchIcon />}
-          inTopBar={true}
+          inTopBar
         >
           <div
             onMouseLeave={() => this.setState({ isSafeToCloseResults: true })}
@@ -226,7 +226,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     onSearchChange: event => dispatch(changeSearch(event.target.value)),
-    onSearchFocus: event => dispatch(toggleSearchExpand(true)),
+    onSearchFocus: () => dispatch(toggleSearchExpand(true)),
     onExpandClick: () => dispatch(toggleSearchExpand()),
     onSearchBlur: (isExpanded, isSafeToCloseResults) =>
       isExpanded && isSafeToCloseResults && dispatch(toggleSearchExpand()),

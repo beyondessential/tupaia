@@ -130,7 +130,4 @@ const mapDispatchToProps = dispatch => ({
   dispatch, // Necessary for merge props.
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(DashboardItem);
+export default connect(mapStateToProps, mapDispatchToProps)(DashboardItem);
