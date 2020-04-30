@@ -4,13 +4,26 @@
  */
 
 import { expect } from 'chai';
-import { TestableApp } from '../../TestableApp';
-import { createAlert } from '../../testUtilities';
+import { TestableApp } from '../TestableApp';
+import { createAlert, resetTestData } from '../testUtilities';
 
 describe('Alerts CRUD', () => {
   const app = new TestableApp();
   const models = app.models;
   const testAlertData = [];
+
+  /*
+  const localReset = async () => {
+    for (const item of testAlertData) {
+      await models.alert.delete({ id: item.alert.id });
+    }
+
+    for (const code of ['TROZ', 'NARF', 'ZORT', 'EGAD', 'FIORD', 'POIT']) {
+      await models.entity.delete({ code });
+      await models.dataSource.delete({ code });
+    }
+  };
+  */
 
   before(async () => {
     await app.authenticate();
@@ -121,14 +134,5 @@ describe('Alerts CRUD', () => {
     });
   });
 
-  after(async () => {
-    for (const item of testAlertData) {
-      await models.alert.delete({ id: item.alert.id });
-    }
-
-    for (const code of ['TROZ', 'NARF', 'ZORT', 'EGAD', 'FIORD', 'POIT']) {
-      await models.entity.delete({ code });
-      await models.dataSource.delete({ code });
-    }
-  });
+  after(resetTestData);
 });
