@@ -78,7 +78,8 @@ class FacilityScreen extends PureComponent {
 
     return (
       <a href={getMapUrl(orgUnit)} style={styles.mapLink} target="_blank" rel="noreferrer noopener">
-        Open Map <MapOpenIcon style={styles.mapLinkIcon} />
+        Open Map
+        <MapOpenIcon style={styles.mapLinkIcon} />
       </a>
     );
   }

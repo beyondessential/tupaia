@@ -28,7 +28,7 @@ export class TableOfDataValuesBuilder extends DataBuilder {
     this.results = results;
     this.tableConfig = new TableConfig(this.config, this.results);
     this.baseRows = this.buildBaseRows();
-    this.valuesByCell = getValuesByCell(this.tableConfig, this.results);
+    this.valuesByCell = this.buildValuesByCell();
     this.totalCalculator = new TotalCalculator(this.tableConfig, this.valuesByCell);
 
     const columns = await this.buildColumns();
@@ -50,7 +50,7 @@ export class TableOfDataValuesBuilder extends DataBuilder {
   }
 
   async fetchAnalyticsAndMetadata() {
-    const dataElementCodes = [...new Set(flatten(this.config.cells))];
+    const dataElementCodes = this.buildDataElementCodes();
     const { results, period } = await this.fetchAnalytics(dataElementCodes);
     const dataElements = await this.fetchDataElements(dataElementCodes);
     const dataElementByCode = keyBy(dataElements, 'code');
@@ -60,6 +60,14 @@ export class TableOfDataValuesBuilder extends DataBuilder {
     }));
 
     return { results: resultsWithMetadata, period };
+  }
+
+  buildDataElementCodes() {
+    return [...new Set(flatten(this.config.cells))];
+  }
+
+  buildValuesByCell() {
+    return getValuesByCell(this.tableConfig, this.results);
   }
 
   async buildRows() {
@@ -108,7 +116,11 @@ export class TableOfDataValuesBuilder extends DataBuilder {
 
     return TotalCalculator.isTotalKey(cell)
       ? this.totalCalculator.calculate(rowIndex, columnIndex)
-      : this.valuesByCell[cell];
+      : this.valuesByCell[this.getCellKey(rowIndex, columnIndex)];
+  }
+
+  getCellKey(rowIndex, columnIndex) {
+    return this.tableConfig.cells[rowIndex][columnIndex];
   }
 
   async buildColumns() {

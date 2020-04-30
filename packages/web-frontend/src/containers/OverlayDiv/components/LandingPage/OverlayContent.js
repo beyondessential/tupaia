@@ -18,7 +18,7 @@ import { LoginForm } from '../../../LoginForm';
 import { SignupForm } from '../../../SignupForm';
 import { RequestResetPasswordForm } from '../../../RequestResetPasswordForm';
 import { ProjectPage } from '../ProjectPage';
-import { OVERLAY_PADDING } from '../..';
+import { OVERLAY_PADDING } from '../../constants';
 import { DARK_BLUE, LIGHTENED_DARK_BLUE, PRIMARY_BLUE } from '../../../../styles';
 
 function a11yProps(index) {

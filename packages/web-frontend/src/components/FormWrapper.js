@@ -5,32 +5,30 @@
  * found in the LICENSE file in the root directory of this source tree.
  */
 
-import React, { Component } from 'react';
+import React from 'react';
 import { isMobile } from '../utils';
 
 import Overlay from './mobile/Overlay';
 import { DARK_BLUE, MOBILE_MARGIN_SIZE } from '../styles';
 
-export class FormWrapper extends Component {
-  render() {
-    const { titleText, onClose, style } = this.props;
+export const FormWrapper = props => {
+  const { titleText, onClose, style } = props;
 
-    if (isMobile()) {
-      return (
-        <Overlay
-          titleText={titleText}
-          onClose={onClose}
-          style={style}
-          contentStyle={styles.mobileContentStyle}
-        >
-          {this.props.children}
-        </Overlay>
-      );
-    }
-
-    return <div style={style}>{this.props.children}</div>;
+  if (isMobile()) {
+    return (
+      <Overlay
+        titleText={titleText}
+        onClose={onClose}
+        style={style}
+        contentStyle={styles.mobileContentStyle}
+      >
+        {props.children}
+      </Overlay>
+    );
   }
-}
+
+  return <div style={style}>{props.children}</div>;
+};
 
 const styles = {
   mobileContentStyle: {

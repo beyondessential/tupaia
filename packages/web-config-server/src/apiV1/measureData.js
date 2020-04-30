@@ -33,17 +33,19 @@ const accessDeniedForMeasure = {
   },
 };
 
-function compileMeasureData(dataToUpdate, measureDataResponse) {
-  return measureDataResponse.reduce((state, current) => {
-    const code = current.organisationUnitCode;
-    const existingData = state[code];
-    const updatedData = { ...existingData, ...current };
-    return {
-      ...state,
-      [code]: updatedData,
-    };
-  }, dataToUpdate);
-}
+const buildMeasureData = measureDataResponses => {
+  const measureDataByOrgUnit = {};
+  // Using `forEach` instead of `reduce` with a spread operator on the accumulator
+  // since it is much faster
+  measureDataResponses.forEach(response => {
+    response.forEach(dataItem => {
+      const code = dataItem.organisationUnitCode;
+      measureDataByOrgUnit[code] = { ...measureDataByOrgUnit[code], ...dataItem };
+    });
+  });
+
+  return Object.values(measureDataByOrgUnit);
+};
 
 function getMostCommon(elements) {
   const counts = {};
@@ -118,36 +120,11 @@ export default class extends DataAggregatingRouteHandler {
     // wait for fetches to complete
     const measureOptions = await Promise.all(optionsTasks);
     const measureDataResponses = await Promise.all(dataTasks);
-
-    // Data arrives as an array of responses (one for each measure) containing an array of org
-    // units. We need to rearrange it so that it's a 1D array of objects with the values
-    // assigned to the appropriate keys.
-    //
-    // RESPONSE: [
-    //  [
-    //    { organisationUnitCode: 'OrgA', measureZ: 0 },
-    //    { organisationUnitCode: 'OrgB', measureZ: 1 }
-    //  ],
-    //  [
-    //    { organisationUnitCode: 'OrgA', measureY: 100 },
-    //    { organisationUnitCode: 'OrgB', measureY: -100 }
-    //  ],
-    // ]
-    //
-    // COMPILED: {
-    //  OrgA: { organisationUnitCode: 'OrgA', measureY: 100, measureZ: 0 },
-    //  OrgB: { organisationUnitCode: 'OrgB', measureY: -100, measureZ: 1 },
-    // }
-    //
-    // RETURN: [
-    //  { organisationUnitCode: 'OrgA', measureY: 100, measureZ: 0 },
-    //  { organisationUnitCode: 'OrgB', measureY: -100, measureZ: 1 },
-    // ]
-    const measureDataByOrgId = measureDataResponses.reduce(compileMeasureData, {});
-    const measureData = Object.values(measureDataByOrgId);
+    const measureData = buildMeasureData(measureDataResponses);
 
     measureOptions
       .filter(mo => mo.displayedValueKey)
+      .filter(mo => !mo.disableRenameLegend)
       .map(mo => updateLegendFromDisplayedValueKey(mo, measureData));
 
     return {
