@@ -14,7 +14,7 @@ const sumPerMetric = async ({ dataBuilderConfig, query }, aggregator, dhisApi, a
     labels = {},
     specialCases = {},
     dataElementsToSum,
-    measureCriteria,
+    filter,
     dataServices,
   } = dataBuilderConfig;
 
@@ -23,7 +23,7 @@ const sumPerMetric = async ({ dataBuilderConfig, query }, aggregator, dhisApi, a
     dataElementCodes,
     { dataServices },
     query,
-    { aggregationType, measureCriteria },
+    { aggregationType, filter },
   );
 
   // Don't process results into valid data for front-end if there are none.

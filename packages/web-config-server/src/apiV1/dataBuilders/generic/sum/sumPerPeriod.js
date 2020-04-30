@@ -25,7 +25,16 @@ class SumPerPeriodBuilder extends DataBuilder {
    */
   async build() {
     const dataElements = this.getAllDataElements();
-    const { results, period } = await this.fetchAnalytics(dataElements);
+
+    const filter = this.config.filter || {};
+
+    const { results, period } = await this.fetchAnalytics(
+      dataElements,
+      {},
+      this.aggregationType,
+      filter,
+    );
+
     const dataElementToDataClass = this.getDataElementToDataClass();
     const dataByPeriod = {};
 

@@ -14,12 +14,11 @@ exports.setup = function(options, seedLink) {
   seed = seedLink;
 };
 
+const arrayToDbString = array => array.map(item => `'${item}'`).join(', ');
+
 const UNFPA_RH_AMC_DATA_CLASSES = {
   "UNFPA_RH_AMC_Male_condoms": {
-    "codes": ["AMC_3b3444bf"]
-  },
-  "UNFPA_RH_AMC_Male_condoms_varied": {
-    "codes": ["AMC_a162942e"]
+    "codes": ["AMC_3b3444bf", "AMC_a162942e"]
   },
   "UNFPA_RH_AMC_Female_condoms": {
     "codes": ["AMC_bf4be518"]
@@ -37,10 +36,7 @@ const UNFPA_RH_AMC_DATA_CLASSES = {
     "codes": ["AMC_d2d28620"]
   },
   "UNFPA_RH_AMC_EC_2_dose": {
-    "codes": ["AMC_47fb04bf"]
-  },
-  "UNFPA_RH_AMC_EC_single_dose": {
-    "codes": ["ACM_47fe44bf"]
+    "codes": ["AMC_47fb04bf", "ACM_47fe44bf"]
   },
   "UNFPA_RH_AMC_Depot": {
     "codes": ["AMC_53d014bf"]
@@ -52,91 +48,81 @@ const UNFPA_RH_AMC_DATA_CLASSES = {
     "codes": ["AMC_542a34bf"]
   },
   "UNFPA_RH_AMC_IUD": {
-    "codes": ["AMC_4718f43e"]
+    "codes": ["AMC_4718f43e", "AMC_3b3994bf"]
   },
-  "UNFPA_RH_AMC_Copper_IUD": {
-    "codes": ["AMC_3b3994bf"]
-  }
 };
 
 const UNFPA_RH_AMC_CHART_CONFIG = {
   "UNFPA_RH_AMC_Male_condoms": {
     "label": "Male condoms",
-    "legendOrder" : 0
-  },
-  "UNFPA_RH_AMC_Male_condoms_varied": {
-    "label": "Male condoms, varied",
-    "legendOrder" : 1
+    "legendOrder" : 0,
+    "color": '#FC1D26'
   },
   "UNFPA_RH_AMC_Female_condoms": {
     "label": "Female condoms",
-    "legendOrder" : 2
+    "legendOrder" : 1,
+    "color": '#FD9155'
   },
   "UNFPA_RH_AMC_COCs": {
     "label": "COCs",
-    "legendOrder" : 3
+    "legendOrder" : 2,
+    "color": '#FEDD64'
   },
   "UNFPA_RH_AMC_POP": {
     "label": "POP",
-    "legendOrder" : 4
+    "legendOrder" : 3,
+    "color": '#81D75E'
   },
   "UNFPA_RH_AMC_Implant_Contraceptives": {
     "label": "Implant Contraceptives",
-    "legendOrder" : 5
+    "legendOrder" : 4,
+    "color": '#0F7F3B'
   },
   "UNFPA_RH_AMC_Jadelle": {
     "label": "Jadelle",
-    "legendOrder" : 6
+    "legendOrder" : 5,
+    "color": '#20C2CA'
   },
   "UNFPA_RH_AMC_EC_2_dose": {
-    "label": "EC (2 dose)",
-    "legendOrder" : 7
-  },
-  "UNFPA_RH_AMC_EC_single_dose": {
-    "label": "EC (single dose)",
-    "legendOrder" : 8
+    "label": "EC",
+    "legendOrder" : 6,
+    "color": '#40B7FC'
   },
   "UNFPA_RH_AMC_Depot": {
     "label": "Depot",
-    "legendOrder" : 9
+    "legendOrder" : 7,
+    "color": '#0A4EAB'
   },
   "UNFPA_RH_AMC_SAYANA_Press": {
     "label": "SAYANA Press",
-    "legendOrder" : 10
+    "legendOrder" : 8,
+    "color": '#8C5AFB'
   },
   "UNFPA_RH_AMC_Norethisterone": {
     "label": "Norethisterone",
-    "legendOrder" : 11
+    "legendOrder" : 9,
+    "color": '#FD6AC4'
   },
   "UNFPA_RH_AMC_IUD": {
     "label": "IUD",
-    "legendOrder" : 11
+    "legendOrder" : 10,
+    "color": '#D9D9D9'
+  }
+};
+
+const ORG_UNIT_CODES = [
+  'TO_CPMS', 'KI_GEN', 'VU_1180_20', 'SB_500092', 'DL_2'
+];
+
+const FILTER = {
+  organisationUnit: {
+    in: ORG_UNIT_CODES
   },
-  "UNFPA_RH_AMC_Copper_IUD": {
-    "label": "Copper IUD",
-    "legendOrder" : 12
-  }
 };
 
-//Update COVID_New_Cases_By_Day report to work with new 'sumPerPeriod' data builder
-const NEW_COVID_NEW_CASES_BY_DAY_REPORT_DATA_BUILDER = {
-  "dataClasses": {
-      "value": {
-        "codes": [
-          "dailysurvey003"
-        ]
-      }
-  }
-};
-
-//Old COVID_New_Cases_By_Day report dataBuilderConfig to revert back
-const OLD_COVID_NEW_CASES_BY_DAY_REPORT_DATA_BUILDER = {
-  "dataSource": {
-      "codes": [
-          "dailysurvey003"
-      ]
-  }
-};
+const DASHBOARD_GROUP_CODES_TO_ADD = [
+  'DL_Unfpa_Country', 'TO_Unfpa_Country', 'VU_Unfpa_Country', 'SB_Unfpa_Country', 'KI_Unfpa_Country'
+]
 
 exports.up = async function(db) {
   await db.runSql(`
@@ -146,6 +132,7 @@ exports.up = async function(db) {
       'sumPerMonth',
       '{
         "dataClasses": ${JSON.stringify(UNFPA_RH_AMC_DATA_CLASSES)},
+        "filter": ${JSON.stringify(FILTER)},
         "periodType" : "month"
       }',
       '{
@@ -160,11 +147,8 @@ exports.up = async function(db) {
 
     UPDATE "dashboardGroup"
     SET "dashboardReports" = "dashboardReports" || '{UNFPA_Reproductive_Health_Product_AMC}'
-    WHERE code = 'DL_Unfpa_Country';
-
-    UPDATE "dashboardReport"
-    SET "dataBuilderConfig" = '${JSON.stringify(NEW_COVID_NEW_CASES_BY_DAY_REPORT_DATA_BUILDER)}'
-    WHERE id = 'COVID_New_Cases_By_Day';
+    WHERE code IN (${arrayToDbString(DASHBOARD_GROUP_CODES_TO_ADD)})
+    AND "organisationLevel" = 'Country';
   `);
 };
 
@@ -173,12 +157,9 @@ exports.down = async function(db) {
     DELETE FROM "dashboardReport" WHERE id = 'UNFPA_Reproductive_Health_Product_AMC';
 
     UPDATE "dashboardGroup"
-    SET "dashboardReports" = array_remove("dashboardReports", '"UNFPA_Reproductive_Health_Product_AMC"')
-    WHERE code = 'DL_Unfpa_Country';
-
-    UPDATE "dashboardReport"
-    SET "dataBuilderConfig" = '${JSON.stringify(OLD_COVID_NEW_CASES_BY_DAY_REPORT_DATA_BUILDER)}'
-    WHERE id = 'COVID_New_Cases_By_Day';
+    SET "dashboardReports" = array_remove("dashboardReports", 'UNFPA_Reproductive_Health_Product_AMC')
+    WHERE code IN (${arrayToDbString(DASHBOARD_GROUP_CODES_TO_ADD)})
+    AND "organisationLevel" = 'Country';
   `);
 };
 

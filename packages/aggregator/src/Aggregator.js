@@ -32,12 +32,12 @@ export class Aggregator {
   }
 
   processAnalytics = (analytics, aggregationOptions, requestedPeriod) => {
-    const { aggregationType, aggregationConfig, measureCriteria } = aggregationOptions;
+    const { aggregationType, aggregationConfig, filter } = aggregationOptions;
     const aggregatedAnalytics = aggregateAnalytics(analytics, aggregationType, {
       ...aggregationConfig,
       requestedPeriod,
     });
-    return filterAnalytics(aggregatedAnalytics, measureCriteria);
+    return filterAnalytics(aggregatedAnalytics, filter);
   };
 
   async fetchAnalytics(codeInput, fetchOptions, aggregationOptions = {}) {
