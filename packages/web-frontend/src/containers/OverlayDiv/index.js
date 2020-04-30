@@ -26,10 +26,9 @@ import { selectProject } from '../../projects/actions';
 import { LandingPage } from './components/LandingPage';
 import { RequestProjectAccess } from './components/RequestProjectAccess';
 import Disaster from './components/Disaster';
+import { OVERLAY_PADDING, LANDING, DISASTER, REQUEST_PROJECT_ACCESS } from './constants';
 
 const EXPLORE_PROJECT = 'explore';
-
-export const OVERLAY_PADDING = `35px ${isMobile() ? '35px' : '64px'}`;
 
 const styles = {
   dialogContainer: {
@@ -58,10 +57,6 @@ const Wrapper = styled.div`
   position: relative;
   overflow-x: hidden;
 `;
-
-export const LANDING = 'landing';
-export const DISASTER = 'disaster';
-export const REQUEST_PROJECT_ACCESS = 'requestProjectAccess';
 
 export class OverlayDiv extends PureComponent {
   render() {
