@@ -6,7 +6,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import MuiBox from '@material-ui/core/Box';
-import { Meter } from '../components/Meter';
+import { Meter, CircleMeter } from '../components/Meter';
 import * as COLORS from '../theme/colors';
 import { Card, CardContent, CardFooter } from '../components/Card';
 
@@ -35,6 +35,20 @@ export const meter = () => (
       <CardFooter>
         <Meter value={22} total={30} />
       </CardFooter>
+    </Card>
+  </Container>
+);
+
+export const circleMeter = () => (
+  <Container>
+    <Card variant="outlined">
+      <CardContent>
+        <CircleMeter percent={0} />
+        <CircleMeter percent={34} />
+        <CircleMeter percent={50} />
+        <CircleMeter percent={99} />
+        <CircleMeter percent={100} />
+      </CardContent>
     </Card>
   </Container>
 );

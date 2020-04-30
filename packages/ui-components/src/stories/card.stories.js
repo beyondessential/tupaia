@@ -12,7 +12,7 @@ import * as COLORS from '../theme/colors';
 import { Card, CardHeader, CardFooter, CardContent } from '../components/Card';
 import { Button } from '../components/Button';
 import { CardTab, CardTabList, CardTabPanel, CardTabPanels, CardTabs } from '..';
-import { Meter } from '../components/Meter';
+import { CircleMeter, Meter } from '../components/Meter';
 
 export default {
   title: 'Card',
@@ -26,7 +26,6 @@ const Container = styled(MuiBox)`
 
   .MuiCard-root {
     min-height: 120px;
-    //max-width: 360px;
   }
 `;
 
@@ -72,13 +71,20 @@ export const simpleExample = () => (
   </Container>
 );
 
+const StyledCardContent = styled(CardContent)`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
 export const reportsExample = () => (
   <Container>
     <Card variant="outlined">
       <CardHeader title="Current reports submitted" label="Week 10" />
-      <CardContent>
+      <StyledCardContent>
         <Typography variant="h3">11/22 Countries</Typography>
-      </CardContent>
+        <CircleMeter percent={50} />
+      </StyledCardContent>
     </Card>
   </Container>
 );
