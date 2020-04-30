@@ -46,8 +46,8 @@ const orgUnitChildrenCache = createCachedSelector(
 )((country, code) => code);
 
 const descendantsCache = createCachedSelector(
-  [country => country, (_, code) => code, (_, __, level) => level],
-  (country, code, level) => {
+  [country => country, allCountryOrgUnitsCache, (_, code) => code, (_, __, level) => level],
+  (country, countryOrgUnits, code, level) => {
     const orgUnit = getOrgUnitFromCountry(country, code);
     if (!orgUnit) {
       return undefined;
@@ -57,16 +57,17 @@ const descendantsCache = createCachedSelector(
       return [orgUnit];
     }
 
-    const countryOrgUnits = Object.values(country);
     const descendants = [];
     let generation = [orgUnit];
     while (generation.length > 0) {
-      descendants.concat(generation);
+      descendants.push(...generation);
       generation = [].concat(
         ...generation
           .filter(generationOrgUnit => generationOrgUnit.type !== level)
           .map(parentOrgUnit =>
-            countryOrgUnits.filter(childOrgUnit => childOrgUnit.parent === parentOrgUnit.code),
+            countryOrgUnits.filter(
+              childOrgUnit => childOrgUnit.parent === parentOrgUnit.organisationUnitCode,
+            ),
           ),
       );
     }
@@ -264,7 +265,7 @@ export const selectRenderedMeasuresWithDisplayInfo = createSelector(
         state.orgUnits.orgUnitMap,
         state.global.currentOrganisationUnit.organisationUnitCode,
       ]),
-    state => selectAllMeasuresWithDisplayInfo(state),
+    selectAllMeasuresWithDisplayAndOrgUnitData,
     state => state.global.currentOrganisationUnit,
     state => state.map.measureInfo.measureOptions,
   ],
@@ -282,7 +283,7 @@ export const selectRenderedMeasuresWithDisplayInfo = createSelector(
       country,
       currentOrgUnit.organisationUnitCode,
       displayOnLevel,
-    ).find(ancestor => ancestor.level === displayOnLevel);
+    ).find(ancestor => ancestor.type === displayOnLevel);
 
     if (!displaylevelAncestor) {
       return [];

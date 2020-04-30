@@ -454,7 +454,6 @@ function* fetchOrgUnitDataAndChangeOrgUnit(action) {
 
   try {
     const orgUnitData = yield fetchOrgUnitData(organisationUnitCode);
-    yield put(fetchOrgUnitSuccess(orgUnitData));
     yield put(
       changeOrgUnitSuccess(
         normaliseCountryHierarchyOrgUnitData(orgUnitData),
