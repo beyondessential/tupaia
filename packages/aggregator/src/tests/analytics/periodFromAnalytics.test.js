@@ -24,15 +24,28 @@ describe('periodFromAnalytics()', () => {
     };
     expect(periodFromAnalytics([], fetchOptions)).to.deep.equal(expected);
   });
+
   it('should find the earliest period', () => {
-    expect(periodFromAnalytics(analytics, fetchOptions).earliestAvailable).to.equal('20200101');
+    expect(periodFromAnalytics(analytics, fetchOptions)).to.have.property(
+      'earliestAvailable',
+      '20200101',
+    );
   });
+
   it('should find the latest period', () => {
-    expect(periodFromAnalytics(analytics, fetchOptions).latestAvailable).to.equal('20200106');
+    expect(periodFromAnalytics(analytics, fetchOptions)).to.have.property(
+      'latestAvailable',
+      '20200106',
+    );
   });
+
   it('should return the requested period', () => {
-    expect(periodFromAnalytics(analytics, fetchOptions).requested).to.equal(fetchOptions.period);
+    expect(periodFromAnalytics(analytics, fetchOptions)).to.have.property(
+      'requested',
+      fetchOptions.period,
+    );
   });
+
   // Doesn't work with week (yet)
   it('should work with year periodType', () => {
     const yearAnalytics = [
@@ -49,5 +62,40 @@ describe('periodFromAnalytics()', () => {
       requested: fetchOptions.period,
     };
     expect(periodFromAnalytics(yearAnalytics, fetchOptions)).to.deep.equal(expected);
+  });
+
+  it('should prefer the correct period types amongst analytics', () => {
+    const mixedAnalytics = [
+      { period: '20100405', value: 1 },
+      { period: '201005', value: 2 },
+      { period: '2010', value: 4 },
+      { period: '20100505', value: 3 },
+    ];
+    const expected = {
+      earliestAvailable: '2010',
+      latestAvailable: '2010',
+      requested: fetchOptions.period,
+    };
+
+    expect(periodFromAnalytics(mixedAnalytics, fetchOptions)).to.deep.equal(expected);
+  });
+
+  it('should prefer the correct period types amongst analytics across years', () => {
+    const mixedAnalytics = [
+      { period: '20100405', value: 1 },
+      { period: '201005', value: 2 },
+      { period: '2010', value: 4 },
+      { period: '20110101', value: 4 },
+      { period: '2010', value: 4 },
+      { period: '200706', value: 4 },
+      { period: '20100505', value: 3 },
+    ];
+    const expected = {
+      earliestAvailable: '200706',
+      latestAvailable: '20110101',
+      requested: fetchOptions.period,
+    };
+
+    expect(periodFromAnalytics(mixedAnalytics, fetchOptions)).to.deep.equal(expected);
   });
 });
