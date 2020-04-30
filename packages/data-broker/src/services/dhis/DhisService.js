@@ -154,11 +154,10 @@ export class DhisService extends Service {
 
   pullAnalyticsFromEventsForApi = async (api, dataSources, options) => {
     const {
-      organisationUnitCodes,
+      organisationUnitCodes = [],
       startDate,
       endDate,
       programCodes,
-      programCode,
       eventId,
       trackedEntityInstance,
     } = options;
@@ -169,12 +168,11 @@ export class DhisService extends Service {
       startDate,
       endDate,
       programCodes,
-      programCode,
       eventId,
       trackedEntityInstance,
     };
-    const events = await this.fetchEventsForPrograms(api, programCodes || [programCode], query);
-    const translatedEvents = await this.translator.translateInboundEvents(events, programCode);
+    const events = await this.fetchEventsForPrograms(api, programCodes, query);
+    const translatedEvents = await this.translator.translateInboundEvents(events, programCodes[0]);
 
     return buildAnalyticsFromEvents(api, translatedEvents);
   };
@@ -230,7 +228,7 @@ export class DhisService extends Service {
    */
   pullEventsForApi_Deprecated = async (api, programCode, options) => {
     const {
-      organisationUnitCode,
+      organisationUnitCodes = [],
       orgUnitIdScheme,
       startDate,
       endDate,
@@ -242,7 +240,7 @@ export class DhisService extends Service {
     const events = await api.getEvents({
       programCode,
       dataElementIdScheme: 'code',
-      organisationUnitCode,
+      organisationUnitCode: organisationUnitCodes[0],
       orgUnitIdScheme,
       startDate,
       endDate,

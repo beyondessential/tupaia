@@ -64,7 +64,7 @@ export class DataBuilder {
 
     return this.aggregator.fetchEvents(programCode, {
       dataServices,
-      organisationUnitCode,
+      organisationUnitCodes: [organisationUnitCode],
       startDate,
       endDate,
       trackedEntityInstance,
