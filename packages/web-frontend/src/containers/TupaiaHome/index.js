@@ -42,14 +42,11 @@ TupaiaHomeComponent.propTypes = {
   goHome: PropTypes.func.isRequired,
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    ...ownProps,
-    goHome: () => {
-      dispatch(goHome());
-      dispatch(changeOrgUnit());
-    },
-  };
-};
+const mapDispatchToProps = dispatch => ({
+  goHome: () => {
+    dispatch(goHome());
+    dispatch(changeOrgUnit());
+  },
+});
 
 export default connect(null, mapDispatchToProps)(TupaiaHomeComponent);
