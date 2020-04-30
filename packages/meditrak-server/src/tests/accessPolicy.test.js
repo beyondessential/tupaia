@@ -5,8 +5,9 @@
 
 import { expect } from 'chai';
 
+import { generateTestId } from '@tupaia/database';
 import { TestableApp, getAuthorizationHeader } from './TestableApp';
-import { randomEmail } from './testUtilities';
+import { randomEmail, upsertEntity, upsertUserEntityPermission } from './testUtilities';
 
 describe('Access Policy', () => {
   const app = new TestableApp();
@@ -97,12 +98,12 @@ describe('Access Policy', () => {
           code: 'TO',
         },
         {
-          id: 'tonga_0000000000000_test',
+          id: generateTestId(),
           name: 'Tonga',
         },
       );
 
-      await models.userEntityPermission.create({
+      await upsertUserEntityPermission({
         user_id: userId,
         entity_id: tongaEntity.id,
         permission_group_id: adminPermissionGroup.id,
@@ -161,25 +162,20 @@ describe('Access Policy', () => {
       });
 
       // Create a facility nested deep within a new country other than Demoland.
-      const canada = await models.entity.updateOrCreate(
-        {
-          id: 'canada_000000000000_test',
-        },
-        {
-          code: 'CA',
-          name: 'Canada',
-          type: 'country',
-        },
-      );
+      const canada = await upsertEntity({
+        code: 'CA',
+        name: 'Canada',
+        type: 'country',
+      });
 
-      const ontario = await models.entity.create({
+      const ontario = await upsertEntity({
         name: 'Ontario',
         code: 'CA_OT',
         country_code: canada.code,
         parent_id: canada.id,
         type: 'district',
       });
-      const toronto = await models.entity.create({
+      const toronto = await upsertEntity({
         name: 'Toronto',
         code: 'CA_OT_TO',
         country_code: canada.code,
@@ -187,19 +183,15 @@ describe('Access Policy', () => {
         type: 'district',
       });
 
-      const mountSinai = await models.entity.updateOrCreate(
-        {
-          code: 'CA_OT_TO_MS',
-        },
-        {
-          name: 'Mount Sinaia Hospital',
-          country_code: canada.code,
-          parent_id: toronto.id,
-          type: 'facility',
-        },
-      );
+      const mountSinai = await upsertEntity({
+        code: 'CA_OT_TO_MS',
+        name: 'Mount Sinaia Hospital',
+        country_code: canada.code,
+        parent_id: toronto.id,
+        type: 'facility',
+      });
 
-      await models.userEntityPermission.create({
+      await upsertUserEntityPermission({
         user_id: userId,
         entity_id: mountSinai.id,
         permission_group_id: adminPermissionGroup.id,
@@ -207,7 +199,7 @@ describe('Access Policy', () => {
 
       // Create an admin permission for a district not containing Mount Sinai to test
       // for clashes between facility level permissions and org unit level permissions.
-      const ottawa = await models.entity.create({
+      const ottawa = await upsertEntity({
         name: 'Ottawa',
         code: 'CA_OT_OT',
         country_code: canada.code,
@@ -215,7 +207,7 @@ describe('Access Policy', () => {
         type: 'district',
       });
 
-      await models.userEntityPermission.create({
+      await upsertUserEntityPermission({
         user_id: userId,
         entity_id: ottawa.id,
         permission_group_id: adminPermissionGroup.id,

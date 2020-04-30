@@ -76,6 +76,7 @@ CREATE TYPE public.entity_type AS ENUM (
     'facility',
     'village',
     'case',
+    'case_contact',
     'disaster'
 );
 
@@ -852,7 +853,7 @@ CREATE TABLE public.survey_screen_component (
 CREATE TABLE public."userSession" (
     id text NOT NULL,
     "userName" text NOT NULL,
-    "accessToken" text NOT NULL,
+    "accessToken" text,
     "refreshToken" text NOT NULL,
     "accessPolicy" jsonb
 );
@@ -2316,7 +2317,7 @@ ALTER TABLE ONLY public.survey
 --
 
 ALTER TABLE ONLY public.user_entity_permission
-    ADD CONSTRAINT user_entity_permission_entity_id_fkey FOREIGN KEY (entity_id) REFERENCES public.entity(id);
+    ADD CONSTRAINT user_entity_permission_entity_id_fkey FOREIGN KEY (entity_id) REFERENCES public.entity(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
@@ -2324,7 +2325,7 @@ ALTER TABLE ONLY public.user_entity_permission
 --
 
 ALTER TABLE ONLY public.user_entity_permission
-    ADD CONSTRAINT user_entity_permission_permission_group_id_fkey FOREIGN KEY (permission_group_id) REFERENCES public.permission_group(id);
+    ADD CONSTRAINT user_entity_permission_permission_group_id_fkey FOREIGN KEY (permission_group_id) REFERENCES public.permission_group(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
@@ -2332,7 +2333,7 @@ ALTER TABLE ONLY public.user_entity_permission
 --
 
 ALTER TABLE ONLY public.user_entity_permission
-    ADD CONSTRAINT user_entity_permission_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user_account(id);
+    ADD CONSTRAINT user_entity_permission_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user_account(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
@@ -3014,23 +3015,44 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 601	/20200325044717-MakeFebrileIllnessCaseCalculationConsistent	2020-04-07 04:56:55.711
 602	/20200403020133-UpdateDataSourcetoReflectHP01andHP02Changes	2020-04-07 04:56:56.472
 603	/20200407021657-AddDisasterDashboardGroupForVanutatu	2020-04-07 04:56:56.557
-604	/20200324034720-CreateMSupplyUNFPAMatrices	2020-04-16 11:40:36.812
-605	/20200325002500-RefactorOrganisationUnitTableReportsToTableOfValueForOrgUnits	2020-04-16 11:40:36.893
-606	/20200330044935-AddConfigToIHRReportsForOrgUnitColumns	2020-04-16 11:40:36.907
-607	/20200401220823-RemoveWordTodayFromCovidReports	2020-04-16 11:40:36.925
-608	/20200402024847-AddProjectEntity	2020-04-16 11:40:37.799
-609	/20200402024848-CreateProjectHierarchy	2020-04-16 11:40:37.955
-610	/20200403015828-AddCovidRawDataDownloadTonga	2020-04-16 11:40:37.971
-611	/20200403030413-AddPeriodDataSwitchToDashBoardReports	2020-04-16 11:40:37.983
-612	/20200406000236-AddFacilityCommoditiesOverlays	2020-04-16 11:40:38.217
-613	/20200407031923-ReplaceProvinceInDashboardGroup	2020-04-16 11:40:38.348
-614	/20200407050822-ReplaceAndRemoveRegionEntityType	2020-04-16 11:40:39.881
-615	/20200407052132-AddSOHandAMCMatricesToUNFPA	2020-04-16 11:40:39.952
-616	/20200407225206-ReplaceRegionInMapOverlays	2020-04-16 11:40:40.008
-617	/20200408015910-UseLowercaseOrgUnitLevel	2020-04-16 11:40:40.046
-618	/20200408031952-ReplaceRegionInSurveyScreenComponent	2020-04-16 11:40:41.22
-619	/20200408071456-RenameOrganisationUnitLevelInDashboardReport	2020-04-16 11:40:41.254
-620	/20200409065901-AddStripFromDataElementNamesForUNFPAMatrices	2020-04-16 11:40:41.264
+604	/20200324034720-CreateMSupplyUNFPAMatrices	2020-04-20 02:20:13.418
+605	/20200325002500-RefactorOrganisationUnitTableReportsToTableOfValueForOrgUnits	2020-04-20 02:20:13.705
+606	/20200330044935-AddConfigToIHRReportsForOrgUnitColumns	2020-04-20 02:20:13.744
+607	/20200401220823-RemoveWordTodayFromCovidReports	2020-04-20 02:20:13.807
+608	/20200402024847-AddProjectEntity	2020-04-20 02:20:18.061
+609	/20200402024848-CreateProjectHierarchy	2020-04-20 02:20:18.307
+610	/20200403015828-AddCovidRawDataDownloadTonga	2020-04-20 02:20:18.356
+611	/20200403030413-AddPeriodDataSwitchToDashBoardReports	2020-04-20 02:20:18.451
+612	/20200405231416-AddIpcCommodityAvailabilityReport	2020-04-20 02:20:19.08
+613	/20200406000236-AddFacilityCommoditiesOverlays	2020-04-20 02:20:19.235
+614	/20200406062057-AddCovidICUAndIsolationBedsOverlaysTonga	2020-04-20 02:20:19.28
+615	/20200407002449-AddStriveStackedBarmRDTByResultReport	2020-04-20 02:20:19.331
+616	/20200407052132-AddSOHandAMCMatricesToUNFPA	2020-04-20 02:20:19.532
+617	/20200408054558-AddCaseContactEntityType	2020-04-20 02:20:20.888
+618	/20200409013211-AddAddCovidTestsPerCapitaReport	2020-04-20 02:20:20.951
+619	/20200409065901-AddStripFromDataElementNamesForUNFPAMatrices	2020-04-20 02:20:20.969
+620	/20200415061542-AddStriveOverlayTotalConsultationsWTFBubble	2020-04-20 02:20:21.031
+621	/20200416060614-UpdateMOSUnpfaMedicinesToTrafficLightsConfig	2020-04-20 02:20:21.049
+622	/20200408015324-AddTestsConductedDashboardAus	2020-04-22 15:05:43.95
+623	/20200416033713-ReplaceProvinceInDashboardGroup	2020-04-22 15:05:48.447
+624	/20200416033714-ReplaceAndRemoveRegionEntityType	2020-04-22 15:05:57.489
+625	/20200416033715-ReplaceRegionInMapOverlays	2020-04-22 15:05:57.75
+626	/20200416033716-UseLowercaseOrgUnitLevel	2020-04-22 15:05:58.249
+627	/20200416033717-ReplaceRegionInSurveyScreenComponent	2020-04-22 15:06:05.461
+628	/20200416033718-RenameOrganisationUnitLevelInDashboardReport	2020-04-22 15:06:05.607
+629	/20200408052334-AddSamoaCovidRawDataDownloadDashboard	2020-04-22 23:41:28.752
+630	/20200331033941-CreateUNFPADeliveryServicesLineCharts	2020-04-30 13:59:08.413
+631	/20200403054119-SwapDataElementsForRHCStockCardsChart	2020-04-30 13:59:08.45
+632	/20200406042212-AddCovidTotalDeathsVsCasesByDay	2020-04-30 13:59:08.514
+633	/20200406044451-AddCovidCumulativeDeathsVsCases	2020-04-30 13:59:08.559
+634	/20200408065558-AddDenominatorAggregationFlagToUNFPAReport	2020-04-30 13:59:08.57
+635	/20200409012830-Migrate-old-facility-BCD1-data	2020-04-30 13:59:08.718
+636	/20200417211027-AllowNullAccessToken	2020-04-30 13:59:08.727
+637	/20200421000451-AddTongaCovidIpcCommodityAvailabilityDashboard	2020-04-30 13:59:08.787
+638	/20200422231733-MoveNoCountryUsersToAdminPanel	2020-04-30 13:59:08.806
+639	/20200423213702-EntityBasedPermissions	2020-04-30 13:59:09.038
+640	/20200427015657-AddReproductiveHealthStockOverlays	2020-04-30 13:59:09.126
+641	/20200428035406-UpdateUNFPACountriesAndDashboards	2020-04-30 13:59:09.288
 \.
 
 
@@ -3038,7 +3060,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 620, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 641, true);
 
 
 --

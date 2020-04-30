@@ -16,4 +16,5 @@ export {
   upsertSurveyResponse,
   upsertSurveyScreen,
   upsertSurveyScreenComponent,
+  upsertUserEntityPermission,
 } from './upsertRecord';

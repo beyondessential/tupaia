@@ -16,6 +16,10 @@ export const upsertEntity = async data => {
   return upsertDummyRecord(models.entity, data);
 };
 
+export const upsertUserEntityPermission = async data => {
+  return upsertDummyRecord(models.userEntityPermission, data);
+};
+
 export const upsertFacility = async data => {
   return upsertDummyRecord(models.facility, data);
 };
