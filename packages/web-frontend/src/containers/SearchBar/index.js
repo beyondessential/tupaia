@@ -129,7 +129,6 @@ export class SearchBar extends PureComponent {
       if (!orgUnits || orgUnits.length < 1) return []; // OrgUnits with no children are our recursive base case
       return orgUnits.map(orgUnit => {
         const { organisationUnitCode, name, type, isLoading, organisationUnitChildren } = orgUnit;
-
         // Recursively generate the children for this OrgUnit, will not recurse whole tree as
         // HierarchyItems only fetch their children data on componentWillMount
         const nestedItems = recurseOrgUnits(
@@ -171,7 +170,7 @@ export class SearchBar extends PureComponent {
           hintText="Search Location"
           style={styles.controlBar}
           icon={<SearchIcon />}
-          inTopBar={true}
+          inTopBar
         >
           <div
             onMouseLeave={() => this.setState({ isSafeToCloseResults: true })}

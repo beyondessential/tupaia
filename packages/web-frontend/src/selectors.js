@@ -191,7 +191,13 @@ export const selectAllMeasuresWithDisplayInfo = createSelector(
     state => state.map.measureInfo.hiddenMeasures,
   ],
   (country, measureData, currentCountry, measureLevel, measureOptions, hiddenMeasures) => {
-    if (!measureLevel || !currentCountry || !measureData || currentCountry === 'World') {
+    if (
+      !measureLevel ||
+      !currentCountry ||
+      !measureData ||
+      currentCountry === 'World' ||
+      !country
+    ) {
       return [];
     }
 

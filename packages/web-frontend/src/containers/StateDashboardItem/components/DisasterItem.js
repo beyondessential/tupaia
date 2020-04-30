@@ -97,9 +97,6 @@ DisasterItemDisplay.propTypes = {
   }).isRequired,
 };
 
-export const DisasterItem = connect(
-  null,
-  dispatch => ({
-    onDisasterSelected: info => dispatch(selectDisaster(info)),
-  }),
-)(DisasterItemDisplay);
+export const DisasterItem = connect(null, dispatch => ({
+  onDisasterSelected: info => dispatch(selectDisaster(info)),
+}))(DisasterItemDisplay);
