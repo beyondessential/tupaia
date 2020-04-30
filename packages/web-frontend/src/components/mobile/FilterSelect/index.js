@@ -12,6 +12,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 import Overlay from '../Overlay';
+// Genuine dependency cycle
 import List from '../List';
 import { GREY, LIGHT_GREY } from '../../../styles';
 
