@@ -5,9 +5,9 @@
 
 import React from 'react';
 import styled from 'styled-components';
+import MuiBox from '@material-ui/core/Box';
 import { Meter } from '../components/Meter';
 import * as COLORS from '../theme/colors';
-import MuiBox from '@material-ui/core/Box';
 import { Card, CardContent, CardFooter } from '../components/Card';
 
 export default {

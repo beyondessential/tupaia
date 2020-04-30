@@ -5,13 +5,14 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { Card, CardHeader, CardFooter, CardContent } from '../components/Card';
-import { Error } from '@material-ui/icons';
-import Paper from '@material-ui/core/Paper';
-import MuiBox from '@material-ui/core/Box';
-import * as COLORS from '../theme/colors';
 import Typography from '@material-ui/core/Typography';
+import MuiBox from '@material-ui/core/Box';
+import { Error, ErrorOutline, NotificationImportant, Assignment } from '@material-ui/icons';
+import * as COLORS from '../theme/colors';
+import { Card, CardHeader, CardFooter, CardContent } from '../components/Card';
 import { Button } from '../components/Button';
+import { CardTab, CardTabList, CardTabPanel, CardTabPanels, CardTabs } from '..';
+import { Meter } from '../components/Meter';
 
 export default {
   title: 'Card',
@@ -28,13 +29,6 @@ const Container = styled(MuiBox)`
     //max-width: 360px;
   }
 `;
-
-// Paper is the basis for card
-export const paper = () => (
-  <Container>
-    <Paper />
-  </Container>
-);
 
 export const border = () => (
   <Container>
@@ -54,7 +48,7 @@ export const shadow = () => (
   </Container>
 );
 
-export const examples = () => (
+export const simpleExample = () => (
   <Container>
     <Card variant="outlined" mb={3}>
       <CardContent>
@@ -75,31 +69,159 @@ export const examples = () => (
         <Button>Submit</Button>
       </CardContent>
     </Card>
+  </Container>
+);
+
+export const reportsExample = () => (
+  <Container>
     <Card variant="outlined">
+      <CardHeader title="Current reports submitted" label="Week 10" />
       <CardContent>
-        <CardHeader>
-          <Typography>Reports submitted</Typography>
-          <Typography>W10</Typography>
-        </CardHeader>
         <Typography variant="h3">11/22 Countries</Typography>
       </CardContent>
     </Card>
+  </Container>
+);
+
+const StyledButton = styled(Button)`
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+`;
+
+export const submissionExample = () => (
+  <Container>
     <Card variant="outlined">
+      <CardHeader color="error" title="Submission due in 3 days" label={<Error color="error" />} />
       <CardContent>
-        <CardHeader>
-          <Typography color="error">Submission due in 3 days</Typography>
-          <Error color="error" />
-        </CardHeader>
+        <Typography variant="h4">Week 11</Typography>
         <Typography variant="h4" gutterBottom>
-          Week 11 Upcoming Report
+          Upcoming Report
         </Typography>
         <Typography variant="subtitle2" gutterBottom>
           Feb 25, 2020 - Mar 1, 2020
         </Typography>
-        <br />
-        <Button fullWidth>Submit now</Button>
+        <StyledButton fullWidth>Review and Submit now</StyledButton>
       </CardContent>
-      <CardFooter>Sites reported: 22/30</CardFooter>
+      <CardFooter>
+        <Meter value={22} total={30} legend="Sites reported" />
+      </CardFooter>
+    </Card>
+  </Container>
+);
+
+const FakeTable = styled.section`
+  display: flex;
+  background: white;
+  border: 2px dashed black;
+  height: 300px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const cardTabsExample = () => {
+  return (
+    <Container>
+      <Card variant="outlined">
+        <CardTabs>
+          <CardTabList>
+            <CardTab>
+              <ErrorOutline /> 3 Active Alerts
+            </CardTab>
+            <CardTab>
+              <NotificationImportant /> 1 Active Outbreak
+            </CardTab>
+          </CardTabList>
+          <CardTabPanels>
+            <CardTabPanel>
+              <FakeTable>Active Alerts Data</FakeTable>
+            </CardTabPanel>
+            <CardTabPanel>
+              <FakeTable>Active Outbreak Data</FakeTable>
+            </CardTabPanel>
+          </CardTabPanels>
+        </CardTabs>
+      </Card>
+    </Container>
+  );
+};
+
+export const cardTabsSectionsExample = () => {
+  return (
+    <Container>
+      <Card variant="outlined">
+        <CardTabs>
+          <CardTabList>
+            <CardTab>
+              <ErrorOutline /> 3 Active Alerts
+            </CardTab>
+            <CardTab>
+              <NotificationImportant /> 1 Active Outbreak
+            </CardTab>
+          </CardTabList>
+          <CardTabPanels>
+            <CardTabPanel>
+              <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                incididunt ut labore et dolore magna aliqua.
+              </p>
+            </CardTabPanel>
+            <CardTabPanel>
+              <p>Sed ut perspiciatis unde omnis iste natus error sit </p>
+              <ul>
+                <li>voluptatem accusantium</li>
+                <li>doloremque laudantium</li>
+                <li>voluptatem accusantium</li>
+              </ul>
+            </CardTabPanel>
+          </CardTabPanels>
+        </CardTabs>
+      </Card>
+    </Container>
+  );
+};
+
+const StyledDiv = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  margin-left: 30px;
+  margin-right: 30px;
+`;
+
+const HeaderTitle = styled(Typography)`
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 19px;
+
+  svg {
+    margin-right: 10px;
+    color: ${COLORS.TEXT_MIDGREY};
+  }
+`;
+
+const HeaderLabel = styled(Typography)`
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 400;
+  color: ${COLORS.TEXT_MIDGREY};
+`;
+
+export const tableExample = () => (
+  <Container>
+    <Card variant="outlined" mb={3}>
+      <StyledDiv>
+        <HeaderTitle>
+          <Assignment />
+          Previous Week
+        </HeaderTitle>
+        <HeaderLabel>Week 9</HeaderLabel>
+      </StyledDiv>
+      <FakeTable>Example data</FakeTable>
     </Card>
   </Container>
 );

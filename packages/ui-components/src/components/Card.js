@@ -8,6 +8,8 @@ import MuiCardActions from '@material-ui/core/CardActions';
 import MuiCardContent from '@material-ui/core/CardContent';
 import styled from 'styled-components';
 import * as COLORS from '../theme/colors';
+import Typography from '@material-ui/core/Typography';
+import PropTypes from 'prop-types';
 
 /*
  * Card
@@ -20,35 +22,59 @@ export const Card = styled(MuiCard)`
 /*
  * Card Header
  */
-export const CardHeader = styled(props => <div {...props} />)`
+const StyledDiv = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 0 1.5rem;
-  margin-bottom: 1.5rem;
-  border-bottom: 1px solid #e7e7e7;
-  font-size: 14px;
-  font-weight: 500;
-
-  p {
-    font-size: 14px;
-    font-weight: 500;
-  }
+  padding-top: 20px;
+  padding-bottom: 12px;
+  margin-left: 30px;
+  margin-right: 30px;
+  border-bottom: 1px solid ${COLORS.GREY_DE};
 `;
 
+const HeaderTitle = styled(Typography)`
+  font-size: 15px;
+  line-height: 18px;
+  font-weight: 500;
+`;
+
+const HeaderLabel = styled(Typography)`
+  font-size: 15px;
+  line-height: 18px;
+  font-weight: 400;
+  color: ${COLORS.TEXT_MIDGREY};
+`;
+
+export const CardHeader = ({ title, label, color }) => (
+  <StyledDiv>
+    <HeaderTitle color={color}>{title}</HeaderTitle>
+    <HeaderLabel color={color}>{label}</HeaderLabel>
+  </StyledDiv>
+);
+CardHeader.propTypes = {
+  title: PropTypes.string.isRequired,
+  label: PropTypes.any,
+  color: PropTypes.string,
+};
+
+CardHeader.defaultProps = {
+  color: undefined,
+  label: undefined,
+};
 /*
  * Card Content
  */
 export const CardContent = styled(MuiCardContent)`
-  padding: 1.5rem 1.5rem 2rem;
+  padding: 20px 30px;
 `;
 
 /*
  * Card Footer
  */
 export const CardFooter = styled(props => <div {...props} />)`
-  border-top: 1px solid #e7e7e7;
-  padding: 1.5rem 1.5rem 2rem;
+  border-top: 1px solid ${COLORS.GREY_DE};
+  padding: 20px 30px 25px;
 `;
 
 /*
