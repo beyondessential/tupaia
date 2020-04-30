@@ -125,7 +125,7 @@ describe('Access Policy', () => {
     });
 
     it('should have Tonga admin and public access', () => {
-      expect(accessPolicy.TO).to.deep.equal(['Public', 'Admin']);
+      expect(accessPolicy.TO).to.include.members(['Public', 'Admin']);
       expect(Object.values(accessPolicy).length).to.equal(2); // DL and TO only
     });
 
@@ -177,14 +177,14 @@ describe('Access Policy', () => {
         code: 'CA_OT',
         country_code: canada.code,
         parent_id: canada.id,
-        type: 'region',
+        type: 'district',
       });
       const toronto = await models.entity.create({
         name: 'Toronto',
         code: 'CA_OT_TO',
         country_code: canada.code,
         parent_id: ontario.id,
-        type: 'region',
+        type: 'district',
       });
 
       const mountSinai = await models.entity.updateOrCreate(
@@ -205,14 +205,14 @@ describe('Access Policy', () => {
         permission_group_id: adminPermissionGroup.id,
       });
 
-      // Create an admin permission for a region not containing Mount Sinai to test
+      // Create an admin permission for a district not containing Mount Sinai to test
       // for clashes between facility level permissions and org unit level permissions.
       const ottawa = await models.entity.create({
         name: 'Ottawa',
         code: 'CA_OT_OT',
         country_code: canada.code,
         parent_id: ontario.id,
-        type: 'region',
+        type: 'district',
       });
 
       await models.userEntityPermission.create({
@@ -235,12 +235,12 @@ describe('Access Policy', () => {
 
     it('should have Mount Sinai admin permissions', async () => {
       const mountSinaiPermissions = accessPolicy.CA_OT_TO_MS;
-      expect(mountSinaiPermissions).to.deep.equal(['Admin', 'Donor', 'Public']);
+      expect(mountSinaiPermissions).to.include.members(['Admin', 'Donor', 'Public']);
     });
 
     it('should have Ottawa admin permissions', async () => {
       const ottawaPermissions = accessPolicy.CA_OT_OT;
-      expect(ottawaPermissions).to.deep.equal(['Admin', 'Donor', 'Public']);
+      expect(ottawaPermissions).to.include.members(['Admin', 'Donor', 'Public']);
     });
 
     it('should not have Toronto permissions', async () => {
