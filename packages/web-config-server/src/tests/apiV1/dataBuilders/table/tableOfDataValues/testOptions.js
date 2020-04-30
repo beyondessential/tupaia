@@ -5,8 +5,10 @@
 
 import { createAssertTableResults } from './helpers';
 import { DATA_VALUES } from './tableOfDataValues.fixtures';
+import { tableOfDataValues } from '/apiV1/dataBuilders';
 
 const assertTableResults = createAssertTableResults(
+  tableOfDataValues,
   DATA_VALUES.filter(({ organisationUnit }) => organisationUnit === 'TO_HvlMCH'),
 );
 

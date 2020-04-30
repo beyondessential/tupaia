@@ -15,13 +15,13 @@ import { ExpandableList } from '../../../components/mobile/ExpandableList';
 import { SelectListItem } from '../../../components/mobile/SelectListItem';
 import { Dashboard } from '../../../components/mobile/Dashboard';
 import {
-  fetchHierarchyNestedItems,
   changeOrgUnit,
   toggleDashboardSelectExpand,
   changeDashboardGroup,
+  requestOrgUnit,
 } from '../../../actions';
 import { WHITE } from '../../../styles';
-import { getCurrentDashboardKey } from '../../../selectors';
+import { selectCurrentDashboardKey } from '../../../selectors';
 
 class HomeScreen extends PureComponent {
   componentWillMount(props) {
@@ -105,13 +105,13 @@ const mapStateToProps = state => {
     currentOrganisationUnit,
     dashboardFilterIsExpanded: isGroupSelectExpanded,
     dashboardConfig,
-    currentDashboardKey: getCurrentDashboardKey(state),
+    currentDashboardKey: selectCurrentDashboardKey(state),
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    getNestedOrgUnits: orgUnitCode => dispatch(fetchHierarchyNestedItems(orgUnitCode)),
+    getNestedOrgUnits: organisationUnitCode => dispatch(requestOrgUnit(organisationUnitCode)),
     onChangeOrgUnit: organisationUnitCode => dispatch(changeOrgUnit(organisationUnitCode, false)),
     onToggleDashboardSelectExpand: () => dispatch(toggleDashboardSelectExpand()),
     onChangeDashboardGroup: name => dispatch(changeDashboardGroup(name)),

@@ -5,12 +5,6 @@
  * found in the LICENSE file in the root directory of this source tree.
  */
 
-export const HIGHLIGHT_TYPES = {
-  NONE: 'none',
-  HIGHLIGHT: 'highlight',
-  LOWLIGHT: 'lowlight',
-};
-
 // this value is just pulled from Leaflet examples.
 // if we need to anything more complex with z-ordering (ie if there's ever more
 // than one constant used here) they should be defined relative to each other,

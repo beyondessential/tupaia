@@ -33,7 +33,7 @@ export class SingleValueWrapper extends PureComponent {
     return (
       <div style={VIEW_STYLES.viewContainer}>
         <div style={VIEW_STYLES.title}>{name}</div>
-        <div style={{ ...VIEW_STYLES.data, ...(style ? style : {}) }}>
+        <div style={{ ...VIEW_STYLES.data, ...(style || {}) }}>
           {formatDataValue(value, valueType, { ...metadata, total })}
         </div>
       </div>
@@ -43,5 +43,4 @@ export class SingleValueWrapper extends PureComponent {
 
 SingleValueWrapper.propTypes = {
   viewContent: PropTypes.object.isRequired,
-  isPartOfList: PropTypes.bool,
 };
