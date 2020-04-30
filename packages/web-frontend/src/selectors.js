@@ -45,48 +45,62 @@ const orgUnitChildrenCache = createCachedSelector(
   (country, code) => Object.values(country).filter(orgUnit => orgUnit.parent === code),
 )((country, code) => code);
 
-export const descendantsCache = createCachedSelector(
-  [country => country, (_, code) => code],
-  (country, code) => {
+const descendantsCache = createCachedSelector(
+  [country => country, (_, code) => code, (_, __, level) => level],
+  (country, code, level) => {
     const orgUnit = getOrgUnitFromCountry(country, code);
     if (!orgUnit) {
       return undefined;
+    }
+
+    if (orgUnit.type === level) {
+      return [orgUnit];
     }
 
     const countryOrgUnits = Object.values(country);
     const descendants = [];
     let generation = [orgUnit];
-    while (generation) {
+    while (generation.length > 0) {
       descendants.concat(generation);
       generation = [].concat(
-        ...generation.map(parentOrgUnit =>
-          countryOrgUnits.filter(childOrgUnit => childOrgUnit.parent === parentOrgUnit.code),
-        ),
+        ...generation
+          .filter(generationOrgUnit => generationOrgUnit.type !== level)
+          .map(parentOrgUnit =>
+            countryOrgUnits.filter(childOrgUnit => childOrgUnit.parent === parentOrgUnit.code),
+          ),
       );
     }
 
     return descendants;
   },
-)((country, code) => code);
+)((country, code, level) => `${code}_${level}`);
 
 const ancestorsCache = createCachedSelector(
-  [country => country, (_, code) => code],
-  (country, code) => {
+  [country => country, (_, code) => code, (_, __, level) => level],
+  (country, code, level) => {
     const orgUnit = getOrgUnitFromCountry(country, code);
     if (!orgUnit) {
       return undefined;
+    }
+
+    if (orgUnit.type === level) {
+      return [orgUnit];
     }
 
     const ancestors = [];
     let ancestor = orgUnit;
     while (ancestor) {
       ancestors.push(ancestor);
+      if (ancestor.type === level) {
+        return ancestors;
+      }
+
       ancestor = getOrgUnitFromCountry(country, ancestor.parent);
     }
 
     return ancestors;
   },
-)((country, code) => code);
+)((country, code, level) => `${code}_${level}`);
 
 const countryAsHierarchyObjectCache = createCachedSelector(
   [country => country, (_, world) => world],
