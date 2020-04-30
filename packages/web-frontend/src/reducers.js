@@ -47,9 +47,6 @@ import {
   FETCH_COUNTRY_ACCESS_DATA_ERROR,
   FETCH_DASHBOARD_CONFIG_ERROR,
   FETCH_DASHBOARD_CONFIG_SUCCESS,
-  FETCH_HIERARCHY_NESTED_ITEMS,
-  FETCH_HIERARCHY_NESTED_ITEMS_ERROR,
-  FETCH_HIERARCHY_NESTED_ITEMS_SUCCESS,
   FETCH_INFO_VIEW_DATA_ERROR,
   FETCH_INFO_VIEW_DATA_SUCCESS,
   FETCH_INFO_VIEW_DATA,
@@ -78,7 +75,6 @@ import {
   FIND_USER_LOGGEDIN,
   FIND_USER_LOGIN_FAILED,
   GO_HOME,
-  HIGHLIGHT_ORG_UNIT,
   CLOSE_DROPDOWN_OVERLAYS,
   SHOW_SERVER_UNREACHABLE_ERROR,
   SHOW_SESSION_EXPIRED_ERROR,
@@ -510,14 +506,6 @@ function searchBar(
       return { ...state, searchResponse: null, searchString: action.searchString };
     case FETCH_SEARCH_ERROR:
       return { ...state, searchResponse: action.error };
-    case FETCH_HIERARCHY_NESTED_ITEMS:
-      return { ...state };
-    case FETCH_HIERARCHY_NESTED_ITEMS_SUCCESS: {
-      const updatedHierarchy = nestOrgUnitInHierarchy(action.response, state.hierarchyData);
-      return { ...state, hierarchyData: updatedHierarchy };
-    }
-    case FETCH_HIERARCHY_NESTED_ITEMS_ERROR:
-      return { ...state, hierarchyData: action.error };
     case CLOSE_DROPDOWN_OVERLAYS:
       return { ...state, isExpanded: false };
     default:
@@ -574,7 +562,6 @@ function global(
     overlay: !isMobile() && LANDING,
     currentOrganisationUnit: {},
     currentOrganisationUnitSiblings: [],
-    highlightedOrganisationUnit: {},
     dashboardConfig: {},
     viewConfigs: {},
     isLoadingOrganisationUnit: false,
@@ -605,12 +592,6 @@ function global(
         isLoadingOrganisationUnit: false,
         currentOrganisationUnit: action.organisationUnit,
         currentOrganisationUnitSiblings: action.organisationUnitSiblings,
-        highlightedOrganisationUnit: {},
-      };
-    case HIGHLIGHT_ORG_UNIT:
-      return {
-        ...state,
-        highlightedOrganisationUnit: action.organisationUnit,
       };
     case CHANGE_ORG_UNIT_ERROR:
       return { ...state, isLoadingOrganisationUnit: false };

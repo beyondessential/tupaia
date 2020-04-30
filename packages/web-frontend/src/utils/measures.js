@@ -36,6 +36,8 @@ export const MEASURE_TYPE_SHADED_SPECTRUM = 'shaded-spectrum';
 export const MEASURE_VALUE_OTHER = 'other';
 export const MEASURE_VALUE_NULL = 'null';
 
+export const POLYGON_MEASURE_TYPES = [MEASURE_TYPE_SHADING, MEASURE_TYPE_SHADED_SPECTRUM];
+
 export function autoAssignColors(values) {
   if (!values) return [];
 
@@ -153,7 +155,7 @@ export function processMeasureInfo(response) {
 
     hiddenMeasures[measureOption.key] = measureOption.hideByDefault;
 
-    if (type === MEASURE_TYPE_SPECTRUM || type === MEASURE_TYPE_SHADED_SPECTRUM) {
+    if (POLYGON_MEASURE_TYPES.includes(type)) {
       // for each spectrum, include the minimum and maximum values for
       // use in the legend scale labels.
       const { min, max } = getSpectrumScaleValues(measureData, measureOption);

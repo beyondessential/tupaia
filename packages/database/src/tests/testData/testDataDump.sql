@@ -3060,6 +3060,8 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
+SELECT pg_catalog.setval('public.migrations_id_seq', 620, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 638, true);
 SELECT pg_catalog.setval('public.migrations_id_seq', 641, true);
 
 
