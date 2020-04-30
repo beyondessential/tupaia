@@ -47,7 +47,8 @@ export class ListWrapper extends PureComponent {
     }
 
     const items = data.map(item => {
-      let { dataElementCode, value } = item;
+      const { dataElementCode } = item;
+      let { value } = item;
       if (valueTranslationOptions) {
         const { match, replace } = valueTranslationOptions;
         value = value.replace(new RegExp(match), replace);

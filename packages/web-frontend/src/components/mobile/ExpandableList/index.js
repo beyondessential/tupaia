@@ -54,7 +54,7 @@ export class ExpandableList extends PureComponent {
     if (handleExpandCollapseClick) {
       handleExpandCollapseClick(!isExpanded);
     } else {
-      this.setState({ isListExpanded: !this.state.isListExpanded });
+      this.setState(state => ({ isListExpanded: !state.isListExpanded }));
     }
   };
 

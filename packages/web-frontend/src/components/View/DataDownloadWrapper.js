@@ -43,7 +43,7 @@ export class DataDownloadWrapper extends PureComponent {
   getDownloadLink = () => {
     const { viewContent } = this.props;
     const selectedSurveyCodes = Object.entries(this.state.selectedSurveys)
-      .filter(([surveyCode, isSelected]) => isSelected)
+      .filter(([, isSelected]) => isSelected)
       .map(([surveyCode]) => surveyCode);
     return `${viewContent.downloadUrl}&surveyCodes=${selectedSurveyCodes}`;
   };

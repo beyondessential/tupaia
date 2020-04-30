@@ -49,7 +49,10 @@ describe('measures', () => {
 
     it('should use the provided null mapping', () => {
       const valueMapping = createValueMapping(
-        [{ value: 1, name: 'test' }, { value: 'null', name: 'null-test' }],
+        [
+          { value: 1, name: 'test' },
+          { value: 'null', name: 'null-test' },
+        ],
         'icon',
       );
 
