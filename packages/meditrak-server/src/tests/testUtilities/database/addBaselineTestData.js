@@ -64,16 +64,21 @@ export async function addBaselineTestData() {
     },
   );
 
-  await createUserAccessor(models, {
-    emailAddress: 'test.user@tupaia.org',
-    password: 'test.password',
-    firstName: 'Test',
-    lastName: 'User',
-    employer: 'Automation',
-    position: 'Test',
-    contactNumber: '',
-    countryName: 'Demo Land',
-    permissionGroupName: 'Admin',
-    verifiedEmail: 'verified',
-  });
+  try {
+    await createUserAccessor(models, {
+      emailAddress: 'test.user@tupaia.org',
+      password: 'test.password',
+      firstName: 'Test',
+      lastName: 'User',
+      employer: 'Automation',
+      position: 'Test',
+      contactNumber: '',
+      countryName: 'Demo Land',
+      permissionGroupName: 'Admin',
+      verifiedEmail: 'verified',
+    });
+  } catch (e) {
+    console.log(e.message, country.code, country.name);
+    throw e;
+  }
 }
