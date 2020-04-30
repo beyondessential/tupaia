@@ -27,14 +27,14 @@ const Container = styled.div`
 `;
 
 const Tab1Label = () => (
-  <>
+  <React.Fragment>
     <ErrorOutline /> 3 Active Alerts
-  </>
+  </React.Fragment>
 );
 const Tab2Label = () => (
-  <>
+  <React.Fragment>
     <NotificationImportant /> 1 Active Outbreak
-  </>
+  </React.Fragment>
 );
 const Tab1Content = () => (
   <p>
@@ -43,14 +43,14 @@ const Tab1Content = () => (
   </p>
 );
 const Tab2Content = () => (
-  <>
+  <React.Fragment>
     <p>Sed ut perspiciatis unde omnis iste natus error sit </p>
     <ul>
       <li>voluptatem accusantium</li>
       <li>doloremque laudantium</li>
       <li>voluptatem accusantium</li>
     </ul>
-  </>
+  </React.Fragment>
 );
 
 export const simple = () => {

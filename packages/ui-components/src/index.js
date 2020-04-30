@@ -2,6 +2,12 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
+
+import * as colors from './theme/colors';
+import theme from './theme';
+
+export { colors, theme };
+
 export * from './components/Icons';
 export * from './components/Inputs';
 export * from './components/Alert';
@@ -14,3 +20,4 @@ export * from './components/IconButton';
 export * from './components/NavBar';
 export * from './components/ProfileButton';
 export * from './components/Tabs';
+export * from './components/Toolbar';
