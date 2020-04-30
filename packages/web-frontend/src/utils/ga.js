@@ -10,7 +10,6 @@ import {
   ATTEMPT_LOGIN,
   FETCH_LOGIN_SUCCESS,
   CHANGE_ORG_UNIT,
-  HIGHLIGHT_ORG_UNIT,
   CHANGE_MEASURE,
   CHANGE_TILE_SET,
   TOGGLE_INFO_PANEL,
@@ -56,10 +55,6 @@ export const gaMiddleware = () => next => action => {
         if (action.organisationUnitCode !== initialOrgUnit.organisationUnitCode) {
           gaEvent('Organisation Unit', 'Change', action.organisationUnitCode);
         }
-        break;
-
-      case HIGHLIGHT_ORG_UNIT:
-        gaEvent('Organisation Unit', 'Highlight', action.organisationUnit.organisationUnitCode);
         break;
 
       case CHANGE_MEASURE:
