@@ -11,7 +11,13 @@ var seed;
  * This enables us to not have to rely on NODE_PATH.
  */
 
-const DASHBOARD_GROUP_CODES = ['DL_Unfpa_Facility'];
+const DASHBOARD_GROUP_CODES = [
+  'DL_Unfpa_Facility',
+  'TO_Unfpa_Facility',
+  'VU_Unfpa_Facility',
+  'KI_Unfpa_Facility',
+  'SB_Unfpa_Facility',
+];
 
 const REPORT_ID = 'UNFPA_RH_Products_MOS';
 
