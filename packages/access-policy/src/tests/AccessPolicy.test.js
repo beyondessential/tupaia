@@ -4,7 +4,7 @@
  */
 
 import { expect } from 'chai';
-import { AccessPolicy } from '../';
+import { AccessPolicy } from '..';
 
 const policy = {
   DL: ['Public'],
@@ -76,19 +76,21 @@ describe('AccessPolicy', () => {
 
   describe('AccessPolicy.getPermissionGroups', () => {
     it('should return all permission groups when no entities are specified', () => {
-      expect(accessPolicy.getPermissionGroups()).to.deep.equal(
-        new Set(['Public', 'Admin', 'Royal Australasian College of Surgeons']),
-      );
+      expect(accessPolicy.getPermissionGroups()).to.have.members([
+        'Public',
+        'Admin',
+        'Royal Australasian College of Surgeons',
+      ]);
     });
 
     it('should return just the permission groups that relate to the provided entities', () => {
-      expect(accessPolicy.getPermissionGroups(['KI'])).to.deep.equal(new Set(['Public', 'Admin']));
-      expect(accessPolicy.getPermissionGroups(['DL', 'KI'])).to.deep.equal(
-        new Set(['Public', 'Admin']),
-      );
-      expect(accessPolicy.getPermissionGroups(['SB', 'KI'])).to.deep.equal(
-        new Set(['Public', 'Admin', 'Royal Australasian College of Surgeons']),
-      );
+      expect(accessPolicy.getPermissionGroups(['KI'])).to.have.members(['Public', 'Admin']);
+      expect(accessPolicy.getPermissionGroups(['DL', 'KI'])).to.have.members(['Public', 'Admin']);
+      expect(accessPolicy.getPermissionGroups(['SB', 'KI'])).to.have.members([
+        'Public',
+        'Admin',
+        'Royal Australasian College of Surgeons',
+      ]);
     });
   });
 });

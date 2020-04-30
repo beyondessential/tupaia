@@ -22,14 +22,11 @@
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jsx-a11y": "^4.0.0",
     "eslint-plugin-react": "^6.10.3",
-    "mocha": "^4.0.1"
+    "mocha": "^6.2.0"
   },
   "scripts": {
     "build": "babel src --out-dir dist",
-    "test": "npm run build && ./node_modules/mocha/bin/mocha './!(node_modules)/**/*.test.js' --require @babel/register --require @babel/polyfill --timeout 100000 --exit"
-  },
-  "directories": {
-    "test": "tests"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",

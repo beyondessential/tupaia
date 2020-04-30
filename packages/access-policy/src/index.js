@@ -34,7 +34,7 @@ export class AccessPolicy {
    * @returns boolean Whether or not the user has access to any of the entities, optionally for
    *                  the given permission group
    */
-  allows({ entity, permissionGroup }) {
+  allows(entity, permissionGroup) {
     return this.allowsSome([entity], permissionGroup);
   }
 
@@ -55,7 +55,7 @@ export class AccessPolicy {
    * @returns boolean Whether or not the user has access to any of the entities, optionally for
    *                  the given permission group
    */
-  allowsSome(entities, permissionGroup) {
+  allowsSome(entities = [], permissionGroup) {
     if (!permissionGroup) {
       return entities.some(entityCode => !!this.policy[entityCode]);
     }
