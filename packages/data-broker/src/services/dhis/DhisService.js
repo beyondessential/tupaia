@@ -136,8 +136,17 @@ export class DhisService extends Service {
   }
 
   getPullAnalyticsForApiMethod = options => {
-    const { programCodes, eventId } = options;
-    return programCodes || eventId ? this.pullAnalyticsFromEventsForApi : this.pullAnalyticsForApi;
+    const { programCodes } = options;
+
+    if (programCodes) {
+      // TODO remove `useDeprecatedApi` option as soon as `pullAnalyticsFromEventsForApi_Deprecated()` is deleted
+      const { useDeprecatedApi = true } = options;
+      return useDeprecatedApi
+        ? this.pullAnalyticsFromEventsForApi_Deprecated
+        : this.pullAnalyticsFromEventsForApi;
+    }
+
+    return this.pullAnalyticsForApi;
   };
 
   fetchEventsForPrograms = async (api, programCodes, query) => {
@@ -152,7 +161,7 @@ export class DhisService extends Service {
     return events;
   };
 
-  pullAnalyticsFromEventsForApi = async (api, dataSources, options) => {
+  pullAnalyticsFromEventsForApi_Deprecated = async (api, dataSources, options) => {
     const {
       organisationUnitCodes = [],
       startDate,
@@ -175,6 +184,10 @@ export class DhisService extends Service {
     const translatedEvents = await this.translator.translateInboundEvents(events, programCodes[0]);
 
     return buildAnalyticsFromEvents(api, translatedEvents);
+  };
+
+  pullAnalyticsFromEventsForApi = async (api, dataSources, options) => {
+    // TODO implement
   };
 
   pullAnalyticsForApi = async (api, dataSources, options) => {

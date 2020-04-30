@@ -9,6 +9,7 @@ import sinon from 'sinon';
 import { DhisService } from '../../../../../services/dhis/DhisService';
 import { DATA_SOURCES } from '../DhisService.fixtures';
 import { buildDhisAnalyticsResponse, stubModels, stubDhisApi } from '../helpers';
+import { testPullAnalyticsFromEvents_Deprecated } from './testPullAnalyticsFromEvents_Deprecated';
 
 const dhisService = new DhisService(stubModels());
 let dhisApi;
@@ -17,6 +18,46 @@ export const testPullAnalytics = () => {
   beforeEach(() => {
     // recreate stub so spy calls are reset
     dhisApi = stubDhisApi();
+  });
+
+  describe('data source selection', () => {
+    const analyticsSpy = sinon.spy(dhisService, 'pullAnalyticsForApi');
+    const analyticsFromEventsSpy = sinon.spy(dhisService, 'pullAnalyticsFromEventsForApi');
+    const analyticsFromEvents_DeprecatedSpy = sinon.spy(
+      dhisService,
+      'pullAnalyticsFromEventsForApi_Deprecated',
+    );
+
+    beforeEach(() => {
+      analyticsSpy.resetHistory();
+      analyticsFromEventsSpy.resetHistory();
+      analyticsFromEvents_DeprecatedSpy.resetHistory();
+    });
+
+    it('pulls aggregate data by default', async () => {
+      await dhisService.pull([DATA_SOURCES.POP01_GROUP], 'dataElement', {});
+      expect(analyticsSpy).to.have.callCount(1);
+      expect(analyticsFromEventsSpy).to.have.callCount(0);
+      expect(analyticsFromEvents_DeprecatedSpy).to.have.callCount(0);
+    });
+
+    it('pulls event data if `programCodes` are provided', async () => {
+      await dhisService.pull([DATA_SOURCES.POP01_GROUP], 'dataElement', {
+        programCodes: ['POP01'],
+      });
+      expect(analyticsSpy).to.have.callCount(0);
+      expect(
+        analyticsFromEventsSpy.callCount + analyticsFromEvents_DeprecatedSpy.callCount,
+      ).to.equal(1);
+    });
+
+    it('invokes the deprecated analytics from events api by default', async () => {
+      await dhisService.pull([DATA_SOURCES.POP01_GROUP], 'dataElement', {
+        programCodes: ['POP01'],
+      });
+      expect(analyticsFromEventsSpy).to.have.callCount(0);
+      expect(analyticsFromEvents_DeprecatedSpy).to.have.callCount(1);
+    });
   });
 
   describe('from aggregate data', () => {
@@ -51,7 +92,7 @@ export const testPullAnalytics = () => {
       it('supports various API options', async () => {
         const options = {
           outputIdScheme: 'code',
-          organisationUnitCodes: ['TO'],
+          organisationUnitCodes: ['TO', 'PG'],
           period: '20200822',
           startDate: '20200731',
           endDate: '20200904',
@@ -133,4 +174,8 @@ export const testPullAnalytics = () => {
       });
     });
   });
+
+  describe('from event data', () => {});
+
+  describe('from event data - deprecated API', testPullAnalyticsFromEvents_Deprecated);
 };
