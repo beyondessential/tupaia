@@ -18,6 +18,8 @@ export {
   upsertSurveyResponse,
   upsertSurveyScreen,
   upsertSurveyScreenComponent,
+  createEntity,
+  createDataElement,
   createAlert,
 } from './database';
 export {

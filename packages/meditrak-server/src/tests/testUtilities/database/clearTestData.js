@@ -53,6 +53,7 @@ const TABLES_TO_CLEAR = [
 
 export function clearTestData(testStartTime = moment().format('YYYY-MM-DD HH:mm:ss')) {
   const extraConditions = {
+    alert: [`id LIKE '%test%'`],
     api_request_log: [`request_time >= '${testStartTime}'`],
     answer: [`question_id ${COMPARISON}`, `survey_response_id ${COMPARISON}`],
     survey_response: [`survey_id ${COMPARISON}`, `entity_id ${COMPARISON}`],

@@ -3,15 +3,21 @@ import { upsertRecord } from './upsertRecord';
 
 const models = getModels();
 
-export const createAlert = async (code = 'ABC', name = 'XYZ') => {
-  const entity = await upsertRecord(models.entity, { code, name });
+export const createEntity = async key => {
+  return upsertRecord(models.entity, { code: key, name: key });
+};
 
-  const dataElement = await upsertRecord(models.dataSource, {
-    code,
+export const createDataElement = async key => {
+  return upsertRecord(models.dataSource, {
+    code: key,
     type: 'dataElement',
     service_type: 'dhis',
   });
+};
 
+export const createAlert = async key => {
+  const entity = await createEntity(key);
+  const dataElement = await createDataElement(key);
   const alert = await upsertRecord(models.alert, {
     entity_id: entity.id,
     data_element_id: dataElement.id,

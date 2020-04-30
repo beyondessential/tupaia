@@ -5,12 +5,11 @@
 
 import { expect } from 'chai';
 import { TestableApp } from '../TestableApp';
-import { createAlert, resetTestData } from '../testUtilities';
+import { createEntity, createDataElement, createAlert, resetTestData } from '../testUtilities';
 
 describe('Alerts CRUD', () => {
   const app = new TestableApp();
   const models = app.models;
-  const testAlertData = [];
 
   /*
   const localReset = async () => {
@@ -18,24 +17,23 @@ describe('Alerts CRUD', () => {
       await models.alert.delete({ id: item.alert.id });
     }
 
-    for (const code of ['TROZ', 'NARF', 'ZORT', 'EGAD', 'FIORD', 'POIT']) {
+    for (const code of ['NARF', 'ZORT', 'POIT', 'EGAD', 'TROZ', 'FIORD']) {
       await models.entity.delete({ code });
       await models.dataSource.delete({ code });
     }
   };
   */
 
-  before(async () => {
-    await app.authenticate();
-  });
+  before(app.authenticate);
 
   describe('Create: POST /alerts', () => {
     it('creates an alert', async () => {
-      const troz = await createAlert('TROZ');
-      const { alert, entity, dataElement } = troz;
+      const entity = await createEntity('NARF1');
+      const dataElement = await createDataElement('NARF2');
 
       const { statusCode, body } = await app.post('alert', {
         body: {
+          id: '123-narf-test-narf-123',
           entity_id: entity.id,
           data_element_id: dataElement.id,
           start_time: new Date().toISOString(),
@@ -45,20 +43,20 @@ describe('Alerts CRUD', () => {
       expect(statusCode).to.equal(200);
       expect(body).to.deep.equal({ message: 'Successfully added alert' });
 
-      await models.alert.delete({ id: alert.id });
-      await models.alert.delete({ entity_id: entity.id, data_element_id: dataElement.id });
+      const latestAlert = (await models.alert.all()).pop();
+      expect(latestAlert.entity_id).to.equal(entity.id);
+      expect(latestAlert.data_element_id).to.equal(dataElement.id);
     });
   });
 
   describe('Read: GET /alerts', () => {
     it('reads a list of alerts', async () => {
-      testAlertData.push(await createAlert('NARF'));
-      testAlertData.push(await createAlert('ZORT'));
+      const createdData = [await createAlert('ZORT1'), await createAlert('ZORT2')];
 
       const { body: alerts } = await app.get('alerts');
-      expect(alerts.length).to.equal(2);
+      expect(alerts.length).to.equal(3);
 
-      for (const [index, alert] of alerts.entries()) {
+      for (const [index, { alert }] of createdData.entries()) {
         expect(alert).to.have.property('id');
         expect(alert).to.have.property('entity_id');
         expect(alert).to.have.property('data_element_id');
@@ -67,18 +65,18 @@ describe('Alerts CRUD', () => {
         expect(alert).to.have.property('event_confirmed_time');
         expect(alert).to.have.property('archived');
 
-        expect(alert.id).to.equal(testAlertData[index].alert.id);
-        expect(alert.entity_id).to.equal(testAlertData[index].entity.id);
-        expect(alert.data_element_id).to.equal(testAlertData[index].dataElement.id);
+        expect(alert.id).to.equal(createdData[index].alert.id);
+        expect(alert.entity_id).to.equal(createdData[index].entity.id);
+        expect(alert.data_element_id).to.equal(createdData[index].dataElement.id);
         expect(alert.end_time).to.be.null;
         expect(alert.event_confirmed_time).to.be.null;
       }
     });
 
     it('reads a single alert', async () => {
-      testAlertData.push(await createAlert('EGAD'));
+      const { alert: createdAlert, entity, dataElement } = await createAlert('POIT1');
 
-      const { body: alert } = await app.get(`alerts/${testAlertData[2].alert.id}`);
+      const { body: alert } = await app.get(`alerts/${createdAlert.id}`);
 
       expect(alert).to.be.an('object');
 
@@ -90,9 +88,9 @@ describe('Alerts CRUD', () => {
       expect(alert).to.have.property('event_confirmed_time');
       expect(alert).to.have.property('archived');
 
-      expect(alert.id).to.equal(testAlertData[2].alert.id);
-      expect(alert.entity_id).to.equal(testAlertData[2].entity.id);
-      expect(alert.data_element_id).to.equal(testAlertData[2].dataElement.id);
+      expect(alert.id).to.equal(createdAlert.id);
+      expect(alert.entity_id).to.equal(entity.id);
+      expect(alert.data_element_id).to.equal(dataElement.id);
       expect(alert.end_time).to.be.null;
       expect(alert.event_confirmed_time).to.be.null;
     });
@@ -100,29 +98,28 @@ describe('Alerts CRUD', () => {
 
   describe('Update: PUT /alerts', () => {
     it('updates a single alert', async () => {
-      const testAlertData1 = await createAlert('FIORD');
-      const { alert } = testAlertData1;
-      const newEndTime = new Date().toISOString();
-      testAlertData.push(testAlertData1);
+      const { alert } = await createAlert('EGAD1');
+      const newEndTime = new Date();
+      const millisecondsCorrection = -newEndTime.getTimezoneOffset() * 60 * 1000;
 
       const { statusCode, body } = await app.put(`alerts/${alert.id}`, {
-        body: { end_time: newEndTime, archived: true },
+        body: { end_time: newEndTime.toISOString(), archived: true },
       });
 
       expect(statusCode).to.equal(200);
       expect(body).to.deep.equal({ message: 'Successfully updated alerts' });
 
-      const createdAlert = await models.alert.findById(alert.id);
-      expect(createdAlert.end_time).is.not.null;
-      expect(createdAlert.archived).to.be.true;
+      const updatedAlert = await models.alert.findById(alert.id);
+      expect(updatedAlert.end_time.getTime()).to.equal(
+        newEndTime.getTime() - millisecondsCorrection,
+      );
+      expect(updatedAlert.archived).to.be.true;
     });
   });
 
   describe('Delete: DELETE /alerts', () => {
     it('deletes an alert', async () => {
-      const testAlertData1 = await createAlert('POIT');
-      const { alert } = testAlertData1;
-      testAlertData.push(testAlertData1);
+      const { alert } = await createAlert('TROZ1');
 
       const { statusCode, body } = await app.delete(`alerts/${alert.id}`);
 
