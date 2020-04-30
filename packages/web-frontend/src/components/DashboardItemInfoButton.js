@@ -60,7 +60,6 @@ const Content = styled.div`
 
 export class DashboardItemInfoButton extends Component {
   state = {
-    isHovered: false,
     shouldShowText: false,
   };
 
@@ -69,7 +68,7 @@ export class DashboardItemInfoButton extends Component {
   mouseOver = () => this.setState({ shouldShowText: true });
 
   toggleInfoText = () => {
-    this.setState({ shouldShowText: !this.state.shouldShowText });
+    this.setState(state => ({ shouldShowText: !state.shouldShowText }));
   };
 
   renderMobileContent = () => {
@@ -80,7 +79,8 @@ export class DashboardItemInfoButton extends Component {
     } else {
       content = (
         <Content>
-          <InfoIcon /> <CallToAction>View more info</CallToAction>
+          <InfoIcon />
+          <CallToAction>View more info</CallToAction>
         </Content>
       );
     }
@@ -90,7 +90,7 @@ export class DashboardItemInfoButton extends Component {
         onFocus={this.mouseOver}
         onBlur={this.mouseOut}
         onClick={this.toggleInfoText}
-        role="Button"
+        role="button"
         tabIndex={0}
       >
         {content}
@@ -107,7 +107,7 @@ export class DashboardItemInfoButton extends Component {
         onKeyPress={this.mouseOver}
         onMouseOut={this.mouseOut}
         onBlur={this.mouseOut}
-        role="Button"
+        role="button"
         tabIndex={0}
       >
         <InfoIcon />

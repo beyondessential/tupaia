@@ -16,8 +16,8 @@ import { DARK_BLUE, MOBILE_HEADER_HEIGHT, MOBILE_MARGIN_SIZE, WHITE } from '../.
 const Overlay = ({ titleText, titleElement, children, onClose, contentStyle }) => (
   <div style={styles.overlay}>
     <div style={styles.header}>
-      {titleElement ? titleElement : <div style={styles.title}>{titleText}</div>}
-      <button style={styles.closeButton} onClick={onClose}>
+      {titleElement || <div style={styles.title}>{titleText}</div>}
+      <button type="button" style={styles.closeButton} onClick={onClose}>
         <CloseIcon />
       </button>
     </div>
