@@ -24,6 +24,8 @@ RUN mkdir -p ./packages/aggregator
 COPY packages/aggregator/. ./packages/aggregator
 RUN mkdir -p ./packages/auth
 COPY packages/auth/. ./packages/auth
+RUN mkdir -p ./packages/access-policy
+COPY packages/access-policy/. ./packages/access-policy
 RUN mkdir -p ./packages/data-broker
 COPY packages/data-broker/. ./packages/data-broker
 RUN mkdir -p ./packages/devops
