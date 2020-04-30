@@ -3,7 +3,7 @@
   "version": "1.7.106",
   "private": true,
   "scripts": {
-    "lint": "eslint --ext .js --ignore-pattern __tests__/",
+    "lint": "eslint --ext .js --ignore-pattern __tests__/ .",
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "flow": "node_modules/.bin/flow",
     "flow-stop": "node_modules/.bin/flow stop",
