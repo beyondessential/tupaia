@@ -3041,18 +3041,18 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 627	/20200416033717-ReplaceRegionInSurveyScreenComponent	2020-04-22 15:06:05.461
 628	/20200416033718-RenameOrganisationUnitLevelInDashboardReport	2020-04-22 15:06:05.607
 629	/20200408052334-AddSamoaCovidRawDataDownloadDashboard	2020-04-22 23:41:28.752
-630	/20200331033941-CreateUNFPADeliveryServicesLineCharts	2020-04-30 13:59:08.413
-631	/20200403054119-SwapDataElementsForRHCStockCardsChart	2020-04-30 13:59:08.45
-632	/20200406042212-AddCovidTotalDeathsVsCasesByDay	2020-04-30 13:59:08.514
-633	/20200406044451-AddCovidCumulativeDeathsVsCases	2020-04-30 13:59:08.559
-634	/20200408065558-AddDenominatorAggregationFlagToUNFPAReport	2020-04-30 13:59:08.57
-635	/20200409012830-Migrate-old-facility-BCD1-data	2020-04-30 13:59:08.718
-636	/20200417211027-AllowNullAccessToken	2020-04-30 13:59:08.727
-637	/20200421000451-AddTongaCovidIpcCommodityAvailabilityDashboard	2020-04-30 13:59:08.787
-638	/20200422231733-MoveNoCountryUsersToAdminPanel	2020-04-30 13:59:08.806
-639	/20200423213702-EntityBasedPermissions	2020-04-30 13:59:09.038
-640	/20200427015657-AddReproductiveHealthStockOverlays	2020-04-30 13:59:09.126
-641	/20200428035406-UpdateUNFPACountriesAndDashboards	2020-04-30 13:59:09.288
+630	/20200331033941-CreateUNFPADeliveryServicesLineCharts	2020-04-30 14:33:09.493
+631	/20200403054119-SwapDataElementsForRHCStockCardsChart	2020-04-30 14:33:09.501
+632	/20200406042212-AddCovidTotalDeathsVsCasesByDay	2020-04-30 14:33:09.514
+633	/20200406044451-AddCovidCumulativeDeathsVsCases	2020-04-30 14:33:09.52
+634	/20200408065558-AddDenominatorAggregationFlagToUNFPAReport	2020-04-30 14:33:09.527
+635	/20200409012830-Migrate-old-facility-BCD1-data	2020-04-30 14:33:09.602
+636	/20200421000451-AddTongaCovidIpcCommodityAvailabilityDashboard	2020-04-30 14:33:09.609
+637	/20200427015657-AddReproductiveHealthStockOverlays	2020-04-30 14:33:09.623
+638	/20200428035406-UpdateUNFPACountriesAndDashboards	2020-04-30 14:33:09.641
+639	/20200417211027-AllowNullAccessToken	2020-04-30 14:34:37.532
+640	/20200422231733-MoveNoCountryUsersToAdminPanel	2020-04-30 14:34:37.598
+641	/20200423213702-EntityBasedPermissions	2020-04-30 14:34:37.831
 \.
 
 
@@ -3060,8 +3060,6 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 620, true);
-SELECT pg_catalog.setval('public.migrations_id_seq', 638, true);
 SELECT pg_catalog.setval('public.migrations_id_seq', 641, true);
 
 
