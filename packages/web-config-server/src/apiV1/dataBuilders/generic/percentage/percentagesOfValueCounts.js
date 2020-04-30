@@ -12,9 +12,9 @@ const COMPARISON_TYPES = {
   COUNT: '$count',
 };
 const OPERATION_TYPES = {
-  '>': (leftOperand, rightOperand) => leftOperand > rightOperand,
-  '=': (leftOperand, rightOperand) => leftOperand == rightOperand,
-  in: (leftOperand, rightOperand) => rightOperand.includes(leftOperand),
+  GT: (leftOperand, rightOperand) => leftOperand > rightOperand,
+  EQ: (leftOperand, rightOperand) => leftOperand == rightOperand,
+  IN: (leftOperand, rightOperand) => rightOperand.includes(leftOperand),
 };
 
 export class PercentagesOfValueCountsBuilder extends DataBuilder {

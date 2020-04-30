@@ -18,7 +18,7 @@ const DATA_BUILDER_CONFIG = {
   "dataClasses": {
     "STI Detected": {
       "numerator": {
-        "operation": "=",
+        "operation": "EQ",
         "operand": 'Detected',
         "dataValues": [
           "CD2_11_A74_9",
@@ -28,7 +28,7 @@ const DATA_BUILDER_CONFIG = {
         ],
       },
       "denominator": {
-        "operation": "in",
+        "operation": "IN",
         "operand": ['Detected', 'Not Detected', 'Not Tested', 'Out of Reagent'],
         "dataValues": [
           "CD2_11_A74_9",
@@ -40,7 +40,7 @@ const DATA_BUILDER_CONFIG = {
     },
     "STI Not Detected": {
       "numerator": {
-        "operation": "=",
+        "operation": "EQ",
         "operand": 'Not Detected',
         "dataValues": [
           "CD2_11_A74_9",
@@ -50,7 +50,7 @@ const DATA_BUILDER_CONFIG = {
         ],
       },
       "denominator": {
-        "operation": "in",
+        "operation": "IN",
         "operand": ['Detected', 'Not Detected', 'Not Tested', 'Out of Reagent'],
         "dataValues": [
           "CD2_11_A74_9",
@@ -62,7 +62,7 @@ const DATA_BUILDER_CONFIG = {
     },
     "Not Tested": {
       "numerator": {
-        "operation": "=",
+        "operation": "EQ",
         "operand": 'Not Tested',
         "dataValues": [
           "CD2_11_A74_9",
@@ -72,7 +72,7 @@ const DATA_BUILDER_CONFIG = {
         ],
       },
       "denominator": {
-        "operation": "in",
+        "operation": "IN",
         "operand": ['Detected', 'Not Detected', 'Not Tested', 'Out of Reagent'],
         "dataValues": [
           "CD2_11_A74_9",
@@ -84,7 +84,7 @@ const DATA_BUILDER_CONFIG = {
     },
     "Not Tested (Out of Reagent)": {
       "numerator": {
-        "operation": "=",
+        "operation": "EQ",
         "operand": 'Out of Reagent',
         "dataValues": [
           "CD2_11_A74_9",
@@ -94,7 +94,7 @@ const DATA_BUILDER_CONFIG = {
         ],
       },
       "denominator": {
-        "operation": "in",
+        "operation": "IN",
         "operand": ['Detected', 'Not Detected', 'Not Tested', 'Out of Reagent'],
         "dataValues": [
           "CD2_11_A74_9",
