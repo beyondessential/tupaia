@@ -20,6 +20,7 @@ export async function addBaselineTestData() {
       name: 'Demo Land',
     },
   );
+  console.log('found demo land', country.code, country.id, country.name);
 
   const areaId = '1111111111111111111_test';
   await models.geographicalArea.updateOrCreate(
