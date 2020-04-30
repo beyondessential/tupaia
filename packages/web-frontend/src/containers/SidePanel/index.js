@@ -15,9 +15,9 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import Dashboard from '../Dashboard';
 import styled from 'styled-components';
-import ExpandButton from '../../containers/ExpandButton';
+import Dashboard from '../Dashboard';
+import ExpandButton from '../ExpandButton';
 import {
   TRANS_BLACK,
   DASHBOARD_TRANSITION_TIME,
@@ -118,7 +118,4 @@ const mapDispatchToProps = dispatch => ({
   onChangeExpandedWidth: width => dispatch(changeSidePanelExpandedWidth(width)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(SidePanel);
+export default connect(mapStateToProps, mapDispatchToProps)(SidePanel);

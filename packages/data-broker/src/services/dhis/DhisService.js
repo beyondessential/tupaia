@@ -154,7 +154,7 @@ export class DhisService extends Service {
 
   pullAnalyticsFromEventsForApi = async (api, dataSources, options) => {
     const {
-      organisationUnitCode,
+      organisationUnitCodes,
       startDate,
       endDate,
       programCodes,
@@ -164,7 +164,7 @@ export class DhisService extends Service {
     } = options;
 
     const query = {
-      organisationUnitCode,
+      organisationUnitCode: organisationUnitCodes[0],
       dataElementIdScheme: 'code',
       startDate,
       endDate,

@@ -20,6 +20,7 @@ import moment from 'moment';
 import { getMarkerForOption, resolveSpectrumColour, UNKNOWN_COLOR } from '../../components/Marker';
 import { BOX_SHADOW, TRANS_BLACK_LESS, OFF_WHITE, WHITE } from '../../styles';
 import NoDataLabel, { LabelLeft, LabelRight } from './labels';
+import { SCALE_TYPES } from '../../constants';
 import {
   MEASURE_TYPE_ICON,
   MEASURE_TYPE_RADIUS,
@@ -28,10 +29,8 @@ import {
   MEASURE_TYPE_COLOR,
   MEASURE_VALUE_OTHER,
   MEASURE_VALUE_NULL,
-  SCALE_TYPES,
   MEASURE_TYPE_SHADED_SPECTRUM,
 } from '../../utils/measures';
-
 import { formatDataValue } from '../../utils/formatters';
 import {
   DEFAULT_ICON,
