@@ -6,8 +6,8 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
 import MuiBox from '@material-ui/core/Box';
-import { SystemUpdateAlt } from '@material-ui/icons';
 import styled from 'styled-components';
+import { SaveAlt } from '../components/Icons';
 import {
   Button,
   TextButton,
@@ -59,7 +59,7 @@ export const outlined = () => (
 
 export const lightOutlined = () => (
   <Container bgcolor={COLORS.BLUE}>
-    <LightOutlinedButton endIcon={<SystemUpdateAlt />}>Outlined</LightOutlinedButton>
+    <LightOutlinedButton startIcon={<SaveAlt />}>Export Data</LightOutlinedButton>
   </Container>
 );
 

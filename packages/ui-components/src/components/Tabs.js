@@ -34,7 +34,7 @@ export const Tabs = props => {
  */
 export const Tab = styled(({ children, ...rest }) => <MuiTab {...rest} label={children} />)`
   min-width: auto;
-  padding: 1.1rem 0;
+  padding: 1rem 0;
   margin: 0 1.2rem;
   text-transform: uppercase;
   letter-spacing: 0;

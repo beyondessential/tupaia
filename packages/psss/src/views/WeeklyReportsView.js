@@ -26,7 +26,7 @@ const config = {
 export const WeeklyReportsView = () => {
   return (
     <React.Fragment>
-      <Header title="All Countries" />
+      <Header title="Countries" />
       <BaseToolbar />
       <Container>
         <Main>
