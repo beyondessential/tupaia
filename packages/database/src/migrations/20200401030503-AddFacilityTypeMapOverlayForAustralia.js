@@ -55,7 +55,7 @@ exports.up = function(db) {
     '0',
     '{"aggregationEntityType": "facility"}',
     'valueForOrgGroup',
-    '{"displayedValueKey": "facilityTypeName", "displayOnLevel": "Region" }',
+    '{"displayedValueKey": "facilityTypeName", "displayOnLevel": "SubDistrict" }',
     '{AU}');
   `);
 };
