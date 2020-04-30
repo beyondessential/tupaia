@@ -11,16 +11,15 @@
  * Container providing all the controls for user: login, logout, info, account
  */
 
-import FacilityIcon from 'material-ui/svg-icons/maps/local-hospital';
 import SearchIcon from 'material-ui/svg-icons/action/search';
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { isNull } from 'lodash';
 import { connect } from 'react-redux';
+import { createSelector } from 'reselect';
 import { List, ListItem } from 'material-ui/List';
 import { ControlBar } from '../../components/ControlBar';
-import { HierarchyItem } from '../../components/HierarchyItem';
-import { selectOrgUnitsAsHierarchy } from '../../selectors';
+import { selectOrgUnitChildren } from '../../selectors';
 import {
   changeSearch,
   toggleSearchExpand,
@@ -28,6 +27,7 @@ import {
   openMapPopup,
   requestOrgUnit,
 } from '../../actions';
+import { SearchBarItem } from '../../components/SearchBarItem';
 
 const styles = {
   menuOption: {
@@ -69,10 +69,6 @@ const styles = {
   controlBar: {
     marginBottom: '10px',
   },
-};
-
-const ICON_BY_ORG_UNIT_TYPE = {
-  Facility: FacilityIcon,
 };
 
 export class SearchBar extends PureComponent {
@@ -118,40 +114,16 @@ export class SearchBar extends PureComponent {
   }
 
   renderHierarchy() {
-    const { hierarchyData, onOrgUnitClick, orgUnitFetchError } = this.props;
+    const { hierarchyData, orgUnitFetchError } = this.props;
 
     if (isNull(hierarchyData))
       return <div style={styles.searchResponseText}>Loading countries...</div>;
     if (orgUnitFetchError) return <h2>Server error, try refresh</h2>;
     if (hierarchyData.length < 1) return null;
 
-    const recurseOrgUnits = (orgUnits, nestedMargin) => {
-      if (!orgUnits || orgUnits.length < 1) return []; // OrgUnits with no children are our recursive base case
-      return orgUnits.map(orgUnit => {
-        const { organisationUnitCode, name, type, isLoading, organisationUnitChildren } = orgUnit;
-        // Recursively generate the children for this OrgUnit, will not recurse whole tree as
-        // HierarchyItems only fetch their children data on componentWillMount
-        const nestedItems = recurseOrgUnits(
-          sortOrgUnitsAlphabeticallyByName(organisationUnitChildren),
-        );
-        return (
-          <HierarchyItem
-            key={organisationUnitCode}
-            label={name}
-            nestedMargin={nestedMargin}
-            nestedItems={nestedItems}
-            hasNestedItems={
-              type === 'Country' || (organisationUnitChildren && organisationUnitChildren.length)
-            }
-            isLoading={isLoading}
-            Icon={ICON_BY_ORG_UNIT_TYPE[type]}
-            onClick={() => onOrgUnitClick(organisationUnitCode)}
-          />
-        );
-      });
-    };
-
-    const hierarchy = recurseOrgUnits(sortOrgUnitsAlphabeticallyByName(hierarchyData), '0px');
+    const hierarchy = sortOrgUnitsAlphabeticallyByName(hierarchyData).map(item => (
+      <SearchBarItem key={item} organisationUnitCode={item} nestedMargin="0px" />
+    ));
     return <List style={styles.heirarchyItem}>{hierarchy}</List>;
   }
 
@@ -200,7 +172,7 @@ SearchBar.propTypes = {
   getNestedOrgUnits: PropTypes.func.isRequired,
   isExpanded: PropTypes.bool,
   searchResponse: PropTypes.arrayOf(PropTypes.object),
-  hierarchyData: PropTypes.arrayOf(PropTypes.object),
+  hierarchyData: PropTypes.arrayOf(PropTypes.string),
   searchString: PropTypes.string,
   orgUnitFetchError: PropTypes.string,
   onSearchChange: PropTypes.func,
@@ -219,10 +191,14 @@ SearchBar.defaultProps = {
   onSearchBlur: undefined,
 };
 
+const selectCodeFromOrgUnit = createSelector([orgUnits => orgUnits], orgUnits =>
+  orgUnits.map(orgUnit => orgUnit.organisationUnitCode),
+);
+
 const mapStateToProps = state => {
   const { isExpanded, searchResponse, searchString } = state.searchBar;
-  const { orgUnitFetchError, orgUnitMap } = state.orgUnits;
-  const hierarchyData = orgUnitMap ? selectOrgUnitsAsHierarchy(state).organisationUnitChildren : [];
+  const { orgUnitFetchError } = state.orgUnits;
+  const hierarchyData = selectCodeFromOrgUnit(selectOrgUnitChildren(state, 'World'));
   return { isExpanded, searchResponse, searchString, hierarchyData, orgUnitFetchError };
 };
 

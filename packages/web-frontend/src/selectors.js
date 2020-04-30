@@ -119,6 +119,10 @@ export const selectOrgUnitChildren = createSelector(
     code === 'World' ? countriesAsOrgUnits : safeGet(orgUnitChildrenCache, [country, code]),
 );
 
+/**
+ * WARNING: This selector struggles with performance when there is a large number of org units loaded into a country,
+ * not currently in use...
+ */
 export const selectOrgUnitsAsHierarchy = createSelector(
   [state => state.orgUnits.orgUnitMap, selectCountriesAsOrgUnits],
   (orgUnitMap, countriesAsOrgUnits) => {
