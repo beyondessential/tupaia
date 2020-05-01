@@ -15,7 +15,7 @@ import configureStore from './configureStore';
 import { initHistoryDispatcher } from './utils';
 import { DARKENED_BLUE } from './styles';
 
-import { fetchInitialData } from '../src/actions';
+import { fetchInitialData } from './actions';
 
 // Set up asynchonous import of the RootScreen to enable webpack to do code splitting.
 // Based on https://serverless-stack.com/chapters/code-splitting-in-create-react-app.html

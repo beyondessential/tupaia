@@ -5,7 +5,7 @@
  * found in the LICENSE file in the root directory of this source tree.
  */
 
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
@@ -26,17 +26,15 @@ const NoDataMessage = styled.div`
   font-size: 24px;
 `;
 
-class DisasterList extends Component {
-  render() {
-    const { disasters } = this.props;
-    const items = Object.keys(disasters).map(disaster => {
-      return <DisasterItem key={disaster} info={disasters[disaster]} />;
-    });
+function DisasterList(props) {
+  const { disasters } = props;
+  const items = Object.keys(disasters).map(disaster => {
+    return <DisasterItem key={disaster} info={disasters[disaster]} />;
+  });
 
-    return (
-      <Grid>{items.length > 0 ? items : <NoDataMessage>No Active Disasters</NoDataMessage>}</Grid>
-    );
-  }
+  return (
+    <Grid>{items.length > 0 ? items : <NoDataMessage>No Active Disasters</NoDataMessage>}</Grid>
+  );
 }
 
 DisasterList.propTypes = {

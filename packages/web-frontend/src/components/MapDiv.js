@@ -11,7 +11,7 @@
  * Visual flex arranged div used for laying out the map controls on the screen such as SearchBar,
  * LocationBar, UserBar the map controls. Probably a custom attribution as well.
  */
-import React, { PureComponent } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { MapControl } from '../containers/MapControl';
 import MeasureLegend from '../containers/MeasureLegend';
@@ -40,18 +40,16 @@ const BottomRow = styled.div`
   padding: 10px 10px 0px 10px;
 `;
 
-export class MapDiv extends PureComponent {
-  render() {
-    return (
-      <FlexDiv>
-        <TopRow>
-          <MeasureBar />
-        </TopRow>
-        <BottomRow>
-          <MeasureLegend />
-          <MapControl />
-        </BottomRow>
-      </FlexDiv>
-    );
-  }
-}
+export const MapDiv = () => {
+  return (
+    <FlexDiv>
+      <TopRow>
+        <MeasureBar />
+      </TopRow>
+      <BottomRow>
+        <MeasureLegend />
+        <MapControl />
+      </BottomRow>
+    </FlexDiv>
+  );
+};
