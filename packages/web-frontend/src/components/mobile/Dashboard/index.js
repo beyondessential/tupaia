@@ -9,7 +9,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { ExpandableList } from '../../mobile/ExpandableList';
+import { ExpandableList } from '../ExpandableList';
 import { setMobileDashboardExpanded } from '../../../actions';
 import DashboardGroup from '../../../containers/DashboardGroup';
 import { DARK_BLUE, WHITE } from '../../../styles';
@@ -67,7 +67,7 @@ class DashboardView extends Component {
             <DashboardGroup
               key={currentFilter.label}
               tab={dashboardConfig[currentFilter.label]}
-              compressed={true}
+              compressed
             />,
           ]}
           isExpanded={isDashboardExpanded}
@@ -98,6 +98,7 @@ const styles = {
 
 DashboardView.propTypes = {
   dashboardConfig: PropTypes.object,
+  filterIsExpanded: PropTypes.bool,
 };
 
 DashboardView.defaultProps = {
@@ -120,7 +121,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export const Dashboard = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(DashboardView);
+export const Dashboard = connect(mapStateToProps, mapDispatchToProps)(DashboardView);

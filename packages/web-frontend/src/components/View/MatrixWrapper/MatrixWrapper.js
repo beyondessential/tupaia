@@ -69,7 +69,6 @@ const buildMatrixDataFromViewContent = viewContent => {
   if (!viewContent.columns) {
     return null;
   }
-
   const {
     columns: columnData,
     rows,
