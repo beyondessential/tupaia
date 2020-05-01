@@ -50,3 +50,51 @@ export const DATA_ELEMENTS_BY_GROUP = {
 };
 
 export const DHIS_REFERENCE = 'XXXYYY';
+
+const EVENT_ANALYTICS_SAME_DHIS_ELEMENT_CODES = {
+  headers: [
+    { name: 'oucode', column: 'Organisation unit code', valueType: 'TEXT' },
+    { name: 'POP01', column: 'Population 1', valueType: 'NUMBER' },
+    { name: 'BCD2', column: 'Population 2', valueType: 'TEXT' },
+  ],
+  metaData: {
+    items: {
+      ou: { name: 'Organisation unit' },
+      POP01: { name: 'Population 1' },
+      POP02: { name: 'Population 2' },
+    },
+    dimensions: {
+      ou: ['tonga_dhisId'],
+      POP01: [],
+      POP02: [],
+    },
+  },
+  width: 3,
+  height: 1,
+  rows: [['TO_Nukuhc', '10.0', '15.0']],
+};
+
+const EVENT_ANALYTICS_DIFFERENT_DHIS_ELEMENT_CODES = {
+  headers: [
+    { name: 'oucode', column: 'Organisation unit code', valueType: 'TEXT' },
+    { name: 'DIF01_DHIS', column: 'Different 1', valueType: 'NUMBER' },
+  ],
+  metaData: {
+    items: {
+      ou: { name: 'Organisation unit' },
+      DIF01_DHIS: { name: 'Different 1' },
+    },
+    dimensions: {
+      ou: ['tonga_dhisId'],
+      DIF01_DHIS: [],
+    },
+  },
+  width: 2,
+  height: 1,
+  rows: [['TO_Nukuhc', '25.0']],
+};
+
+export const EVENT_ANALYTICS = {
+  sameDhisElementCodes: EVENT_ANALYTICS_SAME_DHIS_ELEMENT_CODES,
+  differentDhisElementCodes: EVENT_ANALYTICS_DIFFERENT_DHIS_ELEMENT_CODES,
+};

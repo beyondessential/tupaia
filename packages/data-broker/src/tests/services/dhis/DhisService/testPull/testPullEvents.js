@@ -85,6 +85,13 @@ export const testPullEvents = () => {
         invocationArgs: sinon.match(options),
       });
     });
+
+    it('translates data source element to DHIS element codes if required', () =>
+      assertEventAnalyticsApiWasInvokedCorrectly({
+        dataSources: [DATA_SOURCES.POP01_GROUP],
+        options: { dataElementCodes: ['POP01', 'DIF01'] },
+        invocationArgs: sinon.match({ dataElementCodes: ['POP01', 'DIF01_DHIS'] }),
+      }));
   });
 
   describe('data building', () => {
@@ -98,7 +105,7 @@ export const testPullEvents = () => {
     });
 
     beforeEach(() => {
-      buildEventsStub.resolves([]);
+      buildEventsStub.returns([]);
       buildEventsStub.resetHistory();
     });
 
@@ -184,7 +191,7 @@ export const testPullEvents = () => {
           },
         },
       ];
-      buildEventsStub.resolves(events);
+      buildEventsStub.returns(events);
 
       return expect(
         dhisService.pull([DATA_SOURCES.POP01_GROUP], 'dataGroup', basicOptions),

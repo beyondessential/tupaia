@@ -6,8 +6,9 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 
+import * as BuildAnalyticsFromEventAnalytics from '../../../../../services/dhis/buildAnalytics/buildAnalyticsFromDhisEventAnalytics';
 import { DhisService } from '../../../../../services/dhis/DhisService';
-import { DATA_SOURCES } from '../DhisService.fixtures';
+import { DATA_SOURCES, EVENT_ANALYTICS } from '../DhisService.fixtures';
 import { buildDhisAnalyticsResponse, stubModels, stubDhisApi } from '../helpers';
 import { testPullAnalyticsFromEvents_Deprecated } from './testPullAnalyticsFromEvents_Deprecated';
 
@@ -175,7 +176,202 @@ export const testPullAnalytics = () => {
     });
   });
 
-  describe('from event data', () => {});
+  describe('from event data', () => {
+    const basicOptions = {
+      programCodes: ['POP01'],
+      useDeprecatedApi: false,
+    };
+
+    let buildAnalyticsStub;
+
+    before(() => {
+      buildAnalyticsStub = sinon.stub(
+        BuildAnalyticsFromEventAnalytics,
+        'buildAnalyticsFromDhisEventAnalytics',
+      );
+    });
+
+    beforeEach(() => {
+      buildAnalyticsStub.returns({ results: [], metadata: { dataElementCodeToName: {} } });
+      buildAnalyticsStub.resetHistory();
+    });
+
+    after(() => {
+      buildAnalyticsStub.restore();
+    });
+
+    describe('DHIS API invocation', () => {
+      const assertEventAnalyticsApiWasInvokedOnceWith = async ({
+        dataSources,
+        options = {},
+        invocationArgs,
+      }) => {
+        await dhisService.pull(dataSources, 'dataElement', {
+          ...options,
+          useDeprecatedApi: false,
+        });
+        expect(dhisApi.getEventAnalytics).to.have.been.calledOnceWithExactly(invocationArgs);
+      };
+
+      it('no program', async () => {
+        await dhisService.pull([DATA_SOURCES.POP01, DATA_SOURCES.POP02], 'dataElement', {
+          useDeprecatedApi: false,
+        });
+        expect(dhisApi.getEventAnalytics).to.have.not.been.called;
+      });
+
+      it('single program', async () => {
+        await dhisService.pull([DATA_SOURCES.POP01, DATA_SOURCES.POP02], 'dataElement', {
+          programCodes: ['POP01'],
+          useDeprecatedApi: false,
+        });
+        expect(dhisApi.getEventAnalytics).to.have.been.calledWithExactly(
+          sinon.match({ programCode: 'POP01' }),
+        );
+      });
+
+      it('multiple programs', async () => {
+        await dhisService.pull([DATA_SOURCES.POP01, DATA_SOURCES.POP02], 'dataElement', {
+          programCodes: ['POP01', 'DIFF_GROUP'],
+          useDeprecatedApi: false,
+        });
+        expect(dhisApi.getEventAnalytics).to.have.been.calledWithExactly(
+          sinon.match({
+            programCode: 'POP01',
+          }),
+        );
+        expect(dhisApi.getEventAnalytics).to.have.been.calledWithExactly(
+          sinon.match({
+            programCode: 'DIFF_GROUP',
+          }),
+        );
+        expect(dhisApi.getEventAnalytics).to.have.callCount(2);
+      });
+
+      it('simple data elements', () =>
+        assertEventAnalyticsApiWasInvokedOnceWith({
+          dataSources: [DATA_SOURCES.POP01, DATA_SOURCES.POP02],
+          options: basicOptions,
+          invocationArgs: sinon.match({
+            dataElementCodes: ['POP01', 'POP02'],
+          }),
+        }));
+
+      it('data elements with data source codes different than DHIS2 codes', () =>
+        assertEventAnalyticsApiWasInvokedOnceWith({
+          dataSources: [DATA_SOURCES.POP01, DATA_SOURCES.DIF01],
+          options: basicOptions,
+          invocationArgs: sinon.match({
+            dataElementCodes: ['POP01', 'DIF01_DHIS'],
+          }),
+        }));
+
+      it('forces `dataElementIdScheme` option to `code`', async () =>
+        assertEventAnalyticsApiWasInvokedOnceWith({
+          dataSources: [DATA_SOURCES.POP01],
+          options: { ...basicOptions, dataElementIdScheme: 'id' },
+          invocationArgs: sinon.match({ dataElementIdScheme: 'code' }),
+        }));
+
+      it('supports various API options', async () => {
+        const options = {
+          period: '20200427',
+          startDate: '20200731',
+          endDate: '20200904',
+        };
+
+        return assertEventAnalyticsApiWasInvokedOnceWith({
+          dataSources: [DATA_SOURCES.POP01],
+          options: { ...basicOptions, ...options },
+          invocationArgs: sinon.match(options),
+        });
+      });
+    });
+
+    describe('data building', () => {
+      describe('buildAnalyticsFromDhisEventAnalytics() invocation', () => {
+        it('no program', async () => {
+          const emptyEventAnalytics = {
+            headers: [],
+            metaData: { items: {}, dimensions: {} },
+            width: 0,
+            height: 0,
+            rows: [],
+          };
+          const dataElementCodes = ['POP01'];
+
+          await dhisService.pull([DATA_SOURCES.POP01], 'dataElement', {
+            useDeprecatedApi: false,
+            programCodes: [],
+          });
+          expect(
+            BuildAnalyticsFromEventAnalytics.buildAnalyticsFromDhisEventAnalytics,
+          ).to.have.been.calledOnceWithExactly(sinon.match(emptyEventAnalytics), dataElementCodes);
+        });
+
+        it('simple data elements', async () => {
+          const getEventAnalyticsResponse = EVENT_ANALYTICS.sameDhisElementCodes;
+          dhisApi = stubDhisApi({ getEventAnalyticsResponse });
+          const dataElementCodes = ['POP01', 'POP02'];
+
+          await dhisService.pull([DATA_SOURCES.POP01, DATA_SOURCES.POP02], 'dataElement', {
+            ...basicOptions,
+            dataElementCodes,
+          });
+          expect(
+            BuildAnalyticsFromEventAnalytics.buildAnalyticsFromDhisEventAnalytics,
+          ).to.have.been.calledOnceWithExactly(getEventAnalyticsResponse, dataElementCodes);
+        });
+
+        it('data elements with with data source codes different than DHIS2 codes', async () => {
+          const getEventAnalyticsResponse = EVENT_ANALYTICS.differentDhisElementCodes;
+          const translatedEventAnalytics = {
+            headers: [
+              { name: 'oucode', column: 'Organisation unit code', valueType: 'TEXT' },
+              { name: 'DIF01', column: 'Different 1', valueType: 'NUMBER' },
+            ],
+            metaData: {
+              items: {
+                ou: { name: 'Organisation unit' },
+                DIF01: { name: 'Different 1' },
+              },
+              dimensions: {
+                ou: ['tonga_dhisId'],
+                DIF01: [],
+              },
+            },
+            width: 2,
+            height: 1,
+            rows: [['TO_Nukuhc', '25.0']],
+          };
+          dhisApi = stubDhisApi({ getEventAnalyticsResponse });
+
+          const dataElementCodes = ['DIF01'];
+          await dhisService.pull([DATA_SOURCES.DIF01], 'dataElement', {
+            ...basicOptions,
+            dataElementCodes,
+          });
+          expect(
+            BuildAnalyticsFromEventAnalytics.buildAnalyticsFromDhisEventAnalytics,
+          ).to.have.been.calledOnceWith(translatedEventAnalytics, dataElementCodes);
+        });
+      });
+
+      it('directly returns the buildAnalyticsFromDhisEventAnalytics() results', () => {
+        const analyticsResponse = {
+          results: [
+            { period: '20200206', organisationUnit: 'TO_Nukuhc', dataElement: 'POP01', value: 1 },
+          ],
+          metadata: { dataElementCodeToName: { POP01: 'Population 1' } },
+        };
+        buildAnalyticsStub.returns(analyticsResponse);
+
+        return expect(
+          dhisService.pull([DATA_SOURCES.POP01], 'dataElement', basicOptions),
+        ).to.eventually.deep.equal(analyticsResponse);
+      });
+    });
+  });
 
   describe('from event data - deprecated API', testPullAnalyticsFromEvents_Deprecated);
 };

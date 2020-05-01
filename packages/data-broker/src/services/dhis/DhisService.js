@@ -3,11 +3,14 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import keyBy from 'lodash.keyby';
+
 import { Service } from '../Service';
 import { getDhisApiInstance } from './getDhisApiInstance';
 import { DhisTranslator } from './DhisTranslator';
 import {
   buildAnalyticsFromDhisAnalytics,
+  buildAnalyticsFromDhisEventAnalytics,
   buildAnalyticsFromEvents,
   buildEventsFromDhisEventAnalytics,
 } from './buildAnalytics';
@@ -161,6 +164,43 @@ export class DhisService extends Service {
     return events;
   };
 
+  fetchEventAnalyticsForPrograms = async (api, programCodes, query) => {
+    const allHeaders = [];
+    let metaData = { items: {}, dimensions: {} };
+    let width = 0;
+    let height = 0;
+    const rows = [];
+
+    const fetchAnalyticsForProgram = async programCode => {
+      const newAnalytics = await api.getEventAnalytics({ ...query, programCode });
+
+      allHeaders.push(...newAnalytics.headers);
+      metaData = {
+        items: { ...metaData.items, ...newAnalytics.metaData.items },
+        dimensions: { ...metaData.dimensions, ...newAnalytics.metaData.dimensions },
+      };
+      width = newAnalytics.width;
+      height += newAnalytics.height;
+      rows.push(...newAnalytics.rows);
+    };
+
+    await Promise.all(programCodes.map(fetchAnalyticsForProgram));
+    return {
+      headers: Object.values(keyBy(allHeaders, 'name')),
+      metaData,
+      width,
+      height,
+      rows,
+    };
+  };
+
+  /**
+   * This is a deprecated method which invokes a slow DHIS2 api ('/events').
+   * It is invoked using the `options.useDeprecatedApi` flag
+   *
+   * TODO Delete this method as soon as all its past consumers have migrated over to
+   * the new (non-deprecated) method
+   */
   pullAnalyticsFromEventsForApi_Deprecated = async (api, dataSources, options) => {
     const {
       organisationUnitCodes = [],
@@ -187,7 +227,26 @@ export class DhisService extends Service {
   };
 
   pullAnalyticsFromEventsForApi = async (api, dataSources, options) => {
-    // TODO implement
+    const { programCodes = [], period, startDate, endDate } = options;
+    const dataElementCodes = dataSources.map(({ code }) => code);
+    const dhisElementCodes = dataSources.map(({ dataElementCode }) => dataElementCode);
+
+    const query = {
+      programCodes,
+      dataElementCodes: dhisElementCodes,
+      dataElementIdScheme: 'code',
+      period,
+      startDate,
+      endDate,
+    };
+    const eventAnalytics = await this.fetchEventAnalyticsForPrograms(api, programCodes, query);
+
+    const translatedEventAnalytics = await this.translator.translateInboundEventAnalytics(
+      eventAnalytics,
+      dataSources,
+    );
+
+    return buildAnalyticsFromDhisEventAnalytics(translatedEventAnalytics, dataElementCodes);
   };
 
   pullAnalyticsForApi = async (api, dataSources, options) => {
