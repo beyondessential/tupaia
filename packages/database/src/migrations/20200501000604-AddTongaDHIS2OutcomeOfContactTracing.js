@@ -4,6 +4,8 @@ var dbm;
 var type;
 var seed;
 
+const ALL_RESPONSE_VALUES = ['Treatment in Progress', 'Treated', 'Untreated', 'No Treatment Required', 'Unknown'];
+
 const DATA_BUILDER_CONFIG = {
   "dataClasses": {
     "Treatment in Progress": {
@@ -18,7 +20,7 @@ const DATA_BUILDER_CONFIG = {
       "denominator": {
         "dataValues": {
           "CD3b_015": {
-            "value": ['Treatment in Progress', 'Treated', 'Untreated', 'No Treatment Required', 'Unknown'],
+            "value": ALL_RESPONSE_VALUES,
             "operator": "in"
           }
         }
@@ -36,7 +38,7 @@ const DATA_BUILDER_CONFIG = {
       "denominator": {
         "dataValues": {
           "CD3b_015": {
-            "value": ['Treatment in Progress', 'Treated', 'Untreated', 'No Treatment Required', 'Unknown'],
+            "value": ALL_RESPONSE_VALUES,
             "operator": "in"
           }
         }
@@ -54,7 +56,7 @@ const DATA_BUILDER_CONFIG = {
       "denominator": {
         "dataValues": {
           "CD3b_015": {
-            "value": ['Treatment in Progress', 'Treated', 'Untreated', 'No Treatment Required', 'Unknown'],
+            "value": ALL_RESPONSE_VALUES,
             "operator": "in"
           }
         }
@@ -72,7 +74,7 @@ const DATA_BUILDER_CONFIG = {
       "denominator": {
         "dataValues": {
           "CD3b_015": {
-            "value": ['Treatment in Progress', 'Treated', 'Untreated', 'No Treatment Required', 'Unknown'],
+            "value": ALL_RESPONSE_VALUES,
             "operator": "in"
           }
         }
@@ -90,7 +92,7 @@ const DATA_BUILDER_CONFIG = {
       "denominator": {
         "dataValues": {
           "CD3b_015": {
-            "value": ['Treatment in Progress', 'Treated', 'Untreated', 'No Treatment Required', 'Unknown'],
+            "value": ALL_RESPONSE_VALUES,
             "operator": "in"
           }
         }
