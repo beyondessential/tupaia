@@ -87,7 +87,7 @@ const SingleValueTooltip = ({ valueType, payload, periodGranularity, labelType }
 };
 
 function Tooltip(props) {
-  if (props.active) {
+  if (props.active && props.payload.length >= 1) {
     if (props.payload.length === 1 && !props.presentationOptions) {
       return <SingleValueTooltip {...props} />;
     }

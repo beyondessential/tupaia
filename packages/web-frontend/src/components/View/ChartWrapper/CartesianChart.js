@@ -21,7 +21,7 @@ import {
 } from 'recharts';
 
 import { CHART_BLUES, BLUE, TUPAIA_ORANGE, DARK_BLUE, EXPORT_CHART_PADDING } from '../../../styles';
-import { isMobile, formatDataValue } from '../../../utils';
+import { isMobile, formatDataValue, getInactiveColor } from '../../../utils';
 import { VALUE_TYPES } from '../constants';
 import { VIEW_CONTENT_SHAPE } from '../propTypes';
 import { CHART_TYPES } from './chartTypes';
@@ -173,8 +173,12 @@ export class CartesianChart extends PureComponent {
   };
 
   formatLegend = (value, { color }) => {
-    const { viewContent } = this.props;
-    return <span style={{ color }}>{viewContent.chartConfig[value].label || value}</span>;
+    const { viewContent, activeDataKeys } = this.props;
+    const isActive = activeDataKeys.length === 0 || activeDataKeys.includes(value);
+    const displayColor = isActive ? color : getInactiveColor(color);
+    return (
+      <span style={{ color: displayColor }}>{viewContent.chartConfig[value].label || value}</span>
+    );
   };
 
   getDefaultYAxisDomain = () =>
@@ -329,11 +333,14 @@ export class CartesianChart extends PureComponent {
   };
 
   renderLegend = () => {
-    const { isEnlarged, viewContent } = this.props;
+    const { isEnlarged, viewContent, onLegendClick } = this.props;
     const { chartConfig } = viewContent;
     const hasDataSeries = chartConfig && Object.keys(chartConfig).length > 1;
 
-    return hasDataSeries && isEnlarged && <Legend formatter={this.formatLegend} />;
+    return (
+      hasDataSeries &&
+      isEnlarged && <Legend onClick={onLegendClick} formatter={this.formatLegend} />
+    );
   };
 
   renderReferenceLines = () => {
@@ -490,17 +497,30 @@ export class CartesianChart extends PureComponent {
     );
   };
 
+  filterDisabledData = data => {
+    const { activeDataKeys } = this.props;
+    const realData = data.map(dataSeries =>
+      Object.entries(dataSeries).reduce((newDataSeries, [key, value]) => {
+        const isActive =
+          activeDataKeys.length === 0 ||
+          activeDataKeys.includes(key) ||
+          ['name', 'timestamp'].includes(key); //TODO
+        return isActive ? { ...newDataSeries, [key]: value } : newDataSeries;
+      }, {}),
+    );
+    return realData;
+  };
+
   render = () => {
     const { isEnlarged, isExporting, viewContent } = this.props;
     const { chartType, data } = viewContent;
     const Chart = CHART_TYPE_TO_COMPONENT[chartType];
-
     const responsiveStyle = !isEnlarged && !isMobile() && !isExporting ? 1.6 : undefined;
 
     return (
       <ResponsiveContainer width="100%" aspect={responsiveStyle}>
         <Chart
-          data={data}
+          data={this.filterDisabledData(data)}
           margin={isExporting ? { left: 20, right: 20, top: 20, bottom: 20 } : undefined}
         >
           {this.renderXAxis()}
@@ -520,10 +540,14 @@ CartesianChart.propTypes = {
   isEnlarged: PropTypes.bool,
   isExporting: PropTypes.bool,
   viewContent: PropTypes.shape(VIEW_CONTENT_SHAPE),
+  activeDataKeys: PropTypes.arrayOf(PropTypes.string),
+  onLegendClick: PropTypes.func,
 };
 
 CartesianChart.defaultProps = {
   isEnlarged: false,
   isExporting: false,
   viewContent: null,
+  activeDataKeys: [],
+  onLegendClick: () => {},
 };

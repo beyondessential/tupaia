@@ -1,11 +1,19 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 
+import styled from 'styled-components';
 import { CHART_COLOR_PALETTE, COMPOSED_CHART_COLOR_PALETTE, VIEW_STYLES } from '../../../styles';
 import { VIEW_CONTENT_SHAPE } from '../propTypes';
 import { CartesianChart } from './CartesianChart';
 import { CHART_TYPES } from './chartTypes';
 import { PieChart } from './PieChart';
+import { PrimaryButton } from '../../Buttons';
+
+const SelectAllButton = styled(PrimaryButton)`
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+`;
 
 // Adds default colors for every element with no color defined
 const addDefaultsColorsToConfig = (chartType, chartConfig) => {
@@ -52,18 +60,42 @@ const UnknownChart = () => (
 );
 
 export class ChartWrapper extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      activeDataKeys: [],
+    };
+  }
+
   getViewContent() {
     const { viewContent } = this.props;
     const { chartConfig, chartType } = viewContent;
     if (!chartConfig) {
       return viewContent;
     }
-
     return {
       ...viewContent,
       chartConfig: sortChartConfigByLegendOrder(addDefaultsColorsToConfig(chartType, chartConfig)),
     };
   }
+
+  onLegendClick = event => {
+    const { viewContent } = this.props;
+    const { chartConfig = {} } = viewContent;
+    const allKeys = Object.keys(chartConfig);
+    if (this.state.activeDataKeys.includes(event.dataKey)) {
+      this.setState(state => ({
+        activeDataKeys: state.activeDataKeys.filter(dk => dk !== event.dataKey),
+      }));
+    } else {
+      this.setState(state => ({ activeDataKeys: [...state.activeDataKeys, event.dataKey] }));
+    }
+    if (this.state.activeDataKeys.length >= allKeys.length - 1) {
+      this.setState({ activeDataKeys: [] });
+    }
+  };
+
+  onClickAll = () => this.setState({ activeDataKeys: [] });
 
   render() {
     const viewContent = this.getViewContent();
@@ -77,7 +109,15 @@ export class ChartWrapper extends PureComponent {
     return (
       <div style={VIEW_STYLES.chartViewContainer}>
         <div style={VIEW_STYLES.chartContainer}>
-          <Chart {...this.props} viewContent={viewContent} />
+          <Chart
+            {...this.props}
+            onLegendClick={this.onLegendClick}
+            activeDataKeys={this.state.activeDataKeys}
+            viewContent={viewContent}
+          />
+          {this.state.activeDataKeys.length >= 1 && (
+            <SelectAllButton onClick={this.onClickAll}>All</SelectAllButton>
+          )}
         </div>
       </div>
     );
