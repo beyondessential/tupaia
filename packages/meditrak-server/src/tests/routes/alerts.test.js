@@ -11,19 +11,6 @@ describe('Alerts CRUD', () => {
   const app = new TestableApp();
   const models = app.models;
 
-  /*
-  const localReset = async () => {
-    for (const item of testAlertData) {
-      await models.alert.delete({ id: item.alert.id });
-    }
-
-    for (const code of ['NARF', 'ZORT', 'POIT', 'EGAD', 'TROZ', 'FIORD']) {
-      await models.entity.delete({ code });
-      await models.dataSource.delete({ code });
-    }
-  };
-  */
-
   before(app.authenticate);
 
   describe('Create: POST /alerts', () => {
