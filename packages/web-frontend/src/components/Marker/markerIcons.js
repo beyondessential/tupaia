@@ -6,7 +6,7 @@
  */
 
 import L from 'leaflet';
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import ReactDOMServer from 'react-dom/server';
 

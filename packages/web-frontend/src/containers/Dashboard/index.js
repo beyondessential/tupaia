@@ -25,7 +25,7 @@ import { changeDashboardGroup, closeDropdownOverlays } from '../../actions';
 import DashboardGroup from '../DashboardGroup';
 import { getFacilityThumbnailUrl } from '../../utils';
 import { DropDownMenu } from '../../components/DropDownMenu';
-import { getCurrentDashboardKey } from '../../selectors';
+import { selectCurrentDashboardKey } from '../../selectors';
 
 const IMAGE_HEIGHT_RATIO = 0.5;
 
@@ -67,12 +67,12 @@ export class Dashboard extends Component {
   }
 
   renderMiniMap(visible) {
-    if (!visible) return;
+    if (!visible) return null;
     const { contractedWidth } = this.props;
 
     const { currentOrganisationUnit } = this.props;
     if (!currentOrganisationUnit) {
-      return;
+      return null;
     }
 
     const { location } = currentOrganisationUnit;
@@ -82,7 +82,6 @@ export class Dashboard extends Component {
     const useWorldBounds =
       !(location && location.bounds) || currentOrganisationUnit.organisationUnitCode === 'World';
     const mapWidth = contractedWidth - DASHBOARD_META_MARGIN * 2;
-
     return (
       <StaticMap
         polygonBounds={useWorldBounds ? initialOrgUnit.location.bounds : location.bounds}
@@ -120,7 +119,7 @@ export class Dashboard extends Component {
 
     return (
       <Dialog
-        open={true}
+        open
         onClose={() => this.setState({ isPhotoEnlarged: false })}
         style={DASHBOARD_STYLES.metaImageDialog}
       >
@@ -270,7 +269,7 @@ const mapStateToProps = state => {
   return {
     currentOrganisationUnit,
     sections: dashboardConfig,
-    currentDashboardKey: getCurrentDashboardKey(state),
+    currentDashboardKey: selectCurrentDashboardKey(state),
     mapIsAnimating: isAnimating,
     isLoading: isLoadingOrganisationUnit,
     isSidePanelExpanded,
