@@ -7,7 +7,7 @@ import morgan from 'morgan';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import { TupaiaDatabase } from '@tupaia/database';
+import { TupaiaDatabase, ModelRegistry } from '@tupaia/database';
 import { getRoutesForApiV1 } from './apiV1';
 import { bindUserSessions } from './authSession';
 import { BaseModel } from './models/BaseModel';
@@ -46,8 +46,16 @@ export function createApp() {
 
   // Connect to db
   const database = new TupaiaDatabase();
+
+  // Attach database to legacy singleton models
   BaseModel.database = database;
 
+  // Attach newer model registry to req, along with the authenticator
+  const modelRegistry = new ModelRegistry(database);
+  app.use((req, res, next) => {
+    req.models = modelRegistry;
+    next();
+  });
   // Initialise sessions
   bindUserSessions(app);
 
