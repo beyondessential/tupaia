@@ -5,13 +5,7 @@
 
 import { expect } from 'chai';
 import { TestableApp } from '../TestableApp';
-import {
-  createEntity,
-  createDataElement,
-  createAlert,
-  resetTestData,
-  generateTestId,
-} from '../testUtilities';
+import { createEntity, createDataElement, createAlert, generateTestId } from '../testUtilities';
 
 describe('Alerts CRUD', () => {
   const app = new TestableApp();
@@ -25,7 +19,7 @@ describe('Alerts CRUD', () => {
       const dataElement = await createDataElement('NARF2');
       const startTime = new Date();
 
-      const { statusCode, body } = await app.post('alert', {
+      const { statusCode, body } = await app.post('alerts', {
         body: {
           id: generateTestId(),
           entity_id: entity.id,
@@ -35,7 +29,7 @@ describe('Alerts CRUD', () => {
       });
 
       expect(statusCode).to.equal(200);
-      expect(body).to.deep.equal({ message: 'Successfully added alert' });
+      expect(body).to.deep.equal({ message: 'Successfully added alerts' });
 
       const latestAlert = (await models.alert.all()).pop();
       expect(latestAlert.entity_id).to.equal(entity.id);
