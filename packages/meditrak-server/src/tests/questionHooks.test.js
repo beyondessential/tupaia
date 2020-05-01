@@ -1,7 +1,7 @@
 import { expect } from 'chai';
+import { upsertDummyRecord } from '@tupaia/database';
 
 import { TestableApp } from './TestableApp';
-
 import { registerHook } from '../hooks';
 
 const ENTITY_ID = 'test-hook-entity-0000000';
@@ -53,7 +53,10 @@ describe('Question hooks', () => {
       name: 'Question hooks test survey',
     });
 
-    const geographicalArea = await models.geographicalArea.findOne();
+    const country = await upsertDummyRecord(models.country);
+    const geographicalArea = await upsertDummyRecord(models.geographicalArea, {
+      country_id: country.id,
+    });
     await models.facility.create({
       id: 'question_hook_00000_test',
       name: 'Test question hook clinic',
