@@ -1,9 +1,6 @@
 import {} from 'dotenv/config'; // Load the environment variables into process.env
 import session from 'client-sessions';
-import {
-  hasReportAccessToOrganisationUnit,
-  getReportUserGroupAccessRightsForOrganisationUnit,
-} from '/apiV1/utils';
+
 import { getAccessPolicyForUser } from './getAccessPolicyForUser';
 import { PUBLIC_USER_NAME } from './publicAccess';
 import { Entity } from '/models';
@@ -37,66 +34,69 @@ const checkAllowedUnauthRoutes = req =>
   allowedUnauthRoutes.some(allowedRoute => req.originalUrl.endsWith(allowedRoute));
 
 const getUserAccessPolicyFromSession = async req => {
-  const userName = req.session.userJson.userName;
-  return getAccessPolicyForUser(userName);
+  if (!req.accessPolicy) {
+    const { userName } = req.session.userJson;
+    req.accessPolicy = getAccessPolicyForUser(userName);
+  }
+  return req.accessPolicy;
 };
 
 export const setSession = (req, userInfo) => {
+  req.accessPolicy = null; // reset access policy cache so it is rebuilt
   req.session = { userJson: { ...userInfo } };
   req.lastuser = { userName: userInfo.userName };
 };
 
-export const addUserAccessHelper = (req, res, next) => {
-  req.userHasAccess = async (entityOrCode, userGroup = '') => {
+const addUserAccessHelper = (req, res, next) => {
+  req.userHasAccess = async (entityOrCode, permissionGroup = '') => {
+    const accessPolicy = await getUserAccessPolicyFromSession(req);
+    if (!accessPolicy) {
+      return false;
+    }
+
     const entity =
       typeof entityOrCode === 'string'
-        ? await Entity.findOne({ code: entityOrCode })
+        ? await Entity.findOne({
+            code: entityOrCode,
+          })
         : entityOrCode;
 
     // Assume user always has access to all world items.
     if (entity.code === 'World') {
       return true;
     }
-
-    const accessPolicy = await getUserAccessPolicyFromSession(req);
-    if (!accessPolicy) {
+    // Timor-Leste is temporarily turned off
+    if (entity.country_code === 'TL') {
       return false;
     }
-
     const ancestorCodes = await entity.getAncestorCodes();
 
-    return hasReportAccessToOrganisationUnit(accessPolicy, entity.code, ancestorCodes, userGroup);
-  };
-
-  req.getUserGroupAccessRights = async entityCode => {
-    const accessPolicy = await getUserAccessPolicyFromSession(req);
-    if (!accessPolicy) {
-      return {};
-    }
-
-    const entity = await Entity.findOne({ code: entityCode });
-    const ancestorCodes = await entity.getAncestorCodes();
-
-    return getReportUserGroupAccessRightsForOrganisationUnit(
-      accessPolicy,
-      entityCode,
-      ancestorCodes,
-    );
+    return accessPolicy.allowsSome([entity.code, ...ancestorCodes], permissionGroup);
   };
 
   req.getUserGroups = async entityCode => {
     if (entityCode === 'World') {
       return ['Public']; // At this stage, all users have Public access to the World dashboard
     }
-    const userGroupAccessRights = await req.getUserGroupAccessRights(entityCode);
-    return Object.keys(userGroupAccessRights).filter(
-      userGroup => userGroupAccessRights[userGroup] === true,
-    );
-  };
 
+    const accessPolicy = await getUserAccessPolicyFromSession(req);
+    if (!accessPolicy) {
+      return [];
+    }
+
+    const entity = await Entity.findOne({
+      code: entityCode,
+    });
+    // Timor-Leste is temporarily turned off
+    if (entity.country_code === 'TL') {
+      return {};
+    }
+    const ancestorCodes = await entity.getAncestorCodes();
+
+    return accessPolicy.getPermissionGroups([entity.code, ...ancestorCodes]);
+  };
   next();
 };
-
 const USER_SESSION_COOKIE_TIMEOUT = 24 * 60 * 60 * 1000;
 const LAST_USER_SESSION_COOKIE_TIMEOUT = 7 * 24 * 60 * 60 * 1000;
 

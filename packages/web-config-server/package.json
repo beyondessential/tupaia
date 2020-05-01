@@ -24,7 +24,7 @@
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
   "license": "MIT",
   "dependencies": {
-    "@beyondessential/tupaia-access-policy": "^2.0.2",
+    "@tupaia/access-policy": "3.0.0",
     "@tupaia/aggregator": "1.0.0",
     "@tupaia/data-broker": "1.0.0",
     "@tupaia/database": "1.0.0",
