@@ -1,19 +1,34 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 
-import styled from 'styled-components';
+import ZoomIcon from 'material-ui/svg-icons/action/zoom-in';
 import { CHART_COLOR_PALETTE, COMPOSED_CHART_COLOR_PALETTE, VIEW_STYLES } from '../../../styles';
 import { VIEW_CONTENT_SHAPE } from '../propTypes';
 import { CartesianChart } from './CartesianChart';
 import { CHART_TYPES } from './chartTypes';
 import { PieChart } from './PieChart';
-import { PrimaryButton } from '../../Buttons';
 
-const SelectAllButton = styled(PrimaryButton)`
-  position: absolute;
-  right: 10px;
-  bottom: 10px;
-`;
+const selectAllButtonStyle = {
+  position: 'absolute',
+  right: '10px',
+  bottom: '10px',
+  curser: 'none',
+};
+
+const SelectAllButton = ({ onClick }) => {
+  return (
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+    <div onClick={onClick} style={selectAllButtonStyle}>
+      <ZoomIcon />
+      <span>All</span>
+    </div>
+  );
+};
+
+SelectAllButton.propTypes = {
+  onClick: PropTypes.func.isRequired,
+};
 
 // Adds default colors for every element with no color defined
 const addDefaultsColorsToConfig = (chartType, chartConfig) => {
@@ -104,7 +119,9 @@ export class ChartWrapper extends PureComponent {
     if (!Object.values(CHART_TYPES).includes(chartType)) {
       return <UnknownChart />;
     }
-
+    const SelectAllButton3 = this.state.activeDataKeys.length >= 1 && (
+      <SelectAllButton onClick={this.onClickAll}>All</SelectAllButton>
+    );
     const Chart = chartType === CHART_TYPES.PIE ? PieChart : CartesianChart;
     return (
       <div style={VIEW_STYLES.chartViewContainer}>
@@ -115,9 +132,7 @@ export class ChartWrapper extends PureComponent {
             activeDataKeys={this.state.activeDataKeys}
             viewContent={viewContent}
           />
-          {this.state.activeDataKeys.length >= 1 && (
-            <SelectAllButton onClick={this.onClickAll}>All</SelectAllButton>
-          )}
+          {SelectAllButton3}
         </div>
       </div>
     );

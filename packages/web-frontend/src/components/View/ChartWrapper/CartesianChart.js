@@ -177,7 +177,9 @@ export class CartesianChart extends PureComponent {
     const isActive = activeDataKeys.length === 0 || activeDataKeys.includes(value);
     const displayColor = isActive ? color : getInactiveColor(color);
     return (
-      <span style={{ color: displayColor }}>{viewContent.chartConfig[value].label || value}</span>
+      <span style={{ color: displayColor, textDecoration: isActive ? '' : 'line-through' }}>
+        {viewContent.chartConfig[value].label || value}
+      </span>
     );
   };
 
