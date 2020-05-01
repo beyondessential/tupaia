@@ -1,2 +1,2 @@
 #!/bin/bash
-echo "aggregator" "database" "data-broker" "dhis-api" "utils"
+echo "access-policy" "aggregator" "auth" "database" "data-broker" "dhis-api" "utils"
