@@ -106,7 +106,6 @@ import {
   TOGGLE_DASHBOARD_SELECT_EXPAND,
   SET_MOBILE_DASHBOARD_EXPAND,
   REQUEST_PROJECT_ACCESS,
-  TOGGLE_SEARCH_ITEM_EXPANDED,
 } from './actions';
 
 function authentication(
@@ -502,13 +501,6 @@ function searchBar(
   switch (action.type) {
     case TOGGLE_SEARCH_EXPAND:
       return { ...state, isExpanded: !state.isExpanded, expandedNodes: [] };
-    case TOGGLE_SEARCH_ITEM_EXPANDED:
-      return {
-        ...state,
-        expandedNodes: state.expandedNodes.includes(action.itemCode)
-          ? state.expandedNodes.filter(node => node !== action.itemCode)
-          : state.expandedNodes.concat([action.itemCode]),
-      };
     case FETCH_SEARCH_SUCCESS:
       return { ...state, searchResponse: action.response };
     case CHANGE_SEARCH:

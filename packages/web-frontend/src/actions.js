@@ -100,7 +100,6 @@ export const CLOSE_USER_DIALOG = 'CLOSE_USER_DIALOG';
 export const TOGGLE_MEASURE_EXPAND = 'TOGGLE_MEASURE_EXPAND';
 export const TOGGLE_MEASURE_ITEM_EXPANDED = 'TOGGLE_MEASURE_ITEM_EXPANDED';
 export const TOGGLE_SEARCH_EXPAND = 'TOGGLE_SEARCH_EXPAND';
-export const TOGGLE_SEARCH_ITEM_EXPANDED = 'TOGGLE_SEARCH_ITEM_EXPANDED';
 export const SET_OVERLAY_COMPONENT = 'SET_OVERLAY_COMPONENT';
 export const OPEN_MAP_POPUP = 'OPEN_MAP_POPUP';
 export const CLOSE_MAP_POPUP = 'CLOSE_MAP_POPUP';
@@ -879,16 +878,6 @@ export function setMobileDashboardExpanded(shouldExpand) {
 export function toggleSearchExpand() {
   return {
     type: TOGGLE_SEARCH_EXPAND,
-  };
-}
-
-/**
- * Toggles the expanded state.
- */
-export function toggleSearchItemExpanded(itemCode) {
-  return {
-    type: TOGGLE_SEARCH_ITEM_EXPANDED,
-    itemCode,
   };
 }
 

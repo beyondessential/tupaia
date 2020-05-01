@@ -6,12 +6,12 @@
  */
 
 import FacilityIcon from 'material-ui/svg-icons/maps/local-hospital';
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { createSelector } from 'reselect';
 import { connect } from 'react-redux';
 import { HierarchyItem } from './HierarchyItem';
-import { toggleSearchItemExpanded, changeOrgUnit, openMapPopup } from '../actions';
+import { changeOrgUnit, openMapPopup } from '../actions';
 import { selectOrgUnit, selectOrgUnitChildren } from '../selectors';
 
 const ICON_BY_ORG_UNIT_TYPE = {
@@ -24,10 +24,11 @@ const SearchBarItemComponent = ({
   organisationUnitChildren,
   isLoading,
   type,
-  isExpanded,
   onClick,
   nestedMargin,
 }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
   const nestedItems = isExpanded
     ? organisationUnitChildren.map(child => (
         <SearchBarItem key={child} organisationUnitCode={child} />
@@ -42,7 +43,10 @@ const SearchBarItemComponent = ({
       hasNestedItems={type === 'Country' || organisationUnitChildren.length > 0}
       isLoading={isLoading}
       Icon={ICON_BY_ORG_UNIT_TYPE[type]}
-      onClick={() => onClick(organisationUnitCode)}
+      onClick={() => {
+        setIsExpanded(!isExpanded);
+        onClick(organisationUnitCode);
+      }}
     />
   );
 };
@@ -53,7 +57,6 @@ SearchBarItemComponent.propTypes = {
   type: PropTypes.string.isRequired,
   isLoading: PropTypes.bool,
   organisationUnitChildren: PropTypes.arrayOf(PropTypes.string),
-  isExpanded: PropTypes.bool.isRequired,
   onClick: PropTypes.func.isRequired,
   nestedMargin: PropTypes.string,
 };
@@ -83,7 +86,6 @@ const mapStateToProps = (state, props) => {
 const mapDispatchToProps = dispatch => {
   return {
     onClick: organisationUnitCode => {
-      dispatch(toggleSearchItemExpanded(organisationUnitCode));
       dispatch(changeOrgUnit(organisationUnitCode));
       dispatch(openMapPopup(organisationUnitCode));
     },
