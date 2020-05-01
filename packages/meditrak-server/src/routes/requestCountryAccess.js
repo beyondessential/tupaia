@@ -38,13 +38,13 @@ const getUserName = async (userId, models) => {
   }
 };
 
-const sendRequest = (userName, countryNames, message, userGroup) => {
+const sendRequest = (userName, countryNames, message, permissionGroup) => {
   const { COUNTRY_REQUEST_EMAIL_ADDRESS } = process.env;
 
   const emailText = `${userName} has requested access to countries:
     ${countryNames.join(',\n')}
 
-    For the permission group: ${userGroup || 'not specified'}
+    For the permission group: ${permissionGroup || 'not specified'}
 
     With the message:
     '${message}'
@@ -54,7 +54,7 @@ const sendRequest = (userName, countryNames, message, userGroup) => {
 
 export const requestCountryAccess = async (req, res) => {
   const { body: requestBody = {}, userId: requestUserId, params, models } = req;
-  const { countryIds, message = '', userGroup } = requestBody;
+  const { countryIds, message = '', userGroup: permissionGroup } = requestBody;
   const userId = requestUserId || params.userId;
 
   if (!countryIds || countryIds.length === 0) {
@@ -69,6 +69,6 @@ export const requestCountryAccess = async (req, res) => {
   const userName = await getUserName(userId, models);
   const countryNames = await mapCountryIdsToNames(countryIds, models);
 
-  await sendRequest(userName, countryNames, message, userGroup);
+  await sendRequest(userName, countryNames, message, permissionGroup);
   respond(res, { message: 'Country access requested.' }, 200);
 };

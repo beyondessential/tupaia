@@ -47,23 +47,10 @@ export async function putRecord(req, res) {
 
 const constructValidationRules = (models, recordType) => {
   switch (recordType) {
-    case TYPES.USER_COUNTRY_PERMISSION:
+    case TYPES.USER_ENTITY_PERMISSION:
       return {
         user_id: [constructRecordExistsWithId(models.user)],
-        country_id: [constructRecordExistsWithId(models.country)],
-        permission_group_id: [constructRecordExistsWithId(models.permissionGroup)],
-      };
-
-    case TYPES.USER_FACILITY_PERMISSION:
-      return {
-        user_id: [constructRecordExistsWithId(models.user)],
-        clinic_id: [constructRecordExistsWithId(models.facility)],
-        permission_group_id: [constructRecordExistsWithId(models.permissionGroup)],
-      };
-    case TYPES.USER_GEOGRAPHICAL_AREA_PERMISSION:
-      return {
-        user_id: [constructRecordExistsWithId(models.user)],
-        geographical_area_id: [constructRecordExistsWithId(models.geographicalArea)],
+        entity_id: [constructRecordExistsWithId(models.entity)],
         permission_group_id: [constructRecordExistsWithId(models.permissionGroup)],
       };
     case TYPES.COUNTRY:
