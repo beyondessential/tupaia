@@ -19,6 +19,7 @@ export async function addBaselineTestData() {
     {
       id: generateTestId(),
       name: 'Demo Land',
+      type: 'country',
       country_code: 'DL',
     },
   );
