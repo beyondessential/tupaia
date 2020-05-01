@@ -14,6 +14,8 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
+const arrayToDbString = array => array.map(item => `'${item}'`).join(', ');
+
 const DATA_BUILDER_CONFIG = {
   "dataClasses": {
     "STI Detected": {
@@ -120,11 +122,13 @@ const VIEW_JSON_CONFIG = {
   }
 };
 
+const DASHBOARD_GROUPS_TO_ADD = ['Tonga_Communicable_Diseases_National', 'Tonga_Communicable_Diseases_District'];
+
 exports.up = async function (db) {
   await db.runSql(`
     INSERT INTO "dashboardReport" ("id", "dataBuilder", "dataBuilderConfig", "viewJson", "dataServices")
     VALUES (
-      'TO_CD_Validation_STI_Num_Of_Patients_Tested',
+      'TO_CD_STI_Num_Of_Patients_Tested',
       'percentagesOfValueCounts',
       '${JSON.stringify(DATA_BUILDER_CONFIG)}',
       '${JSON.stringify(VIEW_JSON_CONFIG)}',
@@ -132,20 +136,18 @@ exports.up = async function (db) {
     );
 
     UPDATE "dashboardGroup"
-    SET "dashboardReports" = "dashboardReports" || '{TO_CD_Validation_STI_Num_Of_Patients_Tested}'
-    WHERE code = 'TO_Communicable_Diseases_Country_Validation'
-    AND "organisationLevel" = 'Country';
+    SET "dashboardReports" = "dashboardReports" || '{TO_CD_STI_Num_Of_Patients_Tested}'
+    WHERE code IN (${arrayToDbString(DASHBOARD_GROUPS_TO_ADD)});
   `);
 };
 
 exports.down = async function (db) {
   await db.runSql(`
-    DELETE FROM "dashboardReport" WHERE id = 'TO_CD_Validation_STI_Num_Of_Patients_Tested';
+    DELETE FROM "dashboardReport" WHERE id = 'TO_CD_STI_Num_Of_Patients_Tested';
 
     UPDATE "dashboardGroup"
-    SET "dashboardReports" = array_remove("dashboardReports", 'TO_CD_Validation_STI_Num_Of_Patients_Tested')
-    WHERE code = 'TO_Communicable_Diseases_Country_Validation'
-    AND "organisationLevel" = 'Country';
+    SET "dashboardReports" = array_remove("dashboardReports", 'TO_CD_STI_Num_Of_Patients_Tested')
+    WHERE code IN (${arrayToDbString(DASHBOARD_GROUPS_TO_ADD)});
   `);
 };
 

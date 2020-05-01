@@ -48,8 +48,8 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
   buildData(analytics) {
     const dataClasses = [];
     Object.entries(this.config.dataClasses).forEach(([name, dataClass]) => {
-      const numerator = this.calculateFraction(dataClass.numerator, analytics);
-      const denominator = this.calculateFraction(dataClass.denominator, analytics);
+      const numerator = this.calculateFractionPart(dataClass.numerator, analytics);
+      const denominator = this.calculateFractionPart(dataClass.denominator, analytics);
 
       const data = {
         value: divideValues(numerator, denominator),
@@ -66,19 +66,25 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
     return dataClasses;
   }
 
-  calculateFraction = (fraction, analytics) => {
+  calculateFractionPart = (fraction, analytics) => {
     if (fraction.compare || fraction.operation) {
-      const calculator = this.buildCalculator(fraction);
+      const filterAnalyticsFunction = this.buildFilterAnalyticsFunction(fraction);
 
-      if (!calculator) {
-        throw new Error('Could not create cacluation from percentagesOfValueCounts config');
+      if (!filterAnalyticsFunction) {
+        throw new Error(
+          'Could not create filterAnalyticsFunction from percentagesOfValueCounts config',
+        );
       }
 
       const filteredAnalytics = analytics.filter(analytic =>
         flatten(fraction.dataValues).includes(analytic.dataElement),
       );
 
-      return this.countAnalyticsWithCalculator(filteredAnalytics, calculator, fraction.groupBy);
+      return this.countAnalyticsUsingFilterFunction(
+        filteredAnalytics,
+        filterAnalyticsFunction,
+        fraction.groupBy,
+      );
     } else if (fraction === ORG_UNIT_COUNT) {
       return [...new Set(analytics.map(data => data.organisationUnit))].length;
     }
@@ -86,27 +92,27 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
     return countAnalyticsThatSatisfyConditions(analytics, fraction);
   };
 
-  countAnalyticsWithCalculator = (analytics, calculator, fractionGroupBy) => {
+  countAnalyticsUsingFilterFunction = (analytics, filterAnalyticsFunction, fractionGroupBy) => {
     let result = 0;
 
-    //If there's groupBy set for analytics, try group the analytics before applying calculator.
-    //If not, apply calculator to the raw analytics.
+    //If there's groupBy set for analytics, try group the analytics before applying filterAnalyticsFunction.
+    //If not, apply filterAnalyticsFunction to the raw analytics.
     if (fractionGroupBy) {
       const groupedAnalytics = groupBy(analytics, fractionGroupBy);
 
       Object.values(groupedAnalytics).forEach(analytic => {
-        if (calculator(analytic)) result += 1;
+        if (filterAnalyticsFunction(analytic)) result += 1;
       });
     } else {
       analytics.forEach(analytic => {
-        if (calculator(analytic)) result += 1;
+        if (filterAnalyticsFunction(analytic)) result += 1;
       });
     }
 
     return result;
   };
 
-  buildCalculator(fraction) {
+  buildFilterAnalyticsFunction(fraction) {
     if (fraction.compare === COMPARISON_TYPES.COUNT) {
       if (fraction.dataValues.length !== 2) {
         throw new Error(
