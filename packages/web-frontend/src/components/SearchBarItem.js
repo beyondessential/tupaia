@@ -72,15 +72,12 @@ const selectCodeFromOrgUnit = createSelector([orgUnits => orgUnits], orgUnits =>
 );
 
 const mapStateToProps = (state, props) => {
-  const { expandedNodes } = state.searchBar;
-  const isExpanded = expandedNodes.includes(props.organisationUnitCode);
-
   const orgUnit = selectOrgUnit(state, props.organisationUnitCode);
   const { name, isLoading, type } = orgUnit;
   const organisationUnitChildren = selectCodeFromOrgUnit(
     selectOrgUnitChildren(state, props.organisationUnitCode),
   );
-  return { isExpanded, name, isLoading, type, organisationUnitChildren };
+  return { name, isLoading, type, organisationUnitChildren };
 };
 
 const mapDispatchToProps = dispatch => {

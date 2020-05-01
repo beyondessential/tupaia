@@ -494,13 +494,12 @@ function searchBar(
     searchResponse: null,
     hierarchyData: null,
     searchString: '',
-    expandedNodes: [],
   },
   action,
 ) {
   switch (action.type) {
     case TOGGLE_SEARCH_EXPAND:
-      return { ...state, isExpanded: !state.isExpanded, expandedNodes: [] };
+      return { ...state, isExpanded: !state.isExpanded };
     case FETCH_SEARCH_SUCCESS:
       return { ...state, searchResponse: action.response };
     case CHANGE_SEARCH:
