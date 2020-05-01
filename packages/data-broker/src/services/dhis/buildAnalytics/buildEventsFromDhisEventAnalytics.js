@@ -28,8 +28,8 @@ const createDimensionTranslator = dataElementCodes => dimension => {
   return dataElementCodes.includes(dimension) ? dimension : '';
 };
 
-export const buildEventsFromDhisEventAnalytics = (response, dataElementCodes = []) => {
-  const { headers, rows } = response;
+export const buildEventsFromDhisEventAnalytics = (dhisEventAnalytics, dataElementCodes = []) => {
+  const { headers, rows } = dhisEventAnalytics;
   const columnSpecs = getColumnSpecs(headers, dataElementCodes);
 
   const events = [];

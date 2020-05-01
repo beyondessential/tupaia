@@ -1,23 +1,23 @@
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+
 import { expect } from 'chai';
 
 import { buildEventsFromDhisEventAnalytics } from '../../../../services/dhis/buildAnalytics/buildEventsFromDhisEventAnalytics';
-import {
-  EVENT_ANALYTICS_WITH_DATA_VALUES,
-  EVENT_ANALYTICS_WITHOUT_DATA_VALUES,
-} from './buildEventsFromDhisEventAnalytics.fixtures';
+import { EVENT_ANALYTICS } from './buildAnalytics.fixtures';
 
 describe('buildEventsFromDhisEventAnalytics()', () => {
-  it('should allow empty data element codes', () => {
+  it('allows empty data element codes', () => {
+    expect(() => buildEventsFromDhisEventAnalytics(EVENT_ANALYTICS.withDataValues)).to.not.throw();
     expect(() =>
-      buildEventsFromDhisEventAnalytics(EVENT_ANALYTICS_WITH_DATA_VALUES),
-    ).to.not.throw();
-    expect(() =>
-      buildEventsFromDhisEventAnalytics(EVENT_ANALYTICS_WITH_DATA_VALUES, []),
+      buildEventsFromDhisEventAnalytics(EVENT_ANALYTICS.withDataValues, []),
     ).to.not.throw();
   });
 
-  it('should build events containing no data values', () => {
-    expect(buildEventsFromDhisEventAnalytics(EVENT_ANALYTICS_WITHOUT_DATA_VALUES)).to.deep.equal([
+  it('builds events containing no data values', () => {
+    expect(buildEventsFromDhisEventAnalytics(EVENT_ANALYTICS.noDataValues)).to.deep.equal([
       {
         eventId: 'event1_dhisId',
         organisationUnit: 'TO_Nukuhc',
@@ -33,9 +33,9 @@ describe('buildEventsFromDhisEventAnalytics()', () => {
     ]);
   });
 
-  it('should build events from DHIS2 event analytics', () => {
+  it('builds events from DHIS2 event analytics and sorts them by period', () => {
     expect(
-      buildEventsFromDhisEventAnalytics(EVENT_ANALYTICS_WITH_DATA_VALUES, ['BCD1', 'BCD2']),
+      buildEventsFromDhisEventAnalytics(EVENT_ANALYTICS.withDataValues, ['BCD1', 'BCD2']),
     ).to.deep.equal([
       {
         eventId: 'event1_dhisId',
@@ -49,9 +49,9 @@ describe('buildEventsFromDhisEventAnalytics()', () => {
       {
         eventId: 'event2_dhisId',
         organisationUnit: 'TO_HvlMCH',
-        period: '20200206',
+        period: '20200207',
         values: {
-          BCD1: 20.0,
+          BCD1: 20,
           BCD2: 'Comment 2',
         },
       },

@@ -22,11 +22,11 @@ const DIMENSION_TYPES = {
 };
 
 /**
- * @param {Object} response
+ * @param {Object} dhisAnalytics
  * @returns {{ results: Analytic[], metadata: { dataElementCodeToName } }}
  */
-export const buildAnalyticsFromDhisAnalytics = response => {
-  const { headers, rows, metaData: metadata } = response;
+export const buildAnalyticsFromDhisAnalytics = dhisAnalytics => {
+  const { headers, rows, metaData: metadata } = dhisAnalytics;
   const columnSpecs = getColumnSpecs(headers);
 
   const results = [];
