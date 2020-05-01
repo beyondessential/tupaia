@@ -26,6 +26,7 @@
     "buffer": "^5.2.1",
     "bugsnag-react-native": "^2.16.0",
     "bugsnag-sourcemaps": "^1.0.3",
+    "metro-config": "^0.59.0",
     "moment": "^2.21.0",
     "nanoid": "^2.0.3",
     "npm-bump": "^0.0.23",
