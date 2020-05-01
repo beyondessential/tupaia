@@ -5,8 +5,8 @@
 
 import xlsx from 'xlsx';
 import { respond, DatabaseError, ImportValidationError, UploadError } from '@tupaia/utils';
+import { hashAndSaltPassword } from '@tupaia/auth';
 
-import { hashAndSaltPassword } from '../utilities';
 import { ObjectValidator, hasContent, constructIsOneOf } from '../validation';
 
 export async function importUsers(req, res) {
