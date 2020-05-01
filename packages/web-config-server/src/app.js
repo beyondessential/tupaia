@@ -8,6 +8,7 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import { TupaiaDatabase, ModelRegistry } from '@tupaia/database';
+import { Authenticator } from '@tupaia/auth';
 import { getRoutesForApiV1 } from './apiV1';
 import { bindUserSessions } from './authSession';
 import { BaseModel } from './models/BaseModel';
@@ -52,10 +53,13 @@ export function createApp() {
 
   // Attach newer model registry to req, along with the authenticator
   const modelRegistry = new ModelRegistry(database);
+  const authenticator = new Authenticator(modelRegistry);
   app.use((req, res, next) => {
     req.models = modelRegistry;
+    req.authenticator = authenticator;
     next();
   });
+
   // Initialise sessions
   bindUserSessions(app);
 

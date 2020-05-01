@@ -1,9 +1,6 @@
-import { fetchWithTimeout, stringifyQuery } from '@tupaia/utils';
+import { CustomError, fetchWithTimeout, stringifyQuery } from '@tupaia/utils';
 import { UserSession } from '/models';
 import { refreshAccessToken } from './refreshAccessToken';
-import { CustomError } from '@tupaia/utils';
-
-const TUPAIA_CONFIG_SERVER_DEVICE_NAME = 'Tupaia Config Server';
 
 /**
  * Send request to Meditrak server and handle responses.
@@ -27,9 +24,6 @@ export const fetchFromMediTrakServer = async (endpoint, payload, queryParameters
       ...headers,
     },
   };
-  if (payload) {
-    config.body = JSON.stringify({ deviceName: TUPAIA_CONFIG_SERVER_DEVICE_NAME, ...payload });
-  }
 
   const response = await fetchWithTimeout(url, config);
   if (response.ok) {
@@ -82,6 +76,7 @@ export const fetchFromMeditrakServerUsingTokens = async (
   // If request was not authorized, refresh access token and try once more
   try {
     const newAccessToken = await refreshAccessToken(refreshToken, userName);
+    await UserSession.update({ userName }, { accessToken: newAccessToken });
     newHeaders.Authorization = `Bearer ${newAccessToken}`;
     return await fetchFromMediTrakServer(endpoint, payload, queryParameters, newHeaders);
   } catch (error) {
