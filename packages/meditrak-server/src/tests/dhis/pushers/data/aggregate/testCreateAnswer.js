@@ -4,7 +4,8 @@
  */
 
 import { expect } from 'chai';
-import { generateTestId, populateTestData } from '../../../../testUtilities';
+import { generateTestId } from '@tupaia/database';
+import { populateTestData } from '../../../../testUtilities';
 import { AggregateDataPusher } from '../../../../../dhis/pushers/data/aggregate/AggregateDataPusher';
 import { ANSWER_CHANGE, ANSWER, ANSWER_DATA_VALUE, SURVEY_RESPONSE } from './testData';
 
