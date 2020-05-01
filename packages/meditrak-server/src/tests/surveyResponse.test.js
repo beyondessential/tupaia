@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import momentTimezone from 'moment-timezone';
 
 import { TestableApp } from './TestableApp';
+import { upsertDummyRecord } from '@tupaia/database/dist/testUtilities';
 
 const SURVEY_CODE = 'test-survey-response';
 const ENTITY_ID = 'entity_000000000000_test';
@@ -39,7 +40,10 @@ describe('surveyResponse endpoint', () => {
       name: 'surveyResponse test survey',
     });
 
-    const geographicalArea = await models.geographicalArea.findOne();
+    const country = await upsertDummyRecord(models.country);
+    const geographicalArea = await upsertDummyRecord(models.geographicalArea, {
+      country_id: country.id,
+    });
     await models.facility.create({
       id: 'survey_response_000_test',
       name: 'Test survey response clinic',

@@ -1,3 +1,4 @@
+import { upsertDummyRecord } from '@tupaia/database';
 import { TestableApp } from '../../TestableApp';
 import { upsertEntity, upsertFacility } from './upsertRecord';
 
@@ -7,7 +8,7 @@ export const insertEntityAndFacility = async (
   { entity: entityData, facility: facilityData },
   models = testModels,
 ) => {
-  const country = await models.country.findOne();
+  const country = await upsertDummyRecord(models.country);
   const entity = await upsertEntity({ ...entityData, type: models.entity.types.FACILITY });
   const area = await models.geographicalArea.findOne({ country_id: country.id });
   const facility = await upsertFacility({
