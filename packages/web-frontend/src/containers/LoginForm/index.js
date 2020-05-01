@@ -40,7 +40,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export const LoginForm = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(FormComponent);
+export const LoginForm = connect(mapStateToProps, mapDispatchToProps)(FormComponent);

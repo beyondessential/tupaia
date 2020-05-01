@@ -3,6 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 import { reduceToDictionary } from '@tupaia/utils';
+import { getDefaultPeriod } from '/dhis/getDefaultPeriod';
 import { periodToTimestamp, periodToDisplayString } from '@tupaia/dhis-api';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import groupBy from 'lodash.groupby';
@@ -19,12 +20,19 @@ class ValuesPer100kPerPeriodByOrgUnitBuilder extends DataBuilder {
     const { dataElementCodes, divisor: populationDataElement } = this.config;
     const { results } = await this.fetchAnalytics(dataElementCodes);
 
+    // TODO: You should be able to specify period in additionalQueryConfig
+    // for fetchAnalytics to avoid this hack.
+    const originalQueryPeriod = this.query.period;
+    this.query.period = getDefaultPeriod();
+
     const { results: populationResults } = await this.fetchAnalytics(
       [populationDataElement],
       {},
       this.aggregator.aggregationTypes.FINAL_EACH_DAY_FILL_EMPTY_DAYS,
       { fillEmptyValuesTilCurrentPeriod: true },
     );
+
+    this.query.period = originalQueryPeriod;
 
     if (results.length === 0) return { data: results };
 
