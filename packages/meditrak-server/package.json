@@ -5,7 +5,7 @@
   "main": "handler.js",
   "private": true,
   "dependencies": {
-    "@beyondessential/tupaia-access-policy": "2.1.0",
+    "@tupaia/access-policy": "3.0.0",
     "@tupaia/auth": "1.0.0",
     "@tupaia/data-broker": "1.0.0",
     "@tupaia/database": "1.0.0",

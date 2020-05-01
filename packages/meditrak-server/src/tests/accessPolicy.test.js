@@ -5,12 +5,14 @@
 
 import { expect } from 'chai';
 
+import { generateTestId } from '@tupaia/database';
 import { TestableApp, getAuthorizationHeader } from './TestableApp';
-import { randomEmail, EMAIL_VERIFIED_STATUS } from './testUtilities';
+import { randomEmail, upsertEntity, upsertUserEntityPermission } from './testUtilities';
 
 describe('Access Policy', () => {
   const app = new TestableApp();
   const models = app.models;
+  const { VERIFIED } = models.user.emailVerifiedStatuses;
 
   const dummyFields = {
     firstName: 'Automated test',
@@ -27,10 +29,10 @@ describe('Access Policy', () => {
 
   describe('Demo Land public user', () => {
     const emailAddress = randomEmail();
-    let authResponsePermissions;
+    let accessPolicy;
     let userId;
 
-    it('should create basic test user', async () => {
+    before(async () => {
       const userResponse = await app.post('user', {
         headers,
         body: {
@@ -40,7 +42,9 @@ describe('Access Policy', () => {
       });
       userId = userResponse.body.userId;
 
-      await models.user.updateById(userId, { verified_email: EMAIL_VERIFIED_STATUS.VERIFIED });
+      await models.user.updateById(userId, {
+        verified_email: VERIFIED,
+      });
 
       const authResponse = await app.post('auth', {
         headers,
@@ -51,54 +55,27 @@ describe('Access Policy', () => {
         },
       });
 
-      authResponsePermissions = authResponse.body.user.accessPolicy.permissions;
+      accessPolicy = authResponse.body.user.accessPolicy;
     });
 
-    it('should only have surveying access to demo land', () => {
-      const { surveys } = authResponsePermissions;
-
-      const surveyPermissionItems = surveys._items;
-      expect(surveyPermissionItems.DL._access.Public).to.equal(
-        true,
-        'Public survey permission found for Demo Land',
-      );
-      expect(Object.values(surveyPermissionItems).length).to.equal(
-        1,
-        'Only 1 survey permission found',
-      );
+    it('should only have access to demo land', () => {
+      expect(accessPolicy.DL).to.deep.equal(['Public']);
+      expect(Object.keys(accessPolicy).length).to.equal(1);
     });
 
-    it('should only have reporting access to demo land', () => {
-      const { reports } = authResponsePermissions;
-
-      const reportPermissionItems = reports._items;
-      expect(reportPermissionItems.DL._access.Public).to.equal(
-        true,
-        'Public reporting permission found for Demo Land',
-      );
-      expect(Object.values(reportPermissionItems).length).to.equal(
-        1,
-        'Only 1 report permission found',
-      );
-    });
-
-    it('should have only Demo Land UserCountryPermission model in database', async () => {
-      const userCountryPermissions = await models.userCountryPermission.find({ user_id: userId });
-      expect(userCountryPermissions.length).to.equal(
-        1,
-        'Only 1 UserCountryPermission added to the database',
-      );
-
-      expect(userCountryPermissions[0].country_code).to.equal('DL', 'Country code is Demo Land');
+    it('should have only Demo Land UserEntityPermission model in database', async () => {
+      const userEntityPermissions = await models.userEntityPermission.find({ user_id: userId });
+      expect(userEntityPermissions.length).to.equal(1);
+      expect(userEntityPermissions[0].entity_code).to.equal('DL');
     });
   });
 
   describe('Tonga admin user', () => {
     const emailAddress = randomEmail();
-    let authResponsePermissions;
+    let accessPolicy;
     let userId;
 
-    it('should create admin test user', async () => {
+    before(async () => {
       const userResponse = await app.post('user', {
         headers,
         body: {
@@ -108,7 +85,7 @@ describe('Access Policy', () => {
       });
       userId = userResponse.body.userId;
 
-      await models.user.updateById(userId, { verified_email: EMAIL_VERIFIED_STATUS.VERIFIED });
+      await models.user.updateById(userId, { verified_email: VERIFIED });
 
       const adminPermissionGroup = await models.permissionGroup.findOne({
         name: 'Admin',
@@ -116,19 +93,19 @@ describe('Access Policy', () => {
 
       // if there's a pre-existing Tonga in the DB, use that, otherwise create
       // one with a test ID so it'll get cleaned up later
-      const tongaCountry = await models.country.findOrCreate(
+      const tongaEntity = await models.entity.findOrCreate(
         {
           code: 'TO',
         },
         {
-          id: 'tonga_0000000000000_test',
+          id: generateTestId(),
           name: 'Tonga',
         },
       );
 
-      await models.userCountryPermission.create({
+      await upsertUserEntityPermission({
         user_id: userId,
-        country_id: tongaCountry.id,
+        entity_id: tongaEntity.id,
         permission_group_id: adminPermissionGroup.id,
       });
 
@@ -141,101 +118,34 @@ describe('Access Policy', () => {
         },
       });
 
-      authResponsePermissions = authResponse.body.user.accessPolicy.permissions;
+      accessPolicy = authResponse.body.user.accessPolicy;
     });
 
     it('should have Demo Land public access', () => {
-      const { surveys, reports } = authResponsePermissions;
-
-      const surveyPermissionItems = surveys._items;
-      expect(surveyPermissionItems.DL._access.Public).to.equal(
-        true,
-        'No survey public permission found for Demo Land',
-      );
-      expect(surveyPermissionItems.DL._access.Admin).to.equal(
-        undefined,
-        'No survey admin permission found for Demo Land',
-      );
-
-      const reportPermissionItems = reports._items;
-      expect(reportPermissionItems.DL._access.Public).to.equal(
-        true,
-        'Public report permission found for Demo Land',
-      );
-      expect(reportPermissionItems.DL._access.Admin).to.equal(
-        undefined,
-        'No report admin permission found for Demo Land',
-      );
+      expect(accessPolicy.DL).to.deep.equal(['Public']);
     });
 
-    it('should have Tonga admin and public survey and report access', () => {
-      const { surveys, reports } = authResponsePermissions;
-
-      const surveyPermissionItems = surveys._items;
-      expect(surveyPermissionItems.TO._access.Public).to.equal(
-        true,
-        'Public Tonga survey access found',
-      );
-      expect(surveyPermissionItems.TO._access.Admin).to.equal(
-        true,
-        'Admin Tonga survey access found',
-      );
-      expect(Object.values(surveyPermissionItems).length).to.equal(
-        2,
-        'No other country permissions found in survey group',
-      );
-
-      const reportPermissionItems = reports._items;
-      expect(reportPermissionItems.TO._access.Public).to.equal(
-        true,
-        'Public Tonga report access found',
-      );
-      expect(reportPermissionItems.TO._access.Admin).to.equal(
-        true,
-        'Admin Tonga report access found',
-      );
+    it('should have Tonga admin and public access', () => {
+      expect(accessPolicy.TO).to.include.members(['Public', 'Admin']);
+      expect(Object.values(accessPolicy).length).to.equal(2); // DL and TO only
     });
 
-    it('should not have any report permissions for all other countries', () => {
-      const { reports } = authResponsePermissions;
+    it('should have only Demo Land and Tonga UserEntityPermission model in database', async () => {
+      const userEntityPermissions = await models.userEntityPermission.find({ user_id: userId });
+      expect(userEntityPermissions.length).to.equal(2);
 
-      const reportPermissionItems = reports._items;
-
-      Object.keys(reportPermissionItems).forEach(countryCode => {
-        if (countryCode === 'TO' || countryCode === 'DL') {
-          return;
-        }
-
-        const reportPermission = reportPermissionItems[countryCode];
-
-        expect(reportPermission).to.equal(
-          undefined,
-          `Country ${countryCode} should have no access to reporting`,
-        );
-      });
-    });
-
-    it('should have only Demo Land and Tonga UserCountryPermission model in database', async () => {
-      const userCountryPermissions = await models.userCountryPermission.find({ user_id: userId });
-      expect(userCountryPermissions.length).to.equal(
-        2,
-        'Only 2 UserCountryPermission added to the database',
-      );
-
-      userCountryPermissions.forEach(userCountryPermission => {
-        expect(userCountryPermission.country_code).to.be.oneOf(
-          ['DL', 'TO'],
-          `Country ${userCountryPermission.country_code} permission is in the database`,
-        );
+      userEntityPermissions.forEach(userEntityPermission => {
+        expect(userEntityPermission.entity_code).to.be.oneOf(['DL', 'TO']);
       });
     });
   });
+
   describe('Mount Sinai Canada admin user', () => {
     const emailAddress = randomEmail();
-    let authResponsePermissions;
+    let accessPolicy;
     let userId;
 
-    it('should create admin test user', async () => {
+    before(async () => {
       const userResponse = await app.post('user', {
         headers,
         body: {
@@ -245,72 +155,61 @@ describe('Access Policy', () => {
       });
       userId = userResponse.body.userId;
 
-      await models.user.updateById(userId, { verified_email: EMAIL_VERIFIED_STATUS.VERIFIED });
+      await models.user.updateById(userId, { verified_email: VERIFIED });
 
       const adminPermissionGroup = await models.permissionGroup.findOne({
         name: 'Admin',
       });
 
       // Create a facility nested deep within a new country other than Demoland.
-      const canada = await models.country.updateOrCreate(
-        {
-          id: 'canada_000000000000_test',
-        },
-        {
-          code: 'CA',
-          name: 'Canada',
-        },
-      );
+      const canada = await upsertEntity({
+        code: 'CA',
+        name: 'Canada',
+        type: 'country',
+      });
 
-      const ontario = await models.geographicalArea.create({
+      const ontario = await upsertEntity({
         name: 'Ontario',
         code: 'CA_OT',
-        level_code: 'district',
-        level_name: 'District',
-        country_id: canada.id,
+        country_code: canada.code,
+        parent_id: canada.id,
+        type: 'district',
       });
-      const toronto = await models.geographicalArea.create({
+      const toronto = await upsertEntity({
         name: 'Toronto',
         code: 'CA_OT_TO',
-        level_code: 'sub_district',
-        level_name: 'Sub District',
-        country_id: canada.id,
+        country_code: canada.code,
         parent_id: ontario.id,
+        type: 'district',
       });
 
-      const mountSinaiFacility = await models.facility.updateOrCreate(
-        {
-          code: 'CA_OT_TO_MS',
-        },
-        {
-          code: 'CA_OT_TO_MS',
-          name: 'Mount Sinaia Hospital',
-          country_id: canada.id,
-          geographical_area_id: toronto.id,
-          type: 1,
-        },
-      );
+      const mountSinai = await upsertEntity({
+        code: 'CA_OT_TO_MS',
+        name: 'Mount Sinaia Hospital',
+        country_code: canada.code,
+        parent_id: toronto.id,
+        type: 'facility',
+      });
 
-      await models.userFacilityPermission.create({
+      await upsertUserEntityPermission({
         user_id: userId,
-        clinic_id: mountSinaiFacility.id,
+        entity_id: mountSinai.id,
         permission_group_id: adminPermissionGroup.id,
       });
 
-      // Create an admin permission for a region not containing Mount Sinai to test
+      // Create an admin permission for a district not containing Mount Sinai to test
       // for clashes between facility level permissions and org unit level permissions.
-      const ottawaGeographicalArea = await models.geographicalArea.create({
+      const ottawa = await upsertEntity({
         name: 'Ottawa',
         code: 'CA_OT_OT',
-        level_code: 'sub_district',
-        level_name: 'Sub District',
-        country_id: canada.id,
+        country_code: canada.code,
         parent_id: ontario.id,
+        type: 'district',
       });
 
-      await models.userGeographicalAreaPermission.create({
+      await upsertUserEntityPermission({
         user_id: userId,
-        geographical_area_id: ottawaGeographicalArea.id,
+        entity_id: ottawa.id,
         permission_group_id: adminPermissionGroup.id,
       });
 
@@ -323,71 +222,27 @@ describe('Access Policy', () => {
         },
       });
 
-      authResponsePermissions = authResponse.body.user.accessPolicy.permissions;
+      accessPolicy = authResponse.body.user.accessPolicy;
     });
 
     it('should have Mount Sinai admin permissions', async () => {
-      const { surveys, reports } = authResponsePermissions;
-
-      const permissionTypes = ['Admin', 'Donor', 'Public'];
-
-      const facilitySurveysPermissions =
-        surveys._items.CA._items.CA_OT._items.CA_OT_TO._items.CA_OT_TO_MS._access;
-      permissionTypes.forEach(permissionType => {
-        expect(facilitySurveysPermissions[permissionType]).to.equal(
-          true,
-          `${permissionType} survey permission found on facility`,
-        );
-      });
-
-      const facilityReportsPermissions =
-        reports._items.CA._items.CA_OT._items.CA_OT_TO._items.CA_OT_TO_MS._access;
-      permissionTypes.forEach(permissionType => {
-        expect(facilityReportsPermissions[permissionType]).to.equal(
-          true,
-          `${permissionType} report permission found on facility`,
-        );
-      });
+      const mountSinaiPermissions = accessPolicy.CA_OT_TO_MS;
+      expect(mountSinaiPermissions).to.include.members(['Admin', 'Donor', 'Public']);
     });
 
     it('should have Ottawa admin permissions', async () => {
-      const { surveys, reports } = authResponsePermissions;
-
-      const permissionTypes = ['Admin', 'Donor', 'Public'];
-
-      const facilitySurveysPermissions =
-        surveys._items.CA._items.CA_OT._items.CA_OT_TO._items.CA_OT_TO_MS._access;
-      permissionTypes.forEach(permissionType => {
-        expect(facilitySurveysPermissions[permissionType]).to.equal(
-          true,
-          `${permissionType} survey permission found on facility`,
-        );
-      });
-
-      const facilityReportsPermissions =
-        reports._items.CA._items.CA_OT._items.CA_OT_TO._items.CA_OT_TO_MS._access;
-      permissionTypes.forEach(permissionType => {
-        expect(facilityReportsPermissions[permissionType]).to.equal(
-          true,
-          `${permissionType} report permission found on facility`,
-        );
-      });
+      const ottawaPermissions = accessPolicy.CA_OT_OT;
+      expect(ottawaPermissions).to.include.members(['Admin', 'Donor', 'Public']);
     });
 
-    it('should not have Toronto admin permissions', async () => {
-      const { surveys, reports } = authResponsePermissions;
-
-      expect(surveys._items.CA._items.CA_OT._items.CA_OT_TO).to.not.have.property('_access');
-      expect(reports._items.CA._items.CA_OT._items.CA_OT_TO).to.not.have.property('_access');
+    it('should not have Toronto permissions', async () => {
+      const torontoPermissions = accessPolicy.CA_OT_TO;
+      expect(torontoPermissions).to.be.undefined;
     });
 
-    it('should have no report access in Canada', async () => {
-      const { reports } = authResponsePermissions;
-
-      expect(reports._items.CA._access).to.equal(
-        undefined,
-        'Public report permissions found for Canada',
-      );
+    it('should not have Canada country level permissions', async () => {
+      const canadaPermissions = accessPolicy.CA;
+      expect(canadaPermissions).to.be.undefined;
     });
   });
 });
