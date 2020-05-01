@@ -122,6 +122,4 @@ describe('Alerts CRUD', () => {
       expect(deletedAlert.length).to.equal(0);
     });
   });
-
-  after(resetTestData);
 });
