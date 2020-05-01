@@ -6,6 +6,7 @@ import randomToken from 'rand-token';
 import compareVersions from 'semver-compare';
 
 import { DatabaseError, UnauthenticatedError, UnverifiedError } from '@tupaia/utils';
+import { AccessPolicyBuilder } from './AccessPolicyBuilder';
 
 const REFRESH_TOKEN_LENGTH = 40;
 const MAX_MEDITRAK_USING_LEGACY_POLICY = '1.7.106';
@@ -13,6 +14,7 @@ const MAX_MEDITRAK_USING_LEGACY_POLICY = '1.7.106';
 export class Authenticator {
   constructor(models) {
     this.models = models;
+    this.accessPolicyBuilder = new AccessPolicyBuilder(models);
   }
 
   async authenticatePassword({ emailAddress, password, deviceName }, meditrakDeviceDetails) {
@@ -95,7 +97,20 @@ export class Authenticator {
     }
     return user;
   }
+
+  /**
+   * Returns a plain old javascript object representation of the user's policy. Consumers should
+   * parse into an instance of AccessPolicy to use functions like `accessPolicy.allowsSome`
+   */
   async getAccessPolicyForUser(userId, meditrakDevice) {
+    if (!meditrakDevice) return this.accessPolicyBuilder.getPolicyForUser(userId);
+
+    // this access policy is being requested by meditrak, which means it may require the legacy
+    // policy format
+    const { app_version: appVersion } = meditrakDevice;
+    const useLegacyFormat =
+      !appVersion || compareVersions(appVersion, MAX_MEDITRAK_USING_LEGACY_POLICY) <= 0;
+    return this.accessPolicyBuilder.getPolicyForUser(userId, useLegacyFormat);
   }
 
   async upsertRefreshToken(userId, device, meditrakDevice) {
