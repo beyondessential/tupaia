@@ -142,7 +142,7 @@ export const testPullEvents = () => {
         );
       });
 
-      it('data elements with with data source codes different than DHIS2 codes', async () => {
+      it('data elements with data source codes different than DHIS2 codes', async () => {
         const getEventAnalyticsResponse = {
           headers: [{ name: 'DIF01_DHIS', column: 'Different 1', valueType: 'NUMBER' }],
           metaData: {

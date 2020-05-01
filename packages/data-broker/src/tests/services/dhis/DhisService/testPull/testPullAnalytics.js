@@ -323,7 +323,7 @@ export const testPullAnalytics = () => {
           ).to.have.been.calledOnceWithExactly(getEventAnalyticsResponse, dataElementCodes);
         });
 
-        it('data elements with with data source codes different than DHIS2 codes', async () => {
+        it('data elements with data source codes different than DHIS2 codes', async () => {
           const getEventAnalyticsResponse = EVENT_ANALYTICS.differentDhisElementCodes;
           const translatedEventAnalytics = {
             headers: [
