@@ -67,8 +67,17 @@ SearchBarItemComponent.defaultProps = {
   nestedMargin: undefined,
 };
 
+const sortOrgUnitsAlphabeticallyByName = orgUnits => {
+  //Sort countries alphabetically, this may not be the case if one country was loaded first
+  return orgUnits.concat().sort((data1, data2) => {
+    if (data1.name > data2.name) return 1;
+    if (data1.name < data2.name) return -1;
+    return 0;
+  });
+};
+
 const selectCodeFromOrgUnit = createSelector([orgUnits => orgUnits], orgUnits =>
-  orgUnits.map(orgUnit => orgUnit.organisationUnitCode),
+  sortOrgUnitsAlphabeticallyByName(orgUnits).map(orgUnit => orgUnit.organisationUnitCode),
 );
 
 const mapStateToProps = (state, props) => {

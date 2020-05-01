@@ -121,7 +121,7 @@ export class SearchBar extends PureComponent {
     if (orgUnitFetchError) return <h2>Server error, try refresh</h2>;
     if (hierarchyData.length < 1) return null;
 
-    const hierarchy = sortOrgUnitsAlphabeticallyByName(hierarchyData).map(item => (
+    const hierarchy = hierarchyData.map(item => (
       <SearchBarItem key={item} organisationUnitCode={item} nestedMargin="0px" />
     ));
     return <List style={styles.heirarchyItem}>{hierarchy}</List>;
@@ -192,7 +192,7 @@ SearchBar.defaultProps = {
 };
 
 const selectCodeFromOrgUnit = createSelector([orgUnits => orgUnits], orgUnits =>
-  orgUnits.map(orgUnit => orgUnit.organisationUnitCode),
+  sortOrgUnitsAlphabeticallyByName(orgUnits).map(orgUnit => orgUnit.organisationUnitCode),
 );
 
 const mapStateToProps = state => {
