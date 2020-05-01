@@ -33,7 +33,7 @@ describe('Alerts CRUD', () => {
 
       const { statusCode, body } = await app.post('alert', {
         body: {
-          id: '123-narf-test-narf-123',
+          id: generateTestId(),
           entity_id: entity.id,
           data_element_id: dataElement.id,
           start_time: new Date().toISOString(),
