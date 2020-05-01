@@ -37,6 +37,7 @@ const GETTABLE_TYPES = [
   TYPES.OPTION,
   TYPES.DISASTER,
   TYPES.DATA_SOURCE,
+  TYPES.ALERT,
 ];
 
 const createMultiResourceKey = (...recordTypes) => recordTypes.filter(x => x).join('/');

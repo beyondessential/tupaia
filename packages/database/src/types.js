@@ -4,6 +4,7 @@
  */
 
 export const TYPES = {
+  ALERT: 'alert',
   ANSWER: 'answer',
   API_CLIENT: 'api_client',
   API_REQUEST_LOG: 'api_request_log',

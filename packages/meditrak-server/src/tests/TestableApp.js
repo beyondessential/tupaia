@@ -54,6 +54,11 @@ export class TestableApp {
     return this.addOptionsToRequest(supertest(this.app).put(versionedEndpoint), options);
   }
 
+  delete(endpoint, options, apiVersion = DEFAULT_API_VERSION) {
+    const versionedEndpoint = getVersionedEndpoint(endpoint, apiVersion);
+    return this.addOptionsToRequest(supertest(this.app).delete(versionedEndpoint), options);
+  }
+
   addOptionsToRequest(request, { headers, body } = {}) {
     if (this.authToken) {
       request.set('Authorization', `Bearer ${this.authToken}`);
