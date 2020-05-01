@@ -9,27 +9,6 @@ import { CartesianChart } from './CartesianChart';
 import { CHART_TYPES } from './chartTypes';
 import { PieChart } from './PieChart';
 
-const selectAllButtonStyle = {
-  position: 'absolute',
-  right: '10px',
-  bottom: '10px',
-  curser: 'none',
-};
-
-const SelectAllButton = ({ onClick }) => {
-  return (
-    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-    <div onClick={onClick} style={selectAllButtonStyle}>
-      <ZoomIcon />
-      <span>All</span>
-    </div>
-  );
-};
-
-SelectAllButton.propTypes = {
-  onClick: PropTypes.func.isRequired,
-};
-
 // Adds default colors for every element with no color defined
 const addDefaultsColorsToConfig = (chartType, chartConfig) => {
   const newConfig = {};
@@ -77,9 +56,7 @@ const UnknownChart = () => (
 export class ChartWrapper extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = {
-      activeDataKeys: [],
-    };
+    this.state = {};
   }
 
   getViewContent() {
@@ -94,24 +71,6 @@ export class ChartWrapper extends PureComponent {
     };
   }
 
-  onLegendClick = event => {
-    const { viewContent } = this.props;
-    const { chartConfig = {} } = viewContent;
-    const allKeys = Object.keys(chartConfig);
-    if (this.state.activeDataKeys.includes(event.dataKey)) {
-      this.setState(state => ({
-        activeDataKeys: state.activeDataKeys.filter(dk => dk !== event.dataKey),
-      }));
-    } else {
-      this.setState(state => ({ activeDataKeys: [...state.activeDataKeys, event.dataKey] }));
-    }
-    if (this.state.activeDataKeys.length >= allKeys.length - 1) {
-      this.setState({ activeDataKeys: [] });
-    }
-  };
-
-  onClickAll = () => this.setState({ activeDataKeys: [] });
-
   render() {
     const viewContent = this.getViewContent();
     const { chartType } = viewContent;
@@ -119,9 +78,6 @@ export class ChartWrapper extends PureComponent {
     if (!Object.values(CHART_TYPES).includes(chartType)) {
       return <UnknownChart />;
     }
-    const SelectAllButton3 = this.state.activeDataKeys.length >= 1 && (
-      <SelectAllButton onClick={this.onClickAll}>All</SelectAllButton>
-    );
     const Chart = chartType === CHART_TYPES.PIE ? PieChart : CartesianChart;
     return (
       <div style={VIEW_STYLES.chartViewContainer}>
@@ -132,7 +88,6 @@ export class ChartWrapper extends PureComponent {
             activeDataKeys={this.state.activeDataKeys}
             viewContent={viewContent}
           />
-          {SelectAllButton3}
         </div>
       </div>
     );

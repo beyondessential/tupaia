@@ -32,6 +32,8 @@ import VerticalTick from './VerticalTick';
 
 const { AREA, BAR, COMPOSED, LINE } = CHART_TYPES;
 const { PERCENTAGE } = VALUE_TYPES;
+const LEGEND_ALL_DATA_KEY = 'ALL_DATA_KEY ';
+const ALL_DATA_KEY = 'ALL_DATA_KEY';
 
 const AXIS_TIME_PROPS = {
   dataKey: 'timestamp',
@@ -102,6 +104,7 @@ export class CartesianChart extends PureComponent {
 
     this.state = {
       xAxisHeight: 0,
+      activeDataKeys: [],
     };
     // Because state isn't fast enough to update when ticks mount,
     // use this method to hold on to a value to find the largest tick.
@@ -117,6 +120,32 @@ export class CartesianChart extends PureComponent {
   isComposedChart = () => {
     const { viewContent } = this.props;
     return viewContent.chartType === COMPOSED;
+  };
+
+  onLegendClick = event => {
+    const { viewContent } = this.props;
+    const { chartConfig = {} } = viewContent;
+    if (event.dataKey === LEGEND_ALL_DATA_KEY) {
+      this.setState({ activeDataKeys: [] });
+      return;
+    }
+    const allRealKeys = Object.keys(chartConfig).filter(key => key !== LEGEND_ALL_DATA_KEY);
+    if (this.state.activeDataKeys.includes(event.dataKey)) {
+      this.setState(state => ({
+        activeDataKeys: state.activeDataKeys.filter(dk => dk !== event.dataKey),
+      }));
+    } else {
+      this.setState(state => {
+        const activeDataKeys =
+          state.activeDataKeys.length >= allRealKeys.length - 1
+            ? []
+            : [...state.activeDataKeys, event.dataKey];
+        console.log(activeDataKeys);
+        return {
+          activeDataKeys,
+        };
+      });
+    }
   };
 
   getBarSize = () => {
@@ -173,8 +202,12 @@ export class CartesianChart extends PureComponent {
   };
 
   formatLegend = (value, { color }) => {
-    const { viewContent, activeDataKeys } = this.props;
-    const isActive = activeDataKeys.length === 0 || activeDataKeys.includes(value);
+    const { viewContent } = this.props;
+    const { activeDataKeys } = this.state;
+    const isActive =
+      activeDataKeys.length === 0 ||
+      activeDataKeys.includes(value) ||
+      value === LEGEND_ALL_DATA_KEY;
     const displayColor = isActive ? color : getInactiveColor(color);
     return (
       <span style={{ color: displayColor, textDecoration: isActive ? '' : 'line-through' }}>
@@ -335,13 +368,13 @@ export class CartesianChart extends PureComponent {
   };
 
   renderLegend = () => {
-    const { isEnlarged, viewContent, onLegendClick } = this.props;
+    const { isEnlarged, viewContent } = this.props;
     const { chartConfig } = viewContent;
     const hasDataSeries = chartConfig && Object.keys(chartConfig).length > 1;
 
     return (
       hasDataSeries &&
-      isEnlarged && <Legend onClick={onLegendClick} formatter={this.formatLegend} />
+      isEnlarged && <Legend onClick={this.onLegendClick} formatter={this.formatLegend} />
     );
   };
 
@@ -500,22 +533,40 @@ export class CartesianChart extends PureComponent {
   };
 
   filterDisabledData = data => {
-    const { activeDataKeys } = this.props;
+    const { activeDataKeys } = this.state;
+    const { viewContent } = this.props;
+    const { chartConfig = {} } = viewContent;
+
+    if (this.state.activeDataKeys.length >= 1)
+      chartConfig[LEGEND_ALL_DATA_KEY] = {
+        color: '#FFFFFF',
+        chartType: Object.values(chartConfig)[0].chartType || viewContent.chartType || 'line',
+        label: 'All',
+        stackId: 1,
+      };
+    else if (chartConfig[LEGEND_ALL_DATA_KEY]) {
+      delete chartConfig[LEGEND_ALL_DATA_KEY];
+    }
+    if (activeDataKeys.length === 0) return data;
+
     const realData = data.map(dataSeries =>
-      Object.entries(dataSeries).reduce((newDataSeries, [key, value]) => {
+      [...Object.entries(dataSeries), [ALL_DATA_KEY, 0]].reduce((newDataSeries, [key, value]) => {
         const isActive =
+          !Object.keys(chartConfig).includes(key) ||
           activeDataKeys.length === 0 ||
           activeDataKeys.includes(key) ||
-          ['name', 'timestamp'].includes(key); //TODO
+          key === ALL_DATA_KEY; //TODO
         return isActive ? { ...newDataSeries, [key]: value } : newDataSeries;
       }, {}),
     );
+    console.log(realData);
     return realData;
   };
 
   render = () => {
     const { isEnlarged, isExporting, viewContent } = this.props;
     const { chartType, data } = viewContent;
+    console.log(viewContent);
     const Chart = CHART_TYPE_TO_COMPONENT[chartType];
     const responsiveStyle = !isEnlarged && !isMobile() && !isExporting ? 1.6 : undefined;
 
@@ -543,7 +594,6 @@ CartesianChart.propTypes = {
   isExporting: PropTypes.bool,
   viewContent: PropTypes.shape(VIEW_CONTENT_SHAPE),
   activeDataKeys: PropTypes.arrayOf(PropTypes.string),
-  onLegendClick: PropTypes.func,
 };
 
 CartesianChart.defaultProps = {
@@ -551,5 +601,4 @@ CartesianChart.defaultProps = {
   isExporting: false,
   viewContent: null,
   activeDataKeys: [],
-  onLegendClick: () => {},
 };
