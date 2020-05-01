@@ -12,7 +12,7 @@ export class CountEventsPerOrgUnitBuilder extends DataPerOrgUnitBuilder {
   async fetchResults() {
     return this.fetchEvents({
       dataValueFormat: 'object',
-      organisationUnitCode: this.entity.code,
+      organisationUnitCodes: [this.entity.code],
     });
   }
 }
