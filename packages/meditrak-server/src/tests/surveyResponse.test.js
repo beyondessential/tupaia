@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 import momentTimezone from 'moment-timezone';
+import { upsertDummyRecord } from '@tupaia/database';
 
 import { TestableApp } from './TestableApp';
-import { upsertDummyRecord } from '@tupaia/database/dist/testUtilities';
 
 const SURVEY_CODE = 'test-survey-response';
 const ENTITY_ID = 'entity_000000000000_test';

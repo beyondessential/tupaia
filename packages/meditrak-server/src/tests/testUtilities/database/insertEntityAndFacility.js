@@ -10,7 +10,7 @@ export const insertEntityAndFacility = async (
 ) => {
   const country = await upsertDummyRecord(models.country);
   const entity = await upsertEntity({ ...entityData, type: models.entity.types.FACILITY });
-  const area = await models.geographicalArea.findOne({ country_id: country.id });
+  const area = await upsertDummyRecord(models.geographicalArea, { country_id: country.id });
   const facility = await upsertFacility({
     ...facilityData,
     code: entity.code,
