@@ -29,7 +29,7 @@ const palette = {
     secondary: COLORS.TEXTGREY,
   },
   background: {
-    default: 'transparent', // use background addon to switch colors
+    default: COLORS.LIGHTGREY,
     paper: COLORS.WHITE,
   },
 };
