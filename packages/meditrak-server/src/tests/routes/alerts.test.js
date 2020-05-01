@@ -5,7 +5,13 @@
 
 import { expect } from 'chai';
 import { TestableApp } from '../TestableApp';
-import { createEntity, createDataElement, createAlert, resetTestData } from '../testUtilities';
+import {
+  createEntity,
+  createDataElement,
+  createAlert,
+  resetTestData,
+  generateTestId,
+} from '../testUtilities';
 
 describe('Alerts CRUD', () => {
   const app = new TestableApp();
@@ -17,13 +23,14 @@ describe('Alerts CRUD', () => {
     it('creates an alert', async () => {
       const entity = await createEntity('NARF1');
       const dataElement = await createDataElement('NARF2');
+      const startTime = new Date();
 
       const { statusCode, body } = await app.post('alert', {
         body: {
           id: generateTestId(),
           entity_id: entity.id,
           data_element_id: dataElement.id,
-          start_time: new Date().toISOString(),
+          start_time: startTime,
         },
       });
 
@@ -33,6 +40,7 @@ describe('Alerts CRUD', () => {
       const latestAlert = (await models.alert.all()).pop();
       expect(latestAlert.entity_id).to.equal(entity.id);
       expect(latestAlert.data_element_id).to.equal(dataElement.id);
+      expect(latestAlert.start_time.getTime()).to.equal(startTime.getTime());
     });
   });
 
@@ -87,19 +95,16 @@ describe('Alerts CRUD', () => {
     it('updates a single alert', async () => {
       const { alert } = await createAlert('EGAD1');
       const newEndTime = new Date();
-      const millisecondsCorrection = -newEndTime.getTimezoneOffset() * 60 * 1000;
 
       const { statusCode, body } = await app.put(`alerts/${alert.id}`, {
-        body: { end_time: newEndTime.toISOString(), archived: true },
+        body: { end_time: newEndTime, archived: true },
       });
 
       expect(statusCode).to.equal(200);
       expect(body).to.deep.equal({ message: 'Successfully updated alerts' });
 
       const updatedAlert = await models.alert.findById(alert.id);
-      expect(updatedAlert.end_time.getTime()).to.equal(
-        newEndTime.getTime() - millisecondsCorrection,
-      );
+      expect(updatedAlert.end_time.getTime()).to.equal(newEndTime.getTime());
       expect(updatedAlert.archived).to.be.true;
     });
   });

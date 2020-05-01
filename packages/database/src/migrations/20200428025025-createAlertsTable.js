@@ -20,9 +20,9 @@ exports.up = function(db) {
       id TEXT PRIMARY KEY,
       entity_id text REFERENCES entity(id),
       data_element_id text REFERENCES data_source(id),
-      start_time TIMESTAMP NOT NULL DEFAULT now(),
-      end_time TIMESTAMP,
-      event_confirmed_time TIMESTAMP,
+      start_time TIMESTAMPTZ NOT NULL DEFAULT now(),
+      end_time TIMESTAMPTZ,
+      event_confirmed_time TIMESTAMPTZ,
       archived boolean DEFAULT false
     );
   `);
