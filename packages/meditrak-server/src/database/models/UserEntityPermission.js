@@ -1,45 +1,31 @@
 /**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
 
-import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
+import { UserEntityPermissionModel as CommonUserEntityPermissionModel } from '@tupaia/database';
+
 import { sendEmail } from '../../utilities';
 
-class UserCountryPermissionType extends DatabaseType {
-  static databaseType = TYPES.USER_COUNTRY_PERMISSION;
-
-  static joins = [
-    {
-      fields: {
-        code: 'country_code',
-      },
-      joinWith: TYPES.COUNTRY,
-      joinCondition: [`${TYPES.COUNTRY}.id`, `${TYPES.USER_COUNTRY_PERMISSION}.country_id`],
-    },
-  ];
-
-  async country() {
-    return this.otherModels.country.findById(this.country_id);
-  }
-
-  async user() {
-    return this.otherModels.user.findById(this.user_id);
-  }
-
-  async permissionGroup() {
-    return this.otherModels.permissionGroup.findById(this.permission_group_id);
-  }
-}
-
-export class UserCountryPermissionModel extends DatabaseModel {
+export class UserEntityPermissionModel extends CommonUserEntityPermissionModel {
   notifiers = [onUpsertSendPermissionGrantEmail];
 
-  get DatabaseTypeClass() {
-    return UserCountryPermissionType;
-  }
-
   isDeletableViaApi = true;
+
+  // used to build legacy access policy for meditrak app pre 1.8.107
+  async fetchCountryPermissionGroups(userId) {
+    return this.database.executeSql(
+      `
+      SELECT permission_group.name as permission_group_name, entity.code as country_code
+      FROM user_entity_permission
+      JOIN permission_group ON user_entity_permission.permission_group_id = permission_group.id
+      JOIN entity ON user_entity_permission.entity_id = entity.id
+      WHERE entity.type = 'country'
+      AND user_entity_permission.user_id = ?
+      `,
+      [userId],
+    );
+  }
 }
 
 /**
@@ -54,14 +40,14 @@ async function onUpsertSendPermissionGrantEmail({ type: changeType, record }, mo
 
   // Get details of permission granted
   const user = await models.user.findById(record.user_id);
-  const country = await models.country.findById(record.country_id);
+  const entity = await models.entity.findById(record.entity_id);
   const permissionGroup = await models.permissionGroup.findById(record.permission_group_id);
 
   // Compose message to send
   const message = `Hi ${user.first_name},
 
 This is just to let you know that you've been added to the ${permissionGroup.name} access group
-for ${country.name}. This allows you to collect surveys through the Tupaia data collection app,
+for ${entity.name}. This allows you to collect surveys through the Tupaia data collection app,
 and to see reports and map overlays on Tupaia.org
 
 Please note that you'll need to log out and then log back in to get access to the new permissions.
