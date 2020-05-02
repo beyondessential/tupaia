@@ -81,8 +81,8 @@ const percentage = value => {
 };
 
 const number = (value, { presentationOptions = {} }) => {
- const { valueFormat = '0,0' } = presentationOptions;
- return numeral(value).format(valueFormat);
+  const { valueFormat = '0,0' } = presentationOptions;
+  return numeral(value).format(valueFormat);
 };
 
 const defaultFormatter = input => (Number.isNaN(input) ? input : truncateDecimalToPlace(2)(input));
@@ -97,7 +97,7 @@ const VALUE_TYPE_TO_FORMATTER = {
   [VALUE_TYPES.NUMBER]: number,
 };
 
-export const formatDataValue = (value, valueType, metadata) => {
+export const formatDataValue = (value, valueType, metadata = {}) => {
   const formatter = VALUE_TYPE_TO_FORMATTER[valueType] || defaultFormatter;
   return formatter(value, metadata);
 };

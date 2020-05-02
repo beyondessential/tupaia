@@ -16,6 +16,7 @@ import { SPECTRUM_ICON, DEFAULT_ICON, UNKNOWN_ICON } from '../components/Marker/
 import { MAP_COLORS } from '../styles';
 import { formatDataValue } from './formatters';
 import { SCALE_TYPES } from '../constants';
+import { VALUE_TYPES } from '../components/View/constants';
 
 // At a few places throughout this module we're iterating over a collection
 // while modifying an object, which trips up the eslint rule that expects inline
@@ -101,6 +102,7 @@ export function createValueMapping(valueObjects, type) {
 }
 
 function getFormattedValue(value, type, valueInfo, scaleType, valueType) {
+  console.log(type, value, valueInfo, valueType);
   switch (type) {
     case MEASURE_TYPE_SPECTRUM:
     case MEASURE_TYPE_SHADED_SPECTRUM:
@@ -122,27 +124,29 @@ function getFormattedValue(value, type, valueInfo, scaleType, valueType) {
 }
 
 const getSpectrumScaleValues = (measureData, measureOption) => {
-  const { key, scaleType, scaleMin, scaleMax, startDate, endDate } = measureOption;
+  console.log(measureData, measureOption);
+  const { key, scaleType, valueType, scaleMin, scaleMax, startDate, endDate } = measureOption;
 
-  switch (scaleType) {
-    case SCALE_TYPES.TIME:
-      return { min: startDate, max: endDate };
-    case SCALE_TYPES.PERFORMANCE:
-      return { min: 0, max: 1 };
-    default: {
-      const flattenedMeasureData = flattenNumericalMeasureData(measureData, key);
-      const hasScaleMin = scaleMin !== undefined;
-      const hasScaleMax = scaleMax !== undefined;
-      return {
-        min: hasScaleMin
-          ? Math.min(scaleMin, ...flattenedMeasureData)
-          : Math.min(...flattenedMeasureData),
-        max: hasScaleMax
-          ? Math.max(scaleMax, ...flattenedMeasureData)
-          : Math.max(...flattenedMeasureData),
-      };
-    }
+  if (scaleType === SCALE_TYPES.TIME) {
+    return { min: startDate, max: endDate };
   }
+
+  const flattenedMeasureData = flattenNumericalMeasureData(measureData, key);
+  const hasScaleMin = scaleMin !== undefined;
+  const hasScaleMax = scaleMax !== undefined;
+
+  if (valueType === VALUE_TYPES.PERCENTAGE) {
+    return { min: 0, max: scaleMax === 'auto' ? Math.max(...flattenedMeasureData) : 1 };
+  }
+
+  return {
+    min: hasScaleMin
+      ? Math.min(scaleMin, ...flattenedMeasureData)
+      : Math.min(...flattenedMeasureData),
+    max: hasScaleMax
+      ? Math.max(scaleMax, ...flattenedMeasureData)
+      : Math.max(...flattenedMeasureData),
+  };
 };
 
 export function processMeasureInfo(response) {
@@ -163,6 +167,7 @@ export function processMeasureInfo(response) {
       // A grey no data colour looks like part of the population scale
       const noDataColour = scaleType === SCALE_TYPES.POPULATION ? 'black' : MAP_COLORS.NO_DATA;
 
+      console.log(values, valueMapping);
       return {
         ...measureOption,
         values,
@@ -322,5 +327,5 @@ export const calculateRadiusScaleFactor = measureData => {
 // and filters NaN values (e.g. undefined).
 export function flattenNumericalMeasureData(measureData, key) {
   // eslint-disable-next-line no-restricted-globals
-  return measureData.map(v => parseInt(v[key], 10)).filter(x => !isNaN(x));
+  return measureData.map(v => parseFloat(v[key])).filter(x => !isNaN(x));
 }
