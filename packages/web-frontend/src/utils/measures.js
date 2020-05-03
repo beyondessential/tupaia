@@ -102,17 +102,13 @@ export function createValueMapping(valueObjects, type) {
 }
 
 function getFormattedValue(value, type, valueInfo, scaleType, valueType) {
-  console.log(type, value, valueInfo, valueType);
   switch (type) {
     case MEASURE_TYPE_SPECTRUM:
     case MEASURE_TYPE_SHADED_SPECTRUM:
-      if ([SCALE_TYPES.PERFORMANCE, SCALE_TYPES.PERFORMANCE_DESC].includes(scaleType)) {
-        return formatDataValue(value, valueType);
-      }
       if (scaleType === SCALE_TYPES.TIME) {
         return `last submission on ${value}`;
       }
-      return value;
+      return formatDataValue(value, valueType);
     case MEASURE_TYPE_RADIUS:
     case MEASURE_TYPE_ICON:
     case MEASURE_TYPE_COLOR:
@@ -124,7 +120,6 @@ function getFormattedValue(value, type, valueInfo, scaleType, valueType) {
 }
 
 const getSpectrumScaleValues = (measureData, measureOption) => {
-  console.log(measureData, measureOption);
   const { key, scaleType, valueType, scaleMin, scaleMax, startDate, endDate } = measureOption;
 
   if (scaleType === SCALE_TYPES.TIME) {
@@ -132,20 +127,27 @@ const getSpectrumScaleValues = (measureData, measureOption) => {
   }
 
   const flattenedMeasureData = flattenNumericalMeasureData(measureData, key);
-  const hasScaleMin = scaleMin !== undefined;
-  const hasScaleMax = scaleMax !== undefined;
 
   if (valueType === VALUE_TYPES.PERCENTAGE) {
-    return { min: 0, max: scaleMax === 'auto' ? Math.max(...flattenedMeasureData) : 1 };
+    return getExtremesOfData(
+      scaleMin || 0,
+      scaleMax === 'auto' ? null : scaleMax || 1,
+      flattenedMeasureData,
+    );
   }
 
+  return getExtremesOfData(scaleMin, scaleMax, flattenedMeasureData);
+};
+
+const getExtremesOfData = (manualMin, manualMax, data) => {
+  console.log(manualMax, manualMin, data);
+  // coerce to number before checking for isNan, identical to "isNaN(scaleMin)". Allows for '0' and true to be valid
+  const hasNumberScaleMin = !Number.isNaN(Number(manualMin));
+  const hasNumberScaleMax = !Number.isNaN(Number(manualMax));
+
   return {
-    min: hasScaleMin
-      ? Math.min(scaleMin, ...flattenedMeasureData)
-      : Math.min(...flattenedMeasureData),
-    max: hasScaleMax
-      ? Math.max(scaleMax, ...flattenedMeasureData)
-      : Math.max(...flattenedMeasureData),
+    min: hasNumberScaleMin ? Math.min(manualMin, ...data) : Math.min(...data),
+    max: hasNumberScaleMax ? Math.max(manualMax, ...data) : Math.max(...data),
   };
 };
 
@@ -164,8 +166,8 @@ export function processMeasureInfo(response) {
       // use in the legend scale labels.
       const { min, max } = getSpectrumScaleValues(measureData, measureOption);
 
-      // A grey no data colour looks like part of the population scale
-      const noDataColour = scaleType === SCALE_TYPES.POPULATION ? 'black' : MAP_COLORS.NO_DATA;
+      // A grey no data colour looks like part of the neutral scale
+      const noDataColour = scaleType === SCALE_TYPES.NEUTRAL ? 'black' : MAP_COLORS.NO_DATA;
 
       console.log(values, valueMapping);
       return {
