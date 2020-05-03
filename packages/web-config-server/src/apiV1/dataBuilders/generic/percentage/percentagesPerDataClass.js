@@ -123,3 +123,31 @@ export const percentagesPerDataClass = async (
 
   return builder.build();
 };
+
+const basicPercentagesPerDataClass = async (
+  { dataBuilderConfig, query, entity },
+  aggregator,
+  dhisApi,
+  aggregationType,
+) => {
+  const builder = new PercentagesPerDataClassDataBuilder(
+    aggregator,
+    dhisApi,
+    dataBuilderConfig,
+    query,
+    entity,
+    aggregationType,
+  );
+
+  return builder.build();
+};
+
+export const percentagePerDataClass = basicPercentagesPerDataClass;
+
+export const percentagePerDataClassByMonth = (config, aggregator, dhisApi) =>
+  basicPercentagesPerDataClass(
+    config,
+    aggregator,
+    dhisApi,
+    aggregator.aggregationTypes.FINAL_EACH_MONTH,
+  );
