@@ -26,7 +26,7 @@ import { getSortByKey } from '@tupaia/utils/dist/object';
 
 export class CountEventsBuilder extends DataBuilder {
   async build() {
-    const events = await this.fetchEvents({ useDeprecatedApi: false });
+    const events = await this.fetchEvents({ dataValueFormat: 'object' });
     const data = await this.buildData(events);
 
     return { data };
