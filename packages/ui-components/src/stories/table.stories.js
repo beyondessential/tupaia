@@ -4,14 +4,12 @@
  */
 
 import React from 'react';
-import { SimpleTable, ZebraTable, CardTable } from '../components/Table';
 import styled from 'styled-components';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
-import Box from '@material-ui/core/Box';
-import Paper from '@material-ui/core/Paper';
-import TableContainer from '@material-ui/core/TableContainer';
 import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
+import { SimpleTable, ZebraTable, CardTable } from '../components/TableStyles';
 
 export default {
   title: 'Table',
