@@ -182,10 +182,10 @@ export const testPullEvents = () => {
     it('directly returns the buildEventsFromDhisEventAnalytics() results', () => {
       const events = [
         {
-          eventId: 'event1_dhisId',
-          period: '20200206',
-          organisationUnit: 'TO_Nukuhc',
-          values: {
+          event: 'event1_dhisId',
+          eventDate: '2020-02-06T10:18:00.000',
+          orgUnit: 'TO_Nukuhc',
+          dataValues: {
             POP01: 1,
             POP02: 2,
           },

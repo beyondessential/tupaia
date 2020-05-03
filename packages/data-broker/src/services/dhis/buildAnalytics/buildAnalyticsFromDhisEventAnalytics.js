@@ -2,8 +2,10 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
+
 import flatten from 'lodash.flatten';
 
+import { dateStringToPeriod } from '@tupaia/dhis-api';
 import { buildEventsFromDhisEventAnalytics } from './buildEventsFromDhisEventAnalytics';
 
 export const buildAnalyticsFromDhisEventAnalytics = (dhisEventAnalytics, dataElementCodes = []) => {
@@ -17,10 +19,10 @@ export const buildAnalyticsFromDhisEventAnalytics = (dhisEventAnalytics, dataEle
 
 const eventsToAnalytics = events =>
   flatten(
-    events.map(({ period, organisationUnit, values }) =>
-      Object.entries(values).map(([dataElement, value]) => ({
-        period,
-        organisationUnit,
+    events.map(({ eventDate, orgUnit, dataValues }) =>
+      Object.entries(dataValues).map(([dataElement, value]) => ({
+        period: dateStringToPeriod(eventDate),
+        organisationUnit: orgUnit,
         dataElement,
         value,
       })),

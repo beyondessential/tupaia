@@ -33,7 +33,7 @@ export const EVENT_ANALYTICS_WITH_DATA_VALUES = {
   rows: [
     [
       'event1_dhisId',
-      '2020-02-06 10:18:00.0',
+      '2020-02-06T10:18:00.000',
       'Nukunuku',
       'TO_Nukuhc',
       'nukunuku_dhisId',
@@ -42,7 +42,7 @@ export const EVENT_ANALYTICS_WITH_DATA_VALUES = {
     ],
     [
       'event2_dhisId',
-      '2020-02-07 14:33:00.0',
+      '2020-02-07T14:33:00.000',
       'Haveluloto',
       'TO_HvlMCH',
       'houma_dhisId',
@@ -74,8 +74,8 @@ export const EVENT_ANALYTICS_NO_DATA_VALUES = {
   width: 5,
   height: 2,
   rows: [
-    ['event1_dhisId', '2020-02-06 10:18:00.0', 'Nukunuku', 'TO_Nukuhc', 'nukunuku_dhisId'],
-    ['event2_dhisId', '2020-02-06 14:33:00.0', 'Haveluloto', 'TO_HvlMCH', 'houma_dhisId'],
+    ['event1_dhisId', '2020-02-06T10:18:00.000', 'Nukunuku', 'TO_Nukuhc', 'nukunuku_dhisId'],
+    ['event2_dhisId', '2020-02-07T14:33:00.000', 'Haveluloto', 'TO_HvlMCH', 'houma_dhisId'],
   ],
 };
 

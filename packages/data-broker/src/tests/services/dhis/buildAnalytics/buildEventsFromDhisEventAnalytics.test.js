@@ -19,16 +19,16 @@ describe('buildEventsFromDhisEventAnalytics()', () => {
   it('builds events containing no data values', () => {
     expect(buildEventsFromDhisEventAnalytics(EVENT_ANALYTICS.noDataValues)).to.deep.equal([
       {
-        eventId: 'event1_dhisId',
-        organisationUnit: 'TO_Nukuhc',
-        period: '20200206',
-        values: {},
+        event: 'event1_dhisId',
+        orgUnit: 'TO_Nukuhc',
+        eventDate: '2020-02-06T10:18:00.000',
+        dataValues: {},
       },
       {
-        eventId: 'event2_dhisId',
-        organisationUnit: 'TO_HvlMCH',
-        period: '20200206',
-        values: {},
+        event: 'event2_dhisId',
+        orgUnit: 'TO_HvlMCH',
+        eventDate: '2020-02-07T14:33:00.000',
+        dataValues: {},
       },
     ]);
   });
@@ -38,19 +38,19 @@ describe('buildEventsFromDhisEventAnalytics()', () => {
       buildEventsFromDhisEventAnalytics(EVENT_ANALYTICS.withDataValues, ['BCD1', 'BCD2']),
     ).to.deep.equal([
       {
-        eventId: 'event1_dhisId',
-        organisationUnit: 'TO_Nukuhc',
-        period: '20200206',
-        values: {
+        event: 'event1_dhisId',
+        orgUnit: 'TO_Nukuhc',
+        eventDate: '2020-02-06T10:18:00.000',
+        dataValues: {
           BCD1: 10,
           BCD2: 'Comment 1',
         },
       },
       {
-        eventId: 'event2_dhisId',
-        organisationUnit: 'TO_HvlMCH',
-        period: '20200207',
-        values: {
+        event: 'event2_dhisId',
+        orgUnit: 'TO_HvlMCH',
+        eventDate: '2020-02-07T14:33:00.000',
+        dataValues: {
           BCD1: 20,
           BCD2: 'Comment 2',
         },
