@@ -3,18 +3,17 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { dateStringToPeriod } from '@tupaia/dhis-api';
 import { getSortByKey } from '@tupaia/utils';
 import { sanitizeValue } from './sanitizeValue';
 
 /*
- * @typedef {{ eventId, organisationUnit, period, values: Object }} Event
+ * @typedef {{ event, orgUnit, eventDate, dataValues: Object }} Event
  */
 
 const METADATA_DIMENSION_TRANSLATION = {
-  psi: 'eventId',
-  oucode: 'organisationUnit',
-  eventdate: 'period',
+  psi: 'event',
+  oucode: 'orgUnit',
+  eventdate: 'eventDate',
 };
 
 const createDimensionTranslator = dataElementCodes => dimension => {
@@ -34,16 +33,16 @@ export const buildEventsFromDhisEventAnalytics = (dhisEventAnalytics, dataElemen
 
   const events = [];
   rows.forEach(row => {
-    const event = { values: {} };
+    const event = { dataValues: {} };
     row.forEach((value, columnIndex) => {
       const { dimension, valueType } = columnSpecs[columnIndex];
       if (!dimension) {
         return;
       }
 
-      const formattedValue = formatValue({ dimension, value, valueType });
+      const formattedValue = sanitizeValue(value, valueType);
       if (dataElementCodes.includes(dimension)) {
-        event.values[dimension] = formattedValue;
+        event.dataValues[dimension] = formattedValue;
       } else {
         event[dimension] = formattedValue;
       }
@@ -52,11 +51,8 @@ export const buildEventsFromDhisEventAnalytics = (dhisEventAnalytics, dataElemen
     events.push(event);
   });
 
-  return events.sort(getSortByKey('period'));
+  return events.sort(getSortByKey(METADATA_DIMENSION_TRANSLATION.eventdate));
 };
-
-const formatValue = ({ dimension, value, valueType }) =>
-  dimension === 'period' ? dateStringToPeriod(value) : sanitizeValue(value, valueType);
 
 const getColumnSpecs = (headers, dataElementCodes) => {
   const columnSpecs = new Array(headers.length).fill({});
