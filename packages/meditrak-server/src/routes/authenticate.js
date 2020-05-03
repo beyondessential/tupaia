@@ -40,7 +40,16 @@ const getAuthorizationObject = async ({ accessPolicy, refreshToken, user }) => {
   };
 };
 
-const isMeditrakLogin = body => body && body.installId;
+/**
+ * Check whether this is a meditrak app login, or some other client (e.g. admin panel, mSupply).
+ * N.B. this relies on `installId` being present, which was introduced in app version 1.7.81.
+ * Because of this we have officially deprecated support for any earlier versions of meditrak-app
+ * @param {Object} body The request body from the POST to /auth
+ */
+function isMeditrakLogin(body) {
+  return body && body.installId;
+}
+
 const getMeditrakDeviceDetails = req => {
   const { body, query } = req;
   if (!isMeditrakLogin(body)) {
