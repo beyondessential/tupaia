@@ -58,7 +58,7 @@ class ConnectedPolygon extends Component {
 
   getTooltip(name) {
     const { isChildArea, hasMeasureData, measureValue, measureOptions } = this.props;
-    const hasMeasureValue = !!measureValue;
+    const hasMeasureValue = !(measureValue === null || measureValue === undefined);
 
     // don't render tooltips if we have a measure loaded
     // and don't have a value to display in the tooltip
