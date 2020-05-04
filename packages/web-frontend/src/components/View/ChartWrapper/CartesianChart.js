@@ -559,14 +559,12 @@ export class CartesianChart extends PureComponent {
         return isActive ? { ...newDataSeries, [key]: value } : newDataSeries;
       }, {}),
     );
-    console.log(realData);
     return realData;
   };
 
   render = () => {
     const { isEnlarged, isExporting, viewContent } = this.props;
     const { chartType, data } = viewContent;
-    console.log(viewContent);
     const Chart = CHART_TYPE_TO_COMPONENT[chartType];
     const responsiveStyle = !isEnlarged && !isMobile() && !isExporting ? 1.6 : undefined;
 
