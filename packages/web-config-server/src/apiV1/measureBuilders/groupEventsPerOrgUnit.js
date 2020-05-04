@@ -12,7 +12,7 @@ export class GroupEventsPerOrgUnitBuilder extends DataPerOrgUnitBuilder {
 
   async fetchResults() {
     return this.fetchEvents({
-      dataValueFormat: 'object',
+      useDeprecatedApi: false,
       organisationUnitCodes: [this.entity.code],
     });
   }
