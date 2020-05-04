@@ -27,7 +27,7 @@ describe('buildAnalyticsFromDhisEventAnalytics', () => {
   describe('`results`', () => {
     it('empty data element codes', () => {
       expect(
-        buildAnalyticsFromDhisEventAnalytics(EVENT_ANALYTICS.noDataValues, []),
+        buildAnalyticsFromDhisEventAnalytics(EVENT_ANALYTICS.withDataValues, []),
       ).to.have.deep.property('results', []);
     });
 
@@ -72,7 +72,7 @@ describe('buildAnalyticsFromDhisEventAnalytics', () => {
   describe('`metadata`', () => {
     it('empty data element codes', () => {
       expect(
-        buildAnalyticsFromDhisEventAnalytics(EVENT_ANALYTICS.noDataValues),
+        buildAnalyticsFromDhisEventAnalytics(EVENT_ANALYTICS.withDataValues),
       ).to.have.deep.property('metadata', {
         dataElementCodeToName: {},
       });
