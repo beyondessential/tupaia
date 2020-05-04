@@ -38,23 +38,23 @@ exports.up = function(db) {
       "countryCodes")
      
     VALUES (
-      'STRIVE_FIS_Village_Number_Reported_Cases_In_Week',
-      '# Febrile illness cases (STRIVE Cases)',
+      'STRIVE_FIS_Village_Percent_mRDT_Positive_In_Week',
+      '% mRDT positive (STRIVE Cases)',
       'STRIVE Febrile illness surveilance (Village)',
       'STRIVE User',
       'value',
-      'shading',
-      'Red,Orange,Yellow,Lime,Green',
+      'shaded-spectrum',
+      NULL,
       true,
-      '[{"name": "> 20", "color": "Red", "value": "0"}, {"name": "19 - 15", "color": "Orange", "value": "1"}, {"name": "14 - 10", "color": "Yellow", "value": "2"}, {"name": "9 - 6", "color": "Lime", "value": "3"}, {"name": "5 - 1", "color": "Green", "value": "4"}, {"name": "0", "color": "Grey", "value": "null"}]',
+      '[{"color": "blue","value": "other"},{"color": "grey","value": null}]',
       false,
       false,
       false,
       NULL,
       0,
-      '{"groups": {"0": {"value": 21, "operator": ">="}, "1": {"value": [15, 19], "operator": "range"}, "2": {"value": [10, 14], "operator": "range"}, "3": {"value": [6, 9], "operator": "range"}, "4": {"value": [1, 5], "operator": "range"}}, "programCode": "SCRF", "dataSourceType": "custom", "dataSourceEntityType": "village", "aggregationEntityType": "village"}',
-      'groupEventsPerOrgUnit',
-      '{}',
+      '{"dataSourceType":"custom","measureBuilders":{"numerator":{"measureBuilder":"countEventsPerOrgUnit","measureBuilderConfig":{"dataValues":{"STR_CRF169":{"value":"Positive","operator":"regex"}},"programCode":"SCRF"}},"denominator":{"measureBuilder":"countEventsPerOrgUnit","measureBuilderConfig":{"dataValues":{"STR_CRF165":"1"},"programCode":"SCRF"}}},"aggregationEntityType":"village"}',
+      'composePercentagePerOrgUnit',
+      '{"valueType": "percentage", "scaleType": "performance", "scaleColorScheme": "default"}',
       '{PG}');
   `,
   );
@@ -63,7 +63,7 @@ exports.up = function(db) {
 exports.down = function(db) {
   return db.runSql(
     `
-    DELETE FROM "mapOverlay" WHERE "id" = 'STRIVE_FIS_Village_Number_Reported_Cases_In_Week';
+    DELETE FROM "mapOverlay" WHERE "id" = 'STRIVE_FIS_Village_Percent_mRDT_Positive_In_Week';
   `,
   );
 };
