@@ -62,7 +62,7 @@ const getForeignKeyColumn = (recordType, parentRecordType) => {
   const key = createMultiResourceKey(recordType, parentRecordType);
   return CUSTOM_FOREIGN_KEYS[key] || `${parentRecordType}_id`;
 };
-const PARENT_RECORD_CREATORS = {
+const PARENT_RECORD_FINDERS = {
   [`${TYPES.ALERT}/${TYPES.COMMENT}`]: 'findOrCountJoinChildren',
 };
 
@@ -117,7 +117,7 @@ export async function getRecords(req, res) {
         return customFinder(models, parentRecordId, criteria, options, findOrCount);
       }
       if (parentRecordType) {
-        const recordCreator = database[PARENT_RECORD_CREATORS[`${parentRecordType}/${recordType}`]];
+        const recordCreator = database[PARENT_RECORD_FINDERS[`${parentRecordType}/${recordType}`]];
         if (recordCreator) {
           return recordCreator(
             findOrCount,
