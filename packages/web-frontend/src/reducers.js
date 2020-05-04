@@ -21,7 +21,7 @@ import disaster from './disaster/reducers';
 import project from './projects/reducers';
 import orgUnits from './reducers/orgUnitReducers';
 import { getMeasureFromHierarchy, isMobile } from './utils';
-import { LANDING } from './containers/OverlayDiv';
+import { LANDING } from './containers/OverlayDiv/constants';
 import { getUniqueViewId } from './utils/getUniqueViewId';
 import { EMAIL_VERIFIED_STATUS } from './containers/EmailVerification';
 
@@ -47,9 +47,6 @@ import {
   FETCH_COUNTRY_ACCESS_DATA_ERROR,
   FETCH_DASHBOARD_CONFIG_ERROR,
   FETCH_DASHBOARD_CONFIG_SUCCESS,
-  FETCH_HIERARCHY_NESTED_ITEMS,
-  FETCH_HIERARCHY_NESTED_ITEMS_ERROR,
-  FETCH_HIERARCHY_NESTED_ITEMS_SUCCESS,
   FETCH_INFO_VIEW_DATA_ERROR,
   FETCH_INFO_VIEW_DATA_SUCCESS,
   FETCH_INFO_VIEW_DATA,
@@ -78,7 +75,6 @@ import {
   FIND_USER_LOGGEDIN,
   FIND_USER_LOGIN_FAILED,
   GO_HOME,
-  HIGHLIGHT_ORG_UNIT,
   CLOSE_DROPDOWN_OVERLAYS,
   SHOW_SERVER_UNREACHABLE_ERROR,
   SHOW_SESSION_EXPIRED_ERROR,
@@ -107,7 +103,6 @@ import {
   SET_ENLARGED_DIALOG_DATE_RANGE,
   UPDATE_ENLARGED_DIALOG_ERROR,
   SET_PASSWORD_RESET_TOKEN,
-  SET_PROJECT,
   TOGGLE_DASHBOARD_SELECT_EXPAND,
   SET_MOBILE_DASHBOARD_EXPAND,
   REQUEST_PROJECT_ACCESS,
@@ -466,11 +461,12 @@ function dashboard(
       viewResponses[infoViewKey] = response;
       return { ...state, viewResponses };
     }
-    case FETCH_INFO_VIEW_DATA_ERROR:
+    case FETCH_INFO_VIEW_DATA_ERROR: {
       const { infoViewKey, error } = action;
       const viewResponses = { ...state.viewResponses };
       viewResponses[infoViewKey] = { error };
       return { ...state, viewResponses };
+    }
     case CHANGE_SIDE_BAR_CONTRACTED_WIDTH:
       return { ...state, contractedWidth: action.contractedWidth };
     case CHANGE_SIDE_BAR_EXPANDED_WIDTH:
@@ -510,14 +506,6 @@ function searchBar(
       return { ...state, searchResponse: null, searchString: action.searchString };
     case FETCH_SEARCH_ERROR:
       return { ...state, searchResponse: action.error };
-    case FETCH_HIERARCHY_NESTED_ITEMS:
-      return { ...state };
-    case FETCH_HIERARCHY_NESTED_ITEMS_SUCCESS: {
-      const updatedHierarchy = nestOrgUnitInHierarchy(action.response, state.hierarchyData);
-      return { ...state, hierarchyData: updatedHierarchy };
-    }
-    case FETCH_HIERARCHY_NESTED_ITEMS_ERROR:
-      return { ...state, hierarchyData: action.error };
     case CLOSE_DROPDOWN_OVERLAYS:
       return { ...state, isExpanded: false };
     default:
@@ -574,10 +562,9 @@ function global(
     overlay: !isMobile() && LANDING,
     currentOrganisationUnit: {},
     currentOrganisationUnitSiblings: [],
-    highlightedOrganisationUnit: {},
     dashboardConfig: {},
     viewConfigs: {},
-    loadingOrganisationUnit: null,
+    isLoadingOrganisationUnit: false,
   },
   action,
 ) {
@@ -597,23 +584,17 @@ function global(
     case CHANGE_ORG_UNIT:
       return {
         ...state,
-        loadingOrganisationUnit: action.organisationUnit,
+        isLoadingOrganisationUnit: true,
       };
     case CHANGE_ORG_UNIT_SUCCESS:
       return {
         ...state,
-        loadingOrganisationUnit: null,
+        isLoadingOrganisationUnit: false,
         currentOrganisationUnit: action.organisationUnit,
         currentOrganisationUnitSiblings: action.organisationUnitSiblings,
-        highlightedOrganisationUnit: {},
-      };
-    case HIGHLIGHT_ORG_UNIT:
-      return {
-        ...state,
-        highlightedOrganisationUnit: action.organisationUnit,
       };
     case CHANGE_ORG_UNIT_ERROR:
-      return { ...state, loadingOrganisationUnit: null };
+      return { ...state, isLoadingOrganisationUnit: false };
     case FETCH_DASHBOARD_CONFIG_SUCCESS: {
       const { dashboardConfig } = action;
       const viewConfigs = extractViewsFromAllDashboards(dashboardConfig);

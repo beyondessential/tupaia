@@ -9,22 +9,15 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { LayerGroup } from 'react-leaflet';
+import { createSelector } from 'reselect';
 import { changeOrgUnit, openMapPopup, closeMapPopup } from '../../actions';
 import { CircleProportionMarker, IconMarker, MeasurePopup } from '../../components/Marker';
 import {
   selectHasPolygonMeasure,
-  selectAllMeasuresWithDisplayInfo,
+  selectAllMeasuresWithDisplayAndOrgUnitData,
   selectRadiusScaleFactor,
-} from '../../reducers/mapReducers';
-import { selectOrgUnit } from '../../reducers/orgUnitReducers';
+} from '../../selectors';
 import { ShadedPolygon } from './ConnectedPolygon';
-
-export const MARKER_TYPES = {
-  DOT_MARKER: 'dot',
-  CIRCLE_MARKER: 'circle',
-  CIRCLE_HEATMAP: 'circleHeatmap',
-  SQUARE: 'square',
-};
 
 const MIN_RADIUS = 1;
 
@@ -91,14 +84,7 @@ export class MarkerLayer extends Component {
       nextProps.measureId !== measureId ||
       nextProps.currentCountry !== currentCountry ||
       nextProps.sidePanelWidth !== sidePanelWidth ||
-      nextProps.measureData.length !== measureData.length ||
-      nextProps.measureData.find(
-        (data, index) =>
-          data.organisationUnitCode !== measureData[index].organisationUnitCode ||
-          data.coordinates !== measureData[index].coordinates ||
-          data.color !== measureData[index].color ||
-          data.isHidden !== measureData[index].isHidden,
-      )
+      nextProps.measureData !== measureData
     ) {
       return true;
     }
@@ -204,6 +190,14 @@ export class MarkerLayer extends Component {
 
 MarkerLayer.propTypes = {};
 
+const selectMeasureDataWithCoordinates = createSelector([measureData => measureData], measureData =>
+  measureData.map(({ location, ...otherData }) => ({
+    ...otherData,
+    coordinates: location && location.point,
+    region: location && location.region,
+  })),
+);
+
 const mapStateToProps = state => {
   const { isSidePanelExpanded } = state.global;
   const {
@@ -213,16 +207,9 @@ const mapStateToProps = state => {
   } = state.map;
 
   const { contractedWidth, expandedWidth } = state.dashboard;
-  const measureData = selectAllMeasuresWithDisplayInfo(state)
-    .map(data => ({
-      ...data,
-      ...selectOrgUnit(state, data.organisationUnitCode),
-    }))
-    .map(({ location, ...otherData }) => ({
-      ...otherData,
-      coordinates: location && location.point,
-      region: location && location.region,
-    }));
+  const measureData = selectMeasureDataWithCoordinates(
+    selectAllMeasuresWithDisplayAndOrgUnitData(state),
+  );
 
   return {
     isMeasureLoading,
@@ -238,8 +225,8 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  onChangeOrgUnit: (organisationUnit, shouldChangeMapBounds = false) => {
-    dispatch(changeOrgUnit(organisationUnit, shouldChangeMapBounds));
+  onChangeOrgUnit: (organisationUnitCode, shouldChangeMapBounds = false) => {
+    dispatch(changeOrgUnit(organisationUnitCode, shouldChangeMapBounds));
   },
   onPopupOpen: orgUnitCode => dispatch(openMapPopup(orgUnitCode)),
   onPopupClose: orgUnitCode => dispatch(closeMapPopup(orgUnitCode)),

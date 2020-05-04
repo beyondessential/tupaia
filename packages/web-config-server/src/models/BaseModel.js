@@ -63,8 +63,11 @@ export class BaseModel {
   */
   static joins = [];
 
+  static functionsPendingDatabaseInjection = [];
+
   static set database(database) {
     this._database = database;
+    this.functionsPendingDatabaseInjection.forEach(fn => fn(database));
   }
 
   static get database() {
@@ -79,6 +82,26 @@ export class BaseModel {
 
   set database(value) {
     throw new Error('should not attempt to re-set model database instance variable');
+  }
+
+  /**
+   * Run a function immediately if the database is available, or as soon as a database instance is
+   * injected
+   * @param {function} functionToRun  Takes 'database' as its only argument
+   */
+  static runWithDatabase(functionToRun) {
+    if (this.database) {
+      functionToRun(this.database);
+    } else {
+      // line this up to be run when the database has been injected
+      this.functionsPendingDatabaseInjection.push(functionToRun);
+    }
+  }
+
+  static addChangeHandler(handler) {
+    this.runWithDatabase(database =>
+      database.addChangeHandlerForCollection(this.databaseType, handler),
+    );
   }
 
   static getQueryOptions(customQueryOptions = {}) {
