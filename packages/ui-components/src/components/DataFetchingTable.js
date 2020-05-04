@@ -13,10 +13,10 @@ const DEFAULT_SORT = { order: 'asc', orderBy: undefined };
 const DumbDataFetchingTable = memo(
   ({
     columns,
+    SubComponent,
     fetchData,
     noDataMessage,
     fetchOptions,
-    onRowClick,
     transformRow,
     initialSort = DEFAULT_SORT,
   }) => {
@@ -62,6 +62,7 @@ const DumbDataFetchingTable = memo(
 
     const { data, count, isLoading, errorMessage } = fetchState;
     const { order, orderBy } = sorting;
+
     return (
       <Table
         isLoading={isLoading}
@@ -78,7 +79,7 @@ const DumbDataFetchingTable = memo(
         orderBy={orderBy}
         rowsPerPageOptions={ROWS_PER_PAGE_OPTIONS}
         noDataMessage={noDataMessage}
-        onRowClick={onRowClick}
+        SubComponent={SubComponent}
       />
     );
   },

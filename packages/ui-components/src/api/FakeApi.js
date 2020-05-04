@@ -12,30 +12,15 @@ export class FakeAPI {
     });
   }
 
-  async get() {
-    const user = () => ({
-      name: faker.name.firstName(),
-      surname: faker.name.lastName(),
-      email: faker.internet.email(),
-      city: faker.address.city(),
-    });
-
+  async get(endpoint) {
     const data = [];
 
     // Create users
-    for (let i = 0; i < 30; i++) {
-      let userData = user();
-
-      if (i === 1) {
-        // created nested data
-        const nestedData = [];
-        for (let j = 0; j < 5; j++) {
-          nestedData.push(user());
-        }
-        userData = { ...user(), nested: nestedData };
+    if (endpoint === 'users') {
+      for (let i = 0; i < 30; i++) {
+        const userData = this.user();
+        data.push(userData);
       }
-
-      data.push(userData);
     }
 
     await this.sleep(500);
@@ -45,6 +30,16 @@ export class FakeAPI {
     return {
       data,
       count: data.length,
+    };
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  user() {
+    return {
+      name: faker.name.firstName(),
+      surname: faker.name.lastName(),
+      email: faker.internet.email(),
+      city: faker.address.city(),
     };
   }
 }

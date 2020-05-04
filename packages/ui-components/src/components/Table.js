@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import MaterialTable from '@material-ui/core/Table';
@@ -14,9 +14,6 @@ import TableSortLabel from '@material-ui/core/TableSortLabel';
 import TableRow from '@material-ui/core/TableRow';
 import TableFooter from '@material-ui/core/TableFooter';
 import TablePagination from '@material-ui/core/TablePagination';
-import { Alarm } from '@material-ui/icons';
-import Typography from '@material-ui/core/Typography';
-import { Button } from './Button';
 
 export const Colors = {
   primary: '#326699',
@@ -48,17 +45,11 @@ const CellErrorMessage = styled.div`
 const DEFAULT_ROWS_PER_PAGE_OPTIONS = [10, 25, 50];
 
 const StyledTableRow = styled(TableRow)`
-  margin-top: 1rem;
+  cursor: pointer;
 
-  ${p =>
-    p.onClick
-      ? `
-      cursor: pointer;
-      &:hover {
-        background: rgba(255,255,255,0.6);
-      }
-    `
-      : ''}
+  &:hover {
+    background: rgba(255, 255, 255, 0.6);
+  }
 `;
 
 const StyledTableContainer = styled.div`
@@ -89,74 +80,27 @@ const StyledTableFooter = styled(TableFooter)`
   background: ${Colors.background};
 `;
 
-const StyledDiv = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 2rem;
-`;
-
-const StyledSpan = styled.span`
-  display: flex;
-  align-items: center;
-`;
-
-const StyledNestedTable = styled(MaterialTable)`
-  box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
-
-  border: 1px solid ${Colors.outline};
-  border-radius: 3px 3px 0 0;
-  border-collapse: unset;
-  background: ${Colors.white};
-
-  &:last-child {
-    border-bottom: none;
-  }
-`;
-
-const NestedTable = ({ data, columns }) => {
-  console.log('Nested Table', data);
-  const handleClick = () => {
-    console.log('click');
-  };
-
-  const customAction = () => {
-    console.log('custom action');
-  };
-
-  return (
-    <TableRow>
-      <TableCell colSpan="4">
-        <StyledNestedTable>
-          <TableBody>
-            {data.map((rowData, index) => {
-              // eslint-disable-next-line react/no-array-index-key
-              return <Row data={rowData} key={index} onClick={handleClick} columns={columns} />;
-            })}
-            <TableRow>
-              <TableCell colSpan="4">
-                <StyledDiv>
-                  <StyledSpan>
-                    <Alarm />
-                    <Typography variant="body1">
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                    </Typography>
-                  </StyledSpan>
-                  <Button onClick={customAction}>Save and Submit</Button>
-                </StyledDiv>
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </StyledNestedTable>
-      </TableCell>
-    </TableRow>
-  );
-};
+const NestedTable = ({ row, children }) => (
+  <StyledTableRow>
+    <td colSpan="4">
+      <table style={{ width: '100%' }}>
+        <tbody>{row}</tbody>
+      </table>
+      {children}
+    </td>
+  </StyledTableRow>
+);
 
 /*
  * Row
  */
-const Row = React.memo(({ columns, data, onClick }) => {
+const Row = React.memo(({ columns, data, SubComponent }) => {
+  const [expanded, setExpanded] = useState(false);
+
+  const handleClick = () => {
+    setExpanded(!expanded);
+  };
+
   // cells
   const cells = columns.map(({ key, accessor, CellComponent, numeric, cellColor }) => {
     const value = accessor ? React.createElement(accessor, data) : data[key];
@@ -169,12 +113,17 @@ const Row = React.memo(({ columns, data, onClick }) => {
     );
   });
 
-  return (
-    <React.Fragment>
-      <StyledTableRow onClick={onClick && (() => onClick(data))}>{cells}</StyledTableRow>
-      {data.nested && <NestedTable data={data.nested} columns={columns} />}
-    </React.Fragment>
-  );
+  const row = <StyledTableRow onClick={handleClick}>{cells}</StyledTableRow>;
+
+  if (expanded) {
+    return (
+      <NestedTable row={row}>
+        <SubComponent />
+      </NestedTable>
+    );
+  }
+
+  return row;
 });
 
 const ErrorSpan = styled.span`
@@ -201,7 +150,7 @@ const getErrorMessage = props => {
  * Body
  */
 const Body = props => {
-  const { data, columns, onRowClick, errorMessage, rowIdKey } = props;
+  const { data, columns, errorMessage, rowIdKey, SubComponent } = props;
   const error = getErrorMessage(props);
   if (error) {
     return (
@@ -210,9 +159,10 @@ const Body = props => {
       </ErrorRow>
     );
   }
-  return data.map(rowData => {
-    const key = rowData[rowIdKey] || rowData[columns[0].key];
-    return <Row data={rowData} key={key} columns={columns} onClick={onRowClick} />;
+  return data.map((rowData, index) => {
+    // const key = rowData[rowIdKey] || rowData[columns[0].key];
+    // eslint-disable-next-line react/no-array-index-key
+    return <Row data={rowData} key={index} columns={columns} SubComponent={SubComponent} />;
   });
 };
 
