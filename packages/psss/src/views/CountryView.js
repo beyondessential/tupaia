@@ -3,10 +3,10 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { PhotoAlbum, CalendarToday } from '@material-ui/icons';
+import { PhotoAlbum } from '@material-ui/icons';
 import PropTypes from 'prop-types';
 import { useParams } from 'react-router-dom';
-import { TabsToolbar } from '@tupaia/ui-components';
+import { TabsToolbar, CalendarToday } from '@tupaia/ui-components';
 import { Header } from '../components/Header';
 import { CountryRoutes } from '../routes/CountryRoutes';
 
@@ -25,9 +25,13 @@ const links = [
 
 export const CountryView = ({ match }) => {
   const { countryName } = useParams();
+  const back = {
+    url: '/',
+    title: 'Countries',
+  };
   return (
     <React.Fragment>
-      <Header title={countryName} />
+      <Header title={countryName} back={back} />
       <TabsToolbar links={links} />
       <CountryRoutes match={match} />
     </React.Fragment>

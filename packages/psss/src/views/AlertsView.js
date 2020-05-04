@@ -4,9 +4,9 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { WarningCloud, Clipboard, TabsToolbar } from '@tupaia/ui-components';
+import { WarningCloud, CalendarToday, Clipboard, TabsToolbar } from '@tupaia/ui-components';
 import Typography from '@material-ui/core/Typography';
-import { Alarm } from '@material-ui/icons';
+import { PhotoAlbum } from '@material-ui/icons';
 import MuiContainer from '@material-ui/core/Container';
 import { Header } from '../components/Header';
 import { Main } from '../components';
@@ -16,24 +16,24 @@ const links = [
   {
     label: 'Alerts',
     to: '',
-    icon: <Alarm />,
+    icon: <CalendarToday />,
   },
   {
     label: 'Outbreak',
     to: '/outbreaks',
-    icon: <WarningCloud />,
+    icon: <PhotoAlbum />,
   },
   {
     label: 'Archive',
     to: '/archive',
-    icon: <Clipboard />,
+    icon: <PhotoAlbum />,
   },
 ];
 
 export const AlertsView = ({ match }) => {
   return (
     <React.Fragment>
-      <Header title="Alerts" />
+      <Header title="Alerts & Outbreaks" />
       <TabsToolbar links={links} />
       <MuiContainer>
         <Main>
