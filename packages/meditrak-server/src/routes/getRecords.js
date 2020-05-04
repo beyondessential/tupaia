@@ -38,6 +38,7 @@ const GETTABLE_TYPES = [
   TYPES.DISASTER,
   TYPES.DATA_SOURCE,
   TYPES.ALERT,
+  TYPES.COMMENT,
 ];
 
 const createMultiResourceKey = (...recordTypes) => recordTypes.filter(x => x).join('/');
@@ -60,6 +61,9 @@ const CUSTOM_FOREIGN_KEYS = {
 const getForeignKeyColumn = (recordType, parentRecordType) => {
   const key = createMultiResourceKey(recordType, parentRecordType);
   return CUSTOM_FOREIGN_KEYS[key] || `${parentRecordType}_id`;
+};
+const PARENT_RECORD_CREATORS = {
+  [`${TYPES.ALERT}/${TYPES.COMMENT}`]: 'findOrCountJoinChildren',
 };
 
 const MAX_RECORDS_PER_PAGE = 100;
@@ -113,12 +117,25 @@ export async function getRecords(req, res) {
         return customFinder(models, parentRecordId, criteria, options, findOrCount);
       }
       if (parentRecordType) {
+        const recordCreator = database[PARENT_RECORD_CREATORS[`${parentRecordType}/${recordType}`]];
+        if (recordCreator) {
+          return recordCreator(
+            findOrCount,
+            recordType,
+            parentRecordType,
+            parentRecordId,
+            criteria,
+            options,
+          );
+        }
+
         return database[findOrCount](
           recordType,
           { ...criteria, [getForeignKeyColumn(recordType, parentRecordType)]: parentRecordId },
           options,
         );
       }
+
       return database[findOrCount](recordType, criteria, options);
     };
 
