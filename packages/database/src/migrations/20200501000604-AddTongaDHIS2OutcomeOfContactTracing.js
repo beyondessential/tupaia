@@ -4,103 +4,66 @@ var dbm;
 var type;
 var seed;
 
-const ALL_RESPONSE_VALUES = ['Treatment in Progress', 'Treated', 'Untreated', 'No Treatment Required', 'Unknown'];
+const TREATMENT_IN_PROGRESS = 'Treatment in Progress';
+const TREATED = 'Treated';
+const UNTREATED = 'Untreated';
+const NO_TREATMENT_REQUIRED = 'No Treatment Required';
+const UNKNOWN = 'Unknown';
+
+
+const COMMON_DENOMINATOR = {
+  "dataValues": {
+    "CD3b_015": '*'
+  }
+};
 
 const DATA_BUILDER_CONFIG = {
   "dataClasses": {
-    "Treatment in Progress": {
+    [TREATMENT_IN_PROGRESS]: {
       "numerator": {
         "dataValues": {
-          "CD3b_015": {
-            "value": 'Treatment in Progress',
-            "operator": "="
-          }
+          "CD3b_015": TREATMENT_IN_PROGRESS
         }
       },
-      "denominator": {
-        "dataValues": {
-          "CD3b_015": {
-            "value": ALL_RESPONSE_VALUES,
-            "operator": "in"
-          }
-        }
-      }
+      "denominator": COMMON_DENOMINATOR
     },
-    "Treated": {
+    [TREATED]: {
       "numerator": {
         "dataValues": {
-          "CD3b_015": {
-            "value": 'Treated',
-            "operator": "="
-          }
+          "CD3b_015": TREATED
         }
       },
-      "denominator": {
-        "dataValues": {
-          "CD3b_015": {
-            "value": ALL_RESPONSE_VALUES,
-            "operator": "in"
-          }
-        }
-      }
+      "denominator": COMMON_DENOMINATOR
     },
-    "Untreated": {
+    [UNTREATED]: {
       "numerator": {
         "dataValues": {
-          "CD3b_015": {
-            "value": 'Untreated',
-            "operator": "="
-          }
+          "CD3b_015": UNTREATED
         }
       },
-      "denominator": {
-        "dataValues": {
-          "CD3b_015": {
-            "value": ALL_RESPONSE_VALUES,
-            "operator": "in"
-          }
-        }
-      }
+      "denominator": COMMON_DENOMINATOR
     },
-    "No Treatment Required": {
+    [NO_TREATMENT_REQUIRED]: {
       "numerator": {
         "dataValues": {
-          "CD3b_015": {
-            "value": 'No Treatment Required',
-            "operator": "="
-          }
+          "CD3b_015": NO_TREATMENT_REQUIRED
         }
       },
-      "denominator": {
-        "dataValues": {
-          "CD3b_015": {
-            "value": ALL_RESPONSE_VALUES,
-            "operator": "in"
-          }
-        }
-      }
+      "denominator":COMMON_DENOMINATOR
     },
-    "Unknown": {
+    [UNKNOWN]: {
       "numerator": {
         "dataValues": {
-          "CD3b_015": {
-            "value": 'Unknown',
-            "operator": "="
-          }
+          "CD3b_015": UNKNOWN
         }
       },
-      "denominator": {
-        "dataValues": {
-          "CD3b_015": {
-            "value": ALL_RESPONSE_VALUES,
-            "operator": "in"
-          }
-        }
-      }
+      "denominator": COMMON_DENOMINATOR
     }
   },
   "programCode": "CD3b"
 };
+
+const REPORT_ID = 'TO_CD_Outcome_Of_Contact_Tracing';
 
 /**
   * We receive the dbmigrate dependency from dbmigrate initially.
@@ -124,7 +87,7 @@ exports.up = async function (db) {
   await db.runSql(`
     INSERT INTO "dashboardReport" ("id", "dataBuilder", "dataBuilderConfig", "viewJson", "dataServices")
     VALUES (
-      'TO_CD_Outcome_Of_Contact_Tracing',
+      '${REPORT_ID}',
       'percentagesOfEventCounts',
       '${JSON.stringify(DATA_BUILDER_CONFIG)}',
       '${JSON.stringify(VIEW_JSON_CONFIG)}',
@@ -132,7 +95,7 @@ exports.up = async function (db) {
     );
 
     UPDATE "dashboardGroup"
-    SET "dashboardReports" = "dashboardReports" || '{TO_CD_Outcome_Of_Contact_Tracing}'
+    SET "dashboardReports" = "dashboardReports" || '{${REPORT_ID}}'
     WHERE code = 'Tonga_Communicable_Diseases_National'
     AND "organisationLevel" = 'Country';
   `);
@@ -140,10 +103,10 @@ exports.up = async function (db) {
 
 exports.down = async function (db) {
   await db.runSql(`
-    DELETE FROM "dashboardReport" WHERE id = 'TO_CD_Outcome_Of_Contact_Tracing';
+    DELETE FROM "dashboardReport" WHERE id = '${REPORT_ID}';
 
     UPDATE "dashboardGroup"
-    SET "dashboardReports" = array_remove("dashboardReports", 'TO_CD_Outcome_Of_Contact_Tracing')
+    SET "dashboardReports" = array_remove("dashboardReports", '${REPORT_ID}')
     WHERE code = 'Tonga_Communicable_Diseases_National'
     AND "organisationLevel" = 'Country';
   `);
