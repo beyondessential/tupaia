@@ -23,7 +23,7 @@ const OVERLAY = {
   hideFromPopup: false,
   hideFromLegend: false,
   values: null,
-  measureBuilder: 'composePercentagePerOrgUnit  ',
+  measureBuilder: 'composePercentagePerOrgUnit',
   measureBuilderConfig: {
     fractionType: 'per100k',
     dataSourceType: 'custom',
