@@ -15,8 +15,9 @@ import { DARK_BLUE, MOBILE_MARGIN_SIZE, WHITE } from '../../../styles';
 
 const BackButton = ({ orgUnit, onSelectParent }) => (
   <div style={styles.wrapper}>
-    <button onClick={() => onSelectParent(orgUnit)} style={styles.button}>
-      <BackIcon style={styles.icon} color={DARK_BLUE} /> Back
+    <button type="button" onClick={() => onSelectParent(orgUnit)} style={styles.button}>
+      <BackIcon style={styles.icon} color={DARK_BLUE} />
+      Back
     </button>
   </div>
 );
@@ -51,13 +52,11 @@ BackButton.propTypes = {
 
 function getParentOrgCode(orgUnit) {
   if (orgUnit.parent) {
-    return orgUnit.parent;
+    return orgUnit.parent.organisationUnitCode;
   }
+  return undefined;
 }
 
-export default connect(
-  null,
-  dispatch => ({
-    onSelectParent: orgUnit => dispatch(changeOrgUnit(getParentOrgCode(orgUnit))),
-  }),
-)(BackButton);
+export default connect(null, dispatch => ({
+  onSelectParent: orgUnit => dispatch(changeOrgUnit(getParentOrgCode(orgUnit))),
+}))(BackButton);

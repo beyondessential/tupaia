@@ -15,13 +15,13 @@ import { ExpandableList } from '../../../components/mobile/ExpandableList';
 import { SelectListItem } from '../../../components/mobile/SelectListItem';
 import { Dashboard } from '../../../components/mobile/Dashboard';
 import {
-  fetchHierarchyNestedItems,
   changeOrgUnit,
   toggleDashboardSelectExpand,
   changeDashboardGroup,
+  requestOrgUnit,
 } from '../../../actions';
 import { WHITE } from '../../../styles';
-import { getCurrentDashboardKey } from '../../../selectors';
+import { selectCurrentDashboardKey } from '../../../selectors';
 
 class HomeScreen extends PureComponent {
   componentWillMount(props) {
@@ -35,7 +35,7 @@ class HomeScreen extends PureComponent {
 
   render() {
     const {
-      mobileListItems,
+      organisationUnits,
       isLoading,
       onChangeOrgUnit,
       currentOrganisationUnit,
@@ -59,10 +59,14 @@ class HomeScreen extends PureComponent {
         <ExpandableList
           title={'Countries'}
           expandedByDefault={true}
-          items={mobileListItems.map(item => (
-            <SelectListItem onSelect={onChangeOrgUnit} item={item} key={item.key} />
+          items={organisationUnits.map(({ organisationUnitCode, name }) => (
+            <SelectListItem
+              onSelect={onChangeOrgUnit}
+              title={name}
+              key={organisationUnitCode}
+              data={organisationUnitCode}
+            />
           ))}
-          onSelectItem={orgUnit => onChangeOrgUnit(orgUnit)}
           theme={{ background: WHITE, color: '#000' }}
         />
         {isLoading && (
@@ -96,29 +100,22 @@ const mapStateToProps = state => {
   const { currentOrganisationUnit, dashboardConfig } = state.global;
 
   return {
-    mobileListItems: (hierarchyData || []).map(item => ({
-      title: item.name,
-      key: item.organisationUnitCode,
-      data: item,
-    })),
+    organisationUnits: hierarchyData || [],
     isLoading,
     currentOrganisationUnit,
     dashboardFilterIsExpanded: isGroupSelectExpanded,
     dashboardConfig,
-    currentDashboardKey: getCurrentDashboardKey(state),
+    currentDashboardKey: selectCurrentDashboardKey(state),
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    getNestedOrgUnits: orgUnitCode => dispatch(fetchHierarchyNestedItems(orgUnitCode)),
-    onChangeOrgUnit: orgUnit => dispatch(changeOrgUnit(orgUnit, false)),
+    getNestedOrgUnits: organisationUnitCode => dispatch(requestOrgUnit(organisationUnitCode)),
+    onChangeOrgUnit: organisationUnitCode => dispatch(changeOrgUnit(organisationUnitCode, false)),
     onToggleDashboardSelectExpand: () => dispatch(toggleDashboardSelectExpand()),
     onChangeDashboardGroup: name => dispatch(changeDashboardGroup(name)),
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(HomeScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);

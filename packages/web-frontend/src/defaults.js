@@ -19,7 +19,10 @@ export const initialOrgUnit = {
   location: {
     type: 'no-coordinates',
     coordinates: '',
-    bounds: [[6.5, 149], [-30, 204.5]],
+    bounds: [
+      [6.5, 149],
+      [-30, 204.5],
+    ],
   },
 };
 

@@ -16,7 +16,6 @@
  * @prop {boolean} isSelected True - render checked box on right; False - render unchecked box on right; null - render neither.
  * @prop {boolean} hasNestedItems Manually tell element to render left side arrow.
  * @prop {function} Icon Custom icon for the hierarchy item
- * @prop {function} willMountFunc Called on componentWillMount
  * All additional props go to material-ui FlatButton component.
  * @return {element} a HierarchyItem react component.
  */
@@ -28,6 +27,7 @@ import ClosedIcon from 'material-ui/svg-icons/navigation/chevron-right';
 import OpenIcon from 'material-ui/svg-icons/navigation/expand-more';
 import SelectedIcon from 'material-ui/svg-icons/toggle/radio-button-checked';
 import UnSelectedIcon from 'material-ui/svg-icons/toggle/radio-button-unchecked';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 export class HierarchyItem extends Component {
   constructor(props) {
@@ -37,13 +37,11 @@ export class HierarchyItem extends Component {
     };
   }
 
-  componentWillMount() {
-    if (this.props.willMountFunc) this.props.willMountFunc();
-  }
-
   onClick() {
-    this.props.onClick && this.props.onClick();
-    this.setState({ isOpen: !this.state.isOpen });
+    if (this.props.onClick) {
+      this.props.onClick();
+    }
+    this.setState(state => ({ isOpen: !state.isOpen }));
   }
 
   renderOpenClosedIcon() {
@@ -67,8 +65,8 @@ export class HierarchyItem extends Component {
       nestedItems,
       isSelected,
       Icon,
-      willMountFunc,
       onClick,
+      isLoading,
       ...otherProps
     } = this.props;
     const { isOpen } = this.state;
@@ -83,6 +81,8 @@ export class HierarchyItem extends Component {
       );
     }
 
+    const loadingSpinner = <CircularProgress style={styles.buttonIcon} size={24} thickness={3} />;
+    const childItem = isLoading ? loadingSpinner : nestedItems;
     return (
       <div style={{ ...styles.nestedContainer, ...style, marginLeft: nestedMargin }}>
         <FlatButton
@@ -98,7 +98,7 @@ export class HierarchyItem extends Component {
             <div style={styles.spacer} />
           </div>
         </FlatButton>
-        {isOpen ? nestedItems : null}
+        {isOpen ? childItem : null}
       </div>
     );
   }
@@ -144,8 +144,12 @@ HierarchyItem.propTypes = {
   nestedMargin: PropTypes.string,
   isSelected: PropTypes.bool,
   hasNestedItems: PropTypes.bool,
+  isLoading: PropTypes.bool,
   Icon: PropTypes.func,
-  willMountFunc: PropTypes.func,
+};
+
+HierarchyItem.defaultProps = {
+  willMountFunc: undefined,
 };
 
 HierarchyItem.defaultProps = {

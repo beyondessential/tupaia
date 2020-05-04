@@ -1,0 +1,47 @@
+/**
+ * Tupaia Config Server
+ * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
+ */
+
+export const DATA_VALUES = [
+  // Nukunuku
+  { dataElement: 'COV10', value: 1, organisationUnit: 'TO_Nukuhc' },
+  { dataElement: 'COV10', value: 1, organisationUnit: 'TO_Nukuhc' },
+  { dataElement: 'COV10', value: 0, organisationUnit: 'TO_Nukuhc' },
+  { dataElement: 'COV10', value: 0, organisationUnit: 'TO_Nukuhc' },
+  { dataElement: 'COV10', value: 0, organisationUnit: 'TO_Nukuhc' },
+  { dataElement: 'COV10', value: 0, organisationUnit: 'TO_Nukuhc' },
+  { dataElement: 'COV10', value: 0, organisationUnit: 'TO_Nukuhc' },
+  { dataElement: 'COV10', value: 0, organisationUnit: 'TO_Nukuhc' },
+  { dataElement: 'COV10', value: 0, organisationUnit: 'TO_Nukuhc' },
+  { dataElement: 'COV10', value: 0, organisationUnit: 'TO_Nukuhc' },
+  { dataElement: 'COV11', value: 1, organisationUnit: 'TO_Nukuhc' },
+  { dataElement: 'COV11', value: 1, organisationUnit: 'TO_Nukuhc' },
+  { dataElement: 'COV11', value: 1, organisationUnit: 'TO_Nukuhc' },
+  { dataElement: 'COV11', value: 1, organisationUnit: 'TO_Nukuhc' },
+  { dataElement: 'COV11', value: 1, organisationUnit: 'TO_Nukuhc' },
+  { dataElement: 'COV11', value: 1, organisationUnit: 'TO_Nukuhc' },
+  { dataElement: 'COV11', value: 2, organisationUnit: 'TO_Nukuhc' },
+  { dataElement: 'COV11', value: 3, organisationUnit: 'TO_Nukuhc' },
+  { dataElement: 'COV11', value: 2, organisationUnit: 'TO_Nukuhc' },
+  { dataElement: 'COV11', value: 3, organisationUnit: 'TO_Nukuhc' },
+  { dataElement: 'COV27', value: 0, organisationUnit: 'TO_Nukuhc' },
+  { dataElement: 'COV27', value: 1, organisationUnit: 'TO_Nukuhc' },
+  { dataElement: 'COV27', value: 2, organisationUnit: 'TO_Nukuhc' },
+  { dataElement: 'COV27', value: 3, organisationUnit: 'TO_Nukuhc' },
+  { dataElement: 'COV27', value: 4, organisationUnit: 'TO_Nukuhc' },
+  { dataElement: 'COV27', value: 5, organisationUnit: 'TO_Nukuhc' },
+  { dataElement: 'COV27', value: 6, organisationUnit: 'TO_Nukuhc' },
+  { dataElement: 'COV27', value: 7, organisationUnit: 'TO_Nukuhc' },
+  { dataElement: 'COV27', value: 8, organisationUnit: 'TO_Nukuhc' },
+  { dataElement: 'COV27', value: 9, organisationUnit: 'TO_Nukuhc' },
+  { dataElement: 'COV28', value: 0, organisationUnit: 'TO_Nukuhc' },
+  { dataElement: 'COV28', value: 0, organisationUnit: 'TO_Nukuhc' },
+  { dataElement: 'COV28', value: 0, organisationUnit: 'TO_Nukuhc' },
+  { dataElement: 'COV28', value: 1, organisationUnit: 'TO_Nukuhc' },
+  { dataElement: 'COV28', value: 2, organisationUnit: 'TO_Nukuhc' },
+  { dataElement: 'COV28', value: 3, organisationUnit: 'TO_Nukuhc' },
+  { dataElement: 'COV28', value: 4, organisationUnit: 'TO_Nukuhc' },
+  { dataElement: 'COV28', value: 5, organisationUnit: 'TO_Nukuhc' },
+  { dataElement: 'COV28', value: 6, organisationUnit: 'TO_Nukuhc' },
+];

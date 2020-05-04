@@ -38,6 +38,7 @@ export const CHANGE_SIDE_BAR_CONTRACTED_WIDTH = 'CHANGE_SIDE_BAR_CONTRACTED_WIDT
 export const CHANGE_SIDE_BAR_EXPANDED_WIDTH = 'CHANGE_SIDE_BAR_EXPANDED_WIDTH';
 export const CLEAR_MEASURE_HIERARCHY = 'CLEAR_MEASURE_HIERARCHY';
 export const CHANGE_MEASURE = 'CHANGE_MEASURE';
+export const REQUEST_ORG_UNIT = 'REQUEST_ORG_UNIT';
 export const FETCH_ORG_UNIT = 'FETCH_ORG_UNIT';
 export const CHANGE_ORG_UNIT = 'CHANGE_ORG_UNIT';
 export const CHANGE_POSITION = 'CHANGE_POSITION';
@@ -55,9 +56,6 @@ export const FETCH_COUNTRY_ACCESS_DATA_SUCCESS = 'FETCH_COUNTRY_ACCESS_DATA_SUCC
 export const FETCH_COUNTRY_ACCESS_DATA_ERROR = 'FETCH_COUNTRY_ACCESS_DATA_ERROR';
 export const FETCH_DASHBOARD_CONFIG_ERROR = 'FETCH_DASHBOARD_CONFIG_ERROR';
 export const FETCH_DASHBOARD_CONFIG_SUCCESS = 'FETCH_DASHBOARD_CONFIG_SUCCESS';
-export const FETCH_HIERARCHY_NESTED_ITEMS = 'FETCH_HIERARCHY_NESTED_ITEMS';
-export const FETCH_HIERARCHY_NESTED_ITEMS_ERROR = 'FETCH_HIERARCHY_NESTED_ITEMS_ERROR';
-export const FETCH_HIERARCHY_NESTED_ITEMS_SUCCESS = 'FETCH_HIERARCHY_NESTED_ITEMS_SUCCESS';
 export const FETCH_INFO_VIEW_DATA = 'FETCH_INFO_VIEW_DATA';
 export const FETCH_INFO_VIEW_DATA_ERROR = 'FETCH_INFO_VIEW_DATA_ERROR';
 export const FETCH_INFO_VIEW_DATA_SUCCESS = 'FETCH_INFO_VIEW_DATA_SUCCESS';
@@ -76,6 +74,7 @@ export const FETCH_MEASURES_SUCCESS = 'FETCH_MEASURES_SUCCESS';
 export const CHANGE_ORG_UNIT_ERROR = 'CHANGE_ORG_UNIT_ERROR';
 export const FETCH_REGION_ERROR = 'FETCH_REGION_ERROR';
 export const FETCH_ORG_UNIT_SUCCESS = 'FETCH_ORG_UNIT_SUCCESS';
+export const FETCH_ORG_UNIT_ERROR = 'FETCH_ORG_UNIT_ERROR';
 export const CHANGE_ORG_UNIT_SUCCESS = 'CHANGE_ORG_UNIT_SUCCESS';
 export const FETCH_RESET_PASSWORD_ERROR = 'FETCH_RESET_PASSWORD_ERROR';
 export const FETCH_RESET_PASSWORD_SUCCESS = 'FETCH_RESET_PASSWORD_SUCCESS';
@@ -89,7 +88,6 @@ export const FETCH_SIGNUP_SUCCESS = 'FETCH_SIGNUP_SUCCESS';
 export const FIND_USER_LOGGEDIN = 'FIND_USER_LOGGEDIN';
 export const FINISH_USER_SESSION = 'FINISH_USER_SESSION';
 export const GO_HOME = 'GO_HOME';
-export const HIGHLIGHT_ORG_UNIT = 'HIGHLIGHT_ORG_UNIT';
 export const CLOSE_DROPDOWN_OVERLAYS = 'CLOSE_DROPDOWN_OVERLAYS';
 export const SET_MAP_IS_ANIMATING = 'SET_MAP_IS_ANIMATING';
 export const SHOW_SERVER_UNREACHABLE_ERROR = 'SHOW_SERVER_UNREACHABLE_ERROR';
@@ -441,40 +439,41 @@ export function fetchRequestCountryAccessError(errorMessage) {
 }
 
 /**
- * Fetches an org unit by code. Will update the orgUnitTree.
+ * A request to fetch an org unit by code. Will only fetch if we do not have the orgUnit
  *
  * @param {object} organisationUnit
  */
-export function fetchOrgUnit(organisationUnit = initialOrgUnit) {
+export function requestOrgUnit(organisationUnitCode = initialOrgUnit.organisationUnitCode) {
+  return {
+    type: REQUEST_ORG_UNIT,
+    organisationUnitCode,
+  };
+}
+
+/**
+ * Fetches an org unit by code. Will update the orgUnitTree.
+ *
+ * @param {object} organisationUnitCode
+ */
+export function fetchOrgUnit(organisationUnitCode) {
   return {
     type: FETCH_ORG_UNIT,
-    organisationUnit,
+    organisationUnitCode,
   };
 }
 
 /**
  * Changes current Organisational Unit and Map view. Will trigger sagas affecting state for
  * map and the current dashboard.
- *
- * @param {object} organisationUnit
  */
-export function changeOrgUnit(organisationUnit = initialOrgUnit, shouldChangeMapBounds = true) {
+export function changeOrgUnit(
+  organisationUnitCode = initialOrgUnit.organisationUnitCode,
+  shouldChangeMapBounds = true,
+) {
   return {
     type: CHANGE_ORG_UNIT,
-    organisationUnit,
+    organisationUnitCode,
     shouldChangeMapBounds,
-  };
-}
-
-/**
- * Changes currently highlighed org unit on the map without changing the selected org unit.
- *
- * @param {object} organisationUnit Use null to reset and display all org units
- */
-export function highlightOrgUnit(organisationUnit = {}) {
-  return {
-    type: HIGHLIGHT_ORG_UNIT,
-    organisationUnit,
   };
 }
 
@@ -592,18 +591,6 @@ export function changeOrgUnitSuccess(organisationUnit, shouldChangeMapBounds = t
 }
 
 /**
- * Flags a succesful org unit fetch.
- *
- * @param {object} organisationUnit organisationUnit from saga on successful fetch
- */
-export function fetchOrgUnitSuccess(organisationUnit) {
-  return {
-    type: FETCH_ORG_UNIT_SUCCESS,
-    organisationUnit,
-  };
-}
-
-/**
  * Changes state to communicate error to user appropriately.
  *
  * @param {object} error  response from saga on failed orgUnit change
@@ -616,14 +603,27 @@ export function changeOrgUnitError(error) {
 }
 
 /**
- * Changes state to communicate error to user appropriately.
+ * Flags a succesful org unit fetch.
  *
- * @param {object} error  response from saga on failed fetch
+ * @param {object} organisationUnit organisationUnit from saga on successful fetch
  */
-export function fetchRegionError(error) {
+export function fetchOrgUnitSuccess(organisationUnit) {
   return {
-    type: FETCH_REGION_ERROR,
-    error,
+    type: FETCH_ORG_UNIT_SUCCESS,
+    organisationUnit,
+  };
+}
+
+/**
+ * Flags a fetch org unit fetch error.
+ *
+ * @param {object} errorMessage
+ */
+export function fetchOrgUnitError(organisationUnitCode, errorMessage) {
+  return {
+    type: FETCH_ORG_UNIT_ERROR,
+    organisationUnitCode,
+    errorMessage,
   };
 }
 
@@ -878,42 +878,6 @@ export function setMobileDashboardExpanded(shouldExpand) {
 export function toggleSearchExpand() {
   return {
     type: TOGGLE_SEARCH_EXPAND,
-  };
-}
-
-/**
- * Fetches children data of a hierarchy list item
- *
- * @param {string} organisationUnit
- */
-export function fetchHierarchyNestedItems(organisationUnitCode) {
-  return {
-    type: FETCH_HIERARCHY_NESTED_ITEMS,
-    organisationUnitCode,
-  };
-}
-
-/**
- * Stores children data of a hierarchy list item at appropriate node
- *
- * @param {object} response response from saga on successful fetch
- */
-export function fetchHierarchyNestedItemsSuccess(response) {
-  return {
-    type: FETCH_HIERARCHY_NESTED_ITEMS_SUCCESS,
-    response,
-  };
-}
-
-/**
- * Changes state to communicate search error to user appropriately.
- *
- * @param {object} error
- */
-export function fetchHierarchyNestedItemsError(error) {
-  return {
-    type: FETCH_HIERARCHY_NESTED_ITEMS_ERROR,
-    error,
   };
 }
 

@@ -10,7 +10,6 @@ import {
   ATTEMPT_LOGIN,
   FETCH_LOGIN_SUCCESS,
   CHANGE_ORG_UNIT,
-  HIGHLIGHT_ORG_UNIT,
   CHANGE_MEASURE,
   CHANGE_TILE_SET,
   TOGGLE_INFO_PANEL,
@@ -29,6 +28,7 @@ import { initialOrgUnit } from '../defaults';
 const ga = window.ga || (() => {});
 
 if (!ga) {
+  // eslint-disable-next-line no-console
   console.warn('Google Analytics library not found');
 }
 
@@ -36,7 +36,7 @@ export const gaEvent = (category, action, label) => ga('send', 'event', category
 
 export const gaPageView = pagePath => ga('send', 'pageview', pagePath);
 
-export const gaMiddleware = ({ getState, dispatch }) => next => action => {
+export const gaMiddleware = () => next => action => {
   try {
     switch (action.type) {
       case ATTEMPT_LOGIN:
@@ -52,13 +52,9 @@ export const gaMiddleware = ({ getState, dispatch }) => next => action => {
         break;
 
       case CHANGE_ORG_UNIT:
-        if (action.organisationUnit !== initialOrgUnit) {
-          gaEvent('Organisation Unit', 'Change', action.organisationUnit.organisationUnitCode);
+        if (action.organisationUnitCode !== initialOrgUnit.organisationUnitCode) {
+          gaEvent('Organisation Unit', 'Change', action.organisationUnitCode);
         }
-        break;
-
-      case HIGHLIGHT_ORG_UNIT:
-        gaEvent('Organisation Unit', 'Highlight', action.organisationUnit.organisationUnitCode);
         break;
 
       case CHANGE_MEASURE:

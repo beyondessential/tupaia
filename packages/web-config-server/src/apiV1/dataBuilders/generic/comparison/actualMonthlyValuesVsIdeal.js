@@ -81,5 +81,6 @@ export const actualMonthlyValuesVsIdeal = async ({ dataBuilderConfig, query }, a
     });
     finalResult.rows.push(row);
   });
+
   return finalResult;
 };
