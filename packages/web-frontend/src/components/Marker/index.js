@@ -13,7 +13,6 @@ export {
   getHeatmapColor,
   getPerformanceHeatmapColor,
   resolveSpectrumColour,
-  SCALE_TYPES,
   UNKNOWN_COLOR,
 } from './markerColors';
 export { getMarkerForOption, getMarkerForValue } from './markerIcons';

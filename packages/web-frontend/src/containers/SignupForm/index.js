@@ -27,7 +27,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export const SignupForm = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(SignupComponent);
+export const SignupForm = connect(mapStateToProps, mapDispatchToProps)(SignupComponent);

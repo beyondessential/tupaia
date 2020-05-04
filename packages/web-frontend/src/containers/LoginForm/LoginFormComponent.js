@@ -8,7 +8,7 @@
 /**
  * Component for Login Form
  */
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
@@ -24,29 +24,29 @@ const PasswordField = styled(TextField)`
   margin-bottom: 16px;
 `;
 
-export const LoginFormComponent = ({
-  isRequestingLogin,
-  loginFailedMessage,
-  onClickResetPassword,
-  onAttemptUserLogin,
-  successMessage,
-  emailVerified,
-}) => {
-  const [shouldShowVerifyForm, setVerifyForm] = React.useState(false);
+export const LoginFormComponent = React.memo(
+  ({
+    isRequestingLogin,
+    loginFailedMessage,
+    onClickResetPassword,
+    onAttemptUserLogin,
+    successMessage,
+    emailVerified,
+  }) => {
+    const [shouldShowVerifyForm, setVerifyForm] = useState(false);
 
-  const showVerifyForm = React.useCallback(() => setVerifyForm(true), []);
+    const showVerifyForm = useCallback(() => setVerifyForm(true), []);
 
-  if (shouldShowVerifyForm) return <EmailVerification />;
-  else if (emailVerified === EMAIL_VERIFIED_STATUS.NEW_USER)
-    return <SignupComplete onClickResend={showVerifyForm} />;
+    if (shouldShowVerifyForm) return <EmailVerification />;
+    else if (emailVerified === EMAIL_VERIFIED_STATUS.NEW_USER)
+      return <SignupComplete onClickResend={showVerifyForm} />;
 
-  return (
-    <Form
-      onSubmit={({ email, password }) => onAttemptUserLogin(email, password)}
-      isLoading={isRequestingLogin}
-      formError={loginFailedMessage}
-      formSuccess={successMessage}
-      render={submitForm => (
+    const onSubmit = useCallback(({ email, password }) => onAttemptUserLogin(email, password), [
+      onAttemptUserLogin,
+    ]);
+
+    const renderForm = useCallback(
+      submitForm => (
         <React.Fragment>
           <TextField fullWidth label="E-mail" name="email" validators={[emailAddress]} required />
           <PasswordField
@@ -60,10 +60,21 @@ export const LoginFormComponent = ({
           <ForgotPassword handleClick={onClickResetPassword} />
           <SubmitButton text="Sign in" handleClick={submitForm} />
         </React.Fragment>
-      )}
-    />
-  );
-};
+      ),
+      [onClickResetPassword],
+    );
+
+    return (
+      <Form
+        onSubmit={onSubmit}
+        isLoading={isRequestingLogin}
+        formError={loginFailedMessage}
+        formSuccess={successMessage}
+        render={renderForm}
+      />
+    );
+  },
+);
 
 LoginFormComponent.propTypes = {
   isRequestingLogin: PropTypes.bool.isRequired,
