@@ -20,10 +20,7 @@ const BASE_OVERLAY = {
   hideFromMenu: false,
   hideFromPopup: false,
   hideFromLegend: false,
-  //values: '',
   measureBuilder: 'composePercentagePerOrgUnit',
-  //measureBuilderConfig: 1,
-  //presentationOptions: {},
   countryCodes: '{"AU"}',
 };
 
@@ -39,13 +36,13 @@ const BASE_CONFIG = {
     numerator: {
       measureBuilder: 'sumLatestPerOrgUnit',
       measureBuilderConfig: {
-        dataElementCodes: ['TO_BE_REPLACED'],
+        dataElementCodes: [],
       },
     },
     denominator: {
       measureBuilder: 'sumLatestPerOrgUnit',
       measureBuilderConfig: {
-        dataElementCodes: ['TO_BE_REPLACED'],
+        dataElementCodes: [],
       },
     },
   },
