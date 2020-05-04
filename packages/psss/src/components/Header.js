@@ -73,7 +73,7 @@ export const Header = ({ title, avatarUrl, back }) => {
             )}
             <HeaderTitle>
               {avatarUrl && <Avatar src={avatarUrl} />}
-              {avatarUrl || back ? <StyledH1>{title}</StyledH1> : <H1>{title}</H1>}
+              {avatarUrl ? <StyledH1>{title}</StyledH1> : <H1>{title}</H1>}
             </HeaderTitle>
           </div>
           <LightOutlinedButton startIcon={<SaveAlt />}>Export Data</LightOutlinedButton>
@@ -86,10 +86,10 @@ export const Header = ({ title, avatarUrl, back }) => {
 Header.propTypes = {
   title: PropTypes.string.isRequired,
   avatarUrl: PropTypes.string,
-  back: PropTypes.object,
+  back: PropTypes.shape({ title: PropTypes.string.isRequired, url: PropTypes.string.isRequired }),
 };
 
 Header.defaultProps = {
-  avatarUrl: undefined,
-  back: undefined,
+  avatarUrl: null,
+  back: null,
 };

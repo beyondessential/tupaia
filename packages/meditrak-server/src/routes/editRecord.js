@@ -28,6 +28,7 @@ const EDITABLE_RECORD_TYPES = [
   TYPES.OPTION_SET,
   TYPES.OPTION,
   TYPES.DATA_SOURCE,
+  TYPES.ALERT,
 ];
 
 const CUSTOM_RECORD_UPDATERS = {
@@ -47,7 +48,7 @@ export async function editRecord(req, res) {
 
   // Validate that the record matches required format
   if (!EDITABLE_RECORD_TYPES.includes(recordType)) {
-    throw new ValidationError(`${resource} is not a valid POST endpoint`);
+    throw new ValidationError(`${resource} is not a valid PUT endpoint`);
   }
   const validator = new ObjectValidator({
     id: [constructRecordExistsWithId(database, recordType)],

@@ -18,6 +18,7 @@ export function generateValueOfType(type, options = {}) {
       return Math.random() * 1000;
     case 'boolean':
       return Math.random() >= 0.5;
+    case 'timestamp without time zone':
     case 'timestamp with time zone':
     case 'date':
       return new Date();

@@ -31,7 +31,7 @@ export const CountryView = ({ match }) => {
   };
   return (
     <React.Fragment>
-      <Header title="American Samoa" avatarUrl="https://via.placeholder.com/80" back={back} />
+      <Header title={countryName} back={back} />
       <TabsToolbar links={links} />
       <CountryRoutes match={match} />
     </React.Fragment>

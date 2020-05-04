@@ -6,7 +6,7 @@
 import React from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { EventBasedCountryView } from '../views/EventsBasedCountryView';
+import { EventBasedCountryView } from '../views/EventBasedCountryView';
 import { WeeklyReportsCountryView } from '../views/WeeklyReportsCountryView';
 
 export const CountryRoutes = React.memo(({ match }) => (

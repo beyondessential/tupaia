@@ -10,6 +10,7 @@ export { insertSurveyAndScreens } from './insertSurveyAndScreens';
 export { insertSurveyResponse } from './insertSurveyResponse';
 export { populateTestData } from './populateTestData';
 export { resetTestData } from './resetTestData';
+export { createEntity, createDataElement, createAlert } from './createAlert';
 export {
   upsertAnswer,
   upsertEntity,
