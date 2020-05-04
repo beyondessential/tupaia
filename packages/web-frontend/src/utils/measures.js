@@ -36,7 +36,11 @@ export const MEASURE_TYPE_SHADED_SPECTRUM = 'shaded-spectrum';
 export const MEASURE_VALUE_OTHER = 'other';
 export const MEASURE_VALUE_NULL = 'null';
 
-export const POLYGON_MEASURE_TYPES = [MEASURE_TYPE_SHADING, MEASURE_TYPE_SHADED_SPECTRUM];
+export const POLYGON_MEASURE_TYPES = [
+  MEASURE_TYPE_SHADING,
+  MEASURE_TYPE_SPECTRUM,
+  MEASURE_TYPE_SHADED_SPECTRUM,
+];
 
 export function autoAssignColors(values) {
   if (!values) return [];
