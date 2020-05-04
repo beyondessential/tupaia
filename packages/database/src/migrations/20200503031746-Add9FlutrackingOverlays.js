@@ -54,7 +54,7 @@ const OVERLAYS = [
     id: 'AU_FLUTRACKING_Fever_And_Cough',
     name: '% of participants with fever and cough',
     dataElementCodes: ['FWV_004'],
-    scaleMax: 0.05,
+    scaleMax: 0.035,
     denominatorCodes: ['FWV_003'],
     scaleType: 'performanceDesc',
   },
