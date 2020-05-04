@@ -55,7 +55,6 @@ export class PercentagesOfEventCountsBuilder extends DataBuilder {
   buildData(events) {
     return Object.entries(this.config.dataClasses).map(([name, dataClass]) => {
       const [numerator, denominator] = this.calculateFractionPartsForDataClass(dataClass, events);
-      console.log({ numerator, denominator });
 
       return {
         name,
