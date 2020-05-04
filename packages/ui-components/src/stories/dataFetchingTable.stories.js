@@ -9,14 +9,16 @@ import { Alarm } from '@material-ui/icons';
 import Typography from '@material-ui/core/Typography';
 import { DataFetchingTable } from '../components/DataFetchingTable';
 import { Button } from '../components/Button';
+import * as COLORS from '../theme/colors';
 
 export default {
   title: 'DataFetchingTable',
 };
 
 const Container = styled.div`
-  max-width: 1000px;
-  margin: 1rem;
+  max-width: 900px;
+  padding: 3rem;
+  background: ${COLORS.LIGHTGREY};
 `;
 
 const getDisplayName = ({ name }) => (

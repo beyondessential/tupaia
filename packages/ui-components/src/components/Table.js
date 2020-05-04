@@ -3,119 +3,110 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import MaterialTable from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
-import TableRow from '@material-ui/core/TableRow';
-import TableFooter from '@material-ui/core/TableFooter';
-import TablePagination from '@material-ui/core/TablePagination';
+import MuiTable from '@material-ui/core/Table';
+import MuiTableBody from '@material-ui/core/TableBody';
+import MuiTableCell from '@material-ui/core/TableCell';
+import MuiTableHead from '@material-ui/core/TableHead';
+import MuiTableSortLabel from '@material-ui/core/TableSortLabel';
+import MuiTableRow from '@material-ui/core/TableRow';
+import MuiTableFooter from '@material-ui/core/TableFooter';
+import MuiTablePagination from '@material-ui/core/TablePagination';
+import * as COLORS from '../theme/colors';
 
-export const Colors = {
-  primary: '#326699',
-  primaryDark: '#2f4358',
-  secondary: '#ffcc24',
-  alert: '#f76853',
-  safe: '#47ca80',
-  darkestText: '#444444',
-  darkText: '#666666',
-  midText: '#888888',
-  softText: '#b8b8b8',
-  outline: '#dedede',
-  background: '#f3f5f7',
-  white: '#ffffff',
-  offWhite: '#fafafa',
-  brightBlue: '#67A6E3',
-  searchTintColor: '#d2dae3',
-};
+const TableContext = createContext();
 
-const CellErrorMessage = styled.div`
-  display: block;
-  background: red;
-  width: 100%;
-  height: 100%;
-  color: white;
-  cursor: pointer;
+/**************************************************************************************************
+ - TableCells
+ **************************************************************************************************/
+const TableCell = styled(MuiTableCell)`
+  padding: 16px;
+
+  &:first-child {
+    padding-left: 20px;
+  }
+
+  &:last-child {
+    padding-left: 20px;
+  }
 `;
 
-const DEFAULT_ROWS_PER_PAGE_OPTIONS = [10, 25, 50];
+const TableCells = ({ columns, data }) =>
+  columns.map(({ key, accessor, CellComponent, numeric, cellColor }) => {
+    const value = accessor ? React.createElement(accessor, data) : data[key];
+    const displayValue = value === 0 ? '0' : value;
+    const backgroundColor = typeof cellColor === 'function' ? cellColor(data) : cellColor;
+    return (
+      <TableCell background={backgroundColor} key={key} align={numeric ? 'right' : 'left'}>
+        {CellComponent ? <CellComponent value={displayValue} /> : displayValue}
+      </TableCell>
+    );
+  });
 
-const StyledTableRow = styled(TableRow)`
+/**************************************************************************************************
+ - NestedTable
+ **************************************************************************************************/
+const StyledTableCell = styled.td`
+  background: white;
+  padding: 0;
+  border: 1px solid #dedee0;
+  box-sizing: border-box;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
+`;
+
+const NestedTable = ({ row, children }) => (
+  <MuiTableRow>
+    <StyledTableCell colSpan="4">
+      <StyledTable>
+        <tbody>{row}</tbody>
+      </StyledTable>
+      {children}
+    </StyledTableCell>
+  </MuiTableRow>
+);
+
+/**************************************************************************************************
+  - Row
+ **************************************************************************************************/
+const StyledTableRow = styled(MuiTableRow)`
   cursor: pointer;
+  border-bottom: 1px solid ${COLORS.GREY_DE};
+
+  &:nth-of-type(even) {
+    background: #f1f1f1;
+  }
 
   &:hover {
     background: rgba(255, 255, 255, 0.6);
   }
 `;
 
-const StyledTableContainer = styled.div`
-  margin: 1rem;
-`;
+const ZebraTableRow = styled(MuiTableRow)`
+  &:nth-of-type(even) {
+    background-color: #efefef;
+  }
 
-const StyledTableCell = styled(TableCell)`
-  padding: 16px;
-  background: ${props => props.background};
-`;
-
-const StyledTable = styled(MaterialTable)`
-  border: 1px solid ${Colors.outline};
-  border-radius: 3px 3px 0 0;
-  border-collapse: unset;
-  background: ${Colors.white};
-
-  &:last-child {
-    border-bottom: none;
+  .MuiTableCell-root {
+    border: none;
   }
 `;
 
-const StyledTableHead = styled(TableHead)`
-  background: ${Colors.background};
-`;
-
-const StyledTableFooter = styled(TableFooter)`
-  background: ${Colors.background};
-`;
-
-const NestedTable = ({ row, children }) => (
-  <StyledTableRow>
-    <td colSpan="4">
-      <table style={{ width: '100%' }}>
-        <tbody>{row}</tbody>
-      </table>
-      {children}
-    </td>
-  </StyledTableRow>
-);
-
-/*
- * Row
- */
-const Row = React.memo(({ columns, data, SubComponent }) => {
+const TableRow = React.memo(({ columns, data, SubComponent }) => {
   const [expanded, setExpanded] = useState(false);
 
   const handleClick = () => {
     setExpanded(!expanded);
   };
 
-  // cells
-  const cells = columns.map(({ key, accessor, CellComponent, numeric, cellColor }) => {
-    const value = accessor ? React.createElement(accessor, data) : data[key];
-    const displayValue = value === 0 ? '0' : value;
-    const backgroundColor = typeof cellColor === 'function' ? cellColor(data) : cellColor;
-    return (
-      <StyledTableCell background={backgroundColor} key={key} align={numeric ? 'right' : 'left'}>
-        {CellComponent ? <CellComponent value={displayValue} /> : displayValue}
-      </StyledTableCell>
-    );
-  });
+  const row = (
+    <StyledTableRow onClick={handleClick}>
+      <TableCells columns={columns} data={data} />
+    </StyledTableRow>
+  );
 
-  const row = <StyledTableRow onClick={handleClick}>{cells}</StyledTableRow>;
-
-  if (expanded) {
+  if (SubComponent && expanded) {
     return (
       <NestedTable row={row}>
         <SubComponent />
@@ -126,15 +117,32 @@ const Row = React.memo(({ columns, data, SubComponent }) => {
   return row;
 });
 
+const NestedTableRow = React.memo(({ columns, data }) => {
+  const [expanded, setExpanded] = useState(false);
+
+  const handleClick = () => {
+    setExpanded(!expanded);
+  };
+
+  return (
+    <ZebraTableRow onClick={handleClick}>
+      <TableCells columns={columns} data={data} />
+    </ZebraTableRow>
+  );
+});
+
+/**************************************************************************************************
+ - Error
+ **************************************************************************************************/
 const ErrorSpan = styled.span`
   color: #ff0000;
 `;
 
 const ErrorRow = React.memo(({ colSpan, children }) => (
   <StyledTableRow>
-    <StyledTableCell colSpan={colSpan} align="center">
+    <TableCell colSpan={colSpan} align="center">
       {children}
-    </StyledTableCell>
+    </TableCell>
   </StyledTableRow>
 ));
 
@@ -146,56 +154,119 @@ const getErrorMessage = props => {
   return null;
 };
 
-/*
- * Body
- */
-const Body = props => {
-  const { data, columns, errorMessage, rowIdKey, SubComponent } = props;
+/**************************************************************************************************
+ - Body
+ **************************************************************************************************/
+export const TableBody = () => {
+  const props = useContext(TableContext);
+  const { data, columns, errorMessage, SubComponent } = props;
   const error = getErrorMessage(props);
   if (error) {
     return (
-      <ErrorRow colSpan={columns.length}>
-        {errorMessage ? <ErrorSpan>{error}</ErrorSpan> : error}
-      </ErrorRow>
+      <MuiTableBody>
+        <ErrorRow colSpan={columns.length}>
+          {errorMessage ? <ErrorSpan>{error}</ErrorSpan> : error}
+        </ErrorRow>
+      </MuiTableBody>
     );
   }
-  return data.map((rowData, index) => {
-    // const key = rowData[rowIdKey] || rowData[columns[0].key];
-    // eslint-disable-next-line react/no-array-index-key
-    return <Row data={rowData} key={index} columns={columns} SubComponent={SubComponent} />;
-  });
+  return (
+    <MuiTableBody>
+      {data.map((rowData, index) => {
+        return (
+          // eslint-disable-next-line react/no-array-index-key
+          <TableRow data={rowData} key={index} columns={columns} SubComponent={SubComponent} />
+        );
+      })}
+    </MuiTableBody>
+  );
 };
 
-/*
- * Headers
- */
-const Headers = props => {
+export const NestedTableBody = () => {
+  const props = useContext(TableContext);
+  const { data, columns, errorMessage } = props;
+  const error = getErrorMessage(props);
+  if (error) {
+    return (
+      <MuiTableBody>
+        <ErrorRow colSpan={columns.length}>
+          {errorMessage ? <ErrorSpan>{error}</ErrorSpan> : error}
+        </ErrorRow>
+      </MuiTableBody>
+    );
+  }
+  return (
+    <MuiTableBody>
+      {data.map((rowData, index) => {
+        return (
+          // eslint-disable-next-line react/no-array-index-key
+          <NestedTableRow data={rowData} key={index} columns={columns} />
+        );
+      })}
+    </MuiTableBody>
+  );
+};
+
+/**************************************************************************************************
+ - Header
+ **************************************************************************************************/
+export const TableHeaders = () => {
+  const props = useContext(TableContext);
   const { columns, order, orderBy, onChangeOrderBy } = props;
   const getContent = (key, sortable, title) =>
     sortable ? (
-      <TableSortLabel
+      <MuiTableSortLabel
         active={orderBy === key}
         direction={order}
         onClick={() => onChangeOrderBy(key)}
       >
         {title}
-      </TableSortLabel>
+      </MuiTableSortLabel>
     ) : (
       title
     );
 
-  return columns.map(({ key, title, numeric, sortable = true }) => (
-    <StyledTableCell key={key} align={numeric ? 'right' : 'left'}>
-      {getContent(key, sortable, title)}
-    </StyledTableCell>
-  ));
+  return (
+    <MuiTableHead>
+      <MuiTableRow>
+        {columns.map(({ key, title, numeric, sortable = true }) => (
+          <TableCell key={key} align={numeric ? 'right' : 'left'}>
+            {getContent(key, sortable, title)}
+          </TableCell>
+        ))}
+      </MuiTableRow>
+    </MuiTableHead>
+  );
 };
 
-/*
- * Paginator
- */
-const Paginator = props => {
+const GreyBox = styled(TableCell)`
+  background: #dddddd;
+  width: 100%;
+  height: 30px;
+  margin: 0;
+  padding: 0;
+`;
+
+export const CustomHeader = () => {
+  return (
+    <MuiTableHead>
+      <MuiTableRow>
+        <GreyBox colSpan={4} />
+      </MuiTableRow>
+    </MuiTableHead>
+  );
+};
+
+/**************************************************************************************************
+ - Paginator
+ **************************************************************************************************/
+export const TablePaginator = () => {
+  const props = useContext(TableContext);
   const { columns, page, count, rowsPerPage, rowsPerPageOptions } = props;
+
+  if (!page) {
+    return null;
+  }
 
   const handleChangePage = (event, newPage) => {
     const { onChangePage } = props;
@@ -209,43 +280,57 @@ const Paginator = props => {
   };
 
   return (
-    <TableRow>
-      <TablePagination
-        rowsPerPageOptions={rowsPerPageOptions}
-        colSpan={columns.length}
-        page={page}
-        count={count}
-        rowsPerPage={rowsPerPage}
-        onChangePage={handleChangePage}
-        onChangeRowsPerPage={handleChangeRowsPerPage}
-      />
-    </TableRow>
+    <MuiTableFooter>
+      <MuiTableRow>
+        <MuiTablePagination
+          rowsPerPageOptions={rowsPerPageOptions}
+          colSpan={columns.length}
+          page={page}
+          count={count}
+          rowsPerPage={rowsPerPage}
+          onChangePage={handleChangePage}
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+        />
+      </MuiTableRow>
+    </MuiTableFooter>
   );
 };
 
-/*
- * Table
- */
-export const Table = props => {
-  const { page } = props;
+/**************************************************************************************************
+ - Table
+ **************************************************************************************************/
+
+export const TableContainer = styled.div`
+  margin: 1rem;
+`;
+
+export const NestedTableContainer = styled.div`
+  margin: 0;
+`;
+
+export const StyledTable = styled(MuiTable)`
+  border-collapse: unset;
+`;
+
+export const Table = ({ children, ...props }) => {
   return (
-    <StyledTableContainer>
+    <StyledTable>
+      <TableContext.Provider value={props}>{children}</TableContext.Provider>
+    </StyledTable>
+  );
+};
+
+export const FullTable = props => {
+  return (
+    <TableContainer>
       <StyledTable>
-        <StyledTableHead>
-          <TableRow>
-            <Headers {...props} />
-          </TableRow>
-        </StyledTableHead>
-        <TableBody>
-          <Body {...props} />
-        </TableBody>
-        {page !== null && (
-          <StyledTableFooter>
-            <Paginator {...props} />
-          </StyledTableFooter>
-        )}
+        <TableContext.Provider value={props}>
+          <TableHeaders />
+          <TableBody />
+          <TablePaginator />
+        </TableContext.Provider>
       </StyledTable>
-    </StyledTableContainer>
+    </TableContainer>
   );
 };
 
@@ -272,7 +357,6 @@ Table.propTypes = {
   rowsPerPage: PropTypes.number,
   onRowClick: PropTypes.func,
   rowsPerPageOptions: PropTypes.arrayOf(PropTypes.number),
-  rowIdKey: PropTypes.string,
 };
 
 Table.defaultProps = {
@@ -287,7 +371,6 @@ Table.defaultProps = {
   order: 'asc',
   page: null,
   onRowClick: null,
-  rowsPerPage: DEFAULT_ROWS_PER_PAGE_OPTIONS[0],
-  rowsPerPageOptions: DEFAULT_ROWS_PER_PAGE_OPTIONS,
-  rowIdKey: '_id', // specific to data expected for tamanu REST api fetches
+  rowsPerPage: 10,
+  rowsPerPageOptions: [10, 25, 50],
 };

@@ -3,40 +3,182 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
-import { SimpleTable, ZebraTable, CardTable } from '../components/TableStyles';
+import { FakeAPI } from '../api';
+import * as COLORS from '../theme/colors';
+import {
+  Table,
+  FullTable,
+  NestedTableBody,
+  TableHeaders,
+  TableBody,
+  CustomHeader,
+  TableContainer,
+  TablePaginator,
+  NestedTableContainer,
+} from '../components/Table';
+import { Button } from '..';
 
 export default {
   title: 'Table',
 };
 
 const Container = styled.div`
-  max-width: 360px;
-  margin: 1rem;
+  width: 100%;
+  padding: 3rem;
+  background: ${COLORS.LIGHTGREY};
+
+  > div {
+    max-width: 900px;
+    margin: 0 auto;
+  }
 `;
 
-export const Table = () => <SimpleTable />;
+const columns = [
+  {
+    title: 'Name',
+    key: 'name',
+    // accessor: getDisplayName,
+  },
+  {
+    title: 'Surname',
+    key: 'surname',
+  },
+  {
+    title: 'Email',
+    key: 'email',
+  },
+];
 
-export const zebraTable = () => (
-  <Box p={3}>
-    <ZebraTable />
-  </Box>
-);
+const useTableData = () => {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-export const cardTable = () => (
-  <Container>
-    <Card variant="outlined">
-      <CardContent>
-        <Typography variant="h6" color="primary" gutterBottom>
-          Total cases from previous week
+  const API = new FakeAPI();
+
+  useEffect(() => {
+    (async () => {
+      setLoading(true);
+      const userData = await API.get('users');
+      console.log('user data', userData);
+      setLoading(false);
+      setData(userData.data);
+    })();
+  }, []);
+
+  return { loading, data };
+};
+
+export const SimpleTable = () => {
+  const { loading, data } = useTableData();
+
+  return (
+    <Container>
+      <FullTable columns={columns} data={data} loading={loading} />
+    </Container>
+  );
+};
+
+export const ComposedTable = () => {
+  const { loading, data } = useTableData();
+
+  return (
+    <Container>
+      <TableContainer>
+        <Table columns={columns} data={data} loading={loading}>
+          <TableHeaders />
+          <TableBody />
+          <TablePaginator />
+        </Table>
+      </TableContainer>
+    </Container>
+  );
+};
+
+export const zebraTable = () => {
+  const { loading, data } = useTableData();
+
+  return (
+    <Container>
+      <NestedTableContainer>
+        <Table columns={columns} data={data} loading={loading}>
+          <NestedTableBody />
+        </Table>
+      </NestedTableContainer>
+    </Container>
+  );
+};
+
+const StyledDiv = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2rem;
+`;
+
+const SubComponent = () => {
+  const { loading, data } = useTableData();
+
+  const subColumns = React.useMemo(
+    () => [
+      {
+        title: 'Name',
+        key: 'name',
+        // accessor: getDisplayName,
+      },
+      {
+        title: 'Surname',
+        key: 'surname',
+      },
+      {
+        title: 'Email',
+        key: 'email',
+      },
+    ],
+    [],
+  );
+
+  const customAction = () => {
+    console.log('custom action');
+  };
+
+  return (
+    <NestedTableContainer>
+      <Table columns={subColumns} data={data} loading={loading}>
+        <CustomHeader />
+        <NestedTableBody />
+      </Table>
+      <StyledDiv>
+        <Typography variant="body1">
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit.
         </Typography>
-        <CardTable />
-      </CardContent>
-    </Card>
-  </Container>
-);
+        <Button onClick={customAction}>Save and Submit</Button>
+      </StyledDiv>
+    </NestedTableContainer>
+  );
+};
+
+export const nestedTable = () => {
+  const { loading, data } = useTableData();
+
+  return (
+    <Container>
+      <FullTable columns={columns} data={data} loading={loading} SubComponent={SubComponent} />
+    </Container>
+  );
+};
+
+// export const cardTable = () => (
+//   <Container>
+//     <Card variant="outlined">
+//       <CardContent>
+//         <Typography variant="h6" color="primary" gutterBottom>
+//           Total cases from previous week
+//         </Typography>
+//         <CardTable />
+//       </CardContent>
+//     </Card>
+//   </Container>
+// );

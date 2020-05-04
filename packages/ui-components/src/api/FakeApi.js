@@ -12,15 +12,13 @@ export class FakeAPI {
     });
   }
 
-  async get(endpoint) {
+  async get() {
     const data = [];
 
     // Create users
-    if (endpoint === 'users') {
-      for (let i = 0; i < 30; i++) {
-        const userData = this.user();
-        data.push(userData);
-      }
+    for (let i = 0; i < 30; i++) {
+      const userData = this.user();
+      data.push(userData);
     }
 
     await this.sleep(500);
