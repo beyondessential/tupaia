@@ -19,7 +19,7 @@ const UNFPA_RH_MOS_DATA_CLASSES = {
   "UNFPA_RH_MOS_Levonorgestrel_30mcg_tablet": {
     "codes": ["MOS_47d584bf"]
   },
-  "UNFPA_RH_MOS_Etonogestrel_releasing_implant_single_rod_containing_68mg_of_etonogestrel)": {
+  "UNFPA_RH_MOS_Etonogestrel_releasing_implant_single_rod_containing_68mg_of_etonogestrel": {
     "codes": ["MOS_3ff944bf"]
   },
   "UNFPA_RH_MOS_Jadelle_Contraceptive_Implant": {
@@ -31,7 +31,7 @@ const UNFPA_RH_MOS_DATA_CLASSES = {
   "UNFPA_RH_MOS_Medroxyprogesterone_acetate_depot_injection_150mgpermL_in_1mL_vial": {
     "codes": ["MOS_53d014bf"]
   },
-  "UNFPA_RH_MOS_Medroxyprogesterone_acetate_104mgper0.65ml_SAYANA_Press": {
+  "UNFPA_RH_MOS_Medroxyprogesterone_acetate_104mgper0dot65ml_SAYANA_Press": {
     "codes": ["MOS_4752843e"]
   },
   "UNFPA_RH_MOS_Norethisterone_enantate_200mgpermL_in_1mL_ampoule_oily_solution": {
@@ -83,7 +83,7 @@ const UNFPA_RH_MOS_CHART_CONFIG = {
     "legendOrder" : 7,
     "color": '#0A4EAB'
   },
-  "UNFPA_RH_MOS_Medroxyprogesterone_acetate_104mgper0.65ml_SAYANA_Press": {
+  "UNFPA_RH_MOS_Medroxyprogesterone_acetate_104mgper0dot65ml_SAYANA_Press": {
     "label": "SAYANA Press",
     "legendOrder" : 8,
     "color": '#8C5AFB'
@@ -139,7 +139,6 @@ exports.up = async function(db) {
         "name": "Reproductive Health Products Months of Stock (MOS)",
         "type": "chart",
         "chartType": "line",
-        "valueType": "text",
         "chartConfig": ${JSON.stringify(UNFPA_RH_MOS_CHART_CONFIG)},
         "periodGranularity": "month"
       }'
