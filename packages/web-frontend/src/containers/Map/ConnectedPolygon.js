@@ -11,6 +11,7 @@ import { Polygon } from 'react-leaflet';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
+import { getSingleFormattedValue } from '../../utils/measures';
 import { AreaTooltip } from './AreaTooltip';
 import { MAP_COLORS } from '../../styles';
 import { changeOrgUnit } from '../../actions';
@@ -55,15 +56,20 @@ class ConnectedPolygon extends Component {
     return false;
   }
 
-  getTooltip(organisationUnitCode, area) {
-    const { isChildArea, hasMeasureData, measureValue } = this.props;
-    const hasMeasureValue = !!measureValue;
+  getTooltip(name) {
+    const { isChildArea, hasMeasureData, measureValue, measureOptions } = this.props;
+    const hasMeasureValue = !(measureValue === null || measureValue === undefined);
 
     // don't render tooltips if we have a measure loaded
+    // and don't have a value to display in the tooltip
     return hasMeasureData && !hasMeasureValue ? null : (
       <AreaTooltip
         permanent={isChildArea && !hasMeasureValue}
-        text={`${area.name}${measureValue ? `: ${measureValue}` : ''}`}
+        text={`${name}${
+          hasMeasureValue
+            ? `: ${getSingleFormattedValue({ value: measureValue }, measureOptions)}`
+            : ''
+        }`}
       />
     );
   }
@@ -79,7 +85,7 @@ class ConnectedPolygon extends Component {
       hasShadedChildren,
     } = this.props;
     const { organisationUnitCode } = area;
-    const tooltip = this.getTooltip(organisationUnitCode, area);
+    const tooltip = this.getTooltip(area.name);
 
     if (!coordinates) return null;
 
@@ -130,6 +136,7 @@ ConnectedPolygon.propTypes = {
     PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number))),
   ),
   hasMeasureData: PropTypes.bool,
+  measureOptions: PropTypes.arrayOf(PropTypes.object),
   hasChildren: PropTypes.bool,
   hasShadedChildren: PropTypes.bool,
   shade: PropTypes.string,
@@ -143,6 +150,7 @@ ConnectedPolygon.defaultProps = {
   onChangeOrgUnit: () => {},
   coordinates: undefined,
   hasMeasureData: false,
+  measureOptions: [],
   hasChildren: false,
   hasShadedChildren: false,
   shade: undefined,
@@ -151,7 +159,7 @@ ConnectedPolygon.defaultProps = {
 
 const mapStateToProps = (state, givenProps) => {
   const { organisationUnitCode, organisationUnitChildren } = givenProps.area;
-  const { measureId, measureData } = state.map.measureInfo;
+  const { measureId, measureData, measureOptions } = state.map.measureInfo;
 
   const { currentOrganisationUnit, currentOrganisationUnitSiblings } = state.global;
 
@@ -187,6 +195,7 @@ const mapStateToProps = (state, givenProps) => {
     hasShadedChildren,
     shade,
     measureValue,
+    measureOptions,
     hasChildren: organisationUnitChildren && organisationUnitChildren.length > 0,
     hasMeasureData: measureData && measureData.length > 0,
   };

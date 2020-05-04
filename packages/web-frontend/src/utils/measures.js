@@ -16,6 +16,7 @@ import { SPECTRUM_ICON, DEFAULT_ICON, UNKNOWN_ICON } from '../components/Marker/
 import { MAP_COLORS } from '../styles';
 import { formatDataValue } from './formatters';
 import { SCALE_TYPES } from '../constants';
+import { VALUE_TYPES } from '../components/View/constants';
 
 // At a few places throughout this module we're iterating over a collection
 // while modifying an object, which trips up the eslint rule that expects inline
@@ -104,13 +105,10 @@ function getFormattedValue(value, type, valueInfo, scaleType, valueType) {
   switch (type) {
     case MEASURE_TYPE_SPECTRUM:
     case MEASURE_TYPE_SHADED_SPECTRUM:
-      if ([SCALE_TYPES.PERFORMANCE, SCALE_TYPES.PERFORMANCE_DESC].includes(scaleType)) {
-        return formatDataValue(value, valueType);
-      }
       if (scaleType === SCALE_TYPES.TIME) {
         return `last submission on ${value}`;
       }
-      return value;
+      return formatDataValue(value, valueType);
     case MEASURE_TYPE_RADIUS:
     case MEASURE_TYPE_ICON:
     case MEASURE_TYPE_COLOR:
@@ -122,27 +120,35 @@ function getFormattedValue(value, type, valueInfo, scaleType, valueType) {
 }
 
 const getSpectrumScaleValues = (measureData, measureOption) => {
-  const { key, scaleType, scaleMin, scaleMax, startDate, endDate } = measureOption;
+  const { key, scaleType, valueType, scaleMin, scaleMax, startDate, endDate } = measureOption;
 
-  switch (scaleType) {
-    case SCALE_TYPES.TIME:
-      return { min: startDate, max: endDate };
-    case SCALE_TYPES.PERFORMANCE:
-      return { min: 0, max: 1 };
-    default: {
-      const flattenedMeasureData = flattenNumericalMeasureData(measureData, key);
-      const hasScaleMin = scaleMin !== undefined;
-      const hasScaleMax = scaleMax !== undefined;
-      return {
-        min: hasScaleMin
-          ? Math.min(scaleMin, ...flattenedMeasureData)
-          : Math.min(...flattenedMeasureData),
-        max: hasScaleMax
-          ? Math.max(scaleMax, ...flattenedMeasureData)
-          : Math.max(...flattenedMeasureData),
-      };
-    }
+  if (scaleType === SCALE_TYPES.TIME) {
+    return { min: startDate, max: endDate };
   }
+
+  const flattenedMeasureData = flattenNumericalMeasureData(measureData, key);
+
+  if (valueType === VALUE_TYPES.PERCENTAGE) {
+    return getExtremesOfData(
+      scaleMin || 0,
+      scaleMax === 'auto' ? null : scaleMax || 1,
+      flattenedMeasureData,
+    );
+  }
+
+  return getExtremesOfData(scaleMin, scaleMax, flattenedMeasureData);
+};
+
+const getExtremesOfData = (manualMin, manualMax, data) => {
+  console.log(manualMax, manualMin, data);
+  // coerce to number before checking for isNan, identical to "isNaN(scaleMin)". Allows for '0' and true to be valid
+  const hasNumberScaleMin = !Number.isNaN(Number(manualMin));
+  const hasNumberScaleMax = !Number.isNaN(Number(manualMax));
+
+  return {
+    min: hasNumberScaleMin ? Math.min(manualMin, ...data) : Math.min(...data),
+    max: hasNumberScaleMax ? Math.max(manualMax, ...data) : Math.max(...data),
+  };
 };
 
 export function processMeasureInfo(response) {
@@ -160,8 +166,8 @@ export function processMeasureInfo(response) {
       // use in the legend scale labels.
       const { min, max } = getSpectrumScaleValues(measureData, measureOption);
 
-      // A grey no data colour looks like part of the population scale
-      const noDataColour = scaleType === SCALE_TYPES.POPULATION ? 'black' : MAP_COLORS.NO_DATA;
+      // A grey no data colour looks like part of the neutral scale
+      const noDataColour = scaleType === SCALE_TYPES.NEUTRAL ? 'black' : MAP_COLORS.NO_DATA;
 
       return {
         ...measureOption,
@@ -271,7 +277,8 @@ export function getMeasureDisplayInfo(measureData, measureOptions, hiddenMeasure
           break;
         case MEASURE_TYPE_SPECTRUM:
         case MEASURE_TYPE_SHADED_SPECTRUM:
-          displayInfo.originalValue = valueInfo.value || 'No data';
+          displayInfo.originalValue =
+            valueInfo.value === null || valueInfo.value === undefined ? 'No data' : valueInfo.value;
           displayInfo.color = resolveSpectrumColour(
             scaleType,
             valueInfo.value || (valueInfo.value === 0 ? 0 : null),
@@ -322,5 +329,5 @@ export const calculateRadiusScaleFactor = measureData => {
 // and filters NaN values (e.g. undefined).
 export function flattenNumericalMeasureData(measureData, key) {
   // eslint-disable-next-line no-restricted-globals
-  return measureData.map(v => parseInt(v[key], 10)).filter(x => !isNaN(x));
+  return measureData.map(v => parseFloat(v[key])).filter(x => !isNaN(x));
 }
