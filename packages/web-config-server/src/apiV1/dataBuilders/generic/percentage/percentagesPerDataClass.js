@@ -108,22 +108,6 @@ class PercentagesPerDataClassDataBuilder extends DataBuilder {
   }
 }
 
-export const percentagesPerDataClass = async (
-  { dataBuilderConfig, query, entity },
-  aggregator,
-  dhisApi,
-) => {
-  const builder = new PercentagesPerDataClassDataBuilder(
-    aggregator,
-    dhisApi,
-    dataBuilderConfig,
-    query,
-    entity,
-  );
-
-  return builder.build();
-};
-
 const basicPercentagesPerDataClass = async (
   { dataBuilderConfig, query, entity },
   aggregator,
@@ -142,9 +126,10 @@ const basicPercentagesPerDataClass = async (
   return builder.build();
 };
 
-export const percentagePerDataClass = basicPercentagesPerDataClass;
+export const percentagesPerDataClass = (config, aggregator, dhisApi) =>
+  basicPercentagesPerDataClass(config, aggregator, dhisApi);
 
-export const percentagePerDataClassByMonth = (config, aggregator, dhisApi) =>
+export const percentagesPerDataClassByMonth = (config, aggregator, dhisApi) =>
   basicPercentagesPerDataClass(
     config,
     aggregator,

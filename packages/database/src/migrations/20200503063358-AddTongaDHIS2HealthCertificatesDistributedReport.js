@@ -17,10 +17,10 @@ exports.setup = function (options, seedLink) {
 const arrayToDbString = array => array.map(item => `'${item}'`).join(', ');
 
 const ALL_VALUE_CODES = [
-  "CD65",
-  "CD66",
-  "CD67",
-  "CD68",
+  "CD65", //Shopkeeper - New
+  "CD66", //Shopkeeper - Renewal
+  "CD67", //Food Handler - New
+  "CD68", //Food Handler - Renewal
 ];
 
 const DATA_BUILDER_CONFIG = {
@@ -57,7 +57,7 @@ const DATA_BUILDER_CONFIG = {
 };
 
 const VIEW_JSON_CONFIG = {
-  "name": "Health certificates distributed",
+  "name": "Health Certificates Distributed",
   "type": "chart",
   "chartType": "pie",
   "periodGranularity": "one_year_at_a_time",
@@ -77,7 +77,7 @@ exports.up = async function (db) {
     INSERT INTO "dashboardReport" ("id", "dataBuilder", "dataBuilderConfig", "viewJson", "dataServices")
     VALUES (
       '${REPORT_ID}',
-      'percentagePerDataClassByMonth',
+      'percentagesPerDataClassByMonth',
       '${JSON.stringify(DATA_BUILDER_CONFIG)}',
       '${JSON.stringify(VIEW_JSON_CONFIG)}',
       '[{"isDataRegional": false}]'
