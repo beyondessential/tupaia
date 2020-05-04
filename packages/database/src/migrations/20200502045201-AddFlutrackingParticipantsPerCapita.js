@@ -18,11 +18,11 @@ const OVERLAY = {
   userGroup: 'Public',
   dataElementCode: 'value',
   displayType: 'shaded-spectrum',
-  isDataRegional: true,
+  isDataRegional: false,
+  sortOrder: 1,
   hideFromMenu: false,
   hideFromPopup: false,
   hideFromLegend: false,
-  values: null,
   measureBuilder: 'composePercentagePerOrgUnit',
   measureBuilderConfig: {
     fractionType: 'per100k',
@@ -44,7 +44,10 @@ const OVERLAY = {
     aggregationEntityType: 'district',
   },
   presentationOptions: {
+    scaleMax: 1000,
+    scaleMin: 0,
     scaleType: 'performance',
+    valueType: 'number',
   },
   countryCodes: '{"AU"}',
 };

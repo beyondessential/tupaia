@@ -16,7 +16,7 @@ const BASE_OVERLAY = {
   userGroup: 'Public',
   dataElementCode: 'value',
   displayType: 'shaded-spectrum',
-  isDataRegional: true,
+  isDataRegional: false,
   hideFromMenu: false,
   hideFromPopup: false,
   hideFromLegend: false,
@@ -145,7 +145,7 @@ exports.up = async function(db) {
         id,
         presentationOptions: { ...BASE_PRESENTATION_OPTIONS, scaleMax, scaleType },
         measureBuilderConfig: { ...BASE_CONFIG },
-        sortOrder: index,
+        sortOrder: index + 2, // We want the total participants to be first
       });
     }),
   );
