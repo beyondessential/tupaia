@@ -102,7 +102,6 @@ export function createValueMapping(valueObjects, type) {
 }
 
 function getFormattedValue(value, type, valueInfo, scaleType, valueType) {
-  console.log(type, value, valueInfo, valueType);
   switch (type) {
     case MEASURE_TYPE_SPECTRUM:
     case MEASURE_TYPE_SHADED_SPECTRUM:
@@ -124,7 +123,6 @@ function getFormattedValue(value, type, valueInfo, scaleType, valueType) {
 }
 
 const getSpectrumScaleValues = (measureData, measureOption) => {
-  console.log(measureData, measureOption);
   const { key, scaleType, valueType, scaleMin, scaleMax, startDate, endDate } = measureOption;
 
   if (scaleType === SCALE_TYPES.TIME) {
@@ -167,7 +165,6 @@ export function processMeasureInfo(response) {
       // A grey no data colour looks like part of the population scale
       const noDataColour = scaleType === SCALE_TYPES.POPULATION ? 'black' : MAP_COLORS.NO_DATA;
 
-      console.log(values, valueMapping);
       return {
         ...measureOption,
         values,
