@@ -12,7 +12,7 @@ export const YELLOW = '#FFCC24';
 export const RED = '#E21818';
 export const GREEN = '#08C95C';
 export const DARKGREY = '#283238'; // dark background
-export const LIGHTGREY = '#E5E5E5'; // page background
+export const LIGHTGREY = '#F9F9F9;'; // page background
 export const TEXT_DARKGREY = '#414D55';
 export const TEXT_MIDGREY = '#6F7B82';
 export const TEXT_LIGHTGREY = '#9AA8B0';
@@ -28,6 +28,7 @@ export const GREY_9F = '#9FA6AA';
 export const GREY_DE = '#DEDEE0'; // use for border colors of cards
 export const GREY_E2 = '#E2E2E2';
 export const GREY_FB = '#FBF9F9';
+export const GREY_F9 = '#F9F9F9';
 
 // Blues
 export const WHITE_BLUE = '#DDF1FF';
