@@ -42,9 +42,23 @@ export const testPullEvents_Deprecated = () => {
         invocationArgs: sinon.match({ dataElementIdScheme: 'code' }),
       }));
 
+    it('`organisationUnitCodes` can be empty', async () => {
+      const assertErrorIsNotThrown = async organisationUnitCodes =>
+        expect(dhisService.pull([DATA_SOURCES.POP01_GROUP], 'dataGroup', { organisationUnitCodes }))
+          .to.not.be.rejected;
+
+      return Promise.all([undefined, []].map(assertErrorIsNotThrown));
+    });
+
+    it('uses the first provided organisation unit code', async () =>
+      assertEventsApiWasInvokedCorrectly({
+        dataSources: [DATA_SOURCES.POP01_GROUP],
+        options: { organisationUnitCodes: ['TO', 'PG'] },
+        invocationArgs: sinon.match({ organisationUnitCode: 'TO' }),
+      }));
+
     it('supports various API options', async () => {
       const options = {
-        organisationUnitCode: 'TO',
         orgUnitIdScheme: 'code',
         startDate: '20200731',
         endDate: '20200904',

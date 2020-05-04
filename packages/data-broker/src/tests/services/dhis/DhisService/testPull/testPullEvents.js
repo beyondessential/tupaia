@@ -85,6 +85,13 @@ export const testPullEvents = () => {
         invocationArgs: sinon.match(options),
       });
     });
+
+    it('translates data source element to DHIS element codes if required', () =>
+      assertEventAnalyticsApiWasInvokedCorrectly({
+        dataSources: [DATA_SOURCES.POP01_GROUP],
+        options: { dataElementCodes: ['POP01', 'DIF01'] },
+        invocationArgs: sinon.match({ dataElementCodes: ['POP01', 'DIF01_DHIS'] }),
+      }));
   });
 
   describe('data building', () => {
@@ -98,7 +105,7 @@ export const testPullEvents = () => {
     });
 
     beforeEach(() => {
-      buildEventsStub.resolves([]);
+      buildEventsStub.returns([]);
       buildEventsStub.resetHistory();
     });
 
@@ -135,7 +142,7 @@ export const testPullEvents = () => {
         );
       });
 
-      it('data elements with with data source codes different than DHIS2 codes', async () => {
+      it('data elements with data source codes different than DHIS2 codes', async () => {
         const getEventAnalyticsResponse = {
           headers: [{ name: 'DIF01_DHIS', column: 'Different 1', valueType: 'NUMBER' }],
           metaData: {
@@ -175,16 +182,16 @@ export const testPullEvents = () => {
     it('directly returns the buildEventsFromDhisEventAnalytics() results', () => {
       const events = [
         {
-          eventId: 'event1_dhisId',
-          period: '20200206',
-          organisationUnit: 'TO_Nukuhc',
-          values: {
+          event: 'event1_dhisId',
+          eventDate: '2020-02-06T10:18:00.000',
+          orgUnit: 'TO_Nukuhc',
+          dataValues: {
             POP01: 1,
             POP02: 2,
           },
         },
       ];
-      buildEventsStub.resolves(events);
+      buildEventsStub.returns(events);
 
       return expect(
         dhisService.pull([DATA_SOURCES.POP01_GROUP], 'dataGroup', basicOptions),

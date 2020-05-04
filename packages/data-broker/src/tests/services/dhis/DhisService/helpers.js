@@ -20,8 +20,10 @@ export const setupDhisApiForStubbing = () => {
 
 const defaultAnalytics = {
   headers: [],
-  rows: [],
   metaData: { items: {}, dimensions: [] },
+  width: 0,
+  height: 0,
+  rows: [],
 };
 
 export const stubDhisApi = ({
