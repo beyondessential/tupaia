@@ -45,6 +45,23 @@ const sortChartConfigByLegendOrder = chartConfig => {
     );
 };
 
+const getDefaultChartConfig = ({ data }) => {
+  const defaultConfig = {};
+  const keys = [];
+  data.forEach(dataPoint => {
+    const { timestamp, name, ...restOfData } = dataPoint;
+    Object.keys(restOfData).forEach(key => {
+      if (!keys.includes(key)) {
+        keys.push(key);
+      }
+    });
+  });
+  keys.forEach(key => {
+    defaultConfig[key] = { stackId: 1 };
+  });
+  return defaultConfig;
+};
+
 const UnknownChart = () => (
   <div style={VIEW_STYLES.newChartComing}>
     <h2 style={VIEW_STYLES.title}>New chart coming soon</h2>
@@ -54,9 +71,17 @@ const UnknownChart = () => (
 export class ChartWrapper extends PureComponent {
   getViewContent() {
     const { viewContent } = this.props;
-    const { chartConfig, chartType } = viewContent;
+    const { chartConfig, chartType, useDefaultChartConfig } = viewContent;
+
     if (!chartConfig) {
-      return viewContent;
+      return useDefaultChartConfig
+        ? {
+            ...viewContent,
+            chartConfig: sortChartConfigByLegendOrder(
+              addDefaultsColorsToConfig(chartType, getDefaultChartConfig(viewContent)),
+            ),
+          }
+        : { ...viewContent };
     }
     return {
       ...viewContent,
