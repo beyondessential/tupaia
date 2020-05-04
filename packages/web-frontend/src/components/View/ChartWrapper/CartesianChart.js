@@ -578,6 +578,36 @@ export class CartesianChart extends PureComponent {
     );
   };
 
+  filterDisabledData = data => {
+    const { activeDataKeys } = this.state;
+    const { viewContent } = this.props;
+    const { chartConfig = {} } = viewContent;
+
+    if (this.state.activeDataKeys.length >= 1)
+      chartConfig[LEGEND_ALL_DATA_KEY] = {
+        color: '#FFFFFF',
+        chartType: Object.values(chartConfig)[0].chartType || viewContent.chartType || 'line',
+        label: 'All',
+        stackId: 1,
+      };
+    else if (chartConfig[LEGEND_ALL_DATA_KEY]) {
+      delete chartConfig[LEGEND_ALL_DATA_KEY];
+    }
+    if (activeDataKeys.length === 0) return data;
+
+    const realData = data.map(dataSeries =>
+      [...Object.entries(dataSeries), [ALL_DATA_KEY, 0]].reduce((newDataSeries, [key, value]) => {
+        const isActive =
+          !Object.keys(chartConfig).includes(key) ||
+          activeDataKeys.length === 0 ||
+          activeDataKeys.includes(key) ||
+          key === ALL_DATA_KEY; //TODO
+        return isActive ? { ...newDataSeries, [key]: value } : newDataSeries;
+      }, {}),
+    );
+    return realData;
+  };
+
   render = () => {
     const { isEnlarged, isExporting, viewContent } = this.props;
     const { chartType, data } = viewContent;
