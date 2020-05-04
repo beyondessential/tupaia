@@ -36,7 +36,8 @@ export const countEventsThatSatisfyConditions = (events, conditions) => {
   const { dataValues: valueConditions = {} } = conditions || {};
   const eventHasTargetValues = ({ dataValues }) =>
     Object.entries(valueConditions).every(([dataElement, condition]) => {
-      const { value } = dataValues[dataElement] || {};
+      const dataValue = dataValues[dataElement];
+      const value = isPlainObject(dataValue) ? dataValue.value : dataValue;
       return value && checkValueSatisfiesCondition(value, condition);
     });
 
