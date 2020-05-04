@@ -76,7 +76,7 @@ exports.setup = function (options, seedLink) {
 };
 
 const VIEW_JSON_CONFIG = {
-  "name": " Outcome of contact tracing",
+  "name": " Outcome of Contact Tracing",
   "type": "chart",
   "chartType": "pie",
   "periodGranularity": "one_month_at_a_time",
