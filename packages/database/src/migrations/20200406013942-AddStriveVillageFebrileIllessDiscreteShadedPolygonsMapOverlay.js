@@ -54,7 +54,7 @@ exports.up = function(db) {
       0,
       '{"groups": {"0": {"value": 21, "operator": ">="}, "1": {"value": [15, 19], "operator": "range"}, "2": {"value": [10, 14], "operator": "range"}, "3": {"value": [6, 9], "operator": "range"}, "4": {"value": [1, 5], "operator": "range"}}, "programCode": "SCRF", "dataSourceType": "custom", "dataSourceEntityType": "village", "aggregationEntityType": "village"}',
       'groupEventsPerOrgUnit',
-      '{"periodGranularity": "one_week_at_a_time"}',
+      '{}',
       '{PG}');
   `,
   );

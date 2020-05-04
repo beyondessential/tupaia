@@ -54,7 +54,7 @@ exports.up = function(db) {
       0,
       '{"dataSourceType":"custom","measureBuilders":{"numerator":{"measureBuilder":"countEventsPerOrgUnit","measureBuilderConfig":{"dataValues":{"STR_CRF169":{"value":"Positive","operator":"regex"}},"programCode":"SCRF"}},"denominator":{"measureBuilder":"countEventsPerOrgUnit","measureBuilderConfig":{"dataValues":{"STR_CRF165":"1"},"programCode":"SCRF"}}},"aggregationEntityType":"village"}',
       'composePercentagePerOrgUnit',
-      '{"valueType": "percentage", "scaleType": "performance", "scaleColorScheme": "default", "periodGranularity": "one_week_at_a_time"}',
+      '{"valueType": "percentage", "scaleType": "performance", "scaleColorScheme": "default"}',
       '{PG}');
   `,
   );
