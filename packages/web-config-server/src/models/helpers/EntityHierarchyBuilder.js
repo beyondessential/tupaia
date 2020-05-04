@@ -3,8 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { EntityHierarchySelection } from './EntityHierarchySelection';
-
 export class EntityHierarchyBuilder {
   constructor(entityModel, entityRelationModel) {
     this.models = {
@@ -51,17 +49,11 @@ export class EntityHierarchyBuilder {
    * @param {string} hierarchyId         The specific hierarchy to follow through entity_relation
    */
   async getDescendantsNonCanonically(entityId, hierarchyId) {
-    const childToParentMap = {};
-    const allDescendants = await this.recurseNonCononicalHierarchy(
-      [{ id: entityId }],
-      hierarchyId,
-      childToParentMap,
-    );
-    return new EntityHierarchySelection(allDescendants, childToParentMap);
+    return this.recurseNonCononicalHierarchy([{ id: entityId }], hierarchyId);
   }
 
-  async recurseNonCononicalHierarchy(parents, hierarchyId, childToParentMap) {
-    const children = await this.getNextGeneration(parents, hierarchyId, childToParentMap);
+  async recurseNonCononicalHierarchy(parents, hierarchyId) {
+    const children = await this.getNextGeneration(parents, hierarchyId);
 
     // if we've made it to the leaf nodes, return an empty array
     if (children.length === 0) {
@@ -69,15 +61,11 @@ export class EntityHierarchyBuilder {
     }
 
     // keep recursing down the hierarchy
-    const descendants = await this.recurseNonCononicalHierarchy(
-      children,
-      hierarchyId,
-      childToParentMap,
-    );
+    const descendants = await this.recurseNonCononicalHierarchy(children, hierarchyId);
     return [...children, ...descendants];
   }
 
-  getNextGeneration = async (parents, hierarchyId, childToParentMap) => {
+  getNextGeneration = async (parents, hierarchyId) => {
     // get any matching alternative hierarchy relationships leading out of these parents
     const parentIds = parents.map(p => p.id);
     const hierarchyLinks = hierarchyId
@@ -88,24 +76,9 @@ export class EntityHierarchyBuilder {
       : [];
     const childIds = hierarchyLinks.map(l => l.child_id);
 
-    let children;
-    if (childIds.length > 0) {
-      children = await this.models.entity.find({ id: childIds });
-      if (childToParentMap) {
-        childIds.forEach(childId => {
-          childToParentMap[childId] = hierarchyLinks.find(l => l.child_id === childId).parent_id;
-        });
-      }
-    } else {
-      // if no alternative hierarchy links for this generation, follow the canonical relationships
-      children = await this.models.entity.find({ parent_id: parentIds });
-      if (childToParentMap) {
-        children.forEach(child => {
-          childToParentMap[child.id] = child.parent_id;
-        });
-      }
-    }
-    return children;
+    return childIds.length > 0
+      ? this.models.entity.find({ id: childIds })
+      : this.models.entity.find({ parent_id: parentIds });
   };
 
   async getDescendantsCanonically(entityId) {
@@ -128,7 +101,7 @@ export class EntityHierarchyBuilder {
       [entityId],
     );
 
-    return new EntityHierarchySelection(records.map(record => this.models.entity.load(record)));
+    return records.map(record => this.models.entity.load(record));
   }
 
   async getChildrenCanonically(entityId) {

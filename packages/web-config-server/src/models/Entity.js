@@ -173,6 +173,10 @@ export class Entity extends BaseModel {
     return ancestors.length > 0 ? ancestors[0] : null;
   }
 
+  async getChildren(hierarchyId) {
+    return Entity.hierarchyBuilder.getChildren(this.id, hierarchyId);
+  }
+
   async getDescendants(hierarchyId) {
     return Entity.hierarchyBuilder.getDescendants(this.id, hierarchyId);
   }
@@ -186,16 +190,22 @@ export class Entity extends BaseModel {
     return entity ? entity.getFacilities() : [];
   }
 
-  async getOrgUnitDescendants() {
+  async getOrgUnitChildren(hierarchyId) {
     const types = Object.values(Entity.orgUnitEntityTypes);
-    const descendants = await this.getDescendants();
+    const children = await this.getChildren(hierarchyId);
+    return children.filter(entity => types.includes(entity.type));
+  }
+
+  async getOrgUnitDescendants(hierarchyId) {
+    const types = Object.values(Entity.orgUnitEntityTypes);
+    const descendants = await this.getDescendants(hierarchyId);
     return descendants.filter(entity => types.includes(entity.type));
   }
 
   // assumes all entities of the given type are found at the same level in the hierarchy tree
   async getDescendantsOfType(entityType, hierarchyId) {
     if (this.type === entityType) return [this];
-    const descendants = (await this.getDescendants(hierarchyId)).getEntities();
+    const descendants = await this.getDescendants(hierarchyId);
     return descendants.filter(d => d.type === entityType);
   }
 
@@ -206,7 +216,7 @@ export class Entity extends BaseModel {
 
     // get descendants and return all of the first type that is an org unit type
     // we rely on descendants being returned in order, with those higher in the hierarchy first
-    const descendants = (await this.getDescendants(hierarchyId)).getEntities();
+    const descendants = await this.getDescendants(hierarchyId);
     const nearestOrgUnitType = descendants.find(d => orgUnitEntityTypes.has(d.type)).type;
     return descendants.filter(d => d.type === nearestOrgUnitType);
   }
@@ -230,10 +240,6 @@ export class Entity extends BaseModel {
       ...queryOptions,
       columns: Entity.getColumnSpecs(),
     });
-  }
-
-  async getOrgUnitChildren(hierarchyId) {
-    return Entity.hierarchyBuilder.getChildren(this.id, hierarchyId);
   }
 
   static fetchChildToParentCode = async childrenCodes => {
