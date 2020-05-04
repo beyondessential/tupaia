@@ -89,11 +89,11 @@ const createAggregator = () => {
     .withArgs(programCode, {
       dataServices,
       organisationUnitCodes: [organisationUnitCode],
-      dataValueFormat: 'object',
       startDate: undefined,
       endDate: undefined,
       trackedEntityInstance: undefined,
       eventId: undefined,
+      useDeprecatedApi: false,
     })
     .resolves(events);
 

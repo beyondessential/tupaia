@@ -256,7 +256,17 @@ export function getMeasureDisplayInfo(measureData, measureOptions, hiddenMeasure
     }
   });
   measureOptions.forEach(
-    ({ key, type, valueMapping, noDataColour, scaleType, min, max, hideByDefault }) => {
+    ({
+      key,
+      type,
+      valueMapping,
+      noDataColour,
+      scaleType,
+      scaleColorScheme,
+      min,
+      max,
+      hideByDefault,
+    }) => {
       const valueInfo = getValueInfo(measureData[key], valueMapping, {
         ...hideByDefault,
         ...hiddenMeasures[key],
@@ -275,6 +285,7 @@ export function getMeasureDisplayInfo(measureData, measureOptions, hiddenMeasure
           displayInfo.originalValue = valueInfo.value || 'No data';
           displayInfo.color = resolveSpectrumColour(
             scaleType,
+            scaleColorScheme,
             valueInfo.value || (valueInfo.value === 0 ? 0 : null),
             min,
             max,
