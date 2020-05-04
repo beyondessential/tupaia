@@ -19,11 +19,15 @@ describe('filterAnalytics()', () => {
     it('=', () => {
       expect(filterAnalytics(analytics, { value: 2 })).to.deep.equal([{ value: 2 }]);
       expect(filterAnalytics(analytics, { value: 4 })).to.deep.equal([]);
+      expect(filterAnalytics(analytics, { value: { '=': 2 } })).to.deep.equal([{ value: 2 }]);
+      expect(filterAnalytics(analytics, { value: { '=': 2 } })).to.deep.equal(
+        filterAnalytics(analytics, { value: 2 }),
+      );
     });
 
     it('>', () => {
       expect(filterAnalytics(analytics, { value: { '>': 2 } })).to.deep.equal([{ value: 3 }]);
-      expect(filterAnalytics(analytics, { value: 4 })).to.deep.equal([]);
+      expect(filterAnalytics(analytics, { value: { '>': 4 } })).to.deep.equal([]);
     });
 
     it('>=', () => {

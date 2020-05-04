@@ -139,7 +139,6 @@ exports.up = async function(db) {
         "name": "Reproductive Health Product Average Monthly Consumption (AMC)",
         "type": "chart",
         "chartType": "line",
-        "valueType": "text",
         "chartConfig": ${JSON.stringify(UNFPA_RH_AMC_CHART_CONFIG)},
         "periodGranularity": "month"
       }'
