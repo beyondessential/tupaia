@@ -9,40 +9,44 @@ import { ObjectValidator, constructValidationRules } from '../validation';
 import { resourceToRecordType } from '../utilities';
 import { createUser } from '../dataAccessors';
 
-const CUSTOM_RECORD_CREATORS = {
-  [TYPES.USER_ACCOUNT]: createUser,
+const { ALERT, COMMENT, USER_ACCOUNT } = TYPES;
+
+const PARENT_RECORD_CREATORS = {
+  [`${ALERT}/${COMMENT}`]: 'createJoinChild',
 };
 
-//const SINGULAR_ENTIT
+const CUSTOM_RECORD_CREATORS = {
+  [USER_ACCOUNT]: createUser,
+};
 
 /**
  * Responds to the POST requests by adding a record
  **/
 export async function addRecord(req, res) {
   const { database, models, params, body: recordData } = req;
-  const { resource, id: resourceId, subResource } = params;
+  const { parentResource, parentRecordId, resource } = params;
 
-  console.log('ADD RECORD', resource, resourceId, subResource);
   const recordType = resourceToRecordType(resource);
-  const subRecordType = resourceToRecordType(subResource);
+  const parentRecordType = resourceToRecordType(parentResource);
 
   // Validate that the record matches required format
   const dataToValidate =
-    subRecordType !== '' && resourceId
-      ? { [`${recordType}_id`]: resourceId, ...recordData }
+    parentRecordType !== '' && parentRecordId
+      ? { [`${parentRecordType}_id`]: parentRecordId, ...recordData }
       : recordData;
+
   const validator = new ObjectValidator(
-    constructValidationRules(models, recordType, subRecordType),
+    constructValidationRules(models, recordType, parentRecordType),
   );
-  await validator.validate(dataToValidate, recordType, resourceId, subRecordType); // Will throw an error if not valid
+  await validator.validate(dataToValidate); // Will throw an error if not valid
 
   // Create the record, using a custom creator if necessary
   let customResponseDetails = {};
   if (CUSTOM_RECORD_CREATORS[recordType]) {
     customResponseDetails = await CUSTOM_RECORD_CREATORS[recordType](models, recordData);
-  } else if (subRecordType !== '') {
-    console.log('CREATE', subRecordType, recordData);
-    await database.create(subRecordType, recordData);
+  } else if (parentRecordType !== '') {
+    const recordCreator = database[PARENT_RECORD_CREATORS[`${parentRecordType}/${recordType}`]];
+    await recordCreator(recordType, recordData, parentRecordType, parentRecordId);
   } else {
     await database.create(recordType, recordData);
   }

@@ -123,7 +123,7 @@ export function addRoutesToApp(app) {
   app.post('(/v[0-9]+)/me/changePassword', changePassword);
   app.post('(/v[0-9]+)/surveyResponse', surveyResponse);
   app.post('(/v[0-9]+)/:resource', addRecord);
-  app.post('(/v[0-9]+)/:resource/:id/:subResource', addRecord);
+  app.post('(/v[0-9]+)/:parentResource/:parentRecordId/:resource', addRecord);
 
   /**
    * PUT routes

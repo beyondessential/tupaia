@@ -255,6 +255,22 @@ export class TupaiaDatabase {
     return record;
   }
 
+  /*
+   * recordType, parentRecordType, parentRecordId are sent
+   * a record in table recordType is created
+   * a record in join table parentRecordType_recordType is created
+   * the recordType and parentRecordType ids are used in the join table
+   */
+  async createJoinChild(recordType, recordData, parentRecordType, parentRecordId) {
+    const childRecord = await this.create(recordType, recordData);
+    await this.create(`${parentRecordType}_${recordType}`, {
+      [`${parentRecordType}_id`]: parentRecordId,
+      [`${recordType}_id`]: childRecord.id,
+    });
+
+    return childRecord;
+  }
+
   async createMany(recordType, records) {
     // TODO could be more efficient to create all records in one query
     const recordsCreated = [];

@@ -15,7 +15,25 @@ import {
 import { FEED_ITEM_TYPES } from '../database/models/FeedItem';
 import { DATA_SOURCE_SERVICE_TYPES } from '../database/models/DataSource';
 
-export const constructValidationRules = (models, recordType) => {
+export const constructForParent = (models, recordType, parentRecordType) => {
+  const combinedRecordType = `${parentRecordType}/${recordType}`;
+  const { ALERT, COMMENT } = TYPES;
+
+  switch (combinedRecordType) {
+    case `${ALERT}/${COMMENT}`:
+      return {
+        alert_id: [constructRecordExistsWithId(models.alert)],
+        user_account_id: [constructRecordExistsWithId(models.user)],
+        text: [hasContent],
+      };
+    default:
+      throw new ValidationError(
+        `${parentRecordType}/[${parentRecordType}Id]/${recordType} is not a valid POST endpoint`,
+      );
+  }
+};
+
+export const constructForSingle = (models, recordType) => {
   switch (recordType) {
     case TYPES.USER_COUNTRY_PERMISSION:
       return {
@@ -83,4 +101,12 @@ export const constructValidationRules = (models, recordType) => {
     default:
       throw new ValidationError(`${recordType} is not a valid POST endpoint`);
   }
+};
+
+export const constructValidationRules = (models, recordType, parentRecordType = null) => {
+  if (parentRecordType) {
+    return constructForParent(models, recordType, parentRecordType);
+  }
+
+  return constructForSingle(models, recordType);
 };
