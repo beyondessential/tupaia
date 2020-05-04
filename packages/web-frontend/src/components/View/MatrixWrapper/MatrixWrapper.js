@@ -69,7 +69,6 @@ const buildMatrixDataFromViewContent = viewContent => {
   if (!viewContent.columns) {
     return null;
   }
-
   const {
     columns: columnData,
     rows,
@@ -77,19 +76,19 @@ const buildMatrixDataFromViewContent = viewContent => {
     presentationOptions = {},
     categoryPresentationOptions = {},
     isExporting,
-    valueType,
+    valueType = 'text',
   } = viewContent;
 
   let maximumCellCharacters = 0;
   const formattedRows = rows.map(row => {
     const { dataElement, code, categoryId, category, ...columns } = row;
 
-    const formattedColumns = {};
+    const formattedCells = {};
     Object.entries(columns).forEach(([columnName, columnValue]) => {
-      formattedColumns[columnName] = formatDataValue(columnValue, valueType);
+      formattedCells[columnName] = formatDataValue(columnValue, valueType);
     });
 
-    Object.values(formattedColumns).forEach(value => {
+    Object.values(formattedCells).forEach(value => {
       if (!value) return;
       maximumCellCharacters = Math.max(maximumCellCharacters, value.toString().length);
     });
@@ -98,7 +97,7 @@ const buildMatrixDataFromViewContent = viewContent => {
       description: dataElement,
       categoryId,
       category,
-      ...formattedColumns,
+      ...formattedCells,
     };
   });
 

@@ -14,16 +14,13 @@ import { fetchDisastersError, setDisastersData, selectDisaster } from './actions
 import {
   SELECT_DISASTER,
   VIEW_DISASTER,
-  SET_PROJECT,
   SET_DISASTERS_DATA,
   FETCH_INITIAL_DATA,
   changeBounds,
-  changeDashboardGroup,
   setOverlayComponent,
   changeOrgUnit,
-  setMobileDashboardExpanded,
 } from '../actions';
-import { DISASTER } from '../containers/OverlayDiv';
+import { DISASTER } from '../containers/OverlayDiv/constants';
 import { formatDateForApi } from '../utils';
 
 // As a module that requires extra data for its dashboard item data fetches, the 'disaster' sagas

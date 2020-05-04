@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 
-import { REQUEST_PROJECT_ACCESS } from '../../index';
+import { REQUEST_PROJECT_ACCESS } from '../../constants';
 import { selectProject, setRequestingAccess } from '../../../../projects/actions';
 import { setOverlayComponent, changeOrgUnit } from '../../../../actions';
 import { ProjectCard } from './ProjectCard';

@@ -12,13 +12,6 @@ const FILTER_TYPE_TO_METHOD = {
   in: (analytic, filterValue, filterProperty) => filterValue.includes(analytic[filterProperty]),
 };
 
-/**
- * Apply a filter to analytics.
- * @param {*} analytics Analytics to filter
- * @param {*} filterProperty Property to filter. eg: period, organisationUnit
- * @param {*} operator Operator. eg: >, <, >=
- * @param {*} value Value to compare
- */
 const applyFilter = (analytics, filterProperty, operator, value) => {
   const filterMethod = FILTER_TYPE_TO_METHOD[operator];
 

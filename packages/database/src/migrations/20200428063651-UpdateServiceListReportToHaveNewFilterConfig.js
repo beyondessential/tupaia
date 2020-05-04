@@ -4,9 +4,15 @@ var dbm;
 var type;
 var seed;
 
+//New Filter Config with 'filter' key and operator '=', '>' instead of 'EQ', 'GT'
 const NEW_FILTER_CONFIG = {
   value: "{serviceStatus}"
 };
+
+//Old Filter Config with 'measureCriteria' key and operator 'EQ', 'GT'
+const OLD_FILTER_CONFIG = { 
+  "EQ": "{serviceStatus}" 
+}
 
 /**
   * We receive the dbmigrate dependency from dbmigrate initially.
@@ -54,7 +60,7 @@ exports.down = async function(db) {
     UPDATE
       "dashboardReport"
     SET
-      "dataBuilderConfig" = "dataBuilderConfig" || '{"measureCriteria": { "EQ": "{serviceStatus}" }}'
+      "dataBuilderConfig" = "dataBuilderConfig" || '{"measureCriteria": ${JSON.stringify(OLD_FILTER_CONFIG)}}'
     WHERE
       "id" = '39'
     AND 

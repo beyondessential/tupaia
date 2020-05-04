@@ -26,27 +26,22 @@ class SumPerPeriodBuilder extends DataBuilder {
   async build() {
     const dataElements = this.getAllDataElements();
 
-    const filter = this.config.filter || {};
-
-    const { results, period } = await this.fetchAnalytics(
-      dataElements,
-      {},
-      this.aggregationType,
-      filter,
-    );
+    const { results, period } = await this.fetchAnalytics(dataElements);
 
     const dataElementToDataClass = this.getDataElementToDataClass();
     const dataByPeriod = {};
+    const configPeriodType = this.config.periodType
+      ? parsePeriodType(this.config.periodType)
+      : null;
 
     results.forEach(({ period: dataPeriod, value, dataElement }) => {
       const dataClass = dataElementToDataClass[dataElement];
 
       if (!dataByPeriod[dataPeriod]) {
-        const configPeriodType = this.config.periodType
-          ? parsePeriodType(this.config.periodType)
-          : null;
-        dataByPeriod[dataPeriod] = { timestamp: periodToTimestamp(dataPeriod) };
-        dataByPeriod[dataPeriod].name = periodToDisplayString(dataPeriod, configPeriodType);
+        dataByPeriod[dataPeriod] = {
+          timestamp: periodToTimestamp(dataPeriod),
+          name: periodToDisplayString(dataPeriod, configPeriodType),
+        };
       }
 
       dataByPeriod[dataPeriod][dataClass] = (dataByPeriod[dataPeriod][dataClass] || 0) + value;
@@ -74,9 +69,7 @@ class SumPerPeriodBuilder extends DataBuilder {
    * Flatten all the data elements and use them to fetch analytics.
    */
   getAllDataElements() {
-    return flattenDeep(
-      Object.values(this.config.dataClasses).map(dataCodes => Object.values(dataCodes)),
-    );
+    return flattenDeep(Object.values(this.config.dataClasses).map(({ codes }) => codes));
   }
 }
 

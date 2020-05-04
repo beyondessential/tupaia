@@ -14,7 +14,7 @@ const sumPerMetric = async ({ dataBuilderConfig, query }, aggregator, dhisApi, a
     labels = {},
     specialCases = {},
     dataElementsToSum,
-    filter,
+    filter = {},
     dataServices,
   } = dataBuilderConfig;
 
@@ -91,16 +91,19 @@ const sumPerMetric = async ({ dataBuilderConfig, query }, aggregator, dhisApi, a
       data.unshift(sumResults(data));
     }
   }
-  dataBuilderConfig.dataElementCodes.forEach(dataElementCode => {
-    const name = labels[dataElementCode] || dataElementCodeToName[dataElementCode];
-    if (!dataElementsWithData.includes(dataElementCode)) {
-      data.push({
-        name,
-        dataElementCode,
-        value: NO_DATA_AVAILABLE,
-      });
-    }
-  });
+
+  if (dataBuilderConfig.dataElementCodes) {
+    dataBuilderConfig.dataElementCodes.forEach(dataElementCode => {
+      const name = labels[dataElementCode] || dataElementCodeToName[dataElementCode];
+      if (!dataElementsWithData.includes(dataElementCode)) {
+        data.push({
+          name,
+          dataElementCode,
+          value: NO_DATA_AVAILABLE,
+        });
+      }
+    });
+  }
 
   return { data, period };
 };
