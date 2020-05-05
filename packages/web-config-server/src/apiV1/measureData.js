@@ -119,7 +119,9 @@ export default class extends DataAggregatingRouteHandler {
 
     // wait for fetches to complete
     const measureOptions = await Promise.all(optionsTasks);
-    const measureDataResponsesByMeasureId = (await Promise.all(dataTasks)).reduce((dataResponse, current) => ({...dataResponse, ...current}));
+    const measureDataResponsesByMeasureId = (
+      await Promise.all(dataTasks)
+    ).reduce((dataResponse, current) => ({ ...dataResponse, ...current }));
 
     const measureDataResponses = overlays.map(({ id, dataElementCode }) => {
       const measureDataResponse = measureDataResponsesByMeasureId[id];
