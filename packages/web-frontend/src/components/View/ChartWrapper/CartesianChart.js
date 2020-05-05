@@ -140,7 +140,6 @@ export class CartesianChart extends PureComponent {
           state.activeDataKeys.length >= allRealKeys.length - 1
             ? []
             : [...state.activeDataKeys, event.dataKey];
-        console.log(activeDataKeys);
         return {
           activeDataKeys,
         };
@@ -532,41 +531,45 @@ export class CartesianChart extends PureComponent {
     );
   };
 
+  updateChartConfig = (hasDisabledData, viewContent) => {
+    const { chartConfig = {}, chartType } = viewContent;
+    if (hasDisabledData && !chartConfig[LEGEND_ALL_DATA_KEY]) {
+      chartConfig[LEGEND_ALL_DATA_KEY] = {
+        color: '#FFFFFF',
+        chartType: Object.values(chartConfig)[0].chartType || chartType || 'line',
+        label: 'All',
+        stackId: 1,
+      };
+    } else if (!hasDisabledData && chartConfig[LEGEND_ALL_DATA_KEY]) {
+      delete chartConfig[LEGEND_ALL_DATA_KEY];
+    }
+    console.log(chartConfig);
+  };
+
   filterDisabledData = data => {
     const { activeDataKeys } = this.state;
     const { viewContent } = this.props;
     const { chartConfig = {} } = viewContent;
+    const hasDisabledData = this.state.activeDataKeys.length >= 1;
 
-    if (this.state.activeDataKeys.length >= 1)
-      chartConfig[LEGEND_ALL_DATA_KEY] = {
-        color: '#FFFFFF',
-        chartType: Object.values(chartConfig)[0].chartType || viewContent.chartType || 'line',
-        label: 'All',
-        stackId: 1,
-      };
-    else if (chartConfig[LEGEND_ALL_DATA_KEY]) {
-      delete chartConfig[LEGEND_ALL_DATA_KEY];
-    }
-    if (activeDataKeys.length === 0) return data;
+    // Here we are adding to something in this.props, which seems REAL bad.
+    // Should we store the state in ChartWrapper to avoid this?
+    this.updateChartConfig(hasDisabledData, viewContent);
 
-    const realData = data.map(dataSeries =>
-      [...Object.entries(dataSeries), [ALL_DATA_KEY, 0]].reduce((newDataSeries, [key, value]) => {
-        const isActive =
-          !Object.keys(chartConfig).includes(key) ||
-          activeDataKeys.length === 0 ||
-          activeDataKeys.includes(key) ||
-          key === ALL_DATA_KEY; //TODO
-        return isActive ? { ...newDataSeries, [key]: value } : newDataSeries;
-      }, {}),
-    );
-    console.log(realData);
-    return realData;
+    return hasDisabledData
+      ? data.map(dataSeries =>
+          Object.entries(dataSeries).reduce((newDataSeries, [key, value]) => {
+            const isInactive =
+              Object.keys(chartConfig).includes(key) && !activeDataKeys.includes(key);
+            return isInactive ? newDataSeries : { ...newDataSeries, [key]: value };
+          }, {}),
+        )
+      : data;
   };
 
   render = () => {
     const { isEnlarged, isExporting, viewContent } = this.props;
     const { chartType, data } = viewContent;
-    console.log(viewContent);
     const Chart = CHART_TYPE_TO_COMPONENT[chartType];
     const responsiveStyle = !isEnlarged && !isMobile() && !isExporting ? 1.6 : undefined;
 
