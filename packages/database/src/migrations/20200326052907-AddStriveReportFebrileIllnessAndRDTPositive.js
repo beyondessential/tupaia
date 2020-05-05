@@ -22,7 +22,7 @@ const REPORT = {
   dataBuilder: 'composeDataPerOrgUnit',
   dataBuilderConfig: {
     dataBuilders: {
-      'RDT positive cases': {
+      '# RDT positive cases': {
         dataBuilder: 'countEvents',
         dataBuilderConfig: {
           groupBy: {
@@ -30,6 +30,7 @@ const REPORT = {
             options: {
               type: 'facility',
               parentCode: '{organisationUnitCode}',
+              aggregationLevel: 'village',
             },
           },
           dataValues: {
@@ -50,6 +51,7 @@ const REPORT = {
             options: {
               type: 'facility',
               parentCode: '{organisationUnitCode}',
+              aggregationLevel: 'village',
             },
           },
           dataValues: {
@@ -67,7 +69,7 @@ const REPORT = {
     chartType: 'bar',
     periodGranularity: 'one_week_at_a_time',
     chartConfig: {
-      'RDT positive cases': {
+      '# RDT positive cases': {
         stackId: 1,
       },
       '# febrile illness cases': {
