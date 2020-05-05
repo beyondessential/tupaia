@@ -13,6 +13,7 @@ import { sanitizeValue } from './sanitizeValue';
 const METADATA_DIMENSION_TRANSLATION = {
   psi: 'event',
   oucode: 'orgUnit',
+  ouname: 'orgUnitName',
   eventdate: 'eventDate',
 };
 
