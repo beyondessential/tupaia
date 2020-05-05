@@ -60,7 +60,7 @@ const BASE_CONFIG = {
       measureBuilder: 'countEventsPerOrgUnit',
       measureBuilderConfig: {
         dataValues: {
-          STR_CRF165: '1',
+          STR_CRF165: 1,
         },
         programCode: 'SCRF',
         dataSourceEntityType: 'village',
