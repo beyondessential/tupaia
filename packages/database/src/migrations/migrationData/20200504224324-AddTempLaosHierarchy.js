@@ -104,7 +104,7 @@ export const LAOS_ENTITIES = [
   },
   // Villages
   {
-    code: 'LA_1705001',
+    code: 'LA_vil_1705001',
     parent_code: 'LA_Phouvong District',
     type: 'village',
     name: 'B. Vongsamphunh',
@@ -114,7 +114,7 @@ export const LAOS_ENTITIES = [
     },
   },
   {
-    code: 'LA_1705005',
+    code: 'LA_vil_1705005',
     parent_code: 'LA_Phouvong District',
     type: 'village',
     name: 'B. Vongsay',
@@ -124,7 +124,7 @@ export const LAOS_ENTITIES = [
     },
   },
   {
-    code: 'LA_1702003',
+    code: 'LA_vil_1702003',
     parent_code: 'LA_Samakkhixay District',
     type: 'village',
     name: 'B. sayay',
@@ -134,7 +134,7 @@ export const LAOS_ENTITIES = [
     },
   },
   {
-    code: 'LA_1702004',
+    code: 'LA_vil_1702004',
     parent_code: 'LA_Samakkhixay District',
     type: 'village',
     name: 'B. Samaky',
@@ -267,7 +267,7 @@ export const LAOS_ENTITIES = [
   },
   // Villages
   {
-    code: 'LA_1608001',
+    code: 'LA_vil_1608001',
     parent_code: 'LA_Sukhuma District',
     type: 'village',
     name: 'B. Soukoumaneua',
@@ -277,7 +277,7 @@ export const LAOS_ENTITIES = [
     },
   },
   {
-    code: 'LA_1608003',
+    code: 'LA_vil_1608003',
     parent_code: 'LA_Sukhuma District',
     type: 'village',
     name: 'B. Thabcharm',
@@ -287,7 +287,7 @@ export const LAOS_ENTITIES = [
     },
   },
   {
-    code: 'LA_1602001',
+    code: 'LA_vil_1602001',
     parent_code: 'LA_Sanasomboon District',
     type: 'village',
     name: 'B. Nadan',
@@ -297,7 +297,7 @@ export const LAOS_ENTITIES = [
     },
   },
   {
-    code: 'LA_1602003',
+    code: 'LA_vil_1602003',
     parent_code: 'LA_Sanasomboon District',
     type: 'village',
     name: 'B. Nonsavanh',
