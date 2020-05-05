@@ -3,7 +3,12 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { periodToTimestamp, periodToDisplayString, parsePeriodType } from '@tupaia/dhis-api';
+import {
+  periodToTimestamp,
+  periodToDisplayString,
+  parsePeriodType,
+  convertToPeriod,
+} from '@tupaia/dhis-api';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import flattenDeep from 'lodash.flattendeep';
 
@@ -36,15 +41,19 @@ class SumPerPeriodBuilder extends DataBuilder {
 
     results.forEach(({ period: dataPeriod, value, dataElement }) => {
       const dataClass = dataElementToDataClass[dataElement];
+      const convertPeriod = configPeriodType //Convert period to if configPeriodType is set (eg: period = '20200331', configPeriodType = 'MONTH' => convertPeriod = '202003')
+        ? convertToPeriod(dataPeriod, configPeriodType)
+        : dataPeriod;
 
-      if (!dataByPeriod[dataPeriod]) {
-        dataByPeriod[dataPeriod] = {
-          timestamp: periodToTimestamp(dataPeriod),
-          name: periodToDisplayString(dataPeriod, configPeriodType),
+      if (!dataByPeriod[convertPeriod]) {
+        dataByPeriod[convertPeriod] = {
+          timestamp: periodToTimestamp(convertPeriod),
+          name: periodToDisplayString(convertPeriod, configPeriodType),
         };
       }
 
-      dataByPeriod[dataPeriod][dataClass] = (dataByPeriod[dataPeriod][dataClass] || 0) + value;
+      dataByPeriod[convertPeriod][dataClass] =
+        (dataByPeriod[convertPeriod][dataClass] || 0) + value;
     });
 
     return { data: Object.values(dataByPeriod), period };
