@@ -22,7 +22,6 @@ import * as COLORS from '../theme/colors';
  **************************************************************************************************/
 const TableCell = styled(MuiTableCell)`
   padding: 16px;
-  white-space: nowrap;
   font-size: 15px;
   line-height: 18px;
   min-width: 80px;
@@ -37,13 +36,12 @@ const TableCell = styled(MuiTableCell)`
   }
 `;
 
-const TableCells = ({ columns, data }) =>
+const TableCells = ({ columns, rowData }) =>
   columns.map(({ key, accessor, CellComponent, width = null, align = 'center', cellColor }) => {
-    const value = accessor ? React.createElement(accessor, data) : data[key];
+    const value = accessor ? React.createElement(accessor, rowData) : rowData[key];
     const displayValue = value === 0 ? '0' : value;
-    const backgroundColor = typeof cellColor === 'function' ? cellColor(data) : cellColor;
+    const backgroundColor = typeof cellColor === 'function' ? cellColor(rowData) : cellColor;
     return (
-      // eslint-disable-next-line react/no-array-index-key
       <TableCell background={backgroundColor} key={key} style={{ width: width }} align={align}>
         {CellComponent ? <CellComponent value={displayValue} /> : displayValue}
       </TableCell>
@@ -72,6 +70,23 @@ const NestedTable = ({ row, children, columns }) => (
   </MuiTableRow>
 );
 
+NestedTable.propTypes = {
+  columns: PropTypes.arrayOf(
+    PropTypes.shape({
+      key: PropTypes.string.isRequired,
+      title: PropTypes.node.isRequired,
+      accessor: PropTypes.func,
+      sortable: PropTypes.bool,
+    }),
+  ).isRequired,
+  row: PropTypes.any.isRequired,
+  children: PropTypes.any,
+};
+
+NestedTable.defaultProps = {
+  children: PropTypes.null,
+};
+
 /**************************************************************************************************
   - Row
  **************************************************************************************************/
@@ -98,7 +113,7 @@ const ZebraTableRow = styled(MuiTableRow)`
   }
 `;
 
-const TableRow = React.memo(({ columns, data, SubComponent }) => {
+const TableRow = React.memo(({ columns, rowData, SubComponent }) => {
   const [expanded, setExpanded] = useState(false);
 
   const handleClick = () => {
@@ -107,14 +122,14 @@ const TableRow = React.memo(({ columns, data, SubComponent }) => {
 
   const row = (
     <StyledTableRow onClick={handleClick}>
-      <TableCells columns={columns} data={data} />
+      <TableCells columns={columns} rowData={rowData} />
     </StyledTableRow>
   );
 
   if (SubComponent && expanded) {
     return (
       <NestedTable row={row} columns={columns}>
-        <SubComponent rowData={data} />
+        <SubComponent rowData={rowData} />
       </NestedTable>
     );
   }
@@ -122,7 +137,24 @@ const TableRow = React.memo(({ columns, data, SubComponent }) => {
   return row;
 });
 
-const NestedTableRow = React.memo(({ columns, data }) => {
+TableRow.propTypes = {
+  columns: PropTypes.arrayOf(
+    PropTypes.shape({
+      key: PropTypes.string.isRequired,
+      title: PropTypes.node.isRequired,
+      accessor: PropTypes.func,
+      sortable: PropTypes.bool,
+    }),
+  ).isRequired,
+  rowData: PropTypes.object.isRequired,
+  SubComponent: PropTypes.func,
+};
+
+TableRow.defaultProps = {
+  SubComponent: PropTypes.null,
+};
+
+const NestedTableRow = React.memo(({ columns, rowData }) => {
   const [expanded, setExpanded] = useState(false);
 
   const handleClick = () => {
@@ -131,10 +163,22 @@ const NestedTableRow = React.memo(({ columns, data }) => {
 
   return (
     <ZebraTableRow onClick={handleClick}>
-      <TableCells columns={columns} data={data} />
+      <TableCells columns={columns} rowData={rowData} />
     </ZebraTableRow>
   );
 });
+
+NestedTableRow.propTypes = {
+  columns: PropTypes.arrayOf(
+    PropTypes.shape({
+      key: PropTypes.string.isRequired,
+      title: PropTypes.node.isRequired,
+      accessor: PropTypes.func,
+      sortable: PropTypes.bool,
+    }),
+  ).isRequired,
+  rowData: PropTypes.object.isRequired,
+};
 
 /**************************************************************************************************
  - Error
@@ -150,6 +194,11 @@ const ErrorRow = React.memo(({ colSpan, children }) => (
     </TableCell>
   </StyledTableRow>
 ));
+
+ErrorRow.propTypes = {
+  colSpan: PropTypes.number.isRequired,
+  children: PropTypes.any.isRequired,
+};
 
 const getErrorMessage = ({ isLoading, errorMessage, data, noDataMessage }) => {
   if (isLoading) return 'Loading...';
@@ -184,11 +233,34 @@ export const TableBody = ({
       {data.map((rowData, index) => {
         return (
           // eslint-disable-next-line react/no-array-index-key
-          <TableRow data={rowData} key={index} columns={columns} SubComponent={SubComponent} />
+          <TableRow rowData={rowData} key={index} columns={columns} SubComponent={SubComponent} />
         );
       })}
     </MuiTableBody>
   );
+};
+
+TableBody.propTypes = {
+  columns: PropTypes.arrayOf(
+    PropTypes.shape({
+      key: PropTypes.string.isRequired,
+      title: PropTypes.node.isRequired,
+      accessor: PropTypes.func,
+      sortable: PropTypes.bool,
+    }),
+  ).isRequired,
+  data: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  errorMessage: PropTypes.string,
+  noDataMessage: PropTypes.string,
+  isLoading: PropTypes.bool,
+  SubComponent: PropTypes.func,
+};
+
+TableBody.defaultProps = {
+  errorMessage: '',
+  noDataMessage: 'No data found',
+  isLoading: false,
+  SubComponent: null,
 };
 
 export const NestedTableBody = ({ data, columns, errorMessage, isLoading, noDataMessage }) => {
@@ -207,11 +279,32 @@ export const NestedTableBody = ({ data, columns, errorMessage, isLoading, noData
       {data.map((rowData, index) => {
         return (
           // eslint-disable-next-line react/no-array-index-key
-          <NestedTableRow data={rowData} key={index} columns={columns} />
+          <NestedTableRow rowData={rowData} key={index} columns={columns} />
         );
       })}
     </MuiTableBody>
   );
+};
+
+NestedTableBody.propTypes = {
+  columns: PropTypes.arrayOf(
+    PropTypes.shape({
+      key: PropTypes.string.isRequired,
+      title: PropTypes.node.isRequired,
+      accessor: PropTypes.func,
+      sortable: PropTypes.bool,
+    }),
+  ).isRequired,
+  data: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  errorMessage: PropTypes.string,
+  noDataMessage: PropTypes.string,
+  isLoading: PropTypes.bool,
+};
+
+NestedTableBody.defaultProps = {
+  errorMessage: '',
+  noDataMessage: 'No data found',
+  isLoading: false,
 };
 
 /**************************************************************************************************
@@ -258,6 +351,26 @@ export const TableHeader = ({ columns, order, orderBy, onChangeOrderBy }) => {
   );
 };
 
+TableHeader.propTypes = {
+  columns: PropTypes.arrayOf(
+    PropTypes.shape({
+      key: PropTypes.string.isRequired,
+      title: PropTypes.node.isRequired,
+      accessor: PropTypes.func,
+      sortable: PropTypes.bool,
+    }),
+  ).isRequired,
+  onChangeOrderBy: PropTypes.func,
+  orderBy: PropTypes.string,
+  order: PropTypes.string,
+};
+
+TableHeader.defaultProps = {
+  onChangeOrderBy: null,
+  orderBy: null,
+  order: 'asc',
+};
+
 /**************************************************************************************************
  - Paginator
  **************************************************************************************************/
@@ -300,38 +413,91 @@ export const TablePaginator = ({
   );
 };
 
+TablePaginator.propTypes = {
+  columns: PropTypes.arrayOf(
+    PropTypes.shape({
+      key: PropTypes.string.isRequired,
+      title: PropTypes.node.isRequired,
+      accessor: PropTypes.func,
+      sortable: PropTypes.bool,
+    }),
+  ).isRequired,
+  count: PropTypes.number,
+  onChangePage: PropTypes.func,
+  onChangeRowsPerPage: PropTypes.func,
+  page: PropTypes.number,
+  rowsPerPage: PropTypes.number,
+  rowsPerPageOptions: PropTypes.arrayOf(PropTypes.number),
+};
+
+TablePaginator.defaultProps = {
+  count: 0,
+  onChangePage: null,
+  onChangeRowsPerPage: null,
+  page: null,
+  rowsPerPage: 10,
+  rowsPerPageOptions: [10, 25, 50],
+};
+
 /**************************************************************************************************
  - Table
  **************************************************************************************************/
-
-export const TableContainer = styled.div`
-  margin: 1rem;
-`;
-
-export const NestedTableContainer = styled.div`
-  margin: 0;
-`;
-
 export const StyledTable = styled(MuiTable)`
   border-collapse: unset;
   table-layout: fixed;
 `;
 
-// eslint-disable-next-line no-shadow
-export const Table = ({ Header, Body, Paginator, ...props }) => {
-  return (
-    <StyledTable>
-      {Header && <Header {...props} />}
-      <Body {...props} />
-      <Paginator {...props} />
-    </StyledTable>
-  );
-};
+export const Table = ({
+  Header,
+  Body,
+  Paginator,
+  SubComponent,
+  columns,
+  data,
+  errorMessage,
+  noDataMessage,
+  isLoading,
+  count,
+  onChangePage,
+  onChangeRowsPerPage,
+  onChangeOrderBy,
+  orderBy,
+  order,
+  page,
+  rowsPerPage,
+  rowsPerPageOptions,
+}) => (
+  <StyledTable>
+    {Header && <Header {...{ columns, order, orderBy, onChangeOrderBy }} />}
+    <Body
+      {...{
+        data,
+        columns,
+        errorMessage,
+        isLoading,
+        noDataMessage,
+        SubComponent,
+      }}
+    />
+    <Paginator
+      {...{
+        columns,
+        page,
+        count,
+        rowsPerPage,
+        rowsPerPageOptions,
+        onChangePage,
+        onChangeRowsPerPage,
+      }}
+    />
+  </StyledTable>
+);
 
 Table.propTypes = {
-  Header: PropTypes.func,
+  Header: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]),
   Body: PropTypes.func,
   Paginator: PropTypes.func,
+  SubComponent: PropTypes.func,
   columns: PropTypes.arrayOf(
     PropTypes.shape({
       key: PropTypes.string.isRequired,
@@ -352,7 +518,6 @@ Table.propTypes = {
   order: PropTypes.string,
   page: PropTypes.number,
   rowsPerPage: PropTypes.number,
-  onRowClick: PropTypes.func,
   rowsPerPageOptions: PropTypes.arrayOf(PropTypes.number),
 };
 
@@ -360,6 +525,7 @@ Table.defaultProps = {
   Header: TableHeader,
   Body: TableBody,
   Paginator: TablePaginator,
+  SubComponent: null,
   errorMessage: '',
   noDataMessage: 'No data found',
   count: 0,
@@ -370,7 +536,6 @@ Table.defaultProps = {
   orderBy: null,
   order: 'asc',
   page: null,
-  onRowClick: null,
   rowsPerPage: 10,
   rowsPerPageOptions: [10, 25, 50],
 };

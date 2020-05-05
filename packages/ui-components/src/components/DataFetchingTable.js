@@ -4,11 +4,11 @@
  */
 
 import React, { useState, useCallback, useEffect, memo } from 'react';
+import PropTypes from 'prop-types';
 import { Table } from './Table';
 import { connectApi } from '../api';
 
 const ROWS_PER_PAGE_OPTIONS = [10, 25, 50];
-const DEFAULT_SORT = { order: 'asc', orderBy: undefined };
 
 const DumbDataFetchingTable = memo(
   ({
@@ -21,7 +21,7 @@ const DumbDataFetchingTable = memo(
     noDataMessage,
     fetchOptions,
     transformRow,
-    initialSort = DEFAULT_SORT,
+    initialSort,
   }) => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(ROWS_PER_PAGE_OPTIONS[0]);
@@ -90,6 +90,40 @@ const DumbDataFetchingTable = memo(
     );
   },
 );
+
+DumbDataFetchingTable.propTypes = {
+  Header: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]),
+  Body: PropTypes.func,
+  Paginator: PropTypes.func,
+  SubComponent: PropTypes.func,
+  columns: PropTypes.arrayOf(
+    PropTypes.shape({
+      key: PropTypes.string.isRequired,
+      title: PropTypes.node.isRequired,
+      accessor: PropTypes.func,
+      sortable: PropTypes.bool,
+    }),
+  ).isRequired,
+  fetchData: PropTypes.func.isRequired,
+  noDataMessage: PropTypes.string,
+  fetchOptions: PropTypes.object,
+  transformRow: PropTypes.func,
+  initialSort: PropTypes.shape({
+    order: PropTypes.string.isRequired,
+    orderBy: PropTypes.string,
+  }),
+};
+
+DumbDataFetchingTable.defaultProps = {
+  Header: undefined, // these values need to default to undefined so they don't override the Table defaults
+  Body: undefined,
+  Paginator: undefined,
+  SubComponent: undefined,
+  noDataMessage: undefined,
+  fetchOptions: undefined,
+  transformRow: undefined,
+  initialSort: { order: 'asc', orderBy: undefined },
+};
 
 function mapApiToProps(api, dispatch, { endpoint, fetchOptions }) {
   return {

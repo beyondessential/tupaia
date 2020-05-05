@@ -13,10 +13,7 @@ import {
   NestedTableBody,
   TableHeader,
   TableBody,
-  CustomHeader,
-  TableContainer,
   TablePaginator,
-  NestedTableContainer,
 } from '../components/Table';
 import { Button } from '..';
 
@@ -85,16 +82,14 @@ export const ComposedTable = () => {
 
   return (
     <Container>
-      <TableContainer>
-        <Table
-          columns={columns}
-          data={data}
-          Header={TableHeader}
-          Body={TableBody}
-          Paginator={TablePaginator}
-          loading={loading}
-        />
-      </TableContainer>
+      <Table
+        columns={columns}
+        data={data}
+        Header={TableHeader}
+        Body={TableBody}
+        Paginator={TablePaginator}
+        loading={loading}
+      />
     </Container>
   );
 };
@@ -104,11 +99,9 @@ export const zebraTable = () => {
 
   return (
     <Container>
-      <NestedTableContainer>
-        <Table columns={columns} data={data} loading={loading}>
-          <NestedTableBody />
-        </Table>
-      </NestedTableContainer>
+      <Table columns={columns} data={data} loading={loading}>
+        <NestedTableBody />
+      </Table>
     </Container>
   );
 };
@@ -147,7 +140,7 @@ const SubComponent = () => {
   };
 
   return (
-    <NestedTableContainer>
+    <div>
       <Table
         columns={subColumns}
         data={data}
@@ -161,7 +154,7 @@ const SubComponent = () => {
         </Typography>
         <Button onClick={customAction}>Save and Submit</Button>
       </StyledDiv>
-    </NestedTableContainer>
+    </div>
   );
 };
 

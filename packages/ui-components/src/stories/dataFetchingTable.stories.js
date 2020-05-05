@@ -8,9 +8,10 @@ import styled from 'styled-components';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import { DataFetchingTable } from '../components/DataFetchingTable';
+import MuiLink from '@material-ui/core/Link';
 import { Button } from '../components/Button';
 import * as COLORS from '../theme/colors';
-import { NestedTableBody, TableRowContext } from '../components/Table';
+import { NestedTableBody } from '../components/Table';
 
 export default {
   title: 'DataFetchingTable',
@@ -103,7 +104,7 @@ const CountrySubTable = () => {
 /*
  * CountryTable
  */
-const CountryTitle = styled.div`
+const CountryTitle = styled(MuiLink)`
   display: flex;
   align-items: center;
   font-weight: 400;
@@ -118,9 +119,14 @@ const CountryTitle = styled.div`
 
 export const CountryTable = () => {
   const getCountryTitle = data => {
-    console.log('data', data);
+    const handleClick = e => {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log('route to country page');
+    };
+
     return (
-      <CountryTitle>
+      <CountryTitle href="#" onClick={handleClick}>
         <Avatar /> {data.name}
       </CountryTitle>
     );
