@@ -26,10 +26,16 @@ import { countEventsThatSatisfyConditions, groupEvents } from '/apiV1/dataBuilde
 
 export class CountEventsBuilder extends DataBuilder {
   async build() {
-    const events = await this.fetchEvents({ useDeprecatedApi: false });
+    const events = await this.fetchResults();
     const data = await this.buildData(events);
 
     return { data };
+  }
+
+  async fetchResults() {
+    const dataElementCodes = Object.keys(this.config.dataValues || {});
+    const events = await this.fetchEvents({ useDeprecatedApi: false, dataElementCodes });
+    return events;
   }
 
   async buildData(events) {

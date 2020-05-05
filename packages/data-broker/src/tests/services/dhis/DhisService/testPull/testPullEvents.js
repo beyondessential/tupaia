@@ -185,6 +185,7 @@ export const testPullEvents = () => {
           event: 'event1_dhisId',
           eventDate: '2020-02-06T10:18:00.000',
           orgUnit: 'TO_Nukuhc',
+          orgUnitName: 'Nukunuku',
           dataValues: {
             POP01: 1,
             POP02: 2,
