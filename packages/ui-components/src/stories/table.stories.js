@@ -10,9 +10,8 @@ import { FakeAPI } from '../api';
 import * as COLORS from '../theme/colors';
 import {
   Table,
-  FullTable,
   NestedTableBody,
-  TableHeaders,
+  TableHeader,
   TableBody,
   CustomHeader,
   TableContainer,
@@ -76,7 +75,7 @@ export const SimpleTable = () => {
 
   return (
     <Container>
-      <FullTable columns={columns} data={data} loading={loading} />
+      <Table columns={columns} data={data} loading={loading} />
     </Container>
   );
 };
@@ -87,11 +86,14 @@ export const ComposedTable = () => {
   return (
     <Container>
       <TableContainer>
-        <Table columns={columns} data={data} loading={loading}>
-          <TableHeaders />
-          <TableBody />
-          <TablePaginator />
-        </Table>
+        <Table
+          columns={columns}
+          data={data}
+          Header={TableHeader}
+          Body={TableBody}
+          Paginator={TablePaginator}
+          loading={loading}
+        />
       </TableContainer>
     </Container>
   );
@@ -146,10 +148,13 @@ const SubComponent = () => {
 
   return (
     <NestedTableContainer>
-      <Table columns={subColumns} data={data} loading={loading}>
-        <CustomHeader />
-        <NestedTableBody />
-      </Table>
+      <Table
+        columns={subColumns}
+        data={data}
+        Header={CustomHeader}
+        Body={NestedTableBody}
+        loading={loading}
+      />
       <StyledDiv>
         <Typography variant="body1">
           Lorem ipsum dolor sit amet, consectetur adipisicing elit.
@@ -165,7 +170,7 @@ export const nestedTable = () => {
 
   return (
     <Container>
-      <FullTable columns={columns} data={data} loading={loading} SubComponent={SubComponent} />
+      <Table columns={columns} data={data} loading={loading} SubComponent={SubComponent} />
     </Container>
   );
 };

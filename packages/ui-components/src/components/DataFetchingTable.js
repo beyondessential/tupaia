@@ -12,6 +12,9 @@ const DEFAULT_SORT = { order: 'asc', orderBy: undefined };
 
 const DumbDataFetchingTable = memo(
   ({
+    Header,
+    Body,
+    Paginator,
     columns,
     SubComponent,
     fetchData,
@@ -65,6 +68,9 @@ const DumbDataFetchingTable = memo(
 
     return (
       <Table
+        Header={Header}
+        Body={Body}
+        Paginator={Paginator}
         isLoading={isLoading}
         columns={columns}
         data={data}
