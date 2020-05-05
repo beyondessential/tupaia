@@ -39,7 +39,6 @@ export const countEventsThatSatisfyConditions = (events, conditions) => {
       const dataValue = Array.isArray(dataValues) ?
         dataValues.find(dv => dv.dataElement === dataElement)
         : dataValues[dataElement];
-      console.log(dataValue, dataValues);
       const value = isPlainObject(dataValue) ? dataValue.value : dataValue;
       return value && checkValueSatisfiesCondition(value, condition);
     });
