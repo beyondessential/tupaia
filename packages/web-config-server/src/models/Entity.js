@@ -325,10 +325,15 @@ export class Entity extends BaseModel {
   }
 
   async parent() {
-    return Entity.findById(this.parent_id);
+    return this.parentId ? Entity.findById(this.parent_id) : undefined;
   }
 
   async countryEntity() {
-    return this.type === COUNTRY ? this : Entity.findOne({ code: this.country_code });
+    if (this.type === COUNTRY) {
+      return this;
+    } else if (this.country_code) {
+      return Entity.findOne({ code: this.country_code });
+    }
+    return undefined;
   }
 }

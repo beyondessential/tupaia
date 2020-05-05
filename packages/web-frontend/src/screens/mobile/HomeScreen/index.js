@@ -81,7 +81,7 @@ const mapStateToProps = state => {
   const { isGroupSelectExpanded } = state.dashboard;
 
   const { currentOrganisationUnit, dashboardConfig } = state.global;
-  const organisationUnits = selectOrgUnitChildren(state, 'World') || [];
+  const organisationUnits = selectOrgUnitChildren(state, state.project.active.code) || [];
 
   return {
     organisationUnits,

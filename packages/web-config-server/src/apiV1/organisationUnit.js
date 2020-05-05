@@ -9,8 +9,6 @@ import { RouteHandler } from './RouteHandler';
 import { PermissionsChecker } from './permissions';
 import { Project } from '../models';
 
-const WORLD = 'World';
-
 const translateDescendantForFrontEnd = (descendant, childIdToParentId, entityIdToCode) => ({
   ...descendant.translateForFrontend(),
   parent: entityIdToCode[childIdToParentId[descendant.id]],
@@ -20,31 +18,23 @@ export default class extends RouteHandler {
   static PermissionsChecker = PermissionsChecker; // checks the user has access to requested entity
 
   async buildResponse() {
-    const { includeCountryData, projectCode } = this.query;
+    const { includeCountryData, projectCode = 'explore' } = this.query;
     return includeCountryData === 'true'
       ? this.getEntityAndCountryHierarchyByCode(projectCode)
       : this.getEntityAndChildrenByCode(projectCode);
   }
 
   async getEntityAndCountryHierarchyByCode(projectCode) {
-    // Disabling all this for now until the orgUnit hierarchy is fixed
-    // const project = await Project.findOne({ code: projectCode });
-    // const projectEntity = project ? await Entity.findOne({ id: project.entity_id }) : undefined;
-    // const hierarchy = await EntityHierarchy.findOne({ name: projectCode });
-    const project = undefined;
-    const projectEntity = undefined;
-    const hierarchy = undefined;
-
-    const world = await Entity.findOne({ code: WORLD });
+    const project = await Project.findOne({ code: projectCode });
+    const projectEntity = await Entity.findOne({ id: project.entity_id });
+    const hierarchy = await EntityHierarchy.findOne({ name: projectCode });
     const country = await this.entity.countryEntity();
-
-    const countryDescendants = hierarchy
-      ? await country.getDescendants(hierarchy.id)
-      : await country.getOrgUnitDescendants();
-
-    const orgUnitHierarchy = projectEntity
-      ? await this.filterForAccess([world, projectEntity, country, ...countryDescendants])
-      : await this.filterForAccess([world, country, ...countryDescendants]);
+    const countryDescendants = await country.getDescendants(hierarchy.id);
+    const orgUnitHierarchy = await this.filterForAccess([
+      projectEntity,
+      country,
+      ...countryDescendants,
+    ]);
 
     const childIdToParentId = hierarchy
       ? reduceToDictionary(
@@ -70,11 +60,7 @@ export default class extends RouteHandler {
   }
 
   async getEntityAndChildrenByCode(projectCode) {
-    // Disabling all this for now until the project hierarchy is fixed
-    // const project = await Project.findOne({ code: projectCode });
-    // const hierarchy = await EntityHierarchy.findOne({ name: projectCode });
-    const project = undefined;
-    const hierarchy = undefined;
+    const hierarchy = await EntityHierarchy.findOne({ name: projectCode });
 
     // Don't check parent permission (as we already know we have permission for at least one of its children)
     const parent = await this.entity.parent();

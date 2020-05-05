@@ -12,9 +12,9 @@
  */
 
 export const initialOrgUnit = {
-  type: 'World',
-  organisationUnitCode: 'World',
-  name: 'World',
+  type: 'project',
+  organisationUnitCode: 'explore',
+  name: 'General',
   parent: {},
   location: {
     type: 'no-coordinates',

@@ -8,7 +8,12 @@
 import { call, put, delay, takeEvery, takeLatest, select } from 'redux-saga/effects';
 import queryString from 'query-string';
 import request from './utils/request';
-import { selectOrgUnit, selectOrgUnitChildren, selectOrgUnitCountry } from './selectors';
+import {
+  selectOrgUnit,
+  selectOrgUnitChildren,
+  selectOrgUnitCountry,
+  selectIsProject,
+} from './selectors';
 import {
   ATTEMPT_CHANGE_PASSWORD,
   ATTEMPT_LOGIN,
@@ -420,7 +425,8 @@ function* fetchOrgUnitData(organisationUnitCode, projectCode) {
     const urlParameters = {
       organisationUnitCode,
       projectCode,
-      includeCountryData: organisationUnitCode !== 'World', // We should pull in all country data if we are within a country (ie. not World)
+      includeCountryData:
+        organisationUnitCode !== projectCode && organisationUnitCode !== 'explore', // We should pull in all country data if we are within a country (ie. not World)
     };
     const requestResourceUrl = `organisationUnit?${queryString.stringify(urlParameters)}`;
     const orgUnitData = yield call(request, requestResourceUrl);
@@ -433,8 +439,8 @@ function* fetchOrgUnitData(organisationUnitCode, projectCode) {
 }
 
 function* requestOrgUnit(action) {
-  const { organisationUnitCode } = action;
   const state = yield select();
+  const { organisationUnitCode = state.project.active.code } = action;
   const orgUnit = selectOrgUnit(state, organisationUnitCode);
   if (orgUnit && orgUnit.isComplete) {
     return; // If we already have the complete org unit in reduxStore, just exit early
@@ -641,7 +647,8 @@ function* watchSearchChange() {
  *
  */
 function* fetchMeasureInfo(measureId, organisationUnitCode, oldOrgUnitCountry = null) {
-  if (organisationUnitCode === 'World') {
+  const state = yield select();
+  if (selectIsProject(state, organisationUnitCode)) {
     // Never want to fetch measures for World org code.
     yield put(cancelFetchMeasureData());
     yield put(clearMeasureHierarchy());
@@ -705,7 +712,7 @@ function* fetchCurrentMeasureInfo() {
   const { measureId } = state.map.measureInfo;
   const { measureHierarchy, selectedMeasureId } = state.measureBar;
 
-  if (organisationUnitCode && organisationUnitCode !== 'World') {
+  if (organisationUnitCode && !selectIsProject(state, organisationUnitCode)) {
     const isHeirarchyPopulated = Object.keys(measureHierarchy).length;
 
     // Update the default measure ID
@@ -763,7 +770,8 @@ function* watchOrgUnitChangeAndFetchMeasureInfo() {
  */
 function* fetchMeasures(action) {
   const { organisationUnitCode } = action;
-  if (organisationUnitCode === 'World') yield put(clearMeasure());
+  const state = yield select();
+  if (selectIsProject(state, organisationUnitCode)) yield put(clearMeasure());
   const requestResourceUrl = `measures?organisationUnitCode=${organisationUnitCode}`;
   try {
     const measures = yield call(request, requestResourceUrl);
@@ -905,7 +913,7 @@ function* watchAttemptAttemptDrillDown() {
 function* navigateToWorldOnUserChange() {
   // On user login/logout, we should just navigate back to world, as we don't know if they have permissions
   // to the currently selected orgUnit
-  yield put(changeOrgUnit('World', true));
+  yield put(changeOrgUnit('explore', true));
 }
 
 function* watchUserChangesAndUpdatePermissions() {
