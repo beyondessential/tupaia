@@ -32,8 +32,7 @@ import VerticalTick from './VerticalTick';
 
 const { AREA, BAR, COMPOSED, LINE } = CHART_TYPES;
 const { PERCENTAGE } = VALUE_TYPES;
-const LEGEND_ALL_DATA_KEY = 'ALL_DATA_KEY ';
-const ALL_DATA_KEY = 'ALL_DATA_KEY';
+const LEGEND_ALL_DATA_KEY = 'LEGEND_ALL_DATA_KEY';
 
 const AXIS_TIME_PROPS = {
   dataKey: 'timestamp',
@@ -124,28 +123,70 @@ export class CartesianChart extends PureComponent {
 
   onLegendClick = event => {
     const { viewContent } = this.props;
+    const { activeDataKeys } = this.state;
     const { chartConfig = {} } = viewContent;
-    if (event.dataKey === LEGEND_ALL_DATA_KEY) {
+    const legendDatakey = event.dataKey;
+    const actionWillSelectAllKeys =
+      activeDataKeys.length + 1 >= this.getRealDataKeys(chartConfig).length &&
+      !activeDataKeys.includes(legendDatakey);
+
+    if (legendDatakey === LEGEND_ALL_DATA_KEY || actionWillSelectAllKeys) {
       this.setState({ activeDataKeys: [] });
       return;
     }
-    const allRealKeys = Object.keys(chartConfig).filter(key => key !== LEGEND_ALL_DATA_KEY);
-    if (this.state.activeDataKeys.includes(event.dataKey)) {
+
+    // Note, this may be false even if the dataKey is active
+    if (activeDataKeys.includes(legendDatakey)) {
+      //
       this.setState(state => ({
-        activeDataKeys: state.activeDataKeys.filter(dk => dk !== event.dataKey),
+        activeDataKeys: state.activeDataKeys.filter(dk => dk !== legendDatakey),
       }));
     } else {
-      this.setState(state => {
-        const activeDataKeys =
-          state.activeDataKeys.length >= allRealKeys.length - 1
-            ? []
-            : [...state.activeDataKeys, event.dataKey];
-        console.log(activeDataKeys);
-        return {
-          activeDataKeys,
-        };
-      });
+      this.setState(state => ({
+        activeDataKeys: [...state.activeDataKeys, legendDatakey],
+      }));
     }
+  };
+
+  getRealDataKeys = chartConfig =>
+    Object.keys(chartConfig).filter(key => key !== LEGEND_ALL_DATA_KEY);
+
+  getIsActiveKey = legendDatakey =>
+    this.state.activeDataKeys.length === 0 ||
+    this.state.activeDataKeys.includes(legendDatakey) ||
+    legendDatakey === LEGEND_ALL_DATA_KEY;
+
+  updateChartConfig = (hasDisabledData, viewContent) => {
+    const { chartConfig = {}, chartType } = viewContent;
+    if (hasDisabledData && !chartConfig[LEGEND_ALL_DATA_KEY]) {
+      chartConfig[LEGEND_ALL_DATA_KEY] = {
+        color: '#FFFFFF',
+        chartType: Object.values(chartConfig)[0].chartType || chartType || 'line',
+        label: 'All',
+        stackId: 1,
+      };
+    } else if (!hasDisabledData && chartConfig[LEGEND_ALL_DATA_KEY]) {
+      delete chartConfig[LEGEND_ALL_DATA_KEY];
+    }
+  };
+
+  filterDisabledData = data => {
+    const { viewContent } = this.props;
+    const { chartConfig = {} } = viewContent;
+    const hasDisabledData = this.state.activeDataKeys.length >= 1;
+
+    // Here we are adding to something in this.props, which seems REAL bad.
+    // Should we store the state in ChartWrapper to avoid this?
+    this.updateChartConfig(hasDisabledData, viewContent);
+
+    return hasDisabledData
+      ? data.map(dataSeries =>
+          Object.entries(dataSeries).reduce((newDataSeries, [key, value]) => {
+            const isInactive = Object.keys(chartConfig).includes(key) && !this.getIsActiveKey(key);
+            return isInactive ? newDataSeries : { ...newDataSeries, [key]: value };
+          }, {}),
+        )
+      : data;
   };
 
   getBarSize = () => {
@@ -203,11 +244,7 @@ export class CartesianChart extends PureComponent {
 
   formatLegend = (value, { color }) => {
     const { viewContent } = this.props;
-    const { activeDataKeys } = this.state;
-    const isActive =
-      activeDataKeys.length === 0 ||
-      activeDataKeys.includes(value) ||
-      value === LEGEND_ALL_DATA_KEY;
+    const isActive = this.getIsActiveKey(value);
     const displayColor = isActive ? color : getInactiveColor(color);
     return (
       <span style={{ color: displayColor, textDecoration: isActive ? '' : 'line-through' }}>
@@ -532,40 +569,11 @@ export class CartesianChart extends PureComponent {
     );
   };
 
-  filterDisabledData = data => {
-    const { activeDataKeys } = this.state;
-    const { viewContent } = this.props;
-    const { chartConfig = {} } = viewContent;
-
-    if (this.state.activeDataKeys.length >= 1)
-      chartConfig[LEGEND_ALL_DATA_KEY] = {
-        color: '#FFFFFF',
-        chartType: Object.values(chartConfig)[0].chartType || viewContent.chartType || 'line',
-        label: 'All',
-        stackId: 1,
-      };
-    else if (chartConfig[LEGEND_ALL_DATA_KEY]) {
-      delete chartConfig[LEGEND_ALL_DATA_KEY];
-    }
-    if (activeDataKeys.length === 0) return data;
-
-    const realData = data.map(dataSeries =>
-      [...Object.entries(dataSeries), [ALL_DATA_KEY, 0]].reduce((newDataSeries, [key, value]) => {
-        const isActive =
-          !Object.keys(chartConfig).includes(key) ||
-          activeDataKeys.length === 0 ||
-          activeDataKeys.includes(key) ||
-          key === ALL_DATA_KEY; //TODO
-        return isActive ? { ...newDataSeries, [key]: value } : newDataSeries;
-      }, {}),
-    );
-    return realData;
-  };
-
   render = () => {
     const { isEnlarged, isExporting, viewContent } = this.props;
     const { chartType, data } = viewContent;
     const Chart = CHART_TYPE_TO_COMPONENT[chartType];
+
     const responsiveStyle = !isEnlarged && !isMobile() && !isExporting ? 1.6 : undefined;
 
     return (
@@ -591,12 +599,10 @@ CartesianChart.propTypes = {
   isEnlarged: PropTypes.bool,
   isExporting: PropTypes.bool,
   viewContent: PropTypes.shape(VIEW_CONTENT_SHAPE),
-  activeDataKeys: PropTypes.arrayOf(PropTypes.string),
 };
 
 CartesianChart.defaultProps = {
   isEnlarged: false,
   isExporting: false,
   viewContent: null,
-  activeDataKeys: [],
 };

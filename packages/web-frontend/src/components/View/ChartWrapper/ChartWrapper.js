@@ -1,8 +1,6 @@
-/* eslint-disable jsx-a11y/click-events-have-key-events */
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 
-import ZoomIcon from 'material-ui/svg-icons/action/zoom-in';
 import { CHART_COLOR_PALETTE, COMPOSED_CHART_COLOR_PALETTE, VIEW_STYLES } from '../../../styles';
 import { VIEW_CONTENT_SHAPE } from '../propTypes';
 import { CartesianChart } from './CartesianChart';
@@ -71,11 +69,6 @@ const UnknownChart = () => (
 );
 
 export class ChartWrapper extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-
   getViewContent() {
     const { viewContent } = this.props;
     const { chartConfig, chartType, useDefaultChartConfig } = viewContent;
@@ -104,15 +97,11 @@ export class ChartWrapper extends PureComponent {
       return <UnknownChart />;
     }
     const Chart = chartType === CHART_TYPES.PIE ? PieChart : CartesianChart;
+
     return (
       <div style={VIEW_STYLES.chartViewContainer}>
         <div style={VIEW_STYLES.chartContainer}>
-          <Chart
-            {...this.props}
-            onLegendClick={this.onLegendClick}
-            activeDataKeys={this.state.activeDataKeys}
-            viewContent={viewContent}
-          />
+          <Chart {...this.props} viewContent={viewContent} />
         </div>
       </div>
     );
