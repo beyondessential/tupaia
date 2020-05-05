@@ -9,6 +9,7 @@ import { call, put, delay, takeEvery, takeLatest, select } from 'redux-saga/effe
 import queryString from 'query-string';
 import request from './utils/request';
 import { selectOrgUnit, selectOrgUnitChildren, selectOrgUnitCountry } from './selectors';
+import { selectActiveProject } from './projects/selectors';
 import {
   ATTEMPT_CHANGE_PASSWORD,
   ATTEMPT_LOGIN,
@@ -89,6 +90,7 @@ import { isMobile, processMeasureInfo, formatDateForApi } from './utils';
 import { createUrlString } from './utils/historyNavigation';
 import { getDefaultDates } from './utils/periodGranularities';
 import { INITIAL_MEASURE_ID } from './defaults';
+import { selectProject } from './projects/actions';
 
 /**
  * attemptChangePassword
@@ -526,6 +528,8 @@ function* watchOrgUnitChangeAndFetchDashboard() {
 
 function* fetchViewData(parameters, errorHandler) {
   const { infoViewKey } = parameters;
+  const projectCode = selectActiveProject(yield select()).code;
+
   // If the view should be constrained to a date range and isn't, constrain it
   const { startDate, endDate } =
     parameters.startDate || parameters.endDate
@@ -542,6 +546,7 @@ function* fetchViewData(parameters, errorHandler) {
   } = parameters;
   const urlParameters = {
     organisationUnitCode,
+    projectCode,
     dashboardGroupId,
     viewId,
     drillDownLevel,
@@ -654,8 +659,9 @@ function* fetchMeasureInfo(measureId, organisationUnitCode, oldOrgUnitCountry = 
 
     return;
   }
-
-  const country = selectOrgUnitCountry(yield select(), organisationUnitCode);
+  const state = yield select();
+  const project = selectActiveProject(state);
+  const country = selectOrgUnitCountry(state, organisationUnitCode);
   const countryCode = country ? country.organisationUnitCode : undefined;
   if (oldOrgUnitCountry) {
     if (oldOrgUnitCountry === countryCode) {
@@ -666,7 +672,9 @@ function* fetchMeasureInfo(measureId, organisationUnitCode, oldOrgUnitCountry = 
     yield put(clearMeasureHierarchy());
   }
 
-  const requestResourceUrl = `measureData?organisationUnitCode=${organisationUnitCode}&measureId=${measureId}&shouldShowAllParentCountryResults=${!isMobile()}`;
+  const requestResourceUrl = `measureData?organisationUnitCode=${organisationUnitCode}&measureId=${measureId}&shouldShowAllParentCountryResults=${!isMobile()}&projectCode=${
+    project.code
+  }`;
 
   try {
     const measureInfoResponse = yield call(request, requestResourceUrl);

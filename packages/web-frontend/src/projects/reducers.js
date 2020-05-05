@@ -6,11 +6,12 @@
  */
 
 import { SET_PROJECT_DATA, SELECT_PROJECT, REQUEST_PROJECT_ACCESS } from '../actions';
+import { INITIAL_PROJECT_CODE } from '../defaults';
 
 export default function projects(
   state = {
     projects: [],
-    active: {},
+    active: { code: INITIAL_PROJECT_CODE },
     requestingAccess: null,
     error: '',
   },

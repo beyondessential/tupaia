@@ -6,6 +6,7 @@
 import { RouteHandler } from './RouteHandler';
 import { createAggregator } from '@tupaia/aggregator';
 import { Aggregator } from '../aggregator';
+import { Entity } from '../models';
 
 /**
  * Interface class for handling routes that fetch data from an aggregator
@@ -22,9 +23,12 @@ export class DataAggregatingRouteHandler extends RouteHandler {
   fetchDataSourceEntities = async (entity, defaultEntityType) => {
     // if a specific type was specified in either the query or the function parameter, build org
     // units of that type (otherwise we just use the nearest org unit descendants)
+
     const dataSourceEntityType = this.query.dataSourceEntityType || defaultEntityType;
-    // if this entity is a project, follow the alternative hierarchy matching its name
-    const hierarchyId = entity.isProject() ? (await entity.project()).entity_hierarchy_id : null;
+
+    const projectEntity = await Entity.findOne({ code: this.query.projectCode });
+    const hierarchyId = (await projectEntity.project()).entity_hierarchy_id;
+
     const dataSourceEntities = dataSourceEntityType
       ? await entity.getDescendantsOfType(dataSourceEntityType, hierarchyId)
       : await entity.getNearestOrgUnitDescendants(hierarchyId);
