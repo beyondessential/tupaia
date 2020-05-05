@@ -16,7 +16,7 @@ const OVERLAY = {
   name: 'Number of Tests',
   measureBuilderConfig: {
     dataValues: {
-      STR_CRF165: '1',
+      STR_CRF165: 1,
     },
     dataSourceType: 'custom',
     dataSourceEntityType: 'village',
