@@ -26,8 +26,8 @@ exports.up = function(db) {
 
     CREATE TABLE alert_comment (
       id TEXT PRIMARY KEY,
-      alert_id text REFERENCES alert(id),
-      comment_id text REFERENCES comment(id)
+      alert_id text REFERENCES alert(id) ON UPDATE CASCADE ON DELETE CASCADE,
+      comment_id text REFERENCES comment(id) ON UPDATE CASCADE ON DELETE CASCADE
     );
   `);
 };

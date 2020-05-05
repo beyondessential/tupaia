@@ -21,6 +21,8 @@ export {
   createEntity,
   createDataElement,
   createAlert,
+  createUserAccount,
+  createComment,
 } from './database';
 export {
   generateTestId,
