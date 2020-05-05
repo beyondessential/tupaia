@@ -10,6 +10,9 @@ import { connectApi } from '../api';
 
 const ROWS_PER_PAGE_OPTIONS = [10, 25, 50];
 
+/*
+ * DumbDataFetchingTable Component
+ */
 const DumbDataFetchingTable = memo(
   ({
     Header,
@@ -92,10 +95,10 @@ const DumbDataFetchingTable = memo(
 );
 
 DumbDataFetchingTable.propTypes = {
-  Header: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]),
-  Body: PropTypes.func,
-  Paginator: PropTypes.func,
-  SubComponent: PropTypes.func,
+  Header: PropTypes.any,
+  Body: PropTypes.any,
+  Paginator: PropTypes.any,
+  SubComponent: PropTypes.any,
   columns: PropTypes.arrayOf(
     PropTypes.shape({
       key: PropTypes.string.isRequired,

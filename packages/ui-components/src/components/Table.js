@@ -17,11 +17,11 @@ import MuiTableFooter from '@material-ui/core/TableFooter';
 import MuiTablePagination from '@material-ui/core/TablePagination';
 import * as COLORS from '../theme/colors';
 
-/**************************************************************************************************
- - TableCells
- **************************************************************************************************/
+/*
+ * Table Cell styles
+ */
 const TableCell = styled(MuiTableCell)`
-  padding: 16px;
+  padding: 1rem;
   font-size: 15px;
   line-height: 18px;
   min-width: 80px;
@@ -36,7 +36,10 @@ const TableCell = styled(MuiTableCell)`
   }
 `;
 
-const TableCells = ({ columns, rowData }) =>
+/*
+ * TableCells Component
+ */
+const TableCells = React.memo(({ columns, rowData }) =>
   columns.map(({ key, accessor, CellComponent, width = null, align = 'center', cellColor }) => {
     const value = accessor ? React.createElement(accessor, rowData) : rowData[key];
     const displayValue = value === 0 ? '0' : value;
@@ -46,12 +49,25 @@ const TableCells = ({ columns, rowData }) =>
         {CellComponent ? <CellComponent value={displayValue} /> : displayValue}
       </TableCell>
     );
-  });
+  }),
+);
 
-/**************************************************************************************************
- - NestedTable
- **************************************************************************************************/
-const StyledTableCell = styled.td`
+/*
+ * Shape of columns propType
+ */
+const columnShape = {
+  key: PropTypes.string.isRequired,
+  title: PropTypes.node.isRequired,
+  accessor: PropTypes.func,
+  sortable: PropTypes.bool,
+};
+
+TableCells.propTypes = {
+  columns: PropTypes.arrayOf(PropTypes.shape(columnShape)).isRequired,
+  rowData: PropTypes.object.isRequired,
+};
+
+const NestedTableWrapperCell = styled.td`
   background: white;
   padding: 0;
   border: 1px solid ${COLORS.GREY_DE};
@@ -59,26 +75,22 @@ const StyledTableCell = styled.td`
   box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
 `;
 
-const NestedTable = ({ row, children, columns }) => (
+/*
+ * NestedTable Component
+ */
+const NestedTable = React.memo(({ row, children, columns }) => (
   <MuiTableRow>
-    <StyledTableCell colSpan={columns.length}>
+    <NestedTableWrapperCell colSpan={columns.length}>
       <StyledTable>
         <tbody>{row}</tbody>
       </StyledTable>
       {children}
-    </StyledTableCell>
+    </NestedTableWrapperCell>
   </MuiTableRow>
-);
+));
 
 NestedTable.propTypes = {
-  columns: PropTypes.arrayOf(
-    PropTypes.shape({
-      key: PropTypes.string.isRequired,
-      title: PropTypes.node.isRequired,
-      accessor: PropTypes.func,
-      sortable: PropTypes.bool,
-    }),
-  ).isRequired,
+  columns: PropTypes.arrayOf(PropTypes.shape(columnShape)).isRequired,
   row: PropTypes.any.isRequired,
   children: PropTypes.any,
 };
@@ -87,25 +99,30 @@ NestedTable.defaultProps = {
   children: PropTypes.null,
 };
 
-/**************************************************************************************************
-  - Row
- **************************************************************************************************/
+/*
+ * Row styles
+ */
+const rowBackgroundColor = '#F1F1F1';
+const rowHoverColor = 'rgba(255, 255, 255, 0.6)';
+
 const StyledTableRow = styled(MuiTableRow)`
   cursor: pointer;
   border-bottom: 1px solid ${COLORS.GREY_DE};
 
   &:nth-of-type(even) {
-    background: #f1f1f1;
+    background: ${rowBackgroundColor};
   }
 
   &:hover {
-    background: rgba(255, 255, 255, 0.6);
+    background: ${rowHoverColor};
   }
 `;
 
-const ZebraTableRow = styled(MuiTableRow)`
+const condensedRowBackgroundColor = '#EFEFEF';
+
+const CondensedStyleTableRow = styled(MuiTableRow)`
   &:nth-of-type(even) {
-    background-color: #efefef;
+    background: ${condensedRowBackgroundColor};
   }
 
   .MuiTableCell-root {
@@ -113,7 +130,32 @@ const ZebraTableRow = styled(MuiTableRow)`
   }
 `;
 
-const TableRow = React.memo(({ columns, rowData, SubComponent }) => {
+/*
+ * TableRow Component
+ */
+const TableRow = React.memo(({ columns, rowData, variant }) => {
+  const RowType = variant === 'condensed' ? CondensedStyleTableRow : StyledTableRow;
+  return (
+    <RowType>
+      <TableCells columns={columns} rowData={rowData} />
+    </RowType>
+  );
+});
+
+TableRow.propTypes = {
+  columns: PropTypes.arrayOf(PropTypes.shape(columnShape)).isRequired,
+  rowData: PropTypes.object.isRequired,
+  variant: PropTypes.string,
+};
+
+TableRow.defaultProps = {
+  variant: 'standard',
+};
+
+/*
+ * ExpandableTableRow Component
+ */
+const ExpandableTableRow = React.memo(({ columns, rowData, SubComponent }) => {
   const [expanded, setExpanded] = useState(false);
 
   const handleClick = () => {
@@ -137,179 +179,96 @@ const TableRow = React.memo(({ columns, rowData, SubComponent }) => {
   return row;
 });
 
-TableRow.propTypes = {
-  columns: PropTypes.arrayOf(
-    PropTypes.shape({
-      key: PropTypes.string.isRequired,
-      title: PropTypes.node.isRequired,
-      accessor: PropTypes.func,
-      sortable: PropTypes.bool,
-    }),
-  ).isRequired,
+ExpandableTableRow.propTypes = {
+  columns: PropTypes.arrayOf(PropTypes.shape(columnShape)).isRequired,
   rowData: PropTypes.object.isRequired,
   SubComponent: PropTypes.func,
 };
 
-TableRow.defaultProps = {
+ExpandableTableRow.defaultProps = {
   SubComponent: PropTypes.null,
 };
 
-const NestedTableRow = React.memo(({ columns, rowData }) => {
-  const [expanded, setExpanded] = useState(false);
-
-  const handleClick = () => {
-    setExpanded(!expanded);
-  };
-
-  return (
-    <ZebraTableRow onClick={handleClick}>
-      <TableCells columns={columns} rowData={rowData} />
-    </ZebraTableRow>
-  );
-});
-
-NestedTableRow.propTypes = {
-  columns: PropTypes.arrayOf(
-    PropTypes.shape({
-      key: PropTypes.string.isRequired,
-      title: PropTypes.node.isRequired,
-      accessor: PropTypes.func,
-      sortable: PropTypes.bool,
-    }),
-  ).isRequired,
-  rowData: PropTypes.object.isRequired,
-};
-
-/**************************************************************************************************
- - Error
- **************************************************************************************************/
+/*
+ * ErrorSpan Styles
+ */
 const ErrorSpan = styled.span`
-  color: #ff0000;
+  color: ${COLORS.RED};
 `;
 
-const ErrorRow = React.memo(({ colSpan, children }) => (
-  <StyledTableRow>
-    <TableCell colSpan={colSpan} align="center">
-      {children}
-    </TableCell>
-  </StyledTableRow>
+/*
+ * ErrorRow Component
+ */
+const TableMessage = React.memo(({ colSpan, errorMessage, message }) => (
+  <MuiTableBody>
+    <StyledTableRow>
+      <TableCell colSpan={colSpan} align="center">
+        {errorMessage ? <ErrorSpan>{errorMessage}</ErrorSpan> : message}
+      </TableCell>
+    </StyledTableRow>
+  </MuiTableBody>
 ));
 
-ErrorRow.propTypes = {
+TableMessage.propTypes = {
   colSpan: PropTypes.number.isRequired,
-  children: PropTypes.any.isRequired,
+  message: PropTypes.string.isRequired,
+  errorMessage: PropTypes.string,
 };
 
-const getErrorMessage = ({ isLoading, errorMessage, data, noDataMessage }) => {
-  if (isLoading) return 'Loading...';
-  if (errorMessage) return errorMessage;
-  if (data.length === 0) return noDataMessage;
-  return null;
+TableMessage.defaultProps = {
+  errorMessage: '',
 };
 
-/**************************************************************************************************
- - Body
- **************************************************************************************************/
-export const TableBody = ({
-  data,
-  columns,
-  errorMessage,
-  isLoading,
-  noDataMessage,
-  SubComponent,
-}) => {
-  const error = getErrorMessage({ errorMessage, isLoading, data, noDataMessage });
-  if (error) {
-    return (
-      <MuiTableBody>
-        <ErrorRow colSpan={columns.length}>
-          {errorMessage ? <ErrorSpan>{error}</ErrorSpan> : error}
-        </ErrorRow>
-      </MuiTableBody>
-    );
-  }
-  return (
-    <MuiTableBody>
-      {data.map((rowData, index) => {
-        return (
-          // eslint-disable-next-line react/no-array-index-key
-          <TableRow rowData={rowData} key={index} columns={columns} SubComponent={SubComponent} />
-        );
-      })}
-    </MuiTableBody>
-  );
-};
+/*
+ * TableBody Component
+ */
+export const TableBody = React.memo(({ data, columns, SubComponent }) => (
+  <MuiTableBody>
+    {data.map((rowData, index) => {
+      return (
+        <ExpandableTableRow
+          rowData={rowData}
+          key={index}
+          columns={columns}
+          SubComponent={SubComponent}
+        />
+      );
+    })}
+  </MuiTableBody>
+));
 
 TableBody.propTypes = {
-  columns: PropTypes.arrayOf(
-    PropTypes.shape({
-      key: PropTypes.string.isRequired,
-      title: PropTypes.node.isRequired,
-      accessor: PropTypes.func,
-      sortable: PropTypes.bool,
-    }),
-  ).isRequired,
+  columns: PropTypes.arrayOf(PropTypes.shape(columnShape)).isRequired,
   data: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-  errorMessage: PropTypes.string,
-  noDataMessage: PropTypes.string,
-  isLoading: PropTypes.bool,
   SubComponent: PropTypes.func,
 };
 
 TableBody.defaultProps = {
-  errorMessage: '',
-  noDataMessage: 'No data found',
-  isLoading: false,
   SubComponent: null,
 };
 
-export const NestedTableBody = ({ data, columns, errorMessage, isLoading, noDataMessage }) => {
-  const error = getErrorMessage({ errorMessage, isLoading, data, noDataMessage });
-  if (error) {
-    return (
-      <MuiTableBody>
-        <ErrorRow colSpan={columns.length}>
-          {errorMessage ? <ErrorSpan>{error}</ErrorSpan> : error}
-        </ErrorRow>
-      </MuiTableBody>
-    );
-  }
-  return (
-    <MuiTableBody>
-      {data.map((rowData, index) => {
-        return (
-          // eslint-disable-next-line react/no-array-index-key
-          <NestedTableRow rowData={rowData} key={index} columns={columns} />
-        );
-      })}
-    </MuiTableBody>
-  );
-};
+/*
+ * NestedTableRow Component
+ */
+export const NestedTableBody = React.memo(({ data, columns }) => (
+  <MuiTableBody>
+    {data.map((rowData, index) => {
+      return (
+        // eslint-disable-next-line react/no-array-index-key
+        <TableRow rowData={rowData} key={index} columns={columns} variant="condensed" />
+      );
+    })}
+  </MuiTableBody>
+));
 
 NestedTableBody.propTypes = {
-  columns: PropTypes.arrayOf(
-    PropTypes.shape({
-      key: PropTypes.string.isRequired,
-      title: PropTypes.node.isRequired,
-      accessor: PropTypes.func,
-      sortable: PropTypes.bool,
-    }),
-  ).isRequired,
+  columns: PropTypes.arrayOf(PropTypes.shape(columnShape)).isRequired,
   data: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-  errorMessage: PropTypes.string,
-  noDataMessage: PropTypes.string,
-  isLoading: PropTypes.bool,
 };
 
-NestedTableBody.defaultProps = {
-  errorMessage: '',
-  noDataMessage: 'No data found',
-  isLoading: false,
-};
-
-/**************************************************************************************************
- - Header
- **************************************************************************************************/
+/*
+ * TableHeader Styles
+ */
 const SortLabel = styled(MuiTableSortLabel)`
   flex-direction: row-reverse;
   font-weight: 600;
@@ -323,7 +282,10 @@ const SortLabel = styled(MuiTableSortLabel)`
   }
 `;
 
-export const TableHeader = ({ columns, order, orderBy, onChangeOrderBy }) => {
+/*
+ * TableHeader Component
+ */
+export const TableHeader = React.memo(({ columns, order, orderBy, onChangeOrderBy }) => {
   const getContent = (key, sortable, title) =>
     sortable ? (
       <SortLabel
@@ -349,17 +311,10 @@ export const TableHeader = ({ columns, order, orderBy, onChangeOrderBy }) => {
       </MuiTableRow>
     </MuiTableHead>
   );
-};
+});
 
 TableHeader.propTypes = {
-  columns: PropTypes.arrayOf(
-    PropTypes.shape({
-      key: PropTypes.string.isRequired,
-      title: PropTypes.node.isRequired,
-      accessor: PropTypes.func,
-      sortable: PropTypes.bool,
-    }),
-  ).isRequired,
+  columns: PropTypes.arrayOf(PropTypes.shape(columnShape)).isRequired,
   onChangeOrderBy: PropTypes.func,
   orderBy: PropTypes.string,
   order: PropTypes.string,
@@ -371,57 +326,52 @@ TableHeader.defaultProps = {
   order: 'asc',
 };
 
-/**************************************************************************************************
- - Paginator
- **************************************************************************************************/
-export const TablePaginator = ({
-  columns,
-  page,
-  count,
-  rowsPerPage,
-  rowsPerPageOptions,
-  onChangePage,
-  onChangeRowsPerPage,
-}) => {
-  if (count <= rowsPerPage) {
-    return null;
-  }
+/*
+ * TablePaginator Component
+ */
+export const TablePaginator = React.memo(
+  ({
+    columns,
+    page,
+    count,
+    rowsPerPage,
+    rowsPerPageOptions,
+    onChangePage,
+    onChangeRowsPerPage,
+  }) => {
+    if (count <= rowsPerPage) {
+      return null;
+    }
 
-  const handleChangePage = (event, newPage) => {
-    if (onChangePage) onChangePage(newPage);
-  };
+    const handleChangePage = (event, newPage) => {
+      if (onChangePage) onChangePage(newPage);
+    };
 
-  const handleChangeRowsPerPage = event => {
-    const newRowsPerPage = parseInt(event.target.value, 10);
-    if (onChangeRowsPerPage) onChangeRowsPerPage(newRowsPerPage);
-  };
+    const handleChangeRowsPerPage = event => {
+      const newRowsPerPage = parseInt(event.target.value, 10);
+      if (onChangeRowsPerPage) onChangeRowsPerPage(newRowsPerPage);
+    };
 
-  return (
-    <MuiTableFooter>
-      <MuiTableRow>
-        <MuiTablePagination
-          rowsPerPageOptions={rowsPerPageOptions}
-          colSpan={columns.length}
-          page={page}
-          count={count}
-          rowsPerPage={rowsPerPage}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
-        />
-      </MuiTableRow>
-    </MuiTableFooter>
-  );
-};
+    return (
+      <MuiTableFooter>
+        <MuiTableRow>
+          <MuiTablePagination
+            rowsPerPageOptions={rowsPerPageOptions}
+            colSpan={columns.length}
+            page={page}
+            count={count}
+            rowsPerPage={rowsPerPage}
+            onChangePage={handleChangePage}
+            onChangeRowsPerPage={handleChangeRowsPerPage}
+          />
+        </MuiTableRow>
+      </MuiTableFooter>
+    );
+  },
+);
 
 TablePaginator.propTypes = {
-  columns: PropTypes.arrayOf(
-    PropTypes.shape({
-      key: PropTypes.string.isRequired,
-      title: PropTypes.node.isRequired,
-      accessor: PropTypes.func,
-      sortable: PropTypes.bool,
-    }),
-  ).isRequired,
+  columns: PropTypes.arrayOf(PropTypes.shape(columnShape)).isRequired,
   count: PropTypes.number,
   onChangePage: PropTypes.func,
   onChangeRowsPerPage: PropTypes.func,
@@ -439,73 +389,124 @@ TablePaginator.defaultProps = {
   rowsPerPageOptions: [10, 25, 50],
 };
 
-/**************************************************************************************************
- - Table
- **************************************************************************************************/
+/*
+ * TableMessageProvider
+ * Checks if there is a status message for the table and if so returns it instead of the table body
+ */
+const getMessage = ({ isLoading, errorMessage, isData, noDataMessage }) => {
+  if (isLoading) return 'Loading...';
+  if (errorMessage) return errorMessage;
+  if (isData === 0) return noDataMessage;
+  return null;
+};
+
+const TableMessageProvider = React.memo(
+  ({ isLoading, errorMessage, isData, noDataMessage, colSpan, children }) => {
+    const message = getMessage({ errorMessage, isLoading, isData, noDataMessage });
+    if (message) {
+      return (
+        <MuiTableBody>
+          <StyledTableRow>
+            <TableCell colSpan={colSpan} align="center">
+              {errorMessage ? <ErrorSpan>{errorMessage}</ErrorSpan> : message}
+            </TableCell>
+          </StyledTableRow>
+        </MuiTableBody>
+      );
+    }
+
+    return children;
+  },
+);
+
+TableMessageProvider.propTypes = {
+  isData: PropTypes.bool.isRequired,
+  colSpan: PropTypes.number.isRequired,
+  children: PropTypes.any.isRequired,
+  noDataMessage: PropTypes.string,
+  isLoading: PropTypes.bool,
+  errorMessage: PropTypes.string,
+};
+
+TableMessageProvider.defaultProps = {
+  errorMessage: '',
+  noDataMessage: 'No data found',
+  isLoading: false,
+};
+
+/*
+ * Table Component Styles
+ */
 export const StyledTable = styled(MuiTable)`
   border-collapse: unset;
   table-layout: fixed;
 `;
 
-export const Table = ({
-  Header,
-  Body,
-  Paginator,
-  SubComponent,
-  columns,
-  data,
-  errorMessage,
-  noDataMessage,
-  isLoading,
-  count,
-  onChangePage,
-  onChangeRowsPerPage,
-  onChangeOrderBy,
-  orderBy,
-  order,
-  page,
-  rowsPerPage,
-  rowsPerPageOptions,
-}) => (
-  <StyledTable>
-    {Header && <Header {...{ columns, order, orderBy, onChangeOrderBy }} />}
-    <Body
-      {...{
-        data,
-        columns,
-        errorMessage,
-        isLoading,
-        noDataMessage,
-        SubComponent,
-      }}
-    />
-    <Paginator
-      {...{
-        columns,
-        page,
-        count,
-        rowsPerPage,
-        rowsPerPageOptions,
-        onChangePage,
-        onChangeRowsPerPage,
-      }}
-    />
-  </StyledTable>
+/*
+ * Table Component
+ */
+export const Table = React.memo(
+  ({
+    Header,
+    Body,
+    Paginator,
+    SubComponent,
+    columns,
+    data,
+    errorMessage,
+    noDataMessage,
+    isLoading,
+    count,
+    onChangePage,
+    onChangeRowsPerPage,
+    onChangeOrderBy,
+    orderBy,
+    order,
+    page,
+    rowsPerPage,
+    rowsPerPageOptions,
+  }) => (
+    <StyledTable>
+      {Header && <Header {...{ columns, order, orderBy, onChangeOrderBy }} />}
+      <TableMessageProvider
+        errorMessage={errorMessage}
+        isLoading={isLoading}
+        isData={data.length > 0}
+        noDataMessage={noDataMessage}
+        colSpan={columns.length}
+      >
+        <Body
+          {...{
+            data,
+            columns,
+            errorMessage,
+            isLoading,
+            noDataMessage,
+            SubComponent,
+          }}
+        />
+      </TableMessageProvider>
+      <Paginator
+        {...{
+          columns,
+          page,
+          count,
+          rowsPerPage,
+          rowsPerPageOptions,
+          onChangePage,
+          onChangeRowsPerPage,
+        }}
+      />
+    </StyledTable>
+  ),
 );
 
 Table.propTypes = {
-  Header: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]),
-  Body: PropTypes.func,
-  Paginator: PropTypes.func,
-  SubComponent: PropTypes.func,
-  columns: PropTypes.arrayOf(
-    PropTypes.shape({
-      key: PropTypes.string.isRequired,
-      title: PropTypes.node.isRequired,
-      accessor: PropTypes.func,
-      sortable: PropTypes.bool,
-    }),
-  ).isRequired,
+  Header: PropTypes.any,
+  Body: PropTypes.any,
+  Paginator: PropTypes.any,
+  SubComponent: PropTypes.any,
+  columns: PropTypes.arrayOf(PropTypes.shape(columnShape)).isRequired,
   data: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   errorMessage: PropTypes.string,
   noDataMessage: PropTypes.string,
