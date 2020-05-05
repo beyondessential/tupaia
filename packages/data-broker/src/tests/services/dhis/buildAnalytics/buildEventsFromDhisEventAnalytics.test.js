@@ -21,12 +21,14 @@ describe('buildEventsFromDhisEventAnalytics()', () => {
       {
         event: 'event1_dhisId',
         orgUnit: 'TO_Nukuhc',
+        orgUnitName: 'Nukunuku',
         eventDate: '2020-02-06T10:18:00.000',
         dataValues: {},
       },
       {
         event: 'event2_dhisId',
         orgUnit: 'TO_HvlMCH',
+        orgUnitName: 'Haveluloto',
         eventDate: '2020-02-07T14:33:00.000',
         dataValues: {},
       },
@@ -40,6 +42,7 @@ describe('buildEventsFromDhisEventAnalytics()', () => {
       {
         event: 'event1_dhisId',
         orgUnit: 'TO_Nukuhc',
+        orgUnitName: 'Nukunuku',
         eventDate: '2020-02-06T10:18:00.000',
         dataValues: {
           BCD1: 10,
@@ -49,6 +52,7 @@ describe('buildEventsFromDhisEventAnalytics()', () => {
       {
         event: 'event2_dhisId',
         orgUnit: 'TO_HvlMCH',
+        orgUnitName: 'Haveluloto',
         eventDate: '2020-02-07T14:33:00.000',
         dataValues: {
           BCD1: 20,
