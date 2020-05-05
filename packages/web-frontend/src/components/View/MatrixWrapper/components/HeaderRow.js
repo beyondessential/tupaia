@@ -79,7 +79,8 @@ export default class HeaderRow extends PureComponent {
                 isPreviousEnabled ? styles.headerColumnChanger : styles.headerColumnChangerDisabled
               }
             >
-              <UpIcon style={styles.headerColumnChangerIcon} /> Previous
+              <UpIcon style={styles.headerColumnChangerIcon} />
+              Previous
             </div>
           </div>
         </div>
@@ -101,7 +102,8 @@ export default class HeaderRow extends PureComponent {
                 isNextEnabled ? styles.headerColumnChanger : styles.headerColumnChangerDisabled
               }
             >
-              Next <DownIcon style={styles.headerColumnChangerIcon} />
+              Next
+              <DownIcon style={styles.headerColumnChangerIcon} />
             </div>
           </div>
         </div>

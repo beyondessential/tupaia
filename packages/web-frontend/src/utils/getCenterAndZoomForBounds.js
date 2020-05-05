@@ -37,7 +37,7 @@ export const getCenterAndZoomForBounds = bounds => {
   const longitude = minLong + longDiff / 2;
   let zoom = 0;
 
-  for (var i = 0; i < zoomLevels.length; i++) {
+  for (let i = 0; i < zoomLevels.length; i++) {
     if (zoomLevels[i] > latDiff && zoomLevels[i] > longDiff) {
       zoom = i;
     } else {
