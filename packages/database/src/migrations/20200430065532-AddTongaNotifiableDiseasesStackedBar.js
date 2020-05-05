@@ -17,7 +17,7 @@ exports.setup = function(options, seedLink) {
   seed = seedLink;
 };
 
-const DASHBOARD_GROUP_CODES = ['TO_Communicable_Diseases_Country_Validation'];
+const DASHBOARD_GROUP_CODES = ['Tonga_Communicable_Diseases_National'];
 
 const REPORT = {
   id: 'TO_CD_Notifiable_Diseases_Stacked_Bar',
