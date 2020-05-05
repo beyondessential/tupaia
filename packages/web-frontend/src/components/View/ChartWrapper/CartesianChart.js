@@ -32,8 +32,7 @@ import VerticalTick from './VerticalTick';
 
 const { AREA, BAR, COMPOSED, LINE } = CHART_TYPES;
 const { PERCENTAGE } = VALUE_TYPES;
-const LEGEND_ALL_DATA_KEY = 'ALL_DATA_KEY ';
-const ALL_DATA_KEY = 'ALL_DATA_KEY';
+const LEGEND_ALL_DATA_KEY = 'LEGEND_ALL_DATA_KEY';
 
 const AXIS_TIME_PROPS = {
   dataKey: 'timestamp',
@@ -574,6 +573,7 @@ export class CartesianChart extends PureComponent {
     const { isEnlarged, isExporting, viewContent } = this.props;
     const { chartType, data } = viewContent;
     const Chart = CHART_TYPE_TO_COMPONENT[chartType];
+
     const responsiveStyle = !isEnlarged && !isMobile() && !isExporting ? 1.6 : undefined;
 
     return (
