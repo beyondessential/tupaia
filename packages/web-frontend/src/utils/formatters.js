@@ -19,7 +19,7 @@ import { VIEW_STYLES, BLUE, GREY } from '../styles';
  * @param {string|number} decimalPlace how many decimal places to truncate number to
  */
 const truncateDecimalToPlace = decimalPlace => number => {
-  const place = Math.pow(10, decimalPlace);
+  const place = 10 ** decimalPlace;
   return Math.floor(number * place) / place;
 };
 
@@ -29,6 +29,7 @@ const fraction = (value, { total }) => {
   return `${String(value)}/${String(total)}`;
 };
 const fractionAndPercentage = (value, { numerator, denominator }) => {
+  // eslint-disable-next-line no-restricted-globals
   if (isNaN(value)) return value;
   return `${numerator}/${denominator} = ${percentage(value)}`;
 };
