@@ -37,6 +37,7 @@ export const MEASURE_VALUE_OTHER = 'other';
 export const MEASURE_VALUE_NULL = 'null';
 
 export const POLYGON_MEASURE_TYPES = [MEASURE_TYPE_SHADING, MEASURE_TYPE_SHADED_SPECTRUM];
+export const SPECTRUM_MEASURE_TYPES = [MEASURE_TYPE_SPECTRUM, MEASURE_TYPE_SHADED_SPECTRUM];
 
 export function autoAssignColors(values) {
   if (!values) return [];
@@ -155,7 +156,7 @@ export function processMeasureInfo(response) {
 
     hiddenMeasures[measureOption.key] = measureOption.hideByDefault;
 
-    if (POLYGON_MEASURE_TYPES.includes(type)) {
+    if (SPECTRUM_MEASURE_TYPES.includes(type)) {
       // for each spectrum, include the minimum and maximum values for
       // use in the legend scale labels.
       const { min, max } = getSpectrumScaleValues(measureData, measureOption);
@@ -255,7 +256,17 @@ export function getMeasureDisplayInfo(measureData, measureOptions, hiddenMeasure
     }
   });
   measureOptions.forEach(
-    ({ key, type, valueMapping, noDataColour, scaleType, min, max, hideByDefault }) => {
+    ({
+      key,
+      type,
+      valueMapping,
+      noDataColour,
+      scaleType,
+      scaleColorScheme,
+      min,
+      max,
+      hideByDefault,
+    }) => {
       const valueInfo = getValueInfo(measureData[key], valueMapping, {
         ...hideByDefault,
         ...hiddenMeasures[key],
@@ -274,6 +285,7 @@ export function getMeasureDisplayInfo(measureData, measureOptions, hiddenMeasure
           displayInfo.originalValue = valueInfo.value || 'No data';
           displayInfo.color = resolveSpectrumColour(
             scaleType,
+            scaleColorScheme,
             valueInfo.value || (valueInfo.value === 0 ? 0 : null),
             min,
             max,

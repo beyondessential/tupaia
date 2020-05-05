@@ -10,8 +10,11 @@ export class CountEventsPerOrgUnitBuilder extends DataPerOrgUnitBuilder {
   getBaseBuilderClass = () => CountEventsBuilder;
 
   async fetchResults() {
+    const dataElementCodes = Object.keys(this.config.dataValues);
+
     return this.fetchEvents({
-      dataValueFormat: 'object',
+      dataElementCodes,
+      useDeprecatedApi: false,
       organisationUnitCodes: [this.entity.code],
     });
   }
