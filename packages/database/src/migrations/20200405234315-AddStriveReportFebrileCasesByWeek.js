@@ -24,7 +24,7 @@ const REPORT = {
   dataBuilderConfig: {
     periodType: 'week',
     dataValues: {
-      STR_CRF125: '1',
+      STR_CRF125: 1,
     },
     programCode: 'SCRF',
   },
