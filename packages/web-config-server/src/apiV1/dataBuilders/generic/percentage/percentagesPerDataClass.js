@@ -136,3 +136,11 @@ export const percentagesPerDataClassByMonth = (config, aggregator, dhisApi) =>
     dhisApi,
     aggregator.aggregationTypes.FINAL_EACH_MONTH,
   );
+
+export const percentagesPerDataClassByYear = (config, aggregator, dhisApi) =>
+  basicPercentagesPerDataClass(
+    config,
+    aggregator,
+    dhisApi,
+    aggregator.aggregationTypes.FINAL_EACH_YEAR,
+  );

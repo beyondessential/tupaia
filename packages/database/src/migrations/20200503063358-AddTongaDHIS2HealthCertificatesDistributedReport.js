@@ -1,5 +1,7 @@
 'use strict';
 
+import { insertObject } from '../utilities/migration';
+
 var dbm;
 var type;
 var seed;
@@ -25,34 +27,34 @@ const ALL_VALUE_CODES = [
 
 const DATA_BUILDER_CONFIG = {
   "dataClasses": {
-      "Shopkeeper": {
-          "numerator": {
-              "dataSource": {
-                  "type": "single",
-                  "codes": ['CD65', 'CD66' ]
-              }
-          },
-          "denominator": {
-              "dataSource": {
-                  "type": "single",
-                  "codes": ALL_VALUE_CODES
-              }
-          }
+    "Shopkeeper": {
+      "numerator": {
+        "dataSource": {
+          "type": "single",
+          "codes": ['CD65', 'CD66']
+        }
       },
-      "Food Handler": {
-          "numerator": {
-              "dataSource": {
-                  "type": "single",
-                  "codes": ['CD67', 'CD68' ]
-              }
-          },
-          "denominator": {
-              "dataSource": {
-                  "type": "single",
-                  "codes": ALL_VALUE_CODES
-              }
-          }
+      "denominator": {
+        "dataSource": {
+          "type": "single",
+          "codes": ALL_VALUE_CODES
+        }
       }
+    },
+    "Food Handler": {
+      "numerator": {
+        "dataSource": {
+          "type": "single",
+          "codes": ['CD67', 'CD68']
+        }
+      },
+      "denominator": {
+        "dataSource": {
+          "type": "single",
+          "codes": ALL_VALUE_CODES
+        }
+      }
+    }
   }
 };
 
@@ -72,17 +74,18 @@ const DASHBOARD_GROUPS_TO_ADD = ['Tonga_Communicable_Diseases_National'];
 
 const REPORT_ID = 'TO_CD_Health_Certificates_Distributed';
 
-exports.up = async function (db) {
-  await db.runSql(`
-    INSERT INTO "dashboardReport" ("id", "dataBuilder", "dataBuilderConfig", "viewJson", "dataServices")
-    VALUES (
-      '${REPORT_ID}',
-      'percentagesPerDataClassByMonth',
-      '${JSON.stringify(DATA_BUILDER_CONFIG)}',
-      '${JSON.stringify(VIEW_JSON_CONFIG)}',
-      '[{"isDataRegional": false}]'
-    );
+const REPORT = {
+  id: REPORT_ID,
+  dataBuilder: 'percentagesPerDataClassByMonth',
+  dataBuilderConfig: DATA_BUILDER_CONFIG,
+  viewJson: VIEW_JSON_CONFIG,
+  dataServices: [{ "isDataRegional": false }]
+}
 
+exports.up = async function (db) {
+  await insertObject(db, 'dashboardReport', REPORT);
+
+  await db.runSql(`
     UPDATE "dashboardGroup"
     SET "dashboardReports" = "dashboardReports" || '{${REPORT_ID}}'
     WHERE code IN (${arrayToDbString(DASHBOARD_GROUPS_TO_ADD)});
