@@ -56,8 +56,19 @@ exports.up = async function(db) {
 };
 
 exports.down = async function(db) {
-  const codes = LAOS_ENTITIES.map(({ code }) => code);
-  await db.runSql(`DELETE FROM entity WHERE code IN (${arrayToDbString(codes)})`);
+  const subDistrictCodes = [];
+  const nonSubDistrictCodes = [];
+  LAOS_ENTITIES.forEach(({ type, code }) => {
+    if (type === 'sub_district') {
+      subDistrictCodes.push(code);
+    } else {
+      nonSubDistrictCodes.push(code);
+    }
+  });
+
+  // Delete children first to avoid parent_id reference conflicts
+  await db.runSql(`DELETE FROM entity WHERE code IN (${arrayToDbString(nonSubDistrictCodes)})`);
+  await db.runSql(`DELETE FROM entity WHERE code IN (${arrayToDbString(subDistrictCodes)})`);
 };
 
 exports._meta = {
