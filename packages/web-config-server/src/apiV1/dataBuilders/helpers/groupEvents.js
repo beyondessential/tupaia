@@ -43,8 +43,8 @@ const groupByAllOrgUnitParentNames = async (events, options) => {
   await Promise.all(
     orgUnits.map(async parentOrgUnit => {
       const { name } = parentOrgUnit;
-      const childenAndSelf = await parentOrgUnit.getDescendantsOfType(aggregationLevel);
-      childenAndSelf.forEach(orgUnit => {
+      const childrenAndSelf = await parentOrgUnit.getDescendantsOfType(aggregationLevel);
+      childrenAndSelf.forEach(orgUnit => {
         allOrgUnitsByOrgUnitName[orgUnit.name] = name;
       });
     }),
