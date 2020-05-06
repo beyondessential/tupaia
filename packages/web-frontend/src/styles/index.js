@@ -129,12 +129,24 @@ export const CHART_COLOR_PALETTE = {
   orange: orange['500'],
   brown: brown['500'],
   grey: grey['500'],
-  darkGreen: '#007D00',
-  darkBlue: '#0000FF',
-  pink: '#FF80FF',
-  lime: '#B5E61D',
-  maroon: '#800040',
 };
+
+export const EXPANDED_CHART_COLOR_PALETTE = {
+  maroon: '#C00000',
+  red: '#FF0000',
+  yellow: '#FFC000',
+  lime: '#B0D94C',
+  green: '#00B050',
+  darkGreen: '#00833C',
+  blue: '#00B0F0',
+  darkBlue: '#2F5496',
+  purple: '#7030A0',
+  pink: '#E245CC',
+  grey: '#7B7B7B',
+  brown: '#833C0B',
+  teal: '#6AD5C2',
+};
+
 export const COMPOSED_CHART_COLOR_PALETTE = {
   gold: '#FFD700',
   blue: '#2194F9',
