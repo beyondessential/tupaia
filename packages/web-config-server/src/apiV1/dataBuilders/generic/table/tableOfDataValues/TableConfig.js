@@ -2,14 +2,37 @@
  * Tupaia Config Server
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
-
+import { Facility } from '/models';
 import { TotalCalculator } from './TotalCalculator';
 
 const METADATA_FIELDS = {
   $orgUnit: 'organisationUnit',
+  $orgUnitTypeName: 'organisationUnit',
+};
+
+const METADATA_FIELD_TRANSLATORS = {
+  $orgUnitTypeName: async results => {
+    const orgUnitCodes = results.map(({ organisationUnit }) => organisationUnit);
+    const facilities = await Facility.find({ code: orgUnitCodes });
+    const types = new Map(facilities.map(fac => [fac.code, [fac.type_name, fac.categoryCode]]));
+
+    const resultsWithType = results.map(res => {
+      const fac = types.get(res.organisationUnit);
+      const typeName = fac[0];
+      const categoryCode = fac[1];
+      return {
+        ...res,
+        typeName,
+        categoryCode,
+      };
+    });
+    return resultsWithType;
+  },
 };
 
 const isMetadataKey = input => Object.keys(METADATA_FIELDS).includes(input);
+
+const isMetadataTranslator = input => METADATA_FIELD_TRANSLATORS.hasOwnProperty(input);
 
 export const addPrefixToCell = (cell, prefix) => `${prefix}_${cell}`;
 
@@ -80,6 +103,18 @@ export class TableConfig {
       return newCellRow;
     });
     this.cells = cells;
+  }
+
+  async processColumnMetadataTranslator(results) {
+    return this.getColumnMetadataTranslator()(results);
+  }
+
+  getColumnMetadataTranslator() {
+    return METADATA_FIELD_TRANSLATORS[this.baseConfig.columns];
+  }
+
+  hasColumnMetadataTranslator() {
+    return this.baseConfig.columns && isMetadataTranslator(this.baseConfig.columns);
   }
 
   hasMetadataCategories() {
