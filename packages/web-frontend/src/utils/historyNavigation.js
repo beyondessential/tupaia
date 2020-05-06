@@ -55,7 +55,7 @@ export function decodeUrl(pathname, search) {
 
   const [
     prefix,
-    organisationUnitCode = 'World',
+    organisationUnitCode = 'explore',
     dashboardId = null,
     reportId = null,
   ] = pathname.split('/');
@@ -145,11 +145,11 @@ export function createUrl({
 
   const defaultDashboard = getDefaultDashboardForProject(project);
 
-  const defaultUrlComponents = [DEFAULT_PROJECT, 'World', defaultDashboard, null];
+  const defaultUrlComponents = [DEFAULT_PROJECT, 'explore', defaultDashboard, null];
 
   const urlComponents = [
     project,
-    organisationUnitCode || 'World',
+    organisationUnitCode || 'explore',
     dashboardId || defaultDashboard,
     reportId,
   ];

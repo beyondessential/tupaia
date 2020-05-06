@@ -85,9 +85,9 @@ export class SearchBar extends PureComponent {
   }
 
   componentWillMount() {
-    const { hierarchyData, getNestedOrgUnits } = this.props;
+    const { hierarchyData, requestRootOrgUnit } = this.props;
     if (!hierarchyData || !Array.isArray(hierarchyData) || hierarchyData.length < 2) {
-      getNestedOrgUnits('World');
+      requestRootOrgUnit();
     }
   }
 
@@ -197,7 +197,7 @@ const sortOrgUnitsAlphabeticallyByName = orgUnits => {
 SearchBar.propTypes = {
   onExpandClick: PropTypes.func.isRequired,
   onOrgUnitClick: PropTypes.func.isRequired,
-  getNestedOrgUnits: PropTypes.func.isRequired,
+  requestRootOrgUnit: PropTypes.func.isRequired,
   isExpanded: PropTypes.bool,
   searchResponse: PropTypes.arrayOf(PropTypes.object),
   hierarchyData: PropTypes.arrayOf(PropTypes.object),
@@ -237,7 +237,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(changeOrgUnit(organisationUnitCode));
       dispatch(openMapPopup(organisationUnitCode));
     },
-    getNestedOrgUnits: organisationUnitCode => dispatch(requestOrgUnit(organisationUnitCode)),
+    requestRootOrgUnit: () => dispatch(requestOrgUnit()),
   };
 };
 

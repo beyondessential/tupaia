@@ -76,7 +76,7 @@ const safeGet = (cache, args) => (cache.keySelector(...args) ? cache(...args) : 
 const selectCountriesAsOrgUnits = createSelector([state => state.orgUnits.orgUnitMap], orgUnitMap =>
   Object.entries(orgUnitMap)
     .map(([countryCode, countryHierarchy]) => countryHierarchy[countryCode])
-    .filter(country => country.organisationUnitCode !== 'World'),
+    .filter(country => country.type === 'Country'),
 );
 
 const recursiveBuildHierarchy = (country, orgUnit, parent) => ({
@@ -111,12 +111,13 @@ export const selectOrgUnitCountry = createSelector(
 
 export const selectOrgUnitChildren = createSelector(
   [
+    state => state.project.active.code,
     state => selectCountriesAsOrgUnits(state),
     (state, code) => safeGet(countryCache, [state.orgUnits.orgUnitMap, code]),
     (_, code) => code,
   ],
-  (countriesAsOrgUnits, country, code) =>
-    code === 'World' ? countriesAsOrgUnits : safeGet(orgUnitChildrenCache, [country, code]),
+  (projectCode, countriesAsOrgUnits, country, code) =>
+    code === projectCode ? countriesAsOrgUnits : safeGet(orgUnitChildrenCache, [country, code]),
 );
 
 export const selectOrgUnitsAsHierarchy = createSelector(
@@ -152,6 +153,7 @@ export const selectHasPolygonMeasure = createSelector(
 
 export const selectAllMeasuresWithDisplayInfo = createSelector(
   [
+    state => state.project.active.code,
     state =>
       safeGet(countryCache, [state.orgUnits.orgUnitMap, state.map.measureInfo.currentCountry]),
     state => state.map.measureInfo.measureData,
@@ -160,12 +162,20 @@ export const selectAllMeasuresWithDisplayInfo = createSelector(
     state => state.map.measureInfo.measureOptions,
     state => state.map.measureInfo.hiddenMeasures,
   ],
-  (country, measureData, currentCountry, measureLevel, measureOptions, hiddenMeasures) => {
+  (
+    projectCode,
+    country,
+    measureData,
+    currentCountry,
+    measureLevel,
+    measureOptions,
+    hiddenMeasures,
+  ) => {
     if (
       !measureLevel ||
       !currentCountry ||
       !measureData ||
-      currentCountry === 'World' ||
+      currentCountry === projectCode ||
       !country
     ) {
       return [];
@@ -209,4 +219,9 @@ export const selectCurrentDashboardKey = createSelector(
   [state => state.global.dashboardConfig, state => state.dashboard.currentDashboardKey],
   (dashboardConfig, currentDashboardKey) =>
     dashboardConfig[currentDashboardKey] ? currentDashboardKey : Object.keys(dashboardConfig)[0],
+);
+
+export const selectIsProject = createSelector(
+  [state => state.project.projects, (_, code) => code],
+  (projects, code) => projects.map(project => project.code).includes(code),
 );

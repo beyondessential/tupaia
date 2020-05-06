@@ -101,6 +101,7 @@ export class Entity extends BaseModel {
 
   static orgUnitEntityTypes = {
     WORLD,
+    PROJECT,
     COUNTRY,
     DISTRICT,
     SUB_DISTRICT,
@@ -188,18 +189,6 @@ export class Entity extends BaseModel {
   static async getFacilitiesOfOrgUnit(organisationUnitCode) {
     const entity = await Entity.findOne({ code: organisationUnitCode });
     return entity ? entity.getFacilities() : [];
-  }
-
-  async getOrgUnitChildren(hierarchyId) {
-    const types = Object.values(Entity.orgUnitEntityTypes);
-    const children = await this.getChildren(hierarchyId);
-    return children.filter(entity => types.includes(entity.type));
-  }
-
-  async getOrgUnitDescendants(hierarchyId) {
-    const types = Object.values(Entity.orgUnitEntityTypes);
-    const descendants = await this.getDescendants(hierarchyId);
-    return descendants.filter(entity => types.includes(entity.type));
   }
 
   // assumes all entities of the given type are found at the same level in the hierarchy tree
@@ -325,10 +314,15 @@ export class Entity extends BaseModel {
   }
 
   async parent() {
-    return Entity.findById(this.parent_id);
+    return this.parentId ? Entity.findById(this.parent_id) : undefined;
   }
 
   async countryEntity() {
-    return this.type === COUNTRY ? this : Entity.findOne({ code: this.country_code });
+    if (this.type === COUNTRY) {
+      return this;
+    } else if (this.country_code) {
+      return Entity.findOne({ code: this.country_code });
+    }
+    return undefined;
   }
 }
