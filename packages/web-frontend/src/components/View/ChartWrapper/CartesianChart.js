@@ -144,7 +144,6 @@ export class CartesianChart extends PureComponent {
 
     // Note, this may be false even if the dataKey is active
     if (activeDataKeys.includes(legendDatakey)) {
-      //
       this.setState(state => ({
         activeDataKeys: state.activeDataKeys.filter(dk => dk !== legendDatakey),
       }));
