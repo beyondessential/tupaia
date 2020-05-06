@@ -77,25 +77,6 @@ function position(state = { bounds: defaultBounds }, action) {
   }
 }
 
-function innerAreas(state = [], action) {
-  switch (action.type) {
-    case CHANGE_ORG_UNIT: {
-      return [];
-    }
-    case CHANGE_ORG_UNIT_SUCCESS: {
-      const { organisationUnit } = action;
-      const { organisationUnitChildren } = organisationUnit;
-      if (organisationUnitChildren && organisationUnitChildren.length > 0) {
-        return organisationUnitChildren;
-      }
-      return state;
-    }
-    default: {
-      return state;
-    }
-  }
-}
-
 function measureInfo(state = {}, action) {
   switch (action.type) {
     case CHANGE_ORG_UNIT:
@@ -236,7 +217,6 @@ function tileSet(state, action) {
 
 export default combineReducers({
   position,
-  innerAreas,
   measureInfo,
   tileSet,
   isAnimating,
