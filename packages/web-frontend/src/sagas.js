@@ -8,6 +8,7 @@
 import { call, put, delay, takeEvery, takeLatest, select } from 'redux-saga/effects';
 import queryString from 'query-string';
 import request from './utils/request';
+import { selectActiveProject } from './projects/selectors';
 import {
   selectOrgUnit,
   selectOrgUnitChildren,
@@ -532,6 +533,8 @@ function* watchOrgUnitChangeAndFetchDashboard() {
 
 function* fetchViewData(parameters, errorHandler) {
   const { infoViewKey } = parameters;
+  const projectCode = yield select(selectActiveProject).code;
+
   // If the view should be constrained to a date range and isn't, constrain it
   const { startDate, endDate } =
     parameters.startDate || parameters.endDate
@@ -548,6 +551,7 @@ function* fetchViewData(parameters, errorHandler) {
   } = parameters;
   const urlParameters = {
     organisationUnitCode,
+    projectCode,
     dashboardGroupId,
     viewId,
     drillDownLevel,
@@ -662,7 +666,8 @@ function* fetchMeasureInfo(measureId, organisationUnitCode, oldOrgUnitCountry = 
     return;
   }
 
-  const country = selectOrgUnitCountry(yield select(), organisationUnitCode);
+  const project = selectActiveProject(state);
+  const country = selectOrgUnitCountry(state, organisationUnitCode);
   const countryCode = country ? country.organisationUnitCode : undefined;
   if (oldOrgUnitCountry) {
     if (oldOrgUnitCountry === countryCode) {
@@ -673,7 +678,13 @@ function* fetchMeasureInfo(measureId, organisationUnitCode, oldOrgUnitCountry = 
     yield put(clearMeasureHierarchy());
   }
 
-  const requestResourceUrl = `measureData?organisationUnitCode=${organisationUnitCode}&measureId=${measureId}&shouldShowAllParentCountryResults=${!isMobile()}`;
+  const urlParameters = {
+    organisationUnitCode,
+    measureId,
+    shouldShowAllParentCountryResults: !isMobile(),
+    projectCode: project.code,
+  };
+  const requestResourceUrl = `measureData?${queryString.stringify(urlParameters)}`;
 
   try {
     const measureInfoResponse = yield call(request, requestResourceUrl);
