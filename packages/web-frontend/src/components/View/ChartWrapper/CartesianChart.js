@@ -181,7 +181,6 @@ export class CartesianChart extends PureComponent {
     const { chartConfig, activeDataKeys } = this.state;
     // Can't disable data without chartConfig
     if (!chartConfig) return data;
-    console.log(chartConfig);
 
     const hasDisabledData = activeDataKeys.length >= 1;
     this.updateChartConfig(hasDisabledData, viewContent);
