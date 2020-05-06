@@ -9,7 +9,7 @@ import { AccessPolicyBuilder } from '../AccessPolicyBuilder';
 import * as BuildAccessPolicy from '../buildAccessPolicy';
 import * as BuildLegacyAccessPolicy from '../buildLegacyAccessPolicy';
 
-describe.only('AccessPolicyBuilder', () => {
+describe('AccessPolicyBuilder', () => {
   let notifyPermissionsChange;
   const models = {
     userEntityPermission: {

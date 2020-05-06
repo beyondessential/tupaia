@@ -7,4 +7,4 @@ export { clearTestData } from './clearTestData';
 export { generateTestId } from './generateTestId';
 export { generateValueOfType } from './generateValueOfType';
 export { getTestDatabase } from './getTestDatabase';
-export { upsertDummyRecord } from './upsertDummyRecord';
+export { upsertDummyRecord, findOrCreateDummyRecord } from './upsertDummyRecord';

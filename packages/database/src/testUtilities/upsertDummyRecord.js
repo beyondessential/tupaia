@@ -69,3 +69,8 @@ export const upsertDummyRecord = async (model, data) => {
   const generatedData = await generateDummyRecord(model, data);
   return model.updateOrCreate({ id: generatedData.id }, generatedData);
 };
+
+export const findOrCreateDummyRecord = async (model, findCriteria, data) => {
+  const generatedData = await generateDummyRecord(model, data);
+  return model.findOrCreate(findCriteria, generatedData);
+};

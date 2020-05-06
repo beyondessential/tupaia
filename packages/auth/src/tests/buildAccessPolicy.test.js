@@ -1,0 +1,213 @@
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+
+import { expect } from 'chai';
+import {
+  getTestDatabase,
+  upsertDummyRecord,
+  findOrCreateDummyRecord,
+  ModelRegistry,
+} from '@tupaia/database';
+import { buildAccessPolicy } from '../buildAccessPolicy';
+
+describe('buildAccessPolicy', () => {
+  const models = new ModelRegistry(getTestDatabase());
+
+  describe('Demo Land public user', () => {
+    let accessPolicy;
+
+    before(async () => {
+      const user = await upsertDummyRecord(models.user);
+      const demoLand = await findOrCreateDummyRecord(
+        models.entity,
+        { code: 'DL' },
+        { name: 'Demo Land' },
+      );
+      const publicPermission = await findOrCreateDummyRecord(models.permissionGroup, {
+        name: 'Public',
+      });
+      await upsertDummyRecord(models.userEntityPermission, {
+        entity_id: demoLand.id,
+        user_id: user.id,
+        permission_group_id: publicPermission.id,
+      });
+      accessPolicy = await buildAccessPolicy(models, user.id);
+    });
+
+    it('should only have access to demo land', () => {
+      expect(accessPolicy.DL).to.deep.equal(['Public']);
+      expect(Object.keys(accessPolicy).length).to.equal(1);
+    });
+  });
+
+  describe('Tonga admin user', () => {
+    let accessPolicy;
+
+    before(async () => {
+      const user = await upsertDummyRecord(models.user);
+      const demoLand = await findOrCreateDummyRecord(
+        models.entity,
+        { code: 'DL' },
+        { name: 'Demo Land' },
+      );
+      const tonga = await findOrCreateDummyRecord(models.entity, { code: 'TO' }, { name: 'Tonga' });
+      const adminPermission = await models.permissionGroup.findOne({
+        name: 'Admin',
+      });
+      const donorPermission = await findOrCreateDummyRecord(
+        models.permissionGroup,
+        {
+          name: 'Donor',
+        },
+        {
+          parent_id: adminPermission.id,
+        },
+      );
+      const publicPermission = await findOrCreateDummyRecord(
+        models.permissionGroup,
+        {
+          name: 'Public',
+        },
+        {
+          parent_id: donorPermission.id,
+        },
+      );
+
+      await upsertDummyRecord(models.userEntityPermission, {
+        user_id: user.id,
+        entity_id: demoLand.id,
+        permission_group_id: publicPermission.id,
+      });
+      await upsertDummyRecord(models.userEntityPermission, {
+        user_id: user.id,
+        entity_id: tonga.id,
+        permission_group_id: adminPermission.id,
+      });
+
+      accessPolicy = await buildAccessPolicy(models, user.id);
+    });
+
+    it('should have Demo Land public access', () => {
+      expect(accessPolicy.DL).to.deep.equal(['Public']);
+    });
+
+    it('should have Tonga admin, donor, and public access', () => {
+      expect(accessPolicy.TO).to.include.members(['Public', 'Donor', 'Admin']);
+    });
+
+    it('should have no access to other entities', () => {
+      expect(Object.values(accessPolicy).length).to.equal(2); // DL and TO only
+    });
+  });
+
+  describe('Handles entities of all types/nesting agnostically', () => {
+    let accessPolicy;
+
+    before(async () => {
+      const user = await upsertDummyRecord(models.user);
+      const adminPermission = await findOrCreateDummyRecord(models.permissionGroup, {
+        name: 'Admin',
+      });
+
+      // Create a facility nested deep within a new country
+      const canada = await findOrCreateDummyRecord(
+        models.entity,
+        {
+          code: 'CA',
+        },
+        {
+          name: 'Canada',
+          type: 'country',
+        },
+      );
+
+      const ontario = await findOrCreateDummyRecord(
+        models.entity,
+        {
+          code: 'CA_OT',
+        },
+        {
+          name: 'Ontario',
+          country_code: canada.code,
+          parent_id: canada.id,
+          type: 'district',
+        },
+      );
+
+      const ottawa = await findOrCreateDummyRecord(
+        models.entity,
+        {
+          code: 'CA_OT_OT',
+        },
+        {
+          name: 'Ottawa',
+          country_code: canada.code,
+          parent_id: ontario.id,
+          type: 'district',
+        },
+      );
+
+      const toronto = await findOrCreateDummyRecord(
+        models.entity,
+        {
+          name: 'Toronto',
+        },
+        {
+          code: 'CA_OT_TO',
+          country_code: canada.code,
+          parent_id: ontario.id,
+          type: 'district',
+        },
+      );
+
+      const mountSinai = await findOrCreateDummyRecord(
+        models.entity,
+        {
+          code: 'CA_OT_TO_MS',
+        },
+        {
+          name: 'Mount Sinaia Hospital',
+          country_code: canada.code,
+          parent_id: toronto.id,
+          type: 'facility',
+        },
+      );
+
+      await upsertDummyRecord(models.userEntityPermission, {
+        user_id: user.id,
+        entity_id: mountSinai.id,
+        permission_group_id: adminPermission.id,
+      });
+
+      await upsertDummyRecord(models.userEntityPermission, {
+        user_id: user.id,
+        entity_id: ottawa.id,
+        permission_group_id: adminPermission.id,
+      });
+
+      accessPolicy = await buildAccessPolicy(models, user.id);
+    });
+
+    it('should have Mount Sinai admin permissions', async () => {
+      const mountSinaiPermissions = accessPolicy.CA_OT_TO_MS;
+      expect(mountSinaiPermissions).to.include('Admin');
+    });
+
+    it('should have Ottawa admin permissions', async () => {
+      const ottawaPermissions = accessPolicy.CA_OT_OT;
+      expect(ottawaPermissions).to.include('Admin');
+    });
+
+    it('should not have Toronto permissions', async () => {
+      const torontoPermissions = accessPolicy.CA_OT_TO;
+      expect(torontoPermissions).to.be.undefined;
+    });
+
+    it('should not have Canada country level permissions', async () => {
+      const canadaPermissions = accessPolicy.CA;
+      expect(canadaPermissions).to.be.undefined;
+    });
+  });
+});
