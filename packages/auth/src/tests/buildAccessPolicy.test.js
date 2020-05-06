@@ -4,6 +4,7 @@
  */
 
 import { expect } from 'chai';
+import { AccessPolicy as AccessPolicyParser } from '@tupaia/access-policy';
 import {
   getTestDatabase,
   upsertDummyRecord,
@@ -190,24 +191,42 @@ describe('buildAccessPolicy', () => {
       accessPolicy = await buildAccessPolicy(models, user.id);
     });
 
-    it('should have Mount Sinai admin permissions', async () => {
+    it('should have Mount Sinai admin permissions', () => {
       const mountSinaiPermissions = accessPolicy.CA_OT_TO_MS;
       expect(mountSinaiPermissions).to.deep.equal(['Public']);
     });
 
-    it('should have Ottawa admin permissions', async () => {
+    it('should have Ottawa admin permissions', () => {
       const ottawaPermissions = accessPolicy.CA_OT_OT;
       expect(ottawaPermissions).to.deep.equal(['Public']);
     });
 
-    it('should not have Toronto permissions', async () => {
+    it('should not have Toronto permissions', () => {
       const torontoPermissions = accessPolicy.CA_OT_TO;
       expect(torontoPermissions).to.be.undefined;
     });
 
-    it('should not have Canada country level permissions', async () => {
+    it('should not have Canada country level permissions', () => {
       const canadaPermissions = accessPolicy.CA;
       expect(canadaPermissions).to.be.undefined;
+    });
+
+    // integration test
+    it('can be interpreted by our access policy parser', () => {
+      const parser = new AccessPolicyParser(accessPolicy);
+
+      // individual checks
+      expect(parser.allows('CA_OT_TO_MS')).to.be.true;
+      expect(parser.allows('CA_OT_TO_MS', 'Public')).to.be.true;
+      expect(parser.allows('CA_OT_OT', 'Public')).to.be.true;
+      expect(parser.allows('CA_OT_TO', 'Public')).to.be.false;
+      expect(parser.allows('CA', 'Public')).to.be.false;
+
+      // groups of entities
+      expect(parser.allowsSome(['CA_OT_TO', 'CA_OT_TO_MS', 'CA'])).to.be.true;
+      expect(parser.allowsSome(['CA_OT_TO', 'CA_OT_TO_MS', 'CA'], 'Public')).to.be.true;
+      expect(parser.allowsSome(['CA_OT_TO', 'CA'])).to.be.false;
+      expect(parser.allowsSome(['CA_OT_TO', 'CA'], 'Public')).to.be.false;
     });
   });
 });
