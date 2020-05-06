@@ -24,12 +24,12 @@ const REPORT = {
   dataBuilder: 'countEventsPerPeriodByDataValue',
   dataBuilderConfig: {
     programCode: 'CD3b',
-    dataElement: 'TODO',
+    dataElement: 'CD3b_006',
     periodType: 'month',
-    optionSetCode: 'TODO',
+    optionSetCode: 'TB.Leprosy.Meningococcal Infection',
   },
   viewJson: {
-    name: 'Lab confirmed cases of notifiable diseases per month',
+    name: 'Number of contacts traced',
     type: 'chart',
     chartType: 'bar',
     useDefaultChartConfig: true,
