@@ -9,11 +9,12 @@ import MuiLink from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
 import { Alarm, CheckCircleOutline } from '@material-ui/icons';
-import { DataFetchingTable } from '../components/DataFetchingTable';
+import { DumbDataFetchingTable, DataFetchingTable } from '../components/DataFetchingTable';
 import { Button } from '../components/Button';
 import * as COLORS from '../theme/colors';
 import { NestedTableBody } from '../components/Table';
 import { getAFRAlert, getSitesReported } from '../components/TableColumnAccessors';
+import { connectApi } from '../api';
 
 export default {
   title: 'DataFetchingTable',
@@ -374,6 +375,44 @@ export const CountryWeekTable = () => {
         columns={countryWeekColumns}
         SubComponent={CountryWeekSubTable}
       />
+    </Container>
+  );
+};
+
+function mapApiToProps(api, { endpoint, fetchOptions }) {
+  return {
+    fetchData: queryParameters => api.get(endpoint, { ...fetchOptions, ...queryParameters }),
+  };
+}
+
+const CustomDataFetchingTable = connectApi(mapApiToProps)(DumbDataFetchingTable);
+/*
+ * CustomMappingTable
+ * An example showing how the DataFetchingTable can be mapped to different apis
+ */
+export const CustomMappingTable = () => {
+  const userColumns = [
+    {
+      title: 'Name',
+      key: 'name',
+    },
+    {
+      title: 'Surname',
+      key: 'email',
+    },
+    {
+      title: 'Email',
+      key: 'email',
+    },
+    {
+      title: 'City',
+      key: 'city',
+    },
+  ];
+
+  return (
+    <Container>
+      <CustomDataFetchingTable endpoint="users" columns={userColumns} />
     </Container>
   );
 };

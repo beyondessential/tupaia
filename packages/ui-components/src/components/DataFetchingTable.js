@@ -12,8 +12,9 @@ const ROWS_PER_PAGE_OPTIONS = [10, 25, 50];
 
 /*
  * DumbDataFetchingTable Component
+ * Export so that mappings to alternative apis can be defined
  */
-const DumbDataFetchingTable = memo(
+export const DumbDataFetchingTable = memo(
   ({
     Header,
     Body,
