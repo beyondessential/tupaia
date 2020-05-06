@@ -1,23 +1,18 @@
 import { getModels } from '../../getModels';
 import { upsertRecord } from './upsertRecord';
+import { generateTestId } from '..';
 
 const models = getModels();
 
-export const createComment = async () => {};
+export const createComment = async ({ alert_id, user_account_id, text }) => {
+  const comment = await upsertRecord(models.comment, { user_account_id, text });
 
-/*
-export const createComment = async key => {
-  const entity = await createEntity(key);
-  const dataElement = await createDataElement(key);
-  const alert = await upsertRecord(models.alert, {
-    entity_id: entity.id,
-    data_element_id: dataElement.id,
-    start_time: new Date().toISOString(),
-    end_time: null,
-    event_confirmed_time: null,
-    archived: false,
+  models.database.create('alert_comment', {
+    id: generateTestId(),
+    alert_id,
+    comment_id: comment.id,
   });
 
-  return { entity, dataElement, alert };
+  return comment;
 };
-*/
+

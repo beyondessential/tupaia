@@ -465,10 +465,11 @@ export class TupaiaDatabase {
     const params = [
       recordType,
       { ...criteria, [`${joinTable}.${parentRecordType}_id`]: parentRecordId },
-      { ...options, joinWith: joinTable },
+      { ...options, columns: null, joinWith: joinTable },
     ];
 
     if (findOrCount === 'find') {
+      params[2].columns = [`${recordType}.*`, `${joinTable}.id as ${joinTable}_id`];
       return this.find(...params);
     }
 
