@@ -62,12 +62,9 @@ const VIEW_JSON_CONFIG = {
   "name": "Health Certificates Distributed",
   "type": "chart",
   "chartType": "pie",
-  "periodGranularity": "one_year_at_a_time",
   "valueType": "percentage",
-  "defaultTimePeriod": {
-    "value": "-1",
-    "format": "years"
-  }
+  "periodGranularity": "month",
+  "defaultStartDate": "start_of_year" 
 };
 
 const DASHBOARD_GROUPS_TO_ADD = ['Tonga_Communicable_Diseases_National'];

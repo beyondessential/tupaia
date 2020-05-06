@@ -17,6 +17,8 @@ const SINGLE_MONTH = 'one_month_at_a_time';
 const YEAR = 'year';
 const SINGLE_YEAR = 'one_year_at_a_time';
 
+const START_OF_YEAR = 'start_of_year';
+
 const CONFIG = {
   [DAY]: {
     chartFormat: 'Do MMMM YYYY',
@@ -91,19 +93,36 @@ export function roundStartEndDates(granularity, startDate = moment(), endDate = 
   };
 }
 
+const getDefaultStartDate = defaultStartDate => {
+  switch (defaultStartDate) {
+    case START_OF_YEAR:
+      return moment().startOf('year');
+    default:
+      throw this.unexpected();
+  }
+};
+
 export function getDefaultDates(state, infoViewKey) {
-  const { periodGranularity, defaultTimePeriod } = state.global.viewConfigs[infoViewKey];
-  const isSingleDate = GRANULARITIES_WITH_ONE_DATE.includes(periodGranularity);
+  const { periodGranularity, defaultTimePeriod, defaultStartDate } = state.global.viewConfigs[infoViewKey];
   let startDate = moment();
   let endDate = startDate;
   if (
     defaultTimePeriod &&
     (defaultTimePeriod.format === 'days' || defaultTimePeriod.format === 'years')
   ) {
+    const isSingleDate = GRANULARITIES_WITH_ONE_DATE.includes(periodGranularity);
+
     if (isSingleDate) {
       startDate = moment().add(defaultTimePeriod.value, defaultTimePeriod.format);
       endDate = startDate;
+
+      return roundStartEndDates(periodGranularity, startDate, endDate);
     }
+  } else if (defaultStartDate) {
+    startDate = getDefaultStartDate(defaultStartDate);
+
+    return roundStartEndDates(periodGranularity, startDate, endDate);
   }
-  return isSingleDate ? roundStartEndDates(periodGranularity, startDate, endDate) : {};
+
+  return {};
 }
