@@ -5,11 +5,11 @@
 
 import moment from 'moment';
 
-import { clearTestData, getDatabase } from '../testUtilities';
+import { clearTestData, getTestDatabase } from '../testUtilities';
 
 const testStartTime = moment().format('YYYY-MM-DD HH:mm:ss');
 
 after(async () => {
-  const database = getDatabase();
+  const database = getTestDatabase();
   await clearTestData(database, testStartTime);
 });

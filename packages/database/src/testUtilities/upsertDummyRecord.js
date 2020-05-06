@@ -4,7 +4,8 @@
  */
 
 import { TYPES } from '../types';
-import { generateValueOfType, generateTestId } from './random';
+import { generateTestId } from './generateTestId';
+import { generateValueOfType } from './generateValueOfType';
 
 const { ENTITY, SURVEY_RESPONSE } = TYPES;
 

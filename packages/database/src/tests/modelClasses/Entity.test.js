@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { EntityModel } from '../../modelClasses/Entity';
-import { upsertDummyRecord, getDatabase } from '../../testUtilities';
+import { upsertDummyRecord, getTestDatabase } from '../../testUtilities';
 
 const assertHaveEqualIds = (expectedObject, actualObject) => {
   expect(actualObject).to.have.property('id', expectedObject.id);
@@ -17,7 +17,7 @@ const ORG_UNIT_ENTITY_TYPES = [
 const NON_ORG_UNIT_ENTITY_TYPE = 'case';
 
 describe('EntityModel', () => {
-  const db = getDatabase();
+  const db = getTestDatabase();
   const entityModel = new EntityModel(db);
 
   const upsertEntity = data => upsertDummyRecord(entityModel, data);
