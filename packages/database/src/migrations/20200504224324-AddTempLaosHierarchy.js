@@ -1,6 +1,5 @@
 'use strict';
 
-import { TupaiaDatabase } from '@tupaia/database';
 import { insertObject, arrayToDbString, generateId } from '../utilities';
 import { LAOS_ENTITIES } from './migrationData/20200504224324-AddTempLaosHierarchy';
 
@@ -30,6 +29,9 @@ const getSetClausesForGeoFields = (fieldName, fieldValue) => [
   )}')::geometry), 1)`,
 ];
 
+const deleteEntitiesWithCodes = async (db, codes) =>
+  await db.runSql(`DELETE FROM entity WHERE code IN (${arrayToDbString(codes)})`);
+
 exports.up = async function(db) {
   for (const entity of LAOS_ENTITIES) {
     const { parent_code: parentCode, point, region, ...entityData } = entity;
@@ -56,19 +58,18 @@ exports.up = async function(db) {
 };
 
 exports.down = async function(db) {
-  const subDistrictCodes = [];
-  const nonSubDistrictCodes = [];
+  const entitiesByType = {};
   LAOS_ENTITIES.forEach(({ type, code }) => {
-    if (type === 'sub_district') {
-      subDistrictCodes.push(code);
-    } else {
-      nonSubDistrictCodes.push(code);
+    if (!entitiesByType[type]) {
+      entitiesByType[type] = [];
     }
+    entitiesByType[type].push(code);
   });
 
   // Delete children first to avoid parent_id reference conflicts
-  await db.runSql(`DELETE FROM entity WHERE code IN (${arrayToDbString(nonSubDistrictCodes)})`);
-  await db.runSql(`DELETE FROM entity WHERE code IN (${arrayToDbString(subDistrictCodes)})`);
+  await deleteEntitiesWithCodes(db, entitiesByType.school);
+  await deleteEntitiesWithCodes(db, entitiesByType.village);
+  await deleteEntitiesWithCodes(db, entitiesByType.sub_district);
 };
 
 exports._meta = {
