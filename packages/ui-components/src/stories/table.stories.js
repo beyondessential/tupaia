@@ -8,14 +8,8 @@ import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import { FakeAPI } from '../api';
 import * as COLORS from '../theme/colors';
-import {
-  Table,
-  NestedTableBody,
-  TableHeader,
-  TableBody,
-  TablePaginator,
-} from '../components/Table';
-import { Button } from '..';
+import { Table, CondensedTableBody, FakeHeader } from '../components/Table';
+import { Button } from '../components/Button';
 
 export default {
   title: 'Table',
@@ -36,7 +30,6 @@ const columns = [
   {
     title: 'Name',
     key: 'name',
-    // accessor: getDisplayName,
   },
   {
     title: 'Surname',
@@ -58,7 +51,6 @@ const useTableData = () => {
     (async () => {
       setLoading(true);
       const userData = await API.get('users');
-      console.log('user data', userData);
       setLoading(false);
       setData(userData.data);
     })();
@@ -73,35 +65,6 @@ export const SimpleTable = () => {
   return (
     <Container>
       <Table columns={columns} data={data} loading={loading} />
-    </Container>
-  );
-};
-
-export const ComposedTable = () => {
-  const { loading, data } = useTableData();
-
-  return (
-    <Container>
-      <Table
-        columns={columns}
-        data={data}
-        Header={TableHeader}
-        Body={TableBody}
-        Paginator={TablePaginator}
-        loading={loading}
-      />
-    </Container>
-  );
-};
-
-export const zebraTable = () => {
-  const { loading, data } = useTableData();
-
-  return (
-    <Container>
-      <Table columns={columns} data={data} loading={loading}>
-        <NestedTableBody />
-      </Table>
     </Container>
   );
 };
@@ -121,7 +84,6 @@ const SubComponent = () => {
       {
         title: 'Name',
         key: 'name',
-        // accessor: getDisplayName,
       },
       {
         title: 'Surname',
@@ -140,12 +102,13 @@ const SubComponent = () => {
   };
 
   return (
-    <div>
+    <React.Fragment>
+      <FakeHeader>10/30 Sentinel Sites Reported</FakeHeader>
       <Table
         columns={subColumns}
         data={data}
-        Header={CustomHeader}
-        Body={NestedTableBody}
+        Header={false}
+        Body={CondensedTableBody}
         loading={loading}
       />
       <StyledDiv>
@@ -154,7 +117,7 @@ const SubComponent = () => {
         </Typography>
         <Button onClick={customAction}>Save and Submit</Button>
       </StyledDiv>
-    </div>
+    </React.Fragment>
   );
 };
 
@@ -167,16 +130,3 @@ export const nestedTable = () => {
     </Container>
   );
 };
-
-// export const cardTable = () => (
-//   <Container>
-//     <Card variant="outlined">
-//       <CardContent>
-//         <Typography variant="h6" color="primary" gutterBottom>
-//           Total cases from previous week
-//         </Typography>
-//         <CardTable />
-//       </CardContent>
-//     </Card>
-//   </Container>
-// );

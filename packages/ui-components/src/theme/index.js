@@ -16,10 +16,11 @@ const palette = {
   },
   error: {
     main: COLORS.RED,
+    light: COLORS.LIGHT_RED,
   },
   warning: {
     main: COLORS.RED,
-    dark: COLORS.DARK_RED,
+    light: COLORS.LIGHT_RED,
   },
   success: {
     main: COLORS.GREEN,

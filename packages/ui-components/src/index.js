@@ -21,3 +21,5 @@ export * from './components/NavBar';
 export * from './components/ProfileButton';
 export * from './components/Tabs';
 export * from './components/Toolbar';
+export * from './components/Table';
+export * from './components/DataFetchingTable';

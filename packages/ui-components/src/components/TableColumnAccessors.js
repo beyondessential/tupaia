@@ -6,9 +6,8 @@
 import React from 'react';
 import { Error } from '@material-ui/icons';
 import styled from 'styled-components';
-import * as COLORS from '../theme/colors';
 
-export const getSitesReported = data => {
+export const SitesReportedAccessor = data => {
   return <span>{`${data.sitesReported}/30`}</span>;
 };
 
@@ -16,9 +15,9 @@ const AFRAlert = styled.div`
   display: inline-flex;
   align-items: center;
   padding: 6px 10px;
-  background: ${COLORS.LIGHT_RED};
+  background: ${props => props.theme.palette.warning.light};
   border-radius: 5px;
-  color: ${COLORS.RED};
+  color: ${props => props.theme.palette.warning.main};
   font-weight: 500;
   font-size: 16px;
   line-height: 19px;
@@ -30,7 +29,7 @@ const AFRAlert = styled.div`
   }
 `;
 
-export const getAFRAlert = ({ AFR }) => {
+export const AFRAccessor = ({ AFR }) => {
   if (AFR > 500) {
     return (
       <AFRAlert>

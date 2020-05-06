@@ -10,9 +10,10 @@ export const BLUE = '#3884B8';
 export const DARK_BLUE = '#135D8F';
 export const YELLOW = '#FFCC24';
 export const RED = '#E21818';
-export const GREEN = '#08C95C';
+export const ORANGE = '#EF5A06';
+export const GREEN = '#02B851';
 export const DARKGREY = '#283238'; // dark background
-export const LIGHTGREY = '#F9F9F9;'; // page background
+export const LIGHTGREY = '#F9F9F9'; // page background
 export const TEXT_DARKGREY = '#414D55';
 export const TEXT_MIDGREY = '#6F7B82';
 export const TEXT_LIGHTGREY = '#9AA8B0';
@@ -38,7 +39,6 @@ export const BLUE_BACKDROP = 'rgba(31, 88, 128, 0.72)';
 
 // Reds
 export const LIGHT_RED = '#FEE2E2';
-export const DARK_RED = '#A70000';
 
 // Greens
 export const DARK_GREEN = '#00972E';

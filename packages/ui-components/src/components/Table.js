@@ -21,18 +21,19 @@ import * as COLORS from '../theme/colors';
  * Table Cell styles
  */
 const TableCell = styled(MuiTableCell)`
-  padding: 1rem;
-  font-size: 15px;
-  line-height: 18px;
-  min-width: 80px;
+  height: 70px;
+  padding: 0.4rem 0;
+  font-size: 0.9375rem;
+  line-height: 1rem;
+  min-width: 4rem;
   color: ${COLORS.TEXT_MIDGREY};
 
   &:first-child {
-    padding-left: 20px;
+    padding-left: 1.25rem;
   }
 
   &:last-child {
-    padding-left: 20px;
+    padding-right: 1.25rem;
   }
 `;
 
@@ -73,6 +74,12 @@ const NestedTableWrapperCell = styled.td`
   border: 1px solid ${COLORS.GREY_DE};
   box-sizing: border-box;
   box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
+
+  .MuiTableRow-root {
+    &:hover {
+      background: ${COLORS.WHITE};
+    }
+  }
 `;
 
 /*
@@ -102,16 +109,11 @@ NestedTable.defaultProps = {
 /*
  * Row styles
  */
-const rowBackgroundColor = '#F1F1F1';
-const rowHoverColor = 'rgba(255, 255, 255, 0.6)';
+const rowHoverColor = '#F1F1F1';
 
 const StyledTableRow = styled(MuiTableRow)`
   cursor: pointer;
   border-bottom: 1px solid ${COLORS.GREY_DE};
-
-  &:nth-of-type(even) {
-    background: ${rowBackgroundColor};
-  }
 
   &:hover {
     background: ${rowHoverColor};
@@ -193,7 +195,7 @@ ExpandableTableRow.defaultProps = {
  * ErrorSpan Styles
  */
 const ErrorSpan = styled.span`
-  color: ${COLORS.RED};
+  color: ${props => props.theme.palette.warning.main};
 `;
 
 /*
@@ -248,9 +250,9 @@ TableBody.defaultProps = {
 };
 
 /*
- * NestedTableRow Component
+ * CondensedTableBody Component
  */
-export const NestedTableBody = React.memo(({ data, columns }) => (
+export const CondensedTableBody = React.memo(({ data, columns }) => (
   <MuiTableBody>
     {data.map((rowData, index) => {
       return (
@@ -261,20 +263,43 @@ export const NestedTableBody = React.memo(({ data, columns }) => (
   </MuiTableBody>
 ));
 
-NestedTableBody.propTypes = {
+CondensedTableBody.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape(columnShape)).isRequired,
   data: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
 };
 
 /*
+ * FakeHeader
+ * This is just a full width grey box.
+ * It should not be used inside the table or else it will skew the column sizes
+ */
+const fakeHeaderBackgroundColor = '#f1f1f1';
+
+export const FakeHeader = styled.div`
+  width: 100%;
+  background: ${fakeHeaderBackgroundColor};
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 13px;
+  color: ${COLORS.TEXT_MIDGREY};
+  border-bottom: 1px solid ${COLORS.GREY_DE};
+  padding: 16px 20px;
+`;
+
+/*
  * TableHeader Styles
  */
+
+const TableHeadCell = styled(TableCell)`
+  height: 50px;
+`;
+
 const SortLabel = styled(MuiTableSortLabel)`
   flex-direction: row-reverse;
+  color: ${COLORS.TEXT_DARKGREY};
+  font-size: 0.75rem;
+  margin-left: -0.5rem;
   font-weight: 600;
-  font-size: 12px;
-  line-height: 14px;
-  margin-left: -10px;
 
   .MuiTableSortLabel-icon {
     opacity: 1;
@@ -304,9 +329,9 @@ export const TableHeader = React.memo(({ columns, order, orderBy, onChangeOrderB
     <MuiTableHead>
       <MuiTableRow>
         {columns.map(({ key, title, width = null, align = 'center', sortable = true }) => (
-          <TableCell key={key} style={{ width: width }} align={align}>
+          <TableHeadCell key={key} style={{ width: width }} align={align}>
             {getContent(key, sortable, title)}
-          </TableCell>
+          </TableHeadCell>
         ))}
       </MuiTableRow>
     </MuiTableHead>
