@@ -19,6 +19,7 @@ const DISASTER = 'disaster';
 const DISTRICT = 'district';
 const FACILITY = 'facility';
 const SUB_DISTRICT = 'sub_district';
+const CATCHMENT = 'catchment';
 const VILLAGE = 'village';
 const WORLD = 'world';
 
@@ -30,6 +31,7 @@ export const ENTITY_TYPES = {
   DISTRICT,
   FACILITY,
   SUB_DISTRICT,
+  CATCHMENT,
   VILLAGE,
   WORLD,
 };
@@ -39,6 +41,7 @@ export const ORG_UNIT_ENTITY_TYPES = {
   COUNTRY,
   DISTRICT,
   SUB_DISTRICT,
+  CATCHMENT,
   FACILITY,
   VILLAGE,
 };
