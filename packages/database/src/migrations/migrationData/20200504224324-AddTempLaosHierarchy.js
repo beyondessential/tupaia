@@ -61,47 +61,6 @@ export const LAOS_ENTITIES = [
       ],
     },
   },
-  // Schools
-  {
-    code: 'LA_sch_1705002',
-    parent_code: 'LA_Phouvong District',
-    type: 'school',
-    name: 'ນາ​ເຊືອກ',
-    point: {
-      type: 'Point',
-      coordinates: [106.927271, 14.754054],
-    },
-  },
-  {
-    code: 'LA_sch_1705008',
-    parent_code: 'LA_Phouvong District',
-    type: 'school',
-    name: 'ສົມ­ບູນ',
-    point: {
-      type: 'Point',
-      coordinates: [107.284592, 14.739562],
-    },
-  },
-  {
-    code: 'LA_sch_1702016',
-    parent_code: 'LA_Samakkhixay District',
-    type: 'school',
-    name: 'ແບ່ງ​ພູ​ຄຳ',
-    point: {
-      type: 'Point',
-      coordinates: [106.759824, 15.174436],
-    },
-  },
-  {
-    code: 'LA_sch_1702015',
-    parent_code: 'LA_Samakkhixay District',
-    type: 'school',
-    name: 'ຈະ­ເລີນ​ສຸກ',
-    point: {
-      type: 'Point',
-      coordinates: [106.762471, 14.844248],
-    },
-  },
   // Villages
   {
     code: 'LA_vil_1705001',
@@ -141,6 +100,77 @@ export const LAOS_ENTITIES = [
     point: {
       type: 'Point',
       coordinates: [106.847087, 14.807483],
+    },
+  },
+  // Schools
+  {
+    code: 'LA_sch_1705001',
+    parent_code: 'LA_vil_1705001',
+    type: 'school',
+    name: 'ວົງ​ສຳ­ພັນ',
+    point: {
+      type: 'Point',
+      coordinates: [106.848164, 14.691062],
+    },
+  },
+  {
+    code: 'LA_sch_11705019',
+    parent_code: 'LA_vil_1705001',
+    type: 'school',
+    name: 'ວົງ​ສຳ­ພັນ',
+    point: {
+      type: 'Point',
+      coordinates: [106.845138, 14.691289],
+    },
+  },
+  {
+    code: 'LA_sch_1705008',
+    parent_code: 'LA_vil_1705005',
+    type: 'school',
+    name: 'ສົມ­ບູນ',
+    point: {
+      type: 'Point',
+      coordinates: [107.284592, 14.739562],
+    },
+  },
+  {
+    code: 'LA_sch_21705003',
+    parent_code: 'LA_vil_1705005',
+    type: 'school',
+    name: 'ສົມ­ບູນ',
+    point: {
+      type: 'Point',
+      coordinates: [107.298528, 14.728584],
+    },
+  },
+  {
+    code: 'LA_sch_1702002',
+    parent_code: 'LA_vil_1702003',
+    type: 'school',
+    name: 'ອະ­ນຸ­ບານ 2',
+    point: {
+      type: 'Point',
+      coordinates: [106.832678, 14.812964],
+    },
+  },
+  {
+    code: 'LA_sch_11702011',
+    parent_code: 'LA_vil_1702004',
+    type: 'school',
+    name: 'ສາ­ມັກ­ຄີ',
+    point: {
+      type: 'Point',
+      coordinates: [106.847039, 14.807125],
+    },
+  },
+  {
+    code: 'LA_sch_21702012',
+    parent_code: 'LA_vil_1702004',
+    type: 'school',
+    name: 'ສາ­ມັກ­ຄີ',
+    point: {
+      type: 'Point',
+      coordinates: [106.8475, 14.806796],
     },
   },
   /**
@@ -224,47 +254,6 @@ export const LAOS_ENTITIES = [
       ],
     },
   },
-  // Schools
-  {
-    code: 'LA_sch_1608012',
-    parent_code: 'LA_Sukhuma District',
-    type: 'school',
-    name: 'ອະ­ນຸ­ບານ​ດົງ​ຫົວ​ບ້ານ',
-    point: {
-      type: 'Point',
-      coordinates: [105.970827, 14.785846],
-    },
-  },
-  {
-    code: 'LA_sch_1608008',
-    parent_code: 'LA_Sukhuma District',
-    type: 'school',
-    name: 'ໂນນ​ຍາງ',
-    point: {
-      type: 'Point',
-      coordinates: [105.707035, 14.68529],
-    },
-  },
-  {
-    code: 'LA_sch_1602022',
-    parent_code: 'LA_Sanasomboon District',
-    type: 'school',
-    name: 'ນາ​ດ່ານ',
-    point: {
-      type: 'Point',
-      coordinates: [105.778375, 15.44237],
-    },
-  },
-  {
-    code: 'LA_sch_1602045',
-    parent_code: 'LA_Sanasomboon District',
-    type: 'school',
-    name: 'ອະ­ນຸ­ບານ​ອອກ​ເມືອງ',
-    point: {
-      type: 'Point',
-      coordinates: [106.380578, 15.423377],
-    },
-  },
   // Villages
   {
     code: 'LA_vil_1608001',
@@ -304,6 +293,67 @@ export const LAOS_ENTITIES = [
     point: {
       type: 'Point',
       coordinates: [105.803113, 15.398867],
+    },
+  },
+  // Schools
+  {
+    code: 'LA_sch_21608002',
+    parent_code: 'LA_vil_1608001',
+    type: 'school',
+    name: 'ມັດ­ທະ­ຍົມ ສຸ​ຂຸ​ມາ',
+    point: {
+      type: 'Point',
+      coordinates: [105.804529, 14.649459],
+    },
+  },
+  {
+    code: 'LA_sch_1608010',
+    parent_code: 'LA_vil_1608003',
+    type: 'school',
+    name: 'ອະ­ນຸ­ບານ​ທັບ​ຈາມ',
+    point: {
+      type: 'Point',
+      coordinates: [105.802363, 14.627902],
+    },
+  },
+  {
+    code: 'LA_sch_11608025',
+    parent_code: 'LA_vil_1608003',
+    type: 'school',
+    name: 'ທັບ​ຈາມ',
+    point: {
+      type: 'Point',
+      coordinates: [105.802296, 14.627884],
+    },
+  },
+  {
+    code: 'LA_sch_1602022',
+    parent_code: 'LA_vil_1602001',
+    type: 'school',
+    name: 'ນາ​ດ່ານ',
+    point: {
+      type: 'Point',
+      coordinates: [105.778375, 15.44237],
+    },
+  },
+  {
+    code: 'LA_sch_11602035',
+    parent_code: 'LA_vil_1602003',
+    type: 'school',
+    name: 'ໂນນ​ສະ­ຫວັນ',
+    point: {
+      type: 'Point',
+      coordinates: [105.799377, 15.40125],
+    },
+  },
+  {
+    code: 'LA_sch_1602033',
+    parent_code: 'LA_vil_1602003',
+    type: 'school',
+    name: 'ໂນນ​ສະ­ຫວັນ',
+    point: {
+      type: 'Point',
+      coordinates: [105.800195, 15.399638],
     },
   },
 ];
