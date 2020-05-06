@@ -225,3 +225,8 @@ export const selectIsProject = createSelector(
   [state => state.project.projects, (_, code) => code],
   (projects, code) => projects.map(project => project.code).includes(code),
 );
+
+export const selectProjectByCode = (state, code) =>
+  state.project.projects.find(p => p.code === code);
+
+export const selectActiveProject = state => state.project.active;

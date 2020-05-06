@@ -8,12 +8,13 @@
 import { call, put, delay, takeEvery, takeLatest, select } from 'redux-saga/effects';
 import queryString from 'query-string';
 import request from './utils/request';
-import { selectActiveProject } from './projects/selectors';
 import {
   selectOrgUnit,
   selectOrgUnitChildren,
   selectOrgUnitCountry,
   selectIsProject,
+  selectActiveProject,
+  selectProjectByCode,
 } from './selectors';
 import {
   ATTEMPT_CHANGE_PASSWORD,
@@ -94,7 +95,8 @@ import {
 import { isMobile, processMeasureInfo, formatDateForApi } from './utils';
 import { createUrlString } from './utils/historyNavigation';
 import { getDefaultDates } from './utils/periodGranularities';
-import { INITIAL_MEASURE_ID } from './defaults';
+import { INITIAL_MEASURE_ID, INITIAL_PROJECT_CODE } from './defaults';
+import { selectProject } from './projects/actions';
 
 /**
  * attemptChangePassword
@@ -533,7 +535,7 @@ function* watchOrgUnitChangeAndFetchDashboard() {
 
 function* fetchViewData(parameters, errorHandler) {
   const { infoViewKey } = parameters;
-  const projectCode = yield select(selectActiveProject).code;
+  const projectCode = (yield select(selectActiveProject)).code;
 
   // If the view should be constrained to a date range and isn't, constrain it
   const { startDate, endDate } =
@@ -921,15 +923,18 @@ function* watchAttemptAttemptDrillDown() {
   yield takeLatest(ATTEMPT_DRILL_DOWN, fetchDrillDownData);
 }
 
-function* navigateToWorldOnUserChange() {
-  // On user login/logout, we should just navigate back to world, as we don't know if they have permissions
-  // to the currently selected orgUnit
+function* navigateToExploreOnUserChange() {
+  // On user login/logout, we should just navigate back to explore project, as we don't know if they have permissions
+  // to the current project or organisation unit
+  yield put(
+    selectProject((yield select(selectProjectByCode, 'explore')) || { code: INITIAL_PROJECT_CODE }),
+  );
   yield put(changeOrgUnit('explore', true));
 }
 
 function* watchUserChangesAndUpdatePermissions() {
-  yield takeLatest(FETCH_LOGOUT_SUCCESS, navigateToWorldOnUserChange);
-  yield takeLatest(FETCH_LOGIN_SUCCESS, navigateToWorldOnUserChange);
+  yield takeLatest(FETCH_LOGOUT_SUCCESS, navigateToExploreOnUserChange);
+  yield takeLatest(FETCH_LOGIN_SUCCESS, navigateToExploreOnUserChange);
 }
 
 function* fetchEnlargedDialogViewContentForPeriod(action) {
