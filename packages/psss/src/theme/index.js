@@ -29,13 +29,13 @@ const palette = {
     secondary: COLORS.TEXTGREY,
   },
   background: {
-    default: 'transparent', // use background addon to switch colors
+    default: COLORS.LIGHTGREY,
     paper: COLORS.WHITE,
   },
 };
 const typography = {
   h1: {
-    fontSize: '3.125rem',
+    fontSize: '3.4375rem',
     fontWeight: 500,
     lineHeight: 1.18,
     letterSpacing: 0,

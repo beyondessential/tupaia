@@ -10,7 +10,7 @@ import Typography from '@material-ui/core/Typography';
 const Section = styled.section`
   background: white;
   border: 2px dashed black;
-  height: 400px;
+  height: 600px;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -22,7 +22,7 @@ export const TableView = ({ config }) => {
   return (
     <Section>
       <Typography variant="h2" gutterBottom>
-        Table Layout: {config.resource}
+        Table View: {config.resource}
       </Typography>
     </Section>
   );
