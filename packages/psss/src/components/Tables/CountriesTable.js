@@ -34,7 +34,7 @@ export const NameAccessor = ({ name }) => (
 );
 
 NameAccessor.propTypes = {
-  name: PropTypes.number.isRequired,
+  name: PropTypes.string.isRequired,
 };
 
 const countriesTableColumns = [

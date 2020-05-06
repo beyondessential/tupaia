@@ -54,11 +54,14 @@ const Status = styled.div`
   text-transform: uppercase;
   font-weight: 500;
   font-size: 11px;
-  line-height: 13px;
+  line-height: 1;
+  padding-left: 1rem;
+  text-align: left;
+  width: 100%;
 
   .MuiSvgIcon-root {
-    width: 26px;
-    height: 26px;
+    width: 22px;
+    height: 22px;
     margin-right: 5px;
   }
 `;
@@ -74,7 +77,7 @@ const StatusAccessor = ({ status }) => {
   }
 
   return (
-    <Status color={COLORS.GREEN}>
+    <Status color={COLORS.TEXT_LIGHTGREY}>
       <CheckCircleOutline />
       {status}
     </Status>
@@ -123,8 +126,7 @@ const countryColumns = [
   {
     title: 'STATUS',
     key: 'status',
-    width: '125px',
-    align: 'left',
+    width: '110px',
     accessor: StatusAccessor,
   },
 ];

@@ -31,10 +31,6 @@ const TableCell = styled(MuiTableCell)`
   &:first-child {
     padding-left: 1.25rem;
   }
-
-  &:last-child {
-    padding-right: 1.25rem;
-  }
 `;
 
 /*
