@@ -16,8 +16,6 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-const arrayToDbString = array => array.map(item => `'${item}'`).join(', ');
-
 const ALL_VALUE_CODES = [
   "CD65", //Shopkeeper - New
   "CD66", //Shopkeeper - Renewal
@@ -67,7 +65,7 @@ const VIEW_JSON_CONFIG = {
   "defaultStartDate": "start_of_year" 
 };
 
-const DASHBOARD_GROUPS_TO_ADD = ['Tonga_Communicable_Diseases_National'];
+const DASHBOARD_GROUP_TO_ADD = 'Tonga_Communicable_Diseases_National';
 
 const REPORT_ID = 'TO_CD_Health_Certificates_Distributed';
 
@@ -85,7 +83,7 @@ exports.up = async function (db) {
   await db.runSql(`
     UPDATE "dashboardGroup"
     SET "dashboardReports" = "dashboardReports" || '{${REPORT_ID}}'
-    WHERE code IN (${arrayToDbString(DASHBOARD_GROUPS_TO_ADD)});
+    WHERE code = '${DASHBOARD_GROUP_TO_ADD}';
   `);
 };
 
@@ -95,7 +93,7 @@ exports.down = async function (db) {
 
     UPDATE "dashboardGroup"
     SET "dashboardReports" = array_remove("dashboardReports", '${REPORT_ID}')
-    WHERE code IN (${arrayToDbString(DASHBOARD_GROUPS_TO_ADD)});
+    WHERE code = '${DASHBOARD_GROUP_TO_ADD}';
   `);
 };
 
