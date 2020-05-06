@@ -5,13 +5,15 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import Avatar from '@material-ui/core/Avatar';
-import Typography from '@material-ui/core/Typography';
-import { DataFetchingTable } from '../components/DataFetchingTable';
 import MuiLink from '@material-ui/core/Link';
+import Typography from '@material-ui/core/Typography';
+import Avatar from '@material-ui/core/Avatar';
+import { Alarm, CheckCircleOutline } from '@material-ui/icons';
+import { DataFetchingTable } from '../components/DataFetchingTable';
 import { Button } from '../components/Button';
 import * as COLORS from '../theme/colors';
 import { NestedTableBody } from '../components/Table';
+import { getAFRAlert, getSitesReported } from '../components/TableColumnAccessors';
 
 export default {
   title: 'DataFetchingTable',
@@ -47,9 +49,28 @@ const FakeHeader = () => {
  * CountrySubTable
  */
 const CountrySubTable = () => {
-  const getCountryWeekName = data => {
+  const CountryWeekTitle = styled.div`
+    color: ${COLORS.BLUE};
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 19px;
+    margin-bottom: 3px;
+  `;
+
+  const CountryWeekSubTitle = styled.div`
+    color: ${COLORS.TEXT_DARKGREY};
+    font-size: 14px;
+    line-height: 16px;
+  `;
+
+  const getCountryWeekTitle = data => {
     // console.log('data', data);
-    return 'W9 Feb 25 - Mar 1, 2020';
+    return (
+      <React.Fragment>
+        <CountryWeekTitle>{`Week ${data.week}`}</CountryWeekTitle>
+        <CountryWeekSubTitle>Feb 25 - Mar 1, 2020</CountryWeekSubTitle>
+      </React.Fragment>
+    );
   };
 
   const countryWeekColumns = [
@@ -58,16 +79,18 @@ const CountrySubTable = () => {
       key: 'name',
       width: '30%',
       align: 'left',
-      accessor: getCountryWeekName,
+      accessor: getCountryWeekTitle,
     },
     {
       title: 'Sites Reported',
       key: 'sitesReported',
+      accessor: getSitesReported,
       width: '145px',
     },
     {
       title: 'AFR',
       key: 'AFR',
+      accessor: getAFRAlert,
     },
     {
       title: 'DIA',
@@ -143,11 +166,13 @@ export const CountryTable = () => {
     {
       title: 'Sites Reported',
       key: 'sitesReported',
+      accessor: getSitesReported,
       width: '145px',
     },
     {
       title: 'AFR',
       key: 'AFR',
+      accessor: getAFRAlert,
     },
     {
       title: 'DIA',
@@ -193,7 +218,7 @@ const CountryWeekSubTable = props => {
     console.log('custom action in CountryWeekSubTable. props...', props);
   };
 
-  const getSiteWeekName = data => {
+  const getSiteWeekTitle = data => {
     // console.log('data', data);
     return <span>{data.name}</span>;
   };
@@ -204,16 +229,18 @@ const CountryWeekSubTable = props => {
       key: 'name',
       width: '30%',
       align: 'left',
-      accessor: getSiteWeekName,
+      accessor: getSiteWeekTitle,
     },
     {
       title: 'Sites Reported',
       key: 'sitesReported',
+      accessor: getSitesReported,
       width: '145px',
     },
     {
       title: 'AFR',
       key: 'AFR',
+      accessor: getAFRAlert,
     },
     {
       title: 'DIA',
@@ -255,27 +282,44 @@ const CountryWeekSubTable = props => {
 /*
  * CountryWeekTable
  */
-const CountryWeekTitle = styled.div`
-  color: ${COLORS.BLUE};
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 19px;
-`;
-
-const CountryWeekSubTitle = styled.div`
-  color: ${COLORS.TEXT_DARKGREY};
-  font-size: 14px;
-  line-height: 16px;
-`;
-
 export const CountryWeekTable = () => {
   const getCountryWeekTitle = data => {
     // console.log('data', data);
+    return 'W9 Feb 25 - Mar 1, 2020';
+  };
+
+  const Status = styled.div`
+    display: inline-flex;
+    color: ${props => props.color};
+    align-items: center;
+    text-transform: uppercase;
+    font-weight: 500;
+    font-size: 11px;
+    line-height: 13px;
+
+    .MuiSvgIcon-root {
+      width: 26px;
+      height: 26px;
+      margin-right: 5px;
+    }
+  `;
+
+  // eslint-disable-next-line react/prop-types
+  const getStatus = ({ status }) => {
+    if (status === 'Overdue') {
+      return (
+        <Status color={COLORS.RED}>
+          <Alarm />
+          {status}
+        </Status>
+      );
+    }
+
     return (
-      <React.Fragment>
-        <CountryWeekTitle>{`Week ${data.week}`}</CountryWeekTitle>
-        <CountryWeekSubTitle>Feb 25 - Mar 1, 2020</CountryWeekSubTitle>
-      </React.Fragment>
+      <Status color={COLORS.TEXT_LIGHTGREY}>
+        <CheckCircleOutline />
+        {status}
+      </Status>
     );
   };
 
@@ -290,11 +334,13 @@ export const CountryWeekTable = () => {
     {
       title: 'Sites Reported',
       key: 'sitesReported',
+      accessor: getSitesReported,
       width: '145px',
     },
     {
       title: 'AFR',
       key: 'AFR',
+      accessor: getAFRAlert,
     },
     {
       title: 'DIA',
@@ -315,6 +361,9 @@ export const CountryWeekTable = () => {
     {
       title: 'Status',
       key: 'status',
+      width: '125px',
+      align: 'left',
+      accessor: getStatus,
     },
   ];
 

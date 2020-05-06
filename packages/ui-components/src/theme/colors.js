@@ -37,7 +37,7 @@ export const BLUE_ACCENT = '#2E6F9C';
 export const BLUE_BACKDROP = 'rgba(31, 88, 128, 0.72)';
 
 // Reds
-export const LIGHT_RED = '#FED9D9';
+export const LIGHT_RED = '#FEE2E2';
 export const DARK_RED = '#A70000';
 
 // Greens

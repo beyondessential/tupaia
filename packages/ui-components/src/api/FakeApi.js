@@ -82,7 +82,7 @@ export class FakeAPI {
         min: 0,
         max: 1000,
       }),
-      status: faker.lorem.word(),
+      status: faker.random.arrayElement(['Submitted', 'Overdue']),
     };
   }
 
