@@ -129,8 +129,12 @@ export const CHART_COLOR_PALETTE = {
   orange: orange['500'],
   brown: brown['500'],
   grey: grey['500'],
+  darkGreen: '#007D00',
+  darkBlue: '#0000FF',
+  pink: '#FF80FF',
+  lime: '#B5E61D',
+  maroon: '#800040',
 };
-
 export const COMPOSED_CHART_COLOR_PALETTE = {
   gold: '#FFD700',
   blue: '#2194F9',
