@@ -1,7 +1,12 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 
-import { CHART_COLOR_PALETTE, COMPOSED_CHART_COLOR_PALETTE, VIEW_STYLES } from '../../../styles';
+import {
+  CHART_COLOR_PALETTE,
+  EXPANDED_CHART_COLOR_PALETTE,
+  COMPOSED_CHART_COLOR_PALETTE,
+  VIEW_STYLES,
+} from '../../../styles';
 import { VIEW_CONTENT_SHAPE } from '../propTypes';
 import { CartesianChart } from './CartesianChart';
 import { CHART_TYPES } from './chartTypes';
@@ -10,8 +15,7 @@ import { PieChart } from './PieChart';
 // Adds default colors for every element with no color defined
 const addDefaultsColorsToConfig = (chartType, chartConfig) => {
   const newConfig = {};
-  const palette =
-    chartType === CHART_TYPES.COMPOSED ? COMPOSED_CHART_COLOR_PALETTE : CHART_COLOR_PALETTE;
+  const palette = getColorPalette(chartType, chartConfig);
   const colors = Object.values(palette);
 
   let colorId = 0;
@@ -26,6 +30,15 @@ const addDefaultsColorsToConfig = (chartType, chartConfig) => {
   });
 
   return newConfig;
+};
+
+const getColorPalette = (chartType, chartConfig) => {
+  if (chartType === CHART_TYPES.COMPOSED) {
+    return COMPOSED_CHART_COLOR_PALETTE;
+  }
+  return Object.keys(chartConfig).length > Object.keys(CHART_COLOR_PALETTE).length
+    ? EXPANDED_CHART_COLOR_PALETTE
+    : CHART_COLOR_PALETTE;
 };
 
 const sortChartConfigByLegendOrder = chartConfig => {
