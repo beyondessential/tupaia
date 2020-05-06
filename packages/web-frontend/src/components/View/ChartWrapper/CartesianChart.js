@@ -110,6 +110,7 @@ export class CartesianChart extends PureComponent {
 
     this.state = {
       xAxisHeight: 0,
+      chartConfig: props.viewContent.chartConfig,
       activeDataKeys: [],
     };
     // Because state isn't fast enough to update when ticks mount,
@@ -129,9 +130,7 @@ export class CartesianChart extends PureComponent {
   };
 
   onLegendClick = event => {
-    const { viewContent } = this.props;
-    const { activeDataKeys } = this.state;
-    const { chartConfig = {} } = viewContent;
+    const { activeDataKeys, chartConfig } = this.state;
     const legendDatakey = event.dataKey;
     const actionWillSelectAllKeys =
       activeDataKeys.length + 1 >= this.getRealDataKeys(chartConfig).length &&
@@ -163,22 +162,28 @@ export class CartesianChart extends PureComponent {
     legendDatakey === LEGEND_ALL_DATA_KEY;
 
   updateChartConfig = (hasDisabledData, viewContent) => {
-    const { chartConfig = {}, chartType } = viewContent;
+    const { chartType } = viewContent;
+    const { chartConfig } = this.state;
+    const newChartConfig = { ...chartConfig };
+
     if (hasDisabledData && !chartConfig[LEGEND_ALL_DATA_KEY]) {
       const allChartType = Object.values(chartConfig)[0].chartType || chartType || 'line';
-      chartConfig[LEGEND_ALL_DATA_KEY] = { ...LEGEND_ALL_DATA, chartType: allChartType };
+      newChartConfig[LEGEND_ALL_DATA_KEY] = { ...LEGEND_ALL_DATA, chartType: allChartType };
+      this.setState({ chartConfig: newChartConfig });
     } else if (!hasDisabledData && chartConfig[LEGEND_ALL_DATA_KEY]) {
-      delete chartConfig[LEGEND_ALL_DATA_KEY];
+      delete newChartConfig[LEGEND_ALL_DATA_KEY];
+      this.setState({ chartConfig: newChartConfig });
     }
   };
 
   filterDisabledData = data => {
     const { viewContent } = this.props;
-    const { chartConfig = {} } = viewContent;
-    const hasDisabledData = this.state.activeDataKeys.length >= 1;
+    const { chartConfig, activeDataKeys } = this.state;
+    // Can't disable data without chartConfig
+    if (!chartConfig) return data;
+    console.log(chartConfig);
 
-    // Here we are adding to something in this.props, which seems REAL bad.
-    // Should we store the state in ChartWrapper to avoid this?
+    const hasDisabledData = activeDataKeys.length >= 1;
     this.updateChartConfig(hasDisabledData, viewContent);
 
     return hasDisabledData
@@ -202,7 +207,8 @@ export class CartesianChart extends PureComponent {
 
   getXAxisPadding = () => {
     const { isEnlarged, viewContent } = this.props;
-    const { chartType, chartConfig = {}, data } = viewContent;
+    const { chartConfig = {} } = this.state;
+    const { chartType, data } = viewContent;
     const hasBars =
       chartType === BAR ||
       Object.values(chartConfig).some(({ chartType: composedType }) => composedType === BAR);
@@ -245,12 +251,12 @@ export class CartesianChart extends PureComponent {
   };
 
   formatLegend = (value, { color }) => {
-    const { viewContent } = this.props;
+    const { chartConfig } = this.state;
     const isActive = this.getIsActiveKey(value);
     const displayColor = isActive ? color : getInactiveColor(color);
     return (
       <span style={{ color: displayColor, textDecoration: isActive ? '' : 'line-through' }}>
-        {viewContent.chartConfig[value].label || value}
+        {chartConfig[value].label || value}
       </span>
     );
   };
@@ -338,8 +344,7 @@ export class CartesianChart extends PureComponent {
   };
 
   renderYAxes = () => {
-    const { viewContent } = this.props;
-    const { chartConfig = {} } = viewContent;
+    const { chartConfig = {} } = this.state;
 
     const axisPropsById = {
       [Y_AXIS_IDS.left]: { yAxisId: Y_AXIS_IDS.left, dataKeys: [], orientation: 'left' },
@@ -389,7 +394,8 @@ export class CartesianChart extends PureComponent {
 
   renderTooltip = () => {
     const { viewContent } = this.props;
-    const { chartType, chartConfig, valueType, labelType } = viewContent;
+    const { chartConfig = {} } = this.state;
+    const { chartType, valueType, labelType } = viewContent;
 
     return (
       <Tooltip
@@ -407,8 +413,8 @@ export class CartesianChart extends PureComponent {
   };
 
   renderLegend = () => {
-    const { isEnlarged, viewContent } = this.props;
-    const { chartConfig } = viewContent;
+    const { isEnlarged } = this.props;
+    const { chartConfig } = this.state;
     const hasDataSeries = chartConfig && Object.keys(chartConfig).length > 1;
 
     return (
@@ -448,8 +454,8 @@ export class CartesianChart extends PureComponent {
   };
 
   renderReferenceLineForValues = () => {
-    const { viewContent, isExporting } = this.props;
-    const { chartConfig = {} } = viewContent;
+    const { isExporting } = this.props;
+    const { chartConfig = {} } = this.state;
 
     const referenceLines = Object.entries(chartConfig)
       .filter(([, { referenceValue }]) => referenceValue)
@@ -485,7 +491,8 @@ export class CartesianChart extends PureComponent {
   renderCharts = () => {
     const { viewContent } = this.props;
     const defaultChartConfig = { [DEFAULT_DATA_KEY]: {} };
-    const { chartType: defaultChartType, chartConfig = defaultChartConfig } = viewContent;
+    const { chartConfig = defaultChartConfig } = this.state;
+    const { chartType: defaultChartType } = viewContent;
 
     const sortedChartConfig = Object.entries(chartConfig).sort((a, b) => {
       return CHART_SORT_ORDER[b[1].chartType] - CHART_SORT_ORDER[a[1].chartType];
@@ -518,7 +525,8 @@ export class CartesianChart extends PureComponent {
 
   renderBar = ({ color = BLUE, dataKey, yAxisId, stackId }) => {
     const { isEnlarged, isExporting, viewContent } = this.props;
-    const { chartConfig, valueType } = viewContent;
+    const { chartConfig = {} } = this.state;
+    const { valueType } = viewContent;
     const labelOffset = chartConfig ? -15 : -12;
     return (
       <Bar
