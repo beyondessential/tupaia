@@ -122,7 +122,7 @@ exports.up = async function up(db) {
       E'${district.code}',
       E'${parentId}',
       E'${district.name.replace("'", "\\'")}',
-      E'region',
+      E'district',
       NULL,
       ${regionGeometry ? `ST_GeomFromGeoJSON('${JSON.stringify(regionGeometry)}')` : 'NULL'},
       NULL,
