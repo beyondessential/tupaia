@@ -32,7 +32,6 @@ import VerticalTick from './VerticalTick';
 
 const { AREA, BAR, COMPOSED, LINE } = CHART_TYPES;
 const { PERCENTAGE } = VALUE_TYPES;
-const LEGEND_ALL_DATA_KEY = 'LEGEND_ALL_DATA_KEY';
 
 const AXIS_TIME_PROPS = {
   dataKey: 'timestamp',
@@ -87,8 +86,16 @@ const CHART_TYPE_TO_COMPONENT = {
   [COMPOSED]: ComposedChart,
   [LINE]: LineChart,
 };
+
 const DEFAULT_DATA_KEY = 'value';
 
+const LEGEND_ALL_DATA_KEY = 'LEGEND_ALL_DATA_KEY';
+
+const LEGEND_ALL_DATA = {
+  color: '#FFFFFF',
+  label: 'All',
+  stackId: 1,
+};
 /**
  * Note
  * ----
@@ -159,12 +166,8 @@ export class CartesianChart extends PureComponent {
   updateChartConfig = (hasDisabledData, viewContent) => {
     const { chartConfig = {}, chartType } = viewContent;
     if (hasDisabledData && !chartConfig[LEGEND_ALL_DATA_KEY]) {
-      chartConfig[LEGEND_ALL_DATA_KEY] = {
-        color: '#FFFFFF',
-        chartType: Object.values(chartConfig)[0].chartType || chartType || 'line',
-        label: 'All',
-        stackId: 1,
-      };
+      const allChartType = Object.values(chartConfig)[0].chartType || chartType || 'line';
+      chartConfig[LEGEND_ALL_DATA_KEY] = { ...LEGEND_ALL_DATA, chartType: allChartType };
     } else if (!hasDisabledData && chartConfig[LEGEND_ALL_DATA_KEY]) {
       delete chartConfig[LEGEND_ALL_DATA_KEY];
     }
