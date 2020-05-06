@@ -49,7 +49,7 @@ describe('Alerts CRUD', () => {
       const createdData = [await createAlert('ZORT1'), await createAlert('ZORT2')];
 
       const { body: alerts } = await app.get('alerts');
-      expect(alerts.length).to.equal(3);
+      expect(alerts.length).to.equal(2);
 
       for (const [index, { alert }] of createdData.entries()) {
         expect(alert).to.have.property('id');
