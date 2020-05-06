@@ -33,6 +33,7 @@ const REPORT = {
     type: 'chart',
     chartType: 'bar',
     useDefaultChartConfig: true,
+    renderLegendForOneItem: true,
     periodGranularity: 'month',
   },
   dataServices: [
