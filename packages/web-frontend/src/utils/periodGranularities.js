@@ -119,9 +119,11 @@ export function getDefaultDates(state, infoViewKey) {
       return roundStartEndDates(periodGranularity, startDate, endDate);
     }
   } else if (defaultStartDate) {
-    startDate = getDefaultStartDate(defaultStartDate) || startDate;
+    startDate = getDefaultStartDate(defaultStartDate);
 
-    return roundStartEndDates(periodGranularity, startDate, endDate);
+    if (startDate) {
+      return roundStartEndDates(periodGranularity, startDate, endDate);
+    }
   }
 
   return {};
