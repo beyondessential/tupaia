@@ -98,7 +98,7 @@ const getDefaultStartDate = defaultStartDate => {
     case START_OF_YEAR:
       return moment().startOf('year');
     default:
-      throw this.unexpected();
+      return null;
   }
 };
 
@@ -119,7 +119,7 @@ export function getDefaultDates(state, infoViewKey) {
       return roundStartEndDates(periodGranularity, startDate, endDate);
     }
   } else if (defaultStartDate) {
-    startDate = getDefaultStartDate(defaultStartDate);
+    startDate = getDefaultStartDate(defaultStartDate) || startDate;
 
     return roundStartEndDates(periodGranularity, startDate, endDate);
   }
