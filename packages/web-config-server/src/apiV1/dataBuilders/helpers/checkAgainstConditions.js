@@ -1,15 +1,18 @@
 import isPlainObject from 'lodash.isplainobject';
 
 export const OPERATOR_TO_VALUE_CHECK = {
+  '=': (value, target) => value === target,
   '>=': (value, target) => value >= target,
+  '>': (value, target) => value > target,
   '<': (value, target) => value < target,
   range: (value, target) => target[0] <= value && value <= target[1],
+  rangeExclusive: (value, target) => target[0] < value && value < target[1],
   regex: (value, target) => value.match(target),
 };
 
 const ANY_VALUE_CONDITION = '*';
 
-const checkValueSatisfiesCondition = (value, condition) => {
+export const checkValueSatisfiesCondition = (value, condition) => {
   if (!isPlainObject(condition)) {
     return condition === ANY_VALUE_CONDITION || value === condition;
   }
@@ -33,7 +36,8 @@ export const countEventsThatSatisfyConditions = (events, conditions) => {
   const { dataValues: valueConditions = {} } = conditions || {};
   const eventHasTargetValues = ({ dataValues }) =>
     Object.entries(valueConditions).every(([dataElement, condition]) => {
-      const { value } = dataValues[dataElement] || {};
+      const dataValue = dataValues[dataElement];
+      const value = isPlainObject(dataValue) ? dataValue.value : dataValue;
       return value && checkValueSatisfiesCondition(value, condition);
     });
 

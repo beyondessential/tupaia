@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 /**
  * Tupaia Web
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd.
@@ -7,13 +8,7 @@
 
 import moment from 'moment';
 import { BREWER_PALETTE, MAP_COLORS } from '../../styles';
-
-export const SCALE_TYPES = {
-  PERFORMANCE: 'performance',
-  PERFORMANCE_DESC: 'performanceDesc',
-  POPULATION: 'population',
-  TIME: 'time',
-};
+import { SCALE_TYPES } from '../../constants';
 
 const HEATMAP_UNKNOWN_COLOR = MAP_COLORS.NO_DATA;
 const DEFAULT_COLOR_SCHEME = 'default';

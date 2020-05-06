@@ -134,7 +134,7 @@ class Disaster extends Component {
      */
     const tupaiaResource = {
       title: `${location} Disaster Response Information`,
-      url: `https://info.tupaia.org/disaster-response-${countryCode}/`,
+      url: 'https://sdd.spc.int/disasters-data',
     };
 
     return (
@@ -186,8 +186,6 @@ class Disaster extends Component {
 
 Disaster.propTypes = {
   selectedDisaster: PropTypes.shape({}),
-  setOverlayComponent: PropTypes.func,
-  viewDisaster: PropTypes.func,
 };
 
 const mapStateToProps = state => {
@@ -202,7 +200,4 @@ const mapDispatchToProps = dispatch => ({
   },
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(Disaster);
+export default connect(mapStateToProps, mapDispatchToProps)(Disaster);

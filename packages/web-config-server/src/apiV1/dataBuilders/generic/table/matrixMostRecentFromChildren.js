@@ -17,7 +17,7 @@ export const matrixMostRecentFromChildren = async (
     dataElementGroup,
     dataServices,
     optionSetCode,
-    organisationUnitLevel,
+    organisationUnitType,
   } = dataBuilderConfig;
 
   const { organisationUnitCode } = query;
@@ -27,7 +27,7 @@ export const matrixMostRecentFromChildren = async (
       getChildOrganisationUnits(
         {
           organisationUnitGroupCode: organisationUnitCode,
-          level: organisationUnitLevel,
+          type: organisationUnitType,
         },
         dhisApi,
       ),
@@ -49,13 +49,17 @@ export const matrixMostRecentFromChildren = async (
 
   // build columns and rows
   returnJson.columns = buildColumns(organisationUnits);
-  returnJson.categories = buildCategories(categoryMapping.dataElementGroups);
-  returnJson.rows = buildRows(
-    results,
-    dataElementsInfo,
-    categoryMapping.dataElementToGroupMapping,
-    optionSetOptions,
-  );
+  const categories = buildCategories(categoryMapping.dataElementGroups);
+  returnJson.rows = [
+    ...buildRows(
+      results,
+      dataElementsInfo,
+      categoryMapping.dataElementToGroupMapping,
+      optionSetOptions,
+    ),
+    ...categories,
+  ];
+
   return returnJson;
 };
 

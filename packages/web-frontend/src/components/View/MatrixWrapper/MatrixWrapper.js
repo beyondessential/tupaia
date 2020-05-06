@@ -63,34 +63,44 @@ import matrixPlaceholder from '../../../images/matrix-placeholder.png';
 import { DateRangePicker } from '../../DateRangePicker';
 import { getStyles, DESCRIPTION_CELL_WIDTH, MINIMUM_CELL_WIDTH } from './styles';
 import { Matrix } from './components';
+import { formatDataValue } from '../../../utils';
 
 const buildMatrixDataFromViewContent = viewContent => {
   if (!viewContent.columns) {
     return null;
   }
-
   const {
     columns: columnData,
     rows,
-    categoryRows,
     categories = [],
     presentationOptions = {},
     categoryPresentationOptions = {},
     isExporting,
+    valueType = 'text',
   } = viewContent;
 
   let maximumCellCharacters = 0;
-  const formattedRows = rows.map(({ dataElement, code, categoryId, ...columns }) => {
-    Object.values(columns).forEach(value => {
+  const formattedRows = rows.map(row => {
+    const { dataElement, code, categoryId, category, ...columns } = row;
+
+    const formattedCells = {};
+    Object.entries(columns).forEach(([columnName, columnValue]) => {
+      formattedCells[columnName] = formatDataValue(columnValue, valueType);
+    });
+
+    Object.values(formattedCells).forEach(value => {
       if (!value) return;
       maximumCellCharacters = Math.max(maximumCellCharacters, value.toString().length);
     });
+
     return {
       description: dataElement,
-      values: columns,
       categoryId,
+      category,
+      ...formattedCells,
     };
   });
+
   const rowsInCategories = categories.map(({ title, key }) => ({
     category: title,
     categoryId: key,
@@ -117,7 +127,6 @@ const buildMatrixDataFromViewContent = viewContent => {
   return {
     columns,
     rows: rowsInCategories.length > 0 ? rowsInCategories : formattedRows,
-    categoryRows,
     maximumCellCharacters,
     maximumColumnWidth: calculatedStyles.CELL_WIDTH,
     calculatedStyles,
@@ -218,7 +227,6 @@ export class MatrixWrapper extends Component {
     const { expandedMatrixData, offsetWidth } = this.state;
     const {
       rows,
-      categoryRows,
       columns,
       calculatedStyles,
       presentationOptions,
@@ -248,7 +256,6 @@ export class MatrixWrapper extends Component {
     return (
       <Matrix
         rows={rows}
-        categoryRows={categoryRows}
         columns={columns}
         numberOfColumnsPerPage={numberOfColumnsPerPage}
         calculatedStyles={calculatedStyles}

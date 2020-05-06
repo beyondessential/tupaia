@@ -28,6 +28,9 @@ export class QueryBuilder {
     this.query.eventId = this.getQueryParameter('eventId');
     this.query.trackedEntityInstance = this.getQueryParameter('trackedEntityInstance');
     this.query.programCode = this.getQueryParameter('programCode');
+    if (!this.query.startDate && !this.query.endDate && !this.query.period) {
+      this.query.period = getDefaultPeriod();
+    }
   }
 
   async fetchAndReplaceOrgUnitCodes() {

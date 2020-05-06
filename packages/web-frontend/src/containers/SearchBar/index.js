@@ -11,6 +11,8 @@
  * Container providing all the controls for user: login, logout, info, account
  */
 
+import FacilityIcon from 'material-ui/svg-icons/maps/local-hospital';
+import SearchIcon from 'material-ui/svg-icons/action/search';
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { isNull } from 'lodash';
@@ -18,15 +20,13 @@ import { connect } from 'react-redux';
 import { List, ListItem } from 'material-ui/List';
 import { ControlBar } from '../../components/ControlBar';
 import { HierarchyItem } from '../../components/HierarchyItem';
-import FacilityIcon from 'material-ui/svg-icons/maps/local-hospital';
-import SearchIcon from 'material-ui/svg-icons/action/search';
+import { selectOrgUnitsAsHierarchy } from '../../selectors';
 import {
   changeSearch,
   toggleSearchExpand,
   changeOrgUnit,
-  highlightOrgUnit,
-  fetchHierarchyNestedItems,
   openMapPopup,
+  requestOrgUnit,
 } from '../../actions';
 
 const styles = {
@@ -74,7 +74,6 @@ const styles = {
 const ICON_BY_ORG_UNIT_TYPE = {
   Facility: FacilityIcon,
 };
-const LEAF_ORG_UNIT_TYPE = 'Village';
 
 export class SearchBar extends PureComponent {
   constructor(props) {
@@ -85,9 +84,9 @@ export class SearchBar extends PureComponent {
     };
   }
 
-  componentWillMount(props) {
+  componentWillMount() {
     const { hierarchyData, getNestedOrgUnits } = this.props;
-    if (!hierarchyData || !Array.isArray(hierarchyData) || hierarchyData.length < 1) {
+    if (!hierarchyData || !Array.isArray(hierarchyData) || hierarchyData.length < 2) {
       getNestedOrgUnits('World');
     }
   }
@@ -119,48 +118,45 @@ export class SearchBar extends PureComponent {
   }
 
   renderHierarchy() {
-    const { hierarchyData, onOrgUnitClick, onOrgHighlight, getNestedOrgUnits } = this.props;
+    const { hierarchyData, onOrgUnitClick, orgUnitFetchError } = this.props;
+
     if (isNull(hierarchyData))
       return <div style={styles.searchResponseText}>Loading countries...</div>;
-    if (!Array.isArray(hierarchyData)) return <h2>Server error, try refresh</h2>;
-    if (hierarchyData.length < 1) return;
+    if (orgUnitFetchError) return <h2>Server error, try refresh</h2>;
+    if (hierarchyData.length < 1) return null;
 
     const recurseOrgUnits = (orgUnits, nestedMargin) => {
       if (!orgUnits || orgUnits.length < 1) return []; // OrgUnits with no children are our recursive base case
       return orgUnits.map(orgUnit => {
-        const { organisationUnitCode, name, type, organisationUnitChildren } = orgUnit;
-
+        const { organisationUnitCode, name, type, isLoading, organisationUnitChildren } = orgUnit;
         // Recursively generate the children for this OrgUnit, will not recurse whole tree as
         // HierarchyItems only fetch their children data on componentWillMount
-        const nestedItems = recurseOrgUnits(organisationUnitChildren);
-        let willMountFunc;
-        if (!nestedItems || nestedItems.length < 1) {
-          willMountFunc = () => getNestedOrgUnits(organisationUnitCode);
-        }
-
+        const nestedItems = recurseOrgUnits(
+          sortOrgUnitsAlphabeticallyByName(organisationUnitChildren),
+        );
         return (
           <HierarchyItem
             key={organisationUnitCode}
             label={name}
             nestedMargin={nestedMargin}
             nestedItems={nestedItems}
-            hasNestedItems={type !== LEAF_ORG_UNIT_TYPE}
+            hasNestedItems={
+              type === 'Country' || (organisationUnitChildren && organisationUnitChildren.length)
+            }
+            isLoading={isLoading}
             Icon={ICON_BY_ORG_UNIT_TYPE[type]}
             onClick={() => onOrgUnitClick(organisationUnitCode)}
-            onMouseEnter={() => onOrgHighlight(orgUnit)}
-            onMouseLeave={() => onOrgHighlight()}
-            willMountFunc={willMountFunc}
           />
         );
       });
     };
 
-    const hierarchy = recurseOrgUnits(hierarchyData, '0px');
+    const hierarchy = recurseOrgUnits(sortOrgUnitsAlphabeticallyByName(hierarchyData), '0px');
     return <List style={styles.heirarchyItem}>{hierarchy}</List>;
   }
 
   render() {
-    const { isExpanded, onSearchChange, onSearchFocus, onExpandClick } = this.props;
+    const { isExpanded, onSearchChange, onSearchFocus, onSearchBlur, onExpandClick } = this.props;
     const { isSafeToCloseResults } = this.state;
     const SearchResultsComponent = isExpanded && this.renderSearchResults();
     return (
@@ -168,13 +164,13 @@ export class SearchBar extends PureComponent {
         <ControlBar
           onSearchChange={onSearchChange}
           onSearchFocus={onSearchFocus}
-          onControlBlur={() => this.props.onSearchBlur(isExpanded, isSafeToCloseResults)}
+          onControlBlur={() => onSearchBlur(isExpanded, isSafeToCloseResults)}
           isExpanded={isExpanded}
           onExpandClick={() => onExpandClick()}
           hintText="Search Location"
           style={styles.controlBar}
           icon={<SearchIcon />}
-          inTopBar={true}
+          inTopBar
         >
           <div
             onMouseLeave={() => this.setState({ isSafeToCloseResults: true })}
@@ -189,27 +185,51 @@ export class SearchBar extends PureComponent {
   }
 }
 
+const sortOrgUnitsAlphabeticallyByName = orgUnits => {
+  //Sort countries alphabetically, this may not be the case if one country was loaded first
+  return orgUnits.concat().sort((data1, data2) => {
+    if (data1.name > data2.name) return 1;
+    if (data1.name < data2.name) return -1;
+    return 0;
+  });
+};
+
 SearchBar.propTypes = {
-  searchResponse: PropTypes.arrayOf(PropTypes.object),
-  hierarchyData: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.object), PropTypes.object]),
-  isExpanded: PropTypes.bool,
-  onSearchChange: PropTypes.func,
   onExpandClick: PropTypes.func.isRequired,
   onOrgUnitClick: PropTypes.func.isRequired,
-  onOrgHighlight: PropTypes.func.isRequired,
   getNestedOrgUnits: PropTypes.func.isRequired,
+  isExpanded: PropTypes.bool,
+  searchResponse: PropTypes.arrayOf(PropTypes.object),
+  hierarchyData: PropTypes.arrayOf(PropTypes.object),
+  searchString: PropTypes.string,
+  orgUnitFetchError: PropTypes.string,
+  onSearchChange: PropTypes.func,
   onSearchFocus: PropTypes.func,
+  onSearchBlur: PropTypes.func,
+};
+
+SearchBar.defaultProps = {
+  isExpanded: false,
+  searchResponse: null,
+  hierarchyData: null,
+  searchString: '',
+  orgUnitFetchError: '',
+  onSearchChange: undefined,
+  onSearchFocus: undefined,
+  onSearchBlur: undefined,
 };
 
 const mapStateToProps = state => {
-  const { isExpanded, searchResponse, searchString, hierarchyData } = state.searchBar;
-  return { isExpanded, searchResponse, searchString, hierarchyData };
+  const { isExpanded, searchResponse, searchString } = state.searchBar;
+  const { orgUnitFetchError, orgUnitMap } = state.orgUnits;
+  const hierarchyData = orgUnitMap ? selectOrgUnitsAsHierarchy(state).organisationUnitChildren : [];
+  return { isExpanded, searchResponse, searchString, hierarchyData, orgUnitFetchError };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     onSearchChange: event => dispatch(changeSearch(event.target.value)),
-    onSearchFocus: event => dispatch(toggleSearchExpand(true)),
+    onSearchFocus: () => dispatch(toggleSearchExpand(true)),
     onExpandClick: () => dispatch(toggleSearchExpand()),
     onSearchBlur: (isExpanded, isSafeToCloseResults) =>
       isExpanded && isSafeToCloseResults && dispatch(toggleSearchExpand()),
@@ -217,8 +237,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(changeOrgUnit(organisationUnitCode));
       dispatch(openMapPopup(organisationUnitCode));
     },
-    onOrgHighlight: orgUnit => dispatch(highlightOrgUnit(orgUnit)),
-    getNestedOrgUnits: orgUnitCode => dispatch(fetchHierarchyNestedItems(orgUnitCode)),
+    getNestedOrgUnits: organisationUnitCode => dispatch(requestOrgUnit(organisationUnitCode)),
   };
 };
 
