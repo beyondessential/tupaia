@@ -5,13 +5,19 @@
 
 import { expect } from 'chai';
 import { TestableApp } from '../TestableApp';
-import { createEntity, createDataElement, createAlert, generateTestId } from '../testUtilities';
+import {
+  createEntity,
+  createDataElement,
+  createAlert,
+  generateTestId,
+  resetTestData,
+} from '../testUtilities';
 
 describe('Alerts CRUD', () => {
   const app = new TestableApp();
   const models = app.models;
 
-  before(app.authenticate);
+  beforeEach(app.authenticate);
 
   describe('Create: POST /alerts', () => {
     it('creates an alert', async () => {
@@ -116,4 +122,6 @@ describe('Alerts CRUD', () => {
       expect(deletedAlert.length).to.equal(0);
     });
   });
+
+  afterEach(resetTestData);
 });
