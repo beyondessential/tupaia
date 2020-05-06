@@ -68,7 +68,7 @@ describe('DataBroker', () => {
     it('should throw an error if no code is provided', async () =>
       Promise.all(
         [{}, { type: 'dataElement' }, { code: '' }, { code: [] }].map(dataSourceSpec =>
-          expect(new DataBroker().pull(dataSourceSpec, options)).to.eventually.be.rejectedWith(
+          expect(new DataBroker().pull(dataSourceSpec, options)).to.be.rejectedWith(
             /Please provide.*data source/,
           ),
         ),
