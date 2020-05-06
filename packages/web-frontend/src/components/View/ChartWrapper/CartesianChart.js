@@ -406,11 +406,11 @@ export class CartesianChart extends PureComponent {
 
   renderLegend = () => {
     const { isEnlarged, viewContent } = this.props;
-    const { chartConfig } = viewContent;
+    const { chartConfig, renderLegendForOneItem } = viewContent;
     const hasDataSeries = chartConfig && Object.keys(chartConfig).length > 1;
 
     return (
-      hasDataSeries &&
+      (hasDataSeries || renderLegendForOneItem) &&
       isEnlarged && <Legend onClick={this.onLegendClick} formatter={this.formatLegend} />
     );
   };
