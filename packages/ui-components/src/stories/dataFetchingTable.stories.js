@@ -48,7 +48,7 @@ const FakeHeader = () => {
 /*
  * CountrySubTable
  */
-const CountrySubTable = () => {
+const CountrySubTable = props => {
   const CountryWeekTitle = styled.div`
     color: ${COLORS.BLUE};
     font-weight: 500;
@@ -64,7 +64,6 @@ const CountrySubTable = () => {
   `;
 
   const getCountryWeekTitle = data => {
-    // console.log('data', data);
     return (
       <React.Fragment>
         <CountryWeekTitle>{`Week ${data.week}`}</CountryWeekTitle>
@@ -115,6 +114,7 @@ const CountrySubTable = () => {
       <FakeHeader />
       <DataFetchingTable
         endpoint="country-weeks"
+        fetchOptions={{ filterId: props.rowData.uid }}
         columns={countryWeekColumns}
         Header={false}
         Body={NestedTableBody}

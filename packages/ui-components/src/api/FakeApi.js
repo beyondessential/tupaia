@@ -12,7 +12,8 @@ export class FakeAPI {
     });
   }
 
-  async get(endpoint) {
+  async get(endpoint, options) {
+    console.log('options', options);
     const data = [];
 
     // Create users

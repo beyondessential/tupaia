@@ -128,7 +128,7 @@ DumbDataFetchingTable.defaultProps = {
   initialSort: { order: 'asc', orderBy: undefined },
 };
 
-function mapApiToProps(api, dispatch, { endpoint, fetchOptions }) {
+function mapApiToProps(api, { endpoint, fetchOptions }) {
   return {
     fetchData: queryParameters => api.get(endpoint, { ...fetchOptions, ...queryParameters }),
   };
