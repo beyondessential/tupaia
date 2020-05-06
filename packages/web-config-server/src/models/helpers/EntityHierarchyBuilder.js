@@ -76,12 +76,17 @@ export class EntityHierarchyBuilder {
       : [];
     const childIds = hierarchyLinks.map(l => l.child_id);
 
-    return childIds.length > 0
-      ? this.models.entity.find({ id: childIds })
-      : this.models.entity.find({ parent_id: parentIds });
+    if (childIds.length > 0) {
+      return this.models.entity.find({ id: childIds });
+    }
+
+    const types = Object.values(this.models.entity.orgUnitEntityTypes);
+    const canonicalChildren = await this.models.entity.find({ parent_id: parentIds });
+    return canonicalChildren.filter(entity => types.includes(entity.type));
   };
 
   async getDescendantsCanonically(entityId) {
+    const types = Object.values(this.models.entity.orgUnitEntityTypes);
     const records = await this.models.entity.database.executeSql(
       `
         WITH RECURSIVE descendants AS (
@@ -101,10 +106,13 @@ export class EntityHierarchyBuilder {
       [entityId],
     );
 
-    return records.map(record => this.models.entity.load(record));
+    return records
+      .filter(entity => types.includes(entity.type))
+      .map(record => this.models.entity.load(record));
   }
 
   async getChildrenCanonically(entityId) {
+    const types = Object.values(this.models.entity.orgUnitEntityTypes);
     const records = await this.models.entity.database.executeSql(
       `
       SELECT ${this.models.entity.getSqlForColumns()} FROM entity
@@ -114,6 +122,8 @@ export class EntityHierarchyBuilder {
     `,
       [entityId],
     );
-    return records.map(record => this.models.entity.load(record));
+    return records
+      .filter(entity => types.includes(entity.type))
+      .map(record => this.models.entity.load(record));
   }
 }

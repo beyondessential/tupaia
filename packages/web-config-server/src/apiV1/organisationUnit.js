@@ -4,10 +4,9 @@
  */
 
 import { reduceToDictionary } from '@tupaia/utils';
-import { Entity, EntityHierarchy, EntityRelation } from '/models';
+import { Project, Entity, EntityHierarchy, EntityRelation } from '/models';
 import { RouteHandler } from './RouteHandler';
 import { PermissionsChecker } from './permissions';
-import { Project } from '../models';
 
 const translateDescendantForFrontEnd = (descendant, childIdToParentId, entityIdToCode) => ({
   ...descendant.translateForFrontend(),
@@ -64,10 +63,7 @@ export default class extends RouteHandler {
 
     // Don't check parent permission (as we already know we have permission for at least one of its children)
     const parent = await this.entity.parent();
-    const allChildren = hierarchy
-      ? await this.entity.getChildren(hierarchy.id)
-      : await this.entity.getOrgUnitChildren();
-
+    const allChildren = await this.entity.getChildren(hierarchy.id);
     const children = await this.filterForAccess(allChildren);
 
     return {
