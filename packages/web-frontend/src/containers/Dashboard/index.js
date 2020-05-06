@@ -80,7 +80,7 @@ export class Dashboard extends Component {
     // If the organisation is the redux default, the location contains a point coordinate,
     // instead of bounds, or the current org unit is the world render the default world map.
     const useWorldBounds =
-      !(location && location.bounds) || currentOrganisationUnit.organisationUnitCode === 'explore';
+      !(location && location.bounds) || currentOrganisationUnit.type === 'Project';
     const mapWidth = contractedWidth - DASHBOARD_META_MARGIN * 2;
     return (
       <StaticMap
