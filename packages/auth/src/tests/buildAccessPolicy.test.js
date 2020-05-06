@@ -107,8 +107,8 @@ describe('buildAccessPolicy', () => {
 
     before(async () => {
       const user = await upsertDummyRecord(models.user);
-      const adminPermission = await findOrCreateDummyRecord(models.permissionGroup, {
-        name: 'Admin',
+      const publicPermission = await findOrCreateDummyRecord(models.permissionGroup, {
+        name: 'Public',
       });
 
       // Create a facility nested deep within a new country
@@ -178,13 +178,13 @@ describe('buildAccessPolicy', () => {
       await upsertDummyRecord(models.userEntityPermission, {
         user_id: user.id,
         entity_id: mountSinai.id,
-        permission_group_id: adminPermission.id,
+        permission_group_id: publicPermission.id,
       });
 
       await upsertDummyRecord(models.userEntityPermission, {
         user_id: user.id,
         entity_id: ottawa.id,
-        permission_group_id: adminPermission.id,
+        permission_group_id: publicPermission.id,
       });
 
       accessPolicy = await buildAccessPolicy(models, user.id);
@@ -192,12 +192,12 @@ describe('buildAccessPolicy', () => {
 
     it('should have Mount Sinai admin permissions', async () => {
       const mountSinaiPermissions = accessPolicy.CA_OT_TO_MS;
-      expect(mountSinaiPermissions).to.include('Admin');
+      expect(mountSinaiPermissions).to.deep.equal(['Public']);
     });
 
     it('should have Ottawa admin permissions', async () => {
       const ottawaPermissions = accessPolicy.CA_OT_OT;
-      expect(ottawaPermissions).to.include('Admin');
+      expect(ottawaPermissions).to.deep.equal(['Public']);
     });
 
     it('should not have Toronto permissions', async () => {

@@ -25,6 +25,11 @@ describe('AccessPolicyBuilder', () => {
     sinon.stub(BuildLegacyAccessPolicy, 'buildLegacyAccessPolicy').resolves();
   });
 
+  after(() => {
+    BuildAccessPolicy.buildAccessPolicy.restore();
+    BuildLegacyAccessPolicy.buildLegacyAccessPolicy.restore();
+  });
+
   afterEach(() => {
     BuildAccessPolicy.buildAccessPolicy.resetHistory();
     BuildLegacyAccessPolicy.buildLegacyAccessPolicy.resetHistory();
