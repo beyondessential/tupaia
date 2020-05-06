@@ -533,7 +533,7 @@ function* watchOrgUnitChangeAndFetchDashboard() {
 
 function* fetchViewData(parameters, errorHandler) {
   const { infoViewKey } = parameters;
-  const projectCode = selectActiveProject(yield select()).code;
+  const projectCode = yield select(selectActiveProject).code;
 
   // If the view should be constrained to a date range and isn't, constrain it
   const { startDate, endDate } =
@@ -665,7 +665,7 @@ function* fetchMeasureInfo(measureId, organisationUnitCode, oldOrgUnitCountry = 
 
     return;
   }
-  const state = yield select();
+
   const project = selectActiveProject(state);
   const country = selectOrgUnitCountry(state, organisationUnitCode);
   const countryCode = country ? country.organisationUnitCode : undefined;
@@ -678,9 +678,13 @@ function* fetchMeasureInfo(measureId, organisationUnitCode, oldOrgUnitCountry = 
     yield put(clearMeasureHierarchy());
   }
 
-  const requestResourceUrl = `measureData?organisationUnitCode=${organisationUnitCode}&measureId=${measureId}&shouldShowAllParentCountryResults=${!isMobile()}&projectCode=${
-    project.code
-  }`;
+  const urlParameters = {
+    organisationUnitCode,
+    measureId,
+    shouldShowAllParentCountryResults: !isMobile(),
+    projectCode: project.code,
+  };
+  const requestResourceUrl = `measureData?${queryString.stringify(urlParameters)}`;
 
   try {
     const measureInfoResponse = yield call(request, requestResourceUrl);
