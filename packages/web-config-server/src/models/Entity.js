@@ -101,7 +101,6 @@ export class Entity extends BaseModel {
 
   static orgUnitEntityTypes = {
     WORLD,
-    PROJECT,
     COUNTRY,
     DISTRICT,
     SUB_DISTRICT,

@@ -443,13 +443,13 @@ function* fetchOrgUnitData(organisationUnitCode, projectCode) {
 
 function* requestOrgUnit(action) {
   const state = yield select();
-  const { organisationUnitCode = state.project.active.code } = action;
+  const { organisationUnitCode = selectActiveProject(state).code } = action;
   const orgUnit = selectOrgUnit(state, organisationUnitCode);
   if (orgUnit && orgUnit.isComplete) {
     return; // If we already have the complete org unit in reduxStore, just exit early
   }
 
-  yield fetchOrgUnitData(organisationUnitCode, state.project.active.code);
+  yield fetchOrgUnitData(organisationUnitCode, selectActiveProject(state).code);
 }
 
 function* fetchOrgUnitDataAndChangeOrgUnit(action) {
@@ -467,7 +467,10 @@ function* fetchOrgUnitDataAndChangeOrgUnit(action) {
   }
 
   try {
-    const orgUnitData = yield fetchOrgUnitData(organisationUnitCode, state.project.active.code);
+    const orgUnitData = yield fetchOrgUnitData(
+      organisationUnitCode,
+      selectActiveProject(state).code,
+    );
     yield put(
       changeOrgUnitSuccess(
         normaliseCountryHierarchyOrgUnitData(orgUnitData),

@@ -33,6 +33,8 @@ import {
   findLoggedIn,
 } from '../actions';
 
+import { selectActiveProject } from '../selectors';
+
 import { gaPageView } from '.';
 import { selectProject } from '../projects/actions';
 
@@ -101,7 +103,7 @@ export function createUrlForAppState(state) {
   const reportId = state.enlargedDialog.viewContent.viewId;
   const userPage = '';
 
-  const project = state.project.active.code;
+  const project = selectActiveProject(state).code;
 
   return createUrl({
     dashboardId,
@@ -229,7 +231,7 @@ function reactToHistory(location, store) {
     }
   }
 
-  if (project !== state.project.active.code) {
+  if (project !== selectActiveProject(state).code) {
     dispatch(selectProject({ code: project }));
   }
 }

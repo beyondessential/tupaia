@@ -111,7 +111,7 @@ export const selectOrgUnitCountry = createSelector(
 
 export const selectOrgUnitChildren = createSelector(
   [
-    state => state.project.active.code,
+    state => selectActiveProject(state).code,
     state => selectCountriesAsOrgUnits(state),
     (state, code) => safeGet(countryCache, [state.orgUnits.orgUnitMap, code]),
     (_, code) => code,
@@ -153,7 +153,7 @@ export const selectHasPolygonMeasure = createSelector(
 
 export const selectAllMeasuresWithDisplayInfo = createSelector(
   [
-    state => state.project.active.code,
+    state => selectActiveProject(state).code,
     state =>
       safeGet(countryCache, [state.orgUnits.orgUnitMap, state.map.measureInfo.currentCountry]),
     state => state.map.measureInfo.measureData,
@@ -223,7 +223,7 @@ export const selectCurrentDashboardKey = createSelector(
 
 export const selectIsProject = createSelector(
   [state => state.project.projects, (_, code) => code],
-  (projects, code) => projects.map(project => project.code).includes(code),
+  (projects, code) => projects.some(project => project.code === code),
 );
 
 export const selectProjectByCode = (state, code) =>

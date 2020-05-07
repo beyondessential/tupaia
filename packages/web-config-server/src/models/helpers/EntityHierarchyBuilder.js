@@ -34,19 +34,15 @@ export class EntityHierarchyBuilder {
   }
 
   async getChildren(entityId, hierarchyId) {
-    if (hierarchyId) {
-      return this.getNextGeneration([{ id: entityId }], hierarchyId);
-    }
-    // no alternative hierarchy prescribed, use the faster all-in-one sql query
-    return this.getChildrenCanonically(entityId);
+    return this.getNextGeneration([{ id: entityId }], hierarchyId);
   }
 
   /**
    * Recursively traverse the alternative hierarchy that begins with the specified parents.
    * At each generation, choose children via 'entity_relation' if any exist, or the canonical
    * entity.parent_id if none do
-   * @param {object[]} entityId          The entity to start at
-   * @param {string} hierarchyId         The specific hierarchy to follow through entity_relation
+   * @param {string} entityId      The entity to start at
+   * @param {string} hierarchyId   The specific hierarchy to follow through entity_relation
    */
   async getDescendantsNonCanonically(entityId, hierarchyId) {
     return this.recurseNonCononicalHierarchy([{ id: entityId }], hierarchyId);
@@ -80,19 +76,18 @@ export class EntityHierarchyBuilder {
       return this.models.entity.find({ id: childIds });
     }
 
-    const types = Object.values(this.models.entity.orgUnitEntityTypes);
-    const canonicalChildren = await this.models.entity.find({ parent_id: parentIds });
-    return canonicalChildren.filter(entity => types.includes(entity.type));
+    const canonicalTypes = Object.values(this.models.entity.orgUnitEntityTypes);
+    return this.models.entity.find({ parent_id: parentIds, type: canonicalTypes });
   };
 
   async getDescendantsCanonically(entityId) {
-    const types = Object.values(this.models.entity.orgUnitEntityTypes);
-    const records = await this.models.entity.database.executeSql(
+    const canonicalTypes = Object.values(this.models.entity.orgUnitEntityTypes).join("','");
+    return this.models.entity.database.executeSql(
       `
         WITH RECURSIVE descendants AS (
           SELECT *, 0 AS generation
             FROM entity
-            WHERE parent_id = ?
+            WHERE parent_id = ? AND type IN ('${canonicalTypes}')
 
           UNION ALL
           SELECT c.*, d.generation + 1
@@ -105,25 +100,5 @@ export class EntityHierarchyBuilder {
     `,
       [entityId],
     );
-
-    return records
-      .filter(entity => types.includes(entity.type))
-      .map(record => this.models.entity.load(record));
-  }
-
-  async getChildrenCanonically(entityId) {
-    const types = Object.values(this.models.entity.orgUnitEntityTypes);
-    const records = await this.models.entity.database.executeSql(
-      `
-      SELECT ${this.models.entity.getSqlForColumns()} FROM entity
-      WHERE
-        parent_id = ?
-      ORDER BY name;
-    `,
-      [entityId],
-    );
-    return records
-      .filter(entity => types.includes(entity.type))
-      .map(record => this.models.entity.load(record));
   }
 }
