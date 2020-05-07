@@ -31,9 +31,7 @@ describe('transform', () => {
 
   describe('transformValue()', () => {
     it('should throw an error for an invalid transformation type', async () =>
-      expect(transformValue('invalidType')).to.eventually.be.rejectedWith(
-        'Invalid transformation',
-      ));
+      expect(transformValue('invalidType')).to.be.rejectedWith('Invalid transformation'));
 
     describe('transformation: orgUnitCodeToName', () => {
       it('should return the name of an org unit given its code', async () =>
