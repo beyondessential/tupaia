@@ -8,7 +8,6 @@ import pickBy from 'lodash.pickby';
 import sinon from 'sinon';
 
 import { Aggregator } from '/aggregator';
-import { tableOfDataValues } from '/apiV1/dataBuilders';
 import { DATA_ELEMENTS } from './tableOfDataValues.fixtures';
 
 const query = { organisationUnitCode: 'TO' };
@@ -47,26 +46,26 @@ const createAggregatorStub = dataValues => {
   return sinon.createStubInstance(Aggregator, { fetchAnalytics, fetchDataElements });
 };
 
-export const createAssertTableResults = availableDataValues => {
+export const createAssertTableResults = (table, availableDataValues) => {
   const aggregator = createAggregatorStub(availableDataValues);
   const dhisApi = {};
 
   return async (tableConfig, expectedResults) => {
     const dataBuilderConfig = { ...tableConfig, dataServices };
     return expect(
-      tableOfDataValues({ dataBuilderConfig, query }, aggregator, dhisApi),
+      table({ dataBuilderConfig, query }, aggregator, dhisApi),
     ).to.eventually.deep.equal({ period, ...expectedResults });
   };
 };
 
-export const createAssertErrorIsThrown = availableDataValues => {
+export const createAssertErrorIsThrown = (table, availableDataValues) => {
   const aggregator = createAggregatorStub(availableDataValues);
   const dhisApi = {};
 
   return async (tableConfig, expectedError) => {
     const dataBuilderConfig = { ...tableConfig, dataServices };
-    return expect(
-      tableOfDataValues({ dataBuilderConfig, query }, aggregator, dhisApi),
-    ).to.eventually.be.rejectedWith(expectedError);
+    return expect(table({ dataBuilderConfig, query }, aggregator, dhisApi)).to.be.rejectedWith(
+      expectedError,
+    );
   };
 };

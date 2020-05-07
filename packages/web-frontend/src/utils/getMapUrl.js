@@ -5,14 +5,16 @@
  * found in the LICENSE file in the root directory of this source tree.
  */
 
-import { getCenterAndZoomForBounds } from './';
+import { getCenterAndZoomForBounds } from '.';
 
 export const getMapUrl = orgUnit => {
   if (!orgUnit || !orgUnit.location) {
     return '';
   }
 
-  let latitude, longitude, mapZoom;
+  let latitude;
+  let longitude;
+  let mapZoom;
 
   const { bounds } = orgUnit.location;
   if (bounds && bounds.length > 0) {
@@ -34,7 +36,5 @@ export const getMapUrl = orgUnit => {
     return '';
   }
 
-  return `https://maps.google.com/?q=${latitude},${longitude}+(${
-    orgUnit.name
-  })&ll=${latitude},${longitude}&z=${mapZoom}`;
+  return `https://maps.google.com/?q=${latitude},${longitude}+(${orgUnit.name})&ll=${latitude},${longitude}&z=${mapZoom}`;
 };

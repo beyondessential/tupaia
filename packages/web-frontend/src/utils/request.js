@@ -28,23 +28,24 @@ function getStatus(error, defaultStatus = 500) {
  */
 function assignErrorAction(error, defaultErrorFunction, alwaysUseSuppliedErrorFunction = false) {
   const status = getStatus(error);
+  const modifiedError = error;
 
   if (alwaysUseSuppliedErrorFunction) {
-    error.errorFunction = defaultErrorFunction;
-    return error;
+    modifiedError.errorFunction = defaultErrorFunction;
+    return modifiedError;
   }
 
   switch (status) {
     case 440:
-      error.errorFunction = showSessionExpiredError;
+      modifiedError.errorFunction = showSessionExpiredError;
       break;
     case 500:
-      error.errorFunction = showServerUnreachableError;
+      modifiedError.errorFunction = showServerUnreachableError;
       break;
     default:
-      error.errorFunction = defaultErrorFunction;
+      modifiedError.errorFunction = defaultErrorFunction;
   }
-  return error;
+  return modifiedError;
 }
 
 const inFlightRequests = {};

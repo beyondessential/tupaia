@@ -157,7 +157,7 @@ export const testPull = () => {
           'dataGroup',
           basicOptions,
         ),
-      ).to.eventually.be.rejectedWith(/Cannot .*multiple programs/));
+      ).to.be.rejectedWith(/Cannot .*multiple programs/));
 
     describe('DHIS API invocation', () => {
       const assertEventsApiWasInvokedCorrectly = async ({

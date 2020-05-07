@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-one-expression-per-line */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -29,7 +30,8 @@ const NoDataLabel = ({ noDataColour, handleClick, valueMapping, hiddenMeasures, 
   return (
     <div style={iconStyle} onClick={() => handleClick(dataKey, name, !hidden)}>
       {' '}
-      {getMarkerForOption(LEGEND_SHADING_ICON, noDataLegendColour)} No data{' '}
+      {getMarkerForOption(LEGEND_SHADING_ICON, noDataLegendColour)}
+      No data{' '}
     </div>
   );
 };
@@ -60,7 +62,4 @@ NoDataLabel.propTypes = {
   dataKey: PropTypes.string.isRequired,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(NoDataLabel);
+export default connect(mapStateToProps, mapDispatchToProps)(NoDataLabel);
