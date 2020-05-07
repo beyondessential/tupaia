@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import MuiTable from '@material-ui/core/Table';
@@ -156,9 +156,9 @@ TableRow.defaultProps = {
 const ExpandableTableRow = React.memo(({ columns, rowData, SubComponent }) => {
   const [expanded, setExpanded] = useState(false);
 
-  const handleClick = () => {
-    setExpanded(!expanded);
-  };
+  const handleClick = useCallback(() => {
+    setExpanded(prevExpanded => !prevExpanded);
+  }, []);
 
   const row = (
     <StyledTableRow onClick={handleClick}>
@@ -350,13 +350,14 @@ TableHeader.defaultProps = {
 /*
  * TablePaginator Component
  */
+const ROWS_PER_PAGE_OPTIONS = [10, 25, 50];
+
 export const TablePaginator = React.memo(
   ({
     columns,
     page,
     count,
     rowsPerPage,
-    rowsPerPageOptions,
     onChangePage,
     onChangeRowsPerPage,
   }) => {
@@ -364,20 +365,26 @@ export const TablePaginator = React.memo(
       return null;
     }
 
-    const handleChangePage = (event, newPage) => {
-      if (onChangePage) onChangePage(newPage);
-    };
+    const handleChangePage = useCallback(
+      (event, newPage) => {
+        if (onChangePage) onChangePage(newPage);
+      },
+      [onChangePage],
+    );
 
-    const handleChangeRowsPerPage = event => {
-      const newRowsPerPage = parseInt(event.target.value, 10);
-      if (onChangeRowsPerPage) onChangeRowsPerPage(newRowsPerPage);
-    };
+    const handleChangeRowsPerPage = useCallback(
+      event => {
+        const newRowsPerPage = parseInt(event.target.value, 10);
+        if (onChangeRowsPerPage) onChangeRowsPerPage(newRowsPerPage);
+      },
+      [onChangeRowsPerPage],
+    );
 
     return (
       <MuiTableFooter>
         <MuiTableRow>
           <MuiTablePagination
-            rowsPerPageOptions={rowsPerPageOptions}
+            rowsPerPageOptions={ROWS_PER_PAGE_OPTIONS}
             colSpan={columns.length}
             page={page}
             count={count}
@@ -398,7 +405,6 @@ TablePaginator.propTypes = {
   onChangeRowsPerPage: PropTypes.func,
   page: PropTypes.number,
   rowsPerPage: PropTypes.number,
-  rowsPerPageOptions: PropTypes.arrayOf(PropTypes.number),
 };
 
 TablePaginator.defaultProps = {
@@ -407,7 +413,6 @@ TablePaginator.defaultProps = {
   onChangeRowsPerPage: null,
   page: null,
   rowsPerPage: 10,
-  rowsPerPageOptions: [10, 25, 50],
 };
 
 /*
@@ -485,7 +490,6 @@ export const Table = React.memo(
     order,
     page,
     rowsPerPage,
-    rowsPerPageOptions,
   }) => (
     <StyledTable>
       {Header && <Header {...{ columns, order, orderBy, onChangeOrderBy }} />}
@@ -513,7 +517,6 @@ export const Table = React.memo(
           page,
           count,
           rowsPerPage,
-          rowsPerPageOptions,
           onChangePage,
           onChangeRowsPerPage,
         }}
@@ -540,7 +543,6 @@ Table.propTypes = {
   order: PropTypes.string,
   page: PropTypes.number,
   rowsPerPage: PropTypes.number,
-  rowsPerPageOptions: PropTypes.arrayOf(PropTypes.number),
 };
 
 Table.defaultProps = {
@@ -559,5 +561,4 @@ Table.defaultProps = {
   order: 'asc',
   page: null,
   rowsPerPage: 10,
-  rowsPerPageOptions: [10, 25, 50],
 };

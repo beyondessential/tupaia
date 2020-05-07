@@ -34,7 +34,7 @@ export const NameAccessor = ({ week, startDate, endDate }) => {
 };
 
 NameAccessor.propTypes = {
-  week: PropTypes.string.isRequired,
+  week: PropTypes.number.isRequired,
   startDate: PropTypes.instanceOf(Date).isRequired,
   endDate: PropTypes.instanceOf(Date).isRequired,
 };

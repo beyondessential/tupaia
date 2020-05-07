@@ -8,7 +8,8 @@ import PropTypes from 'prop-types';
 import { Table } from './Table';
 import { connectApi } from '../api';
 
-const ROWS_PER_PAGE_OPTIONS = [10, 25, 50];
+const DEFAULT_ROWS_PER_PAGE = 10;
+const DEFAULT_FETCH_STATE = { data: [], count: 0, errorMessage: '', isLoading: true };
 
 /*
  * DumbDataFetchingTable Component
@@ -28,10 +29,9 @@ export const DumbDataFetchingTable = memo(
     initialSort,
   }) => {
     const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(ROWS_PER_PAGE_OPTIONS[0]);
+    const [rowsPerPage, setRowsPerPage] = useState(DEFAULT_ROWS_PER_PAGE);
     const [sorting, setSorting] = useState(initialSort);
-    const defaultFetchState = { data: [], count: 0, errorMessage: '', isLoading: true };
-    const [fetchState, setFetchState] = useState(defaultFetchState);
+    const [fetchState, setFetchState] = useState(DEFAULT_FETCH_STATE);
 
     const handleChangeOrderBy = useCallback(
       columnKey => {
@@ -44,7 +44,8 @@ export const DumbDataFetchingTable = memo(
     );
 
     useEffect(() => {
-      let updateFetchState = newFetchState => setFetchState({ ...fetchState, ...newFetchState });
+      let updateFetchState = newFetchState =>
+        setFetchState(prevFetchState => ({ ...prevFetchState, ...newFetchState }));
 
       updateFetchState({ isLoading: true });
       (async () => {
@@ -52,7 +53,7 @@ export const DumbDataFetchingTable = memo(
           const { data, count } = await fetchData({ page, rowsPerPage, ...sorting });
           const transformedData = transformRow ? data.map(transformRow) : data;
           updateFetchState({
-            ...defaultFetchState,
+            ...DEFAULT_FETCH_STATE,
             data: transformedData,
             count,
             isLoading: false,
@@ -87,7 +88,6 @@ export const DumbDataFetchingTable = memo(
         onChangeOrderBy={handleChangeOrderBy}
         order={order}
         orderBy={orderBy}
-        rowsPerPageOptions={ROWS_PER_PAGE_OPTIONS}
         noDataMessage={noDataMessage}
         SubComponent={SubComponent}
       />
