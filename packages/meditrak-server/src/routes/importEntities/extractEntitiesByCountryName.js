@@ -33,15 +33,15 @@ const geojsonParser = filePath => {
   return groupBy(entities, 'country_name');
 };
 
-const JSON_FIELDS = ['geojson', 'attributes'];
-
 const processXlsxRow = (row, { countryName }) => {
   const entity = { ...row, country_name: countryName };
-  JSON_FIELDS.forEach(fieldKey => {
-    if (entity[fieldKey] !== undefined) {
-      entity[fieldKey] = convertCellToJson(entity[fieldKey]);
-    }
-  });
+  const { geojson, attributes } = row;
+  if (geojson) {
+    entity.geojson = JSON.parse(geojson);
+  }
+  if (attributes) {
+    entity.attributes = convertCellToJson(attributes);
+  }
 
   return entity;
 };
