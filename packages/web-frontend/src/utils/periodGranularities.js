@@ -104,19 +104,16 @@ const getDefaultStartDate = defaultStartDate => {
 
 export function getDefaultDates(state, infoViewKey) {
   const { periodGranularity, defaultTimePeriod, defaultStartDate } = state.global.viewConfigs[infoViewKey];
+  const isSingleDate = GRANULARITIES_WITH_ONE_DATE.includes(periodGranularity);
   let startDate = moment();
   let endDate = startDate;
   if (
     defaultTimePeriod &&
     (defaultTimePeriod.format === 'days' || defaultTimePeriod.format === 'years')
   ) {
-    const isSingleDate = GRANULARITIES_WITH_ONE_DATE.includes(periodGranularity);
-
     if (isSingleDate) {
       startDate = moment().add(defaultTimePeriod.value, defaultTimePeriod.format);
       endDate = startDate;
-
-      return roundStartEndDates(periodGranularity, startDate, endDate);
     }
   } else if (defaultStartDate) {
     startDate = getDefaultStartDate(defaultStartDate);
@@ -126,5 +123,5 @@ export function getDefaultDates(state, infoViewKey) {
     }
   }
 
-  return {};
+  return isSingleDate ? roundStartEndDates(periodGranularity, startDate, endDate) : {};
 }

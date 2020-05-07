@@ -46,10 +46,23 @@ class PercentagesPerDataClassDataBuilder extends DataBuilder {
     const sumPerDataElementCode = await this.getSumPerDataElementCode(results);
 
     const { dataClasses } = this.config;
-    const data = Object.keys(dataClasses).map(dataClassKey => ({
-      name: dataClassKey,
-      value: this.calculateDataClassValue(dataClassKey, sumPerDataElementCode, dataElementMap),
-    }));
+
+    const data = Object.keys(dataClasses).map(dataClassKey => {
+      const { value, numerator, denominator } = this.calculateDataClassValue(
+        dataClassKey,
+        sumPerDataElementCode,
+        dataElementMap,
+      );
+
+      return {
+        name: dataClassKey,
+        value: value,
+        [`${dataClassKey}_metadata`]: {
+          numerator,
+          denominator,
+        },
+      };
+    });
     this.sortDataByName(data);
 
     return { data: this.areDataAvailable(data) ? data : [] };
@@ -104,7 +117,13 @@ class PercentagesPerDataClassDataBuilder extends DataBuilder {
     const denominatorValue = getValueForDataSource(`${dataClassKey} denominator`);
     const value = divideValues(numeratorValue, denominatorValue);
 
-    return range ? limitRange(value, range) : value;
+    const finalValue = range ? limitRange(value, range) : value;
+
+    return {
+      numerator: numeratorValue,
+      denominator: denominatorValue,
+      value: finalValue,
+    };
   }
 }
 

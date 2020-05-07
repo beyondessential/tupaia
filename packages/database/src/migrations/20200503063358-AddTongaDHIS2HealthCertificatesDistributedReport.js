@@ -60,7 +60,7 @@ const VIEW_JSON_CONFIG = {
   "name": "Health Certificates Distributed",
   "type": "chart",
   "chartType": "pie",
-  "valueType": "percentage",
+  "valueType": "fractionAndPercentage",
   "periodGranularity": "month",
   "defaultStartDate": "start_of_year" 
 };
