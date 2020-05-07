@@ -15,7 +15,7 @@ import { PieChart } from './PieChart';
 // Adds default colors for every element with no color defined
 const addDefaultsColorsToConfig = (chartType, chartConfig) => {
   const newConfig = {};
-  const palette = getColorPalette(chartType, chartConfig);
+  const palette = getColorPalette(chartType, Object.keys(chartConfig).length, false);
   const colors = Object.values(palette);
 
   let colorId = 0;
@@ -32,11 +32,11 @@ const addDefaultsColorsToConfig = (chartType, chartConfig) => {
   return newConfig;
 };
 
-const getColorPalette = (chartType, chartConfig) => {
+const getColorPalette = (chartType, numberRequired, useExpandedPalette) => {
   if (chartType === CHART_TYPES.COMPOSED) {
     return COMPOSED_CHART_COLOR_PALETTE;
   }
-  return Object.keys(chartConfig).length > Object.keys(CHART_COLOR_PALETTE).length
+  return numberRequired > Object.keys(CHART_COLOR_PALETTE).length && useExpandedPalette
     ? EXPANDED_CHART_COLOR_PALETTE
     : CHART_COLOR_PALETTE;
 };
@@ -58,21 +58,35 @@ const sortChartConfigByLegendOrder = chartConfig => {
     );
 };
 
-const getDefaultChartConfig = ({ data }) => {
-  const defaultConfig = {};
+const getDynamicChartConfig = viewContent => {
+  /*  dynamicChartConfig is of the form
+   *  {
+   *    baseConfig: { stackId: 1 } // will be added to every key
+   *  }
+   */
+  const { chartType, dynamicChartConfig, data } = viewContent;
+
+  // Just find keys. Doesn't include keys which end in _metadata.
   const keys = [];
   data.forEach(dataPoint => {
     const { timestamp, name, ...restOfData } = dataPoint;
     Object.keys(restOfData).forEach(key => {
-      if (!keys.includes(key)) {
+      if (!keys.includes(key) && !(key.substr(-9) === '_metadata')) {
         keys.push(key);
       }
     });
   });
-  keys.forEach(key => {
-    defaultConfig[key] = { stackId: 1 };
+
+  const palette = getColorPalette(chartType, keys.length, true);
+  const colors = Object.values(palette);
+
+  // Add config to each key
+  const chartConfig = {};
+  const baseConfig = dynamicChartConfig.baseConfig;
+  keys.forEach((key, index) => {
+    chartConfig[key] = { ...baseConfig, color: colors[index] };
   });
-  return defaultConfig;
+  return chartConfig;
 };
 
 const UnknownChart = () => (
@@ -84,14 +98,14 @@ const UnknownChart = () => (
 export class ChartWrapper extends PureComponent {
   getViewContent() {
     const { viewContent } = this.props;
-    const { chartConfig, chartType, useDefaultChartConfig } = viewContent;
+    const { chartConfig, chartType, dynamicChartConfig } = viewContent;
 
     if (!chartConfig) {
-      return useDefaultChartConfig
+      return dynamicChartConfig
         ? {
             ...viewContent,
             chartConfig: sortChartConfigByLegendOrder(
-              addDefaultsColorsToConfig(chartType, getDefaultChartConfig(viewContent)),
+              addDefaultsColorsToConfig(chartType, getDynamicChartConfig(viewContent)),
             ),
           }
         : { ...viewContent };

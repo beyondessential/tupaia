@@ -32,7 +32,11 @@ const REPORT = {
     name: 'Isolation Ward Admissions',
     type: 'chart',
     chartType: 'bar',
-    useDefaultChartConfig: true,
+    dynamicChartConfig: {
+      baseConfig: {
+        stackId: 1,
+      },
+    },
     renderLegendForOneItem: true,
     periodGranularity: 'month',
   },
