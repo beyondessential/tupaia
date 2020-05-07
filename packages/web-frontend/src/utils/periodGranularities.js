@@ -116,10 +116,10 @@ export function getDefaultDates(state, infoViewKey) {
       endDate = startDate;
     }
   } else if (defaultStartDate) {
-    startDate = getDefaultStartDate(defaultStartDate);
+    const defaultStartDateMoment = getDefaultStartDate(defaultStartDate);
 
-    if (startDate) {
-      return roundStartEndDates(periodGranularity, startDate, endDate);
+    if (defaultStartDateMoment) {
+      return roundStartEndDates(periodGranularity, defaultStartDateMoment, endDate);
     }
   }
 
