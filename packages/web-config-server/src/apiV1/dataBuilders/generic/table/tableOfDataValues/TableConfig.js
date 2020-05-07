@@ -14,7 +14,7 @@ const METADATA_FIELD_TRANSLATORS = {
   $orgUnitTypeName: async results => {
     const orgUnitCodes = results.map(({ organisationUnit }) => organisationUnit);
     const facilities = await Facility.find({ code: orgUnitCodes });
-    const types = new Map(facilities.map(fac => [fac.code, [fac.type_name, fac.categoryCode]]));
+    const types = new Map(facilities.map(fac => [fac.code, { typeName: fac.type_name, categoryCode: fac.categoryCode }]));
 
     const resultsWithType = results.map(res => {
       const fac = types.get(res.organisationUnit);
