@@ -8,6 +8,8 @@ import { groupBy } from 'lodash';
 import path from 'path';
 import xlsx from 'xlsx';
 
+import { convertCellToJson } from '../importSurveys/utilities';
+
 const geojsonParser = filePath => {
   const fileContents = fs.readFileSync(filePath, { encoding: 'utf-8' });
   const { features } = JSON.parse(fileContents);
@@ -31,22 +33,27 @@ const geojsonParser = filePath => {
   return groupBy(entities, 'country_name');
 };
 
-const xlsxParser = filePath => {
-  const rowToEntity = (row, { countryName }) => {
-    const entity = { ...row, country_name: countryName };
-    const { geojson } = row;
-    if (geojson) {
-      entity.geojson = JSON.parse(geojson);
+const JSON_FIELDS = ['geojson', 'attributes'];
+
+const processXlsxRow = (row, { countryName }) => {
+  const entity = { ...row, country_name: countryName };
+  JSON_FIELDS.forEach(fieldKey => {
+    if (entity[fieldKey] !== undefined) {
+      entity[fieldKey] = convertCellToJson(entity[fieldKey]);
     }
+  });
 
-    return entity;
-  };
+  return entity;
+};
 
+const xlsxParser = filePath => {
   const workbook = xlsx.readFile(filePath);
   return Object.entries(workbook.Sheets).reduce(
     (entitiesByCountry, [countryName, sheet]) => ({
       ...entitiesByCountry,
-      [countryName]: xlsx.utils.sheet_to_json(sheet).map(row => rowToEntity(row, { countryName })),
+      [countryName]: xlsx.utils
+        .sheet_to_json(sheet)
+        .map(row => processXlsxRow(row, { countryName })),
     }),
     {},
   );

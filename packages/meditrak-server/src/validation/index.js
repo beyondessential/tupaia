@@ -14,6 +14,7 @@ export {
   isNumber,
   isEmail,
   isPlainObject,
+  isValidCellObject,
   fieldHasContent,
   isValidPassword,
   constructIsNotPresentOr,
