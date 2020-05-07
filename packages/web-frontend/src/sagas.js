@@ -421,15 +421,14 @@ function* watchFetchCountryAccessDataAndFetchItTEST() {
  * Fetch an org unit.
  *
  */
-function* fetchOrgUnitData(organisationUnitCode, projectCode) {
+function* fetchOrgUnitData(organisationUnitCode = 'explore', projectCode = 'explore') {
   try {
     yield put(fetchOrgUnit(organisationUnitCode));
     // Build the request url
     const urlParameters = {
       organisationUnitCode,
       projectCode,
-      includeCountryData:
-        organisationUnitCode !== projectCode && organisationUnitCode !== 'explore', // We should pull in all country data if we are within a country (ie. not World)
+      includeCountryData: organisationUnitCode !== projectCode, // We should pull in all country data if we are within a project
     };
     const requestResourceUrl = `organisationUnit?${queryString.stringify(urlParameters)}`;
     const orgUnitData = yield call(request, requestResourceUrl);
