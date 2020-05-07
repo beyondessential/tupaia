@@ -16,17 +16,15 @@ const METADATA_FIELD_TRANSLATORS = {
     const facilities = await Facility.find({ code: orgUnitCodes });
     const types = new Map(facilities.map(fac => [fac.code, { typeName: fac.type_name, categoryCode: fac.categoryCode }]));
 
-    const resultsWithType = results.map(res => {
+    return resultsWithType = results.map(res => {
       const fac = types.get(res.organisationUnit);
-      const typeName = fac[0];
-      const categoryCode = fac[1];
+      const { typeName, categoryCode } = fac;
       return {
         ...res,
         typeName,
         categoryCode,
       };
     });
-    return resultsWithType;
   },
 };
 
