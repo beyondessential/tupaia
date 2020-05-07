@@ -45,11 +45,6 @@ const orgUnitChildrenCache = createCachedSelector(
   (country, code) => Object.values(country).filter(orgUnit => orgUnit.parent === code),
 )((country, code) => code);
 
-const countryAsHierarchyObjectCache = createCachedSelector(
-  [country => country, (_, world) => world],
-  (country, world) => recursiveBuildHierarchy(country, country[country.countryCode], world),
-)(country => country && country.countryCode);
-
 const displayInfoCache = createCachedSelector(
   [
     measureOptions => measureOptions,
@@ -78,15 +73,6 @@ const selectCountriesAsOrgUnits = createSelector([state => state.orgUnits.orgUni
     .map(([countryCode, countryHierarchy]) => countryHierarchy[countryCode])
     .filter(country => country.type === 'Country'),
 );
-
-const recursiveBuildHierarchy = (country, orgUnit, parent) => ({
-  ...orgUnit,
-  parent,
-  organisationUnitChildren: safeGet(orgUnitChildrenCache, [
-    country,
-    orgUnit.organisationUnitCode,
-  ]).map(child => recursiveBuildHierarchy(country, child, orgUnit)),
-});
 
 const getOrgUnitFromMeasureData = (measureData, code) =>
   measureData.find(val => val.organisationUnitCode === code);
@@ -118,27 +104,6 @@ export const selectOrgUnitChildren = createSelector(
   ],
   (projectCode, countriesAsOrgUnits, country, code) =>
     code === projectCode ? countriesAsOrgUnits : safeGet(orgUnitChildrenCache, [country, code]),
-);
-
-export const selectOrgUnitsAsHierarchy = createSelector(
-  [state => state.orgUnits.orgUnitMap, selectCountriesAsOrgUnits],
-  (orgUnitMap, countriesAsOrgUnits) => {
-    const world = orgUnitMap.World && orgUnitMap.World.World;
-    if (!world) {
-      return {};
-    }
-
-    const hierarchy = {
-      ...world,
-      organisationUnitChildren: countriesAsOrgUnits.map(countryOrgUnit =>
-        safeGet(countryAsHierarchyObjectCache, [
-          orgUnitMap[countryOrgUnit.organisationUnitCode],
-          world,
-        ]),
-      ),
-    };
-    return hierarchy;
-  },
 );
 
 export const selectHasPolygonMeasure = createSelector(
