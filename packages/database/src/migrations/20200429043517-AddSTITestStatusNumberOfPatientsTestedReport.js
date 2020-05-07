@@ -115,7 +115,7 @@ const VIEW_JSON_CONFIG = {
   "type": "chart",
   "chartType": "pie",
   "periodGranularity": "one_year_at_a_time",
-  "valueType": "percentage",
+  "valueType": "fractionAndPercentage",
   "defaultTimePeriod": {
     "value": "-1",
     "format": "years"
