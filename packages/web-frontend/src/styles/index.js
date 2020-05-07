@@ -142,8 +142,8 @@ export const EXPANDED_CHART_COLOR_PALETTE = {
   darkBlue: '#2F5496',
   purple: '#7030A0',
   pink: '#E245CC',
-  grey: '#D9E2F3',
   custard: '#FFD966',
+  grey: '#D9E2F3',
   teal: '#6AD5C2',
 };
 
