@@ -80,7 +80,7 @@ const VIEW_JSON_CONFIG = {
   "type": "chart",
   "chartType": "pie",
   "periodGranularity": "one_month_at_a_time",
-  "valueType": "percentage"
+  "valueType": "fractionAndPercentage"
 };
 
 exports.up = async function (db) {
