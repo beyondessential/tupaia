@@ -6,7 +6,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import MuiBox from '@material-ui/core/Box';
-import { DropdownMenu } from '../components/DropdownMenu';
+import { DropdownMenu } from '../src/components/DropdownMenu';
 
 export default {
   title: 'DropdownMenu',

@@ -7,7 +7,7 @@ import React from 'react';
 import { action } from '@storybook/addon-actions';
 import MuiBox from '@material-ui/core/Box';
 import styled from 'styled-components';
-import { SaveAlt } from '../components/Icons';
+import { SaveAlt } from '../src/components/Icons';
 import {
   Button,
   TextButton,

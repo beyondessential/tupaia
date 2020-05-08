@@ -6,10 +6,10 @@ import React from 'react';
 import MuiCard from '@material-ui/core/Card';
 import MuiCardActions from '@material-ui/core/CardActions';
 import MuiCardContent from '@material-ui/core/CardContent';
-import styled from 'styled-components';
-import * as COLORS from '../theme/colors';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
+import * as COLORS from '../../stories/story-utils/theme/colors'; // todo fix colors
 
 /*
  * Card

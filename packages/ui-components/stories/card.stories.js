@@ -8,11 +8,17 @@ import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import MuiBox from '@material-ui/core/Box';
 import { Error, ErrorOutline, NotificationImportant, Assignment } from '@material-ui/icons';
-import * as COLORS from '../theme/colors';
-import { Card, CardHeader, CardFooter, CardContent } from '../components/Card';
-import { Button } from '../components/Button';
-import { CardTab, CardTabList, CardTabPanel, CardTabPanels, CardTabs } from '..';
-import { CircleMeter, Meter } from '../components/Meter';
+import { Card, CardHeader, CardFooter, CardContent } from '../src/components/Card';
+import { Button } from '../src/components/Button';
+import {
+  CardTab,
+  CardTabList,
+  CardTabPanel,
+  CardTabPanels,
+  CardTabs,
+} from '../src/components/CardTabs';
+import { CircleMeter, Meter } from '../src';
+import * as COLORS from './story-utils/theme/colors';
 
 export default {
   title: 'Card',

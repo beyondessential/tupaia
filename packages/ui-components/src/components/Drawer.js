@@ -9,9 +9,8 @@ import MuiDrawer from '@material-ui/core/Drawer';
 import Typography from '@material-ui/core/Typography';
 import { Close } from '@material-ui/icons';
 import styled from 'styled-components';
-import * as COLORS from '../theme/colors';
 import { LightIconButton } from './IconButton';
-import { TEXT_MIDGREY } from '../theme/colors';
+import * as COLORS from '../../stories/story-utils/theme/colors'; // todo fix colors
 
 export default {
   title: 'Drawer',

@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { Checkbox } from '../../components/Inputs';
+import { Checkbox } from '../../src/components/Inputs';
 import styled from 'styled-components';
 
 export default {

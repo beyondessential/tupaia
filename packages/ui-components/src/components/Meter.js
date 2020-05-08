@@ -6,10 +6,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
-import * as COLORS from '../theme/colors';
-import { LIGHTGREY } from '../theme/colors';
+import * as COLORS from '../../stories/story-utils/theme/colors'; // todo fix colors
 
 const Bar = styled.div`
   position: relative;

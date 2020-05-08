@@ -6,9 +6,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import MuiBox from '@material-ui/core/Box';
-import { Meter, CircleMeter } from '../components/Meter';
-import * as COLORS from '../theme/colors';
-import { Card, CardContent, CardFooter } from '../components/Card';
+import { Meter, CircleMeter } from '../src/components/Meter';
+import * as COLORS from './story-utils/theme/colors';
+import { Card, CardContent, CardFooter } from '../src/components/Card';
 
 export default {
   title: 'Meter',
