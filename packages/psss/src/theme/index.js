@@ -15,19 +15,18 @@ const palette = {
   },
   error: {
     main: COLORS.RED,
-    light: COLORS.LIGHT_RED,
   },
   warning: {
     main: COLORS.RED,
-    light: COLORS.LIGHT_RED,
+    dark: COLORS.DARK_RED,
   },
   success: {
     main: COLORS.GREEN,
     dark: COLORS.DARK_GREEN,
   },
   text: {
-    primary: COLORS.TEXT_DARKGREY,
-    secondary: COLORS.TEXT_DARKGREY,
+    primary: COLORS.TEXTGREY,
+    secondary: COLORS.TEXTGREY,
   },
   background: {
     default: COLORS.LIGHTGREY,

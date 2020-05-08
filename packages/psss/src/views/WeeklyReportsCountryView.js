@@ -4,24 +4,24 @@
  */
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
-import { Container, Main, Sidebar } from '../components';
 import { TableView } from './TableView';
+import { Container, Main, Sidebar } from '../components';
 
-const eventBasedConfig = {
-  resource: 'base-url/resources/event-based',
+const weeklyReportConfig = {
+  resource: 'base-url/resources/weekly-reports',
 };
 
-export const CountryReportsViewEventBased = () => (
+export const WeeklyReportsCountryView = () => (
   <Container>
     <Main>
-      <TableView config={eventBasedConfig} />
+      <TableView config={weeklyReportConfig} />
     </Main>
     <Sidebar>
       <Typography variant="h2" gutterBottom>
         Sidebar
       </Typography>
       <Typography variant="body1" gutterBottom>
-        Event Based Country View
+        Weekly Reports Country View
       </Typography>
     </Sidebar>
   </Container>

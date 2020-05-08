@@ -6,13 +6,13 @@
 import React from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { CountryReportsViewEventBased } from '../views/CountryReportsViewEventBased';
-import { CountryReportsViewWeekly } from '../views/CountryReportsViewWeekly';
+import { EventBasedCountryView } from '../views/EventBasedCountryView';
+import { WeeklyReportsCountryView } from '../views/WeeklyReportsCountryView';
 
 export const CountryRoutes = React.memo(({ match }) => (
   <Switch>
-    <Route exact path={match.path} component={CountryReportsViewWeekly} />
-    <Route path={`${match.path}/event-based`} component={CountryReportsViewEventBased} />
+    <Route exact path={match.path} component={WeeklyReportsCountryView} />
+    <Route path={`${match.path}/event-based`} component={EventBasedCountryView} />
     <Redirect to={match.path} />
   </Switch>
 ));

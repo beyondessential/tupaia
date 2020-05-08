@@ -30,7 +30,7 @@ const links = [
   },
 ];
 
-export const AlertReportsView = ({ match }) => {
+export const AlertsView = ({ match }) => {
   return (
     <React.Fragment>
       <Header title="Alerts & Outbreaks" />
@@ -47,6 +47,6 @@ export const AlertReportsView = ({ match }) => {
   );
 };
 
-AlertReportsView.propTypes = {
+AlertsView.propTypes = {
   match: PropTypes.any.isRequired,
 };

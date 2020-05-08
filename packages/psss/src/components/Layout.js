@@ -28,7 +28,7 @@ const headerHeight = '355px';
  */
 export const Main = styled.main`
   padding-top: 1rem;
-  padding-bottom: 5rem;
+  padding-bottom: 3rem;
   min-height: calc(100vh - ${headerHeight});
 
   @media (max-width: ${desktopWidth}) {
@@ -52,8 +52,7 @@ export const Sidebar = styled.aside`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background: white;
-  border-radius: 3px;
-  border: 1px solid #dedee0;
+  background: lightgray;
+  border: 2px dashed black;
   height: 800px;
 `;
