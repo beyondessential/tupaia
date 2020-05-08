@@ -3,12 +3,12 @@ import { composeBuiltData } from '/apiV1/utils';
 import { latestDownloadLink } from './latestDownloadLink';
 
 export const latestSurveyDownloadLink = async (
-  { dataBuilderConfig, query, req, viewJson },
+  { dataBuilderConfig, query, entity, req, viewJson },
   aggregator,
   dhisApi,
 ) => {
   const dateJson = await latestDataValueDate(
-    { dataBuilderConfig, query, viewJson },
+    { dataBuilderConfig, entity, viewJson },
     aggregator,
     dhisApi,
   );

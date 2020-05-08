@@ -21,7 +21,7 @@ import {
   setOverlayComponent,
   closeUserPage,
 } from '../../../../actions';
-import { LANDING } from '../../index';
+import { LANDING } from '../../constants';
 import { SuccessMessage } from './SuccessMessage';
 
 export const RequestProjectAccessComponent = ({

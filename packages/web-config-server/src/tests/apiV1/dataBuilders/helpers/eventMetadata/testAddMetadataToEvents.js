@@ -13,7 +13,7 @@ import { EVENTS, ORG_UNITS } from './eventMetadata.fixtures';
 export const testAddMetadataToEvents = () => {
   it('should throw an error if an invalid key has been provided', async () => {
     const assertErrorIsThrownForKeys = async keys =>
-      expect(addMetadataToEvents([EVENTS.objectDataValue], keys)).to.eventually.be.rejectedWith(
+      expect(addMetadataToEvents([EVENTS.objectDataValue], keys)).to.be.rejectedWith(
         'Invalid metadata key',
       );
 

@@ -29,7 +29,7 @@ import { DARK_BLUE, MOBILE_MARGIN_SIZE, WHITE } from '../../../styles';
 import { getMapUrl } from '../../../utils';
 import { getSingleFormattedValue } from '../../../utils/measures';
 import { ENTITY_TYPE } from '../../../constants';
-import { getCurrentDashboardKey } from '../../../selectors';
+import { selectCurrentDashboardKey } from '../../../selectors';
 
 const MAP_WIDTH = 420;
 const MAP_HEIGHT = 250;
@@ -130,7 +130,7 @@ class RegionScreen extends PureComponent {
             items={mobileListItems.map(item => (
               <SelectListItem onSelect={onChangeOrgUnit} {...item} />
             ))}
-            expandedByDefault={true}
+            expandedByDefault
             title={title}
             filterTitle="Measures"
             filters={measureFilters}
@@ -277,7 +277,7 @@ const mapStateToProps = state => {
 
   return {
     dashboardConfig,
-    currentDashboardKey: getCurrentDashboardKey(state),
+    currentDashboardKey: selectCurrentDashboardKey(state),
     orgUnit: currentOrganisationUnit,
     mobileListItems,
     measureFilters,

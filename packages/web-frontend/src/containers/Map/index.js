@@ -34,7 +34,6 @@ const mapStateToProps = state => {
     tileSet,
   } = state.map;
   const {
-    highlightedOrganisationUnit,
     currentOrganisationUnit,
     currentOrganisationUnitSiblings,
     isSidePanelExpanded,
@@ -45,7 +44,6 @@ const mapStateToProps = state => {
     position,
     innerAreas,
     currentOrganisationUnit,
-    highlightedOrganisationUnit,
     currentOrganisationUnitSiblings,
     measureInfo,
     tileSet,
