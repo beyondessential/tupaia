@@ -21,7 +21,7 @@ exports.up = function(db) {
       user_account_id text REFERENCES user_account(id),
       created_time TIMESTAMPTZ NOT NULL DEFAULT now(),
       last_modified_time TIMESTAMPTZ NOT NULL DEFAULT now(),
-      text text NOT NULL
+      text TEXT NOT NULL
     );
 
     CREATE TABLE alert_comment (
