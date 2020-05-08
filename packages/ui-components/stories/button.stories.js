@@ -15,11 +15,12 @@ import {
   SuccessButton,
   WarningButton,
   LightOutlinedButton,
-} from '../components/Button';
-import * as COLORS from '../theme/colors';
+} from '../src/components/Button';
+import * as COLORS from './story-utils/theme/colors';
 
 export default {
   title: 'Button',
+  component: Button,
 };
 
 const Container = styled(MuiBox)`

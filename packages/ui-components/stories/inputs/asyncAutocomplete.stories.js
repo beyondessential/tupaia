@@ -6,7 +6,7 @@
 import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
-import { AsyncAutocomplete } from '../../components/Inputs';
+import { AsyncAutocomplete } from '../../src/components/Inputs';
 
 export default {
   title: 'Inputs/AsyncAutocomplete',

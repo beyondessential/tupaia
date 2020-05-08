@@ -7,7 +7,7 @@ import React, { useState, useCallback } from 'react';
 import { CalendarToday, KeyboardArrowDown, Visibility } from '@material-ui/icons';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import styled from 'styled-components';
-import { TextField } from '../../components/Inputs';
+import { TextField } from '../../src/components/Inputs';
 
 export default {
   title: 'Inputs/TextField',

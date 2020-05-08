@@ -5,11 +5,11 @@
 
 import React from 'react';
 import Avatar from '@material-ui/core/Avatar';
-import { HomeButton } from '../components/HomeButton';
-import { NavBar } from '../components/NavBar';
-import { LightProfileButton } from '../components/ProfileButton';
-import { WarningCloud, Dashboard } from '../components/Icons';
-import { RouterProvider } from '../RouterProvider';
+import { HomeButton } from '../src/components/HomeButton';
+import { NavBar } from '../src/components/NavBar';
+import { LightProfileButton } from '../src/components/ProfileButton';
+import { WarningCloud, Dashboard } from '../src/components/Icons';
+import { RouterProvider } from './story-utils/RouterProvider';
 
 export default {
   title: 'NavBar',

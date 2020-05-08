@@ -15,7 +15,7 @@ import MuiTableRow from '@material-ui/core/TableRow';
 import UnfoldMoreIcon from '@material-ui/icons/UnfoldMore';
 import MuiTableFooter from '@material-ui/core/TableFooter';
 import MuiTablePagination from '@material-ui/core/TablePagination';
-import * as COLORS from '../theme/colors';
+import * as COLORS from '../../stories/story-utils/theme/colors';
 
 /*
  * Table Cell styles

@@ -4,8 +4,8 @@
  */
 
 import React from 'react';
-import { IconButton, LightIconButton } from '../components/IconButton';
-import * as COLORS from '../../src/theme/colors';
+import { IconButton, LightIconButton } from '../src/components/IconButton';
+import * as COLORS from './story-utils/theme/colors';
 import {
   AddBoxOutlined,
   IndeterminateCheckBox,

@@ -13,7 +13,7 @@ import MuiDialogContentText from '@material-ui/core/DialogContentText';
 import Close from '@material-ui/icons/Close';
 import styled from 'styled-components';
 import { LightIconButton } from './IconButton';
-import * as COLORS from '../theme/colors';
+import * as COLORS from '../../stories/story-utils/theme/colors';
 
 /*
  * Dialog

@@ -6,7 +6,7 @@
 import React, { useState, useCallback, useEffect, memo } from 'react';
 import PropTypes from 'prop-types';
 import { Table } from './Table';
-import { connectApi } from '../api';
+import { connectApi } from '../../stories/story-utils/api';
 
 const DEFAULT_ROWS_PER_PAGE = 10;
 const DEFAULT_FETCH_STATE = { data: [], count: 0, errorMessage: '', isLoading: true };
@@ -135,4 +135,8 @@ function mapApiToProps(api, { endpoint, fetchOptions }) {
   };
 }
 
+/*
+ * DataFetchingTable Component
+ * Fetches data from a api resource and renders table
+ */
 export const DataFetchingTable = connectApi(mapApiToProps)(DumbDataFetchingTable);

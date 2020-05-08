@@ -10,7 +10,7 @@ import MuiKeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import * as COLORS from '../../theme/colors';
+import * as COLORS from '../../../stories/story-utils/theme/colors';
 import { TextField } from './TextField';
 
 const KeyboardArrowDown = styled(MuiKeyboardArrowDown)`

@@ -6,7 +6,7 @@ import React from 'react';
 import styled from 'styled-components';
 import MuiButton from '@material-ui/core/Button';
 import PropTypes from 'prop-types';
-import * as COLORS from '../theme/colors';
+import * as COLORS from '../../stories/story-utils/theme/colors';
 
 const StyledButton = styled(MuiButton)`
   font-size: 0.9375rem;

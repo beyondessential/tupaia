@@ -3,8 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import * as colors from './theme/colors';
-import theme from './theme';
+import * as colors from '../stories/story-utils/theme/colors';
+import theme from '../stories/story-utils/theme';
 
 export { colors, theme };
 

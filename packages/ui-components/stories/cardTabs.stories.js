@@ -11,7 +11,7 @@ import {
   CardTabPanels,
   CardTabPanel,
   DataCardTabs,
-} from '../components/CardTabs';
+} from '../src/components/CardTabs';
 import styled from 'styled-components';
 import Card from '@material-ui/core/Card';
 import { ErrorOutline, NotificationImportant } from '@material-ui/icons';

@@ -7,9 +7,9 @@ import React from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import styled from 'styled-components';
 import MuiBox from '@material-ui/core/Box';
-import { ProfileButton, LightProfileButton } from '../components/ProfileButton';
-import * as COLORS from '../theme/colors';
-import { RouterProvider } from '../RouterProvider';
+import { ProfileButton, LightProfileButton } from '../src/components/ProfileButton';
+import * as COLORS from './story-utils/theme/colors';
+import { RouterProvider } from './story-utils/RouterProvider';
 
 export default {
   title: 'ProfileButton',

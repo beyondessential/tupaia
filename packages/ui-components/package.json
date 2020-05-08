@@ -42,12 +42,13 @@
     "@storybook/addon-docs": "^5.3.18",
     "@storybook/addon-links": "^5.3.17",
     "@storybook/addon-storysource": "^5.3.18",
+    "@storybook/addons": "^5.3.18",
     "@storybook/react": "^5.3.18",
     "babel-loader": "^8.1.0",
     "babel-preset-react-app": "^9.1.2",
     "cross-env": "^7.0.2",
+    "faker": "^4.1.0",
     "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.11",
-    "faker": "^4.1.0"
+    "webpack-cli": "^3.3.11"
   }
 }

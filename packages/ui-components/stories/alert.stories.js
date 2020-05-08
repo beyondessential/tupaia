@@ -5,7 +5,7 @@
 
 import React from 'react';
 import Box from '@material-ui/core/Box';
-import { ErrorAlert, WarningAlert, InfoAlert, SuccessAlert } from '../components/Alert';
+import { ErrorAlert, WarningAlert, InfoAlert, SuccessAlert } from '../src/components/Alert';
 
 export default {
   title: 'Alert',

@@ -9,7 +9,7 @@ import Container from '@material-ui/core/Container';
 import PropTypes from 'prop-types';
 import { Link as RouterLink, useLocation, useRouteMatch } from 'react-router-dom';
 import { LightTab, LightTabs } from './Tabs';
-import * as COLORS from '../theme/colors';
+import * as COLORS from '../../stories/story-utils/theme/colors';
 
 const toolbarHeight = '65px';
 

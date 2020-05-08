@@ -9,14 +9,15 @@ import MuiLink from '@material-ui/core/Link';
 import { format } from 'date-fns';
 import PropTypes from 'prop-types';
 import Avatar from '@material-ui/core/Avatar';
-import { DumbDataFetchingTable, DataFetchingTable } from '../components/DataFetchingTable';
-import * as COLORS from '../theme/colors';
-import { CondensedTableBody, FakeHeader } from '../components/Table';
-import { AFRAccessor, SitesReportedAccessor } from '../components/TableColumnAccessors';
-import { connectApi } from '../api';
+import { DumbDataFetchingTable, DataFetchingTable } from '../src/components/DataFetchingTable';
+import { CondensedTableBody, FakeHeader } from '../src/components/Table';
+import { AFRAccessor, SitesReportedAccessor } from '../src/components/TableColumnAccessors';
+import * as COLORS from './story-utils/theme/colors';
+import { connectApi } from './story-utils/api';
 
 export default {
   title: 'DataFetchingTable',
+  component: DataFetchingTable,
 };
 
 const Container = styled.div`

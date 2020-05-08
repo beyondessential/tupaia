@@ -6,13 +6,14 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
-import { FakeAPI } from '../api';
-import * as COLORS from '../theme/colors';
-import { Table, CondensedTableBody, FakeHeader } from '../components/Table';
-import { Button } from '../components/Button';
+import { FakeAPI } from './story-utils/api';
+import * as COLORS from './story-utils/theme/colors';
+import { Table, CondensedTableBody, FakeHeader } from '../src/components/Table';
+import { Button } from '../src/components/Button';
 
 export default {
   title: 'Table',
+  component: Table,
 };
 
 const Container = styled.div`

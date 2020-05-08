@@ -5,9 +5,9 @@
 
 import React from 'react';
 import { Alarm } from '@material-ui/icons';
-import { TabsToolbar } from '../components/Toolbar';
-import { Clipboard, WarningCloud } from '../components/Icons';
-import { RouterProvider } from '../RouterProvider';
+import { TabsToolbar } from '../src/components/Toolbar';
+import { Clipboard, WarningCloud } from '../src/components/Icons';
+import { RouterProvider } from './story-utils/RouterProvider';
 
 export default {
   title: 'Toolbar',
