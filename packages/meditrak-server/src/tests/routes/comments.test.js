@@ -30,6 +30,8 @@ describe('Alert Comments CRUD', () => {
       expect(comment).to.be.an('object');
       expect(comment.user_account_id).to.equal(app.user.id);
       expect(comment.text).to.equal(text);
+      const alertCommentJoin = await models.alertComment.findOne({ comment_id: id });
+      expect(alertCommentJoin.alert_id).to.equal(alert.id);
     });
   });
 
