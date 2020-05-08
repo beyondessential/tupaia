@@ -17,7 +17,7 @@ import MuiListItem from '@material-ui/core/ListItem';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import Avatar from '@material-ui/core/Avatar';
 import MuiListSubheader from '@material-ui/core/ListSubheader';
-import * as COLORS from '../theme/colors';
+import * as COLORS from '../../stories/story-utils/theme/colors';
 
 const StyledListItem = styled(MuiListItem)`
   padding-right: 3rem;

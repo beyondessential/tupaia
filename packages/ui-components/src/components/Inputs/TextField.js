@@ -6,7 +6,7 @@
 import React from 'react';
 import MuiTextField from '@material-ui/core/TextField';
 import styled from 'styled-components';
-import * as COLORS from '../../theme/colors';
+import * as COLORS from '../../../stories/story-utils/theme/colors';
 
 /*
  * TextField

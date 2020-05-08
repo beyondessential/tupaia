@@ -9,7 +9,7 @@ import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import * as COLORS from '../theme/colors';
+import * as COLORS from '../../stories/story-utils/theme/colors';
 import { Home as HomeIcon } from './Icons';
 
 const StyledBreadcrumbs = styled(MuiBreadcrumbs)`

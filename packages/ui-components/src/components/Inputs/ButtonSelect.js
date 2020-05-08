@@ -11,7 +11,7 @@ import MuiInputAdornment from '@material-ui/core/InputAdornment';
 import MuiMenuItem from '@material-ui/core/MenuItem';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import * as COLORS from '../../theme/colors';
+import * as COLORS from '../../../stories/story-utils/theme/colors';
 import { TextField } from './TextField';
 import { IconButton } from '../IconButton';
 

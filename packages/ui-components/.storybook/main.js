@@ -2,7 +2,7 @@
 const custom = require('../webpack.config.js');
 
 module.exports = {
-  stories: ['../src/**/*.stories.js'],
+  stories: ['../stories/**/*.stories.js'],
   addons: [
     '@storybook/addon-actions',
     '@storybook/addon-links',
@@ -10,7 +10,4 @@ module.exports = {
     '@storybook/addon-storysource',
     '@storybook/addon-docs',
   ],
-  webpackFinal: (config) => {
-    return { ...config, module: { ...config.module, rules: custom.module.rules } };
-  },
 };

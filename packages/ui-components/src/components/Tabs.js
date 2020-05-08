@@ -7,7 +7,7 @@ import React, { useState, useCallback } from 'react';
 import MuiTabs from '@material-ui/core/Tabs';
 import MuiTab from '@material-ui/core/Tab';
 import styled from 'styled-components';
-import * as COLORS from '../theme/colors';
+import * as COLORS from '../../stories/story-utils/theme/colors';
 
 /*
  * Tabs
