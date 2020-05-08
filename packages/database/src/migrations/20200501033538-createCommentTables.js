@@ -18,7 +18,7 @@ exports.up = function(db) {
   return db.runSql(`
     CREATE TABLE comment (
       id TEXT PRIMARY KEY,
-      user_account_id text REFERENCES user_account(id),
+      user_id text REFERENCES user_account(id),
       created_time TIMESTAMPTZ NOT NULL DEFAULT now(),
       last_modified_time TIMESTAMPTZ NOT NULL DEFAULT now(),
       text TEXT NOT NULL
