@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { WarningCloud, CalendarToday, Clipboard, TabsToolbar } from '@tupaia/ui-components';
+import { CalendarToday, TabsToolbar } from '@tupaia/ui-components';
 import Typography from '@material-ui/core/Typography';
 import { PhotoAlbum } from '@material-ui/icons';
 import MuiContainer from '@material-ui/core/Container';
