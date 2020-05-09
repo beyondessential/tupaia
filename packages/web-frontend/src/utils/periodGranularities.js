@@ -17,7 +17,8 @@ const SINGLE_MONTH = 'one_month_at_a_time';
 const YEAR = 'year';
 const SINGLE_YEAR = 'one_year_at_a_time';
 
-const START_OF_YEAR = 'start_of_year';
+const START_OF_PERIOD = 'start_of';
+const END_OF_PERIOD = 'end_of';
 
 const CONFIG = {
   [DAY]: {
@@ -26,6 +27,7 @@ const CONFIG = {
     pickerFormat: 'D',
     momentShorthand: 'd',
     momentUnit: 'day',
+    momentUnitPlural: 'days',
   },
   [WEEK]: {
     chartFormat: 'D MMM YYYY',
@@ -33,6 +35,7 @@ const CONFIG = {
     pickerFormat: '[W/C] D MMM YYYY',
     momentShorthand: 'w',
     momentUnit: 'isoWeek',
+    momentUnitPlural: 'isoWeeks',
   },
   [MONTH]: {
     chartFormat: 'MMM YYYY',
@@ -40,6 +43,7 @@ const CONFIG = {
     pickerFormat: 'MMMM',
     momentShorthand: 'M',
     momentUnit: 'month',
+    momentUnitPlural: 'months',
   },
   [YEAR]: {
     chartFormat: 'YYYY',
@@ -47,6 +51,7 @@ const CONFIG = {
     pickerFormat: 'YYYY',
     momentShorthand: 'Y',
     momentUnit: 'year',
+    momentUnitPlural: 'years',
   },
 };
 
@@ -93,35 +98,125 @@ export function roundStartEndDates(granularity, startDate = moment(), endDate = 
   };
 }
 
-const getDefaultStartDate = defaultStartDate => {
-  switch (defaultStartDate) {
-    case START_OF_YEAR:
-      return moment().startOf('year');
-    default:
-      return null;
+const getDefaultDate = (offset, unit, modifier) => {
+  //We need a valid unit to proceed.
+  if (!CONFIG[unit]) {
+    return moment();
   }
+
+  let defaultDate = moment();
+
+  if (offset) {
+    const { momentUnitPlural } = CONFIG[unit];
+    defaultDate = defaultDate.add(offset, momentUnitPlural);
+  }
+
+  //If modifier is set (eg: 'start_of', 'end_of'),
+  //switch the default date to either start or end of the year
+  if (modifier) {
+    const { momentUnit } = CONFIG[unit];
+
+    switch (modifier) {
+      case START_OF_PERIOD:
+        defaultDate = defaultDate.startOf(momentUnit);
+        break;
+      case END_OF_PERIOD:
+        defaultDate = defaultDate.endOf(momentUnit);
+        break;
+      default:
+    }
+  }
+
+  return defaultDate;
+};
+
+/**
+ * Get default dates for start and end period of single date period granularities,
+ * meaning both start and end date will have the same date.
+ * `defaultTimePeriod` can be in 2 ways:
+ *
+ * Short version:
+ * {
+ *    defaultTimePeriod: {offset: -1, unit: 'year'}
+ * }
+ *
+ * Long version:
+ * {
+ *    defaultTimePeriod: {
+ *        start: {unit: 'month', offset: -1},
+ *        end: {unit: 'month', offset: -1}
+ *    }
+ * }
+ * @param {*} periodGranularity
+ * @param {*} defaultTimePeriod
+ */
+const getDefaultDatesForSingleDateGranularities = (periodGranularity, defaultTimePeriod) => {
+  let startDate = moment();
+  let endDate = startDate;
+
+  if (defaultTimePeriod) {
+    let singleDateConfig;
+
+    //If defaultTimePeriod has either start or end,
+    //pick either one of them because we only want a single date for both start and end period.
+    //Eg: {defaultTimePeriod: {start: {unit: 'month', offset: -1}, end: {unit: 'month', offset: -1}}}
+    if (defaultTimePeriod.start || defaultTimePeriod.end) {
+      singleDateConfig = defaultTimePeriod.start || defaultTimePeriod.end;
+    } else {
+      //else, assume defaultTimePeriod is the period config. Eg: {defaultTimePeriod: {unit: 'month', offset: -1}}
+      singleDateConfig = defaultTimePeriod;
+    }
+
+    //Grab all the details and get a single default date used for both start/end period.
+    const { offset, unit, modifier } = singleDateConfig;
+    startDate = getDefaultDate(offset, unit, modifier);
+    endDate = startDate;
+  }
+
+  return roundStartEndDates(periodGranularity, startDate, endDate);
+};
+
+/**
+ * Get default dates for start and end period of normal period granularities.
+ * defaultTimePeriod has to have either start or end if you want to change the default start or end date.
+ * Example:
+ * {
+ *    defaultTimePeriod: {
+ *        start: {unit: year, offset: -3, modifier: 'start_of'},
+ *        end: {unit: month, offset: -1, modifier: 'end_of'}
+ *    }
+ * }
+ * @param {*} periodGranularity
+ * @param {*} defaultTimePeriod
+ */
+const getDefaultDatesForNormalGranularities = (periodGranularity, defaultTimePeriod) => {
+  if (defaultTimePeriod) {
+    let startDate = moment();
+    let endDate = startDate;
+
+    if (defaultTimePeriod.start) {
+      const { offset, unit, modifier } = defaultTimePeriod.start;
+      startDate = getDefaultDate(offset, unit, modifier);
+    }
+
+    if (defaultTimePeriod.end) {
+      const { offset, unit, modifier } = defaultTimePeriod.end;
+      endDate = getDefaultDate(offset, unit, modifier);
+    }
+
+    return roundStartEndDates(periodGranularity, startDate, endDate);
+  }
+
+  return {};
 };
 
 export function getDefaultDates(state, infoViewKey) {
-  const { periodGranularity, defaultTimePeriod, defaultStartDate } = state.global.viewConfigs[infoViewKey];
+  const { periodGranularity, defaultTimePeriod } = state.global.viewConfigs[infoViewKey];
   const isSingleDate = GRANULARITIES_WITH_ONE_DATE.includes(periodGranularity);
-  let startDate = moment();
-  let endDate = startDate;
-  if (
-    defaultTimePeriod &&
-    (defaultTimePeriod.format === 'days' || defaultTimePeriod.format === 'years')
-  ) {
-    if (isSingleDate) {
-      startDate = moment().add(defaultTimePeriod.value, defaultTimePeriod.format);
-      endDate = startDate;
-    }
-  } else if (defaultStartDate) {
-    const defaultStartDateMoment = getDefaultStartDate(defaultStartDate);
 
-    if (defaultStartDateMoment) {
-      return roundStartEndDates(periodGranularity, defaultStartDateMoment, endDate);
-    }
+  if (isSingleDate) {
+    return getDefaultDatesForSingleDateGranularities(periodGranularity, defaultTimePeriod);
   }
 
-  return isSingleDate ? roundStartEndDates(periodGranularity, startDate, endDate) : {};
+  return getDefaultDatesForNormalGranularities(periodGranularity, defaultTimePeriod);
 }

@@ -62,7 +62,12 @@ const VIEW_JSON_CONFIG = {
   "chartType": "pie",
   "valueType": "fractionAndPercentage",
   "periodGranularity": "month",
-  "defaultStartDate": "start_of_year" 
+  "defaultTimePeriod": {
+		start: {
+			unit: 'year',
+			modifier: 'start_of'
+    }
+	}
 };
 
 const DASHBOARD_GROUP_TO_ADD = 'Tonga_Communicable_Diseases_National';
