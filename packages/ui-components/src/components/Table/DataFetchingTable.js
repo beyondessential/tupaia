@@ -20,7 +20,6 @@ export const DataFetchingTable = memo(
     fetchData,
     noDataMessage,
     fetchOptions,
-    transformRow,
     initialSort,
   }) => {
     const [page, setPage] = useState(0);
@@ -46,10 +45,9 @@ export const DataFetchingTable = memo(
       (async () => {
         try {
           const { data, count } = await fetchData({ page, rowsPerPage, ...sorting });
-          const transformedData = transformRow ? data.map(transformRow) : data;
           updateFetchState({
             ...DEFAULT_FETCH_STATE,
-            data: transformedData,
+            data: data,
             count,
             isLoading: false,
           });
@@ -107,7 +105,6 @@ DataFetchingTable.propTypes = {
   fetchData: PropTypes.func.isRequired,
   noDataMessage: PropTypes.string,
   fetchOptions: PropTypes.object,
-  transformRow: PropTypes.func,
   initialSort: PropTypes.shape({
     order: PropTypes.string.isRequired,
     orderBy: PropTypes.string,
@@ -121,6 +118,5 @@ DataFetchingTable.defaultProps = {
   SubComponent: undefined,
   noDataMessage: undefined,
   fetchOptions: undefined,
-  transformRow: undefined,
   initialSort: { order: 'asc', orderBy: undefined },
 };
