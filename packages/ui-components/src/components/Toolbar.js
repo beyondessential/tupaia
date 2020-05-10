@@ -9,14 +9,13 @@ import Container from '@material-ui/core/Container';
 import PropTypes from 'prop-types';
 import { Link as RouterLink, useLocation, useRouteMatch } from 'react-router-dom';
 import { LightTab, LightTabs } from './Tabs';
-import * as COLORS from '../../stories/story-utils/theme/colors';
 
 const toolbarHeight = '65px';
 
 const ToolbarWrapper = styled.div`
-  background-color: ${COLORS.DARK_BLUE};
+  background-color: ${props => props.theme.palette.primary.main};
   height: ${toolbarHeight};
-  color: ${COLORS.WHITE};
+  color: ${props => props.theme.palette.common.white};
 `;
 
 export const BaseToolbar = ({ children }) => (

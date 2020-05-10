@@ -7,7 +7,7 @@ import React from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import styled from 'styled-components';
 import MuiBox from '@material-ui/core/Box';
-import { ProfileButton, LightProfileButton } from '../src/components/ProfileButton';
+import { ProfileButton, LightProfileButton } from '../src';
 import * as COLORS from './story-utils/theme/colors';
 import { RouterProvider } from './story-utils/RouterProvider';
 

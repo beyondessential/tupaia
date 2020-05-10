@@ -6,16 +6,11 @@
 import React, { useState, useCallback, useEffect, memo } from 'react';
 import PropTypes from 'prop-types';
 import { Table } from './Table';
-import { connectApi } from '../../stories/story-utils/api';
 
 const DEFAULT_ROWS_PER_PAGE = 10;
 const DEFAULT_FETCH_STATE = { data: [], count: 0, errorMessage: '', isLoading: true };
 
-/*
- * DumbDataFetchingTable Component
- * Export so that mappings to alternative apis can be defined
- */
-export const DumbDataFetchingTable = memo(
+export const DataFetchingTable = memo(
   ({
     Header,
     Body,
@@ -95,7 +90,7 @@ export const DumbDataFetchingTable = memo(
   },
 );
 
-DumbDataFetchingTable.propTypes = {
+DataFetchingTable.propTypes = {
   Header: PropTypes.any,
   Body: PropTypes.any,
   Paginator: PropTypes.any,
@@ -105,6 +100,7 @@ DumbDataFetchingTable.propTypes = {
       key: PropTypes.string.isRequired,
       title: PropTypes.node.isRequired,
       accessor: PropTypes.func,
+      CellComponent: PropTypes.any,
       sortable: PropTypes.bool,
     }),
   ).isRequired,
@@ -118,7 +114,7 @@ DumbDataFetchingTable.propTypes = {
   }),
 };
 
-DumbDataFetchingTable.defaultProps = {
+DataFetchingTable.defaultProps = {
   Header: undefined, // these values need to default to undefined so they don't override the Table defaults
   Body: undefined,
   Paginator: undefined,
@@ -128,15 +124,3 @@ DumbDataFetchingTable.defaultProps = {
   transformRow: undefined,
   initialSort: { order: 'asc', orderBy: undefined },
 };
-
-function mapApiToProps(api, { endpoint, fetchOptions }) {
-  return {
-    fetchData: queryParameters => api.get(endpoint, { ...fetchOptions, ...queryParameters }),
-  };
-}
-
-/*
- * DataFetchingTable Component
- * Fetches data from a api resource and renders table
- */
-export const DataFetchingTable = connectApi(mapApiToProps)(DumbDataFetchingTable);

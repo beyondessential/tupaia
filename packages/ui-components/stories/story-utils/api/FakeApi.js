@@ -52,7 +52,7 @@ export class FakeAPI {
   // eslint-disable-next-line class-methods-use-this
   countryWeek() {
     return {
-      uid: faker.random.uuid(),
+      id: faker.random.uuid(),
       week: faker.random.number({
         min: 1,
         max: 10,
@@ -90,7 +90,7 @@ export class FakeAPI {
   // eslint-disable-next-line class-methods-use-this
   siteWeek() {
     return {
-      uid: faker.random.uuid(),
+      id: faker.random.uuid(),
       name: faker.address.city(),
       sitesReported: faker.random.number({
         min: 0,
@@ -122,7 +122,7 @@ export class FakeAPI {
   // eslint-disable-next-line class-methods-use-this
   country() {
     return {
-      uid: faker.random.uuid(),
+      id: faker.random.uuid(),
       name: faker.address.country(),
       sitesReported: faker.random.number({
         min: 0,
@@ -154,7 +154,7 @@ export class FakeAPI {
   // eslint-disable-next-line class-methods-use-this
   user() {
     return {
-      uid: faker.random.uuid(),
+      id: faker.random.uuid(),
       name: faker.name.firstName(),
       surname: faker.name.lastName(),
       email: faker.internet.email(),

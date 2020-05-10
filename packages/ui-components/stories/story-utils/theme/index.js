@@ -13,6 +13,7 @@ const palette = {
   },
   secondary: {
     main: COLORS.DARK_BLUE,
+    light: COLORS.LIGHT_BLUE,
   },
   error: {
     main: COLORS.RED,
@@ -28,7 +29,15 @@ const palette = {
   },
   text: {
     primary: COLORS.TEXT_DARKGREY,
-    secondary: COLORS.TEXT_DARKGREY,
+    secondary: COLORS.TEXT_MIDGREY,
+    tertiary: COLORS.TEXT_LIGHTGREY,
+  },
+  grey: {
+    100: COLORS.GREY_FB,
+    300: COLORS.GREY_E2,
+    400: COLORS.GREY_DE,
+    500: COLORS.GREY_9F,
+    600: COLORS.GREY_72,
   },
   background: {
     default: 'transparent', // use background addon to switch colors

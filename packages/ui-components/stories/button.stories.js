@@ -15,7 +15,7 @@ import {
   SuccessButton,
   WarningButton,
   LightOutlinedButton,
-} from '../src/components/Button';
+} from '../src';
 import * as COLORS from './story-utils/theme/colors';
 
 export default {
