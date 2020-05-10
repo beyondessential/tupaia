@@ -189,7 +189,7 @@ const getDefaultDatesForSingleDateGranularities = (periodGranularity, defaultTim
  * @param {*} periodGranularity
  * @param {*} defaultTimePeriod
  */
-const getDefaultDatesForNormalGranularities = (periodGranularity, defaultTimePeriod) => {
+const getDefaultDatesForRangeGranularities = (periodGranularity, defaultTimePeriod) => {
   if (defaultTimePeriod) {
     let startDate = moment();
     let endDate = startDate;
@@ -218,5 +218,5 @@ export function getDefaultDates(state, infoViewKey) {
     return getDefaultDatesForSingleDateGranularities(periodGranularity, defaultTimePeriod);
   }
 
-  return getDefaultDatesForNormalGranularities(periodGranularity, defaultTimePeriod);
+  return getDefaultDatesForRangeGranularities(periodGranularity, defaultTimePeriod);
 }
