@@ -2,12 +2,13 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
+import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
 import MuiTableCell from '@material-ui/core/TableCell';
-import React, { useCallback, useState } from 'react';
 import MuiTable from '@material-ui/core/Table';
 import PropTypes from 'prop-types';
 import MuiTableRow from '@material-ui/core/TableRow';
+import { tableColumnShape } from './tableColumnShape';
 
 export const TableCell = styled(MuiTableCell)`
   height: 70px;
@@ -35,14 +36,6 @@ const TableRowCells = React.memo(({ columns, rowData }) =>
   }),
 );
 
-const tableColumnShape = {
-  key: PropTypes.string.isRequired,
-  title: PropTypes.node.isRequired,
-  accessor: PropTypes.func,
-  CellComponent: PropTypes.any,
-  sortable: PropTypes.bool,
-};
-
 TableRowCells.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
   rowData: PropTypes.object.isRequired,
@@ -67,11 +60,11 @@ export const StyledTable = styled(MuiTable)`
   table-layout: fixed;
 `;
 
-const NestedTable = React.memo(({ row, children, columns }) => (
+const NestedTable = React.memo(({ parentData, children, columns }) => (
   <MuiTableRow>
     <NestedTableWrapperCell colSpan={columns.length}>
       <StyledTable>
-        <tbody>{row}</tbody>
+        <tbody>{parentData}</tbody>
       </StyledTable>
       {children}
     </NestedTableWrapperCell>
@@ -80,7 +73,7 @@ const NestedTable = React.memo(({ row, children, columns }) => (
 
 NestedTable.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
-  row: PropTypes.any.isRequired,
+  parentData: PropTypes.any.isRequired,
   children: PropTypes.any,
 };
 
@@ -149,7 +142,7 @@ export const ExpandableTableRow = React.memo(({ columns, rowData, SubComponent }
 
   if (SubComponent && expanded) {
     return (
-      <NestedTable row={row} columns={columns}>
+      <NestedTable parentData={row} columns={columns}>
         <SubComponent rowData={rowData} />
       </NestedTable>
     );
