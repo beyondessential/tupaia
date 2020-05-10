@@ -8,7 +8,14 @@
 import { call, put, delay, takeEvery, takeLatest, select } from 'redux-saga/effects';
 import queryString from 'query-string';
 import request from './utils/request';
-import { selectOrgUnit, selectOrgUnitChildren, selectOrgUnitCountry } from './selectors';
+import {
+  selectOrgUnit,
+  selectOrgUnitChildren,
+  selectOrgUnitCountry,
+  selectIsProject,
+  selectActiveProject,
+  selectProjectByCode,
+} from './selectors';
 import {
   ATTEMPT_CHANGE_PASSWORD,
   ATTEMPT_LOGIN,
@@ -88,7 +95,8 @@ import {
 import { isMobile, processMeasureInfo, formatDateForApi } from './utils';
 import { createUrlString } from './utils/historyNavigation';
 import { getDefaultDates } from './utils/periodGranularities';
-import { INITIAL_MEASURE_ID } from './defaults';
+import { INITIAL_MEASURE_ID, INITIAL_PROJECT_CODE, initialOrgUnit } from './defaults';
+import { selectProject } from './projects/actions';
 
 /**
  * attemptChangePassword
@@ -413,11 +421,19 @@ function* watchFetchCountryAccessDataAndFetchItTEST() {
  * Fetch an org unit.
  *
  */
-function* fetchOrgUnitData(organisationUnitCode) {
+function* fetchOrgUnitData(
+  organisationUnitCode = initialOrgUnit.organisationUnitCode,
+  projectCode = INITIAL_PROJECT_CODE,
+) {
   try {
     yield put(fetchOrgUnit(organisationUnitCode));
-    const shouldIncludeCountryData = organisationUnitCode !== 'World'; // We should pull in all country data if we are within a country (ie. not World)
-    const requestResourceUrl = `organisationUnit?organisationUnitCode=${organisationUnitCode}&includeCountryHierarchy=${shouldIncludeCountryData}`;
+    // Build the request url
+    const urlParameters = {
+      organisationUnitCode,
+      projectCode,
+      includeCountryData: organisationUnitCode !== projectCode, // We should pull in all country data if we are within a project
+    };
+    const requestResourceUrl = `organisationUnit?${queryString.stringify(urlParameters)}`;
     const orgUnitData = yield call(request, requestResourceUrl);
     yield put(fetchOrgUnitSuccess(orgUnitData));
     return orgUnitData;
@@ -428,14 +444,14 @@ function* fetchOrgUnitData(organisationUnitCode) {
 }
 
 function* requestOrgUnit(action) {
-  const { organisationUnitCode } = action;
   const state = yield select();
+  const { organisationUnitCode = selectActiveProject(state).code } = action;
   const orgUnit = selectOrgUnit(state, organisationUnitCode);
   if (orgUnit && orgUnit.isComplete) {
     return; // If we already have the complete org unit in reduxStore, just exit early
   }
 
-  yield fetchOrgUnitData(organisationUnitCode);
+  yield fetchOrgUnitData(organisationUnitCode, selectActiveProject(state).code);
 }
 
 function* fetchOrgUnitDataAndChangeOrgUnit(action) {
@@ -453,8 +469,10 @@ function* fetchOrgUnitDataAndChangeOrgUnit(action) {
   }
 
   try {
-    const orgUnitData = yield fetchOrgUnitData(organisationUnitCode);
-    yield put(fetchOrgUnitSuccess(orgUnitData));
+    const orgUnitData = yield fetchOrgUnitData(
+      organisationUnitCode,
+      selectActiveProject(state).code,
+    );
     yield put(
       changeOrgUnitSuccess(
         normaliseCountryHierarchyOrgUnitData(orgUnitData),
@@ -522,6 +540,8 @@ function* watchOrgUnitChangeAndFetchDashboard() {
 
 function* fetchViewData(parameters, errorHandler) {
   const { infoViewKey } = parameters;
+  const projectCode = (yield select(selectActiveProject)).code;
+
   // If the view should be constrained to a date range and isn't, constrain it
   const { startDate, endDate } =
     parameters.startDate || parameters.endDate
@@ -538,6 +558,7 @@ function* fetchViewData(parameters, errorHandler) {
   } = parameters;
   const urlParameters = {
     organisationUnitCode,
+    projectCode,
     dashboardGroupId,
     viewId,
     drillDownLevel,
@@ -637,7 +658,8 @@ function* watchSearchChange() {
  *
  */
 function* fetchMeasureInfo(measureId, organisationUnitCode, oldOrgUnitCountry = null) {
-  if (organisationUnitCode === 'World') {
+  const state = yield select();
+  if (selectIsProject(state, organisationUnitCode)) {
     // Never want to fetch measures for World org code.
     yield put(cancelFetchMeasureData());
     yield put(clearMeasureHierarchy());
@@ -651,7 +673,8 @@ function* fetchMeasureInfo(measureId, organisationUnitCode, oldOrgUnitCountry = 
     return;
   }
 
-  const country = selectOrgUnitCountry(yield select(), organisationUnitCode);
+  const project = selectActiveProject(state);
+  const country = selectOrgUnitCountry(state, organisationUnitCode);
   const countryCode = country ? country.organisationUnitCode : undefined;
   if (oldOrgUnitCountry) {
     if (oldOrgUnitCountry === countryCode) {
@@ -662,7 +685,13 @@ function* fetchMeasureInfo(measureId, organisationUnitCode, oldOrgUnitCountry = 
     yield put(clearMeasureHierarchy());
   }
 
-  const requestResourceUrl = `measureData?organisationUnitCode=${organisationUnitCode}&measureId=${measureId}&shouldShowAllParentCountryResults=${!isMobile()}`;
+  const urlParameters = {
+    organisationUnitCode,
+    measureId,
+    shouldShowAllParentCountryResults: !isMobile(),
+    projectCode: project.code,
+  };
+  const requestResourceUrl = `measureData?${queryString.stringify(urlParameters)}`;
 
   try {
     const measureInfoResponse = yield call(request, requestResourceUrl);
@@ -701,7 +730,7 @@ function* fetchCurrentMeasureInfo() {
   const { measureId } = state.map.measureInfo;
   const { measureHierarchy, selectedMeasureId } = state.measureBar;
 
-  if (organisationUnitCode && organisationUnitCode !== 'World') {
+  if (organisationUnitCode && !selectIsProject(state, organisationUnitCode)) {
     const isHeirarchyPopulated = Object.keys(measureHierarchy).length;
 
     // Update the default measure ID
@@ -759,7 +788,8 @@ function* watchOrgUnitChangeAndFetchMeasureInfo() {
  */
 function* fetchMeasures(action) {
   const { organisationUnitCode } = action;
-  if (organisationUnitCode === 'World') yield put(clearMeasure());
+  const state = yield select();
+  if (selectIsProject(state, organisationUnitCode)) yield put(clearMeasure());
   const requestResourceUrl = `measures?organisationUnitCode=${organisationUnitCode}`;
   try {
     const measures = yield call(request, requestResourceUrl);
@@ -898,15 +928,18 @@ function* watchAttemptAttemptDrillDown() {
   yield takeLatest(ATTEMPT_DRILL_DOWN, fetchDrillDownData);
 }
 
-function* navigateToWorldOnUserChange() {
-  // On user login/logout, we should just navigate back to world, as we don't know if they have permissions
-  // to the currently selected orgUnit
-  yield put(changeOrgUnit('World', true));
+function* navigateToExploreOnUserChange() {
+  // On user login/logout, we should just navigate back to explore project, as we don't know if they have permissions
+  // to the current project or organisation unit
+  yield put(
+    selectProject((yield select(selectProjectByCode, 'explore')) || { code: INITIAL_PROJECT_CODE }),
+  );
+  yield put(changeOrgUnit('explore', true));
 }
 
 function* watchUserChangesAndUpdatePermissions() {
-  yield takeLatest(FETCH_LOGOUT_SUCCESS, navigateToWorldOnUserChange);
-  yield takeLatest(FETCH_LOGIN_SUCCESS, navigateToWorldOnUserChange);
+  yield takeLatest(FETCH_LOGOUT_SUCCESS, navigateToExploreOnUserChange);
+  yield takeLatest(FETCH_LOGIN_SUCCESS, navigateToExploreOnUserChange);
 }
 
 function* fetchEnlargedDialogViewContentForPeriod(action) {

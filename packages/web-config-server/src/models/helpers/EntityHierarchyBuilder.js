@@ -24,7 +24,7 @@ export class EntityHierarchyBuilder {
     const cacheKey = this.getCacheKey(entityId, hierarchyId);
     if (!this.cachedPromises[cacheKey]) {
       if (hierarchyId) {
-        this.cachedPromises[cacheKey] = this.getDescendantsNonCanonically([entityId], hierarchyId);
+        this.cachedPromises[cacheKey] = this.getDescendantsNonCanonically(entityId, hierarchyId);
       } else {
         // no alternative hierarchy prescribed, use the faster all-in-one sql query
         this.cachedPromises[cacheKey] = this.getDescendantsCanonically(entityId);
@@ -33,14 +33,22 @@ export class EntityHierarchyBuilder {
     return this.cachedPromises[cacheKey];
   }
 
+  async getChildren(entityId, hierarchyId) {
+    return this.getNextGeneration([{ id: entityId }], hierarchyId);
+  }
+
   /**
    * Recursively traverse the alternative hierarchy that begins with the specified parents.
    * At each generation, choose children via 'entity_relation' if any exist, or the canonical
    * entity.parent_id if none do
-   * @param {string[]} parents      The entities to start at
-   * @param {string} hierarchyId    The specific hierarchy to follow through entity_relation
+   * @param {string} entityId      The entity to start at
+   * @param {string} hierarchyId   The specific hierarchy to follow through entity_relation
    */
-  async getDescendantsNonCanonically(parents, hierarchyId) {
+  async getDescendantsNonCanonically(entityId, hierarchyId) {
+    return this.recurseNonCononicalHierarchy([{ id: entityId }], hierarchyId);
+  }
+
+  async recurseNonCononicalHierarchy(parents, hierarchyId) {
     const children = await this.getNextGeneration(parents, hierarchyId);
 
     // if we've made it to the leaf nodes, return an empty array
@@ -49,37 +57,37 @@ export class EntityHierarchyBuilder {
     }
 
     // keep recursing down the hierarchy
-    const descendants = await this.getDescendantsNonCanonically(children, hierarchyId);
+    const descendants = await this.recurseNonCononicalHierarchy(children, hierarchyId);
     return [...children, ...descendants];
   }
 
   getNextGeneration = async (parents, hierarchyId) => {
     // get any matching alternative hierarchy relationships leading out of these parents
     const parentIds = parents.map(p => p.id);
-    const alternativeHierarchyLinks = hierarchyId
+    const hierarchyLinks = hierarchyId
       ? await this.models.entityRelation.find({
           parent_id: parentIds,
           entity_hierarchy_id: hierarchyId,
         })
       : [];
-    const childIds = alternativeHierarchyLinks.map(l => l.child_id);
+    const childIds = hierarchyLinks.map(l => l.child_id);
 
-    // if no alternative hierarchy links for this generation, follow the canonical relationships
-    const children =
-      childIds.length > 0
-        ? await this.models.entity.find({ id: childIds })
-        : await this.models.entity.find({ parent_id: parentIds });
+    if (childIds.length > 0) {
+      return this.models.entity.find({ id: childIds });
+    }
 
-    return children;
+    const canonicalTypes = Object.values(this.models.entity.orgUnitEntityTypes);
+    return this.models.entity.find({ parent_id: parentIds, type: canonicalTypes });
   };
 
   async getDescendantsCanonically(entityId) {
-    const records = await this.models.entity.database.executeSql(
+    const canonicalTypes = Object.values(this.models.entity.orgUnitEntityTypes).join("','");
+    return this.models.entity.database.executeSql(
       `
         WITH RECURSIVE descendants AS (
           SELECT *, 0 AS generation
             FROM entity
-            WHERE parent_id = ?
+            WHERE parent_id = ? AND type IN ('${canonicalTypes}')
 
           UNION ALL
           SELECT c.*, d.generation + 1
@@ -92,7 +100,5 @@ export class EntityHierarchyBuilder {
     `,
       [entityId],
     );
-
-    return records.map(record => this.models.entity.load(record));
   }
 }

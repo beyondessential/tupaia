@@ -26,7 +26,7 @@ import { selectProject } from '../../projects/actions';
 import { LandingPage } from './components/LandingPage';
 import { RequestProjectAccess } from './components/RequestProjectAccess';
 import Disaster from './components/Disaster';
-import { getProjectByCode } from '../../projects/selectors';
+import { selectProjectByCode } from '../../selectors';
 import { OVERLAY_PADDING, LANDING, DISASTER, REQUEST_PROJECT_ACCESS } from './constants';
 
 const styles = {
@@ -105,7 +105,7 @@ OverlayDiv.defaultProps = {
 };
 
 const mapStateToProps = state => {
-  const exploreProject = getProjectByCode(state, 'explore');
+  const exploreProject = selectProjectByCode(state, 'explore');
 
   return {
     overlay: state.global.overlay,
@@ -119,7 +119,7 @@ const mapDispatchToProps = dispatch => {
     onSelectProject: project => {
       dispatch(selectProject(project));
       dispatch(setOverlayComponent(null));
-      dispatch(changeOrgUnit(project.homeEntityCode, false));
+      dispatch(changeOrgUnit(project.code, false));
     },
     closeOverlay: () => {
       dispatch(setOverlayComponent(null));

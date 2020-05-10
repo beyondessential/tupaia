@@ -173,6 +173,10 @@ export class Entity extends BaseModel {
     return ancestors.length > 0 ? ancestors[0] : null;
   }
 
+  async getChildren(hierarchyId) {
+    return Entity.hierarchyBuilder.getChildren(this.id, hierarchyId);
+  }
+
   async getDescendants(hierarchyId) {
     return Entity.hierarchyBuilder.getDescendants(this.id, hierarchyId);
   }
@@ -184,12 +188,6 @@ export class Entity extends BaseModel {
   static async getFacilitiesOfOrgUnit(organisationUnitCode) {
     const entity = await Entity.findOne({ code: organisationUnitCode });
     return entity ? entity.getFacilities() : [];
-  }
-
-  async getOrgUnitDescendants() {
-    const types = Object.values(Entity.orgUnitEntityTypes);
-    const descendants = await this.getDescendants();
-    return descendants.filter(entity => types.includes(entity.type));
   }
 
   // assumes all entities of the given type are found at the same level in the hierarchy tree
@@ -230,22 +228,6 @@ export class Entity extends BaseModel {
       ...queryOptions,
       columns: Entity.getColumnSpecs(),
     });
-  }
-
-  async getOrgUnitChildren() {
-    const types = Object.values(Entity.orgUnitEntityTypes);
-
-    const records = await Entity.database.executeSql(
-      `
-      SELECT ${Entity.getSqlForColumns()} FROM entity
-      WHERE
-        parent_id = ?
-        ${constructTypesCriteria(types, 'AND')}
-      ORDER BY name;
-    `,
-      [this.id, ...types],
-    );
-    return records.map(record => Entity.load(record));
   }
 
   static fetchChildToParentCode = async childrenCodes => {
@@ -331,10 +313,15 @@ export class Entity extends BaseModel {
   }
 
   async parent() {
-    return Entity.findById(this.parent_id);
+    return this.parentId ? Entity.findById(this.parent_id) : undefined;
   }
 
   async countryEntity() {
-    return this.type === COUNTRY ? this : Entity.findOne({ code: this.country_code });
+    if (this.type === COUNTRY) {
+      return this;
+    } else if (this.country_code) {
+      return Entity.findOne({ code: this.country_code });
+    }
+    return undefined;
   }
 }
