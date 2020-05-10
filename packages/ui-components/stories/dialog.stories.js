@@ -12,9 +12,10 @@ import {
   DialogContent,
   DialogActions,
   DialogContentText,
-} from '../src/components/Dialog';
-import { Button, TextButton } from '../src/components/Button';
-import { CircleTick } from '../src/components/Icons';
+  Button,
+  TextButton,
+  CircleTick,
+} from '../src';
 import * as COLORS from './story-utils/theme/colors';
 
 export default {

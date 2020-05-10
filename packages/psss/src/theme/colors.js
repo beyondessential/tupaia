@@ -19,23 +19,14 @@ export const TEXT_MIDGREY = '#6F7B82';
 export const TEXT_LIGHTGREY = '#9AA8B0';
 
 // Greys (based on first 2 letters of hex code)
-export const GREY_28 = DARKGREY;
-export const GREY_41 = TEXT_DARKGREY;
-export const GREY_6F = TEXT_MIDGREY;
-export const GREY_9A = TEXT_LIGHTGREY;
-export const GREY_E5 = LIGHTGREY;
 export const GREY_72 = '#727D84';
 export const GREY_9F = '#9FA6AA';
 export const GREY_DE = '#DEDEE0'; // use for border colors of cards
 export const GREY_E2 = '#E2E2E2';
 export const GREY_FB = '#FBF9F9';
-export const GREY_F9 = '#F9F9F9';
 
 // Blues
-export const WHITE_BLUE = '#DDF1FF';
 export const LIGHT_BLUE = '#99D6FF';
-export const BLUE_ACCENT = '#2E6F9C';
-export const BLUE_BACKDROP = 'rgba(31, 88, 128, 0.72)';
 
 // Reds
 export const LIGHT_RED = '#FEE2E2';

@@ -17,7 +17,6 @@ import MuiListItem from '@material-ui/core/ListItem';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import Avatar from '@material-ui/core/Avatar';
 import MuiListSubheader from '@material-ui/core/ListSubheader';
-import * as COLORS from '../../stories/story-utils/theme/colors';
 
 const StyledListItem = styled(MuiListItem)`
   padding-right: 3rem;
@@ -32,7 +31,7 @@ const StyledButton = styled(MuiButton)`
   }
 
   .MuiAvatar-root {
-    color: ${COLORS.TEXT_DARKGREY};
+    color: ${props => props.theme.palette.text.primary};
   }
 `;
 
@@ -85,7 +84,7 @@ export const ProfileButton = props => {
 };
 
 export const LightProfileButton = styled(ProfileButton)`
-  color: ${COLORS.WHITE};
+  color: ${props => props.theme.palette.common.white};
 
   .MuiAvatar-root {
     color: white;

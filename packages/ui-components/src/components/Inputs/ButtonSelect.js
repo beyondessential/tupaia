@@ -11,16 +11,15 @@ import MuiInputAdornment from '@material-ui/core/InputAdornment';
 import MuiMenuItem from '@material-ui/core/MenuItem';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import * as COLORS from '../../../stories/story-utils/theme/colors';
 import { TextField } from './TextField';
 import { IconButton } from '../IconButton';
 
 const ChevronLeft = styled(MuiChevronLeft)`
-  color: ${COLORS.TEXT_LIGHTGREY};
+  color: ${props => props.theme.palette.text.tertiary};
 `;
 
 const ChevronRight = styled(MuiChevronRight)`
-  color: ${COLORS.TEXT_LIGHTGREY};
+  color: ${props => props.theme.palette.text.tertiary};
 `;
 
 const boxShadow = '0 0 6px rgba(0, 0, 0, 0.15)';
@@ -31,7 +30,7 @@ const StyledTextField = styled(TextField)`
   }
 
   .MuiInputBase-input {
-    color: ${COLORS.TEXT_DARKGREY};
+    color: ${props => props.theme.palette.text.primary};
   }
 
   .MuiOutlinedInput-notchedOutline {
@@ -66,11 +65,11 @@ const StyledTextField = styled(TextField)`
 `;
 
 const Counter = styled.div`
-  color: ${COLORS.TEXT_LIGHTGREY};
+  color: ${props => props.theme.palette.text.tertiary};
 `;
 
 const Menu = styled(MuiMenu)`
-  color: ${COLORS.TEXT_LIGHTGREY};
+  color: ${props => props.theme.palette.text.tertiary};
   font-size: 1.5rem;
   top: calc(50% - 0.75rem);
   left: 1.2rem;
