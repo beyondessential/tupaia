@@ -70,7 +70,7 @@ const VIEW_JSON_CONFIG = {
 	}
 };
 
-const DASHBOARD_GROUP_TO_ADD = 'Tonga_Communicable_Diseases_National';
+const DASHBOARD_GROUP = 'Tonga_Communicable_Diseases_National';
 
 const REPORT_ID = 'TO_CD_Health_Certificates_Distributed';
 
@@ -88,7 +88,7 @@ exports.up = async function (db) {
   await db.runSql(`
     UPDATE "dashboardGroup"
     SET "dashboardReports" = "dashboardReports" || '{${REPORT_ID}}'
-    WHERE code = '${DASHBOARD_GROUP_TO_ADD}';
+    WHERE code = '${DASHBOARD_GROUP}';
   `);
 };
 
@@ -98,7 +98,7 @@ exports.down = async function (db) {
 
     UPDATE "dashboardGroup"
     SET "dashboardReports" = array_remove("dashboardReports", '${REPORT_ID}')
-    WHERE code = '${DASHBOARD_GROUP_TO_ADD}';
+    WHERE code = '${DASHBOARD_GROUP}';
   `);
 };
 
