@@ -45,6 +45,10 @@ exports.up = async function(db) {
       UPDATE entity
       SET bounds = '${worldBounds}'
       WHERE type = 'project';
+
+      UPDATE entity
+      SET name = 'Explore'
+      WHERE code = '${PROJECT_CODE}';
     `);
 };
 
@@ -66,6 +70,10 @@ exports.down = async function(db) {
       UPDATE entity
       SET bounds = NULL
       WHERE type = 'project';
+
+      UPDATE entity
+      SET name = 'General'
+      WHERE code = '${PROJECT_CODE}';
     `);
 };
 

@@ -95,7 +95,7 @@ import {
 import { isMobile, processMeasureInfo, formatDateForApi } from './utils';
 import { createUrlString } from './utils/historyNavigation';
 import { getDefaultDates } from './utils/periodGranularities';
-import { INITIAL_MEASURE_ID, INITIAL_PROJECT_CODE } from './defaults';
+import { INITIAL_MEASURE_ID, INITIAL_PROJECT_CODE, initialOrgUnit } from './defaults';
 import { selectProject } from './projects/actions';
 
 /**
@@ -421,7 +421,10 @@ function* watchFetchCountryAccessDataAndFetchItTEST() {
  * Fetch an org unit.
  *
  */
-function* fetchOrgUnitData(organisationUnitCode = 'explore', projectCode = 'explore') {
+function* fetchOrgUnitData(
+  organisationUnitCode = initialOrgUnit.organisationUnitCode,
+  projectCode = INITIAL_PROJECT_CODE,
+) {
   try {
     yield put(fetchOrgUnit(organisationUnitCode));
     // Build the request url

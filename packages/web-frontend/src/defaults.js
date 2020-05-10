@@ -14,7 +14,7 @@
 export const initialOrgUnit = {
   type: 'project',
   organisationUnitCode: 'explore',
-  name: 'General',
+  name: 'Explore',
   parent: {},
   location: {
     type: 'no-coordinates',
