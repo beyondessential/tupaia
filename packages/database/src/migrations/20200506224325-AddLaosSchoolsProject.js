@@ -39,7 +39,7 @@ exports.up = async function(db) {
     image_url: 'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/laos_schools_background.jpg',
     default_measure: '126,171',
     dashboard_group_name: 'General',
-    user_groups: '{Laos User,Laos Super User}',
+    user_groups: '{Laos Schools User}',
     logo_url: 'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/laos_schools_logo.png',
     entity_id: await codeToId(db, 'entity', PROJECT_CODE),
   });
