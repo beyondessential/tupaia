@@ -6,6 +6,7 @@
 import { expect } from 'chai';
 import { AccessPolicy as AccessPolicyParser } from '@tupaia/access-policy';
 import {
+  clearTestData,
   getTestDatabase,
   upsertDummyRecord,
   findOrCreateDummyRecord,
@@ -20,6 +21,8 @@ describe('buildAccessPolicy', () => {
   let publicPermission;
 
   before(async () => {
+    await clearTestData(getTestDatabase());
+
     demoLand = await findOrCreateDummyRecord(models.entity, { code: 'DL' }, { name: 'Demo Land' });
 
     adminPermission = await findOrCreateDummyRecord(models.permissionGroup, {

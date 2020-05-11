@@ -8,6 +8,7 @@
 import { expect } from 'chai';
 import { hasAccess } from '@beyondessential/tupaia-access-policy';
 import {
+  clearTestData,
   getTestDatabase,
   upsertDummyRecord,
   findOrCreateDummyRecord,
@@ -22,6 +23,8 @@ describe('buildLegacyAccessPolicy', () => {
   let publicPermission;
 
   before(async () => {
+    await clearTestData(getTestDatabase());
+
     demoLand = await findOrCreateDummyRecord(
       models.entity,
       { code: 'DL' },
@@ -62,7 +65,6 @@ describe('buildLegacyAccessPolicy', () => {
         permission_group_id: publicPermission.id,
       });
       accessPolicy = await buildLegacyAccessPolicy(models, user.id);
-      console.log(accessPolicy);
     });
 
     it('should only have access to demo land', () => {
@@ -82,7 +84,11 @@ describe('buildLegacyAccessPolicy', () => {
 
     before(async () => {
       const user = await upsertDummyRecord(models.user);
-      const tonga = await findOrCreateDummyRecord(models.entity, { code: 'TO' }, { name: 'Tonga' });
+      const tonga = await findOrCreateDummyRecord(
+        models.entity,
+        { code: 'TO' },
+        { name: 'Tonga', type: 'country' },
+      );
 
       await upsertDummyRecord(models.userEntityPermission, {
         user_id: user.id,
