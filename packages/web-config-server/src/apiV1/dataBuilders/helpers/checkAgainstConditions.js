@@ -8,6 +8,7 @@ export const OPERATOR_TO_VALUE_CHECK = {
   range: (value, target) => target[0] <= value && value <= target[1],
   rangeExclusive: (value, target) => target[0] < value && value < target[1],
   regex: (value, target) => value.match(target),
+  in: (value, target) => target.includes(value),
 };
 
 const ANY_VALUE_CONDITION = '*';
