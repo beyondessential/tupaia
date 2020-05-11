@@ -90,7 +90,7 @@ const StyledFooter = styled.div`
   left: 0;
   bottom: 0;
   width: 100%;
-  background: ${COLORS.GREY_F9};
+  background: '#F9F9F9';
   height: ${DrawerFooterHeight};
   text-align: center;
   padding: 1.5rem;
