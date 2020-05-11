@@ -9,7 +9,8 @@ import MuiLink from '@material-ui/core/Link';
 import Avatar from '@material-ui/core/Avatar';
 import PropTypes from 'prop-types';
 import { Link as RouterLink } from 'react-router-dom';
-import { DataFetchingTable, SitesReportedAccessor, AFRAccessor } from '@tupaia/ui-components';
+import { SitesReportedAccessor, AFRAccessor } from '@tupaia/ui-components';
+import { ConnectedTable } from './ConnectedTable';
 import * as COLORS from '../../theme/colors';
 import { CountrySummaryTable } from './CountrySummaryTable';
 
@@ -75,7 +76,7 @@ const countriesTableColumns = [
 ];
 
 export const CountriesTable = () => (
-  <DataFetchingTable
+  <ConnectedTable
     endpoint="countries"
     columns={countriesTableColumns}
     SubComponent={CountrySummaryTable}

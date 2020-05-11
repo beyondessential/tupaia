@@ -7,7 +7,7 @@ import React from 'react';
 import { Error } from '@material-ui/icons';
 import styled from 'styled-components';
 
-export const SitesReportedAccessor = data => {
+export const SitesReportedCell = data => {
   return <span>{`${data.sitesReported}/30`}</span>;
 };
 
@@ -29,7 +29,7 @@ const AFRAlert = styled.div`
   }
 `;
 
-export const AFRAccessor = ({ AFR }) => {
+export const AFRCell = ({ AFR }) => {
   if (AFR > 500) {
     return (
       <AFRAlert>

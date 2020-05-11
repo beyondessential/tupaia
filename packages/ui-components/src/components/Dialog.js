@@ -13,11 +13,9 @@ import MuiDialogContentText from '@material-ui/core/DialogContentText';
 import Close from '@material-ui/icons/Close';
 import styled from 'styled-components';
 import { LightIconButton } from './IconButton';
-import * as COLORS from '../../stories/story-utils/theme/colors';
 
-/*
- * Dialog
- */
+const backdropColor = 'rgba(31, 88, 128, 0.72)';
+
 export const Dialog = styled(({ children, ...props }) => (
   <MuiDialog fullWidth maxWidth="sm" {...props}>
     {children}
@@ -28,7 +26,7 @@ export const Dialog = styled(({ children, ...props }) => (
   }
 
   .MuiBackdrop-root {
-    background: ${COLORS.BLUE_BACKDROP};
+    background: ${backdropColor};
   }
 `;
 
@@ -44,9 +42,6 @@ const StyledDialogTitle = styled(MuiDialogTitle)`
   line-height: 3.125rem;
 `;
 
-/*
- * DialogTitle
- */
 export const DialogTitle = ({ children, ...props }) => (
   <StyledDialogTitle {...props} disableTypography>
     {children}
@@ -67,36 +62,28 @@ DialogTitle.defaultProps = {
   onClose: null,
 };
 
-/*
- * DialogContent
- */
 export const DialogContent = styled(({ greyBackground, ...props }) => (
   <MuiDialogContent {...props} />
 ))`
   padding: 1.5rem 1.5rem 1.5rem 2rem;
-  background-color: ${props => (props.greyBackground ? COLORS.GREY_FB : COLORS.WHITE)};
+  background-color: ${props =>
+    props.greyBackground ? props.theme.palette.grey['400'] : props.theme.palette.common.white};
 `;
 
 DialogContent.propTypes = {
   greyBackground: PropTypes.bool,
 };
 
-/*
- * DialogActions
- */
 export const DialogActions = styled(MuiDialogActions)`
   padding: 1.5rem 1.5rem 1.5rem 2rem;
-  background-color: ${COLORS.GREY_FB};
-  border-top: 1px solid ${COLORS.GREY_E2};
+  background-color: ${props => props.theme.palette.grey['400']};
+  border-top: 1px solid ${props => props.theme.palette.grey['300']};
 
   > :not(:first-child) {
     margin-left: 1rem;
   }
 `;
 
-/*
- * DialogContentText
- */
 export const DialogContentText = styled(MuiDialogContentText)`
-  color: ${COLORS.TEXT_DARKGREY};
+  color: ${props => props.theme.palette.text.primary};
 `;

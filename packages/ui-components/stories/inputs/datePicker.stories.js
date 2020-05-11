@@ -5,7 +5,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { DatePicker } from '../../src/components/Inputs';
+import { DatePicker } from '../../src';
 
 export default {
   title: 'Inputs/DatePicker',

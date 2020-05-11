@@ -8,8 +8,7 @@ import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import { FakeAPI } from './story-utils/api';
 import * as COLORS from './story-utils/theme/colors';
-import { Table, CondensedTableBody, FakeHeader } from '../src/components/Table';
-import { Button } from '../src/components/Button';
+import { Button, Table, CondensedTableBody, FakeHeader } from '../src';
 
 export default {
   title: 'Table',
@@ -77,7 +76,7 @@ const StyledDiv = styled.div`
   padding: 2rem;
 `;
 
-const SubComponent = () => {
+const SubComponent = React.memo(() => {
   const { loading, data } = useTableData();
 
   const subColumns = React.useMemo(
@@ -120,7 +119,7 @@ const SubComponent = () => {
       </StyledDiv>
     </React.Fragment>
   );
-};
+});
 
 export const nestedTable = () => {
   const { loading, data } = useTableData();

@@ -8,12 +8,12 @@ import React from 'react';
 import { format } from 'date-fns';
 import PropTypes from 'prop-types';
 import {
-  DataFetchingTable,
   SitesReportedAccessor,
   AFRAccessor,
   CondensedTableBody,
   FakeHeader,
 } from '@tupaia/ui-components';
+import { ConnectedTable } from './ConnectedTable';
 import * as COLORS from '../../theme/colors';
 
 const CountrySummaryTitle = styled.div`
@@ -83,9 +83,9 @@ const TableHeader = () => {
 export const CountrySummaryTable = props => (
   <React.Fragment>
     <TableHeader />
-    <DataFetchingTable
+    <ConnectedTable
       endpoint="country-weeks"
-      fetchOptions={{ filterId: props.rowData.uid }}
+      fetchOptions={{ filterId: props.rowData.id }}
       columns={countrySummaryTableColumns}
       Header={false}
       Body={CondensedTableBody}

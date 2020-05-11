@@ -5,10 +5,7 @@
 
 import React from 'react';
 import Avatar from '@material-ui/core/Avatar';
-import { HomeButton } from '../src/components/HomeButton';
-import { NavBar } from '../src/components/NavBar';
-import { LightProfileButton } from '../src/components/ProfileButton';
-import { WarningCloud, Dashboard } from '../src/components/Icons';
+import { NavBar, LightProfileButton, HomeButton, WarningCloud, Dashboard } from '../src';
 import { RouterProvider } from './story-utils/RouterProvider';
 
 export default {

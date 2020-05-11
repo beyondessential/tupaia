@@ -11,8 +11,9 @@ import { format } from 'date-fns';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Alarm, CheckCircleOutline } from '@material-ui/icons';
-import { DataFetchingTable, AFRAccessor, SitesReportedAccessor } from '@tupaia/ui-components';
+import { AFRAccessor, SitesReportedAccessor } from '@tupaia/ui-components';
 import { SiteSummaryTable } from './SiteSummaryTable';
+import { ConnectedTable } from './ConnectedTable';
 import * as COLORS from '../../theme/colors';
 
 const CountryWeekTitle = styled.div`
@@ -135,7 +136,7 @@ const countryColumns = [
  * CountryWeekTable Component
  */
 export const CountryTable = () => (
-  <DataFetchingTable
+  <ConnectedTable
     endpoint="country-weeks"
     columns={countryColumns}
     SubComponent={SiteSummaryTable}

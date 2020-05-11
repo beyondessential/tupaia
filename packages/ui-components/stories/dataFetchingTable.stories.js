@@ -9,9 +9,8 @@ import MuiLink from '@material-ui/core/Link';
 import { format } from 'date-fns';
 import PropTypes from 'prop-types';
 import Avatar from '@material-ui/core/Avatar';
-import { DumbDataFetchingTable, DataFetchingTable } from '../src/components/DataFetchingTable';
-import { CondensedTableBody, FakeHeader } from '../src/components/Table';
-import { AFRAccessor, SitesReportedAccessor } from '../src/components/TableColumnAccessors';
+import { DataFetchingTable, CondensedTableBody, FakeHeader } from '../src';
+import { AFRCell, SitesReportedCell } from './story-utils/TableCells';
 import * as COLORS from './story-utils/theme/colors';
 import { connectApi } from './story-utils/api';
 
@@ -40,7 +39,7 @@ const CountryWeekTitle = styled.div`
   line-height: 1;
 `;
 
-const CountryWeekNameAccessor = ({ week, startDate, endDate }) => {
+const CountryWeekNameCell = React.memo(({ week, startDate, endDate }) => {
   const start = `${format(startDate, 'LLL d')}`;
   const end = `${format(endDate, 'LLL d')}`;
   const year = `${format(endDate, 'yyyy')}`;
@@ -51,9 +50,9 @@ const CountryWeekNameAccessor = ({ week, startDate, endDate }) => {
       </CountryWeekTitle>
     </React.Fragment>
   );
-};
+});
 
-CountryWeekNameAccessor.propTypes = {
+CountryWeekNameCell.propTypes = {
   week: PropTypes.number.isRequired,
   startDate: PropTypes.instanceOf(Date).isRequired,
   endDate: PropTypes.instanceOf(Date).isRequired,
@@ -69,18 +68,18 @@ const countryTableColumns = [
     key: 'name',
     width: '30%',
     align: 'left',
-    accessor: CountryWeekNameAccessor,
+    CellComponent: CountryWeekNameCell,
   },
   {
     title: 'Site Reported',
     key: 'sitesReported',
-    accessor: SitesReportedAccessor,
+    CellComponent: SitesReportedCell,
     width: '100px',
   },
   {
     title: 'AFR',
     key: 'AFR',
-    accessor: AFRAccessor,
+    CellComponent: AFRCell,
   },
   {
     title: 'DIA',
@@ -100,21 +99,29 @@ const countryTableColumns = [
   },
 ];
 
+function mapApiToDataFetchingTable(api, { endpoint, fetchOptions }) {
+  return {
+    fetchData: queryParameters => api.get(endpoint, { ...fetchOptions, ...queryParameters }),
+  };
+}
+
+const ConnectedTable = connectApi(mapApiToDataFetchingTable)(DataFetchingTable);
+
 /*
  * CountryTable Component
  */
-const CountryTable = props => (
+const CountryTable = React.memo(props => (
   <React.Fragment>
     <CountryTableHeader />
-    <DataFetchingTable
+    <ConnectedTable
       endpoint="country-weeks"
-      fetchOptions={{ filterId: props.rowData.uid }}
+      fetchOptions={{ filterId: props.rowData.id }}
       columns={countryTableColumns}
       Header={false}
       Body={CondensedTableBody}
     />
   </React.Fragment>
-);
+));
 
 /*
  * CountryTable
@@ -133,7 +140,7 @@ const CountryTitle = styled(MuiLink)`
   }
 `;
 
-const CountryNameAccessor = ({ name }) => {
+const CountryNameCell = React.memo(({ name }) => {
   const handleClick = e => {
     e.preventDefault();
     e.stopPropagation();
@@ -145,9 +152,9 @@ const CountryNameAccessor = ({ name }) => {
       <Avatar /> {name}
     </CountryTitle>
   );
-};
+});
 
-CountryNameAccessor.propTypes = {
+CountryNameCell.propTypes = {
   name: PropTypes.string.isRequired,
 };
 
@@ -157,18 +164,18 @@ const countriesTableColumns = [
     key: 'name',
     width: '30%',
     align: 'left',
-    accessor: CountryNameAccessor,
+    CellComponent: CountryNameCell,
   },
   {
     title: 'Site Reported',
     key: 'sitesReported',
-    accessor: SitesReportedAccessor,
+    CellComponent: SitesReportedCell,
     width: '100px',
   },
   {
     title: 'AFR',
     key: 'AFR',
-    accessor: AFRAccessor,
+    CellComponent: AFRCell,
   },
   {
     title: 'DIA',
@@ -189,12 +196,12 @@ const countriesTableColumns = [
 ];
 
 /*
- * CountryTable Component
+ * CountriesTable Component
  */
 export const CountriesTable = () => {
   return (
     <Container>
-      <DataFetchingTable
+      <ConnectedTable
         endpoint="countries"
         columns={countriesTableColumns}
         SubComponent={CountryTable}
@@ -202,43 +209,3 @@ export const CountriesTable = () => {
     </Container>
   );
 };
-
-/*
- * CustomMappingTable
- */
-function mapApiToProps(api, { endpoint, fetchOptions }) {
-  return {
-    fetchData: queryParameters => api.get(endpoint, { ...fetchOptions, ...queryParameters }),
-  };
-}
-
-const CustomDataFetchingTable = connectApi(mapApiToProps)(DumbDataFetchingTable);
-
-const userColumns = [
-  {
-    title: 'Name',
-    key: 'name',
-  },
-  {
-    title: 'Surname',
-    key: 'surname',
-  },
-  {
-    title: 'Email',
-    key: 'email',
-  },
-  {
-    title: 'City',
-    key: 'city',
-  },
-];
-
-/*
- * CustomMappingTable Component
- * An example showing how the DataFetchingTable can be mapped to different apis
- */
-export const CustomMappingTable = () => (
-  <Container>
-    <CustomDataFetchingTable endpoint="users" columns={userColumns} />
-  </Container>
-);
