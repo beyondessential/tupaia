@@ -83,7 +83,7 @@ export class AccessPolicy {
     // if no specific entities were requested, fetch the permissions for all of them
     const entities = requestedEntities || Object.keys(this.policy);
     // cache this part, as it is run often and is the most expensive operation
-    const cacheKey = entities.join('_');
+    const cacheKey = entities.join('-');
     if (!this.cachedPermissionGroupSets[cacheKey]) {
       const permissionGroups = new Set();
       entities.forEach(entityCode => {
