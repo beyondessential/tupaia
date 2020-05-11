@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import MuiBox from '@material-ui/core/Box';
 import MuiCard from '@material-ui/core/Card';
 import MuiCardContent from '@material-ui/core/CardContent';
-import { BarMeter } from '../src';
+import { BarMeter, CircleMeter } from '../src';
 import * as COLORS from './story-utils/theme/colors';
 
 export default {
@@ -30,6 +30,20 @@ export const barMeter = () => (
     <MuiCard variant="outlined">
       <MuiCardContent>
         <BarMeter value={22} total={30} />
+      </MuiCardContent>
+    </MuiCard>
+  </Container>
+);
+
+export const circleMeter = () => (
+  <Container>
+    <MuiCard variant="outlined">
+      <MuiCardContent>
+        <CircleMeter percent={0} />
+        <CircleMeter percent={34} />
+        <CircleMeter percent={50} />
+        <CircleMeter percent={99} />
+        <CircleMeter percent={100} />
       </MuiCardContent>
     </MuiCard>
   </Container>

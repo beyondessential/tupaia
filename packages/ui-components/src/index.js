@@ -8,6 +8,7 @@ export * from './components/Alert';
 export * from './components/Breadcrumbs';
 export * from './components/Button';
 export * from './components/CardTabs';
+export * from './components/CircleMeter';
 export * from './components/Dialog';
 export * from './components/HomeButton';
 export * from './components/IconButton';
