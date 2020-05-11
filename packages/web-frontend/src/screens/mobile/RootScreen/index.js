@@ -20,6 +20,7 @@ import { LoadingScreen } from '../LoadingScreen';
 import Footer from '../../../components/mobile/Footer';
 import { ENTITY_TYPE } from '../../../constants';
 import OverlayDiv from '../../../containers/OverlayDiv';
+import { selectCurrentOrgUnit } from '../../../selectors';
 
 const ORG_UNIT_TYPE_TO_COMPONENT = {
   [ENTITY_TYPE.COUNTRY]: RegionScreen,
@@ -33,8 +34,8 @@ const getPageComponent = orgUnitType => ORG_UNIT_TYPE_TO_COMPONENT[orgUnitType] 
 
 class RootScreen extends Component {
   renderPage() {
-    const { currentOrganisationUnit } = this.props;
-    const PageComponent = getPageComponent(currentOrganisationUnit.type);
+    const { currentOrganisationUnitType } = this.props;
+    const PageComponent = getPageComponent(currentOrganisationUnitType);
     return <PageComponent />;
   }
 
@@ -60,15 +61,17 @@ class RootScreen extends Component {
 }
 
 RootScreen.propTypes = {
-  currentOrganisationUnit: PropTypes.shape({ type: PropTypes.string }).isRequired,
+  currentOrganisationUnitType: PropTypes.string.isRequired,
   isLoading: PropTypes.bool.isRequired,
   isUserLoggedIn: PropTypes.bool.isRequired,
 };
 
-const mapStateToProps = state => ({
-  currentOrganisationUnit: state.global.currentOrganisationUnit,
-  isLoading: state.global.isLoadingOrganisationUnit,
-  isUserLoggedIn: state.authentication.isUserLoggedIn,
-});
+const mapStateToProps = state => {
+  return {
+    currentOrganisationUnitType: selectCurrentOrgUnit(state).type,
+    isLoading: state.global.isLoadingOrganisationUnit,
+    isUserLoggedIn: state.authentication.isUserLoggedIn,
+  };
+};
 
 export default connect(mapStateToProps)(RootScreen);

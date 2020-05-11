@@ -17,7 +17,7 @@
  * /?p=about - Loads the home page with about overlay shown.
  */
 
-import createHistory from 'history/createBrowserHistory';
+import { createBrowserHistory } from 'history';
 import queryString from 'query-string';
 
 import {
@@ -47,7 +47,7 @@ const DEFAULT_DASHBOARDS = {
   disaster: 'Disaster Response',
 };
 
-const history = createHistory();
+const history = createBrowserHistory();
 
 export function decodeUrl(pathname, search) {
   if (pathname[0] === '/') {
@@ -97,9 +97,7 @@ export function createUrlForAppState(state) {
   const dashboardId = state.dashboard.currentDashboardKey;
   const measureId = state.measureBar.currentMeasure.measureId;
 
-  const focusedOrganisationUnit = state.global.currentOrganisationUnit;
-
-  const { organisationUnitCode } = focusedOrganisationUnit;
+  const { currentOrganisationUnitCode } = state.global;
   const reportId = state.enlargedDialog.viewContent.viewId;
   const userPage = '';
 
@@ -108,7 +106,7 @@ export function createUrlForAppState(state) {
   return createUrl({
     dashboardId,
     measureId,
-    organisationUnitCode,
+    currentOrganisationUnitCode,
     reportId,
     userPage,
     project,
@@ -218,7 +216,7 @@ function reactToHistory(location, store) {
 
   dispatch(findLoggedIn());
 
-  if (organisationUnitCode !== state.global.currentOrganisationUnit.organisationUnitCode) {
+  if (organisationUnitCode !== state.global.currentOrganisationUnitCode) {
     dispatch(changeOrgUnit(organisationUnitCode));
     dispatch(openMapPopup(organisationUnitCode));
   }
