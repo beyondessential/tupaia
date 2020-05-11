@@ -5,7 +5,7 @@
 
 import { expect } from 'chai';
 
-import { accessPolicy, verifiedUser, MEDITRAK_DEVICE_DETAILS } from './Authenticator.fixtures';
+import { accessPolicy, verifiedUser } from './Authenticator.fixtures';
 import { getPolicyForUserStub } from './Authenticator.stubs';
 
 export const testAuthenticateRefreshToken = constructAuthenticator => async () => {
