@@ -251,9 +251,10 @@ export class TableOfDataValuesBuilder extends DataBuilder {
   }
 
   buildOrgsFromResultsWithCategories() {
-    const types = Array.from(reduceToSet(this.results, 'typeName'));
+    const types = reduceToDictionary(this.results, 'typeName', 'categoryCode');
+    const sortedTypes = Object.keys(types).sort((a, b) => types[a] - types[b]);
     const orgUnitTypes = reduceToDictionary(this.results, 'organisationUnit', 'typeName');
-    const columnCategories = new Map(types.map(cat => [cat, []]));
+    const columnCategories = new Map(sortedTypes.map(cat => [cat, []]));
     Object.keys(orgUnitTypes).forEach(org => {
       columnCategories.get(orgUnitTypes[org]).push(org);
     });
