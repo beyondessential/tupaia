@@ -128,27 +128,6 @@ export const selectOrgUnitChildren = createSelector(
     code === 'World' ? countriesAsOrgUnits : safeGet(orgUnitChildrenCache, [country, code]),
 );
 
-export const selectOrgUnitsAsHierarchy = createSelector(
-  [state => state.orgUnits.orgUnitMap, selectCountriesAsOrgUnits],
-  (orgUnitMap, countriesAsOrgUnits) => {
-    const world = orgUnitMap.World && orgUnitMap.World.World;
-    if (!world) {
-      return {};
-    }
-
-    const hierarchy = {
-      ...world,
-      organisationUnitChildren: countriesAsOrgUnits.map(countryOrgUnit =>
-        safeGet(countryAsHierarchyObjectCache, [
-          orgUnitMap[countryOrgUnit.organisationUnitCode],
-          world,
-        ]),
-      ),
-    };
-    return hierarchy;
-  },
-);
-
 export const selectOrgUnitSiblings = createSelector(
   [selectOrgUnitSiblingsAndSelf, (_, code) => code],
   (siblings, code) => {

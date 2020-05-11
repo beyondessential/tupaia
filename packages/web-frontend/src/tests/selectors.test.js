@@ -8,7 +8,6 @@
 import {
   selectOrgUnit,
   selectOrgUnitChildren,
-  selectOrgUnitsAsHierarchy,
   selectCurrentOrgUnit,
   selectOrgUnitSiblings,
 } from '../selectors';
@@ -135,25 +134,6 @@ describe('selectors', () => {
         expect(selectOrgUnitSiblings.recomputations()).toEqual(2); //OrgUnitMap has changed, so recompute
       });
     });
-
-    describe('selectOrgUnitsAsHierarchy', () => {
-      it('recomputes by orgUnitMap', () => {
-        let testState = {
-          orgUnits: { orgUnitMap: { TO: { TO: { organisationUnitCode: 'TO', name: 'Tonga' } } } },
-        };
-
-        selectOrgUnitsAsHierarchy(testState);
-        expect(selectOrgUnitsAsHierarchy.recomputations()).toEqual(1);
-
-        testState = insertOrgUnit(testState, 'PG', {
-          organisationUnitCode: 'PG',
-          name: 'Papua New Guinea',
-        });
-
-        selectOrgUnitsAsHierarchy(testState);
-        expect(selectOrgUnitsAsHierarchy.recomputations()).toEqual(2); //OrgUnitMap has changed, so recompute
-      });
-    });
   });
   describe('functionality', () => {
     describe('selectOrgUnit', () => {
@@ -234,26 +214,6 @@ describe('selectors', () => {
       });
       it('can select siblings of undefined', () => {
         expect(selectOrgUnitSiblings(state, undefined)).toEqual([]);
-      });
-    });
-
-    describe('selectOrgUnitsAsHierarchy', () => {
-      it('can select orgUnits as a hierarchy', () => {
-        const codeMatching = code => orgUnit => orgUnit.organisationUnitCode === code;
-        const orgUnitsAsHierarchy = selectOrgUnitsAsHierarchy(state);
-        expect(orgUnitsAsHierarchy.organisationUnitCode).toEqual('World');
-        const TO = orgUnitsAsHierarchy.organisationUnitChildren.find(codeMatching('TO'));
-        expect(TO.name).toEqual('Tonga');
-        expect(TO.parent.name).toEqual('World');
-        const TO_Haapai = TO.organisationUnitChildren.find(codeMatching('TO_Haapai'));
-        expect(TO_Haapai.name).toEqual("Ha'apai");
-        expect(TO_Haapai.parent.name).toEqual('Tonga');
-        const TO_HfevaHC = TO_Haapai.organisationUnitChildren.find(codeMatching('TO_HfevaHC'));
-        const TO_FoaMCH = TO_Haapai.organisationUnitChildren.find(codeMatching('TO_FoaMCH'));
-        expect(TO_HfevaHC.name).toEqual("Ha'afeva");
-        expect(TO_HfevaHC.parent.name).toEqual("Ha'apai");
-        expect(TO_FoaMCH.name).toEqual('Foa');
-        expect(TO_FoaMCH.parent.name).toEqual("Ha'apai");
       });
     });
   });
