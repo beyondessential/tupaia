@@ -6,7 +6,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import MuiBox from '@material-ui/core/Box';
-import { Card, CardContent, CardFooter, BarMeter, CircleMeter } from '../src';
+import MuiCard from '@material-ui/core/Card';
+import MuiCardContent from '@material-ui/core/CardContent';
+import { BarMeter, CircleMeter } from '../src';
 import * as COLORS from './story-utils/theme/colors';
 
 export default {
@@ -25,29 +27,24 @@ const Container = styled(MuiBox)`
 
 export const barMeter = () => (
   <Container>
-    <Card variant="outlined">
-      <CardContent>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab alias aliquid, beatae
-        consectetur consequuntur dolorum error explicabo ipsam iusto laborum modi obcaecati quae
-        quia quo rem sed tempore unde vel.
-      </CardContent>
-      <CardFooter>
+    <MuiCard variant="outlined">
+      <MuiCardContent>
         <BarMeter value={22} total={30} />
-      </CardFooter>
-    </Card>
+      </MuiCardContent>
+    </MuiCard>
   </Container>
 );
 
 export const circleMeter = () => (
   <Container>
-    <Card variant="outlined">
-      <CardContent>
+    <MuiCard variant="outlined">
+      <MuiCardContent>
         <CircleMeter percent={0} />
         <CircleMeter percent={34} />
         <CircleMeter percent={50} />
         <CircleMeter percent={99} />
         <CircleMeter percent={100} />
-      </CardContent>
-    </Card>
+      </MuiCardContent>
+    </MuiCard>
   </Container>
 );

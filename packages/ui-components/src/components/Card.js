@@ -26,14 +26,14 @@ const StyledDiv = styled.div`
 `;
 
 const HeaderTitle = styled(Typography)`
-  font-size: 15px;
-  line-height: 18px;
+  font-size: 0.9375rem;
+  line-height: 1.125rem;
   font-weight: 500;
 `;
 
 const HeaderLabel = styled(Typography)`
-  font-size: 15px;
-  line-height: 18px;
+  font-size: 0.9375rem;
+  line-height: 1.125rem;
   font-weight: 400;
   color: ${props => props.theme.palette.text.secondary};
 `;
