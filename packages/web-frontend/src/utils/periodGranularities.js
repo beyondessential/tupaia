@@ -27,7 +27,6 @@ const CONFIG = {
     pickerFormat: 'D',
     momentShorthand: 'd',
     momentUnit: 'day',
-    momentUnitPlural: 'days',
   },
   [WEEK]: {
     chartFormat: 'D MMM YYYY',
@@ -35,7 +34,6 @@ const CONFIG = {
     pickerFormat: '[W/C] D MMM YYYY',
     momentShorthand: 'w',
     momentUnit: 'isoWeek',
-    momentUnitPlural: 'isoWeeks',
   },
   [MONTH]: {
     chartFormat: 'MMM YYYY',
@@ -43,7 +41,6 @@ const CONFIG = {
     pickerFormat: 'MMMM',
     momentShorthand: 'M',
     momentUnit: 'month',
-    momentUnitPlural: 'months',
   },
   [YEAR]: {
     chartFormat: 'YYYY',
@@ -51,7 +48,6 @@ const CONFIG = {
     pickerFormat: 'YYYY',
     momentShorthand: 'Y',
     momentUnit: 'year',
-    momentUnitPlural: 'years',
   },
 };
 
@@ -106,16 +102,15 @@ const getDefaultDate = (offset, unit, modifier) => {
 
   let defaultDate = moment();
 
+  const { momentUnit } = CONFIG[unit];
+
   if (offset) {
-    const { momentUnitPlural } = CONFIG[unit];
-    defaultDate = defaultDate.add(offset, momentUnitPlural);
+    defaultDate = defaultDate.add(offset, momentUnit);
   }
 
   //If modifier is set (eg: 'start_of', 'end_of'),
   //switch the default date to either start or end of the year
   if (modifier) {
-    const { momentUnit } = CONFIG[unit];
-
     switch (modifier) {
       case START_OF_PERIOD:
         defaultDate = defaultDate.startOf(momentUnit);
