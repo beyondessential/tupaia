@@ -70,8 +70,8 @@ const safeGet = (cache, args) => (cache.keySelector(...args) ? cache(...args) : 
 
 const selectCountriesAsOrgUnits = createSelector([state => state.orgUnits.orgUnitMap], orgUnitMap =>
   Object.entries(orgUnitMap)
-    .map(([countryCode, countryHierarchy]) => countryHierarchy[countryCode])
-    .filter(country => country.type === 'Country'),
+    .map(([countryCode, countryHierarchy]) => getOrgUnitFromCountry(countryHierarchy, countryCode))
+    .filter(country => country && country.type === 'Country'),
 );
 
 const getOrgUnitFromMeasureData = (measureData, code) =>
