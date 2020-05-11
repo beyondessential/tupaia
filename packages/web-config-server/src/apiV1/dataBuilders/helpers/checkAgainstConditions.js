@@ -8,6 +8,7 @@ export const OPERATOR_TO_VALUE_CHECK = {
   range: (value, target) => target[0] <= value && value <= target[1],
   rangeExclusive: (value, target) => target[0] < value && value < target[1],
   regex: (value, target) => !!value.match(target),
+  in: (value, target) => target.includes(value),
 };
 
 const ANY_VALUE_CONDITION = '*';
@@ -36,8 +37,8 @@ export const countEventsThatSatisfyConditions = (events, conditions) => {
   const { dataValues: valueConditions = {} } = conditions || {};
   const eventHasTargetValues = ({ dataValues }) =>
     Object.entries(valueConditions).every(([dataElement, condition]) => {
-      const dataValue = Array.isArray(dataValues) ?
-        dataValues.find(dv => dv.dataElement === dataElement)
+      const dataValue = Array.isArray(dataValues)
+        ? dataValues.find(dv => dv.dataElement === dataElement)
         : dataValues[dataElement];
       const value = isPlainObject(dataValue) ? dataValue.value : dataValue;
       return value && checkValueSatisfiesCondition(value, condition);
