@@ -41,7 +41,7 @@ export const countEventsThatSatisfyConditions = (events, conditions) => {
         ? dataValues.find(dv => dv.dataElement === dataElement)
         : dataValues[dataElement];
       const value = isPlainObject(dataValue) ? dataValue.value : dataValue;
-      return value && checkValueSatisfiesCondition(value, condition);
+      return value !== undefined && checkValueSatisfiesCondition(value, condition);
     });
 
   return events.filter(eventHasTargetValues).length;
