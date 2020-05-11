@@ -23,11 +23,14 @@
     "@material-ui/styles": "^4.9.10",
     "@tupaia/ui-components": "1.0",
     "@tupaia/utils": "1.0.0",
+    "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "prop-types": "^15.7.2",
+    "react-redux": "^7.1.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.1",
+    "redux": "^4.0.2",
+    "redux-persist": "^6.0.0",
     "styled-components": "^5.1.0"
   },
   "babel": {
