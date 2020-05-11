@@ -36,11 +36,11 @@ export const countEventsThatSatisfyConditions = (events, conditions) => {
   const { dataValues: valueConditions = {} } = conditions || {};
   const eventHasTargetValues = ({ dataValues }) =>
     Object.entries(valueConditions).every(([dataElement, condition]) => {
-      const dataValue = Array.isArray(dataValues) ?
-        dataValues.find(dv => dv.dataElement === dataElement)
+      const dataValue = Array.isArray(dataValues)
+        ? dataValues.find(dv => dv.dataElement === dataElement)
         : dataValues[dataElement];
       const value = isPlainObject(dataValue) ? dataValue.value : dataValue;
-      return value && checkValueSatisfiesCondition(value, condition);
+      return value !== undefined && checkValueSatisfiesCondition(value, condition);
     });
 
   return events.filter(eventHasTargetValues).length;
