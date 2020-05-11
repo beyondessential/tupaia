@@ -6,12 +6,11 @@
 import React from 'react';
 import styled from 'styled-components';
 import MuiBox from '@material-ui/core/Box';
-import { Meter, CircleMeter } from '../src/components/Meter';
+import { Card, CardContent, CardFooter, BarMeter, CircleMeter } from '../src';
 import * as COLORS from './story-utils/theme/colors';
-import { Card, CardContent, CardFooter } from '../src/components/Card';
 
 export default {
-  title: 'Meter',
+  title: 'Meters',
 };
 
 const Container = styled(MuiBox)`
@@ -24,7 +23,7 @@ const Container = styled(MuiBox)`
   }
 `;
 
-export const meter = () => (
+export const barMeter = () => (
   <Container>
     <Card variant="outlined">
       <CardContent>
@@ -33,7 +32,7 @@ export const meter = () => (
         quia quo rem sed tempore unde vel.
       </CardContent>
       <CardFooter>
-        <Meter value={22} total={30} />
+        <BarMeter value={22} total={30} />
       </CardFooter>
     </Card>
   </Container>

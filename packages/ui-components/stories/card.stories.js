@@ -8,16 +8,20 @@ import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import MuiBox from '@material-ui/core/Box';
 import { Error, ErrorOutline, NotificationImportant, Assignment } from '@material-ui/icons';
-import { Card, CardHeader, CardFooter, CardContent } from '../src/components/Card';
-import { Button } from '../src/components/Button';
 import {
+  Card,
+  CardHeader,
+  CardFooter,
+  CardContent,
+  Button,
+  CircleMeter,
+  BarMeter,
   CardTab,
   CardTabList,
   CardTabPanel,
   CardTabPanels,
   CardTabs,
-} from '../src/components/CardTabs';
-import { CircleMeter, Meter } from '../src';
+} from '../src';
 import * as COLORS from './story-utils/theme/colors';
 
 export default {
@@ -115,7 +119,7 @@ export const submissionExample = () => (
         <StyledButton fullWidth>Review and Submit now</StyledButton>
       </CardContent>
       <CardFooter>
-        <Meter value={22} total={30} legend="Sites reported" />
+        <BarMeter value={22} total={30} legend="Sites reported" />
       </CardFooter>
     </Card>
   </Container>
