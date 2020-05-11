@@ -77,7 +77,9 @@ export default class extends RouteHandler {
   async filterForAccess(entities) {
     return (
       await Promise.all(
-        entities.map(async entity => (await this.checkUserHasEntityAccess(entity)) && entity),
+        entities
+          .filter(entity => entity)
+          .map(async entity => (await this.checkUserHasEntityAccess(entity)) && entity),
       )
     ).filter(entity => entity);
   }
