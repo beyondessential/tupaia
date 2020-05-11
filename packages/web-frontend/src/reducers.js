@@ -492,7 +492,6 @@ function searchBar(
   state = {
     isExpanded: false,
     searchResponse: null,
-    hierarchyData: null,
     searchString: '',
   },
   action,
@@ -806,43 +805,6 @@ function drillDown(
     default:
       return state;
   }
-}
-
-/**
- * Stores the orgUnit at the appropriate location in currentHierarchy, returning the
- * resulting hierarchy.
- *
- * @param {object} orgUnit The organisationUnit to be nestedItems
- * @param {array} currentHierarchy The current hierarchy to modify
- *
- * @return {array} The new hierarchy array with added orgUnit data
- */
-function nestOrgUnitInHierarchy(orgUnit, currentHierarchy) {
-  if (
-    !currentHierarchy ||
-    !Array.isArray(currentHierarchy) ||
-    currentHierarchy.length < 1 ||
-    orgUnit.organisationUnitCode === 'World'
-  ) {
-    return orgUnit.organisationUnitChildren;
-  }
-
-  const recursiveReplace = branch => {
-    branch.some((child, index, branchArray) => {
-      if (child.organisationUnitCode === orgUnit.organisationUnitCode) {
-        branchArray[index] = orgUnit; // eslint-disable-line no-param-reassign
-        // Org unit replaced, return true and cascade up the recursive branch.some() calls
-        return true;
-      }
-      if (Array.isArray(child.organisationUnitChildren)) {
-        return recursiveReplace(child.organisationUnitChildren);
-      }
-      return false; // Did not find the orgUnit to replace and are at a leaf node.
-    });
-  };
-  const updatedHierarchy = [...currentHierarchy];
-  recursiveReplace(updatedHierarchy);
-  return updatedHierarchy;
 }
 
 /**
