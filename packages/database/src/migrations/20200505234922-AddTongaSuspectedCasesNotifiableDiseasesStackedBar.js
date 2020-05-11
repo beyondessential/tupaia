@@ -32,8 +32,8 @@ const REPORT = {
     name: 'Suspected Cases of Notifiable diseases per month',
     type: 'chart',
     chartType: 'bar',
-    dynamicChartConfig: {
-      baseConfig: {
+    chartConfig: {
+      $all: {
         stackId: 1,
       },
     },

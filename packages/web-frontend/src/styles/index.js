@@ -157,6 +157,13 @@ export const COMPOSED_CHART_COLOR_PALETTE = {
   magentaLight: '#CD34B5',
 };
 
+export const COLOR_PALETTES = {
+  EXPANDED_CHART_COLOR_PALETTE,
+  COMPOSED_CHART_COLOR_PALETTE,
+  CHART_COLOR_PALETTE,
+  CHART_BLUES,
+};
+
 export const BUTTON_COLORS = {
   primary: blue[700],
   secondary: WHITE,

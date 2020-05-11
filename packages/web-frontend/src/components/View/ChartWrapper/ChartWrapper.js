@@ -18,7 +18,6 @@ export class ChartWrapper extends PureComponent {
   getViewContent() {
     const { viewContent } = this.props;
     const { chartConfig } = viewContent;
-    console.log(viewContent);
 
     return chartConfig
       ? {

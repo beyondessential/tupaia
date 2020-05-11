@@ -1,29 +1,33 @@
-import {
-  CHART_COLOR_PALETTE,
-  EXPANDED_CHART_COLOR_PALETTE,
-  COMPOSED_CHART_COLOR_PALETTE,
-} from '../../../styles';
+import { COLOR_PALETTES } from '../../../styles';
 import { CHART_TYPES } from './chartTypes';
 
 const DYNAMIC_KEY = '$all';
+const CUSTOM_PALETTE_KEY = '$colorPalette';
 
 export const parseChartConfig = viewContent => {
   const { chartType, chartConfig, data } = viewContent;
-  const { [DYNAMIC_KEY]: dynamicChartConfig, ...restOfConfig } = chartConfig;
+  const {
+    [CUSTOM_PALETTE_KEY]: paletteName,
+    [DYNAMIC_KEY]: dynamicChartConfig,
+    ...restOfConfig
+  } = chartConfig;
 
-  return sortChartConfigByLegendOrder(
-    addDefaultsColorsToConfig(
-      chartType,
+  return addDefaultsColorsToConfig(
+    sortChartConfigByLegendOrder(
       dynamicChartConfig ? addDynamicConfig(restOfConfig, dynamicChartConfig, data) : restOfConfig,
     ),
+    paletteName,
+    chartType,
   );
 };
 
 // Adds default colors for every element with no color defined
-const addDefaultsColorsToConfig = (chartType, chartConfig) => {
+const addDefaultsColorsToConfig = (chartConfig, paletteName, chartType) => {
   const newConfig = {};
-  const palette = getDefaultColorsForChart(chartType, Object.keys(chartConfig).length, false);
-  const colors = Object.values(palette);
+
+  const colors = paletteName
+    ? getColorsFromPalette(paletteName)
+    : getDefaultColorsForChart(chartType, Object.keys(chartConfig).length, false);
 
   let colorId = 0;
   Object.entries(chartConfig).forEach(([key, configItem]) => {
@@ -39,17 +43,21 @@ const addDefaultsColorsToConfig = (chartType, chartConfig) => {
   return newConfig;
 };
 
-const getDefaultColorPalette = (chartType, numberRequired, useExpandedPalette) => {
+const getDefaultColorPalette = (chartType, numberRequired) => {
   if (chartType === CHART_TYPES.COMPOSED) {
-    return COMPOSED_CHART_COLOR_PALETTE;
+    return COLOR_PALETTES.COMPOSED_CHART_COLOR_PALETTE;
   }
-  return numberRequired > Object.keys(CHART_COLOR_PALETTE).length && useExpandedPalette
-    ? EXPANDED_CHART_COLOR_PALETTE
-    : CHART_COLOR_PALETTE;
+  return numberRequired > Object.keys(COLOR_PALETTES.CHART_COLOR_PALETTE).length
+    ? COLOR_PALETTES.EXPANDED_CHART_COLOR_PALETTE
+    : COLOR_PALETTES.CHART_COLOR_PALETTE;
 };
 
-const getDefaultColorsForChart = (...args) => Object.values(getDefaultColorPalette(...args));
+const getDefaultColorsForChart = (chartType, numberRequired) =>
+  Object.values(getDefaultColorPalette(chartType, numberRequired));
 
+const getColorsFromPalette = paletteName => Object.values(COLOR_PALETTES[paletteName]);
+
+// Bad practice to rely on object ordering: https://stackoverflow.com/questions/9179680/is-it-acceptable-style-for-node-js-libraries-to-rely-on-object-key-order
 const sortChartConfigByLegendOrder = chartConfig => {
   return Object.entries(chartConfig)
     .sort(([, cfg1], [, cfg2]) => {
@@ -80,9 +88,9 @@ const addDynamicConfig = (chartConfig, dynamicChartConfig, data) => {
   });
 
   // Add config to each key
-  const newChartConfig = { ...chartConfig };
+  const newChartConfig = {};
   keys.forEach(key => {
-    newChartConfig[key] = { ...dynamicChartConfig };
+    newChartConfig[key] = { ...dynamicChartConfig, ...chartConfig[key] };
   });
   return newChartConfig;
 };

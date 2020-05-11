@@ -32,8 +32,8 @@ const REPORT = {
     name: 'Number of contacts traced',
     type: 'chart',
     chartType: 'bar',
-    dynamicChartConfig: {
-      baseConfig: {
+    chartConfig: {
+      $all: {
         stackId: 1,
       },
     },
