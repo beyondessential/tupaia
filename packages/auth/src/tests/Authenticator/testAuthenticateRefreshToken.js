@@ -5,6 +5,9 @@
 
 import { expect } from 'chai';
 
+import { accessPolicy, verifiedUser, MEDITRAK_DEVICE_DETAILS } from './Authenticator.fixtures';
+import { getPolicyForUserStub } from './Authenticator.stubs';
+
 export const testAuthenticateRefreshToken = constructAuthenticator => async () => {
   it('throws an error with invalid arguments', async () => {
     const authenticator = constructAuthenticator();
@@ -37,5 +40,29 @@ export const testAuthenticateRefreshToken = constructAuthenticator => async () =
     const authenticator = constructAuthenticator();
     return expect(authenticator.authenticateRefreshToken({ refreshToken: 'validToken' })).to.be
       .fulfilled;
+  });
+
+  it('should build the correct access policy for the meditrak device', async () => {
+    const authenticator = constructAuthenticator();
+    const assertCorrectAccessPolicyWasBuilt = async (refreshToken, useLegacyFormat) => {
+      getPolicyForUserStub.resetHistory(); // ensure history is reset between tests
+      await expect(
+        authenticator.authenticateRefreshToken({ refreshToken }),
+      ).to.eventually.deep.equal({
+        accessPolicy,
+        refreshToken,
+        user: verifiedUser,
+      });
+      expect(getPolicyForUserStub).to.have.been.calledOnceWithExactly(
+        verifiedUser.id,
+        useLegacyFormat,
+      );
+    };
+    // modern
+    await assertCorrectAccessPolicyWasBuilt('modern', false);
+    await assertCorrectAccessPolicyWasBuilt('ultraModern', false);
+    // legacy
+    await assertCorrectAccessPolicyWasBuilt('legacy', true);
+    await assertCorrectAccessPolicyWasBuilt('ultraLegacy', true);
   });
 };

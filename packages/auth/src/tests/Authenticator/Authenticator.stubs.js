@@ -4,7 +4,12 @@
  */
 import sinon from 'sinon';
 
-import { accessPolicy, verifiedUser, unverifiedUser } from './Authenticator.fixtures';
+import {
+  accessPolicy,
+  verifiedUser,
+  unverifiedUser,
+  MEDITRAK_DEVICE_BY_REFRESH_TOKEN,
+} from './Authenticator.fixtures';
 
 export const getPolicyForUserStub = sinon.stub().resolves(accessPolicy);
 export class AccessPolicyBuilderStub {
@@ -23,12 +28,19 @@ const findUserStub = ({ email }) => {
   }
 };
 
+const getValidToken = token => ({ token, meditrakDevice: () => null, expiry: Date.now() + 100000 });
 const findRefreshTokenStub = ({ token }) => {
+  if (MEDITRAK_DEVICE_BY_REFRESH_TOKEN[token]) {
+    return {
+      ...getValidToken(token),
+      meditrakDevice: () => MEDITRAK_DEVICE_BY_REFRESH_TOKEN[token],
+    };
+  }
   switch (token) {
     case 'validToken':
-      return { token, meditrakDevice: () => null, expiry: Date.now() + 100000 };
+      return getValidToken(token);
     case 'expiredToken':
-      return { token, meditrakDevice: () => null, expiry: Date.now() - 100 };
+      return { ...getValidToken(token), expiry: Date.now() - 100 };
     default:
       return null;
   }
