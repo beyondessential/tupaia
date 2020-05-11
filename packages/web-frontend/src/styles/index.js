@@ -21,7 +21,7 @@ import {
   brown,
   grey,
 } from '@material-ui/core/colors';
-import { isMobile } from '../utils';
+import { isMobile } from '../utils/mobile';
 
 const fullWhite = 'rgba(255, 255, 255, 1)';
 export const darkWhite = 'rgba(255, 255, 255, 0.87)';

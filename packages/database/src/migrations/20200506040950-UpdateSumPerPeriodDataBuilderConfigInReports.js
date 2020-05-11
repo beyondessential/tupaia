@@ -54,7 +54,6 @@ const COVID_Compose_Cumulative_Deaths_Vs_Cases_UPDATE_INFO = {
         "dataBuilderConfig": {
           "dataClasses": {
             "value": {
-              "type": "single",
               "codes": [
                 "dailysurvey003"
               ]
@@ -67,7 +66,6 @@ const COVID_Compose_Cumulative_Deaths_Vs_Cases_UPDATE_INFO = {
         "dataBuilderConfig": {
           "dataClasses": {
             "value": {
-              "type": "single",
               "codes": [
                 "dailysurvey004"
               ]
@@ -113,7 +111,6 @@ const COVID_Compose_Daily_Deaths_Vs_Cases_REPORT_ID_UPDATE_INFO = {
         "dataBuilderConfig": {
           "dataClasses": {
             "value": {
-              "type": "single",
               "codes": [
                 "dailysurvey003"
               ]
@@ -126,7 +123,6 @@ const COVID_Compose_Daily_Deaths_Vs_Cases_REPORT_ID_UPDATE_INFO = {
         "dataBuilderConfig": {
           "dataClasses": {
             "value": {
-              "type": "single",
               "codes": [
                 "dailysurvey004"
               ]
@@ -186,7 +182,6 @@ const PG_Strive_PNG_Weekly_Percentage_of_Positive_Consultations_UPDATE_INFO = {
         "dataBuilderConfig": {
           "dataClasses": {
             "value": {
-              "type": "single",
               "codes": [
                 "SSWT1021",
                 "SSWT1022",
@@ -201,7 +196,6 @@ const PG_Strive_PNG_Weekly_Percentage_of_Positive_Consultations_UPDATE_INFO = {
         "dataBuilderConfig": {
           "dataClasses": {
             "value": {
-              "type": "single",
               "codes": [
                 "SSWT1001"
               ]
@@ -283,7 +277,6 @@ const PG_Strive_PNG_Weekly_Percentage_of_Positive_Malaria_Against_Consultations_
               "dataBuilderConfig": {
                 "dataClasses": {
                   "value": {
-                    "type": "single",
                     "codes": [
                       "SSWT1021",
                       "SSWT1022",
@@ -298,7 +291,6 @@ const PG_Strive_PNG_Weekly_Percentage_of_Positive_Malaria_Against_Consultations_
               "dataBuilderConfig": {
                 "dataClasses": {
                   "value": {
-                    "type": "single",
                     "codes": [
                       "SSWT1072"
                     ]
@@ -314,7 +306,6 @@ const PG_Strive_PNG_Weekly_Percentage_of_Positive_Malaria_Against_Consultations_
         "dataBuilderConfig": {
           "dataClasses": {
             "value": {
-              "type": "single",
               "codes": [
                 "SSWT1001"
               ]
