@@ -56,6 +56,9 @@ export class AccessPolicy {
    *                  the given permission group
    */
   allowsSome(entities = [], permissionGroup) {
+    if (entities === null) {
+      return false;
+    }
     if (!permissionGroup) {
       return entities.some(entityCode => !!this.policy[entityCode]);
     }
