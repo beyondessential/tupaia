@@ -55,7 +55,7 @@ const NestedTableWrapperCell = styled.td`
   }
 `;
 
-export const StyledTable = styled(MuiTable)`
+const StyledTable = styled(MuiTable)`
   border-collapse: unset;
   table-layout: fixed;
 `;

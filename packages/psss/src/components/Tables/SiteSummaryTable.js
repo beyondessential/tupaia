@@ -11,12 +11,12 @@ import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import {
   CondensedTableBody,
-  DataFetchingTable,
   AFRAccessor,
   FakeHeader,
   SitesReportedAccessor,
   Button,
 } from '@tupaia/ui-components';
+import { ConnectedTable } from './ConnectedTable';
 
 const StyledDiv = styled.div`
   display: flex;
@@ -81,7 +81,7 @@ export const SiteSummaryTable = props => {
   return (
     <React.Fragment>
       <TableHeader />
-      <DataFetchingTable
+      <ConnectedTable
         endpoint="sites"
         columns={siteWeekColumns}
         Header={false}
