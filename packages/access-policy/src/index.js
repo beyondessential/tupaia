@@ -86,10 +86,11 @@ export class AccessPolicy {
     const cacheKey = entities.join('_');
     if (!this.cachedPermissionGroupSets[cacheKey]) {
       const permissionGroups = new Set();
-      entities.forEach(
-        entityCode =>
-          this.policy[entityCode] && this.policy[entityCode].forEach(r => permissionGroups.add(r)),
-      );
+      entities.forEach(entityCode => {
+        if (this.policy[entityCode]) {
+          this.policy[entityCode].forEach(r => permissionGroups.add(r));
+        }
+      });
       this.cachedPermissionGroupSets[cacheKey] = permissionGroups;
     }
     return this.cachedPermissionGroupSets[cacheKey];
