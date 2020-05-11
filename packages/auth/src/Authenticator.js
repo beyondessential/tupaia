@@ -12,9 +12,9 @@ const REFRESH_TOKEN_LENGTH = 40;
 const MAX_MEDITRAK_USING_LEGACY_POLICY = '1.7.106';
 
 export class Authenticator {
-  constructor(models) {
+  constructor(models, AccessPolicyBuilderClass = AccessPolicyBuilder) {
     this.models = models;
-    this.accessPolicyBuilder = new AccessPolicyBuilder(models);
+    this.accessPolicyBuilder = new AccessPolicyBuilderClass(models);
   }
 
   async authenticatePassword({ emailAddress, password, deviceName }, meditrakDeviceDetails) {
@@ -35,8 +35,8 @@ export class Authenticator {
     // Get the refresh token from the models
     const refreshToken = await this.models.refreshToken.findOne({ token });
 
-    // If there wasn't a *valid* refresh token, tell the user to log in again
-    if (!refreshToken || !refreshToken.user_id || !refreshToken.token) {
+    // If there wasn't a refresh token, tell the user to log in again
+    if (!refreshToken) {
       throw new UnauthenticatedError('Refresh token not valid, please log in again');
     }
 
@@ -82,8 +82,8 @@ export class Authenticator {
       email: { comparisonValue: emailAddress, ignoreCase: true },
     });
 
-    // If there wasn't a *valid* user with the given email, send back a slightly obscured message
-    if (!user || !user.id || !user.password_hash || !user.password_salt) {
+    // If there wasn't a user with the given email, send back a slightly obscured message
+    if (!user) {
       throw new UnauthenticatedError('Email address or password not found');
     }
 
