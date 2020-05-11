@@ -15,20 +15,41 @@ import { buildAccessPolicy } from '../buildAccessPolicy';
 
 describe('buildAccessPolicy', () => {
   const models = new ModelRegistry(getTestDatabase());
+  let demoLand;
+  let adminPermission;
+  let publicPermission;
+
+  before(async () => {
+    demoLand = await findOrCreateDummyRecord(models.entity, { code: 'DL' }, { name: 'Demo Land' });
+
+    adminPermission = await findOrCreateDummyRecord(models.permissionGroup, {
+      name: 'Admin',
+    });
+    const donorPermission = await findOrCreateDummyRecord(
+      models.permissionGroup,
+      {
+        name: 'Donor',
+      },
+      {
+        parent_id: adminPermission.id,
+      },
+    );
+    publicPermission = await findOrCreateDummyRecord(
+      models.permissionGroup,
+      {
+        name: 'Public',
+      },
+      {
+        parent_id: donorPermission.id,
+      },
+    );
+  });
 
   describe('Demo Land public user', () => {
     let accessPolicy;
 
     before(async () => {
       const user = await upsertDummyRecord(models.user);
-      const demoLand = await findOrCreateDummyRecord(
-        models.entity,
-        { code: 'DL' },
-        { name: 'Demo Land' },
-      );
-      const publicPermission = await findOrCreateDummyRecord(models.permissionGroup, {
-        name: 'Public',
-      });
       await upsertDummyRecord(models.userEntityPermission, {
         entity_id: demoLand.id,
         user_id: user.id,
@@ -48,33 +69,7 @@ describe('buildAccessPolicy', () => {
 
     before(async () => {
       const user = await upsertDummyRecord(models.user);
-      const demoLand = await findOrCreateDummyRecord(
-        models.entity,
-        { code: 'DL' },
-        { name: 'Demo Land' },
-      );
       const tonga = await findOrCreateDummyRecord(models.entity, { code: 'TO' }, { name: 'Tonga' });
-      const adminPermission = await models.permissionGroup.findOne({
-        name: 'Admin',
-      });
-      const donorPermission = await findOrCreateDummyRecord(
-        models.permissionGroup,
-        {
-          name: 'Donor',
-        },
-        {
-          parent_id: adminPermission.id,
-        },
-      );
-      const publicPermission = await findOrCreateDummyRecord(
-        models.permissionGroup,
-        {
-          name: 'Public',
-        },
-        {
-          parent_id: donorPermission.id,
-        },
-      );
 
       await upsertDummyRecord(models.userEntityPermission, {
         user_id: user.id,
@@ -108,9 +103,6 @@ describe('buildAccessPolicy', () => {
 
     before(async () => {
       const user = await upsertDummyRecord(models.user);
-      const publicPermission = await findOrCreateDummyRecord(models.permissionGroup, {
-        name: 'Public',
-      });
 
       // Create a facility nested deep within a new country
       const canada = await findOrCreateDummyRecord(
