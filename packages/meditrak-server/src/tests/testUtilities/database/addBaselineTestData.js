@@ -63,5 +63,6 @@ export async function addBaselineTestData() {
     contactNumber: '',
     countryName: 'Demo Land',
     permissionGroupName: 'Admin',
+    verifiedEmail: 'verified',
   });
 }
