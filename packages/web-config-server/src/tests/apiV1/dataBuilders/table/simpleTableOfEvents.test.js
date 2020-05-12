@@ -71,6 +71,7 @@ const fetchAnalytics = sinon.stub();
 fetchAnalytics
   .withArgs(['WHOSPAR'], { dataServices, programCodes: ['WSRS'] }, query, {
     aggregationType: 'FINAL_EACH_YEAR',
+    filter: {},
   })
   .returns(analytics);
 

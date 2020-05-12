@@ -17,7 +17,7 @@
  * /?p=about - Loads the home page with about overlay shown.
  */
 
-import createHistory from 'history/createBrowserHistory';
+import { createBrowserHistory } from 'history';
 import queryString from 'query-string';
 
 import {
@@ -47,7 +47,7 @@ const DEFAULT_DASHBOARDS = {
   disaster: 'Disaster Response',
 };
 
-const history = createHistory();
+const history = createBrowserHistory();
 
 export function decodeUrl(pathname, search) {
   if (pathname[0] === '/') {
