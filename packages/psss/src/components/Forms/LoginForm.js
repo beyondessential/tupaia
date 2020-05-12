@@ -3,39 +3,40 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import { TextField, Button } from '@tupaia/ui-components';
+import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
+import { useHistory } from 'react-router-dom';
+import { FakeStore } from '../../FakeStore';
+import * as COLORS from '../../theme/colors';
+import { useFormFields, useAuthState } from '../../hooks';
 
-const useFormFields = initialState => {
-  const [fields, setValues] = useState(initialState);
+export const ErrorMessage = styled.p`
+  color: ${COLORS.RED};
+`;
 
-  return [
-    fields,
-    event => {
-      setValues({
-        ...fields,
-        [event.target.id]: event.target.value,
-      });
-    },
-  ];
-};
-
-export const LoginForm = ({ handleLogin }) => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+export const LoginForm = () => {
+  const history = useHistory();
+  const { isPending, isError, error } = useAuthState();
 
   const [fields, handleFieldChange] = useFormFields({
     email: '',
     password: '',
   });
 
-  const handleSubmit = event => {
+  const handleSubmit = async event => {
     event.preventDefault();
-    setLoading(true);
     const { email, password } = fields;
 
-    handleLogin({ email, password });
+    const { status } = await FakeStore.auth.authenticate({ email, password });
+    if (status === 'success') {
+      history.push('/');
+    }
+
+    if (status === 'error') {
+      history.push('/login');
+    }
   };
 
   return (
@@ -43,14 +44,7 @@ export const LoginForm = ({ handleLogin }) => {
       <Typography variant="h3" component="h3" gutterBottom>
         Login
       </Typography>
-      {error && (
-        <div style={{ color: 'red' }}>
-          <p>Oops, there was an error logging you in.</p>
-          <p>
-            <i>{error.message}</i>
-          </p>
-        </div>
-      )}
+      {isError && <ErrorMessage>{error}</ErrorMessage>}
       <TextField
         id="email"
         name="email"
@@ -67,7 +61,9 @@ export const LoginForm = ({ handleLogin }) => {
         value={fields.password}
         onChange={handleFieldChange}
       />
-      <Button type="submit">Sign in</Button>
+      <Button type="submit" isSubmitting={isPending}>
+        Sign in
+      </Button>
     </form>
   );
 };

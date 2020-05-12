@@ -6,23 +6,12 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import MuiButton from '@material-ui/core/Button';
-import MuiListItemText from '@material-ui/core/ListItemText';
-import MuiList from '@material-ui/core/List';
 import MuiMenu from '@material-ui/core/Menu';
-import MuiListItemIcon from '@material-ui/core/ListItemIcon';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import { Link as RouterLink } from 'react-router-dom';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import MuiListItem from '@material-ui/core/ListItem';
+import PropTypes from 'prop-types';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import Avatar from '@material-ui/core/Avatar';
 import MuiListSubheader from '@material-ui/core/ListSubheader';
-
-const StyledListItem = styled(MuiListItem)`
-  padding-right: 3rem;
-`;
-
-const ListItemLink = props => <StyledListItem button component={RouterLink} {...props} />;
+import MuiList from '@material-ui/core/List';
 
 const StyledButton = styled(MuiButton)`
   .MuiAvatar-root {
@@ -44,7 +33,7 @@ const Menu = styled(MuiMenu)`
 /*
  * Profile button
  */
-export const ProfileButton = props => {
+export const ProfileButton = ({ children, ListItems, ...props }) => {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleClick = event => {
@@ -62,25 +51,21 @@ export const ProfileButton = props => {
         startIcon={<Avatar />}
         onClick={handleClick}
         {...props}
-      />
+      >
+        {children}
+      </StyledButton>
       <Menu keepMounted anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
         <MuiList subheader={<MuiListSubheader>Profile</MuiListSubheader>}>
-          <ListItemLink to="/profile">
-            <MuiListItemIcon>
-              <AccountCircleIcon />
-            </MuiListItemIcon>
-            <MuiListItemText primary="Profile" />
-          </ListItemLink>
-          <ListItemLink to="/logout">
-            <MuiListItemIcon>
-              <ExitToAppIcon />
-            </MuiListItemIcon>
-            <MuiListItemText primary="Logout" />
-          </ListItemLink>
+          <ListItems />
         </MuiList>
       </Menu>
     </React.Fragment>
   );
+};
+
+ProfileButton.propTypes = {
+  children: PropTypes.any.isRequired,
+  ListItems: PropTypes.any.isRequired,
 };
 
 export const LightProfileButton = styled(ProfileButton)`

@@ -24,11 +24,11 @@ export const StyledCard = styled(MuiCard)`
   margin: 0 auto;
 `;
 
-export const LoginView = ({ handleLogin }) => {
+export const LoginView = () => {
   return (
     <Main>
       <StyledCard>
-        <LoginForm handleLogin={handleLogin} />
+        <LoginForm />
       </StyledCard>
     </Main>
   );

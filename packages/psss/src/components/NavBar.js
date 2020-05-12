@@ -3,14 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import {
-  Dashboard,
-  HomeButton,
-  LightProfileButton,
-  WarningCloud,
-  NavBar as BaseNavBar,
-} from '@tupaia/ui-components';
-import Avatar from '@material-ui/core/Avatar';
+import { Dashboard, HomeButton, WarningCloud, NavBar as BaseNavBar } from '@tupaia/ui-components';
+import { ProfileButton } from './ProfileButton';
 
 const links = [
   {
@@ -26,8 +20,6 @@ const links = [
 ];
 
 const Home = () => <HomeButton source="/psss-logo-white.svg" />;
-
-const Profile = () => <LightProfileButton startIcon={<Avatar>T</Avatar>}>Tom</LightProfileButton>;
 
 /*
  * This ensures that the link to the home page is active for sub-urls of country (eg. /weekly-reports/samoa)
@@ -48,5 +40,5 @@ const isTabActive = (match, location) => {
 };
 
 export const NavBar = () => (
-  <BaseNavBar HomeButton={Home} links={links} Profile={Profile} isTabActive={isTabActive} />
+  <BaseNavBar HomeButton={Home} links={links} Profile={ProfileButton} isTabActive={isTabActive} />
 );

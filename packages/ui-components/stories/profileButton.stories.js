@@ -7,9 +7,15 @@ import React from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import styled from 'styled-components';
 import MuiBox from '@material-ui/core/Box';
-import { ProfileButton, LightProfileButton } from '../src';
+import { Link as RouterLink } from 'react-router-dom';
+import MuiListItem from '@material-ui/core/ListItem';
+import MuiListItemIcon from '@material-ui/core/ListItemIcon';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import MuiListItemText from '@material-ui/core/ListItemText';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import * as COLORS from './story-utils/theme/colors';
 import { RouterProvider } from './story-utils/RouterProvider';
+import { ProfileButton, LightProfileButton } from '../src';
 
 export default {
   title: 'ProfileButton',
@@ -21,14 +27,41 @@ const Container = styled(MuiBox)`
   padding: 1rem;
 `;
 
+const StyledListItem = styled(MuiListItem)`
+  padding-right: 3rem;
+`;
+
+const ListItemLink = props => <StyledListItem button component={RouterLink} {...props} />;
+
+const ProfileLinks = () => (
+  <React.Fragment>
+    <ListItemLink to="/profile">
+      <MuiListItemIcon>
+        <AccountCircleIcon />
+      </MuiListItemIcon>
+      <MuiListItemText primary="Profile" />
+    </ListItemLink>
+    <ListItemLink to="/logout">
+      <MuiListItemIcon>
+        <ExitToAppIcon />
+      </MuiListItemIcon>
+      <MuiListItemText primary="Logout" />
+    </ListItemLink>
+  </React.Fragment>
+);
+
 export const profileButton = () => (
   <Container>
-    <ProfileButton startIcon={<Avatar>T</Avatar>}>Tom</ProfileButton>
+    <ProfileButton startIcon={<Avatar>T</Avatar>} ListItems={ProfileLinks}>
+      Tom
+    </ProfileButton>
   </Container>
 );
 
 export const lightProfileButton = () => (
   <Container bgcolor={COLORS.BLUE}>
-    <LightProfileButton startIcon={<Avatar>T</Avatar>}>Tom</LightProfileButton>
+    <LightProfileButton startIcon={<Avatar>T</Avatar>} ListItems={ProfileLinks}>
+      Tom
+    </LightProfileButton>
   </Container>
 );

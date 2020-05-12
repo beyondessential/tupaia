@@ -3,13 +3,12 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import PropTypes from 'prop-types';
 import { CalendarToday, TabsToolbar } from '@tupaia/ui-components';
 import Typography from '@material-ui/core/Typography';
+import { useRouteMatch } from 'react-router-dom';
 import { PhotoAlbum } from '@material-ui/icons';
 import MuiContainer from '@material-ui/core/Container';
-import { Header } from '../components/Header';
-import { Main } from '../components';
+import { Header, Main } from '../components';
 import { AlertsRoutes } from '../routes/AlertsRoutes';
 
 const links = [
@@ -30,7 +29,9 @@ const links = [
   },
 ];
 
-export const AlertReportsView = ({ match }) => {
+export const AlertReportsView = () => {
+  const match = useRouteMatch();
+
   return (
     <React.Fragment>
       <Header title="Alerts & Outbreaks" />
@@ -45,8 +46,4 @@ export const AlertReportsView = ({ match }) => {
       </MuiContainer>
     </React.Fragment>
   );
-};
-
-AlertReportsView.propTypes = {
-  match: PropTypes.any.isRequired,
 };
