@@ -1,16 +1,23 @@
 import React from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { NavBar, Footer } from './components';
 import { PageRoutes } from './routes/PageRoutes';
+import { LoginView } from './views/LoginView';
+import { PrivateRoute } from './routes/PrivateRoute';
 
-const App = () => {
-  return (
-    <Router>
-      <NavBar />
-      <PageRoutes />
-      <Footer />
-    </Router>
-  );
-};
+const App = () => (
+  <Router>
+    <Switch>
+      <Route path="/login">
+        <LoginView />
+      </Route>
+      <PrivateRoute path="/">
+        <NavBar />
+        <PageRoutes />
+        <Footer />
+      </PrivateRoute>
+    </Switch>
+  </Router>
+);
 
 export default App;

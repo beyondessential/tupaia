@@ -4,8 +4,7 @@
  */
 
 import React from 'react';
-import { Redirect, Route, Switch } from 'react-router-dom';
-import PropTypes from 'prop-types';
+import { Redirect, Route, Switch, useRouteMatch } from 'react-router-dom';
 import { TableView } from '../views/TableView';
 
 const routedTableView = endpoint =>
@@ -17,15 +16,21 @@ const AlertsView = routedTableView('alerts');
 const OutbreaksView = routedTableView('outbreaks');
 const ArchiveView = routedTableView('archive');
 
-export const AlertsRoutes = React.memo(({ match }) => (
-  <Switch>
-    <Route exact path={match.path} component={AlertsView} />
-    <Route path={`${match.path}/outbreaks`} component={OutbreaksView} />
-    <Route path={`${match.path}/archive`} component={ArchiveView} />
-    <Redirect to={match.path} />
-  </Switch>
-));
+export const AlertsRoutes = React.memo(() => {
+  const match = useRouteMatch();
 
-AlertsRoutes.propTypes = {
-  match: PropTypes.any.isRequired,
-};
+  return (
+    <Switch>
+      <Route exact path={match.path}>
+        <AlertsView />
+      </Route>
+      <Route path={`${match.path}/outbreaks`}>
+        <OutbreaksView />
+      </Route>
+      <Route path={`${match.path}/archive`}>
+        <ArchiveView />
+      </Route>
+      <Redirect to={match.path} />
+    </Switch>
+  );
+});
