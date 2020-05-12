@@ -4,6 +4,7 @@
  */
 
 export { clearTestData } from './clearTestData';
-export { getDatabase } from './getDatabase';
-export { upsertDummyRecord } from './upsertDummyRecord';
-export * from './random';
+export { generateTestId } from './generateTestId';
+export { generateValueOfType } from './generateValueOfType';
+export { getTestDatabase } from './getTestDatabase';
+export { upsertDummyRecord, findOrCreateDummyRecord } from './upsertDummyRecord';

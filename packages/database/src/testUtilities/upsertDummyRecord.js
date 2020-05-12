@@ -4,7 +4,8 @@
  */
 
 import { TYPES } from '../types';
-import { generateValueOfType, generateTestId } from './random';
+import { generateTestId } from './generateTestId';
+import { generateValueOfType } from './generateValueOfType';
 
 const { ENTITY, SURVEY_RESPONSE } = TYPES;
 
@@ -67,4 +68,9 @@ const generateDummyRecord = async (model, overrides = {}) => {
 export const upsertDummyRecord = async (model, data) => {
   const generatedData = await generateDummyRecord(model, data);
   return model.updateOrCreate({ id: generatedData.id }, generatedData);
+};
+
+export const findOrCreateDummyRecord = async (model, findCriteria, data) => {
+  const generatedData = await generateDummyRecord(model, { ...findCriteria, ...data });
+  return model.findOrCreate(findCriteria, generatedData);
 };

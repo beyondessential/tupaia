@@ -38,6 +38,7 @@ describe('AccessPolicy', () => {
 
     it('should not allow access if no entity is specified', () => {
       expect(accessPolicy.allows()).to.equal(false);
+      expect(accessPolicy.allows(null)).to.equal(false);
     });
   });
 
@@ -71,6 +72,7 @@ describe('AccessPolicy', () => {
     it('should not allow access if no entities are specified', () => {
       expect(accessPolicy.allowsSome([])).to.equal(false);
       expect(accessPolicy.allowsSome()).to.equal(false);
+      expect(accessPolicy.allowsSome(null)).to.equal(false);
     });
   });
 

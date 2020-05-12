@@ -27,6 +27,10 @@ class UserType extends DatabaseType {
   checkIsEmailUnverified() {
     return this.verified_email === this.model.emailVerifiedStatuses.NEW_USER;
   }
+
+  checkIsEmailVerified() {
+    return this.verified_email === this.model.emailVerifiedStatuses.VERIFIED;
+  }
 }
 
 export class UserModel extends DatabaseModel {

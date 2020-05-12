@@ -13,7 +13,6 @@ const respondWithError = (res, errorMessage) => {
 
 const processLogin = (sessionDetails, req, res) => {
   setSession(req, sessionDetails); // store new session
-  req.session = { userJson: sessionDetails };
   res.send({
     authenticated: true,
     name: req.session.userJson.name,

@@ -56,6 +56,9 @@ export class AccessPolicy {
    *                  the given permission group
    */
   allowsSome(entities = [], permissionGroup) {
+    if (entities === null) {
+      return false;
+    }
     if (!permissionGroup) {
       return entities.some(entityCode => !!this.policy[entityCode]);
     }
@@ -80,13 +83,14 @@ export class AccessPolicy {
     // if no specific entities were requested, fetch the permissions for all of them
     const entities = requestedEntities || Object.keys(this.policy);
     // cache this part, as it is run often and is the most expensive operation
-    const cacheKey = entities.join('_');
+    const cacheKey = entities.join('-');
     if (!this.cachedPermissionGroupSets[cacheKey]) {
       const permissionGroups = new Set();
-      entities.forEach(
-        entityCode =>
-          this.policy[entityCode] && this.policy[entityCode].forEach(r => permissionGroups.add(r)),
-      );
+      entities.forEach(entityCode => {
+        if (this.policy[entityCode]) {
+          this.policy[entityCode].forEach(r => permissionGroups.add(r));
+        }
+      });
       this.cachedPermissionGroupSets[cacheKey] = permissionGroups;
     }
     return this.cachedPermissionGroupSets[cacheKey];

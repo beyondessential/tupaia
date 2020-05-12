@@ -40,7 +40,7 @@ export const login = (emailAddress, password) => async (dispatch, getState, { ap
   }
 };
 
-export const loginSuccess = ({ accessToken, refreshToken, user, accessPolicy }) => dispatch => {
+export const loginSuccess = ({ accessToken, refreshToken, user }) => dispatch => {
   dispatch({
     type: LOGIN_SUCCESS,
     accessToken,

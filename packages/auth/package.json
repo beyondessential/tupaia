@@ -15,6 +15,9 @@
     "sha256": "^0.2.0"
   },
   "devDependencies": {
+    "@beyondessential/tupaia-access-policy": "^2.5.0",
+    "@tupaia/access-policy": "3.0.0",
+    "@tupaia/database": "1.0.0",
     "babel-cli": "^6.24.1",
     "babel-core": "^6.23.1",
     "babel-eslint": "^7.2.3",
