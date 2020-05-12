@@ -38,6 +38,8 @@ export const CHANGE_SIDE_BAR_CONTRACTED_WIDTH = 'CHANGE_SIDE_BAR_CONTRACTED_WIDT
 export const CHANGE_SIDE_BAR_EXPANDED_WIDTH = 'CHANGE_SIDE_BAR_EXPANDED_WIDTH';
 export const CLEAR_MEASURE_HIERARCHY = 'CLEAR_MEASURE_HIERARCHY';
 export const CHANGE_MEASURE = 'CHANGE_MEASURE';
+export const REQUEST_ORG_UNIT = 'REQUEST_ORG_UNIT';
+export const FETCH_ORG_UNIT = 'FETCH_ORG_UNIT';
 export const CHANGE_ORG_UNIT = 'CHANGE_ORG_UNIT';
 export const CHANGE_POSITION = 'CHANGE_POSITION';
 export const CHANGE_BOUNDS = 'CHANGE_BOUNDS';
@@ -54,9 +56,6 @@ export const FETCH_COUNTRY_ACCESS_DATA_SUCCESS = 'FETCH_COUNTRY_ACCESS_DATA_SUCC
 export const FETCH_COUNTRY_ACCESS_DATA_ERROR = 'FETCH_COUNTRY_ACCESS_DATA_ERROR';
 export const FETCH_DASHBOARD_CONFIG_ERROR = 'FETCH_DASHBOARD_CONFIG_ERROR';
 export const FETCH_DASHBOARD_CONFIG_SUCCESS = 'FETCH_DASHBOARD_CONFIG_SUCCESS';
-export const FETCH_HIERARCHY_NESTED_ITEMS = 'FETCH_HIERARCHY_NESTED_ITEMS';
-export const FETCH_HIERARCHY_NESTED_ITEMS_ERROR = 'FETCH_HIERARCHY_NESTED_ITEMS_ERROR';
-export const FETCH_HIERARCHY_NESTED_ITEMS_SUCCESS = 'FETCH_HIERARCHY_NESTED_ITEMS_SUCCESS';
 export const FETCH_INFO_VIEW_DATA = 'FETCH_INFO_VIEW_DATA';
 export const FETCH_INFO_VIEW_DATA_ERROR = 'FETCH_INFO_VIEW_DATA_ERROR';
 export const FETCH_INFO_VIEW_DATA_SUCCESS = 'FETCH_INFO_VIEW_DATA_SUCCESS';
@@ -72,9 +71,11 @@ export const FETCH_MEASURE_DATA_SUCCESS = 'FETCH_MEASURE_DATA_SUCCESS';
 export const CANCEL_FETCH_MEASURE_DATA = 'CANCEL_FETCH_MEASURE_DATA';
 export const FETCH_MEASURES_ERROR = 'FETCH_MEASURES_ERROR';
 export const FETCH_MEASURES_SUCCESS = 'FETCH_MEASURES_SUCCESS';
-export const FETCH_ORG_UNIT_ERROR = 'FETCH_ORG_UNIT_ERROR';
+export const CHANGE_ORG_UNIT_ERROR = 'CHANGE_ORG_UNIT_ERROR';
 export const FETCH_REGION_ERROR = 'FETCH_REGION_ERROR';
 export const FETCH_ORG_UNIT_SUCCESS = 'FETCH_ORG_UNIT_SUCCESS';
+export const FETCH_ORG_UNIT_ERROR = 'FETCH_ORG_UNIT_ERROR';
+export const CHANGE_ORG_UNIT_SUCCESS = 'CHANGE_ORG_UNIT_SUCCESS';
 export const FETCH_RESET_PASSWORD_ERROR = 'FETCH_RESET_PASSWORD_ERROR';
 export const FETCH_RESET_PASSWORD_SUCCESS = 'FETCH_RESET_PASSWORD_SUCCESS';
 export const FETCH_REQUEST_COUNTRY_ACCESS_SUCCESS = 'FETCH_REQUEST_COUNTRY_ACCESS_SUCCESS';
@@ -87,7 +88,6 @@ export const FETCH_SIGNUP_SUCCESS = 'FETCH_SIGNUP_SUCCESS';
 export const FIND_USER_LOGGEDIN = 'FIND_USER_LOGGEDIN';
 export const FINISH_USER_SESSION = 'FINISH_USER_SESSION';
 export const GO_HOME = 'GO_HOME';
-export const HIGHLIGHT_ORG_UNIT = 'HIGHLIGHT_ORG_UNIT';
 export const CLOSE_DROPDOWN_OVERLAYS = 'CLOSE_DROPDOWN_OVERLAYS';
 export const SET_MAP_IS_ANIMATING = 'SET_MAP_IS_ANIMATING';
 export const SHOW_SERVER_UNREACHABLE_ERROR = 'SHOW_SERVER_UNREACHABLE_ERROR';
@@ -134,7 +134,6 @@ export const SELECT_DISASTER = 'SELECT_DISASTER';
 export const VIEW_DISASTER = 'VIEW_DISASTER';
 export const TOGGLE_DASHBOARD_SELECT_EXPAND = 'TOGGLE_DASHBOARD_SELECT_EXPAND';
 export const SET_MOBILE_DASHBOARD_EXPAND = 'SET_MOBILE_DASHBOARD_EXPAND';
-export const ADD_MAP_REGIONS = 'ADD_MAP_REGIONS';
 export const SET_PROJECT = 'SET_PROJECT';
 export const SET_PROJECT_DATA = 'SET_PROJECT_DATA';
 export const SELECT_PROJECT = 'SELECT_PROJECT';
@@ -440,28 +439,41 @@ export function fetchRequestCountryAccessError(errorMessage) {
 }
 
 /**
- * Changes current Organisational Unit and Map view. Will trigger sagas affecting state for
- * map and the current dashboard.
+ * A request to fetch an org unit by code. Will only fetch if we do not have the orgUnit
  *
  * @param {object} organisationUnit
  */
-export function changeOrgUnit(organisationUnit = initialOrgUnit, shouldChangeMapBounds = true) {
+export function requestOrgUnit(organisationUnitCode = initialOrgUnit.organisationUnitCode) {
   return {
-    type: CHANGE_ORG_UNIT,
-    organisationUnit,
-    shouldChangeMapBounds,
+    type: REQUEST_ORG_UNIT,
+    organisationUnitCode,
   };
 }
 
 /**
- * Changes currently highlighed org unit on the map without changing the selected org unit.
+ * Fetches an org unit by code. Will update the orgUnitTree.
  *
- * @param {object} organisationUnit Use null to reset and display all org units
+ * @param {object} organisationUnitCode
  */
-export function highlightOrgUnit(organisationUnit = {}) {
+export function fetchOrgUnit(organisationUnitCode) {
   return {
-    type: HIGHLIGHT_ORG_UNIT,
-    organisationUnit,
+    type: FETCH_ORG_UNIT,
+    organisationUnitCode,
+  };
+}
+
+/**
+ * Changes current Organisational Unit and Map view. Will trigger sagas affecting state for
+ * map and the current dashboard.
+ */
+export function changeOrgUnit(
+  organisationUnitCode = initialOrgUnit.organisationUnitCode,
+  shouldChangeMapBounds = true,
+) {
+  return {
+    type: CHANGE_ORG_UNIT,
+    organisationUnitCode,
+    shouldChangeMapBounds,
   };
 }
 
@@ -558,7 +570,7 @@ export function setOverlayComponent(component) {
  *
  * @param {object} organisationUnit organisationUnit from saga on successful fetch
  */
-export function fetchOrgUnitSuccess(organisationUnit, shouldChangeMapBounds = true) {
+export function changeOrgUnitSuccess(organisationUnit, shouldChangeMapBounds = true) {
   const parentOrganisationUnitCode = organisationUnit.parent.organisationUnitCode;
   const siblings = getSiblingItems(
     parentOrganisationUnitCode,
@@ -571,7 +583,7 @@ export function fetchOrgUnitSuccess(organisationUnit, shouldChangeMapBounds = tr
   );
 
   return {
-    type: FETCH_ORG_UNIT_SUCCESS,
+    type: CHANGE_ORG_UNIT_SUCCESS,
     organisationUnit,
     organisationUnitSiblings: siblings,
     shouldChangeMapBounds,
@@ -581,24 +593,37 @@ export function fetchOrgUnitSuccess(organisationUnit, shouldChangeMapBounds = tr
 /**
  * Changes state to communicate error to user appropriately.
  *
- * @param {object} error  response from saga on failed fetch
+ * @param {object} error  response from saga on failed orgUnit change
  */
-export function fetchOrgUnitError(error) {
+export function changeOrgUnitError(error) {
   return {
-    type: FETCH_ORG_UNIT_ERROR,
+    type: CHANGE_ORG_UNIT_ERROR,
     error,
   };
 }
 
 /**
- * Changes state to communicate error to user appropriately.
+ * Flags a succesful org unit fetch.
  *
- * @param {object} error  response from saga on failed fetch
+ * @param {object} organisationUnit organisationUnit from saga on successful fetch
  */
-export function fetchRegionError(error) {
+export function fetchOrgUnitSuccess(organisationUnit) {
   return {
-    type: FETCH_REGION_ERROR,
-    error,
+    type: FETCH_ORG_UNIT_SUCCESS,
+    organisationUnit,
+  };
+}
+
+/**
+ * Flags a fetch org unit fetch error.
+ *
+ * @param {object} errorMessage
+ */
+export function fetchOrgUnitError(organisationUnitCode, errorMessage) {
+  return {
+    type: FETCH_ORG_UNIT_ERROR,
+    organisationUnitCode,
+    errorMessage,
   };
 }
 
@@ -853,42 +878,6 @@ export function setMobileDashboardExpanded(shouldExpand) {
 export function toggleSearchExpand() {
   return {
     type: TOGGLE_SEARCH_EXPAND,
-  };
-}
-
-/**
- * Fetches children data of a hierarchy list item
- *
- * @param {string} organisationUnit
- */
-export function fetchHierarchyNestedItems(organisationUnitCode) {
-  return {
-    type: FETCH_HIERARCHY_NESTED_ITEMS,
-    organisationUnitCode,
-  };
-}
-
-/**
- * Stores children data of a hierarchy list item at appropriate node
- *
- * @param {object} response response from saga on successful fetch
- */
-export function fetchHierarchyNestedItemsSuccess(response) {
-  return {
-    type: FETCH_HIERARCHY_NESTED_ITEMS_SUCCESS,
-    response,
-  };
-}
-
-/**
- * Changes state to communicate search error to user appropriately.
- *
- * @param {object} error
- */
-export function fetchHierarchyNestedItemsError(error) {
-  return {
-    type: FETCH_HIERARCHY_NESTED_ITEMS_ERROR,
-    error,
   };
 }
 
@@ -1193,41 +1182,6 @@ export function updateEnlargedDialogError(errorMessage) {
   return {
     type: UPDATE_ENLARGED_DIALOG_ERROR,
     errorMessage,
-  };
-}
-
-function flipCoordinatesRecursive(array) {
-  if (typeof array[0] === 'number') {
-    return [array[1], (array[0] + 360) % 360];
-  }
-
-  return array.map(flipCoordinatesRecursive);
-}
-
-function replaceGeoJsonWithCoordinateArray({ region, ...rest }) {
-  const data = JSON.parse(region);
-  if (data.type !== 'MultiPolygon') return rest;
-
-  // need to recurse into data structure and flip all coordinate arrays
-  const coordinates = flipCoordinatesRecursive(data.coordinates);
-
-  return {
-    coordinates,
-    ...rest,
-  };
-}
-
-export function addMapRegions(regions) {
-  const regionData = regions.reduce(
-    (data, region) => ({
-      ...data,
-      [region.code]: replaceGeoJsonWithCoordinateArray(region),
-    }),
-    {},
-  );
-  return {
-    type: 'ADD_MAP_REGIONS',
-    regionData,
   };
 }
 

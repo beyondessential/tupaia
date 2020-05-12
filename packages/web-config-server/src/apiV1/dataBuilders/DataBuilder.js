@@ -2,22 +2,13 @@
  * Tupaia Config Server
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
-
-import isPlainObject from 'lodash.isplainobject';
 import { getSortByKey } from '@tupaia/utils';
 
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 
-const OPERATOR_TO_VALUE_CHECK = {
-  '>=': (value, target) => value >= target,
-  '<': (value, target) => value < target,
-  range: (value, target) => target[0] <= value && value <= target[1],
-  regex: (value, target) => value.match(target),
-};
-
-const ANY_VALUE_CONDITION = '*';
-
 export class DataBuilder {
+  static NO_DATA_AVAILABLE = NO_DATA_AVAILABLE;
+
   /**
    * @param {Aggregator} aggregator
    * @param {DhisApi} dhisApi
@@ -50,8 +41,12 @@ export class DataBuilder {
     );
   }
 
-  async fetchAnalytics(dataElementCodes, additionalQueryConfig) {
-    const { dataServices } = this.config;
+  async fetchAnalytics(
+    dataElementCodes,
+    additionalQueryConfig,
+    aggregationType = this.aggregationType,
+  ) {
+    const { dataServices, filter = {} } = this.config;
     const fetchOptions = {
       programCodes: this.getProgramCodesForAnalytics(),
       dataServices,
@@ -59,7 +54,8 @@ export class DataBuilder {
     };
 
     return this.aggregator.fetchAnalytics(dataElementCodes, fetchOptions, this.query, {
-      aggregationType: this.aggregationType,
+      aggregationType,
+      filter,
     });
   }
 
@@ -85,44 +81,9 @@ export class DataBuilder {
     return this.aggregator.fetchDataElements(codes, {
       organisationUnitCode,
       dataServices,
-      shouldIncludeOptions: true,
+      includeOptions: true,
     });
   }
-
-  countEventsThatSatisfyConditions = (events, conditions) => {
-    const { dataValues: valueConditions = {} } = conditions || {};
-    const eventHasTargetValues = ({ dataValues }) =>
-      Object.entries(valueConditions).every(([dataElement, condition]) => {
-        const { value } = dataValues[dataElement] || {};
-        return value && this.checkValueSatisfiesCondition(value, condition);
-      });
-
-    return events.filter(eventHasTargetValues).length;
-  };
-
-  countAnalyticsThatSatisfyConditions = (analytics, conditions) => {
-    const { dataValues: valueConditions = {} } = conditions || {};
-    const analyticHasTargetValue = ({ dataElement, value }) => {
-      const condition = valueConditions[dataElement];
-      return condition && this.checkValueSatisfiesCondition(value, condition);
-    };
-
-    return analytics.filter(analyticHasTargetValue).length;
-  };
-
-  checkValueSatisfiesCondition = (value, condition) => {
-    if (!isPlainObject(condition)) {
-      return condition === ANY_VALUE_CONDITION || value === condition;
-    }
-
-    const { operator, value: targetValue } = condition;
-    const checkValue = OPERATOR_TO_VALUE_CHECK[operator];
-    if (!checkValue) {
-      throw new Error(`Unknown operator: '${operator}'`);
-    }
-
-    return checkValue(value, targetValue);
-  };
 
   sortDataByName = data => data.sort(getSortByKey('name'));
 

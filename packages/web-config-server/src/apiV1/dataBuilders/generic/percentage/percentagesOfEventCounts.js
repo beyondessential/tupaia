@@ -4,7 +4,7 @@
  */
 
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { divideValues } from '/apiV1/dataBuilders/helpers';
+import { divideValues, countEventsThatSatisfyConditions } from '/apiV1/dataBuilders/helpers';
 
 /**
  * Configuration schema
@@ -59,8 +59,8 @@ export class PercentagesOfEventCountsBuilder extends DataBuilder {
 
   calculateFractionPartsForDataClass(dataClass, events) {
     const { numerator, denominator } = dataClass;
-    const numeratorValue = this.countEventsThatSatisfyConditions(events, numerator);
-    const denominatorValue = this.countEventsThatSatisfyConditions(events, denominator);
+    const numeratorValue = countEventsThatSatisfyConditions(events, numerator);
+    const denominatorValue = countEventsThatSatisfyConditions(events, denominator);
 
     return [numeratorValue, denominatorValue];
   }

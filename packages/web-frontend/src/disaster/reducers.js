@@ -5,7 +5,7 @@
  * found in the LICENSE file in the root directory of this source tree.
  */
 
-import { SET_DISASTERS_DATA, SELECT_DISASTER, CHANGE_ORG_UNIT } from '../actions';
+import { SET_DISASTERS_DATA, SELECT_DISASTER, CHANGE_ORG_UNIT_SUCCESS } from '../actions';
 
 export default function disasters(
   state = {
@@ -25,9 +25,9 @@ export default function disasters(
         ...state,
         selectedDisaster: action.disaster,
       };
-    case CHANGE_ORG_UNIT:
+    case CHANGE_ORG_UNIT_SUCCESS: {
       // De-select disaster when user views a different country.
-      const { type, organisationUnitCode } = action.organisationUnit;
+      const { organisationUnitCode, type } = action.organisationUnit;
       if (!state.selectedDisaster) return state;
       if (type === 'Country' && organisationUnitCode !== state.selectedDisaster.countryCode) {
         return {
@@ -35,6 +35,8 @@ export default function disasters(
           selectedDisaster: null,
         };
       }
+    }
+    // falls through
     default:
       return state;
   }

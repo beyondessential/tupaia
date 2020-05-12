@@ -13,10 +13,6 @@ import { buildDhisAnalyticsResponse, stubModels, stubDhisApi } from './helpers';
 const dhisService = new DhisService(stubModels());
 let dhisApi;
 
-const basicOptions = {
-  organisationUnitCode: 'TO',
-};
-
 export const testPull = () => {
   beforeEach(() => {
     // recreate stub so spy calls are reset
@@ -24,6 +20,9 @@ export const testPull = () => {
   });
 
   describe('data element', () => {
+    const basicOptions = {
+      organisationUnitCodes: ['TO'],
+    };
     describe('DHIS API invocation', () => {
       const assertAnalyticsApiWasInvokedCorrectly = async ({
         dataSources,
@@ -38,7 +37,10 @@ export const testPull = () => {
         assertAnalyticsApiWasInvokedCorrectly({
           dataSources: [DATA_SOURCES.POP01],
           options: basicOptions,
-          invocationArgs: sinon.match({ dataElementCodes: ['POP01'], organisationUnitCode: 'TO' }),
+          invocationArgs: sinon.match({
+            dataElementCodes: ['POP01'],
+            organisationUnitCodes: ['TO'],
+          }),
         }));
 
       it('single data element with different DHIS code', async () =>
@@ -47,7 +49,7 @@ export const testPull = () => {
           options: basicOptions,
           invocationArgs: sinon.match({
             dataElementCodes: ['DIF01_DHIS'],
-            organisationUnitCode: 'TO',
+            organisationUnitCodes: ['TO'],
           }),
         }));
 
@@ -57,14 +59,14 @@ export const testPull = () => {
           options: basicOptions,
           invocationArgs: sinon.match({
             dataElementCodes: ['POP01', 'POP02'],
-            organisationUnitCode: 'TO',
+            organisationUnitCodes: ['TO'],
           }),
         }));
 
       it('supports various API options', async () => {
         const apiOptions = {
           outputIdScheme: 'code',
-          organisationUnitCode: 'TO',
+          organisationUnitCodes: ['TO'],
           period: '20200822',
           startDate: '20200731',
           endDate: '20200904',
@@ -144,6 +146,10 @@ export const testPull = () => {
   });
 
   describe('data group', () => {
+    const basicOptions = {
+      organisationUnitCode: 'TO',
+    };
+
     it('throws an error if multiple data groups are provided', async () =>
       expect(
         dhisService.pull(
@@ -151,7 +157,7 @@ export const testPull = () => {
           'dataGroup',
           basicOptions,
         ),
-      ).to.eventually.be.rejectedWith(/Cannot .*multiple programs/));
+      ).to.be.rejectedWith(/Cannot .*multiple programs/));
 
     describe('DHIS API invocation', () => {
       const assertEventsApiWasInvokedCorrectly = async ({

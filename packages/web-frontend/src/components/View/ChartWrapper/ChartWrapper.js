@@ -28,6 +28,23 @@ const addDefaultsColorsToConfig = (chartType, chartConfig) => {
   return newConfig;
 };
 
+const sortChartConfigByLegendOrder = chartConfig => {
+  return Object.entries(chartConfig)
+    .sort(([, cfg1], [, cfg2]) => {
+      if (Number.isNaN(cfg1.legendOrder) && Number.isNaN(cfg2.legendOrder)) return 0;
+      if (Number.isNaN(cfg1.legendOrder)) return -1;
+      if (Number.isNaN(cfg2.legendOrder)) return 1;
+      return cfg1.legendOrder - cfg2.legendOrder;
+    })
+    .reduce(
+      (newChartConfig, [key, val]) => ({
+        ...newChartConfig,
+        [key]: val,
+      }),
+      {},
+    );
+};
+
 const UnknownChart = () => (
   <div style={VIEW_STYLES.newChartComing}>
     <h2 style={VIEW_STYLES.title}>New chart coming soon</h2>
@@ -41,8 +58,10 @@ export class ChartWrapper extends PureComponent {
     if (!chartConfig) {
       return viewContent;
     }
-
-    return { ...viewContent, chartConfig: addDefaultsColorsToConfig(chartType, chartConfig) };
+    return {
+      ...viewContent,
+      chartConfig: sortChartConfigByLegendOrder(addDefaultsColorsToConfig(chartType, chartConfig)),
+    };
   }
 
   render() {
@@ -52,8 +71,8 @@ export class ChartWrapper extends PureComponent {
     if (!Object.values(CHART_TYPES).includes(chartType)) {
       return <UnknownChart />;
     }
-
     const Chart = chartType === CHART_TYPES.PIE ? PieChart : CartesianChart;
+
     return (
       <div style={VIEW_STYLES.chartViewContainer}>
         <div style={VIEW_STYLES.chartContainer}>

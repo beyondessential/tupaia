@@ -5,7 +5,6 @@
  * found in the LICENSE file in the root directory of this source tree.
  */
 
-import numeral from 'numeral';
 import {
   YES_COLOR,
   NO_COLOR,
@@ -16,6 +15,7 @@ import {
 import { SPECTRUM_ICON, DEFAULT_ICON, UNKNOWN_ICON } from '../components/Marker/markerIcons';
 import { MAP_COLORS } from '../styles';
 import { formatDataValue } from './formatters';
+import { SCALE_TYPES } from '../constants';
 
 // At a few places throughout this module we're iterating over a collection
 // while modifying an object, which trips up the eslint rule that expects inline
@@ -31,16 +31,13 @@ export const MEASURE_TYPE_COLOR = 'color';
 export const MEASURE_TYPE_RADIUS = 'radius';
 export const MEASURE_TYPE_SPECTRUM = 'spectrum';
 export const MEASURE_TYPE_SHADING = 'shading';
+export const MEASURE_TYPE_SHADED_SPECTRUM = 'shaded-spectrum';
 
 export const MEASURE_VALUE_OTHER = 'other';
 export const MEASURE_VALUE_NULL = 'null';
 
-export const SCALE_TYPES = {
-  PERFORMANCE: 'performance',
-  PERFORMANCE_DESC: 'performanceDesc',
-  POPULATION: 'population',
-  TIME: 'time',
-};
+export const POLYGON_MEASURE_TYPES = [MEASURE_TYPE_SHADING, MEASURE_TYPE_SHADED_SPECTRUM];
+export const SPECTRUM_MEASURE_TYPES = [MEASURE_TYPE_SPECTRUM, MEASURE_TYPE_SHADED_SPECTRUM];
 
 export function autoAssignColors(values) {
   if (!values) return [];
@@ -93,6 +90,7 @@ export function createValueMapping(valueObjects, type) {
         mapping.null = { name: 'No data' };
         break;
       case MEASURE_TYPE_SPECTRUM:
+      case MEASURE_TYPE_SHADED_SPECTRUM:
         mapping.null = { name: 'No data' };
         break;
       default:
@@ -106,6 +104,7 @@ export function createValueMapping(valueObjects, type) {
 function getFormattedValue(value, type, valueInfo, scaleType, valueType) {
   switch (type) {
     case MEASURE_TYPE_SPECTRUM:
+    case MEASURE_TYPE_SHADED_SPECTRUM:
       if ([SCALE_TYPES.PERFORMANCE, SCALE_TYPES.PERFORMANCE_DESC].includes(scaleType)) {
         return formatDataValue(value, valueType);
       }
@@ -124,7 +123,7 @@ function getFormattedValue(value, type, valueInfo, scaleType, valueType) {
 }
 
 const getSpectrumScaleValues = (measureData, measureOption) => {
-  const { key, scaleType, startDate, endDate } = measureOption;
+  const { key, scaleType, scaleMin, scaleMax, startDate, endDate } = measureOption;
 
   switch (scaleType) {
     case SCALE_TYPES.TIME:
@@ -133,9 +132,15 @@ const getSpectrumScaleValues = (measureData, measureOption) => {
       return { min: 0, max: 1 };
     default: {
       const flattenedMeasureData = flattenNumericalMeasureData(measureData, key);
+      const hasScaleMin = scaleMin !== undefined;
+      const hasScaleMax = scaleMax !== undefined;
       return {
-        min: Math.min(...flattenedMeasureData),
-        max: Math.max(...flattenedMeasureData),
+        min: hasScaleMin
+          ? Math.min(scaleMin, ...flattenedMeasureData)
+          : Math.min(...flattenedMeasureData),
+        max: hasScaleMax
+          ? Math.max(scaleMax, ...flattenedMeasureData)
+          : Math.max(...flattenedMeasureData),
       };
     }
   }
@@ -151,7 +156,7 @@ export function processMeasureInfo(response) {
 
     hiddenMeasures[measureOption.key] = measureOption.hideByDefault;
 
-    if (type === 'spectrum') {
+    if (SPECTRUM_MEASURE_TYPES.includes(type)) {
       // for each spectrum, include the minimum and maximum values for
       // use in the legend scale labels.
       const { min, max } = getSpectrumScaleValues(measureData, measureOption);
@@ -215,7 +220,7 @@ export function getValueInfo(value, valueMapping, hiddenValues = {}) {
 export function getFormattedInfo(orgUnitData, measureOption) {
   const { key, valueMapping, type, displayedValueKey, scaleType, valueType } = measureOption;
 
-  if (displayedValueKey) {
+  if (displayedValueKey && orgUnitData[displayedValueKey]) {
     return { value: orgUnitData[displayedValueKey] };
   }
 
@@ -236,7 +241,7 @@ export function getSingleFormattedValue(orgUnitData, measureOptions) {
   return getFormattedInfo(orgUnitData, measureOptions[0]).value;
 }
 
-export function getMeasureDisplayInfo(orgUnitData, measureOptions, hiddenMeasures = {}) {
+export function getMeasureDisplayInfo(measureData, measureOptions, hiddenMeasures = {}) {
   const displayInfo = {};
 
   measureOptions.forEach(({ color, icon, radius }) => {
@@ -252,7 +257,7 @@ export function getMeasureDisplayInfo(orgUnitData, measureOptions, hiddenMeasure
   });
   measureOptions.forEach(
     ({ key, type, valueMapping, noDataColour, scaleType, min, max, hideByDefault }) => {
-      const valueInfo = getValueInfo(orgUnitData[key], valueMapping, {
+      const valueInfo = getValueInfo(measureData[key], valueMapping, {
         ...hideByDefault,
         ...hiddenMeasures[key],
       });
@@ -266,9 +271,11 @@ export function getMeasureDisplayInfo(orgUnitData, measureOptions, hiddenMeasure
           displayInfo.color = displayInfo.color || valueInfo.color;
           break;
         case MEASURE_TYPE_SPECTRUM:
+        case MEASURE_TYPE_SHADED_SPECTRUM:
+          displayInfo.originalValue = valueInfo.value || 'No data';
           displayInfo.color = resolveSpectrumColour(
             scaleType,
-            valueInfo.value || null,
+            valueInfo.value || (valueInfo.value === 0 ? 0 : null),
             min,
             max,
             noDataColour,
@@ -276,6 +283,8 @@ export function getMeasureDisplayInfo(orgUnitData, measureOptions, hiddenMeasure
           displayInfo.icon = SPECTRUM_ICON;
           break;
         case MEASURE_TYPE_SHADING:
+          displayInfo.color = MAP_COLORS[valueInfo.color] || MAP_COLORS.NO_DATA;
+          break;
         case MEASURE_TYPE_COLOR:
         default:
           displayInfo.color = valueInfo.color;
@@ -295,29 +304,24 @@ export function getMeasureDisplayInfo(orgUnitData, measureOptions, hiddenMeasure
     displayInfo.color = UNKNOWN_COLOR;
   }
 
-  return {
-    ...orgUnitData,
-    ...displayInfo,
-  };
+  return displayInfo;
 }
 
-// when we pass in an organisationUnitCode does one of the measures shade it?
-export function getMeasureAsShade(organisationUnitCode, { measureData, measureOptions }) {
-  if (!measureData || !measureOptions || !measureData.length) return null;
-
-  // check if this org unit exists in the set at all
-  // (return null here instead of NO_DATA -- NO_DATA indicates "this org unit has not responded
-  // to this question" rather than "this org unit is not part of the requested data set")
-  const currentDatapoint = measureData.find(md => md.organisationUnitCode === organisationUnitCode);
-  if (!currentDatapoint) return null;
-
-  const { color } = getMeasureDisplayInfo(currentDatapoint, measureOptions);
-  if (color) return MAP_COLORS[color];
-  return MAP_COLORS.NO_DATA;
-}
+const MAX_ALLOWED_RADIUS = 1000;
+export const calculateRadiusScaleFactor = measureData => {
+  // Check if any of the radii in the dataset are larger than the max allowed
+  // radius, and scale everything down proportionally if so.
+  // (this needs to happen here instead of inside the circle marker component
+  // because it needs to operate on the dataset level, not the datapoint level)
+  const maxRadius = measureData
+    .map(d => parseInt(d.radius, 10) || 1)
+    .reduce((state, current) => Math.max(state, current), 0);
+  return maxRadius < MAX_ALLOWED_RADIUS ? 1 : (1 / maxRadius) * MAX_ALLOWED_RADIUS;
+};
 
 // Take a measureData array where the [key]: value is a number
 // and filters NaN values (e.g. undefined).
 export function flattenNumericalMeasureData(measureData, key) {
+  // eslint-disable-next-line no-restricted-globals
   return measureData.map(v => parseInt(v[key], 10)).filter(x => !isNaN(x));
 }

@@ -21,7 +21,7 @@ import {
   brown,
   grey,
 } from '@material-ui/core/colors';
-import { isMobile } from '../utils';
+import { isMobile } from '../utils/mobile';
 
 const fullWhite = 'rgba(255, 255, 255, 1)';
 export const darkWhite = 'rgba(255, 255, 255, 0.87)';
@@ -347,6 +347,13 @@ export const VIEW_STYLES = {
     marginBottom: 15,
     lineHeight: '130%',
     textAlign: 'center',
+  },
+  periodRange: {
+    position: 'relative',
+    color: darkWhite,
+    marginTop: 5,
+    textAlign: 'center',
+    fontSize: 9,
   },
   data: isMobile()
     ? {

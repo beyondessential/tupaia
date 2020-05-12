@@ -102,7 +102,9 @@ export const SURVEY_RESPONSE_DATA_VALUE_DIMENSIONS = {
 export const SURVEY_RESPONSE_DATA_VALUE = {
   ...ANSWER_DATA_VALUE,
   ...SURVEY_RESPONSE_DATA_VALUE_DIMENSIONS,
-  value: moment(SURVEY_RESPONSE.submission_time).format('YYYY-MM-DD'),
+  value: moment(SURVEY_RESPONSE.submission_time)
+    .utc()
+    .format(),
 };
 export const SURVEY_RESPONSE_SYNC_LOG_DATA = {
   ...ANSWER_SYNC_LOG_DATA,
@@ -115,7 +117,7 @@ export const DATA_SET_COMPLETION_DIMENSIONS = {
 };
 export const DATA_SET_COMPLETION = {
   ...DATA_SET_COMPLETION_DIMENSIONS,
-  date: moment.utc(SURVEY_RESPONSE.end_time).format('YYYY-MM-DDTkk:mm:ss'),
+  date: moment.utc(SURVEY_RESPONSE.end_time).format('YYYY-MM-DDTHH:mm:ss'),
   storedBy: STORED_BY,
 };
 export const SERVER_NAME = 'test server name';

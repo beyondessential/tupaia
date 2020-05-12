@@ -10,9 +10,10 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { darken } from 'polished';
 
+import SelectIcon from 'material-ui/svg-icons/navigation/chevron-right';
 import { delayMobileTapCallback } from '../../../utils';
 import { LIGHT_GREY, WHITE } from '../../../styles';
-import SelectIcon from 'material-ui/svg-icons/navigation/chevron-right';
+
 const ListItem = styled.button`
   background: ${WHITE};
   color: #000;
@@ -23,7 +24,7 @@ const ListItem = styled.button`
   padding: 10px 0;
   justify-content: space-between;
   &:active {
-    background: ${p => darken(0.2, WHITE)};
+    background: ${darken(0.2, WHITE)};
     width: 108%;
     left: -3%;
     padding-left: 3%;
@@ -41,9 +42,7 @@ const ListItemSubTitle = styled(Title)`
   font-size: 14px;
 `;
 
-export const SelectListItem = ({ onSelect, item }) => {
-  const { title, subTitle, data } = item;
-
+export const SelectListItem = ({ onSelect, title, subTitle, data }) => {
   return (
     <ListItem onClick={() => delayMobileTapCallback(() => onSelect(data))}>
       <Title>{title}</Title>
@@ -55,11 +54,9 @@ export const SelectListItem = ({ onSelect, item }) => {
 
 SelectListItem.propTypes = {
   onSelect: PropTypes.func,
-  item: PropTypes.shape({
-    key: PropTypes.string,
-    data: PropTypes.shape({}),
-    title: PropTypes.string,
-  }),
+  data: PropTypes.shape({}),
+  title: PropTypes.string,
+  subTitle: PropTypes.string,
   color: PropTypes.string,
   background: PropTypes.string,
 };

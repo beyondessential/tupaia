@@ -18,14 +18,15 @@ fi
 # Get latest code and dependencies
 echo "Checking out ${BRANCH}, or dev if that doesn't exist"
 cd ${HOME_DIRECTORY}
-git fetch
+git fetch --all
 git checkout dev # Ensure we have dev as our default, if the specified branch doesn't exist
-git checkout $BRANCH
-git pull
+git reset --hard origin/dev
+git checkout $BRANCH # Now try the requested branch
+git reset --hard origin/${BRANCH}
 yarn install
 
 # For each package, get the latest and deploy it
-for PACKAGE in "meditrak-server" "admin-panel" "web-frontend" "web-config-server"; do
+for PACKAGE in "meditrak-server" "web-config-server" "web-frontend" "admin-panel"; do
     # Set up .env to match the environment variables stored in SSM parameter store
     cd ${HOME_DIRECTORY}/packages/$PACKAGE
     rm .env

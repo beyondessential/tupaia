@@ -19,15 +19,17 @@ import { VIEW_STYLES, BLUE, GREY } from '../styles';
  * @param {string|number} decimalPlace how many decimal places to truncate number to
  */
 const truncateDecimalToPlace = decimalPlace => number => {
-  const place = Math.pow(10, decimalPlace);
+  const place = 10 ** decimalPlace;
   return Math.floor(number * place) / place;
 };
 
 const currency = value => numeral(value).format('$0.00a');
 const fraction = (value, { total }) => {
+  if (isNaN(total)) return 'No data';
   return `${String(value)}/${String(total)}`;
 };
 const fractionAndPercentage = (value, { numerator, denominator }) => {
+  // eslint-disable-next-line no-restricted-globals
   if (isNaN(value)) return value;
   return `${numerator}/${denominator} = ${percentage(value)}`;
 };
@@ -52,6 +54,11 @@ const boolean = (value, { presentationOptions = {} }) => {
 };
 
 const percentage = value => {
+  // eslint-disable-next-line no-restricted-globals
+  if (isNaN(value)) {
+    return value;
+  }
+
   const percentageValue = value * 100;
 
   let decimalPrecision = 0;
@@ -73,6 +80,11 @@ const percentage = value => {
   return `${Math.round(percentageValue * floatNormalizer) / floatNormalizer}%`;
 };
 
+const number = (value, { presentationOptions = {} }) => {
+ const { valueFormat = '0,0' } = presentationOptions;
+ return numeral(value).format(valueFormat);
+};
+
 const defaultFormatter = input => (Number.isNaN(input) ? input : truncateDecimalToPlace(2)(input));
 
 const VALUE_TYPE_TO_FORMATTER = {
@@ -82,6 +94,7 @@ const VALUE_TYPE_TO_FORMATTER = {
   [VALUE_TYPES.FRACTION]: fraction,
   [VALUE_TYPES.CURRENCY]: currency,
   [VALUE_TYPES.BOOLEAN]: boolean,
+  [VALUE_TYPES.NUMBER]: number,
 };
 
 export const formatDataValue = (value, valueType, metadata) => {

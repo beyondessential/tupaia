@@ -43,15 +43,7 @@ export class CustomMap extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    const {
-      measureInfo,
-      currentOrganisationUnit,
-      highlightedOrganisationUnit,
-      focussedOrganisationUnit,
-      tileSet,
-      position,
-      innerAreas,
-    } = this.props;
+    const { measureInfo, currentOrganisationUnit, tileSet, position, innerAreas } = this.props;
     // Only updates/re-renders when the measure has changed or the orgUnit has changed.
     // These are the only cases where polygons or area tooltips should rerender.
     if (nextProps.measureInfo.measureId !== measureInfo.measureId) return true;
@@ -61,18 +53,6 @@ export class CustomMap extends Component {
     if (
       nextProps.currentOrganisationUnit.organisationUnitCode !==
       currentOrganisationUnit.organisationUnitCode
-    ) {
-      return true;
-    }
-    if (
-      nextProps.highlightedOrganisationUnit.organisationUnitCode !==
-      highlightedOrganisationUnit.organisationUnitCode
-    ) {
-      return true;
-    }
-    if (
-      nextProps.focussedOrganisationUnit.organisationUnitCode !==
-      focussedOrganisationUnit.organisationUnitCode
     ) {
       return true;
     }
@@ -105,35 +85,24 @@ export class CustomMap extends Component {
         // Now check if we're at a reasonable zoom level to switch to that parent
         const difference = checkBoundsDifference(parentOrg.location.bounds, bounds);
         if (difference > CHANGE_TO_PARENT_PERCENTAGE) {
-          changeOrgUnit(parentOrg, false);
+          changeOrgUnit(parentOrg.organisationUnitCode, false);
         }
       }
     }
   }
 
   renderPolygons() {
-    const { innerAreas, currentOrganisationUnitSiblings, highlightedOrganisationUnit } = this.props;
-
-    const highlightedCode = highlightedOrganisationUnit.organisationUnitCode;
-    const isAreaHighlighted = area => area.organisationUnitCode === highlightedCode;
+    const { innerAreas, currentOrganisationUnitSiblings } = this.props;
 
     const areaPolygons = (innerAreas || []).map(area => (
       <ConnectedPolygon area={area} key={area.organisationUnitCode} isChildArea />
     ));
 
-    const nonHighlightedPolygons = (currentOrganisationUnitSiblings || [])
-      .filter(area => !isAreaHighlighted(area))
-      .map(area => <ConnectedPolygon area={area} key={area.organisationUnitCode} />);
+    const siblingPolygons = (currentOrganisationUnitSiblings || []).map(area => (
+      <ConnectedPolygon area={area} key={area.organisationUnitCode} />
+    ));
 
-    const highlightedPolygons = (currentOrganisationUnitSiblings || [])
-      .filter(area => isAreaHighlighted(area))
-      .map(area => (
-        <LayerGroup key={`highlight-${area.organisationUnitCode}`}>
-          <ConnectedPolygon area={area} key={area.organisationUnitCode} />
-        </LayerGroup>
-      ));
-
-    return [...areaPolygons, ...nonHighlightedPolygons, ...highlightedPolygons];
+    return [...areaPolygons, ...siblingPolygons];
   }
 
   renderActivePolygons() {
@@ -199,7 +168,6 @@ CustomMap.propTypes = {
 
   /* eslint-disable react/forbid-prop-types */
   currentOrganisationUnit: PropTypes.object.isRequired,
-  highlightedOrganisationUnit: PropTypes.object.isRequired,
   measureInfo: PropTypes.object.isRequired,
   /* eslint-enable react/forbid-prop-types */
   innerAreas: PropTypes.arrayOf(PropTypes.object),

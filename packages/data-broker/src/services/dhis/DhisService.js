@@ -107,10 +107,10 @@ export class DhisService extends Service {
   }
 
   async deleteAggregateData(api, dataValue, dataSource) {
-    const translatedDataValue = await this.translator.translateOutboundDataValue(
+    const [translatedDataValue] = await this.translator.translateOutboundDataValues(
       api,
-      dataValue,
-      dataSource,
+      [dataValue],
+      [dataSource],
     );
     return api.deleteDataValue(translatedDataValue);
   }
@@ -118,10 +118,15 @@ export class DhisService extends Service {
   deleteEvent = async (api, data) => api.deleteEvent(data.dhisReference);
 
   async pull(dataSources, type, options = {}) {
-    const { organisationUnitCode: entityCode, dataServices = DEFAULT_DATA_SERVICES } = options;
+    const {
+      organisationUnitCode,
+      organisationUnitCodes,
+      dataServices = DEFAULT_DATA_SERVICES,
+    } = options;
+    const entityCodes = organisationUnitCodes || [organisationUnitCode];
     const pullData = this.pullers[type];
     const apis = dataServices.map(({ isDataRegional }) =>
-      getDhisApiInstance({ entityCode, isDataRegional }),
+      getDhisApiInstance({ entityCodes, isDataRegional }),
     );
 
     return pullData(apis, dataSources, options);
@@ -146,7 +151,7 @@ export class DhisService extends Service {
 
   pullEventAnalytics = async (api, dataSources, options) => {
     const {
-      organisationUnitCode,
+      organisationUnitCodes,
       startDate,
       endDate,
       programCodes,
@@ -156,7 +161,7 @@ export class DhisService extends Service {
     } = options;
 
     const query = {
-      organisationUnitCode,
+      organisationUnitCode: organisationUnitCodes[0],
       dataElementIdScheme: 'code',
       startDate,
       endDate,
@@ -173,12 +178,12 @@ export class DhisService extends Service {
 
   pullAggregateAnalytics = async (api, dataSources, options) => {
     const dataElementCodes = dataSources.map(({ dataElementCode }) => dataElementCode);
-    const { organisationUnitCode, period, startDate, endDate } = options;
+    const { organisationUnitCode, organisationUnitCodes, period, startDate, endDate } = options;
 
     const aggregateData = await api.getAnalytics({
       dataElementCodes,
       outputIdScheme: 'code',
-      organisationUnitCode,
+      organisationUnitCodes: organisationUnitCode ? [organisationUnitCode] : organisationUnitCodes,
       period,
       startDate,
       endDate,
@@ -268,42 +273,9 @@ export class DhisService extends Service {
   }
 
   async pullDataElementMetadata(api, dataSources, options) {
-    const { shouldIncludeOptions } = options;
     const dataElementCodes = dataSources.map(({ dataElementCode }) => dataElementCode);
-    const dataElements = await this.fetchDataElements(api, dataElementCodes, shouldIncludeOptions);
-    const translatedDataElements = this.translator.translateInboundDataElements(
-      dataElements,
-      dataSources,
-    );
-
-    return Promise.all(
-      translatedDataElements.map(dataElement =>
-        this.addOptionsToDataElementIfTheyExist(api, dataElement),
-      ),
-    );
+    const { includeOptions } = options;
+    const dataElements = await api.fetchDataElements(dataElementCodes, { includeOptions });
+    return this.translator.translateInboundDataElements(dataElements, dataSources);
   }
-
-  fetchDataElements = async (api, dataElementCodes, shouldIncludeOptions) => {
-    const fields = ['id', 'code', 'name'];
-    if (shouldIncludeOptions) {
-      fields.push('optionSet');
-    }
-    const dataElements = await api.getRecords({
-      type: api.getResourceTypes().DATA_ELEMENT,
-      codes: dataElementCodes,
-      fields,
-    });
-
-    return dataElements;
-  };
-
-  addOptionsToDataElementIfTheyExist = async (api, dataElement) => {
-    const { code, optionSet, ...restOfDataElement } = dataElement;
-    const newDataElement = { code, ...restOfDataElement };
-    if (optionSet && optionSet.id) {
-      newDataElement.options = await api.getOptionSetOptions({ id: optionSet.id });
-    }
-
-    return newDataElement;
-  };
 }

@@ -8,6 +8,7 @@
 import { call, put, delay, takeEvery, takeLatest, select } from 'redux-saga/effects';
 import queryString from 'query-string';
 import request from './utils/request';
+import { selectOrgUnit, selectOrgUnitChildren, selectOrgUnitCountry } from './selectors';
 import {
   ATTEMPT_CHANGE_PASSWORD,
   ATTEMPT_LOGIN,
@@ -21,7 +22,6 @@ import {
   FETCH_INFO_VIEW_DATA,
   CHANGE_SEARCH,
   CHANGE_MEASURE,
-  FETCH_HIERARCHY_NESTED_ITEMS,
   FIND_USER_LOGGEDIN,
   FETCH_LOGOUT_SUCCESS,
   FETCH_LOGIN_SUCCESS,
@@ -48,17 +48,14 @@ import {
   displayUnverified,
   fetchUserSignupError,
   fetchOrgUnitSuccess,
-  fetchOrgUnitError,
-  fetchRegionError,
+  changeOrgUnitSuccess,
+  changeOrgUnitError,
   fetchDashboardSuccess,
   fetchDashboardError,
   fetchDashboardItemDataSuccess,
   fetchDashboardItemDataError,
   fetchSearchSuccess,
   fetchSearchError,
-  fetchHierarchyNestedItems,
-  fetchHierarchyNestedItemsSuccess,
-  fetchHierarchyNestedItemsError,
   fetchMeasureInfoSuccess,
   fetchMeasureInfoError,
   cancelFetchMeasureData,
@@ -75,8 +72,7 @@ import {
   updateEnlargedDialog,
   updateEnlargedDialogError,
   FETCH_MEASURES_SUCCESS,
-  FETCH_ORG_UNIT_SUCCESS,
-  addMapRegions,
+  CHANGE_ORG_UNIT_SUCCESS,
   openEmailVerifiedPage,
   fetchEmailVerifyError,
   openResendEmailSuccess,
@@ -85,10 +81,13 @@ import {
   FETCH_RESEND_VERIFICATION_EMAIL,
   findUserLoginFailed,
   REQUEST_PROJECT_ACCESS,
+  fetchOrgUnitError,
+  fetchOrgUnit,
+  REQUEST_ORG_UNIT,
 } from './actions';
 import { isMobile, processMeasureInfo, formatDateForApi } from './utils';
 import { createUrlString } from './utils/historyNavigation';
-import { GRANULARITIES_WITH_ONE_DATE, roundStartEndDates } from './utils/periodGranularities';
+import { getDefaultDates } from './utils/periodGranularities';
 import { INITIAL_MEASURE_ID } from './defaults';
 
 /**
@@ -411,39 +410,91 @@ function* watchFetchCountryAccessDataAndFetchItTEST() {
 /**
  * fetchOrgUnitData
  *
- * Fetch an org unit and call action on success/fail.
+ * Fetch an org unit.
  *
  */
-function* fetchOrgUnitData(action) {
-  const { organisationUnitCode } = action.organisationUnit;
-  const requestResourceUrl = `organisationUnit?organisationUnitCode=${organisationUnitCode}`;
+function* fetchOrgUnitData(organisationUnitCode) {
+  try {
+    yield put(fetchOrgUnit(organisationUnitCode));
+    const shouldIncludeCountryData = organisationUnitCode !== 'World'; // We should pull in all country data if we are within a country (ie. not World)
+    const requestResourceUrl = `organisationUnit?organisationUnitCode=${organisationUnitCode}&includeCountryHierarchy=${shouldIncludeCountryData}`;
+    const orgUnitData = yield call(request, requestResourceUrl);
+    yield put(fetchOrgUnitSuccess(orgUnitData));
+    return orgUnitData;
+  } catch (error) {
+    yield put(fetchOrgUnitError(organisationUnitCode, error.message));
+    throw error;
+  }
+}
+
+function* requestOrgUnit(action) {
+  const { organisationUnitCode } = action;
+  const state = yield select();
+  const orgUnit = selectOrgUnit(state, organisationUnitCode);
+  if (orgUnit && orgUnit.isComplete) {
+    return; // If we already have the complete org unit in reduxStore, just exit early
+  }
+
+  yield fetchOrgUnitData(organisationUnitCode);
+}
+
+function* fetchOrgUnitDataAndChangeOrgUnit(action) {
+  const state = yield select();
+  const { organisationUnitCode, shouldChangeMapBounds } = action;
+  const orgUnit = selectOrgUnit(state, organisationUnitCode);
+  if (orgUnit && orgUnit.isComplete) {
+    const orgUnitAndChildren = {
+      ...orgUnit,
+      parent: selectOrgUnit(state, orgUnit.parent) || {},
+      organisationUnitChildren: selectOrgUnitChildren(state, organisationUnitCode),
+    };
+    yield put(changeOrgUnitSuccess(orgUnitAndChildren, shouldChangeMapBounds));
+    return; // If we already have the org unit in reduxStore, just exit early
+  }
 
   try {
-    const orgUnitData = yield call(request, requestResourceUrl, fetchOrgUnitError);
-    yield put(fetchOrgUnitSuccess(orgUnitData, action.shouldChangeMapBounds));
+    const orgUnitData = yield fetchOrgUnitData(organisationUnitCode);
+    yield put(
+      changeOrgUnitSuccess(
+        normaliseCountryHierarchyOrgUnitData(orgUnitData),
+        shouldChangeMapBounds,
+      ),
+    );
   } catch (error) {
-    yield put(error.errorFunction(error));
+    console.log(error);
+    yield put(changeOrgUnitError(error));
   }
+}
+
+const normaliseCountryHierarchyOrgUnitData = orgUnitData => {
+  const { countryHierarchy, ...restOfOrgUnit } = orgUnitData;
+  if (!countryHierarchy) {
+    return orgUnitData;
+  }
+
+  const hierarchyOrgUnitItem = countryHierarchy.find(
+    hierarchyItem => hierarchyItem.organisationUnitCode === orgUnitData.organisationUnitCode,
+  );
+
+  const parent = countryHierarchy.find(
+    hierarchyItem => hierarchyItem.organisationUnitCode === hierarchyOrgUnitItem.parent,
+  );
+
+  return {
+    ...restOfOrgUnit,
+    parent,
+    organisationUnitChildren: countryHierarchy.filter(
+      descendant => descendant.parent === orgUnitData.organisationUnitCode,
+    ),
+  };
+};
+
+function* watchRequestOrgUnitAndFetchIt() {
+  yield takeEvery(REQUEST_ORG_UNIT, requestOrgUnit);
 }
 
 function* watchOrgUnitChangeAndFetchIt() {
-  yield takeLatest(CHANGE_ORG_UNIT, fetchOrgUnitData);
-}
-
-function* fetchOrgUnitRegionData(action) {
-  const { organisationUnitCode } = action.organisationUnit;
-  const requestResourceUrl = `regions/${organisationUnitCode}`;
-
-  try {
-    const response = yield call(request, requestResourceUrl, fetchRegionError);
-    yield put(addMapRegions(response.regions));
-  } catch (error) {
-    yield put(error.errorFunction(error));
-  }
-}
-
-function* watchOrgUnitChangeAndFetchRegions() {
-  if (!isMobile()) yield takeLatest(CHANGE_ORG_UNIT, fetchOrgUnitRegionData);
+  yield takeLatest(CHANGE_ORG_UNIT, fetchOrgUnitDataAndChangeOrgUnit);
 }
 
 /**
@@ -453,7 +504,7 @@ function* watchOrgUnitChangeAndFetchRegions() {
  *
  */
 function* fetchDashboard(action) {
-  const { organisationUnitCode } = action.organisationUnit;
+  const { organisationUnitCode } = action;
   const requestResourceUrl = `dashboard?organisationUnitCode=${organisationUnitCode}`;
 
   try {
@@ -470,19 +521,11 @@ function* watchOrgUnitChangeAndFetchDashboard() {
 
 function* fetchViewData(parameters, errorHandler) {
   const { infoViewKey } = parameters;
-
-  const getDefaultDates = state => {
-    const { periodGranularity } = state.global.viewConfigs[infoViewKey];
-    if (GRANULARITIES_WITH_ONE_DATE.includes(periodGranularity)) {
-      return roundStartEndDates(periodGranularity);
-    }
-    return {};
-  };
-
   // If the view should be constrained to a date range and isn't, constrain it
   const { startDate, endDate } =
-    parameters.startDate || parameters.endDate ? parameters : getDefaultDates(yield select());
-
+    parameters.startDate || parameters.endDate
+      ? parameters
+      : getDefaultDates(yield select(), infoViewKey);
   // Build the request url
   const {
     organisationUnitCode,
@@ -530,9 +573,12 @@ function* fetchDashboardItemData(action) {
   // data, allow the module to handle that work and return any extra url parameters
   let prepareForDashboardItemDataFetch;
   try {
+    // eslint-disable-next-line import/no-dynamic-require
     const moduleSagas = require(`./${dashboardItemProject}/sagas`);
     prepareForDashboardItemDataFetch = moduleSagas.prepareForDashboardItemDataFetch;
-  } catch (error) {} // the project is not associated with a module handling its own sagas, ignore
+  } catch (error) {
+    // the project is not associated with a module handling its own sagas, ignore
+  }
 
   // Run preparation saga if it exists to collect module specific url parameters
   let extraUrlParameters = {};
@@ -584,34 +630,12 @@ function* watchSearchChange() {
 }
 
 /**
- * fetchHierarchyData
- *
- * Fetches an orgUnit according to given code and calls actions to manage response
- *
- */
-function* fetchHierarchyData(action) {
-  const { organisationUnitCode } = action;
-  const requestResourceUrl = `organisationUnit?organisationUnitCode=${organisationUnitCode}`;
-
-  try {
-    const orgUnitData = yield call(request, requestResourceUrl);
-    yield put(fetchHierarchyNestedItemsSuccess(orgUnitData));
-  } catch (error) {
-    yield put(fetchHierarchyNestedItemsError(error));
-  }
-}
-
-function* watchLocationHierarchyEvents() {
-  yield takeEvery(FETCH_HIERARCHY_NESTED_ITEMS, fetchHierarchyData);
-}
-
-/**
  * fetchmeasureInfo
  *
  * Fetches data for a measure and write it to map state by calling fetchMeasureSuccess.
  *
  */
-function* fetchMeasureInfo(measureId, organisationUnitCode, oldOrganisationUnitCode = null) {
+function* fetchMeasureInfo(measureId, organisationUnitCode, oldOrgUnitCountry = null) {
   if (organisationUnitCode === 'World') {
     // Never want to fetch measures for World org code.
     yield put(cancelFetchMeasureData());
@@ -623,20 +647,18 @@ function* fetchMeasureInfo(measureId, organisationUnitCode, oldOrganisationUnitC
     // Don't try and fetch null measures
     yield put(cancelFetchMeasureData());
 
-    if (!organisationUnitCode) {
-      // if we've selected a null unit (somehow) clear out the measure hierarchy as well
-      yield put(clearMeasureHierarchy());
-    }
-
     return;
   }
 
-  const countryCode = organisationUnitCode.substring(0, 2);
-  if (oldOrganisationUnitCode) {
-    const oldCountryCode = oldOrganisationUnitCode.substring(0, 2);
-    if (oldCountryCode !== countryCode) {
-      yield put(clearMeasureHierarchy());
+  const country = selectOrgUnitCountry(yield select(), organisationUnitCode);
+  const countryCode = country ? country.organisationUnitCode : undefined;
+  if (oldOrgUnitCountry) {
+    if (oldOrgUnitCountry === countryCode) {
+      // We are in the same country as before, no need to refetch measureData
+      return;
     }
+
+    yield put(clearMeasureHierarchy());
   }
 
   const requestResourceUrl = `measureData?organisationUnitCode=${organisationUnitCode}&measureId=${measureId}&shouldShowAllParentCountryResults=${!isMobile()}`;
@@ -647,7 +669,7 @@ function* fetchMeasureInfo(measureId, organisationUnitCode, oldOrganisationUnitC
 
     yield put(fetchMeasureInfoSuccess(measureInfo, countryCode));
   } catch (error) {
-    console.error(error);
+    console.log(error);
     yield put(fetchMeasureInfoError(error));
   }
 }
@@ -667,6 +689,8 @@ function getSelectedMeasureFromHierarchy(measureHierarchy, selectedMeasureId, pr
 
   if (measures.find(m => m.measureId === selectedMeasureId)) return selectedMeasureId;
   else if (measures.find(m => m.measureId === projectMeasureId)) return projectMeasureId;
+  else if (measures.find(m => m.measureId === INITIAL_MEASURE_ID)) return INITIAL_MEASURE_ID;
+  else if (measures.length) return measures[0].measureId;
   return INITIAL_MEASURE_ID;
 }
 
@@ -689,7 +713,9 @@ function* fetchCurrentMeasureInfo() {
         activeProject,
       );
 
-      yield put(changeMeasure(newMeasure, organisationUnitCode));
+      if (newMeasure !== measureId) {
+        yield put(changeMeasure(newMeasure, organisationUnitCode));
+      }
     } else {
       /** Ensure measure is selected if there is a current measure selected in the case
        * it is not selected through the measureBar UI
@@ -701,8 +727,8 @@ function* fetchCurrentMeasureInfo() {
 }
 
 // Ensures current measure remains selected on new org unit fetch
-function* watchFetchOrgUnitSuccess() {
-  yield takeLatest(FETCH_ORG_UNIT_SUCCESS, fetchCurrentMeasureInfo);
+function* watchChangeOrgUnitSuccess() {
+  yield takeLatest(CHANGE_ORG_UNIT_SUCCESS, fetchCurrentMeasureInfo);
 }
 
 // Ensures current measure remains selected in the case that the new org unit
@@ -712,13 +738,13 @@ function* watchFetchMeasureSuccess() {
 }
 
 function* fetchMeasureInfoForNewOrgUnit(action) {
-  const { organisationUnit } = action;
-  const { measureId, oldOrgUnitCode } = yield select(state => ({
+  const { organisationUnitCode } = action;
+  const { measureId, oldOrgUnitCountry } = yield select(state => ({
     measureId: state.map.measureInfo.measureId,
-    oldOrgUnitCode: state.measureBar.currentMeasureOrganisationUnitCode,
+    oldOrgUnitCountry: state.map.measureInfo.currentCountry,
   }));
   if (measureId) {
-    yield fetchMeasureInfo(measureId, organisationUnit.organisationUnitCode, oldOrgUnitCode);
+    yield fetchMeasureInfo(measureId, organisationUnitCode, oldOrgUnitCountry);
   }
 }
 
@@ -733,8 +759,8 @@ function* watchOrgUnitChangeAndFetchMeasureInfo() {
  *
  */
 function* fetchMeasures(action) {
-  if (action.organisationUnit.organisationUnitCode === 'World') yield put(clearMeasure());
-  const { organisationUnitCode } = action.organisationUnit;
+  const { organisationUnitCode } = action;
+  if (organisationUnitCode === 'World') yield put(clearMeasure());
   const requestResourceUrl = `measures?organisationUnitCode=${organisationUnitCode}`;
   try {
     const measures = yield call(request, requestResourceUrl);
@@ -873,25 +899,15 @@ function* watchAttemptAttemptDrillDown() {
   yield takeLatest(ATTEMPT_DRILL_DOWN, fetchDrillDownData);
 }
 
-function* updatePermissionsToMatchUser() {
-  // Update the location navigation hierarchy to match countries available to this user
-  yield put(fetchHierarchyNestedItems('World'));
-
-  // Refresh current organisation unit so that dashboards, measures etc. will
-  // match current user permissions
-  const state = yield select();
-  const { currentOrganisationUnit } = state.global;
-
-  // By default the current organisation does not have an org unit code as it
-  // is an empty object, so must not be loaded.
-  if (currentOrganisationUnit.organisationUnitCode) {
-    yield put(changeOrgUnit(state.global.currentOrganisationUnit, false));
-  }
+function* navigateToWorldOnUserChange() {
+  // On user login/logout, we should just navigate back to world, as we don't know if they have permissions
+  // to the currently selected orgUnit
+  yield put(changeOrgUnit('World', true));
 }
 
 function* watchUserChangesAndUpdatePermissions() {
-  yield takeLatest(FETCH_LOGOUT_SUCCESS, updatePermissionsToMatchUser);
-  yield takeLatest(FETCH_LOGIN_SUCCESS, updatePermissionsToMatchUser);
+  yield takeLatest(FETCH_LOGOUT_SUCCESS, navigateToWorldOnUserChange);
+  yield takeLatest(FETCH_LOGIN_SUCCESS, navigateToWorldOnUserChange);
 }
 
 function* fetchEnlargedDialogViewContentForPeriod(action) {
@@ -933,13 +949,12 @@ export default [
   watchAttemptUserLogout,
   watchAttemptUserSignupAndFetchIt,
   watchFetchCountryAccessDataAndFetchIt,
+  watchRequestOrgUnitAndFetchIt,
   watchOrgUnitChangeAndFetchIt,
-  watchOrgUnitChangeAndFetchRegions,
   watchOrgUnitChangeAndFetchDashboard,
   watchOrgUnitChangeAndFetchMeasureInfo,
   watchViewFetchRequests,
   watchSearchChange,
-  watchLocationHierarchyEvents,
   watchMeasureChange,
   watchOrgUnitChangeAndFetchMeasures,
   watchFindUserCurrentLoggedIn,
@@ -951,7 +966,7 @@ export default [
   watchResendEmailVerificationAndFetchIt,
   watchSetVerifyEmailToken,
   watchFetchMeasureSuccess,
-  watchFetchOrgUnitSuccess,
+  watchChangeOrgUnitSuccess,
   refreshBrowserWhenFinishingUserSession,
   watchFetchCountryAccessDataAndFetchItTEST,
 ];

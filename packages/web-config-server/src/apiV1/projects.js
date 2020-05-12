@@ -1,7 +1,6 @@
 import { respond } from '@tupaia/utils';
 import { Project, Entity } from '/models';
 import { calculateBoundsFromEntities } from '/utils/geoJson';
-import { translateForFrontend, getEntityByCode } from '/apiV1/organisationUnit';
 
 async function fetchEntitiesWithProjectAccess(req, entities, userGroups) {
   return Promise.all(
@@ -29,7 +28,7 @@ async function buildProjectDataForFrontend(project, req) {
     default_measure: defaultMeasure,
   } = project;
 
-  const entities = await Promise.all(entityIds.map(Entity.getEntity));
+  const entities = await Promise.all(entityIds.map(id => Entity.findById(id)));
   const accessByEntity = await fetchEntitiesWithProjectAccess(req, entities, userGroups);
   const entitiesWithAccess = accessByEntity.filter(e => e.hasAccess.some(x => x));
   const names = entities.map(e => e.name);
@@ -42,10 +41,8 @@ async function buildProjectDataForFrontend(project, req) {
   // This controls where the project zooms to and what level dashboards
   // are shown on the front-end.
   const hasAccess = entitiesWithAccess.length > 0; // equivalent to accessByEntity.some(e => e.hasAccess)
-  const parent =
-    entitiesWithAccess.length > 1
-      ? await getEntityByCode('World', req.userHasAccess)
-      : translateForFrontend(entitiesWithAccess[0]);
+  const homeEntityCode =
+    hasAccess && (entitiesWithAccess.length > 1 ? 'World' : entitiesWithAccess[0].code);
 
   return {
     name,
@@ -58,14 +55,14 @@ async function buildProjectDataForFrontend(project, req) {
     names,
     bounds: calculateBoundsFromEntities(entitiesWithAccess),
     hasAccess,
-    parent,
+    homeEntityCode,
     dashboardGroupName,
     defaultMeasure,
   };
 }
 
 export async function getProjects(req, res) {
-  const data = await Project.all();
+  const data = await Project.getProjectDetails();
 
   const promises = data.map(project => buildProjectDataForFrontend(project, req));
   const projects = await Promise.all(promises);

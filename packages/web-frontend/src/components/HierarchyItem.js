@@ -15,8 +15,7 @@
  * @prop {array}  nestedItems An array of nested items to render as children. Will render iteractive expand arrow on left if provided.
  * @prop {boolean} isSelected True - render checked box on right; False - render unchecked box on right; null - render neither.
  * @prop {boolean} hasNestedItems Manually tell element to render left side arrow.
- * @prop {function} LeafIcon When there are no nested items, render LeafIcon on left if provided.
- * @prop {function} willMountFunc Called on componentWillMount
+ * @prop {function} Icon Custom icon for the hierarchy item
  * All additional props go to material-ui FlatButton component.
  * @return {element} a HierarchyItem react component.
  */
@@ -28,6 +27,7 @@ import ClosedIcon from 'material-ui/svg-icons/navigation/chevron-right';
 import OpenIcon from 'material-ui/svg-icons/navigation/expand-more';
 import SelectedIcon from 'material-ui/svg-icons/toggle/radio-button-checked';
 import UnSelectedIcon from 'material-ui/svg-icons/toggle/radio-button-unchecked';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 export class HierarchyItem extends Component {
   constructor(props) {
@@ -37,13 +37,24 @@ export class HierarchyItem extends Component {
     };
   }
 
-  componentWillMount() {
-    if (this.props.willMountFunc) this.props.willMountFunc();
+  onClick() {
+    if (this.props.onClick) {
+      this.props.onClick();
+    }
+    this.setState(state => ({ isOpen: !state.isOpen }));
   }
 
-  onClick() {
-    this.props.onClick && this.props.onClick();
-    this.setState({ isOpen: !this.state.isOpen });
+  renderOpenClosedIcon() {
+    const { nestedItems, hasNestedItems } = this.props;
+    const { isOpen } = this.state;
+
+    const hasChildren = hasNestedItems || (Array.isArray(nestedItems) && nestedItems.length > 0);
+    if (!hasChildren) {
+      return null;
+    }
+
+    const IconComponent = isOpen ? OpenIcon : ClosedIcon;
+    return <IconComponent style={styles.buttonIcon} />;
   }
 
   render() {
@@ -52,27 +63,14 @@ export class HierarchyItem extends Component {
       style,
       nestedMargin,
       nestedItems,
-      hasNestedItems,
       isSelected,
-      LeafIcon,
-      willMountFunc,
+      Icon,
       onClick,
+      isLoading,
       ...otherProps
     } = this.props;
     const { isOpen } = this.state;
-    const hasChildren = hasNestedItems || (Array.isArray(nestedItems) && nestedItems.length > 0);
-    let beforeIcon;
     let selectionIcon;
-
-    if (hasChildren) {
-      beforeIcon = isOpen ? (
-        <OpenIcon style={styles.buttonIcon} />
-      ) : (
-        <ClosedIcon style={styles.buttonIcon} />
-      );
-    } else {
-      beforeIcon = LeafIcon && <LeafIcon style={styles.buttonIcon} />;
-    }
 
     if (isSelected != null) {
       // Check isSelected specifically for null or undefined, !isSelected would be anything falsy.
@@ -83,6 +81,8 @@ export class HierarchyItem extends Component {
       );
     }
 
+    const loadingSpinner = <CircularProgress style={styles.buttonIcon} size={24} thickness={3} />;
+    const childItem = isLoading ? loadingSpinner : nestedItems;
     return (
       <div style={{ ...styles.nestedContainer, ...style, marginLeft: nestedMargin }}>
         <FlatButton
@@ -91,13 +91,14 @@ export class HierarchyItem extends Component {
           style={{ minHeight: 36, height: 'auto', padding: '5px 0' }}
         >
           <div style={styles.buttonContentContainer}>
-            {beforeIcon}
+            {this.renderOpenClosedIcon()}
+            {Icon && <Icon style={styles.buttonIcon} />}
             {selectionIcon}
             <div style={styles.buttonLabel}>{label}</div>
             <div style={styles.spacer} />
           </div>
         </FlatButton>
-        {isOpen ? nestedItems : null}
+        {isOpen ? childItem : null}
       </div>
     );
   }
@@ -143,8 +144,12 @@ HierarchyItem.propTypes = {
   nestedMargin: PropTypes.string,
   isSelected: PropTypes.bool,
   hasNestedItems: PropTypes.bool,
-  LeafIcon: PropTypes.func,
-  willMountFunc: PropTypes.func,
+  isLoading: PropTypes.bool,
+  Icon: PropTypes.func,
+};
+
+HierarchyItem.defaultProps = {
+  willMountFunc: undefined,
 };
 
 HierarchyItem.defaultProps = {

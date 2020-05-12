@@ -3,39 +3,52 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  **/
 
-import { capital } from 'case';
-import groupBy from 'lodash.groupby';
+import { pascal } from 'case';
 
 import { TYPES } from '@tupaia/database';
 import { reduceToDictionary } from '@tupaia/utils';
+import {
+  translateBoundsForFrontend,
+  translatePointForFrontend,
+  translateRegionForFrontend,
+} from '/utils/geoJson';
 import { BaseModel } from './BaseModel';
+import { EntityRelation } from './EntityRelation';
+import { Project } from './Project';
+import { EntityHierarchyBuilder } from './helpers/EntityHierarchyBuilder';
 
-const FACILITY = 'facility';
-const REGION = 'region';
-const COUNTRY = 'country';
-const WORLD = 'world';
 const CASE = 'case';
+const CASE_CONTACT = 'case_contact';
+const COUNTRY = 'country';
 const DISASTER = 'disaster';
+const DISTRICT = 'district';
+const FACILITY = 'facility';
+const SUB_DISTRICT = 'sub_district';
 const VILLAGE = 'village';
+const WORLD = 'world';
+const PROJECT = 'project';
 
 export const ENTITY_TYPES = {
-  FACILITY,
-  REGION,
-  COUNTRY,
-  WORLD,
   CASE,
-  DISASTER,
-  VILLAGE,
-};
-
-export const ORG_UNIT_ENTITY_TYPES = {
-  FACILITY,
-  REGION,
+  CASE_CONTACT,
   COUNTRY,
+  DISASTER,
+  DISTRICT,
+  FACILITY,
+  SUB_DISTRICT,
+  VILLAGE,
   WORLD,
+  PROJECT,
 };
 
-const ORG_UNIT_TYPE_LIST = Object.values(ORG_UNIT_ENTITY_TYPES);
+const ORG_UNIT_TYPE_LEVELS = {
+  [WORLD]: 1,
+  [COUNTRY]: 2,
+  [DISTRICT]: 3,
+  [SUB_DISTRICT]: 4,
+  [FACILITY]: 5,
+  [VILLAGE]: 6,
+};
 
 const constructTypesCriteria = (types, prefix) =>
   types.length > 0 ? `${prefix} type IN (${types.map(() => '?').join(',')})` : '';
@@ -43,17 +56,59 @@ const constructTypesCriteria = (types, prefix) =>
 export class Entity extends BaseModel {
   static databaseType = TYPES.ENTITY;
 
-  static fields = ['id', 'code', 'type', 'parent_id', 'country_code', 'name', 'point', 'region'];
+  static fields = [
+    'id',
+    'code',
+    'type',
+    'parent_id',
+    'country_code',
+    'name',
+    'point',
+    'region',
+    'bounds',
+    'image_url',
+  ];
+
+  static geoFields = ['point', 'region', 'bounds'];
+
+  static getColumnSpecs = tableAlias => {
+    const tableAliasPrefix = tableAlias ? `${tableAlias}.` : '';
+    return Entity.fields.map(field => {
+      if (Entity.geoFields.includes(field)) {
+        return { [field]: `ST_AsGeoJSON(${tableAliasPrefix}${field})` };
+      }
+      return { [field]: `${tableAliasPrefix}${field}` };
+    });
+  };
+
+  static getSqlForColumns = tableAlias =>
+    Entity.getColumnSpecs(tableAlias).map(columnSpec => {
+      const [fieldAlias, selector] = Object.entries(columnSpec)[0];
+      return `${selector} as ${fieldAlias}`;
+    });
 
   static FACILITY = FACILITY;
 
   static COUNTRY = COUNTRY;
 
-  static REGION = REGION;
+  static DISTRICT = DISTRICT;
+
+  static SUB_DISTRICT = SUB_DISTRICT;
 
   static DISASTER = DISASTER;
 
   static WORLD = WORLD;
+
+  static orgUnitEntityTypes = {
+    WORLD,
+    COUNTRY,
+    DISTRICT,
+    SUB_DISTRICT,
+    FACILITY,
+    VILLAGE,
+  };
+
+  static hierarchyBuilder = new EntityHierarchyBuilder(Entity, EntityRelation);
 
   constructor() {
     super();
@@ -112,169 +167,85 @@ export class Entity extends BaseModel {
     return ancestors.map(({ code }) => code);
   }
 
-  async getOrgUnitAncestors(includeWorld = false) {
-    return Entity.getAllAncestors(this.id, includeWorld, ORG_UNIT_TYPE_LIST);
-  }
-
   async getCountry() {
     if (this.type === COUNTRY) return this;
     const ancestors = await Entity.getAllAncestors(this.id, false, [COUNTRY]);
     return ancestors.length > 0 ? ancestors[0] : null;
   }
 
-  static async getAllDescendants(id, types = []) {
-    return Entity.database.executeSql(
-      `
-      WITH RECURSIVE descendants AS (
-        SELECT *, 0 AS generation
-          FROM entity
-          WHERE id = ?
-
-        UNION ALL
-        SELECT c.*, d.generation + 1
-          FROM descendants d
-          JOIN entity c ON c.parent_id = d.id
-      )
-      SELECT id, code, "name", parent_id, type
-        FROM descendants
-        ${constructTypesCriteria(types, 'WHERE')}
-        ORDER BY generation ASC;
-    `,
-      [id, ...types],
-    );
+  async getDescendants(hierarchyId) {
+    return Entity.hierarchyBuilder.getDescendants(this.id, hierarchyId);
   }
 
-  static async getFacilityDescendantsWithCoordinates(code) {
-    return Entity.database.executeSql(
-      `
-      WITH RECURSIVE children AS (
-        SELECT id, code, name, point, type, 0 AS generation
-        FROM   entity
-        WHERE  code = ?
-
-        UNION  ALL
-        SELECT p.id, p.code, p.name, p.point, p.type, c.generation + 1
-        FROM   children      c
-        JOIN   entity p ON p.parent_id = c.id
-      )
-        SELECT
-          children.id,
-          children.code,
-          ST_AsGeoJSON(children.point) AS point,
-          clinic.category_code,
-          clinic.type_name,
-          clinic.type,
-          children.name
-        FROM children
-        INNER JOIN clinic
-          ON clinic.code = children.code
-        WHERE
-          children.type = ?;
-    `,
-      [code, FACILITY],
-    );
+  async getFacilities(hierarchyId) {
+    return this.getDescendantsOfType(ENTITY_TYPES.FACILITY, hierarchyId);
   }
 
-  static async getChildRegions(code) {
-    return Entity.database.executeSql(
+  static async getFacilitiesOfOrgUnit(organisationUnitCode) {
+    const entity = await Entity.findOne({ code: organisationUnitCode });
+    return entity ? entity.getFacilities() : [];
+  }
+
+  async getOrgUnitDescendants() {
+    const types = Object.values(Entity.orgUnitEntityTypes);
+    const descendants = await this.getDescendants();
+    return descendants.filter(entity => types.includes(entity.type));
+  }
+
+  // assumes all entities of the given type are found at the same level in the hierarchy tree
+  async getDescendantsOfType(entityType, hierarchyId) {
+    if (this.type === entityType) return [this];
+    const descendants = await this.getDescendants(hierarchyId);
+    return descendants.filter(d => d.type === entityType);
+  }
+
+  async getNearestOrgUnitDescendants(hierarchyId) {
+    const orgUnitEntityTypes = new Set(Object.values(Entity.orgUnitEntityTypes));
+    // if this is an org unit, don't worry about going deeper
+    if (orgUnitEntityTypes.has(this.type)) return [this];
+
+    // get descendants and return all of the first type that is an org unit type
+    // we rely on descendants being returned in order, with those higher in the hierarchy first
+    const descendants = await this.getDescendants(hierarchyId);
+    const nearestOrgUnitType = descendants.find(d => orgUnitEntityTypes.has(d.type)).type;
+    return descendants.filter(d => d.type === nearestOrgUnitType);
+  }
+
+  static async findOne(conditions, loadOptions, queryOptions) {
+    return super.findOne(conditions, loadOptions, {
+      ...queryOptions,
+      columns: Entity.getColumnSpecs(),
+    });
+  }
+
+  static async find(conditions, loadOptions, queryOptions) {
+    return super.find(conditions, loadOptions, {
+      ...queryOptions,
+      columns: Entity.getColumnSpecs(),
+    });
+  }
+
+  static async findById(id, loadOptions, queryOptions) {
+    return super.findById(id, loadOptions, {
+      ...queryOptions,
+      columns: Entity.getColumnSpecs(),
+    });
+  }
+
+  async getOrgUnitChildren() {
+    const types = Object.values(Entity.orgUnitEntityTypes);
+
+    const records = await Entity.database.executeSql(
       `
-      SELECT
-        id,
-        code,
-        name,
-        image_url,
-        parent_id,
-        ST_AsGeoJSON(region) as region,
-        ST_AsGeoJSON(bounds) as bounds,
-        type
-      FROM entity
+      SELECT ${Entity.getSqlForColumns()} FROM entity
       WHERE
-        region IS NOT NULL
-        AND parent_id IN (
-          SELECT id
-            FROM entity
-            WHERE code = ?
-        );
+        parent_id = ?
+        ${constructTypesCriteria(types, 'AND')}
+      ORDER BY name;
     `,
-      [code],
+      [this.id, ...types],
     );
-  }
-
-  static async getEntityByCode(code) {
-    const result = await Entity.database.executeSql(
-      `
-      SELECT
-        id,
-        code,
-        country_code,
-        name,
-        image_url,
-        parent_id,
-        ST_AsGeoJSON(point) as point,
-        ST_AsGeoJSON(bounds) as bounds,
-        (region IS NOT NULL) as has_region,
-        type
-      FROM entity
-      WHERE
-        code = ?;
-    `,
-      [code],
-    );
-    return result[0];
-  }
-
-  static async getEntity(id) {
-    const result = await Entity.database.executeSql(
-      `
-      SELECT
-        id,
-        code,
-        country_code,
-        name,
-        image_url,
-        parent_id,
-        ST_AsGeoJSON(point) as point,
-        ST_AsGeoJSON(bounds) as bounds,
-        (region IS NOT NULL) as has_region,
-        type
-      FROM entity
-      WHERE
-        id = ?;
-    `,
-      [id],
-    );
-    return result[0];
-  }
-
-  static async getAllChildren(id, types = []) {
-    return Entity.database.executeSql(
-      `
-      SELECT
-        id,
-        code,
-        country_code,
-        name,
-        image_url,
-        parent_id,
-        ST_AsGeoJSON(point) as point,
-        ST_AsGeoJSON(bounds) as bounds,
-        type
-      FROM entity
-      WHERE
-        parent_id = ? ${constructTypesCriteria(types, 'AND')}
-      ORDER BY
-        name;
-    `,
-      [id, ...types],
-    );
-  }
-
-  static async getOrgUnitChildren(id) {
-    return Entity.getAllChildren(id, ORG_UNIT_TYPE_LIST);
-  }
-
-  async getDescendantsOfType(entityType) {
-    return Entity.getAllDescendants(this.id, [entityType]);
+    return records.map(record => Entity.load(record));
   }
 
   static fetchChildToParentCode = async childrenCodes => {
@@ -292,9 +263,17 @@ export class Entity extends BaseModel {
     );
   };
 
+  static getDhisLevel(type) {
+    const level = ORG_UNIT_TYPE_LEVELS[type];
+    if (!level) {
+      throw new Error(`${type} is not an organisational unit type`);
+    }
+
+    return level;
+  }
+
   getOrganisationLevel() {
-    if (this.type === 'region') return 'Province'; // this is the exception to the rule, the rest are a simple case translation
-    return capital(this.type); // facility -> Facility
+    return pascal(this.type); // sub_district -> SubDistrict
   }
 
   async buildDisplayName() {
@@ -305,12 +284,57 @@ export class Entity extends BaseModel {
       .join(', ');
   }
 
+  isCountry() {
+    return this.type === COUNTRY;
+  }
+
+  static translateTypeForFrontend = type => pascal(type);
+
+  translateForFrontend() {
+    return {
+      type: Entity.translateTypeForFrontend(this.type),
+      organisationUnitCode: this.code,
+      countryCode: this.country_code,
+      name: this.name,
+      location: this.translateLocationForFrontend(),
+      photoUrl: this.image_url,
+    };
+  }
+
+  translateLocationForFrontend() {
+    const { point, region, bounds } = this;
+
+    const type = (() => {
+      if (region) return 'area';
+      if (point) return 'point';
+      return 'no-coordinates';
+    })();
+
+    return {
+      type,
+      point: translatePointForFrontend(point),
+      bounds: translateBoundsForFrontend(bounds),
+      region: translateRegionForFrontend(region),
+    };
+  }
+
   isFacility() {
     return this.type === FACILITY;
   }
 
-  async getFacilitiesByType() {
-    const facilityDescendants = await Entity.getFacilityDescendantsWithCoordinates(this.code);
-    return groupBy(facilityDescendants, 'type_name');
+  isProject() {
+    return this.type === PROJECT;
+  }
+
+  async project() {
+    return Project.findOne({ entity_id: this.id });
+  }
+
+  async parent() {
+    return Entity.findById(this.parent_id);
+  }
+
+  async countryEntity() {
+    return this.type === COUNTRY ? this : Entity.findOne({ code: this.country_code });
   }
 }

@@ -1,75 +1,70 @@
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+
+import { reduceToDictionary } from '@tupaia/utils';
 import { Entity } from '/models';
+import { RouteHandler } from './RouteHandler';
+import { PermissionsChecker } from './permissions';
 
-import { getEntityLocationForFrontend } from './utils/getEntityLocationForFrontend';
+const WORLD = 'World';
 
-function getOrganisationUnitTypeForFrontend(type) {
-  switch (type) {
-    case 'region':
-      return 'Region';
-    case 'country':
-      return 'Country';
-    case 'facility':
-      return 'Facility';
-    default:
-      return 'Other';
+const translateDescendantForFrontEnd = (descendant, entityIdToCode) => ({
+  ...descendant.translateForFrontend(),
+  parent: entityIdToCode[descendant.parent_id],
+});
+
+export default class extends RouteHandler {
+  static PermissionsChecker = PermissionsChecker; // checks the user has access to requested entity
+
+  async buildResponse() {
+    const { includeCountryHierarchy } = this.query;
+    return includeCountryHierarchy === 'true'
+      ? this.getEntityAndCountryHierarchyByCode()
+      : this.getEntityAndChildrenByCode();
   }
-}
 
-export function translateForFrontend(entity) {
-  // Sometimes we'll end up with a null entity (eg getting a top-level entity's parent).
-  // Frontend expects an empty object rather than null.
-  if (!entity) return {};
+  async getEntityAndCountryHierarchyByCode() {
+    const world = await Entity.findOne({ code: WORLD });
+    const country = await this.entity.countryEntity();
+    const countryDescendants = await country.getOrgUnitDescendants();
+    const orgUnitHierarchy = await this.filterForAccess([world, country, ...countryDescendants]);
+    const entityIdToCode = reduceToDictionary(orgUnitHierarchy, 'id', 'code');
+    return {
+      ...this.entity.translateForFrontend(),
+      countryHierarchy: orgUnitHierarchy.map(e =>
+        translateDescendantForFrontEnd(e, entityIdToCode),
+      ),
+    };
+  }
 
-  return {
-    type: getOrganisationUnitTypeForFrontend(entity.type),
-    organisationUnitCode: entity.code,
-    countryCode: entity.country_code,
-    name: entity.name,
-    location: getEntityLocationForFrontend(entity),
-    photoUrl: entity.image_url,
+  async getEntityAndChildrenByCode() {
+    // Don't check parent permission (as we already know we have permission for at least one of its children)
+    const parent = await this.entity.parent();
+    const children = await this.filterForAccess(await this.entity.getOrgUnitChildren());
+
+    return {
+      ...this.entity.translateForFrontend(),
+      // parent may be `null` (eg getting a top-level entity's parent)
+      parent: parent ? parent.translateForFrontend() : {},
+      organisationUnitChildren: children.map(child => child.translateForFrontend()),
+    };
+  }
+
+  async filterForAccess(entities) {
+    return (
+      await Promise.all(
+        entities.map(async entity => (await this.checkUserHasEntityAccess(entity)) && entity),
+      )
+    ).filter(entity => entity);
+  }
+
+  checkUserHasEntityAccess = async entity => {
+    const { userHasAccess } = this.req;
+    if (entity.isCountry()) {
+      return userHasAccess(entity);
+    }
+    return true; // temporarily only checking access at the country level (permissions currently defined for country only)
   };
-}
-
-export async function getEntityByCode(entityCode, userHasAccess) {
-  // query our base entity
-  const queriedEntity = await Entity.getEntityByCode(entityCode);
-  if (!queriedEntity) {
-    throw new Error(`Entity ${entityCode} not found`);
-  }
-
-  // check permission
-  const hasAccess = await userHasAccess(queriedEntity.code);
-  if (!hasAccess) {
-    throw new Error(`No access to ${queriedEntity.code}`);
-  }
-
-  // fetch parent if one exists - don't check permission (as we already
-  // know we have permission for at least one of its children)
-  const { parent_id: parentId, id: entityId } = queriedEntity;
-  const parentTask = parentId && Entity.getEntity(parentId);
-
-  // get children & remove those we don't have permission for
-  const childrenTask = Entity.getOrgUnitChildren(entityId);
-  const children = (await Promise.all(
-    (await childrenTask).map(async c => (await userHasAccess(c.code)) && c),
-  ))
-    .filter(c => c)
-    .map(translateForFrontend);
-
-  // assemble response
-  const data = {
-    ...translateForFrontend(queriedEntity),
-    parent: translateForFrontend(await parentTask),
-    organisationUnitChildren: children,
-  };
-
-  return data;
-}
-
-export async function getOrganisationUnitHandler(req, res) {
-  const { organisationUnitCode } = req.query;
-
-  const data = await getEntityByCode(organisationUnitCode, req.userHasAccess);
-
-  res.send(data);
 }

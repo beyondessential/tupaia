@@ -6,11 +6,12 @@
 /* eslint-disable class-methods-use-this */
 
 import groupBy from 'lodash.groupby';
-import keyBy from 'lodash.keyby';
 
-import { getDataSourceEntityType } from '/apiV1/dataBuilders/helpers/getDataSourceEntityType';
+import {
+  getDataSourceEntityType,
+  getAggregationEntityType,
+} from '/apiV1/dataBuilders/helpers/getDataSourceEntityType';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { formatFacilityDataForOverlay } from '/apiV1/utils';
 import { ENTITY_TYPES, Entity } from '/models/Entity';
 
 /**
@@ -46,7 +47,7 @@ export class DataPerOrgUnitBuilder extends DataBuilder {
     }
     if (typeof builder.buildData !== 'function') {
       throw new Error(
-        'The base builder for a period builder must implement the "buildData" method',
+        'The base builder for an org unit builder must implement the "buildData" method',
       );
     }
 
@@ -66,43 +67,49 @@ export class DataPerOrgUnitBuilder extends DataBuilder {
 
   async groupResultsByOrgUnitCode(results) {
     const orgUnitKey = this.areEventResults(results) ? 'orgUnit' : 'organisationUnit';
-    if (getDataSourceEntityType(this.config) !== ENTITY_TYPES.VILLAGE) {
-      return groupBy(results, orgUnitKey);
-    }
 
-    const villageCodes = results.map(({ [orgUnitKey]: orgUnit }) => orgUnit);
-    const villageToFacilityCode = await Entity.fetchChildToParentCode(villageCodes);
-    return groupBy(results, ({ [orgUnitKey]: orgUnit }) => villageToFacilityCode[orgUnit]);
-  }
+    const dataSourceToAggregateMapper = async () => {
+      // This functionalilty should be developed upon into a generic dataSource -> aggregation Entity mapping
+      // eg. village -> facility, facility -> country, etc.
+      // For now it only supports mapping to self, and mapping village -> facility
+      const dataSourceEntityType = getDataSourceEntityType(this.config);
+      const aggregationEntityType = getAggregationEntityType(this.config);
+      if (
+        dataSourceEntityType !== ENTITY_TYPES.VILLAGE ||
+        dataSourceEntityType === aggregationEntityType
+      ) {
+        // No mapping required, mapper just returns original orgUnitCode
+        return orgUnitCode => orgUnitCode;
+      }
 
-  async fetchOrgUnitData() {
-    const { organisationUnitGroupCode } = this.query;
-    const orgUnits = await Entity.getFacilityDescendantsWithCoordinates(organisationUnitGroupCode);
+      // Create village -> facility mapper
+      const villageCodes = results.map(({ [orgUnitKey]: orgUnit }) => orgUnit);
+      const villageToFacilityCode = await Entity.fetchChildToParentCode(villageCodes);
+      return orgUnitCode => villageToFacilityCode[orgUnitCode];
+    };
 
-    return keyBy(orgUnits, 'code');
+    const mapper = await dataSourceToAggregateMapper();
+    return groupBy(results, ({ [orgUnitKey]: orgUnitCode }) => mapper(orgUnitCode));
   }
 
   async buildData(results) {
     const { dataElementCode } = this.query;
     const resultsByOrgUnit = await this.groupResultsByOrgUnitCode(results);
     const baseBuilder = this.getBaseBuilder();
-    const orgUnitData = await this.fetchOrgUnitData();
 
-    const processResultsForOrgUnit = async orgUnitCode => {
-      const resultsForOrgUnit = resultsByOrgUnit[orgUnitCode];
-      if (!resultsForOrgUnit) {
+    const processResultsForOrgUnit = async ([organisationUnitCode, result]) => {
+      if (!result) {
         return;
       }
 
-      const data = await baseBuilder.buildData(resultsForOrgUnit);
+      const data = await baseBuilder.buildData(result);
       if (data.length !== 1) {
         throw new Error('The base data builder should return a single element array');
       }
-      orgUnitData[orgUnitCode][dataElementCode] = data[0][dataElementCode];
-    };
-    await Promise.all(Object.keys(orgUnitData).map(processResultsForOrgUnit));
 
-    return Object.values(orgUnitData);
+      return { organisationUnitCode, [dataElementCode]: data[0][dataElementCode] };
+    };
+    return Promise.all(Object.entries(resultsByOrgUnit).map(processResultsForOrgUnit));
   }
 
   /**
@@ -121,6 +128,6 @@ export class DataPerOrgUnitBuilder extends DataBuilder {
     const results = await this.fetchResults();
     const data = await this.buildData(results);
 
-    return this.formatData(data).map(formatFacilityDataForOverlay);
+    return this.formatData(data);
   }
 }

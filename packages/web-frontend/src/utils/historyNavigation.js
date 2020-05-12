@@ -10,16 +10,14 @@
  *
  * Url writing and interpreting for Tupaia. Urls are in the format
  *
- * /[entity_type]/[entity_code]?m={measureId}&p={overlayPageName}
+ * /[project_code]/[entity_code]?m={measureId}&p={overlayPageName}
  *
  * eg
- * /facility/FACILITY_CODE - Loads the given facility.
- * /region/REGION_CODE - Loads the given region.
- * /region/REGION_CODE?m=124 - Load the given region with measure 124 active.
+ * /PROJECT_CODE/ENTITY_CODE?m=124 - Load the given entity with measure 124 active.
  * /?p=about - Loads the home page with about overlay shown.
  */
 
-import createHistory from 'history/createBrowserHistory';
+import { createBrowserHistory } from 'history';
 import queryString from 'query-string';
 
 import {
@@ -47,7 +45,7 @@ const DEFAULT_DASHBOARDS = {
   disaster: 'Disaster Response',
 };
 
-const history = createHistory();
+const history = createBrowserHistory();
 
 export function decodeUrl(pathname, search) {
   if (pathname[0] === '/') {
@@ -97,8 +95,7 @@ export function createUrlForAppState(state) {
   const dashboardId = state.dashboard.currentDashboardKey;
   const measureId = state.measureBar.currentMeasure.measureId;
 
-  const focusedOrganisationUnit =
-    state.global.loadingOrganisationUnit || state.global.currentOrganisationUnit;
+  const focusedOrganisationUnit = state.global.currentOrganisationUnit;
 
   const { organisationUnitCode } = focusedOrganisationUnit;
   const reportId = state.enlargedDialog.viewContent.viewId;
@@ -220,7 +217,7 @@ function reactToHistory(location, store) {
   dispatch(findLoggedIn());
 
   if (organisationUnitCode !== state.global.currentOrganisationUnit.organisationUnitCode) {
-    dispatch(changeOrgUnit({ organisationUnitCode }));
+    dispatch(changeOrgUnit(organisationUnitCode));
     dispatch(openMapPopup(organisationUnitCode));
   }
 
@@ -291,7 +288,7 @@ function pushHistory(pathname, searchParams) {
   if (isLocationEqual(location, { pathname, search })) {
     if (pathname !== location.pathname || search !== oldSearch) {
       // We have a url that is functionally equivalent but different in string representation.
-      // This could could be switching the prefix (country / region / facility) so let's assume
+      // This could could be switching the prefix (project), so let's assume
       // that the updated version is "more correct" and update the history without a push.
       history.replace({ pathname, search });
     }

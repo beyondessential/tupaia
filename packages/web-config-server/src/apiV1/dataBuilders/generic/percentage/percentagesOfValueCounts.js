@@ -2,22 +2,34 @@
  * Tupaia Config Server
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
-
+import flatten from 'lodash.flatten';
+import groupBy from 'lodash.groupby';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { divideValues } from '/apiV1/dataBuilders/helpers';
+import { divideValues, countAnalyticsThatSatisfyConditions } from '/apiV1/dataBuilders/helpers';
 
 const ORG_UNIT_COUNT = '$orgUnitCount';
+const COMPARISON_TYPES = {
+  COUNT: '$count',
+};
+const OPERATION_TYPES = {
+  GT: (leftOperand, rightOperand) => leftOperand > rightOperand,
+  EQ: (leftOperand, rightOperand) => leftOperand == rightOperand,
+  IN: (leftOperand, rightOperand) => rightOperand.includes(leftOperand),
+};
 
 export class PercentagesOfValueCountsBuilder extends DataBuilder {
   getDataElementCodes() {
-    return Object.values(this.config.dataClasses).reduce(
+    const dataElementCodes = Object.values(this.config.dataClasses).reduce(
       (codes, { numerator, denominator }) =>
         codes.concat(
-          Object.keys(numerator.dataValues),
-          denominator.hasOwnProperty('dataValues') && Object.keys(denominator.dataValues),
+          flatten(numerator.dataValues),
+          denominator.hasOwnProperty('dataValues') && denominator.dataValues,
         ),
       [],
     );
+
+    //Remove duplicated data element codes if there's any
+    return [...new Set(dataElementCodes)];
   }
 
   async build() {
@@ -36,10 +48,8 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
   buildData(analytics) {
     const dataClasses = [];
     Object.entries(this.config.dataClasses).forEach(([name, dataClass]) => {
-      const [numerator, denominator] = this.calculateFractionPartsForDataClass(
-        dataClass,
-        analytics,
-      );
+      const numerator = this.calculateFractionPart(dataClass.numerator, analytics);
+      const denominator = this.calculateFractionPart(dataClass.denominator, analytics);
 
       const data = {
         value: divideValues(numerator, denominator),
@@ -56,18 +66,93 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
     return dataClasses;
   }
 
-  calculateFractionPartsForDataClass(dataClass, analytics) {
-    const { numerator, denominator } = dataClass;
-    const numeratorValue = this.countAnalyticsThatSatisfyConditions(analytics, numerator);
-    let denominatorValue;
+  calculateFractionPart = (fraction, analytics) => {
+    if (fraction.compare || fraction.operation) {
+      const filterAnalyticsFunction = this.buildFilterAnalyticsFunction(fraction);
 
-    if (denominator === ORG_UNIT_COUNT) {
-      denominatorValue = [...new Set(analytics.map(data => data.organisationUnit))].length;
-    } else {
-      denominatorValue = this.countAnalyticsThatSatisfyConditions(analytics, denominator);
+      if (!filterAnalyticsFunction) {
+        throw new Error(
+          'Could not create filterAnalyticsFunction from percentagesOfValueCounts config',
+        );
+      }
+
+      const filteredAnalytics = analytics.filter(analytic =>
+        flatten(fraction.dataValues).includes(analytic.dataElement),
+      );
+
+      return this.countAnalyticsUsingFilterFunction(
+        filteredAnalytics,
+        filterAnalyticsFunction,
+        fraction.groupBy,
+      );
+    } else if (fraction === ORG_UNIT_COUNT) {
+      return [...new Set(analytics.map(data => data.organisationUnit))].length;
     }
 
-    return [numeratorValue, denominatorValue];
+    return countAnalyticsThatSatisfyConditions(analytics, fraction);
+  };
+
+  countAnalyticsUsingFilterFunction = (analytics, filterAnalyticsFunction, fractionGroupBy) => {
+    let result = 0;
+
+    //If there's groupBy set for analytics, try group the analytics before applying filterAnalyticsFunction.
+    //If not, apply filterAnalyticsFunction to the raw analytics.
+    if (fractionGroupBy) {
+      const groupedAnalytics = groupBy(analytics, fractionGroupBy);
+
+      Object.values(groupedAnalytics).forEach(analytic => {
+        if (filterAnalyticsFunction(analytic)) result += 1;
+      });
+    } else {
+      analytics.forEach(analytic => {
+        if (filterAnalyticsFunction(analytic)) result += 1;
+      });
+    }
+
+    return result;
+  };
+
+  buildFilterAnalyticsFunction(fraction) {
+    if (fraction.compare === COMPARISON_TYPES.COUNT) {
+      if (fraction.dataValues.length !== 2) {
+        throw new Error(
+          'nested array passed to: percentagesOfValueCounts must have exactly 2 sub-arrays for comparison',
+        );
+      }
+
+      const [values, valuesToCompare] = fraction.dataValues;
+      return results => {
+        const set1 = results.filter(r => values.includes(r.dataElement));
+        const set2 = results.filter(r => valuesToCompare.includes(r.dataElement));
+
+        const set1Count = countAnalyticsThatSatisfyConditions(set1, {
+          dataValues: values,
+          valueOfInterest: fraction.valueOfInterest,
+        });
+
+        const count2Count = countAnalyticsThatSatisfyConditions(set2, {
+          dataValues: valuesToCompare,
+          valueOfInterest: fraction.valueOfInterest,
+        });
+
+        return set1Count > 0 && set1Count === count2Count;
+      };
+    }
+
+    if (fraction.operation) {
+      if (fraction.groupBy) {
+        return results => {
+          return results.every(r => {
+            return OPERATION_TYPES[fraction.operation](r.value, fraction.operand);
+          });
+        };
+      }
+
+      return result => {
+          return OPERATION_TYPES[fraction.operation](result.value, fraction.operand);
+      }
+      
+    }
   }
 }
 

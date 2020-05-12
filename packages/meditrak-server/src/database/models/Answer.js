@@ -113,6 +113,8 @@ export class AnswerModel extends DatabaseModel {
     return AnswerType;
   }
 
+  types = ANSWER_TYPES;
+
   static onChange = async ({ type: changeType, record }, model) => {
     if (changeType === 'delete') return;
 
