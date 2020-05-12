@@ -574,6 +574,7 @@ function global(
       return {
         ...state,
         isSidePanelExpanded: false,
+        overlay: !isMobile() && LANDING,
       };
     case SHOW_TUPAIA_INFO:
       return {

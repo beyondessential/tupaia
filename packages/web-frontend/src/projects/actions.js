@@ -12,8 +12,9 @@ import {
   SET_PROJECT,
   REQUEST_PROJECT_ACCESS,
 } from '../actions';
+import { INITIAL_PROJECT_CODE } from '../defaults';
 
-export function selectProject(project) {
+export function selectProject(project = INITIAL_PROJECT_CODE) {
   return { type: SELECT_PROJECT, project };
 }
 
