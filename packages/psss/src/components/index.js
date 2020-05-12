@@ -6,3 +6,4 @@
 export * from './NavBar';
 export * from './Footer';
 export * from './Layout';
+export * from './ExampleWithRedux';
