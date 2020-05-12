@@ -222,8 +222,11 @@ export class DhisService extends Service {
     };
     const events = await this.fetchEventsForPrograms(api, programCodes, query);
     const translatedEvents = await this.translator.translateInboundEvents(events, programCodes[0]);
+    const dataElements = await this.pullDataElementMetadata(api, dataSources, {
+      additionalFields: 'valueType',
+    });
 
-    return buildAnalyticsFromEvents(api, translatedEvents);
+    return buildAnalyticsFromEvents(translatedEvents, dataElements);
   };
 
   pullAnalyticsFromEventsForApi = async (api, dataSources, options) => {
@@ -393,8 +396,11 @@ export class DhisService extends Service {
 
   async pullDataElementMetadata(api, dataSources, options) {
     const dataElementCodes = dataSources.map(({ dataElementCode }) => dataElementCode);
-    const { includeOptions } = options;
-    const dataElements = await api.fetchDataElements(dataElementCodes, { includeOptions });
+    const { additionalFields, includeOptions } = options;
+    const dataElements = await api.fetchDataElements(dataElementCodes, {
+      additionalFields,
+      includeOptions,
+    });
     return this.translator.translateInboundDataElements(dataElements, dataSources);
   }
 }
