@@ -16,6 +16,9 @@ import { createReducers } from './createReducers';
 import { theme } from './theme';
 import App from './App';
 
+const composeEnhancers =
+  (window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()) || compose; // eslint-disable-line no-underscore-dangle
+
 function initStore() {
   const persistConfig = { key: 'psss', storage };
   if (process.env.NODE_ENV !== 'development') {
@@ -23,7 +26,7 @@ function initStore() {
   }
   const persistedReducers = persistCombineReducers(persistConfig, createReducers());
 
-  return createStore(persistedReducers, {}, compose);
+  return createStore(persistedReducers, {}, composeEnhancers);
 }
 
 function initPersistor(store) {
