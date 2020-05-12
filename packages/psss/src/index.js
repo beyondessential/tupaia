@@ -4,10 +4,11 @@
  */
 import React from 'react';
 import { render } from 'react-dom';
-import { createStore, compose } from 'redux';
+import { createStore, compose, applyMiddleware } from 'redux';
 import { persistStore, persistCombineReducers } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { Provider } from 'react-redux';
+import thunk from 'redux-thunk';
 import { PersistGate } from 'redux-persist/integration/react';
 import { MuiThemeProvider, StylesProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -15,6 +16,9 @@ import { ThemeProvider } from 'styled-components';
 import { createReducers } from './createReducers';
 import { theme } from './theme';
 import App from './App';
+import { API } from './api';
+
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose; // eslint-disable-line no-underscore-dangle
 
 function initStore() {
   const persistConfig = { key: 'psss', storage };
@@ -22,8 +26,8 @@ function initStore() {
     persistConfig.whitelist = []; // persist used for a dev experience, but not required in production
   }
   const persistedReducers = persistCombineReducers(persistConfig, createReducers());
-
-  return createStore(persistedReducers, {}, compose);
+  const enhancers = composeEnhancers(applyMiddleware(thunk.withExtraArgument({ api: API })));
+  return createStore(persistedReducers, {}, enhancers);
 }
 
 function initPersistor(store) {

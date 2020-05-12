@@ -2,24 +2,21 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-
 import React from 'react';
 import { TextField, Button } from '@tupaia/ui-components';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
-import { useHistory } from 'react-router-dom';
-import { FakeStore } from '../../FakeStore';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { login, checkIsPending, checkIsError, getError } from '../../store';
 import * as COLORS from '../../theme/colors';
-import { useFormFields, useAuthState } from '../../hooks';
+import { useFormFields } from '../../hooks';
 
 export const ErrorMessage = styled.p`
   color: ${COLORS.RED};
 `;
 
-export const LoginForm = () => {
-  const history = useHistory();
-  const { isPending, isError, error } = useAuthState();
-
+export const LoginFormComponent = ({ isPending, isError, error, onLogin }) => {
   const [fields, handleFieldChange] = useFormFields({
     email: '',
     password: '',
@@ -28,15 +25,7 @@ export const LoginForm = () => {
   const handleSubmit = async event => {
     event.preventDefault();
     const { email, password } = fields;
-
-    const { status } = await FakeStore.auth.authenticate({ email, password });
-    if (status === 'success') {
-      history.push('/');
-    }
-
-    if (status === 'error') {
-      history.push('/login');
-    }
+    onLogin({ email, password });
   };
 
   return (
@@ -67,3 +56,26 @@ export const LoginForm = () => {
     </form>
   );
 };
+
+LoginFormComponent.propTypes = {
+  isError: PropTypes.any.isRequired,
+  isPending: PropTypes.bool.isRequired,
+  error: PropTypes.string,
+  onLogin: PropTypes.func.isRequired,
+};
+
+LoginFormComponent.defaultProps = {
+  error: null,
+};
+
+const mapStateToProps = state => ({
+  isPending: checkIsPending(state),
+  isError: checkIsError(state),
+  error: getError(state),
+});
+
+const mapDispatchToProps = dispatch => ({
+  onLogin: ({ email, password }) => dispatch(login(email, password)),
+});
+
+export const LoginForm = connect(mapStateToProps, mapDispatchToProps)(LoginFormComponent);

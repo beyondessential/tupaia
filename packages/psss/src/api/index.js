@@ -3,5 +3,5 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-export * from './FakeApi';
+export * from './singletons';
 export * from './connectApi';

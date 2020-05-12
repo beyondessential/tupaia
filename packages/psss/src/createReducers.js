@@ -1,5 +1,5 @@
-import { exampleReducer } from './store';
+import { auth } from './store';
 
 export const createReducers = () => ({
-  example: exampleReducer,
+  auth: auth,
 });
