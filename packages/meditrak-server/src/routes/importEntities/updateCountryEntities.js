@@ -78,6 +78,7 @@ export async function updateCountryEntities(transactingModels, countryName, enti
       screen_bounds: screenBounds,
       category_code: categoryCode,
       facility_type: facilityType,
+      attributes = {},
     } = entityObject;
     if (codes.includes(code)) {
       throw new ImportValidationError(
@@ -126,6 +127,7 @@ export async function updateCountryEntities(transactingModels, countryName, enti
         metadata: {
           dhis: { isDataRegional: true },
         },
+        attributes,
       },
     );
     if (longitude && latitude) {

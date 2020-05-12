@@ -6,8 +6,10 @@
 import {
   ObjectValidator,
   hasContent,
+  constructIsEmptyOr,
   constructIsOneOf,
   constructThisOrThatHasContent,
+  isPlainObject,
 } from '../../validation';
 const constructEntityFieldValidators = models => ({
   parent_code: [constructThisOrThatHasContent('district')],
@@ -22,6 +24,7 @@ const constructEntityFieldValidators = models => ({
       checkIsOneOf(cellValue);
     },
   ],
+  attributes: [constructIsEmptyOr(isPlainObject)],
 });
 
 const constructSpecificEntityTypeValidators = (entityType, models) => {

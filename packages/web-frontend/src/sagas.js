@@ -454,7 +454,6 @@ function* fetchOrgUnitDataAndChangeOrgUnit(action) {
 
   try {
     const orgUnitData = yield fetchOrgUnitData(organisationUnitCode);
-    yield put(fetchOrgUnitSuccess(orgUnitData));
     yield put(
       changeOrgUnitSuccess(
         normaliseCountryHierarchyOrgUnitData(orgUnitData),
@@ -690,6 +689,8 @@ function getSelectedMeasureFromHierarchy(measureHierarchy, selectedMeasureId, pr
 
   if (measures.find(m => m.measureId === selectedMeasureId)) return selectedMeasureId;
   else if (measures.find(m => m.measureId === projectMeasureId)) return projectMeasureId;
+  else if (measures.find(m => m.measureId === INITIAL_MEASURE_ID)) return INITIAL_MEASURE_ID;
+  else if (measures.length) return measures[0].measureId;
   return INITIAL_MEASURE_ID;
 }
 
