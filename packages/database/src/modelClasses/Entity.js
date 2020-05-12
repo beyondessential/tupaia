@@ -1,16 +1,23 @@
 /**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
 
-import { get, set } from 'lodash';
+import { DatabaseModel } from '../DatabaseModel';
+import { DatabaseType } from '../DatabaseType';
+import { TYPES } from '../types';
 
-import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
+/**
+ * TODO: This version of Entity.js comes from meditrak-server, which does not include any of the
+ * a) alternative hierarchy logic, or b) optimisations that are in the version in web-config-server
+ * https://github.com/beyondessential/tupaia-backlog/issues/427
+ */
+
 /**
  * Maximum number of parents an entity can have.
  * Used to avoid infinite loops while traversing the entity hierarchy
  */
-export const MAX_ENTITY_HIERARCHY_LEVELS = 100;
+const MAX_ENTITY_HIERARCHY_LEVELS = 100;
 
 const CASE = 'case';
 const CASE_CONTACT = 'case_contact';
@@ -22,7 +29,7 @@ const SUB_DISTRICT = 'sub_district';
 const VILLAGE = 'village';
 const WORLD = 'world';
 
-export const ENTITY_TYPES = {
+const ENTITY_TYPES = {
   CASE,
   CASE_CONTACT,
   COUNTRY,
@@ -34,7 +41,7 @@ export const ENTITY_TYPES = {
   WORLD,
 };
 
-export const ORG_UNIT_ENTITY_TYPES = {
+const ORG_UNIT_ENTITY_TYPES = {
   WORLD,
   COUNTRY,
   DISTRICT,
@@ -42,18 +49,6 @@ export const ORG_UNIT_ENTITY_TYPES = {
   FACILITY,
   VILLAGE,
 };
-
-/**
- * @param {string} type
- * @param {boolean}
- */
-export const isOrganisationUnitType = type => Object.values(ORG_UNIT_ENTITY_TYPES).includes(type);
-
-/**
- * @param {Object<string, any>} data
- * @returns {(string|undefined)}
- */
-export const getDhisIdFromEntityData = data => get(data, 'metadata.dhis.id');
 
 class EntityType extends DatabaseType {
   static databaseType = TYPES.ENTITY;
@@ -72,8 +67,16 @@ class EntityType extends DatabaseType {
     return this.otherModels.country.findOne({ code: this.country_code });
   }
 
+  isFacility() {
+    return this.type === FACILITY;
+  }
+
+  isWorld() {
+    return this.type === WORLD;
+  }
+
   isOrganisationUnit() {
-    return isOrganisationUnitType(this.type);
+    return Object.values(ORG_UNIT_ENTITY_TYPES).includes(this.type);
   }
 
   isTrackedEntity() {
@@ -81,11 +84,17 @@ class EntityType extends DatabaseType {
   }
 
   getDhisId() {
-    return getDhisIdFromEntityData(this);
+    return this.metadata && this.metadata.dhis && this.metadata.dhis.id;
   }
 
   async setDhisId(dhisId) {
-    set(this, 'metadata.dhis.id', dhisId);
+    if (!this.metadata) {
+      this.metadata = {};
+    }
+    if (!this.metadata.dhis) {
+      this.metadata.dhis = {};
+    }
+    this.metadata.dhis.id = dhisId;
     return this.save();
   }
 
@@ -94,16 +103,12 @@ class EntityType extends DatabaseType {
   }
 
   async fetchParent() {
-    return this.otherModels.entity.findById(this.parent_id);
+    return this.model.findById(this.parent_id);
   }
 
   async hasCountryParent() {
     const parent = await this.fetchParent();
     return parent.type === COUNTRY;
-  }
-
-  async country() {
-    return this.otherModels.country.findOne({ code: this.country_code });
   }
 
   /**
@@ -133,6 +138,10 @@ export class EntityModel extends DatabaseModel {
   }
 
   orgUnitEntityTypes = ORG_UNIT_ENTITY_TYPES;
+
+  types = ENTITY_TYPES;
+
+  isOrganisationUnitType = type => Object.values(ORG_UNIT_ENTITY_TYPES).includes(type);
 
   async updatePointCoordinates(code, { longitude, latitude }) {
     const point = JSON.stringify({ coordinates: [longitude, latitude], type: 'Point' });
