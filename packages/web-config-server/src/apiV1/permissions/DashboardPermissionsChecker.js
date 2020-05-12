@@ -25,7 +25,7 @@ export class DashboardPermissionsChecker extends PermissionsChecker {
   async checkPermissions() {
     // run standard permission checks against entity
     await super.checkPermissions();
-
+    const { dashboardGroupId } = this.query;
     const dashboardGroup = await this.fetchAndCacheDashboardGroup();
     if (!dashboardGroup) {
       throw new PermissionsError(`Dashboard group with the id ${dashboardGroupId} does not exist`);
@@ -40,7 +40,7 @@ export class DashboardPermissionsChecker extends PermissionsChecker {
     const hasEntityAccess = await this.checkHasEntityAccess(this.entity.code);
     if (!hasEntityAccess) {
       throw new PermissionsError(
-        `Dashboard group with the id ${dashboardGroupId} is not allowed for entith ${this.entity.code}`,
+        `Dashboard group with the id ${dashboardGroupId} is not allowed for entity ${this.entity.code}`,
       );
     }
     await this.matchReportToDashboard(dashboardGroup.dashboardReports);

@@ -85,8 +85,8 @@ export const addUserAccessHelper = (req, res, next) => {
   };
 
   req.getUserGroups = async entityCode => {
-    if (entityCode === 'World') {
-      return ['Public']; // At this stage, all users have Public access to the World dashboard
+    if (entityCode === 'World' || entityCode === 'explore') {
+      return ['Public']; // At this stage, all users have Public access to the World and explore dashboards
     }
     const userGroupAccessRights = await req.getUserGroupAccessRights(entityCode);
     return Object.keys(userGroupAccessRights).filter(

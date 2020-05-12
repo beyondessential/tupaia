@@ -40,9 +40,10 @@ const allCountryOrgUnitsCache = createCachedSelector([country => country], count
   Object.values(country),
 )(country => country && country.countryCode);
 
+// Bastien TODO: Fix root call to this with undefined country instead of checking here
 const orgUnitChildrenCache = createCachedSelector(
   [country => country, (_, code) => code],
-  (country, code) => Object.values(country).filter(orgUnit => orgUnit.parent === code),
+  (country, code) => country && Object.values(country).filter(orgUnit => orgUnit.parent === code),
 )((country, code) => code);
 
 const displayInfoCache = createCachedSelector(
