@@ -17,7 +17,7 @@ describe('/user', () => {
     lastName: 'User',
     password: 'password',
     passwordConfirm: 'password',
-    contactNumber: 900000000,
+    contactNumber: '900000000',
     employer: 'Test',
     position: 'Robot',
     deviceName: 'foobar',
