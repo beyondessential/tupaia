@@ -19,17 +19,14 @@ const DEFAULT_DATA_SERVICE = { isDataRegional: true };
 const DEFAULT_DATA_SERVICES = [DEFAULT_DATA_SERVICE];
 
 export class DhisService extends Service {
-  constructor(...args) {
-    super(...args);
+  constructor(models) {
+    super(models);
+
     this.pushers = this.getPushers();
     this.deleters = this.getDeleters();
     this.pullers = this.getPullers();
     this.metadataPullers = this.getMetadataPullers();
     this.translator = new DhisTranslator(this.models);
-  }
-
-  get dataSourceTypes() {
-    return this.models.dataSource.getTypes();
   }
 
   getPushers() {

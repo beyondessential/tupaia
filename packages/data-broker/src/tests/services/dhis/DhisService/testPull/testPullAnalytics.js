@@ -9,10 +9,10 @@ import sinon from 'sinon';
 import * as BuildAnalyticsFromEventAnalytics from '../../../../../services/dhis/buildAnalytics/buildAnalyticsFromDhisEventAnalytics';
 import { DhisService } from '../../../../../services/dhis/DhisService';
 import { DATA_SOURCES, EVENT_ANALYTICS } from '../DhisService.fixtures';
-import { buildDhisAnalyticsResponse, stubModels, stubDhisApi } from '../helpers';
+import { buildDhisAnalyticsResponse, createModelsStub, stubDhisApi } from '../DhisService.stubs';
 import { testPullAnalyticsFromEvents_Deprecated } from './testPullAnalyticsFromEvents_Deprecated';
 
-const dhisService = new DhisService(stubModels());
+const dhisService = new DhisService(createModelsStub());
 let dhisApi;
 
 export const testPullAnalytics = () => {
