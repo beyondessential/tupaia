@@ -64,8 +64,8 @@ export const createAssertErrorIsThrown = (table, availableDataValues) => {
 
   return async (tableConfig, expectedError) => {
     const dataBuilderConfig = { ...tableConfig, dataServices };
-    return expect(
-      table({ dataBuilderConfig, query }, aggregator, dhisApi),
-    ).to.eventually.be.rejectedWith(expectedError);
+    return expect(table({ dataBuilderConfig, query }, aggregator, dhisApi)).to.be.rejectedWith(
+      expectedError,
+    );
   };
 };

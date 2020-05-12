@@ -58,7 +58,6 @@ export class ChartWrapper extends PureComponent {
     if (!chartConfig) {
       return viewContent;
     }
-
     return {
       ...viewContent,
       chartConfig: sortChartConfigByLegendOrder(addDefaultsColorsToConfig(chartType, chartConfig)),
@@ -72,8 +71,8 @@ export class ChartWrapper extends PureComponent {
     if (!Object.values(CHART_TYPES).includes(chartType)) {
       return <UnknownChart />;
     }
-
     const Chart = chartType === CHART_TYPES.PIE ? PieChart : CartesianChart;
+
     return (
       <div style={VIEW_STYLES.chartViewContainer}>
         <div style={VIEW_STYLES.chartContainer}>

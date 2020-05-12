@@ -45,7 +45,7 @@ describe('formatters', () => {
       it('should use the provided values to display a percentage calculation', () => {
         expect(
           formatDataValue(0.666666, FRACTION_AND_PERCENTAGE, { numerator: 2, denominator: 3 }),
-        ).toEqual('2/3=66.7%');
+        ).toEqual('2/3 = 66.7%');
       });
     });
   });

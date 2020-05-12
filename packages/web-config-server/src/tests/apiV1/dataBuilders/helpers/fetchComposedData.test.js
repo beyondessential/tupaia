@@ -58,9 +58,7 @@ describe('fetchComposedData()', () => {
   });
 
   it('should throw an error if no data builders are provided', () =>
-    expect(fetchComposedData({ dataBuilderConfig: {} })).to.eventually.be.rejectedWith(
-      'Data builders',
-    ));
+    expect(fetchComposedData({ dataBuilderConfig: {} })).to.be.rejectedWith('Data builders'));
 
   it('should invoke the specified data builders with the expected arguments', async () => {
     await callFetchComposedData();
