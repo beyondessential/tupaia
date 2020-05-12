@@ -4,12 +4,16 @@
  */
 
 import { DhisService } from './dhis';
-
-export const TYPE_TO_SERVICE = {
-  dhis: DhisService,
-};
+import { TupaiaDataService } from './tupaia';
+import { TupaiaDataApi } from './tupaia';
 
 export const createService = (models, type) => {
-  const ServiceClass = TYPE_TO_SERVICE[type];
-  return new ServiceClass(models);
+  switch (type) {
+    case 'dhis':
+      return new DhisService(models);
+    case 'tupaia':
+      return new TupaiaDataService(models, new TupaiaDataApi(models));
+    default:
+      throw new Error(`Invalid service type: ${type}`);
+  }
 };
