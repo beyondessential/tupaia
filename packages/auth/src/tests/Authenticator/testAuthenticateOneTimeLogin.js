@@ -5,9 +5,14 @@
 
 import { expect } from 'chai';
 
-export const testAuthenticateOneTimeLogin = constructAuthenticator => () => {
+import { Authenticator } from '../../Authenticator';
+import { models, AccessPolicyBuilderStub } from './Authenticator.stubs';
+import { verifiedUser, refreshToken, accessPolicy } from './Authenticator.fixtures';
+
+export const testAuthenticateOneTimeLogin = () => {
+  const authenticator = new Authenticator(models, AccessPolicyBuilderStub);
+
   it('throws an error with invalid arguments', async () => {
-    const authenticator = constructAuthenticator();
     expect(() => authenticator.authenticateOneTimeLogin()).to.throw;
     const assertThrowsWithArg = arg =>
       expect(authenticator.authenticateOneTimeLogin(arg)).to.be.rejectedWith('token not provided');
@@ -18,16 +23,22 @@ export const testAuthenticateOneTimeLogin = constructAuthenticator => () => {
   });
 
   it('throws an error with an invalid one time login token', async () => {
-    const authenticator = constructAuthenticator();
     return expect(
       authenticator.authenticateOneTimeLogin({ token: 'invalidToken', deviceName: 'validDevice' }),
-    ).to.be.rejected;
+    ).to.be.rejectedWith('Error thrown by stub');
   });
 
   it('should respond correctly with a valid one time login token', async () => {
-    const authenticator = constructAuthenticator();
-    return expect(
+    await expect(
       authenticator.authenticateOneTimeLogin({ token: 'validToken', deviceName: 'validDevice' }),
-    ).to.be.fulfilled;
+    ).to.eventually.deep.equal({
+      user: verifiedUser,
+      refreshToken,
+      accessPolicy,
+    });
+    expect(models.refreshToken.updateOrCreate).to.have.been.calledOnceWithExactly(
+      { device: 'validDevice', user_id: verifiedUser.id },
+      { token: refreshToken, meditrak_device_id: null },
+    );
   });
 };

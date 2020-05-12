@@ -5,16 +5,13 @@
 import sinon from 'sinon';
 import randomToken from 'rand-token';
 
-import { Authenticator } from '../../Authenticator';
-import { models, AccessPolicyBuilderStub, getPolicyForUserStub } from './Authenticator.stubs';
+import { getPolicyForUserStub, models } from './Authenticator.stubs';
 import { refreshToken } from './Authenticator.fixtures';
 import { testAuthenticatePassword } from './testAuthenticatePassword';
 import { testAuthenticateOneTimeLogin } from './testAuthenticateOneTimeLogin';
 import { testAuthenticateRefreshToken } from './testAuthenticateRefreshToken';
 
 describe('Authenticator', () => {
-  const constructAuthenticator = () => new Authenticator(models, AccessPolicyBuilderStub);
-
   before(() => {
     sinon.stub(randomToken, 'generate').returns(refreshToken);
   });
@@ -25,9 +22,11 @@ describe('Authenticator', () => {
 
   afterEach(() => {
     getPolicyForUserStub.resetHistory();
+    models.meditrakDevice.updateOrCreate.resetHistory();
+    models.refreshToken.updateOrCreate.resetHistory();
   });
 
-  describe('authenticatePassword', testAuthenticatePassword(constructAuthenticator));
-  describe('authenticateRefreshToken', testAuthenticateRefreshToken(constructAuthenticator));
-  describe('authenticateOneTimeLogin', testAuthenticateOneTimeLogin(constructAuthenticator));
+  describe('authenticatePassword', testAuthenticatePassword);
+  describe('authenticateRefreshToken', testAuthenticateRefreshToken);
+  describe('authenticateOneTimeLogin', testAuthenticateOneTimeLogin);
 });

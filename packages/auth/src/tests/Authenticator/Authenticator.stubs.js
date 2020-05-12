@@ -46,24 +46,28 @@ const findRefreshTokenStub = ({ token }) => {
   }
 };
 
-const createUpsertStub = () =>
-  sinon.stub().callsFake(async (criteria, upsertedFields) => ({ ...criteria, ...upsertedFields }));
+const createUpsertStub = idField =>
+  sinon.stub().callsFake(async (criteria, upsertedFields) => ({
+    ...criteria,
+    ...upsertedFields,
+    id: upsertedFields[idField],
+  }));
 export const models = {
   user: {
     findOne: findUserStub,
     findById: () => verifiedUser,
   },
   refreshToken: {
-    updateOrCreate: createUpsertStub(),
+    updateOrCreate: createUpsertStub('token'),
     findOne: findRefreshTokenStub,
   },
   meditrakDevice: {
-    updateOrCreate: createUpsertStub(),
+    updateOrCreate: createUpsertStub('app_version'),
   },
   oneTimeLogin: {
     findValidOneTimeLoginOrFail: token => {
       if (token !== 'validToken') {
-        throw new Error();
+        throw new Error('Error thrown by stub');
       }
       return { save: () => {} };
     },

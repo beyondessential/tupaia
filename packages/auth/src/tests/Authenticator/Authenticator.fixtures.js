@@ -3,8 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import Case from 'case';
-
 export const accessPolicy = { DL: ['Public'] };
 export const refreshToken = 'refreshToken';
 
@@ -44,13 +42,11 @@ export const MEDITRAK_DEVICE_DETAILS = {
   },
 };
 
-const getDbRecordFromDetails = meditrakDeviceDetails => {
-  const dbRecord = {};
-  Object.entries(meditrakDeviceDetails).forEach(([key, value]) => {
-    dbRecord[Case.snake(key)] = value;
-  });
-  return dbRecord;
-};
+const getDbRecordFromDetails = ({ installId, platform, appVersion }) => ({
+  install_id: installId,
+  platform,
+  app_version: appVersion,
+});
 export const MEDITRAK_DEVICE_BY_REFRESH_TOKEN = {
   modern: getDbRecordFromDetails(MEDITRAK_DEVICE_DETAILS.modern),
   ultraModern: getDbRecordFromDetails(MEDITRAK_DEVICE_DETAILS.ultraModern),

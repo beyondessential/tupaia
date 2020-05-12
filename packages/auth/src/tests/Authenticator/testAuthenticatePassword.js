@@ -4,19 +4,20 @@
  */
 
 import { expect } from 'chai';
-import sinon from 'sinon';
 
+import { Authenticator } from '../../Authenticator';
+import { models, AccessPolicyBuilderStub, getPolicyForUserStub } from './Authenticator.stubs';
 import {
   accessPolicy,
   MEDITRAK_DEVICE_DETAILS,
   verifiedUser,
   refreshToken,
 } from './Authenticator.fixtures';
-import { getPolicyForUserStub } from './Authenticator.stubs';
 
-export const testAuthenticatePassword = constructAuthenticator => () => {
+export const testAuthenticatePassword = () => {
+  const authenticator = new Authenticator(models, AccessPolicyBuilderStub);
+
   it('throws an error with invalid arguments', async () => {
-    const authenticator = constructAuthenticator();
     expect(() => authenticator.authenticatePassword()).to.throw;
     const assertThrowsWithArg = async arg =>
       expect(authenticator.authenticatePassword(arg)).to.be.rejectedWith(
@@ -38,7 +39,6 @@ export const testAuthenticatePassword = constructAuthenticator => () => {
   });
 
   it('throws an error when the credentials are invalid', async () => {
-    const authenticator = constructAuthenticator();
     const assertThrowsWithArg = (arg, errorMessage) =>
       expect(authenticator.authenticatePassword(arg)).to.be.rejectedWith(errorMessage);
     await assertThrowsWithArg(
@@ -68,8 +68,6 @@ export const testAuthenticatePassword = constructAuthenticator => () => {
   });
 
   it('should succeed when the credentials are correct', async () => {
-    const authenticator = constructAuthenticator();
-
     return expect(
       authenticator.authenticatePassword({
         emailAddress: 'verified@test.com',
@@ -80,7 +78,6 @@ export const testAuthenticatePassword = constructAuthenticator => () => {
   });
 
   it('should respond with the expected values when the credentials are correct', async () => {
-    const authenticator = constructAuthenticator();
     await expect(
       authenticator.authenticatePassword({
         emailAddress: 'verified@test.com',
@@ -93,12 +90,18 @@ export const testAuthenticatePassword = constructAuthenticator => () => {
       user: verifiedUser,
     });
     expect(getPolicyForUserStub).to.have.been.calledOnceWithExactly(verifiedUser.id);
+    expect(models.refreshToken.updateOrCreate).to.have.been.calledOnceWithExactly(
+      { device: 'validDevice', user_id: verifiedUser.id },
+      { token: refreshToken, meditrak_device_id: null },
+    );
   });
 
   it('should build the correct access policy for the meditrak device', async () => {
-    const authenticator = constructAuthenticator();
     const assertCorrectAccessPolicyWasBuilt = async (meditrakDeviceDetails, useLegacyFormat) => {
-      getPolicyForUserStub.resetHistory(); // ensure history is reset between tests
+      // ensure history is reset between tests
+      getPolicyForUserStub.resetHistory();
+      models.meditrakDevice.updateOrCreate.resetHistory();
+      models.refreshToken.updateOrCreate.resetHistory();
       await expect(
         authenticator.authenticatePassword(
           {
@@ -116,6 +119,26 @@ export const testAuthenticatePassword = constructAuthenticator => () => {
       expect(getPolicyForUserStub).to.have.been.calledOnceWithExactly(
         verifiedUser.id,
         useLegacyFormat,
+      );
+      expect(models.meditrakDevice.updateOrCreate).to.have.been.calledOnceWithExactly(
+        {
+          install_id: meditrakDeviceDetails.installId,
+        },
+        {
+          user_id: verifiedUser.id,
+          app_version: meditrakDeviceDetails.appVersion,
+          platform: meditrakDeviceDetails.platform,
+        },
+      );
+      expect(models.refreshToken.updateOrCreate).to.have.been.calledOnceWithExactly(
+        {
+          device: 'validDevice',
+          user_id: verifiedUser.id,
+        },
+        {
+          token: refreshToken,
+          meditrak_device_id: meditrakDeviceDetails.appVersion,
+        },
       );
     };
     // modern

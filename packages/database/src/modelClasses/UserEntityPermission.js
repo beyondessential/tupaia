@@ -48,7 +48,7 @@ export class UserEntityPermissionModel extends DatabaseModel {
     return UserEntityPermissionType;
   }
 
-  // used by @tupaia/auth to build legacy access policy for meditrak app pre 1.8.107
+  // used by @tupaia/auth to build legacy access policy for meditrak app v1.7.106 and below
   async fetchCountryPermissionGroups(userId) {
     return this.database.executeSql(
       `

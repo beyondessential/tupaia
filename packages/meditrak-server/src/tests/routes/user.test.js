@@ -47,7 +47,7 @@ describe('/user', () => {
     it('should have created the user', async () => {
       const user = await models.user.findById(userId);
       expect(user).to.exist;
-      expect(user.getData()).to.eventually.include({
+      return expect(user.getData()).to.eventually.include({
         first_name: dummyFields.firstName,
         last_name: dummyFields.lastName,
         employer: dummyFields.employer,
