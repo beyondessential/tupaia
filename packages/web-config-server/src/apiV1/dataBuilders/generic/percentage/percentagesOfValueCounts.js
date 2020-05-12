@@ -13,11 +13,13 @@ const COMPARISON_TYPES = {
 };
 const OPERATION_TYPES = {
   GT: (leftOperand, rightOperand) => leftOperand > rightOperand,
+  EQ: (leftOperand, rightOperand) => leftOperand == rightOperand,
+  IN: (leftOperand, rightOperand) => rightOperand.includes(leftOperand),
 };
 
 export class PercentagesOfValueCountsBuilder extends DataBuilder {
   getDataElementCodes() {
-    return Object.values(this.config.dataClasses).reduce(
+    const dataElementCodes = Object.values(this.config.dataClasses).reduce(
       (codes, { numerator, denominator }) =>
         codes.concat(
           flatten(numerator.dataValues),
@@ -25,6 +27,9 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
         ),
       [],
     );
+
+    //Remove duplicated data element codes if there's any
+    return [...new Set(dataElementCodes)];
   }
 
   async build() {
@@ -43,8 +48,8 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
   buildData(analytics) {
     const dataClasses = [];
     Object.entries(this.config.dataClasses).forEach(([name, dataClass]) => {
-      const numerator = this.calculateFraction(dataClass.numerator, analytics);
-      const denominator = this.calculateFraction(dataClass.denominator, analytics);
+      const numerator = this.calculateFractionPart(dataClass.numerator, analytics);
+      const denominator = this.calculateFractionPart(dataClass.denominator, analytics);
 
       const data = {
         value: divideValues(numerator, denominator),
@@ -61,30 +66,25 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
     return dataClasses;
   }
 
-  calculateFraction = (fraction, analytics) => {
+  calculateFractionPart = (fraction, analytics) => {
     if (fraction.compare || fraction.operation) {
-      // Is straight forward to add support for just counting non-grouped analytics, but is not currently a requirement.
-      if (!fraction.groupBy) {
-        throw new Error('percentagesOfValueCounts missing config field: groupBy');
-      }
+      const filterAnalyticsFunction = this.buildFilterAnalyticsFunction(fraction);
 
-      const calculator = this.buildCalculator(fraction);
-
-      if (!calculator) {
-        throw new Error('Could not create cacluation from percentagesOfValueCounts config');
+      if (!filterAnalyticsFunction) {
+        throw new Error(
+          'Could not create filterAnalyticsFunction from percentagesOfValueCounts config',
+        );
       }
 
       const filteredAnalytics = analytics.filter(analytic =>
         flatten(fraction.dataValues).includes(analytic.dataElement),
       );
-      const groupedAnalytics = groupBy(filteredAnalytics, fraction.groupBy);
 
-      let result = 0;
-      Object.values(groupedAnalytics).forEach(analytic => {
-        if (calculator(analytic)) result += 1;
-      });
-
-      return result;
+      return this.countAnalyticsUsingFilterFunction(
+        filteredAnalytics,
+        filterAnalyticsFunction,
+        fraction.groupBy,
+      );
     } else if (fraction === ORG_UNIT_COUNT) {
       return [...new Set(analytics.map(data => data.organisationUnit))].length;
     }
@@ -92,7 +92,27 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
     return countAnalyticsThatSatisfyConditions(analytics, fraction);
   };
 
-  buildCalculator(fraction) {
+  countAnalyticsUsingFilterFunction = (analytics, filterAnalyticsFunction, fractionGroupBy) => {
+    let result = 0;
+
+    //If there's groupBy set for analytics, try group the analytics before applying filterAnalyticsFunction.
+    //If not, apply filterAnalyticsFunction to the raw analytics.
+    if (fractionGroupBy) {
+      const groupedAnalytics = groupBy(analytics, fractionGroupBy);
+
+      Object.values(groupedAnalytics).forEach(analytic => {
+        if (filterAnalyticsFunction(analytic)) result += 1;
+      });
+    } else {
+      analytics.forEach(analytic => {
+        if (filterAnalyticsFunction(analytic)) result += 1;
+      });
+    }
+
+    return result;
+  };
+
+  buildFilterAnalyticsFunction(fraction) {
     if (fraction.compare === COMPARISON_TYPES.COUNT) {
       if (fraction.dataValues.length !== 2) {
         throw new Error(
@@ -120,11 +140,18 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
     }
 
     if (fraction.operation) {
-      return results => {
-        return results.every(r => {
-          return OPERATION_TYPES[fraction.operation](r.value, fraction.operand);
-        });
-      };
+      if (fraction.groupBy) {
+        return results => {
+          return results.every(r => {
+            return OPERATION_TYPES[fraction.operation](r.value, fraction.operand);
+          });
+        };
+      }
+
+      return result => {
+          return OPERATION_TYPES[fraction.operation](result.value, fraction.operand);
+      }
+      
     }
   }
 }

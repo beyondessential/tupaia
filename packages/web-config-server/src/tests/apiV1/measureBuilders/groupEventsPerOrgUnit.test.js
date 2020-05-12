@@ -146,6 +146,6 @@ describe('groupEventsPerOrgUnit', () => {
     };
     return expect(
       groupEventsPerOrgUnit(createAggregator(), {}, query, newConfig, entity),
-    ).to.eventually.be.rejectedWith('No function defined for operator: no-op');
+    ).to.be.rejectedWith('No function defined for operator: no-op');
   });
 });

@@ -96,9 +96,12 @@ export function getDefaultDates(state, infoViewKey) {
   const isSingleDate = GRANULARITIES_WITH_ONE_DATE.includes(periodGranularity);
   let startDate = moment();
   let endDate = startDate;
-  if (defaultTimePeriod && defaultTimePeriod.format === 'days') {
+  if (
+    defaultTimePeriod &&
+    (defaultTimePeriod.format === 'days' || defaultTimePeriod.format === 'years')
+  ) {
     if (isSingleDate) {
-      startDate = moment().add(defaultTimePeriod.value, 'days');
+      startDate = moment().add(defaultTimePeriod.value, defaultTimePeriod.format);
       endDate = startDate;
     }
   }

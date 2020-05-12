@@ -27,7 +27,8 @@ class TableOfValuesForOrgUnitsBuilder extends TableOfDataValuesBuilder {
     }, {});
   }
 
-  buildRows(columns) {
+  buildRows(columnsRaw) {
+    const columns = this.flattenColumnCategories(columnsRaw);
     const { stripFromDataElementNames, filterEmptyRows } = this.config;
     const rowData = { ...this.baseRows };
     this.results.forEach(({ value, organisationUnit, metadata }) => {

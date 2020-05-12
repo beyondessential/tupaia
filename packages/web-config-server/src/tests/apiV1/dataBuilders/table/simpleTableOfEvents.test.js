@@ -72,6 +72,7 @@ fetchAnalytics
   .withArgs(['WHOSPAR'], { dataServices, programCodes: ['WSRS'] }, query, {
     aggregationType: 'FINAL_EACH_YEAR',
     aggregationConfig: {},
+    filter: {},
   })
   .returns(analytics);
 

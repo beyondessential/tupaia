@@ -6,10 +6,13 @@
 import {
   ObjectValidator,
   hasContent,
+  constructIsEmptyOr,
   constructIsOneOf,
   constructThisOrThatHasContent,
+  isPlainObject,
 } from '../../validation';
 import { ENTITY_TYPES } from '../../database';
+
 const ENTITY_FIELD_VALIDATORS = {
   parent_code: [constructThisOrThatHasContent('district')],
   district: [constructThisOrThatHasContent('parent_code')],
@@ -23,6 +26,7 @@ const ENTITY_FIELD_VALIDATORS = {
       checkIsOneOf(cellValue);
     },
   ],
+  attributes: [constructIsEmptyOr(isPlainObject)],
 };
 
 const SPECIFIC_ENTITY_TYPE_VALIDATORS = {
