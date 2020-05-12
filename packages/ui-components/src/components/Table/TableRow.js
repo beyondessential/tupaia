@@ -25,7 +25,7 @@ export const TableCell = styled(MuiTableCell)`
 
 const TableRowCells = React.memo(({ columns, rowData }) =>
   columns.map(({ key, accessor, CellComponent, width = null, align = 'center', cellColor }) => {
-    const value = accessor ? React.createElement(accessor, rowData) : rowData[key];
+    const value = accessor ? accessor(rowData) : rowData[key];
     const displayValue = value === 0 ? '0' : value;
     const backgroundColor = typeof cellColor === 'function' ? cellColor(rowData) : cellColor;
     return (
@@ -55,12 +55,12 @@ const NestedTableWrapperCell = styled.td`
   }
 `;
 
-export const StyledTable = styled(MuiTable)`
+const StyledTable = styled(MuiTable)`
   border-collapse: unset;
   table-layout: fixed;
 `;
 
-const NestedTable = React.memo(({ parentData, children, columns }) => (
+const RowExpansionContainer = React.memo(({ parentData, children, columns }) => (
   <MuiTableRow>
     <NestedTableWrapperCell colSpan={columns.length}>
       <StyledTable>
@@ -71,13 +71,13 @@ const NestedTable = React.memo(({ parentData, children, columns }) => (
   </MuiTableRow>
 ));
 
-NestedTable.propTypes = {
+RowExpansionContainer.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
   parentData: PropTypes.any.isRequired,
   children: PropTypes.any,
 };
 
-NestedTable.defaultProps = {
+RowExpansionContainer.defaultProps = {
   children: PropTypes.null,
 };
 
@@ -142,9 +142,9 @@ export const ExpandableTableRow = React.memo(({ columns, rowData, SubComponent }
 
   if (SubComponent && expanded) {
     return (
-      <NestedTable parentData={row} columns={columns}>
+      <RowExpansionContainer parentData={row} columns={columns}>
         <SubComponent rowData={rowData} />
-      </NestedTable>
+      </RowExpansionContainer>
     );
   }
 
