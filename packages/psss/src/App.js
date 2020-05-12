@@ -1,12 +1,13 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { NavBar, Footer } from './components';
+import { NavBar, Footer, ExampleWithRedux } from './components';
 import { PageRoutes } from './routes/PageRoutes';
 import { LoginView } from './views/LoginView';
 import { PrivateRoute } from './routes/PrivateRoute';
 
 const App = () => (
   <Router>
+    <ExampleWithRedux />
     <Switch>
       <Route path="/login">
         <LoginView />
@@ -19,5 +20,6 @@ const App = () => (
     </Switch>
   </Router>
 );
+
 
 export default App;
