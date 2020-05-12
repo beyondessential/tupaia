@@ -22,7 +22,7 @@ const testConfig = {
   metric1: { stackId: 1 },
   metric2: { stackId: 2 },
 };
-describe.only('parseChartConfig', () => {
+describe('parseChartConfig', () => {
   it('should add correct colors based on default color palette', () => {
     expect(parseChartConfig({ ...testViewJson, chartConfig: testConfig })).toEqual({
       metric1: { stackId: 1, color: CHART_COLOR_PALETTE.blue },
@@ -54,9 +54,8 @@ describe.only('parseChartConfig', () => {
     };
     expect(parseChartConfig({ ...testViewJson, chartConfig })).toEqual(expected);
   });
-  it('should use an expanded palette when specified', () => {
+  it('should use a specified palette', () => {
     const chartConfig = {
-      $colorPalette: 'EXPANDED_CHART_COLOR_PALETTE',
       metric1: { stackId: 1 },
       metric2: { stackId: 2 },
     };
@@ -64,6 +63,12 @@ describe.only('parseChartConfig', () => {
       metric1: { stackId: 1, color: EXPANDED_CHART_COLOR_PALETTE.maroon },
       metric2: { stackId: 2, color: EXPANDED_CHART_COLOR_PALETTE.red },
     };
-    expect(parseChartConfig({ ...testViewJson, chartConfig })).toEqual(expected);
+    expect(
+      parseChartConfig({
+        ...testViewJson,
+        chartConfig,
+        colorPalette: 'EXPANDED_CHART_COLOR_PALETTE',
+      }),
+    ).toEqual(expected);
   });
 });
