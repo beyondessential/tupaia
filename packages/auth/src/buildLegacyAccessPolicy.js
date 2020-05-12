@@ -8,9 +8,7 @@
 /**
  * Builds a user's country level permissions in the legacy access policy format (see example at
  * bottom of this file), but without any geographical area or facility permissions (these were never
- * actually used), and without the 'reports' section of the tree (as we can update web-config-server
- * at the same time as we update the access-policy structure, so only need legacy support for
- * meditrak-app)
+ * actually used)
  */
 export const buildLegacyAccessPolicy = async (models, userId) => {
   const permissionGroupSets = await getPermissionGroupSets(models);
