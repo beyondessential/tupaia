@@ -7,12 +7,13 @@ import { expect } from 'chai';
 import { it, describe } from 'mocha';
 import sinon from 'sinon';
 
-import { DISTRICT_INDEX } from '/apiV1/utils/getLevelIndex';
 import { mostRecentValueFromChildren } from '/apiV1/measureBuilders/mostRecentValueFromChildren';
+
+const DISTRICT_INDEX = 3;
 
 const dataElementCode = 'POP01';
 const dataServices = [{ isDataRegional: true }];
-const aggregationEntityType = 'region';
+const aggregationEntityType = 'district';
 
 const entityCode = 'TO';
 const organisationUnitsResults = [

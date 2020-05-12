@@ -39,6 +39,8 @@ const chartColorAtIndex = (colorArray, index) => {
 };
 
 export class PieChart extends PureComponent {
+  // Disable tapping charts to reveal legend labels on mobile as they do not fit and are awkwardly cropped
+
   constructor(props) {
     super(props);
     this.state = {
@@ -72,12 +74,27 @@ export class PieChart extends PureComponent {
           ...VIEW_STYLES.legend,
         },
       };
-    } else {
-      return {
-        wrapperStyle: VIEW_STYLES.legend,
-      };
     }
+    return {
+      wrapperStyle: VIEW_STYLES.legend,
+    };
   }
+
+  handleMouseEnter = (object, index) => {
+    if (!isMobile()) {
+      this.setState({
+        activeIndex: index,
+      });
+    }
+  };
+
+  handleMouseOut = (object, index) => {
+    if (!isMobile()) {
+      this.setState({
+        activeIndex: -1,
+      });
+    }
+  };
 
   getValidData = () => {
     const { data, valueType } = this.props.viewContent;
@@ -105,23 +122,6 @@ export class PieChart extends PureComponent {
     const { presentationOptions } = this.props.viewContent;
     return presentationOptions && presentationOptions[key] && presentationOptions[key][option];
   };
-
-  // Disable tapping charts to reveal legend labels on mobile as they do not fit and are awkwardly cropped
-  handleMouseEnter = isMobile()
-    ? null
-    : (object, index) => {
-        this.setState({
-          activeIndex: index,
-        });
-      };
-
-  handleMouseOut = isMobile()
-    ? null
-    : (object, index) => {
-        this.setState({
-          activeIndex: -1,
-        });
-      };
 
   renderActiveShape = props => {
     const { valueType, labelType } = this.props.viewContent;
@@ -248,7 +248,6 @@ export class PieChart extends PureComponent {
               const fill =
                 this.getPresentationOption(entry.originalItem.name, 'color') ||
                 chartColorAtIndex(chartColors, index);
-
               return <Cell key={`cell-${index}`} fill={fill} stroke={OFF_WHITE} />;
             })}
           </Pie>

@@ -14,16 +14,16 @@ const sumPerMetric = async ({ dataBuilderConfig, query }, aggregator, dhisApi, a
     labels = {},
     specialCases = {},
     dataElementsToSum,
-    measureCriteria,
+    filter = {},
     dataServices,
   } = dataBuilderConfig;
 
   const dataElementCodes = await getDataElementCodes(dataBuilderConfig, dhisApi);
-  const { results, metadata } = await aggregator.fetchAnalytics(
+  const { results, metadata, period } = await aggregator.fetchAnalytics(
     dataElementCodes,
     { dataServices },
     query,
-    { aggregationType, measureCriteria },
+    { aggregationType, filter },
   );
 
   // Don't process results into valid data for front-end if there are none.
@@ -51,7 +51,7 @@ const sumPerMetric = async ({ dataBuilderConfig, query }, aggregator, dhisApi, a
 
     return returnData[name];
   };
-  
+
   const dataElementsWithData = [];
   results
     .map(({ dataElement: dataElementCode, ...result }) => {
@@ -91,19 +91,21 @@ const sumPerMetric = async ({ dataBuilderConfig, query }, aggregator, dhisApi, a
       data.unshift(sumResults(data));
     }
   }
-  dataBuilderConfig.dataElementCodes.forEach(dataElementCode => {
-    const name = labels[dataElementCode] || dataElementCodeToName[dataElementCode];
-    if(!dataElementsWithData.includes(dataElementCode)){
-      data.push({
-        name,
-        dataElementCode,
-        value: NO_DATA_AVAILABLE,
-      });
-    }
-  });
 
+  if (dataBuilderConfig.dataElementCodes) {
+    dataBuilderConfig.dataElementCodes.forEach(dataElementCode => {
+      const name = labels[dataElementCode] || dataElementCodeToName[dataElementCode];
+      if (!dataElementsWithData.includes(dataElementCode)) {
+        data.push({
+          name,
+          dataElementCode,
+          value: NO_DATA_AVAILABLE,
+        });
+      }
+    });
+  }
 
-  return { data };
+  return { data, period };
 };
 
 export const sumLatestPerMetric = async (queryConfig, aggregator, dhisApi) =>

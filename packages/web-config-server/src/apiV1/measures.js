@@ -52,7 +52,7 @@ const translateOverlaysForResponse = mapOverlays => {
         groupedOverlays[groupName] = [];
       }
 
-      const idString = [id, ...(linkedMeasures || [])].join(',');
+      const idString = [id, ...(linkedMeasures || [])].sort().join(',');
 
       groupedOverlays[groupName].push({
         measureId: idString,

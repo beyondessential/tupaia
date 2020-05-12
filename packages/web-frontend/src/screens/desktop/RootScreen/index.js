@@ -12,7 +12,7 @@
  * of Dashboard and MapDiv based on expanded state of Dashboard (through redux store)
  */
 
-import React, { PureComponent } from 'react';
+import React from 'react';
 import Map from '../../../containers/Map';
 import { MapDiv } from '../../../components/MapDiv';
 import TopBar from '../../../containers/TopBar';
@@ -25,27 +25,25 @@ import { OverlayContainer } from '../../../utils';
 import { TOP_BAR_HEIGHT } from '../../../styles';
 import './desktop-styles.css';
 
-export class RootScreen extends PureComponent {
-  render() {
-    return (
-      <div>
-        {/* The order here matters, Map must be added to the DOM body after FlexContainer */}
-        <OverlayContainer>
-          <TopBar />
-          <div style={styles.contentWrapper}>
-            <MapDiv />
-            <SidePanel />
-          </div>
-          <OverlayDiv />
-          <SessionExpiredDialog />
-          <EnlargedDialog />
-          <ExportDialog />
-        </OverlayContainer>
-        <Map />
-      </div>
-    );
-  }
-}
+export const RootScreen = () => {
+  return (
+    <div>
+      {/* The order here matters, Map must be added to the DOM body after FlexContainer */}
+      <OverlayContainer>
+        <TopBar />
+        <div style={styles.contentWrapper}>
+          <MapDiv />
+          <SidePanel />
+        </div>
+        <OverlayDiv />
+        <SessionExpiredDialog />
+        <EnlargedDialog />
+        <ExportDialog />
+      </OverlayContainer>
+      <Map />
+    </div>
+  );
+};
 
 const styles = {
   contentWrapper: {

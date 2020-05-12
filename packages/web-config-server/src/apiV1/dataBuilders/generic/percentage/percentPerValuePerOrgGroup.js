@@ -18,7 +18,7 @@ export const percentPerValuePerOrgGroup = async (
   const {
     dataElementGroupCode,
     dataServices,
-    organisationUnitLevel,
+    organisationUnitType,
     range,
     valuesOfInterest,
   } = dataBuilderConfig;
@@ -27,7 +27,7 @@ export const percentPerValuePerOrgGroup = async (
   const organisationUnits = await getChildOrganisationUnits(
     {
       organisationUnitGroupCode: organisationUnitCode,
-      level: organisationUnitLevel,
+      type: organisationUnitType,
     },
     dhisApi,
   );

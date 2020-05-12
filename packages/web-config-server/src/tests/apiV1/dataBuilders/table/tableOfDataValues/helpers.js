@@ -8,11 +8,15 @@ import pickBy from 'lodash.pickby';
 import sinon from 'sinon';
 
 import { Aggregator } from '/aggregator';
-import { tableOfDataValues } from '/apiV1/dataBuilders';
 import { DATA_ELEMENTS } from './tableOfDataValues.fixtures';
 
 const query = { organisationUnitCode: 'TO' };
 const dataServices = [{ isDataRegional: false }];
+const period = {
+  requested: '202001;202002;202003;202004',
+  earliestAvailable: '20200105',
+  latestAvailable: '20200406',
+};
 
 const createAggregatorStub = dataValues => {
   const fetchAnalytics = sinon.stub();
@@ -23,6 +27,7 @@ const createAggregatorStub = dataValues => {
       results: Object.values(dataValues).filter(({ dataElement }) =>
         dataElementCodes.includes(dataElement),
       ),
+      period,
     }));
 
   const fetchDataElements = sinon.stub();
@@ -41,26 +46,26 @@ const createAggregatorStub = dataValues => {
   return sinon.createStubInstance(Aggregator, { fetchAnalytics, fetchDataElements });
 };
 
-export const createAssertTableResults = availableDataValues => {
+export const createAssertTableResults = (table, availableDataValues) => {
   const aggregator = createAggregatorStub(availableDataValues);
   const dhisApi = {};
 
   return async (tableConfig, expectedResults) => {
     const dataBuilderConfig = { ...tableConfig, dataServices };
     return expect(
-      tableOfDataValues({ dataBuilderConfig, query }, aggregator, dhisApi),
-    ).to.eventually.deep.equal(expectedResults);
+      table({ dataBuilderConfig, query }, aggregator, dhisApi),
+    ).to.eventually.deep.equal({ period, ...expectedResults });
   };
 };
 
-export const createAssertErrorIsThrown = availableDataValues => {
+export const createAssertErrorIsThrown = (table, availableDataValues) => {
   const aggregator = createAggregatorStub(availableDataValues);
   const dhisApi = {};
 
   return async (tableConfig, expectedError) => {
     const dataBuilderConfig = { ...tableConfig, dataServices };
-    return expect(
-      tableOfDataValues({ dataBuilderConfig, query }, aggregator, dhisApi),
-    ).to.eventually.be.rejectedWith(expectedError);
+    return expect(table({ dataBuilderConfig, query }, aggregator, dhisApi)).to.be.rejectedWith(
+      expectedError,
+    );
   };
 };

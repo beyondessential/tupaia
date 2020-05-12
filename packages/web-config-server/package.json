@@ -5,7 +5,7 @@
   "private": true,
   "main": "dist",
   "scripts": {
-    "lint": "eslint --ext .js  --ignore-pattern __tests__/",
+    "lint": "eslint --ext .js  --ignore-pattern __tests__/ .",
     "lint:all": "yarn run lint \"src/**/*.{js,jsx}\"",
     "dev": "nodemon -w src --exec \"babel-node src --inspect=9997\"",
     "build": "babel src --out-dir dist",

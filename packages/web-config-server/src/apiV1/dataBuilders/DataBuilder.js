@@ -41,8 +41,12 @@ export class DataBuilder {
     );
   }
 
-  async fetchAnalytics(dataElementCodes, additionalQueryConfig) {
-    const { dataServices } = this.config;
+  async fetchAnalytics(
+    dataElementCodes,
+    additionalQueryConfig,
+    aggregationType = this.aggregationType,
+  ) {
+    const { dataServices, filter = {} } = this.config;
     const fetchOptions = {
       programCodes: this.getProgramCodesForAnalytics(),
       dataServices,
@@ -50,7 +54,8 @@ export class DataBuilder {
     };
 
     return this.aggregator.fetchAnalytics(dataElementCodes, fetchOptions, this.query, {
-      aggregationType: this.aggregationType,
+      aggregationType,
+      filter,
     });
   }
 

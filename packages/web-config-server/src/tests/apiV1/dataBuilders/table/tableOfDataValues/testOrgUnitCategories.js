@@ -9,8 +9,10 @@ import { getSortByKey } from '@tupaia/utils';
 import * as Entity from '/models/Entity';
 import { createAssertTableResults } from './helpers';
 import { DATA_VALUES, ORG_UNITS } from './tableOfDataValues.fixtures';
+import { tableOfDataValues } from '/apiV1/dataBuilders';
 
 const assertTableResults = createAssertTableResults(
+  tableOfDataValues,
   // Sort results in DESC org unit order, to assert their ASC ordering in the results
   DATA_VALUES.filter(
     ({ organisationUnit }) => organisationUnit === 'TO_Nukuhc' || organisationUnit === 'TO_Vainihc',
@@ -40,14 +42,12 @@ export const testOrgUnitCategories = () => {
           rows: [
             { dataElement: 'Smokers', categoryId: 'TO_Nukuhc', Col1: 1, Col2: 2 },
             { dataElement: 'Smokers', categoryId: 'TO_Vainihc', Col1: 10, Col2: 20 },
+            { category: 'Nukunuku' },
+            { category: 'Vaini' },
           ],
           columns: [
             { key: 'Col1', title: 'Female' },
             { key: 'Col2', title: 'Male' },
-          ],
-          categories: [
-            { key: 'TO_Nukuhc', title: 'Nukunuku' },
-            { key: 'TO_Vainihc', title: 'Vaini' },
           ],
         },
       ));
@@ -85,6 +85,8 @@ export const testOrgUnitCategories = () => {
               Col3: 60,
               Col4: 80,
             },
+            { category: 'Nukunuku' },
+            { category: 'Vaini' },
           ],
           columns: [
             {
@@ -101,10 +103,6 @@ export const testOrgUnitCategories = () => {
                 { key: 'Col4', title: 'Red' },
               ],
             },
-          ],
-          categories: [
-            { key: 'TO_Nukuhc', title: 'Nukunuku' },
-            { key: 'TO_Vainihc', title: 'Vaini' },
           ],
         },
       ));
@@ -185,6 +183,8 @@ export const testOrgUnitCategories = () => {
               Col3: 70,
               Col4: 80,
             },
+            { category: 'Risk Factor' },
+            { category: 'CVD Risk' },
           ],
           columns: [
             {
@@ -201,10 +201,6 @@ export const testOrgUnitCategories = () => {
                 { key: 'Col4', title: 'Male' },
               ],
             },
-          ],
-          categories: [
-            { key: 'Risk Factor', title: 'Risk Factor' },
-            { key: 'CVD Risk', title: 'CVD Risk' },
           ],
         },
       ));
