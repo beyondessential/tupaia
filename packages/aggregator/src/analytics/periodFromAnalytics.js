@@ -1,24 +1,35 @@
-import { getPreferredPeriod } from './aggregateAnalytics/aggregations/utils';
-
-const MAX_LATEST_DATE = '99991230';
+import groupBy from 'lodash.groupby';
+import { findCoarsestPeriodType, periodToType } from '@tupaia/dhis-api';
 
 export const periodFromAnalytics = (analytics, { period: requestedPeriod }) => {
-  const returnPeriod = analytics.reduce(
-    (currentDateRange, dataPoint) => {
-      const { latestAvailable } = currentDateRange;
-      const earliestAvailable = currentDateRange.earliestAvailable || MAX_LATEST_DATE;
-      const { period } = dataPoint;
-      return {
-        earliestAvailable:
-          period && period === getPreferredPeriod(period, earliestAvailable)
-            ? earliestAvailable
-            : period,
-        latestAvailable:
-          period === getPreferredPeriod(period, latestAvailable) ? period : latestAvailable,
-      };
-    },
-    { earliestAvailable: null, latestAvailable: null },
-  );
+  return {
+    requested: requestedPeriod,
+    ...getMostAndLeastRecentPeriod(analytics.map(analytic => analytic.period)),
+  };
+};
 
-  return { requested: requestedPeriod, ...returnPeriod };
+const getMostAndLeastRecentPeriod = periods => {
+  if (!periods || periods.length === 0) {
+    return {
+      earliestAvailable: null,
+      latestAvailable: null,
+    };
+  }
+  const groupedPeriods = groupBy(periods, period => period.substring(0, 4));
+  // sorts ascending
+  const sortedKeys = Object.keys(groupedPeriods).sort((year1, year2) => year1 - year2);
+  const earliestYearPeriods = groupedPeriods[sortedKeys[0]];
+  const latestYearPeriods = groupedPeriods[sortedKeys[sortedKeys.length - 1]];
+
+  return {
+    earliestAvailable: Math.min(...findPeriodsWithCoarsestType(earliestYearPeriods)).toString(),
+    latestAvailable: Math.max(...findPeriodsWithCoarsestType(latestYearPeriods)).toString(),
+  };
+};
+
+const findPeriodsWithCoarsestType = periods => {
+  const periodTypes = periods.map(period => periodToType(period));
+  const coarsestPeriodType = findCoarsestPeriodType(periodTypes);
+
+  return periods.filter((period, index) => periodTypes[index] === coarsestPeriodType);
 };

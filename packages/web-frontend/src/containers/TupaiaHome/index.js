@@ -30,29 +30,23 @@ const styles = {
   },
 };
 
-export const TupaiaHome = props => {
+export const TupaiaHomeComponent = ({ goHome }) => {
   return (
     <div style={styles.logo}>
-      <img src={logo} alt="Tupaia logo" style={styles.logoImage} onClick={props.goHome} />
+      <img src={logo} alt="Tupaia logo" style={styles.logoImage} onClick={goHome} />
     </div>
   );
 };
 
-TupaiaHome.propTypes = {
+TupaiaHomeComponent.propTypes = {
   goHome: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = () => {
-  return {};
-};
+const mapDispatchToProps = dispatch => ({
+  goHome: () => {
+    dispatch(goHome());
+    dispatch(changeOrgUnit());
+  },
+});
 
-const mapDispatchToProps = dispatch => {
-  return {
-    goHome: () => {
-      dispatch(goHome());
-      dispatch(changeOrgUnit());
-    },
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(TupaiaHome);
+export default connect(null, mapDispatchToProps)(TupaiaHomeComponent);

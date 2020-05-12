@@ -60,6 +60,7 @@ const Wrapper = styled.div`
 
 export class OverlayDiv extends PureComponent {
   render() {
+<<<<<<< HEAD
     const { overlay, closeOverlay, onSelectProject, isUserLoggedIn } = this.props;
     const components = {
       [LANDING]: () => (
@@ -69,6 +70,11 @@ export class OverlayDiv extends PureComponent {
           transition
         />
       ),
+=======
+    const { overlay, closeOverlay, isUserLoggedIn } = this.props;
+    const components = {
+      [LANDING]: () => <LandingPage isUserLoggedIn={isUserLoggedIn} transition />,
+>>>>>>> dev
       [DISASTER]: Disaster,
       [REQUEST_PROJECT_ACCESS]: RequestProjectAccess,
     };
@@ -103,12 +109,10 @@ OverlayDiv.defaultProps = {
   overlay: null,
 };
 
-const mapStateToProps = state => {
-  return {
-    overlay: state.global.overlay,
-    isUserLoggedIn: state.authentication.isUserLoggedIn,
-  };
-};
+const mapStateToProps = state => ({
+  overlay: state.global.overlay,
+  isUserLoggedIn: state.authentication.isUserLoggedIn,
+});
 
 const mapDispatchToProps = dispatch => {
   return {

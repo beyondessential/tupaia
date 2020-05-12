@@ -10,6 +10,7 @@ import {
   changeBounds,
   changeDashboardGroup,
   FETCH_LOGIN_SUCCESS,
+  FETCH_LOGOUT_SUCCESS,
 } from '../actions';
 import { INITIAL_PROJECT_CODE } from '../defaults';
 import { getProjectByCode } from './selectors';
@@ -32,6 +33,10 @@ function* watchUserLoginSuccessAndRefetchProjectData() {
   yield takeLatest(FETCH_LOGIN_SUCCESS, fetchProjectData);
 }
 
+function* watchUserLogoutSuccessAndRefetchProjectData() {
+  yield takeLatest(FETCH_LOGOUT_SUCCESS, fetchProjectData);
+}
+
 function* watchSelectProjectAndLoadProjectState() {
   // eslint-disable-next-line func-names
   yield takeLatest(SELECT_PROJECT, function*(action) {
@@ -49,4 +54,5 @@ export default [
   watchFetchInitialDataAndFetchProjects,
   watchSelectProjectAndLoadProjectState,
   watchUserLoginSuccessAndRefetchProjectData,
+  watchUserLogoutSuccessAndRefetchProjectData,
 ];
