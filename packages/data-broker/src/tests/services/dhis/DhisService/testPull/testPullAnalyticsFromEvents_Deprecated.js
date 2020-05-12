@@ -42,23 +42,22 @@ export const testPullAnalyticsFromEvents_Deprecated = () => {
 
     it('forces `dataElementIdScheme` option to `code`', async () =>
       assertEventsApiWasInvokedCorrectly({
-        dataSources: [DATA_SOURCES.POP01_GROUP],
+        dataSources: [DATA_SOURCES.POP01],
         options: { ...basicOptions, dataElementIdScheme: 'id' },
         invocationArgs: sinon.match({ dataElementIdScheme: 'code' }),
       }));
 
     it('`organisationUnitCodes` can be empty', async () => {
       const assertErrorIsNotThrown = async organisationUnitCodes =>
-        expect(
-          dhisService.pull([DATA_SOURCES.POP01_GROUP], 'dataElement', { organisationUnitCodes }),
-        ).to.not.be.rejected;
+        expect(dhisService.pull([DATA_SOURCES.POP01], 'dataElement', { organisationUnitCodes })).to
+          .not.be.rejected;
 
       return Promise.all([undefined, []].map(assertErrorIsNotThrown));
     });
 
     it('uses the first provided organisation unit code', async () =>
       assertEventsApiWasInvokedCorrectly({
-        dataSources: [DATA_SOURCES.POP01_GROUP],
+        dataSources: [DATA_SOURCES.POP01],
         options: { ...basicOptions, organisationUnitCodes: ['TO', 'PG'] },
         invocationArgs: sinon.match({ organisationUnitCode: 'TO' }),
       }));

@@ -36,14 +36,14 @@ export const testPullAnalytics = () => {
     });
 
     it('pulls aggregate data by default', async () => {
-      await dhisService.pull([DATA_SOURCES.POP01_GROUP], 'dataElement', {});
+      await dhisService.pull([DATA_SOURCES.POP01], 'dataElement', {});
       expect(analyticsSpy).to.have.callCount(1);
       expect(analyticsFromEventsSpy).to.have.callCount(0);
       expect(analyticsFromEvents_DeprecatedSpy).to.have.callCount(0);
     });
 
     it('pulls event data if `programCodes` are provided', async () => {
-      await dhisService.pull([DATA_SOURCES.POP01_GROUP], 'dataElement', {
+      await dhisService.pull([DATA_SOURCES.POP01], 'dataElement', {
         programCodes: ['POP01'],
       });
       expect(analyticsSpy).to.have.callCount(0);
@@ -53,7 +53,7 @@ export const testPullAnalytics = () => {
     });
 
     it('invokes the deprecated analytics from events api by default', async () => {
-      await dhisService.pull([DATA_SOURCES.POP01_GROUP], 'dataElement', {
+      await dhisService.pull([DATA_SOURCES.POP01], 'dataElement', {
         programCodes: ['POP01'],
       });
       expect(analyticsFromEventsSpy).to.have.callCount(0);
