@@ -17,4 +17,15 @@ export class Aggregator extends BaseAggregator {
 
     return super.fetchAnalytics(dataElementCodes, query, ...otherParams);
   }
+
+  async fetchEvents(programCode, originalQuery, replacementValues) {
+    const queryBuilder = new QueryBuilder(
+      originalQuery,
+      replacementValues,
+      this.fetchDataSourceEntities,
+    );
+    queryBuilder.makeEventReplacements();
+
+    return super.fetchEvents(programCode, queryBuilder.query);
+  }
 }
