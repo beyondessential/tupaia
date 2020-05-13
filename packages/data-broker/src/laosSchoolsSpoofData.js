@@ -1,33 +1,31 @@
-export const getSpoofData = (dataSourceSpec, options) => {
-  return { results: analyticsData[dataSourceSpec.code[0]] };
+const DATA_TYPE_TO_FUNC = {
+  number: index => index,
+  bool: index => index % 2,
 };
 
-const analyticsData = {
-  SchPop003: [
-    {
-      dataElement: 'SchPop003',
-      organisationUnit: 'LA_sch_706035',
-      period: '20191202',
-      value: 109,
-    },
-    {
-      dataElement: 'SchPop003',
-      organisationUnit: 'LA_sch_706036',
-      period: '20191202',
-      value: 10,
-    },
-    {
-      dataElement: 'SchPop003',
-      organisationUnit: 'LA_sch_706037',
-      period: '20191202',
-      value: 19,
-    },
-    {
-      dataElement: 'SchPop003',
-      organisationUnit: 'LA_sch_706038',
-      period: '20191202',
-      value: 9,
-    },
-  ],
-  // Add as needed
+// Add any codes required here
+const validCodeConfig = {
+  SchPop001: { type: 'number' },
+};
+
+const generateSpoofData = (dataElementCode, orgUnits) => {
+  const type = validCodeConfig[dataElementCode].type;
+  const dataGenerarator = DATA_TYPE_TO_FUNC[type];
+  return orgUnits.map((school, index) => {
+    return {
+      dataElement: dataElementCode,
+      period: '20200304',
+      organisationUnit: school,
+      value: dataGenerarator(index),
+    };
+  });
+};
+
+export const getSpoofData = (dataSourceSpec, options) => {
+  const dataElementCode = dataSourceSpec.code[0];
+  if (!validCodeConfig[dataElementCode]) {
+    return [];
+  }
+  // Doesn't return any metadata
+  return { results: generateSpoofData(dataElementCode, options.organisationUnitCodes) };
 };
