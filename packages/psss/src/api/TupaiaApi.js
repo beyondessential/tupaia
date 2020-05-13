@@ -3,8 +3,6 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 
-//-- import { saveAs } from 'file-saver';
-
 import { stringifyQuery } from '@tupaia/utils';
 import {
   getAccessToken,
@@ -14,6 +12,10 @@ import {
   validateUserIsAuthenticated,
 } from '../authentication';
 
+const [CLIENT_BASIC_AUTH_HEADER, PSSS_API_URL] = [
+  process.env.REACT_APP_CLIENT_BASIC_AUTH_HEADER,
+  process.env.REACT_APP_PSSS_API_URL,
+];
 const AUTH_API_ENDPOINT = 'auth';
 const FETCH_TIMEOUT = 45 * 1000; // 45 seconds in milliseconds
 
@@ -48,7 +50,7 @@ export class TupaiaApi {
         AUTH_API_ENDPOINT,
         null,
         loginCredentials,
-        process.env.CLIENT_BASIC_AUTH_HEADER,
+        CLIENT_BASIC_AUTH_HEADER,
         false,
       );
       const { accessToken, refreshToken, user } = authenticationDetails;
@@ -76,7 +78,7 @@ export class TupaiaApi {
         {
           refreshToken: this.getRefreshToken(),
         },
-        process.env.CLIENT_BASIC_AUTH_HEADER,
+        CLIENT_BASIC_AUTH_HEADER,
         false,
       );
       if (!response.body.accessToken) {
@@ -133,7 +135,8 @@ export class TupaiaApi {
   }
 
   async request(endpoint, queryParameters, fetchConfig, shouldReauthenticateIfUnauthorized = true) {
-    const queryUrl = stringifyQuery(process.env.PSSS_API_URL, endpoint, queryParameters);
+    const queryUrl = stringifyQuery(PSSS_API_URL, endpoint, queryParameters);
+
     try {
       const response = await Promise.race([fetch(queryUrl, fetchConfig), createTimeoutPromise()]);
       // If server responded with 401, i.e. not authenticated, refresh token and try once more

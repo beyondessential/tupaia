@@ -1,23 +1,42 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { example } from '../store/example';
+import { example, loadAlerts, getAlerts } from '../store/example';
+import { login } from '../authentication';
 
-const ExampleWithReduxComponent = ({ counter, increment1, increment2 }) => (
-  <div>
-    ExampleWithRedux: {`${counter} `}
-    <button type="button" onClick={increment1}>
-      ++1
-    </button>
-    <button type="button" onClick={increment2}>
-      ++2
-    </button>
-  </div>
-);
+const emailAddress = 'andres.oventi@gmail.com';
+const password = 'koru225Zealandia';
 
-const mapStateToProps = state => ({ counter: state.example.counter });
+const ExampleWithReduxComponent = ({ counter, alerts, increment, doLogin, doLoadAlerts }) => {
+  const AlertList = () => {
+    return <pre>{JSON.stringify(alerts, null, 2)}</pre>;
+  };
+
+  return (
+    <div>
+      ExampleWithRedux: {`${counter} `}
+      <AlertList />
+      <hr />
+      <button type="button" onClick={increment}>
+        increment
+      </button>
+      <button type="button" onClick={doLogin}>
+        login
+      </button>
+      <button type="button" onClick={doLoadAlerts}>
+        get alerts
+      </button>
+    </div>
+  );
+};
+
+const mapStateToProps = state => ({
+  counter: state.example.counter,
+  alerts: getAlerts(state),
+});
 const mapDispatchToProps = dispatch => ({
-  increment1: () => dispatch({ type: 'INCREMENT' }),
-  increment2: () => dispatch(example()),
+  increment: () => dispatch(example()),
+  doLogin: () => dispatch(login(emailAddress, password)),
+  doLoadAlerts: () => dispatch(loadAlerts()),
 });
 
 export const ExampleWithRedux = connect(
