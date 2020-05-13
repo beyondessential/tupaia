@@ -9,10 +9,10 @@ import MuiLink from '@material-ui/core/Link';
 import Avatar from '@material-ui/core/Avatar';
 import PropTypes from 'prop-types';
 import { Link as RouterLink } from 'react-router-dom';
-import { SitesReportedAccessor, AFRAccessor } from '@tupaia/ui-components';
 import { ConnectedTable } from './ConnectedTable';
 import * as COLORS from '../../theme/colors';
 import { CountrySummaryTable } from './CountrySummaryTable';
+import { AFRCell, SitesReportedCell } from './TableCellComponents';
 
 const CountryTitle = styled(MuiLink)`
   display: flex;
@@ -28,13 +28,13 @@ const CountryTitle = styled(MuiLink)`
   }
 `;
 
-export const NameAccessor = ({ name }) => (
+export const NameCell = ({ name }) => (
   <CountryTitle to="weekly-reports/samoa" component={RouterLink}>
     <Avatar /> {name}
   </CountryTitle>
 );
 
-NameAccessor.propTypes = {
+NameCell.propTypes = {
   name: PropTypes.string.isRequired,
 };
 
@@ -44,18 +44,18 @@ const countriesTableColumns = [
     key: 'name',
     width: '30%',
     align: 'left',
-    accessor: NameAccessor,
+    CellComponent: NameCell,
   },
   {
     title: 'Site Reported',
     key: 'sitesReported',
-    accessor: SitesReportedAccessor,
+    CellComponent: SitesReportedCell,
     width: '100px',
   },
   {
     title: 'AFR',
     key: 'AFR',
-    accessor: AFRAccessor,
+    CellComponent: AFRCell,
   },
   {
     title: 'DIA',

@@ -7,14 +7,10 @@ import styled from 'styled-components';
 import React from 'react';
 import { format } from 'date-fns';
 import PropTypes from 'prop-types';
-import {
-  SitesReportedAccessor,
-  AFRAccessor,
-  CondensedTableBody,
-  FakeHeader,
-} from '@tupaia/ui-components';
+import { CondensedTableBody, FakeHeader } from '@tupaia/ui-components';
 import { ConnectedTable } from './ConnectedTable';
 import * as COLORS from '../../theme/colors';
+import { AFRCell, SitesReportedCell } from './TableCellComponents';
 
 const CountrySummaryTitle = styled.div`
   color: ${COLORS.TEXT_DARKGREY};
@@ -22,7 +18,7 @@ const CountrySummaryTitle = styled.div`
   font-size: 0.9375rem;
 `;
 
-export const NameAccessor = ({ week, startDate, endDate }) => {
+export const NameCell = ({ week, startDate, endDate }) => {
   const start = `${format(startDate, 'LLL d')}`;
   const end = `${format(endDate, 'LLL d')}`;
   const year = `${format(endDate, 'yyyy')}`;
@@ -33,7 +29,7 @@ export const NameAccessor = ({ week, startDate, endDate }) => {
   );
 };
 
-NameAccessor.propTypes = {
+NameCell.propTypes = {
   week: PropTypes.number.isRequired,
   startDate: PropTypes.instanceOf(Date).isRequired,
   endDate: PropTypes.instanceOf(Date).isRequired,
@@ -45,18 +41,18 @@ const countrySummaryTableColumns = [
     key: 'name',
     width: '30%',
     align: 'left',
-    accessor: NameAccessor,
+    CellComponent: NameCell,
   },
   {
     title: 'Site Reported',
     key: 'sitesReported',
-    accessor: SitesReportedAccessor,
+    CellComponent: SitesReportedCell,
     width: '100px',
   },
   {
     title: 'AFR',
     key: 'AFR',
-    accessor: AFRAccessor,
+    CellComponent: AFRCell,
   },
   {
     title: 'DIA',

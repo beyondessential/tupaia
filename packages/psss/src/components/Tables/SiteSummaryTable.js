@@ -9,14 +9,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
-import {
-  CondensedTableBody,
-  AFRAccessor,
-  FakeHeader,
-  SitesReportedAccessor,
-  Button,
-} from '@tupaia/ui-components';
+import { CondensedTableBody, FakeHeader, Button } from '@tupaia/ui-components';
 import { ConnectedTable } from './ConnectedTable';
+import { AFRCell, SitesReportedCell } from './TableCellComponents';
 
 const StyledDiv = styled.div`
   display: flex;
@@ -25,7 +20,7 @@ const StyledDiv = styled.div`
   padding: 2rem;
 `;
 
-const NameAccessor = data => {
+const NameCell = data => {
   return <span>{data.name} Clinic</span>;
 };
 
@@ -35,18 +30,18 @@ const siteWeekColumns = [
     key: 'name',
     width: '30%',
     align: 'left',
-    accessor: NameAccessor,
+    CellComponent: NameCell,
   },
   {
     title: 'Sites Reported',
     key: 'sitesReported',
-    accessor: SitesReportedAccessor,
+    CellComponent: SitesReportedCell,
     width: '100px',
   },
   {
     title: 'AFR',
     key: 'AFR',
-    accessor: AFRAccessor,
+    CellComponent: AFRCell,
   },
   {
     title: 'DIA',

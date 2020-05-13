@@ -11,10 +11,10 @@ import { format } from 'date-fns';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Alarm, CheckCircleOutline } from '@material-ui/icons';
-import { AFRAccessor, SitesReportedAccessor } from '@tupaia/ui-components';
 import { SiteSummaryTable } from './SiteSummaryTable';
 import { ConnectedTable } from './ConnectedTable';
 import * as COLORS from '../../theme/colors';
+import { AFRCell, SitesReportedCell } from './TableCellComponents';
 
 const CountryWeekTitle = styled.div`
   color: ${COLORS.BLUE};
@@ -30,7 +30,7 @@ const CountryWeekSubTitle = styled.div`
   line-height: 16px;
 `;
 
-const NameAccessor = ({ week, startDate, endDate }) => {
+const NameCell = ({ week, startDate, endDate }) => {
   const start = `${format(startDate, 'LLL d')}`;
   const end = `${format(endDate, 'LLL d')}`;
   const year = `${format(endDate, 'yyyy')}`;
@@ -42,7 +42,7 @@ const NameAccessor = ({ week, startDate, endDate }) => {
   );
 };
 
-NameAccessor.propTypes = {
+NameCell.propTypes = {
   week: PropTypes.number.isRequired,
   startDate: PropTypes.instanceOf(Date).isRequired,
   endDate: PropTypes.instanceOf(Date).isRequired,
@@ -67,7 +67,7 @@ const Status = styled.div`
   }
 `;
 
-const StatusAccessor = ({ status }) => {
+const StatusCell = ({ status }) => {
   if (status === 'Overdue') {
     return (
       <Status color={COLORS.ORANGE}>
@@ -85,7 +85,7 @@ const StatusAccessor = ({ status }) => {
   );
 };
 
-StatusAccessor.propTypes = {
+StatusCell.propTypes = {
   status: PropTypes.string.isRequired,
 };
 
@@ -95,18 +95,18 @@ const countryColumns = [
     key: 'week',
     width: '30%',
     align: 'left',
-    accessor: NameAccessor,
+    CellComponent: NameCell,
   },
   {
     title: 'Site Reported',
     key: 'sitesReported',
-    accessor: SitesReportedAccessor,
+    CellComponent: SitesReportedCell,
     width: '100px',
   },
   {
     title: 'AFR',
     key: 'AFR',
-    accessor: AFRAccessor,
+    CellComponent: AFRCell,
   },
   {
     title: 'DIA',
@@ -128,7 +128,7 @@ const countryColumns = [
     title: 'STATUS',
     key: 'status',
     width: '110px',
-    accessor: StatusAccessor,
+    CellComponent: StatusCell,
   },
 ];
 
