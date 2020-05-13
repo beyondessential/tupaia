@@ -33,10 +33,6 @@ const defaultBounds = initialOrgUnit.location.bounds;
 
 function position(state = { bounds: defaultBounds }, action) {
   switch (action.type) {
-    case GO_HOME: {
-      return { bounds: defaultBounds };
-    }
-
     case CHANGE_ORG_UNIT_SUCCESS: {
       if (action.shouldChangeMapBounds) {
         const { location } = action.organisationUnit;

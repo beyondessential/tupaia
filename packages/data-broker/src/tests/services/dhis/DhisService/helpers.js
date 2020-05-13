@@ -6,7 +6,7 @@
 import sinon from 'sinon';
 
 import { DhisApi } from '@tupaia/dhis-api';
-import * as GetDhisApiInstance from '../../../services/dhis/getDhisApiInstance';
+import * as GetDhisApiInstance from '../../../../services/dhis/getDhisApiInstance';
 import {
   DATA_ELEMENTS_BY_GROUP,
   DATA_ELEMENTS,
@@ -20,20 +20,24 @@ export const setupDhisApiForStubbing = () => {
 
 const defaultAnalytics = {
   headers: [],
-  rows: [],
   metaData: { items: {}, dimensions: [] },
+  width: 0,
+  height: 0,
+  rows: [],
 };
 
 export const stubDhisApi = ({
   getAnalyticsResponse = defaultAnalytics,
   getEventsResponse = [],
+  getEventAnalyticsResponse = defaultAnalytics,
 } = {}) => {
   const dhisApi = sinon.createStubInstance(DhisApi, {
-    getAnalytics: getAnalyticsResponse,
-    getEvents: getEventsResponse,
+    getAnalytics: sinon.stub().resolves(getAnalyticsResponse),
+    getEvents: sinon.stub().resolves(getEventsResponse),
+    getEventAnalytics: sinon.stub().resolves(getEventAnalyticsResponse),
     fetchDataElements: sinon
       .stub()
-      .callsFake(codes =>
+      .callsFake(async codes =>
         codes.map(code => ({ code, id: DATA_ELEMENTS[code].uid, valueType: 'NUMBER' }), {}),
       ),
     getServerName: SERVER_NAME,
@@ -49,11 +53,11 @@ export const cleanupDhisApiStub = () => {
 
 export const stubModels = () => ({
   dataSource: {
-    findOrDefault: specs =>
+    findOrDefault: async specs =>
       Object.values(DATA_SOURCES).filter(
         ({ code, type }) => specs.code.includes(code) && specs.type === type,
       ),
-    getDataElementsInGroup: groupCode => DATA_ELEMENTS_BY_GROUP[groupCode],
+    getDataElementsInGroup: async groupCode => DATA_ELEMENTS_BY_GROUP[groupCode],
     getTypes: () => ({ DATA_ELEMENT: 'dataElement', DATA_GROUP: 'dataGroup' }),
   },
 });

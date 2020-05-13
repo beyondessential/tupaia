@@ -91,8 +91,7 @@ export function roundStartEndDates(granularity, startDate = moment(), endDate = 
   };
 }
 
-export function getDefaultDates(state, infoViewKey) {
-  const { periodGranularity, defaultTimePeriod } = state.global.viewConfigs[infoViewKey];
+export function getDefaultDates({ periodGranularity, defaultTimePeriod }) {
   const isSingleDate = GRANULARITIES_WITH_ONE_DATE.includes(periodGranularity);
   let startDate = moment();
   let endDate = startDate;
