@@ -57,7 +57,7 @@ export class DataBroker {
   async pull(dataSourceSpec, options) {
     // Not sure what codes are asked for here. If it is not school level we need some different logic
     // For overlays it is probably country
-    if (validCodeConfig[dataSourceSpec.code[0]]) {
+    if (dataSourceSpec && dataSourceSpec.code && validCodeConfig[dataSourceSpec.code[0]]) {
       return getSpoofData(dataSourceSpec, options);
     }
     const dataSources = await this.fetchDataSources(dataSourceSpec);

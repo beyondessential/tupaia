@@ -4,7 +4,7 @@ const DATA_TYPE_TO_FUNC = {
 };
 
 // Add any codes required here
-const validCodeConfig = {
+export const validCodeConfig = {
   SchPop001: { type: 'number' },
 };
 
@@ -21,10 +21,12 @@ const generateSpoofData = (dataElementCode, orgUnits) => {
   });
 };
 
-export const getSpoofData = (dataSourceSpec, options) => {
+export const getSpoofData = dataSourceSpec => {
   const dataElementCode = dataSourceSpec.code[0];
   // Doesn't return any metadata
-  return { results: generateSpoofData(dataElementCode, schools) };
+  const data = generateSpoofData(dataElementCode, schools);
+  console.log('generating data like:', data[0]);
+  return { results: data };
 };
 
 const schools = [
