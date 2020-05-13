@@ -275,3 +275,11 @@ export const selectCurrentDashboardKey = createSelector(
   (dashboardConfig, currentDashboardKey) =>
     dashboardConfig[currentDashboardKey] ? currentDashboardKey : Object.keys(dashboardConfig)[0],
 );
+
+export const selectMeasureBarItemById = createSelector(
+  [state => state.measureBar.measureHierarchy, (_, id) => id],
+  (measureHierarchy, id) => {
+    const flattenedMeasureHierarchy = [].concat(...Object.values(measureHierarchy));
+    return flattenedMeasureHierarchy.find(measure => measure.measureId === id);
+  },
+);

@@ -36,10 +36,20 @@ import { divideValues, countEventsThatSatisfyConditions } from '/apiV1/dataBuild
 
 export class PercentagesOfEventCountsBuilder extends DataBuilder {
   async build() {
-    const events = await this.fetchEvents({ dataValueFormat: 'object' });
+    const events = await this.fetchResults();
     const data = this.buildData(events);
 
-    return { data: this.areDataAvailable(data) ? data : [] };
+    return { data: this.formatData(data) };
+  }
+
+  async fetchResults() {
+    const dataElementCodes = Object.values(this.config.dataClasses).reduce(
+      (codes, { numerator, denominator }) =>
+        codes.concat(Object.keys(numerator.dataValues)).concat(Object.keys(denominator.dataValues)),
+      [],
+    );
+
+    return this.fetchEvents({ useDeprecatedApi: false, dataElementCodes });
   }
 
   buildData(events) {
@@ -63,6 +73,10 @@ export class PercentagesOfEventCountsBuilder extends DataBuilder {
     const denominatorValue = countEventsThatSatisfyConditions(events, denominator);
 
     return [numeratorValue, denominatorValue];
+  }
+
+  formatData(data) {
+    return this.areDataAvailable(data) ? data : [];
   }
 }
 

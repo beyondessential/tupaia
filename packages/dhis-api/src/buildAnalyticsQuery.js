@@ -23,20 +23,21 @@ const getDxDimension = query => {
 
 const getOuDimension = query => {
   const { organisationUnitCode, organisationUnitCodes } = query;
-
   return organisationUnitCode ? [organisationUnitCode] : getUniqueEntries(organisationUnitCodes);
 };
 
-const buildAnalyticQuery = queryInput => {
+const addTemporalDimension = (query, { period, startDate, endDate }) =>
+  period
+    ? { ...query, dimension: (query.dimension || []).concat(`pe:${period}`) }
+    : { ...query, startDate, endDate };
+
+const buildDataValueAnalyticsQuery = queryInput => {
   const {
     dx,
     ou,
     inputIdScheme = 'code',
     outputIdScheme = 'uid',
     includeMetadataDetails = true,
-    period,
-    startDate,
-    endDate,
   } = queryInput;
 
   const query = {
@@ -45,18 +46,10 @@ const buildAnalyticQuery = queryInput => {
     includeMetadataDetails,
     dimension: [`dx:${dx.join(';')}`, `ou:${ou.join(';')}`, 'co'],
   };
-
-  if (period) {
-    query.dimension.push(`pe:${period}`);
-  } else {
-    query.startDate = startDate;
-    query.endDate = endDate;
-  }
-
-  return query;
+  return addTemporalDimension(query, queryInput);
 };
 
-export const buildAnalyticQueries = queryInput => {
+export const buildDataValueAnalyticsQueries = queryInput => {
   const dx = getDxDimension(queryInput);
   const ou = getOuDimension(queryInput);
 
@@ -65,7 +58,7 @@ export const buildAnalyticQueries = queryInput => {
   for (let dxIndex = 0; dxIndex < dx.length; dxIndex += DX_BATCH_SIZE) {
     for (let ouIndex = 0; ouIndex < ou.length; ouIndex += OU_BATCH_SIZE) {
       queries.push(
-        buildAnalyticQuery({
+        buildDataValueAnalyticsQuery({
           ...queryInput,
           dx: dx.slice(dxIndex, dxIndex + DX_BATCH_SIZE),
           ou: ou.slice(ouIndex, ouIndex + OU_BATCH_SIZE),
@@ -74,4 +67,14 @@ export const buildAnalyticQueries = queryInput => {
     }
   }
   return queries;
+};
+
+export const buildEventAnalyticsQuery = queryInput => {
+  const { dataElementIds = [], organisationUnitIds } = queryInput;
+  if (!organisationUnitIds || organisationUnitIds.length === 0) {
+    throw new Error('Event analytics require at least one organisation unit id');
+  }
+
+  const query = { dimension: [...dataElementIds, `ou:${organisationUnitIds.join(';')}`] };
+  return addTemporalDimension(query, queryInput);
 };
