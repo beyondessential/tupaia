@@ -19,7 +19,7 @@ const CountrySummaryTitle = styled.div`
   font-size: 0.9375rem;
 `;
 
-export const NameCell = ({ week, startDate, endDate }) => {
+const NameCell = ({ week, startDate, endDate }) => {
   const start = `${format(startDate, 'LLL d')}`;
   const end = `${format(endDate, 'LLL d')}`;
   const year = `${format(endDate, 'yyyy')}`;
@@ -77,7 +77,7 @@ const TableHeader = () => {
   return <FakeHeader>PREVIOUS 8 WEEKS</FakeHeader>;
 };
 
-export const CountrySummaryTable = props => (
+export const CountrySummaryTable = React.memo(props => (
   <React.Fragment>
     <TableHeader />
     <ConnectedTable
@@ -88,4 +88,4 @@ export const CountrySummaryTable = props => (
       Body={CondensedTableBody}
     />
   </React.Fragment>
-);
+));

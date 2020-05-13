@@ -2,7 +2,6 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-
 import styled from 'styled-components';
 import React from 'react';
 import MuiLink from '@material-ui/core/Link';
@@ -29,7 +28,7 @@ const CountryTitle = styled(MuiLink)`
   }
 `;
 
-export const NameCell = ({ name }) => (
+const NameCell = ({ name }) => (
   <CountryTitle to="weekly-reports/samoa" component={RouterLink}>
     <Avatar /> {name}
   </CountryTitle>
@@ -76,10 +75,10 @@ const countriesTableColumns = [
   },
 ];
 
-export const CountriesTable = () => (
+export const CountriesTable = React.memo(() => (
   <ConnectedTable
     endpoint="countries"
     columns={countriesTableColumns}
     SubComponent={CountrySummaryTable}
   />
-);
+));

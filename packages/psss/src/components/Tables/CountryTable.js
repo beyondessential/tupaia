@@ -3,9 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-/*
- * CountryWeekTable
- */
 import React from 'react';
 import { format } from 'date-fns';
 import styled from 'styled-components';
@@ -133,13 +130,10 @@ const countryColumns = [
   },
 ];
 
-/*
- * CountryWeekTable Component
- */
-export const CountryTable = () => (
+export const CountryTable = React.memo(() => (
   <ConnectedTable
     endpoint="country-weeks"
     columns={countryColumns}
     SubComponent={SiteSummaryTable}
   />
-);
+));

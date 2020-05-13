@@ -3,9 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-/*
- * SiteWeekTable
- */
 import React from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
@@ -66,10 +63,7 @@ const TableHeader = () => {
   return <FakeHeader>10/30 Sentinel Sites Reported</FakeHeader>;
 };
 
-/*
- * CountryWeekSummaryTable Component
- */
-export const SiteSummaryTable = props => {
+export const SiteSummaryTable = React.memo(props => {
   const customAction = () => {
     console.log('custom action in CountryWeekSummaryTable. props...', props);
   };
@@ -91,4 +85,4 @@ export const SiteSummaryTable = props => {
       </StyledDiv>
     </React.Fragment>
   );
-};
+});
