@@ -1,5 +1,19 @@
 import { createReducer } from '../utils/createReducer';
 
+// actions
+
+export const example = () => async (dispatch, getState, { api }) => {
+  console.log('REDUX ACTION');
+  console.log('getState', getState);
+  console.log('api', api);
+
+  dispatch({ type: 'INCREMENT' });
+};
+
+// selectors
+
+// reducers
+
 const defaultState = {
   counter: 0,
 };
