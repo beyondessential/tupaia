@@ -27,6 +27,9 @@
             - name: test-web-config-server
               service: web-config-server-testing
               command: './packages/devops/scripts/ci/testBackend.sh'
+            - name: test-database
+              service: database-testing
+              command: './packages/devops/scripts/ci/testBackend.sh'
             - name: test-internal-dependencies
               service: internal-dependency-testing
               command: './packages/devops/scripts/ci/testInternalDependencies.sh'
