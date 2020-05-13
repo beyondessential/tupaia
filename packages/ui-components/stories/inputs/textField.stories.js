@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useCallback } from 'react';
-import { CalendarToday, KeyboardArrowDown, Visibility } from '@material-ui/icons';
+import { CalendarToday, KeyboardArrowDown, Visibility, Room } from '@material-ui/icons';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import styled from 'styled-components';
 import { TextField } from '../../src';
@@ -43,7 +43,7 @@ export const textField = () => (
 
 export const textArea = () => (
   <Container>
-    <TextField name="textArea" label="TextArea" multiline rows="4" />
+    <TextField name="textArea" placeholder="Placeholder text" multiline rows="4" />
   </Container>
 );
 
@@ -62,6 +62,17 @@ export const icons = () => (
       helperText="Weight"
       InputProps={{
         startAdornment: <InputAdornment position="start">Kg</InputAdornment>,
+      }}
+    />
+    <TextField
+      name="address"
+      placeholder="Enter a new address"
+      InputProps={{
+        startAdornment: (
+          <InputAdornment position="start">
+            <Room />
+          </InputAdornment>
+        ),
       }}
     />
     <TextField

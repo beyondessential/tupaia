@@ -47,22 +47,24 @@ function initPersistor(store) {
   return persistor;
 }
 
-(() => {
-  const store = initStore();
+if (module.hot) {
+  module.hot.accept();
+}
 
-  render(
-    <Provider store={store}>
-      <PersistGate persistor={initPersistor(store)}>
-        <StylesProvider injectFirst>
-          <MuiThemeProvider theme={theme}>
-            <ThemeProvider theme={theme}>
-              <CssBaseline />
-              <App />
-            </ThemeProvider>
-          </MuiThemeProvider>
-        </StylesProvider>
-      </PersistGate>
-    </Provider>,
-    document.getElementById('root'),
-  );
-})();
+const store = initStore();
+
+render(
+  <Provider store={store}>
+    <PersistGate persistor={initPersistor(store)}>
+      <StylesProvider injectFirst>
+        <MuiThemeProvider theme={theme}>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <App />
+          </ThemeProvider>
+        </MuiThemeProvider>
+      </StylesProvider>
+    </PersistGate>
+  </Provider>,
+  document.getElementById('root'),
+);
