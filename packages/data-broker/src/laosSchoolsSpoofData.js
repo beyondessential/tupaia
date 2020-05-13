@@ -4,19 +4,19 @@ const DATA_TYPE_TO_FUNC = {
 };
 
 // Add any codes required here
-export const validCodeConfig = {
+export const LAOS_SCHOOLS_DATA_ELEMENTS = {
   SchPop001: { type: 'number' },
 };
 
 const generateSpoofData = (dataElementCode, orgUnits) => {
-  const type = validCodeConfig[dataElementCode].type;
-  const dataGenerarator = DATA_TYPE_TO_FUNC[type];
+  const type = LAOS_SCHOOLS_DATA_ELEMENTS[dataElementCode].type;
+  const dataGenerator = DATA_TYPE_TO_FUNC[type];
   return orgUnits.map((school, index) => {
     return {
       dataElement: dataElementCode,
       period: '20200304',
       organisationUnit: school,
-      value: dataGenerarator(index),
+      value: dataGenerator(index),
     };
   });
 };
