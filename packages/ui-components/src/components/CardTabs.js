@@ -9,7 +9,6 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import MuiTab from '@material-ui/core/Tab';
 import styled from 'styled-components';
-import * as COLORS from '../theme/colors';
 
 /*
  * CardTabs
@@ -55,10 +54,10 @@ export const CardTabList = ({ children }) => {
  * CardTab
  */
 export const CardTab = styled(({ children, ...rest }) => <MuiTab {...rest} label={children} />)`
-  border-right: 1px solid ${COLORS.GREY_DE};
-  border-bottom: 1px solid ${COLORS.GREY_DE};
-  background: ${COLORS.GREY_FB};
-  color: ${COLORS.GREY_9F};
+  border-right: 1px solid ${props => props.theme.palette.grey['400']};
+  border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
+  background: ${props => props.theme.palette.grey['400']};
+  color: ${props => props.theme.palette.grey['500']};
   padding: 1rem 0.75rem;
   min-width: 5rem;
 

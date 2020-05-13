@@ -6,7 +6,7 @@
 import React, { useState, useCallback } from 'react';
 import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
-import { Autocomplete } from '../../components/Inputs';
+import { Autocomplete } from '../../src';
 
 export default {
   title: 'Inputs/Autocomplete',

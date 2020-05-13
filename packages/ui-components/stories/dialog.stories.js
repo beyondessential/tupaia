@@ -12,10 +12,11 @@ import {
   DialogContent,
   DialogActions,
   DialogContentText,
-} from '../components/Dialog';
-import { Button, TextButton } from '../components/Button';
-import { CircleTick } from '../components/Icons';
-import * as COLORS from '../theme/colors';
+  Button,
+  TextButton,
+  CircleTick,
+} from '../src';
+import * as COLORS from './story-utils/theme/colors';
 
 export default {
   title: 'Modal',

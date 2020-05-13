@@ -2,6 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
+
 import { createMuiTheme } from '@material-ui/core/styles';
 import * as COLORS from './colors';
 
@@ -12,30 +13,40 @@ const palette = {
   },
   secondary: {
     main: COLORS.DARK_BLUE,
+    light: COLORS.LIGHT_BLUE,
   },
   error: {
     main: COLORS.RED,
+    light: COLORS.LIGHT_RED,
   },
   warning: {
     main: COLORS.RED,
-    dark: COLORS.DARK_RED,
+    light: COLORS.LIGHT_RED,
   },
   success: {
     main: COLORS.GREEN,
     dark: COLORS.DARK_GREEN,
   },
   text: {
-    primary: COLORS.TEXTGREY,
-    secondary: COLORS.TEXTGREY,
+    primary: COLORS.TEXT_DARKGREY,
+    secondary: COLORS.TEXT_MIDGREY,
+    tertiary: COLORS.TEXT_LIGHTGREY,
+  },
+  grey: {
+    100: COLORS.GREY_FB,
+    300: COLORS.GREY_E2,
+    400: COLORS.GREY_DE,
+    500: COLORS.GREY_9F,
+    600: COLORS.GREY_72,
   },
   background: {
-    default: COLORS.LIGHTGREY,
+    default: 'transparent', // use background addon to switch colors
     paper: COLORS.WHITE,
   },
 };
 const typography = {
   h1: {
-    fontSize: '3.4375rem',
+    fontSize: '3.125rem',
     fontWeight: 500,
     lineHeight: 1.18,
     letterSpacing: 0,
@@ -107,5 +118,4 @@ const overrides = {
     },
   },
 };
-
-export const theme = createMuiTheme({ palette, themeName, typography, shape, overrides });
+export default createMuiTheme({ palette, themeName, typography, shape, overrides });

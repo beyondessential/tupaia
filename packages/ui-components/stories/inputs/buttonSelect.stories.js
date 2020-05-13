@@ -7,7 +7,7 @@ import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
 import MuiBox from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
-import { ButtonSelect } from '../../components/Inputs/ButtonSelect';
+import { ButtonSelect } from '../../src';
 
 export default {
   title: 'Inputs/ButtonSelect',

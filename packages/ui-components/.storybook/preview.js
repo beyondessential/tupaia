@@ -3,8 +3,8 @@ import { addDecorator, addParameters } from '@storybook/react';
 import { MuiThemeProvider, StylesProvider } from '@material-ui/core/styles';
 import { ThemeProvider } from 'styled-components';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import theme from '../src/theme';
-import * as COLORS from '../src/theme/colors';
+import theme from '../stories/story-utils/theme';
+import * as COLORS from '../stories/story-utils/theme/colors';
 
 addParameters({
   backgrounds: [

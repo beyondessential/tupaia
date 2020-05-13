@@ -4,8 +4,6 @@
  */
 
 import React from 'react';
-import { IconButton, LightIconButton } from '../components/IconButton';
-import * as COLORS from '../../src/theme/colors';
 import {
   AddBoxOutlined,
   IndeterminateCheckBox,
@@ -13,6 +11,8 @@ import {
   ChevronRight,
   ChevronLeft,
 } from '@material-ui/icons';
+import { IconButton, LightIconButton } from '../src';
+import * as COLORS from './story-utils/theme/colors';
 
 export default {
   title: 'IconButton',
