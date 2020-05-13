@@ -11,6 +11,7 @@ import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import { CondensedTableBody, FakeHeader, Button } from '@tupaia/ui-components';
 import { ConnectedTable } from './ConnectedTable';
+import { FIRST_COLUMN_WIDTH, SITES_REPORTED_COLUMN_WIDTH } from './constants';
 import { AFRCell, SitesReportedCell } from './TableCellComponents';
 
 const StyledDiv = styled.div`
