@@ -71,13 +71,17 @@ export class DataPerPeriodBuilder extends DataBuilder {
   }
 
   async buildData(results) {
+    const { optionSetCode } = this.config;
     const periodType = parsePeriodType(this.config.periodType);
     const resultsByPeriod = this.groupResultsByPeriod(results, periodType);
     const baseBuilder = this.getBaseBuilder();
 
     const data = [];
+    const optionCodeToName =
+      optionSetCode && (await this.dhisApi.getOptionSetOptions({ code: optionSetCode }));
+
     const processResultsForPeriod = async ([period, resultsForPeriod]) => {
-      const buildData = await baseBuilder.buildData(resultsForPeriod);
+      const buildData = await baseBuilder.buildData(resultsForPeriod, optionCodeToName);
       const newData = buildData.map(dataItem => ({
         ...dataItem,
         timestamp: periodToTimestamp(period),
