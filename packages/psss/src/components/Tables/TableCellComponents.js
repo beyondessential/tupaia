@@ -8,6 +8,7 @@ import { Error } from '@material-ui/icons';
 import styled from 'styled-components';
 
 export const SitesReportedCell = data => {
+  // Todo: update placeholder
   return <span>{`${data.sitesReported}/30`}</span>;
 };
 
@@ -30,6 +31,7 @@ const AFRAlert = styled.div`
 `;
 
 export const AFRCell = ({ AFR }) => {
+  // Todo: update placeholder
   if (AFR > 500) {
     return (
       <AFRAlert>

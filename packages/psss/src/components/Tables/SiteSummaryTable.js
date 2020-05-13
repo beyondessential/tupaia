@@ -18,6 +18,7 @@ const StyledDiv = styled.div`
   padding: 2rem;
 `;
 
+// Todo: update placeholder
 const NameCell = data => {
   return <span>{data.name} Clinic</span>;
 };
@@ -59,11 +60,13 @@ const siteWeekColumns = [
   },
 ];
 
+// Todo: update placeholder
 const TableHeader = () => {
   return <FakeHeader>10/30 Sentinel Sites Reported</FakeHeader>;
 };
 
 export const SiteSummaryTable = React.memo(props => {
+  // Todo: update placeholder
   const customAction = () => {
     console.log('custom action in CountryWeekSummaryTable. props...', props);
   };
