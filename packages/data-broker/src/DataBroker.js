@@ -5,7 +5,7 @@
 
 import { createService } from './services';
 import { getModels } from './getModels';
-import { getSpoofData } from './laosSchoolsSpoofData';
+import { getSpoofData, validCodeConfig } from './laosSchoolsSpoofData';
 
 export class DataBroker {
   constructor() {
@@ -57,7 +57,7 @@ export class DataBroker {
   async pull(dataSourceSpec, options) {
     // Not sure what codes are asked for here. If it is not school level we need some different logic
     // For overlays it is probably country
-    if (options.organisationUnitCodes[0].startsWith('LA_sch_')) {
+    if (validCodeConfig[dataSourceSpec.code[0]]) {
       return getSpoofData(dataSourceSpec, options);
     }
     const dataSources = await this.fetchDataSources(dataSourceSpec);
