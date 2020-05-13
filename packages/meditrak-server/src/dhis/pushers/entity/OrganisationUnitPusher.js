@@ -9,26 +9,6 @@ import { EntityPusher } from './EntityPusher';
 const { ORGANISATION_UNIT, ORGANISATION_UNIT_GROUP } = DHIS2_RESOURCE_TYPES;
 const MAXIMUM_SHORT_NAME_LENGTH = 50;
 
-const getLevelByTypeForServer = (models, server, type) => {
-  const { COUNTRY, DISTRICT, SUB_DISTRICT, FACILITY, VILLAGE } = models.entity.types;
-  const levelsByServerAndType = {
-    regional: {
-      [COUNTRY]: 'Country',
-      [DISTRICT]: 'District',
-      [SUB_DISTRICT]: 'Subdistrict',
-      [FACILITY]: 'Facility',
-      [VILLAGE]: 'Village',
-    },
-    tonga: {
-      [COUNTRY]: 'Country',
-      [DISTRICT]: 'Island Group',
-      [FACILITY]: 'Facility',
-      [VILLAGE]: 'Village',
-    },
-  };
-  return levelsByServerAndType[server][type];
-};
-
 function getFacilityTypeCollectionName(typeName) {
   const edgeCases = {
     Dispensary: 'Dispensaries',
@@ -171,8 +151,24 @@ export class OrganisationUnitPusher extends EntityPusher {
   }
 
   async getLevel(entity) {
+    const { COUNTRY, DISTRICT, SUB_DISTRICT, FACILITY, VILLAGE } = this.models.entity.types;
+    const levelsByServerAndType = {
+      regional: {
+        [COUNTRY]: 'Country',
+        [DISTRICT]: 'District',
+        [SUB_DISTRICT]: 'Subdistrict',
+        [FACILITY]: 'Facility',
+        [VILLAGE]: 'Village',
+      },
+      tonga: {
+        [COUNTRY]: 'Country',
+        [DISTRICT]: 'Island Group',
+        [FACILITY]: 'Facility',
+        [VILLAGE]: 'Village',
+      },
+    };
     const serverName = this.api.getServerName();
-    const levelByType = getLevelByTypeForServer(this.models, serverName);
+    const levelByType = levelsByServerAndType[serverName];
     if (!levelByType) {
       throw new Error(`Unsupported server for entity sync ${serverName}`);
     }
