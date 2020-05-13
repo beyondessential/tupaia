@@ -7,14 +7,11 @@ import styled from 'styled-components';
 import React from 'react';
 import { format } from 'date-fns';
 import PropTypes from 'prop-types';
-import {
-  SitesReportedAccessor,
-  AFRAccessor,
-  CondensedTableBody,
-  FakeHeader,
-} from '@tupaia/ui-components';
+import { CondensedTableBody, FakeHeader } from '@tupaia/ui-components';
 import { ConnectedTable } from './ConnectedTable';
 import * as COLORS from '../../theme/colors';
+import { FIRST_COLUMN_WIDTH, SITES_REPORTED_COLUMN_WIDTH } from './constants';
+import { AFRCell, SitesReportedCell } from './TableCellComponents';
 
 const CountrySummaryTitle = styled.div`
   color: ${COLORS.TEXT_DARKGREY};
@@ -22,7 +19,7 @@ const CountrySummaryTitle = styled.div`
   font-size: 0.9375rem;
 `;
 
-export const NameAccessor = ({ week, startDate, endDate }) => {
+const NameCell = ({ week, startDate, endDate }) => {
   const start = `${format(startDate, 'LLL d')}`;
   const end = `${format(endDate, 'LLL d')}`;
   const year = `${format(endDate, 'yyyy')}`;
@@ -33,7 +30,7 @@ export const NameAccessor = ({ week, startDate, endDate }) => {
   );
 };
 
-NameAccessor.propTypes = {
+NameCell.propTypes = {
   week: PropTypes.number.isRequired,
   startDate: PropTypes.instanceOf(Date).isRequired,
   endDate: PropTypes.instanceOf(Date).isRequired,
@@ -43,20 +40,20 @@ const countrySummaryTableColumns = [
   {
     title: 'Name',
     key: 'name',
-    width: '30%',
+    width: FIRST_COLUMN_WIDTH,
     align: 'left',
-    accessor: NameAccessor,
+    CellComponent: NameCell,
   },
   {
     title: 'Site Reported',
     key: 'sitesReported',
-    accessor: SitesReportedAccessor,
-    width: '100px',
+    CellComponent: SitesReportedCell,
+    width: SITES_REPORTED_COLUMN_WIDTH,
   },
   {
     title: 'AFR',
     key: 'AFR',
-    accessor: AFRAccessor,
+    CellComponent: AFRCell,
   },
   {
     title: 'DIA',
@@ -80,7 +77,7 @@ const TableHeader = () => {
   return <FakeHeader>PREVIOUS 8 WEEKS</FakeHeader>;
 };
 
-export const CountrySummaryTable = props => (
+export const CountrySummaryTable = React.memo(props => (
   <React.Fragment>
     <TableHeader />
     <ConnectedTable
@@ -91,4 +88,4 @@ export const CountrySummaryTable = props => (
       Body={CondensedTableBody}
     />
   </React.Fragment>
-);
+));

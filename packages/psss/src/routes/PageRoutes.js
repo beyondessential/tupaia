@@ -6,14 +6,14 @@
 import React from 'react';
 import { Redirect, Switch } from 'react-router-dom';
 import { AlertReportsView } from '../views/AlertReportsView';
-import { WeeklyReportsView } from '../views/CountriesReportsView';
+import { CountriesReportsView } from '../views/CountriesReportsView';
 import { CountryReportsView } from '../views/CountryReportsView';
 import { PrivateRoute } from './PrivateRoute';
 
 export const PageRoutes = React.memo(() => (
   <Switch>
     <PrivateRoute exact path="/">
-      <WeeklyReportsView />
+      <CountriesReportsView />
     </PrivateRoute>
     <PrivateRoute path="/weekly-reports/:countryName">
       <CountryReportsView />

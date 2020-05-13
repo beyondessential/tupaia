@@ -5,7 +5,6 @@
 import React from 'react';
 import { CalendarToday, TabsToolbar } from '@tupaia/ui-components';
 import Typography from '@material-ui/core/Typography';
-import { useRouteMatch } from 'react-router-dom';
 import { PhotoAlbum } from '@material-ui/icons';
 import MuiContainer from '@material-ui/core/Container';
 import { Header, Main } from '../components';
@@ -29,21 +28,17 @@ const links = [
   },
 ];
 
-export const AlertReportsView = () => {
-  const match = useRouteMatch();
-
-  return (
-    <React.Fragment>
-      <Header title="Alerts & Outbreaks" />
-      <TabsToolbar links={links} />
-      <MuiContainer>
-        <Main>
-          <Typography variant="h2" gutterBottom>
-            Alerts Layout
-          </Typography>
-          <AlertsRoutes match={match} />
-        </Main>
-      </MuiContainer>
-    </React.Fragment>
-  );
-};
+export const AlertReportsView = () => (
+  <React.Fragment>
+    <Header title="Alerts & Outbreaks" />
+    <TabsToolbar links={links} />
+    <MuiContainer>
+      <Main>
+        <Typography variant="h2" gutterBottom>
+          Alerts Layout
+        </Typography>
+        <AlertsRoutes />
+      </Main>
+    </MuiContainer>
+  </React.Fragment>
+);

@@ -2,6 +2,6 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
+import { FakeAPI } from './FakeApi';
 
-export * from './singletons';
-export * from './connectApi';
+export const API = new FakeAPI();
