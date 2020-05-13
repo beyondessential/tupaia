@@ -12,19 +12,11 @@ export class TupaiaDataService extends Service {
     super(models);
 
     this.api = api;
-    this.pullers = this.getPullers();
-    this.metadataPullers = this.getMetadataPullers();
-  }
-
-  getPullers() {
-    return {
+    this.pullers = {
       [this.dataSourceTypes.DATA_ELEMENT]: this.pullAnalytics.bind(this),
       [this.dataSourceTypes.DATA_GROUP]: this.pullEvents.bind(this),
     };
-  }
-
-  getMetadataPullers() {
-    return {
+    this.metadataPullers = {
       [this.dataSourceTypes.DATA_ELEMENT]: this.pullDataElementMetadata.bind(this),
     };
   }
@@ -62,9 +54,9 @@ export class TupaiaDataService extends Service {
       throw new Error('Cannot pull from multiple programs at the same time');
     }
     const [dataSource] = dataSources;
-    const { code: programCode } = dataSource;
+    const { code: surveyCode } = dataSource;
 
-    return this.api.getEvents({ ...options, programCode });
+    return this.api.getEvents({ ...options, surveyCode });
   }
 
   async pullMetadata(dataSources, type) {

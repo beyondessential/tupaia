@@ -4,8 +4,7 @@
  */
 
 import { DhisService } from './dhis';
-import { TupaiaDataService } from './tupaia';
-import { TupaiaDataApi } from './tupaia';
+import { TupaiaDataApi, TupaiaDataService } from './tupaia';
 
 export const createService = (models, type) => {
   switch (type) {

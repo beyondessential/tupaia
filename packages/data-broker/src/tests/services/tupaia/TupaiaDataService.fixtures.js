@@ -40,7 +40,7 @@ export const ANALYTICS = [
 
 export const EVENTS = [
   {
-    event: 'event1_dhisId',
+    event: '5d5f04faf013d60c0f6ecde5',
     eventDate: '2020-02-06T10:18:00.000',
     orgUnit: 'TO_Nukuhc',
     orgUnitName: 'Nukunuku',

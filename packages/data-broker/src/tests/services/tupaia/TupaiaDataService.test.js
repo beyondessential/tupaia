@@ -119,10 +119,10 @@ describe('TupaiaDataService', () => {
           ),
         ).to.be.rejectedWith(/Cannot .*multiple programs/));
 
-      it('uses the data group code as `programCode`', () =>
+      it('uses the data group code as `surveyCode`', () =>
         assertEventApiWasInvokedCorrectly({
           dataSources: [DATA_SOURCES.POP01_GROUP],
-          invocationArgs: sinon.match({ programCode: 'POP01' }),
+          invocationArgs: sinon.match({ surveyCode: 'POP01' }),
         }));
 
       it('supports various API options', async () => {
