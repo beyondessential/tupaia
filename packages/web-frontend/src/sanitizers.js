@@ -5,24 +5,37 @@
  * found in the LICENSE file in the root directory of this source tree.
  */
 
-import { FETCH_ORG_UNIT_SUCCESS } from './actions';
+import { FETCH_ORG_UNIT_SUCCESS, FETCH_MEASURE_DATA_SUCCESS } from './actions';
 
 const tooLargeForDevToolsSerializationWarning =
   "This object has been sanitized is too large for redux dev-tools serialization. To de-sanitize, see 'src/sanitizers.js'";
 
 const actionSanitizer = action => {
-  return action.type === FETCH_ORG_UNIT_SUCCESS
-    ? { ...action, organisationUnit: tooLargeForDevToolsSerializationWarning }
-    : action;
+  switch (action.type) {
+    case FETCH_ORG_UNIT_SUCCESS:
+      return { ...action, organisationUnit: tooLargeForDevToolsSerializationWarning };
+    case FETCH_MEASURE_DATA_SUCCESS:
+      return {
+        ...action,
+        response: { ...action.response, measureData: tooLargeForDevToolsSerializationWarning },
+      };
+    default:
+      return action;
+  }
 };
 
 const stateSanitizer = state => {
-  return state.orgUnits
-    ? {
-        ...state,
-        orgUnits: { ...state.orgUnits, orgUnitMap: tooLargeForDevToolsSerializationWarning },
-      }
-    : state;
+  return {
+    ...state,
+    orgUnits: { ...state.orgUnits, orgUnitMap: tooLargeForDevToolsSerializationWarning },
+    map: {
+      ...state.map,
+      measureInfo: {
+        ...state.map.measureInfo,
+        measureData: tooLargeForDevToolsSerializationWarning,
+      },
+    },
+  };
 };
 
 export const sanitizers = {
