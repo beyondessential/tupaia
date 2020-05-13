@@ -94,9 +94,9 @@ function innerAreas(state = [], action) {
 
 function measureInfo(state = {}, action) {
   switch (action.type) {
-    case CHANGE_ORG_UNIT:
-      if (action.organisationUnitCode === 'World') {
-        // clear measures when returning to world view
+    case CHANGE_ORG_UNIT_SUCCESS:
+      if (action.organisationUnit.type === 'Project') {
+        // clear measures when returning to project view
         return {};
       }
       return state;

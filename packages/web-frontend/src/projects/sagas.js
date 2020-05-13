@@ -10,6 +10,7 @@ import {
   changeBounds,
   changeDashboardGroup,
   FETCH_LOGIN_SUCCESS,
+  requestOrgUnit,
   FETCH_LOGOUT_SUCCESS,
 } from '../actions';
 import { INITIAL_PROJECT_CODE } from '../defaults';
@@ -42,6 +43,7 @@ function* watchSelectProjectAndLoadProjectState() {
     yield put(changeBounds(action.project.bounds));
     yield put(setProjectDefaults(action.project));
     yield put(changeDashboardGroup(action.project.dashboardGroupName));
+    yield put(requestOrgUnit(action.project.code, action.project.code));
   });
 }
 

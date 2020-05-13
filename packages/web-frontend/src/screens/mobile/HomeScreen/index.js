@@ -15,7 +15,11 @@ import { SelectListItem } from '../../../components/mobile/SelectListItem';
 import { Dashboard } from '../../../components/mobile/Dashboard';
 import { changeOrgUnit, toggleDashboardSelectExpand, changeDashboardGroup } from '../../../actions';
 import { WHITE } from '../../../styles';
-import { selectCurrentDashboardKey, selectOrgUnitChildren } from '../../../selectors';
+import {
+  selectCurrentDashboardKey,
+  selectOrgUnitChildren,
+  selectActiveProject,
+} from '../../../selectors';
 
 class HomeScreen extends PureComponent {
   componentWillMount() {
@@ -81,7 +85,7 @@ const mapStateToProps = state => {
   const { isGroupSelectExpanded } = state.dashboard;
 
   const { currentOrganisationUnit, dashboardConfig } = state.global;
-  const organisationUnits = selectOrgUnitChildren(state, 'World') || [];
+  const organisationUnits = selectOrgUnitChildren(state, selectActiveProject(state).code) || [];
 
   return {
     organisationUnits,
