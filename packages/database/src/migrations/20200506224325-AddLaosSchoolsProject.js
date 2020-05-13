@@ -23,6 +23,9 @@ export const hierarchyNameToId = async (db, name) => {
   return record.rows[0] && record.rows[0].id;
 };
 
+const getWorldBounds = async db =>
+  db.runSql(`select bounds from entity where code = 'World' limit 1;`);
+
 exports.up = async function(db) {
   await insertObject(db, 'entity', {
     id: generateId(),
@@ -30,6 +33,11 @@ exports.up = async function(db) {
     parent_id: await codeToId(db, 'entity', 'World'),
     name: 'Laos Schools',
     type: 'project',
+    bounds: (await getWorldBounds(db)).rows[0].bounds,
+  });
+  await insertObject(db, 'entity_hierarchy', {
+    id: generateId(),
+    name: PROJECT_CODE,
   });
   await insertObject(db, 'project', {
     id: generateId(),
@@ -42,11 +50,7 @@ exports.up = async function(db) {
     user_groups: '{Laos Schools User}',
     logo_url: 'https://tupaia.s3-ap-southeast-2.amazonaws.com/uploads/laos_schools_logo.png',
     entity_id: await codeToId(db, 'entity', PROJECT_CODE),
-  });
-
-  await insertObject(db, 'entity_hierarchy', {
-    id: generateId(),
-    name: PROJECT_CODE,
+    entity_hierarchy_id: await hierarchyNameToId(db, PROJECT_CODE),
   });
   await insertObject(db, 'entity_relation', {
     id: generateId(),
