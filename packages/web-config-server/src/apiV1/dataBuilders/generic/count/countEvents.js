@@ -3,9 +3,9 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { getSortByKey } from '@tupaia/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { countEventsThatSatisfyConditions, groupEvents } from '/apiV1/dataBuilders/helpers';
-import { getSortByKey } from '@tupaia/utils/dist/object';
 
 /**
  * Configuration schema
@@ -26,10 +26,16 @@ import { getSortByKey } from '@tupaia/utils/dist/object';
 
 export class CountEventsBuilder extends DataBuilder {
   async build() {
-    const events = await this.fetchEvents({ dataValueFormat: 'object' });
+    const events = await this.fetchResults();
     const data = await this.buildData(events);
 
     return { data };
+  }
+
+  async fetchResults() {
+    const dataElementCodes = Object.keys(this.config.dataValues || {});
+    const events = await this.fetchEvents({ useDeprecatedApi: false, dataElementCodes });
+    return events;
   }
 
   async buildData(events) {
