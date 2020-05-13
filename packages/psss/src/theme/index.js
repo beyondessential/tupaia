@@ -118,4 +118,4 @@ const overrides = {
     },
   },
 };
-export default createMuiTheme({ palette, themeName, typography, shape, overrides });
+export const theme = createMuiTheme({ palette, themeName, typography, shape, overrides });
