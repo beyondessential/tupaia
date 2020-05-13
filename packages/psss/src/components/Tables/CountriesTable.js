@@ -11,6 +11,7 @@ import PropTypes from 'prop-types';
 import { Link as RouterLink } from 'react-router-dom';
 import { ConnectedTable } from './ConnectedTable';
 import * as COLORS from '../../theme/colors';
+import { FIRST_COLUMN_WIDTH, SITES_REPORTED_COLUMN_WIDTH } from './constants';
 import { CountrySummaryTable } from './CountrySummaryTable';
 import { AFRCell, SitesReportedCell } from './TableCellComponents';
 
@@ -42,7 +43,7 @@ const countriesTableColumns = [
   {
     title: 'Name',
     key: 'name',
-    width: '30%',
+    width: FIRST_COLUMN_WIDTH,
     align: 'left',
     CellComponent: NameCell,
   },
@@ -50,7 +51,7 @@ const countriesTableColumns = [
     title: 'Site Reported',
     key: 'sitesReported',
     CellComponent: SitesReportedCell,
-    width: '100px',
+    width: SITES_REPORTED_COLUMN_WIDTH,
   },
   {
     title: 'AFR',

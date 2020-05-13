@@ -14,20 +14,21 @@ import { Alarm, CheckCircleOutline } from '@material-ui/icons';
 import { SiteSummaryTable } from './SiteSummaryTable';
 import { ConnectedTable } from './ConnectedTable';
 import * as COLORS from '../../theme/colors';
+import { FIRST_COLUMN_WIDTH, SITES_REPORTED_COLUMN_WIDTH } from './constants';
 import { AFRCell, SitesReportedCell } from './TableCellComponents';
 
 const CountryWeekTitle = styled.div`
   color: ${COLORS.BLUE};
   font-weight: 500;
-  font-size: 16px;
-  line-height: 19px;
+  font-size: 1rem;
+  line-height: 1.2rem;
   margin-bottom: 3px;
 `;
 
 const CountryWeekSubTitle = styled.div`
   color: ${COLORS.TEXT_DARKGREY};
-  font-size: 14px;
-  line-height: 16px;
+  font-size: 0.875rem;
+  line-height: 1rem;
 `;
 
 const NameCell = ({ week, startDate, endDate }) => {
@@ -54,16 +55,16 @@ const Status = styled.div`
   align-items: center;
   text-transform: uppercase;
   font-weight: 500;
-  font-size: 11px;
+  font-size: 0.6875rem;
   line-height: 1;
   padding-left: 1rem;
   text-align: left;
   width: 100%;
 
   .MuiSvgIcon-root {
-    width: 22px;
-    height: 22px;
-    margin-right: 5px;
+    width: 1.375rem;
+    height: 1.375rem;
+    margin-right: 0.3125rem;
   }
 `;
 
@@ -93,7 +94,7 @@ const countryColumns = [
   {
     title: 'Date ',
     key: 'week',
-    width: '30%',
+    width: FIRST_COLUMN_WIDTH,
     align: 'left',
     CellComponent: NameCell,
   },
@@ -101,7 +102,7 @@ const countryColumns = [
     title: 'Site Reported',
     key: 'sitesReported',
     CellComponent: SitesReportedCell,
-    width: '100px',
+    width: SITES_REPORTED_COLUMN_WIDTH,
   },
   {
     title: 'AFR',

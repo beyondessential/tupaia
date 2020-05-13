@@ -28,7 +28,7 @@ const siteWeekColumns = [
   {
     title: 'Name',
     key: 'name',
-    width: '30%',
+    width: FIRST_COLUMN_WIDTH,
     align: 'left',
     CellComponent: NameCell,
   },
@@ -36,7 +36,7 @@ const siteWeekColumns = [
     title: 'Sites Reported',
     key: 'sitesReported',
     CellComponent: SitesReportedCell,
-    width: '100px',
+    width: SITES_REPORTED_COLUMN_WIDTH,
   },
   {
     title: 'AFR',

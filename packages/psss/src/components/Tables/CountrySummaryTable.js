@@ -10,6 +10,7 @@ import PropTypes from 'prop-types';
 import { CondensedTableBody, FakeHeader } from '@tupaia/ui-components';
 import { ConnectedTable } from './ConnectedTable';
 import * as COLORS from '../../theme/colors';
+import { FIRST_COLUMN_WIDTH, SITES_REPORTED_COLUMN_WIDTH } from './constants';
 import { AFRCell, SitesReportedCell } from './TableCellComponents';
 
 const CountrySummaryTitle = styled.div`
@@ -39,7 +40,7 @@ const countrySummaryTableColumns = [
   {
     title: 'Name',
     key: 'name',
-    width: '30%',
+    width: FIRST_COLUMN_WIDTH,
     align: 'left',
     CellComponent: NameCell,
   },
@@ -47,7 +48,7 @@ const countrySummaryTableColumns = [
     title: 'Site Reported',
     key: 'sitesReported',
     CellComponent: SitesReportedCell,
-    width: '100px',
+    width: SITES_REPORTED_COLUMN_WIDTH,
   },
   {
     title: 'AFR',
