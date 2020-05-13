@@ -4,10 +4,11 @@
  */
 
 import { expect } from 'chai';
+import { TupaiaDataApi } from '@tupaia/data-api';
 
 import { createService } from '../../services/createService';
 import { DhisService } from '../../services/dhis';
-import { TupaiaDataService, TupaiaDataApi } from '../../services/tupaia';
+import { TupaiaDataService } from '../../services/tupaia';
 
 describe('createService()', () => {
   const models = {
