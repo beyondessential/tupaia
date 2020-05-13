@@ -5,12 +5,7 @@
 
 export const SERVER_NAME = 'test server name';
 
-const BASIC_DATA_SOURCE = {
-  service_type: 'testServiceType',
-  config: {},
-};
-
-const createDataSource = fields => ({ ...BASIC_DATA_SOURCE, ...fields });
+const createDataSource = fields => ({ service_type: 'dhis', config: {}, ...fields });
 
 export const DATA_SOURCES = {
   POP01: createDataSource({ type: 'dataElement', code: 'POP01', dataElementCode: 'POP01' }),
@@ -22,13 +17,11 @@ export const DATA_SOURCES = {
   }),
   POP01_GROUP: createDataSource({
     type: 'dataGroup',
-    code: 'POP01', // intentionally the same as data source 1, as they should be differentiated by type
-    dataElementCode: 'POP01_GROUP',
+    code: 'POP01', // intentionally the same as `POP01` data element, as their type should differentiate them
   }),
   DIFF_GROUP: createDataSource({
     type: 'dataGroup',
     code: 'DIFF_GROUP',
-    dataElementCode: 'DIFF_GROUP',
   }),
 };
 
