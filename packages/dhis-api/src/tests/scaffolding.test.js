@@ -1,9 +1,11 @@
 /**
- * Tupaia Config Server
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
 import chai from 'chai';
+import chaiAsPromised from 'chai-as-promised';
+
 import sinonChai from 'sinon-chai';
 
 // These setup tasks need to be performed before any test, so we
@@ -11,4 +13,7 @@ import sinonChai from 'sinon-chai';
 
 before(() => {
   chai.use(sinonChai);
+
+  // `chaiAsPromised` must be used after other plugins to promisify them
+  chai.use(chaiAsPromised);
 });

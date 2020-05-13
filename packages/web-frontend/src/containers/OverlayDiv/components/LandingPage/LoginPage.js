@@ -6,7 +6,6 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import MuiAppBar from '@material-ui/core/AppBar';
 import MuiTabs from '@material-ui/core/Tabs';
@@ -17,7 +16,6 @@ import Box from '@material-ui/core/Box';
 import { LoginForm } from '../../../LoginForm';
 import { SignupForm } from '../../../SignupForm';
 import { RequestResetPasswordForm } from '../../../RequestResetPasswordForm';
-import { ProjectPage } from '../ProjectPage';
 import { OVERLAY_PADDING } from '../../constants';
 import { DARK_BLUE, LIGHTENED_DARK_BLUE, PRIMARY_BLUE } from '../../../../styles';
 
@@ -71,7 +69,7 @@ const ContentContainer = styled.div`
   transition: height 0.4 linear;
 `;
 
-export const OverlayContent = ({ isUserLoggedIn }) => {
+export const LoginPage = () => {
   const contentMargin = OVERLAY_PADDING.split(' ')
     .map(x => `-${x}`)
     .join(' ');
@@ -83,8 +81,6 @@ export const OverlayContent = ({ isUserLoggedIn }) => {
   const [value, setValue] = React.useState(1);
   const handleChange = React.useCallback((_, newValue) => setValue(newValue));
   const handleLogin = React.useCallback(() => setValue(1));
-
-  if (isUserLoggedIn) return <ProjectPage />;
 
   return (
     <ContentContainer margin={contentMargin}>
@@ -113,8 +109,4 @@ export const OverlayContent = ({ isUserLoggedIn }) => {
       </div>
     </ContentContainer>
   );
-};
-
-OverlayContent.propTypes = {
-  isUserLoggedIn: PropTypes.bool.isRequired,
 };
