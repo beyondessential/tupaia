@@ -3,8 +3,18 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { Dashboard, HomeButton, WarningCloud, NavBar as BaseNavBar } from '@tupaia/ui-components';
-import { ProfileButton } from './ProfileButton';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import Avatar from '@material-ui/core/Avatar';
+import {
+  Dashboard,
+  HomeButton,
+  LightProfileButton,
+  WarningCloud,
+  TextButton,
+  NavBar as BaseNavBar,
+} from '@tupaia/ui-components';
+import { logout } from '../store';
 
 const links = [
   {
@@ -20,6 +30,20 @@ const links = [
 ];
 
 const Home = () => <HomeButton source="/psss-logo-white.svg" />;
+
+/*
+ * Temporarily replacing the Profile button with a logout button. Will update the profile button in another PR
+ */
+// const Profile = () => <LightProfileButton startIcon={<Avatar>T</Avatar>}>Tom</LightProfileButton>;
+const LogoutButton = ({ onLogout }) => <TextButton onClick={onLogout}>Logout</TextButton>;
+
+LogoutButton.propTypes = {
+  onLogout: PropTypes.func.isRequired,
+};
+
+const ConnectedLogoutButton = connect(null, dispatch => ({
+  onLogout: () => dispatch(logout()),
+}))(LogoutButton);
 
 /*
  * This ensures that the link to the home page is active for sub-urls of country (eg. /weekly-reports/samoa)
@@ -40,5 +64,10 @@ const isTabActive = (match, location) => {
 };
 
 export const NavBar = () => (
-  <BaseNavBar HomeButton={Home} links={links} Profile={ProfileButton} isTabActive={isTabActive} />
+  <BaseNavBar
+    HomeButton={Home}
+    links={links}
+    Profile={ConnectedLogoutButton}
+    isTabActive={isTabActive}
+  />
 );
