@@ -45,6 +45,7 @@ export class DataBuilder {
     dataElementCodes,
     additionalQueryConfig,
     aggregationType = this.aggregationType,
+    aggregationConfig = {},
   ) {
     const { dataServices, filter = {} } = this.config;
     const fetchOptions = {
@@ -54,6 +55,7 @@ export class DataBuilder {
     };
 
     return this.aggregator.fetchAnalytics(dataElementCodes, fetchOptions, this.query, {
+      aggregationConfig,
       aggregationType,
       filter,
     });
