@@ -55,6 +55,8 @@ export class DataBroker {
   }
 
   async pull(dataSourceSpec, options) {
+    // Not sure what codes are asked for here. If it is not school level we need some different logic
+    // For overlays it is probably country
     if (options.organisationUnitCodes[0].startsWith('LA_sch_')) {
       return getSpoofData(dataSourceSpec, options);
     }
