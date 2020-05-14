@@ -4,6 +4,7 @@
  */
 
 export { buildAndInsertSurveys } from './buildAndInsertSurveys';
+export { buildAndInsertSurveyResponses } from './buildAndInsertSurveyResponses';
 export { clearTestData } from './clearTestData';
 export { generateTestId } from './generateTestId';
 export { generateValueOfType } from './generateValueOfType';
