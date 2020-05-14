@@ -3,18 +3,18 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { upsertDummyRecord } from './upsertDummyRecord';
+import { findOrCreateDummyRecord, upsertDummyRecord } from './upsertDummyRecord';
 
-const buildAndInsertQuestion = async (models, surveyScreen, questionProperties) => {
-  const question = await upsertDummyRecord(models.question, questionProperties);
+const buildAndInsertQuestion = async (models, surveyScreen, { code, ...questionProperties }) => {
+  const question = await findOrCreateDummyRecord(models.question, { code }, questionProperties);
   await upsertDummyRecord(models.surveyScreenComponent, {
     screen_id: surveyScreen.id,
     question_id: question.id,
   });
 };
 
-const buildAndInsertSurvey = async (models, { questions, ...surveyProperties }) => {
-  const survey = await upsertDummyRecord(models.survey, surveyProperties);
+const buildAndInsertSurvey = async (models, { questions, code, ...surveyProperties }) => {
+  const survey = await findOrCreateDummyRecord(models.survey, { code }, surveyProperties);
   const surveyScreen = await upsertDummyRecord(models.surveyScreen, { survey_id: survey.id });
   await Promise.all(questions.map(q => buildAndInsertQuestion(models, surveyScreen, q)));
 };
