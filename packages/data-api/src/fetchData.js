@@ -34,8 +34,9 @@ const generateBaseSqlQuery = ({ dataElementCodes, organisationUnitCodes, startDa
     [...dataElementCodes, ...organisationUnitCodes],
   );
 
+  // Add start and end date, which are inclusive
   if (startDate) {
-    sqlQuery.addClause(`AND survey_response.submission_time >= ?`, [startDate]); // TODO check if dhis2 is inclusive or exclusive
+    sqlQuery.addClause(`AND survey_response.submission_time >= ?`, [startDate]);
   }
   if (endDate) {
     sqlQuery.addClause(`AND survey_response.submission_time <= ?`, [endDate]);
