@@ -180,7 +180,7 @@ describe('measures', () => {
 
     it('should choose a color from a spectrum', () => {
       const display = getMeasureDisplayInfo({ questionC: 0 }, [optionsSpectrum]);
-      expect(display).toHaveProperty('color', '#000');
+      expect(display).toHaveProperty('color', 'hsl(0, 100%, 50%)');
       const display2 = getMeasureDisplayInfo({ questionC: 1 }, [optionsSpectrum]);
       expect(display2).toHaveProperty('color', 'hsl(100, 100%, 50%)');
       const display3 = getMeasureDisplayInfo({ questionC: 0.5 }, [optionsSpectrum]);
