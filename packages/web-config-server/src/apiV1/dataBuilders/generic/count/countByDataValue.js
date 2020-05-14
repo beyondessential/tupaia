@@ -9,16 +9,18 @@ class CountByDataValueBuilder extends DataBuilder {
 
     const returnJson = {};
     const returnDataJson = {};
-    results.forEach(({ value }) => {
-      if (valuesOfInterest && !valuesOfInterest.includes(value)) {
-        // not interested in this value, ignore it
-        return;
-      }
-      if (!returnDataJson[value]) {
-        returnDataJson[value] = { value: 0, name: value };
-      }
-      returnDataJson[value].value += 1;
-    });
+    results
+      .filter(result => dataElementCodes.includes(result.dataElement))
+      .forEach(({ value }) => {
+        if (valuesOfInterest && !valuesOfInterest.includes(value)) {
+          // not interested in this value, ignore it
+          return;
+        }
+        if (!returnDataJson[value]) {
+          returnDataJson[value] = { value: 0, name: value };
+        }
+        returnDataJson[value].value += 1;
+      });
 
     returnJson.data = Object.values(returnDataJson);
     return returnJson;

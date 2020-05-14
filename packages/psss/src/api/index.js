@@ -4,3 +4,5 @@
  */
 
 export { TupaiaApi } from './TupaiaApi';
+export * from './singletons';
+export * from './connectApi';

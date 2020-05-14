@@ -9,10 +9,9 @@ import { KeyboardArrowDown as MuiKeyboardArrowDown } from '@material-ui/icons';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { TextField } from './TextField';
-import * as COLORS from '../../theme/colors';
 
 const KeyboardArrowDown = styled(MuiKeyboardArrowDown)`
-  color: ${COLORS.GREY_72};
+  color: ${props => props.theme.palette.grey['600']};
   font-size: 28px;
   top: calc(50% - 14px);
   right: 16px;
@@ -24,7 +23,7 @@ const StyledTextField = styled(TextField)`
       position: absolute;
       right: 55px;
       top: calc(50% - 15px);
-      border-left: 1px solid ${COLORS.GREY_9F};
+      border-left: 1px solid ${props => props.theme.palette.grey['500']};
       height: 30px;
       content: '';
     }

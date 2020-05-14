@@ -6,7 +6,6 @@ import React from 'react';
 import styled from 'styled-components';
 import MuiButton from '@material-ui/core/Button';
 import PropTypes from 'prop-types';
-import * as COLORS from '../theme/colors';
 
 const StyledButton = styled(MuiButton)`
   font-size: 0.9375rem;
@@ -82,8 +81,8 @@ export const SmallButton = styled(Button)`
 const OutlinedButton = props => <Button {...props} variant="outlined" />;
 
 export const LightOutlinedButton = styled(OutlinedButton)`
-  color: ${COLORS.WHITE};
-  border-color: ${COLORS.GREY_DE};
+  color: ${props => props.theme.palette.common.white};
+  border-color: ${props => props.theme.palette.common.white};
   justify-content: space-between;
   padding: 0.5rem 1rem;
 
@@ -93,8 +92,8 @@ export const LightOutlinedButton = styled(OutlinedButton)`
   }
 
   &:hover {
-    background-color: ${COLORS.WHITE};
-    border-color: ${COLORS.WHITE};
+    background-color: ${props => props.theme.palette.common.white};
+    border-color: ${props => props.theme.palette.common.white};
     color: ${props => props.theme.palette.primary.main};
   }
 `;

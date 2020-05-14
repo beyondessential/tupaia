@@ -23,6 +23,7 @@
     "@material-ui/styles": "^4.9.10",
     "@tupaia/ui-components": "1.0",
     "@tupaia/utils": "1.0.0",
+    "date-fns": "^2.12.0",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
@@ -41,5 +42,8 @@
   },
   "browserslist": [
     "defaults"
-  ]
+  ],
+  "devDependencies": {
+    "faker": "^4.1.0"
+  }
 }

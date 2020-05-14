@@ -9,7 +9,6 @@ import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import * as COLORS from '../theme/colors';
 import { Home as HomeIcon } from './Icons';
 
 const StyledBreadcrumbs = styled(MuiBreadcrumbs)`
@@ -87,13 +86,13 @@ Breadcrumbs.defaultProps = {
  * Light Breadcrumbs
  */
 export const LightBreadcrumbs = styled(Breadcrumbs)`
-  color: ${COLORS.LIGHT_BLUE};
+  color: ${props => props.theme.palette.secondary.light};
 
   svg {
-    color: ${COLORS.WHITE};
+    color: ${props => props.theme.palette.common.white};
   }
 
   a {
-    color: ${COLORS.WHITE};
+    color: ${props => props.theme.palette.common.white};
   }
 `;

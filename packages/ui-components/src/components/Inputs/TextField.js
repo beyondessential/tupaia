@@ -6,7 +6,6 @@
 import React from 'react';
 import MuiTextField from '@material-ui/core/TextField';
 import styled from 'styled-components';
-import * as COLORS from '../../theme/colors';
 
 /*
  * TextField
@@ -22,8 +21,8 @@ export const TextField = styled(BaseTextField)`
 
   // The actual input field
   .MuiInputBase-input {
-    background: ${COLORS.WHITE};
-    color: ${COLORS.GREY_72};
+    background: ${props => props.theme.palette.common.white};
+    color: ${props => props.theme.palette.grey['600']};
     font-weight: 400;
     font-size: 15px;
     line-height: 18px;
@@ -33,7 +32,7 @@ export const TextField = styled(BaseTextField)`
 
   // The border
   .MuiOutlinedInput-notchedOutline {
-    border-color: ${COLORS.GREY_DE};
+    border-color: ${props => props.theme.palette.grey['400']};
     top: 0;
 
     legend {
@@ -43,17 +42,17 @@ export const TextField = styled(BaseTextField)`
 
   // Hover state
   .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
-    border-color: ${COLORS.GREY_72};
+    border-color: ${props => props.theme.palette.grey['600']};
   }
 
   // Focused state
   .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-    border-color: ${COLORS.GREY_72};
+    border-color: ${props => props.theme.palette.grey['600']};
     border-width: 1px;
   }
 
   .MuiFormLabel-root.Mui-focused {
-    color: ${COLORS.TEXT_DARKGREY};
+    color: ${props => props.theme.palette.text.primary};
   }
 
   // The label
@@ -68,10 +67,10 @@ export const TextField = styled(BaseTextField)`
   * Adornments
   */
   .MuiInputAdornment-positionEnd {
-    color: ${COLORS.GREY_72};
+    color: ${props => props.theme.palette.grey['600']};
 
     &:before {
-      border-left: 1px solid ${COLORS.GREY_9F};
+      border-left: 1px solid ${props => props.theme.palette.grey['500']};
       height: 30px;
       content: '';
       padding-right: 15px;
