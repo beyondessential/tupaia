@@ -7,7 +7,7 @@ import groupBy from 'lodash.groupby';
 import { utcMoment } from '@tupaia/utils';
 
 import { fetchEventData, fetchAnalyticData } from './fetchData';
-import { parameteriseArray } from './utils';
+import { parameteriseArray, sanitizeDataValue } from './utils';
 
 const EVENT_DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss';
 const DAY_PERIOD_FORMAT = 'YYYYMMDD';
@@ -23,7 +23,10 @@ export class TupaiaDataApi {
     return Object.values(resultsBySurveyResponse).map(resultsForSurveyResponse => {
       const { surveyResponseId, date, entityCode, entityName } = resultsForSurveyResponse[0];
       const dataValues = resultsForSurveyResponse.reduce(
-        (values, { dataElementCode, value }) => ({ ...values, [dataElementCode]: value }),
+        (values, { dataElementCode, type, value }) => ({
+          ...values,
+          [dataElementCode]: sanitizeDataValue(value, type),
+        }),
         {},
       );
       return {
@@ -38,11 +41,11 @@ export class TupaiaDataApi {
 
   async fetchAnalytics(options) {
     const results = await fetchAnalyticData(this.database, options);
-    return results.map(({ entityCode, dataElementCode, date, value }) => ({
+    return results.map(({ entityCode, dataElementCode, date, type, value }) => ({
       organisationUnit: entityCode,
       dataElement: dataElementCode,
       period: utcMoment(date).format(DAY_PERIOD_FORMAT), // TODO should we convert to period here or in data-broker
-      value,
+      value: sanitizeDataValue(value, type),
     }));
   }
 

@@ -27,7 +27,7 @@ export const testFetchEvents = () => {
         eventDate: '2020-01-31T09:00:00',
         dataValues: {
           BCD1: 'Fully operational',
-          BCD325: '53',
+          BCD325: 53,
         },
       },
     ]);

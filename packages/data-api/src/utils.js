@@ -4,3 +4,12 @@
  */
 
 export const parameteriseArray = arr => `(${arr.map(() => '?').join(',')})`;
+
+export const sanitizeDataValue = (value, type) => {
+  if (type === 'Number') {
+    const sanitizedValue = parseFloat(value);
+    return Number.isNaN(sanitizedValue) ? '' : sanitizedValue;
+  }
+
+  return value;
+};

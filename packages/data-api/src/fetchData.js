@@ -15,6 +15,7 @@ const generateBaseSqlQuery = ({ dataElementCodes, organisationUnitCodes, startDa
       entity.code as "entityCode",
       entity.name as "entityName",
       question.code as "dataElementCode",
+      question.type as "type",
       answer.text as "value"
     FROM
       survey_response
