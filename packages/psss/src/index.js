@@ -2,6 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
+
 import React from 'react';
 import { render } from 'react-dom';
 import { applyMiddleware, createStore, compose } from 'redux';
@@ -15,15 +16,13 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { ThemeProvider } from 'styled-components';
 import { createReducers } from './createReducers';
 import { theme } from './theme';
-import { TupaiaApi } from './api';
+import { API } from './api';
 import App from './App';
 
-const composeEnhancers =
-  (window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()) || compose; // eslint-disable-line no-underscore-dangle
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 function initStore() {
-  const api = new TupaiaApi();
-  const enhancers = composeEnhancers(applyMiddleware(thunk.withExtraArgument({ api })));
+  const enhancers = composeEnhancers(applyMiddleware(thunk.withExtraArgument({ api: API })));
   const persistConfig = { key: 'psss', storage };
   if (process.env.NODE_ENV !== 'development') {
     persistConfig.whitelist = []; // persist used for a dev experience, but not required in production
@@ -31,7 +30,7 @@ function initStore() {
   const persistedReducers = persistCombineReducers(persistConfig, createReducers());
 
   const store = createStore(persistedReducers, {}, enhancers);
-  api.injectReduxStore(store);
+  API.injectReduxStore(store);
 
   return store;
 }
