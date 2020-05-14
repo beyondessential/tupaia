@@ -41,7 +41,7 @@ export class TupaiaDataApi {
     return results.map(({ entityCode, dataElementCode, date, value }) => ({
       organisationUnit: entityCode,
       dataElement: dataElementCode,
-      period: moment(date).format(DAY_PERIOD_FORMAT),
+      period: moment(date).format(DAY_PERIOD_FORMAT), // TODO should we convert to period here or in data-broker
       value,
     }));
   }
