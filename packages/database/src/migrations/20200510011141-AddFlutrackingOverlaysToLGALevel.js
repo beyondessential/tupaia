@@ -16,7 +16,7 @@ const BASE_OVERLAY = {
   userGroup: 'Public',
   dataElementCode: 'value',
   displayType: 'shaded-spectrum',
-  isDataRegional: false,
+  isDataRegional: true,
   hideFromMenu: false,
   hideFromPopup: false,
   hideFromLegend: false,
