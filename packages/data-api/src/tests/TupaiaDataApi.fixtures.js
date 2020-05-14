@@ -6,14 +6,12 @@
 import { generateTestId } from '@tupaia/database';
 
 const portDouglas = {
-  id: generateTestId(),
   code: 'DL_1',
   name: 'Port Douglas',
   type: 'facility',
 };
 
 const kerang = {
-  id: generateTestId(),
   code: 'DL_2',
   name: 'Kerang',
   type: 'facility',
@@ -63,49 +61,57 @@ const CROP_SURVEY = {
 
 export const SURVEYS = [BCD_SURVEY, CROP_SURVEY];
 
-export const BCD_RESPONSE_1 = {
-  survey_id: BCD_SURVEY,
-  entity_id: portDouglas.id,
+const BCD_RESPONSE_1 = {
+  surveyCode: BCD_SURVEY.code,
+  entityCode: portDouglas.code,
   submission_time: '2020-01-31T09:00:00',
   answers: [
-    { question_id: BCD1.id, text: 'Fully operational' },
-    { question_id: BCD325.id, text: '53' },
+    { questionCode: BCD1.code, text: 'Fully operational' },
+    { questionCode: BCD325.code, text: '53' },
   ],
 };
 
-export const BCD_RESPONSE_2 = {
-  survey_id: BCD_SURVEY,
-  entity_id: kerang.id,
+const BCD_RESPONSE_2 = {
+  surveyCode: BCD_SURVEY.code,
+  entityCode: kerang.code,
   submission_time: '2020-02-05T15:00:00',
   answers: [
-    { question_id: BCD1.id, text: 'Temporarily closed' },
-    { question_id: BCD325.id, text: '0' },
+    { questionCode: BCD1.code, text: 'Temporarily closed' },
+    { questionCode: BCD325.code, text: '0' },
   ],
 };
 
-export const CROP_RESPONSE_PORT_DOUGLAS_2019 = {
-  survey_id: CROP_SURVEY,
-  entity_id: portDouglas.id,
+const CROP_RESPONSE_PORT_DOUGLAS_2019 = {
+  surveyCode: CROP_SURVEY.code,
+  entityCode: portDouglas.code,
   submission_time: '2019-11-21T09:00:00',
   answers: [
-    { question_id: CROP_1.id, text: '105' },
-    { question_id: CROP_2.id, text: '32' },
+    { questionCode: CROP_1.code, text: '105' },
+    { questionCode: CROP_2.code, text: '32' },
   ],
 };
 
-export const CROP_RESPONSE_PORT_DOUGLAS_2020 = {
-  survey_id: CROP_SURVEY,
-  entity_id: portDouglas.id,
+const CROP_RESPONSE_PORT_DOUGLAS_2020 = {
+  surveyCode: CROP_SURVEY.code,
+  entityCode: portDouglas.code,
   submission_time: '2020-11-21T09:00:00',
-  answers: [{ question_id: CROP_2.id, text: '55' }],
+  answers: [{ questionCode: CROP_2.code, text: '55' }],
 };
 
-export const CROP_RESPONSE_KERANG = {
-  survey_id: CROP_SURVEY,
-  entity_id: kerang.id,
+const CROP_RESPONSE_KERANG = {
+  surveyCode: CROP_SURVEY.code,
+  entityCode: kerang.code,
   submission_time: '2019-11-21T09:00:00',
   answers: [
-    { question_id: CROP_1.id, text: '5.1' },
-    { question_id: CROP_2.id, text: '55' },
+    { questionCode: CROP_1.code, text: '5.1' },
+    { questionCode: CROP_2.code, text: '55' },
   ],
 };
+
+export const SURVEY_RESPONSES = [
+  BCD_RESPONSE_1,
+  BCD_RESPONSE_2,
+  CROP_RESPONSE_KERANG,
+  CROP_RESPONSE_PORT_DOUGLAS_2019,
+  CROP_RESPONSE_PORT_DOUGLAS_2020,
+];
