@@ -61,14 +61,11 @@ const descendantsCache = createCachedSelector(
     let generation = [orgUnit];
     while (generation.length > 0) {
       descendants.push(...generation);
-      generation = [].concat(
-        ...generation
-          .filter(generationOrgUnit => generationOrgUnit.type !== level)
-          .map(parentOrgUnit =>
-            countryOrgUnits.filter(
-              childOrgUnit => childOrgUnit.parent === parentOrgUnit.organisationUnitCode,
-            ),
-          ),
+      const nextGenParentCodes = generation
+        .filter(generationOrgUnit => generationOrgUnit.type !== level)
+        .map(nextGenParent => nextGenParent.organisationUnitCode);
+      generation = countryOrgUnits.filter(childOrgUnit =>
+        nextGenParentCodes.includes(childOrgUnit.parent),
       );
     }
 
@@ -136,6 +133,34 @@ const getOrgUnitFromMeasureData = (measureData, code) =>
   measureData.find(val => val.organisationUnitCode === code);
 
 const getOrgUnitFromCountry = (country, code) => (country && code ? country[code] : undefined);
+
+const selectDisplayLevelAncestor = createSelector(
+  [
+    state =>
+      safeGet(countryCache, [
+        state.orgUnits.orgUnitMap,
+        state.global.currentOrganisationUnit.organisationUnitCode,
+      ]),
+    state => state.global.currentOrganisationUnit,
+    state => state.map.measureInfo.measureOptions,
+  ],
+  (country, currentOrganisationUnit, measureOptions) => {
+    if (!country || !currentOrganisationUnit || !measureOptions) {
+      return undefined;
+    }
+
+    const displayOnLevel = measureOptions.map(option => option.displayOnLevel).find(level => level);
+    if (!displayOnLevel) {
+      return undefined;
+    }
+
+    return ancestorsCache(
+      country,
+      currentOrganisationUnit.organisationUnitCode,
+      displayOnLevel,
+    ).find(ancestor => ancestor.type === displayOnLevel);
+  },
+);
 
 /**
  * Public Selectors
@@ -241,24 +266,14 @@ export const selectRenderedMeasuresWithDisplayInfo = createSelector(
         state.global.currentOrganisationUnit.organisationUnitCode,
       ]),
     selectAllMeasuresWithDisplayAndOrgUnitData,
-    state => state.global.currentOrganisationUnit,
+    selectDisplayLevelAncestor,
     state => state.map.measureInfo.measureOptions,
   ],
-  (country, allMeasuresWithMeasureInfo, currentOrgUnit = {}, measureOptions = []) => {
-    if (!currentOrgUnit.organisationUnitCode) {
-      return [];
-    }
-
+  (country, allMeasuresWithMeasureInfo, displaylevelAncestor, measureOptions = []) => {
     const displayOnLevel = measureOptions.map(option => option.displayOnLevel).find(level => level);
     if (!displayOnLevel) {
       return allMeasuresWithMeasureInfo;
     }
-
-    const displaylevelAncestor = ancestorsCache(
-      country,
-      currentOrgUnit.organisationUnitCode,
-      displayOnLevel,
-    ).find(ancestor => ancestor.type === displayOnLevel);
 
     if (!displaylevelAncestor) {
       return [];
