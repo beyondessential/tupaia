@@ -46,6 +46,64 @@ const orgUnitChildrenCache = createCachedSelector(
   (country, code) => country && Object.values(country).filter(orgUnit => orgUnit.parent === code),
 )((country, code) => code);
 
+const descendantsCache = createCachedSelector(
+  [country => country, allCountryOrgUnitsCache, (_, code) => code, (_, __, level) => level],
+  (country, countryOrgUnits, code, level) => {
+    const orgUnit = getOrgUnitFromCountry(country, code);
+    if (!orgUnit) {
+      return undefined;
+    }
+
+    if (orgUnit.type === level) {
+      return [orgUnit];
+    }
+
+    const descendants = [];
+    let generation = [orgUnit];
+    while (generation.length > 0) {
+      descendants.push(...generation);
+      generation = [].concat(
+        ...generation
+          .filter(generationOrgUnit => generationOrgUnit.type !== level)
+          .map(parentOrgUnit =>
+            countryOrgUnits.filter(
+              childOrgUnit => childOrgUnit.parent === parentOrgUnit.organisationUnitCode,
+            ),
+          ),
+      );
+    }
+
+    return descendants;
+  },
+)((country, code, level) => `${code}_${level}`);
+
+const ancestorsCache = createCachedSelector(
+  [country => country, (_, code) => code, (_, __, level) => level],
+  (country, code, level) => {
+    const orgUnit = getOrgUnitFromCountry(country, code);
+    if (!orgUnit) {
+      return undefined;
+    }
+
+    if (orgUnit.type === level) {
+      return [orgUnit];
+    }
+
+    const ancestors = [];
+    let ancestor = orgUnit;
+    while (ancestor) {
+      ancestors.push(ancestor);
+      if (ancestor.type === level) {
+        return ancestors;
+      }
+
+      ancestor = getOrgUnitFromCountry(country, ancestor.parent);
+    }
+
+    return ancestors;
+  },
+)((country, code, level) => `${code}_${level}`);
+
 const displayInfoCache = createCachedSelector(
   [
     measureOptions => measureOptions,
@@ -94,7 +152,7 @@ const selectOrgUnitSiblingsAndSelf = createSelector(
 const getOrgUnitFromMeasureData = (measureData, code) =>
   measureData.find(val => val.organisationUnitCode === code);
 
-const getOrgUnitFromCountry = (country, code) => (country ? country[code] : undefined);
+const getOrgUnitFromCountry = (country, code) => (country && code ? country[code] : undefined);
 
 const getOrgUnitParent = orgUnit => (orgUnit ? orgUnit.parent : undefined);
 
@@ -206,6 +264,48 @@ export const selectAllMeasuresWithDisplayAndOrgUnitData = createSelector(
     })),
 );
 
+export const selectRenderedMeasuresWithDisplayInfo = createSelector(
+  [
+    state =>
+      safeGet(countryCache, [
+        state.orgUnits.orgUnitMap,
+        state.global.currentOrganisationUnit.organisationUnitCode,
+      ]),
+    selectAllMeasuresWithDisplayAndOrgUnitData,
+    state => state.global.currentOrganisationUnit,
+    state => state.map.measureInfo.measureOptions,
+  ],
+  (country, allMeasuresWithMeasureInfo, currentOrgUnit = {}, measureOptions = []) => {
+    if (!currentOrgUnit.organisationUnitCode) {
+      return [];
+    }
+
+    const displayOnLevel = measureOptions.map(option => option.displayOnLevel).find(level => level);
+    if (!displayOnLevel) {
+      return allMeasuresWithMeasureInfo;
+    }
+
+    const displaylevelAncestor = ancestorsCache(
+      country,
+      currentOrgUnit.organisationUnitCode,
+      displayOnLevel,
+    ).find(ancestor => ancestor.type === displayOnLevel);
+
+    if (!displaylevelAncestor) {
+      return [];
+    }
+
+    const allDescendantCodesOfAncestor = descendantsCache(
+      country,
+      displaylevelAncestor.organisationUnitCode,
+    ).map(descendant => descendant.organisationUnitCode);
+
+    return allMeasuresWithMeasureInfo.filter(measure =>
+      allDescendantCodesOfAncestor.includes(measure.organisationUnitCode),
+    );
+  },
+);
+
 export const selectRadiusScaleFactor = createSelector(
   [selectAllMeasuresWithDisplayInfo],
   calculateRadiusScaleFactor,
@@ -226,3 +326,11 @@ export const selectProjectByCode = (state, code) =>
   state.project.projects.find(p => p.code === code);
 
 export const selectActiveProject = state => state.project.active;
+
+export const selectMeasureBarItemById = createSelector(
+  [state => state.measureBar.measureHierarchy, (_, id) => id],
+  (measureHierarchy, id) => {
+    const flattenedMeasureHierarchy = [].concat(...Object.values(measureHierarchy));
+    return flattenedMeasureHierarchy.find(measure => measure.measureId === id);
+  },
+);

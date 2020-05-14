@@ -15,6 +15,7 @@ import {
   selectIsProject,
   selectActiveProject,
   selectProjectByCode,
+  selectMeasureBarItemById,
 } from './selectors';
 import {
   ATTEMPT_CHANGE_PASSWORD,
@@ -543,10 +544,11 @@ function* fetchViewData(parameters, errorHandler) {
   const projectCode = (yield select(selectActiveProject)).code;
 
   // If the view should be constrained to a date range and isn't, constrain it
+  const state = yield select();
   const { startDate, endDate } =
     parameters.startDate || parameters.endDate
       ? parameters
-      : getDefaultDates(yield select(), infoViewKey);
+      : getDefaultDates(state.global.viewConfigs[infoViewKey]);
   // Build the request url
   const {
     organisationUnitCode,
@@ -685,9 +687,19 @@ function* fetchMeasureInfo(measureId, organisationUnitCode, oldOrgUnitCountry = 
     yield put(clearMeasureHierarchy());
   }
 
+  const measureParams = selectMeasureBarItemById(state, measureId) || {};
+
+  // If the view should be constrained to a date range and isn't, constrain it
+  const { startDate, endDate } =
+    measureParams.startDate || measureParams.endDate
+      ? measureParams
+      : getDefaultDates(measureParams);
+
   const urlParameters = {
-    organisationUnitCode,
     measureId,
+    organisationUnitCode,
+    startDate: formatDateForApi(startDate),
+    endDate: formatDateForApi(endDate),
     shouldShowAllParentCountryResults: !isMobile(),
     projectCode: project.code,
   };
@@ -719,6 +731,8 @@ function getSelectedMeasureFromHierarchy(measureHierarchy, selectedMeasureId, pr
 
   if (measures.find(m => m.measureId === selectedMeasureId)) return selectedMeasureId;
   else if (measures.find(m => m.measureId === projectMeasureId)) return projectMeasureId;
+  else if (measures.find(m => m.measureId === INITIAL_MEASURE_ID)) return INITIAL_MEASURE_ID;
+  else if (measures.length) return measures[0].measureId;
   return INITIAL_MEASURE_ID;
 }
 

@@ -31,7 +31,7 @@ const fetchOptions = { startDate: '20200214', endDate: '20200215', period: '2020
 const aggregationOptions = {
   aggregationType: 'MOST_RECENT',
   aggregationConfig: { orgUnitToGroupKeys: [], requestedPeriod: '20200214;20200215' },
-  measureCriteria: { EQ: 3 },
+  filter: { value: 3 },
 };
 
 describe('Aggregator', () => {
@@ -88,7 +88,7 @@ describe('Aggregator', () => {
     });
 
     it('fetches, then aggregates, then filters analytics', async () => {
-      const { aggregationType, aggregationConfig, measureCriteria } = aggregationOptions;
+      const { aggregationType, aggregationConfig, filter } = aggregationOptions;
       const { results } = RESPONSE_BY_SOURCE_TYPE[DATA_ELEMENT];
 
       await aggregator.fetchAnalytics(['POP01', 'POP02'], fetchOptions, aggregationOptions);
@@ -103,7 +103,7 @@ describe('Aggregator', () => {
       );
       expect(FilterAnalytics.filterAnalytics).to.have.been.calledOnceWithExactly(
         AGGREGATED_ANALYTICS,
-        measureCriteria,
+        filter,
       );
     });
 

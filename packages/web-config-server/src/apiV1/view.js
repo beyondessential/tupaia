@@ -1,8 +1,7 @@
 import { convertDateRangeToPeriods } from '@tupaia/dhis-api';
-import { replaceValues } from '@tupaia/utils';
-import { DashboardReport, DashboardGroup } from '/models';
+import { replaceValues, CustomError } from '@tupaia/utils';
+import { DashboardReport } from '/models';
 import { getDhisApiInstance } from '/dhis';
-import { CustomError } from '@tupaia/utils';
 import { isSingleValue } from './utils';
 import { DataAggregatingRouteHandler } from './DataAggregatingRouteHandler';
 import { DashboardPermissionsChecker } from './permissions';
