@@ -69,6 +69,7 @@ export class Entity extends BaseModel {
     'region',
     'bounds',
     'image_url',
+    'attributes',
   ];
 
   static geoFields = ['point', 'region', 'bounds'];
