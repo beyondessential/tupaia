@@ -22,9 +22,9 @@ export const testFetchAnalytics = () => {
         dataElement: 'BCD1',
         organisationUnit: 'NZ_AK',
         value: 'Fully operational',
-        period: '20200131',
+        date: '2020-01-31',
       },
-      { dataElement: 'BCD325', organisationUnit: 'NZ_AK', value: 53, period: '20200131' },
+      { dataElement: 'BCD325', organisationUnit: 'NZ_AK', value: 53, date: '2020-01-31' },
     ]);
   });
 

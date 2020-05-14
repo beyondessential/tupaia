@@ -10,7 +10,7 @@ import { fetchEventData, fetchAnalyticData } from './fetchData';
 import { parameteriseArray, sanitizeDataValue } from './utils';
 
 const EVENT_DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss';
-const DAY_PERIOD_FORMAT = 'YYYYMMDD';
+const ANALYTICS_DATE_FORMAT = 'YYYY-MM-DD';
 
 export class TupaiaDataApi {
   constructor(database) {
@@ -44,7 +44,7 @@ export class TupaiaDataApi {
     return results.map(({ entityCode, dataElementCode, date, type, value }) => ({
       organisationUnit: entityCode,
       dataElement: dataElementCode,
-      period: utcMoment(date).format(DAY_PERIOD_FORMAT), // TODO should we convert to period here or in data-broker
+      date: utcMoment(date).format(ANALYTICS_DATE_FORMAT),
       value: sanitizeDataValue(value, type),
     }));
   }
