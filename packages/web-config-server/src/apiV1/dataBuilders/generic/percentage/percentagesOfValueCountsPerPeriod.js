@@ -92,8 +92,11 @@ class BaseBuilder extends PercentagesOfValueCountsBuilder {
     let filteredData = analytics;
     const percentage = {};
 
-    if (this.config.filter) {
-      filteredData = await FILTERS[this.config.filter.name](this.config.filter, analytics);
+    if (this.config.customFilter) {
+      filteredData = await FILTERS[this.config.customFilter.name](
+        this.config.customFilter,
+        analytics,
+      );
     }
 
     Object.entries(this.config.dataClasses).forEach(([name, dataClass]) => {

@@ -45,8 +45,9 @@ export class DataBuilder {
     dataElementCodes,
     additionalQueryConfig,
     aggregationType = this.aggregationType,
+    aggregationConfig = {},
   ) {
-    const { dataServices } = this.config;
+    const { dataServices, filter = {} } = this.config;
     const fetchOptions = {
       programCodes: this.getProgramCodesForAnalytics(),
       dataServices,
@@ -54,7 +55,9 @@ export class DataBuilder {
     };
 
     return this.aggregator.fetchAnalytics(dataElementCodes, fetchOptions, this.query, {
+      aggregationConfig,
       aggregationType,
+      filter,
     });
   }
 
@@ -64,7 +67,7 @@ export class DataBuilder {
 
     return this.aggregator.fetchEvents(programCode, {
       dataServices,
-      organisationUnitCode,
+      organisationUnitCodes: [organisationUnitCode],
       startDate,
       endDate,
       trackedEntityInstance,

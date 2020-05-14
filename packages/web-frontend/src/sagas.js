@@ -8,7 +8,12 @@
 import { call, put, delay, takeEvery, takeLatest, select } from 'redux-saga/effects';
 import queryString from 'query-string';
 import request from './utils/request';
-import { selectOrgUnit, selectOrgUnitChildren, selectOrgUnitCountry } from './selectors';
+import {
+  selectOrgUnit,
+  selectOrgUnitChildren,
+  selectOrgUnitCountry,
+  selectMeasureBarItemById,
+} from './selectors';
 import {
   ATTEMPT_CHANGE_PASSWORD,
   ATTEMPT_LOGIN,
@@ -454,7 +459,6 @@ function* fetchOrgUnitDataAndChangeOrgUnit(action) {
 
   try {
     const orgUnitData = yield fetchOrgUnitData(organisationUnitCode);
-    yield put(fetchOrgUnitSuccess(orgUnitData));
     yield put(
       changeOrgUnitSuccess(
         normaliseCountryHierarchyOrgUnitData(orgUnitData),
@@ -523,10 +527,11 @@ function* watchOrgUnitChangeAndFetchDashboard() {
 function* fetchViewData(parameters, errorHandler) {
   const { infoViewKey } = parameters;
   // If the view should be constrained to a date range and isn't, constrain it
+  const state = yield select();
   const { startDate, endDate } =
     parameters.startDate || parameters.endDate
       ? parameters
-      : getDefaultDates(yield select(), infoViewKey);
+      : getDefaultDates(state.global.viewConfigs[infoViewKey]);
   // Build the request url
   const {
     organisationUnitCode,
@@ -662,7 +667,23 @@ function* fetchMeasureInfo(measureId, organisationUnitCode, oldOrgUnitCountry = 
     yield put(clearMeasureHierarchy());
   }
 
-  const requestResourceUrl = `measureData?organisationUnitCode=${organisationUnitCode}&measureId=${measureId}&shouldShowAllParentCountryResults=${!isMobile()}`;
+  const state = yield select();
+  const measureParams = selectMeasureBarItemById(state, measureId) || {};
+
+  // If the view should be constrained to a date range and isn't, constrain it
+  const { startDate, endDate } =
+    measureParams.startDate || measureParams.endDate
+      ? measureParams
+      : getDefaultDates(measureParams);
+
+  const urlParameters = {
+    measureId,
+    organisationUnitCode,
+    startDate: formatDateForApi(startDate),
+    endDate: formatDateForApi(endDate),
+    shouldShowAllParentCountryResults: !isMobile(),
+  };
+  const requestResourceUrl = `measureData?${queryString.stringify(urlParameters)}`;
 
   try {
     const measureInfoResponse = yield call(request, requestResourceUrl);
@@ -690,6 +711,8 @@ function getSelectedMeasureFromHierarchy(measureHierarchy, selectedMeasureId, pr
 
   if (measures.find(m => m.measureId === selectedMeasureId)) return selectedMeasureId;
   else if (measures.find(m => m.measureId === projectMeasureId)) return projectMeasureId;
+  else if (measures.find(m => m.measureId === INITIAL_MEASURE_ID)) return INITIAL_MEASURE_ID;
+  else if (measures.length) return measures[0].measureId;
   return INITIAL_MEASURE_ID;
 }
 
