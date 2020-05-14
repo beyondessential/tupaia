@@ -25,6 +25,13 @@ export const checkboxField = () => (
   </Container>
 );
 
+export const labels = () => (
+  <Container>
+    <Checkbox label="Remember me" color="primary" />
+    <Checkbox label="Remember me" color="primary" defaultChecked />
+  </Container>
+);
+
 export const controlledCheckboxField = () => {
   const [checked, setChecked] = React.useState(true);
 
@@ -34,10 +41,7 @@ export const controlledCheckboxField = () => {
 
   return (
     <Container>
-      <Checkbox checked={checked} onChange={handleChange} />
-      <Checkbox checked={checked} onChange={handleChange} />
-      <Checkbox checked={checked} onChange={handleChange} color="primary" />
-      <Checkbox checked={checked} onChange={handleChange} color="primary" />
+      <Checkbox label="Remember me" color="primary" checked={checked} onChange={handleChange} />
     </Container>
   );
 };
