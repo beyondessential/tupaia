@@ -206,8 +206,6 @@ export class Entity extends BaseModel {
     // we rely on descendants being returned in order, with those higher in the hierarchy first
     const descendants = await this.getDescendants(hierarchyId);
 
-    // EDWIN LOOK HERE :(
-    console.log('Entity -> getNearestOrgUnitDescendants -> descendants', descendants);
     const nearestOrgUnitType = descendants.find(d => orgUnitEntityTypes.has(d.type)).type;
     return descendants.filter(d => d.type === nearestOrgUnitType);
   }

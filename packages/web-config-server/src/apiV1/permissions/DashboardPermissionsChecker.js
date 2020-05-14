@@ -38,7 +38,7 @@ export class DashboardPermissionsChecker extends PermissionsChecker {
     }
 
     const hasEntityAccess = await this.checkHasEntityAccess(this.entity.code);
-    if (!hasEntityAccess) {
+    if (this.entity.type !== 'project' && !hasEntityAccess) {
       throw new PermissionsError(
         `Dashboard group with the id ${dashboardGroupId} is not allowed for entity ${this.entity.code}`,
       );

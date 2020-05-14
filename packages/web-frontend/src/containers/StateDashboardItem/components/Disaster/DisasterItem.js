@@ -11,10 +11,10 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import moment from 'moment';
 
-import { DashboardItemExpanderButton } from '../../../components/DashboardItemExpanderButton';
-import { selectDisaster } from '../../../disaster/actions';
+import { DashboardItemExpanderButton } from '../../../../components/DashboardItemExpanderButton';
+import { selectDisaster } from '../../../../disaster/actions';
 
-import { OFF_WHITE, BLUE } from '../../../styles';
+import { OFF_WHITE, BLUE } from '../../../../styles';
 
 const Item = styled.div`
   position: relative;

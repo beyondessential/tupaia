@@ -6,7 +6,7 @@ import {
 } from '/apiV1/utils';
 import { getAccessPolicyForUser } from './getAccessPolicyForUser';
 import { PUBLIC_USER_NAME } from './publicAccess';
-import { Entity } from '/models';
+import { Entity, Project } from '/models';
 
 const allowedUnauthRoutes = ['/login', '/version'];
 
@@ -86,8 +86,26 @@ export const addUserAccessHelper = (req, res, next) => {
 
   req.getUserGroups = async entityCode => {
     if (entityCode === 'World' || entityCode === 'explore') {
-      return ['Public']; // At this stage, all users have Public access to the World and explore dashboards
+      return ['Public']; // At this stage, all users have Public access to the World and explore project dashboards
     }
+
+    const entity = await Entity.findOne({ code: entityCode });
+    if (entity.isProject()) {
+      const projectHierarchy = await Project.getProjectHierarchyByCode(entityCode);
+      const hierarchyEntities = await Entity.find({ id: projectHierarchy });
+
+      const projectAccessRights = [];
+      for (const entity of hierarchyEntities) {
+        const userGroupAccessRights = await req.getUserGroupAccessRights(entity.code);
+
+        Object.keys(userGroupAccessRights).forEach(
+          userGroup =>
+            userGroupAccessRights[userGroup] === true && projectAccessRights.push(userGroup),
+        );
+      }
+      return [...new Set(projectAccessRights)];
+    }
+
     const userGroupAccessRights = await req.getUserGroupAccessRights(entityCode);
     return Object.keys(userGroupAccessRights).filter(
       userGroup => userGroupAccessRights[userGroup] === true,
