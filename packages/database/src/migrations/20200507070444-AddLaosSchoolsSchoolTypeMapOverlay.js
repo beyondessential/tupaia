@@ -18,7 +18,7 @@ exports.setup = function(options, seedLink) {
 
 const SCHOOLS_OVERLAY = {
   id: 'Laos_Schools_School_Type',
-  name: 'Schools',
+  name: 'School Type',
   groupName: 'Laos Schools',
   userGroup: 'Laos Schools User',
   dataElementCode: 'schoolTypeCode',
