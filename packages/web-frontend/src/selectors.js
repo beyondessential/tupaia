@@ -269,7 +269,7 @@ export const selectRenderedMeasuresWithDisplayInfo = createSelector(
     state =>
       safeGet(countryCache, [state.orgUnits.orgUnitMap, state.global.currentOrganisationUnitCode]),
     selectAllMeasuresWithDisplayAndOrgUnitData,
-    state => state.global.currentOrganisationUnitCode,
+    state => selectCurrentOrgUnit(state),
     state => state.map.measureInfo.measureOptions,
   ],
   (country, allMeasuresWithMeasureInfo, currentOrgUnitCode, measureOptions = []) => {

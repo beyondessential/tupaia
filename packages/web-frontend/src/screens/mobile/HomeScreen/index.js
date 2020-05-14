@@ -16,9 +16,9 @@ import { Dashboard } from '../../../components/mobile/Dashboard';
 import { changeOrgUnit, toggleDashboardSelectExpand, changeDashboardGroup } from '../../../actions';
 import { WHITE } from '../../../styles';
 import {
+  selectCurrentDashboardKey,
   selectActiveProject,
   selectOrgUnitChildren,
-  selectCurrentDashboardKey,
   selectCurrentOrgUnit,
 } from '../../../selectors';
 

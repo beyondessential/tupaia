@@ -739,12 +739,11 @@ function getSelectedMeasureFromHierarchy(measureHierarchy, selectedMeasureId, pr
 function* fetchCurrentMeasureInfo() {
   const state = yield select();
   const { currentOrganisationUnitCode } = state.global;
-  const isProject = selectIsProject(state, currentOrganisationUnitCode);
   const { active: activeProject } = state.project;
   const { measureId } = state.map.measureInfo;
   const { measureHierarchy, selectedMeasureId } = state.measureBar;
 
-  if (currentOrganisationUnitCode && !isProject) {
+  if (currentOrganisationUnitCode && !selectIsProject(state, organisationUnitCode)) {
     const isHeirarchyPopulated = Object.keys(measureHierarchy).length;
 
     // Update the default measure ID
