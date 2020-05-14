@@ -3,20 +3,13 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-/*
- * SiteWeekTable
- */
 import React from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
-import {
-  CondensedTableBody,
-  AFRAccessor,
-  FakeHeader,
-  SitesReportedAccessor,
-  Button,
-} from '@tupaia/ui-components';
+import { CondensedTableBody, FakeHeader, Button } from '@tupaia/ui-components';
 import { ConnectedTable } from './ConnectedTable';
+import { FIRST_COLUMN_WIDTH, SITES_REPORTED_COLUMN_WIDTH } from './constants';
+import { AFRCell, SitesReportedCell } from './TableCellComponents';
 
 const StyledDiv = styled.div`
   display: flex;
@@ -25,7 +18,8 @@ const StyledDiv = styled.div`
   padding: 2rem;
 `;
 
-const NameAccessor = data => {
+// Todo: update placeholder
+const NameCell = data => {
   return <span>{data.name} Clinic</span>;
 };
 
@@ -33,20 +27,20 @@ const siteWeekColumns = [
   {
     title: 'Name',
     key: 'name',
-    width: '30%',
+    width: FIRST_COLUMN_WIDTH,
     align: 'left',
-    accessor: NameAccessor,
+    CellComponent: NameCell,
   },
   {
     title: 'Sites Reported',
     key: 'sitesReported',
-    accessor: SitesReportedAccessor,
-    width: '100px',
+    CellComponent: SitesReportedCell,
+    width: SITES_REPORTED_COLUMN_WIDTH,
   },
   {
     title: 'AFR',
     key: 'AFR',
-    accessor: AFRAccessor,
+    CellComponent: AFRCell,
   },
   {
     title: 'DIA',
@@ -66,14 +60,13 @@ const siteWeekColumns = [
   },
 ];
 
+// Todo: update placeholder
 const TableHeader = () => {
   return <FakeHeader>10/30 Sentinel Sites Reported</FakeHeader>;
 };
 
-/*
- * CountryWeekSummaryTable Component
- */
-export const SiteSummaryTable = props => {
+export const SiteSummaryTable = React.memo(props => {
+  // Todo: update placeholder
   const customAction = () => {
     console.log('custom action in CountryWeekSummaryTable. props...', props);
   };
@@ -95,4 +88,4 @@ export const SiteSummaryTable = props => {
       </StyledDiv>
     </React.Fragment>
   );
-};
+});

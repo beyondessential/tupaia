@@ -2,17 +2,17 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-
 import styled from 'styled-components';
 import React from 'react';
 import MuiLink from '@material-ui/core/Link';
 import Avatar from '@material-ui/core/Avatar';
 import PropTypes from 'prop-types';
 import { Link as RouterLink } from 'react-router-dom';
-import { SitesReportedAccessor, AFRAccessor } from '@tupaia/ui-components';
 import { ConnectedTable } from './ConnectedTable';
 import * as COLORS from '../../theme/colors';
+import { FIRST_COLUMN_WIDTH, SITES_REPORTED_COLUMN_WIDTH } from './constants';
 import { CountrySummaryTable } from './CountrySummaryTable';
+import { AFRCell, SitesReportedCell } from './TableCellComponents';
 
 const CountryTitle = styled(MuiLink)`
   display: flex;
@@ -28,13 +28,13 @@ const CountryTitle = styled(MuiLink)`
   }
 `;
 
-export const NameAccessor = ({ name }) => (
+const NameCell = ({ name }) => (
   <CountryTitle to="weekly-reports/samoa" component={RouterLink}>
     <Avatar /> {name}
   </CountryTitle>
 );
 
-NameAccessor.propTypes = {
+NameCell.propTypes = {
   name: PropTypes.string.isRequired,
 };
 
@@ -42,20 +42,20 @@ const countriesTableColumns = [
   {
     title: 'Name',
     key: 'name',
-    width: '30%',
+    width: FIRST_COLUMN_WIDTH,
     align: 'left',
-    accessor: NameAccessor,
+    CellComponent: NameCell,
   },
   {
     title: 'Site Reported',
     key: 'sitesReported',
-    accessor: SitesReportedAccessor,
-    width: '100px',
+    CellComponent: SitesReportedCell,
+    width: SITES_REPORTED_COLUMN_WIDTH,
   },
   {
     title: 'AFR',
     key: 'AFR',
-    accessor: AFRAccessor,
+    CellComponent: AFRCell,
   },
   {
     title: 'DIA',
@@ -75,10 +75,10 @@ const countriesTableColumns = [
   },
 ];
 
-export const CountriesTable = () => (
+export const CountriesTable = React.memo(() => (
   <ConnectedTable
     endpoint="countries"
     columns={countriesTableColumns}
     SubComponent={CountrySummaryTable}
   />
-);
+));

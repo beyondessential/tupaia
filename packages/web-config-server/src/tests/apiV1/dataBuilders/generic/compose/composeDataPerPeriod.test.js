@@ -35,7 +35,7 @@ describe('composeDataPerPeriod', () => {
       results: { data },
     });
 
-    return expect(composeDataPerPeriod(config, aggregator, dhisApi)).to.eventually.be.rejectedWith(
+    return expect(composeDataPerPeriod(config, aggregator, dhisApi)).to.be.rejectedWith(
       'composed of period data builders',
     );
   });
