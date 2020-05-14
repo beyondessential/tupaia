@@ -8,13 +8,13 @@ import { getTestDatabase } from '@tupaia/database';
 import { TupaiaDataApi } from '../TupaiaDataApi';
 import { BCD_RESPONSE_AUCKLAND } from './TupaiaDataApi.fixtures';
 
-export const testGetEvents = () => {
+export const testFetchEvents = () => {
   const api = new TupaiaDataApi(getTestDatabase());
 
   it('throws an error with invalid parameters', () => {});
   it('returns results in the correct format', async () => {
     return expect(
-      api.getEvents({
+      api.fetchEvents({
         surveyCode: 'BCD',
         organisationUnitCodes: ['NZ_AK'],
         dataElementCodes: ['BCD1', 'BCD325'],

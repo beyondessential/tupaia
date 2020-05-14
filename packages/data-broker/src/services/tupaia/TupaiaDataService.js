@@ -38,7 +38,7 @@ export class TupaiaDataService extends Service {
 
   async pullAnalytics(dataSources, options) {
     const dataElementCodes = dataSources.map(({ code }) => code);
-    const analytics = await this.api.getAnalytics({ ...options, dataElementCodes });
+    const analytics = await this.api.fetchAnalytics({ ...options, dataElementCodes });
     const dataElements = await this.pullDataElementMetadata(dataSources);
 
     return {
@@ -56,7 +56,7 @@ export class TupaiaDataService extends Service {
     const [dataSource] = dataSources;
     const { code: surveyCode } = dataSource;
 
-    return this.api.getEvents({ ...options, surveyCode });
+    return this.api.fetchEvents({ ...options, surveyCode });
   }
 
   async pullMetadata(dataSources, type) {

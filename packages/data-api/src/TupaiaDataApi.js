@@ -17,7 +17,7 @@ export class TupaiaDataApi {
     this.database = database;
   }
 
-  async getEvents(options) {
+  async fetchEvents(options) {
     const results = await fetchEventData(this.database, options);
     const resultsBySurveyResponse = groupBy(results, 'surveyResponseId');
     return Object.values(resultsBySurveyResponse).map(resultsForSurveyResponse => {
@@ -36,7 +36,7 @@ export class TupaiaDataApi {
     });
   }
 
-  async getAnalytics(options) {
+  async fetchAnalytics(options) {
     const results = await fetchAnalyticData(this.database, options);
     return results.map(({ entityCode, dataElementCode, date, value }) => ({
       organisationUnit: entityCode,

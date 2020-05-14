@@ -11,7 +11,7 @@ import {
   findOrCreateDummyRecord,
 } from '@tupaia/database';
 import { ENTITIES, SURVEYS, SURVEY_RESPONSES } from './TupaiaDataApi.fixtures';
-import { testGetEvents } from './testGetEvents';
+import { testFetchEvents } from './testFetchEvents';
 
 describe('TupaiaDataApi', () => {
   before(async () => {
@@ -23,9 +23,9 @@ describe('TupaiaDataApi', () => {
     await buildAndInsertSurveyResponses(models, SURVEY_RESPONSES);
   });
 
-  describe('getEvents()', testGetEvents);
+  describe('fetchEvents()', testFetchEvents);
 
-  describe('getAnalytics()', () => {
+  describe('fetchAnalytics()', () => {
     // TODO add test cases
   });
 

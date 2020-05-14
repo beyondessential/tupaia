@@ -14,12 +14,12 @@ export const createModelsStub = () => ({
 });
 
 export const createTupaiaDataApiStub = ({
-  getAnalyticsResponse = [],
-  getEventsResponse = [],
+  fetchAnalyticsResponse = [],
+  fetchEventsResponse = [],
 } = {}) =>
   sinon.createStubInstance(TupaiaDataApi, {
-    getAnalytics: sinon.stub().resolves(getAnalyticsResponse),
-    getEvents: sinon.stub().resolves(getEventsResponse),
+    fetchAnalytics: sinon.stub().resolves(fetchAnalyticsResponse),
+    fetchEvents: sinon.stub().resolves(fetchEventsResponse),
     fetchDataElements: sinon
       .stub()
       .callsFake(async dataElementCodes =>

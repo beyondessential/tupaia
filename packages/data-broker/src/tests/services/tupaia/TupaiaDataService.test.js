@@ -12,15 +12,15 @@ import { ANALYTICS, DATA_SOURCES, EVENTS, DATA_ELEMENTS } from './TupaiaDataServ
 
 const models = createModelsStub();
 const tupaiaDataApi = createTupaiaDataApiStub({
-  getAnalyticsResponse: ANALYTICS,
-  getEventsResponse: EVENTS,
+  fetchAnalyticsResponse: ANALYTICS,
+  fetchEventsResponse: EVENTS,
 });
 const tupaiaDataService = new TupaiaDataService(models, tupaiaDataApi);
 
 describe('TupaiaDataService', () => {
   beforeEach(() => {
-    tupaiaDataApi.getAnalytics.resetHistory();
-    tupaiaDataApi.getEvents.resetHistory();
+    tupaiaDataApi.fetchAnalytics.resetHistory();
+    tupaiaDataApi.fetchEvents.resetHistory();
   });
 
   describe('push()', () => {
@@ -42,7 +42,7 @@ describe('TupaiaDataService', () => {
           invocationArgs,
         }) => {
           await tupaiaDataService.pull(dataSources, 'dataElement', options);
-          expect(tupaiaDataApi.getAnalytics).to.have.been.calledOnceWithExactly(invocationArgs);
+          expect(tupaiaDataApi.fetchAnalytics).to.have.been.calledOnceWithExactly(invocationArgs);
         };
 
         it('single data element', async () =>
@@ -107,7 +107,7 @@ describe('TupaiaDataService', () => {
         invocationArgs,
       }) => {
         await tupaiaDataService.pull(dataSources, 'dataGroup', options);
-        expect(tupaiaDataApi.getEvents).to.have.been.calledOnceWithExactly(invocationArgs);
+        expect(tupaiaDataApi.fetchEvents).to.have.been.calledOnceWithExactly(invocationArgs);
       };
 
       it('throws an error if multiple data groups are provided', () =>
