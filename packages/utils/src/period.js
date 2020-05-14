@@ -5,7 +5,8 @@
 
 import get from 'lodash.get';
 
-import { utcMoment, reduceToDictionary } from '.';
+import { utcMoment } from './datetime';
+import { reduceToDictionary } from './object';
 
 const DAY = 'DAY';
 const WEEK = 'WEEK';
