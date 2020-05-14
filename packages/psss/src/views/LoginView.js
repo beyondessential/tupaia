@@ -17,8 +17,8 @@ export const Main = styled.main`
   height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  padding-bottom: 5%;
+  justify-content: flex-start;
+  padding-top: 5%;
 `;
 
 export const Container = styled.section`
@@ -58,7 +58,7 @@ const StyledLink = styled(MuiLink)`
   font-weight: 500;
   font-size: 14px;
   line-height: 16px;
-  margin-left: 10px;
+  margin-left: 5px;
   color: ${props => props.theme.palette.primary.main};
 `;
 

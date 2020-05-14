@@ -33,11 +33,11 @@ export const labels = () => (
 );
 
 export const controlledCheckboxField = () => {
-  const [checked, setChecked] = React.useState(true);
+  const [checked, setChecked] = useState(true);
 
-  const handleChange = event => {
+  const handleChange = useCallback(event => {
     setChecked(event.target.checked);
-  };
+  }, []);
 
   return (
     <Container>

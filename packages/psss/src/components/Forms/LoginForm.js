@@ -7,7 +7,6 @@ import { TextField, Button, Checkbox } from '@tupaia/ui-components';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
-import MuiFormControlLabel from '@material-ui/core/FormControlLabel';
 import { connect } from 'react-redux';
 import { login, checkIsPending, checkIsError, getError } from '../../store';
 import * as COLORS from '../../theme/colors';
@@ -30,6 +29,7 @@ export const LoginFormComponent = ({ isPending, isError, error, onLogin }) => {
   const [fields, handleFieldChange] = useFormFields({
     email: '',
     password: '',
+    rememberMe: false,
   });
 
   const handleSubmit = async event => {
@@ -58,12 +58,13 @@ export const LoginFormComponent = ({ isPending, isError, error, onLogin }) => {
         value={fields.password}
         onChange={handleFieldChange}
       />
-      <div>
-        <MuiFormControlLabel
-          control={<Checkbox color="primary" defaultChecked />}
-          label="Remember me"
-        />
-      </div>
+      <Checkbox
+        id="rememberMe"
+        color="primary"
+        label="Remember me"
+        onChange={handleFieldChange}
+        checked={fields.rememberMe}
+      />
       <Button type="submit" isSubmitting={isPending}>
         Login to your account
       </Button>
