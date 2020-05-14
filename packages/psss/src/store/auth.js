@@ -11,12 +11,18 @@ const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 const LOGIN_FAILURE = 'LOGIN_FAILURE';
 const LOGOUT = 'LOGOUT';
 
-export const login = (email, password) => async (dispatch, getState, { api }) => {
+export const login = (emailAddress, password) => async (dispatch, getState, { api }) => {
   console.log('api', api);
+  const deviceName = window.navigator.userAgent;
+
   dispatch({ type: LOGIN_START });
   try {
-    const { user, token } = await api.login(email, password);
-    dispatch({ type: LOGIN_SUCCESS, user, token });
+    const { accessToken, refreshToken, user } = await api.reauthenticate({
+      emailAddress,
+      password,
+      deviceName,
+    });
+    dispatch({ type: LOGIN_SUCCESS, accessToken, refreshToken, user });
   } catch (error) {
     dispatch({ type: LOGIN_FAILURE, error: error.message });
   }
@@ -52,7 +58,8 @@ const actionHandlers = {
     status: 'success',
     user: action.user,
     error: defaultState.error,
-    token: action.token,
+    accessToken: action.accessToken,
+    refreshToken: action.refreshToken,
   }),
   [LOGIN_FAILURE]: action => ({
     status: 'error',

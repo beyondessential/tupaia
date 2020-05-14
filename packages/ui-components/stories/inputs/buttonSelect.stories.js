@@ -53,13 +53,13 @@ const Container = styled(MuiBox)`
 
 export const simple = () => (
   <Container>
-    <ButtonSelect id="button-select" label="Button Select Field" options={options} />
+    <ButtonSelect id="button-select" options={options} />
   </Container>
 );
 
 export const disabled = () => (
   <Container>
-    <ButtonSelect id="button-select" label="Button Select Field" options={options} disabled />
+    <ButtonSelect id="button-select" options={options} disabled />
   </Container>
 );
 
@@ -67,7 +67,6 @@ export const muiProps = () => (
   <Container>
     <ButtonSelect
       id="button-select"
-      label="Button Select Field"
       options={options}
       muiProps={{ error: true }}
     />
@@ -90,7 +89,6 @@ export const controlled = () => {
     <Container>
       <ButtonSelect
         id="button-select"
-        label="Button Select Field"
         options={options}
         onChange={handleChange}
         controlValue={controlValue}

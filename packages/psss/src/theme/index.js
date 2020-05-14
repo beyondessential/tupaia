@@ -40,7 +40,7 @@ const palette = {
     600: COLORS.GREY_72,
   },
   background: {
-    default: 'transparent', // use background addon to switch colors
+    default: COLORS.LIGHTGREY,
     paper: COLORS.WHITE,
   },
 };

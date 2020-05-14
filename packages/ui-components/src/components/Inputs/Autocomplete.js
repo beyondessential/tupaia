@@ -13,8 +13,8 @@ import PropTypes from 'prop-types';
 import { TextField } from './TextField';
 
 const KeyboardArrowDown = styled(MuiKeyboardArrowDown)`
-  color: ${props => props.theme.palette.grey['500']};
-  font-size: 1.75rem;
+  color: ${props => props.theme.palette.text.tertiary};
+  font-size: 24px;
 `;
 
 const Paper = props => <MuiPaper {...props} variant="outlined" elevation={0} />;
@@ -26,8 +26,16 @@ const StyledPaper = styled(Paper)`
 `;
 
 const StyledAutocomplete = styled(MuiAutocomplete)`
-  .MuiAutocomplete-endAdornment {
-    padding-right: 0.5rem;
+  .MuiAutocomplete-inputRoot.MuiInputBase-adornedEnd.MuiOutlinedInput-adornedEnd {
+    padding: 0 45px 0 0;
+  }
+
+  .MuiInputBase-input.MuiAutocomplete-input.MuiInputBase-inputAdornedEnd {
+    padding: 15px 5px 16px 15px;
+  }
+
+  .MuiAutocomplete-inputRoot .MuiAutocomplete-endAdornment {
+    right: 15px;
   }
 `;
 
@@ -57,6 +65,7 @@ export const Autocomplete = ({
     disabled={disabled}
     onChange={onChange}
     loading={loading}
+    disableClearable={loading}
     onInputChange={onInputChange}
     getOptionSelected={(option, selected) => option[labelKey] === selected[labelKey]}
     getOptionLabel={option => (option ? option[labelKey] : '')}
