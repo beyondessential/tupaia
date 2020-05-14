@@ -11,6 +11,8 @@ import { PermissionGroupModel } from './PermissionGroup';
 import { QuestionModel } from './Question';
 import { SurveyModel } from './Survey';
 import { SurveyResponseModel } from './SurveyResponse';
+import { SurveyScreenComponentModel } from './SurveyScreenComponent';
+import { SurveyScreenModel } from './SurveyScreen';
 import { UserModel } from './User';
 
 // export all models to be used in constructing a ModelRegistry
@@ -23,5 +25,7 @@ export const modelClasses = {
   Question: QuestionModel,
   Survey: SurveyModel,
   SurveyResponse: SurveyResponseModel,
+  SurveyScreen: SurveyScreenModel,
+  SurveyScreenComponent: SurveyScreenComponentModel,
   User: UserModel,
 };
