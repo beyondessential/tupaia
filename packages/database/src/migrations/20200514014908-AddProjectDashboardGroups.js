@@ -25,7 +25,7 @@ exports.up = async function(db) {
   await db.runSql(`
     INSERT INTO "dashboardGroup"("organisationLevel","userGroup","organisationUnitCode","dashboardReports","name","code")
     VALUES
-    (E'Project',E'Public',E'disaster',E'{active_disasters}',E'Disasters',E'Disaster_Project');
+    (E'Project',E'Public',E'disaster',E'{active_disasters}',E'Disaster Response',E'Disaster_Project');
   `);
 
   for (const project of projects) {

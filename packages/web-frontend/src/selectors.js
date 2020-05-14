@@ -267,16 +267,13 @@ export const selectAllMeasuresWithDisplayAndOrgUnitData = createSelector(
 export const selectRenderedMeasuresWithDisplayInfo = createSelector(
   [
     state =>
-      safeGet(countryCache, [
-        state.orgUnits.orgUnitMap,
-        state.global.currentOrganisationUnit.organisationUnitCode,
-      ]),
+      safeGet(countryCache, [state.orgUnits.orgUnitMap, state.global.currentOrganisationUnitCode]),
     selectAllMeasuresWithDisplayAndOrgUnitData,
-    state => state.global.currentOrganisationUnit,
+    state => state.global.currentOrganisationUnitCode,
     state => state.map.measureInfo.measureOptions,
   ],
-  (country, allMeasuresWithMeasureInfo, currentOrgUnit = {}, measureOptions = []) => {
-    if (!currentOrgUnit.organisationUnitCode) {
+  (country, allMeasuresWithMeasureInfo, currentOrgUnitCode, measureOptions = []) => {
+    if (!currentOrgUnitCode) {
       return [];
     }
 
