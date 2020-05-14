@@ -638,8 +638,12 @@ function* fetchSearchData(action) {
   if (action.searchString === '') {
     yield put(fetchSearchSuccess([]));
   } else {
-    const requestResourceUrl = `organisationUnitSearch?criteria=${action.searchString}&limit=5`;
-
+    const urlParameters = {
+      criteria: action.searchString,
+      limit: 5,
+      projectCode: (yield select(selectActiveProject)).code,
+    };
+    const requestResourceUrl = `organisationUnitSearch?${queryString.stringify(urlParameters)}`;
     try {
       const response = yield call(request, requestResourceUrl);
       yield put(fetchSearchSuccess(response));

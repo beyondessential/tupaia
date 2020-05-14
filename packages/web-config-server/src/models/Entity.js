@@ -258,14 +258,6 @@ export class Entity extends BaseModel {
     return pascal(this.type); // sub_district -> SubDistrict
   }
 
-  async buildDisplayName() {
-    const ancestors = await this.getAllAncestors();
-    return ancestors
-      .reverse()
-      .map(ancestor => ancestor.name)
-      .join(', ');
-  }
-
   isCountry() {
     return this.type === COUNTRY;
   }
