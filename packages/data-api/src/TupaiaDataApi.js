@@ -47,6 +47,7 @@ export class TupaiaDataApi {
   }
 
   async fetchDataElements(dataElementCodes) {
+    // TODO should 'text' or 'indicator' be used as name?
     return this.database.executeSql(
       `
       SELECT code, text as name

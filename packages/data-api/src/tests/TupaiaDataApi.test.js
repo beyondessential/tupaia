@@ -3,10 +3,17 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-describe.skip('TupaiaDataApi', () => {
-  describe('getEvents()', () => {
-    // TODO add test cases
+import { ModelRegistry, getTestDatabase } from '@tupaia/database';
+import { SURVEYS, SURVEY_RESPONSES } from './TupaiaDataApi.fixtures';
+import { testGetEvents } from './testGetEvents';
+
+describe('TupaiaDataApi', () => {
+  before(async () => {
+    const models = new ModelRegistry(getTestDatabase());
+    await upsertDummySurveys(SURVEYS);
   });
+
+  describe('getEvents()', testGetEvents);
 
   describe('getAnalytics()', () => {
     // TODO add test cases
