@@ -12,6 +12,8 @@ import {
 } from '@tupaia/database';
 import { ENTITIES, SURVEYS, SURVEY_RESPONSES } from './TupaiaDataApi.fixtures';
 import { testFetchEvents } from './testFetchEvents';
+import { testFetchAnalytics } from './testFetchAnalytics';
+import { testFetchDataElements } from './testFetchDataElements';
 
 describe('TupaiaDataApi', () => {
   before(async () => {
@@ -25,11 +27,7 @@ describe('TupaiaDataApi', () => {
 
   describe('fetchEvents()', testFetchEvents);
 
-  describe('fetchAnalytics()', () => {
-    // TODO add test cases
-  });
+  describe('fetchAnalytics()', testFetchAnalytics);
 
-  describe('fetchDataElements()', () => {
-    // TODO add test cases
-  });
+  describe('fetchDataElements()', testFetchDataElements);
 });
