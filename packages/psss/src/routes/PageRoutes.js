@@ -5,15 +5,15 @@
 
 import React from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
-import { AlertsView } from '../views/AlertsView';
-import { WeeklyReportsView } from '../views/WeeklyReportsView';
-import { CountryView } from '../views/CountryView';
+import { AlertReportsView } from '../views/AlertReportsView';
+import { CountriesReportsView } from '../views/CountriesReportsView';
+import { CountryReportsView } from '../views/CountryReportsView';
 
 export const PageRoutes = React.memo(() => (
   <Switch>
-    <Route exact path="/" component={WeeklyReportsView} />
-    <Route path="/weekly-reports/:countryName" component={CountryView} />
-    <Route path="/alerts" component={AlertsView} />
+    <Route exact path="/" component={CountriesReportsView} />
+    <Route path="/weekly-reports/:countryName" component={CountryReportsView} />
+    <Route path="/alerts" component={AlertReportsView} />
     <Redirect to="/" />
   </Switch>
 ));

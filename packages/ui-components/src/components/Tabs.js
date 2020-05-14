@@ -7,7 +7,6 @@ import React, { useState, useCallback } from 'react';
 import MuiTabs from '@material-ui/core/Tabs';
 import MuiTab from '@material-ui/core/Tab';
 import styled from 'styled-components';
-import * as COLORS from '../theme/colors';
 
 /*
  * Tabs
@@ -66,7 +65,7 @@ export const LightTabs = styled(Tabs)`
  * Light Tab
  */
 export const LightTab = styled(Tab)`
-  color: ${COLORS.LIGHT_BLUE};
+  color: ${props => props.theme.palette.secondary.light};
 
   &.Mui-selected {
     color: ${props => props.theme.palette.primary.contrastText};

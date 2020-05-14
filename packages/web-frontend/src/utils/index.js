@@ -29,4 +29,4 @@ export { formatDateForApi } from './formatDateForApi';
 export { formatDataValue } from './formatters';
 export { findByKey } from './collection';
 export { areStringsEqual } from './string';
-export { hexToRgba, getPresentationOption } from './color';
+export { hexToRgba, getPresentationOption, getInactiveColor } from './color';
