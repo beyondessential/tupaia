@@ -113,6 +113,10 @@ const BASIC_LAOS_SCHOOL_MAP_OVERLAY_OBJECT = {
   measureBuilder: MEASURE_BUILDER,
   measureBuilderConfig: MEASURE_BUILDER_CONFIG,
   presentationOptions: {
+    hideByDefault: {
+      0: true,
+      "null": true
+    },
     displayOnLevel: 'District',
   },
   countryCodes: COUNTRY_CODES,
