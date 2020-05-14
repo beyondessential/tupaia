@@ -12,7 +12,7 @@ export const createService = (models, type) => {
     case 'dhis':
       return new DhisService(models);
     case 'tupaia':
-      return new TupaiaDataService(models, new TupaiaDataApi(models));
+      return new TupaiaDataService(models, new TupaiaDataApi(models.database));
     default:
       throw new Error(`Invalid service type: ${type}`);
   }

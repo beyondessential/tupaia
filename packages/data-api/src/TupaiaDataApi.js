@@ -4,88 +4,56 @@
  */
 
 import groupBy from 'lodash.groupby';
-import keyBy from 'lodash.keyby';
+import moment from 'moment';
 
-import { reduceToDictionary } from '@tupaia/utils';
-import { buildEventFromSurveyResponse } from './buildEventFromSurveyResponse';
+import { fetchEventData, fetchAnalyticData } from './fetchData';
+import { parameteriseArray } from './utils';
+
+const EVENT_DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss';
+const DAY_PERIOD_FORMAT = 'YYYYMMDD';
 
 export class TupaiaDataApi {
-  constructor(models) {
-    this.models = models;
+  constructor(database) {
+    this.database = database;
   }
 
   async getEvents(options) {
-    const {
-      surveyCode,
-      organisationUnitCode,
-      startDate,
-      endDate,
-      eventId,
-      dataElementCodes = [],
-    } = options;
-
-    const surveyResponses = await this.findSurveyResponsesForEvents({
-      surveyCode,
-      organisationUnitCode,
-      startDate,
-      endDate,
-      eventId,
+    const results = await fetchEventData(this.database, options);
+    const resultsBySurveyResponse = groupBy(results, 'surveyResponseId');
+    return Object.values(resultsBySurveyResponse).map(resultsForSurveyResponse => {
+      const { surveyResponseId, date, entityCode, entityName } = resultsForSurveyResponse[0];
+      const dataValues = resultsForSurveyResponse.reduce(
+        (values, { dataElementCode, value }) => ({ ...values, [dataElementCode]: value }),
+        {},
+      );
+      return {
+        event: surveyResponseId,
+        eventDate: moment(date).format(EVENT_DATE_FORMAT),
+        orgUnit: entityCode, // TODO incorrect for STRIVE cases
+        orgUnitName: entityName,
+        dataValues,
+      };
     });
-    return this.buildEvents(surveyResponses, { dataElementCodes });
-  }
-
-  async findSurveyResponsesForEvents({
-    surveyCode,
-    organisationUnitCode,
-    startDate,
-    endDate,
-    eventId,
-    // TODO: Add support for `trackedEntityInstance`
-  }) {
-    const { id: surveyId } = await this.models.survey.findOne({ code: surveyCode });
-    const { id: entityId } = await this.models.entity.findOne({ code: organisationUnitCode });
-
-    const findConditions = {
-      survey_id: surveyId,
-      entity_id: entityId,
-    };
-    if (eventId) {
-      findConditions.id = eventId;
-    }
-    // TODO handle startDate, endDate conditions
-
-    return this.models.surveyResponse.find(findConditions);
-  }
-
-  async buildEvents(surveyResponses, { dataElementCodes }) {
-    const questions = await this.models.question.find({ code: dataElementCodes });
-    const questionIdToCode = reduceToDictionary(questions, 'id', 'code');
-
-    const answers = await this.models.answers.find({
-      survey_response_id: surveyResponses.map(({ id }) => id),
-      question_id: questions.map(({ id }) => id),
-    });
-    const answersBySurveyResponseId = groupBy(answers, 'survey_response_id');
-
-    const entities = await this.models.entity.find({
-      code: surveyResponses.map(({ entity_id: entityId }) => entityId),
-    });
-    const entityById = keyBy(entities, 'id');
-
-    return surveyResponses.map(surveyResponse =>
-      buildEventFromSurveyResponse(surveyResponse, {
-        questionIdToCode,
-        entity: entityById[surveyResponse.entity_id],
-        answers: answersBySurveyResponseId[surveyResponse.id],
-      }),
-    );
   }
 
   async getAnalytics(options) {
-    // TODO implement
+    const results = await fetchAnalyticData(this.database, options);
+    return results.map(({ entityCode, dataElementCode, date, value }) => ({
+      organisationUnit: entityCode,
+      dataElement: dataElementCode,
+      period: moment(date).format(DAY_PERIOD_FORMAT),
+      value,
+    }));
   }
 
   async fetchDataElements(dataElementCodes) {
-    // TODO implement
+    return this.database.executeSql(
+      `
+      SELECT code, text as name
+      FROM question
+      WHERE code IN ${parameteriseArray(dataElementCodes)};
+    `,
+      dataElementCodes,
+    );
   }
 }
