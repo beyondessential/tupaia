@@ -5,18 +5,18 @@
 
 import { generateTestId } from '@tupaia/database';
 
-const portDouglas = {
-  code: 'DL_1',
-  name: 'Port Douglas',
-  type: 'facility',
+const auckland = {
+  code: 'NZ_AK',
+  name: 'Auckland',
+  type: 'district',
 };
 
-const kerang = {
-  code: 'DL_2',
-  name: 'Kerang',
-  type: 'facility',
+const wellington = {
+  code: 'NZ_WG',
+  name: 'Wellington',
+  type: 'district',
 };
-export const ENTITIES = [portDouglas, kerang];
+export const ENTITIES = [auckland, wellington];
 
 const BCD1 = {
   id: generateTestId(),
@@ -61,57 +61,114 @@ const CROP_SURVEY = {
 
 export const SURVEYS = [BCD_SURVEY, CROP_SURVEY];
 
-const BCD_RESPONSE_1 = {
+export const BCD_RESPONSE_AUCKLAND = {
+  id: generateTestId(),
   surveyCode: BCD_SURVEY.code,
-  entityCode: portDouglas.code,
-  submission_time: '2020-01-31T09:00:00',
+  entityCode: auckland.code,
+  submission_time: '2020-01-31T09:00:00Z',
   answers: [
     { questionCode: BCD1.code, text: 'Fully operational' },
     { questionCode: BCD325.code, text: '53' },
   ],
 };
 
-const BCD_RESPONSE_2 = {
+export const BCD_RESPONSE_WELLINGTON = {
+  id: generateTestId(),
   surveyCode: BCD_SURVEY.code,
-  entityCode: kerang.code,
-  submission_time: '2020-02-05T15:00:00',
+  entityCode: wellington.code,
+  submission_time: '2020-02-05T15:00:00Z',
   answers: [
     { questionCode: BCD1.code, text: 'Temporarily closed' },
     { questionCode: BCD325.code, text: '0' },
   ],
 };
 
-const CROP_RESPONSE_PORT_DOUGLAS_2019 = {
+export const CROP_RESPONSE_AUCKLAND_2019 = {
+  id: generateTestId(),
   surveyCode: CROP_SURVEY.code,
-  entityCode: portDouglas.code,
-  submission_time: '2019-11-21T09:00:00',
+  entityCode: auckland.code,
+  submission_time: '2019-11-21T09:00:00Z',
   answers: [
     { questionCode: CROP_1.code, text: '105' },
     { questionCode: CROP_2.code, text: '32' },
   ],
 };
 
-const CROP_RESPONSE_PORT_DOUGLAS_2020 = {
+export const CROP_RESPONSE_AUCKLAND_2020 = {
+  id: generateTestId(),
   surveyCode: CROP_SURVEY.code,
-  entityCode: portDouglas.code,
-  submission_time: '2020-11-21T09:00:00',
+  entityCode: auckland.code,
+  submission_time: '2020-11-21T09:00:00Z',
   answers: [{ questionCode: CROP_2.code, text: '55' }],
 };
 
-const CROP_RESPONSE_KERANG = {
+export const CROP_RESPONSE_WELLINGTON = {
+  id: generateTestId(),
   surveyCode: CROP_SURVEY.code,
-  entityCode: kerang.code,
-  submission_time: '2019-11-21T09:00:00',
+  entityCode: wellington.code,
+  submission_time: '2019-11-21T09:00:00Z',
   answers: [
     { questionCode: CROP_1.code, text: '5.1' },
     { questionCode: CROP_2.code, text: '55' },
   ],
 };
 
+export const BCD_EVENT_AUCKLAND = {
+  event: BCD_RESPONSE_AUCKLAND.id,
+  orgUnit: auckland.code,
+  orgUnitName: auckland.name,
+  eventDate: '2020-01-31T09:00:00',
+  dataValues: {
+    [BCD1.code]: 'Fully operational',
+    [BCD325.code]: '53',
+  },
+};
+
+export const BCD_EVENT_WELLINGTON = {
+  event: BCD_RESPONSE_WELLINGTON.id,
+  orgUnit: wellington.code,
+  orgUnitName: wellington.name,
+  eventDate: '2020-02-05T15:00:00',
+  dataValues: {
+    [BCD1.code]: 'Temporarily closed',
+    [BCD325.code]: '0',
+  },
+};
+
+export const CROP_EVENT_AUCKLAND_2019 = {
+  event: CROP_RESPONSE_AUCKLAND_2019.id,
+  orgUnit: auckland.code,
+  orgUnitName: auckland.name,
+  eventDate: '2019-11-21T09:00:00',
+  dataValues: {
+    [CROP_1.code]: '105',
+    [CROP_2.code]: '32',
+  },
+};
+
+export const CROP_EVENT_AUCKLAND_2020 = {
+  event: CROP_RESPONSE_AUCKLAND_2020.id,
+  orgUnit: auckland.code,
+  orgUnitName: auckland.name,
+  eventDate: '2020-11-21T09:00:00',
+  dataValues: { [CROP_2.code]: '55' },
+};
+
+export const CROP_EVENT_WELLINGTON = {
+  event: CROP_RESPONSE_WELLINGTON.id,
+  orgUnit: wellington.code,
+  orgUnitName: wellington.name,
+  eventDate: '2019-11-21T09:00:00',
+  dataValues: {
+    [CROP_1.code]: '5.1',
+    [CROP_2.code]: '55',
+  },
+};
+
 export const SURVEY_RESPONSES = [
-  BCD_RESPONSE_1,
-  BCD_RESPONSE_2,
-  CROP_RESPONSE_KERANG,
-  CROP_RESPONSE_PORT_DOUGLAS_2019,
-  CROP_RESPONSE_PORT_DOUGLAS_2020,
+  BCD_RESPONSE_AUCKLAND,
+  BCD_RESPONSE_WELLINGTON,
+  CROP_RESPONSE_WELLINGTON,
+  CROP_RESPONSE_AUCKLAND_2019,
+  CROP_RESPONSE_AUCKLAND_2020,
 ];

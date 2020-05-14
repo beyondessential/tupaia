@@ -4,19 +4,20 @@
  */
 
 import { SqlQuery } from './SqlQuery';
+import { parameteriseArray } from './utils';
 
-const generateBaseSqlQuery = ({ dataElementCodes, startDate, endDate }) => {
+const generateBaseSqlQuery = ({ dataElementCodes, organisationUnitCodes, startDate, endDate }) => {
   const sqlQuery = new SqlQuery(
     `
     SELECT
       survey_response.id as "surveyResponseId",
-      survey_response.submission_time as "date"
+      survey_response.submission_time as "date",
       entity.code as "entityCode",
       entity.name as "entityName",
       question.code as "dataElementCode",
-      answer.text as "value",
+      answer.text as "value"
     FROM
-      survey_response sr
+      survey_response
     JOIN
       answer ON answer.survey_response_id = survey_response.id
     JOIN
@@ -26,9 +27,11 @@ const generateBaseSqlQuery = ({ dataElementCodes, startDate, endDate }) => {
     JOIN
       survey ON survey.id = survey_response.survey_id
     WHERE
-      question.code IN ${SqlQuery.parameteriseArray(dataElementCodes)}
+      question.code IN ${parameteriseArray(dataElementCodes)}
+    AND
+      entity.code IN ${parameteriseArray(organisationUnitCodes)}
   `,
-    dataElementCodes,
+    [...dataElementCodes, ...organisationUnitCodes],
   );
 
   if (startDate) {
@@ -43,22 +46,15 @@ const generateBaseSqlQuery = ({ dataElementCodes, startDate, endDate }) => {
 
 export async function fetchEventData(database, options) {
   const sqlQuery = generateBaseSqlQuery(options);
-  const { surveyCode, organisationUnitCode, eventId } = options;
+  const { surveyCode, eventId } = options;
   sqlQuery.addClause(`AND survey.code = ?`, [surveyCode]);
-  sqlQuery.addClause(`AND entity.code = ?`, [organisationUnitCode]);
   if (eventId) {
     sqlQuery.addClause(`AND survey_response.id = ?`, [eventId]);
   }
-  // TODO handle trackedEntityInstanceId
   return sqlQuery.executeOnDatabase(database);
 }
 
 export async function fetchAnalyticData(database, options) {
   const sqlQuery = generateBaseSqlQuery(options);
-  const { organisationUnitCodes } = options;
-  sqlQuery.addClause(
-    `AND entity.code IN ${SqlQuery.parameteriseArray(organisationUnitCodes)}`,
-    organisationUnitCodes,
-  );
   return sqlQuery.executeOnDatabase(database);
 }

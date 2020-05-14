@@ -4,7 +4,7 @@
  */
 
 import groupBy from 'lodash.groupby';
-import moment from 'moment';
+import { utcMoment } from '@tupaia/utils';
 
 import { fetchEventData, fetchAnalyticData } from './fetchData';
 import { parameteriseArray } from './utils';
@@ -28,7 +28,7 @@ export class TupaiaDataApi {
       );
       return {
         event: surveyResponseId,
-        eventDate: moment(date).format(EVENT_DATE_FORMAT),
+        eventDate: utcMoment(date).format(EVENT_DATE_FORMAT),
         orgUnit: entityCode, // TODO incorrect for STRIVE cases
         orgUnitName: entityName,
         dataValues,
@@ -41,7 +41,7 @@ export class TupaiaDataApi {
     return results.map(({ entityCode, dataElementCode, date, value }) => ({
       organisationUnit: entityCode,
       dataElement: dataElementCode,
-      period: moment(date).format(DAY_PERIOD_FORMAT), // TODO should we convert to period here or in data-broker
+      period: utcMoment(date).format(DAY_PERIOD_FORMAT), // TODO should we convert to period here or in data-broker
       value,
     }));
   }
