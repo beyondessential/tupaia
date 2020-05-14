@@ -49,6 +49,7 @@ export async function fetchEventData(database, options) {
   if (eventId) {
     sqlQuery.addClause(`AND survey_response.id = ?`, [eventId]);
   }
+  // TODO handle trackedEntityInstanceId
   return sqlQuery.executeOnDatabase(database);
 }
 
