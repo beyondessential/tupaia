@@ -35,3 +35,21 @@ export const sumLatestPerOrgUnit = async (
   );
   return builder.build();
 };
+
+export const sumAllPerOrgUnit = async (
+  aggregator,
+  dhisApi,
+  query,
+  measureBuilderConfig,
+  entity,
+) => {
+  const builder = new SumPerOrgUnitBuilder(
+    aggregator,
+    dhisApi,
+    measureBuilderConfig,
+    query,
+    entity,
+    aggregator.aggregationTypes.SUM,
+  );
+  return builder.build();
+};

@@ -20,6 +20,7 @@ import moment from 'moment';
 import { getMarkerForOption, resolveSpectrumColour, UNKNOWN_COLOR } from '../../components/Marker';
 import { BOX_SHADOW, TRANS_BLACK_LESS, OFF_WHITE, WHITE } from '../../styles';
 import NoDataLabel, { LabelLeft, LabelRight } from './labels';
+import { SCALE_TYPES } from '../../constants';
 import {
   MEASURE_TYPE_ICON,
   MEASURE_TYPE_RADIUS,
@@ -28,10 +29,8 @@ import {
   MEASURE_TYPE_COLOR,
   MEASURE_VALUE_OTHER,
   MEASURE_VALUE_NULL,
-  SCALE_TYPES,
   MEASURE_TYPE_SHADED_SPECTRUM,
 } from '../../utils/measures';
-
 import { formatDataValue } from '../../utils/formatters';
 import {
   DEFAULT_ICON,
@@ -102,13 +101,21 @@ const getLabels = (scaleType, min, max, valueType) => {
   }
 };
 
-const SpectrumLegend = ({ scaleType, min, max, noDataColour, valueMapping, valueType }) => {
+const SpectrumLegend = ({
+  scaleType,
+  scaleColorScheme,
+  min,
+  max,
+  noDataColour,
+  valueMapping,
+  valueType,
+}) => {
   const spectrumDivs = [];
 
   switch (scaleType) {
     case SCALE_TYPES.TIME:
       for (let i = 0; i < 1; i += 0.01) {
-        const colour = resolveSpectrumColour(scaleType, i, min, max);
+        const colour = resolveSpectrumColour(scaleType, scaleColorScheme, i, min, max);
         spectrumDivs.push(<SpectrumSliver style={{ background: colour }} key={i} />);
       }
       break;
@@ -119,7 +126,7 @@ const SpectrumLegend = ({ scaleType, min, max, noDataColour, valueMapping, value
       const increment = (max - min) / 100;
 
       for (let i = min; i < max; i += increment) {
-        const colour = resolveSpectrumColour(scaleType, i, min, max);
+        const colour = resolveSpectrumColour(scaleType, scaleColorScheme, i, min, max);
         spectrumDivs.push(<SpectrumSliver style={{ background: colour }} key={i} />);
       }
     }
@@ -223,6 +230,7 @@ const MeasureLegend = ({ measureOptions, hasIconLayer, hasRadiusLayer, hasColorL
     type,
     valueMapping,
     scaleType,
+    scaleColorScheme,
     noDataColour,
     key: dataKey,
     min,
@@ -234,6 +242,7 @@ const MeasureLegend = ({ measureOptions, hasIconLayer, hasRadiusLayer, hasColorL
     return (
       <SpectrumLegend
         scaleType={scaleType}
+        scaleColorScheme={scaleColorScheme}
         min={min}
         max={max}
         noDataColour={noDataColour}

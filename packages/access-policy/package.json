@@ -36,7 +36,7 @@
     "babel-loader": "^8.0.0",
     "babel-plugin-array-includes": "^2.0.3",
     "chai": "^4.1.2",
-    "eslint": "^3.15.0",
+    "eslint": "^5.15.0",
     "eslint-config-airbnb": "^14.1.0",
     "eslint-config-airbnb-base": "^11.1.0",
     "eslint-plugin-import": "^2.2.0",

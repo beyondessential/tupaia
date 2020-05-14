@@ -23,6 +23,7 @@ const COUNTRY = 'country';
 const DISASTER = 'disaster';
 const DISTRICT = 'district';
 const FACILITY = 'facility';
+const SCHOOL = 'school';
 const SUB_DISTRICT = 'sub_district';
 const VILLAGE = 'village';
 const WORLD = 'world';
@@ -35,6 +36,7 @@ export const ENTITY_TYPES = {
   DISASTER,
   DISTRICT,
   FACILITY,
+  SCHOOL,
   SUB_DISTRICT,
   VILLAGE,
   WORLD,
@@ -184,6 +186,12 @@ export class Entity extends BaseModel {
   static async getFacilitiesOfOrgUnit(organisationUnitCode) {
     const entity = await Entity.findOne({ code: organisationUnitCode });
     return entity ? entity.getFacilities() : [];
+  }
+
+  async getOrgUnitDescendants() {
+    const types = Object.values(Entity.orgUnitEntityTypes);
+    const descendants = await this.getDescendants();
+    return descendants.filter(entity => types.includes(entity.type));
   }
 
   // assumes all entities of the given type are found at the same level in the hierarchy tree

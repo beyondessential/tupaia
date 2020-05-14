@@ -63,12 +63,12 @@ import matrixPlaceholder from '../../../images/matrix-placeholder.png';
 import { DateRangePicker } from '../../DateRangePicker';
 import { getStyles, DESCRIPTION_CELL_WIDTH, MINIMUM_CELL_WIDTH } from './styles';
 import { Matrix } from './components';
+import { formatDataValue } from '../../../utils';
 
 const buildMatrixDataFromViewContent = viewContent => {
   if (!viewContent.columns) {
     return null;
   }
-
   const {
     columns: columnData,
     rows,
@@ -76,20 +76,28 @@ const buildMatrixDataFromViewContent = viewContent => {
     presentationOptions = {},
     categoryPresentationOptions = {},
     isExporting,
+    valueType = 'text',
   } = viewContent;
 
   let maximumCellCharacters = 0;
   const formattedRows = rows.map(row => {
     const { dataElement, code, categoryId, category, ...columns } = row;
-    Object.values(columns).forEach(value => {
+
+    const formattedCells = {};
+    Object.entries(columns).forEach(([columnName, columnValue]) => {
+      formattedCells[columnName] = formatDataValue(columnValue, valueType);
+    });
+
+    Object.values(formattedCells).forEach(value => {
       if (!value) return;
       maximumCellCharacters = Math.max(maximumCellCharacters, value.toString().length);
     });
+
     return {
       description: dataElement,
       categoryId,
       category,
-      ...columns,
+      ...formattedCells,
     };
   });
 

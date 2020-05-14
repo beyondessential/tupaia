@@ -7,10 +7,12 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
 import { connect } from 'react-redux';
+import styled from 'styled-components';
+import Button from '@material-ui/core/Button';
+import ExploreIcon from '@material-ui/icons/ExploreOutlined';
 
-import { REQUEST_PROJECT_ACCESS } from '../../index';
+import { REQUEST_PROJECT_ACCESS } from '../../constants';
 import { selectProject, setRequestingAccess } from '../../../../projects/actions';
 import { setOverlayComponent, changeOrgUnit } from '../../../../actions';
 import { ProjectCard } from './ProjectCard';
@@ -23,6 +25,18 @@ const Container = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 16px;
+`;
+
+const ExploreButton = styled(Button)`
+  margin-bottom: 16px;
+  width: 250px;
+  height: 50px;
+  border-radius: 3px;
+  font-size: 13px;
+
+  svg {
+    margin-right: 10px;
+  }
 `;
 
 const renderProjectsWithFilter = (projects, accessType, action, actionText) =>
@@ -39,7 +53,16 @@ const renderProjectsWithFilter = (projects, accessType, action, actionText) =>
       />
     ));
 
-const ProjectPageComponent = ({ onSelectProject, onRequestProjectAccess, projects }) => {
+const ProjectPageComponent = ({
+  onSelectProject,
+  onRequestProjectAccess,
+  openLoginDialog,
+  isUserLoggedIn,
+  projects,
+}) => {
+  const exploreProject = projects.find(p => p.code === EXPLORE_CODE);
+  const selectExploreProject = React.useCallback(() => onSelectProject(exploreProject));
+
   const projectsWithAccess = renderProjectsWithFilter(
     projects,
     true,
@@ -47,18 +70,25 @@ const ProjectPageComponent = ({ onSelectProject, onRequestProjectAccess, project
     'View project',
   );
 
+  const noAccessAction = isUserLoggedIn ? onRequestProjectAccess : openLoginDialog;
+  const noAccessText = isUserLoggedIn ? 'Request access' : 'Log in';
   const projectsWithoutAccess = renderProjectsWithFilter(
     projects,
     false,
-    onRequestProjectAccess,
-    'Request access',
+    noAccessAction,
+    noAccessText,
   );
 
   return (
-    <Container>
-      {projectsWithAccess}
-      {projectsWithoutAccess}
-    </Container>
+    <div>
+      <ExploreButton onClick={selectExploreProject} variant="outlined">
+        <ExploreIcon /> I just want to explore
+      </ExploreButton>
+      <Container>
+        {projectsWithAccess}
+        {projectsWithoutAccess}
+      </Container>
+    </div>
   );
 };
 

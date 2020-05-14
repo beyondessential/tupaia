@@ -18,6 +18,7 @@ const getColumnKey = columnIndex => `Col${parseInt(columnIndex, 10) + 1}`;
 
 const METADATA_ROW_KEYS = ['dataElement', 'categoryId'];
 const ORG_UNIT_COL_KEY = '$orgUnit';
+const ORG_UNIT_WITH_TYPE_COL_KEY = '$orgUnitTypeName';
 const CATEGORY_AGGREGATION_TYPES = {
   AVERAGE: '$average',
 };
@@ -28,7 +29,7 @@ export class TableOfDataValuesBuilder extends DataBuilder {
     this.results = results;
     this.tableConfig = new TableConfig(this.config, this.results);
     this.baseRows = this.buildBaseRows();
-    this.valuesByCell = getValuesByCell(this.tableConfig, this.results);
+    this.valuesByCell = this.buildValuesByCell();
     this.totalCalculator = new TotalCalculator(this.tableConfig, this.valuesByCell);
 
     const columns = await this.buildColumns();
@@ -46,11 +47,17 @@ export class TableOfDataValuesBuilder extends DataBuilder {
       }
     }
 
+    if (
+      this.tableConfig.columnType === ORG_UNIT_COL_KEY ||
+      this.tableConfig.columnType === ORG_UNIT_WITH_TYPE_COL_KEY
+    ) {
+      data.columns = await this.replaceOrgUnitCodesWithNames(data.columns);
+    }
     return data;
   }
 
   async fetchAnalyticsAndMetadata() {
-    const dataElementCodes = [...new Set(flatten(this.config.cells))];
+    const dataElementCodes = this.buildDataElementCodes();
     const { results, period } = await this.fetchAnalytics(dataElementCodes);
     const dataElements = await this.fetchDataElements(dataElementCodes);
     const dataElementByCode = keyBy(dataElements, 'code');
@@ -60,6 +67,14 @@ export class TableOfDataValuesBuilder extends DataBuilder {
     }));
 
     return { results: resultsWithMetadata, period };
+  }
+
+  buildDataElementCodes() {
+    return [...new Set(flatten(this.config.cells))];
+  }
+
+  buildValuesByCell() {
+    return getValuesByCell(this.tableConfig, this.results);
   }
 
   async buildRows() {
@@ -108,14 +123,27 @@ export class TableOfDataValuesBuilder extends DataBuilder {
 
     return TotalCalculator.isTotalKey(cell)
       ? this.totalCalculator.calculate(rowIndex, columnIndex)
-      : this.valuesByCell[cell];
+      : this.valuesByCell[this.getCellKey(rowIndex, columnIndex)];
+  }
+
+  getCellKey(rowIndex, columnIndex) {
+    return this.tableConfig.cells[rowIndex][columnIndex];
   }
 
   async buildColumns() {
     const buildColumn = (column, index) => ({ key: getColumnKey(index), title: column });
+    this.tableConfig.columnType = this.tableConfig.columns;
 
-    if (this.tableConfig.columns === ORG_UNIT_COL_KEY) this.buildOrgsFromResults();
-    if (!this.tableConfig.hasColumnCategories()) {
+    if (this.tableConfig.hasColumnMetadataTranslator()) {
+      this.results = await this.tableConfig.processColumnMetadataTranslator(this.results);
+    }
+
+    if (this.tableConfig.columnType === ORG_UNIT_COL_KEY) this.buildOrgsFromResults();
+
+    if (this.tableConfig.columnType === ORG_UNIT_WITH_TYPE_COL_KEY)
+      this.buildOrgsFromResultsWithCategories();
+
+    if (!this.hasColumnsInCategories(this.tableConfig.columns)) {
       return this.tableConfig.columns.map(buildColumn);
     }
 
@@ -127,12 +155,6 @@ export class TableOfDataValuesBuilder extends DataBuilder {
       columns: columns.map(column => buildColumn(column, index++)),
     }));
 
-    if (
-      this.tableConfig.columns === ORG_UNIT_COL_KEY ||
-      this.tableConfig.columnType === ORG_UNIT_COL_KEY
-    ) {
-      return this.replaceOrgUnitCodesWithNames(builtColumns);
-    }
     return builtColumns;
   }
 
@@ -228,12 +250,51 @@ export class TableOfDataValuesBuilder extends DataBuilder {
     this.tableConfig.columns = Array.from(orgUnitsWithData);
   }
 
+  buildOrgsFromResultsWithCategories() {
+    const types = reduceToDictionary(this.results, 'typeName', 'categoryCode');
+    const sortedTypes = Object.keys(types).sort((a, b) => types[a] - types[b]);
+    const orgUnitTypes = reduceToDictionary(this.results, 'organisationUnit', 'typeName');
+    const columnCategories = new Map(sortedTypes.map(cat => [cat, []]));
+    Object.keys(orgUnitTypes).forEach(org => {
+      columnCategories.get(orgUnitTypes[org]).push(org);
+    });
+    const columns = [];
+    columnCategories.forEach((cols, cat) => {
+      columns.push({ category: cat, columns: cols });
+    });
+    this.tableConfig.columns = columns;
+  }
+
   replaceOrgUnitCodesWithNames = async columns => {
+    const orgUnitCodesToName = await this.fetchOrgUnitCodesToName(
+      this.flattenColumnCategories(columns),
+    );
+    const swapNames = ({ title, key }) => ({ key, title: orgUnitCodesToName[title] });
+
+    if (this.hasColumnsInCategories(columns)) {
+      const updatedColumns = columns.map(category => {
+        const newColumns = category.columns.map(swapNames);
+        return { ...category, columns: newColumns };
+      });
+      return updatedColumns;
+    }
+    return columns.map(swapNames);
+  };
+
+  fetchOrgUnitCodesToName = async columns => {
     const orgUnitCodes = columns.map(c => c.title);
     const orgUnits = await Entity.find({ code: orgUnitCodes });
-    const orgUnitCodesToName = reduceToDictionary(orgUnits, 'code', 'name');
+    return reduceToDictionary(orgUnits, 'code', 'name');
+  };
 
-    return columns.map(({ title, key }) => ({ key, title: orgUnitCodesToName[title] }));
+  flattenColumnCategories = columns => {
+    return this.hasColumnsInCategories(columns)
+      ? [].concat(...columns.map(categories => categories.columns))
+      : columns;
+  };
+
+  hasColumnsInCategories = columns => {
+    return columns[0] && columns[0].hasOwnProperty('category');
   };
 }
 

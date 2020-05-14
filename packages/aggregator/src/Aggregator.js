@@ -3,7 +3,12 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { aggregateAnalytics, filterAnalytics, periodFromAnalytics } from './analytics';
+import {
+  aggregateAnalytics,
+  filterAnalytics,
+  periodFromAnalytics,
+  getPeriodForDataBroker,
+} from './analytics';
 import { AGGREGATION_TYPES } from './aggregationTypes';
 
 export class Aggregator {
@@ -26,22 +31,34 @@ export class Aggregator {
     return this.dataBroker.getDataSourceTypes();
   }
 
-  processAnalytics = (analytics, aggregationOptions) => {
-    const { aggregationType, aggregationConfig, measureCriteria } = aggregationOptions;
-    const aggregatedAnalytics = aggregateAnalytics(analytics, aggregationType, aggregationConfig);
-    return filterAnalytics(aggregatedAnalytics, measureCriteria);
+  processAnalytics = (analytics, aggregationOptions, requestedPeriod) => {
+    const { aggregationType, aggregationConfig, filter } = aggregationOptions;
+    const aggregatedAnalytics = aggregateAnalytics(analytics, aggregationType, {
+      ...aggregationConfig,
+      requestedPeriod,
+    });
+    return filterAnalytics(aggregatedAnalytics, filter);
   };
 
   async fetchAnalytics(codeInput, fetchOptions, aggregationOptions = {}) {
     const code = Array.isArray(codeInput) ? codeInput : [codeInput];
     const dataSourceSpec = { code, type: this.dataSourceTypes.DATA_ELEMENT };
-    const { results, metadata } = await this.dataBroker.pull(dataSourceSpec, fetchOptions);
-    const period = periodFromAnalytics(results, fetchOptions);
+    const { startDate, endDate, period, ...restOfFetchOptions } = fetchOptions;
+    const periodForDataBroker = getPeriodForDataBroker(aggregationOptions.aggregationType, {
+      startDate,
+      endDate,
+      period,
+    });
+
+    const { results, metadata } = await this.dataBroker.pull(dataSourceSpec, {
+      ...restOfFetchOptions,
+      ...periodForDataBroker,
+    });
 
     return {
-      results: this.processAnalytics(results, aggregationOptions),
+      results: this.processAnalytics(results, aggregationOptions, period),
       metadata,
-      period,
+      period: periodFromAnalytics(results, fetchOptions),
     };
   }
 
