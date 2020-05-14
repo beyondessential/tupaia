@@ -18,7 +18,7 @@ import {
   periodToDisplayString,
   parsePeriodType,
   periodToTimestamp,
-} from '../period';
+} from '../../period/period';
 
 const { DAY, WEEK, MONTH, YEAR } = PERIOD_TYPES;
 

@@ -1,4 +1,4 @@
-import { utcMoment } from './datetime';
+import { utcMoment } from '../datetime';
 import { PERIOD_TYPES, getPeriodsInRange, momentToPeriod } from './period';
 
 const { DAY, MONTH } = PERIOD_TYPES;
