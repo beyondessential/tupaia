@@ -1,5 +1,5 @@
 export { DhisApi } from './DhisApi';
-export * from './periodTypes';
+export { dhisToTupaiaPeriodType } from './dhisToTupaiaPeriodType';
 export { groupAnalyticsByPeriod, groupEventsByPeriod, groupEventsByOrgUnit } from './groupResults';
 export {
   convertDateRangeToPeriods,

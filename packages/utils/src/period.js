@@ -1,11 +1,11 @@
 /**
- * Tupaia Config Server
- * * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
 import get from 'lodash.get';
 
-import { utcMoment, reduceToDictionary } from '@tupaia/utils';
+import { utcMoment, reduceToDictionary } from '.';
 
 const DAY = 'DAY';
 const WEEK = 'WEEK';
@@ -30,7 +30,6 @@ const PERIOD_TYPE_CONFIG = {
     displayFormat: 'Do MMM YYYY',
     momentShorthand: 'd',
     momentUnit: 'day',
-    dhisType: 'Daily',
   },
   [WEEK]: {
     format: 'GGGG[W]WW',
@@ -38,7 +37,6 @@ const PERIOD_TYPE_CONFIG = {
     displayFormat: 'Do MMM YYYY',
     momentShorthand: 'w',
     momentUnit: 'isoWeek',
-    dhisType: 'Weekly',
   },
   [MONTH]: {
     format: 'YYYYMM',
@@ -46,7 +44,6 @@ const PERIOD_TYPE_CONFIG = {
     displayFormat: 'MMM YYYY',
     momentShorthand: 'M',
     momentUnit: 'month',
-    dhisType: 'Monthly',
   },
   [YEAR]: {
     format: 'YYYY',
@@ -54,7 +51,6 @@ const PERIOD_TYPE_CONFIG = {
     displayFormat: 'YYYY',
     momentShorthand: 'Y',
     momentUnit: 'year',
-    dhisType: 'Yearly',
   },
 };
 
@@ -68,8 +64,6 @@ const createFieldToPeriodType = fieldName =>
     'periodType',
   );
 const LENGTH_TO_PERIOD_TYPE = createFieldToPeriodType('length');
-const DHIS_TYPE_TO_PERIOD_TYPE = createFieldToPeriodType('dhisType');
-export const dhisToTupaiaPeriodType = dhisType => DHIS_TYPE_TO_PERIOD_TYPE[dhisType];
 
 const createAccessor = field => periodType => get(PERIOD_TYPE_CONFIG, [periodType, field]);
 export const periodTypeToFormat = createAccessor('format');
@@ -120,8 +114,8 @@ export const periodToDisplayString = (period, targetType) => {
 };
 
 /**
- * @param {string} period A DHIS data period
- * @param {string} targetType Type of DHIS period to convert to
+ * @param {string} period A data period
+ * @param {string} targetType Type of period to convert to
  * @param {boolean} isEndPeriod if set, the periods will be converted
  * to the last available period of their initial range
  * @returns {string}
@@ -216,7 +210,7 @@ export const findCoarsestPeriodType = periodTypes => {
 };
 
 /**
- * Returns all DHIS2 periods in a specified range (inclusive)
+ * Returns all periods in a specified range (inclusive)
  *
  * @param {string} start The start period. Must be earlier than or equal to the end period
  * @param {string} end The end period

@@ -1,5 +1,4 @@
-import { utcMoment } from '@tupaia/utils';
-import { PERIOD_TYPES, getPeriodsInRange, momentToPeriod } from './periodTypes';
+import { utcMoment, PERIOD_TYPES, getPeriodsInRange, momentToPeriod } from '@tupaia/utils';
 
 const { DAY, MONTH } = PERIOD_TYPES;
 

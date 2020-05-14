@@ -6,7 +6,6 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 import moment from 'moment';
-
 import {
   PERIOD_TYPES,
   convertToPeriod,
@@ -19,7 +18,7 @@ import {
   periodToDisplayString,
   parsePeriodType,
   periodToTimestamp,
-} from '../periodTypes';
+} from '../period';
 
 const { DAY, WEEK, MONTH, YEAR } = PERIOD_TYPES;
 
