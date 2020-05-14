@@ -13,10 +13,10 @@ import {
   resolveSpectrumColour,
 } from '../components/Marker/markerColors';
 import { SPECTRUM_ICON, DEFAULT_ICON, UNKNOWN_ICON } from '../components/Marker/markerIcons';
+import { VALUE_TYPES, VALUE_TYPES } from '../components/View/constants';
 import { MAP_COLORS } from '../styles';
 import { formatDataValue } from './formatters';
 import { SCALE_TYPES } from '../constants';
-import { VALUE_TYPES } from '../components/View/constants';
 
 // At a few places throughout this module we're iterating over a collection
 // while modifying an object, which trips up the eslint rule that expects inline
@@ -38,6 +38,7 @@ export const MEASURE_VALUE_OTHER = 'other';
 export const MEASURE_VALUE_NULL = 'null';
 
 export const POLYGON_MEASURE_TYPES = [MEASURE_TYPE_SHADING, MEASURE_TYPE_SHADED_SPECTRUM];
+export const SPECTRUM_MEASURE_TYPES = [MEASURE_TYPE_SPECTRUM, MEASURE_TYPE_SHADED_SPECTRUM];
 
 export function autoAssignColors(values) {
   if (!values) return [];
@@ -161,7 +162,7 @@ export function processMeasureInfo(response) {
 
     hiddenMeasures[measureOption.key] = measureOption.hideByDefault;
 
-    if (POLYGON_MEASURE_TYPES.includes(type)) {
+    if (SPECTRUM_MEASURE_TYPES.includes(type)) {
       // for each spectrum, include the minimum and maximum values for
       // use in the legend scale labels.
       const { min, max } = getSpectrumScaleValues(measureData, measureOption);
@@ -261,7 +262,17 @@ export function getMeasureDisplayInfo(measureData, measureOptions, hiddenMeasure
     }
   });
   measureOptions.forEach(
-    ({ key, type, valueMapping, noDataColour, scaleType, min, max, hideByDefault }) => {
+    ({
+      key,
+      type,
+      valueMapping,
+      noDataColour,
+      scaleType,
+      scaleColorScheme,
+      min,
+      max,
+      hideByDefault,
+    }) => {
       const valueInfo = getValueInfo(measureData[key], valueMapping, {
         ...hideByDefault,
         ...hiddenMeasures[key],
@@ -281,12 +292,13 @@ export function getMeasureDisplayInfo(measureData, measureOptions, hiddenMeasure
             valueInfo.value === null || valueInfo.value === undefined ? 'No data' : valueInfo.value;
           displayInfo.color = resolveSpectrumColour(
             scaleType,
+            scaleColorScheme,
             valueInfo.value || (valueInfo.value === 0 ? 0 : null),
             min,
             max,
             noDataColour,
           );
-          displayInfo.icon = SPECTRUM_ICON;
+          displayInfo.icon = valueInfo.icon || displayInfo.icon || SPECTRUM_ICON;
           break;
         case MEASURE_TYPE_SHADING:
           displayInfo.color = MAP_COLORS[valueInfo.color] || MAP_COLORS.NO_DATA;

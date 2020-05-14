@@ -101,13 +101,21 @@ const getLabels = (scaleType, min, max, valueType) => {
   }
 };
 
-const SpectrumLegend = ({ scaleType, min, max, noDataColour, valueMapping, valueType }) => {
+const SpectrumLegend = ({
+  scaleType,
+  scaleColorScheme,
+  min,
+  max,
+  noDataColour,
+  valueMapping,
+  valueType,
+}) => {
   const spectrumDivs = [];
 
   switch (scaleType) {
     case SCALE_TYPES.TIME:
       for (let i = 0; i < 1; i += 0.01) {
-        const colour = resolveSpectrumColour(scaleType, i, min, max);
+        const colour = resolveSpectrumColour(scaleType, scaleColorScheme, i, min, max);
         spectrumDivs.push(<SpectrumSliver style={{ background: colour }} key={i} />);
       }
       break;
@@ -118,7 +126,7 @@ const SpectrumLegend = ({ scaleType, min, max, noDataColour, valueMapping, value
       const increment = (max - min) / 100;
 
       for (let i = min; i < max; i += increment) {
-        const colour = resolveSpectrumColour(scaleType, i, min, max);
+        const colour = resolveSpectrumColour(scaleType, scaleColorScheme, i, min, max);
         spectrumDivs.push(<SpectrumSliver style={{ background: colour }} key={i} />);
       }
     }
@@ -222,6 +230,7 @@ const MeasureLegend = ({ measureOptions, hasIconLayer, hasRadiusLayer, hasColorL
     type,
     valueMapping,
     scaleType,
+    scaleColorScheme,
     noDataColour,
     key: dataKey,
     min,
@@ -233,6 +242,7 @@ const MeasureLegend = ({ measureOptions, hasIconLayer, hasRadiusLayer, hasColorL
     return (
       <SpectrumLegend
         scaleType={scaleType}
+        scaleColorScheme={scaleColorScheme}
         min={min}
         max={max}
         noDataColour={noDataColour}

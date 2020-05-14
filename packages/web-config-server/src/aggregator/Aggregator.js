@@ -8,7 +8,6 @@ export class Aggregator extends BaseAggregator {
   }
 
   async fetchAnalytics(dataElementCodes, originalQuery, replacementValues, ...otherParams) {
-
     const queryBuilder = new QueryBuilder(
       originalQuery,
       replacementValues,
@@ -17,5 +16,16 @@ export class Aggregator extends BaseAggregator {
     const query = await queryBuilder.build();
 
     return super.fetchAnalytics(dataElementCodes, query, ...otherParams);
+  }
+
+  async fetchEvents(programCode, originalQuery, replacementValues) {
+    const queryBuilder = new QueryBuilder(
+      originalQuery,
+      replacementValues,
+      this.fetchDataSourceEntities,
+    );
+    queryBuilder.makeEventReplacements();
+
+    return super.fetchEvents(programCode, queryBuilder.query);
   }
 }

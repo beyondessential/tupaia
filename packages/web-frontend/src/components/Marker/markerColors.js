@@ -11,6 +11,23 @@ import { BREWER_PALETTE, MAP_COLORS } from '../../styles';
 import { SCALE_TYPES } from '../../constants';
 
 const HEATMAP_UNKNOWN_COLOR = MAP_COLORS.NO_DATA;
+const DEFAULT_COLOR_SCHEME = 'default';
+const PERFORMANCE_COLOR_SCHEME = 'performance';
+const TIME_COLOR_SCHEME = 'time';
+
+const COLOR_SCHEME_TO_FUNCTION = {
+  [DEFAULT_COLOR_SCHEME]: getHeatmapColor,
+  [PERFORMANCE_COLOR_SCHEME]: getPerformanceHeatmapColor,
+  [TIME_COLOR_SCHEME]: getTimeHeatmapColor,
+};
+
+const SCALE_TYPE_TO_COLOR_SCHEME = {
+  [SCALE_TYPES.PERFORMANCE]: PERFORMANCE_COLOR_SCHEME,
+  [SCALE_TYPES.PERFORMANCE_DESC]: PERFORMANCE_COLOR_SCHEME,
+  [SCALE_TYPES.POPULATION]: DEFAULT_COLOR_SCHEME,
+  [SCALE_TYPES.TIME]: TIME_COLOR_SCHEME,
+};
+
 /**
  * Helper function just to point the spectrum type to the correct colours
  *
@@ -22,16 +39,21 @@ const HEATMAP_UNKNOWN_COLOR = MAP_COLORS.NO_DATA;
  * @param {string} noDataColour css hsl string, e.g. `hsl(value, 100%, 50%)` for null value
  * @returns {style} css hsl string, e.g. `hsl(value, 100%, 50%)`
  */
-export function resolveSpectrumColour(scaleType, value, min, max, noDataColour) {
+export function resolveSpectrumColour(scaleType, scaleColorScheme, value, min, max, noDataColour) {
   if (value === null || (isNaN(value) && scaleType !== SCALE_TYPES.TIME))
     return noDataColour || HEATMAP_UNKNOWN_COLOR;
+
+  const valueToColor =
+    COLOR_SCHEME_TO_FUNCTION[scaleColorScheme] ||
+    COLOR_SCHEME_TO_FUNCTION[SCALE_TYPE_TO_COLOR_SCHEME[scaleType]] ||
+    COLOR_SCHEME_TO_FUNCTION[DEFAULT_COLOR_SCHEME];
 
   switch (scaleType) {
     case SCALE_TYPES.PERFORMANCE:
       return getPerformanceHeatmapColor(normaliseToPercentage(value, min, max));
     case SCALE_TYPES.PERFORMANCE_DESC: {
       const percentage = value || value === 0 ? 1 - normaliseToPercentage(value, min, max) : null;
-      return getPerformanceHeatmapColor(percentage);
+      return valueToColor(percentage);
     }
     case SCALE_TYPES.TIME:
       // if the value passed is a date locate it in the [min, max] range
