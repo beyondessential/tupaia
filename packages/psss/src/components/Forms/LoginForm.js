@@ -3,17 +3,27 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { TextField, Button } from '@tupaia/ui-components';
+import { TextField, Button, Checkbox } from '@tupaia/ui-components';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
+import MuiFormControlLabel from '@material-ui/core/FormControlLabel';
 import { connect } from 'react-redux';
 import { login, checkIsPending, checkIsError, getError } from '../../store';
 import * as COLORS from '../../theme/colors';
 import { useFormFields } from '../../hooks';
 
-export const ErrorMessage = styled.p`
+const ErrorMessage = styled.p`
   color: ${COLORS.RED};
+`;
+
+const Heading = styled(Typography)`
+  font-size: 18px;
+  line-height: 21px;
+  font-weight: 400;
+  color: ${props => props.theme.palette.text.primary};
+  text-align: center;
+  margin-bottom: 2rem;
 `;
 
 export const LoginFormComponent = ({ isPending, isError, error, onLogin }) => {
@@ -30,14 +40,12 @@ export const LoginFormComponent = ({ isPending, isError, error, onLogin }) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <Typography variant="h3" component="h3" gutterBottom>
-        Login
-      </Typography>
+      <Heading component="h4">Enter your email and password</Heading>
       {isError && <ErrorMessage>{error}</ErrorMessage>}
       <TextField
         id="email"
         name="email"
-        label="Email"
+        placeholder="Email"
         type="email"
         value={fields.email}
         onChange={handleFieldChange}
@@ -46,12 +54,18 @@ export const LoginFormComponent = ({ isPending, isError, error, onLogin }) => {
         id="password"
         name="password"
         type="password"
-        label="Password"
+        placeholder="Password"
         value={fields.password}
         onChange={handleFieldChange}
       />
+      <div>
+        <MuiFormControlLabel
+          control={<Checkbox color="primary" defaultChecked />}
+          label="Remember me"
+        />
+      </div>
       <Button type="submit" isSubmitting={isPending}>
-        Sign in
+        Login to your account
       </Button>
     </form>
   );
