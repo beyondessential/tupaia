@@ -29,7 +29,7 @@ export class TupaiaDataApi {
       return {
         event: surveyResponseId,
         eventDate: utcMoment(date).format(EVENT_DATE_FORMAT),
-        orgUnit: entityCode, // TODO incorrect for STRIVE cases
+        orgUnit: entityCode,
         orgUnitName: entityName,
         dataValues,
       };
@@ -47,10 +47,9 @@ export class TupaiaDataApi {
   }
 
   async fetchDataElements(dataElementCodes) {
-    // TODO should 'text' or 'indicator' be used as name?
     return this.database.executeSql(
       `
-      SELECT code, text as name
+      SELECT code, indicator as name
       FROM question
       WHERE code IN ${parameteriseArray(dataElementCodes)};
     `,
