@@ -3,10 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-export {
-  convertDateRangeToPeriods,
-  convertDateRangeToPeriodString,
-} from './convertDateRangeToPeriods';
 export { getTimezoneNameFromTimestamp, utcMoment } from './datetime';
 export { getDhisConfig } from './dhis';
 export * from './errors';
