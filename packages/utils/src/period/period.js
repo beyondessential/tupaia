@@ -89,7 +89,7 @@ export const parsePeriodType = periodTypeString => {
   return periodType;
 };
 
-const periodToMoment = period => {
+export const periodToMoment = period => {
   const periodType = periodToType(period);
   return utcMoment(period, periodTypeToFormat(periodType));
 };
