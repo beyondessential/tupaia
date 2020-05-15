@@ -17,7 +17,18 @@ export class SqlQuery {
     this.parameters = this.parameters.concat(parameters);
   }
 
+  orderBy(orderByClause) {
+    this.orderByClause = orderByClause;
+  }
+
   async executeOnDatabase(database) {
-    return database.executeSql(`${this.query};`, this.parameters);
+    return database.executeSql(
+      `
+      ${this.query}
+      ${this.orderByClause ? `ORDER BY ${this.orderByClause}` : ''};
+    `,
+      this.parameters,
+    );
+  }
   }
 }

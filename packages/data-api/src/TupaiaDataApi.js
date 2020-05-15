@@ -20,23 +20,25 @@ export class TupaiaDataApi {
   async fetchEvents(options) {
     const results = await fetchEventData(this.database, options);
     const resultsBySurveyResponse = groupBy(results, 'surveyResponseId');
-    return Object.values(resultsBySurveyResponse).map(resultsForSurveyResponse => {
-      const { surveyResponseId, date, entityCode, entityName } = resultsForSurveyResponse[0];
-      const dataValues = resultsForSurveyResponse.reduce(
-        (values, { dataElementCode, type, value }) => ({
-          ...values,
-          [dataElementCode]: sanitizeDataValue(value, type),
-        }),
-        {},
-      );
-      return {
-        event: surveyResponseId,
-        eventDate: utcMoment(date).format(EVENT_DATE_FORMAT),
-        orgUnit: entityCode,
-        orgUnitName: entityName,
-        dataValues,
-      };
-    });
+    return Object.values(resultsBySurveyResponse)
+      .map(resultsForSurveyResponse => {
+        const { surveyResponseId, date, entityCode, entityName } = resultsForSurveyResponse[0];
+        const dataValues = resultsForSurveyResponse.reduce(
+          (values, { dataElementCode, type, value }) => ({
+            ...values,
+            [dataElementCode]: sanitizeDataValue(value, type),
+          }),
+          {},
+        );
+        return {
+          event: surveyResponseId,
+          eventDate: utcMoment(date).format(EVENT_DATE_FORMAT),
+          orgUnit: entityCode,
+          orgUnitName: entityName,
+          dataValues,
+        };
+      })
+      .sort((a, b) => a.eventDate > b.eventDate);
   }
 
   async fetchAnalytics(options) {

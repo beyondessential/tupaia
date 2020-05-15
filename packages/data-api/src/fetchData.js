@@ -52,6 +52,8 @@ const generateBaseSqlQuery = ({ dataElementCodes, organisationUnitCodes, startDa
     ]);
   }
 
+  sqlQuery.orderBy('survey_response.submission_time');
+
   return sqlQuery;
 };
 
