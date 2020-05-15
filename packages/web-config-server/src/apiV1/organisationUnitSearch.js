@@ -3,7 +3,8 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { Entity } from '/models/Entity';
+import keyBy from 'lodash.keyby';
+import { Entity, Project, EntityRelation } from '/models';
 import { RouteHandler } from './RouteHandler';
 import { NoPermissionRequiredChecker } from './permissions';
 
@@ -13,87 +14,75 @@ export default class extends RouteHandler {
   // allow passing straight through, results are limited by permissions
   static PermissionsChecker = NoPermissionRequiredChecker;
 
-  getNextResults = async (filter, limit, pageNumber = 0) => {
-    const sort = ['name'];
-    return Entity.find(filter, {}, { sort, limit, offset: pageNumber * limit });
-  };
+  async getMatchingEntites(searchString, entities, limit) {
+    const safeSearchString = searchString.replace(/[-[\]{}()*+?.,\\^$|#\\s]/g, '\\$&'); // Need to escape special regex chars from query
+    const comparators = [
+      entity => new RegExp(`^${safeSearchString}`, 'i').test(entity.name), // Name starts with query string
+      entity => new RegExp(`^(?!${safeSearchString}).*${safeSearchString}`, 'i').test(entity.name), // Name contains query string
+    ];
 
-  async getResultsWithMatchType(shouldMatchStart, searchString, limit, alreadyFetchedIds) {
-    // Keep trying to get results as the first page may have some filtered out if they are not accessible
-    // by this user
-    const comparisonValue = shouldMatchStart ? `${searchString}%` : `%${searchString}%`;
-    const filter = {
-      name: { comparator: 'ilike', comparisonValue },
-      type: Object.values(Entity.orgUnitEntityTypes),
-      code: { comparator: '<>', comparisonValue: 'World' },
-    };
-    if (alreadyFetchedIds) {
-      filter.id = { args: [alreadyFetchedIds], comparisonType: 'whereNotIn' };
-    }
-    let allResults = [];
-    let pageNumber = 0;
-    while (allResults.length < limit) {
-      const entities = await this.getNextResults(filter, limit, pageNumber);
-      if (entities.length === 0) {
-        break;
+    const allResults = [];
+    for (let comparitorIndex = 0; comparitorIndex < comparators.length; comparitorIndex++) {
+      const comparator = comparators[comparitorIndex];
+      for (
+        let entityIndex = 0;
+        entityIndex < entities.length && allResults.length < limit;
+        entityIndex++
+      ) {
+        const entity = entities[entityIndex];
+        if (comparator(entity) && (await this.req.userHasAccess(entity.country_code))) {
+          allResults.push(entity);
+        }
       }
-      // Filter out any organisation units that should not be in the entities for this user
-      const entitiesWithAccess = await this.removeEntitiesWithoutAccess(entities);
-      allResults = [...allResults, ...entitiesWithAccess];
-      pageNumber++;
     }
-    return allResults.slice(0, limit); // Slice as we may have overshot during pagination
+
+    return allResults;
   }
 
-  async getPrimaryResults(searchString, limit) {
-    // Match from start for primary
-    return this.getResultsWithMatchType(true, searchString, limit);
-  }
+  async getSearchResults(searchString, projectCode, limit) {
+    const project = await Project.findOne({ code: projectCode });
+    const projectEntity = await Entity.findOne({ id: project.entity_id });
 
-  async getSecondaryResults(searchString, limit, alreadyFetchedIds) {
-    // Match anywhere for secondary
-    return this.getResultsWithMatchType(false, searchString, limit, alreadyFetchedIds);
-  }
+    const allEntities = await projectEntity.getDescendants(project.entity_hierarchy_id);
+    const matchingEntities = await this.getMatchingEntites(searchString, allEntities, limit);
 
-  async getResults(searchString, limit) {
-    const primaryResults = await this.getPrimaryResults(searchString, limit);
-    const remainingToFind = limit - primaryResults.length;
-    if (remainingToFind === 0) {
-      return primaryResults;
-    }
-    const secondaryResults = await this.getSecondaryResults(
-      searchString,
-      remainingToFind,
-      primaryResults.map(entity => entity.id),
+    const childIdToParentId = await EntityRelation.getChildIdToParentIdMap(
+      project.entity_hierarchy_id,
     );
-    return [...primaryResults, ...secondaryResults];
+    const entityById = keyBy(allEntities, 'id');
+    return this.formatForResponse(matchingEntities, childIdToParentId, entityById);
   }
 
-  removeEntitiesWithoutAccess = async (entities, userGroup) => {
-    const entityAccess = await Promise.all(
-      entities.map(async entity => this.req.userHasAccess(entity, userGroup)),
-    );
-    return entities.filter((e, i) => entityAccess[i]);
-  };
-
-  formatForResponse = async entities => {
-    return Promise.all(
-      entities.map(async entity => {
-        const displayName = await entity.buildDisplayName();
-        return {
-          organisationUnitCode: entity.code,
-          displayName,
-        };
-      }),
-    );
+  formatForResponse = (entities, childIdToParentId, entityById) => {
+    return entities.map(entity => {
+      const displayName = buildEntityAddress(entity, childIdToParentId, entityById);
+      return {
+        organisationUnitCode: entity.code,
+        displayName,
+      };
+    });
   };
 
   buildResponse = async () => {
-    const { limit = DEFAULT_LIMIT, criteria: searchString } = this.req.query;
+    const { limit = DEFAULT_LIMIT, criteria: searchString, projectCode } = this.req.query;
     if (!searchString || searchString === '' || isNaN(parseInt(limit, 10))) {
       throw new Error('Query parameters must match "criteria" (text) and "limit" (number)');
     }
-    const results = await this.getResults(searchString, limit);
-    return this.formatForResponse(results);
+    return this.getSearchResults(searchString, projectCode, limit);
   };
 }
+
+const buildEntityAddress = (entity, childIdToParentId, entityById) => {
+  const getParent = child =>
+    childIdToParentId[child.id]
+      ? entityById[childIdToParentId[child.id]]
+      : entityById[child.parent_id];
+
+  const address = [entity];
+  let parentEntity = getParent(entity);
+  while (parentEntity) {
+    address.push(parentEntity);
+    parentEntity = getParent(parentEntity);
+  }
+  return address.map(ancestor => ancestor.name).join(', ');
+};
