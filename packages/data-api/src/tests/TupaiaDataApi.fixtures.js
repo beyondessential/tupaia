@@ -21,7 +21,7 @@ export const ENTITIES = [auckland, wellington];
 const BCD1 = {
   id: generateTestId(),
   code: 'BCD1',
-  indicator: 'Operational status',
+  indicator: 'Facility Status',
   type: 'Radio',
 };
 
