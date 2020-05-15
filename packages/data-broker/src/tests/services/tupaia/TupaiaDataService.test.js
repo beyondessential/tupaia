@@ -23,7 +23,7 @@ const tupaiaDataApi = createTupaiaDataApiStub({
 });
 const tupaiaDataService = new TupaiaDataService(models, tupaiaDataApi);
 
-describe.only('TupaiaDataService', () => {
+describe('TupaiaDataService', () => {
   beforeEach(() => {
     tupaiaDataApi.fetchAnalytics.resetHistory();
     tupaiaDataApi.fetchEvents.resetHistory();
