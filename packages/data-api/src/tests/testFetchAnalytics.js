@@ -17,7 +17,7 @@ export const testFetchAnalytics = () => {
         organisationUnitCodes: ['NZ_AK'],
         dataElementCodes: ['BCD1', 'BCD325'],
       }),
-    ).to.eventually.deep.equal([
+    ).to.eventually.have.members([
       {
         dataElement: 'BCD1',
         organisationUnit: 'NZ_AK',
