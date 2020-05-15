@@ -5,6 +5,7 @@
 
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
+import deepEqualInAnyOrder from 'deep-equal-in-any-order';
 import sinonChai from 'sinon-chai';
 import { clearTestData, getTestDatabase } from '@tupaia/database';
 
@@ -13,7 +14,7 @@ import { clearTestData, getTestDatabase } from '@tupaia/database';
 
 before(() => {
   chai.use(sinonChai);
-
+  chai.use(deepEqualInAnyOrder);
   // `chaiAsPromised` must be used after other plugins to promisify them
   chai.use(chaiAsPromised);
 });

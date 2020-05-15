@@ -19,7 +19,7 @@ export const testFetchEvents = () => {
         organisationUnitCodes: ['NZ_AK'],
         dataElementCodes: ['BCD1', 'BCD325'],
       }),
-    ).to.eventually.have.members([
+    ).to.eventually.deep.equalInAnyOrder([
       {
         event: BCD_RESPONSE_AUCKLAND.id,
         orgUnit: 'NZ_AK',
