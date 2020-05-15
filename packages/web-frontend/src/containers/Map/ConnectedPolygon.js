@@ -182,7 +182,6 @@ const mapStateToProps = (state, givenProps) => {
     }
 
     shade = (orgUnitMeasureData || {}).color;
-    console.log(measureOrgUnits, orgUnitMeasureData);
   }
 
   const orgUnit = selectOrgUnit(state, organisationUnitCode);
