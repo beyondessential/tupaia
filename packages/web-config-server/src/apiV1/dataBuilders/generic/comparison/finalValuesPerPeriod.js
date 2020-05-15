@@ -3,7 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { periodToTimestamp } from '@tupaia/dhis-api';
+import { periodToTimestamp } from '@tupaia/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 
 class FinalValuesPerPeriodBuilder extends DataBuilder {

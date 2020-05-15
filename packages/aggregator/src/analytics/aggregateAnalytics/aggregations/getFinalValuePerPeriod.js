@@ -3,12 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import {
-  PERIOD_TYPES,
-  convertToPeriod,
-  findCoarsestPeriodType,
-  periodToType,
-} from '@tupaia/dhis-api';
+import { PERIOD_TYPES, convertToPeriod, findCoarsestPeriodType, periodToType } from '@tupaia/utils';
 import { getPreferredPeriod, getContinuousPeriodsForAnalytics } from './utils';
 
 /**

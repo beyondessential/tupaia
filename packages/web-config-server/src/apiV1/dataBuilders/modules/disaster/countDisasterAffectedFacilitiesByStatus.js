@@ -1,4 +1,4 @@
-import { convertDateRangeToPeriodString } from '@tupaia/dhis-api';
+import { convertDateRangeToPeriodString } from '@tupaia/utils';
 import { Entity } from '/models';
 
 const AFFECTED_STATUS_DATA_ELEMENT_CODE = 'DP_NEW008';
