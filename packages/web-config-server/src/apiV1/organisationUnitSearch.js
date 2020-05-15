@@ -15,7 +15,7 @@ export default class extends RouteHandler {
   static PermissionsChecker = NoPermissionRequiredChecker;
 
   async getMatchingEntites(searchString, entities, limit) {
-    const safeSearchString = searchString.replace(/[-[\]{}()*+?.,\\^$|#\\s]/g, '\\$&'); // Need to escape special regex chars from query
+    const safeSearchString = searchString.replace(/[-[\]{}()*+?.,\\^$|#\\]/g, '\\$&'); // Need to escape special regex chars from query
     const comparators = [
       entity => new RegExp(`^${safeSearchString}`, 'i').test(entity.name), // Name starts with query string
       entity => new RegExp(`^(?!${safeSearchString}).*${safeSearchString}`, 'i').test(entity.name), // Name contains query string
