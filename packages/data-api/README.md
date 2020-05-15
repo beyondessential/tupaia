@@ -1,3 +1,3 @@
-## @tupaia/data-broker
+## @tupaia/data-api
 
-Maps data from Tupaia to external sources, and vice versa
+Fetches data from the Tupaia database, in the form of events or analytics
