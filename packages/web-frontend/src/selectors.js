@@ -134,15 +134,16 @@ const selectCountriesAsOrgUnits = createSelector([state => state.orgUnits.orgUni
 
 const selectOrgUnitSiblingsAndSelf = createSelector(
   [
+    state => selectActiveProject(state).code,
     (state, code) => getOrgUnitParent(selectOrgUnit(state, code)),
     state => selectCountriesAsOrgUnits(state),
     (state, code) => safeGet(countryCache, [state.orgUnits.orgUnitMap, code]),
   ],
-  (parentCode, countriesAsOrgUnits, country) => {
+  (projectCode, parentCode, countriesAsOrgUnits, country) => {
     if (!parentCode) {
       return [];
     }
-    return parentCode === 'World'
+    return parentCode === projectCode
       ? countriesAsOrgUnits
       : safeGet(orgUnitChildrenCache, [country, parentCode]);
   },
