@@ -8,16 +8,22 @@ import sinon from 'sinon';
 
 import { TupaiaDataService } from '../../../services/tupaia/TupaiaDataService';
 import { createModelsStub, createTupaiaDataApiStub } from './TupaiaDataService.stubs';
-import { ANALYTICS, DATA_SOURCES, EVENTS, DATA_ELEMENTS } from './TupaiaDataService.fixtures';
+import {
+  ANALYTICS,
+  FETCH_ANALYTICS_RESULTS,
+  DATA_SOURCES,
+  EVENTS,
+  DATA_ELEMENTS,
+} from './TupaiaDataService.fixtures';
 
 const models = createModelsStub();
 const tupaiaDataApi = createTupaiaDataApiStub({
-  fetchAnalyticsResponse: ANALYTICS,
+  fetchAnalyticsResponse: FETCH_ANALYTICS_RESULTS,
   fetchEventsResponse: EVENTS,
 });
 const tupaiaDataService = new TupaiaDataService(models, tupaiaDataApi);
 
-describe('TupaiaDataService', () => {
+describe.only('TupaiaDataService', () => {
   beforeEach(() => {
     tupaiaDataApi.fetchAnalytics.resetHistory();
     tupaiaDataApi.fetchEvents.resetHistory();
@@ -57,10 +63,29 @@ describe('TupaiaDataService', () => {
             invocationArgs: sinon.match({ dataElementCodes: ['POP01', 'POP02'] }),
           }));
 
+        it('converts period to start and end dates', async () => {
+          before(() => {
+            sinon.stub();
+          });
+          const optionsIn = {
+            period: '20200822',
+          };
+
+          const optionsOut = {
+            startDate: '2020-08-22',
+            endDate: '2020-08-22',
+          };
+
+          await assertAnalyticsApiWasInvokedCorrectly({
+            dataSources: [DATA_SOURCES.POP01],
+            options: optionsIn,
+            invocationArgs: sinon.match(optionsOut),
+          });
+        });
+
         it('supports various API options', async () => {
           const options = {
             organisationUnitCodes: ['TO', 'PG'],
-            period: '20200822',
             startDate: '20200731',
             endDate: '20200904',
           };
@@ -125,11 +150,30 @@ describe('TupaiaDataService', () => {
           invocationArgs: sinon.match({ surveyCode: 'POP01' }),
         }));
 
+      it('converts period to start and end dates', async () => {
+        before(() => {
+          sinon.stub();
+        });
+        const optionsIn = {
+          period: '20200822',
+        };
+
+        const optionsOut = {
+          startDate: '2020-08-22',
+          endDate: '2020-08-22',
+        };
+
+        await assertEventApiWasInvokedCorrectly({
+          dataSources: [DATA_SOURCES.POP01_GROUP],
+          options: optionsIn,
+          invocationArgs: sinon.match(optionsOut),
+        });
+      });
+
       it('supports various API options', async () => {
         const options = {
           dataElementCodes: ['POP01', 'POP02'],
           organisationUnitCodes: ['TO', 'PG'],
-          period: '20200822',
           startDate: '20200731',
           endDate: '20200904',
         };

@@ -7,4 +7,5 @@ export {
   convertDateRangeToPeriods,
   convertDateRangeToPeriodString,
 } from './convertDateRangeToPeriods';
+export { convertPeriodStringToDateRange } from './convertPeriodStringToDateRange';
 export * from './period';
