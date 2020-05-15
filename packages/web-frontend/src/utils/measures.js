@@ -13,7 +13,7 @@ import {
   resolveSpectrumColour,
 } from '../components/Marker/markerColors';
 import { SPECTRUM_ICON, DEFAULT_ICON, UNKNOWN_ICON } from '../components/Marker/markerIcons';
-import { VALUE_TYPES, VALUE_TYPES } from '../components/View/constants';
+import { VALUE_TYPES } from '../components/View/constants';
 import { MAP_COLORS } from '../styles';
 import { formatDataValue } from './formatters';
 import { SCALE_TYPES } from '../constants';

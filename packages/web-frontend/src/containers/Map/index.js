@@ -23,6 +23,11 @@ import {
   closeDropdownOverlays,
   setMapIsAnimating,
 } from '../../actions';
+import {
+  selectHasPolygonMeasure,
+  selectAllMeasuresWithDisplayInfo,
+  selectOrgUnitChildren,
+} from '../../selectors';
 
 const mapStateToProps = state => {
   const {
@@ -40,9 +45,25 @@ const mapStateToProps = state => {
   } = state.global;
   const { contractedWidth, expandedWidth } = state.dashboard;
 
+  // If the org unit's grandchildren are polygons and have a measure, display grandchildren
+  // rather than children
+  let displayedChildren = innerAreas;
+  if (selectHasPolygonMeasure(state)) {
+    const measureOrgUnits = selectAllMeasuresWithDisplayInfo(state);
+    const measureOrgUnitCodes = measureOrgUnits.map(orgUnit => orgUnit.organisationUnitCode);
+    const grandchildren = innerAreas
+      .map(area => selectOrgUnitChildren(state, area.organisationUnitCode))
+      .flat();
+
+    const hasShadedGrandchildren =
+      grandchildren &&
+      grandchildren.some(child => measureOrgUnitCodes.includes(child.organisationUnitCode));
+    if (hasShadedGrandchildren) displayedChildren = grandchildren;
+  }
+
   return {
     position,
-    innerAreas,
+    innerAreas: displayedChildren,
     currentOrganisationUnit,
     currentOrganisationUnitSiblings,
     measureInfo,
