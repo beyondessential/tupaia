@@ -273,15 +273,35 @@ const MeasureLegend = ({ measureOptions, hasIconLayer, hasRadiusLayer, hasColorL
       );
     });
 
+  //Check if we have any already-defined null legend in values.
+  //If so, we don't want to render 'No Data' legend
+  const hasDefinedLegendForNull = values.some(({ value }) => {
+    if (Array.isArray(value)) {
+      return value.some(innerValue => innerValue === MEASURE_VALUE_NULL);
+    }
+
+    return value === MEASURE_VALUE_NULL;
+  });
+
+  let nullKey = null;
   const nullItem = valueMapping.null;
-  const nullKey = nullItem ? (
-    <LegendEntry
-      marker={getLegendMarkerForValue(nullItem, type, hasIconLayer, hasRadiusLayer, hasColorLayer)}
-      label={nullItem.name}
-      dataKey={dataKey}
-      value={null}
-    />
-  ) : null;
+
+  if (!hasDefinedLegendForNull && nullItem) {
+    nullKey = (
+      <LegendEntry
+        marker={getLegendMarkerForValue(
+          nullItem,
+          type,
+          hasIconLayer,
+          hasRadiusLayer,
+          hasColorLayer,
+        )}
+        label={nullItem.name}
+        dataKey={dataKey}
+        value={null}
+      />
+    );
+  }
 
   return (
     <LegendContainer>

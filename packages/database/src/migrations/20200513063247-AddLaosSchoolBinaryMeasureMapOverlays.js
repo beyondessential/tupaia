@@ -107,15 +107,14 @@ const BASIC_LAOS_SCHOOL_MAP_OVERLAY_OBJECT = {
     {
         "name": "No",
         "color": "red",
-        "value": 0
+        "value": [0, "null"]
     }
   ],
   measureBuilder: MEASURE_BUILDER,
   measureBuilderConfig: MEASURE_BUILDER_CONFIG,
   presentationOptions: {
     hideByDefault: {
-      0: true,
-      "null": true
+      "0,null": true
     },
     displayOnLevel: 'District',
   },

@@ -117,9 +117,6 @@ function measureInfo(state = {}, action) {
 
       return {
         ...action.response,
-        hiddenMeasures: {
-          ...state.hiddenMeasures,
-        },
         currentCountry,
         measureData,
       };
