@@ -4,7 +4,6 @@
  */
 
 import keyBy from 'lodash.keyby';
-import { reduceToDictionary } from '@tupaia/utils';
 import { Entity, Project, EntityRelation } from '/models';
 import { RouteHandler } from './RouteHandler';
 import { NoPermissionRequiredChecker } from './permissions';
@@ -43,13 +42,12 @@ export default class extends RouteHandler {
   async getSearchResults(searchString, projectCode, limit) {
     const project = await Project.findOne({ code: projectCode });
     const projectEntity = await Entity.findOne({ id: project.entity_id });
+
     const allEntities = await projectEntity.getDescendants(project.entity_hierarchy_id);
     const matchingEntities = await this.getMatchingEntites(searchString, allEntities, limit);
 
-    const childIdToParentId = reduceToDictionary(
-      await EntityRelation.find({ entity_hierarchy_id: project.entity_hierarchy_id }),
-      'child_id',
-      'parent_id',
+    const childIdToParentId = await EntityRelation.getChildIdToParentIdMap(
+      project.entity_hierarchy_id,
     );
     const entityById = keyBy(allEntities, 'id');
     return this.formatForResponse(matchingEntities, childIdToParentId, entityById);
