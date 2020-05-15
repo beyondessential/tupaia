@@ -6,7 +6,7 @@
 /* eslint-disable camelcase */
 
 import { expect } from 'chai';
-import { PERIOD_TYPES } from '../periodTypes';
+import { PERIOD_TYPES } from '@tupaia/utils';
 import { groupAnalyticsByPeriod, groupEventsByOrgUnit, groupEventsByPeriod } from '../groupResults';
 
 const { DAY, WEEK, MONTH, YEAR } = PERIOD_TYPES;
