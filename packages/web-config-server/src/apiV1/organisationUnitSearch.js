@@ -15,26 +15,23 @@ export default class extends RouteHandler {
   // allow passing straight through, results are limited by permissions
   static PermissionsChecker = NoPermissionRequiredChecker;
 
-  async getResultsWithMatchType(searchString, entities, limit) {
-    const comparitors = [
-      entity => new RegExp(`^${searchString}`, 'i').test(entity.name), // Name starts with query string
-      entity => new RegExp(`${searchString}`, 'i').test(entity.name), // Name contains query string
+  async getMatchingEntites(searchString, entities, limit) {
+    const safeSearchString = searchString.replace(/[-[\]{}()*+?.,\\^$|#\\s]/g, '\\$&'); // Need to escape special regex chars from query
+    const comparators = [
+      entity => new RegExp(`^${safeSearchString}`, 'i').test(entity.name), // Name starts with query string
+      entity => new RegExp(`^(?!${safeSearchString}).*${safeSearchString}`, 'i').test(entity.name), // Name contains query string
     ];
 
     const allResults = [];
-    for (let comparitorIndex = 0; comparitorIndex < comparitors.length; comparitorIndex++) {
-      const comparitor = comparitors[comparitorIndex];
+    for (let comparitorIndex = 0; comparitorIndex < comparators.length; comparitorIndex++) {
+      const comparator = comparators[comparitorIndex];
       for (
         let entityIndex = 0;
         entityIndex < entities.length && allResults.length < limit;
         entityIndex++
       ) {
         const entity = entities[entityIndex];
-        if (
-          comparitor(entity) &&
-          !allResults.includes(entity) &&
-          (await this.req.userHasAccess(entity.country_code))
-        ) {
+        if (comparator(entity) && (await this.req.userHasAccess(entity.country_code))) {
           allResults.push(entity);
         }
       }
@@ -43,20 +40,19 @@ export default class extends RouteHandler {
     return allResults;
   }
 
-  async getResults(searchString, projectCode, limit) {
+  async getSearchResults(searchString, projectCode, limit) {
     const project = await Project.findOne({ code: projectCode });
     const projectEntity = await Entity.findOne({ id: project.entity_id });
     const allEntities = await projectEntity.getDescendants(project.entity_hierarchy_id);
-    const results = await this.getResultsWithMatchType(searchString, allEntities, limit);
+    const matchingEntities = await this.getMatchingEntites(searchString, allEntities, limit);
 
     const childIdToParentId = reduceToDictionary(
       await EntityRelation.find({ entity_hierarchy_id: project.entity_hierarchy_id }),
       'child_id',
       'parent_id',
     );
-
     const entityById = keyBy(allEntities, 'id');
-    return this.formatForResponse(results, childIdToParentId, entityById);
+    return this.formatForResponse(matchingEntities, childIdToParentId, entityById);
   }
 
   formatForResponse = (entities, childIdToParentId, entityById) => {
@@ -74,7 +70,7 @@ export default class extends RouteHandler {
     if (!searchString || searchString === '' || isNaN(parseInt(limit, 10))) {
       throw new Error('Query parameters must match "criteria" (text) and "limit" (number)');
     }
-    return this.getResults(searchString, projectCode, limit);
+    return this.getSearchResults(searchString, projectCode, limit);
   };
 }
 
