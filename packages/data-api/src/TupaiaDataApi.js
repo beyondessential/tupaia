@@ -7,7 +7,8 @@ import groupBy from 'lodash.groupby';
 import { utcMoment } from '@tupaia/utils';
 
 import { fetchEventData, fetchAnalyticData } from './fetchData';
-import { parameteriseArray, sanitizeDataValue } from './utils';
+import { SqlQuery } from './SqlQuery';
+import { sanitizeDataValue } from './utils';
 
 const EVENT_DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss';
 const ANALYTICS_DATE_FORMAT = 'YYYY-MM-DD';
@@ -52,13 +53,13 @@ export class TupaiaDataApi {
   }
 
   async fetchDataElements(dataElementCodes) {
-    return this.database.executeSql(
+    return new SqlQuery(
       `
       SELECT code, indicator as name
       FROM question
-      WHERE code IN ${parameteriseArray(dataElementCodes)};
+      WHERE code IN ${SqlQuery.parameteriseArray(dataElementCodes)};
     `,
       dataElementCodes,
-    );
+    ).executeOnDatabase(this.database);
   }
 }

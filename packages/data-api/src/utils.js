@@ -3,8 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-export const parameteriseArray = arr => `(${arr.map(() => '?').join(',')})`;
-
 export const sanitizeDataValue = (value, type) => {
   if (type === 'Number') {
     const sanitizedValue = parseFloat(value);
