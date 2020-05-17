@@ -11,7 +11,7 @@ import { Polygon } from 'react-leaflet';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
-import { getSingleFormattedValue } from '../../utils/measures';
+import { getSingleFormattedValue } from '../../utils';
 import { AreaTooltip } from './AreaTooltip';
 import { MAP_COLORS } from '../../styles';
 import { changeOrgUnit } from '../../actions';
@@ -21,7 +21,6 @@ import {
   selectAllMeasuresWithDisplayInfo,
 } from '../../selectors';
 import ActivePolygon from './ActivePolygon';
-import { getSingleFormattedValue } from '../../utils';
 
 const { POLYGON_BLUE, POLYGON_HIGHLIGHT } = MAP_COLORS;
 
