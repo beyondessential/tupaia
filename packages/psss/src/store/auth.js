@@ -8,25 +8,45 @@ import { createReducer } from '../utils/createReducer';
 // actions
 const LOGIN_START = 'LOGIN_START';
 const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
-const LOGIN_FAILURE = 'LOGIN_FAILURE';
+const LOGIN_ERROR = 'LOGIN_ERROR';
 const LOGOUT = 'LOGOUT';
 
-export const login = (email, password) => async (dispatch, getState, { api }) => {
-  console.log('api', api);
+// action creators
+export const login = (emailAddress, password) => async (dispatch, getState, { api }) => {
+  const deviceName = window.navigator.userAgent;
+
   dispatch({ type: LOGIN_START });
   try {
-    const { user, token } = await api.login(email, password);
-    dispatch({ type: LOGIN_SUCCESS, user, token });
+    const userDetails = await api.reauthenticate({
+      emailAddress,
+      password,
+      deviceName,
+    });
+    dispatch(loginSuccess(userDetails));
   } catch (error) {
-    dispatch({ type: LOGIN_FAILURE, error: error.message });
+    dispatch(loginError(error.message));
   }
 };
+
+export const loginSuccess = ({ accessToken, refreshToken, user }) => ({
+  type: LOGIN_SUCCESS,
+  accessToken,
+  refreshToken,
+  user,
+});
+
+export const loginError = errorMessage => ({
+  type: LOGIN_ERROR,
+  error: errorMessage,
+});
 
 export const logout = () => ({
   type: LOGOUT,
 });
 
 // selectors
+export const getAccessToken = ({ auth }) => auth.accessToken;
+export const getRefreshToken = ({ auth }) => auth.refreshToken;
 export const getCurrentUser = ({ auth }) => auth.user;
 export const getError = ({ auth }) => auth.error;
 export const checkIsPending = ({ auth }) => auth.status === 'pending';
@@ -39,7 +59,8 @@ const defaultState = {
   status: 'idle',
   user: null,
   error: null,
-  token: null,
+  accessToken: null,
+  refreshToken: null,
 };
 
 const actionHandlers = {
@@ -52,9 +73,10 @@ const actionHandlers = {
     status: 'success',
     user: action.user,
     error: defaultState.error,
-    token: action.token,
+    accessToken: action.accessToken,
+    refreshToken: action.refreshToken,
   }),
-  [LOGIN_FAILURE]: action => ({
+  [LOGIN_ERROR]: action => ({
     status: 'error',
     error: action.error,
   }),

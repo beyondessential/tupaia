@@ -58,6 +58,7 @@ export const LoginFormComponent = ({ isPending, isError, error, onLogin }) => {
         value={fields.password}
         onChange={handleFieldChange}
       />
+<<<<<<< HEAD
       <Checkbox
         id="rememberMe"
         color="primary"
@@ -65,6 +66,9 @@ export const LoginFormComponent = ({ isPending, isError, error, onLogin }) => {
         onChange={handleFieldChange}
         checked={fields.rememberMe}
       />
+=======
+      <Checkbox id="rememberMe" color="primary" label="Remember me" />
+>>>>>>> origin/420-psss-auth-gateway
       <Button type="submit" isSubmitting={isPending}>
         Login to your account
       </Button>

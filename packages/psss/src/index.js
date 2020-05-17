@@ -27,7 +27,15 @@ function initStore() {
   }
   const persistedReducers = persistCombineReducers(persistConfig, createReducers());
   const enhancers = composeEnhancers(applyMiddleware(thunk.withExtraArgument({ api: API })));
+<<<<<<< HEAD
   return createStore(persistedReducers, {}, enhancers);
+=======
+
+  const store = createStore(persistedReducers, {}, enhancers);
+  API.injectReduxStore(store);
+
+  return store;
+>>>>>>> origin/420-psss-auth-gateway
 }
 
 function initPersistor(store) {
