@@ -45,11 +45,6 @@ export class TupaiaApi {
   }
 
   async reauthenticate(loginCredentials) {
-    console.log('re-auth', loginCredentials);
-    console.log('api', this);
-    console.log('endpoint', AUTH_API_ENDPOINT);
-    console.log('header', CLIENT_BASIC_AUTH_HEADER);
-
     try {
       const response = await this.post(
         AUTH_API_ENDPOINT,
@@ -64,6 +59,7 @@ export class TupaiaApi {
       if (!accessToken || !refreshToken || !user) {
         throw new Error('Invalid response from auth server');
       }
+      // Todo: determine what account type auth is needed
       // if (!validateUserIsAuthenticated(user)) {
       //   throw new Error('Your permissions for Tupaia do not allow you to view the admin panel');
       // }
