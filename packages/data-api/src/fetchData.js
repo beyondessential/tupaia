@@ -5,7 +5,6 @@
 import { utcMoment } from '@tupaia/utils';
 
 import { SqlQuery } from './SqlQuery';
-import { parameteriseArray } from './utils';
 
 const generateBaseSqlQuery = ({ dataElementCodes, organisationUnitCodes, startDate, endDate }) => {
   const sqlQuery = new SqlQuery(
@@ -29,9 +28,9 @@ const generateBaseSqlQuery = ({ dataElementCodes, organisationUnitCodes, startDa
     JOIN
       survey ON survey.id = survey_response.survey_id
     WHERE
-      question.code IN ${parameteriseArray(dataElementCodes)}
+      question.code IN ${SqlQuery.parameteriseArray(dataElementCodes)}
     AND
-      entity.code IN ${parameteriseArray(organisationUnitCodes)}
+      entity.code IN ${SqlQuery.parameteriseArray(organisationUnitCodes)}
   `,
     [...dataElementCodes, ...organisationUnitCodes],
   );
