@@ -6,6 +6,7 @@
 import { reduceToDictionary } from '@tupaia/utils';
 
 import { Service } from '../Service';
+import { translateAnalyticsForConsumer, translateOptionsForTupaiaDataApi } from './translation';
 
 export class TupaiaDataService extends Service {
   constructor(models, api) {
@@ -38,11 +39,14 @@ export class TupaiaDataService extends Service {
 
   async pullAnalytics(dataSources, options) {
     const dataElementCodes = dataSources.map(({ code }) => code);
-    const analytics = await this.api.getAnalytics({ ...options, dataElementCodes });
+    const analytics = await this.api.fetchAnalytics({
+      ...translateOptionsForTupaiaDataApi(options),
+      dataElementCodes,
+    });
     const dataElements = await this.pullDataElementMetadata(dataSources);
 
     return {
-      results: analytics,
+      results: translateAnalyticsForConsumer(analytics),
       metadata: {
         dataElementCodeToName: reduceToDictionary(dataElements, 'code', 'name'),
       },
@@ -56,7 +60,7 @@ export class TupaiaDataService extends Service {
     const [dataSource] = dataSources;
     const { code: surveyCode } = dataSource;
 
-    return this.api.getEvents({ ...options, surveyCode });
+    return this.api.fetchEvents({ ...translateOptionsForTupaiaDataApi(options), surveyCode });
   }
 
   async pullMetadata(dataSources, type) {

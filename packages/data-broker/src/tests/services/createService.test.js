@@ -4,13 +4,16 @@
  */
 
 import { expect } from 'chai';
+import { TupaiaDataApi } from '@tupaia/data-api';
 
 import { createService } from '../../services/createService';
 import { DhisService } from '../../services/dhis';
-import { TupaiaDataService, TupaiaDataApi } from '../../services/tupaia';
+import { TupaiaDataService } from '../../services/tupaia';
 
 describe('createService()', () => {
+  const database = 'db';
   const models = {
+    database,
     dataSource: {
       getTypes: () => ({}),
     },
@@ -34,6 +37,6 @@ describe('createService()', () => {
     expect(service).to.have.deep.property('models', models);
     expect(service).to.have.deep.property('api');
     expect(service.api).to.be.instanceOf(TupaiaDataApi);
-    expect(service.api).to.have.deep.property('models', models);
+    expect(service.api).to.have.deep.property('database', database);
   });
 });

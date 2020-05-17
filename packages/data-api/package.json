@@ -1,5 +1,5 @@
 {
-  "name": "@tupaia/data-broker",
+  "name": "@tupaia/data-api",
   "version": "1.0.0",
   "main": "dist/index.js",
   "private": true,
@@ -9,24 +9,16 @@
     "test-coverage": "cross-env NODE_ENV=test nyc mocha"
   },
   "dependencies": {
-    "@tupaia/data-api": "1.0.0",
     "@tupaia/database": "1.0.0",
-    "@tupaia/dhis-api": "1.0.0",
     "@tupaia/utils": "1.0.0",
-    "case": "^1.5.5",
-    "lodash.flatten": "^4.4.0",
-    "lodash.groupby": "^4.6.0",
-    "lodash.keyby": "^4.6.0",
-    "lodash.pickby": "^4.6.0",
-    "moment": "^2.24.0",
-    "winston": "^3.1.0"
+    "deep-equal-in-any-order": "^1.0.27",
+    "lodash.groupby": "^4.6.0"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
     "babel-core": "^6.23.1",
     "babel-eslint": "^7.2.3",
     "babel-loader": "^6.3.1",
-    "babel-plugin-array-includes": "^2.0.3",
     "babel-plugin-istanbul": "^4.1.6",
     "babel-plugin-syntax-async-functions": "^6.13.0",
     "babel-plugin-transform-runtime": "^6.23.0",

@@ -4,7 +4,7 @@
  */
 
 import sinon from 'sinon';
-import { TupaiaDataApi } from '../../../services/tupaia/TupaiaDataApi';
+import { TupaiaDataApi } from '@tupaia/data-api';
 import { DATA_ELEMENTS } from './TupaiaDataService.fixtures';
 
 export const createModelsStub = () => ({
@@ -14,12 +14,12 @@ export const createModelsStub = () => ({
 });
 
 export const createTupaiaDataApiStub = ({
-  getAnalyticsResponse = [],
-  getEventsResponse = [],
+  fetchAnalyticsResponse = [],
+  fetchEventsResponse = [],
 } = {}) =>
   sinon.createStubInstance(TupaiaDataApi, {
-    getAnalytics: sinon.stub().resolves(getAnalyticsResponse),
-    getEvents: sinon.stub().resolves(getEventsResponse),
+    fetchAnalytics: sinon.stub().resolves(fetchAnalyticsResponse),
+    fetchEvents: sinon.stub().resolves(fetchEventsResponse),
     fetchDataElements: sinon
       .stub()
       .callsFake(async dataElementCodes =>

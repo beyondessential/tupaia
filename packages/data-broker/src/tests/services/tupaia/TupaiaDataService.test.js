@@ -8,19 +8,25 @@ import sinon from 'sinon';
 
 import { TupaiaDataService } from '../../../services/tupaia/TupaiaDataService';
 import { createModelsStub, createTupaiaDataApiStub } from './TupaiaDataService.stubs';
-import { ANALYTICS, DATA_SOURCES, EVENTS, DATA_ELEMENTS } from './TupaiaDataService.fixtures';
+import {
+  ANALYTICS,
+  FETCH_ANALYTICS_RESULTS,
+  DATA_SOURCES,
+  EVENTS,
+  DATA_ELEMENTS,
+} from './TupaiaDataService.fixtures';
 
 const models = createModelsStub();
 const tupaiaDataApi = createTupaiaDataApiStub({
-  getAnalyticsResponse: ANALYTICS,
-  getEventsResponse: EVENTS,
+  fetchAnalyticsResponse: FETCH_ANALYTICS_RESULTS,
+  fetchEventsResponse: EVENTS,
 });
 const tupaiaDataService = new TupaiaDataService(models, tupaiaDataApi);
 
 describe('TupaiaDataService', () => {
   beforeEach(() => {
-    tupaiaDataApi.getAnalytics.resetHistory();
-    tupaiaDataApi.getEvents.resetHistory();
+    tupaiaDataApi.fetchAnalytics.resetHistory();
+    tupaiaDataApi.fetchEvents.resetHistory();
   });
 
   describe('push()', () => {
@@ -42,7 +48,7 @@ describe('TupaiaDataService', () => {
           invocationArgs,
         }) => {
           await tupaiaDataService.pull(dataSources, 'dataElement', options);
-          expect(tupaiaDataApi.getAnalytics).to.have.been.calledOnceWithExactly(invocationArgs);
+          expect(tupaiaDataApi.fetchAnalytics).to.have.been.calledOnceWithExactly(invocationArgs);
         };
 
         it('single data element', async () =>
@@ -57,10 +63,26 @@ describe('TupaiaDataService', () => {
             invocationArgs: sinon.match({ dataElementCodes: ['POP01', 'POP02'] }),
           }));
 
+        it('converts period to start and end dates', async () => {
+          const optionsIn = {
+            period: '20200822',
+          };
+
+          const optionsOut = {
+            startDate: '2020-08-22',
+            endDate: '2020-08-22',
+          };
+
+          await assertAnalyticsApiWasInvokedCorrectly({
+            dataSources: [DATA_SOURCES.POP01],
+            options: optionsIn,
+            invocationArgs: sinon.match(optionsOut),
+          });
+        });
+
         it('supports various API options', async () => {
           const options = {
             organisationUnitCodes: ['TO', 'PG'],
-            period: '20200822',
             startDate: '20200731',
             endDate: '20200904',
           };
@@ -107,7 +129,7 @@ describe('TupaiaDataService', () => {
         invocationArgs,
       }) => {
         await tupaiaDataService.pull(dataSources, 'dataGroup', options);
-        expect(tupaiaDataApi.getEvents).to.have.been.calledOnceWithExactly(invocationArgs);
+        expect(tupaiaDataApi.fetchEvents).to.have.been.calledOnceWithExactly(invocationArgs);
       };
 
       it('throws an error if multiple data groups are provided', () =>
@@ -125,11 +147,27 @@ describe('TupaiaDataService', () => {
           invocationArgs: sinon.match({ surveyCode: 'POP01' }),
         }));
 
+      it('converts period to start and end dates', async () => {
+        const optionsIn = {
+          period: '20200822',
+        };
+
+        const optionsOut = {
+          startDate: '2020-08-22',
+          endDate: '2020-08-22',
+        };
+
+        await assertEventApiWasInvokedCorrectly({
+          dataSources: [DATA_SOURCES.POP01_GROUP],
+          options: optionsIn,
+          invocationArgs: sinon.match(optionsOut),
+        });
+      });
+
       it('supports various API options', async () => {
         const options = {
           dataElementCodes: ['POP01', 'POP02'],
           organisationUnitCodes: ['TO', 'PG'],
-          period: '20200822',
           startDate: '20200731',
           endDate: '20200904',
         };
