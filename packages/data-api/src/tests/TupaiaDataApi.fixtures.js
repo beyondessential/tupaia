@@ -19,41 +19,35 @@ const wellington = {
 export const ENTITIES = [auckland, wellington];
 
 const BCD1 = {
-  id: generateTestId(),
   code: 'BCD1',
   indicator: 'Facility Status',
   type: 'Radio',
 };
 
 const BCD325 = {
-  id: generateTestId(),
   code: 'BCD325',
   indicator: 'Days of operation',
   type: 'Number',
 };
 
 const BCD_SURVEY = {
-  id: generateTestId(),
   code: 'BCD',
   name: 'Basic Clinic Data',
   questions: [BCD1, BCD325],
 };
 
 const CROP_1 = {
-  id: generateTestId(),
   code: 'CROP_1',
   indicator: 'Number of potatoes grown',
   type: 'Number',
 };
 const CROP_2 = {
-  id: generateTestId(),
   code: 'CROP_2',
   indicator: 'Number of lettuces grown',
   type: 'Number',
 };
 
 const CROP_SURVEY = {
-  id: generateTestId(),
   code: 'CROP',
   name: 'Crop productivity assessment',
   questions: [CROP_1, CROP_2],
@@ -111,58 +105,6 @@ export const CROP_RESPONSE_WELLINGTON = {
     { questionCode: CROP_1.code, text: '5.1' },
     { questionCode: CROP_2.code, text: '55' },
   ],
-};
-
-export const BCD_EVENT_AUCKLAND = {
-  event: BCD_RESPONSE_AUCKLAND.id,
-  orgUnit: auckland.code,
-  orgUnitName: auckland.name,
-  eventDate: '2020-01-31T09:00:00',
-  dataValues: {
-    [BCD1.code]: 'Fully operational',
-    [BCD325.code]: '53',
-  },
-};
-
-export const BCD_EVENT_WELLINGTON = {
-  event: BCD_RESPONSE_WELLINGTON.id,
-  orgUnit: wellington.code,
-  orgUnitName: wellington.name,
-  eventDate: '2020-02-05T15:00:00',
-  dataValues: {
-    [BCD1.code]: 'Temporarily closed',
-    [BCD325.code]: '0',
-  },
-};
-
-export const CROP_EVENT_AUCKLAND_2019 = {
-  event: CROP_RESPONSE_AUCKLAND_2019.id,
-  orgUnit: auckland.code,
-  orgUnitName: auckland.name,
-  eventDate: '2019-11-21T09:00:00',
-  dataValues: {
-    [CROP_1.code]: '105',
-    [CROP_2.code]: '32',
-  },
-};
-
-export const CROP_EVENT_AUCKLAND_2020 = {
-  event: CROP_RESPONSE_AUCKLAND_2020.id,
-  orgUnit: auckland.code,
-  orgUnitName: auckland.name,
-  eventDate: '2020-11-21T09:00:00',
-  dataValues: { [CROP_2.code]: '55' },
-};
-
-export const CROP_EVENT_WELLINGTON = {
-  event: CROP_RESPONSE_WELLINGTON.id,
-  orgUnit: wellington.code,
-  orgUnitName: wellington.name,
-  eventDate: '2019-11-21T09:00:00',
-  dataValues: {
-    [CROP_1.code]: '5.1',
-    [CROP_2.code]: '55',
-  },
 };
 
 export const SURVEY_RESPONSES = [

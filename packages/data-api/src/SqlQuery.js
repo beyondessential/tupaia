@@ -6,7 +6,8 @@
 export class SqlQuery {
   constructor(baseQuery, baseParameters) {
     this.query = baseQuery;
-    this.parameters = [...baseParameters];
+    this.parameters = baseParameters;
+    this.orderByClause = null;
   }
 
   addClause(clause, parameters) {

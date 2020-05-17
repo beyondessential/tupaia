@@ -64,9 +64,6 @@ describe('TupaiaDataService', () => {
           }));
 
         it('converts period to start and end dates', async () => {
-          before(() => {
-            sinon.stub();
-          });
           const optionsIn = {
             period: '20200822',
           };
@@ -151,9 +148,6 @@ describe('TupaiaDataService', () => {
         }));
 
       it('converts period to start and end dates', async () => {
-        before(() => {
-          sinon.stub();
-        });
         const optionsIn = {
           period: '20200822',
         };
