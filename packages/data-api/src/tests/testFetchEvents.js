@@ -6,32 +6,167 @@ import { expect } from 'chai';
 import { getTestDatabase } from '@tupaia/database';
 
 import { TupaiaDataApi } from '../TupaiaDataApi';
-import { BCD_RESPONSE_AUCKLAND } from './TupaiaDataApi.fixtures';
+import {
+  BCD_RESPONSE_AUCKLAND,
+  BCD_RESPONSE_WELLINGTON,
+  CROP_RESPONSE_AUCKLAND_2019,
+  CROP_RESPONSE_AUCKLAND_2020,
+  CROP_RESPONSE_WELLINGTON_2019,
+} from './TupaiaDataApi.fixtures';
+
+const getEventsFromResponses = (responses, dataElementsToInclude) =>
+  responses.map(r => ({
+    event: r.id,
+    orgUnit: r.entityCode,
+    orgUnitName: r.entityCode === 'NZ_AK' ? 'Auckland' : 'Wellington',
+    eventDate: r.submission_time.substring(0, r.submission_time.length - 1), // remove trailing 'Z'
+    dataValues: Object.entries(r.answers)
+      .filter(([code]) => dataElementsToInclude.includes(code))
+      .reduce(
+        (values, [code, answer]) => ({
+          ...values,
+          [code]: isNaN(answer) ? answer : parseFloat(answer),
+        }),
+        {},
+      ),
+  }));
 
 export const testFetchEvents = () => {
   const api = new TupaiaDataApi(getTestDatabase());
 
+  const assertCorrectResponse = async (options, responses) =>
+    expect(api.fetchEvents(options)).to.eventually.deep.equalInAnyOrder(
+      getEventsFromResponses(responses, options.dataElementCodes),
+    );
+
   it('throws an error with invalid parameters', () => {});
   it('returns results in the correct format', async () => {
-    return expect(
-      api.fetchEvents({
+    assertCorrectResponse(
+      {
+        surveyCode: 'BCD',
+        organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
+        dataElementCodes: ['BCD1', 'BCD325'],
+      },
+      [BCD_RESPONSE_AUCKLAND, BCD_RESPONSE_WELLINGTON],
+    );
+    assertCorrectResponse(
+      {
+        surveyCode: 'CROP',
+        organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
+        dataElementCodes: ['CROP_1', 'CROP_2'],
+      },
+      [CROP_RESPONSE_AUCKLAND_2019, CROP_RESPONSE_AUCKLAND_2020, CROP_RESPONSE_WELLINGTON_2019],
+    );
+  });
+
+  it('should limit results by data element codes', async () => {
+    assertCorrectResponse(
+      {
+        surveyCode: 'BCD',
+        organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
+        dataElementCodes: ['BCD1'],
+      },
+      [BCD_RESPONSE_AUCKLAND, BCD_RESPONSE_WELLINGTON],
+    );
+    assertCorrectResponse(
+      {
+        surveyCode: 'CROP',
+        organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
+        dataElementCodes: ['CROP_2'],
+      },
+      [CROP_RESPONSE_AUCKLAND_2019, CROP_RESPONSE_AUCKLAND_2020, CROP_RESPONSE_WELLINGTON_2019],
+    );
+  });
+
+  it('should limit results by organisation unit codes', async () => {
+    assertCorrectResponse(
+      {
         surveyCode: 'BCD',
         organisationUnitCodes: ['NZ_AK'],
         dataElementCodes: ['BCD1', 'BCD325'],
-      }),
-    ).to.eventually.deep.equalInAnyOrder([
-      {
-        event: BCD_RESPONSE_AUCKLAND.id,
-        orgUnit: 'NZ_AK',
-        orgUnitName: 'Auckland',
-        eventDate: '2020-01-31T09:00:00',
-        dataValues: {
-          BCD1: 'Fully operational',
-          BCD325: 53,
-        },
       },
-    ]);
+      [BCD_RESPONSE_AUCKLAND],
+    );
+    assertCorrectResponse(
+      {
+        surveyCode: 'CROP',
+        organisationUnitCodes: ['NZ_WG'],
+        dataElementCodes: ['CROP_1', 'CROP_2'],
+      },
+      [CROP_RESPONSE_WELLINGTON_2019],
+    );
   });
 
-  it('respects start and end dates', () => {});
+  it('should limit results by start and end dates', async () => {
+    // start date only
+    assertCorrectResponse(
+      {
+        surveyCode: 'CROP',
+        organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
+        dataElementCodes: ['CROP_1', 'CROP_2'],
+        startDate: '2020-01-01',
+      },
+      [CROP_RESPONSE_AUCKLAND_2020],
+    );
+
+    // end date only
+    assertCorrectResponse(
+      {
+        surveyCode: 'CROP',
+        organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
+        dataElementCodes: ['CROP_1', 'CROP_2'],
+        endDate: '2019-12-31',
+      },
+      [CROP_RESPONSE_AUCKLAND_2019, CROP_RESPONSE_WELLINGTON_2019],
+    );
+
+    // start and end dates
+    assertCorrectResponse(
+      {
+        surveyCode: 'CROP',
+        organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
+        dataElementCodes: ['CROP_1', 'CROP_2'],
+        startDate: '2019-12-01',
+        endDate: '2019-12-31',
+      },
+      [CROP_RESPONSE_WELLINGTON_2019],
+    );
+
+    // start and end dates, check inclusivity of start date
+    assertCorrectResponse(
+      {
+        surveyCode: 'CROP',
+        organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
+        dataElementCodes: ['CROP_1', 'CROP_2'],
+        startDate: '2019-11-21',
+        endDate: '2019-12-31',
+      },
+      [CROP_RESPONSE_AUCKLAND_2019, CROP_RESPONSE_WELLINGTON_2019],
+    );
+
+    // start and end dates, check inclusivity of end date
+    assertCorrectResponse(
+      {
+        surveyCode: 'CROP',
+        organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
+        dataElementCodes: ['CROP_1', 'CROP_2'],
+        startDate: '2019-12-01',
+        endDate: '2020-11-21',
+      },
+      [CROP_RESPONSE_WELLINGTON_2019, CROP_RESPONSE_AUCKLAND_2020],
+    );
+  });
+
+  it('should limit results by a combination of parameters', () => {
+    assertCorrectResponse(
+      {
+        surveyCode: 'CROP',
+        organisationUnitCodes: ['NZ_AK'],
+        dataElementCodes: ['CROP_1'],
+        startDate: '2019-12-01',
+        endDate: '2020-11-21',
+      },
+      [CROP_RESPONSE_AUCKLAND_2020],
+    );
+  });
 };
