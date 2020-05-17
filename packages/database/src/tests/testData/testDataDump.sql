@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 11.2
--- Dumped by pg_dump version 11.2
+-- Dumped from database version 12.2
+-- Dumped by pg_dump version 12.2
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -12,6 +12,7 @@ SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
+SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
@@ -68,16 +69,13 @@ CREATE TYPE public.disaster_type AS ENUM (
 --
 
 CREATE TYPE public.entity_type AS ENUM (
-    'world',
-    'project',
-    'country',
-    'district',
-    'sub_district',
     'facility',
+    'region',
+    'country',
+    'disaster',
+    'world',
     'village',
-    'case',
-    'case_contact',
-    'disaster'
+    'case'
 );
 
 
@@ -225,7 +223,7 @@ CREATE FUNCTION public.update_change_time() RETURNS trigger
 
 SET default_tablespace = '';
 
-SET default_with_oids = false;
+SET default_table_access_method = heap;
 
 --
 -- Name: answer; Type: TABLE; Schema: public; Owner: -
@@ -462,24 +460,24 @@ CREATE TABLE public.entity (
 
 
 --
--- Name: entity_hierarchy; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.entity_hierarchy (
-    id text NOT NULL,
-    name text NOT NULL
-);
-
-
---
 -- Name: entity_relation; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.entity_relation (
     id text NOT NULL,
-    parent_id text NOT NULL,
-    child_id text NOT NULL,
-    entity_hierarchy_id text NOT NULL
+    from_id text NOT NULL,
+    to_id text NOT NULL,
+    entity_relation_type_code text NOT NULL
+);
+
+
+--
+-- Name: entity_relation_type; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.entity_relation_type (
+    code text NOT NULL,
+    description text
 );
 
 
@@ -717,14 +715,15 @@ CREATE TABLE public.permission_group (
 CREATE TABLE public.project (
     id text NOT NULL,
     code text NOT NULL,
+    entity_ids text[] NOT NULL,
+    name text NOT NULL,
     description text,
     sort_order integer,
     image_url text,
     default_measure text DEFAULT '126,171'::text,
     dashboard_group_name text DEFAULT 'General'::text,
     user_groups text[],
-    logo_url text,
-    entity_id text
+    logo_url text
 );
 
 
@@ -945,126 +944,6 @@ ALTER TABLE ONLY public.migrations ALTER COLUMN id SET DEFAULT nextval('public.m
 
 
 --
--- Name: answer answer_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.answer
-    ADD CONSTRAINT answer_pkey PRIMARY KEY (id);
-
-
---
--- Name: answer answer_survey_response_id_question_id_unique; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.answer
-    ADD CONSTRAINT answer_survey_response_id_question_id_unique UNIQUE (survey_response_id, question_id);
-
-
---
--- Name: api_client api_client_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.api_client
-    ADD CONSTRAINT api_client_pkey PRIMARY KEY (id);
-
-
---
--- Name: api_client api_client_username_key; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.api_client
-    ADD CONSTRAINT api_client_username_key UNIQUE (username);
-
-
---
--- Name: api_request_log api_request_log_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.api_request_log
-    ADD CONSTRAINT api_request_log_pkey PRIMARY KEY (id);
-
-
---
--- Name: clinic clinic_code; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.clinic
-    ADD CONSTRAINT clinic_code UNIQUE (code);
-
-
---
--- Name: clinic clinic_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.clinic
-    ADD CONSTRAINT clinic_pkey PRIMARY KEY (id);
-
-
---
--- Name: country country_code_key; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.country
-    ADD CONSTRAINT country_code_key UNIQUE (code);
-
-
---
--- Name: country country_name_key; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.country
-    ADD CONSTRAINT country_name_key UNIQUE (name);
-
-
---
--- Name: country country_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.country
-    ADD CONSTRAINT country_pkey PRIMARY KEY (id);
-
-
---
--- Name: dashboardGroup dashboardGroup_code_key; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public."dashboardGroup"
-    ADD CONSTRAINT "dashboardGroup_code_key" UNIQUE (code);
-
-
---
--- Name: dashboardGroup dashboardGroup_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public."dashboardGroup"
-    ADD CONSTRAINT "dashboardGroup_pkey" PRIMARY KEY (id);
-
-
---
--- Name: data_element_data_group data_element_data_group_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.data_element_data_group
-    ADD CONSTRAINT data_element_data_group_pkey PRIMARY KEY (id);
-
-
---
--- Name: data_source data_source_code_type_key; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.data_source
-    ADD CONSTRAINT data_source_code_type_key UNIQUE (code, type);
-
-
---
--- Name: data_source data_source_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.data_source
-    ADD CONSTRAINT data_source_pkey PRIMARY KEY (id);
-
-
---
 -- Name: dhis_sync_log dhis_sync_log_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1129,22 +1008,6 @@ ALTER TABLE ONLY public.entity
 
 
 --
--- Name: entity_hierarchy entity_hierarchy_name_key; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.entity_hierarchy
-    ADD CONSTRAINT entity_hierarchy_name_key UNIQUE (name);
-
-
---
--- Name: entity_hierarchy entity_hierarchy_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.entity_hierarchy
-    ADD CONSTRAINT entity_hierarchy_pkey PRIMARY KEY (id);
-
-
---
 -- Name: entity entity_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1158,6 +1021,14 @@ ALTER TABLE ONLY public.entity
 
 ALTER TABLE ONLY public.entity_relation
     ADD CONSTRAINT entity_relation_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: entity_relation_type entity_relation_type_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.entity_relation_type
+    ADD CONSTRAINT entity_relation_type_pkey PRIMARY KEY (code);
 
 
 --
@@ -1326,6 +1197,14 @@ ALTER TABLE ONLY public.permission_group
 
 ALTER TABLE ONLY public.project
     ADD CONSTRAINT project_code_key UNIQUE (code);
+
+
+--
+-- Name: project project_name_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.project
+    ADD CONSTRAINT project_name_key UNIQUE (name);
 
 
 --
@@ -1824,266 +1703,273 @@ CREATE INDEX user_country_permission_user_id_idx ON public.user_country_permissi
 -- Name: answer answer_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER answer_trigger AFTER INSERT OR DELETE OR UPDATE ON public.answer FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER answer_trigger AFTER INSERT OR DELETE OR UPDATE ON public.answer FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: api_client api_client_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER api_client_trigger AFTER INSERT OR DELETE OR UPDATE ON public.api_client FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER api_client_trigger AFTER INSERT OR DELETE OR UPDATE ON public.api_client FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: clinic clinic_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER clinic_trigger AFTER INSERT OR DELETE OR UPDATE ON public.clinic FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER clinic_trigger AFTER INSERT OR DELETE OR UPDATE ON public.clinic FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: country country_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER country_trigger AFTER INSERT OR DELETE OR UPDATE ON public.country FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER country_trigger AFTER INSERT OR DELETE OR UPDATE ON public.country FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: dashboardGroup dashboardgroup_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER dashboardgroup_trigger AFTER INSERT OR DELETE OR UPDATE ON public."dashboardGroup" FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER dashboardgroup_trigger AFTER INSERT OR DELETE OR UPDATE ON public."dashboardGroup" FOR EACH ROW EXECUTE FUNCTION public.notification();
+
+
+--
+-- Name: dashboardReport dashboardreport_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER dashboardreport_trigger AFTER INSERT OR DELETE OR UPDATE ON public."dashboardReport" FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: data_element_data_group data_element_data_group_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER data_element_data_group_trigger AFTER INSERT OR DELETE OR UPDATE ON public.data_element_data_group FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER data_element_data_group_trigger AFTER INSERT OR DELETE OR UPDATE ON public.data_element_data_group FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: data_source data_source_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER data_source_trigger AFTER INSERT OR DELETE OR UPDATE ON public.data_source FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER data_source_trigger AFTER INSERT OR DELETE OR UPDATE ON public.data_source FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: dhis_sync_queue dhis_sync_queue_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER dhis_sync_queue_trigger BEFORE INSERT OR UPDATE ON public.dhis_sync_queue FOR EACH ROW EXECUTE PROCEDURE public.update_change_time();
+CREATE TRIGGER dhis_sync_queue_trigger BEFORE INSERT OR UPDATE ON public.dhis_sync_queue FOR EACH ROW EXECUTE FUNCTION public.update_change_time();
 
 
 --
 -- Name: disaster disaster_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER disaster_trigger AFTER INSERT OR DELETE OR UPDATE ON public.disaster FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER disaster_trigger AFTER INSERT OR DELETE OR UPDATE ON public.disaster FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: disasterEvent disasterevent_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER disasterevent_trigger AFTER INSERT OR DELETE OR UPDATE ON public."disasterEvent" FOR EACH ROW EXECUTE PROCEDURE public.notification();
-
-
---
--- Name: entity_hierarchy entity_hierarchy_trigger; Type: TRIGGER; Schema: public; Owner: -
---
-
-CREATE TRIGGER entity_hierarchy_trigger AFTER INSERT OR DELETE OR UPDATE ON public.entity_hierarchy FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER disasterevent_trigger AFTER INSERT OR DELETE OR UPDATE ON public."disasterEvent" FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: entity_relation entity_relation_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER entity_relation_trigger AFTER INSERT OR DELETE OR UPDATE ON public.entity_relation FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER entity_relation_trigger AFTER INSERT OR DELETE OR UPDATE ON public.entity_relation FOR EACH ROW EXECUTE FUNCTION public.notification();
+
+
+--
+-- Name: entity_relation_type entity_relation_type_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER entity_relation_type_trigger AFTER INSERT OR DELETE OR UPDATE ON public.entity_relation_type FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: entity entity_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER entity_trigger AFTER INSERT OR DELETE OR UPDATE ON public.entity FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER entity_trigger AFTER INSERT OR DELETE OR UPDATE ON public.entity FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: geographical_area geographical_area_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER geographical_area_trigger AFTER INSERT OR DELETE OR UPDATE ON public.geographical_area FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER geographical_area_trigger AFTER INSERT OR DELETE OR UPDATE ON public.geographical_area FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: meditrak_device install_id_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER install_id_trigger AFTER INSERT OR DELETE OR UPDATE ON public.meditrak_device FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER install_id_trigger AFTER INSERT OR DELETE OR UPDATE ON public.meditrak_device FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: mapOverlay mapoverlay_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER mapoverlay_trigger AFTER INSERT OR DELETE OR UPDATE ON public."mapOverlay" FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER mapoverlay_trigger AFTER INSERT OR DELETE OR UPDATE ON public."mapOverlay" FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: meditrak_device meditrak_device_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER meditrak_device_trigger AFTER INSERT OR DELETE OR UPDATE ON public.meditrak_device FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER meditrak_device_trigger AFTER INSERT OR DELETE OR UPDATE ON public.meditrak_device FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: meditrak_sync_queue meditrak_sync_queue_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER meditrak_sync_queue_trigger BEFORE INSERT OR UPDATE ON public.meditrak_sync_queue FOR EACH ROW EXECUTE PROCEDURE public.update_change_time();
+CREATE TRIGGER meditrak_sync_queue_trigger BEFORE INSERT OR UPDATE ON public.meditrak_sync_queue FOR EACH ROW EXECUTE FUNCTION public.update_change_time();
 
 
 --
 -- Name: ms1_sync_log ms1_sync_log_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER ms1_sync_log_trigger AFTER INSERT OR DELETE OR UPDATE ON public.ms1_sync_log FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER ms1_sync_log_trigger AFTER INSERT OR DELETE OR UPDATE ON public.ms1_sync_log FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: ms1_sync_queue ms1_sync_queue_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER ms1_sync_queue_trigger BEFORE INSERT OR UPDATE ON public.ms1_sync_queue FOR EACH ROW EXECUTE PROCEDURE public.update_change_time();
+CREATE TRIGGER ms1_sync_queue_trigger BEFORE INSERT OR UPDATE ON public.ms1_sync_queue FOR EACH ROW EXECUTE FUNCTION public.update_change_time();
 
 
 --
 -- Name: one_time_login one_time_login_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER one_time_login_trigger AFTER INSERT OR DELETE OR UPDATE ON public.one_time_login FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER one_time_login_trigger AFTER INSERT OR DELETE OR UPDATE ON public.one_time_login FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: option_set option_set_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER option_set_trigger AFTER INSERT OR DELETE OR UPDATE ON public.option_set FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER option_set_trigger AFTER INSERT OR DELETE OR UPDATE ON public.option_set FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: option option_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER option_trigger AFTER INSERT OR DELETE OR UPDATE ON public.option FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER option_trigger AFTER INSERT OR DELETE OR UPDATE ON public.option FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: permission_group permission_group_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER permission_group_trigger AFTER INSERT OR DELETE OR UPDATE ON public.permission_group FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER permission_group_trigger AFTER INSERT OR DELETE OR UPDATE ON public.permission_group FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: project project_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER project_trigger AFTER INSERT OR DELETE OR UPDATE ON public.project FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER project_trigger AFTER INSERT OR DELETE OR UPDATE ON public.project FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: question question_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER question_trigger AFTER INSERT OR DELETE OR UPDATE ON public.question FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER question_trigger AFTER INSERT OR DELETE OR UPDATE ON public.question FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: refresh_token refresh_token_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER refresh_token_trigger AFTER INSERT OR DELETE OR UPDATE ON public.refresh_token FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER refresh_token_trigger AFTER INSERT OR DELETE OR UPDATE ON public.refresh_token FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: setting setting_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER setting_trigger AFTER INSERT OR DELETE OR UPDATE ON public.setting FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER setting_trigger AFTER INSERT OR DELETE OR UPDATE ON public.setting FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: survey_group survey_group_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER survey_group_trigger AFTER INSERT OR DELETE OR UPDATE ON public.survey_group FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER survey_group_trigger AFTER INSERT OR DELETE OR UPDATE ON public.survey_group FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: survey_response survey_response_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER survey_response_trigger AFTER INSERT OR DELETE OR UPDATE ON public.survey_response FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER survey_response_trigger AFTER INSERT OR DELETE OR UPDATE ON public.survey_response FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: survey_screen_component survey_screen_component_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER survey_screen_component_trigger AFTER INSERT OR DELETE OR UPDATE ON public.survey_screen_component FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER survey_screen_component_trigger AFTER INSERT OR DELETE OR UPDATE ON public.survey_screen_component FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: survey_screen survey_screen_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER survey_screen_trigger AFTER INSERT OR DELETE OR UPDATE ON public.survey_screen FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER survey_screen_trigger AFTER INSERT OR DELETE OR UPDATE ON public.survey_screen FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: survey survey_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER survey_trigger AFTER INSERT OR DELETE OR UPDATE ON public.survey FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER survey_trigger AFTER INSERT OR DELETE OR UPDATE ON public.survey FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: user_account user_account_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER user_account_trigger AFTER INSERT OR DELETE OR UPDATE ON public.user_account FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER user_account_trigger AFTER INSERT OR DELETE OR UPDATE ON public.user_account FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: user_clinic_permission user_clinic_permission_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER user_clinic_permission_trigger AFTER INSERT OR DELETE OR UPDATE ON public.user_clinic_permission FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER user_clinic_permission_trigger AFTER INSERT OR DELETE OR UPDATE ON public.user_clinic_permission FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: user_country_permission user_country_permission_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER user_country_permission_trigger AFTER INSERT OR DELETE OR UPDATE ON public.user_country_permission FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER user_country_permission_trigger AFTER INSERT OR DELETE OR UPDATE ON public.user_country_permission FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: user_geographical_area_permission user_geographical_area_permission_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER user_geographical_area_permission_trigger AFTER INSERT OR DELETE OR UPDATE ON public.user_geographical_area_permission FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER user_geographical_area_permission_trigger AFTER INSERT OR DELETE OR UPDATE ON public.user_geographical_area_permission FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
 -- Name: user_reward user_reward_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER user_reward_trigger AFTER INSERT OR DELETE OR UPDATE ON public.user_reward FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER user_reward_trigger AFTER INSERT OR DELETE OR UPDATE ON public.user_reward FOR EACH ROW EXECUTE FUNCTION public.notification();
 
 
 --
@@ -2119,35 +2005,11 @@ ALTER TABLE ONLY public.api_request_log
 
 
 --
--- Name: clinic clinic_country_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.clinic
-    ADD CONSTRAINT clinic_country_id_fkey FOREIGN KEY (country_id) REFERENCES public.country(id) ON UPDATE CASCADE ON DELETE RESTRICT;
-
-
---
 -- Name: clinic clinic_geographical_area_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.clinic
     ADD CONSTRAINT clinic_geographical_area_id_fkey FOREIGN KEY (geographical_area_id) REFERENCES public.geographical_area(id) ON UPDATE CASCADE ON DELETE RESTRICT;
-
-
---
--- Name: data_element_data_group data_element_data_group_data_element_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.data_element_data_group
-    ADD CONSTRAINT data_element_data_group_data_element_id_fk FOREIGN KEY (data_element_id) REFERENCES public.data_source(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: data_element_data_group data_element_data_group_data_group_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.data_element_data_group
-    ADD CONSTRAINT data_element_data_group_data_group_id_fk FOREIGN KEY (data_group_id) REFERENCES public.data_source(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
@@ -2167,43 +2029,27 @@ ALTER TABLE ONLY public.entity
 
 
 --
--- Name: entity_relation entity_relation_child_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: entity_relation entity_relation_entity_relation_type_code_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.entity_relation
-    ADD CONSTRAINT entity_relation_child_id_fkey FOREIGN KEY (child_id) REFERENCES public.entity(id);
+    ADD CONSTRAINT entity_relation_entity_relation_type_code_fkey FOREIGN KEY (entity_relation_type_code) REFERENCES public.entity_relation_type(code);
 
 
 --
--- Name: entity_relation entity_relation_entity_hierarchy_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.entity_relation
-    ADD CONSTRAINT entity_relation_entity_hierarchy_id_fkey FOREIGN KEY (entity_hierarchy_id) REFERENCES public.entity_hierarchy(id);
-
-
---
--- Name: entity_relation entity_relation_parent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: entity_relation entity_relation_from_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.entity_relation
-    ADD CONSTRAINT entity_relation_parent_id_fkey FOREIGN KEY (parent_id) REFERENCES public.entity(id);
+    ADD CONSTRAINT entity_relation_from_id_fkey FOREIGN KEY (from_id) REFERENCES public.entity(id);
 
 
 --
--- Name: error_log error_log_api_request_log_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: entity_relation entity_relation_to_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.error_log
-    ADD CONSTRAINT error_log_api_request_log_id_fkey FOREIGN KEY (api_request_log_id) REFERENCES public.api_request_log(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: feed_item feed_item_country_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.feed_item
-    ADD CONSTRAINT feed_item_country_fk FOREIGN KEY (country_id) REFERENCES public.country(id) ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE ONLY public.entity_relation
+    ADD CONSTRAINT entity_relation_to_id_fkey FOREIGN KEY (to_id) REFERENCES public.entity(id);
 
 
 --
@@ -2228,14 +2074,6 @@ ALTER TABLE ONLY public.feed_item
 
 ALTER TABLE ONLY public.feed_item
     ADD CONSTRAINT feed_item_user_fk FOREIGN KEY (user_id) REFERENCES public.user_account(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: geographical_area geographical_area_country_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.geographical_area
-    ADD CONSTRAINT geographical_area_country_id_fkey FOREIGN KEY (country_id) REFERENCES public.country(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
@@ -2367,14 +2205,6 @@ ALTER TABLE ONLY public.survey
 
 
 --
--- Name: user_clinic_permission user_clinic_permission_clinic_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.user_clinic_permission
-    ADD CONSTRAINT user_clinic_permission_clinic_id_fk FOREIGN KEY (clinic_id) REFERENCES public.clinic(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
 -- Name: user_clinic_permission user_clinic_permission_permission_group_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2388,14 +2218,6 @@ ALTER TABLE ONLY public.user_clinic_permission
 
 ALTER TABLE ONLY public.user_clinic_permission
     ADD CONSTRAINT user_clinic_permission_user_account_id_fk FOREIGN KEY (user_id) REFERENCES public.user_account(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: user_country_permission user_country_permission_country_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.user_country_permission
-    ADD CONSTRAINT user_country_permission_country_id_fkey FOREIGN KEY (country_id) REFERENCES public.country(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
@@ -2454,8 +2276,8 @@ ALTER TABLE ONLY public.user_reward
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 11.2
--- Dumped by pg_dump version 11.2
+-- Dumped from database version 12.2
+-- Dumped by pg_dump version 12.2
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -2464,6 +2286,7 @@ SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
+SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
@@ -2473,7 +2296,7 @@ DROP SEQUENCE public.migrations_id_seq;
 DROP TABLE public.migrations;
 SET default_tablespace = '';
 
-SET default_with_oids = false;
+SET default_table_access_method = heap;
 
 --
 -- Name: migrations; Type: TABLE; Schema: public; Owner: -
@@ -3087,71 +2910,6 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 571	/20200316010349-AddWeeklyNumberOfFebrileIllnessReportsNational	2020-03-24 05:41:33.358
 572	/20200316022146-AddStriveRegionalDashboardGroup	2020-03-24 05:41:33.414
 573	/20200316022217-AddWeeklyNumberOfFebrileIllnessReportsRegional	2020-03-24 05:41:33.527
-574	/20200316042719-AddMRDTDashboardReportToNationalAndProvincial	2020-03-31 07:11:24.146
-575	/20200316055056-Add2YAxisMRDTFebrileIllnessDashboardReportToNationalAndProvincialStrive	2020-03-31 07:11:24.247
-576	/20200318223935-DeleteErroneousStriveSurveyData	2020-03-31 07:11:24.303
-577	/20200323002803-AddCovid19AustraliaToProjects	2020-03-31 07:20:42.006
-578	/20200324032850-AddCOVID19DashboardgroupsAusNationalState	2020-03-31 07:20:42.109
-579	/20200324050422-AddCovid19StateDashboardReport	2020-03-31 07:20:42.167
-580	/20200324053202-AddCasesByStateReportCovidAus	2020-03-31 07:20:42.238
-581	/20200325001848-AddTotalNumberReportedCasesCOVIDAUMapOverlay	2020-03-31 07:20:42.27
-582	/20200326012240-MoveDefaultDashboardGroupsToIndividualCountries	2020-03-31 07:20:42.62
-583	/20200326032657-AddTotalCasesByStateAus	2020-03-31 07:20:42.685
-584	/20200326034630-AddTotalCovidCasesByTypeReport	2020-03-31 07:20:42.741
-585	/20200326043343-AddCovidNewCasesByDayBarChartStateAus	2020-03-31 07:20:42.813
-586	/20200326045458-AddCovid19NationalDailyCasesOverTimeEachStateAndTotalDashboard	2020-03-31 07:20:42.922
-587	/20200326225508-FixDailyCovidStateNumbersReportAus	2020-03-31 07:20:42.968
-588	/20200326233613-FixDailyCovidCasesByStateChart	2020-03-31 07:20:43.004
-589	/20200327014704-AddNationalNewCovidCasesByDayAus	2020-03-31 07:20:43.106
-590	/20200327052900-UpdateCovidAuTotalConfirmedCasesMapOverlayScaleMin	2020-03-31 07:20:43.126
-591	/20200327055605-UpdateCovidAuTotalConfirmedCasesOverTimeByStateWordings	2020-03-31 07:20:43.177
-592	/20200330013822-ChangeGeographicalBoundsOfWorld	2020-03-31 07:20:43.211
-593	/20200330014731-MoveDefaultMapOverlaysToIndividualCountries	2020-03-31 07:20:43.315
-594	/20200330023425-AddDailyToCovid19Reports	2020-03-31 07:20:43.343
-595	/20200330025955-ChangeIdOfDashboardReportToRemoveState	2020-03-31 07:20:43.392
-596	/20200330034009-AddSubDistrictAndFacilityLevelDashboardGroups	2020-03-31 07:20:43.429
-597	/20200330034023-AddLinkToSourcesCovidAllOrgLevels	2020-03-31 07:20:43.463
-598	/20200330041343-RemoveRecoveriesFromDashboardCovid	2020-03-31 07:20:43.489
-599	/20200330233911-ChangeDefaultDataToYesterdayCovidReports	2020-03-31 07:20:43.515
-600	/20200317055123-AddStriveReportsToVillages	2020-04-07 04:56:55.638
-601	/20200325044717-MakeFebrileIllnessCaseCalculationConsistent	2020-04-07 04:56:55.711
-602	/20200403020133-UpdateDataSourcetoReflectHP01andHP02Changes	2020-04-07 04:56:56.472
-603	/20200407021657-AddDisasterDashboardGroupForVanutatu	2020-04-07 04:56:56.557
-604	/20200324034720-CreateMSupplyUNFPAMatrices	2020-04-20 02:20:13.418
-605	/20200325002500-RefactorOrganisationUnitTableReportsToTableOfValueForOrgUnits	2020-04-20 02:20:13.705
-606	/20200330044935-AddConfigToIHRReportsForOrgUnitColumns	2020-04-20 02:20:13.744
-607	/20200401220823-RemoveWordTodayFromCovidReports	2020-04-20 02:20:13.807
-608	/20200402024847-AddProjectEntity	2020-04-20 02:20:18.061
-609	/20200402024848-CreateProjectHierarchy	2020-04-20 02:20:18.307
-610	/20200403015828-AddCovidRawDataDownloadTonga	2020-04-20 02:20:18.356
-611	/20200403030413-AddPeriodDataSwitchToDashBoardReports	2020-04-20 02:20:18.451
-612	/20200405231416-AddIpcCommodityAvailabilityReport	2020-04-20 02:20:19.08
-613	/20200406000236-AddFacilityCommoditiesOverlays	2020-04-20 02:20:19.235
-614	/20200406062057-AddCovidICUAndIsolationBedsOverlaysTonga	2020-04-20 02:20:19.28
-615	/20200407002449-AddStriveStackedBarmRDTByResultReport	2020-04-20 02:20:19.331
-616	/20200407052132-AddSOHandAMCMatricesToUNFPA	2020-04-20 02:20:19.532
-617	/20200408054558-AddCaseContactEntityType	2020-04-20 02:20:20.888
-618	/20200409013211-AddAddCovidTestsPerCapitaReport	2020-04-20 02:20:20.951
-619	/20200409065901-AddStripFromDataElementNamesForUNFPAMatrices	2020-04-20 02:20:20.969
-620	/20200415061542-AddStriveOverlayTotalConsultationsWTFBubble	2020-04-20 02:20:21.031
-621	/20200416060614-UpdateMOSUnpfaMedicinesToTrafficLightsConfig	2020-04-20 02:20:21.049
-622	/20200408015324-AddTestsConductedDashboardAus	2020-04-22 15:05:43.95
-623	/20200416033713-ReplaceProvinceInDashboardGroup	2020-04-22 15:05:48.447
-624	/20200416033714-ReplaceAndRemoveRegionEntityType	2020-04-22 15:05:57.489
-625	/20200416033715-ReplaceRegionInMapOverlays	2020-04-22 15:05:57.75
-626	/20200416033716-UseLowercaseOrgUnitLevel	2020-04-22 15:05:58.249
-627	/20200416033717-ReplaceRegionInSurveyScreenComponent	2020-04-22 15:06:05.461
-628	/20200416033718-RenameOrganisationUnitLevelInDashboardReport	2020-04-22 15:06:05.607
-629	/20200408052334-AddSamoaCovidRawDataDownloadDashboard	2020-04-22 23:41:28.752
-630	/20200331033941-CreateUNFPADeliveryServicesLineCharts	2020-04-30 14:33:09.493
-631	/20200403054119-SwapDataElementsForRHCStockCardsChart	2020-04-30 14:33:09.501
-632	/20200406042212-AddCovidTotalDeathsVsCasesByDay	2020-04-30 14:33:09.514
-633	/20200406044451-AddCovidCumulativeDeathsVsCases	2020-04-30 14:33:09.52
-634	/20200408065558-AddDenominatorAggregationFlagToUNFPAReport	2020-04-30 14:33:09.527
-635	/20200409012830-Migrate-old-facility-BCD1-data	2020-04-30 14:33:09.602
-636	/20200421000451-AddTongaCovidIpcCommodityAvailabilityDashboard	2020-04-30 14:33:09.609
-637	/20200427015657-AddReproductiveHealthStockOverlays	2020-04-30 14:33:09.623
-638	/20200428035406-UpdateUNFPACountriesAndDashboards	2020-04-30 14:33:09.641
 \.
 
 
@@ -3159,7 +2917,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 638, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 573, true);
 
 
 --
