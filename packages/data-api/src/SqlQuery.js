@@ -31,5 +31,4 @@ export class SqlQuery {
       this.parameters,
     );
   }
-  }
 }
