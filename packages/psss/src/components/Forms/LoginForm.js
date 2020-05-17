@@ -29,7 +29,6 @@ export const LoginFormComponent = ({ isPending, isError, error, onLogin }) => {
   const [fields, handleFieldChange] = useFormFields({
     email: '',
     password: '',
-    rememberMe: false,
   });
 
   const handleSubmit = async event => {
@@ -58,17 +57,7 @@ export const LoginFormComponent = ({ isPending, isError, error, onLogin }) => {
         value={fields.password}
         onChange={handleFieldChange}
       />
-<<<<<<< HEAD
-      <Checkbox
-        id="rememberMe"
-        color="primary"
-        label="Remember me"
-        onChange={handleFieldChange}
-        checked={fields.rememberMe}
-      />
-=======
       <Checkbox id="rememberMe" color="primary" label="Remember me" />
->>>>>>> origin/420-psss-auth-gateway
       <Button type="submit" isSubmitting={isPending}>
         Login to your account
       </Button>

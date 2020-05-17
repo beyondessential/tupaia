@@ -12,7 +12,6 @@ import MuiListItemText from '@material-ui/core/ListItemText';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import Avatar from '@material-ui/core/Avatar';
 import { LightProfileButton } from '@tupaia/ui-components';
-import { FakeStore } from '../FakeStore';
 
 const StyledListItem = styled(MuiListItem)`
   padding-right: 3rem;
@@ -24,9 +23,9 @@ const ListItemButton = props => {
   const history = useHistory();
 
   const handleClick = () => {
-    FakeStore.auth.logout().then(() => {
-      history.push('/login');
-    });
+    // FakeStore.auth.logout().then(() => {
+    //   history.push('/login');
+    // });
   };
   return <StyledListItem button {...props} onClick={handleClick} />;
 };

@@ -8,7 +8,7 @@ import { PrivateRoute } from './routes/PrivateRoute';
 const App = () => (
   <Router>
     <Switch>
-      <Route path="/login">
+      <Route exact path="/login">
         <LoginView />
       </Route>
       <PrivateRoute path="/">
