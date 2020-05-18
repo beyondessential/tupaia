@@ -39,9 +39,48 @@ export const testFetchEvents = () => {
       getEventsFromResponses(responses, options.dataElementCodes),
     );
 
-  it('throws an error with invalid parameters', () => {});
+  it('throws an error with invalid parameters', async () => {
+    await expect(api.fetchEvents()).to.be.rejectedWith(/provide options/);
+    await expect(api.fetchEvents(null)).to.be.rejectedWith(/provide options/);
+    await expect(api.fetchEvents({})).to.be.rejectedWith(/Invalid content/);
+
+    // no surveyCode
+    await expect(
+      api.fetchEvents({
+        organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
+        dataElementCodes: ['BCD1', 'BCD325'],
+      }),
+    ).to.be.rejectedWith(/Invalid content.*surveyCode/);
+
+    // no organisationUnitCodes
+    await expect(
+      api.fetchEvents({
+        surveyCode: 'BCD',
+        dataElementCodes: ['BCD1', 'BCD325'],
+      }),
+    ).to.be.rejectedWith(/Invalid content.*organisationUnitCodes/);
+
+    // no dataElementCodes
+    await expect(
+      api.fetchEvents({
+        surveyCode: 'BCD',
+        organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
+      }),
+    ).to.be.rejectedWith(/Invalid content.*dataElementCodes/);
+
+    // invalid startDate format
+    await expect(
+      api.fetchEvents({
+        surveyCode: 'BCD',
+        organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
+        dataElementCodes: ['BCD1', 'BCD325'],
+        startDate: 'January first, 2020',
+      }),
+    ).to.be.rejectedWith(/Invalid content.*startDate/);
+  });
+
   it('returns results in the correct format', async () => {
-    assertCorrectResponse(
+    await assertCorrectResponse(
       {
         surveyCode: 'BCD',
         organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
@@ -49,7 +88,7 @@ export const testFetchEvents = () => {
       },
       [BCD_RESPONSE_AUCKLAND, BCD_RESPONSE_WELLINGTON],
     );
-    assertCorrectResponse(
+    await assertCorrectResponse(
       {
         surveyCode: 'CROP',
         organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
@@ -60,7 +99,7 @@ export const testFetchEvents = () => {
   });
 
   it('should limit results by data element codes', async () => {
-    assertCorrectResponse(
+    await assertCorrectResponse(
       {
         surveyCode: 'BCD',
         organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
@@ -68,7 +107,7 @@ export const testFetchEvents = () => {
       },
       [BCD_RESPONSE_AUCKLAND, BCD_RESPONSE_WELLINGTON],
     );
-    assertCorrectResponse(
+    await assertCorrectResponse(
       {
         surveyCode: 'CROP',
         organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
@@ -79,7 +118,7 @@ export const testFetchEvents = () => {
   });
 
   it('should limit results by organisation unit codes', async () => {
-    assertCorrectResponse(
+    await assertCorrectResponse(
       {
         surveyCode: 'BCD',
         organisationUnitCodes: ['NZ_AK'],
@@ -87,7 +126,7 @@ export const testFetchEvents = () => {
       },
       [BCD_RESPONSE_AUCKLAND],
     );
-    assertCorrectResponse(
+    await assertCorrectResponse(
       {
         surveyCode: 'CROP',
         organisationUnitCodes: ['NZ_WG'],
@@ -99,7 +138,7 @@ export const testFetchEvents = () => {
 
   it('should limit results by start and end dates', async () => {
     // start date only
-    assertCorrectResponse(
+    await assertCorrectResponse(
       {
         surveyCode: 'CROP',
         organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
@@ -110,7 +149,7 @@ export const testFetchEvents = () => {
     );
 
     // end date only
-    assertCorrectResponse(
+    await assertCorrectResponse(
       {
         surveyCode: 'CROP',
         organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
@@ -121,7 +160,7 @@ export const testFetchEvents = () => {
     );
 
     // start and end dates
-    assertCorrectResponse(
+    await assertCorrectResponse(
       {
         surveyCode: 'CROP',
         organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
@@ -133,7 +172,7 @@ export const testFetchEvents = () => {
     );
 
     // start and end dates, check inclusivity of start date
-    assertCorrectResponse(
+    await assertCorrectResponse(
       {
         surveyCode: 'CROP',
         organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
@@ -145,7 +184,7 @@ export const testFetchEvents = () => {
     );
 
     // start and end dates, check inclusivity of end date
-    assertCorrectResponse(
+    await assertCorrectResponse(
       {
         surveyCode: 'CROP',
         organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
@@ -157,16 +196,16 @@ export const testFetchEvents = () => {
     );
   });
 
-  it('should limit results by a combination of parameters', () => {
-    assertCorrectResponse(
+  it('should limit results by a combination of parameters', async () => {
+    await assertCorrectResponse(
       {
         surveyCode: 'CROP',
         organisationUnitCodes: ['NZ_AK'],
         dataElementCodes: ['CROP_1'],
-        startDate: '2019-12-01',
-        endDate: '2020-11-21',
+        startDate: '2019-01-01',
+        endDate: '2020-01-01',
       },
-      [CROP_RESPONSE_AUCKLAND_2020],
+      [CROP_RESPONSE_AUCKLAND_2019],
     );
   });
 };

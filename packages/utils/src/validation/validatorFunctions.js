@@ -57,6 +57,12 @@ export const isNumber = value => {
   }
 };
 
+export const isAString = value => {
+  if (typeof value !== 'string') {
+    throw new ValidationError(`Should contain a string instead of ${value}`);
+  }
+};
+
 export const hasNoAlphaLetters = value => {
   if (value.toString().match(/[a-zA-Z]/g)) {
     throw new ValidationError('Should not contain any alpha letters');
