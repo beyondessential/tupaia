@@ -14,15 +14,11 @@ const KeyboardArrowDown = styled(MuiKeyboardArrowDown)`
   color: ${props => props.theme.palette.text.tertiary};
   font-size: 24px;
   top: calc(50% - 12px);
-  right: 15px;
-`;
-
-const StyledTextField = styled(TextField)`
-  // ??
+  right: 0.9rem;
 `;
 
 export const SelectField = ({ SelectProps, ...props }) => (
-  <StyledTextField
+  <TextField
     SelectProps={{
       IconComponent: iconProps => <KeyboardArrowDown {...iconProps} />,
       ...SelectProps,
