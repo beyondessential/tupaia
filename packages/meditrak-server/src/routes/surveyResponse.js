@@ -4,15 +4,17 @@
  */
 
 import { keyBy } from 'lodash';
-import { getTimezoneNameFromTimestamp, ValidationError, MultiValidationError } from '@tupaia/utils';
 import {
+  getTimezoneNameFromTimestamp,
+  ValidationError,
+  MultiValidationError,
   ObjectValidator,
   hasContent,
   constructRecordExistsWithId,
   constructRecordExistsWithCode,
   constructAnswerValidator,
   constructIsEmptyOr,
-} from '../validation';
+} from '@tupaia/utils';
 import { findQuestionsBySurvey } from '../dataAccessors';
 
 const createSurveyResponseValidator = models =>

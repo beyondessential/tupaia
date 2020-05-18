@@ -1,4 +1,3 @@
-import { ANSWER_TYPES } from '../database/models/Answer';
 import {
   constructIsEmptyOr,
   constructIsOneOf,
@@ -6,7 +5,8 @@ import {
   takesDateForm,
   hasNoContent,
   isNumber,
-} from './validatorFunctions';
+} from '@tupaia/utils';
+import { ANSWER_TYPES } from '../database/models/Answer';
 
 function getValuesFromOptions(options) {
   return options.map(option => {

@@ -3,9 +3,13 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  **/
 
+import {
+  constructIsNotPresentOr,
+  hasContent,
+  constructListItemsAreOneOf,
+  validateIsYesOrNo,
+} from '@tupaia/utils';
 import { ANSWER_TYPES } from '../../../../database/models/Answer';
-import { constructIsNotPresentOr, hasContent } from '../../../../validation';
-import { constructListItemsAreOneOf, validateIsYesOrNo } from '../../validatorFunctions';
 import { isEmpty, isYes } from '../../utilities';
 import { JsonFieldValidator } from '../JsonFieldValidator';
 

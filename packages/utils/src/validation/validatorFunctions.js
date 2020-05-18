@@ -5,7 +5,7 @@
 
 import moment from 'moment';
 import validator from 'validator';
-import { ValidationError } from '@tupaia/utils';
+import { ValidationError } from '../errors';
 
 const checkIsEmpty = value => value === undefined || value === null || value.length === 0;
 
