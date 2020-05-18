@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.6.17
--- Dumped by pg_dump version 9.6.17
+-- Dumped from database version 11.2
+-- Dumped by pg_dump version 11.2
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -12,23 +12,8 @@ SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
-SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
-
---
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
-
-
---
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: -
---
-
-COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
-
 
 --
 -- Name: postgis; Type: EXTENSION; Schema: -; Owner: -
@@ -242,21 +227,6 @@ CREATE FUNCTION public.update_change_time() RETURNS trigger
 SET default_tablespace = '';
 
 SET default_with_oids = false;
-
---
--- Name: alert; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.alert (
-    id text NOT NULL,
-    entity_id text,
-    data_element_id text,
-    start_time timestamp with time zone DEFAULT now() NOT NULL,
-    end_time timestamp with time zone,
-    event_confirmed_time timestamp with time zone,
-    archived boolean DEFAULT false
-);
-
 
 --
 -- Name: alert; Type: TABLE; Schema: public; Owner: -
@@ -2165,22 +2135,6 @@ ALTER TABLE ONLY public.alert
 
 
 --
--- Name: alert alert_data_element_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.alert
-    ADD CONSTRAINT alert_data_element_id_fkey FOREIGN KEY (data_element_id) REFERENCES public.data_source(id);
-
-
---
--- Name: alert alert_entity_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.alert
-    ADD CONSTRAINT alert_entity_id_fkey FOREIGN KEY (entity_id) REFERENCES public.entity(id);
-
-
---
 -- Name: answer answer_question_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2548,8 +2502,8 @@ ALTER TABLE ONLY public.user_reward
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.6.17
--- Dumped by pg_dump version 9.6.17
+-- Dumped from database version 11.2
+-- Dumped by pg_dump version 11.2
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -2558,7 +2512,6 @@ SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
-SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
@@ -3288,7 +3241,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 677	/20200506041900-AddLabConfirmedSTICasesPerMonthReport	2020-05-13 05:15:18.471
 678	/20200429021341-AddUNFPAReproductiveHealthProductsMonthOfStockReport	2020-05-17 15:05:50.269
 679	/20200504224323-AddSchoolEntityType	2020-05-17 15:05:52.781
-680	/20200428025025-createAlertsTable	2020-05-18 14:49:47.768
+680	/20200428025025-createAlertsTable	2020-05-18 15:24:54.24
 \.
 
 
