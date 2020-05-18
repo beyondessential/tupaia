@@ -5,7 +5,7 @@
 
 import { respond } from '@tupaia/utils';
 import { TYPES } from '@tupaia/database';
-import { ObjectValidator, constructValidationRules } from '../validation';
+import { ObjectValidator, constructNewRecordValidationRules } from '../validation';
 import { resourceToRecordType } from '../utilities';
 import { createUser, createJoinChild } from '../dataAccessors';
 
@@ -36,7 +36,7 @@ export async function addRecord(req, res) {
       : recordData;
 
   const validator = new ObjectValidator(
-    constructValidationRules(models, recordType, parentRecordType),
+    constructNewRecordValidationRules(models, recordType, parentRecordType),
   );
   await validator.validate(dataToValidate); // Will throw an error if not valid
 

@@ -103,7 +103,7 @@ export const constructForSingle = (models, recordType) => {
   }
 };
 
-export const constructValidationRules = (models, recordType, parentRecordType = null) => {
+export const constructNewRecordValidationRules = (models, recordType, parentRecordType = null) => {
   if (parentRecordType) {
     return constructForParent(models, recordType, parentRecordType);
   }

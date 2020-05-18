@@ -27,4 +27,4 @@ export {
   constructThisOrThatHasContent,
 } from './validatorFunctions';
 export { constructAnswerValidator } from './surveyResponseValidation';
-export { constructValidationRules } from './constructValidationRules';
+export { constructNewRecordValidationRules } from './constructNewRecordValidationRules';
