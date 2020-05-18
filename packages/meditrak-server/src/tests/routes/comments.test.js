@@ -20,7 +20,7 @@ describe('Alert Comments CRUD', () => {
       const text = 'It is the unknown that defines our existence.';
 
       const { statusCode, body } = await app.post(`alerts/${alert.id}/comments`, {
-        body: { id, user_account_id: app.user.id, text },
+        body: { id, user_id: app.user.id, text },
       });
 
       expect(statusCode).to.equal(200);
@@ -28,7 +28,7 @@ describe('Alert Comments CRUD', () => {
 
       const comment = await models.comment.findById(id);
       expect(comment).to.be.an('object');
-      expect(comment.user_account_id).to.equal(app.user.id);
+      expect(comment.user_id).to.equal(app.user.id);
       expect(comment.text).to.equal(text);
       const alertCommentJoin = await models.alertComment.findOne({ comment_id: id });
       expect(alertCommentJoin.alert_id).to.equal(alert.id);
@@ -40,7 +40,7 @@ describe('Alert Comments CRUD', () => {
       const {
         alert: { id: alert_id },
       } = await createAlert('JANEWAY1');
-      const commonData = { alert_id, user_account_id: app.user.id };
+      const commonData = { alert_id, user_id: app.user.id };
 
       const createdData = [
         await createComment({
@@ -59,13 +59,13 @@ describe('Alert Comments CRUD', () => {
 
       for (const [index, comment] of createdData.entries()) {
         expect(comment).to.have.property('id');
-        expect(comment).to.have.property('user_account_id');
+        expect(comment).to.have.property('user_id');
         expect(comment).to.have.property('created_time');
         expect(comment).to.have.property('last_modified_time');
         expect(comment).to.have.property('text');
 
         expect(comment.id).to.equal(createdData[index].id);
-        expect(comment.user_account_id).to.equal(app.user.id);
+        expect(comment.user_id).to.equal(app.user.id);
         expect(comment.text).to.equal(createdData[index].text);
       }
     });
@@ -84,7 +84,7 @@ describe('Alert Comments CRUD', () => {
       const { body: comment } = await app.get(`alerts/${alert_id}/comments/${createdComment.id}`);
 
       expect(comment).to.have.property('id');
-      expect(comment).to.have.property('user_account_id');
+      expect(comment).to.have.property('user_id');
       expect(comment).to.have.property('created_time');
       expect(comment).to.have.property('last_modified_time');
       expect(comment).to.have.property('text');
@@ -127,7 +127,7 @@ describe('Alert Comments CRUD', () => {
       } = await createAlert('PIKE1');
       const createdComment = await createComment({
         alert_id,
-        user_account_id: app.user.id,
+        user_id: app.user.id,
         text: "Just because someone isn't born on Earth doesn't make him any less human.",
       });
 
