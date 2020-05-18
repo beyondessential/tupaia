@@ -13,6 +13,7 @@ import {
   findSurveyScreenComponentsInSurvey,
   findSurveysInCountry,
   findDataElementsInDataGroup,
+  findOrCountJoinChildren,
 } from '../dataAccessors';
 import { getApiUrl, resourceToRecordType } from '../utilities';
 
@@ -63,7 +64,7 @@ const getForeignKeyColumn = (recordType, parentRecordType) => {
   return CUSTOM_FOREIGN_KEYS[key] || `${parentRecordType}_id`;
 };
 const PARENT_RECORD_FINDERS = {
-  [`${TYPES.ALERT}/${TYPES.COMMENT}`]: 'findOrCountJoinChildren',
+  [`${TYPES.ALERT}/${TYPES.COMMENT}`]: findOrCountJoinChildren,
 };
 
 const MAX_RECORDS_PER_PAGE = 100;
@@ -117,9 +118,10 @@ export async function getRecords(req, res) {
         return customFinder(models, parentRecordId, criteria, options, findOrCount);
       }
       if (parentRecordType) {
-        const recordCreator = database[PARENT_RECORD_FINDERS[`${parentRecordType}/${recordType}`]];
-        if (recordCreator) {
-          return recordCreator(
+        const recordAccessor = PARENT_RECORD_FINDERS[`${parentRecordType}/${recordType}`];
+        if (recordAccessor) {
+          return recordAccessor(
+            models,
             findOrCount,
             recordType,
             parentRecordType,

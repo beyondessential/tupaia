@@ -23,7 +23,7 @@ export const constructForParent = (models, recordType, parentRecordType) => {
     case `${ALERT}/${COMMENT}`:
       return {
         alert_id: [constructRecordExistsWithId(models.alert)],
-        user_account_id: [constructRecordExistsWithId(models.user)],
+        user_id: [constructRecordExistsWithId(models.user)],
         text: [hasContent],
       };
     default:

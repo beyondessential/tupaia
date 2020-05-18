@@ -7,12 +7,12 @@ import { respond } from '@tupaia/utils';
 import { TYPES } from '@tupaia/database';
 import { ObjectValidator, constructValidationRules } from '../validation';
 import { resourceToRecordType } from '../utilities';
-import { createUser } from '../dataAccessors';
+import { createUser, createJoinChild } from '../dataAccessors';
 
 const { ALERT, COMMENT, USER_ACCOUNT } = TYPES;
 
 const PARENT_RECORD_CREATORS = {
-  [`${ALERT}/${COMMENT}`]: 'createJoinChild',
+  [`${ALERT}/${COMMENT}`]: createJoinChild,
 };
 
 const CUSTOM_RECORD_CREATORS = {
@@ -45,8 +45,8 @@ export async function addRecord(req, res) {
   if (CUSTOM_RECORD_CREATORS[recordType]) {
     customResponseDetails = await CUSTOM_RECORD_CREATORS[recordType](models, recordData);
   } else if (parentRecordType !== '') {
-    const recordCreator = database[PARENT_RECORD_CREATORS[`${parentRecordType}/${recordType}`]];
-    await recordCreator(recordType, recordData, parentRecordType, parentRecordId);
+    const recordCreator = PARENT_RECORD_CREATORS[`${parentRecordType}/${recordType}`];
+    await recordCreator(models, recordType, recordData, parentRecordType, parentRecordId);
   } else {
     await database.create(recordType, recordData);
   }

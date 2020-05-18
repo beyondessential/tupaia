@@ -12,7 +12,7 @@ import { getConnectionConfig } from './getConnectionConfig';
 import { DatabaseChangeChannel } from './DatabaseChangeChannel';
 import { generateId } from './utilities/generateId';
 
-const QUERY_METHODS = {
+export const QUERY_METHODS = {
   COUNT: 'count',
   INSERT: 'insert',
   UPDATE: 'update',
@@ -433,52 +433,6 @@ export class TupaiaDatabase {
 
     const result = await this.connection.raw(sqlString, parametersToBind);
     return result.rows;
-  }
-
-  // CRUD for records with join table //////////////////////////////////////////
-
-  /*
-   * recordType, parentRecordType, parentRecordId are sent
-   * a record in table recordType is created
-   * a record in join table parentRecordType_recordType is created
-   * the recordType and parentRecordType ids are used in the join table
-   */
-  async createJoinChild(recordType, recordData, parentRecordType, parentRecordId) {
-    const childRecord = await this.create(recordType, recordData);
-    await this.create(`${parentRecordType}_${recordType}`, {
-      [`${parentRecordType}_id`]: parentRecordId,
-      [`${recordType}_id`]: childRecord.id,
-    });
-
-    return childRecord;
-  }
-
-  async findOrCountJoinChildren(
-    findOrCount,
-    recordType,
-    parentRecordType,
-    parentRecordId,
-    criteria,
-    options,
-  ) {
-    const joinTable = `${parentRecordType}_${recordType}`;
-    const params = [
-      recordType,
-      { ...criteria, [`${joinTable}.${parentRecordType}_id`]: parentRecordId },
-      { ...options, columns: null, joinWith: joinTable },
-    ];
-
-    if (findOrCount === 'find') {
-      params[2].columns = [`${recordType}.*`, `${joinTable}.id as ${joinTable}_id`];
-      return this.find(...params);
-    }
-
-    if (findOrCount === 'count') {
-      const result = await this.find(...params, QUERY_METHODS.COUNT);
-      return parseInt(result[0].count, 10);
-    }
-
-    return null;
   }
 }
 
