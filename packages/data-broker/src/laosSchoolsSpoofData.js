@@ -1,15 +1,11 @@
 const DATA_TYPE_TO_FUNC = {
   number: index => index,
   bool: index => index % 2,
-  binary: index => (index % 2 ? 1 : 0),
 };
 
 // Add any codes required here
 export const LAOS_SCHOOLS_DATA_ELEMENTS = {
   SchPop001: { type: 'number' },
-  BCD29_event: { type: 'binary' },
-  BCD32_event: { type: 'binary' },
-  SchQuar001: { type: 'binary' },
 };
 
 const generateSpoofData = (dataElementCode, orgUnits) => {
