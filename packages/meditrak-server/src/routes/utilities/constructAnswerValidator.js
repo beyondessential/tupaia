@@ -6,7 +6,7 @@ import {
   hasNoContent,
   isNumber,
 } from '@tupaia/utils';
-import { ANSWER_TYPES } from '../database/models/Answer';
+import { ANSWER_TYPES } from '../../database/models/Answer';
 
 function getValuesFromOptions(options) {
   return options.map(option => {
