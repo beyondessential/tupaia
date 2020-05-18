@@ -80,9 +80,7 @@ describe('groupEvents()', () => {
 
   it('unknown groupBy type', async () => {
     const assertCorrectErrorIsThrown = groupBySpecs =>
-      expect(groupEvents(EVENTS, groupBySpecs)).to.eventually.be.rejectedWith(
-        /not a supported groupBy type/,
-      );
+      expect(groupEvents(EVENTS, groupBySpecs)).to.be.rejectedWith(/not a supported groupBy type/);
 
     return Promise.all([{ type: 'unknownType' }, { type: '' }, {}].map(assertCorrectErrorIsThrown));
   });

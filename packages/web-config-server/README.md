@@ -20,8 +20,9 @@ Find Tupaia Config Server .env Environment Variables in lastpass, and copy to re
 Set up postgres on your machine and create the database 'tupaia', with credentials matching those in
 the .env file.
 
-The project requires importing an initial database dump. This can be obtained from the `#latest-db` channel
-on Slack. Import the dump by running:
+The project requires importing an initial database dump. Grab the latest database dump from dev server using `yarn dump-database ~/path/to/key.pem` (pem key can be obtained in LastPass - Tupaia Main Server). This will create a db dump and pull it to your current directory. You also need to be added into the Security Groups of the server.
+
+After pulling the latest database dump from dev server, run:
 
 ```bash
 yarn refresh-database tupaia_dump.sql

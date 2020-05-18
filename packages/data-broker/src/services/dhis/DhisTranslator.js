@@ -4,6 +4,8 @@
  */
 
 import keyBy from 'lodash.keyby';
+
+import { translateElementKeysInEventAnalytics } from '@tupaia/dhis-api';
 import { reduceToDictionary } from '@tupaia/utils';
 import { InboundAggregateDataTranslator } from './InboundAggregateDataTranslator';
 import { parseValueForDhis } from './parseValueForDhis';
@@ -182,6 +184,15 @@ export class DhisTranslator {
       dataValues: this.translateInboundEventDataValues(dataValues, dataElementToSourceCode),
     }));
   }
+
+  translateInboundEventAnalytics = async (eventAnalytics, dataElementSources) => {
+    const dataElementToSourceCode = reduceToDictionary(
+      dataElementSources,
+      'dataElementCode',
+      'code',
+    );
+    return translateElementKeysInEventAnalytics(eventAnalytics, dataElementToSourceCode);
+  };
 
   translateInboundDataElements = (dataElements, dataSources) => {
     const dataElementToSourceCode = reduceToDictionary(dataSources, 'dataElementCode', 'code');

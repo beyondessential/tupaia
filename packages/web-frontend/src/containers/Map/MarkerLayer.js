@@ -14,10 +14,11 @@ import { changeOrgUnit, openMapPopup, closeMapPopup } from '../../actions';
 import { CircleProportionMarker, IconMarker, MeasurePopup } from '../../components/Marker';
 import {
   selectHasPolygonMeasure,
-  selectAllMeasuresWithDisplayAndOrgUnitData,
+  selectRenderedMeasuresWithDisplayInfo,
   selectRadiusScaleFactor,
 } from '../../selectors';
 import { ShadedPolygon } from './ConnectedPolygon';
+import { MEASURE_TYPE_RADIUS } from '../../utils/measures';
 
 const MIN_RADIUS = 1;
 
@@ -57,6 +58,8 @@ const MeasureMarker = props => {
   return <IconMarker {...props} />;
 };
 
+const hasRadiusLayer = measureOptions => measureOptions.some(l => l.type === MEASURE_TYPE_RADIUS);
+
 /**
  * MarkerLayer - Component to render measures
  */
@@ -79,8 +82,9 @@ export class MarkerLayer extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    const { measureData, currentCountry, measureId, sidePanelWidth } = this.props;
+    const { isMeasureLoading, measureData, currentCountry, measureId, sidePanelWidth } = this.props;
     if (
+      nextProps.isMeasureLoading !== isMeasureLoading ||
       nextProps.measureId !== measureId ||
       nextProps.currentCountry !== currentCountry ||
       nextProps.sidePanelWidth !== sidePanelWidth ||
@@ -153,6 +157,13 @@ export class MarkerLayer extends Component {
       .filter(data => data.coordinates && data.coordinates.length === 2)
       .filter(displayInfo => !displayInfo.isHidden);
 
+    //for radius overlay sort desc radius to place smaller circles over larger circles
+    if (hasRadiusLayer(measureOptions)) {
+      processedData.sort((a, b) => {
+        return Number(b.radius) - Number(a.radius);
+      });
+    }
+
     const PopupChild = ({ data }) => (
       <MeasurePopup
         data={data}
@@ -208,7 +219,7 @@ const mapStateToProps = state => {
 
   const { contractedWidth, expandedWidth } = state.dashboard;
   const measureData = selectMeasureDataWithCoordinates(
-    selectAllMeasuresWithDisplayAndOrgUnitData(state),
+    selectRenderedMeasuresWithDisplayInfo(state),
   );
 
   return {
