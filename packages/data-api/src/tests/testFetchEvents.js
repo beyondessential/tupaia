@@ -196,6 +196,18 @@ export const testFetchEvents = () => {
     );
   });
 
+  it('should limit results when an event id is passed in', async () => {
+    await assertCorrectResponse(
+      {
+        surveyCode: 'CROP',
+        organisationUnitCodes: ['NZ_AK', 'NZ_WG'],
+        dataElementCodes: ['CROP_1', 'CROP_2'],
+        eventId: CROP_RESPONSE_AUCKLAND_2019.id,
+      },
+      [CROP_RESPONSE_AUCKLAND_2019],
+    );
+  });
+
   it('should limit results by a combination of parameters', async () => {
     await assertCorrectResponse(
       {
