@@ -259,6 +259,21 @@ CREATE TABLE public.alert (
 
 
 --
+-- Name: alert; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.alert (
+    id text NOT NULL,
+    entity_id text,
+    data_element_id text,
+    start_time timestamp with time zone DEFAULT now() NOT NULL,
+    end_time timestamp with time zone,
+    event_confirmed_time timestamp with time zone,
+    archived boolean DEFAULT false
+);
+
+
+--
 -- Name: answer; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2131,6 +2146,22 @@ CREATE TRIGGER user_geographical_area_permission_trigger AFTER INSERT OR DELETE 
 --
 
 CREATE TRIGGER user_reward_trigger AFTER INSERT OR DELETE OR UPDATE ON public.user_reward FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
+-- Name: alert alert_data_element_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.alert
+    ADD CONSTRAINT alert_data_element_id_fkey FOREIGN KEY (data_element_id) REFERENCES public.data_source(id);
+
+
+--
+-- Name: alert alert_entity_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.alert
+    ADD CONSTRAINT alert_entity_id_fkey FOREIGN KEY (entity_id) REFERENCES public.entity(id);
 
 
 --
