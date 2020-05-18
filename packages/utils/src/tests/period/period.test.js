@@ -1,12 +1,11 @@
 /**
- * Tupaia Config Server
- * * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
 import { expect } from 'chai';
 import sinon from 'sinon';
 import moment from 'moment';
-
 import {
   PERIOD_TYPES,
   convertToPeriod,
@@ -19,7 +18,7 @@ import {
   periodToDisplayString,
   parsePeriodType,
   periodToTimestamp,
-} from '../periodTypes';
+} from '../../period/period';
 
 const { DAY, WEEK, MONTH, YEAR } = PERIOD_TYPES;
 
