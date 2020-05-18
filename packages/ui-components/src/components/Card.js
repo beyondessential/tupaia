@@ -44,15 +44,16 @@ export const CardHeader = ({ title, label, color }) => (
     <HeaderLabel color={color}>{label}</HeaderLabel>
   </StyledDiv>
 );
+
 CardHeader.propTypes = {
-  title: PropTypes.string.isRequired,
-  label: PropTypes.any,
+  title: PropTypes.any.isRequired,
+  label: PropTypes.string,
   color: PropTypes.string,
 };
 
 CardHeader.defaultProps = {
-  color: undefined,
-  label: undefined,
+  color: 'initial',
+  label: 'initial',
 };
 
 export const CardContent = styled(MuiCardContent)`
