@@ -42,11 +42,11 @@ export async function addRecord(req, res) {
 
   // Create the record, using a custom creator if necessary
   let customResponseDetails = {};
-  if (CUSTOM_RECORD_CREATORS[recordType]) {
-    customResponseDetails = await CUSTOM_RECORD_CREATORS[recordType](models, recordData);
-  } else if (parentRecordType !== '') {
+  if (parentRecordType !== '') {
     const recordCreator = PARENT_RECORD_CREATORS[`${parentRecordType}/${recordType}`];
     await recordCreator(models, recordType, recordData, parentRecordType, parentRecordId);
+  } else if (CUSTOM_RECORD_CREATORS[recordType]) {
+    customResponseDetails = await CUSTOM_RECORD_CREATORS[recordType](models, recordData);
   } else {
     await database.create(recordType, recordData);
   }

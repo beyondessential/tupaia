@@ -12,7 +12,7 @@ import { getConnectionConfig } from './getConnectionConfig';
 import { DatabaseChangeChannel } from './DatabaseChangeChannel';
 import { generateId } from './utilities/generateId';
 
-export const QUERY_METHODS = {
+const QUERY_METHODS = {
   COUNT: 'count',
   INSERT: 'insert',
   UPDATE: 'update',
