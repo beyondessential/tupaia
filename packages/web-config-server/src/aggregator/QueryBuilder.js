@@ -40,8 +40,7 @@ export class QueryBuilder {
       entity,
       this.getQueryParameter('dataSourceEntityType'),
     );
-    this.query.organisationUnitCodes =
-      dataSourceEntities.length > 0 ? dataSourceEntities.map(e => e.code) : [organisationUnitCode];
+    this.query.organisationUnitCodes = dataSourceEntities.map(e => e.code);
     delete this.query.organisationUnitCode;
   }
 
