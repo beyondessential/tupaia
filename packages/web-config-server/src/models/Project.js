@@ -38,19 +38,4 @@ export class Project extends BaseModel {
           on p.entity_id = sub.parent_id
     `);
   }
-
-  static async getProjectHierarchyByCode(code) {
-    return (
-      await Project.database.executeSql(`
-      select
-        to_json(sub.child_id) AS entity_ids
-      from Project p
-        left join Entity E
-          on p.entity_id = e.id
-        left join (select parent_id, json_agg(child_id) as child_id from entity_relation er group by parent_id) sub
-          on p.entity_id = sub.parent_id
-      where p.code = '${code}' limit 1
-    `)
-    )[0].entity_ids;
-  }
 }
