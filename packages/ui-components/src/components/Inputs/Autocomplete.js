@@ -14,7 +14,7 @@ import { TextField } from './TextField';
 
 const KeyboardArrowDown = styled(MuiKeyboardArrowDown)`
   color: ${props => props.theme.palette.text.tertiary};
-  font-size: 24px;
+  font-size: 1.5rem;
 `;
 
 const Paper = props => <MuiPaper {...props} variant="outlined" elevation={0} />;
@@ -27,15 +27,15 @@ const StyledPaper = styled(Paper)`
 
 const StyledAutocomplete = styled(MuiAutocomplete)`
   .MuiAutocomplete-inputRoot.MuiInputBase-adornedEnd.MuiOutlinedInput-adornedEnd {
-    padding: 0 45px 0 0;
+    padding: 0 2.8rem 0 0;
   }
 
   .MuiInputBase-input.MuiAutocomplete-input.MuiInputBase-inputAdornedEnd {
-    padding: 15px 5px 16px 15px;
+    padding: 0.9rem 0.3rem 1rem 0.9rem;
   }
 
   .MuiAutocomplete-inputRoot .MuiAutocomplete-endAdornment {
-    right: 15px;
+    right: 0.9rem;
   }
 `;
 

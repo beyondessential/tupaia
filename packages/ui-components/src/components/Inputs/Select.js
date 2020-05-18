@@ -14,7 +14,7 @@ const KeyboardArrowDown = styled(MuiKeyboardArrowDown)`
   color: ${props => props.theme.palette.text.tertiary};
   font-size: 24px;
   top: calc(50% - 12px);
-  right: 15px;
+  right: 0.9rem;
 `;
 
 export const SelectField = ({ SelectProps, ...props }) => (
