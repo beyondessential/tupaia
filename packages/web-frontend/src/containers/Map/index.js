@@ -36,7 +36,7 @@ const mapStateToProps = state => {
   const { contractedWidth, expandedWidth } = state.dashboard;
   const currentOrganisationUnit = selectCurrentOrgUnit(state);
   const currentParent = selectOrgUnit(state, currentOrganisationUnit.parent);
-  const currentChildren = selectOrgUnitChildren(state, currentOrganisationUnitCode);
+  const currentChildren = selectOrgUnitChildren(state, currentOrganisationUnit.code);
 
   return {
     position,

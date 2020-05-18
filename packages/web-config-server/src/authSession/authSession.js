@@ -91,11 +91,11 @@ export const addUserAccessHelper = (req, res, next) => {
 
     const entity = await Entity.findOne({ code: entityCode });
     if (entity.isProject()) {
-      const projectHierarchy = await Project.getProjectHierarchyByCode(entityCode);
-      const hierarchyEntities = await Entity.find({ id: projectHierarchy });
+      const project = await Project.findOne({ code: entity.code });
+      const projectChildren = await entity.getChildren(project.entity_hierarchy_id);
 
       const projectAccessRights = [];
-      for (const entity of hierarchyEntities) {
+      for (const entity of projectChildren) {
         const userGroupAccessRights = await req.getUserGroupAccessRights(entity.code);
 
         Object.keys(userGroupAccessRights).forEach(
