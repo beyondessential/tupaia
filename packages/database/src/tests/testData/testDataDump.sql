@@ -230,6 +230,21 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
+-- Name: alert; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.alert (
+    id text NOT NULL,
+    entity_id text,
+    data_element_id text,
+    start_time timestamp with time zone DEFAULT now() NOT NULL,
+    end_time timestamp with time zone,
+    event_confirmed_time timestamp with time zone,
+    archived boolean DEFAULT false
+);
+
+
+--
 -- Name: answer; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -945,6 +960,14 @@ ALTER TABLE ONLY public."dashboardGroup" ALTER COLUMN id SET DEFAULT nextval('pu
 --
 
 ALTER TABLE ONLY public.migrations ALTER COLUMN id SET DEFAULT nextval('public.migrations_id_seq'::regclass);
+
+
+--
+-- Name: alert alert_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.alert
+    ADD CONSTRAINT alert_pkey PRIMARY KEY (id);
 
 
 --
@@ -1824,6 +1847,13 @@ CREATE INDEX user_country_permission_user_id_idx ON public.user_country_permissi
 
 
 --
+-- Name: alert alert_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER alert_trigger AFTER INSERT OR DELETE OR UPDATE ON public.alert FOR EACH ROW EXECUTE FUNCTION public.notification();
+
+
+--
 -- Name: answer answer_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -2087,6 +2117,22 @@ CREATE TRIGGER user_geographical_area_permission_trigger AFTER INSERT OR DELETE 
 --
 
 CREATE TRIGGER user_reward_trigger AFTER INSERT OR DELETE OR UPDATE ON public.user_reward FOR EACH ROW EXECUTE FUNCTION public.notification();
+
+
+--
+-- Name: alert alert_data_element_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.alert
+    ADD CONSTRAINT alert_data_element_id_fkey FOREIGN KEY (data_element_id) REFERENCES public.data_source(id);
+
+
+--
+-- Name: alert alert_entity_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.alert
+    ADD CONSTRAINT alert_entity_id_fkey FOREIGN KEY (entity_id) REFERENCES public.entity(id);
 
 
 --
@@ -3197,6 +3243,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 677	/20200506041900-AddLabConfirmedSTICasesPerMonthReport	2020-05-13 05:15:18.471
 678	/20200429021341-AddUNFPAReproductiveHealthProductsMonthOfStockReport	2020-05-17 15:05:50.269
 679	/20200504224323-AddSchoolEntityType	2020-05-17 15:05:52.781
+680	/20200428025025-createAlertsTable	2020-05-18 12:56:28.674
 \.
 
 
@@ -3204,7 +3251,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 679, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 680, true);
 
 
 --
@@ -3218,3 +3265,4 @@ ALTER TABLE ONLY public.migrations
 --
 -- PostgreSQL database dump complete
 --
+
