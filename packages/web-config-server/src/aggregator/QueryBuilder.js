@@ -37,7 +37,8 @@ export class QueryBuilder {
     const organisationUnitCode = this.getQueryParameter('organisationUnitCode');
     const entity = await Entity.findOne({ code: organisationUnitCode });
     const dataSourceEntities = await this.fetchDataSourceEntities(entity);
-    this.query.organisationUnitCodes = dataSourceEntities.map(e => e.code);
+    this.query.organisationUnitCodes =
+      dataSourceEntities.length > 0 ? dataSourceEntities.map(e => e.code) : [organisationUnitCode];
     delete this.query.organisationUnitCode;
   }
 
