@@ -7,27 +7,39 @@ import React from 'react';
 import MuiTextField from '@material-ui/core/TextField';
 import styled from 'styled-components';
 
-/*
- * TextField
- */
+const TEXT_FIELD_FONT_FAMILY = "'Inter', sans-serif";
+
 const BaseTextField = props => <MuiTextField fullWidth {...props} variant="outlined" />;
 
+const focusColor = '#99d6ff';
+const adornmentColor = '#c4c4c7';
+
 export const TextField = styled(BaseTextField)`
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.2rem;
 
   .MuiInputBase-root {
-    margin-top: 32px;
+    background: ${props => props.theme.palette.common.white};
   }
 
   // The actual input field
   .MuiInputBase-input {
-    background: ${props => props.theme.palette.common.white};
-    color: ${props => props.theme.palette.grey['600']};
+    font-family: ${TEXT_FIELD_FONT_FAMILY};
+    color: ${props => props.theme.palette.text.primary};
     font-weight: 400;
-    font-size: 15px;
-    line-height: 18px;
-    padding: 21px 15px;
+    font-size: 16px;
+    line-height: 19px;
+    padding: 15px 16px 16px;
     border-radius: 3px;
+  }
+
+  // Error state
+  .MuiInputBase-root.Mui-error {
+    background: ${props => props.theme.palette.error.light};
+  }
+
+  // helper text
+  .MuiFormHelperText-root {
+    margin-left: 0;
   }
 
   // The border
@@ -42,13 +54,14 @@ export const TextField = styled(BaseTextField)`
 
   // Hover state
   .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
-    border-color: ${props => props.theme.palette.grey['600']};
+    border-color: ${props => props.theme.palette.grey['400']};
   }
 
   // Focused state
   .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-    border-color: ${props => props.theme.palette.grey['600']};
     border-width: 1px;
+    border-color: ${focusColor};
+    box-shadow: 0 0 5px rgba(0, 135, 216, 0.75);
   }
 
   .MuiFormLabel-root.Mui-focused {
@@ -57,34 +70,34 @@ export const TextField = styled(BaseTextField)`
 
   // The label
   .MuiFormLabel-root {
-    transform: none;
-    font-size: 16px;
+    position: relative;
+    margin-bottom: 4px;
+    font-family: ${TEXT_FIELD_FONT_FAMILY};
+    color: ${props => props.theme.palette.text.secondary};
+    font-size: 14px;
+    line-height: 1;
     font-weight: 500;
-    line-height: 19px;
+    transform: none;
   }
 
-  /*
-  * Adornments
-  */
-  .MuiInputAdornment-positionEnd {
-    color: ${props => props.theme.palette.grey['600']};
-
-    &:before {
-      border-left: 1px solid ${props => props.theme.palette.grey['500']};
-      height: 30px;
-      content: '';
-      padding-right: 15px;
-    }
+  // Adornments
+  .MuiInputAdornment-root {
+    color: ${adornmentColor};
   }
 
-  .MuiOutlinedInput-adornedEnd {
-    padding-right: 18px;
+  .MuiInputAdornment-positionStart {
+    margin-right: 0;
+  }
+
+  .MuiInputBase-inputAdornedStart {
+    padding-left: 5px;
   }
 
   /* Override MaterialUI which hides the placeholder due to conflict with its floating labels */
   &&&& {
     .MuiInputBase-input::placeholder {
       opacity: 1 !important;
+      color: ${props => props.theme.palette.text.tertiary};
     }
   }
 
@@ -94,44 +107,12 @@ export const TextField = styled(BaseTextField)`
     display: none;
   }
 
-  /*
-  * Textarea
-   */
+  //Textarea
   .MuiOutlinedInput-multiline {
     padding: 0;
   }
 
-  ${({ multiline }) =>
-    multiline &&
-    `
-    .MuiInputBase-root {
-      margin-top: 0;
-      padding-top: 25px;
-    }
-    
-    .MuiInputBase-input {
-      border-top-left-radius: 0;
-      border-top-right-radius: 0;
-    }
-    
-    .MuiFormLabel-root {
-      padding-left: 15px;
-      padding-top: 3px;
-      padding-bottom: 3px;
-      background: #dedede;
-      display: block;
-      width: 100%;
-      font-size: 11px;
-      font-weight: 600;
-      z-index: -1;
-      border-top-left-radius: 3px;
-      border-top-right-radius: 3px;
-    }
-  `};
-
-  /*
-  * Small size
-  */
+  // Small size
   .MuiInputBase-inputMarginDense {
     padding: 10px;
   }

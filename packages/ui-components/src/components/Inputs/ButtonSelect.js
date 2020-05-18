@@ -31,6 +31,8 @@ const StyledTextField = styled(TextField)`
 
   .MuiInputBase-input {
     color: ${props => props.theme.palette.text.primary};
+    padding-top: 1.375rem;
+    padding-bottom: 1.375rem;
   }
 
   .MuiOutlinedInput-notchedOutline {
@@ -200,7 +202,7 @@ export const ButtonSelect = ({
 
 ButtonSelect.propTypes = {
   id: PropTypes.string.isRequired,
-  label: PropTypes.string.isRequired,
+  label: PropTypes.string,
   options: PropTypes.array.isRequired,
   controlValue: PropTypes.string,
   onChange: PropTypes.func,
@@ -213,6 +215,7 @@ ButtonSelect.propTypes = {
 
 ButtonSelect.defaultProps = {
   defaultValue: '',
+  label: undefined,
   labelKey: 'name',
   valueKey: 'id',
   controlValue: undefined,

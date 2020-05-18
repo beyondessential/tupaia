@@ -11,27 +11,14 @@ import styled from 'styled-components';
 import { TextField } from './TextField';
 
 const KeyboardArrowDown = styled(MuiKeyboardArrowDown)`
-  color: ${props => props.theme.palette.grey['600']};
-  font-size: 28px;
-  top: calc(50% - 14px);
-  right: 16px;
-`;
-
-const StyledTextField = styled(TextField)`
-  .MuiSelect-root {
-    &:before {
-      position: absolute;
-      right: 55px;
-      top: calc(50% - 15px);
-      border-left: 1px solid ${props => props.theme.palette.grey['500']};
-      height: 30px;
-      content: '';
-    }
-  }
+  color: ${props => props.theme.palette.text.tertiary};
+  font-size: 24px;
+  top: calc(50% - 12px);
+  right: 15px;
 `;
 
 export const SelectField = ({ SelectProps, ...props }) => (
-  <StyledTextField
+  <TextField
     SelectProps={{
       IconComponent: iconProps => <KeyboardArrowDown {...iconProps} />,
       ...SelectProps,
