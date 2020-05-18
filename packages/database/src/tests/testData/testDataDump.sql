@@ -3218,4 +3218,3 @@ ALTER TABLE ONLY public.migrations
 --
 -- PostgreSQL database dump complete
 --
-
