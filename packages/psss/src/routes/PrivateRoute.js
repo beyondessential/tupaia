@@ -13,7 +13,6 @@ import { checkIsLoggedIn } from '../store';
  * screen if you're not yet authenticated.
  * */
 export const PrivateRouteComponent = ({ isLoggedIn, children, ...props }) => {
-  console.log('isLoggedIn', isLoggedIn);
   return (
     <Route
       {...props}

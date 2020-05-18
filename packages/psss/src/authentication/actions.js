@@ -29,7 +29,6 @@ export const login = (emailAddress, password) => async (dispatch, getState, { ap
     type: LOGIN_REQUEST,
   });
   try {
-    console.log('API login...');
     const userDetails = await api.reauthenticate({
       emailAddress,
       password,
@@ -42,7 +41,6 @@ export const login = (emailAddress, password) => async (dispatch, getState, { ap
 };
 
 export const loginSuccess = ({ accessToken, refreshToken, user }) => dispatch => {
-  console.log('API user logged in', user.email);
   dispatch({
     type: LOGIN_SUCCESS,
     accessToken,
