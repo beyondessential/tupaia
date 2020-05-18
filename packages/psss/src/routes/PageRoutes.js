@@ -6,12 +6,12 @@
 import React from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import { AlertReportsView } from '../views/AlertReportsView';
-import { WeeklyReportsView } from '../views/CountriesReportsView';
+import { CountriesReportsView } from '../views/CountriesReportsView';
 import { CountryReportsView } from '../views/CountryReportsView';
 
 export const PageRoutes = React.memo(() => (
   <Switch>
-    <Route exact path="/" component={WeeklyReportsView} />
+    <Route exact path="/" component={CountriesReportsView} />
     <Route path="/weekly-reports/:countryName" component={CountryReportsView} />
     <Route path="/alerts" component={AlertReportsView} />
     <Redirect to="/" />

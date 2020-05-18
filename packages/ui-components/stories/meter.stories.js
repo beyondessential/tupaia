@@ -39,11 +39,12 @@ export const circleMeter = () => (
   <Container>
     <MuiCard variant="outlined">
       <MuiCardContent>
-        <CircleMeter percent={0} />
-        <CircleMeter percent={34} />
-        <CircleMeter percent={50} />
-        <CircleMeter percent={99} />
-        <CircleMeter percent={100} />
+        <CircleMeter value={0} />
+        <CircleMeter value={0.34} />
+        <CircleMeter value={50} total={100} />
+        <CircleMeter value={6.9} total={8} />
+        <CircleMeter value={1} />
+        <CircleMeter value={20} total={10} />
       </MuiCardContent>
     </MuiCard>
   </Container>
