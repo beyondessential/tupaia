@@ -54,7 +54,7 @@ export const SelectListItem = ({ onSelect, title, subTitle, data }) => {
 
 SelectListItem.propTypes = {
   onSelect: PropTypes.func,
-  data: PropTypes.shape({}),
+  data: PropTypes.string,
   title: PropTypes.string,
   subTitle: PropTypes.string,
   color: PropTypes.string,
