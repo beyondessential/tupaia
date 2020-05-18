@@ -6,20 +6,14 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 import { DhisApi, DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
+import { generateTestId } from '@tupaia/database';
 
-import { ENTITY_TYPES } from '../../database/models/Entity';
 import * as Enrollments from '../../dhis/api/enrollments';
 import { EventBuilder } from '../../dhis/pushers/data/event/EventBuilder';
-import {
-  generateTestId,
-  insertSurveyAndScreens,
-  insertSurveyResponse,
-  upsertEntity,
-} from '../testUtilities';
+import { insertSurveyAndScreens, insertSurveyResponse, upsertEntity } from '../testUtilities';
 import { TestableApp } from '../TestableApp';
 
 const { ENROLLMENT, ORGANISATION_UNIT, PROGRAM } = DHIS2_RESOURCE_TYPES;
-const { VILLAGE, CASE } = ENTITY_TYPES;
 
 const orgUnitId = generateTestId();
 const eventOrgUnitQuestionId = generateTestId();
@@ -27,24 +21,23 @@ const ENTITIES = {
   orgUnit: {
     id: orgUnitId,
     code: generateTestId(),
-    type: VILLAGE,
+    type: 'village',
     dhisId: 'jSk4k1gnSqk',
   },
   trackedEntity: {
     id: generateTestId(),
     code: generateTestId(),
     parent_id: orgUnitId,
-    type: CASE,
+    type: 'case',
   },
   eventOrgUnit: {
     id: generateTestId(),
     code: generateTestId(),
-    type: VILLAGE,
+    type: 'village',
     dhisId: 'QCJyj3v0Zgr',
   },
 };
 const EVENT_DATE = '2019-07-15T06:25:05';
-const QUESTION_DATA_ELEMENT_ID = 'jxodPel43S3';
 const SUBMISSION_TIME = '2019-07-15T06:25:05Z';
 const SURVEYS = {
   default: {

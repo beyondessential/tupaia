@@ -4,7 +4,7 @@
  */
 
 import { expect } from 'chai';
-import { PERIOD_TYPES } from '@tupaia/dhis-api';
+import { PERIOD_TYPES } from '@tupaia/utils';
 import { sumPreviousPerPeriod } from '../../../analytics/aggregateAnalytics/aggregations';
 
 const DAY = PERIOD_TYPES.DAY;

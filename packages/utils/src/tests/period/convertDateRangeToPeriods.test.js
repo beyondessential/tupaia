@@ -1,12 +1,12 @@
 /**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
 import { expect } from 'chai';
 import moment from 'moment';
 
-import { convertDateRangeToPeriods } from '../convertDateRangeToPeriods';
+import { convertDateRangeToPeriods } from '../../period/convertDateRangeToPeriods';
 
 describe('convertDateRangeToPeriods', () => {
   it('should convert a date range within a single month', () => {

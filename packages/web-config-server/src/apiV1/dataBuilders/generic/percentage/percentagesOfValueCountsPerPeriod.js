@@ -5,7 +5,8 @@
 import keyBy from 'lodash.keyby';
 import flatten from 'lodash.flatten';
 
-import { groupAnalyticsByPeriod, PERIOD_TYPES, parsePeriodType } from '@tupaia/dhis-api';
+import { groupAnalyticsByPeriod } from '@tupaia/dhis-api';
+import { PERIOD_TYPES, parsePeriodType } from '@tupaia/utils';
 import { DataPerPeriodBuilder } from 'apiV1/dataBuilders/DataPerPeriodBuilder';
 import { PercentagesOfValueCountsBuilder } from '/apiV1/dataBuilders/generic/percentage/percentagesOfValueCounts';
 import { divideValues } from '/apiV1/dataBuilders/helpers';

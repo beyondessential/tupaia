@@ -1,5 +1,9 @@
-import { convertDateRangeToPeriodString, PERIOD_TYPES, momentToPeriod } from '@tupaia/dhis-api';
-import { utcMoment } from '@tupaia/utils';
+import {
+  utcMoment,
+  convertDateRangeToPeriodString,
+  PERIOD_TYPES,
+  momentToPeriod,
+} from '@tupaia/utils';
 import { AGGREGATION_TYPES } from '../aggregationTypes';
 
 const EARLIEST_DATA_DATE = utcMoment('2017-01-01'); // Tupaia started in 2017

@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { PERIOD_TYPES } from '@tupaia/dhis-api';
+import { PERIOD_TYPES } from '@tupaia/utils';
 import { AGGREGATION_TYPES } from '../../aggregationTypes';
 import {
   filterLatest,
