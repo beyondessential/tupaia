@@ -28,39 +28,42 @@ export const Container = styled.section`
 `;
 
 export const StyledCard = styled(MuiCard)`
-  width: 450px;
-  padding: 40px 50px 50px;
-  margin: 0 auto 30px;
+  width: 28rem;
+  padding: 2.5rem 3.5rem 3rem 3rem;
+  margin: 0 auto 2rem;
   box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
 `;
 
 const StyledImg = styled.img`
-  height: 96px;
+  height: 6rem;
   width: auto;
-  margin-bottom: 40px;
+  margin-bottom: 2.5rem;
 `;
 
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 40px;
+  margin-bottom: 2.5rem;
 `;
 
 const StyledHelperText = styled(Typography)`
   font-weight: 500;
-  font-size: 14px;
-  line-height: 16px;
+  font-size: 0.875rem;
+  line-height: 1rem;
   color: ${props => props.theme.palette.text.secondary};
 `;
 
 const StyledLink = styled(MuiLink)`
   font-weight: 500;
-  font-size: 14px;
-  line-height: 16px;
-  margin-left: 5px;
+  font-size: 0.875rem;
+  line-height: 1rem;
+  margin-left: 0.3rem;
   color: ${props => props.theme.palette.primary.main};
 `;
+
+// Todo: confirm the correct request an account url
+const requestAnAccountUrl = 'https://beyondessential.com.au/contact';
 
 export const LoginViewComponent = ({ isLoggedIn }) => {
   if (isLoggedIn) {
@@ -75,8 +78,8 @@ export const LoginViewComponent = ({ isLoggedIn }) => {
           <LoginForm />
         </StyledCard>
         <Wrapper>
-          <StyledHelperText>Dont have access?</StyledHelperText>
-          <StyledLink>Request an account</StyledLink>
+          <StyledHelperText>Don&apos;t have access?</StyledHelperText>
+          <StyledLink href={requestAnAccountUrl}>Request an account</StyledLink>
         </Wrapper>
       </Container>
     </Main>
