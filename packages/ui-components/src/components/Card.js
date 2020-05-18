@@ -46,8 +46,8 @@ export const CardHeader = ({ title, label, color }) => (
 );
 
 CardHeader.propTypes = {
-  title: PropTypes.string.isRequired,
-  label: PropTypes.string,
+  title: PropTypes.any.isRequired,
+  label: PropTypes.any,
   color: PropTypes.string,
 };
 
