@@ -22,6 +22,10 @@ const StyledButton = styled(MuiButton)`
   .MuiAvatar-root {
     color: ${props => props.theme.palette.text.primary};
   }
+
+  .MuiSvgIcon-root {
+    transition: transform 0.3s ease;
+  }
 `;
 
 const Menu = styled(MuiMenu)`
@@ -33,7 +37,7 @@ const Menu = styled(MuiMenu)`
 /*
  * Profile button
  */
-export const ProfileButton = ({ children, ListItems, ...props }) => {
+export const ProfileButton = ({ children, listItems, ...props }) => {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleClick = event => {
@@ -47,17 +51,26 @@ export const ProfileButton = ({ children, ListItems, ...props }) => {
   return (
     <React.Fragment>
       <StyledButton
-        endIcon={<ExpandMore />}
+        endIcon={<ExpandMore style={{ transform: anchorEl ? 'rotate(180deg)' : 'rotate(0)' }} />}
         startIcon={<Avatar />}
         onClick={handleClick}
         {...props}
       >
         {children}
       </StyledButton>
-      <Menu keepMounted anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
-        <MuiList subheader={<MuiListSubheader>Profile</MuiListSubheader>}>
-          <ListItems />
-        </MuiList>
+      <Menu
+        keepMounted
+        disablePortal
+        getContentAnchorEl={null}
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+      >
+        <MuiList subheader={<MuiListSubheader>Profile</MuiListSubheader>}>{listItems}</MuiList>
       </Menu>
     </React.Fragment>
   );
@@ -65,7 +78,7 @@ export const ProfileButton = ({ children, ListItems, ...props }) => {
 
 ProfileButton.propTypes = {
   children: PropTypes.any.isRequired,
-  ListItems: PropTypes.any.isRequired,
+  listItems: PropTypes.any.isRequired,
 };
 
 export const LightProfileButton = styled(ProfileButton)`

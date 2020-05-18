@@ -3,15 +3,18 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import MuiListItem from '@material-ui/core/ListItem';
-import { Link as RouterLink, useHistory } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import MuiListItemIcon from '@material-ui/core/ListItemIcon';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import MuiListItemText from '@material-ui/core/ListItemText';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import Avatar from '@material-ui/core/Avatar';
 import { LightProfileButton } from '@tupaia/ui-components';
+import { getCurrentUser, logout } from '../store';
 
 const StyledListItem = styled(MuiListItem)`
   padding-right: 3rem;
@@ -19,18 +22,11 @@ const StyledListItem = styled(MuiListItem)`
 
 const ListItemLink = props => <StyledListItem button component={RouterLink} {...props} />;
 
-const ListItemButton = props => {
-  const history = useHistory();
-
+const ProfileLinks = ({ onLogout }) => {
   const handleClick = () => {
-    // FakeStore.auth.logout().then(() => {
-    //   history.push('/login');
-    // });
+    onLogout();
   };
-  return <StyledListItem button {...props} onClick={handleClick} />;
-};
 
-const ProfileLinks = () => {
   return (
     <React.Fragment>
       <ListItemLink to="/profile">
@@ -39,18 +35,45 @@ const ProfileLinks = () => {
         </MuiListItemIcon>
         <MuiListItemText primary="Profile" />
       </ListItemLink>
-      <ListItemButton>
+      <StyledListItem button onClick={handleClick}>
         <MuiListItemIcon>
           <ExitToAppIcon />
         </MuiListItemIcon>
         <MuiListItemText primary="Logout" />
-      </ListItemButton>
+      </StyledListItem>
     </React.Fragment>
   );
 };
 
-export const ProfileButton = () => (
-  <LightProfileButton startIcon={<Avatar>T</Avatar>} ListItems={ProfileLinks}>
-    Tom
-  </LightProfileButton>
-);
+ProfileLinks.propTypes = {
+  onLogout: PropTypes.func.isRequired,
+};
+
+const ProfileButtonComponent = ({ onLogout, user }) => {
+  const displayName = user.name.split(' ')[0];
+  const firstLetter = user.name.substring(0, 1);
+
+  return (
+    <LightProfileButton
+      startIcon={<Avatar>{firstLetter}</Avatar>}
+      listItems={<ProfileLinks onLogout={onLogout} />}
+    >
+      {displayName}
+    </LightProfileButton>
+  );
+};
+
+ProfileButtonComponent.propTypes = {
+  onLogout: PropTypes.func.isRequired,
+  user: PropTypes.object.isRequired,
+};
+
+const mapStateToProps = state => ({
+  user: getCurrentUser(state),
+});
+
+const mapDispatchToProps = dispatch => ({
+  onLogout: () => dispatch(logout()),
+});
+
+export const ProfileButton = connect(mapStateToProps, mapDispatchToProps)(ProfileButtonComponent);

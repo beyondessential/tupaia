@@ -52,16 +52,16 @@ const ProfileLinks = () => (
 
 export const profileButton = () => (
   <Container>
-    <ProfileButton startIcon={<Avatar>T</Avatar>} ListItems={ProfileLinks}>
-      Tom
+    <ProfileButton startIcon={<Avatar>K</Avatar>} listItems={<ProfileLinks />}>
+      Kupe
     </ProfileButton>
   </Container>
 );
 
 export const lightProfileButton = () => (
   <Container bgcolor={COLORS.BLUE}>
-    <LightProfileButton startIcon={<Avatar>T</Avatar>} ListItems={ProfileLinks}>
-      Tom
+    <LightProfileButton startIcon={<Avatar>K</Avatar>} listItems={<ProfileLinks />}>
+      Kupe
     </LightProfileButton>
   </Container>
 );

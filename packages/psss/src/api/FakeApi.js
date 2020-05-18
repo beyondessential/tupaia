@@ -13,9 +13,6 @@ export class FakeAPI {
   }
 
   async login(email, password) {
-    console.log('credentials', email, password);
-    console.log('loading...');
-
     await this.sleep(1000);
     return {
       user: {

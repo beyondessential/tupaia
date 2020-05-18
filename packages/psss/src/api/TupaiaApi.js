@@ -53,7 +53,6 @@ export class TupaiaApi {
         CLIENT_BASIC_AUTH_HEADER,
         false,
       );
-      console.log('response', response);
       const { body: authenticationDetails } = response;
       const { accessToken, refreshToken, user } = authenticationDetails;
       if (!accessToken || !refreshToken || !user) {

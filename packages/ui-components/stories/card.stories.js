@@ -93,7 +93,7 @@ export const reportsExample = () => (
       <CardHeader title="Current reports submitted" label="Week 10" />
       <StyledCardContent>
         <Typography variant="h3">11/22 Countries</Typography>
-        <CircleMeter percent={50} />
+        <CircleMeter value={11} total={22} />
       </StyledCardContent>
     </Card>
   </Container>
