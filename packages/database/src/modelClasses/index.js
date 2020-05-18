@@ -30,4 +30,5 @@ export { GeographicalAreaModel } from './GeographicalArea';
 export { MeditrakDeviceModel } from './MeditrakDevice';
 export { DataSourceModel } from './DataSource';
 export { AlertModel } from './Alert';
+export { AlertCommentModel } from './AlertComment';
 export { CommentModel } from './Comment';

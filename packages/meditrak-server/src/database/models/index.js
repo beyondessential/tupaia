@@ -4,6 +4,7 @@
  */
 
 export { AlertModel as Alert } from './Alert';
+export { AlertCommentModel as AlertComment } from './AlertComment';
 export { AnswerModel as Answer } from './Answer';
 export { APIClientModel as ApiClient } from './APIClient';
 export { ApiRequestLogModel as ApiRequestLog } from './ApiRequestLog';
