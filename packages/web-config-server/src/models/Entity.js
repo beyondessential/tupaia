@@ -23,6 +23,7 @@ const COUNTRY = 'country';
 const DISASTER = 'disaster';
 const DISTRICT = 'district';
 const FACILITY = 'facility';
+const SCHOOL = 'school';
 const SUB_DISTRICT = 'sub_district';
 const VILLAGE = 'village';
 const WORLD = 'world';
@@ -35,6 +36,7 @@ export const ENTITY_TYPES = {
   DISASTER,
   DISTRICT,
   FACILITY,
+  SCHOOL,
   SUB_DISTRICT,
   VILLAGE,
   WORLD,
@@ -257,14 +259,6 @@ export class Entity extends BaseModel {
 
   getOrganisationLevel() {
     return pascal(this.type); // sub_district -> SubDistrict
-  }
-
-  async buildDisplayName() {
-    const ancestors = await this.getAllAncestors();
-    return ancestors
-      .reverse()
-      .map(ancestor => ancestor.name)
-      .join(', ');
   }
 
   isCountry() {
