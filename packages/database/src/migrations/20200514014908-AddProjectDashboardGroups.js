@@ -15,7 +15,14 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = async function(db) {
-  const projects = ['unfpa', 'covidau', 'strive', 'wish', 'imms', 'fanafana'];
+  const projects = {
+    unfpa: 'UNFPA',
+    covidau: 'COVID-19 Australia',
+    strive: 'STRIVE PNG',
+    wish: 'WISH Fiji',
+    imms: 'Immunization Module',
+    fanafana: 'Fanafana Ola',
+  };
   await db.runSql(`
     INSERT INTO "dashboardGroup"("organisationLevel","userGroup","organisationUnitCode","dashboardReports","name","code")
     VALUES
@@ -28,11 +35,11 @@ exports.up = async function(db) {
     (E'Project',E'Public',E'disaster',E'{active_disasters}',E'Disaster Response',E'Disaster_Project');
   `);
 
-  for (const project of projects) {
+  for (const [code, name] of Object.entries(projects)) {
     await db.runSql(`
       INSERT INTO "dashboardGroup"("organisationLevel","userGroup","organisationUnitCode","dashboardReports","name","code")
       VALUES
-      (E'Project',E'Public',E'${project}',E'{project_details}',E'${project.toUpperCase()}',E'${project.toUpperCase()}_Project');
+      (E'Project',E'Public',E'${code}',E'{project_details}',E'${name}',E'${code.toUpperCase()}_Project');
     `);
   }
 
