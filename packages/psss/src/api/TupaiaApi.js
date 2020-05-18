@@ -9,7 +9,6 @@ import {
   getRefreshToken,
   loginSuccess,
   loginError,
-  // validateUserIsAuthenticated,
 } from '../store';
 
 const [CLIENT_BASIC_AUTH_HEADER, PSSS_API_URL] = [

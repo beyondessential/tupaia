@@ -17,12 +17,17 @@ const ErrorMessage = styled.p`
 `;
 
 const Heading = styled(Typography)`
-  font-size: 18px;
-  line-height: 21px;
+  font-size: 1.125rem;
+  line-height: 1.3rem;
   font-weight: 400;
   color: ${props => props.theme.palette.text.primary};
   text-align: center;
   margin-bottom: 2rem;
+`;
+
+const StyledButton = styled(Button)`
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 `;
 
 export const LoginFormComponent = ({ isPending, isError, error, onLogin }) => {
@@ -58,9 +63,9 @@ export const LoginFormComponent = ({ isPending, isError, error, onLogin }) => {
         onChange={handleFieldChange}
       />
       <Checkbox id="rememberMe" color="primary" label="Remember me" />
-      <Button type="submit" isSubmitting={isPending}>
+      <StyledButton type="submit" fullWidth isSubmitting={isPending}>
         Login to your account
-      </Button>
+      </StyledButton>
     </form>
   );
 };
