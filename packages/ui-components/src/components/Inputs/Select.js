@@ -17,12 +17,8 @@ const KeyboardArrowDown = styled(MuiKeyboardArrowDown)`
   right: 15px;
 `;
 
-const StyledTextField = styled(TextField)`
-  // ??
-`;
-
 export const SelectField = ({ SelectProps, ...props }) => (
-  <StyledTextField
+  <TextField
     SelectProps={{
       IconComponent: iconProps => <KeyboardArrowDown {...iconProps} />,
       ...SelectProps,
