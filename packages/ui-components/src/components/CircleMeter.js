@@ -29,7 +29,7 @@ const width = 62;
 const strokeWidth = 8;
 const center = width / 2;
 const radius = (width - strokeWidth) / 2;
-const C = 2 * Math.PI * radius;
+const circumference = 2 * Math.PI * radius;
 
 const StyledSVG = styled.svg`
   transform: rotate(-90deg);
@@ -46,19 +46,25 @@ const InnerCircle = styled.circle`
 const OuterCircle = styled.circle`
   stroke: ${props => props.theme.palette.primary.main};
   stroke-width: ${strokeWidth};
-  stroke-dasharray: ${C};
-  stroke-dashoffset: ${C};
+  stroke-dasharray: ${circumference};
+  stroke-dashoffset: ${circumference};
   transition: stroke-dashoffset 2s ease;
 `;
 
-export const CircleMeter = ({ percent }) => {
-  if (percent > 100 || percent < 0) {
+export const CircleMeter = ({ value, total }) => {
+  let fraction = value / total;
+  const percent = Math.round(fraction * 100);
+
+  if (value > total) {
     // eslint-disable-next-line no-console
-    console.warn(percent, 'is not a valid percent');
+    console.warn('value should not be greater than total');
+    fraction = 1; // this will show a full circle
   }
+
   const offsetStyle = {
-    strokeDashoffset: C - (percent / 100) * C,
+    strokeDashoffset: circumference - fraction * circumference,
   };
+
   return (
     <Circle>
       <StyledSVG width={width} height={width} viewBox={`0 0 ${width} ${width}`} fill="none">
@@ -71,5 +77,10 @@ export const CircleMeter = ({ percent }) => {
 };
 
 CircleMeter.propTypes = {
-  percent: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired,
+  total: PropTypes.number,
+};
+
+CircleMeter.defaultProps = {
+  total: 1,
 };
