@@ -26,9 +26,9 @@ export const TextField = styled(BaseTextField)`
     font-family: ${TEXT_FIELD_FONT_FAMILY};
     color: ${props => props.theme.palette.text.primary};
     font-weight: 400;
-    font-size: 16px;
-    line-height: 19px;
-    padding: 15px 16px 16px;
+    font-size: 1rem;
+    line-height: 1.2rem;
+    padding: 0.9rem 1rem 1rem;
     border-radius: 3px;
   }
 
@@ -74,7 +74,7 @@ export const TextField = styled(BaseTextField)`
     margin-bottom: 4px;
     font-family: ${TEXT_FIELD_FONT_FAMILY};
     color: ${props => props.theme.palette.text.secondary};
-    font-size: 14px;
+    font-size: 0.875rem;
     line-height: 1;
     font-weight: 500;
     transform: none;

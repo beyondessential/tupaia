@@ -10,7 +10,7 @@ import { Warning } from '@material-ui/icons';
 const StyledAlert = styled(MuiAlert)`
   border-radius: 0;
   font-weight: 400;
-  padding: 15px 20px 14px 40px;
+  padding: 0.9rem 1.25rem 0.9rem 2.5rem;
   align-items: center;
   box-shadow: inset 0px -1px 0px rgba(0, 0, 0, 0.15);
 `;
