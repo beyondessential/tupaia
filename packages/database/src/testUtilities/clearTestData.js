@@ -1,12 +1,9 @@
 /**
- * Tupaia MediTrak
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
 import moment from 'moment';
-import { getModels } from '../../getModels';
-
-const models = getModels();
 
 const COMPARISON = `LIKE '%_test%'`;
 const getDeleteStatement = (table, extraConditions = []) => {
@@ -40,16 +37,16 @@ const TABLES_TO_CLEAR = [
   'option',
   'option_set',
   'refresh_token',
-  'permission_group',
   'user_country_permission',
   'user_clinic_permission',
   'user_geographical_area_permission',
+  'permission_group',
   'user_reward',
   'api_client',
   'user_account',
 ];
 
-export function clearTestData(testStartTime = moment().format('YYYY-MM-DD HH:mm:ss')) {
+export function clearTestData(db, testStartTime = moment().format('YYYY-MM-DD HH:mm:ss')) {
   const extraConditions = {
     api_request_log: [`request_time >= '${testStartTime}'`],
     answer: [`question_id ${COMPARISON}`, `survey_response_id ${COMPARISON}`],
@@ -65,5 +62,5 @@ export function clearTestData(testStartTime = moment().format('YYYY-MM-DD HH:mm:
     (acc, table) => `${acc}\n${getDeleteStatement(table, extraConditions[table])}`,
     '',
   );
-  return models.database.executeSql(sql);
+  return db.executeSql(sql);
 }

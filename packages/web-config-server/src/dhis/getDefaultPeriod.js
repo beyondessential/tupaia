@@ -1,5 +1,4 @@
-import { utcMoment } from '@tupaia/utils';
-import { convertDateRangeToPeriods } from '@tupaia/dhis-api';
+import { utcMoment, convertDateRangeToPeriods } from '@tupaia/utils';
 
 export const EARLIEST_DATA_DATE = utcMoment('2017-01-01'); // Tupaia started in 2017
 const MAXIMUM_MONTHS_TO_LOOK_BACK = 60; // Last 5 years

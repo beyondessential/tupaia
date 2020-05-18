@@ -3,7 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { PERIOD_TYPES, convertToPeriod, periodToTimestamp } from '@tupaia/dhis-api';
+import { PERIOD_TYPES, convertToPeriod, periodToTimestamp } from '@tupaia/utils';
 import {
   aggregateOperationalFacilityValues,
   getFacilityStatuses,
