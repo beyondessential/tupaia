@@ -12,9 +12,9 @@ import {
   hasContent,
   constructRecordExistsWithId,
   constructRecordExistsWithCode,
-  constructAnswerValidator,
   constructIsEmptyOr,
 } from '@tupaia/utils';
+import { constructAnswerValidator } from './utilities/constructAnswerValidator';
 import { findQuestionsBySurvey } from '../dataAccessors';
 
 const createSurveyResponseValidator = models =>

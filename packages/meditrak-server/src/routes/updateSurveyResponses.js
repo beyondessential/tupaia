@@ -16,9 +16,9 @@ import {
   constructRecordExistsWithId,
   takesIdForm,
   constructIsOneOf,
-  constructAnswerValidator,
 } from '@tupaia/utils';
 import { ANSWER_TYPES } from '../database/models/Answer';
+import { constructAnswerValidator } from './utilities/constructAnswerValidator';
 import { EXPORT_DATE_FORMAT, INFO_COLUMN_HEADERS, INFO_ROW_HEADERS } from './exportSurveyResponses';
 
 /**
