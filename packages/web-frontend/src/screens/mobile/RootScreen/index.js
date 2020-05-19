@@ -61,14 +61,18 @@ class RootScreen extends Component {
 }
 
 RootScreen.propTypes = {
-  currentOrganisationUnitType: PropTypes.string,
+  currentOrganisationUnitType: PropTypes.string.isRequired,
   isLoading: PropTypes.bool.isRequired,
   isUserLoggedIn: PropTypes.bool.isRequired,
 };
 
+RootScreen.defaultProps = {
+  currentOrganisationUnitType: '',
+};
+
 const mapStateToProps = state => {
   return {
-    currentOrganisationUnitType: selectCurrentOrgUnit(state).type || '',
+    currentOrganisationUnitType: selectCurrentOrgUnit(state).type,
     isLoading: state.global.isLoadingOrganisationUnit,
     isUserLoggedIn: state.authentication.isUserLoggedIn,
   };
