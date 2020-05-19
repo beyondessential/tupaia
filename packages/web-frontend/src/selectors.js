@@ -154,15 +154,12 @@ const getOrgUnitFromCountry = (country, code) => (country && code ? country[code
 const selectDisplayLevelAncestor = createSelector(
   [
     state =>
-      safeGet(countryCache, [
-        state.orgUnits.orgUnitMap,
-        state.global.currentOrganisationUnit.organisationUnitCode,
-      ]),
-    state => state.global.currentOrganisationUnit,
+      safeGet(countryCache, [state.orgUnits.orgUnitMap, state.global.currentOrganisationUnitCode]),
+    state => state.global.currentOrganisationUnitCode,
     state => state.map.measureInfo.measureOptions,
   ],
-  (country, currentOrganisationUnit, measureOptions) => {
-    if (!country || !currentOrganisationUnit || !measureOptions) {
+  (country, currentOrganisationUnitCode, measureOptions) => {
+    if (!country || !currentOrganisationUnitCode || !measureOptions) {
       return undefined;
     }
 
@@ -171,11 +168,9 @@ const selectDisplayLevelAncestor = createSelector(
       return undefined;
     }
 
-    return ancestorsCache(
-      country,
-      currentOrganisationUnit.organisationUnitCode,
-      displayOnLevel,
-    ).find(ancestor => ancestor.type === displayOnLevel);
+    return ancestorsCache(country, currentOrganisationUnitCode, displayOnLevel).find(
+      ancestor => ancestor.type === displayOnLevel,
+    );
   },
 );
 
