@@ -111,7 +111,7 @@ export const ProjectCard = ({
       <Title>{name}</Title>
       <FullWidthRow>{description}</FullWidthRow>
       <Footer>
-        <Countries>{names.map(n => n.replace('World', 'Global')).join(', ')}</Countries>
+        <Countries>{name === 'Disaster Response' ? 'Global' : names.join(', ')}</Countries>
         <Button
           onClick={projectAction}
           color="primary"

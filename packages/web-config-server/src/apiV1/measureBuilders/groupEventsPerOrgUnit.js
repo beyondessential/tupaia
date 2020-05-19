@@ -11,10 +11,7 @@ export class GroupEventsPerOrgUnitBuilder extends DataPerOrgUnitBuilder {
   getBaseBuilderClass = () => CountEventsBuilder;
 
   async fetchResults() {
-    return this.fetchEvents({
-      useDeprecatedApi: false,
-      organisationUnitCodes: [this.entity.code],
-    });
+    return this.fetchEvents({ useDeprecatedApi: false });
   }
 
   formatData(data) {

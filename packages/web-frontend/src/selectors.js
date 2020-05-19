@@ -129,6 +129,23 @@ const selectCountriesAsOrgUnits = createSelector([state => state.orgUnits.orgUni
     .filter(country => country && country.type === 'Country'),
 );
 
+const selectOrgUnitSiblingsAndSelf = createSelector(
+  [
+    state => selectActiveProject(state).code,
+    (state, code) => getOrgUnitParent(selectOrgUnit(state, code)),
+    state => selectCountriesAsOrgUnits(state),
+    (state, code) => safeGet(countryCache, [state.orgUnits.orgUnitMap, code]),
+  ],
+  (projectCode, parentCode, countriesAsOrgUnits, country) => {
+    if (!parentCode) {
+      return [];
+    }
+    return parentCode === projectCode
+      ? countriesAsOrgUnits
+      : safeGet(orgUnitChildrenCache, [country, parentCode]);
+  },
+);
+
 const getOrgUnitFromMeasureData = (measureData, code) =>
   measureData.find(val => val.organisationUnitCode === code);
 
@@ -137,15 +154,12 @@ const getOrgUnitFromCountry = (country, code) => (country && code ? country[code
 const selectDisplayLevelAncestor = createSelector(
   [
     state =>
-      safeGet(countryCache, [
-        state.orgUnits.orgUnitMap,
-        state.global.currentOrganisationUnit.organisationUnitCode,
-      ]),
-    state => state.global.currentOrganisationUnit,
+      safeGet(countryCache, [state.orgUnits.orgUnitMap, state.global.currentOrganisationUnitCode]),
+    state => state.global.currentOrganisationUnitCode,
     state => state.map.measureInfo.measureOptions,
   ],
-  (country, currentOrganisationUnit, measureOptions) => {
-    if (!country || !currentOrganisationUnit || !measureOptions) {
+  (country, currentOrganisationUnitCode, measureOptions) => {
+    if (!country || !currentOrganisationUnitCode || !measureOptions) {
       return undefined;
     }
 
@@ -154,13 +168,13 @@ const selectDisplayLevelAncestor = createSelector(
       return undefined;
     }
 
-    return ancestorsCache(
-      country,
-      currentOrganisationUnit.organisationUnitCode,
-      displayOnLevel,
-    ).find(ancestor => ancestor.type === displayOnLevel);
+    return ancestorsCache(country, currentOrganisationUnitCode, displayOnLevel).find(
+      ancestor => ancestor.type === displayOnLevel,
+    );
   },
 );
+
+const getOrgUnitParent = orgUnit => (orgUnit ? orgUnit.parent : undefined);
 
 /**
  * Public Selectors
@@ -178,6 +192,11 @@ export const selectOrgUnitCountry = createSelector(
   country => (country ? country[country.countryCode] : undefined),
 );
 
+export const selectCurrentOrgUnit = createSelector(
+  [state => selectOrgUnit(state, state.global.currentOrganisationUnitCode)],
+  currentOrgUnit => currentOrgUnit || {},
+);
+
 export const selectOrgUnitChildren = createSelector(
   [
     state => selectActiveProject(state).code,
@@ -187,6 +206,13 @@ export const selectOrgUnitChildren = createSelector(
   ],
   (projectCode, countriesAsOrgUnits, country, code) =>
     code === projectCode ? countriesAsOrgUnits : safeGet(orgUnitChildrenCache, [country, code]),
+);
+
+export const selectOrgUnitSiblings = createSelector(
+  [selectOrgUnitSiblingsAndSelf, (_, code) => code],
+  (siblings, code) => {
+    return siblings.filter(orgUnit => orgUnit.organisationUnitCode !== code);
+  },
 );
 
 export const selectHasPolygonMeasure = createSelector(
@@ -261,10 +287,7 @@ export const selectAllMeasuresWithDisplayAndOrgUnitData = createSelector(
 export const selectRenderedMeasuresWithDisplayInfo = createSelector(
   [
     state =>
-      safeGet(countryCache, [
-        state.orgUnits.orgUnitMap,
-        state.global.currentOrganisationUnit.organisationUnitCode,
-      ]),
+      safeGet(countryCache, [state.orgUnits.orgUnitMap, state.global.currentOrganisationUnitCode]),
     selectAllMeasuresWithDisplayAndOrgUnitData,
     selectDisplayLevelAncestor,
     state => state.map.measureInfo.measureOptions,

@@ -36,31 +36,47 @@ const selectQuestionsBySurveyCode = async (db, surveyCode) => {
   return questions;
 };
 
-const insertDataSources = async (db, questions, surveyCode) => {
-  const dataGroupId = generateId();
+/**
+ * @return {Promise<string>} The id of the found/created record
+ */
+const findOrCreateDataSource = async (db, dataSourceData) => {
+  const dataSourceResults = await db.runSql(
+    `SELECT * FROM data_source WHERE code = '${dataSourceData.code}' AND type = '${dataSourceData.type}'`,
+  );
+  const [dataSource] = dataSourceResults.rows;
+  if (dataSource) {
+    return dataSource.id;
+  }
+
+  const dataSourceId = generateId();
   await insertObject(db, 'data_source', {
-    id: dataGroupId,
+    ...dataSourceData,
+    id: dataSourceId,
+    service_type: 'tupaia',
+  });
+
+  return dataSourceId;
+};
+
+const insertDataSources = async (db, questions, surveyCode) => {
+  const dataGroupId = await findOrCreateDataSource(db, {
     code: surveyCode,
     type: 'dataGroup',
     service_type: 'tupaia',
   });
 
-  await Promise.all(
-    questions.map(async question => {
-      const dataElementId = generateId();
-      await insertObject(db, 'data_source', {
-        id: dataElementId,
-        code: question.code,
-        type: 'dataElement',
-        service_type: 'tupaia',
-      });
-      await insertObject(db, 'data_element_data_group', {
-        id: generateId(),
-        data_element_id: dataElementId,
-        data_group_id: dataGroupId,
-      });
-    }),
-  );
+  for (let i = 0; i < questions.length; i++) {
+    const dataElementId = await findOrCreateDataSource(db, {
+      code: questions[i].code,
+      type: 'dataElement',
+      service_type: 'tupaia',
+    });
+    await insertObject(db, 'data_element_data_group', {
+      id: generateId(),
+      data_element_id: dataElementId,
+      data_group_id: dataGroupId,
+    });
+  }
 };
 
 const deleteDataSources = async (db, surveyCode) => {
@@ -86,12 +102,11 @@ const LAOS_SCHOOLS_SURVEY_GROUP = 'School Surveys';
 
 exports.up = async function(db) {
   const surveys = await selectSurveysBySurveyGroup(db, LAOS_SCHOOLS_SURVEY_GROUP);
-  await Promise.all(
-    surveys.map(async ({ code: surveyCode }) => {
-      const questions = await selectQuestionsBySurveyCode(db, surveyCode);
-      await insertDataSources(db, questions, surveyCode);
-    }),
-  );
+  for (let i = 0; i < surveys.length; i++) {
+    const surveyCode = surveys[i].code;
+    const questions = await selectQuestionsBySurveyCode(db, surveyCode);
+    await insertDataSources(db, questions, surveyCode);
+  }
 };
 
 exports.down = async function(db) {
