@@ -5,7 +5,6 @@
 
 import { createService } from './services';
 import { getModels } from './getModels';
-import { getSpoofData, LAOS_SCHOOLS_DATA_ELEMENTS } from './laosSchoolsSpoofData';
 
 export class DataBroker {
   constructor() {
@@ -55,13 +54,6 @@ export class DataBroker {
   }
 
   async pull(dataSourceSpec, options) {
-    if (
-      dataSourceSpec &&
-      dataSourceSpec.code &&
-      LAOS_SCHOOLS_DATA_ELEMENTS[dataSourceSpec.code[0]]
-    ) {
-      return getSpoofData(dataSourceSpec, options);
-    }
     const dataSources = await this.fetchDataSources(dataSourceSpec);
     const service = this.createService(dataSources);
 
