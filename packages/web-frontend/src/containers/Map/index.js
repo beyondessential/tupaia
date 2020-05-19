@@ -16,6 +16,12 @@
 import { connect } from 'react-redux';
 
 import { CustomMap } from './CustomMap';
+import {
+  selectOrgUnit,
+  selectCurrentOrgUnit,
+  selectOrgUnitSiblings,
+  selectOrgUnitChildren,
+} from '../../selectors';
 
 import {
   changeOrgUnit,
@@ -25,26 +31,19 @@ import {
 } from '../../actions';
 
 const mapStateToProps = state => {
-  const {
-    isAnimating,
-    shouldSnapToPosition,
-    position,
-    innerAreas,
-    measureInfo,
-    tileSet,
-  } = state.map;
-  const {
-    currentOrganisationUnit,
-    currentOrganisationUnitSiblings,
-    isSidePanelExpanded,
-  } = state.global;
+  const { isAnimating, shouldSnapToPosition, position, measureInfo, tileSet } = state.map;
+  const { currentOrganisationUnitCode, isSidePanelExpanded } = state.global;
   const { contractedWidth, expandedWidth } = state.dashboard;
+  const currentOrganisationUnit = selectCurrentOrgUnit(state);
+  const currentParent = selectOrgUnit(state, currentOrganisationUnit.parent);
+  const currentChildren = selectOrgUnitChildren(state, currentOrganisationUnitCode);
 
   return {
     position,
-    innerAreas,
     currentOrganisationUnit,
-    currentOrganisationUnitSiblings,
+    currentParent,
+    currentChildren,
+    currentOrganisationUnitSiblings: selectOrgUnitSiblings(state, currentOrganisationUnitCode),
     measureInfo,
     tileSet,
     isAnimating,

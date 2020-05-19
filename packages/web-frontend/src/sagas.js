@@ -718,13 +718,12 @@ function getSelectedMeasureFromHierarchy(measureHierarchy, selectedMeasureId, pr
 
 function* fetchCurrentMeasureInfo() {
   const state = yield select();
-  const { currentOrganisationUnit } = state.global;
+  const { currentOrganisationUnitCode } = state.global;
   const { active: activeProject } = state.project;
-  const { organisationUnitCode } = currentOrganisationUnit;
   const { measureId } = state.map.measureInfo;
   const { measureHierarchy, selectedMeasureId } = state.measureBar;
 
-  if (organisationUnitCode && organisationUnitCode !== 'World') {
+  if (currentOrganisationUnitCode && currentOrganisationUnitCode !== 'World') {
     const isHeirarchyPopulated = Object.keys(measureHierarchy).length;
 
     // Update the default measure ID
@@ -736,14 +735,14 @@ function* fetchCurrentMeasureInfo() {
       );
 
       if (newMeasure !== measureId) {
-        yield put(changeMeasure(newMeasure, organisationUnitCode));
+        yield put(changeMeasure(newMeasure, currentOrganisationUnitCode));
       }
     } else {
       /** Ensure measure is selected if there is a current measure selected in the case
        * it is not selected through the measureBar UI
        * i.e. page reloaded when on org with measure selected
        */
-      yield put(changeMeasure(measureId, organisationUnitCode));
+      yield put(changeMeasure(measureId, currentOrganisationUnitCode));
     }
   }
 }

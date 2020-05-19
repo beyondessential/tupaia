@@ -15,7 +15,11 @@ import { SelectListItem } from '../../../components/mobile/SelectListItem';
 import { Dashboard } from '../../../components/mobile/Dashboard';
 import { changeOrgUnit, toggleDashboardSelectExpand, changeDashboardGroup } from '../../../actions';
 import { WHITE } from '../../../styles';
-import { selectCurrentDashboardKey, selectOrgUnitChildren } from '../../../selectors';
+import {
+  selectOrgUnitChildren,
+  selectCurrentDashboardKey,
+  selectCurrentOrgUnit,
+} from '../../../selectors';
 
 class HomeScreen extends PureComponent {
   componentWillMount() {
@@ -46,14 +50,14 @@ class HomeScreen extends PureComponent {
         />
         <ExpandableList
           title="Countries"
-          expandedByDefault={true}
+          expandedByDefault
           items={sortOrgUnitsAlphabeticallyByName(organisationUnits).map(
             ({ organisationUnitCode, name }) => (
               <SelectListItem
                 onSelect={onChangeOrgUnit}
                 title={name}
                 key={organisationUnitCode}
-                data={organisationUnitCode}
+                orgUnitCode={organisationUnitCode}
               />
             ),
           )}
@@ -80,12 +84,12 @@ HomeScreen.propTypes = {
 const mapStateToProps = state => {
   const { isGroupSelectExpanded } = state.dashboard;
 
-  const { currentOrganisationUnit, dashboardConfig } = state.global;
+  const { dashboardConfig } = state.global;
   const organisationUnits = selectOrgUnitChildren(state, 'World') || [];
 
   return {
     organisationUnits,
-    currentOrganisationUnit,
+    currentOrganisationUnit: selectCurrentOrgUnit(state),
     dashboardFilterIsExpanded: isGroupSelectExpanded,
     dashboardConfig,
     currentDashboardKey: selectCurrentDashboardKey(state),
