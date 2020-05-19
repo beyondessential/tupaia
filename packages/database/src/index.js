@@ -5,7 +5,7 @@
 
 export * from './modelClasses';
 export { generateId, getHighestPossibleIdForGivenTime } from './utilities/generateId';
-export { TupaiaDatabase, QUERY_METHODS, QUERY_CONJUNCTIONS, JOIN_TYPES } from './TupaiaDatabase';
+export { TupaiaDatabase, QUERY_CONJUNCTIONS, JOIN_TYPES } from './TupaiaDatabase';
 export { TYPES } from './types';
 export { ModelRegistry } from './ModelRegistry';
 export { DatabaseChangeChannel } from './DatabaseChangeChannel';
