@@ -3,7 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import keyBy from 'lodash.keyby';
+import groupBy from 'lodash.groupby';
 
 import { divideValues } from '/apiV1/dataBuilders/helpers';
 import { fetchComposedData } from '/apiV1/measureBuilders/helpers';
@@ -40,13 +40,16 @@ export const composePercentagePerOrgUnit = async (aggregator, dhisApi, query, co
   const { dataElementCode } = query;
 
   const responses = await fetchComposedData(aggregator, dhisApi, query, config, entity);
-  const numeratorsByOrgUnit = keyBy(responses.numerator, 'organisationUnitCode');
-  const denominatorsByOrgUnit = keyBy(responses.denominator, 'organisationUnitCode');
+  const numeratorsByOrgUnit = groupBy(responses.numerator, 'organisationUnitCode');
+  const denominatorsByOrgUnit = groupBy(responses.denominator, 'organisationUnitCode');
 
   const fractionsByOrgUnit = {};
   Object.keys(numeratorsByOrgUnit).forEach(orgUnit => {
-    const { [dataElementCode]: numeratorValue } = numeratorsByOrgUnit[orgUnit] || {};
-    const { [dataElementCode]: denominatorValue } = denominatorsByOrgUnit[orgUnit] || {};
+    const { [dataElementCode]: numeratorValue } =
+      sumMeasureData(numeratorsByOrgUnit[orgUnit]) || {};
+    const { [dataElementCode]: denominatorValue } =
+      sumMeasureData(denominatorsByOrgUnit[orgUnit]) || {};
+
     const fraction = divideValues(numeratorValue, denominatorValue, fractionType);
 
     // eslint-disable-next-line no-restricted-globals
@@ -59,4 +62,13 @@ export const composePercentagePerOrgUnit = async (aggregator, dhisApi, query, co
   });
 
   return Object.values(fractionsByOrgUnit);
+};
+
+const sumMeasureData = measureData => {
+  if (!measureData) return null;
+  let summedValue = 0;
+  measureData.forEach(({ value }) => {
+    summedValue += value;
+  });
+  return { ...measureData[0], value: summedValue };
 };

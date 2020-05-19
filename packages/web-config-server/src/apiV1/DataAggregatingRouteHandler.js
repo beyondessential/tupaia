@@ -3,8 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { RouteHandler } from './RouteHandler';
 import { createAggregator } from '@tupaia/aggregator';
+import { RouteHandler } from './RouteHandler';
 import { Aggregator } from '../aggregator';
 import { Entity, Project } from '../models';
 
@@ -44,17 +44,17 @@ export class DataAggregatingRouteHandler extends RouteHandler {
   };
 
   getOrgUnitToAncestorMap = async analytics => {
-    const { aggregationEntityType, dataSourceEntityType } = this.query;
-    if (
-      !aggregationEntityType ||
-      !dataSourceEntityType ||
-      dataSourceEntityType === aggregationEntityType
-    ) {
+    const aggregationEntityType = this.entity.type;
+    console.log(aggregationEntityType);
+    if (!aggregationEntityType) {
       return {};
     }
+    const orgUnits = Entity.find({
+      code: analytics.map(({ organisationUnit: orgUnit }) => orgUnit),
+    });
+    if (orgUnits[0].type === aggregationEntityType) return {};
     const orgUnitToAncestor = {};
-    const addOrgUnitToMap = async orgUnitCode => {
-      const orgUnit = await Entity.findOne({ code: orgUnitCode });
+    const addOrgUnitToMap = async orgUnit => {
       if (orgUnit) {
         const ancestor = await orgUnit.getAncestorOfType(aggregationEntityType);
         if (ancestor) {
@@ -66,7 +66,6 @@ export class DataAggregatingRouteHandler extends RouteHandler {
         orgUnitToAncestor[orgUnit.code] = orgUnit.code; // Not sure about these defaults, should we let it error, maybe set it to a constant?
       }
     };
-    const orgUnits = analytics.map(({ organisationUnit: orgUnit }) => orgUnit);
     await Promise.all(orgUnits.map(orgUnit => addOrgUnitToMap(orgUnit)));
     return orgUnitCode => orgUnitToAncestor[orgUnitCode];
   };

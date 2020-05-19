@@ -17,15 +17,22 @@ export class ResponseBuilder {
   }
 
   async build() {
-    const orgUnitToAncestor = this.routeHandler.getOrgUnitToAncestorMap(this.data);
+    console.log(this.data);
+    const orgUnitToAncestor = await this.routeHandler.getOrgUnitToAncestorMap(this.data, aggregationEntityType, dataSourceEntityType);
     const entityAggregationType = this.routeHandler.getEntityAggregationType();
+    console.log(orgUnitToAncestor);
 
     if (this.dataType === 'analytics') {
-      return this.aggregateAnalyticsToEntityType(
-        this.data,
-        entityAggregationType,
-        orgUnitToAncestor,
-      );
+      if (!this.data.results || this.data.results.length === 0) return this.data;
+      if (Object.keys(orgUnitToAncestor).length === 0) return this.data;
+      return {
+        ...this.data,
+        results: this.aggregateAnalyticsToEntityType(
+          this.data.results,
+          entityAggregationType,
+          orgUnitToAncestor,
+        ),
+      };
     }
     // doesn't aggregate events yet
     return this.data;

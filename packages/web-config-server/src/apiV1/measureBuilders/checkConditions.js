@@ -4,15 +4,19 @@ import { analyticsToMeasureData } from 'apiV1/measureBuilders/helpers';
 
 class CheckConditionsBuilder extends DataBuilder {
   async build() {
-    const { dataElementCode } = this.query;
-    const { condition } = this.config;
+    const { dataElementCode: queryDataCode } = this.query;
+    const { condition, dataElementCodes: configDataCodes } = this.config;
 
-    const { results } = await this.fetchAnalytics([dataElementCode]);
+    const dataElementCodes = queryDataCode === 'value' ? configDataCodes : [queryDataCode];
+    console.log(dataElementCodes, queryDataCode, configDataCodes);
+    const { results } = await this.fetchAnalytics(dataElementCodes);
     const analytics = results.map(result => ({
       ...result,
       value: checkValueSatisfiesCondition(result.value, condition) ? 1 : 0,
     }));
-    return analyticsToMeasureData(analytics);
+    return queryDataCode === 'value'
+      ? analyticsToMeasureData(analytics, 'value')
+      : analyticsToMeasureData(analytics);
   }
 }
 
