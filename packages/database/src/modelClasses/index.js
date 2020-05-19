@@ -10,6 +10,7 @@ import { GeographicalAreaModel } from './GeographicalArea';
 import { RefreshTokenModel } from './RefreshToken';
 import { MeditrakDeviceModel } from './MeditrakDevice';
 import { AlertModel } from './Alert';
+import { AlertCommentModel } from './AlertComment';
 import { CommentModel } from './Comment';
 
 // export all models to be used in constructing a ModelRegistry
@@ -21,6 +22,7 @@ export const modelClasses = {
   MeditrakDevice: MeditrakDeviceModel,
   RefreshToken: RefreshTokenModel,
   Alert: AlertModel,
+  AlertComment: AlertCommentModel,
   Comment: CommentModel,
 };
 
@@ -30,5 +32,4 @@ export { GeographicalAreaModel } from './GeographicalArea';
 export { MeditrakDeviceModel } from './MeditrakDevice';
 export { DataSourceModel } from './DataSource';
 export { AlertModel } from './Alert';
-export { AlertCommentModel } from './AlertComment';
 export { CommentModel } from './Comment';
