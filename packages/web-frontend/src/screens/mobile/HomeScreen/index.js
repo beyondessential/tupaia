@@ -57,7 +57,7 @@ class HomeScreen extends PureComponent {
                 onSelect={onChangeOrgUnit}
                 title={name}
                 key={organisationUnitCode}
-                data={organisationUnitCode}
+                orgUnitCode={organisationUnitCode}
               />
             ),
           )}
