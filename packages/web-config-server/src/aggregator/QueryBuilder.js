@@ -36,7 +36,10 @@ export class QueryBuilder {
   async fetchAndReplaceOrgUnitCodes() {
     const organisationUnitCode = this.getQueryParameter('organisationUnitCode');
     const entity = await Entity.findOne({ code: organisationUnitCode });
-    const dataSourceEntities = await this.fetchDataSourceEntities(entity);
+    const dataSourceEntities = await this.fetchDataSourceEntities(
+      entity,
+      this.getQueryParameter('dataSourceEntityType'),
+    );
     this.query.organisationUnitCodes = dataSourceEntities.map(e => e.code);
     delete this.query.organisationUnitCode;
   }
