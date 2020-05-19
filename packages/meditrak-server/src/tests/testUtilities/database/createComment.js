@@ -14,7 +14,7 @@ export const createComment = async ({ alert_id, user_id, text }) => {
 
   await upsertRecord(models.alertComment, {
     alert_id,
-    comment_id: comment.id
+    comment_id: comment.id,
   });
 
   return comment;
