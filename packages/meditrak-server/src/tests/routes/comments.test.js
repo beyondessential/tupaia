@@ -38,9 +38,9 @@ describe('Alert Comments CRUD', () => {
   describe('Read: GET /alerts/[id]/comments', () => {
     it('reads a list of alert comments', async () => {
       const {
-        alert: { id: alert_id },
+        alert: { id: alertId },
       } = await createAlert('JANEWAY1');
-      const commonData = { alert_id, user_id: app.user.id };
+      const commonData = { alert_id: alertId, user_id: app.user.id };
 
       const createdData = [
         await createComment({
@@ -54,7 +54,7 @@ describe('Alert Comments CRUD', () => {
         }),
       ];
 
-      const { body: comments } = await app.get(`alerts/${alert_id}/comments`);
+      const { body: comments } = await app.get(`alerts/${alertId}/comments`);
       expect(comments.length).to.equal(2);
 
       for (const [index, comment] of createdData.entries()) {
@@ -72,16 +72,16 @@ describe('Alert Comments CRUD', () => {
 
     it('reads a single alert comment', async () => {
       const {
-        alert: { id: alert_id },
+        alert: { id: alertId },
       } = await createAlert('PICARD1');
       const createdComment = await createComment({
-        alert_id,
-        user_account_id: app.user.id,
+        alert_id: alertId,
+        user_id: app.user.id,
         text:
           "There is a way out of every box, a solution to every puzzle, it's just a matter of finding it.",
       });
 
-      const { body: comment } = await app.get(`alerts/${alert_id}/comments/${createdComment.id}`);
+      const { body: comment } = await app.get(`alerts/${alertId}/comments/${createdComment.id}`);
 
       expect(comment).to.have.property('id');
       expect(comment).to.have.property('user_id');
@@ -90,7 +90,7 @@ describe('Alert Comments CRUD', () => {
       expect(comment).to.have.property('text');
 
       expect(comment.id).to.equal(createdComment.id);
-      expect(comment.user_account_id).to.equal(createdComment.user_account_id);
+      expect(comment.user_id).to.equal(createdComment.user_id);
       expect(comment.text).to.equal(createdComment.text);
     });
   });
@@ -98,17 +98,17 @@ describe('Alert Comments CRUD', () => {
   describe('Update: PUT /alerts/[alertId]/comments/[commentId]', () => {
     it('updates a single alert comment', async () => {
       const {
-        alert: { id: alert_id },
+        alert: { id: alertId },
       } = await createAlert('ARCHER1');
       const createdComment = await createComment({
-        alert_id,
-        user_account_id: app.user.id,
+        alert_id: alertId,
+        user_id: app.user.id,
         text: "Just because someone isn't born on Earth doesn't make him any less human.",
       });
       const newText = "Once you give up, the game's over.";
 
       const { statusCode, body } = await app.put(
-        `alerts/${alert_id}/comments/${createdComment.id}`,
+        `alerts/${alertId}/comments/${createdComment.id}`,
         { body: { text: newText } },
       );
 
@@ -123,16 +123,16 @@ describe('Alert Comments CRUD', () => {
   describe('Delete: DELETE /alerts/[alertId]/comments/[commentId]', () => {
     it('deletes an alert comment', async () => {
       const {
-        alert: { id: alert_id },
+        alert: { id: alertId },
       } = await createAlert('PIKE1');
       const createdComment = await createComment({
-        alert_id,
+        alert_id: alertId,
         user_id: app.user.id,
         text: "Just because someone isn't born on Earth doesn't make him any less human.",
       });
 
       const { statusCode, body } = await app.delete(
-        `alerts/${alert_id}/comments/${createdComment.id}`,
+        `alerts/${alertId}/comments/${createdComment.id}`,
       );
 
       expect(statusCode).to.equal(200);
