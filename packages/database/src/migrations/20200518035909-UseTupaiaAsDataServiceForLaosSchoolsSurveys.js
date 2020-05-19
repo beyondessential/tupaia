@@ -84,6 +84,10 @@ const deleteDataSources = async (db, surveyCode) => {
     SELECT * FROM data_source WHERE code = '${surveyCode}' AND type = 'dataGroup';
   `);
   const dataGroupSource = dataGroupSourceResults.rows[0];
+  if (!dataGroupSource) {
+    // This could be a new survey, added after the `up` migration run
+    return;
+  }
 
   const { rows: dataElementDataGroups } = await db.runSql(`
   SELECT * FROM data_element_data_group WHERE data_group_id = '${dataGroupSource.id}';
@@ -111,7 +115,9 @@ exports.up = async function(db) {
 
 exports.down = async function(db) {
   const surveys = await selectSurveysBySurveyGroup(db, LAOS_SCHOOLS_SURVEY_GROUP);
-  await Promise.all(surveys.map(({ code: surveyCode }) => deleteDataSources(db, surveyCode)));
+  for (let i = 0; i < surveys.length; i++) {
+    await deleteDataSources(db, surveys[i].code);
+  }
 };
 
 exports._meta = {
