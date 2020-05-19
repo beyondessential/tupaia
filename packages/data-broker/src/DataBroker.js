@@ -5,7 +5,6 @@
 
 import { createService } from './services';
 import { getModels } from './getModels';
-import { getSpoofData, LAOS_SCHOOLS_DATA_ELEMENTS } from './laosSchoolsSpoofData';
 
 export class DataBroker {
   constructor() {
