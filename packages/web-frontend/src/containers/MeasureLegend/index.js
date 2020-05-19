@@ -273,20 +273,20 @@ const MeasureLegend = ({ measureOptions, hasIconLayer, hasRadiusLayer, hasColorL
       );
     });
 
-  //Check if we have any already-defined null legend in values.
-  //If so, we don't want to render 'No Data' legend
-  const hasDefinedLegendForNull = values.some(({ value }) => {
+  //Sometimes we want to group Null + No = No.
+  //So we dont wan't to render 'No data' legend if that's the case
+  const hasGroupedLegendIncludingNull = values.some(({ value }) => {
     if (Array.isArray(value)) {
       return value.some(innerValue => innerValue === MEASURE_VALUE_NULL);
     }
 
-    return value === MEASURE_VALUE_NULL;
+    return false;
   });
 
   let nullKey = null;
   const nullItem = valueMapping.null;
 
-  if (!hasDefinedLegendForNull && nullItem) {
+  if (!hasGroupedLegendIncludingNull && nullItem) {
     nullKey = (
       <LegendEntry
         marker={getLegendMarkerForValue(
