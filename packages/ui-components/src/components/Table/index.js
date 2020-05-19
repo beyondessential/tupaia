@@ -5,6 +5,7 @@
 
 export * from './Table';
 export * from './DataFetchingTable';
+export * from './tableColumnShape';
 export * from './TableHeader';
 export * from './TableBody';
 export * from './TablePaginator';

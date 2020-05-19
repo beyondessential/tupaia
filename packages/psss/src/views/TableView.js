@@ -6,6 +6,9 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
+import { FakeHeader, Table } from '@tupaia/ui-components/src/components/Table';
+import * as COLORS from '@tupaia/ui-components/stories/story-utils/theme/colors';
+import { BorderlessTableBody } from '../components';
 
 const Section = styled.section`
   background: white;
@@ -18,13 +21,74 @@ const Section = styled.section`
   align-items: center;
 `;
 
+const siteData = [
+  {
+    title: 'Acute Fever and Rash (AFR)',
+    percentageChange: '+15%',
+    totalCases: '15',
+  },
+  {
+    title: 'Diarrhoea (DIA)',
+    percentageChange: '+7%',
+    totalCases: '20',
+  },
+  {
+    title: 'Influenza-like Illness (ILI)',
+    percentageChange: '+10%',
+    totalCases: '115',
+  },
+  {
+    title: 'Prolonged Fever (AFR)',
+    percentageChange: '-12%',
+    totalCases: '5',
+  },
+  {
+    title: 'Dengue-like Illness (DIL)',
+    percentageChange: '+9%',
+    totalCases: '54',
+  },
+];
+
+const paneColumns = [
+  {
+    title: 'Title',
+    key: 'title',
+    width: '300px',
+  },
+  {
+    title: 'Percentage Increase',
+    key: 'percentageIncrease',
+  },
+  {
+    title: 'Total Cases',
+    key: 'totalCases',
+  },
+];
+
+const Container = styled.div`
+  width: 100%;
+  padding: 3rem;
+  background: ${COLORS.LIGHTGREY};
+
+  > div {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+`;
+
+const Inner = styled.div`
+  width: 500px;
+  background: white;
+`;
+
 export const TableView = ({ config }) => {
   return (
-    <Section>
-      <Typography variant="h2" gutterBottom>
-        Table View: {config.resource}
-      </Typography>
-    </Section>
+    <Container>
+      <Inner>
+        <FakeHeader>SYNDROMES</FakeHeader>
+        <Table Header={false} Body={BorderlessTableBody} columns={paneColumns} data={siteData} />
+      </Inner>
+    </Container>
   );
 };
 

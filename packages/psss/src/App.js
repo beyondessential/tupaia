@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { NavBar, Footer } from './components';
 import { PageRoutes } from './routes/PageRoutes';
 import { LoginView } from './views/LoginView';
+import { TableView } from './views/TableView';
 import { PrivateRoute } from './routes/PrivateRoute';
 
 const App = () => (
@@ -10,6 +11,9 @@ const App = () => (
     <Switch>
       <Route exact path="/login">
         <LoginView />
+      </Route>
+      <Route exact path="/tables">
+        <TableView />
       </Route>
       <PrivateRoute path="/">
         <NavBar />

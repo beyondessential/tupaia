@@ -92,23 +92,25 @@ export const StyledTableRow = styled(MuiTableRow)`
   }
 `;
 
-export const TableRow = React.memo(({ columns, rowData }) => {
-  console.log('table row');
-  return (
-    <StyledTableRow>
-      <TableRowCells columns={columns} rowData={rowData} />
-    </StyledTableRow>
-  );
-});
+export const TableRow = ({ columns, rowData, className }) => (
+  <StyledTableRow className={className}>
+    <TableRowCells columns={columns} rowData={rowData} />
+  </StyledTableRow>
+);
 
 TableRow.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
   rowData: PropTypes.object.isRequired,
+  className: PropTypes.string,
+};
+
+TableRow.defaultProps = {
+  className: '',
 };
 
 const condensedRowBackgroundColor = '#EFEFEF';
 
-const CondensedStyleTableRow = styled(MuiTableRow)`
+export const CondensedTableRow = styled(TableRow)`
   &:nth-of-type(even) {
     background: ${condensedRowBackgroundColor};
 
@@ -121,17 +123,6 @@ const CondensedStyleTableRow = styled(MuiTableRow)`
     border: none;
   }
 `;
-
-export const CondensedTableRow = React.memo(({ columns, rowData }) => (
-  <CondensedStyleTableRow>
-    <TableRowCells columns={columns} rowData={rowData} />
-  </CondensedStyleTableRow>
-));
-
-CondensedTableRow.propTypes = {
-  columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
-  rowData: PropTypes.object.isRequired,
-};
 
 export const ExpandableTableRow = React.memo(({ columns, data, rowIndex, SubComponent }) => {
   const [expanded, setExpanded] = useState(false);
@@ -159,7 +150,7 @@ export const ExpandableTableRow = React.memo(({ columns, data, rowIndex, SubComp
 
 ExpandableTableRow.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
-  data: PropTypes.object.isRequired,
+  data: PropTypes.array.isRequired,
   rowIndex: PropTypes.number.isRequired,
   SubComponent: PropTypes.any,
 };

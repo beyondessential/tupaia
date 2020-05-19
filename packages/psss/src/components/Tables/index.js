@@ -7,3 +7,4 @@ export * from './CountriesTable';
 export * from './CountrySummaryTable';
 export * from './CountryTable';
 export * from './SiteSummaryTable';
+export * from './TableBodies'; // make this table types
