@@ -36,12 +36,9 @@ export default class extends RouteHandler {
       ...countryDescendants,
     ]);
 
-    const childIdToParentId = reduceToDictionary(
-      await EntityRelation.find({ entity_hierarchy_id: project.entity_hierarchy_id }),
-      'child_id',
-      'parent_id',
+    const childIdToParentId = await EntityRelation.getChildIdToParentIdMap(
+      project.entity_hierarchy_id,
     );
-
     // Fill in childIdToParentId with missing org units
     orgUnitHierarchy.forEach(({ id, parent_id: parentId }) => {
       if (!childIdToParentId[id]) {
