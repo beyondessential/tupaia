@@ -102,12 +102,11 @@ const LAOS_SCHOOLS_SURVEY_GROUP = 'School Surveys';
 
 exports.up = async function(db) {
   const surveys = await selectSurveysBySurveyGroup(db, LAOS_SCHOOLS_SURVEY_GROUP);
-  await Promise.all(
-    surveys.map(async ({ code: surveyCode }) => {
-      const questions = await selectQuestionsBySurveyCode(db, surveyCode);
-      await insertDataSources(db, questions, surveyCode);
-    }),
-  );
+  for (let i = 0; i < surveys.length; i++) {
+    const surveyCode = surveys[i].code;
+    const questions = await selectQuestionsBySurveyCode(db, surveyCode);
+    await insertDataSources(db, questions, surveyCode);
+  }
 };
 
 exports.down = async function(db) {
