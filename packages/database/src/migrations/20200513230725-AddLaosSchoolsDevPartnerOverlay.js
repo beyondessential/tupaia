@@ -16,6 +16,8 @@ exports.setup = function(options, seedLink) {
   seed = seedLink;
 };
 
+const MAP_OVERLAY_ID_PREFIX = 'Laos_Schools_Dev_Partner_';
+
 const DEV_PARTNERS_OVERLAYS = [
   { dataElementCode: 'SchDP_AEAL', name: 'Aide et Action Laos (AEAL)' },
   { dataElementCode: 'SchDP_CRS', name: 'Catholic Relief Services (CRS)' },
@@ -39,12 +41,12 @@ const BASE_CONFIG = {
     {
       name: 'School Supported',
       color: 'green',
-      value: 1,
+      value: 'Yes',
     },
     {
       name: 'School Not Supported',
       color: 'grey',
-      value: 0,
+      value: 'No',
     },
     {
       name: 'School Not Supported',
@@ -73,7 +75,7 @@ const buildRow = (overlay, index) => {
   return {
     ...BASE_CONFIG,
     name,
-    id: `${dataElementCode}`,
+    id: `${MAP_OVERLAY_ID_PREFIX}${dataElementCode}`,
     dataElementCode,
     sortOrder: index,
     measureBuilderConfig: measureBuilderConfig(dataElementCode),
@@ -91,7 +93,9 @@ exports.up = async function(db) {
 exports.down = function(db) {
   return db.runSql(`DELETE FROM "mapOverlay" 
                     WHERE "id" in (${arrayToDbString(
-                      DEV_PARTNERS_OVERLAYS.map(o => o.dataElementCode),
+                      DEV_PARTNERS_OVERLAYS.map(
+                        o => `${MAP_OVERLAY_ID_PREFIX}${o.dataElementCode}`,
+                      ),
                     )});	
                   `);
 };
