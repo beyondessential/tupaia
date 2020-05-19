@@ -1,3 +1,8 @@
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+
 /*
  * GENERIC DATA ACCESSOR
  * recordType, parentRecordType, parentRecordId are sent
@@ -5,7 +10,6 @@
  * a record in join table parentRecordType_recordType is created
  * the recordType and parentRecordType ids are used in the join table
  */
-
 export async function createJoinChild(
   models,
   recordType,

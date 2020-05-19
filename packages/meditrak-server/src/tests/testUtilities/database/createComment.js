@@ -1,3 +1,8 @@
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+
 import { getModels } from '../../getModels';
 import { upsertRecord } from './upsertRecord';
 import { generateTestId } from '..';
