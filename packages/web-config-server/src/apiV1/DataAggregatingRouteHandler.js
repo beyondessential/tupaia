@@ -6,7 +6,7 @@
 import { RouteHandler } from './RouteHandler';
 import { createAggregator } from '@tupaia/aggregator';
 import { Aggregator } from '../aggregator';
-import { Project } from '../models';
+import { Entity, Project } from '../models';
 
 /**
  * Interface class for handling routes that fetch data from an aggregator
@@ -15,7 +15,7 @@ import { Project } from '../models';
 export class DataAggregatingRouteHandler extends RouteHandler {
   constructor(req, res) {
     super(req, res);
-    this.aggregator = createAggregator(Aggregator, this.fetchDataSourceEntities);
+    this.aggregator = createAggregator(Aggregator, this);
   }
 
   // Builds the list of entities data should be fetched from, using org unit descendents of the
@@ -41,5 +41,37 @@ export class DataAggregatingRouteHandler extends RouteHandler {
       {},
     );
     return dataSourceEntities.filter(e => countryAccess[e.country_code]);
+  };
+
+  getOrgUnitToAncestorMap = async analytics => {
+    const { aggregationEntityType, dataSourceEntityType } = this.query;
+    if (
+      !aggregationEntityType ||
+      !dataSourceEntityType ||
+      dataSourceEntityType === aggregationEntityType
+    ) {
+      return {};
+    }
+    const orgUnitToAncestor = {};
+    const addOrgUnitToMap = async orgUnitCode => {
+      const orgUnit = await Entity.findOne({ code: orgUnitCode });
+      if (orgUnit) {
+        const ancestor = await orgUnit.getAncestorOfType(aggregationEntityType);
+        if (ancestor) {
+          orgUnitToAncestor[orgUnit.code] = ancestor.code;
+        } else {
+          orgUnitToAncestor[orgUnit.code] = orgUnit.code; // Not sure about these defaults, should we let it error, maybe set it to a constant?
+        }
+      } else {
+        orgUnitToAncestor[orgUnit.code] = orgUnit.code; // Not sure about these defaults, should we let it error, maybe set it to a constant?
+      }
+    };
+    const orgUnits = analytics.map(({ organisationUnit: orgUnit }) => orgUnit);
+    await Promise.all(orgUnits.map(orgUnit => addOrgUnitToMap(orgUnit)));
+    return orgUnitCode => orgUnitToAncestor[orgUnitCode];
+  };
+
+  getEntityAggregationConfig = () => {
+    return this.query.entityAggregationConfig;
   };
 }
