@@ -26,6 +26,7 @@ import { changeMeasure, clearMeasure, toggleMeasureExpand } from '../../actions'
 import { HierarchyItem } from '../../components/HierarchyItem';
 import TupaiaIcon from '../../images/TupaiaIcon.svg';
 import { MAP_OVERLAY_SELECTOR } from '../../styles';
+import { selectCurrentOrgUnit } from '../../selectors';
 
 export class MeasureBar extends Component {
   constructor(props) {
@@ -53,15 +54,14 @@ export class MeasureBar extends Component {
   };
 
   renderSelectedMeasure() {
-    const { currentMeasure, currentOrganisationUnit } = this.props;
-    const { organisationUnitCode } = currentOrganisationUnit;
+    const { currentMeasure, currentOrganisationUnitCode } = this.props;
 
     return (
       <HierarchyItem
         nestedMargin="0px"
         label={currentMeasure.name}
         isSelected={currentMeasure.measureId}
-        onClick={() => this.handleSelectMeasure(currentMeasure, organisationUnitCode)}
+        onClick={() => this.handleSelectMeasure(currentMeasure, currentOrganisationUnitCode)}
       />
     );
   }
@@ -70,7 +70,7 @@ export class MeasureBar extends Component {
     const {
       currentMeasure,
       measureHierarchy,
-      currentOrganisationUnit,
+      currentOrganisationUnitCode,
       onClearMeasure,
     } = this.props;
 
@@ -80,7 +80,7 @@ export class MeasureBar extends Component {
         const onClick =
           measure.measureId === currentMeasure.measureId
             ? () => onClearMeasure()
-            : () => this.handleSelectMeasure(measure, currentOrganisationUnit.organisationUnitCode);
+            : () => this.handleSelectMeasure(measure, currentOrganisationUnitCode);
         return (
           <HierarchyItem
             label={measure.name}
@@ -110,11 +110,9 @@ export class MeasureBar extends Component {
   }
 
   renderEmptyMessage() {
-    const { currentOrganisationUnit } = this.props;
+    const { currentOrganisationUnitName } = this.props;
 
-    const orgName = currentOrganisationUnit
-      ? currentOrganisationUnit.name
-      : 'Your current selection';
+    const orgName = currentOrganisationUnitName || 'Your current selection';
 
     return `Select an area with valid data. ${orgName} has no map overlays available`;
   }
@@ -170,7 +168,8 @@ const MeasureShape = PropTypes.shape({
 MeasureBar.propTypes = {
   currentMeasure: MeasureShape.isRequired,
   measureHierarchy: PropTypes.shape({}).isRequired,
-  currentOrganisationUnit: PropTypes.shape({}).isRequired,
+  currentOrganisationUnitCode: PropTypes.string.isRequired,
+  currentOrganisationUnitName: PropTypes.string.isRequired,
   isExpanded: PropTypes.bool.isRequired,
   isMeasureLoading: PropTypes.bool.isRequired,
   onExpandClick: PropTypes.func.isRequired,
@@ -180,14 +179,16 @@ MeasureBar.propTypes = {
 
 const mapStateToProps = state => {
   const { currentMeasure, measureHierarchy, isExpanded } = state.measureBar;
-  const { currentOrganisationUnit } = state.global;
   const { isMeasureLoading } = state.map;
+  const { currentOrganisationUnitCode } = state.global;
+
   return {
     currentMeasure,
     measureHierarchy,
     isExpanded,
     isMeasureLoading,
-    currentOrganisationUnit,
+    currentOrganisationUnitCode,
+    currentOrganisationUnitName: selectCurrentOrgUnit(state).name,
   };
 };
 
