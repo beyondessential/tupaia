@@ -96,8 +96,18 @@ function measureInfo(state = {}, action) {
         });
       }
 
+      //Combine default hiddenMeasures (action.response.hiddenMeasures) and hiddenMeasures in the state so that default hiddenMeasures are populated
+      //If hiddenMeasures in the state has the same value, override the default hiddenMeasures.
+      const newHiddenMeasure = {
+        ...action.response.hiddenMeasures,
+        ...state.hiddenMeasures,
+      };
+
       return {
         ...action.response,
+        hiddenMeasures: {
+          ...newHiddenMeasure,
+        },
         currentCountry,
         measureData,
       };
