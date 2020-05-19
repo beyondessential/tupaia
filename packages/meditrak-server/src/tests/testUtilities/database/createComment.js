@@ -5,15 +5,14 @@
 
 import { getModels } from '../../getModels';
 import { upsertRecord } from './upsertRecord';
-import { generateTestId } from '..';
 
 const models = getModels();
 
-export const createComment = async ({ alert_id, user_id, text }) => {
-  const comment = await upsertRecord(models.comment, { user_id, text });
+export const createComment = async ({ alert_id: alertId, user_id: userId, text }) => {
+  const comment = await upsertRecord(models.comment, { user_id: userId, text });
 
   await upsertRecord(models.alertComment, {
-    alert_id,
+    alert_id: alertId,
     comment_id: comment.id,
   });
 
