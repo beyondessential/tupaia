@@ -9,15 +9,15 @@ import {
   createEntity,
   createDataElement,
   createAlert,
-  resetTestData,
   generateTestId,
+  resetTestData,
 } from '../testUtilities';
 
 describe('Alerts CRUD', () => {
   const app = new TestableApp();
   const models = app.models;
 
-  before(app.authenticate);
+  beforeEach(app.authenticate);
 
   describe('Create: POST /alerts', () => {
     it('creates an alert', async () => {
@@ -25,7 +25,7 @@ describe('Alerts CRUD', () => {
       const dataElement = await createDataElement('NARF2');
       const startTime = new Date();
 
-      const { statusCode, body } = await app.post('alert', {
+      const { statusCode, body } = await app.post('alerts', {
         body: {
           id: generateTestId(),
           entity_id: entity.id,
@@ -35,7 +35,7 @@ describe('Alerts CRUD', () => {
       });
 
       expect(statusCode).to.equal(200);
-      expect(body).to.deep.equal({ message: 'Successfully added alert' });
+      expect(body).to.deep.equal({ message: 'Successfully added alerts' });
 
       const latestAlert = (await models.alert.all()).pop();
       expect(latestAlert.entity_id).to.equal(entity.id);
@@ -49,7 +49,7 @@ describe('Alerts CRUD', () => {
       const createdData = [await createAlert('ZORT1'), await createAlert('ZORT2')];
 
       const { body: alerts } = await app.get('alerts');
-      expect(alerts.length).to.equal(3);
+      expect(alerts.length).to.equal(2);
 
       for (const [index, { alert }] of createdData.entries()) {
         expect(alert).to.have.property('id');
@@ -122,4 +122,6 @@ describe('Alerts CRUD', () => {
       expect(deletedAlert.length).to.equal(0);
     });
   });
+
+  afterEach(resetTestData);
 });

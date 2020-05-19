@@ -5,9 +5,11 @@
 
 export const TYPES = {
   ALERT: 'alert',
+  ALERT_COMMENT: 'alert_comment',
   ANSWER: 'answer',
   API_CLIENT: 'api_client',
   API_REQUEST_LOG: 'api_request_log',
+  COMMENT: 'comment',
   COUNTRY: 'country',
   DASHBOARD_GROUP: 'dashboardGroup',
   DASHBOARD_REPORT: 'dashboardReport',
