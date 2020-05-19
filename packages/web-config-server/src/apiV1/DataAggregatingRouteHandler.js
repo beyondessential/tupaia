@@ -71,7 +71,7 @@ export class DataAggregatingRouteHandler extends RouteHandler {
     return orgUnitCode => orgUnitToAncestor[orgUnitCode];
   };
 
-  getEntityAggregationConfig = () => {
-    return this.query.entityAggregationConfig;
+  getEntityAggregationType = () => {
+    return this.query.entityAggregationType;
   };
 }

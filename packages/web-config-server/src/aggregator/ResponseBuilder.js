@@ -18,12 +18,12 @@ export class ResponseBuilder {
 
   async build() {
     const orgUnitToAncestor = this.routeHandler.getOrgUnitToAncestorMap(this.data);
-    const entityAggregationConfig = this.routeHandler.getEntityAggregationConfig();
+    const entityAggregationType = this.routeHandler.getEntityAggregationType();
 
     if (this.dataType === 'analytics') {
       return this.aggregateAnalyticsToEntityType(
         this.data,
-        entityAggregationConfig,
+        entityAggregationType,
         orgUnitToAncestor,
       );
     }
