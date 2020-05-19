@@ -82,7 +82,7 @@ export class EntityHierarchyBuilder {
 
   async getDescendantsCanonically(entityId) {
     const canonicalTypes = Object.values(this.models.entity.orgUnitEntityTypes).join("','");
-    return this.models.entity.database.executeSql(
+    const results = await this.models.entity.database.executeSql(
       `
         WITH RECURSIVE descendants AS (
           SELECT *, 0 AS generation
@@ -100,5 +100,6 @@ export class EntityHierarchyBuilder {
     `,
       [entityId],
     );
+    return results.map(result => this.models.entity.load(result));
   }
 }
