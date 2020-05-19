@@ -9,13 +9,13 @@ import MuiLink from '@material-ui/core/Link';
 import { format } from 'date-fns';
 import PropTypes from 'prop-types';
 import Avatar from '@material-ui/core/Avatar';
-import { DataFetchingTable, CondensedTableBody, FakeHeader } from '../src';
-import { AFRCell, SitesReportedCell } from './story-utils/TableCells';
-import * as COLORS from './story-utils/theme/colors';
-import { connectApi } from './story-utils/api';
+import { DataFetchingTable, CondensedTableBody, FakeHeader } from '../../src';
+import { AFRCell, SitesReportedCell } from '../story-utils/TableCells';
+import * as COLORS from '../story-utils/theme/colors';
+import { connectApi } from '../story-utils/api';
 
 export default {
-  title: 'DataFetchingTable',
+  title: 'Tables/DataFetchingTable',
   component: DataFetchingTable,
 };
 
@@ -115,7 +115,7 @@ const CountryTable = React.memo(props => (
     <CountryTableHeader />
     <ConnectedTable
       endpoint="country-weeks"
-      fetchOptions={{ filterId: props.rowData.id }}
+      fetchOptions={{ filterId: props }}
       columns={countryTableColumns}
       Header={false}
       Body={CondensedTableBody}

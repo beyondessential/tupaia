@@ -60,11 +60,11 @@ const StyledTable = styled(MuiTable)`
   table-layout: fixed;
 `;
 
-const RowExpansionContainer = React.memo(({ parentData, children, columns }) => (
+const RowExpansionContainer = React.memo(({ parentRow, children, columns }) => (
   <MuiTableRow>
     <NestedTableWrapperCell colSpan={columns.length}>
       <StyledTable>
-        <tbody>{parentData}</tbody>
+        <tbody>{parentRow}</tbody>
       </StyledTable>
       {children}
     </NestedTableWrapperCell>
@@ -73,7 +73,7 @@ const RowExpansionContainer = React.memo(({ parentData, children, columns }) => 
 
 RowExpansionContainer.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
-  parentData: PropTypes.any.isRequired,
+  parentRow: PropTypes.any.isRequired,
   children: PropTypes.any,
 };
 
@@ -92,6 +92,20 @@ export const StyledTableRow = styled(MuiTableRow)`
   }
 `;
 
+export const TableRow = React.memo(({ columns, rowData }) => {
+  console.log('table row');
+  return (
+    <StyledTableRow>
+      <TableRowCells columns={columns} rowData={rowData} />
+    </StyledTableRow>
+  );
+});
+
+TableRow.propTypes = {
+  columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
+  rowData: PropTypes.object.isRequired,
+};
+
 const condensedRowBackgroundColor = '#EFEFEF';
 
 const CondensedStyleTableRow = styled(MuiTableRow)`
@@ -108,26 +122,18 @@ const CondensedStyleTableRow = styled(MuiTableRow)`
   }
 `;
 
-export const TableRow = React.memo(({ columns, rowData, variant }) => {
-  const RowType = variant === 'condensed' ? CondensedStyleTableRow : StyledTableRow;
-  return (
-    <RowType>
-      <TableRowCells columns={columns} rowData={rowData} />
-    </RowType>
-  );
-});
+export const CondensedTableRow = React.memo(({ columns, rowData }) => (
+  <CondensedStyleTableRow>
+    <TableRowCells columns={columns} rowData={rowData} />
+  </CondensedStyleTableRow>
+));
 
-TableRow.propTypes = {
+CondensedTableRow.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
   rowData: PropTypes.object.isRequired,
-  variant: PropTypes.oneOf(['standard', 'condensed']),
 };
 
-TableRow.defaultProps = {
-  variant: 'standard',
-};
-
-export const ExpandableTableRow = React.memo(({ columns, rowData, SubComponent }) => {
+export const ExpandableTableRow = React.memo(({ columns, data, rowIndex, SubComponent }) => {
   const [expanded, setExpanded] = useState(false);
 
   const handleClick = useCallback(() => {
@@ -136,14 +142,14 @@ export const ExpandableTableRow = React.memo(({ columns, rowData, SubComponent }
 
   const row = (
     <StyledTableRow onClick={handleClick}>
-      <TableRowCells columns={columns} rowData={rowData} />
+      <TableRowCells columns={columns} rowData={data[rowIndex]} />
     </StyledTableRow>
   );
 
   if (SubComponent && expanded) {
     return (
-      <RowExpansionContainer parentData={row} columns={columns}>
-        <SubComponent rowData={rowData} />
+      <RowExpansionContainer parentRow={row} columns={columns}>
+        <SubComponent data={data} />
       </RowExpansionContainer>
     );
   }
@@ -153,7 +159,8 @@ export const ExpandableTableRow = React.memo(({ columns, rowData, SubComponent }
 
 ExpandableTableRow.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
-  rowData: PropTypes.object.isRequired,
+  data: PropTypes.object.isRequired,
+  rowIndex: PropTypes.number.isRequired,
   SubComponent: PropTypes.any,
 };
 

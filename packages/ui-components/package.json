@@ -15,6 +15,7 @@
   "scripts": {
     "storybook": "start-storybook -s ./public -p 6006",
     "build": "cross-env NODE_ENV=production webpack",
+    "start-dev": "cross-env NODE_ENV=development webpack --watch",
     "test": "true"
   },
   "dependencies": {

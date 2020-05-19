@@ -7,8 +7,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import MuiBox from '@material-ui/core/Box';
-import { Button } from '../src/components/Button';
-import { Drawer, DrawerHeader, DrawerFooter } from '../src/components/Drawer';
+import { Drawer, DrawerHeader, DrawerFooter, Button } from '../src';
 
 export default {
   title: 'Drawer',

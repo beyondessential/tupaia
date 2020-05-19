@@ -6,12 +6,12 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
-import { FakeAPI } from './story-utils/api';
-import * as COLORS from './story-utils/theme/colors';
-import { Button, Table, CondensedTableBody, FakeHeader } from '../src';
+import { FakeAPI } from '../story-utils/api';
+import * as COLORS from '../story-utils/theme/colors';
+import { Button, Table, FakeHeader, CondensedTableBody } from '../../src';
 
 export default {
-  title: 'Table',
+  title: 'Tables/Table',
   component: Table,
 };
 
