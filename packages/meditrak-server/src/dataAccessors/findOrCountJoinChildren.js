@@ -14,7 +14,7 @@ export async function findOrCountJoinChildren(
 ) {
   const db = models.database;
   const joinTable = `${parentRecordType}_${recordType}`;
-  const columns = [`${recordType}.*`, `${joinTable}.id as ${joinTable}_id`];
+  const columns = [`${recordType}.*`];
   const params = {
     recordType,
     criteria: { ...criteria, [`${joinTable}.${parentRecordType}_id`]: parentRecordId },
