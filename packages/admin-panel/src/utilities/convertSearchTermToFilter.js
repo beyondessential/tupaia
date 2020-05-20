@@ -7,9 +7,8 @@ export const convertSearchTermToFilter = (unprocessedFilterObject = {}) => {
   const filterObject = {};
   Object.entries(unprocessedFilterObject).forEach(([key, value]) => {
     filterObject[key] = {
-      comparator: 'LIKE',
+      comparator: `ilike`,
       comparisonValue: `${value}%`,
-      ignoreCase: true,
     };
   });
   return filterObject;
