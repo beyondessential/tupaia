@@ -34,7 +34,7 @@ const LAOS_SCHOOLS_CHILDREN_MAP_OVERLAYS = [
   },
 ]
 
-const GROUP_NAME = 'Children';
+const GROUP_NAME = 'Number of Children';
 
 const USER_GROUP = 'Laos Schools User';
 
