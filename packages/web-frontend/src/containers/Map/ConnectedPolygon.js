@@ -65,8 +65,8 @@ class ConnectedPolygon extends Component {
     if (hasMeasureData && !hasMeasureValue) return null;
 
     const text = hasMeasureValue
-      ? name
-      : `${name}: ${getSingleFormattedValue(orgUnitMeasureData, measureOptions)}`;
+      ? `${name}: ${getSingleFormattedValue(orgUnitMeasureData, measureOptions)}`
+      : name;
 
     return <AreaTooltip permanent={isChildArea && !hasMeasureValue} text={text} />;
   }
