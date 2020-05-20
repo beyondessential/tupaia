@@ -240,7 +240,7 @@ const getListItemsFromOrganisationUnitChildren = (
   return organisationUnitChildren.map(({ name, organisationUnitCode, type }) => ({
     title: name,
     key: organisationUnitCode,
-    data: organisationUnitCode,
+    orgUnitCode: organisationUnitCode,
     subTitle: getSubtitle(organisationUnitCode),
     type,
   }));
