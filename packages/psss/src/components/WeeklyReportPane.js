@@ -110,6 +110,13 @@ const AddressPlaceholder = styled.section`
 `;
 
 // Card Header - could be made into component?
+const MainHeadingRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 20px;
+`;
+
 const HeadingRow = styled.div`
   display: flex;
   align-items: center;
@@ -167,6 +174,10 @@ export const WeeklyReportPane = () => {
         />
         <ErrorAlert>ILI Above Threshold. Please review and verify data.</ErrorAlert>
         <GreySection>
+          <MainHeadingRow>
+            <Typography variant="h5">Previous Week</Typography>
+            <TextButton>Edit</TextButton>
+          </MainHeadingRow>
           <GreyHeader>
             <span>SYNDROMES</span>
             <span>TOTAL CASES</span>
