@@ -22,18 +22,59 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import Grid from '@material-ui/core/Grid';
+import Box from '@material-ui/core/Box';
+
+// MuiCardHeader-action
+
+const ActionIcon = () => (
+  <IconButton aria-label="settings">
+    <MoreVertIcon />
+  </IconButton>
+);
+
+const TestRow = () => (
+  <Grid container direction="row" justify="flex-end" alignItems="center" spacing={1}>
+    <Grid item xs={4}>
+      23/03/1987
+    </Grid>
+    <Grid item xs={4}>
+      <Box textAlign="right">6:00 pm</Box>
+    </Grid>
+    <Grid item xs={3}>
+      <IconButton aria-label="settings">
+        <MoreVertIcon />
+      </IconButton>
+    </Grid>
+  </Grid>
+);
+
+const StyledCardHeader = styled(CardHeader)`
+  .MuiCardHeader-action {
+    flex: 1 1 auto;
+    align-self: center;
+    margin-top: 0;
+  }
+`;
+
+const StyledCard = styled(Card)`
+  .MuiCardHeader-root {
+    padding: 8px 16px;
+    border-width: 0 0 1px 0;
+    border-style: solid;
+    border-color: #dedee0;
+  }
+`;
+
+// TODO
+// ADD MENU TO MoreVertIcon https://material-ui.com/components/menus/#menus
 
 export const UserMessage = props => (
-  <Card>
-    <CardHeader
+  <StyledCard variant="outlined">
+    <StyledCardHeader
       avatar={<Avatar aria-label="recipe">R</Avatar>}
-      action={
-        <IconButton aria-label="settings">
-  <MoreVertIcon />
-</IconButton>
-      }
-      title="Shrimp and Chorizo Paella"
-      subheader="September 14, 2016"
+      title={<Box fontWeight="fontWeightBold">Dr. Sarah De Jones</Box>}
+      action={<TestRow />}
     />
     <CardMedia image="/static/images/cards/paella.jpg" title="Paella dish" />
     <CardContent>
@@ -42,43 +83,5 @@ export const UserMessage = props => (
         guests. Add 1 cup of frozen peas along with the mussels, if you like.
       </Typography>
     </CardContent>
-    <CardActions disableSpacing>
-      <IconButton aria-label="add to favorites">
-        <FavoriteIcon />
-      </IconButton>
-      <IconButton aria-label="share">
-        <ShareIcon />
-      </IconButton>
-      <IconButton onClick={() => null} aria-label="show more">
-        <ExpandMoreIcon />
-      </IconButton>
-    </CardActions>
-    <Collapse timeout="auto" unmountOnExit>
-      <CardContent>
-        <Typography paragraph>Method:</Typography>
-        <Typography paragraph>
-          Heat 1/2 cup of the broth in a pot until simmering, add saffron and set aside for 10
-          minutes.
-        </Typography>
-        <Typography paragraph>
-          Heat oil in a (14- to 16-inch) paella pan or a large, deep skillet over medium-high heat.
-          Add chicken, shrimp and chorizo, and cook, stirring occasionally until lightly browned, 6
-          to 8 minutes. Transfer shrimp to a large plate and set aside, leaving chicken and chorizo
-          in the pan. Add pimentón, bay leaves, garlic, tomatoes, onion, salt and pepper, and cook,
-          stirring often until thickened and fragrant, about 10 minutes. Add saffron broth and
-          remaining 4 1/2 cups chicken broth; bring to a boil.
-        </Typography>
-        <Typography paragraph>
-          Add rice and stir very gently to distribute. Top with artichokes and peppers, and cook
-          without stirring, until most of the liquid is absorbed, 15 to 18 minutes. Reduce heat to
-          medium-low, add reserved shrimp and mussels, tucking them down into the rice, and cook
-          again without stirring, until mussels have opened and rice is just tender, 5 to 7 minutes
-          more. (Discard any mussels that don’t open.)
-        </Typography>
-        <Typography>
-          Set aside off of the heat to let rest for 10 minutes, and then serve.
-        </Typography>
-      </CardContent>
-    </Collapse>
-  </Card>
+  </StyledCard>
 );
