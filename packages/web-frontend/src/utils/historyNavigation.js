@@ -95,9 +95,7 @@ export function createUrlForAppState(state) {
   const dashboardId = state.dashboard.currentDashboardKey;
   const measureId = state.measureBar.currentMeasure.measureId;
 
-  const focusedOrganisationUnit = state.global.currentOrganisationUnit;
-
-  const { organisationUnitCode } = focusedOrganisationUnit;
+  const { currentOrganisationUnitCode } = state.global;
   const reportId = state.enlargedDialog.viewContent.viewId;
   const userPage = '';
 
@@ -106,7 +104,7 @@ export function createUrlForAppState(state) {
   return createUrl({
     dashboardId,
     measureId,
-    organisationUnitCode,
+    currentOrganisationUnitCode,
     reportId,
     userPage,
     project,
@@ -216,7 +214,7 @@ function reactToHistory(location, store) {
 
   dispatch(findLoggedIn());
 
-  if (organisationUnitCode !== state.global.currentOrganisationUnit.organisationUnitCode) {
+  if (organisationUnitCode !== state.global.currentOrganisationUnitCode) {
     dispatch(changeOrgUnit(organisationUnitCode));
     dispatch(openMapPopup(organisationUnitCode));
   }

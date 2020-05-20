@@ -571,21 +571,9 @@ export function setOverlayComponent(component) {
  * @param {object} organisationUnit organisationUnit from saga on successful fetch
  */
 export function changeOrgUnitSuccess(organisationUnit, shouldChangeMapBounds = true) {
-  const parentOrganisationUnitCode = organisationUnit.parent.organisationUnitCode;
-  const siblings = getSiblingItems(
-    parentOrganisationUnitCode,
-    organisationUnit.organisationUnitCode,
-  );
-
-  storeSiblingItems(
-    organisationUnit.organisationUnitCode,
-    organisationUnit.organisationUnitChildren,
-  );
-
   return {
     type: CHANGE_ORG_UNIT_SUCCESS,
     organisationUnit,
-    organisationUnitSiblings: siblings,
     shouldChangeMapBounds,
   };
 }
