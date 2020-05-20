@@ -33,16 +33,10 @@ async function buildProjectDataForFrontend(project, req) {
   const entitiesWithAccess = accessByEntity.filter(e => e.hasAccess.some(x => x));
   const names = entities.map(e => e.name);
 
-  // TODO: Remove once project dashboards are implemented.
-  // This dumb version naively assumed all entities of a project
-  // have the same parent, which for now is true as projects are all
-  // at country/multi-country level, so parent will be world,
-  // or if it only has a single entity, use that as the parent.
-  // This controls where the project zooms to and what level dashboards
-  // are shown on the front-end.
-  const hasAccess = entitiesWithAccess.length > 0; // equivalent to accessByEntity.some(e => e.hasAccess)
-  const homeEntityCode =
-    hasAccess && (entitiesWithAccess.length > 1 ? 'World' : entitiesWithAccess[0].code);
+  // This controls which entity the project zooms to and what level dashboards are shown on the front-end.
+  // If a single entity is available, zoom to that, otherwise show the project entity
+  const hasAccess = entitiesWithAccess.length > 0;
+  const homeEntityCode = entitiesWithAccess.length === 1 ? entitiesWithAccess[0].code : code;
 
   return {
     name,

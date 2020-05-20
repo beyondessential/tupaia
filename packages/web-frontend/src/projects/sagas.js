@@ -44,7 +44,7 @@ function* watchSelectProjectAndLoadProjectState() {
     yield put(changeBounds(yield select(selectAdjustedProjectBounds, action.project.code)));
     yield put(setProjectDefaults(action.project));
     yield put(changeDashboardGroup(action.project.dashboardGroupName));
-    yield put(requestOrgUnit(action.project.code, action.project.code));
+    yield put(requestOrgUnit(action.project.code));
   });
 }
 
