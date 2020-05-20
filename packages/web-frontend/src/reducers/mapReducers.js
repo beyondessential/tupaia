@@ -8,7 +8,6 @@
 import { combineReducers } from 'redux';
 
 import {
-  GO_HOME,
   CHANGE_MEASURE,
   CHANGE_ORG_UNIT,
   CHANGE_POSITION,

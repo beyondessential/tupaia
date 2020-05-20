@@ -5,6 +5,7 @@ import {
   getMeasureDisplayInfo,
   calculateRadiusScaleFactor,
 } from './utils/measures';
+import { initialOrgUnit } from './defaults';
 
 /**
  * Selectors
@@ -323,6 +324,14 @@ export const selectProjectByCode = (state, code) =>
   state.project.projects.find(p => p.code === code);
 
 export const selectActiveProject = state => state.project.active;
+
+export const selectAdjustedProjectBounds = (state, code) => {
+  if (code === 'explore' || code === 'disaster') {
+    return initialOrgUnit.location.bounds;
+  }
+  const project = selectProjectByCode(state, code);
+  return project && project.bounds;
+};
 
 export const selectMeasureBarItemById = createSelector(
   [state => state.measureBar.measureHierarchy, (_, id) => id],
