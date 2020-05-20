@@ -20,8 +20,8 @@ export const initialOrgUnit = {
     type: 'no-coordinates',
     coordinates: '',
     bounds: [
-      [6.5, 149],
-      [-30, 204.5],
+      [6.5, 110],
+      [-40, 204.5],
     ],
   },
 };
