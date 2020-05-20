@@ -38,6 +38,29 @@ export const JOIN_TYPES = {
   DEFAULT: null,
 };
 
+const VALID_COMPARATORS = [
+  '=',
+  '!=',
+  '<>',
+  '>',
+  '<',
+  '>=',
+  '<=',
+  '@>',
+  'is',
+  'is not',
+  'in',
+  'not in',
+  'like',
+  'not like',
+  'ilike',
+  'not ilike',
+  'between',
+  'not between',
+  'exists',
+  'not exists',
+];
+
 // no math here, just hand-tuned to be as low as possible while
 // keeping all the tests passing
 const HANDLER_DEBOUNCE_DURATION = 250;
@@ -534,9 +557,13 @@ function addWhereClause(baseQuery, where) {
       comparisonValue = value,
       ignoreCase = false,
     } = value;
+
+    if (!VALID_COMPARATORS.includes(comparator.toLowerCase())) {
+      throw new Error(`${comparator} is not a valid comparator`);
+    }
     if (ignoreCase) {
       // When manipulating case, cast the field as text
-      return querySoFar.whereRaw(`LOWER(${key}::text) ${comparator} LOWER('${comparisonValue}')`, {
+      return querySoFar.whereRaw(`LOWER(:key:::text) ${comparator} LOWER(:comparisonValue)`, {
         key,
         comparisonValue,
       });
