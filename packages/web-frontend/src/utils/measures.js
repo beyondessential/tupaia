@@ -193,7 +193,7 @@ export function processMeasureInfo(response) {
 export function getValueInfo(value, valueMapping, hiddenValues = {}) {
   if (!value && typeof value !== 'number' && valueMapping.null) {
     // use 'no data' value
-    const nullValue = hiddenValues.null || hiddenValues[valueMapping.null.name];
+    const nullValue = hiddenValues.null || hiddenValues[valueMapping.null.value];
 
     return {
       ...valueMapping.null,
