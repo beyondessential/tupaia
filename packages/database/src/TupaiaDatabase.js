@@ -38,29 +38,6 @@ export const JOIN_TYPES = {
   DEFAULT: null,
 };
 
-const VALID_COMPARATORS = [
-  '=',
-  '!=',
-  '<>',
-  '>',
-  '<',
-  '>=',
-  '<=',
-  '@>',
-  'is',
-  'is not',
-  'in',
-  'not in',
-  'like',
-  'not like',
-  'ilike',
-  'not ilike',
-  'between',
-  'not between',
-  'exists',
-  'not exists',
-];
-
 // no math here, just hand-tuned to be as low as possible while
 // keeping all the tests passing
 const HANDLER_DEBOUNCE_DURATION = 250;
