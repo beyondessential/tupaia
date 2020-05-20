@@ -3,7 +3,7 @@ const ALTER_TYPE_TO_METHOD = {
 };
 
 export const alterValue = (operator, value, parameter) => {
-  if (!value || !parameter || !operator) {
+  if (!parameter || !operator) {
     return value;
   }
 
