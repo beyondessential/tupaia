@@ -10,7 +10,8 @@ import Typography from '@material-ui/core/Typography';
 import { Close } from '@material-ui/icons';
 import styled from 'styled-components';
 import { LightIconButton } from './IconButton';
-import * as COLORS from '../../stories/story-utils/theme/colors'; // todo fix colors
+import * as COLORS from '../../stories/story-utils/theme/colors';
+import MuiAvatar from '@material-ui/core/Avatar'; // todo fix colors
 
 export default {
   title: 'Drawer',
@@ -25,7 +26,7 @@ const Header = styled.div`
   color: ${COLORS.WHITE};
   height: 250px;
   text-align: center;
-  padding: 0 1rem 0.5rem;
+  padding: 0 1.25rem 0.5rem;
 `;
 
 const HeaderTray = styled.div`
@@ -34,10 +35,10 @@ const HeaderTray = styled.div`
   justify-content: space-between;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   text-transform: uppercase;
-  padding: 1rem 0;
+  padding: 0.5rem 0;
 `;
 
-const HeaderSubHeading = styled.span`
+const TrayHeading = styled.span`
   font-weight: 500;
   font-size: 0.875rem;
   line-height: 1rem;
@@ -52,28 +53,45 @@ const HeaderContent = styled.div`
 
 const HeaderInner = styled.div`
   display: flex;
-  flex-direction: column;
+  align-items: center;
 `;
 
-/*
- * Drawer Header
- */
+const HeaderHeading = styled(Typography)`
+  font-weight: 500;
+  font-size: 2rem;
+  line-height: 2.3rem;
+  margin-bottom: 0.3rem;
+`;
+
+const HeaderSubHeading = styled(Typography)`
+  font-weight: 500;
+  font-size: 1.125rem;
+  line-height: 1.3rem;
+`;
+
+const Avatar = styled(MuiAvatar)`
+  height: 5rem;
+  width: 5rem;
+  margin-right: 0.9rem;
+  color: white;
+  background: white;
+`;
+
 export const DrawerHeader = ({ title, date, onClose }) => (
   <Header>
     <HeaderTray>
-      <HeaderSubHeading>Upcoming report</HeaderSubHeading>
+      <TrayHeading>Upcoming report</TrayHeading>
       <LightIconButton onClick={onClose}>
         <Close />
       </LightIconButton>
     </HeaderTray>
     <HeaderContent>
       <HeaderInner>
-        <Typography variant="h2" gutterBottom>
-          {title}
-        </Typography>
-        <Typography variant="h6" gutterBottom>
-          {date}
-        </Typography>
+        <Avatar />
+        <div>
+          <HeaderHeading>{title}</HeaderHeading>
+          <HeaderSubHeading>{date}</HeaderSubHeading>
+        </div>
       </HeaderInner>
     </HeaderContent>
   </Header>
