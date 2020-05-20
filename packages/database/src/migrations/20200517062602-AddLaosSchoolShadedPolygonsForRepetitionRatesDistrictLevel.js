@@ -79,17 +79,17 @@ const LAOS_SCHOOL_REPETITION_MAP_OVERLAYS = [
   },
   {
     id: 'Laos_Schools_Total_Repetition_Primary_District',
-    name: 'Total repetition rate in Primary School',
+    name: 'Total repetition rate in primary school',
     dataElementCode: 'SchRep016'
   },
   {
     id: 'Laos_Schools_Total_Repetition_Lower_Secondary_District',
-    name: 'Total repetition rate in Lower Secondary School',
+    name: 'Total repetition rate in lower secondary school',
     dataElementCode: 'SchRep031'
   },
   {
     id: 'Laos_Schools_Total_Repetition_Upper_Secondary_District',
-    name: 'Total repetition rate in Upper Secondary School',
+    name: 'Total repetition rate in upper secondary school',
     dataElementCode: 'SchRep043'
   }
 ];
@@ -111,7 +111,7 @@ const MEASURE_BUILDER_CONFIG =  {
 
 const COUNTRY_CODES = '{"LA"}';
 
-const GROUP_NAME = 'Total repetition rate in District';
+const GROUP_NAME = 'Total Repetition Rate in District';
 
 const VALUES = [
   {

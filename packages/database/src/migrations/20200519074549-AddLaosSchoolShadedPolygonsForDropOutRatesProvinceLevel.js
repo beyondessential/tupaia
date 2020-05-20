@@ -79,17 +79,17 @@ const LAOS_SCHOOL_DROP_OUT_MAP_OVERLAYS = [
   },
   {
     id: 'Laos_Schools_Total_Drop_Out_Primary_Province',
-    name: 'Total drop-out rate in Primary School',
+    name: 'Total drop-out rate in primary school',
     dataElementCode: 'SchDropProv016'
   },
   {
     id: 'Laos_Schools_Total_Drop_Out_Lower_Secondary_Province',
-    name: 'Total drop-out rate in Lower Secondary School',
+    name: 'Total drop-out rate in lower secondary school',
     dataElementCode: 'SchDropProv031'
   },
   {
     id: 'Laos_Schools_Total_Drop_Out_Upper_Secondary_Province',
-    name: 'Total drop-out rate in Upper Secondary School',
+    name: 'Total drop-out rate in upper secondary school',
     dataElementCode: 'SchDropProv043'
   }
 ];
@@ -111,7 +111,7 @@ const MEASURE_BUILDER_CONFIG =  {
 
 const COUNTRY_CODES = '{"LA"}';
 
-const GROUP_NAME = 'Total drop-out rate in Province';
+const GROUP_NAME = 'Total Drop-out Rate in Province';
 
 const VALUES = [
   {
