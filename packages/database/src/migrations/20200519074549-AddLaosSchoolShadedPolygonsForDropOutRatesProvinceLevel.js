@@ -128,7 +128,6 @@ const PRESENTATION_OPTIONS = {
   "scaleMin": 0,
   "scaleMax": 'auto',
   "scaleType": "performanceDesc",
-  "displayOnLevel": 'District',
   "valueType": 'percentage'
 };
 
