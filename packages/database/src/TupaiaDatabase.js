@@ -555,19 +555,7 @@ function addWhereClause(baseQuery, where) {
       comparisonType = 'where',
       comparator = Array.isArray(value) ? 'in' : '=',
       comparisonValue = value,
-      ignoreCase = false,
     } = value;
-
-    if (!VALID_COMPARATORS.includes(comparator.toLowerCase())) {
-      throw new Error(`${comparator} is not a valid comparator`);
-    }
-    if (ignoreCase) {
-      // When manipulating case, cast the field as text
-      return querySoFar.whereRaw(`LOWER(:key:::text) ${comparator} LOWER(:comparisonValue)`, {
-        key,
-        comparisonValue,
-      });
-    }
     const { args = [comparator, comparisonValue] } = value;
     return querySoFar[comparisonType](key, ...args);
   }, baseQuery);

@@ -28,7 +28,7 @@ const getAuthenticatedUser = async (models, { emailAddress, password, deviceName
   let user;
   try {
     user = await models.user.findOne({
-      email: { comparisonValue: emailAddress, ignoreCase: true },
+      email: { comparisonValue: emailAddress, comparator: 'ilike' },
     });
   } catch (error) {
     throw new DatabaseError('finding user', error);
