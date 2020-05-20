@@ -19,7 +19,7 @@ export class ConfigImporter {
   constructor(models, questions) {
     this.models = models;
     this.questions = questions;
-    this.validator = new ConfigValidator(questions);
+    this.validator = new ConfigValidator(questions, models);
     this.rowIndexToComponentId = {};
   }
 
@@ -77,10 +77,7 @@ export class ConfigImporter {
     const component = await this.models.surveyScreenComponent.findById(componentId);
     const visibilityCriteria = JSON.parse(component.visibility_criteria);
 
-    if (
-      !visibilityCriteria.hasOwnProperty('hidden') &&
-      (config.entity && config.entity.createNew)
-    ) {
+    if (!visibilityCriteria.hasOwnProperty('hidden') && config.entity && config.entity.createNew) {
       visibilityCriteria.hidden = true;
     }
 

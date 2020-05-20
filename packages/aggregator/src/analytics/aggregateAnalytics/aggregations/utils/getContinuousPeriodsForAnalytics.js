@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { convertToPeriod, getCurrentPeriod, getPeriodsInRange } from '@tupaia/dhis-api';
+import { convertToPeriod, getCurrentPeriod, getPeriodsInRange } from '@tupaia/utils';
 
 /**
  * Calculates an array of continuous period strings from the first period in the analytics until the last

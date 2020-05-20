@@ -7,7 +7,7 @@ import { getSortByKey } from '@tupaia/utils';
 import { sanitizeValue } from './sanitizeValue';
 
 /*
- * @typedef {{ event, orgUnit, eventDate, dataValues: Object }} Event
+ * @typedef {{ event, orgUnit, orgUnitName, eventDate, dataValues: Object }} Event
  */
 
 const METADATA_DIMENSION_TRANSLATION = {

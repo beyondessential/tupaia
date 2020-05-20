@@ -1,5 +1,10 @@
-import { utcMoment } from '@tupaia/utils';
-import { PERIOD_TYPES, getPeriodsInRange, momentToPeriod } from './periodTypes';
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+
+import { utcMoment } from '../datetime';
+import { PERIOD_TYPES, getPeriodsInRange, momentToPeriod } from './period';
 
 const { DAY, MONTH } = PERIOD_TYPES;
 

@@ -6,7 +6,6 @@
 import { capital as capitaliseFirstLetters } from 'case';
 import { DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
 
-import { getDhisIdFromEntityData } from '../../../database/models/Entity';
 import { EntityPusher } from './EntityPusher';
 
 const {
@@ -39,7 +38,7 @@ export class TrackedEntityPusher extends EntityPusher {
    */
   async delete() {
     const entityData = await this.fetchDataFromSyncLog();
-    const dhisId = getDhisIdFromEntityData(entityData);
+    const dhisId = entityData.metadata && entityData.metadata.dhis && entityData.metadata.dhis.id;
     const diagnostics = await this.api.deleteRecordById(TRACKED_ENTITY_INSTANCE, dhisId);
 
     return diagnostics;

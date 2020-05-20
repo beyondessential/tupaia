@@ -1,5 +1,5 @@
 import groupBy from 'lodash.groupby';
-import { findCoarsestPeriodType, periodToType } from '@tupaia/dhis-api';
+import { findCoarsestPeriodType, periodToType } from '@tupaia/utils';
 
 export const periodFromAnalytics = (analytics, { period: requestedPeriod }) => {
   return {

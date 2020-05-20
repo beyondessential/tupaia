@@ -11,11 +11,15 @@ export class Service {
     this.models = models;
   }
 
+  get dataSourceTypes() {
+    return this.models.dataSource.getTypes();
+  }
+
   /**
    * @abstract
    */
   // eslint-disable-next-line class-methods-use-this
-  push() {
+  async push() {
     throw new Error('Any subclass of Service must implement the "push" method');
   }
 
@@ -23,7 +27,7 @@ export class Service {
    * @abstract
    */
   // eslint-disable-next-line class-methods-use-this
-  delete() {
+  async delete() {
     throw new Error('Any subclass of Service must implement the "delete" method');
   }
 
@@ -31,7 +35,7 @@ export class Service {
    * @abstract
    */
   // eslint-disable-next-line class-methods-use-this
-  pull() {
+  async pull() {
     throw new Error('Any subclass of Service must implement the "pull" method');
   }
 }
