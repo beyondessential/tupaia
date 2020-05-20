@@ -259,7 +259,7 @@ const MeasureLegend = ({ measureOptions, hasIconLayer, hasRadiusLayer, hasColorL
   const keys = values
     .filter(v => !v.hideFromLegend)
     .filter(v => hasRadiusLayer || !isHiddenOtherIcon(v)) // only show hidden icons in legend if paired with radius
-    .filter(v => v.value !== MEASURE_VALUE_NULL) // we will be rendering this below
+    .filter(v => v.value !== MEASURE_VALUE_NULL && v.value !== null) // we will be rendering this below
     .map(v => {
       const marker = getLegendMarkerForValue(v, type, hasIconLayer, hasRadiusLayer, hasColorLayer);
       return (
