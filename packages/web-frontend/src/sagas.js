@@ -774,22 +774,18 @@ function* watchFetchMeasureSuccess() {
 }
 
 function* fetchMeasureInfoForNewOrgUnit(action) {
-  const { organisationUnitCode } = action.organisationUnit;
+  const { organisationUnitCode, countryCode } = action.organisationUnit;
   const { measureId, oldOrgUnitCountry } = yield select(state => ({
     measureId: state.map.measureInfo.measureId,
     oldOrgUnitCountry: state.map.measureInfo.currentCountry,
   }));
-  const country = yield select(selectOrgUnitCountry, organisationUnitCode);
-  const countryCode = country ? country.organisationUnitCode : undefined;
-  if (oldOrgUnitCountry) {
-    if (oldOrgUnitCountry === countryCode) {
-      // We are in the same country as before, no need to refetch measureData
-      return;
-    }
+  if (oldOrgUnitCountry === countryCode) {
+    // We are in the same country as before, no need to refetch measureData
+    return;
+  }
 
-    if (measureId) {
-      yield put(changeMeasure(measureId, organisationUnitCode));
-    }
+  if (measureId) {
+    yield put(changeMeasure(measureId, organisationUnitCode));
   }
 }
 
