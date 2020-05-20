@@ -26,7 +26,8 @@ const BINARY_MEASURE_MAP_OVERLAY_IDS = [
   'Laos_Schools_Schools_Provided_With_Cleaning_Materials',
   'Laos_Schools_Schools_Provided_With_Hygiene_Kids',
   'Laos_Schools_Schools_Received_Training_On_Safe_Protocols',
-  'Laos_Schools_Schools_Implementing_Remedial_Education_Programmes'
+  'Laos_Schools_Schools_Implementing_Remedial_Education_Programmes',
+  'Laos_Schools_Schools_Provided_With_Psychosocial_Support'
 ];
 
 const OLD_VALUES = [
