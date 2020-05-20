@@ -11,6 +11,7 @@ export { insertSurveyResponse } from './insertSurveyResponse';
 export { populateTestData } from './populateTestData';
 export { resetTestData } from './resetTestData';
 export { createEntity, createDataElement, createAlert } from './createAlert';
+export { createComment } from './createComment';
 export {
   upsertAnswer,
   upsertEntity,

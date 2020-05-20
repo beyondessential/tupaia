@@ -7,6 +7,7 @@ export { AlertModel as Alert } from './Alert';
 export { AnswerModel as Answer } from './Answer';
 export { APIClientModel as ApiClient } from './APIClient';
 export { ApiRequestLogModel as ApiRequestLog } from './ApiRequestLog';
+export { CommentModel as Comment } from './Comment';
 export { CountryModel as Country } from './Country';
 export { DataSourceModel as DataSource } from './DataSource';
 export { DhisSyncLogModel as DhisSyncLog } from './DhisSyncLog';
