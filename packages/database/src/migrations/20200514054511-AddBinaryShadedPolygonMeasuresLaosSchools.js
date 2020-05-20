@@ -11,7 +11,7 @@ var seed;
  * This enables us to not have to rely on NODE_PATH.
  */
 const BASE_OVERLAY = {
-  groupName: 'Binary Measures (Province level)',
+  groupName: '% of schools in province with access to resource',
   userGroup: 'Laos Schools User',
   dataElementCode: 'value',
   displayType: 'shading',
@@ -35,43 +35,61 @@ const BASE_OVERLAY = {
   countryCodes: '{"LA"}',
 };
 
-const BASE_CONFIG = {
-  groups: {
-    '<20': { value: 0.2, operator: '<' },
-    '20-40': { value: [0.2, 0.4], operator: 'range' },
-    '40-60': { value: [0.4, 0.6], operator: 'range' },
-    '60-80': { value: [0.6, 0.8], operator: 'range' },
-    '>80': { value: 0.8, operator: '>' },
-  },
-  aggregationEntityType: 'district',
-  measureBuilder: 'composePercentagePerOrgUnit',
-
-  measureBuilderConfig: {
-    measureBuilders: {
-      numerator: {
-        measureBuilder: 'sumLatestPerOrgUnit',
-        measureBuilderConfig: {
-          aggregationEntityType: 'district',
-          dataSourceEntityType: 'school',
-          dataElementCodes: ['BCD29_event'],
-        },
-      },
-      denominator: {
-        measureBuilder: 'sumLatestPerOrgUnit',
-        measureBuilderConfig: {
-          aggregationEntityType: 'district',
-          dataSourceEntityType: 'school',
-          dataElementCodes: ['BCD29_event_always_true'],
-        },
-      },
-    },
-  },
-};
-
 const OVERLAYS = [
   {
-    name: 'Electricity Available',
-    id: 'LAOS_SCHOOLS_Electricity_Available_Province',
+    dataElementCodes: ['SchFF001'],
+    name: 'Electricity',
+    id: 'LAOS_SCHOOLS_Electricity_Province',
+  },
+  {
+    dataElementCodes: ['SchFF002'],
+    name: 'Internet connection in school',
+    id: 'LAOS_SCHOOLS_Internet_Province',
+  },
+  {
+    dataElementCodes: ['BCD29_event'],
+    name: 'Functioning water supply',
+    id: 'LAOS_SCHOOLS_Water_Supply_Province',
+  },
+  {
+    dataElementCodes: ['BCD32_event'],
+    name: 'Functioning toilet',
+    id: 'LAOS_SCHOOLS_Toilet_Province',
+  },
+  {
+    dataElementCodes: ['SchFF004'],
+    name: 'Hand washing facilities',
+    id: 'LAOS_SCHOOLS_Hand_Washing_Province',
+  },
+  {
+    dataElementCodes: ['SchFF008'],
+    name: 'Hard copy learning materials for communities with limited internet and TV access',
+    id: 'LAOS_SCHOOLS_Hard_Copy_Materials_Province',
+  },
+  {
+    dataElementCodes: ['SchFF009'],
+    name: 'Cleaning/disinfecting materials and guidance on their use',
+    id: 'LAOS_SCHOOLS_Cleaning_Materials_Province',
+  },
+  {
+    dataElementCodes: ['SchFF009a'],
+    name: 'Hygiene kits',
+    id: 'LAOS_SCHOOLS_Hygiene_Kits_Province',
+  },
+  {
+    dataElementCodes: ['SchFF010'],
+    name: 'COVID-19 prevention and control training',
+    id: 'LAOS_SCHOOLS_COVID_Training_Province',
+  },
+  {
+    dataElementCodes: ['SchFF011'],
+    name: 'Implementing remedial education programmes',
+    id: 'LAOS_SCHOOLS_Remedial_Education_Province',
+  },
+  {
+    dataElementCodes: ['SchFF016'],
+    name: 'Psychosocial support',
+    id: 'LAOS_SCHOOLS_Psychosocial_Support_Province',
   },
 ];
 
@@ -84,15 +102,49 @@ exports.setup = function(options, seedLink) {
 exports.up = async function(db) {
   await Promise.all(
     OVERLAYS.map((overlay, index) => {
-      const { name, id } = overlay;
+      const { name, id, dataElementCodes } = overlay;
       return insertObject(db, 'mapOverlay', {
         ...BASE_OVERLAY,
         name,
         id,
-        measureBuilderConfig: {
-          ...BASE_CONFIG,
-        },
         sortOrder: index,
+        measureBuilderConfig: {
+          groups: {
+            '<20': { value: 0.2, operator: '<' },
+            '20-40': { value: [0.2, 0.4], operator: 'range' },
+            '40-60': { value: [0.4, 0.6], operator: 'range' },
+            '60-80': { value: [0.6, 0.8], operator: 'range' },
+            '>80': { value: 0.8, operator: '>' },
+          },
+          aggregationEntityType: 'district',
+          dataSourceEntityType: 'school',
+          entityAggregationType: 'RAW',
+          measureBuilder: 'composePercentagePerAncestor',
+          measureBuilderConfig: {
+            aggregationEntityType: 'district',
+            dataSourceEntityType: 'school',
+            measureBuilders: {
+              numerator: {
+                measureBuilder: 'checkConditions',
+                measureBuilderConfig: {
+                  aggregationEntityType: 'district',
+                  dataSourceEntityType: 'school',
+                  condition: 'Yes',
+                  dataElementCodes,
+                },
+              },
+              denominator: {
+                measureBuilder: 'checkConditions',
+                measureBuilderConfig: {
+                  aggregationEntityType: 'district',
+                  dataSourceEntityType: 'school',
+                  condition: '*',
+                  dataElementCodes: ['SchFFsch'],
+                },
+              },
+            },
+          },
+        },
       });
     }),
   );

@@ -49,8 +49,8 @@ export const mapMeasureValuesToGroups = (measureValue, dataElementGroupCode, gro
   };
 };
 
-export const analyticsToMeasureData = analytics =>
+export const analyticsToMeasureData = (analytics, customDataKey) =>
   analytics.map(({ organisationUnit, dataElement, value }) => ({
     organisationUnitCode: organisationUnit,
-    [dataElement]: value,
+    [customDataKey || dataElement]: value,
   }));
