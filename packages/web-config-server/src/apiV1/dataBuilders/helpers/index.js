@@ -4,6 +4,7 @@
  */
 
 export { divideValues } from './divideValues';
+export { alterValue } from './alterValue';
 export { groupEvents } from './groupEvents';
 export { fetchComposedData } from './fetchComposedData';
 export { getDataSourceEntityType } from './getDataSourceEntityType';
