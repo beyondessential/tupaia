@@ -2,13 +2,16 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
+import React, { createContext, useContext } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { TextButton, FakeHeader, TextField } from '@tupaia/ui-components';
+import { FakeHeader, TextField } from '@tupaia/ui-components';
 import { BorderlessTable } from './TableTypes';
 import { useFormFields } from '../../hooks';
 
+// ====================================================================================
+// SITE DATA
+// ====================================================================================
 const siteData = [
   {
     code: 'afr',
@@ -42,24 +45,14 @@ const siteData = [
   },
 ];
 
-const columns = [
-  {
-    title: 'Title',
-    key: 'title',
-    width: '300px',
-  },
-  {
-    title: 'Percentage Increase',
-    key: 'percentageChange',
-  },
-  {
-    title: 'Total Cases',
-    key: 'totalCases',
-  },
-];
-
-const StyledTextField = styled(TextField)`
+// ====================================================================================
+// CELL COMPONENT
+// ====================================================================================
+const EditableTextField = styled(TextField)`
   margin: 0;
+  position: relative;
+  right: 1px;
+  width: 4rem;
 
   .MuiInputBase-input {
     text-align: center;
@@ -69,9 +62,56 @@ const StyledTextField = styled(TextField)`
   }
 `;
 
-// Todo: update to take columns and data props
-export const EditableTable = ({ tableState, Action }) => {
-  const editableColumns = [
+const ReadOnlyTextField = styled(EditableTextField)`
+  .MuiInputBase-root {
+    background: none;
+  }
+
+  .MuiOutlinedInput-notchedOutline {
+    border: none;
+  }
+
+  .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border: none;
+    box-shadow: none;
+  }
+`;
+
+const TotalCasesCell = props => {
+  const [fields, handleFieldChange] = useContext(EditableTableContext);
+  const key = `${props.code}-totalCases`;
+  return (
+    <ReadOnlyTextField
+      name="cases"
+      value={fields[key]}
+      onChange={handleFieldChange}
+      id={key}
+      InputProps={{ readOnly: true }}
+    />
+  );
+};
+
+TotalCasesCell.propTypes = {
+  code: PropTypes.string.isRequired,
+};
+
+const EditableTotalCasesCell = props => {
+  const [fields, handleFieldChange] = useContext(EditableTableContext);
+  const key = `${props.code}-totalCases`;
+  return (
+    <EditableTextField name="cases" value={fields[key]} onChange={handleFieldChange} id={key} />
+  );
+};
+
+EditableTotalCasesCell.propTypes = {
+  code: PropTypes.string.isRequired,
+};
+
+// ====================================================================================
+// COLUMNS
+// ====================================================================================
+const makeTableColumns = tableState => {
+  return [
     {
       title: 'Title',
       key: 'title',
@@ -85,11 +125,16 @@ export const EditableTable = ({ tableState, Action }) => {
       title: 'Total Cases',
       key: 'totalCases',
       editable: true,
-      CellComponent: EditableTotalCasesCell,
+      CellComponent: tableState === 'editable' ? EditableTotalCasesCell : TotalCasesCell,
     },
   ];
+};
 
-  const initialFormState = editableColumns.reduce((state, column) => {
+// ====================================================================================
+// EDITABLE TABLE
+// ====================================================================================
+const makeInitialFormState = columns => {
+  return columns.reduce((state, column) => {
     if (column.editable) {
       const newState = state;
 
@@ -103,23 +148,22 @@ export const EditableTable = ({ tableState, Action }) => {
 
     return state;
   }, {});
+};
 
-  // todo create enum for table state
+const EditableTableContext = createContext({});
+
+/**
+ *
+ * Todo: update to take columns and data props
+ * Todo : make work for different table styles
+ * Todo: create an array variable for table states
+ */
+export const EditableTable = ({ tableState, Action }) => {
+  const columns = makeTableColumns(tableState);
+  const initialFormState = makeInitialFormState(columns);
   const [fields, handleFieldChange] = useFormFields(initialFormState);
 
-  function EditableTotalCasesCell(props) {
-    // maybe use this for the read only with invisible cell style??
-    const key = `${props.code}-totalCases`;
-    return (
-      <StyledTextField name="cases" value={fields[key]} onChange={handleFieldChange} id={key} />
-    );
-  }
-
-  EditableTotalCasesCell.propTypes = {
-    code: PropTypes.string.isRequired,
-  };
-
-  const tableConfig = tableState === 'editable' ? editableColumns : columns;
+  console.log(initialFormState);
 
   return (
     <React.Fragment>
@@ -127,8 +171,15 @@ export const EditableTable = ({ tableState, Action }) => {
         <span>SYNDROMES</span>
         <span>TOTAL CASES</span>
       </FakeHeader>
-      <BorderlessTable columns={tableConfig} data={siteData} />
-      {tableState === 'editable' && Action}
+      <EditableTableContext.Provider value={[fields, handleFieldChange]}>
+        <BorderlessTable columns={columns} data={siteData} />
+      </EditableTableContext.Provider>
+      {tableState === 'editable' && <Action fields={fields} />}
     </React.Fragment>
   );
+};
+
+EditableTable.propTypes = {
+  tableState: PropTypes.string.isRequired,
+  Action: PropTypes.any.isRequired,
 };

@@ -129,20 +129,36 @@ const contact = {
 export const SandboxView = () => {
   const [tableState, setTableState] = React.useState('static');
 
-  const handleClick = () => {
+  const handleEditClick = () => {
     setTableState('editable');
   };
 
-  const handleSubmit = () => {
-    // how to save values?
-    // why am i losing focus?
-    console.log('updated values...');
-    setTableState('static');
+  const SubmitButton = props => {
+    const handleSubmit = () => {
+      // how to save values?
+      // why am i losing focus?
+      console.log('updated values...', props);
+      setTableState('static');
+    };
+    return <Button onClick={handleSubmit}>Save</Button>;
   };
 
   return (
     <Container>
       <Inner>
+        <Box>
+          <HeadingRow>
+            <Heading variant="h6" gutterBottom>
+              Editable Table
+            </Heading>
+            <TextButton onClick={handleEditClick} disabled={tableState === 'editable'}>
+              Edit
+            </TextButton>
+          </HeadingRow>
+          {/*========== EDITABLE TABLE ================*/}
+          <EditableTable tableState={tableState} Action={SubmitButton} />
+        </Box>
+        {/*========== TABLE STYLES ================*/}
         <Box>
           <Heading variant="h6" gutterBottom>
             Borderless Table
@@ -153,22 +169,6 @@ export const SandboxView = () => {
           </FakeHeader>
           <BorderlessTable columns={columns} data={siteData} />
         </Box>
-
-        <Box>
-          <HeadingRow>
-            <Heading variant="h6" gutterBottom>
-              Editable Table
-            </Heading>
-            <TextButton onClick={handleClick} disabled={tableState === 'editable'}>
-              Edit
-            </TextButton>
-          </HeadingRow>
-          <EditableTable
-            tableState={tableState}
-            Action={<Button onClick={handleSubmit}>Save</Button>}
-          />
-        </Box>
-
         <Box>
           <Heading variant="h6" gutterBottom>
             Dotted Table
