@@ -36,15 +36,9 @@ export const LoginFormComponent = React.memo(
     const [shouldShowVerifyForm, setVerifyForm] = useState(false);
 
     const showVerifyForm = useCallback(() => setVerifyForm(true), []);
-
-    if (shouldShowVerifyForm) return <EmailVerification />;
-    else if (emailVerified === EMAIL_VERIFIED_STATUS.NEW_USER)
-      return <SignupComplete onClickResend={showVerifyForm} />;
-
     const onSubmit = useCallback(({ email, password }) => onAttemptUserLogin(email, password), [
       onAttemptUserLogin,
     ]);
-
     const renderForm = useCallback(
       submitForm => (
         <React.Fragment>
@@ -63,6 +57,10 @@ export const LoginFormComponent = React.memo(
       ),
       [onClickResetPassword],
     );
+
+    if (shouldShowVerifyForm) return <EmailVerification />;
+    else if (emailVerified === EMAIL_VERIFIED_STATUS.NEW_USER)
+      return <SignupComplete onClickResend={showVerifyForm} />;
 
     return (
       <Form
