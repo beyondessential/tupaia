@@ -9,7 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import { TextButton, FakeHeader, Button } from '@tupaia/ui-components';
 import * as COLORS from '../theme/colors';
 import { BorderlessTable, SimpleTable, DottedTable } from '../components/Tables/TableTypes';
-import { EditableTable } from '../components';
+import { SiteAddress, EditableTable } from '../components';
 
 const Container = styled.div`
   width: 100%;
@@ -114,6 +114,18 @@ const columns = [
   },
 ];
 
+const address = {
+  name: 'Tafuna Health Clinic',
+  district: 'Tafuna Western District 96799,',
+  country: 'American Samoa',
+};
+
+const contact = {
+  name: 'Shakila Naidu',
+  department: 'Ministry of Health',
+  email: 'Shakila@gmail.com',
+};
+
 export const SandboxView = () => {
   const [tableState, setTableState] = React.useState('static');
 
@@ -176,6 +188,10 @@ export const SandboxView = () => {
             <span>TOTAL CASES</span>
           </FakeHeader>
           <SimpleTable columns={columns} data={siteData} />
+        </Box>
+
+        <Box>
+          <SiteAddress address={address} contact={contact} />
         </Box>
       </Inner>
     </Container>

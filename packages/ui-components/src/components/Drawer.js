@@ -125,7 +125,7 @@ const DrawerContent = styled.div`
   overflow: auto;
 `;
 
-const drawerWidth = '500px';
+const drawerWidth = '515px';
 
 export const StyledDrawer = styled(MuiDrawer)`
   .MuiBackdrop-root {

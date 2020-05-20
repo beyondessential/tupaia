@@ -20,7 +20,7 @@ import {
 import { BorderlessTable, DottedTable } from './Tables/TableTypes';
 import { PercentageChangeCell } from './Tables/TableCellComponents';
 import * as COLORS from '../theme/colors';
-import { EditableTable } from '../components';
+import { SiteAddress } from './SiteAddress';
 
 const Action = () => {
   const handleClick = () => {
@@ -97,18 +97,6 @@ const MainSection = styled.section`
   padding: 30px 20px;
 `;
 
-const AddressPlaceholder = styled.section`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  border-radius: 3px;
-  border: 1px solid #dedee0;
-  height: 200px;
-  margin-bottom: 30px;
-  margin-top: 20px;
-`;
-
 // Card Header - could be made into component?
 const MainHeadingRow = styled.div`
   display: flex;
@@ -149,6 +137,18 @@ const options = [
   { name: 'Austria', id: 'AT' },
 ];
 
+const address = {
+  name: 'Tafuna Health Clinic',
+  district: 'Tafuna Western District 96799,',
+  country: 'American Samoa',
+};
+
+const contact = {
+  name: 'Shakila Naidu',
+  department: 'Ministry of Health',
+  email: 'Shakila@gmail.com',
+};
+
 export const WeeklyReportPane = () => {
   const [open, setOpen] = useState(false);
 
@@ -186,7 +186,7 @@ export const WeeklyReportPane = () => {
         </GreySection>
         <MainSection>
           <ButtonSelect id="button-select" options={options} />
-          <AddressPlaceholder>Site Address</AddressPlaceholder>
+          <SiteAddress address={address} contact={contact} />
           <Card variant="outlined" mb={3}>
             <HeadingRow>
               <HeaderTitle>Previous Week</HeaderTitle>
