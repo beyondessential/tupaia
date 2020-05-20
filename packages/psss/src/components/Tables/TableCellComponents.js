@@ -6,6 +6,7 @@
 import React from 'react';
 import { Error } from '@material-ui/icons';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
 export const SitesReportedCell = data => {
   // Todo: update placeholder
@@ -42,4 +43,26 @@ export const AFRCell = ({ AFR }) => {
   }
 
   return AFR;
+};
+
+const WarningStyleText = styled.span`
+  color: ${props => props.theme.palette.warning.main};
+  font-weight: 500;
+`;
+
+const SuccessStyleText = styled.span`
+  color: ${props => props.theme.palette.success.main};
+  font-weight: 500;
+`;
+
+export const PercentageChangeCell = ({ percentageChange }) => {
+  if (percentageChange > 0) {
+    return <WarningStyleText>{`${percentageChange}%`}</WarningStyleText>;
+  }
+
+  return <SuccessStyleText>{percentageChange}</SuccessStyleText>;
+};
+
+PercentageChangeCell.propTypes = {
+  percentageChange: PropTypes.string.isRequired,
 };

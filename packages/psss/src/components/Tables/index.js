@@ -8,4 +8,3 @@ export * from './CountrySummaryTable';
 export * from './CountryTable';
 export * from './SiteSummaryTable';
 export * from './EditableTable';
-export * from './TableTypes'; // make this table types

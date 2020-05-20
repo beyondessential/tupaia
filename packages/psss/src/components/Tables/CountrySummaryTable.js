@@ -82,7 +82,7 @@ export const CountrySummaryTable = React.memo(props => (
     <TableHeader />
     <ConnectedTable
       endpoint="country-weeks"
-      fetchOptions={{ filterId: props.rowData.id }}
+      fetchOptions={{ filterId: props }}
       columns={countrySummaryTableColumns}
       Header={false}
       Body={CondensedTableBody}

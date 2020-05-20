@@ -10,3 +10,4 @@ export * from './Header';
 export * from './Tables';
 export * from './Forms';
 export * from './ProfileButton';
+export * from './WeeklyReportPane';

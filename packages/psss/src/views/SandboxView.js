@@ -7,8 +7,9 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import { TextButton, FakeHeader, Button } from '@tupaia/ui-components';
-import * as COLORS from '@tupaia/ui-components/stories/story-utils/theme/colors';
-import { BorderlessTable, SimpleTable, DottedTable, EditableTable } from '../components';
+import * as COLORS from '../theme/colors';
+import { BorderlessTable, SimpleTable, DottedTable } from '../components/Tables/TableTypes';
+import { EditableTable } from '../components';
 
 const Container = styled.div`
   width: 100%;
