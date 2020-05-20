@@ -10,23 +10,19 @@ export class GetStringsFromBinaryDataBuilder extends DataBuilder {
     const { dataElementToString } = this.config;
     const { results } = await this.fetchAnalytics(Object.keys(dataElementToString));
 
-    const stringByOrgUnit = {};
+    const stringArrayByOrgUnit = [];
     results.forEach(({ dataElement, value, organisationUnit }) => {
       const stringValue = value ? dataElementToString[dataElement] : '';
       if (stringValue) {
-        if (stringByOrgUnit[organisationUnit]) {
-          stringByOrgUnit[
-            organisationUnit
-          ] = `${stringByOrgUnit[organisationUnit]}, ${stringValue}`;
-        } else {
-          stringByOrgUnit[organisationUnit] = stringValue;
-        }
+        stringArrayByOrgUnit[organisationUnit] = [stringValue].concat(
+          stringArrayByOrgUnit[organisationUnit],
+        );
       }
     });
 
-    return Object.entries(stringByOrgUnit).map(([organisationUnitCode, value]) => ({
+    return Object.entries(stringArrayByOrgUnit).map(([organisationUnitCode, valueArray]) => ({
       organisationUnitCode,
-      value,
+      value: valueArray.join(', '),
     }));
   }
 }
