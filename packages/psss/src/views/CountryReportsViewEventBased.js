@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
-import { Container, Main, Sidebar } from '../components';
+import { Container, Main, SidebarPlaceholder } from '../components';
 import { TableView } from './TableView';
 
 const eventBasedConfig = {
@@ -16,13 +16,13 @@ export const CountryReportsViewEventBased = () => (
     <Main>
       <TableView config={eventBasedConfig} />
     </Main>
-    <Sidebar>
+    <SidebarPlaceholder>
       <Typography variant="h2" gutterBottom>
         Sidebar
       </Typography>
       <Typography variant="body1" gutterBottom>
         Event Based Country View
       </Typography>
-    </Sidebar>
+    </SidebarPlaceholder>
   </Container>
 );

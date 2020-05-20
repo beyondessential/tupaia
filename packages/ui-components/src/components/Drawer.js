@@ -128,6 +128,10 @@ const DrawerContent = styled.div`
 const drawerWidth = '500px';
 
 export const StyledDrawer = styled(MuiDrawer)`
+  .MuiBackdrop-root {
+    background-color: rgba(0, 0, 0, 0.35);
+  }
+
   .MuiDrawer-paper {
     width: ${drawerWidth};
     padding-bottom: ${DrawerFooterHeight};

@@ -46,6 +46,15 @@ export const Sidebar = styled.aside`
     margin-top: 0;
     margin-bottom: 3rem;
   }
+`;
+
+export const SidebarPlaceholder = styled.aside`
+  margin-top: -85px;
+
+  @media (max-width: ${desktopWidth}) {
+    margin-top: 0;
+    margin-bottom: 3rem;
+  }
 
   /* These styles are temporary for demo only */
   display: flex;
