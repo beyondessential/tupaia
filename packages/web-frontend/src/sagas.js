@@ -8,7 +8,12 @@
 import { call, put, delay, takeEvery, takeLatest, select } from 'redux-saga/effects';
 import queryString from 'query-string';
 import request from './utils/request';
-import { selectOrgUnit, selectOrgUnitChildren, selectOrgUnitCountry } from './selectors';
+import {
+  selectOrgUnit,
+  selectOrgUnitChildren,
+  selectOrgUnitCountry,
+  selectMeasureBarItemById,
+} from './selectors';
 import {
   ATTEMPT_CHANGE_PASSWORD,
   ATTEMPT_LOGIN,
@@ -522,10 +527,11 @@ function* watchOrgUnitChangeAndFetchDashboard() {
 function* fetchViewData(parameters, errorHandler) {
   const { infoViewKey } = parameters;
   // If the view should be constrained to a date range and isn't, constrain it
+  const state = yield select();
   const { startDate, endDate } =
     parameters.startDate || parameters.endDate
       ? parameters
-      : getDefaultDates(yield select(), infoViewKey);
+      : getDefaultDates(state.global.viewConfigs[infoViewKey]);
   // Build the request url
   const {
     organisationUnitCode,
@@ -661,7 +667,23 @@ function* fetchMeasureInfo(measureId, organisationUnitCode, oldOrgUnitCountry = 
     yield put(clearMeasureHierarchy());
   }
 
-  const requestResourceUrl = `measureData?organisationUnitCode=${organisationUnitCode}&measureId=${measureId}&shouldShowAllParentCountryResults=${!isMobile()}`;
+  const state = yield select();
+  const measureParams = selectMeasureBarItemById(state, measureId) || {};
+
+  // If the view should be constrained to a date range and isn't, constrain it
+  const { startDate, endDate } =
+    measureParams.startDate || measureParams.endDate
+      ? measureParams
+      : getDefaultDates(measureParams);
+
+  const urlParameters = {
+    measureId,
+    organisationUnitCode,
+    startDate: formatDateForApi(startDate),
+    endDate: formatDateForApi(endDate),
+    shouldShowAllParentCountryResults: !isMobile(),
+  };
+  const requestResourceUrl = `measureData?${queryString.stringify(urlParameters)}`;
 
   try {
     const measureInfoResponse = yield call(request, requestResourceUrl);
@@ -696,13 +718,12 @@ function getSelectedMeasureFromHierarchy(measureHierarchy, selectedMeasureId, pr
 
 function* fetchCurrentMeasureInfo() {
   const state = yield select();
-  const { currentOrganisationUnit } = state.global;
+  const { currentOrganisationUnitCode } = state.global;
   const { active: activeProject } = state.project;
-  const { organisationUnitCode } = currentOrganisationUnit;
   const { measureId } = state.map.measureInfo;
   const { measureHierarchy, selectedMeasureId } = state.measureBar;
 
-  if (organisationUnitCode && organisationUnitCode !== 'World') {
+  if (currentOrganisationUnitCode && currentOrganisationUnitCode !== 'World') {
     const isHeirarchyPopulated = Object.keys(measureHierarchy).length;
 
     // Update the default measure ID
@@ -714,14 +735,14 @@ function* fetchCurrentMeasureInfo() {
       );
 
       if (newMeasure !== measureId) {
-        yield put(changeMeasure(newMeasure, organisationUnitCode));
+        yield put(changeMeasure(newMeasure, currentOrganisationUnitCode));
       }
     } else {
       /** Ensure measure is selected if there is a current measure selected in the case
        * it is not selected through the measureBar UI
        * i.e. page reloaded when on org with measure selected
        */
-      yield put(changeMeasure(measureId, organisationUnitCode));
+      yield put(changeMeasure(measureId, currentOrganisationUnitCode));
     }
   }
 }

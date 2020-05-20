@@ -132,10 +132,28 @@ const selectCountriesAsOrgUnits = createSelector([state => state.orgUnits.orgUni
     .filter(country => country.organisationUnitCode !== 'World'),
 );
 
+const selectOrgUnitSiblingsAndSelf = createSelector(
+  [
+    (state, code) => getOrgUnitParent(selectOrgUnit(state, code)),
+    state => selectCountriesAsOrgUnits(state),
+    (state, code) => safeGet(countryCache, [state.orgUnits.orgUnitMap, code]),
+  ],
+  (parentCode, countriesAsOrgUnits, country) => {
+    if (!parentCode) {
+      return [];
+    }
+    return parentCode === 'World'
+      ? countriesAsOrgUnits
+      : safeGet(orgUnitChildrenCache, [country, parentCode]);
+  },
+);
+
 const getOrgUnitFromMeasureData = (measureData, code) =>
   measureData.find(val => val.organisationUnitCode === code);
 
 const getOrgUnitFromCountry = (country, code) => (country && code ? country[code] : undefined);
+
+const getOrgUnitParent = orgUnit => (orgUnit ? orgUnit.parent : undefined);
 
 /**
  * Public Selectors
@@ -153,6 +171,11 @@ export const selectOrgUnitCountry = createSelector(
   country => (country ? country[country.countryCode] : undefined),
 );
 
+export const selectCurrentOrgUnit = createSelector(
+  [state => selectOrgUnit(state, state.global.currentOrganisationUnitCode)],
+  currentOrgUnit => currentOrgUnit || {},
+);
+
 export const selectOrgUnitChildren = createSelector(
   [
     state => selectCountriesAsOrgUnits(state),
@@ -161,6 +184,13 @@ export const selectOrgUnitChildren = createSelector(
   ],
   (countriesAsOrgUnits, country, code) =>
     code === 'World' ? countriesAsOrgUnits : safeGet(orgUnitChildrenCache, [country, code]),
+);
+
+export const selectOrgUnitSiblings = createSelector(
+  [selectOrgUnitSiblingsAndSelf, (_, code) => code],
+  (siblings, code) => {
+    return siblings.filter(orgUnit => orgUnit.organisationUnitCode !== code);
+  },
 );
 
 export const selectHasPolygonMeasure = createSelector(
@@ -226,12 +256,9 @@ export const selectAllMeasuresWithDisplayAndOrgUnitData = createSelector(
 export const selectRenderedMeasuresWithDisplayInfo = createSelector(
   [
     state =>
-      safeGet(countryCache, [
-        state.orgUnits.orgUnitMap,
-        state.global.currentOrganisationUnit.organisationUnitCode,
-      ]),
+      safeGet(countryCache, [state.orgUnits.orgUnitMap, state.global.currentOrganisationUnitCode]),
     selectAllMeasuresWithDisplayAndOrgUnitData,
-    state => state.global.currentOrganisationUnit,
+    state => selectCurrentOrgUnit(state),
     state => state.map.measureInfo.measureOptions,
   ],
   (country, allMeasuresWithMeasureInfo, currentOrgUnit = {}, measureOptions = []) => {
@@ -274,4 +301,12 @@ export const selectCurrentDashboardKey = createSelector(
   [state => state.global.dashboardConfig, state => state.dashboard.currentDashboardKey],
   (dashboardConfig, currentDashboardKey) =>
     dashboardConfig[currentDashboardKey] ? currentDashboardKey : Object.keys(dashboardConfig)[0],
+);
+
+export const selectMeasureBarItemById = createSelector(
+  [state => state.measureBar.measureHierarchy, (_, id) => id],
+  (measureHierarchy, id) => {
+    const flattenedMeasureHierarchy = [].concat(...Object.values(measureHierarchy));
+    return flattenedMeasureHierarchy.find(measure => measure.measureId === id);
+  },
 );

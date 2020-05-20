@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { NUMBER } from './dhisValueTypes';
+import { NUMBER } from '../dhisValueTypes';
 
 /**
  * @param {number|string} value
