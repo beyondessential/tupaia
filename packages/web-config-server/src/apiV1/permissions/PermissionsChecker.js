@@ -35,8 +35,8 @@ export class PermissionsChecker {
   }
 
   async checkHasEntityAccess(entityCode) {
-    if (entityCode === 'World') {
-      return true; // currently, all users have access to everything at world level
+    if (entityCode === 'World' || entityCode === 'explore') {
+      return true; // currently, all users have access to everything in the explore project and at the world level.
     }
     const permissionGroups = await this.fetchPermissionGroups();
     const accessToPermissionGroups = await Promise.all(

@@ -273,8 +273,8 @@ export const selectRenderedMeasuresWithDisplayInfo = createSelector(
     state => selectCurrentOrgUnit(state),
     state => state.map.measureInfo.measureOptions,
   ],
-  (country, allMeasuresWithMeasureInfo, currentOrgUnit = {}, measureOptions = []) => {
-    if (!currentOrgUnit.organisationUnitCode) {
+  (country, allMeasuresWithMeasureInfo, currentOrgUnitCode, measureOptions = []) => {
+    if (!currentOrgUnitCode) {
       return [];
     }
 
