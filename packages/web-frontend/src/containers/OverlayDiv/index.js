@@ -111,7 +111,7 @@ const mapDispatchToProps = dispatch => {
     onSelectProject: project => {
       dispatch(selectProject(project));
       dispatch(setOverlayComponent(null));
-      dispatch(changeOrgUnit(project.code, false));
+      dispatch(changeOrgUnit(project.homeEntityCode, false));
     },
     closeOverlay: () => {
       dispatch(setOverlayComponent(null));

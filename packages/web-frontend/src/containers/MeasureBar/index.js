@@ -168,13 +168,13 @@ const MeasureShape = PropTypes.shape({
 MeasureBar.propTypes = {
   currentMeasure: MeasureShape.isRequired,
   measureHierarchy: PropTypes.shape({}).isRequired,
-  currentOrganisationUnitCode: PropTypes.string.isRequired,
-  currentOrganisationUnitName: PropTypes.string.isRequired,
   isExpanded: PropTypes.bool.isRequired,
   isMeasureLoading: PropTypes.bool.isRequired,
   onExpandClick: PropTypes.func.isRequired,
   onSelectMeasure: PropTypes.func.isRequired,
   onClearMeasure: PropTypes.func.isRequired,
+  currentOrganisationUnitCode: PropTypes.string,
+  currentOrganisationUnitName: PropTypes.string,
 };
 
 const mapStateToProps = state => {
