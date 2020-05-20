@@ -31,6 +31,7 @@ const BASE_OVERLAY = {
 };
 
 const BASE_CONFIG = {
+  dataSourceEntityType: 'school',
   aggregationEntityType: 'school',
 };
 
