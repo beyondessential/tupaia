@@ -83,7 +83,7 @@ const BASE_CONFIG = {
 const OVERLAYS = [
   {
     name: 'Development partners',
-    id: 'LAOS_SCHOOLS_Development_Partners_Pin',
+    id: 'Laos_Schools_Development_Partners_Pin',
   },
 ];
 
