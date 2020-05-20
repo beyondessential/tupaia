@@ -12,7 +12,7 @@
  */
 
 export const initialOrgUnit = {
-  type: 'project',
+  type: 'Project',
   organisationUnitCode: 'explore',
   name: 'Explore',
   parent: {},
@@ -20,7 +20,10 @@ export const initialOrgUnit = {
     type: 'no-coordinates',
     coordinates: '',
     bounds: [
-      [6.5, 110],
+      // Note: There's a little bit of a hack going on here, the bounds[0] are actually [6.5, 110]
+      // However in order to trigger the map to re-render we set them slightly adjusted as [6.5001, 110]
+      // See: https://github.com/beyondessential/tupaia-backlog/issues/540#issuecomment-631314721
+      [6.5001, 110],
       [-40, 204.5],
     ],
   },
