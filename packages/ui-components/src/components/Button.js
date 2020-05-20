@@ -84,11 +84,14 @@ export const LightOutlinedButton = styled(OutlinedButton)`
   color: ${props => props.theme.palette.common.white};
   border-color: ${props => props.theme.palette.common.white};
   justify-content: space-between;
-  padding: 0.5rem 1rem;
+  padding: 0.8rem 2rem;
 
-  .MuiButton-endIcon {
-    margin-left: 1.5rem;
-    margin-right: 0;
+  .MuiButton-startIcon {
+    margin-right: 0.5rem;
+
+    svg {
+      font-size: 1rem;
+    }
   }
 
   &:hover {

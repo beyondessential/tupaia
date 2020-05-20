@@ -9,17 +9,22 @@ import { Warning } from '@material-ui/icons';
 
 const StyledAlert = styled(MuiAlert)`
   border-radius: 0;
-  padding: 6px 30px;
+  font-weight: 400;
+  padding: 0.9rem 1.25rem 0.9rem 2.5rem;
+  align-items: center;
+  box-shadow: inset 0px -1px 0px rgba(0, 0, 0, 0.15);
 `;
 
-const BaseAlert = props => <StyledAlert variant="filled" {...props} />;
+const StyledErrorAlert = styled(StyledAlert)`
+  background: ${props => props.theme.palette.error.light};
+  color: ${props => props.theme.palette.error.main};
+`;
 
 export const ErrorAlert = props => (
-  <BaseAlert icon={<Warning fontSize="inherit" />} severity="error" {...props} />
+  <StyledErrorAlert
+    icon={<Warning fontSize="inherit" />}
+    variant="filled"
+    severity="error"
+    {...props}
+  />
 );
-
-export const WarningAlert = props => <BaseAlert severity="warning" {...props} />;
-
-export const InfoAlert = props => <BaseAlert severity="info" {...props} />;
-
-export const SuccessAlert = props => <BaseAlert severity="success" {...props} />;

@@ -4,10 +4,10 @@
  */
 
 import React, { useState, useCallback } from 'react';
-import { CalendarToday, KeyboardArrowDown, Visibility } from '@material-ui/icons';
+import { CalendarToday, KeyboardArrowDown, Visibility, Room } from '@material-ui/icons';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import styled from 'styled-components';
-import { TextField } from '../../src';
+import { Checkbox, TextField, Button } from '../../src';
 
 export default {
   title: 'Inputs/TextField',
@@ -43,7 +43,7 @@ export const textField = () => (
 
 export const textArea = () => (
   <Container>
-    <TextField name="textArea" label="TextArea" multiline rows="4" />
+    <TextField name="textArea" placeholder="Placeholder text" multiline rows="4" />
   </Container>
 );
 
@@ -62,6 +62,17 @@ export const icons = () => (
       helperText="Weight"
       InputProps={{
         startAdornment: <InputAdornment position="start">Kg</InputAdornment>,
+      }}
+    />
+    <TextField
+      name="address"
+      placeholder="Enter a new address"
+      InputProps={{
+        startAdornment: (
+          <InputAdornment position="start">
+            <Room />
+          </InputAdornment>
+        ),
       }}
     />
     <TextField
@@ -159,3 +170,18 @@ export const controlled = () => {
     </Container>
   );
 };
+
+export const loginForm = () => (
+  <Container>
+    <form>
+      <TextField id="text" name="text" placeholder="Text" type="text" label="Text label" />
+      <TextField id="text2" name="text2" placeholder="Text" type="text" label="Text label 2" />
+      <TextField name="errorState" label="Error state" error />
+      <TextField name="errorMessage" label="Error message" error helperText="Incorrect entry" />
+      <TextField id="email" name="email" placeholder="Email" type="email" />
+      <TextField id="password" name="password" type="password" placeholder="Password" />
+      <Checkbox label="Remember me" color="primary" defaultChecked />
+      <Button type="submit">Login to your account</Button>
+    </form>
+  </Container>
+);
