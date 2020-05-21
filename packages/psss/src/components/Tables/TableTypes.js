@@ -7,17 +7,16 @@ import styled from 'styled-components';
 import {
   Table,
   TableBody,
+  ExpandableTableBody,
   TableRow,
-  ExpandedTableRow,
+  ExpandableTableRow,
+  ControlledTableRow,
   tableColumnShape,
 } from '@tupaia/ui-components';
 import PropTypes from 'prop-types';
 import * as COLORS from '../../theme/colors';
 
-/*
- * Borderless Table Body
- */
-const BorderlessTableRow = styled(ExpandedTableRow)`
+const BorderlessTableRow = styled(ControlledTableRow)`
   .MuiTableCell-root {
     font-size: 15px;
     line-height: 18px;
@@ -29,26 +28,11 @@ const BorderlessTableRow = styled(ExpandedTableRow)`
   }
 `;
 
+const ActiveBorderlessTableRow = props => <BorderlessTableRow {...props} expanded />;
+
 const BorderlessTableBody = props => (
-  <TableBody
-    TableRow={BorderlessTableRow}
-    data={data}
-    rowIdKey={rowIdKey}
-    columns={columns}
-    SubComponent={SubComponent}
-  />
+  <ExpandableTableBody TableRow={ActiveBorderlessTableRow} {...props} />
 );
-
-BorderlessTableBody.propTypes = {
-  columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
-  data: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-  rowIdKey: PropTypes.string.isRequired,
-  SubComponent: PropTypes.any,
-};
-
-BorderlessTableBody.defaultProps = {
-  SubComponent: null,
-};
 
 export const BorderlessTable = ({ columns, data, SubComponent }) => {
   return (
@@ -72,9 +56,6 @@ BorderlessTable.defaultProps = {
   SubComponent: null,
 };
 
-/*
- * Dotted Table Body
- */
 const DottedTableRow = styled(TableRow)`
   .MuiTableCell-root {
     font-size: 14px;
@@ -87,15 +68,7 @@ const DottedTableRow = styled(TableRow)`
   }
 `;
 
-const DottedTableBody = ({ data, rowIdKey, columns }) => (
-  <TableBody StyledTableRow={DottedTableRow} data={data} rowIdKey={rowIdKey} columns={columns} />
-);
-
-DottedTableBody.propTypes = {
-  columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
-  data: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-  rowIdKey: PropTypes.string.isRequired,
-};
+const DottedTableBody = props => <TableBody TableRow={DottedTableRow} {...props} />;
 
 export const DottedTable = ({ columns, data }) => {
   return <Table Header={false} Body={DottedTableBody} columns={columns} data={data} />;
@@ -106,9 +79,6 @@ DottedTable.propTypes = {
   data: PropTypes.array.isRequired,
 };
 
-/*
- * Simple  Table Body
- */
 const SimpleTableRow = styled(TableRow)`
   .MuiTableCell-root {
     font-size: 14px;
@@ -121,15 +91,7 @@ const SimpleTableRow = styled(TableRow)`
   }
 `;
 
-const SimpleTableBody = ({ data, rowIdKey, columns }) => (
-  <TableBody StyledTableRow={SimpleTableRow} data={data} rowIdKey={rowIdKey} columns={columns} />
-);
-
-SimpleTableBody.propTypes = {
-  columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
-  data: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-  rowIdKey: PropTypes.string.isRequired,
-};
+const SimpleTableBody = props => <TableBody TableRow={SimpleTableRow} {...props} />;
 
 export const SimpleTable = ({ columns, data }) => {
   return <Table Header={false} Body={SimpleTableBody} columns={columns} data={data} />;

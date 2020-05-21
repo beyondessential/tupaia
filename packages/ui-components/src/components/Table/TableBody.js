@@ -8,23 +8,21 @@ import PropTypes from 'prop-types';
 import { TableRow as TableRowComponent, CondensedTableRow, ExpandableTableRow } from './TableRow';
 import { tableColumnShape } from './tableColumnShape';
 
-export const ExpandableTableBody = React.memo(
-  ({ data, columns, rowIdKey, TableRow, SubComponent }) => (
-    <MuiTableBody>
-      {data.map((rowData, rowIndex) => {
-        const key = rowData[rowIdKey] || rowData[columns[0].key];
-        return (
-          <TableRow
-            data={data}
-            rowIndex={rowIndex}
-            key={key}
-            columns={columns}
-            SubComponent={SubComponent}
-          />
-        );
-      })}
-    </MuiTableBody>
-  ),
+export const ExpandableTableBody = ({ data, columns, rowIdKey, TableRow, SubComponent }) => (
+  <MuiTableBody>
+    {data.map((rowData, rowIndex) => {
+      const key = rowData[rowIdKey] || rowData[columns[0].key];
+      return (
+        <TableRow
+          data={data}
+          rowIndex={rowIndex}
+          key={key}
+          columns={columns}
+          SubComponent={SubComponent}
+        />
+      );
+    })}
+  </MuiTableBody>
 );
 
 ExpandableTableBody.propTypes = {

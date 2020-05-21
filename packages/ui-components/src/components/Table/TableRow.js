@@ -109,24 +109,6 @@ TableRow.defaultProps = {
   className: '',
 };
 
-export const ExpandedTableRow = ({ columns, rowData, SubComponent, className }) => {
-  const row = (
-    <StyledTableRow className={className}>
-      <TableRowCells columns={columns} rowData={rowData} />
-    </StyledTableRow>
-  );
-
-  if (SubComponent) {
-    return (
-      <RowExpansionContainer parentRow={row} columns={columns}>
-        <SubComponent rowData={rowData} />
-      </RowExpansionContainer>
-    );
-  }
-
-  return row;
-};
-
 const condensedRowBackgroundColor = '#EFEFEF';
 
 export const CondensedTableRow = styled(TableRow)`
@@ -143,7 +125,7 @@ export const CondensedTableRow = styled(TableRow)`
   }
 `;
 
-export const ExpandableTableRow = React.memo(({ columns, data, rowIndex, SubComponent }) => {
+export const ExpandableTableRow = ({ columns, data, rowIndex, className, SubComponent }) => {
   const [expanded, setExpanded] = useState(false);
 
   const handleClick = useCallback(() => {
@@ -151,7 +133,7 @@ export const ExpandableTableRow = React.memo(({ columns, data, rowIndex, SubComp
   }, []);
 
   const row = (
-    <StyledTableRow onClick={handleClick}>
+    <StyledTableRow className={className} onClick={handleClick}>
       <TableRowCells columns={columns} rowData={data[rowIndex]} />
     </StyledTableRow>
   );
@@ -165,15 +147,59 @@ export const ExpandableTableRow = React.memo(({ columns, data, rowIndex, SubComp
   }
 
   return row;
-});
+};
 
 ExpandableTableRow.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
   data: PropTypes.array.isRequired,
   rowIndex: PropTypes.number.isRequired,
   SubComponent: PropTypes.any,
+  className: PropTypes.string,
 };
 
 ExpandableTableRow.defaultProps = {
   SubComponent: PropTypes.null,
+  className: '',
+};
+
+// ====================== WIP: Combine with above maybe ================
+export const ControlledTableRow = ({
+  columns,
+  data,
+  rowIndex,
+  className,
+  SubComponent,
+  expanded,
+  onClick,
+}) => {
+  const row = (
+    <StyledTableRow className={className} onClick={onClick}>
+      <TableRowCells columns={columns} rowData={data[rowIndex]} />
+    </StyledTableRow>
+  );
+
+  if (SubComponent && expanded) {
+    return (
+      <RowExpansionContainer parentRow={row} columns={columns}>
+        <SubComponent data={data} />
+      </RowExpansionContainer>
+    );
+  }
+
+  return row;
+};
+
+ControlledTableRow.propTypes = {
+  columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
+  data: PropTypes.array.isRequired,
+  rowIndex: PropTypes.number.isRequired,
+  SubComponent: PropTypes.any,
+  className: PropTypes.string,
+  expanded: PropTypes.bool,
+};
+
+ControlledTableRow.defaultProps = {
+  SubComponent: PropTypes.null,
+  className: '',
+  expanded: false,
 };
