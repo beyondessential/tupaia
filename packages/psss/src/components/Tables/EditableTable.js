@@ -69,11 +69,6 @@ EditableCell.propTypes = {
   columnKey: PropTypes.string.isRequired,
 };
 
-/**
- *
- * Todo: create an array variable for table states
- */
-
 const makeInitialFormState = (columns, data) => {
   return columns.reduce((state, column) => {
     if (column.editable) {
@@ -118,7 +113,7 @@ export const EditableTableProvider = ({ columns, data, tableState, children }) =
 };
 
 EditableTableProvider.propTypes = {
-  tableState: PropTypes.string.isRequired,
+  tableState: PropTypes.PropTypes.oneOf(['static', 'editable', 'loading']).isRequired,
   children: PropTypes.any.isRequired,
   columns: PropTypes.arrayOf(
     PropTypes.shape({
