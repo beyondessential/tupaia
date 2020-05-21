@@ -39,57 +39,57 @@ const OVERLAYS = [
   {
     dataElementCodes: ['SchFF001'],
     name: 'Electricity',
-    id: 'LAOS_SCHOOLS_Electricity_Province',
+    id: 'Laos_Schools_Electricity_Province',
   },
   {
     dataElementCodes: ['SchFF002'],
     name: 'Internet connection in school',
-    id: 'LAOS_SCHOOLS_Internet_Province',
+    id: 'Laos_Schools_Internet_Province',
   },
   {
     dataElementCodes: ['BCD29_event'],
     name: 'Functioning water supply',
-    id: 'LAOS_SCHOOLS_Water_Supply_Province',
+    id: 'Laos_Schools_Water_Supply_Province',
   },
   {
     dataElementCodes: ['BCD32_event'],
     name: 'Functioning toilet',
-    id: 'LAOS_SCHOOLS_Toilet_Province',
+    id: 'Laos_Schools_Toilet_Province',
   },
   {
     dataElementCodes: ['SchFF004'],
     name: 'Hand washing facilities',
-    id: 'LAOS_SCHOOLS_Hand_Washing_Province',
+    id: 'Laos_Schools_Hand_Washing_Province',
   },
   {
     dataElementCodes: ['SchFF008'],
     name: 'Hard copy learning materials for communities with limited internet and TV access',
-    id: 'LAOS_SCHOOLS_Hard_Copy_Materials_Province',
+    id: 'Laos_Schools_Hard_Copy_Materials_Province',
   },
   {
     dataElementCodes: ['SchFF009'],
     name: 'Cleaning/disinfecting materials and guidance on their use',
-    id: 'LAOS_SCHOOLS_Cleaning_Materials_Province',
+    id: 'Laos_Schools_Cleaning_Materials_Province',
   },
   {
     dataElementCodes: ['SchFF009a'],
     name: 'Hygiene kits',
-    id: 'LAOS_SCHOOLS_Hygiene_Kits_Province',
+    id: 'Laos_Schools_Hygiene_Kits_Province',
   },
   {
     dataElementCodes: ['SchFF010'],
     name: 'COVID-19 prevention and control training',
-    id: 'LAOS_SCHOOLS_COVID_Training_Province',
+    id: 'Laos_Schools_COVID_Training_Province',
   },
   {
     dataElementCodes: ['SchFF011'],
     name: 'Implementing remedial education programmes',
-    id: 'LAOS_SCHOOLS_Remedial_Education_Province',
+    id: 'Laos_Schools_Remedial_Education_Province',
   },
   {
     dataElementCodes: ['SchFF016'],
     name: 'Psychosocial support',
-    id: 'LAOS_SCHOOLS_Psychosocial_Support_Province',
+    id: 'Laos_Schools_Psychosocial_Support_Province',
   },
 ];
 
