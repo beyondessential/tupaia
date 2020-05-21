@@ -18,7 +18,7 @@ exports.setup = function(options, seedLink) {
 
 const LAOS_SCHOOLS_NAME = 'Laos Schools';
 
-const LAOS_SCHOOLS_RESTRICTED_NAME = 'Laos Schools Restricted';
+const LAOS_SCHOOLS_MOES_VIEW_NAME = 'Laos Schools MoES View';
 
 const LAOS_SCHOOLS_USER_GROUP = 'Laos Schools User';
 
@@ -57,25 +57,25 @@ const LAOS_SCHOOLS_DASHBOARD_GROUPS = [
     code: 'LA_Laos_Schools_Country_Laos_Schools_Super_User',
     organisationLevel: 'Country',
     userGroup: LAOS_SCHOOLS_SUPER_USER_GROUP,
-    name: LAOS_SCHOOLS_RESTRICTED_NAME,
+    name: LAOS_SCHOOLS_MOES_VIEW_NAME,
   },
   {
     code: 'LA_Laos_Schools_Province_Laos_Schools_Super_User',
     organisationLevel: 'District',
     userGroup: LAOS_SCHOOLS_SUPER_USER_GROUP,
-    name: LAOS_SCHOOLS_RESTRICTED_NAME,
+    name: LAOS_SCHOOLS_MOES_VIEW_NAME,
   },
   {
     code: 'LA_Laos_Schools_District_Laos_Schools_Super_User',
     organisationLevel: 'SubDistrict',
     userGroup: LAOS_SCHOOLS_SUPER_USER_GROUP,
-    name: LAOS_SCHOOLS_RESTRICTED_NAME,
+    name: LAOS_SCHOOLS_MOES_VIEW_NAME,
   },
   {
     code: 'LA_Laos_Schools_School_Laos_Schools_Super_User',
     organisationLevel: 'School',
     userGroup: LAOS_SCHOOLS_SUPER_USER_GROUP,
-    name: LAOS_SCHOOLS_RESTRICTED_NAME,
+    name: LAOS_SCHOOLS_MOES_VIEW_NAME,
   }
 ];
 
