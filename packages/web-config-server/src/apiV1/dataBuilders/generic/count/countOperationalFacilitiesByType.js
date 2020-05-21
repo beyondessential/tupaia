@@ -4,9 +4,7 @@
  */
 import { Project, Facility } from '/models';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { getBasicFacilityTypeNamePlural, isFacilityOperational } from '/apiV1/utils';
-
-const OPERATIONAL_STATUS_CODE = 'BCD1';
+import { getFacilityStatuses, getBasicFacilityTypeNamePlural } from '/apiV1/utils';
 
 class CountOperationalFacilitiesByTypeBuilder extends DataBuilder {
   async fetchEntityHierarchyId() {
@@ -76,8 +74,15 @@ class CountOperationalFacilitiesByTypeBuilder extends DataBuilder {
   }
 
   async fetchOperationalFacilityCodes() {
-    const { results } = await this.fetchAnalytics([OPERATIONAL_STATUS_CODE]);
-    return results.filter(a => isFacilityOperational(a.value)).map(a => a.organisationUnit);
+    const facilityStatuses = await getFacilityStatuses(
+      this.aggregator,
+      this.entity.code,
+      this.period,
+      true,
+    );
+    return Object.entries(facilityStatuses)
+      .filter(([, isOperational]) => isOperational)
+      .map(([code]) => code);
   }
 }
 
