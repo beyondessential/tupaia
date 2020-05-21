@@ -75,7 +75,7 @@ export const getFacilityStatusCounts = async (aggregator, parentCode, period) =>
 };
 
 // Operational facilities have value 0 (Fully Operational) or 1 (Operational But Closed This Week);
-const isFacilityOperational = value => value < 2;
+export const isFacilityOperational = value => value < 2;
 
 // Annual periods only have four characters, e.g. 2018
 const periodIsAnnual = period => period.length === 4;
