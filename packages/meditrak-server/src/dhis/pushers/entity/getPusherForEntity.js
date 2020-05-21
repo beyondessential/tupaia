@@ -3,7 +3,6 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { isOrganisationUnitType } from '../../../database/models/Entity';
 import { NonExistingRecordPusher } from './NonExistingRecordPusher';
 import { OrganisationUnitPusher } from './OrganisationUnitPusher';
 import { TrackedEntityPusher } from './TrackedEntityPusher';
@@ -25,7 +24,7 @@ const getDeletePusher = async (models, change) => {
 
   const { type } = JSON.parse(syncLogRecord.data);
 
-  return isOrganisationUnitType(type) ? OrganisationUnitPusher : TrackedEntityPusher;
+  return models.entity.isOrganisationUnitType(type) ? OrganisationUnitPusher : TrackedEntityPusher;
 };
 
 export async function getPusherForEntity(models, change) {

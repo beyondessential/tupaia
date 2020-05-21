@@ -4,22 +4,39 @@
  */
 
 import { expect } from 'chai';
+import { TupaiaDataApi } from '@tupaia/data-api';
 
-import { createService, TYPE_TO_SERVICE } from '../../services/createService';
+import { createService } from '../../services/createService';
+import { DhisService } from '../../services/dhis';
+import { TupaiaDataService } from '../../services/tupaia';
 
 describe('createService()', () => {
+  const database = 'db';
   const models = {
+    database,
     dataSource: {
       getTypes: () => ({}),
     },
   };
 
-  Object.entries(TYPE_TO_SERVICE).forEach(([serviceType, serviceClass]) => {
-    it(`${serviceType} service`, () => {
-      const service = createService(models, serviceType);
+  it('throws an error for invalid service type', () => {
+    expect(() => createService(models, 'invalidService')).to.throw(/invalid.*type/i);
+  });
 
-      expect(service).to.be.instanceOf(serviceClass);
-      expect(service).to.have.deep.property('models', models);
-    });
+  it('dhis service', () => {
+    const service = createService(models, 'dhis');
+
+    expect(service).to.be.instanceOf(DhisService);
+    expect(service).to.have.deep.property('models', models);
+  });
+
+  it('tupaia service', () => {
+    const service = createService(models, 'tupaia');
+
+    expect(service).to.be.instanceOf(TupaiaDataService);
+    expect(service).to.have.deep.property('models', models);
+    expect(service).to.have.deep.property('api');
+    expect(service.api).to.be.instanceOf(TupaiaDataApi);
+    expect(service.api).to.have.deep.property('database', database);
   });
 });

@@ -1,9 +1,7 @@
 import xlsx from 'xlsx';
 
-import { respond } from '@tupaia/utils';
-import { DatabaseError } from '@tupaia/utils';
+import { DatabaseError, respond } from '@tupaia/utils';
 import { ObjectValidator, fieldHasContent } from '../validation';
-import { ENTITY_TYPES } from '../database';
 
 const TAB_NAMES = {
   DISASTER: 'Disaster',
@@ -92,7 +90,7 @@ export async function importDisaster(req, res) {
                 parent_id: item.parent_id,
                 name: item.name,
                 country_code: item.country_code,
-                type: ENTITY_TYPES.DISASTER,
+                type: transactingModels.entity.types.DISASTER,
               };
             });
 

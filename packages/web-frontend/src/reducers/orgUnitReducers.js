@@ -13,6 +13,7 @@ import {
   FETCH_ORG_UNIT_ERROR,
   FETCH_LOGIN_SUCCESS,
   FETCH_LOGOUT_SUCCESS,
+  SELECT_PROJECT,
 } from '../actions';
 
 function orgUnitMap(state = {}, action) {
@@ -27,6 +28,8 @@ function orgUnitMap(state = {}, action) {
       return {}; // Clear org units on login incase of permission change
     case FETCH_LOGOUT_SUCCESS:
       return {}; // Clear org units on logout incase of permission change
+    case SELECT_PROJECT:
+      return {}; // Clear org units on project change to fetch alternative hierarchy
     default: {
       return state;
     }
@@ -91,27 +94,36 @@ const addOrgUnitToMap = (state, orgUnit) => {
       return result;
     }
 
-    const world = countryHierarchy.find(
-      hierarchyItem => hierarchyItem.organisationUnitCode === 'World',
-    );
+    const project = countryHierarchy.find(hierarchyItem => hierarchyItem.type === 'Project');
 
-    if (!result.World) {
-      result = { ...result, World: { World: normaliseForMap(world, undefined, false) } };
+    if (!result[project.organisationUnitCode]) {
+      result = {
+        ...result,
+        [project.organisationUnitCode]: {
+          [project.organisationUnitCode]: normaliseForMap(project, undefined, false),
+        },
+      };
     }
 
-    return { ...result, [orgUnit.countryCode]: buildCountryHierarchy(countryHierarchy) };
+    return {
+      ...result,
+      [orgUnit.countryCode]: buildCountryHierarchy(countryHierarchy, project.organisationUnitCode),
+    };
   }
 
-  // Inserting 'World' fetch
+  // Inserting project fetch
   result = { ...result };
-  const world = orgUnit;
-  result.World = { World: normaliseForMap(world, undefined, true), countryCode: 'World' };
+  const project = orgUnit;
+  result[project.organisationUnitCode] = {
+    [project.organisationUnitCode]: normaliseForMap(project, undefined, true),
+    countryCode: project.organisationUnitCode,
+  };
 
   countries.forEach(country => {
     const countryCode = country.organisationUnitCode;
     if (!result[countryCode] || !result[countryCode][countryCode].isComplete) {
       result[countryCode] = {
-        [countryCode]: normaliseForMap(country, world.organisationUnitCode, false),
+        [countryCode]: normaliseForMap(country, project.organisationUnitCode, false),
         countryCode,
       };
     }
@@ -120,10 +132,10 @@ const addOrgUnitToMap = (state, orgUnit) => {
   return result;
 };
 
-const buildCountryHierarchy = countryHierarchy => {
+const buildCountryHierarchy = (countryHierarchy, projectCode) => {
   const result = {};
   countryHierarchy.forEach(orgUnit => {
-    if (orgUnit.organisationUnitCode !== 'World') {
+    if (orgUnit.organisationUnitCode !== projectCode) {
       if (orgUnit.type === 'Country') {
         result.countryCode = orgUnit.organisationUnitCode;
       }

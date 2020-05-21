@@ -1,8 +1,10 @@
-import { Entity, Facility } from '/models';
+import { Project, Facility } from '/models';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { analyticsToMeasureData } from './helpers';
+import { ENTITY_TYPES } from '/models/Entity';
 
 const FACILITY_TYPE_CODE = 'facilityTypeCode';
+const SCHOOL_TYPE_CODE = 'schoolTypeCode';
 
 class ValueForOrgGroupMeasureBuilder extends DataBuilder {
   async build() {
@@ -12,12 +14,15 @@ class ValueForOrgGroupMeasureBuilder extends DataBuilder {
   }
 
   async getFacilityDataByCode() {
-    const { dataElementCode } = this.query;
+    const { dataElementCode, projectCode } = this.query;
 
     // 'facilityTypeCode' signifies a special case which is handled internally
     if (dataElementCode === FACILITY_TYPE_CODE) {
       // create index of all facilities
-      const facilityCodes = (await this.entity.getFacilities()).map(facility => facility.code);
+      const project = await Project.findOne({ code: projectCode });
+      const facilityCodes = (await this.entity.getFacilities(project.entity_hierarchy_id)).map(
+        facility => facility.code,
+      );
       const facilityMetaDatas = await Facility.find({ code: facilityCodes });
       return facilityMetaDatas.reduce(
         (array, metadata) => [
@@ -30,6 +35,17 @@ class ValueForOrgGroupMeasureBuilder extends DataBuilder {
         ],
         [],
       );
+    } else if (dataElementCode === SCHOOL_TYPE_CODE) {
+      const project = await Project.findOne({ code: projectCode });
+      const schools = await this.entity.getDescendantsOfType(
+        ENTITY_TYPES.SCHOOL,
+        project.entity_hierarchy_id,
+      );
+      return schools.map(school => ({
+        organisationUnitCode: school.code,
+        schoolTypeName: school.attributes.type,
+        schoolTypeCode: school.attributes.type,
+      }));
     }
 
     const { results } = await this.fetchAnalytics([dataElementCode], {

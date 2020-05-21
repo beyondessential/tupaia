@@ -9,9 +9,9 @@ import sinon from 'sinon';
 import * as BuildEvents from '../../../../../services/dhis/buildAnalytics/buildEventsFromDhisEventAnalytics';
 import { DhisService } from '../../../../../services/dhis/DhisService';
 import { DATA_SOURCES } from '../DhisService.fixtures';
-import { stubModels, stubDhisApi } from '../helpers';
+import { createModelsStub, stubDhisApi } from '../DhisService.stubs';
 
-const dhisService = new DhisService(stubModels());
+const dhisService = new DhisService(createModelsStub());
 let dhisApi;
 
 export const testPullEvents = () => {
@@ -21,7 +21,7 @@ export const testPullEvents = () => {
 
   it('throws an error if multiple data groups are provided', async () =>
     expect(
-      dhisService.pull([DATA_SOURCES.POP01_GROUP, DATA_SOURCES.POP02_GROUP], 'dataGroup', {}),
+      dhisService.pull([DATA_SOURCES.POP01_GROUP, DATA_SOURCES.DIFF_GROUP], 'dataGroup', {}),
     ).to.be.rejectedWith(/Cannot .*multiple programs/));
 
   it('invokes the deprecated event api by default', async () => {

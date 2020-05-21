@@ -32,18 +32,24 @@ import {
 
 const mapStateToProps = state => {
   const { isAnimating, shouldSnapToPosition, position, measureInfo, tileSet } = state.map;
-  const { currentOrganisationUnitCode, isSidePanelExpanded } = state.global;
+  const { isSidePanelExpanded } = state.global;
   const { contractedWidth, expandedWidth } = state.dashboard;
   const currentOrganisationUnit = selectCurrentOrgUnit(state);
   const currentParent = selectOrgUnit(state, currentOrganisationUnit.parent);
-  const currentChildren = selectOrgUnitChildren(state, currentOrganisationUnitCode);
+  const currentChildren = selectOrgUnitChildren(
+    state,
+    currentOrganisationUnit.organisationUnitCode,
+  );
 
   return {
     position,
     currentOrganisationUnit,
     currentParent,
     currentChildren,
-    currentOrganisationUnitSiblings: selectOrgUnitSiblings(state, currentOrganisationUnitCode),
+    currentOrganisationUnitSiblings: selectOrgUnitSiblings(
+      state,
+      currentOrganisationUnit.organisationUnitCode,
+    ),
     measureInfo,
     tileSet,
     isAnimating,

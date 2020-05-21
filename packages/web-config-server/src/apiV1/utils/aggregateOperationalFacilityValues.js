@@ -1,4 +1,4 @@
-import { convertToPeriod, PERIOD_TYPES } from '@tupaia/dhis-api';
+import { convertToPeriod, PERIOD_TYPES } from '@tupaia/utils';
 
 export const aggregateOperationalFacilityValues = (
   operationalFacilities,

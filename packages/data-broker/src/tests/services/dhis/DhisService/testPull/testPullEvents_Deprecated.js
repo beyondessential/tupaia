@@ -8,9 +8,9 @@ import sinon from 'sinon';
 
 import { DhisService } from '../../../../../services/dhis/DhisService';
 import { DATA_SOURCES } from '../DhisService.fixtures';
-import { stubModels, stubDhisApi } from '../helpers';
+import { createModelsStub, stubDhisApi } from '../DhisService.stubs';
 
-const dhisService = new DhisService(stubModels());
+const dhisService = new DhisService(createModelsStub());
 let dhisApi;
 
 export const testPullEvents_Deprecated = () => {

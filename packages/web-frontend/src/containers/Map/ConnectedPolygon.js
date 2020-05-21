@@ -20,6 +20,7 @@ import {
   selectAllMeasuresWithDisplayInfo,
 } from '../../selectors';
 import ActivePolygon from './ActivePolygon';
+import { getSingleFormattedValue } from '../../utils';
 
 const { POLYGON_BLUE, POLYGON_HIGHLIGHT } = MAP_COLORS;
 
@@ -55,17 +56,19 @@ class ConnectedPolygon extends Component {
     return false;
   }
 
-  getTooltip(organisationUnitCode, area) {
-    const { isChildArea, hasMeasureData, measureValue } = this.props;
-    const hasMeasureValue = !!measureValue;
+  getTooltip(name) {
+    const { isChildArea, hasMeasureData, orgUnitMeasureData, measureOptions } = this.props;
+    const hasMeasureValue = orgUnitMeasureData || orgUnitMeasureData === 0;
 
     // don't render tooltips if we have a measure loaded
-    return hasMeasureData && !hasMeasureValue ? null : (
-      <AreaTooltip
-        permanent={isChildArea && !hasMeasureValue}
-        text={`${area.name}${measureValue ? `: ${measureValue}` : ''}`}
-      />
-    );
+    // and don't have a value to display in the tooltip (ie: radius overlay)
+    if (hasMeasureData && !hasMeasureValue) return null;
+
+    const text = hasMeasureValue
+      ? `${name}: ${getSingleFormattedValue(orgUnitMeasureData, measureOptions)}`
+      : name;
+
+    return <AreaTooltip permanent={isChildArea && !hasMeasureValue} text={text} />;
   }
 
   render() {
@@ -79,7 +82,7 @@ class ConnectedPolygon extends Component {
       hasShadedChildren,
     } = this.props;
     const { organisationUnitCode } = area;
-    const tooltip = this.getTooltip(organisationUnitCode, area);
+    const tooltip = this.getTooltip(area.name);
 
     if (!coordinates) return null;
 
@@ -133,7 +136,11 @@ ConnectedPolygon.propTypes = {
   hasChildren: PropTypes.bool,
   hasShadedChildren: PropTypes.bool,
   shade: PropTypes.string,
-  measureValue: PropTypes.string,
+  orgUnitMeasureData: PropTypes.shape({
+    value: PropTypes.any,
+    originalValue: PropTypes.any,
+  }),
+  measureOptions: PropTypes.arrayOf(PropTypes.object),
 };
 
 ConnectedPolygon.defaultProps = {
@@ -146,15 +153,16 @@ ConnectedPolygon.defaultProps = {
   hasChildren: false,
   hasShadedChildren: false,
   shade: undefined,
-  measureValue: undefined,
+  orgUnitMeasureData: undefined,
+  measureOptions: undefined,
 };
 
 const mapStateToProps = (state, givenProps) => {
   const { organisationUnitCode, organisationUnitChildren } = givenProps.area;
-  const { measureId, measureData } = state.map.measureInfo;
+  const { measureId, measureData, measureOptions } = state.map.measureInfo;
 
   let shade;
-  let measureValue;
+  let orgUnitMeasureData;
   let hasShadedChildren = false;
   if (selectHasPolygonMeasure(state)) {
     const measureOrgUnits = selectAllMeasuresWithDisplayInfo(state);
@@ -166,12 +174,13 @@ const mapStateToProps = (state, givenProps) => {
         measureOrgUnitCodes.includes(child.organisationUnitCode),
       );
 
-    const orgUnitMeasureData = measureOrgUnitCodes.includes(organisationUnitCode)
-      ? measureOrgUnits.find(orgUnit => orgUnit.organisationUnitCode === organisationUnitCode)
-      : {};
+    if (measureOrgUnitCodes.includes(organisationUnitCode)) {
+      orgUnitMeasureData = measureOrgUnits.find(
+        orgUnit => orgUnit.organisationUnitCode === organisationUnitCode,
+      );
+    }
 
-    shade = orgUnitMeasureData.color;
-    measureValue = orgUnitMeasureData.originalValue;
+    shade = (orgUnitMeasureData || {}).color;
   }
 
   const orgUnit = selectOrgUnit(state, organisationUnitCode);
@@ -181,8 +190,9 @@ const mapStateToProps = (state, givenProps) => {
     measureId,
     coordinates,
     hasShadedChildren,
+    orgUnitMeasureData,
     shade,
-    measureValue,
+    measureOptions,
     hasChildren: organisationUnitChildren && organisationUnitChildren.length > 0,
     hasMeasureData: measureData && measureData.length > 0,
   };

@@ -71,6 +71,5 @@ export const LandingPage = ({ isUserLoggedIn }) => {
 };
 
 LandingPage.propTypes = {
-  activateExploreMode: PropTypes.func.isRequired,
   isUserLoggedIn: PropTypes.bool.isRequired,
 };
