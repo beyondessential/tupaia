@@ -102,11 +102,7 @@ const MEASURE_BUILDER = 'valueForOrgGroup';
 
 const MEASURE_BUILDER_CONFIG =  {
   "dataSourceEntityType": "sub_district",
-  "aggregationEntityType": "sub_district",
-  "valueAlterationConfig": {
-    operator: '/',
-    parameter: 100
-  }
+  "aggregationEntityType": "sub_district"
 };
 
 const COUNTRY_CODES = '{"LA"}';

@@ -2,7 +2,6 @@ import { Project, Facility } from '/models';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { analyticsToMeasureData } from './helpers';
 import { ENTITY_TYPES } from '/models/Entity';
-import { alterValue } from '/apiV1/dataBuilders/helpers';
 
 const FACILITY_TYPE_CODE = 'facilityTypeCode';
 const SCHOOL_TYPE_CODE = 'schoolTypeCode';
@@ -52,23 +51,10 @@ class ValueForOrgGroupMeasureBuilder extends DataBuilder {
     const { results } = await this.fetchAnalytics([dataElementCode], {
       organisationUnitCode: this.entity.code,
     });
-    const analytics = results.map(result => {
-      let value = result.value;
-
-      if (value === undefined) {
-        value = '';
-      } else if (this.config.valueAlterationConfig) {
-        const { operator, parameter } = this.config.valueAlterationConfig;
-        value = alterValue(operator, value, parameter);
-      }
-
-      value = value.toString();
-
-      return {
-        ...result,
-        value,
-      };
-    });
+    const analytics = results.map(result => ({
+      ...result,
+      value: result.value === undefined ? '' : result.value.toString(),
+    }));
     return analyticsToMeasureData(analytics);
   }
 }
