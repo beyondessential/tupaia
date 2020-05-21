@@ -74,7 +74,6 @@ export const getFacilityStatusCounts = async (aggregator, parentCode, period) =>
   };
 };
 
-// Operational facilities have value 0 (Fully Operational) or 1 (Operational But Closed This Week);
 const OPERATIONAL_STATES = ['Fully Operational', 'Operational but closed this week'];
 const isFacilityOperational = value => OPERATIONAL_STATES.includes(value);
 
