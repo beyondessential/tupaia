@@ -17,8 +17,9 @@ export const translateOptionsForTupaiaDataApi = ({ period, ...restOfOptions }) =
   if (!period) return restOfOptions;
   const [startDate, endDate] = convertPeriodStringToDateRange(period);
   return {
-    startDate,
-    endDate,
-    ...restOfOptions, // if start/end dates are also provided, we favour them over period
+    ...restOfOptions,
+    // if start/end dates are also provided (and not null or undefined), favour them over period
+    startDate: restOfOptions.startDate || startDate,
+    endDate: restOfOptions.endDate || endDate,
   };
 };
