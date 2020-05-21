@@ -5,62 +5,65 @@
 import React from 'react';
 import MuiTableBody from '@material-ui/core/TableBody';
 import PropTypes from 'prop-types';
-import { TableRow, ExpandableTableRow, CondensedTableRow } from './TableRow';
+import { TableRow as TableRowComponent, CondensedTableRow, ExpandableTableRow } from './TableRow';
 import { tableColumnShape } from './tableColumnShape';
 
-export const ExpandableTableBody = React.memo(({ data, columns, rowIdKey, SubComponent }) => (
-  <MuiTableBody>
-    {data.map((rowData, rowIndex) => {
-      const key = rowData[rowIdKey] || rowData[columns[0].key];
-      return (
-        <ExpandableTableRow
-          data={data}
-          rowIndex={rowIndex}
-          key={key}
-          columns={columns}
-          SubComponent={SubComponent}
-        />
-      );
-    })}
-  </MuiTableBody>
-));
+export const ExpandableTableBody = React.memo(
+  ({ data, columns, rowIdKey, TableRow, SubComponent }) => (
+    <MuiTableBody>
+      {data.map((rowData, rowIndex) => {
+        const key = rowData[rowIdKey] || rowData[columns[0].key];
+        return (
+          <TableRow
+            data={data}
+            rowIndex={rowIndex}
+            key={key}
+            columns={columns}
+            SubComponent={SubComponent}
+          />
+        );
+      })}
+    </MuiTableBody>
+  ),
+);
 
 ExpandableTableBody.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
-  data: PropTypes.array.isRequired,
+  data: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  TableRow: PropTypes.any,
   SubComponent: PropTypes.any,
   rowIdKey: PropTypes.string.isRequired,
 };
 
 ExpandableTableBody.defaultProps = {
   SubComponent: null,
+  TableRow: ExpandableTableRow,
 };
 
-export const TableBody = ({ data, rowIdKey, columns, StyledTableRow }) => {
-  const Row = StyledTableRow || TableRow;
+export const TableBody = React.memo(({ data, columns, rowIdKey, TableRow }) => {
   return (
     <MuiTableBody>
-      {data.map(rowData => {
+      {data.map((rowData, rowIndex) => {
         const key = rowData[rowIdKey] || rowData[columns[0].key];
-        return <Row rowData={rowData} key={key} columns={columns} />;
+        return <TableRow columns={columns} data={data} rowIndex={rowIndex} key={key} />;
       })}
     </MuiTableBody>
   );
-};
+});
 
 TableBody.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
   data: PropTypes.array.isRequired,
+  TableRow: PropTypes.any,
   rowIdKey: PropTypes.string.isRequired,
-  StyledTableRow: PropTypes.any,
 };
 
 TableBody.defaultProps = {
-  StyledTableRow: null,
+  TableRow: TableRowComponent,
 };
 
 export const CondensedTableBody = React.memo(({ data, rowIdKey, columns }) => (
-  <TableBody StyledTableRow={CondensedTableRow} data={data} rowIdKey={rowIdKey} columns={columns} />
+  <TableBody TableRow={CondensedTableRow} data={data} rowIdKey={rowIdKey} columns={columns} />
 ));
 
 CondensedTableBody.propTypes = {

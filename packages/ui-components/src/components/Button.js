@@ -12,8 +12,8 @@ const StyledButton = styled(MuiButton)`
   line-height: 1;
   letter-spacing: 0;
   padding: 1em 1.5em;
-  min-width: 8em;
   box-shadow: none;
+  min-width: 3rem;
 `;
 
 /*
@@ -22,7 +22,7 @@ const StyledButton = styled(MuiButton)`
  * Default button is styled as material ui contained with the primary color
  */
 export const Button = ({ children, isSubmitting, disabled, ...props }) => (
-  <StyledButton variant="contained" color="primary" {...props} disabled={isSubmitting}>
+  <StyledButton variant="contained" color="primary" {...props} disabled={isSubmitting || disabled}>
     {isSubmitting ? 'Loading...' : children}
   </StyledButton>
 );
@@ -98,5 +98,27 @@ export const LightOutlinedButton = styled(OutlinedButton)`
     background-color: ${props => props.theme.palette.common.white};
     border-color: ${props => props.theme.palette.common.white};
     color: ${props => props.theme.palette.primary.main};
+  }
+`;
+
+/*
+ * Grey Outline Button
+ */
+export const GreyOutlinedButton = styled(OutlinedButton)`
+  color: ${props => props.theme.palette.text.secondary};
+  border: 1px solid ${props => props.theme.palette.grey['400']};
+  background: none;
+  font-size: 0.75rem;
+  padding: 0.8em 1.5em;
+
+  &.Mui-disabled {
+    background: #f1f1f1;
+    border: none;
+  }
+
+  &:hover {
+    color: ${props => props.theme.palette.text.secondary};
+    border: 1px solid ${props => props.theme.palette.grey['400']};
+    background: none;
   }
 `;

@@ -4,8 +4,16 @@
  */
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
-import { TextButton, FakeHeader, Button } from '@tupaia/ui-components';
+import MuiLink from '@material-ui/core/Link';
+import {
+  FakeHeader,
+  Button,
+  WarningButton,
+  GreyOutlinedButton,
+  SmallErrorAlert,
+} from '@tupaia/ui-components';
 import * as COLORS from '../theme/colors';
 import { BorderlessTable, SimpleTable, DottedTable } from '../components/Tables/TableTypes';
 import {
@@ -15,38 +23,6 @@ import {
   EditableTableProvider,
 } from '../components';
 import { PercentageChangeCell } from '../components/Tables/TableCellComponents';
-import PropTypes from 'prop-types';
-
-const Container = styled.div`
-  width: 100%;
-  padding: 3rem;
-  background: ${COLORS.LIGHTGREY};
-
-  > div {
-    max-width: 900px;
-    margin: 0 auto;
-  }
-`;
-
-const Inner = styled.div`
-  width: 500px;
-  border: 1px solid ${COLORS.GREY_DE};
-`;
-
-const Box = styled.section`
-  padding: 2rem 20px;
-`;
-
-const Heading = styled(Typography)`
-  margin-left: 1rem;
-  margin-bottom: 1rem;
-`;
-
-const HeadingRow = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`;
 
 const siteData = [
   {
@@ -128,6 +104,62 @@ const contact = {
   email: 'Shakila@gmail.com',
 };
 
+const ButtonContainer = styled.div`
+  background: white;
+  padding: 1rem;
+  border-radius: 3px;
+`;
+
+const SubComponent = () => {
+  return (
+    <ButtonContainer>
+      <WarningButton>Please Verify Now</WarningButton>
+    </ButtonContainer>
+  );
+};
+
+const AlertsTable = ({ columns, data }) => {
+  return <BorderlessTable columns={columns} data={data} SubComponent={SubComponent} />;
+};
+
+const Container = styled.div`
+  width: 100%;
+  padding: 3rem;
+  background: ${COLORS.LIGHTGREY};
+
+  > div {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+`;
+
+const Inner = styled.div`
+  width: 500px;
+  border: 1px solid ${COLORS.GREY_DE};
+`;
+
+const Box = styled.section`
+  padding: 2rem 20px;
+`;
+
+const Heading = styled(Typography)`
+  margin-left: 1rem;
+`;
+
+const HeadingRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 0;
+`;
+
+const ActionsRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 0;
+`;
+
 export const SandboxView = () => {
   const [tableState, setTableState] = useState('static');
 
@@ -144,6 +176,17 @@ export const SandboxView = () => {
     return <Button onClick={handleSubmit}>Save</Button>;
   };
 
+  const CancelButton = () => {
+    const handleCancel = () => {
+      setTableState('static');
+    };
+    return (
+      <Button variant="outlined" onClick={handleCancel}>
+        Cancel
+      </Button>
+    );
+  };
+
   SubmitButton.propTypes = {
     fields: PropTypes.any.isRequired,
   };
@@ -153,12 +196,10 @@ export const SandboxView = () => {
       <Inner>
         <Box>
           <HeadingRow>
-            <Heading variant="h6" gutterBottom>
-              Editable Table
-            </Heading>
-            <TextButton onClick={handleEditClick} disabled={tableState === 'editable'}>
+            <Heading variant="h6">Editable Table</Heading>
+            <GreyOutlinedButton onClick={handleEditClick} disabled={tableState === 'editable'}>
               Edit
-            </TextButton>
+            </GreyOutlinedButton>
           </HeadingRow>
           {/*========== EDITABLE TABLE ================*/}
           <EditableTableProvider
@@ -170,8 +211,16 @@ export const SandboxView = () => {
               <span>SYNDROMES</span>
               <span>TOTAL CASES</span>
             </FakeHeader>
-            <EditableTable Component={BorderlessTable} />
-            {tableState === 'editable' && <EditableTableAction Component={SubmitButton} />}
+            <EditableTable Component={AlertsTable} />
+            {tableState === 'editable' && (
+              <ActionsRow>
+                <MuiLink>Reset and use Sentinel data</MuiLink>
+                <div>
+                  <EditableTableAction Component={CancelButton} />
+                  <EditableTableAction Component={SubmitButton} />
+                </div>
+              </ActionsRow>
+            )}
           </EditableTableProvider>
         </Box>
         {/*========== TABLE STYLES ================*/}

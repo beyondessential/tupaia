@@ -92,20 +92,39 @@ export const StyledTableRow = styled(MuiTableRow)`
   }
 `;
 
-export const TableRow = ({ columns, rowData, className }) => (
+export const TableRow = ({ columns, data, rowIndex, className }) => (
   <StyledTableRow className={className}>
-    <TableRowCells columns={columns} rowData={rowData} />
+    <TableRowCells columns={columns} rowData={data[rowIndex]} />
   </StyledTableRow>
 );
 
 TableRow.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
-  rowData: PropTypes.object.isRequired,
+  data: PropTypes.array.isRequired,
   className: PropTypes.string,
+  rowIndex: PropTypes.number.isRequired,
 };
 
 TableRow.defaultProps = {
   className: '',
+};
+
+export const ExpandedTableRow = ({ columns, rowData, SubComponent, className }) => {
+  const row = (
+    <StyledTableRow className={className}>
+      <TableRowCells columns={columns} rowData={rowData} />
+    </StyledTableRow>
+  );
+
+  if (SubComponent) {
+    return (
+      <RowExpansionContainer parentRow={row} columns={columns}>
+        <SubComponent rowData={rowData} />
+      </RowExpansionContainer>
+    );
+  }
+
+  return row;
 };
 
 const condensedRowBackgroundColor = '#EFEFEF';

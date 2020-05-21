@@ -4,14 +4,20 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { Table, TableBody, TableRow, tableColumnShape } from '@tupaia/ui-components';
+import {
+  Table,
+  TableBody,
+  TableRow,
+  ExpandedTableRow,
+  tableColumnShape,
+} from '@tupaia/ui-components';
 import PropTypes from 'prop-types';
 import * as COLORS from '../../theme/colors';
 
 /*
  * Borderless Table Body
  */
-const BorderlessTableRow = styled(TableRow)`
+const BorderlessTableRow = styled(ExpandedTableRow)`
   .MuiTableCell-root {
     font-size: 15px;
     line-height: 18px;
@@ -23,12 +29,13 @@ const BorderlessTableRow = styled(TableRow)`
   }
 `;
 
-const BorderlessTableBody = ({ data, rowIdKey, columns }) => (
+const BorderlessTableBody = props => (
   <TableBody
-    StyledTableRow={BorderlessTableRow}
+    TableRow={BorderlessTableRow}
     data={data}
     rowIdKey={rowIdKey}
     columns={columns}
+    SubComponent={SubComponent}
   />
 );
 
@@ -36,15 +43,33 @@ BorderlessTableBody.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
   data: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   rowIdKey: PropTypes.string.isRequired,
+  SubComponent: PropTypes.any,
 };
 
-export const BorderlessTable = ({ columns, data }) => {
-  return <Table Header={false} Body={BorderlessTableBody} columns={columns} data={data} />;
+BorderlessTableBody.defaultProps = {
+  SubComponent: null,
+};
+
+export const BorderlessTable = ({ columns, data, SubComponent }) => {
+  return (
+    <Table
+      Header={false}
+      Body={BorderlessTableBody}
+      columns={columns}
+      data={data}
+      SubComponent={SubComponent}
+    />
+  );
 };
 
 BorderlessTable.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
   data: PropTypes.array.isRequired,
+  SubComponent: PropTypes.any,
+};
+
+BorderlessTable.defaultProps = {
+  SubComponent: null,
 };
 
 /*
