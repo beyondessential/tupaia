@@ -139,7 +139,7 @@ exports.up = async function(db) {
                   aggregationEntityType: 'district',
                   dataSourceEntityType: 'school',
                   condition: '*',
-                  dataElementCodes: ['SchFFsch'],
+                  dataElementCodes: ['SchFFprov'],
                 },
               },
             },

@@ -48,8 +48,9 @@ export const composePercentagePerOrgUnit = async (
   const { dataElementCode } = query;
 
   const responses = await fetchComposedData(aggregator, dhisApi, query, config, entity);
-  const numeratorsByOrgUnit = processValues(keyBy(responses.numerator, 'organisationUnitCode'));
-  const denominatorsByOrgUnit = processValues(keyBy(responses.denominator, 'organisationUnitCode'));
+  const { numerator, denominator } = responses;
+  const numeratorsByOrgUnit = await processValues(keyBy(numerator, 'organisationUnitCode'));
+  const denominatorsByOrgUnit = await processValues(keyBy(denominator, 'organisationUnitCode'));
 
   const fractionsByOrgUnit = {};
   Object.keys(numeratorsByOrgUnit).forEach(orgUnit => {
