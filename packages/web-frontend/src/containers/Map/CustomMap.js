@@ -143,11 +143,11 @@ export class CustomMap extends Component {
         <MapPane name="demo-land" above="tilePane" aboveAmount={0}>
           <DemoLand />
         </MapPane>
-        <MapPane name="org-regions" above="tilePane" aboveAmount={1}>
-          {this.renderPolygons()}
-        </MapPane>
-        <MapPane name="org-regions-active" above="tilePane" aboveAmount={2}>
+        <MapPane name="org-regions-active" above="tilePane" aboveAmount={1}>
           {this.renderActivePolygons()}
+        </MapPane>
+        <MapPane name="org-regions" above="tilePane" aboveAmount={2}>
+          {this.renderPolygons()}
         </MapPane>
         <MapPane name="org-markers" above="markerPane">
           <MarkerLayer />

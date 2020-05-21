@@ -66,6 +66,10 @@ RootScreen.propTypes = {
   isUserLoggedIn: PropTypes.bool.isRequired,
 };
 
+RootScreen.defaultProps = {
+  currentOrganisationUnitType: '',
+};
+
 const mapStateToProps = state => {
   return {
     currentOrganisationUnitType: selectCurrentOrgUnit(state).type,

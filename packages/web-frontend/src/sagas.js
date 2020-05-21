@@ -524,7 +524,7 @@ function* watchOrgUnitChangeAndFetchIt() {
  *
  */
 function* fetchDashboard(action) {
-  const { organisationUnitCode } = action;
+  const { organisationUnitCode } = action.organisationUnit;
   const requestResourceUrl = `dashboard?organisationUnitCode=${organisationUnitCode}`;
 
   try {
@@ -536,7 +536,7 @@ function* fetchDashboard(action) {
 }
 
 function* watchOrgUnitChangeAndFetchDashboard() {
-  yield takeLatest(CHANGE_ORG_UNIT, fetchDashboard);
+  yield takeLatest(CHANGE_ORG_UNIT_SUCCESS, fetchDashboard);
 }
 
 function* fetchViewData(parameters, errorHandler) {
@@ -663,7 +663,7 @@ function* watchSearchChange() {
  * Fetches data for a measure and write it to map state by calling fetchMeasureSuccess.
  *
  */
-function* fetchMeasureInfo(measureId, organisationUnitCode, oldOrgUnitCountry = null) {
+function* fetchMeasureInfo(measureId, organisationUnitCode) {
   const state = yield select();
   if (selectIsProject(state, organisationUnitCode)) {
     // Never want to fetch measures for World org code.
@@ -682,15 +682,6 @@ function* fetchMeasureInfo(measureId, organisationUnitCode, oldOrgUnitCountry = 
   const project = selectActiveProject(state);
   const country = selectOrgUnitCountry(state, organisationUnitCode);
   const countryCode = country ? country.organisationUnitCode : undefined;
-  if (oldOrgUnitCountry) {
-    if (oldOrgUnitCountry === countryCode) {
-      // We are in the same country as before, no need to refetch measureData
-      return;
-    }
-
-    yield put(clearMeasureHierarchy());
-  }
-
   const measureParams = selectMeasureBarItemById(state, measureId) || {};
 
   // If the view should be constrained to a date range and isn't, constrain it
@@ -783,18 +774,23 @@ function* watchFetchMeasureSuccess() {
 }
 
 function* fetchMeasureInfoForNewOrgUnit(action) {
-  const { organisationUnitCode } = action;
+  const { organisationUnitCode, countryCode } = action.organisationUnit;
   const { measureId, oldOrgUnitCountry } = yield select(state => ({
     measureId: state.map.measureInfo.measureId,
     oldOrgUnitCountry: state.map.measureInfo.currentCountry,
   }));
+  if (oldOrgUnitCountry === countryCode) {
+    // We are in the same country as before, no need to refetch measureData
+    return;
+  }
+
   if (measureId) {
-    yield fetchMeasureInfo(measureId, organisationUnitCode, oldOrgUnitCountry);
+    yield put(changeMeasure(measureId, organisationUnitCode));
   }
 }
 
 function* watchOrgUnitChangeAndFetchMeasureInfo() {
-  yield takeLatest(CHANGE_ORG_UNIT, fetchMeasureInfoForNewOrgUnit);
+  yield takeLatest(CHANGE_ORG_UNIT_SUCCESS, fetchMeasureInfoForNewOrgUnit);
 }
 
 /**
@@ -804,7 +800,7 @@ function* watchOrgUnitChangeAndFetchMeasureInfo() {
  *
  */
 function* fetchMeasures(action) {
-  const { organisationUnitCode } = action;
+  const { organisationUnitCode } = action.organisationUnit;
   const state = yield select();
   if (selectIsProject(state, organisationUnitCode)) yield put(clearMeasure());
   const requestResourceUrl = `measures?organisationUnitCode=${organisationUnitCode}`;
@@ -817,7 +813,7 @@ function* fetchMeasures(action) {
 }
 
 function* watchOrgUnitChangeAndFetchMeasures() {
-  yield takeLatest(CHANGE_ORG_UNIT, fetchMeasures);
+  yield takeLatest(CHANGE_ORG_UNIT_SUCCESS, fetchMeasures);
 }
 
 /**

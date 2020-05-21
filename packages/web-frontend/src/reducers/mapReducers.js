@@ -8,7 +8,6 @@
 import { combineReducers } from 'redux';
 
 import {
-  GO_HOME,
   CHANGE_MEASURE,
   CHANGE_ORG_UNIT,
   CHANGE_POSITION,
@@ -98,7 +97,10 @@ function measureInfo(state = {}, action) {
 
       return {
         ...action.response,
+        //Combine default hiddenMeasures (action.response.hiddenMeasures) and hiddenMeasures in the state so that default hiddenMeasures are populated
+        //If hiddenMeasures in the state has the same value, override the default hiddenMeasures.
         hiddenMeasures: {
+          ...action.response.hiddenMeasures,
           ...state.hiddenMeasures,
         },
         currentCountry,
