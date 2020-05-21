@@ -65,7 +65,6 @@ const OLD_PRESENTATION_OPTIONS =  {
 
 const NEW_PRESENTATION_OPTIONS =  {
   hideByDefault: {
-    "No": true,
     "null": true
   },
   displayOnLevel: 'District',
