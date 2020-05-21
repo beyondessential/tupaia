@@ -56,7 +56,7 @@ exports.down = function(db) {
 
     UPDATE "mapOverlay"
     SET
-      "values" = '${JSON.stringify(newValues)}',
+      "values" = '${JSON.stringify(oldValues)}',
       "measureBuilderConfig" = "measureBuilderConfig" - 'dataSourceEntityType'
     WHERE "id" = '${mapOverlayId}';
   `);
