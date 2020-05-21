@@ -29,7 +29,7 @@ const BASE_OVERLAY = {
   measureBuilder: 'groupData',
   presentationOptions: {
     displayedValueKey: 'originalValue',
-    valueType: 'percentage',
+    valueType: 'fractionAndPercentage',
     disableRenameLegend: true,
   },
   countryCodes: '{"LA"}',

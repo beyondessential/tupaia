@@ -97,7 +97,7 @@ export class DataPerOrgUnitBuilder extends DataBuilder {
           await Promise.all(schools.map(school => addSchoolToMap(school)));
           return orgUnitCode => schoolToAnscestorCode[orgUnitCode];
         }
-        case Entity.VILLAGE: {
+        case ENTITY_TYPES.VILLAGE: {
           // Create village -> facility mapper
           const villageCodes = results.map(({ [orgUnitKey]: orgUnit }) => orgUnit);
           const villageToFacilityCode = await Entity.fetchChildToParentCode(villageCodes);

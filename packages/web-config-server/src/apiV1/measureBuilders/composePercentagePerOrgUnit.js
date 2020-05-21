@@ -63,6 +63,7 @@ export const composePercentagePerOrgUnit = async (
       fractionsByOrgUnit[orgUnit] = {
         ...denominatorsByOrgUnit[orgUnit],
         [dataElementCode]: fraction,
+        metadata: { numerator: numeratorValue, denominator: denominatorValue },
       };
     }
   });
