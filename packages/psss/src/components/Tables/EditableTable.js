@@ -5,49 +5,9 @@
 import React, { createContext, useContext } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { FakeHeader, TextField } from '@tupaia/ui-components';
-import { BorderlessTable } from './TableTypes';
+import { TextField } from '@tupaia/ui-components';
 import { useFormFields } from '../../hooks';
 
-// ====================================================================================
-// SITE DATA
-// ====================================================================================
-const siteData = [
-  {
-    code: 'afr',
-    title: 'Acute Fever and Rash (AFR)',
-    percentageChange: '15',
-    totalCases: '15',
-  },
-  {
-    code: 'dia',
-    title: 'Diarrhoea (DIA)',
-    percentageChange: '7',
-    totalCases: '20',
-  },
-  {
-    code: 'ili',
-    title: 'Influenza-like Illness (ILI)',
-    percentageChange: '10',
-    totalCases: '115',
-  },
-  {
-    code: 'pf',
-    title: 'Prolonged Fever (AFR)',
-    percentageChange: '-12',
-    totalCases: '5',
-  },
-  {
-    code: 'dil',
-    title: 'Dengue-like Illness (DIL)',
-    percentageChange: '9',
-    totalCases: '54',
-  },
-];
-
-// ====================================================================================
-// CELL COMPONENT
-// ====================================================================================
 const EditableTextField = styled(TextField)`
   margin: 0;
   position: relative;
@@ -77,9 +37,22 @@ const ReadOnlyTextField = styled(EditableTextField)`
   }
 `;
 
-const TotalCasesCell = props => {
-  const [fields, handleFieldChange] = useContext(EditableTableContext);
-  const key = `${props.code}-totalCases`;
+const EditableTableContext = createContext({});
+
+export const EditableCell = ({ id, columnKey }) => {
+  const { fields, handleFieldChange, tableState } = useContext(EditableTableContext);
+  const key = `${id}-${columnKey}`;
+  if (tableState === 'editable') {
+    return (
+      <EditableTextField
+        name={columnKey}
+        value={fields[key]}
+        onChange={handleFieldChange}
+        id={key}
+      />
+    );
+  }
+
   return (
     <ReadOnlyTextField
       name="cases"
@@ -91,55 +64,23 @@ const TotalCasesCell = props => {
   );
 };
 
-TotalCasesCell.propTypes = {
-  code: PropTypes.string.isRequired,
+EditableCell.propTypes = {
+  id: PropTypes.string.isRequired,
+  columnKey: PropTypes.string.isRequired,
 };
 
-const EditableTotalCasesCell = props => {
-  const [fields, handleFieldChange] = useContext(EditableTableContext);
-  const key = `${props.code}-totalCases`;
-  return (
-    <EditableTextField name="cases" value={fields[key]} onChange={handleFieldChange} id={key} />
-  );
-};
+/**
+ *
+ * Todo: create an array variable for table states
+ */
 
-EditableTotalCasesCell.propTypes = {
-  code: PropTypes.string.isRequired,
-};
-
-// ====================================================================================
-// COLUMNS
-// ====================================================================================
-const makeTableColumns = tableState => {
-  return [
-    {
-      title: 'Title',
-      key: 'title',
-      width: '300px',
-    },
-    {
-      title: 'Percentage Increase',
-      key: 'percentageChange',
-    },
-    {
-      title: 'Total Cases',
-      key: 'totalCases',
-      editable: true,
-      CellComponent: tableState === 'editable' ? EditableTotalCasesCell : TotalCasesCell,
-    },
-  ];
-};
-
-// ====================================================================================
-// EDITABLE TABLE
-// ====================================================================================
-const makeInitialFormState = columns => {
+const makeInitialFormState = (columns, data) => {
   return columns.reduce((state, column) => {
     if (column.editable) {
       const newState = state;
 
-      siteData.forEach(row => {
-        const key = `${row.code}-${column.key}`;
+      data.forEach(row => {
+        const key = `${row.id}-${column.key}`;
         newState[key] = row[column.key];
       });
 
@@ -150,36 +91,62 @@ const makeInitialFormState = columns => {
   }, {});
 };
 
-const EditableTableContext = createContext({});
+const makeEditableColumns = columns => {
+  return columns.map(column => {
+    if (column.editable) {
+      return { ...column, CellComponent: EditableCell };
+    }
 
-/**
- *
- * Todo: update to take columns and data props
- * Todo : make work for different table styles
- * Todo: create an array variable for table states
- */
-export const EditableTable = ({ tableState, Action }) => {
-  const columns = makeTableColumns(tableState);
-  const initialFormState = makeInitialFormState(columns);
+    return column;
+  });
+};
+
+export const EditableTableProvider = ({ columns, data, tableState, children }) => {
+  const initialFormState = makeInitialFormState(columns, data);
   const [fields, handleFieldChange] = useFormFields(initialFormState);
-
-  console.log(initialFormState);
+  const editableColumns = makeEditableColumns(columns);
 
   return (
     <React.Fragment>
-      <FakeHeader>
-        <span>SYNDROMES</span>
-        <span>TOTAL CASES</span>
-      </FakeHeader>
-      <EditableTableContext.Provider value={[fields, handleFieldChange]}>
-        <BorderlessTable columns={columns} data={siteData} />
+      <EditableTableContext.Provider
+        value={{ fields, handleFieldChange, tableState, editableColumns, data }}
+      >
+        {children}
       </EditableTableContext.Provider>
-      {tableState === 'editable' && <Action fields={fields} />}
     </React.Fragment>
   );
 };
 
-EditableTable.propTypes = {
+EditableTableProvider.propTypes = {
   tableState: PropTypes.string.isRequired,
-  Action: PropTypes.any.isRequired,
+  children: PropTypes.any.isRequired,
+  columns: PropTypes.arrayOf(
+    PropTypes.shape({
+      key: PropTypes.string.isRequired,
+      title: PropTypes.node.isRequired,
+      accessor: PropTypes.func,
+      editable: PropTypes.bool,
+      CellComponent: PropTypes.any,
+      sortable: PropTypes.bool,
+    }),
+  ).isRequired,
+  data: PropTypes.array.isRequired,
+};
+
+export const EditableTable = ({ Component }) => {
+  const { editableColumns, data } = useContext(EditableTableContext);
+  return <Component columns={editableColumns} data={data} />;
+};
+
+EditableTable.propTypes = {
+  Component: PropTypes.any.isRequired,
+};
+
+export const EditableTableAction = ({ Component }) => {
+  const { fields } = useContext(EditableTableContext);
+  return <Component fields={fields} />;
+};
+
+EditableTableAction.propTypes = {
+  Component: PropTypes.any.isRequired,
 };

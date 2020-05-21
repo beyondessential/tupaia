@@ -30,7 +30,7 @@ const TableRowCells = React.memo(({ columns, rowData }) =>
     const backgroundColor = typeof cellColor === 'function' ? cellColor(rowData) : cellColor;
     return (
       <TableCell background={backgroundColor} key={key} style={{ width: width }} align={align}>
-        {CellComponent ? <CellComponent {...rowData} /> : displayValue}
+        {CellComponent ? <CellComponent {...rowData} columnKey={key} /> : displayValue}
       </TableCell>
     );
   }),

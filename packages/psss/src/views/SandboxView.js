@@ -2,14 +2,20 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import { TextButton, FakeHeader, Button } from '@tupaia/ui-components';
 import * as COLORS from '../theme/colors';
 import { BorderlessTable, SimpleTable, DottedTable } from '../components/Tables/TableTypes';
-import { SiteAddress, EditableTable } from '../components';
+import {
+  SiteAddress,
+  EditableTable,
+  EditableTableAction,
+  EditableTableProvider,
+} from '../components';
+import { PercentageChangeCell } from '../components/Tables/TableCellComponents';
+import PropTypes from 'prop-types';
 
 const Container = styled.div`
   width: 100%;
@@ -42,55 +48,33 @@ const HeadingRow = styled.div`
   justify-content: space-between;
 `;
 
-const WarningStyleText = styled.span`
-  color: ${props => props.theme.palette.warning.main};
-  font-weight: 500;
-`;
-
-const SuccessStyleText = styled.span`
-  color: ${props => props.theme.palette.success.main};
-  font-weight: 500;
-`;
-
-const PercentageChangeCell = ({ percentageChange }) => {
-  if (percentageChange > 0) {
-    return <WarningStyleText>{`${percentageChange}%`}</WarningStyleText>;
-  }
-
-  return <SuccessStyleText>{percentageChange}</SuccessStyleText>;
-};
-
-PercentageChangeCell.propTypes = {
-  percentageChange: PropTypes.string.isRequired,
-};
-
 const siteData = [
   {
-    code: 'afr',
+    id: 'afr',
     title: 'Acute Fever and Rash (AFR)',
     percentageChange: '15',
     totalCases: '15',
   },
   {
-    code: 'dia',
+    id: 'dia',
     title: 'Diarrhoea (DIA)',
     percentageChange: '7',
     totalCases: '20',
   },
   {
-    code: 'ili',
+    id: 'ili',
     title: 'Influenza-like Illness (ILI)',
     percentageChange: '10',
     totalCases: '115',
   },
   {
-    code: 'pf',
+    id: 'pf',
     title: 'Prolonged Fever (AFR)',
     percentageChange: '-12',
     totalCases: '5',
   },
   {
-    code: 'dil',
+    id: 'dil',
     title: 'Dengue-like Illness (DIL)',
     percentageChange: '9',
     totalCases: '54',
@@ -114,6 +98,24 @@ const columns = [
   },
 ];
 
+const editableTableColumns = [
+  {
+    title: 'Title',
+    key: 'title',
+    width: '300px',
+  },
+  {
+    title: 'Percentage Increase',
+    key: 'percentageChange',
+    CellComponent: PercentageChangeCell,
+  },
+  {
+    title: 'Total Cases',
+    key: 'totalCases',
+    editable: true,
+  },
+];
+
 const address = {
   name: 'Tafuna Health Clinic',
   district: 'Tafuna Western District 96799,',
@@ -127,20 +129,23 @@ const contact = {
 };
 
 export const SandboxView = () => {
-  const [tableState, setTableState] = React.useState('static');
+  const [tableState, setTableState] = useState('static');
 
   const handleEditClick = () => {
     setTableState('editable');
   };
 
-  const SubmitButton = props => {
+  const SubmitButton = ({ fields }) => {
     const handleSubmit = () => {
-      // how to save values?
-      // why am i losing focus?
-      console.log('updated values...', props);
+      console.log('updated values...', fields);
       setTableState('static');
     };
+
     return <Button onClick={handleSubmit}>Save</Button>;
+  };
+
+  SubmitButton.propTypes = {
+    fields: PropTypes.any.isRequired,
   };
 
   return (
@@ -156,7 +161,18 @@ export const SandboxView = () => {
             </TextButton>
           </HeadingRow>
           {/*========== EDITABLE TABLE ================*/}
-          <EditableTable tableState={tableState} Action={SubmitButton} />
+          <EditableTableProvider
+            columns={editableTableColumns}
+            data={siteData}
+            tableState={tableState}
+          >
+            <FakeHeader>
+              <span>SYNDROMES</span>
+              <span>TOTAL CASES</span>
+            </FakeHeader>
+            <EditableTable Component={BorderlessTable} />
+            {tableState === 'editable' && <EditableTableAction Component={SubmitButton} />}
+          </EditableTableProvider>
         </Box>
         {/*========== TABLE STYLES ================*/}
         <Box>
