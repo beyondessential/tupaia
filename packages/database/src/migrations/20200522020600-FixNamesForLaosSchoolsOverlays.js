@@ -9,69 +9,6 @@ var seed;
  * This enables us to not have to rely on NODE_PATH.
  */
 
-const LAOS_SCHOOL_BINARY_MEASURE_MAP_OVERLAYS = [
-  {
-    id: 'Laos_Schools_Electricity_Available',
-
-    dataElementCode: 'SchFF001',
-  },
-  {
-    id: 'Laos_Schools_Internet_Connection_Available_In_School',
-
-    dataElementCode: 'SchFF002',
-  },
-  {
-    id: 'Laos_Schools_Functioning_Water_Supply',
-
-    dataElementCode: 'BCD29_event',
-  },
-  {
-    id: 'Laos_Schools_Functioning_Toilet',
-
-    dataElementCode: 'BCD32_event',
-  },
-  {
-    id: 'Laos_Schools_Hand_Washing_Facility_Available',
-
-    dataElementCode: 'SchFF004',
-  },
-  {
-    id: 'Laos_Schools_Schools_Received_Learning_Materials',
-
-    dataElementCode: 'SchFF008',
-  },
-  {
-    id: 'Laos_Schools_Schools_Used_As_Quarantine',
-
-    dataElementCode: 'SchQuar001',
-  },
-  {
-    id: 'Laos_Schools_Schools_Provided_With_Cleaning_Materials',
-
-    dataElementCode: 'SchFF009',
-  },
-  {
-    id: 'Laos_Schools_Schools_Provided_With_Hygiene_Kids',
-
-    dataElementCode: 'SchFF009a',
-  },
-  {
-    id: 'Laos_Schools_Schools_Received_Training_On_Safe_Protocols',
-
-    dataElementCode: 'SchFF010',
-  },
-  {
-    id: 'Laos_Schools_Schools_Implementing_Remedial_Education_Programmes',
-
-    dataElementCode: 'SchFF011',
-  },
-  {
-    id: 'Laos_Schools_Schools_Provided_With_Psychosocial_Support',
-
-    dataElementCode: 'SchFF016',
-  },
-];
-
 const CHANGES_TO_MAKE_BY_OVERLAY = {
   Laos_Schools_Electricity_Province: {
     name: 'Electricity available in school',
