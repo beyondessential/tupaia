@@ -6,7 +6,7 @@ export default class extends RouteHandler {
   static PermissionsChecker = PermissionsChecker;
 
   buildResponse = async () => {
-    const { entity } = this;
+    const { entity, query } = this;
     const { code: entityCode, name: entityName } = entity;
     const organisationLevel = entity.getOrganisationLevel();
     const userGroups = await this.req.getUserGroups(entityCode);
@@ -17,6 +17,7 @@ export default class extends RouteHandler {
       userGroups,
       organisationLevel,
       entity,
+      query.projectCode,
     );
 
     // Aggregate dashboardGroups into api response format
