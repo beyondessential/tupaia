@@ -5,6 +5,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
+import CheckCircleIcon from '@material-ui/icons/CheckCircleOutline';
 import PropTypes from 'prop-types';
 import {
   WarningButton,
@@ -111,28 +112,38 @@ export const expandableTable = () => {
   );
 };
 
-const StyledExpansionContainer = styled(TableRowExpansionContainer)`
-  td {
-    border: none;
-  }
-
-  > .MuiTableCell-root {
-    background: white;
-    padding: 0 1rem 1rem;
-    border-radius: 3px;
-    border: 1px solid ${COLORS.RED};
-  }
+const VerifiedAlert = styled.div`
+  background-color: ${props => props.theme.palette.warning.light};
+  color: ${props => props.theme.palette.warning.main};
+  display: flex;
+  align-items: center;
+  font-size: 0.9375rem;
+  line-height: 1;
+  letter-spacing: 0;
+  font-weight: 500;
+  text-align: center;
+  padding: 1em 1.5em;
+  box-shadow: none;
+  width: 100%;
 `;
 
 const TableRow = props => {
   const { data, rowIndex } = props;
   const nameFirstLetter = data[rowIndex].name.charAt(0);
-  const initialValue = nameFirstLetter === 'A';
-  const [expanded, setExpanded] = useState(initialValue);
+  const initialStatus = nameFirstLetter === 'A' ? 'expanded' : 'closed';
+  const [status, setStatus] = useState(initialStatus);
 
-  const WarningAction = () => {
+  const WarningButtonComponent = () => {
+    if (status === 'verified') {
+      return (
+        <VerifiedAlert>
+          <CheckCircleIcon /> Verified
+        </VerifiedAlert>
+      );
+    }
+
     const handelClick = () => {
-      setExpanded(false);
+      setStatus('verified');
     };
 
     return (
@@ -141,11 +152,25 @@ const TableRow = props => {
       </WarningButton>
     );
   };
+
+  const StyledExpansionContainer = styled(TableRowExpansionContainer)`
+    td {
+      border: none;
+    }
+
+    > .MuiTableCell-root {
+      background: white;
+      padding: 0 1rem 1rem;
+      border-radius: 3px;
+      border: 1px solid ${status === 'verified' ? COLORS.LIGHT_RED : COLORS.RED};
+    }
+  `;
+
   return (
     <ControlledExpandableTableRow
       {...props}
-      expanded={expanded}
-      SubComponent={WarningAction}
+      expanded={status === 'expanded' || status === 'verified'}
+      SubComponent={WarningButtonComponent}
       ExpansionContainer={StyledExpansionContainer}
     />
   );
