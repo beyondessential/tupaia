@@ -21,6 +21,8 @@ import {
   selectCurrentOrgUnit,
   selectOrgUnitSiblings,
   selectOrgUnitChildren,
+  selectHasPolygonMeasure,
+  selectAllMeasuresWithDisplayInfo,
 } from '../../selectors';
 
 import {
@@ -41,11 +43,27 @@ const mapStateToProps = state => {
     currentOrganisationUnit.organisationUnitCode,
   );
 
+  // If the org unit's grandchildren are polygons and have a measure, display grandchildren
+  // rather than children
+  let displayedChildren = currentChildren;
+  if (selectHasPolygonMeasure(state)) {
+    const measureOrgUnits = selectAllMeasuresWithDisplayInfo(state);
+    const measureOrgUnitCodes = measureOrgUnits.map(orgUnit => orgUnit.organisationUnitCode);
+    const grandchildren = currentChildren
+      .map(area => selectOrgUnitChildren(state, area.organisationUnitCode))
+      .flat();
+
+    const hasShadedGrandchildren =
+      grandchildren &&
+      grandchildren.some(child => measureOrgUnitCodes.includes(child.organisationUnitCode));
+    if (hasShadedGrandchildren) displayedChildren = grandchildren;
+  }
+
   return {
     position,
     currentOrganisationUnit,
     currentParent,
-    currentChildren,
+    displayedChildren,
     currentOrganisationUnitSiblings: selectOrgUnitSiblings(
       state,
       currentOrganisationUnit.organisationUnitCode,
