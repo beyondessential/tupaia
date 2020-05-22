@@ -5,6 +5,7 @@
 import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
 import MuiTableCell from '@material-ui/core/TableCell';
+import MuiTableBody from '@material-ui/core/TableBody';
 import MuiTable from '@material-ui/core/Table';
 import PropTypes from 'prop-types';
 import MuiTableRow from '@material-ui/core/TableRow';
@@ -41,7 +42,7 @@ TableRowCells.propTypes = {
   rowData: PropTypes.object.isRequired,
 };
 
-const NestedTableWrapperCell = styled.td`
+const WrapperCell = styled(MuiTableCell)`
   background: white;
   padding: 0;
   border: 1px solid ${props => props.theme.palette.grey['400']};
@@ -60,25 +61,28 @@ const StyledTable = styled(MuiTable)`
   table-layout: fixed;
 `;
 
-const RowExpansionContainer = React.memo(({ parentRow, children, columns }) => (
-  <MuiTableRow>
-    <NestedTableWrapperCell colSpan={columns.length}>
-      <StyledTable>
-        <tbody>{parentRow}</tbody>
-      </StyledTable>
-      {children}
-    </NestedTableWrapperCell>
-  </MuiTableRow>
-));
+export const TableRowExpansionContainer = React.memo(
+  ({ parentRow, children, colSpan, className }) => (
+    <MuiTableRow className={className}>
+      <WrapperCell colSpan={colSpan}>
+        <StyledTable>
+          <MuiTableBody>{parentRow}</MuiTableBody>
+        </StyledTable>
+        {children}
+      </WrapperCell>
+    </MuiTableRow>
+  ),
+);
 
-RowExpansionContainer.propTypes = {
-  columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
+TableRowExpansionContainer.propTypes = {
+  colSpan: PropTypes.number.isRequired,
   parentRow: PropTypes.any.isRequired,
-  children: PropTypes.any,
+  children: PropTypes.any.isRequired,
+  className: PropTypes.string,
 };
 
-RowExpansionContainer.defaultProps = {
-  children: PropTypes.null,
+TableRowExpansionContainer.defaultProps = {
+  className: '',
 };
 
 const rowHoverColor = '#F1F1F1';
@@ -140,9 +144,9 @@ export const ExpandableTableRow = ({ columns, data, rowIndex, className, SubComp
 
   if (SubComponent && expanded) {
     return (
-      <RowExpansionContainer parentRow={row} columns={columns}>
+      <TableRowExpansionContainer parentRow={row} colSpan={columns.length}>
         <SubComponent data={data} />
-      </RowExpansionContainer>
+      </TableRowExpansionContainer>
     );
   }
 
@@ -167,9 +171,10 @@ export const ControlledExpandableTableRow = ({
   data,
   rowIndex,
   className,
-  SubComponent,
   expanded,
   onClick,
+  SubComponent,
+  ExpansionContainer,
 }) => {
   const row = (
     <StyledTableRow className={className} onClick={onClick}>
@@ -179,9 +184,9 @@ export const ControlledExpandableTableRow = ({
 
   if (SubComponent && expanded) {
     return (
-      <RowExpansionContainer parentRow={row} columns={columns}>
+      <ExpansionContainer parentRow={row} colSpan={columns.length}>
         <SubComponent data={data} />
-      </RowExpansionContainer>
+      </ExpansionContainer>
     );
   }
 
@@ -192,13 +197,15 @@ ControlledExpandableTableRow.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
   data: PropTypes.array.isRequired,
   rowIndex: PropTypes.number.isRequired,
-  SubComponent: PropTypes.any,
   className: PropTypes.string,
   expanded: PropTypes.bool,
+  SubComponent: PropTypes.any,
+  ExpansionContainer: PropTypes.any,
 };
 
 ControlledExpandableTableRow.defaultProps = {
-  SubComponent: PropTypes.null,
   className: '',
   expanded: false,
+  SubComponent: PropTypes.null,
+  ExpansionContainer: TableRowExpansionContainer,
 };

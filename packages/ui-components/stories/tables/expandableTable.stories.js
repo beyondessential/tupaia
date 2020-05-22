@@ -5,6 +5,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
+import PropTypes from 'prop-types';
 import {
   WarningButton,
   Button,
@@ -13,6 +14,7 @@ import {
   CondensedTableBody,
   ExpandableTableBody,
   ControlledExpandableTableRow,
+  TableRowExpansionContainer,
 } from '../../src';
 import { useTableData } from '../story-utils/useTableData';
 import * as COLORS from '../story-utils/theme/colors';
@@ -109,10 +111,17 @@ export const expandableTable = () => {
   );
 };
 
-const ButtonContainer = styled.div`
-  background: white;
-  padding: 1rem;
-  border-radius: 3px;
+const StyledExpansionContainer = styled(TableRowExpansionContainer)`
+  td {
+    border: none;
+  }
+
+  > .MuiTableCell-root {
+    background: white;
+    padding: 0 1rem 1rem;
+    border-radius: 3px;
+    border: 1px solid ${COLORS.RED};
+  }
 `;
 
 const TableRow = props => {
@@ -127,19 +136,50 @@ const TableRow = props => {
     };
 
     return (
-      <ButtonContainer>
-        <WarningButton onClick={handelClick}>Please Verify Now</WarningButton>
-      </ButtonContainer>
+      <WarningButton fullWidth onClick={handelClick}>
+        Please Verify Now
+      </WarningButton>
     );
   };
   return (
-    <ControlledExpandableTableRow {...props} expanded={expanded} SubComponent={WarningAction} />
+    <ControlledExpandableTableRow
+      {...props}
+      expanded={expanded}
+      SubComponent={WarningAction}
+      ExpansionContainer={StyledExpansionContainer}
+    />
   );
+};
+
+TableRow.propTypes = {
+  data: PropTypes.array.isRequired,
+  rowIndex: PropTypes.number.isRequired,
 };
 
 const TableBody = props => <ExpandableTableBody TableRow={TableRow} {...props} />;
 
+const SmallContainer = styled.div`
+  width: 600px;
+  padding: 3rem;
+  background: ${COLORS.LIGHTGREY};
+`;
+
+const smallColumns = [
+  {
+    title: 'Name',
+    key: 'name',
+  },
+  {
+    title: 'Surname',
+    key: 'surname',
+  },
+];
+
 export const controlledExpandableTable = () => {
   const { loading, data } = useTableData();
-  return <Table Header={false} Body={TableBody} columns={columns} data={data} />;
+  return (
+    <SmallContainer>
+      <Table Header={false} Body={TableBody} columns={smallColumns} data={data} />
+    </SmallContainer>
+  );
 };
