@@ -27,7 +27,12 @@ const dataBroker = sinon.createStubInstance(DataBroker, {
 });
 let aggregator;
 
-const fetchOptions = { startDate: '20200214', endDate: '20200215', period: '20200214;20200215' };
+const fetchOptions = {
+  organisationUnitCodes: ['TO'],
+  startDate: '20200214',
+  endDate: '20200215',
+  period: '20200214;20200215',
+};
 const aggregationOptions = {
   aggregationType: 'MOST_RECENT',
   aggregationConfig: { orgUnitToGroupKeys: [], requestedPeriod: '20200214;20200215' },
@@ -57,11 +62,16 @@ describe('Aggregator', () => {
   });
 
   describe('fetchAnalytics()', () => {
-    const assertDataBrokerPullIsInvokedCorrectly = ({ codeInput }) => {
+    const assertDataBrokerPullIsInvokedCorrectly = ({ codeInput }, additionalOptions) => {
       expect(dataBroker.pull).to.have.been.calledOnceWithExactly(
         { code: codeInput, type: DATA_ELEMENT },
-        fetchOptions,
+        { ...fetchOptions, ...additionalOptions },
       );
+      dataBroker.pull.resetHistory();
+    };
+
+    const assertDataBrokerPullIsNotInvoked = () => {
+      expect(dataBroker.pull).to.have.been.callCount(0);
       dataBroker.pull.resetHistory();
     };
 
@@ -85,6 +95,43 @@ describe('Aggregator', () => {
 
       await aggregator.fetchAnalytics(codes, fetchOptions);
       assertDataBrokerPullIsInvokedCorrectly({ codeInput: codes });
+    });
+
+    it('returns data for just organisationUnitCode', async () => {
+      const codes = ['POP01', 'POP02'];
+
+      await aggregator.fetchAnalytics(codes, {
+        ...fetchOptions,
+        organisationUnitCodes: undefined,
+        organisationUnitCode: 'TO',
+      });
+      assertDataBrokerPullIsInvokedCorrectly(
+        {
+          codeInput: codes,
+        },
+        { organisationUnitCodes: undefined, organisationUnitCode: 'TO' },
+      );
+    });
+
+    it('immediately returns empty data for no organisationUnitCode or organisationUnitCode', async () => {
+      const codes = ['POP01', 'POP02'];
+
+      const result = await aggregator.fetchAnalytics(codes, {
+        ...fetchOptions,
+        organisationUnitCodes: undefined,
+      });
+      assertDataBrokerPullIsNotInvoked();
+      return expect(result).to.deep.equal({
+        results: [],
+        metadata: {
+          dataElementCodeToName: {},
+        },
+        period: {
+          earliestAvailable: null,
+          latestAvailable: null,
+          requested: '20200214;20200215',
+        },
+      });
     });
 
     it('fetches, then aggregates, then filters analytics', async () => {
@@ -112,7 +159,11 @@ describe('Aggregator', () => {
       const period = '20160214';
 
       return expect(
-        aggregator.fetchAnalytics(['POP01', 'POP02'], { period }, aggregationOptions),
+        aggregator.fetchAnalytics(
+          ['POP01', 'POP02'],
+          { ...fetchOptions, period },
+          aggregationOptions,
+        ),
       ).to.eventually.deep.equal({
         results: FILTERED_ANALYTICS,
         metadata,
@@ -125,14 +176,41 @@ describe('Aggregator', () => {
     });
   });
 
-  it('fetchEvents()', async () => {
-    const code = 'PROGRAM_1';
+  describe('fetch events', () => {
+    it('fetches events', async () => {
+      const code = 'PROGRAM_1';
 
-    const response = await aggregator.fetchEvents(code, fetchOptions);
-    expect(dataBroker.pull).to.have.been.calledOnceWithExactly(
-      { code, type: DATA_GROUP },
-      fetchOptions,
-    );
-    expect(response).to.deep.equal(RESPONSE_BY_SOURCE_TYPE[DATA_GROUP]);
+      const response = await aggregator.fetchEvents(code, fetchOptions);
+      expect(dataBroker.pull).to.have.been.calledOnceWithExactly(
+        { code, type: DATA_GROUP },
+        fetchOptions,
+      );
+      expect(response).to.deep.equal(RESPONSE_BY_SOURCE_TYPE[DATA_GROUP]);
+    });
+
+    it('returns data for just organisationUnitCode', async () => {
+      const code = 'PROGRAM_1';
+
+      await aggregator.fetchEvents(code, {
+        ...fetchOptions,
+        organisationUnitCodes: undefined,
+        organisationUnitCode: 'TO',
+      });
+      expect(dataBroker.pull).to.have.been.calledOnceWithExactly(
+        { code, type: DATA_GROUP },
+        { ...fetchOptions, organisationUnitCodes: undefined, organisationUnitCode: 'TO' },
+      );
+    });
+
+    it('immediately returns empty data for no organisationUnitCode or organisationUnitCode', async () => {
+      const code = 'PROGRAM_1';
+
+      const response = await aggregator.fetchEvents(code, {
+        ...fetchOptions,
+        organisationUnitCodes: undefined,
+      });
+      expect(dataBroker.pull).to.have.been.callCount(0);
+      return expect(response).to.deep.equal([]);
+    });
   });
 });
