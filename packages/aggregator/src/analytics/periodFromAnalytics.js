@@ -1,5 +1,5 @@
 import groupBy from 'lodash.groupby';
-import { findCoarsestPeriodType, periodToType } from '@tupaia/utils';
+import { min, max, findCoarsestPeriodType, periodToType } from '@tupaia/utils';
 
 export const periodFromAnalytics = (analytics, { period: requestedPeriod }) => {
   return {
@@ -22,8 +22,8 @@ const getMostAndLeastRecentPeriod = periods => {
   const latestYearPeriods = groupedPeriods[sortedKeys[sortedKeys.length - 1]];
 
   return {
-    earliestAvailable: Math.min(...findPeriodsWithCoarsestType(earliestYearPeriods)).toString(),
-    latestAvailable: Math.max(...findPeriodsWithCoarsestType(latestYearPeriods)).toString(),
+    earliestAvailable: min(findPeriodsWithCoarsestType(earliestYearPeriods)).toString(),
+    latestAvailable: max(findPeriodsWithCoarsestType(latestYearPeriods)).toString(),
   };
 };
 
