@@ -51,37 +51,37 @@ const BASE_VIEW_JSON = {
 
 const REPORTS = {
   Laos_Schools_Dropout_Bar_Primary: {
-    name: 'Drop-out rate in primary education (%)',
+    name: 'Drop-out Rate in Primary Education (%)',
     gradeNames: GRADE_NAMES.PRIMARY,
     codeIndexOffset: 1, // code of first bit of data
     codePrefix: 'SchDrop',
   },
   Laos_Schools_Dropout_Bar_Lower_Secondary: {
-    name: 'Drop-out rate in lower secondary education (%)',
+    name: 'Drop-out Rate in Lower Secondary Education (%)',
     gradeNames: GRADE_NAMES.LOWER_SECONDARY,
     codeIndexOffset: 19,
     codePrefix: 'SchDrop',
   },
   Laos_Schools_Dropout_Bar_Upper_Secondary: {
-    name: 'Drop-out rate in upper secondary education (%)',
+    name: 'Drop-out Rate in Upper Secondary Education (%)',
     gradeNames: GRADE_NAMES.UPPER_SECONDARY,
     codeIndexOffset: 34,
     codePrefix: 'SchDrop',
   },
   Laos_Schools_Repeaters_Bar_Primary: {
-    name: 'Repeat rate in primary education (%)',
+    name: 'Repeat Rate in Primary Education (%)',
     gradeNames: GRADE_NAMES.PRIMARY,
     codeIndexOffset: 1,
     codePrefix: 'SchRep',
   },
   Laos_Schools_Repeaters_Bar_Lower_Secondary: {
-    name: 'Repeat rate in lower secondary education (%)',
+    name: 'Repeat Rate in Lower Secondary Education (%)',
     gradeNames: GRADE_NAMES.LOWER_SECONDARY,
     codeIndexOffset: 19,
     codePrefix: 'SchRep',
   },
   Laos_Schools_Repeaters_Bar_Upper_Secondary: {
-    name: 'Repeat rate in upper secondary education (%)',
+    name: 'Repeat Rate in Upper Secondary Education (%)',
     gradeNames: GRADE_NAMES.UPPER_SECONDARY,
     codeIndexOffset: 34,
     codePrefix: 'SchRep',
