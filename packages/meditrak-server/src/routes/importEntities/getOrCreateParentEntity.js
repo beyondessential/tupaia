@@ -3,8 +3,6 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  **/
 
-import { ENTITY_TYPES } from '../../database';
-
 function getGeographicalAreaCode(name, country, district) {
   return `${district ? district.code : country.code}_${name.replace("'", '')}`;
 }
@@ -42,7 +40,7 @@ export async function getOrCreateParentEntity(transactingModels, entityObject, c
       },
       {
         name: districtName,
-        type: ENTITY_TYPES.DISTRICT,
+        type: transactingModels.entity.types.DISTRICT,
         parent_id: countryEntity.id,
         country_code: country.code,
         metadata: {
@@ -63,7 +61,7 @@ export async function getOrCreateParentEntity(transactingModels, entityObject, c
     };
     const subDistrictEntityObject = {
       name: subDistrictName,
-      type: ENTITY_TYPES.SUB_DISTRICT,
+      type: transactingModels.entity.types.SUB_DISTRICT,
       parent_id: countryEntity.id,
       country_code: country.code,
       metadata: {

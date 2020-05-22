@@ -1,7 +1,6 @@
 import groupBy from 'lodash.groupby';
 
-import { utcMoment } from '@tupaia/utils';
-import { momentToPeriod, convertToPeriod } from './periodTypes';
+import { utcMoment, momentToPeriod, convertToPeriod } from '@tupaia/utils';
 
 export const groupAnalyticsByPeriod = (analytics = [], periodType) =>
   analytics.reduce((results, analytic) => {

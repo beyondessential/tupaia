@@ -24,10 +24,10 @@ export function translatePointForFrontend(point) {
 
 // Swap from geojson polygon to [[lat, lng], [lat, lng]]
 export function translateBoundsForFrontend(bounds) {
-  if (!bounds) return [];
+  if (!bounds) return null;
   const data = JSON.parse(bounds);
   const box = data.coordinates[0];
-  if (!box) return [];
+  if (!box) return null;
 
   const [topLeft, _, bottomRight] = box; // eslint-disable-line no-unused-vars
   return [flipLatLng(topLeft), flipLatLng(bottomRight)];
@@ -45,19 +45,22 @@ export function translateRegionForFrontend(region) {
 }
 
 // Calculates the largest bounding box from a list of entities with bounds.
-export function calculateBoundsFromEntities(entities) {
-  return entities.reduce((bounds, entity) => {
-    const entityBounds = translateBoundsForFrontend(entity.bounds);
-    if (!bounds) return entityBounds;
+export const calculateBoundsFromEntities = entities => {
+  const bounds = entities.map(entity => translateBoundsForFrontend(entity.bounds)).filter(x => x);
+  if (bounds.length === 0) {
+    return null;
+  }
 
-    const box = [...bounds];
-    // topLeft
-    if (box[0][0] < entityBounds[0][0]) box[0][0] = entityBounds[0][0];
-    if (box[0][1] > entityBounds[0][1]) box[0][1] = entityBounds[0][1];
-    // bottomRight
-    if (box[1][0] > entityBounds[1][0]) box[1][0] = entityBounds[1][0];
-    if (box[1][1] < entityBounds[1][1]) box[1][1] = entityBounds[1][1];
-
-    return box;
-  }, null);
-}
+  return [
+    [
+      // topLeft
+      Math.max(...bounds.map(b => b[0][0])),
+      Math.min(...bounds.map(b => b[0][1])),
+    ],
+    [
+      // bottomRight
+      Math.min(...bounds.map(b => b[1][0])),
+      Math.max(...bounds.map(b => b[1][1])),
+    ],
+  ];
+};

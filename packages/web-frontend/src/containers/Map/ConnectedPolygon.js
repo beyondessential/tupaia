@@ -58,18 +58,17 @@ class ConnectedPolygon extends Component {
 
   getTooltip(name) {
     const { isChildArea, hasMeasureData, orgUnitMeasureData, measureOptions } = this.props;
-    const hasMeasureValue = !(orgUnitMeasureData === null || orgUnitMeasureData === undefined);
+    const hasMeasureValue = orgUnitMeasureData || orgUnitMeasureData === 0;
 
     // don't render tooltips if we have a measure loaded
-    // and don't have a value to display in the tooltip
-    return hasMeasureData && !hasMeasureValue ? null : (
-      <AreaTooltip
-        permanent={isChildArea && !hasMeasureValue}
-        text={`${name}${
-          hasMeasureValue ? `: ${getSingleFormattedValue(orgUnitMeasureData, measureOptions)}` : ''
-        }`}
-      />
-    );
+    // and don't have a value to display in the tooltip (ie: radius overlay)
+    if (hasMeasureData && !hasMeasureValue) return null;
+
+    const text = hasMeasureValue
+      ? `${name}: ${getSingleFormattedValue(orgUnitMeasureData, measureOptions)}`
+      : name;
+
+    return <AreaTooltip permanent={isChildArea && !hasMeasureValue} text={text} />;
   }
 
   render() {
@@ -142,7 +141,6 @@ ConnectedPolygon.propTypes = {
     value: PropTypes.any,
     originalValue: PropTypes.any,
   }),
-  measureOptions: PropTypes.arrayOf(PropTypes.object),
 };
 
 ConnectedPolygon.defaultProps = {
@@ -157,14 +155,11 @@ ConnectedPolygon.defaultProps = {
   hasShadedChildren: false,
   shade: undefined,
   orgUnitMeasureData: undefined,
-  measureOptions: undefined,
 };
 
 const mapStateToProps = (state, givenProps) => {
   const { organisationUnitCode, organisationUnitChildren } = givenProps.area;
   const { measureId, measureData, measureOptions } = state.map.measureInfo;
-
-  const { currentOrganisationUnit, currentOrganisationUnitSiblings } = state.global;
 
   let shade;
   let orgUnitMeasureData;
@@ -193,8 +188,6 @@ const mapStateToProps = (state, givenProps) => {
 
   return {
     measureId,
-    currentOrganisationUnit,
-    currentOrganisationUnitSiblings,
     coordinates,
     hasShadedChildren,
     orgUnitMeasureData,

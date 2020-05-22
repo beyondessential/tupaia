@@ -16,6 +16,14 @@
 import { connect } from 'react-redux';
 
 import { CustomMap } from './CustomMap';
+import {
+  selectOrgUnit,
+  selectCurrentOrgUnit,
+  selectOrgUnitSiblings,
+  selectOrgUnitChildren,
+  selectHasPolygonMeasure,
+  selectAllMeasuresWithDisplayInfo,
+} from '../../selectors';
 
 import {
   changeOrgUnit,
@@ -23,11 +31,6 @@ import {
   closeDropdownOverlays,
   setMapIsAnimating,
 } from '../../actions';
-import {
-  selectHasPolygonMeasure,
-  selectAllMeasuresWithDisplayInfo,
-  selectOrgUnitChildren,
-} from '../../selectors';
 
 const mapStateToProps = state => {
   const {
@@ -38,12 +41,14 @@ const mapStateToProps = state => {
     measureInfo,
     tileSet,
   } = state.map;
-  const {
-    currentOrganisationUnit,
-    currentOrganisationUnitSiblings,
-    isSidePanelExpanded,
-  } = state.global;
+  const { isSidePanelExpanded } = state.global;
   const { contractedWidth, expandedWidth } = state.dashboard;
+  const currentOrganisationUnit = selectCurrentOrgUnit(state);
+  const currentParent = selectOrgUnit(state, currentOrganisationUnit.parent);
+  const currentChildren = selectOrgUnitChildren(
+    state,
+    currentOrganisationUnit.organisationUnitCode,
+  );
 
   // If the org unit's grandchildren are polygons and have a measure, display grandchildren
   // rather than children
@@ -65,7 +70,12 @@ const mapStateToProps = state => {
     position,
     innerAreas: displayedChildren,
     currentOrganisationUnit,
-    currentOrganisationUnitSiblings,
+    currentParent,
+    currentChildren,
+    currentOrganisationUnitSiblings: selectOrgUnitSiblings(
+      state,
+      currentOrganisationUnit.organisationUnitCode,
+    ),
     measureInfo,
     tileSet,
     isAnimating,

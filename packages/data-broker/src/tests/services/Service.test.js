@@ -2,18 +2,11 @@ import { expect } from 'chai';
 import { Service } from '../../services/Service';
 
 describe('Service', () => {
-  it('push()', () => {
-    const service = new Service();
-    expect(() => service.push()).to.throw(/must implement.*push/);
-  });
+  const service = new Service();
 
-  it('delete()', () => {
-    const service = new Service();
-    expect(() => service.delete()).to.throw(/must implement.*delete/);
-  });
+  it('push()', () => expect(service.push()).to.be.rejectedWith(/must implement.*push/));
 
-  it('pull()', () => {
-    const service = new Service();
-    expect(() => service.pull()).to.throw(/must implement.*pull/);
-  });
+  it('delete()', () => expect(service.delete()).to.be.rejectedWith(/must implement.*delete/));
+
+  it('pull()', () => expect(service.pull()).to.be.rejectedWith(/must implement.*pull/));
 });

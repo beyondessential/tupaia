@@ -16,6 +16,10 @@ class SurveyType extends DatabaseType {
     return this.otherModels.permissionGroup.findById(this.permission_group_id);
   }
 
+  getIsIntegratedWithDhis2() {
+    return !!this.integration_metadata.dhis2;
+  }
+
   getIsDataForRegionalDhis2() {
     if (!this.integration_metadata.dhis2) {
       throw new Error('This survey is not meant for DHIS2 at all');
