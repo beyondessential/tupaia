@@ -4,7 +4,7 @@
  */
 
 import groupBy from 'lodash.groupby';
-import { convertToPeriod, getPeriodsInRange } from '@tupaia/dhis-api';
+import { convertToPeriod, getPeriodsInRange } from '@tupaia/utils';
 import { getContinuousPeriodsForAnalytics } from './utils';
 
 export const sumPreviousPerPeriod = (analytics, aggregationPeriod, requestedPeriod) => {

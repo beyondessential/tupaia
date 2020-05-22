@@ -4,28 +4,10 @@
  **/
 
 import { DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
-import { ORG_UNIT_ENTITY_TYPES } from '../../../database';
 import { EntityPusher } from './EntityPusher';
 
 const { ORGANISATION_UNIT, ORGANISATION_UNIT_GROUP } = DHIS2_RESOURCE_TYPES;
-const { COUNTRY, DISTRICT, SUB_DISTRICT, FACILITY, WORLD, VILLAGE } = ORG_UNIT_ENTITY_TYPES;
 const MAXIMUM_SHORT_NAME_LENGTH = 50;
-
-const LEVEL_BY_SERVER_AND_TYPE = {
-  regional: {
-    [COUNTRY]: 'Country',
-    [DISTRICT]: 'District',
-    [SUB_DISTRICT]: 'Subdistrict',
-    [FACILITY]: 'Facility',
-    [VILLAGE]: 'Village',
-  },
-  tonga: {
-    [COUNTRY]: 'Country',
-    [DISTRICT]: 'Island Group',
-    [FACILITY]: 'Facility',
-    [VILLAGE]: 'Village',
-  },
-};
 
 function getFacilityTypeCollectionName(typeName) {
   const edgeCases = {
@@ -121,7 +103,7 @@ export class OrganisationUnitPusher extends EntityPusher {
     //     regional dashboard)
     const shouldBeAddedToWorld = await this.getIsInPacific(entity);
     let ancestor = await this.models.entity.findById(entity.parent_id);
-    while (ancestor && (ancestor.type !== WORLD || shouldBeAddedToWorld)) {
+    while (ancestor && (!ancestor.isWorld() || shouldBeAddedToWorld)) {
       await this.addFacilityToOrganisationUnitGroup(
         ancestor.code,
         constructGroupDetails,
@@ -139,8 +121,7 @@ export class OrganisationUnitPusher extends EntityPusher {
    * @param {object} entity
    */
   async addEntityToOrganisationUnitGroups(entity) {
-    const { type } = entity;
-    if (type !== FACILITY) {
+    if (!entity.isFacility()) {
       // Only facilities need to be added to organisation unit groups
       return;
     }
@@ -170,8 +151,24 @@ export class OrganisationUnitPusher extends EntityPusher {
   }
 
   async getLevel(entity) {
+    const { COUNTRY, DISTRICT, SUB_DISTRICT, FACILITY, VILLAGE } = this.models.entity.types;
+    const levelsByServerAndType = {
+      regional: {
+        [COUNTRY]: 'Country',
+        [DISTRICT]: 'District',
+        [SUB_DISTRICT]: 'Subdistrict',
+        [FACILITY]: 'Facility',
+        [VILLAGE]: 'Village',
+      },
+      tonga: {
+        [COUNTRY]: 'Country',
+        [DISTRICT]: 'Island Group',
+        [FACILITY]: 'Facility',
+        [VILLAGE]: 'Village',
+      },
+    };
     const serverName = this.api.getServerName();
-    const levelByType = LEVEL_BY_SERVER_AND_TYPE[serverName];
+    const levelByType = levelsByServerAndType[serverName];
     if (!levelByType) {
       throw new Error(`Unsupported server for entity sync ${serverName}`);
     }

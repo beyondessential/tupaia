@@ -25,7 +25,11 @@ import { changeDashboardGroup, closeDropdownOverlays } from '../../actions';
 import DashboardGroup from '../DashboardGroup';
 import { getFacilityThumbnailUrl } from '../../utils';
 import { DropDownMenu } from '../../components/DropDownMenu';
-import { selectCurrentDashboardKey, selectCurrentOrgUnit } from '../../selectors';
+import {
+  selectCurrentDashboardKey,
+  selectCurrentOrgUnit,
+  selectAdjustedProjectBounds,
+} from '../../selectors';
 
 const IMAGE_HEIGHT_RATIO = 0.5;
 
@@ -70,21 +74,17 @@ export class Dashboard extends Component {
     if (!visible) return null;
     const { contractedWidth } = this.props;
 
-    const { currentOrganisationUnit } = this.props;
-    if (!currentOrganisationUnit) {
+    const { currentOrganisationUnitBounds } = this.props;
+    if (!currentOrganisationUnitBounds) {
       return null;
     }
-
-    const { location } = currentOrganisationUnit;
-
     // If the organisation is the redux default, the location contains a point coordinate,
     // instead of bounds, or the current org unit is the world render the default world map.
-    const useWorldBounds =
-      !(location && location.bounds) || currentOrganisationUnit.organisationUnitCode === 'World';
+
     const mapWidth = contractedWidth - DASHBOARD_META_MARGIN * 2;
     return (
       <StaticMap
-        polygonBounds={useWorldBounds ? initialOrgUnit.location.bounds : location.bounds}
+        polygonBounds={currentOrganisationUnitBounds}
         width={mapWidth * 2 /* Multiply by 2 to render maps that look sharp when expanded */}
         height={
           mapWidth *
@@ -92,7 +92,7 @@ export class Dashboard extends Component {
           2 /* Multiply by 2 to render maps that look sharp when expanded */
         }
         style={DASHBOARD_STYLES.metaImage}
-        showBox={!useWorldBounds}
+        showBox={currentOrganisationUnitBounds !== initialOrgUnit.location.bounds}
       />
     );
   }
@@ -249,6 +249,7 @@ Dashboard.propTypes = {
   onChangeDashboardGroup: PropTypes.func.isRequired,
   currentDashboardKey: PropTypes.string,
   currentOrganisationUnit: PropTypes.object,
+  currentOrganisationUnitBounds: PropTypes.arrayOf(PropTypes.string),
   onDashboardClicked: PropTypes.func.isRequired,
   mapIsAnimating: PropTypes.bool,
   isSidePanelExpanded: PropTypes.bool.isRequired,
@@ -259,9 +260,19 @@ const mapStateToProps = state => {
   const { isAnimating } = state.map;
   const { isLoadingOrganisationUnit, dashboardConfig, isSidePanelExpanded, project } = state.global;
   const { contractedWidth } = state.dashboard;
-
+  const currentOrganisationUnit = selectCurrentOrgUnit(state);
+  let currentOrganisationUnitBounds = initialOrgUnit.location.bounds;
+  if (currentOrganisationUnit.type === 'Project') {
+    currentOrganisationUnitBounds = selectAdjustedProjectBounds(
+      state,
+      currentOrganisationUnit.organisationUnitCode,
+    );
+  } else if (currentOrganisationUnit.location && currentOrganisationUnit.location.bounds) {
+    currentOrganisationUnitBounds = currentOrganisationUnit.location.bounds;
+  }
   return {
-    currentOrganisationUnit: selectCurrentOrgUnit(state),
+    currentOrganisationUnit,
+    currentOrganisationUnitBounds,
     sections: dashboardConfig,
     currentDashboardKey: selectCurrentDashboardKey(state),
     mapIsAnimating: isAnimating,

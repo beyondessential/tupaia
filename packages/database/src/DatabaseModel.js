@@ -12,9 +12,7 @@ export class DatabaseModel {
     // Add change handler to database if defined, and this is the singleton instance of the model
     const onChange = this.constructor.onChange;
     if (this.database.isSingleton && onChange) {
-      this.database.addChangeHandlerForCollection(this.DatabaseTypeClass.databaseType, change =>
-        onChange(change, this),
-      );
+      this.addChangeHandler(change => onChange(change, this));
     }
 
     // this.schema contains information about the columns on the table in the database, e.g.:
@@ -34,6 +32,9 @@ export class DatabaseModel {
       });
     }
   }
+
+  addChangeHandler = handler =>
+    this.database.addChangeHandlerForCollection(this.DatabaseTypeClass.databaseType, handler);
 
   async fetchSchema() {
     if (!this.schema) {
