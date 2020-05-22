@@ -341,7 +341,6 @@ export class TupaiaDatabase {
       `,
       allParameterBindings,
     );
-    console.log('Returning result from update or create');
     return result[0];
   }
 
