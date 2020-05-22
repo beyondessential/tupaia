@@ -33,6 +33,7 @@ const BorderlessTableBody = props => (
   <ExpandableTableBody TableRow={ActiveBorderlessTableRow} {...props} />
 );
 
+// Todo: investigate using table row rather than table body to customise styles of tables
 export const BorderlessTable = ({ columns, data, SubComponent }) => {
   return (
     <Table

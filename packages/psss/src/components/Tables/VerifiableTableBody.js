@@ -37,6 +37,7 @@ const VerifiedAlert = styled.div`
 const TableRow = props => {
   const { data, rowIndex } = props;
   const indicator = data[rowIndex].percentageChange;
+  // Todo: move the row status to the data and manage it with the form state
   const initialStatus = indicator > '10' ? 'expanded' : 'closed';
   const [status, setStatus] = useState(initialStatus);
 
@@ -60,6 +61,7 @@ const TableRow = props => {
     );
   };
 
+  // Todo: update so that there can be space below alerts
   const StyledExpansionContainer = styled(TableRowExpansionContainer)`
     td {
       border: none;
@@ -88,6 +90,7 @@ TableRow.propTypes = {
   rowIndex: PropTypes.number.isRequired,
 };
 
+// Todo: export table row instead of table body
 export const VerifiableTableBody = ({ tableState, ...props }) => {
   const Row = tableState === 'editable' ? BorderlessTableRow : TableRow;
   return <ExpandableTableBody TableRow={Row} {...props} />;

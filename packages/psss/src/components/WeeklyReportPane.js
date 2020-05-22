@@ -276,7 +276,7 @@ export const WeeklyReportPane = () => {
           <Card variant="outlined" mb={3}>
             <HeadingRow>
               <HeaderTitle>Sentinel Cases Reported</HeaderTitle>
-              <GreyOutlinedButton >Edit</GreyOutlinedButton>
+              <GreyOutlinedButton>Edit</GreyOutlinedButton>
             </HeadingRow>
             <FakeHeader>
               <span>SYNDROMES</span>
