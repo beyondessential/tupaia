@@ -3,12 +3,12 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import MuiLink from '@material-ui/core/Link';
-import { FakeAPI } from '../story-utils/api';
 import * as COLORS from '../story-utils/theme/colors';
+import { useTableData } from '../story-utils/useTableData';
 import {
   Button,
   Table,
@@ -31,24 +31,6 @@ const Container = styled.div`
     margin: 0 auto;
   }
 `;
-
-const useTableData = () => {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  const API = new FakeAPI();
-
-  useEffect(() => {
-    (async () => {
-      setLoading(true);
-      const userData = await API.get('users');
-      setLoading(false);
-      setData(userData.data);
-    })();
-  }, []);
-
-  return { loading, data };
-};
 
 const ActionsRow = styled.div`
   display: flex;

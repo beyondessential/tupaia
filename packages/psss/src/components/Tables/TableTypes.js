@@ -10,13 +10,13 @@ import {
   ExpandableTableBody,
   TableRow,
   ExpandableTableRow,
-  ControlledTableRow,
+  ControlledExpandableTableRow,
   tableColumnShape,
 } from '@tupaia/ui-components';
 import PropTypes from 'prop-types';
 import * as COLORS from '../../theme/colors';
 
-const BorderlessTableRow = styled(ControlledTableRow)`
+const BorderlessTableRow = styled(ControlledExpandableTableRow)`
   .MuiTableCell-root {
     font-size: 15px;
     line-height: 18px;

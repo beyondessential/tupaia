@@ -162,8 +162,7 @@ ExpandableTableRow.defaultProps = {
   className: '',
 };
 
-// ====================== WIP: Combine with above maybe ================
-export const ControlledTableRow = ({
+export const ControlledExpandableTableRow = ({
   columns,
   data,
   rowIndex,
@@ -189,7 +188,7 @@ export const ControlledTableRow = ({
   return row;
 };
 
-ControlledTableRow.propTypes = {
+ControlledExpandableTableRow.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
   data: PropTypes.array.isRequired,
   rowIndex: PropTypes.number.isRequired,
@@ -198,7 +197,7 @@ ControlledTableRow.propTypes = {
   expanded: PropTypes.bool,
 };
 
-ControlledTableRow.defaultProps = {
+ControlledExpandableTableRow.defaultProps = {
   SubComponent: PropTypes.null,
   className: '',
   expanded: false,
