@@ -21,7 +21,7 @@ const REMOVABLE_MAP_OVERLAY_GROUP_NAMES = [
   'Disaster response',
   'Electricity',
   'Facility equipment',
-  'Laboratory and Diagnosis',
+  'Laboratory and diagnosis',
   'Medicines & Consumables',
   'Services provided',
   'Water and Sanitation',
