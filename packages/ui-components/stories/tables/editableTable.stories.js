@@ -83,6 +83,10 @@ export const editableTable = () => {
     return <Button onClick={handleSubmit}>Save</Button>;
   };
 
+  SubmitButton.propTypes = {
+    fields: PropTypes.any.isRequired,
+  };
+
   const CancelButton = () => {
     const handleCancel = () => {
       setTableState('static');
@@ -92,10 +96,6 @@ export const editableTable = () => {
         Cancel
       </Button>
     );
-  };
-
-  SubmitButton.propTypes = {
-    fields: PropTypes.any.isRequired,
   };
 
   return (

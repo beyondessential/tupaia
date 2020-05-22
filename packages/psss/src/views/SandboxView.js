@@ -13,15 +13,13 @@ import {
   WarningButton,
   GreyOutlinedButton,
   SmallErrorAlert,
-} from '@tupaia/ui-components';
-import * as COLORS from '../theme/colors';
-import { BorderlessTable, SimpleTable, DottedTable } from '../components/Tables/TableTypes';
-import {
-  SiteAddress,
   EditableTable,
   EditableTableAction,
   EditableTableProvider,
-} from '../components';
+} from '@tupaia/ui-components';
+import * as COLORS from '../theme/colors';
+import { BorderlessTable, SimpleTable, DottedTable } from '../components/Tables/TableTypes';
+import { SiteAddress } from '../components';
 import { PercentageChangeCell } from '../components/Tables/TableCellComponents';
 
 const siteData = [

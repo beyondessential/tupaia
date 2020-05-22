@@ -6,6 +6,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
+import MuiLink from '@material-ui/core/Link';
+import PropTypes from 'prop-types';
 import {
   FakeHeader,
   Drawer,
@@ -16,6 +18,11 @@ import {
   ErrorAlert,
   TextButton,
   ButtonSelect,
+  EditableTable,
+  EditableTableAction,
+  EditableTableProvider,
+  SmallErrorAlert,
+  GreyOutlinedButton,
 } from '@tupaia/ui-components';
 import { BorderlessTable, DottedTable } from './Tables/TableTypes';
 import { PercentageChangeCell } from './Tables/TableCellComponents';
@@ -35,31 +42,31 @@ const Action = () => {
 
 const siteData = [
   {
-    code: 'afr',
+    id: 'afr',
     title: 'Acute Fever and Rash (AFR)',
     percentageChange: '15',
     totalCases: '15',
   },
   {
-    code: 'dia',
+    id: 'dia',
     title: 'Diarrhoea (DIA)',
     percentageChange: '7',
     totalCases: '20',
   },
   {
-    code: 'ili',
+    id: 'ili',
     title: 'Influenza-like Illness (ILI)',
     percentageChange: '10',
     totalCases: '115',
   },
   {
-    code: 'pf',
+    id: 'pf',
     title: 'Prolonged Fever (AFR)',
     percentageChange: '-12',
     totalCases: '5',
   },
   {
-    code: 'dil',
+    id: 'dil',
     title: 'Dengue-like Illness (DIL)',
     percentageChange: '9',
     totalCases: '54',
@@ -149,6 +156,31 @@ const contact = {
   email: 'Shakila@gmail.com',
 };
 
+const ActionsRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 0;
+`;
+
+const editableColumns = [
+  {
+    title: 'Title',
+    key: 'title',
+    width: '300px',
+  },
+  {
+    title: 'Percentage Increase',
+    key: 'percentageChange',
+    CellComponent: PercentageChangeCell,
+  },
+  {
+    title: 'Total Cases',
+    key: 'totalCases',
+    editable: true,
+  },
+];
+
 export const WeeklyReportPane = () => {
   const [open, setOpen] = useState(false);
 
@@ -163,6 +195,36 @@ export const WeeklyReportPane = () => {
 
   const handleClose = event => toggleDrawer(event, false);
 
+  const [tableState, setTableState] = useState('static');
+
+  const SubmitButton = ({ fields }) => {
+    const handleSubmit = () => {
+      console.log('updated values...', fields);
+      setTableState('static');
+    };
+
+    return <Button onClick={handleSubmit}>Save</Button>;
+  };
+
+  SubmitButton.propTypes = {
+    fields: PropTypes.any.isRequired,
+  };
+
+  const CancelButton = () => {
+    const handleCancel = () => {
+      setTableState('static');
+    };
+    return (
+      <Button variant="outlined" onClick={handleCancel}>
+        Cancel
+      </Button>
+    );
+  };
+
+  const handleEditClick = () => {
+    setTableState('editable');
+  };
+
   return (
     <React.Fragment>
       <Button onClick={handleOpen}>Save and submit</Button>
@@ -175,21 +237,34 @@ export const WeeklyReportPane = () => {
         <ErrorAlert>ILI Above Threshold. Please review and verify data.</ErrorAlert>
         <GreySection>
           <MainHeadingRow>
-            <Typography variant="h5">Previous Week</Typography>
-            <TextButton>Edit</TextButton>
+            <Typography variant="h5">7/10 Sites Reported</Typography>
+            <GreyOutlinedButton onClick={handleEditClick} disabled={tableState === 'editable'}>
+              Edit
+            </GreyOutlinedButton>
           </MainHeadingRow>
           <GreyHeader>
             <span>SYNDROMES</span>
             <span>TOTAL CASES</span>
           </GreyHeader>
-          <BorderlessTable columns={columns} data={siteData} />
+          <EditableTableProvider columns={editableColumns} data={siteData} tableState={tableState}>
+            <EditableTable Component={BorderlessTable} />
+            {tableState === 'editable' && (
+              <ActionsRow>
+                <MuiLink>Reset and use Sentinel data</MuiLink>
+                <div>
+                  <EditableTableAction Component={CancelButton} />
+                  <EditableTableAction Component={SubmitButton} />
+                </div>
+              </ActionsRow>
+            )}
+          </EditableTableProvider>
         </GreySection>
         <MainSection>
           <ButtonSelect id="button-select" options={options} />
           <SiteAddress address={address} contact={contact} />
           <Card variant="outlined" mb={3}>
             <HeadingRow>
-              <HeaderTitle>Previous Week</HeaderTitle>
+              <HeaderTitle>Sentinel Cases Reported</HeaderTitle>
               <TextButton>Edit</TextButton>
             </HeadingRow>
             <FakeHeader>
