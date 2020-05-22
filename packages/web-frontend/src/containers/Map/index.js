@@ -51,7 +51,7 @@ const mapStateToProps = state => {
     const measureOrgUnitCodes = measureOrgUnits.map(orgUnit => orgUnit.organisationUnitCode);
     const grandchildren = currentChildren
       .map(area => selectOrgUnitChildren(state, area.organisationUnitCode))
-      .flat();
+      .reduce((acc, val) => acc.concat(val), []); // equivelent to .flat(), for IE
 
     const hasShadedGrandchildren =
       grandchildren &&
