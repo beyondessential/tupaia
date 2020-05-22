@@ -4,10 +4,14 @@
  */
 
 export const sanitizeDataValue = (value, type) => {
-  if (type === 'Number') {
-    const sanitizedValue = parseFloat(value);
-    return Number.isNaN(sanitizedValue) ? '' : sanitizedValue;
+  switch (type) {
+    case 'Number': {
+      const sanitizedValue = parseFloat(value);
+      return Number.isNaN(sanitizedValue) ? '' : sanitizedValue;
+    }
+    case 'Binary':
+      return value === 'Yes' ? 1 : 0;
+    default:
+      return value;
   }
-
-  return value;
 };
