@@ -121,7 +121,7 @@ const SubComponent = React.memo(() => {
   );
 });
 
-export const nestedTable = () => {
+export const expandableTable = () => {
   const { loading, data } = useTableData();
 
   return (
