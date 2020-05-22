@@ -4,7 +4,11 @@
  */
 import { Project, Facility } from '/models';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { getFacilityStatuses, getBasicFacilityTypeNamePlural } from '/apiV1/utils';
+import {
+  getFacilityStatuses,
+  translateCategoryCodeToFacilityType,
+  pluraliseFacilityType,
+} from '/apiV1/utils';
 
 class CountOperationalFacilitiesByTypeBuilder extends DataBuilder {
   async fetchEntityHierarchyId() {
@@ -57,12 +61,12 @@ class CountOperationalFacilitiesByTypeBuilder extends DataBuilder {
     const getTypeAndLevel = facility => {
       if (isMultipleCountries) {
         return {
-          type: getBasicFacilityTypeNamePlural(facility.category_code),
+          type: pluraliseFacilityType(translateCategoryCodeToFacilityType(facility.category_code)),
           level: parseInt(facility.category_code, 10),
         };
       }
       return {
-        type: facility.type_name,
+        type: pluraliseFacilityType(facility.type_name),
         level: parseFloat(facility.type),
       };
     };
