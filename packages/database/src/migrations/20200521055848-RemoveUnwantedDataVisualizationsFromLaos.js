@@ -61,7 +61,7 @@ exports.up = async function(db) {
       "groupName" IN (${arrayToDbString(REMOVABLE_MAP_OVERLAY_GROUP_NAMES)});
   `);
 
-  // Oxygen concentrators belongs to the removable `Facility equipment` overlay group,
+  // `Oxygen concentrators` belongs to the removable `Facility equipment` overlay group,
   // but is still relevant to Laos
   await db.runSql(`
     UPDATE
@@ -70,6 +70,16 @@ exports.up = async function(db) {
       "countryCodes" = "countryCodes" || '{LA}'
     WHERE
       name = 'Oxygen concentrators';
+  `);
+  // `Operational facilities` belongs to the removable `Services provided` overlay group,
+  // but is still relevant to Laos
+  await db.runSql(`
+    UPDATE
+      "mapOverlay"
+    SET
+      "countryCodes" = "countryCodes" || '{LA}'
+    WHERE
+      name = 'Operational facilities';
   `);
 
   await db.runSql(`
