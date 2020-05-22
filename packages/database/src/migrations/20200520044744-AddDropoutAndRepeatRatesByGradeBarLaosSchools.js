@@ -32,6 +32,7 @@ const BASE_REPORT = {
 };
 
 const BASE_VIEW_JSON = {
+  valueType: 'percentage',
   type: 'chart',
   chartType: 'bar',
   chartConfig: {
