@@ -85,7 +85,8 @@ const number = (value, { presentationOptions = {} }) => {
   return numeral(value).format(valueFormat);
 };
 
-const defaultFormatter = input => (Number.isNaN(input) ? input : truncateDecimalToPlace(2)(input));
+const defaultFormatter = input =>
+  Number.isNaN(Number(input)) ? input : truncateDecimalToPlace(2)(input);
 
 const VALUE_TYPE_TO_FORMATTER = {
   [VALUE_TYPES.TEXT]: text,

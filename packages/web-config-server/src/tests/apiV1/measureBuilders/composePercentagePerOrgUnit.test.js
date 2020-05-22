@@ -42,8 +42,18 @@ describe('composePercentagePerOrgUnit', () => {
     return expect(
       composePercentagePerOrgUnit(aggregator, dhisApi, query, config),
     ).to.eventually.deep.equal([
-      { name: 'Kolonga', organisationUnitCode: 'TO_KlongaHC', value: 0.5 },
-      { name: 'Nukunuku', organisationUnitCode: 'TO_Nukuhc', value: 0.25 },
+      {
+        name: 'Kolonga',
+        organisationUnitCode: 'TO_KlongaHC',
+        value: 0.5,
+        metadata: { numerator: 1, denominator: 2 },
+      },
+      {
+        name: 'Nukunuku',
+        organisationUnitCode: 'TO_Nukuhc',
+        value: 0.25,
+        metadata: { numerator: 2, denominator: 8 },
+      },
     ]);
   });
 
@@ -62,7 +72,12 @@ describe('composePercentagePerOrgUnit', () => {
     return expect(
       composePercentagePerOrgUnit(aggregator, dhisApi, query, config),
     ).to.eventually.deep.equal([
-      { name: 'Kolonga', organisationUnitCode: 'TO_KlongaHC', value: 0.5 },
+      {
+        name: 'Kolonga',
+        organisationUnitCode: 'TO_KlongaHC',
+        value: 0.5,
+        metadata: { numerator: 1, denominator: 2 },
+      },
     ]);
   });
 });
