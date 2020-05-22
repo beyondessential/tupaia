@@ -21,12 +21,15 @@ import {
   EditableTable,
   EditableTableAction,
   EditableTableProvider,
+  ExpandableTableBody,
   SmallErrorAlert,
+  Table,
   GreyOutlinedButton,
 } from '@tupaia/ui-components';
 import { BorderlessTable, DottedTable } from './Tables/TableTypes';
 import { PercentageChangeCell } from './Tables/TableCellComponents';
 import * as COLORS from '../theme/colors';
+import { VerifiableTableBody } from './Tables/VerifiableTableBody';
 import { SiteAddress } from './SiteAddress';
 
 const Action = () => {
@@ -199,8 +202,8 @@ export const WeeklyReportPane = () => {
 
   const SubmitButton = ({ fields }) => {
     const handleSubmit = () => {
-      console.log('updated values...', fields);
       setTableState('static');
+      console.log('updated values...', fields);
     };
 
     return <Button onClick={handleSubmit}>Save</Button>;
@@ -225,6 +228,14 @@ export const WeeklyReportPane = () => {
     setTableState('editable');
   };
 
+  const EditableVerifiableTableBody = props => (
+    <VerifiableTableBody tableState={tableState} {...props} />
+  );
+
+  const VerifiableTable = props => (
+    <Table Header={false} Body={EditableVerifiableTableBody} {...props} />
+  );
+
   return (
     <React.Fragment>
       <Button onClick={handleOpen}>Save and submit</Button>
@@ -247,7 +258,7 @@ export const WeeklyReportPane = () => {
             <span>TOTAL CASES</span>
           </GreyHeader>
           <EditableTableProvider columns={editableColumns} data={siteData} tableState={tableState}>
-            <EditableTable Component={BorderlessTable} />
+            <EditableTable Component={VerifiableTable} />
             {tableState === 'editable' && (
               <ActionsRow>
                 <MuiLink>Reset and use Sentinel data</MuiLink>
@@ -265,7 +276,7 @@ export const WeeklyReportPane = () => {
           <Card variant="outlined" mb={3}>
             <HeadingRow>
               <HeaderTitle>Sentinel Cases Reported</HeaderTitle>
-              <TextButton>Edit</TextButton>
+              <GreyOutlinedButton >Edit</GreyOutlinedButton>
             </HeadingRow>
             <FakeHeader>
               <span>SYNDROMES</span>

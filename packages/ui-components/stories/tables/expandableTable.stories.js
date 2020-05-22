@@ -113,8 +113,8 @@ export const expandableTable = () => {
 };
 
 const VerifiedAlert = styled.div`
-  background-color: ${props => props.theme.palette.warning.light};
   color: ${props => props.theme.palette.warning.main};
+  background-color: ${props => props.theme.palette.warning.light};
   display: flex;
   align-items: center;
   font-size: 0.9375rem;

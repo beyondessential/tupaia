@@ -4,24 +4,23 @@
  */
 import React from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import {
   Table,
   TableBody,
   ExpandableTableBody,
   TableRow,
-  ExpandableTableRow,
   ControlledExpandableTableRow,
   tableColumnShape,
 } from '@tupaia/ui-components';
-import PropTypes from 'prop-types';
 import * as COLORS from '../../theme/colors';
 
-const BorderlessTableRow = styled(ControlledExpandableTableRow)`
+export const BorderlessTableRow = styled(ControlledExpandableTableRow)`
   .MuiTableCell-root {
     font-size: 15px;
     line-height: 18px;
     border: none;
-    padding: 0 1rem;
+    padding: 0;
     text-align: left;
     height: 42px;
     color: ${props => props.theme.palette.text.primary};
@@ -56,7 +55,7 @@ BorderlessTable.defaultProps = {
   SubComponent: null,
 };
 
-const DottedTableRow = styled(TableRow)`
+export const DottedTableRow = styled(TableRow)`
   .MuiTableCell-root {
     font-size: 14px;
     line-height: 16px;
@@ -79,7 +78,7 @@ DottedTable.propTypes = {
   data: PropTypes.array.isRequired,
 };
 
-const SimpleTableRow = styled(TableRow)`
+export const SimpleTableRow = styled(TableRow)`
   .MuiTableCell-root {
     font-size: 14px;
     line-height: 16px;
