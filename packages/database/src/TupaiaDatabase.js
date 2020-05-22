@@ -292,7 +292,7 @@ export class TupaiaDatabase {
 
   async updateOrCreate(recordType, identifiers, updatedFields) {
     // Put together the full new record that will be created, if no matching record exists
-    const newId = this.generateId(); // Generate a new id, in no id was provided
+    const newId = this.generateId(); // Generate a new id, in case no id was provided
     const updatedFieldsWithoutUndefined = JSON.parse(JSON.stringify(updatedFields));
     const newRecord = { id: newId, ...identifiers, ...updatedFieldsWithoutUndefined };
 
