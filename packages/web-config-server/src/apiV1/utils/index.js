@@ -15,8 +15,6 @@ export { getDataElementCodesInGroup, getDataElementsInGroup } from './getDataEle
 export { getDataElementFromId } from './getDataElementFromId';
 export {
   parseFacilityTypeData,
-  sortFacilityTypesByLevel,
-  getAllFacilityTypesOfFacilities,
   filterOutOrganisationUnitsNotInWorld,
 } from './organisationUnitTypeUtils';
 export { getDataElementGroups } from './getDataElementGroups';

@@ -193,6 +193,11 @@ export class Entity extends BaseModel {
     return entity ? entity.getFacilities() : [];
   }
 
+  async getAncestorOfType(entityType) {
+    const ancestors = await this.getAllAncestors();
+    return ancestors.find(ancestor => ancestor.type === entityType);
+  }
+
   // assumes all entities of the given type are found at the same level in the hierarchy tree
   async getDescendantsOfType(entityType, hierarchyId) {
     if (this.type === entityType) return [this];
