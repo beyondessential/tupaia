@@ -124,6 +124,21 @@ export class TableConfig {
     return this.hasMetadataRowCategories() || this.hasMetadataColumnCategories();
   }
 
+  hasRowDataElements() {
+    return (
+      this.baseConfig.rows[0] &&
+      (this.baseConfig.rows[0].code || this.baseConfig.rows[0].rows[0].code)
+    );
+  }
+
+  hasRowDescriptions() {
+    return (
+      this.baseConfig.rows[0] &&
+      (this.baseConfig.rows[0].descriptionDataElement ||
+        this.baseConfig.rows[0].rows[0].descriptionDataElement)
+    );
+  }
+
   hasRowCategories() {
     return this.baseConfig.rows[0] && this.baseConfig.rows[0].category;
   }
