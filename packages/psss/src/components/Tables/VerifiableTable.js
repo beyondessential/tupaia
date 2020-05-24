@@ -113,11 +113,15 @@ VerifiableTableRow.propTypes = {
   rowIndex: PropTypes.number.isRequired,
 };
 
+const Body = props => {
+  const { tableState } = useContext(EditableTableContext);
+  const Row = tableState === 'editable' ? BorderlessTableRow : VerifiableTableRow;
+  return <ExpandableTableBody TableRow={Row} {...props} />;
+};
+
 // maybe take a variant prop tp switch between rowTypes or pass in a custom row type?
 export const VerifiableTable = () => {
   const { editableColumns, data, tableState } = useContext(EditableTableContext);
-  const Row = tableState === 'editable' ? BorderlessTableRow : VerifiableTableRow;
-  const Body = bodyProps => <ExpandableTableBody TableRow={Row} {...bodyProps} />;
 
   return (
     <Table
