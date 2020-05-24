@@ -7,10 +7,10 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import CheckCircleIcon from '@material-ui/icons/CheckCircleOutline';
 import {
-  ControlledExpandableTableRow,
   ExpandableTableBody,
   TableRowExpansionContainer,
   WarningButton,
+  Table,
 } from '@tupaia/ui-components';
 import { BorderlessTableRow } from './TableTypes';
 import * as COLORS from '../../theme/colors';
@@ -20,7 +20,9 @@ const VerifiedAlert = styled.div`
   color: ${props => props.theme.palette.warning.main};
   display: flex;
   align-items: center;
+  height: 45px;
   justify-content: center;
+  border-radius: 3px;
   font-size: 0.9375rem;
   line-height: 1;
   letter-spacing: 0;
@@ -34,19 +36,43 @@ const VerifiedAlert = styled.div`
   }
 `;
 
-const TableRow = props => {
+const VerifiableTableRow = props => {
   const { data, rowIndex } = props;
   const indicator = data[rowIndex].percentageChange;
   // Todo: move the row status to the data and manage it with the form state
   const initialStatus = indicator > '10' ? 'expanded' : 'closed';
   const [status, setStatus] = useState(initialStatus);
 
+  const Wrapper = styled.div`
+    padding: 0 1em 2.25rem;
+
+    button {
+      position: relative;
+      z-index: 1;
+    }
+
+    &:after {
+      position: absolute;
+      border: 1px solid ${status === 'verified' ? COLORS.LIGHT_RED : COLORS.RED};
+      content: '';
+      display: block;
+      top: 0;
+      bottom: 1rem;
+      left: 0;
+      right: 0;
+      border-radius: 3px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
+    }
+  `;
+
   const WarningButtonComponent = () => {
     if (status === 'verified') {
       return (
-        <VerifiedAlert>
-          <CheckCircleIcon /> Verified
-        </VerifiedAlert>
+        <Wrapper>
+          <VerifiedAlert>
+            <CheckCircleIcon /> Verified
+          </VerifiedAlert>
+        </Wrapper>
       );
     }
 
@@ -55,23 +81,20 @@ const TableRow = props => {
     };
 
     return (
-      <WarningButton fullWidth onClick={handelClick}>
-        Please Verify Now
-      </WarningButton>
+      <Wrapper>
+        <WarningButton fullWidth onClick={handelClick}>
+          Please Verify Now
+        </WarningButton>
+      </Wrapper>
     );
   };
 
-  // Todo: update so that there can be space below alerts
   const StyledExpansionContainer = styled(TableRowExpansionContainer)`
     td {
+      position: relative;
       border: none;
-    }
-
-    > .MuiTableCell-root {
-      background: white;
-      padding: 0 1rem 1rem;
-      border-radius: 3px;
-      border: 1px solid ${status === 'verified' ? COLORS.LIGHT_RED : COLORS.RED};
+      background: none;
+      box-shadow: none;
     }
   `;
 
@@ -85,21 +108,22 @@ const TableRow = props => {
   );
 };
 
-TableRow.propTypes = {
+VerifiableTableRow.propTypes = {
   data: PropTypes.array.isRequired,
   rowIndex: PropTypes.number.isRequired,
 };
 
-// Todo: export table row instead of table body
-export const VerifiableTableBody = ({ tableState, ...props }) => {
-  const Row = tableState === 'editable' ? BorderlessTableRow : TableRow;
-  return <ExpandableTableBody TableRow={Row} {...props} />;
+// maybe take a variant prop tp switch between rowTypes?
+export const VerifiableTable = props => {
+  const Row = props.tableState === 'editable' ? BorderlessTableRow : VerifiableTableRow;
+  const Body = bodyProps => <ExpandableTableBody TableRow={Row} {...bodyProps} />;
+  return <Table Header={false} Body={Body} {...props} />;
 };
 
-VerifiableTableBody.propTypes = {
+VerifiableTable.propTypes = {
   tableState: PropTypes.string,
 };
 
-VerifiableTableBody.defaultProps = {
+VerifiableTable.defaultProps = {
   tableState: 'static',
 };

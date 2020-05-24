@@ -21,9 +21,14 @@ export const BorderlessTableRow = styled(ControlledExpandableTableRow)`
     line-height: 18px;
     border: none;
     padding: 0;
-    text-align: left;
+    text-align: center;
     height: 42px;
     color: ${props => props.theme.palette.text.primary};
+
+    &:first-child {
+      padding-left: 1.25rem;
+      text-align: left;
+    }
   }
 `;
 

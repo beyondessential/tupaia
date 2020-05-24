@@ -147,8 +147,8 @@ EditableTableProvider.propTypes = {
 };
 
 export const EditableTable = ({ Component }) => {
-  const { editableColumns, data } = useContext(EditableTableContext);
-  return <Component columns={editableColumns} data={data} />;
+  const { editableColumns, data, tableState } = useContext(EditableTableContext);
+  return <Component columns={editableColumns} data={data} tableState={tableState} />;
 };
 
 EditableTable.propTypes = {

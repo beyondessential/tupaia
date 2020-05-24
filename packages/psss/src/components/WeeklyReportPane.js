@@ -2,7 +2,6 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
@@ -16,20 +15,16 @@ import {
   Button,
   Card,
   ErrorAlert,
-  TextButton,
   ButtonSelect,
   EditableTable,
   EditableTableAction,
   EditableTableProvider,
-  ExpandableTableBody,
-  SmallErrorAlert,
-  Table,
   GreyOutlinedButton,
 } from '@tupaia/ui-components';
-import { BorderlessTable, DottedTable } from './Tables/TableTypes';
 import { PercentageChangeCell } from './Tables/TableCellComponents';
 import * as COLORS from '../theme/colors';
-import { VerifiableTableBody } from './Tables/VerifiableTableBody';
+import { DottedTable } from './Tables/TableTypes';
+import { VerifiableTable } from './Tables/VerifiableTable';
 import { SiteAddress } from './SiteAddress';
 
 const Action = () => {
@@ -227,14 +222,6 @@ export const WeeklyReportPane = () => {
   const handleEditClick = () => {
     setTableState('editable');
   };
-
-  const EditableVerifiableTableBody = props => (
-    <VerifiableTableBody tableState={tableState} {...props} />
-  );
-
-  const VerifiableTable = props => (
-    <Table Header={false} Body={EditableVerifiableTableBody} {...props} />
-  );
 
   return (
     <React.Fragment>
