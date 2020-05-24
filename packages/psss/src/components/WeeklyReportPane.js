@@ -16,12 +16,10 @@ import {
   Card,
   ErrorAlert,
   ButtonSelect,
-  EditableTable,
-  EditableTableAction,
-  EditableTableProvider,
   GreyOutlinedButton,
 } from '@tupaia/ui-components';
 import { PercentageChangeCell } from './Tables/TableCellComponents';
+import { EditableTableAction, EditableTableProvider } from './Tables/EditableTable';
 import * as COLORS from '../theme/colors';
 import { DottedTable } from './Tables/TableTypes';
 import { VerifiableTable } from './Tables/VerifiableTable';
@@ -245,16 +243,16 @@ export const WeeklyReportPane = () => {
             <span>TOTAL CASES</span>
           </GreyHeader>
           <EditableTableProvider columns={editableColumns} data={siteData} tableState={tableState}>
-            <EditableTable Component={VerifiableTable} />
-            {tableState === 'editable' && (
-              <ActionsRow>
-                <MuiLink>Reset and use Sentinel data</MuiLink>
-                <div>
-                  <EditableTableAction Component={CancelButton} />
-                  <EditableTableAction Component={SubmitButton} />
-                </div>
-              </ActionsRow>
-            )}
+            <VerifiableTable />
+            {/*{tableState === 'editable' && (*/}
+            {/*  <ActionsRow>*/}
+            {/*    <MuiLink>Reset and use Sentinel data</MuiLink>*/}
+            {/*    <div>*/}
+            {/*      <EditableTableAction Component={CancelButton} />*/}
+            {/*      <EditableTableAction Component={SubmitButton} />*/}
+            {/*    </div>*/}
+            {/*  </ActionsRow>*/}
+            {/*)}*/}
           </EditableTableProvider>
         </GreySection>
         <MainSection>

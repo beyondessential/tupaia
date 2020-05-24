@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import CheckCircleIcon from '@material-ui/icons/CheckCircleOutline';
@@ -13,6 +13,7 @@ import {
   Table,
 } from '@tupaia/ui-components';
 import { BorderlessTableRow } from './TableTypes';
+import { EditableTableContext } from './EditableTable';
 import * as COLORS from '../../theme/colors';
 
 const VerifiedAlert = styled.div`
@@ -36,34 +37,42 @@ const VerifiedAlert = styled.div`
   }
 `;
 
+const Wrapper = styled.div`
+  padding: 0 1em 2.25rem;
+
+  button {
+    position: relative;
+    z-index: 1;
+  }
+
+  &:after {
+    position: absolute;
+    border: 1px solid ${props => (props.status === 'verified' ? COLORS.LIGHT_RED : COLORS.RED)};
+    content: '';
+    display: block;
+    top: 0;
+    bottom: 1rem;
+    left: 0;
+    right: 0;
+    border-radius: 3px;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
+  }
+`;
+
+const StyledExpansionContainer = styled(TableRowExpansionContainer)`
+  td {
+    position: relative;
+    border: none;
+    background: none;
+    box-shadow: none;
+  }
+`;
+
 const VerifiableTableRow = props => {
   const { data, rowIndex } = props;
   const indicator = data[rowIndex].percentageChange;
-  // Todo: move the row status to the data and manage it with the form state
   const initialStatus = indicator > '10' ? 'expanded' : 'closed';
   const [status, setStatus] = useState(initialStatus);
-
-  const Wrapper = styled.div`
-    padding: 0 1em 2.25rem;
-
-    button {
-      position: relative;
-      z-index: 1;
-    }
-
-    &:after {
-      position: absolute;
-      border: 1px solid ${status === 'verified' ? COLORS.LIGHT_RED : COLORS.RED};
-      content: '';
-      display: block;
-      top: 0;
-      bottom: 1rem;
-      left: 0;
-      right: 0;
-      border-radius: 3px;
-      box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
-    }
-  `;
 
   const WarningButtonComponent = () => {
     if (status === 'verified') {
@@ -89,15 +98,6 @@ const VerifiableTableRow = props => {
     );
   };
 
-  const StyledExpansionContainer = styled(TableRowExpansionContainer)`
-    td {
-      position: relative;
-      border: none;
-      background: none;
-      box-shadow: none;
-    }
-  `;
-
   return (
     <BorderlessTableRow
       {...props}
@@ -113,17 +113,19 @@ VerifiableTableRow.propTypes = {
   rowIndex: PropTypes.number.isRequired,
 };
 
-// maybe take a variant prop tp switch between rowTypes?
-export const VerifiableTable = props => {
-  const Row = props.tableState === 'editable' ? BorderlessTableRow : VerifiableTableRow;
+// maybe take a variant prop tp switch between rowTypes or pass in a custom row type?
+export const VerifiableTable = () => {
+  const { editableColumns, data, tableState } = useContext(EditableTableContext);
+  const Row = tableState === 'editable' ? BorderlessTableRow : VerifiableTableRow;
   const Body = bodyProps => <ExpandableTableBody TableRow={Row} {...bodyProps} />;
-  return <Table Header={false} Body={Body} {...props} />;
-};
 
-VerifiableTable.propTypes = {
-  tableState: PropTypes.string,
-};
-
-VerifiableTable.defaultProps = {
-  tableState: 'static',
+  return (
+    <Table
+      Header={false}
+      Body={Body}
+      columns={editableColumns}
+      data={data}
+      tableState={tableState}
+    />
+  );
 };

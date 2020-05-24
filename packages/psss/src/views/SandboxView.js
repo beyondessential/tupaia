@@ -4,23 +4,15 @@
  */
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import MuiLink from '@material-ui/core/Link';
-import {
-  FakeHeader,
-  Button,
-  WarningButton,
-  GreyOutlinedButton,
-  SmallErrorAlert,
-  EditableTable,
-  EditableTableAction,
-  EditableTableProvider,
-} from '@tupaia/ui-components';
+import { FakeHeader, Button, GreyOutlinedButton } from '@tupaia/ui-components';
 import * as COLORS from '../theme/colors';
 import { BorderlessTable, SimpleTable, DottedTable } from '../components/Tables/TableTypes';
 import { SiteAddress } from '../components';
 import { PercentageChangeCell } from '../components/Tables/TableCellComponents';
+import { VerifiableTable } from '../components/Tables/VerifiableTable';
+import { EditableTableProvider } from '../components/Tables/EditableTable';
 
 const siteData = [
   {
@@ -102,24 +94,6 @@ const contact = {
   email: 'Shakila@gmail.com',
 };
 
-const ButtonContainer = styled.div`
-  background: white;
-  padding: 1rem;
-  border-radius: 3px;
-`;
-
-const SubComponent = () => {
-  return (
-    <ButtonContainer>
-      <WarningButton>Please Verify Now</WarningButton>
-    </ButtonContainer>
-  );
-};
-
-const AlertsTable = ({ columns, data }) => {
-  return <BorderlessTable columns={columns} data={data} SubComponent={SubComponent} />;
-};
-
 const Container = styled.div`
   width: 100%;
   padding: 3rem;
@@ -165,28 +139,14 @@ export const SandboxView = () => {
     setTableState('editable');
   };
 
-  const SubmitButton = ({ fields }) => {
-    const handleSubmit = () => {
-      console.log('updated values...', fields);
-      setTableState('static');
-    };
-
-    return <Button onClick={handleSubmit}>Save</Button>;
+  const handleSubmit = () => {
+    // POST DATA
+    console.log('updated values...');
+    setTableState('static');
   };
 
-  const CancelButton = () => {
-    const handleCancel = () => {
-      setTableState('static');
-    };
-    return (
-      <Button variant="outlined" onClick={handleCancel}>
-        Cancel
-      </Button>
-    );
-  };
-
-  SubmitButton.propTypes = {
-    fields: PropTypes.any.isRequired,
+  const handleCancel = () => {
+    setTableState('static');
   };
 
   return (
@@ -209,13 +169,15 @@ export const SandboxView = () => {
               <span>SYNDROMES</span>
               <span>TOTAL CASES</span>
             </FakeHeader>
-            <EditableTable Component={AlertsTable} />
+            <VerifiableTable />
             {tableState === 'editable' && (
               <ActionsRow>
                 <MuiLink>Reset and use Sentinel data</MuiLink>
                 <div>
-                  <EditableTableAction Component={CancelButton} />
-                  <EditableTableAction Component={SubmitButton} />
+                  <Button variant="outlined" onClick={handleCancel}>
+                    Cancel
+                  </Button>
+                  <Button onClick={handleSubmit}>Save</Button>
                 </div>
               </ActionsRow>
             )}
