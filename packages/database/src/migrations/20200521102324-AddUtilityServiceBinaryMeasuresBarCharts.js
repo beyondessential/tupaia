@@ -133,7 +133,7 @@ exports.up = async function (db) {
         },
         viewJson: {
           "name": name,
-          "description": "This report is calculated based on the number of responses.",
+          "description": "This report is calculated based on the number of School Fundamentals Laos survey responses",
           "type": "chart",
           "chartType": "bar",
           "periodGranularity": "month",
