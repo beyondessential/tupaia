@@ -7,10 +7,15 @@ const basicFacilityTypes = {
   4: 'Aid post',
 };
 
-export function getBasicFacilityTypeName(facilityTypeCode) {
-  return basicFacilityTypes[facilityTypeCode] || OTHER;
-}
+const specialCasePlurals = {
+  Dispensary: 'Dispensaries',
+  'National administration': 'National administration',
+  'Provincial administration': 'Provincial administration',
+  Storage: 'Storage',
+};
 
-export function getBasicFacilityTypeNamePlural(facilityTypeCode) {
-  return `${getBasicFacilityTypeName(facilityTypeCode)}s`;
-}
+export const pluraliseFacilityType = facilityType =>
+  specialCasePlurals[facilityType] || `${facilityType}s`;
+
+export const translateCategoryCodeToFacilityType = facilityTypeCode =>
+  basicFacilityTypes[facilityTypeCode] || OTHER;

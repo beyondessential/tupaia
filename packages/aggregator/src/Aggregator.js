@@ -41,6 +41,17 @@ export class Aggregator {
   };
 
   async fetchAnalytics(codeInput, fetchOptions, aggregationOptions = {}) {
+    const { organisationUnitCode, organisationUnitCodes } = fetchOptions;
+    if (!organisationUnitCode && (!organisationUnitCodes || !organisationUnitCodes.length)) {
+      // No organisation unit code, return empty response
+      return {
+        results: [],
+        metadata: {
+          dataElementCodeToName: {},
+        },
+        period: periodFromAnalytics([], fetchOptions),
+      };
+    }
     const code = Array.isArray(codeInput) ? codeInput : [codeInput];
     const dataSourceSpec = { code, type: this.dataSourceTypes.DATA_ELEMENT };
     const { startDate, endDate, period, ...restOfFetchOptions } = fetchOptions;
@@ -63,6 +74,10 @@ export class Aggregator {
   }
 
   async fetchEvents(code, fetchOptions) {
+    const { organisationUnitCode, organisationUnitCodes } = fetchOptions;
+    if (!organisationUnitCode && (!organisationUnitCodes || !organisationUnitCodes.length)) {
+      return [];
+    }
     const dataSourceSpec = { code, type: this.dataSourceTypes.DATA_GROUP };
     return this.dataBroker.pull(dataSourceSpec, fetchOptions);
   }

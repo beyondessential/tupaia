@@ -87,7 +87,7 @@ class PercentagesPerDataClassDataBuilder extends DataBuilder {
       sumPerCode[dataElementCode] = currentSum + value;
     };
 
-    if (this.entity.isFacility()) {
+    if (this.entity.isFacility() || this.config.disableFilterOperationalFacilityValues) {
       // Single facility, don't worry if it is operational or not
       results.forEach(incrementTotals);
     } else {

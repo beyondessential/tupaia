@@ -90,13 +90,18 @@ export async function updateOrCreateSurveyResponse(models, surveyResponseObject)
 
 const createEntities = async (models, entitiesCreated, surveyId) => {
   const survey = await models.survey.findById(surveyId);
-  const isDataRegional = survey.getIsDataForRegionalDhis2();
+  const isForDhis = survey.getIsIntegratedWithDhis2();
 
   return Promise.all(
     entitiesCreated.map(async entity =>
       models.entity.updateOrCreate(
         { id: entity.id },
-        { ...entity, metadata: { dhis: { isDataRegional } } },
+        {
+          ...entity,
+          metadata: isForDhis
+            ? { dhis: { isDataRegional: survey.getIsDataForRegionalDhis2() } }
+            : {},
+        },
       ),
     ),
   );

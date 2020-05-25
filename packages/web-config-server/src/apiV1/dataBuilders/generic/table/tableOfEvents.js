@@ -64,7 +64,7 @@ class TableOfEventsBuilder extends DataBuilder {
       return organisationUnitCode;
     };
     const events = await super.fetchEvents({
-      organisationUnitCodes: [getOrganisationUnitCode()],
+      organisationUnitCode: getOrganisationUnitCode(),
       dataValueFormat: 'object',
     });
 

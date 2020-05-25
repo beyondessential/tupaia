@@ -6,7 +6,6 @@
 import { getCode as getCountryIsoCode } from 'countrynames';
 
 import { ImportValidationError } from '@tupaia/utils';
-import { ENTITY_TYPES } from '../../database';
 import { getEntityObjectValidator } from './getEntityObjectValidator';
 import { getOrCreateParentEntity } from './getOrCreateParentEntity';
 
@@ -45,14 +44,14 @@ export async function updateCountryEntities(transactingModels, countryName, enti
     { code: countryCode },
   );
   const { id: worldId } = await transactingModels.entity.findOne({
-    type: ENTITY_TYPES.WORLD,
+    type: transactingModels.entity.types.WORLD,
   });
   await transactingModels.entity.findOrCreate(
     { code: countryCode },
     {
       name: countryName,
       country_code: countryCode,
-      type: ENTITY_TYPES.COUNTRY,
+      type: transactingModels.entity.types.COUNTRY,
       parent_id: worldId,
       metadata: {
         dhis: { isDataRegional: true },
@@ -63,7 +62,7 @@ export async function updateCountryEntities(transactingModels, countryName, enti
   for (let i = 0; i < entityObjects.length; i++) {
     const entityObject = entityObjects[i];
     const { entity_type: entityType } = entityObject;
-    const validator = getEntityObjectValidator(entityType);
+    const validator = getEntityObjectValidator(entityType, transactingModels);
     const excelRowNumber = i + 2;
     const constructImportValidationError = (message, field) =>
       new ImportValidationError(message, excelRowNumber, field, countryName);
@@ -95,7 +94,7 @@ export async function updateCountryEntities(transactingModels, countryName, enti
       entityObject,
       country,
     );
-    if (entityType === ENTITY_TYPES.FACILITY) {
+    if (entityType === transactingModels.entity.types.FACILITY) {
       const defaultTypeDetails = getDefaultTypeDetails(facilityType);
       const facilityToUpsert = {
         type: facilityType,

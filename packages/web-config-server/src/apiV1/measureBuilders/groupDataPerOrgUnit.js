@@ -6,6 +6,8 @@
 import { SumPerOrgUnitBuilder } from './sumPerOrgUnit';
 import { mapMeasureValuesToGroups } from './helpers';
 
+// Don't use this measurebuilder, use 'groupData' instead.
+// Ideally would remove this measureBuilder entirely
 export const groupSumDataPerOrgUnit = async (
   aggregator,
   dhisApi,

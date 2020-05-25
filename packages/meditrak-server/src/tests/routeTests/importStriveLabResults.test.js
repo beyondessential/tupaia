@@ -5,14 +5,12 @@
 
 import chai, { expect } from 'chai';
 import deepEqualInAnyOrder from 'deep-equal-in-any-order';
+import { generateTestId } from '@tupaia/database';
 
-import { ENTITY_TYPES } from '../../database/models/Entity';
 import { TestableApp } from '../TestableApp';
-import { upsertEntity, insertSurveyAndScreens, generateTestId } from '../testUtilities';
+import { upsertEntity, insertSurveyAndScreens } from '../testUtilities';
 
 chai.use(deepEqualInAnyOrder);
-
-const { CASE } = ENTITY_TYPES;
 
 const QUESTION_IDS = {
   Well: generateTestId(),
@@ -80,10 +78,15 @@ const createSurvey = async () =>
     screens: [QUESTIONS],
   });
 
-const createEntities = async () =>
+const createEntities = async models =>
   Promise.all(
     CASE_CODES.map(caseCode =>
-      upsertEntity({ id: generateTestId(), type: CASE, code: caseCode, name: caseCode }),
+      upsertEntity({
+        id: generateTestId(),
+        type: models.entity.types.CASE,
+        code: caseCode,
+        name: caseCode,
+      }),
     ),
   );
 
@@ -104,7 +107,7 @@ describe('POST /import/striveLabResults', async () => {
   before(async () => {
     await app.authenticate();
     await createSurvey();
-    await createEntities();
+    await createEntities(models);
 
     response = await importLabResults(app);
   });

@@ -1,7 +1,9 @@
 import moment from 'moment';
 
+import { clearTestData } from '@tupaia/database';
 import { getIsProductionEnvironment } from '../devops';
-import { resetTestData, clearTestData } from './testUtilities';
+import { resetTestData } from './testUtilities';
+import { getModels } from './getModels';
 
 const testStartTime = moment().format('YYYY-MM-DD HH:mm:ss');
 
@@ -19,5 +21,6 @@ before(async () => {
 });
 
 after(async () => {
-  await clearTestData(testStartTime);
+  const models = getModels();
+  await clearTestData(models.database, testStartTime);
 });
