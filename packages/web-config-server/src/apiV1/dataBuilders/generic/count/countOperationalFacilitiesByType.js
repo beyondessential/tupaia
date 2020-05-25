@@ -44,7 +44,7 @@ class CountOperationalFacilitiesByTypeBuilder extends DataBuilder {
 
   async fetchFacilityTypeData() {
     // Get facility entities under this entity, for the given project
-    const facilityEntities = await this.entity.fetchDescendantsOfType(ENTITY_TYPES.FACILITY);
+    const facilityEntities = await this.fetchDescendantsOfType(ENTITY_TYPES.FACILITY);
     if (facilityEntities.length === 0) return {};
 
     // Find matching facility records
