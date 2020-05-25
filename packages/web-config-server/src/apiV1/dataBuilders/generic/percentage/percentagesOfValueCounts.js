@@ -5,7 +5,11 @@
 import flatten from 'lodash.flatten';
 import groupBy from 'lodash.groupby';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { divideValues, countAnalyticsThatSatisfyConditions } from '/apiV1/dataBuilders/helpers';
+import {
+  divideValues,
+  countAnalyticsThatSatisfyConditions,
+  filterAnalyticsByEntities,
+} from '/apiV1/dataBuilders/helpers';
 
 const ORG_UNIT_COUNT = '$orgUnitCount';
 const COMPARISON_TYPES = {
@@ -45,11 +49,13 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
     return results;
   }
 
-  buildData(analytics) {
+  async buildData(analytics) {
+    const filteredAnalytics = await filterAnalyticsByEntities(this.config.customFilter, analytics);
+
     const dataClasses = [];
     Object.entries(this.config.dataClasses).forEach(([name, dataClass]) => {
-      const numerator = this.calculateFractionPart(dataClass.numerator, analytics);
-      const denominator = this.calculateFractionPart(dataClass.denominator, analytics);
+      const numerator = this.calculateFractionPart(dataClass.numerator, filteredAnalytics);
+      const denominator = this.calculateFractionPart(dataClass.denominator, filteredAnalytics);
 
       const data = {
         value: divideValues(numerator, denominator),
@@ -149,9 +155,8 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
       }
 
       return result => {
-          return OPERATION_TYPES[fraction.operation](result.value, fraction.operand);
-      }
-      
+        return OPERATION_TYPES[fraction.operation](result.value, fraction.operand);
+      };
     }
   }
 }
