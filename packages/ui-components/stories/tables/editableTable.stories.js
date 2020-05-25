@@ -7,9 +7,16 @@ import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import MuiLink from '@material-ui/core/Link';
+import Typography from '@material-ui/core/Typography';
 import * as COLORS from '../story-utils/theme/colors';
 import { useTableData } from '../story-utils/useTableData';
-import { Button, Table, EditableTableProvider, EditableTableContext } from '../../src';
+import {
+  Button,
+  GreyOutlinedButton,
+  Table,
+  EditableTableProvider,
+  EditableTableContext,
+} from '../../src';
 
 export default {
   title: 'Tables/EditableTable',
@@ -26,7 +33,7 @@ const Container = styled.div`
   }
 `;
 
-const ActionsRow = styled.div`
+const LayoutRow = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -93,16 +100,19 @@ export const editableTable = () => {
 
   return (
     <Container>
-      <Button fullWidth onClick={handleEditClick} disabled={tableState === 'editable'}>
-        Edit
-      </Button>
+      <LayoutRow>
+        <Typography variant="h6">Editable Table</Typography>
+        <GreyOutlinedButton onClick={handleEditClick} disabled={tableState === 'editable'}>
+          Edit
+        </GreyOutlinedButton>
+      </LayoutRow>
       {loading ? (
         <Loader>Loading...</Loader>
       ) : (
         <EditableTableProvider columns={columns} data={tableData} tableState={tableState}>
           <EditableTableComponent />
           {tableState === 'editable' && (
-            <ActionsRow>
+            <LayoutRow>
               <MuiLink>Reset and use Sentinel data</MuiLink>
               <div>
                 <Button variant="outlined" onClick={handleCancel}>
@@ -110,7 +120,7 @@ export const editableTable = () => {
                 </Button>
                 <SubmitButton tableState={tableState} setTableState={setTableState} />
               </div>
-            </ActionsRow>
+            </LayoutRow>
           )}
         </EditableTableProvider>
       )}
