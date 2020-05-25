@@ -11,8 +11,9 @@ import { groupEventsPerOrgUnit } from '/apiV1/measureBuilders/groupEventsPerOrgU
 const organisationUnitCode = 'PG';
 const programCode = 'SCRF';
 const dataServices = [{ isDataRegional: true }];
+const dataSourceEntityType = 'village';
 
-const query = { dataElementCode: 'value' };
+const query = { organisationUnitCode, dataElementCode: 'value' };
 const entity = { code: organisationUnitCode };
 
 const groups = {
@@ -35,7 +36,7 @@ const config = {
   dataServices,
   groups,
   dataSourceType: 'custom',
-  dataSourceEntityType: 'village',
+  dataSourceEntityType,
   aggregationEntityType: 'village',
 };
 
@@ -88,12 +89,13 @@ const createAggregator = () => {
     .resolves([])
     .withArgs(programCode, {
       dataServices,
-      organisationUnitCode,
-      dataValueFormat: 'object',
+      dataSourceEntityType: dataSourceEntityType,
+      organisationUnitCode: organisationUnitCode,
       startDate: undefined,
       endDate: undefined,
       trackedEntityInstance: undefined,
       eventId: undefined,
+      useDeprecatedApi: false,
     })
     .resolves(events);
 
@@ -146,6 +148,6 @@ describe('groupEventsPerOrgUnit', () => {
     };
     return expect(
       groupEventsPerOrgUnit(createAggregator(), {}, query, newConfig, entity),
-    ).to.eventually.be.rejectedWith('No function defined for operator: no-op');
+    ).to.be.rejectedWith('No function defined for operator: no-op');
   });
 });

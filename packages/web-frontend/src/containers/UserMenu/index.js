@@ -163,7 +163,6 @@ UserMenu.propTypes = {
   onToggleChangePasswordPanel: PropTypes.func.isRequired,
   onToggleRequestCountryAccessPanel: PropTypes.func.isRequired,
   onRefreshCurrentUser: PropTypes.func.isRequired,
-  currentOrganisationUnit: PropTypes.shape({}).isRequired,
 };
 
 const mapStateToProps = state => {
@@ -173,14 +172,12 @@ const mapStateToProps = state => {
     isRequestingLogin,
     loginFailedMessage,
   } = state.authentication;
-  const { currentOrganisationUnit } = state.global;
 
   return {
     isUserLoggedIn,
     currentUserUsername,
     isRequestingLogin,
     loginFailedMessage,
-    currentOrganisationUnit,
   };
 };
 
@@ -200,7 +197,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(UserMenu);
+export default connect(mapStateToProps, mapDispatchToProps)(UserMenu);

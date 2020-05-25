@@ -22,7 +22,7 @@ const DescriptionOverlay = ({ mainTitle, header, body, color, styles, onClose })
       ) : null}
       {header ? <strong style={styles.descriptionOverlayHeader}>{header}</strong> : null}
       <div style={styles.descriptionOverlayBody}>
-        <Markdown children={body.replace(/\\n/g, '\n\n')} />
+        <Markdown>{body.replace(/\\n/g, '\n\n')}</Markdown>
       </div>
     </div>
     <RaisedButton

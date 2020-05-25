@@ -44,10 +44,6 @@ ExpandButton.propTypes = {
   onExpandClick: PropTypes.func.isRequired,
 };
 
-ExpandButton.defaultProps = {
-  pointUp: true,
-};
-
 const mapStateToProps = state => {
   const { isSidePanelExpanded } = state.global;
   return {
@@ -61,7 +57,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(ExpandButton);
+export default connect(mapStateToProps, mapDispatchToProps)(ExpandButton);

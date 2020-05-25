@@ -28,12 +28,18 @@ export class QueryBuilder {
     this.query.eventId = this.getQueryParameter('eventId');
     this.query.trackedEntityInstance = this.getQueryParameter('trackedEntityInstance');
     this.query.programCode = this.getQueryParameter('programCode');
+    if (!this.query.startDate && !this.query.endDate && !this.query.period) {
+      this.query.period = getDefaultPeriod();
+    }
   }
 
   async fetchAndReplaceOrgUnitCodes() {
     const organisationUnitCode = this.getQueryParameter('organisationUnitCode');
     const entity = await Entity.findOne({ code: organisationUnitCode });
-    const dataSourceEntities = await this.fetchDataSourceEntities(entity);
+    const dataSourceEntities = await this.fetchDataSourceEntities(
+      entity,
+      this.getQueryParameter('dataSourceEntityType'),
+    );
     this.query.organisationUnitCodes = dataSourceEntities.map(e => e.code);
     delete this.query.organisationUnitCode;
   }

@@ -69,9 +69,16 @@ const responseData = [
 
 const fetchAnalytics = sinon.stub();
 fetchAnalytics
-  .withArgs(['WHOSPAR'], { dataServices, programCodes: ['WSRS'] }, query, {
-    aggregationType: 'FINAL_EACH_YEAR',
-  })
+  .withArgs(
+    ['WHOSPAR'],
+    { dataServices, dataSourceEntityType: undefined, programCodes: ['WSRS'] },
+    query,
+    {
+      aggregationType: 'FINAL_EACH_YEAR',
+      aggregationConfig: {},
+      filter: {},
+    },
+  )
   .returns(analytics);
 
 const aggregator = {

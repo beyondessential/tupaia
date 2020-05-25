@@ -13,21 +13,17 @@ const arrowStyle = {
   },
 };
 
-const Arrow = ({
-  handleClick, Icon, style, tabIndex,
-}) => (
+const Arrow = ({ handleClick, Icon, style, tabIndex }) => (
   <div
-    style={[
-      style,
-      arrowStyle,
-    ]}
+    style={[style, arrowStyle]}
     onClick={handleClick}
     onKeyPress={handleClick}
     role="button"
     tabIndex={tabIndex}
   >
     {Icon}
-  </div>);
+  </div>
+);
 
 Arrow.propTypes = {
   handleClick: PropTypes.func.isRequired,
