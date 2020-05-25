@@ -5,6 +5,7 @@
 import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
 import MuiTableCell from '@material-ui/core/TableCell';
+import MuiTableBody from '@material-ui/core/TableBody';
 import MuiTable from '@material-ui/core/Table';
 import PropTypes from 'prop-types';
 import MuiTableRow from '@material-ui/core/TableRow';
@@ -30,7 +31,7 @@ const TableRowCells = React.memo(({ columns, rowData }) =>
     const backgroundColor = typeof cellColor === 'function' ? cellColor(rowData) : cellColor;
     return (
       <TableCell background={backgroundColor} key={key} style={{ width: width }} align={align}>
-        {CellComponent ? <CellComponent {...rowData} /> : displayValue}
+        {CellComponent ? <CellComponent {...rowData} columnKey={key} key={key} /> : displayValue}
       </TableCell>
     );
   }),
@@ -41,7 +42,7 @@ TableRowCells.propTypes = {
   rowData: PropTypes.object.isRequired,
 };
 
-const NestedTableWrapperCell = styled.td`
+const WrapperCell = styled(MuiTableCell)`
   background: white;
   padding: 0;
   border: 1px solid ${props => props.theme.palette.grey['400']};
@@ -60,25 +61,28 @@ const StyledTable = styled(MuiTable)`
   table-layout: fixed;
 `;
 
-const RowExpansionContainer = React.memo(({ parentData, children, columns }) => (
-  <MuiTableRow>
-    <NestedTableWrapperCell colSpan={columns.length}>
-      <StyledTable>
-        <tbody>{parentData}</tbody>
-      </StyledTable>
-      {children}
-    </NestedTableWrapperCell>
-  </MuiTableRow>
-));
+export const TableRowExpansionContainer = React.memo(
+  ({ parentRow, children, colSpan, className }) => (
+    <MuiTableRow className={className}>
+      <WrapperCell colSpan={colSpan}>
+        <StyledTable>
+          <MuiTableBody>{parentRow}</MuiTableBody>
+        </StyledTable>
+        {children}
+      </WrapperCell>
+    </MuiTableRow>
+  ),
+);
 
-RowExpansionContainer.propTypes = {
-  columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
-  parentData: PropTypes.any.isRequired,
-  children: PropTypes.any,
+TableRowExpansionContainer.propTypes = {
+  colSpan: PropTypes.number.isRequired,
+  parentRow: PropTypes.any.isRequired,
+  children: PropTypes.any.isRequired,
+  className: PropTypes.string,
 };
 
-RowExpansionContainer.defaultProps = {
-  children: PropTypes.null,
+TableRowExpansionContainer.defaultProps = {
+  className: '',
 };
 
 const rowHoverColor = '#F1F1F1';
@@ -92,9 +96,26 @@ export const StyledTableRow = styled(MuiTableRow)`
   }
 `;
 
+export const TableRow = ({ columns, data, rowIndex, className }) => (
+  <StyledTableRow className={className}>
+    <TableRowCells columns={columns} rowData={data[rowIndex]} />
+  </StyledTableRow>
+);
+
+TableRow.propTypes = {
+  columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
+  data: PropTypes.array.isRequired,
+  className: PropTypes.string,
+  rowIndex: PropTypes.number.isRequired,
+};
+
+TableRow.defaultProps = {
+  className: '',
+};
+
 const condensedRowBackgroundColor = '#EFEFEF';
 
-const CondensedStyleTableRow = styled(MuiTableRow)`
+export const CondensedTableRow = styled(TableRow)`
   &:nth-of-type(even) {
     background: ${condensedRowBackgroundColor};
 
@@ -108,26 +129,7 @@ const CondensedStyleTableRow = styled(MuiTableRow)`
   }
 `;
 
-export const TableRow = React.memo(({ columns, rowData, variant }) => {
-  const RowType = variant === 'condensed' ? CondensedStyleTableRow : StyledTableRow;
-  return (
-    <RowType>
-      <TableRowCells columns={columns} rowData={rowData} />
-    </RowType>
-  );
-});
-
-TableRow.propTypes = {
-  columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
-  rowData: PropTypes.object.isRequired,
-  variant: PropTypes.oneOf(['standard', 'condensed']),
-};
-
-TableRow.defaultProps = {
-  variant: 'standard',
-};
-
-export const ExpandableTableRow = React.memo(({ columns, rowData, SubComponent }) => {
+export const ExpandableTableRow = ({ columns, data, rowIndex, className, SubComponent }) => {
   const [expanded, setExpanded] = useState(false);
 
   const handleClick = useCallback(() => {
@@ -135,28 +137,75 @@ export const ExpandableTableRow = React.memo(({ columns, rowData, SubComponent }
   }, []);
 
   const row = (
-    <StyledTableRow onClick={handleClick}>
-      <TableRowCells columns={columns} rowData={rowData} />
+    <StyledTableRow className={className} onClick={handleClick}>
+      <TableRowCells columns={columns} rowData={data[rowIndex]} />
     </StyledTableRow>
   );
 
   if (SubComponent && expanded) {
     return (
-      <RowExpansionContainer parentData={row} columns={columns}>
-        <SubComponent rowData={rowData} />
-      </RowExpansionContainer>
+      <TableRowExpansionContainer parentRow={row} colSpan={columns.length}>
+        <SubComponent data={data} />
+      </TableRowExpansionContainer>
     );
   }
 
   return row;
-});
+};
 
 ExpandableTableRow.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
-  rowData: PropTypes.object.isRequired,
+  data: PropTypes.array.isRequired,
+  rowIndex: PropTypes.number.isRequired,
   SubComponent: PropTypes.any,
+  className: PropTypes.string,
 };
 
 ExpandableTableRow.defaultProps = {
   SubComponent: PropTypes.null,
+  className: '',
+};
+
+export const ControlledExpandableTableRow = ({
+  columns,
+  data,
+  rowIndex,
+  className,
+  expanded,
+  onClick,
+  SubComponent,
+  ExpansionContainer,
+}) => {
+  const row = (
+    <StyledTableRow className={className} onClick={onClick}>
+      <TableRowCells columns={columns} rowData={data[rowIndex]} />
+    </StyledTableRow>
+  );
+
+  if (SubComponent && expanded) {
+    return (
+      <ExpansionContainer parentRow={row} colSpan={columns.length}>
+        <SubComponent data={data} />
+      </ExpansionContainer>
+    );
+  }
+
+  return row;
+};
+
+ControlledExpandableTableRow.propTypes = {
+  columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
+  data: PropTypes.array.isRequired,
+  rowIndex: PropTypes.number.isRequired,
+  className: PropTypes.string,
+  expanded: PropTypes.bool,
+  SubComponent: PropTypes.any,
+  ExpansionContainer: PropTypes.any,
+};
+
+ControlledExpandableTableRow.defaultProps = {
+  className: '',
+  expanded: false,
+  SubComponent: PropTypes.null,
+  ExpansionContainer: TableRowExpansionContainer,
 };

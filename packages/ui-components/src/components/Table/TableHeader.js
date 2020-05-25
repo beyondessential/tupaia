@@ -19,14 +19,16 @@ const fakeHeaderBackgroundColor = '#f1f1f1';
  * It should not be used inside the table or else it will skew the column sizes
  */
 export const FakeHeader = styled.div`
-  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   background: ${fakeHeaderBackgroundColor};
   font-weight: 500;
   font-size: 11px;
   line-height: 13px;
   color: ${props => props.theme.palette.text.secondary};
   border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
-  padding: 16px 20px;
+  padding: 11px 20px;
 `;
 
 const TableHeaderCell = styled(TableCell)`

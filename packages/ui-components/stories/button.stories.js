@@ -15,6 +15,7 @@ import {
   SuccessButton,
   WarningButton,
   LightOutlinedButton,
+  GreyOutlinedButton,
 } from '../src';
 import * as COLORS from './story-utils/theme/colors';
 
@@ -61,6 +62,13 @@ export const outlined = () => (
 export const lightOutlined = () => (
   <Container bgcolor={COLORS.BLUE}>
     <LightOutlinedButton startIcon={<SaveAlt />}>Export Data</LightOutlinedButton>
+  </Container>
+);
+
+export const greyOutlined = () => (
+  <Container bgcolor={COLORS.LIGHTGREY}>
+    <GreyOutlinedButton>Edit</GreyOutlinedButton>
+    <GreyOutlinedButton disabled>Edit</GreyOutlinedButton>
   </Container>
 );
 
