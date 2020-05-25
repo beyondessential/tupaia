@@ -11,7 +11,6 @@ const EditableTextField = styled(TextField)`
   margin: 0;
   position: relative;
   right: 1px;
-  //width: 4rem;
 
   .MuiInputBase-input {
     text-align: center;
