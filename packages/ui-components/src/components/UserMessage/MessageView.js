@@ -20,9 +20,7 @@ export const MessageView = ({ userMessageId, edit, message, onCancel, onUpdate }
         className="MuiTypography-root MuiTypography-body2 MuiTypography-colorTextSecondary"
         defaultValue={message}
       />
-
       <StyledDivider />
-
       <Typography align="right">
         <StyledButton variant="outlined" color="primary" onClick={onCancel}>
           Cancel
