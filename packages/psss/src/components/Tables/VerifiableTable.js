@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React, { useContext, useState } from 'react';
+import React, { createContext, useContext } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import CheckCircleIcon from '@material-ui/icons/CheckCircleOutline';
@@ -38,7 +38,7 @@ const VerifiedAlert = styled.div`
 `;
 
 const Wrapper = styled.div`
-  padding: 0 1em 2.25rem;
+  padding: 0 1rem 1rem;
 
   button {
     position: relative;
@@ -50,8 +50,8 @@ const Wrapper = styled.div`
     border: 1px solid ${props => (props.status === 'verified' ? COLORS.LIGHT_RED : COLORS.RED)};
     content: '';
     display: block;
-    top: 0;
-    bottom: 1rem;
+    top: 0.5rem;
+    bottom: 0;
     left: 0;
     right: 0;
     border-radius: 3px;
@@ -66,18 +66,29 @@ const StyledExpansionContainer = styled(TableRowExpansionContainer)`
     background: none;
     box-shadow: none;
   }
+
+  > .MuiTableCell-root {
+    padding-top: 0.5rem;
+  }
 `;
 
 const VerifiableTableRow = props => {
   const { data, rowIndex } = props;
-  const indicator = data[rowIndex].percentageChange;
-  const initialStatus = indicator > '10' ? 'expanded' : 'closed';
-  const [status, setStatus] = useState(initialStatus);
+  const key = data[rowIndex].id;
+  const { metadata, setMetadata } = useContext(EditableTableContext);
+  const status = metadata ? metadata[key] : 'closed';
+
+  const setStatus = value => {
+    setMetadata({
+      ...metadata,
+      [key]: value,
+    });
+  };
 
   const WarningButtonComponent = () => {
     if (status === 'verified') {
       return (
-        <Wrapper>
+        <Wrapper status={status}>
           <VerifiedAlert>
             <CheckCircleIcon /> Verified
           </VerifiedAlert>
@@ -90,7 +101,7 @@ const VerifiableTableRow = props => {
     };
 
     return (
-      <Wrapper>
+      <Wrapper status={status}>
         <WarningButton fullWidth onClick={handelClick}>
           Please Verify Now
         </WarningButton>
@@ -113,7 +124,7 @@ VerifiableTableRow.propTypes = {
   rowIndex: PropTypes.number.isRequired,
 };
 
-const Body = props => {
+const VerifiableBody = props => {
   const { tableState } = useContext(EditableTableContext);
   const Row = tableState === 'editable' ? BorderlessTableRow : VerifiableTableRow;
   return <ExpandableTableBody TableRow={Row} {...props} />;
@@ -126,7 +137,7 @@ export const VerifiableTable = () => {
   return (
     <Table
       Header={false}
-      Body={Body}
+      Body={VerifiableBody}
       columns={editableColumns}
       data={data}
       tableState={tableState}

@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import MuiLink from '@material-ui/core/Link';
@@ -19,7 +19,11 @@ import {
   GreyOutlinedButton,
 } from '@tupaia/ui-components';
 import { PercentageChangeCell } from './Tables/TableCellComponents';
-import { EditableTableAction, EditableTableProvider } from './Tables/EditableTable';
+import {
+  EditableTableAction,
+  EditableTableContext,
+  EditableTableProvider,
+} from './Tables/EditableTable';
 import * as COLORS from '../theme/colors';
 import { DottedTable } from './Tables/TableTypes';
 import { VerifiableTable } from './Tables/VerifiableTable';
@@ -177,7 +181,33 @@ const editableColumns = [
   },
 ];
 
+const SubmitButton = ({ setTableState }) => {
+  const { fields, metadata } = useContext(EditableTableContext);
+
+  const handleSubmit = () => {
+    // POST DATA
+    console.log('updated values...', fields, metadata);
+    setTableState('static');
+  };
+  return <Button onClick={handleSubmit}>Save</Button>;
+};
+
+SubmitButton.propTypes = {
+  setTableState: PropTypes.func.isRequired,
+};
+
+const verifiedStatus = siteData.reduce((state, item) => {
+  if (item.percentageChange > 10) {
+    return {
+      ...state,
+      [item.id]: 'expanded',
+    };
+  }
+  return state;
+}, {});
+
 export const WeeklyReportPane = () => {
+  const { fields, metadata } = useContext(EditableTableContext);
   const [open, setOpen] = useState(false);
 
   const toggleDrawer = (event, isOpen) => {
@@ -193,32 +223,12 @@ export const WeeklyReportPane = () => {
 
   const [tableState, setTableState] = useState('static');
 
-  const SubmitButton = ({ fields }) => {
-    const handleSubmit = () => {
-      setTableState('static');
-      console.log('updated values...', fields);
-    };
-
-    return <Button onClick={handleSubmit}>Save</Button>;
-  };
-
-  SubmitButton.propTypes = {
-    fields: PropTypes.any.isRequired,
-  };
-
-  const CancelButton = () => {
-    const handleCancel = () => {
-      setTableState('static');
-    };
-    return (
-      <Button variant="outlined" onClick={handleCancel}>
-        Cancel
-      </Button>
-    );
-  };
-
   const handleEditClick = () => {
     setTableState('editable');
+  };
+
+  const handleCancel = () => {
+    setTableState('static');
   };
 
   return (
@@ -242,17 +252,24 @@ export const WeeklyReportPane = () => {
             <span>SYNDROMES</span>
             <span>TOTAL CASES</span>
           </GreyHeader>
-          <EditableTableProvider columns={editableColumns} data={siteData} tableState={tableState}>
+          <EditableTableProvider
+            columns={editableColumns}
+            data={siteData}
+            tableState={tableState}
+            initialMetadata={verifiedStatus}
+          >
             <VerifiableTable />
-            {/*{tableState === 'editable' && (*/}
-            {/*  <ActionsRow>*/}
-            {/*    <MuiLink>Reset and use Sentinel data</MuiLink>*/}
-            {/*    <div>*/}
-            {/*      <EditableTableAction Component={CancelButton} />*/}
-            {/*      <EditableTableAction Component={SubmitButton} />*/}
-            {/*    </div>*/}
-            {/*  </ActionsRow>*/}
-            {/*)}*/}
+            {tableState === 'editable' && (
+              <ActionsRow>
+                <MuiLink>Reset and use Sentinel data</MuiLink>
+                <div>
+                  <Button variant="outlined" onClick={handleCancel}>
+                    Cancel
+                  </Button>
+                  <SubmitButton tableState={tableState} setTableState={setTableState} />
+                </div>
+              </ActionsRow>
+            )}
           </EditableTableProvider>
         </GreySection>
         <MainSection>

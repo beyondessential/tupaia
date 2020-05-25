@@ -108,21 +108,33 @@ const useFormFields = initialState => {
   ];
 };
 
-export const EditableTableProvider = ({ columns, data, tableState, children }) => {
+export const EditableTableProvider = ({ columns, data, tableState, initialMetadata, children }) => {
   const initialState = makeInitialFormState(columns, data);
   const editableColumns = makeEditableColumns(columns);
   const [fields, handleFieldChange, setValues] = useFormFields(initialState);
+  const [metadata, setMetadata] = React.useState(initialMetadata);
 
   useEffect(() => {
     if (tableState !== 'editing') {
       setValues(initialState);
+      setMetadata(initialMetadata);
     }
   }, [data]);
+
+  console.log('metadata', metadata);
 
   return (
     <React.Fragment>
       <EditableTableContext.Provider
-        value={{ fields, handleFieldChange, tableState, editableColumns, data }}
+        value={{
+          fields,
+          handleFieldChange,
+          tableState,
+          editableColumns,
+          data,
+          metadata,
+          setMetadata,
+        }}
       >
         {children}
       </EditableTableContext.Provider>
@@ -144,6 +156,11 @@ EditableTableProvider.propTypes = {
     }),
   ).isRequired,
   data: PropTypes.array.isRequired,
+  initialMetadata: PropTypes.array,
+};
+
+EditableTableProvider.defaultProps = {
+  initialMetadata: {},
 };
 
 export const EditableTable = ({ Component }) => {

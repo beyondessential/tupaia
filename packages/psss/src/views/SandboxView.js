@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React, { useState } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import MuiLink from '@material-ui/core/Link';
@@ -11,15 +11,16 @@ import * as COLORS from '../theme/colors';
 import { BorderlessTable, SimpleTable, DottedTable } from '../components/Tables/TableTypes';
 import { SiteAddress } from '../components';
 import { PercentageChangeCell } from '../components/Tables/TableCellComponents';
+import { EditableTableContext, EditableTableProvider } from '../components/Tables/EditableTable';
 import { VerifiableTable } from '../components/Tables/VerifiableTable';
-import { EditableTableProvider } from '../components/Tables/EditableTable';
+import PropTypes from 'prop-types';
 
 const siteData = [
   {
     id: 'afr',
     title: 'Acute Fever and Rash (AFR)',
-    percentageChange: '15',
-    totalCases: '15',
+    percentageChange: '5',
+    totalCases: '5',
   },
   {
     id: 'dia',
@@ -30,8 +31,9 @@ const siteData = [
   {
     id: 'ili',
     title: 'Influenza-like Illness (ILI)',
-    percentageChange: '10',
+    percentageChange: '14',
     totalCases: '115',
+    alert: true,
   },
   {
     id: 'pf',
@@ -42,8 +44,9 @@ const siteData = [
   {
     id: 'dil',
     title: 'Dengue-like Illness (DIL)',
-    percentageChange: '9',
+    percentageChange: '12',
     totalCases: '54',
+    alert: true,
   },
 ];
 
@@ -132,17 +135,36 @@ const ActionsRow = styled.div`
   padding: 1rem 0;
 `;
 
+const verifiedStatus = siteData.reduce((state, item) => {
+  if (item.alert) {
+    return {
+      ...state,
+      [item.id]: 'expanded',
+    };
+  }
+  return state;
+}, {});
+
+const SubmitButton = ({ setTableState }) => {
+  const { fields, metadata } = useContext(EditableTableContext);
+
+  const handleSubmit = () => {
+    // POST DATA
+    console.log('updated values...', fields, metadata);
+    setTableState('static');
+  };
+  return <Button onClick={handleSubmit}>Save</Button>;
+};
+
+SubmitButton.propTypes = {
+  setTableState: PropTypes.func.isRequired,
+};
+
 export const SandboxView = () => {
   const [tableState, setTableState] = useState('static');
 
   const handleEditClick = () => {
     setTableState('editable');
-  };
-
-  const handleSubmit = () => {
-    // POST DATA
-    console.log('updated values...');
-    setTableState('static');
   };
 
   const handleCancel = () => {
@@ -164,6 +186,7 @@ export const SandboxView = () => {
             columns={editableTableColumns}
             data={siteData}
             tableState={tableState}
+            initialMetadata={verifiedStatus}
           >
             <FakeHeader>
               <span>SYNDROMES</span>
@@ -177,7 +200,7 @@ export const SandboxView = () => {
                   <Button variant="outlined" onClick={handleCancel}>
                     Cancel
                   </Button>
-                  <Button onClick={handleSubmit}>Save</Button>
+                  <SubmitButton tableState={tableState} setTableState={setTableState} />
                 </div>
               </ActionsRow>
             )}
