@@ -11,7 +11,6 @@ export * from './components/CardTabs';
 export * from './components/Card';
 export * from './components/CircleMeter';
 export * from './components/Dialog';
-export * from './components/Drawer';
 export * from './components/HomeButton';
 export * from './components/IconButton';
 export * from './components/BarMeter';

@@ -9,20 +9,17 @@ import MuiDrawer from '@material-ui/core/Drawer';
 import Typography from '@material-ui/core/Typography';
 import { Close } from '@material-ui/icons';
 import styled from 'styled-components';
-import { LightIconButton } from './IconButton';
-import * as COLORS from '../../stories/story-utils/theme/colors';
-import MuiAvatar from '@material-ui/core/Avatar'; // todo fix colors
+import { LightIconButton } from '@tupaia/ui-components';
+import * as COLORS from '../theme/colors';
 
 export default {
   title: 'Drawer',
 };
 
-const DrawerFooterHeight = '125px';
-
 const Header = styled.div`
   display: flex;
   flex-direction: column;
-  background: ${COLORS.BLUE};
+  background: ${props => props.color};
   color: ${COLORS.WHITE};
   height: 250px;
   text-align: center;
@@ -44,71 +41,41 @@ const TrayHeading = styled.span`
   line-height: 1rem;
 `;
 
-const HeaderContent = styled.div`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-`;
-
-const HeaderInner = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const HeaderHeading = styled(Typography)`
-  font-weight: 500;
-  font-size: 2rem;
-  line-height: 2.3rem;
-  margin-bottom: 0.3rem;
-`;
-
-const HeaderSubHeading = styled(Typography)`
-  font-weight: 500;
-  font-size: 1.125rem;
-  line-height: 1.3rem;
-`;
-
-const Avatar = styled(MuiAvatar)`
-  height: 5rem;
-  width: 5rem;
-  margin-right: 0.9rem;
-  color: white;
-  background: white;
-`;
-
-export const DrawerHeader = ({ title, date, onClose }) => (
-  <Header>
+export const DrawerHeader = ({ heading, color, Icon, onClose, children }) => (
+  <Header color={color}>
     <HeaderTray>
-      <TrayHeading>Upcoming report</TrayHeading>
+      <TrayHeading>
+        {Icon && <Icon />} {heading}
+      </TrayHeading>
       <LightIconButton onClick={onClose}>
         <Close />
       </LightIconButton>
     </HeaderTray>
-    <HeaderContent>
-      <HeaderInner>
-        <Avatar />
-        <div>
-          <HeaderHeading>{title}</HeaderHeading>
-          <HeaderSubHeading>{date}</HeaderSubHeading>
-        </div>
-      </HeaderInner>
-    </HeaderContent>
+    {children}
   </Header>
 );
 
 DrawerHeader.propTypes = {
-  title: PropTypes.string.isRequired,
-  date: PropTypes.string.isRequired,
+  heading: PropTypes.string.isRequired,
+  color: PropTypes.string,
+  Icon: PropTypes.any,
   onClose: PropTypes.func.isRequired,
+  children: PropTypes.any.isRequired,
 };
+
+DrawerHeader.defaultProps = {
+  color: COLORS.BLUE,
+  Icon: null,
+};
+
+const DrawerFooterHeight = '125px';
 
 const StyledFooter = styled.div`
   position: absolute;
   left: 0;
   bottom: 0;
   width: 100%;
-  background: '#F9F9F9';
+  background: ${COLORS.LIGHTGREY};
   height: ${DrawerFooterHeight};
   text-align: center;
   padding: 1.5rem;
@@ -122,9 +89,6 @@ const HelperText = styled(Typography)`
   color: ${COLORS.TEXT_MIDGREY};
 `;
 
-/*
- * Drawer  Footer
- */
 export const DrawerFooter = ({ Action, helperText }) => (
   <StyledFooter>
     <Action />
@@ -159,12 +123,17 @@ export const StyledDrawer = styled(MuiDrawer)`
 /*
  * Drawer that slides out from the right to display actions
  */
-export const Drawer = ({ children, ...props }) => (
-  <StyledDrawer anchor="right" {...props}>
+export const Drawer = ({ anchor, children, ...props }) => (
+  <StyledDrawer anchor={anchor} {...props}>
     <DrawerContent>{children}</DrawerContent>
   </StyledDrawer>
 );
 
 Drawer.propTypes = {
+  anchor: PropTypes.string,
   children: PropTypes.node.isRequired,
+};
+
+Drawer.defaultProps = {
+  anchor: 'right',
 };

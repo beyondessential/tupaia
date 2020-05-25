@@ -3,15 +3,13 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React, { useContext, useState } from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import MuiLink from '@material-ui/core/Link';
-import PropTypes from 'prop-types';
+import MuiAvatar from '@material-ui/core/Avatar';
 import {
   FakeHeader,
-  Drawer,
-  DrawerFooter,
-  DrawerHeader,
   Button,
   Card,
   ErrorAlert,
@@ -19,27 +17,14 @@ import {
   GreyOutlinedButton,
 } from '@tupaia/ui-components';
 import { PercentageChangeCell } from './Tables/TableCellComponents';
-import {
-  EditableTableAction,
-  EditableTableContext,
-  EditableTableProvider,
-} from './Tables/EditableTable';
+import { EditableTableContext, EditableTableProvider } from './Tables/EditableTable';
 import * as COLORS from '../theme/colors';
+import { Drawer, DrawerFooter, DrawerHeader } from './Drawer';
 import { DottedTable } from './Tables/TableTypes';
 import { VerifiableTable } from './Tables/VerifiableTable';
 import { SiteAddress } from './SiteAddress';
 
-const Action = () => {
-  const handleClick = () => {
-    console.log('click');
-  };
-  return (
-    <Button fullWidth onClick={handleClick}>
-      Submit now
-    </Button>
-  );
-};
-
+// dummy data
 const siteData = [
   {
     id: 'afr',
@@ -90,46 +75,6 @@ const columns = [
   },
 ];
 
-const GreyHeader = styled(FakeHeader)`
-  border: none;
-`;
-
-const GreySection = styled.section`
-  background: #f9f9f9;
-  box-shadow: 0 1px 0 ${COLORS.GREY_DE};
-  padding: 25px 20px;
-`;
-
-const MainSection = styled.section`
-  padding: 30px 20px;
-`;
-
-// Card Header - could be made into component?
-const MainHeadingRow = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-bottom: 20px;
-`;
-
-const HeadingRow = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-top: 20px;
-  padding-bottom: 20px;
-  margin-left: 30px;
-  margin-right: 30px;
-`;
-
-const HeaderTitle = styled(Typography)`
-  display: flex;
-  align-items: center;
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 19px;
-`;
-
 const options = [
   { name: 'Afghanistan', id: 'AF' },
   { name: 'Albania', id: 'AL' },
@@ -156,7 +101,39 @@ const contact = {
   email: 'Shakila@gmail.com',
 };
 
-const ActionsRow = styled.div`
+const GreyHeader = styled(FakeHeader)`
+  border: none;
+`;
+
+const GreySection = styled.section`
+  background: ${COLORS.LIGHTGREY};
+  box-shadow: 0 1px 0 ${COLORS.GREY_DE};
+  padding: 25px 20px;
+`;
+
+const MainSection = styled.section`
+  padding: 30px 20px;
+`;
+
+const HeadingRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  margin-left: 30px;
+  margin-right: 30px;
+`;
+
+const HeaderTitle = styled(Typography)`
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 19px;
+`;
+
+const LayoutRow = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -181,21 +158,6 @@ const editableColumns = [
   },
 ];
 
-const SubmitButton = ({ setTableState }) => {
-  const { fields, metadata } = useContext(EditableTableContext);
-
-  const handleSubmit = () => {
-    // POST DATA
-    console.log('updated values...', fields, metadata);
-    setTableState('static');
-  };
-  return <Button onClick={handleSubmit}>Save</Button>;
-};
-
-SubmitButton.propTypes = {
-  setTableState: PropTypes.func.isRequired,
-};
-
 const verifiedStatus = siteData.reduce((state, item) => {
   if (item.percentageChange > 10) {
     return {
@@ -206,8 +168,68 @@ const verifiedStatus = siteData.reduce((state, item) => {
   return state;
 }, {});
 
-export const WeeklyReportPane = () => {
+const EditableTableSubmitButton = ({ setTableState }) => {
   const { fields, metadata } = useContext(EditableTableContext);
+
+  const handleSubmit = () => {
+    // POST DATA
+    console.log('updated values...', fields, metadata);
+    setTableState('static');
+  };
+  return <Button onClick={handleSubmit}>Save</Button>;
+};
+
+EditableTableSubmitButton.propTypes = {
+  setTableState: PropTypes.func.isRequired,
+};
+
+const WeeklyReportsPaneSubmitButton = () => {
+  const handleClick = () => {
+    console.log('click');
+  };
+  return (
+    <Button fullWidth onClick={handleClick}>
+      Submit now
+    </Button>
+  );
+};
+
+const HeaderContent = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`;
+
+const HeaderInner = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  margin-left: 1rem;
+`;
+
+const HeaderHeading = styled(Typography)`
+  font-weight: 500;
+  font-size: 2rem;
+  line-height: 2.3rem;
+  margin-bottom: 0.3rem;
+`;
+
+const HeaderSubHeading = styled(Typography)`
+  font-weight: 500;
+  font-size: 1.125rem;
+  line-height: 1.3rem;
+`;
+
+const Avatar = styled(MuiAvatar)`
+  height: 5rem;
+  width: 5rem;
+  margin-right: 0.9rem;
+  color: white;
+  background: white;
+`;
+
+export const WeeklyReportPane = () => {
   const [open, setOpen] = useState(false);
 
   const toggleDrawer = (event, isOpen) => {
@@ -235,19 +257,25 @@ export const WeeklyReportPane = () => {
     <React.Fragment>
       <Button onClick={handleOpen}>Save and submit</Button>
       <Drawer open={open} onClose={handleClose}>
-        <DrawerHeader
-          title="American Samoa"
-          date="Week 9 Feb 25 - Mar 1, 20202"
-          onClose={handleClose}
-        />
+        <DrawerHeader heading="Upcoming report" onClose={handleClose}>
+          <HeaderContent>
+            <HeaderInner>
+              <Avatar />
+              <div>
+                <HeaderHeading>American Samoa</HeaderHeading>
+                <HeaderSubHeading>Week 9 Feb 25 - Mar 1, 20202</HeaderSubHeading>
+              </div>
+            </HeaderInner>
+          </HeaderContent>
+        </DrawerHeader>
         <ErrorAlert>ILI Above Threshold. Please review and verify data.</ErrorAlert>
         <GreySection>
-          <MainHeadingRow>
+          <LayoutRow>
             <Typography variant="h5">7/10 Sites Reported</Typography>
             <GreyOutlinedButton onClick={handleEditClick} disabled={tableState === 'editable'}>
               Edit
             </GreyOutlinedButton>
-          </MainHeadingRow>
+          </LayoutRow>
           <GreyHeader>
             <span>SYNDROMES</span>
             <span>TOTAL CASES</span>
@@ -260,15 +288,18 @@ export const WeeklyReportPane = () => {
           >
             <VerifiableTable />
             {tableState === 'editable' && (
-              <ActionsRow>
+              <LayoutRow>
                 <MuiLink>Reset and use Sentinel data</MuiLink>
                 <div>
                   <Button variant="outlined" onClick={handleCancel}>
                     Cancel
                   </Button>
-                  <SubmitButton tableState={tableState} setTableState={setTableState} />
+                  <EditableTableSubmitButton
+                    tableState={tableState}
+                    setTableState={setTableState}
+                  />
                 </div>
-              </ActionsRow>
+              </LayoutRow>
             )}
           </EditableTableProvider>
         </GreySection>
@@ -288,7 +319,7 @@ export const WeeklyReportPane = () => {
           </Card>
         </MainSection>
         <DrawerFooter
-          Action={Action}
+          Action={WeeklyReportsPaneSubmitButton}
           helperText="Verify data to submit Weekly Report to Regional"
         />
       </Drawer>

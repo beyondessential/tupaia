@@ -4,12 +4,7 @@
  */
 
 import { stringifyQuery } from '@tupaia/utils';
-import {
-  getAccessToken,
-  getRefreshToken,
-  loginSuccess,
-  loginError,
-} from '../store';
+import { getAccessToken, getRefreshToken, loginSuccess, loginError } from '../store';
 
 const [CLIENT_BASIC_AUTH_HEADER, PSSS_API_URL] = [
   process.env.REACT_APP_CLIENT_BASIC_AUTH_HEADER,
