@@ -16,7 +16,6 @@ const getDeleteStatement = (table, extraConditions = []) => {
 
 // tables are in a significant order, ensuring any foreign keys are cleaned up correctly
 const TABLES_TO_CLEAR = [
-  'alert',
   'api_request_log',
   'answer',
   'survey_response',
@@ -28,8 +27,11 @@ const TABLES_TO_CLEAR = [
   'dhis_sync_log',
   'dhis_sync_queue',
   'clinic',
+  'alert_comment',
+  'alert',
   'entity',
   'data_source',
+  'comment',
   'entity_relation',
   'geographical_area',
   'country',
@@ -67,5 +69,6 @@ export function clearTestData(testStartTime = moment().format('YYYY-MM-DD HH:mm:
     (acc, table) => `${acc}\n${getDeleteStatement(table, extraConditions[table])}`,
     '',
   );
+
   return models.database.executeSql(sql);
 }

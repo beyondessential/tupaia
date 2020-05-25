@@ -14,6 +14,14 @@ const StyledButton = styled(MuiButton)`
   padding: 1em 1.5em;
   box-shadow: none;
   min-width: 3rem;
+
+  &.MuiButton-contained {
+    border: 1px solid transparent; // used to make the contained buttons the same size as the outlined ones
+  }
+
+  & ~ .MuiButtonBase-root {
+    margin-left: 1rem; // add spacing for adjacent buttons
+  }
 `;
 
 /*

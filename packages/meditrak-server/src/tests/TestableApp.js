@@ -23,6 +23,7 @@ export class TestableApp {
     this.models = getModels();
     this.database = this.models.database;
     this.app = createApp(this.database, this.models);
+    this.user = {};
     autobind(this);
   }
 
@@ -36,6 +37,8 @@ export class TestableApp {
       app_version: '999.999.999',
     };
     const response = await this.post('auth', { headers, body });
+
+    this.user = response.body.user;
     this.authToken = response.body.accessToken;
   }
 

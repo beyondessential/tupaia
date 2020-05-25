@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 export const Card = styled(MuiCard)`
-  margin-bottom: 1.25rem;
+  margin-bottom: 1rem;
   border-color: ${props => props.theme.palette.grey['400']};
 `;
 

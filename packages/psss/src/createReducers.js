@@ -1,5 +1,5 @@
 import { auth } from './store';
 
 export const createReducers = () => ({
-  auth: auth,
+  auth,
 });
