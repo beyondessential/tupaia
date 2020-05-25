@@ -7,6 +7,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import MuiDrawer from '@material-ui/core/Drawer';
 import Typography from '@material-ui/core/Typography';
+import MuiAvatar from '@material-ui/core/Avatar';
 import { Close } from '@material-ui/icons';
 import styled from 'styled-components';
 import { LightIconButton } from '@tupaia/ui-components';
@@ -66,6 +67,63 @@ DrawerHeader.propTypes = {
 DrawerHeader.defaultProps = {
   color: COLORS.BLUE,
   Icon: null,
+};
+
+const HeaderContent = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`;
+
+const HeaderInner = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  margin-left: 1rem;
+`;
+
+const HeaderHeading = styled(Typography)`
+  font-weight: 500;
+  font-size: 2rem;
+  line-height: 2.3rem;
+  margin-bottom: 0.3rem;
+`;
+
+const HeaderSubHeading = styled(Typography)`
+  font-weight: 500;
+  font-size: 1.125rem;
+  line-height: 1.3rem;
+`;
+
+const Avatar = styled(MuiAvatar)`
+  height: 5rem;
+  width: 5rem;
+  margin-right: 0.9rem;
+  color: white;
+  background: white;
+`;
+
+export const DrawerHeaderContent = ({ heading, date, avatarUrl }) => (
+  <HeaderContent>
+    <HeaderInner>
+      <Avatar src={avatarUrl} />
+      <div>
+        <HeaderHeading>{heading}</HeaderHeading>
+        <HeaderSubHeading>{date}</HeaderSubHeading>
+      </div>
+    </HeaderInner>
+  </HeaderContent>
+);
+
+DrawerHeaderContent.propTypes = {
+  heading: PropTypes.string.isRequired,
+  date: PropTypes.string.isRequired,
+  avatarUrl: PropTypes.string,
+};
+
+DrawerHeaderContent.defaultProps = {
+  avatarUrl: null,
 };
 
 const DrawerFooterHeight = '125px';
