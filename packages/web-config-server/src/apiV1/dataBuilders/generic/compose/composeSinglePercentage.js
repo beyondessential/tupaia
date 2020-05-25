@@ -34,7 +34,7 @@ export const composeSinglePercentage = async (config, aggregator, dhisApi) => {
   const denominatorValue = denominator.data[0].value;
   const numeratorValue = numerator.data[0].value;
 
-  if (numeratorValue === 0) return { data: [] };
+  if (denominatorValue === 0) return { data: [] };
 
   return {
     data: [
