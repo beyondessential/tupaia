@@ -177,8 +177,8 @@ const getDefaultDatesForSingleDateGranularities = (periodGranularity, defaultTim
  * Example:
  * {
  *    defaultTimePeriod: {
- *        start: {unit: year, offset: -3, modifier: 'start_of'},
- *        end: {unit: month, offset: -1, modifier: 'end_of'}
+ *        start: {unit: 'year', offset: -3, modifier: 'start_of'},
+ *        end: {unit: 'month', offset: -1, modifier: 'end_of'}
  *    }
  * }
  * @param {*} periodGranularity
