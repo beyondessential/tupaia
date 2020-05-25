@@ -4,6 +4,7 @@
  */
 import { getSortByKey } from '@tupaia/utils';
 
+import { Project } from '/models';
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 
 export class DataBuilder {
@@ -87,6 +88,17 @@ export class DataBuilder {
       dataServices,
       includeOptions: true,
     });
+  }
+
+  async fetchEntityHierarchyId() {
+    const { projectCode } = this.query;
+    const project = await Project.findOne({ code: projectCode });
+    return project.entity_hierarchy_id;
+  }
+
+  async fetchDescendantsOfType(type) {
+    const entityHierarchyId = await this.fetchEntityHierarchyId();
+    return this.entity.getDescendantsOfType(type, entityHierarchyId);
   }
 
   sortDataByName = data => data.sort(getSortByKey('name'));
