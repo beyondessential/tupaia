@@ -17,7 +17,7 @@ const stubFetchComposedData = expectedResults => {
   fetchComposedDataStub.returns(expectedResults);
 };
 
-describe.only('composeData', () => {
+describe('composeData', () => {
   afterEach(() => {
     FetchComposedData.fetchComposedData.restore();
   });
