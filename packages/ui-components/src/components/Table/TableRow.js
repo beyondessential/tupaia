@@ -96,11 +96,11 @@ export const StyledTableRow = styled(MuiTableRow)`
   }
 `;
 
-export const TableRow = ({ columns, data, rowIndex, className }) => (
+export const TableRow = React.memo(({ columns, data, rowIndex, className }) => (
   <StyledTableRow className={className}>
     <TableRowCells columns={columns} rowData={data[rowIndex]} />
   </StyledTableRow>
-);
+));
 
 TableRow.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
@@ -129,29 +129,31 @@ export const CondensedTableRow = styled(TableRow)`
   }
 `;
 
-export const ExpandableTableRow = ({ columns, data, rowIndex, className, SubComponent }) => {
-  const [expanded, setExpanded] = useState(false);
+export const ExpandableTableRow = React.memo(
+  ({ columns, data, rowIndex, className, SubComponent }) => {
+    const [expanded, setExpanded] = useState(false);
 
-  const handleClick = useCallback(() => {
-    setExpanded(prevExpanded => !prevExpanded);
-  }, []);
+    const handleClick = useCallback(() => {
+      setExpanded(prevExpanded => !prevExpanded);
+    }, []);
 
-  const row = (
-    <StyledTableRow className={className} onClick={handleClick}>
-      <TableRowCells columns={columns} rowData={data[rowIndex]} />
-    </StyledTableRow>
-  );
-
-  if (SubComponent && expanded) {
-    return (
-      <TableRowExpansionContainer parentRow={row} colSpan={columns.length}>
-        <SubComponent data={data} />
-      </TableRowExpansionContainer>
+    const row = (
+      <StyledTableRow className={className} onClick={handleClick}>
+        <TableRowCells columns={columns} rowData={data[rowIndex]} />
+      </StyledTableRow>
     );
-  }
 
-  return row;
-};
+    if (SubComponent && expanded) {
+      return (
+        <TableRowExpansionContainer parentRow={row} colSpan={columns.length}>
+          <SubComponent data={data} />
+        </TableRowExpansionContainer>
+      );
+    }
+
+    return row;
+  },
+);
 
 ExpandableTableRow.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
