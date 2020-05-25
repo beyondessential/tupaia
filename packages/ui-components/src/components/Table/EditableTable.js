@@ -11,7 +11,6 @@ const EditableTextField = styled(TextField)`
   margin: 0;
   position: relative;
   right: 1px;
-  //width: 4rem;
 
   .MuiInputBase-input {
     text-align: center;
@@ -36,9 +35,9 @@ const ReadOnlyTextField = styled(EditableTextField)`
   }
 `;
 
-const EditableTableContext = createContext({});
+export const EditableTableContext = createContext({});
 
-export const EditableCell = ({ id, columnKey }) => {
+const EditableCell = ({ id, columnKey }) => {
   const { fields, handleFieldChange, tableState } = useContext(EditableTableContext);
   const key = `${id}-${columnKey}`;
   if (tableState === 'editable') {
@@ -48,6 +47,7 @@ export const EditableCell = ({ id, columnKey }) => {
         value={fields[key]}
         onChange={handleFieldChange}
         id={key}
+        key={key}
       />
     );
   }
@@ -112,33 +112,30 @@ export const EditableTableProvider = ({ columns, data, tableState, initialMetada
   const initialState = makeInitialFormState(columns, data);
   const editableColumns = makeEditableColumns(columns);
   const [fields, handleFieldChange, setValues] = useFormFields(initialState);
-  const [metadata, setMetadata] = React.useState(initialMetadata);
+  const [metadata, setMetadata] = useState(initialMetadata);
 
   useEffect(() => {
-    if (tableState !== 'editing') {
+    // loading must change after initial state is set
+    if (tableState === 'loading') {
       setValues(initialState);
       setMetadata(initialMetadata);
     }
   }, [data]);
 
-  console.log('metadata', metadata);
-
   return (
-    <React.Fragment>
-      <EditableTableContext.Provider
-        value={{
-          fields,
-          handleFieldChange,
-          tableState,
-          editableColumns,
-          data,
-          metadata,
-          setMetadata,
-        }}
-      >
-        {children}
-      </EditableTableContext.Provider>
-    </React.Fragment>
+    <EditableTableContext.Provider
+      value={{
+        fields,
+        handleFieldChange,
+        tableState,
+        editableColumns,
+        data,
+        metadata,
+        setMetadata,
+      }}
+    >
+      {children}
+    </EditableTableContext.Provider>
   );
 };
 
@@ -156,27 +153,9 @@ EditableTableProvider.propTypes = {
     }),
   ).isRequired,
   data: PropTypes.array.isRequired,
-  initialMetadata: PropTypes.array,
+  initialMetadata: PropTypes.object,
 };
 
 EditableTableProvider.defaultProps = {
   initialMetadata: {},
-};
-
-export const EditableTable = ({ Component }) => {
-  const { editableColumns, data, tableState } = useContext(EditableTableContext);
-  return <Component columns={editableColumns} data={data} tableState={tableState} />;
-};
-
-EditableTable.propTypes = {
-  Component: PropTypes.any.isRequired,
-};
-
-export const EditableTableAction = ({ Component }) => {
-  const { fields } = useContext(EditableTableContext);
-  return <Component fields={fields} />;
-};
-
-EditableTableAction.propTypes = {
-  Component: PropTypes.any.isRequired,
 };
