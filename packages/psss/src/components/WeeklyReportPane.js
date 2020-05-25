@@ -7,7 +7,6 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import MuiLink from '@material-ui/core/Link';
-import MuiAvatar from '@material-ui/core/Avatar';
 import {
   FakeHeader,
   Button,
@@ -19,7 +18,7 @@ import {
 import { PercentageChangeCell } from './Tables/TableCellComponents';
 import { EditableTableContext, EditableTableProvider } from './Tables/EditableTable';
 import * as COLORS from '../theme/colors';
-import { Drawer, DrawerFooter, DrawerHeader } from './Drawer';
+import { Drawer, DrawerHeaderContent, DrawerFooter, DrawerHeader } from './Drawer';
 import { DottedTable } from './Tables/TableTypes';
 import { VerifiableTable } from './Tables/VerifiableTable';
 import { SiteAddress } from './SiteAddress';
@@ -194,41 +193,6 @@ const WeeklyReportsPaneSubmitButton = () => {
   );
 };
 
-const HeaderContent = styled.div`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-`;
-
-const HeaderInner = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: 1rem;
-  margin-left: 1rem;
-`;
-
-const HeaderHeading = styled(Typography)`
-  font-weight: 500;
-  font-size: 2rem;
-  line-height: 2.3rem;
-  margin-bottom: 0.3rem;
-`;
-
-const HeaderSubHeading = styled(Typography)`
-  font-weight: 500;
-  font-size: 1.125rem;
-  line-height: 1.3rem;
-`;
-
-const Avatar = styled(MuiAvatar)`
-  height: 5rem;
-  width: 5rem;
-  margin-right: 0.9rem;
-  color: white;
-  background: white;
-`;
-
 export const WeeklyReportPane = () => {
   const [open, setOpen] = useState(false);
 
@@ -258,15 +222,10 @@ export const WeeklyReportPane = () => {
       <Button onClick={handleOpen}>Save and submit</Button>
       <Drawer open={open} onClose={handleClose}>
         <DrawerHeader heading="Upcoming report" onClose={handleClose}>
-          <HeaderContent>
-            <HeaderInner>
-              <Avatar />
-              <div>
-                <HeaderHeading>American Samoa</HeaderHeading>
-                <HeaderSubHeading>Week 9 Feb 25 - Mar 1, 20202</HeaderSubHeading>
-              </div>
-            </HeaderInner>
-          </HeaderContent>
+          <DrawerHeaderContent
+            heading="American Samoa"
+            date="Week 9 Feb 25 - Mar 1, 2020"
+          />
         </DrawerHeader>
         <ErrorAlert>ILI Above Threshold. Please review and verify data.</ErrorAlert>
         <GreySection>
