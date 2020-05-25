@@ -23,7 +23,7 @@ const StyledListItem = styled(MuiListItem)`
 const ListItemLink = props => <StyledListItem button component={RouterLink} {...props} />;
 
 const ProfileLinks = ({ onLogout }) => {
-  const handleClick = () => {
+  const handleClickLogout = () => {
     onLogout();
   };
 
@@ -35,7 +35,7 @@ const ProfileLinks = ({ onLogout }) => {
         </MuiListItemIcon>
         <MuiListItemText primary="Profile" />
       </ListItemLink>
-      <StyledListItem button onClick={handleClick}>
+      <StyledListItem button onClick={handleClickLogout}>
         <MuiListItemIcon>
           <ExitToAppIcon />
         </MuiListItemIcon>
@@ -50,7 +50,6 @@ ProfileLinks.propTypes = {
 };
 
 const ProfileButtonComponent = ({ onLogout, user }) => {
-  const displayName = user.name.split(' ')[0];
   const firstLetter = user.name.substring(0, 1);
 
   return (
@@ -58,7 +57,7 @@ const ProfileButtonComponent = ({ onLogout, user }) => {
       startIcon={<Avatar>{firstLetter}</Avatar>}
       listItems={<ProfileLinks onLogout={onLogout} />}
     >
-      {displayName}
+      {user.name}
     </LightProfileButton>
   );
 };
