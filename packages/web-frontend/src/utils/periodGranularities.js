@@ -205,8 +205,8 @@ const getDefaultDatesForRangeGranularities = (periodGranularity, defaultTimePeri
   return {};
 };
 
-export function getDefaultDates(state, infoViewKey) {
-  const { periodGranularity, defaultTimePeriod } = state.global.viewConfigs[infoViewKey];
+export function getDefaultDates(state) {
+  const { periodGranularity, defaultTimePeriod } = state;
   const isSingleDate = GRANULARITIES_WITH_ONE_DATE.includes(periodGranularity);
 
   if (isSingleDate) {
