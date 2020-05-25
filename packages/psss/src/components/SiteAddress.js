@@ -13,7 +13,7 @@ const Container = styled.div`
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  margin: 15px 15px 30px 20px;
+  margin: 1rem 1rem 1.8rem 1.25rem;
 `;
 
 const AddressContainer = styled.div`
@@ -41,8 +41,8 @@ const AddressHeading = styled(Typography)`
 
 const AddressContent = styled(Typography)`
   color: ${COLORS.TEXT_MIDGREY};
-  font-size: 14px;
-  line-height: 18px;
+  font-size: 0.875rem;
+  line-height: 1.125rem;
   padding-right: 1rem;
 `;
 
@@ -51,8 +51,8 @@ const ContactSection = styled.div`
 `;
 
 const ContactHeading = styled(Typography)`
-  font-size: 13px;
-  line-height: 18px;
+  font-size: 0.8rem;
+  line-height: 1.125rem;
   font-weight: 500;
 `;
 
@@ -87,6 +87,14 @@ export const SiteAddress = ({ address, contact }) => {
 };
 
 SiteAddress.propTypes = {
-  address: PropTypes.object.isRequired,
-  contact: PropTypes.object.isRequired,
+  contact: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    department: PropTypes.string.isRequired,
+    email: PropTypes.string.isRequired,
+  }).isRequired,
+  address: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    district: PropTypes.string.isRequired,
+    country: PropTypes.string.isRequired,
+  }).isRequired,
 };
