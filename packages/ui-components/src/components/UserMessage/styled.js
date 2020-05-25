@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Card, CardHeader } from '@material-ui/core';
+import { Button, Card, CardHeader, Divider, TextareaAutosize } from '@material-ui/core';
 
 export const StyledCard = styled(Card)`
   max-width: 460px;
@@ -19,4 +19,22 @@ export const StyledCardHeader = styled(CardHeader)`
     align-self: center;
     margin-top: 0;
   }
+`;
+
+export const StyledTextareaAutosize = styled(TextareaAutosize)`
+  width: 100%;
+  border: 0;
+  padding: 0;
+  height: 50px !important;
+  margin-bottom: 1em;
+`;
+
+export const StyledButton = styled(Button)`
+  position: relative;
+  top: 0.8em;
+  margin-right: 1em;
+`;
+
+export const StyledDivider = styled(Divider)`
+  margin: 0 -5%;
 `;

@@ -50,5 +50,5 @@ export const ActionsMenu = ({ options }) => {
 };
 
 ActionsMenu.propTypes = {
-  options: PropTypes.array.isRequired,
+  options: PropTypes.object.isRequired,
 };

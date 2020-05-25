@@ -6,12 +6,13 @@
 import moment from 'moment';
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Avatar, Box, CardContent, Grid, Typography } from '@material-ui/core';
+import { Avatar, Box, CardContent, Grid } from '@material-ui/core';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
 import { StyledCard, StyledCardHeader } from './styled';
 
 import { ActionsMenu } from './ActionsMenu';
+import { MessageView } from './MessageView';
 
 const getAvatar = avatarUrl =>
   !avatarUrl ? <AccountCircleIcon style={{ fontSize: 40 }} /> : <Avatar alt="" src={avatarUrl} />;
@@ -34,22 +35,26 @@ const getTimestampAndMenu = (timestamp, menuOptions) => {
 };
 
 export const UserMessage = ({ id, avatarUrl, title, timestamp, message, onUpdate, onDelete }) => {
-  const actions = {
-    Edit: () => console.log('UserMessage.edit', id),
-    Delete: () => onDelete(id),
-  };
+  const [edit, setEdit] = React.useState(false);
 
   return (
     <StyledCard variant="outlined">
       <StyledCardHeader
         avatar={getAvatar(avatarUrl)}
         title={<Box fontWeight="fontWeightBold">{title}</Box>}
-        action={getTimestampAndMenu(timestamp, actions)}
+        action={getTimestampAndMenu(timestamp, {
+          Edit: () => setEdit(true),
+          Delete: () => onDelete(id),
+        })}
       />
       <CardContent>
-        <Typography variant="body2" color="textSecondary" component="p">
-          {message}
-        </Typography>
+        <MessageView
+          userMessageId={id}
+          edit={edit}
+          message={message}
+          onCancel={() => setEdit(false)}
+          onUpdate={onUpdate}
+        />
       </CardContent>
     </StyledCard>
   );
