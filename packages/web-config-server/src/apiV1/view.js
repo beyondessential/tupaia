@@ -1,5 +1,4 @@
-import { convertDateRangeToPeriods } from '@tupaia/dhis-api';
-import { replaceValues, CustomError } from '@tupaia/utils';
+import { convertDateRangeToPeriods, replaceValues, CustomError } from '@tupaia/utils';
 import { DashboardReport } from '/models';
 import { getDhisApiInstance } from '/dhis';
 import { isSingleValue } from './utils';
@@ -57,7 +56,7 @@ export default class extends DataAggregatingRouteHandler {
     if (getIsValidDate(startDate)) this.startDate = startDate;
     if (getIsValidDate(endDate)) this.endDate = endDate;
 
-    const { viewId, drillDownLevel, dashboardGroupId } = this.query;
+    const { viewId, drillDownLevel } = this.query;
     // If drillDownLevel is undefined, send it through as null instead so it's not dropped from the object.
     const dashboardReport = await DashboardReport.findOne({
       id: viewId,

@@ -14,7 +14,7 @@ const getFacilitiesData = async (aggregator, parentCode, period, shouldOnlyRetur
     {
       period,
       organisationUnitCode: parentCode,
-      dataServices: [{ isDataRegional: true }], // Always use the regional DHIS2 server for facility status
+      dataSourceEntityType: 'facility',
     },
     {},
     { ...extraParams },
@@ -74,8 +74,8 @@ export const getFacilityStatusCounts = async (aggregator, parentCode, period) =>
   };
 };
 
-// Operational facilities have value 0 (Fully Operational) or 1 (Operational But Closed This Week);
-const isFacilityOperational = value => value < 2;
+const OPERATIONAL_STATES = ['Fully Operational', 'Operational but closed this week'];
+const isFacilityOperational = value => OPERATIONAL_STATES.includes(value);
 
 // Annual periods only have four characters, e.g. 2018
 const periodIsAnnual = period => period.length === 4;

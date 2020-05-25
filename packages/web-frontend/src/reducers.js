@@ -106,6 +106,7 @@ import {
   TOGGLE_DASHBOARD_SELECT_EXPAND,
   SET_MOBILE_DASHBOARD_EXPAND,
   REQUEST_PROJECT_ACCESS,
+  SELECT_PROJECT,
 } from './actions';
 
 function authentication(
@@ -507,6 +508,15 @@ function searchBar(
       return { ...state, searchResponse: action.error };
     case CLOSE_DROPDOWN_OVERLAYS:
       return { ...state, isExpanded: false };
+    case FETCH_LOGIN_SUCCESS:
+      // Clear search results on login incase of permission change
+      return { ...state, isExpanded: false, searchResponse: null, searchString: '' };
+    case FETCH_LOGOUT_SUCCESS:
+      // Clear search results on logout incase of permission change
+      return { ...state, isExpanded: false, searchResponse: null, searchString: '' };
+    case SELECT_PROJECT:
+      // Clear search results on project change to fetch alternative hierarchy
+      return { ...state, isExpanded: false, searchResponse: null, searchString: '' };
     default:
       return state;
   }

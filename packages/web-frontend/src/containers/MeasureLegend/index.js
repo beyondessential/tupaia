@@ -259,7 +259,7 @@ const MeasureLegend = ({ measureOptions, hasIconLayer, hasRadiusLayer, hasColorL
   const keys = values
     .filter(v => !v.hideFromLegend)
     .filter(v => hasRadiusLayer || !isHiddenOtherIcon(v)) // only show hidden icons in legend if paired with radius
-    .filter(v => v.value !== MEASURE_VALUE_NULL) // we will be rendering this below
+    .filter(v => v.value !== MEASURE_VALUE_NULL && v.value !== null) // we will be rendering this below
     .map(v => {
       const marker = getLegendMarkerForValue(v, type, hasIconLayer, hasRadiusLayer, hasColorLayer);
       return (
@@ -273,15 +273,35 @@ const MeasureLegend = ({ measureOptions, hasIconLayer, hasRadiusLayer, hasColorL
       );
     });
 
+  //Sometimes we want to group Null + No = No.
+  //So we dont wan't to render 'No data' legend if that's the case
+  const hasGroupedLegendIncludingNull = values.some(({ value }) => {
+    if (Array.isArray(value)) {
+      return value.some(innerValue => innerValue === MEASURE_VALUE_NULL);
+    }
+
+    return false;
+  });
+
+  let nullKey = null;
   const nullItem = valueMapping.null;
-  const nullKey = nullItem ? (
-    <LegendEntry
-      marker={getLegendMarkerForValue(nullItem, type, hasIconLayer, hasRadiusLayer, hasColorLayer)}
-      label={nullItem.name}
-      dataKey={dataKey}
-      value={null}
-    />
-  ) : null;
+
+  if (!hasGroupedLegendIncludingNull && nullItem) {
+    nullKey = (
+      <LegendEntry
+        marker={getLegendMarkerForValue(
+          nullItem,
+          type,
+          hasIconLayer,
+          hasRadiusLayer,
+          hasColorLayer,
+        )}
+        label={nullItem.name}
+        dataKey={dataKey}
+        value={null}
+      />
+    );
+  }
 
   return (
     <LegendContainer>

@@ -51,7 +51,7 @@ export const cleanupDhisApiStub = () => {
   GetDhisApiInstance.getDhisApiInstance.restore();
 };
 
-export const stubModels = () => ({
+export const createModelsStub = () => ({
   dataSource: {
     findOrDefault: async specs =>
       Object.values(DATA_SOURCES).filter(

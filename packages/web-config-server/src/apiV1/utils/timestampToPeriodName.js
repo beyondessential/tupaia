@@ -3,8 +3,7 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
 
-import { PERIOD_TYPES } from '@tupaia/dhis-api';
-import { utcMoment } from '@tupaia/utils';
+import { utcMoment, PERIOD_TYPES } from '@tupaia/utils';
 
 const PERIOD_TYPE_TO_NAME_FORMAT = {
   [PERIOD_TYPES.MONTH]: 'MMM YYYY',

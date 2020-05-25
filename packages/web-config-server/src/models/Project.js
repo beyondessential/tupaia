@@ -19,6 +19,7 @@ export class Project extends BaseModel {
     'logo_url',
     'dashboard_group_name',
     'default_measure',
+    'entity_hierarchy_id',
   ];
 
   static async getProjectDetails() {

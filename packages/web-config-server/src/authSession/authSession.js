@@ -3,7 +3,7 @@ import session from 'client-sessions';
 
 import { getAccessPolicyForUser } from './getAccessPolicyForUser';
 import { PUBLIC_USER_NAME } from './publicAccess';
-import { Entity } from '/models';
+import { Entity, Project } from '/models';
 
 const allowedUnauthRoutes = ['/login', '/version'];
 
@@ -87,13 +87,17 @@ const addUserAccessHelper = (req, res, next) => {
     const entity = await Entity.findOne({
       code: entityCode,
     });
-    // Timor-Leste is temporarily turned off
-    if (entity.country_code === 'TL') {
-      return {};
-    }
-    const ancestorCodes = await entity.getAncestorCodes();
 
-    return accessPolicy.getPermissionGroups([entity.code, ...ancestorCodes]);
+    // project access rights are determined by their children
+    if (entity.isProject()) {
+      const project = await Project.findOne({ code: entity.code });
+      const projectChildren = await entity.getChildren(project.entity_hierarchy_id);
+      return accessPolicy.getPermissionGroups([
+        ...new Set(projectChildren.map(c => c.country_code)),
+      ]);
+    }
+
+    return accessPolicy.getPermissionGroups([entity.country_code]);
   };
   next();
 };

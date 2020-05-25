@@ -8,7 +8,7 @@ import {
   periodToDisplayString,
   parsePeriodType,
   convertToPeriod,
-} from '@tupaia/dhis-api';
+} from '@tupaia/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import flattenDeep from 'lodash.flattendeep';
 

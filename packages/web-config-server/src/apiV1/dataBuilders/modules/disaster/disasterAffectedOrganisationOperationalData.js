@@ -1,4 +1,4 @@
-import { convertDateRangeToPeriodString } from '@tupaia/dhis-api';
+import { convertDateRangeToPeriodString } from '@tupaia/utils';
 import { Entity } from '/models';
 
 const DATA_ELEMENT_CODES = {

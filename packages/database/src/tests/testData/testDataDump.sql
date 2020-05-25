@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 11.2
--- Dumped by pg_dump version 11.2
+-- Dumped from database version 10.12
+-- Dumped by pg_dump version 10.12
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -12,8 +12,23 @@ SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
+SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
+
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
 
 --
 -- Name: postgis; Type: EXTENSION; Schema: -; Owner: -
@@ -77,7 +92,8 @@ CREATE TYPE public.entity_type AS ENUM (
     'village',
     'case',
     'case_contact',
-    'disaster'
+    'disaster',
+    'school'
 );
 
 
@@ -457,7 +473,8 @@ CREATE TABLE public.entity (
     image_url text,
     country_code character varying(6),
     bounds public.geography(Polygon,4326),
-    metadata jsonb
+    metadata jsonb,
+    attributes jsonb DEFAULT '{}'::jsonb
 );
 
 
@@ -724,7 +741,8 @@ CREATE TABLE public.project (
     dashboard_group_name text DEFAULT 'General'::text,
     user_groups text[],
     logo_url text,
-    entity_id text
+    entity_id text,
+    entity_hierarchy_id text
 );
 
 
@@ -812,7 +830,7 @@ CREATE TABLE public.survey_response (
     metadata text,
     submission_time timestamp with time zone,
     timezone text DEFAULT 'Pacific/Auckland'::text,
-    entity_id text
+    entity_id text NOT NULL
 );
 
 
@@ -2225,6 +2243,14 @@ ALTER TABLE ONLY public.permission_group
 
 
 --
+-- Name: project project_entity_hierarchy_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.project
+    ADD CONSTRAINT project_entity_hierarchy_id_fkey FOREIGN KEY (entity_hierarchy_id) REFERENCES public.entity_hierarchy(id);
+
+
+--
 -- Name: question question_option_set_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2352,8 +2378,8 @@ ALTER TABLE ONLY public.user_reward
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 11.2
--- Dumped by pg_dump version 11.2
+-- Dumped from database version 10.12
+-- Dumped by pg_dump version 10.12
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -2362,6 +2388,7 @@ SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
+SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 

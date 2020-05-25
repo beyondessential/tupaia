@@ -17,6 +17,10 @@
       "path": "packages/auth"
     },
     {
+      "name": "data-api",
+      "path": "packages/data-api"
+    },
+    {
       "name": "data-broker",
       "path": "packages/data-broker"
     },

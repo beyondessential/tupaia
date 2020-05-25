@@ -43,12 +43,18 @@ export class CustomMap extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    const { measureInfo, currentOrganisationUnit, tileSet, position, currentChildren } = this.props;
+    const {
+      measureInfo,
+      currentOrganisationUnit,
+      tileSet,
+      position,
+      displayedChildren,
+    } = this.props;
     // Only updates/re-renders when the measure has changed or the orgUnit has changed.
     // These are the only cases where polygons or area tooltips should rerender.
     if (nextProps.measureInfo.measureId !== measureInfo.measureId) return true;
 
-    if (nextProps.currentChildren !== currentChildren) return true;
+    if (nextProps.displayedChildren !== displayedChildren) return true;
 
     if (
       (nextProps.currentOrganisationUnit || {}).organisationUnitCode !==
@@ -91,9 +97,9 @@ export class CustomMap extends Component {
   }
 
   renderPolygons() {
-    const { currentChildren, currentOrganisationUnitSiblings } = this.props;
+    const { displayedChildren, currentOrganisationUnitSiblings } = this.props;
 
-    const areaPolygons = (currentChildren || []).map(area => (
+    const areaPolygons = (displayedChildren || []).map(area => (
       <ConnectedPolygon area={area} key={area.organisationUnitCode} isChildArea />
     ));
 
@@ -169,7 +175,7 @@ CustomMap.propTypes = {
   currentOrganisationUnit: PropTypes.object.isRequired,
   measureInfo: PropTypes.object.isRequired,
   /* eslint-enable react/forbid-prop-types */
-  currentChildren: PropTypes.arrayOf(PropTypes.object),
+  displayedChildren: PropTypes.arrayOf(PropTypes.object),
 
   shouldSnapToPosition: PropTypes.bool.isRequired,
   position: PropTypes.shape({
@@ -181,5 +187,5 @@ CustomMap.propTypes = {
 };
 
 CustomMap.defaultProps = {
-  currentChildren: [],
+  displayedChildren: [],
 };

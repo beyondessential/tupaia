@@ -5,8 +5,7 @@
 
 import keyBy from 'lodash.keyby';
 
-import { PERIOD_TYPES, momentToPeriod } from '@tupaia/dhis-api';
-import { utcMoment, reduceToDictionary } from '@tupaia/utils';
+import { utcMoment, reduceToDictionary, PERIOD_TYPES, momentToPeriod } from '@tupaia/utils';
 import { sanitizeValue } from './sanitizeValue';
 
 class AnalyticsFromEventsBuilder {
