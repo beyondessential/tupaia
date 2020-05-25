@@ -8,23 +8,22 @@ import { CountryModel } from './Country';
 import { DataElementDataGroupModel } from './DataElementDataGroup';
 import { DataSourceModel } from './DataSource';
 import { EntityModel } from './Entity';
+import { MeditrakDeviceModel } from './MeditrakDevice';
+import { OneTimeLoginModel } from './OneTimeLogin';
 import { PermissionGroupModel } from './PermissionGroup';
 import { QuestionModel } from './Question';
+import { RefreshTokenModel } from './RefreshToken';
 import { SurveyModel } from './Survey';
 import { SurveyResponseModel } from './SurveyResponse';
 import { SurveyScreenComponentModel } from './SurveyScreenComponent';
 import { SurveyScreenModel } from './SurveyScreen';
-import { UserModel } from './User';
-import { MeditrakDeviceModel } from './MeditrakDevice';
-import { OneTimeLoginModel } from './OneTimeLogin';
-import { PermissionGroupModel } from './PermissionGroup';
-import { RefreshTokenModel } from './RefreshToken';
 import { UserEntityPermissionModel } from './UserEntityPermission';
 import { UserModel } from './User';
 
 // export all models to be used in constructing a ModelRegistry
 export const modelClasses = {
   Answer: AnswerModel,
+  Country: CountryModel,
   DataElementDataGroup: DataElementDataGroupModel,
   DataSource: DataSourceModel,
   Entity: EntityModel,
@@ -33,12 +32,10 @@ export const modelClasses = {
   PermissionGroup: PermissionGroupModel,
   Question: QuestionModel,
   RefreshToken: RefreshTokenModel,
-  Su  RefreshToken: RefreshTokenModel,
   Survey: SurveyModel,
   SurveyResponse: SurveyResponseModel,
   SurveyScreen: SurveyScreenModel,
   SurveyScreenComponent: SurveyScreenComponentModel,
-  User: UserModel,
   User: UserModel,
   UserEntityPermission: UserEntityPermissionModel,
 };
