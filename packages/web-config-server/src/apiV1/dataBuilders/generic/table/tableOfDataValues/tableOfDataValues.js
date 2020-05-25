@@ -28,7 +28,6 @@ export class TableOfDataValuesBuilder extends DataBuilder {
     const { results, period } = await this.fetchAnalyticsAndMetadata();
     this.results = results;
     this.tableConfig = new TableConfig(this.config, this.results);
-    this.baseRows = this.buildBaseRows();
     this.valuesByCell = this.buildValuesByCell();
     this.totalCalculator = new TotalCalculator(this.tableConfig, this.valuesByCell);
     this.rowsToDescriptions = {};
@@ -102,13 +101,15 @@ export class TableOfDataValuesBuilder extends DataBuilder {
         });
         const rowsWithData = results.map(result => result.dataElement);
         this.tableConfig.rows = this.tableConfig.rows.map(({ rows, category }) => {
-          rows
-            .filter(row => rowsWithData.includes(row.code))
-            .forEach(row => {
-              this.rowsToDescriptions[row.name] = this.rowDescriptionResults[
-                row.descriptionDataElement
-              ];
-            });
+          if (this.tableConfig.hasRowDescriptions()) {
+            rows
+              .filter(row => rowsWithData.includes(row.code))
+              .forEach(row => {
+                this.rowsToDescriptions[row.name] = this.rowDescriptionResults[
+                  row.descriptionDataElement
+                ];
+              });
+          }
 
           const rowsFromData = rows.filter(row => rowsWithData.includes(row.code)).map(r => r.name);
 
@@ -127,11 +128,14 @@ export class TableOfDataValuesBuilder extends DataBuilder {
               };
             }
 
-            return {
-              dataElement,
-              rowInfo: this.rowsToDescriptions[dataElement],
+            const rowData = {
+              dataElement: dataElement.hasOwnProperty('name') ? dataElement.name : dataElement,
               categoryId,
             };
+            const rowInfo = this.rowsToDescriptions[rowData.dataElement];
+            if (rowInfo) return { ...rowData, rowInfo };
+
+            return rowData;
           });
         }),
       );
@@ -146,20 +150,27 @@ export class TableOfDataValuesBuilder extends DataBuilder {
       });
       const rowsWithData = results.map(result => result.dataElement);
 
-      this.tableConfig.rows
-        .filter(row => rowsWithData.includes(row.code))
-        .forEach(row => {
-          this.rowsToDescriptions[row.name] = this.rowDescriptionResults[
-            row.descriptionDataElement
-          ];
-        });
+      if (this.tableConfig.hasRowDescriptions()) {
+        this.tableConfig.rows
+          .filter(row => rowsWithData.includes(row.code))
+          .forEach(row => {
+            this.rowsToDescriptions[row.name] = this.rowDescriptionResults[
+              row.descriptionDataElement
+            ];
+          });
+      }
       this.tableConfig.rows = this.tableConfig.rows.filter(row => rowsWithData.includes(row.code));
     }
 
-    return this.tableConfig.rows.map(dataElement => ({
-      dataElement,
-      rowInfo: this.rowDescriptionResults[dataElement],
-    }));
+    return this.tableConfig.rows.map(dataElement => {
+      const rowData = {
+        dataElement: dataElement.hasOwnProperty('name') ? dataElement.name : dataElement,
+      };
+      const rowInfo = this.rowsToDescriptions[rowData.dataElement];
+      if (rowInfo) return { ...rowData, rowInfo };
+
+      return rowData;
+    });
   }
 
   async buildRowDescriptions() {
@@ -169,9 +180,7 @@ export class TableOfDataValuesBuilder extends DataBuilder {
         this.tableConfig.rows.map(({ rows }) => rows.map(row => row.descriptionDataElement)),
       );
     } else {
-      rowDescriptionDataElementCodes = this.tableConfig.rows.map(({ rows }) =>
-        rows.map(row => row.descriptionDataElement),
-      );
+      rowDescriptionDataElementCodes = this.tableConfig.rows.map(row => row.descriptionDataElement);
     }
 
     const { results: rowDescriptionResults } = await this.fetchAnalytics(
@@ -371,10 +380,6 @@ export class TableOfDataValuesBuilder extends DataBuilder {
   hasColumnsInCategories = columns => {
     return columns[0] && columns[0].hasOwnProperty('category');
   };
-
-  async buildCellDescriptionForRow() {
-    this;
-  }
 }
 
 export const tableOfDataValues = async (

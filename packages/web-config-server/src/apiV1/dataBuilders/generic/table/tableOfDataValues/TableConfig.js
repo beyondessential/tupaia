@@ -126,16 +126,16 @@ export class TableConfig {
 
   hasRowDataElements() {
     return (
-      this.baseConfig.rows[0] &&
-      (this.baseConfig.rows[0].code || this.baseConfig.rows[0].rows[0].code)
+      this.baseConfig.rows[0].hasOwnProperty('code') ||
+      (this.baseConfig.rows[0].rows && this.baseConfig.rows[0].rows[0].hasOwnProperty('code'))
     );
   }
 
   hasRowDescriptions() {
     return (
-      this.baseConfig.rows[0] &&
-      (this.baseConfig.rows[0].descriptionDataElement ||
-        this.baseConfig.rows[0].rows[0].descriptionDataElement)
+      this.baseConfig.rows[0].hasOwnProperty('descriptionDataElement') ||
+      (this.baseConfig.rows[0].rows &&
+        this.baseConfig.rows[0].rows[0].hasOwnProperty('descriptionDataElement'))
     );
   }
 
