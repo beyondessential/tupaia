@@ -1,4 +1,9 @@
-import { getCountryNameFromCode } from '@tupaia/utils';
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+import { reduceToDictionary } from '@tupaia/utils';
+
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { fetchOperationalFacilityCodes } from '/apiV1/utils';
 import { ENTITY_TYPES } from '/models/Entity';
@@ -28,11 +33,7 @@ class CountOperationalFacilitiesByCountryBuilder extends DataBuilder {
 
   async fetchCountryNamesByCode() {
     const countryEntities = await this.fetchDescendantsOfType(ENTITY_TYPES.COUNTRY);
-    const countryNamesByCode = {};
-    countryEntities.forEach(c => {
-      countryNamesByCode[c.code] = c.name;
-    });
-    return countryNamesByCode;
+    return reduceToDictionary(countryEntities, 'code', 'name');
   }
 }
 
