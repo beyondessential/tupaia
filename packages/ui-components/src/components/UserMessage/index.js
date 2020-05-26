@@ -6,13 +6,31 @@
 import { format } from 'date-fns';
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Avatar, Box, CardContent, Grid } from '@material-ui/core';
+import { Avatar, Box, CardContent, Grid, Card, CardHeader } from '@material-ui/core';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-
-import { StyledCard, StyledCardHeader } from './styled';
+import styled from 'styled-components';
 
 import { ActionsMenu } from '../ActionsMenu';
 import { MessageView } from './MessageView';
+
+const StyledCard = styled(Card)`
+  max-width: 460px;
+
+  .MuiCardHeader-root {
+    padding: 8px 16px;
+    border-width: 0 0 1px 0;
+    border-style: solid;
+    border-color: #dedee0;
+  }
+`;
+
+const StyledCardHeader = styled(CardHeader)`
+  .MuiCardHeader-action {
+    flex: 1 1 auto;
+    align-self: center;
+    margin-top: 0;
+  }
+`;
 
 const getAvatar = avatarUrl =>
   !avatarUrl ? <AccountCircleIcon style={{ fontSize: 40 }} /> : <Avatar alt="" src={avatarUrl} />;
