@@ -5,7 +5,16 @@
 import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { ButtonSelect, Button, Card, ErrorAlert } from '@tupaia/ui-components';
+import Typography from '@material-ui/core/Typography';
+import MuiLink from '@material-ui/core/Link';
+import {
+  ButtonSelect,
+  FakeHeader,
+  Button,
+  Card,
+  ErrorAlert,
+  GreyOutlinedButton,
+} from '@tupaia/ui-components';
 import { PercentageChangeCell } from './Tables/TableCellComponents';
 import { EditableTableContext, EditableTableProvider } from './Tables/EditableTable';
 import * as COLORS from '../theme/colors';
@@ -15,7 +24,7 @@ import { VerifiableTable } from './Tables/VerifiableTable';
 import { SiteAddress } from './SiteAddress';
 
 // dummy data
-const regionalData = [
+const countryData = [
   {
     id: 'afr',
     title: 'Acute Fever and Rash (AFR)',
@@ -62,8 +71,13 @@ const columns = [
   {
     title: 'Total Cases',
     key: 'totalCases',
+    editable: true,
   },
 ];
+
+const GreyHeader = styled(FakeHeader)`
+  border: none;
+`;
 
 const GreySection = styled.section`
   background: ${COLORS.LIGHTGREY};
@@ -75,25 +89,32 @@ const MainSection = styled.section`
   padding: 30px 20px;
 `;
 
-const editableColumns = [
-  {
-    title: 'Title',
-    key: 'title',
-    width: '300px',
-  },
-  {
-    title: 'Percentage Increase',
-    key: 'percentageChange',
-    CellComponent: PercentageChangeCell,
-  },
-  {
-    title: 'Total Cases',
-    key: 'totalCases',
-    editable: true,
-  },
-];
+const HeadingRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  margin-left: 30px;
+  margin-right: 30px;
+`;
 
-const verifiedStatus = regionalData.reduce((state, item) => {
+const HeaderTitle = styled(Typography)`
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 19px;
+`;
+
+const LayoutRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 0;
+`;
+
+const verifiedStatus = countryData.reduce((state, item) => {
   if (item.percentageChange > 10) {
     return {
       ...state,
@@ -102,6 +123,21 @@ const verifiedStatus = regionalData.reduce((state, item) => {
   }
   return state;
 }, {});
+
+const EditableTableSubmitButton = ({ setTableState }) => {
+  const { fields, metadata } = useContext(EditableTableContext);
+
+  const handleSubmit = () => {
+    // POST DATA
+    console.log('updated values...', fields, metadata);
+    setTableState('static');
+  };
+  return <Button onClick={handleSubmit}>Save</Button>;
+};
+
+EditableTableSubmitButton.propTypes = {
+  setTableState: PropTypes.func.isRequired,
+};
 
 const WeeklyReportsPaneSubmitButton = () => {
   const handleClick = () => {
@@ -114,18 +150,17 @@ const WeeklyReportsPaneSubmitButton = () => {
   );
 };
 
-const EditableDottedTable = () => {
-  const { updatingColumns, data } = useContext(EditableTableContext);
-  return <DottedTable columns={updatingColumns} data={data} />;
+const IndicatorsTable = () => {
+  const { editableColumns, data } = useContext(EditableTableContext);
+  return <DottedTable columns={editableColumns} data={data} />;
 };
 
+/*
+ * WEEKLY REPORT PANE
+ */
 export const WeeklyReportPane = ({ data }) => {
+  // ------- DRAWER ---------------
   const [open, setOpen] = useState(false);
-  const [activeSiteIndex, setActiveSiteIndex] = useState(0);
-
-  const indicatorsData = data[activeSiteIndex].indicators;
-  const activeSite = data[activeSiteIndex];
-
   const toggleDrawer = (event, isOpen) => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
       return;
@@ -134,8 +169,33 @@ export const WeeklyReportPane = ({ data }) => {
   };
 
   const handleOpen = event => toggleDrawer(event, true);
-
   const handleClose = event => toggleDrawer(event, false);
+
+  // ------- COUNTRY TABLE ----------
+  const [countryTableState, setCountryTableState] = useState('static');
+
+  const handleEditClick = () => {
+    setCountryTableState('editable');
+  };
+
+  const handleCancel = () => {
+    setCountryTableState('static');
+  };
+
+  // ------- INDICATORS TABLE --------
+  const [activeSiteIndex, setActiveSiteIndex] = useState(0);
+  const indicatorsData = data[activeSiteIndex].indicators;
+  const activeSite = data[activeSiteIndex];
+
+  const [indicatorTableState, setIndicatorTableState] = useState('static');
+
+  const handleIndicatorTableEditClick = () => {
+    setIndicatorTableState('editable');
+  };
+
+  const handleIndicatorTableCancel = () => {
+    setIndicatorTableState('static');
+  };
 
   return (
     <React.Fragment>
@@ -146,12 +206,41 @@ export const WeeklyReportPane = ({ data }) => {
         </DrawerHeader>
         <ErrorAlert>ILI Above Threshold. Please review and verify data.</ErrorAlert>
         <GreySection>
+          {/* ---------- Country Table ------------ */}
           <EditableTableProvider
-            columns={editableColumns}
-            data={regionalData}
+            columns={columns}
+            data={countryData}
+            tableState={countryTableState}
             initialMetadata={verifiedStatus}
           >
+            <LayoutRow>
+              <Typography variant="h5">7/10 Sites Reported</Typography>
+              <GreyOutlinedButton
+                onClick={handleEditClick}
+                disabled={countryTableState === 'editable'}
+              >
+                Edit
+              </GreyOutlinedButton>
+            </LayoutRow>
+            <GreyHeader>
+              <span>SYNDROMES</span>
+              <span>TOTAL CASES</span>
+            </GreyHeader>
             <VerifiableTable />
+            {countryTableState === 'editable' && (
+              <LayoutRow>
+                <MuiLink>Reset and use Sentinel data</MuiLink>
+                <div>
+                  <Button variant="outlined" onClick={handleCancel}>
+                    Cancel
+                  </Button>
+                  <EditableTableSubmitButton
+                    tableState={countryTableState}
+                    setTableState={setCountryTableState}
+                  />
+                </div>
+              </LayoutRow>
+            )}
           </EditableTableProvider>
         </GreySection>
         <MainSection>
@@ -163,22 +252,41 @@ export const WeeklyReportPane = ({ data }) => {
           />
           <SiteAddress address={activeSite.address} contact={activeSite.contact} />
           <Card variant="outlined" mb={3}>
-            {/*<EditableTableProvider*/}
-            {/*  columns={editableColumns}*/}
-            {/*  data={regionalData}*/}
-            {/*  tableState={tableState}*/}
-            {/*  initialMetadata={verifiedStatus}*/}
-            {/*>*/}
-            {/*  <HeadingRow>*/}
-            {/*    <HeaderTitle>Sentinel Cases Reported</HeaderTitle>*/}
-            {/*    <GreyOutlinedButton>Edit</GreyOutlinedButton>*/}
-            {/*  </HeadingRow>*/}
-            {/*  <FakeHeader>*/}
-            {/*    <span>SYNDROMES</span>*/}
-            {/*    <span>TOTAL CASES</span>*/}
-            {/*  </FakeHeader>*/}
-            {/*  <EditableDottedTable />*/}
-            {/*</EditableTableProvider>*/}
+            {/* --------------- Indicators Table ----------------- */}
+            <EditableTableProvider
+              columns={columns}
+              data={indicatorsData}
+              tableState={indicatorTableState}
+            >
+              <HeadingRow>
+                <HeaderTitle>Sentinel Cases Reported</HeaderTitle>
+                <GreyOutlinedButton
+                  onClick={handleIndicatorTableEditClick}
+                  disabled={indicatorTableState === 'editable'}
+                >
+                  Edit
+                </GreyOutlinedButton>
+              </HeadingRow>
+              <FakeHeader>
+                <span>SYNDROMES</span>
+                <span>TOTAL CASES</span>
+              </FakeHeader>
+              <IndicatorsTable />
+              {indicatorTableState === 'editable' && (
+                <LayoutRow>
+                  <MuiLink>Reset and use Sentinel data</MuiLink>
+                  <div>
+                    <Button variant="outlined" onClick={handleIndicatorTableCancel}>
+                      Cancel
+                    </Button>
+                    <EditableTableSubmitButton
+                      tableState={indicatorTableState}
+                      setTableState={setIndicatorTableState}
+                    />
+                  </div>
+                </LayoutRow>
+              )}
+            </EditableTableProvider>
           </Card>
         </MainSection>
         <DrawerFooter
