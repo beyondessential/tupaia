@@ -3,7 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 import { periodToTimestamp, periodToDisplayString, reduceToDictionary } from '@tupaia/utils';
-import { getDefaultPeriod } from '/dhis/getDefaultPeriod';
+import { getDefaultPeriod } from '/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import groupBy from 'lodash.groupby';
 

@@ -10,7 +10,11 @@ export {
 } from './facilityTypeTranslation';
 export { getPacificFacilityStatuses } from './getPacificFacilityStatuses';
 export getChildOrganisationUnits from './getChildOrganisationUnits';
-export { getFacilityStatusCounts, getFacilityStatuses } from './getFacilityStatuses';
+export {
+  getFacilityStatusCounts,
+  getFacilityStatuses,
+  fetchOperationalFacilityCodes,
+} from './getFacilityStatuses';
 export { getDataElementCodesInGroup, getDataElementsInGroup } from './getDataElementsInGroup';
 export { getDataElementFromId } from './getDataElementFromId';
 export {
