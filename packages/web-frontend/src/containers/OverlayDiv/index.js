@@ -26,7 +26,7 @@ import { selectProject } from '../../projects/actions';
 import { LandingPage } from './components/LandingPage';
 import { RequestProjectAccess } from './components/RequestProjectAccess';
 import Disaster from './components/Disaster';
-import { getProjectByCode } from '../../projects/selectors';
+import { selectProjectByCode } from '../../selectors';
 import { OVERLAY_PADDING, LANDING, DISASTER, REQUEST_PROJECT_ACCESS } from './constants';
 
 const styles = {
@@ -59,15 +59,9 @@ const Wrapper = styled.div`
 
 export class OverlayDiv extends PureComponent {
   render() {
-    const { overlay, closeOverlay, onSelectProject, isUserLoggedIn, exploreProject } = this.props;
+    const { overlay, closeOverlay, isUserLoggedIn } = this.props;
     const components = {
-      [LANDING]: () => (
-        <LandingPage
-          activateExploreMode={() => onSelectProject(exploreProject)}
-          isUserLoggedIn={isUserLoggedIn}
-          transition
-        />
-      ),
+      [LANDING]: () => <LandingPage isUserLoggedIn={isUserLoggedIn} transition />,
       [DISASTER]: Disaster,
       [REQUEST_PROJECT_ACCESS]: RequestProjectAccess,
     };
@@ -96,16 +90,14 @@ OverlayDiv.propTypes = {
   closeOverlay: PropTypes.func.isRequired,
   onSelectProject: PropTypes.func.isRequired,
   isUserLoggedIn: PropTypes.bool.isRequired,
-  exploreProject: PropTypes.shape({}),
 };
 
 OverlayDiv.defaultProps = {
   overlay: null,
-  exploreProject: {},
 };
 
 const mapStateToProps = state => {
-  const exploreProject = getProjectByCode(state, 'explore');
+  const exploreProject = selectProjectByCode(state, 'explore');
 
   return {
     overlay: state.global.overlay,

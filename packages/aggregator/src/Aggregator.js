@@ -32,15 +32,26 @@ export class Aggregator {
   }
 
   processAnalytics = (analytics, aggregationOptions, requestedPeriod) => {
-    const { aggregationType, aggregationConfig, measureCriteria } = aggregationOptions;
+    const { aggregationType, aggregationConfig, filter } = aggregationOptions;
     const aggregatedAnalytics = aggregateAnalytics(analytics, aggregationType, {
       ...aggregationConfig,
       requestedPeriod,
     });
-    return filterAnalytics(aggregatedAnalytics, measureCriteria);
+    return filterAnalytics(aggregatedAnalytics, filter);
   };
 
   async fetchAnalytics(codeInput, fetchOptions, aggregationOptions = {}) {
+    const { organisationUnitCode, organisationUnitCodes } = fetchOptions;
+    if (!organisationUnitCode && (!organisationUnitCodes || !organisationUnitCodes.length)) {
+      // No organisation unit code, return empty response
+      return {
+        results: [],
+        metadata: {
+          dataElementCodeToName: {},
+        },
+        period: periodFromAnalytics([], fetchOptions),
+      };
+    }
     const code = Array.isArray(codeInput) ? codeInput : [codeInput];
     const dataSourceSpec = { code, type: this.dataSourceTypes.DATA_ELEMENT };
     const { startDate, endDate, period, ...restOfFetchOptions } = fetchOptions;
@@ -63,6 +74,10 @@ export class Aggregator {
   }
 
   async fetchEvents(code, fetchOptions) {
+    const { organisationUnitCode, organisationUnitCodes } = fetchOptions;
+    if (!organisationUnitCode && (!organisationUnitCodes || !organisationUnitCodes.length)) {
+      return [];
+    }
     const dataSourceSpec = { code, type: this.dataSourceTypes.DATA_GROUP };
     return this.dataBroker.pull(dataSourceSpec, fetchOptions);
   }

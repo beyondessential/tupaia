@@ -1,4 +1,4 @@
-import { convertToPeriod, periodToTimestamp, PERIOD_TYPES } from '@tupaia/dhis-api';
+import { convertToPeriod, periodToTimestamp, PERIOD_TYPES } from '@tupaia/utils';
 import { aggregateOperationalFacilityValues, getFacilityStatuses } from '/apiV1/utils';
 
 const periodToMonthTimestamp = period =>
@@ -20,7 +20,12 @@ export const averageMonthlyValuesOverCount = async (
   // build json from dhis response
   returnJson.data = entity.isFacility()
     ? await buildData(results)
-    : await buildAggregatedData(aggregator, results, query.organisationUnitCode, resultPeriod.requested);
+    : await buildAggregatedData(
+        aggregator,
+        results,
+        query.organisationUnitCode,
+        resultPeriod.requested,
+      );
   return returnJson;
 };
 // parse analytic response, aggregate only operational facilities

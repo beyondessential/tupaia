@@ -2,8 +2,7 @@
  * Tupaia MediTrak
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
-import { TYPES } from '@tupaia/database';
-import { generateTestId } from '../../../../testUtilities';
+import { TYPES, generateTestId } from '@tupaia/database';
 import { ANSWER_TYPES } from '../../../../../database/models/Answer';
 
 export const DHIS_REFERENCE = 'XXXXXXX';

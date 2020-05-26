@@ -106,6 +106,7 @@ import {
   TOGGLE_DASHBOARD_SELECT_EXPAND,
   SET_MOBILE_DASHBOARD_EXPAND,
   REQUEST_PROJECT_ACCESS,
+  SELECT_PROJECT,
 } from './actions';
 
 function authentication(
@@ -492,7 +493,6 @@ function searchBar(
   state = {
     isExpanded: false,
     searchResponse: null,
-    hierarchyData: null,
     searchString: '',
   },
   action,
@@ -508,6 +508,15 @@ function searchBar(
       return { ...state, searchResponse: action.error };
     case CLOSE_DROPDOWN_OVERLAYS:
       return { ...state, isExpanded: false };
+    case FETCH_LOGIN_SUCCESS:
+      // Clear search results on login incase of permission change
+      return { ...state, isExpanded: false, searchResponse: null, searchString: '' };
+    case FETCH_LOGOUT_SUCCESS:
+      // Clear search results on logout incase of permission change
+      return { ...state, isExpanded: false, searchResponse: null, searchString: '' };
+    case SELECT_PROJECT:
+      // Clear search results on project change to fetch alternative hierarchy
+      return { ...state, isExpanded: false, searchResponse: null, searchString: '' };
     default:
       return state;
   }
@@ -560,8 +569,7 @@ function global(
   state = {
     isSidePanelExpanded: false,
     overlay: !isMobile() && LANDING,
-    currentOrganisationUnit: {},
-    currentOrganisationUnitSiblings: [],
+    currentOrganisationUnitCode: null,
     dashboardConfig: {},
     viewConfigs: {},
     isLoadingOrganisationUnit: false,
@@ -575,6 +583,7 @@ function global(
       return {
         ...state,
         isSidePanelExpanded: false,
+        overlay: !isMobile() && LANDING,
       };
     case SHOW_TUPAIA_INFO:
       return {
@@ -590,8 +599,7 @@ function global(
       return {
         ...state,
         isLoadingOrganisationUnit: false,
-        currentOrganisationUnit: action.organisationUnit,
-        currentOrganisationUnitSiblings: action.organisationUnitSiblings,
+        currentOrganisationUnitCode: action.organisationUnit.organisationUnitCode,
       };
     case CHANGE_ORG_UNIT_ERROR:
       return { ...state, isLoadingOrganisationUnit: false };
@@ -805,43 +813,6 @@ function drillDown(
     default:
       return state;
   }
-}
-
-/**
- * Stores the orgUnit at the appropriate location in currentHierarchy, returning the
- * resulting hierarchy.
- *
- * @param {object} orgUnit The organisationUnit to be nestedItems
- * @param {array} currentHierarchy The current hierarchy to modify
- *
- * @return {array} The new hierarchy array with added orgUnit data
- */
-function nestOrgUnitInHierarchy(orgUnit, currentHierarchy) {
-  if (
-    !currentHierarchy ||
-    !Array.isArray(currentHierarchy) ||
-    currentHierarchy.length < 1 ||
-    orgUnit.organisationUnitCode === 'World'
-  ) {
-    return orgUnit.organisationUnitChildren;
-  }
-
-  const recursiveReplace = branch => {
-    branch.some((child, index, branchArray) => {
-      if (child.organisationUnitCode === orgUnit.organisationUnitCode) {
-        branchArray[index] = orgUnit; // eslint-disable-line no-param-reassign
-        // Org unit replaced, return true and cascade up the recursive branch.some() calls
-        return true;
-      }
-      if (Array.isArray(child.organisationUnitChildren)) {
-        return recursiveReplace(child.organisationUnitChildren);
-      }
-      return false; // Did not find the orgUnit to replace and are at a leaf node.
-    });
-  };
-  const updatedHierarchy = [...currentHierarchy];
-  recursiveReplace(updatedHierarchy);
-  return updatedHierarchy;
 }
 
 /**

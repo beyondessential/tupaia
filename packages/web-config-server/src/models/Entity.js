@@ -23,6 +23,7 @@ const COUNTRY = 'country';
 const DISASTER = 'disaster';
 const DISTRICT = 'district';
 const FACILITY = 'facility';
+const SCHOOL = 'school';
 const SUB_DISTRICT = 'sub_district';
 const VILLAGE = 'village';
 const WORLD = 'world';
@@ -35,6 +36,7 @@ export const ENTITY_TYPES = {
   DISASTER,
   DISTRICT,
   FACILITY,
+  SCHOOL,
   SUB_DISTRICT,
   VILLAGE,
   WORLD,
@@ -67,6 +69,7 @@ export class Entity extends BaseModel {
     'region',
     'bounds',
     'image_url',
+    'attributes',
   ];
 
   static geoFields = ['point', 'region', 'bounds'];
@@ -173,23 +176,22 @@ export class Entity extends BaseModel {
     return ancestors.length > 0 ? ancestors[0] : null;
   }
 
+  async getChildren(hierarchyId) {
+    return Entity.hierarchyBuilder.getChildren(this.id, hierarchyId);
+  }
+
   async getDescendants(hierarchyId) {
     return Entity.hierarchyBuilder.getDescendants(this.id, hierarchyId);
   }
 
-  async getFacilities(hierarchyId) {
-    return this.getDescendantsOfType(ENTITY_TYPES.FACILITY, hierarchyId);
-  }
-
   static async getFacilitiesOfOrgUnit(organisationUnitCode) {
     const entity = await Entity.findOne({ code: organisationUnitCode });
-    return entity ? entity.getFacilities() : [];
+    return entity ? entity.getDescendantsOfType(ENTITY_TYPES.FACILITY) : [];
   }
 
-  async getOrgUnitDescendants() {
-    const types = Object.values(Entity.orgUnitEntityTypes);
-    const descendants = await this.getDescendants();
-    return descendants.filter(entity => types.includes(entity.type));
+  async getAncestorOfType(entityType) {
+    const ancestors = await this.getAllAncestors();
+    return ancestors.find(ancestor => ancestor.type === entityType);
   }
 
   // assumes all entities of the given type are found at the same level in the hierarchy tree
@@ -207,8 +209,11 @@ export class Entity extends BaseModel {
     // get descendants and return all of the first type that is an org unit type
     // we rely on descendants being returned in order, with those higher in the hierarchy first
     const descendants = await this.getDescendants(hierarchyId);
-    const nearestOrgUnitType = descendants.find(d => orgUnitEntityTypes.has(d.type)).type;
-    return descendants.filter(d => d.type === nearestOrgUnitType);
+    const nearestOrgUnitDescendant = descendants.find(d => orgUnitEntityTypes.has(d.type));
+    if (!nearestOrgUnitDescendant) {
+      return [];
+    }
+    return descendants.filter(d => d.type === nearestOrgUnitDescendant.type);
   }
 
   static async findOne(conditions, loadOptions, queryOptions) {
@@ -230,22 +235,6 @@ export class Entity extends BaseModel {
       ...queryOptions,
       columns: Entity.getColumnSpecs(),
     });
-  }
-
-  async getOrgUnitChildren() {
-    const types = Object.values(Entity.orgUnitEntityTypes);
-
-    const records = await Entity.database.executeSql(
-      `
-      SELECT ${Entity.getSqlForColumns()} FROM entity
-      WHERE
-        parent_id = ?
-        ${constructTypesCriteria(types, 'AND')}
-      ORDER BY name;
-    `,
-      [this.id, ...types],
-    );
-    return records.map(record => Entity.load(record));
   }
 
   static fetchChildToParentCode = async childrenCodes => {
@@ -274,14 +263,6 @@ export class Entity extends BaseModel {
 
   getOrganisationLevel() {
     return pascal(this.type); // sub_district -> SubDistrict
-  }
-
-  async buildDisplayName() {
-    const ancestors = await this.getAllAncestors();
-    return ancestors
-      .reverse()
-      .map(ancestor => ancestor.name)
-      .join(', ');
   }
 
   isCountry() {
@@ -331,10 +312,15 @@ export class Entity extends BaseModel {
   }
 
   async parent() {
-    return Entity.findById(this.parent_id);
+    return this.parentId ? Entity.findById(this.parent_id) : undefined;
   }
 
   async countryEntity() {
-    return this.type === COUNTRY ? this : Entity.findOne({ code: this.country_code });
+    if (this.type === COUNTRY) {
+      return this;
+    } else if (this.country_code) {
+      return Entity.findOne({ code: this.country_code });
+    }
+    return undefined;
   }
 }

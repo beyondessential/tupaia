@@ -14,16 +14,17 @@ const sumPerMetric = async ({ dataBuilderConfig, query }, aggregator, dhisApi, a
     labels = {},
     specialCases = {},
     dataElementsToSum,
-    measureCriteria,
+    filter = {},
     dataServices,
+    dataSourceEntityType,
   } = dataBuilderConfig;
 
   const dataElementCodes = await getDataElementCodes(dataBuilderConfig, dhisApi);
   const { results, metadata, period } = await aggregator.fetchAnalytics(
     dataElementCodes,
-    { dataServices },
+    { dataServices, dataSourceEntityType },
     query,
-    { aggregationType, measureCriteria },
+    { aggregationType, filter },
   );
 
   // Don't process results into valid data for front-end if there are none.
@@ -91,16 +92,19 @@ const sumPerMetric = async ({ dataBuilderConfig, query }, aggregator, dhisApi, a
       data.unshift(sumResults(data));
     }
   }
-  dataBuilderConfig.dataElementCodes.forEach(dataElementCode => {
-    const name = labels[dataElementCode] || dataElementCodeToName[dataElementCode];
-    if (!dataElementsWithData.includes(dataElementCode)) {
-      data.push({
-        name,
-        dataElementCode,
-        value: NO_DATA_AVAILABLE,
-      });
-    }
-  });
+
+  if (dataBuilderConfig.dataElementCodes) {
+    dataBuilderConfig.dataElementCodes.forEach(dataElementCode => {
+      const name = labels[dataElementCode] || dataElementCodeToName[dataElementCode];
+      if (!dataElementsWithData.includes(dataElementCode)) {
+        data.push({
+          name,
+          dataElementCode,
+          value: NO_DATA_AVAILABLE,
+        });
+      }
+    });
+  }
 
   return { data, period };
 };

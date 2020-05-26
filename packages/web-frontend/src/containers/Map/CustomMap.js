@@ -43,16 +43,22 @@ export class CustomMap extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    const { measureInfo, currentOrganisationUnit, tileSet, position, innerAreas } = this.props;
+    const {
+      measureInfo,
+      currentOrganisationUnit,
+      tileSet,
+      position,
+      displayedChildren,
+    } = this.props;
     // Only updates/re-renders when the measure has changed or the orgUnit has changed.
     // These are the only cases where polygons or area tooltips should rerender.
     if (nextProps.measureInfo.measureId !== measureInfo.measureId) return true;
 
-    if (nextProps.innerAreas !== innerAreas) return true;
+    if (nextProps.displayedChildren !== displayedChildren) return true;
 
     if (
-      nextProps.currentOrganisationUnit.organisationUnitCode !==
-      currentOrganisationUnit.organisationUnitCode
+      (nextProps.currentOrganisationUnit || {}).organisationUnitCode !==
+      (currentOrganisationUnit || {}).organisationUnitCode
     ) {
       return true;
     }
@@ -75,26 +81,25 @@ export class CustomMap extends Component {
   };
 
   checkZoomOutToParentOrgUnit(bounds) {
-    const { currentOrganisationUnit, changeOrgUnit } = this.props;
+    const { currentParent, changeOrgUnit } = this.props;
 
     // Maybe we need to zoom out to a parent!
     // First, check if there's a valid parent to zoom out to
-    if (currentOrganisationUnit && currentOrganisationUnit.parent) {
-      const parentOrg = currentOrganisationUnit.parent;
-      if (parentOrg.location && parentOrg.location.bounds) {
+    if (currentParent) {
+      if (currentParent.location && currentParent.location.bounds) {
         // Now check if we're at a reasonable zoom level to switch to that parent
-        const difference = checkBoundsDifference(parentOrg.location.bounds, bounds);
+        const difference = checkBoundsDifference(currentParent.location.bounds, bounds);
         if (difference > CHANGE_TO_PARENT_PERCENTAGE) {
-          changeOrgUnit(parentOrg.organisationUnitCode, false);
+          changeOrgUnit(currentParent.organisationUnitCode, false);
         }
       }
     }
   }
 
   renderPolygons() {
-    const { innerAreas, currentOrganisationUnitSiblings } = this.props;
+    const { displayedChildren, currentOrganisationUnitSiblings } = this.props;
 
-    const areaPolygons = (innerAreas || []).map(area => (
+    const areaPolygons = (displayedChildren || []).map(area => (
       <ConnectedPolygon area={area} key={area.organisationUnitCode} isChildArea />
     ));
 
@@ -109,7 +114,7 @@ export class CustomMap extends Component {
     const { currentOrganisationUnit } = this.props;
 
     // Render the currentOrgUnit polygon perimeter if it is an area (i.e. not a facility)
-    if (organisationUnitIsArea(currentOrganisationUnit)) {
+    if (currentOrganisationUnit && organisationUnitIsArea(currentOrganisationUnit)) {
       return (
         <ConnectedPolygon
           area={currentOrganisationUnit}
@@ -144,11 +149,11 @@ export class CustomMap extends Component {
         <MapPane name="demo-land" above="tilePane" aboveAmount={0}>
           <DemoLand />
         </MapPane>
-        <MapPane name="org-regions" above="tilePane" aboveAmount={1}>
-          {this.renderPolygons()}
-        </MapPane>
-        <MapPane name="org-regions-active" above="tilePane" aboveAmount={2}>
+        <MapPane name="org-regions-active" above="tilePane" aboveAmount={1}>
           {this.renderActivePolygons()}
+        </MapPane>
+        <MapPane name="org-regions" above="tilePane" aboveAmount={2}>
+          {this.renderPolygons()}
         </MapPane>
         <MapPane name="org-markers" above="markerPane">
           <MarkerLayer />
@@ -170,7 +175,7 @@ CustomMap.propTypes = {
   currentOrganisationUnit: PropTypes.object.isRequired,
   measureInfo: PropTypes.object.isRequired,
   /* eslint-enable react/forbid-prop-types */
-  innerAreas: PropTypes.arrayOf(PropTypes.object),
+  displayedChildren: PropTypes.arrayOf(PropTypes.object),
 
   shouldSnapToPosition: PropTypes.bool.isRequired,
   position: PropTypes.shape({
@@ -182,5 +187,5 @@ CustomMap.propTypes = {
 };
 
 CustomMap.defaultProps = {
-  innerAreas: [],
+  displayedChildren: [],
 };

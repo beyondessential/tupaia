@@ -4,8 +4,6 @@
  */
 
 export {
-  clearTestData,
-  generateDummyRecord,
   insertEntityAndFacility,
   insertSurveyAndScreens,
   insertSurveyResponse,
@@ -18,14 +16,9 @@ export {
   upsertSurveyResponse,
   upsertSurveyScreen,
   upsertSurveyScreenComponent,
+  upsertUserEntityPermission,
 } from './database';
-export {
-  generateTestId,
-  randomEmail,
-  randomIntBetween,
-  randomString,
-  generateValueOfType,
-} from './random';
+export { randomEmail, randomIntBetween, randomString } from './random';
 export { oneSecondSleep, sleep } from './sleep';
 
 export const EMAIL_VERIFIED_STATUS = {

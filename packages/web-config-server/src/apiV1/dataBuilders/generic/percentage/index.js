@@ -4,7 +4,7 @@ export { percentagesOfEventCounts } from './percentagesOfEventCounts';
 export { percentagesOfEventCountsPerPeriod } from './percentagesOfEventCountsPerPeriod';
 export { percentagesOfValueCounts } from './percentagesOfValueCounts';
 export { percentagesOfValueCountsPerPeriod } from './percentagesOfValueCountsPerPeriod';
-export { percentagesPerDataClass } from './percentagesPerDataClass';
+export { percentagesPerDataClass, percentagesPerDataClassByMonth } from './percentagesPerDataClass';
 export { percentagesByNominatedPairs } from './percentagesByNominatedPairs';
 export { percentChildrenDataElement } from './percentChildrenDataElement';
 export { percentInGroupByDataElement } from './percentInGroupByDataElement';

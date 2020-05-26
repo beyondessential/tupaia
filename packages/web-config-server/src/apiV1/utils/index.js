@@ -5,18 +5,20 @@ export { mapOrgUnitIdsToGroupIds } from './mapOrgUnitIdsToGroupIds';
 export { mapOrgUnitToGroupCodes } from './mapOrgUnitToGroupCodes';
 export { getMatchedNumeratorsAndDenominators } from './getMatchedNumeratorsAndDenominators';
 export {
-  getBasicFacilityTypeName,
-  getBasicFacilityTypeNamePlural,
+  pluraliseFacilityType,
+  translateCategoryCodeToFacilityType,
 } from './facilityTypeTranslation';
 export { getPacificFacilityStatuses } from './getPacificFacilityStatuses';
 export getChildOrganisationUnits from './getChildOrganisationUnits';
-export { getFacilityStatusCounts, getFacilityStatuses } from './getFacilityStatuses';
+export {
+  getFacilityStatusCounts,
+  getFacilityStatuses,
+  fetchOperationalFacilityCodes,
+} from './getFacilityStatuses';
 export { getDataElementCodesInGroup, getDataElementsInGroup } from './getDataElementsInGroup';
 export { getDataElementFromId } from './getDataElementFromId';
 export {
   parseFacilityTypeData,
-  sortFacilityTypesByLevel,
-  getAllFacilityTypesOfFacilities,
   filterOutOrganisationUnitsNotInWorld,
 } from './organisationUnitTypeUtils';
 export { getDataElementGroups } from './getDataElementGroups';

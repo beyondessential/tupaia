@@ -4,7 +4,8 @@
  */
 
 import { expect } from 'chai';
-import { generateTestId, populateTestData } from '../../../../testUtilities';
+import { generateTestId } from '@tupaia/database';
+import { populateTestData } from '../../../../testUtilities';
 import { AggregateDataPusher } from '../../../../../dhis/pushers/data/aggregate/AggregateDataPusher';
 import { ANSWER_CHANGE, ANSWER, ANSWER_DATA_VALUE, SURVEY_RESPONSE } from './testData';
 
@@ -13,7 +14,7 @@ export const testCreateAnswer = (dhisApi, models, dataBroker) => {
     const change = await models.dhisSyncQueue.findById(ANSWER_CHANGE.id);
     change.record_id = 'does_not_exist_xxxxxxxxx';
     const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
-    expect(pusher.push()).to.be.rejectedWith(`No answer found for ${change.record_id}`);
+    await expect(pusher.push()).to.eventually.equal(false);
     expect(dataBroker.push).not.to.have.been.called;
     expect(dataBroker.delete).not.to.have.been.called;
   });
