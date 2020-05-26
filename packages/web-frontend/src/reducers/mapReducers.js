@@ -23,6 +23,7 @@ import {
   CLOSE_MAP_POPUP,
   HIDE_MAP_MEASURE,
   UNHIDE_MAP_MEASURE,
+  CLEAR_MEASURE,
 } from '../actions';
 
 import { MARKER_TYPES } from '../constants';
@@ -74,14 +75,8 @@ function position(state = { bounds: defaultBounds }, action) {
 
 function measureInfo(state = {}, action) {
   switch (action.type) {
-    case CHANGE_ORG_UNIT_SUCCESS:
-      if (action.organisationUnit.type === 'Project') {
-        // clear measures when returning to project view
-        return {};
-      }
-      return state;
-    case CHANGE_MEASURE:
-      return state;
+    case CLEAR_MEASURE:
+      return {};
     case FETCH_MEASURE_DATA_SUCCESS: {
       const currentCountry = action.countryCode;
       // remove measure units with no coordinates
