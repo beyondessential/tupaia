@@ -10,7 +10,6 @@ import MuiLink from '@material-ui/core/Link';
 import { FakeHeader, Button, GreyOutlinedButton } from '@tupaia/ui-components';
 import * as COLORS from '../theme/colors';
 import { BorderlessTable, SimpleTable, DottedTable } from '../components/Tables/TableTypes';
-import { SiteAddress } from '../components';
 import { PercentageChangeCell } from '../components/Tables/TableCellComponents';
 import { EditableTableContext, EditableTableProvider } from '../components/Tables/EditableTable';
 import { VerifiableTable } from '../components/Tables/VerifiableTable';
@@ -84,18 +83,6 @@ const editableTableColumns = [
     editable: true,
   },
 ];
-
-const address = {
-  name: 'Tafuna Health Clinic',
-  district: 'Tafuna Western District 96799,',
-  country: 'American Samoa',
-};
-
-const contact = {
-  name: 'Shakila Naidu',
-  department: 'Ministry of Health',
-  email: 'Shakila@gmail.com',
-};
 
 const Container = styled.div`
   width: 100%;
@@ -206,42 +193,45 @@ export const SandboxView = () => {
             )}
           </EditableTableProvider>
         </Box>
-        {/*========== TABLE STYLES ================*/}
-        <Box>
-          <Heading variant="h6" gutterBottom>
-            Borderless Table
-          </Heading>
-          <FakeHeader>
-            <span>SYNDROMES</span>
-            <span>TOTAL CASES</span>
-          </FakeHeader>
-          <BorderlessTable columns={columns} data={siteData} />
-        </Box>
-        <Box>
-          <Heading variant="h6" gutterBottom>
-            Dotted Table
-          </Heading>
-          <FakeHeader>
-            <span>SYNDROMES</span>
-            <span>TOTAL CASES</span>
-          </FakeHeader>
-          <DottedTable columns={columns} data={siteData} />
-        </Box>
-        <Box>
-          <Heading variant="h6" gutterBottom>
-            Simple Table
-          </Heading>
-          <FakeHeader>
-            <span>SYNDROMES</span>
-            <span>TOTAL CASES</span>
-          </FakeHeader>
-          <SimpleTable columns={columns} data={siteData} />
-        </Box>
-
-        <Box>
-          <SiteAddress address={address} contact={contact} />
-        </Box>
       </Inner>
     </Container>
   );
 };
+
+
+const tableExamples = () => {
+  return (
+    <Container>
+      <Box>
+        <Heading variant="h6" gutterBottom>
+          Borderless Table
+        </Heading>
+        <FakeHeader>
+          <span>SYNDROMES</span>
+          <span>TOTAL CASES</span>
+        </FakeHeader>
+        <BorderlessTable columns={columns} data={siteData} />
+      </Box>
+      <Box>
+        <Heading variant="h6" gutterBottom>
+          Dotted Table
+        </Heading>
+        <FakeHeader>
+          <span>SYNDROMES</span>
+          <span>TOTAL CASES</span>
+        </FakeHeader>
+        <DottedTable columns={columns} data={siteData} />
+      </Box>
+      <Box>
+        <Heading variant="h6" gutterBottom>
+          Simple Table
+        </Heading>
+        <FakeHeader>
+          <span>SYNDROMES</span>
+          <span>TOTAL CASES</span>
+        </FakeHeader>
+        <SimpleTable columns={columns} data={siteData} />
+      </Box>
+    </Container>
+  )
+}
