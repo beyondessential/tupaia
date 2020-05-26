@@ -17,12 +17,22 @@ class CountOperationalFacilitiesByCountryBuilder extends DataBuilder {
         countsByCountryCode[countryCode] = (countsByCountryCode[countryCode] || 0) + 1;
       }
     });
+    const countryNamesByCode = await this.fetchCountryNamesByCode();
     const responseData = Object.entries(countsByCountryCode)
       .filter(([countryCode]) => countryCode !== 'DL') // exclude Demo Land from the count
-      .map(([countryCode, count]) => ({ name: getCountryNameFromCode(countryCode), value: count }));
+      .map(([countryCode, count]) => ({ name: countryNamesByCode[countryCode], value: count }));
     return {
       data: this.sortDataByName(responseData),
     };
+  }
+
+  async fetchCountryNamesByCode() {
+    const countryEntities = await this.fetchDescendantsOfType(ENTITY_TYPES.COUNTRY);
+    const countryNamesByCode = {};
+    countryEntities.forEach(c => {
+      countryNamesByCode[c.code] = c.name;
+    });
+    return countryNamesByCode;
   }
 }
 
