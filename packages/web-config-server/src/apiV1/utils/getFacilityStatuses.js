@@ -64,6 +64,13 @@ export const getFacilityStatuses = async (
   return operationalFacilityStatuses;
 };
 
+export const fetchOperationalFacilityCodes = async (aggregator, ancestorCode, period) => {
+  const facilityStatuses = await getFacilityStatuses(aggregator, ancestorCode, period, true);
+  return Object.entries(facilityStatuses)
+    .filter(([, isOperational]) => isOperational)
+    .map(([code]) => code);
+};
+
 export const getFacilityStatusCounts = async (aggregator, parentCode, period) => {
   const facilityStatuses = await getFacilityStatuses(aggregator, parentCode, period, true);
   let numberOperational = 0;
