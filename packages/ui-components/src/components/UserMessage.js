@@ -6,12 +6,22 @@
 import { format } from 'date-fns';
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Avatar, Box, CardContent, Grid, Card, CardHeader } from '@material-ui/core';
+import {
+  Avatar,
+  Box,
+  CardContent,
+  Grid,
+  Card,
+  CardHeader,
+  Divider,
+  TextareaAutosize,
+  Typography,
+} from '@material-ui/core';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import styled from 'styled-components';
 
-import { ActionsMenu } from '../ActionsMenu';
-import { MessageView } from './MessageView';
+import { ActionsMenu } from './ActionsMenu';
+import { Button } from './Button';
 
 const StyledCard = styled(Card)`
   max-width: 460px;
@@ -32,6 +42,24 @@ const StyledCardHeader = styled(CardHeader)`
   }
 `;
 
+export const StyledTextareaAutosize = styled(TextareaAutosize)`
+  width: 100%;
+  border: 0;
+  padding: 0;
+  height: 50px !important;
+  margin-bottom: 1em;
+`;
+
+export const StyledButton = styled(Button)`
+  position: relative;
+  top: 0.8em;
+  margin-right: 1em;
+`;
+
+export const StyledDivider = styled(Divider)`
+  margin: 0 -5%;
+`;
+
 const getAvatar = avatarUrl =>
   !avatarUrl ? <AccountCircleIcon style={{ fontSize: 40 }} /> : <Avatar alt="" src={avatarUrl} />;
 
@@ -48,6 +76,51 @@ const getTimestampAndMenu = (dateTime, menuOptions) => (
     </Grid>
   </Grid>
 );
+
+const MessageView = ({ userMessageId, edit, message, onCancel, onUpdate }) => {
+  const textarea = React.useRef(null);
+
+  React.useEffect(() => {
+    if (textarea.current) {
+      textarea.current.focus();
+    }
+  }, [edit]);
+
+  return edit ? (
+    <div>
+      <StyledTextareaAutosize
+        ref={textarea}
+        className="MuiTypography-root MuiTypography-body2 MuiTypography-colorTextSecondary"
+        defaultValue={message}
+      />
+      <StyledDivider />
+      <Typography align="right">
+        <StyledButton variant="outlined" color="primary" onClick={onCancel}>
+          Cancel
+        </StyledButton>
+        <StyledButton variant="contained" color="primary" onClick={() => onUpdate(userMessageId)}>
+          Update
+        </StyledButton>
+      </Typography>
+    </div>
+  ) : (
+    <Typography variant="body2" color="textSecondary" component="p">
+      {message}
+    </Typography>
+  );
+};
+
+MessageView.propTypes = {
+  userMessageId: PropTypes.string.isRequired,
+  edit: PropTypes.bool,
+  message: PropTypes.string.isRequired,
+  onCancel: PropTypes.func.isRequired,
+  onUpdate: PropTypes.func.isRequired,
+};
+
+MessageView.defaultProps = {
+  edit: false,
+};
 
 export const UserMessage = ({ id, avatarUrl, title, dateTime, message, onUpdate, onDelete }) => {
   const [edit, setEdit] = React.useState(false);
