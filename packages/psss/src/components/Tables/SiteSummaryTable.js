@@ -6,22 +6,26 @@
 import React from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
-import { CondensedTableBody, FakeHeader } from '@tupaia/ui-components';
+import PropTypes from 'prop-types';
+import { tableColumnShape, CondensedTableBody, FakeHeader } from '@tupaia/ui-components';
+import MuiTableFooter from '@material-ui/core/TableFooter';
+import MuiTableCell from '@material-ui/core/TableCell';
+import MuiTableRow from '@material-ui/core/TableRow';
 import { ConnectedTable } from './ConnectedTable';
 import { WeeklyReportPane } from '../WeeklyReportPane';
 import { FIRST_COLUMN_WIDTH, SITES_REPORTED_COLUMN_WIDTH } from './constants';
-import { AFRCell, SitesReportedCell } from './TableCellComponents';
-
-const StyledDiv = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 2rem;
-`;
+import { AlertCell } from './TableCellComponents';
 
 // Todo: update placeholder
 const NameCell = data => {
-  return <span>{data.name} Clinic</span>;
+  return <span>{data.name}</span>;
+};
+
+const dataAccessor = key => {
+  return data => {
+    const indicator = data.indicators.find(i => i.id === key);
+    return indicator ? indicator.totalCases : null;
+  };
 };
 
 const siteWeekColumns = [
@@ -35,29 +39,43 @@ const siteWeekColumns = [
   {
     title: 'Sites Reported',
     key: 'sitesReported',
-    CellComponent: SitesReportedCell,
+    accessor: dataAccessor('sitesReported'),
     width: SITES_REPORTED_COLUMN_WIDTH,
   },
   {
     title: 'AFR',
     key: 'AFR',
-    CellComponent: AFRCell,
+    accessor: dataAccessor('afr'),
+    CellComponent: AlertCell,
   },
   {
     title: 'DIA',
     key: 'DIA',
+    accessor: dataAccessor('dia'),
+    CellComponent: AlertCell,
   },
   {
     title: 'ILI',
     key: 'ILI',
+    accessor: dataAccessor('ili'),
+    CellComponent: AlertCell,
   },
   {
     title: 'PF',
     key: 'PF',
+    accessor: dataAccessor('pf'),
+    CellComponent: AlertCell,
   },
   {
     title: 'DLI',
     key: 'DLI',
+    accessor: dataAccessor('dil'),
+  },
+  {
+    title: 'Status',
+    key: 'status',
+    width: '110px',
+    accessor: dataAccessor('status'),
   },
 ];
 
@@ -66,8 +84,36 @@ const TableHeader = () => {
   return <FakeHeader>10/30 Sentinel Sites Reported</FakeHeader>;
 };
 
-export const SiteSummaryTable = React.memo(({ data }) => {
-  console.log('data', data);
+const StyledDiv = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2rem;
+`;
+
+const TableFooter = ({ columns, data }) => {
+  return (
+    <MuiTableFooter>
+      <MuiTableRow>
+        <MuiTableCell colSpan={columns.length}>
+          <StyledDiv>
+            <Typography variant="body1">
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+            </Typography>
+            {data.length && <WeeklyReportPane data={data} />}
+          </StyledDiv>
+        </MuiTableCell>
+      </MuiTableRow>
+    </MuiTableFooter>
+  );
+};
+
+TableFooter.propTypes = {
+  columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
+  data: PropTypes.array.isRequired,
+};
+
+export const SiteSummaryTable = React.memo(() => {
   return (
     <React.Fragment>
       <TableHeader />
@@ -76,13 +122,8 @@ export const SiteSummaryTable = React.memo(({ data }) => {
         columns={siteWeekColumns}
         Header={false}
         Body={CondensedTableBody}
+        Paginator={TableFooter}
       />
-      <StyledDiv>
-        <Typography variant="body1">
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-        </Typography>
-        <WeeklyReportPane data={data} />
-      </StyledDiv>
     </React.Fragment>
   );
 });

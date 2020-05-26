@@ -33,7 +33,7 @@ const AFRAlert = styled.div`
 
 export const AFRCell = ({ AFR }) => {
   // Todo: update placeholder
-  if (AFR > 500) {
+  if (AFR > 900) {
     return (
       <AFRAlert>
         {AFR}
@@ -43,6 +43,20 @@ export const AFRCell = ({ AFR }) => {
   }
 
   return AFR;
+};
+
+export const AlertCell = props => {
+  const { displayValue } = props;
+  if (displayValue > 900) {
+    return (
+      <AFRAlert>
+        {displayValue}
+        <Error />
+      </AFRAlert>
+    );
+  }
+
+  return displayValue;
 };
 
 const WarningStyleText = styled.span`
@@ -64,5 +78,5 @@ export const PercentageChangeCell = ({ percentageChange }) => {
 };
 
 PercentageChangeCell.propTypes = {
-  percentageChange: PropTypes.string.isRequired,
+  percentageChange: PropTypes.number.isRequired,
 };

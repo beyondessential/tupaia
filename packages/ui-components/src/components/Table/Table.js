@@ -63,6 +63,7 @@ export const Table = React.memo(
       {Paginator && (
         <Paginator
           {...{
+            data,
             columns,
             page,
             count,

@@ -2,7 +2,8 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React, { createContext, useContext, useState } from 'react';
+import React, { useContext, useState } from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import MuiLink from '@material-ui/core/Link';
@@ -13,38 +14,37 @@ import { SiteAddress } from '../components';
 import { PercentageChangeCell } from '../components/Tables/TableCellComponents';
 import { EditableTableContext, EditableTableProvider } from '../components/Tables/EditableTable';
 import { VerifiableTable } from '../components/Tables/VerifiableTable';
-import PropTypes from 'prop-types';
 
 const siteData = [
   {
     id: 'afr',
     title: 'Acute Fever and Rash (AFR)',
-    percentageChange: '5',
+    percentageChange: 5,
     totalCases: '5',
   },
   {
     id: 'dia',
     title: 'Diarrhoea (DIA)',
-    percentageChange: '7',
+    percentageChange: 7,
     totalCases: '20',
   },
   {
     id: 'ili',
     title: 'Influenza-like Illness (ILI)',
-    percentageChange: '14',
+    percentageChange: 14,
     totalCases: '115',
     alert: true,
   },
   {
     id: 'pf',
     title: 'Prolonged Fever (AFR)',
-    percentageChange: '-12',
+    percentageChange: -12,
     totalCases: '5',
   },
   {
     id: 'dil',
     title: 'Dengue-like Illness (DIL)',
-    percentageChange: '12',
+    percentageChange: 12,
     totalCases: '54',
     alert: true,
   },

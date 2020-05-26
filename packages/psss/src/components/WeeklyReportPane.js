@@ -8,11 +8,11 @@ import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import MuiLink from '@material-ui/core/Link';
 import {
+  ButtonSelect,
   FakeHeader,
   Button,
   Card,
   ErrorAlert,
-  ButtonSelect,
   GreyOutlinedButton,
 } from '@tupaia/ui-components';
 import { PercentageChangeCell } from './Tables/TableCellComponents';
@@ -24,35 +24,35 @@ import { VerifiableTable } from './Tables/VerifiableTable';
 import { SiteAddress } from './SiteAddress';
 
 // dummy data
-const siteData = [
+const regionalData = [
   {
     id: 'afr',
     title: 'Acute Fever and Rash (AFR)',
-    percentageChange: '15',
+    percentageChange: 4,
     totalCases: '15',
   },
   {
     id: 'dia',
     title: 'Diarrhoea (DIA)',
-    percentageChange: '7',
+    percentageChange: 7,
     totalCases: '20',
   },
   {
     id: 'ili',
     title: 'Influenza-like Illness (ILI)',
-    percentageChange: '10',
+    percentageChange: 15,
     totalCases: '115',
   },
   {
     id: 'pf',
     title: 'Prolonged Fever (AFR)',
-    percentageChange: '-12',
+    percentageChange: -12,
     totalCases: '5',
   },
   {
     id: 'dil',
     title: 'Dengue-like Illness (DIL)',
-    percentageChange: '9',
+    percentageChange: 9,
     totalCases: '54',
   },
 ];
@@ -73,32 +73,6 @@ const columns = [
     key: 'totalCases',
   },
 ];
-
-const options = [
-  { name: 'Afghanistan', id: 'AF' },
-  { name: 'Albania', id: 'AL' },
-  { name: 'Algeria', id: 'DZ' },
-  { name: 'Angola', id: 'AO' },
-  { name: 'Anguilla', id: 'AI' },
-  { name: 'Antarctica', id: 'AQ' },
-  { name: 'Argentina', id: 'AR' },
-  { name: 'Armenia', id: 'AM' },
-  { name: 'Aruba', id: 'AW' },
-  { name: 'Australia', id: 'AU' },
-  { name: 'Austria', id: 'AT' },
-];
-
-const address = {
-  name: 'Tafuna Health Clinic',
-  district: 'Tafuna Western District 96799,',
-  country: 'American Samoa',
-};
-
-const contact = {
-  name: 'Shakila Naidu',
-  department: 'Ministry of Health',
-  email: 'Shakila@gmail.com',
-};
 
 const GreyHeader = styled(FakeHeader)`
   border: none;
@@ -157,7 +131,7 @@ const editableColumns = [
   },
 ];
 
-const verifiedStatus = siteData.reduce((state, item) => {
+const verifiedStatus = regionalData.reduce((state, item) => {
   if (item.percentageChange > 10) {
     return {
       ...state,
@@ -193,8 +167,13 @@ const WeeklyReportsPaneSubmitButton = () => {
   );
 };
 
-export const WeeklyReportPane = () => {
+export const WeeklyReportPane = ({ data }) => {
+  console.log('data', data);
   const [open, setOpen] = useState(false);
+  const [activeSiteIndex, setActiveSiteIndex] = useState(0);
+
+  const indicatorsData = data[activeSiteIndex].indicators;
+  const activeSite = data[activeSiteIndex];
 
   const toggleDrawer = (event, isOpen) => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -222,10 +201,7 @@ export const WeeklyReportPane = () => {
       <Button onClick={handleOpen}>Save and submit</Button>
       <Drawer open={open} onClose={handleClose}>
         <DrawerHeader heading="Upcoming report" onClose={handleClose}>
-          <DrawerHeaderContent
-            heading="American Samoa"
-            date="Week 9 Feb 25 - Mar 1, 2020"
-          />
+          <DrawerHeaderContent heading="American Samoa" date="Week 9 Feb 25 - Mar 1, 2020" />
         </DrawerHeader>
         <ErrorAlert>ILI Above Threshold. Please review and verify data.</ErrorAlert>
         <GreySection>
@@ -241,7 +217,7 @@ export const WeeklyReportPane = () => {
           </GreyHeader>
           <EditableTableProvider
             columns={editableColumns}
-            data={siteData}
+            data={regionalData}
             tableState={tableState}
             initialMetadata={verifiedStatus}
           >
@@ -263,8 +239,13 @@ export const WeeklyReportPane = () => {
           </EditableTableProvider>
         </GreySection>
         <MainSection>
-          <ButtonSelect id="button-select" options={options} />
-          <SiteAddress address={address} contact={contact} />
+          <ButtonSelect
+            id="button-select"
+            options={data}
+            onChange={setActiveSiteIndex}
+            index={activeSiteIndex}
+          />
+          <SiteAddress address={activeSite.address} contact={activeSite.contact} />
           <Card variant="outlined" mb={3}>
             <HeadingRow>
               <HeaderTitle>Sentinel Cases Reported</HeaderTitle>
@@ -274,7 +255,7 @@ export const WeeklyReportPane = () => {
               <span>SYNDROMES</span>
               <span>TOTAL CASES</span>
             </FakeHeader>
-            <DottedTable columns={columns} data={siteData} />
+            <DottedTable columns={columns} data={indicatorsData} />
           </Card>
         </MainSection>
         <DrawerFooter
@@ -284,4 +265,8 @@ export const WeeklyReportPane = () => {
       </Drawer>
     </React.Fragment>
   );
+};
+
+WeeklyReportPane.propTypes = {
+  data: PropTypes.array.isRequired,
 };
