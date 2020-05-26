@@ -9,7 +9,6 @@ import {
   SELECT_PROJECT,
   SET_PROJECT_DATA,
   FETCH_PROJECTS_ERROR,
-  SET_PROJECT,
   REQUEST_PROJECT_ACCESS,
 } from '../actions';
 import { INITIAL_PROJECT_CODE } from '../defaults';
@@ -29,13 +28,6 @@ export function fetchProjectsError(error) {
   return {
     type: FETCH_PROJECTS_ERROR,
     error,
-  };
-}
-
-export function setProjectDefaults(project) {
-  return {
-    type: SET_PROJECT,
-    project: project.code,
   };
 }
 
