@@ -69,6 +69,7 @@ export class Aggregator {
     return {
       results: this.processAnalytics(results, aggregationOptions, period),
       metadata,
+      numberOfResults: results.length,
       period: periodFromAnalytics(results, fetchOptions),
     };
   }

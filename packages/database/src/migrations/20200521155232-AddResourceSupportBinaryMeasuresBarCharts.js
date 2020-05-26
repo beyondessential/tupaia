@@ -146,7 +146,7 @@ exports.up = async function (db) {
             }
           },
           "customFilter": {
-            "name": "filterEntitiesByAttributes",
+            "name": "filterSchoolEntitiesByAttributes",
             "comparator": "@>",
             "value": `{"type": "${schoolType}"}`
           },
@@ -154,11 +154,11 @@ exports.up = async function (db) {
         },
         viewJson: {
           "name": name,
-          "description": "This report is calculated based on the number of School Fundamentals Laos survey responses",
           "type": "chart",
           "chartType": "bar",
           "periodGranularity": "month",
           "valueType": "percentage",
+          "showNumberOfResults": true,
           "presentationOptions": {
             "hideAverage": true
           }

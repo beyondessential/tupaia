@@ -123,6 +123,21 @@ export class EnlargedDialogContent extends PureComponent {
     return <DialogContentText style={styles.description}>{description}</DialogContentText>;
   }
 
+  renderNumberOfSurveyResponses() {
+    const { viewContent } = this.props;
+    const { numberOfResults, showNumberOfResults } = viewContent;
+
+    if (!showNumberOfResults || !numberOfResults) {
+      return null;
+    }
+
+    return (
+      <DialogContentText style={styles.description}>
+        {`This report is calculated based on ${numberOfResults} results`}
+      </DialogContentText>
+    );
+  }
+
   renderToolbar() {
     const { onCloseOverlay, onExport, CloseIcon, toolbarStyle } = this.props;
     const { extraChartConfig } = this.state;
@@ -198,6 +213,7 @@ export class EnlargedDialogContent extends PureComponent {
         <DialogContent style={contentStyle}>
           {this.renderToolbar()}
           {this.renderDescription()}
+          {this.renderNumberOfSurveyResponses()}
           {this.renderBody()}
           {this.renderPeriodRange()}
         </DialogContent>
