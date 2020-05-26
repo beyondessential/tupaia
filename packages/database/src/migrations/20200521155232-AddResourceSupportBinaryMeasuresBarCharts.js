@@ -157,11 +157,11 @@ exports.up = async function (db) {
           "type": "chart",
           "chartType": "bar",
           "periodGranularity": "month",
-          "valueType": "percentage",
-          "showNumberOfResults": true,
+          "labelType": 'fractionAndPercentage',
+          "valueType": 'percentage',
           "presentationOptions": {
             "hideAverage": true
-          }
+          },
         }
       });
     }),

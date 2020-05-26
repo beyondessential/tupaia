@@ -37,22 +37,15 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
   }
 
   async build() {
-    const { results, numberOfResults } = await this.fetchFullResults();
+    const results = await this.fetchResults();
     const data = await this.buildData(results);
 
-    return {
-      data: this.areDataAvailable(data) ? data : [],
-      numberOfResults: numberOfResults,
-    };
-  }
-
-  async fetchFullResults() {
-    const dataElementCodes = this.getDataElementCodes();
-    return this.fetchAnalytics(dataElementCodes);
+    return { data: this.areDataAvailable(data) ? data : [] };
   }
 
   async fetchResults() {
-    const { results } = await this.fetchFullResults();
+    const dataElementCodes = this.getDataElementCodes();
+    const { results } = await this.fetchAnalytics(dataElementCodes);
     return results;
   }
 
