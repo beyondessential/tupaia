@@ -123,7 +123,7 @@ export class EnlargedDialogContent extends PureComponent {
     return <DialogContentText style={styles.description}>{description}</DialogContentText>;
   }
 
-  renderNumberOfSurveyResponses() {
+  renderNumberOfResults() {
     const { viewContent } = this.props;
     const { numberOfResults, showNumberOfResults } = viewContent;
 
@@ -213,7 +213,7 @@ export class EnlargedDialogContent extends PureComponent {
         <DialogContent style={contentStyle}>
           {this.renderToolbar()}
           {this.renderDescription()}
-          {this.renderNumberOfSurveyResponses()}
+          {this.renderNumberOfResults()}
           {this.renderBody()}
           {this.renderPeriodRange()}
         </DialogContent>
