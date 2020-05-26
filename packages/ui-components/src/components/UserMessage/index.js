@@ -38,7 +38,7 @@ const getAvatar = avatarUrl =>
 const getTimestampAndMenu = (dateTime, menuOptions) => (
   <Grid container direction="row" justify="flex-end" alignItems="center" spacing={1}>
     <Grid item xs={4}>
-      {format(dateTime, 'DD/MM/YYYY')}
+      {format(dateTime, 'dd/MM/yyyy')}
     </Grid>
     <Grid item xs={4}>
       <Box textAlign="right">{format(dateTime, 'hh:mm a')}</Box>
