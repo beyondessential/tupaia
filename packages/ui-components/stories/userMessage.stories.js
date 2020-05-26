@@ -34,7 +34,7 @@ export const WithAvatar = () => {
         id="user-message-123"
         avatarUrl={AVATAR_URL}
         title="Dr. Sarah De Jones"
-        timestamp={new Date()}
+        dateTime={new Date()}
         message="Lorem ipsum dolor sit amet, consectetur adipiscing elit.
         Aliquam id enim id lorem porta rhoncus."
         onUpdate={id => setAlertMessage(`Updating ${id}...`)}
@@ -54,7 +54,7 @@ export const WithoutAvatar = () => {
       <UserMessage
         id="user-message-456"
         title="Dr. Sarah De Jones"
-        timestamp={new Date()}
+        dateTime={new Date()}
         message="In pharetra libero et dapibus vehicula. Quisque ultricies nisi eget erat vulputate commodo.
         Nullam egestas dui vel augue convallis, vel ullamcorper mi euismod.
         Quisque non pulvinar turpis. Vestibulum pulvinar neque vel dignissim pretium.
