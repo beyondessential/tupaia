@@ -167,6 +167,7 @@ describe('Aggregator', () => {
       ).to.eventually.deep.equal({
         results: FILTERED_ANALYTICS,
         metadata,
+        numberOfResults: 2,
         period: {
           earliestAvailable: '20200214',
           latestAvailable: '20200214',
