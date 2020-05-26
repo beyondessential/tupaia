@@ -105,7 +105,8 @@ const USER_SESSION_COOKIE_TIMEOUT = 24 * 60 * 60 * 1000;
 const LAST_USER_SESSION_COOKIE_TIMEOUT = 7 * 24 * 60 * 60 * 1000;
 
 export const USER_SESSION_CONFIG = {
-  cookieName: 'session',
+  cookieName: 'sessionV2', // changed name to ignore old sessions after access policy refactor
+  requestKey: 'session', // use it as `req.session` rather than `req.sessionV2`
   secret: process.env.USER_SESSION_COOKIE_SECRET,
   secure: false,
   httpOnly: false,
