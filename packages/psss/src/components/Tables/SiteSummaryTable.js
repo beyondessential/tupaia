@@ -6,8 +6,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
-import { CondensedTableBody, FakeHeader, Button } from '@tupaia/ui-components';
+import { CondensedTableBody, FakeHeader } from '@tupaia/ui-components';
 import { ConnectedTable } from './ConnectedTable';
+import { WeeklyReportPane } from '../WeeklyReportPane';
 import { FIRST_COLUMN_WIDTH, SITES_REPORTED_COLUMN_WIDTH } from './constants';
 import { AFRCell, SitesReportedCell } from './TableCellComponents';
 
@@ -65,27 +66,20 @@ const TableHeader = () => {
   return <FakeHeader>10/30 Sentinel Sites Reported</FakeHeader>;
 };
 
-export const SiteSummaryTable = React.memo(props => {
-  // Todo: update placeholder
-  const customAction = () => {
-    console.log('custom action in CountryWeekSummaryTable. props...', props);
-  };
-
-  return (
-    <React.Fragment>
-      <TableHeader />
-      <ConnectedTable
-        endpoint="sites"
-        columns={siteWeekColumns}
-        Header={false}
-        Body={CondensedTableBody}
-      />
-      <StyledDiv>
-        <Typography variant="body1">
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-        </Typography>
-        <Button onClick={customAction}>Save and Submit</Button>
-      </StyledDiv>
-    </React.Fragment>
-  );
-});
+export const SiteSummaryTable = React.memo(() => (
+  <React.Fragment>
+    <TableHeader />
+    <ConnectedTable
+      endpoint="sites"
+      columns={siteWeekColumns}
+      Header={false}
+      Body={CondensedTableBody}
+    />
+    <StyledDiv>
+      <Typography variant="body1">
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+      </Typography>
+      <WeeklyReportPane />
+    </StyledDiv>
+  </React.Fragment>
+));
