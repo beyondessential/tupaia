@@ -959,7 +959,7 @@ function* watchUserChangesAndUpdatePermissions() {
   yield takeLatest(FETCH_LOGIN_SUCCESS, resetToExplore);
 }
 
-function* watchGoHomeAndRestToExplore() {
+function* watchGoHomeAndResetToExplore() {
   yield takeLatest(GO_HOME, resetToExplore);
 }
 
@@ -1022,5 +1022,5 @@ export default [
   watchChangeOrgUnitSuccess,
   refreshBrowserWhenFinishingUserSession,
   watchFetchCountryAccessDataAndFetchItTEST,
-  watchGoHomeAndRestToExplore,
+  watchGoHomeAndResetToExplore,
 ];
