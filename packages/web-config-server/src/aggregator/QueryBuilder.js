@@ -6,10 +6,10 @@ import { getDefaultPeriod } from '/utils';
 import { Entity } from '/models';
 
 export class QueryBuilder {
-  constructor(originalQuery, replacementValues = {}, fetchDataSourceEntities) {
+  constructor(originalQuery, replacementValues = {}, routeHandler) {
     this.query = { ...originalQuery };
     this.replacementValues = replacementValues;
-    this.fetchDataSourceEntities = fetchDataSourceEntities;
+    this.routeHandler = routeHandler;
   }
 
   getQueryParameter(parameterKey) {
@@ -36,7 +36,7 @@ export class QueryBuilder {
   async fetchAndReplaceOrgUnitCodes() {
     const organisationUnitCode = this.getQueryParameter('organisationUnitCode');
     const entity = await Entity.findOne({ code: organisationUnitCode });
-    const dataSourceEntities = await this.fetchDataSourceEntities(
+    const dataSourceEntities = await this.routeHandler.fetchDataSourceEntities(
       entity,
       this.getQueryParameter('dataSourceEntityType'),
     );

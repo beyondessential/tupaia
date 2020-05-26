@@ -75,7 +75,10 @@ export default class extends DataAggregatingRouteHandler {
 
     const { viewJson, dataBuilderConfig, dataBuilder, dataServices } = dashboardReport;
     this.viewJson = this.translateViewJson(viewJson);
-    this.dataBuilderConfig = this.translateDataBuilderConfig(dataBuilderConfig, dataServices);
+
+    const restOfConfig = this.stripEntityAggregationFromConfig(dataBuilderConfig);
+
+    this.dataBuilderConfig = this.translateDataBuilderConfig(restOfConfig, dataServices);
 
     const dataBuilderData = await this.buildDataBuilderData(dataBuilder);
     return this.addViewMetaData(dataBuilderData);
@@ -102,7 +105,9 @@ export default class extends DataAggregatingRouteHandler {
   }
 
   translateDataBuilderConfig(dataBuilderConfig, dataServices) {
+    console.log(dataBuilderConfig);
     const replacedConfig = replaceValues(dataBuilderConfig, this.query);
+    console.log(replacedConfig);
     return { ...replacedConfig, dataServices };
   }
 

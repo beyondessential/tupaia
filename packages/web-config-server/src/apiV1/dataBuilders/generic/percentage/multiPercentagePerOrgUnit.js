@@ -1,4 +1,3 @@
-import { getDataSourceEntityType } from 'apiV1/dataBuilders/helpers';
 
 // Case insensitive string comparison
 const compareStrings = (stringA, stringB) => {
@@ -15,14 +14,14 @@ const compareStrings = (stringA, stringB) => {
 };
 
 export const multiPercentagePerOrgUnit = async (
-  { dataBuilderConfig, query, entity },
+  { dataSourceEntityType, dataBuilderConfig, query, entity },
   aggregator,
 ) => {
   const { dataElementCodes, dataServices } = dataBuilderConfig;
   const { results } = await aggregator.fetchAnalytics(dataElementCodes, { dataServices }, query);
 
   const tempData = {};
-  const entities = await entity.getDescendantsOfType(getDataSourceEntityType(dataBuilderConfig));
+  const entities = await entity.getDescendantsOfType(dataSourceEntityType);
   results.forEach(analyticRow => {
     if (!tempData[analyticRow.organisationUnit]) {
       const { name } = entities.find(e => e.code === analyticRow.organisationUnit);

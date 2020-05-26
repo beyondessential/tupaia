@@ -247,6 +247,9 @@ export default class extends DataAggregatingRouteHandler {
       measureBuilderConfig,
       measureBuilder,
     } = mapOverlay;
+
+    const restOfConfig = this.stripEntityAggregationFromConfig(measureBuilderConfig);
+
     const entityCode = shouldFetchSiblings
       ? await this.getCountryLevelOrgUnitCode()
       : this.entity.code;
@@ -263,7 +266,7 @@ export default class extends DataAggregatingRouteHandler {
       this.aggregator,
       dhisApi,
       { ...this.query, dataElementCode },
-      { ...measureBuilderConfig, dataServices },
+      { ...restOfConfig, dataServices },
       entity,
     );
   }
