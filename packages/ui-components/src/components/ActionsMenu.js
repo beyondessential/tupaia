@@ -33,7 +33,7 @@ export const ActionsMenu = ({ options }) => {
         }}
         PaperProps={{ style: { width: '135px' } }}
       >
-        {Object.entries(options).map(([label, action]) => (
+        {options.map(({ label, action }) => (
           <MenuItem
             key={label}
             onClick={() => {
@@ -50,5 +50,5 @@ export const ActionsMenu = ({ options }) => {
 };
 
 ActionsMenu.propTypes = {
-  options: PropTypes.object.isRequired,
+  options: PropTypes.array.isRequired,
 };

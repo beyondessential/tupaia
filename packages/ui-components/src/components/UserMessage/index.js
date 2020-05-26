@@ -11,7 +11,7 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
 import { StyledCard, StyledCardHeader } from './styled';
 
-import { ActionsMenu } from './ActionsMenu';
+import { ActionsMenu } from '../ActionsMenu';
 import { MessageView } from './MessageView';
 
 const getAvatar = avatarUrl =>
@@ -33,16 +33,17 @@ const getTimestampAndMenu = (dateTime, menuOptions) => (
 
 export const UserMessage = ({ id, avatarUrl, title, dateTime, message, onUpdate, onDelete }) => {
   const [edit, setEdit] = React.useState(false);
+  const menuOptions = [
+    { label: 'Edit', action: () => setEdit(true) },
+    { label: 'Delete', action: () => onDelete(id) },
+  ];
 
   return (
     <StyledCard variant="outlined">
       <StyledCardHeader
         avatar={getAvatar(avatarUrl)}
         title={<Box fontWeight="fontWeightBold">{title}</Box>}
-        action={getTimestampAndMenu(dateTime, {
-          Edit: () => setEdit(true),
-          Delete: () => onDelete(id),
-        })}
+        action={getTimestampAndMenu(dateTime, menuOptions)}
       />
       <CardContent>
         <MessageView
