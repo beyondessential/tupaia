@@ -57,53 +57,53 @@ export const SURVEYS = [BCD_SURVEY, CROP_SURVEY];
 
 export const BCD_RESPONSE_AUCKLAND = {
   id: generateTestId(),
-  surveyCode: BCD_SURVEY.code,
+  surveyCode: 'BCD',
   entityCode: auckland.code,
   submission_time: '2020-01-31T09:00:00Z',
   answers: {
-    [BCD1.code]: 'Fully operational',
-    [BCD325.code]: '53',
+    BCD1: 'Fully operational',
+    BCD325: '53',
   },
 };
 
 export const BCD_RESPONSE_WELLINGTON = {
   id: generateTestId(),
-  surveyCode: BCD_SURVEY.code,
+  surveyCode: 'BCD',
   entityCode: wellington.code,
   submission_time: '2020-02-05T15:00:00Z',
   answers: {
-    [BCD1.code]: 'Temporarily closed',
-    [BCD325.code]: '0',
+    BCD1: 'Temporarily closed',
+    BCD325: '0',
   },
 };
 
 export const CROP_RESPONSE_AUCKLAND_2019 = {
   id: generateTestId(),
-  surveyCode: CROP_SURVEY.code,
+  surveyCode: 'CROP',
   entityCode: auckland.code,
   submission_time: '2019-11-21T09:00:00Z',
   answers: {
-    [CROP_1.code]: '105',
-    [CROP_2.code]: '32',
+    CROP_1: '105',
+    CROP_2: '32',
   },
 };
 
 export const CROP_RESPONSE_AUCKLAND_2020 = {
   id: generateTestId(),
-  surveyCode: CROP_SURVEY.code,
+  surveyCode: 'CROP',
   entityCode: auckland.code,
   submission_time: '2020-11-21T09:00:00Z',
-  answers: { [CROP_2.code]: '55' },
+  answers: { CROP_2: '55' },
 };
 
 export const CROP_RESPONSE_WELLINGTON_2019 = {
   id: generateTestId(),
-  surveyCode: CROP_SURVEY.code,
+  surveyCode: 'CROP',
   entityCode: wellington.code,
   submission_time: '2019-12-16T09:00:00Z',
   answers: {
-    [CROP_1.code]: '5.1',
-    [CROP_2.code]: '55',
+    CROP_1: '5.1',
+    CROP_2: '55',
   },
 };
 
