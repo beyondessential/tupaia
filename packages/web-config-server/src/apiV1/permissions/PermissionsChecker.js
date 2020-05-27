@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import { PermissionsError } from '@tupaia/utils';
+import { ENTITY_TYPES } from '/models/Entity';
 
 export class PermissionsChecker {
   constructor(query, userHasAccess, entity) {
@@ -16,7 +17,15 @@ export class PermissionsChecker {
       throw new PermissionsError('Tried to access an entity that does not exist');
     }
 
-    if (this.entity.code !== 'World' && !(await this.userHasAccess(this.entity))) {
+    if (this.entity.code === 'World') {
+      return; // Don't restrict access to World
+    }
+
+    if (this.entity.type === ENTITY_TYPES.PROJECT) {
+      return; // Don't restrict access to Project entities
+    }
+
+    if (!(await this.userHasAccess(this.entity))) {
       throw new PermissionsError(`No access to selected entity ${this.entity.code}`);
     }
   }
@@ -26,8 +35,8 @@ export class PermissionsChecker {
   }
 
   async checkHasEntityAccess(entityCode) {
-    if (entityCode === 'World') {
-      return true; // currently, all users have access to everything at world level
+    if (entityCode === 'World' || entityCode === 'explore') {
+      return true; // currently, all users have access to everything in the explore project and at the world level.
     }
     const permissionGroups = await this.fetchPermissionGroups();
     const accessToPermissionGroups = await Promise.all(

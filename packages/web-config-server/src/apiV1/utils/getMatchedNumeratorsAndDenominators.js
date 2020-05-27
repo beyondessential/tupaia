@@ -1,4 +1,4 @@
-import { convertToPeriod, periodToTimestamp } from '@tupaia/dhis-api';
+import { convertToPeriod, periodToTimestamp } from '@tupaia/utils';
 
 // Takes in a bunch of numerator and denominator results from DHIS2, and converts them into an array
 // of objects containing a numerator and denominator for each organisation unit and month that has

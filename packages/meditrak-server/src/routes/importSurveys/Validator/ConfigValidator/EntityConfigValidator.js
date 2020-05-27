@@ -4,15 +4,12 @@
  **/
 
 import { ANSWER_TYPES } from '../../../../database/models/Answer';
-import { ENTITY_TYPES } from '../../../../database/models/Entity';
 import { constructIsNotPresentOr, hasContent } from '../../../../validation';
 import { constructListItemsAreOneOf, validateIsYesOrNo } from '../../validatorFunctions';
 import { isEmpty, isYes } from '../../utilities';
 import { JsonFieldValidator } from '../JsonFieldValidator';
 
 const { ENTITY, PRIMARY_ENTITY } = ANSWER_TYPES;
-
-const ENTITY_TYPE_LIST = Object.values(ENTITY_TYPES);
 
 const isEntityQuestion = ({ type }) => [ENTITY, PRIMARY_ENTITY].includes(type);
 
@@ -30,6 +27,11 @@ const hasContentIfCanCreateNew = (value, object, key) => {
 };
 
 export class EntityConfigValidator extends JsonFieldValidator {
+  constructor(questions, models) {
+    super(questions);
+    this.models = models;
+  }
+
   static fieldName = 'config';
 
   getFieldValidators(rowIndex) {
@@ -37,7 +39,7 @@ export class EntityConfigValidator extends JsonFieldValidator {
     const pointsToParentEntityQuestion = this.constructPointsToParentEntityQuestion(rowIndex);
 
     return {
-      type: [hasContent, constructListItemsAreOneOf(ENTITY_TYPE_LIST)],
+      type: [hasContent, constructListItemsAreOneOf(Object.values(this.models.entity.types))],
       createNew: [constructIsNotPresentOr(validateIsYesOrNo)],
       code: [hasContentIfCanCreateNew, constructIsNotPresentOr(pointsToAnotherQuestion)],
       name: [hasContentIfCanCreateNew, constructIsNotPresentOr(pointsToAnotherQuestion)],

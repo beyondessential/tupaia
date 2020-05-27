@@ -5,7 +5,8 @@
 
 import { expect } from 'chai';
 import sinon from 'sinon';
-import { generateTestId, populateTestData } from '../../../../testUtilities';
+import { generateTestId } from '@tupaia/database';
+import { populateTestData } from '../../../../testUtilities';
 import { AggregateDataPusher } from '../../../../../dhis/pushers/data/aggregate/AggregateDataPusher';
 import { DummySyncQueue } from '../../../../DummySyncQueue';
 import {

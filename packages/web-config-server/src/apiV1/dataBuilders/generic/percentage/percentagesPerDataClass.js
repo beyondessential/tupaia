@@ -46,10 +46,23 @@ class PercentagesPerDataClassDataBuilder extends DataBuilder {
     const sumPerDataElementCode = await this.getSumPerDataElementCode(results);
 
     const { dataClasses } = this.config;
-    const data = Object.keys(dataClasses).map(dataClassKey => ({
-      name: dataClassKey,
-      value: this.calculateDataClassValue(dataClassKey, sumPerDataElementCode, dataElementMap),
-    }));
+
+    const data = Object.keys(dataClasses).map(dataClassKey => {
+      const { value, numerator, denominator } = this.calculateDataClassValue(
+        dataClassKey,
+        sumPerDataElementCode,
+        dataElementMap,
+      );
+
+      return {
+        name: dataClassKey,
+        value: value,
+        [`${dataClassKey}_metadata`]: {
+          numerator,
+          denominator,
+        },
+      };
+    });
     this.sortDataByName(data);
 
     return { data: this.areDataAvailable(data) ? data : [] };
@@ -74,7 +87,7 @@ class PercentagesPerDataClassDataBuilder extends DataBuilder {
       sumPerCode[dataElementCode] = currentSum + value;
     };
 
-    if (this.entity.isFacility()) {
+    if (this.entity.isFacility() || this.config.disableFilterOperationalFacilityValues) {
       // Single facility, don't worry if it is operational or not
       results.forEach(incrementTotals);
     } else {
@@ -104,14 +117,21 @@ class PercentagesPerDataClassDataBuilder extends DataBuilder {
     const denominatorValue = getValueForDataSource(`${dataClassKey} denominator`);
     const value = divideValues(numeratorValue, denominatorValue);
 
-    return range ? limitRange(value, range) : value;
+    const finalValue = range ? limitRange(value, range) : value;
+
+    return {
+      numerator: numeratorValue,
+      denominator: denominatorValue,
+      value: finalValue,
+    };
   }
 }
 
-export const percentagesPerDataClass = async (
+const basicPercentagesPerDataClass = async (
   { dataBuilderConfig, query, entity },
   aggregator,
   dhisApi,
+  aggregationType,
 ) => {
   const builder = new PercentagesPerDataClassDataBuilder(
     aggregator,
@@ -119,7 +139,19 @@ export const percentagesPerDataClass = async (
     dataBuilderConfig,
     query,
     entity,
+    aggregationType,
   );
 
   return builder.build();
 };
+
+export const percentagesPerDataClass = (config, aggregator, dhisApi) =>
+  basicPercentagesPerDataClass(config, aggregator, dhisApi);
+
+export const percentagesPerDataClassByMonth = (config, aggregator, dhisApi) =>
+  basicPercentagesPerDataClass(
+    config,
+    aggregator,
+    dhisApi,
+    aggregator.aggregationTypes.FINAL_EACH_MONTH,
+  );

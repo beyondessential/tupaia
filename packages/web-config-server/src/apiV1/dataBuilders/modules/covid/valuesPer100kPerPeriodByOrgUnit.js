@@ -2,9 +2,8 @@
  * Tupaia Config Server
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
-import { reduceToDictionary } from '@tupaia/utils';
-import { getDefaultPeriod } from '/dhis/getDefaultPeriod';
-import { periodToTimestamp, periodToDisplayString } from '@tupaia/dhis-api';
+import { periodToTimestamp, periodToDisplayString, reduceToDictionary } from '@tupaia/utils';
+import { getDefaultPeriod } from '/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import groupBy from 'lodash.groupby';
 

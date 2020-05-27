@@ -19,8 +19,6 @@ import { RequestCountryAccessForm } from '../../RequestCountryAccessForm';
 import { TopBar } from './TopBar';
 import { delayMobileTapCallback } from '../../../utils';
 import {
-  goHome,
-  changeOrgUnit,
   findLoggedIn,
   toggleSearchExpand,
   openUserPage,
@@ -146,10 +144,6 @@ const mapDispatchToProps = dispatch => ({
   onToggleUserMenuExpand: () =>
     delayMobileTapCallback(() => dispatch(openUserPage(DIALOG_PAGE_USER_MENU))),
   onRefreshCurrentUser: () => dispatch(findLoggedIn()),
-  goHome: () => {
-    dispatch(goHome());
-    dispatch(changeOrgUnit());
-  },
   dispatch,
 });
 

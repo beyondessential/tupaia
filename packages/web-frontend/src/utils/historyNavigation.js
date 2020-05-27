@@ -33,6 +33,8 @@ import {
   findLoggedIn,
 } from '../actions';
 
+import { selectActiveProject } from '../selectors';
+
 import { gaPageView } from '.';
 import { selectProject } from '../projects/actions';
 
@@ -55,7 +57,7 @@ export function decodeUrl(pathname, search) {
 
   const [
     prefix,
-    organisationUnitCode = 'World',
+    organisationUnitCode = 'explore',
     dashboardId = null,
     reportId = null,
   ] = pathname.split('/');
@@ -95,18 +97,16 @@ export function createUrlForAppState(state) {
   const dashboardId = state.dashboard.currentDashboardKey;
   const measureId = state.measureBar.currentMeasure.measureId;
 
-  const focusedOrganisationUnit = state.global.currentOrganisationUnit;
-
-  const { organisationUnitCode } = focusedOrganisationUnit;
+  const { currentOrganisationUnitCode } = state.global;
   const reportId = state.enlargedDialog.viewContent.viewId;
   const userPage = '';
 
-  const project = state.project.active.code;
+  const project = selectActiveProject(state).code;
 
   return createUrl({
     dashboardId,
     measureId,
-    organisationUnitCode,
+    currentOrganisationUnitCode,
     reportId,
     userPage,
     project,
@@ -145,11 +145,11 @@ export function createUrl({
 
   const defaultDashboard = getDefaultDashboardForProject(project);
 
-  const defaultUrlComponents = [DEFAULT_PROJECT, 'World', defaultDashboard, null];
+  const defaultUrlComponents = [DEFAULT_PROJECT, 'explore', defaultDashboard, null];
 
   const urlComponents = [
     project,
-    organisationUnitCode || 'World',
+    organisationUnitCode || 'explore',
     dashboardId || defaultDashboard,
     reportId,
   ];
@@ -216,7 +216,7 @@ function reactToHistory(location, store) {
 
   dispatch(findLoggedIn());
 
-  if (organisationUnitCode !== state.global.currentOrganisationUnit.organisationUnitCode) {
+  if (organisationUnitCode !== state.global.currentOrganisationUnitCode) {
     dispatch(changeOrgUnit(organisationUnitCode));
     dispatch(openMapPopup(organisationUnitCode));
   }
@@ -229,7 +229,7 @@ function reactToHistory(location, store) {
     }
   }
 
-  if (project !== state.project.active.code) {
+  if (project !== selectActiveProject(state).code) {
     dispatch(selectProject({ code: project }));
   }
 }

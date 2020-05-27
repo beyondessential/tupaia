@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 11.2
--- Dumped by pg_dump version 11.2
+-- Dumped from database version 10.12
+-- Dumped by pg_dump version 10.12
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -12,8 +12,23 @@ SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
+SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
+
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
 
 --
 -- Name: postgis; Type: EXTENSION; Schema: -; Owner: -
@@ -227,21 +242,6 @@ CREATE FUNCTION public.update_change_time() RETURNS trigger
 SET default_tablespace = '';
 
 SET default_with_oids = false;
-
---
--- Name: alert; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.alert (
-    id text NOT NULL,
-    entity_id text,
-    data_element_id text,
-    start_time timestamp with time zone DEFAULT now() NOT NULL,
-    end_time timestamp with time zone,
-    event_confirmed_time timestamp with time zone,
-    archived boolean DEFAULT false
-);
-
 
 --
 -- Name: answer; Type: TABLE; Schema: public; Owner: -
@@ -741,7 +741,8 @@ CREATE TABLE public.project (
     dashboard_group_name text DEFAULT 'General'::text,
     user_groups text[],
     logo_url text,
-    entity_id text
+    entity_id text,
+    entity_hierarchy_id text
 );
 
 
@@ -959,14 +960,6 @@ ALTER TABLE ONLY public."dashboardGroup" ALTER COLUMN id SET DEFAULT nextval('pu
 --
 
 ALTER TABLE ONLY public.migrations ALTER COLUMN id SET DEFAULT nextval('public.migrations_id_seq'::regclass);
-
-
---
--- Name: alert alert_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.alert
-    ADD CONSTRAINT alert_pkey PRIMARY KEY (id);
 
 
 --
@@ -1846,13 +1839,6 @@ CREATE INDEX user_country_permission_user_id_idx ON public.user_country_permissi
 
 
 --
--- Name: alert alert_trigger; Type: TRIGGER; Schema: public; Owner: -
---
-
-CREATE TRIGGER alert_trigger AFTER INSERT OR DELETE OR UPDATE ON public.alert FOR EACH ROW EXECUTE PROCEDURE public.notification();
-
-
---
 -- Name: answer answer_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -2119,22 +2105,6 @@ CREATE TRIGGER user_reward_trigger AFTER INSERT OR DELETE OR UPDATE ON public.us
 
 
 --
--- Name: alert alert_data_element_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.alert
-    ADD CONSTRAINT alert_data_element_id_fkey FOREIGN KEY (data_element_id) REFERENCES public.data_source(id);
-
-
---
--- Name: alert alert_entity_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.alert
-    ADD CONSTRAINT alert_entity_id_fkey FOREIGN KEY (entity_id) REFERENCES public.entity(id);
-
-
---
 -- Name: answer answer_question_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2327,6 +2297,14 @@ ALTER TABLE ONLY public.permission_group
 
 
 --
+-- Name: project project_entity_hierarchy_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.project
+    ADD CONSTRAINT project_entity_hierarchy_id_fkey FOREIGN KEY (entity_hierarchy_id) REFERENCES public.entity_hierarchy(id);
+
+
+--
 -- Name: question question_option_set_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2502,8 +2480,8 @@ ALTER TABLE ONLY public.user_reward
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 11.2
--- Dumped by pg_dump version 11.2
+-- Dumped from database version 10.12
+-- Dumped by pg_dump version 10.12
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -2512,6 +2490,7 @@ SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
+SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
@@ -3219,29 +3198,32 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 655	/20200505222240-updateTongaPehsMatrixIncFacType	2020-05-12 05:53:43.305
 656	/20200506040950-UpdateSumPerPeriodDataBuilderConfigInReports	2020-05-12 05:53:43.985
 657	/20200507033858-AddAttributesToEntityTable	2020-05-12 05:53:54.462
-658	/20200326052907-AddStriveReportFebrileIllnessAndRDTPositive	2020-05-13 03:13:08.331
-659	/20200405234315-AddStriveReportFebrileCasesByWeek	2020-05-13 03:13:08.484
-660	/20200406010511-AddRDTTotalTestsVsPercentagePositiveComposedReportStrive	2020-05-13 03:13:08.623
-661	/20200406013942-AddStriveVillageFebrileIllessDiscreteShadedPolygonsMapOverlay	2020-05-13 03:13:08.687
-662	/20200406061858-AddStriveVillagePercentMRDTPositiveShadedSpectrumMapOverlay	2020-05-13 03:13:08.745
-663	/20200407044756-Add3TypeOfStriveVillagePercentMRDTPositiveShadedSpectrumMapOverlay	2020-05-13 03:13:08.84
-664	/20200408002104-AddStriveFacilityRadiusOverlayTestNumber	2020-05-13 03:13:09.046
-665	/20200408044353-Add4StriveMapOverlays	2020-05-13 03:13:09.378
-666	/20200414065121-AddStriveOverlayPercentmRDTPositiveAndTestsSourceWTF	2020-05-13 03:13:09.515
-667	/20200415034908-AddStriveOverlayAllCasesByFacilityBubbleCRF	2020-05-13 03:13:09.593
-668	/20200424054821-ShiftAnnualFanafanaolaDashboardsToShowPreviousYearData	2020-05-13 03:13:09.662
-669	/20200504025438-UseNumberValueForDataValueFilter	2020-05-13 03:13:09.751
-670	/20200504065336-UseNumberForValueFilterInOverlays	2020-05-13 03:13:09.834
-671	/20200512023653-UseNumberForValueFilterInReports	2020-05-13 03:13:09.938
-672	/20200513022041-UpdateRdtTestsTotalConfig	2020-05-13 03:13:10.011
-673	/20200430065532-AddTongaNotifiableDiseasesStackedBar	2020-05-13 05:15:17.737
-674	/20200505233853-AddTongaIsolationAdmissionsInitialDiagnosisStackedBar	2020-05-13 05:15:18.125
-675	/20200505234922-AddTongaSuspectedCasesNotifiableDiseasesStackedBar	2020-05-13 05:15:18.248
-676	/20200506001638-AddTongaContactsTracedStackedBar	2020-05-13 05:15:18.376
-677	/20200506041900-AddLabConfirmedSTICasesPerMonthReport	2020-05-13 05:15:18.471
-678	/20200429021341-AddUNFPAReproductiveHealthProductsMonthOfStockReport	2020-05-17 15:05:50.269
-679	/20200504224323-AddSchoolEntityType	2020-05-17 15:05:52.781
-680	/20200428025025-createAlertsTable	2020-05-18 15:24:54.24
+658	/20200424054821-ShiftAnnualFanafanaolaDashboardsToShowPreviousYearData	2020-05-12 15:05:08.076
+659	/20200326052907-AddStriveReportFebrileIllnessAndRDTPositive	2020-05-13 01:06:15.754
+660	/20200405234315-AddStriveReportFebrileCasesByWeek	2020-05-13 01:06:15.891
+661	/20200406010511-AddRDTTotalTestsVsPercentagePositiveComposedReportStrive	2020-05-13 01:06:15.988
+662	/20200406013942-AddStriveVillageFebrileIllessDiscreteShadedPolygonsMapOverlay	2020-05-13 01:06:16.026
+663	/20200406061858-AddStriveVillagePercentMRDTPositiveShadedSpectrumMapOverlay	2020-05-13 01:06:16.048
+664	/20200407044756-Add3TypeOfStriveVillagePercentMRDTPositiveShadedSpectrumMapOverlay	2020-05-13 01:06:16.117
+665	/20200408002104-AddStriveFacilityRadiusOverlayTestNumber	2020-05-13 01:06:16.197
+666	/20200408044353-Add4StriveMapOverlays	2020-05-13 01:06:16.39
+667	/20200414065121-AddStriveOverlayPercentmRDTPositiveAndTestsSourceWTF	2020-05-13 01:06:16.494
+668	/20200415034908-AddStriveOverlayAllCasesByFacilityBubbleCRF	2020-05-13 01:06:16.571
+669	/20200504025438-UseNumberValueForDataValueFilter	2020-05-13 01:06:16.747
+670	/20200504065336-UseNumberForValueFilterInOverlays	2020-05-13 01:06:16.844
+671	/20200512023653-UseNumberForValueFilterInReports	2020-05-13 01:06:16.909
+672	/20200513022041-UpdateRdtTestsTotalConfig	2020-05-13 02:44:47.531
+673	/20200430065532-AddTongaNotifiableDiseasesStackedBar	2020-05-13 04:29:38.751
+674	/20200505233853-AddTongaIsolationAdmissionsInitialDiagnosisStackedBar	2020-05-13 04:29:38.902
+675	/20200505234922-AddTongaSuspectedCasesNotifiableDiseasesStackedBar	2020-05-13 04:29:39.015
+676	/20200506001638-AddTongaContactsTracedStackedBar	2020-05-13 04:29:39.148
+677	/20200506041900-AddLabConfirmedSTICasesPerMonthReport	2020-05-13 04:29:39.228
+678	/20200504224323-AddSchoolEntityType	2020-05-13 05:32:21.564
+679	/20200505015116-AddEntityHierarchyIdToProjectTable	2020-05-13 16:13:23.862
+680	/20200506031906-ChangeRootEntityToProjects	2020-05-13 16:13:24.123
+681	/20200506224325-AddLaosSchoolsProject	2020-05-13 16:13:24.19
+682	/20200507020955-AddLaosSchoolAlternativeHierarchyRelations	2020-05-13 16:13:30.319
+683	/20200507070444-AddLaosSchoolsSchoolTypeMapOverlay	2020-05-13 17:58:12.839
 \.
 
 
@@ -3249,7 +3231,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 680, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 683, true);
 
 
 --

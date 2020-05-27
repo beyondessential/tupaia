@@ -193,7 +193,7 @@ export function processMeasureInfo(response) {
 export function getValueInfo(value, valueMapping, hiddenValues = {}) {
   if (!value && typeof value !== 'number' && valueMapping.null) {
     // use 'no data' value
-    const nullValue = hiddenValues.null || hiddenValues[valueMapping.null.name];
+    const nullValue = hiddenValues.null || hiddenValues[valueMapping.null.value];
 
     return {
       ...valueMapping.null,
@@ -222,7 +222,9 @@ export function getFormattedInfo(orgUnitData, measureOption) {
   const { key, valueMapping, type, displayedValueKey, scaleType, valueType } = measureOption;
 
   if (displayedValueKey && orgUnitData[displayedValueKey]) {
-    return { value: orgUnitData[displayedValueKey] };
+    return {
+      value: formatDataValue(orgUnitData[displayedValueKey], valueType, orgUnitData.metadata),
+    };
   }
 
   const value = orgUnitData[key];

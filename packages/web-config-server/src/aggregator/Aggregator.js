@@ -24,6 +24,7 @@ export class Aggregator extends BaseAggregator {
       replacementValues,
       this.fetchDataSourceEntities,
     );
+    await queryBuilder.fetchAndReplaceOrgUnitCodes();
     queryBuilder.makeEventReplacements();
 
     return super.fetchEvents(programCode, queryBuilder.query);

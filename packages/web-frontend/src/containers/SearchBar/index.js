@@ -19,7 +19,7 @@ import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
 import { List, ListItem } from 'material-ui/List';
 import { ControlBar } from '../../components/ControlBar';
-import { selectOrgUnitChildren } from '../../selectors';
+import { selectOrgUnitChildren, selectActiveProject } from '../../selectors';
 import {
   changeSearch,
   toggleSearchExpand,
@@ -81,9 +81,9 @@ export class SearchBar extends PureComponent {
   }
 
   componentWillMount() {
-    const { hierarchyData, getNestedOrgUnits } = this.props;
+    const { hierarchyData, requestRootOrgUnit } = this.props;
     if (!hierarchyData || !Array.isArray(hierarchyData) || hierarchyData.length < 2) {
-      getNestedOrgUnits('World');
+      requestRootOrgUnit();
     }
   }
 
@@ -169,7 +169,7 @@ const sortOrgUnitsAlphabeticallyByName = orgUnits => {
 SearchBar.propTypes = {
   onExpandClick: PropTypes.func.isRequired,
   onOrgUnitClick: PropTypes.func.isRequired,
-  getNestedOrgUnits: PropTypes.func.isRequired,
+  requestRootOrgUnit: PropTypes.func.isRequired,
   isExpanded: PropTypes.bool,
   searchResponse: PropTypes.arrayOf(PropTypes.object),
   hierarchyData: PropTypes.arrayOf(PropTypes.string),
@@ -198,7 +198,9 @@ const selectCodeFromOrgUnit = createSelector([orgUnits => orgUnits], orgUnits =>
 const mapStateToProps = state => {
   const { isExpanded, searchResponse, searchString } = state.searchBar;
   const { orgUnitFetchError } = state.orgUnits;
-  const hierarchyData = selectCodeFromOrgUnit(selectOrgUnitChildren(state, 'World'));
+  const hierarchyData = selectCodeFromOrgUnit(
+    selectOrgUnitChildren(state, selectActiveProject(state).code),
+  );
   return { isExpanded, searchResponse, searchString, hierarchyData, orgUnitFetchError };
 };
 
@@ -213,7 +215,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(changeOrgUnit(organisationUnitCode));
       dispatch(openMapPopup(organisationUnitCode));
     },
-    getNestedOrgUnits: organisationUnitCode => dispatch(requestOrgUnit(organisationUnitCode)),
+    requestRootOrgUnit: () => dispatch(requestOrgUnit()),
   };
 };
 
