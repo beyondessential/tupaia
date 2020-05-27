@@ -26,8 +26,8 @@ export const reloadCountryWeeks = ({ fetchOptions, queryParameters }) => async (
     const { data } = await fakeApi.get(endpoint, { ...fetchOptions, ...queryParameters });
     dispatch({ type: COUNTRY_WEEKS_LOAD_FINISH, data });
   } catch (error) {
-    dispatch({ type: COUNTRY_WEEKS_LOAD_ERROR, error });
     console.log('error', error);
+    dispatch({ type: COUNTRY_WEEKS_LOAD_ERROR, error });
   }
 };
 
@@ -44,16 +44,19 @@ export const reloadCountryWeekSites = ({ fetchOptions, queryParameters }) => asy
     console.log('data', data);
     dispatch({ type: SITES_LOAD_FINISH, data });
   } catch (error) {
-    dispatch({ type: SITES_LOAD_ERROR, error });
     console.log('error', error);
+    dispatch({ type: SITES_LOAD_ERROR, error });
   }
+
+  console.log('done');
 };
 
 // selectors
 export const getCountryWeeks = ({ weeklyReports }) => weeklyReports.countryWeeks;
 export const getCountryWeekSites = ({ weeklyReports }) => weeklyReports.countryWeekSites;
-export const getWeeklyReportsError = ({ weeklyReports }) => weeklyReports.countryWeekSites;
-export const checkWeeklyReportsIsLoading = ({ weeklyReports }) => weeklyReports.countryWeekSites;
+export const getWeeklyReportsError = ({ weeklyReports }) => weeklyReports.error;
+export const checkWeeklyReportsIsLoading = ({ weeklyReports }) =>
+  weeklyReports.status === 'loading';
 
 // reducer
 const defaultState = {
@@ -75,7 +78,7 @@ const actionHandlers = {
   }),
   [COUNTRY_WEEKS_LOAD_ERROR]: ({ error }) => ({
     status: 'error',
-    error,
+    error: error.message,
   }),
   [SITES_LOAD_START]: () => ({
     error: defaultState.error,
@@ -83,7 +86,7 @@ const actionHandlers = {
   }),
   [SITES_LOAD_FINISH]: ({ data }) => ({
     status: 'success',
-    countryWeeks: data,
+    countryWeekSites: data,
   }),
   [SITES_LOAD_ERROR]: ({ error }) => ({
     status: 'error',

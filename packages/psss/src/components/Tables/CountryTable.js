@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -36,21 +36,20 @@ const CountryWeekSubTitle = styled.div`
 `;
 
 const NameCell = ({ week, startDate, endDate }) => {
-  const start = `${format(startDate, 'LLL d')}`;
-  const end = `${format(endDate, 'LLL d')}`;
-  const year = `${format(endDate, 'yyyy')}`;
+  const start = `${format(new Date(startDate), 'LLL d')}`;
+  const end = `${format(new Date(endDate), 'LLL d, yyyy')}`;
   return (
     <React.Fragment>
       <CountryWeekTitle>{`Week ${week}`}</CountryWeekTitle>
-      <CountryWeekSubTitle>{`${start} - ${end}, ${year}`}</CountryWeekSubTitle>
+      <CountryWeekSubTitle>{`${start} - ${end}`}</CountryWeekSubTitle>
     </React.Fragment>
   );
 };
 
 NameCell.propTypes = {
   week: PropTypes.number.isRequired,
-  startDate: PropTypes.instanceOf(Date).isRequired,
-  endDate: PropTypes.instanceOf(Date).isRequired,
+  startDate: PropTypes.any.isRequired,
+  endDate: PropTypes.any.isRequired,
 };
 
 const Status = styled.div`
@@ -137,44 +136,48 @@ const countryColumns = [
   },
 ];
 
-const CountryTableComponent = React.memo(
-  ({ fetchData, data, fetchOptions, isLoading, errorMessage }) => {
-    const [page, setPage] = useState(0);
+const CountryTableComponent = React.memo(({ fetchData, data, fetchOptions, errorMessage }) => {
+  const [page, setPage] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
-    return (
-      <Table
-        isLoading={isLoading}
-        columns={countryColumns}
-        data={data}
-        errorMessage={errorMessage}
-        onChangePage={setPage}
-        page={page}
-        fetchData={fetchData}
-        fetchOptions={fetchOptions}
-        SubComponent={SiteSummaryTable}
-      />
-    );
-  },
-);
+  useEffect(() => {
+    (async () => {
+      setIsLoading(true);
+      await fetchData({ page });
+      setIsLoading(false);
+    })();
+  }, [page, fetchOptions]);
+
+  return (
+    <Table
+      isLoading={isLoading}
+      columns={countryColumns}
+      data={data}
+      errorMessage={errorMessage}
+      onChangePage={setPage}
+      page={page}
+      fetchData={fetchData}
+      fetchOptions={fetchOptions}
+      SubComponent={SiteSummaryTable}
+    />
+  );
+});
 
 CountryTableComponent.propTypes = {
   fetchData: PropTypes.func.isRequired,
   data: PropTypes.array.isRequired,
   fetchOptions: PropTypes.object,
   errorMessage: PropTypes.string,
-  isLoading: PropTypes.bool,
 };
 
 CountryTableComponent.defaultProps = {
   fetchOptions: null,
   errorMessage: '',
-  isLoading: false,
 };
 
 const mapStateToProps = state => ({
   data: getCountryWeeks(state),
-  error: checkWeeklyReportsIsLoading,
-  isLoading: getWeeklyReportsError,
+  error: getWeeklyReportsError(state),
 });
 
 const mapDispatchToProps = dispatch => ({

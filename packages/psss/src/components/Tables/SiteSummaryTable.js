@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
@@ -119,8 +119,18 @@ TableFooter.propTypes = {
 };
 
 export const SiteSummaryTableComponent = React.memo(
-  ({ fetchData, data, fetchOptions, isLoading, errorMessage }) => {
+  ({ fetchData, data, fetchOptions, errorMessage }) => {
     const [page, setPage] = useState(0);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+      (async () => {
+        setIsLoading(true);
+        await fetchData({ page });
+        console.log('stop loading');
+        setIsLoading(false);
+      })();
+    }, [page, fetchOptions]);
 
     return (
       <React.Fragment>
@@ -148,19 +158,16 @@ SiteSummaryTableComponent.propTypes = {
   data: PropTypes.array.isRequired,
   fetchOptions: PropTypes.object,
   errorMessage: PropTypes.string,
-  isLoading: PropTypes.bool,
 };
 
 SiteSummaryTableComponent.defaultProps = {
   fetchOptions: null,
   errorMessage: '',
-  isLoading: false,
 };
 
 const mapStateToProps = state => ({
   data: getCountryWeekSites(state),
-  error: checkWeeklyReportsIsLoading,
-  isLoading: getWeeklyReportsError,
+  errorMessage: checkWeeklyReportsIsLoading(state),
 });
 
 const mapDispatchToProps = dispatch => ({
