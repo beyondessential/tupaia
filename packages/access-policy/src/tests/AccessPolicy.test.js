@@ -69,7 +69,16 @@ describe('AccessPolicy', () => {
       );
     });
 
-    it('should not allow access if no entities are specified', () => {
+    it('should allow access if no entities are specified, along with a permission group', () => {
+      expect(accessPolicy.allowsSome(undefined, 'Royal Australasian College of Surgeons')).to.equal(
+        false,
+      );
+      expect(accessPolicy.allowsSome(null, 'Royal Australasian College of Surgeons')).to.equal(
+        false,
+      );
+    });
+
+    it('should not allow access if no entities or permission group are specified', () => {
       expect(accessPolicy.allowsSome([])).to.equal(false);
       expect(accessPolicy.allowsSome()).to.equal(false);
       expect(accessPolicy.allowsSome(null)).to.equal(false);

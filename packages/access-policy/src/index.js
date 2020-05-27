@@ -55,8 +55,8 @@ export class AccessPolicy {
    * @returns boolean Whether or not the user has access to any of the entities, optionally for
    *                  the given permission group
    */
-  allowsSome(entities = [], permissionGroup) {
-    if (entities === null) {
+  allowsSome(entities, permissionGroup) {
+    if (!entities && !permissionGroup) {
       return false;
     }
     if (!permissionGroup) {
@@ -83,7 +83,7 @@ export class AccessPolicy {
     // if no specific entities were requested, fetch the permissions for all of them
     const entities = requestedEntities || Object.keys(this.policy);
     // cache this part, as it is run often and is the most expensive operation
-    const cacheKey = entities.join('-');
+    const cacheKey = `permissions-${entities.join('-')}`;
     if (!this.cachedPermissionGroupSets[cacheKey]) {
       const permissionGroups = new Set();
       entities.forEach(entityCode => {
