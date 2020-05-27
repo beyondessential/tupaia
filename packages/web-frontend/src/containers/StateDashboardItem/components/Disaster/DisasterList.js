@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 
-import { BLUE } from '../../../styles';
+import { BLUE } from '../../../../styles';
 import { DisasterItem } from './DisasterItem';
 
 const Grid = styled.div`

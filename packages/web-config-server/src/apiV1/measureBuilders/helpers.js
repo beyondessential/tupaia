@@ -33,7 +33,7 @@ export const fetchComposedData = async (aggregator, dhisApi, query, config, enti
 };
 
 export const mapMeasureValuesToGroups = (measureValue, dataElementGroupCode, groups) => {
-  const { organisationUnitCode, [dataElementGroupCode]: originalValue } = measureValue;
+  const { [dataElementGroupCode]: originalValue } = measureValue;
   const valueGroup = Object.entries(groups).find(([groupName, groupConfig]) => {
     const groupCheck = OPERATOR_TO_VALUE_CHECK[groupConfig.operator];
     if (!groupCheck) {
@@ -43,14 +43,14 @@ export const mapMeasureValuesToGroups = (measureValue, dataElementGroupCode, gro
   });
 
   return {
-    organisationUnitCode,
+    ...measureValue,
     originalValue,
     [dataElementGroupCode]: valueGroup ? valueGroup[0] : originalValue,
   };
 };
 
-export const analyticsToMeasureData = analytics =>
+export const analyticsToMeasureData = (analytics, customDataKey) =>
   analytics.map(({ organisationUnit, dataElement, value }) => ({
     organisationUnitCode: organisationUnit,
-    [dataElement]: value,
+    [customDataKey || dataElement]: value,
   }));

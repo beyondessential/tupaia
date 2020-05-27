@@ -25,6 +25,11 @@ export const insertObject = async (db, table, data, onError) =>
 
 export const arrayToDbString = array => array.map(item => `'${item}'`).join(', ');
 
+export const codeToId = async (db, table, code) => {
+  const record = await db.runSql(`SELECT id FROM "${table}" WHERE code = '${code}'`);
+  return record.rows[0] && record.rows[0].id;
+};
+
 /**
  * @param {Object<string, any>} params
  * @throws {RequiredParameterError}
