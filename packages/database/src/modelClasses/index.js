@@ -10,8 +10,6 @@ import { CountryModel } from './Country';
 import { CommentModel } from './Comment';
 import { DataElementDataGroupModel } from './DataElementDataGroup';
 import { DataSourceModel } from './DataSource';
-import { DataElementDataGroupModel } from './DataElementDataGroup';
-import { DataSourceModel } from './DataSource';
 import { EntityModel } from './Entity';
 import { GeographicalAreaModel } from './GeographicalArea';
 import { MeditrakDeviceModel } from './MeditrakDevice';
@@ -31,8 +29,6 @@ export const modelClasses = {
   Answer: AnswerModel,
   Country: CountryModel,
   Comment: CommentModel,
-  DataElementDataGroup: DataElementDataGroupModel,
-  DataSource: DataSourceModel,
   DataElementDataGroup: DataElementDataGroupModel,
   DataSource: DataSourceModel,
   GeographicalArea: GeographicalAreaModel,
