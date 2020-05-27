@@ -166,7 +166,7 @@ export class TableOfDataValuesBuilder extends DataBuilder {
       const rowData = {
         dataElement: dataElement.hasOwnProperty('name') ? dataElement.name : dataElement,
       };
-      const rowInfo = this.rowsToDescriptions[rowData.dataElement];
+      const rowInfo = this.rowsToDescriptions && this.rowsToDescriptions[rowData.dataElement];
       if (rowInfo) return { ...rowData, rowInfo };
 
       return rowData;
