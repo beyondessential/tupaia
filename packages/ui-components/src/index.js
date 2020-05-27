@@ -19,3 +19,5 @@ export * from './components/ProfileButton';
 export * from './components/Tabs';
 export * from './components/Toolbar';
 export * from './components/Table';
+export * from './components/UserMessage';
+export * from './components/ActionsMenu';
