@@ -4,7 +4,6 @@
  */
 import React from 'react';
 import { PhotoAlbum } from '@material-ui/icons';
-import PropTypes from 'prop-types';
 import { useParams } from 'react-router-dom';
 import { TabsToolbar, CalendarToday } from '@tupaia/ui-components';
 import { Header } from '../components';
@@ -23,7 +22,7 @@ const links = [
   },
 ];
 
-export const CountryReportsView = ({ match }) => {
+export const CountryReportsView = () => {
   const { countryName } = useParams();
   const back = {
     url: '/',
@@ -33,11 +32,7 @@ export const CountryReportsView = ({ match }) => {
     <React.Fragment>
       <Header title={countryName} back={back} />
       <TabsToolbar links={links} />
-      <CountryRoutes match={match} />
+      <CountryRoutes />
     </React.Fragment>
   );
-};
-
-CountryReportsView.propTypes = {
-  match: PropTypes.any.isRequired,
 };

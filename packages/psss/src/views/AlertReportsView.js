@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import PropTypes from 'prop-types';
 import { CalendarToday, TabsToolbar } from '@tupaia/ui-components';
 import Typography from '@material-ui/core/Typography';
 import { PhotoAlbum } from '@material-ui/icons';
@@ -29,7 +28,7 @@ const links = [
   },
 ];
 
-export const AlertReportsView = ({ match }) => (
+export const AlertReportsView = () => (
   <React.Fragment>
     <Header title="Alerts & Outbreaks" />
     <TabsToolbar links={links} />
@@ -38,12 +37,8 @@ export const AlertReportsView = ({ match }) => (
         <Typography variant="h2" gutterBottom>
           Alerts Layout
         </Typography>
-        <AlertsRoutes match={match} />
+        <AlertsRoutes />
       </Main>
     </MuiContainer>
   </React.Fragment>
 );
-
-AlertReportsView.propTypes = {
-  match: PropTypes.any.isRequired,
-};

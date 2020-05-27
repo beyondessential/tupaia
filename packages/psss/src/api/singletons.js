@@ -2,6 +2,8 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import { FakeAPI } from './FakeApi';
+import { TupaiaApi } from './TupaiaApi';
+import { FakeAPI as TempApi } from './FakeApi';
 
-export const API = new FakeAPI();
+export const API = new TupaiaApi();
+export const FakeAPI = new TempApi();

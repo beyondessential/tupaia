@@ -4,19 +4,21 @@
  */
 
 import React from 'react';
-import { Redirect, Route, Switch } from 'react-router-dom';
-import PropTypes from 'prop-types';
+import { useRouteMatch, Redirect, Route, Switch } from 'react-router-dom';
 import { CountryReportsViewEventBased } from '../views/CountryReportsViewEventBased';
 import { CountryReportsViewWeekly } from '../views/CountryReportsViewWeekly';
 
-export const CountryRoutes = React.memo(({ match }) => (
-  <Switch>
-    <Route exact path={match.path} component={CountryReportsViewWeekly} />
-    <Route path={`${match.path}/event-based`} component={CountryReportsViewEventBased} />
-    <Redirect to={match.path} />
-  </Switch>
-));
-
-CountryRoutes.propTypes = {
-  match: PropTypes.any.isRequired,
-};
+export const CountryRoutes = React.memo(() => {
+  const match = useRouteMatch();
+  return (
+    <Switch>
+      <Route exact path={match.path}>
+        <CountryReportsViewWeekly />
+      </Route>
+      <Route path={`${match.path}/event-based`}>
+        <CountryReportsViewEventBased />
+      </Route>
+      <Redirect to={match.path} />
+    </Switch>
+  );
+});

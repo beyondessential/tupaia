@@ -4,9 +4,9 @@
  */
 
 import React from 'react';
-import { API } from './singletons';
+import { FakeAPI } from './singletons';
 
 export const connectApi = mapApiToProps => WrappedComponent => props => {
-  const apiProps = mapApiToProps(API, props);
+  const apiProps = mapApiToProps(FakeAPI, props);
   return <WrappedComponent {...apiProps} {...props} />;
 };

@@ -4,13 +4,7 @@
  */
 
 import { stringifyQuery } from '@tupaia/utils';
-import {
-  getAccessToken,
-  getRefreshToken,
-  loginSuccess,
-  loginError,
-  validateUserIsAuthenticated,
-} from '../authentication';
+import { getAccessToken, getRefreshToken, loginSuccess, loginError } from '../store';
 
 const [CLIENT_BASIC_AUTH_HEADER, PSSS_API_URL] = [
   process.env.REACT_APP_CLIENT_BASIC_AUTH_HEADER,
@@ -46,20 +40,22 @@ export class TupaiaApi {
 
   async reauthenticate(loginCredentials) {
     try {
-      const { body: authenticationDetails } = await this.post(
+      const response = await this.post(
         AUTH_API_ENDPOINT,
         null,
         loginCredentials,
         CLIENT_BASIC_AUTH_HEADER,
         false,
       );
+      const { body: authenticationDetails } = response;
       const { accessToken, refreshToken, user } = authenticationDetails;
       if (!accessToken || !refreshToken || !user) {
         throw new Error('Invalid response from auth server');
       }
-      if (!validateUserIsAuthenticated(user)) {
-        throw new Error('Your permissions for Tupaia do not allow you to view the admin panel');
-      }
+      // Todo: determine what account type auth is needed
+      // if (!validateUserIsAuthenticated(user)) {
+      //   throw new Error('Your permissions for Tupaia do not allow you to view the admin panel');
+      // }
       return authenticationDetails;
     } catch (error) {
       throw error; // Throw error up
