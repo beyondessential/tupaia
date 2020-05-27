@@ -1,37 +1,50 @@
-import { getCountryNameFromCode } from '@tupaia/utils';
-import { getPacificFacilityStatuses } from '/apiV1/utils';
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+import { reduceToDictionary } from '@tupaia/utils';
 
-export const countOperationalFacilitiesByCountry = async ({ query }, aggregator) => {
-  const operationalFacilities = await getPacificFacilityStatuses(
+import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
+import { fetchOperationalFacilityCodes } from '/apiV1/utils';
+import { ENTITY_TYPES } from '/models/Entity';
+
+class CountOperationalFacilitiesByCountryBuilder extends DataBuilder {
+  async build() {
+    const operationalFacilityCodes = await fetchOperationalFacilityCodes(
+      this.aggregator,
+      this.entity.code,
+      this.period,
+    );
+    const facilityEntities = await this.fetchDescendantsOfType(ENTITY_TYPES.FACILITY);
+    const countsByCountryCode = {};
+    facilityEntities.forEach(({ code, country_code: countryCode }) => {
+      if (operationalFacilityCodes.includes(code)) {
+        countsByCountryCode[countryCode] = (countsByCountryCode[countryCode] || 0) + 1;
+      }
+    });
+    const countryNamesByCode = await this.fetchCountryNamesByCode();
+    const responseData = Object.entries(countsByCountryCode)
+      .filter(([countryCode]) => countryCode !== 'DL') // exclude Demo Land from the count
+      .map(([countryCode, count]) => ({ name: countryNamesByCode[countryCode], value: count }));
+    return {
+      data: this.sortDataByName(responseData),
+    };
+  }
+
+  async fetchCountryNamesByCode() {
+    const countryEntities = await this.fetchDescendantsOfType(ENTITY_TYPES.COUNTRY);
+    return reduceToDictionary(countryEntities, 'code', 'name');
+  }
+}
+
+export const countOperationalFacilitiesByCountry = async (queryConfig, aggregator, dhisApi) => {
+  const { dataBuilderConfig, query, entity } = queryConfig;
+  const builder = new CountOperationalFacilitiesByCountryBuilder(
     aggregator,
-    query.organisationUnitCode,
-    query.period,
+    dhisApi,
+    dataBuilderConfig,
+    query,
+    entity,
   );
-
-  const countryCodeIndexes = {};
-  const operationalFacilityCounts = [];
-  Object.values(operationalFacilities).forEach(({ countryCode }) => {
-    if (!countryCode) {
-      // This facility is not in a country we care about, e.g. Demo Land
-      return;
-    }
-    if (countryCodeIndexes[countryCode] === undefined) {
-      countryCodeIndexes[countryCode] = operationalFacilityCounts.length;
-      operationalFacilityCounts.push({
-        name: getCountryNameFromCode(countryCode),
-        value: 0,
-      });
-    }
-    const indexForCountry = countryCodeIndexes[countryCode];
-    operationalFacilityCounts[indexForCountry].value++;
-  });
-
-  // Return the result array sorted by country name
-  return {
-    data: operationalFacilityCounts.sort((one, two) => {
-      if (one.name < two.name) return -1;
-      if (one.name > two.name) return 1;
-      return 0;
-    }),
-  };
+  return builder.build();
 };

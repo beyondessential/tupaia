@@ -14,9 +14,11 @@ export class GetStringsFromBinaryDataBuilder extends DataBuilder {
     results.forEach(({ dataElement, value, organisationUnit }) => {
       const stringValue = value ? dataElementToString[dataElement] : '';
       if (stringValue) {
-        stringArrayByOrgUnit[organisationUnit] = [stringValue].concat(
-          stringArrayByOrgUnit[organisationUnit],
-        );
+        if (stringArrayByOrgUnit[organisationUnit]) {
+          stringArrayByOrgUnit[organisationUnit].push(stringValue);
+        } else {
+          stringArrayByOrgUnit[organisationUnit] = [stringValue];
+        }
       }
     });
 
