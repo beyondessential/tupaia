@@ -1,5 +1,6 @@
-import { auth } from './store';
+import { auth, weeklyReports } from './store';
 
 export const createReducers = () => ({
   auth,
+  weeklyReports,
 });

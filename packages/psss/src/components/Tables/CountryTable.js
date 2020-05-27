@@ -3,16 +3,18 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { Table } from '@tupaia/ui-components';
 import { format } from 'date-fns';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { Alarm, CheckCircleOutline } from '@material-ui/icons';
 import { SiteSummaryTable } from './SiteSummaryTable';
-import { ConnectedTable } from './ConnectedTable';
 import * as COLORS from '../../theme/colors';
 import { FIRST_COLUMN_WIDTH, SITES_REPORTED_COLUMN_WIDTH } from './constants';
 import { AFRCell, SitesReportedCell } from './TableCellComponents';
+import { getCountryWeeks, reloadCountryWeeks } from '../../store';
 
 const CountryWeekTitle = styled.div`
   color: ${COLORS.BLUE};
@@ -130,10 +132,74 @@ const countryColumns = [
   },
 ];
 
-export const CountryTable = React.memo(() => (
-  <ConnectedTable
-    endpoint="country-weeks"
-    columns={countryColumns}
-    SubComponent={SiteSummaryTable}
-  />
-));
+const DEFAULT_ROWS_PER_PAGE = 10;
+const DEFAULT_FETCH_STATE = { errorMessage: '', isLoading: true };
+
+/*
+ * Country Table Component
+ */
+const CountryTableComponent = React.memo(({ fetchOptions, fetchData, data }) => {
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(DEFAULT_ROWS_PER_PAGE);
+  const [fetchState, setFetchState] = useState(DEFAULT_FETCH_STATE);
+
+  useEffect(() => {
+    let updateFetchState = newFetchState =>
+      setFetchState(prevFetchState => ({ ...prevFetchState, ...newFetchState }));
+
+    updateFetchState({ isLoading: true });
+    (async () => {
+      try {
+        await fetchData({ page, rowsPerPage });
+        updateFetchState({
+          ...DEFAULT_FETCH_STATE,
+          isLoading: false,
+        });
+      } catch (error) {
+        updateFetchState({ errorMessage: error.message, isLoading: false });
+      }
+    })();
+
+    return () => {
+      updateFetchState = () => {}; // discard the fetch state update if this request is stale
+    };
+  }, [page, rowsPerPage, fetchOptions]);
+
+  const count = data.length;
+  const { isLoading, errorMessage } = fetchState;
+
+  return (
+    <Table
+      isLoading={isLoading}
+      columns={countryColumns}
+      data={data}
+      errorMessage={errorMessage}
+      rowsPerPage={rowsPerPage}
+      page={page}
+      count={count}
+      onChangePage={setPage}
+      onChangeRowsPerPage={setRowsPerPage}
+      SubComponent={SiteSummaryTable}
+    />
+  );
+});
+
+CountryTableComponent.propTypes = {
+  fetchData: PropTypes.func.isRequired,
+  data: PropTypes.array.isRequired,
+  fetchOptions: PropTypes.object,
+};
+
+CountryTableComponent.defaultProps = {
+  fetchOptions: null,
+};
+
+const mapStateToProps = state => ({
+  data: getCountryWeeks(state),
+});
+
+const mapDispatchToProps = dispatch => ({
+  fetchData: () => dispatch(reloadCountryWeeks({})),
+});
+
+export const CountryTable = connect(mapStateToProps, mapDispatchToProps)(CountryTableComponent);
