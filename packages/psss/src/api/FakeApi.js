@@ -50,6 +50,72 @@ export class FakeAPI {
   }
 
   // eslint-disable-next-line class-methods-use-this
+  indicators() {
+    return [
+      {
+        id: 'afr',
+        title: 'Acute Fever and Rash (AFR)',
+        percentageChange: faker.random.number({
+          min: -15,
+          max: 15,
+        }),
+        totalCases: faker.random.number({
+          min: 0,
+          max: 1000,
+        }),
+      },
+      {
+        id: 'dia',
+        title: 'Diarrhoea (DIA)',
+        percentageChange: faker.random.number({
+          min: -15,
+          max: 15,
+        }),
+        totalCases: faker.random.number({
+          min: 0,
+          max: 1000,
+        }),
+      },
+      {
+        id: 'ili',
+        title: 'Influenza-like Illness (ILI)',
+        percentageChange: faker.random.number({
+          min: -15,
+          max: 15,
+        }),
+        totalCases: faker.random.number({
+          min: 0,
+          max: 1000,
+        }),
+      },
+      {
+        id: 'pf',
+        title: 'Prolonged Fever (AFR)',
+        percentageChange: faker.random.number({
+          min: -15,
+          max: 15,
+        }),
+        totalCases: faker.random.number({
+          min: 0,
+          max: 1000,
+        }),
+      },
+      {
+        id: 'dil',
+        title: 'Dengue-like Illness (DIL)',
+        percentageChange: faker.random.number({
+          min: -15,
+          max: 15,
+        }),
+        totalCases: faker.random.number({
+          min: 0,
+          max: 1000,
+        }),
+      },
+    ];
+  }
+
+  // eslint-disable-next-line class-methods-use-this
   countryWeek() {
     return {
       id: faker.random.uuid(),
@@ -63,26 +129,7 @@ export class FakeAPI {
         min: 0,
         max: 30,
       }),
-      AFR: faker.random.number({
-        min: 0,
-        max: 1000,
-      }),
-      DIA: faker.random.number({
-        min: 0,
-        max: 1000,
-      }),
-      ILI: faker.random.number({
-        min: 0,
-        max: 1000,
-      }),
-      PF: faker.random.number({
-        min: 0,
-        max: 1000,
-      }),
-      DLI: faker.random.number({
-        min: 0,
-        max: 1000,
-      }),
+      indicators: this.indicators(),
       status: faker.random.arrayElement(['Submitted', 'Overdue']),
     };
   }
@@ -107,68 +154,7 @@ export class FakeAPI {
         department: faker.name.jobTitle(),
         email: faker.internet.email(),
       },
-      indicators: [
-        {
-          id: 'afr',
-          title: 'Acute Fever and Rash (AFR)',
-          percentageChange: faker.random.number({
-            min: -15,
-            max: 15,
-          }),
-          totalCases: faker.random.number({
-            min: 0,
-            max: 1000,
-          }),
-        },
-        {
-          id: 'dia',
-          title: 'Diarrhoea (DIA)',
-          percentageChange: faker.random.number({
-            min: -15,
-            max: 15,
-          }),
-          totalCases: faker.random.number({
-            min: 0,
-            max: 1000,
-          }),
-        },
-        {
-          id: 'ili',
-          title: 'Influenza-like Illness (ILI)',
-          percentageChange: faker.random.number({
-            min: -15,
-            max: 15,
-          }),
-          totalCases: faker.random.number({
-            min: 0,
-            max: 1000,
-          }),
-        },
-        {
-          id: 'pf',
-          title: 'Prolonged Fever (AFR)',
-          percentageChange: faker.random.number({
-            min: -15,
-            max: 15,
-          }),
-          totalCases: faker.random.number({
-            min: 0,
-            max: 1000,
-          }),
-        },
-        {
-          id: 'dil',
-          title: 'Dengue-like Illness (DIL)',
-          percentageChange: faker.random.number({
-            min: -15,
-            max: 15,
-          }),
-          totalCases: faker.random.number({
-            min: 0,
-            max: 1000,
-          }),
-        },
-      ],
+      indicators: this.indicators(),
     };
   }
 
@@ -181,26 +167,7 @@ export class FakeAPI {
         min: 0,
         max: 30,
       }),
-      AFR: faker.random.number({
-        min: 0,
-        max: 1000,
-      }),
-      DIA: faker.random.number({
-        min: 0,
-        max: 1000,
-      }),
-      ILI: faker.random.number({
-        min: 0,
-        max: 1000,
-      }),
-      PF: faker.random.number({
-        min: 0,
-        max: 1000,
-      }),
-      DLI: faker.random.number({
-        min: 0,
-        max: 1000,
-      }),
+      indicators: this.indicators(),
     };
   }
 

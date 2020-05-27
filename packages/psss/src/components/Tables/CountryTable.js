@@ -13,7 +13,7 @@ import { Alarm, CheckCircleOutline } from '@material-ui/icons';
 import { SiteSummaryTable } from './SiteSummaryTable';
 import * as COLORS from '../../theme/colors';
 import { FIRST_COLUMN_WIDTH, SITES_REPORTED_COLUMN_WIDTH } from './constants';
-import { AFRCell, SitesReportedCell } from './TableCellComponents';
+import { AlertCell, SitesReportedCell } from './TableCellComponents';
 import {
   getCountryWeeks,
   reloadCountryWeeks,
@@ -93,6 +93,11 @@ StatusCell.propTypes = {
   status: PropTypes.string.isRequired,
 };
 
+const dataAccessor = key => data => {
+  const indicator = data.indicators.find(i => i.id === key);
+  return indicator ? indicator.totalCases : null;
+};
+
 const countryColumns = [
   {
     title: 'Date ',
@@ -110,23 +115,32 @@ const countryColumns = [
   {
     title: 'AFR',
     key: 'AFR',
-    CellComponent: AFRCell,
+    accessor: dataAccessor('afr'),
+    CellComponent: AlertCell,
   },
   {
     title: 'DIA',
     key: 'DIA',
+    accessor: dataAccessor('dia'),
+    CellComponent: AlertCell,
   },
   {
     title: 'ILI',
     key: 'ILI',
+    accessor: dataAccessor('ili'),
+    CellComponent: AlertCell,
   },
   {
     title: 'PF',
     key: 'PF',
+    accessor: dataAccessor('pf'),
+    CellComponent: AlertCell,
   },
   {
-    title: 'DLI',
-    key: 'DLI',
+    title: 'DIL',
+    key: 'DIL',
+    accessor: dataAccessor('dil'),
+    CellComponent: AlertCell,
   },
   {
     title: 'STATUS',

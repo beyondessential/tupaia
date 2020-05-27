@@ -24,11 +24,9 @@ const NameCell = data => {
   return <span>{data.name}</span>;
 };
 
-const dataAccessor = key => {
-  return data => {
-    const indicator = data.indicators.find(i => i.id === key);
-    return indicator ? indicator.totalCases : null;
-  };
+const dataAccessor = key => data => {
+  const indicator = data.indicators.find(i => i.id === key);
+  return indicator ? indicator.totalCases : null;
 };
 
 const siteWeekColumns = [
@@ -70,8 +68,8 @@ const siteWeekColumns = [
     CellComponent: AlertCell,
   },
   {
-    title: 'DLI',
-    key: 'DLI',
+    title: 'DIL',
+    key: 'DIL',
     accessor: dataAccessor('dil'),
   },
   {
