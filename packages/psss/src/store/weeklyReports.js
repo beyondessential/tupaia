@@ -9,9 +9,9 @@ import { createReducer } from '../utils/createReducer';
 const COUNTRY_WEEKS_LOAD_START = 'COUNTRY_WEEKS_LOAD_START';
 const COUNTRY_WEEKS_LOAD_FINISH = 'COUNTRY_WEEKS_LOAD_FINISH';
 const COUNTRY_WEEKS_LOAD_ERROR = 'COUNTRY_WEEKS_LOAD_ERROR';
-const SITES_LOAD_START = 'COUNTRY_WEEK_SITES_LOAD_START';
-const SITES_LOAD_FINISH = 'COUNTRY_WEEK_SITES_LOAD_FINISH';
-const SITES_LOAD_ERROR = 'COUNTRY_WEEK_SITES_LOAD_ERROR';
+const SITE_WEEKS_LOAD_START = 'SITES_WEEKS_LOAD_START';
+const SITE_WEEKS_LOAD_FINISH = 'SITES_WEEKS_LOAD_FINISH';
+const SITE_WEEKS_LOAD_ERROR = 'SITES_WEEKS_LOAD_ERROR';
 
 // action creators
 export const reloadCountryWeeks = ({ fetchOptions, queryParameters }) => async (
@@ -31,21 +31,21 @@ export const reloadCountryWeeks = ({ fetchOptions, queryParameters }) => async (
   }
 };
 
-export const reloadCountryWeekSites = ({ fetchOptions, queryParameters }) => async (
+export const reloadSiteWeeks = ({ fetchOptions, queryParameters }) => async (
   dispatch,
   getState,
   { fakeApi },
 ) => {
   const endpoint = 'sites';
-  dispatch({ type: SITES_LOAD_START });
+  dispatch({ type: SITE_WEEKS_LOAD_START });
 
   try {
     const { data } = await fakeApi.get(endpoint, { ...fetchOptions, ...queryParameters });
     console.log('data', data);
-    dispatch({ type: SITES_LOAD_FINISH, data });
+    dispatch({ type: SITE_WEEKS_LOAD_FINISH, data });
   } catch (error) {
     console.log('error', error);
-    dispatch({ type: SITES_LOAD_ERROR, error });
+    dispatch({ type: SITE_WEEKS_LOAD_ERROR, error });
   }
 
   console.log('done');
@@ -53,44 +53,49 @@ export const reloadCountryWeekSites = ({ fetchOptions, queryParameters }) => asy
 
 // selectors
 export const getCountryWeeks = ({ weeklyReports }) => weeklyReports.countryWeeks;
-export const getCountryWeekSites = ({ weeklyReports }) => weeklyReports.countryWeekSites;
-export const getWeeklyReportsError = ({ weeklyReports }) => weeklyReports.error;
-export const checkWeeklyReportsIsLoading = ({ weeklyReports }) =>
-  weeklyReports.status === 'loading';
+export const getCountryWeeksError = ({ weeklyReports }) => weeklyReports.countryWeeksError;
+export const checkCountryWeeksIsLoading = ({ weeklyReports }) =>
+  weeklyReports.countryWeeksStatus === 'loading';
+export const getSiteWeeks = ({ weeklyReports }) => weeklyReports.siteWeeks;
+export const getSiteWeeksError = ({ weeklyReports }) => weeklyReports.countryWeeksError;
+export const checkSiteWeeksIsLoading = ({ weeklyReports }) =>
+  weeklyReports.siteWeeksStatus === 'loading';
 
 // reducer
 const defaultState = {
-  status: 'idle',
-  error: null,
   activeCountryWeekId: '',
   countryWeeks: [],
-  countryWeekSites: [],
+  countryWeeksStatus: 'idle',
+  countryWeeksError: null,
+  siteWeeks: [],
+  siteWeeksStatus: 'idle',
+  siteWeeksError: null,
 };
 
 const actionHandlers = {
   [COUNTRY_WEEKS_LOAD_START]: () => ({
-    error: defaultState.error,
-    status: 'loading',
+    countryWeeksError: defaultState.countryWeeksError,
+    countryWeeksStatus: 'loading',
   }),
   [COUNTRY_WEEKS_LOAD_FINISH]: ({ data }) => ({
-    status: 'success',
+    countryWeeksStatus: 'success',
     countryWeeks: data,
   }),
   [COUNTRY_WEEKS_LOAD_ERROR]: ({ error }) => ({
-    status: 'error',
-    error: error.message,
+    countryWeeksStatus: 'error',
+    countryWeeksError: error.message,
   }),
-  [SITES_LOAD_START]: () => ({
-    error: defaultState.error,
-    status: 'loading',
+  [SITE_WEEKS_LOAD_START]: () => ({
+    siteWeeksError: defaultState.siteWeeksError,
+    siteWeeksStatus: 'loading',
   }),
-  [SITES_LOAD_FINISH]: ({ data }) => ({
-    status: 'success',
-    countryWeekSites: data,
+  [SITE_WEEKS_LOAD_FINISH]: ({ data }) => ({
+    siteWeeksStatus: 'success',
+    siteWeeks: data,
   }),
-  [SITES_LOAD_ERROR]: ({ error }) => ({
-    status: 'error',
-    error: error.message,
+  [SITE_WEEKS_LOAD_ERROR]: ({ error }) => ({
+    siteWeeksStatus: 'error',
+    siteWeeksError: error.message,
   }),
 };
 

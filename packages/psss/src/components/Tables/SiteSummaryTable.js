@@ -16,10 +16,10 @@ import { WeeklyReportPanel } from '../WeeklyReportPanel';
 import { FIRST_COLUMN_WIDTH, SITES_REPORTED_COLUMN_WIDTH } from './constants';
 import { AlertCell } from './TableCellComponents';
 import {
-  getWeeklyReportsError,
-  checkWeeklyReportsIsLoading,
-  getCountryWeekSites,
-  reloadCountryWeekSites,
+  getSiteWeeksError,
+  checkSiteWeeksIsLoading,
+  getSiteWeeks,
+  reloadSiteWeeks,
 } from '../../store';
 
 // Todo: update placeholder
@@ -166,12 +166,12 @@ SiteSummaryTableComponent.defaultProps = {
 };
 
 const mapStateToProps = state => ({
-  data: getCountryWeekSites(state),
-  errorMessage: checkWeeklyReportsIsLoading(state),
+  data: getSiteWeeks(state),
+  errorMessage: getSiteWeeksError(state),
 });
 
 const mapDispatchToProps = dispatch => ({
-  fetchData: () => dispatch(reloadCountryWeekSites({})),
+  fetchData: () => dispatch(reloadSiteWeeks({})),
 });
 
 export const SiteSummaryTable = connect(

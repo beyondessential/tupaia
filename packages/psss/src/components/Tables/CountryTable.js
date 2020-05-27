@@ -17,8 +17,8 @@ import { AFRCell, SitesReportedCell } from './TableCellComponents';
 import {
   getCountryWeeks,
   reloadCountryWeeks,
-  getWeeklyReportsError,
-  checkWeeklyReportsIsLoading,
+  getCountryWeeksError,
+  checkCountryWeeksIsLoading,
 } from '../../store';
 
 const CountryWeekTitle = styled.div`
@@ -177,7 +177,7 @@ CountryTableComponent.defaultProps = {
 
 const mapStateToProps = state => ({
   data: getCountryWeeks(state),
-  error: getWeeklyReportsError(state),
+  error: getCountryWeeksError(state),
 });
 
 const mapDispatchToProps = dispatch => ({
