@@ -135,9 +135,6 @@ const countryColumns = [
 const DEFAULT_ROWS_PER_PAGE = 10;
 const DEFAULT_FETCH_STATE = { errorMessage: '', isLoading: true };
 
-/*
- * Country Table Component
- */
 const CountryTableComponent = React.memo(({ fetchOptions, fetchData, data }) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(DEFAULT_ROWS_PER_PAGE);

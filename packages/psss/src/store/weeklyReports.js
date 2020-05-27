@@ -23,10 +23,10 @@ export const reloadCountryWeeks = ({ fetchOptions, queryParameters }) => async (
   dispatch({ type: COUNTRY_WEEKS_LOAD_START });
 
   try {
-    const { data, count } = await fakeApi.get(endpoint, { ...fetchOptions, ...queryParameters });
+    const { data } = await fakeApi.get(endpoint, { ...fetchOptions, ...queryParameters });
     dispatch({ type: COUNTRY_WEEKS_LOAD_FINISH, data });
   } catch (error) {
-    dispatch({ type: COUNTRY_WEEKS_LOAD_ERROR, error: error.message });
+    dispatch({ type: COUNTRY_WEEKS_LOAD_ERROR, error });
     console.log('error', error);
   }
 };
@@ -36,17 +36,15 @@ export const reloadCountryWeekSites = ({ fetchOptions, queryParameters }) => asy
   getState,
   { fakeApi },
 ) => {
-  const endpoint = 'country-week-sites';
-
+  const endpoint = 'sites';
   dispatch({ type: SITES_LOAD_START });
 
   try {
-    const { data, count } = await fakeApi.get(endpoint, { ...fetchOptions, ...queryParameters });
+    const { data } = await fakeApi.get(endpoint, { ...fetchOptions, ...queryParameters });
     console.log('data', data);
-    console.log('count', count);
     dispatch({ type: SITES_LOAD_FINISH, data });
   } catch (error) {
-    dispatch({ type: SITES_LOAD_ERROR, error: error.message });
+    dispatch({ type: SITES_LOAD_ERROR, error });
     console.log('error', error);
   }
 };
@@ -85,7 +83,7 @@ const actionHandlers = {
   }),
   [SITES_LOAD_ERROR]: ({ error }) => ({
     status: 'error',
-    error,
+    error: error.message,
   }),
 };
 
