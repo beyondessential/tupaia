@@ -40,15 +40,8 @@ const DASHBOARD_GROUPS = [
   'LA_Laos_Schools_District_Laos_Schools_User',
 ];
 
-const DATA_SERVICES = [
-  {
-    "isDataRegional": true
-  }
-];
-
 const BASIC_DASHBOARD_REPORT = {
-  dataBuilder: 'percentagesOfValueCounts',
-  dataServices: DATA_SERVICES
+  dataBuilder: 'percentagesOfValueCounts'
 }
 
 exports.up = async function (db) {
