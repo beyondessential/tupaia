@@ -158,7 +158,7 @@ const IndicatorsTable = () => {
 /*
  * WEEKLY REPORT PANE
  */
-export const WeeklyReportPane = ({ data }) => {
+export const WeeklyReportPanel = ({ data }) => {
   // ------- DRAWER ---------------
   const [open, setOpen] = useState(false);
   const toggleDrawer = (event, isOpen) => {
@@ -298,6 +298,6 @@ export const WeeklyReportPane = ({ data }) => {
   );
 };
 
-WeeklyReportPane.propTypes = {
+WeeklyReportPanel.propTypes = {
   data: PropTypes.array.isRequired,
 };

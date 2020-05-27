@@ -3,19 +3,24 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
-import { tableColumnShape, CondensedTableBody, FakeHeader } from '@tupaia/ui-components';
+import { CondensedTableBody, FakeHeader, tableColumnShape, Table } from '@tupaia/ui-components';
+import { connect } from 'react-redux';
 import MuiTableFooter from '@material-ui/core/TableFooter';
 import MuiTableCell from '@material-ui/core/TableCell';
 import MuiTableRow from '@material-ui/core/TableRow';
-import { CondensedTableBody, FakeHeader } from '@tupaia/ui-components';
-import { ConnectedTable } from './ConnectedTable';
-import { WeeklyReportPane } from '../WeeklyReportPane';
+import { WeeklyReportPanel } from '../WeeklyReportPanel';
 import { FIRST_COLUMN_WIDTH, SITES_REPORTED_COLUMN_WIDTH } from './constants';
 import { AlertCell } from './TableCellComponents';
+import {
+  getWeeklyReportsError,
+  checkWeeklyReportsIsLoading,
+  getCountryWeekSites,
+  reloadCountryWeekSites,
+} from '../../store';
 
 // Todo: update placeholder
 const NameCell = data => {
@@ -92,6 +97,7 @@ const StyledDiv = styled.div`
   padding: 2rem;
 `;
 
+// may be able to use a SubComponent instead??
 const TableFooter = ({ columns, data }) => {
   return (
     <MuiTableFooter>
@@ -99,7 +105,7 @@ const TableFooter = ({ columns, data }) => {
         <MuiTableCell colSpan={columns.length}>
           <StyledDiv>
             <Typography variant="body1">Verify data to submit Weekly report to Regional</Typography>
-            {data.length && <WeeklyReportPane data={data} />}
+            {data.length && <WeeklyReportPanel data={data} />}
           </StyledDiv>
         </MuiTableCell>
       </MuiTableRow>
@@ -112,17 +118,56 @@ TableFooter.propTypes = {
   data: PropTypes.array.isRequired,
 };
 
-export const SiteSummaryTable = React.memo(() => {
-  return (
-    <React.Fragment>
-      <TableHeader />
-      <ConnectedTable
-        endpoint="sites"
-        columns={siteWeekColumns}
-        Header={false}
-        Body={CondensedTableBody}
-        Paginator={TableFooter}
-      />
-    </React.Fragment>
-  );
+export const SiteSummaryTableComponent = React.memo(
+  ({ fetchData, data, fetchOptions, isLoading, errorMessage }) => {
+    const [page, setPage] = useState(0);
+
+    return (
+      <React.Fragment>
+        <TableHeader />
+        <Table
+          isLoading={isLoading}
+          errorMessage={errorMessage}
+          columns={siteWeekColumns}
+          fetchData={fetchData}
+          onChangePage={setPage}
+          page={page}
+          fetchOptions={fetchOptions}
+          data={data}
+          Header={false}
+          Body={CondensedTableBody}
+          Paginator={TableFooter}
+        />
+      </React.Fragment>
+    );
+  },
+);
+
+SiteSummaryTableComponent.propTypes = {
+  fetchData: PropTypes.func.isRequired,
+  data: PropTypes.array.isRequired,
+  fetchOptions: PropTypes.object,
+  errorMessage: PropTypes.string,
+  isLoading: PropTypes.bool,
+};
+
+SiteSummaryTableComponent.defaultProps = {
+  fetchOptions: null,
+  errorMessage: '',
+  isLoading: false,
+};
+
+const mapStateToProps = state => ({
+  data: getCountryWeekSites(state),
+  error: checkWeeklyReportsIsLoading,
+  isLoading: getWeeklyReportsError,
 });
+
+const mapDispatchToProps = dispatch => ({
+  fetchData: () => dispatch(reloadCountryWeekSites({})),
+});
+
+export const SiteSummaryTable = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(SiteSummaryTableComponent);

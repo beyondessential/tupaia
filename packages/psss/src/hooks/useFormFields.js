@@ -11,10 +11,10 @@ export const useFormFields = initialState => {
   return [
     fields,
     event => {
-      setValues(prevFields => ({
-        ...prevFields,
+      setValues({
+        ...fields,
         [event.target.id]: event.target.value,
-      }));
+      });
     },
   ];
 };

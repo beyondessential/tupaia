@@ -11,5 +11,5 @@ export * from './Tables';
 export * from './Forms';
 export * from './ProfileButton';
 export * from './Drawer';
-export * from './WeeklyReportPane';
+export * from './WeeklyReportPanel';
 export * from './SiteAddress';

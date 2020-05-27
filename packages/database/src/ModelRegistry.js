@@ -4,8 +4,6 @@
  */
 import { modelClasses as baseModelClasses } from './modelClasses';
 
-import { modelClasses as baseModelClasses } from './modelClasses';
-
 const MAX_APP_VERSION = '999.999.999';
 
 // Converts e.g. PermissionGroup -> permissionGroup

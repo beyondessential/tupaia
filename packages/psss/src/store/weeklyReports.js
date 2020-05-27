@@ -51,10 +51,14 @@ export const reloadCountryWeekSites = ({ fetchOptions, queryParameters }) => asy
 
 // selectors
 export const getCountryWeeks = ({ weeklyReports }) => weeklyReports.countryWeeks;
+export const getCountryWeekSites = ({ weeklyReports }) => weeklyReports.countryWeekSites;
+export const getWeeklyReportsError = ({ weeklyReports }) => weeklyReports.countryWeekSites;
+export const checkWeeklyReportsIsLoading = ({ weeklyReports }) => weeklyReports.countryWeekSites;
 
 // reducer
 const defaultState = {
   status: 'idle',
+  error: null,
   activeCountryWeekId: '',
   countryWeeks: [],
   countryWeekSites: [],
