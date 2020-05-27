@@ -5,7 +5,7 @@
 
 import flatten from 'lodash.flatten';
 
-import { dateStringToPeriod } from '@tupaia/dhis-api';
+import { dateStringToPeriod } from '@tupaia/utils';
 import { buildEventsFromDhisEventAnalytics } from './buildEventsFromDhisEventAnalytics';
 
 export const buildAnalyticsFromDhisEventAnalytics = (dhisEventAnalytics, dataElementCodes = []) => {

@@ -10476,6 +10476,14 @@ deep-equal-in-any-order@^1.0.21:
     lodash "^4.17.15"
     sort-any "^1.1.19"
 
+deep-equal-in-any-order@^1.0.27:
+  version "1.0.27"
+  resolved "https://registry.yarnpkg.com/deep-equal-in-any-order/-/deep-equal-in-any-order-1.0.27.tgz#607c4250368f3f95dddb07cc768ef5428132c16e"
+  integrity sha512-yxZ1zYvaiZidcpprBq5hZdbiWNzNXQtcDjc10R2iMfoCgYx6oIdwkPrIaXbcvZkk6spsJvG/C1nRyVTcI748Jg==
+  dependencies:
+    lodash.mapvalues "^4.6.0"
+    sort-any "^1.1.21"
+
 deep-equal@^1.0.1, deep-equal@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/deep-equal/-/deep-equal-1.1.1.tgz#b5c98c942ceffaf7cb051e24e1434a25a2e6076a"
@@ -10961,6 +10969,11 @@ dotenv@^5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-5.0.1.tgz#a5317459bd3d79ab88cff6e44057a6a3fbb1fcef"
   integrity sha512-4As8uPrjfwb7VXC+WnLCbXK7y+Ueb2B3zgNCePYfhxS1PYeaO1YTeplffTEcbfLhvFNGLAz90VvJs9yomG7bow==
+
+dotenv@^8.2.0:
+  version "8.2.0"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-8.2.0.tgz#97e619259ada750eea3e4ea3e26bceea5424b16a"
+  integrity sha512-8sJ78ElpbDJBHNeBzUbUVLsqKdccaa/BXF1uPTw3GrvQTBgrQrtObr2mUrE38vzYd8cEv+m/JBfDLioYcfXoaw==
 
 duplexer3@^0.1.4:
   version "0.1.4"
@@ -16847,6 +16860,11 @@ lodash.map@^4.6.0:
   version "4.6.0"
   resolved "https://registry.yarnpkg.com/lodash.map/-/lodash.map-4.6.0.tgz#771ec7839e3473d9c4cde28b19394c3562f4f6d3"
   integrity sha1-dx7Hg540c9nEzeKLGTlMNWL09tM=
+
+lodash.mapvalues@^4.6.0:
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/lodash.mapvalues/-/lodash.mapvalues-4.6.0.tgz#1bafa5005de9dd6f4f26668c30ca37230cc9689c"
+  integrity sha1-G6+lAF3p3W9PJmaMMMo3IwzJaJw=
 
 lodash.maxby@^4.6.0:
   version "4.6.0"
@@ -24112,6 +24130,13 @@ sort-any@^1.1.19:
   version "1.1.19"
   resolved "https://registry.yarnpkg.com/sort-any/-/sort-any-1.1.19.tgz#028488cc2340e7cca6da85fd4c0f9270c9798320"
   integrity sha512-RbbHSbTg7b9K+89nj/Fyv7WpGMAIEvqvmS6B3RzsSIVn0eDpCWJuvLGB8vjCisLtWeN3FYwfYg5EGEQO+oOtvQ==
+  dependencies:
+    lodash "^4.17.15"
+
+sort-any@^1.1.21:
+  version "1.1.22"
+  resolved "https://registry.yarnpkg.com/sort-any/-/sort-any-1.1.22.tgz#09be6ec1194dfe19d32d9a50a99023b3ff431f22"
+  integrity sha512-RDDFA8jZTeYQgH7icQQV+O6ZMC3ZmNLIx8EBbqQPM3J/Wi0iuHrdd/BIr8V6mUlaYEL8RFK2wP+G3q1OiiviWQ==
   dependencies:
     lodash "^4.17.15"
 

@@ -5,7 +5,8 @@
 
 import { expect } from 'chai';
 import sinon from 'sinon';
-import { generateTestId, populateTestData } from '../../../../testUtilities';
+import { generateTestId } from '@tupaia/database';
+import { populateTestData } from '../../../../testUtilities';
 import { AggregateDataPusher } from '../../../../../dhis/pushers/data/aggregate/AggregateDataPusher';
 import {
   SURVEY_RESPONSE_DATA_VALUE,
@@ -21,7 +22,7 @@ export const testCreateSurveyResponse = (dhisApi, models, dataBroker) => {
     const change = await models.dhisSyncQueue.findById(SURVEY_RESPONSE_CHANGE.id);
     change.record_id = 'does_not_exist_xxxxxxxxx';
     const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
-    expect(pusher.push()).to.be.rejectedWith(`No survey response found for ${change.record_id}`);
+    await expect(pusher.push()).to.eventually.equal(false);
     expect(dataBroker.push).not.to.have.been.called;
     expect(dataBroker.delete).not.to.have.been.called;
   });

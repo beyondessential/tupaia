@@ -15,12 +15,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import DisasterList from './components/DisasterList';
+import DisasterList from './components/Disaster/DisasterList';
+import ProjectDescription from './components/Project/ProjectDescription';
 
 export default function StateDashboardItem(props) {
   const { viewContent } = props;
   const components = {
     ActiveDisasters: DisasterList,
+    ProjectDescription: ProjectDescription,
   };
   const Component = components[viewContent.componentName];
 

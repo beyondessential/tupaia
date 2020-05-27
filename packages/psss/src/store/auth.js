@@ -65,9 +65,8 @@ const defaultState = {
 
 const actionHandlers = {
   [LOGIN_START]: () => ({
+    ...defaultState,
     status: 'pending',
-    user: defaultState.user,
-    error: defaultState.error,
   }),
   [LOGIN_SUCCESS]: action => ({
     status: 'success',

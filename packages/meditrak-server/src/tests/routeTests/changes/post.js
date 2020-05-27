@@ -5,14 +5,12 @@
 
 import { expect, assert } from 'chai';
 import { fetchWithTimeout } from '@tupaia/utils';
-import { generateId, TYPES } from '@tupaia/database';
+import { generateId, generateTestId, generateValueOfType, TYPES } from '@tupaia/database';
 
 import { TEST_IMAGE_DATA } from '../../testData';
 import {
-  generateTestId,
   insertEntityAndFacility,
   randomIntBetween,
-  generateValueOfType,
   oneSecondSleep,
   upsertEntity,
   upsertQuestion,

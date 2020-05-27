@@ -26,6 +26,7 @@ import { selectProject } from '../../projects/actions';
 import { LandingPage } from './components/LandingPage';
 import { RequestProjectAccess } from './components/RequestProjectAccess';
 import Disaster from './components/Disaster';
+import { selectProjectByCode } from '../../selectors';
 import { OVERLAY_PADDING, LANDING, DISASTER, REQUEST_PROJECT_ACCESS } from './constants';
 
 const styles = {
@@ -95,10 +96,15 @@ OverlayDiv.defaultProps = {
   overlay: null,
 };
 
-const mapStateToProps = state => ({
-  overlay: state.global.overlay,
-  isUserLoggedIn: state.authentication.isUserLoggedIn,
-});
+const mapStateToProps = state => {
+  const exploreProject = selectProjectByCode(state, 'explore');
+
+  return {
+    overlay: state.global.overlay,
+    isUserLoggedIn: state.authentication.isUserLoggedIn,
+    exploreProject,
+  };
+};
 
 const mapDispatchToProps = dispatch => {
   return {

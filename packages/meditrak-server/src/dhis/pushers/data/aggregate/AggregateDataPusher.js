@@ -4,15 +4,13 @@
  */
 
 import moment from 'moment';
+import { DHIS2_RESOURCE_TYPES, dhisToTupaiaPeriodType, combineDiagnostics } from '@tupaia/dhis-api';
 import {
-  DHIS2_RESOURCE_TYPES,
   DEFAULT_PERIOD_TYPE,
   periodToType,
   periodTypeToMomentUnit,
   periodTypeToFormat,
-  dhisToTupaiaPeriodType,
-  combineDiagnostics,
-} from '@tupaia/dhis-api';
+} from '@tupaia/utils';
 import { DataPusher } from '../DataPusher';
 import { generateDataValue } from '../generateDataValue';
 

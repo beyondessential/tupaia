@@ -4,6 +4,7 @@
  */
 import { getSortByKey } from '@tupaia/utils';
 
+import { Project } from '/models';
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 
 export class DataBuilder {
@@ -47,10 +48,11 @@ export class DataBuilder {
     aggregationType = this.aggregationType,
     aggregationConfig = {},
   ) {
-    const { dataServices, filter = {} } = this.config;
+    const { dataServices, dataSourceEntityType, filter = {} } = this.config;
     const fetchOptions = {
       programCodes: this.getProgramCodesForAnalytics(),
       dataServices,
+      dataSourceEntityType,
       ...additionalQueryConfig,
     };
 
@@ -62,12 +64,13 @@ export class DataBuilder {
   }
 
   async fetchEvents(additionalQueryConfig) {
-    const { programCode, dataServices } = this.config;
+    const { programCode, dataServices, dataSourceEntityType } = this.config;
     const { organisationUnitCode, startDate, endDate, trackedEntityInstance, eventId } = this.query;
 
     return this.aggregator.fetchEvents(programCode, {
       dataServices,
-      organisationUnitCodes: [organisationUnitCode],
+      dataSourceEntityType,
+      organisationUnitCode,
       startDate,
       endDate,
       trackedEntityInstance,
@@ -85,6 +88,17 @@ export class DataBuilder {
       dataServices,
       includeOptions: true,
     });
+  }
+
+  async fetchEntityHierarchyId() {
+    const { projectCode } = this.query;
+    const project = await Project.findOne({ code: projectCode });
+    return project.entity_hierarchy_id;
+  }
+
+  async fetchDescendantsOfType(type) {
+    const entityHierarchyId = await this.fetchEntityHierarchyId();
+    return this.entity.getDescendantsOfType(type, entityHierarchyId);
   }
 
   sortDataByName = data => data.sort(getSortByKey('name'));

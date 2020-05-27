@@ -1,8 +1,8 @@
-import { call, put, takeLatest } from 'redux-saga/effects';
+import { call, put, takeLatest, select } from 'redux-saga/effects';
 
 import request from '../utils/request';
 
-import { setProjects, fetchProjectsError, setProjectDefaults, selectProject } from './actions';
+import { setProjects, fetchProjectsError, selectProject } from './actions';
 
 import {
   FETCH_INITIAL_DATA,
@@ -10,9 +10,11 @@ import {
   changeBounds,
   changeDashboardGroup,
   FETCH_LOGIN_SUCCESS,
+  requestOrgUnit,
   FETCH_LOGOUT_SUCCESS,
 } from '../actions';
 import { INITIAL_PROJECT_CODE } from '../defaults';
+import { selectAdjustedProjectBounds } from '../selectors';
 
 function* fetchProjectData() {
   try {
@@ -39,9 +41,9 @@ function* watchUserLogoutSuccessAndRefetchProjectData() {
 function* watchSelectProjectAndLoadProjectState() {
   // eslint-disable-next-line func-names
   yield takeLatest(SELECT_PROJECT, function*(action) {
-    yield put(changeBounds(action.project.bounds));
-    yield put(setProjectDefaults(action.project));
+    yield put(changeBounds(yield select(selectAdjustedProjectBounds, action.project.code)));
     yield put(changeDashboardGroup(action.project.dashboardGroupName));
+    yield put(requestOrgUnit(action.project.code));
   });
 }
 

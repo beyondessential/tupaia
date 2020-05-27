@@ -14,7 +14,6 @@
 export { default as request } from './request';
 export { default as checkBoundsDifference } from './checkBoundsDifference';
 export { organisationUnitIsArea } from './organisation';
-export { getSiblingItems, storeSiblingItems } from './orgUnitSiblingCache';
 export { isMobile, delayMobileTapCallback } from './mobile';
 export { getCenterAndZoomForBounds } from './getCenterAndZoomForBounds';
 export { mapBoxToken } from './mapbox';
@@ -23,7 +22,12 @@ export { getMapUrl } from './getMapUrl';
 export { initHistoryDispatcher, historyMiddleware } from './historyNavigation';
 export { OverlayContainer, OverlayView } from './overlayContainer';
 export { getMeasureFromHierarchy } from './getMeasureFromHierarchy';
-export { processMeasureInfo, getMeasureDisplayInfo, flattenNumericalMeasureData } from './measures';
+export {
+  processMeasureInfo,
+  getMeasureDisplayInfo,
+  getSingleFormattedValue,
+  flattenNumericalMeasureData,
+} from './measures';
 export { default as ga, gaEvent, gaPageView, gaMiddleware } from './ga';
 export { formatDateForApi } from './formatDateForApi';
 export { formatDataValue } from './formatters';

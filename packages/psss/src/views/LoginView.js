@@ -62,8 +62,7 @@ const StyledLink = styled(MuiLink)`
   color: ${props => props.theme.palette.primary.main};
 `;
 
-// Todo: confirm the correct request an account url
-const requestAnAccountUrl = 'https://beyondessential.com.au/contact';
+const requestAnAccountUrl = 'https://info.tupaia.org/contact';
 
 export const LoginViewComponent = ({ isLoggedIn }) => {
   if (isLoggedIn) {

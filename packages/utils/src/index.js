@@ -3,10 +3,12 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+export { min, max } from './array';
 export { getTimezoneNameFromTimestamp, utcMoment } from './datetime';
 export { getDhisConfig } from './dhis';
 export * from './errors';
 export { Multilock } from './Multilock';
+export * from './period';
 export { getCountryNameFromCode } from './getCountryNameFromCode';
 export { getUniqueEntries } from './getUniqueEntries';
 export {

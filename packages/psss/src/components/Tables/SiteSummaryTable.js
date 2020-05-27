@@ -11,6 +11,7 @@ import { tableColumnShape, CondensedTableBody, FakeHeader } from '@tupaia/ui-com
 import MuiTableFooter from '@material-ui/core/TableFooter';
 import MuiTableCell from '@material-ui/core/TableCell';
 import MuiTableRow from '@material-ui/core/TableRow';
+import { CondensedTableBody, FakeHeader } from '@tupaia/ui-components';
 import { ConnectedTable } from './ConnectedTable';
 import { WeeklyReportPane } from '../WeeklyReportPane';
 import { FIRST_COLUMN_WIDTH, SITES_REPORTED_COLUMN_WIDTH } from './constants';
@@ -97,9 +98,7 @@ const TableFooter = ({ columns, data }) => {
       <MuiTableRow>
         <MuiTableCell colSpan={columns.length}>
           <StyledDiv>
-            <Typography variant="body1">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-            </Typography>
+            <Typography variant="body1">Verify data to submit Weekly report to Regional</Typography>
             {data.length && <WeeklyReportPane data={data} />}
           </StyledDiv>
         </MuiTableCell>

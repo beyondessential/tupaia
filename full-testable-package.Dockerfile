@@ -22,6 +22,8 @@ COPY packages/${package}/package.json ./packages/${package}
 # dependencies must exist during yarn install (e.g. database, dhis-api)
 RUN mkdir -p ./packages/aggregator
 COPY packages/aggregator/. ./packages/aggregator
+RUN mkdir -p ./packages/data-api
+COPY packages/data-api/. ./packages/data-api
 RUN mkdir -p ./packages/data-broker
 COPY packages/data-broker/. ./packages/data-broker
 RUN mkdir -p ./packages/devops
