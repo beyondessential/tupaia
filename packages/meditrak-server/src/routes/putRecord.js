@@ -50,7 +50,15 @@ const constructValidationRules = (models, recordType) => {
     case TYPES.USER_ENTITY_PERMISSION:
       return {
         user_id: [constructRecordExistsWithId(models.user)],
-        entity_id: [constructRecordExistsWithId(models.entity)],
+        entity_id: [
+          constructRecordExistsWithId(models.entity),
+          async entityId => {
+            const entity = await models.entity.findById(entityId);
+            if (entity.type !== 'country') {
+              throw new Error('Only country level permissions are currently supported');
+            }
+          },
+        ],
         permission_group_id: [constructRecordExistsWithId(models.permissionGroup)],
       };
     case TYPES.COUNTRY:
