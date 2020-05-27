@@ -73,7 +73,7 @@ export const WeeklyReportPane = () => {
 
   return (
     <React.Fragment>
-      <Button onClick={handleOpen}>Save and submit</Button>
+      <Button onClick={handleOpen}>Review and Confirm Now</Button>
       <Drawer open={open} onClose={handleClose}>
         <DrawerHeader heading="Upcoming report" onClose={handleClose}>
           <DrawerHeaderContent heading="American Samoa" date="Week 9 Feb 25 - Mar 1, 2020" />

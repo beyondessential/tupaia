@@ -76,9 +76,7 @@ export const SiteSummaryTable = React.memo(() => (
       Body={CondensedTableBody}
     />
     <StyledDiv>
-      <Typography variant="body1">
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-      </Typography>
+      <Typography variant="body1">Verify data to submit Weekly report to Regional</Typography>
       <WeeklyReportPane />
     </StyledDiv>
   </React.Fragment>
