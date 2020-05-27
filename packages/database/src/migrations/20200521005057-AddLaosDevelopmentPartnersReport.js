@@ -207,8 +207,8 @@ exports.up = function(db) {
     );
 
     update "dashboardGroup"
-    set "dashboardReports" = "dashboardReports" || {'SchDP_Partner_Assistance_Types'}
-    where code in (LA_Laos_Schools_Province_Laos_Schools_User, LA_Laos_Schools_District_Laos_Schools_User, LA_Laos_Schools_Country_Laos_Schools_User);
+    set "dashboardReports" = "dashboardReports" || '{"SchDP_Partner_Assistance_Types"}'
+    where code in ('LA_Laos_Schools_Province_Laos_Schools_User', 'LA_Laos_Schools_District_Laos_Schools_User', 'LA_Laos_Schools_Country_Laos_Schools_User');
   `);
 };
 
@@ -216,7 +216,7 @@ exports.down = function(db) {
   return db.runSql(`
     update "dashboardGroup"
     set "dashboardReports" = array_remove("dashboardReports", 'SchDP_Partner_Assistance_Types')
-        where code in (LA_Laos_Schools_Province_Laos_Schools_User, LA_Laos_Schools_District_Laos_Schools_User, LA_Laos_Schools_Country_Laos_Schools_User);
+    where code in ('LA_Laos_Schools_Province_Laos_Schools_User', 'LA_Laos_Schools_District_Laos_Schools_User', 'LA_Laos_Schools_Country_Laos_Schools_User');
       
     delete from "dashboardReport" where id = 'SchDP_Partner_Assistance_Types';
   `);
