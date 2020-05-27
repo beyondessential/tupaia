@@ -146,8 +146,8 @@ const dashboardConfig = {
         },
         {
           name: 'World Concern Laos',
-          descriptionDataElement: 'SchDP_projdesc_WC',
-          code: 'SchDP_WCL',
+          descriptionDataElement: 'SchDP_projdesc_WCL',
+          code: 'SchDP_WC',
         },
         {
           name: 'World Food Programme (WFP)',
