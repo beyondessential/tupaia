@@ -14,41 +14,7 @@ import { Drawer, DrawerHeaderContent, DrawerFooter, DrawerHeader } from './Drawe
 import { VerifiableTable } from './Tables/VerifiableTable';
 import { IndicatorsTable } from './Tables/IndicatorsTable';
 import { SiteAddress } from './SiteAddress';
-import { getSiteWeeks, confirmWeeklyReportsData } from '../store';
-
-// dummy data
-const countryData = [
-  {
-    id: 'afr',
-    title: 'Acute Fever and Rash (AFR)',
-    percentageChange: 4,
-    totalCases: '15',
-  },
-  {
-    id: 'dia',
-    title: 'Diarrhoea (DIA)',
-    percentageChange: 7,
-    totalCases: '20',
-  },
-  {
-    id: 'ili',
-    title: 'Influenza-like Illness (ILI)',
-    percentageChange: 15,
-    totalCases: '115',
-  },
-  {
-    id: 'pf',
-    title: 'Prolonged Fever (AFR)',
-    percentageChange: -12,
-    totalCases: '5',
-  },
-  {
-    id: 'dil',
-    title: 'Dengue-like Illness (DIL)',
-    percentageChange: 9,
-    totalCases: '54',
-  },
-];
+import { getSiteWeeks, getCountryWeeks, confirmWeeklyReportsData } from '../store';
 
 const columns = [
   {
@@ -78,16 +44,6 @@ const MainSection = styled.section`
   padding: 30px 20px;
 `;
 
-const verifiedStatus = countryData.reduce((state, item) => {
-  if (item.percentageChange > 10) {
-    return {
-      ...state,
-      [item.id]: 'expanded',
-    };
-  }
-  return state;
-}, {});
-
 const WeeklyReportsPaneSubmitButton = confirmData => () => {
   const handleClick = () => {
     confirmData();
@@ -99,7 +55,7 @@ const WeeklyReportsPaneSubmitButton = confirmData => () => {
   );
 };
 
-export const WeeklyReportPanelComponent = ({ siteWeeksData, confirmData }) => {
+export const WeeklyReportPanelComponent = ({ siteWeeksData, countryWeeksData, confirmData }) => {
   // ------- DRAWER ---------------
   const [open, setOpen] = useState(false);
   const toggleDrawer = (event, isOpen) => {
@@ -114,6 +70,18 @@ export const WeeklyReportPanelComponent = ({ siteWeeksData, confirmData }) => {
 
   // ------- COUNTRY TABLE ----------
   const [countryTableState, setCountryTableState] = useState('static');
+  const countryData = countryWeeksData[0].indicators;
+
+  // move this to store
+  const verifiedStatus = countryData.reduce((state, item) => {
+    if (item.percentageChange > 10) {
+      return {
+        ...state,
+        [item.id]: 'expanded',
+      };
+    }
+    return state;
+  }, {});
 
   // ------- INDICATORS TABLE --------
   const [activeSiteIndex, setActiveSiteIndex] = useState(0);
@@ -171,12 +139,14 @@ export const WeeklyReportPanelComponent = ({ siteWeeksData, confirmData }) => {
 };
 
 WeeklyReportPanelComponent.propTypes = {
+  countryWeeksData: PropTypes.array.isRequired,
   siteWeeksData: PropTypes.array.isRequired,
   confirmData: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
   siteWeeksData: getSiteWeeks(state),
+  countryWeeksData: getCountryWeeks(state),
 });
 
 const mapDispatchToProps = dispatch => ({
