@@ -51,6 +51,14 @@ export const reloadSiteWeeks = ({ fetchOptions, queryParameters }) => async (
   console.log('done');
 };
 
+export const updateWeeklyReportsData = data => async (dispatch, getState, { fakeApi }) => {
+  console.log('update data', data);
+};
+
+export const confirmWeeklyReportsData = () => async (dispatch, getState, { fakeApi }) => {
+  console.log('confirm data...');
+};
+
 // selectors
 export const getCountryWeeks = ({ weeklyReports }) => weeklyReports.countryWeeks;
 export const getCountryWeeksError = ({ weeklyReports }) => weeklyReports.countryWeeksError;

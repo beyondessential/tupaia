@@ -2,17 +2,19 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { ButtonSelect, Button, Card, ErrorAlert } from '@tupaia/ui-components';
 import { PercentageChangeCell } from './Tables/TableCellComponents';
-import { EditableTableContext, EditableTableProvider } from './Tables/EditableTable';
+import { EditableTableProvider } from './Tables/EditableTable';
 import * as COLORS from '../theme/colors';
 import { Drawer, DrawerHeaderContent, DrawerFooter, DrawerHeader } from './Drawer';
 import { VerifiableTable } from './Tables/VerifiableTable';
 import { IndicatorsTable } from './Tables/IndicatorsTable';
 import { SiteAddress } from './SiteAddress';
+import { getSiteWeeks, confirmWeeklyReportsData } from '../store';
 
 // dummy data
 const countryData = [
@@ -86,9 +88,9 @@ const verifiedStatus = countryData.reduce((state, item) => {
   return state;
 }, {});
 
-const WeeklyReportsPaneSubmitButton = () => {
+const WeeklyReportsPaneSubmitButton = confirmData => () => {
   const handleClick = () => {
-    console.log('click');
+    confirmData();
   };
   return (
     <Button fullWidth onClick={handleClick}>
@@ -97,7 +99,7 @@ const WeeklyReportsPaneSubmitButton = () => {
   );
 };
 
-export const WeeklyReportPanel = ({ data }) => {
+export const WeeklyReportPanelComponent = ({ siteWeeksData, confirmData }) => {
   // ------- DRAWER ---------------
   const [open, setOpen] = useState(false);
   const toggleDrawer = (event, isOpen) => {
@@ -115,8 +117,8 @@ export const WeeklyReportPanel = ({ data }) => {
 
   // ------- INDICATORS TABLE --------
   const [activeSiteIndex, setActiveSiteIndex] = useState(0);
-  const indicatorsData = data[activeSiteIndex].indicators;
-  const activeSite = data[activeSiteIndex];
+  const indicatorsData = siteWeeksData[activeSiteIndex].indicators;
+  const activeSite = siteWeeksData[activeSiteIndex];
 
   const [indicatorTableState, setIndicatorTableState] = useState('static');
 
@@ -141,7 +143,7 @@ export const WeeklyReportPanel = ({ data }) => {
         <MainSection>
           <ButtonSelect
             id="button-select"
-            options={data}
+            options={siteWeeksData}
             onChange={setActiveSiteIndex}
             index={activeSiteIndex}
           />
@@ -160,7 +162,7 @@ export const WeeklyReportPanel = ({ data }) => {
           </Card>
         </MainSection>
         <DrawerFooter
-          Action={WeeklyReportsPaneSubmitButton}
+          Action={WeeklyReportsPaneSubmitButton(confirmData)}
           helperText="Verify data to submit Weekly Report to Regional"
         />
       </Drawer>
@@ -168,6 +170,20 @@ export const WeeklyReportPanel = ({ data }) => {
   );
 };
 
-WeeklyReportPanel.propTypes = {
-  data: PropTypes.array.isRequired,
+WeeklyReportPanelComponent.propTypes = {
+  siteWeeksData: PropTypes.array.isRequired,
+  confirmData: PropTypes.func.isRequired,
 };
+
+const mapStateToProps = state => ({
+  siteWeeksData: getSiteWeeks(state),
+});
+
+const mapDispatchToProps = dispatch => ({
+  confirmData: () => dispatch(confirmWeeklyReportsData()),
+});
+
+export const WeeklyReportPanel = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(WeeklyReportPanelComponent);

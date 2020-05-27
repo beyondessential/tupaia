@@ -5,13 +5,10 @@
 
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
-import { CondensedTableBody, FakeHeader, tableColumnShape, Table } from '@tupaia/ui-components';
-import { connect } from 'react-redux';
-import MuiTableFooter from '@material-ui/core/TableFooter';
-import MuiTableCell from '@material-ui/core/TableCell';
-import MuiTableRow from '@material-ui/core/TableRow';
+import { CondensedTableBody, FakeHeader, Table } from '@tupaia/ui-components';
 import { WeeklyReportPanel } from '../WeeklyReportPanel';
 import { FIRST_COLUMN_WIDTH, SITES_REPORTED_COLUMN_WIDTH } from './constants';
 import { AlertCell } from './TableCellComponents';
@@ -97,27 +94,6 @@ const StyledDiv = styled.div`
   padding: 2rem;
 `;
 
-// may be able to use a SubComponent instead??
-const TableFooter = ({ columns, data }) => {
-  return (
-    <MuiTableFooter>
-      <MuiTableRow>
-        <MuiTableCell colSpan={columns.length}>
-          <StyledDiv>
-            <Typography variant="body1">Verify data to submit Weekly report to Regional</Typography>
-            {data.length && <WeeklyReportPanel data={data} />}
-          </StyledDiv>
-        </MuiTableCell>
-      </MuiTableRow>
-    </MuiTableFooter>
-  );
-};
-
-TableFooter.propTypes = {
-  columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
-  data: PropTypes.array.isRequired,
-};
-
 export const SiteSummaryTableComponent = React.memo(
   ({ fetchData, data, fetchOptions, errorMessage }) => {
     const [page, setPage] = useState(0);
@@ -146,8 +122,11 @@ export const SiteSummaryTableComponent = React.memo(
           data={data}
           Header={false}
           Body={CondensedTableBody}
-          Paginator={TableFooter}
         />
+        <StyledDiv>
+          <Typography variant="body1">Verify data to submit Weekly report to Regional</Typography>
+          {data.length && <WeeklyReportPanel />}
+        </StyledDiv>
       </React.Fragment>
     );
   },
