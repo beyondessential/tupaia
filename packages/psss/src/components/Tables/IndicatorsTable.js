@@ -3,26 +3,31 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React, { useContext } from 'react';
-import Typography from '@material-ui/core/Typography';
-import PropTypes from 'prop-types';
 import MuiLink from '@material-ui/core/Link';
 import styled from 'styled-components';
-import {
-  ExpandableTableBody,
-  Table,
-  GreyOutlinedButton,
-  Button,
-  FakeHeader,
-} from '@tupaia/ui-components';
-import { VerifiableTableRow } from './VerifiableTableRow';
-import { BorderlessTableRow } from './TableTypes';
+import Typography from '@material-ui/core/Typography';
+import PropTypes from 'prop-types';
+import { GreyOutlinedButton, Button, FakeHeader } from '@tupaia/ui-components';
+import { DottedTable } from './TableTypes';
 import { EditableTableContext } from './EditableTable';
 
-const VerifiableBody = props => {
-  const { tableState } = useContext(EditableTableContext);
-  const Row = tableState === 'editable' ? BorderlessTableRow : VerifiableTableRow;
-  return <ExpandableTableBody TableRow={Row} {...props} />;
-};
+const HeadingRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  margin-left: 30px;
+  margin-right: 30px;
+`;
+
+const HeaderTitle = styled(Typography)`
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 19px;
+`;
 
 const LayoutRow = styled.div`
   display: flex;
@@ -31,11 +36,7 @@ const LayoutRow = styled.div`
   padding: 1rem 0;
 `;
 
-const GreyHeader = styled(FakeHeader)`
-  border: none;
-`;
-
-export const VerifiableTable = ({ tableState, setTableState }) => {
+export const IndicatorsTable = ({ tableState, setTableState }) => {
   const { editableColumns, data, fields, metadata } = useContext(EditableTableContext);
 
   const handleEdit = () => {
@@ -54,17 +55,17 @@ export const VerifiableTable = ({ tableState, setTableState }) => {
 
   return (
     <React.Fragment>
-      <LayoutRow>
-        <Typography variant="h5">7/10 Sites Reported</Typography>
+      <HeadingRow>
+        <HeaderTitle>Sentinel Cases Reported</HeaderTitle>
         <GreyOutlinedButton onClick={handleEdit} disabled={tableState === 'editable'}>
           Edit
         </GreyOutlinedButton>
-      </LayoutRow>
-      <GreyHeader>
+      </HeadingRow>
+      <FakeHeader>
         <span>SYNDROMES</span>
         <span>TOTAL CASES</span>
-      </GreyHeader>
-      <Table Header={false} Body={VerifiableBody} columns={editableColumns} data={data} />
+      </FakeHeader>
+      <DottedTable columns={editableColumns} data={data} />
       {tableState === 'editable' && (
         <LayoutRow>
           <MuiLink>Reset and use Sentinel data</MuiLink>
@@ -80,7 +81,7 @@ export const VerifiableTable = ({ tableState, setTableState }) => {
   );
 };
 
-VerifiableTable.propTypes = {
+IndicatorsTable.propTypes = {
   tableState: PropTypes.string.isRequired,
   setTableState: PropTypes.func.isRequired,
 };

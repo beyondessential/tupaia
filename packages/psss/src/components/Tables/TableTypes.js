@@ -15,6 +15,7 @@ import {
 } from '@tupaia/ui-components';
 import * as COLORS from '../../theme/colors';
 
+// Todo: create a file per table style
 export const BorderlessTableRow = styled(ControlledExpandableTableRow)`
   .MuiTableCell-root {
     font-size: 15px;
