@@ -76,16 +76,8 @@ context('periodTypes', () => {
   });
 
   describe('parsePeriodType', () => {
-    it('should return the period type for a correct upper case string', () => {
-      expect(parsePeriodType('YEAR')).to.equal(YEAR);
-      expect(parsePeriodType('QUARTER')).to.equal(QUARTER);
-      expect(parsePeriodType('MONTH')).to.equal(MONTH);
-      expect(parsePeriodType('WEEK')).to.equal(WEEK);
-      expect(parsePeriodType('DAY')).to.equal(DAY);
-    });
-
     it('should return the period type regardless of case', () => {
-      expect(parsePeriodType('year')).to.equal(YEAR);
+      expect(parsePeriodType('YEAR')).to.equal(YEAR);
       expect(parsePeriodType('quaRter')).to.equal(QUARTER);
       expect(parsePeriodType('mOnTh')).to.equal(MONTH);
       expect(parsePeriodType('wEEk')).to.equal(WEEK);

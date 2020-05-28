@@ -21,8 +21,8 @@ export const PERIOD_TYPES = {
   DAY, // e.g. '20180104'
   WEEK, // e.g. '2018W01'
   MONTH, // e.g. '201801'
-  YEAR, // e.g. '2018'
   QUARTER, // e.g. '2018Q1'
+  YEAR, // e.g. '2018'
 };
 
 const NON_NUMERIC_PERIOD_TYPES = [WEEK, QUARTER];
@@ -33,6 +33,7 @@ const PERIOD_TYPE_CONFIG = {
   [DAY]: {
     format: 'YYYYMMDD',
     length: 8,
+    granularityOrder: 1,
     displayFormat: 'Do MMM YYYY',
     momentShorthand: 'd',
     momentUnit: 'day',
@@ -40,6 +41,7 @@ const PERIOD_TYPE_CONFIG = {
   [WEEK]: {
     format: 'GGGG[W]WW',
     length: 7,
+    granularityOrder: 2,
     displayFormat: 'Do MMM YYYY',
     momentShorthand: 'w',
     momentUnit: 'isoWeek',
@@ -47,23 +49,26 @@ const PERIOD_TYPE_CONFIG = {
   [MONTH]: {
     format: 'YYYYMM',
     length: 6,
+    granularityOrder: 3,
     displayFormat: 'MMM YYYY',
     momentShorthand: 'M',
     momentUnit: 'month',
   },
-  [YEAR]: {
-    format: 'YYYY',
-    length: 4,
-    displayFormat: 'YYYY',
-    momentShorthand: 'Y',
-    momentUnit: 'year',
-  },
   [QUARTER]: {
     format: 'YYYY[Q]Q',
-    length: 4.5, // bit of a hack to get coarsest period type and periodToType to work
+    length: 'Not a possible length', // bit of a hack to get periodToType to work
+    granularityOrder: 4,
     displayFormat: '[Q]Q YYYY',
     momentShorthand: 'Q',
     momentUnit: 'quarter',
+  },
+  [YEAR]: {
+    format: 'YYYY',
+    length: 4,
+    granularityOrder: 5,
+    displayFormat: 'YYYY',
+    momentShorthand: 'Y',
+    momentUnit: 'year',
   },
 };
 
@@ -81,6 +86,7 @@ const LENGTH_TO_PERIOD_TYPE = createFieldToPeriodType('length');
 const createAccessor = field => periodType => get(PERIOD_TYPE_CONFIG, [periodType, field]);
 export const periodTypeToFormat = createAccessor('format');
 const periodTypeToLength = createAccessor('length');
+const periodTypeToGranularity = createAccessor('granularityOrder');
 const periodTypeToDisplayFormat = createAccessor('displayFormat');
 const toMomentShorthand = createAccessor('momentShorthand');
 export const periodTypeToMomentUnit = createAccessor('momentUnit');
@@ -210,17 +216,17 @@ const convertToNumericPeriod = (period, targetType, isEndPeriod) => {
  * @returns {string}
  */
 export const findCoarsestPeriodType = periodTypes => {
-  let minLength;
+  let maxGranularity;
   let result;
 
   periodTypes.forEach(periodType => {
-    const currentLength = periodTypeToLength(periodType);
-    if (!currentLength) {
+    const currentGranularity = periodTypeToGranularity(periodType);
+    if (!currentGranularity) {
       return;
     }
 
-    if (currentLength < minLength || minLength === undefined) {
-      minLength = currentLength;
+    if (currentGranularity > maxGranularity || maxGranularity === undefined) {
+      maxGranularity = currentGranularity;
       result = periodType;
     }
   });

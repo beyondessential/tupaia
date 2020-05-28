@@ -20,24 +20,27 @@ export class QuarterPicker extends PureComponent {
   render() {
     const { momentDateValue, minMomentDate, maxMomentDate, onChange } = this.props;
 
-    const minAvailableQuarterIndex = momentDateValue.isSame(minMomentDate, 'year')
+    const minAvailableQuarterNumber = momentDateValue.isSame(minMomentDate, 'year')
       ? minMomentDate.quarter()
       : 1;
-    const maxAvailableQuarterIndex = momentDateValue.isSame(maxMomentDate, 'year')
+    const maxAvailableQuarterNumber = momentDateValue.isSame(maxMomentDate, 'year')
       ? maxMomentDate.quarter()
       : 4;
 
-    const menuItems = quarters.map((quarterName, quarterIndex) => (
-      <MenuItem
-        key={quarterName}
-        value={quarterIndex + 1} // Quarters are 1 indexed
-        disabled={
-          quarterIndex + 1 < minAvailableQuarterIndex || quarterIndex + 1 > maxAvailableQuarterIndex
-        }
-      >
-        {quarterName}
-      </MenuItem>
-    ));
+    const menuItems = quarters.map((quarterName, quarterIndex) => {
+      const quarterNumber = quarterIndex + 1; // Quarters are 1 indexed
+      return (
+        <MenuItem
+          key={quarterName}
+          value={quarterNumber}
+          disabled={
+            quarterNumber < minAvailableQuarterNumber || quarterNumber > maxAvailableQuarterNumber
+          }
+        >
+          {quarterName}
+        </MenuItem>
+      );
+    });
 
     return (
       <DatePicker
@@ -45,9 +48,9 @@ export class QuarterPicker extends PureComponent {
         selectedValue={momentDateValue.quarter()}
         menuItems={menuItems}
         onChange={e => onChange(moment(momentDateValue).quarter(e.target.value))}
-        getFormattedValue={quarterIndex =>
+        getFormattedValue={quarterNumber =>
           moment()
-            .quarter(quarterIndex)
+            .quarter(quarterNumber)
             .format(FORMAT)
         }
       />
