@@ -37,17 +37,20 @@ const ReadOnlyTextField = styled(EditableTextField)`
 
 export const EditableTableContext = createContext({});
 
+const STATIC = 'static';
+const EDITABLE = 'editable';
+const LOADING = 'loading';
+
 const EditableCell = React.memo(({ id, columnKey }) => {
   const { fields, handleFieldChange, tableState } = useContext(EditableTableContext);
   const key = `${id}-${columnKey}`;
-  if (tableState === 'editable') {
+  if (tableState === EDITABLE) {
     return (
       <EditableTextField
         name={columnKey}
         value={fields[key]}
         onChange={handleFieldChange}
         id={key}
-        key={key}
       />
     );
   }
@@ -123,7 +126,7 @@ export const EditableTableProvider = React.memo(
 
     useEffect(() => {
       // loading must change after initial state is set
-      if (tableState === 'loading') {
+      if (tableState === LOADING) {
         setValues(initialState);
         setMetadata(initialMetadata);
       }
@@ -148,7 +151,7 @@ export const EditableTableProvider = React.memo(
 );
 
 EditableTableProvider.propTypes = {
-  tableState: PropTypes.PropTypes.oneOf(['static', 'editable', 'loading']).isRequired,
+  tableState: PropTypes.PropTypes.oneOf([STATIC, EDITABLE, LOADING]).isRequired,
   children: PropTypes.any.isRequired,
   columns: PropTypes.arrayOf(
     PropTypes.shape({

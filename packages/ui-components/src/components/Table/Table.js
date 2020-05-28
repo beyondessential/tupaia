@@ -9,7 +9,7 @@ import styled from 'styled-components';
 import MuiTable from '@material-ui/core/Table';
 import { TablePaginator } from './TablePaginator';
 import { TableHeader } from './TableHeader';
-import { ExpandableTableBody } from './TableBody';
+import { TableBody } from './TableBody';
 import { TableMessageProvider } from './TableMessageProvider';
 import { tableColumnShape } from './tableColumnShape';
 
@@ -99,7 +99,7 @@ Table.propTypes = {
 
 Table.defaultProps = {
   Header: TableHeader,
-  Body: ExpandableTableBody,
+  Body: TableBody,
   Paginator: TablePaginator,
   SubComponent: null,
   errorMessage: '',
