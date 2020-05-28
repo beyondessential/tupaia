@@ -30,7 +30,7 @@ const filterEntitiesByAttributes = (entities, attributesFilter) => {
  */
 const filterEntitiesByField = (entities, field, filterValue, operator = '=') => {
   const filterMethod = FILTER_TYPE_TO_METHOD[operator];
-  return filterMethod ? entities.filter(filterMethod(entities, filterValue, field)) : entities;
+  return filterMethod ? entities.filter(filterMethod(entities, field, filterValue)) : entities;
 };
 
 /**
