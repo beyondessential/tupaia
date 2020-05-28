@@ -105,9 +105,7 @@ export default class extends DataAggregatingRouteHandler {
   }
 
   translateDataBuilderConfig(dataBuilderConfig, dataServices) {
-    console.log(dataBuilderConfig);
     const replacedConfig = replaceValues(dataBuilderConfig, this.query);
-    console.log(replacedConfig);
     return { ...replacedConfig, dataServices };
   }
 

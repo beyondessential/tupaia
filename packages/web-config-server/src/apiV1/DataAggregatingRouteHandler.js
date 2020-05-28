@@ -9,6 +9,7 @@ import { Aggregator } from '../aggregator';
 import { Entity, Project } from '../models';
 
 const DEFAULT_ENTITY_TYPE = Entity.FACILITY;
+const DEFAULT_ENTITY_AGGREGATION_TYPE = Aggregator.aggregationTypes.SUM_PER_ORG_GROUP;
 
 /**
  * Interface class for handling routes that fetch data from an aggregator
@@ -46,13 +47,10 @@ export class DataAggregatingRouteHandler extends RouteHandler {
   };
 
   // Will return a map for every org unit (regardless of type) in analytics to its ancestor of type aggregationEntityType
-  getOrgUnitToAncestorMap = async analytics => {
-    if (!this.aggregationEntityType || this.aggregationEntityType === this.dataSourceEntityType) {
+  getOrgUnitToAncestorMap = async (orgUnits, aggregationEntityType) => {
+    if (!aggregationEntityType || aggregationEntityType === this.dataSourceEntityType) {
       return {};
     }
-    const orgUnits = await Entity.find({
-      code: analytics.map(({ organisationUnit: orgUnit }) => orgUnit),
-    });
     if (!orgUnits || orgUnits.length === 0) return {};
     const orgUnitToAncestor = {};
     const addOrgUnitToMap = async orgUnit => {
@@ -71,8 +69,11 @@ export class DataAggregatingRouteHandler extends RouteHandler {
     return orgUnitToAncestor;
   };
 
-  getEntityAggregationType = () => {
-    return this.entityAggregationType;
+  fetchEntityAggregationConfig = async dataSourceEntities => {
+    if (this.aggregationEntityType === this.dataSourceEntityType) return false;
+    const entityAggregationType = this.entityAggregationType || DEFAULT_ENTITY_AGGREGATION_TYPE;
+    const orgUnitMap = await this.getOrgUnitToAncestorMap(dataSourceEntities, this.aggregationEntityType);
+    return { type: entityAggregationType, config: { orgUnitMap } };
   };
 
   stripEntityAggregationFromConfig = config => {
@@ -82,8 +83,9 @@ export class DataAggregatingRouteHandler extends RouteHandler {
       entityAggregationType,
       ...restOfConfig
     } = config;
+
     this.aggregationEntityType = aggregationEntityType || this.entity.type || DEFAULT_ENTITY_TYPE;
-    this.dataSourceEntityType = dataSourceEntityType || this.aggregationEntityType;
+    this.dataSourceEntityType = dataSourceEntityType || (this.aggregationEntityType === 'project' ? 'country' : this.aggregationEntityType);
     this.entityAggregationType = entityAggregationType;
 
     return restOfConfig;

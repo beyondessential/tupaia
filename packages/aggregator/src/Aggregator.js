@@ -33,14 +33,27 @@ export class Aggregator {
 
   processAnalytics = (analytics, aggregationOptions, requestedPeriod) => {
     const { aggregationType, aggregationConfig, filter } = aggregationOptions;
-    const aggregatedAnalytics = aggregateAnalytics(analytics, aggregationType, {
-      ...aggregationConfig,
-      requestedPeriod,
-    });
+    console.log(aggregationOptions);
+
+    const aggregations = aggregationOptions.aggregations || [
+      { type: aggregationType, config: aggregationConfig },
+    ];
+
+    const aggregatedAnalytics = aggregations.reduce(
+      (partiallyAggregatedAnalytics, { type, config }) => {
+        return aggregateAnalytics(partiallyAggregatedAnalytics, type, {
+          ...config,
+          requestedPeriod,
+        });
+      },
+      analytics,
+    );
+
     return filterAnalytics(aggregatedAnalytics, filter);
   };
 
   async fetchAnalytics(codeInput, fetchOptions, aggregationOptions = {}) {
+    console.log(codeInput, aggregationOptions);
     const { organisationUnitCode, organisationUnitCodes } = fetchOptions;
     if (!organisationUnitCode && (!organisationUnitCodes || !organisationUnitCodes.length)) {
       // No organisation unit code, return empty response

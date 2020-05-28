@@ -1,6 +1,5 @@
 import { Aggregator as BaseAggregator } from '@tupaia/aggregator';
 import { QueryBuilder } from './QueryBuilder';
-import { ResponseBuilder } from './ResponseBuilder';
 
 export class Aggregator extends BaseAggregator {
   constructor(dataBroker, routeHandler) {
@@ -8,22 +7,25 @@ export class Aggregator extends BaseAggregator {
     this.routeHandler = routeHandler;
   }
 
-  async fetchAnalytics(dataElementCodes, originalQuery, replacementValues, ...otherParams) {
-    const queryBuilder = new QueryBuilder(originalQuery, replacementValues, this.routeHandler);
-    const query = await queryBuilder.build();
-    const analytics = await super.fetchAnalytics(dataElementCodes, query, ...otherParams);
-
-    const responseBuilder = new ResponseBuilder(analytics, 'analytics', this.routeHandler);
-
-    return responseBuilder.build();
-  }
-
-  async fetchEvents(programCode, originalQuery, replacementValues) {
+  async fetchAnalytics(
+    dataElementCodes,
+    originalQuery,
+    replacementValues,
+    initialAggregationOptions,
+  ) {
     const queryBuilder = new QueryBuilder(
       originalQuery,
       replacementValues,
-      this.fetchDataSourceEntities,
+      initialAggregationOptions,
+      this.routeHandler,
     );
+    const { fetchOptions, aggregationOptions } = await queryBuilder.build();
+
+    return super.fetchAnalytics(dataElementCodes, fetchOptions, aggregationOptions);
+  }
+
+  async fetchEvents(programCode, originalQuery, replacementValues) {
+    const queryBuilder = new QueryBuilder(originalQuery, replacementValues, this.routeHandler);
     await queryBuilder.fetchAndReplaceOrgUnitCodes();
     queryBuilder.makeEventReplacements();
 

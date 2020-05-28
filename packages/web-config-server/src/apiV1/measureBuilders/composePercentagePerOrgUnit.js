@@ -36,14 +36,7 @@ import { Entity } from '/models';
  * ```
  */
 
-export const composePercentagePerOrgUnit = async (
-  aggregator,
-  dhisApi,
-  query,
-  config,
-  entity,
-  processValues = value => value,
-) => {
+export const composePercentagePerOrgUnit = async (aggregator, dhisApi, query, config, entity) => {
   const { fractionType } = config;
   const { dataElementCode } = query;
 

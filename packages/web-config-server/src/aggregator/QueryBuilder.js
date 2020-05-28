@@ -6,9 +6,10 @@ import { getDefaultPeriod } from '/utils';
 import { Entity } from '/models';
 
 export class QueryBuilder {
-  constructor(originalQuery, replacementValues = {}, routeHandler) {
+  constructor(originalQuery, replacementValues = {}, initialAggregationOptions = {}, routeHandler) {
     this.query = { ...originalQuery };
     this.replacementValues = replacementValues;
+    this.aggregationOptions = { ...initialAggregationOptions };
     this.routeHandler = routeHandler;
   }
 
@@ -19,9 +20,10 @@ export class QueryBuilder {
   // Ensure the standard dimensions of period, start/end date, and organisation unit are set up
   async build() {
     this.makePeriodReplacements();
-    await this.fetchAndReplaceOrgUnitCodes();
+    const dataSourceEntities = await this.fetchAndReplaceOrgUnitCodes();
+    await this.buildAggregationOptions(dataSourceEntities);
     this.makeEventReplacements();
-    return this.query;
+    return { fetchOptions: this.query, aggregationOptions: this.aggregationOptions };
   }
 
   makeEventReplacements() {
@@ -42,6 +44,33 @@ export class QueryBuilder {
     );
     this.query.organisationUnitCodes = dataSourceEntities.map(e => e.code);
     delete this.query.organisationUnitCode;
+    return dataSourceEntities;
+  }
+
+  async buildAggregationOptions(dataSourceEntities) {
+    const entityAggregation = await this.routeHandler.fetchEntityAggregationConfig(
+      dataSourceEntities,
+    );
+    if (!entityAggregation) return;
+    const aggregationType = this.aggregationOptions.aggregationType;
+    const aggregationConfig = this.aggregationOptions.aggregationConfig;
+    const aggregations =
+      this.aggregationOptions.aggregations || aggregationType
+        ? [
+            {
+              type: aggregationType,
+              config: aggregationConfig,
+            },
+          ]
+        : [];
+    console.log(JSON.stringify(aggregations), entityAggregation);
+    this.aggregationOptions.aggregations = [
+      // entity aggregation always happens last, this should be configurable
+      ...aggregations,
+      entityAggregation,
+    ];
+    delete this.aggregationOptions.aggregationType;
+    delete this.aggregationOptions.aggregationConfig;
   }
 
   // Adds standard period, start date and end date
