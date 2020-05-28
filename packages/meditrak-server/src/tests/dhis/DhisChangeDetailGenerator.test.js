@@ -9,9 +9,6 @@ import { generateTestId } from '../testUtilities';
 
 import {
   MODELS,
-  ENTITY,
-  ANSWER,
-  SURVEY_RESPONSE,
   REGIONAL_SURVEY_RESPONSE,
   TONGA_SURVEY_RESPONSE,
 } from './DhisChangeDetailGenerator.fixtures';
@@ -36,7 +33,7 @@ const assertCorrectDetailsGenerated = async testData => {
 describe('DhisChangeDetailGenerator', () => {
   it('generates change details for a entities', async () => {
     const buildTestData = ({ metadata, expectedIsDataRegional }) => ({
-      change: buildChange(ENTITY, { metadata, country_code: 'DL' }),
+      change: buildChange('entity', { metadata, country_code: 'DL' }),
       expectedDetails: {
         isDataRegional: expectedIsDataRegional,
         organisationUnitCode: 'DL',
@@ -66,14 +63,14 @@ describe('DhisChangeDetailGenerator', () => {
   it('generates change details for survey responses', async () => {
     const testData = [
       {
-        change: buildChange(SURVEY_RESPONSE, REGIONAL_SURVEY_RESPONSE),
+        change: buildChange('survey_response', REGIONAL_SURVEY_RESPONSE),
         expectedDetails: {
           isDataRegional: true,
           organisationUnitCode: 'DL',
         },
       },
       {
-        change: buildChange(SURVEY_RESPONSE, TONGA_SURVEY_RESPONSE),
+        change: buildChange('survey_response', TONGA_SURVEY_RESPONSE),
         expectedDetails: {
           isDataRegional: false,
           organisationUnitCode: 'TO_Tongatapu_Tofoa',
@@ -86,14 +83,14 @@ describe('DhisChangeDetailGenerator', () => {
   it('generates change details for answers', async () => {
     const testData = [
       {
-        change: buildChange(ANSWER, { survey_response_id: REGIONAL_SURVEY_RESPONSE.id }),
+        change: buildChange('answer', { survey_response_id: REGIONAL_SURVEY_RESPONSE.id }),
         expectedDetails: {
           isDataRegional: true,
           organisationUnitCode: 'DL',
         },
       },
       {
-        change: buildChange(ANSWER, { survey_response_id: TONGA_SURVEY_RESPONSE.id }),
+        change: buildChange('answer', { survey_response_id: TONGA_SURVEY_RESPONSE.id }),
         expectedDetails: {
           isDataRegional: false,
           organisationUnitCode: 'TO_Tongatapu_Tofoa',
