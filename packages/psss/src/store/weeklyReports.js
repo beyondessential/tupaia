@@ -6,7 +6,9 @@
 import { createReducer } from '../utils/createReducer';
 
 // actions
-const TOGGLE_PANEL = 'TOGGLE_PANEL';
+const OPEN_PANEL = 'OPEN_PANEL';
+const CLOSE_PANEL = 'CLOSE_PANEL';
+const SET_ACTIVE_COUNTRY_WEEK = 'SET_ACTIVE_COUNTRY_WEEK';
 const COUNTRY_WEEKS_LOAD_START = 'COUNTRY_WEEKS_LOAD_START';
 const COUNTRY_WEEKS_LOAD_FINISH = 'COUNTRY_WEEKS_LOAD_FINISH';
 const COUNTRY_WEEKS_LOAD_ERROR = 'COUNTRY_WEEKS_LOAD_ERROR';
@@ -52,7 +54,7 @@ export const reloadSiteWeeks = ({ fetchOptions, queryParameters }) => async (
   console.log('done');
 };
 
-export const updateWeeklyReportsData = data => async (dispatch, getState, { fakeApi }) => {
+export const updateWeeklyReportsData = data => async (dispatch) => {
   console.log('update data...', data);
   dispatch(reloadCountryWeeks({}));
   dispatch(reloadSiteWeeks({}));
@@ -62,12 +64,16 @@ export const confirmWeeklyReportsData = () => async (dispatch, getState, { fakeA
   console.log('confirm data...');
 };
 
-export const openWeeklyReportsPanel = () => async dispatch => {
-  dispatch({ type: TOGGLE_PANEL, isOpen: true });
+export const openWeeklyReportsPanel = rowId => async dispatch => {
+  dispatch({ type: OPEN_PANEL, rowId: rowId });
 };
 
 export const closeWeeklyReportsPanel = () => async dispatch => {
-  dispatch({ type: TOGGLE_PANEL, isOpen: false });
+  dispatch({ type: CLOSE_PANEL });
+};
+
+export const setActiveCountryWeek = rowId => async dispatch => {
+  dispatch({ type: SET_ACTIVE_COUNTRY_WEEK, rowId: rowId });
 };
 
 // selectors
@@ -83,7 +89,7 @@ export const checkSiteWeeksIsLoading = ({ weeklyReports }) =>
 // reducer
 const defaultState = {
   panelIsOpen: false,
-  activeCountryWeekId: '',
+  activeCountryWeekId: null,
   countryWeeks: [],
   countryWeeksStatus: 'idle',
   countryWeeksError: null,
@@ -93,8 +99,14 @@ const defaultState = {
 };
 
 const actionHandlers = {
-  [TOGGLE_PANEL]: ({ isOpen }) => ({
-    panelIsOpen: isOpen,
+  [SET_ACTIVE_COUNTRY_WEEK]: ({ rowId }) => ({
+    activeCountryWeekId: rowId,
+  }),
+  [OPEN_PANEL]: () => ({
+    panelIsOpen: true,
+  }),
+  [CLOSE_PANEL]: () => ({
+    panelIsOpen: false,
   }),
   [COUNTRY_WEEKS_LOAD_START]: () => ({
     countryWeeksError: defaultState.countryWeeksError,

@@ -134,8 +134,8 @@ export const CondensedTableRow = styled(TableRow)`
 `;
 
 export const ExpandableTableRow = React.memo(
-  ({ columns, data, rowIndex, className, SubComponent, defaultExpanded }) => {
-    const [expanded, setExpanded] = useState(defaultExpanded);
+  ({ columns, data, rowIndex, className, SubComponent }) => {
+    const [expanded, setExpanded] = useState(false);
 
     const handleClick = useCallback(() => {
       setExpanded(prevExpanded => !prevExpanded);
@@ -150,7 +150,7 @@ export const ExpandableTableRow = React.memo(
     if (SubComponent && expanded) {
       return (
         <TableRowExpansionContainer parentRow={row} colSpan={columns.length}>
-          <SubComponent data={data} />
+          <SubComponent rowData={data[rowIndex]} />
         </TableRowExpansionContainer>
       );
     }
@@ -165,12 +165,10 @@ ExpandableTableRow.propTypes = {
   rowIndex: PropTypes.number.isRequired,
   SubComponent: PropTypes.any,
   className: PropTypes.string,
-  defaultExpanded: PropTypes.bool,
 };
 
 ExpandableTableRow.defaultProps = {
   SubComponent: PropTypes.null,
-  defaultExpanded: false,
   className: '',
 };
 
@@ -193,7 +191,7 @@ export const ControlledExpandableTableRow = ({
   if (SubComponent && expanded) {
     return (
       <ExpansionContainer parentRow={row} colSpan={columns.length}>
-        <SubComponent data={data} />
+        <SubComponent rowData={data[rowIndex]} />
       </ExpansionContainer>
     );
   }

@@ -94,17 +94,16 @@ const StyledDiv = styled.div`
 `;
 
 export const SiteSummaryTableComponent = React.memo(
-  ({ fetchData, data, fetchOptions, errorMessage, handleOpen }) => {
-    const [page, setPage] = useState(0);
-    const [isLoading, setIsLoading] = useState(true);
+  ({ fetchData, data, errorMessage, handleOpen, rowData }) => {
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
       (async () => {
-        setIsLoading(true);
-        await fetchData({ page });
-        setIsLoading(false);
+        // setIsLoading(true);
+        await fetchData();
+        // setIsLoading(false);
       })();
-    }, [page, fetchOptions]);
+    }, []);
 
     return (
       <React.Fragment>
@@ -114,16 +113,13 @@ export const SiteSummaryTableComponent = React.memo(
           errorMessage={errorMessage}
           columns={siteWeekColumns}
           fetchData={fetchData}
-          onChangePage={setPage}
-          page={page}
-          fetchOptions={fetchOptions}
           data={data}
           Header={false}
           Body={CondensedTableBody}
         />
         <StyledDiv>
           <Typography variant="body1">Verify data to submit Weekly report to Regional</Typography>
-          <Button onClick={handleOpen}>Save and submit</Button>
+          <Button onClick={() => handleOpen(rowData.id)}>Save and submit</Button>
         </StyledDiv>
       </React.Fragment>
     );
@@ -134,12 +130,11 @@ SiteSummaryTableComponent.propTypes = {
   fetchData: PropTypes.func.isRequired,
   handleOpen: PropTypes.func.isRequired,
   data: PropTypes.array.isRequired,
-  fetchOptions: PropTypes.object,
+  rowData: PropTypes.object.isRequired,
   errorMessage: PropTypes.string,
 };
 
 SiteSummaryTableComponent.defaultProps = {
-  fetchOptions: null,
   errorMessage: '',
 };
 
@@ -150,7 +145,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   fetchData: () => dispatch(reloadSiteWeeks({})),
-  handleOpen: () => dispatch(openWeeklyReportsPanel()),
+  handleOpen: rowId => dispatch(openWeeklyReportsPanel(rowId)),
 });
 
 export const SiteSummaryTable = connect(

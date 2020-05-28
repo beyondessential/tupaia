@@ -29,7 +29,7 @@ export class FakeAPI {
       }
     } else if (endpoint === 'country-weeks') {
       for (let i = 0; i < 10; i++) {
-        const userData = this.countryWeek();
+        const userData = this.countryWeek(i);
         data.push(userData);
       }
     } else if (endpoint === 'sites') {
@@ -116,9 +116,10 @@ export class FakeAPI {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  countryWeek() {
+  countryWeek(index) {
     return {
       id: faker.random.uuid(),
+      index: index,
       week: faker.random.number({
         min: 1,
         max: 10,

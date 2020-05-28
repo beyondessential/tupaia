@@ -11,6 +11,7 @@ import { format } from 'date-fns';
 import { Table } from '@tupaia/ui-components';
 import { Alarm, CheckCircleOutline } from '@material-ui/icons';
 import { SiteSummaryTable } from './SiteSummaryTable';
+import { CountryTableBody } from './CountryTableBody';
 import * as COLORS from '../../theme/colors';
 import { FIRST_COLUMN_WIDTH, SITES_REPORTED_COLUMN_WIDTH } from './constants';
 import { AlertCell, SitesReportedCell } from './TableCellComponents';
@@ -150,7 +151,7 @@ const countryColumns = [
   },
 ];
 
-const CountryTableComponent = React.memo(({ fetchData, data, fetchOptions, errorMessage }) => {
+const CountryTableComponent = React.memo(({ fetchData, data, errorMessage }) => {
   const [page, setPage] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -160,7 +161,7 @@ const CountryTableComponent = React.memo(({ fetchData, data, fetchOptions, error
       await fetchData({ page });
       setIsLoading(false);
     })();
-  }, [page, fetchOptions]);
+  }, [page]);
 
   return (
     <Table
@@ -170,8 +171,8 @@ const CountryTableComponent = React.memo(({ fetchData, data, fetchOptions, error
       errorMessage={errorMessage}
       onChangePage={setPage}
       page={page}
+      Body={CountryTableBody}
       fetchData={fetchData}
-      fetchOptions={fetchOptions}
       SubComponent={SiteSummaryTable}
     />
   );
@@ -180,12 +181,10 @@ const CountryTableComponent = React.memo(({ fetchData, data, fetchOptions, error
 CountryTableComponent.propTypes = {
   fetchData: PropTypes.func.isRequired,
   data: PropTypes.array.isRequired,
-  fetchOptions: PropTypes.object,
   errorMessage: PropTypes.string,
 };
 
 CountryTableComponent.defaultProps = {
-  fetchOptions: null,
   errorMessage: '',
 };
 

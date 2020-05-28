@@ -9,7 +9,7 @@ import { TableRow as TableRowComponent, CondensedTableRow, ExpandableTableRow } 
 import { tableColumnShape } from './tableColumnShape';
 
 export const ExpandableTableBody = React.memo(
-  ({ data, columns, rowIdKey, TableRow, SubComponent, defaultExpanded }) => (
+  ({ data, columns, rowIdKey, TableRow, SubComponent }) => (
     <MuiTableBody>
       {data.map((rowData, rowIndex) => {
         const key = rowData[rowIdKey] || rowData[columns[0].key];
@@ -19,7 +19,6 @@ export const ExpandableTableBody = React.memo(
             rowIndex={rowIndex}
             key={key}
             columns={columns}
-            defaultExpanded={defaultExpanded && defaultExpanded(data[rowIndex], rowIndex)}
             SubComponent={SubComponent}
           />
         );
@@ -34,12 +33,10 @@ ExpandableTableBody.propTypes = {
   TableRow: PropTypes.any,
   SubComponent: PropTypes.any,
   rowIdKey: PropTypes.string.isRequired,
-  defaultExpanded: PropTypes.func,
 };
 
 ExpandableTableBody.defaultProps = {
   SubComponent: null,
-  defaultExpanded: null,
   TableRow: ExpandableTableRow,
 };
 

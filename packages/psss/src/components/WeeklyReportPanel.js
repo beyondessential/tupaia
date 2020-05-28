@@ -62,13 +62,16 @@ const WeeklyReportsPaneSubmitButton = confirmData => () => {
 
 const WeeklyReportPanelComponent = React.memo(
   ({ countryWeeksData, siteWeeksData, isOpen, handleClose, confirmData }) => {
+    if (countryWeeksData.length === 0 || siteWeeksData.length === 0) {
+      return null;
+    }
+
     // ------- COUNTRY TABLE ----------
     const countryData = countryWeeksData[0].indicators;
     const [countryTableState, setCountryTableState] = useState('static');
 
     // Derive from store??
     const verifiedStatus = countryData.reduce((state, item) => {
-      console.log('item', item);
       if (item.percentageChange > 10) {
         return {
           ...state,
