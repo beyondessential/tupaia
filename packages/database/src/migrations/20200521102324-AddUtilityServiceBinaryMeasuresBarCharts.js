@@ -124,12 +124,12 @@ exports.up = async function (db) {
               }
             }
           },
-          "customFilter": {
-            "name": "filterSchoolEntitiesByAttributes",
-            "comparator": "@>",
-            "value": `{"type": "${schoolType}"}`
+          "dataSourceEntityType": 'school',
+          "dataSourceEntityFilter": {
+            "attributes": {
+              "type": schoolType
+            },
           },
-          "dataSourceEntityType": 'school'
         },
         viewJson: {
           "name": name,

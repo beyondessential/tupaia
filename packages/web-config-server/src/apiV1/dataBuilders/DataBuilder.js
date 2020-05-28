@@ -47,11 +47,12 @@ export class DataBuilder {
     aggregationType = this.aggregationType,
     aggregationConfig = {},
   ) {
-    const { dataServices, dataSourceEntityType, filter = {} } = this.config;
+    const { dataServices, dataSourceEntityType, dataSourceEntityFilter, filter = {} } = this.config;
     const fetchOptions = {
       programCodes: this.getProgramCodesForAnalytics(),
       dataServices,
       dataSourceEntityType,
+      dataSourceEntityFilter,
       ...additionalQueryConfig,
     };
 
