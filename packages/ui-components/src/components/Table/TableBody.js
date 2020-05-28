@@ -5,29 +5,27 @@
 import React from 'react';
 import MuiTableBody from '@material-ui/core/TableBody';
 import PropTypes from 'prop-types';
-import { TableRow as TableRowComponent, CondensedTableRow, ExpandableTableRow } from './TableRow';
+import { CondensedTableRow, TableRow as TableRowComponent } from './TableRow';
 import { tableColumnShape } from './tableColumnShape';
 
-export const ExpandableTableBody = React.memo(
-  ({ data, columns, rowIdKey, TableRow, SubComponent }) => (
-    <MuiTableBody>
-      {data.map((rowData, rowIndex) => {
-        const key = rowData[rowIdKey] || rowData[columns[0].key];
-        return (
-          <TableRow
-            data={data}
-            rowIndex={rowIndex}
-            key={key}
-            columns={columns}
-            SubComponent={SubComponent}
-          />
-        );
-      })}
-    </MuiTableBody>
-  ),
-);
+export const TableBody = React.memo(({ data, columns, rowIdKey, TableRow, SubComponent }) => (
+  <MuiTableBody>
+    {data.map((rowData, rowIndex) => {
+      const key = rowData[rowIdKey] || rowData[columns[0].key];
+      return (
+        <TableRow
+          data={data}
+          rowIndex={rowIndex}
+          key={key}
+          columns={columns}
+          SubComponent={SubComponent}
+        />
+      );
+    })}
+  </MuiTableBody>
+));
 
-ExpandableTableBody.propTypes = {
+TableBody.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
   data: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   TableRow: PropTypes.any,
@@ -35,30 +33,8 @@ ExpandableTableBody.propTypes = {
   rowIdKey: PropTypes.string.isRequired,
 };
 
-ExpandableTableBody.defaultProps = {
-  SubComponent: null,
-  TableRow: ExpandableTableRow,
-};
-
-export const TableBody = React.memo(({ data, columns, rowIdKey, TableRow }) => {
-  return (
-    <MuiTableBody>
-      {data.map((rowData, rowIndex) => {
-        const key = rowData[rowIdKey] || rowData[columns[0].key];
-        return <TableRow columns={columns} data={data} rowIndex={rowIndex} key={key} />;
-      })}
-    </MuiTableBody>
-  );
-});
-
-TableBody.propTypes = {
-  columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
-  data: PropTypes.array.isRequired,
-  TableRow: PropTypes.any,
-  rowIdKey: PropTypes.string.isRequired,
-};
-
 TableBody.defaultProps = {
+  SubComponent: null,
   TableRow: TableRowComponent,
 };
 
