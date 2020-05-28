@@ -5,11 +5,13 @@
 import React, { useContext } from 'react';
 import MuiLink from '@material-ui/core/Link';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import { GreyOutlinedButton, Button, FakeHeader } from '@tupaia/ui-components';
 import { DottedTable } from './TableTypes';
 import { EditableTableContext } from './EditableTable';
+import { updateWeeklyReportsData } from '../../store';
 
 const HeadingRow = styled.div`
   display: flex;
@@ -36,8 +38,8 @@ const LayoutRow = styled.div`
   padding: 1rem 0;
 `;
 
-export const IndicatorsTable = ({ tableState, setTableState }) => {
-  const { editableColumns, data, fields, metadata } = useContext(EditableTableContext);
+export const IndicatorsTableComponent = ({ onSubmit, tableState, setTableState }) => {
+  const { editableColumns, data, fields } = useContext(EditableTableContext);
 
   const handleEdit = () => {
     setTableState('editable');
@@ -47,9 +49,9 @@ export const IndicatorsTable = ({ tableState, setTableState }) => {
     setTableState('static');
   };
 
-  const handleSubmit = () => {
-    // POST DATA
-    console.log('updated values...', fields, metadata);
+  const handleSubmit = async () => {
+    console.log('updated values...', fields);
+    await onSubmit(fields);
     setTableState('static');
   };
 
@@ -81,7 +83,14 @@ export const IndicatorsTable = ({ tableState, setTableState }) => {
   );
 };
 
-IndicatorsTable.propTypes = {
+IndicatorsTableComponent.propTypes = {
   tableState: PropTypes.string.isRequired,
   setTableState: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
 };
+
+const mapDispatchToProps = dispatch => ({
+  onSubmit: data => dispatch(updateWeeklyReportsData(data)),
+});
+
+export const IndicatorsTable = connect(null, mapDispatchToProps)(IndicatorsTableComponent);

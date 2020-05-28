@@ -44,7 +44,7 @@ export const VerifiableTableComponent = ({ tableState, setTableState, onSubmit }
 
   const handleSubmit = async () => {
     console.log('submit updated values...', fields);
-    onSubmit(fields);
+    await onSubmit(fields);
     setTableState('static');
   };
 
