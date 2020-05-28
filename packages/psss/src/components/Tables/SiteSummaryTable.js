@@ -102,7 +102,6 @@ export const SiteSummaryTableComponent = React.memo(
       (async () => {
         setIsLoading(true);
         await fetchData({ page });
-        console.log('stop loading');
         setIsLoading(false);
       })();
     }, [page, fetchOptions]);

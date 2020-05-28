@@ -67,7 +67,8 @@ const WeeklyReportPanelComponent = React.memo(
     const [countryTableState, setCountryTableState] = useState('static');
 
     // Derive from store??
-    const verifiedStatus = countryWeeksData.reduce((state, item) => {
+    const verifiedStatus = countryData.reduce((state, item) => {
+      console.log('item', item);
       if (item.percentageChange > 10) {
         return {
           ...state,
@@ -76,6 +77,8 @@ const WeeklyReportPanelComponent = React.memo(
       }
       return state;
     }, {});
+
+    console.log('meta data', verifiedStatus);
 
     // ------- INDICATORS TABLE --------
     const [activeSiteIndex, setActiveSiteIndex] = useState(0);

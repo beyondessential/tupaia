@@ -9,8 +9,8 @@ import { connect } from 'react-redux';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import { GreyOutlinedButton, Button, FakeHeader } from '@tupaia/ui-components';
-import { DottedTable } from './TableTypes';
-import { EditableTableContext } from './EditableTable';
+import { DottedTableBody } from './TableTypes';
+import { EditableTableContext, EditableTable } from './EditableTable';
 import { updateWeeklyReportsData } from '../../store';
 
 const HeadingRow = styled.div`
@@ -39,7 +39,7 @@ const LayoutRow = styled.div`
 `;
 
 export const IndicatorsTableComponent = ({ onSubmit, tableState, setTableState }) => {
-  const { editableColumns, data, fields } = useContext(EditableTableContext);
+  const { fields } = useContext(EditableTableContext);
 
   const handleEdit = () => {
     setTableState('editable');
@@ -67,7 +67,7 @@ export const IndicatorsTableComponent = ({ onSubmit, tableState, setTableState }
         <span>SYNDROMES</span>
         <span>TOTAL CASES</span>
       </FakeHeader>
-      <DottedTable columns={editableColumns} data={data} />
+      <EditableTable Header={false} Body={DottedTableBody} />
       {tableState === 'editable' && (
         <LayoutRow>
           <MuiLink>Reset and use Sentinel data</MuiLink>

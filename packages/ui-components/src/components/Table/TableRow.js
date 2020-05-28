@@ -134,8 +134,8 @@ export const CondensedTableRow = styled(TableRow)`
 `;
 
 export const ExpandableTableRow = React.memo(
-  ({ columns, data, rowIndex, className, SubComponent }) => {
-    const [expanded, setExpanded] = useState(false);
+  ({ columns, data, rowIndex, className, SubComponent, defaultExpanded }) => {
+    const [expanded, setExpanded] = useState(defaultExpanded);
 
     const handleClick = useCallback(() => {
       setExpanded(prevExpanded => !prevExpanded);
@@ -165,10 +165,12 @@ ExpandableTableRow.propTypes = {
   rowIndex: PropTypes.number.isRequired,
   SubComponent: PropTypes.any,
   className: PropTypes.string,
+  defaultExpanded: PropTypes.bool,
 };
 
 ExpandableTableRow.defaultProps = {
   SubComponent: PropTypes.null,
+  defaultExpanded: false,
   className: '',
 };
 

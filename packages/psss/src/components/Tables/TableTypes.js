@@ -74,7 +74,7 @@ export const DottedTableRow = styled(TableRow)`
   }
 `;
 
-const DottedTableBody = props => <TableBody TableRow={DottedTableRow} {...props} />;
+export const DottedTableBody = props => <TableBody TableRow={DottedTableRow} {...props} />;
 
 export const DottedTable = ({ columns, data }) => {
   console.log('data', data);
