@@ -5,7 +5,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { TextField } from '@tupaia/ui-components';
+import { TextField, Table } from '@tupaia/ui-components';
 
 const EditableTextField = styled(TextField)`
   margin: 0;
@@ -43,6 +43,7 @@ const EditableCell = ({ id, columnKey }) => {
   if (tableState === 'editable') {
     return (
       <EditableTextField
+        type="number"
         name={columnKey}
         value={fields[key]}
         onChange={handleFieldChange}
@@ -157,4 +158,9 @@ EditableTableProvider.propTypes = {
 
 EditableTableProvider.defaultProps = {
   initialMetadata: {},
+};
+
+export const EditableTable = props => {
+  const { editableColumns, data } = useContext(EditableTableContext);
+  return <Table columns={editableColumns} data={data} {...props} />;
 };

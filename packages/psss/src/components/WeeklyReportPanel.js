@@ -14,7 +14,12 @@ import { Drawer, DrawerHeaderContent, DrawerFooter, DrawerHeader } from './Drawe
 import { VerifiableTable } from './Tables/VerifiableTable';
 import { IndicatorsTable } from './Tables/IndicatorsTable';
 import { SiteAddress } from './SiteAddress';
-import { getSiteWeeks, getCountryWeeks, confirmWeeklyReportsData } from '../store';
+import {
+  getSiteWeeks,
+  getCountryWeeks,
+  closeWeeklyReportsPanel,
+  confirmWeeklyReportsData,
+} from '../store';
 
 const columns = [
   {
@@ -55,102 +60,98 @@ const WeeklyReportsPaneSubmitButton = confirmData => () => {
   );
 };
 
-export const WeeklyReportPanelComponent = ({ siteWeeksData, countryWeeksData, confirmData }) => {
-  // ------- DRAWER ---------------
-  const [open, setOpen] = useState(false);
-  const toggleDrawer = (event, isOpen) => {
-    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
-      return;
-    }
-    setOpen(isOpen);
-  };
+const WeeklyReportPanelComponent = React.memo(
+  ({ countryWeeksData, siteWeeksData, isOpen, handleClose, confirmData }) => {
+    // ------- COUNTRY TABLE ----------
+    const countryData = countryWeeksData[0].indicators;
+    const [countryTableState, setCountryTableState] = useState('static');
 
-  const handleOpen = event => toggleDrawer(event, true);
-  const handleClose = event => toggleDrawer(event, false);
+    // Derive from store??
+    const verifiedStatus = countryWeeksData.reduce((state, item) => {
+      if (item.percentageChange > 10) {
+        return {
+          ...state,
+          [item.id]: 'expanded',
+        };
+      }
+      return state;
+    }, {});
 
-  // ------- COUNTRY TABLE ----------
-  const [countryTableState, setCountryTableState] = useState('static');
-  const countryData = countryWeeksData[0].indicators;
+    // ------- INDICATORS TABLE --------
+    const [activeSiteIndex, setActiveSiteIndex] = useState(0);
+    const indicatorsData = siteWeeksData[activeSiteIndex].indicators;
+    const activeSite = siteWeeksData[activeSiteIndex];
+    //
+    const [indicatorTableState, setIndicatorTableState] = useState('static');
 
-  // move this to store
-  const verifiedStatus = countryData.reduce((state, item) => {
-    if (item.percentageChange > 10) {
-      return {
-        ...state,
-        [item.id]: 'expanded',
-      };
-    }
-    return state;
-  }, {});
-
-  // ------- INDICATORS TABLE --------
-  const [activeSiteIndex, setActiveSiteIndex] = useState(0);
-  const indicatorsData = siteWeeksData[activeSiteIndex].indicators;
-  const activeSite = siteWeeksData[activeSiteIndex];
-
-  const [indicatorTableState, setIndicatorTableState] = useState('static');
-
-  return (
-    <React.Fragment>
-      <Button onClick={handleOpen}>Save and submit</Button>
-      <Drawer open={open} onClose={handleClose}>
-        <DrawerHeader heading="Upcoming report" onClose={handleClose}>
-          <DrawerHeaderContent heading="American Samoa" date="Week 9 Feb 25 - Mar 1, 2020" />
-        </DrawerHeader>
-        <ErrorAlert>ILI Above Threshold. Please review and verify data.</ErrorAlert>
-        <GreySection>
-          <EditableTableProvider
-            columns={columns}
-            data={countryData}
-            tableState={countryTableState}
-            initialMetadata={verifiedStatus}
-          >
-            <VerifiableTable tableState={countryTableState} setTableState={setCountryTableState} />
-          </EditableTableProvider>
-        </GreySection>
-        <MainSection>
-          <ButtonSelect
-            id="button-select"
-            options={siteWeeksData}
-            onChange={setActiveSiteIndex}
-            index={activeSiteIndex}
-          />
-          <SiteAddress address={activeSite.address} contact={activeSite.contact} />
-          <Card variant="outlined" mb={3}>
+    return (
+      <React.Fragment>
+        <Drawer open={isOpen} onClose={handleClose}>
+          <DrawerHeader heading="Upcoming report" onClose={handleClose}>
+            <DrawerHeaderContent heading="American Samoa" date="Week 9 Feb 25 - Mar 1, 2020" />
+          </DrawerHeader>
+          <ErrorAlert>ILI Above Threshold. Please review and verify data.</ErrorAlert>
+          <GreySection>
             <EditableTableProvider
               columns={columns}
-              data={indicatorsData}
-              tableState={indicatorTableState}
+              data={countryData}
+              tableState={countryTableState}
+              initialMetadata={verifiedStatus}
             >
-              <IndicatorsTable
-                tableState={indicatorTableState}
-                setTableState={setIndicatorTableState}
+              <VerifiableTable
+                tableState={countryTableState}
+                setTableState={setCountryTableState}
               />
             </EditableTableProvider>
-          </Card>
-        </MainSection>
-        <DrawerFooter
-          Action={WeeklyReportsPaneSubmitButton(confirmData)}
-          helperText="Verify data to submit Weekly Report to Regional"
-        />
-      </Drawer>
-    </React.Fragment>
-  );
-};
+          </GreySection>
+          <MainSection>
+            <ButtonSelect
+              id="button-select"
+              options={siteWeeksData}
+              onChange={setActiveSiteIndex}
+              index={activeSiteIndex}
+            />
+            <SiteAddress address={activeSite.address} contact={activeSite.contact} />
+            <Card variant="outlined" mb={3}>
+              <EditableTableProvider
+                columns={columns}
+                data={indicatorsData}
+                tableState={indicatorTableState}
+              >
+                <IndicatorsTable
+                  tableState={indicatorTableState}
+                  setTableState={setIndicatorTableState}
+                />
+              </EditableTableProvider>
+            </Card>
+          </MainSection>
+          <DrawerFooter
+            Action={WeeklyReportsPaneSubmitButton(confirmData)}
+            helperText="Verify data to submit Weekly Report to Regional"
+          />
+        </Drawer>
+      </React.Fragment>
+    );
+  },
+);
 
 WeeklyReportPanelComponent.propTypes = {
   countryWeeksData: PropTypes.array.isRequired,
   siteWeeksData: PropTypes.array.isRequired,
   confirmData: PropTypes.func.isRequired,
+  handleClose: PropTypes.func.isRequired,
+  isOpen: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = state => ({
-  siteWeeksData: getSiteWeeks(state),
+  isOpen: state.weeklyReports.panelIsOpen,
   countryWeeksData: getCountryWeeks(state),
+  siteWeeksData: getSiteWeeks(state),
 });
 
 const mapDispatchToProps = dispatch => ({
   confirmData: () => dispatch(confirmWeeklyReportsData()),
+  handleClose: () => dispatch(closeWeeklyReportsPanel()),
 });
 
 export const WeeklyReportPanel = connect(

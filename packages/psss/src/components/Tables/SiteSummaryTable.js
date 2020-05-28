@@ -8,13 +8,14 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
-import { CondensedTableBody, FakeHeader, Table } from '@tupaia/ui-components';
+import { CondensedTableBody, FakeHeader, Table, Button } from '@tupaia/ui-components';
 import { WeeklyReportPanel } from '../WeeklyReportPanel';
 import { FIRST_COLUMN_WIDTH, SITES_REPORTED_COLUMN_WIDTH } from './constants';
 import { AlertCell } from './TableCellComponents';
 import {
   getSiteWeeksError,
   checkSiteWeeksIsLoading,
+  openWeeklyReportsPanel,
   getSiteWeeks,
   reloadSiteWeeks,
 } from '../../store';
@@ -93,7 +94,7 @@ const StyledDiv = styled.div`
 `;
 
 export const SiteSummaryTableComponent = React.memo(
-  ({ fetchData, data, fetchOptions, errorMessage }) => {
+  ({ fetchData, data, fetchOptions, errorMessage, handleOpen }) => {
     const [page, setPage] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -123,7 +124,7 @@ export const SiteSummaryTableComponent = React.memo(
         />
         <StyledDiv>
           <Typography variant="body1">Verify data to submit Weekly report to Regional</Typography>
-          {data.length && <WeeklyReportPanel />}
+          <Button onClick={handleOpen}>Save and submit</Button>
         </StyledDiv>
       </React.Fragment>
     );
@@ -132,6 +133,7 @@ export const SiteSummaryTableComponent = React.memo(
 
 SiteSummaryTableComponent.propTypes = {
   fetchData: PropTypes.func.isRequired,
+  handleOpen: PropTypes.func.isRequired,
   data: PropTypes.array.isRequired,
   fetchOptions: PropTypes.object,
   errorMessage: PropTypes.string,
@@ -149,6 +151,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   fetchData: () => dispatch(reloadSiteWeeks({})),
+  handleOpen: () => dispatch(openWeeklyReportsPanel()),
 });
 
 export const SiteSummaryTable = connect(

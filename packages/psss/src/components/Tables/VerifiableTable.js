@@ -3,20 +3,16 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React, { useContext } from 'react';
-import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import Typography from '@material-ui/core/Typography';
 import MuiLink from '@material-ui/core/Link';
 import styled from 'styled-components';
-import {
-  ExpandableTableBody,
-  Table,
-  GreyOutlinedButton,
-  Button,
-  FakeHeader,
-} from '@tupaia/ui-components';
+import { ExpandableTableBody, GreyOutlinedButton, Button, FakeHeader } from '@tupaia/ui-components';
 import { VerifiableTableRow } from './VerifiableTableRow';
 import { BorderlessTableRow } from './TableTypes';
-import { EditableTableContext } from './EditableTable';
+import { EditableTable, EditableTableContext } from './EditableTable';
+import { updateWeeklyReportsData } from '../../store';
 
 const VerifiableBody = props => {
   const { tableState } = useContext(EditableTableContext);
@@ -35,8 +31,8 @@ const GreyHeader = styled(FakeHeader)`
   border: none;
 `;
 
-export const VerifiableTable = ({ tableState, setTableState }) => {
-  const { editableColumns, data, fields, metadata } = useContext(EditableTableContext);
+export const VerifiableTableComponent = ({ tableState, setTableState, onSubmit }) => {
+  const { fields } = useContext(EditableTableContext);
 
   const handleEdit = () => {
     setTableState('editable');
@@ -46,9 +42,9 @@ export const VerifiableTable = ({ tableState, setTableState }) => {
     setTableState('static');
   };
 
-  const handleSubmit = () => {
-    // POST DATA
-    console.log('updated values...', fields, metadata);
+  const handleSubmit = async () => {
+    console.log('submit updated values...', fields);
+    onSubmit(fields);
     setTableState('static');
   };
 
@@ -64,7 +60,7 @@ export const VerifiableTable = ({ tableState, setTableState }) => {
         <span>SYNDROMES</span>
         <span>TOTAL CASES</span>
       </GreyHeader>
-      <Table Header={false} Body={VerifiableBody} columns={editableColumns} data={data} />
+      <EditableTable Header={false} Body={VerifiableBody} />
       {tableState === 'editable' && (
         <LayoutRow>
           <MuiLink>Reset and use Sentinel data</MuiLink>
@@ -80,7 +76,14 @@ export const VerifiableTable = ({ tableState, setTableState }) => {
   );
 };
 
-VerifiableTable.propTypes = {
+VerifiableTableComponent.propTypes = {
   tableState: PropTypes.string.isRequired,
   setTableState: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
 };
+
+const mapDispatchToProps = dispatch => ({
+  onSubmit: data => dispatch(updateWeeklyReportsData(data)),
+});
+
+export const VerifiableTable = connect(null, mapDispatchToProps)(VerifiableTableComponent);

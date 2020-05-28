@@ -6,6 +6,7 @@
 import { createReducer } from '../utils/createReducer';
 
 // actions
+const TOGGLE_PANEL = 'TOGGLE_PANEL';
 const COUNTRY_WEEKS_LOAD_START = 'COUNTRY_WEEKS_LOAD_START';
 const COUNTRY_WEEKS_LOAD_FINISH = 'COUNTRY_WEEKS_LOAD_FINISH';
 const COUNTRY_WEEKS_LOAD_ERROR = 'COUNTRY_WEEKS_LOAD_ERROR';
@@ -52,11 +53,21 @@ export const reloadSiteWeeks = ({ fetchOptions, queryParameters }) => async (
 };
 
 export const updateWeeklyReportsData = data => async (dispatch, getState, { fakeApi }) => {
-  console.log('update data', data);
+  console.log('update data...', data);
+  dispatch(reloadCountryWeeks({}));
+  dispatch(reloadSiteWeeks({}));
 };
 
 export const confirmWeeklyReportsData = () => async (dispatch, getState, { fakeApi }) => {
   console.log('confirm data...');
+};
+
+export const openWeeklyReportsPanel = () => async dispatch => {
+  dispatch({ type: TOGGLE_PANEL, isOpen: true });
+};
+
+export const closeWeeklyReportsPanel = () => async dispatch => {
+  dispatch({ type: TOGGLE_PANEL, isOpen: false });
 };
 
 // selectors
@@ -71,6 +82,7 @@ export const checkSiteWeeksIsLoading = ({ weeklyReports }) =>
 
 // reducer
 const defaultState = {
+  panelIsOpen: false,
   activeCountryWeekId: '',
   countryWeeks: [],
   countryWeeksStatus: 'idle',
@@ -81,6 +93,9 @@ const defaultState = {
 };
 
 const actionHandlers = {
+  [TOGGLE_PANEL]: ({ isOpen }) => ({
+    panelIsOpen: isOpen,
+  }),
   [COUNTRY_WEEKS_LOAD_START]: () => ({
     countryWeeksError: defaultState.countryWeeksError,
     countryWeeksStatus: 'loading',
