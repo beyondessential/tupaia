@@ -48,10 +48,10 @@ export const filterEntities = (entities, entityFilter) => {
   Object.entries(entityFilter).forEach(([field, filterValue]) => {
     switch (field) {
       case 'attributes':
-        filteredEntities = filterEntitiesByAttributes(entities, filterValue);
+        filteredEntities = filterEntitiesByAttributes(filteredEntities, filterValue);
         break;
       default:
-        filteredEntities = filterEntitiesByField(entities, field, filterValue);
+        filteredEntities = filterEntitiesByField(filteredEntities, field, filterValue);
         break;
     }
   });
