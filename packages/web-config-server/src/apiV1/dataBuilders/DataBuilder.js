@@ -64,12 +64,13 @@ export class DataBuilder {
   }
 
   async fetchEvents(additionalQueryConfig) {
-    const { programCode, dataServices, dataSourceEntityType } = this.config;
+    const { programCode, dataServices, dataSourceEntityType, dataSourceEntityFilter } = this.config;
     const { organisationUnitCode, startDate, endDate, trackedEntityInstance, eventId } = this.query;
 
     return this.aggregator.fetchEvents(programCode, {
       dataServices,
       dataSourceEntityType,
+      dataSourceEntityFilter,
       organisationUnitCode,
       startDate,
       endDate,
