@@ -9,7 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import MuiLink from '@material-ui/core/Link';
 import { FakeHeader, Button, GreyOutlinedButton } from '@tupaia/ui-components';
 import * as COLORS from '../theme/colors';
-import { BorderlessTable, SimpleTable, DottedTable } from '../components/Tables/TableTypes';
+import { BorderlessTable, SimpleTable, DottedTable } from '../components/Tables/Table';
 import { PercentageChangeCell } from '../components/Tables/TableCellComponents';
 import { EditableTableContext, EditableTableProvider } from '../components/Tables/EditableTable';
 import { VerifiableTable } from '../components/Tables/VerifiableTable';

@@ -10,7 +10,7 @@ import MuiLink from '@material-ui/core/Link';
 import styled from 'styled-components';
 import { ExpandableTableBody, GreyOutlinedButton, Button, FakeHeader } from '@tupaia/ui-components';
 import { VerifiableTableRow } from './VerifiableTableRow';
-import { BorderlessTableRow } from './TableTypes';
+import { BorderlessTableRow } from './TableRow';
 import { EditableTable, EditableTableContext } from './EditableTable';
 import { updateWeeklyReportsData } from '../../store';
 

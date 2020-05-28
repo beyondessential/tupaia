@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import { GreyOutlinedButton, Button, FakeHeader } from '@tupaia/ui-components';
-import { DottedTableBody } from './TableTypes';
+import { DottedTableBody } from './TableBody';
 import { EditableTableContext, EditableTable } from './EditableTable';
 import { updateWeeklyReportsData } from '../../store';
 

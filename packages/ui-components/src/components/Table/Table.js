@@ -63,7 +63,6 @@ export const Table = React.memo(
       {Paginator && (
         <Paginator
           {...{
-            data,
             columns,
             page,
             count,
@@ -83,7 +82,7 @@ Table.propTypes = {
   Paginator: PropTypes.any,
   SubComponent: PropTypes.any,
   columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
-  data: PropTypes.array.isRequired,
+  data: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   errorMessage: PropTypes.string,
   noDataMessage: PropTypes.string,
   isLoading: PropTypes.bool,

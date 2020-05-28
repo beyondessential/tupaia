@@ -1,0 +1,15 @@
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+import React from 'react';
+import { TableBody, ExpandableTableBody } from '@tupaia/ui-components';
+import { SimpleTableRow, DottedTableRow, BorderlessTableRow } from './TableRow';
+
+export const SimpleTableBody = props => <TableBody TableRow={SimpleTableRow} {...props} />;
+
+export const BorderlessTableBody = props => (
+  <ExpandableTableBody TableRow={BorderlessTableRow} {...props} />
+);
+
+export const DottedTableBody = props => <TableBody TableRow={DottedTableRow} {...props} />;

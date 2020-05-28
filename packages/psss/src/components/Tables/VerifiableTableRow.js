@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import CheckCircleIcon from '@material-ui/icons/CheckCircleOutline';
 import { TableRowExpansionContainer, WarningButton } from '@tupaia/ui-components';
-import { BorderlessTableRow } from './TableTypes';
+import { BorderlessTableRow } from './TableRow';
 import { EditableTableContext } from './EditableTable';
 import * as COLORS from '../../theme/colors';
 
