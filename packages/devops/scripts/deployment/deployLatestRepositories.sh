@@ -24,6 +24,7 @@ git reset --hard origin/dev
 git checkout $BRANCH # Now try the requested branch
 git reset --hard origin/${BRANCH}
 yarn install
+yarn install # First install fails https://github.com/beyondessential/tupaia-backlog/issues/605
 
 # For each package, get the latest and deploy it
 for PACKAGE in "meditrak-server" "web-config-server" "web-frontend" "admin-panel"; do
