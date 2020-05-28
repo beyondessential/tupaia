@@ -1,5 +1,5 @@
 import { convertDateRangeToPeriodString, utcMoment, reduceToDictionary } from '@tupaia/utils';
-import { EARLIEST_DATA_DATE } from '/dhis';
+import { EARLIEST_DATA_DATE } from '/utils';
 
 export const compareValuesByDisasterDate = async (
   { dataBuilderConfig, viewJson, query },

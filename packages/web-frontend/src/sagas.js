@@ -33,6 +33,7 @@ import {
   FIND_USER_LOGGEDIN,
   FETCH_LOGOUT_SUCCESS,
   FETCH_LOGIN_SUCCESS,
+  GO_HOME,
   SET_PASSWORD_RESET_TOKEN,
   OPEN_USER_DIALOG,
   DIALOG_PAGE_REQUEST_COUNTRY_ACCESS,
@@ -943,9 +944,10 @@ function* watchAttemptAttemptDrillDown() {
   yield takeLatest(ATTEMPT_DRILL_DOWN, fetchDrillDownData);
 }
 
-function* navigateToExploreOnUserChange() {
-  // On user login/logout, we should just navigate back to explore project, as we don't know if they have permissions
-  // to the current project or organisation unit
+function* resetToExplore() {
+  // default measure will be selected once the org unit has fully changed, just clear for now
+  yield put(clearMeasure());
+  yield put(clearMeasureHierarchy());
   yield put(
     selectProject((yield select(selectProjectByCode, 'explore')) || { code: INITIAL_PROJECT_CODE }),
   );
@@ -953,8 +955,14 @@ function* navigateToExploreOnUserChange() {
 }
 
 function* watchUserChangesAndUpdatePermissions() {
-  yield takeLatest(FETCH_LOGOUT_SUCCESS, navigateToExploreOnUserChange);
-  yield takeLatest(FETCH_LOGIN_SUCCESS, navigateToExploreOnUserChange);
+  // On user login/logout, we should just navigate back to explore project, as we don't know if they have permissions
+  // to the current project or organisation unit
+  yield takeLatest(FETCH_LOGOUT_SUCCESS, resetToExplore);
+  yield takeLatest(FETCH_LOGIN_SUCCESS, resetToExplore);
+}
+
+function* watchGoHomeAndResetToExplore() {
+  yield takeLatest(GO_HOME, resetToExplore);
 }
 
 function* fetchEnlargedDialogViewContentForPeriod(action) {
@@ -1016,4 +1024,5 @@ export default [
   watchChangeOrgUnitSuccess,
   refreshBrowserWhenFinishingUserSession,
   watchFetchCountryAccessDataAndFetchItTEST,
+  watchGoHomeAndResetToExplore,
 ];

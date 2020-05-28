@@ -110,9 +110,9 @@ exports.up = async function(db) {
             dataBuilder: 'sumLatestPerMetric',
             dataBuilderConfig: {
               labels: {
-                [codes[0]]: 'Female',
-                [codes[1]]: 'Male',
-                [codes[2]]: 'Total',
+                [codes[0]]: 'Total',
+                [codes[1]]: 'Female',
+                [codes[2]]: 'Male',
               },
               dataElementCodes: codes,
               dataSourceEntityType: isProvinceLevel ? 'district' : 'sub_district',

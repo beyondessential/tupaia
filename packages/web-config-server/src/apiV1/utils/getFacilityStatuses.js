@@ -1,4 +1,9 @@
-import { getDefaultPeriod, EARLIEST_DATA_DATE } from '/dhis';
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+import { convertPeriodStringToDateRange, convertDateRangeToPeriodString } from '@tupaia/utils';
+import { getDefaultPeriod, EARLIEST_DATA_DATE } from '/utils';
 
 // Request to calculate number of operational facilities with new query
 const getFacilitiesData = async (aggregator, parentCode, period, shouldOnlyReturnCurrentStatus) => {
@@ -25,22 +30,18 @@ const getFacilitiesData = async (aggregator, parentCode, period, shouldOnlyRetur
 export const getFacilityStatuses = async (
   aggregator,
   parentCode,
-  period = getDefaultPeriod(),
+  period,
   shouldOnlyReturnCurrentStatus = false,
 ) => {
   // Have to add on earlier years to make sure that the 'LAST' aggregation type gets information
   // from them and carries them into the defined period as the most recent values, otherwise it
   // is lazy and just assumes there is no most recent value
-  let previousYears = '';
-  const currentYear = new Date().getFullYear();
-  for (let year = EARLIEST_DATA_DATE.year(); year <= currentYear; year++) {
-    previousYears = `${previousYears}${year};`;
-  }
-  const periodPlusEveryYear = `${previousYears}${period}`;
+  const [, endDate] = convertPeriodStringToDateRange(period || getDefaultPeriod());
+  const fullPeriod = convertDateRangeToPeriodString(EARLIEST_DATA_DATE, endDate);
   const facilitiesData = await getFacilitiesData(
     aggregator,
     parentCode,
-    periodPlusEveryYear,
+    fullPeriod,
     shouldOnlyReturnCurrentStatus,
   );
 
@@ -61,6 +62,13 @@ export const getFacilityStatuses = async (
     }
   });
   return operationalFacilityStatuses;
+};
+
+export const fetchOperationalFacilityCodes = async (aggregator, ancestorCode, period) => {
+  const facilityStatuses = await getFacilityStatuses(aggregator, ancestorCode, period, true);
+  return Object.entries(facilityStatuses)
+    .filter(([, isOperational]) => isOperational)
+    .map(([code]) => code);
 };
 
 export const getFacilityStatusCounts = async (aggregator, parentCode, period) => {
