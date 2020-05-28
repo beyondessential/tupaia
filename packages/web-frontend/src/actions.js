@@ -134,11 +134,9 @@ export const SELECT_DISASTER = 'SELECT_DISASTER';
 export const VIEW_DISASTER = 'VIEW_DISASTER';
 export const TOGGLE_DASHBOARD_SELECT_EXPAND = 'TOGGLE_DASHBOARD_SELECT_EXPAND';
 export const SET_MOBILE_DASHBOARD_EXPAND = 'SET_MOBILE_DASHBOARD_EXPAND';
-export const SET_PROJECT = 'SET_PROJECT';
 export const SET_PROJECT_DATA = 'SET_PROJECT_DATA';
 export const SELECT_PROJECT = 'SELECT_PROJECT';
 export const FETCH_PROJECTS_ERROR = 'FETCH_PROJECTS_ERROR';
-export const SET_PROJECT_DEFAULTS = 'SET_PROJECT_DEFAULTS';
 export const REQUEST_PROJECT_ACCESS = 'REQUEST_PROJECT_ACCESS';
 
 export function fetchInitialData() {
@@ -1170,12 +1168,5 @@ export function updateEnlargedDialogError(errorMessage) {
   return {
     type: UPDATE_ENLARGED_DIALOG_ERROR,
     errorMessage,
-  };
-}
-
-export function setExploreMode() {
-  return {
-    type: SET_PROJECT,
-    project: 'explore',
   };
 }
