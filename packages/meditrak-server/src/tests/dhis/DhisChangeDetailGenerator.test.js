@@ -34,7 +34,7 @@ const assertCorrectDetailsGenerated = async testData => {
 };
 
 describe('DhisChangeDetailGenerator', () => {
-  it('generates change details for a entities', async () => {
+  it('generates change details for entities', async () => {
     const buildTestData = ({ metadata, expectedIsDataRegional }) => ({
       change: buildChange(ENTITY, { metadata, country_code: 'DL' }),
       expectedDetails: {
