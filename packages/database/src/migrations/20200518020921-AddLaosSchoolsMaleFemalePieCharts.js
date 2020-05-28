@@ -166,9 +166,6 @@ exports.up = async function(db) {
 };
 
 exports.down = async function(db) {
-  console.log('==== 20200518020921-AddLaosSchoolsMaleFemalePieCharts:169 ====');
-  console.log('running this');
-  console.log('--------------------------------------');
   await db.runSql(`
     DELETE FROM "dashboardReport" WHERE id = '${REPORT_ID}';
 
