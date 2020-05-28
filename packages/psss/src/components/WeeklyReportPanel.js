@@ -81,8 +81,6 @@ const WeeklyReportPanelComponent = React.memo(
       return state;
     }, {});
 
-    console.log('meta data', verifiedStatus);
-
     // ------- INDICATORS TABLE --------
     const [activeSiteIndex, setActiveSiteIndex] = useState(0);
     const indicatorsData = siteWeeksData[activeSiteIndex].indicators;

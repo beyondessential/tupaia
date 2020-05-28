@@ -43,6 +43,7 @@ export const reloadSiteWeeks = ({ fetchOptions, queryParameters }) => async (
   dispatch({ type: SITE_WEEKS_LOAD_START });
 
   try {
+    // Todo: pass in active countryWeek as a param
     const { data } = await fakeApi.get(endpoint, { ...fetchOptions, ...queryParameters });
     console.log('data', data);
     dispatch({ type: SITE_WEEKS_LOAD_FINISH, data });
@@ -54,10 +55,9 @@ export const reloadSiteWeeks = ({ fetchOptions, queryParameters }) => async (
   console.log('done');
 };
 
-export const updateWeeklyReportsData = data => async (dispatch) => {
+export const updateWeeklyReportsData = data => async dispatch => {
   console.log('update data...', data);
   dispatch(reloadCountryWeeks({}));
-  dispatch(reloadSiteWeeks({}));
 };
 
 export const confirmWeeklyReportsData = () => async (dispatch, getState, { fakeApi }) => {

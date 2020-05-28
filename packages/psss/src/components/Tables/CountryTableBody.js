@@ -11,8 +11,13 @@ const TableBodyComponent = React.memo(
       {data.map((rowData, rowIndex) => {
         const key = rowData.index; // todo: use real id
         const expanded = activeCountryWeekId === key;
+
         const handleRowClick = () => {
-          toggleTableRow(key);
+          if (expanded) {
+            toggleTableRow(null);
+          } else {
+            toggleTableRow(key);
+          }
         };
         return (
           <ControlledExpandableTableRow

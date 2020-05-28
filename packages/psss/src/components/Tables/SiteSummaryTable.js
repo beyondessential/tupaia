@@ -9,12 +9,10 @@ import { connect } from 'react-redux';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import { CondensedTableBody, FakeHeader, Table, Button } from '@tupaia/ui-components';
-import { WeeklyReportPanel } from '../WeeklyReportPanel';
 import { FIRST_COLUMN_WIDTH, SITES_REPORTED_COLUMN_WIDTH } from './constants';
 import { AlertCell } from './TableCellComponents';
 import {
   getSiteWeeksError,
-  checkSiteWeeksIsLoading,
   openWeeklyReportsPanel,
   getSiteWeeks,
   reloadSiteWeeks,
@@ -94,14 +92,14 @@ const StyledDiv = styled.div`
 `;
 
 export const SiteSummaryTableComponent = React.memo(
-  ({ fetchData, data, errorMessage, handleOpen, rowData }) => {
-    const [isLoading, setIsLoading] = useState(false);
+  ({ fetchData, data, errorMessage, handleOpen }) => {
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
       (async () => {
-        // setIsLoading(true);
+        setIsLoading(true);
         await fetchData();
-        // setIsLoading(false);
+        setIsLoading(false);
       })();
     }, []);
 
@@ -119,7 +117,7 @@ export const SiteSummaryTableComponent = React.memo(
         />
         <StyledDiv>
           <Typography variant="body1">Verify data to submit Weekly report to Regional</Typography>
-          <Button onClick={() => handleOpen(rowData.id)}>Save and submit</Button>
+          <Button onClick={handleOpen}>Save and submit</Button>
         </StyledDiv>
       </React.Fragment>
     );
@@ -130,7 +128,6 @@ SiteSummaryTableComponent.propTypes = {
   fetchData: PropTypes.func.isRequired,
   handleOpen: PropTypes.func.isRequired,
   data: PropTypes.array.isRequired,
-  rowData: PropTypes.object.isRequired,
   errorMessage: PropTypes.string,
 };
 
