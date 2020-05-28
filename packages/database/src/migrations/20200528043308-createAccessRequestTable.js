@@ -21,7 +21,7 @@ exports.up = function(db) {
       user_id text REFERENCES user_account(id),
       country_id text REFERENCES country(id),
       message text,
-      permissionGroup text REFERENCES permission_group(name),
+      permission_group text REFERENCES permission_group(name),
       created_time TIMESTAMPTZ NOT NULL DEFAULT now(),
       last_modified_time TIMESTAMPTZ NOT NULL DEFAULT now()
     );

@@ -54,6 +54,12 @@ const sendRequest = (userName, countryNames, message, userGroup) => {
 
 const createAccessRequests = async (userId, countryIds, message, permissionGroup, models) => {
   for (const countryId of countryIds) {
+    await models.accessRequest.create({
+      user_id: userId,
+      country_id: countryId,
+      message,
+      permission_group: permissionGroup,
+    });
   }
 };
 
