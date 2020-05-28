@@ -1,63 +1,45 @@
 import React from 'react';
 import { ResourcePage } from './ResourcePage';
 
-const OPTION_SET_FIELDS = [
+const FIELDS = [
   {
-    Header: 'Name',
-    source: 'name',
+    Header: 'User',
+    source: 'user.email',
+  },
+  {
+    Header: 'Country',
+    source: 'country.name',
+  },
+  {
+    Header: 'Message',
+    source: 'message',
+  },
+  {
+    Header: 'Permission Group',
+    source: 'permission_group',
   },
 ];
 
-const OPTION_SET_COLUMNS = [
-  ...OPTION_SET_FIELDS,
+const COLUMNS = [
+  ...FIELDS,
   {
     Header: 'Edit',
     type: 'edit',
     source: 'id',
     actionConfig: {
-      editEndpoint: 'optionSet',
-      fields: [...OPTION_SET_FIELDS],
+      editEndpoint: 'accessRequests',
+      fields: [...FIELDS],
     },
   },
 ];
-
-const OPTION_FIELDS = [
-  {
-    Header: 'Value',
-    source: 'value',
-  },
-  {
-    Header: 'Label',
-    source: 'label',
-  },
-  {
-    Header: 'Sort Order',
-    source: 'sort_order',
-  },
-];
-
-const OPTION_COLUMNS = [
-  ...OPTION_FIELDS,
-  {
-    Header: 'Edit',
-    type: 'edit',
-    source: 'id',
-    actionConfig: {
-      editEndpoint: 'option',
-      fields: OPTION_FIELDS,
-    },
-  },
-];
-
-const EDIT_CONFIG = {
-  title: 'Edit Option Set',
-};
 
 export const AccessRequestsPage = () => (
   <ResourcePage
     title="Access Requests"
-    endpoint="optionSets"
-    columns={OPTION_SET_COLUMNS}
-    editConfig={EDIT_CONFIG}
+    endpoint="accessRequests"
+    columns={COLUMNS}
+    editConfig={{
+      title: 'Approve/Edit Access Request',
+    }}
   />
 );
