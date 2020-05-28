@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 10.12
--- Dumped by pg_dump version 10.12
+-- Dumped from database version 9.6.17
+-- Dumped by pg_dump version 9.6.17
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -244,6 +244,47 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
+-- Name: access_request; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.access_request (
+    id text NOT NULL,
+    user_id text,
+    country_id text,
+    message text,
+    permissiongroup text,
+    created_time timestamp with time zone DEFAULT now() NOT NULL,
+    last_modified_time timestamp with time zone DEFAULT now() NOT NULL
+);
+
+
+--
+-- Name: alert; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.alert (
+    id text NOT NULL,
+    entity_id text,
+    data_element_id text,
+    start_time timestamp with time zone DEFAULT now() NOT NULL,
+    end_time timestamp with time zone,
+    event_confirmed_time timestamp with time zone,
+    archived boolean DEFAULT false
+);
+
+
+--
+-- Name: alert_comment; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.alert_comment (
+    id text NOT NULL,
+    alert_id text,
+    comment_id text
+);
+
+
+--
 -- Name: answer; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -310,6 +351,19 @@ CREATE TABLE public.clinic (
     type text,
     category_code character varying(3),
     type_name character varying(30)
+);
+
+
+--
+-- Name: comment; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.comment (
+    id text NOT NULL,
+    user_id text,
+    created_time timestamp with time zone DEFAULT now() NOT NULL,
+    last_modified_time timestamp with time zone DEFAULT now() NOT NULL,
+    text text NOT NULL
 );
 
 
@@ -963,6 +1017,30 @@ ALTER TABLE ONLY public.migrations ALTER COLUMN id SET DEFAULT nextval('public.m
 
 
 --
+-- Name: access_request access_request_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: alert_comment alert_comment_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.alert_comment
+    ADD CONSTRAINT alert_comment_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: alert alert_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.alert
+    ADD CONSTRAINT alert_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: answer answer_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1016,6 +1094,14 @@ ALTER TABLE ONLY public.clinic
 
 ALTER TABLE ONLY public.clinic
     ADD CONSTRAINT clinic_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: comment comment_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.comment
+    ADD CONSTRAINT comment_pkey PRIMARY KEY (id);
 
 
 --
@@ -1839,6 +1925,20 @@ CREATE INDEX user_country_permission_user_id_idx ON public.user_country_permissi
 
 
 --
+-- Name: alert_comment alert_comment_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER alert_comment_trigger AFTER INSERT OR DELETE OR UPDATE ON public.alert_comment FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
+-- Name: alert alert_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER alert_trigger AFTER INSERT OR DELETE OR UPDATE ON public.alert FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
 -- Name: answer answer_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -1857,6 +1957,13 @@ CREATE TRIGGER api_client_trigger AFTER INSERT OR DELETE OR UPDATE ON public.api
 --
 
 CREATE TRIGGER clinic_trigger AFTER INSERT OR DELETE OR UPDATE ON public.clinic FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
+-- Name: comment comment_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER comment_trigger AFTER INSERT OR DELETE OR UPDATE ON public.comment FOR EACH ROW EXECUTE PROCEDURE public.notification();
 
 
 --
@@ -2105,6 +2212,62 @@ CREATE TRIGGER user_reward_trigger AFTER INSERT OR DELETE OR UPDATE ON public.us
 
 
 --
+-- Name: access_request access_request_country_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_country_id_fkey FOREIGN KEY (country_id) REFERENCES public.country(id);
+
+
+--
+-- Name: access_request access_request_permissiongroup_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_permissiongroup_fkey FOREIGN KEY (permissiongroup) REFERENCES public.permission_group(name);
+
+
+--
+-- Name: access_request access_request_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user_account(id);
+
+
+--
+-- Name: alert_comment alert_comment_alert_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.alert_comment
+    ADD CONSTRAINT alert_comment_alert_id_fkey FOREIGN KEY (alert_id) REFERENCES public.alert(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: alert_comment alert_comment_comment_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.alert_comment
+    ADD CONSTRAINT alert_comment_comment_id_fkey FOREIGN KEY (comment_id) REFERENCES public.comment(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: alert alert_data_element_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.alert
+    ADD CONSTRAINT alert_data_element_id_fkey FOREIGN KEY (data_element_id) REFERENCES public.data_source(id);
+
+
+--
+-- Name: alert alert_entity_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.alert
+    ADD CONSTRAINT alert_entity_id_fkey FOREIGN KEY (entity_id) REFERENCES public.entity(id);
+
+
+--
 -- Name: answer answer_question_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2150,6 +2313,14 @@ ALTER TABLE ONLY public.clinic
 
 ALTER TABLE ONLY public.clinic
     ADD CONSTRAINT clinic_geographical_area_id_fkey FOREIGN KEY (geographical_area_id) REFERENCES public.geographical_area(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+--
+-- Name: comment comment_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.comment
+    ADD CONSTRAINT comment_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user_account(id);
 
 
 --
@@ -2480,8 +2651,8 @@ ALTER TABLE ONLY public.user_reward
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 10.12
--- Dumped by pg_dump version 10.12
+-- Dumped from database version 9.6.17
+-- Dumped by pg_dump version 9.6.17
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -3198,32 +3369,35 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 655	/20200505222240-updateTongaPehsMatrixIncFacType	2020-05-12 05:53:43.305
 656	/20200506040950-UpdateSumPerPeriodDataBuilderConfigInReports	2020-05-12 05:53:43.985
 657	/20200507033858-AddAttributesToEntityTable	2020-05-12 05:53:54.462
-658	/20200424054821-ShiftAnnualFanafanaolaDashboardsToShowPreviousYearData	2020-05-12 15:05:08.076
-659	/20200326052907-AddStriveReportFebrileIllnessAndRDTPositive	2020-05-13 01:06:15.754
-660	/20200405234315-AddStriveReportFebrileCasesByWeek	2020-05-13 01:06:15.891
-661	/20200406010511-AddRDTTotalTestsVsPercentagePositiveComposedReportStrive	2020-05-13 01:06:15.988
-662	/20200406013942-AddStriveVillageFebrileIllessDiscreteShadedPolygonsMapOverlay	2020-05-13 01:06:16.026
-663	/20200406061858-AddStriveVillagePercentMRDTPositiveShadedSpectrumMapOverlay	2020-05-13 01:06:16.048
-664	/20200407044756-Add3TypeOfStriveVillagePercentMRDTPositiveShadedSpectrumMapOverlay	2020-05-13 01:06:16.117
-665	/20200408002104-AddStriveFacilityRadiusOverlayTestNumber	2020-05-13 01:06:16.197
-666	/20200408044353-Add4StriveMapOverlays	2020-05-13 01:06:16.39
-667	/20200414065121-AddStriveOverlayPercentmRDTPositiveAndTestsSourceWTF	2020-05-13 01:06:16.494
-668	/20200415034908-AddStriveOverlayAllCasesByFacilityBubbleCRF	2020-05-13 01:06:16.571
-669	/20200504025438-UseNumberValueForDataValueFilter	2020-05-13 01:06:16.747
-670	/20200504065336-UseNumberForValueFilterInOverlays	2020-05-13 01:06:16.844
-671	/20200512023653-UseNumberForValueFilterInReports	2020-05-13 01:06:16.909
-672	/20200513022041-UpdateRdtTestsTotalConfig	2020-05-13 02:44:47.531
-673	/20200430065532-AddTongaNotifiableDiseasesStackedBar	2020-05-13 04:29:38.751
-674	/20200505233853-AddTongaIsolationAdmissionsInitialDiagnosisStackedBar	2020-05-13 04:29:38.902
-675	/20200505234922-AddTongaSuspectedCasesNotifiableDiseasesStackedBar	2020-05-13 04:29:39.015
-676	/20200506001638-AddTongaContactsTracedStackedBar	2020-05-13 04:29:39.148
-677	/20200506041900-AddLabConfirmedSTICasesPerMonthReport	2020-05-13 04:29:39.228
-678	/20200504224323-AddSchoolEntityType	2020-05-13 05:32:21.564
-679	/20200505015116-AddEntityHierarchyIdToProjectTable	2020-05-13 16:13:23.862
-680	/20200506031906-ChangeRootEntityToProjects	2020-05-13 16:13:24.123
-681	/20200506224325-AddLaosSchoolsProject	2020-05-13 16:13:24.19
-682	/20200507020955-AddLaosSchoolAlternativeHierarchyRelations	2020-05-13 16:13:30.319
-683	/20200507070444-AddLaosSchoolsSchoolTypeMapOverlay	2020-05-13 17:58:12.839
+658	/20200326052907-AddStriveReportFebrileIllnessAndRDTPositive	2020-05-13 03:13:08.331
+659	/20200405234315-AddStriveReportFebrileCasesByWeek	2020-05-13 03:13:08.484
+660	/20200406010511-AddRDTTotalTestsVsPercentagePositiveComposedReportStrive	2020-05-13 03:13:08.623
+661	/20200406013942-AddStriveVillageFebrileIllessDiscreteShadedPolygonsMapOverlay	2020-05-13 03:13:08.687
+662	/20200406061858-AddStriveVillagePercentMRDTPositiveShadedSpectrumMapOverlay	2020-05-13 03:13:08.745
+663	/20200407044756-Add3TypeOfStriveVillagePercentMRDTPositiveShadedSpectrumMapOverlay	2020-05-13 03:13:08.84
+664	/20200408002104-AddStriveFacilityRadiusOverlayTestNumber	2020-05-13 03:13:09.046
+665	/20200408044353-Add4StriveMapOverlays	2020-05-13 03:13:09.378
+666	/20200414065121-AddStriveOverlayPercentmRDTPositiveAndTestsSourceWTF	2020-05-13 03:13:09.515
+667	/20200415034908-AddStriveOverlayAllCasesByFacilityBubbleCRF	2020-05-13 03:13:09.593
+668	/20200424054821-ShiftAnnualFanafanaolaDashboardsToShowPreviousYearData	2020-05-13 03:13:09.662
+669	/20200504025438-UseNumberValueForDataValueFilter	2020-05-13 03:13:09.751
+670	/20200504065336-UseNumberForValueFilterInOverlays	2020-05-13 03:13:09.834
+671	/20200512023653-UseNumberForValueFilterInReports	2020-05-13 03:13:09.938
+672	/20200513022041-UpdateRdtTestsTotalConfig	2020-05-13 03:13:10.011
+673	/20200430065532-AddTongaNotifiableDiseasesStackedBar	2020-05-13 05:15:17.737
+674	/20200505233853-AddTongaIsolationAdmissionsInitialDiagnosisStackedBar	2020-05-13 05:15:18.125
+675	/20200505234922-AddTongaSuspectedCasesNotifiableDiseasesStackedBar	2020-05-13 05:15:18.248
+676	/20200506001638-AddTongaContactsTracedStackedBar	2020-05-13 05:15:18.376
+677	/20200506041900-AddLabConfirmedSTICasesPerMonthReport	2020-05-13 05:15:18.471
+678	/20200429021341-AddUNFPAReproductiveHealthProductsMonthOfStockReport	2020-05-17 15:05:50.269
+679	/20200504224323-AddSchoolEntityType	2020-05-17 15:05:52.781
+680	/20200428025025-createAlertsTable	2020-05-18 14:49:47.768
+681	/20200416023232-ShiftFanafanaolaDashboardsToShowPreviousMonthData	2020-05-28 16:21:45.402
+682	/20200503063358-AddTongaDHIS2HealthCertificatesDistributedReport	2020-05-28 16:21:45.733
+683	/20200505015116-AddEntityHierarchyIdToProjectTable	2020-05-28 16:21:45.803
+684	/20200506031906-ChangeRootEntityToProjects	2020-05-28 16:21:45.918
+685	/20200506224325-AddLaosSchoolsProject	2020-05-28 16:21:46.017
+687	/20200212052756-RemoveRedundantQuestionsWish	2020-05-28 16:37:34.861
 \.
 
 
@@ -3231,7 +3405,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 683, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 687, true);
 
 
 --
