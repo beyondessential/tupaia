@@ -13,7 +13,6 @@ import SearchIcon from '@material-ui/icons/Search';
 import UserIcon from '@material-ui/icons/AccountCircle';
 
 import logo from '../../../images/tupaia-logo-white.png';
-import { goHome } from '../../../actions';
 import { WHITE } from '../../../styles';
 
 const Header = styled.div`
@@ -53,13 +52,7 @@ export const TopBar = ({
 }) => {
   return (
     <Header>
-      <a
-        href="/"
-        onClick={e => {
-          e.preventDefault();
-          goHome();
-        }}
-      >
+      <a href="/">
         <img src={logo} alt="Tupaia logo" width="70" height="30" />
       </a>
       <Toolbar>

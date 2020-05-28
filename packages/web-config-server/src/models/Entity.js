@@ -184,13 +184,9 @@ export class Entity extends BaseModel {
     return Entity.hierarchyBuilder.getDescendants(this.id, hierarchyId);
   }
 
-  async getFacilities(hierarchyId) {
-    return this.getDescendantsOfType(ENTITY_TYPES.FACILITY, hierarchyId);
-  }
-
   static async getFacilitiesOfOrgUnit(organisationUnitCode) {
     const entity = await Entity.findOne({ code: organisationUnitCode });
-    return entity ? entity.getFacilities() : [];
+    return entity ? entity.getDescendantsOfType(ENTITY_TYPES.FACILITY) : [];
   }
 
   async getAncestorOfType(entityType) {
