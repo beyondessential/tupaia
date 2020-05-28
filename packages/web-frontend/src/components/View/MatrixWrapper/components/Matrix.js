@@ -344,7 +344,7 @@ export class Matrix extends PureComponent {
     const [rootRows, childRows] = partition(rows, { categoryId: parent });
 
     return rootRows
-      .map(({ description, category, categoryId, ...cellData }, index) => {
+      .map(({ description, category, categoryId, rowInfo, ...cellData }, index) => {
         const rowKey = `${description}_${index}`;
         const isRowHighlighted = rowKey === highlightedRow;
 
@@ -425,6 +425,7 @@ export class Matrix extends PureComponent {
             isPreviousColumnEnabled={this.isPreviousColumnEnabled()}
             isUsingDots={this.getIsUsingDots(presentationOptions)}
             styles={styles}
+            rowInfo={rowInfo}
           />
         );
       })
