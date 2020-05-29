@@ -13,7 +13,6 @@ const EditableTextField = styled(TextField)`
   right: 1px;
 
   .MuiInputBase-input {
-    text-align: center;
     font-size: 15px;
     line-height: 18px;
     padding: 0.5rem;
@@ -44,21 +43,22 @@ const LOADING = 'loading';
 const EditableCell = React.memo(({ id, columnKey }) => {
   const { fields, handleFieldChange, tableState } = useContext(EditableTableContext);
   const key = `${id}-${columnKey}`;
+  const value = fields[key];
+
+  if (!value) {
+    return null;
+  }
+
   if (tableState === EDITABLE) {
     return (
-      <EditableTextField
-        name={columnKey}
-        value={fields[key]}
-        onChange={handleFieldChange}
-        id={key}
-      />
+      <EditableTextField name={columnKey} value={value} onChange={handleFieldChange} id={key} />
     );
   }
 
   return (
     <ReadOnlyTextField
       name="cases"
-      value={fields[key]}
+      value={value}
       onChange={handleFieldChange}
       id={key}
       InputProps={{ readOnly: true }}

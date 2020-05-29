@@ -66,12 +66,15 @@ const columns = [
   },
 ];
 
+const STATIC = 'static';
+const EDITABLE = 'editable';
+
 const SubmitButton = ({ setTableState }) => {
   const { fields, metadata } = useContext(EditableTableContext);
 
   const handleSubmit = () => {
     console.log('updated values...', fields, metadata);
-    setTableState('static');
+    setTableState(STATIC);
   };
   return <Button onClick={handleSubmit}>Save</Button>;
 };
@@ -87,22 +90,22 @@ const EditableTableComponent = () => {
 
 export const editableTable = () => {
   const { loading, data } = useTableData();
-  const [tableState, setTableState] = useState('static');
+  const [tableState, setTableState] = useState(STATIC);
   const tableData = data.slice(0, 10);
 
   const handleEditClick = () => {
-    setTableState('editable');
+    setTableState(EDITABLE);
   };
 
   const handleCancel = () => {
-    setTableState('static');
+    setTableState(STATIC);
   };
 
   return (
     <Container>
       <LayoutRow>
         <Typography variant="h6">Editable Table</Typography>
-        <GreyOutlinedButton onClick={handleEditClick} disabled={tableState === 'editable'}>
+        <GreyOutlinedButton onClick={handleEditClick} disabled={tableState === EDITABLE}>
           Edit
         </GreyOutlinedButton>
       </LayoutRow>
@@ -111,7 +114,7 @@ export const editableTable = () => {
       ) : (
         <EditableTableProvider columns={columns} data={tableData} tableState={tableState}>
           <EditableTableComponent />
-          {tableState === 'editable' && (
+          {tableState === EDITABLE && (
             <LayoutRow>
               <MuiLink>Reset and use Sentinel data</MuiLink>
               <div>

@@ -5,7 +5,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
-import { Button, Table, FakeHeader, CondensedTableBody } from '../../src';
+import { Button, Table, ExpandableTable, FakeHeader, CondensedTableBody } from '../../src';
 import { useTableData } from '../story-utils/useTableData';
 import * as COLORS from '../story-utils/theme/colors';
 
@@ -96,7 +96,12 @@ export const expandableTable = () => {
 
   return (
     <Container>
-      <Table columns={columns} data={data} loading={loading} SubComponent={SubComponent} />
+      <ExpandableTable
+        columns={columns}
+        data={data}
+        loading={loading}
+        SubComponent={SubComponent}
+      />
     </Container>
   );
 };
