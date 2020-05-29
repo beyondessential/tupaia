@@ -2,7 +2,7 @@
  * Tupaia Config Server
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
-import { getDefaultPeriod } from '/dhis/getDefaultPeriod';
+import { getDefaultPeriod } from '/utils';
 import { Entity } from '/models';
 
 export class QueryBuilder {

@@ -30,7 +30,7 @@ export class BooleanValueByDataElementsBuilder extends DataBuilder {
   }
 }
 const wrapResults = responseObject => {
-  Object.keys(responseObject).map(key => ({
+  return Object.keys(responseObject).map(key => ({
     name: key,
     value: responseObject[key],
   }));
