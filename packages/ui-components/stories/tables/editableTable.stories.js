@@ -91,7 +91,7 @@ SubmitButton.propTypes = {
 
 export const editableTable = () => {
   const { loading, data } = useTableData();
-  const [tableState, setTableState] = useState(LOADING);
+  const [tableState, setTableState] = useState(STATIC);
   const tableData = data.slice(0, 10);
 
   useEffect(() => {
