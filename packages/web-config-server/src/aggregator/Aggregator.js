@@ -25,10 +25,11 @@ export class Aggregator extends BaseAggregator {
   }
 
   async fetchEvents(programCode, originalQuery, replacementValues) {
-    const queryBuilder = new QueryBuilder(originalQuery, replacementValues, this.routeHandler);
-    await queryBuilder.fetchAndReplaceOrgUnitCodes();
+    const queryBuilder = new QueryBuilder(originalQuery, replacementValues, {}, this.routeHandler);
+    const dataSourceEntities = await queryBuilder.fetchAndReplaceOrgUnitCodes();
     queryBuilder.makeEventReplacements();
+    queryBuilder.buildAggregationOptions(dataSourceEntities);
 
-    return super.fetchEvents(programCode, queryBuilder.query);
+    return super.fetchEvents(programCode, queryBuilder.query, queryBuilder.aggregationOptions);
   }
 }

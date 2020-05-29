@@ -3,11 +3,10 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import groupBy from 'lodash.groupby';
+import keyBy from 'lodash.keyBy';
 
 import { divideValues } from '/apiV1/dataBuilders/helpers';
 import { fetchComposedData } from '/apiV1/measureBuilders/helpers';
-import { Entity } from '/models';
 
 /**
  * Configuration schema
@@ -42,15 +41,13 @@ export const composePercentagePerOrgUnit = async (aggregator, dhisApi, query, co
 
   const responses = await fetchComposedData(aggregator, dhisApi, query, config, entity);
   console.log(responses);
-  const numeratorsByOrgUnit = groupBy(responses.numerator, 'organisationUnitCode');
-  const denominatorsByOrgUnit = groupBy(responses.denominator, 'organisationUnitCode');
+  const numeratorsByOrgUnit = keyBy(responses.numerator, 'organisationUnitCode');
+  const denominatorsByOrgUnit = keyBy(responses.denominator, 'organisationUnitCode');
 
   const fractionsByOrgUnit = {};
   Object.keys(numeratorsByOrgUnit).forEach(orgUnit => {
-    const { [dataElementCode]: numeratorValue } =
-      sumMeasureData(numeratorsByOrgUnit[orgUnit]) || {};
-    const { [dataElementCode]: denominatorValue } =
-      sumMeasureData(denominatorsByOrgUnit[orgUnit]) || {};
+    const { [dataElementCode]: numeratorValue } = numeratorsByOrgUnit[orgUnit] || {};
+    const { [dataElementCode]: denominatorValue } = denominatorsByOrgUnit[orgUnit] || {};
 
     const fraction = divideValues(numeratorValue, denominatorValue, fractionType);
 
@@ -65,13 +62,4 @@ export const composePercentagePerOrgUnit = async (aggregator, dhisApi, query, co
   });
 
   return Object.values(fractionsByOrgUnit);
-};
-
-const sumMeasureData = measureData => {
-  if (!measureData) return null;
-  let summedValue = 0;
-  measureData.forEach(({ value }) => {
-    summedValue += value;
-  });
-  return { ...measureData[0], value: summedValue };
 };

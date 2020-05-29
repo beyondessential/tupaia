@@ -12,7 +12,7 @@ import {
   sumEachDataElement,
   sumPreviousPerPeriod,
   sumPerOrgGroup,
-  replaceChildrenPerOrgGroup,
+  replaceOrgUnitWithOrgGroup,
 } from './aggregations';
 
 export const aggregateAnalytics = (
@@ -78,7 +78,7 @@ export const aggregateAnalytics = (
     case AGGREGATION_TYPES.SUM_YES_PER_ORG_GROUP:
       return sumPerOrgGroup(analytics, aggregationConfig, value => (value === 'Yes' ? 1 : 0));
     case AGGREGATION_TYPES.REPLACE_ORG_UNIT_WITH_ORG_GROUP:
-      return replaceChildrenPerOrgGroup(analytics, aggregationConfig);
+      return replaceOrgUnitWithOrgGroup(analytics, aggregationConfig);
     case AGGREGATION_TYPES.RAW:
     default:
       return analytics;

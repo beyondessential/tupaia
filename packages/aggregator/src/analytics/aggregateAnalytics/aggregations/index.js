@@ -8,4 +8,4 @@ export { getFinalValuePerPeriod } from './getFinalValuePerPeriod';
 export { sumAcrossPeriods } from './sumAcrossPeriods';
 export { sumEachDataElement } from './sumEachDataElement';
 export { sumPreviousPerPeriod } from './sumPreviousPerPeriod';
-export { sumPerOrgGroup, replaceChildrenPerOrgGroup } from './sumPerOrgGroup';
+export { sumPerOrgGroup, replaceOrgUnitWithOrgGroup } from './sumPerOrgGroup';

@@ -12,7 +12,7 @@ const orgUnitMap = {
   org3: 'parent1',
 };
 
-describe.only('sumPerOrgGroup()', () => {
+describe('sumPerOrgGroup()', () => {
   it('should do nothing without orgUnitMap', () => {
     const testAnalytics = [
       { dataElement: 'element1', organisationUnit: 'org1', period: '20200101', value: 1 },

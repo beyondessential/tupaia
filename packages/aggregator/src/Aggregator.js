@@ -9,6 +9,7 @@ import {
   periodFromAnalytics,
   getPeriodForDataBroker,
 } from './analytics';
+import { aggregateEvents } from './events';
 import { AGGREGATION_TYPES } from './aggregationTypes';
 
 export class Aggregator {
@@ -33,7 +34,6 @@ export class Aggregator {
 
   processAnalytics = (analytics, aggregationOptions, requestedPeriod) => {
     const { aggregationType, aggregationConfig, filter } = aggregationOptions;
-    console.log(aggregationOptions);
 
     const aggregations = aggregationOptions.aggregations || [
       { type: aggregationType, config: aggregationConfig },
@@ -53,7 +53,6 @@ export class Aggregator {
   };
 
   async fetchAnalytics(codeInput, fetchOptions, aggregationOptions = {}) {
-    console.log(codeInput, aggregationOptions);
     const { organisationUnitCode, organisationUnitCodes } = fetchOptions;
     if (!organisationUnitCode && (!organisationUnitCodes || !organisationUnitCodes.length)) {
       // No organisation unit code, return empty response
@@ -79,6 +78,7 @@ export class Aggregator {
       ...periodForDataBroker,
     });
 
+    console.log('Analytics', results && results[0]);
     return {
       results: this.processAnalytics(results, aggregationOptions, period),
       metadata,
@@ -86,13 +86,22 @@ export class Aggregator {
     };
   }
 
-  async fetchEvents(code, fetchOptions) {
+  async fetchEvents(code, fetchOptions, aggregationOptions = {}) {
     const { organisationUnitCode, organisationUnitCodes } = fetchOptions;
     if (!organisationUnitCode && (!organisationUnitCodes || !organisationUnitCodes.length)) {
       return [];
     }
     const dataSourceSpec = { code, type: this.dataSourceTypes.DATA_GROUP };
-    return this.dataBroker.pull(dataSourceSpec, fetchOptions);
+    const events = await this.dataBroker.pull(dataSourceSpec, fetchOptions);
+    console.log('Events', events && events[0].orgUnit);
+    const aggregations = aggregationOptions.aggregations || [];
+    const aggregatedEvents = aggregations.reduce(
+      (partiallyAggregatedEvents, { type, config }) =>
+        aggregateEvents(partiallyAggregatedEvents, type, config),
+      events,
+    );
+    console.log('Events 2', aggregations, events && events[0].orgUnit);
+    return aggregatedEvents;
   }
 
   async fetchDataElements(codes, fetchOptions) {

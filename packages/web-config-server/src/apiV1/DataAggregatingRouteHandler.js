@@ -46,24 +46,17 @@ export class DataAggregatingRouteHandler extends RouteHandler {
     return dataSourceEntities.filter(e => countryAccess[e.country_code]);
   };
 
-  // Will return a map for every org unit (regardless of type) in analytics to its ancestor of type aggregationEntityType
+  // Will return a map for every org unit (regardless of type) in orgUnits to its ancestor of type aggregationEntityType
   getOrgUnitToAncestorMap = async (orgUnits, aggregationEntityType) => {
-    if (!aggregationEntityType || aggregationEntityType === this.dataSourceEntityType) {
-      return {};
-    }
     if (!orgUnits || orgUnits.length === 0) return {};
     const orgUnitToAncestor = {};
     const addOrgUnitToMap = async orgUnit => {
-      if (orgUnit && orgUnit.type !== this.aggregationEntityType) {
-        const ancestor = await orgUnit.getAncestorOfType(this.aggregationEntityType);
+      if (orgUnit && orgUnit.type !== aggregationEntityType) {
+        const ancestor = await orgUnit.getAncestorOfType(aggregationEntityType);
         if (ancestor) {
-          orgUnitToAncestor[orgUnit.code] = ancestor.code;
-        } else {
-          orgUnitToAncestor[orgUnit.code] = orgUnit.code; // Not sure about these defaults, should we let it error, maybe set it to a constant?
-        }
-      } else {
-        orgUnitToAncestor[orgUnit.code] = orgUnit.code; // Not sure about these defaults, should we let it error, maybe set it to a constant?
-      }
+          orgUnitToAncestor[orgUnit.code] = { code: ancestor.code, name: ancestor.name };
+        } // Not sure about these defaults, should we let it error, maybe set it to a constant?
+      } // Not sure about these defaults, should we let it error, maybe set it to a constant?
     };
     await Promise.all(orgUnits.map(orgUnit => addOrgUnitToMap(orgUnit)));
     return orgUnitToAncestor;
@@ -72,7 +65,10 @@ export class DataAggregatingRouteHandler extends RouteHandler {
   fetchEntityAggregationConfig = async dataSourceEntities => {
     if (this.aggregationEntityType === this.dataSourceEntityType) return false;
     const entityAggregationType = this.entityAggregationType || DEFAULT_ENTITY_AGGREGATION_TYPE;
-    const orgUnitMap = await this.getOrgUnitToAncestorMap(dataSourceEntities, this.aggregationEntityType);
+    const orgUnitMap = await this.getOrgUnitToAncestorMap(
+      dataSourceEntities,
+      this.aggregationEntityType,
+    );
     return { type: entityAggregationType, config: { orgUnitMap } };
   };
 
@@ -85,7 +81,9 @@ export class DataAggregatingRouteHandler extends RouteHandler {
     } = config;
 
     this.aggregationEntityType = aggregationEntityType || this.entity.type || DEFAULT_ENTITY_TYPE;
-    this.dataSourceEntityType = dataSourceEntityType || (this.aggregationEntityType === 'project' ? 'country' : this.aggregationEntityType);
+    this.dataSourceEntityType =
+      dataSourceEntityType ||
+      (this.aggregationEntityType === 'project' ? 'country' : this.aggregationEntityType);
     this.entityAggregationType = entityAggregationType;
 
     return restOfConfig;

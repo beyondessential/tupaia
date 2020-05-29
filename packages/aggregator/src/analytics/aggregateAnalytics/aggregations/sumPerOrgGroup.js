@@ -12,9 +12,6 @@
  */
 export const sumPerOrgGroup = (analytics, aggregationConfig, valueMapper = value => value) => {
   const { orgUnitMap = {} } = aggregationConfig;
-  console.log('Aggregating:');
-  console.log(Object.entries(orgUnitMap) && Object.entries(orgUnitMap)[0]);
-  console.log(analytics && analytics[0]);
   const summedAnalytics = [];
   analytics.forEach(responseElement => {
     const organisationUnit =
@@ -27,17 +24,15 @@ export const sumPerOrgGroup = (analytics, aggregationConfig, valueMapper = value
     // If there are no matching response elements already being returned, add it
     const value = valueMapper(responseElement.value);
     if (indexOfEquivalentResponseElement < 0) {
-      console.log('added', value);
       summedAnalytics.push({ ...responseElement, value, organisationUnit });
     } else {
-      console.log('it is working', value);
       summedAnalytics[indexOfEquivalentResponseElement].value += value;
     }
   });
   return summedAnalytics;
 };
 
-export const replaceChildrenPerOrgGroup = (analytics, aggregationConfig) => {
+export const replaceOrgUnitWithOrgGroup = (analytics, aggregationConfig) => {
   const { orgUnitMap } = aggregationConfig;
   return analytics.map(responseElement => {
     const organisationUnit = orgUnitMap[responseElement.organisationUnit];
