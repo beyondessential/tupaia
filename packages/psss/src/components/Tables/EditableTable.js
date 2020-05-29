@@ -37,18 +37,20 @@ const ReadOnlyTextField = styled(EditableTextField)`
 
 export const EditableTableContext = createContext({});
 
-const EditableCell = ({ id, columnKey }) => {
+const STATIC = 'static';
+const EDITABLE = 'editable';
+const LOADING = 'loading';
+
+const EditableCell = React.memo(({ id, columnKey }) => {
   const { fields, handleFieldChange, tableState } = useContext(EditableTableContext);
   const key = `${id}-${columnKey}`;
-  if (tableState === 'editable') {
+  if (tableState === EDITABLE) {
     return (
       <EditableTextField
-        type="number"
         name={columnKey}
         value={fields[key]}
         onChange={handleFieldChange}
         id={key}
-        key={key}
       />
     );
   }
@@ -62,13 +64,16 @@ const EditableCell = ({ id, columnKey }) => {
       InputProps={{ readOnly: true }}
     />
   );
-};
+});
 
 EditableCell.propTypes = {
   id: PropTypes.string.isRequired,
   columnKey: PropTypes.string.isRequired,
 };
 
+/*
+ * Make the editable data into a a flat object of key value paris
+ */
 const makeInitialFormState = (columns, data) => {
   return columns.reduce((state, column) => {
     if (column.editable) {
@@ -85,6 +90,9 @@ const makeInitialFormState = (columns, data) => {
   }, {});
 };
 
+/*
+ * Add the EditableCell Cell Component to columns marked as editable
+ */
 const makeEditableColumns = columns => {
   return columns.map(column => {
     if (column.editable) {
@@ -95,6 +103,7 @@ const makeEditableColumns = columns => {
   });
 };
 
+// Todo: prevState
 const useFormFields = initialState => {
   const [fields, setValues] = useState(initialState);
   return [
@@ -109,38 +118,41 @@ const useFormFields = initialState => {
   ];
 };
 
-export const EditableTableProvider = ({ columns, data, tableState, initialMetadata, children }) => {
-  const initialState = makeInitialFormState(columns, data);
-  const editableColumns = makeEditableColumns(columns);
-  const [fields, handleFieldChange, setValues] = useFormFields(initialState);
-  const [metadata, setMetadata] = useState(initialMetadata);
+export const EditableTableProvider = React.memo(
+  ({ columns, data, tableState, initialMetadata, children }) => {
+    const initialState = makeInitialFormState(columns, data);
+    const editableColumns = makeEditableColumns(columns);
+    const [fields, handleFieldChange, setValues] = useFormFields(initialState);
+    const [metadata, setMetadata] = useState(initialMetadata);
 
-  useEffect(() => {
-    if (tableState !== 'editing') {
-      setValues(initialState);
-      setMetadata(initialMetadata);
-    }
-  }, [data]); // determine best dependency array without creating infinite loop
+    useEffect(() => {
+      // loading must change after initial state is set
+      if (tableState === LOADING) {
+        setValues(initialState);
+        setMetadata(initialMetadata);
+      }
+    }, [data]);
 
-  return (
-    <EditableTableContext.Provider
-      value={{
-        fields,
-        handleFieldChange,
-        tableState,
-        editableColumns,
-        data,
-        metadata,
-        setMetadata,
-      }}
-    >
-      {children}
-    </EditableTableContext.Provider>
-  );
-};
+    return (
+      <EditableTableContext.Provider
+        value={{
+          fields,
+          handleFieldChange,
+          tableState,
+          editableColumns,
+          data,
+          metadata,
+          setMetadata,
+        }}
+      >
+        {children}
+      </EditableTableContext.Provider>
+    );
+  },
+);
 
 EditableTableProvider.propTypes = {
-  tableState: PropTypes.PropTypes.oneOf(['static', 'editable', 'loading']).isRequired,
+  tableState: PropTypes.PropTypes.oneOf([STATIC, EDITABLE, LOADING]).isRequired,
   children: PropTypes.any.isRequired,
   columns: PropTypes.arrayOf(
     PropTypes.shape({

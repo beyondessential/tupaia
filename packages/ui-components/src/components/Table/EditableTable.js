@@ -5,7 +5,11 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Typography from '@material-ui/core/Typography';
 import { TextField } from '../Inputs';
+import { Table } from './Table';
+import * as COLORS from '../../../stories/story-utils/theme/colors';
 
 const EditableTextField = styled(TextField)`
   margin: 0;
@@ -13,7 +17,7 @@ const EditableTextField = styled(TextField)`
   right: 1px;
 
   .MuiInputBase-input {
-    text-align: center;
+    //text-align: center;
     font-size: 15px;
     line-height: 18px;
     padding: 0.5rem;
@@ -40,10 +44,16 @@ export const EditableTableContext = createContext({});
 const STATIC = 'static';
 const EDITABLE = 'editable';
 const LOADING = 'loading';
+const SAVING = 'saving';
 
 const EditableCell = React.memo(({ id, columnKey }) => {
   const { fields, handleFieldChange, tableState } = useContext(EditableTableContext);
   const key = `${id}-${columnKey}`;
+
+  if (!fields[key]) {
+    return null;
+  }
+
   if (tableState === EDITABLE) {
     return (
       <EditableTextField
@@ -103,6 +113,7 @@ const makeEditableColumns = columns => {
   });
 };
 
+// Todo: prevState
 const useFormFields = initialState => {
   const [fields, setValues] = useState(initialState);
   return [
@@ -151,7 +162,7 @@ export const EditableTableProvider = React.memo(
 );
 
 EditableTableProvider.propTypes = {
-  tableState: PropTypes.PropTypes.oneOf([STATIC, EDITABLE, LOADING]).isRequired,
+  tableState: PropTypes.PropTypes.oneOf([STATIC, EDITABLE, SAVING, LOADING]).isRequired,
   children: PropTypes.any.isRequired,
   columns: PropTypes.arrayOf(
     PropTypes.shape({
@@ -169,4 +180,70 @@ EditableTableProvider.propTypes = {
 
 EditableTableProvider.defaultProps = {
   initialMetadata: {},
+};
+
+export const EditableTable = props => {
+  const { editableColumns, data } = useContext(EditableTableContext);
+  return <Table columns={editableColumns} data={data} {...props} />;
+};
+
+const LoadingContainer = styled.div`
+  position: relative;
+`;
+
+const LoadingScreen = styled.div`
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: #f9f9f9;
+  border: 1px solid #dedee0;
+  border-radius: 3px;
+`;
+
+const Loader = styled(CircularProgress)`
+  margin-bottom: 1rem;
+`;
+
+const LoadingHeading = styled(Typography)`
+  margin-bottom: 0.5rem;
+`;
+
+const LoadingText = styled(Typography)`
+  margin-bottom: 0.5rem;
+  color: ${COLORS.TEXT_MIDGREY};
+`;
+
+export const EditableTableLoader = ({ isLoading, heading, text, children }) => {
+  if (isLoading) {
+    return (
+      <LoadingContainer>
+        {children}
+        <LoadingScreen>
+          <Loader />
+          <LoadingHeading variant="h5">{heading}</LoadingHeading>
+          <LoadingText variant="body2">{text}</LoadingText>
+        </LoadingScreen>
+      </LoadingContainer>
+    );
+  }
+
+  return children;
+};
+
+EditableTableLoader.propTypes = {
+  isLoading: PropTypes.bool.isRequired,
+  children: PropTypes.any.isRequired,
+  heading: PropTypes.array.isRequired,
+  text: PropTypes.object,
+};
+
+EditableTableLoader.defaultProps = {
+  heading: 'Saving Data',
+  text: 'Please do not refresh browser or close this page',
 };
