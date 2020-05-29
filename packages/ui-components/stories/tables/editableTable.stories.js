@@ -16,6 +16,7 @@ import {
   EditableTableProvider,
   EditableTable,
   EditableTableLoader,
+  Table,
   EditableTableContext,
 } from '../../src';
 
@@ -39,6 +40,14 @@ const LayoutRow = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 1rem 0;
+`;
+
+const Loader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3rem 0;
+  text-align: center;
 `;
 
 const columns = [
