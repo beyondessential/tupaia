@@ -55,8 +55,15 @@ export const reloadSiteWeeks = ({ fetchOptions, queryParameters }) => async (
   console.log('done');
 };
 
+function sleep(delay = 0) {
+  return new Promise(resolve => {
+    setTimeout(resolve, delay);
+  });
+}
+
 export const updateWeeklyReportsData = data => async dispatch => {
   console.log('update data...', data);
+  await sleep(1000);
   dispatch(reloadCountryWeeks({}));
 };
 

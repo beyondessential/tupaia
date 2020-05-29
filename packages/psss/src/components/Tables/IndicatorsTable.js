@@ -10,7 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import { GreyOutlinedButton, Button, FakeHeader } from '@tupaia/ui-components';
 import { DottedTableBody } from './TableBody';
-import { EditableTableContext, EditableTable } from './EditableTable';
+import { EditableTableContext, EditableTable, EditableTableLoader } from './EditableTable';
 import { updateWeeklyReportsData } from '../../store';
 
 const HeadingRow = styled.div`
@@ -38,28 +38,34 @@ const LayoutRow = styled.div`
   padding: 1rem 0;
 `;
 
+const STATIC = 'static';
+const EDITABLE = 'editable';
+const SAVING = 'saving';
+const LOADING = 'loading';
+
 export const IndicatorsTableComponent = ({ onSubmit, tableState, setTableState }) => {
   const { fields } = useContext(EditableTableContext);
 
   const handleEdit = () => {
-    setTableState('editable');
+    setTableState(EDITABLE);
   };
 
   const handleCancel = () => {
-    setTableState('static');
+    setTableState(STATIC);
   };
 
   const handleSubmit = async () => {
     console.log('updated values...', fields);
+    setTableState(SAVING);
     await onSubmit(fields);
-    setTableState('static');
+    setTableState(STATIC);
   };
 
   return (
-    <React.Fragment>
+    <EditableTableLoader isLoading={tableState === SAVING}>
       <HeadingRow>
         <HeaderTitle>Sentinel Cases Reported</HeaderTitle>
-        <GreyOutlinedButton onClick={handleEdit} disabled={tableState === 'editable'}>
+        <GreyOutlinedButton onClick={handleEdit} disabled={tableState === EDITABLE}>
           Edit
         </GreyOutlinedButton>
       </HeadingRow>
@@ -68,7 +74,7 @@ export const IndicatorsTableComponent = ({ onSubmit, tableState, setTableState }
         <span>TOTAL CASES</span>
       </FakeHeader>
       <EditableTable Header={false} Body={DottedTableBody} />
-      {tableState === 'editable' && (
+      {tableState === EDITABLE && (
         <LayoutRow>
           <MuiLink>Reset and use Sentinel data</MuiLink>
           <div>
@@ -79,12 +85,12 @@ export const IndicatorsTableComponent = ({ onSubmit, tableState, setTableState }
           </div>
         </LayoutRow>
       )}
-    </React.Fragment>
+    </EditableTableLoader>
   );
 };
 
 IndicatorsTableComponent.propTypes = {
-  tableState: PropTypes.string.isRequired,
+  tableState: PropTypes.PropTypes.oneOf([STATIC, EDITABLE, LOADING, SAVING]).isRequired,
   setTableState: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
 };

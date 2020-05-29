@@ -67,6 +67,7 @@ const StyledExpansionContainer = styled(TableRowExpansionContainer)`
   }
 `;
 
+// todo : set up constants
 export const VerifiableTableRow = props => {
   const { data, rowIndex } = props;
   const key = data[rowIndex].id;

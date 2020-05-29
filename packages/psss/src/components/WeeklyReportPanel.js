@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { ButtonSelect, Button, Card, ErrorAlert } from '@tupaia/ui-components';
 import { PercentageChangeCell } from './Tables/TableCellComponents';
-import { EditableTableProvider } from './Tables/EditableTable';
+import { EditableTableProvider, EditableTableLoader } from './Tables/EditableTable';
 import * as COLORS from '../theme/colors';
 import { Drawer, DrawerHeaderContent, DrawerFooter, DrawerHeader } from './Drawer';
 import { VerifiableTable } from './Tables/VerifiableTable';

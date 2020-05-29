@@ -31,7 +31,11 @@ const TableRowCells = React.memo(({ columns, rowData }) =>
     const backgroundColor = typeof cellColor === 'function' ? cellColor(rowData) : cellColor;
     return (
       <TableCell background={backgroundColor} key={key} style={{ width: width }} align={align}>
-        {CellComponent ? <CellComponent {...rowData} displayValue={displayValue} columnKey={key} /> : displayValue}
+        {CellComponent ? (
+          <CellComponent {...rowData} displayValue={displayValue} columnKey={key} />
+        ) : (
+          displayValue
+        )}
       </TableCell>
     );
   }),
@@ -143,6 +147,7 @@ export const ControlledExpandableTableRow = ({
   SubComponent,
   ExpansionContainer,
 }) => {
+  console.log('expanded', expanded);
   const row = (
     <StyledTableRow className={className} onClick={onClick}>
       <TableRowCells columns={columns} rowData={data[rowIndex]} />

@@ -8,16 +8,16 @@ import { connect } from 'react-redux';
 import Typography from '@material-ui/core/Typography';
 import MuiLink from '@material-ui/core/Link';
 import styled from 'styled-components';
-import { ExpandableTableBody, GreyOutlinedButton, Button, FakeHeader } from '@tupaia/ui-components';
+import { TableBody, GreyOutlinedButton, Button, FakeHeader } from '@tupaia/ui-components';
 import { VerifiableTableRow } from './VerifiableTableRow';
 import { BorderlessTableRow } from './TableRow';
-import { EditableTable, EditableTableContext } from './EditableTable';
+import { EditableTable, EditableTableContext, EditableTableLoader } from './EditableTable';
 import { updateWeeklyReportsData } from '../../store';
 
 const VerifiableBody = props => {
   const { tableState } = useContext(EditableTableContext);
   const Row = tableState === 'editable' ? BorderlessTableRow : VerifiableTableRow;
-  return <ExpandableTableBody TableRow={Row} {...props} />;
+  return <TableBody TableRow={Row} {...props} />;
 };
 
 const LayoutRow = styled.div`
@@ -31,28 +31,34 @@ const GreyHeader = styled(FakeHeader)`
   border: none;
 `;
 
+const STATIC = 'static';
+const EDITABLE = 'editable';
+const SAVING = 'saving';
+const LOADING = 'loading';
+
 export const VerifiableTableComponent = ({ tableState, setTableState, onSubmit }) => {
   const { fields } = useContext(EditableTableContext);
 
   const handleEdit = () => {
-    setTableState('editable');
+    setTableState(EDITABLE);
   };
 
   const handleCancel = () => {
-    setTableState('static');
+    setTableState(STATIC);
   };
 
   const handleSubmit = async () => {
     console.log('submit updated values...', fields);
+    setTableState(SAVING);
     await onSubmit(fields);
-    setTableState('static');
+    setTableState(STATIC);
   };
 
   return (
-    <React.Fragment>
+    <EditableTableLoader isLoading={tableState === SAVING}>
       <LayoutRow>
         <Typography variant="h5">7/10 Sites Reported</Typography>
-        <GreyOutlinedButton onClick={handleEdit} disabled={tableState === 'editable'}>
+        <GreyOutlinedButton onClick={handleEdit} disabled={tableState === EDITABLE}>
           Edit
         </GreyOutlinedButton>
       </LayoutRow>
@@ -61,7 +67,7 @@ export const VerifiableTableComponent = ({ tableState, setTableState, onSubmit }
         <span>TOTAL CASES</span>
       </GreyHeader>
       <EditableTable Header={false} Body={VerifiableBody} />
-      {tableState === 'editable' && (
+      {tableState === EDITABLE && (
         <LayoutRow>
           <MuiLink>Reset and use Sentinel data</MuiLink>
           <div>
@@ -72,12 +78,12 @@ export const VerifiableTableComponent = ({ tableState, setTableState, onSubmit }
           </div>
         </LayoutRow>
       )}
-    </React.Fragment>
+    </EditableTableLoader>
   );
 };
 
 VerifiableTableComponent.propTypes = {
-  tableState: PropTypes.string.isRequired,
+  tableState: PropTypes.PropTypes.oneOf([STATIC, EDITABLE, LOADING, SAVING]).isRequired,
   setTableState: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
 };

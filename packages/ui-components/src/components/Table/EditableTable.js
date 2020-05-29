@@ -239,8 +239,8 @@ export const EditableTableLoader = ({ isLoading, heading, text, children }) => {
 EditableTableLoader.propTypes = {
   isLoading: PropTypes.bool.isRequired,
   children: PropTypes.any.isRequired,
-  heading: PropTypes.array.isRequired,
-  text: PropTypes.object,
+  heading: PropTypes.string,
+  text: PropTypes.string,
 };
 
 EditableTableLoader.defaultProps = {
