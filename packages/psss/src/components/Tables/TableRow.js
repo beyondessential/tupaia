@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import { TableRow, ControlledExpandableTableRow } from '@tupaia/ui-components';
 import * as COLORS from '../../theme/colors';
 
-export const StyledBorderlessTableRow = styled(ControlledExpandableTableRow)`
+export const BorderlessTableRow = styled(ControlledExpandableTableRow)`
   .MuiTableCell-root {
     font-size: 15px;
     line-height: 18px;
@@ -23,8 +23,6 @@ export const StyledBorderlessTableRow = styled(ControlledExpandableTableRow)`
     }
   }
 `;
-
-export const BorderlessTableRow = props => <StyledBorderlessTableRow {...props} expanded />;
 
 export const DottedTableRow = styled(TableRow)`
   .MuiTableCell-root {

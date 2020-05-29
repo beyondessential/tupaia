@@ -5,8 +5,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import MuiTableCell from '@material-ui/core/TableCell';
-import MuiTableBody from '@material-ui/core/TableBody';
-import MuiTable from '@material-ui/core/Table';
 import PropTypes from 'prop-types';
 import MuiTableRow from '@material-ui/core/TableRow';
 import { tableColumnShape } from './tableColumnShape';

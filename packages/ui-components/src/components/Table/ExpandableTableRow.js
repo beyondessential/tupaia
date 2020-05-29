@@ -105,7 +105,6 @@ export const ControlledExpandableTableRow = ({
   SubComponent,
   ExpansionContainer,
 }) => {
-  console.log('expanded', expanded);
   const row = (
     <StyledTableRow className={className} onClick={onClick}>
       <TableRowCells columns={columns} rowData={data[rowIndex]} />

@@ -60,6 +60,9 @@ const WeeklyReportsPaneSubmitButton = confirmData => () => {
   );
 };
 
+// Todo: refactor tableState into an object that is stored in table/constants in ui-components
+const STATIC = 'static';
+
 const WeeklyReportPanelComponent = React.memo(
   ({ countryWeeksData, siteWeeksData, isOpen, handleClose, confirmData }) => {
     if (countryWeeksData.length === 0 || siteWeeksData.length === 0) {
@@ -68,7 +71,7 @@ const WeeklyReportPanelComponent = React.memo(
 
     // ------- COUNTRY TABLE ----------
     const countryData = countryWeeksData[0].indicators;
-    const [countryTableState, setCountryTableState] = useState('static');
+    const [countryTableState, setCountryTableState] = useState(STATIC);
 
     // Derive from store??
     const verifiedStatus = countryData.reduce((state, item) => {
@@ -86,7 +89,7 @@ const WeeklyReportPanelComponent = React.memo(
     const indicatorsData = siteWeeksData[activeSiteIndex].indicators;
     const activeSite = siteWeeksData[activeSiteIndex];
     //
-    const [indicatorTableState, setIndicatorTableState] = useState('static');
+    const [indicatorTableState, setIndicatorTableState] = useState(STATIC);
 
     return (
       <React.Fragment>

@@ -7,6 +7,7 @@ import React from 'react';
 import MuiLink from '@material-ui/core/Link';
 import Avatar from '@material-ui/core/Avatar';
 import PropTypes from 'prop-types';
+import { ExpandableTableBody } from '@tupaia/ui-components';
 import { Link as RouterLink } from 'react-router-dom';
 import { ConnectedTable } from './ConnectedTable';
 import * as COLORS from '../../theme/colors';
@@ -93,6 +94,7 @@ export const CountriesTable = React.memo(() => (
   <ConnectedTable
     endpoint="countries"
     columns={countriesTableColumns}
+    Body={ExpandableTableBody}
     SubComponent={CountrySummaryTable}
   />
 ));

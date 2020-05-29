@@ -198,6 +198,7 @@ const LoadingScreen = styled.div`
   background: #f9f9f9;
   border: 1px solid #dedee0;
   border-radius: 3px;
+  z-index: 10;
 `;
 
 const Loader = styled(CircularProgress)`
