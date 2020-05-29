@@ -100,7 +100,7 @@ export class Aggregator {
         aggregateEvents(partiallyAggregatedEvents, type, config),
       events,
     );
-    console.log('Events 2', aggregations, events && events[0].orgUnit);
+    console.log('Events 2', aggregations, aggregatedEvents && aggregatedEvents[0].orgUnit);
     return aggregatedEvents;
   }
 

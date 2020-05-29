@@ -9,11 +9,17 @@ import {
 } from '/apiV1/utils';
 
 export const percentPerValuePerOrgUnit = async (
-  { dataSourceEntityType, dataBuilderConfig, query, entity },
+  { dataBuilderConfig, query, entity },
   aggregator,
   dhisApi,
 ) => {
-  const { dataElementGroupCode, dataServices, range, valuesOfInterest } = dataBuilderConfig;
+  const {
+    dataElementGroupCode,
+    dataSourceEntityType,
+    dataServices,
+    range,
+    valuesOfInterest,
+  } = dataBuilderConfig;
 
   const dataElementCodes = await getDataElementCodesInGroup(dhisApi, dataElementGroupCode);
   const { results } = await aggregator.fetchAnalytics(dataElementCodes, { dataServices }, query);

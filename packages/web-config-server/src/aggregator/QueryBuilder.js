@@ -40,7 +40,7 @@ export class QueryBuilder {
     const entity = await Entity.findOne({ code: organisationUnitCode });
     const dataSourceEntities = await this.routeHandler.fetchDataSourceEntities(
       entity,
-      this.getQueryParameter('dataSourceEntityType'),
+      (this.getQueryParameter('entityAggregation') || {}).dataSourceEntityType,
     );
     this.query.organisationUnitCodes = dataSourceEntities.map(e => e.code);
     delete this.query.organisationUnitCode;
@@ -48,27 +48,30 @@ export class QueryBuilder {
   }
 
   async buildAggregationOptions(dataSourceEntities) {
+    const { aggregationEntityType, aggregationType: entityAggregationType } =
+      this.getQueryParameter('entityAggregation') || {};
+
     const entityAggregation = await this.routeHandler.fetchEntityAggregationConfig(
       dataSourceEntities,
+      aggregationEntityType,
+      entityAggregationType,
     );
-    if (!entityAggregation) return;
-    const aggregationType = this.aggregationOptions.aggregationType;
-    const aggregationConfig = this.aggregationOptions.aggregationConfig;
     const aggregations =
-      this.aggregationOptions.aggregations || aggregationType
+      this.aggregationOptions.aggregations || this.aggregationOptions.aggregationType
         ? [
             {
-              type: aggregationType,
-              config: aggregationConfig,
+              type: this.aggregationOptions.aggregationType,
+              config: this.aggregationOptions.aggregationConfig,
             },
           ]
         : [];
-    console.log(JSON.stringify(aggregations), entityAggregation);
-    this.aggregationOptions.aggregations = [
-      // entity aggregation always happens last, this should be configurable
-      ...aggregations,
-      entityAggregation,
-    ];
+    this.aggregationOptions.aggregations = entityAggregation
+      ? [
+          // entity aggregation always happens last, this should be configurable
+          ...aggregations,
+          entityAggregation,
+        ]
+      : aggregations;
     delete this.aggregationOptions.aggregationType;
     delete this.aggregationOptions.aggregationConfig;
   }

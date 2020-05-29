@@ -21,7 +21,6 @@ export const aggregateAnalytics = (
   aggregationConfig = {},
 ) => {
   const { DAY, WEEK, MONTH, YEAR } = PERIOD_TYPES;
-  // console.log('Aggregating here with: ', { aggregationType, aggregationConfig });
   switch (aggregationType) {
     case AGGREGATION_TYPES.MOST_RECENT:
     case AGGREGATION_TYPES.MOST_RECENT_PER_ORG_GROUP:

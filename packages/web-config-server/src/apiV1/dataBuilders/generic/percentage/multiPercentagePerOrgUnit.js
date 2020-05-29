@@ -14,10 +14,10 @@ const compareStrings = (stringA, stringB) => {
 };
 
 export const multiPercentagePerOrgUnit = async (
-  { dataSourceEntityType, dataBuilderConfig, query, entity },
+  { dataBuilderConfig, query, entity },
   aggregator,
 ) => {
-  const { dataElementCodes, dataServices } = dataBuilderConfig;
+  const { dataElementCodes, dataSourceEntityType, dataServices } = dataBuilderConfig; // TODO: Check this and similar
   const { results } = await aggregator.fetchAnalytics(dataElementCodes, { dataServices }, query);
 
   const tempData = {};

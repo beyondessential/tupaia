@@ -86,8 +86,8 @@ const createDataServices = mapOverlay => {
 };
 
 const getMeasureLevel = mapOverlays => {
-  const aggregationTypes = mapOverlays.map(({ measureBuilderConfig }) =>
-    Entity.translateTypeForFrontend(measureBuilderConfig.aggregationEntityType),
+  const aggregationTypes = mapOverlays.map(
+    ({ presentationOptions }) => presentationOptions.measureLevel,
   );
   return [...new Set(aggregationTypes)].join(',');
 };
@@ -248,8 +248,6 @@ export default class extends DataAggregatingRouteHandler {
       measureBuilder,
     } = mapOverlay;
 
-    const restOfConfig = this.stripEntityAggregationFromConfig(measureBuilderConfig);
-
     const entityCode = shouldFetchSiblings
       ? await this.getCountryLevelOrgUnitCode()
       : this.entity.code;
@@ -266,7 +264,7 @@ export default class extends DataAggregatingRouteHandler {
       this.aggregator,
       dhisApi,
       { ...this.query, dataElementCode },
-      { ...restOfConfig, dataServices },
+      { ...measureBuilderConfig, dataServices },
       entity,
     );
   }

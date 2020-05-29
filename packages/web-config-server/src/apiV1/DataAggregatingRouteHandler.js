@@ -27,7 +27,7 @@ export class DataAggregatingRouteHandler extends RouteHandler {
     // if a specific type was specified in either the query or the function parameter, build org
     // units of that type (otherwise we just use the nearest org unit descendants)
 
-    const entityType = dataSourceEntityType || this.dataSourceEntityType;
+    const entityType = dataSourceEntityType || this.query.dataSourceEntityType;
     const hierarchyId = (await Project.findOne({ code: this.query.projectCode }))
       .entity_hierarchy_id;
 
@@ -62,30 +62,17 @@ export class DataAggregatingRouteHandler extends RouteHandler {
     return orgUnitToAncestor;
   };
 
-  fetchEntityAggregationConfig = async dataSourceEntities => {
-    if (this.aggregationEntityType === this.dataSourceEntityType) return false;
-    const entityAggregationType = this.entityAggregationType || DEFAULT_ENTITY_AGGREGATION_TYPE;
+  fetchEntityAggregationConfig = async (
+    dataSourceEntities,
+    aggregationEntityType,
+    entityAggregationType = DEFAULT_ENTITY_AGGREGATION_TYPE,
+  ) => {
+    if (!aggregationEntityType || !dataSourceEntities || dataSourceEntities.length === 0)
+      return false;
     const orgUnitMap = await this.getOrgUnitToAncestorMap(
       dataSourceEntities,
-      this.aggregationEntityType,
+      aggregationEntityType,
     );
     return { type: entityAggregationType, config: { orgUnitMap } };
-  };
-
-  stripEntityAggregationFromConfig = config => {
-    const {
-      dataSourceEntityType,
-      aggregationEntityType,
-      entityAggregationType,
-      ...restOfConfig
-    } = config;
-
-    this.aggregationEntityType = aggregationEntityType || this.entity.type || DEFAULT_ENTITY_TYPE;
-    this.dataSourceEntityType =
-      dataSourceEntityType ||
-      (this.aggregationEntityType === 'project' ? 'country' : this.aggregationEntityType);
-    this.entityAggregationType = entityAggregationType;
-
-    return restOfConfig;
   };
 }
