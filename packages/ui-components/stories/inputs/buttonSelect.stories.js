@@ -65,11 +65,7 @@ export const disabled = () => (
 
 export const muiProps = () => (
   <Container>
-    <ButtonSelect
-      id="button-select"
-      options={options}
-      muiProps={{ error: true }}
-    />
+    <ButtonSelect id="button-select" options={options} muiProps={{ error: true }} />
   </Container>
 );
 

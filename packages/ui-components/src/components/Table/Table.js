@@ -82,7 +82,7 @@ Table.propTypes = {
   Paginator: PropTypes.any,
   SubComponent: PropTypes.any,
   columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
-  data: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  data: PropTypes.array.isRequired,
   errorMessage: PropTypes.string,
   noDataMessage: PropTypes.string,
   isLoading: PropTypes.bool,

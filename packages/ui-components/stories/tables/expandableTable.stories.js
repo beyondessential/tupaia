@@ -2,17 +2,15 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
-import { FakeAPI } from './story-utils/api';
-import * as COLORS from './story-utils/theme/colors';
-import { Button, Table, CondensedTableBody, FakeHeader } from '../src';
+import { Button, Table, ExpandableTable, FakeHeader, CondensedTableBody } from '../../src';
+import { useTableData } from '../story-utils/useTableData';
+import * as COLORS from '../story-utils/theme/colors';
 
 export default {
-  title: 'Table',
-  component: Table,
+  title: 'Tables/ExpandableTable',
 };
 
 const Container = styled.div`
@@ -25,49 +23,6 @@ const Container = styled.div`
     margin: 0 auto;
   }
 `;
-
-const columns = [
-  {
-    title: 'Name',
-    key: 'name',
-  },
-  {
-    title: 'Surname',
-    key: 'surname',
-  },
-  {
-    title: 'Email',
-    key: 'email',
-  },
-];
-
-const useTableData = () => {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  const API = new FakeAPI();
-
-  useEffect(() => {
-    (async () => {
-      setLoading(true);
-      const userData = await API.get('users');
-      setLoading(false);
-      setData(userData.data);
-    })();
-  }, []);
-
-  return { loading, data };
-};
-
-export const SimpleTable = () => {
-  const { loading, data } = useTableData();
-
-  return (
-    <Container>
-      <Table columns={columns} data={data} loading={loading} />
-    </Container>
-  );
-};
 
 const StyledDiv = styled.div`
   display: flex;
@@ -121,12 +76,32 @@ const SubComponent = React.memo(() => {
   );
 });
 
-export const nestedTable = () => {
+const columns = [
+  {
+    title: 'Name',
+    key: 'name',
+  },
+  {
+    title: 'Surname',
+    key: 'surname',
+  },
+  {
+    title: 'Email',
+    key: 'email',
+  },
+];
+
+export const expandableTable = () => {
   const { loading, data } = useTableData();
 
   return (
     <Container>
-      <Table columns={columns} data={data} loading={loading} SubComponent={SubComponent} />
+      <ExpandableTable
+        columns={columns}
+        data={data}
+        loading={loading}
+        SubComponent={SubComponent}
+      />
     </Container>
   );
 };
