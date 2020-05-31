@@ -23,6 +23,7 @@ const defaultState = {
   recordData: null,
   fields: null,
   editedFields: {},
+  allowNoChangeSave: false,
 };
 
 const stateChanges = {

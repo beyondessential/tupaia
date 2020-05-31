@@ -14,7 +14,7 @@ import {
   EDITOR_OPEN_CREATOR,
 } from './constants';
 
-export const openEditModal = ({ editEndpoint, fields }, recordId) => async (
+export const openEditModal = ({ editEndpoint, fields, allowNoChangeSave }, recordId) => async (
   dispatch,
   getState,
   { api },
@@ -38,6 +38,7 @@ export const openEditModal = ({ editEndpoint, fields }, recordId) => async (
       dispatch({
         type: EDITOR_DATA_FETCH_SUCCESS,
         recordData: response.body,
+        allowNoChangeSave,
       });
     } catch (error) {
       dispatch({

@@ -20,15 +20,19 @@ export const EditModalComponent = props => {
     onSave,
     recordData,
     title,
+    confirmLabel,
     fields,
     isUnchanged,
+    allowNoChangeSave,
   } = props;
+  const isConfirmDisabled = allowNoChangeSave ? false : isUnchanged;
+
   return (
     <AsyncModal
       isLoading={isLoading}
       errorMessage={errorMessage}
-      confirmLabel={'Save'}
-      dismissLabel={'Cancel'}
+      confirmLabel={confirmLabel}
+      dismissLabel="Cancel"
       title={title}
       renderContent={() =>
         fields && (
@@ -43,7 +47,7 @@ export const EditModalComponent = props => {
       }
       onConfirm={onSave}
       onDismiss={onDismiss}
-      isConfirmDisabled={isUnchanged}
+      isConfirmDisabled={isConfirmDisabled}
     />
   );
 };
@@ -56,28 +60,36 @@ EditModalComponent.propTypes = {
   onSave: PropTypes.func.isRequired,
   recordData: PropTypes.object,
   title: PropTypes.string,
+  confirmLabel: PropTypes.string,
   fields: PropTypes.array,
   isUnchanged: PropTypes.bool,
+  allowNoChangeSave: PropTypes.bool,
 };
 
 EditModalComponent.defaultProps = {
   errorMessage: null,
-  title: 'Hello',
+  title: 'Edit',
+  confirmLabel: 'Save',
   recordData: null,
   fields: null,
   isUnchanged: false,
+  allowNoChangeSave: false,
 };
 
-const mapStateToProps = state => ({
-  ...getEditorState(state),
-  isUnchanged: getIsUnchanged(state),
-});
+const mapStateToProps = state => {
+  return {
+    ...getEditorState(state),
+    isUnchanged: getIsUnchanged(state),
+  };
+};
 
-const mapDispatchToProps = dispatch => ({
-  onDismiss: () => dispatch(closeEditModal()),
-  onEditField: (fieldKey, newValue) => dispatch(editField(fieldKey, newValue)),
-  dispatch,
-});
+const mapDispatchToProps = dispatch => {
+  return {
+    onDismiss: () => dispatch(closeEditModal()),
+    onEditField: (fieldKey, newValue) => dispatch(editField(fieldKey, newValue)),
+    dispatch,
+  };
+};
 
 const mergeProps = (
   { endpoint, editedFields, recordData, ...stateProps },

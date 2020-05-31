@@ -9,9 +9,15 @@ import { connect } from 'react-redux';
 import { IconButton } from '../widgets';
 import { openEditModal } from './actions';
 
-export const EditButtonComponent = ({ dispatch, value: recordId, actionConfig }) => (
-  <IconButton icon={'cog'} onClick={() => dispatch(openEditModal(actionConfig, recordId))} />
-);
+export const EditButtonComponent = ({ dispatch, value: recordId, actionConfig }) => {
+  //console.log('EDIT BUTTON', actionConfig);
+  return (
+    <IconButton
+      icon={actionConfig.icon || 'cog'}
+      onClick={() => dispatch(openEditModal(actionConfig, recordId))}
+    />
+  );
+};
 
 EditButtonComponent.propTypes = {
   actionConfig: PropTypes.object.isRequired,

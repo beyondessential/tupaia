@@ -22,6 +22,7 @@ exports.up = function(db) {
       country_id text REFERENCES country(id),
       message text,
       permission_group text REFERENCES permission_group(name),
+      approved BOOLEAN DEFAULT false,
       created_time TIMESTAMPTZ NOT NULL DEFAULT now(),
       last_modified_time TIMESTAMPTZ NOT NULL DEFAULT now()
     );
