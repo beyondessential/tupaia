@@ -7,6 +7,12 @@ import { EventBuilder } from './EventBuilder';
 import { DataPusher } from '../DataPusher';
 
 export class EventPusher extends DataPusher {
+  checkExistsOnDhis2 = syncLogRecord =>
+    syncLogRecord &&
+    (syncLogRecord.imported || syncLogRecord.updated || syncLogRecord.dhis_reference) &&
+    !syncLogRecord.deleted &&
+    syncLogRecord.data;
+
   /**
    * @returns {Promise<PushResults>}
    */
