@@ -8,10 +8,17 @@ import { connect } from 'react-redux';
 import Typography from '@material-ui/core/Typography';
 import MuiLink from '@material-ui/core/Link';
 import styled from 'styled-components';
-import { TableBody, GreyOutlinedButton, Button, FakeHeader } from '@tupaia/ui-components';
+import {
+  EditableTable,
+  EditableTableContext,
+  EditableTableLoader,
+  TableBody,
+  GreyOutlinedButton,
+  Button,
+  FakeHeader,
+} from '@tupaia/ui-components';
 import { VerifiableTableRow } from './VerifiableTableRow';
 import { BorderlessTableRow } from './TableRow';
-import { EditableTable, EditableTableContext, EditableTableLoader } from './EditableTable';
 import { updateWeeklyReportsData } from '../../store';
 
 const VerifiableBody = props => {

@@ -2,48 +2,54 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
 import styled from 'styled-components';
 import { TableRow, ControlledExpandableTableRow } from '@tupaia/ui-components';
 import * as COLORS from '../../theme/colors';
 
-export const BorderlessTableRow = styled(ControlledExpandableTableRow)`
+export const SimpleTableRow = styled(ControlledExpandableTableRow)`
+  border: none;
+
   .MuiTableCell-root {
-    font-size: 15px;
-    line-height: 18px;
+    font-size: 0.875rem;
+    line-height: 1rem;
     border: none;
-    padding: 0;
+    padding: 0.9rem 0;
     text-align: center;
-    height: 42px;
+    border-bottom: 1px solid ${COLORS.GREY_DE};
+
+    height: auto;
     color: ${props => props.theme.palette.text.primary};
 
     &:first-child {
-      padding-left: 1.25rem;
       text-align: left;
+    }
+  }
+
+  &:last-child {
+    .MuiTableCell-root {
+      border-bottom: none;
     }
   }
 `;
 
-export const DottedTableRow = styled(TableRow)`
+export const BorderlessTableRow = styled(SimpleTableRow)`
   .MuiTableCell-root {
-    font-size: 14px;
-    line-height: 16px;
-    padding: 0.8rem 1rem;
-    border-bottom: 1px dashed ${COLORS.GREY_DE};
+    font-size: 0.9375rem;
+    line-height: 1.125rem;
+    border: none;
+    padding: 0;
+    height: 2.6rem;
     color: ${props => props.theme.palette.text.primary};
-    text-align: left;
-    height: auto;
   }
 `;
 
-export const SimpleTableRow = styled(TableRow)`
+export const DottedTableRow = styled(SimpleTableRow)`
   .MuiTableCell-root {
-    font-size: 14px;
-    line-height: 16px;
-    border-bottom: 1px solid ${COLORS.GREY_DE};
-    padding: 0.8rem 1rem;
-    text-align: left;
-    height: auto;
+    font-size: 0.875rem;
+    border-bottom: 1px dotted ${COLORS.GREY_DE};
+    line-height: 1rem;
+    padding: 0.9rem 0;
     color: ${props => props.theme.palette.text.primary};
+    height: auto;
   }
 `;

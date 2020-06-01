@@ -186,6 +186,8 @@ const LoadingContainer = styled.div`
   position: relative;
 `;
 
+const loadingBackgroundColor = '#f9f9f9';
+
 const LoadingScreen = styled.div`
   position: absolute;
   top: 0;
@@ -196,8 +198,8 @@ const LoadingScreen = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background: #f9f9f9;
-  border: 1px solid #dedee0;
+  background: ${loadingBackgroundColor};
+  border: 1px solid ${props => props.theme.palette.grey['400']};
   border-radius: 3px;
 `;
 
@@ -214,6 +216,9 @@ const LoadingText = styled(Typography)`
   color: ${COLORS.TEXT_MIDGREY};
 `;
 
+/**
+ * Adds a loader around the table
+ */
 export const EditableTableLoader = ({ isLoading, heading, text, children }) => {
   if (isLoading) {
     return (

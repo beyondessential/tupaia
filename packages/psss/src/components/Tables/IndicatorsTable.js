@@ -3,32 +3,38 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React, { useContext } from 'react';
-import MuiLink from '@material-ui/core/Link';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
-import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
-import { GreyOutlinedButton, Button, FakeHeader } from '@tupaia/ui-components';
+import { connect } from 'react-redux';
+import MuiLink from '@material-ui/core/Link';
+import Typography from '@material-ui/core/Typography';
+import {
+  EditableTableContext,
+  EditableTable,
+  EditableTableLoader,
+  GreyOutlinedButton,
+  Button,
+  FakeHeader,
+} from '@tupaia/ui-components';
 import { DottedTableBody } from './TableBody';
-import { EditableTableContext, EditableTable, EditableTableLoader } from './EditableTable';
 import { updateWeeklyReportsData } from '../../store';
 
 const HeadingRow = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-top: 20px;
-  padding-bottom: 20px;
-  margin-left: 30px;
-  margin-right: 30px;
+  padding-top: 1.25rem;
+  padding-bottom: 1.25rem;
+  margin-left: 1.5rem;
+  margin-right: 1.5rem;
 `;
 
 const HeaderTitle = styled(Typography)`
   display: flex;
   align-items: center;
   font-weight: 500;
-  font-size: 16px;
-  line-height: 19px;
+  font-size: 1rem;
+  line-height: 1.2rem;
 `;
 
 const LayoutRow = styled.div`
@@ -55,7 +61,6 @@ export const IndicatorsTableComponent = ({ onSubmit, tableState, setTableState }
   };
 
   const handleSubmit = async () => {
-    console.log('updated values...', fields);
     setTableState(SAVING);
     await onSubmit(fields);
     setTableState(STATIC);

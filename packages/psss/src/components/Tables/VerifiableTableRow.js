@@ -6,9 +6,12 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import CheckCircleIcon from '@material-ui/icons/CheckCircleOutline';
-import { TableRowExpansionContainer, WarningButton } from '@tupaia/ui-components';
+import {
+  EditableTableContext,
+  TableRowExpansionContainer,
+  WarningButton,
+} from '@tupaia/ui-components';
 import { BorderlessTableRow } from './TableRow';
-import { EditableTableContext } from './EditableTable';
 import * as COLORS from '../../theme/colors';
 
 const VerifiedAlert = styled.div`

@@ -7,11 +7,17 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import MuiLink from '@material-ui/core/Link';
-import { FakeHeader, Button, GreyOutlinedButton } from '@tupaia/ui-components';
+import {
+  EditableTableContext,
+  EditableTableProvider,
+  FakeHeader,
+  Button,
+  Card,
+  GreyOutlinedButton,
+} from '@tupaia/ui-components';
 import * as COLORS from '../theme/colors';
 import { BorderlessTable, SimpleTable, DottedTable } from '../components/Tables/Table';
 import { PercentageChangeCell } from '../components/Tables/TableCellComponents';
-import { EditableTableContext, EditableTableProvider } from '../components/Tables/EditableTable';
 import { VerifiableTable } from '../components/Tables/VerifiableTable';
 
 const siteData = [
@@ -86,6 +92,7 @@ const editableTableColumns = [
 
 const Container = styled.div`
   width: 100%;
+  max-width: 600px;
   padding: 3rem;
   background: ${COLORS.LIGHTGREY};
 
@@ -105,7 +112,9 @@ const Box = styled.section`
 `;
 
 const Heading = styled(Typography)`
+  margin-top: 1rem;
   margin-left: 1rem;
+  margin-bottom: 0.8rem;
 `;
 
 const HeadingRow = styled.div`
@@ -120,6 +129,10 @@ const ActionsRow = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 1rem 0;
+`;
+
+const StyledCard = styled(Card)`
+  padding-bottom: 2px;
 `;
 
 const verifiedStatus = siteData.reduce((state, item) => {
@@ -160,78 +173,83 @@ export const SandboxView = () => {
 
   return (
     <Container>
-      <Inner>
-        <Box>
-          <HeadingRow>
-            <Heading variant="h6">Editable Table</Heading>
-            <GreyOutlinedButton onClick={handleEditClick} disabled={tableState === 'editable'}>
-              Edit
-            </GreyOutlinedButton>
-          </HeadingRow>
-          {/*========== EDITABLE TABLE ================*/}
-          <EditableTableProvider
-            columns={editableTableColumns}
-            data={siteData}
-            tableState={tableState}
-            initialMetadata={verifiedStatus}
-          >
-            <FakeHeader>
-              <span>SYNDROMES</span>
-              <span>TOTAL CASES</span>
-            </FakeHeader>
-            <VerifiableTable />
-            {tableState === 'editable' && (
-              <ActionsRow>
-                <MuiLink>Reset and use Sentinel data</MuiLink>
-                <div>
-                  <Button variant="outlined" onClick={handleCancel}>
-                    Cancel
-                  </Button>
-                  <SubmitButton tableState={tableState} setTableState={setTableState} />
-                </div>
-              </ActionsRow>
-            )}
-          </EditableTableProvider>
-        </Box>
-      </Inner>
+      <Box>
+        <StyledCard variant="outlined" mb={3}>
+          <Heading variant="h6" gutterBottom>
+            Simple Table
+          </Heading>
+          <FakeHeader>
+            <span>SYNDROMES</span>
+            <span>TOTAL CASES</span>
+          </FakeHeader>
+          <SimpleTable columns={columns} data={siteData} />
+        </StyledCard>
+      </Box>
+      <Box>
+        <StyledCard variant="outlined" mb={3}>
+          <Heading variant="h6" gutterBottom>
+            Borderless Table
+          </Heading>
+          <FakeHeader>
+            <span>SYNDROMES</span>
+            <span>TOTAL CASES</span>
+          </FakeHeader>
+          <BorderlessTable columns={columns} data={siteData} />
+        </StyledCard>
+      </Box>
+      <Box>
+        <StyledCard variant="outlined" mb={3}>
+          <Heading variant="h6" gutterBottom>
+            Dotted Table
+          </Heading>
+          <FakeHeader>
+            <span>SYNDROMES</span>
+            <span>TOTAL CASES</span>
+          </FakeHeader>
+          <DottedTable columns={columns} data={siteData} />
+        </StyledCard>
+      </Box>
     </Container>
   );
 };
 
-
-const tableExamples = () => {
-  return (
-    <Container>
-      <Box>
-        <Heading variant="h6" gutterBottom>
-          Borderless Table
-        </Heading>
-        <FakeHeader>
-          <span>SYNDROMES</span>
-          <span>TOTAL CASES</span>
-        </FakeHeader>
-        <BorderlessTable columns={columns} data={siteData} />
-      </Box>
-      <Box>
-        <Heading variant="h6" gutterBottom>
-          Dotted Table
-        </Heading>
-        <FakeHeader>
-          <span>SYNDROMES</span>
-          <span>TOTAL CASES</span>
-        </FakeHeader>
-        <DottedTable columns={columns} data={siteData} />
-      </Box>
-      <Box>
-        <Heading variant="h6" gutterBottom>
-          Simple Table
-        </Heading>
-        <FakeHeader>
-          <span>SYNDROMES</span>
-          <span>TOTAL CASES</span>
-        </FakeHeader>
-        <SimpleTable columns={columns} data={siteData} />
-      </Box>
-    </Container>
-  )
-}
+// const tableExamples = () => {
+//   return (
+//     <Container>
+//       <Inner>
+//         <Box>
+//           <HeadingRow>
+//             <Heading variant="h6">Editable Table</Heading>
+//             <GreyOutlinedButton onClick={handleEditClick} disabled={tableState === 'editable'}>
+//               Edit
+//             </GreyOutlinedButton>
+//           </HeadingRow>
+//           {/*========== EDITABLE TABLE ================*/}
+//           <EditableTableProvider
+//             columns={editableTableColumns}
+//             data={siteData}
+//             tableState={tableState}
+//             initialMetadata={verifiedStatus}
+//           >
+//             <FakeHeader>
+//               <span>SYNDROMES</span>
+//               <span>TOTAL CASES</span>
+//             </FakeHeader>
+//             <VerifiableTable />
+//             {tableState === 'editable' && (
+//               <ActionsRow>
+//                 <MuiLink>Reset and use Sentinel data</MuiLink>
+//                 <div>
+//                   <Button variant="outlined" onClick={handleCancel}>
+//                     Cancel
+//                   </Button>
+//                   <SubmitButton tableState={tableState} setTableState={setTableState} />
+//                 </div>
+//               </ActionsRow>
+//             )}
+//           </EditableTableProvider>
+//         </Box>
+//       </Inner>
+//     </Container>
+//   );
+// };

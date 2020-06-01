@@ -6,13 +6,17 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { ButtonSelect, Button, Card, ErrorAlert } from '@tupaia/ui-components';
+import {
+  EditableTableProvider,
+  ButtonSelect,
+  Button,
+  Card,
+  ErrorAlert,
+} from '@tupaia/ui-components';
 import { PercentageChangeCell } from './Tables/TableCellComponents';
-import { EditableTableProvider, EditableTableLoader } from './Tables/EditableTable';
 import * as COLORS from '../theme/colors';
 import { Drawer, DrawerHeaderContent, DrawerFooter, DrawerHeader } from './Drawer';
-import { VerifiableTable } from './Tables/VerifiableTable';
-import { IndicatorsTable } from './Tables/IndicatorsTable';
+import { VerifiableTable, IndicatorsTable } from './Tables';
 import { SiteAddress } from './SiteAddress';
 import {
   getSiteWeeks,
@@ -69,7 +73,6 @@ const WeeklyReportPanelComponent = React.memo(
       return null;
     }
 
-    // ------- COUNTRY TABLE ----------
     const countryData = countryWeeksData[0].indicators;
     const [countryTableState, setCountryTableState] = useState(STATIC);
 
@@ -84,11 +87,9 @@ const WeeklyReportPanelComponent = React.memo(
       return state;
     }, {});
 
-    // ------- INDICATORS TABLE --------
     const [activeSiteIndex, setActiveSiteIndex] = useState(0);
     const indicatorsData = siteWeeksData[activeSiteIndex].indicators;
     const activeSite = siteWeeksData[activeSiteIndex];
-    //
     const [indicatorTableState, setIndicatorTableState] = useState(STATIC);
 
     return (

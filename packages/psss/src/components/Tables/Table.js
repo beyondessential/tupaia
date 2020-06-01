@@ -4,11 +4,17 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import { Table, tableColumnShape } from '@tupaia/ui-components';
 import { SimpleTableBody, DottedTableBody, BorderlessTableBody } from './TableBody';
 
+const StyledTable = styled(Table)`
+  padding-left: 1.2rem;
+  padding-right: 1.2rem;
+`;
+
 export const SimpleTable = ({ columns, data }) => {
-  return <Table Header={false} Body={SimpleTableBody} columns={columns} data={data} />;
+  return <StyledTable Header={false} Body={SimpleTableBody} columns={columns} data={data} />;
 };
 
 SimpleTable.propTypes = {
@@ -18,7 +24,7 @@ SimpleTable.propTypes = {
 
 export const BorderlessTable = ({ columns, data, SubComponent }) => {
   return (
-    <Table
+    <StyledTable
       Header={false}
       Body={BorderlessTableBody}
       columns={columns}
@@ -39,7 +45,7 @@ BorderlessTable.defaultProps = {
 };
 
 export const DottedTable = ({ columns, data }) => {
-  return <Table Header={false} Body={DottedTableBody} columns={columns} data={data} />;
+  return <StyledTable Header={false} Body={DottedTableBody} columns={columns} data={data} />;
 };
 
 DottedTable.propTypes = {
