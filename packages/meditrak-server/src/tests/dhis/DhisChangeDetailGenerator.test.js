@@ -4,8 +4,8 @@
  */
 
 import { expect } from 'chai';
+import { generateTestId } from '@tupaia/database';
 import { DhisChangeDetailGenerator } from '../../dhis/DhisChangeDetailGenerator';
-import { generateTestId } from '../testUtilities';
 
 import {
   MODELS,
