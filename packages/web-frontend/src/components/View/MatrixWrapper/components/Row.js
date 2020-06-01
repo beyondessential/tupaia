@@ -112,7 +112,16 @@ export default class Row extends Component {
             return <div style={style} key={index} />;
           }
 
-          const presentation = getPresentationOption(presentationOptions, cellValue);
+          let presentation = getPresentationOption(presentationOptions, cellValue);
+
+          //if presentation is null, we should not show the DescriptionOverlay popup.
+          //So, only add the `main title` to the presentation object if presentation != null
+          if (presentation) {
+            presentation = {
+              ...presentation,
+              mainTitle: description,
+            };
+          }
 
           return (
             <Cell
