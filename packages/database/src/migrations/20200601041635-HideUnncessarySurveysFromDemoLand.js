@@ -83,8 +83,6 @@ exports.up = async function (db) {
     SET country_ids = array_remove(country_ids, '${demolandCountryId}')
     WHERE code IN (${arrayToDbString(SURVEY_CODES)});
   `);
-
-  console.log(`${demolandCountryId}`)
 };
 
 exports.down = async function (db) {
