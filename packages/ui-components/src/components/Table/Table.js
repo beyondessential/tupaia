@@ -38,8 +38,9 @@ export const Table = React.memo(
     page,
     rowsPerPage,
     rowIdKey,
+    className,
   }) => (
-    <StyledTable>
+    <StyledTable className={className}>
       {Header && <Header {...{ columns, order, orderBy, onChangeOrderBy }} />}
       <TableMessageProvider
         errorMessage={errorMessage}
@@ -95,6 +96,7 @@ Table.propTypes = {
   page: PropTypes.number,
   rowsPerPage: PropTypes.number,
   rowIdKey: PropTypes.string,
+  className: PropTypes.string,
 };
 
 Table.defaultProps = {
@@ -114,4 +116,5 @@ Table.defaultProps = {
   page: null,
   rowsPerPage: 10,
   rowIdKey: 'id',
+  className: '',
 };
