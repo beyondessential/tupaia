@@ -6,63 +6,61 @@ var seed;
 
 import { arrayToDbString } from '../utilities';
 
-const DEMO_LAND_CODE = 'DL';
+const DEMO_LAND_COUNTRY_ID = '59085f2dfc6a0715dae508f0';
 
-const getDemoLandCountryId = async db => db.runSql(`SELECT id FROM country WHERE code = '${DEMO_LAND_CODE}' LIMIT 1;`);
-
-const SURVEY_CODES = [
-  'AFF',
-  'AI',
-  'AII',
-  'ALS',
-  'ALSM',
-  'AS',
-  'CH1',
-  'CH2a',
-  'CH2b',
-  'CH3',
-  'CH4',
-  'CH10',
-  'CH11',
-  'CH12',
-  'DP_LEGACY',
-  'DR_LEGACY',
-  'DWSSP_A1',
-  'DWSSP_A2A',
-  'DWSSP_A2B',
-  'DWSSP_A2C',
-  'DWSSP_A2D',
-  'DWSSP_A2E',
-  'DWSSP_CD',
-  'DWSSP_S1',
-  'DWSSP_S2',
-  'DWSSP_S3A',
-  'DWSSP_S3B',
-  'DWSSP_S3C',
-  'DWSSP_S4',
-  'DWSSP_S5',
-  'DWSSP_S6',
-  'FP02',
-  'FP03',
-  'FP04',
-  'IMMS01',
-  'IMMS02',
-  'IMMS03',
-  'IMMS04',
-  'IMMS05',
-  'IMMS06',
-  'IMMS07',
-  'IMMS08',
-  'MCH01',
-  'MCH02',
-  'MCH03',
-  'MCH04',
-  'MCH05',
-  'MCH07',
-  'MCH08',
-  'POP01',
-  'POP02',
-  'POP03'
+const SURVEY_CODE_IDS = [
+  '5a7bda323ec0d460d2173e05',
+  '5b67d770f013d64e811e4a25',
+  '5bea415ef013d6491a1d6a57',
+  '5d524403f013d61a6219e0ed',
+  '5d52442df013d61a6223f229',
+  '5a7bda203ec0d460d2358cd8',
+  '5c79ef94f013d67ad5970c2e',
+  '5c79ef97f013d67ad529dcb4',
+  '5c79ef97f013d67ad5348404',
+  '5c79ef97f013d67ad51a3736',
+  '5c79ef96f013d67ad53691f7',
+  '5c79ef96f013d67ad51e1cef',
+  '5c79ef96f013d67ad54be2f9',
+  '5c79ef96f013d67ad59fb7c7',
+  '59085fd6cc42a44705c03116',
+  '5a9f12943ec0d40ecb1d87e2',
+  '5cd11e13f013d605a4125aaf',
+  '5cd11e13f013d605a432712a',
+  '5cd11e13f013d605a435c3f9',
+  '5cd11e13f013d605a43a5370',
+  '5cd11e13f013d605a41015c7',
+  '5cd11e13f013d605a4345f6b',
+  '5cd11e0cf013d605a4151388',
+  '5cd11e0df013d605a436a2a5',
+  '5cd11e0ef013d605a4eaf70b',
+  '5cd11e0ef013d605a4241deb',
+  '5cd11e0ef013d605a431bfbe',
+  '5cd11e10f013d605a423b827',
+  '5cd11e10f013d605a42cd806',
+  '5cd11e12f013d605a432b677',
+  '5cd11e12f013d605a48519a5',
+  '5b889d7df013d654c4104d35',
+  '5b889d7ef013d654c45b2344',
+  '5b889d7ef013d654c48992cf',
+  '5b889eddf013d654c4244a9f',
+  '5b889eddf013d654c4287fac',
+  '5b889eddf013d654c42c6ebf',
+  '5b889eddf013d654c433d092',
+  '5b889eddf013d654c437f12b',
+  '5b889eddf013d654c4199271',
+  '5b889eddf013d654c4d1b0f4',
+  '5b889eddf013d654c414595a',
+  '5b88a0e0f013d654c43a93e3',
+  '5b88a0e0f013d654c48d541e',
+  '5b88a0e0f013d654c4e3b440',
+  '5b88a0e0f013d654c4166e1e',
+  '5b88a0e0f013d654c41f8d02',
+  '5b88a0e1f013d654c4acf86b',
+  '5b88a0e1f013d654c476c376',
+  '5b88c76af013d654c4fca54e',
+  '5b88a20cf013d654c4299bb6',
+  '5b88a20cf013d654c42d848c'
 ];
 
 /**
@@ -76,25 +74,21 @@ exports.setup = function (options, seedLink) {
 };
 
 exports.up = async function (db) {
-  const demolandCountryId = (await getDemoLandCountryId(db)).rows[0].id;
-
   await db.runSql(`
     UPDATE survey
-    SET country_ids = array_remove(country_ids, '${demolandCountryId}')
-    WHERE code IN (${arrayToDbString(SURVEY_CODES)});
+    SET country_ids = array_remove(country_ids, '${DEMO_LAND_COUNTRY_ID}')
+    WHERE id IN (${arrayToDbString(SURVEY_CODE_IDS)});
   `);
 };
 
 exports.down = async function (db) {
-  const demolandCountryId = (await getDemoLandCountryId(db)).rows[0].id;
-
   await db.runSql(`
     UPDATE survey
-    SET country_ids = country_ids || '{${demolandCountryId}}'
-    WHERE code IN (${arrayToDbString(SURVEY_CODES)});
+    SET country_ids = country_ids || '{${DEMO_LAND_COUNTRY_ID}}'
+    WHERE id IN (${arrayToDbString(SURVEY_CODE_IDS)});
   `);
 };
 
 exports._meta = {
-  "version": 1
+  'version': 1
 };
