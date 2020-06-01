@@ -246,5 +246,20 @@ describe('aggregateEvents()', () => {
         ),
       ).to.deep.equal(expectedResponse);
     });
+
+    it('works with no events', () => {
+      const aggregationConfig = {
+        orgUnitMap: {
+          Org_Unit_1: { code: 'Parent_1', name: 'Parent 1' },
+          Org_Unit_2: { code: 'Parent_1', name: 'Parent 1' },
+          Org_Unit_3: { code: 'Parent_2', name: 'Parent 2' },
+          Org_Unit_4: { code: 'Parent_2', name: 'Parent 2' },
+        },
+      };
+      const expectedResponse = [];
+      expect(
+        aggregateEvents([], AGGREGATION_TYPES.REPLACE_ORG_UNIT_WITH_ORG_GROUP , aggregationConfig),
+      ).to.deep.equal(expectedResponse);
+    });
   });
 });

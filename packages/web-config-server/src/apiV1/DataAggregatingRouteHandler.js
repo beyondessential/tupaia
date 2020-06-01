@@ -9,7 +9,7 @@ import { Aggregator } from '../aggregator';
 import { Entity, Project } from '../models';
 
 const DEFAULT_ENTITY_TYPE = Entity.FACILITY;
-const DEFAULT_ENTITY_AGGREGATION_TYPE = Aggregator.aggregationTypes.SUM_PER_ORG_GROUP;
+const DEFAULT_ENTITY_AGGREGATION_TYPE = Aggregator.aggregationTypes.REPLACE_ORG_UNIT_WITH_ORG_GROUP;
 
 /**
  * Interface class for handling routes that fetch data from an aggregator
@@ -67,7 +67,13 @@ export class DataAggregatingRouteHandler extends RouteHandler {
     aggregationEntityType,
     entityAggregationType = DEFAULT_ENTITY_AGGREGATION_TYPE,
   ) => {
-    if (!aggregationEntityType || !dataSourceEntities || dataSourceEntities.length === 0)
+    if (
+      !aggregationEntityType ||
+      !dataSourceEntities ||
+      dataSourceEntities.length === 0 ||
+      // Remove this line to fetch more than 1 type of entity (e.g. whole hierarchy)
+      aggregationEntityType === dataSourceEntities[0].type
+    )
       return false;
     const orgUnitMap = await this.getOrgUnitToAncestorMap(
       dataSourceEntities,
