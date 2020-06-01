@@ -36,25 +36,25 @@ export class EntityConfigValidator extends JsonFieldValidator {
 
   getFieldValidators(rowIndex) {
     const pointsToAnotherQuestion = this.constructPointsToAnotherQuestion(rowIndex);
-    const pointsToParentEntityQuestion = this.constructPointsToParentEntityQuestion(rowIndex);
+    const pointsToPrecedingEntityQuestion = this.constructPointsToPrecedingEntityQuestion(rowIndex);
+    const pointsToValidPrecedingEntityQuestion = constructIsNotPresentOr(
+      (...params) =>
+        hasContent(...params) &&
+        pointsToAnotherQuestion(...params) &&
+        pointsToPrecedingEntityQuestion(...params),
+    );
 
     return {
       type: [hasContent, constructListItemsAreOneOf(Object.values(this.models.entity.types))],
       createNew: [constructIsNotPresentOr(validateIsYesOrNo)],
       code: [hasContentIfCanCreateNew, constructIsNotPresentOr(pointsToAnotherQuestion)],
       name: [hasContentIfCanCreateNew, constructIsNotPresentOr(pointsToAnotherQuestion)],
-      parent: [
-        constructIsNotPresentOr(
-          (...params) =>
-            hasContent(...params) &&
-            pointsToAnotherQuestion(...params) &&
-            pointsToParentEntityQuestion(...params),
-        ),
-      ],
+      parent: [pointsToValidPrecedingEntityQuestion],
+      grandparent: [pointsToValidPrecedingEntityQuestion],
     };
   }
 
-  constructPointsToParentEntityQuestion(rowIndex) {
+  constructPointsToPrecedingEntityQuestion(rowIndex) {
     return value => {
       const questionCode = value;
       const question = this.findOtherQuestion(questionCode, rowIndex, rowIndex);

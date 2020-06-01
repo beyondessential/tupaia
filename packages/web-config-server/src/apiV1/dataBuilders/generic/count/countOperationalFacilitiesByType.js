@@ -2,24 +2,23 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import { Project, Facility } from '/models';
+import { Facility } from '/models';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import {
-  getFacilityStatuses,
+  fetchOperationalFacilityCodes,
   translateCategoryCodeToFacilityType,
   pluraliseFacilityType,
 } from '/apiV1/utils';
+import { ENTITY_TYPES } from '/models/Entity';
 
 class CountOperationalFacilitiesByTypeBuilder extends DataBuilder {
-  async fetchEntityHierarchyId() {
-    const { projectCode } = this.query;
-    const project = await Project.findOne({ code: projectCode });
-    return project.entity_hierarchy_id;
-  }
-
   async build() {
     const facilityTypeAndLevelByCode = await this.fetchFacilityTypeData();
-    const operationalFacilityCodes = await this.fetchOperationalFacilityCodes();
+    const operationalFacilityCodes = await fetchOperationalFacilityCodes(
+      this.aggregator,
+      this.entity.code,
+      this.period,
+    );
 
     const countsByType = {};
     operationalFacilityCodes.forEach(facilityCode => {
@@ -45,8 +44,7 @@ class CountOperationalFacilitiesByTypeBuilder extends DataBuilder {
 
   async fetchFacilityTypeData() {
     // Get facility entities under this entity, for the given project
-    const entityHierarchyId = await this.fetchEntityHierarchyId();
-    const facilityEntities = await this.entity.getFacilities(entityHierarchyId);
+    const facilityEntities = await this.fetchDescendantsOfType(ENTITY_TYPES.FACILITY);
     if (facilityEntities.length === 0) return {};
 
     // Find matching facility records
@@ -75,18 +73,6 @@ class CountOperationalFacilitiesByTypeBuilder extends DataBuilder {
       facilityTypeAndLevelByCode[f.code] = getTypeAndLevel(f);
     });
     return facilityTypeAndLevelByCode;
-  }
-
-  async fetchOperationalFacilityCodes() {
-    const facilityStatuses = await getFacilityStatuses(
-      this.aggregator,
-      this.entity.code,
-      this.period,
-      true,
-    );
-    return Object.entries(facilityStatuses)
-      .filter(([, isOperational]) => isOperational)
-      .map(([code]) => code);
   }
 }
 
