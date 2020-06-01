@@ -8,7 +8,7 @@ import { arrayToDbString } from '../utilities';
 
 const DEMO_LAND_COUNTRY_ID = '59085f2dfc6a0715dae508f0';
 
-const SURVEY_CODE_IDS = [
+const SURVEY_IDS = [
   '5a7bda323ec0d460d2173e05',
   '5b67d770f013d64e811e4a25',
   '5bea415ef013d6491a1d6a57',
@@ -77,7 +77,7 @@ exports.up = async function (db) {
   await db.runSql(`
     UPDATE survey
     SET country_ids = array_remove(country_ids, '${DEMO_LAND_COUNTRY_ID}')
-    WHERE id IN (${arrayToDbString(SURVEY_CODE_IDS)});
+    WHERE id IN (${arrayToDbString(SURVEY_IDS)});
   `);
 };
 
@@ -85,7 +85,7 @@ exports.down = async function (db) {
   await db.runSql(`
     UPDATE survey
     SET country_ids = country_ids || '{${DEMO_LAND_COUNTRY_ID}}'
-    WHERE id IN (${arrayToDbString(SURVEY_CODE_IDS)});
+    WHERE id IN (${arrayToDbString(SURVEY_IDS)});
   `);
 };
 
