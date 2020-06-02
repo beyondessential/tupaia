@@ -105,3 +105,21 @@ export const expandableTable = () => {
     </Container>
   );
 };
+
+export const calculatedExpandableTable = () => {
+  const { loading, data } = useTableData();
+
+  return (
+    <Container>
+      <ExpandableTable
+        columns={columns}
+        data={data}
+        loading={loading}
+        expandedAssessor={rowData => {
+          return rowData.name.startsWith('A');
+        }}
+        SubComponent={SubComponent}
+      />
+    </Container>
+  );
+};

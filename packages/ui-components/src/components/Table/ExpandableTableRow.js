@@ -57,8 +57,13 @@ TableRowExpansionContainer.defaultProps = {
 };
 
 export const ExpandableTableRow = React.memo(
-  ({ columns, data, rowIndex, className, SubComponent }) => {
-    const [expanded, setExpanded] = useState(false);
+  ({ columns, data, rowIndex, className, expandedAssessor, SubComponent }) => {
+    let initialExpanded = false;
+    if (expandedAssessor && expandedAssessor(data[rowIndex])) {
+      initialExpanded = true;
+    }
+
+    const [expanded, setExpanded] = useState(initialExpanded);
 
     const handleClick = useCallback(() => {
       setExpanded(prevExpanded => !prevExpanded);
@@ -88,53 +93,11 @@ ExpandableTableRow.propTypes = {
   rowIndex: PropTypes.number.isRequired,
   SubComponent: PropTypes.any,
   className: PropTypes.string,
+  expandedAssessor: PropTypes.func,
 };
 
 ExpandableTableRow.defaultProps = {
   SubComponent: PropTypes.null,
+  expandedAssessor: PropTypes.null,
   className: '',
-};
-
-export const ControlledExpandableTableRow = ({
-  columns,
-  data,
-  rowIndex,
-  className,
-  expanded,
-  onClick,
-  SubComponent,
-  ExpansionContainer,
-}) => {
-  const row = (
-    <StyledTableRow className={className} onClick={onClick}>
-      <TableRowCells columns={columns} rowData={data[rowIndex]} />
-    </StyledTableRow>
-  );
-
-  if (SubComponent && expanded) {
-    return (
-      <ExpansionContainer parentRow={row} colSpan={columns.length}>
-        <SubComponent rowData={data[rowIndex]} />
-      </ExpansionContainer>
-    );
-  }
-
-  return row;
-};
-
-ControlledExpandableTableRow.propTypes = {
-  columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
-  data: PropTypes.array.isRequired,
-  rowIndex: PropTypes.number.isRequired,
-  className: PropTypes.string,
-  expanded: PropTypes.bool,
-  SubComponent: PropTypes.any,
-  ExpansionContainer: PropTypes.any,
-};
-
-ControlledExpandableTableRow.defaultProps = {
-  className: '',
-  expanded: false,
-  SubComponent: PropTypes.null,
-  ExpansionContainer: TableRowExpansionContainer,
 };
