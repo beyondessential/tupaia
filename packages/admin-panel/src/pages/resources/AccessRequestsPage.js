@@ -28,7 +28,7 @@ const FIELDS = [
 const COLUMNS = [
   ...FIELDS,
   {
-    Header: 'Approve',
+    Header: 'Approve/Decline',
     type: 'edit',
     source: 'id',
     actionConfig: {
@@ -38,12 +38,12 @@ const COLUMNS = [
         {
           Header: 'Approved',
           source: 'approved',
-          accessor: () => true,
-          editable: false,
-          hidden: true,
+          type: 'boolean',
+          editConfig: {
+            type: 'boolean',
+          },
         },
       ],
-      icon: 'check',
       allowNoChangeSave: true,
     },
   },
@@ -56,7 +56,6 @@ export const AccessRequestsPage = () => (
     columns={COLUMNS}
     editConfig={{
       title: 'Edit & Approve Access Request',
-      confirmLabel: 'Approve',
     }}
   />
 );

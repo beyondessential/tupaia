@@ -31,6 +31,7 @@ import { getCountryAccessList } from './getCountryAccessList';
 import { surveyResponse } from './surveyResponse';
 import { importDisaster } from './importDisaster';
 import { verifyEmail, requestResendEmail } from './verifyEmail';
+import { getPendingAccessRequests } from './getPendingAccessRequests';
 import { approveAccessRequest } from './approveAccessRequest';
 
 /**
@@ -76,5 +77,6 @@ export default {
   importDisaster: catchAsyncErrors(importDisaster),
   verifyEmail: catchAsyncErrors(verifyEmail),
   requestResendEmail: catchAsyncErrors(requestResendEmail),
+  getPendingAccessRequests: catchAsyncErrors(getPendingAccessRequests),
   approveAccessRequest: catchAsyncErrors(approveAccessRequest),
 };

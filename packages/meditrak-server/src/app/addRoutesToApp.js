@@ -41,6 +41,7 @@ const {
   surveyResponse,
   importDisaster,
   verifyEmail,
+  getPendingAccessRequests,
   approveAccessRequest,
 } = routes;
 
@@ -92,6 +93,7 @@ export function addRoutesToApp(app) {
   app.get('(/v[0-9]+)/socialFeed', getSocialFeed);
   app.get('(/v[0-9]+)/me/rewards', getUserRewards);
   app.get('(/v[0-9]+)/me/countries', getCountryAccessList);
+  //app.get('(/v[0-9]+)/accessRequests', getPendingAccessRequests);
   app.get('(/v[0-9]+)/:resource/:recordId?', getRecords);
 
   /**
