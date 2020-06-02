@@ -3,10 +3,10 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import styled from 'styled-components';
-import { TableRow } from '@tupaia/ui-components';
+import { ExpandableTableRow } from '@tupaia/ui-components';
 import * as COLORS from '../../theme/colors';
 
-export const SimpleTableRow = styled(TableRow)`
+export const SimpleTableRow = styled(ExpandableTableRow)`
   border: none;
 
   .MuiTableCell-root {
@@ -37,7 +37,7 @@ export const BorderlessTableRow = styled(SimpleTableRow)`
     font-size: 0.9375rem;
     line-height: 1.125rem;
     border: none;
-    padding: 0;
+    padding: 0 1.2rem;
     height: 2.6rem;
     color: ${props => props.theme.palette.text.primary};
   }
@@ -46,7 +46,7 @@ export const BorderlessTableRow = styled(SimpleTableRow)`
 export const DottedTableRow = styled(SimpleTableRow)`
   .MuiTableCell-root {
     font-size: 0.875rem;
-    border-bottom: 1px dotted ${COLORS.GREY_DE};
+    border-bottom: 1px dashed ${COLORS.GREY_DE};
     line-height: 1rem;
     padding: 0.9rem 0;
     color: ${props => props.theme.palette.text.primary};

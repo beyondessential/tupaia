@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import MuiBox from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
@@ -51,45 +51,30 @@ const Container = styled(MuiBox)`
   padding: 1rem;
 `;
 
-export const simple = () => (
-  <Container>
-    <ButtonSelect id="button-select" options={options} />
-  </Container>
-);
-
-export const disabled = () => (
-  <Container>
-    <ButtonSelect id="button-select" options={options} disabled />
-  </Container>
-);
-
-export const muiProps = () => (
-  <Container>
-    <ButtonSelect id="button-select" options={options} muiProps={{ error: true }} />
-  </Container>
-);
-
 export const controlled = () => {
-  const [controlValue, setControlValue] = useState(options[4].id);
+  const [index, setIndex] = useState(0);
+  const selectedOption = options[index];
 
-  const handleChange = useCallback(
-    newValue => {
-      setControlValue(newValue);
-    },
-    [setControlValue],
+  return (
+    <Container>
+      <ButtonSelect id="button-select" options={options} onChange={setIndex} index={index} />
+      <Typography>Selected Value: {selectedOption ? selectedOption.name : 'none'}</Typography>
+    </Container>
   );
+};
 
-  const selectedOption = options.find(option => option.id === controlValue);
+export const muiProps = () => {
+  const [index, setIndex] = useState(0);
 
   return (
     <Container>
       <ButtonSelect
         id="button-select"
         options={options}
-        onChange={handleChange}
-        controlValue={controlValue}
+        onChange={setIndex}
+        index={index}
+        muiProps={{ error: true }}
       />
-      <Typography>Selected Value: {selectedOption ? selectedOption.name : 'none'}</Typography>
     </Container>
   );
 };
