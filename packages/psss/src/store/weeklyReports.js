@@ -6,8 +6,6 @@
 import { createReducer } from '../utils/createReducer';
 
 // actions
-const OPEN_PANEL = 'OPEN_PANEL';
-const CLOSE_PANEL = 'CLOSE_PANEL';
 const SET_ACTIVE_COUNTRY_WEEK = 'SET_ACTIVE_COUNTRY_WEEK';
 const COUNTRY_WEEKS_LOAD_START = 'COUNTRY_WEEKS_LOAD_START';
 const COUNTRY_WEEKS_LOAD_FINISH = 'COUNTRY_WEEKS_LOAD_FINISH';
@@ -29,7 +27,6 @@ export const reloadCountryWeeks = ({ fetchOptions, queryParameters }) => async (
     const { data } = await fakeApi.get(endpoint, { ...fetchOptions, ...queryParameters });
     dispatch({ type: COUNTRY_WEEKS_LOAD_FINISH, data });
   } catch (error) {
-    console.log('error', error);
     dispatch({ type: COUNTRY_WEEKS_LOAD_ERROR, error });
   }
 };
@@ -43,12 +40,9 @@ export const reloadSiteWeeks = ({ fetchOptions, queryParameters }) => async (
   dispatch({ type: SITE_WEEKS_LOAD_START });
 
   try {
-    // Todo: pass in active countryWeek as a param
     const { data } = await fakeApi.get(endpoint, { ...fetchOptions, ...queryParameters });
-    console.log('data', data);
     dispatch({ type: SITE_WEEKS_LOAD_FINISH, data });
   } catch (error) {
-    console.log('error', error);
     dispatch({ type: SITE_WEEKS_LOAD_ERROR, error });
   }
 };
@@ -59,14 +53,6 @@ export const updateWeeklyReportsData = () => async dispatch => {
 
 export const confirmWeeklyReportsData = () => async () => {
   console.log('confirm data...');
-};
-
-export const openWeeklyReportsPanel = rowId => async dispatch => {
-  dispatch({ type: OPEN_PANEL, rowId: rowId });
-};
-
-export const closeWeeklyReportsPanel = () => async dispatch => {
-  dispatch({ type: CLOSE_PANEL });
 };
 
 export const setActiveCountryWeek = rowId => async dispatch => {
@@ -81,7 +67,6 @@ export const getSiteWeeksError = ({ weeklyReports }) => weeklyReports.countryWee
 
 // reducer
 const defaultState = {
-  panelIsOpen: false,
   activeCountryWeekId: null,
   countryWeeks: [],
   countryWeeksStatus: 'idle',
@@ -94,12 +79,6 @@ const defaultState = {
 const actionHandlers = {
   [SET_ACTIVE_COUNTRY_WEEK]: ({ rowId }) => ({
     activeCountryWeekId: rowId,
-  }),
-  [OPEN_PANEL]: () => ({
-    panelIsOpen: true,
-  }),
-  [CLOSE_PANEL]: () => ({
-    panelIsOpen: false,
   }),
   [COUNTRY_WEEKS_LOAD_START]: () => ({
     countryWeeksError: defaultState.countryWeeksError,
