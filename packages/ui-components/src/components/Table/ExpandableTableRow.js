@@ -57,17 +57,28 @@ TableRowExpansionContainer.defaultProps = {
 };
 
 export const ExpandableTableRow = React.memo(
-  ({ columns, data, rowIndex, className, expandedAssessor, SubComponent }) => {
-    let initialExpanded = false;
-    if (expandedAssessor && expandedAssessor(data[rowIndex])) {
-      initialExpanded = true;
-    }
+  ({
+    columns,
+    data,
+    rowIndex,
+    className,
+    expandedValue,
+    SubComponent,
+    ExpansionContainer,
+    onClick,
+  }) => {
+    const isControlled = expandedValue !== undefined;
+    const [expandedState, setExpandedState] = useState(false);
+    const expanded = isControlled ? expandedValue : expandedState;
 
-    const [expanded, setExpanded] = useState(initialExpanded);
-
-    const handleClick = useCallback(() => {
-      setExpanded(prevExpanded => !prevExpanded);
-    }, []);
+    // useCallback
+    const handleClick = () => {
+      if (!isControlled) {
+        setExpandedState(prevExpanded => !prevExpanded);
+      } else if (onClick) {
+        onClick();
+      }
+    };
 
     const row = (
       <StyledTableRow className={className} onClick={handleClick}>
@@ -77,9 +88,9 @@ export const ExpandableTableRow = React.memo(
 
     if (SubComponent && expanded) {
       return (
-        <TableRowExpansionContainer parentRow={row} colSpan={columns.length}>
+        <ExpansionContainer parentRow={row} colSpan={columns.length}>
           <SubComponent data={data} />
-        </TableRowExpansionContainer>
+        </ExpansionContainer>
       );
     }
 
@@ -93,11 +104,15 @@ ExpandableTableRow.propTypes = {
   rowIndex: PropTypes.number.isRequired,
   SubComponent: PropTypes.any,
   className: PropTypes.string,
-  expandedAssessor: PropTypes.func,
+  ExpansionContainer: PropTypes.any,
+  expandedValue: PropTypes.bool,
+  onClick: PropTypes.func,
 };
 
 ExpandableTableRow.defaultProps = {
-  SubComponent: PropTypes.null,
-  expandedAssessor: PropTypes.null,
+  SubComponent: null,
   className: '',
+  ExpansionContainer: TableRowExpansionContainer,
+  expandedValue: undefined,
+  onClick: null,
 };

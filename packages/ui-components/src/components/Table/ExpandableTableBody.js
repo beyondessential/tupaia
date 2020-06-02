@@ -8,30 +8,19 @@ import PropTypes from 'prop-types';
 import { ExpandableTableRow as ExpandableTableRowComponent } from './ExpandableTableRow';
 import { TableBody } from './TableBody';
 
-export const ExpandableTableBody = ({
-  ExpandableTableRow,
-  expandedAssessor,
-  SubComponent,
-  ...tableBodyProps
-}) => {
+export const ExpandableTableBody = ({ ExpandableTableRow, SubComponent, ...tableBodyProps }) => {
   const TableRow = tableRowProps => (
-    <ExpandableTableRow
-      {...tableRowProps}
-      SubComponent={SubComponent}
-      expandedAssessor={expandedAssessor}
-    />
+    <ExpandableTableRow {...tableRowProps} SubComponent={SubComponent} />
   );
   return <TableBody {...tableBodyProps} TableRow={TableRow} />;
 };
 
 ExpandableTableBody.propTypes = {
   ExpandableTableRow: PropTypes.any,
-  expandedAssessor: PropTypes.func,
   SubComponent: PropTypes.any,
 };
 
 ExpandableTableBody.defaultProps = {
   SubComponent: null,
-  expandedAssessor: null,
   ExpandableTableRow: ExpandableTableRowComponent,
 };

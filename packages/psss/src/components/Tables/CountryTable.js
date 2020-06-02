@@ -15,11 +15,7 @@ import { CountryTableBody } from './CountryTableBody';
 import * as COLORS from '../../theme/colors';
 import { FIRST_COLUMN_WIDTH, SITES_REPORTED_COLUMN_WIDTH } from './constants';
 import { AlertCell, SitesReportedCell } from './TableCellComponents';
-import {
-  getCountryWeeks,
-  reloadCountryWeeks,
-  getCountryWeeksError,
-} from '../../store';
+import { getCountryWeeks, reloadCountryWeeks, getCountryWeeksError } from '../../store';
 
 const CountryWeekTitle = styled.div`
   color: ${COLORS.BLUE};

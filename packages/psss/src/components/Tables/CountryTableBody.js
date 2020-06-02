@@ -22,7 +22,7 @@ const TableBodyComponent = React.memo(
         return (
           <ExpandableTableRow
             onClick={handleRowClick}
-            expanded={expanded}
+            expandedValue={expanded}
             data={data}
             rowIndex={rowIndex}
             key={rowData.id}

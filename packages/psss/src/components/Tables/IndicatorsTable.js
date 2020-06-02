@@ -37,11 +37,11 @@ const HeaderTitle = styled(Typography)`
   line-height: 1.2rem;
 `;
 
-const LayoutRow = styled.div`
+const ActionsRow = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem 0;
+  padding: 1rem;
 `;
 
 const StyledEditableTable = styled(EditableTable)`
@@ -85,7 +85,7 @@ export const IndicatorsTableComponent = ({ onSubmit, tableState, setTableState }
       </FakeHeader>
       <StyledEditableTable Header={false} Body={DottedTableBody} />
       {tableState === EDITABLE && (
-        <LayoutRow>
+        <ActionsRow>
           <MuiLink>Reset and use Sentinel data</MuiLink>
           <div>
             <Button variant="outlined" onClick={handleCancel}>
@@ -93,7 +93,7 @@ export const IndicatorsTableComponent = ({ onSubmit, tableState, setTableState }
             </Button>
             <Button onClick={handleSubmit}>Save</Button>
           </div>
-        </LayoutRow>
+        </ActionsRow>
       )}
     </EditableTableLoader>
   );

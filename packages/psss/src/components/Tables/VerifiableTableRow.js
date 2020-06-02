@@ -117,7 +117,7 @@ export const VerifiableTableRow = props => {
   return (
     <BorderlessTableRow
       {...props}
-      expanded={status === VERIFY_STATUSES.EXPANDED || status === VERIFY_STATUSES.VERIFIED}
+      expandedValue={status === VERIFY_STATUSES.EXPANDED || status === VERIFY_STATUSES.VERIFIED}
       SubComponent={WarningButtonComponent}
       ExpansionContainer={StyledExpansionContainer}
     />

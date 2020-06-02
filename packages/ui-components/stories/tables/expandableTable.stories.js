@@ -5,7 +5,15 @@
 import React from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
-import { Button, Table, ExpandableTable, FakeHeader, CondensedTableBody } from '../../src';
+import MuiTableBody from '@material-ui/core/TableBody';
+import {
+  Button,
+  Table,
+  ExpandableTable,
+  ExpandableTableRow,
+  FakeHeader,
+  CondensedTableBody,
+} from '../../src';
 import { useTableData } from '../story-utils/useTableData';
 import * as COLORS from '../story-utils/theme/colors';
 
@@ -106,18 +114,40 @@ export const expandableTable = () => {
   );
 };
 
-export const calculatedExpandableTable = () => {
+const TableBody = ({ ...props }) => {
+  return (
+    <MuiTableBody>
+      {props.data.map((rowData, rowIndex) => {
+        const expanded = rowIndex === 0;
+
+        const handleRowClick = () => {
+          console.log('click...');
+        };
+
+        return (
+          <ExpandableTableRow
+            onClick={handleRowClick}
+            expandedValue={expanded}
+            rowIndex={rowIndex}
+            key={rowData.id}
+            {...props}
+          />
+        );
+      })}
+    </MuiTableBody>
+  );
+};
+
+export const controlledExpandableTable = () => {
   const { loading, data } = useTableData();
 
   return (
     <Container>
-      <ExpandableTable
+      <Table
         columns={columns}
         data={data}
         loading={loading}
-        expandedAssessor={rowData => {
-          return rowData.name.startsWith('A');
-        }}
+        Body={TableBody}
         SubComponent={SubComponent}
       />
     </Container>
