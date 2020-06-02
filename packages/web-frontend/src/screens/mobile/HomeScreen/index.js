@@ -81,11 +81,15 @@ HomeScreen.propTypes = {
   onChangeOrgUnit: PropTypes.func.isRequired,
 };
 
+HomeScreen.defaultProps = {
+  organisationUnits: [],
+};
+
 const mapStateToProps = state => {
   const { isGroupSelectExpanded } = state.dashboard;
 
   const { dashboardConfig } = state.global;
-  const organisationUnits = selectOrgUnitChildren(state, state.project.activeProjectCode) || [];
+  const organisationUnits = selectOrgUnitChildren(state, state.project.activeProjectCode);
 
   return {
     organisationUnits,

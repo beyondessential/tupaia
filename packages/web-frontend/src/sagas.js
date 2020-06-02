@@ -941,11 +941,15 @@ function* watchAttemptAttemptDrillDown() {
 }
 
 function* resetToExplore() {
+  const state = yield select();
   // default measure will be selected once the org unit has fully changed, just clear for now
   yield put(clearMeasure());
   yield put(clearMeasureHierarchy());
-  yield put(selectProject(INITIAL_PROJECT_CODE));
   yield put(changeOrgUnit('explore', true));
+
+  if (state.project.projects.length > 0) {
+    yield put(selectProject(INITIAL_PROJECT_CODE));
+  }
 }
 
 function* watchUserChangesAndUpdatePermissions() {

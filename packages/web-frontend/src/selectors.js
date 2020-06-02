@@ -333,11 +333,8 @@ export const selectIsProject = createSelector(
 export const selectProjectByCode = (state, code) =>
   state.project.projects.find(p => p.code === code);
 
-export const selectActiveProject = state => {
-  return (
-    state.project.projects.length > 0 && selectProjectByCode(state, state.project.activeProjectCode)
-  );
-};
+export const selectActiveProject = state =>
+  selectProjectByCode(state, state.project.activeProjectCode);
 
 export const selectAdjustedProjectBounds = (state, code) => {
   if (code === 'explore' || code === 'disaster') {

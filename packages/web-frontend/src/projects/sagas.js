@@ -44,7 +44,7 @@ function* loadProject(action) {
 
   yield put(changeBounds(yield select(selectAdjustedProjectBounds, action.projectCode)));
   yield put(requestOrgUnit(action.projectCode));
-  yield put(changeDashboardGroup(project ? project.dashboardGroupName : 'General'));
+  yield put(changeDashboardGroup(project.dashboardGroupName));
 }
 
 function* watchSelectProjectAndLoadProjectState() {
