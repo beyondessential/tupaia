@@ -16,6 +16,7 @@ import {
 } from '../../src';
 import { useTableData } from '../story-utils/useTableData';
 import * as COLORS from '../story-utils/theme/colors';
+import PropTypes from 'prop-types';
 
 export default {
   title: 'Tables/ExpandableTable',
@@ -138,12 +139,16 @@ const TableBody = ({ ...props }) => {
   );
 };
 
+TableBody.propTypes = {
+  data: PropTypes.array.isRequired,
+};
+
 export const controlledExpandableTable = () => {
   const { loading, data } = useTableData();
 
   return (
     <Container>
-      <Table
+      <ExpandableTable
         columns={columns}
         data={data}
         loading={loading}

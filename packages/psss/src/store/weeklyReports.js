@@ -51,22 +51,13 @@ export const reloadSiteWeeks = ({ fetchOptions, queryParameters }) => async (
     console.log('error', error);
     dispatch({ type: SITE_WEEKS_LOAD_ERROR, error });
   }
-
-  console.log('done');
 };
 
-function sleep(delay = 0) {
-  return new Promise(resolve => {
-    setTimeout(resolve, delay);
-  });
-}
-
-export const updateWeeklyReportsData = data => async dispatch => {
-  await sleep(1000);
+export const updateWeeklyReportsData = () => async dispatch => {
   await dispatch(reloadCountryWeeks({}));
 };
 
-export const confirmWeeklyReportsData = () => async (dispatch, getState, { fakeApi }) => {
+export const confirmWeeklyReportsData = () => async () => {
   console.log('confirm data...');
 };
 
@@ -84,14 +75,9 @@ export const setActiveCountryWeek = rowId => async dispatch => {
 
 // selectors
 export const getCountryWeeks = ({ weeklyReports }) => weeklyReports.countryWeeks;
-export const getActiveCountryWeek = ({ weeklyReports }) => weeklyReports.countryWeeks[0]; // add active value
 export const getCountryWeeksError = ({ weeklyReports }) => weeklyReports.countryWeeksError;
-export const checkCountryWeeksIsLoading = ({ weeklyReports }) =>
-  weeklyReports.countryWeeksStatus === 'loading';
 export const getSiteWeeks = ({ weeklyReports }) => weeklyReports.siteWeeks;
 export const getSiteWeeksError = ({ weeklyReports }) => weeklyReports.countryWeeksError;
-export const checkSiteWeeksIsLoading = ({ weeklyReports }) =>
-  weeklyReports.siteWeeksStatus === 'loading';
 
 // reducer
 const defaultState = {
