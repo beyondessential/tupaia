@@ -23,8 +23,6 @@ const SURVEY_IDS = [
   '5c79ef96f013d67ad51e1cef',
   '5c79ef96f013d67ad54be2f9',
   '5c79ef96f013d67ad59fb7c7',
-  '59085fd6cc42a44705c03116',
-  '5a9f12943ec0d40ecb1d87e2',
   '5cd11e13f013d605a4125aaf',
   '5cd11e13f013d605a432712a',
   '5cd11e13f013d605a435c3f9',
