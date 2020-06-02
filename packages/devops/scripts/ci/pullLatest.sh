@@ -13,8 +13,7 @@ if curl --output /dev/null --silent --head --fail $DEPLOYMENT_URL; then
     git reset --hard origin/${CI_BRANCH}
     git stash pop
     yarn
-    yarn
-  " # yarn twice as first install fails https://github.com/beyondessential/tupaia-backlog/issues/605
+  "
 else
   echo "No deployment exists for ${CI_BRANCH}, cancelling update"
 fi
