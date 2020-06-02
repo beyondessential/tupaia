@@ -11,6 +11,7 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 
 import { WHITE } from '../../../../styles';
+import { selectActiveProject } from '../../../../selectors';
 
 const Grid = styled.div`
   display: grid;
@@ -53,6 +54,6 @@ ProjectDescription.propTypes = {
   project: PropTypes.shape({}).isRequired,
 };
 
-const mapStateToProps = state => ({ project: state.project.active });
+const mapStateToProps = state => ({ project: selectActiveProject(state) });
 
 export default connect(mapStateToProps)(ProjectDescription);
