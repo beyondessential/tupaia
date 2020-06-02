@@ -98,18 +98,20 @@ describe('UserHasAccess', function() {
   });
 
   xit('should only retrieve public level dashboards for Tonga org units unless Access Policy otherwise specifies', async () => {
-    const tongaDashboardResponse = await app.get('dashboard?organisationUnitCode=TO').expect(200);
+    const tongaDashboardResponse = await app
+      .get('dashboard?organisationUnitCode=TO&projectCode=explore')
+      .expect(200);
     expect(tongaDashboardResponse.body).to.have.all.keys('General');
     expect(tongaDashboardResponse.body).to.not.have.any.keys('PEHS');
 
     const niuasDashboardResponse = await app
-      .get('dashboard?organisationUnitCode=TO_Niuas')
+      .get('dashboard?organisationUnitCode=TO_Niuas&projectCode=explore')
       .expect(200);
     expect(niuasDashboardResponse.body).to.have.all.keys('General');
     expect(niuasDashboardResponse.body).to.not.have.any.keys('PEHS');
 
     const tongatapuDashboardResponse = await app
-      .get('dashboard?organisationUnitCode=TO_Tongatapu')
+      .get('dashboard?organisationUnitCode=TO_Tongatapu&projectCode=explore')
       .expect(200);
     expect(tongatapuDashboardResponse.body).to.have.all.keys('General', 'PEHS');
   });
@@ -120,13 +122,13 @@ describe('UserHasAccess', function() {
   });
   xit('should not have access to donor level measure group for organisation unit that does not have any donor level permissions', async () => {
     const niuasDashboardResponse = await app
-      .get('measures?organisationUnitCode=TO_Niuas')
+      .get('measures?organisationUnitCode=TO_Niuas&projectCode=explore')
       .expect(200);
     expect(niuasDashboardResponse.body.measures).to.not.have.property('Facility equipment');
   });
   xit('should have access to donor level measure group for nested organisation unit with donor level permissions', async () => {
     const tongaDashboardResponse = await app
-      .get('measures?organisationUnitCode=TO_Tongatapu')
+      .get('measures?organisationUnitCode=TO_Tongatapu&projectCode=explore')
       .expect(200);
 
     expect(tongaDashboardResponse.body.measures).to.have.property('Facility equipment');
