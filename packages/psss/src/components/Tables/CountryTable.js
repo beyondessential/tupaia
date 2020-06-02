@@ -3,16 +3,19 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
-import { format } from 'date-fns';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { format } from 'date-fns';
+import { Table } from '@tupaia/ui-components';
 import { Alarm, CheckCircleOutline } from '@material-ui/icons';
 import { SiteSummaryTable } from './SiteSummaryTable';
-import { ConnectedTable } from './ConnectedTable';
+import { CountryTableBody } from './CountryTableBody';
 import * as COLORS from '../../theme/colors';
 import { FIRST_COLUMN_WIDTH, SITES_REPORTED_COLUMN_WIDTH } from './constants';
-import { AFRCell, SitesReportedCell } from './TableCellComponents';
+import { AlertCell, SitesReportedCell } from './TableCellComponents';
+import { getCountryWeeks, reloadCountryWeeks, getCountryWeeksError } from '../../store';
 
 const CountryWeekTitle = styled.div`
   color: ${COLORS.BLUE};
@@ -29,21 +32,20 @@ const CountryWeekSubTitle = styled.div`
 `;
 
 const NameCell = ({ week, startDate, endDate }) => {
-  const start = `${format(startDate, 'LLL d')}`;
-  const end = `${format(endDate, 'LLL d')}`;
-  const year = `${format(endDate, 'yyyy')}`;
+  const start = `${format(new Date(startDate), 'LLL d')}`;
+  const end = `${format(new Date(endDate), 'LLL d, yyyy')}`;
   return (
     <React.Fragment>
       <CountryWeekTitle>{`Week ${week}`}</CountryWeekTitle>
-      <CountryWeekSubTitle>{`${start} - ${end}, ${year}`}</CountryWeekSubTitle>
+      <CountryWeekSubTitle>{`${start} - ${end}`}</CountryWeekSubTitle>
     </React.Fragment>
   );
 };
 
 NameCell.propTypes = {
   week: PropTypes.number.isRequired,
-  startDate: PropTypes.instanceOf(Date).isRequired,
-  endDate: PropTypes.instanceOf(Date).isRequired,
+  startDate: PropTypes.any.isRequired,
+  endDate: PropTypes.any.isRequired,
 };
 
 const Status = styled.div`
@@ -87,6 +89,11 @@ StatusCell.propTypes = {
   status: PropTypes.string.isRequired,
 };
 
+const dataAccessor = key => data => {
+  const indicator = data.indicators.find(i => i.id === key);
+  return indicator ? indicator.totalCases : null;
+};
+
 const countryColumns = [
   {
     title: 'Date ',
@@ -104,23 +111,32 @@ const countryColumns = [
   {
     title: 'AFR',
     key: 'AFR',
-    CellComponent: AFRCell,
+    accessor: dataAccessor('afr'),
+    CellComponent: AlertCell,
   },
   {
     title: 'DIA',
     key: 'DIA',
+    accessor: dataAccessor('dia'),
+    CellComponent: AlertCell,
   },
   {
     title: 'ILI',
     key: 'ILI',
+    accessor: dataAccessor('ili'),
+    CellComponent: AlertCell,
   },
   {
     title: 'PF',
     key: 'PF',
+    accessor: dataAccessor('pf'),
+    CellComponent: AlertCell,
   },
   {
-    title: 'DLI',
-    key: 'DLI',
+    title: 'DIL',
+    key: 'DIL',
+    accessor: dataAccessor('dil'),
+    CellComponent: AlertCell,
   },
   {
     title: 'STATUS',
@@ -130,10 +146,50 @@ const countryColumns = [
   },
 ];
 
-export const CountryTable = React.memo(() => (
-  <ConnectedTable
-    endpoint="country-weeks"
-    columns={countryColumns}
-    SubComponent={SiteSummaryTable}
-  />
-));
+const CountryTableComponent = React.memo(({ fetchData, data, errorMessage }) => {
+  const [page, setPage] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    (async () => {
+      setIsLoading(true);
+      await fetchData({ page });
+      setIsLoading(false);
+    })();
+  }, [page]);
+
+  return (
+    <Table
+      isLoading={isLoading}
+      columns={countryColumns}
+      data={data}
+      errorMessage={errorMessage}
+      onChangePage={setPage}
+      page={page}
+      Body={CountryTableBody}
+      fetchData={fetchData}
+      SubComponent={SiteSummaryTable}
+    />
+  );
+});
+
+CountryTableComponent.propTypes = {
+  fetchData: PropTypes.func.isRequired,
+  data: PropTypes.array.isRequired,
+  errorMessage: PropTypes.string,
+};
+
+CountryTableComponent.defaultProps = {
+  errorMessage: '',
+};
+
+const mapStateToProps = state => ({
+  data: getCountryWeeks(state),
+  error: getCountryWeeksError(state),
+});
+
+const mapDispatchToProps = dispatch => ({
+  fetchData: () => dispatch(reloadCountryWeeks({})),
+});
+
+export const CountryTable = connect(mapStateToProps, mapDispatchToProps)(CountryTableComponent);

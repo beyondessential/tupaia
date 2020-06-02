@@ -57,7 +57,7 @@ const WeeklyReportsPaneSubmitButton = () => {
   );
 };
 
-export const WeeklyReportPane = () => {
+export const WeeklyReportPanel = () => {
   const [open, setOpen] = useState(false);
 
   const toggleDrawer = (event, isOpen) => {

@@ -3,25 +3,29 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
 import Typography from '@material-ui/core/Typography';
-import { CondensedTableBody, FakeHeader } from '@tupaia/ui-components';
-import { ConnectedTable } from './ConnectedTable';
-import { WeeklyReportPane } from '../WeeklyReportPane';
+import PropTypes from 'prop-types';
+import { CondensedTableBody, FakeHeader, Table, Button } from '@tupaia/ui-components';
 import { FIRST_COLUMN_WIDTH, SITES_REPORTED_COLUMN_WIDTH } from './constants';
-import { AFRCell, SitesReportedCell } from './TableCellComponents';
-
-const StyledDiv = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 2rem;
-`;
+import { AlertCell } from './TableCellComponents';
+import {
+  getSiteWeeksError,
+  openWeeklyReportsPanel,
+  getSiteWeeks,
+  reloadSiteWeeks,
+} from '../../store';
 
 // Todo: update placeholder
 const NameCell = data => {
-  return <span>{data.name} Clinic</span>;
+  return <span>{data.name}</span>;
+};
+
+const dataAccessor = key => data => {
+  const indicator = data.indicators.find(i => i.id === key);
+  return indicator ? indicator.totalCases : null;
 };
 
 const siteWeekColumns = [
@@ -35,29 +39,43 @@ const siteWeekColumns = [
   {
     title: 'Sites Reported',
     key: 'sitesReported',
-    CellComponent: SitesReportedCell,
+    accessor: dataAccessor('sitesReported'),
     width: SITES_REPORTED_COLUMN_WIDTH,
   },
   {
     title: 'AFR',
     key: 'AFR',
-    CellComponent: AFRCell,
+    accessor: dataAccessor('afr'),
+    CellComponent: AlertCell,
   },
   {
     title: 'DIA',
     key: 'DIA',
+    accessor: dataAccessor('dia'),
+    CellComponent: AlertCell,
   },
   {
     title: 'ILI',
     key: 'ILI',
+    accessor: dataAccessor('ili'),
+    CellComponent: AlertCell,
   },
   {
     title: 'PF',
     key: 'PF',
+    accessor: dataAccessor('pf'),
+    CellComponent: AlertCell,
   },
   {
-    title: 'DLI',
-    key: 'DLI',
+    title: 'DIL',
+    key: 'DIL',
+    accessor: dataAccessor('dil'),
+  },
+  {
+    title: 'Status',
+    key: 'status',
+    width: '110px',
+    accessor: dataAccessor('status'),
   },
 ];
 
@@ -66,18 +84,68 @@ const TableHeader = () => {
   return <FakeHeader>10/30 Sentinel Sites Reported</FakeHeader>;
 };
 
-export const SiteSummaryTable = React.memo(() => (
-  <React.Fragment>
-    <TableHeader />
-    <ConnectedTable
-      endpoint="sites"
-      columns={siteWeekColumns}
-      Header={false}
-      Body={CondensedTableBody}
-    />
-    <StyledDiv>
-      <Typography variant="body1">Verify data to submit Weekly report to Regional</Typography>
-      <WeeklyReportPane />
-    </StyledDiv>
-  </React.Fragment>
-));
+const StyledDiv = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2rem;
+`;
+
+export const SiteSummaryTableComponent = React.memo(
+  ({ fetchData, data, errorMessage, handleOpen }) => {
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+      (async () => {
+        setIsLoading(true);
+        await fetchData();
+        setIsLoading(false);
+      })();
+    }, []);
+
+    return (
+      <React.Fragment>
+        <TableHeader />
+        <Table
+          isLoading={isLoading}
+          errorMessage={errorMessage}
+          columns={siteWeekColumns}
+          fetchData={fetchData}
+          data={data}
+          Header={false}
+          Body={CondensedTableBody}
+        />
+        <StyledDiv>
+          <Typography variant="body1">Verify data to submit Weekly report to Regional</Typography>
+          <Button onClick={handleOpen}>Save and submit</Button>
+        </StyledDiv>
+      </React.Fragment>
+    );
+  },
+);
+
+SiteSummaryTableComponent.propTypes = {
+  fetchData: PropTypes.func.isRequired,
+  handleOpen: PropTypes.func.isRequired,
+  data: PropTypes.array.isRequired,
+  errorMessage: PropTypes.string,
+};
+
+SiteSummaryTableComponent.defaultProps = {
+  errorMessage: '',
+};
+
+const mapStateToProps = state => ({
+  data: getSiteWeeks(state),
+  errorMessage: getSiteWeeksError(state),
+});
+
+const mapDispatchToProps = dispatch => ({
+  fetchData: () => dispatch(reloadSiteWeeks({})),
+  handleOpen: rowId => dispatch(openWeeklyReportsPanel(rowId)),
+});
+
+export const SiteSummaryTable = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(SiteSummaryTableComponent);

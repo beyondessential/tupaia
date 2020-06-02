@@ -7,12 +7,13 @@ import React from 'react';
 import MuiLink from '@material-ui/core/Link';
 import Avatar from '@material-ui/core/Avatar';
 import PropTypes from 'prop-types';
+import { ExpandableTableBody } from '@tupaia/ui-components';
 import { Link as RouterLink } from 'react-router-dom';
 import { ConnectedTable } from './ConnectedTable';
 import * as COLORS from '../../theme/colors';
 import { FIRST_COLUMN_WIDTH, SITES_REPORTED_COLUMN_WIDTH } from './constants';
 import { CountrySummaryTable } from './CountrySummaryTable';
-import { AFRCell, SitesReportedCell } from './TableCellComponents';
+import { AlertCell, SitesReportedCell } from './TableCellComponents';
 
 const CountryTitle = styled(MuiLink)`
   display: flex;
@@ -38,6 +39,11 @@ NameCell.propTypes = {
   name: PropTypes.string.isRequired,
 };
 
+const dataAccessor = key => data => {
+  const indicator = data.indicators.find(i => i.id === key);
+  return indicator ? indicator.totalCases : null;
+};
+
 const countriesTableColumns = [
   {
     title: 'Name',
@@ -55,23 +61,32 @@ const countriesTableColumns = [
   {
     title: 'AFR',
     key: 'AFR',
-    CellComponent: AFRCell,
+    accessor: dataAccessor('afr'),
+    CellComponent: AlertCell,
   },
   {
     title: 'DIA',
     key: 'DIA',
+    accessor: dataAccessor('dia'),
+    CellComponent: AlertCell,
   },
   {
     title: 'ILI',
     key: 'ILI',
+    accessor: dataAccessor('ili'),
+    CellComponent: AlertCell,
   },
   {
     title: 'PF',
     key: 'PF',
+    accessor: dataAccessor('pf'),
+    CellComponent: AlertCell,
   },
   {
-    title: 'DLI',
-    key: 'DLI',
+    title: 'DIO',
+    key: 'DIL',
+    accessor: dataAccessor('dil'),
+    CellComponent: AlertCell,
   },
 ];
 
@@ -79,6 +94,7 @@ export const CountriesTable = React.memo(() => (
   <ConnectedTable
     endpoint="countries"
     columns={countriesTableColumns}
+    Body={ExpandableTableBody}
     SubComponent={CountrySummaryTable}
   />
 ));
