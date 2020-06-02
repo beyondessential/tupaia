@@ -52,4 +52,47 @@ describe('sumPerOrgGroup()', () => {
       { dataElement: 'element1', organisationUnit: 'org4', period: '20200103', value: 4 },
     ]);
   });
+
+  it('should not sum across dataElements', () => {
+    const testAnalytics = [
+      { dataElement: 'element1', organisationUnit: 'org1', period: '20200101', value: 1 },
+      { dataElement: 'element2', organisationUnit: 'org2', period: '20200102', value: 2 },
+      { dataElement: 'element1', organisationUnit: 'org3', period: '20200103', value: 3 },
+      { dataElement: 'element2', organisationUnit: 'org3', period: '20200103', value: 4 },
+      { dataElement: 'element1', organisationUnit: 'parent1', period: '20200103', value: 5 },
+    ];
+    expect(sumPerOrgGroup(testAnalytics, { orgUnitMap })).to.have.same.deep.members([
+      { dataElement: 'element1', organisationUnit: 'parent1', period: '20200101', value: 9 },
+      { dataElement: 'element2', organisationUnit: 'parent1', period: '20200103', value: 4 },
+      { dataElement: 'element2', organisationUnit: 'parent2', period: '20200102', value: 2 },
+    ]);
+  });
+
+  it('should use valueToMatch', () => {
+    const testAnalytics = [
+      { dataElement: 'element1', organisationUnit: 'org1', period: '20200101', value: 'Yes' },
+      { dataElement: 'element1', organisationUnit: 'org2', period: '20200102', value: 'No' },
+      { dataElement: 'element1', organisationUnit: 'org3', period: '20200103', value: 'Yes' },
+    ];
+    expect(
+      sumPerOrgGroup(testAnalytics, { orgUnitMap, valueToMatch: 'Yes' }),
+    ).to.have.same.deep.members([
+      { dataElement: 'element1', organisationUnit: 'parent1', period: '20200101', value: 2 },
+      { dataElement: 'element1', organisationUnit: 'parent2', period: '20200102', value: 0 },
+    ]);
+  });
+
+  it('should use valueToMatch any key (*)', () => {
+    const testAnalytics = [
+      { dataElement: 'element1', organisationUnit: 'org1', period: '20200101', value: 'Yes' },
+      { dataElement: 'element1', organisationUnit: 'org2', period: '20200102', value: 'No' },
+      { dataElement: 'element1', organisationUnit: 'org3', period: '20200103', value: 'Yes' },
+    ];
+    expect(
+      sumPerOrgGroup(testAnalytics, { orgUnitMap, valueToMatch: '*' }),
+    ).to.have.same.deep.members([
+      { dataElement: 'element1', organisationUnit: 'parent1', period: '20200101', value: 2 },
+      { dataElement: 'element1', organisationUnit: 'parent2', period: '20200102', value: 1 },
+    ]);
+  });
 });

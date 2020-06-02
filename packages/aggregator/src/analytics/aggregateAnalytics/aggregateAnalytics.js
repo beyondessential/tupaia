@@ -74,8 +74,6 @@ export const aggregateAnalytics = (
       return sumPreviousPerPeriod(analytics, aggregationConfig, DAY);
     case AGGREGATION_TYPES.SUM_PER_ORG_GROUP:
       return sumPerOrgGroup(analytics, aggregationConfig);
-    case AGGREGATION_TYPES.SUM_YES_PER_ORG_GROUP:
-      return sumPerOrgGroup(analytics, aggregationConfig, value => (value === 'Yes' ? 1 : 0));
     case AGGREGATION_TYPES.REPLACE_ORG_UNIT_WITH_ORG_GROUP:
       return replaceOrgUnitWithOrgGroup(analytics, aggregationConfig);
     case AGGREGATION_TYPES.RAW:

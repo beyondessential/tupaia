@@ -10,8 +10,11 @@
  * @param {Array} analytics
  * @param {Array}
  */
-export const sumPerOrgGroup = (analytics, aggregationConfig, valueMapper = value => value) => {
-  const { orgUnitMap = {} } = aggregationConfig;
+export const sumPerOrgGroup = (analytics, aggregationConfig) => {
+  const { orgUnitMap = {}, valueToMatch } = aggregationConfig;
+  // TODO: I would like to use checkValueSatisfiesCondition from web-config-server, but maybe
+  // it should be moved to utils?
+  const valueMapper = valueToMatch ? createValueMapper(valueToMatch) : value => value;
   const summedAnalytics = [];
   analytics.forEach(responseElement => {
     const organisationUnit =
@@ -31,6 +34,9 @@ export const sumPerOrgGroup = (analytics, aggregationConfig, valueMapper = value
   });
   return summedAnalytics;
 };
+
+const createValueMapper = valueToMatch =>
+  valueToMatch === '*' ? () => 1 : value => (value === valueToMatch ? 1 : 0);
 
 export const replaceOrgUnitWithOrgGroup = (analytics, aggregationConfig) => {
   const { orgUnitMap } = aggregationConfig;
