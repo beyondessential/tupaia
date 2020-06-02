@@ -10,8 +10,8 @@ import {
   constructEveryItem,
   constructIsEmptyOr,
   takesDateForm,
+  takesIdForm,
 } from '@tupaia/utils';
-import { takesIdForm } from '@tupaia/utils/src/validation/validatorFunctions';
 
 const COMMON_OPTIONS = {
   dataElementCodes: [hasContent, constructEveryItem(isAString)],
