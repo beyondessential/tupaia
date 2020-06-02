@@ -24,7 +24,7 @@ SimpleTable.propTypes = {
 
 export const BorderlessTable = ({ columns, data, SubComponent }) => {
   return (
-    <Table
+    <StyledTable
       Header={false}
       Body={BorderlessTableBody}
       columns={columns}
