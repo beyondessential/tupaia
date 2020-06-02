@@ -39,7 +39,7 @@ const config = {
   entityAggregation: {
     aggregationType: 'REPLACE_ORG_UNIT_WITH_ORG_GROUP',
     dataSourceEntityType,
-    aggregationEntityType: 'village',
+    aggregationEntityType: 'facility',
   },
 };
 

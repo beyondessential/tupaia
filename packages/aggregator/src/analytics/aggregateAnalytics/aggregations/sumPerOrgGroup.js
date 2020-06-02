@@ -12,8 +12,6 @@
  */
 export const sumPerOrgGroup = (analytics, aggregationConfig) => {
   const { orgUnitMap = {}, valueToMatch } = aggregationConfig;
-  // TODO: I would like to use checkValueSatisfiesCondition from web-config-server, but maybe
-  // it should be moved to utils?
   const valueMapper = valueToMatch ? createValueMapper(valueToMatch) : value => value;
   const summedAnalytics = [];
   analytics.forEach(responseElement => {

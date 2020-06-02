@@ -5,10 +5,9 @@
 
 import { createAggregator } from '@tupaia/aggregator';
 import { RouteHandler } from './RouteHandler';
-import { Aggregator } from '../aggregator';
-import { Entity, Project } from '../models';
+import { Aggregator } from '/aggregator';
+import { Project } from '/models';
 
-const DEFAULT_ENTITY_TYPE = Entity.FACILITY;
 const DEFAULT_ENTITY_AGGREGATION_TYPE = Aggregator.aggregationTypes.REPLACE_ORG_UNIT_WITH_ORG_GROUP;
 
 /**
@@ -55,8 +54,8 @@ export class DataAggregatingRouteHandler extends RouteHandler {
         const ancestor = await orgUnit.getAncestorOfType(aggregationEntityType);
         if (ancestor) {
           orgUnitToAncestor[orgUnit.code] = { code: ancestor.code, name: ancestor.name };
-        } // Not sure about these defaults, should we let it error, maybe set it to a constant?
-      } // Not sure about these defaults, should we let it error, maybe set it to a constant?
+        }
+      }
     };
     await Promise.all(orgUnits.map(orgUnit => addOrgUnitToMap(orgUnit)));
     return orgUnitToAncestor;

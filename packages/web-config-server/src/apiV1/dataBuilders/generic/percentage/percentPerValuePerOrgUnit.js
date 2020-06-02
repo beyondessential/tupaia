@@ -7,6 +7,7 @@ import {
   calculatePercentagesWithinRange,
   getDataElementCodesInGroup,
 } from '/apiV1/utils';
+import { ENTITY_TYPES } from '/models/Entity';
 
 export const percentPerValuePerOrgUnit = async (
   { dataBuilderConfig, query, entity },
@@ -15,7 +16,7 @@ export const percentPerValuePerOrgUnit = async (
 ) => {
   const {
     dataElementGroupCode,
-    dataSourceEntityType,
+    dataSourceEntityType = ENTITY_TYPES.FACILITY,
     dataServices,
     range,
     valuesOfInterest,

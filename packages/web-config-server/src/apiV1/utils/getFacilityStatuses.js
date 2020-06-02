@@ -19,7 +19,7 @@ const getFacilitiesData = async (aggregator, parentCode, period, shouldOnlyRetur
     {
       period,
       organisationUnitCode: parentCode,
-      entityAggregation: { dataSourceEntityType: 'facility', aggregationEntityType: 'facility' },
+      entityAggregation: { dataSourceEntityType: 'facility' },
     },
     {},
     { ...extraParams },
