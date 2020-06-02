@@ -62,9 +62,8 @@ function sleep(delay = 0) {
 }
 
 export const updateWeeklyReportsData = data => async dispatch => {
-  console.log('update data...', data);
   await sleep(1000);
-  dispatch(reloadCountryWeeks({}));
+  await dispatch(reloadCountryWeeks({}));
 };
 
 export const confirmWeeklyReportsData = () => async (dispatch, getState, { fakeApi }) => {
@@ -85,6 +84,7 @@ export const setActiveCountryWeek = rowId => async dispatch => {
 
 // selectors
 export const getCountryWeeks = ({ weeklyReports }) => weeklyReports.countryWeeks;
+export const getActiveCountryWeek = ({ weeklyReports }) => weeklyReports.countryWeeks[0]; // add active value
 export const getCountryWeeksError = ({ weeklyReports }) => weeklyReports.countryWeeksError;
 export const checkCountryWeeksIsLoading = ({ weeklyReports }) =>
   weeklyReports.countryWeeksStatus === 'loading';

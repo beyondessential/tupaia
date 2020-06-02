@@ -14,12 +14,19 @@ import * as COLORS from '../../../stories/story-utils/theme/colors';
 const EditableTextField = styled(TextField)`
   margin: 0;
   position: relative;
-  right: 1px;
+
+  .MuiInputBase-root {
+    position: absolute;
+    top: -6px;
+    left: 0;
+    min-width: 50px;
+  }
 
   .MuiInputBase-input {
     font-size: 15px;
     line-height: 18px;
-    padding: 0.5rem;
+    padding: 0.5rem 0;
+    text-align: center;
   }
 `;
 
@@ -132,7 +139,7 @@ export const EditableTableProvider = React.memo(
 
     useEffect(() => {
       // loading must change after initial state is set
-      if (tableState === LOADING) {
+      if (tableState === LOADING || tableState === SAVING) {
         setValues(initialState);
         setMetadata(initialMetadata);
       }
@@ -201,6 +208,7 @@ const LoadingScreen = styled.div`
   background: ${loadingBackgroundColor};
   border: 1px solid ${props => props.theme.palette.grey['400']};
   border-radius: 3px;
+  z-index: 10;
 `;
 
 const Loader = styled(CircularProgress)`

@@ -44,6 +44,11 @@ const LayoutRow = styled.div`
   padding: 1rem 0;
 `;
 
+const StyledEditableTable = styled(EditableTable)`
+  padding-left: 1.2rem;
+  padding-right: 1.2rem;
+`;
+
 const STATIC = 'static';
 const EDITABLE = 'editable';
 const SAVING = 'saving';
@@ -78,7 +83,7 @@ export const IndicatorsTableComponent = ({ onSubmit, tableState, setTableState }
         <span>SYNDROMES</span>
         <span>TOTAL CASES</span>
       </FakeHeader>
-      <EditableTable Header={false} Body={DottedTableBody} />
+      <StyledEditableTable Header={false} Body={DottedTableBody} />
       {tableState === EDITABLE && (
         <LayoutRow>
           <MuiLink>Reset and use Sentinel data</MuiLink>
