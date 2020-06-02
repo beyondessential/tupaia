@@ -78,7 +78,6 @@ export class Aggregator {
       ...periodForDataBroker,
     });
 
-    console.log('Analytics', results && results[0]);
     return {
       results: this.processAnalytics(results, aggregationOptions, period),
       metadata,
@@ -93,14 +92,12 @@ export class Aggregator {
     }
     const dataSourceSpec = { code, type: this.dataSourceTypes.DATA_GROUP };
     const events = await this.dataBroker.pull(dataSourceSpec, fetchOptions);
-    console.log('Events', events && events[0].orgUnit);
     const aggregations = aggregationOptions.aggregations || [];
     const aggregatedEvents = aggregations.reduce(
       (partiallyAggregatedEvents, { type, config }) =>
         aggregateEvents(partiallyAggregatedEvents, type, config),
       events,
     );
-    console.log('Events 2', aggregations, aggregatedEvents && aggregatedEvents[0].orgUnit);
     return aggregatedEvents;
   }
 

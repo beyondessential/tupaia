@@ -40,7 +40,6 @@ export const composePercentagePerOrgUnit = async (aggregator, dhisApi, query, co
   const { dataElementCode } = query;
 
   const responses = await fetchComposedData(aggregator, dhisApi, query, config, entity);
-  console.log(responses);
   const numeratorsByOrgUnit = keyBy(responses.numerator, 'organisationUnitCode');
   const denominatorsByOrgUnit = keyBy(responses.denominator, 'organisationUnitCode');
 
