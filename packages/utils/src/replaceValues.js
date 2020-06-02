@@ -11,7 +11,7 @@
  * @param {Object} replacements
  * @returns {(string|Object)}
  */
-export const replaceValues = (target, replacements) => { 
+export const replaceValues = (target, replacements) => {
   if (!replacements || Object.keys(replacements).length === 0) {
     return target;
   }
@@ -19,12 +19,10 @@ export const replaceValues = (target, replacements) => {
   const isString = typeof target === 'string';
 
   let replacedString = isString ? target : JSON.stringify(target);
-  console.log(replacedString);
   Object.entries(replacements).forEach(([key, value]) => {
     if (replacedString.indexOf(`{${key}}`) !== -1) {
       replacedString = replacedString.replace(new RegExp(`\{${key}\}`, 'g'), value);
     }
   });
-  console.log(replacedString);
   return isString ? replacedString : JSON.parse(replacedString);
 };
