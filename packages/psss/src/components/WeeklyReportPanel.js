@@ -43,14 +43,27 @@ const columns = [
   },
 ];
 
-const GreySection = styled.section`
+const MainSection = styled.section`
+  position: relative;
+  padding: 30px 20px;
+
+  &:after {
+    display: ${props => (props.disabled ? 'block' : 'none')};
+    position: absolute;
+    content: '';
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    opacity: 0.5;
+  }
+`;
+
+const GreySection = styled(MainSection)`
   background: ${COLORS.LIGHTGREY};
   box-shadow: 0 1px 0 ${COLORS.GREY_DE};
   padding: 25px 20px;
-`;
-
-const MainSection = styled.section`
-  padding: 30px 20px;
 `;
 
 const WeeklyReportsPaneSubmitButton = confirmData => () => {
@@ -66,6 +79,7 @@ const WeeklyReportsPaneSubmitButton = confirmData => () => {
 
 // Todo: refactor tableState into an object that is stored in table/constants in ui-components
 const STATIC = 'static';
+const SAVING = 'saving';
 
 const WeeklyReportPanelComponent = React.memo(
   ({ countryWeeksData, siteWeeksData, isOpen, handleClose, confirmData }) => {
@@ -75,6 +89,11 @@ const WeeklyReportPanelComponent = React.memo(
 
     const countryData = countryWeeksData[0].indicators;
     const [countryTableState, setCountryTableState] = useState(STATIC);
+
+    const [activeSiteIndex, setActiveSiteIndex] = useState(0);
+    const indicatorsData = siteWeeksData[activeSiteIndex].indicators;
+    const activeSite = siteWeeksData[activeSiteIndex];
+    const [indicatorTableState, setIndicatorTableState] = useState(STATIC);
 
     // Derive from store??
     const verifiedStatus = countryData.reduce((state, item) => {
@@ -87,58 +106,51 @@ const WeeklyReportPanelComponent = React.memo(
       return state;
     }, {});
 
-    const [activeSiteIndex, setActiveSiteIndex] = useState(0);
-    const indicatorsData = siteWeeksData[activeSiteIndex].indicators;
-    const activeSite = siteWeeksData[activeSiteIndex];
-    const [indicatorTableState, setIndicatorTableState] = useState(STATIC);
+    const isSaving = countryTableState === SAVING || indicatorTableState === SAVING;
 
     return (
-      <React.Fragment>
-        <Drawer open={isOpen} onClose={handleClose}>
-          <DrawerHeader heading="Upcoming report" onClose={handleClose}>
-            <DrawerHeaderContent heading="American Samoa" date="Week 9 Feb 25 - Mar 1, 2020" />
-          </DrawerHeader>
-          <ErrorAlert>ILI Above Threshold. Please review and verify data.</ErrorAlert>
-          <GreySection>
+      <Drawer open={isOpen} onClose={handleClose}>
+        <DrawerHeader heading="Upcoming report" onClose={handleClose}>
+          <DrawerHeaderContent heading="American Samoa" date="Week 9 Feb 25 - Mar 1, 2020" />
+        </DrawerHeader>
+        <ErrorAlert>ILI Above Threshold. Please review and verify data.</ErrorAlert>
+        <GreySection disabled={isSaving}>
+          <EditableTableProvider
+            columns={columns}
+            data={countryData}
+            tableState={countryTableState}
+            initialMetadata={verifiedStatus}
+          >
+            <VerifiableTable tableState={countryTableState} setTableState={setCountryTableState} />
+          </EditableTableProvider>
+        </GreySection>
+        <MainSection disabled={isSaving}>
+          <ButtonSelect
+            id="button-select"
+            options={siteWeeksData}
+            onChange={setActiveSiteIndex}
+            index={activeSiteIndex}
+          />
+          <SiteAddress address={activeSite.address} contact={activeSite.contact} />
+          <Card variant="outlined" mb={3}>
             <EditableTableProvider
               columns={columns}
-              data={countryData}
-              tableState={countryTableState}
-              initialMetadata={verifiedStatus}
+              data={indicatorsData}
+              tableState={indicatorTableState}
             >
-              <VerifiableTable
-                tableState={countryTableState}
-                setTableState={setCountryTableState}
+              <IndicatorsTable
+                tableState={indicatorTableState}
+                setTableState={setIndicatorTableState}
               />
             </EditableTableProvider>
-          </GreySection>
-          <MainSection>
-            <ButtonSelect
-              id="button-select"
-              options={siteWeeksData}
-              onChange={setActiveSiteIndex}
-              index={activeSiteIndex}
-            />
-            <SiteAddress address={activeSite.address} contact={activeSite.contact} />
-            <Card variant="outlined" mb={3}>
-              <EditableTableProvider
-                columns={columns}
-                data={indicatorsData}
-                tableState={indicatorTableState}
-              >
-                <IndicatorsTable
-                  tableState={indicatorTableState}
-                  setTableState={setIndicatorTableState}
-                />
-              </EditableTableProvider>
-            </Card>
-          </MainSection>
-          <DrawerFooter
-            Action={WeeklyReportsPaneSubmitButton(confirmData)}
-            helperText="Verify data to submit Weekly Report to Regional"
-          />
-        </Drawer>
-      </React.Fragment>
+          </Card>
+        </MainSection>
+        <DrawerFooter
+          disabled={isSaving}
+          Action={WeeklyReportsPaneSubmitButton(confirmData)}
+          helperText="Verify data to submit Weekly Report to Regional"
+        />
+      </Drawer>
     );
   },
 );
