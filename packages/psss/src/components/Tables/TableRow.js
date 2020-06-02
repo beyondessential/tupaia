@@ -3,10 +3,10 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import styled from 'styled-components';
-import { TableRow, ControlledExpandableTableRow } from '@tupaia/ui-components';
+import { ExpandableTableRow } from '@tupaia/ui-components';
 import * as COLORS from '../../theme/colors';
 
-export const SimpleTableRow = styled(ControlledExpandableTableRow)`
+export const SimpleTableRow = styled(ExpandableTableRow)`
   border: none;
 
   .MuiTableCell-root {

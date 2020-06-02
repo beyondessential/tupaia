@@ -19,7 +19,6 @@ import {
   getCountryWeeks,
   reloadCountryWeeks,
   getCountryWeeksError,
-  checkCountryWeeksIsLoading,
 } from '../../store';
 
 const CountryWeekTitle = styled.div`

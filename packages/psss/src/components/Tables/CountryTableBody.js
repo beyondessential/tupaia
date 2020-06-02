@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import MuiTableBody from '@material-ui/core/TableBody';
-import { ControlledExpandableTableRow, tableColumnShape } from '@tupaia/ui-components';
+import { ExpandableTableRow, tableColumnShape } from '@tupaia/ui-components';
 import { setActiveCountryWeek } from '../../store';
 
 const TableBodyComponent = React.memo(
@@ -20,7 +20,7 @@ const TableBodyComponent = React.memo(
           }
         };
         return (
-          <ControlledExpandableTableRow
+          <ExpandableTableRow
             onClick={handleRowClick}
             expanded={expanded}
             data={data}

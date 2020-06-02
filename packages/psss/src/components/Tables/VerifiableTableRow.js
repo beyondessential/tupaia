@@ -14,6 +14,12 @@ import {
 import { BorderlessTableRow } from './TableRow';
 import * as COLORS from '../../theme/colors';
 
+const VERIFY_STATUSES = {
+  VERIFIED: 'verified',
+  EXPANDED: 'expanded',
+  CLOSED: 'closed',
+};
+
 const VerifiedAlert = styled.div`
   background-color: ${props => props.theme.palette.warning.light};
   color: ${props => props.theme.palette.warning.main};
@@ -45,7 +51,8 @@ const Wrapper = styled.div`
 
   &:after {
     position: absolute;
-    border: 1px solid ${props => (props.status === 'verified' ? COLORS.LIGHT_RED : COLORS.RED)};
+    border: 1px solid
+      ${props => (props.status === VERIFY_STATUSES.VERIFIED ? COLORS.LIGHT_RED : COLORS.RED)};
     content: '';
     display: block;
     top: 0.5rem;
@@ -70,12 +77,11 @@ const StyledExpansionContainer = styled(TableRowExpansionContainer)`
   }
 `;
 
-// todo : set up constants
 export const VerifiableTableRow = props => {
   const { data, rowIndex } = props;
   const key = data[rowIndex].id;
   const { metadata, setMetadata } = useContext(EditableTableContext);
-  const status = metadata ? metadata[key] : 'closed';
+  const status = metadata ? metadata[key] : VERIFY_STATUSES.CLOSED;
 
   const setStatus = value => {
     setMetadata({
@@ -85,7 +91,7 @@ export const VerifiableTableRow = props => {
   };
 
   const WarningButtonComponent = () => {
-    if (status === 'verified') {
+    if (status === VERIFY_STATUSES.VERIFIED) {
       return (
         <Wrapper status={status}>
           <VerifiedAlert>
@@ -96,7 +102,7 @@ export const VerifiableTableRow = props => {
     }
 
     const handelClick = () => {
-      setStatus('verified');
+      setStatus(VERIFY_STATUSES.VERIFIED);
     };
 
     return (
@@ -111,7 +117,7 @@ export const VerifiableTableRow = props => {
   return (
     <BorderlessTableRow
       {...props}
-      expanded={status === 'expanded' || status === 'verified'}
+      expanded={status === VERIFY_STATUSES.EXPANDED || status === VERIFY_STATUSES.VERIFIED}
       SubComponent={WarningButtonComponent}
       ExpansionContainer={StyledExpansionContainer}
     />
