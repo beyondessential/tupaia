@@ -148,9 +148,7 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
         };
       }
 
-      return result => {
-          return OPERATION_TYPES[fraction.operation](result.value, fraction.operand);
-      }
+      return result => OPERATION_TYPES[fraction.operation](result.value, fraction.operand);
       
     }
   }
