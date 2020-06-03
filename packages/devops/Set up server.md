@@ -8,7 +8,7 @@
   - RestoreCode: tupaia (if production)
   - RestoreFrom: tupaia (if dev, i.e. should be recloned from production nightly)
 - Add ElasticIP
-- Attach the role MeditrakServerParameterStoreRole to grant access to parameter store and lambda invocation
+- Attach the role TupaiaServerRole to grant access to parameter store, lambda invocation, and cloudwatch monitoring
 
 # node
 
