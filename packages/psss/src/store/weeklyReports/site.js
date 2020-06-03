@@ -9,6 +9,10 @@ const SITES_FOR_WEEK_LOAD_START = 'SITES_WEEKS_LOAD_START';
 const SITES_FOR_WEEK_LOAD_FINISH = 'SITES_WEEKS_LOAD_FINISH';
 const SITES_FOR_WEEK_LOAD_ERROR = 'SITES_WEEKS_LOAD_ERROR';
 
+function actionIsValid(state, timestamp) {
+  return timestamp >= state.weeklyReports.site.fetchStartedAt;
+}
+
 // action creators
 export const reloadSitesForWeek = ({ fetchOptions, queryParameters }) => async (
   dispatch,
@@ -16,12 +20,21 @@ export const reloadSitesForWeek = ({ fetchOptions, queryParameters }) => async (
   { fakeApi },
 ) => {
   const endpoint = 'sites';
-  dispatch({ type: SITES_FOR_WEEK_LOAD_START });
+  const fetchStartedAt = Date.now();
+  dispatch({ type: SITES_FOR_WEEK_LOAD_START, fetchStartedAt });
 
   try {
     const { data } = await fakeApi.get(endpoint, { ...fetchOptions, ...queryParameters });
+    if (!actionIsValid(getState(), fetchStartedAt)) {
+      return;
+    }
+
     dispatch({ type: SITES_FOR_WEEK_LOAD_FINISH, data });
   } catch (error) {
+    if (!actionIsValid(getState(), fetchStartedAt)) {
+      return;
+    }
+
     dispatch({ type: SITES_FOR_WEEK_LOAD_ERROR, error });
   }
 };
@@ -43,12 +56,14 @@ const defaultState = {
   data: [],
   status: STATUSES.IDLE,
   error: null,
+  fetchStartedAt: null,
 };
 
 const actionHandlers = {
-  [SITES_FOR_WEEK_LOAD_START]: () => ({
+  [SITES_FOR_WEEK_LOAD_START]: ({ fetchStartedAt }) => ({
     error: defaultState.error,
     status: STATUSES.LOADING,
+    fetchStartedAt,
   }),
   [SITES_FOR_WEEK_LOAD_FINISH]: ({ data }) => ({
     status: STATUSES.SUCCESS,

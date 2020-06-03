@@ -5,6 +5,10 @@
 
 import { createReducer } from '../../utils/createReducer';
 
+function actionIsValid(state, timestamp) {
+  return timestamp >= state.weeklyReports.country.fetchStartedAt;
+}
+
 // actions
 const COUNTRY_WEEKS_LOAD_START = 'COUNTRY_WEEKS_LOAD_START';
 const COUNTRY_WEEKS_LOAD_FINISH = 'COUNTRY_WEEKS_LOAD_FINISH';
@@ -17,12 +21,19 @@ export const reloadCountryWeeks = ({ fetchOptions, queryParameters }) => async (
   { fakeApi },
 ) => {
   const endpoint = 'country-weeks';
-  dispatch({ type: COUNTRY_WEEKS_LOAD_START });
+  const fetchStartedAt = Date.now();
+  dispatch({ type: COUNTRY_WEEKS_LOAD_START, fetchStartedAt });
 
   try {
     const { data } = await fakeApi.get(endpoint, { ...fetchOptions, ...queryParameters });
+    if (!actionIsValid(getState(), fetchStartedAt)) {
+      return;
+    }
     dispatch({ type: COUNTRY_WEEKS_LOAD_FINISH, data });
   } catch (error) {
+    if (!actionIsValid(getState(), fetchStartedAt)) {
+      return;
+    }
     dispatch({ type: COUNTRY_WEEKS_LOAD_ERROR, error });
   }
 };
@@ -52,12 +63,14 @@ const defaultState = {
   data: [],
   status: STATUSES.IDLE,
   error: null,
+  fetchStartedAt: null,
 };
 
 const actionHandlers = {
-  [COUNTRY_WEEKS_LOAD_START]: () => ({
+  [COUNTRY_WEEKS_LOAD_START]: ({ fetchStartedAt }) => ({
     error: defaultState.error,
     status: STATUSES.LOADING,
+    fetchStartedAt,
   }),
   [COUNTRY_WEEKS_LOAD_FINISH]: ({ data }) => ({
     status: STATUSES.SUCCESS,

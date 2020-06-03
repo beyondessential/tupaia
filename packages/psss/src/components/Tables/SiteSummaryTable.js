@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import Typography from '@material-ui/core/Typography';
@@ -94,7 +94,7 @@ export const SiteSummaryTableComponent = React.memo(
       (async () => {
         await fetchData();
       })();
-    }, []);
+    }, [fetchData]);
 
     return (
       <React.Fragment>

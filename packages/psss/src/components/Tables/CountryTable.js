@@ -153,7 +153,7 @@ const CountryTableComponent = React.memo(({ fetchData, data, isLoading, errorMes
     (async () => {
       await fetchData({ page });
     })();
-  }, [page]);
+  }, [fetchData, page]);
 
   return (
     <Table
