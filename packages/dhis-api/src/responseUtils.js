@@ -101,7 +101,8 @@ const getImportSummariesDiagnostics = responseDetails => {
 
 const getImportCountByReference = (reference, singleImportCounts, totalImportCounts) => {
   let newTotalImportCounts = totalImportCounts;
-  const singleImportIgnoredCount = singleImportCounts.ignored;
+  const singleImportIgnoredCount =
+    singleImportCounts && singleImportCounts.ignored ? singleImportCounts.ignored : 0;
 
   //If there is a reference, but 'ignored' is > 0, it means that the import was actually not ignored.
   //Transfer all the 'ignored' count to 'imported'
