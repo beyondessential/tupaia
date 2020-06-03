@@ -13,6 +13,7 @@ import { ConnectedTable } from './ConnectedTable';
 import * as COLORS from '../../theme/colors';
 import { FIRST_COLUMN_WIDTH, SITES_REPORTED_COLUMN_WIDTH } from './constants';
 import { CountrySummaryTable } from './CountrySummaryTable';
+import { createDataAccessor } from './createDataAccessors';
 import { AlertCell, SitesReportedCell } from './TableCellComponents';
 
 const CountryTitle = styled(MuiLink)`
@@ -39,11 +40,6 @@ NameCell.propTypes = {
   name: PropTypes.string.isRequired,
 };
 
-const dataAccessor = key => data => {
-  const indicator = data.indicators.find(i => i.id === key);
-  return indicator ? indicator.totalCases : null;
-};
-
 const countriesTableColumns = [
   {
     title: 'Name',
@@ -61,31 +57,31 @@ const countriesTableColumns = [
   {
     title: 'AFR',
     key: 'AFR',
-    accessor: dataAccessor('afr'),
+    accessor: createDataAccessor('afr'),
     CellComponent: AlertCell,
   },
   {
     title: 'DIA',
     key: 'DIA',
-    accessor: dataAccessor('dia'),
+    accessor: createDataAccessor('dia'),
     CellComponent: AlertCell,
   },
   {
     title: 'ILI',
     key: 'ILI',
-    accessor: dataAccessor('ili'),
+    accessor: createDataAccessor('ili'),
     CellComponent: AlertCell,
   },
   {
     title: 'PF',
     key: 'PF',
-    accessor: dataAccessor('pf'),
+    accessor: createDataAccessor('pf'),
     CellComponent: AlertCell,
   },
   {
     title: 'DIO',
     key: 'DIL',
-    accessor: dataAccessor('dil'),
+    accessor: createDataAccessor('dil'),
     CellComponent: AlertCell,
   },
 ];

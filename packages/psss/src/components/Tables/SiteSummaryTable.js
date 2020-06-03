@@ -11,16 +11,12 @@ import PropTypes from 'prop-types';
 import { CondensedTableBody, FakeHeader, Table, Button } from '@tupaia/ui-components';
 import { FIRST_COLUMN_WIDTH, SITES_REPORTED_COLUMN_WIDTH } from './constants';
 import { AlertCell } from './TableCellComponents';
+import { createDataAccessor } from './dataAccessors';
 import { getSiteWeeksError, getSiteWeeks, reloadSiteWeeks } from '../../store';
 
 // Todo: update placeholder
 const NameCell = data => {
   return <span>{data.name}</span>;
-};
-
-const dataAccessor = key => data => {
-  const indicator = data.indicators.find(i => i.id === key);
-  return indicator ? indicator.totalCases : null;
 };
 
 const siteWeekColumns = [
@@ -34,43 +30,44 @@ const siteWeekColumns = [
   {
     title: 'Sites Reported',
     key: 'sitesReported',
-    accessor: dataAccessor('sitesReported'),
+    accessor: createDataAccessor('sitesReported'),
     width: SITES_REPORTED_COLUMN_WIDTH,
   },
   {
     title: 'AFR',
     key: 'AFR',
-    accessor: dataAccessor('afr'),
+    accessor: createDataAccessor('afr'),
     CellComponent: AlertCell,
   },
   {
     title: 'DIA',
     key: 'DIA',
-    accessor: dataAccessor('dia'),
+    accessor: createDataAccessor('dia'),
     CellComponent: AlertCell,
   },
   {
     title: 'ILI',
     key: 'ILI',
-    accessor: dataAccessor('ili'),
+    accessor: createDataAccessor('ili'),
     CellComponent: AlertCell,
   },
   {
     title: 'PF',
     key: 'PF',
-    accessor: dataAccessor('pf'),
+    accessor: createDataAccessor('pf'),
     CellComponent: AlertCell,
   },
   {
     title: 'DIL',
     key: 'DIL',
-    accessor: dataAccessor('dil'),
+    accessor: createDataAccessor('dil'),
+    CellComponent: AlertCell,
   },
   {
     title: 'Status',
     key: 'status',
     width: '110px',
-    accessor: dataAccessor('status'),
+    accessor: createDataAccessor('status'),
   },
 ];
 

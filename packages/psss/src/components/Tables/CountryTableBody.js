@@ -8,48 +8,45 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import MuiTableBody from '@material-ui/core/TableBody';
 import { ExpandableTableRow, tableColumnShape } from '@tupaia/ui-components';
+import { SiteSummaryTable } from './SiteSummaryTable';
 import { setActiveCountryWeek } from '../../store';
 
-const TableBodyComponent = React.memo(
-  ({ data, columns, SubComponent, activeCountryWeekId, toggleTableRow }) => (
-    <MuiTableBody>
-      {data.map((rowData, rowIndex) => {
-        const key = rowData.index; // todo: use real id
-        const expanded = activeCountryWeekId === key;
+const TableBodyComponent = React.memo(({ data, columns, activeCountryWeekId, toggleTableRow }) => (
+  <MuiTableBody>
+    {data.map((rowData, rowIndex) => {
+      const key = rowData.index; // todo: use real id
+      const expanded = activeCountryWeekId === key;
 
-        const handleRowClick = () => {
-          if (expanded) {
-            toggleTableRow(null);
-          } else {
-            toggleTableRow(key);
-          }
-        };
-        return (
-          <ExpandableTableRow
-            onClick={handleRowClick}
-            expandedValue={expanded}
-            data={data}
-            rowIndex={rowIndex}
-            key={rowData.id}
-            columns={columns}
-            SubComponent={SubComponent}
-          />
-        );
-      })}
-    </MuiTableBody>
-  ),
-);
+      const handleRowClick = () => {
+        if (expanded) {
+          toggleTableRow(null);
+        } else {
+          toggleTableRow(key);
+        }
+      };
+      return (
+        <ExpandableTableRow
+          onClick={handleRowClick}
+          expandedValue={expanded}
+          data={data}
+          rowIndex={rowIndex}
+          key={rowData.id} // todo: update to key when real data is in place
+          columns={columns}
+          SubComponent={SiteSummaryTable}
+        />
+      );
+    })}
+  </MuiTableBody>
+));
 
 TableBodyComponent.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
   data: PropTypes.array.isRequired,
-  SubComponent: PropTypes.any,
   activeCountryWeekId: PropTypes.number,
   toggleTableRow: PropTypes.func.isRequired,
 };
 
 TableBodyComponent.defaultProps = {
-  SubComponent: null,
   activeCountryWeekId: null,
 };
 

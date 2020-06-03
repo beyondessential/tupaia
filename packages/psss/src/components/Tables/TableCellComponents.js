@@ -13,7 +13,7 @@ export const SitesReportedCell = data => {
   return <span>{`${data.sitesReported}/30`}</span>;
 };
 
-const AFRAlert = styled.div`
+const StyledAlert = styled.div`
   display: inline-flex;
   align-items: center;
   padding: 6px 10px;
@@ -31,28 +31,15 @@ const AFRAlert = styled.div`
   }
 `;
 
-export const AFRCell = ({ AFR }) => {
-  // Todo: update placeholder
-  if (AFR > 900) {
-    return (
-      <AFRAlert>
-        {AFR}
-        <Error />
-      </AFRAlert>
-    );
-  }
-
-  return AFR;
-};
-
 export const AlertCell = props => {
   const { displayValue } = props;
+  // this is just temporary logic until real data is in place
   if (displayValue > 900) {
     return (
-      <AFRAlert>
+      <StyledAlert>
         {displayValue}
         <Error />
-      </AFRAlert>
+      </StyledAlert>
     );
   }
 

@@ -63,16 +63,23 @@ export const setActiveCountryWeek = rowId => async dispatch => {
 export const getCountryWeeks = ({ weeklyReports }) => weeklyReports.countryWeeks;
 export const getCountryWeeksError = ({ weeklyReports }) => weeklyReports.countryWeeksError;
 export const getSiteWeeks = ({ weeklyReports }) => weeklyReports.siteWeeks;
-export const getSiteWeeksError = ({ weeklyReports }) => weeklyReports.countryWeeksError;
+export const getSiteWeeksError = ({ weeklyReports }) => weeklyReports.siteWeeksError;
 
 // reducer
+const STATUSES = {
+  IDLE: 'idle',
+  LOADING: 'loading',
+  SUCCESS: 'success',
+  ERROR: 'error',
+};
+
 const defaultState = {
   activeCountryWeekId: null,
   countryWeeks: [],
-  countryWeeksStatus: 'idle',
+  countryWeeksStatus: STATUSES.IDLE,
   countryWeeksError: null,
   siteWeeks: [],
-  siteWeeksStatus: 'idle',
+  siteWeeksStatus: STATUSES.IDLE,
   siteWeeksError: null,
 };
 
@@ -82,26 +89,26 @@ const actionHandlers = {
   }),
   [COUNTRY_WEEKS_LOAD_START]: () => ({
     countryWeeksError: defaultState.countryWeeksError,
-    countryWeeksStatus: 'loading',
+    countryWeeksStatus: STATUSES.LOADING,
   }),
   [COUNTRY_WEEKS_LOAD_FINISH]: ({ data }) => ({
-    countryWeeksStatus: 'success',
+    countryWeeksStatus: STATUSES.SUCCESS,
     countryWeeks: data,
   }),
   [COUNTRY_WEEKS_LOAD_ERROR]: ({ error }) => ({
-    countryWeeksStatus: 'error',
+    countryWeeksStatus: STATUSES.ERROR,
     countryWeeksError: error.message,
   }),
   [SITE_WEEKS_LOAD_START]: () => ({
     siteWeeksError: defaultState.siteWeeksError,
-    siteWeeksStatus: 'loading',
+    siteWeeksStatus: STATUSES.LOADING,
   }),
   [SITE_WEEKS_LOAD_FINISH]: ({ data }) => ({
-    siteWeeksStatus: 'success',
+    siteWeeksStatus: STATUSES.SUCCESS,
     siteWeeks: data,
   }),
   [SITE_WEEKS_LOAD_ERROR]: ({ error }) => ({
-    siteWeeksStatus: 'error',
+    siteWeeksStatus: STATUSES.ERROR,
     siteWeeksError: error.message,
   }),
 };
