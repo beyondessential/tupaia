@@ -10,7 +10,10 @@ import { IconButton } from '../widgets';
 import { openEditModal } from './actions';
 
 export const EditButtonComponent = ({ dispatch, value: recordId, actionConfig }) => (
-  <IconButton icon={'cog'} onClick={() => dispatch(openEditModal(actionConfig, recordId))} />
+  <IconButton
+    icon={actionConfig.icon || 'cog'}
+    onClick={() => dispatch(openEditModal(actionConfig, recordId))}
+  />
 );
 
 EditButtonComponent.propTypes = {

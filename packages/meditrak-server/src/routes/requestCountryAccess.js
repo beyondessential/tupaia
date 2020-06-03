@@ -52,6 +52,17 @@ const sendRequest = (userName, countryNames, message, userGroup) => {
   return sendEmail(COUNTRY_REQUEST_EMAIL_ADDRESS, 'Tupaia Country Access Request', emailText);
 };
 
+const createAccessRequests = async (userId, countryIds, message, permissionGroup, models) => {
+  for (const countryId of countryIds) {
+    await models.accessRequest.create({
+      user_id: userId,
+      country_id: countryId,
+      message,
+      permission_group: permissionGroup,
+    });
+  }
+};
+
 export const requestCountryAccess = async (req, res) => {
   const { body: requestBody = {}, userId: requestUserId, params, models } = req;
   const { countryIds, message = '', userGroup } = requestBody;
@@ -68,6 +79,9 @@ export const requestCountryAccess = async (req, res) => {
   }
   const userName = await getUserName(userId, models);
   const countryNames = await mapCountryIdsToNames(countryIds, models);
+
+  // create one access request per country (edited/approved via admin-panel)
+  await createAccessRequests(userId, countryIds, message, userGroup, models);
 
   await sendRequest(userName, countryNames, message, userGroup);
   respond(res, { message: 'Country access requested.' }, 200);

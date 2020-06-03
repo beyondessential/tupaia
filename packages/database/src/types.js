@@ -5,6 +5,7 @@
 
 export const TYPES = {
   ANSWER: 'answer',
+  ACCESS_REQUEST: 'access_request',
   API_CLIENT: 'api_client',
   API_REQUEST_LOG: 'api_request_log',
   COUNTRY: 'country',
