@@ -13,6 +13,12 @@ const REPORTS_WITH_ONE_SCHOOL_KEY = [
   'LAOS_SCHOOL_BINARY_TABLE',
   'Laos_Schools_Male_Female',
   'Laos_Schools_Language_Of_Students',
+  'LA_Laos_Schools_Service_Availability_Percentage_Preschool',
+  'LA_Laos_Schools_Service_Availability_Percentage_Primary',
+  'LA_Laos_Schools_Service_Availability_Percentage_Secondary',
+  'LA_Laos_Schools_Resources_Percentage_Preschool',
+  'LA_Laos_Schools_Resources_Percentage_Primary',
+  'LA_Laos_Schools_Resources_Percentage_Secondary',
   'SchDP_Partner_Assistance_Types',
 ];
 const REPORTS_WITH_MULTIPLE_DATABUILDERS = [
