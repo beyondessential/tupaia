@@ -79,14 +79,16 @@ const getImportSummaryDiagnostics = responseDetails => {
 
 const getImportSummariesDiagnostics = responseDetails => {
   const { imported, updated, deleted, ignored, importSummaries = [] } = responseDetails;
-  const counts = { imported, updated, deleted, ignored };
+  let counts = { imported, updated, deleted, ignored };
 
   const errors = [];
   const references = [];
-  importSummaries.forEach(({ status, description, conflicts, reference }) => {
+  importSummaries.forEach(({ status, importCount, description, conflicts, reference }) => {
     if (status === ERROR) {
       const errorMessage = description || conflicts.map(conflictToErrorString).join(', ');
       errors.push(errorMessage);
+
+      counts = getImportCountByReference(reference, importCount, counts);
     }
 
     if (reference) {
@@ -95,6 +97,26 @@ const getImportSummariesDiagnostics = responseDetails => {
   });
 
   return { counts, errors, references, wasSuccessful: errors.length === 0 && ignored === 0 };
+};
+
+const getImportCountByReference = (reference, singleImportCounts, totalImportCounts) => {
+  let newTotalImportCounts = totalImportCounts;
+  const singleImportIgnoredCount = singleImportCounts.ignored;
+
+  //If there is a reference, but 'ignored' is > 0, it means that the import was actually not ignored.
+  //Transfer all the 'ignored' count to 'imported'
+  if (reference && singleImportIgnoredCount) {
+    newTotalImportCounts = {
+      ...newTotalImportCounts,
+      imported: newTotalImportCounts.imported + singleImportIgnoredCount,
+      ignored:
+        newTotalImportCounts.ignored - singleImportIgnoredCount >= 0
+          ? newTotalImportCounts.ignored - singleImportIgnoredCount
+          : 0, //should never be lower than 0 but just in case
+    };
+  }
+
+  return newTotalImportCounts;
 };
 
 const getObjectReportDiagnostics = (response, isDelete) => {
