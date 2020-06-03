@@ -227,7 +227,9 @@ export function getFormattedInfo(orgUnitData, measureOption) {
   const { key, valueMapping, type, displayedValueKey, scaleType, valueType } = measureOption;
 
   if (displayedValueKey && orgUnitData[displayedValueKey]) {
-    return { value: orgUnitData[displayedValueKey] };
+    return {
+      value: formatDataValue(orgUnitData[displayedValueKey], valueType, orgUnitData.metadata),
+    };
   }
 
   const value = orgUnitData[key];

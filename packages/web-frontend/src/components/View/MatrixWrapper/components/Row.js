@@ -15,6 +15,8 @@ import { Cell } from './Cell';
 import { getPresentationOption } from '../../../../utils';
 import { PRESENTATION_OPTIONS_SHAPE } from '../../propTypes';
 
+const ROW_INFO_KEY = '$rowInfo';
+
 export default class Row extends Component {
   shouldComponentUpdate(nextProps) {
     const currentProps = this.props;
@@ -64,6 +66,7 @@ export default class Row extends Component {
       isNextColumnEnabled,
       styles,
       isUsingDots,
+      rowInfo,
     } = this.props;
 
     return (
@@ -109,7 +112,16 @@ export default class Row extends Component {
             return <div style={style} key={index} />;
           }
 
-          const presentation = getPresentationOption(presentationOptions, cellValue);
+          let presentation = getPresentationOption(presentationOptions, cellValue);
+
+          //if presentation is null, we should not show the DescriptionOverlay popup.
+          //So, only add the `main title` to the presentation object if presentation != null
+          if (presentation) {
+            presentation = {
+              ...presentation,
+              mainTitle: description,
+            };
+          }
 
           return (
             <Cell
@@ -117,7 +129,14 @@ export default class Row extends Component {
               cellKey={index}
               onMouseEnter={() => onCellMouseEnter(index, rowKey)}
               onMouseLeave={() => onCellMouseLeave()}
-              onClick={() => onCellClick(presentation, cellValue)}
+              onClick={() =>
+                onCellClick(
+                  presentation.description === ROW_INFO_KEY
+                    ? { ...presentation, description: rowInfo }
+                    : presentation,
+                  cellValue,
+                )
+              }
               color={presentation ? presentation.color : { color: '' }}
               value={cellValue}
               style={styles.gridCell}

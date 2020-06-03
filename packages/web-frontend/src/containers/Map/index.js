@@ -52,13 +52,13 @@ const mapStateToProps = state => {
 
   // If the org unit's grandchildren are polygons and have a measure, display grandchildren
   // rather than children
-  let displayedChildren = innerAreas;
+  let displayedChildren = currentChildren;
   if (selectHasPolygonMeasure(state)) {
     const measureOrgUnits = selectAllMeasuresWithDisplayInfo(state);
     const measureOrgUnitCodes = measureOrgUnits.map(orgUnit => orgUnit.organisationUnitCode);
-    const grandchildren = innerAreas
+    const grandchildren = currentChildren
       .map(area => selectOrgUnitChildren(state, area.organisationUnitCode))
-      .flat();
+      .reduce((acc, val) => acc.concat(val), []); // equivelent to .flat(), for IE
 
     const hasShadedGrandchildren =
       grandchildren &&
@@ -71,7 +71,7 @@ const mapStateToProps = state => {
     innerAreas: displayedChildren,
     currentOrganisationUnit,
     currentParent,
-    currentChildren,
+    displayedChildren,
     currentOrganisationUnitSiblings: selectOrgUnitSiblings(
       state,
       currentOrganisationUnit.organisationUnitCode,
