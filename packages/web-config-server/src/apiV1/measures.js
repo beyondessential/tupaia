@@ -8,7 +8,7 @@ export default class extends RouteHandler {
   static PermissionsChecker = PermissionsChecker;
 
   buildResponse = async () => {
-    const { entity } = this;
+    const { entity, query } = this;
     const { code: entityCode, name: entityName } = entity;
     const userGroups = await this.req.getUserGroups(entityCode);
 
@@ -26,6 +26,12 @@ export default class extends RouteHandler {
             sql: '"countryCodes" IS NULL OR :countryCode = ANY("countryCodes")',
             parameters: {
               countryCode,
+            },
+          },
+          [AND]: {
+            projectCodes: {
+              comparator: '@>',
+              comparisonValue: [query.projectCode],
             },
           },
         },
