@@ -49,7 +49,8 @@ const MultiValueTooltip = ({
     const label = (options && options.label) || dataKey;
     const valueTypeForLabel =
       labelType || valueType || get(presentationOptions, [dataKey, 'valueType']);
-    const metadata = data[`${dataKey}_metadata`];
+
+    const metadata = data[`${dataKey}_metadata`] || data[`${data.name}_metadata`];
 
     return <li key={dataKey}>{formatLabelledValue(label, value, valueTypeForLabel, metadata)}</li>;
   });
