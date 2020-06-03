@@ -13,7 +13,7 @@ import { ConnectedTable } from './ConnectedTable';
 import * as COLORS from '../../theme/colors';
 import { FIRST_COLUMN_WIDTH, SITES_REPORTED_COLUMN_WIDTH } from './constants';
 import { CountrySummaryTable } from './CountrySummaryTable';
-import { createDataAccessor } from './createDataAccessors';
+import { createDataAccessor } from './dataAccessors';
 import { AlertCell, SitesReportedCell } from './TableCellComponents';
 
 const CountryTitle = styled(MuiLink)`

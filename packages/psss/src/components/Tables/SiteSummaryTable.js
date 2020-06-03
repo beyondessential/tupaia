@@ -12,7 +12,12 @@ import { CondensedTableBody, FakeHeader, Table, Button } from '@tupaia/ui-compon
 import { FIRST_COLUMN_WIDTH, SITES_REPORTED_COLUMN_WIDTH } from './constants';
 import { AlertCell } from './TableCellComponents';
 import { createDataAccessor } from './dataAccessors';
-import { getSiteWeeksError, getSiteWeeks, reloadSiteWeeks } from '../../store';
+import {
+  getSitesForWeekError,
+  getSitesForWeek,
+  reloadSitesForWeek,
+  checkSitesForWeekIsLoading,
+} from '../../store';
 
 // Todo: update placeholder
 const NameCell = data => {
@@ -83,54 +88,55 @@ const StyledDiv = styled.div`
   padding: 2rem;
 `;
 
-export const SiteSummaryTableComponent = React.memo(({ fetchData, data, errorMessage }) => {
-  const [isLoading, setIsLoading] = useState(true);
+export const SiteSummaryTableComponent = React.memo(
+  ({ fetchData, data, isLoading, errorMessage }) => {
+    useEffect(() => {
+      (async () => {
+        await fetchData();
+      })();
+    }, []);
 
-  useEffect(() => {
-    (async () => {
-      setIsLoading(true);
-      await fetchData();
-      setIsLoading(false);
-    })();
-  }, []);
-
-  return (
-    <React.Fragment>
-      <TableHeader />
-      <Table
-        isLoading={isLoading}
-        errorMessage={errorMessage}
-        columns={siteWeekColumns}
-        fetchData={fetchData}
-        data={data}
-        Header={false}
-        Body={CondensedTableBody}
-      />
-      <StyledDiv>
-        <Typography variant="body1">Verify data to submit Weekly report to Regional</Typography>
-        <Button>Review and Confirm Now</Button>
-      </StyledDiv>
-    </React.Fragment>
-  );
-});
+    return (
+      <React.Fragment>
+        <TableHeader />
+        <Table
+          isLoading={isLoading}
+          errorMessage={errorMessage}
+          columns={siteWeekColumns}
+          fetchData={fetchData}
+          data={data}
+          Header={false}
+          Body={CondensedTableBody}
+        />
+        <StyledDiv>
+          <Typography variant="body1">Verify data to submit Weekly report to Regional</Typography>
+          <Button>Review and Confirm Now</Button>
+        </StyledDiv>
+      </React.Fragment>
+    );
+  },
+);
 
 SiteSummaryTableComponent.propTypes = {
   fetchData: PropTypes.func.isRequired,
   data: PropTypes.array.isRequired,
+  isLoading: PropTypes.bool,
   errorMessage: PropTypes.string,
 };
 
 SiteSummaryTableComponent.defaultProps = {
+  isLoading: false,
   errorMessage: '',
 };
 
 const mapStateToProps = state => ({
-  data: getSiteWeeks(state),
-  errorMessage: getSiteWeeksError(state),
+  data: getSitesForWeek(state),
+  isLoading: checkSitesForWeekIsLoading(state),
+  errorMessage: getSitesForWeekError(state),
 });
 
 const mapDispatchToProps = dispatch => ({
-  fetchData: () => dispatch(reloadSiteWeeks({})),
+  fetchData: () => dispatch(reloadSitesForWeek({})),
 });
 
 export const SiteSummaryTable = connect(

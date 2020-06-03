@@ -9,13 +9,13 @@ import { connect } from 'react-redux';
 import MuiTableBody from '@material-ui/core/TableBody';
 import { ExpandableTableRow, tableColumnShape } from '@tupaia/ui-components';
 import { SiteSummaryTable } from './SiteSummaryTable';
-import { setActiveCountryWeek } from '../../store';
+import { setActiveWeek } from '../../store';
 
-const TableBodyComponent = React.memo(({ data, columns, activeCountryWeekId, toggleTableRow }) => (
+const TableBodyComponent = React.memo(({ data, columns, activeWeekId, toggleTableRow }) => (
   <MuiTableBody>
     {data.map((rowData, rowIndex) => {
       const key = rowData.index; // todo: use real id
-      const expanded = activeCountryWeekId === key;
+      const expanded = activeWeekId === key;
 
       const handleRowClick = () => {
         if (expanded) {
@@ -42,20 +42,20 @@ const TableBodyComponent = React.memo(({ data, columns, activeCountryWeekId, tog
 TableBodyComponent.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
   data: PropTypes.array.isRequired,
-  activeCountryWeekId: PropTypes.number,
+  activeWeekId: PropTypes.number,
   toggleTableRow: PropTypes.func.isRequired,
 };
 
 TableBodyComponent.defaultProps = {
-  activeCountryWeekId: null,
+  activeWeekId: null,
 };
 
 const mapStateToProps = state => ({
-  activeCountryWeekId: state.weeklyReports.activeCountryWeekId,
+  activeWeekId: state.weeklyReports.activeWeekId,
 });
 
 const mapDispatchToProps = dispatch => ({
-  toggleTableRow: key => dispatch(setActiveCountryWeek(key)),
+  toggleTableRow: key => dispatch(setActiveWeek(key)),
 });
 
 export const CountryTableBody = connect(mapStateToProps, mapDispatchToProps)(TableBodyComponent);
