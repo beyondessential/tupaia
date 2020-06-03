@@ -41,7 +41,7 @@ export class QueryBuilder {
     const dataSourceEntities = await this.routeHandler.fetchDataSourceEntities(
       entity,
       (this.getQueryParameter('entityAggregation') || {}).dataSourceEntityType,
-      this.getQueryParameter('dataSourceEntityType'),
+      this.getQueryParameter('dataSourceEntityFilter'),
     );
     this.query.organisationUnitCodes = dataSourceEntities.map(e => e.code);
     delete this.query.organisationUnitCode;
