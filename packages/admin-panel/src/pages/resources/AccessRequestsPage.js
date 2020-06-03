@@ -44,7 +44,6 @@ const COLUMNS = [
           },
         },
       ],
-      allowNoChangeSave: true,
     },
   },
 ];
@@ -57,5 +56,6 @@ export const AccessRequestsPage = () => (
     editConfig={{
       title: 'Edit & Approve Access Request',
     }}
+    baseFilter={{ approved: null }}
   />
 );
