@@ -11,6 +11,7 @@ const getRecordData = async record => (record instanceof DatabaseType ? record.g
 export const getPendingAccessRequests = async (req, res) => {
   const { models } = req;
 
+  /*
   const records = await models.database.find(
     ACCESS_REQUEST,
     { approved: null },
@@ -34,6 +35,14 @@ export const getPendingAccessRequests = async (req, res) => {
       ],
     },
   );
+  */
+
+  const records = await models.database.executeSql(`
+    SELECT * FROM access_request ar
+    JOIN user_account ua ON ar.user_id = ua.id
+    JOIN country c ON ar.country_id = c.id
+  `);
+  console.log('RECORDS', records);
 
   //const records = await models.accessRequest.find({ approved: null });
   const pendingAccessRequests = await Promise.all(records.map(getRecordData));

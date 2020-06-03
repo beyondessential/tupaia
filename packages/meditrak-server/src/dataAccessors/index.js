@@ -16,3 +16,4 @@ export { updateOrCreateSurveyResponse } from './updateOrCreateSurveyResponse';
 export { getUserPermissionGroups } from './userPermissionGroups';
 export { findEditableFeedItems } from './findEditableFeedItems';
 export { findFormattedDisasters } from './findFormattedDisasters';
+export { getPendingAccessRequests } from './getPendingAccessRequests';
