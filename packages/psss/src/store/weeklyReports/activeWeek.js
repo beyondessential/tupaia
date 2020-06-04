@@ -9,6 +9,9 @@ const SET_ACTIVE_WEEK = 'SET_ACTIVE_WEEK';
 // action creators
 export const setActiveWeek = id => ({ type: SET_ACTIVE_WEEK, id });
 
+// selectors
+export const getActiveWeek = ({ weeklyReports }) => weeklyReports.activeWeekId;
+
 // reducer
 const defaultState = null;
 

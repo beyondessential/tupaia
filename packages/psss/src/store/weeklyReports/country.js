@@ -52,6 +52,10 @@ const STATUSES = {
   ERROR: 'error',
 };
 export const getCountryWeeks = ({ weeklyReports }) => weeklyReports.country.data;
+export const getActiveCountryWeekData = ({ weeklyReports }) =>
+  weeklyReports.activeWeekId !== null
+    ? weeklyReports.country.data[weeklyReports.activeWeekId].indicators
+    : [];
 export const getCountryWeeksError = ({ weeklyReports }) => weeklyReports.country.error;
 export const checkCountryWeekIsLoading = ({ weeklyReports }) =>
   weeklyReports.country.status === STATUSES.LOADING;

@@ -20,7 +20,7 @@ import { VerifiableTable, IndicatorsTable } from './Tables';
 import { SiteAddress } from './SiteAddress';
 import {
   getSitesForWeek,
-  getCountryWeeks,
+  getActiveCountryWeekData,
   closeWeeklyReportsPanel,
   confirmWeeklyReportsData,
 } from '../store';
@@ -83,12 +83,11 @@ const TABLE_STATE = {
 };
 
 const WeeklyReportPanelComponent = React.memo(
-  ({ countryWeeksData, siteWeeksData, isOpen, handleClose, confirmData }) => {
-    if (countryWeeksData.length === 0 || siteWeeksData.length === 0) {
+  ({ activeCountryWeekData, siteWeeksData, isOpen, handleClose, confirmData }) => {
+    if (activeCountryWeekData.length === 0 || siteWeeksData.length === 0) {
       return null;
     }
 
-    const countryData = countryWeeksData[0].indicators;
     const [countryTableState, setCountryTableState] = useState(TABLE_STATE.STATIC);
 
     const [activeSiteIndex, setActiveSiteIndex] = useState(0);
@@ -97,7 +96,7 @@ const WeeklyReportPanelComponent = React.memo(
     const [indicatorTableState, setIndicatorTableState] = useState(TABLE_STATE.STATIC);
 
     // Derive from store??
-    const verifiedStatus = countryData.reduce((state, item) => {
+    const verifiedStatus = activeCountryWeekData.reduce((state, item) => {
       if (item.percentageChange > 10) {
         return {
           ...state,
@@ -119,7 +118,7 @@ const WeeklyReportPanelComponent = React.memo(
         <GreySection disabled={isSaving}>
           <EditableTableProvider
             columns={columns}
-            data={countryData}
+            data={activeCountryWeekData}
             tableState={countryTableState}
             initialMetadata={verifiedStatus}
           >
@@ -158,7 +157,7 @@ const WeeklyReportPanelComponent = React.memo(
 );
 
 WeeklyReportPanelComponent.propTypes = {
-  countryWeeksData: PropTypes.array.isRequired,
+  activeCountryWeekData: PropTypes.array.isRequired,
   siteWeeksData: PropTypes.array.isRequired,
   confirmData: PropTypes.func.isRequired,
   handleClose: PropTypes.func.isRequired,
@@ -167,7 +166,7 @@ WeeklyReportPanelComponent.propTypes = {
 
 const mapStateToProps = state => ({
   isOpen: state.weeklyReports.panelIsOpen,
-  countryWeeksData: getCountryWeeks(state),
+  activeCountryWeekData: getActiveCountryWeekData(state),
   siteWeeksData: getSitesForWeek(state),
 });
 
