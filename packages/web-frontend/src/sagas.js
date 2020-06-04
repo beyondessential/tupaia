@@ -525,7 +525,8 @@ function* watchOrgUnitChangeAndFetchIt() {
  */
 function* fetchDashboard(action) {
   const { organisationUnitCode } = action.organisationUnit;
-  const requestResourceUrl = `dashboard?organisationUnitCode=${organisationUnitCode}`;
+  const projectCode = (yield select(selectActiveProject)).code;
+  const requestResourceUrl = `dashboard?organisationUnitCode=${organisationUnitCode}&projectCode=${projectCode}`;
 
   try {
     const dashboard = yield call(request, requestResourceUrl, fetchDashboardError);
@@ -802,7 +803,8 @@ function* fetchMeasures(action) {
   const { organisationUnitCode } = action.organisationUnit;
   const state = yield select();
   if (selectIsProject(state, organisationUnitCode)) yield put(clearMeasure());
-  const requestResourceUrl = `measures?organisationUnitCode=${organisationUnitCode}`;
+  const projectCode = (yield select(selectActiveProject)).code;
+  const requestResourceUrl = `measures?organisationUnitCode=${organisationUnitCode}&projectCode=${projectCode}`;
   try {
     const measures = yield call(request, requestResourceUrl);
     yield put(fetchMeasuresSuccess(measures));
