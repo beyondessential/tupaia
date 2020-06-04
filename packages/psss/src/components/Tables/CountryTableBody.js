@@ -8,57 +8,54 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import MuiTableBody from '@material-ui/core/TableBody';
 import { ExpandableTableRow, tableColumnShape } from '@tupaia/ui-components';
-import { setActiveCountryWeek } from '../../store';
+import { SiteSummaryTable } from './SiteSummaryTable';
+import { setActiveWeek } from '../../store';
 
-const TableBodyComponent = React.memo(
-  ({ data, columns, SubComponent, activeCountryWeekId, toggleTableRow }) => (
-    <MuiTableBody>
-      {data.map((rowData, rowIndex) => {
-        const key = rowData.index; // todo: use real id
-        const expanded = activeCountryWeekId === key;
+const TableBodyComponent = React.memo(({ data, columns, activeWeekId, toggleTableRow }) => (
+  <MuiTableBody>
+    {data.map((rowData, rowIndex) => {
+      const key = rowData.index; // todo: use real id
+      const expanded = activeWeekId === key;
 
-        const handleRowClick = () => {
-          if (expanded) {
-            toggleTableRow(null);
-          } else {
-            toggleTableRow(key);
-          }
-        };
-        return (
-          <ExpandableTableRow
-            onClick={handleRowClick}
-            expandedValue={expanded}
-            data={data}
-            rowIndex={rowIndex}
-            key={rowData.id}
-            columns={columns}
-            SubComponent={SubComponent}
-          />
-        );
-      })}
-    </MuiTableBody>
-  ),
-);
+      const handleRowClick = () => {
+        if (expanded) {
+          toggleTableRow(null);
+        } else {
+          toggleTableRow(key);
+        }
+      };
+      return (
+        <ExpandableTableRow
+          onClick={handleRowClick}
+          expandedValue={expanded}
+          data={data}
+          rowIndex={rowIndex}
+          key={rowData.id} // todo: update to key when real data is in place
+          columns={columns}
+          SubComponent={SiteSummaryTable}
+        />
+      );
+    })}
+  </MuiTableBody>
+));
 
 TableBodyComponent.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
   data: PropTypes.array.isRequired,
-  SubComponent: PropTypes.any,
-  activeCountryWeekId: PropTypes.number,
+  activeWeekId: PropTypes.number,
   toggleTableRow: PropTypes.func.isRequired,
 };
 
 TableBodyComponent.defaultProps = {
-  SubComponent: null,
-  activeCountryWeekId: null,
+  activeWeekId: null,
 };
 
 const mapStateToProps = state => ({
-  activeCountryWeekId: state.weeklyReports.activeCountryWeekId,
+  activeWeekId: state.weeklyReports.activeWeekId,
 });
 
 const mapDispatchToProps = dispatch => ({
-  toggleTableRow: key => dispatch(setActiveCountryWeek(key)),
+  toggleTableRow: key => dispatch(setActiveWeek(key)),
 });
 
 export const CountryTableBody = connect(mapStateToProps, mapDispatchToProps)(TableBodyComponent);

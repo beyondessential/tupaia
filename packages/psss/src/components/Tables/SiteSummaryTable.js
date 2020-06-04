@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import Typography from '@material-ui/core/Typography';
@@ -11,21 +11,17 @@ import PropTypes from 'prop-types';
 import { CondensedTableBody, FakeHeader, Table, Button } from '@tupaia/ui-components';
 import { FIRST_COLUMN_WIDTH, SITES_REPORTED_COLUMN_WIDTH } from './constants';
 import { AlertCell } from './TableCellComponents';
+import { createTotalCasesAccessor } from './dataAccessors';
 import {
-  getSiteWeeksError,
-  openWeeklyReportsPanel,
-  getSiteWeeks,
-  reloadSiteWeeks,
+  getSitesForWeekError,
+  getSitesForWeek,
+  reloadSitesForWeek,
+  checkSitesForWeekIsLoading,
 } from '../../store';
 
 // Todo: update placeholder
 const NameCell = data => {
   return <span>{data.name}</span>;
-};
-
-const dataAccessor = key => data => {
-  const indicator = data.indicators.find(i => i.id === key);
-  return indicator ? indicator.totalCases : null;
 };
 
 const siteWeekColumns = [
@@ -39,43 +35,44 @@ const siteWeekColumns = [
   {
     title: 'Sites Reported',
     key: 'sitesReported',
-    accessor: dataAccessor('sitesReported'),
+    accessor: createTotalCasesAccessor('sitesReported'),
     width: SITES_REPORTED_COLUMN_WIDTH,
   },
   {
     title: 'AFR',
     key: 'AFR',
-    accessor: dataAccessor('afr'),
+    accessor: createTotalCasesAccessor('afr'),
     CellComponent: AlertCell,
   },
   {
     title: 'DIA',
     key: 'DIA',
-    accessor: dataAccessor('dia'),
+    accessor: createTotalCasesAccessor('dia'),
     CellComponent: AlertCell,
   },
   {
     title: 'ILI',
     key: 'ILI',
-    accessor: dataAccessor('ili'),
+    accessor: createTotalCasesAccessor('ili'),
     CellComponent: AlertCell,
   },
   {
     title: 'PF',
     key: 'PF',
-    accessor: dataAccessor('pf'),
+    accessor: createTotalCasesAccessor('pf'),
     CellComponent: AlertCell,
   },
   {
     title: 'DIL',
     key: 'DIL',
-    accessor: dataAccessor('dil'),
+    accessor: createTotalCasesAccessor('dil'),
+    CellComponent: AlertCell,
   },
   {
     title: 'Status',
     key: 'status',
     width: '110px',
-    accessor: dataAccessor('status'),
+    accessor: createTotalCasesAccessor('status'),
   },
 ];
 
@@ -92,16 +89,12 @@ const StyledDiv = styled.div`
 `;
 
 export const SiteSummaryTableComponent = React.memo(
-  ({ fetchData, data, errorMessage, handleOpen }) => {
-    const [isLoading, setIsLoading] = useState(true);
-
+  ({ fetchData, data, isLoading, errorMessage }) => {
     useEffect(() => {
       (async () => {
-        setIsLoading(true);
         await fetchData();
-        setIsLoading(false);
       })();
-    }, []);
+    }, [fetchData]);
 
     return (
       <React.Fragment>
@@ -117,7 +110,7 @@ export const SiteSummaryTableComponent = React.memo(
         />
         <StyledDiv>
           <Typography variant="body1">Verify data to submit Weekly report to Regional</Typography>
-          <Button onClick={handleOpen}>Save and submit</Button>
+          <Button>Review and Confirm Now</Button>
         </StyledDiv>
       </React.Fragment>
     );
@@ -126,23 +119,24 @@ export const SiteSummaryTableComponent = React.memo(
 
 SiteSummaryTableComponent.propTypes = {
   fetchData: PropTypes.func.isRequired,
-  handleOpen: PropTypes.func.isRequired,
   data: PropTypes.array.isRequired,
+  isLoading: PropTypes.bool,
   errorMessage: PropTypes.string,
 };
 
 SiteSummaryTableComponent.defaultProps = {
+  isLoading: false,
   errorMessage: '',
 };
 
 const mapStateToProps = state => ({
-  data: getSiteWeeks(state),
-  errorMessage: getSiteWeeksError(state),
+  data: getSitesForWeek(state),
+  isLoading: checkSitesForWeekIsLoading(state),
+  errorMessage: getSitesForWeekError(state),
 });
 
 const mapDispatchToProps = dispatch => ({
-  fetchData: () => dispatch(reloadSiteWeeks({})),
-  handleOpen: rowId => dispatch(openWeeklyReportsPanel(rowId)),
+  fetchData: () => dispatch(reloadSitesForWeek({})),
 });
 
 export const SiteSummaryTable = connect(

@@ -11,6 +11,7 @@ import { CondensedTableBody, FakeHeader } from '@tupaia/ui-components';
 import { ConnectedTable } from './ConnectedTable';
 import * as COLORS from '../../theme/colors';
 import { FIRST_COLUMN_WIDTH, SITES_REPORTED_COLUMN_WIDTH } from './constants';
+import { createTotalCasesAccessor } from './dataAccessors';
 import { AlertCell, SitesReportedCell } from './TableCellComponents';
 
 const CountrySummaryTitle = styled.div`
@@ -36,11 +37,6 @@ NameCell.propTypes = {
   endDate: PropTypes.instanceOf(Date).isRequired,
 };
 
-const dataAccessor = key => data => {
-  const indicator = data.indicators.find(i => i.id === key);
-  return indicator ? indicator.totalCases : null;
-};
-
 const countrySummaryTableColumns = [
   {
     title: 'Name',
@@ -58,31 +54,31 @@ const countrySummaryTableColumns = [
   {
     title: 'AFR',
     key: 'AFR',
-    accessor: dataAccessor('afr'),
+    accessor: createTotalCasesAccessor('afr'),
     CellComponent: AlertCell,
   },
   {
     title: 'DIA',
     key: 'DIA',
-    accessor: dataAccessor('dia'),
+    accessor: createTotalCasesAccessor('dia'),
     CellComponent: AlertCell,
   },
   {
     title: 'ILI',
     key: 'ILI',
-    accessor: dataAccessor('ili'),
+    accessor: createTotalCasesAccessor('ili'),
     CellComponent: AlertCell,
   },
   {
     title: 'PF',
     key: 'PF',
-    accessor: dataAccessor('pf'),
+    accessor: createTotalCasesAccessor('pf'),
     CellComponent: AlertCell,
   },
   {
     title: 'DIL',
     key: 'DIL',
-    accessor: dataAccessor('dil'),
+    accessor: createTotalCasesAccessor('dil'),
     CellComponent: AlertCell,
   },
 ];
@@ -91,12 +87,11 @@ const TableHeader = () => {
   return <FakeHeader>PREVIOUS 8 WEEKS</FakeHeader>;
 };
 
-export const CountrySummaryTable = React.memo(props => (
+export const CountrySummaryTable = React.memo(() => (
   <React.Fragment>
     <TableHeader />
     <ConnectedTable
       endpoint="country-weeks"
-      fetchOptions={{ filterId: props }}
       columns={countrySummaryTableColumns}
       Header={false}
       Body={CondensedTableBody}
