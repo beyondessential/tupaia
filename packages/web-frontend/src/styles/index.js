@@ -378,6 +378,14 @@ export const VIEW_STYLES = {
     textAlign: 'center',
     fontSize: 9,
   },
+  overlayPeriodRange: {
+    position: 'relative',
+    color: darkWhite,
+    marginTop: 5,
+    marginLeft: 5,
+    textAlign: 'left',
+    fontSize: 15,
+  },
   data: isMobile()
     ? {
         fontSize: '50px',
