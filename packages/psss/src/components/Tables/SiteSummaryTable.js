@@ -13,6 +13,7 @@ import { FIRST_COLUMN_WIDTH, SITES_REPORTED_COLUMN_WIDTH } from './constants';
 import { AlertCell } from './TableCellComponents';
 import { createTotalCasesAccessor } from './dataAccessors';
 import {
+  openWeeklyReportsPanel,
   getSitesForWeekError,
   getSitesForWeek,
   reloadSitesForWeek,
@@ -89,7 +90,7 @@ const StyledDiv = styled.div`
 `;
 
 export const SiteSummaryTableComponent = React.memo(
-  ({ fetchData, data, isLoading, errorMessage }) => {
+  ({ fetchData, data, handleOpen, isLoading, errorMessage }) => {
     useEffect(() => {
       (async () => {
         await fetchData();
@@ -110,7 +111,7 @@ export const SiteSummaryTableComponent = React.memo(
         />
         <StyledDiv>
           <Typography variant="body1">Verify data to submit Weekly report to Regional</Typography>
-          <Button>Review and Confirm Now</Button>
+          <Button onClick={handleOpen}>Review and Confirm Now</Button>
         </StyledDiv>
       </React.Fragment>
     );
@@ -120,6 +121,7 @@ export const SiteSummaryTableComponent = React.memo(
 SiteSummaryTableComponent.propTypes = {
   fetchData: PropTypes.func.isRequired,
   data: PropTypes.array.isRequired,
+  handleOpen: PropTypes.func.isRequired,
   isLoading: PropTypes.bool,
   errorMessage: PropTypes.string,
 };
@@ -137,6 +139,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   fetchData: () => dispatch(reloadSitesForWeek({})),
+  handleOpen: () => dispatch(openWeeklyReportsPanel()),
 });
 
 export const SiteSummaryTable = connect(
