@@ -37,6 +37,7 @@ export const changeSearchTerm = (reduxId, endpoint, column, searchTerm, parentRe
     const response = await api.get(makeSubstitutionsInString(endpoint, parentRecord), {
       filter: JSON.stringify(filter),
       pageSize: MAX_AUTOCOMPLETE_RESULTS,
+      sort: JSON.stringify([`${reduxId} ASC`]),
     });
     dispatch({
       type: AUTOCOMPLETE_RESULTS_CHANGE,
