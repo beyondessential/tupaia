@@ -14,25 +14,28 @@ test('renders login form', () => {
   render(<LoginForm />);
 });
 
+const testData = {
+  email: 'tupaia@gmail.com',
+  password: 'password123',
+};
+
 test('submits a login form with email field, password field and submit button', async () => {
   mockAPI.reauthenticate.mockResolvedValueOnce({ user: { name: 'tupaia' } });
-
   const { getByPlaceholderText, getByText } = render(<LoginForm />);
   const emailInput = getByPlaceholderText(/email/i);
   const passwordInput = getByPlaceholderText(/password/i);
   const submitButton = getByText(/login to your account/i).closest('button');
 
-  fireEvent.change(emailInput, { target: { value: 'tupaia@gmail.com' } });
-  fireEvent.change(passwordInput, { target: { value: 'password123' } });
+  fireEvent.change(emailInput, { target: { value: testData.email } });
+  fireEvent.change(passwordInput, { target: { value: testData.password } });
   fireEvent.click(submitButton);
 
   expect(mockAPI.reauthenticate).toHaveBeenCalledWith({
-    emailAddress: 'tupaia@gmail.com',
-    password: 'password123',
+    emailAddress: testData.email,
+    password: testData.password,
     deviceName: window.navigator.userAgent,
   });
 
   expect(mockAPI.reauthenticate).toHaveBeenCalledTimes(1);
-
   mockAPI.reauthenticate.mockReset();
 });
