@@ -4,6 +4,7 @@
  */
 import keyBy from 'lodash.keyby';
 import flatten from 'lodash.flatten';
+import isEqual from 'lodash.isequal';
 
 import { groupAnalyticsByPeriod } from '@tupaia/dhis-api';
 import { PERIOD_TYPES, parsePeriodType } from '@tupaia/utils';
@@ -28,7 +29,7 @@ const filterFacility = async (filterCriteria, analytics) => {
   return analytics.filter(({ organisationUnit: orgUnitCode }) => facilitiesByCode[orgUnitCode]);
 };
 
-const { MONTH, YEAR } = PERIOD_TYPES;
+const { MONTH, QUARTER, YEAR } = PERIOD_TYPES;
 const FILTERS = {
   filterFacility,
 };
@@ -41,7 +42,7 @@ class BaseBuilder extends PercentagesOfValueCountsBuilder {
     };
     Object.values(this.config.dataClasses).forEach(({ numerator, denominator }) => {
       codes.numerator.push(flatten(numerator.dataValues));
-      denominator.hasOwnProperty('dataValues') && codes.denominator.push(denominator.dataValues);
+      if (denominator.hasOwnProperty('dataValues')) codes.denominator.push(denominator.dataValues);
     });
 
     return codes;
@@ -55,6 +56,13 @@ class BaseBuilder extends PercentagesOfValueCountsBuilder {
           denominator: this.config.fillEmptyDenominatorValues
             ? this.aggregator.aggregationTypes.FINAL_EACH_MONTH_FILL_EMPTY_MONTHS
             : this.aggregator.aggregationTypes.FINAL_EACH_MONTH,
+        };
+      case QUARTER:
+        return {
+          numerator: this.aggregator.aggregationTypes.FINAL_EACH_QUARTER,
+          denominator: this.config.fillEmptyDenominatorValues
+            ? this.aggregator.aggregationTypes.FINAL_EACH_QUARTER_FILL_EMPTY_QUARTERS
+            : this.aggregator.aggregationTypes.FINAL_EACH_QUARTER,
         };
       case YEAR:
         return {
@@ -86,7 +94,17 @@ class BaseBuilder extends PercentagesOfValueCountsBuilder {
       denominatorAggregationType,
     );
 
-    return [...denominatorResults, ...numeratorResults];
+    const allResults = numeratorResults;
+
+    // Hack to make sure that there are no duplicated analytics returned to count twice.
+    // Would like to have { denominatorResults, numeratorResults }, but can't because of how DataPerPeriodBuilder works
+    denominatorResults.forEach(analytic => {
+      if (!allResults.find(otherAnalytic => isEqual(analytic, otherAnalytic))) {
+        allResults.push(analytic);
+      }
+    });
+
+    return allResults;
   }
 
   async buildData(analytics) {

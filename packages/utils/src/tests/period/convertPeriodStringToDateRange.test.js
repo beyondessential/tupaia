@@ -15,6 +15,7 @@ describe('convertPeriodStringToDateRange', () => {
     assertCorrectConversion('20200126', ['2020-01-26', '2020-01-26']); // day
     assertCorrectConversion('2020W03', ['2020-01-13', '2020-01-19']); // week
     assertCorrectConversion('202001', ['2020-01-01', '2020-01-31']); // month
+    assertCorrectConversion('2020Q2', ['2020-04-01', '2020-06-30']); // quarter
     assertCorrectConversion('2020', ['2020-01-01', '2020-12-31']); // year
   });
 
