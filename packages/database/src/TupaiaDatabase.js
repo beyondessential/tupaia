@@ -74,11 +74,11 @@ export class TupaiaDatabase {
   // can be replaced with 'generateTestId' by tests
   generateId = generateId;
 
-  closeConnections() {
+  async closeConnections() {
     if (this.changeChannel) {
-      this.changeChannel.close();
+      await this.changeChannel.close();
     }
-    this.connection.destroy();
+    return this.connection.destroy();
   }
 
   getOrCreateChangeChannel() {
