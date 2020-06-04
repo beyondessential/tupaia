@@ -88,7 +88,7 @@ const getImportSummariesDiagnostics = responseDetails => {
       const errorMessage = description || conflicts.map(conflictToErrorString).join(', ');
       errors.push(errorMessage);
 
-      // ignored to the imported count
+      // if there is a reference, it means that the import was actually not ignored
       if (reference) {
         counts.imported++;
         counts.ignored = Math.max(counts.ignored - 1, 0); // bottom out at 0
