@@ -3,7 +3,8 @@
   "parser": "babel-eslint",
   "env": {
     "browser": true,
-    "mocha": true
+    "mocha": true,
+    "jest/globals": true
   },
   "rules": {
     "react/jsx-one-expression-per-line": "off",
@@ -16,6 +17,7 @@
       { "devDependencies": true, "optionalDependencies": true, "peerDependencies": true }
     ]
   },
+  "plugins": ["jest"],
   "settings": {
     "import/resolver": {
       "alias": [

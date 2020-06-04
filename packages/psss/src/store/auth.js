@@ -22,7 +22,7 @@ export const login = (emailAddress, password) => async (dispatch, getState, { ap
       password,
       deviceName,
     });
-    dispatch(loginSuccess(userDetails));
+    // dispatch(loginSuccess(userDetails));
   } catch (error) {
     dispatch(loginError(error.message));
   }
