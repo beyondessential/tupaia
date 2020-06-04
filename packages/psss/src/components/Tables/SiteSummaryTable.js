@@ -11,7 +11,7 @@ import PropTypes from 'prop-types';
 import { CondensedTableBody, FakeHeader, Table, Button } from '@tupaia/ui-components';
 import { FIRST_COLUMN_WIDTH, SITES_REPORTED_COLUMN_WIDTH } from './constants';
 import { AlertCell } from './TableCellComponents';
-import { createDataAccessor } from './dataAccessors';
+import { createTotalCasesAccessor } from './dataAccessors';
 import {
   getSitesForWeekError,
   getSitesForWeek,
@@ -35,44 +35,44 @@ const siteWeekColumns = [
   {
     title: 'Sites Reported',
     key: 'sitesReported',
-    accessor: createDataAccessor('sitesReported'),
+    accessor: createTotalCasesAccessor('sitesReported'),
     width: SITES_REPORTED_COLUMN_WIDTH,
   },
   {
     title: 'AFR',
     key: 'AFR',
-    accessor: createDataAccessor('afr'),
+    accessor: createTotalCasesAccessor('afr'),
     CellComponent: AlertCell,
   },
   {
     title: 'DIA',
     key: 'DIA',
-    accessor: createDataAccessor('dia'),
+    accessor: createTotalCasesAccessor('dia'),
     CellComponent: AlertCell,
   },
   {
     title: 'ILI',
     key: 'ILI',
-    accessor: createDataAccessor('ili'),
+    accessor: createTotalCasesAccessor('ili'),
     CellComponent: AlertCell,
   },
   {
     title: 'PF',
     key: 'PF',
-    accessor: createDataAccessor('pf'),
+    accessor: createTotalCasesAccessor('pf'),
     CellComponent: AlertCell,
   },
   {
     title: 'DIL',
     key: 'DIL',
-    accessor: createDataAccessor('dil'),
+    accessor: createTotalCasesAccessor('dil'),
     CellComponent: AlertCell,
   },
   {
     title: 'Status',
     key: 'status',
     width: '110px',
-    accessor: createDataAccessor('status'),
+    accessor: createTotalCasesAccessor('status'),
   },
 ];
 

@@ -13,7 +13,7 @@ import { Alarm, CheckCircleOutline } from '@material-ui/icons';
 import { CountryTableBody } from './CountryTableBody';
 import * as COLORS from '../../theme/colors';
 import { FIRST_COLUMN_WIDTH, SITES_REPORTED_COLUMN_WIDTH } from './constants';
-import { createDataAccessor } from './dataAccessors';
+import { createTotalCasesAccessor } from './dataAccessors';
 import { AlertCell, SitesReportedCell } from './TableCellComponents';
 import {
   getCountryWeeks,
@@ -111,31 +111,31 @@ const countryColumns = [
   {
     title: 'AFR',
     key: 'AFR',
-    accessor: createDataAccessor('afr'),
+    accessor: createTotalCasesAccessor('afr'),
     CellComponent: AlertCell,
   },
   {
     title: 'DIA',
     key: 'DIA',
-    accessor: createDataAccessor('dia'),
+    accessor: createTotalCasesAccessor('dia'),
     CellComponent: AlertCell,
   },
   {
     title: 'ILI',
     key: 'ILI',
-    accessor: createDataAccessor('ili'),
+    accessor: createTotalCasesAccessor('ili'),
     CellComponent: AlertCell,
   },
   {
     title: 'PF',
     key: 'PF',
-    accessor: createDataAccessor('pf'),
+    accessor: createTotalCasesAccessor('pf'),
     CellComponent: AlertCell,
   },
   {
     title: 'DIL',
     key: 'DIL',
-    accessor: createDataAccessor('dil'),
+    accessor: createTotalCasesAccessor('dil'),
     CellComponent: AlertCell,
   },
   {
