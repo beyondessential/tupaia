@@ -4,6 +4,7 @@
  */
 import keyBy from 'lodash.keyby';
 import flatten from 'lodash.flatten';
+import isEqual from 'lodash.isequal';
 
 import { groupAnalyticsByPeriod } from '@tupaia/dhis-api';
 import { PERIOD_TYPES, parsePeriodType } from '@tupaia/utils';
@@ -93,7 +94,17 @@ class BaseBuilder extends PercentagesOfValueCountsBuilder {
       denominatorAggregationType,
     );
 
-    return [...denominatorResults, ...numeratorResults];
+    const allResults = numeratorResults;
+
+    // Hack to make sure that there are no duplicated analytics returned to count twice.
+    // Would like to have { denominatorResults, numeratorResults }, but can't because of how DataPerPeriodBuilder works
+    denominatorResults.forEach(analytic => {
+      if (!allResults.find(otherAnalytic => isEqual(analytic, otherAnalytic))) {
+        allResults.push(analytic);
+      }
+    });
+
+    return allResults;
   }
 
   async buildData(analytics) {
