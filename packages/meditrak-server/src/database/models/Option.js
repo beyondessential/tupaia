@@ -4,7 +4,7 @@
  **/
 
 import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
-import { hasContent } from './validatorFunctions';
+import { hasContent } from '@tupaia/utils';
 
 class OptionType extends DatabaseType {
   static databaseType = TYPES.OPTION;

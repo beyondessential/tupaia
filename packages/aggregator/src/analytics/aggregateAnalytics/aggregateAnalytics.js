@@ -20,7 +20,8 @@ export const aggregateAnalytics = (
   aggregationType = AGGREGATION_TYPES.MOST_RECENT,
   aggregationConfig = {},
 ) => {
-  const { DAY, WEEK, MONTH, YEAR } = PERIOD_TYPES;
+  const { DAY, WEEK, MONTH, YEAR, QUARTER } = PERIOD_TYPES;
+
   switch (aggregationType) {
     case AGGREGATION_TYPES.MOST_RECENT:
     case AGGREGATION_TYPES.MOST_RECENT_PER_ORG_GROUP:
@@ -58,6 +59,17 @@ export const aggregateAnalytics = (
           fillEmptyValues: true,
         },
         MONTH,
+      );
+    case AGGREGATION_TYPES.FINAL_EACH_QUARTER:
+      return getFinalValuePerPeriod(analytics, aggregationConfig, QUARTER);
+    case AGGREGATION_TYPES.FINAL_EACH_QUARTER_FILL_EMPTY_QUARTERS:
+      return getFinalValuePerPeriod(
+        analytics,
+        {
+          ...aggregationConfig,
+          fillEmptyValues: true,
+        },
+        QUARTER,
       );
     case AGGREGATION_TYPES.FINAL_EACH_YEAR:
       return getFinalValuePerPeriod(analytics, aggregationConfig, YEAR);

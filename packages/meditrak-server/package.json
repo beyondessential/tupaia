@@ -45,7 +45,6 @@
     "string-similarity": "^1.2.2",
     "sussol-utilities": "^0.4.6",
     "urlencode": "^1.1.0",
-    "validator": "^8.2.0",
     "winston": "^3.2.1",
     "xlsx": "^0.10.9"
   },
