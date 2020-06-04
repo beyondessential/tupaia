@@ -69,7 +69,6 @@ const CONFIGS_BY_REPORT_ID = {
     },
     new: {
       surveyCodes: NEW_PEHS_SURVEY_CODES,
-      surveys: NEW_PEHS_SURVEY_CODES.map(code => ({ code })),
       dataElementGroupCode: 'PEHSSurveyDate',
     },
   },
@@ -80,7 +79,6 @@ const CONFIGS_BY_REPORT_ID = {
     },
     new: {
       surveyCodes: NEW_PEHS_SURVEY_CODES,
-      surveys: NEW_PEHS_SURVEY_CODES.map(code => ({ code })),
       dataElementGroupCode: 'PEHSSurveyDate',
     },
   },
