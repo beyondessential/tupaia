@@ -6,7 +6,7 @@
 import { createReducer } from '../../utils/createReducer';
 
 function actionIsValid(state, timestamp) {
-  return timestamp >= state.weeklyReports.country.fetchStartedAt;
+  return timestamp === state.weeklyReports.country.fetchStartedAt;
 }
 
 // actions
@@ -38,9 +38,7 @@ export const reloadCountryWeeks = ({ fetchOptions, queryParameters }) => async (
   }
 };
 
-export const updateWeeklyReportsData = () => async dispatch => {
-  await dispatch(reloadCountryWeeks({}));
-};
+export const updateWeeklyReportsData = () => reloadCountryWeeks({});
 
 export const confirmWeeklyReportsData = () => async () => {
   console.log('confirm data...');

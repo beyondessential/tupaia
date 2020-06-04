@@ -5,12 +5,12 @@
 import { createReducer } from '../../utils/createReducer';
 
 // actions
-const SITES_FOR_WEEK_LOAD_START = 'SITES_WEEKS_LOAD_START';
-const SITES_FOR_WEEK_LOAD_FINISH = 'SITES_WEEKS_LOAD_FINISH';
-const SITES_FOR_WEEK_LOAD_ERROR = 'SITES_WEEKS_LOAD_ERROR';
+const SITES_FOR_WEEK_LOAD_START = 'SITES_FOR_WEEK_LOAD_START';
+const SITES_FOR_WEEK_LOAD_FINISH = 'SITES_FOR_WEEK_LOAD_FINISH';
+const SITES_FOR_WEEK_LOAD_ERROR = 'SITES_FOR_WEEK_LOAD_ERROR';
 
 function actionIsValid(state, timestamp) {
-  return timestamp >= state.weeklyReports.site.fetchStartedAt;
+  return timestamp === state.weeklyReports.site.fetchStartedAt;
 }
 
 // action creators
