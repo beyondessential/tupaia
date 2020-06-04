@@ -23,6 +23,7 @@ import {
   getActiveCountryWeekData,
   closeWeeklyReportsPanel,
   confirmWeeklyReportsData,
+  checkWeeklyReportsPanelIsOpen,
 } from '../store';
 
 const columns = [
@@ -100,7 +101,7 @@ const WeeklyReportPanelComponent = React.memo(
       if (item.percentageChange > 10) {
         return {
           ...state,
-          [item.id]: 'expanded',
+          [item.id]: '',
         };
       }
       return state;
@@ -165,7 +166,7 @@ WeeklyReportPanelComponent.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  isOpen: state.weeklyReports.panelIsOpen,
+  isOpen: checkWeeklyReportsPanelIsOpen(state),
   activeCountryWeekData: getActiveCountryWeekData(state),
   siteWeeksData: getSitesForWeek(state),
 });

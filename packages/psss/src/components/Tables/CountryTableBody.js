@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import MuiTableBody from '@material-ui/core/TableBody';
 import { ExpandableTableRow, tableColumnShape } from '@tupaia/ui-components';
 import { SiteSummaryTable } from './SiteSummaryTable';
-import { setActiveWeek } from '../../store';
+import { setActiveWeek, getActiveWeekId } from '../../store';
 
 const TableBodyComponent = React.memo(({ data, columns, activeWeekId, toggleTableRow }) => (
   <MuiTableBody>
@@ -51,7 +51,7 @@ TableBodyComponent.defaultProps = {
 };
 
 const mapStateToProps = state => ({
-  activeWeekId: state.weeklyReports.activeWeekId,
+  activeWeekId: getActiveWeekId(state),
 });
 
 const mapDispatchToProps = dispatch => ({

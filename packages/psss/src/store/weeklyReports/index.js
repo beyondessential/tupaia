@@ -7,16 +7,13 @@ import { combineReducers } from 'redux';
 import { country } from './country';
 import { site } from './site';
 import { activeWeek } from './activeWeek';
-import { panel } from './panel';
 
 export const weeklyReports = combineReducers({
   site,
   country,
-  activeWeekId: activeWeek,
-  panelIsOpen: panel,
+  activeWeek,
 });
 
 export * from './site';
 export * from './country';
 export * from './activeWeek';
-export * from './panel';
