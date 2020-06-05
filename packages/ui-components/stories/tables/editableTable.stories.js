@@ -83,10 +83,10 @@ const LOADING = 'loading';
 const SAVING = 'saving';
 
 const SubmitButton = ({ setTableState }) => {
-  const { fields, metadata } = useContext(EditableTableContext);
+  const { fields } = useContext(EditableTableContext);
 
   const handleSubmit = async () => {
-    console.log('updated values...', fields, metadata);
+    console.log('updated values...', fields);
     setTableState(SAVING);
     await sleep(1000);
     setTableState(STATIC);

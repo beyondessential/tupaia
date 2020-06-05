@@ -120,47 +120,42 @@ const useFormFields = initialState => {
   return [
     fields,
     event => {
-      setValues({
-        ...fields,
-        [event.target.id]: event.target.value,
-      });
+      const { value, id } = event.target;
+      setValues(prevFields => ({
+        ...prevFields,
+        [id]: value,
+      }));
     },
     setValues,
   ];
 };
 
-export const EditableTableProvider = React.memo(
-  ({ columns, data, tableState, initialMetadata, children }) => {
-    const initialState = makeInitialFormState(columns, data);
-    const editableColumns = makeEditableColumns(columns);
-    const [fields, handleFieldChange, setValues] = useFormFields(initialState);
-    const [metadata, setMetadata] = useState(initialMetadata);
+export const EditableTableProvider = React.memo(({ columns, data, tableState, children }) => {
+  const initialState = makeInitialFormState(columns, data);
+  const editableColumns = makeEditableColumns(columns);
+  const [fields, handleFieldChange, setValues] = useFormFields(initialState);
 
-    useEffect(() => {
-      // loading must change after initial state is set
-      if (tableState === LOADING || tableState === SAVING) {
-        setValues(initialState);
-        setMetadata(initialMetadata);
-      }
-    }, [data]);
+  useEffect(() => {
+    // loading must change after initial state is set
+    if (tableState === LOADING || tableState === SAVING) {
+      setValues(initialState);
+    }
+  }, [data]);
 
-    return (
-      <EditableTableContext.Provider
-        value={{
-          fields,
-          handleFieldChange,
-          tableState,
-          editableColumns,
-          data,
-          metadata,
-          setMetadata,
-        }}
-      >
-        {children}
-      </EditableTableContext.Provider>
-    );
-  },
-);
+  return (
+    <EditableTableContext.Provider
+      value={{
+        fields,
+        handleFieldChange,
+        tableState,
+        editableColumns,
+        data,
+      }}
+    >
+      {children}
+    </EditableTableContext.Provider>
+  );
+});
 
 EditableTableProvider.propTypes = {
   tableState: PropTypes.PropTypes.oneOf([STATIC, EDITABLE, SAVING, LOADING]).isRequired,
@@ -176,11 +171,6 @@ EditableTableProvider.propTypes = {
     }),
   ).isRequired,
   data: PropTypes.array.isRequired,
-  initialMetadata: PropTypes.object,
-};
-
-EditableTableProvider.defaultProps = {
-  initialMetadata: {},
 };
 
 export const EditableTable = props => {
