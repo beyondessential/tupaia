@@ -3,8 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { TYPES } from '@tupaia/database';
-import { ValidationError } from '@tupaia/utils';
+
 
 import {
   constructRecordExistsWithId,
@@ -15,7 +14,8 @@ import {
   constructIsOneOf,
   isValidPassword,
   takesDateForm,
-} from './validatorFunctions';
+  ValidationError,
+} from '@tupaia/utils';
 
 import { FEED_ITEM_TYPES } from '../database/models/FeedItem';
 import { DATA_SOURCE_SERVICE_TYPES } from '../database/models/DataSource';

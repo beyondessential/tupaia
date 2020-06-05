@@ -1,7 +1,6 @@
 import xlsx from 'xlsx';
 
-import { DatabaseError, respond } from '@tupaia/utils';
-import { ObjectValidator, fieldHasContent } from '../validation';
+import { DatabaseError, respond, ObjectValidator, fieldHasContent } from '@tupaia/utils';
 
 const TAB_NAMES = {
   DISASTER: 'Disaster',
