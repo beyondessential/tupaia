@@ -14,6 +14,7 @@ import { ThemeProvider } from 'styled-components';
 import { theme } from '../theme';
 import { createReducers } from '../createReducers';
 import { API } from '../api';
+import { initialState} from './initialState';
 
 function initStore() {
   const store = createStore(createReducers, applyMiddleware(thunk.withExtraArgument({ api: API })));
@@ -43,3 +44,30 @@ const customRender = (ui, options) => render(ui, { wrapper: Providers, ...option
 
 // override render method
 export { customRender as render };
+// ----------
+
+
+const loggedInStore = createStore(createReducers, initialState);
+
+// console.log('CREATE REDUCERS', createReducers());
+console.log('STORE', loggedInStore.getState());
+
+// eslint-disable-next-line react/prop-types
+const LoggedInProviders = ({ children }) => {
+  return (
+    <Provider store={loggedInStore}>
+      <StylesProvider injectFirst>
+        <MuiThemeProvider theme={theme}>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            {children}
+          </ThemeProvider>
+        </MuiThemeProvider>
+      </StylesProvider>
+    </Provider>
+  );
+};
+
+const loggedInRender = (ui, options) => render(ui, { wrapper: LoggedInProviders, ...options });
+
+export { loggedInRender };

@@ -14,7 +14,7 @@
   "scripts": {
     "start-dev": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --env=jest-environment-jsdom-sixteen",
     "eject": "react-scripts eject"
   },
   "dependencies": {
@@ -50,6 +50,7 @@
     "eslint": "^7.1.0",
     "eslint-import-resolver-alias": "^1.1.2",
     "eslint-plugin-jest": "^23.13.2",
-    "faker": "^4.1.0"
+    "faker": "^4.1.0",
+    "jest-environment-jsdom-sixteen": "^1.0.3"
   }
 }

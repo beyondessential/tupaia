@@ -56,3 +56,5 @@ In order to use Prettier in **Visual Studio Code**:
 1. Install the `Prettier` plugin
 2. Enable the `Editor: Format on Save` setting.
 3. You can now format a fi
+
+note on js dom version: https://github.com/facebook/create-react-app/pull/8362
