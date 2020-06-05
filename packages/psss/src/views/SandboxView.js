@@ -135,22 +135,10 @@ const StyledCard = styled(Card)`
   padding-bottom: 2px;
 `;
 
-const verifiedStatus = siteData.reduce((state, item) => {
-  if (item.alert) {
-    return {
-      ...state,
-      [item.id]: 'expanded',
-    };
-  }
-  return state;
-}, {});
-
 const SubmitButton = ({ setTableState }) => {
-  const { fields, metadata } = useContext(EditableTableContext);
-
   const handleSubmit = () => {
     // POST DATA
-    console.log('updated values...', fields, metadata);
+    console.log('updated values...');
     setTableState('static');
   };
   return <Button onClick={handleSubmit}>Save</Button>;
@@ -229,7 +217,6 @@ export const SandboxView = () => {
 //             columns={editableTableColumns}
 //             data={siteData}
 //             tableState={tableState}
-//             initialMetadata={verifiedStatus}
 //           >
 //             <FakeHeader>
 //               <span>SYNDROMES</span>

@@ -2,23 +2,15 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React, { useContext } from 'react';
+import React from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import CheckCircleIcon from '@material-ui/icons/CheckCircleOutline';
-import {
-  EditableTableContext,
-  TableRowExpansionContainer,
-  WarningButton,
-} from '@tupaia/ui-components';
+import { TableRowExpansionContainer, WarningButton } from '@tupaia/ui-components';
 import { BorderlessTableRow } from './TableRow';
 import * as COLORS from '../../theme/colors';
-
-const VERIFY_STATUSES = {
-  VERIFIED: 'verified',
-  EXPANDED: 'expanded',
-  CLOSED: 'closed',
-};
+import { getVerifiedStatuses, updateVerifiedStatus } from '../../store';
 
 const VerifiedAlert = styled.div`
   background-color: ${props => props.theme.palette.warning.light};
@@ -41,7 +33,7 @@ const VerifiedAlert = styled.div`
   }
 `;
 
-const Wrapper = styled.div`
+const WarningWrapper = styled.div`
   padding: 0 1rem 1rem;
 
   button {
@@ -51,8 +43,22 @@ const Wrapper = styled.div`
 
   &:after {
     position: absolute;
-    border: 1px solid
-      ${props => (props.status === VERIFY_STATUSES.VERIFIED ? COLORS.LIGHT_RED : COLORS.RED)};
+    border: 1px solid ${COLORS.RED}
+    content: '';
+    display: block;
+    top: 0.5rem;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-radius: 3px;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
+  }
+`;
+
+const VerifiedWrapper = styled(WarningWrapper)`
+  &:after {
+    position: absolute;
+    border: 1px solid ${COLORS.LIGHT_RED}
     content: '';
     display: block;
     top: 0.5rem;
@@ -77,54 +83,61 @@ const StyledExpansionContainer = styled(TableRowExpansionContainer)`
   }
 `;
 
-export const VerifiableTableRow = props => {
-  const { data, rowIndex } = props;
+export const VerifiableTableRowComponent = props => {
+  const { data, rowIndex, verifiedStatuses, setVerifiedStatus } = props;
   const key = data[rowIndex].id;
-  const { metadata, setMetadata } = useContext(EditableTableContext);
-  const status = metadata ? metadata[key] : VERIFY_STATUSES.CLOSED;
-
-  const setStatus = value => {
-    setMetadata({
-      ...metadata,
-      [key]: value,
-    });
-  };
+  const status = verifiedStatuses[key];
 
   const WarningButtonComponent = () => {
-    if (status === VERIFY_STATUSES.VERIFIED) {
+    if (status === true) {
       return (
-        <Wrapper status={status}>
+        <VerifiedWrapper>
           <VerifiedAlert>
             <CheckCircleIcon /> Verified
           </VerifiedAlert>
-        </Wrapper>
+        </VerifiedWrapper>
       );
     }
 
-    const handelClick = () => {
-      setStatus(VERIFY_STATUSES.VERIFIED);
+    const handelVerify = () => {
+      setVerifiedStatus(key);
     };
 
     return (
-      <Wrapper status={status}>
-        <WarningButton fullWidth onClick={handelClick}>
+      <WarningWrapper>
+        <WarningButton fullWidth onClick={handelVerify}>
           Please Verify Now
         </WarningButton>
-      </Wrapper>
+      </WarningWrapper>
     );
   };
 
   return (
     <BorderlessTableRow
       {...props}
-      expandedValue={status === VERIFY_STATUSES.EXPANDED || status === VERIFY_STATUSES.VERIFIED}
+      expandedValue={status !== null}
       SubComponent={WarningButtonComponent}
       ExpansionContainer={StyledExpansionContainer}
     />
   );
 };
 
-VerifiableTableRow.propTypes = {
+VerifiableTableRowComponent.propTypes = {
   data: PropTypes.array.isRequired,
   rowIndex: PropTypes.number.isRequired,
+  verifiedStatuses: PropTypes.object.isRequired,
+  setVerifiedStatus: PropTypes.func.isRequired,
 };
+
+const mapStateToProps = state => ({
+  verifiedStatuses: getVerifiedStatuses(state),
+});
+
+const mapDispatchToProps = dispatch => ({
+  setVerifiedStatus: data => dispatch(updateVerifiedStatus(data)),
+});
+
+export const VerifiableTableRow = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(VerifiableTableRowComponent);

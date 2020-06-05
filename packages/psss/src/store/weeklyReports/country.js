@@ -57,31 +57,12 @@ export const getCountryWeeksError = ({ weeklyReports }) => weeklyReports.country
 export const checkCountryWeekIsLoading = ({ weeklyReports }) =>
   weeklyReports.country.status === STATUSES.LOADING;
 
-export const getActiveCountryWeekData = ({ weeklyReports }) => {
-  if (weeklyReports.activeWeekId !== null) {
-    return weeklyReports.country.data[weeklyReports.activeWeekId].indicators;
-  }
-
-  return [];
-};
-
-// export const verifiedStatus = getActiveCountryWeekData().reduce((state, item) => {
-//   if (item.percentageChange > 10) {
-//     return {
-//       ...state,
-//       [item.id]: 'expanded',
-//     };
-//   }
-//   return state;
-// }, {});
-
 // reducer
 const defaultState = {
   data: [],
   status: STATUSES.IDLE,
   error: null,
   fetchStartedAt: null,
-  syndromeVerifiedStatus: {},
 };
 
 const actionHandlers = {
@@ -91,15 +72,9 @@ const actionHandlers = {
     fetchStartedAt,
   }),
   [COUNTRY_WEEKS_LOAD_FINISH]: ({ data }) => {
-    console.log('FINISH', data);
     return {
       status: STATUSES.SUCCESS,
       data: data,
-      syndromeVerifiedStatus: {
-        '1': null,
-        '2': true,
-        '3': false,
-      },
     };
   },
   [COUNTRY_WEEKS_LOAD_ERROR]: ({ error }) => ({

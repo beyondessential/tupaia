@@ -121,7 +121,6 @@ const WeeklyReportPanelComponent = React.memo(
             columns={columns}
             data={activeCountryWeekData}
             tableState={countryTableState}
-            initialMetadata={verifiedStatus}
           >
             <VerifiableTable tableState={countryTableState} setTableState={setCountryTableState} />
           </EditableTableProvider>
