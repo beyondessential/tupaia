@@ -868,6 +868,7 @@ function* exportChart(action) {
     endDate,
     selectedDisaster,
     extraConfig,
+    project,
   } = action;
 
   const timeZone = getTimeZone();
@@ -881,6 +882,7 @@ function* exportChart(action) {
     endDate: formatDateForApi(endDate, timeZone),
     disasterStartDate: selectedDisaster && formatDateForApi(selectedDisaster.startDate, timeZone),
     disasterEndDate: selectedDisaster && formatDateForApi(selectedDisaster.endDate, timeZone),
+    project,
   });
 
   const fetchOptions = Object.assign(

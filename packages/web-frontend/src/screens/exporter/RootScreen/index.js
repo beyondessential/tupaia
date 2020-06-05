@@ -21,7 +21,7 @@ import { ChartWrapper, getIsMatrix, MatrixWrapper } from '../../../components/Vi
 import { request } from '../../../utils';
 import { decodeUrl, getInitialLocation } from '../../../utils/historyNavigation';
 import { DARK_BLUE, WHITE } from '../../../styles';
-import { selectCurrentOrgUnit } from '../../../selectors';
+import { selectOrgUnit } from '../../../selectors';
 
 const initialLocation = getInitialLocation();
 const {
@@ -113,9 +113,13 @@ export class RootScreen extends PureComponent {
   }
 }
 
-const mapStateToProps = state => ({
-  organisationUnitName: selectCurrentOrgUnit(state).name,
-});
+const mapStateToProps = state => {
+  const orgUnit = selectOrgUnit(state, organisationUnitCode);
+
+  return {
+    organisationUnitName: orgUnit ? orgUnit.name : null,
+  };
+};
 
 export default connect(mapStateToProps, null)(RootScreen);
 
