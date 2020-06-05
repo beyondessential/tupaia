@@ -78,7 +78,7 @@ const WeeklyReportsPaneSubmitButton = confirmData => () => {
   );
 };
 
-const TABLE_STATE = {
+const TABLE_STATES = {
   STATIC: 'static',
   SAVING: 'saving',
 };
@@ -89,26 +89,15 @@ const WeeklyReportPanelComponent = React.memo(
       return null;
     }
 
-    const [countryTableState, setCountryTableState] = useState(TABLE_STATE.STATIC);
+    const [countryTableState, setCountryTableState] = useState(TABLE_STATES.STATIC);
 
     const [activeSiteIndex, setActiveSiteIndex] = useState(0);
     const indicatorsData = siteWeeksData[activeSiteIndex].indicators;
     const activeSite = siteWeeksData[activeSiteIndex];
-    const [indicatorTableState, setIndicatorTableState] = useState(TABLE_STATE.STATIC);
-
-    // Derive from store??
-    const verifiedStatus = activeCountryWeekData.reduce((state, item) => {
-      if (item.percentageChange > 10) {
-        return {
-          ...state,
-          [item.id]: '',
-        };
-      }
-      return state;
-    }, {});
+    const [indicatorTableState, setIndicatorTableState] = useState(TABLE_STATES.STATIC);
 
     const isSaving =
-      countryTableState === TABLE_STATE.SAVING || indicatorTableState === TABLE_STATE.SAVING;
+      countryTableState === TABLE_STATES.SAVING || indicatorTableState === TABLE_STATES.SAVING;
 
     return (
       <Drawer open={isOpen} onClose={handleClose}>

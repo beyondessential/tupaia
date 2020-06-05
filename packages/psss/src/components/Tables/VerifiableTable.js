@@ -38,33 +38,35 @@ const GreyHeader = styled(FakeHeader)`
   border: none;
 `;
 
-const STATIC = 'static';
-const EDITABLE = 'editable';
-const SAVING = 'saving';
-const LOADING = 'loading';
+const TABLE_STATES = {
+  STATIC: 'static',
+  EDITABLE: 'editable',
+  SAVING: 'saving',
+  LOADING: 'loading',
+};
 
 export const VerifiableTableComponent = ({ tableState, setTableState, onSubmit }) => {
   const { fields } = useContext(EditableTableContext);
 
   const handleEdit = () => {
-    setTableState(EDITABLE);
+    setTableState(TABLE_STATES.EDITABLE);
   };
 
   const handleCancel = () => {
-    setTableState(STATIC);
+    setTableState(TABLE_STATES.STATIC);
   };
 
   const handleSubmit = async () => {
-    setTableState(SAVING);
+    setTableState(TABLE_STATES.SAVING);
     await onSubmit(fields);
-    setTableState(STATIC);
+    setTableState(TABLE_STATES.STATIC);
   };
 
   return (
-    <EditableTableLoader isLoading={tableState === SAVING}>
+    <EditableTableLoader isLoading={tableState === TABLE_STATES.SAVING}>
       <LayoutRow>
         <Typography variant="h5">7/10 Sites Reported</Typography>
-        <GreyOutlinedButton onClick={handleEdit} disabled={tableState === EDITABLE}>
+        <GreyOutlinedButton onClick={handleEdit} disabled={tableState === TABLE_STATES.EDITABLE}>
           Edit
         </GreyOutlinedButton>
       </LayoutRow>
@@ -73,7 +75,7 @@ export const VerifiableTableComponent = ({ tableState, setTableState, onSubmit }
         <span>TOTAL CASES</span>
       </GreyHeader>
       <EditableTable Header={false} Body={VerifiableBody} />
-      {tableState === EDITABLE && (
+      {tableState === TABLE_STATES.EDITABLE && (
         <LayoutRow>
           <MuiLink>Reset and use Sentinel data</MuiLink>
           <div>
@@ -89,7 +91,12 @@ export const VerifiableTableComponent = ({ tableState, setTableState, onSubmit }
 };
 
 VerifiableTableComponent.propTypes = {
-  tableState: PropTypes.PropTypes.oneOf([STATIC, EDITABLE, LOADING, SAVING]).isRequired,
+  tableState: PropTypes.PropTypes.oneOf([
+    TABLE_STATES.STATIC,
+    TABLE_STATES.EDITABLE,
+    TABLE_STATES.LOADING,
+    TABLE_STATES.SAVING,
+  ]).isRequired,
   setTableState: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
 };

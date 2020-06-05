@@ -47,10 +47,12 @@ const ReadOnlyTextField = styled(EditableTextField)`
 
 export const EditableTableContext = createContext({});
 
-const STATIC = 'static';
-const EDITABLE = 'editable';
-const LOADING = 'loading';
-const SAVING = 'saving';
+const TABLE_STATES = {
+  STATIC: 'static',
+  EDITABLE: 'editable',
+  LOADING: 'loading',
+  SAVING: 'saving',
+};
 
 const EditableCell = React.memo(({ id, columnKey }) => {
   const { fields, handleFieldChange, tableState } = useContext(EditableTableContext);
@@ -61,7 +63,7 @@ const EditableCell = React.memo(({ id, columnKey }) => {
     return null;
   }
 
-  if (tableState === EDITABLE) {
+  if (tableState === TABLE_STATES.EDITABLE) {
     return (
       <EditableTextField name={columnKey} value={value} onChange={handleFieldChange} id={key} />
     );
@@ -137,7 +139,7 @@ export const EditableTableProvider = React.memo(({ columns, data, tableState, ch
 
   useEffect(() => {
     // loading must change after initial state is set
-    if (tableState === LOADING || tableState === SAVING) {
+    if (tableState === TABLE_STATES.LOADING || tableState === TABLE_STATES.SAVING) {
       setValues(initialState);
     }
   }, [data]);
@@ -158,7 +160,12 @@ export const EditableTableProvider = React.memo(({ columns, data, tableState, ch
 });
 
 EditableTableProvider.propTypes = {
-  tableState: PropTypes.PropTypes.oneOf([STATIC, EDITABLE, SAVING, LOADING]).isRequired,
+  tableState: PropTypes.PropTypes.oneOf([
+    TABLE_STATES.STATIC,
+    TABLE_STATES.EDITABLE,
+    TABLE_STATES.SAVING,
+    TABLE_STATES.LOADING,
+  ]).isRequired,
   children: PropTypes.any.isRequired,
   columns: PropTypes.arrayOf(
     PropTypes.shape({
