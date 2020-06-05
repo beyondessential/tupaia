@@ -3,9 +3,9 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 
-import { respond, ValidationError } from '@tupaia/utils';
-import { updateOrCreateSurveyResponse, addSurveyImage } from '../dataAccessors';
 import {
+  respond,
+  ValidationError,
   ObjectValidator,
   hasContent,
   isPresent,
@@ -15,7 +15,8 @@ import {
   takesIdForm,
   takesDateForm,
   constructIsOneOf,
-} from '../validation';
+} from '@tupaia/utils';
+import { updateOrCreateSurveyResponse, addSurveyImage } from '../dataAccessors';
 
 // Action constants
 const SUBMIT_SURVEY_RESPONSE = 'SubmitSurveyResponse';

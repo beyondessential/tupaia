@@ -16,16 +16,21 @@ export class DashboardGroup extends BaseModel {
     'organisationUnitCode',
     'dashboardReports',
     'name',
+    'projectCodes',
   ];
 
   // Return dashboardGroup with matching userGroups, organisationLevel and organisationUnits
-  static async getDashboardGroups(userGroups = [], organisationLevel, entity) {
+  static async getDashboardGroups(userGroups = [], organisationLevel, entity, projectCode) {
     const ancestorCodes = await entity.getAncestorCodes(true);
     const entityCodes = [...ancestorCodes, entity.code];
     const results = await DashboardGroup.find({
       organisationLevel,
       userGroup: userGroups, // Passing an array will cause the database to do an 'IN'
       organisationUnitCode: entityCodes, // As above, an array uses 'IN'
+      projectCodes: {
+        comparator: '@>',
+        comparisonValue: [projectCode],
+      },
     });
     const dashboardGroups = {};
     results.forEach(dashboardGroup => {

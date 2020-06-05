@@ -15,6 +15,10 @@ export class DatabaseChangeChannel extends PGPubSub {
     this.addChannel('ping', this.notifyPingListeners);
   }
 
+  async close() {
+    return super.close();
+  }
+
   addChangeHandler(handler) {
     this.addChannel('change', handler);
   }

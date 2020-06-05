@@ -3,9 +3,13 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 
-import { respond, ValidationError } from '@tupaia/utils';
+import {
+  respond,
+  ValidationError,
+  ObjectValidator,
+  constructRecordExistsWithId,
+} from '@tupaia/utils';
 import { TYPES } from '@tupaia/database';
-import { ObjectValidator, constructRecordExistsWithId } from '../validation';
 import { resourceToRecordType } from '../utilities';
 import { editUserAccount, editOption, editOptionSet } from '../dataAccessors';
 
