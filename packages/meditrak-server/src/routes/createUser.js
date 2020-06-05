@@ -2,11 +2,18 @@
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
-import { respond, FormValidationError, UnauthenticatedError } from '@tupaia/utils';
-import { ObjectValidator, fieldHasContent, isEmail, isValidPassword } from '../validation';
+import {
+  respond,
+  FormValidationError,
+  UnauthenticatedError,
+  ObjectValidator,
+  hasNoAlphaLetters,
+  fieldHasContent,
+  isEmail,
+  isValidPassword,
+} from '@tupaia/utils';
 import { createUser as createUserAccessor } from '../dataAccessors';
 import { sendVerifyEmail } from './verifyEmail';
-import { hasNoAlphaLetters } from '../validation/validatorFunctions';
 
 const PERMISSION_GROUPS = {
   PUBLIC: 'Public',

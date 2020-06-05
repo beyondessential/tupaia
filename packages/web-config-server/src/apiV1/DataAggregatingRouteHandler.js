@@ -7,6 +7,7 @@ import { RouteHandler } from './RouteHandler';
 import { createAggregator } from '@tupaia/aggregator';
 import { Aggregator } from '../aggregator';
 import { Project } from '../models';
+import { filterEntities } from './utils';
 
 /**
  * Interface class for handling routes that fetch data from an aggregator
@@ -20,7 +21,7 @@ export class DataAggregatingRouteHandler extends RouteHandler {
 
   // Builds the list of entities data should be fetched from, using org unit descendents of the
   // selected entity (optionally of a specific entity type)
-  fetchDataSourceEntities = async (entity, dataSourceEntityType) => {
+  fetchDataSourceEntities = async (entity, dataSourceEntityType, dataSourceEntityFilter) => {
     // if a specific type was specified in either the query or the function parameter, build org
     // units of that type (otherwise we just use the nearest org unit descendants)
 
@@ -28,7 +29,7 @@ export class DataAggregatingRouteHandler extends RouteHandler {
     const hierarchyId = (await Project.findOne({ code: this.query.projectCode }))
       .entity_hierarchy_id;
 
-    const dataSourceEntities = entityType
+    let dataSourceEntities = entityType
       ? await entity.getDescendantsOfType(entityType, hierarchyId)
       : await entity.getNearestOrgUnitDescendants(hierarchyId);
 
@@ -40,6 +41,12 @@ export class DataAggregatingRouteHandler extends RouteHandler {
       (obj, countryCode, i) => ({ ...obj, [countryCode]: countryAccessList[i] }),
       {},
     );
-    return dataSourceEntities.filter(e => countryAccess[e.country_code]);
+    dataSourceEntities = dataSourceEntities.filter(e => countryAccess[e.country_code]);
+
+    if (dataSourceEntityFilter) {
+      dataSourceEntities = filterEntities(dataSourceEntities, dataSourceEntityFilter);
+    }
+
+    return dataSourceEntities;
   };
 }

@@ -2,8 +2,7 @@
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
-import { FormValidationError, DatabaseError } from '@tupaia/utils';
-import { isValidPassword } from '../validation';
+import { FormValidationError, DatabaseError, isValidPassword } from '@tupaia/utils';
 import { editRecord } from './editRecord';
 
 export async function changePassword(req, res, next) {
