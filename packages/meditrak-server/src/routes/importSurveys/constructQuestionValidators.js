@@ -3,8 +3,8 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
+import { constructIsOneOf, hasContent, isNumber } from '@tupaia/utils';
 import { ANSWER_TYPES } from '../../database/models/Answer';
-import { constructIsOneOf, hasContent, isNumber } from '../../validation';
 import { splitStringOnComma, splitOnNewLinesOrCommas } from '../utilities';
 import { convertCellToJson, isEmpty, isYesOrNo } from './utilities';
 
