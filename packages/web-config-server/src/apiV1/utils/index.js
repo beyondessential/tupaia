@@ -33,7 +33,6 @@ export { timestampToPeriod } from './timestampToPeriod';
 export { timestampToPeriodName } from './timestampToPeriodName';
 export { limitRange } from './limitRange';
 export { regexLabel } from './regexLabel';
-export { findLatestPeriod } from './findLatestPeriod';
 export { filterEntities } from './filterEntities';
 export { getDateRange } from './getDateRange';
 export { mapDataSourcesToElementCodes } from './mapDataSourcesToElementCodes';
