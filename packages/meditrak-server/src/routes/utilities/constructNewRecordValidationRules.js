@@ -3,8 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-
-
+import { TYPES } from '@tupaia/database';
 import {
   constructRecordExistsWithId,
   hasContent,
@@ -16,9 +15,8 @@ import {
   takesDateForm,
   ValidationError,
 } from '@tupaia/utils';
-
-import { FEED_ITEM_TYPES } from '../database/models/FeedItem';
-import { DATA_SOURCE_SERVICE_TYPES } from '../database/models/DataSource';
+import { FEED_ITEM_TYPES } from '../../database/models/FeedItem';
+import { DATA_SOURCE_SERVICE_TYPES } from '../../database/models/DataSource';
 
 export const constructForParent = (models, recordType, parentRecordType) => {
   const combinedRecordType = `${parentRecordType}/${recordType}`;
