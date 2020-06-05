@@ -12,6 +12,7 @@ const organisationUnitCode = 'PG';
 const programCode = 'SCRF';
 const dataServices = [{ isDataRegional: true }];
 const dataSourceEntityType = 'village';
+const dataSourceEntityFilter = undefined;
 
 const query = { organisationUnitCode, dataElementCode: 'value' };
 const entity = { code: organisationUnitCode };
@@ -37,6 +38,7 @@ const config = {
   groups,
   dataSourceType: 'custom',
   dataSourceEntityType,
+  dataSourceEntityFilter,
   aggregationEntityType: 'village',
 };
 
@@ -90,6 +92,7 @@ const createAggregator = () => {
     .withArgs(programCode, {
       dataServices,
       dataSourceEntityType: dataSourceEntityType,
+      dataSourceEntityFilter: dataSourceEntityFilter,
       organisationUnitCode: organisationUnitCode,
       startDate: undefined,
       endDate: undefined,
