@@ -10,7 +10,7 @@ class ValueForOrgGroupMeasureBuilder extends DataBuilder {
   async build() {
     const facilitiesByCode = await this.getFacilityDataByCode();
 
-    return Object.values(facilitiesByCode);
+    return { data: Object.values(facilitiesByCode) };
   }
 
   async getFacilityDataByCode() {

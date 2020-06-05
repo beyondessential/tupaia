@@ -49,8 +49,10 @@ export const composePercentagePerOrgUnit = async (
 
   const responses = await fetchComposedData(aggregator, dhisApi, query, config, entity);
   const { numerator, denominator } = responses;
-  const numeratorsByOrgUnit = await processValues(keyBy(numerator, 'organisationUnitCode'));
-  const denominatorsByOrgUnit = await processValues(keyBy(denominator, 'organisationUnitCode'));
+  const numeratorsByOrgUnit = await processValues(keyBy(numerator.data, 'organisationUnitCode'));
+  const denominatorsByOrgUnit = await processValues(
+    keyBy(denominator.data, 'organisationUnitCode'),
+  );
 
   const fractionsByOrgUnit = {};
   Object.keys(numeratorsByOrgUnit).forEach(orgUnit => {
@@ -67,8 +69,9 @@ export const composePercentagePerOrgUnit = async (
       };
     }
   });
+  // const period = getAggregatePeriod(numerator.period, denominator.period);
 
-  return Object.values(fractionsByOrgUnit);
+  return { data: Object.values(fractionsByOrgUnit) };
 };
 
 export const composePercentagePerAncestor = async (aggregator, dhisApi, query, config, entity) => {

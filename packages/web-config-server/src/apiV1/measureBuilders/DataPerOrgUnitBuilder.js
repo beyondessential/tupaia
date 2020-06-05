@@ -119,7 +119,7 @@ export class DataPerOrgUnitBuilder extends DataBuilder {
 
     const processResultsForOrgUnit = async ([organisationUnitCode, result]) => {
       if (!result) {
-        return;
+        return null;
       }
 
       const data = await baseBuilder.buildData(result);
@@ -148,6 +148,6 @@ export class DataPerOrgUnitBuilder extends DataBuilder {
     const results = await this.fetchResults();
     const data = await this.buildData(results);
 
-    return this.formatData(data);
+    return { data: this.formatData(data) };
   }
 }
