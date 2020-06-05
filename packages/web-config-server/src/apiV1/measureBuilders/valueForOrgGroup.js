@@ -8,9 +8,9 @@ const SCHOOL_TYPE_CODE = 'schoolTypeCode';
 
 class ValueForOrgGroupMeasureBuilder extends DataBuilder {
   async build() {
-    const facilitiesByCode = await this.getFacilityDataByCode();
+    const { data: facilitiesByCode, period } = await this.getFacilityDataByCode();
 
-    return { data: Object.values(facilitiesByCode) };
+    return { data: Object.values(facilitiesByCode), period };
   }
 
   async getFacilityDataByCode() {
@@ -22,7 +22,7 @@ class ValueForOrgGroupMeasureBuilder extends DataBuilder {
       const facilityEntities = await this.fetchDescendantsOfType(ENTITY_TYPES.FACILITY);
       const facilityCodes = facilityEntities.map(facility => facility.code);
       const facilityMetaDatas = await Facility.find({ code: facilityCodes });
-      return facilityMetaDatas.reduce(
+      const facilitiesByCode = facilityMetaDatas.reduce(
         (array, metadata) => [
           ...array,
           {
@@ -33,23 +33,29 @@ class ValueForOrgGroupMeasureBuilder extends DataBuilder {
         ],
         [],
       );
+      return {
+        data: facilitiesByCode,
+      };
     } else if (dataElementCode === SCHOOL_TYPE_CODE) {
       const schools = await this.fetchDescendantsOfType(ENTITY_TYPES.SCHOOL);
-      return schools.map(school => ({
+      const facilitiesByCode = schools.map(school => ({
         organisationUnitCode: school.code,
         schoolTypeName: school.attributes.type,
         schoolTypeCode: school.attributes.type,
       }));
+      return {
+        data: facilitiesByCode,
+      };
     }
 
-    const { results } = await this.fetchAnalytics([dataElementCode], {
+    const { results, period } = await this.fetchAnalytics([dataElementCode], {
       organisationUnitCode: this.entity.code,
     });
     const analytics = results.map(result => ({
       ...result,
       value: result.value === undefined ? '' : result.value.toString(),
     }));
-    return analyticsToMeasureData(analytics);
+    return { data: analyticsToMeasureData(analytics), period };
   }
 }
 

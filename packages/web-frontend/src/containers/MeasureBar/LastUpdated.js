@@ -40,12 +40,11 @@ LastUpdated.propTypes = {
 };
 
 const mapStateToProps = state => {
-  const { currentMeasure } = state.measureBar;
+  const { measureInfo = {} } = state.map;
 
+  const latestAvailable = measureInfo.period && measureInfo.period.latestAvailable;
   return {
-    latestAvailable: currentMeasure.period
-      ? currentMeasure.period.latestAvailable || '20200301'
-      : '20200301',
+    latestAvailable: latestAvailable || '20200103',
   };
 };
 
