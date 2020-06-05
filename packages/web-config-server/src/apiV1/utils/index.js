@@ -39,3 +39,4 @@ export { mapDataSourcesToElementCodes } from './mapDataSourcesToElementCodes';
 export { parseCoordinates } from './parseCoordinates';
 export { composeBuiltData } from './composeBuiltData';
 export { sumResults } from './sumResults';
+export { getAggregatePeriod } from './getAggregatePeriod';

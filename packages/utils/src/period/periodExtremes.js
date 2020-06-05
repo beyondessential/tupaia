@@ -32,19 +32,14 @@ const getPeriodExtreme = (periods, gettingMostRecent) => {
 
   const sortedPeriods = [...periods]
     .filter(period => isValidPeriod(period))
-    .sort(gettingMostRecent ? isCoarserPeriod : (p1, p2) => !isCoarserPeriod(p1, p2))
-    .sort(isMoreRecentPeriod);
+    .sort((p1, p2) => {
+      if (periodToTimestamp(p1) < periodToTimestamp(p2)) return gettingMostRecent;
+      else if (periodToTimestamp(p1) > periodToTimestamp(p2)) return !gettingMostRecent;
+      // Timestamps are equal
+      return isCoarserPeriod(p1, p2);
+    });
 
   if (sortedPeriods.length === 0) return null;
 
-  return gettingMostRecent ? sortedPeriods[0] : sortedPeriods.pop();
-};
-
-/**
- * Will return true if periodToCheck is more recent than otherPeriod.
- *
- * Assumes all periods are start periods (e.g. 202002 is earlier than 20200202)
- */
-const isMoreRecentPeriod = (periodToCheck, otherPeriod) => {
-  return periodToTimestamp(periodToCheck) > periodToTimestamp(otherPeriod);
+  return sortedPeriods[0];
 };

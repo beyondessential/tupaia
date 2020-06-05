@@ -54,6 +54,11 @@ context('periodTypes', () => {
 
     it('should return undefined for invalid input', () => {
       expect(periodToType('20165')).to.equal(undefined);
+      expect(periodToType('2016W5')).to.equal(undefined);
+      expect(periodToType('!VALID')).to.equal(undefined);
+      expect(periodToType('!VALID_WITH_W')).to.equal(undefined);
+      expect(periodToType('W122020')).to.equal(undefined);
+      expect(periodToType('2021Q10')).to.equal(undefined);
     });
 
     it('year', () => {
