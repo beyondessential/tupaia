@@ -37,7 +37,7 @@ COPY packages/utils/. ./packages/utils
 RUN mkdir -p ./packages/ui-components
 COPY packages/ui-components/. ./packages/ui-components
 
-# install internal and external dependencies (preinstall will build internal)
+# install internal and external dependencies (postinstall will build internal)
 RUN yarn install
 
 # copy everything else from the repo
