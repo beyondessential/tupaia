@@ -18,7 +18,7 @@ import BackButton from '../../../components/mobile/BackButton';
 import { DARK_BLUE, MOBILE_MARGIN_SIZE, WHITE } from '../../../styles';
 import { getFacilityThumbnailUrl, getMapUrl } from '../../../utils';
 import { toggleDashboardSelectExpand, changeDashboardGroup } from '../../../actions';
-import { getCurrentDashboardKey } from '../../../selectors';
+import { selectCurrentDashboardKey, selectCurrentOrgUnit } from '../../../selectors';
 
 class FacilityScreen extends PureComponent {
   componentWillMount() {
@@ -78,7 +78,8 @@ class FacilityScreen extends PureComponent {
 
     return (
       <a href={getMapUrl(orgUnit)} style={styles.mapLink} target="_blank" rel="noreferrer noopener">
-        Open Map <MapOpenIcon style={styles.mapLinkIcon} />
+        Open Map
+        <MapOpenIcon style={styles.mapLinkIcon} />
       </a>
     );
   }
@@ -188,15 +189,15 @@ FacilityScreen.propTypes = {
 };
 
 const mapStateToProps = state => {
-  const { currentOrganisationUnit, dashboardConfig, isLoadingOrganisationUnit } = state.global;
+  const { dashboardConfig, isLoadingOrganisationUnit } = state.global;
   const { isGroupSelectExpanded } = state.dashboard;
 
   return {
     dashboardConfig,
-    orgUnit: currentOrganisationUnit,
+    orgUnit: selectCurrentOrgUnit(state),
     isLoading: isLoadingOrganisationUnit,
     dashboardFilterIsExpanded: isGroupSelectExpanded,
-    currentDashboardKey: getCurrentDashboardKey(state),
+    currentDashboardKey: selectCurrentDashboardKey(state),
   };
 };
 

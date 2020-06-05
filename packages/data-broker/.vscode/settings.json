@@ -1,3 +1,12 @@
 {
-  "cSpell.words": ["analytics", "cleanup", "Dhis", "Tupaia"]
+  "cSpell.words": [
+    "analytics",
+    "cleanup",
+    "deleters",
+    "Dhis",
+    "eventdate",
+    "keyby",
+    "oucode",
+    "Tupaia"
+  ]
 }

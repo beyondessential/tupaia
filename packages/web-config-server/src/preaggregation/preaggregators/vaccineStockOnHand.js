@@ -6,8 +6,13 @@ import flatten from 'lodash.flatten';
 import keyBy from 'lodash.keyby';
 import winston from 'winston';
 
-import { PERIOD_TYPES, momentToPeriod } from '@tupaia/dhis-api';
-import { utcMoment, reduceToDictionary, stripFromString } from '@tupaia/utils';
+import {
+  utcMoment,
+  reduceToDictionary,
+  stripFromString,
+  PERIOD_TYPES,
+  momentToPeriod,
+} from '@tupaia/utils';
 import { getDataElementGroups } from '/apiV1/utils';
 import {
   FRIDGE_BREACH_PROGRAM_CODE,

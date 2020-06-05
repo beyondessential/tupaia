@@ -9,22 +9,16 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { LayerGroup } from 'react-leaflet';
+import { createSelector } from 'reselect';
 import { changeOrgUnit, openMapPopup, closeMapPopup } from '../../actions';
 import { CircleProportionMarker, IconMarker, MeasurePopup } from '../../components/Marker';
 import {
   selectHasPolygonMeasure,
-  selectAllMeasuresWithDisplayInfo,
+  selectRenderedMeasuresWithDisplayInfo,
   selectRadiusScaleFactor,
-} from '../../reducers/mapReducers';
-import { selectOrgUnit } from '../../reducers/orgUnitReducers';
+} from '../../selectors';
 import { ShadedPolygon } from './ConnectedPolygon';
-
-export const MARKER_TYPES = {
-  DOT_MARKER: 'dot',
-  CIRCLE_MARKER: 'circle',
-  CIRCLE_HEATMAP: 'circleHeatmap',
-  SQUARE: 'square',
-};
+import { MEASURE_TYPE_RADIUS } from '../../utils/measures';
 
 const MIN_RADIUS = 1;
 
@@ -64,6 +58,8 @@ const MeasureMarker = props => {
   return <IconMarker {...props} />;
 };
 
+const hasRadiusLayer = measureOptions => measureOptions.some(l => l.type === MEASURE_TYPE_RADIUS);
+
 /**
  * MarkerLayer - Component to render measures
  */
@@ -86,19 +82,13 @@ export class MarkerLayer extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    const { measureData, currentCountry, measureId, sidePanelWidth } = this.props;
+    const { isMeasureLoading, measureData, currentCountry, measureId, sidePanelWidth } = this.props;
     if (
+      nextProps.isMeasureLoading !== isMeasureLoading ||
       nextProps.measureId !== measureId ||
       nextProps.currentCountry !== currentCountry ||
       nextProps.sidePanelWidth !== sidePanelWidth ||
-      nextProps.measureData.length !== measureData.length ||
-      nextProps.measureData.find(
-        (data, index) =>
-          data.organisationUnitCode !== measureData[index].organisationUnitCode ||
-          data.coordinates !== measureData[index].coordinates ||
-          data.color !== measureData[index].color ||
-          data.isHidden !== measureData[index].isHidden,
-      )
+      nextProps.measureData !== measureData
     ) {
       return true;
     }
@@ -167,6 +157,13 @@ export class MarkerLayer extends Component {
       .filter(data => data.coordinates && data.coordinates.length === 2)
       .filter(displayInfo => !displayInfo.isHidden);
 
+    //for radius overlay sort desc radius to place smaller circles over larger circles
+    if (hasRadiusLayer(measureOptions)) {
+      processedData.sort((a, b) => {
+        return Number(b.radius) - Number(a.radius);
+      });
+    }
+
     const PopupChild = ({ data }) => (
       <MeasurePopup
         data={data}
@@ -204,6 +201,14 @@ export class MarkerLayer extends Component {
 
 MarkerLayer.propTypes = {};
 
+const selectMeasureDataWithCoordinates = createSelector([measureData => measureData], measureData =>
+  measureData.map(({ location, ...otherData }) => ({
+    ...otherData,
+    coordinates: location && location.point,
+    region: location && location.region,
+  })),
+);
+
 const mapStateToProps = state => {
   const { isSidePanelExpanded } = state.global;
   const {
@@ -213,16 +218,9 @@ const mapStateToProps = state => {
   } = state.map;
 
   const { contractedWidth, expandedWidth } = state.dashboard;
-  const measureData = selectAllMeasuresWithDisplayInfo(state)
-    .map(data => ({
-      ...data,
-      ...selectOrgUnit(state, data.organisationUnitCode),
-    }))
-    .map(({ location, ...otherData }) => ({
-      ...otherData,
-      coordinates: location && location.point,
-      region: location && location.region,
-    }));
+  const measureData = selectMeasureDataWithCoordinates(
+    selectRenderedMeasuresWithDisplayInfo(state),
+  );
 
   return {
     isMeasureLoading,

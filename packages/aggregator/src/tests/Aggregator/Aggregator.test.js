@@ -27,11 +27,16 @@ const dataBroker = sinon.createStubInstance(DataBroker, {
 });
 let aggregator;
 
-const fetchOptions = { period: '20200214' };
+const fetchOptions = {
+  organisationUnitCodes: ['TO'],
+  startDate: '20200214',
+  endDate: '20200215',
+  period: '20200214;20200215',
+};
 const aggregationOptions = {
   aggregationType: 'MOST_RECENT',
-  aggregationConfig: { orgUnitToGroupKeys: [] },
-  measureCriteria: { EQ: 3 },
+  aggregationConfig: { orgUnitToGroupKeys: [], requestedPeriod: '20200214;20200215' },
+  filter: { value: 3 },
 };
 
 describe('Aggregator', () => {
@@ -57,20 +62,25 @@ describe('Aggregator', () => {
   });
 
   describe('fetchAnalytics()', () => {
-    const assertDataBrokerPullIsInvokedCorrectly = ({ codeInput }) => {
+    const assertDataBrokerPullIsInvokedCorrectly = ({ codeInput }, additionalOptions) => {
       expect(dataBroker.pull).to.have.been.calledOnceWithExactly(
         { code: codeInput, type: DATA_ELEMENT },
-        fetchOptions,
+        { ...fetchOptions, ...additionalOptions },
       );
+      dataBroker.pull.resetHistory();
+    };
+
+    const assertDataBrokerPullIsNotInvoked = () => {
+      expect(dataBroker.pull).to.have.been.callCount(0);
       dataBroker.pull.resetHistory();
     };
 
     it('`aggregationOptions` parameter is optional', async () => {
       const assertErrorIsNotThrown = async emptyAggregationOptions =>
-        expect(aggregator.fetchAnalytics('POP01', fetchOptions, emptyAggregationOptions)).to
-          .eventually.not.be.rejected;
+        expect(aggregator.fetchAnalytics('POP01', fetchOptions, emptyAggregationOptions)).to.not.be
+          .rejected;
 
-      return Promise.all([undefined, null, {}].map(assertErrorIsNotThrown));
+      return Promise.all([undefined, {}].map(assertErrorIsNotThrown));
     });
 
     it('supports string code input', async () => {
@@ -87,8 +97,45 @@ describe('Aggregator', () => {
       assertDataBrokerPullIsInvokedCorrectly({ codeInput: codes });
     });
 
+    it('returns data for just organisationUnitCode', async () => {
+      const codes = ['POP01', 'POP02'];
+
+      await aggregator.fetchAnalytics(codes, {
+        ...fetchOptions,
+        organisationUnitCodes: undefined,
+        organisationUnitCode: 'TO',
+      });
+      assertDataBrokerPullIsInvokedCorrectly(
+        {
+          codeInput: codes,
+        },
+        { organisationUnitCodes: undefined, organisationUnitCode: 'TO' },
+      );
+    });
+
+    it('immediately returns empty data for no organisationUnitCode or organisationUnitCode', async () => {
+      const codes = ['POP01', 'POP02'];
+
+      const result = await aggregator.fetchAnalytics(codes, {
+        ...fetchOptions,
+        organisationUnitCodes: undefined,
+      });
+      assertDataBrokerPullIsNotInvoked();
+      return expect(result).to.deep.equal({
+        results: [],
+        metadata: {
+          dataElementCodeToName: {},
+        },
+        period: {
+          earliestAvailable: null,
+          latestAvailable: null,
+          requested: '20200214;20200215',
+        },
+      });
+    });
+
     it('fetches, then aggregates, then filters analytics', async () => {
-      const { aggregationType, aggregationConfig, measureCriteria } = aggregationOptions;
+      const { aggregationType, aggregationConfig, filter } = aggregationOptions;
       const { results } = RESPONSE_BY_SOURCE_TYPE[DATA_ELEMENT];
 
       await aggregator.fetchAnalytics(['POP01', 'POP02'], fetchOptions, aggregationOptions);
@@ -103,32 +150,67 @@ describe('Aggregator', () => {
       );
       expect(FilterAnalytics.filterAnalytics).to.have.been.calledOnceWithExactly(
         AGGREGATED_ANALYTICS,
-        measureCriteria,
+        filter,
       );
     });
 
-    it('returns a response with processed results, metadata and the provided period', async () => {
+    it('returns a response with processed results, metadata and period data', async () => {
       const { metadata } = RESPONSE_BY_SOURCE_TYPE[DATA_ELEMENT];
       const period = '20160214';
 
-      expect(
-        aggregator.fetchAnalytics(['POP01', 'POP02'], { period }, aggregationOptions),
+      return expect(
+        aggregator.fetchAnalytics(
+          ['POP01', 'POP02'],
+          { ...fetchOptions, period },
+          aggregationOptions,
+        ),
       ).to.eventually.deep.equal({
         results: FILTERED_ANALYTICS,
         metadata,
-        period,
+        period: {
+          earliestAvailable: '20200214',
+          latestAvailable: '20200214',
+          requested: '20160214',
+        },
       });
     });
   });
 
-  it('fetchEvents()', async () => {
-    const code = 'PROGRAM_1';
+  describe('fetch events', () => {
+    it('fetches events', async () => {
+      const code = 'PROGRAM_1';
 
-    const response = await aggregator.fetchEvents(code, fetchOptions);
-    expect(dataBroker.pull).to.have.been.calledOnceWithExactly(
-      { code, type: DATA_GROUP },
-      fetchOptions,
-    );
-    expect(response).to.deep.equal(RESPONSE_BY_SOURCE_TYPE[DATA_GROUP]);
+      const response = await aggregator.fetchEvents(code, fetchOptions);
+      expect(dataBroker.pull).to.have.been.calledOnceWithExactly(
+        { code, type: DATA_GROUP },
+        fetchOptions,
+      );
+      expect(response).to.deep.equal(RESPONSE_BY_SOURCE_TYPE[DATA_GROUP]);
+    });
+
+    it('returns data for just organisationUnitCode', async () => {
+      const code = 'PROGRAM_1';
+
+      await aggregator.fetchEvents(code, {
+        ...fetchOptions,
+        organisationUnitCodes: undefined,
+        organisationUnitCode: 'TO',
+      });
+      expect(dataBroker.pull).to.have.been.calledOnceWithExactly(
+        { code, type: DATA_GROUP },
+        { ...fetchOptions, organisationUnitCodes: undefined, organisationUnitCode: 'TO' },
+      );
+    });
+
+    it('immediately returns empty data for no organisationUnitCode or organisationUnitCode', async () => {
+      const code = 'PROGRAM_1';
+
+      const response = await aggregator.fetchEvents(code, {
+        ...fetchOptions,
+        organisationUnitCodes: undefined,
+      });
+      expect(dataBroker.pull).to.have.been.callCount(0);
+      return expect(response).to.deep.equal([]);
+    });
   });
 });

@@ -3,12 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import {
-  PERIOD_TYPES,
-  convertToPeriod,
-  findCoarsestPeriodType,
-  periodToType,
-} from '@tupaia/dhis-api';
+import { PERIOD_TYPES, convertToPeriod, findCoarsestPeriodType, periodToType } from '@tupaia/utils';
 import { getPreferredPeriod, getContinuousPeriodsForAnalytics } from './utils';
 
 /**
@@ -112,8 +107,12 @@ class FinalValueAggregator {
     this.cache = cache;
   }
 
-  getContinuousValues(analytics, aggregationPeriod) {
-    const periods = getContinuousPeriodsForAnalytics(analytics, aggregationPeriod);
+  getContinuousValues(analytics, aggregationPeriod, fillEmptyValuesTilCurrentPeriod) {
+    const periods = getContinuousPeriodsForAnalytics(
+      analytics,
+      aggregationPeriod,
+      fillEmptyValuesTilCurrentPeriod,
+    );
 
     const values = [];
     this.cache.iterateOrganisationUnitCache(organisationUnitCache => {
@@ -148,6 +147,7 @@ class FinalValueAggregator {
 export const getFinalValuePerPeriod = (analytics, aggregationPeriod, inOptions) => {
   const defaultOptions = {
     fillEmptyValues: false,
+    fillEmptyValuesTilCurrentPeriod: false,
     preferredPeriodType: PERIOD_TYPES.YEAR,
   };
 
@@ -156,6 +156,10 @@ export const getFinalValuePerPeriod = (analytics, aggregationPeriod, inOptions) 
   const valueAggregator = new FinalValueAggregator(cache);
 
   return options.fillEmptyValues
-    ? valueAggregator.getContinuousValues(analytics, aggregationPeriod)
+    ? valueAggregator.getContinuousValues(
+        analytics,
+        aggregationPeriod,
+        options.fillEmptyValuesTilCurrentPeriod,
+      )
     : valueAggregator.getDistinctValues();
 };

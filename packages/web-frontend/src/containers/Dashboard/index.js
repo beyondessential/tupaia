@@ -15,9 +15,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import StaticMap from '../../components/StaticMap';
 import shallowEqual from 'shallowequal';
 import Dialog from '@material-ui/core/Dialog';
+import StaticMap from '../../components/StaticMap';
 
 import { initialOrgUnit } from '../../defaults';
 import { DASHBOARD_STYLES, DASHBOARD_META_MARGIN } from '../../styles';
@@ -25,7 +25,11 @@ import { changeDashboardGroup, closeDropdownOverlays } from '../../actions';
 import DashboardGroup from '../DashboardGroup';
 import { getFacilityThumbnailUrl } from '../../utils';
 import { DropDownMenu } from '../../components/DropDownMenu';
-import { getCurrentDashboardKey } from '../../selectors';
+import {
+  selectCurrentDashboardKey,
+  selectCurrentOrgUnit,
+  selectAdjustedProjectBounds,
+} from '../../selectors';
 
 const IMAGE_HEIGHT_RATIO = 0.5;
 
@@ -67,25 +71,20 @@ export class Dashboard extends Component {
   }
 
   renderMiniMap(visible) {
-    if (!visible) return;
+    if (!visible) return null;
     const { contractedWidth } = this.props;
 
-    const { currentOrganisationUnit } = this.props;
-    if (!currentOrganisationUnit) {
-      return;
+    const { currentOrganisationUnitBounds } = this.props;
+    if (!currentOrganisationUnitBounds) {
+      return null;
     }
-
-    const { location } = currentOrganisationUnit;
-
     // If the organisation is the redux default, the location contains a point coordinate,
     // instead of bounds, or the current org unit is the world render the default world map.
-    const useWorldBounds =
-      !(location && location.bounds) || currentOrganisationUnit.organisationUnitCode === 'World';
-    const mapWidth = contractedWidth - DASHBOARD_META_MARGIN * 2;
 
+    const mapWidth = contractedWidth - DASHBOARD_META_MARGIN * 2;
     return (
       <StaticMap
-        polygonBounds={useWorldBounds ? initialOrgUnit.location.bounds : location.bounds}
+        polygonBounds={currentOrganisationUnitBounds}
         width={mapWidth * 2 /* Multiply by 2 to render maps that look sharp when expanded */}
         height={
           mapWidth *
@@ -93,7 +92,7 @@ export class Dashboard extends Component {
           2 /* Multiply by 2 to render maps that look sharp when expanded */
         }
         style={DASHBOARD_STYLES.metaImage}
-        showBox={!useWorldBounds}
+        showBox={currentOrganisationUnitBounds !== initialOrgUnit.location.bounds}
       />
     );
   }
@@ -120,7 +119,7 @@ export class Dashboard extends Component {
 
     return (
       <Dialog
-        open={true}
+        open
         onClose={() => this.setState({ isPhotoEnlarged: false })}
         style={DASHBOARD_STYLES.metaImageDialog}
       >
@@ -197,7 +196,7 @@ export class Dashboard extends Component {
       return names;
     }, []);
 
-    if (groupNames.length < 2) {
+    if (groupNames.length < 1) {
       return null;
     }
 
@@ -250,6 +249,7 @@ Dashboard.propTypes = {
   onChangeDashboardGroup: PropTypes.func.isRequired,
   currentDashboardKey: PropTypes.string,
   currentOrganisationUnit: PropTypes.object,
+  currentOrganisationUnitBounds: PropTypes.arrayOf(PropTypes.string),
   onDashboardClicked: PropTypes.func.isRequired,
   mapIsAnimating: PropTypes.bool,
   isSidePanelExpanded: PropTypes.bool.isRequired,
@@ -258,19 +258,23 @@ Dashboard.propTypes = {
 
 const mapStateToProps = state => {
   const { isAnimating } = state.map;
-  const {
-    currentOrganisationUnit,
-    isLoadingOrganisationUnit,
-    dashboardConfig,
-    isSidePanelExpanded,
-    project,
-  } = state.global;
+  const { isLoadingOrganisationUnit, dashboardConfig, isSidePanelExpanded, project } = state.global;
   const { contractedWidth } = state.dashboard;
-
+  const currentOrganisationUnit = selectCurrentOrgUnit(state);
+  let currentOrganisationUnitBounds = initialOrgUnit.location.bounds;
+  if (currentOrganisationUnit.type === 'Project') {
+    currentOrganisationUnitBounds = selectAdjustedProjectBounds(
+      state,
+      currentOrganisationUnit.organisationUnitCode,
+    );
+  } else if (currentOrganisationUnit.location && currentOrganisationUnit.location.bounds) {
+    currentOrganisationUnitBounds = currentOrganisationUnit.location.bounds;
+  }
   return {
     currentOrganisationUnit,
+    currentOrganisationUnitBounds,
     sections: dashboardConfig,
-    currentDashboardKey: getCurrentDashboardKey(state),
+    currentDashboardKey: selectCurrentDashboardKey(state),
     mapIsAnimating: isAnimating,
     isLoading: isLoadingOrganisationUnit,
     isSidePanelExpanded,

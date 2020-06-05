@@ -5,7 +5,7 @@
   "private": true,
   "main": "dist",
   "scripts": {
-    "lint": "eslint --ext .js  --ignore-pattern __tests__/",
+    "lint": "eslint --ext .js  --ignore-pattern __tests__/ .",
     "lint:all": "yarn run lint \"src/**/*.{js,jsx}\"",
     "dev": "nodemon -w src --exec \"babel-node src --inspect=9997\"",
     "build": "babel src --out-dir dist",
@@ -50,6 +50,7 @@
     "lodash.groupby": "^4.6.0",
     "lodash.has": "^4.5.2",
     "lodash.invert": "^4.3.0",
+    "lodash.isequal": "^4.5.0",
     "lodash.isplainobject": "4.0.6",
     "lodash.keyby": "^4.6.0",
     "lodash.pick": "^4.4.0",

@@ -12,21 +12,21 @@
  * and renders a component that will fetch the data it needs from redux state.
  */
 
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
-import DisasterList from './components/DisasterList';
+import DisasterList from './components/Disaster/DisasterList';
+import ProjectDescription from './components/Project/ProjectDescription';
 
-export default class StateDashboardItem extends Component {
-  render() {
-    const { viewContent } = this.props;
-    const components = {
-      ActiveDisasters: DisasterList,
-    };
-    const Component = components[viewContent.componentName];
+export default function StateDashboardItem(props) {
+  const { viewContent } = props;
+  const components = {
+    ActiveDisasters: DisasterList,
+    ProjectDescription: ProjectDescription,
+  };
+  const Component = components[viewContent.componentName];
 
-    return <Component viewContent={viewContent} />;
-  }
+  return <Component viewContent={viewContent} />;
 }
 
 StateDashboardItem.propTypes = {

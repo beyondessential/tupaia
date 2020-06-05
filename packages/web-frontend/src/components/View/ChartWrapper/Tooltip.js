@@ -49,7 +49,8 @@ const MultiValueTooltip = ({
     const label = (options && options.label) || dataKey;
     const valueTypeForLabel =
       labelType || valueType || get(presentationOptions, [dataKey, 'valueType']);
-    const metadata = data[`${dataKey}_metadata`];
+
+    const metadata = data[`${dataKey}_metadata`] || data[`${data.name}_metadata`];
 
     return <li key={dataKey}>{formatLabelledValue(label, value, valueTypeForLabel, metadata)}</li>;
   });
@@ -87,7 +88,7 @@ const SingleValueTooltip = ({ valueType, payload, periodGranularity, labelType }
 };
 
 function Tooltip(props) {
-  if (props.active) {
+  if (props.active && props.payload.length >= 1) {
     if (props.payload.length === 1 && !props.presentationOptions) {
       return <SingleValueTooltip {...props} />;
     }

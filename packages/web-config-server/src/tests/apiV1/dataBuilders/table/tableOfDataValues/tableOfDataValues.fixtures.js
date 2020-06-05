@@ -23,6 +23,7 @@ export const DATA_ELEMENTS = {
   CD6: { code: 'CD6', name: 'CVD Risk: Green Male' },
   CD7: { code: 'CD7', name: 'CVD Risk: Red Female' },
   CD8: { code: 'CD8', name: 'CVD Risk: Red Male' },
+  CD8: { code: 'CD_Description', name: 'CD Description' },
   HP1: { code: 'HP1', name: 'Fitness: 10-19 years - female', options: OPTIONS },
   HP2: { code: 'HP2', name: 'Fitness: 10-19 years - male', options: OPTIONS },
   HP3: { code: 'HP3', name: 'Fitness: 20-39 years - female', options: OPTIONS },
@@ -43,6 +44,11 @@ export const DATA_VALUES = [
   { dataElement: 'CD6', value: 6, organisationUnit: 'TO_Nukuhc' },
   { dataElement: 'CD7', value: 7, organisationUnit: 'TO_Nukuhc' },
   { dataElement: 'CD8', value: 8, organisationUnit: 'TO_Nukuhc' },
+  {
+    dataElement: 'CD_Description',
+    value: 'Communicable diseases description',
+    organisationUnit: 'TO_Nukuhc',
+  },
   // Vaini
   { dataElement: 'CD1', value: 10, organisationUnit: 'TO_Vainihc' },
   { dataElement: 'CD2', value: 20, organisationUnit: 'TO_Vainihc' },

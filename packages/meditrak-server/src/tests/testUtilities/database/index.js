@@ -3,8 +3,6 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-export { clearTestData } from './clearTestData';
-export { generateDummyRecord } from './generateDummyRecord';
 export { insertEntityAndFacility } from './insertEntityAndFacility';
 export { insertSurveyAndScreens } from './insertSurveyAndScreens';
 export { insertSurveyResponse } from './insertSurveyResponse';
@@ -18,4 +16,5 @@ export {
   upsertSurveyResponse,
   upsertSurveyScreen,
   upsertSurveyScreenComponent,
+  upsertUserEntityPermission,
 } from './upsertRecord';

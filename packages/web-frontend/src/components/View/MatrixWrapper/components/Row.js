@@ -15,6 +15,8 @@ import { Cell } from './Cell';
 import { getPresentationOption } from '../../../../utils';
 import { PRESENTATION_OPTIONS_SHAPE } from '../../propTypes';
 
+const ROW_INFO_KEY = '$rowInfo';
+
 export default class Row extends Component {
   shouldComponentUpdate(nextProps) {
     const currentProps = this.props;
@@ -34,6 +36,7 @@ export default class Row extends Component {
 
         return a === b;
       }
+      return false;
     });
   }
 
@@ -63,6 +66,7 @@ export default class Row extends Component {
       isNextColumnEnabled,
       styles,
       isUsingDots,
+      rowInfo,
     } = this.props;
 
     return (
@@ -70,7 +74,9 @@ export default class Row extends Component {
         style={isRowHighlighted ? { ...styles.row, ...styles.rowHighlighted } : styles.row}
         onMouseEnter={() => onCellMouseEnter(null, rowKey)}
         onMouseLeave={() => onCellMouseLeave()}
-        ref={element => (this.rowElement = element)}
+        ref={element => {
+          this.rowElement = element;
+        }}
       >
         <div
           style={{
@@ -106,7 +112,16 @@ export default class Row extends Component {
             return <div style={style} key={index} />;
           }
 
-          const presentation = getPresentationOption(presentationOptions, cellValue);
+          let presentation = getPresentationOption(presentationOptions, cellValue);
+
+          //if presentation is null, we should not show the DescriptionOverlay popup.
+          //So, only add the `main title` to the presentation object if presentation != null
+          if (presentation) {
+            presentation = {
+              ...presentation,
+              mainTitle: description,
+            };
+          }
 
           return (
             <Cell
@@ -114,7 +129,14 @@ export default class Row extends Component {
               cellKey={index}
               onMouseEnter={() => onCellMouseEnter(index, rowKey)}
               onMouseLeave={() => onCellMouseLeave()}
-              onClick={() => onCellClick(presentation, cellValue)}
+              onClick={() =>
+                onCellClick(
+                  presentation.description === ROW_INFO_KEY
+                    ? { ...presentation, description: rowInfo }
+                    : presentation,
+                  cellValue,
+                )
+              }
               color={presentation ? presentation.color : { color: '' }}
               value={cellValue}
               style={styles.gridCell}
@@ -149,9 +171,6 @@ export default class Row extends Component {
 Row.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.object),
   isRowHighlighted: PropTypes.bool,
-  onMouseEnter: PropTypes.func,
-  onMouseLeave: PropTypes.func,
-  cellToolTip: PropTypes.node,
   highlightedColumn: PropTypes.number,
   depth: PropTypes.number,
   categoryIndent: PropTypes.number,
@@ -159,7 +178,6 @@ Row.propTypes = {
   onCellMouseLeave: PropTypes.func,
   onCellClick: PropTypes.func,
   onTitleClick: PropTypes.func,
-  onMoveColumn: PropTypes.func,
   styles: PropTypes.object.isRequired,
   presentationOptions: PropTypes.shape(PRESENTATION_OPTIONS_SHAPE),
   isPreviousColumnEnabled: PropTypes.bool,
