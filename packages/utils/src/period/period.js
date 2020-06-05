@@ -98,6 +98,13 @@ export const periodToType = (period = '') => {
   return LENGTH_TO_PERIOD_TYPE[period.length];
 };
 
+/**
+ *
+ * @param {any} period
+ * @returns {boolean}
+ */
+export const isValidPeriod = period => typeof period === 'string' && !!periodToType(period);
+
 export const parsePeriodType = periodTypeString => {
   const error = new Error(`Period type must be one of ${Object.values(PERIOD_TYPES)}`);
 
@@ -233,6 +240,14 @@ export const findCoarsestPeriodType = periodTypes => {
 
   return result;
 };
+
+/**
+ * @param {string} period1
+ * @param {string} period2
+ * @returns {boolean}
+ */
+export const isCoarserPeriod = (period1, period2) =>
+  periodTypeToGranularity(periodToType(period1)) > periodTypeToGranularity(periodToType(period2));
 
 /**
  * Returns all periods in a specified range (inclusive)
