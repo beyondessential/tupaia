@@ -13,3 +13,5 @@ codeship_deploy_key.pub
 codeship_deploy_key
 dump.sql
 *.todo
+packages/psss/cypress/videos
+packages/psss/cypress/screenshots

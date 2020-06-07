@@ -12,9 +12,17 @@
     "url": "https://github.com/beyondessential/tupaia/issues"
   },
   "scripts": {
-    "start-dev": "react-scripts start",
+    "start": "react-scripts start",
+    "start-dev": "npm run start",
+    "start-backend": "yarn workspace @tupaia/meditrak-server start",
+    "start-servers": "npm-run-all -p -l -c start-backend start-dev",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "cy:run": "cypress run",
+    "cy:open": "cypress open",
+    "pretest:test-e2e": "npm run build",
+    "test-e2e": "start-server-and-test start http://localhost:3000 cy:run",
+    "test-e2e-dev": "start-server-and-test start-servers http://localhost:3000 cy:open",
     "eject": "react-scripts eject"
   },
   "dependencies": {
@@ -44,6 +52,11 @@
     "defaults"
   ],
   "devDependencies": {
-    "faker": "^4.1.0"
+    "@testing-library/cypress": "^6.0.0",
+    "cypress": "^4.7.0",
+    "eslint-plugin-cypress": "^2.11.1",
+    "faker": "^4.1.0",
+    "npm-run-all": "^4.1.5",
+    "start-server-and-test": "^1.11.0"
   }
 }
