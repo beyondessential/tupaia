@@ -4,14 +4,9 @@
  */
 
 import { expect } from 'chai';
+import { generateTestId } from '@tupaia/database';
 import { TestableApp } from '../TestableApp';
-import {
-  createEntity,
-  createDataElement,
-  createAlert,
-  generateTestId,
-  resetTestData,
-} from '../testUtilities';
+import { createEntity, createDataElement, createAlert, resetTestData } from '../testUtilities';
 
 describe('Alerts CRUD', () => {
   const app = new TestableApp();

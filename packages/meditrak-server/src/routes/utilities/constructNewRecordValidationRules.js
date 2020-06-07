@@ -4,8 +4,6 @@
  */
 
 import { TYPES } from '@tupaia/database';
-import { ValidationError } from '@tupaia/utils';
-
 import {
   constructRecordExistsWithId,
   hasContent,
@@ -15,10 +13,10 @@ import {
   constructIsOneOf,
   isValidPassword,
   takesDateForm,
-} from './validatorFunctions';
-
-import { FEED_ITEM_TYPES } from '../database/models/FeedItem';
-import { DATA_SOURCE_SERVICE_TYPES } from '../database/models/DataSource';
+  ValidationError,
+} from '@tupaia/utils';
+import { FEED_ITEM_TYPES } from '../../database/models/FeedItem';
+import { DATA_SOURCE_SERVICE_TYPES } from '../../database/models/DataSource';
 
 export const constructForParent = (models, recordType, parentRecordType) => {
   const combinedRecordType = `${parentRecordType}/${recordType}`;
