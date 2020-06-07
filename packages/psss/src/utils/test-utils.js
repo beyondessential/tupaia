@@ -6,26 +6,30 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import '@testing-library/jest-dom';
 import { render } from '@testing-library/react';
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, combineReducers } from 'redux';
 import { MuiThemeProvider, StylesProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import thunk from 'redux-thunk';
 import { ThemeProvider } from 'styled-components';
 import { theme } from '../theme';
-import { createReducers } from '../createReducers';
+import { auth } from '../store';
 import { API } from '../api';
-import { initialState} from './initialState';
+import { initialState } from './initialState';
 
-function initStore() {
-  const store = createStore(createReducers, applyMiddleware(thunk.withExtraArgument({ api: API })));
-  API.injectReduxStore(store);
-  return store;
-}
-
-const store = initStore();
+const reducers = combineReducers({
+  auth,
+});
 
 // eslint-disable-next-line react/prop-types
-const Providers = ({ children }) => {
+const createProviders = isLoggedIn => ({ children }) => {
+  const state = isLoggedIn ? initialState : {};
+  const store = createStore(
+    reducers,
+    state,
+    applyMiddleware(thunk.withExtraArgument({ api: API })),
+  );
+  API.injectReduxStore(store);
+
   return (
     <Provider store={store}>
       <StylesProvider injectFirst>
@@ -40,34 +44,10 @@ const Providers = ({ children }) => {
   );
 };
 
-const customRender = (ui, options) => render(ui, { wrapper: Providers, ...options });
+const customRender = (ui, options) => render(ui, { wrapper: createProviders(), ...options });
 
 // override render method
 export { customRender as render };
-// ----------
 
-
-const loggedInStore = createStore(createReducers, initialState);
-
-// console.log('CREATE REDUCERS', createReducers());
-console.log('STORE', loggedInStore.getState());
-
-// eslint-disable-next-line react/prop-types
-const LoggedInProviders = ({ children }) => {
-  return (
-    <Provider store={loggedInStore}>
-      <StylesProvider injectFirst>
-        <MuiThemeProvider theme={theme}>
-          <ThemeProvider theme={theme}>
-            <CssBaseline />
-            {children}
-          </ThemeProvider>
-        </MuiThemeProvider>
-      </StylesProvider>
-    </Provider>
-  );
-};
-
-const loggedInRender = (ui, options) => render(ui, { wrapper: LoggedInProviders, ...options });
-
-export { loggedInRender };
+export const loggedInRender = (ui, options) =>
+  render(ui, { wrapper: createProviders(true), ...options });

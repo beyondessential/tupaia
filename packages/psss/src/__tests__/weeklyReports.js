@@ -18,19 +18,19 @@ const testData = {
 };
 
 test('Can view and update weekly reports', async () => {
-  // mockAPI.reauthenticate.mockResolvedValueOnce(response);
+  mockAPI.reauthenticate.mockResolvedValueOnce(response);
   const { getByPlaceholderText, getByLabelText, getByText, findByText, debug } = loggedInRender(
     <App />,
   );
 
-  debug();
-  // const emailInput = getByPlaceholderText(/email/i);
-  // const passwordInput = getByPlaceholderText(/password/i);
-  // const submitButton = getByText(/Login to your account/i).closest('button');
-  // fireEvent.change(emailInput, { target: { value: testData.email } });
-  // fireEvent.change(passwordInput, { target: { value: testData.password } });
-  // fireEvent.click(submitButton);
+  // debug();
+  const emailInput = getByPlaceholderText(/email/i);
+  const passwordInput = getByPlaceholderText(/password/i);
+  const submitButton = getByText(/login*/i).closest('button');
+  fireEvent.change(emailInput, { target: { value: testData.email } });
+  fireEvent.change(passwordInput, { target: { value: testData.password } });
+  fireEvent.click(submitButton);
 
-  // await expect(findByText(/countries/i)).toBeInTheDocument();
+  expect(findByText(/countries/i)).toBeInTheDocument();
   // debug();
 });
