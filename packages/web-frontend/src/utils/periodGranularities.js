@@ -14,6 +14,8 @@ const WEEK = 'week';
 const SINGLE_WEEK = 'one_week_at_a_time';
 const MONTH = 'month';
 const SINGLE_MONTH = 'one_month_at_a_time';
+const QUARTER = 'quarter';
+const SINGLE_QUARTER = 'one_quarter_at_a_time';
 const YEAR = 'year';
 const SINGLE_YEAR = 'one_year_at_a_time';
 
@@ -42,6 +44,13 @@ const CONFIG = {
     momentShorthand: 'M',
     momentUnit: 'month',
   },
+  [QUARTER]: {
+    chartFormat: '[Q]Q YYYY',
+    rangeFormat: '[Q]Q YYYY',
+    pickerFormat: '[Q]Q',
+    momentShorthand: 'Q',
+    momentUnit: 'quarter',
+  },
   [YEAR]: {
     chartFormat: 'YYYY',
     rangeFormat: 'YYYY',
@@ -58,6 +67,8 @@ export const GRANULARITIES = {
   SINGLE_WEEK,
   MONTH,
   SINGLE_MONTH,
+  QUARTER,
+  SINGLE_QUARTER,
   YEAR,
   SINGLE_YEAR,
 };
@@ -69,11 +80,19 @@ export const GRANULARITY_CONFIG = {
   [SINGLE_WEEK]: CONFIG[WEEK],
   [MONTH]: CONFIG[MONTH],
   [SINGLE_MONTH]: CONFIG[MONTH],
+  [QUARTER]: CONFIG[QUARTER],
+  [SINGLE_QUARTER]: CONFIG[QUARTER],
   [YEAR]: CONFIG[YEAR],
   [SINGLE_YEAR]: CONFIG[YEAR],
 };
 
-export const GRANULARITIES_WITH_ONE_DATE = [SINGLE_DAY, SINGLE_WEEK, SINGLE_MONTH, SINGLE_YEAR];
+export const GRANULARITIES_WITH_ONE_DATE = [
+  SINGLE_DAY,
+  SINGLE_WEEK,
+  SINGLE_MONTH,
+  SINGLE_QUARTER,
+  SINGLE_YEAR,
+];
 
 export const GRANULARITY_SHAPE = PropTypes.oneOf([
   DAY,
@@ -82,6 +101,8 @@ export const GRANULARITY_SHAPE = PropTypes.oneOf([
   SINGLE_WEEK,
   MONTH,
   SINGLE_MONTH,
+  QUARTER,
+  SINGLE_QUARTER,
   YEAR,
   SINGLE_YEAR,
 ]);
