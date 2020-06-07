@@ -1,6 +1,6 @@
 /* eslint-disable class-methods-use-this */
 
-import { isNotPresent, ObjectValidator } from '../../../validation';
+import { isNotPresent, ObjectValidator } from '@tupaia/utils';
 import { convertCellToJson } from '../utilities';
 import { BaseValidator } from './BaseValidator';
 
