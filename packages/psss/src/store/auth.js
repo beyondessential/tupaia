@@ -22,7 +22,6 @@ export const login = (emailAddress, password) => async (dispatch, getState, { ap
       password,
       deviceName,
     });
-    console.log('USER DETAILS', userDetails);
     dispatch(loginSuccess(userDetails));
   } catch (error) {
     dispatch(loginError(error.message));
@@ -30,7 +29,6 @@ export const login = (emailAddress, password) => async (dispatch, getState, { ap
 };
 
 export const loginSuccess = ({ accessToken, refreshToken, user }) => {
-  console.log('LOGIN SUCCESS');
   return {
     type: LOGIN_SUCCESS,
     accessToken,
@@ -40,8 +38,6 @@ export const loginSuccess = ({ accessToken, refreshToken, user }) => {
 };
 
 export const loginError = errorMessage => {
-  console.log('LOGIN ERROR');
-
   return {
     type: LOGIN_ERROR,
     error: errorMessage,
@@ -60,10 +56,7 @@ export const getError = ({ auth }) => auth.error;
 export const checkIsPending = ({ auth }) => auth.status === 'pending';
 export const checkIsSuccess = ({ auth }) => auth.status === 'success';
 export const checkIsError = ({ auth }) => auth.status === 'error';
-export const checkIsLoggedIn = state => {
-  console.log('check is logged in?', state);
-  return !!getCurrentUser(state) && checkIsSuccess(state);
-};
+export const checkIsLoggedIn = state => !!getCurrentUser(state) && checkIsSuccess(state);
 
 // reducer
 const defaultState = {

@@ -65,7 +65,6 @@ const StyledLink = styled(MuiLink)`
 const requestAnAccountUrl = 'https://info.tupaia.org/contact';
 
 export const LoginViewComponent = ({ isLoggedIn }) => {
-  console.log('RENDER LOGIN', isLoggedIn);
   if (isLoggedIn) {
     return <Redirect to="/" />;
   }
