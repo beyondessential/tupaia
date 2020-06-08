@@ -12,18 +12,18 @@
     "url": "https://github.com/beyondessential/tupaia/issues"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "start-dev": "npm run start",
-    "start-backend": "yarn workspace @tupaia/meditrak-server start",
-    "start-servers": "npm-run-all -p -l -c start-backend start-dev",
     "build": "react-scripts build",
-    "test": "react-scripts test",
-    "cy:run": "cypress run",
-    "cy:open": "cypress open",
-    "pretest:test-e2e": "npm run build",
-    "test-e2e": "start-server-and-test start http://localhost:3000 cy:run",
-    "test-e2e-dev": "start-server-and-test start-servers 3000 cy:open",
-    "eject": "react-scripts eject"
+    "cypress:run": "cypress run",
+    "cypress:open": "cypress open",
+    "eject": "react-scripts eject",
+    "pretest:test:cypress:run": "npm run build",
+    "start": "react-scripts start",
+    "start-dev": "npm-run-all -c -l -p start-server start",
+    "start-server": "yarn workspace @tupaia/meditrak-server start",
+    "test": "test:jest",
+    "test:jest": "react-scripts test",
+    "test:cypress:open": "start-server-and-test start-dev 3000 cypress:open",
+    "test:cypress:run": "start-server-and-test start-dev 3000 cypress:run"
   },
   "dependencies": {
     "@material-ui/core": "^4.9.11",
