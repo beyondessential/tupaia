@@ -82,7 +82,7 @@ const App = props => {
   return (
     <div>
       <Navbar
-        brandName="Tupaia Admin"
+        brandName={'Tupaia Admin'}
         leftLinks={LEFT_LINKS}
         rightLinks={isUserAuthenticated ? [loginLink] : []}
         onNavigate={onNavigate}
