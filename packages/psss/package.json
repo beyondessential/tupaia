@@ -22,7 +22,7 @@
     "cy:open": "cypress open",
     "pretest:test-e2e": "npm run build",
     "test-e2e": "start-server-and-test start http://localhost:3000 cy:run",
-    "test-e2e-dev": "start-server-and-test start-servers http://localhost:3000 cy:open",
+    "test-e2e-dev": "start-server-and-test start-servers 3000 cy:open",
     "eject": "react-scripts eject"
   },
   "dependencies": {
