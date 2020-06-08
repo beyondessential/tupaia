@@ -3,16 +3,17 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  **/
 
+import {
+  constructIsNotPresentOr,
+  hasContent,
+  constructListItemsAreOneOf,
+  validateIsYesOrNo,
+} from '@tupaia/utils';
 import { ANSWER_TYPES } from '../../../../database/models/Answer';
-import { ENTITY_TYPES } from '../../../../database/models/Entity';
-import { constructIsNotPresentOr, hasContent } from '../../../../validation';
-import { constructListItemsAreOneOf, validateIsYesOrNo } from '../../validatorFunctions';
 import { isEmpty, isYes } from '../../utilities';
 import { JsonFieldValidator } from '../JsonFieldValidator';
 
 const { ENTITY, PRIMARY_ENTITY } = ANSWER_TYPES;
-
-const ENTITY_TYPE_LIST = Object.values(ENTITY_TYPES);
 
 const isEntityQuestion = ({ type }) => [ENTITY, PRIMARY_ENTITY].includes(type);
 
@@ -30,29 +31,34 @@ const hasContentIfCanCreateNew = (value, object, key) => {
 };
 
 export class EntityConfigValidator extends JsonFieldValidator {
+  constructor(questions, models) {
+    super(questions);
+    this.models = models;
+  }
+
   static fieldName = 'config';
 
   getFieldValidators(rowIndex) {
     const pointsToAnotherQuestion = this.constructPointsToAnotherQuestion(rowIndex);
-    const pointsToParentEntityQuestion = this.constructPointsToParentEntityQuestion(rowIndex);
+    const pointsToPrecedingEntityQuestion = this.constructPointsToPrecedingEntityQuestion(rowIndex);
+    const pointsToValidPrecedingEntityQuestion = constructIsNotPresentOr(
+      (...params) =>
+        hasContent(...params) &&
+        pointsToAnotherQuestion(...params) &&
+        pointsToPrecedingEntityQuestion(...params),
+    );
 
     return {
-      type: [hasContent, constructListItemsAreOneOf(ENTITY_TYPE_LIST)],
+      type: [hasContent, constructListItemsAreOneOf(Object.values(this.models.entity.types))],
       createNew: [constructIsNotPresentOr(validateIsYesOrNo)],
       code: [hasContentIfCanCreateNew, constructIsNotPresentOr(pointsToAnotherQuestion)],
       name: [hasContentIfCanCreateNew, constructIsNotPresentOr(pointsToAnotherQuestion)],
-      parent: [
-        constructIsNotPresentOr(
-          (...params) =>
-            hasContent(...params) &&
-            pointsToAnotherQuestion(...params) &&
-            pointsToParentEntityQuestion(...params),
-        ),
-      ],
+      parent: [pointsToValidPrecedingEntityQuestion],
+      grandparent: [pointsToValidPrecedingEntityQuestion],
     };
   }
 
-  constructPointsToParentEntityQuestion(rowIndex) {
+  constructPointsToPrecedingEntityQuestion(rowIndex) {
     return value => {
       const questionCode = value;
       const question = this.findOtherQuestion(questionCode, rowIndex, rowIndex);

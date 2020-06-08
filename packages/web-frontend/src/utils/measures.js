@@ -5,7 +5,6 @@
  * found in the LICENSE file in the root directory of this source tree.
  */
 
-import numeral from 'numeral';
 import {
   YES_COLOR,
   NO_COLOR,
@@ -14,8 +13,10 @@ import {
   resolveSpectrumColour,
 } from '../components/Marker/markerColors';
 import { SPECTRUM_ICON, DEFAULT_ICON, UNKNOWN_ICON } from '../components/Marker/markerIcons';
+import { VALUE_TYPES } from '../components/View/constants';
 import { MAP_COLORS } from '../styles';
 import { formatDataValue } from './formatters';
+import { SCALE_TYPES } from '../constants';
 
 // At a few places throughout this module we're iterating over a collection
 // while modifying an object, which trips up the eslint rule that expects inline
@@ -36,12 +37,8 @@ export const MEASURE_TYPE_SHADED_SPECTRUM = 'shaded-spectrum';
 export const MEASURE_VALUE_OTHER = 'other';
 export const MEASURE_VALUE_NULL = 'null';
 
-export const SCALE_TYPES = {
-  PERFORMANCE: 'performance',
-  PERFORMANCE_DESC: 'performanceDesc',
-  POPULATION: 'population',
-  TIME: 'time',
-};
+export const POLYGON_MEASURE_TYPES = [MEASURE_TYPE_SHADING, MEASURE_TYPE_SHADED_SPECTRUM];
+export const SPECTRUM_MEASURE_TYPES = [MEASURE_TYPE_SPECTRUM, MEASURE_TYPE_SHADED_SPECTRUM];
 
 export function autoAssignColors(values) {
   if (!values) return [];
@@ -127,27 +124,27 @@ function getFormattedValue(value, type, valueInfo, scaleType, valueType) {
 }
 
 const getSpectrumScaleValues = (measureData, measureOption) => {
-  const { key, scaleType, scaleMin, scaleMax, startDate, endDate } = measureOption;
+  const { key, scaleType, valueType, scaleMin, scaleMax, startDate, endDate } = measureOption;
 
-  switch (scaleType) {
-    case SCALE_TYPES.TIME:
-      return { min: startDate, max: endDate };
-    case SCALE_TYPES.PERFORMANCE:
-      return { min: 0, max: 1 };
-    default: {
-      const flattenedMeasureData = flattenNumericalMeasureData(measureData, key);
-      const hasScaleMin = scaleMin !== undefined;
-      const hasScaleMax = scaleMax !== undefined;
-      return {
-        min: hasScaleMin
-          ? Math.min(scaleMin, ...flattenedMeasureData)
-          : Math.min(...flattenedMeasureData),
-        max: hasScaleMax
-          ? Math.max(scaleMax, ...flattenedMeasureData)
-          : Math.max(...flattenedMeasureData),
-      };
-    }
+  if (scaleType === SCALE_TYPES.TIME) {
+    return { min: startDate, max: endDate };
   }
+
+  const flattenedMeasureData = flattenNumericalMeasureData(measureData, key);
+  const hasScaleMin = scaleMin !== undefined;
+  const hasScaleMax = scaleMax !== undefined;
+  if (valueType === VALUE_TYPES.PERCENTAGE) {
+    return { min: 0, max: scaleMax === 'auto' ? Math.max(...flattenedMeasureData) : 1 };
+  }
+
+  return {
+    min: hasScaleMin
+      ? Math.min(scaleMin, ...flattenedMeasureData)
+      : Math.min(...flattenedMeasureData),
+    max: hasScaleMax
+      ? Math.max(scaleMax, ...flattenedMeasureData)
+      : Math.max(...flattenedMeasureData),
+  };
 };
 
 export function processMeasureInfo(response) {
@@ -160,7 +157,7 @@ export function processMeasureInfo(response) {
 
     hiddenMeasures[measureOption.key] = measureOption.hideByDefault;
 
-    if (type === MEASURE_TYPE_SPECTRUM || type === MEASURE_TYPE_SHADED_SPECTRUM) {
+    if (SPECTRUM_MEASURE_TYPES.includes(type)) {
       // for each spectrum, include the minimum and maximum values for
       // use in the legend scale labels.
       const { min, max } = getSpectrumScaleValues(measureData, measureOption);
@@ -196,7 +193,7 @@ export function processMeasureInfo(response) {
 export function getValueInfo(value, valueMapping, hiddenValues = {}) {
   if (!value && typeof value !== 'number' && valueMapping.null) {
     // use 'no data' value
-    const nullValue = hiddenValues.null || hiddenValues[valueMapping.null.name];
+    const nullValue = hiddenValues.null || hiddenValues[valueMapping.null.value];
 
     return {
       ...valueMapping.null,
@@ -224,8 +221,10 @@ export function getValueInfo(value, valueMapping, hiddenValues = {}) {
 export function getFormattedInfo(orgUnitData, measureOption) {
   const { key, valueMapping, type, displayedValueKey, scaleType, valueType } = measureOption;
 
-  if (displayedValueKey) {
-    return { value: orgUnitData[displayedValueKey] };
+  if (displayedValueKey && orgUnitData[displayedValueKey]) {
+    return {
+      value: formatDataValue(orgUnitData[displayedValueKey], valueType, orgUnitData.metadata),
+    };
   }
 
   const value = orgUnitData[key];
@@ -260,7 +259,17 @@ export function getMeasureDisplayInfo(measureData, measureOptions, hiddenMeasure
     }
   });
   measureOptions.forEach(
-    ({ key, type, valueMapping, noDataColour, scaleType, min, max, hideByDefault }) => {
+    ({
+      key,
+      type,
+      valueMapping,
+      noDataColour,
+      scaleType,
+      scaleColorScheme,
+      min,
+      max,
+      hideByDefault,
+    }) => {
       const valueInfo = getValueInfo(measureData[key], valueMapping, {
         ...hideByDefault,
         ...hiddenMeasures[key],
@@ -279,12 +288,13 @@ export function getMeasureDisplayInfo(measureData, measureOptions, hiddenMeasure
           displayInfo.originalValue = valueInfo.value || 'No data';
           displayInfo.color = resolveSpectrumColour(
             scaleType,
+            scaleColorScheme,
             valueInfo.value || (valueInfo.value === 0 ? 0 : null),
             min,
             max,
             noDataColour,
           );
-          displayInfo.icon = SPECTRUM_ICON;
+          displayInfo.icon = valueInfo.icon || displayInfo.icon || SPECTRUM_ICON;
           break;
         case MEASURE_TYPE_SHADING:
           displayInfo.color = MAP_COLORS[valueInfo.color] || MAP_COLORS.NO_DATA;
@@ -326,5 +336,6 @@ export const calculateRadiusScaleFactor = measureData => {
 // Take a measureData array where the [key]: value is a number
 // and filters NaN values (e.g. undefined).
 export function flattenNumericalMeasureData(measureData, key) {
-  return measureData.map(v => parseInt(v[key], 10)).filter(x => !isNaN(x));
+  // eslint-disable-next-line no-restricted-globals
+  return measureData.map(v => parseFloat(v[key])).filter(x => !isNaN(x));
 }

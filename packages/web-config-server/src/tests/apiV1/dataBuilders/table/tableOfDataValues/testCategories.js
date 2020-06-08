@@ -5,8 +5,10 @@
 
 import { createAssertTableResults } from './helpers';
 import { DATA_VALUES } from './tableOfDataValues.fixtures';
+import { tableOfDataValues } from '/apiV1/dataBuilders';
 
 const assertTableResults = createAssertTableResults(
+  tableOfDataValues,
   DATA_VALUES.filter(({ organisationUnit }) => organisationUnit === 'TO_Nukuhc'),
 );
 
@@ -124,6 +126,68 @@ export const testCategories = () => {
             { category: 'Male' },
           ],
           columns: [{ key: 'Col1', title: 'Count' }],
+        },
+      ));
+
+    it('should fetch rows from data', () =>
+      assertTableResults(
+        {
+          rows: [
+            {
+              category: 'Risk Factors',
+              rows: [
+                {
+                  code: 'CD1',
+                  name: 'Smokers',
+                },
+                {
+                  code: 'DoesntExist',
+                  name: 'This should not be added to rows',
+                },
+              ],
+            },
+          ],
+          columns: ['Female'],
+          cells: [['CD1']],
+        },
+        {
+          rows: [
+            { dataElement: 'Smokers', categoryId: 'Risk Factors', Col1: 1 },
+            { category: 'Risk Factors' },
+          ],
+          columns: [{ key: 'Col1', title: 'Female' }],
+        },
+      ));
+
+    it('should fetch rowInfo from data', () =>
+      assertTableResults(
+        {
+          rows: [
+            {
+              category: 'Risk Factors',
+              rows: [
+                {
+                  code: 'CD1',
+                  name: 'Smokers',
+                  descriptionDataElement: 'CD_Description',
+                },
+              ],
+            },
+          ],
+          columns: ['Female'],
+          cells: [['CD1']],
+        },
+        {
+          rows: [
+            {
+              dataElement: 'Smokers',
+              categoryId: 'Risk Factors',
+              Col1: 1,
+              rowInfo: 'Communicable diseases description',
+            },
+            { category: 'Risk Factors' },
+          ],
+          columns: [{ key: 'Col1', title: 'Female' }],
         },
       ));
   });

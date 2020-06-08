@@ -163,7 +163,7 @@ export class Matrix extends PureComponent {
       currentPresentationOption: 0,
       presentationOptions: Object.keys(presentationOptions),
       rowElements: [],
-      initExporter: function(extraConfig) {
+      initExporter: extraConfig => {
         /* eslint-disable-line */ // Used by aws lambda
         if (extraConfig.search) {
           this.search(extraConfig.search);
@@ -174,10 +174,9 @@ export class Matrix extends PureComponent {
         this.changeXPage(0);
         this.openAll();
         this.rowElements = this.getOrderedRowElements();
-        this.setPrintMode(true);
         this.fitToViewport();
       },
-      moveToNextExportPage: function() {
+      moveToNextExportPage: () => {
         /* eslint-disable-line */ // Used by aws lambda, needs es5
         const totalXPages = window.tupaiaExportProps.getXPageCount();
         this.currentExportXPage++;
@@ -199,7 +198,6 @@ export class Matrix extends PureComponent {
         }
 
         if (this.currentPresentationOption < this.presentationOptions.length) {
-          this.showPresentationOption(this.presentationOptions[this.currentPresentationOption]);
           this.currentPresentationOption++;
           return true;
         }
@@ -282,10 +280,6 @@ export class Matrix extends PureComponent {
 
         this.forceUpdate();
       },
-      setPrintMode: isPrintMode => this.setState({ isPrintMode }),
-      showPresentationOption: presentationOption => {
-        this.setState({ selectedCellType: presentationOption });
-      },
       openAll: () => this.setState({ areAllExpanded: true }),
       search: searchTerm => this.setState({ searchTerm }),
     };
@@ -350,7 +344,7 @@ export class Matrix extends PureComponent {
     const [rootRows, childRows] = partition(rows, { categoryId: parent });
 
     return rootRows
-      .map(({ description, category, categoryId, ...cellData }, index) => {
+      .map(({ description, category, categoryId, rowInfo, ...cellData }, index) => {
         const rowKey = `${description}_${index}`;
         const isRowHighlighted = rowKey === highlightedRow;
 
@@ -401,7 +395,7 @@ export class Matrix extends PureComponent {
         }
 
         const rowData = columns.map(({ key, isGroupHeader }) => ({
-          value: cellData[key],
+          value: isNaN(cellData[key]) ? cellData[key] : Math.round(cellData[key] * 1000) / 1000, //round the numeric values UP TO 3 decimal places
           isGroupBoundary: isGroupHeader,
         }));
 
@@ -431,6 +425,7 @@ export class Matrix extends PureComponent {
             isPreviousColumnEnabled={this.isPreviousColumnEnabled()}
             isUsingDots={this.getIsUsingDots(presentationOptions)}
             styles={styles}
+            rowInfo={rowInfo}
           />
         );
       })
@@ -472,10 +467,11 @@ export class Matrix extends PureComponent {
       ...this.props.presentationOptions,
       ...this.props.categoryPresentationOptions,
     };
-    const { label, description, color } = selectedPresentationOption;
+    const { mainTitle, label, description, color } = selectedPresentationOption;
 
     return (
       <DescriptionOverlay
+        mainTitle={mainTitle}
         header={label}
         body={`${description || ''} ${
           allPresentationOptions.showRawValue ? selectedCellValue : ''

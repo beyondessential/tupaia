@@ -37,10 +37,10 @@ export class RouteHandler {
 
   async handleRequest() {
     // Fetch permissions
-    const { organisationUnitCode } = this.query;
-    this.entity = await Entity.findOne({ code: organisationUnitCode });
+    const { organisationUnitCode: entityCode } = this.query;
+    this.entity = await Entity.findOne({ code: entityCode });
     if (!this.entity) {
-      throw new ValidationError(`Entity ${organisationUnitCode} could not be found`);
+      throw new ValidationError(`Entity ${entityCode} could not be found`);
     }
     await this.checkPermissions();
     // if a 'buildResponse' is defined by the subclass, run it and respond, otherwise assume the

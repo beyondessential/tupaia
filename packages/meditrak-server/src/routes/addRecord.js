@@ -3,9 +3,9 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 
-import { respond, ValidationError } from '@tupaia/utils';
-import { TYPES } from '@tupaia/database';
 import {
+  respond,
+  ValidationError,
   ObjectValidator,
   constructRecordExistsWithId,
   hasContent,
@@ -14,7 +14,8 @@ import {
   constructIsEmptyOr,
   constructIsOneOf,
   isValidPassword,
-} from '../validation';
+} from '@tupaia/utils';
+import { TYPES } from '@tupaia/database';
 import { resourceToRecordType } from '../utilities';
 import { createUser } from '../dataAccessors';
 import { FEED_ITEM_TYPES } from '../database/models/FeedItem';

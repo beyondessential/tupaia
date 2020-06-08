@@ -19,7 +19,7 @@ const StyledPolygon = styled(Polygon)`
   pointer-events: ${props => (props.hasChildren ? 'none !important' : 'auto')} 
   stroke-width: ${props => {
     let weight = 2;
-    if (props.areChildrenShaded) weight = 0;
+    if (props.hasShadedChildren) weight = 0;
     else if (props.shade) weight = 3;
     return weight;
   }};

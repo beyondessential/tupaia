@@ -11,10 +11,10 @@
  * Home button for the app, center top of map.
  */
 
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { goHome, changeOrgUnit } from '../../actions';
+import { goHome } from '../../actions';
 import logo from '../../images/tupaia-logo-white.png';
 
 const styles = {
@@ -30,34 +30,22 @@ const styles = {
   },
 };
 
-export class TupaiaHome extends Component {
-  render() {
-    return (
-      <div style={styles.logo}>
-        <img src={logo} alt="Tupaia logo" style={styles.logoImage} onClick={this.props.goHome} />
-      </div>
-    );
-  }
-}
+export const TupaiaHomeComponent = ({ goHome }) => {
+  return (
+    <div style={styles.logo}>
+      <img src={logo} alt="Tupaia logo" style={styles.logoImage} onClick={goHome} />
+    </div>
+  );
+};
 
-TupaiaHome.propTypes = {
+TupaiaHomeComponent.propTypes = {
   goHome: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = state => {
-  return {};
-};
+const mapDispatchToProps = dispatch => ({
+  goHome: () => {
+    dispatch(goHome());
+  },
+});
 
-const mapDispatchToProps = dispatch => {
-  return {
-    goHome: () => {
-      dispatch(goHome());
-      dispatch(changeOrgUnit());
-    },
-  };
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(TupaiaHome);
+export default connect(null, mapDispatchToProps)(TupaiaHomeComponent);

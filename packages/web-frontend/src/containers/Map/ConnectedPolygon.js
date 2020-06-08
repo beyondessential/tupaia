@@ -13,14 +13,14 @@ import styled from 'styled-components';
 
 import { AreaTooltip } from './AreaTooltip';
 import { MAP_COLORS } from '../../styles';
-import { HIGHLIGHT_TYPES } from './constants';
 import { changeOrgUnit } from '../../actions';
 import {
+  selectOrgUnit,
   selectHasPolygonMeasure,
   selectAllMeasuresWithDisplayInfo,
-} from '../../reducers/mapReducers';
-import { selectOrgUnit } from '../../reducers/orgUnitReducers';
+} from '../../selectors';
 import ActivePolygon from './ActivePolygon';
+import { getSingleFormattedValue } from '../../utils';
 
 const { POLYGON_BLUE, POLYGON_HIGHLIGHT } = MAP_COLORS;
 
@@ -50,37 +50,25 @@ export const ShadedPolygon = styled(Polygon)`
  */
 class ConnectedPolygon extends Component {
   shouldComponentUpdate(nextProps) {
-    const { isHighlighted, measureId, highlightedOrganisationUnit, coordinates } = this.props;
-    if (nextProps.highlightedOrganisationUnit !== highlightedOrganisationUnit) return true;
-    if (nextProps.isHighlighted !== isHighlighted) return true;
+    const { measureId, coordinates } = this.props;
     if (nextProps.measureId !== measureId) return true;
     if (coordinates !== nextProps.coordinates) return true;
     return false;
   }
 
-  getTooltip(organisationUnitCode, area) {
-    const { highlightedOrganisationUnit, isChildArea, hasMeasureData, measureValue } = this.props;
-    const highlightedCode = highlightedOrganisationUnit.organisationUnitCode;
-    const getHighlight = code => {
-      if (code === highlightedCode) {
-        return HIGHLIGHT_TYPES.HIGHLIGHT;
-      }
-      if (highlightedCode) {
-        return HIGHLIGHT_TYPES.LOWLIGHT;
-      }
-      return HIGHLIGHT_TYPES.NONE;
-    };
-    const highlight = getHighlight(organisationUnitCode);
-    const hasMeasureValue = !!measureValue;
+  getTooltip(name) {
+    const { isChildArea, hasMeasureData, orgUnitMeasureData, measureOptions } = this.props;
+    const hasMeasureValue = orgUnitMeasureData || orgUnitMeasureData === 0;
 
     // don't render tooltips if we have a measure loaded
-    return hasMeasureData && !hasMeasureValue ? null : (
-      <AreaTooltip
-        highlight={highlight}
-        permanent={isChildArea && !hasMeasureValue}
-        text={`${area.name}${measureValue ? `: ${measureValue}` : ''}`}
-      />
-    );
+    // and don't have a value to display in the tooltip (ie: radius overlay)
+    if (hasMeasureData && !hasMeasureValue) return null;
+
+    const text = hasMeasureValue
+      ? `${name}: ${getSingleFormattedValue(orgUnitMeasureData, measureOptions)}`
+      : name;
+
+    return <AreaTooltip permanent={isChildArea && !hasMeasureValue} text={text} />;
   }
 
   render() {
@@ -94,7 +82,7 @@ class ConnectedPolygon extends Component {
       hasShadedChildren,
     } = this.props;
     const { organisationUnitCode } = area;
-    const tooltip = this.getTooltip(organisationUnitCode, area);
+    const tooltip = this.getTooltip(area.name);
 
     if (!coordinates) return null;
 
@@ -137,10 +125,6 @@ ConnectedPolygon.propTypes = {
     name: PropTypes.string,
     type: PropTypes.string,
   }).isRequired,
-  highlightedOrganisationUnit: PropTypes.shape({
-    type: PropTypes.string,
-    organisationUnitCode: PropTypes.string,
-  }).isRequired,
   measureId: PropTypes.string,
   isActive: PropTypes.bool,
   isChildArea: PropTypes.bool,
@@ -148,12 +132,15 @@ ConnectedPolygon.propTypes = {
   coordinates: PropTypes.arrayOf(
     PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number))),
   ),
-  isHighlighted: PropTypes.bool,
   hasMeasureData: PropTypes.bool,
   hasChildren: PropTypes.bool,
   hasShadedChildren: PropTypes.bool,
   shade: PropTypes.string,
-  measureValue: PropTypes.string,
+  orgUnitMeasureData: PropTypes.shape({
+    value: PropTypes.any,
+    originalValue: PropTypes.any,
+  }),
+  measureOptions: PropTypes.arrayOf(PropTypes.object),
 };
 
 ConnectedPolygon.defaultProps = {
@@ -162,26 +149,20 @@ ConnectedPolygon.defaultProps = {
   isChildArea: false,
   onChangeOrgUnit: () => {},
   coordinates: undefined,
-  isHighlighted: false,
   hasMeasureData: false,
   hasChildren: false,
   hasShadedChildren: false,
   shade: undefined,
-  measureValue: undefined,
+  orgUnitMeasureData: undefined,
+  measureOptions: undefined,
 };
 
 const mapStateToProps = (state, givenProps) => {
   const { organisationUnitCode, organisationUnitChildren } = givenProps.area;
-  const { measureId, measureData } = state.map.measureInfo;
-
-  const {
-    highlightedOrganisationUnit,
-    currentOrganisationUnit,
-    currentOrganisationUnitSiblings,
-  } = state.global;
+  const { measureId, measureData, measureOptions } = state.map.measureInfo;
 
   let shade;
-  let measureValue;
+  let orgUnitMeasureData;
   let hasShadedChildren = false;
   if (selectHasPolygonMeasure(state)) {
     const measureOrgUnits = selectAllMeasuresWithDisplayInfo(state);
@@ -193,12 +174,13 @@ const mapStateToProps = (state, givenProps) => {
         measureOrgUnitCodes.includes(child.organisationUnitCode),
       );
 
-    const orgUnitMeasureData = measureOrgUnitCodes.includes(organisationUnitCode)
-      ? measureOrgUnits.find(orgUnit => orgUnit.organisationUnitCode === organisationUnitCode)
-      : {};
+    if (measureOrgUnitCodes.includes(organisationUnitCode)) {
+      orgUnitMeasureData = measureOrgUnits.find(
+        orgUnit => orgUnit.organisationUnitCode === organisationUnitCode,
+      );
+    }
 
-    shade = orgUnitMeasureData.color;
-    measureValue = orgUnitMeasureData.originalValue;
+    shade = (orgUnitMeasureData || {}).color;
   }
 
   const orgUnit = selectOrgUnit(state, organisationUnitCode);
@@ -206,13 +188,11 @@ const mapStateToProps = (state, givenProps) => {
 
   return {
     measureId,
-    highlightedOrganisationUnit,
-    currentOrganisationUnit,
-    currentOrganisationUnitSiblings,
     coordinates,
     hasShadedChildren,
+    orgUnitMeasureData,
     shade,
-    measureValue,
+    measureOptions,
     hasChildren: organisationUnitChildren && organisationUnitChildren.length > 0,
     hasMeasureData: measureData && measureData.length > 0,
   };

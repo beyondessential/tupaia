@@ -10,10 +10,10 @@ import {
   UploadError,
   ImportValidationError,
   ValidationError,
+  ObjectValidator,
 } from '@tupaia/utils';
 import { deleteScreensForSurvey, deleteOrphanQuestions } from '../../dataAccessors';
 import { ANSWER_TYPES } from '../../database/models/Answer';
-import { ObjectValidator } from '../../validation';
 import {
   splitStringOnComma,
   splitOnNewLinesOrCommas,

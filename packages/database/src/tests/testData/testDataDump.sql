@@ -76,7 +76,9 @@ CREATE TYPE public.entity_type AS ENUM (
     'facility',
     'village',
     'case',
-    'disaster'
+    'case_contact',
+    'disaster',
+    'school'
 );
 
 
@@ -85,7 +87,8 @@ CREATE TYPE public.entity_type AS ENUM (
 --
 
 CREATE TYPE public.service_type AS ENUM (
-    'dhis'
+    'dhis',
+    'tupaia'
 );
 
 
@@ -318,7 +321,8 @@ CREATE TABLE public."dashboardGroup" (
     "organisationUnitCode" text NOT NULL,
     "dashboardReports" text[] DEFAULT '{}'::text[] NOT NULL,
     name text NOT NULL,
-    code text
+    code text,
+    "projectCodes" text[] DEFAULT '{}'::text[]
 );
 
 
@@ -375,7 +379,7 @@ CREATE TABLE public.data_source (
     code text NOT NULL,
     type public.data_source_type NOT NULL,
     service_type public.service_type NOT NULL,
-    config jsonb NOT NULL
+    config jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
 
@@ -456,7 +460,8 @@ CREATE TABLE public.entity (
     image_url text,
     country_code character varying(6),
     bounds public.geography(Polygon,4326),
-    metadata jsonb
+    metadata jsonb,
+    attributes jsonb DEFAULT '{}'::jsonb
 );
 
 
@@ -549,7 +554,8 @@ CREATE TABLE public."mapOverlay" (
     "measureBuilderConfig" jsonb,
     "measureBuilder" character varying,
     "presentationOptions" jsonb,
-    "countryCodes" text[]
+    "countryCodes" text[],
+    "projectCodes" text[] DEFAULT '{}'::text[]
 );
 
 
@@ -723,7 +729,8 @@ CREATE TABLE public.project (
     dashboard_group_name text DEFAULT 'General'::text,
     user_groups text[],
     logo_url text,
-    entity_id text
+    entity_id text,
+    entity_hierarchy_id text
 );
 
 
@@ -811,7 +818,7 @@ CREATE TABLE public.survey_response (
     metadata text,
     submission_time timestamp with time zone,
     timezone text DEFAULT 'Pacific/Auckland'::text,
-    entity_id text
+    entity_id text NOT NULL
 );
 
 
@@ -2278,6 +2285,14 @@ ALTER TABLE ONLY public.permission_group
 
 
 --
+-- Name: project project_entity_hierarchy_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.project
+    ADD CONSTRAINT project_entity_hierarchy_id_fkey FOREIGN KEY (entity_hierarchy_id) REFERENCES public.entity_hierarchy(id);
+
+
+--
 -- Name: question question_option_set_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3116,23 +3131,138 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 601	/20200325044717-MakeFebrileIllnessCaseCalculationConsistent	2020-04-07 04:56:55.711
 602	/20200403020133-UpdateDataSourcetoReflectHP01andHP02Changes	2020-04-07 04:56:56.472
 603	/20200407021657-AddDisasterDashboardGroupForVanutatu	2020-04-07 04:56:56.557
-604	/20200324034720-CreateMSupplyUNFPAMatrices	2020-04-16 11:40:36.812
-605	/20200325002500-RefactorOrganisationUnitTableReportsToTableOfValueForOrgUnits	2020-04-16 11:40:36.893
-606	/20200330044935-AddConfigToIHRReportsForOrgUnitColumns	2020-04-16 11:40:36.907
-607	/20200401220823-RemoveWordTodayFromCovidReports	2020-04-16 11:40:36.925
-608	/20200402024847-AddProjectEntity	2020-04-16 11:40:37.799
-609	/20200402024848-CreateProjectHierarchy	2020-04-16 11:40:37.955
-610	/20200403015828-AddCovidRawDataDownloadTonga	2020-04-16 11:40:37.971
-611	/20200403030413-AddPeriodDataSwitchToDashBoardReports	2020-04-16 11:40:37.983
-612	/20200406000236-AddFacilityCommoditiesOverlays	2020-04-16 11:40:38.217
-613	/20200407031923-ReplaceProvinceInDashboardGroup	2020-04-16 11:40:38.348
-614	/20200407050822-ReplaceAndRemoveRegionEntityType	2020-04-16 11:40:39.881
-615	/20200407052132-AddSOHandAMCMatricesToUNFPA	2020-04-16 11:40:39.952
-616	/20200407225206-ReplaceRegionInMapOverlays	2020-04-16 11:40:40.008
-617	/20200408015910-UseLowercaseOrgUnitLevel	2020-04-16 11:40:40.046
-618	/20200408031952-ReplaceRegionInSurveyScreenComponent	2020-04-16 11:40:41.22
-619	/20200408071456-RenameOrganisationUnitLevelInDashboardReport	2020-04-16 11:40:41.254
-620	/20200409065901-AddStripFromDataElementNamesForUNFPAMatrices	2020-04-16 11:40:41.264
+604	/20200324034720-CreateMSupplyUNFPAMatrices	2020-04-20 02:20:13.418
+605	/20200325002500-RefactorOrganisationUnitTableReportsToTableOfValueForOrgUnits	2020-04-20 02:20:13.705
+606	/20200330044935-AddConfigToIHRReportsForOrgUnitColumns	2020-04-20 02:20:13.744
+607	/20200401220823-RemoveWordTodayFromCovidReports	2020-04-20 02:20:13.807
+608	/20200402024847-AddProjectEntity	2020-04-20 02:20:18.061
+609	/20200402024848-CreateProjectHierarchy	2020-04-20 02:20:18.307
+610	/20200403015828-AddCovidRawDataDownloadTonga	2020-04-20 02:20:18.356
+611	/20200403030413-AddPeriodDataSwitchToDashBoardReports	2020-04-20 02:20:18.451
+612	/20200405231416-AddIpcCommodityAvailabilityReport	2020-04-20 02:20:19.08
+613	/20200406000236-AddFacilityCommoditiesOverlays	2020-04-20 02:20:19.235
+614	/20200406062057-AddCovidICUAndIsolationBedsOverlaysTonga	2020-04-20 02:20:19.28
+615	/20200407002449-AddStriveStackedBarmRDTByResultReport	2020-04-20 02:20:19.331
+616	/20200407052132-AddSOHandAMCMatricesToUNFPA	2020-04-20 02:20:19.532
+617	/20200408054558-AddCaseContactEntityType	2020-04-20 02:20:20.888
+618	/20200409013211-AddAddCovidTestsPerCapitaReport	2020-04-20 02:20:20.951
+619	/20200409065901-AddStripFromDataElementNamesForUNFPAMatrices	2020-04-20 02:20:20.969
+620	/20200415061542-AddStriveOverlayTotalConsultationsWTFBubble	2020-04-20 02:20:21.031
+621	/20200416060614-UpdateMOSUnpfaMedicinesToTrafficLightsConfig	2020-04-20 02:20:21.049
+622	/20200331033941-CreateUNFPADeliveryServicesLineCharts	2020-04-24 06:48:49.22
+623	/20200403054119-SwapDataElementsForRHCStockCardsChart	2020-04-24 06:48:49.294
+624	/20200408015324-AddTestsConductedDashboardAus	2020-04-24 06:48:50.08
+625	/20200408052334-AddSamoaCovidRawDataDownloadDashboard	2020-04-24 06:48:50.208
+626	/20200408065558-AddDenominatorAggregationFlagToUNFPAReport	2020-04-24 06:48:50.258
+627	/20200416033713-ReplaceProvinceInDashboardGroup	2020-04-24 06:48:50.573
+628	/20200416033714-ReplaceAndRemoveRegionEntityType	2020-04-24 06:49:06.988
+629	/20200416033715-ReplaceRegionInMapOverlays	2020-04-24 06:49:07.184
+630	/20200416033716-UseLowercaseOrgUnitLevel	2020-04-24 06:49:07.375
+631	/20200416033717-ReplaceRegionInSurveyScreenComponent	2020-04-24 06:49:10.617
+632	/20200416033718-RenameOrganisationUnitLevelInDashboardReport	2020-04-24 06:49:10.677
+633	/20200406042212-AddCovidTotalDeathsVsCasesByDay	2020-04-27 23:26:41.019
+634	/20200406044451-AddCovidCumulativeDeathsVsCases	2020-04-27 23:26:41.204
+635	/20200409012830-Migrate-old-facility-BCD1-data	2020-04-27 23:26:41.921
+636	/20200421000451-AddTongaCovidIpcCommodityAvailabilityDashboard	2020-04-27 23:26:42.244
+637	/20200427015657-AddReproductiveHealthStockOverlays	2020-04-28 22:12:23.004
+638	/20200428033101-RenamePngVillageCodes	2020-05-01 05:42:53.356
+639	/20200428035406-UpdateUNFPACountriesAndDashboards	2020-05-01 05:42:56.096
+640	/20200130050502-ReconcileClinicEntities	2020-05-12 05:53:40.85
+641	/20200401030503-AddFacilityTypeMapOverlayForAustralia	2020-05-12 05:53:41.026
+642	/20200401033652-RemoveAccessToOperationalFacilitiesForAU	2020-05-12 05:53:41.105
+643	/20200427073641-AddUNFPAFacilityMosReport	2020-05-12 05:53:41.446
+644	/20200428051149-AddUNFPADemoLandDashboardGroup	2020-05-12 05:53:41.536
+645	/20200428051160-AddUNFPAReportToDLDashboardGroup	2020-05-12 05:53:41.597
+646	/20200428063651-UpdateServiceListReportToHaveNewFilterConfig	2020-05-12 05:53:41.701
+647	/20200428144225-UpdateCovidNewCaseByDayDataBuilderConfig	2020-05-12 05:53:41.813
+648	/20200429010300-AddUNFPAReproductiveHealthProductAverageMonthlyConsumptionReport	2020-05-12 05:53:42.113
+649	/20200429043336-AddCommunicableDiseasesDashboardGroup	2020-05-12 05:53:42.185
+650	/20200429043517-AddSTITestStatusNumberOfPatientsTestedReport	2020-05-12 05:53:42.401
+651	/20200430030959-UpdateWeeklyMalariaPerCasesDenominator	2020-05-12 05:53:42.452
+652	/20200501000604-AddTongaDHIS2OutcomeOfContactTracing	2020-05-12 05:53:42.657
+653	/20200504012216-ChangeFilterToCustomFilterInPercentagesOfValueCountsPerPeriodDataBuilderConfig	2020-05-12 05:53:42.781
+654	/20200505143813-AddTongaDHIS2MedicalCertificatesDistributedReport	2020-05-12 05:53:43.201
+655	/20200505222240-updateTongaPehsMatrixIncFacType	2020-05-12 05:53:43.305
+656	/20200506040950-UpdateSumPerPeriodDataBuilderConfigInReports	2020-05-12 05:53:43.985
+657	/20200507033858-AddAttributesToEntityTable	2020-05-12 05:53:54.462
+658	/20200326052907-AddStriveReportFebrileIllnessAndRDTPositive	2020-05-13 03:13:08.331
+659	/20200405234315-AddStriveReportFebrileCasesByWeek	2020-05-13 03:13:08.484
+660	/20200406010511-AddRDTTotalTestsVsPercentagePositiveComposedReportStrive	2020-05-13 03:13:08.623
+661	/20200406013942-AddStriveVillageFebrileIllessDiscreteShadedPolygonsMapOverlay	2020-05-13 03:13:08.687
+662	/20200406061858-AddStriveVillagePercentMRDTPositiveShadedSpectrumMapOverlay	2020-05-13 03:13:08.745
+663	/20200407044756-Add3TypeOfStriveVillagePercentMRDTPositiveShadedSpectrumMapOverlay	2020-05-13 03:13:08.84
+664	/20200408002104-AddStriveFacilityRadiusOverlayTestNumber	2020-05-13 03:13:09.046
+665	/20200408044353-Add4StriveMapOverlays	2020-05-13 03:13:09.378
+666	/20200414065121-AddStriveOverlayPercentmRDTPositiveAndTestsSourceWTF	2020-05-13 03:13:09.515
+667	/20200415034908-AddStriveOverlayAllCasesByFacilityBubbleCRF	2020-05-13 03:13:09.593
+668	/20200424054821-ShiftAnnualFanafanaolaDashboardsToShowPreviousYearData	2020-05-13 03:13:09.662
+669	/20200504025438-UseNumberValueForDataValueFilter	2020-05-13 03:13:09.751
+670	/20200504065336-UseNumberForValueFilterInOverlays	2020-05-13 03:13:09.834
+671	/20200512023653-UseNumberForValueFilterInReports	2020-05-13 03:13:09.938
+672	/20200513022041-UpdateRdtTestsTotalConfig	2020-05-13 03:13:10.011
+673	/20200430065532-AddTongaNotifiableDiseasesStackedBar	2020-05-13 05:15:17.737
+674	/20200505233853-AddTongaIsolationAdmissionsInitialDiagnosisStackedBar	2020-05-13 05:15:18.125
+675	/20200505234922-AddTongaSuspectedCasesNotifiableDiseasesStackedBar	2020-05-13 05:15:18.248
+676	/20200506001638-AddTongaContactsTracedStackedBar	2020-05-13 05:15:18.376
+677	/20200506041900-AddLabConfirmedSTICasesPerMonthReport	2020-05-13 05:15:18.471
+678	/20200416023232-ShiftFanafanaolaDashboardsToShowPreviousMonthData	2020-05-18 05:15:38.271
+679	/20200429021341-AddUNFPAReproductiveHealthProductsMonthOfStockReport	2020-05-18 05:15:38.491
+680	/20200504224323-AddSchoolEntityType	2020-05-18 05:15:41.126
+681	/20200520034215-RemoveDhisIntegrationMetadataForLaosSchoolsSurveys	2020-05-20 08:06:10.353
+682	/20200505015116-AddEntityHierarchyIdToProjectTable	2020-05-22 04:53:18.839
+683	/20200506031906-ChangeRootEntityToProjects	2020-05-22 04:53:20.049
+684	/20200506224325-AddLaosSchoolsProject	2020-05-22 04:53:20.474
+685	/20200507020955-AddLaosSchoolAlternativeHierarchyRelations	2020-05-22 04:53:35.326
+686	/20200507070444-AddLaosSchoolsSchoolTypeMapOverlay	2020-05-22 04:53:35.509
+687	/20200513054910-AddLaosSchoolsRadiusOverlays	2020-05-22 04:53:35.744
+688	/20200513063247-AddLaosSchoolBinaryMeasureMapOverlays	2020-05-22 04:53:35.894
+689	/20200513230725-AddLaosSchoolsDevPartnerOverlay	2020-05-22 04:53:36.095
+690	/20200514014908-AddProjectDashboardGroups	2020-05-22 04:53:36.374
+691	/20200514045247-RemoveWorldAsChildOfProjects	2020-05-22 04:53:36.667
+692	/20200514144900-AddLaosSchoolNumberOfChildrenHeatMap	2020-05-22 04:53:36.845
+693	/20200515041112-AddTupaiaToDataSourceServiceTypes	2020-05-22 04:53:41.052
+694	/20200518011240-AddDevelopmentPartnerPinOverlay	2020-05-22 04:53:41.138
+695	/20200518035908-AddDefaultValueForDataSourceConfig	2020-05-22 04:53:41.173
+696	/20200518035909-UseTupaiaAsDataServiceForLaosSchoolsSurveys	2020-05-22 04:53:43.205
+697	/20200519020537-AddLaosSchoolsDormitoryMapOverlay	2020-05-22 04:53:43.376
+698	/20200520071141-FixCaseInLaosSchoFixCaseInLaosSchoolsOverlays	2020-05-22 04:53:43.491
+699	/20200520090416-UpdateMapOverlaysDormitorySchools	2020-05-22 04:53:43.52
+700	/20200520112832-FixGroupingValuesInLaosSchoolsBinaryMeasuresOverlays	2020-05-22 04:53:43.716
+701	/20200520223152-UpdateMapOverlaysDevPartners	2020-05-22 04:53:43.911
+702	/20200521062959-AddIHRDashboardGroupToExplore	2020-05-22 04:53:44.003
+703	/20200522020712-SetLaosSchoolsDefaultDashboardAndOverlay	2020-05-22 04:53:44.032
+704	/20200514054511-AddBinaryShadedPolygonMeasuresLaosSchools	2020-05-22 06:36:37.011
+705	/20200515021226-AddLaosSchoolShadedPolygonsForDropOutRatesDistrictLevel	2020-05-22 06:36:37.239
+706	/20200517062602-AddLaosSchoolShadedPolygonsForRepetitionRatesDistrictLevel	2020-05-22 06:36:37.513
+707	/20200518004335-AddLaosSchoolDashboardGroups	2020-05-22 06:36:37.763
+708	/20200518020921-AddLaosSchoolsMaleFemalePieCharts	2020-05-22 06:36:38.023
+709	/20200519074549-AddLaosSchoolShadedPolygonsForDropOutRatesProvinceLevel	2020-05-22 06:36:38.222
+710	/20200519074621-AddLaosSchoolShadedPolygonsForRepetitionRatesProvinceLevel	2020-05-22 06:36:38.381
+711	/20200520044744-AddDropoutAndRepeatRatesByGradeBarLaosSchools	2020-05-22 06:36:38.648
+712	/20200520223705-AddLaosSchoolsLanguageOfStudentsPieChart	2020-05-22 06:36:38.777
+713	/20200521034842-AddLaosSchoolBinaryDashbaord	2020-05-22 06:36:38.865
+714	/20200521055848-RemoveUnwantedDataVisualizationsFromLaos	2020-05-22 06:36:39.074
+715	/20200521215551-AddBCD1ToInternalDataFetch	2020-05-22 06:36:39.228
+716	/20200521221711-FixLaosSchoolsBinaryMeasureMapOverlayNameTypo	2020-05-22 06:36:39.349
+717	/20200521221800-UpdateLaosSchoolsPieChartsDataServices	2020-05-22 06:36:39.552
+718	/20200522020600-FixNamesForLaosSchoolsOverlays	2020-05-22 06:36:39.714
+719	/20200522031911-laosSchoolsFixUnicefCode	2020-05-22 06:36:39.753
+720	/20200522032405-UpdateMapOverlayHeadings	2020-05-22 06:36:39.887
+721	/20200522055413-ChangeLaosSchoolsOverlayGroupName	2020-05-22 06:36:39.921
+722	/20200522010341-updateLaosSchoolsBinaryDashboard	2020-05-24 22:44:43.751
+723	/20200212052756-RemoveRedundantQuestionsWish	2020-06-05 15:50:56.197
+724	/20200503063358-AddTongaDHIS2HealthCertificatesDistributedReport	2020-06-05 15:50:56.583
+725	/20200508034036-UpdateDefaultTimePeriodFormatInDataBuilderConfig	2020-06-05 15:50:56.623
+726	/20200521005057-AddLaosDevelopmentPartnersReport	2020-06-05 15:50:56.66
+727	/20200521102324-AddUtilityServiceBinaryMeasuresBarCharts	2020-06-05 15:50:56.734
+728	/20200521155232-AddResourceSupportBinaryMeasuresBarCharts	2020-06-05 15:50:56.786
+729	/20200522022756-VisualisationsDefinedPerProject	2020-06-05 15:50:57.017
+730	/20200524212939-LimitVisualisationsPerProject	2020-06-05 15:50:57.5
+731	/20200524231548-AddSchoolPercentDashboards	2020-06-05 15:50:57.542
+732	/20200525044209-NoFunnyPeriods	2020-06-05 15:50:57.553
+733	/20200526005827-RemoveWorldDashboardGroups	2020-06-05 15:50:57.562
+734	/20200528011043-ChangeUNFPAReportsToUseQuarters	2020-06-05 15:50:57.574
+735	/20200528042309-DeleteAnswersForLaosSchoolsSelectVillageQuestions	2020-06-05 15:50:57.59
 \.
 
 
@@ -3140,7 +3270,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 620, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 735, true);
 
 
 --

@@ -15,7 +15,7 @@ import { groupEventsByPeriod } from '@tupaia/dhis-api';
  */
 
 class DataByValueBuilder extends DataBuilder {
-  async buildData(results) {
+  async buildData(results, optionCodeToName) {
     const { dataElement, valuesOfInterest, isPercentage } = this.config;
     const returnData = {};
     let totalEvents = 0;
@@ -28,10 +28,12 @@ class DataByValueBuilder extends DataBuilder {
         return;
       }
       const value = dataValues[dataElement].value;
-      if (!returnData[value]) {
-        returnData[value] = 0;
+      const valueForMatching = optionCodeToName ? optionCodeToName[value] : value;
+
+      if (!returnData[valueForMatching]) {
+        returnData[valueForMatching] = 0;
       }
-      returnData[value] += 1;
+      returnData[valueForMatching] += 1;
       totalEvents++;
     });
 

@@ -10,8 +10,10 @@ import PropTypes from 'prop-types';
 import RaisedButton from 'material-ui/RaisedButton';
 import Markdown from 'markdown-to-jsx';
 
-const DescriptionOverlay = ({ header, body, color, styles, onClose }) => (
+const DescriptionOverlay = ({ mainTitle, header, body, color, styles, onClose }) => (
   <div style={styles.descriptionOverlay} onClick={onClose}>
+    {mainTitle ? <div style={styles.descriptionOverlayMainTitle}>{mainTitle}</div> : null}
+
     <div onClick={e => e.stopPropagation()}>
       {color ? (
         <div style={styles.descriptionOverlayIcon}>
@@ -20,7 +22,7 @@ const DescriptionOverlay = ({ header, body, color, styles, onClose }) => (
       ) : null}
       {header ? <strong style={styles.descriptionOverlayHeader}>{header}</strong> : null}
       <div style={styles.descriptionOverlayBody}>
-        <Markdown children={body.replace(/\\n/g, '\n\n')} />
+        <Markdown>{body.replace(/\\n/g, '\n\n')}</Markdown>
       </div>
     </div>
     <RaisedButton
@@ -32,6 +34,7 @@ const DescriptionOverlay = ({ header, body, color, styles, onClose }) => (
 );
 
 DescriptionOverlay.propTypes = {
+  mainTitle: PropTypes.string,
   header: PropTypes.string,
   body: PropTypes.string,
   color: PropTypes.string,
@@ -39,6 +42,7 @@ DescriptionOverlay.propTypes = {
   styles: PropTypes.object.isRequired,
 };
 DescriptionOverlay.defaultProps = {
+  mainTitle: '',
   header: '',
   body: '',
   color: '',

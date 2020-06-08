@@ -6,6 +6,8 @@
 import { RouteHandler } from './RouteHandler';
 import { createAggregator } from '@tupaia/aggregator';
 import { Aggregator } from '../aggregator';
+import { Project } from '../models';
+import { filterEntities } from './utils';
 
 /**
  * Interface class for handling routes that fetch data from an aggregator
@@ -19,18 +21,32 @@ export class DataAggregatingRouteHandler extends RouteHandler {
 
   // Builds the list of entities data should be fetched from, using org unit descendents of the
   // selected entity (optionally of a specific entity type)
-  fetchDataSourceEntities = async (entity, defaultEntityType) => {
+  fetchDataSourceEntities = async (entity, dataSourceEntityType, dataSourceEntityFilter) => {
     // if a specific type was specified in either the query or the function parameter, build org
     // units of that type (otherwise we just use the nearest org unit descendants)
-    const dataSourceEntityType = this.query.dataSourceEntityType || defaultEntityType;
-    // if this entity is a project, follow the alternative hierarchy matching its name
-    const hierarchyId = entity.isProject() ? (await entity.project()).entity_hierarchy_id : null;
-    const dataSourceEntities = dataSourceEntityType
-      ? await entity.getDescendantsOfType(dataSourceEntityType, hierarchyId)
+
+    const entityType = this.query.dataSourceEntityType || dataSourceEntityType;
+    const hierarchyId = (await Project.findOne({ code: this.query.projectCode }))
+      .entity_hierarchy_id;
+
+    let dataSourceEntities = entityType
+      ? await entity.getDescendantsOfType(entityType, hierarchyId)
       : await entity.getNearestOrgUnitDescendants(hierarchyId);
-    const entityAccessList = await Promise.all(
-      dataSourceEntities.map(({ code }) => this.permissionsChecker.checkHasEntityAccess(code)),
+
+    const countryCodes = [...new Set(dataSourceEntities.map(e => e.country_code))];
+    const countryAccessList = await Promise.all(
+      countryCodes.map(countryCode => this.permissionsChecker.checkHasEntityAccess(countryCode)),
     );
-    return dataSourceEntities.filter((_, i) => entityAccessList[i]);
+    const countryAccess = countryCodes.reduce(
+      (obj, countryCode, i) => ({ ...obj, [countryCode]: countryAccessList[i] }),
+      {},
+    );
+    dataSourceEntities = dataSourceEntities.filter(e => countryAccess[e.country_code]);
+
+    if (dataSourceEntityFilter) {
+      dataSourceEntities = filterEntities(dataSourceEntities, dataSourceEntityFilter);
+    }
+
+    return dataSourceEntities;
   };
 }

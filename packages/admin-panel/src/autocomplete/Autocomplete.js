@@ -11,6 +11,8 @@ import 'react-select/dist/react-select.css';
 import { getAutocompleteState } from './selectors';
 import { changeSelection, changeSearchTerm, clearState } from './actions';
 
+const DEFAULT_PLACEHOLDER = 'Start typing to search';
+
 const shouldCommaCreateOption = () => false;
 
 class AutocompleteComponent extends React.Component {
@@ -44,7 +46,7 @@ class AutocompleteComponent extends React.Component {
         valueKey={optionLabelKey}
         options={results}
         isLoading={isLoading}
-        placeholder={placeholder}
+        placeholder={placeholder || DEFAULT_PLACEHOLDER}
         multi={allowMultipleValues}
         clearable={false}
         newOptionCreator={option => ({ [option.valueKey]: searchTerm })}

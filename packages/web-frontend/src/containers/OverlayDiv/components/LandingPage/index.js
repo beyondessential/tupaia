@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-one-expression-per-line */
 /**
  * Tupaia Web
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd.
@@ -12,7 +13,8 @@ import Button from '@material-ui/core/Button';
 import ExploreIcon from '@material-ui/icons/ExploreOutlined';
 
 import logo from '../../../../images/tupaia-logo-white.png';
-import { OverlayContent } from './OverlayContent';
+import { LoginPage } from './LoginPage';
+import { ProjectPage } from '../ProjectPage';
 
 const Container = styled.div`
   display: grid;
@@ -29,9 +31,9 @@ const TagLine = styled.p`
   margin: 10px 0 40px;
 `;
 
-const ExploreModeButton = styled(Button)`
+const ViewProjectsButton = styled(Button)`
   margin-bottom: 16px;
-  width: 250px;
+  width: 225px;
   height: 50px;
   border-radius: 3px;
   font-size: 13px;
@@ -41,22 +43,33 @@ const ExploreModeButton = styled(Button)`
   }
 `;
 
-export const LandingPage = ({ activateExploreMode, isUserLoggedIn }) => {
+export const LandingPage = ({ isUserLoggedIn }) => {
+  const [isProjectsPageVisible, setIsProjectsPageVisible] = React.useState(false);
+  const showProjects = React.useCallback(() => setIsProjectsPageVisible(true));
+  const hideProjects = React.useCallback(() => setIsProjectsPageVisible(false));
+
+  const isLoginPageVisible = !isUserLoggedIn && !isProjectsPageVisible;
+
   return (
     <Container>
       <div>
         <Logo src={logo} alt="Tupaia logo" />
         <TagLine>Health resource and supply chain mapping for the Asia Pacific region</TagLine>
-        <ExploreModeButton onClick={activateExploreMode} variant="outlined">
-          <ExploreIcon /> I just want to explore!
-        </ExploreModeButton>
+        {isLoginPageVisible && (
+          <ViewProjectsButton onClick={showProjects} variant="outlined">
+            <ExploreIcon /> View projects
+          </ViewProjectsButton>
+        )}
       </div>
-      <OverlayContent isUserLoggedIn={isUserLoggedIn} />
+      {isLoginPageVisible ? (
+        <LoginPage isUserLoggedIn={isUserLoggedIn} />
+      ) : (
+        <ProjectPage openLoginDialog={hideProjects} isUserLoggedIn={isUserLoggedIn} />
+      )}
     </Container>
   );
 };
 
 LandingPage.propTypes = {
-  activateExploreMode: PropTypes.func.isRequired,
   isUserLoggedIn: PropTypes.bool.isRequired,
 };

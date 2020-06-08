@@ -2,14 +2,40 @@
  * Tupaia Config Server
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
-
+import { Facility } from '/models';
 import { TotalCalculator } from './TotalCalculator';
 
 const METADATA_FIELDS = {
   $orgUnit: 'organisationUnit',
+  $orgUnitTypeName: 'organisationUnit',
+};
+
+const METADATA_FIELD_TRANSLATORS = {
+  $orgUnitTypeName: async results => {
+    const orgUnitCodes = results.map(({ organisationUnit }) => organisationUnit);
+    const facilities = await Facility.find({ code: orgUnitCodes });
+    const types = new Map(
+      facilities.map(fac => [
+        fac.code,
+        { typeName: fac.type_name, categoryCode: fac.categoryCode },
+      ]),
+    );
+
+    return results.map(res => {
+      const fac = types.get(res.organisationUnit);
+      const { typeName, categoryCode } = fac;
+      return {
+        ...res,
+        typeName,
+        categoryCode,
+      };
+    });
+  },
 };
 
 const isMetadataKey = input => Object.keys(METADATA_FIELDS).includes(input);
+
+const isMetadataTranslator = input => METADATA_FIELD_TRANSLATORS.hasOwnProperty(input);
 
 export const addPrefixToCell = (cell, prefix) => `${prefix}_${cell}`;
 
@@ -82,8 +108,35 @@ export class TableConfig {
     this.cells = cells;
   }
 
+  async processColumnMetadataTranslator(results) {
+    return this.getColumnMetadataTranslator()(results);
+  }
+
+  getColumnMetadataTranslator() {
+    return METADATA_FIELD_TRANSLATORS[this.baseConfig.columns];
+  }
+
+  hasColumnMetadataTranslator() {
+    return this.baseConfig.columns && isMetadataTranslator(this.baseConfig.columns);
+  }
+
   hasMetadataCategories() {
     return this.hasMetadataRowCategories() || this.hasMetadataColumnCategories();
+  }
+
+  hasRowDataElements() {
+    return (
+      this.baseConfig.rows[0].hasOwnProperty('code') ||
+      (this.baseConfig.rows[0].rows && this.baseConfig.rows[0].rows[0].hasOwnProperty('code'))
+    );
+  }
+
+  hasRowDescriptions() {
+    return (
+      this.baseConfig.rows[0].hasOwnProperty('descriptionDataElement') ||
+      (this.baseConfig.rows[0].rows &&
+        this.baseConfig.rows[0].rows[0].hasOwnProperty('descriptionDataElement'))
+    );
   }
 
   hasRowCategories() {

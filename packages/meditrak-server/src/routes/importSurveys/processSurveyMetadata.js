@@ -1,10 +1,10 @@
-import { convertCellToJson } from './utilities';
 import {
+  ImportValidationError,
+  ObjectValidator,
   constructAtMostOneItem,
   constructIsNotPresentOr,
-} from '../../validation/validatorFunctions';
-import { ImportValidationError } from '@tupaia/utils';
-import { ObjectValidator } from '../../validation';
+} from '@tupaia/utils';
+import { convertCellToJson } from './utilities';
 import { JsonFieldValidator } from './Validator/JsonFieldValidator';
 
 export const SURVEY_METADATA = 'SurveyMetadata';

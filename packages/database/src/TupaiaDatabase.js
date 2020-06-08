@@ -71,11 +71,14 @@ export class TupaiaDatabase {
 
   maxBindingsPerQuery = MAX_BINDINGS_PER_QUERY;
 
-  closeConnections() {
+  // can be replaced with 'generateTestId' by tests
+  generateId = generateId;
+
+  async closeConnections() {
     if (this.changeChannel) {
-      this.changeChannel.close();
+      await this.changeChannel.close();
     }
-    this.connection.destroy();
+    return this.connection.destroy();
   }
 
   getOrCreateChangeChannel() {
@@ -99,7 +102,7 @@ export class TupaiaDatabase {
     return this.changeChannelPromise;
   }
 
-  addChangeHandlerForCollection(collectionName, changeHandler, key = generateId()) {
+  addChangeHandlerForCollection(collectionName, changeHandler, key = this.generateId()) {
     // if a change handler is being added, this db needs a change channel - make sure it's instantiated
     this.getOrCreateChangeChannel();
     this.getChangeHandlersForCollection(collectionName)[key] = changeHandler;
@@ -244,7 +247,7 @@ export class TupaiaDatabase {
 
   async create(recordType, record) {
     if (!record.id) {
-      record.id = generateId();
+      record.id = this.generateId();
     }
     await this.query({
       recordType,
@@ -289,7 +292,7 @@ export class TupaiaDatabase {
 
   async updateOrCreate(recordType, identifiers, updatedFields) {
     // Put together the full new record that will be created, if no matching record exists
-    const newId = generateId(); // Generate a new id, in no id was provided
+    const newId = this.generateId(); // Generate a new id, in case no id was provided
     const updatedFieldsWithoutUndefined = JSON.parse(JSON.stringify(updatedFields));
     const newRecord = { id: newId, ...identifiers, ...updatedFieldsWithoutUndefined };
 

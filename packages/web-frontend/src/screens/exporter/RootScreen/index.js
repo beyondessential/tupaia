@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-one-expression-per-line */
 /**
  * Tupaia Web
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd.
@@ -20,6 +21,7 @@ import { ChartWrapper, getIsMatrix, MatrixWrapper } from '../../../components/Vi
 import { request } from '../../../utils';
 import { decodeUrl, getInitialLocation } from '../../../utils/historyNavigation';
 import { DARK_BLUE, WHITE } from '../../../styles';
+import { selectCurrentOrgUnit } from '../../../selectors';
 
 const initialLocation = getInitialLocation();
 const {
@@ -31,6 +33,7 @@ const {
   endDate,
   disasterStartDate,
   disasterEndDate,
+  project: projectCode,
 } = decodeUrl(initialLocation.pathname, initialLocation.search);
 
 const getCurrentDateString = () => {
@@ -65,6 +68,7 @@ export class RootScreen extends PureComponent {
       disasterStartDate,
       disasterEndDate,
       isExpanded: true,
+      projectCode,
     };
     const requestResourceUrl = `view?${queryString.stringify(urlParameters)}`;
     const viewContent = await request(requestResourceUrl, this.handleError, {});
@@ -109,8 +113,8 @@ export class RootScreen extends PureComponent {
   }
 }
 
-const mapStateToProps = ({ global }) => ({
-  organisationUnitName: global.currentOrganisationUnit.name,
+const mapStateToProps = state => ({
+  organisationUnitName: selectCurrentOrgUnit(state).name,
 });
 
 export default connect(mapStateToProps, null)(RootScreen);

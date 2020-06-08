@@ -6,7 +6,7 @@ export default class extends RouteHandler {
   static PermissionsChecker = PermissionsChecker;
 
   buildResponse = async () => {
-    const { entity } = this;
+    const { entity, query } = this;
     const { code: entityCode, name: entityName } = entity;
     const organisationLevel = entity.getOrganisationLevel();
     const userGroups = await this.req.getUserGroups(entityCode);
@@ -17,6 +17,7 @@ export default class extends RouteHandler {
       userGroups,
       organisationLevel,
       entity,
+      query.projectCode,
     );
 
     // Aggregate dashboardGroups into api response format
@@ -47,7 +48,10 @@ export default class extends RouteHandler {
               // from { General: { Public: {} } to { General: { Public: { views: [...] } }
               const views = await Promise.all(
                 dashboardReportIds.map(async viewId => {
-                  const report = await DashboardReport.findById(viewId);
+                  const report = await DashboardReport.findOne({
+                    id: viewId,
+                    drillDownLevel: null, //drillDownLevel = null so that only the parent reports are selected, we don't want drill down reports at this level.
+                  });
                   return { viewId, ...report.viewJson, requiresDataFetch: !!report.dataBuilder };
                 }),
               );

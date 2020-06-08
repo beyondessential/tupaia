@@ -8,7 +8,20 @@
   "rules": {
     "react/jsx-boolean-value": ["error", "never"],
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
-    "react/jsx-wrap-multilines": ["error", { "prop": "ignore" }]
+    "react/jsx-wrap-multilines": ["error", { "prop": "ignore" }],
+    "import/no-extraneous-dependencies": ["error", {
+      // This is fine
+      // https://github.com/airbnb/javascript/blob/master/packages/eslint-config-airbnb-base/rules/imports.js#L70
+      "devDependencies": [
+        "config/**",
+        "**/test.js",
+        "**/scripts/**"
+      ],
+      "optionalDependencies": false
+    }],
+    
+    // no-did-update-set-state is not needed as per: https://github.com/airbnb/javascript/issues/1875
+    "react/no-did-update-set-state": 0
   },
   "overrides": [
     {

@@ -3,10 +3,9 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 
-import { respond, ValidationError } from '@tupaia/utils';
-import { ENTITY_TYPES } from '../database/models/Entity';
-import { updateOrCreateSurveyResponse, addSurveyImage } from '../dataAccessors';
 import {
+  respond,
+  ValidationError,
   ObjectValidator,
   hasContent,
   isPresent,
@@ -16,7 +15,8 @@ import {
   takesIdForm,
   takesDateForm,
   constructIsOneOf,
-} from '../validation';
+} from '@tupaia/utils';
+import { updateOrCreateSurveyResponse, addSurveyImage } from '../dataAccessors';
 
 // Action constants
 const SUBMIT_SURVEY_RESPONSE = 'SubmitSurveyResponse';
@@ -75,7 +75,9 @@ async function validateSurveyResponseObject(models, surveyResponseObject) {
   if (!surveyResponseObject) {
     throw new ValidationError('Payload must contain survey_response_object');
   }
-  const surveyResponseObjectValidator = new ObjectValidator(SURVEY_RESPONSE_VALIDATORS);
+  const surveyResponseObjectValidator = new ObjectValidator(
+    constructSurveyResponseValidators(models),
+  );
   await surveyResponseObjectValidator.validate(surveyResponseObject);
   const answerObjectValidator = new ObjectValidator(constructAnswerValidators(models));
   for (let i = 0; i < surveyResponseObject.answers.length; i++) {
@@ -95,19 +97,19 @@ const clinicOrEntityIdExist = (id, obj) => {
   }
 };
 
-const ENTITIES_CREATED_VALIDATORS = {
+const constructEntitiesCreatedValidators = models => ({
   id: [hasContent, takesIdForm],
   code: [hasContent],
   parent_id: [takesIdForm],
   name: [hasContent],
-  type: [constructIsOneOf(Object.values(ENTITY_TYPES))],
+  type: [constructIsOneOf(Object.values(models.entity.types))],
   country_code: [hasContent],
-};
+});
 
-const isValidEntity = async value =>
-  new ObjectValidator(ENTITIES_CREATED_VALIDATORS).validate(value);
+const constructIsValidEntity = models => async value =>
+  new ObjectValidator(constructEntitiesCreatedValidators(models)).validate(value);
 
-const SURVEY_RESPONSE_VALIDATORS = {
+const constructSurveyResponseValidators = models => ({
   id: [hasContent, takesIdForm],
   assessor_name: [hasContent],
   clinic_id: [clinicOrEntityIdExist, constructIsEmptyOr(takesIdForm)],
@@ -117,8 +119,8 @@ const SURVEY_RESPONSE_VALIDATORS = {
   survey_id: [hasContent, takesIdForm],
   user_id: [hasContent, takesIdForm],
   answers: [isPresent],
-  entities_created: [constructIsEmptyOr(constructEveryItem(isValidEntity))],
-};
+  entities_created: [constructIsEmptyOr(constructEveryItem(constructIsValidEntity(models)))],
+});
 
 const constructAnswerValidators = models => ({
   id: [hasContent, takesIdForm],

@@ -1,75 +1,90 @@
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+import { Facility } from '/models';
+import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import {
-  parseFacilityTypeData,
-  sortFacilityTypesByLevel,
-  getBasicFacilityTypeNamePlural,
-  getAllFacilityTypesOfFacilities,
-  getFacilityStatuses,
-  filterOutOrganisationUnitsNotInWorld,
+  fetchOperationalFacilityCodes,
+  translateCategoryCodeToFacilityType,
+  pluraliseFacilityType,
 } from '/apiV1/utils';
+import { ENTITY_TYPES } from '/models/Entity';
+
+class CountOperationalFacilitiesByTypeBuilder extends DataBuilder {
+  async build() {
+    const facilityTypeAndLevelByCode = await this.fetchFacilityTypeData();
+    const operationalFacilityCodes = await fetchOperationalFacilityCodes(
+      this.aggregator,
+      this.entity.code,
+      this.period,
+    );
+
+    const countsByType = {};
+    operationalFacilityCodes.forEach(facilityCode => {
+      if (!facilityTypeAndLevelByCode[facilityCode]) {
+        // super edge case where we've collected operational status for a facility that we don't
+        // have an entity in the db for (does exist!)
+        return;
+      }
+      const { type, level } = facilityTypeAndLevelByCode[facilityCode];
+      if (!countsByType[type]) {
+        countsByType[type] = {
+          name: type,
+          value: 0,
+          level,
+        };
+      }
+      countsByType[type].value++;
+    });
+
+    // Convert data to array and if using the aggregation server for codes, sort by level
+    return { data: Object.values(countsByType).sort((a, b) => a.level - b.level) };
+  }
+
+  async fetchFacilityTypeData() {
+    // Get facility entities under this entity, for the given project
+    const facilityEntities = await this.fetchDescendantsOfType(ENTITY_TYPES.FACILITY);
+    if (facilityEntities.length === 0) return {};
+
+    // Find matching facility records
+    const facilities = await Facility.find({ code: facilityEntities.map(e => e.code) });
+
+    // Work out which "type" to use
+    // To have a cohesive aggregation of facility types across multiple countries, we use standard
+    // facility category levels 1, 2, 3, & 4. Countries may use specific facility types, but each
+    // must have a level that comes within one of the four standard levels, e.g. 1.4 or 3.1
+    const firstCountryCode = facilityEntities[0].country_code;
+    const isMultipleCountries = facilityEntities.some(e => e.country_code !== firstCountryCode);
+    const getTypeAndLevel = facility => {
+      if (isMultipleCountries) {
+        return {
+          type: pluraliseFacilityType(translateCategoryCodeToFacilityType(facility.category_code)),
+          level: parseInt(facility.category_code, 10),
+        };
+      }
+      return {
+        type: pluraliseFacilityType(facility.type_name),
+        level: parseFloat(facility.type),
+      };
+    };
+    const facilityTypeAndLevelByCode = {};
+    facilities.forEach(f => {
+      facilityTypeAndLevelByCode[f.code] = getTypeAndLevel(f);
+    });
+    return facilityTypeAndLevelByCode;
+  }
+}
 
 // Number of Operational Facilities by Facility Type
-export const countOperationalFacilitiesByType = async ({ query }, aggregator, dhisApi) => {
-  const { organisationUnitCode } = query;
-  // Retrieve organisation units and the groups they are in
-  const organisationUnits = await dhisApi.getOrganisationUnits(
-    {
-      filter: [{ 'ancestors.code': organisationUnitCode }],
-      fields: 'code,organisationUnitGroups[code]',
-    },
-    query,
-  );
-
-  const facilityStatusesByCode = await getFacilityStatuses(
+export const countOperationalFacilitiesByType = async (queryConfig, aggregator, dhisApi) => {
+  const { dataBuilderConfig, query, entity } = queryConfig;
+  const builder = new CountOperationalFacilitiesByTypeBuilder(
     aggregator,
-    query.organisationUnitCode,
-    query.period,
-    true,
+    dhisApi,
+    dataBuilderConfig,
+    query,
+    entity,
   );
-
-  // exclude facilities that have not been surveyed -- if they're present in the
-  // analytics result at all (whether true or false) then they've been surveyed
-  const checkSurveyed = ({ code }) => facilityStatusesByCode.hasOwnProperty(code);
-  const surveyedOrganisationUnits = organisationUnits.filter(checkSurveyed);
-
-  // If we are running this for the world dashboard, exclude any facilities in countries that should
-  // not show up on the world dashboard
-  const isForWorld = query.organisationUnitCode === 'World';
-  const facilitiesToInclude = isForWorld
-    ? filterOutOrganisationUnitsNotInWorld(surveyedOrganisationUnits)
-    : surveyedOrganisationUnits;
-  const allFacilityTypes = getAllFacilityTypesOfFacilities(facilitiesToInclude);
-
-  let facilityTypeCounts = {};
-  allFacilityTypes.forEach(row => {
-    const facilityTypeData = parseFacilityTypeData(row.code);
-
-    // To have a cohesive aggregation of facility types across the world, we use the standard
-    // facility type levels 1, 2, 3, & 4. Countries may use specific facility types, but each
-    // must have a level that comes within one of the four standard levels, e.g. 1.4 or 3.1
-    let facilityType = isForWorld
-      ? getBasicFacilityTypeNamePlural(Math.trunc(facilityTypeData.facilityTypeLevel))
-      : facilityTypeData.facilityTypeCode;
-
-    if (!facilityType) {
-      facilityType = 'Not specified';
-    }
-
-    if (facilityTypeCounts[facilityType]) {
-      facilityTypeCounts[facilityType].value++;
-    } else {
-      facilityTypeCounts[facilityType] = {
-        name: facilityType,
-        value: 1,
-      };
-
-      // Add level number if using the aggregation server for codes
-      facilityTypeCounts[facilityType].level = facilityTypeData.facilityTypeLevel;
-    }
-  });
-
-  // Convert data to array and if using the aggregation server for codes, sort by level
-  facilityTypeCounts = Object.values(facilityTypeCounts);
-  facilityTypeCounts = sortFacilityTypesByLevel(facilityTypeCounts);
-
-  return { data: facilityTypeCounts };
+  return builder.build();
 };

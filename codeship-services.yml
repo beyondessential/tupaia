@@ -47,6 +47,28 @@ web-config-server-testing:
   environment:
     CI_PACKAGE: web-config-server
 
+database-testing:
+  build:
+    dockerfile: full-testable-package.Dockerfile
+    args:
+      package: database
+  depends_on:
+    - db
+  encrypted_env_file: ./packages/web-config-server/ci-env-vars.encrypted # for the db credentials
+  environment:
+    CI_PACKAGE: database
+
+data-api-testing:
+  build:
+    dockerfile: full-testable-package.Dockerfile
+    args:
+      package: data-api
+  depends_on:
+    - db
+  encrypted_env_file: ./packages/web-config-server/ci-env-vars.encrypted # for the db credentials
+  environment:
+    CI_PACKAGE: data-api
+
 internal-dependency-testing:
   build:
     dockerfile: full-testable-package.Dockerfile

@@ -72,20 +72,40 @@ export class DataPerOrgUnitBuilder extends DataBuilder {
       // This functionalilty should be developed upon into a generic dataSource -> aggregation Entity mapping
       // eg. village -> facility, facility -> country, etc.
       // For now it only supports mapping to self, and mapping village -> facility
-      const dataSourceEntityType = getDataSourceEntityType(this.config);
       const aggregationEntityType = getAggregationEntityType(this.config);
-      if (
-        dataSourceEntityType !== ENTITY_TYPES.VILLAGE ||
-        dataSourceEntityType === aggregationEntityType
-      ) {
+      const dataSourceEntityType = getDataSourceEntityType(this.config, aggregationEntityType);
+
+      if (dataSourceEntityType === aggregationEntityType) {
         // No mapping required, mapper just returns original orgUnitCode
         return orgUnitCode => orgUnitCode;
       }
 
-      // Create village -> facility mapper
-      const villageCodes = results.map(({ [orgUnitKey]: orgUnit }) => orgUnit);
-      const villageToFacilityCode = await Entity.fetchChildToParentCode(villageCodes);
-      return orgUnitCode => villageToFacilityCode[orgUnitCode];
+      switch (dataSourceEntityType) {
+        case 'school': {
+          // create school -> ancestor mapper
+          const schoolToAnscestorCode = {};
+          const addSchoolToMap = async schoolCode => {
+            const school = await Entity.findOne({ code: schoolCode });
+            if (school) {
+              const ancestor = await school.getAncestorOfType(aggregationEntityType);
+              if (ancestor) {
+                schoolToAnscestorCode[school.code] = ancestor.code;
+              }
+            }
+          };
+          const schools = results.map(({ [orgUnitKey]: orgUnit }) => orgUnit);
+          await Promise.all(schools.map(school => addSchoolToMap(school)));
+          return orgUnitCode => schoolToAnscestorCode[orgUnitCode];
+        }
+        case ENTITY_TYPES.VILLAGE: {
+          // Create village -> facility mapper
+          const villageCodes = results.map(({ [orgUnitKey]: orgUnit }) => orgUnit);
+          const villageToFacilityCode = await Entity.fetchChildToParentCode(villageCodes);
+          return orgUnitCode => villageToFacilityCode[orgUnitCode];
+        }
+        default:
+          return orgUnitCode => orgUnitCode;
+      }
     };
 
     const mapper = await dataSourceToAggregateMapper();
