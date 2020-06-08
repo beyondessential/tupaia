@@ -4,6 +4,7 @@
  */
 
 import { AccessRequestModel } from './AccessRequest';
+import { AnswerModel } from './Answer';
 import { CountryModel } from './Country';
 import { DataElementDataGroupModel } from './DataElementDataGroup';
 import { DataSourceModel } from './DataSource';
@@ -22,6 +23,7 @@ import { UserModel } from './User';
 // export all models to be used in constructing a ModelRegistry
 export const modelClasses = {
   AccessRequest: AccessRequestModel,
+  Answer: AnswerModel,
   Country: CountryModel,
   DataElementDataGroup: DataElementDataGroupModel,
   DataSource: DataSourceModel,
