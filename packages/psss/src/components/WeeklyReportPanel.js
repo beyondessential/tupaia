@@ -16,7 +16,7 @@ import {
 import { PercentageChangeCell } from './Tables/TableCellComponents';
 import * as COLORS from '../theme/colors';
 import { Drawer, DrawerHeaderContent, DrawerFooter, DrawerHeader } from './Drawer';
-import { VerifiableTable, IndicatorsTable } from './Tables';
+import { CountryReportTable, IndicatorsTable } from './Tables';
 import { SiteAddress } from './SiteAddress';
 import {
   getSitesForWeek,
@@ -111,7 +111,7 @@ const WeeklyReportPanelComponent = React.memo(
             data={countryData}
             tableState={countryTableState}
           >
-            <VerifiableTable tableState={countryTableState} setTableState={setCountryTableState} />
+            <CountryReportTable tableState={countryTableState} setTableState={setCountryTableState} />
           </EditableTableProvider>
         </GreySection>
         <MainSection disabled={isSaving}>

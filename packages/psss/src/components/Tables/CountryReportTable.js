@@ -45,7 +45,7 @@ const TABLE_STATES = {
   LOADING: 'loading',
 };
 
-export const VerifiableTableComponent = ({ tableState, setTableState, onSubmit }) => {
+export const CountryReportTableComponent = ({ tableState, setTableState, onSubmit }) => {
   const { fields } = useContext(EditableTableContext);
 
   const handleEdit = () => {
@@ -90,7 +90,7 @@ export const VerifiableTableComponent = ({ tableState, setTableState, onSubmit }
   );
 };
 
-VerifiableTableComponent.propTypes = {
+CountryReportTableComponent.propTypes = {
   tableState: PropTypes.PropTypes.oneOf([
     TABLE_STATES.STATIC,
     TABLE_STATES.EDITABLE,
@@ -105,4 +105,4 @@ const mapDispatchToProps = dispatch => ({
   onSubmit: data => dispatch(updateWeeklyReportsData(data)),
 });
 
-export const VerifiableTable = connect(null, mapDispatchToProps)(VerifiableTableComponent);
+export const CountryReportTable = connect(null, mapDispatchToProps)(CountryReportTableComponent);

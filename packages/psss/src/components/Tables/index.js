@@ -8,4 +8,4 @@ export * from './CountrySummaryTable';
 export * from './CountryTable';
 export * from './SiteSummaryTable';
 export * from './IndicatorsTable';
-export * from './VerifiableTable';
+export * from './CountryReportTable';
