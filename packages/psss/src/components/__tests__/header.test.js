@@ -7,6 +7,8 @@ import React from 'react';
 import { render } from 'test-utils';
 import { Header } from '../Header';
 
-test('renders header', () => {
-  render(<Header title="Title" />);
+describe('header', () => {
+  it('renders', () => {
+    render(<Header title="Title" />);
+  });
 });
