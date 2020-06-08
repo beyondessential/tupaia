@@ -8,8 +8,8 @@ import { render } from 'test-utils';
 import { Header } from '../Header';
 
 describe('header', () => {
-  it('renders', () => {
-    const { getByText } = render(<Header title="Title" />);
-    expect(getByText('Title')).toBeInTheDocument();
+  it('renders', async () => {
+    const { findByText } = render(<Header title="Title" />);
+    expect(await findByText('Title')).toBeInTheDocument();
   });
 });

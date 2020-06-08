@@ -11,10 +11,6 @@ import { LoginForm } from '../Forms';
 jest.mock('../../api');
 
 describe('login form', () => {
-  it('renders', () => {
-    render(<LoginForm />);
-  });
-
   const testData = {
     email: 'tupaia@gmail.com',
     password: 'password123',
@@ -22,10 +18,11 @@ describe('login form', () => {
 
   it('submits a login form with email and password field', async () => {
     API.reauthenticate.mockResolvedValueOnce({ user: { name: 'tupaia' } });
-    const { getByPlaceholderText, getByText } = render(<LoginForm />);
+    const { getByText, getByPlaceholderText } = render(<LoginForm />);
+
     const emailInput = getByPlaceholderText(/email/i);
     const passwordInput = getByPlaceholderText(/password/i);
-    const submitButton = getByText(/login to your account/i).closest('button');
+    const submitButton = getByText(/login*/i).closest('button');
 
     fireEvent.change(emailInput, { target: { value: testData.email } });
     fireEvent.change(passwordInput, { target: { value: testData.password } });

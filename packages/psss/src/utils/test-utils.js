@@ -3,43 +3,19 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { Provider } from 'react-redux';
-import '@testing-library/jest-dom';
-import { render } from '@testing-library/react';
-import { createStore, applyMiddleware } from 'redux';
-import { MuiThemeProvider, StylesProvider } from '@material-ui/core/styles';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import thunk from 'redux-thunk';
-import { ThemeProvider } from 'styled-components';
-import { theme } from '../theme';
-import { createReducers } from '../createReducers';
+import '@testing-library/jest-dom';
+import { combineReducers, createStore, applyMiddleware } from 'redux';
+import { render } from '@testing-library/react';
+import { AppProviders } from '../AppProviders';
 import { API } from '../api';
+import { createReducers } from '../createReducers';
 
-function initStore() {
-  const store = createStore(createReducers, applyMiddleware(thunk.withExtraArgument({ api: API })));
-  API.injectReduxStore(store);
-  return store;
-}
+const reducer = combineReducers(createReducers());
+const store = createStore(reducer, applyMiddleware(thunk.withExtraArgument({ api: API })));
 
-const store = initStore();
-
-// eslint-disable-next-line react/prop-types
-const Providers = ({ children }) => {
-  return (
-    <Provider store={store}>
-      <StylesProvider injectFirst>
-        <MuiThemeProvider theme={theme}>
-          <ThemeProvider theme={theme}>
-            <CssBaseline />
-            {children}
-          </ThemeProvider>
-        </MuiThemeProvider>
-      </StylesProvider>
-    </Provider>
-  );
-};
+const Providers = props => <AppProviders store={store} {...props} />;
 
 const customRender = (ui, options) => render(ui, { wrapper: Providers, ...options });
 
-// override render method
 export { customRender as render };
