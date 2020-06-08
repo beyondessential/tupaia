@@ -93,7 +93,7 @@ const WeeklyReportPanelComponent = React.memo(
 
     const [activeSiteIndex, setActiveSiteIndex] = useState(0);
     const activeSite = sitesData[activeSiteIndex];
-    const { indicators: indicatorsData } = activeSite;
+    const { syndromes: syndromesData } = activeSite;
     const [indicatorTableState, setIndicatorTableState] = useState(TABLE_STATES.STATIC);
 
     const isSaving =
@@ -125,7 +125,7 @@ const WeeklyReportPanelComponent = React.memo(
           <Card variant="outlined" mb={3}>
             <EditableTableProvider
               columns={columns}
-              data={indicatorsData}
+              data={syndromesData}
               tableState={indicatorTableState}
             >
               <SyndromesTable

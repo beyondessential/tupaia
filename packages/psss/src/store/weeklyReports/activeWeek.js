@@ -43,7 +43,7 @@ export const getVerifiedStatuses = ({ weeklyReports }) => weeklyReports.activeWe
 
 export const getActiveWeekCountryData = ({ weeklyReports }) => {
   if (weeklyReports.activeWeek.id !== null) {
-    return weeklyReports.country.data[weeklyReports.activeWeek.id].indicators;
+    return weeklyReports.country.data[weeklyReports.activeWeek.id].syndromes;
   }
 
   return [];
