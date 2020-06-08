@@ -119,7 +119,7 @@ export class FakeAPI {
   countryWeek(index) {
     return {
       id: faker.random.uuid(),
-      index: index,
+      index,
       week: faker.random.number({
         min: 1,
         max: 10,

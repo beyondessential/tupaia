@@ -40,10 +40,6 @@ export const reloadCountryWeeks = ({ fetchOptions, queryParameters }) => async (
 
 export const updateWeeklyReportsData = () => reloadCountryWeeks({});
 
-export const confirmWeeklyReportsData = () => async () => {
-  console.log('confirm data...');
-};
-
 // selectors
 const STATUSES = {
   IDLE: 'idle',
@@ -71,12 +67,10 @@ const actionHandlers = {
     status: STATUSES.LOADING,
     fetchStartedAt,
   }),
-  [COUNTRY_WEEKS_LOAD_FINISH]: ({ data }) => {
-    return {
-      status: STATUSES.SUCCESS,
-      data: data,
-    };
-  },
+  [COUNTRY_WEEKS_LOAD_FINISH]: ({ data }) => ({
+    status: STATUSES.SUCCESS,
+    data: data,
+  }),
   [COUNTRY_WEEKS_LOAD_ERROR]: ({ error }) => ({
     status: STATUSES.ERROR,
     error: error.message,
