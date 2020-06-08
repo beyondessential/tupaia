@@ -6,24 +6,24 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 
-import { TupaiaDataService } from '../../../services/tupaia/TupaiaDataService';
-import { createModelsStub, createTupaiaDataApiStub } from './TupaiaDataService.stubs';
+import { TupaiaService } from '../../../services/tupaia/TupaiaService';
+import { createModelsStub, createTupaiaDataApiStub } from './TupaiaService.stubs';
 import {
   ANALYTICS,
   FETCH_ANALYTICS_RESULTS,
   DATA_SOURCES,
   EVENTS,
   DATA_ELEMENTS,
-} from './TupaiaDataService.fixtures';
+} from './TupaiaService.fixtures';
 
 const models = createModelsStub();
 const tupaiaDataApi = createTupaiaDataApiStub({
   fetchAnalyticsResponse: FETCH_ANALYTICS_RESULTS,
   fetchEventsResponse: EVENTS,
 });
-const tupaiaDataService = new TupaiaDataService(models, tupaiaDataApi);
+const tupaiaDataService = new TupaiaService(models, tupaiaDataApi);
 
-describe('TupaiaDataService', () => {
+describe('TupaiaService', () => {
   beforeEach(() => {
     tupaiaDataApi.fetchAnalytics.resetHistory();
     tupaiaDataApi.fetchEvents.resetHistory();
