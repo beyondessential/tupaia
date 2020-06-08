@@ -5,6 +5,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
+import PropTypes from 'prop-types';
 import MuiTableBody from '@material-ui/core/TableBody';
 import {
   Button,
@@ -16,7 +17,6 @@ import {
 } from '../../src';
 import { useTableData } from '../story-utils/useTableData';
 import * as COLORS from '../story-utils/theme/colors';
-import PropTypes from 'prop-types';
 
 export default {
   title: 'Tables/ExpandableTable',
@@ -128,7 +128,7 @@ const TableBody = ({ ...props }) => {
         return (
           <ExpandableTableRow
             onClick={handleRowClick}
-            expandedValue={expanded}
+            expanded={expanded}
             rowIndex={rowIndex}
             key={rowData.id}
             {...props}
