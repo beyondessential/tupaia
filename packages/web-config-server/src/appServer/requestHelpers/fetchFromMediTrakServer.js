@@ -25,6 +25,10 @@ export const fetchFromMediTrakServer = async (endpoint, payload, queryParameters
     },
   };
 
+  if (payload) {
+    config.body = JSON.stringify(payload);
+  }
+
   const response = await fetchWithTimeout(url, config);
   if (response.ok) {
     if (response.headers.get('Content-Type').includes('application/json')) {
