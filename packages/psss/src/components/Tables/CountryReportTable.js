@@ -22,8 +22,8 @@ import { BorderlessTableRow } from './TableRow';
 import { updateWeeklyReportsData } from '../../store';
 
 const VerifiableBody = props => {
-  const { tableState } = useContext(EditableTableContext);
-  const Row = tableState === 'editable' ? BorderlessTableRow : VerifiableTableRow;
+  const { tableStatus } = useContext(EditableTableContext);
+  const Row = tableStatus === 'editable' ? BorderlessTableRow : VerifiableTableRow;
   return <TableBody TableRow={Row} {...props} />;
 };
 
@@ -38,35 +38,35 @@ const GreyHeader = styled(FakeHeader)`
   border: none;
 `;
 
-const TABLE_STATES = {
+const TABLE_STATUSES = {
   STATIC: 'static',
   EDITABLE: 'editable',
   SAVING: 'saving',
   LOADING: 'loading',
 };
 
-export const CountryReportTableComponent = ({ tableState, setTableState, onSubmit }) => {
+export const CountryReportTableComponent = ({ tableStatus, setTableStatus, onSubmit }) => {
   const { fields } = useContext(EditableTableContext);
 
   const handleEdit = () => {
-    setTableState(TABLE_STATES.EDITABLE);
+    setTableStatus(TABLE_STATUSES.EDITABLE);
   };
 
   const handleCancel = () => {
-    setTableState(TABLE_STATES.STATIC);
+    setTableStatus(TABLE_STATUSES.STATIC);
   };
 
   const handleSubmit = async () => {
-    setTableState(TABLE_STATES.SAVING);
+    setTableStatus(TABLE_STATUSES.SAVING);
     await onSubmit(fields);
-    setTableState(TABLE_STATES.STATIC);
+    setTableStatus(TABLE_STATUSES.STATIC);
   };
 
   return (
-    <EditableTableLoader isLoading={tableState === TABLE_STATES.SAVING}>
+    <EditableTableLoader isLoading={tableStatus === TABLE_STATUSES.SAVING}>
       <LayoutRow>
         <Typography variant="h5">7/10 Sites Reported</Typography>
-        <GreyOutlinedButton onClick={handleEdit} disabled={tableState === TABLE_STATES.EDITABLE}>
+        <GreyOutlinedButton onClick={handleEdit} disabled={tableStatus === TABLE_STATUSES.EDITABLE}>
           Edit
         </GreyOutlinedButton>
       </LayoutRow>
@@ -75,7 +75,7 @@ export const CountryReportTableComponent = ({ tableState, setTableState, onSubmi
         <span>TOTAL CASES</span>
       </GreyHeader>
       <EditableTable Header={false} Body={VerifiableBody} />
-      {tableState === TABLE_STATES.EDITABLE && (
+      {tableStatus === TABLE_STATUSES.EDITABLE && (
         <LayoutRow>
           <MuiLink>Reset and use Sentinel data</MuiLink>
           <div>
@@ -91,13 +91,13 @@ export const CountryReportTableComponent = ({ tableState, setTableState, onSubmi
 };
 
 CountryReportTableComponent.propTypes = {
-  tableState: PropTypes.PropTypes.oneOf([
-    TABLE_STATES.STATIC,
-    TABLE_STATES.EDITABLE,
-    TABLE_STATES.LOADING,
-    TABLE_STATES.SAVING,
+  tableStatus: PropTypes.PropTypes.oneOf([
+    TABLE_STATUSES.STATIC,
+    TABLE_STATUSES.EDITABLE,
+    TABLE_STATUSES.LOADING,
+    TABLE_STATUSES.SAVING,
   ]).isRequired,
-  setTableState: PropTypes.func.isRequired,
+  setTableStatus: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
 };
 

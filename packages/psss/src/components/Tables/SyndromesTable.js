@@ -6,7 +6,6 @@ import React, { useContext } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import MuiLink from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
 import {
   EditableTableContext,
@@ -49,35 +48,35 @@ const StyledEditableTable = styled(EditableTable)`
   padding-right: 1.2rem;
 `;
 
-const TABLE_STATES = {
+const TABLE_STATUSES = {
   STATIC: 'static',
   EDITABLE: 'editable',
   SAVING: 'saving',
   LOADING: 'loading',
 };
 
-export const SyndromesTableComponent = ({ onSubmit, tableState, setTableState }) => {
+export const SyndromesTableComponent = ({ onSubmit, tableStatus, setTableStatus }) => {
   const { fields } = useContext(EditableTableContext);
 
   const handleEdit = () => {
-    setTableState(TABLE_STATES.EDITABLE);
+    setTableStatus(TABLE_STATUSES.EDITABLE);
   };
 
   const handleCancel = () => {
-    setTableState(TABLE_STATES.STATIC);
+    setTableStatus(TABLE_STATUSES.STATIC);
   };
 
   const handleSubmit = async () => {
-    setTableState(TABLE_STATES.SAVING);
+    setTableStatus(TABLE_STATUSES.SAVING);
     await onSubmit(fields);
-    setTableState(TABLE_STATES.STATIC);
+    setTableStatus(TABLE_STATUSES.STATIC);
   };
 
   return (
-    <EditableTableLoader isLoading={tableState === TABLE_STATES.SAVING}>
+    <EditableTableLoader isLoading={tableStatus === TABLE_STATUSES.SAVING}>
       <HeadingRow>
         <HeaderTitle>Sentinel Cases Reported</HeaderTitle>
-        <GreyOutlinedButton onClick={handleEdit} disabled={tableState === TABLE_STATES.EDITABLE}>
+        <GreyOutlinedButton onClick={handleEdit} disabled={tableStatus === TABLE_STATUSES.EDITABLE}>
           Edit
         </GreyOutlinedButton>
       </HeadingRow>
@@ -86,7 +85,7 @@ export const SyndromesTableComponent = ({ onSubmit, tableState, setTableState })
         <span>TOTAL CASES</span>
       </FakeHeader>
       <StyledEditableTable Header={false} Body={DottedTableBody} />
-      {tableState === TABLE_STATES.EDITABLE && (
+      {tableStatus === TABLE_STATUSES.EDITABLE && (
         <ActionsRow>
           <Button variant="outlined" onClick={handleCancel}>
             Cancel
@@ -99,13 +98,13 @@ export const SyndromesTableComponent = ({ onSubmit, tableState, setTableState })
 };
 
 SyndromesTableComponent.propTypes = {
-  tableState: PropTypes.PropTypes.oneOf([
-    TABLE_STATES.STATIC,
-    TABLE_STATES.EDITABLE,
-    TABLE_STATES.LOADING,
-    TABLE_STATES.SAVING,
+  tableStatus: PropTypes.PropTypes.oneOf([
+    TABLE_STATUSES.STATIC,
+    TABLE_STATUSES.EDITABLE,
+    TABLE_STATUSES.LOADING,
+    TABLE_STATUSES.SAVING,
   ]).isRequired,
-  setTableState: PropTypes.func.isRequired,
+  setTableStatus: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
 };
 

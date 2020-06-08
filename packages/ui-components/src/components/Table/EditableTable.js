@@ -47,7 +47,7 @@ const ReadOnlyTextField = styled(EditableTextField)`
 
 export const EditableTableContext = createContext({});
 
-const TABLE_STATES = {
+const TABLE_STATUSES = {
   STATIC: 'static',
   EDITABLE: 'editable',
   LOADING: 'loading',
@@ -55,7 +55,7 @@ const TABLE_STATES = {
 };
 
 const EditableCell = React.memo(({ id, columnKey }) => {
-  const { fields, handleFieldChange, tableState } = useContext(EditableTableContext);
+  const { fields, handleFieldChange, tableStatus } = useContext(EditableTableContext);
   const key = `${id}-${columnKey}`;
   const value = fields[key];
 
@@ -63,7 +63,7 @@ const EditableCell = React.memo(({ id, columnKey }) => {
     return null;
   }
 
-  if (tableState === TABLE_STATES.EDITABLE) {
+  if (tableStatus === TABLE_STATUSES.EDITABLE) {
     return (
       <EditableTextField name={columnKey} value={value} onChange={handleFieldChange} id={key} />
     );
@@ -132,14 +132,14 @@ const useFormFields = initialState => {
   ];
 };
 
-export const EditableTableProvider = React.memo(({ columns, data, tableState, children }) => {
+export const EditableTableProvider = React.memo(({ columns, data, tableStatus, children }) => {
   const initialState = makeInitialFormState(columns, data);
   const editableColumns = makeEditableColumns(columns);
   const [fields, handleFieldChange, setValues] = useFormFields(initialState);
 
   useEffect(() => {
     // loading must change after initial state is set
-    if (tableState === TABLE_STATES.LOADING || tableState === TABLE_STATES.SAVING) {
+    if (tableStatus === TABLE_STATUSES.LOADING || tableStatus === TABLE_STATUSES.SAVING) {
       setValues(initialState);
     }
   }, [data]);
@@ -149,7 +149,7 @@ export const EditableTableProvider = React.memo(({ columns, data, tableState, ch
       value={{
         fields,
         handleFieldChange,
-        tableState,
+        tableStatus,
         editableColumns,
         data,
       }}
@@ -160,11 +160,11 @@ export const EditableTableProvider = React.memo(({ columns, data, tableState, ch
 });
 
 EditableTableProvider.propTypes = {
-  tableState: PropTypes.PropTypes.oneOf([
-    TABLE_STATES.STATIC,
-    TABLE_STATES.EDITABLE,
-    TABLE_STATES.SAVING,
-    TABLE_STATES.LOADING,
+  tableStatus: PropTypes.PropTypes.oneOf([
+    TABLE_STATUSES.STATIC,
+    TABLE_STATUSES.EDITABLE,
+    TABLE_STATUSES.SAVING,
+    TABLE_STATUSES.LOADING,
   ]).isRequired,
   children: PropTypes.any.isRequired,
   columns: PropTypes.arrayOf(

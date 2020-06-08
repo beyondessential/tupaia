@@ -78,7 +78,7 @@ const WeeklyReportsPaneSubmitButton = handleConfirm => () => {
   );
 };
 
-const TABLE_STATES = {
+const TABLE_STATUSES = {
   STATIC: 'static',
   SAVING: 'saving',
 };
@@ -89,15 +89,15 @@ const WeeklyReportPanelComponent = React.memo(
       return null;
     }
 
-    const [countryTableState, setCountryTableState] = useState(TABLE_STATES.STATIC);
+    const [countryTableStatus, setCountryTableStatus] = useState(TABLE_STATUSES.STATIC);
 
     const [activeSiteIndex, setActiveSiteIndex] = useState(0);
     const activeSite = sitesData[activeSiteIndex];
     const { syndromes: syndromesData } = activeSite;
-    const [indicatorTableState, setIndicatorTableState] = useState(TABLE_STATES.STATIC);
+    const [indicatorTableStatus, setIndicatorTableStatus] = useState(TABLE_STATUSES.STATIC);
 
     const isSaving =
-      countryTableState === TABLE_STATES.SAVING || indicatorTableState === TABLE_STATES.SAVING;
+      countryTableStatus === TABLE_STATUSES.SAVING || indicatorTableStatus === TABLE_STATUSES.SAVING;
 
     return (
       <Drawer open={isOpen} onClose={handleClose}>
@@ -109,9 +109,12 @@ const WeeklyReportPanelComponent = React.memo(
           <EditableTableProvider
             columns={columns}
             data={countryData}
-            tableState={countryTableState}
+            tableStatus={countryTableStatus}
           >
-            <CountryReportTable tableState={countryTableState} setTableState={setCountryTableState} />
+            <CountryReportTable
+              tableStatus={countryTableStatus}
+              setTableStatus={setCountryTableStatus}
+            />
           </EditableTableProvider>
         </GreySection>
         <MainSection disabled={isSaving}>
@@ -126,11 +129,11 @@ const WeeklyReportPanelComponent = React.memo(
             <EditableTableProvider
               columns={columns}
               data={syndromesData}
-              tableState={indicatorTableState}
+              tableStatus={indicatorTableStatus}
             >
               <SyndromesTable
-                tableState={indicatorTableState}
-                setTableState={setIndicatorTableState}
+                tableStatus={indicatorTableStatus}
+                setTableStatus={setIndicatorTableStatus}
               />
             </EditableTableProvider>
           </Card>
