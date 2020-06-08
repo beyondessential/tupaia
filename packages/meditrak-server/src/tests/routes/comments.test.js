@@ -4,8 +4,9 @@
  */
 
 import { expect } from 'chai';
+import { generateTestId } from '@tupaia/database';
 import { TestableApp } from '../TestableApp';
-import { generateTestId, createAlert, createComment, resetTestData } from '../testUtilities';
+import { createAlert, createComment, resetTestData } from '../testUtilities';
 
 describe('Alert Comments CRUD', () => {
   const app = new TestableApp();
