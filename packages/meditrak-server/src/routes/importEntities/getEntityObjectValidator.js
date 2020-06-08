@@ -10,7 +10,8 @@ import {
   constructIsOneOf,
   constructThisOrThatHasContent,
   isPlainObject,
-} from '../../validation';
+} from '@tupaia/utils';
+
 const constructEntityFieldValidators = models => ({
   parent_code: [constructThisOrThatHasContent('district')],
   district: [constructThisOrThatHasContent('parent_code')],
