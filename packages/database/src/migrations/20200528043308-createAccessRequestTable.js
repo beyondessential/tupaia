@@ -24,7 +24,6 @@ exports.up = function(db) {
       permission_group text REFERENCES permission_group(name),
       approved BOOLEAN DEFAULT NULL,
       created_time TIMESTAMPTZ NOT NULL DEFAULT now(),
-      last_modified_time TIMESTAMPTZ NOT NULL DEFAULT now()
     );
   `);
 };
