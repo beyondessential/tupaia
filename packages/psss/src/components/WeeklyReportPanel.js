@@ -16,7 +16,7 @@ import {
 import { PercentageChangeCell } from './Tables/TableCellComponents';
 import * as COLORS from '../theme/colors';
 import { Drawer, DrawerHeaderContent, DrawerFooter, DrawerHeader } from './Drawer';
-import { CountryReportTable, SyndromesTable } from './Tables';
+import { CountryReportTable, SiteReportTable } from './Tables';
 import { SiteAddress } from './SiteAddress';
 import {
   getSitesForWeek,
@@ -131,7 +131,7 @@ const WeeklyReportPanelComponent = React.memo(
               data={syndromesData}
               tableStatus={indicatorTableStatus}
             >
-              <SyndromesTable
+              <SiteReportTable
                 tableStatus={indicatorTableStatus}
                 setTableStatus={setIndicatorTableStatus}
               />

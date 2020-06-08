@@ -55,7 +55,7 @@ const TABLE_STATUSES = {
   LOADING: 'loading',
 };
 
-export const SyndromesTableComponent = ({ onSubmit, tableStatus, setTableStatus }) => {
+export const SiteReportTableComponent = ({ onSubmit, tableStatus, setTableStatus }) => {
   const { fields } = useContext(EditableTableContext);
 
   const handleEdit = () => {
@@ -97,7 +97,7 @@ export const SyndromesTableComponent = ({ onSubmit, tableStatus, setTableStatus 
   );
 };
 
-SyndromesTableComponent.propTypes = {
+SiteReportTableComponent.propTypes = {
   tableStatus: PropTypes.PropTypes.oneOf([
     TABLE_STATUSES.STATIC,
     TABLE_STATUSES.EDITABLE,
@@ -112,4 +112,4 @@ const mapDispatchToProps = dispatch => ({
   onSubmit: data => dispatch(updateWeeklyReportsData(data)),
 });
 
-export const SyndromesTable = connect(null, mapDispatchToProps)(SyndromesTableComponent);
+export const SiteReportTable = connect(null, mapDispatchToProps)(SiteReportTableComponent);
