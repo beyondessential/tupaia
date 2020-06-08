@@ -9,6 +9,7 @@ import { Header } from '../Header';
 
 describe('header', () => {
   it('renders', () => {
-    render(<Header title="Title" />);
+    const { getByText } = render(<Header title="Title" />);
+    expect(getByText('Title')).toBeInTheDocument();
   });
 });

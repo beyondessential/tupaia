@@ -5,7 +5,7 @@
 import React from 'react';
 import { render } from 'test-utils';
 import { fireEvent } from '@testing-library/react';
-import { API as mockAPI } from '../../api';
+import { API } from '../../api';
 import { LoginForm } from '../Forms';
 
 jest.mock('../../api');
@@ -20,8 +20,8 @@ describe('login form', () => {
     password: 'password123',
   };
 
-  it('submits a login form with email field, password field and submit button', async () => {
-    mockAPI.reauthenticate.mockResolvedValueOnce({ user: { name: 'tupaia' } });
+  it('submits a login form with email and password field', async () => {
+    API.reauthenticate.mockResolvedValueOnce({ user: { name: 'tupaia' } });
     const { getByPlaceholderText, getByText } = render(<LoginForm />);
     const emailInput = getByPlaceholderText(/email/i);
     const passwordInput = getByPlaceholderText(/password/i);
@@ -31,13 +31,13 @@ describe('login form', () => {
     fireEvent.change(passwordInput, { target: { value: testData.password } });
     fireEvent.click(submitButton);
 
-    expect(mockAPI.reauthenticate).toHaveBeenCalledWith({
+    expect(API.reauthenticate).toHaveBeenCalledWith({
       emailAddress: testData.email,
       password: testData.password,
       deviceName: window.navigator.userAgent,
     });
 
-    expect(mockAPI.reauthenticate).toHaveBeenCalledTimes(1);
-    mockAPI.reauthenticate.mockReset();
+    expect(API.reauthenticate).toHaveBeenCalledTimes(1);
+    API.reauthenticate.mockReset();
   });
 });
