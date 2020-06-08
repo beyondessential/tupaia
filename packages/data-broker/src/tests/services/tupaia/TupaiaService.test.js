@@ -21,7 +21,7 @@ const tupaiaDataApi = createTupaiaDataApiStub({
   fetchAnalyticsResponse: FETCH_ANALYTICS_RESULTS,
   fetchEventsResponse: EVENTS,
 });
-const tupaiaDataService = new TupaiaService(models, tupaiaDataApi);
+const tupaiaService = new TupaiaService(models, tupaiaDataApi);
 
 describe('TupaiaService', () => {
   beforeEach(() => {
@@ -30,13 +30,11 @@ describe('TupaiaService', () => {
   });
 
   describe('push()', () => {
-    it('throws an error', () =>
-      expect(tupaiaDataService.push()).to.be.rejectedWith('not supported'));
+    it('throws an error', () => expect(tupaiaService.push()).to.be.rejectedWith('not supported'));
   });
 
   describe('delete()', () => {
-    it('throws an error', () =>
-      expect(tupaiaDataService.delete()).to.be.rejectedWith('not supported'));
+    it('throws an error', () => expect(tupaiaService.delete()).to.be.rejectedWith('not supported'));
   });
 
   describe('pull()', () => {
@@ -47,7 +45,7 @@ describe('TupaiaService', () => {
           options = {},
           invocationArgs,
         }) => {
-          await tupaiaDataService.pull(dataSources, 'dataElement', options);
+          await tupaiaService.pull(dataSources, 'dataElement', options);
           expect(tupaiaDataApi.fetchAnalytics).to.have.been.calledOnceWithExactly(invocationArgs);
         };
 
@@ -97,7 +95,7 @@ describe('TupaiaService', () => {
 
       describe('data pulling', () => {
         it('returns a { results, metadata } response', async () => {
-          const response = await tupaiaDataService.pull(
+          const response = await tupaiaService.pull(
             [DATA_SOURCES.POP01, DATA_SOURCES.POP02],
             'dataElement',
           );
@@ -107,12 +105,12 @@ describe('TupaiaService', () => {
 
         it('returns the analytics API response in the `results` field', () =>
           expect(
-            tupaiaDataService.pull([DATA_SOURCES.POP01, DATA_SOURCES.POP02], 'dataElement'),
+            tupaiaService.pull([DATA_SOURCES.POP01, DATA_SOURCES.POP02], 'dataElement'),
           ).to.eventually.have.deep.property('results', ANALYTICS));
 
         it('correctly builds the `metadata` field', () =>
           expect(
-            tupaiaDataService.pull([DATA_SOURCES.POP01, DATA_SOURCES.POP02], 'dataElement'),
+            tupaiaService.pull([DATA_SOURCES.POP01, DATA_SOURCES.POP02], 'dataElement'),
           ).to.eventually.have.deep.property('metadata', {
             dataElementCodeToName: {
               POP01: 'Population 1',
@@ -128,17 +126,13 @@ describe('TupaiaService', () => {
         options = {},
         invocationArgs,
       }) => {
-        await tupaiaDataService.pull(dataSources, 'dataGroup', options);
+        await tupaiaService.pull(dataSources, 'dataGroup', options);
         expect(tupaiaDataApi.fetchEvents).to.have.been.calledOnceWithExactly(invocationArgs);
       };
 
       it('throws an error if multiple data groups are provided', () =>
         expect(
-          tupaiaDataService.pull(
-            [DATA_SOURCES.POP01_GROUP, DATA_SOURCES.POP02_GROUP],
-            'dataGroup',
-            {},
-          ),
+          tupaiaService.pull([DATA_SOURCES.POP01_GROUP, DATA_SOURCES.POP02_GROUP], 'dataGroup', {}),
         ).to.be.rejectedWith(/Cannot .*multiple programs/));
 
       it('uses the data group code as `surveyCode`', () =>
@@ -181,7 +175,7 @@ describe('TupaiaService', () => {
 
       it('directly returns the event API response', () =>
         expect(
-          tupaiaDataService.pull([DATA_SOURCES.POP01_GROUP], 'dataGroup'),
+          tupaiaService.pull([DATA_SOURCES.POP01_GROUP], 'dataGroup'),
         ).to.eventually.deep.equal(EVENTS));
     });
   });
@@ -190,12 +184,12 @@ describe('TupaiaService', () => {
     describe('data element', () => {
       it('single code', () =>
         expect(
-          tupaiaDataService.pullMetadata([DATA_SOURCES.POP01], 'dataElement'),
+          tupaiaService.pullMetadata([DATA_SOURCES.POP01], 'dataElement'),
         ).to.eventually.deep.equal([DATA_ELEMENTS.POP01]));
 
       it('multiple codes', () =>
         expect(
-          tupaiaDataService.pullMetadata([DATA_SOURCES.POP01, DATA_ELEMENTS.POP02], 'dataElement'),
+          tupaiaService.pullMetadata([DATA_SOURCES.POP01, DATA_ELEMENTS.POP02], 'dataElement'),
         ).to.eventually.deep.equal([DATA_ELEMENTS.POP01, DATA_ELEMENTS.POP02]));
     });
   });
