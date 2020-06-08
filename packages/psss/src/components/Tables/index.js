@@ -7,5 +7,5 @@ export * from './CountriesTable';
 export * from './CountrySummaryTable';
 export * from './CountryTable';
 export * from './SiteSummaryTable';
-export * from './IndicatorsTable';
+export * from './SyndromesTable';
 export * from './CountryReportTable';
