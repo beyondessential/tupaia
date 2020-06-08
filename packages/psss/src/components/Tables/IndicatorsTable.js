@@ -40,7 +40,7 @@ const HeaderTitle = styled(Typography)`
 const ActionsRow = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   padding: 1rem;
 `;
 
@@ -88,13 +88,10 @@ export const IndicatorsTableComponent = ({ onSubmit, tableState, setTableState }
       <StyledEditableTable Header={false} Body={DottedTableBody} />
       {tableState === TABLE_STATES.EDITABLE && (
         <ActionsRow>
-          <MuiLink>Reset and use Sentinel data</MuiLink>
-          <div>
-            <Button variant="outlined" onClick={handleCancel}>
-              Cancel
-            </Button>
-            <Button onClick={handleSubmit}>Save</Button>
-          </div>
+          <Button variant="outlined" onClick={handleCancel}>
+            Cancel
+          </Button>
+          <Button onClick={handleSubmit}>Save</Button>
         </ActionsRow>
       )}
     </EditableTableLoader>
