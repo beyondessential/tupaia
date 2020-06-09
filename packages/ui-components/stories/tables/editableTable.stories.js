@@ -19,6 +19,7 @@ import {
   Table,
   EditableTableContext,
 } from '../../src';
+import { FakeAPI } from '../story-utils/api';
 
 export default {
   title: 'Tables/EditableTable',
@@ -78,7 +79,6 @@ const SubmitButton = ({ setTableStatus }) => {
   const { fields } = useContext(EditableTableContext);
 
   const handleSubmit = async () => {
-    console.log('updated values...', fields);
     setTableStatus(SAVING);
     await sleep(1000);
     setTableStatus(STATIC);
@@ -91,13 +91,8 @@ SubmitButton.propTypes = {
 };
 
 export const editableTable = () => {
-  const { loading, data } = useTableData();
   const [tableStatus, setTableStatus] = useState(STATIC);
-  const tableData = data.slice(0, 10);
-
-  useEffect(() => {
-    setTableStatus(loading ? LOADING : STATIC);
-  }, [loading]);
+  const { loading, data } = useTableData();
 
   const handleEditClick = () => {
     setTableStatus(EDITABLE);
@@ -109,7 +104,7 @@ export const editableTable = () => {
 
   return (
     <Container>
-      <EditableTableProvider columns={columns} data={tableData} tableStatus={tableStatus}>
+      <EditableTableProvider columns={columns} data={data} tableStatus={tableStatus}>
         <EditableTableLoader isLoading={tableStatus === SAVING}>
           <LayoutRow>
             <Typography variant="h6">Editable Table</Typography>

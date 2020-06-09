@@ -26,7 +26,6 @@ const EditableTextField = styled(TextField)`
     font-size: 15px;
     line-height: 18px;
     padding: 0.5rem 0;
-    text-align: center;
   }
 `;
 
@@ -74,7 +73,6 @@ const EditableCell = React.memo(({ id, columnKey }) => {
       name="cases"
       value={value}
       onChange={handleFieldChange}
-      id={key}
       InputProps={{ readOnly: true }}
     />
   );
@@ -138,10 +136,7 @@ export const EditableTableProvider = React.memo(({ columns, data, tableStatus, c
   const [fields, handleFieldChange, setValues] = useFormFields(initialState);
 
   useEffect(() => {
-    // loading must change after initial state is set
-    if (tableStatus === TABLE_STATUSES.LOADING || tableStatus === TABLE_STATUSES.SAVING) {
-      setValues(initialState);
-    }
+    setValues(initialState);
   }, [data]);
 
   return (
