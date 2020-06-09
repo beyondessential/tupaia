@@ -6,16 +6,19 @@
 import xlsx from 'xlsx';
 import moment from 'moment';
 import momentTimezone from 'moment-timezone';
-import { respond, DatabaseError, ImportValidationError, UploadError } from '@tupaia/utils';
-import { ANSWER_TYPES } from '../database/models/Answer';
 import {
+  respond,
+  DatabaseError,
+  ImportValidationError,
+  UploadError,
   ObjectValidator,
   hasContent,
   constructRecordExistsWithId,
   takesIdForm,
   constructIsOneOf,
-  constructAnswerValidator,
-} from '../validation';
+} from '@tupaia/utils';
+import { ANSWER_TYPES } from '../database/models/Answer';
+import { constructAnswerValidator } from './utilities/constructAnswerValidator';
 import { EXPORT_DATE_FORMAT, INFO_COLUMN_HEADERS, INFO_ROW_HEADERS } from './exportSurveyResponses';
 
 /**
