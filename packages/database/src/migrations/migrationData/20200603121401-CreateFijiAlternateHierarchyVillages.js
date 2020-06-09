@@ -11,7 +11,7 @@ export const FIJI_ENTITIES_NEW_VILLAGES = [
   // Naqiri (settlement)
   // Dawasamu	Tailevu	Naqiri (settlement)		-17.626312°	178.508625°
   {
-    code: 'FJ_NKI',
+    code: 'FJ_NQI',
     parent_code: 'FJ_Central',
     name: 'Naqiri',
     type: 'village',

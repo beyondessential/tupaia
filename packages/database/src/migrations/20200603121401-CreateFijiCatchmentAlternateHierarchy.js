@@ -4,6 +4,7 @@ import { insertObject, arrayToDbString, generateId } from '../utilities';
 import { FIJI_ENTITIES_PROVINCES } from './migrationData/20200603121401-CreateFijiAlternateHierarchyProvinces';
 import { FIJI_ENTITIES_SUB_CATCHMENTS } from './migrationData/20200603121401-CreateFijiAlternateHierarchyCatchments';
 import { FIJI_ENTITIES_NEW_VILLAGES } from './migrationData/20200603121401-CreateFijiAlternateHierarchyVillages';
+import FIJI_ENTITIES_PROVINCES_GEODATA from './migrationData/fiji_province_flat.json';
 
 var dbm;
 var type;
@@ -20,6 +21,17 @@ exports.setup = function(options, seedLink) {
 };
 
 const COUNTRY_CODE = 'FJ';
+
+const convertFeaturesToMap = (features) => {
+  return features.reduce(function(map, feature) {
+    map[feature.name] = feature.region;
+    return map;
+  }, {});
+};
+
+const addGeoDataToEntities = (entities, geoDatatMap) => {
+  return entities.map(entity => ({...entity, region: geoDatatMap[entity.name]}));
+}
 
 const parentCodeToId = async (db, parentCode) => {
   const record = await db.runSql(`SELECT id FROM entity WHERE code = '${parentCode}'`);
@@ -79,8 +91,9 @@ const insertEntity = async (db, entity, parentIdMap) => {
 };
 
 exports.up = async function(db) {
-  // console.log('FIJI_ENTITIES_PROVINCES', FIJI_ENTITIES_PROVINCES);
-  const provinceIdMap = await insertEntities(db, FIJI_ENTITIES_PROVINCES);
+  const provincesWithData = addGeoDataToEntities(FIJI_ENTITIES_PROVINCES, convertFeaturesToMap(FIJI_ENTITIES_PROVINCES_GEODATA));
+  //console.log('provincesWithData', provincesWithData);
+  const provinceIdMap = await insertEntities(db, provincesWithData);
 
   //console.log('FIJI_ENTITIES_SUB_CATCHMENTS', FIJI_ENTITIES_SUB_CATCHMENTS);
   const subcatchmentIdMap = await insertEntities(db, FIJI_ENTITIES_SUB_CATCHMENTS, provinceIdMap);
