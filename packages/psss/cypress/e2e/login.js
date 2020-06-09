@@ -9,7 +9,7 @@ describe('login', () => {
       username: 'caigertom@gmail.com',
       password: 'Pinkie3235',
     };
-    cy.visit('/');
+    cy.visit('/login');
     cy.findByPlaceholderText(/email/i).type(user.username);
     cy.findByPlaceholderText(/password/i).type(user.password);
     cy.findByText(/login*/i)

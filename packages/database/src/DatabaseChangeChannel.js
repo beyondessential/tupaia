@@ -4,8 +4,8 @@
  */
 
 import PGPubSub from 'pg-pubsub';
+import winston from 'winston';
 import { generateId } from './utilities/generateId';
-
 import { getConnectionConfig } from './getConnectionConfig';
 
 export class DatabaseChangeChannel extends PGPubSub {
@@ -62,7 +62,11 @@ export class DatabaseChangeChannel extends PGPubSub {
         tries++;
       };
 
-      pingRequest();
+      try {
+        pingRequest();
+      } catch (e) {
+        winston.error(e);
+      }
     });
   }
 
