@@ -41,7 +41,6 @@ const {
   surveyResponse,
   importDisaster,
   verifyEmail,
-  approveAccessRequest,
 } = routes;
 
 const MINIMUM_API_VERSION = 2;
@@ -128,7 +127,6 @@ export function addRoutesToApp(app) {
   /**
    * PUT routes
    */
-  //app.put('(/v[0-9]+)/accessRequests/:id', approveAccessRequest);
   app.put('(/v[0-9]+)/:resource/:id', editRecord);
 
   /**

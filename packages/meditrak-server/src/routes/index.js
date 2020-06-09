@@ -31,7 +31,6 @@ import { getCountryAccessList } from './getCountryAccessList';
 import { surveyResponse } from './surveyResponse';
 import { importDisaster } from './importDisaster';
 import { verifyEmail, requestResendEmail } from './verifyEmail';
-import { approveAccessRequest } from './approveAccessRequest';
 
 /**
  * All routes will be wrapped with an error catcher that simply passes the error to the next()
@@ -76,5 +75,4 @@ export default {
   importDisaster: catchAsyncErrors(importDisaster),
   verifyEmail: catchAsyncErrors(verifyEmail),
   requestResendEmail: catchAsyncErrors(requestResendEmail),
-  approveAccessRequest: catchAsyncErrors(approveAccessRequest),
 };
