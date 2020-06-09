@@ -138,6 +138,18 @@ const StyledFooter = styled.div`
   text-align: center;
   padding: 1.5rem;
   box-shadow: 0px -1px 0px ${COLORS.GREY_DE};
+
+  &:after {
+    display: ${props => (props.disabled ? 'block' : 'none')};
+    position: absolute;
+    content: '';
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    opacity: 0.5;
+  }
 `;
 
 const HelperText = styled(Typography)`
@@ -147,8 +159,8 @@ const HelperText = styled(Typography)`
   color: ${COLORS.TEXT_MIDGREY};
 `;
 
-export const DrawerFooter = ({ Action, helperText }) => (
-  <StyledFooter>
+export const DrawerFooter = ({ Action, helperText, disabled }) => (
+  <StyledFooter disabled={disabled}>
     <Action />
     <HelperText variant="body1">{helperText}</HelperText>
   </StyledFooter>
@@ -157,6 +169,11 @@ export const DrawerFooter = ({ Action, helperText }) => (
 DrawerFooter.propTypes = {
   Action: PropTypes.any.isRequired,
   helperText: PropTypes.string.isRequired,
+  disabled: PropTypes.bool,
+};
+
+DrawerFooter.defaultProps = {
+  disabled: false,
 };
 
 const DrawerContent = styled.div`

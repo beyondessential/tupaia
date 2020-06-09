@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import MuiLink from '@material-ui/core/Link';
@@ -13,8 +13,10 @@ import { useTableData } from '../story-utils/useTableData';
 import {
   Button,
   GreyOutlinedButton,
-  Table,
   EditableTableProvider,
+  EditableTable,
+  EditableTableLoader,
+  Table,
   EditableTableContext,
 } from '../../src';
 
@@ -52,28 +54,41 @@ const columns = [
   {
     title: 'Name',
     key: 'name',
+    align: 'left',
     editable: true,
   },
   {
     title: 'Surname',
     key: 'surname',
+    align: 'left',
     editable: true,
   },
   {
     title: 'Email',
     key: 'email',
+    align: 'left',
     editable: true,
   },
 ];
 
+function sleep(delay = 0) {
+  return new Promise(resolve => {
+    setTimeout(resolve, delay);
+  });
+}
+
 const STATIC = 'static';
 const EDITABLE = 'editable';
+const LOADING = 'loading';
+const SAVING = 'saving';
 
 const SubmitButton = ({ setTableState }) => {
   const { fields, metadata } = useContext(EditableTableContext);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     console.log('updated values...', fields, metadata);
+    setTableState(SAVING);
+    await sleep(1000);
     setTableState(STATIC);
   };
   return <Button onClick={handleSubmit}>Save</Button>;
@@ -83,15 +98,14 @@ SubmitButton.propTypes = {
   setTableState: PropTypes.func.isRequired,
 };
 
-const EditableTableComponent = () => {
-  const { editableColumns, data, tableState } = useContext(EditableTableContext);
-  return <Table columns={editableColumns} data={data} tableState={tableState} />;
-};
-
 export const editableTable = () => {
   const { loading, data } = useTableData();
   const [tableState, setTableState] = useState(STATIC);
   const tableData = data.slice(0, 10);
+
+  useEffect(() => {
+    setTableState(loading ? LOADING : STATIC);
+  }, [loading]);
 
   const handleEditClick = () => {
     setTableState(EDITABLE);
@@ -103,17 +117,15 @@ export const editableTable = () => {
 
   return (
     <Container>
-      <LayoutRow>
-        <Typography variant="h6">Editable Table</Typography>
-        <GreyOutlinedButton onClick={handleEditClick} disabled={tableState === EDITABLE}>
-          Edit
-        </GreyOutlinedButton>
-      </LayoutRow>
-      {loading ? (
-        <Loader>Loading...</Loader>
-      ) : (
-        <EditableTableProvider columns={columns} data={tableData} tableState={tableState}>
-          <EditableTableComponent />
+      <EditableTableProvider columns={columns} data={tableData} tableState={tableState}>
+        <EditableTableLoader isLoading={tableState === SAVING}>
+          <LayoutRow>
+            <Typography variant="h6">Editable Table</Typography>
+            <GreyOutlinedButton onClick={handleEditClick} disabled={tableState === EDITABLE}>
+              Edit
+            </GreyOutlinedButton>
+          </LayoutRow>
+          <EditableTable isLoading={loading} />
           {tableState === EDITABLE && (
             <LayoutRow>
               <MuiLink>Reset and use Sentinel data</MuiLink>
@@ -125,8 +137,8 @@ export const editableTable = () => {
               </div>
             </LayoutRow>
           )}
-        </EditableTableProvider>
-      )}
+        </EditableTableLoader>
+      </EditableTableProvider>
     </Container>
   );
 };

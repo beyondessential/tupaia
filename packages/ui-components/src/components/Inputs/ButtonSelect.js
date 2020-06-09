@@ -2,7 +2,6 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-
 import React, { useState, useEffect, useCallback } from 'react';
 import MuiMenu from '@material-ui/icons/Menu';
 import MuiChevronRight from '@material-ui/icons/ChevronRight';
@@ -27,6 +26,10 @@ const boxShadow = '0 0 6px rgba(0, 0, 0, 0.15)';
 const StyledTextField = styled(TextField)`
   .MuiSelect-root {
     padding-left: 3.5rem;
+
+    &:focus {
+      background: none;
+    }
   }
 
   .MuiInputBase-input {
@@ -54,9 +57,6 @@ const StyledTextField = styled(TextField)`
     padding-right: 0;
   }
 
-  /*
-  * Menu styles
-  */
   .MuiMenu-paper {
     max-height: 20rem;
   }
@@ -77,77 +77,36 @@ const Menu = styled(MuiMenu)`
   left: 1.2rem;
 `;
 
-/**
- * Button Select Field
- */
 export const ButtonSelect = ({
   id,
   label,
   options,
   labelKey,
   valueKey,
-  controlValue,
+  index,
   onChange,
-  defaultValue,
   disabled,
   muiProps,
 }) => {
-  const [value, setValue] = useState(defaultValue);
-  const [index, setIndex] = useState(null);
-
-  /*
-   * Set the first value as default if no default is set
-   */
-  useEffect(() => {
-    if (!defaultValue) {
-      setValue(options[0][valueKey]);
-    }
-  }, [defaultValue]);
-
-  /*
-   * Set internal value based on parent control value
-   */
-  useEffect(() => {
-    if (controlValue) {
-      setValue(controlValue);
-    }
-  }, [controlValue]);
-
-  /*
-   * Call on Change handler when value changes
-   */
-  useEffect(() => {
-    if (onChange) {
-      onChange(value);
-    }
-  }, [value]);
-
-  /*
-   * Set index based on value
-   */
-  useEffect(() => {
-    const newIndex = options.findIndex(option => option[valueKey] === value);
-    setIndex(newIndex);
-  }, [value]);
+  const value = options[index][valueKey];
 
   const handlePrev = useCallback(() => {
     const newIndex = value === '' || index === 0 ? options.length - 1 : index - 1;
-    const newValue = options[newIndex];
-    setValue(newValue[valueKey]);
-  }, [setValue, value, index, options]);
+    onChange(newIndex);
+  }, [options, onChange, index]);
 
   const handleNext = useCallback(() => {
     const newIndex = value === '' || index === options.length - 1 ? 0 : index + 1;
-    const newValue = options[newIndex];
-    setValue(newValue[valueKey]);
-  }, [setValue, value, index, options]);
+    onChange(newIndex);
+  }, [options, onChange, index]);
 
   const handleChange = useCallback(
     event => {
       const newValue = event.target.value;
-      setValue(newValue);
+      const newIndex = options.findIndex(option => option[valueKey] === newValue);
+      onChange(newIndex);
     },
-    [setValue],
+    [onChange, options],
   );
 
   return (
@@ -204,9 +163,8 @@ ButtonSelect.propTypes = {
   id: PropTypes.string.isRequired,
   label: PropTypes.string,
   options: PropTypes.array.isRequired,
-  controlValue: PropTypes.string,
-  onChange: PropTypes.func,
-  defaultValue: PropTypes.any,
+  index: PropTypes.number.isRequired,
+  onChange: PropTypes.func.isRequired,
   disabled: PropTypes.bool,
   labelKey: PropTypes.string,
   valueKey: PropTypes.string,
@@ -214,12 +172,9 @@ ButtonSelect.propTypes = {
 };
 
 ButtonSelect.defaultProps = {
-  defaultValue: '',
-  label: undefined,
+  label: null,
   labelKey: 'name',
   valueKey: 'id',
-  controlValue: undefined,
-  onChange: undefined,
   disabled: false,
   muiProps: undefined,
 };
