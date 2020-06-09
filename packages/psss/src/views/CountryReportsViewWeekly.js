@@ -15,7 +15,7 @@ import {
   Card,
   DataCardTabs,
 } from '@tupaia/ui-components';
-import { Container, Main, Sidebar, CountryTable } from '../components';
+import { Container, Main, Sidebar, CountryTable, WeeklyReportPanel } from '../components';
 
 const ExampleContent = styled.div`
   padding: 3rem 1rem;
@@ -50,6 +50,7 @@ export const CountryReportsViewWeekly = () => (
   <Container>
     <Main>
       <CountryTable />
+      <WeeklyReportPanel />
     </Main>
     <Sidebar>
       <Card variant="outlined">

@@ -57,7 +57,7 @@ const WeeklyReportsPaneSubmitButton = () => {
   );
 };
 
-export const WeeklyReportPane = () => {
+export const WeeklyReportPanel = () => {
   const [open, setOpen] = useState(false);
 
   const toggleDrawer = (event, isOpen) => {
@@ -72,27 +72,24 @@ export const WeeklyReportPane = () => {
   const handleClose = event => toggleDrawer(event, false);
 
   return (
-    <React.Fragment>
-      <Button onClick={handleOpen}>Review and Confirm Now</Button>
-      <Drawer open={open} onClose={handleClose}>
-        <DrawerHeader heading="Upcoming report" onClose={handleClose}>
-          <DrawerHeaderContent heading="American Samoa" date="Week 9 Feb 25 - Mar 1, 2020" />
-        </DrawerHeader>
-        <ErrorAlert>ILI Above Threshold. Please review and verify data.</ErrorAlert>
-        <GreySection>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur laudantium non odit
-          perspiciatis quidem, repellat voluptates! Architecto dolorum ducimus ea eum ipsam, iusto
-          laborum nulla quam! Hic laudantium reiciendis sapiente.
-        </GreySection>
-        <MainSection>
-          <ButtonSelect id="button-select" options={options} />
-          <SiteAddress address={address} contact={contact} />
-        </MainSection>
-        <DrawerFooter
-          Action={WeeklyReportsPaneSubmitButton}
-          helperText="Verify data to submit Weekly Report to Regional"
-        />
-      </Drawer>
-    </React.Fragment>
+    <Drawer open={open} onClose={handleClose}>
+      <DrawerHeader heading="Upcoming report" onClose={handleClose}>
+        <DrawerHeaderContent heading="American Samoa" date="Week 9 Feb 25 - Mar 1, 2020" />
+      </DrawerHeader>
+      <ErrorAlert>ILI Above Threshold. Please review and verify data.</ErrorAlert>
+      <GreySection>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur laudantium non odit
+        perspiciatis quidem, repellat voluptates! Architecto dolorum ducimus ea eum ipsam, iusto
+        laborum nulla quam! Hic laudantium reiciendis sapiente.
+      </GreySection>
+      <MainSection>
+        <ButtonSelect id="button-select" options={options} />
+        <SiteAddress address={address} contact={contact} />
+      </MainSection>
+      <DrawerFooter
+        Action={WeeklyReportsPaneSubmitButton}
+        helperText="Verify data to submit Weekly Report to Regional"
+      />
+    </Drawer>
   );
 };

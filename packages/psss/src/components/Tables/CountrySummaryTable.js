@@ -11,7 +11,8 @@ import { CondensedTableBody, FakeHeader } from '@tupaia/ui-components';
 import { ConnectedTable } from './ConnectedTable';
 import * as COLORS from '../../theme/colors';
 import { FIRST_COLUMN_WIDTH, SITES_REPORTED_COLUMN_WIDTH } from './constants';
-import { AFRCell, SitesReportedCell } from './TableCellComponents';
+import { createTotalCasesAccessor } from './dataAccessors';
+import { AlertCell, SitesReportedCell } from './TableCellComponents';
 
 const CountrySummaryTitle = styled.div`
   color: ${COLORS.TEXT_DARKGREY};
@@ -53,23 +54,32 @@ const countrySummaryTableColumns = [
   {
     title: 'AFR',
     key: 'AFR',
-    CellComponent: AFRCell,
+    accessor: createTotalCasesAccessor('afr'),
+    CellComponent: AlertCell,
   },
   {
     title: 'DIA',
     key: 'DIA',
+    accessor: createTotalCasesAccessor('dia'),
+    CellComponent: AlertCell,
   },
   {
     title: 'ILI',
     key: 'ILI',
+    accessor: createTotalCasesAccessor('ili'),
+    CellComponent: AlertCell,
   },
   {
     title: 'PF',
     key: 'PF',
+    accessor: createTotalCasesAccessor('pf'),
+    CellComponent: AlertCell,
   },
   {
-    title: 'DLI',
-    key: 'DLI',
+    title: 'DIL',
+    key: 'DIL',
+    accessor: createTotalCasesAccessor('dil'),
+    CellComponent: AlertCell,
   },
 ];
 
@@ -77,12 +87,11 @@ const TableHeader = () => {
   return <FakeHeader>PREVIOUS 8 WEEKS</FakeHeader>;
 };
 
-export const CountrySummaryTable = React.memo(props => (
+export const CountrySummaryTable = React.memo(() => (
   <React.Fragment>
     <TableHeader />
     <ConnectedTable
       endpoint="country-weeks"
-      fetchOptions={{ filterId: props.rowData.id }}
       columns={countrySummaryTableColumns}
       Header={false}
       Body={CondensedTableBody}
