@@ -29,7 +29,7 @@ const TableBodyComponent = React.memo(({ data, columns, activeWeekId, toggleTabl
         <ExpandableTableRow
           onClick={handleRowClick}
           expandedValue={expanded}
-          data={data}
+          rowData={rowData}
           rowIndex={rowIndex}
           key={rowData.id} // todo: update to key when real data is in place
           columns={columns}
