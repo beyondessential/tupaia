@@ -65,8 +65,7 @@ export async function editRecord(req, res) {
   if (CUSTOM_RECORD_UPDATERS[recordType]) {
     await CUSTOM_RECORD_UPDATERS[recordType](models, id, updatedFields, req);
   } else {
-    const dbModel = await models.getModelForDatabaseType(recordType);
-    await dbModel.updateById(id, updatedFields);
+    await models.getModelForDatabaseType(recordType).updateById(id, updatedFields);
   }
   respond(res, { message: `Successfully updated ${resource}` });
 }
