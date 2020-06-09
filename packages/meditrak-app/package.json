@@ -70,7 +70,6 @@
     "bump-patch": "npm-bump patch; ios/version-sync.sh",
     "bump-minor": "npm-bump minor; ios/version-sync.sh",
     "bugsnag-sourcemaps-upload": "scripts/uploadSourcemaps.sh",
-    "postinstall": "find node_modules -name \".babelrc\" -delete",
     "start-dev": "react-native run-android"
   },
   "dependencies": {
