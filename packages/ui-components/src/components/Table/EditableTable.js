@@ -131,11 +131,11 @@ const useFormFields = initialState => {
 };
 
 export const EditableTableProvider = React.memo(({ columns, data, tableStatus, children }) => {
-  const initialState = makeInitialFormState(columns, data);
   const editableColumns = makeEditableColumns(columns);
-  const [fields, handleFieldChange, setValues] = useFormFields(initialState);
+  const [fields, handleFieldChange, setValues] = useFormFields({});
 
   useEffect(() => {
+    const initialState = makeInitialFormState(columns, data);
     setValues(initialState);
   }, [data]);
 
