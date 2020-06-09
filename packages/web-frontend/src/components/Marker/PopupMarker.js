@@ -95,13 +95,16 @@ export class PopupMarker extends PureComponent {
     );
   }
 }
+const shouldDisplayCode = data => {
+  return data.organisationUnitCode.substring(0, 7) === 'LA_sch_';
+};
 
 export const MeasurePopup = ({ data, measureOptions, onOrgUnitClick }) => {
   const { name, coordinates, organisationUnitCode } = data;
 
   return (
     <PopupMarker
-      headerText={name}
+      headerText={shouldDisplayCode(data) ? `${organisationUnitCode}: ${name}` : name}
       buttonText="See Dashboard"
       coordinates={coordinates}
       onDetailButtonClick={() => onOrgUnitClick(organisationUnitCode)}

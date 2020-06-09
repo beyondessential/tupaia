@@ -89,7 +89,7 @@ const getMeasureLevel = mapOverlays => {
   const aggregationTypes = mapOverlays.map(({ measureBuilderConfig }) =>
     Entity.translateTypeForFrontend(measureBuilderConfig.aggregationEntityType),
   );
-  return [...new Set(aggregationTypes)].join(',');
+  return 'Facility';//[...new Set(aggregationTypes)].join(',');
 };
 
 export default class extends DataAggregatingRouteHandler {
