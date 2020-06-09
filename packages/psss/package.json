@@ -20,7 +20,7 @@
     "start": "react-scripts start",
     "start-dev": "npm-run-all -c -l -p start-server start",
     "start-server": "yarn workspace @tupaia/meditrak-server start",
-    "test": "test:jest",
+    "test": "npm run test:jest",
     "test:jest": "react-scripts test --env=jest-environment-jsdom-sixteen",
     "test:cypress:open": "start-server-and-test start-dev 3000 cypress:open",
     "test:cypress:run": "start-server-and-test start-dev 3000 cypress:run"
