@@ -94,10 +94,10 @@ const WeeklyReportPanelComponent = React.memo(
     const [activeSiteIndex, setActiveSiteIndex] = useState(0);
     const activeSite = sitesData[activeSiteIndex];
     const { syndromes: syndromesData } = activeSite;
-    const [indicatorTableStatus, setIndicatorTableStatus] = useState(TABLE_STATUSES.STATIC);
+    const [sitesTableStatus, setSitesTableStatus] = useState(TABLE_STATUSES.STATIC);
 
     const isSaving =
-      countryTableStatus === TABLE_STATUSES.SAVING || indicatorTableStatus === TABLE_STATUSES.SAVING;
+      countryTableStatus === TABLE_STATUSES.SAVING || sitesTableStatus === TABLE_STATUSES.SAVING;
 
     return (
       <Drawer open={isOpen} onClose={handleClose}>
@@ -129,11 +129,11 @@ const WeeklyReportPanelComponent = React.memo(
             <EditableTableProvider
               columns={columns}
               data={syndromesData}
-              tableStatus={indicatorTableStatus}
+              tableStatus={sitesTableStatus}
             >
               <SiteReportTable
-                tableStatus={indicatorTableStatus}
-                setTableStatus={setIndicatorTableStatus}
+                tableStatus={sitesTableStatus}
+                setTableStatus={setSitesTableStatus}
               />
             </EditableTableProvider>
           </Card>

@@ -43,7 +43,7 @@ const WarningWrapper = styled.div`
 
   &:after {
     position: absolute;
-    border: 1px solid ${COLORS.RED}
+    border: 1px solid ${COLORS.RED};
     content: '';
     display: block;
     top: 0.5rem;
@@ -57,16 +57,7 @@ const WarningWrapper = styled.div`
 
 const VerifiedWrapper = styled(WarningWrapper)`
   &:after {
-    position: absolute;
-    border: 1px solid ${COLORS.LIGHT_RED}
-    content: '';
-    display: block;
-    top: 0.5rem;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    border-radius: 3px;
-    box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
+    border: 1px solid ${COLORS.LIGHT_RED};
   }
 `;
 
