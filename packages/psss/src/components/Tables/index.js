@@ -7,3 +7,5 @@ export * from './CountriesTable';
 export * from './CountrySummaryTable';
 export * from './CountryTable';
 export * from './SiteSummaryTable';
+export * from './SiteReportTable';
+export * from './CountryReportTable';

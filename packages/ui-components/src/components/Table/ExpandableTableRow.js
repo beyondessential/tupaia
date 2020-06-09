@@ -57,24 +57,30 @@ TableRowExpansionContainer.defaultProps = {
 };
 
 export const ExpandableTableRow = React.memo(
-  ({ columns, data, rowIndex, className, SubComponent }) => {
-    const [expanded, setExpanded] = useState(false);
+  ({ columns, rowData, className, expandedValue, SubComponent, ExpansionContainer, onClick }) => {
+    const isControlled = expandedValue !== undefined;
+    const [expandedState, setExpandedState] = useState(false);
+    const expanded = isControlled ? expandedValue : expandedState;
 
     const handleClick = useCallback(() => {
-      setExpanded(prevExpanded => !prevExpanded);
-    }, []);
+      if (!isControlled) {
+        setExpandedState(prevExpanded => !prevExpanded);
+      } else if (onClick) {
+        onClick();
+      }
+    }, [setExpandedState, onClick, isControlled]);
 
     const row = (
       <StyledTableRow className={className} onClick={handleClick}>
-        <TableRowCells columns={columns} rowData={data[rowIndex]} />
+        <TableRowCells columns={columns} rowData={rowData} />
       </StyledTableRow>
     );
 
     if (SubComponent && expanded) {
       return (
-        <TableRowExpansionContainer parentRow={row} colSpan={columns.length}>
-          <SubComponent data={data} />
-        </TableRowExpansionContainer>
+        <ExpansionContainer parentRow={row} colSpan={columns.length}>
+          <SubComponent rowData={rowData} />
+        </ExpansionContainer>
       );
     }
 
@@ -84,13 +90,18 @@ export const ExpandableTableRow = React.memo(
 
 ExpandableTableRow.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
-  data: PropTypes.array.isRequired,
-  rowIndex: PropTypes.number.isRequired,
+  rowData: PropTypes.array.isRequired,
   SubComponent: PropTypes.any,
   className: PropTypes.string,
+  ExpansionContainer: PropTypes.any,
+  expandedValue: PropTypes.bool,
+  onClick: PropTypes.func,
 };
 
 ExpandableTableRow.defaultProps = {
-  SubComponent: PropTypes.null,
+  SubComponent: null,
   className: '',
+  ExpansionContainer: TableRowExpansionContainer,
+  expandedValue: undefined,
+  onClick: null,
 };

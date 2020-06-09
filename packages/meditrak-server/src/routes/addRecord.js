@@ -3,9 +3,9 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 
-import { respond } from '@tupaia/utils';
+import { ObjectValidator, respond } from '@tupaia/utils';
 import { TYPES } from '@tupaia/database';
-import { ObjectValidator, constructNewRecordValidationRules } from '../validation';
+import { constructNewRecordValidationRules } from './utilities';
 import { resourceToRecordType } from '../utilities';
 import { createUser, createJoinChild } from '../dataAccessors';
 

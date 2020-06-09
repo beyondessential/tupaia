@@ -29,7 +29,11 @@ export const TableRowCells = React.memo(({ columns, rowData }) =>
     const backgroundColor = typeof cellColor === 'function' ? cellColor(rowData) : cellColor;
     return (
       <TableCell background={backgroundColor} key={key} style={{ width: width }} align={align}>
-        {CellComponent ? <CellComponent {...rowData} columnKey={key} /> : displayValue}
+        {CellComponent ? (
+          <CellComponent {...rowData} displayValue={displayValue} columnKey={key} />
+        ) : (
+          displayValue
+        )}
       </TableCell>
     );
   }),
@@ -51,17 +55,16 @@ export const StyledTableRow = styled(MuiTableRow)`
   }
 `;
 
-export const TableRow = React.memo(({ columns, data, rowIndex, className }) => (
+export const TableRow = React.memo(({ columns, rowData, className }) => (
   <StyledTableRow className={className}>
-    <TableRowCells columns={columns} rowData={data[rowIndex]} />
+    <TableRowCells columns={columns} rowData={rowData} />
   </StyledTableRow>
 ));
 
 TableRow.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
-  data: PropTypes.array.isRequired,
+  rowData: PropTypes.array.isRequired,
   className: PropTypes.string,
-  rowIndex: PropTypes.number.isRequired,
 };
 
 TableRow.defaultProps = {

@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import MuiLink from '@material-ui/core/Link';
@@ -13,10 +13,13 @@ import { useTableData } from '../story-utils/useTableData';
 import {
   Button,
   GreyOutlinedButton,
-  Table,
   EditableTableProvider,
+  EditableTable,
+  EditableTableLoader,
+  Table,
   EditableTableContext,
 } from '../../src';
+import { FakeAPI } from '../story-utils/api';
 
 export default {
   title: 'Tables/EditableTable',
@@ -40,93 +43,91 @@ const LayoutRow = styled.div`
   padding: 1rem 0;
 `;
 
-const Loader = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 3rem 0;
-  text-align: center;
-`;
-
 const columns = [
   {
     title: 'Name',
     key: 'name',
+    align: 'left',
     editable: true,
   },
   {
     title: 'Surname',
     key: 'surname',
+    align: 'left',
     editable: true,
   },
   {
     title: 'Email',
     key: 'email',
+    align: 'left',
     editable: true,
   },
 ];
 
-const STATIC = 'static';
-const EDITABLE = 'editable';
+function sleep(delay = 0) {
+  return new Promise(resolve => {
+    setTimeout(resolve, delay);
+  });
+}
 
-const SubmitButton = ({ setTableState }) => {
-  const { fields, metadata } = useContext(EditableTableContext);
+const TABLE_STATUSES = {
+  STATIC: 'static',
+  EDITABLE: 'editable',
+  LOADING: 'loading',
+  SAVING: 'saving',
+};
 
-  const handleSubmit = () => {
-    console.log('updated values...', fields, metadata);
-    setTableState(STATIC);
+const SubmitButton = ({ setTableStatus }) => {
+  const { fields } = useContext(EditableTableContext);
+
+  const handleSubmit = async () => {
+    setTableStatus(TABLE_STATUSES.SAVING);
+    await sleep(1000);
+    setTableStatus(TABLE_STATUSES.STATIC);
   };
   return <Button onClick={handleSubmit}>Save</Button>;
 };
 
 SubmitButton.propTypes = {
-  setTableState: PropTypes.func.isRequired,
-};
-
-const EditableTableComponent = () => {
-  const { editableColumns, data, tableState } = useContext(EditableTableContext);
-  return <Table columns={editableColumns} data={data} tableState={tableState} />;
+  setTableStatus: PropTypes.func.isRequired,
 };
 
 export const editableTable = () => {
+  const [tableStatus, setTableStatus] = useState(TABLE_STATUSES.STATIC);
   const { loading, data } = useTableData();
-  const [tableState, setTableState] = useState(STATIC);
-  const tableData = data.slice(0, 10);
 
   const handleEditClick = () => {
-    setTableState(EDITABLE);
+    setTableStatus(TABLE_STATUSES.EDITABLE);
   };
 
   const handleCancel = () => {
-    setTableState(STATIC);
+    setTableStatus(TABLE_STATUSES.STATIC);
   };
 
   return (
     <Container>
-      <LayoutRow>
-        <Typography variant="h6">Editable Table</Typography>
-        <GreyOutlinedButton onClick={handleEditClick} disabled={tableState === EDITABLE}>
-          Edit
-        </GreyOutlinedButton>
-      </LayoutRow>
-      {loading ? (
-        <Loader>Loading...</Loader>
-      ) : (
-        <EditableTableProvider columns={columns} data={tableData} tableState={tableState}>
-          <EditableTableComponent />
-          {tableState === EDITABLE && (
+      <EditableTableProvider columns={columns} data={data} tableStatus={tableStatus}>
+        <EditableTableLoader isLoading={tableStatus === TABLE_STATUSES.SAVING}>
+          <LayoutRow>
+            <Typography variant="h6">Editable Table</Typography>
+            <GreyOutlinedButton onClick={handleEditClick} disabled={tableStatus === TABLE_STATUSES.EDITABLE}>
+              Edit
+            </GreyOutlinedButton>
+          </LayoutRow>
+          <EditableTable isLoading={loading} />
+          {tableStatus === TABLE_STATUSES.EDITABLE && (
             <LayoutRow>
               <MuiLink>Reset and use Sentinel data</MuiLink>
               <div>
                 <Button variant="outlined" onClick={handleCancel}>
                   Cancel
                 </Button>
-                <SubmitButton tableState={tableState} setTableState={setTableState} />
+                <SubmitButton tableStatus={tableStatus} setTableStatus={setTableStatus} />
               </div>
             </LayoutRow>
           )}
-        </EditableTableProvider>
-      )}
+        </EditableTableLoader>
+      </EditableTableProvider>
     </Container>
   );
 };

@@ -1,9 +1,9 @@
 /**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
 
-import { ValidationError } from '@tupaia/utils';
+import { ValidationError } from '../errors';
 
 /**
  * Allows a series of 'validator' functions to be run, e.g., across each row in an import file. The

@@ -29,7 +29,7 @@ export class FakeAPI {
       }
     } else if (endpoint === 'country-weeks') {
       for (let i = 0; i < 10; i++) {
-        const userData = this.countryWeek();
+        const userData = this.countryWeek(i);
         data.push(userData);
       }
     } else if (endpoint === 'sites') {
@@ -50,9 +50,76 @@ export class FakeAPI {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  countryWeek() {
+  syndromes() {
+    return [
+      {
+        id: 'afr',
+        title: 'Acute Fever and Rash (AFR)',
+        percentageChange: faker.random.number({
+          min: -15,
+          max: 15,
+        }),
+        totalCases: faker.random.number({
+          min: 0,
+          max: 1000,
+        }),
+      },
+      {
+        id: 'dia',
+        title: 'Diarrhoea (DIA)',
+        percentageChange: faker.random.number({
+          min: -15,
+          max: 15,
+        }),
+        totalCases: faker.random.number({
+          min: 0,
+          max: 1000,
+        }),
+      },
+      {
+        id: 'ili',
+        title: 'Influenza-like Illness (ILI)',
+        percentageChange: faker.random.number({
+          min: -15,
+          max: 15,
+        }),
+        totalCases: faker.random.number({
+          min: 0,
+          max: 1000,
+        }),
+      },
+      {
+        id: 'pf',
+        title: 'Prolonged Fever (AFR)',
+        percentageChange: faker.random.number({
+          min: -15,
+          max: 15,
+        }),
+        totalCases: faker.random.number({
+          min: 0,
+          max: 1000,
+        }),
+      },
+      {
+        id: 'dil',
+        title: 'Dengue-like Illness (DIL)',
+        percentageChange: faker.random.number({
+          min: -15,
+          max: 15,
+        }),
+        totalCases: faker.random.number({
+          min: 0,
+          max: 1000,
+        }),
+      },
+    ];
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  countryWeek(index) {
     return {
       id: faker.random.uuid(),
+      index,
       week: faker.random.number({
         min: 1,
         max: 10,
@@ -63,59 +130,32 @@ export class FakeAPI {
         min: 0,
         max: 30,
       }),
-      AFR: faker.random.number({
-        min: 0,
-        max: 1000,
-      }),
-      DIA: faker.random.number({
-        min: 0,
-        max: 1000,
-      }),
-      ILI: faker.random.number({
-        min: 0,
-        max: 1000,
-      }),
-      PF: faker.random.number({
-        min: 0,
-        max: 1000,
-      }),
-      DLI: faker.random.number({
-        min: 0,
-        max: 1000,
-      }),
+      syndromes: this.syndromes(),
       status: faker.random.arrayElement(['Submitted', 'Overdue']),
     };
   }
 
   // eslint-disable-next-line class-methods-use-this
   siteWeek() {
+    const city = faker.address.city();
     return {
       id: faker.random.uuid(),
-      name: faker.address.city(),
+      name: city,
       sitesReported: faker.random.number({
         min: 0,
         max: 30,
       }),
-      AFR: faker.random.number({
-        min: 0,
-        max: 1000,
-      }),
-      DIA: faker.random.number({
-        min: 0,
-        max: 1000,
-      }),
-      ILI: faker.random.number({
-        min: 0,
-        max: 1000,
-      }),
-      PF: faker.random.number({
-        min: 0,
-        max: 1000,
-      }),
-      DLI: faker.random.number({
-        min: 0,
-        max: 1000,
-      }),
+      address: {
+        name: `${city} Health Clinic`,
+        district: `${city} District 96799`,
+        country: faker.address.country(),
+      },
+      contact: {
+        name: faker.name.findName(),
+        department: faker.name.jobTitle(),
+        email: faker.internet.email(),
+      },
+      syndromes: this.syndromes(),
     };
   }
 
@@ -128,26 +168,7 @@ export class FakeAPI {
         min: 0,
         max: 30,
       }),
-      AFR: faker.random.number({
-        min: 0,
-        max: 1000,
-      }),
-      DIA: faker.random.number({
-        min: 0,
-        max: 1000,
-      }),
-      ILI: faker.random.number({
-        min: 0,
-        max: 1000,
-      }),
-      PF: faker.random.number({
-        min: 0,
-        max: 1000,
-      }),
-      DLI: faker.random.number({
-        min: 0,
-        max: 1000,
-      }),
+      syndromes: this.syndromes(),
     };
   }
 
