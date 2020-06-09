@@ -9,7 +9,6 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 import { TextField } from '../Inputs';
 import { Table } from './Table';
-import * as COLORS from '../../../stories/story-utils/theme/colors';
 
 const EditableTextField = styled(TextField)`
   margin: 0;
@@ -217,7 +216,7 @@ const LoadingHeading = styled(Typography)`
 
 const LoadingText = styled(Typography)`
   margin-bottom: 0.5rem;
-  color: ${COLORS.TEXT_MIDGREY};
+  color: ${props => props.theme.palette.text.secondary};
 `;
 
 /**

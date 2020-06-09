@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import MuiTable from '@material-ui/core/Table';
 import MuiTableRow from '@material-ui/core/TableRow';
@@ -62,7 +62,7 @@ export const ExpandableTableRow = React.memo(
     data,
     rowIndex,
     className,
-    expandedValue,
+    expanded: expandedValue,
     SubComponent,
     ExpansionContainer,
     onClick,
@@ -105,7 +105,7 @@ ExpandableTableRow.propTypes = {
   SubComponent: PropTypes.any,
   className: PropTypes.string,
   ExpansionContainer: PropTypes.any,
-  expandedValue: PropTypes.bool,
+  expanded: PropTypes.bool,
   onClick: PropTypes.func,
 };
 
@@ -113,6 +113,6 @@ ExpandableTableRow.defaultProps = {
   SubComponent: null,
   className: '',
   ExpansionContainer: TableRowExpansionContainer,
-  expandedValue: undefined,
+  expanded: undefined,
   onClick: null,
 };
