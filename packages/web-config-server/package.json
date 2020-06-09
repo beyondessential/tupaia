@@ -25,6 +25,7 @@
   "license": "MIT",
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
+    "@babel/runtime-corejs2": "^7.0.0",
     "@tupaia/access-policy": "3.0.0",
     "@tupaia/aggregator": "1.0.0",
     "@tupaia/auth": "1.0.0",
