@@ -85,12 +85,7 @@ export class TupaiaDatabase {
     if (!this.changeChannel) {
       this.changeChannel = new DatabaseChangeChannel();
       this.changeChannel.addChangeHandler(this.notifyChangeHandlers);
-
-      try {
-        this.changeChannelPromise = this.changeChannel.ping();
-      } catch (e) {
-        winston.error(e);
-      }
+      this.changeChannelPromise = this.changeChannel.ping();
     }
     return this.changeChannel;
   }
