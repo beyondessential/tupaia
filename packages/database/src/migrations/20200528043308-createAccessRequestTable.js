@@ -21,9 +21,14 @@ exports.up = function(db) {
       user_id text REFERENCES user_account(id),
       country_id text REFERENCES country(id),
       message text,
-      permission_group text REFERENCES permission_group(name),
+      permission_group_id text REFERENCES permission_group(id),
       approved BOOLEAN DEFAULT NULL,
       created_time TIMESTAMPTZ NOT NULL DEFAULT now(),
+      approving_user_id text DEFAULT NULL,
+      approval_note text DEFAULT NULL,
+      approval_date TIMESTAMPTZ DEFAULT NULL,
+
+      FOREIGN KEY (approving_user_id) REFERENCES user_account(id)
     );
   `);
 };

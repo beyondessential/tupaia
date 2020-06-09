@@ -12,6 +12,7 @@ import {
 import { TYPES } from '@tupaia/database';
 import { resourceToRecordType } from '../utilities';
 import {
+  editAccessRequest,
   editUserAccount,
   editOption,
   editOptionSet,
@@ -40,6 +41,7 @@ const CUSTOM_RECORD_UPDATERS = {
   [TYPES.OPTION_SET]: editOptionSet,
   [TYPES.OPTION]: editOption,
   [TYPES.SURVEY_SCREEN_COMPONENT]: editSurveyScreenComponent,
+  [TYPES.ACCESS_REQUEST]: editAccessRequest,
 };
 
 /**
@@ -49,8 +51,6 @@ export async function editRecord(req, res) {
   const { database, params, body: updatedFields, models } = req;
   const { resource, id } = params;
   const recordType = resourceToRecordType(resource);
-
-  console.log('EDIT RECORD', updatedFields);
 
   // Validate that the record matches required format
   if (!EDITABLE_RECORD_TYPES.includes(recordType)) {
@@ -63,10 +63,9 @@ export async function editRecord(req, res) {
 
   // Update the record, using a custom updater if necessary
   if (CUSTOM_RECORD_UPDATERS[recordType]) {
-    await CUSTOM_RECORD_UPDATERS[recordType](models, id, updatedFields);
+    await CUSTOM_RECORD_UPDATERS[recordType](models, id, updatedFields, req);
   } else {
     const dbModel = await models.getModelForDatabaseType(recordType);
-    console.log('DB MODEL', dbModel);
     await dbModel.updateById(id, updatedFields);
   }
   respond(res, { message: `Successfully updated ${resource}` });

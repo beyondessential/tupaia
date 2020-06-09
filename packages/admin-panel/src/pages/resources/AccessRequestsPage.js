@@ -20,8 +20,8 @@ const FIELDS = [
   },
   {
     Header: 'Permission Group',
-    source: 'permission_group',
-    editConfig: { optionsEndpoint: 'permissionGroups', optionValueKey: 'name' },
+    source: 'permission_group.name',
+    editConfig: { optionsEndpoint: 'permissionGroups' },
   },
 ];
 
@@ -42,6 +42,11 @@ const COLUMNS = [
           editConfig: {
             type: 'boolean',
           },
+        },
+        {
+          Header: 'Approval Note',
+          source: 'approval_note',
+          editConfig: { type: 'textarea' },
         },
       ],
     },
