@@ -89,7 +89,7 @@ EditableCell.propTypes = {
 const makeInitialFormState = (columns, data) => {
   return columns.reduce((state, column) => {
     if (column.editable) {
-      const newState = state;
+      const newState = { ...state };
       data.forEach(row => {
         const key = `${row.id}-${column.key}`;
         newState[key] = row[column.key];
