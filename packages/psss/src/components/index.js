@@ -10,4 +10,5 @@ export * from './Header';
 export * from './Tables';
 export * from './Forms';
 export * from './Drawer';
+export * from './WeeklyReportPanel';
 export * from './SiteAddress';

@@ -28,3 +28,16 @@ export const ErrorAlert = props => (
     {...props}
   />
 );
+
+export const SmallErrorAlert = styled(ErrorAlert)`
+  font-size: 0.8125rem;
+  border-radius: 3px;
+  padding: 0.5rem 1.25rem 0.5rem 1rem;
+  box-shadow: none;
+
+  .MuiAlert-icon {
+    padding: 0.5rem 0;
+    margin-right: 0.5rem;
+    font-size: 1.5em;
+  }
+`;

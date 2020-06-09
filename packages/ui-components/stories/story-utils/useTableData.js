@@ -12,12 +12,18 @@ export const useTableData = () => {
   const API = new FakeAPI();
 
   useEffect(() => {
+    let isCurrent = true;
     (async () => {
       setLoading(true);
       const userData = await API.get('users');
-      setData(userData.data);
-      setLoading(false);
+      if (isCurrent) {
+        setData(userData.data);
+        setLoading(false);
+      }
     })();
+    return () => {
+      isCurrent = false;
+    };
   }, []);
 
   return { loading, data };
