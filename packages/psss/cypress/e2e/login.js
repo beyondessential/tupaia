@@ -14,9 +14,8 @@ describe('login', () => {
     cy.findByPlaceholderText(/password/i).type(user.password);
     cy.findByText(/login*/i)
       .closest('button')
-      .click()
-    cy.findByText(/countries*/i, {selector: 'h1'})
-    cy.url()
-    .should('eq', `${Cypress.config().baseUrl}/`);
+      .click();
+    cy.findByText(/countries*/i, { selector: 'h1' });
+    cy.url().should('eq', `${Cypress.config().baseUrl}/`);
   });
 });

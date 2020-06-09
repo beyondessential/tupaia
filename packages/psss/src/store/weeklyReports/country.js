@@ -67,12 +67,10 @@ const actionHandlers = {
     status: STATUSES.LOADING,
     fetchStartedAt,
   }),
-  [COUNTRY_WEEKS_LOAD_FINISH]: ({ data }) => {
-    return {
-      status: STATUSES.SUCCESS,
-      data: data,
-    };
-  },
+  [COUNTRY_WEEKS_LOAD_FINISH]: ({ data }) => ({
+    status: STATUSES.SUCCESS,
+    data,
+  }),
   [COUNTRY_WEEKS_LOAD_ERROR]: ({ error }) => ({
     status: STATUSES.ERROR,
     error: error.message,
