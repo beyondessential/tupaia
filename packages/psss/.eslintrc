@@ -3,7 +3,8 @@
   "parser": "babel-eslint",
   "env": {
     "browser": true,
-    "mocha": true
+    "mocha": true,
+    "jest/globals": true
   },
   "rules": {
     "object-shorthand": ["error", "always"],
@@ -12,6 +13,18 @@
     "react/forbid-prop-types": "off",
     "jsx-a11y/href-no-hash": "off",
     "no-restricted-syntax": ["error", "ForInStatement", "LabeledStatement", "WithStatement"],
-    "import/no-extraneous-dependencies": ["error", {"devDependencies": true, "optionalDependencies": true, "peerDependencies": true}]
+    "import/no-extraneous-dependencies": [
+      "error",
+      { "devDependencies": true, "optionalDependencies": true, "peerDependencies": true }
+    ]
+  },
+  "plugins": ["jest"],
+  "settings": {
+    "import/resolver": {
+      "alias": [
+        ["test-utils", "./src/utils/test-utils.js"],
+        ["utils", "./src/utils"]
+      ]
+    }
   }
 }

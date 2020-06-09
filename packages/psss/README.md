@@ -20,6 +20,8 @@ You will also see any lint errors in the console.
 Launches the test runner in the interactive watch mode.<br />
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
+Note: Create React App does not include the latest version of `jest-dom` so it needs to be set in jest test scripts https://github.com/testing-library/react-testing-library/issues/141
+
 ### `yarn build`
 
 Builds the app for production to the `build` folder.<br />
@@ -55,4 +57,4 @@ In order to use Prettier in **Visual Studio Code**:
 
 1. Install the `Prettier` plugin
 2. Enable the `Editor: Format on Save` setting.
-3. You can now format a fi
+3. You can now format a file simply by saving it
