@@ -69,11 +69,11 @@ data-api-testing:
   environment:
     CI_PACKAGE: data-api
 
-data-psss-testing:
+psss-testing:
   build:
     dockerfile: full-testable-package.Dockerfile
     args:
-      package: data-psss
+      package: psss
   encrypted_env_file: ./packages/psss/ci-env-vars.encrypted
   environment:
     CI_PACKAGE: psss
