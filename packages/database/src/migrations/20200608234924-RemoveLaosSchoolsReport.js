@@ -1,15 +1,8 @@
 'use strict';
 
-import { arrayToDbString } from '../utilities';
-
 var dbm;
 var type;
 var seed;
-
-const REPORT_IDS = [
-  'Laos_Schools_MoES_Users_Percent_School',
-  'Laos_Schools_Primary_Standardised_Tests_School',
-];
 
 /**
  * We receive the dbmigrate dependency from dbmigrate initially.
@@ -24,7 +17,18 @@ exports.setup = function(options, seedLink) {
 exports.up = async function(db) {
   await db.runSql(`
     DELETE FROM "dashboardReport" 
-    WHERE id IN (${arrayToDbString(REPORT_IDS)})
+    WHERE id IN (
+      'Laos_Schools_MoES_Users_Percent_School',
+      'Laos_Schools_Primary_Standardised_Tests_School'
+    );
+
+    UPDATE "dashboardGroup"
+    SET "dashboardReports" = array_remove("dashboardReports", 'Laos_Schools_MoES_Users_Percent_School')
+    WHERE code = 'LA_Laos_Schools_School_Laos_Schools_User';
+
+    UPDATE "dashboardGroup"
+    SET "dashboardReports" = array_remove("dashboardReports", 'Laos_Schools_Primary_Standardised_Tests_School')
+    WHERE code = 'LA_Laos_Schools_School_Laos_Schools_User';
   `);
 
   // Just a bit of safety
