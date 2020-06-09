@@ -57,4 +57,4 @@ In order to use Prettier in **Visual Studio Code**:
 
 1. Install the `Prettier` plugin
 2. Enable the `Editor: Format on Save` setting.
-3. You can now format a fi
+3. You can now format a file simply by saving it
