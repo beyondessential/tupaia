@@ -45,50 +45,55 @@ const TABLE_STATUSES = {
   LOADING: 'loading',
 };
 
-export const CountryReportTableComponent = ({ tableStatus, setTableStatus, onSubmit }) => {
-  const { fields } = useContext(EditableTableContext);
+export const CountryReportTableComponent = React.memo(
+  ({ tableStatus, setTableStatus, onSubmit }) => {
+    const { fields } = useContext(EditableTableContext);
 
-  const handleEdit = useCallback(() => {
-    setTableStatus(TABLE_STATUSES.EDITABLE);
-  }, [setTableStatus]);
+    const handleEdit = useCallback(() => {
+      setTableStatus(TABLE_STATUSES.EDITABLE);
+    }, [setTableStatus]);
 
-  const handleCancel = useCallback(() => {
-    setTableStatus(TABLE_STATUSES.STATIC);
-  }, [setTableStatus]);
+    const handleCancel = useCallback(() => {
+      setTableStatus(TABLE_STATUSES.STATIC);
+    }, [setTableStatus]);
 
-  const handleSubmit = async () => {
-    setTableStatus(TABLE_STATUSES.SAVING);
-    await onSubmit(fields);
-    setTableStatus(TABLE_STATUSES.STATIC);
-  };
+    const handleSubmit = async () => {
+      setTableStatus(TABLE_STATUSES.SAVING);
+      await onSubmit(fields);
+      setTableStatus(TABLE_STATUSES.STATIC);
+    };
 
-  return (
-    <EditableTableLoader isLoading={tableStatus === TABLE_STATUSES.SAVING}>
-      <LayoutRow>
-        <Typography variant="h5">7/10 Sites Reported</Typography>
-        <GreyOutlinedButton onClick={handleEdit} disabled={tableStatus === TABLE_STATUSES.EDITABLE}>
-          Edit
-        </GreyOutlinedButton>
-      </LayoutRow>
-      <GreyHeader>
-        <span>SYNDROMES</span>
-        <span>TOTAL CASES</span>
-      </GreyHeader>
-      <EditableTable Header={false} Body={VerifiableBody} />
-      {tableStatus === TABLE_STATUSES.EDITABLE && (
+    return (
+      <EditableTableLoader isLoading={tableStatus === TABLE_STATUSES.SAVING}>
         <LayoutRow>
-          <MuiLink>Reset and use Sentinel data</MuiLink>
-          <div>
-            <Button variant="outlined" onClick={handleCancel}>
-              Cancel
-            </Button>
-            <Button onClick={handleSubmit}>Save</Button>
-          </div>
+          <Typography variant="h5">7/10 Sites Reported</Typography>
+          <GreyOutlinedButton
+            onClick={handleEdit}
+            disabled={tableStatus === TABLE_STATUSES.EDITABLE}
+          >
+            Edit
+          </GreyOutlinedButton>
         </LayoutRow>
-      )}
-    </EditableTableLoader>
-  );
-};
+        <GreyHeader>
+          <span>SYNDROMES</span>
+          <span>TOTAL CASES</span>
+        </GreyHeader>
+        <EditableTable Header={false} Body={VerifiableBody} />
+        {tableStatus === TABLE_STATUSES.EDITABLE && (
+          <LayoutRow>
+            <MuiLink>Reset and use Sentinel data</MuiLink>
+            <div>
+              <Button variant="outlined" onClick={handleCancel}>
+                Cancel
+              </Button>
+              <Button onClick={handleSubmit}>Save</Button>
+            </div>
+          </LayoutRow>
+        )}
+      </EditableTableLoader>
+    );
+  },
+);
 
 CountryReportTableComponent.propTypes = {
   tableStatus: PropTypes.PropTypes.oneOf([

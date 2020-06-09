@@ -74,7 +74,7 @@ const StyledExpansionContainer = styled(TableRowExpansionContainer)`
   }
 `;
 
-export const VerifiableTableRowComponent = props => {
+export const VerifiableTableRowComponent = React.memo(props => {
   const { rowData, verifiedStatuses, setVerifiedStatus } = props;
   const key = rowData.id;
   const status = verifiedStatuses[key];
@@ -111,7 +111,7 @@ export const VerifiableTableRowComponent = props => {
       ExpansionContainer={StyledExpansionContainer}
     />
   );
-};
+});
 
 VerifiableTableRowComponent.propTypes = {
   rowData: PropTypes.array.isRequired,

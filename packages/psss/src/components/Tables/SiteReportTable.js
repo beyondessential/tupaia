@@ -55,7 +55,7 @@ const TABLE_STATUSES = {
   LOADING: 'loading',
 };
 
-export const SiteReportTableComponent = ({ onSubmit, tableStatus, setTableStatus }) => {
+export const SiteReportTableComponent = React.memo(({ onSubmit, tableStatus, setTableStatus }) => {
   const { fields } = useContext(EditableTableContext);
 
   const handleEdit = useCallback(() => {
@@ -95,7 +95,7 @@ export const SiteReportTableComponent = ({ onSubmit, tableStatus, setTableStatus
       )}
     </EditableTableLoader>
   );
-};
+});
 
 SiteReportTableComponent.propTypes = {
   tableStatus: PropTypes.PropTypes.oneOf([
