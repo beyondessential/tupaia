@@ -41,6 +41,7 @@ export const modelClasses = {
 };
 
 // export any models and types that are extended in other packages
+export { AccessRequestModel } from './AccessRequest';
 export { CountryModel } from './Country';
 export { GeographicalAreaModel } from './GeographicalArea';
 export { MeditrakDeviceModel } from './MeditrakDevice';

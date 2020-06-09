@@ -50,6 +50,8 @@ export async function editRecord(req, res) {
   const { resource, id } = params;
   const recordType = resourceToRecordType(resource);
 
+  console.log('EDIT RECORD', updatedFields);
+
   // Validate that the record matches required format
   if (!EDITABLE_RECORD_TYPES.includes(recordType)) {
     throw new ValidationError(`${resource} is not a valid POST endpoint`);
@@ -63,7 +65,9 @@ export async function editRecord(req, res) {
   if (CUSTOM_RECORD_UPDATERS[recordType]) {
     await CUSTOM_RECORD_UPDATERS[recordType](models, id, updatedFields);
   } else {
-    await models.getModelForDatabaseType(recordType).updateById(id, updatedFields);
+    const dbModel = await models.getModelForDatabaseType(recordType);
+    console.log('DB MODEL', dbModel);
+    await dbModel.updateById(id, updatedFields);
   }
   respond(res, { message: `Successfully updated ${resource}` });
 }

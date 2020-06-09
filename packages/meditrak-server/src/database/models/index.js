@@ -3,6 +3,7 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
 
+export { AccessRequestModel as AccessRequest } from './AccessRequest';
 export { AnswerModel as Answer } from './Answer';
 export { APIClientModel as ApiClient } from './APIClient';
 export { ApiRequestLogModel as ApiRequestLog } from './ApiRequestLog';

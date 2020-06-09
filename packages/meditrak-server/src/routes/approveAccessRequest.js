@@ -13,9 +13,11 @@ export const approveAccessRequest = async (req, res) => {
     models,
   } = req;
 
-  await models.accessRequest.update({ id }, body);
+  console.log('approveAccessRequest!!');
 
-  if (body.approved) {
+  //await models.accessRequest.update({ id }, body);
+
+  if (false) {
     const [userCountryPermissionData] = await models.database.find(
       TYPES.ACCESS_REQUEST,
       { [`${ACCESS_REQUEST}.id`]: id, approved: true },
