@@ -33,6 +33,7 @@ exports.up = async function(db) {
 
 exports.down = function(db) {
   //No down migration;
+  return null;
 };
 
 exports._meta = {
