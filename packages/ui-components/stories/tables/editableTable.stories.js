@@ -70,18 +70,20 @@ function sleep(delay = 0) {
   });
 }
 
-const STATIC = 'static';
-const EDITABLE = 'editable';
-const LOADING = 'loading';
-const SAVING = 'saving';
+const TABLE_STATUSES = {
+  STATIC: 'static',
+  EDITABLE: 'editable',
+  LOADING: 'loading',
+  SAVING: 'saving',
+};
 
 const SubmitButton = ({ setTableStatus }) => {
   const { fields } = useContext(EditableTableContext);
 
   const handleSubmit = async () => {
-    setTableStatus(SAVING);
+    setTableStatus(TABLE_STATUSES.SAVING);
     await sleep(1000);
-    setTableStatus(STATIC);
+    setTableStatus(TABLE_STATUSES.STATIC);
   };
   return <Button onClick={handleSubmit}>Save</Button>;
 };
@@ -91,29 +93,29 @@ SubmitButton.propTypes = {
 };
 
 export const editableTable = () => {
-  const [tableStatus, setTableStatus] = useState(STATIC);
+  const [tableStatus, setTableStatus] = useState(TABLE_STATUSES.STATIC);
   const { loading, data } = useTableData();
 
   const handleEditClick = () => {
-    setTableStatus(EDITABLE);
+    setTableStatus(TABLE_STATUSES.EDITABLE);
   };
 
   const handleCancel = () => {
-    setTableStatus(STATIC);
+    setTableStatus(TABLE_STATUSES.STATIC);
   };
 
   return (
     <Container>
       <EditableTableProvider columns={columns} data={data} tableStatus={tableStatus}>
-        <EditableTableLoader isLoading={tableStatus === SAVING}>
+        <EditableTableLoader isLoading={tableStatus === TABLE_STATUSES.SAVING}>
           <LayoutRow>
             <Typography variant="h6">Editable Table</Typography>
-            <GreyOutlinedButton onClick={handleEditClick} disabled={tableStatus === EDITABLE}>
+            <GreyOutlinedButton onClick={handleEditClick} disabled={tableStatus === TABLE_STATUSES.EDITABLE}>
               Edit
             </GreyOutlinedButton>
           </LayoutRow>
           <EditableTable isLoading={loading} />
-          {tableStatus === EDITABLE && (
+          {tableStatus === TABLE_STATUSES.EDITABLE && (
             <LayoutRow>
               <MuiLink>Reset and use Sentinel data</MuiLink>
               <div>

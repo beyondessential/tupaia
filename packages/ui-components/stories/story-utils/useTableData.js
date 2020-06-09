@@ -17,7 +17,7 @@ export const useTableData = () => {
       setLoading(true);
       const userData = await API.get('users');
       if (isCurrent) {
-        setData(userData.data.slice(0, 6));
+        setData(userData.data);
         setLoading(false);
       }
     })();

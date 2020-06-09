@@ -15,12 +15,13 @@ export const openWeeklyReportsPanel = () => (dispatch, getState) => {
   const state = getState();
   const activeCountryWeekData = getActiveWeekCountryData(state);
 
-  const verifiedStatuses = activeCountryWeekData.reduce((object, item) => {
-    return {
+  const verifiedStatuses = activeCountryWeekData.reduce(
+    (object, item) => ({
       ...object,
       [item.id]: item.percentageChange > 10 ? false : null,
-    };
-  }, {});
+    }),
+    {},
+  );
 
   dispatch({ type: OPEN_PANEL, verifiedStatuses });
 };
