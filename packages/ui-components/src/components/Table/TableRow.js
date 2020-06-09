@@ -55,17 +55,16 @@ export const StyledTableRow = styled(MuiTableRow)`
   }
 `;
 
-export const TableRow = React.memo(({ columns, data, rowIndex, className }) => (
+export const TableRow = React.memo(({ columns, rowData, className }) => (
   <StyledTableRow className={className}>
-    <TableRowCells columns={columns} rowData={data[rowIndex]} />
+    <TableRowCells columns={columns} rowData={rowData} />
   </StyledTableRow>
 ));
 
 TableRow.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
-  data: PropTypes.array.isRequired,
+  rowData: PropTypes.array.isRequired,
   className: PropTypes.string,
-  rowIndex: PropTypes.number.isRequired,
 };
 
 TableRow.defaultProps = {

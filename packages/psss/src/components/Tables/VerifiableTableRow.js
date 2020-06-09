@@ -75,8 +75,8 @@ const StyledExpansionContainer = styled(TableRowExpansionContainer)`
 `;
 
 export const VerifiableTableRowComponent = props => {
-  const { data, rowIndex, verifiedStatuses, setVerifiedStatus } = props;
-  const key = data[rowIndex].id;
+  const { rowData, verifiedStatuses, setVerifiedStatus } = props;
+  const key = rowData.id;
   const status = verifiedStatuses[key];
 
   const WarningButtonComponent = () => {
@@ -114,8 +114,7 @@ export const VerifiableTableRowComponent = props => {
 };
 
 VerifiableTableRowComponent.propTypes = {
-  data: PropTypes.array.isRequired,
-  rowIndex: PropTypes.number.isRequired,
+  rowData: PropTypes.array.isRequired,
   verifiedStatuses: PropTypes.object.isRequired,
   setVerifiedStatus: PropTypes.func.isRequired,
 };
