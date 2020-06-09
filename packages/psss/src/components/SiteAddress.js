@@ -19,6 +19,7 @@ const Container = styled.div`
 const AddressContainer = styled.div`
   flex: 1;
   padding-top: 0.8rem;
+  padding-right: 0.8rem;
 `;
 
 const Map = styled.div`

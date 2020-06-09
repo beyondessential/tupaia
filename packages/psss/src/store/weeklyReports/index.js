@@ -9,9 +9,9 @@ import { site } from './site';
 import { activeWeek } from './activeWeek';
 
 export const weeklyReports = combineReducers({
-  activeWeekId: activeWeek,
-  country,
   site,
+  country,
+  activeWeek,
 });
 
 export * from './site';

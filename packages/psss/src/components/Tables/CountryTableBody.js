@@ -3,13 +3,13 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import MuiTableBody from '@material-ui/core/TableBody';
 import { ExpandableTableRow, tableColumnShape } from '@tupaia/ui-components';
 import { SiteSummaryTable } from './SiteSummaryTable';
-import { setActiveWeek } from '../../store';
+import { setActiveWeek, getActiveWeekId } from '../../store';
 
 const TableBodyComponent = React.memo(({ data, columns, activeWeekId, toggleTableRow }) => (
   <MuiTableBody>
@@ -17,18 +17,19 @@ const TableBodyComponent = React.memo(({ data, columns, activeWeekId, toggleTabl
       const key = rowData.index; // todo: use real id
       const expanded = activeWeekId === key;
 
-      const handleRowClick = () => {
+      const handleRowClick = useCallback(() => {
         if (expanded) {
           toggleTableRow(null);
         } else {
           toggleTableRow(key);
         }
-      };
+      }, [toggleTableRow, expanded, key]);
+
       return (
         <ExpandableTableRow
           onClick={handleRowClick}
           expandedValue={expanded}
-          data={data}
+          rowData={rowData}
           rowIndex={rowIndex}
           key={rowData.id} // todo: update to key when real data is in place
           columns={columns}
@@ -51,7 +52,7 @@ TableBodyComponent.defaultProps = {
 };
 
 const mapStateToProps = state => ({
-  activeWeekId: state.weeklyReports.activeWeekId,
+  activeWeekId: getActiveWeekId(state),
 });
 
 const mapDispatchToProps = dispatch => ({

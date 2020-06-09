@@ -12,7 +12,7 @@ export const TableBody = React.memo(({ data, columns, rowIdKey, TableRow }) => (
   <MuiTableBody>
     {data.map((rowData, rowIndex) => {
       const key = rowData[rowIdKey] || rowData[columns[0].key];
-      return <TableRow data={data} rowIndex={rowIndex} key={key} columns={columns} />;
+      return <TableRow rowData={rowData} rowIndex={rowIndex} key={key} columns={columns} />;
     })}
   </MuiTableBody>
 ));
