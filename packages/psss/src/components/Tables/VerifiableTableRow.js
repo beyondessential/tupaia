@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
+import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
@@ -90,13 +90,13 @@ export const VerifiableTableRowComponent = props => {
       );
     }
 
-    const handelVerify = () => {
+    const handleVerify = useCallback(() => {
       setVerifiedStatus(key);
-    };
+    }, [setVerifiedStatus]);
 
     return (
       <WarningWrapper>
-        <WarningButton fullWidth onClick={handelVerify}>
+        <WarningButton fullWidth onClick={handleVerify}>
           Please Verify Now
         </WarningButton>
       </WarningWrapper>

@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React, { useContext } from 'react';
+import React, { useContext, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Typography from '@material-ui/core/Typography';
@@ -48,13 +48,13 @@ const TABLE_STATUSES = {
 export const CountryReportTableComponent = ({ tableStatus, setTableStatus, onSubmit }) => {
   const { fields } = useContext(EditableTableContext);
 
-  const handleEdit = () => {
+  const handleEdit = useCallback(() => {
     setTableStatus(TABLE_STATUSES.EDITABLE);
-  };
+  }, [setTableStatus]);
 
-  const handleCancel = () => {
+  const handleCancel = useCallback(() => {
     setTableStatus(TABLE_STATUSES.STATIC);
-  };
+  }, [setTableStatus]);
 
   const handleSubmit = async () => {
     setTableStatus(TABLE_STATUSES.SAVING);

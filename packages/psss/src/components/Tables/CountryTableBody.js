@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import MuiTableBody from '@material-ui/core/TableBody';
@@ -17,13 +17,14 @@ const TableBodyComponent = React.memo(({ data, columns, activeWeekId, toggleTabl
       const key = rowData.index; // todo: use real id
       const expanded = activeWeekId === key;
 
-      const handleRowClick = () => {
+      const handleRowClick = useCallback(() => {
         if (expanded) {
           toggleTableRow(null);
         } else {
           toggleTableRow(key);
         }
-      };
+      }, [toggleTableRow, expanded]);
+
       return (
         <ExpandableTableRow
           onClick={handleRowClick}
