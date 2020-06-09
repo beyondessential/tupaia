@@ -25,7 +25,6 @@ const EditableTextField = styled(TextField)`
     font-size: 15px;
     line-height: 18px;
     padding: 0.5rem 0;
-    text-align: center;
   }
 `;
 
@@ -46,7 +45,7 @@ const ReadOnlyTextField = styled(EditableTextField)`
 
 export const EditableTableContext = createContext({});
 
-const TABLE_STATES = {
+const TABLE_STATUSES = {
   STATIC: 'static',
   EDITABLE: 'editable',
   LOADING: 'loading',
@@ -54,7 +53,7 @@ const TABLE_STATES = {
 };
 
 const EditableCell = React.memo(({ id, columnKey }) => {
-  const { fields, handleFieldChange, tableState } = useContext(EditableTableContext);
+  const { fields, handleFieldChange, tableStatus } = useContext(EditableTableContext);
   const key = `${id}-${columnKey}`;
   const value = fields[key];
 
@@ -62,7 +61,7 @@ const EditableCell = React.memo(({ id, columnKey }) => {
     return null;
   }
 
-  if (tableState === TABLE_STATES.EDITABLE) {
+  if (tableStatus === TABLE_STATUSES.EDITABLE) {
     return (
       <EditableTextField name={columnKey} value={value} onChange={handleFieldChange} id={key} />
     );
@@ -73,7 +72,6 @@ const EditableCell = React.memo(({ id, columnKey }) => {
       name="cases"
       value={value}
       onChange={handleFieldChange}
-      id={key}
       InputProps={{ readOnly: true }}
     />
   );
@@ -90,7 +88,7 @@ EditableCell.propTypes = {
 const makeInitialFormState = (columns, data) => {
   return columns.reduce((state, column) => {
     if (column.editable) {
-      const newState = state;
+      const newState = { ...state };
       data.forEach(row => {
         const key = `${row.id}-${column.key}`;
         newState[key] = row[column.key];
@@ -131,16 +129,13 @@ const useFormFields = initialState => {
   ];
 };
 
-export const EditableTableProvider = React.memo(({ columns, data, tableState, children }) => {
-  const initialState = makeInitialFormState(columns, data);
+export const EditableTableProvider = React.memo(({ columns, data, tableStatus, children }) => {
   const editableColumns = makeEditableColumns(columns);
-  const [fields, handleFieldChange, setValues] = useFormFields(initialState);
+  const [fields, handleFieldChange, setValues] = useFormFields({});
 
   useEffect(() => {
-    // loading must change after initial state is set
-    if (tableState === TABLE_STATES.LOADING || tableState === TABLE_STATES.SAVING) {
-      setValues(initialState);
-    }
+    const initialState = makeInitialFormState(columns, data);
+    setValues(initialState);
   }, [data]);
 
   return (
@@ -148,7 +143,7 @@ export const EditableTableProvider = React.memo(({ columns, data, tableState, ch
       value={{
         fields,
         handleFieldChange,
-        tableState,
+        tableStatus,
         editableColumns,
         data,
       }}
@@ -159,11 +154,11 @@ export const EditableTableProvider = React.memo(({ columns, data, tableState, ch
 });
 
 EditableTableProvider.propTypes = {
-  tableState: PropTypes.PropTypes.oneOf([
-    TABLE_STATES.STATIC,
-    TABLE_STATES.EDITABLE,
-    TABLE_STATES.SAVING,
-    TABLE_STATES.LOADING,
+  tableStatus: PropTypes.PropTypes.oneOf([
+    TABLE_STATUSES.STATIC,
+    TABLE_STATUSES.EDITABLE,
+    TABLE_STATUSES.SAVING,
+    TABLE_STATUSES.LOADING,
   ]).isRequired,
   children: PropTypes.any.isRequired,
   columns: PropTypes.arrayOf(

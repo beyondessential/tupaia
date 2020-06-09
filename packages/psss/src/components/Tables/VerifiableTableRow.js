@@ -43,7 +43,7 @@ const WarningWrapper = styled.div`
 
   &:after {
     position: absolute;
-    border: 1px solid ${COLORS.RED}
+    border: 1px solid ${COLORS.RED};
     content: '';
     display: block;
     top: 0.5rem;
@@ -57,16 +57,7 @@ const WarningWrapper = styled.div`
 
 const VerifiedWrapper = styled(WarningWrapper)`
   &:after {
-    position: absolute;
-    border: 1px solid ${COLORS.LIGHT_RED}
-    content: '';
-    display: block;
-    top: 0.5rem;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    border-radius: 3px;
-    box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
+    border: 1px solid ${COLORS.LIGHT_RED};
   }
 `;
 
@@ -83,9 +74,9 @@ const StyledExpansionContainer = styled(TableRowExpansionContainer)`
   }
 `;
 
-export const VerifiableTableRowComponent = props => {
-  const { data, rowIndex, verifiedStatuses, setVerifiedStatus } = props;
-  const key = data[rowIndex].id;
+export const VerifiableTableRowComponent = React.memo(props => {
+  const { rowData, verifiedStatuses, setVerifiedStatus } = props;
+  const key = rowData.id;
   const status = verifiedStatuses[key];
 
   const WarningButtonComponent = () => {
@@ -99,13 +90,13 @@ export const VerifiableTableRowComponent = props => {
       );
     }
 
-    const handelVerify = () => {
+    const handleVerify = () => {
       setVerifiedStatus(key);
     };
 
     return (
       <WarningWrapper>
-        <WarningButton fullWidth onClick={handelVerify}>
+        <WarningButton fullWidth onClick={handleVerify}>
           Please Verify Now
         </WarningButton>
       </WarningWrapper>
@@ -120,11 +111,10 @@ export const VerifiableTableRowComponent = props => {
       ExpansionContainer={StyledExpansionContainer}
     />
   );
-};
+});
 
 VerifiableTableRowComponent.propTypes = {
-  data: PropTypes.array.isRequired,
-  rowIndex: PropTypes.number.isRequired,
+  rowData: PropTypes.array.isRequired,
   verifiedStatuses: PropTypes.object.isRequired,
   setVerifiedStatus: PropTypes.func.isRequired,
 };

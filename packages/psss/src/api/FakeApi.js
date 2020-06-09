@@ -50,7 +50,7 @@ export class FakeAPI {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  indicators() {
+  syndromes() {
     return [
       {
         id: 'afr',
@@ -119,7 +119,7 @@ export class FakeAPI {
   countryWeek(index) {
     return {
       id: faker.random.uuid(),
-      index: index,
+      index,
       week: faker.random.number({
         min: 1,
         max: 10,
@@ -130,7 +130,7 @@ export class FakeAPI {
         min: 0,
         max: 30,
       }),
-      indicators: this.indicators(),
+      syndromes: this.syndromes(),
       status: faker.random.arrayElement(['Submitted', 'Overdue']),
     };
   }
@@ -155,7 +155,7 @@ export class FakeAPI {
         department: faker.name.jobTitle(),
         email: faker.internet.email(),
       },
-      indicators: this.indicators(),
+      syndromes: this.syndromes(),
     };
   }
 
@@ -168,7 +168,7 @@ export class FakeAPI {
         min: 0,
         max: 30,
       }),
-      indicators: this.indicators(),
+      syndromes: this.syndromes(),
     };
   }
 
