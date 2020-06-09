@@ -23,7 +23,7 @@ const TableBodyComponent = React.memo(({ data, columns, activeWeekId, toggleTabl
         } else {
           toggleTableRow(key);
         }
-      }, [toggleTableRow, expanded]);
+      }, [toggleTableRow, expanded, key]);
 
       return (
         <ExpandableTableRow
