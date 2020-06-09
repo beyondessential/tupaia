@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
+    "@babel/polyfill": "^7.0.0",
     "@mapbox/polyline": "^0.2.0",
     "@material-ui/core": "^4.5.1",
     "@material-ui/icons": "^3.0.1",
-    "@material-ui/styles":"^4.7.1",
-    "babel-polyfill": "^6.23.0",
+    "@material-ui/styles": "^4.7.1",
     "email-validator": "^1.1.1",
     "eslint-plugin-jest": "^22.1.2",
     "history": "^4.7.2",
@@ -43,14 +43,15 @@
     "whatwg-fetch": "2.0.3"
   },
   "devDependencies": {
+    "@babel/core": "^7.0.0",
+    "@babel/runtime-corejs2": "^7.0.0",
     "@beyondessential/eslint-config-beyondessential": "2.3.0",
     "autoprefixer": "7.1.0",
-    "babel-core": "6.24.1",
-    "babel-eslint": "^8.1.1",
-    "babel-jest": "20.0.3",
-    "babel-loader": "7.0.0",
-    "babel-preset-react-app": "^3.0.0",
-    "babel-runtime": "6.23.0",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-eslint": "^9.0.0",
+    "babel-jest": "^23.4.2",
+    "babel-loader": "^8.0.0",
+    "babel-preset-react-app": "^9.1.2",
     "case-sensitive-paths-webpack-plugin": "1.1.4",
     "chalk": "1.1.3",
     "css-loader": "0.28.1",
@@ -92,10 +93,5 @@
     "build-mobile": "REACT_APP_APP_TYPE=mobile node scripts/build.js && rm -rf builds/mobile && mv build builds/mobile",
     "build-exporter": "REACT_APP_APP_TYPE=exporter node scripts/build.js && rm -rf builds/exporter && mv build builds/exporter",
     "test": "node scripts/test.js --env=jsdom"
-  },
-  "babel": {
-    "presets": [
-      "react-app"
-    ]
   }
 }
