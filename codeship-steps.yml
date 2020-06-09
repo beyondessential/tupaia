@@ -33,9 +33,6 @@
             - name: test-data-api
               service: data-api-testing
               command: './packages/devops/scripts/ci/testBackend.sh'
-            - name: test-psss
-              service: psss-testing
-              command: './packages/devops/scripts/ci/testClient.sh'
             - name: test-internal-dependencies
               service: internal-dependency-testing
               command: './packages/devops/scripts/ci/testInternalDependencies.sh'

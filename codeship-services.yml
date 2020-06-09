@@ -69,15 +69,6 @@ data-api-testing:
   environment:
     CI_PACKAGE: data-api
 
-psss-testing:
-  build:
-    dockerfile: full-testable-package.Dockerfile
-    args:
-      package: psss
-  encrypted_env_file: ./packages/psss/ci-env-vars.encrypted
-  environment:
-    CI_PACKAGE: psss
-
 internal-dependency-testing:
   build:
     dockerfile: full-testable-package.Dockerfile
