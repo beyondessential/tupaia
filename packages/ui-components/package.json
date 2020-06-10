@@ -1,0 +1,22 @@
+{
+  "name": "@tupaia/ui-components",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "description": "A library of user interface components for the Tupaia project.",
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beyondessential/tupaia"
+  },
+  "bugs": {
+    "url": "https://github.com/beyondessential/tupaia/issues"
+  },
+  "homepage": "https://github.com/beyondessential/tupaia",
+  "scripts": {
+    "storybook": "start-storybook -s ./public -p 6006",
+    "build": "cross-env NODE_ENV=production webpack",
+    "test": "true"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
