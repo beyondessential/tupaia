@@ -379,12 +379,25 @@ export const VIEW_STYLES = {
     fontSize: 9,
   },
   overlayPeriodRange: {
+    // Positioning
     position: 'relative',
-    color: darkWhite,
+    width: `${342 - 8}px`,
+    height: '16px',
     marginTop: 5,
-    marginLeft: 5,
+    paddingLeft: 8,
+    paddingTop: 5,
+    paddingBottom: 5,
+    // Box
+    borderRadius: '4px',
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    // Text
+    color: '#FFFFFF',
+    fontFamily: 'Roboto',
+    fontStyle: 'normal',
+    fontWeight: 'normal',
+    fontSize: '14px',
+    lineHeight: '16px',
     textAlign: 'left',
-    fontSize: 15,
   },
   data: isMobile()
     ? {

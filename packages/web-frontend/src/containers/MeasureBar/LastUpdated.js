@@ -23,7 +23,7 @@ import { VIEW_STYLES } from '../../styles';
 class LastUpdated extends Component {
   getFormattedDate = () => {
     const { latestAvailable } = this.props;
-    return `Latest available data for overlay: ${moment(latestAvailable).format('DD/MM/YY')}`;
+    return `Latest overlay data: ${moment(latestAvailable).format('DD/MM/YYYY')}`;
   };
 
   shouldRender = () => !!this.props.latestAvailable;
@@ -44,7 +44,7 @@ const mapStateToProps = state => {
 
   const latestAvailable = measureInfo.period && measureInfo.period.latestAvailable;
   return {
-    latestAvailable: latestAvailable || '20200103',
+    latestAvailable: latestAvailable,
   };
 };
 
