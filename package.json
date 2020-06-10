@@ -21,6 +21,7 @@
   },
   "devDependencies": {
     "@babel/polyfill": "^7.10.1",
-    "@babel/register": "^7.10.1"
+    "@babel/register": "^7.10.1",
+    "@babel/runtime-corejs2": "^7.10.2"
   }
 }
