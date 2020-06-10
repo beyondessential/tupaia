@@ -11,8 +11,8 @@ var seed;
  * This enables us to not have to rely on NODE_PATH.
  */
 
-const PROVINCE_GROUP_NAME = 'Percentage of School Utility/Resource Availability by Province';
-const DISTRICT_GROUP_NAME = 'Percentage of School Utility/Resource Availability by District';
+const PROVINCE_GROUP_NAME = 'School Indicators by Province';
+const DISTRICT_GROUP_NAME = 'School Indicators by District';
 
 const OLD_GROUP_NAME = 'Percentage of School Utility/Resource Availability by province';
 
