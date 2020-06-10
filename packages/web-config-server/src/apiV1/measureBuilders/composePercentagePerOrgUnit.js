@@ -7,6 +7,7 @@ import keyBy from 'lodash.keyby';
 
 import { divideValues } from '/apiV1/dataBuilders/helpers';
 import { fetchComposedData } from '/apiV1/measureBuilders/helpers';
+import { getAggregatePeriod } from '/apiV1/utils';
 import { Entity } from '/models';
 
 /**
@@ -69,9 +70,9 @@ export const composePercentagePerOrgUnit = async (
       };
     }
   });
-  // const period = getAggregatePeriod(numerator.period, denominator.period);
+  const period = getAggregatePeriod([numerator.period, denominator.period]);
 
-  return { data: Object.values(fractionsByOrgUnit) };
+  return { data: Object.values(fractionsByOrgUnit), period };
 };
 
 export const composePercentagePerAncestor = async (aggregator, dhisApi, query, config, entity) => {

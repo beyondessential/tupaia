@@ -9,12 +9,12 @@ import { DataPerOrgUnitBuilder } from './DataPerOrgUnitBuilder';
 export class SumPerOrgUnitBuilder extends DataPerOrgUnitBuilder {
   getBaseBuilderClass = () => SumBuilder;
 
-  async fetchResults() {
+  async fetchResultsAndPeriod() {
     const { dataElementCodes } = this.config;
-    const { results } = await this.fetchAnalytics(dataElementCodes, {
+    const { period, results } = await this.fetchAnalytics(dataElementCodes, {
       organisationUnitCode: this.entity.code,
     });
-    return results;
+    return { results, period };
   }
 }
 
