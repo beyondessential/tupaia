@@ -114,7 +114,7 @@ export const VerifiableTableRowComponent = React.memo(props => {
 });
 
 VerifiableTableRowComponent.propTypes = {
-  rowData: PropTypes.array.isRequired,
+  rowData: PropTypes.object.isRequired,
   verifiedStatuses: PropTypes.object.isRequired,
   setVerifiedStatus: PropTypes.func.isRequired,
 };
