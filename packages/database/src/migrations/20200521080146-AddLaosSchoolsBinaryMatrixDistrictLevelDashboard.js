@@ -90,7 +90,9 @@ const REPORT = {
       'SchCVD021',
     ],
     columns: '$orgUnit',
-    dataSourceEntityType: 'school',
+    entityAggregation: {
+      dataSourceEntityType: 'school',
+    },
   },
   viewJson: {
     name: 'School Utility/Resource Availability',
