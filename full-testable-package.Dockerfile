@@ -38,6 +38,8 @@ RUN mkdir -p ./packages/dhis-api
 COPY packages/dhis-api/. ./packages/dhis-api
 RUN mkdir -p ./packages/utils
 COPY packages/utils/. ./packages/utils
+RUN mkdir -p ./packages/ui-components
+COPY packages/ui-components/. ./packages/ui-components
 
 # install internal and external dependencies (preinstall will build internal)
 RUN yarn install

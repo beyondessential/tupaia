@@ -321,7 +321,8 @@ CREATE TABLE public."dashboardGroup" (
     "organisationUnitCode" text NOT NULL,
     "dashboardReports" text[] DEFAULT '{}'::text[] NOT NULL,
     name text NOT NULL,
-    code text
+    code text,
+    "projectCodes" text[] DEFAULT '{}'::text[]
 );
 
 
@@ -553,7 +554,8 @@ CREATE TABLE public."mapOverlay" (
     "measureBuilderConfig" jsonb,
     "measureBuilder" character varying,
     "presentationOptions" jsonb,
-    "countryCodes" text[]
+    "countryCodes" text[],
+    "projectCodes" text[] DEFAULT '{}'::text[]
 );
 
 
@@ -739,7 +741,7 @@ CREATE TABLE public.project (
 CREATE TABLE public.question (
     id text NOT NULL,
     text text NOT NULL,
-    indicator text,
+    name text,
     image_data text,
     type text NOT NULL,
     options text[],
