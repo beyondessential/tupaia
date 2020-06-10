@@ -8,9 +8,10 @@ import { createStore, compose, applyMiddleware } from 'redux';
 import { persistCombineReducers } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import thunk from 'redux-thunk';
+import 'whatwg-fetch';
 import { createReducers } from './createReducers';
 import App from './App';
-import { API } from './api';
+import { API, FakeAPI } from './api';
 import { AppProviders } from './AppProviders';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose; // eslint-disable-line no-underscore-dangle
@@ -21,7 +22,9 @@ function initStore() {
     persistConfig.whitelist = []; // persist used for a dev experience, but not required in production
   }
   const persistedReducers = persistCombineReducers(persistConfig, createReducers());
-  const enhancers = composeEnhancers(applyMiddleware(thunk.withExtraArgument({ api: API })));
+  const enhancers = composeEnhancers(
+    applyMiddleware(thunk.withExtraArgument({ api: API, fakeApi: FakeAPI })),
+  );
 
   const store = createStore(persistedReducers, {}, enhancers);
   API.injectReduxStore(store);
