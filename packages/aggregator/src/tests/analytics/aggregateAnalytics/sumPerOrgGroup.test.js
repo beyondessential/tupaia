@@ -12,14 +12,15 @@ const orgUnitMap = {
   org3: 'parent1',
 };
 
+const BASE_TEST_ANALYTICS = [
+  { dataElement: 'element1', organisationUnit: 'org1', period: '20200101', value: 1 },
+  { dataElement: 'element1', organisationUnit: 'org2', period: '20200102', value: 2 },
+  { dataElement: 'element1', organisationUnit: 'org3', period: '20200103', value: 3 },
+];
+
 describe('sumPerOrgGroup()', () => {
   it('should do nothing without orgUnitMap', () => {
-    const testAnalytics = [
-      { dataElement: 'element1', organisationUnit: 'org1', period: '20200101', value: 1 },
-      { dataElement: 'element1', organisationUnit: 'org2', period: '20200102', value: 2 },
-      { dataElement: 'element1', organisationUnit: 'org3', period: '20200103', value: 3 },
-    ];
-    expect(sumPerOrgGroup(testAnalytics, {})).to.have.same.deep.members([
+    expect(sumPerOrgGroup(BASE_TEST_ANALYTICS, {})).to.have.same.deep.members([
       { dataElement: 'element1', organisationUnit: 'org1', period: '20200101', value: 1 },
       { dataElement: 'element1', organisationUnit: 'org2', period: '20200102', value: 2 },
       { dataElement: 'element1', organisationUnit: 'org3', period: '20200103', value: 3 },
@@ -27,12 +28,7 @@ describe('sumPerOrgGroup()', () => {
   });
 
   it('should sum using orgUnitMap', () => {
-    const testAnalytics = [
-      { dataElement: 'element1', organisationUnit: 'org1', period: '20200101', value: 1 },
-      { dataElement: 'element1', organisationUnit: 'org2', period: '20200102', value: 2 },
-      { dataElement: 'element1', organisationUnit: 'org3', period: '20200103', value: 3 },
-    ];
-    expect(sumPerOrgGroup(testAnalytics, { orgUnitMap })).to.have.same.deep.members([
+    expect(sumPerOrgGroup(BASE_TEST_ANALYTICS, { orgUnitMap })).to.have.same.deep.members([
       { dataElement: 'element1', organisationUnit: 'parent1', period: '20200101', value: 4 },
       { dataElement: 'element1', organisationUnit: 'parent2', period: '20200102', value: 2 },
     ]);
@@ -40,9 +36,7 @@ describe('sumPerOrgGroup()', () => {
 
   it('should sum using incomplete orgUnitMap', () => {
     const testAnalytics = [
-      { dataElement: 'element1', organisationUnit: 'org1', period: '20200101', value: 1 },
-      { dataElement: 'element1', organisationUnit: 'org2', period: '20200102', value: 2 },
-      { dataElement: 'element1', organisationUnit: 'org3', period: '20200103', value: 3 },
+      ...BASE_TEST_ANALYTICS,
       { dataElement: 'element1', organisationUnit: 'org4', period: '20200103', value: 4 },
       { dataElement: 'element1', organisationUnit: 'parent1', period: '20200103', value: 5 },
     ];
@@ -84,9 +78,9 @@ describe('sumPerOrgGroup()', () => {
 
   it('should use valueToMatch any key (*)', () => {
     const testAnalytics = [
-      { dataElement: 'element1', organisationUnit: 'org1', period: '20200101', value: 'Yes' },
+      { dataElement: 'element1', organisationUnit: 'org1', period: '20200101', value: null },
       { dataElement: 'element1', organisationUnit: 'org2', period: '20200102', value: 'No' },
-      { dataElement: 'element1', organisationUnit: 'org3', period: '20200103', value: 'Yes' },
+      { dataElement: 'element1', organisationUnit: 'org3', period: '20200103', value: false },
     ];
     expect(
       sumPerOrgGroup(testAnalytics, { orgUnitMap, valueToMatch: '*' }),
