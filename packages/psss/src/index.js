@@ -8,7 +8,6 @@ import { createStore, compose, applyMiddleware } from 'redux';
 import { persistCombineReducers } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import thunk from 'redux-thunk';
-import 'whatwg-fetch';
 import { createReducers } from './createReducers';
 import App from './App';
 import { API, FakeAPI } from './api';

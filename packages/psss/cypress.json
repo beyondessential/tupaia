@@ -4,9 +4,5 @@
   "viewportHeight": 900,
   "viewportWidth": 1400,
   "video": false,
-  "defaultCommandTimeout": 6000,
-  "env": {
-    "username": "caigertom@gmail.com",
-    "userPassword": "Pinkie3235"
-  }
+  "defaultCommandTimeout": 6000
 }
