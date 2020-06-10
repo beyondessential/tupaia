@@ -73,7 +73,7 @@ fetchAnalytics
     ['WHOSPAR'],
     {
       dataServices,
-      dataSourceEntityType: undefined,
+      entityAggregation: undefined,
       dataSourceEntityFilter: undefined,
       programCodes: ['WSRS'],
     },

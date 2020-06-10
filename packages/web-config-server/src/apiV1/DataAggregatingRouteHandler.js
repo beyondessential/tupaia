@@ -3,11 +3,13 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { RouteHandler } from './RouteHandler';
 import { createAggregator } from '@tupaia/aggregator';
-import { Aggregator } from '../aggregator';
-import { Project } from '../models';
+import { RouteHandler } from './RouteHandler';
+import { Aggregator } from '/aggregator';
+import { Project } from '/models';
 import { filterEntities } from './utils';
+
+const DEFAULT_ENTITY_AGGREGATION_TYPE = Aggregator.aggregationTypes.REPLACE_ORG_UNIT_WITH_ORG_GROUP;
 
 /**
  * Interface class for handling routes that fetch data from an aggregator
@@ -16,7 +18,7 @@ import { filterEntities } from './utils';
 export class DataAggregatingRouteHandler extends RouteHandler {
   constructor(req, res) {
     super(req, res);
-    this.aggregator = createAggregator(Aggregator, this.fetchDataSourceEntities);
+    this.aggregator = createAggregator(Aggregator, this);
   }
 
   // Builds the list of entities data should be fetched from, using org unit descendents of the
@@ -25,7 +27,7 @@ export class DataAggregatingRouteHandler extends RouteHandler {
     // if a specific type was specified in either the query or the function parameter, build org
     // units of that type (otherwise we just use the nearest org unit descendants)
 
-    const entityType = this.query.dataSourceEntityType || dataSourceEntityType;
+    const entityType = dataSourceEntityType || this.query.dataSourceEntityType;
     const hierarchyId = (await Project.findOne({ code: this.query.projectCode }))
       .entity_hierarchy_id;
 
@@ -48,5 +50,41 @@ export class DataAggregatingRouteHandler extends RouteHandler {
     }
 
     return dataSourceEntities;
+  };
+
+  // Will return a map for every org unit (regardless of type) in orgUnits to its ancestor of type aggregationEntityType
+  getOrgUnitToAncestorMap = async (orgUnits, aggregationEntityType) => {
+    if (!orgUnits || orgUnits.length === 0) return {};
+    const orgUnitToAncestor = {};
+    const addOrgUnitToMap = async orgUnit => {
+      if (orgUnit && orgUnit.type !== aggregationEntityType) {
+        const ancestor = await orgUnit.getAncestorOfType(aggregationEntityType);
+        if (ancestor) {
+          orgUnitToAncestor[orgUnit.code] = { code: ancestor.code, name: ancestor.name };
+        }
+      }
+    };
+    await Promise.all(orgUnits.map(orgUnit => addOrgUnitToMap(orgUnit)));
+    return orgUnitToAncestor;
+  };
+
+  fetchEntityAggregationConfig = async (
+    dataSourceEntities,
+    aggregationEntityType,
+    entityAggregationType = DEFAULT_ENTITY_AGGREGATION_TYPE,
+  ) => {
+    if (
+      !aggregationEntityType ||
+      !dataSourceEntities ||
+      dataSourceEntities.length === 0 ||
+      // Remove this line to fetch more than 1 type of entity (e.g. whole hierarchy)
+      aggregationEntityType === dataSourceEntities[0].type
+    )
+      return false;
+    const orgUnitMap = await this.getOrgUnitToAncestorMap(
+      dataSourceEntities,
+      aggregationEntityType,
+    );
+    return { type: entityAggregationType, config: { orgUnitMap } };
   };
 }

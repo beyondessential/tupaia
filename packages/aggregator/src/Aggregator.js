@@ -9,6 +9,7 @@ import {
   periodFromAnalytics,
   getPeriodForDataBroker,
 } from './analytics';
+import { aggregateEvents } from './events';
 import { AGGREGATION_TYPES } from './aggregationTypes';
 
 export class Aggregator {
@@ -33,10 +34,21 @@ export class Aggregator {
 
   processAnalytics = (analytics, aggregationOptions, requestedPeriod) => {
     const { aggregationType, aggregationConfig, filter } = aggregationOptions;
-    const aggregatedAnalytics = aggregateAnalytics(analytics, aggregationType, {
-      ...aggregationConfig,
-      requestedPeriod,
-    });
+
+    const aggregations = aggregationOptions.aggregations || [
+      { type: aggregationType, config: aggregationConfig },
+    ];
+
+    const aggregatedAnalytics = aggregations.reduce(
+      (partiallyAggregatedAnalytics, { type, config }) => {
+        return aggregateAnalytics(partiallyAggregatedAnalytics, type, {
+          ...config,
+          requestedPeriod,
+        });
+      },
+      analytics,
+    );
+
     return filterAnalytics(aggregatedAnalytics, filter);
   };
 
@@ -73,13 +85,20 @@ export class Aggregator {
     };
   }
 
-  async fetchEvents(code, fetchOptions) {
+  async fetchEvents(code, fetchOptions, aggregationOptions = {}) {
     const { organisationUnitCode, organisationUnitCodes } = fetchOptions;
     if (!organisationUnitCode && (!organisationUnitCodes || !organisationUnitCodes.length)) {
       return [];
     }
     const dataSourceSpec = { code, type: this.dataSourceTypes.DATA_GROUP };
-    return this.dataBroker.pull(dataSourceSpec, fetchOptions);
+    const events = await this.dataBroker.pull(dataSourceSpec, fetchOptions);
+    const aggregations = aggregationOptions.aggregations || [];
+    const aggregatedEvents = aggregations.reduce(
+      (partiallyAggregatedEvents, { type, config }) =>
+        aggregateEvents(partiallyAggregatedEvents, type, config),
+      events,
+    );
+    return aggregatedEvents;
   }
 
   async fetchDataElements(codes, fetchOptions) {
