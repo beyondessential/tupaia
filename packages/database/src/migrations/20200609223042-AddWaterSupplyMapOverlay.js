@@ -27,8 +27,9 @@ const FILTER = {
 };
 
 const NEW_MEASURE_BUILDER_CONFIG = {
-  dataSourceEntityType: 'school',
-  aggregationEntityType: 'school',
+  entityAggregation: {
+    dataSourceEntityType: 'school'
+  },
   dataElementCodes: ['BCD29_event', 'SchCVD010'],
   filter: FILTER
 };
@@ -96,7 +97,8 @@ exports.up = async function(db) {
     SET "measureBuilderConfig" = '${JSON.stringify(MAP_OVERLAY.newMeasureBuilderConfig)}',
     "dataElementCode" = '${MAP_OVERLAY.newDataElementCode}',
     "values" = '${JSON.stringify(MAP_OVERLAY.newValues)}',
-    name = '${MAP_OVERLAY.newName}'
+    name = '${MAP_OVERLAY.newName}',
+    "presentationOptions" = "presentationOptions" || '{"measureLevel": "School"}'
     WHERE id = '${MAP_OVERLAY.id}';
   `);
 };
@@ -107,7 +109,8 @@ exports.down = async function(db) {
     SET "measureBuilderConfig" = '${JSON.stringify(MAP_OVERLAY.oldMeasureBuilderConfig)}',
     "dataElementCode" = '${MAP_OVERLAY.oldDataElementCode}',
     "values" = '${JSON.stringify(MAP_OVERLAY.oldValues)}',
-    name = '${MAP_OVERLAY.oldName}'
+    name = '${MAP_OVERLAY.oldName}',
+    "presentationOptions" = "presentationOptions" - 'measureLevel'
     WHERE id = '${MAP_OVERLAY.id}';
   `);
 };
