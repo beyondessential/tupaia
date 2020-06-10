@@ -78,20 +78,21 @@ const DISPLAY_TYPE = 'color';
 const MEASURE_BUILDER = 'valueForOrgGroup';
 
 const MEASURE_BUILDER_CONFIG =  {
-  dataSourceEntityType: 'school',
-  aggregationEntityType: 'school'
+  entityAggregation: {
+    dataSourceEntityType: 'school'
+  }
 };
 
 const VALUES = [
   {
-    "name": "Yes",
-    "color": "green",
-    "value": 'Yes'
+    name: 'Yes',
+    color: 'green',
+    value: 'Yes'
   },
   {
-    "name": "No",
-    "color": "red",
-    "value": 'No'
+    name: 'No',
+    color: 'red',
+    value: 'No'
   }
 ];
 
@@ -103,6 +104,7 @@ const PRESENTATION_OPTIONS =  {
   hideByDefault: {
     "null": true
   },
+  measureLevel: 'School',
   displayOnLevel: 'District',
 };
 

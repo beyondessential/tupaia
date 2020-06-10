@@ -167,8 +167,9 @@ const DISPLAY_TYPE = 'color';
 const MEASURE_BUILDER = 'valueForOrgGroup';
 
 const MEASURE_BUILDER_CONFIG =  {
-  dataSourceEntityType: 'school',
-  aggregationEntityType: 'school'
+  entityAggregation: {
+    dataSourceEntityType: 'school'
+  }
 };
 
 const COUNTRY_CODES = '{"LA"}';
@@ -179,6 +180,7 @@ const PRESENTATION_OPTIONS =  {
   hideByDefault: {
     "null": true
   },
+  measureLevel: 'School',
   displayOnLevel: 'District',
 };
 
