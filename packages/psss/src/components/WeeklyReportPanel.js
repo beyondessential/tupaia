@@ -16,11 +16,11 @@ import {
 import { PercentageChangeCell } from './Tables/TableCellComponents';
 import * as COLORS from '../theme/colors';
 import { Drawer, DrawerHeaderContent, DrawerFooter, DrawerHeader } from './Drawer';
-import { VerifiableTable, IndicatorsTable } from './Tables';
+import { CountryReportTable, SiteReportTable } from './Tables';
 import { SiteAddress } from './SiteAddress';
 import {
   getSitesForWeek,
-  getActiveCountryWeekData,
+  getActiveWeekCountryData,
   closeWeeklyReportsPanel,
   confirmWeeklyReportsData,
   checkWeeklyReportsPanelIsOpen,
@@ -67,9 +67,9 @@ const GreySection = styled(MainSection)`
   padding: 25px 20px;
 `;
 
-const WeeklyReportsPaneSubmitButton = confirmData => () => {
+const WeeklyReportsPaneSubmitButton = handleConfirm => () => {
   const handleClick = () => {
-    confirmData();
+    handleConfirm();
   };
   return (
     <Button fullWidth onClick={handleClick}>
@@ -78,37 +78,26 @@ const WeeklyReportsPaneSubmitButton = confirmData => () => {
   );
 };
 
-const TABLE_STATE = {
+const TABLE_STATUSES = {
   STATIC: 'static',
   SAVING: 'saving',
 };
 
 const WeeklyReportPanelComponent = React.memo(
-  ({ activeCountryWeekData, siteWeeksData, isOpen, handleClose, confirmData }) => {
-    if (activeCountryWeekData.length === 0 || siteWeeksData.length === 0) {
+  ({ countryData, sitesData, isOpen, handleClose, handleConfirm }) => {
+    if (countryData.length === 0 || sitesData.length === 0) {
       return null;
     }
 
-    const [countryTableState, setCountryTableState] = useState(TABLE_STATE.STATIC);
+    const [countryTableStatus, setCountryTableStatus] = useState(TABLE_STATUSES.STATIC);
 
     const [activeSiteIndex, setActiveSiteIndex] = useState(0);
-    const indicatorsData = siteWeeksData[activeSiteIndex].indicators;
-    const activeSite = siteWeeksData[activeSiteIndex];
-    const [indicatorTableState, setIndicatorTableState] = useState(TABLE_STATE.STATIC);
-
-    // Derive from store??
-    const verifiedStatus = activeCountryWeekData.reduce((state, item) => {
-      if (item.percentageChange > 10) {
-        return {
-          ...state,
-          [item.id]: '',
-        };
-      }
-      return state;
-    }, {});
+    const activeSite = sitesData[activeSiteIndex];
+    const { syndromes: syndromesData } = activeSite;
+    const [sitesTableStatus, setSitesTableStatus] = useState(TABLE_STATUSES.STATIC);
 
     const isSaving =
-      countryTableState === TABLE_STATE.SAVING || indicatorTableState === TABLE_STATE.SAVING;
+      countryTableStatus === TABLE_STATUSES.SAVING || sitesTableStatus === TABLE_STATUSES.SAVING;
 
     return (
       <Drawer open={isOpen} onClose={handleClose}>
@@ -119,16 +108,19 @@ const WeeklyReportPanelComponent = React.memo(
         <GreySection disabled={isSaving}>
           <EditableTableProvider
             columns={columns}
-            data={activeCountryWeekData}
-            tableState={countryTableState}
+            data={countryData}
+            tableStatus={countryTableStatus}
           >
-            <VerifiableTable tableState={countryTableState} setTableState={setCountryTableState} />
+            <CountryReportTable
+              tableStatus={countryTableStatus}
+              setTableStatus={setCountryTableStatus}
+            />
           </EditableTableProvider>
         </GreySection>
         <MainSection disabled={isSaving}>
           <ButtonSelect
-            id="button-select"
-            options={siteWeeksData}
+            id="active-site"
+            options={sitesData}
             onChange={setActiveSiteIndex}
             index={activeSiteIndex}
           />
@@ -136,19 +128,19 @@ const WeeklyReportPanelComponent = React.memo(
           <Card variant="outlined" mb={3}>
             <EditableTableProvider
               columns={columns}
-              data={indicatorsData}
-              tableState={indicatorTableState}
+              data={syndromesData}
+              tableStatus={sitesTableStatus}
             >
-              <IndicatorsTable
-                tableState={indicatorTableState}
-                setTableState={setIndicatorTableState}
+              <SiteReportTable
+                tableStatus={sitesTableStatus}
+                setTableStatus={setSitesTableStatus}
               />
             </EditableTableProvider>
           </Card>
         </MainSection>
         <DrawerFooter
           disabled={isSaving}
-          Action={WeeklyReportsPaneSubmitButton(confirmData)}
+          Action={WeeklyReportsPaneSubmitButton(handleConfirm)}
           helperText="Verify data to submit Weekly Report to Regional"
         />
       </Drawer>
@@ -157,21 +149,21 @@ const WeeklyReportPanelComponent = React.memo(
 );
 
 WeeklyReportPanelComponent.propTypes = {
-  activeCountryWeekData: PropTypes.array.isRequired,
-  siteWeeksData: PropTypes.array.isRequired,
-  confirmData: PropTypes.func.isRequired,
+  countryData: PropTypes.array.isRequired,
+  sitesData: PropTypes.array.isRequired,
+  handleConfirm: PropTypes.func.isRequired,
   handleClose: PropTypes.func.isRequired,
   isOpen: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = state => ({
   isOpen: checkWeeklyReportsPanelIsOpen(state),
-  activeCountryWeekData: getActiveCountryWeekData(state),
-  siteWeeksData: getSitesForWeek(state),
+  countryData: getActiveWeekCountryData(state),
+  sitesData: getSitesForWeek(state),
 });
 
 const mapDispatchToProps = dispatch => ({
-  confirmData: () => dispatch(confirmWeeklyReportsData()),
+  handleConfirm: () => dispatch(confirmWeeklyReportsData()),
   handleClose: () => dispatch(closeWeeklyReportsPanel()),
 });
 

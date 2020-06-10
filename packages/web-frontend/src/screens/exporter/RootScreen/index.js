@@ -33,6 +33,7 @@ const {
   endDate,
   disasterStartDate,
   disasterEndDate,
+  project: projectCode,
 } = decodeUrl(initialLocation.pathname, initialLocation.search);
 
 const getCurrentDateString = () => {
@@ -67,6 +68,7 @@ export class RootScreen extends PureComponent {
       disasterStartDate,
       disasterEndDate,
       isExpanded: true,
+      projectCode,
     };
     const requestResourceUrl = `view?${queryString.stringify(urlParameters)}`;
     const viewContent = await request(requestResourceUrl, this.handleError, {});

@@ -30,7 +30,7 @@ const StyledButton = styled(Button)`
   padding-bottom: 1rem;
 `;
 
-export const LoginFormComponent = ({ isPending, isError, error, onLogin }) => {
+const LoginFormComponent = ({ isPending, isError, error, onLogin }) => {
   const [fields, handleFieldChange] = useFormFields({
     email: '',
     password: '',

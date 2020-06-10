@@ -16,12 +16,15 @@ export const SimpleTableRow = styled(ExpandableTableRow)`
     padding: 0.9rem 0;
     text-align: center;
     border-bottom: 1px solid ${COLORS.GREY_DE};
-
     height: auto;
     color: ${props => props.theme.palette.text.primary};
 
     &:first-child {
       text-align: left;
+    }
+
+    .MuiInputBase-input {
+      text-align: center;
     }
   }
 

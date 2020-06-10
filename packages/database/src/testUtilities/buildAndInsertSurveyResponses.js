@@ -5,16 +5,12 @@
 
 import { findOrCreateDummyRecord, upsertDummyRecord } from './upsertDummyRecord';
 
-const buildAndInsertAnswer = async (
-  models,
-  surveyResponse,
-  { questionCode, ...answerProperties },
-) => {
+const buildAndInsertAnswer = async (models, surveyResponse, questionCode, answerText) => {
   const question = await findOrCreateDummyRecord(models.question, { code: questionCode });
   await upsertDummyRecord(models.answer, {
     question_id: question.id,
     survey_response_id: surveyResponse.id,
-    ...answerProperties,
+    text: answerText,
   });
 };
 
@@ -31,7 +27,11 @@ const buildAndInsertSurveyResponse = async (
     survey_id: survey.id,
     ...surveyResponseProperties,
   });
-  await Promise.all(answers.map(a => buildAndInsertAnswer(models, surveyResponse, a)));
+  await Promise.all(
+    Object.entries(answers).map(([questionCode, answerText]) =>
+      buildAndInsertAnswer(models, surveyResponse, questionCode, answerText),
+    ),
+  );
 };
 
 /**

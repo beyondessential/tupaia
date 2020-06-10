@@ -8,18 +8,30 @@ import { createReducer } from '../../utils/createReducer';
 const SET_ACTIVE_WEEK = 'SET_ACTIVE_WEEK';
 const OPEN_PANEL = 'OPEN_PANEL';
 const CLOSE_PANEL = 'CLOSE_PANEL';
-const UPDATE_VERIFIED_STATUS = 'UPDATE_VERIFIED_STATUS';
+const VERIFY_SYNDROME = 'VERIFY_SYNDROME';
 
 // action creators
 export const openWeeklyReportsPanel = () => (dispatch, getState) => {
   const state = getState();
-  const activeCountryWeekData = getActiveCountryWeekData(state);
-  dispatch({ type: OPEN_PANEL, activeCountryWeekData });
+  const activeCountryWeekData = getActiveWeekCountryData(state);
+
+  const verifiedStatuses = activeCountryWeekData.reduce(
+    (object, item) => ({
+      ...object,
+      [item.id]: item.percentageChange > 10 ? false : null,
+    }),
+    {},
+  );
+
+  dispatch({ type: OPEN_PANEL, verifiedStatuses });
 };
 export const closeWeeklyReportsPanel = () => ({ type: CLOSE_PANEL });
 export const setActiveWeek = id => ({ type: SET_ACTIVE_WEEK, id });
 export const updateVerifiedStatus = id => {
-  return { type: UPDATE_VERIFIED_STATUS, id };
+  return { type: VERIFY_SYNDROME, id };
+};
+export const confirmWeeklyReportsData = () => async () => {
+  console.log('confirm data...');
 };
 
 // selectors
@@ -30,9 +42,9 @@ export const getActiveWeekId = ({ weeklyReports }) => weeklyReports.activeWeek.i
 
 export const getVerifiedStatuses = ({ weeklyReports }) => weeklyReports.activeWeek.verifiedStatuses;
 
-export const getActiveCountryWeekData = ({ weeklyReports }) => {
+export const getActiveWeekCountryData = ({ weeklyReports }) => {
   if (weeklyReports.activeWeek.id !== null) {
-    return weeklyReports.country.data[weeklyReports.activeWeek.id].indicators;
+    return weeklyReports.country.data[weeklyReports.activeWeek.id].syndromes;
   }
 
   return [];
@@ -47,26 +59,17 @@ const defaultState = {
 
 const actionHandlers = {
   [SET_ACTIVE_WEEK]: ({ id }) => ({
-    id: id,
+    id,
   }),
-  [OPEN_PANEL]: ({ activeCountryWeekData }) => {
-    const verifiedStatuses = activeCountryWeekData.reduce((object, item) => {
-      return {
-        ...object,
-        [item.id]: item.percentageChange > 10 ? false : null,
-      };
-    }, {});
-
-    return {
-      panelIsOpen: true,
-      verifiedStatuses,
-    };
-  },
+  [OPEN_PANEL]: ({ verifiedStatuses }) => ({
+    panelIsOpen: true,
+    verifiedStatuses,
+  }),
   [CLOSE_PANEL]: () => ({
     panelIsOpen: false,
     verifiedStatus: defaultState.verifiedStatus,
   }),
-  [UPDATE_VERIFIED_STATUS]: ({ id }, { verifiedStatuses }) => ({
+  [VERIFY_SYNDROME]: ({ id }, { verifiedStatuses }) => ({
     verifiedStatuses: {
       ...verifiedStatuses,
       [id]: true,

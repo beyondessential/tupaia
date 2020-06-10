@@ -19,6 +19,7 @@ import {
   Table,
   EditableTableContext,
 } from '../../src';
+import { FakeAPI } from '../story-utils/api';
 
 export default {
   title: 'Tables/EditableTable',
@@ -40,14 +41,6 @@ const LayoutRow = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 1rem 0;
-`;
-
-const Loader = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 3rem 0;
-  text-align: center;
 `;
 
 const columns = [
@@ -77,63 +70,59 @@ function sleep(delay = 0) {
   });
 }
 
-const STATIC = 'static';
-const EDITABLE = 'editable';
-const LOADING = 'loading';
-const SAVING = 'saving';
+const TABLE_STATUSES = {
+  STATIC: 'static',
+  EDITABLE: 'editable',
+  LOADING: 'loading',
+  SAVING: 'saving',
+};
 
-const SubmitButton = ({ setTableState }) => {
+const SubmitButton = ({ setTableStatus }) => {
   const { fields } = useContext(EditableTableContext);
 
   const handleSubmit = async () => {
-    console.log('updated values...', fields);
-    setTableState(SAVING);
+    setTableStatus(TABLE_STATUSES.SAVING);
     await sleep(1000);
-    setTableState(STATIC);
+    setTableStatus(TABLE_STATUSES.STATIC);
   };
   return <Button onClick={handleSubmit}>Save</Button>;
 };
 
 SubmitButton.propTypes = {
-  setTableState: PropTypes.func.isRequired,
+  setTableStatus: PropTypes.func.isRequired,
 };
 
 export const editableTable = () => {
+  const [tableStatus, setTableStatus] = useState(TABLE_STATUSES.STATIC);
   const { loading, data } = useTableData();
-  const [tableState, setTableState] = useState(STATIC);
-  const tableData = data.slice(0, 10);
-
-  useEffect(() => {
-    setTableState(loading ? LOADING : STATIC);
-  }, [loading]);
 
   const handleEditClick = () => {
-    setTableState(EDITABLE);
+    setTableStatus(TABLE_STATUSES.EDITABLE);
   };
 
   const handleCancel = () => {
-    setTableState(STATIC);
+    setTableStatus(TABLE_STATUSES.STATIC);
   };
 
   return (
     <Container>
-      <EditableTableProvider columns={columns} data={tableData} tableState={tableState}>
-        <EditableTableLoader isLoading={tableState === SAVING}>
+      <EditableTableProvider columns={columns} data={data} tableStatus={tableStatus}>
+        <EditableTableLoader isLoading={tableStatus === TABLE_STATUSES.SAVING}>
           <LayoutRow>
             <Typography variant="h6">Editable Table</Typography>
-            <GreyOutlinedButton onClick={handleEditClick} disabled={tableState === EDITABLE}>
+            <GreyOutlinedButton onClick={handleEditClick} disabled={tableStatus === TABLE_STATUSES.EDITABLE}>
               Edit
             </GreyOutlinedButton>
           </LayoutRow>
           <EditableTable isLoading={loading} />
-          {tableState === EDITABLE && (
+          {tableStatus === TABLE_STATUSES.EDITABLE && (
             <LayoutRow>
               <MuiLink>Reset and use Sentinel data</MuiLink>
               <div>
                 <Button variant="outlined" onClick={handleCancel}>
                   Cancel
                 </Button>
-                <SubmitButton tableState={tableState} setTableState={setTableState} />
+                <SubmitButton tableStatus={tableStatus} setTableStatus={setTableStatus} />
               </div>
             </LayoutRow>
           )}

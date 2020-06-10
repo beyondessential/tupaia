@@ -9,7 +9,6 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 import { TextField } from '../Inputs';
 import { Table } from './Table';
-import * as COLORS from '../../../stories/story-utils/theme/colors';
 
 const EditableTextField = styled(TextField)`
   margin: 0;
@@ -26,7 +25,6 @@ const EditableTextField = styled(TextField)`
     font-size: 15px;
     line-height: 18px;
     padding: 0.5rem 0;
-    text-align: center;
   }
 `;
 
@@ -47,13 +45,15 @@ const ReadOnlyTextField = styled(EditableTextField)`
 
 export const EditableTableContext = createContext({});
 
-const STATIC = 'static';
-const EDITABLE = 'editable';
-const LOADING = 'loading';
-const SAVING = 'saving';
+const TABLE_STATUSES = {
+  STATIC: 'static',
+  EDITABLE: 'editable',
+  LOADING: 'loading',
+  SAVING: 'saving',
+};
 
 const EditableCell = React.memo(({ id, columnKey }) => {
-  const { fields, handleFieldChange, tableState } = useContext(EditableTableContext);
+  const { fields, handleFieldChange, tableStatus } = useContext(EditableTableContext);
   const key = `${id}-${columnKey}`;
   const value = fields[key];
 
@@ -61,7 +61,7 @@ const EditableCell = React.memo(({ id, columnKey }) => {
     return null;
   }
 
-  if (tableState === EDITABLE) {
+  if (tableStatus === TABLE_STATUSES.EDITABLE) {
     return (
       <EditableTextField name={columnKey} value={value} onChange={handleFieldChange} id={key} />
     );
@@ -72,7 +72,6 @@ const EditableCell = React.memo(({ id, columnKey }) => {
       name="cases"
       value={value}
       onChange={handleFieldChange}
-      id={key}
       InputProps={{ readOnly: true }}
     />
   );
@@ -89,7 +88,7 @@ EditableCell.propTypes = {
 const makeInitialFormState = (columns, data) => {
   return columns.reduce((state, column) => {
     if (column.editable) {
-      const newState = state;
+      const newState = { ...state };
       data.forEach(row => {
         const key = `${row.id}-${column.key}`;
         newState[key] = row[column.key];
@@ -115,31 +114,28 @@ const makeEditableColumns = columns => {
   });
 };
 
-// Todo: prevState
 const useFormFields = initialState => {
   const [fields, setValues] = useState(initialState);
   return [
     fields,
     event => {
-      setValues({
-        ...fields,
-        [event.target.id]: event.target.value,
-      });
+      const { value, id } = event.target;
+      setValues(prevFields => ({
+        ...prevFields,
+        [id]: value,
+      }));
     },
     setValues,
   ];
 };
 
-export const EditableTableProvider = React.memo(({ columns, data, tableState, children }) => {
-  const initialState = makeInitialFormState(columns, data);
+export const EditableTableProvider = React.memo(({ columns, data, tableStatus, children }) => {
   const editableColumns = makeEditableColumns(columns);
-  const [fields, handleFieldChange, setValues] = useFormFields(initialState);
+  const [fields, handleFieldChange, setValues] = useFormFields({});
 
   useEffect(() => {
-    // loading must change after initial state is set
-    if (tableState === LOADING || tableState === SAVING) {
-      setValues(initialState);
-    }
+    const initialState = makeInitialFormState(columns, data);
+    setValues(initialState);
   }, [data]);
 
   return (
@@ -147,7 +143,7 @@ export const EditableTableProvider = React.memo(({ columns, data, tableState, ch
       value={{
         fields,
         handleFieldChange,
-        tableState,
+        tableStatus,
         editableColumns,
         data,
       }}
@@ -158,7 +154,12 @@ export const EditableTableProvider = React.memo(({ columns, data, tableState, ch
 });
 
 EditableTableProvider.propTypes = {
-  tableState: PropTypes.PropTypes.oneOf([STATIC, EDITABLE, SAVING, LOADING]).isRequired,
+  tableStatus: PropTypes.PropTypes.oneOf([
+    TABLE_STATUSES.STATIC,
+    TABLE_STATUSES.EDITABLE,
+    TABLE_STATUSES.SAVING,
+    TABLE_STATUSES.LOADING,
+  ]).isRequired,
   children: PropTypes.any.isRequired,
   columns: PropTypes.arrayOf(
     PropTypes.shape({
@@ -210,7 +211,7 @@ const LoadingHeading = styled(Typography)`
 
 const LoadingText = styled(Typography)`
   margin-bottom: 0.5rem;
-  color: ${COLORS.TEXT_MIDGREY};
+  color: ${props => props.theme.palette.text.secondary};
 `;
 
 /**
