@@ -3148,9 +3148,29 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 720	/20200522032405-UpdateMapOverlayHeadings	2020-05-22 06:36:39.887
 721	/20200522055413-ChangeLaosSchoolsOverlayGroupName	2020-05-22 06:36:39.921
 722	/20200522010341-updateLaosSchoolsBinaryDashboard	2020-05-24 22:44:43.751
-723	/20200417211027-AllowNullAccessToken	2020-05-25 12:45:22.261
-724	/20200422231733-MoveNoCountryUsersToAdminPanel	2020-05-25 12:45:22.36
-725	/20200423213702-EntityBasedPermissions	2020-05-25 12:45:22.59
+723	/20200212052756-RemoveRedundantQuestionsWish	2020-06-11 11:40:47.098
+724	/20200417211027-AllowNullAccessToken	2020-06-11 11:40:47.133
+725	/20200422231733-MoveNoCountryUsersToAdminPanel	2020-06-11 11:40:47.158
+726	/20200423213702-EntityBasedPermissions	2020-06-11 11:40:47.421
+727	/20200503063358-AddTongaDHIS2HealthCertificatesDistributedReport	2020-06-11 11:40:47.511
+728	/20200508034036-UpdateDefaultTimePeriodFormatInDataBuilderConfig	2020-06-11 11:40:47.524
+729	/20200521005057-AddLaosDevelopmentPartnersReport	2020-06-11 11:40:47.532
+730	/20200521102324-AddUtilityServiceBinaryMeasuresBarCharts	2020-06-11 11:40:47.542
+731	/20200521155232-AddResourceSupportBinaryMeasuresBarCharts	2020-06-11 11:40:47.547
+732	/20200522022756-VisualisationsDefinedPerProject	2020-06-11 11:40:47.647
+733	/20200524212939-LimitVisualisationsPerProject	2020-06-11 11:40:47.958
+734	/20200524231548-AddSchoolPercentDashboards	2020-06-11 11:40:47.996
+735	/20200525005457-WipeUserSessions	2020-06-11 11:40:48.006
+736	/20200525044209-NoFunnyPeriods	2020-06-11 11:40:48.016
+737	/20200526005827-RemoveWorldDashboardGroups	2020-06-11 11:40:48.024
+738	/20200528011043-ChangeUNFPAReportsToUseQuarters	2020-06-11 11:40:48.038
+739	/20200528042309-DeleteAnswersForLaosSchoolsSelectVillageQuestions	2020-06-11 11:40:48.491
+740	/20200605045409-CorrectStriveDashboardCase	2020-06-11 11:40:48.5
+741	/20200605051613-SetCovidDefaultDashboard	2020-06-11 11:40:48.506
+742	/20200608220007-RenameQuestionIndicatorToName	2020-06-11 11:40:48.516
+743	/20200608234924-RemoveLaosSchoolsReport	2020-06-11 11:40:48.535
+744	/20200609022031-RemoveLaosSchoolsHeatmaps	2020-06-11 11:40:48.543
+745	/20200609022859-UpdateOverlayHeadingsToRemoveTotal	2020-06-11 11:40:48.616
 \.
 
 
@@ -3158,7 +3178,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 725, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 745, true);
 
 
 --
