@@ -3,8 +3,15 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-export const editAccessRequest = (models, id, updatedFields, { userId }) =>
-  models.accessRequest.updateById(
+import { ValidationError } from '@tupaia/utils';
+
+export const editAccessRequest = async (models, id, updatedFields, { userId }) => {
+  const { approved } = await models.accessRequest.findOne({ id });
+  if (approved !== null) {
+    throw new ValidationError(`AccessRequest has already been processed`);
+  }
+
+  return models.accessRequest.updateById(
     id,
     updatedFields.approved
       ? {
@@ -14,3 +21,4 @@ export const editAccessRequest = (models, id, updatedFields, { userId }) =>
         }
       : { ...updatedFields, approval_note: null },
   );
+};
