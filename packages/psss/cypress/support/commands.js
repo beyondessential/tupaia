@@ -11,16 +11,16 @@ Cypress.Commands.add('login', () => {
   cy.findByPlaceholderText(/email/i).type(USER);
   cy.findByPlaceholderText(/password/i).type(PASS);
   cy.findByText(/login*/i)
-  .closest('button')
-  .click();
+    .closest('button')
+    .click();
 });
 
 Cypress.Commands.add('assertHome', () => {
   cy.findByText(/countries*/i, { selector: 'h1' });
   cy.url().should('eq', `${Cypress.config().baseUrl}/`);
-})
+});
 
 Cypress.Commands.add('assertWeeklyReportsPage', () => {
   cy.findByText(/back to countries*/i);
   cy.url().should('contain', `weekly-reports`);
-})
+});

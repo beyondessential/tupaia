@@ -23,6 +23,7 @@ export const reloadCountryWeeks = ({ fetchOptions, queryParameters }) => async (
   const endpoint = 'country-weeks';
   const fetchStartedAt = Date.now();
   dispatch({ type: COUNTRY_WEEKS_LOAD_START, fetchStartedAt });
+
   try {
     const { data } = await fakeApi.get(endpoint, { ...fetchOptions, ...queryParameters });
     if (!actionIsValid(getState(), fetchStartedAt)) {
@@ -68,7 +69,7 @@ const actionHandlers = {
   }),
   [COUNTRY_WEEKS_LOAD_FINISH]: ({ data }) => ({
     status: STATUSES.SUCCESS,
-    data,
+    data: data,
   }),
   [COUNTRY_WEEKS_LOAD_ERROR]: ({ error }) => ({
     status: STATUSES.ERROR,

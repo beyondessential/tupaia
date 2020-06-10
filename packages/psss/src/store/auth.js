@@ -28,21 +28,17 @@ export const login = (emailAddress, password) => async (dispatch, getState, { ap
   }
 };
 
-export const loginSuccess = ({ accessToken, refreshToken, user }) => {
-  return {
-    type: LOGIN_SUCCESS,
-    accessToken,
-    refreshToken,
-    user,
-  };
-};
+export const loginSuccess = ({ accessToken, refreshToken, user }) => ({
+  type: LOGIN_SUCCESS,
+  accessToken,
+  refreshToken,
+  user,
+});
 
-export const loginError = errorMessage => {
-  return {
-    type: LOGIN_ERROR,
-    error: errorMessage,
-  };
-};
+export const loginError = errorMessage => ({
+  type: LOGIN_ERROR,
+  error: errorMessage,
+});
 
 export const logout = () => ({
   type: LOGOUT,

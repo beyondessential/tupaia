@@ -12,15 +12,21 @@ describe('weekly reports', () => {
     cy.assertHome();
 
     // select country
-    cy.findAllByTestId('country-link').first().click();
+    cy.findAllByTestId('country-link')
+      .first()
+      .click();
 
     cy.assertWeeklyReportsPage();
 
     // expand table row
-    cy.findAllByTestId('active-country-link').first().click();
+    cy.findAllByTestId('active-country-link')
+      .first()
+      .click();
 
     // open panel
-    cy.findAllByTestId('review-confirm-button').first().click();
+    cy.findAllByTestId('review-confirm-button')
+      .first()
+      .click();
     cy.findByText(/submit now*/i).should('exist');
   });
 });
