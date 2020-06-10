@@ -2,31 +2,34 @@ import { Aggregator as BaseAggregator } from '@tupaia/aggregator';
 import { QueryBuilder } from './QueryBuilder';
 
 export class Aggregator extends BaseAggregator {
-  constructor(dataBroker, fetchDataSourceEntities) {
+  constructor(dataBroker, routeHandler) {
     super(dataBroker);
-    this.fetchDataSourceEntities = fetchDataSourceEntities;
+    this.routeHandler = routeHandler;
   }
 
-  async fetchAnalytics(dataElementCodes, originalQuery, replacementValues, ...otherParams) {
+  async fetchAnalytics(
+    dataElementCodes,
+    originalQuery,
+    replacementValues,
+    initialAggregationOptions,
+  ) {
     const queryBuilder = new QueryBuilder(
       originalQuery,
       replacementValues,
-      this.fetchDataSourceEntities,
+      initialAggregationOptions,
+      this.routeHandler,
     );
-    const query = await queryBuilder.build();
+    const { fetchOptions, aggregationOptions } = await queryBuilder.build();
 
-    return super.fetchAnalytics(dataElementCodes, query, ...otherParams);
+    return super.fetchAnalytics(dataElementCodes, fetchOptions, aggregationOptions);
   }
 
   async fetchEvents(programCode, originalQuery, replacementValues) {
-    const queryBuilder = new QueryBuilder(
-      originalQuery,
-      replacementValues,
-      this.fetchDataSourceEntities,
-    );
-    await queryBuilder.fetchAndReplaceOrgUnitCodes();
+    const queryBuilder = new QueryBuilder(originalQuery, replacementValues, {}, this.routeHandler);
+    const dataSourceEntities = await queryBuilder.fetchAndReplaceOrgUnitCodes();
     queryBuilder.makeEventReplacements();
+    queryBuilder.buildAggregationOptions(dataSourceEntities);
 
-    return super.fetchEvents(programCode, queryBuilder.query);
+    return super.fetchEvents(programCode, queryBuilder.query, queryBuilder.aggregationOptions);
   }
 }

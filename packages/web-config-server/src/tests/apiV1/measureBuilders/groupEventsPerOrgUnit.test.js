@@ -37,9 +37,12 @@ const config = {
   dataServices,
   groups,
   dataSourceType: 'custom',
-  dataSourceEntityType,
   dataSourceEntityFilter,
-  aggregationEntityType: 'village',
+  entityAggregation: {
+    aggregationType: 'REPLACE_ORG_UNIT_WITH_ORG_GROUP',
+    dataSourceEntityType,
+    aggregationEntityType: 'facility',
+  },
 };
 
 const events = [
@@ -91,7 +94,7 @@ const createAggregator = () => {
     .resolves([])
     .withArgs(programCode, {
       dataServices,
-      dataSourceEntityType: dataSourceEntityType,
+      entityAggregation: config.entityAggregation,
       dataSourceEntityFilter: dataSourceEntityFilter,
       organisationUnitCode: organisationUnitCode,
       startDate: undefined,
