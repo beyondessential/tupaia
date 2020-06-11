@@ -22,9 +22,9 @@ const REPORT = {
   dataBuilder: 'tableOfValuesForOrgUnits',
   dataBuilderConfig: {
     rows: [
-      'Electricity',
+      'Electricity available',
       'Internet connection available',
-      'Dormitory school',
+      //'Dormitory school',
       'Access to clean water',
       'Functioning toilets',
       'Functioning hand washing facilities',
@@ -58,7 +58,7 @@ const REPORT = {
     cells: [
       'SchFF001',
       'SchFF002',
-      'SchFF003',
+      //'SchFF003',
       'BCD29_event',
       'BCD32_event',
       'SchFF004',
