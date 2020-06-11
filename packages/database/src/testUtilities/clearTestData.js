@@ -43,6 +43,7 @@ const TABLES_TO_CLEAR = [
   'permission_group',
   'user_reward',
   'api_client',
+  'access_request',
   'user_account',
 ];
 
