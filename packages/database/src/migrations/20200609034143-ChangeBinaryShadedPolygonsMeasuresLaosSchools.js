@@ -253,7 +253,7 @@ exports.up = async function(db) {
                           valueToMatch: '*',
                         },
                       },
-                      dataElementCodes: ['SchFFprov'],
+                      dataElementCodes,
                     },
                   },
                 },
