@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-const createDataSource = fields => ({ service_type: 'tupaia', config: {}, ...fields });
+const createDataSource = fields => ({ config: {}, ...fields });
 
 export const DATA_SOURCES = {
   POP01: createDataSource({ type: 'dataElement', code: 'POP01' }),

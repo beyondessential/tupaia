@@ -8,7 +8,7 @@ import { TupaiaDataApi } from '@tupaia/data-api';
 
 import { createService } from '../../services/createService';
 import { DhisService } from '../../services/dhis';
-import { TupaiaDataService } from '../../services/tupaia';
+import { TupaiaService } from '../../services/tupaia';
 
 describe('createService()', () => {
   const database = 'db';
@@ -33,7 +33,7 @@ describe('createService()', () => {
   it('tupaia service', () => {
     const service = createService(models, 'tupaia');
 
-    expect(service).to.be.instanceOf(TupaiaDataService);
+    expect(service).to.be.instanceOf(TupaiaService);
     expect(service).to.have.deep.property('models', models);
     expect(service).to.have.deep.property('api');
     expect(service.api).to.be.instanceOf(TupaiaDataApi);
