@@ -667,12 +667,12 @@ function* watchSearchChange() {
  */
 function* fetchMeasureInfo(measureId, organisationUnitCode) {
   const state = yield select();
-  if (selectIsProject(state, organisationUnitCode)) {
-    // Never want to fetch measures for World org code.
-    yield put(cancelFetchMeasureData());
-    yield put(clearMeasureHierarchy());
-    return;
-  }
+  // if (selectIsProject(state, organisationUnitCode)) {
+  //   // Never want to fetch measures for World org code.
+  //   yield put(cancelFetchMeasureData());
+  //   yield put(clearMeasureHierarchy());
+  //   return;
+  // }
 
   if (!measureId || !organisationUnitCode) {
     // Don't try and fetch null measures
@@ -684,6 +684,7 @@ function* fetchMeasureInfo(measureId, organisationUnitCode) {
   const project = selectActiveProject(state);
   const country = selectOrgUnitCountry(state, organisationUnitCode);
   const countryCode = country ? country.organisationUnitCode : undefined;
+  console.log('function*fetchMeasureInfo -> countryCode', countryCode, project.code);
   const measureParams = selectMeasureBarItemById(state, measureId) || {};
 
   // If the view should be constrained to a date range and isn't, constrain it
@@ -697,7 +698,7 @@ function* fetchMeasureInfo(measureId, organisationUnitCode) {
     organisationUnitCode,
     startDate: formatDateForApi(startDate),
     endDate: formatDateForApi(endDate),
-    shouldShowAllParentCountryResults: !isMobile(),
+    shouldShowAllParentCountryResults: !isMobile() && countryCode !== project.code,
     projectCode: project.code,
   };
   const requestResourceUrl = `measureData?${queryString.stringify(urlParameters)}`;
@@ -740,11 +741,16 @@ function* fetchCurrentMeasureInfo() {
   const { measureId } = state.map.measureInfo;
   const { measureHierarchy, selectedMeasureId } = state.measureBar;
 
-  if (currentOrganisationUnitCode && !selectIsProject(state, currentOrganisationUnitCode)) {
+  if (currentOrganisationUnitCode) {
     const isHeirarchyPopulated = Object.keys(measureHierarchy).length;
+    console.log(
+      'function*fetchCurrentMeasureInfo -> currentOrganisationUnitCode',
+      currentOrganisationUnitCode,
+      isHeirarchyPopulated,
+    );
 
     // Update the default measure ID
-    if (isHeirarchyPopulated) {
+    if (true) {
       const newMeasure = getSelectedMeasureFromHierarchy(
         measureHierarchy,
         selectedMeasureId,
@@ -804,7 +810,7 @@ function* watchOrgUnitChangeAndFetchMeasureInfo() {
 function* fetchMeasures(action) {
   const { organisationUnitCode } = action.organisationUnit;
   const state = yield select();
-  if (selectIsProject(state, organisationUnitCode)) yield put(clearMeasure());
+  // if (selectIsProject(state, organisationUnitCode)) yield put(clearMeasure());
   const projectCode = (yield select(selectActiveProject)).code;
   const requestResourceUrl = `measures?organisationUnitCode=${organisationUnitCode}&projectCode=${projectCode}`;
   try {

@@ -13,7 +13,7 @@ export default class extends RouteHandler {
     const userGroups = await this.req.getUserGroups(entityCode);
 
     // will return undefined if no country level ancestor organisationUnit (e.g. World)
-    const { code: countryCode } = (await entity.getCountry()) || {};
+    const { code: countryCode } = entity;
     let mapOverlays = [];
     if (countryCode) {
       mapOverlays = await MapOverlay.find({
