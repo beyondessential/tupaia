@@ -9,7 +9,7 @@ import styled from 'styled-components';
 import CheckCircleIcon from '@material-ui/icons/CheckCircleOutline';
 import { TableRowExpansionContainer, WarningButton } from '@tupaia/ui-components';
 import { BorderlessTableRow } from './TableRow';
-import * as COLORS from '../../theme/colors';
+import * as COLORS from '../../constants/colors';
 import { getVerifiedStatuses, updateVerifiedStatus } from '../../store';
 
 const VerifiedAlert = styled.div`
@@ -114,7 +114,7 @@ export const VerifiableTableRowComponent = React.memo(props => {
 });
 
 VerifiableTableRowComponent.propTypes = {
-  rowData: PropTypes.array.isRequired,
+  rowData: PropTypes.object.isRequired,
   verifiedStatuses: PropTypes.object.isRequired,
   setVerifiedStatus: PropTypes.func.isRequired,
 };

@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import MuiLink from '@material-ui/core/Link';
-import * as COLORS from '../theme/colors';
+import * as COLORS from '../constants/colors';
 
 const Container = styled.div`
   display: flex;

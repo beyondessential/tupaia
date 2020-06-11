@@ -6,7 +6,7 @@ import React from 'react';
 import styled from 'styled-components';
 import MuiContainer from '@material-ui/core/Container';
 import MuiLink from '@material-ui/core/Link';
-import * as COLORS from '../theme/colors';
+import * as COLORS from '../constants/colors';
 
 const footerFontColor = '#c4c4c4';
 
