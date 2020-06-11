@@ -1,6 +1,6 @@
 {
   "exit": true,
-  "require": ["../../register-babel-for-testing", "@babel/polyfill"],
-  "spec": "./!(node_modules)/**/*.test.js",
+  "require": ["../../register-babel-for-testing"],
+  "spec": "./src/tests/**/*.test.js",
   "timeout": 100000
 }

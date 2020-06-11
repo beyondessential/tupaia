@@ -121,22 +121,14 @@
     "url": "^0.11.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.0.0",
-    "@babel/core": "^7.4.0",
     "@babel/preset-flow": "^7.0.0",
     "@babel/runtime": "^7.4.2",
-    "@beyondessential/eslint-config-beyondessential": "2.3.0",
     "@react-native-community/eslint-config": "^0.0.3",
-    "babel-eslint": "^9.0.0",
-    "eslint": "^5.15.3",
-    "eslint-config-prettier": "^4.3.0",
     "eslint-plugin-import": "^2.18.0",
     "eslint-plugin-jsx-a11y": "^6.2.3",
-    "eslint-plugin-prettier": "^3.1.0",
     "eslint-plugin-react-native": "^3.6.0",
     "flow-bin": "0.38.0",
     "metro-react-native-babel-preset": "^0.53.1",
-    "prettier": "^1.17.1",
     "react-test-renderer": "16.8.6"
   }
 }
