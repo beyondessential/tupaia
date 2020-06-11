@@ -9,7 +9,7 @@ const DEFAULT_ENTITY_AGGREGATION_TYPE = Aggregator.aggregationTypes.REPLACE_ORG_
 
 export const buildAggregationOptions = async (
   initialAggregationOptions,
-  dataSourceEntities,
+  dataSourceEntities = [],
   query,
 ) => {
   const {
@@ -65,7 +65,6 @@ const getOrgUnitToAncestorMap = async (orgUnits, aggregationEntityType) => {
 
 const shouldAggregateEntities = (dataSourceEntities, aggregationEntityType) =>
   aggregationEntityType &&
-  dataSourceEntities &&
   !(dataSourceEntities.length === 0) &&
   !dataSourceEntities.every(({ type }) => type === aggregationEntityType);
 
