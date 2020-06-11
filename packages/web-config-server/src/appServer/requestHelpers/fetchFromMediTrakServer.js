@@ -1,6 +1,6 @@
 import { CustomError, fetchWithTimeout, stringifyQuery } from '@tupaia/utils';
 import { UserSession } from '/models';
-import { refreshAccessToken } from './refreshAccessToken';
+import { refreshAndSaveAccessToken } from './refreshAndSaveAccessToken';
 
 /**
  * Send request to Meditrak server and handle responses.
@@ -65,7 +65,7 @@ export const fetchFromMeditrakServerUsingTokens = async (
 ) => {
   const UNAUTHORIZED_STATUS_CODE = 401;
   const { accessToken, refreshToken } = await UserSession.findOne({ userName });
-  const newHeaders = headers;
+  const newHeaders = { ...headers };
   newHeaders.Authorization = `Bearer ${accessToken}`;
 
   try {
@@ -79,8 +79,7 @@ export const fetchFromMeditrakServerUsingTokens = async (
 
   // If request was not authorized, refresh access token and try once more
   try {
-    const newAccessToken = await refreshAccessToken(refreshToken, userName);
-    await UserSession.update({ userName }, { accessToken: newAccessToken });
+    const newAccessToken = await refreshAndSaveAccessToken(refreshToken, userName);
     newHeaders.Authorization = `Bearer ${newAccessToken}`;
     return await fetchFromMediTrakServer(endpoint, payload, queryParameters, newHeaders);
   } catch (error) {

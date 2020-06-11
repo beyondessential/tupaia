@@ -20,6 +20,10 @@ export function getUserIDFromToken(authHeader) {
     throw new UnauthenticatedError(error.message);
   }
 
+  if (!jwtToken) {
+    throw new UnauthenticatedError('Please provide a jwt in the auth header');
+  }
+
   let tokenClaims = {};
   try {
     tokenClaims = jwt.verify(jwtToken, process.env.JWT_SECRET);
