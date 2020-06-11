@@ -8,19 +8,19 @@ import { connect } from 'react-redux';
 import { RequestCountryAccessPage } from './RequestCountryAccessPage';
 import { COUNTRY_REQUEST_STATUSES } from './constants';
 import { sendCountryAccessRequest, setCountryAccessFormFieldValues } from './actions';
-import { AccessPolicy } from '@tupaia/access-policy';
 
-function mapStateToProps({ country, authentication }) {
+function mapStateToProps({ country, authentication }, { screenProps }) {
   const { requestCountryStatus, requestCountryErrorMessage, requestCountryFieldValues } = country;
 
-  const { accessPolicy } = authentication;
-
+  const { currentUserId } = authentication;
+  const { database } = screenProps;
+  const user = database.findOne('User', currentUserId, 'id');
   return {
     isLoading: requestCountryStatus === COUNTRY_REQUEST_STATUSES.COUNTRY_REQUESTING,
     isComplete: requestCountryStatus === COUNTRY_REQUEST_STATUSES.COUNTRY_REQUEST_SUCCESS,
     errorMessage: requestCountryErrorMessage,
     formFieldValues: requestCountryFieldValues,
-    accessPolicy: new AccessPolicy(accessPolicy),
+    accessPolicy: user.accessPolicy,
   };
 }
 
