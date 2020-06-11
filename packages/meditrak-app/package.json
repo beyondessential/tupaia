@@ -70,7 +70,6 @@
     "bump-patch": "npm-bump patch; ios/version-sync.sh",
     "bump-minor": "npm-bump minor; ios/version-sync.sh",
     "bugsnag-sourcemaps-upload": "scripts/uploadSourcemaps.sh",
-    "postinstall": "find node_modules -name \".babelrc\" -delete",
     "start-dev": "react-native run-android"
   },
   "dependencies": {
@@ -122,22 +121,14 @@
     "url": "^0.11.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.4.0",
+    "@babel/preset-flow": "^7.0.0",
     "@babel/runtime": "^7.4.2",
-    "@beyondessential/eslint-config-beyondessential": "2.3.0",
     "@react-native-community/eslint-config": "^0.0.3",
-    "babel-cli": "^6.24.0",
-    "babel-eslint": "^8.1.1",
-    "babel-preset-flow": "^6.23.0",
-    "eslint": "^5.15.3",
-    "eslint-config-prettier": "^4.3.0",
     "eslint-plugin-import": "^2.18.0",
     "eslint-plugin-jsx-a11y": "^6.2.3",
-    "eslint-plugin-prettier": "^3.1.0",
     "eslint-plugin-react-native": "^3.6.0",
     "flow-bin": "0.38.0",
     "metro-react-native-babel-preset": "^0.53.1",
-    "prettier": "^1.17.1",
     "react-test-renderer": "16.8.6"
   }
 }

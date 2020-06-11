@@ -11,7 +11,6 @@ import { saltAndHash } from './saltAndHash';
 import {
   EMAIL_ADDRESS_CHANGE,
   PASSWORD_CHANGE,
-  ACCESS_POLICY_UPDATED,
   LOGIN_REQUEST,
   LOGIN_SUCCESS,
   LOGIN_FAILURE,
@@ -117,7 +116,6 @@ export const receiveLogin = (emailAddress, user, accessPolicy, installId) => asy
     type: LOGIN_SUCCESS,
     userId: user.id,
     name: user.name,
-    accessPolicy,
   });
 
   crashReporter.setUser(installId, user.name, emailAddress);
@@ -125,15 +123,8 @@ export const receiveLogin = (emailAddress, user, accessPolicy, installId) => asy
   dispatch(resetToHome());
 };
 
-export const receiveUpdatedAccessPolicy = userDetails => (dispatch, getState, { database }) => {
-  const { id: userId, name, accessPolicy } = database.updateUser(userDetails);
-  dispatch({
-    type: ACCESS_POLICY_UPDATED,
-    userId,
-    name,
-    accessPolicy,
-  });
-};
+export const receiveUpdatedAccessPolicy = userDetails => (dispatch, getState, { database }) =>
+  database.updateUser(userDetails);
 
 export const receiveLoginError = errorMessage => ({
   type: LOGIN_FAILURE,

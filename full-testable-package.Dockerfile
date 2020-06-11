@@ -15,6 +15,7 @@ WORKDIR /tupaia
 # that node_modules is built and added to the container cache without changes to code invalidating it
 COPY package.json ./
 COPY yarn.lock ./
+COPY babel.config.json ./
 RUN mkdir -p ./packages/${package}
 COPY packages/${package}/package.json ./packages/${package}
 
