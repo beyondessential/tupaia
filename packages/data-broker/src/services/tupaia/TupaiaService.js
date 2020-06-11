@@ -6,9 +6,10 @@
 import { reduceToDictionary } from '@tupaia/utils';
 
 import { Service } from '../Service';
-import { translateAnalyticsForConsumer, translateOptionsForTupaiaDataApi } from './translation';
+import { translateAnalyticsForConsumer, translateOptionsForApi } from './translation';
 
-export class TupaiaDataService extends Service {
+// used for internal Tupaia apis: TupaiaDataApi and IndicatorApi
+export class TupaiaService extends Service {
   constructor(models, api) {
     super(models);
 
@@ -24,12 +25,12 @@ export class TupaiaDataService extends Service {
 
   // eslint-disable-next-line class-methods-use-this
   async push() {
-    throw new Error('Data push is not supported in TupaiaDataService');
+    throw new Error('Data push is not supported in TupaiaService');
   }
 
   // eslint-disable-next-line class-methods-use-this
   async delete() {
-    throw new Error('Data deletion is not supported in TupaiaDataService');
+    throw new Error('Data deletion is not supported in TupaiaService');
   }
 
   async pull(dataSources, type, options = {}) {
@@ -40,7 +41,7 @@ export class TupaiaDataService extends Service {
   async pullAnalytics(dataSources, options) {
     const dataElementCodes = dataSources.map(({ code }) => code);
     const analytics = await this.api.fetchAnalytics({
-      ...translateOptionsForTupaiaDataApi(options),
+      ...translateOptionsForApi(options),
       dataElementCodes,
     });
     const dataElements = await this.pullDataElementMetadata(dataSources);
@@ -60,7 +61,7 @@ export class TupaiaDataService extends Service {
     const [dataSource] = dataSources;
     const { code: surveyCode } = dataSource;
 
-    return this.api.fetchEvents({ ...translateOptionsForTupaiaDataApi(options), surveyCode });
+    return this.api.fetchEvents({ ...translateOptionsForApi(options), surveyCode });
   }
 
   async pullMetadata(dataSources, type) {
