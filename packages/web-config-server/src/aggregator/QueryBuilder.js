@@ -53,6 +53,8 @@ export class QueryBuilder {
     return this.getQueryParameter('entityAggregation') || {};
   }
 
+  getQuery = () => this.query;
+
   // Adds standard period, start date and end date
   makePeriodReplacements() {
     // Make standard replacements if required

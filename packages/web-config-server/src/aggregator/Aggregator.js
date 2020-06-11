@@ -43,6 +43,6 @@ export class Aggregator extends BaseAggregator {
       aggregationParams,
     );
 
-    return super.fetchEvents(programCode, queryBuilder.query, aggregationOptions);
+    return super.fetchEvents(programCode, queryBuilder.getQuery(), aggregationOptions);
   }
 }

@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import { Aggregator } from '@tupaia/aggregator';
+import winston from '/log';
 
 const DEFAULT_ENTITY_AGGREGATION_TYPE = Aggregator.aggregationTypes.REPLACE_ORG_UNIT_WITH_ORG_GROUP;
 
@@ -50,11 +51,12 @@ const getOrgUnitToAncestorMap = async (orgUnits, aggregationEntityType) => {
   if (!orgUnits || orgUnits.length === 0) return {};
   const orgUnitToAncestor = {};
   const addOrgUnitToMap = async orgUnit => {
-    if (orgUnit && orgUnit.type !== aggregationEntityType) {
+    if (orgUnit.type !== aggregationEntityType) {
       const ancestor = await orgUnit.getAncestorOfType(aggregationEntityType);
       if (ancestor) {
         orgUnitToAncestor[orgUnit.code] = { code: ancestor.code, name: ancestor.name };
       }
+      winston.warn(`No ancestor of type ${aggregationEntityType} found for ${orgUnit.name}`);
     }
   };
   await Promise.all(orgUnits.map(orgUnit => addOrgUnitToMap(orgUnit)));
