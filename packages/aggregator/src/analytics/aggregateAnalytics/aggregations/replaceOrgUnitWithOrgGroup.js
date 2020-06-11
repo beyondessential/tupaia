@@ -12,7 +12,9 @@
 export const replaceOrgUnitWithOrgGroup = (analytics, aggregationConfig) => {
   const { orgUnitMap } = aggregationConfig;
   return analytics.map(analytic => {
-    const organisationUnit = orgUnitMap[analytic.organisationUnit];
+    const organisationUnit =
+      (orgUnitMap[analytic.organisationUnit] && orgUnitMap[analytic.organisationUnit].code) ||
+      analytic.organisationUnit;
     return { ...analytic, organisationUnit };
   });
 };

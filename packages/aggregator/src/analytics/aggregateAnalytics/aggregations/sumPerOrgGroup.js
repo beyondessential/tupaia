@@ -16,7 +16,9 @@ export const sumPerOrgGroup = (analytics, aggregationConfig) => {
 
   const summedAnalyticsByKey = {};
   analytics.forEach(analytic => {
-    const organisationUnit = orgUnitMap[analytic.organisationUnit] || analytic.organisationUnit;
+    const organisationUnit =
+      (orgUnitMap[analytic.organisationUnit] && orgUnitMap[analytic.organisationUnit].code) ||
+      analytic.organisationUnit;
     const key = `${analytic.dataElement}__${organisationUnit}`;
 
     const value = valueMapper(analytic.value);

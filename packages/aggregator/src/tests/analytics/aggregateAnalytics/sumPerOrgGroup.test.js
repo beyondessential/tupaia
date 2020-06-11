@@ -7,9 +7,9 @@ import { expect } from 'chai';
 import { sumPerOrgGroup } from '../../../analytics/aggregateAnalytics/aggregations';
 
 const orgUnitMap = {
-  org1: 'parent1',
-  org2: 'parent2',
-  org3: 'parent1',
+  org1: { code: 'parent1', name: 'Parent 1' },
+  org2: { code: 'parent2', name: 'Parent 2' },
+  org3: { code: 'parent1', name: 'Parent 1' },
 };
 
 const BASE_TEST_ANALYTICS = [

@@ -10,7 +10,7 @@ const DEFAULT_ENTITY_AGGREGATION_TYPE = Aggregator.aggregationTypes.REPLACE_ORG_
 export const buildAggregationOptions = async (
   initialAggregationOptions,
   dataSourceEntities = [],
-  query,
+  entityAggregationOptions,
 ) => {
   const {
     aggregations,
@@ -18,7 +18,11 @@ export const buildAggregationOptions = async (
     aggregationConfig,
     ...restOfOptions
   } = initialAggregationOptions;
-  const { aggregationEntityType, aggregationType: entityAggregationType } = query;
+  const {
+    aggregationEntityType,
+    aggregationType: entityAggregationType,
+    aggregationConfig: entityAggregationConfig,
+  } = entityAggregationOptions;
 
   const inputAggregations =
     aggregations || aggregationType ? [{ type: aggregationType, config: aggregationConfig }] : [];
@@ -34,6 +38,7 @@ export const buildAggregationOptions = async (
     dataSourceEntities,
     aggregationEntityType,
     entityAggregationType,
+    entityAggregationConfig,
   );
 
   return {
@@ -55,8 +60,9 @@ const getOrgUnitToAncestorMap = async (orgUnits, aggregationEntityType) => {
       const ancestor = await orgUnit.getAncestorOfType(aggregationEntityType);
       if (ancestor) {
         orgUnitToAncestor[orgUnit.code] = { code: ancestor.code, name: ancestor.name };
+      } else {
+        winston.warn(`No ancestor of type ${aggregationEntityType} found for ${orgUnit.code}`);
       }
-      winston.warn(`No ancestor of type ${aggregationEntityType} found for ${orgUnit.name}`);
     }
   };
   await Promise.all(orgUnits.map(orgUnit => addOrgUnitToMap(orgUnit)));
@@ -72,7 +78,8 @@ const fetchEntityAggregationConfig = async (
   dataSourceEntities,
   aggregationEntityType,
   entityAggregationType = DEFAULT_ENTITY_AGGREGATION_TYPE,
+  entityAggregationConfig,
 ) => {
   const orgUnitMap = await getOrgUnitToAncestorMap(dataSourceEntities, aggregationEntityType);
-  return { type: entityAggregationType, config: { orgUnitMap } };
+  return { type: entityAggregationType, config: { ...entityAggregationConfig, orgUnitMap } };
 };

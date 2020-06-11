@@ -49,7 +49,7 @@ export class QueryBuilder {
     return dataSourceEntities;
   }
 
-  getAggregationParams() {
+  getEntityAggregationOptions() {
     return this.getQueryParameter('entityAggregation') || {};
   }
 

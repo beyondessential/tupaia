@@ -19,11 +19,11 @@ export class Aggregator extends BaseAggregator {
 
     const fetchOptions = await queryBuilder.build(dataSourceEntities);
 
-    const aggregationParams = queryBuilder.getAggregationParams();
+    const entityAggregationOptions = queryBuilder.getEntityAggregationOptions();
     const aggregationOptions = await buildAggregationOptions(
       initialAggregationOptions,
       dataSourceEntities,
-      aggregationParams,
+      entityAggregationOptions,
     );
 
     return super.fetchAnalytics(dataElementCodes, fetchOptions, aggregationOptions);
@@ -36,11 +36,11 @@ export class Aggregator extends BaseAggregator {
     queryBuilder.replaceOrgUnitCodes(dataSourceEntities);
     queryBuilder.makeEventReplacements();
 
-    const aggregationParams = queryBuilder.getAggregationParams();
+    const entityAggregationOptions = queryBuilder.getEntityAggregationOptions();
     const aggregationOptions = await buildAggregationOptions(
       {}, // No input aggregation for events (yet)
       dataSourceEntities,
-      aggregationParams,
+      entityAggregationOptions,
     );
 
     return super.fetchEvents(programCode, queryBuilder.getQuery(), aggregationOptions);
