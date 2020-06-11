@@ -16,11 +16,12 @@ export const percentPerValuePerOrgUnit = async (
 ) => {
   const {
     dataElementGroupCode,
-    dataSourceEntityType = ENTITY_TYPES.FACILITY,
+    entityAggregation,
     dataServices,
     range,
     valuesOfInterest,
   } = dataBuilderConfig;
+  const { dataSourceEntityType = ENTITY_TYPES.FACILITY } = entityAggregation;
 
   const dataElementCodes = await getDataElementCodesInGroup(dhisApi, dataElementGroupCode);
   const { results } = await aggregator.fetchAnalytics(dataElementCodes, { dataServices }, query);
