@@ -9,7 +9,7 @@ import { format } from 'date-fns';
 import PropTypes from 'prop-types';
 import { CondensedTableBody, FakeHeader } from '@tupaia/ui-components';
 import { ConnectedTable } from './ConnectedTable';
-import * as COLORS from '../../theme/colors';
+import * as COLORS from '../../constants/colors';
 import { FIRST_COLUMN_WIDTH, SITES_REPORTED_COLUMN_WIDTH } from './constants';
 import { createTotalCasesAccessor } from './dataAccessors';
 import { AlertCell, SitesReportedCell } from './TableCellComponents';

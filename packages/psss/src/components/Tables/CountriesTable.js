@@ -10,11 +10,12 @@ import PropTypes from 'prop-types';
 import { ExpandableTableBody } from '@tupaia/ui-components';
 import { Link as RouterLink } from 'react-router-dom';
 import { ConnectedTable } from './ConnectedTable';
-import * as COLORS from '../../theme/colors';
+import * as COLORS from '../../constants/colors';
 import { FIRST_COLUMN_WIDTH, SITES_REPORTED_COLUMN_WIDTH } from './constants';
 import { CountrySummaryTable } from './CountrySummaryTable';
 import { createTotalCasesAccessor } from './dataAccessors';
 import { AlertCell, SitesReportedCell } from './TableCellComponents';
+import { countryFlagImage } from '../../utils';
 
 const CountryTitle = styled(MuiLink)`
   display: flex;
@@ -33,7 +34,7 @@ const CountryTitle = styled(MuiLink)`
 const NameCell = ({ name, countryCode }) => {
   return (
     <CountryTitle to="weekly-reports/samoa" data-testid="country-link" component={RouterLink}>
-      <Avatar src={`https://hatscripts.github.io/circle-flags/flags/${countryCode}.svg`} /> {name}
+      <Avatar src={countryFlagImage(countryCode)} /> {name}
     </CountryTitle>
   );
 };

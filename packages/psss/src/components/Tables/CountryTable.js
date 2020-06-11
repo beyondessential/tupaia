@@ -11,7 +11,7 @@ import { format } from 'date-fns';
 import { Table } from '@tupaia/ui-components';
 import { Alarm, CheckCircleOutline } from '@material-ui/icons';
 import { CountryTableBody } from './CountryTableBody';
-import * as COLORS from '../../theme/colors';
+import * as COLORS from '../../constants/colors';
 import { FIRST_COLUMN_WIDTH, SITES_REPORTED_COLUMN_WIDTH } from './constants';
 import { createTotalCasesAccessor } from './dataAccessors';
 import { AlertCell, SitesReportedCell } from './TableCellComponents';

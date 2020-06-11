@@ -14,7 +14,7 @@ import {
   ErrorAlert,
 } from '@tupaia/ui-components';
 import { PercentageChangeCell } from './Tables/TableCellComponents';
-import * as COLORS from '../theme/colors';
+import * as COLORS from '../constants/colors';
 import { Drawer, DrawerHeaderContent, DrawerFooter, DrawerHeader } from './Drawer';
 import { CountryReportTable, SiteReportTable } from './Tables';
 import { SiteAddress } from './SiteAddress';
@@ -25,6 +25,7 @@ import {
   confirmWeeklyReportsData,
   checkWeeklyReportsPanelIsOpen,
 } from '../store';
+import { countryFlagImage } from '../utils';
 
 const columns = [
   {
@@ -105,7 +106,7 @@ const WeeklyReportPanelComponent = React.memo(
           <DrawerHeaderContent
             heading="American Samoa"
             date="Week 9 Feb 25 - Mar 1, 2020"
-            avatarUrl="https://hatscripts.github.io/circle-flags/flags/as.svg"
+            avatarUrl={countryFlagImage('as')}
           />
         </DrawerHeader>
         <ErrorAlert>ILI Above Threshold. Please review and verify data.</ErrorAlert>
