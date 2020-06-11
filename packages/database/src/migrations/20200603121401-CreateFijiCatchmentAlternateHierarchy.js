@@ -1,9 +1,12 @@
 'use strict';
 
 import { insertObject, arrayToDbString, generateId } from '../utilities';
-import { FIJI_ENTITIES_PROVINCES } from './migrationData/20200603121401-CreateFijiAlternateHierarchyProvinces';
-import { FIJI_ENTITIES_SUB_CATCHMENTS } from './migrationData/20200603121401-CreateFijiAlternateHierarchyCatchments';
-import { FIJI_ENTITIES_NEW_VILLAGES } from './migrationData/20200603121401-CreateFijiAlternateHierarchyVillages';
+import { FIJI_ENTITIES_PROVINCES } from './migrationData/20200603121401-createWishCatchmentHierarchy/WishProvinces';
+import { FIJI_ENTITIES_SUB_CATCHMENTS } from './migrationData/20200603121401-createWishCatchmentHierarchy/WishCatchments';
+import {
+  FIJI_ENTITIES_NEW_VILLAGES,
+  FIJI_ENTITIES_VILLAGES_HEIRARCHIES,
+} from './migrationData/20200603121401-createWishCatchmentHierarchy/WishVillages';
 import FIJI_ENTITIES_PROVINCES_GEODATA from './migrationData/fiji_province_flat.json';
 
 var dbm;
@@ -21,8 +24,9 @@ exports.setup = function(options, seedLink) {
 };
 
 const COUNTRY_CODE = 'FJ';
+const PROJECT_CODE = 'wish';
 
-const convertFeaturesToMap = (features) => {
+const convertFeaturesToMap = features => {
   return features.reduce(function(map, feature) {
     map[feature.name] = feature.region;
     return map;
@@ -30,11 +34,18 @@ const convertFeaturesToMap = (features) => {
 };
 
 const addGeoDataToEntities = (entities, geoDatatMap) => {
-  return entities.map(entity => ({...entity, region: geoDatatMap[entity.name]}));
-}
+  return entities.map(entity => ({ ...entity, region: geoDatatMap[entity.name] }));
+};
 
-const parentCodeToId = async (db, parentCode) => {
-  const record = await db.runSql(`SELECT id FROM entity WHERE code = '${parentCode}'`);
+const getIdFromCode = async (db, code) => {
+  const record = await db.runSql(`SELECT id FROM entity WHERE code = '${code}'`);
+  return record.rows[0] && record.rows[0].id;
+};
+
+const getHeirarchyId = async db => {
+  const record = await db.runSql(
+    `select id from entity_hierarchy where name = '${PROJECT_CODE}' limit 1;`,
+  );
   return record.rows[0] && record.rows[0].id;
 };
 
@@ -56,26 +67,44 @@ const deleteEntitiesWithCodes = async (db, codes) => {
   await db.runSql(`DELETE FROM entity WHERE code IN (${arrayToDbString(codes)})`);
 };
 
-const insertEntities = async (db, entities, ParentIdMap = {}) => {
-  const idMap = await entities.map(async entity => await insertEntity(db, entity, ParentIdMap));
+//This is a bit hacky but delete all relations that aren't the existing top relation
+const deleteEntityRelations = async db => {
+  const countryId = await getIdFromCode(db, COUNTRY_CODE);
+  const heirarchyId = await getHeirarchyId(db);
+  db.runSql(
+    `DELETE FROM entity_relation WHERE entity_hierarchy_id = '${heirarchyId}' and child_id != '${countryId}'`,
+  );
+};
+
+const insertEntities = async (db, entities, hierarchyId, ParentIdMap = {}) => {
+  const idMap = {};
+
+  await Promise.all(
+    entities.map(async entity => {
+      const id = await insertEntity(db, entity, hierarchyId, ParentIdMap);
+      idMap[entity.code] = id;
+    }),
+  );
   return idMap;
 };
 
-const insertEntity = async (db, entity, parentIdMap) => {
-  const { parent_code: parentCode, point, region, ...entityData } = entity;
+const insertEntity = async (db, entity, hierarchyId, parentIdMap) => {
+  const { code, name, type: entityType, parent_code: parentCode, point, region } = entity;
   const parentId = parentIdMap.hasOwnProperty(parentCode)
     ? parentIdMap[parentCode]
-    : await parentCodeToId(db, parentCode);
+    : await getIdFromCode(db, parentCode);
 
-  await insertObject(db, 'entity', {
-    ...entityData,
+  const record = await insertObject(db, 'entity', {
     id: generateId(),
+    code: code,
     parent_id: parentId,
+    name: name,
+    type: entityType,
     country_code: COUNTRY_CODE,
     metadata: { dhis: { isDataRegional: true } },
   });
-  const result = await db.runSql(`SELECT id FROM entity WHERE code = '${entity.code}'`);
-  const id = result.rows[0].id;
+
+  const id = await getIdFromCode(db, code);
 
   const setClauses = [];
   if (point) {
@@ -86,24 +115,64 @@ const insertEntity = async (db, entity, parentIdMap) => {
   if (setClauses.length > 0) {
     await db.runSql(`UPDATE entity SET ${setClauses.join(',')} WHERE id = '${id}';`);
   }
-  const { code } = entity;
-  return { code: id };
+
+  if (entityType !== 'village') await insertEntityRelation(db, parentId, id, hierarchyId);
+
+  return id;
+};
+
+const insertEntityRelation = async (db, parentId, childId, hierarchyId) => {
+  const result = await db.runSql(`
+      insert into entity_relation (id, parent_id, child_id, entity_hierarchy_id)
+      values (
+        '${generateId()}',
+        '${parentId}',
+        '${childId}',
+        '${hierarchyId}'
+      );
+    `);
+};
+
+const updateVillageAltHeirarchies = async (db, villages, subcatchmentIdMap, heirarchyId) => {
+  villages.map(async village => {
+    const childId = await getIdFromCode(db, village.code);
+    const parentId = subcatchmentIdMap[village.parent_code];
+    await insertEntityRelation(db, parentId, childId, heirarchyId);
+  });
 };
 
 exports.up = async function(db) {
-  const provincesWithData = addGeoDataToEntities(FIJI_ENTITIES_PROVINCES, convertFeaturesToMap(FIJI_ENTITIES_PROVINCES_GEODATA));
-  //console.log('provincesWithData', provincesWithData);
-  const provinceIdMap = await insertEntities(db, provincesWithData);
+  const hierarchyId = await getHeirarchyId(db);
 
-  //console.log('FIJI_ENTITIES_SUB_CATCHMENTS', FIJI_ENTITIES_SUB_CATCHMENTS);
-  const subcatchmentIdMap = await insertEntities(db, FIJI_ENTITIES_SUB_CATCHMENTS, provinceIdMap);
+  const provincesWithData = addGeoDataToEntities(
+    FIJI_ENTITIES_PROVINCES,
+    convertFeaturesToMap(FIJI_ENTITIES_PROVINCES_GEODATA),
+  );
+  // console.log('provincesWithData', provincesWithData);
+  const provinceIdMap = await insertEntities(db, provincesWithData, hierarchyId);
+
+  // console.log('FIJI_ENTITIES_SUB_CATCHMENTS', FIJI_ENTITIES_SUB_CATCHMENTS);
+  const subcatchmentIdMap = await insertEntities(
+    db,
+    FIJI_ENTITIES_SUB_CATCHMENTS,
+    hierarchyId,
+    provinceIdMap,
+  );
 
   // console.log('FIJI_ENTITIES_NEW_VILLAGES', FIJI_ENTITIES_NEW_VILLAGES);
-  await insertEntities(db, FIJI_ENTITIES_NEW_VILLAGES, subcatchmentIdMap);
+  const villageIdMap = await insertEntities(db, FIJI_ENTITIES_NEW_VILLAGES, subcatchmentIdMap);
+
+  await updateVillageAltHeirarchies(
+    db,
+    FIJI_ENTITIES_VILLAGES_HEIRARCHIES,
+    subcatchmentIdMap,
+    hierarchyId,
+  );
 };
 
 exports.down = async function(db) {
   // Delete children first to avoid parent_id reference conflicts
+  await deleteEntityRelations(db);
   await deleteEntities(db, FIJI_ENTITIES_NEW_VILLAGES);
   await deleteEntities(db, FIJI_ENTITIES_SUB_CATCHMENTS);
   await deleteEntities(db, FIJI_ENTITIES_PROVINCES);
