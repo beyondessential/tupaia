@@ -20,11 +20,18 @@ async function onCreateCreateUserCountryPermission(
   },
   models,
 ) {
+  const data = {
+    user_id: userId,
+    country_id: countryId,
+    permission_group_id: permissionGroupId,
+  };
+
   if (approved) {
-    await models.userCountryPermission.create({
-      user_id: userId,
-      country_id: countryId,
-      permission_group_id: permissionGroupId,
-    });
+    const userCountryPermission = await models.userCountryPermission.findOne(data);
+    if (userCountryPermission !== null) {
+      throw new Error(`User Country Permission already exists`);
+    }
+
+    await models.userCountryPermission.create(data);
   }
 }
