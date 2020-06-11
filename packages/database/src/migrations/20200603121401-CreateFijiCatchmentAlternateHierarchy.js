@@ -7,7 +7,8 @@ import {
   FIJI_ENTITIES_NEW_VILLAGES,
   FIJI_ENTITIES_VILLAGES_HEIRARCHIES,
 } from './migrationData/20200603121401-createWishCatchmentHierarchy/WishVillages';
-import FIJI_ENTITIES_PROVINCES_GEODATA from './migrationData/fiji_province_flat.json';
+import FIJI_ENTITIES_PROVINCES_GEODATA from './migrationData/20200603121401-createWishCatchmentHierarchy/fiji_admin2_province_4326_flat.json';
+import FIJI_ENTITIES_SUBCATCHMENTS_GEODATA from './migrationData/20200603121401-createWishCatchmentHierarchy/fiji_sub-catchments_4326_flat.json';
 
 var dbm;
 var type;
@@ -28,13 +29,13 @@ const PROJECT_CODE = 'wish';
 
 const convertFeaturesToMap = features => {
   return features.reduce(function(map, feature) {
-    map[feature.name] = feature.region;
+    map[feature.code] = feature.region;
     return map;
   }, {});
 };
 
 const addGeoDataToEntities = (entities, geoDatatMap) => {
-  return entities.map(entity => ({ ...entity, region: geoDatatMap[entity.name] }));
+  return entities.map(entity => ({ ...entity, region: geoDatatMap[entity.code] }));
 };
 
 const getIdFromCode = async (db, code) => {
@@ -50,7 +51,7 @@ const getHeirarchyId = async db => {
 };
 
 const getSetClausesForGeoFields = (fieldName, fieldValue) => [
-  `"${fieldName}" = ST_GeomFromGeoJSON('${JSON.stringify(fieldValue)}')`,
+  `"${fieldName}" = ST_Force2D(ST_GeomFromGeoJSON('${JSON.stringify(fieldValue)}'))`,
   `bounds = ST_Expand(ST_Envelope(ST_GeomFromGeoJSON('${JSON.stringify(
     fieldValue,
   )}')::geometry), 1)`,
@@ -113,7 +114,7 @@ const insertEntity = async (db, entity, hierarchyId, parentIdMap) => {
     setClauses.push(...getSetClausesForGeoFields('region', region));
   }
   if (setClauses.length > 0) {
-    await db.runSql(`UPDATE entity SET ${setClauses.join(',')} WHERE id = '${id}';`);
+    const result = await db.runSql(`UPDATE entity SET ${setClauses.join(',')} WHERE id = '${id}';`);
   }
 
   if (entityType !== 'village') await insertEntityRelation(db, parentId, id, hierarchyId);
@@ -146,15 +147,20 @@ exports.up = async function(db) {
 
   const provincesWithData = addGeoDataToEntities(
     FIJI_ENTITIES_PROVINCES,
-    convertFeaturesToMap(FIJI_ENTITIES_PROVINCES_GEODATA),
+    convertFeaturesToMap(FIJI_ENTITIES_PROVINCES_GEODATA.features),
   );
   // console.log('provincesWithData', provincesWithData);
   const provinceIdMap = await insertEntities(db, provincesWithData, hierarchyId);
 
-  // console.log('FIJI_ENTITIES_SUB_CATCHMENTS', FIJI_ENTITIES_SUB_CATCHMENTS);
+  const subCatchmentsWithData = addGeoDataToEntities(
+    FIJI_ENTITIES_SUB_CATCHMENTS,
+    convertFeaturesToMap(FIJI_ENTITIES_SUBCATCHMENTS_GEODATA.features),
+  );
+  // console.log('subCatchmentsWithData', subCatchmentsWithData);
+
   const subcatchmentIdMap = await insertEntities(
     db,
-    FIJI_ENTITIES_SUB_CATCHMENTS,
+    FIJI_ENTITIES_SUB_CATCHMENTS, //subCatchmentsWithData,
     hierarchyId,
     provinceIdMap,
   );
