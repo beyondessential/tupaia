@@ -102,7 +102,11 @@ const WeeklyReportPanelComponent = React.memo(
     return (
       <Drawer open={isOpen} onClose={handleClose}>
         <DrawerHeader heading="Upcoming report" onClose={handleClose}>
-          <DrawerHeaderContent heading="American Samoa" date="Week 9 Feb 25 - Mar 1, 2020" />
+          <DrawerHeaderContent
+            heading="American Samoa"
+            date="Week 9 Feb 25 - Mar 1, 2020"
+            avatarUrl="https://hatscripts.github.io/circle-flags/flags/as.svg"
+          />
         </DrawerHeader>
         <ErrorAlert>ILI Above Threshold. Please review and verify data.</ErrorAlert>
         <GreySection disabled={isSaving}>

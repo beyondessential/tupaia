@@ -30,7 +30,11 @@ export const CountryReportsView = () => {
   };
   return (
     <React.Fragment>
-      <Header title={countryName} back={back} />
+      <Header
+        title={countryName}
+        back={back}
+        avatarUrl="https://hatscripts.github.io/circle-flags/flags/as.svg"
+      />
       <TabsToolbar links={links} />
       <CountryRoutes />
     </React.Fragment>

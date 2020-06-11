@@ -30,14 +30,21 @@ const CountryTitle = styled(MuiLink)`
   }
 `;
 
-const NameCell = ({ name }) => (
-  <CountryTitle to="weekly-reports/samoa" data-testid="country-link" component={RouterLink}>
-    <Avatar /> {name}
-  </CountryTitle>
-);
+const NameCell = ({ name, countryCode }) => {
+  return (
+    <CountryTitle to="weekly-reports/samoa" data-testid="country-link" component={RouterLink}>
+      <Avatar src={`https://hatscripts.github.io/circle-flags/flags/${countryCode}.svg`} /> {name}
+    </CountryTitle>
+  );
+};
 
 NameCell.propTypes = {
   name: PropTypes.string.isRequired,
+  countryCode: PropTypes.string,
+};
+
+NameCell.defaultProps = {
+  countryCode: null,
 };
 
 const countriesTableColumns = [
