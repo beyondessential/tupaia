@@ -83,7 +83,7 @@ const TABLE_STATUSES = {
   SAVING: 'saving',
 };
 
-const WeeklyReportPanelComponent = React.memo(
+export const WeeklyReportPanelComponent = React.memo(
   ({ countryData, sitesData, isOpen, handleClose, handleConfirm }) => {
     if (countryData.length === 0 || sitesData.length === 0) {
       return null;
@@ -105,7 +105,7 @@ const WeeklyReportPanelComponent = React.memo(
           <DrawerHeaderContent heading="American Samoa" date="Week 9 Feb 25 - Mar 1, 2020" />
         </DrawerHeader>
         <ErrorAlert>ILI Above Threshold. Please review and verify data.</ErrorAlert>
-        <GreySection disabled={isSaving}>
+        <GreySection disabled={isSaving} data-testid="country-reports">
           <EditableTableProvider
             columns={columns}
             data={countryData}
@@ -117,7 +117,7 @@ const WeeklyReportPanelComponent = React.memo(
             />
           </EditableTableProvider>
         </GreySection>
-        <MainSection disabled={isSaving}>
+        <MainSection disabled={isSaving} data-testid="site-reports">
           <ButtonSelect
             id="active-site"
             options={sitesData}
