@@ -21,7 +21,7 @@ const NEW_DATA_ELEMENT_TO_STRING = {
   SchFF002: 'Internet connection available',
   BCD29_event: 'Access to clean water',
   BCD32_event: 'Functioning toilets',
-  SchFF004: 'Hand washing facilities available',
+  SchFF004: 'Functioning hand washing facilities',
   SchFF011: 'Remedial support provided to students',
   SchQuar001: 'Currently used as quarantine centre',
 
