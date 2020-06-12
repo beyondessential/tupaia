@@ -44,7 +44,11 @@ export const getVerifiedStatuses = ({ weeklyReports }) => weeklyReports.activeWe
 
 export const getActiveWeekCountryData = ({ weeklyReports }) => {
   if (weeklyReports.activeWeek.id !== null) {
-    return weeklyReports.country.data[weeklyReports.activeWeek.id].syndromes;
+    // Todo: refactor to find by id when there is real data
+    const activeCountryWeek = weeklyReports.country.data.find(
+      item => item.index === weeklyReports.activeWeek.id,
+    );
+    return activeCountryWeek.syndromes;
   }
 
   return [];

@@ -116,5 +116,5 @@ Table.defaultProps = {
   page: null,
   rowsPerPage: 10,
   rowIdKey: 'id',
-  className: '',
+  className: null,
 };
