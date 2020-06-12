@@ -5,7 +5,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
-import { Error, ErrorOutline, NotificationImportant } from '@material-ui/icons';
+import { Warning } from '@material-ui/icons';
 import {
   CardContent,
   CardFooter,
@@ -14,6 +14,8 @@ import {
   Button,
   Card,
   DataCardTabs,
+  WarningCloud,
+  Virus,
 } from '@tupaia/ui-components';
 import { Container, Main, Sidebar, CountryTable, WeeklyReportPanel } from '../components';
 
@@ -26,7 +28,7 @@ const tabData = [
   {
     label: (
       <React.Fragment>
-        <ErrorOutline /> 3 Active Alerts
+        <WarningCloud /> 3 Active Alerts
       </React.Fragment>
     ),
     content: <ExampleContent>Table Content</ExampleContent>,
@@ -34,7 +36,7 @@ const tabData = [
   {
     label: (
       <React.Fragment>
-        <NotificationImportant /> 1 Active Outbreak
+        <Virus /> 1 Active Outbreak
       </React.Fragment>
     ),
     content: <ExampleContent>Table Content</ExampleContent>,
@@ -46,9 +48,16 @@ const StyledButton = styled(Button)`
   margin-bottom: 1rem;
 `;
 
+const StyledText = styled(Typography)`
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  font-weight: 400;
+  color: ${props => props.theme.palette.text.secondary};
+`;
+
 export const CountryReportsViewWeekly = () => (
   <Container>
-    <Main>
+    <Main data-testid="country-table">
       <CountryTable />
       <WeeklyReportPanel />
     </Main>
@@ -57,16 +66,16 @@ export const CountryReportsViewWeekly = () => (
         <CardHeader
           color="error"
           title="Submission due in 3 days"
-          label={<Error color="error" />}
+          label={<Warning color="error" />}
         />
         <CardContent>
           <Typography variant="h4">Week 11</Typography>
           <Typography variant="h4" gutterBottom>
             Upcoming Report
           </Typography>
-          <Typography variant="subtitle2" gutterBottom>
+          <StyledText variant="subtitle2" gutterBottom>
             Feb 25, 2020 - Mar 1, 2020
-          </Typography>
+          </StyledText>
           <StyledButton fullWidth>Review and Submit now</StyledButton>
         </CardContent>
         <CardFooter>

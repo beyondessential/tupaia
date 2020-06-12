@@ -6,13 +6,13 @@
 import React from 'react';
 import { Redirect, Route, Switch, useRouteMatch } from 'react-router-dom';
 import { TableView } from '../views/TableView';
+import { AlertsTabView } from '../views/AlertsTabView';
 
 const routedTableView = endpoint =>
   React.memo(props => (
     <TableView {...props} config={{ resource: `base-url/resources/${endpoint}` }} />
   ));
 
-const AlertsView = routedTableView('alerts');
 const OutbreaksView = routedTableView('outbreaks');
 const ArchiveView = routedTableView('archive');
 
@@ -22,7 +22,7 @@ export const AlertsRoutes = React.memo(() => {
   return (
     <Switch>
       <Route exact path={match.path}>
-        <AlertsView />
+        <AlertsTabView />
       </Route>
       <Route path={`${match.path}/outbreaks`}>
         <OutbreaksView />

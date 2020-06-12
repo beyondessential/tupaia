@@ -19,23 +19,23 @@ export class FakeAPI {
     // Create users
     if (endpoint === 'users') {
       for (let i = 0; i < 30; i++) {
-        const userData = this.user();
-        data.push(userData);
+        data.push(this.user());
       }
     } else if (endpoint === 'countries') {
       for (let i = 0; i < 20; i++) {
-        const userData = this.country();
-        data.push(userData);
+        data.push(this.country());
       }
     } else if (endpoint === 'country-weeks') {
       for (let i = 0; i < 10; i++) {
-        const userData = this.countryWeek(i);
-        data.push(userData);
+        data.push(this.countryWeek(i));
       }
     } else if (endpoint === 'sites') {
       for (let i = 0; i < 7; i++) {
-        const userData = this.siteWeek();
-        data.push(userData);
+        data.push(this.siteWeek());
+      }
+    } else if (endpoint === 'alerts') {
+      for (let i = 0; i < 10; i++) {
+        data.push(this.alert());
       }
     }
 
@@ -170,6 +170,30 @@ export class FakeAPI {
         max: 30,
       }),
       syndromes: this.syndromes(),
+    };
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  alert() {
+    return {
+      id: faker.random.uuid(),
+      name: faker.address.country(),
+      countryCode: faker.address.countryCode().toLowerCase(),
+      syndrome: faker.random.arrayElement(['AFR', 'DIA', 'ILI', 'PF', 'DIL']),
+      week: faker.random.number({
+        min: 1,
+        max: 10,
+      }),
+      startDate: faker.date.between('2020-01-01', '2020-01-31'),
+      endDate: faker.date.between('2020-02-01', '2020-02-28'),
+      totalCases: faker.random.number({
+        min: 10000,
+        max: 20000,
+      }),
+      sitesReported: faker.random.number({
+        min: 40,
+        max: 100,
+      }),
     };
   }
 

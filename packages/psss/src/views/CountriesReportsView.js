@@ -5,7 +5,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
-import { ErrorOutline, NotificationImportant } from '@material-ui/icons';
 import {
   CircleMeter,
   BaseToolbar,
@@ -13,6 +12,8 @@ import {
   CardContent,
   CardHeader,
   DataCardTabs,
+  WarningCloud,
+  Virus,
 } from '@tupaia/ui-components';
 import { Container, Main, Sidebar, Header, CountriesTable } from '../components';
 
@@ -31,7 +32,7 @@ const tabData = [
   {
     label: (
       <React.Fragment>
-        <ErrorOutline /> 3 Active Alerts
+        <WarningCloud /> 3 Active Alerts
       </React.Fragment>
     ),
     content: <ExampleContent>Table Content</ExampleContent>,
@@ -39,7 +40,7 @@ const tabData = [
   {
     label: (
       <React.Fragment>
-        <NotificationImportant /> 1 Active Outbreak
+        <Virus /> 1 Active Outbreak
       </React.Fragment>
     ),
     content: <ExampleContent>Table Content</ExampleContent>,
@@ -51,8 +52,8 @@ export const CountriesReportsView = () => (
     <Header title="Countries" />
     <BaseToolbar />
     <Container>
-      <Main>
-        <CountriesTable foo="bar" />
+      <Main data-testid="countries-table">
+        <CountriesTable />
       </Main>
       <Sidebar>
         <Card variant="outlined">

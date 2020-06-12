@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import { CondensedTableBody, FakeHeader, Table, Button } from '@tupaia/ui-components';
-import { FIRST_COLUMN_WIDTH, SITES_REPORTED_COLUMN_WIDTH } from './constants';
+import { COLUMN_WIDTHS } from './constants';
 import { AlertCell } from './TableCellComponents';
 import { createTotalCasesAccessor } from './dataAccessors';
 import {
@@ -29,7 +29,7 @@ const siteWeekColumns = [
   {
     title: 'Name',
     key: 'name',
-    width: FIRST_COLUMN_WIDTH,
+    width: COLUMN_WIDTHS.FIRST,
     align: 'left',
     CellComponent: NameCell,
   },
@@ -37,7 +37,7 @@ const siteWeekColumns = [
     title: 'Sites Reported',
     key: 'sitesReported',
     accessor: createTotalCasesAccessor('sitesReported'),
-    width: SITES_REPORTED_COLUMN_WIDTH,
+    width: COLUMN_WIDTHS.SITES_REPORTED,
   },
   {
     title: 'AFR',
