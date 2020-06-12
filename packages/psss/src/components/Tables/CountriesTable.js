@@ -31,7 +31,7 @@ const CountryTitle = styled(MuiLink)`
 `;
 
 const NameCell = ({ name }) => (
-  <CountryTitle to="weekly-reports/samoa" data-testid="country-link" component={RouterLink}>
+  <CountryTitle to="weekly-reports/samoa" component={RouterLink}>
     <Avatar /> {name}
   </CountryTitle>
 );

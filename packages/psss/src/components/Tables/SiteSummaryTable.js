@@ -111,9 +111,7 @@ export const SiteSummaryTableComponent = React.memo(
         />
         <StyledDiv>
           <Typography variant="body1">Verify data to submit Weekly report to Regional</Typography>
-          <Button onClick={handleOpen} data-testid="review-confirm-button">
-            Review and Confirm Now
-          </Button>
+          <Button onClick={handleOpen}>Review and Confirm Now</Button>
         </StyledDiv>
       </React.Fragment>
     );

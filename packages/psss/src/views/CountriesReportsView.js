@@ -51,8 +51,8 @@ export const CountriesReportsView = () => (
     <Header title="Countries" />
     <BaseToolbar />
     <Container>
-      <Main>
-        <CountriesTable foo="bar" />
+      <Main data-testid="countries-table">
+        <CountriesTable />
       </Main>
       <Sidebar>
         <Card variant="outlined">
