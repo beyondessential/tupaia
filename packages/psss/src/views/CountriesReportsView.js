@@ -51,7 +51,7 @@ export const CountriesReportsView = () => (
     <Header title="Countries" />
     <BaseToolbar />
     <Container>
-      <Main>
+      <Main data-testid="countries-table">
         <CountriesTable />
       </Main>
       <Sidebar>
