@@ -7,7 +7,6 @@ import get from 'lodash.get';
 
 import { utcMoment } from '../datetime';
 import { reduceToDictionary } from '../object';
-import { isNumber } from '../../dist/validation/validatorFunctions';
 
 const DAY = 'DAY';
 const WEEK = 'WEEK';
