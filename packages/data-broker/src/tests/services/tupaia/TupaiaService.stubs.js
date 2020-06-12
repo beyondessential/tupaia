@@ -5,7 +5,7 @@
 
 import sinon from 'sinon';
 import { TupaiaDataApi } from '@tupaia/data-api';
-import { DATA_ELEMENTS } from './TupaiaDataService.fixtures';
+import { DATA_ELEMENTS } from './TupaiaService.fixtures';
 
 export const createModelsStub = () => ({
   dataSource: {

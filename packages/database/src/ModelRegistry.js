@@ -20,9 +20,9 @@ export class ModelRegistry {
     this.generateModels();
   }
 
-  closeDatabaseConnections() {
+  async closeDatabaseConnections() {
     if (this.database.isSingleton) {
-      this.database.closeConnections();
+      await this.database.closeConnections();
     }
   }
 
