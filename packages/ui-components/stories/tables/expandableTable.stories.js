@@ -4,7 +4,6 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import MuiTableBody from '@material-ui/core/TableBody';

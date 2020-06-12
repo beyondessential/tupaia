@@ -2,7 +2,10 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-
+// Cypress does not currently support fetch api,
+// so have added this polyfill so that cypress requests fall back to xhr
+// https://docs.cypress.io/guides/guides/network-requests.html#Testing-Strategies
+import 'whatwg-fetch';
 import { stringifyQuery } from '@tupaia/utils';
 import { getAccessToken, getRefreshToken, loginSuccess, loginError } from '../store';
 
