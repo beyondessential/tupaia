@@ -60,6 +60,7 @@ describe('composePercentagePerOrgUnit', () => {
           metadata: { numerator: 2, denominator: 8 },
         },
       ],
+      period: null,
     });
   });
 
@@ -90,6 +91,58 @@ describe('composePercentagePerOrgUnit', () => {
           metadata: { numerator: 1, denominator: 2 },
         },
       ],
+      period: null,
+    });
+  });
+
+  it('should correctly compose periods', async () => {
+    stubFetchComposedData({
+      numerator: {
+        data: [
+          { name: 'Kolonga', organisationUnitCode: 'TO_KlongaHC', value: 1 },
+          { name: 'Nukunuku', organisationUnitCode: 'TO_Nukuhc', value: 2 },
+        ],
+        period: {
+          latestAvailable: '20190103',
+          earliestAvailable: '20170801',
+          requested: 'NOT_TESTED',
+        },
+      },
+      denominator: {
+        data: [
+          { name: 'Kolonga', organisationUnitCode: 'TO_KlongaHC', value: 2 },
+          { name: 'Nukunuku', organisationUnitCode: 'TO_Nukuhc', value: 8 },
+        ],
+        period: {
+          latestAvailable: '20200103',
+          earliestAvailable: '20180801',
+          requested: 'NOT_TESTED',
+        },
+      },
+    });
+
+    return expect(
+      composePercentagePerOrgUnit(aggregator, dhisApi, query, config),
+    ).to.eventually.deep.equal({
+      data: [
+        {
+          name: 'Kolonga',
+          organisationUnitCode: 'TO_KlongaHC',
+          value: 0.5,
+          metadata: { numerator: 1, denominator: 2 },
+        },
+        {
+          name: 'Nukunuku',
+          organisationUnitCode: 'TO_Nukuhc',
+          value: 0.25,
+          metadata: { numerator: 2, denominator: 8 },
+        },
+      ],
+      period: {
+        latestAvailable: '20200103',
+        earliestAvailable: '20170801',
+        requested: 'NOT_TESTED',
+      },
     });
   });
 });

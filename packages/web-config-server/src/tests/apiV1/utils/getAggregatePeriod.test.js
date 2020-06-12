@@ -44,7 +44,7 @@ describe('getAggregatePeriod()', () => {
   it('should return an aggregate period for 2 inputs', () => {
     const expectedResponse = {
       latestAvailable: '20200201',
-      earliestAvailable: '20200201',
+      earliestAvailable: '20191104',
       requested: 'WILL_ALWAYS_BE_RETURNED_AS_IT_IS_AT_INDEX_0',
     };
 

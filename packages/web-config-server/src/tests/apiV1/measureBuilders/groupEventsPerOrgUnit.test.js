@@ -118,6 +118,7 @@ describe('groupEventsPerOrgUnit', () => {
         { organisationUnitCode: 'threeEventLand', value: 'twoToThree', originalValue: 3 },
         { organisationUnitCode: 'fourEventLand', value: 'fourOrMore', originalValue: 4 },
       ],
+      period: null,
     });
   });
 
@@ -140,6 +141,7 @@ describe('groupEventsPerOrgUnit', () => {
         { organisationUnitCode: 'threeEventLand', value: 'threeOrMore', originalValue: 3 },
         { organisationUnitCode: 'fourEventLand', value: 'threeOrMore', originalValue: 4 },
       ],
+      period: null,
     });
   });
 
