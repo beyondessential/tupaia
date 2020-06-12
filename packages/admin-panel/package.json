@@ -42,6 +42,7 @@
     "start": "react-scripts start",
     "start-dev": "npm run start",
     "build": "react-scripts build",
+    "postbuild": "rm -rf served_build && mv build served_build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "lint": "eslint ."
