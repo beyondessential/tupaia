@@ -164,13 +164,14 @@ ExportDialog.propTypes = {
 };
 
 const mapStateToProps = state => {
-  const { chartExport, authentication, disaster } = state;
+  const { chartExport, authentication, disaster, project } = state;
   const { currentUserEmail } = authentication;
   const { selectedDisaster } = disaster;
 
   return {
     emailAddress: currentUserEmail,
     selectedDisaster,
+    projectCode: project.active.code,
     ...chartExport,
   };
 };
@@ -191,6 +192,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     onChartExport: () => {
       const {
         viewId,
+        projectCode,
         organisationUnitCode,
         organisationUnitName,
         dashboardGroupId,
@@ -205,6 +207,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         attemptChartExport({
           ...stateProps,
           viewId,
+          projectCode,
           organisationUnitCode,
           organisationUnitName,
           dashboardGroupId,
