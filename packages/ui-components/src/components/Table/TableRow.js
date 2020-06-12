@@ -63,7 +63,7 @@ export const TableRow = React.memo(({ columns, rowData, className }) => (
 
 TableRow.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
-  rowData: PropTypes.array.isRequired,
+  rowData: PropTypes.object.isRequired,
   className: PropTypes.string,
 };
 

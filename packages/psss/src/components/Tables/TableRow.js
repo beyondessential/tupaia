@@ -4,7 +4,7 @@
  */
 import styled from 'styled-components';
 import { ExpandableTableRow } from '@tupaia/ui-components';
-import * as COLORS from '../../theme/colors';
+import * as COLORS from '../../constants/colors';
 
 export const SimpleTableRow = styled(ExpandableTableRow)`
   border: none;

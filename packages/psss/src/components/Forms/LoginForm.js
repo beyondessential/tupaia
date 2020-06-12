@@ -9,7 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { login, checkIsPending, checkIsError, getError } from '../../store';
-import * as COLORS from '../../theme/colors';
+import * as COLORS from '../../constants/colors';
 import { useFormFields } from '../../hooks';
 
 const ErrorMessage = styled.p`

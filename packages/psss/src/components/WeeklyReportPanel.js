@@ -14,7 +14,7 @@ import {
   ErrorAlert,
 } from '@tupaia/ui-components';
 import { PercentageChangeCell } from './Tables/TableCellComponents';
-import * as COLORS from '../theme/colors';
+import * as COLORS from '../constants/colors';
 import { Drawer, DrawerHeaderContent, DrawerFooter, DrawerHeader } from './Drawer';
 import { CountryReportTable, SiteReportTable } from './Tables';
 import { SiteAddress } from './SiteAddress';
@@ -25,6 +25,7 @@ import {
   confirmWeeklyReportsData,
   checkWeeklyReportsPanelIsOpen,
 } from '../store';
+import { countryFlagImage } from '../utils';
 
 const columns = [
   {
@@ -83,7 +84,7 @@ const TABLE_STATUSES = {
   SAVING: 'saving',
 };
 
-const WeeklyReportPanelComponent = React.memo(
+export const WeeklyReportPanelComponent = React.memo(
   ({ countryData, sitesData, isOpen, handleClose, handleConfirm }) => {
     if (countryData.length === 0 || sitesData.length === 0) {
       return null;
@@ -102,10 +103,14 @@ const WeeklyReportPanelComponent = React.memo(
     return (
       <Drawer open={isOpen} onClose={handleClose}>
         <DrawerHeader heading="Upcoming report" onClose={handleClose}>
-          <DrawerHeaderContent heading="American Samoa" date="Week 9 Feb 25 - Mar 1, 2020" />
+          <DrawerHeaderContent
+            heading="American Samoa"
+            date="Week 9 Feb 25 - Mar 1, 2020"
+            avatarUrl={countryFlagImage('as')}
+          />
         </DrawerHeader>
         <ErrorAlert>ILI Above Threshold. Please review and verify data.</ErrorAlert>
-        <GreySection disabled={isSaving}>
+        <GreySection disabled={isSaving} data-testid="country-reports">
           <EditableTableProvider
             columns={columns}
             data={countryData}
@@ -117,7 +122,7 @@ const WeeklyReportPanelComponent = React.memo(
             />
           </EditableTableProvider>
         </GreySection>
-        <MainSection disabled={isSaving}>
+        <MainSection disabled={isSaving} data-testid="site-reports">
           <ButtonSelect
             id="active-site"
             options={sitesData}

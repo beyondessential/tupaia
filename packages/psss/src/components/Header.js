@@ -12,7 +12,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import MuiLink from '@material-ui/core/Link';
 import { SaveAlt, LightOutlinedButton } from '@tupaia/ui-components';
 import MuiAvatar from '@material-ui/core/Avatar';
-import * as COLORS from '../theme/colors';
+import * as COLORS from '../constants/colors';
 
 const HeaderMain = styled.header`
   background-color: ${COLORS.BLUE};
@@ -57,6 +57,7 @@ const H1 = props => <Typography {...props} variant="h1" component="h1" />;
 const StyledH1 = styled(H1)`
   font-size: 2.8rem;
   line-height: 3.3rem;
+  text-transform: capitalize;
 `;
 
 export const Header = ({ title, avatarUrl, back }) => {

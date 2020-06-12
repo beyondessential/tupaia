@@ -63,7 +63,13 @@ const EditableCell = React.memo(({ id, columnKey }) => {
 
   if (tableStatus === TABLE_STATUSES.EDITABLE) {
     return (
-      <EditableTextField name={columnKey} value={value} onChange={handleFieldChange} id={key} />
+      <EditableTextField
+        inputProps={{ 'aria-label': columnKey }}
+        name={columnKey}
+        value={value}
+        onChange={handleFieldChange}
+        id={key}
+      />
     );
   }
 
@@ -72,7 +78,7 @@ const EditableCell = React.memo(({ id, columnKey }) => {
       name="cases"
       value={value}
       onChange={handleFieldChange}
-      InputProps={{ readOnly: true }}
+      inputProps={{ 'aria-label': columnKey, readOnly: true }}
     />
   );
 });

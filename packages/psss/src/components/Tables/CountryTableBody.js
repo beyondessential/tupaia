@@ -17,13 +17,13 @@ const TableBodyComponent = React.memo(({ data, columns, activeWeekId, toggleTabl
       const key = rowData.index; // todo: use real id
       const expanded = activeWeekId === key;
 
-      const handleRowClick = useCallback(() => {
+      const handleRowClick = () => {
         if (expanded) {
           toggleTableRow(null);
         } else {
           toggleTableRow(key);
         }
-      }, [expanded, key]);
+      };
 
       return (
         <ExpandableTableRow

@@ -8,6 +8,7 @@ import { useParams } from 'react-router-dom';
 import { TabsToolbar, CalendarToday } from '@tupaia/ui-components';
 import { Header } from '../components';
 import { CountryRoutes } from '../routes/CountryRoutes';
+import { countryFlagImage } from '../utils';
 
 const links = [
   {
@@ -30,7 +31,7 @@ export const CountryReportsView = () => {
   };
   return (
     <React.Fragment>
-      <Header title={countryName} back={back} />
+      <Header title={countryName} back={back} avatarUrl={countryFlagImage('as')} />
       <TabsToolbar links={links} />
       <CountryRoutes />
     </React.Fragment>
