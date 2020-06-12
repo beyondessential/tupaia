@@ -2,65 +2,27 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import styled from 'styled-components';
 import React from 'react';
-import MuiLink from '@material-ui/core/Link';
-import Avatar from '@material-ui/core/Avatar';
-import PropTypes from 'prop-types';
 import { ExpandableTableBody } from '@tupaia/ui-components';
-import { Link as RouterLink } from 'react-router-dom';
 import { ConnectedTable } from './ConnectedTable';
-import * as COLORS from '../../constants/colors';
-import { FIRST_COLUMN_WIDTH, SITES_REPORTED_COLUMN_WIDTH } from './constants';
+import { COLUMN_WIDTHS } from './constants';
 import { CountrySummaryTable } from './CountrySummaryTable';
 import { createTotalCasesAccessor } from './dataAccessors';
-import { AlertCell, SitesReportedCell } from './TableCellComponents';
-import { countryFlagImage } from '../../utils';
-
-const CountryTitle = styled(MuiLink)`
-  display: flex;
-  align-items: center;
-  font-weight: 400;
-  font-size: 1.125rem;
-  color: ${COLORS.BLUE};
-
-  .MuiAvatar-root {
-    margin-right: 0.6rem;
-    color: ${COLORS.GREY_DE};
-    background-color: ${COLORS.GREY_DE};
-  }
-`;
-
-const NameCell = ({ name, countryCode }) => {
-  return (
-    <CountryTitle to="weekly-reports/samoa" data-testid="country-link" component={RouterLink}>
-      <Avatar src={countryFlagImage(countryCode)} /> {name}
-    </CountryTitle>
-  );
-};
-
-NameCell.propTypes = {
-  name: PropTypes.string.isRequired,
-  countryCode: PropTypes.string,
-};
-
-NameCell.defaultProps = {
-  countryCode: null,
-};
+import { AlertCell, SitesReportedCell, CountryNameCell } from './TableCellComponents';
 
 const countriesTableColumns = [
   {
-    title: 'Name',
+    title: 'Country',
     key: 'name',
-    width: FIRST_COLUMN_WIDTH,
+    width: COLUMN_WIDTHS.FIRST,
     align: 'left',
-    CellComponent: NameCell,
+    CellComponent: CountryNameCell,
   },
   {
-    title: 'Site Reported',
+    title: 'Sites Reported',
     key: 'sitesReported',
     CellComponent: SitesReportedCell,
-    width: SITES_REPORTED_COLUMN_WIDTH,
+    width: COLUMN_WIDTHS.SITES_REPORTED,
   },
   {
     title: 'AFR',
@@ -87,7 +49,7 @@ const countriesTableColumns = [
     CellComponent: AlertCell,
   },
   {
-    title: 'DIO',
+    title: 'DIL',
     key: 'DIL',
     accessor: createTotalCasesAccessor('dil'),
     CellComponent: AlertCell,

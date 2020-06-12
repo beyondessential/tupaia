@@ -38,6 +38,7 @@ const TableHeaderCell = styled(TableCell)`
 const SortLabel = styled(MuiTableSortLabel)`
   flex-direction: row-reverse;
   color: ${props => props.theme.palette.text.primary};
+  text-transform: uppercase;
   font-size: 0.75rem;
   margin-left: -0.5rem;
   font-weight: 600;

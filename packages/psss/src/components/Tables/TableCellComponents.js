@@ -5,8 +5,14 @@
 
 import React from 'react';
 import { Error } from '@material-ui/icons';
+import { Link as RouterLink } from 'react-router-dom';
+import MuiLink from '@material-ui/core/Link';
+import { format } from "date-fns";
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import Avatar from '@material-ui/core/Avatar';
+import { countryFlagImage } from '../../utils';
+import * as COLORS from '../../constants/colors';
 
 export const SitesReportedCell = data => {
   // Todo: update placeholder
@@ -31,6 +37,9 @@ const StyledAlert = styled.div`
   }
 `;
 
+/*
+ * Conditionally displays the value styled as an alert
+ */
 export const AlertCell = props => {
   const { displayValue } = props;
   // this is just temporary logic until real data is in place
@@ -56,6 +65,9 @@ const SuccessStyleText = styled.span`
   font-weight: 500;
 `;
 
+/*
+ * Displays a value as a percentage
+ */
 export const PercentageChangeCell = ({ percentageChange }) => {
   if (percentageChange > 0) {
     return <WarningStyleText>{`${percentageChange}%`}</WarningStyleText>;
@@ -66,4 +78,58 @@ export const PercentageChangeCell = ({ percentageChange }) => {
 
 PercentageChangeCell.propTypes = {
   percentageChange: PropTypes.number.isRequired,
+};
+
+const CountryTitle = styled(MuiLink)`
+  display: flex;
+  align-items: center;
+  font-weight: 400;
+  font-size: 1.125rem;
+  color: ${COLORS.BLUE};
+
+  .MuiAvatar-root {
+    margin-right: 0.6rem;
+    color: ${COLORS.GREY_DE};
+    background-color: ${COLORS.GREY_DE};
+  }
+`;
+
+export const CountryNameCell = ({ name, countryCode }) => {
+  return (
+    <CountryTitle to="weekly-reports/samoa" data-testid="country-link" component={RouterLink}>
+      <Avatar src={countryFlagImage(countryCode)} /> {name}
+    </CountryTitle>
+  );
+};
+
+CountryNameCell.propTypes = {
+  name: PropTypes.string.isRequired,
+  countryCode: PropTypes.string,
+};
+
+CountryNameCell.defaultProps = {
+  countryCode: null,
+};
+
+const CountrySummaryTitle = styled.div`
+  color: ${COLORS.TEXT_DARKGREY};
+  font-weight: 400;
+  font-size: 0.9375rem;
+`;
+
+export const WeekAndDateCell = ({ week, startDate, endDate }) => {
+  const start = `${format(startDate, 'LLL d')}`;
+  const end = `${format(endDate, 'LLL d')}`;
+  const year = `${format(endDate, 'yyyy')}`;
+  return (
+    <CountrySummaryTitle>
+      <strong>W{week}</strong> {`${start} - ${end}, ${year}`}
+    </CountrySummaryTitle>
+  );
+};
+
+WeekAndDateCell.propTypes = {
+  week: PropTypes.number.isRequired,
+  startDate: PropTypes.instanceOf(Date).isRequired,
+  endDate: PropTypes.instanceOf(Date).isRequired,
 };

@@ -5,7 +5,7 @@
 
 import React from 'react';
 import { Redirect, Switch } from 'react-router-dom';
-import { AlertReportsView } from '../views/AlertReportsView';
+import { AlertsOutbreaksView } from '../views/AlertsOutbreaksView';
 import { CountriesReportsView } from '../views/CountriesReportsView';
 import { CountryReportsView } from '../views/CountryReportsView';
 import { PrivateRoute } from './PrivateRoute';
@@ -19,7 +19,7 @@ export const PageRoutes = React.memo(() => (
       <CountryReportsView />
     </PrivateRoute>
     <PrivateRoute path="/alerts">
-      <AlertReportsView />
+      <AlertsOutbreaksView />
     </PrivateRoute>
     <Redirect to="/" />
   </Switch>

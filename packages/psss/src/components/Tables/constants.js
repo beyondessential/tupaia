@@ -3,5 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-export const FIRST_COLUMN_WIDTH = '30%';
-export const SITES_REPORTED_COLUMN_WIDTH = '100px';
+export const COLUMN_WIDTHS = {
+  FIRST: '30%',
+  SITES_REPORTED: '110px',
+  ALERT_START_DATE: '165px',
+};
