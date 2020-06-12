@@ -40,10 +40,10 @@ const TABLES_TO_CLEAR = [
   'user_country_permission',
   'user_clinic_permission',
   'user_geographical_area_permission',
+  'access_request',
   'permission_group',
   'user_reward',
   'api_client',
-  'access_request',
   'user_account',
 ];
 
