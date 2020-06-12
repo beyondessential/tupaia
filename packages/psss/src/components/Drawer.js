@@ -11,7 +11,7 @@ import MuiAvatar from '@material-ui/core/Avatar';
 import { Close } from '@material-ui/icons';
 import styled from 'styled-components';
 import { LightIconButton } from '@tupaia/ui-components';
-import * as COLORS from '../theme/colors';
+import * as COLORS from '../constants/colors';
 
 export default {
   title: 'Drawer',
@@ -101,7 +101,6 @@ const Avatar = styled(MuiAvatar)`
   width: 5rem;
   margin-right: 0.9rem;
   color: white;
-  background: white;
 `;
 
 export const DrawerHeaderContent = ({ heading, date, avatarUrl }) => (
