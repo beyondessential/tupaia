@@ -82,7 +82,7 @@ export const requestCountryAccess = async (req, res) => {
 
   const permissionGroup = await models.permissionGroup.findOne({ name: userGroup });
   if (!permissionGroup) {
-    throw new Error(`Permission Group ${userGroup} does not exist`);
+    throw new ValidationError(`Permission Group ${userGroup} does not exist`);
   }
   await createAccessRequests(userId, countryIds, message, permissionGroup.id, models);
 
