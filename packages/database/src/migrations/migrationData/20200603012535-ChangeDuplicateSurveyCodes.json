@@ -145,6 +145,11 @@
     "newCode": "PEHS_OHS"
   },
   {
+    "name": "School Fundamentals DL (obsolete)",
+    "oldCode": "SFD",
+    "newCode": "SFD_O"
+  },
+  {
     "name": "Tupaia Survey",
     "oldCode": "TS",
     "newCode": "TS"
