@@ -164,6 +164,7 @@ export class FakeAPI {
     return {
       id: faker.random.uuid(),
       name: faker.address.country(),
+      countryCode: faker.address.countryCode().toLowerCase(),
       sitesReported: faker.random.number({
         min: 0,
         max: 30,
