@@ -46,6 +46,13 @@ const StyledButton = styled(Button)`
   margin-bottom: 1rem;
 `;
 
+const StyledText = styled(Typography)`
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  font-weight: 400;
+  color: ${props => props.theme.palette.text.secondary};
+`;
+
 export const CountryReportsViewWeekly = () => (
   <Container>
     <Main>
@@ -64,9 +71,9 @@ export const CountryReportsViewWeekly = () => (
           <Typography variant="h4" gutterBottom>
             Upcoming Report
           </Typography>
-          <Typography variant="subtitle2" gutterBottom>
+          <StyledText variant="subtitle2" gutterBottom>
             Feb 25, 2020 - Mar 1, 2020
-          </Typography>
+          </StyledText>
           <StyledButton fullWidth>Review and Submit now</StyledButton>
         </CardContent>
         <CardFooter>

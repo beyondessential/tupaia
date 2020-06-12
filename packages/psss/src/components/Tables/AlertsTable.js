@@ -3,14 +3,13 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { ActionsMenu } from '@tupaia/ui-components';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import { IconButton } from '@material-ui/core';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { ConnectedTable } from './ConnectedTable';
 import { COLUMN_WIDTHS } from './constants';
 import { CountryNameCell, WeekAndDateCell } from './TableCellComponents';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import { IconButton } from '@material-ui/core';
 
 const StyledCell = styled.div`
   display: inline-block;
@@ -63,6 +62,7 @@ const columns = [
   {
     title: '',
     key: 'id',
+    sortable: false,
     CellComponent: AlertMenuCell,
   },
 ];
