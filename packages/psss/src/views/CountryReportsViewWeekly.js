@@ -5,7 +5,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
-import { Error, ErrorOutline, NotificationImportant } from '@material-ui/icons';
+import { Warning } from '@material-ui/icons';
 import {
   CardContent,
   CardFooter,
@@ -14,6 +14,8 @@ import {
   Button,
   Card,
   DataCardTabs,
+  WarningCloud,
+  Virus,
 } from '@tupaia/ui-components';
 import { Container, Main, Sidebar, CountryTable, WeeklyReportPanel } from '../components';
 
@@ -26,7 +28,7 @@ const tabData = [
   {
     label: (
       <React.Fragment>
-        <ErrorOutline /> 3 Active Alerts
+        <WarningCloud /> 3 Active Alerts
       </React.Fragment>
     ),
     content: <ExampleContent>Table Content</ExampleContent>,
@@ -34,7 +36,7 @@ const tabData = [
   {
     label: (
       <React.Fragment>
-        <NotificationImportant /> 1 Active Outbreak
+        <Virus /> 1 Active Outbreak
       </React.Fragment>
     ),
     content: <ExampleContent>Table Content</ExampleContent>,
@@ -64,7 +66,7 @@ export const CountryReportsViewWeekly = () => (
         <CardHeader
           color="error"
           title="Submission due in 3 days"
-          label={<Error color="error" />}
+          label={<Warning color="error" />}
         />
         <CardContent>
           <Typography variant="h4">Week 11</Typography>

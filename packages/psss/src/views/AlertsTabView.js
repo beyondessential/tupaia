@@ -22,9 +22,13 @@ export const AlertsTabView = () => (
     </Main>
     <Sidebar>
       <Card variant="outlined">
-        <CardHeader color="primary" title="Week 10" label={<CalendarToday color="primary" />} />
+        <CardHeader
+          color="primary"
+          title="Current Week"
+          label={<CalendarToday color="primary" />}
+        />
         <CardContent>
-          <Typography variant="h4">Current Week</Typography>
+          <Typography variant="h4">Week 10</Typography>
           <StyledText variant="subtitle2" gutterBottom>
             Feb 25, 2020 - Mar 1, 2020
           </StyledText>

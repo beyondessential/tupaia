@@ -40,7 +40,7 @@ const SortLabel = styled(MuiTableSortLabel)`
   color: ${props => props.theme.palette.text.primary};
   text-transform: uppercase;
   font-size: 0.75rem;
-  margin-left: -0.5rem;
+  margin-left: -10px;
   font-weight: 600;
 
   .MuiTableSortLabel-icon {

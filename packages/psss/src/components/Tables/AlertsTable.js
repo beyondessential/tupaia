@@ -8,7 +8,6 @@ import { IconButton } from '@material-ui/core';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { ConnectedTable } from './ConnectedTable';
-import { COLUMN_WIDTHS } from './constants';
 import { CountryNameCell, WeekAndDateCell } from './TableCellComponents';
 
 const StyledCell = styled.div`
@@ -32,7 +31,7 @@ const columns = [
   {
     title: 'Country',
     key: 'name',
-    width: COLUMN_WIDTHS.FIRST,
+    width: '28%',
     align: 'left',
     CellComponent: CountryNameCell,
   },
@@ -46,13 +45,14 @@ const columns = [
     title: 'Alert Start Date',
     key: 'week',
     align: 'left',
-    width: COLUMN_WIDTHS.ALERT_START_DATE,
+    width: '180px',
     CellComponent: WeekAndDateCell,
   },
   {
     title: 'Cases Since Alert Began',
     key: 'totalCases',
     align: 'left',
+    width: '115px',
   },
   {
     title: 'Sites Reported',
@@ -64,6 +64,7 @@ const columns = [
     key: 'id',
     sortable: false,
     CellComponent: AlertMenuCell,
+    width: '50px',
   },
 ];
 
