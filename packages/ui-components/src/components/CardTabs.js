@@ -56,7 +56,7 @@ export const CardTabList = ({ children }) => {
 export const CardTab = styled(({ children, ...rest }) => <MuiTab {...rest} label={children} />)`
   border-right: 1px solid ${props => props.theme.palette.grey['400']};
   border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
-  background: ${props => props.theme.palette.grey['400']};
+  background: ${props => props.theme.palette.grey['100']};
   color: ${props => props.theme.palette.grey['500']};
   padding: 1rem 0.75rem;
   min-width: 5rem;

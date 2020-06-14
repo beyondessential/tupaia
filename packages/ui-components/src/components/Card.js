@@ -18,8 +18,8 @@ const StyledDiv = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-top: 20px;
-  padding-bottom: 12px;
+  padding-top: 1.2rem;
+  padding-bottom: 0.7rem;
   margin-left: 30px;
   margin-right: 30px;
   border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
