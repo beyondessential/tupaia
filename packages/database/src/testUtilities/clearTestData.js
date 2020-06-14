@@ -27,6 +27,7 @@ const TABLES_TO_CLEAR = [
   'entity',
   'entity_relation',
   'geographical_area',
+  'access_request',
   'country',
   'feed_item',
   'meditrak_device',

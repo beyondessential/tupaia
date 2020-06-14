@@ -6,6 +6,12 @@
 export const convertSearchTermToFilter = (unprocessedFilterObject = {}) => {
   const filterObject = {};
   Object.entries(unprocessedFilterObject).forEach(([key, value]) => {
+    if (value === null || typeof value === 'boolean') {
+      filterObject[key] = value;
+
+      return;
+    }
+
     filterObject[key] = {
       comparator: `ilike`,
       comparisonValue: `${value}%`,

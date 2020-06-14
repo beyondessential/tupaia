@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { AccessRequestModel } from './AccessRequest';
 import { AnswerModel } from './Answer';
 import { CountryModel } from './Country';
 import { DataElementDataGroupModel } from './DataElementDataGroup';
@@ -21,6 +22,7 @@ import { UserModel } from './User';
 
 // export all models to be used in constructing a ModelRegistry
 export const modelClasses = {
+  AccessRequest: AccessRequestModel,
   Answer: AnswerModel,
   Country: CountryModel,
   DataElementDataGroup: DataElementDataGroupModel,
@@ -39,6 +41,7 @@ export const modelClasses = {
 };
 
 // export any models and types that are extended in other packages
+export { AccessRequestModel } from './AccessRequest';
 export { CountryModel } from './Country';
 export { GeographicalAreaModel } from './GeographicalArea';
 export { MeditrakDeviceModel } from './MeditrakDevice';

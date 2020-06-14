@@ -15,3 +15,4 @@ export { UsersPage } from './UsersPage';
 export { SocialFeedPage } from './SocialFeedPage';
 export { DisasterResponsePage } from './DisasterResponsePage';
 export { DataSourcesPage } from './DataSourcesPage';
+export { AccessRequestsPage } from './AccessRequestsPage';

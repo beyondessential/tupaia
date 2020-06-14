@@ -4,6 +4,7 @@
  **/
 
 export { addSurveyImage } from './addSurveyImage';
+export { editAccessRequest } from './editAccessRequest';
 export { editUserAccount } from './editUserAccount';
 export { editOption } from './editOption';
 export { editOptionSet } from './editOptionSet';
