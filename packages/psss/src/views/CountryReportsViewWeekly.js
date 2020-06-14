@@ -48,7 +48,7 @@ const StyledButton = styled(Button)`
 
 export const CountryReportsViewWeekly = () => (
   <Container>
-    <Main>
+    <Main data-testid="country-table">
       <CountryTable />
       <WeeklyReportPanel />
     </Main>

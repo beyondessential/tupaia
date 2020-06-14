@@ -10,9 +10,7 @@ Cypress.Commands.add('login', () => {
   cy.visit('/login');
   cy.findByPlaceholderText(/email/i).type(USER);
   cy.findByPlaceholderText(/password/i).type(PASS);
-  cy.findByText(/login*/i)
-    .closest('button')
-    .click();
+  cy.findByRole('button', { name: /login*/i }).click();
 });
 
 Cypress.Commands.add('assertHome', () => {

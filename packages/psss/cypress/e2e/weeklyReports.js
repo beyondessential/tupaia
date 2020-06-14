@@ -12,21 +12,26 @@ describe('weekly reports', () => {
     cy.assertHome();
 
     // select country
-    cy.findAllByTestId('country-link')
-      .first()
-      .click();
+    cy.findByTestId('countries-table').within(() => {
+      cy.findAllByRole('link')
+        .first()
+        .click();
+    });
 
     cy.assertWeeklyReportsPage();
 
     // expand table row
-    cy.findAllByTestId('active-country-link')
-      .first()
-      .click();
+    cy.findByTestId('country-table').within(() => {
+      cy.findAllByRole('row', { name: /week*/i })
+        .first()
+        .click();
+    });
 
     // open panel
-    cy.findAllByTestId('review-confirm-button')
-      .first()
-      .click();
+    cy.findByRole('button', { name: /review and confirm*/i }).click();
+
+    // check that the panel is correctly rendered
+    cy.findByText(/upcoming report*/i).should('exist');
     cy.findByText(/submit now*/i).should('exist');
   });
 });
