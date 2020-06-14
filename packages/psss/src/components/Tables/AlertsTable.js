@@ -10,12 +10,12 @@ import PropTypes from 'prop-types';
 import { ConnectedTable } from './ConnectedTable';
 import { CountryNameCell, WeekAndDateCell } from './TableCellComponents';
 
-const StyledCell = styled.div`
+const SyndromeCellContainer = styled.div`
   display: inline-block;
   border-bottom: 1px dotted ${props => props.theme.palette.text.secondary};
 `;
 
-const SyndromeCell = ({ syndrome }) => <StyledCell>{syndrome}</StyledCell>;
+const SyndromeCell = ({ syndrome }) => <SyndromeCellContainer>{syndrome}</SyndromeCellContainer>;
 
 SyndromeCell.propTypes = {
   syndrome: PropTypes.string.isRequired,
