@@ -12,7 +12,7 @@ import { CountryNameCell, WeekAndDateCell } from './TableCellComponents';
 
 const StyledCell = styled.div`
   display: inline-block;
-  border-bottom: 1px dotted #6f7b82;
+  border-bottom: 1px dotted ${props => props.theme.palette.text.secondary};
 `;
 
 const SyndromeCell = ({ syndrome }) => <StyledCell>{syndrome}</StyledCell>;
