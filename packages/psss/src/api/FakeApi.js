@@ -37,6 +37,10 @@ export class FakeAPI {
       for (let i = 0; i < 10; i++) {
         data.push(this.alert());
       }
+    } else if (endpoint === 'outbreaks') {
+      for (let i = 0; i < 3; i++) {
+        data.push(this.outbreak());
+      }
     }
 
     await this.sleep(500);
@@ -193,6 +197,31 @@ export class FakeAPI {
       sitesReported: faker.random.number({
         min: 40,
         max: 100,
+      }),
+    };
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  outbreak() {
+    return {
+      id: faker.random.uuid(),
+      name: faker.address.country(),
+      countryCode: faker.address.countryCode().toLowerCase(),
+      diagnosis: faker.random.arrayElement(['Measles', 'Influenza']),
+      week: faker.random.number({
+        min: 1,
+        max: 10,
+      }),
+      startDate: faker.date.between('2020-01-01', '2020-01-31'),
+      endDate: faker.date.between('2020-02-01', '2020-02-28'),
+      outbreakStartDate: faker.date.between('2020-01-01', '2020-01-31'),
+      totalCases: faker.random.number({
+        min: 10000,
+        max: 20000,
+      }),
+      totalLabCases: faker.random.number({
+        min: 100,
+        max: 300,
       }),
     };
   }
