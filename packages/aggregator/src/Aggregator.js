@@ -18,8 +18,8 @@ export class Aggregator {
     this.dataBroker = dataBroker;
   }
 
-  close() {
-    this.dataBroker.close();
+  async close() {
+    return this.dataBroker.close();
   }
 
   // eslint-disable-next-line class-methods-use-this
