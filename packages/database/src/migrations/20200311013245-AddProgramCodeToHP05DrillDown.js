@@ -18,7 +18,7 @@ exports.up = function(db) {
   return db.runSql(`
     UPDATE "dashboardReport"
     SET "dataBuilderConfig" = "dataBuilderConfig" || '{"programCode": "HP05"}'
-    WHERE "id" = 'TO_HPU_Validation_HP_05' AND "drillDownLevel" = 1;   
+    WHERE "id" = 'TO_HPU_Validation_HP_05' AND "drillDownLevel" = 1;    
   `);
 };
 
