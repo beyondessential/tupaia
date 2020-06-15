@@ -7,12 +7,14 @@ import React from 'react';
 import { Error } from '@material-ui/icons';
 import { Link as RouterLink } from 'react-router-dom';
 import MuiLink from '@material-ui/core/Link';
-import { format } from "date-fns";
+import { format } from 'date-fns';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Avatar from '@material-ui/core/Avatar';
 import { countryFlagImage } from '../../utils';
 import * as COLORS from '../../constants/colors';
+import { IconButton } from '@material-ui/core';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 export const SitesReportedCell = data => {
   // Todo: update placeholder
@@ -133,4 +135,27 @@ WeekAndDateCell.propTypes = {
   week: PropTypes.number.isRequired,
   startDate: PropTypes.instanceOf(Date).isRequired,
   endDate: PropTypes.instanceOf(Date).isRequired,
+};
+
+const SyndromeCellContainer = styled.div`
+  display: inline-block;
+  border-bottom: 1px dotted ${props => props.theme.palette.text.secondary};
+`;
+
+export const SyndromeCell = ({ syndrome }) => (
+  <SyndromeCellContainer>{syndrome}</SyndromeCellContainer>
+);
+
+SyndromeCell.propTypes = {
+  syndrome: PropTypes.string.isRequired,
+};
+
+export const AlertMenuCell = () => (
+  <IconButton>
+    <MoreVertIcon />
+  </IconButton>
+);
+
+export const StartDateCell = ({ startDate }) => {
+  return format(startDate, 'LLL d, yyyy');
 };

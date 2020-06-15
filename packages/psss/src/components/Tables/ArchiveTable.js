@@ -5,24 +5,27 @@
 import React from 'react';
 import { ConnectedTable } from './ConnectedTable';
 import {
+  SyndromeCell,
   AlertMenuCell,
   CountryNameCell,
-  StartDateCell,
   WeekAndDateCell,
+  StartDateCell,
 } from './TableCellComponents';
 
 const columns = [
   {
     title: 'Country',
     key: 'name',
-    width: '26%',
+    width: '22%',
     align: 'left',
     CellComponent: CountryNameCell,
   },
   {
-    title: 'Diagnosis',
-    key: 'diagnosis',
+    title: 'Syndrome',
+    key: 'syndrome',
     align: 'left',
+    width: '100px',
+    CellComponent: SyndromeCell,
   },
   {
     title: 'Alert Start Date',
@@ -32,16 +35,22 @@ const columns = [
     CellComponent: WeekAndDateCell,
   },
   {
-    title: 'Outbreak Start Date',
-    key: 'outbreakStartDate',
-    align: 'left',
-    CellComponent: StartDateCell,
-  },
-  {
     title: 'Cases Since Alert Began',
     key: 'totalCases',
     align: 'left',
     width: '125px',
+  },
+  {
+    title: 'Outbreak Start Date',
+    key: 'outbreakStartDate',
+    align: 'left',
+    width: '120px',
+    CellComponent: StartDateCell,
+  },
+  {
+    title: 'Diagnosis',
+    key: 'diagnosis',
+    align: 'left',
   },
   {
     title: 'Total Lab Confirmed Cases',
@@ -58,6 +67,6 @@ const columns = [
   },
 ];
 
-export const OutbreaksTable = React.memo(() => (
-  <ConnectedTable endpoint="outbreaks" columns={columns} />
+export const ArchiveTable = React.memo(() => (
+  <ConnectedTable endpoint="archive" columns={columns} />
 ));

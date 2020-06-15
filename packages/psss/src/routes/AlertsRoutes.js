@@ -5,16 +5,9 @@
 
 import React from 'react';
 import { Redirect, Route, Switch, useRouteMatch } from 'react-router-dom';
-import { TableView } from '../views/TableView';
 import { AlertsTabView } from '../views/AlertsTabView';
+import { ArchiveTabView } from '../views/ArchiveTabView';
 import { OutbreaksTabView } from '../views/OutbreaksTabView';
-
-const routedTableView = endpoint =>
-  React.memo(props => (
-    <TableView {...props} config={{ resource: `base-url/resources/${endpoint}` }} />
-  ));
-
-const ArchiveView = routedTableView('archive');
 
 export const AlertsRoutes = React.memo(() => {
   const match = useRouteMatch();
@@ -28,7 +21,7 @@ export const AlertsRoutes = React.memo(() => {
         <OutbreaksTabView />
       </Route>
       <Route path={`${match.path}/archive`}>
-        <ArchiveView />
+        <ArchiveTabView />
       </Route>
       <Redirect to={match.path} />
     </Switch>
