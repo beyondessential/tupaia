@@ -528,7 +528,6 @@ function* fetchDashboard(action) {
   const { organisationUnitCode } = action.organisationUnit;
   const state = yield select();
   const projectCode = selectActiveProjectCode(state);
-  console.log('function*fetchDashboard -> projectCode', projectCode);
 
   const requestResourceUrl = `dashboard?organisationUnitCode=${organisationUnitCode}&projectCode=${projectCode}`;
 
