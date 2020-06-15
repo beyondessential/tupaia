@@ -5,6 +5,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Error } from '@material-ui/icons';
 import { Link as RouterLink } from 'react-router-dom';
@@ -16,6 +17,7 @@ import Avatar from '@material-ui/core/Avatar';
 import { Tooltip } from '@tupaia/ui-components';
 import { countryFlagImage } from '../../utils';
 import * as COLORS from '../../constants/colors';
+import { openAlertsPanel } from '../../store';
 
 const StyledAlert = styled.div`
   display: inline-flex;
@@ -94,7 +96,7 @@ const CountryTitle = styled(MuiLink)`
 
 export const CountryNameCell = ({ name, countryCode }) => {
   return (
-    <CountryTitle to="weekly-reports/samoa" data-testid="country-link" component={RouterLink}>
+    <CountryTitle to="weekly-reports/samoa" component={RouterLink}>
       <Avatar src={countryFlagImage(countryCode)} /> {name}
     </CountryTitle>
   );
@@ -107,6 +109,28 @@ CountryNameCell.propTypes = {
 
 CountryNameCell.defaultProps = {
   countryCode: null,
+};
+
+export const CountryNameButton = ({ handleClick }) => {
+  // eslint-disable-next-line react/prop-types
+  return ({ name, countryCode }) => {
+    return (
+      <CountryTitle onClick={handleClick}>
+        <Avatar src={countryFlagImage(countryCode)} /> {name}
+      </CountryTitle>
+    );
+  };
+};
+
+CountryNameButton.propTypes = {
+  handleClick: PropTypes.func.isRequired,
+};
+
+export const CountryNameButtonCreator = actionCreator => {
+  const mapDispatchToProps = dispatch => ({
+    handleClick: () => dispatch(actionCreator()),
+  });
+  return connect(null, mapDispatchToProps)(CountryNameButton);
 };
 
 const CountrySummaryTitle = styled.div`

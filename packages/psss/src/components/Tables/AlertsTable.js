@@ -7,9 +7,10 @@ import { ConnectedTable } from './ConnectedTable';
 import {
   SyndromeCell,
   AlertMenuCell,
-  CountryNameCell,
+  CountryNameButtonCreator,
   WeekAndDateCell,
 } from './TableCellComponents';
+import { openAlertsPanel } from '../../store';
 
 const columns = [
   {
@@ -17,7 +18,7 @@ const columns = [
     key: 'name',
     width: '28%',
     align: 'left',
-    CellComponent: CountryNameCell,
+    CellComponent: CountryNameButtonCreator(openAlertsPanel),
   },
   {
     title: 'Syndrome',
