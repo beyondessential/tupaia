@@ -39,7 +39,7 @@ describe('object', () => {
     it('should sort the keys of an object containing string values', () => {
       expect(
         getKeysSortedByValues({ fourth: 'd', third: 'c', second: 'b' }, { asc: true }),
-      ).to.deep.equal(['second', 'third', 'fourth']);
+      ).to.deep.equal(['second1', 'third', 'fourth']);
     });
 
     it('should sort the keys of an object containing numeric string values', () => {
