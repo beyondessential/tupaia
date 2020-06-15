@@ -6,10 +6,9 @@ import { getDefaultPeriod } from '/utils';
 import { Entity } from '/models';
 
 export class QueryBuilder {
-  constructor(originalQuery, replacementValues = {}, initialAggregationOptions = {}, routeHandler) {
+  constructor(originalQuery, replacementValues = {}, routeHandler) {
     this.query = { ...originalQuery };
     this.replacementValues = replacementValues;
-    this.aggregationOptions = { ...initialAggregationOptions };
     this.routeHandler = routeHandler;
   }
 
@@ -18,12 +17,11 @@ export class QueryBuilder {
   }
 
   // Ensure the standard dimensions of period, start/end date, and organisation unit are set up
-  async build() {
+  async build(dataSourceEntities) {
     this.makePeriodReplacements();
-    const dataSourceEntities = await this.fetchAndReplaceOrgUnitCodes();
-    await this.buildAggregationOptions(dataSourceEntities);
+    this.replaceOrgUnitCodes(dataSourceEntities);
     this.makeEventReplacements();
-    return { fetchOptions: this.query, aggregationOptions: this.aggregationOptions };
+    return this.query;
   }
 
   makeEventReplacements() {
@@ -35,7 +33,12 @@ export class QueryBuilder {
     }
   }
 
-  async fetchAndReplaceOrgUnitCodes() {
+  async replaceOrgUnitCodes(dataSourceEntities) {
+    this.query.organisationUnitCodes = dataSourceEntities.map(e => e.code);
+    delete this.query.organisationUnitCode;
+  }
+
+  async getDataSourceEntities() {
     const organisationUnitCode = this.getQueryParameter('organisationUnitCode');
     const entity = await Entity.findOne({ code: organisationUnitCode });
     const dataSourceEntities = await this.routeHandler.fetchDataSourceEntities(
@@ -43,39 +46,14 @@ export class QueryBuilder {
       (this.getQueryParameter('entityAggregation') || {}).dataSourceEntityType,
       this.getQueryParameter('dataSourceEntityFilter'),
     );
-    this.query.organisationUnitCodes = dataSourceEntities.map(e => e.code);
-    delete this.query.organisationUnitCode;
     return dataSourceEntities;
   }
 
-  async buildAggregationOptions(dataSourceEntities) {
-    const { aggregationEntityType, aggregationType: entityAggregationType } =
-      this.getQueryParameter('entityAggregation') || {};
-
-    const entityAggregation = await this.routeHandler.fetchEntityAggregationConfig(
-      dataSourceEntities,
-      aggregationEntityType,
-      entityAggregationType,
-    );
-    const aggregations =
-      this.aggregationOptions.aggregations || this.aggregationOptions.aggregationType
-        ? [
-            {
-              type: this.aggregationOptions.aggregationType,
-              config: this.aggregationOptions.aggregationConfig,
-            },
-          ]
-        : [];
-    this.aggregationOptions.aggregations = entityAggregation
-      ? [
-          // entity aggregation always happens last, this should be configurable
-          ...aggregations,
-          entityAggregation,
-        ]
-      : aggregations;
-    delete this.aggregationOptions.aggregationType;
-    delete this.aggregationOptions.aggregationConfig;
+  getEntityAggregationOptions() {
+    return this.getQueryParameter('entityAggregation') || {};
   }
+
+  getQuery = () => this.query;
 
   // Adds standard period, start date and end date
   makePeriodReplacements() {

@@ -58,8 +58,9 @@ exports.up = function(db) {
       `),
     ),
     ...REPORTS_WITH_MULTIPLE_DATABUILDERS.map(async id => {
-      const reportConfig = (await db.runSql(`select * from "dashboardReport" where id='${id}'`))
-        .rows[0].dataBuilderConfig;
+      const { rows } = await db.runSql(`select * from "dashboardReport" where id='${id}'`);
+      if (rows.length !== 1) return null;
+      const { dataBuilderConfig: reportConfig } = rows[0];
       // Top level
       if (reportConfig.dataSourceEntityType) {
         await db.runSql(`
@@ -113,8 +114,9 @@ exports.down = function(db) {
       `),
     ),
     ...REPORTS_WITH_MULTIPLE_DATABUILDERS.map(async id => {
-      const reportConfig = (await db.runSql(`select * from "dashboardReport" where id='${id}'`))
-        .rows[0].dataBuilderConfig;
+      const { rows } = await db.runSql(`select * from "dashboardReport" where id='${id}'`);
+      if (rows.length !== 1) return null;
+      const { dataBuilderConfig } = rows[0];
       // Top level
       if (reportConfig.entityAggregation) {
         await db.runSql(`

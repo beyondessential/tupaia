@@ -6,7 +6,6 @@
 import { AGGREGATION_TYPES } from '../../aggregationTypes';
 import { replaceOrgUnitWithOrgGroup } from './aggregations';
 
-// Needs to handle both the new events api and the old one.
 export const aggregateEvents = (
   events,
   aggregationType = AGGREGATION_TYPES.RAW,
