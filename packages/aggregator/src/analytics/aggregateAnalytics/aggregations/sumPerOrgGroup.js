@@ -8,38 +8,31 @@
  * with just one analytic per data element/ancestor pair
  *
  * @param {Array} analytics
- * @param {Array}
+ * @param {Object} aggregationConfig
  */
 export const sumPerOrgGroup = (analytics, aggregationConfig) => {
   const { orgUnitMap = {}, valueToMatch } = aggregationConfig;
   const valueMapper = valueToMatch ? createValueMapper(valueToMatch) : value => value;
-  const summedAnalytics = [];
-  analytics.forEach(responseElement => {
+
+  const summedAnalyticsByKey = {};
+  analytics.forEach(analytic => {
     const organisationUnit =
-      orgUnitMap[responseElement.organisationUnit] || responseElement.organisationUnit;
-    const indexOfEquivalentResponseElement = summedAnalytics.findIndex(
-      otherResponseElement =>
-        responseElement.dataElement === otherResponseElement.dataElement &&
-        organisationUnit === otherResponseElement.organisationUnit,
-    );
+      (orgUnitMap[analytic.organisationUnit] && orgUnitMap[analytic.organisationUnit].code) ||
+      analytic.organisationUnit;
+    const key = `${analytic.dataElement}__${organisationUnit}`;
+
+    const value = valueMapper(analytic.value);
+
     // If there are no matching response elements already being returned, add it
-    const value = valueMapper(responseElement.value);
-    if (indexOfEquivalentResponseElement < 0) {
-      summedAnalytics.push({ ...responseElement, value, organisationUnit });
+    if (!summedAnalyticsByKey[key]) {
+      summedAnalyticsByKey[key] = { ...analytic, value, organisationUnit };
     } else {
-      summedAnalytics[indexOfEquivalentResponseElement].value += value;
+      summedAnalyticsByKey[key].value += value;
     }
   });
-  return summedAnalytics;
+
+  return Object.values(summedAnalyticsByKey);
 };
 
 const createValueMapper = valueToMatch =>
   valueToMatch === '*' ? () => 1 : value => (value === valueToMatch ? 1 : 0);
-
-export const replaceOrgUnitWithOrgGroup = (analytics, aggregationConfig) => {
-  const { orgUnitMap } = aggregationConfig;
-  return analytics.map(responseElement => {
-    const organisationUnit = orgUnitMap[responseElement.organisationUnit];
-    return { ...responseElement, organisationUnit };
-  });
-};

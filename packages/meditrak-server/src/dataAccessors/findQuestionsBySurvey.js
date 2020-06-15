@@ -23,7 +23,7 @@ export const findQuestionsBySurvey = async (
             { id: 'question_id' },
             'code',
             'type',
-            'indicator',
+            'name',
             'text',
             'detail',
             'options',
