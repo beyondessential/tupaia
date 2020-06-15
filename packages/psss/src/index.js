@@ -31,15 +31,22 @@ function initStore() {
   return store;
 }
 
-if (module.hot) {
-  module.hot.accept();
-}
-
 const store = initStore();
 
-renderReactApp(
-  <AppProviders store={store}>
-    <App />
-  </AppProviders>,
-  document.getElementById('root'),
-);
+const render = () => {
+  return renderReactApp(
+    <AppProviders store={store}>
+      <App />
+    </AppProviders>,
+    document.getElementById('root'),
+  );
+};
+
+render(App);
+
+if (module.hot) {
+  module.hot.accept('./App', () => {
+    const NextApp = require('./App').default;
+    render(NextApp);
+  });
+}
