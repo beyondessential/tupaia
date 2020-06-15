@@ -44,6 +44,10 @@ const LEFT_LINKS = [
     path: '/countries',
   },
   {
+    label: 'Dashboard Reports',
+    path: '/dashboard-reports',
+  },
+  {
     label: 'Permissions',
     path: '/permissions',
   },
