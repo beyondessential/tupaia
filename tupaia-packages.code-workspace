@@ -45,6 +45,10 @@
       "path": "packages/meditrak-server"
     },
     {
+      "name": "ui-components",
+      "path": "packages/ui-components"
+    },
+    {
       "name": "utils",
       "path": "packages/utils"
     },
