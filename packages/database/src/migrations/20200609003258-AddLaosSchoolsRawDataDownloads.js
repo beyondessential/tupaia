@@ -22,16 +22,20 @@ const DATA_BUILDER_CONFIG = {
   dataSourceEntityType: 'school',
   surveys: [
     {
-      code: "SC1RL",
-      name: "School COVID-19 Response Laos"
+      code: 'SC1RL',
+      name: 'School COVID-19 Response Laos'
     },
     {
-      code: "SPDL",
-      name: "School Dev Partners Laos"
+      code: 'SPDL',
+      name: 'School Dev Partners Laos'
     },
     {
-      code: "SPAL",
-      name: "School Partner Assistance Laos"
+      code: 'SPAL',
+      name: 'School Partner Assistance Laos'
+    },
+    {
+      code: 'SFL',
+      name: 'School Fundamentals Laos'
     }
   ]
 };

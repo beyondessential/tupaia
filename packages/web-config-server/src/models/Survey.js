@@ -12,7 +12,6 @@ export class Survey extends BaseModel {
     'id',
     'name',
     'code',
-    'image_data',
     'permission_group_id',
     'country_ids',
     'can_repeat',

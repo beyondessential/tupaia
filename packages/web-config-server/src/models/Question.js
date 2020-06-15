@@ -12,7 +12,6 @@ export class Question extends BaseModel {
     'id',
     'text',
     'name',
-    'image_data',
     'type',
     'options',
     'code',

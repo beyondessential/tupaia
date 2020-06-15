@@ -29,7 +29,7 @@ class RawDataValuesBuilder extends DataBuilder {
         name,
         value: code,
       })),
-      downloadUrl: buildExportUrl(this.req, 'rawData', {
+      downloadUrl: buildExportUrl(this.req, 'rawDataSurveyResponses', {
         ...this.query,
       }),
     };
