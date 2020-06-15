@@ -1,6 +1,10 @@
 {
   "folders": [
     {
+      "name": "root",
+      "path": "."
+    },
+    {
       "name": "access-policy",
       "path": "packages/access-policy"
     },
@@ -45,6 +49,10 @@
       "path": "packages/meditrak-server"
     },
     {
+      "name": "ui-components",
+      "path": "packages/ui-components"
+    },
+    {
       "name": "utils",
       "path": "packages/utils"
     },
@@ -56,5 +64,10 @@
       "name": "web-frontend",
       "path": "packages/web-frontend"
     }
-  ]
+  ],
+  "settings": {
+    "files.exclude": {
+      "packages/": true
+    }
+  }
 }

@@ -16,13 +16,12 @@ const sumPerMetric = async ({ dataBuilderConfig, query }, aggregator, dhisApi, a
     dataElementsToSum,
     filter = {},
     dataServices,
-    dataSourceEntityType,
   } = dataBuilderConfig;
 
   const dataElementCodes = await getDataElementCodes(dataBuilderConfig, dhisApi);
   const { results, metadata, period } = await aggregator.fetchAnalytics(
     dataElementCodes,
-    { dataServices, dataSourceEntityType },
+    { dataServices },
     query,
     { aggregationType, filter },
   );

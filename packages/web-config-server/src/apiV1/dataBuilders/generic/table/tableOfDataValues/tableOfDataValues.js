@@ -97,7 +97,9 @@ export class TableOfDataValuesBuilder extends DataBuilder {
         );
 
         const { results } = await this.fetchAnalytics(rowDataElementCodes, {
-          dataSourceEntityType: this.config.rowDataSourceEntityType,
+          entityAggregation: {
+            dataSourceEntityType: this.config.rowDataSourceEntityType,
+          },
         });
         const rowsWithData = results.map(result => result.dataElement);
         this.tableConfig.rows = this.tableConfig.rows.map(({ rows, category }) => {
@@ -146,7 +148,9 @@ export class TableOfDataValuesBuilder extends DataBuilder {
       const rowDataElementCodes = this.tableConfig.rows.map(row => row.code);
 
       const { results } = await this.fetchAnalytics(rowDataElementCodes, {
-        dataSourceEntityType: this.config.rowDataSourceEntityType,
+        entityAggregation: {
+          dataSourceEntityType: this.config.rowDataSourceEntityType,
+        },
       });
       const rowsWithData = results.map(result => result.dataElement);
 
