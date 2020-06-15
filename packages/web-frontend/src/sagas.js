@@ -15,6 +15,7 @@ import {
   selectIsProject,
   selectProjectByCode,
   selectMeasureBarItemById,
+  selectActiveProjectCode,
 } from './selectors';
 import {
   ATTEMPT_CHANGE_PASSWORD,
@@ -525,7 +526,10 @@ function* watchOrgUnitChangeAndFetchIt() {
  */
 function* fetchDashboard(action) {
   const { organisationUnitCode } = action.organisationUnit;
-  const projectCode = (yield select(selectActiveProject)).code;
+  const state = yield select();
+  const projectCode = selectActiveProjectCode(state);
+  console.log('function*fetchDashboard -> projectCode', projectCode);
+
   const requestResourceUrl = `dashboard?organisationUnitCode=${organisationUnitCode}&projectCode=${projectCode}`;
 
   try {
@@ -803,7 +807,7 @@ function* fetchMeasures(action) {
   const { organisationUnitCode } = action.organisationUnit;
   const state = yield select();
   if (selectIsProject(state, organisationUnitCode)) yield put(clearMeasure());
-  const projectCode = (yield select(selectActiveProject)).code;
+  const projectCode = selectActiveProjectCode(state);
   const requestResourceUrl = `measures?organisationUnitCode=${organisationUnitCode}&projectCode=${projectCode}`;
   try {
     const measures = yield call(request, requestResourceUrl);
