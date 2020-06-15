@@ -33,6 +33,7 @@ export const FakeHeader = styled.div`
 
 const TableHeaderCell = styled(TableCell)`
   height: 50px;
+  padding-right: 1rem;
 `;
 
 const SortLabel = styled(MuiTableSortLabel)`

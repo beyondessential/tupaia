@@ -3,29 +3,13 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import { IconButton } from '@material-ui/core';
-import styled from 'styled-components';
-import PropTypes from 'prop-types';
 import { ConnectedTable } from './ConnectedTable';
-import { CountryNameCell, WeekAndDateCell } from './TableCellComponents';
-
-const SyndromeCellContainer = styled.div`
-  display: inline-block;
-  border-bottom: 1px dotted ${props => props.theme.palette.text.secondary};
-`;
-
-const SyndromeCell = ({ syndrome }) => <SyndromeCellContainer>{syndrome}</SyndromeCellContainer>;
-
-SyndromeCell.propTypes = {
-  syndrome: PropTypes.string.isRequired,
-};
-
-const AlertMenuCell = () => (
-  <IconButton>
-    <MoreVertIcon />
-  </IconButton>
-);
+import {
+  SyndromeCell,
+  AlertMenuCell,
+  CountryNameCell,
+  WeekAndDateCell,
+} from './TableCellComponents';
 
 const columns = [
   {

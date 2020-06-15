@@ -3,21 +3,13 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import { IconButton } from '@material-ui/core';
-import { format } from 'date-fns';
 import { ConnectedTable } from './ConnectedTable';
-import { CountryNameCell, WeekAndDateCell } from './TableCellComponents';
-
-const AlertMenuCell = () => (
-  <IconButton>
-    <MoreVertIcon />
-  </IconButton>
-);
-
-export const DateCell = ({ startDate }) => {
-  return format(startDate, 'LLL d, yyyy');
-};
+import {
+  AlertMenuCell,
+  CountryNameCell,
+  StartDateCell,
+  WeekAndDateCell,
+} from './TableCellComponents';
 
 const columns = [
   {
@@ -43,7 +35,7 @@ const columns = [
     title: 'Outbreak Start Date',
     key: 'outbreakStartDate',
     align: 'left',
-    CellComponent: DateCell,
+    CellComponent: StartDateCell,
   },
   {
     title: 'Cases Since Alert Began',
