@@ -4,22 +4,18 @@
  */
 
 import React from 'react';
+import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import { Error } from '@material-ui/icons';
 import { Link as RouterLink } from 'react-router-dom';
 import MuiLink from '@material-ui/core/Link';
 import { format } from 'date-fns';
-import styled from 'styled-components';
-import PropTypes from 'prop-types';
-import Avatar from '@material-ui/core/Avatar';
-import { countryFlagImage } from '../../utils';
-import * as COLORS from '../../constants/colors';
 import { IconButton } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-
-export const SitesReportedCell = data => {
-  // Todo: update placeholder
-  return <span>{`${data.sitesReported}/30`}</span>;
-};
+import Avatar from '@material-ui/core/Avatar';
+import { Tooltip } from '@tupaia/ui-components';
+import { countryFlagImage } from '../../utils';
+import * as COLORS from '../../constants/colors';
 
 const StyledAlert = styled.div`
   display: inline-flex;
@@ -137,17 +133,28 @@ WeekAndDateCell.propTypes = {
   endDate: PropTypes.instanceOf(Date).isRequired,
 };
 
-const SyndromeCellContainer = styled.div`
+const DottedUnderline = styled.div`
   display: inline-block;
   border-bottom: 1px dotted ${props => props.theme.palette.text.secondary};
 `;
 
 export const SyndromeCell = ({ syndrome }) => (
-  <SyndromeCellContainer>{syndrome}</SyndromeCellContainer>
+  <Tooltip title="Acute Fever and Rash">
+    <DottedUnderline>{syndrome}</DottedUnderline>
+  </Tooltip>
 );
 
 SyndromeCell.propTypes = {
   syndrome: PropTypes.string.isRequired,
+};
+
+// Todo: update placeholder number
+export const SitesReportedCell = data => {
+  return (
+    <Tooltip title="Submitted: 1day ago">
+      <DottedUnderline>{`${data.sitesReported}/30`}</DottedUnderline>
+    </Tooltip>
+  );
 };
 
 export const AlertMenuCell = () => (
