@@ -68,7 +68,7 @@ const GreySection = styled(MainSection)`
   padding: 25px 20px;
 `;
 
-const WeeklyReportsPaneSubmitButton = handleConfirm => () => {
+const WeeklyReportsPanelSubmitButton = handleConfirm => () => {
   const handleClick = () => {
     handleConfirm();
   };
@@ -84,19 +84,18 @@ const TABLE_STATUSES = {
   SAVING: 'saving',
 };
 
-export const WeeklyReportPanelComponent = React.memo(
+export const WeeklyReportsPanelComponent = React.memo(
   ({ countryData, sitesData, isOpen, handleClose, handleConfirm }) => {
+    const [countryTableStatus, setCountryTableStatus] = useState(TABLE_STATUSES.STATIC);
+    const [activeSiteIndex, setActiveSiteIndex] = useState(0);
+    const [sitesTableStatus, setSitesTableStatus] = useState(TABLE_STATUSES.STATIC);
+
     if (countryData.length === 0 || sitesData.length === 0) {
       return null;
     }
 
-    const [countryTableStatus, setCountryTableStatus] = useState(TABLE_STATUSES.STATIC);
-
-    const [activeSiteIndex, setActiveSiteIndex] = useState(0);
     const activeSite = sitesData[activeSiteIndex];
     const { syndromes: syndromesData } = activeSite;
-    const [sitesTableStatus, setSitesTableStatus] = useState(TABLE_STATUSES.STATIC);
-
     const isSaving =
       countryTableStatus === TABLE_STATUSES.SAVING || sitesTableStatus === TABLE_STATUSES.SAVING;
 
@@ -145,7 +144,7 @@ export const WeeklyReportPanelComponent = React.memo(
         </MainSection>
         <DrawerFooter
           disabled={isSaving}
-          Action={WeeklyReportsPaneSubmitButton(handleConfirm)}
+          Action={WeeklyReportsPanelSubmitButton(handleConfirm)}
           helperText="Verify data to submit Weekly Report to Regional"
         />
       </Drawer>
@@ -153,7 +152,7 @@ export const WeeklyReportPanelComponent = React.memo(
   },
 );
 
-WeeklyReportPanelComponent.propTypes = {
+WeeklyReportsPanelComponent.propTypes = {
   countryData: PropTypes.array.isRequired,
   sitesData: PropTypes.array.isRequired,
   handleConfirm: PropTypes.func.isRequired,
@@ -172,7 +171,7 @@ const mapDispatchToProps = dispatch => ({
   handleClose: () => dispatch(closeWeeklyReportsPanel()),
 });
 
-export const WeeklyReportPanel = connect(
+export const WeeklyReportsPanel = connect(
   mapStateToProps,
   mapDispatchToProps,
-)(WeeklyReportPanelComponent);
+)(WeeklyReportsPanelComponent);

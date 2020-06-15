@@ -17,7 +17,7 @@ import {
   WarningCloud,
   Virus,
 } from '@tupaia/ui-components';
-import { Container, Main, Sidebar, CountryTable, WeeklyReportPanel } from '../components';
+import { Container, Main, Sidebar, CountryTable, WeeklyReportsPanel } from '../components';
 
 const ExampleContent = styled.div`
   padding: 3rem 1rem;
@@ -59,7 +59,7 @@ export const CountryReportsViewWeekly = () => (
   <Container>
     <Main data-testid="country-table">
       <CountryTable />
-      <WeeklyReportPanel />
+      <WeeklyReportsPanel />
     </Main>
     <Sidebar>
       <Card variant="outlined">
