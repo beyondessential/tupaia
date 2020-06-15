@@ -41,6 +41,13 @@ export class FakeAPI {
       for (let i = 0; i < 3; i++) {
         data.push(this.outbreak());
       }
+    } else if (endpoint === 'archive') {
+      for (let i = 0; i < 5; i++) {
+        data.push(this.alert());
+      }
+      for (let j = 0; j < 5; j++) {
+        data.push(this.outbreak());
+      }
     }
 
     await this.sleep(500);

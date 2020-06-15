@@ -15,7 +15,7 @@ const links = [
     icon: <WarningCloud />,
   },
   {
-    label: 'Outbreak',
+    label: 'Outbreaks',
     to: '/outbreaks',
     icon: <Virus />,
   },
