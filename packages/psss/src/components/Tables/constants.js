@@ -5,5 +5,5 @@
 
 export const COLUMN_WIDTHS = {
   FIRST: '30%',
-  SITES_REPORTED: '120px',
+  SITES_REPORTED: '125px',
 };
