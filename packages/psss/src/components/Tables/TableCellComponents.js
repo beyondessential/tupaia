@@ -4,8 +4,8 @@
  */
 
 import React from 'react';
-import styled from 'styled-components';
 import { connect } from 'react-redux';
+import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Error } from '@material-ui/icons';
 import { Link as RouterLink } from 'react-router-dom';
