@@ -35,4 +35,4 @@ const actionHandlers = {
   }),
 };
 
-export const auth = createReducer(defaultState, actionHandlers);
+export const alerts = createReducer(defaultState, actionHandlers);
