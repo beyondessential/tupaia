@@ -37,6 +37,10 @@ export class FakeAPI {
       for (let i = 0; i < 10; i++) {
         data.push(this.alert());
       }
+    } else if (endpoint === 'outbreaks') {
+      for (let i = 0; i < 3; i++) {
+        data.push(this.outbreak());
+      }
     }
 
     await this.sleep(500);
@@ -193,6 +197,20 @@ export class FakeAPI {
       sitesReported: faker.random.number({
         min: 40,
         max: 100,
+      }),
+    };
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  outbreak() {
+    const alert = this.alert();
+    return {
+      ...alert,
+      diagnosis: faker.random.arrayElement(['Measles', 'Influenza']),
+      outbreakStartDate: faker.date.between('2020-01-01', '2020-01-31'),
+      totalLabCases: faker.random.number({
+        min: 100,
+        max: 300,
       }),
     };
   }
