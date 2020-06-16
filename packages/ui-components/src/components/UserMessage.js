@@ -3,40 +3,23 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import React, { useRef, useEffect, useState } from 'react';
 import { format } from 'date-fns';
-import React from 'react';
 import PropTypes from 'prop-types';
-import { Avatar, Card, CardHeader, Divider, Typography } from '@material-ui/core';
 import styled from 'styled-components';
+import { Avatar, Typography } from '@material-ui/core';
 import { ActionsMenu } from './ActionsMenu';
-import { Button } from './Button';
+import { Button, OutlinedButton } from './Button';
+import { Card } from './Card';
 import { TextField } from './Inputs';
-
-const StyledCard = styled(Card)`
-  max-width: 460px;
-  box-shadow: ${props => (props.edit ? '0 0 6px #99d6ff' : 'none')};
-
-  .MuiCardHeader-root {
-    padding: 8px 16px;
-    border-width: 0 0 1px 0;
-    border-style: solid;
-    border-color: #dedee0;
-  }
-`;
-
-const StyledCardHeader = styled(CardHeader)`
-  .MuiCardHeader-action {
-    flex: 1 1 auto;
-    align-self: center;
-    margin-top: 0;
-  }
-`;
 
 const TextareaField = styled(TextField)`
   margin: 0;
 
   .MuiInputBase-input {
-    padding: 20px;
+    padding: 1.25rem;
+    color: #888888;
+    line-height: 1.5;
   }
 
   .MuiOutlinedInput-notchedOutline {
@@ -54,57 +37,63 @@ const ReadOnlyField = styled(TextareaField)`
   margin: 0;
 `;
 
-const Actions = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  padding: 20px;
-`;
+const MessageView = ({ edit, message }) => {
+  const inputRef = useRef(null);
 
-const MessageView = ({ userMessageId, edit, message, onCancel, onUpdate }) => {
-  return edit ? (
-    <React.Fragment>
-      <TextareaField
+  useEffect(() => {
+    if (edit) {
+      const input = inputRef.current;
+      const length = input.value.length;
+      input.setSelectionRange(length, length);
+      input.focus();
+    }
+  }, [edit, inputRef]);
+
+  if (!edit) {
+    return (
+      <ReadOnlyField
         name="textArea"
-        placeholder="Placeholder text"
         multiline
-        rows="4"
-        autoFocus
-        defaultValue={message}
+        value={message}
+        InputProps={{
+          readOnly: true,
+        }}
       />
-      <Divider />
-      <Actions>
-        <Button variant="outlined" color="primary" onClick={onCancel}>
-          Cancel
-        </Button>
-        <Button variant="contained" color="primary" onClick={() => onUpdate(userMessageId)}>
-          Update
-        </Button>
-      </Actions>
-    </React.Fragment>
-  ) : (
-    <ReadOnlyField name="textArea" multiline rows="4" value={message} />
+    );
+  }
+
+  return (
+    <TextareaField
+      inputRef={inputRef}
+      name="textArea"
+      placeholder="Placeholder text"
+      multiline
+      defaultValue={message}
+    />
   );
 };
 
 MessageView.propTypes = {
-  userMessageId: PropTypes.string.isRequired,
   edit: PropTypes.bool.isRequired,
   message: PropTypes.string.isRequired,
-  onCancel: PropTypes.func.isRequired,
-  onUpdate: PropTypes.func.isRequired,
 };
 
-const Container = styled.div`
+const Flexbox = styled.div`
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
+`;
+
+const Header = styled(Flexbox)`
+  padding: 0.8rem 0.5rem 0.8rem 1rem;
+  border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
 `;
 
 const Title = styled(Typography)`
   font-weight: 500;
-  font-size: 14px;
-  line-height: 16px;
+  font-size: 0.875rem;
+  line-height: 1rem;
+  margin-left: 0.5rem;
   color: ${props => props.theme.palette.text.primary};
 `;
 
@@ -118,49 +107,67 @@ const Time = styled(Title)`
   margin-left: 1rem;
 `;
 
-const TimeAndMenu = ({ dateTime, menuOptions }) => (
-  <Container>
-    <Date>{format(dateTime, 'dd/MM/yyyy')}</Date>
-    <Time>{format(dateTime, 'hh:mm a')}</Time>
-    <ActionsMenu options={menuOptions} />
-  </Container>
-);
+const CardActions = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 20px;
+  border-top: 1px solid ${props => props.theme.palette.grey['400']};
+`;
 
-export const UserMessage = ({ id, avatarUrl, title, dateTime, message, onUpdate, onDelete }) => {
-  const [edit, setEdit] = React.useState(false);
+export const UserMessage = ({ user, message, onUpdate, onDelete }) => {
+  const [edit, setEdit] = useState(false);
+  const date = format(message.dateTime, 'dd/MM/yyyy');
+  const time = format(message.dateTime, 'hh:mm a');
+
+  const handleUpdate = () => {
+    onUpdate(message);
+  };
+
+  const handleCancel = () => {
+    setEdit(false);
+  };
+
+  // investigate a jsx option
   const menuOptions = [
     { label: 'Edit', action: () => setEdit(true) },
-    { label: 'Delete', action: () => onDelete(id) },
+    { label: 'Delete', action: () => onDelete(message.id) },
   ];
 
   return (
-    <StyledCard variant="outlined" edit={edit}>
-      <StyledCardHeader
-        avatar={<Avatar src={avatarUrl} />}
-        title={<Title>{title}</Title>}
-        action={<TimeAndMenu dateTime={dateTime} menuOptions={menuOptions} />}
-      />
-      <MessageView
-        userMessageId={id}
-        edit={edit}
-        message={message}
-        onCancel={() => setEdit(false)}
-        onUpdate={onUpdate}
-      />
-    </StyledCard>
+    <Card variant="outlined" edit={edit}>
+      <Header>
+        <Flexbox>
+          <Avatar src={user.avatarUrl} />
+          <Title>{user.title}</Title>
+        </Flexbox>
+        <Flexbox>
+          <Date>{date}</Date>
+          <Time>{time}</Time>
+          <ActionsMenu options={menuOptions} />
+        </Flexbox>
+      </Header>
+      <MessageView edit={edit} message={message.content} />
+      {edit && (
+        <CardActions>
+          <OutlinedButton onClick={handleCancel}>Cancel</OutlinedButton>
+          <Button onClick={handleUpdate}>Update</Button>
+        </CardActions>
+      )}
+    </Card>
   );
 };
 
 UserMessage.propTypes = {
-  id: PropTypes.string.isRequired,
-  avatarUrl: PropTypes.string,
-  title: PropTypes.string.isRequired,
-  dateTime: PropTypes.instanceOf(Date).isRequired,
-  message: PropTypes.string.isRequired,
+  user: PropTypes.shape({
+    avatarUrl: PropTypes.string,
+    title: PropTypes.string.isRequired,
+  }).isRequired,
+  message: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    dateTime: PropTypes.instanceOf(Date).isRequired,
+    content: PropTypes.string.isRequired,
+  }).isRequired,
   onUpdate: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
-};
-
-UserMessage.defaultProps = {
-  avatarUrl: null,
 };

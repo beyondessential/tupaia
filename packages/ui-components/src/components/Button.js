@@ -86,7 +86,7 @@ export const SmallButton = styled(Button)`
 /*
  * Light Outlined Button
  */
-const OutlinedButton = props => <Button {...props} variant="outlined" />;
+export const OutlinedButton = props => <Button {...props} variant="outlined" />;
 
 export const LightOutlinedButton = styled(OutlinedButton)`
   color: ${props => props.theme.palette.common.white};
