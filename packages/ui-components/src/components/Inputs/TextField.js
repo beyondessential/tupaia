@@ -7,8 +7,6 @@ import React from 'react';
 import MuiTextField from '@material-ui/core/TextField';
 import styled from 'styled-components';
 
-const TEXT_FIELD_FONT_FAMILY = "'Inter', sans-serif";
-
 const BaseTextField = props => <MuiTextField fullWidth {...props} variant="outlined" />;
 
 const focusColor = '#99d6ff';
@@ -23,7 +21,6 @@ export const TextField = styled(BaseTextField)`
 
   // The actual input field
   .MuiInputBase-input {
-    font-family: ${TEXT_FIELD_FONT_FAMILY};
     color: ${props => props.theme.palette.text.primary};
     font-weight: 400;
     font-size: 1rem;
@@ -72,7 +69,6 @@ export const TextField = styled(BaseTextField)`
   .MuiFormLabel-root {
     position: relative;
     margin-bottom: 4px;
-    font-family: ${TEXT_FIELD_FONT_FAMILY};
     color: ${props => props.theme.palette.text.secondary};
     font-size: 0.875rem;
     line-height: 1;

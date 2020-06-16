@@ -6,25 +6,15 @@
 import { format } from 'date-fns';
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  Avatar,
-  Box,
-  CardContent,
-  Grid,
-  Card,
-  CardHeader,
-  Divider,
-  TextareaAutosize,
-  Typography,
-} from '@material-ui/core';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import { Avatar, Card, CardHeader, Divider, Typography } from '@material-ui/core';
 import styled from 'styled-components';
-
 import { ActionsMenu } from './ActionsMenu';
 import { Button } from './Button';
+import { TextField } from './Inputs';
 
 const StyledCard = styled(Card)`
   max-width: 460px;
+  box-shadow: ${props => (props.edit ? '0 0 6px #99d6ff' : 'none')};
 
   .MuiCardHeader-root {
     padding: 8px 16px;
@@ -42,85 +32,99 @@ const StyledCardHeader = styled(CardHeader)`
   }
 `;
 
-export const StyledTextareaAutosize = styled(TextareaAutosize)`
-  width: 100%;
-  border: 0;
-  padding: 0;
-  height: 50px !important;
-  margin-bottom: 1em;
+const TextareaField = styled(TextField)`
+  margin: 0;
+
+  .MuiInputBase-input {
+    padding: 20px;
+  }
+
+  .MuiOutlinedInput-notchedOutline {
+    border: none;
+    border-radius: 0;
+  }
+
+  .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    box-shadow: none;
+    border: none;
+  }
 `;
 
-export const StyledButton = styled(Button)`
-  position: relative;
-  top: 0.8em;
-  margin-right: 1em;
+const ReadOnlyField = styled(TextareaField)`
+  margin: 0;
 `;
 
-export const StyledDivider = styled(Divider)`
-  margin: 0 -5%;
+const Actions = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 20px;
 `;
-
-const getAvatar = avatarUrl =>
-  !avatarUrl ? <AccountCircleIcon style={{ fontSize: 40 }} /> : <Avatar alt="" src={avatarUrl} />;
-
-const getTimestampAndMenu = (dateTime, menuOptions) => (
-  <Grid container direction="row" justify="flex-end" alignItems="center" spacing={1}>
-    <Grid item xs={4}>
-      {format(dateTime, 'dd/MM/yyyy')}
-    </Grid>
-    <Grid item xs={4}>
-      <Box textAlign="right">{format(dateTime, 'hh:mm a')}</Box>
-    </Grid>
-    <Grid item xs={3}>
-      <ActionsMenu options={menuOptions} />
-    </Grid>
-  </Grid>
-);
 
 const MessageView = ({ userMessageId, edit, message, onCancel, onUpdate }) => {
-  const textarea = React.useRef(null);
-
-  React.useEffect(() => {
-    if (textarea.current) {
-      textarea.current.focus();
-    }
-  }, [edit]);
-
   return edit ? (
-    <div>
-      <StyledTextareaAutosize
-        ref={textarea}
-        className="MuiTypography-root MuiTypography-body2 MuiTypography-colorTextSecondary"
+    <React.Fragment>
+      <TextareaField
+        name="textArea"
+        placeholder="Placeholder text"
+        multiline
+        rows="4"
+        autoFocus
         defaultValue={message}
       />
-      <StyledDivider />
-      <Typography align="right">
-        <StyledButton variant="outlined" color="primary" onClick={onCancel}>
+      <Divider />
+      <Actions>
+        <Button variant="outlined" color="primary" onClick={onCancel}>
           Cancel
-        </StyledButton>
-        <StyledButton variant="contained" color="primary" onClick={() => onUpdate(userMessageId)}>
+        </Button>
+        <Button variant="contained" color="primary" onClick={() => onUpdate(userMessageId)}>
           Update
-        </StyledButton>
-      </Typography>
-    </div>
+        </Button>
+      </Actions>
+    </React.Fragment>
   ) : (
-    <Typography variant="body2" color="textSecondary" component="p">
-      {message}
-    </Typography>
+    <ReadOnlyField name="textArea" multiline rows="4" value={message} />
   );
 };
 
 MessageView.propTypes = {
   userMessageId: PropTypes.string.isRequired,
-  edit: PropTypes.bool,
+  edit: PropTypes.bool.isRequired,
   message: PropTypes.string.isRequired,
   onCancel: PropTypes.func.isRequired,
   onUpdate: PropTypes.func.isRequired,
 };
 
-MessageView.defaultProps = {
-  edit: false,
-};
+const Container = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+`;
+
+const Title = styled(Typography)`
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 16px;
+  color: ${props => props.theme.palette.text.primary};
+`;
+
+const Date = styled(Title)`
+  font-weight: 400;
+`;
+
+const Time = styled(Title)`
+  font-weight: 400;
+  color: ${props => props.theme.palette.text.secondary};
+  margin-left: 1rem;
+`;
+
+const TimeAndMenu = ({ dateTime, menuOptions }) => (
+  <Container>
+    <Date>{format(dateTime, 'dd/MM/yyyy')}</Date>
+    <Time>{format(dateTime, 'hh:mm a')}</Time>
+    <ActionsMenu options={menuOptions} />
+  </Container>
+);
 
 export const UserMessage = ({ id, avatarUrl, title, dateTime, message, onUpdate, onDelete }) => {
   const [edit, setEdit] = React.useState(false);
@@ -130,21 +134,19 @@ export const UserMessage = ({ id, avatarUrl, title, dateTime, message, onUpdate,
   ];
 
   return (
-    <StyledCard variant="outlined">
+    <StyledCard variant="outlined" edit={edit}>
       <StyledCardHeader
-        avatar={getAvatar(avatarUrl)}
-        title={<Box fontWeight="fontWeightBold">{title}</Box>}
-        action={getTimestampAndMenu(dateTime, menuOptions)}
+        avatar={<Avatar src={avatarUrl} />}
+        title={<Title>{title}</Title>}
+        action={<TimeAndMenu dateTime={dateTime} menuOptions={menuOptions} />}
       />
-      <CardContent>
-        <MessageView
-          userMessageId={id}
-          edit={edit}
-          message={message}
-          onCancel={() => setEdit(false)}
-          onUpdate={onUpdate}
-        />
-      </CardContent>
+      <MessageView
+        userMessageId={id}
+        edit={edit}
+        message={message}
+        onCancel={() => setEdit(false)}
+        onUpdate={onUpdate}
+      />
     </StyledCard>
   );
 };
