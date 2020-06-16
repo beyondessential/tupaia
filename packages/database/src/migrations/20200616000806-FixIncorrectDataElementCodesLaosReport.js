@@ -39,7 +39,6 @@ exports.up = async function(db) {
       });
 
       const newDataBuilderConfig = { ...dataBuilderConfig, dataBuilders: newDataBuilders };
-      console.log(newDataBuilderConfig);
 
       return db.runSql(`
         update "dashboardReport"
@@ -75,7 +74,6 @@ exports.down = async function(db) {
       });
 
       const newDataBuilderConfig = { ...dataBuilderConfig, dataBuilders: newDataBuilders };
-      console.log(newDataBuilderConfig);
 
       return db.runSql(`
       update "dashboardReport"
