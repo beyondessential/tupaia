@@ -10,7 +10,7 @@ import styled from 'styled-components';
 import MuiLink from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
-import { LoginForm } from '../components';
+import { LoginForm } from '../containers';
 import { checkIsLoggedIn } from '../store';
 
 export const Main = styled.main`

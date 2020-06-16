@@ -5,7 +5,7 @@
 import React from 'react';
 import { render } from 'test-utils';
 import { screen, within, fireEvent } from '@testing-library/react';
-import { WeeklyReportPanelComponent } from '../WeeklyReportPanel';
+import { WeeklyReportsPanelComponent } from '../../containers/Panels/WeeklyReportsPanel';
 import sitesData from './fixtures/sites.fixtures.json';
 import countryData from './fixtures/country.fixtures.json';
 
@@ -34,9 +34,9 @@ jest.mock('@tupaia/ui-components', () => ({
   },
 }));
 
-function renderWeeklyReportPanel() {
+function renderWeeklyReportsPanel() {
   render(
-    <WeeklyReportPanelComponent
+    <WeeklyReportsPanelComponent
       countryData={props.countryData}
       sitesData={props.sitesData}
       isOpen={props.isOpen}
@@ -58,7 +58,7 @@ function renderWeeklyReportPanel() {
 
 describe('weekly reports panel', () => {
   it('renders country syndromes data', () => {
-    const { inCountryReports } = renderWeeklyReportPanel();
+    const { inCountryReports } = renderWeeklyReportsPanel();
     const syndromes = props.countryData;
 
     syndromes.forEach(({ title, totalCases }) => {
@@ -71,7 +71,7 @@ describe('weekly reports panel', () => {
 
   it('renders site syndromes data', () => {
     const FIRST_SITE_INDEX = 0;
-    const { inSiteReports } = renderWeeklyReportPanel();
+    const { inSiteReports } = renderWeeklyReportsPanel();
 
     const syndromes = props.sitesData[FIRST_SITE_INDEX].syndromes;
     syndromes.forEach(({ title, totalCases }) => {
@@ -85,7 +85,7 @@ describe('weekly reports panel', () => {
   it('can render data by site', () => {
     const FIRST_SITE_INDEX = 0;
     const SECOND_SITE_INDEX = 1;
-    const { inSiteReports } = renderWeeklyReportPanel();
+    const { inSiteReports } = renderWeeklyReportsPanel();
     const firstSite = props.sitesData[FIRST_SITE_INDEX];
     const secondSite = props.sitesData[SECOND_SITE_INDEX];
 

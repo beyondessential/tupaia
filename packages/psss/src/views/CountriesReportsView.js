@@ -15,7 +15,8 @@ import {
   WarningCloud,
   Virus,
 } from '@tupaia/ui-components';
-import { Container, Main, Sidebar, Header, CountriesTable } from '../components';
+import { Container, Main, Sidebar, Header } from '../components';
+import { CountriesTable } from '../containers';
 
 const StyledCardContent = styled(CardContent)`
   display: flex;

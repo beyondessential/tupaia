@@ -3,13 +3,13 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { ConnectedTable } from './ConnectedTable';
 import {
+  ConnectedTable,
   SyndromeCell,
   AlertMenuCell,
-  CountryNameCell,
   WeekAndDateCell,
-} from './TableCellComponents';
+  CountryNameCell,
+} from '../../components';
 
 const columns = [
   {

@@ -94,7 +94,7 @@ const CountryTitle = styled(MuiLink)`
 
 export const CountryNameCell = ({ name, countryCode }) => {
   return (
-    <CountryTitle to="weekly-reports/samoa" data-testid="country-link" component={RouterLink}>
+    <CountryTitle to="weekly-reports/samoa" component={RouterLink}>
       <Avatar src={countryFlagImage(countryCode)} /> {name}
     </CountryTitle>
   );

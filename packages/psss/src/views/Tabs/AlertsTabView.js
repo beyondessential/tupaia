@@ -7,7 +7,8 @@ import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
 import { CalendarToday } from '@material-ui/icons';
 import { CardContent, CardHeader, Card } from '@tupaia/ui-components';
-import { Container, Main, Sidebar, AlertsTable } from '../components';
+import { Container, Main, Sidebar } from '../../components';
+import { AlertsTable } from '../../containers';
 
 const DateSubtitle = styled(Typography)`
   margin-top: 1rem;

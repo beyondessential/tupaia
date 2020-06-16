@@ -15,7 +15,7 @@ import {
   Button,
   FakeHeader,
 } from '@tupaia/ui-components';
-import { DottedTableBody } from './TableBody';
+import { DottedTableBody } from '../../components';
 import { updateWeeklyReportsData } from '../../store';
 
 const HeadingRow = styled.div`

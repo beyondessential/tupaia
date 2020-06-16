@@ -17,7 +17,8 @@ import {
   WarningCloud,
   Virus,
 } from '@tupaia/ui-components';
-import { Container, Main, Sidebar, CountryTable, WeeklyReportPanel } from '../components';
+import { Container, Main, Sidebar } from '../../components';
+import { CountryTable, WeeklyReportsPanel } from '../../containers';
 
 const ExampleContent = styled.div`
   padding: 3rem 1rem;
@@ -55,11 +56,11 @@ const DateSubtitle = styled(Typography)`
   color: ${props => props.theme.palette.text.secondary};
 `;
 
-export const CountryReportsViewWeekly = () => (
+export const WeeklyCasesTabView = () => (
   <Container>
     <Main data-testid="country-table">
       <CountryTable />
-      <WeeklyReportPanel />
+      <WeeklyReportsPanel />
     </Main>
     <Sidebar>
       <Card variant="outlined">
