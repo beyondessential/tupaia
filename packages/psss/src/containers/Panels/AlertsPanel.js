@@ -6,8 +6,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { LocationOn, SpeakerNotes, List } from '@material-ui/icons';
+import { CardTabs, CardTabList, CardTab, CardTabPanels, CardTabPanel } from '@tupaia/ui-components';
 import { checkAlertsPanelIsOpen, closeAlertsPanel } from '../../store';
-import { Drawer, DrawerHeader, DrawerHeaderContent } from '../../components';
+import {
+  Drawer,
+  DrawerHeader,
+  DrawerHeaderContent,
+  AffectedSitesTab,
+  ActivityTab,
+  NotesTab,
+} from '../../components';
 import { countryFlagImage } from '../../utils';
 
 export const AlertsPanelComponent = ({ isOpen, handleClose }) => {
@@ -20,7 +29,32 @@ export const AlertsPanelComponent = ({ isOpen, handleClose }) => {
           avatarUrl={countryFlagImage('as')}
         />
       </DrawerHeader>
-      <div>Panel Content</div>
+      <CardTabs>
+        <CardTabList>
+          <CardTab>
+            <LocationOn /> Affected Sites
+          </CardTab>
+          <CardTab>
+            <SpeakerNotes />
+            Notes (3)
+          </CardTab>
+          <CardTab>
+            <List />
+            Activity
+          </CardTab>
+        </CardTabList>
+        <CardTabPanels>
+          <CardTabPanel>
+            <AffectedSitesTab />
+          </CardTabPanel>
+          <CardTabPanel>
+            <NotesTab />
+          </CardTabPanel>
+          <CardTabPanel>
+            <ActivityTab />
+          </CardTabPanel>
+        </CardTabPanels>
+      </CardTabs>
     </Drawer>
   );
 };

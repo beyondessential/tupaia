@@ -10,3 +10,6 @@ export * from './Header';
 export * from './Table';
 export * from './Drawer';
 export * from './SiteAddress';
+export * from './ActivityTab';
+export * from './NotesTab';
+export * from './AffectedSitesTab';
