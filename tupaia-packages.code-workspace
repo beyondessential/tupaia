@@ -1,6 +1,10 @@
 {
   "folders": [
     {
+      "name": "root",
+      "path": "."
+    },
+    {
       "name": "access-policy",
       "path": "packages/access-policy"
     },
@@ -64,5 +68,10 @@
       "name": "web-frontend",
       "path": "packages/web-frontend"
     }
-  ]
+  ],
+  "settings": {
+    "files.exclude": {
+      "packages/": true
+    }
+  }
 }
