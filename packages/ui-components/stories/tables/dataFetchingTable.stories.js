@@ -15,7 +15,7 @@ import * as COLORS from '../story-utils/theme/colors';
 import { connectApi } from '../story-utils/api';
 
 export default {
-  title: 'Table/DataFetchingTable',
+  title: 'Tables/DataFetchingTable',
   component: DataFetchingTable,
 };
 

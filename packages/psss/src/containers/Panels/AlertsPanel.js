@@ -16,7 +16,7 @@ export const AlertsPanelComponent = ({ isOpen, handleClose }) => {
       <DrawerHeader heading="Upcoming report" onClose={handleClose}>
         <DrawerHeaderContent
           heading="Acute Fever and Rash (AFR)"
-          date="Week 9 Feb 25 - Mar 1, 2020"
+          date="Week 9 Feb 25 - Mar 1, 2021"
           avatarUrl={countryFlagImage('as')}
         />
       </DrawerHeader>

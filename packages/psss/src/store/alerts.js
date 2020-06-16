@@ -19,7 +19,7 @@ export const closeAlertsPanel = () => ({
 });
 
 // selectors
-export const checkAlertsPanelIsOpen = ({ weeklyReports }) => weeklyReports.activeWeek.panelIsOpen;
+export const checkAlertsPanelIsOpen = ({ alerts }) => alerts.panelIsOpen;
 
 // reducer
 const defaultState = {

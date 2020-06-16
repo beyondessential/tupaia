@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import { CalendarToday } from '@material-ui/icons';
 import { CardContent, CardHeader, Card } from '@tupaia/ui-components';
 import { Container, Main, Sidebar } from '../../components';
-import { AlertsTable } from '../../containers';
+import { AlertsTable, AlertsPanel } from '../../containers';
 
 const DateSubtitle = styled(Typography)`
   margin-top: 1rem;
@@ -20,6 +20,7 @@ export const AlertsTabView = () => (
   <Container>
     <Main>
       <AlertsTable />
+      <AlertsPanel />
     </Main>
     <Sidebar>
       <Card variant="outlined">

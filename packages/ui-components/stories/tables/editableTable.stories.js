@@ -22,7 +22,7 @@ import {
 import { FakeAPI } from '../story-utils/api';
 
 export default {
-  title: 'Table/EditableTable',
+  title: 'Tables/EditableTable',
 };
 
 const Container = styled.div`

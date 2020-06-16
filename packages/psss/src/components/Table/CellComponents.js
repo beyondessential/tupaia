@@ -17,7 +17,6 @@ import Avatar from '@material-ui/core/Avatar';
 import { Tooltip } from '@tupaia/ui-components';
 import { countryFlagImage } from '../../utils';
 import * as COLORS from '../../constants/colors';
-import { openAlertsPanel } from '../../store';
 
 const StyledAlert = styled.div`
   display: inline-flex;
@@ -92,45 +91,40 @@ const CountryTitle = styled(MuiLink)`
     color: ${COLORS.GREY_DE};
     background-color: ${COLORS.GREY_DE};
   }
+
+  &.MuiLink-button {
+    text-align: left;
+  }
 `;
 
-export const CountryNameCell = ({ name, countryCode }) => {
+export const CountryNameCell = ({ handleClick, name, countryCode }) => {
+  const isButton = handleClick;
+  const to = isButton ? null : 'weekly-reports/samoa';
+  const component = isButton ? 'button' : RouterLink;
+
   return (
-    <CountryTitle to="weekly-reports/samoa" component={RouterLink}>
+    <CountryTitle to={to} onClick={handleClick} component={component}>
       <Avatar src={countryFlagImage(countryCode)} /> {name}
     </CountryTitle>
   );
 };
 
 CountryNameCell.propTypes = {
+  handleClick: PropTypes.func,
   name: PropTypes.string.isRequired,
   countryCode: PropTypes.string,
 };
 
 CountryNameCell.defaultProps = {
+  handleClick: null,
   countryCode: null,
-};
-
-export const CountryNameButton = ({ handleClick }) => {
-  // eslint-disable-next-line react/prop-types
-  return ({ name, countryCode }) => {
-    return (
-      <CountryTitle onClick={handleClick}>
-        <Avatar src={countryFlagImage(countryCode)} /> {name}
-      </CountryTitle>
-    );
-  };
-};
-
-CountryNameButton.propTypes = {
-  handleClick: PropTypes.func.isRequired,
 };
 
 export const CountryNameButtonCreator = actionCreator => {
   const mapDispatchToProps = dispatch => ({
     handleClick: () => dispatch(actionCreator()),
   });
-  return connect(null, mapDispatchToProps)(CountryNameButton);
+  return connect(null, mapDispatchToProps)(CountryNameCell);
 };
 
 const CountrySummaryTitle = styled.div`
@@ -175,7 +169,7 @@ SyndromeCell.propTypes = {
 // Todo: update placeholder number
 export const SitesReportedCell = data => {
   return (
-    <Tooltip title="Submitted: 1day ago">
+    <Tooltip title="Submitted: 1 day ago">
       <DottedUnderline>{`${data.sitesReported}/30`}</DottedUnderline>
     </Tooltip>
   );
