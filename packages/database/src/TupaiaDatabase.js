@@ -464,12 +464,14 @@ function buildQuery(connection, queryConfig, where = {}, options = {}) {
   }
 
   // Add filtering (or WHERE) details if provided
+  // Each column can be specified as a string (e.g. 'id'), or if aliasing is required, as an object
+  // with one entry, e.g. { user_id: 'user_account.id' }
   const columns =
     options.columns &&
     options.columns.map(columnSpec => {
       if (typeof columnSpec === 'string') return columnSpec;
       const [alias, selector] = Object.entries(columnSpec)[0];
-      return { [alias]: connection.raw(selector) };
+      return { [alias]: connection.raw('??', [selector]) };
     });
   query = addWhereClause(query[queryMethod](queryMethodParameter || columns), where);
 
