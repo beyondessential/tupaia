@@ -19,7 +19,9 @@ exports.setup = function(options, seedLink) {
 const REPORT_ID = 'Laos_Schools_Raw_Data_Downloads';
 
 const DATA_BUILDER_CONFIG = {
-  dataSourceEntityType: 'school',
+  entityAggregation: {
+    dataSourceEntityType: 'school'
+  },
   surveys: [
     {
       code: 'SC1RL',
