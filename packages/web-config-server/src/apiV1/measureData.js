@@ -89,7 +89,7 @@ const getMeasureLevel = mapOverlays => {
   const aggregationTypes = mapOverlays.map(
     ({ presentationOptions }) => presentationOptions.measureLevel,
   );
-  return 'Facility';//[...new Set(aggregationTypes)].join(',');
+  return [...new Set(aggregationTypes)].join(',');
 };
 
 export default class extends DataAggregatingRouteHandler {
