@@ -28,7 +28,7 @@ export class Form extends React.Component {
     const defaultValues = {};
     React.Children.forEach(this.formChildren, child => {
       if (!child.props.name) return;
-      if (!React.isValidElement(child)) throw new Error('Invalid Fields element as child of Form');
+      if (!React.isValidElement(child)) throw new Error('Invalid Field element as child of Form');
 
       const { name, defaultValue } = child.props;
       if (defaultValue !== null) defaultValues[name] = defaultValue; // should allow falsy values as defaults
