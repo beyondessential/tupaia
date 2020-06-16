@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import { ExpandableTableBody } from '@tupaia/ui-components';
-import { COLUMN_WIDTHS } from '../../constants';
+import { COLUMN_WIDTHS } from './constants';
 import { CountrySummaryTable } from './CountrySummaryTable';
 import {
   ConnectedTable,

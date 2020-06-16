@@ -13,6 +13,7 @@ import {
   SitesReportedCell,
   WeekAndDateCell,
 } from '../../components';
+import { COLUMN_WIDTHS } from './constants';
 
 const countrySummaryTableColumns = [
   {
