@@ -13,11 +13,14 @@ import {
   Card,
   ErrorAlert,
 } from '@tupaia/ui-components';
-import { PercentageChangeCell } from '../Tables/TableCellComponents';
-import * as COLORS from '../../constants/colors';
-import { Drawer, DrawerHeaderContent, DrawerFooter, DrawerHeader } from '../Drawer';
-import { CountryReportTable, SiteReportTable } from '../Tables';
-import { SiteAddress } from '../SiteAddress';
+import {
+  SiteAddress,
+  Drawer,
+  DrawerHeaderContent,
+  DrawerFooter,
+  DrawerHeader,
+  PercentageChangeCell,
+} from '../../components';
 import {
   getSitesForWeek,
   getActiveWeekCountryData,
@@ -25,6 +28,8 @@ import {
   confirmWeeklyReportsData,
   checkWeeklyReportsPanelIsOpen,
 } from '../../store';
+import * as COLORS from '../../constants/colors';
+import { CountryReportTable, SiteReportTable } from '../Tables';
 import { countryFlagImage } from '../../utils';
 
 const columns = [

@@ -17,8 +17,7 @@ import {
   Button,
   FakeHeader,
 } from '@tupaia/ui-components';
-import { VerifiableTableRow } from './VerifiableTableRow';
-import { BorderlessTableRow } from './TableRow';
+import { BorderlessTableRow, VerifiableTableRow } from '../../components';
 import { updateWeeklyReportsData } from '../../store';
 
 const VerifiableBody = props => {

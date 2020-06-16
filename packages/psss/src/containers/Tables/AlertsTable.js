@@ -3,70 +3,54 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { ConnectedTable } from './ConnectedTable';
 import {
+  ConnectedTable,
   SyndromeCell,
   AlertMenuCell,
-  CountryNameCell,
+  CountryNameButtonCreator,
   WeekAndDateCell,
-  StartDateCell,
-} from './TableCellComponents';
+} from '../../components';
+import { openAlertsPanel } from '../../store';
 
 const columns = [
   {
     title: 'Country',
     key: 'name',
-    width: '22%',
+    width: '28%',
     align: 'left',
-    CellComponent: CountryNameCell,
+    CellComponent: CountryNameButtonCreator(openAlertsPanel),
   },
   {
     title: 'Syndrome',
     key: 'syndrome',
     align: 'left',
-    width: '100px',
     CellComponent: SyndromeCell,
   },
   {
     title: 'Alert Start Date',
     key: 'week',
     align: 'left',
-    width: '220px',
+    width: '180px',
     CellComponent: WeekAndDateCell,
   },
   {
     title: 'Cases Since Alert Began',
     key: 'totalCases',
     align: 'left',
-    width: '125px',
+    width: '115px',
   },
   {
-    title: 'Outbreak Start Date',
-    key: 'outbreakStartDate',
+    title: 'Sites Reported',
+    key: 'sitesReported',
     align: 'left',
-    width: '120px',
-    CellComponent: StartDateCell,
-  },
-  {
-    title: 'Diagnosis',
-    key: 'diagnosis',
-    align: 'left',
-  },
-  {
-    title: 'Total Lab Confirmed Cases',
-    key: 'totalLabCases',
-    align: 'left',
-    width: '140px',
   },
   {
     title: '',
     key: 'id',
     sortable: false,
     CellComponent: AlertMenuCell,
-    width: '70px',
+    width: '50px',
   },
 ];
 
-export const ArchiveTable = React.memo(() => (
-  <ConnectedTable endpoint="archive" columns={columns} />
-));
+export const AlertsTable = React.memo(() => <ConnectedTable endpoint="alerts" columns={columns} />);

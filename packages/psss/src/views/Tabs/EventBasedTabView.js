@@ -5,7 +5,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
-import { Container, Main } from '../components';
+import { Container, Main } from '../../components';
 
 const Section = styled.section`
   background: white;
@@ -30,7 +30,7 @@ export const SidebarPlaceholder = styled.aside`
   height: 600px;
 `;
 
-export const CountryReportsViewEventBased = () => (
+export const EventBasedTabView = () => (
   <Container>
     <Main>
       <Section>

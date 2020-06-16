@@ -12,9 +12,8 @@ import { Table } from '@tupaia/ui-components';
 import { Alarm, CheckCircleOutline } from '@material-ui/icons';
 import { CountryTableBody } from './CountryTableBody';
 import * as COLORS from '../../constants/colors';
-import { COLUMN_WIDTHS } from './constants';
-import { createTotalCasesAccessor } from './dataAccessors';
-import { AlertCell, SitesReportedCell } from './TableCellComponents';
+import { COLUMN_WIDTHS } from '../../constants';
+import { createTotalCasesAccessor, AlertCell, SitesReportedCell } from '../../components';
 import {
   getCountryWeeks,
   reloadCountryWeeks,

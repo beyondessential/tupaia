@@ -9,9 +9,8 @@ import { connect } from 'react-redux';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import { CondensedTableBody, FakeHeader, Table, Button } from '@tupaia/ui-components';
-import { COLUMN_WIDTHS } from './constants';
-import { AlertCell } from './TableCellComponents';
-import { createTotalCasesAccessor } from './dataAccessors';
+import { COLUMN_WIDTHS } from '../../constants';
+import { createTotalCasesAccessor, AlertCell } from '../../components/Table';
 import {
   openWeeklyReportsPanel,
   getSitesForWeekError,
@@ -111,9 +110,7 @@ export const SiteSummaryTableComponent = React.memo(
         />
         <StyledDiv>
           <Typography variant="body1">Verify data to submit Weekly report to Regional</Typography>
-          <Button onClick={handleOpen}>
-            Review and Confirm Now
-          </Button>
+          <Button onClick={handleOpen}>Review and Confirm Now</Button>
         </StyledDiv>
       </React.Fragment>
     );

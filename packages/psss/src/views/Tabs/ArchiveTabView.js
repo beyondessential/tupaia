@@ -4,12 +4,13 @@
  */
 import React from 'react';
 import MuiContainer from '@material-ui/core/Container';
-import { Main, OutbreaksTable } from '../components';
+import { Main } from '../../components';
+import { ArchiveTable } from '../../containers';
 
-export const OutbreaksTabView = () => (
+export const ArchiveTabView = () => (
   <MuiContainer>
     <Main>
-      <OutbreaksTable />
+      <ArchiveTable />
     </Main>
   </MuiContainer>
 );

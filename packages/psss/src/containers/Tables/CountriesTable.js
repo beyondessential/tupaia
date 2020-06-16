@@ -4,11 +4,15 @@
  */
 import React from 'react';
 import { ExpandableTableBody } from '@tupaia/ui-components';
-import { ConnectedTable } from './ConnectedTable';
-import { COLUMN_WIDTHS } from './constants';
+import { COLUMN_WIDTHS } from '../../constants';
 import { CountrySummaryTable } from './CountrySummaryTable';
-import { createTotalCasesAccessor } from './dataAccessors';
-import { AlertCell, SitesReportedCell, CountryNameCell } from './TableCellComponents';
+import {
+  ConnectedTable,
+  createTotalCasesAccessor,
+  AlertCell,
+  SitesReportedCell,
+  CountryNameCell,
+} from '../../components';
 
 const countriesTableColumns = [
   {

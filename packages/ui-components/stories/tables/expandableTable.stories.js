@@ -19,7 +19,7 @@ import { useTableData } from '../story-utils/useTableData';
 import * as COLORS from '../story-utils/theme/colors';
 
 export default {
-  title: 'Tables/ExpandableTable',
+  title: 'Table/ExpandableTable',
 };
 
 const Container = styled.div`

@@ -5,10 +5,14 @@
 
 import React from 'react';
 import { CondensedTableBody, FakeHeader } from '@tupaia/ui-components';
-import { ConnectedTable } from './ConnectedTable';
-import { COLUMN_WIDTHS } from './constants';
-import { createTotalCasesAccessor } from './dataAccessors';
-import { AlertCell, SitesReportedCell, WeekAndDateCell } from './TableCellComponents';
+import { COLUMN_WIDTHS } from '../../constants';
+import {
+  ConnectedTable,
+  createTotalCasesAccessor,
+  AlertCell,
+  SitesReportedCell,
+  WeekAndDateCell,
+} from '../../components';
 
 const countrySummaryTableColumns = [
   {

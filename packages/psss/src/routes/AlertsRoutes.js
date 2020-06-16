@@ -5,9 +5,9 @@
 
 import React from 'react';
 import { Redirect, Route, Switch, useRouteMatch } from 'react-router-dom';
-import { AlertsTabView } from '../views/AlertsTabView';
-import { ArchiveTabView } from '../views/ArchiveTabView';
-import { OutbreaksTabView } from '../views/OutbreaksTabView';
+import { AlertsTabView } from '../views/Tabs/AlertsTabView';
+import { ArchiveTabView } from '../views/Tabs/ArchiveTabView';
+import { OutbreaksTabView } from '../views/Tabs/OutbreaksTabView';
 
 export const AlertsRoutes = React.memo(() => {
   const match = useRouteMatch();

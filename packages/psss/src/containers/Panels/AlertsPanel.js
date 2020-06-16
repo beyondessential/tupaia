@@ -7,7 +7,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { checkAlertsPanelIsOpen, closeAlertsPanel } from '../../store';
-import { Drawer, DrawerHeader, DrawerHeaderContent } from '../Drawer';
+import { Drawer, DrawerHeader, DrawerHeaderContent } from '../../components';
 import { countryFlagImage } from '../../utils';
 
 export const AlertsPanelComponent = ({ isOpen, handleClose }) => {
