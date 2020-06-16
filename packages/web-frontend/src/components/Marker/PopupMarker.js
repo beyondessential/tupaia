@@ -109,7 +109,7 @@ const buildHeaderText = (data, popupHeaderFormat) => {
 
 export const MeasurePopup = ({ data, measureOptions, onOrgUnitClick }) => {
   const { coordinates, organisationUnitCode } = data;
-  const { popupHeaderFormat = '$name' } = measureOptions.reduce((all, mo) => ({ all, mo }));
+  const { popupHeaderFormat = '$name' } = measureOptions.reduce((all, mo) => ({ ...all, ...mo }));
 
   return (
     <PopupMarker
