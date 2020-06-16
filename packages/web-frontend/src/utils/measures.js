@@ -154,7 +154,7 @@ export function processMeasureInfo(response) {
     const { values: mapOptionValues, type, scaleType } = measureOption;
     const values = autoAssignColors(mapOptionValues);
     const valueMapping = createValueMapping(values, type);
-
+    console.log("createValueMapping(values, type)", valueMapping, values, type);
     hiddenMeasures[measureOption.key] = measureOption.hideByDefault;
 
     if (SPECTRUM_MEASURE_TYPES.includes(type)) {
@@ -297,7 +297,7 @@ export function getMeasureDisplayInfo(measureData, measureOptions, hiddenMeasure
           displayInfo.icon = valueInfo.icon || displayInfo.icon || SPECTRUM_ICON;
           break;
         case MEASURE_TYPE_SHADING:
-          displayInfo.color = MAP_COLORS[valueInfo.color] || MAP_COLORS.NO_DATA;
+          displayInfo.color = valueInfo.color || MAP_COLORS.NO_DATA;
           break;
         case MEASURE_TYPE_COLOR:
         default:

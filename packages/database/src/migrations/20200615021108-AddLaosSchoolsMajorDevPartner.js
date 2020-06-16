@@ -19,10 +19,8 @@ exports.setup = function(options, seedLink) {
 const MAP_OVERLAY_ID_NATIONAL = 'Laos_Schools_Major_Dev_Partner_National';
 const MAP_OVERLAY_ID_PROVINCIAL = 'Laos_Schools_Major_Dev_Partner_Provincial';
 const MAP_OVERLAY_NAME = 'Major Development Partner';
-const GROUP_NAME = 'School Indicators';
-// this groups below may be need for #599
-// const PROVINCE_GROUP_NAME = 'School Indicators by Province';
-// const DISTRICT_GROUP_NAME = 'School Indicators by District';
+const PROVINCE_GROUP_NAME = 'School Indicators by Province';
+const DISTRICT_GROUP_NAME = 'School Indicators by District';
 
 const VALUES = [
   { value: 'SchDP_AEAL', name: 'Aide et Action Laos (AEAL)', color: 'red' },
@@ -38,20 +36,18 @@ const VALUES = [
   { value: 'SchDP_WV', name: 'World Vision', color: 'saddleBrown' },
 ];
 
-const DATA_ELEMENT_CODES = VALUES.map(data => data.value);
-
 const GROUPS = {
-  'Aide et Action Laos (AEAL)': { value: 'SchDP_AEAL', operator: '=' },
-  'Catholic Relief Services (CRS)': { value: 'SchDP_CRS', operator: '=' },
-  'Humanity & Inclusion - Handicap International': { value: 'SchDP_HII', operator: '=' },
-  'Plan International': { value: 'SchDP_Plan', operator: '=' },
-  'Room to Read': { value: 'SchDP_RtR', operator: '=' },
-  'UNICEF': { value: 'SchDP_UNICEF', operator: '=' },
-  'World Bank': { value: 'SchDP_WB', operator: '=' },
-  'World Concern Laos': { value: 'SchDP_WC', operator: '=' },
-  'World Food Programme (WFP)': { value: 'SchDP_WFP', operator: '=' },
-  'World Renew': { value: 'SchDP_WR', operator: '=' },
-  'World Vision': { value: 'SchDP_WV', operator: '=' },
+  'SchDP_AEAL': { value: 'SchDP_AEAL', operator: '=' },
+  'SchDP_CRS': { value: 'SchDP_CRS', operator: '=' },
+  'SchDP_HII': { value: 'SchDP_HII', operator: '=' },
+  'SchDP_Plan': { value: 'SchDP_Plan', operator: '=' },
+  'SchDP_RtR': { value: 'SchDP_RtR', operator: '=' },
+  'SchDP_UNIC': { value: 'SchDP_UNIC', operator: '=' },
+  'SchDP_WB': { value: 'SchDP_WB', operator: '=' },
+  'SchDP_WC': { value: 'SchDP_WC', operator: '=' },
+  'SchDP_WFP': { value: 'SchDP_WFP', operator: '=' },
+  'SchDP_WR': { value: 'SchDP_WR', operator: '=' },
+  'SchDP_WV': { value: 'SchDP_WV', operator: '=' },
 };
 
 const DATA_ELEMENTS = {
@@ -60,13 +56,15 @@ const DATA_ELEMENTS = {
   SchDP_HII: 'Humanity & Inclusion - Handicap International',
   SchDP_Plan: 'Plan International',
   SchDP_RtR: 'Room to Read',
-  SchDP_UNICEF: 'UNICEF',
+  SchDP_UNIC: 'UNICEF',
   SchDP_WB: 'World Bank',
   SchDP_WC: 'World Concern Laos',
   SchDP_WFP: 'World Food Programme (WFP)',
   SchDP_WR: 'World Renew',
   SchDP_WV: 'World Vision',
 };
+
+const DATA_ELEMENT_CODES = Object.keys(DATA_ELEMENTS);
 
 const MEASURE_BUILDER_CONFIG_NAT = {
   measureBuilder: 'maxSumPerOrgUnit',
@@ -108,19 +106,16 @@ const PRESENTATION_OPTIONS = {
 
 const PRESENTATION_OPTIONS_NAT = {
   ...PRESENTATION_OPTIONS,
-  displayOnLevel: 'Country',
   measureLevel: 'District',
 };
 
 const PRESENTATION_OPTIONS_PROV = {
   ...PRESENTATION_OPTIONS,
-  displayOnLevel: 'District',
   measureLevel: 'SubDistrict',
 };
 
 const BASE_OVERLAY = {
   name: MAP_OVERLAY_NAME,
-  groupName: GROUP_NAME,
   userGroup: 'Laos Schools User',
   dataElementCode: 'value',
   displayType: 'shading',
@@ -138,6 +133,7 @@ const insertOverlay = (db, isProvincial) => {
   return insertObject(db, 'mapOverlay', {
     ...BASE_OVERLAY,
     id: isProvincial ? MAP_OVERLAY_ID_PROVINCIAL : MAP_OVERLAY_ID_NATIONAL,
+    groupName: isProvincial ? DISTRICT_GROUP_NAME : PROVINCE_GROUP_NAME,
     measureBuilderConfig: isProvincial ? MEASURE_BUILDER_CONFIG_PROV : MEASURE_BUILDER_CONFIG_NAT,
     presentationOptions: isProvincial ? PRESENTATION_OPTIONS_PROV : PRESENTATION_OPTIONS_NAT,
   });

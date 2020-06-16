@@ -22,7 +22,7 @@ export class MaxSumBuilder extends DataBuilder {
   buildData = results => {
     const sortedResults = results.sort((a, b) => b.value - a.value);
     const max = sortedResults[0].dataElement;
-    return [{ name: 'sum', value: max }];
+    return [{ name: 'max', value: max }];
   };
 }
 
