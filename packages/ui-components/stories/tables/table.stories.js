@@ -10,7 +10,7 @@ import { Table } from '../../src';
 import { useTableData } from '../story-utils/useTableData';
 
 export default {
-  title: 'Table/Table',
+  title: 'Tables/Table',
   component: Table,
 };
 

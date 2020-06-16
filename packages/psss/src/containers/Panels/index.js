@@ -4,4 +4,3 @@
  */
 
 export * from './WeeklyReportsPanel';
-export * from './AlertsPanel';

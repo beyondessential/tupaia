@@ -111,28 +111,6 @@ CountryNameCell.defaultProps = {
   countryCode: null,
 };
 
-export const CountryNameButton = ({ handleClick }) => {
-  // eslint-disable-next-line react/prop-types
-  return ({ name, countryCode }) => {
-    return (
-      <CountryTitle onClick={handleClick}>
-        <Avatar src={countryFlagImage(countryCode)} /> {name}
-      </CountryTitle>
-    );
-  };
-};
-
-CountryNameButton.propTypes = {
-  handleClick: PropTypes.func.isRequired,
-};
-
-export const CountryNameButtonCreator = actionCreator => {
-  const mapDispatchToProps = dispatch => ({
-    handleClick: () => dispatch(actionCreator()),
-  });
-  return connect(null, mapDispatchToProps)(CountryNameButton);
-};
-
 const CountrySummaryTitle = styled.div`
   color: ${COLORS.TEXT_DARKGREY};
   font-weight: 400;
