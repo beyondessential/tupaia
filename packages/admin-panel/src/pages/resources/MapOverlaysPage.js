@@ -3,8 +3,9 @@ import { ResourcePage } from './ResourcePage';
 
 const FIELDS = [
   {
-    Header: 'Drill Down Level',
-    source: 'drillDownLevel',
+    Header: 'TMP',
+    source: 'tmp',
+    editable: false,
   },
 ];
 
@@ -15,19 +16,19 @@ const COLUMNS = [
     type: 'edit',
     source: 'id',
     actionConfig: {
-      editEndpoint: 'dashboardReports',
+      editEndpoint: 'mapOverlays',
       fields: [...FIELDS],
     },
   },
 ];
 
-export const DashboardReportsPage = () => (
+export const MapOverlaysPage = () => (
   <ResourcePage
-    title="Dashboard Reports"
-    endpoint="dashboardReports"
+    title="Map Overlays"
+    endpoint="mapOverlays"
     columns={COLUMNS}
     editConfig={{
-      title: 'Edit Dashboard Report',
+      title: 'Edit Map Overlay',
     }}
   />
 );

@@ -48,6 +48,14 @@ const LEFT_LINKS = [
     path: '/dashboard-reports',
   },
   {
+    label: 'Map Overlays',
+    path: '/map-overlays',
+  },
+  {
+    label: 'Dashboard Groups',
+    path: '/dashboard-groups',
+  },
+  {
     label: 'Permissions',
     path: '/permissions',
   },
@@ -86,7 +94,7 @@ const App = props => {
   return (
     <div>
       <Navbar
-        brandName={'Tupaia Admin'}
+        brandName="Tupaia Admin"
         leftLinks={LEFT_LINKS}
         rightLinks={isUserAuthenticated ? [loginLink] : []}
         onNavigate={onNavigate}
