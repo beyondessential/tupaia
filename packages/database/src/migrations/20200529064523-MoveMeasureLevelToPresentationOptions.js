@@ -1,6 +1,6 @@
 'use strict';
 
-import { pascal, kebab } from 'case';
+import { pascal, snake } from 'case';
 
 var dbm;
 var type;
@@ -18,7 +18,6 @@ exports.setup = function(options, seedLink) {
 
 exports.up = async function(db) {
   const allOverlays = (await db.runSql(`select * from "mapOverlay"`)).rows;
-  //console.log(allOverlays);
   return Promise.all(
     allOverlays.map(async ({ id, measureBuilderConfig, presentationOptions }) => {
       const type = pascal(measureBuilderConfig.aggregationEntityType);
@@ -38,17 +37,15 @@ exports.up = async function(db) {
           where id='${id}';
         `);
       }
-      console.log('Failure: ', id, !!presentationOptions, type);
     }),
   );
 };
 
 exports.down = async function(db) {
   const allOverlays = (await db.runSql(`select * from "mapOverlay"`)).rows;
-  //console.log(allOverlays);
   return Promise.all(
     allOverlays.map(async ({ id, presentationOptions }) => {
-      const type = kebab(presentationOptions && presentationOptions.measureLevel);
+      const type = snake(presentationOptions && presentationOptions.measureLevel);
       if (type) {
         await db.runSql(`
           update "mapOverlay"

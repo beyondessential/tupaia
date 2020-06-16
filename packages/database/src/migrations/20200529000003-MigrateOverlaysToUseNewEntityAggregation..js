@@ -15,14 +15,14 @@ exports.setup = function(options, seedLink) {
   type = dbm.dataType;
   seed = seedLink;
 };
-const deleteEntityTypes = async (db, id, configPath, dontDeleteAggregationEntityType) => {
+const deleteEntityTypes = async (db, id, configPath) => {
   await db.runSql(`
     update "mapOverlay"
     set "measureBuilderConfig" = "measureBuilderConfig" #- '{${configPath}dataSourceEntityType}'
     where id='${id}';
   `);
   // Nested level aggregation is occurring, don't leave aggregationEntityType for other migration
-  if (!dontDeleteAggregationEntityType) {
+  if (configPath) {
     await db.runSql(`
       update "mapOverlay"
       set "measureBuilderConfig" = "measureBuilderConfig" #- '{${configPath}aggregationEntityType}'
@@ -37,12 +37,10 @@ const updateConfig = async (
   id,
   measureBuilderConfig,
   configPath,
-  isTopLevel,
   globalAggregationEntityType,
 ) => {
-  const aggregationEntityType =
-    measureBuilderConfig.aggregationEntityType || globalAggregationEntityType;
-  const dataSourceEntityType = measureBuilderConfig.dataSourceEntityType;
+  const { aggregationEntityType = globalAggregationEntityType } = measureBuilderConfig;
+  const { dataSourceEntityType } = measureBuilderConfig;
 
   if (dataSourceEntityType && aggregationEntityType) {
     if (dataSourceEntityType === aggregationEntityType) {
@@ -67,7 +65,7 @@ const updateConfig = async (
     }
   }
   // No matter what, we delete the existing config
-  await deleteEntityTypes(db, id, configPath, isTopLevel);
+  await deleteEntityTypes(db, id, configPath);
 };
 
 exports.up = async function(db) {
@@ -110,7 +108,7 @@ exports.up = async function(db) {
             },
           );
           // delete extranious entity types
-          await deleteEntityTypes(db, id, 'measureBuilderConfig,', false);
+          await deleteEntityTypes(db, id, 'measureBuilderConfig,');
         } else {
           /* e.g.
            * measureBuilderConfig:{
@@ -166,14 +164,14 @@ exports.up = async function(db) {
         await updateConfig(db, id, measureBuilderConfig, '', true, globalAggregationEntityType);
       } else {
         // Entity aggregation has been handled elsewhere, we don't need it at the top level
-        await deleteEntityTypes(db, id, '', true);
+        await deleteEntityTypes(db, id, '');
       }
     }),
   );
 };
 
 exports.down = async function(db) {
-  throw new Error('No down function');
+  // No down function
 };
 
 exports._meta = {
