@@ -6,7 +6,7 @@ import React from 'react';
 import { render } from 'test-utils';
 import { screen, fireEvent } from '@testing-library/react';
 import { API } from '../../api';
-import { LoginForm } from '../../containers/Forms';
+import { LoginForm } from '../Forms';
 
 jest.mock('../../api');
 

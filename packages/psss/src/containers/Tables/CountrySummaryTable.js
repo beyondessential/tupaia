@@ -5,7 +5,6 @@
 
 import React from 'react';
 import { CondensedTableBody, FakeHeader } from '@tupaia/ui-components';
-import { COLUMN_WIDTHS } from '../../constants';
 import {
   ConnectedTable,
   createTotalCasesAccessor,

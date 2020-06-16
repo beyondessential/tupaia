@@ -5,7 +5,7 @@
 import React from 'react';
 import { render } from 'test-utils';
 import { screen, within, fireEvent } from '@testing-library/react';
-import { WeeklyReportsPanelComponent } from '../../containers/Panels/WeeklyReportsPanel';
+import { WeeklyReportsPanelComponent } from '../Panels';
 import sitesData from './fixtures/sites.fixtures.json';
 import countryData from './fixtures/country.fixtures.json';
 
