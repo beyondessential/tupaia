@@ -13,9 +13,8 @@ import {
   EditableTableLoader,
   GreyOutlinedButton,
   Button,
-  FakeHeader,
 } from '@tupaia/ui-components';
-import { DottedTableBody } from '../../components';
+import { DottedTableBody, GreyTableHeader } from '../../components';
 import { updateWeeklyReportsData } from '../../store';
 
 const HeadingRow = styled.div`
@@ -80,11 +79,11 @@ export const SiteReportTableComponent = React.memo(({ onSubmit, tableStatus, set
           Edit
         </GreyOutlinedButton>
       </HeadingRow>
-      <FakeHeader>
-        <span>SYNDROMES</span>
-        <span>TOTAL CASES</span>
-      </FakeHeader>
-      <StyledEditableTable Header={false} Body={DottedTableBody} />
+      {/*<FakeHeader>*/}
+      {/*  <span>SYNDROMES</span>*/}
+      {/*  <span>TOTAL CASES</span>*/}
+      {/*</FakeHeader>*/}
+      <StyledEditableTable Header={GreyTableHeader} Body={DottedTableBody} />
       {tableStatus === TABLE_STATUSES.EDITABLE && (
         <ActionsRow>
           <Button variant="outlined" onClick={handleCancel}>

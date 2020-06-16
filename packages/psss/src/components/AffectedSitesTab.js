@@ -3,13 +3,9 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import styled from 'styled-components';
 import { Card } from '@tupaia/ui-components';
 import { DottedTable } from './Table';
-
-const Container = styled.div`
-  margin-bottom: 1rem;
-`;
+import { CardHeader } from './CardHeader';
 
 const data = [
   {
@@ -48,27 +44,35 @@ const columns = [
   {
     title: 'Name',
     key: 'name',
+    sortable: false,
   },
   {
-    title: 'Previous Week Change',
+    title: '',
     key: 'prevWeek',
+    sortable: false,
   },
   {
     title: 'Cases',
     key: 'totalCases',
+    sortable: false,
   },
 ];
 
 export const AffectedSitesTab = () => {
   return (
     <React.Fragment>
-      <Card variant="outlined" mb={3}>
+      <Card variant="outlined" mb={5}>
+        <CardHeader />
         <DottedTable columns={columns} data={data} />
       </Card>
-      <Card variant="outlined" mb={3}>
+      <Card variant="outlined" mb={5}>
+        <CardHeader />
+
         <DottedTable columns={columns} data={data} />
       </Card>
-      <Card variant="outlined" mb={3}>
+      <Card variant="outlined" mb={5}>
+        <CardHeader />
+
         <DottedTable columns={columns} data={data} />
       </Card>
     </React.Fragment>

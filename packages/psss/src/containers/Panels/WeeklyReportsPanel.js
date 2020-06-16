@@ -34,19 +34,23 @@ import { countryFlagImage } from '../../utils';
 
 const columns = [
   {
-    title: 'Title',
+    title: 'Syndromes',
     key: 'title',
-    width: '300px',
+    sortable: false,
   },
   {
-    title: 'Percentage Increase',
+    title: '',
     key: 'percentageChange',
     CellComponent: PercentageChangeCell,
+    sortable: false,
+    width: '80px',
   },
   {
     title: 'Total Cases',
     key: 'totalCases',
     editable: true,
+    sortable: false,
+    width: '80px',
   },
 ];
 
@@ -105,7 +109,7 @@ export const WeeklyReportsPanelComponent = React.memo(
       countryTableStatus === TABLE_STATUSES.SAVING || sitesTableStatus === TABLE_STATUSES.SAVING;
 
     return (
-      <Drawer open={isOpen} onClose={handleClose}>
+      <Drawer open={isOpen} onClose={handleClose} footerSpacing>
         <DrawerHeader heading="Upcoming report" onClose={handleClose}>
           <DrawerHeaderContent
             heading="American Samoa"
