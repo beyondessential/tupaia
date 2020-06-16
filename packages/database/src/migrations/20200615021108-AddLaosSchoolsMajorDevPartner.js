@@ -119,6 +119,7 @@ const BASE_OVERLAY = {
   userGroup: 'Laos Schools User',
   dataElementCode: 'value',
   displayType: 'shading',
+  customColors: VALUES.map(v => v.color).join(','),
   isDataRegional: true,
   values: VALUES,
   hideFromMenu: false,
