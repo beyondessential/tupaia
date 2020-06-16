@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import { connect } from 'react-redux';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Error } from '@material-ui/icons';
@@ -17,7 +16,6 @@ import Avatar from '@material-ui/core/Avatar';
 import { Tooltip } from '@tupaia/ui-components';
 import { countryFlagImage } from '../../utils';
 import * as COLORS from '../../constants/colors';
-import { openAlertsPanel } from '../../store';
 
 const StyledAlert = styled.div`
   display: inline-flex;
