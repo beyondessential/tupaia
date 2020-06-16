@@ -52,6 +52,8 @@ export class UserRewardModel extends DatabaseModel {
       "'59a4f8faa0bcd70f2188d705'", // Susie
       "'59085f2dfc6a0715dae508e7'", // Michael
       "'5ab9c278820f656efb144377'", // Andrew
+      "'59085f80fc6a0715dae51420'", // Gerry K
+      "'5ea3984a61f76a61f1011fa7'", // Geoff F
       "'5cee0ba0f013d666713786a9'", // mSupply API Client
     ];
     return cache.getOrElse(CACHE_KEY_GENERATORS.leaderboard(), () =>
