@@ -12,10 +12,10 @@
           steps:
             - name: validate meditrak-server code
               service: validation
-              command: 'CI_PACKAGE=meditrak-server ./packages/devops/scripts/ci/validateCode.sh'
+              command: './packages/devops/scripts/ci/validateCode.sh meditrak-server'
             - name: validate web-config-server code
               service: validation
-              command: 'CI_PACKAGE=web-config-server ./packages/devops/scripts/ci/validateCode.sh'
+              command: './packages/devops/scripts/ci/validateCode.sh web-config-server'
     - type: serial
       name: test
       steps:
@@ -24,16 +24,16 @@
           steps:
             - name: test-meditrak-server
               service: testing
-              command: 'CI_PACKAGE=meditrak-server ./packages/devops/scripts/ci/testBackend.sh'
+              command: './packages/devops/scripts/ci/testBackend.sh meditrak-server'
             - name: test-web-config-server
               service: testing
-              command: 'CI_PACKAGE=web-config-server ./packages/devops/scripts/ci/testBackend.sh'
+              command: './packages/devops/scripts/ci/testBackend.sh web-config-server'
             - name: test-database
               service: testing
-              command: 'CI_PACKAGE=database ./packages/devops/scripts/ci/testBackend.sh'
+              command: './packages/devops/scripts/ci/testBackend.sh database'
             - name: test-data-api
               service: testing
-              command: 'CI_PACKAGE=data-api ./packages/devops/scripts/ci/testBackend.sh'
+              command: './packages/devops/scripts/ci/testBackend.sh data-api'
             - name: test-internal-dependencies
               service: testing
               command: './packages/devops/scripts/ci/testInternalDependencies.sh'
