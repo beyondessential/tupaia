@@ -16,8 +16,8 @@ exports.setup = function(options, seedLink) {
   seed = seedLink;
 };
 
-const MAP_OVERLAY_ID_NATIONAL = 'Laos_Schools_Major_Dev_Partner_National';
-const MAP_OVERLAY_ID_PROVINCIAL = 'Laos_Schools_Major_Dev_Partner_Provincial';
+const MAP_OVERLAY_ID_PROVINCE = 'Laos_Schools_Major_Dev_Partner_Province';
+const MAP_OVERLAY_ID_DISTRICT = 'Laos_Schools_Major_Dev_Partner_District';
 const MAP_OVERLAY_NAME = 'Major Development Partner';
 const PROVINCE_GROUP_NAME = 'School Indicators by Province';
 const DISTRICT_GROUP_NAME = 'School Indicators by District';
@@ -66,7 +66,7 @@ const DATA_ELEMENTS = {
 
 const DATA_ELEMENT_CODES = Object.keys(DATA_ELEMENTS);
 
-const MEASURE_BUILDER_CONFIG_NAT = {
+const MEASURE_BUILDER_CONFIG_PROV = {
   measureBuilder: 'maxSumPerOrgUnit',
   groups: GROUPS,
   measureBuilderConfig: {
@@ -82,7 +82,7 @@ const MEASURE_BUILDER_CONFIG_NAT = {
   },
 };
 
-const MEASURE_BUILDER_CONFIG_PROV = {
+const MEASURE_BUILDER_CONFIG_DIST = {
   measureBuilder: 'maxSumPerOrgUnit',
   groups: GROUPS,
   measureBuilderConfig: {
@@ -104,12 +104,12 @@ const PRESENTATION_OPTIONS = {
   disableRenameLegend: true,
 };
 
-const PRESENTATION_OPTIONS_NAT = {
+const PRESENTATION_OPTIONS_PROV = {
   ...PRESENTATION_OPTIONS,
   measureLevel: 'District',
 };
 
-const PRESENTATION_OPTIONS_PROV = {
+const PRESENTATION_OPTIONS_DIST = {
   ...PRESENTATION_OPTIONS,
   measureLevel: 'SubDistrict',
 };
@@ -130,24 +130,26 @@ const BASE_OVERLAY = {
   projectCodes: '{"laos_schools"}',
 };
 
-const insertOverlay = (db, isProvincial) => {
+const insertOverlay = (db, isDistrictLevel) => {
   return insertObject(db, 'mapOverlay', {
     ...BASE_OVERLAY,
-    id: isProvincial ? MAP_OVERLAY_ID_PROVINCIAL : MAP_OVERLAY_ID_NATIONAL,
-    groupName: isProvincial ? DISTRICT_GROUP_NAME : PROVINCE_GROUP_NAME,
-    measureBuilderConfig: isProvincial ? MEASURE_BUILDER_CONFIG_PROV : MEASURE_BUILDER_CONFIG_NAT,
-    presentationOptions: isProvincial ? PRESENTATION_OPTIONS_PROV : PRESENTATION_OPTIONS_NAT,
+    id: isDistrictLevel ? MAP_OVERLAY_ID_DISTRICT : MAP_OVERLAY_ID_PROVINCE,
+    groupName: isDistrictLevel ? DISTRICT_GROUP_NAME : PROVINCE_GROUP_NAME,
+    measureBuilderConfig: isDistrictLevel
+      ? MEASURE_BUILDER_CONFIG_DIST
+      : MEASURE_BUILDER_CONFIG_PROV,
+    presentationOptions: isDistrictLevel ? PRESENTATION_OPTIONS_DIST : PRESENTATION_OPTIONS_PROV,
   });
 };
 
 exports.up = async function(db) {
-  const nationalOverlay = await insertOverlay(db, false);
-  const provincialOverlay = await insertOverlay(db, true);
+  const provinceOverlay = await insertOverlay(db, false);
+  const districtOverlay = await insertOverlay(db, true);
 };
 
 exports.down = function(db) {
   return db.runSql(
-    `DELETE FROM "mapOverlay" WHERE "id" IN ('${MAP_OVERLAY_ID_NATIONAL}', '${MAP_OVERLAY_ID_PROVINCIAL}')`,
+    `DELETE FROM "mapOverlay" WHERE "id" IN ('${MAP_OVERLAY_ID_PROVINCE}', '${MAP_OVERLAY_ID_DISTRICT}')`,
   );
 };
 
