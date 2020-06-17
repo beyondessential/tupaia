@@ -5,8 +5,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { TextField, Button, CardTabPanel } from '@tupaia/ui-components';
-import { UserMessage } from './UserMessage';
+import { TextField, Button, UserMessage, CardTabPanel } from '@tupaia/ui-components';
 import * as COLORS from '../constants/colors';
 import { connectApi } from '../api';
 

@@ -7,7 +7,8 @@ import React, { useRef, useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Avatar, Typography } from '@material-ui/core';
+import Typography from '@material-ui/core/Typography';
+import Avatar from '@material-ui/core/Avatar';
 import { ActionsMenu } from './ActionsMenu';
 import { Button, OutlinedButton } from './Button';
 import { Card } from './Card';
@@ -147,8 +148,8 @@ export const UserMessage = ({ user, message, onUpdate, onDelete, className }) =>
     <StyledCard className={className} variant="outlined" focus={status === STATUS.EDITING}>
       <Header>
         <Flexbox>
-          <Avatar src={user.avatarUrl} />
-          <Title>{user.title}</Title>
+          <Avatar src={user.avatar} />
+          <Title>{user.name}</Title>
         </Flexbox>
         <Flexbox>
           <Date>{date}</Date>

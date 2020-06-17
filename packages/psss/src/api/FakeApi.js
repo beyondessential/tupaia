@@ -245,7 +245,6 @@ export class FakeAPI {
     return {
       id: faker.random.uuid(),
       avatar: faker.internet.avatar(),
-      avatarImage: faker.image.avatar(),
       name: faker.name.firstName(),
       surname: faker.name.lastName(),
       email: faker.internet.email(),
