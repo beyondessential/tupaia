@@ -6,6 +6,7 @@
 import { buildAccessPolicy } from './buildAccessPolicy';
 import { buildLegacyAccessPolicy } from './buildLegacyAccessPolicy';
 
+const getCacheKey = (userId, useLegacyFormat) => `${userId}${useLegacyFormat ? '_legacy' : ''}`;
 export class AccessPolicyBuilder {
   constructor(models) {
     this.models = models;
@@ -17,12 +18,14 @@ export class AccessPolicyBuilder {
     // if a user entity permission record is changed, make sure we rebuild the associated user's
     // access policy next time it is requested
     this.models.userEntityPermission.addChangeHandler(({ record }) => {
-      this.cachedPolicyPromises[record.user_id] = null;
+      const { user_id: userId } = record;
+      this.cachedPolicyPromises[getCacheKey(userId, true)] = null; // legacy
+      this.cachedPolicyPromises[getCacheKey(userId, false)] = null; // modern
     });
   }
 
   async getPolicyForUser(userId, useLegacyFormat = false) {
-    const cacheKey = `${userId}${useLegacyFormat ? '_legacy' : ''}`;
+    const cacheKey = getCacheKey(userId, useLegacyFormat);
     if (!this.cachedPolicyPromises[cacheKey]) {
       this.cachedPolicyPromises[cacheKey] = useLegacyFormat
         ? buildLegacyAccessPolicy(this.models, userId)
