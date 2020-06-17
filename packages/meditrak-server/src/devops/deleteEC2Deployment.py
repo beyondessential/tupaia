@@ -27,11 +27,17 @@ def get_instances(filters):
     )
     return reservations[0]['Instances']
 
-def build_record_set_deletion(domain, subdomain, stage, ip_address):
+def build_record_set_deletion(domain, subdomain, stage, ip_address, route53, hosted_zone_id):
     if (subdomain == ''):
         url = stage + '.' + domain + '.'
     else:
         url = stage + '-' + subdomain + '.' + domain + '.'
+
+    # Filter out deletions for record sets that don't actually exist
+    existing_record_sets = route53.list_resource_record_sets(HostedZoneId=hosted_zone_id,StartRecordName=url,MaxItems='1')['ResourceRecordSets']
+    if (len(existing_record_sets) == 0 or existing_record_sets[0]['Name'] != url):
+        print('Because the route53 entry {url} does not exist, it will not be deleted'.format(url=url))
+        return None
 
     return {
         'Action': 'DELETE',
@@ -75,12 +81,10 @@ def lambda_handler(event, context):
 
     # Delete subdomains from hosted zone
     hosted_zone_id = route53.list_hosted_zones_by_name(DNSName=domain)['HostedZones'][0]['Id']
-    all_record_sets = route53.list_resource_record_sets(HostedZoneId=hosted_zone_id)['ResourceRecordSets']
-    all_record_set_names = [record_set['Name'] for record_set in all_record_sets]
-    record_set_deletions = [build_record_set_deletion(domain, subdomain, stage, public_ip_address) for subdomain in subdomains]
-    # Filter out deletions for record sets that don't actually exist
-    valid_record_set_deletions = [deletion for deletion in record_set_deletions if deletion['ResourceRecordSet']['Name'] in all_record_set_names]
-    print('Generated {} record set changes'.format(len(record_set_deletions)))
+    record_set_deletions = [build_record_set_deletion(domain, subdomain, stage, public_ip_address, route53, hosted_zone_id) for subdomain in subdomains]
+    # Filter out deletions that weren't generated because they don't have a matching record set
+    valid_record_set_deletions = [deletion for deletion in record_set_deletions if deletion != None]
+    print('Generated {} record set changes'.format(len(valid_record_set_deletions)))
     if (len(valid_record_set_deletions) > 0):
       route53.change_resource_record_sets(
           HostedZoneId=hosted_zone_id,
@@ -89,7 +93,7 @@ def lambda_handler(event, context):
               'Changes': valid_record_set_deletions
           }
       )
-      print('Submitted {} deletions to hosted zone'.format(len(record_set_deletions)))
+      print('Submitted {} deletions to hosted zone'.format(len(valid_record_set_deletions)))
 
     # Release elastic ip
     elastic_ip = ec.describe_addresses(PublicIps=[public_ip_address])['Addresses'][0]

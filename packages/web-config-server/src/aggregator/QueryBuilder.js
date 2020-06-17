@@ -33,7 +33,7 @@ export class QueryBuilder {
     }
   }
 
-  async replaceOrgUnitCodes(dataSourceEntities) {
+  replaceOrgUnitCodes(dataSourceEntities) {
     this.query.organisationUnitCodes = dataSourceEntities.map(e => e.code);
     delete this.query.organisationUnitCode;
   }
