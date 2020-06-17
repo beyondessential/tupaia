@@ -42,7 +42,7 @@ export const NotesTab = () => {
   };
 
   return (
-    <div>
+    <React.Fragment>
       <CardTabPanel>
         <StyledUserMessage
           message={message}
@@ -67,6 +67,6 @@ export const NotesTab = () => {
         <TextField name="textArea" placeholder="Type in your notes..." multiline rows="4" />
         <Button fullWidth>Add Note</Button>
       </GreySection>
-    </div>
+    </React.Fragment>
   );
 };

@@ -7,28 +7,28 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { LocationOn, SpeakerNotes, List } from '@material-ui/icons';
-import { CardTabs, CardTabList, CardTab, CardTabPanels } from '@tupaia/ui-components';
+import { CardTabs, CardTabList, CardTab, CardTabPanels, WarningCloud } from '@tupaia/ui-components';
 import { checkAlertsPanelIsOpen, closeAlertsPanel } from '../../store';
 import {
   Drawer,
-  DrawerHeader,
-  DrawerHeaderContent,
+  AlertsDrawerHeader,
   AffectedSitesTab,
   ActivityTab,
   NotesTab,
+  DrawerTray,
 } from '../../components';
 import { countryFlagImage } from '../../utils';
 
 export const AlertsPanelComponent = ({ isOpen, handleClose }) => {
   return (
     <Drawer open={isOpen} onClose={handleClose}>
-      <DrawerHeader heading="Upcoming report" onClose={handleClose}>
-        <DrawerHeaderContent
-          heading="Acute Fever and Rash (AFR)"
-          date="Week 9 Feb 25 - Mar 1, 2021"
-          avatarUrl={countryFlagImage('as')}
-        />
-      </DrawerHeader>
+      <DrawerTray heading="Alert Details" onClose={handleClose} Icon={WarningCloud} />
+      <AlertsDrawerHeader
+        date="Week 9 Feb 25 - Mar 1, 2021"
+        avatarUrl={countryFlagImage('as')}
+        subheading="American Samoa"
+        heading="Acute Fever and Rash (AFR)"
+      />
       <CardTabs>
         <CardTabList>
           <CardTab>

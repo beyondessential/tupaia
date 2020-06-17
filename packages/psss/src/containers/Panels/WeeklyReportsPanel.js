@@ -16,8 +16,8 @@ import {
 import {
   SiteAddress,
   Drawer,
-  DrawerHeaderContent,
   DrawerFooter,
+  DrawerTray,
   DrawerHeader,
   PercentageChangeCell,
 } from '../../components';
@@ -114,13 +114,13 @@ export const WeeklyReportsPanelComponent = React.memo(
 
     return (
       <StyledDrawer open={isOpen} onClose={handleClose}>
-        <DrawerHeader heading="Upcoming report" onClose={handleClose}>
-          <DrawerHeaderContent
-            heading="American Samoa"
-            date="Week 9 Feb 25 - Mar 1, 2020"
-            avatarUrl={countryFlagImage('as')}
-          />
-        </DrawerHeader>
+        <DrawerTray heading="Upcoming report" onClose={handleClose} />
+        <DrawerHeader
+          trayHeading="Upcoming report"
+          heading="American Samoa"
+          date="Week 9 Feb 25 - Mar 1, 2020"
+          avatarUrl={countryFlagImage('as')}
+        />
         <ErrorAlert>ILI Above Threshold. Please review and verify data.</ErrorAlert>
         <GreySection disabled={isSaving} data-testid="country-reports">
           <EditableTableProvider
