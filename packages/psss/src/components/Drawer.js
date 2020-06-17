@@ -190,26 +190,23 @@ export const StyledDrawer = styled(MuiDrawer)`
 
   .MuiDrawer-paper {
     width: ${drawerWidth};
-    padding-bottom: ${props => (props.footerSpacing ? DrawerFooterHeight : 0)};
   }
 `;
 
 /*
  * Drawer that slides out from the right to display actions
  */
-export const Drawer = ({ anchor, footerSpacing, children, ...props }) => (
-  <StyledDrawer footerSpacing={footerSpacing} anchor={anchor} {...props}>
+export const Drawer = ({ anchor, children, ...props }) => (
+  <StyledDrawer anchor={anchor} {...props}>
     <DrawerContent>{children}</DrawerContent>
   </StyledDrawer>
 );
 
 Drawer.propTypes = {
-  footerSpacing: PropTypes.bool,
   anchor: PropTypes.string,
   children: PropTypes.node.isRequired,
 };
 
 Drawer.defaultProps = {
   anchor: 'right',
-  footerSpacing: false,
 };

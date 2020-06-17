@@ -77,6 +77,10 @@ const GreySection = styled(MainSection)`
   padding: 25px 20px;
 `;
 
+const StyledDrawer = styled(Drawer)`
+  padding-bottom: 125px;
+`;
+
 const WeeklyReportsPanelSubmitButton = handleConfirm => () => {
   const handleClick = () => {
     handleConfirm();
@@ -109,7 +113,7 @@ export const WeeklyReportsPanelComponent = React.memo(
       countryTableStatus === TABLE_STATUSES.SAVING || sitesTableStatus === TABLE_STATUSES.SAVING;
 
     return (
-      <Drawer open={isOpen} onClose={handleClose} footerSpacing>
+      <StyledDrawer open={isOpen} onClose={handleClose}>
         <DrawerHeader heading="Upcoming report" onClose={handleClose}>
           <DrawerHeaderContent
             heading="American Samoa"
@@ -156,7 +160,7 @@ export const WeeklyReportsPanelComponent = React.memo(
           Action={WeeklyReportsPanelSubmitButton(handleConfirm)}
           helperText="Verify data to submit Weekly Report to Regional"
         />
-      </Drawer>
+      </StyledDrawer>
     );
   },
 );

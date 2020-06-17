@@ -8,10 +8,13 @@ import { format } from 'date-fns';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Avatar, Typography } from '@material-ui/core';
-import { ActionsMenu } from './ActionsMenu';
-import { Button, OutlinedButton } from './Button';
-import { Card } from './Card';
-import { TextField } from './Inputs';
+
+import { ActionsMenu, Button, OutlinedButton, Card, TextField } from '@tupaia/ui-components';
+
+// import { ActionsMenu } from './ActionsMenu';
+// import { Button, OutlinedButton } from './Button';
+// import { Card } from './Card';
+// import { TextField } from './Inputs';
 
 const TextareaField = styled(TextField)`
   margin: 0;
@@ -144,7 +147,7 @@ export const UserMessage = ({ user, message, onUpdate, onDelete, className }) =>
   ];
 
   return (
-    <StyledCard className={className} variant="outlined" focus={status === STATUS.EDITING}>
+    <StyledCard variant="outlined" className={className} focus={status === STATUS.EDITING}>
       <Header>
         <Flexbox>
           <Avatar src={user.avatarUrl} />

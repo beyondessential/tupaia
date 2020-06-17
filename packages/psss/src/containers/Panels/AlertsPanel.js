@@ -7,7 +7,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { LocationOn, SpeakerNotes, List } from '@material-ui/icons';
-import { CardTabs, CardTabList, CardTab, CardTabPanels, CardTabPanel } from '@tupaia/ui-components';
+import { CardTabs, CardTabList, CardTab, CardTabPanels } from '@tupaia/ui-components';
 import { checkAlertsPanelIsOpen, closeAlertsPanel } from '../../store';
 import {
   Drawer,
@@ -44,15 +44,9 @@ export const AlertsPanelComponent = ({ isOpen, handleClose }) => {
           </CardTab>
         </CardTabList>
         <CardTabPanels>
-          <CardTabPanel>
-            <AffectedSitesTab />
-          </CardTabPanel>
-          <CardTabPanel>
-            <NotesTab />
-          </CardTabPanel>
-          <CardTabPanel>
-            <ActivityTab />
-          </CardTabPanel>
+          <AffectedSitesTab />
+          <NotesTab />
+          <ActivityTab />
         </CardTabPanels>
       </CardTabs>
     </Drawer>

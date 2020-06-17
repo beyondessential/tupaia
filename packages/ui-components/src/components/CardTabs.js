@@ -5,14 +5,10 @@
 
 import React, { useState, createContext, useContext, useCallback } from 'react';
 import MuiTabs from '@material-ui/core/Tabs';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
+import PropTypes from 'prop-types';
 import MuiTab from '@material-ui/core/Tab';
 import styled from 'styled-components';
 
-/*
- * CardTabs
- */
 const TabsContext = createContext();
 
 /**
@@ -26,9 +22,10 @@ export const CardTabs = ({ children }) => {
   );
 };
 
-/*
- * CardTab List
- */
+CardTabs.propTypes = {
+  children: PropTypes.array.isRequired,
+};
+
 const StyledTabs = styled(MuiTabs)`
   .MuiTabs-indicator {
     display: none;
@@ -50,9 +47,10 @@ export const CardTabList = ({ children }) => {
   );
 };
 
-/*
- * CardTab
- */
+CardTabList.propTypes = {
+  children: PropTypes.array.isRequired,
+};
+
 export const CardTab = styled(({ children, ...rest }) => <MuiTab {...rest} label={children} />)`
   border-right: 1px solid ${props => props.theme.palette.grey['400']};
   border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
@@ -72,26 +70,16 @@ export const CardTab = styled(({ children, ...rest }) => <MuiTab {...rest} label
   }
 `;
 
-/*
- * CardTab Panels
- */
 export const CardTabPanels = ({ children }) => {
   const { activeIndex } = useContext(TabsContext);
   return children[activeIndex];
 };
 
-/*
- * Card Tab Panel
- */
-export const CardTabPanel = ({ children, ...props }) => (
-  <Typography component="div" {...props}>
-    <Box p={3}>{children}</Box>
-  </Typography>
-);
+export const CardTabPanel = styled.div`
+  padding: 1.5rem;
+`;
 
 /*
- * DataTabs
- *
  * CardTabs with an array api. Each entry in 'data' should contain 'label' and 'content' fields.
  */
 export const DataCardTabs = ({ data }) => {
@@ -109,4 +97,8 @@ export const DataCardTabs = ({ data }) => {
       </CardTabPanels>
     </CardTabs>
   );
+};
+
+DataCardTabs.propTypes = {
+  data: PropTypes.object.isRequired,
 };

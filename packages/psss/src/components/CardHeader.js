@@ -46,7 +46,7 @@ const SuperText = styled(Typography)`
   margin-bottom: 0.5rem;
 `;
 
-const HighlightText = styled(Typography)`
+const HighlightText = styled.span`
   font-weight: 500;
   font-size: 16px;
   line-height: 19px;

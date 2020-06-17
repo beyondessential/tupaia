@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { Card } from '@tupaia/ui-components';
+import { Card, CardTabPanel } from '@tupaia/ui-components';
 import { DottedTable } from './Table';
 import { CardHeader } from './CardHeader';
 
@@ -60,21 +60,19 @@ const columns = [
 
 export const AffectedSitesTab = () => {
   return (
-    <React.Fragment>
+    <CardTabPanel>
       <Card variant="outlined" mb={5}>
         <CardHeader />
         <DottedTable columns={columns} data={data} />
       </Card>
       <Card variant="outlined" mb={5}>
         <CardHeader />
-
         <DottedTable columns={columns} data={data} />
       </Card>
       <Card variant="outlined" mb={5}>
         <CardHeader />
-
         <DottedTable columns={columns} data={data} />
       </Card>
-    </React.Fragment>
+    </CardTabPanel>
   );
 };
