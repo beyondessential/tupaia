@@ -12,16 +12,16 @@
   "scripts": {
     "postinstall": "yarn build-internal-dependencies",
     "update-codeship-env-vars": "./packages/devops/scripts/ci/updateCiEnvVars.sh",
-    "update-parameter-store-env-vars": "./packages/devops/scripts/utility/updateParameterStoreEnvVars.sh",
+    "update-parameter-store-env-vars": "./scripts/bash/updateParameterStoreEnvVars.sh",
     "build-admin-panel": "yarn workspace @tupaia/admin-panel build",
     "build-web-frontend": "yarn workspace @tupaia/web-frontend build",
     "build-internal-dependencies": "./packages/devops/scripts/ci/buildInternalDependencies.sh",
     "migrate": "yarn workspace @tupaia/database migrate",
     "migrate-create": "yarn workspace @tupaia/database migrate-create",
     "migrate-down": "yarn workspace @tupaia/database migrate-down",
-    "dump-database": "./packages/devops/scripts/utility/dumpDb.sh",
-    "refresh-database": "./packages/devops/scripts/utility/refreshDb.sh",
-    "test-all": "node ./scripts/testAll --silent"
+    "dump-database": "./scripts/bash/dumpDb.sh",
+    "refresh-database": "./scripts/bash/refreshDb.sh",
+    "test-all": "node ./scripts/node/testAll --silent"
   },
   "devDependencies": {
     "winston": "^3.1.0"
