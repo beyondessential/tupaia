@@ -49,7 +49,6 @@ export const login = (emailAddress, password) => async (
     deviceName: DeviceInfo.getDeviceName(),
     devicePlatform: Platform.OS,
     installId,
-    countryIdentifier: 'id',
   };
   let response;
   try {

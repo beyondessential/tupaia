@@ -92,11 +92,9 @@ const checkAuthentication = async req => {
  **/
 export async function authenticate(req, res) {
   const { refreshToken, user, accessPolicy } = await checkAuthentication(req);
-  const { countryIdentifier } = req.body || {};
   const authorizationObject = await getAuthorizationObject({
     refreshToken,
     user,
-    countryIdentifier,
     accessPolicy,
   });
 
