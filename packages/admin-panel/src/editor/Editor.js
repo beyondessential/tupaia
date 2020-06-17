@@ -5,7 +5,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { InputField } from '../widgets';
+import { InputField, JsonEditor } from '../widgets';
 
 export const Editor = props => {
   const { fields, recordData, onEditField } = props;
@@ -13,17 +13,32 @@ export const Editor = props => {
     <div>
       {fields
         .filter(({ show = true }) => show)
-        .map(({ editable = true, editConfig, source, Header, accessor }) => (
-          <InputField
-            key={source}
-            inputKey={source}
-            label={Header}
-            onChange={onEditField}
-            value={accessor ? accessor(recordData) : recordData[source]}
-            disabled={!editable}
-            {...editConfig}
-          />
-        ))}
+        .map(({ editable = true, editConfig = {}, source, Header, accessor }) => {
+          if (recordData[source] && editConfig.type === 'jsonEditor') {
+            return (
+              <JsonEditor
+                key={source}
+                inputKey={source}
+                label={Header}
+                value={recordData[source]}
+                maxHeight={editConfig.maxHeight || 100}
+                onChange={onEditField}
+              />
+            );
+          }
+
+          return (
+            <InputField
+              key={source}
+              inputKey={source}
+              label={Header}
+              onChange={onEditField}
+              value={accessor ? accessor(recordData) : recordData[source]}
+              disabled={!editable}
+              {...editConfig}
+            />
+          );
+        })}
     </div>
   );
 };
