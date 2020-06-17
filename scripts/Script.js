@@ -57,7 +57,7 @@ class Script {
   };
 
   /**
-   * @param {boolean} True if the command exited with a success status
+   * @returns {boolean} True if the command exited with a success status
    */
   exec = (commandString, { printOutput = true }) => {
     const [command, ...args] = commandString.split(' ');
@@ -65,7 +65,7 @@ class Script {
     const { stderr, status } = spawnSync(command, args, {
       stdio: printOutput ? 'inherit' : 'ignore',
     });
-    return !stderr && status === 0;
+    return !stderr && status === this.STATUS_CODES.SUCCESS;
   };
 
   exit(success = true) {

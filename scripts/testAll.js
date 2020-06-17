@@ -8,11 +8,11 @@ const Script = require('./Script');
 const PACKAGE_DIR = 'packages';
 
 /**
- * Usage: `node  testAll [-e] [-s]`
+ * Usage: `node  testAll [-b|--bail] [-s|--silent]`
  *
  * Options:
- * -e: eager mode (stop on first failure)
- * -s: silent mode (do not print output from the tests)
+ * -b|--bail: bail mode (exit on first failure)
+ * -s|--silent: silent mode (do not print output from the tests)
  */
 class TestAllScript extends Script {
   packages;
@@ -28,13 +28,13 @@ class TestAllScript extends Script {
 
   parseOptions(args) {
     return {
-      eagerMode: args.includes('-e'),
-      silentMode: args.includes('-s'),
+      bailMode: args.includes('-b') || args.includes('--bail'),
+      silentMode: args.includes('-s') || args.includes('--silent'),
     };
   }
 
   printEnabledOptionsInfo() {
-    if (this.options.eagerMode) {
+    if (this.options.bailMode) {
       this.log('Eager mode is on');
     }
     if (this.options.silentMode) {
@@ -51,6 +51,7 @@ class TestAllScript extends Script {
    * @returns {Object<string, bool>}
    */
   runTests = () => {
+    // Simulate a CI environment (do not run tests in "watch' mode etc)
     process.env.CI = true;
     process.env.FORCE_COLOR = true;
 
@@ -71,10 +72,11 @@ class TestAllScript extends Script {
       printOutput: !this.options.silentMode,
     });
     if (this.options.silentMode) {
+      // No test output in `silentMode`, so we can print the results as we get them
       this.printPackageResult(packageName, result);
     }
 
-    if (!result && this.options.eagerMode) {
+    if (!result && this.options.bailMode) {
       this.logError('\nA failing package was found, exiting');
       this.exit(false);
     }
