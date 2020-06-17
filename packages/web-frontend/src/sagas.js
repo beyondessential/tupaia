@@ -684,7 +684,6 @@ function* fetchMeasureInfo(measureId, organisationUnitCode) {
   const project = selectActiveProject(state);
   const country = selectOrgUnitCountry(state, organisationUnitCode);
   const countryCode = country ? country.organisationUnitCode : undefined;
-  console.log('function*fetchMeasureInfo -> countryCode', countryCode, project.code);
   const measureParams = selectMeasureBarItemById(state, measureId) || {};
 
   // If the view should be constrained to a date range and isn't, constrain it
@@ -743,11 +742,6 @@ function* fetchCurrentMeasureInfo() {
 
   if (currentOrganisationUnitCode) {
     const isHeirarchyPopulated = Object.keys(measureHierarchy).length;
-    console.log(
-      'function*fetchCurrentMeasureInfo -> currentOrganisationUnitCode',
-      currentOrganisationUnitCode,
-      isHeirarchyPopulated,
-    );
 
     // Update the default measure ID
     if (true) {

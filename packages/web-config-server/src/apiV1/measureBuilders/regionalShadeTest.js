@@ -1,10 +1,8 @@
-import { Facility } from '/models';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { analyticsToMeasureData } from './helpers';
-import { ENTITY_TYPES } from '/models/Entity';
+import { Entity } from '/models/Entity';
 
-const FACILITY_TYPE_CODE = 'facilityTypeCode';
-const SCHOOL_TYPE_CODE = 'schoolTypeCode';
+import { inspect } from 'util';
 
 class RegionalShadeTest extends DataBuilder {
   async build() {
@@ -17,29 +15,41 @@ class RegionalShadeTest extends DataBuilder {
     //   dataElementCode: 'MOS_3b3444bf' }
     // --------------------------------------
 
-    const dataSource = this.config.dataSourceEntity;
+    const dataSources = this.config.dataSources;
+    console.log('RegionalShadeTest -> build -> dataSources', dataSources);
     const dataElementCode = this.query.dataElementCode;
-    const { results } = await this.fetchAnalytics([dataElementCode], {
-      organisationUnitCode: dataSource,
-    });
-    console.log('==== regionalShadeTest:25 ====');
-    console.log(results);
-    console.log('--------------------------------------');
 
-    return [];
-  }
+    const jobs = dataSources.map(dataSource =>
+      this.fetchAnalytics([dataElementCode], {
+        organisationUnitCode: dataSource,
+      }),
+    );
 
-  async getFacilityDataByCode() {
-    const { dataElementCode } = this.query;
+    const results = await Promise.all(jobs);
 
-    const { results } = await this.fetchAnalytics([dataElementCode], {
-      organisationUnitCode: this.entity.code,
-    });
-    const analytics = results.map(result => ({
-      ...result,
-      value: result.value === undefined ? '' : result.value.toString(),
-    }));
-    return analyticsToMeasureData(analytics);
+    const b = [
+      {
+        results: [
+          {
+            dataElement: 'MOS_3b3444bf',
+            organisationUnit: 'VU_1180_20',
+            period: '20200531',
+            value: 4.210197449039,
+          },
+        ],
+        metadata: { dataElementCodeToName: { MOS_3b3444bf: 'Condoms, maleMonths of Stock' } },
+      },
+    ];
+
+    let analytics;
+    for (const result of results) {
+      if (result.results.length > 0) {
+        const { value, organisationUnit } = result.results[0];
+        console.log(value, organisationUnit);
+      }
+    }
+
+    return [{ organisationUnitCode: 'VU', regional_shade_test: '3-6' }];
   }
 }
 

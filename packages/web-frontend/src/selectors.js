@@ -246,13 +246,7 @@ export const selectAllMeasuresWithDisplayInfo = createSelector(
     measureOptions,
     hiddenMeasures,
   ) => {
-    if (
-      !measureLevel ||
-      !currentCountry ||
-      !measureData ||
-      currentCountry === projectCode ||
-      !country
-    ) {
+    if (!currentCountry || !measureData || !country) {
       return [];
     }
 

@@ -159,7 +159,7 @@ ConnectedPolygon.defaultProps = {
 
 const mapStateToProps = (state, givenProps) => {
   const { organisationUnitCode, organisationUnitChildren } = givenProps.area;
-  const { measureId, measureData, measureOptions } = state.map.measureInfo;
+  const { measureId, measureData, measureOptions, measureLevel } = state.map.measureInfo;
 
   let shade;
   let orgUnitMeasureData;
@@ -167,6 +167,7 @@ const mapStateToProps = (state, givenProps) => {
   if (selectHasPolygonMeasure(state)) {
     const measureOrgUnits = selectAllMeasuresWithDisplayInfo(state);
     const measureOrgUnitCodes = measureOrgUnits.map(orgUnit => orgUnit.organisationUnitCode);
+    // console.log('mapStateToProps -> measureOrgUnits', state.orgUnits.orgUnitMap);
 
     hasShadedChildren =
       organisationUnitChildren &&
@@ -174,10 +175,22 @@ const mapStateToProps = (state, givenProps) => {
         measureOrgUnitCodes.includes(child.organisationUnitCode),
       );
 
+    // console.log('mapStateToProps -> measureOrgUnits', {
+    //   measureOrgUnitCodes,
+    //   organisationUnitCode,
+    // });
     if (measureOrgUnitCodes.includes(organisationUnitCode)) {
+      console.log('==== ConnectedPolygon:183 ====');
+      console.log(measureOrgUnits);
+      console.log('--------------------------------------');
       orgUnitMeasureData = measureOrgUnits.find(
         orgUnit => orgUnit.organisationUnitCode === organisationUnitCode,
       );
+    }
+
+    if (measureLevel === 'Project') {
+      const data = measureData.find(data => data.organisationUnitCode === organisationUnitCode);
+      // orgUnitMeasureData =
     }
 
     shade = (orgUnitMeasureData || {}).color;
