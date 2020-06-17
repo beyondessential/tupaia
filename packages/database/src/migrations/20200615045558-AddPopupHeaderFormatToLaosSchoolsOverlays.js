@@ -17,7 +17,7 @@ exports.setup = function(options, seedLink) {
 exports.up = async function(db) {
   return db.runSql(`
     update "mapOverlay"
-    set "presentationOptions" = "presentationOptions" || '{"popupHeaderFormat": "$code: $name"}'::jsonb
+    set "presentationOptions" = "presentationOptions" || '{"popupHeaderFormat": "{code}: {name}"}'::jsonb
     where "presentationOptions"::text like '%"measureLevel": "School"%'
     and "projectCodes" @> ARRAY['laos_schools'];
   `);
@@ -27,7 +27,7 @@ exports.down = async function(db) {
   return db.runSql(`
     update "mapOverlay"
     set "presentationOptions" = "presentationOptions" - 'popupHeaderFormat' 
-    where "presentationOptions"::text like '%"measureLevel": "School"%';
+    where "presentationOptions"::text like '%"measureLevel": "School"%'
     and "projectCodes" @> ARRAY['laos_schools'];
     `);
 };

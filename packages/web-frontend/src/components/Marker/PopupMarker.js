@@ -8,6 +8,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Popup } from 'react-leaflet';
+import { replaceValues } from '@tupaia/utils';
 import { MARKER_POPUP_STYLE, TOP_BAR_HEIGHT } from '../../styles';
 
 import { MarkerDataPropType, MeasureOptionsGroupPropType } from './propTypes';
@@ -98,19 +99,18 @@ export class PopupMarker extends PureComponent {
 const buildHeaderText = (data, popupHeaderFormat) => {
   const { organisationUnitCode, name } = data;
   const replacements = {
-    $code: organisationUnitCode,
-    $name: name,
+    code: organisationUnitCode,
+    name: name,
   };
-  return Object.entries(replacements).reduce(
-    (headerText, [key, replacement]) => headerText.replace(key, replacement),
-    popupHeaderFormat,
-  );
+  return replaceValues(popupHeaderFormat, replacements);
 };
 
 export const MeasurePopup = ({ data, measureOptions, onOrgUnitClick }) => {
   const { coordinates, organisationUnitCode } = data;
-  const { popupHeaderFormat = '$name' } = measureOptions.reduce((all, mo) => ({ ...all, ...mo }), {});
-
+  const { popupHeaderFormat = '{name}' } = measureOptions.reduce(
+    (all, mo) => ({ ...all, ...mo }),
+    {},
+  );
   return (
     <PopupMarker
       headerText={buildHeaderText(data, popupHeaderFormat)}
