@@ -23,12 +23,6 @@ const COMMUNITY = 'Community';
 
 const DATA_ELEMENT = 'HP4';
 
-const COMMON_DENOMINATOR = {
-  dataValues: {
-    [DATA_ELEMENT]: '*',
-  },
-};
-
 const DASHBOARD_GROUP_CODE = 'TO_Health_Promotion_Unit_Country';
 
 const BASE_SUB_BUILDER_CONFIG = {
@@ -92,7 +86,7 @@ const REPORT = {
     },
   },
   viewJson: {
-    name: 'Weekly # of cases by health facility (all sites)',
+    name: 'Number of physical activity sessions by setting type',
     type: 'chart',
     chartType: 'bar',
     periodGranularity: 'one_year_at_a_time',
