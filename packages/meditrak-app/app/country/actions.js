@@ -50,7 +50,7 @@ export const setCountryAccessFormFieldValues = fieldValues => ({
   fieldValues,
 });
 
-export const sendCountryAccessRequest = (countryIds, message) => async (
+export const sendCountryAccessRequest = (entityIds, message) => async (
   dispatch,
   getState,
   { api },
@@ -58,7 +58,7 @@ export const sendCountryAccessRequest = (countryIds, message) => async (
   dispatch(beginCountryAccessRequest());
 
   const payload = {
-    countryIds,
+    entityIds,
     message,
   };
 

@@ -28,10 +28,10 @@ function mapDispatchToProps(dispatch, { screenProps }) {
   const { database } = screenProps;
 
   return {
-    onSubmitFields: ({ countryIds, message }) =>
-      dispatch(sendCountryAccessRequest(countryIds, message)),
+    onSubmitFields: ({ entityIds, message }) =>
+      dispatch(sendCountryAccessRequest(entityIds, message)),
     onFormFieldChange: fieldValues => dispatch(setCountryAccessFormFieldValues(fieldValues)),
-    getCountries: () => database.getCountries(),
+    getCountries: () => database.getCountryEntities(),
   };
 }
 

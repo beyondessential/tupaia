@@ -142,7 +142,7 @@ export class RequestCountryAccessPage extends React.Component {
       .filter(fieldName => formFieldValues[fieldName]); // Filter out any checkboxes not checked.
 
     onSubmitFields({
-      countryIds: selectedCountries,
+      entityIds: selectedCountries,
       message: formFieldValues.message,
     });
   }

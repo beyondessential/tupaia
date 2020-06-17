@@ -17,13 +17,13 @@ const checkUserPermission = (req, userId) => {
   }
 };
 
-const mapEntityIdsToNames = async (entityIds, models) => {
+const mapRecordIdsToNames = async (recordIds, model) => {
   try {
-    const entities = await Promise.all(entityIds.map(entityId => models.entity.findById(entityId)));
+    const records = await Promise.all(recordIds.map(recordId => model.findById(recordId)));
 
-    return entities.map(entity => `${entity.name} (${entity.id})`);
+    return records.map(record => `${record.name} (${record.id})`);
   } catch (error) {
-    throw new DatabaseError('getting entity names', error);
+    throw new DatabaseError('getting country names', error);
   }
 };
 
@@ -52,10 +52,10 @@ const sendRequest = (userName, countryNames, message, permissionGroup) => {
 
 export const requestCountryAccess = async (req, res) => {
   const { body: requestBody = {}, userId: requestUserId, params, models } = req;
-  const { countryIds: entityIds, message = '', userGroup: permissionGroup } = requestBody;
+  const { countryIds, entityIds, message = '', userGroup: permissionGroup } = requestBody;
   const userId = requestUserId || params.userId;
 
-  if (!entityIds || entityIds.length === 0) {
+  if ((!countryIds || countryIds.length === 0) && (!entityIds || entityIds.length === 0)) {
     throw new ValidationError('Please select at least one country.');
   }
 
@@ -65,7 +65,9 @@ export const requestCountryAccess = async (req, res) => {
     throw new UnauthenticatedError(error.message);
   }
   const userName = await getUserName(userId, models);
-  const countryNames = await mapEntityIdsToNames(entityIds, models);
+  const countryNames = entityIds
+    ? await mapRecordIdsToNames(entityIds, models.entity)
+    : await mapRecordIdsToNames(countryIds, models.country);
 
   await sendRequest(userName, countryNames, message, permissionGroup);
   respond(res, { message: 'Country access requested.' }, 200);
