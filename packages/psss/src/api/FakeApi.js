@@ -41,6 +41,10 @@ export class FakeAPI {
       for (let i = 0; i < 3; i++) {
         data.push(this.outbreak());
       }
+    } else if (endpoint === 'messages') {
+      for (let i = 0; i < 3; i++) {
+        data.push(this.message());
+      }
     } else if (endpoint === 'archive') {
       for (let i = 0; i < 5; i++) {
         data.push(this.alert());
@@ -147,6 +151,20 @@ export class FakeAPI {
   }
 
   // eslint-disable-next-line class-methods-use-this
+  message() {
+    const user = this.user();
+    return {
+      user,
+      message: {
+        id: faker.random.uuid(),
+        created: faker.date.between('2020-04-01', '2020-04-31'),
+        lastUpdated: faker.date.between('2020-05-01', '2020-05-31'),
+        content: faker.lorem.sentences(),
+      },
+    };
+  }
+
+  // eslint-disable-next-line class-methods-use-this
   siteWeek() {
     const city = faker.address.city();
     return {
@@ -226,6 +244,8 @@ export class FakeAPI {
   user() {
     return {
       id: faker.random.uuid(),
+      avatar: faker.internet.avatar(),
+      avatarImage: faker.image.avatar(),
       name: faker.name.firstName(),
       surname: faker.name.lastName(),
       email: faker.internet.email(),

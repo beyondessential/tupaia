@@ -150,8 +150,8 @@ export const UserMessage = ({ user, message, onUpdate, onDelete, className }) =>
     <StyledCard variant="outlined" className={className} focus={status === STATUS.EDITING}>
       <Header>
         <Flexbox>
-          <Avatar src={user.avatarUrl} />
-          <Title>{user.title}</Title>
+          <Avatar src={user.avatar} />
+          <Title>{user.name}</Title>
         </Flexbox>
         <Flexbox>
           <Date>{date}</Date>
