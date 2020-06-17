@@ -75,7 +75,7 @@ const NotesTabComponent = ({ fetchData }) => {
 
   const { data: messages, status, count, errorMessage } = fetchState;
 
-  console.log('messages', messages);
+  // console.log('messages', messages);
 
   if (status === 'idle' || status === 'loading') {
     return <CardTabPanel>Loading...</CardTabPanel>;
