@@ -128,7 +128,6 @@ export const UserMessage = ({ user, message, onUpdate, onDelete }) => {
     setEdit(false);
   };
 
-  // investigate a jsx option
   const menuOptions = [
     { label: 'Edit', action: () => setEdit(true) },
     { label: 'Delete', action: () => onDelete(message.id) },
