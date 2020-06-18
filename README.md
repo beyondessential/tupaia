@@ -25,6 +25,7 @@ See also https://docs.beyondessential.com.au/books/software-development/page/int
 
 - [access-policy](https://github.com/beyondessential/tupaia/blob/dev/packages/access-policy/README.md)
 - [aggregator](https://github.com/beyondessential/tupaia/blob/dev/packages/aggregator/README.md)
+- [auth](https://github.com/beyondessential/tupaia/blob/dev/packages/auth/README.md)
 - [database](https://github.com/beyondessential/tupaia/blob/dev/packages/database/README.md)
 - [data-broker](https://github.com/beyondessential/tupaia/blob/dev/packages/data-broker/README.md)
 - [devops](https://github.com/beyondessential/tupaia/blob/dev/packages/devops/README.md)
