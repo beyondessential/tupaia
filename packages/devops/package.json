@@ -17,7 +17,5 @@
     "url": "https://github.com/beyondessential/tupaia/issues"
   },
   "homepage": "https://github.com/beyondessential/tupaia#readme",
-  "devDependencies": {
-    "generate-nginx-config": "^0.1.8"
-  }
+  "devDependencies": {}
 }

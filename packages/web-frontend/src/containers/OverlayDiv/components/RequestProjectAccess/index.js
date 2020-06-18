@@ -58,7 +58,7 @@ export const RequestProjectAccessComponent = ({
                 fullWidth
                 label={country.name}
                 key={country.id}
-                name={`countryIds.${country.id}`}
+                name={`entityIds.${country.id}`}
               />
             ))}
             <TextField
@@ -111,8 +111,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onAttemptRequestProjectAccess: ({ countryIds, message, userGroup }) =>
-      dispatch(attemptRequestCountryAccess(countryIds, message, userGroup)),
+    onAttemptRequestProjectAccess: ({ entityIds, message, userGroup }) =>
+      dispatch(attemptRequestCountryAccess(entityIds, message, userGroup)),
     onBackToProjects: () => {
       dispatch(setOverlayComponent(LANDING));
       dispatch(closeUserPage());

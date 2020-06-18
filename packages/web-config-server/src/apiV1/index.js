@@ -8,9 +8,6 @@ import { Router } from 'express';
 
 import {
   appSignup,
-  appLogin,
-  appOneTimeLogin,
-  appLogout,
   appChangePassword,
   appRequestResetPassword,
   appGetCountryAccessList,
@@ -18,6 +15,8 @@ import {
   appVerifyEmail,
   appResendEmail,
 } from '/appServer';
+
+import { login, oneTimeLogin, logout } from '/authSession';
 import {
   exportChart,
   ExportSurveyResponsesHandler,
@@ -41,10 +40,10 @@ export const getRoutesForApiV1 = () => {
   const api = Router();
   // mount the routes
   api.get('/getUser', catchAsyncErrors(getUser()));
-  api.post('/login', catchAsyncErrors(appLogin()));
-  api.post('/login/oneTimeLogin', catchAsyncErrors(appOneTimeLogin()));
+  api.post('/login', catchAsyncErrors(login));
+  api.post('/login/oneTimeLogin', catchAsyncErrors(oneTimeLogin));
+  api.get('/logout', catchAsyncErrors(logout));
   api.post('/signup', catchAsyncErrors(appSignup()));
-  api.get('/logout', catchAsyncErrors(appLogout()));
   api.post('/changePassword', catchAsyncErrors(appChangePassword()));
   api.post('/resetPassword', catchAsyncErrors(appRequestResetPassword()));
   api.get('/countryAccessList', catchAsyncErrors(appGetCountryAccessList()));

@@ -113,7 +113,6 @@ export class TupaiaApi {
         },
         JSON.stringify({
           refreshToken: this.refreshToken,
-          countryIdentifier: 'id',
         }),
         CLIENT_BASIC_AUTH_HEADER,
         false,
