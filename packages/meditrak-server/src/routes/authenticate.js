@@ -4,7 +4,7 @@
  */
 
 import jwt from 'jsonwebtoken';
-import { respond } from '@tupaia/utils';
+import { respond, reduceToDictionary } from '@tupaia/utils';
 
 const GRANT_TYPES = {
   PASSWORD: 'password',
@@ -13,7 +13,34 @@ const GRANT_TYPES = {
 };
 const ACCESS_TOKEN_EXPIRY_SECONDS = 15 * 60; // User's access expires every 15 mins
 
-const getAuthorizationObject = async ({ accessPolicy, refreshToken, user }) => {
+// Get the permission group ids for each country the user has access to
+// This is to support legacy meditrak app versions 1.7.81 (oldest supported) and 1.7.85 (only other
+// app released before the (now also legacy) access policy was introduced in 1.7.86)
+const extractPermissionGroupsIfLegacy = async (models, accessPolicy) => {
+  // legacy policies look like
+  // { permissions: { surveys: { _items: { VU: { _access: { Donor: true } } } } } }
+  const isLegacyPolicy = !!accessPolicy.permissions;
+  if (!isLegacyPolicy) return null;
+  // legacy meditrak-app dealt with the permissions for surveys
+  const surveyPermissions = accessPolicy.permissions.surveys._items; // eslint-disable-line no-underscore-dangle
+  const countryCodes = Object.keys(surveyPermissions);
+  const countries = await models.country.find({ code: countryCodes });
+  const countryIdByCode = reduceToDictionary(countries, 'code', 'id');
+  const permissionGroupsByCountryId = {};
+  await Promise.all(
+    Object.entries(surveyPermissions).map(async ([countryCode, { _access: access }]) => {
+      const countryId = countryIdByCode[countryCode];
+      const permissionGroupNames = Object.keys(access).filter(p => access[p]);
+      const permissionGroupIds = (
+        await models.permissionGroup.find({ name: permissionGroupNames })
+      ).map(p => p.id);
+      permissionGroupsByCountryId[countryId] = permissionGroupIds;
+    }),
+  );
+  return permissionGroupsByCountryId;
+};
+
+const getAuthorizationObject = async ({ accessPolicy, refreshToken, user, permissionGroups }) => {
   // Generate JWT
   const accessToken = jwt.sign(
     {
@@ -27,16 +54,20 @@ const getAuthorizationObject = async ({ accessPolicy, refreshToken, user }) => {
   );
 
   // Assemble and return authorization object
+  const userDetails = {
+    id: user.id,
+    name: user.fullName,
+    email: user.email,
+    verifiedEmail: user.verified_email,
+    accessPolicy,
+  };
+  if (permissionGroups) {
+    userDetails.permissionGroups = permissionGroups;
+  }
   return {
     accessToken: accessToken,
     refreshToken,
-    user: {
-      id: user.id,
-      name: user.fullName,
-      email: user.email,
-      verifiedEmail: user.verified_email,
-      accessPolicy,
-    },
+    user: userDetails,
   };
 };
 
@@ -92,10 +123,15 @@ const checkAuthentication = async req => {
  **/
 export async function authenticate(req, res) {
   const { refreshToken, user, accessPolicy } = await checkAuthentication(req);
+  const permissionGroupsByCountryId = await extractPermissionGroupsIfLegacy(
+    req.models,
+    accessPolicy,
+  );
   const authorizationObject = await getAuthorizationObject({
     refreshToken,
     user,
     accessPolicy,
+    permissionGroups: permissionGroupsByCountryId,
   });
 
   respond(res, authorizationObject);
