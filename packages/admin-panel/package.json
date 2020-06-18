@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
+    "@tupaia/access-policy": "3.0.0",
     "@tupaia/utils": "1.0.0",
     "bootstrap": "^4.3.1",
     "case": "^1.5.3",
@@ -31,18 +32,14 @@
     "uuid": "^3.2.1"
   },
   "devDependencies": {
-    "@beyondessential/eslint-config-beyondessential": "2.3.0",
-    "babel-eslint": "^10.0.1",
-    "eslint-config-prettier": "^4.3.0",
-    "eslint-plugin-prettier": "^3.1.0",
-    "prettier": "^1.17.1",
-    "react-scripts": "3.0.1"
+    "react-scripts": "3.4.1"
   },
   "scripts": {
     "start": "react-scripts start",
     "start-dev": "npm run start",
     "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
+    "postbuild": "rm -rf served_build && mv build served_build",
+    "test": "react-scripts test --env=jsdom --passWithNoTests",
     "eject": "react-scripts eject",
     "lint": "eslint ."
   },

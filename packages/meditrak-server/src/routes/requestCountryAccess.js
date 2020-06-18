@@ -17,13 +17,11 @@ const checkUserPermission = (req, userId) => {
   }
 };
 
-const mapCountryIdsToNames = async (countryIds, models) => {
+const mapRecordIdsToNames = async (recordIds, model) => {
   try {
-    const countries = await Promise.all(
-      countryIds.map(countryId => models.country.findById(countryId)),
-    );
+    const records = await Promise.all(recordIds.map(recordId => model.findById(recordId)));
 
-    return countries.map(country => `${country.name} (${country.id})`);
+    return records.map(record => `${record.name} (${record.id})`);
   } catch (error) {
     throw new DatabaseError('getting country names', error);
   }
@@ -38,13 +36,13 @@ const getUserName = async (userId, models) => {
   }
 };
 
-const sendRequest = (userName, countryNames, message, userGroup) => {
+const sendRequest = (userName, countryNames, message, permissionGroup) => {
   const { COUNTRY_REQUEST_EMAIL_ADDRESS } = process.env;
 
   const emailText = `${userName} has requested access to countries:
     ${countryNames.join(',\n')}
 
-    For the permission group: ${userGroup || 'not specified'}
+    For the permission group: ${permissionGroup || 'not specified'}
 
     With the message:
     '${message}'
@@ -65,10 +63,10 @@ const createAccessRequests = async (userId, countryIds, message, permissionGroup
 
 export const requestCountryAccess = async (req, res) => {
   const { body: requestBody = {}, userId: requestUserId, params, models } = req;
-  const { countryIds, message = '', userGroup } = requestBody;
+  const { countryIds, entityIds, message = '', userGroup } = requestBody;
   const userId = requestUserId || params.userId;
 
-  if (!countryIds || countryIds.length === 0) {
+  if ((!countryIds || countryIds.length === 0) && (!entityIds || entityIds.length === 0)) {
     throw new ValidationError('Please select at least one country.');
   }
 
@@ -78,7 +76,9 @@ export const requestCountryAccess = async (req, res) => {
     throw new UnauthenticatedError(error.message);
   }
   const userName = await getUserName(userId, models);
-  const countryNames = await mapCountryIdsToNames(countryIds, models);
+  const countryNames = entityIds
+    ? await mapRecordIdsToNames(entityIds, models.entity)
+    : await mapRecordIdsToNames(countryIds, models.country);
 
   const permissionGroup = await models.permissionGroup.findOne({ name: userGroup });
   if (!permissionGroup) {
@@ -87,5 +87,6 @@ export const requestCountryAccess = async (req, res) => {
   await createAccessRequests(userId, countryIds, message, permissionGroup.id, models);
 
   await sendRequest(userName, countryNames, message, userGroup);
+
   respond(res, { message: 'Country access requested.' }, 200);
 };

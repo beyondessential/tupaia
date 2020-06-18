@@ -741,7 +741,7 @@ CREATE TABLE public.project (
 CREATE TABLE public.question (
     id text NOT NULL,
     text text NOT NULL,
-    indicator text,
+    name text,
     image_data text,
     type text NOT NULL,
     options text[],
@@ -859,7 +859,7 @@ CREATE TABLE public.survey_screen_component (
 CREATE TABLE public."userSession" (
     id text NOT NULL,
     "userName" text NOT NULL,
-    "accessToken" text NOT NULL,
+    "accessToken" text,
     "refreshToken" text NOT NULL,
     "accessPolicy" jsonb
 );
@@ -886,38 +886,14 @@ CREATE TABLE public.user_account (
 
 
 --
--- Name: user_clinic_permission; Type: TABLE; Schema: public; Owner: -
+-- Name: user_entity_permission; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.user_clinic_permission (
+CREATE TABLE public.user_entity_permission (
     id text NOT NULL,
-    user_id text NOT NULL,
-    clinic_id text NOT NULL,
-    permission_group_id text NOT NULL
-);
-
-
---
--- Name: user_country_permission; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.user_country_permission (
-    id text NOT NULL,
-    user_id text NOT NULL,
-    country_id text NOT NULL,
-    permission_group_id text NOT NULL
-);
-
-
---
--- Name: user_geographical_area_permission; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.user_geographical_area_permission (
-    id text NOT NULL,
-    user_id text NOT NULL,
-    geographical_area_id text NOT NULL,
-    permission_group_id text NOT NULL
+    user_id text,
+    entity_id text,
+    permission_group_id text
 );
 
 
@@ -1479,27 +1455,11 @@ ALTER TABLE ONLY public.user_account
 
 
 --
--- Name: user_clinic_permission user_clinic_permission_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: user_entity_permission user_entity_permission_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.user_clinic_permission
-    ADD CONSTRAINT user_clinic_permission_pkey PRIMARY KEY (id);
-
-
---
--- Name: user_country_permission user_country_permission_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.user_country_permission
-    ADD CONSTRAINT user_country_permission_pkey PRIMARY KEY (id);
-
-
---
--- Name: user_geographical_area_permission user_geographical_area_permission_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.user_geographical_area_permission
-    ADD CONSTRAINT user_geographical_area_permission_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.user_entity_permission
+    ADD CONSTRAINT user_entity_permission_pkey PRIMARY KEY (id);
 
 
 --
@@ -1806,24 +1766,24 @@ CREATE INDEX user_account_last_name_idx ON public.user_account USING btree (last
 
 
 --
--- Name: user_country_permission_country_id_idx; Type: INDEX; Schema: public; Owner: -
+-- Name: user_entity_permission_entity_id_idx; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX user_country_permission_country_id_idx ON public.user_country_permission USING btree (country_id);
-
-
---
--- Name: user_country_permission_permission_group_id_idx; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX user_country_permission_permission_group_id_idx ON public.user_country_permission USING btree (permission_group_id);
+CREATE INDEX user_entity_permission_entity_id_idx ON public.user_entity_permission USING btree (entity_id);
 
 
 --
--- Name: user_country_permission_user_id_idx; Type: INDEX; Schema: public; Owner: -
+-- Name: user_entity_permission_permission_group_id_idx; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX user_country_permission_user_id_idx ON public.user_country_permission USING btree (user_id);
+CREATE INDEX user_entity_permission_permission_group_id_idx ON public.user_entity_permission USING btree (permission_group_id);
+
+
+--
+-- Name: user_entity_permission_user_id_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX user_entity_permission_user_id_idx ON public.user_entity_permission USING btree (user_id);
 
 
 --
@@ -2065,24 +2025,10 @@ CREATE TRIGGER user_account_trigger AFTER INSERT OR DELETE OR UPDATE ON public.u
 
 
 --
--- Name: user_clinic_permission user_clinic_permission_trigger; Type: TRIGGER; Schema: public; Owner: -
+-- Name: user_entity_permission user_entity_permission_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER user_clinic_permission_trigger AFTER INSERT OR DELETE OR UPDATE ON public.user_clinic_permission FOR EACH ROW EXECUTE PROCEDURE public.notification();
-
-
---
--- Name: user_country_permission user_country_permission_trigger; Type: TRIGGER; Schema: public; Owner: -
---
-
-CREATE TRIGGER user_country_permission_trigger AFTER INSERT OR DELETE OR UPDATE ON public.user_country_permission FOR EACH ROW EXECUTE PROCEDURE public.notification();
-
-
---
--- Name: user_geographical_area_permission user_geographical_area_permission_trigger; Type: TRIGGER; Schema: public; Owner: -
---
-
-CREATE TRIGGER user_geographical_area_permission_trigger AFTER INSERT OR DELETE OR UPDATE ON public.user_geographical_area_permission FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER user_entity_permission_trigger AFTER INSERT OR DELETE OR UPDATE ON public.user_entity_permission FOR EACH ROW EXECUTE PROCEDURE public.notification();
 
 
 --
@@ -2381,75 +2327,27 @@ ALTER TABLE ONLY public.survey
 
 
 --
--- Name: user_clinic_permission user_clinic_permission_clinic_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: user_entity_permission user_entity_permission_entity_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.user_clinic_permission
-    ADD CONSTRAINT user_clinic_permission_clinic_id_fk FOREIGN KEY (clinic_id) REFERENCES public.clinic(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: user_clinic_permission user_clinic_permission_permission_group_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.user_clinic_permission
-    ADD CONSTRAINT user_clinic_permission_permission_group_id_fk FOREIGN KEY (permission_group_id) REFERENCES public.permission_group(id) ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE ONLY public.user_entity_permission
+    ADD CONSTRAINT user_entity_permission_entity_id_fkey FOREIGN KEY (entity_id) REFERENCES public.entity(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
--- Name: user_clinic_permission user_clinic_permission_user_account_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: user_entity_permission user_entity_permission_permission_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.user_clinic_permission
-    ADD CONSTRAINT user_clinic_permission_user_account_id_fk FOREIGN KEY (user_id) REFERENCES public.user_account(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: user_country_permission user_country_permission_country_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.user_country_permission
-    ADD CONSTRAINT user_country_permission_country_id_fkey FOREIGN KEY (country_id) REFERENCES public.country(id) ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE ONLY public.user_entity_permission
+    ADD CONSTRAINT user_entity_permission_permission_group_id_fkey FOREIGN KEY (permission_group_id) REFERENCES public.permission_group(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
--- Name: user_country_permission user_country_permission_permission_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: user_entity_permission user_entity_permission_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.user_country_permission
-    ADD CONSTRAINT user_country_permission_permission_group_id_fkey FOREIGN KEY (permission_group_id) REFERENCES public.permission_group(id) ON UPDATE CASCADE ON DELETE RESTRICT;
-
-
---
--- Name: user_country_permission user_country_permission_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.user_country_permission
-    ADD CONSTRAINT user_country_permission_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user_account(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: user_geographical_area_permission user_geographical_area_permission_geographical_area_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.user_geographical_area_permission
-    ADD CONSTRAINT user_geographical_area_permission_geographical_area_id_fk FOREIGN KEY (geographical_area_id) REFERENCES public.geographical_area(id) ON UPDATE RESTRICT ON DELETE CASCADE;
-
-
---
--- Name: user_geographical_area_permission user_geographical_area_permission_permission_group_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.user_geographical_area_permission
-    ADD CONSTRAINT user_geographical_area_permission_permission_group_id_fk FOREIGN KEY (permission_group_id) REFERENCES public.permission_group(id) ON UPDATE RESTRICT ON DELETE CASCADE;
-
-
---
--- Name: user_geographical_area_permission user_geographical_area_permission_user_account_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.user_geographical_area_permission
-    ADD CONSTRAINT user_geographical_area_permission_user_account_id_fk FOREIGN KEY (user_id) REFERENCES public.user_account(id) ON UPDATE RESTRICT ON DELETE CASCADE;
+ALTER TABLE ONLY public.user_entity_permission
+    ADD CONSTRAINT user_entity_permission_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user_account(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --

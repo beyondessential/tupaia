@@ -4,7 +4,7 @@
  */
 
 import { TupaiaDataApi } from '@tupaia/data-api';
-import { TupaiaDataService } from './tupaia';
+import { TupaiaService } from './tupaia';
 import { DhisService } from './dhis';
 
 export const createService = (models, type) => {
@@ -12,7 +12,7 @@ export const createService = (models, type) => {
     case 'dhis':
       return new DhisService(models);
     case 'tupaia':
-      return new TupaiaDataService(models, new TupaiaDataApi(models.database));
+      return new TupaiaService(models, new TupaiaDataApi(models.database));
     default:
       throw new Error(`Invalid service type: ${type}`);
   }

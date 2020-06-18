@@ -4,7 +4,8 @@
  **/
 
 import { DatabaseError } from '@tupaia/utils';
-import { hashAndSaltPassword, encryptPassword, generateSecretKey } from '../utilities';
+import { hashAndSaltPassword, encryptPassword } from '@tupaia/auth';
+import { generateSecretKey } from '../utilities';
 
 export const createUser = async (
   models,
@@ -26,7 +27,10 @@ export const createUser = async (
       const permissionGroup = await transactingModels.permissionGroup.findOne({
         name: permissionGroupName,
       });
-      const country = await transactingModels.country.findOne({ name: countryName });
+      const country = await transactingModels.entity.findOne({
+        name: countryName,
+        type: 'country',
+      });
 
       if (!permissionGroup) {
         throw new Error(`No such permission group: ${permissionGroupName}`);
@@ -46,9 +50,9 @@ export const createUser = async (
         ...restOfUser,
       });
 
-      await transactingModels.userCountryPermission.findOrCreate({
+      await transactingModels.userEntityPermission.findOrCreate({
         user_id: user.id,
-        country_id: country.id,
+        entity_id: country.id,
         permission_group_id: permissionGroup.id,
       });
 
