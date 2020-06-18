@@ -19,7 +19,7 @@ exports.setup = function(options, seedLink) {
 
 const DASHBOARD_GROUP_CODES = ['TO_Health_Promotion_Unit_Country'];
 
-const REPORT_ID = 'TO_HPU_IEC_Requests_Fulfilled';
+const REPORT_ID = 'TO_HPU_IEC_Requests_Fulfilled_By_Target_Group';
 
 const DATA_BUILDER_CONFIG = {
   programCode: 'HP05',
