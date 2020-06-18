@@ -144,14 +144,14 @@ class FinalValueAggregator {
   }
 }
 
-export const getFinalValuePerPeriod = (analytics, aggregationPeriod, inOptions) => {
+export const getFinalValuePerPeriod = (analytics, aggregationConfig, aggregationPeriod) => {
   const defaultOptions = {
     fillEmptyValues: false,
     fillEmptyValuesTilCurrentPeriod: false,
     preferredPeriodType: PERIOD_TYPES.YEAR,
   };
 
-  const options = { ...defaultOptions, ...inOptions };
+  const options = { ...defaultOptions, ...aggregationConfig };
   const cache = new FinalValueCache(analytics, aggregationPeriod, options.preferredPeriodType);
   const valueAggregator = new FinalValueAggregator(cache);
 

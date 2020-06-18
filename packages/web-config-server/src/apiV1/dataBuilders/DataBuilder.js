@@ -48,11 +48,11 @@ export class DataBuilder {
     aggregationType = this.aggregationType,
     aggregationConfig = {},
   ) {
-    const { dataServices, dataSourceEntityType, dataSourceEntityFilter, filter = {} } = this.config;
+    const { dataServices, entityAggregation, dataSourceEntityFilter, filter = {} } = this.config;
     const fetchOptions = {
       programCodes: this.getProgramCodesForAnalytics(),
       dataServices,
-      dataSourceEntityType,
+      entityAggregation,
       dataSourceEntityFilter,
       ...additionalQueryConfig,
     };
@@ -65,12 +65,12 @@ export class DataBuilder {
   }
 
   async fetchEvents(additionalQueryConfig) {
-    const { programCode, dataServices, dataSourceEntityType, dataSourceEntityFilter } = this.config;
+    const { programCode, dataServices, entityAggregation, dataSourceEntityFilter } = this.config;
     const { organisationUnitCode, startDate, endDate, trackedEntityInstance, eventId } = this.query;
 
     return this.aggregator.fetchEvents(programCode, {
       dataServices,
-      dataSourceEntityType,
+      entityAggregation,
       dataSourceEntityFilter,
       organisationUnitCode,
       startDate,
