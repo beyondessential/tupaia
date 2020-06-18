@@ -6,17 +6,8 @@
 import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  DialogContentText,
-  Button,
-  TextButton,
-  CircleTick,
-} from '../src';
-import * as COLORS from './story-utils/theme/colors';
+import CheckCircle from '@material-ui/icons/CheckCircle';
+import { Dialog, DialogHeader, DialogContent, DialogFooter, Button, OutlinedButton } from '../src';
 
 export default {
   title: 'Modal',
@@ -40,77 +31,26 @@ export const modal = () => {
   return (
     <Container>
       <Dialog onClose={handleClose} open={open}>
-        <DialogTitle onClose={handleClose}>Archive Alert</DialogTitle>
+        <DialogHeader onClose={handleClose} title="Archive Alert" />
         <DialogContent>
-          <DialogContentText>
+          <Typography>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
             incididunt ut labore et dolore magna aliqua.
-          </DialogContentText>
+          </Typography>
         </DialogContent>
-        <DialogActions>
+        <DialogFooter>
           <Button onClick={handleClose}>Confirm</Button>
-        </DialogActions>
+        </DialogFooter>
       </Dialog>
       <Button onClick={handleClickOpen}>Open modal</Button>
     </Container>
   );
 };
 
-export const TwoTone = () => {
-  const [open, setOpen] = useState(true);
-
-  const handleClickOpen = useCallback(() => {
-    setOpen(true);
-  }, [setOpen]);
-
-  const handleClose = useCallback(() => {
-    setOpen(false);
-  }, [setOpen]);
-
-  return (
-    <Container>
-      <Dialog onClose={handleClose} open={open}>
-        <DialogTitle onClose={handleClose}>Archive Alert</DialogTitle>
-        <DialogContent greyBackground>
-          <DialogContentText>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-            incididunt ut labore et dolore magna aliqua.
-          </DialogContentText>
-        </DialogContent>
-        <DialogContent>
-          <DialogContentText>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-            incididunt ut labore et dolore magna aliqua.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Confirm</Button>
-        </DialogActions>
-      </Dialog>
-      <Button onClick={handleClickOpen}>Open modal</Button>
-    </Container>
-  );
-};
-
-const StyledContent = styled.div`
-  padding: 2rem 1rem;
-  text-align: center;
-`;
-
-const StyledCircleTick = styled(CircleTick)`
-  font-size: 3rem;
-  margin-bottom: 1rem;
+const TickIcon = styled(CheckCircle)`
+  font-size: 2rem;
+  margin-bottom: 0.3rem;
   color: ${props => props.theme.palette.success.main};
-`;
-
-const StyledH2 = styled(Typography)`
-  margin-bottom: 1.5rem;
-`;
-
-const StyledH5 = styled(Typography)`
-  display: inline-block;
-  max-width: 400px;
-  color: ${COLORS.GREY_72};
 `;
 
 export const customContent = () => {
@@ -127,22 +67,20 @@ export const customContent = () => {
   return (
     <Container>
       <Dialog disableBackdropClick onClose={handleClose} open={open}>
-        <DialogTitle onClose={handleClose}>Outbreak</DialogTitle>
+        <DialogHeader onClose={handleClose} title="Confirm Outbreak" />
         <DialogContent>
-          <StyledContent>
-            <StyledCircleTick />
-            <StyledH2 variant="h2" gutterBottom>
-              Outbreak successfully confirmed
-            </StyledH2>
-            <StyledH5 variant="h5" gutterBottom>
-              Please note this information has been moved to the outbreak section
-            </StyledH5>
-          </StyledContent>
+          <TickIcon />
+          <Typography variant="h6" gutterBottom>
+            Outbreak successfully confirmed
+          </Typography>
+          <Typography gutterBottom>
+            Please note this information has been moved to the outbreak tab.
+          </Typography>
         </DialogContent>
-        <DialogActions>
-          <TextButton>Stay on Alerts</TextButton>
+        <DialogFooter>
+          <OutlinedButton>Stay on Alerts</OutlinedButton>
           <Button onClick={handleClose}>Go to Outbreaks</Button>
-        </DialogActions>
+        </DialogFooter>
       </Dialog>
       <Button onClick={handleClickOpen}>Open modal</Button>
     </Container>
