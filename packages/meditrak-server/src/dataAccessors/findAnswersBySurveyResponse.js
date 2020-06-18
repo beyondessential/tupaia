@@ -29,7 +29,7 @@ export const findAnswersBySurveyResponse = async (
             { [`${TYPES.QUESTION}.id`]: 'question.id' },
             { text: 'answer.text' },
             { [`${TYPES.QUESTION}.text`]: 'question.text' },
-            ...(options.columns ? options.columns : {}),
+            ...(options.columns ? options.columns : []),
           ],
           sort: ['screen_number', 'component_number', ...options.sort],
         }
