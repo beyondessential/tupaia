@@ -24,8 +24,8 @@ export const buildAggregationOptions = async (
     aggregationConfig: entityAggregationConfig,
   } = entityAggregationOptions;
 
-  const inputAggregations =
-    aggregations || aggregationType ? [{ type: aggregationType, config: aggregationConfig }] : [];
+  // Note aggregationType and aggregationConfig might be undefined
+  const inputAggregations = aggregations || [{ type: aggregationType, config: aggregationConfig }];
 
   if (!shouldAggregateEntities(dataSourceEntities, aggregationEntityType)) {
     return {
