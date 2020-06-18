@@ -3,21 +3,22 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
+import PropTypes from 'prop-types';
 import {
   ConnectedTable,
   AlertMenuCell,
-  CountryNameCell,
+  CountryNameButtonCell,
   StartDateCell,
   WeekAndDateCell,
 } from '../../components';
 
-const columns = [
+const createColumns = handleOpen => [
   {
     title: 'Country',
     key: 'name',
     width: '26%',
     align: 'left',
-    CellComponent: CountryNameCell,
+    CellComponent: CountryNameButtonCell(handleOpen),
   },
   {
     title: 'Diagnosis',
@@ -58,6 +59,10 @@ const columns = [
   },
 ];
 
-export const OutbreaksTable = React.memo(() => (
-  <ConnectedTable endpoint="outbreaks" columns={columns} />
-));
+export const OutbreaksTable = React.memo(({ handleOpen }) => {
+  return <ConnectedTable endpoint="outbreaks" columns={createColumns(handleOpen)} />;
+});
+
+OutbreaksTable.propTypes = {
+  handleOpen: PropTypes.func.isRequired,
+};

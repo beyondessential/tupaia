@@ -120,6 +120,10 @@ CountryNameCell.defaultProps = {
   countryCode: null,
 };
 
+export const CountryNameButtonCell = handleClick => props => (
+  <CountryNameCell handleClick={handleClick} {...props} />
+);
+
 export const CountryNameButtonCreator = actionCreator => {
   const mapDispatchToProps = dispatch => ({
     handleClick: () => dispatch(actionCreator()),
