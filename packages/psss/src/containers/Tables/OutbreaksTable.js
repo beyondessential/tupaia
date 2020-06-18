@@ -7,18 +7,18 @@ import PropTypes from 'prop-types';
 import {
   ConnectedTable,
   AlertMenuCell,
-  CountryNameButtonCell,
+  CountryNameButtonCreator,
   StartDateCell,
   WeekAndDateCell,
 } from '../../components';
 
-const createColumns = handleOpen => [
+const createColumns = handlePanelOpen => [
   {
     title: 'Country',
     key: 'name',
     width: '26%',
     align: 'left',
-    CellComponent: CountryNameButtonCell(handleOpen),
+    CellComponent: CountryNameButtonCreator(handlePanelOpen),
   },
   {
     title: 'Diagnosis',
@@ -59,10 +59,10 @@ const createColumns = handleOpen => [
   },
 ];
 
-export const OutbreaksTable = React.memo(({ handleOpen }) => {
-  return <ConnectedTable endpoint="outbreaks" columns={createColumns(handleOpen)} />;
+export const OutbreaksTable = React.memo(({ handlePanelOpen }) => {
+  return <ConnectedTable endpoint="outbreaks" columns={createColumns(handlePanelOpen)} />;
 });
 
 OutbreaksTable.propTypes = {
-  handleOpen: PropTypes.func.isRequired,
+  handlePanelOpen: PropTypes.func.isRequired,
 };

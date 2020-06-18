@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
+import PropTypes from 'prop-types';
 import {
   ConnectedTable,
   SyndromeCell,
@@ -10,15 +11,14 @@ import {
   CountryNameButtonCreator,
   WeekAndDateCell,
 } from '../../components';
-import { openAlertsPanel } from '../../store';
 
-const columns = [
+const createColumns = handlePanelOpen => [
   {
     title: 'Country',
     key: 'name',
     width: '28%',
     align: 'left',
-    CellComponent: CountryNameButtonCreator(openAlertsPanel),
+    CellComponent: CountryNameButtonCreator(handlePanelOpen),
   },
   {
     title: 'Syndrome',
@@ -53,4 +53,10 @@ const columns = [
   },
 ];
 
-export const AlertsTable = React.memo(() => <ConnectedTable endpoint="alerts" columns={columns} />);
+export const AlertsTable = React.memo(({ handlePanelOpen }) => (
+  <ConnectedTable endpoint="alerts" columns={createColumns(handlePanelOpen)} />
+));
+
+AlertsTable.propTypes = {
+  handlePanelOpen: PropTypes.func.isRequired,
+};

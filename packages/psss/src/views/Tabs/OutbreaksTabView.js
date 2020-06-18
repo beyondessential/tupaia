@@ -8,18 +8,18 @@ import { Main } from '../../components';
 import { OutbreaksTable, OutbreaksPanel } from '../../containers';
 
 export const OutbreaksTabView = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const handleOpen = () => {
-    setIsOpen(true);
+  const [isPanelOpen, setIsPanelOpen] = useState(false);
+  const handlePanelOpen = () => {
+    setIsPanelOpen(true);
   };
-  const handleClose = () => {
-    setIsOpen(false);
+  const handlePanelClose = () => {
+    setIsPanelOpen(false);
   };
   return (
     <MuiContainer>
       <Main>
-        <OutbreaksTable handleOpen={handleOpen} />
-        <OutbreaksPanel isOpen={isOpen} handleClose={handleClose} />
+        <OutbreaksTable handlePanelOpen={handlePanelOpen} />
+        <OutbreaksPanel isOpen={isPanelOpen} handleClose={handlePanelClose} />
       </Main>
     </MuiContainer>
   );

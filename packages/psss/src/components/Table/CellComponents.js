@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import { connect } from 'react-redux';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Error } from '@material-ui/icons';
@@ -120,16 +119,9 @@ CountryNameCell.defaultProps = {
   countryCode: null,
 };
 
-export const CountryNameButtonCell = handleClick => props => (
+export const CountryNameButtonCreator = handleClick => props => (
   <CountryNameCell handleClick={handleClick} {...props} />
 );
-
-export const CountryNameButtonCreator = actionCreator => {
-  const mapDispatchToProps = dispatch => ({
-    handleClick: () => dispatch(actionCreator()),
-  });
-  return connect(null, mapDispatchToProps)(CountryNameCell);
-};
 
 const CountrySummaryTitle = styled.div`
   color: ${COLORS.TEXT_DARKGREY};

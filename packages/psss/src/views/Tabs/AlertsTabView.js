@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
+import React, { useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
 import { CalendarToday } from '@material-ui/icons';
@@ -16,26 +16,35 @@ const DateSubtitle = styled(Typography)`
   color: ${props => props.theme.palette.text.secondary};
 `;
 
-export const AlertsTabView = () => (
-  <Container>
-    <Main>
-      <AlertsTable />
-      <AlertsPanel />
-    </Main>
-    <Sidebar>
-      <Card variant="outlined">
-        <CardHeader
-          color="primary"
-          title="Current Week"
-          label={<CalendarToday color="primary" />}
-        />
-        <CardContent>
-          <Typography variant="h4">Week 10</Typography>
-          <DateSubtitle variant="subtitle2" gutterBottom>
-            Feb 25, 2020 - Mar 1, 2020
-          </DateSubtitle>
-        </CardContent>
-      </Card>
-    </Sidebar>
-  </Container>
-);
+export const AlertsTabView = () => {
+  const [isPanelOpen, setIsPanelOpen] = useState(false);
+  const handlePanelOpen = () => {
+    setIsPanelOpen(true);
+  };
+  const handlePanelClose = () => {
+    setIsPanelOpen(false);
+  };
+  return (
+    <Container>
+      <Main>
+        <AlertsTable handlePanelOpen={handlePanelOpen} />
+        <AlertsPanel isOpen={isPanelOpen} handleClose={handlePanelClose} />
+      </Main>
+      <Sidebar>
+        <Card variant="outlined">
+          <CardHeader
+            color="primary"
+            title="Current Week"
+            label={<CalendarToday color="primary" />}
+          />
+          <CardContent>
+            <Typography variant="h4">Week 10</Typography>
+            <DateSubtitle variant="subtitle2" gutterBottom>
+              Feb 25, 2020 - Mar 1, 2020
+            </DateSubtitle>
+          </CardContent>
+        </Card>
+      </Sidebar>
+    </Container>
+  );
+};
