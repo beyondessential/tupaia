@@ -134,11 +134,6 @@ export class EntityModel extends DatabaseModel {
     return EntityType;
   }
 
-  meditrakConfig = {
-    ignorableFields: ['region', 'bounds'],
-    minAppVersion: '1.7.102',
-  };
-
   orgUnitEntityTypes = ORG_UNIT_ENTITY_TYPES;
 
   types = ENTITY_TYPES;
