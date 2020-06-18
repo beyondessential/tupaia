@@ -12,7 +12,9 @@ const RESOURCE_TRANSLATIONS = {
   facilities: TYPES.FACILITY,
   facility: TYPES.FACILITY,
   user_facility_permission: TYPES.USER_FACILITY_PERMISSION,
+  dashboard_group: TYPES.DASHBOARD_GROUP,
   dashboard_report: TYPES.DASHBOARD_REPORT,
+  map_overlay: TYPES.MAP_OVERLAY,
 };
 
 // This utility function takes in a resource, or endpoint, and converts it to the record type we

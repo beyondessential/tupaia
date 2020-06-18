@@ -1,6 +1,6 @@
 import React from 'react';
 import { ResourcePage } from './ResourcePage';
-import { prettyJSON } from '../../utilities/prettyJSON';
+import { prettyJSON } from '../../utilities/pretty';
 
 const FIELDS = [
   {

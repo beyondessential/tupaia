@@ -39,6 +39,8 @@ const GETTABLE_TYPES = [
   TYPES.DATA_SOURCE,
   TYPES.ACCESS_REQUEST,
   TYPES.DASHBOARD_REPORT,
+  TYPES.MAP_OVERLAY,
+  TYPES.DASHBOARD_GROUP,
 ];
 
 const createMultiResourceKey = (...recordTypes) => recordTypes.filter(x => x).join('/');

@@ -1,11 +1,37 @@
 import React from 'react';
 import { ResourcePage } from './ResourcePage';
+import { prettyArray } from '../../utilities/pretty';
 
 const FIELDS = [
   {
-    Header: 'TMP',
-    source: 'tmp',
-    editable: false,
+    Header: 'Organisation Level',
+    source: 'organisationLevel',
+  },
+  {
+    Header: 'User Group',
+    source: 'userGroup',
+  },
+  {
+    Header: 'Organisation Unit Code',
+    source: 'organisationUnitCode',
+  },
+  {
+    Header: 'Dashboard Reports',
+    source: 'dashboardReports',
+    Cell: ({ original: { dashboardReports } }) => prettyArray(dashboardReports),
+  },
+  {
+    Header: 'Name',
+    source: 'name',
+  },
+  {
+    Header: 'Code',
+    source: 'code',
+  },
+  {
+    Header: 'Project Codes',
+    source: 'projectCodes',
+    Cell: ({ original: { projectCodes } }) => prettyArray(projectCodes),
   },
 ];
 
