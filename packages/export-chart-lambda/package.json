@@ -13,9 +13,5 @@
     "nodemailer": "^4.4.2",
     "tar": "^4.0.1"
   },
-  "devDependencies": {
-    "@babel/cli": "^7.8.3",
-    "@babel/core": "^7.8.3",
-    "@babel/preset-env": "^7.8.3"
-  }
+  "devDependencies": {}
 }
