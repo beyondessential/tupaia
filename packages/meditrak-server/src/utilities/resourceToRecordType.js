@@ -11,7 +11,6 @@ const RESOURCE_TRANSLATIONS = {
   user: TYPES.USER_ACCOUNT,
   facilities: TYPES.FACILITY,
   facility: TYPES.FACILITY,
-  user_facility_permission: TYPES.USER_FACILITY_PERMISSION,
 };
 
 // This utility function takes in a resource, or endpoint, and converts it to the record type we
