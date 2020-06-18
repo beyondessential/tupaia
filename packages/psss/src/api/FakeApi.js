@@ -45,6 +45,10 @@ export class FakeAPI {
       for (let i = 0; i < 3; i++) {
         data.push(this.message());
       }
+    } else if (endpoint === 'activity-feed') {
+      for (let i = 0; i < 3; i++) {
+        data.push(this.activity());
+      }
     } else if (endpoint === 'archive') {
       for (let i = 0; i < 5; i++) {
         data.push(this.alert());
@@ -161,6 +165,32 @@ export class FakeAPI {
         lastUpdated: faker.date.between('2020-05-01', '2020-05-31'),
         content: faker.lorem.sentences(),
       },
+    };
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  update() {
+    const user = this.user();
+    return {
+      id: faker.random.uuid(),
+      user,
+      type: faker.random.arrayElement(['note', 'statusChange']),
+      dateTime: faker.date.between('2020-01-01', '2020-04-31'),
+    };
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  activity() {
+    const update1 = this.update();
+    const update2 = this.update();
+    return {
+      id: faker.random.uuid(),
+      week: faker.random.number({
+        min: 1,
+        max: 10,
+      }),
+      dateTime: faker.date.between('2020-04-01', '2020-04-31'),
+      updates: [update1, update2],
     };
   }
 

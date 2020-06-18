@@ -3,15 +3,19 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
+import PropTypes from 'prop-types';
+import styled from 'styled-components';
+import { format } from 'date-fns';
 import Typography from '@material-ui/core/Typography';
-import { CardTabPanel } from '@tupaia/ui-components';
+import { CardTabPanel, WarningCloud } from '@tupaia/ui-components';
 import MuiAvatar from '@material-ui/core/Avatar';
 import Divider from '@material-ui/core/Divider';
-import styled from 'styled-components';
+import { connectApi } from '../api';
+import { useFetch } from '../hooks/useFetchData';
 import * as COLORS from '../constants/colors';
 
 const Container = styled.div`
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 `;
 
 const FlexRow = styled.div`
@@ -26,7 +30,11 @@ const HeaderContainer = styled.div`
   border-radius: 3px 3px 0 0;
   padding: 1.25rem;
   margin-bottom: 1rem;
-  margin-top: 1rem;
+  margin-top: 3rem;
+  
+  &:first-child {
+      margin-top: 0;  
+  }
 `;
 
 const Heading = styled(Typography)`
@@ -42,14 +50,22 @@ const DarkHeading = styled(Heading)`
   color: ${props => props.theme.palette.text.primary};
 `;
 
-const DateHeader = () => (
-  <HeaderContainer>
-    <FlexRow>
-      <DarkHeading>Week 11 - </DarkHeading>
-      <Heading>Monday, 22 December 2020</Heading>
-    </FlexRow>
-  </HeaderContainer>
-);
+const DateHeader = ({ week, dateTime }) => {
+  const date = format(dateTime, 'EEEE, dd MMMM yyyy');
+  return (
+    <HeaderContainer>
+      <FlexRow>
+        <DarkHeading>Week {week} - </DarkHeading>
+        <Heading>{date}</Heading>
+      </FlexRow>
+    </HeaderContainer>
+  );
+};
+
+DateHeader.propTypes = {
+  week: PropTypes.number.isRequired,
+  dateTime: PropTypes.instanceOf(Date).isRequired,
+};
 
 const Text = styled(Typography)`
   font-weight: 400;
@@ -83,42 +99,107 @@ const Time = styled(Typography)`
   margin-bottom: 0.5rem;
 `;
 
-const UserUpdate = () => (
-  <UpdateContainer>
-    <Time>8:30 am</Time>
-    <FlexRow>
-      <Avatar />
-      <DarkText>Dr. Sarah De Jones</DarkText>
-      <LightText>changes status to</LightText>
-      <Text>Archive Outbreak</Text>
-    </FlexRow>
-  </UpdateContainer>
-);
+const UserUpdate = ({ name, avatar, dateTime, type }) => {
+  const time = format(dateTime, 'hh:mm a');
 
-const items = [
-  {
-    week: 1,
-  },
-  {
-    week: 2,
-  },
-  {
-    week: 3,
-  },
-];
+  const Update = () => (
+    <React.Fragment>
+      <LightText>changed alert status to</LightText>
+      <Text>Outbreak</Text>
+    </React.Fragment>
+  );
 
-export const ActivityTab = () => {
+  const Note = () => (
+    <React.Fragment>
+      <LightText>Added a note</LightText>
+    </React.Fragment>
+  );
+
+  const UpdateContent = type === 'note' ? Note : Update;
+
+  return (
+    <UpdateContainer>
+      <Time>{time}</Time>
+      <FlexRow>
+        <Avatar src={avatar} />
+        <DarkText>{name}</DarkText>
+        <UpdateContent />
+      </FlexRow>
+    </UpdateContainer>
+  );
+};
+
+const AlertWrapper = styled.div`
+  margin: 2rem 0;
+`;
+
+const AlertContainer = styled.div`
+  margin: 1.5rem 0;
+
+  svg {
+    margin-right: 0.5rem;
+  }
+`;
+
+const StyledWarningCloud = styled(WarningCloud)`
+  font-size: 30px;
+  color: ${COLORS.BLUE};
+`;
+
+const AlertCreatedUpdate = () => {
+  return (
+    <AlertWrapper>
+      <Divider />
+      <AlertContainer>
+        <Time>8:45 am</Time>
+        <FlexRow>
+          <StyledWarningCloud />
+          <DarkText>Alert created</DarkText>
+        </FlexRow>
+      </AlertContainer>
+      <Divider />
+    </AlertWrapper>
+  );
+};
+
+UserUpdate.propTypes = {
+  name: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
+  avatar: PropTypes.string.isRequired,
+  dateTime: PropTypes.instanceOf(Date).isRequired,
+};
+
+export const ActivityTabComponent = ({ fetchData }) => {
+  const { data: feed, isLoading, isError, count, errorMessage } = useFetch(fetchData);
   return (
     <CardTabPanel>
-      {items.map(data => {
-        return (
-          <Container key={data.week}>
-            <DateHeader />
-            <UserUpdate />
-            <Divider />
-          </Container>
-        );
-      })}
+      {feed.map(week => (
+        <Container key={week.id}>
+          <DateHeader week={week.week} dateTime={week.dateTime} />
+          {week.updates.map((update, index) => (
+            <Container key={update.id}>
+              <UserUpdate
+                avatar={update.user.avatar}
+                name={update.user.name}
+                dateTime={update.dateTime}
+                type={update.type}
+              />
+              {index < week.updates.length - 1 && <Divider />}
+            </Container>
+          ))}
+        </Container>
+      ))}
+      <AlertCreatedUpdate />
     </CardTabPanel>
   );
 };
+
+ActivityTabComponent.propTypes = {
+  fetchData: PropTypes.func.isRequired,
+};
+
+const mapApiToProps = api => ({
+  fetchData: () => api.get('activity-feed'),
+});
+
+export const ActivityTab = connectApi(mapApiToProps)(ActivityTabComponent);

@@ -2,12 +2,13 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
+import React from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import { TextField, Button, UserMessage, CardTabPanel } from '@tupaia/ui-components';
-import * as COLORS from '../constants/colors';
 import { connectApi } from '../api';
+import { useFetch } from '../hooks/useFetchData';
+import * as COLORS from '../constants/colors';
 
 const greySectionHeight = '225px';
 
@@ -28,42 +29,8 @@ const GreySection = styled.div`
   padding: 25px 20px;
 `;
 
-const FETCH_STATUSES = {
-  IDLE: 'idle',
-  LOADING: 'loading',
-  ERROR: 'error',
-  SUCCESS: 'success',
-};
-
-const DEFAULT_FETCH_STATE = { data: [], count: 0, errorMessage: '', status: FETCH_STATUSES.IDLE };
-
-const NotesTabComponent = ({ fetchData }) => {
-  const [fetchState, setFetchState] = useState(DEFAULT_FETCH_STATE);
-
-  useEffect(() => {
-    let updateFetchState = newFetchState =>
-      setFetchState(prevFetchState => ({ ...prevFetchState, ...newFetchState }));
-
-    updateFetchState({ status: FETCH_STATUSES.LOADING });
-
-    (async () => {
-      try {
-        const { data, count } = await fetchData();
-        updateFetchState({
-          ...DEFAULT_FETCH_STATE,
-          data,
-          count,
-          status: FETCH_STATUSES.SUCCESS,
-        });
-      } catch (error) {
-        updateFetchState({ errorMessage: error.message, status: FETCH_STATUSES.ERROR });
-      }
-    })();
-
-    return () => {
-      updateFetchState = () => {}; // discard the fetch state update if this request is stale
-    };
-  }, [fetchData]);
+export const NotesTabComponent = ({ fetchData }) => {
+  const { data: messages, isLoading, isError, count, errorMessage } = useFetch(fetchData);
 
   const handleUpdate = () => {
     console.log('update');
@@ -73,15 +40,11 @@ const NotesTabComponent = ({ fetchData }) => {
     console.log('delete');
   };
 
-  const { data: messages, status, count, errorMessage } = fetchState;
-
-  // console.log('messages', messages);
-
-  if (status === 'idle' || status === 'loading') {
+  if (isLoading) {
     return <CardTabPanel>Loading...</CardTabPanel>;
   } else if (count === 0) {
     return <CardTabPanel>There are no messages</CardTabPanel>;
-  } else if (status === 'error') {
+  } else if (isError) {
     console.log('error message', errorMessage);
     return <CardTabPanel>Error</CardTabPanel>;
   }

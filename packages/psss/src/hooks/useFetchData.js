@@ -5,42 +5,46 @@
 
 import { useEffect, useState } from 'react';
 
-const FETCH_STATUSES = {
+const STATUSES = {
   IDLE: 'idle',
   LOADING: 'loading',
   ERROR: 'error',
   SUCCESS: 'success',
 };
 
-const DEFAULT_FETCH_STATE = { data: [], count: 0, errorMessage: '', status: FETCH_STATUSES.IDLE };
+const DEFAULT_FETCH_STATE = { data: [], count: 0, errorMessage: '', status: STATUSES.IDLE };
 
 export const useFetch = fetchData => {
-  const [fetchState, setFetchState] = useState(DEFAULT_FETCH_STATE);
+  const [state, setState] = useState(DEFAULT_FETCH_STATE);
 
   useEffect(() => {
-    let updateFetchState = newFetchState =>
-      setFetchState(prevFetchState => ({ ...prevFetchState, ...newFetchState }));
+    let updateState = newState => setState(prevState => ({ ...prevState, ...newState }));
 
-    updateFetchState({ status: FETCH_STATUSES.LOADING });
+    updateState({ status: STATUSES.LOADING });
 
     (async () => {
       try {
         const { data, count } = await fetchData();
-        updateFetchState({
+        updateState({
           ...DEFAULT_FETCH_STATE,
           data,
           count,
-          status: FETCH_STATUSES.SUCCESS,
+          status: STATUSES.SUCCESS,
         });
       } catch (error) {
-        updateFetchState({ errorMessage: error.message, status: FETCH_STATUSES.ERROR });
+        updateState({ errorMessage: error.message, status: STATUSES.ERROR });
       }
     })();
 
     return () => {
-      updateFetchState = () => {}; // discard the fetch state update if this request is stale
+      updateState = () => {}; // discard the fetch state update if this request is stale
     };
   }, [fetchData]);
 
-  return { ...fetchState };
+  return {
+    isLoading: state.status === STATUSES.IDLE || state.status === STATUSES.LOADING,
+    isError: state.status === STATUSES.ERROR,
+    isSuccess: state.status === STATUSES.SUCCESS,
+    ...state,
+  };
 };
