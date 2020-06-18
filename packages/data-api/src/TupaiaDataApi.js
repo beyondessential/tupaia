@@ -59,13 +59,32 @@ export class TupaiaDataApi {
     if (!dataElementCodes || !Array.isArray(dataElementCodes)) {
       throw new Error('Please provide an array of data element codes');
     }
+    const sqlQuery = new SqlQuery(
+      `
+      SELECT question.code, question.name, question.text
+      FROM question 
+      join survey_screen_component on question.id = survey_screen_component.question_id 
+      join survey_screen on survey_screen.id = survey_screen_component.screen_id 
+      WHERE question.code IN ${SqlQuery.parameteriseArray(dataElementCodes)}
+    `,
+      dataElementCodes,
+    );
+
+    sqlQuery.orderBy('survey_screen.screen_number, survey_screen_component.component_number');
+
+    return sqlQuery.executeOnDatabase(this.database);
+  }
+
+  async fetchDataGroup(dataGroupCode) {
+    if (!dataGroupCode) {
+      throw new Error('Please provide a data group code');
+    }
     return new SqlQuery(
       `
       SELECT code, name
-      FROM question
-      WHERE code IN ${SqlQuery.parameteriseArray(dataElementCodes)};
+      FROM survey 
+      WHERE survey.code = '${dataGroupCode}'
     `,
-      dataElementCodes,
     ).executeOnDatabase(this.database);
   }
 }

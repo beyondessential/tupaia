@@ -1,9 +1,5 @@
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 
-import { buildExportUrl } from '/export';
-
-import { Question, Survey, Entity, Country } from '/models';
-
 import { reduceToDictionary } from '@tupaia/utils';
 
 import moment from 'moment';
@@ -13,64 +9,43 @@ const RAW_VALUE_DATE_FORMAT = 'D-M-YYYY h:mma';
 class RawDataValuesBuilder extends DataBuilder {
   async build() {
     const surveyCodes = this.query.surveyCodes;
-    if (!surveyCodes) {
-      return this.getSurveyExportOptions();
-    }
-
-    const data = await this.fetchResults(surveyCodes);
+    const data = await this.fetchResults(surveyCodes.split(','));
     return { data };
   }
 
-  getSurveyExportOptions() {
-    const { surveys } = this.config;
-
-    return {
-      data: surveys.map(({ name, code }) => ({
-        name,
-        value: code,
-      })),
-      downloadUrl: buildExportUrl(this.req, 'rawDataSurveyResponses', {
-        ...this.query,
-      }),
-    };
-  }
-
   async fetchResults(surveyCodes) {
-    const surveys = await this.findSurveys(surveyCodes);
-
     const data = {};
 
-    if (!surveys.length) {
-      return data;
-    }
+    const surveyCodeToName = reduceToDictionary(this.config.surveys, 'code', 'name');
 
     //Loop through each selected survey and fetch the analytics of that survey,
     //then build a matrix around the analytics
-    for (let surveyIndex = 0; surveyIndex < surveys.length; surveyIndex++) {
-      const survey = surveys[surveyIndex];
-      const questions = await Question.findQuestionsBySurvey({ survey_id: survey.id });
+    for (let surveyCodeIndex = 0; surveyCodeIndex < surveyCodes.length; surveyCodeIndex++) {
+      const surveyCode = surveyCodes[surveyCodeIndex];
 
-      if (!questions.length) {
-        continue;
-      }
+      const { dataElements: dataElementsMetadata } = await this.fetchDataGroup(surveyCode);
 
-      const questionCodes = questions.map(question => question.code);
-      const questionCodeToText = {};
+      const dataElementCodes = dataElementsMetadata.map(
+        dataElementMetadata => dataElementMetadata.code,
+      );
 
-      questions.forEach(question => {
-        questionCodeToText[question.code] = question.text;
+      const events = await this.fetchEvents({ dataElementCodes }, surveyCode);
+
+      const columns = this.buildColumns(events);
+
+      const dataElementCodeToText = {};
+
+      dataElementsMetadata.forEach(({ code, text }) => {
+        dataElementCodeToText[code] = text;
       });
-
-      const analyticResults = await this.fetchAnalytics(questionCodes);
-      const columns = this.buildColumns(analyticResults.results);
 
       let rows = [];
 
       if (columns && columns.length) {
-        rows = await this.buildRows(analyticResults.results, questionCodeToText, questionCodes);
+        rows = await this.buildRows(events, dataElementCodeToText);
       }
 
-      data[survey.name] = {
+      data[surveyCodeToName[surveyCode]] = {
         data: {
           columns,
           rows,
@@ -81,43 +56,14 @@ class RawDataValuesBuilder extends DataBuilder {
     return data;
   }
 
-  async findSurveys(surveyCodes) {
-    const country = await Country.findOne({ code: this.entity.country_code });
-    return Survey.find({
-      code: {
-        comparisonType: 'whereIn',
-        args: Array.isArray(surveyCodes) ? [surveyCodes] : [surveyCodes.split(',')],
-      },
-      _and_: {
-        country_ids: '{}',
-        _or_: {
-          country_ids: { comparator: '@>', comparisonValue: [country.id] },
-        },
-      },
-    });
-  }
-
-  getEntityCodeToName = async analytics => {
-    const entityCodes = analytics.map(analytic => analytic.organisationUnit);
-
-    const entities = await Entity.find({
-      code: {
-        comparisonType: 'whereIn',
-        args: [entityCodes],
-      },
-    });
-
-    return reduceToDictionary(entities, 'code', 'name');
-  };
-
   /**
    * Build columns for each organisationUnit - period combination
    */
-  buildColumns = analytics => {
+  buildColumns = events => {
     const builtColumnsMap = {};
 
-    analytics.forEach(({ organisationUnit, period }) => {
-      const key = `${organisationUnit}|${period}`;
+    events.forEach(({ orgUnit, eventDate }) => {
+      const key = `${orgUnit}|${eventDate}`;
       builtColumnsMap[key] = {
         key: key,
         title: key,
@@ -130,7 +76,7 @@ class RawDataValuesBuilder extends DataBuilder {
   /**
    * Build row values for data elements of different organisationUnit - period combination
    */
-  async buildRows(analytics, dataElementCodeToText) {
+  buildRows = async (events, dataElementCodeToText) => {
     const builtRows = [];
 
     const DEFAULT_DATA_KEY_TO_TEXT = {
@@ -144,8 +90,6 @@ class RawDataValuesBuilder extends DataBuilder {
       ...dataElementCodeToText,
     };
 
-    const entityCodeToName = await this.getEntityCodeToName(analytics);
-
     //Loop through each data key and build a row for each organisationUnit - period combination
     Object.entries(dataKeyToName).forEach(([dataKey, text]) => {
       //First column is the name of the data element
@@ -154,43 +98,40 @@ class RawDataValuesBuilder extends DataBuilder {
       };
 
       //Build a row for each organisationUnit - period combination
-      analytics.forEach(analytic => {
-        if (dataKey === analytic.dataElement || DEFAULT_DATA_KEY_TO_TEXT[dataKey]) {
-          const key = `${analytic.organisationUnit}|${analytic.period}`;
-          const value = this.getValueFromDataKey(analytic, dataKey, entityCodeToName);
-          row[key] = value;
-        }
+      events.forEach(({ orgUnit, orgUnitName, eventDate, dataValues }) => {
+        Object.entries(dataValues).forEach(([code, dataValue]) => {
+          if (dataKey === code || DEFAULT_DATA_KEY_TO_TEXT[dataKey]) {
+            const key = `${orgUnit}|${eventDate}`;
+            let value;
+
+            switch (dataKey) {
+              case 'name':
+                value = orgUnitName;
+                break;
+              case 'entityCode':
+                value = orgUnit;
+                break;
+              case 'date':
+                value = moment(eventDate).format(RAW_VALUE_DATE_FORMAT);
+                break;
+              default:
+                value = dataValue;
+                break;
+            }
+
+            row[key] = value;
+          }
+        });
       });
 
       builtRows.push(row);
     });
 
     return builtRows;
-  }
-
-  getValueFromDataKey = (analytic, dataKey, entityCodeToName) => {
-    switch (dataKey) {
-      case 'name':
-        return entityCodeToName[analytic.organisationUnit];
-      case 'entityCode':
-        return analytic.organisationUnit;
-      case 'date':
-        return moment(analytic.period).format(RAW_VALUE_DATE_FORMAT);
-      default:
-        return analytic.value;
-    }
   };
-
-  injectReq(req) {
-    this.req = req;
-  }
 }
 
-export const rawDataValues = async (
-  { dataBuilderConfig, query, entity, req },
-  aggregator,
-  dhisApi,
-) => {
+export const rawDataValues = async ({ dataBuilderConfig, query, entity }, aggregator, dhisApi) => {
   const builder = new RawDataValuesBuilder(
     aggregator,
     dhisApi,
@@ -199,8 +140,6 @@ export const rawDataValues = async (
     entity,
     aggregator.aggregationTypes.RAW_DATA,
   );
-
-  builder.injectReq(req);
 
   return builder.build();
 };

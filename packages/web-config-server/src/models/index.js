@@ -14,6 +14,3 @@ export { EntityHierarchy } from './EntityHierarchy';
 export { EntityRelation } from './EntityRelation';
 export { Entity } from './Entity';
 export { Project } from './Project';
-export { Survey } from './Survey';
-export { Question } from './Question';
-export { Country } from './Country';

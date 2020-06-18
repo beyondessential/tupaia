@@ -19,9 +19,6 @@ exports.setup = function(options, seedLink) {
 const REPORT_ID = 'Laos_Schools_Raw_Data_Downloads';
 
 const DATA_BUILDER_CONFIG = {
-  entityAggregation: {
-    dataSourceEntityType: 'school'
-  },
   surveys: [
     {
       code: 'SC1RL',
@@ -39,7 +36,15 @@ const DATA_BUILDER_CONFIG = {
       code: 'SFL',
       name: 'School Fundamentals Laos'
     }
-  ]
+  ],
+  exportDataBuilder: {
+    dataBuilder: 'rawDataValues',
+    dataBuilderConfig: {
+      entityAggregation: {
+        dataSourceEntityType: 'school'
+      }
+    }
+  }
 };
 
 const VIEW_JSON = {
@@ -51,7 +56,7 @@ const VIEW_JSON = {
 
 const DASHBOARD_REPORT = {
   id: REPORT_ID,
-  dataBuilder: 'rawDataValues',
+  dataBuilder: 'rawDataExport',
   dataBuilderConfig: DATA_BUILDER_CONFIG,
   viewJson: VIEW_JSON,
 };

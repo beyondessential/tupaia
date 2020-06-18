@@ -49,4 +49,20 @@ export class DataSourceModel extends modelClasses.DataSource {
       codes.map(code => codeToRecord[code] || this.getDefault({ ...dataSourceSpec, code })),
     );
   }
+
+  async findDataElementsOfDataGroup() {
+    if (this.type !== this.dataSourceTypes.DATA_GROUP) {
+      throw new Error(`Data source ${this.id} is not a data group`);
+    }
+
+    const dataElements = await this.otherModels.dataElementDataGroup.find({
+      data_group_id: this.id,
+      type: this.dataSourceTypes.DATA_ELEMENT,
+    });
+
+    return this.findOrDefault({
+      code: dataElements.map(dataElement => dataElement.code),
+      type: this.dataSourceTypes.DATA_ELEMENT,
+    });
+  }
 }
