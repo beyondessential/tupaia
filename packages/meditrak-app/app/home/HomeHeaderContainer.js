@@ -10,7 +10,7 @@ import { loadSocialFeedLatest, loadSocialFeedNextPage } from '../social';
 import { getLatestUserRewardCount } from '../rewards';
 
 function mapStateToProps({ authentication, social, rewards }) {
-  const { name, permissionGroups } = authentication;
+  const { name } = authentication;
   const { isLoading: isFeedLoading, errorMessage: feedErrorMessage } = social;
   const { coconuts, pigs } = rewards;
 
@@ -18,7 +18,6 @@ function mapStateToProps({ authentication, social, rewards }) {
     name,
     coconuts,
     pigs,
-    permissionGroups,
     isFeedLoading,
     feedErrorMessage,
   };
@@ -32,9 +31,6 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-const HomeHeaderContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(HomeHeader);
+const HomeHeaderContainer = connect(mapStateToProps, mapDispatchToProps)(HomeHeader);
 
 export { HomeHeaderContainer };

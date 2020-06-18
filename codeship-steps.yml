@@ -34,6 +34,9 @@
             - name: test-data-api
               service: testing
               command: './packages/devops/scripts/ci/testBackend.sh data-api'
+            - name: test-auth
+              service: testing
+              command: './packages/devops/scripts/ci/testBackend.sh auth'
             - name: test-internal-dependencies
               service: testing
               command: './packages/devops/scripts/ci/testInternalDependencies.sh'

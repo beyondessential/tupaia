@@ -17,6 +17,10 @@
       "path": "packages/aggregator"
     },
     {
+      "name": "auth",
+      "path": "packages/auth"
+    },
+    {
       "name": "data-api",
       "path": "packages/data-api"
     },
