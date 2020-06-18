@@ -78,7 +78,9 @@ const GreySection = styled(MainSection)`
 `;
 
 const StyledDrawer = styled(Drawer)`
-  padding-bottom: 125px;
+  .MuiDrawer-paper {
+    padding-bottom: 125px;
+  }
 `;
 
 const WeeklyReportsPanelSubmitButton = handleConfirm => () => {

@@ -15,13 +15,20 @@ import {
   NotesTab,
   DrawerTray,
 } from '../../components';
+import * as COLORS from '../../constants/colors';
 import { countryFlagImage } from '../../utils';
 
 export const OutbreaksPanel = ({ isOpen, handleClose }) => {
   return (
     <Drawer open={isOpen} onClose={handleClose}>
-      <DrawerTray heading="Outbreak Details" onClose={handleClose} Icon={Virus} />
+      <DrawerTray
+        color={COLORS.RED}
+        heading="Outbreak Details"
+        onClose={handleClose}
+        Icon={Virus}
+      />
       <AlertsDrawerHeader
+        color={COLORS.RED}
         date="Mar 6, 2020"
         avatarUrl={countryFlagImage('as')}
         subheading="American Samoa"
