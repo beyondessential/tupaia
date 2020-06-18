@@ -16,6 +16,11 @@ exports.setup = function(options, seedLink) {
 
 const LAOS_SCHOOL_BINARY_MEASURE_MAP_OVERLAYS = [
   {
+    id: 'Laos_Schools_Schools_Used_As_Quarantine',
+    newName: 'Currently used as quarantine centre',
+    oldName: 'Schools used as quarantine centres'
+  },
+  {
     id: 'Laos_Schools_Internet_Connection_Available_In_School',
     newName: 'Internet connection available',
     oldName: 'Internet connection available in school',
