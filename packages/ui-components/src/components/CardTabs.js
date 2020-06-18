@@ -100,5 +100,5 @@ export const DataCardTabs = ({ data }) => {
 };
 
 DataCardTabs.propTypes = {
-  data: PropTypes.object.isRequired,
+  data: PropTypes.array.isRequired,
 };
