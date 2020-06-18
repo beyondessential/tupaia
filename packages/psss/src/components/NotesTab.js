@@ -6,8 +6,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { TextField, Button, UserMessage, CardTabPanel } from '@tupaia/ui-components';
-import { connectApi } from '../api';
-import { useFetch } from '../hooks/useFetchData';
 import * as COLORS from '../constants/colors';
 
 const greySectionHeight = '225px';
@@ -29,8 +27,8 @@ const GreySection = styled.div`
   padding: 25px 20px;
 `;
 
-export const NotesTabComponent = ({ fetchData }) => {
-  const { data: messages, isLoading, isError, count, errorMessage } = useFetch(fetchData);
+export const NotesTab = ({ state }) => {
+  const { data: messages, isLoading, isError, count, errorMessage } = state;
 
   const handleUpdate = () => {
     console.log('update');
@@ -76,12 +74,6 @@ export const NotesTabComponent = ({ fetchData }) => {
   );
 };
 
-NotesTabComponent.propTypes = {
-  fetchData: PropTypes.func.isRequired,
+NotesTab.propTypes = {
+  state: PropTypes.object.isRequired,
 };
-
-const mapApiToProps = api => ({
-  fetchData: () => api.get('messages'),
-});
-
-export const NotesTab = connectApi(mapApiToProps)(NotesTabComponent);

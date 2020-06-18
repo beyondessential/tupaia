@@ -7,6 +7,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { LocationOn, SpeakerNotes, List } from '@material-ui/icons';
 import { CardTabs, CardTabList, CardTab, CardTabPanels, WarningCloud } from '@tupaia/ui-components';
+import { connectApi } from '../../api';
 import {
   Drawer,
   AlertsDrawerHeader,
@@ -16,8 +17,17 @@ import {
   DrawerTray,
 } from '../../components';
 import { countryFlagImage } from '../../utils';
+import { useFetch } from '../../hooks/useFetchData';
 
-export const AlertsPanel = ({ isOpen, handleClose }) => {
+export const AlertsPanelComponent = ({
+  isOpen,
+  handleClose,
+  fetchNotesData,
+  fetchActivityData,
+}) => {
+  const notesState = useFetch(fetchNotesData);
+  const activityState = useFetch(fetchActivityData);
+
   return (
     <Drawer open={isOpen} onClose={handleClose}>
       <DrawerTray heading="Alert Details" onClose={handleClose} Icon={WarningCloud} />
@@ -43,16 +53,24 @@ export const AlertsPanel = ({ isOpen, handleClose }) => {
         </CardTabList>
         <CardTabPanels>
           <AffectedSitesTab />
-          <NotesTab />
-          <ActivityTab />
+          <NotesTab state={notesState} />
+          <ActivityTab state={activityState} />
         </CardTabPanels>
       </CardTabs>
     </Drawer>
   );
 };
 
-AlertsPanel.propTypes = {
-  handleClose: PropTypes.func.isRequired,
+AlertsPanelComponent.propTypes = {
   isOpen: PropTypes.bool.isRequired,
+  handleClose: PropTypes.func.isRequired,
+  fetchNotesData: PropTypes.func.isRequired,
+  fetchActivityData: PropTypes.func.isRequired,
 };
 
+const mapApiToProps = api => ({
+  fetchNotesData: () => api.get('messages'),
+  fetchActivityData: () => api.get('activity-feed'),
+});
+
+export const AlertsPanel = connectApi(mapApiToProps)(AlertsPanelComponent);

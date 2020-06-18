@@ -10,8 +10,6 @@ import Typography from '@material-ui/core/Typography';
 import { CardTabPanel, WarningCloud } from '@tupaia/ui-components';
 import MuiAvatar from '@material-ui/core/Avatar';
 import Divider from '@material-ui/core/Divider';
-import { connectApi } from '../api';
-import { useFetch } from '../hooks/useFetchData';
 import * as COLORS from '../constants/colors';
 
 const Container = styled.div`
@@ -31,9 +29,9 @@ const HeaderContainer = styled.div`
   padding: 1.25rem;
   margin-bottom: 1rem;
   margin-top: 3rem;
-  
+
   &:first-child {
-      margin-top: 0;  
+    margin-top: 0;
   }
 `;
 
@@ -169,8 +167,8 @@ UserUpdate.propTypes = {
   dateTime: PropTypes.instanceOf(Date).isRequired,
 };
 
-export const ActivityTabComponent = ({ fetchData }) => {
-  const { data: feed, isLoading, isError, count, errorMessage } = useFetch(fetchData);
+export const ActivityTab = ({ state }) => {
+  const { data: feed, isLoading, isError, count, errorMessage } = state;
   return (
     <CardTabPanel>
       {feed.map(week => (
@@ -194,12 +192,6 @@ export const ActivityTabComponent = ({ fetchData }) => {
   );
 };
 
-ActivityTabComponent.propTypes = {
-  fetchData: PropTypes.func.isRequired,
+ActivityTab.propTypes = {
+  state: PropTypes.func.isRequired,
 };
-
-const mapApiToProps = api => ({
-  fetchData: () => api.get('activity-feed'),
-});
-
-export const ActivityTab = connectApi(mapApiToProps)(ActivityTabComponent);
