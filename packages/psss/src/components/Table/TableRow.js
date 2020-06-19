@@ -14,7 +14,6 @@ export const SimpleTableRow = styled(ExpandableTableRow)`
     line-height: 1rem;
     border: none;
     padding: 0.9rem 0;
-    text-align: center;
     border-bottom: 1px solid ${COLORS.GREY_DE};
     height: auto;
     color: ${props => props.theme.palette.text.primary};

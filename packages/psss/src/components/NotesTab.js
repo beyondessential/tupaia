@@ -6,6 +6,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { TextField, Button, UserMessage, CardTabPanel } from '@tupaia/ui-components';
+import { FetchLoader } from './FetchLoader';
 import * as COLORS from '../constants/colors';
 
 const greySectionHeight = '225px';
@@ -28,7 +29,7 @@ const GreySection = styled.div`
 `;
 
 export const NotesTab = ({ state }) => {
-  const { data: messages, isLoading, isError, count, errorMessage } = state;
+  const { data: messages } = state;
 
   const handleUpdate = () => {
     console.log('update');
@@ -38,33 +39,26 @@ export const NotesTab = ({ state }) => {
     console.log('delete');
   };
 
-  if (isLoading) {
-    return <CardTabPanel>Loading...</CardTabPanel>;
-  } else if (count === 0) {
-    return <CardTabPanel>There are no messages</CardTabPanel>;
-  } else if (isError) {
-    console.log('error message', errorMessage);
-    return <CardTabPanel>Error</CardTabPanel>;
-  }
-
   return (
     <Container>
       <CardTabPanel>
-        {messages.map(data => {
-          const message = {
-            ...data.message,
-            dateTime: data.message.created,
-          };
-          return (
-            <StyledUserMessage
-              key={message.id}
-              message={message}
-              user={data.user}
-              onUpdate={handleUpdate}
-              onDelete={handleDelete}
-            />
-          );
-        })}
+        <FetchLoader state={state}>
+          {messages.map(data => {
+            const message = {
+              ...data.message,
+              dateTime: data.message.created,
+            };
+            return (
+              <StyledUserMessage
+                key={message.id}
+                message={message}
+                user={data.user}
+                onUpdate={handleUpdate}
+                onDelete={handleDelete}
+              />
+            );
+          })}
+        </FetchLoader>
       </CardTabPanel>
       <GreySection>
         <TextField name="textArea" placeholder="Type in your notes..." multiline rows="4" />

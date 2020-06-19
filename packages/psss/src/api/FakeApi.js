@@ -49,6 +49,10 @@ export class FakeAPI {
       for (let i = 0; i < 3; i++) {
         data.push(this.activity());
       }
+    } else if (endpoint === 'affected-sites') {
+      for (let i = 0; i < 3; i++) {
+        data.push(this.affectedSite());
+      }
     } else if (endpoint === 'archive') {
       for (let i = 0; i < 5; i++) {
         data.push(this.alert());
@@ -134,6 +138,18 @@ export class FakeAPI {
     ];
   }
 
+  affectedSite() {
+    const countryWeek = this.countryWeek(0);
+    const sites = [];
+    for (let i = 0; i < 5; i++) {
+      sites.push(this.siteWeek());
+    }
+    return {
+      ...countryWeek,
+      sites,
+    };
+  }
+
   // eslint-disable-next-line class-methods-use-this
   countryWeek(index) {
     return {
@@ -148,6 +164,14 @@ export class FakeAPI {
       sitesReported: faker.random.number({
         min: 0,
         max: 30,
+      }),
+      totalCases: faker.random.number({
+        min: 1000,
+        max: 2000,
+      }),
+      percentageChange: faker.random.number({
+        min: -15,
+        max: 15,
       }),
       syndromes: this.syndromes(),
       status: faker.random.arrayElement(['Submitted', 'Overdue']),

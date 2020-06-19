@@ -11,6 +11,8 @@ import { CardTabPanel, WarningCloud } from '@tupaia/ui-components';
 import MuiAvatar from '@material-ui/core/Avatar';
 import Divider from '@material-ui/core/Divider';
 import * as COLORS from '../constants/colors';
+import { FetchLoader } from './FetchLoader';
+import { fetchStateShape } from '../hooks';
 
 const Container = styled.div`
   margin-bottom: 1.5rem;
@@ -168,30 +170,32 @@ UserUpdate.propTypes = {
 };
 
 export const ActivityTab = ({ state }) => {
-  const { data: feed, isLoading, isError, count, errorMessage } = state;
+  const { data: feed } = state;
   return (
     <CardTabPanel>
-      {feed.map(week => (
-        <Container key={week.id}>
-          <DateHeader week={week.week} dateTime={week.dateTime} />
-          {week.updates.map((update, index) => (
-            <Container key={update.id}>
-              <UserUpdate
-                avatar={update.user.avatar}
-                name={update.user.name}
-                dateTime={update.dateTime}
-                type={update.type}
-              />
-              {index < week.updates.length - 1 && <Divider />}
-            </Container>
-          ))}
-        </Container>
-      ))}
-      <AlertCreatedUpdate />
+      <FetchLoader state={state}>
+        {feed.map(week => (
+          <Container key={week.id}>
+            <DateHeader week={week.week} dateTime={week.dateTime} />
+            {week.updates.map((update, index) => (
+              <Container key={update.id}>
+                <UserUpdate
+                  avatar={update.user.avatar}
+                  name={update.user.name}
+                  dateTime={update.dateTime}
+                  type={update.type}
+                />
+                {index < week.updates.length - 1 && <Divider />}
+              </Container>
+            ))}
+          </Container>
+        ))}
+        <AlertCreatedUpdate />
+      </FetchLoader>
     </CardTabPanel>
   );
 };
 
 ActivityTab.propTypes = {
-  state: PropTypes.func.isRequired,
+  state: PropTypes.shape(fetchStateShape).isRequired,
 };

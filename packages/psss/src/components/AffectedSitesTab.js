@@ -3,76 +3,77 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
+import PropTypes from 'prop-types';
+import { format } from 'date-fns';
 import { Card, CardTabPanel } from '@tupaia/ui-components';
-import { DottedTable } from './Table';
-import { CardHeader } from './CardHeader';
+import {
+  createTotalCasesAccessor,
+  createPercentageChangeAccessor,
+  DottedTable,
+  PercentageChangeCell,
+} from './Table';
+import { CardWeekHeader } from './CardWeekHeader';
+import { fetchStateShape } from '../hooks';
+import { FetchLoader } from './FetchLoader';
 
-const data = [
-  {
-    id: '1',
-    name: 'Sentinel Site Name',
-    prevWeek: '15',
-    totalCases: '15',
-  },
-  {
-    id: '2',
-    name: 'Tafuna Health Clinic',
-    prevWeek: '15',
-    totalCases: '10',
-  },
-  {
-    id: '3',
-    name: 'Sentinel Site Name',
-    prevWeek: '55',
-    totalCases: '1592',
-  },
-  {
-    id: '4',
-    name: 'Sentinel Site Name',
-    prevWeek: '6',
-    totalCases: '151',
-  },
-  {
-    id: '5',
-    name: 'Sentinel Site Name',
-    prevWeek: '7',
-    totalCases: '65',
-  },
-];
+const PercentageChangeCellWrapper = ({ displayValue }) => (
+  <PercentageChangeCell percentageChange={displayValue} />
+);
+
+PercentageChangeCellWrapper.propTypes = {
+  displayValue: PropTypes.number.isRequired,
+};
 
 const columns = [
   {
-    title: 'Name',
+    title: 'Affected Sentinel Sites',
     key: 'name',
+    width: '250px',
     sortable: false,
   },
   {
-    title: '',
-    key: 'prevWeek',
+    title: 'Prev.Week',
+    key: 'percentageChange',
+    CellComponent: PercentageChangeCellWrapper,
+    accessor: createPercentageChangeAccessor('afr'),
     sortable: false,
   },
   {
     title: 'Cases',
     key: 'totalCases',
+    align: 'right',
+    accessor: createTotalCasesAccessor('afr'),
     sortable: false,
   },
 ];
 
-export const AffectedSitesTab = () => {
+export const AffectedSitesTab = ({ state }) => {
+  const { data: weeks } = state;
+
   return (
     <CardTabPanel>
-      <Card variant="outlined" mb={5}>
-        <CardHeader />
-        <DottedTable columns={columns} data={data} />
-      </Card>
-      <Card variant="outlined" mb={5}>
-        <CardHeader />
-        <DottedTable columns={columns} data={data} />
-      </Card>
-      <Card variant="outlined" mb={5}>
-        <CardHeader />
-        <DottedTable columns={columns} data={data} />
-      </Card>
+      <FetchLoader state={state}>
+        {weeks.map(week => {
+          const startDate = format(week.startDate, 'LLL d');
+          const endDate = format(week.endDate, 'LLL d');
+          const year = format(week.endDate, 'yyyy');
+          return (
+            <Card key={week.id} variant="outlined" mb={5}>
+              <CardWeekHeader
+                heading={`Week ${week.week}`}
+                subheading={`${startDate} - ${endDate}, ${year}`}
+                detailText={`Total Cases for all Sites: ${week.totalCases}`}
+                percentageChange={week.percentageChange}
+              />
+              <DottedTable columns={columns} data={week.sites} />
+            </Card>
+          );
+        })}
+      </FetchLoader>
     </CardTabPanel>
   );
+};
+
+AffectedSitesTab.propTypes = {
+  state: PropTypes.shape(fetchStateShape).isRequired,
 };

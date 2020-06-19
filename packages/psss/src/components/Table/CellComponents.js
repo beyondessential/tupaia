@@ -66,16 +66,21 @@ const SuccessStyleText = styled.span`
 /*
  * Displays a value as a percentage
  */
-export const PercentageChangeCell = ({ percentageChange }) => {
+export const PercentageChangeCell = ({ percentageChange, className }) => {
   if (percentageChange > 0) {
-    return <WarningStyleText>{`${percentageChange}%`}</WarningStyleText>;
+    return <WarningStyleText className={className}>+{`${percentageChange}%`}</WarningStyleText>;
   }
 
-  return <SuccessStyleText>{percentageChange}</SuccessStyleText>;
+  return <SuccessStyleText className={className}>{percentageChange}</SuccessStyleText>;
 };
 
 PercentageChangeCell.propTypes = {
   percentageChange: PropTypes.number.isRequired,
+  className: PropTypes.string,
+};
+
+PercentageChangeCell.defaultProps = {
+  className: '',
 };
 
 const CountryTitle = styled(MuiLink)`
@@ -131,9 +136,9 @@ const CountrySummaryTitle = styled.div`
 `;
 
 export const WeekAndDateCell = ({ week, startDate, endDate }) => {
-  const start = `${format(startDate, 'LLL d')}`;
-  const end = `${format(endDate, 'LLL d')}`;
-  const year = `${format(endDate, 'yyyy')}`;
+  const start = format(startDate, 'LLL d');
+  const end = format(endDate, 'LLL d');
+  const year = format(endDate, 'yyyy');
   return (
     <CountrySummaryTitle>
       <strong>W{week}</strong> {`${start} - ${end}, ${year}`}

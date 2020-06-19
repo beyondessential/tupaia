@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-
+import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 
 const STATUSES = {
@@ -47,4 +47,11 @@ export const useFetch = fetchData => {
     isSuccess: state.status === STATUSES.SUCCESS,
     ...state,
   };
+};
+
+export const fetchStateShape = {
+  data: PropTypes.array.isRequired,
+  count: PropTypes.number.isRequired,
+  errorMessage: PropTypes.string.isRequired,
+  status: PropTypes.string.isRequired,
 };

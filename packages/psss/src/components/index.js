@@ -11,5 +11,6 @@ export * from './Table';
 export * from './Drawer';
 export * from './SiteAddress';
 export * from './ActivityTab';
+export * from './FetchLoader';
 export * from './NotesTab';
 export * from './AffectedSitesTab';

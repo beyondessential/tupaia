@@ -17,14 +17,16 @@ import {
   DrawerTray,
 } from '../../components';
 import { countryFlagImage } from '../../utils';
-import { useFetch } from '../../hooks/useFetchData';
+import { useFetch } from '../../hooks';
 
 export const AlertsPanelComponent = ({
   isOpen,
   handleClose,
+  fetchSitesData,
   fetchNotesData,
   fetchActivityData,
 }) => {
+  const sitesState = useFetch(fetchSitesData);
   const notesState = useFetch(fetchNotesData);
   const activityState = useFetch(fetchActivityData);
 
@@ -52,7 +54,7 @@ export const AlertsPanelComponent = ({
           </CardTab>
         </CardTabList>
         <CardTabPanels>
-          <AffectedSitesTab />
+          <AffectedSitesTab state={sitesState} />
           <NotesTab state={notesState} />
           <ActivityTab state={activityState} />
         </CardTabPanels>
@@ -64,11 +66,13 @@ export const AlertsPanelComponent = ({
 AlertsPanelComponent.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
+  fetchSitesData: PropTypes.func.isRequired,
   fetchNotesData: PropTypes.func.isRequired,
   fetchActivityData: PropTypes.func.isRequired,
 };
 
 const mapApiToProps = api => ({
+  fetchSitesData: () => api.get('affected-sites'),
   fetchNotesData: () => api.get('messages'),
   fetchActivityData: () => api.get('activity-feed'),
 });
