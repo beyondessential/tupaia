@@ -6,9 +6,8 @@
 export const convertSearchTermToFilter = (unprocessedFilterObject = {}) => {
   const filterObject = {};
   Object.entries(unprocessedFilterObject).forEach(([key, value]) => {
-    if (value === null || typeof value === 'boolean') {
+    if (typeof value !== 'string') {
       filterObject[key] = value;
-
       return;
     }
 

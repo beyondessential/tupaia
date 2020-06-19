@@ -93,7 +93,7 @@ const TABS = {
   [DATA_ELEMENTS]: {
     title: 'Data Elements',
     endpoint: 'dataSources',
-    baseFilter: { type: 'dataElement' },
+    baseFilter: { type: { comparisonValue: 'dataElement' } },
     fields: DATA_SOURCE_FIELDS,
     createConfig: {
       title: 'New Data Element',
@@ -114,7 +114,7 @@ const TABS = {
   [DATA_GROUPS]: {
     title: 'Data Groups',
     endpoint: 'dataSources',
-    baseFilter: { type: 'dataGroup' },
+    baseFilter: { type: { comparisonValue: 'dataGroup' } },
     fields: DATA_SOURCE_FIELDS,
     expansionTabs: [
       {
