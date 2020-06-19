@@ -5,6 +5,5 @@
 
 export * from './actions';
 export * from './selectors';
-export { validateUserIsAuthenticated } from './validateUserIsAuthenticated';
 export { reducer } from './reducer';
 export { LoginModal } from './LoginModal';

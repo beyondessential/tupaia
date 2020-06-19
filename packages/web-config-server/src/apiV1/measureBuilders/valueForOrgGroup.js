@@ -42,14 +42,22 @@ class ValueForOrgGroupMeasureBuilder extends DataBuilder {
       }));
     }
 
-    const { results } = await this.fetchAnalytics([dataElementCode], {
+    //There are cases that we want to group more than 1 data element codes.
+    const dataElementCodes = this.config.dataElementCodes || [dataElementCode];
+
+    const { results } = await this.fetchAnalytics(dataElementCodes, {
       organisationUnitCode: this.entity.code,
     });
+
     const analytics = results.map(result => ({
       ...result,
       value: result.value === undefined ? '' : result.value.toString(),
     }));
-    return analyticsToMeasureData(analytics);
+
+    //If we group multiple data element codes, dataElementCode is usually 'value'
+    const customDataKey = this.config.dataElementCodes ? dataElementCode : null;
+
+    return analyticsToMeasureData(analytics, customDataKey);
   }
 }
 
