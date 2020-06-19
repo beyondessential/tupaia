@@ -13,18 +13,18 @@ describe('Access Requests', () => {
 
   const createData = async (email, countryCode, permissionGroupName) => {
     const { id: userId } = await findOrCreateDummyRecord(models.user, { email });
-    const { id: countryId } = await findOrCreateDummyRecord(models.country, { code: countryCode });
+    const { id: entityId } = await findOrCreateDummyRecord(models.entity, { code: countryCode });
     const { id: permissionGroupId } = await findOrCreateDummyRecord(models.permissionGroup, {
       name: permissionGroupName,
     });
 
-    return { userId, countryId, permissionGroupId };
+    return { userId, entityId, permissionGroupId };
   };
 
-  const requestCountryAccess = async (userId, countryId, userGroup) => {
+  const requestCountryAccess = async (userId, entityId, userGroup) => {
     return app.post(`user/${userId}/requestCountryAccess`, {
       body: {
-        countryIds: [countryId],
+        entityIds: [entityId],
         message: "E rab'a te kaitiboo! / Pleased to meet you",
         userGroup,
       },
@@ -33,21 +33,21 @@ describe('Access Requests', () => {
 
   before(app.authenticate);
 
-  describe('User Country Permission via Access Request', () => {
+  describe('User Entity Permission via Access Request', () => {
     it('creates permission when approved', async () => {
-      const { userId, countryId, permissionGroupId } = await createData(
+      const { userId, entityId, permissionGroupId } = await createData(
         'test.user@tupaia.org',
         'KI',
         'Admin',
       );
 
-      const response1 = await requestCountryAccess(userId, countryId, 'Admin');
+      const response1 = await requestCountryAccess(userId, entityId, 'Admin');
       expect(response1.statusCode).to.equal(200);
       expect(response1.body).to.deep.equal({ message: 'Country access requested.' });
 
       const { id: accessRequestId } = await models.accessRequest.findOne({
         user_id: userId,
-        country_id: countryId,
+        entity_id: entityId,
       });
       const response2 = await app.put(`accessRequests/${accessRequestId}`, {
         body: { approved: true, approval_note: 'Marurung!' },
@@ -57,9 +57,9 @@ describe('Access Requests', () => {
 
       await models.database.waitForAllChangeHandlers();
 
-      const permission = await models.userCountryPermission.findOne({
+      const permission = await models.userEntityPermission.findOne({
         user_id: userId,
-        country_id: countryId,
+        entity_id: entityId,
         permission_group_id: permissionGroupId,
       });
       expect(permission).to.not.equal(null);
@@ -67,19 +67,19 @@ describe('Access Requests', () => {
     });
 
     it('does not creates permission when rejected', async () => {
-      const { userId, countryId, permissionGroupId } = await createData(
+      const { userId, entityId, permissionGroupId } = await createData(
         'test.user@tupaia.org',
         'VE',
         'Admin',
       );
 
-      const response1 = await requestCountryAccess(userId, countryId, 'Admin');
+      const response1 = await requestCountryAccess(userId, entityId, 'Admin');
       expect(response1.statusCode).to.equal(200);
       expect(response1.body).to.deep.equal({ message: 'Country access requested.' });
 
       const { id: accessRequestId } = await models.accessRequest.findOne({
         user_id: userId,
-        country_id: countryId,
+        entity_id: entityId,
       });
       const response2 = await app.put(`accessRequests/${accessRequestId}`, {
         body: { approved: false },
@@ -89,9 +89,9 @@ describe('Access Requests', () => {
 
       await models.database.waitForAllChangeHandlers();
 
-      const permission = await models.userCountryPermission.findOne({
+      const permission = await models.userEntityPermission.findOne({
         user_id: userId,
-        country_id: countryId,
+        entity_id: entityId,
         permission_group_id: permissionGroupId,
       });
       expect(permission).to.equal(null);

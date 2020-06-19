@@ -16,8 +16,6 @@ export { deleteScreensForSurvey } from './deleteScreensForSurvey';
 export { deleteOrphanQuestions } from './deleteOrphanQuestions';
 export { createUser } from './createUser';
 export { updateOrCreateSurveyResponse } from './updateOrCreateSurveyResponse';
-export { getUserPermissionGroups } from './userPermissionGroups';
-export { findEditableFeedItems } from './findEditableFeedItems';
 export { findFormattedDisasters } from './findFormattedDisasters';
 export { editSurveyScreenComponent } from './editSurveyScreenComponent';
 export { findSurveyScreenComponentsInSurvey } from './findSurveyScreenComponentsInSurvey';

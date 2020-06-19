@@ -47,7 +47,11 @@ export const modelClasses = {
 // export any models and types that are extended in other packages
 export { AccessRequestModel } from './AccessRequest';
 export { CountryModel } from './Country';
+export { DataSourceModel } from './DataSource';
+export { EntityModel } from './Entity';
 export { GeographicalAreaModel } from './GeographicalArea';
 export { MeditrakDeviceModel } from './MeditrakDevice';
-export { DataSourceModel } from './DataSource';
+export { PermissionGroupModel } from './PermissionGroup';
+export { SurveyScreenModel } from './SurveyScreen';
+export { SurveyScreenComponentModel } from './SurveyScreenComponent';
 export { UserEntityPermissionModel } from './UserEntityPermission';
