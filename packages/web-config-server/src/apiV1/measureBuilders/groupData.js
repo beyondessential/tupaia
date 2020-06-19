@@ -21,5 +21,12 @@ export const groupData = async (aggregator, dhisApi, query, measureBuilderConfig
   const groupedData = ungroupedData.map(dataElement =>
     mapMeasureValuesToGroups(dataElement, dataElementCode, measureBuilderConfig.groups),
   );
-  return groupedData;
+
+  const a = groupedData.map(g => ({
+    ...g,
+    organisationUnitCode: g.organisationUnitCode.split('_')[0],
+  }));
+
+  console.log('groupData -> a', a);
+  return a;
 };

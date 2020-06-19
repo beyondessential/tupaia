@@ -228,6 +228,7 @@ export const selectHasPolygonMeasure = createSelector(
 
 export const selectAllMeasuresWithDisplayInfo = createSelector(
   [
+    state => state.orgUnits.orgUnitMap,
     state => selectActiveProject(state).code,
     state =>
       safeGet(countryCache, [state.orgUnits.orgUnitMap, state.map.measureInfo.currentCountry]),
@@ -238,6 +239,7 @@ export const selectAllMeasuresWithDisplayInfo = createSelector(
     state => state.map.measureInfo.hiddenMeasures,
   ],
   (
+    orgUnitMap,
     projectCode,
     country,
     measureData,
@@ -251,10 +253,18 @@ export const selectAllMeasuresWithDisplayInfo = createSelector(
     }
 
     const listOfMeasureLevels = measureLevel.split(',');
-    const allOrgUnitsOfLevel = safeGet(allCountryOrgUnitsCache, [country]).filter(orgUnit =>
-      listOfMeasureLevels.includes(orgUnit.type),
-    );
 
+    let allOrgUnitsOfLevel = safeGet(allCountryOrgUnitsCache, [country]).filter(orgUnit => {
+      return listOfMeasureLevels.includes(orgUnit.type);
+    });
+
+    if (country[projectCode].type === 'Project') {
+      allOrgUnitsOfLevel = Object.values(orgUnitMap)
+        .filter(org => org[org.countryCode])
+        .filter(org => listOfMeasureLevels.includes(org[org.countryCode].type))
+        .map(org => org[org.countryCode]);
+    }
+    console.log(allOrgUnitsOfLevel);
     return allOrgUnitsOfLevel.map(orgUnit =>
       safeGet(displayInfoCache, [
         measureOptions,
