@@ -52,7 +52,7 @@ const getButtonsConfig = fields => [
 ];
 
 const DATA_ELEMENTS = 'DATA_ELEMENTS';
-const PROGRAMS = 'PROGRAMS';
+const DATA_GROUPS = 'DATA_GROUPS';
 const DATA_SOURCE_FIELDS = [
   {
     Header: 'Code',
@@ -111,8 +111,8 @@ const TABS = {
       },
     },
   },
-  [PROGRAMS]: {
-    title: 'Programs',
+  [DATA_GROUPS]: {
+    title: 'Data Groups',
     endpoint: 'dataSources',
     baseFilter: { type: 'dataGroup' },
     fields: DATA_SOURCE_FIELDS,
@@ -150,5 +150,5 @@ const getTabPage = tabName => {
 };
 
 export const DataSourcesPage = () => (
-  <TabsPage tabs={[getTabPage(DATA_ELEMENTS), getTabPage(PROGRAMS)]} />
+  <TabsPage tabs={[getTabPage(DATA_ELEMENTS), getTabPage(DATA_GROUPS)]} />
 );
