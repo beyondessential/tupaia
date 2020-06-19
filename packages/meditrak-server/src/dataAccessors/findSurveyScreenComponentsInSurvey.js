@@ -16,7 +16,7 @@ export const findSurveyScreenComponentsInSurvey = async (
     { id: `${TYPES.SURVEY_SCREEN_COMPONENT}.id` },
     'code',
     'type',
-    'indicator',
+    'name',
     'text',
     'detail',
     'options',
