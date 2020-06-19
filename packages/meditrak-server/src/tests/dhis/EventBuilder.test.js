@@ -1,106 +1,21 @@
 /**
- * Tupaia MediTrak
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
 import chai, { expect } from 'chai';
 import chaiSubset from 'chai-subset';
 import sinon from 'sinon';
 
-import {
-  buildAndInsertSurveyResponses,
-  buildAndInsertSurveys,
-  generateTestId,
-} from '@tupaia/database';
+import { buildAndInsertSurveyResponses, buildAndInsertSurveys } from '@tupaia/database';
 import { DhisApi } from '@tupaia/dhis-api';
 import * as Enrollments from '../../dhis/api/enrollments';
 import { EventBuilder } from '../../dhis/pushers/data/event/EventBuilder';
 import { getModels } from '../getModels';
 import { upsertEntity } from '../testUtilities';
+import { DHIS_RESOURCES, ENTITIES, SURVEYS } from './EventBuilder.fixtures';
 
 chai.use(chaiSubset);
-
-const orgUnitId = generateTestId();
-const customEventOrgUnitId = generateTestId();
-const ENTITIES = {
-  ORG_UNIT: {
-    id: orgUnitId,
-    code: 'ORG_UNIT',
-  },
-  TRACKED_ENTITY: {
-    parent_id: orgUnitId,
-    code: 'TRACKED_ENTITY',
-    type: 'case',
-    metadata: {
-      dhis: {
-        id: 'trackedEntity_dhisId',
-      },
-    },
-  },
-  CUSTOM_EVENT_ORG_UNIT: {
-    id: customEventOrgUnitId,
-    code: 'CUSTOM_EVENT_ORG_UNIT',
-  },
-};
-
-const DEFAULT_OU_SURVEY = {
-  id: generateTestId(),
-  code: 'DEFAULT_OU',
-  name: 'Survey using the default org unit for the event',
-  questions: [
-    {
-      id: generateTestId(),
-      code: 'DEFAULT_OU1',
-      text: 'Select a disease',
-    },
-  ],
-};
-
-const eventOrgUnitQuestionId = generateTestId();
-const CUSTOM_OU_SURVEY = {
-  id: generateTestId(),
-  code: 'CUSTOM_OU',
-  name: 'Survey using a custom org unit specified in the response',
-  integration_metadata: {
-    dhis2: {
-      eventOrgUnit: { questionId: eventOrgUnitQuestionId },
-    },
-  },
-  questions: [
-    {
-      id: eventOrgUnitQuestionId,
-      code: 'CUSTOM_OU1',
-      text: 'Select the location of the event',
-    },
-  ],
-};
-
-const PROGRAMS = {
-  DEFAULT_OU: {
-    id: 'DEFAULT_OU_dhisId',
-    code: 'DEFAULT_OU',
-    programStages: [{ id: 'DEFAULT_OU_STAGE1_dhisId' }],
-  },
-  CUSTOM_OU: {
-    id: 'CUSTOM_OU_dhisId',
-    code: 'CUSTOM_OU',
-    programStages: [{ id: 'CUSTOM_OU_STAGE1_dhisId' }],
-  },
-};
-
-const DHIS_RESOURCES = {
-  programs: PROGRAMS,
-  organisationUnits: {
-    ORG_UNIT: {
-      ...ENTITIES.ORG_UNIT,
-      id: 'ORG_UNIT_dhisId',
-    },
-    CUSTOM_EVENT_ORG_UNIT: {
-      ...ENTITIES.CUSTOM_EVENT_ORG_UNIT,
-      id: 'CUSTOM_EVENT_ORG_UNIT_dhisId',
-    },
-  },
-};
 
 const models = getModels();
 
@@ -124,7 +39,7 @@ describe('EventBuilder', () => {
 
   before(async () => {
     enrollmentSpy = sinon.stub(Enrollments, 'enrollTrackedEntityInProgramIfNotEnrolled');
-    await buildAndInsertSurveys(models, [DEFAULT_OU_SURVEY, CUSTOM_OU_SURVEY]);
+    await buildAndInsertSurveys(models, Object.values(SURVEYS));
     const entities = Object.values(ENTITIES);
     for (let i = 0; i < entities.length; i++) {
       // Upsert entities in order for correct parent/child relationships
@@ -184,7 +99,7 @@ describe('EventBuilder', () => {
         {
           surveyCode: 'CUSTOM_OU',
           entityCode: 'TRACKED_ENTITY',
-          answers: { CUSTOM_OU1: customEventOrgUnitId },
+          answers: { CUSTOM_OU1: ENTITIES.CUSTOM_EVENT_ORG_UNIT.id },
         },
       ]);
 
