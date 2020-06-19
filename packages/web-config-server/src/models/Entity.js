@@ -124,7 +124,7 @@ export class Entity extends BaseModel {
    * @param {boolean} [includeWorld=false] Optionally force the top level 'World' to be included
    */
   static async getAllAncestors(id, includeWorld = false, types = []) {
-    return Entity.database.executeSql(
+    const entityIds = await Entity.database.executeSql(
       `
       WITH RECURSIVE children AS (
         SELECT id, code, "name", parent_id, type, 0 AS generation
@@ -145,6 +145,8 @@ export class Entity extends BaseModel {
     `,
       [id, ...types],
     );
+
+    return Promise.all(entityIds.map(({ id }) => Entity.findOne({ id })));
   }
 
   /**
