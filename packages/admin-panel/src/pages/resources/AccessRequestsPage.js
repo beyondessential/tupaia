@@ -8,9 +8,9 @@ const FIELDS = [
     editable: false,
   },
   {
-    Header: 'Country',
-    source: 'country.name',
-    editConfig: { optionsEndpoint: 'countries' },
+    Header: 'Entity',
+    source: 'entity.name',
+    editConfig: { optionsEndpoint: 'entities' },
   },
   {
     Header: 'Message',

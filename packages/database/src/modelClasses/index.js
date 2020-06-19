@@ -11,6 +11,7 @@ import { DataSourceModel } from './DataSource';
 import { EntityModel } from './Entity';
 import { GeographicalAreaModel } from './GeographicalArea';
 import { MeditrakDeviceModel } from './MeditrakDevice';
+import { OneTimeLoginModel } from './OneTimeLogin';
 import { PermissionGroupModel } from './PermissionGroup';
 import { QuestionModel } from './Question';
 import { RefreshTokenModel } from './RefreshToken';
@@ -18,6 +19,7 @@ import { SurveyModel } from './Survey';
 import { SurveyResponseModel } from './SurveyResponse';
 import { SurveyScreenComponentModel } from './SurveyScreenComponent';
 import { SurveyScreenModel } from './SurveyScreen';
+import { UserEntityPermissionModel } from './UserEntityPermission';
 import { UserModel } from './User';
 
 // export all models to be used in constructing a ModelRegistry
@@ -30,6 +32,7 @@ export const modelClasses = {
   Entity: EntityModel,
   GeographicalArea: GeographicalAreaModel,
   MeditrakDevice: MeditrakDeviceModel,
+  OneTimeLogin: OneTimeLoginModel,
   PermissionGroup: PermissionGroupModel,
   Question: QuestionModel,
   RefreshToken: RefreshTokenModel,
@@ -38,11 +41,17 @@ export const modelClasses = {
   SurveyScreen: SurveyScreenModel,
   SurveyScreenComponent: SurveyScreenComponentModel,
   User: UserModel,
+  UserEntityPermission: UserEntityPermissionModel,
 };
 
 // export any models and types that are extended in other packages
 export { AccessRequestModel } from './AccessRequest';
 export { CountryModel } from './Country';
+export { DataSourceModel } from './DataSource';
+export { EntityModel } from './Entity';
 export { GeographicalAreaModel } from './GeographicalArea';
 export { MeditrakDeviceModel } from './MeditrakDevice';
-export { DataSourceModel } from './DataSource';
+export { PermissionGroupModel } from './PermissionGroup';
+export { SurveyScreenModel } from './SurveyScreen';
+export { SurveyScreenComponentModel } from './SurveyScreenComponent';
+export { UserEntityPermissionModel } from './UserEntityPermission';

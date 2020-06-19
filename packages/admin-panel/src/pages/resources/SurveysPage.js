@@ -126,8 +126,8 @@ const QUESTION_FIELDS = [
     source: 'type',
   },
   {
-    Header: 'Indicator',
-    source: 'indicator',
+    Header: 'Name',
+    source: 'name',
   },
   {
     Header: 'Question',

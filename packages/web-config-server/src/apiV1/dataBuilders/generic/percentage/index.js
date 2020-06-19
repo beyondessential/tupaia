@@ -1,5 +1,4 @@
 export { annualPercentages, monthlyPercentages } from './percentagesPerPeriod';
-export { multiPercentagePerOrgUnit } from './multiPercentagePerOrgUnit';
 export { percentagesOfEventCounts } from './percentagesOfEventCounts';
 export { percentagesOfEventCountsPerPeriod } from './percentagesOfEventCountsPerPeriod';
 export { percentagesOfValueCounts } from './percentagesOfValueCounts';

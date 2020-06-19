@@ -49,15 +49,6 @@ const getBaseExport = infoColumnHeaders => [
   ...INFO_ROW_HEADERS.map(rowHeader => getValuesForRowHeader(rowHeader, infoColumnHeaders)),
 ];
 
-// Ensure user has access to this survey for this country
-// TODO: Make more fine grained once we have finer grained permissions
-// Eg: by facility or geo area
-const checkUserHasSurveyAccess = async (survey, user, country) => {
-  const ACCESS_OBJECT_TYPE = 'surveys';
-  const permissionGroup = await survey.getPermissionGroup();
-  return user.hasAccess(ACCESS_OBJECT_TYPE, [country.code], permissionGroup.name);
-};
-
 /**
  * Responds to GET requests to the /export/surveyResponses endpoint, exporting an excel document
  * containing the relevant survey responses
@@ -65,8 +56,7 @@ const checkUserHasSurveyAccess = async (survey, user, country) => {
  * @param {func}    res - function to call with response, takes (Error error, Object result)
  */
 export async function exportSurveyResponses(req, res) {
-  const { models, userId } = req;
-  const user = await models.user.findOne({ id: userId });
+  const { models, accessPolicy } = req;
   const { surveyResponseId } = req.params;
   const {
     surveyCodes,
@@ -163,7 +153,8 @@ export async function exportSurveyResponses(req, res) {
     };
     for (let surveyIndex = 0; surveyIndex < surveys.length; surveyIndex++) {
       const currentSurvey = surveys[surveyIndex];
-      const hasSurveyAccess = await checkUserHasSurveyAccess(currentSurvey, user, country);
+      const permissionGroup = await currentSurvey.getPermissionGroup();
+      const hasSurveyAccess = accessPolicy.allows(country.code, permissionGroup.name);
       if (!hasSurveyAccess) {
         exportData = [[`You do not have export access to ${currentSurvey.name}`]];
         addDataToSheet(currentSurvey.name, exportData);

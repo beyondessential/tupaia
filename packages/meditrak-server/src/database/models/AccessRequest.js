@@ -6,15 +6,15 @@
 import { AccessRequestModel as CommonAccessRequestModel } from '@tupaia/database';
 
 export class AccessRequestModel extends CommonAccessRequestModel {
-  notifiers = [onCreateCreateUserCountryPermission];
+  notifiers = [onApproveCreateUserCountryPermission];
 }
 
-async function onCreateCreateUserCountryPermission(
+async function onApproveCreateUserCountryPermission(
   {
     record: {
       approved,
       user_id: userId,
-      country_id: countryId,
+      entity_id: entityId,
       permission_group_id: permissionGroupId,
     },
   },
@@ -22,16 +22,16 @@ async function onCreateCreateUserCountryPermission(
 ) {
   const data = {
     user_id: userId,
-    country_id: countryId,
+    entity_id: entityId,
     permission_group_id: permissionGroupId,
   };
 
   if (approved) {
-    const userCountryPermission = await models.userCountryPermission.findOne(data);
-    if (userCountryPermission !== null) {
-      throw new Error(`User Country Permission already exists`);
+    const userEntityPermission = await models.userEntityPermission.findOne(data);
+    if (userEntityPermission !== null) {
+      throw new Error(`User already has this permission`);
     }
 
-    await models.userCountryPermission.create(data);
+    await models.userEntityPermission.create(data);
   }
 }

@@ -47,7 +47,6 @@ export const createUser = async (req, res) => {
     contactNumber: contactNumber ? [hasNoAlphaLetters] : [],
     employer: [fieldHasContent],
     position: [fieldHasContent],
-    deviceName: [fieldHasContent],
   };
 
   // Most errors are checked using the ObjectValidator except for a few specific ones which are easier to check here in createUser

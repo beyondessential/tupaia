@@ -5,9 +5,9 @@ var type;
 var seed;
 
 /**
-  * We receive the dbmigrate dependency from dbmigrate initially.
-  * This enables us to not have to rely on NODE_PATH.
-  */
+ * We receive the dbmigrate dependency from dbmigrate initially.
+ * This enables us to not have to rely on NODE_PATH.
+ */
 exports.setup = function(options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
@@ -19,7 +19,7 @@ exports.up = function(db) {
     CREATE TABLE access_request (
       id TEXT PRIMARY KEY,
       user_id text REFERENCES user_account(id),
-      country_id text REFERENCES country(id),
+      entity_id text REFERENCES entity(id),
       message text,
       permission_group_id text REFERENCES permission_group(id),
       approved BOOLEAN DEFAULT NULL,
@@ -40,5 +40,5 @@ exports.down = function(db) {
 };
 
 exports._meta = {
-  "version": 1
+  version: 1,
 };

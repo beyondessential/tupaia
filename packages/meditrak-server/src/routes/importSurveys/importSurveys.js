@@ -176,7 +176,7 @@ export async function importSurveys(req, res) {
           const {
             code,
             type,
-            indicator,
+            name,
             text,
             questionLabel,
             detail,
@@ -194,7 +194,7 @@ export async function importSurveys(req, res) {
           const questionToUpsert = {
             code,
             type,
-            indicator,
+            name,
             text,
             detail,
             options: processOptions(options, optionLabels, optionColors),

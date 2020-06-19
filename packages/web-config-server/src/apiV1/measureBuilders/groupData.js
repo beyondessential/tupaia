@@ -7,7 +7,9 @@ import { mapMeasureValuesToGroups } from './helpers';
 import { getMeasureBuilder } from './getMeasureBuilder';
 
 export const groupData = async (aggregator, dhisApi, query, measureBuilderConfig = {}, entity) => {
-  const builderName = measureBuilderConfig.measureBuilder;
+  const { measureBuilder: builderName } = measureBuilderConfig;
+  const { dataElementCode } = query;
+
   const ungroupedData = await getMeasureBuilder(builderName)(
     aggregator,
     dhisApi,
@@ -17,7 +19,7 @@ export const groupData = async (aggregator, dhisApi, query, measureBuilderConfig
   );
 
   const groupedData = ungroupedData.map(dataElement =>
-    mapMeasureValuesToGroups(dataElement, query.dataElementCode, measureBuilderConfig.groups),
+    mapMeasureValuesToGroups(dataElement, dataElementCode, measureBuilderConfig.groups),
   );
   return groupedData;
 };

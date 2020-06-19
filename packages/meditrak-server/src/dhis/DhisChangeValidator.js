@@ -12,10 +12,10 @@ export class DhisChangeValidator extends ChangeValidator {
       await this.models.database.executeSql(
         `
           SELECT DISTINCT user_id
-          FROM user_country_permission
-          JOIN country ON country.id = user_country_permission.country_id
-          JOIN permission_group ON permission_group.id = user_country_permission.permission_group_id
-          WHERE country.code = 'DL'
+          FROM user_entity_permission
+          JOIN entity ON entity.id = user_entity_permission.entity_id
+          JOIN permission_group ON permission_group.id = user_entity_permission.permission_group_id
+          WHERE entity.code = 'DL'
           AND permission_group.name <> 'Public';
         `,
       )

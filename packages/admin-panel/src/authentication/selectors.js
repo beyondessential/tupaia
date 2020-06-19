@@ -1,5 +1,3 @@
-import { validateUserIsAuthenticated } from './validateUserIsAuthenticated';
-
 /**
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
@@ -14,10 +12,7 @@ export const getErrorMessage = state => getAuthenticationState(state).errorMessa
 export const getIsLoginModalOpen = state => !getIsUserAuthenticated(state);
 
 // Authentication details
-export const getIsUserAuthenticated = state => {
-  const user = getUser(state);
-  return validateUserIsAuthenticated(user);
-};
+export const getIsUserAuthenticated = state => !!getAuthenticationState(state).user;
 export const getAccessToken = state => getAuthenticationState(state).accessToken;
 export const getRefreshToken = state => getAuthenticationState(state).refreshToken;
 
