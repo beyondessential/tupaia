@@ -22,11 +22,5 @@ export const groupData = async (aggregator, dhisApi, query, measureBuilderConfig
     mapMeasureValuesToGroups(dataElement, dataElementCode, measureBuilderConfig.groups),
   );
 
-  const a = groupedData.map(g => ({
-    ...g,
-    organisationUnitCode: g.organisationUnitCode.split('_')[0],
-  }));
-
-  console.log('groupData -> a', a);
-  return a;
+  return groupedData;
 };
