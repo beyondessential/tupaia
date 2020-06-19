@@ -174,23 +174,12 @@ const mapStateToProps = (state, givenProps) => {
         measureOrgUnitCodes.includes(child.organisationUnitCode),
       );
 
-    // console.log('mapStateToProps -> measureOrgUnits', {
-    //   measureOrgUnitCodes,
-    //   organisationUnitCode,
-    // });
-    // console.log('mapStateToProps -> organisationUnitCode', organisationUnitCode);
-    // console.log('mapStateToProps -> measureOrgUnitCodes', measureOrgUnitCodes);
     if (measureOrgUnitCodes.includes(organisationUnitCode)) {
       orgUnitMeasureData = measureOrgUnits.find(
         orgUnit => orgUnit.organisationUnitCode === organisationUnitCode,
       );
     }
 
-    // if (measureLevel === 'Project') {
-    //   const data = measureData.find(data => data.organisationUnitCode === organisationUnitCode);
-    //   // orgUnitMeasureData =
-    // }
-    // console.log(orgUnitMeasureData);
     shade = (orgUnitMeasureData || {}).color;
   }
 

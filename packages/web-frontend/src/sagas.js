@@ -667,12 +667,6 @@ function* watchSearchChange() {
  */
 function* fetchMeasureInfo(measureId, organisationUnitCode) {
   const state = yield select();
-  // if (selectIsProject(state, organisationUnitCode)) {
-  //   // Never want to fetch measures for World org code.
-  //   yield put(cancelFetchMeasureData());
-  //   yield put(clearMeasureHierarchy());
-  //   return;
-  // }
 
   if (!measureId || !organisationUnitCode) {
     // Don't try and fetch null measures
@@ -744,7 +738,7 @@ function* fetchCurrentMeasureInfo() {
     const isHeirarchyPopulated = Object.keys(measureHierarchy).length;
 
     // Update the default measure ID
-    if (true) {
+    if (isHeirarchyPopulated) {
       const newMeasure = getSelectedMeasureFromHierarchy(
         measureHierarchy,
         selectedMeasureId,
@@ -803,8 +797,6 @@ function* watchOrgUnitChangeAndFetchMeasureInfo() {
  */
 function* fetchMeasures(action) {
   const { organisationUnitCode } = action.organisationUnit;
-  const state = yield select();
-  // if (selectIsProject(state, organisationUnitCode)) yield put(clearMeasure());
   const projectCode = (yield select(selectActiveProject)).code;
   const requestResourceUrl = `measures?organisationUnitCode=${organisationUnitCode}&projectCode=${projectCode}`;
   try {

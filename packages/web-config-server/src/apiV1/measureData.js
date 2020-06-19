@@ -101,14 +101,14 @@ export default class extends DataAggregatingRouteHandler {
     const overlays = await MapOverlay.find({ id: measureId.split(',') });
 
     // check permission
-    // await Promise.all(
-    //   overlays.map(async ({ userGroup }) => {
-    //     const isUserAllowedMeasure = await this.req.userHasAccess(code, userGroup);
-    //     if (!isUserAllowedMeasure) {
-    //       throw new CustomError(accessDeniedForMeasure);
-    //     }
-    //   }),
-    // );
+    await Promise.all(
+      overlays.map(async ({ userGroup }) => {
+        const isUserAllowedMeasure = await this.req.userHasAccess(code, userGroup);
+        if (!isUserAllowedMeasure) {
+          throw new CustomError(accessDeniedForMeasure);
+        }
+      }),
+    );
 
     // start fetching options
     const optionsTasks = overlays.map(o => this.fetchMeasureOptions(o, this.query));
@@ -116,9 +116,6 @@ export default class extends DataAggregatingRouteHandler {
     const shouldFetchSiblings = this.query.shouldShowAllParentCountryResults === 'true';
     const dataTasks = overlays.map(o => this.fetchMeasureData(o, shouldFetchSiblings));
 
-    // console.log('==== measureData:115 ====');
-    // console.log(options)
-    // console.log('--------------------------------------');
     // wait for fetches to complete
     const measureOptions = await Promise.all(optionsTasks);
     const measureDataResponsesByMeasureId = (
@@ -211,9 +208,7 @@ export default class extends DataAggregatingRouteHandler {
       dataSourceType === DATA_SOURCE_TYPES.SINGLE
         ? await this.getOptionsForDataElement(mapOverlay, dataElementCode)
         : {};
-    console.log('==== measureData:192 ====');
-    console.log('fetch options: ', dataSourceType);
-    console.log('--------------------------------------');
+
     const translatedOptions = translateMeasureOptionSet(options, mapOverlay);
 
     return { ...baseOptions, values: translatedOptions };
@@ -226,9 +221,7 @@ export default class extends DataAggregatingRouteHandler {
       dataServices,
       includeOptions: true,
     });
-    console.log('==== measureData:229 ====');
-    console.log(dataElement);
-    console.log('--------------------------------------');
+
     if (!dataElement) {
       throw new Error(`Data element with code ${dataElementCode} not found`);
     }
