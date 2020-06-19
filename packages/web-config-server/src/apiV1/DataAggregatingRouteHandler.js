@@ -32,7 +32,7 @@ export class DataAggregatingRouteHandler extends RouteHandler {
     let dataSourceEntities = [];
     if (entityType) {
       const ancestor = await entity.getAncestorOfType(entityType);
-      if (ancestor) {
+      if (ancestor && ancestor.type != entityType) {
         dataSourceEntities = [ancestor];
       } else {
         dataSourceEntities = await entity.getDescendantsOfType(entityType, hierarchyId);
