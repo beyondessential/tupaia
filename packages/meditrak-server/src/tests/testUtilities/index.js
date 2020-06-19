@@ -5,8 +5,6 @@
 
 export {
   insertEntityAndFacility,
-  insertSurveyAndScreens,
-  insertSurveyResponse,
   populateTestData,
   resetTestData,
   upsertAnswer,
