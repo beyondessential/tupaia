@@ -1,88 +1,144 @@
-import React from 'react';
-import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-import Grow from '@material-ui/core/Grow';
-import Paper from '@material-ui/core/Paper';
-import Popper from '@material-ui/core/Popper';
-import MenuItem from '@material-ui/core/MenuItem';
-import MenuList from '@material-ui/core/MenuList';
+import MuiPaper from '@material-ui/core/Paper';
+import MuiMenuItem from '@material-ui/core/MenuItem';
+import MuiMenuList from '@material-ui/core/MenuList';
+import styled from 'styled-components';
+import { LightOutlinedButton } from './Button';
 
-const options = ['Create a merge commit', 'Squash and merge', 'Rebase and merge'];
+const ButtonGroup = styled(LightOutlinedButton)`
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 0.8rem 0 1.2rem;
+  min-width: 13rem;
 
-export const DropdownMenu = () => {
-  const [open, setOpen] = React.useState(false);
-  const anchorRef = React.useRef(null);
-  const [selectedIndex, setSelectedIndex] = React.useState(1);
+  &:hover {
+    background-color: white;
+    span,
+    svg {
+      color: ${props => props.theme.palette.primary.main};
+    }
+  }
 
-  const handleClick = () => {
-    console.info(`You clicked ${options[selectedIndex]}`);
-  };
+  ${({ isActive }) =>
+    isActive &&
+    `
+    background: white;
+    
+    &.MuiButtonBase-root {
+      span {
+        color: #414d55;
+      }
+    
+      svg {
+        color: #9AA8B0;
+      }
+    } 
+  `}
+`;
+
+const LeftSpan = styled.span`
+  padding-right: 2rem;
+  line-height: 1rem;
+`;
+
+const RightSpan = styled.span`
+  padding-left: 0.8rem;
+  padding-top: 0.7rem;
+  padding-bottom: 0.6rem;
+  border-left: 1px solid ${props => props.theme.palette.grey['400']};
+`;
+
+const Paper = styled(MuiPaper)`
+  position: absolute;
+  top: calc(100% - 1px);
+  left: -1px;
+  width: calc(2px + 100%);
+  box-shadow: none;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+`;
+
+const MenuList = styled(MuiMenuList)`
+  padding: 0;
+`;
+
+const MenuItem = styled(MuiMenuItem)`
+  border-top: 1px solid ${props => props.theme.palette.grey['400']};
+  font-size: 14px;
+  line-height: 16px;
+  display: flex;
+  align-items: center;
+  color: #6f7b82;
+  padding-top: 14px;
+  padding-bottom: 14px;
+
+  &:hover {
+    background-color: initial;
+  }
+
+  &.MuiButtonBase-root.Mui-selected {
+    background-color: ${props => props.theme.palette.error.main};
+    color: white;
+    font-weight: 500;
+  }
+`;
+
+export const DropdownMenu = ({ options }) => {
+  const [open, setOpen] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
   const handleMenuItemClick = (event, index) => {
+    event.preventDefault();
+    event.stopPropagation();
     setSelectedIndex(index);
     setOpen(false);
   };
 
   const handleToggle = () => {
-    setOpen((prevOpen) => !prevOpen);
+    setOpen(prevOpen => !prevOpen);
   };
 
-  const handleClose = (event) => {
-    if (anchorRef.current && anchorRef.current.contains(event.target)) {
-      return;
-    }
-
+  const handleClose = () => {
     setOpen(false);
   };
 
   return (
-    <Grid container direction="column" alignItems="center">
-      <Grid item xs={12}>
-        <ButtonGroup variant="contained" color="primary" ref={anchorRef} aria-label="split button">
-          <Button onClick={handleClick}>{options[selectedIndex]}</Button>
-          <Button
-            color="primary"
-            size="small"
-            aria-controls={open ? 'split-button-menu' : undefined}
-            aria-expanded={open ? 'true' : undefined}
-            aria-label="select merge strategy"
-            aria-haspopup="menu"
-            onClick={handleToggle}
-          >
-            <ArrowDropDownIcon />
-          </Button>
-        </ButtonGroup>
-        <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
-          {({ TransitionProps, placement }) => (
-            <Grow
-              {...TransitionProps}
-              style={{
-                transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom',
-              }}
-            >
-              <Paper>
-                <ClickAwayListener onClickAway={handleClose}>
-                  <MenuList id="split-button-menu">
-                    {options.map((option, index) => (
-                      <MenuItem
-                        key={option}
-                        disabled={index === 2}
-                        selected={index === selectedIndex}
-                        onClick={(event) => handleMenuItemClick(event, index)}
-                      >
-                        {option}
-                      </MenuItem>
-                    ))}
-                  </MenuList>
-                </ClickAwayListener>
-              </Paper>
-            </Grow>
-          )}
-        </Popper>
-      </Grid>
-    </Grid>
+    <ButtonGroup isActive={open} onClick={handleToggle}>
+      <LeftSpan>State: {options[selectedIndex]}</LeftSpan>
+      <RightSpan>
+        <ExpandMoreIcon />
+      </RightSpan>
+      {open && (
+        <Paper>
+          <ClickAwayListener onClickAway={handleClose}>
+            <MenuList>
+              {options.map((option, index) => (
+                <MenuItem
+                  key={option}
+                  selected={index === selectedIndex}
+                  onClick={event => handleMenuItemClick(event, index)}
+                >
+                  {option}
+                </MenuItem>
+              ))}
+            </MenuList>
+          </ClickAwayListener>
+        </Paper>
+      )}
+    </ButtonGroup>
   );
+};
+
+DropdownMenu.propTypes = {
+  options: PropTypes.array.isRequired,
 };

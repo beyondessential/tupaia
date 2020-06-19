@@ -7,6 +7,7 @@ import React from 'react';
 import styled from 'styled-components';
 import MuiBox from '@material-ui/core/Box';
 import { DropdownMenu } from '../src/components/DropdownMenu';
+import * as COLORS from './story-utils/theme/colors';
 
 export default {
   title: 'DropdownMenu',
@@ -14,11 +15,14 @@ export default {
 
 const Container = styled(MuiBox)`
   max-width: 1200px;
-  padding: 1rem;
+  padding: 3rem 3rem 10rem 3rem;
 `;
 
+const options = ['Alert', 'Outbreak', 'Archive Alert '];
+
 export const dropdownMenu = () => (
-  <Container>
-    <DropdownMenu />
+  <Container bgcolor={COLORS.BLUE}>
+    <DropdownMenu options={options} />
   </Container>
 );
+
