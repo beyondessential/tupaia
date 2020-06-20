@@ -159,7 +159,7 @@ ConnectedPolygon.defaultProps = {
 
 const mapStateToProps = (state, givenProps) => {
   const { organisationUnitCode, organisationUnitChildren } = givenProps.area;
-  const { measureId, measureData, measureOptions, measureLevel } = state.map.measureInfo;
+  const { measureId, measureData, measureOptions } = state.map.measureInfo;
 
   let shade;
   let orgUnitMeasureData;

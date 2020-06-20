@@ -258,13 +258,14 @@ export const selectAllMeasuresWithDisplayInfo = createSelector(
       return listOfMeasureLevels.includes(orgUnit.type);
     });
 
+    // selectIsProject()
     if (country[projectCode].type === 'Project') {
       allOrgUnitsOfLevel = Object.values(orgUnitMap)
         .filter(org => org[org.countryCode])
         .filter(org => listOfMeasureLevels.includes(org[org.countryCode].type))
         .map(org => org[org.countryCode]);
     }
-    console.log(allOrgUnitsOfLevel);
+
     return allOrgUnitsOfLevel.map(orgUnit =>
       safeGet(displayInfoCache, [
         measureOptions,

@@ -12,7 +12,6 @@ import {
   selectOrgUnit,
   selectOrgUnitChildren,
   selectOrgUnitCountry,
-  selectIsProject,
   selectActiveProject,
   selectProjectByCode,
   selectMeasureBarItemById,
