@@ -81,15 +81,11 @@ export class TupaiaService extends Service {
     }
 
     const [dataSource] = dataSources;
-    const { code: surveyCode } = dataSource;
-    const dataElementDataSources = await this.models.dataSource.getDataElementsInGroup(surveyCode);
-    const dataElementsMetadata = await this.pullDataElementMetadata(dataElementDataSources);
-    const dataGroupsMetadata = await this.api.fetchDataGroup(surveyCode);
-    const dataGroupMetadata = dataGroupsMetadata[0]; //Only expect 1
-
-    return {
-      ...dataGroupMetadata,
-      dataElements: dataElementsMetadata,
-    };
+    const { code: dataGroupCode } = dataSource;
+    const dataElementDataSources = await this.models.dataSource.getDataElementsInGroup(
+      dataGroupCode,
+    );
+    const dataElementCodes = dataElementDataSources.map(({ code }) => code);
+    return this.api.fetchDataGroup(dataGroupCode, dataElementCodes);
   }
 }

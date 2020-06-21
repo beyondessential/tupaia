@@ -11,7 +11,7 @@ import { formatMatrixDataForExcel } from './excelFormatters/formatMatrixDataForE
 const EXPORT_FILE_TITLE = 'survey_response_export';
 const EXPORT_DIRECTORY = 'exports';
 
-export class ExportRawDataSurveyResponsesHandler extends RouteHandler {
+export class ExportSurveyDataHandler extends RouteHandler {
   static PermissionsChecker = ExportSurveyResponsesPermissionsChecker;
 
   async handleRequest() {
@@ -52,8 +52,8 @@ export class ExportRawDataSurveyResponsesHandler extends RouteHandler {
 
     Object.entries(data.data).forEach(([surveyName, surveyData]) => {
       const header = surveyData.data.columns.length
-        ? `Survey responses ${this.getExportDatesString(startDate, endDate)}`
-        : `No survey responses for ${surveyName} ${this.getExportDatesString(startDate, endDate)}`;
+        ? `Data ${this.getExportDatesString(startDate, endDate)}`
+        : `No data for ${surveyName} ${this.getExportDatesString(startDate, endDate)}`;
 
       const headerData = [[header]];
 

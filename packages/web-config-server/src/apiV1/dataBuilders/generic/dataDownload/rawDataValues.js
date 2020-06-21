@@ -25,19 +25,13 @@ class RawDataValuesBuilder extends DataBuilder {
 
       const { dataElements: dataElementsMetadata } = await this.fetchDataGroup(surveyCode);
 
-      const dataElementCodes = dataElementsMetadata.map(
-        dataElementMetadata => dataElementMetadata.code,
-      );
+      const dataElementCodes = dataElementsMetadata.map(d => d.code);
 
       const events = await this.fetchEvents({ dataElementCodes }, surveyCode);
 
       const columns = this.buildColumns(events);
 
-      const dataElementCodeToText = {};
-
-      dataElementsMetadata.forEach(({ code, text }) => {
-        dataElementCodeToText[code] = text;
-      });
+      const dataElementCodeToText = reduceToDictionary(dataElementsMetadata, 'code', 'text');
 
       let rows = [];
 
@@ -46,6 +40,7 @@ class RawDataValuesBuilder extends DataBuilder {
       }
 
       data[surveyCodeToName[surveyCode]] = {
+        // need the nested 'data' property to be interpreted as the input to a matrix
         data: {
           columns,
           rows,
@@ -62,11 +57,11 @@ class RawDataValuesBuilder extends DataBuilder {
   buildColumns = events => {
     const builtColumnsMap = {};
 
-    events.forEach(({ orgUnit, eventDate }) => {
-      const key = `${orgUnit}|${eventDate}`;
-      builtColumnsMap[key] = {
-        key: key,
-        title: key,
+    events.forEach(({ event }) => {
+      //event = id of survey_response
+      builtColumnsMap[event] = {
+        key: event,
+        title: event,
       };
     });
 
@@ -98,10 +93,9 @@ class RawDataValuesBuilder extends DataBuilder {
       };
 
       //Build a row for each organisationUnit - period combination
-      events.forEach(({ orgUnit, orgUnitName, eventDate, dataValues }) => {
+      events.forEach(({ event, orgUnit, orgUnitName, eventDate, dataValues }) => {
         Object.entries(dataValues).forEach(([code, dataValue]) => {
           if (dataKey === code || DEFAULT_DATA_KEY_TO_TEXT[dataKey]) {
-            const key = `${orgUnit}|${eventDate}`;
             let value;
 
             switch (dataKey) {
@@ -119,7 +113,7 @@ class RawDataValuesBuilder extends DataBuilder {
                 break;
             }
 
-            row[key] = value;
+            row[event] = value;
           }
         });
       });

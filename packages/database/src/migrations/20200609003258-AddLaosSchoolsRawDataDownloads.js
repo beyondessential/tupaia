@@ -56,7 +56,7 @@ const VIEW_JSON = {
 
 const DASHBOARD_REPORT = {
   id: REPORT_ID,
-  dataBuilder: 'rawDataExport',
+  dataBuilder: 'surveyDataExport',
   dataBuilderConfig: DATA_BUILDER_CONFIG,
   viewJson: VIEW_JSON,
 };

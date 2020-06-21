@@ -4,13 +4,21 @@ import { buildExportUrl } from '/export';
 
 import { getDataBuilder } from '/apiV1/dataBuilders/getDataBuilder';
 
-class RawDataExportBuilder extends DataBuilder {
+class SurveyDataExportBuilder extends DataBuilder {
+  constructor(req, ...superClassArgs) {
+    super(...superClassArgs);
+    this.req = req;
+  }
+
   async build() {
     const surveyCodes = this.query.surveyCodes;
     if (!surveyCodes) {
+      //First call to this data builder will return only the available surveys that can be exported.
       return this.getSurveyExportOptions();
     }
 
+    //When surveyCodes is provided in the query, it will grab the exportDataBuilder
+    //and build the actual data that can be exported.
     return this.fetchExportResults();
   }
 
@@ -22,7 +30,7 @@ class RawDataExportBuilder extends DataBuilder {
         name,
         value: code,
       })),
-      downloadUrl: buildExportUrl(this.req, 'rawDataSurveyResponses', {
+      downloadUrl: buildExportUrl(this.req, 'surveyDataDownload', {
         ...this.query,
       }),
     };
@@ -52,18 +60,15 @@ class RawDataExportBuilder extends DataBuilder {
       this.dhisApi,
     );
   };
-
-  injectReq(req) {
-    this.req = req;
-  }
 }
 
-export const rawDataExport = async (
+export const surveyDataExport = async (
   { dataBuilderConfig, query, entity, req },
   aggregator,
   dhisApi,
 ) => {
-  const builder = new RawDataExportBuilder(
+  const builder = new SurveyDataExportBuilder(
+    req,
     aggregator,
     dhisApi,
     dataBuilderConfig,
@@ -71,8 +76,6 @@ export const rawDataExport = async (
     entity,
     aggregator.aggregationTypes.RAW_DATA,
   );
-
-  builder.injectReq(req);
 
   return builder.build();
 };
