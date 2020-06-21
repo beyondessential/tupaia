@@ -3,14 +3,14 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { createContext, useContext, useState } from 'react';
+import React, { useState } from 'react';
+import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import MuiPaper from '@material-ui/core/Paper';
 import MuiMenuItem from '@material-ui/core/MenuItem';
 import MuiMenuList from '@material-ui/core/MenuList';
-import styled from 'styled-components';
 import { LightOutlinedButton } from '@tupaia/ui-components';
 
 const ButtonGroup = styled(LightOutlinedButton)`
@@ -93,16 +93,15 @@ const MenuItem = styled(MuiMenuItem)`
   }
 `;
 
-const DropdownMenuContext = createContext(null);
-
-export const DropdownMenu = ({ children }) => {
-  const [activeIndex, setActiveIndex] = useState(0);
+export const DropdownMenu = ({ options, onChange }) => {
   const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(options[0].value);
 
-  const onChange = (event, index) => {
+  const handleMenuItemClick = (event, option) => {
     event.preventDefault();
     event.stopPropagation();
-    setActiveIndex(index);
+    setValue(option.value);
+    onChange(option);
     setOpen(false);
   };
 
@@ -114,9 +113,11 @@ export const DropdownMenu = ({ children }) => {
     setOpen(false);
   };
 
+  const remainingOptions = options.filter(option => option.value !== value);
+
   return (
     <ButtonGroup isActive={open} onClick={handleToggle}>
-      <LeftSpan>State: {children[activeIndex].value}</LeftSpan>
+      <LeftSpan>State: {value}</LeftSpan>
       <RightSpan>
         <ExpandMoreIcon />
       </RightSpan>
@@ -124,9 +125,15 @@ export const DropdownMenu = ({ children }) => {
         <Paper>
           <ClickAwayListener onClickAway={handleClose}>
             <MenuList>
-              <DropdownMenuContext.Provider value={{ activeIndex, setActiveIndex, onChange }}>
-                {children}
-              </DropdownMenuContext.Provider>
+              {remainingOptions.map(option => (
+                <MenuItem
+                  key={option.value}
+                  selected={option.value === value}
+                  onClick={event => handleMenuItemClick(event, option)}
+                >
+                  {option.label}
+                </MenuItem>
+              ))}
             </MenuList>
           </ClickAwayListener>
         </Paper>
@@ -136,11 +143,6 @@ export const DropdownMenu = ({ children }) => {
 };
 
 DropdownMenu.propTypes = {
-  children: PropTypes.array.isRequired,
-};
-
-export const DropdownMenuOption = ({ index }) => {
-  console.log('index', index);
-  const { activeIndex, onChange } = useContext(DropdownMenuContext);
-  return <MenuItem selected={index === activeIndex} onClick={event => onChange(event, index)} />;
+  options: PropTypes.array.isRequired,
+  onChange: PropTypes.func.isRequired,
 };

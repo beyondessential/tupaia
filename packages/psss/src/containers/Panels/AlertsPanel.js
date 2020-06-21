@@ -3,10 +3,18 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { LocationOn, SpeakerNotes, List } from '@material-ui/icons';
-import { CardTabs, CardTabList, CardTab, CardTabPanels, WarningCloud } from '@tupaia/ui-components';
+import styled from 'styled-components';
+import { MoveToInbox, LocationOn, SpeakerNotes, List } from '@material-ui/icons';
+import {
+  CardTabs,
+  CardTabList,
+  CardTab,
+  CardTabPanels,
+  WarningCloud,
+  Virus,
+} from '@tupaia/ui-components';
 import { connectApi } from '../../api';
 import {
   Drawer,
@@ -20,24 +28,41 @@ import {
 import { countryFlagImage } from '../../utils';
 import { useFetch } from '../../hooks';
 
-const AlertsMenu = () => {
-  const handleChange = () => {
-    console.log('change...');
-  };
-  return (
-    <DropdownMenu onChange={handleChange}>
-      <Option value="alert">
-        <Icon /> Alert
+const Option = styled.span`
+  display: flex;
+  align-items: center;
+
+  svg {
+    margin-right: 0.5rem;
+  }
+`;
+
+const menuOptions = [
+  {
+    value: 'Alert',
+    label: (
+      <Option>
+        <WarningCloud /> Alert
       </Option>
-      <Option value="alert">
-        <Icon /> Outbreak
+    ),
+  },
+  {
+    value: 'Archive',
+    label: (
+      <Option>
+        <MoveToInbox /> Archive Alert
       </Option>
-      <Option value="alert">
-        <Icon /> Archive
+    ),
+  },
+  {
+    value: 'Outbreak',
+    label: (
+      <Option>
+        <Virus /> Create Outbreak
       </Option>
-    </DropdownMenu>
-  );
-};
+    ),
+  },
+];
 
 export const AlertsPanelComponent = ({
   isOpen,
@@ -50,6 +75,10 @@ export const AlertsPanelComponent = ({
   const notesState = useFetch(fetchNotesData);
   const activityState = useFetch(fetchActivityData);
 
+  const handleChange = option => {
+    console.log('handle change...', option);
+  };
+
   return (
     <Drawer open={isOpen} onClose={handleClose}>
       <DrawerTray heading="Alert Details" onClose={handleClose} Icon={WarningCloud} />
@@ -58,7 +87,7 @@ export const AlertsPanelComponent = ({
         avatarUrl={countryFlagImage('as')}
         subheading="American Samoa"
         heading="Acute Fever and Rash (AFR)"
-        DropdownMenu={AlertsMenu}
+        DropdownMenu={<DropdownMenu options={menuOptions} onChange={handleChange} />}
       />
       <CardTabs>
         <CardTabList>

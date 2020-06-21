@@ -62,7 +62,14 @@ const Heading = styled(Typography)`
   line-height: 2.3rem;
 `;
 
-export const AlertsDrawerHeader = ({ heading, subheading, date, color, avatarUrl, DropdownMenu }) => (
+export const AlertsDrawerHeader = ({
+  heading,
+  subheading,
+  date,
+  color,
+  avatarUrl,
+  DropdownMenu,
+}) => (
   <Header color={color}>
     <SpaceBetween>
       <div>
