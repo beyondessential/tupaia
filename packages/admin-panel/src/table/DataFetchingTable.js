@@ -26,6 +26,8 @@ import { generateConfigForColumnType } from './columnTypes';
 import { getIsChangingDataOnServer } from '../dataChangeListener';
 import { makeSubstitutionsInString } from '../utilities';
 
+const PAGE_SIZE_OPTIONS = [2, 5, 10, 20, 50, 100];
+
 class DataFetchingTableComponent extends React.Component {
   componentWillMount() {
     this.props.onRefreshData();
@@ -79,11 +81,19 @@ class DataFetchingTableComponent extends React.Component {
       onExpandedTabChange,
     } = this.props;
     const getPageSize = () => {
-      const noData = !expansionTabs && data.length === 0;
+      // maintain the selected page size if there are multiple pages
+      if (data.length > pageSize) {
+        return pageSize;
+      }
 
-      if (noData) return 2;
-      if (pageSize > data.length) return data.length;
+      // shrink the table if there's only one page of data
+      for (let i = 0; i < PAGE_SIZE_OPTIONS.length; i++) {
+        if (data.length <= PAGE_SIZE_OPTIONS[i]) {
+          return PAGE_SIZE_OPTIONS[i];
+        }
+      }
 
+      // should never be reached
       return pageSize;
     };
 
@@ -100,6 +110,7 @@ class DataFetchingTableComponent extends React.Component {
         onResizedChange={onResizedChange}
         page={pageIndex}
         pageSize={getPageSize()}
+        pageSizeOptions={PAGE_SIZE_OPTIONS}
         sorted={sorting}
         expanded={expansions}
         filtered={filters}
