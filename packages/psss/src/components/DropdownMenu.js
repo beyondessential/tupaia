@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
@@ -11,7 +11,7 @@ import MuiPaper from '@material-ui/core/Paper';
 import MuiMenuItem from '@material-ui/core/MenuItem';
 import MuiMenuList from '@material-ui/core/MenuList';
 import styled from 'styled-components';
-import { LightOutlinedButton } from './Button';
+import { LightOutlinedButton } from '@tupaia/ui-components';
 
 const ButtonGroup = styled(LightOutlinedButton)`
   position: relative;
@@ -93,14 +93,16 @@ const MenuItem = styled(MuiMenuItem)`
   }
 `;
 
-export const DropdownMenu = ({ options }) => {
-  const [open, setOpen] = useState(false);
-  const [selectedIndex, setSelectedIndex] = useState(0);
+const DropdownMenuContext = createContext(null);
 
-  const handleMenuItemClick = (event, index) => {
+export const DropdownMenu = ({ children }) => {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [open, setOpen] = useState(false);
+
+  const onChange = (event, index) => {
     event.preventDefault();
     event.stopPropagation();
-    setSelectedIndex(index);
+    setActiveIndex(index);
     setOpen(false);
   };
 
@@ -114,7 +116,7 @@ export const DropdownMenu = ({ options }) => {
 
   return (
     <ButtonGroup isActive={open} onClick={handleToggle}>
-      <LeftSpan>State: {options[selectedIndex]}</LeftSpan>
+      <LeftSpan>State: {children[activeIndex].value}</LeftSpan>
       <RightSpan>
         <ExpandMoreIcon />
       </RightSpan>
@@ -122,15 +124,9 @@ export const DropdownMenu = ({ options }) => {
         <Paper>
           <ClickAwayListener onClickAway={handleClose}>
             <MenuList>
-              {options.map((option, index) => (
-                <MenuItem
-                  key={option}
-                  selected={index === selectedIndex}
-                  onClick={event => handleMenuItemClick(event, index)}
-                >
-                  {option}
-                </MenuItem>
-              ))}
+              <DropdownMenuContext.Provider value={{ activeIndex, setActiveIndex, onChange }}>
+                {children}
+              </DropdownMenuContext.Provider>
             </MenuList>
           </ClickAwayListener>
         </Paper>
@@ -140,5 +136,11 @@ export const DropdownMenu = ({ options }) => {
 };
 
 DropdownMenu.propTypes = {
-  options: PropTypes.array.isRequired,
+  children: PropTypes.array.isRequired,
+};
+
+export const DropdownMenuOption = ({ index }) => {
+  console.log('index', index);
+  const { activeIndex, onChange } = useContext(DropdownMenuContext);
+  return <MenuItem selected={index === activeIndex} onClick={event => onChange(event, index)} />;
 };

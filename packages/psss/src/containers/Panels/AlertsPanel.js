@@ -3,13 +3,14 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { LocationOn, SpeakerNotes, List } from '@material-ui/icons';
 import { CardTabs, CardTabList, CardTab, CardTabPanels, WarningCloud } from '@tupaia/ui-components';
 import { connectApi } from '../../api';
 import {
   Drawer,
+  DropdownMenu,
   AlertsDrawerHeader,
   AffectedSitesTab,
   ActivityTab,
@@ -18,6 +19,25 @@ import {
 } from '../../components';
 import { countryFlagImage } from '../../utils';
 import { useFetch } from '../../hooks';
+
+const AlertsMenu = () => {
+  const handleChange = () => {
+    console.log('change...');
+  };
+  return (
+    <DropdownMenu onChange={handleChange}>
+      <Option value="alert">
+        <Icon /> Alert
+      </Option>
+      <Option value="alert">
+        <Icon /> Outbreak
+      </Option>
+      <Option value="alert">
+        <Icon /> Archive
+      </Option>
+    </DropdownMenu>
+  );
+};
 
 export const AlertsPanelComponent = ({
   isOpen,
@@ -38,6 +58,7 @@ export const AlertsPanelComponent = ({
         avatarUrl={countryFlagImage('as')}
         subheading="American Samoa"
         heading="Acute Fever and Rash (AFR)"
+        DropdownMenu={AlertsMenu}
       />
       <CardTabs>
         <CardTabList>

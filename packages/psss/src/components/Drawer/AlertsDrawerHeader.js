@@ -62,14 +62,14 @@ const Heading = styled(Typography)`
   line-height: 2.3rem;
 `;
 
-export const AlertsDrawerHeader = ({ heading, subheading, date, color, avatarUrl }) => (
+export const AlertsDrawerHeader = ({ heading, subheading, date, color, avatarUrl, DropdownMenu }) => (
   <Header color={color}>
     <SpaceBetween>
       <div>
         <Text>Triggered on:</Text>
         <Date>{date}</Date>
       </div>
-      <div>State: Alert</div>
+      {DropdownMenu}
     </SpaceBetween>
     <div>
       <Row>
@@ -82,6 +82,7 @@ export const AlertsDrawerHeader = ({ heading, subheading, date, color, avatarUrl
 );
 
 AlertsDrawerHeader.propTypes = {
+  DropdownMenu: PropTypes.any,
   heading: PropTypes.string.isRequired,
   subheading: PropTypes.string.isRequired,
   date: PropTypes.string.isRequired,
@@ -90,6 +91,7 @@ AlertsDrawerHeader.propTypes = {
 };
 
 AlertsDrawerHeader.defaultProps = {
+  DropdownMenu: null,
   avatarUrl: null,
   color: COLORS.BLUE,
 };
