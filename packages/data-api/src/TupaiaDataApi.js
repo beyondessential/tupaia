@@ -85,7 +85,7 @@ export class TupaiaDataApi {
     const dataGroup = dataGroups[0];
 
     if (!dataGroup) {
-      throw new Error('Cannot find Survey with code: ', dataGroupCode);
+      throw new Error(`Cannot find Survey: ${dataGroupCode}`);
     }
 
     let dataGroupMetadata = {
