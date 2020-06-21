@@ -3,8 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import chai, { expect } from 'chai';
-import chaiSubset from 'chai-subset';
+import { expect } from 'chai';
 import sinon from 'sinon';
 
 import { buildAndInsertSurveyResponses, buildAndInsertSurveys } from '@tupaia/database';
@@ -14,8 +13,6 @@ import { EventBuilder } from '../../dhis/pushers/data/event/EventBuilder';
 import { getModels } from '../getModels';
 import { upsertEntity } from '../testUtilities';
 import { DHIS_RESOURCES, ENTITIES, SURVEYS } from './EventBuilder.fixtures';
-
-chai.use(chaiSubset);
 
 const models = getModels();
 

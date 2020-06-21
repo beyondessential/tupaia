@@ -3,14 +3,11 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import chai, { expect } from 'chai';
-import deepEqualInAnyOrder from 'deep-equal-in-any-order';
+import { expect } from 'chai';
 
 import { buildAndInsertSurveys, generateTestId } from '@tupaia/database';
 import { TestableApp } from '../TestableApp';
 import { upsertEntity } from '../testUtilities';
-
-chai.use(deepEqualInAnyOrder);
 
 const QUESTION_IDS = {
   Well: generateTestId(),

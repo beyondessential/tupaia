@@ -3,10 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import chai from 'chai';
-import chaiAsPromised from 'chai-as-promised';
 import sinon from 'sinon';
-import sinonChai from 'sinon-chai';
 import winston from 'winston';
 
 import { buildAndInsertSurveys, populateTestData } from '@tupaia/database';
@@ -23,9 +20,6 @@ import { testUpdateAnswer } from './testUpdateAnswer';
 import { testUpdateSurveyResponse } from './testUpdateSurveyResponse';
 import { testPeriodsBasedOnDataSet } from './testPeriodsBasedOnDataSet';
 import { createDataBrokerStub, resetDataBrokerStubHistory } from './createDataBrokerStub';
-
-chai.use(chaiAsPromised);
-chai.use(sinonChai);
 
 describe('AggregateDataPusher', () => {
   const models = getModels();

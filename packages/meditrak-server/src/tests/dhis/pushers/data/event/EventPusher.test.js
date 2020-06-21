@@ -3,10 +3,8 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import chai, { expect } from 'chai';
-import chaiAsPromised from 'chai-as-promised';
+import { expect } from 'chai';
 import sinon from 'sinon';
-import sinonChai from 'sinon-chai';
 import winston from 'winston';
 
 import { buildAndInsertSurveys, populateTestData } from '@tupaia/database';
@@ -24,9 +22,6 @@ import {
   DHIS_REFERENCE,
   SERVER_NAME,
 } from './EventPusher.fixtures';
-
-chai.use(chaiAsPromised);
-chai.use(sinonChai);
 
 // relatively simple tests in here as EventBuilder contains a lot of logic, and is tested separately
 describe('EventPusher', () => {
