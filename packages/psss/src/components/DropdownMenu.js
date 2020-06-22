@@ -12,6 +12,7 @@ import MuiPaper from '@material-ui/core/Paper';
 import MuiMenuItem from '@material-ui/core/MenuItem';
 import MuiMenuList from '@material-ui/core/MenuList';
 import { LightOutlinedButton } from '@tupaia/ui-components';
+import { tableColumnShape } from '@tupaia/ui-components/src/components/Table';
 
 const ButtonGroup = styled(LightOutlinedButton)`
   position: relative;
@@ -72,13 +73,13 @@ const MenuList = styled(MuiMenuList)`
 
 const MenuItem = styled(MuiMenuItem)`
   border-top: 1px solid ${props => props.theme.palette.grey['400']};
-  font-size: 14px;
-  line-height: 16px;
+  font-size: 0.875rem;
+  line-height: 1rem;
   display: flex;
   align-items: center;
   color: ${props => props.theme.palette.text.secondary};
-  padding-top: 14px;
-  padding-bottom: 14px;
+  padding-top: 0.875rem;
+  padding-bottom: 0.875rem;
 
   &:hover {
     background-color: ${props => props.theme.palette.error.main};
@@ -139,6 +140,11 @@ export const DropdownMenu = ({ options, onChange }) => {
 };
 
 DropdownMenu.propTypes = {
-  options: PropTypes.array.isRequired,
+  options: PropTypes.arrayOf(
+    PropTypes.shape({
+      value: PropTypes.string.isRequired,
+      label: PropTypes.any.isRequired,
+    }),
+  ).isRequired,
   onChange: PropTypes.func.isRequired,
 };
