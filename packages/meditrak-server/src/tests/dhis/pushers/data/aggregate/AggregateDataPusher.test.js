@@ -3,17 +3,15 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import chai from 'chai';
-import chaiAsPromised from 'chai-as-promised';
 import sinon from 'sinon';
-import sinonChai from 'sinon-chai';
 import winston from 'winston';
 
-import { populateTestData, insertSurveyAndScreens, resetTestData } from '../../../../testUtilities';
+import { buildAndInsertSurveys, populateTestData } from '@tupaia/database';
+import { resetTestData } from '../../../../testUtilities';
 import { Pusher } from '../../../../../dhis/pushers/Pusher';
 import { getModels } from '../../../../getModels';
+import { BASELINE_TEST_DATA, QUESTION, SURVEY } from './AggregateDataPusher.fixtures';
 import { createDhisApiStub, resetDhisApiStubHistory } from './createDhisApiStub';
-import { BASELINE_TEST_DATA, QUESTION, SURVEY } from './testData';
 import { testCreateAnswer } from './testCreateAnswer';
 import { testCreateSurveyResponse } from './testCreateSurveyResponse';
 import { testDeleteAnswer } from './testDeleteAnswer';
@@ -22,9 +20,6 @@ import { testUpdateAnswer } from './testUpdateAnswer';
 import { testUpdateSurveyResponse } from './testUpdateSurveyResponse';
 import { testPeriodsBasedOnDataSet } from './testPeriodsBasedOnDataSet';
 import { createDataBrokerStub, resetDataBrokerStubHistory } from './createDataBrokerStub';
-
-chai.use(chaiAsPromised);
-chai.use(sinonChai);
 
 describe('AggregateDataPusher', () => {
   const models = getModels();
@@ -47,8 +42,8 @@ describe('AggregateDataPusher', () => {
 
     beforeEach(async () => {
       // populate default test data
-      await insertSurveyAndScreens({ survey: SURVEY, screens: [[QUESTION]] });
-      await populateTestData(BASELINE_TEST_DATA);
+      await buildAndInsertSurveys(models, [{ ...SURVEY, questions: [QUESTION] }]);
+      await populateTestData(models, BASELINE_TEST_DATA);
     });
 
     afterEach(async () => {

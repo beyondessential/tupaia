@@ -10,7 +10,7 @@ import { fetchComposedData } from '/apiV1/dataBuilders/helpers';
  * {
  *   "dataBuilders": {
  *    "RDT positive cases": {
- *     "dataBuilder": "countEvents",
+ *       "dataBuilder": "countEvents",
  *       "dataBuilderConfig": "<CONFIG1>",
  *     },
  *     "# febrile illness cases": {
