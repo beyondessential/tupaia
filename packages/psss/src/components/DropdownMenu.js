@@ -12,7 +12,6 @@ import MuiPaper from '@material-ui/core/Paper';
 import MuiMenuItem from '@material-ui/core/MenuItem';
 import MuiMenuList from '@material-ui/core/MenuList';
 import { LightOutlinedButton } from '@tupaia/ui-components';
-import { tableColumnShape } from '@tupaia/ui-components/src/components/Table';
 
 const ButtonGroup = styled(LightOutlinedButton)`
   position: relative;
