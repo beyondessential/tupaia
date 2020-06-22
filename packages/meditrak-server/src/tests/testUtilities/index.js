@@ -5,7 +5,6 @@
 
 export {
   insertEntityAndFacility,
-  populateTestData,
   resetTestData,
   upsertAnswer,
   upsertEntity,
