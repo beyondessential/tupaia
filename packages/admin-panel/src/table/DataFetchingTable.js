@@ -78,14 +78,6 @@ class DataFetchingTableComponent extends React.Component {
       expansionTabStates,
       onExpandedTabChange,
     } = this.props;
-    const getPageSize = () => {
-      const noData = !expansionTabs && data.length === 0;
-
-      if (noData) return 2;
-      if (pageSize > data.length) return data.length;
-
-      return pageSize;
-    };
 
     return (
       <ReactTable
@@ -99,7 +91,7 @@ class DataFetchingTableComponent extends React.Component {
         onFilteredChange={onFilteredChange}
         onResizedChange={onResizedChange}
         page={pageIndex}
-        pageSize={getPageSize()}
+        pageSize={pageSize}
         sorted={sorting}
         expanded={expansions}
         filtered={filters}
