@@ -25,7 +25,10 @@ const ButtonGroup = styled(LightOutlinedButton)`
     .MuiButton-label {
       background-color: white;
 
-      > span,
+      > span {
+        color: ${props => props.theme.palette.text.primary};
+      }
+      
       > svg {
         color: ${props => props.theme.palette.text.secondary};
       }
@@ -37,7 +40,10 @@ const ButtonGroup = styled(LightOutlinedButton)`
     &:focus {
       background-color: white;
 
-      > span,
+      > span {
+        color: ${props => props.theme.palette.text.primary};
+      }
+      
       > svg {
         color: ${props => props.theme.palette.text.secondary};
       }
