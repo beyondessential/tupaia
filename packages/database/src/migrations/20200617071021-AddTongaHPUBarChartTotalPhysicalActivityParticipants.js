@@ -27,13 +27,21 @@ const DATA_BUILDER_CONFG = {
         'HP10',
         'HP20',
       ],
-      '20 - 39 years': [
-        'HP12',
-        'HP22'
+      '20 - 29 years': [
+        'HP12n',
+        'HP22n'
       ],
-      '40 - 59 years': [
-        'HP14',
-        'HP24'
+      '30 - 39 years': [
+        'HP13a',
+        'HP23a'
+      ],
+      '40 - 49 years': [
+        'HP14n',
+        'HP24n'
+      ],
+      '50 - 59 years': [
+        'HP15a',
+        'HP25a'
       ],
       '60 + years': [
         'HP16',
@@ -49,13 +57,21 @@ const DATA_BUILDER_CONFG = {
         'HP11',
         'HP21',
       ],
-      '20 - 39 years': [
-        'HP13',
-        'HP23'
+      '20 - 29 years': [
+        'HP13n',
+        'HP23n'
       ],
-      '40 - 59 years': [
-        'HP15',
-        'HP25'
+      '30 - 39 years': [
+        'HP13b',
+        'HP23b'
+      ],
+      '40 - 49 years': [
+        'HP15n',
+        'HP25n'
+      ],
+      '50 - 59 years': [
+        'HP15b',
+        'HP25b'
       ],
       '60 + years': [
         'HP17',
