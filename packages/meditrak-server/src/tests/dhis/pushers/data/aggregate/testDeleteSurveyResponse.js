@@ -5,8 +5,7 @@
 
 import { expect } from 'chai';
 import sinon from 'sinon';
-import { generateTestId } from '@tupaia/database';
-import { populateTestData } from '../../../../testUtilities';
+import { generateTestId, populateTestData } from '@tupaia/database';
 import { AggregateDataPusher } from '../../../../../dhis/pushers/data/aggregate/AggregateDataPusher';
 import { DummySyncQueue } from '../../../../DummySyncQueue';
 import {
@@ -19,7 +18,7 @@ import {
   SURVEY_RESPONSE,
   SURVEY,
   SERVER_NAME,
-} from './testData';
+} from './AggregateDataPusher.fixtures';
 
 export const testDeleteSurveyResponse = (dhisApi, models, dataBroker) => {
   it('should mark as successful if the survey response never attempted to sync', async () => {
@@ -36,7 +35,7 @@ export const testDeleteSurveyResponse = (dhisApi, models, dataBroker) => {
   it('should mark as successful if the survey response never successfully synced', async () => {
     const change = await models.dhisSyncQueue.findById(SURVEY_RESPONSE_CHANGE.id);
     change.type = 'delete';
-    await populateTestData({ dhisSyncLog: [getFailedSyncLog(change)] });
+    await populateTestData(models, { dhisSyncLog: [getFailedSyncLog(change)] });
 
     const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
     const result = await pusher.push();
@@ -48,7 +47,7 @@ export const testDeleteSurveyResponse = (dhisApi, models, dataBroker) => {
   it('should delete if the survey response previously synced successfully', async () => {
     const change = await models.dhisSyncQueue.findById(SURVEY_RESPONSE_CHANGE.id);
     change.type = 'delete';
-    await populateTestData({ dhisSyncLog: [getSyncLog(change)] });
+    await populateTestData(models, { dhisSyncLog: [getSyncLog(change)] });
     const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
 
     const result = await pusher.push();
@@ -68,7 +67,7 @@ export const testDeleteSurveyResponse = (dhisApi, models, dataBroker) => {
       dhisApi.getDataSetByCode = sinon.stub().returns(DATA_SET); // change to return valid data set
       const change = await models.dhisSyncQueue.findById(SURVEY_RESPONSE_CHANGE.id);
       change.type = 'delete';
-      await populateTestData({ dhisSyncLog: [getSyncLog(change)] });
+      await populateTestData(models, { dhisSyncLog: [getSyncLog(change)] });
       const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
 
       const result = await pusher.push();
@@ -85,7 +84,7 @@ export const testDeleteSurveyResponse = (dhisApi, models, dataBroker) => {
   it('should not delete the data set complete registration if no data set matches', async () => {
     const change = await models.dhisSyncQueue.findById(SURVEY_RESPONSE_CHANGE.id);
     change.type = 'delete';
-    await populateTestData({ dhisSyncLog: [getSyncLog(change)] });
+    await populateTestData(models, { dhisSyncLog: [getSyncLog(change)] });
     const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
 
     const result = await pusher.push();
@@ -101,13 +100,13 @@ export const testDeleteSurveyResponse = (dhisApi, models, dataBroker) => {
       id: generateTestId(),
       submission_time: '2019-05-20T12:05+00',
     };
-    await populateTestData({ surveyResponse: [nextMostRecentSurveyResponse] });
+    await populateTestData(models, { surveyResponse: [nextMostRecentSurveyResponse] });
 
     // delete the original survey response
     await models.surveyResponse.deleteById(SURVEY_RESPONSE.id);
     const change = await models.dhisSyncQueue.findById(SURVEY_RESPONSE_CHANGE.id);
     change.type = 'delete';
-    await populateTestData({ dhisSyncLog: [getSyncLog(change)] });
+    await populateTestData(models, { dhisSyncLog: [getSyncLog(change)] });
 
     // set up dummy sync queue to listen for changes
     const syncQueue = new DummySyncQueue();
