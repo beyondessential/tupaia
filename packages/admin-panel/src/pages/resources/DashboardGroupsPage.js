@@ -19,6 +19,11 @@ const FIELDS = [
     Header: 'Dashboard Reports',
     source: 'dashboardReports',
     Cell: ({ original: { dashboardReports } }) => prettyArray(dashboardReports),
+    editConfig: {
+      optionsEndpoint: 'dashboardReports',
+      optionLabelKey: 'id',
+      allowMultipleValues: true,
+    },
   },
   {
     Header: 'Name',
@@ -32,6 +37,12 @@ const FIELDS = [
     Header: 'Project Codes',
     source: 'projectCodes',
     Cell: ({ original: { projectCodes } }) => prettyArray(projectCodes),
+    editConfig: {
+      optionsEndpoint: 'projects',
+      optionLabelKey: 'code',
+      optionValueKey: 'code',
+      allowMultipleValues: true,
+    },
   },
 ];
 

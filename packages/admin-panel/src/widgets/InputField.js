@@ -125,7 +125,13 @@ const processValue = (value, type) => {
 InputField.propTypes = {
   allowMultipleValues: PropTypes.bool,
   label: PropTypes.string.isRequired,
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.bool]),
+  value: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.array,
+    PropTypes.object,
+    PropTypes.bool,
+    PropTypes.number,
+  ]),
   inputKey: PropTypes.string.isRequired,
   optionsEndpoint: PropTypes.string,
   onChange: PropTypes.func.isRequired,

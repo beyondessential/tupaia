@@ -15,17 +15,4 @@ export class MapOverlayModel extends DatabaseModel {
   get DatabaseTypeClass() {
     return MapOverlayType;
   }
-
-  getTransformedData(data) {
-    const toTransform = ['linkedMeasures', 'countryCodes', 'projectCodes'];
-    const transformedData = {};
-
-    for (const property in data) {
-      if (toTransform.includes(property)) {
-        transformedData[property] = data[property].split(',');
-      }
-    }
-
-    return transformedData;
-  }
 }

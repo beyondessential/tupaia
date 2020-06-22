@@ -205,10 +205,6 @@ export class DatabaseModel {
     return this.delete(this.getIdClause(id));
   }
 
-  getTransformedData(data) {
-    return data;
-  }
-
   /**
    * Updates all records that match the criteria to have the values in fieldsToUpdate
    * @param {object} whereCondition Records matching this criteria will be updated
@@ -218,18 +214,14 @@ export class DatabaseModel {
     const data = await this.getDatabaseSafeData(fieldsToUpdate);
     const instance = await this.generateInstance(data);
     await instance.assertValid();
-    return this.database.update(this.databaseType, whereCondition, this.getTransformedData(data));
+    return this.database.update(this.databaseType, whereCondition, data);
   }
 
   async updateOrCreate(whereCondition, fieldsToUpsert) {
     const data = await this.getDatabaseSafeData(fieldsToUpsert);
     const instance = await this.generateInstance(data);
     await instance.assertValid();
-    const fieldValues = await this.database.updateOrCreate(
-      this.databaseType,
-      whereCondition,
-      this.getTransformedData(data),
-    );
+    const fieldValues = await this.database.updateOrCreate(this.databaseType, whereCondition, data);
     return this.generateInstance(fieldValues);
   }
 

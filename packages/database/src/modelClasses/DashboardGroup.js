@@ -15,17 +15,4 @@ export class DashboardGroupModel extends DatabaseModel {
   get DatabaseTypeClass() {
     return DashboardGroupType;
   }
-
-  getTransformedData(data) {
-    const toTransform = ['dashboardReports', 'projectCodes'];
-    const transformedData = {};
-
-    for (const property in data) {
-      if (toTransform.includes(property)) {
-        transformedData[property] = data[property].split(',');
-      }
-    }
-
-    return transformedData;
-  }
 }
