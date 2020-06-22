@@ -15,7 +15,7 @@ import {
   DAILY_DATA_SET,
   MONTHLY_DATA_SET,
   YEARLY_DATA_SET,
-} from './testData';
+} from './AggregateDataPusher.fixtures';
 
 export const testPeriodsBasedOnDataSet = (dhisApi, models, dataBroker) => {
   const testPeriodType = async (dataSet, format) => {

@@ -21,7 +21,6 @@ export const TYPES = {
   DISASTER: 'disaster',
   DISASTER_EVENT: 'disasterEvent',
   ENTITY_HIERARCHY: 'entity_hierarchy',
-  ENTITY_RELATION_TYPE: 'entity_relation_type',
   ENTITY_RELATION: 'entity_relation',
   ENTITY: 'entity',
   ERROR_LOG: 'error_log',
