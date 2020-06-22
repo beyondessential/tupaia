@@ -40,7 +40,7 @@ export class DatabaseChangeChannel extends PGPubSub {
    * @param {number} timeout - default 250ms
    * @param {number} retries - default 4
    */
-  async ping(timeout = 250, retries = 14) {
+  async ping(timeout = 250, retries = 4) {
     return new Promise((resolve, reject) => {
       let tries = 0;
       let nextRequest;
