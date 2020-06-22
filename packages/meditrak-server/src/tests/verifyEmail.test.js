@@ -6,13 +6,14 @@
 import {} from 'dotenv/config'; // Load the environment variables into process.env
 import { expect } from 'chai';
 
+import { encryptPassword } from '@tupaia/auth';
 import { TestableApp, getAuthorizationHeader } from './TestableApp';
-import { randomEmail, EMAIL_VERIFIED_STATUS } from './testUtilities';
-import { encryptPassword } from '../utilities';
+import { randomEmail } from './testUtilities';
 
 describe('Verify Email', () => {
   const app = new TestableApp();
   const models = app.models;
+  const { VERIFIED, NEW_USER, UNVERIFIED } = models.user.emailVerifiedStatuses;
 
   const dummyFields = {
     firstName: 'Automated test',
@@ -74,7 +75,7 @@ describe('Verify Email', () => {
       const response = await login(emailAddress);
       expect(response.status).to.equal(403);
 
-      expect(await assertUserStatus(userId)).to.equal(EMAIL_VERIFIED_STATUS.NEW_USER);
+      expect(await assertUserStatus(userId)).to.equal(NEW_USER);
     });
 
     it('Should be able to verify email correctly', async () => {
@@ -84,7 +85,7 @@ describe('Verify Email', () => {
       const response = await verifyEmail(userId);
       expect(response.status).to.equal(200);
 
-      expect(await assertUserStatus(userId)).to.equal(EMAIL_VERIFIED_STATUS.VERIFIED);
+      expect(await assertUserStatus(userId)).to.equal(VERIFIED);
     });
 
     it('Should be able to login after verifying email', async () => {
@@ -95,15 +96,15 @@ describe('Verify Email', () => {
       const response = await login(emailAddress);
       expect(response.status).to.equal(200);
 
-      expect(await assertUserStatus(userId)).to.equal(EMAIL_VERIFIED_STATUS.VERIFIED);
+      expect(await assertUserStatus(userId)).to.equal(VERIFIED);
     });
 
     it('Existing users should be able to login with unverified status ', async () => {
       const emailAddress = randomEmail();
       const userId = await createUser(emailAddress);
 
-      await models.user.updateById(userId, { verified_email: EMAIL_VERIFIED_STATUS.UNVERIFIED });
-      expect(await assertUserStatus(userId)).to.equal(EMAIL_VERIFIED_STATUS.UNVERIFIED);
+      await models.user.updateById(userId, { verified_email: UNVERIFIED });
+      expect(await assertUserStatus(userId)).to.equal(UNVERIFIED);
 
       const response = await login(emailAddress);
       expect(response.status).to.equal(200);

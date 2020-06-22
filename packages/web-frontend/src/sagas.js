@@ -357,7 +357,7 @@ function* watchSetPasswordResetToken() {
  */
 function* attemptRequestCountryAccess(action) {
   const { message, userGroup } = action;
-  const countryIds = action.countryIds ? Object.keys(action.countryIds) : [];
+  const entityIds = action.entityIds ? Object.keys(action.entityIds) : [];
 
   const options = {
     method: 'POST',
@@ -365,7 +365,7 @@ function* attemptRequestCountryAccess(action) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      countryIds: countryIds,
+      entityIds,
       message,
       userGroup,
     }),
