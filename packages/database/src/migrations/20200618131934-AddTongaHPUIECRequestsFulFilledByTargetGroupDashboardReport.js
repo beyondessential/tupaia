@@ -35,33 +35,33 @@ const VIEW_JSON = {
     'Diabetic Patients': {
       label: 'Diabetic Patients',
       stackId: 1,
-      legendOrder: 1
+      legendOrder: 1,
     },
     'Pregnant Women': {
-        label: 'Pregnant Women',
-        stackId: 1,
-        legendOrder: 2
+      label: 'Pregnant Women',
+      stackId: 1,
+      legendOrder: 2,
     },
-    'Smokers': {
-        label: 'Smokers',
-        stackId: 1,
-        legendOrder: 3
+    Smokers: {
+      label: 'Smokers',
+      stackId: 1,
+      legendOrder: 3,
     },
     'Youth and Adult': {
-        label: 'Youth and Adult',
-        stackId: 1,
-        legendOrder: 4
+      label: 'Youth and Adult',
+      stackId: 1,
+      legendOrder: 4,
     },
     'Visitors to Health Centres': {
-        label: 'Visitors to Health Centres',
-        stackId: 1,
-        legendOrder: 5
+      label: 'Visitors to Health Centres',
+      stackId: 1,
+      legendOrder: 5,
     },
-    'Other': {
+    Other: {
       label: 'Other',
       stackId: 1,
-      legendOrder: 5
-    }
+      legendOrder: 6,
+    },
   },
   periodGranularity: 'month',
 };
