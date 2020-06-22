@@ -95,7 +95,7 @@ export const sumLatestPerSeries = async (
   return builder.build();
 };
 
-export const sumAllPerSeries = async (
+export const sumPerMonthPerSeries = async (
   { dataBuilderConfig, query, entity },
   aggregator,
   dhisApi,
@@ -106,7 +106,7 @@ export const sumAllPerSeries = async (
     dataBuilderConfig,
     query,
     entity,
-    aggregator.aggregationTypes.SUM,
+    aggregator.aggregationTypes.FINAL_EACH_MONTH,
   );
 
   return builder.build();

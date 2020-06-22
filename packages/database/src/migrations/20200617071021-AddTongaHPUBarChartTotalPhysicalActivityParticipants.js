@@ -105,7 +105,7 @@ const DATA_SERVICES = [{ isDataRegional: false }];
 
 const REPORT = {
   id: REPORT_ID,
-  dataBuilder: 'sumAllPerSeries',
+  dataBuilder: 'sumPerMonthPerSeries',
   dataBuilderConfig: DATA_BUILDER_CONFG,
   viewJson: VIEW_JSON_CONFIG,
   dataServices: DATA_SERVICES
