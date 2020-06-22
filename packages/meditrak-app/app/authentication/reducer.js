@@ -8,7 +8,6 @@ import {
   AUTH_STATUSES,
   EMAIL_ADDRESS_CHANGE,
   PASSWORD_CHANGE,
-  ACCESS_POLICY_UPDATED,
   LOGIN_REQUEST,
   LOGIN_SUCCESS,
   LOGIN_FAILURE,
@@ -23,7 +22,6 @@ const defaultState = {
   password: '',
   errorMessage: '',
   currentUserId: '',
-  accessPolicy: {},
   name: '',
   user: null,
 };
@@ -39,22 +37,16 @@ const stateChanges = {
     errorMessage: '',
     password,
   }),
-  [ACCESS_POLICY_UPDATED]: ({ userId, name, accessPolicy }) => ({
-    currentUserId: userId,
-    name,
-    accessPolicy,
-  }),
   [LOGIN_REQUEST]: () => ({
     status: AUTHENTICATING,
     errorMessage: '',
   }),
-  [LOGIN_SUCCESS]: ({ userId, name, accessPolicy }) => ({
+  [LOGIN_SUCCESS]: ({ userId, name }) => ({
     status: AUTHENTICATED,
     errorMessage: '',
     password: '', // Clear password once successfully logged in
     name,
     currentUserId: userId,
-    accessPolicy,
   }),
   [LOGIN_FAILURE]: ({ errorMessage }) => ({
     status: ERROR,

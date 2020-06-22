@@ -7,6 +7,7 @@ export const TYPES = {
   ALERT: 'alert',
   ALERT_COMMENT: 'alert_comment',
   ANSWER: 'answer',
+  ACCESS_REQUEST: 'access_request',
   API_CLIENT: 'api_client',
   API_REQUEST_LOG: 'api_request_log',
   COMMENT: 'comment',
@@ -46,9 +47,7 @@ export const TYPES = {
   SURVEY_SCREEN: 'survey_screen',
   SURVEY: 'survey',
   USER_ACCOUNT: 'user_account',
-  USER_COUNTRY_PERMISSION: 'user_country_permission',
-  USER_FACILITY_PERMISSION: 'user_clinic_permission',
-  USER_GEOGRAPHICAL_AREA_PERMISSION: 'user_geographical_area_permission',
+  USER_ENTITY_PERMISSION: 'user_entity_permission',
   USER_REWARD: 'user_reward',
   USER_SESSION: 'userSession',
 };

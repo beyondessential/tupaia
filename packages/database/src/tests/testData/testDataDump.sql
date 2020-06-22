@@ -230,28 +230,20 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
--- Name: alert; Type: TABLE; Schema: public; Owner: -
+-- Name: access_request; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.alert (
+CREATE TABLE public.access_request (
     id text NOT NULL,
+    user_id text,
     entity_id text,
-    data_element_id text,
-    start_time timestamp with time zone DEFAULT now() NOT NULL,
-    end_time timestamp with time zone,
-    event_confirmed_time timestamp with time zone,
-    archived boolean DEFAULT false
-);
-
-
---
--- Name: alert_comment; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.alert_comment (
-    id text NOT NULL,
-    alert_id text,
-    comment_id text
+    message text,
+    permission_group_id text,
+    approved boolean,
+    created_time timestamp with time zone DEFAULT now() NOT NULL,
+    approving_user_id text,
+    approval_note text,
+    approval_date timestamp with time zone
 );
 
 
@@ -322,19 +314,6 @@ CREATE TABLE public.clinic (
     type text,
     category_code character varying(3),
     type_name character varying(30)
-);
-
-
---
--- Name: comment; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.comment (
-    id text NOT NULL,
-    user_id text,
-    created_time timestamp with time zone DEFAULT now() NOT NULL,
-    last_modified_time timestamp with time zone DEFAULT now() NOT NULL,
-    text text NOT NULL
 );
 
 
@@ -780,8 +759,7 @@ CREATE TABLE public.project (
 CREATE TABLE public.question (
     id text NOT NULL,
     text text NOT NULL,
-    indicator text,
-    image_data text,
+    name text,
     type text NOT NULL,
     options text[],
     code text,
@@ -824,7 +802,6 @@ CREATE TABLE public.survey (
     id text NOT NULL,
     name text NOT NULL,
     code text NOT NULL,
-    image_data text DEFAULT ''::text,
     permission_group_id text,
     country_ids text[] DEFAULT '{}'::text[],
     can_repeat boolean DEFAULT false,
@@ -898,7 +875,7 @@ CREATE TABLE public.survey_screen_component (
 CREATE TABLE public."userSession" (
     id text NOT NULL,
     "userName" text NOT NULL,
-    "accessToken" text NOT NULL,
+    "accessToken" text,
     "refreshToken" text NOT NULL,
     "accessPolicy" jsonb
 );
@@ -925,38 +902,14 @@ CREATE TABLE public.user_account (
 
 
 --
--- Name: user_clinic_permission; Type: TABLE; Schema: public; Owner: -
+-- Name: user_entity_permission; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.user_clinic_permission (
+CREATE TABLE public.user_entity_permission (
     id text NOT NULL,
-    user_id text NOT NULL,
-    clinic_id text NOT NULL,
-    permission_group_id text NOT NULL
-);
-
-
---
--- Name: user_country_permission; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.user_country_permission (
-    id text NOT NULL,
-    user_id text NOT NULL,
-    country_id text NOT NULL,
-    permission_group_id text NOT NULL
-);
-
-
---
--- Name: user_geographical_area_permission; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.user_geographical_area_permission (
-    id text NOT NULL,
-    user_id text NOT NULL,
-    geographical_area_id text NOT NULL,
-    permission_group_id text NOT NULL
+    user_id text,
+    entity_id text,
+    permission_group_id text
 );
 
 
@@ -990,19 +943,11 @@ ALTER TABLE ONLY public.migrations ALTER COLUMN id SET DEFAULT nextval('public.m
 
 
 --
--- Name: alert_comment alert_comment_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: access_request access_request_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.alert_comment
-    ADD CONSTRAINT alert_comment_pkey PRIMARY KEY (id);
-
-
---
--- Name: alert alert_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.alert
-    ADD CONSTRAINT alert_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_pkey PRIMARY KEY (id);
 
 
 --
@@ -1059,14 +1004,6 @@ ALTER TABLE ONLY public.clinic
 
 ALTER TABLE ONLY public.clinic
     ADD CONSTRAINT clinic_pkey PRIMARY KEY (id);
-
-
---
--- Name: comment comment_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.comment
-    ADD CONSTRAINT comment_pkey PRIMARY KEY (id);
 
 
 --
@@ -1454,6 +1391,14 @@ ALTER TABLE ONLY public.setting
 
 
 --
+-- Name: survey survey_code_unique; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.survey
+    ADD CONSTRAINT survey_code_unique UNIQUE (code);
+
+
+--
 -- Name: survey_group survey_group_name_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1542,27 +1487,11 @@ ALTER TABLE ONLY public.user_account
 
 
 --
--- Name: user_clinic_permission user_clinic_permission_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: user_entity_permission user_entity_permission_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.user_clinic_permission
-    ADD CONSTRAINT user_clinic_permission_pkey PRIMARY KEY (id);
-
-
---
--- Name: user_country_permission user_country_permission_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.user_country_permission
-    ADD CONSTRAINT user_country_permission_pkey PRIMARY KEY (id);
-
-
---
--- Name: user_geographical_area_permission user_geographical_area_permission_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.user_geographical_area_permission
-    ADD CONSTRAINT user_geographical_area_permission_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.user_entity_permission
+    ADD CONSTRAINT user_entity_permission_pkey PRIMARY KEY (id);
 
 
 --
@@ -1869,38 +1798,31 @@ CREATE INDEX user_account_last_name_idx ON public.user_account USING btree (last
 
 
 --
--- Name: user_country_permission_country_id_idx; Type: INDEX; Schema: public; Owner: -
+-- Name: user_entity_permission_entity_id_idx; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX user_country_permission_country_id_idx ON public.user_country_permission USING btree (country_id);
-
-
---
--- Name: user_country_permission_permission_group_id_idx; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX user_country_permission_permission_group_id_idx ON public.user_country_permission USING btree (permission_group_id);
+CREATE INDEX user_entity_permission_entity_id_idx ON public.user_entity_permission USING btree (entity_id);
 
 
 --
--- Name: user_country_permission_user_id_idx; Type: INDEX; Schema: public; Owner: -
+-- Name: user_entity_permission_permission_group_id_idx; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX user_country_permission_user_id_idx ON public.user_country_permission USING btree (user_id);
-
-
---
--- Name: alert_comment alert_comment_trigger; Type: TRIGGER; Schema: public; Owner: -
---
-
-CREATE TRIGGER alert_comment_trigger AFTER INSERT OR DELETE OR UPDATE ON public.alert_comment FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE INDEX user_entity_permission_permission_group_id_idx ON public.user_entity_permission USING btree (permission_group_id);
 
 
 --
--- Name: alert alert_trigger; Type: TRIGGER; Schema: public; Owner: -
+-- Name: user_entity_permission_user_id_idx; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE TRIGGER alert_trigger AFTER INSERT OR DELETE OR UPDATE ON public.alert FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE INDEX user_entity_permission_user_id_idx ON public.user_entity_permission USING btree (user_id);
+
+
+--
+-- Name: access_request access_request_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER access_request_trigger AFTER INSERT OR DELETE OR UPDATE ON public.access_request FOR EACH ROW EXECUTE PROCEDURE public.notification();
 
 
 --
@@ -1922,13 +1844,6 @@ CREATE TRIGGER api_client_trigger AFTER INSERT OR DELETE OR UPDATE ON public.api
 --
 
 CREATE TRIGGER clinic_trigger AFTER INSERT OR DELETE OR UPDATE ON public.clinic FOR EACH ROW EXECUTE PROCEDURE public.notification();
-
-
---
--- Name: comment comment_trigger; Type: TRIGGER; Schema: public; Owner: -
---
-
-CREATE TRIGGER comment_trigger AFTER INSERT OR DELETE OR UPDATE ON public.comment FOR EACH ROW EXECUTE PROCEDURE public.notification();
 
 
 --
@@ -2149,24 +2064,10 @@ CREATE TRIGGER user_account_trigger AFTER INSERT OR DELETE OR UPDATE ON public.u
 
 
 --
--- Name: user_clinic_permission user_clinic_permission_trigger; Type: TRIGGER; Schema: public; Owner: -
+-- Name: user_entity_permission user_entity_permission_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER user_clinic_permission_trigger AFTER INSERT OR DELETE OR UPDATE ON public.user_clinic_permission FOR EACH ROW EXECUTE PROCEDURE public.notification();
-
-
---
--- Name: user_country_permission user_country_permission_trigger; Type: TRIGGER; Schema: public; Owner: -
---
-
-CREATE TRIGGER user_country_permission_trigger AFTER INSERT OR DELETE OR UPDATE ON public.user_country_permission FOR EACH ROW EXECUTE PROCEDURE public.notification();
-
-
---
--- Name: user_geographical_area_permission user_geographical_area_permission_trigger; Type: TRIGGER; Schema: public; Owner: -
---
-
-CREATE TRIGGER user_geographical_area_permission_trigger AFTER INSERT OR DELETE OR UPDATE ON public.user_geographical_area_permission FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER user_entity_permission_trigger AFTER INSERT OR DELETE OR UPDATE ON public.user_entity_permission FOR EACH ROW EXECUTE PROCEDURE public.notification();
 
 
 --
@@ -2177,35 +2078,35 @@ CREATE TRIGGER user_reward_trigger AFTER INSERT OR DELETE OR UPDATE ON public.us
 
 
 --
--- Name: alert_comment alert_comment_alert_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: access_request access_request_approving_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.alert_comment
-    ADD CONSTRAINT alert_comment_alert_id_fkey FOREIGN KEY (alert_id) REFERENCES public.alert(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: alert_comment alert_comment_comment_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.alert_comment
-    ADD CONSTRAINT alert_comment_comment_id_fkey FOREIGN KEY (comment_id) REFERENCES public.comment(id) ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_approving_user_id_fkey FOREIGN KEY (approving_user_id) REFERENCES public.user_account(id);
 
 
 --
--- Name: alert alert_data_element_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: access_request access_request_entity_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.alert
-    ADD CONSTRAINT alert_data_element_id_fkey FOREIGN KEY (data_element_id) REFERENCES public.data_source(id);
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_entity_id_fkey FOREIGN KEY (entity_id) REFERENCES public.entity(id);
 
 
 --
--- Name: alert alert_entity_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: access_request access_request_permission_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.alert
-    ADD CONSTRAINT alert_entity_id_fkey FOREIGN KEY (entity_id) REFERENCES public.entity(id);
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_permission_group_id_fkey FOREIGN KEY (permission_group_id) REFERENCES public.permission_group(id);
+
+
+--
+-- Name: access_request access_request_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user_account(id);
 
 
 --
@@ -2254,14 +2155,6 @@ ALTER TABLE ONLY public.clinic
 
 ALTER TABLE ONLY public.clinic
     ADD CONSTRAINT clinic_geographical_area_id_fkey FOREIGN KEY (geographical_area_id) REFERENCES public.geographical_area(id) ON UPDATE CASCADE ON DELETE RESTRICT;
-
-
---
--- Name: comment comment_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.comment
-    ADD CONSTRAINT comment_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user_account(id);
 
 
 --
@@ -2505,75 +2398,27 @@ ALTER TABLE ONLY public.survey
 
 
 --
--- Name: user_clinic_permission user_clinic_permission_clinic_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: user_entity_permission user_entity_permission_entity_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.user_clinic_permission
-    ADD CONSTRAINT user_clinic_permission_clinic_id_fk FOREIGN KEY (clinic_id) REFERENCES public.clinic(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: user_clinic_permission user_clinic_permission_permission_group_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.user_clinic_permission
-    ADD CONSTRAINT user_clinic_permission_permission_group_id_fk FOREIGN KEY (permission_group_id) REFERENCES public.permission_group(id) ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE ONLY public.user_entity_permission
+    ADD CONSTRAINT user_entity_permission_entity_id_fkey FOREIGN KEY (entity_id) REFERENCES public.entity(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
--- Name: user_clinic_permission user_clinic_permission_user_account_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: user_entity_permission user_entity_permission_permission_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.user_clinic_permission
-    ADD CONSTRAINT user_clinic_permission_user_account_id_fk FOREIGN KEY (user_id) REFERENCES public.user_account(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: user_country_permission user_country_permission_country_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.user_country_permission
-    ADD CONSTRAINT user_country_permission_country_id_fkey FOREIGN KEY (country_id) REFERENCES public.country(id) ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE ONLY public.user_entity_permission
+    ADD CONSTRAINT user_entity_permission_permission_group_id_fkey FOREIGN KEY (permission_group_id) REFERENCES public.permission_group(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
--- Name: user_country_permission user_country_permission_permission_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: user_entity_permission user_entity_permission_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.user_country_permission
-    ADD CONSTRAINT user_country_permission_permission_group_id_fkey FOREIGN KEY (permission_group_id) REFERENCES public.permission_group(id) ON UPDATE CASCADE ON DELETE RESTRICT;
-
-
---
--- Name: user_country_permission user_country_permission_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.user_country_permission
-    ADD CONSTRAINT user_country_permission_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user_account(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: user_geographical_area_permission user_geographical_area_permission_geographical_area_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.user_geographical_area_permission
-    ADD CONSTRAINT user_geographical_area_permission_geographical_area_id_fk FOREIGN KEY (geographical_area_id) REFERENCES public.geographical_area(id) ON UPDATE RESTRICT ON DELETE CASCADE;
-
-
---
--- Name: user_geographical_area_permission user_geographical_area_permission_permission_group_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.user_geographical_area_permission
-    ADD CONSTRAINT user_geographical_area_permission_permission_group_id_fk FOREIGN KEY (permission_group_id) REFERENCES public.permission_group(id) ON UPDATE RESTRICT ON DELETE CASCADE;
-
-
---
--- Name: user_geographical_area_permission user_geographical_area_permission_user_account_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.user_geographical_area_permission
-    ADD CONSTRAINT user_geographical_area_permission_user_account_id_fk FOREIGN KEY (user_id) REFERENCES public.user_account(id) ON UPDATE RESTRICT ON DELETE CASCADE;
+ALTER TABLE ONLY public.user_entity_permission
+    ADD CONSTRAINT user_entity_permission_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user_account(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
@@ -3374,21 +3219,50 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 720	/20200522032405-UpdateMapOverlayHeadings	2020-05-22 06:36:39.887
 721	/20200522055413-ChangeLaosSchoolsOverlayGroupName	2020-05-22 06:36:39.921
 722	/20200522010341-updateLaosSchoolsBinaryDashboard	2020-05-24 22:44:43.751
-723	/20200212052756-RemoveRedundantQuestionsWish	2020-06-05 15:50:56.197
-724	/20200503063358-AddTongaDHIS2HealthCertificatesDistributedReport	2020-06-05 15:50:56.583
-725	/20200508034036-UpdateDefaultTimePeriodFormatInDataBuilderConfig	2020-06-05 15:50:56.623
-726	/20200521005057-AddLaosDevelopmentPartnersReport	2020-06-05 15:50:56.66
-727	/20200521102324-AddUtilityServiceBinaryMeasuresBarCharts	2020-06-05 15:50:56.734
-728	/20200521155232-AddResourceSupportBinaryMeasuresBarCharts	2020-06-05 15:50:56.786
-729	/20200522022756-VisualisationsDefinedPerProject	2020-06-05 15:50:57.017
-730	/20200524212939-LimitVisualisationsPerProject	2020-06-05 15:50:57.5
-731	/20200524231548-AddSchoolPercentDashboards	2020-06-05 15:50:57.542
-732	/20200525044209-NoFunnyPeriods	2020-06-05 15:50:57.553
-733	/20200526005827-RemoveWorldDashboardGroups	2020-06-05 15:50:57.562
-734	/20200528011043-ChangeUNFPAReportsToUseQuarters	2020-06-05 15:50:57.574
-735	/20200528042309-DeleteAnswersForLaosSchoolsSelectVillageQuestions	2020-06-05 15:50:57.59
-736	/20200428025025-createAlertsTable	2020-06-05 15:52:25.893
-737	/20200501033538-createCommentTables	2020-06-05 15:52:25.927
+723	/20200212052756-RemoveRedundantQuestionsWish	2020-06-19 15:49:25.012
+724	/20200417211027-AllowNullAccessToken	2020-06-19 15:49:25.04
+725	/20200422231733-MoveNoCountryUsersToAdminPanel	2020-06-19 15:49:25.058
+726	/20200423213702-EntityBasedPermissions	2020-06-19 15:49:25.285
+727	/20200503063358-AddTongaDHIS2HealthCertificatesDistributedReport	2020-06-19 15:49:25.412
+728	/20200508034036-UpdateDefaultTimePeriodFormatInDataBuilderConfig	2020-06-19 15:49:25.454
+729	/20200521005057-AddLaosDevelopmentPartnersReport	2020-06-19 15:49:25.478
+730	/20200521102324-AddUtilityServiceBinaryMeasuresBarCharts	2020-06-19 15:49:25.571
+731	/20200521155232-AddResourceSupportBinaryMeasuresBarCharts	2020-06-19 15:49:25.633
+732	/20200522022756-VisualisationsDefinedPerProject	2020-06-19 15:49:25.761
+733	/20200524212939-LimitVisualisationsPerProject	2020-06-19 15:49:26.025
+734	/20200524231548-AddSchoolPercentDashboards	2020-06-19 15:49:26.068
+735	/20200525005457-WipeUserSessions	2020-06-19 15:49:26.088
+736	/20200525044209-NoFunnyPeriods	2020-06-19 15:49:26.099
+737	/20200526005827-RemoveWorldDashboardGroups	2020-06-19 15:49:26.107
+738	/20200528011043-ChangeUNFPAReportsToUseQuarters	2020-06-19 15:49:26.115
+739	/20200528042309-DeleteAnswersForLaosSchoolsSelectVillageQuestions	2020-06-19 15:49:26.13
+740	/20200528043308-createAccessRequestTable	2020-06-19 15:49:26.144
+741	/20200529000003-MigrateOverlaysToUseNewEntityAggregation	2020-06-19 15:49:26.431
+742	/20200529064523-MoveMeasureLevelToPresentationOptions	2020-06-19 15:49:26.713
+743	/20200601050232-MigrateReportsToUseNewEntityAggregation	2020-06-19 15:49:26.811
+744	/20200602035743-FixConfigForSurveyExportReports	2020-06-19 15:49:26.851
+745	/20200603012534-DeleteSurveyAndQuestionImageData	2020-06-19 15:49:26.875
+746	/20200603012535-ChangeDuplicateSurveyCodes	2020-06-19 15:49:27.392
+747	/20200603014358-AddUniqueCodeConstraintInSurvey	2020-06-19 15:49:27.417
+748	/20200603032358-UseCountrySpecificBcdSurveys	2020-06-19 15:49:27.508
+749	/20200605045409-CorrectStriveDashboardCase	2020-06-19 15:49:27.518
+750	/20200605051613-SetCovidDefaultDashboard	2020-06-19 15:49:27.524
+751	/20200608220007-RenameQuestionIndicatorToName	2020-06-19 15:49:27.531
+752	/20200608234924-RemoveLaosSchoolsReport	2020-06-19 15:49:27.547
+753	/20200609002315-UpdateSchoolBinaryListMeasures	2020-06-19 15:49:27.558
+754	/20200609022031-RemoveLaosSchoolsHeatmaps	2020-06-19 15:49:27.564
+755	/20200609022859-UpdateOverlayHeadingsToRemoveTotal	2020-06-19 15:49:27.635
+756	/20200609045707-UpdateLaosSchoolsBinaryMeasureMapOverlayNames	2020-06-19 15:49:27.639
+757	/20200609045724-RemoveLaosSchoolsBinaryMeasureMapOverlays	2020-06-19 15:49:27.643
+758	/20200609053914-UseTupaiaAsDataServiceForNewLaosSchoolSurveys	2020-06-19 15:49:27.995
+759	/20200609055929-AddMoreLaosSchoolsBinaryMeasuresMapOverlays	2020-06-19 15:49:28.009
+760	/20200609072253-AddLaosSchoolsStudentResourcesMapOverlays	2020-06-19 15:49:28.014
+761	/20200609223042-AddWaterSupplyMapOverlay	2020-06-19 15:49:28.037
+762	/20200612003644-AddMostVisualisationsToExplore	2020-06-19 15:49:28.063
+763	/20200612021300-FixIncorrectDashboardGroupProjects	2020-06-19 15:49:28.106
+764	/20200616000806-FixIncorrectDataElementCodesLaosReport	2020-06-19 15:49:28.17
+765	/20200617235154-FixTongaMeaslesOverlaysWithEntityAggregation	2020-06-19 15:49:28.184
+766	/20200618090311-FixEntityAggregationConfig	2020-06-19 15:49:28.187
 \.
 
 
@@ -3396,7 +3270,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 737, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 766, true);
 
 
 --

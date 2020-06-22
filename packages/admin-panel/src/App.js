@@ -67,6 +67,10 @@ const LEFT_LINKS = [
     label: 'Data Sources',
     path: '/data-sources',
   },
+  {
+    label: 'Access Requests',
+    path: '/access-requests',
+  },
 ];
 
 const App = props => {

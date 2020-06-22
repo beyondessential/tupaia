@@ -7,7 +7,8 @@ import groupBy from 'lodash.groupby';
 import { convertToPeriod, getPeriodsInRange } from '@tupaia/utils';
 import { getContinuousPeriodsForAnalytics } from './utils';
 
-export const sumPreviousPerPeriod = (analytics, aggregationPeriod, requestedPeriod) => {
+export const sumPreviousPerPeriod = (analytics, aggregationConfig, aggregationPeriod) => {
+  const { requestedPeriod } = aggregationConfig;
   const periods = calculatePeriodsFromAnalytics(analytics, aggregationPeriod, requestedPeriod);
   const analyticsByPeriod = groupBy(analytics, analytic =>
     convertToPeriod(analytic.period, aggregationPeriod),
