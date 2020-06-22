@@ -9,4 +9,5 @@ export * from './Layout';
 export * from './Header';
 export * from './Table';
 export * from './Drawer';
+export * from './DropdownMenu';
 export * from './SiteAddress';
