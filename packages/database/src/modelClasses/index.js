@@ -7,7 +7,6 @@ import { AlertModel } from './Alert';
 import { AlertCommentModel } from './AlertComment';
 import { AnswerModel } from './Answer';
 import { AccessRequestModel } from './AccessRequest';
-import { AnswerModel } from './Answer';
 import { CountryModel } from './Country';
 import { CommentModel } from './Comment';
 import { DataSourceModel } from './DataSource';
@@ -19,7 +18,6 @@ import { RefreshTokenModel } from './RefreshToken';
 import { OneTimeLoginModel } from './OneTimeLogin';
 import { PermissionGroupModel } from './PermissionGroup';
 import { QuestionModel } from './Question';
-import { RefreshTokenModel } from './RefreshToken';
 import { SurveyModel } from './Survey';
 import { SurveyResponseModel } from './SurveyResponse';
 import { SurveyScreenComponentModel } from './SurveyScreenComponent';
@@ -37,8 +35,6 @@ export const modelClasses = {
   Country: CountryModel,
   DataElementDataGroup: DataElementDataGroupModel,
   DataSource: DataSourceModel,
-  GeographicalArea: GeographicalAreaModel,
-  MeditrakDevice: MeditrakDeviceModel,
   Entity: EntityModel,
   GeographicalArea: GeographicalAreaModel,
   MeditrakDevice: MeditrakDeviceModel,
@@ -61,7 +57,6 @@ export { DataSourceModel } from './DataSource';
 export { EntityModel } from './Entity';
 export { GeographicalAreaModel } from './GeographicalArea';
 export { MeditrakDeviceModel } from './MeditrakDevice';
-export { DataSourceModel } from './DataSource';
 export { AlertModel } from './Alert';
 export { CommentModel } from './Comment';
 export { PermissionGroupModel } from './PermissionGroup';
