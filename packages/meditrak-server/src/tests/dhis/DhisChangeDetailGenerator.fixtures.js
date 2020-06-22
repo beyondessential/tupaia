@@ -14,11 +14,11 @@ const STUBBED_MODEL_DATA = {
   survey: [
     {
       id: 'survey_is_regional',
-      getIsDataForRegionalDhis2: () => true,
+      getIsDataForRegionalDhis2: async () => true,
     },
     {
       id: 'survey_is_not_regional',
-      getIsDataForRegionalDhis2: () => false,
+      getIsDataForRegionalDhis2: async () => false,
     },
   ],
   entity: [

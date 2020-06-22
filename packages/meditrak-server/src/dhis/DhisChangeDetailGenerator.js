@@ -33,13 +33,7 @@ export class DhisChangeDetailGenerator extends ChangeDetailGenerator {
 
   async generateSurveyResponseDetails(surveyResponses) {
     if (surveyResponses.length === 0) return {};
-    const surveyIds = getUniqueEntries(surveyResponses.map(r => r.survey_id));
-    const surveys = await this.models.survey.find({ id: surveyIds });
-    const isDataRegionalBySurveyId = {};
-    surveys.forEach(s => {
-      isDataRegionalBySurveyId[s.id] = s.getIsDataForRegionalDhis2();
-    });
-
+    const isDataRegionalBySurveyId = await this.getIsDataRegionalBySurveyId(surveyResponses);
     const entityIds = getUniqueEntries(surveyResponses.map(r => r.entity_id));
     const entities = await this.models.entity.find({ id: entityIds });
     const orgUnitByEntityId = {};
@@ -60,6 +54,19 @@ export class DhisChangeDetailGenerator extends ChangeDetailGenerator {
     });
     return changeDetailsById;
   }
+
+  getIsDataRegionalBySurveyId = async surveyResponses => {
+    const surveyIds = getUniqueEntries(surveyResponses.map(r => r.survey_id));
+    const surveys = await this.models.survey.find({ id: surveyIds });
+    const isDataRegionalBySurveyId = {};
+    await Promise.all(
+      surveys.map(async s => {
+        isDataRegionalBySurveyId[s.id] = await s.getIsDataForRegionalDhis2();
+      }),
+    );
+
+    return isDataRegionalBySurveyId;
+  };
 
   generateDetails = async updateChanges => {
     // entities

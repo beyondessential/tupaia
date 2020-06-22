@@ -1,3 +1,7 @@
 {
-  "cSpell.words": ["migrator", "Tupaia"]
+  "cSpell.words": [
+    "Tupaia",
+    "migrator",
+    "upsert"
+  ]
 }
