@@ -23,7 +23,7 @@ const REPORT = {
   dataBuilder: 'sumPerMonth',
   dataBuilderConfig: {
     dataClasses: {
-      cases: {
+      value: {
         codes: [
           'HP217', // 10-19- male
           'HP218', // 10-19- female
