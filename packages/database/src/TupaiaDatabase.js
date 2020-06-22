@@ -471,6 +471,12 @@ function buildQuery(connection, queryConfig, where = {}, options = {}) {
     options.columns.map(columnSpec => {
       if (typeof columnSpec === 'string') return columnSpec;
       const [alias, selector] = Object.entries(columnSpec)[0];
+      // special case to handle selecting geojson - avoid generic handling of functions to keep
+      // out sql injection vulnerabilities
+      if (selector.includes('ST_AsGeoJSON')) {
+        const [, columnSelector] = selector.match(/ST_AsGeoJSON\((.*)\)/);
+        return { [alias]: connection.raw('ST_AsGeoJSON(??)', [columnSelector]) };
+      }
       return { [alias]: connection.raw('??', [selector]) };
     });
   query = addWhereClause(query[queryMethod](queryMethodParameter || columns), where);
