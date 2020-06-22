@@ -21,16 +21,20 @@ const ButtonGroup = styled(LightOutlinedButton)`
   padding: 0;
   min-width: 11rem;
 
+  > span svg {
+    transition: transform 0.3s ease;
+  }
+
   &.active {
     .MuiButton-label {
       background-color: white;
 
       > span {
         color: ${props => props.theme.palette.text.primary};
-      }
-      
-      > svg {
-        color: ${props => props.theme.palette.text.secondary};
+
+        svg {
+          color: ${props => props.theme.palette.text.secondary};
+        }
       }
     }
   }
@@ -42,10 +46,11 @@ const ButtonGroup = styled(LightOutlinedButton)`
 
       > span {
         color: ${props => props.theme.palette.text.primary};
-      }
-      
-      > svg {
-        color: ${props => props.theme.palette.text.secondary};
+
+        svg {
+          color: ${props => props.theme.palette.text.secondary};
+          transform: rotate(180deg);
+        }
       }
     }
   }
@@ -88,8 +93,10 @@ const MenuItem = styled(MuiMenuItem)`
 
   &:hover {
     background-color: ${props => props.theme.palette.error.main};
+
     span,
     svg {
+      font-weight: 500;
       color: white;
     }
   }
