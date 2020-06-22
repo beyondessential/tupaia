@@ -76,5 +76,5 @@ CardWeekHeader.propTypes = {
   heading: PropTypes.string.isRequired,
   subheading: PropTypes.string.isRequired,
   detailText: PropTypes.string.isRequired,
-  percentageChange: PropTypes.string.isRequired,
+  percentageChange: PropTypes.number.isRequired,
 };

@@ -16,7 +16,7 @@ const Header = styled.div`
   justify-content: space-between;
   background: ${props => props.color};
   color: ${COLORS.WHITE};
-  height: 250px;
+  height: 235px;
   padding: 1rem 1.25rem 2rem;
 `;
 
@@ -34,29 +34,29 @@ const Row = styled.div`
 
 const Subheading = styled(Typography)`
   font-weight: 400;
-  font-size: 21px;
-  line-height: 25px;
+  font-size: 1.3rem;
+  line-height: 1.5rem;
 `;
 
 const Text = styled(Typography)`
   font-weight: 500;
-  font-size: 14px;
+  font-size: 0.875rem;
   margin-bottom: 0.5rem;
 `;
 
 const Date = styled(Typography)`
+  font-size: 0.875rem;
   font-weight: 400;
-  font-size: 14px;
 `;
 
 const Avatar = styled(MuiAvatar)`
   height: 3rem;
   width: 3rem;
-  margin-right: 0.9rem;
+  margin-right: 0.8rem;
 `;
 
 const Heading = styled(Typography)`
-  margin-top: 0.8rem;
+  margin-top: 0.7rem;
   font-weight: 500;
   font-size: 2rem;
   line-height: 2.3rem;
@@ -65,6 +65,7 @@ const Heading = styled(Typography)`
 export const AlertsDrawerHeader = ({
   heading,
   subheading,
+  dateText,
   date,
   color,
   avatarUrl,
@@ -73,7 +74,7 @@ export const AlertsDrawerHeader = ({
   <Header color={color}>
     <SpaceBetween>
       <div>
-        <Text>Triggered on:</Text>
+        <Text>{dateText}</Text>
         <Date>{date}</Date>
       </div>
       {DropdownMenu}
@@ -92,6 +93,7 @@ AlertsDrawerHeader.propTypes = {
   DropdownMenu: PropTypes.any,
   heading: PropTypes.string.isRequired,
   subheading: PropTypes.string.isRequired,
+  dateText: PropTypes.string.isRequired,
   date: PropTypes.string.isRequired,
   avatarUrl: PropTypes.string,
   color: PropTypes.string,

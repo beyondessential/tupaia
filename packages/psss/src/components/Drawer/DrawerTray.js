@@ -13,7 +13,7 @@ import * as COLORS from '../../constants';
 const Tray = styled.div`
   background: ${props => props.color};
   color: white;
-  padding: 0.5rem 1.25rem;
+  padding: 0.2rem 1.25rem 0.5rem;
 `;
 
 const TrayInner = styled.div`
@@ -30,7 +30,7 @@ const TrayHeading = styled.span`
   font-weight: 500;
   font-size: 0.875rem;
   line-height: 1rem;
-  
+
   svg {
     margin-right: 1rem;
   }

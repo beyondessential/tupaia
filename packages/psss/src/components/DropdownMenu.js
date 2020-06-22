@@ -18,43 +18,41 @@ const ButtonGroup = styled(LightOutlinedButton)`
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 0.8rem 0 1.2rem;
-  min-width: 13rem;
+  padding: 0;
+  min-width: 11rem;
 
-  &:hover {
-    background-color: white;
-    span,
-    svg {
-      color: ${props => props.theme.palette.primary.main};
+  &.active {
+    .MuiButton-label {
+      background-color: white;
+
+      > span,
+      > svg {
+        color: ${props => props.theme.palette.text.secondary};
+      }
     }
   }
 
-  ${({ isActive }) =>
-    isActive &&
-    `
-    background: white;
-    
-    &.MuiButtonBase-root {
-      span {
-        color: #414d55;
+  .MuiButton-label {
+    &:hover,
+    &:focus {
+      background-color: white;
+
+      > span,
+      > svg {
+        color: ${props => props.theme.palette.text.secondary};
       }
-    
-      svg {
-        color: #9AA8B0;
-      }
-    } 
-  `}
+    }
+  }
 `;
 
-const LeftSpan = styled.span`
+const ValueSpan = styled.span`
   padding-right: 2rem;
+  padding-left: 1.2rem;
   line-height: 1rem;
 `;
 
-const RightSpan = styled.span`
-  padding-left: 0.8rem;
-  padding-top: 0.7rem;
-  padding-bottom: 0.6rem;
+const IconSpan = styled.span`
+  padding: 0.5rem 0.5rem 0.4rem;
   border-left: 1px solid ${props => props.theme.palette.grey['400']};
 `;
 
@@ -78,18 +76,16 @@ const MenuItem = styled(MuiMenuItem)`
   line-height: 16px;
   display: flex;
   align-items: center;
-  color: #6f7b82;
+  color: ${props => props.theme.palette.text.secondary};
   padding-top: 14px;
   padding-bottom: 14px;
 
   &:hover {
-    background-color: initial;
-  }
-
-  &.MuiButtonBase-root.Mui-selected {
     background-color: ${props => props.theme.palette.error.main};
-    color: white;
-    font-weight: 500;
+    span,
+    svg {
+      color: white;
+    }
   }
 `;
 
@@ -116,11 +112,11 @@ export const DropdownMenu = ({ options, onChange }) => {
   const remainingOptions = options.filter(option => option.value !== value);
 
   return (
-    <ButtonGroup isActive={open} onClick={handleToggle}>
-      <LeftSpan>State: {value}</LeftSpan>
-      <RightSpan>
+    <ButtonGroup className={open ? 'active' : null} onClick={handleToggle}>
+      <ValueSpan>State: {value}</ValueSpan>
+      <IconSpan>
         <ExpandMoreIcon />
-      </RightSpan>
+      </IconSpan>
       {open && (
         <Paper>
           <ClickAwayListener onClickAway={handleClose}>

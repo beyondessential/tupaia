@@ -84,6 +84,7 @@ export const AlertsPanelComponent = ({
       <DrawerTray heading="Alert Details" onClose={handleClose} Icon={WarningCloud} />
       <AlertsDrawerHeader
         date="Week 9 Feb 25 - Mar 1, 2021"
+        dateText="Triggered on:"
         avatarUrl={countryFlagImage('as')}
         subheading="American Samoa"
         heading="Acute Fever and Rash (AFR)"
@@ -96,7 +97,7 @@ export const AlertsPanelComponent = ({
           </CardTab>
           <CardTab>
             <SpeakerNotes />
-            Notes (3)
+            Notes ({notesState.count})
           </CardTab>
           <CardTab>
             <List />
