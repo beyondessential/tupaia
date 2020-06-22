@@ -49,6 +49,8 @@ export const setSession = (req, userInfo) => {
 
 const addUserAccessHelper = (req, res, next) => {
   req.userHasAccess = async (entityOrCode, permissionGroup = '') => {
+    console.log('req.userHasAccess -> entityOrCode', entityOrCode);
+    console.log('req.userHasAccess -> permissionGroup', permissionGroup);
     const accessPolicy = await getUserAccessPolicyFromSession(req);
     if (!accessPolicy) {
       return false;

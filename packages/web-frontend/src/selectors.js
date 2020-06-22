@@ -258,7 +258,6 @@ export const selectAllMeasuresWithDisplayInfo = createSelector(
       return listOfMeasureLevels.includes(orgUnit.type);
     });
 
-    // selectIsProject()
     if (country[projectCode].type === 'Project') {
       allOrgUnitsOfLevel = Object.values(orgUnitMap)
         .filter(org => org[org.countryCode])

@@ -35,6 +35,7 @@ export class PermissionsChecker {
   }
 
   async checkHasEntityAccess(entityCode) {
+    console.log('PermissionsChecker -> checkHasEntityAccess -> entityCode', entityCode);
     if (entityCode === 'World' || entityCode === 'explore') {
       return true; // currently, all users have access to everything in the explore project and at the world level.
     }
