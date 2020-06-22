@@ -14,7 +14,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { goHome, changeOrgUnit } from '../../actions';
+import { goHome } from '../../actions';
 import logo from '../../images/tupaia-logo-white.png';
 
 const styles = {
@@ -45,7 +45,6 @@ TupaiaHomeComponent.propTypes = {
 const mapDispatchToProps = dispatch => ({
   goHome: () => {
     dispatch(goHome());
-    dispatch(changeOrgUnit());
   },
 });
 

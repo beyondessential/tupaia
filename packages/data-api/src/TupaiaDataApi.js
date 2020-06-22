@@ -9,6 +9,7 @@ import { utcMoment } from '@tupaia/utils';
 import { fetchEventData, fetchAnalyticData } from './fetchData';
 import { SqlQuery } from './SqlQuery';
 import { sanitizeDataValue } from './utils';
+import { validateEventOptions, validateAnalyticsOptions } from './validation';
 
 const EVENT_DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss';
 const ANALYTICS_DATE_FORMAT = 'YYYY-MM-DD';
@@ -19,6 +20,7 @@ export class TupaiaDataApi {
   }
 
   async fetchEvents(options) {
+    await validateEventOptions(options);
     const results = await fetchEventData(this.database, options);
     const resultsBySurveyResponse = groupBy(results, 'surveyResponseId');
     return Object.values(resultsBySurveyResponse)
@@ -43,6 +45,7 @@ export class TupaiaDataApi {
   }
 
   async fetchAnalytics(options) {
+    await validateAnalyticsOptions(options);
     const results = await fetchAnalyticData(this.database, options);
     return results.map(({ entityCode, dataElementCode, date, type, value }) => ({
       organisationUnit: entityCode,
@@ -53,9 +56,12 @@ export class TupaiaDataApi {
   }
 
   async fetchDataElements(dataElementCodes) {
+    if (!dataElementCodes || !Array.isArray(dataElementCodes)) {
+      throw new Error('Please provide an array of data element codes');
+    }
     return new SqlQuery(
       `
-      SELECT code, indicator as name
+      SELECT code, name
       FROM question
       WHERE code IN ${SqlQuery.parameteriseArray(dataElementCodes)};
     `,

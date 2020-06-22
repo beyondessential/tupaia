@@ -33,6 +33,7 @@ import {
   FIND_USER_LOGGEDIN,
   FETCH_LOGOUT_SUCCESS,
   FETCH_LOGIN_SUCCESS,
+  GO_HOME,
   SET_PASSWORD_RESET_TOKEN,
   OPEN_USER_DIALOG,
   DIALOG_PAGE_REQUEST_COUNTRY_ACCESS,
@@ -356,7 +357,7 @@ function* watchSetPasswordResetToken() {
  */
 function* attemptRequestCountryAccess(action) {
   const { message, userGroup } = action;
-  const countryIds = action.countryIds ? Object.keys(action.countryIds) : [];
+  const entityIds = action.entityIds ? Object.keys(action.entityIds) : [];
 
   const options = {
     method: 'POST',
@@ -364,7 +365,7 @@ function* attemptRequestCountryAccess(action) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      countryIds: countryIds,
+      entityIds,
       message,
       userGroup,
     }),
@@ -521,7 +522,8 @@ function* watchOrgUnitChangeAndFetchIt() {
  */
 function* fetchDashboard(action) {
   const { organisationUnitCode } = action.organisationUnit;
-  const requestResourceUrl = `dashboard?organisationUnitCode=${organisationUnitCode}`;
+  const projectCode = (yield select(selectActiveProject)).code;
+  const requestResourceUrl = `dashboard?organisationUnitCode=${organisationUnitCode}&projectCode=${projectCode}`;
 
   try {
     const dashboard = yield call(request, requestResourceUrl, fetchDashboardError);
@@ -799,7 +801,8 @@ function* fetchMeasures(action) {
   const { organisationUnitCode } = action.organisationUnit;
   const state = yield select();
   if (selectIsProject(state, organisationUnitCode)) yield put(clearMeasure());
-  const requestResourceUrl = `measures?organisationUnitCode=${organisationUnitCode}`;
+  const projectCode = (yield select(selectActiveProject)).code;
+  const requestResourceUrl = `measures?organisationUnitCode=${organisationUnitCode}&projectCode=${projectCode}`;
   try {
     const measures = yield call(request, requestResourceUrl);
     yield put(fetchMeasuresSuccess(measures));
@@ -937,9 +940,10 @@ function* watchAttemptAttemptDrillDown() {
   yield takeLatest(ATTEMPT_DRILL_DOWN, fetchDrillDownData);
 }
 
-function* navigateToExploreOnUserChange() {
-  // On user login/logout, we should just navigate back to explore project, as we don't know if they have permissions
-  // to the current project or organisation unit
+function* resetToExplore() {
+  // default measure will be selected once the org unit has fully changed, just clear for now
+  yield put(clearMeasure());
+  yield put(clearMeasureHierarchy());
   yield put(
     selectProject((yield select(selectProjectByCode, 'explore')) || { code: INITIAL_PROJECT_CODE }),
   );
@@ -947,8 +951,14 @@ function* navigateToExploreOnUserChange() {
 }
 
 function* watchUserChangesAndUpdatePermissions() {
-  yield takeLatest(FETCH_LOGOUT_SUCCESS, navigateToExploreOnUserChange);
-  yield takeLatest(FETCH_LOGIN_SUCCESS, navigateToExploreOnUserChange);
+  // On user login/logout, we should just navigate back to explore project, as we don't know if they have permissions
+  // to the current project or organisation unit
+  yield takeLatest(FETCH_LOGOUT_SUCCESS, resetToExplore);
+  yield takeLatest(FETCH_LOGIN_SUCCESS, resetToExplore);
+}
+
+function* watchGoHomeAndResetToExplore() {
+  yield takeLatest(GO_HOME, resetToExplore);
 }
 
 function* fetchEnlargedDialogViewContentForPeriod(action) {
@@ -1009,4 +1019,5 @@ export default [
   watchFetchMeasureSuccess,
   watchChangeOrgUnitSuccess,
   refreshBrowserWhenFinishingUserSession,
+  watchGoHomeAndResetToExplore,
 ];

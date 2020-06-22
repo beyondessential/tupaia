@@ -23,6 +23,7 @@ import {
   CLOSE_MAP_POPUP,
   HIDE_MAP_MEASURE,
   UNHIDE_MAP_MEASURE,
+  CLEAR_MEASURE,
 } from '../actions';
 
 import { MARKER_TYPES } from '../constants';
@@ -74,14 +75,8 @@ function position(state = { bounds: defaultBounds }, action) {
 
 function measureInfo(state = {}, action) {
   switch (action.type) {
-    case CHANGE_ORG_UNIT_SUCCESS:
-      if (action.organisationUnit.type === 'Project') {
-        // clear measures when returning to project view
-        return {};
-      }
-      return state;
-    case CHANGE_MEASURE:
-      return state;
+    case CLEAR_MEASURE:
+      return {};
     case FETCH_MEASURE_DATA_SUCCESS: {
       const currentCountry = action.countryCode;
       // remove measure units with no coordinates
@@ -197,6 +192,10 @@ function shouldSnapToPosition(state = true, action) {
  * initial state of the map.
  */
 function getAutoTileset() {
+  // default to osm in dev so that we don't pay for tiles when running locally
+  if (process.env.NODE_ENV !== 'production') {
+    return 'osm';
+  }
   const SLOW_LOAD_TIME_THRESHOLD = 2 * 1000; // 2 seconds in milliseconds
   return window.loadTime < SLOW_LOAD_TIME_THRESHOLD ? 'satellite' : 'osm';
 }

@@ -12,6 +12,7 @@ const organisationUnitCode = 'PG';
 const programCode = 'SCRF';
 const dataServices = [{ isDataRegional: true }];
 const dataSourceEntityType = 'village';
+const dataSourceEntityFilter = undefined;
 
 const query = { organisationUnitCode, dataElementCode: 'value' };
 const entity = { code: organisationUnitCode };
@@ -36,8 +37,12 @@ const config = {
   dataServices,
   groups,
   dataSourceType: 'custom',
-  dataSourceEntityType,
-  aggregationEntityType: 'village',
+  dataSourceEntityFilter,
+  entityAggregation: {
+    aggregationType: 'REPLACE_ORG_UNIT_WITH_ORG_GROUP',
+    dataSourceEntityType,
+    aggregationEntityType: 'facility',
+  },
 };
 
 const events = [
@@ -89,7 +94,8 @@ const createAggregator = () => {
     .resolves([])
     .withArgs(programCode, {
       dataServices,
-      dataSourceEntityType: dataSourceEntityType,
+      entityAggregation: config.entityAggregation,
+      dataSourceEntityFilter: dataSourceEntityFilter,
       organisationUnitCode: organisationUnitCode,
       startDate: undefined,
       endDate: undefined,

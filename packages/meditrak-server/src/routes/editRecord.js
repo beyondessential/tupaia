@@ -3,9 +3,13 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 
-import { respond, ValidationError } from '@tupaia/utils';
+import {
+  respond,
+  ValidationError,
+  ObjectValidator,
+  constructRecordExistsWithId,
+} from '@tupaia/utils';
 import { TYPES } from '@tupaia/database';
-import { ObjectValidator, constructRecordExistsWithId } from '../validation';
 import { resourceToRecordType } from '../utilities';
 import { editUserAccount, editOption, editOptionSet } from '../dataAccessors';
 
@@ -13,9 +17,7 @@ const EDITABLE_RECORD_TYPES = [
   TYPES.USER_ACCOUNT,
   TYPES.SURVEY_RESPONSE,
   TYPES.SURVEY,
-  TYPES.USER_COUNTRY_PERMISSION,
-  TYPES.USER_FACILITY_PERMISSION,
-  TYPES.USER_GEOGRAPHICAL_AREA_PERMISSION,
+  TYPES.USER_ENTITY_PERMISSION,
   TYPES.ANSWER,
   TYPES.QUESTION,
   TYPES.FEED_ITEM,

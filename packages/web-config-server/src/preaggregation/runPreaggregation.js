@@ -6,21 +6,30 @@
 import { createAggregator } from '@tupaia/aggregator';
 import { getDhisApiInstance } from '/dhis';
 import * as preaggregators from './preaggregators';
+import winston from 'winston';
 
 const getPreaggregators = preaggregationName =>
   preaggregationName.toLowerCase() === 'all'
-    ? Object.values(preaggregators)
-    : [preaggregators[preaggregationName]];
+    ? preaggregators
+    : { [preaggregationName]: preaggregators[preaggregationName] };
 
 const runPreaggregators = async preaggregatorsToRun => {
   const aggregator = createAggregator();
   const regionalDhisApiInstance = getDhisApiInstance();
   await regionalDhisApiInstance.updateAnalyticsTables();
-  for (let i = 0; i < preaggregatorsToRun.length; i++) {
-    await preaggregatorsToRun[i](aggregator, regionalDhisApiInstance); // Await each preaggregator as otherwise it will cause a huge spike in load
+  const preaggregatorEntries = Object.entries(preaggregatorsToRun);
+  for (let i = 0; i < preaggregatorEntries.length; i++) {
+    const [name, preaggregator] = preaggregatorEntries[i];
+    winston.info(`Starting preaggregator: ${name}`);
+    try {
+      await preaggregator(aggregator, regionalDhisApiInstance); // Await each preaggregator as otherwise it will cause a huge spike in load
+    } catch (error) {
+      winston.error(`Preaggregator ${name} failed!`, error.message);
+    }
   }
   await regionalDhisApiInstance.updateAnalyticsTables();
-  aggregator.close();
+  await aggregator.close();
+  winston.info('Preaggregation finished, aggregator closed');
 };
 
 export const runPreaggregation = async preaggregationName => {
