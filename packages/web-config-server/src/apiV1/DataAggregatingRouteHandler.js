@@ -32,7 +32,7 @@ export class DataAggregatingRouteHandler extends RouteHandler {
     let dataSourceEntities = [];
     if (entityType) {
       const ancestor = await entity.getAncestorOfType(entityType);
-      if (ancestor) {
+      if (ancestor && ancestor.type !== entity.type) {
         dataSourceEntities = [ancestor];
       } else {
         dataSourceEntities = await entity.getDescendantsOfType(entityType, hierarchyId);
@@ -41,9 +41,7 @@ export class DataAggregatingRouteHandler extends RouteHandler {
       dataSourceEntities = await entity.getNearestOrgUnitDescendants(hierarchyId);
     }
 
-    const countryCodes = [
-      ...new Set(dataSourceEntities.map(e => (e.type === 'country' ? e.code : e.country_code))),
-    ];
+    const countryCodes = [...new Set(dataSourceEntities.map(e => e.country_code))];
     const countryAccessList = await Promise.all(
       countryCodes.map(countryCode => this.permissionsChecker.checkHasEntityAccess(countryCode)),
     );
@@ -51,9 +49,7 @@ export class DataAggregatingRouteHandler extends RouteHandler {
       (obj, countryCode, i) => ({ ...obj, [countryCode]: countryAccessList[i] }),
       {},
     );
-    dataSourceEntities = dataSourceEntities.filter(
-      e => countryAccess[e.country_code] || countryAccess[e.code],
-    );
+    dataSourceEntities = dataSourceEntities.filter(e => countryAccess[e.country_code]);
 
     if (dataSourceEntityFilter) {
       dataSourceEntities = filterEntities(dataSourceEntities, dataSourceEntityFilter);

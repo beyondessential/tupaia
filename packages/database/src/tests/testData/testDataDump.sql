@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 11.2
--- Dumped by pg_dump version 11.2
+-- Dumped from database version 11.3
+-- Dumped by pg_dump version 11.3
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -12,6 +12,7 @@ SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
+SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
@@ -228,24 +229,6 @@ CREATE FUNCTION public.update_change_time() RETURNS trigger
 SET default_tablespace = '';
 
 SET default_with_oids = false;
-
---
--- Name: access_request; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.access_request (
-    id text NOT NULL,
-    user_id text,
-    entity_id text,
-    message text,
-    permission_group_id text,
-    approved boolean,
-    created_time timestamp with time zone DEFAULT now() NOT NULL,
-    approving_user_id text,
-    approval_note text,
-    approval_date timestamp with time zone
-);
-
 
 --
 -- Name: answer; Type: TABLE; Schema: public; Owner: -
@@ -940,14 +923,6 @@ ALTER TABLE ONLY public."dashboardGroup" ALTER COLUMN id SET DEFAULT nextval('pu
 --
 
 ALTER TABLE ONLY public.migrations ALTER COLUMN id SET DEFAULT nextval('public.migrations_id_seq'::regclass);
-
-
---
--- Name: access_request access_request_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.access_request
-    ADD CONSTRAINT access_request_pkey PRIMARY KEY (id);
 
 
 --
@@ -1819,13 +1794,6 @@ CREATE INDEX user_entity_permission_user_id_idx ON public.user_entity_permission
 
 
 --
--- Name: access_request access_request_trigger; Type: TRIGGER; Schema: public; Owner: -
---
-
-CREATE TRIGGER access_request_trigger AFTER INSERT OR DELETE OR UPDATE ON public.access_request FOR EACH ROW EXECUTE PROCEDURE public.notification();
-
-
---
 -- Name: answer answer_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -2075,38 +2043,6 @@ CREATE TRIGGER user_entity_permission_trigger AFTER INSERT OR DELETE OR UPDATE O
 --
 
 CREATE TRIGGER user_reward_trigger AFTER INSERT OR DELETE OR UPDATE ON public.user_reward FOR EACH ROW EXECUTE PROCEDURE public.notification();
-
-
---
--- Name: access_request access_request_approving_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.access_request
-    ADD CONSTRAINT access_request_approving_user_id_fkey FOREIGN KEY (approving_user_id) REFERENCES public.user_account(id);
-
-
---
--- Name: access_request access_request_entity_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.access_request
-    ADD CONSTRAINT access_request_entity_id_fkey FOREIGN KEY (entity_id) REFERENCES public.entity(id);
-
-
---
--- Name: access_request access_request_permission_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.access_request
-    ADD CONSTRAINT access_request_permission_group_id_fkey FOREIGN KEY (permission_group_id) REFERENCES public.permission_group(id);
-
-
---
--- Name: access_request access_request_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.access_request
-    ADD CONSTRAINT access_request_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user_account(id);
 
 
 --
@@ -2437,8 +2373,8 @@ ALTER TABLE ONLY public.user_reward
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 11.2
--- Dumped by pg_dump version 11.2
+-- Dumped from database version 11.3
+-- Dumped by pg_dump version 11.3
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -2447,6 +2383,7 @@ SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
+SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
@@ -3218,51 +3155,50 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 719	/20200522031911-laosSchoolsFixUnicefCode	2020-05-22 06:36:39.753
 720	/20200522032405-UpdateMapOverlayHeadings	2020-05-22 06:36:39.887
 721	/20200522055413-ChangeLaosSchoolsOverlayGroupName	2020-05-22 06:36:39.921
-722	/20200522010341-updateLaosSchoolsBinaryDashboard	2020-05-24 22:44:43.751
-723	/20200212052756-RemoveRedundantQuestionsWish	2020-06-19 15:49:25.012
-724	/20200417211027-AllowNullAccessToken	2020-06-19 15:49:25.04
-725	/20200422231733-MoveNoCountryUsersToAdminPanel	2020-06-19 15:49:25.058
-726	/20200423213702-EntityBasedPermissions	2020-06-19 15:49:25.285
-727	/20200503063358-AddTongaDHIS2HealthCertificatesDistributedReport	2020-06-19 15:49:25.412
-728	/20200508034036-UpdateDefaultTimePeriodFormatInDataBuilderConfig	2020-06-19 15:49:25.454
-729	/20200521005057-AddLaosDevelopmentPartnersReport	2020-06-19 15:49:25.478
-730	/20200521102324-AddUtilityServiceBinaryMeasuresBarCharts	2020-06-19 15:49:25.571
-731	/20200521155232-AddResourceSupportBinaryMeasuresBarCharts	2020-06-19 15:49:25.633
-732	/20200522022756-VisualisationsDefinedPerProject	2020-06-19 15:49:25.761
-733	/20200524212939-LimitVisualisationsPerProject	2020-06-19 15:49:26.025
-734	/20200524231548-AddSchoolPercentDashboards	2020-06-19 15:49:26.068
-735	/20200525005457-WipeUserSessions	2020-06-19 15:49:26.088
-736	/20200525044209-NoFunnyPeriods	2020-06-19 15:49:26.099
-737	/20200526005827-RemoveWorldDashboardGroups	2020-06-19 15:49:26.107
-738	/20200528011043-ChangeUNFPAReportsToUseQuarters	2020-06-19 15:49:26.115
-739	/20200528042309-DeleteAnswersForLaosSchoolsSelectVillageQuestions	2020-06-19 15:49:26.13
-740	/20200528043308-createAccessRequestTable	2020-06-19 15:49:26.144
-741	/20200529000003-MigrateOverlaysToUseNewEntityAggregation	2020-06-19 15:49:26.431
-742	/20200529064523-MoveMeasureLevelToPresentationOptions	2020-06-19 15:49:26.713
-743	/20200601050232-MigrateReportsToUseNewEntityAggregation	2020-06-19 15:49:26.811
-744	/20200602035743-FixConfigForSurveyExportReports	2020-06-19 15:49:26.851
-745	/20200603012534-DeleteSurveyAndQuestionImageData	2020-06-19 15:49:26.875
-746	/20200603012535-ChangeDuplicateSurveyCodes	2020-06-19 15:49:27.392
-747	/20200603014358-AddUniqueCodeConstraintInSurvey	2020-06-19 15:49:27.417
-748	/20200603032358-UseCountrySpecificBcdSurveys	2020-06-19 15:49:27.508
-749	/20200605045409-CorrectStriveDashboardCase	2020-06-19 15:49:27.518
-750	/20200605051613-SetCovidDefaultDashboard	2020-06-19 15:49:27.524
-751	/20200608220007-RenameQuestionIndicatorToName	2020-06-19 15:49:27.531
-752	/20200608234924-RemoveLaosSchoolsReport	2020-06-19 15:49:27.547
-753	/20200609002315-UpdateSchoolBinaryListMeasures	2020-06-19 15:49:27.558
-754	/20200609022031-RemoveLaosSchoolsHeatmaps	2020-06-19 15:49:27.564
-755	/20200609022859-UpdateOverlayHeadingsToRemoveTotal	2020-06-19 15:49:27.635
-756	/20200609045707-UpdateLaosSchoolsBinaryMeasureMapOverlayNames	2020-06-19 15:49:27.639
-757	/20200609045724-RemoveLaosSchoolsBinaryMeasureMapOverlays	2020-06-19 15:49:27.643
-758	/20200609053914-UseTupaiaAsDataServiceForNewLaosSchoolSurveys	2020-06-19 15:49:27.995
-759	/20200609055929-AddMoreLaosSchoolsBinaryMeasuresMapOverlays	2020-06-19 15:49:28.009
-760	/20200609072253-AddLaosSchoolsStudentResourcesMapOverlays	2020-06-19 15:49:28.014
-761	/20200609223042-AddWaterSupplyMapOverlay	2020-06-19 15:49:28.037
-762	/20200612003644-AddMostVisualisationsToExplore	2020-06-19 15:49:28.063
-763	/20200612021300-FixIncorrectDashboardGroupProjects	2020-06-19 15:49:28.106
-764	/20200616000806-FixIncorrectDataElementCodesLaosReport	2020-06-19 15:49:28.17
-765	/20200617235154-FixTongaMeaslesOverlaysWithEntityAggregation	2020-06-19 15:49:28.184
-766	/20200618090311-FixEntityAggregationConfig	2020-06-19 15:49:28.187
+722	/20200503063358-AddTongaDHIS2HealthCertificatesDistributedReport	2020-05-26 05:33:22.248
+723	/20200508034036-UpdateDefaultTimePeriodFormatInDataBuilderConfig	2020-05-26 05:33:22.404
+724	/20200522010341-updateLaosSchoolsBinaryDashboard	2020-05-26 05:33:22.531
+725	/20200525044209-NoFunnyPeriods	2020-05-26 05:33:22.587
+726	/20200526005827-RemoveWorldDashboardGroups	2020-05-26 05:33:22.618
+727	/20200212052756-RemoveRedundantQuestionsWish	2020-05-28 07:05:49.153
+728	/20200521005057-AddLaosDevelopmentPartnersReport	2020-05-28 07:05:49.46
+729	/20200524231548-AddSchoolPercentDashboards	2020-05-28 07:05:50.058
+730	/20200522022756-VisualisationsDefinedPerProject	2020-06-01 23:11:11.261
+731	/20200524212939-LimitVisualisationsPerProject	2020-06-01 23:11:12.839
+732	/20200528042309-DeleteAnswersForLaosSchoolsSelectVillageQuestions	2020-06-01 23:11:13.004
+733	/20200521102324-AddUtilityServiceBinaryMeasuresBarCharts	2020-06-05 05:09:17.476
+734	/20200521155232-AddResourceSupportBinaryMeasuresBarCharts	2020-06-05 05:09:17.765
+735	/20200528011043-ChangeUNFPAReportsToUseQuarters	2020-06-05 05:09:17.857
+736	/20200605045409-CorrectStriveDashboardCase	2020-06-05 05:09:17.912
+737	/20200605051613-SetCovidDefaultDashboard	2020-06-11 22:06:48.088
+738	/20200608220007-RenameQuestionIndicatorToName	2020-06-11 22:06:48.184
+739	/20200608234924-RemoveLaosSchoolsReport	2020-06-11 22:06:48.527
+740	/20200609022031-RemoveLaosSchoolsHeatmaps	2020-06-11 22:06:48.594
+741	/20200609022859-UpdateOverlayHeadingsToRemoveTotal	2020-06-11 22:06:48.938
+742	/20200612003644-AddMostVisualisationsToExplore	2020-06-12 01:09:53.702
+743	/20200417211027-AllowNullAccessToken	2020-06-18 21:35:02.61
+744	/20200422231733-MoveNoCountryUsersToAdminPanel	2020-06-18 21:35:02.717
+745	/20200423213702-EntityBasedPermissions	2020-06-18 21:35:03.473
+746	/20200525005457-WipeUserSessions	2020-06-18 21:35:03.546
+747	/20200529000003-MigrateOverlaysToUseNewEntityAggregation	2020-06-18 21:35:05.868
+748	/20200529064523-MoveMeasureLevelToPresentationOptions	2020-06-18 21:35:07.96
+749	/20200601050232-MigrateReportsToUseNewEntityAggregation	2020-06-18 21:35:08.941
+750	/20200602035743-FixConfigForSurveyExportReports	2020-06-18 21:35:11.342
+751	/20200603012534-DeleteSurveyAndQuestionImageData	2020-06-18 21:35:11.364
+752	/20200603012535-ChangeDuplicateSurveyCodes	2020-06-18 21:35:15.127
+753	/20200603014358-AddUniqueCodeConstraintInSurvey	2020-06-18 21:35:15.193
+754	/20200603032358-UseCountrySpecificBcdSurveys	2020-06-18 21:35:15.822
+755	/20200609002315-UpdateSchoolBinaryListMeasures	2020-06-18 21:35:15.925
+756	/20200609045707-UpdateLaosSchoolsBinaryMeasureMapOverlayNames	2020-06-18 21:35:16.046
+757	/20200609045724-RemoveLaosSchoolsBinaryMeasureMapOverlays	2020-06-18 21:35:16.083
+758	/20200609053914-UseTupaiaAsDataServiceForNewLaosSchoolSurveys	2020-06-18 21:35:18.666
+759	/20200609055929-AddMoreLaosSchoolsBinaryMeasuresMapOverlays	2020-06-18 21:35:18.939
+760	/20200609072253-AddLaosSchoolsStudentResourcesMapOverlays	2020-06-18 21:35:19.174
+761	/20200609223042-AddWaterSupplyMapOverlay	2020-06-18 21:35:19.443
+762	/20200612021300-FixIncorrectDashboardGroupProjects	2020-06-18 21:35:19.63
+763	/20200616000806-FixIncorrectDataElementCodesLaosReport	2020-06-18 21:35:19.97
+764	/20200617235154-FixTongaMeaslesOverlaysWithEntityAggregation	2020-06-18 21:35:20.008
+765	/20200618090311-FixEntityAggregationConfig	2020-06-18 21:35:20.071
 \.
 
 
@@ -3270,7 +3206,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 766, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 765, true);
 
 
 --
