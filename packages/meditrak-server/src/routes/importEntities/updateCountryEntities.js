@@ -21,9 +21,9 @@ function getDefaultTypeDetails(type) {
   const typeName = DEFAULT_TYPE_NAMES[categoryCode];
   if (!typeName) {
     throw new Error(
-      `${type} is not a valid facility type, must be one of ${Object.keys(DEFAULT_TYPE_NAMES).join(
-        ', ',
-      )}`,
+      `Tupaia doesn't support the import of type '${type}'. Please import as one of ${Object.keys(
+        DEFAULT_TYPE_NAMES,
+      ).join(', ')} and change type post-import.`,
     );
   }
   return { categoryCode, typeName };
