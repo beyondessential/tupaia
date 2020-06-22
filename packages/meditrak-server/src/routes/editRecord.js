@@ -12,6 +12,7 @@ import {
 import { TYPES } from '@tupaia/database';
 import { resourceToRecordType } from '../utilities';
 import {
+  editAccessRequest,
   editUserAccount,
   editOption,
   editOptionSet,
@@ -23,9 +24,7 @@ const EDITABLE_RECORD_TYPES = [
   TYPES.SURVEY_RESPONSE,
   TYPES.SURVEY,
   TYPES.SURVEY_SCREEN_COMPONENT,
-  TYPES.USER_COUNTRY_PERMISSION,
-  TYPES.USER_FACILITY_PERMISSION,
-  TYPES.USER_GEOGRAPHICAL_AREA_PERMISSION,
+  TYPES.USER_ENTITY_PERMISSION,
   TYPES.ANSWER,
   TYPES.QUESTION,
   TYPES.FEED_ITEM,
@@ -34,6 +33,7 @@ const EDITABLE_RECORD_TYPES = [
   TYPES.DATA_SOURCE,
   TYPES.ALERT,
   TYPES.COMMENT,
+  TYPES.ACCESS_REQUEST,
 ];
 
 const CUSTOM_RECORD_UPDATERS = {
@@ -41,6 +41,7 @@ const CUSTOM_RECORD_UPDATERS = {
   [TYPES.OPTION_SET]: editOptionSet,
   [TYPES.OPTION]: editOption,
   [TYPES.SURVEY_SCREEN_COMPONENT]: editSurveyScreenComponent,
+  [TYPES.ACCESS_REQUEST]: editAccessRequest,
 };
 
 /**
@@ -62,7 +63,7 @@ export async function editRecord(req, res) {
 
   // Update the record, using a custom updater if necessary
   if (CUSTOM_RECORD_UPDATERS[recordType]) {
-    await CUSTOM_RECORD_UPDATERS[recordType](models, id, updatedFields);
+    await CUSTOM_RECORD_UPDATERS[recordType](models, id, updatedFields, req);
   } else {
     await models.getModelForDatabaseType(recordType).updateById(id, updatedFields);
   }

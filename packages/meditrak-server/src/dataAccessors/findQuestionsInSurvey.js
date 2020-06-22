@@ -14,7 +14,7 @@ export const findQuestionsInSurvey = async (models, surveyId) => {
         { id: 'question_id' },
         'code',
         'type',
-        'indicator',
+        'name',
         'text',
         'detail',
         'options',

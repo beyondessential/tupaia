@@ -109,8 +109,8 @@ export async function pushChange(models, change, ms1Api) {
   const questions = await findQuestionsInSurvey(models, surveyResponse.survey_id);
   const questionIdToMs1Variable = {};
   questions.forEach(question => {
-    if (!question.indicator) return;
-    questionIdToMs1Variable[question.id] = generateMs1VariableName(question.indicator);
+    if (!question.name) return;
+    questionIdToMs1Variable[question.id] = generateMs1VariableName(question.name);
   });
 
   let body = { distributionId };

@@ -78,18 +78,31 @@ const createResponseExtractors = () => {
   return { [SHEET1]: responseExtractor, [SHEET2]: responseExtractor };
 };
 
+let clock;
+
 describe('SurveyResponseImporter', () => {
   before(() => {
-    sinon.stub(Date, 'now').callsFake(() => TIMESTAMP);
+    clock = sinon.useFakeTimers({ now: TIMESTAMP, toFake: ['Date'] });
     sinon
       .stub(SurveyResponse, 'submitResponses')
       .callsFake((models, userId, responses) => RESULTS_BY_SURVEY_ID[responses[0].survey_id]);
   });
 
+  after(() => {
+    SurveyResponse.submitResponses.restore();
+    clock.restore();
+  });
+
   describe('import()', () => {
-    const modelsStub = createModelsStub();
-    const extractors = createResponseExtractors();
-    const importer = new SurveyResponseImporter(modelsStub, extractors);
+    let modelsStub;
+    let extractors;
+    let importer;
+
+    before(() => {
+      modelsStub = createModelsStub();
+      extractors = createResponseExtractors();
+      importer = new SurveyResponseImporter(modelsStub, extractors);
+    });
 
     beforeEach(() => {
       SurveyResponse.submitResponses.resetHistory();
@@ -144,10 +157,5 @@ describe('SurveyResponseImporter', () => {
 
     it('should return the resulting response ids and answers', () =>
       expect(importer.import(ROWS_BY_SURVEY, USER_ID)).to.eventually.have.members(ALL_RESULTS));
-  });
-
-  after(() => {
-    SurveyResponse.submitResponses.restore();
-    Date.now.restore();
   });
 });

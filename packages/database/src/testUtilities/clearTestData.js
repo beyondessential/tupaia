@@ -14,6 +14,7 @@ const getDeleteStatement = (table, extraConditions = []) => {
 // tables are in a significant order, ensuring any foreign keys are cleaned up correctly
 const TABLES_TO_CLEAR = [
   'api_request_log',
+  'access_request',
   'answer',
   'survey_response',
   'survey_screen_component',
@@ -41,9 +42,7 @@ const TABLES_TO_CLEAR = [
   'option',
   'option_set',
   'refresh_token',
-  'user_country_permission',
-  'user_clinic_permission',
-  'user_geographical_area_permission',
+  'user_entity_permission',
   'permission_group',
   'user_reward',
   'api_client',
@@ -56,7 +55,7 @@ export function clearTestData(db, testStartTime = moment().format('YYYY-MM-DD HH
     answer: [`question_id ${COMPARISON}`, `survey_response_id ${COMPARISON}`],
     survey_response: [`survey_id ${COMPARISON}`, `entity_id ${COMPARISON}`],
     survey: [`code LIKE 'test%'`],
-    user_country_permission: [`permission_group_id ${COMPARISON}`],
+    user_entity_permission: [`permission_group_id ${COMPARISON}`],
     user_account: [`email = 'test.user@tupaia.org'`, `first_name = 'Automated test'`],
     clinic: [`country_id ${COMPARISON}`],
     entity: [`code LIKE 'test%'`],

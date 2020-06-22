@@ -16,10 +16,11 @@ export const findFormattedDisasters = async (models, criteria) => {
       whereClause += `${where} ${columns.id} = ?`;
       bindParams.push(criteria[key]);
     } else {
-      whereClause += criteria[key].ignoreCase
-        ? `${where} lower(${columns[key]}) ${criteria[key].comparator} lower(?)`
-        : `${where} ${columns[key]} ${criteria[key].comparator} ?`;
-
+      // check there's no dodgy comparator being used as an sql injection attack
+      if (criteria[key].comparator !== 'ilike') {
+        throw new Error('Only ilike is supported as a comparator for finding disasters');
+      }
+      whereClause += `${where} ${columns[key]} ${criteria[key].comparator} ?`;
       bindParams.push(criteria[key].comparisonValue);
     }
     where = ' and ';

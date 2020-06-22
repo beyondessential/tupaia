@@ -79,7 +79,7 @@ export const refreshData = (reduxId, endpoint, columns, baseFilter, tableState) 
   const { pageIndex, pageSize, filters, sorting } = tableState;
 
   // Set up filter
-  const filterObject = baseFilter;
+  const filterObject = { ...baseFilter };
   filters.forEach(({ id, value }) => {
     filterObject[id] = value;
   });
