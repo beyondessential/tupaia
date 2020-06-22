@@ -3,17 +3,12 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import chai, { expect } from 'chai';
-import chaiAsPromised from 'chai-as-promised';
+import { expect } from 'chai';
 import { flatten } from 'lodash';
 import sinon from 'sinon';
-import sinonChai from 'sinon-chai';
 
 import { SurveyResponseImporter } from '../../../routes/utilities';
 import * as SurveyResponse from '../../../routes/surveyResponse';
-
-chai.use(chaiAsPromised);
-chai.use(sinonChai);
 
 const ENTITY_IDS = {
   '1989': '5d8c4d7963af199371da0560',

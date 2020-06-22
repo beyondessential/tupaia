@@ -5,8 +5,7 @@
 
 import { expect } from 'chai';
 import sinon from 'sinon';
-import { generateTestId } from '@tupaia/database';
-import { populateTestData } from '../../../../testUtilities';
+import { generateTestId, populateTestData } from '@tupaia/database';
 import { AggregateDataPusher } from '../../../../../dhis/pushers/data/aggregate/AggregateDataPusher';
 import {
   SURVEY_RESPONSE_DATA_VALUE,
@@ -15,7 +14,7 @@ import {
   SURVEY,
   DATA_SET,
   DATA_SET_COMPLETION,
-} from './testData';
+} from './AggregateDataPusher.fixtures';
 
 export const testCreateSurveyResponse = (dhisApi, models, dataBroker) => {
   it('should throw an error if the changed record was not found', async () => {
@@ -46,7 +45,7 @@ export const testCreateSurveyResponse = (dhisApi, models, dataBroker) => {
       id: generateTestId(),
       end_time: '2019-04-10T14:05+00',
     };
-    await populateTestData({ surveyResponse: [moreRecentSurveyResponse] });
+    await populateTestData(models, { surveyResponse: [moreRecentSurveyResponse] });
     const change = await models.dhisSyncQueue.findById(SURVEY_RESPONSE_CHANGE.id);
     const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
     const result = await pusher.push();
