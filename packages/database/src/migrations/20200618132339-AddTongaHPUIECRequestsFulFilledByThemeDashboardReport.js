@@ -11,7 +11,7 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
@@ -35,33 +35,33 @@ const VIEW_JSON = {
     'Communicable Disease Prevention': {
       label: 'Communicable Disease Prevention',
       stackId: 1,
-      legendOrder: 1
+      legendOrder: 1,
     },
     'Healthy Lifestyle (physical activity, healthy eating, tobacco/smoking, alcohol/substance use)': {
-        label: 'Healthy Lifestyle',
-        stackId: 1,
-        legendOrder: 2
+      label: 'Healthy Lifestyle',
+      stackId: 1,
+      legendOrder: 2,
     },
     'Healthy Pregnancy': {
-        label: 'Healthy Pregnancy',
-        stackId: 1,
-        legendOrder: 3
+      label: 'Healthy Pregnancy',
+      stackId: 1,
+      legendOrder: 3,
     },
-    'Hearing': {
-        label: 'Hearing',
-        stackId: 1,
-        legendOrder: 4
+    Hearing: {
+      label: 'Hearing',
+      stackId: 1,
+      legendOrder: 4,
     },
     'NCD Prevention': {
-        label: 'NCD Prevention',
-        stackId: 1,
-        legendOrder: 5
+      label: 'NCD Prevention',
+      stackId: 1,
+      legendOrder: 5,
     },
-    'Other': {
+    Other: {
       label: 'Other',
       stackId: 1,
-      legendOrder: 5
-    }
+      legendOrder: 6,
+    },
   },
   periodGranularity: 'month',
 };
@@ -80,7 +80,7 @@ const REPORT = {
   dataServices: DATA_SERVICES,
 };
 
-exports.up = async function(db) {
+exports.up = async function (db) {
   await insertObject(db, 'dashboardReport', REPORT);
 
   return db.runSql(`
@@ -93,7 +93,7 @@ exports.up = async function(db) {
    `);
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return db.runSql(`
      DELETE FROM "dashboardReport" WHERE id = '${REPORT.id}';
 
