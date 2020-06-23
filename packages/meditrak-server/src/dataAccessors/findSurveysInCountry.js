@@ -15,7 +15,7 @@ export const findSurveysInCountry = async (
 ) =>
   models.survey[findOrCount](
     {
-      criteria,
+      ...criteria,
       [RAW]: {
         sql: `country_ids = '{}' OR ? = ANY(country_ids)`,
         parameters: [countryId],
