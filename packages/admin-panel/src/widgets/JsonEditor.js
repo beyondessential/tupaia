@@ -24,15 +24,12 @@ export const JsonEditor = ({ inputKey, label, value, maxHeight, onChange }) => {
   const height = editorValue.split('\n').length * 27;
 
   return (
-    <FormGroup>
-      <p>{label}</p>
-      <Input
-        style={{ height, maxHeight }}
-        type="textarea"
-        value={editorValue}
-        onChange={event => onChange(inputKey, event.target.value)}
-      />
-    </FormGroup>
+    <Input
+      style={{ height, maxHeight }}
+      type="textarea"
+      value={editorValue}
+      onChange={event => onChange(inputKey, event.target.value)}
+    />
   );
 };
 
