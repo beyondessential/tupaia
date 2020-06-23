@@ -45,7 +45,7 @@ const CUSTOM_RECORD_UPDATERS = {
   [TYPES.ACCESS_REQUEST]: editAccessRequest,
 };
 
-// remove when this task is done https://github.com/beyondessential/tupaia-backlog/issues/723
+// TODO remove when this task is done https://github.com/beyondessential/tupaia-backlog/issues/723
 const SKIP_ID_VALIDATION = [TYPES.DASHBOARD_REPORT, TYPES.MAP_OVERLAY, TYPES.DASHBOARD_GROUP];
 
 /**
