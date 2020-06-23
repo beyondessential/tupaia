@@ -22,7 +22,7 @@ const Header = styled.div`
   flex-direction: column;
   background: ${props => props.color};
   color: ${COLORS.WHITE};
-  height: 250px;
+  height: 251px;
   text-align: center;
   padding: 0 1.25rem 0.5rem;
 `;
