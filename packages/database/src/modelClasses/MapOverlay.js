@@ -16,13 +16,18 @@ export class MapOverlayModel extends DatabaseModel {
     return MapOverlayType;
   }
 
-  getTransformedData(data) {
+  async getDatabaseSafeData(fieldValues) {
+    const safeData = await super.getDatabaseSafeData(fieldValues);
+    const transformedData = { ...safeData };
     const toTransform = ['linkedMeasures', 'countryCodes', 'projectCodes'];
-    const transformedData = { ...data };
 
-    for (const property in data) {
-      if (toTransform.includes(property)) {
-        transformedData[property] = data[property].split(',');
+    for (const property in safeData) {
+      if (
+        toTransform.includes(property) &&
+        safeData[property] &&
+        !Array.isArray(safeData[property])
+      ) {
+        transformedData[property] = safeData[property].split(',');
       }
     }
 
