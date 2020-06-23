@@ -18,7 +18,7 @@ export class DashboardGroupModel extends DatabaseModel {
 
   getTransformedData(data) {
     const toTransform = ['dashboardReports', 'projectCodes'];
-    const transformedData = {};
+    const transformedData = { ...data };
 
     for (const property in data) {
       if (toTransform.includes(property) && data[property] && !Array.isArray(data[property])) {

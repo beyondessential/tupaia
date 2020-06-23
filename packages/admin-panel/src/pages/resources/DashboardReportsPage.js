@@ -4,6 +4,10 @@ import { prettyJSON } from '../../utilities/pretty';
 
 const FIELDS = [
   {
+    Header: 'ID',
+    source: 'id',
+  },
+  {
     Header: 'Drill Down Level',
     source: 'drillDownLevel',
     width: 150,

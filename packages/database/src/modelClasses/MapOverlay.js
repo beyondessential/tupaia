@@ -18,7 +18,7 @@ export class MapOverlayModel extends DatabaseModel {
 
   getTransformedData(data) {
     const toTransform = ['linkedMeasures', 'countryCodes', 'projectCodes'];
-    const transformedData = {};
+    const transformedData = { ...data };
 
     for (const property in data) {
       if (toTransform.includes(property)) {

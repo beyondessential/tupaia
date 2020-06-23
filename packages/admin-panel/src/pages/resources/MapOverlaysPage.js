@@ -4,6 +4,10 @@ import { prettyJSON, prettyArray } from '../../utilities/pretty';
 
 const FIELDS = [
   {
+    Header: 'ID',
+    source: 'id',
+  },
+  {
     Header: 'Name',
     source: 'name',
   },
@@ -12,12 +16,22 @@ const FIELDS = [
     source: 'groupName',
   },
   {
-    Header: 'User Group',
+    Header: 'Permission Group',
     source: 'userGroup',
   },
   {
     Header: 'Data Element Code',
     source: 'dataElementCode',
+  },
+  {
+    Header: 'Measure Builder',
+    source: 'measureBuilder',
+  },
+  {
+    Header: 'Measure Builder Config',
+    source: 'measureBuilderConfig',
+    Cell: ({ original: { measureBuilderConfig } }) => prettyJSON(measureBuilderConfig),
+    editConfig: { type: 'jsonEditor' },
   },
   {
     Header: 'Display Type',
@@ -61,16 +75,6 @@ const FIELDS = [
   {
     Header: 'Sort Order',
     source: 'sortOrder',
-  },
-  {
-    Header: 'Measure Builder Config',
-    source: 'measureBuilderConfig',
-    Cell: ({ original: { measureBuilderConfig } }) => prettyJSON(measureBuilderConfig),
-    editConfig: { type: 'jsonEditor' },
-  },
-  {
-    Header: 'Measure Builder',
-    source: 'measureBuilder',
   },
   {
     Header: 'Presentation Options',
