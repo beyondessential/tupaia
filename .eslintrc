@@ -9,6 +9,22 @@
       "error",
       { "devDependencies": ["**/src/tests/**"], "packageDir": ["../../", "."] }
     ],
+    "import/no-unresolved": [
+      "error",
+      {
+        "ignore": [
+          "^@tupaia/access-policy$",
+          "^@tupaia/aggregator$",
+          "^@tupaia/auth$",
+          "^@tupaia/data-api$",
+          "^@tupaia/data-broker$",
+          "^@tupaia/database$",
+          "^@tupaia/dhis-api$",
+          "^@tupaia/utils$"
+        ]
+      }
+    ],
+    "max-classes-per-file": ["error", 2],
     "react/forbid-prop-types": "off"
   },
   "overrides": [
