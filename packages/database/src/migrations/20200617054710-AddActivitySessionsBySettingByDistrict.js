@@ -79,7 +79,7 @@ const REPORT = {
         dataBuilderConfig: {
           ...BASE_SUB_BUILDER_CONFIG,
           dataValues: {
-            [DATA_ELEMENT]: CHURCH,
+            [DATA_ELEMENT]: COMMUNITY,
           },
         },
       },
