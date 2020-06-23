@@ -5,10 +5,11 @@
     "mocha": true
   },
   "rules": {
-    "import/no-extraneous-dependencies": ["error", { "devDependencies": ["src/tests/**"] }],
-    "react/jsx-filename-extension": "off",
-    "react/forbid-prop-types": "off",
-    "jsx-a11y/href-no-hash": "off"
+    "import/no-extraneous-dependencies": [
+      "error",
+      { "devDependencies": ["**/src/tests/**"], "packageDir": ["../../", "."] }
+    ],
+    "react/forbid-prop-types": "off"
   },
   "overrides": [
     {

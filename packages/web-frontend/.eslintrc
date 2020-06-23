@@ -3,8 +3,6 @@
     "browser": true
   },
   "rules": {
-    "react/jsx-boolean-value": ["error", "never"],
-    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
     "react/jsx-wrap-multilines": ["error", { "prop": "ignore" }],
     "import/no-extraneous-dependencies": [
       "error",

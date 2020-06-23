@@ -4,14 +4,6 @@
     "browser": true
   },
   "rules": {
-    "react/prop-types": [2, { "ignore": ["navigation"] }],
-    "react/jsx-boolean-value": ["error", "never"],
-    "react/prefer-stateless-function": [2, { "ignorePureComponents": true }],
-    "react/jsx-filename-extension": [
-      1,
-      {
-        "extensions": [".js", ".jsx"]
-      }
-    ]
+    "react/prop-types": ["error", { "ignore": ["navigation"] }]
   }
 }
