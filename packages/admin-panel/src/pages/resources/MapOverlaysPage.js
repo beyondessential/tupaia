@@ -70,7 +70,7 @@ const FIELDS = [
   {
     Header: 'Linked Measures',
     source: 'linkedMeasures',
-    Cell: ({ original: { linkedMeasures } }) => prettyArray(linkedMeasures),
+    Cell: ({ value }) => prettyArray(value),
   },
   {
     Header: 'Sort Order',
@@ -85,12 +85,12 @@ const FIELDS = [
   {
     Header: 'Country Codes',
     source: 'countryCodes',
-    Cell: ({ original: { countryCodes } }) => prettyArray(countryCodes),
+    Cell: ({ value }) => prettyArray(value),
   },
   {
     Header: 'Project Codes',
     source: 'projectCodes',
-    Cell: ({ original: { projectCodes } }) => prettyArray(projectCodes),
+    Cell: ({ value }) => prettyArray(value),
   },
 ];
 
