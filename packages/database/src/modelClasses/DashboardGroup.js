@@ -16,6 +16,7 @@ export class DashboardGroupModel extends DatabaseModel {
     return DashboardGroupType;
   }
 
+  /*
   async getDatabaseSafeData(fieldValues) {
     const safeData = await super.getDatabaseSafeData(fieldValues);
     const transformedData = { ...safeData };
@@ -33,4 +34,5 @@ export class DashboardGroupModel extends DatabaseModel {
 
     return transformedData;
   }
+  */
 }
