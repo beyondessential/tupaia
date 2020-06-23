@@ -45,7 +45,7 @@ const CUSTOM_RECORD_UPDATERS = {
   [TYPES.ACCESS_REQUEST]: editAccessRequest,
 };
 
-// remove when this task is done https://github.com/beyondessential/tupaia-backlog/issues/723
+// TODO remove when this task is done https://github.com/beyondessential/tupaia-backlog/issues/723
 const SKIP_ID_VALIDATION = [TYPES.DASHBOARD_REPORT, TYPES.MAP_OVERLAY, TYPES.DASHBOARD_GROUP];
 
 /**
@@ -61,7 +61,7 @@ export async function editRecord(req, res) {
     throw new ValidationError(`${resource} is not a valid POST endpoint`);
   }
 
-  // remove when this task is done https://github.com/beyondessential/tupaia-backlog/issues/723
+  // TODO remove when this task is done https://github.com/beyondessential/tupaia-backlog/issues/723
   const validationCriteria = SKIP_ID_VALIDATION.includes(recordType)
     ? {}
     : {

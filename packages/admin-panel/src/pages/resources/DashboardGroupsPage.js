@@ -4,43 +4,43 @@ import { prettyArray } from '../../utilities/pretty';
 
 const FIELDS = [
   {
-    Header: 'Organisation Level',
-    source: 'organisationLevel',
-  },
-  {
-    Header: 'User Group',
-    source: 'userGroup',
-  },
-  {
-    Header: 'Organisation Unit Code',
-    source: 'organisationUnitCode',
-  },
-  {
-    Header: 'Dashboard Reports',
-    source: 'dashboardReports',
-    Cell: ({ original: { dashboardReports } }) => prettyArray(dashboardReports),
-    editConfig: {
-      optionsEndpoint: 'dashboardReports',
-      optionLabelKey: 'id',
-      allowMultipleValues: true,
-    },
+    Header: 'Code',
+    source: 'code',
   },
   {
     Header: 'Name',
     source: 'name',
   },
   {
-    Header: 'Code',
-    source: 'code',
+    Header: 'Organisation Level',
+    source: 'organisationLevel',
+  },
+  {
+    Header: 'Organisation Unit Code',
+    source: 'organisationUnitCode',
+  },
+  {
+    Header: 'Permission Group',
+    source: 'userGroup',
   },
   {
     Header: 'Project Codes',
     source: 'projectCodes',
-    Cell: ({ original: { projectCodes } }) => prettyArray(projectCodes),
+    Cell: ({ value }) => prettyArray(value),
     editConfig: {
       optionsEndpoint: 'projects',
       optionLabelKey: 'code',
       optionValueKey: 'code',
+      allowMultipleValues: true,
+    },
+  },
+  {
+    Header: 'Dashboard Reports',
+    source: 'dashboardReports',
+    Cell: ({ value }) => prettyArray(value),
+    editConfig: {
+      optionsEndpoint: 'dashboardReports',
+      optionLabelKey: 'id',
       allowMultipleValues: true,
     },
   },

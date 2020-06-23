@@ -4,6 +4,10 @@ import { prettyJSON, prettyArray } from '../../utilities/pretty';
 
 const FIELDS = [
   {
+    Header: 'ID',
+    source: 'id',
+  },
+  {
     Header: 'Name',
     source: 'name',
   },
@@ -12,12 +16,22 @@ const FIELDS = [
     source: 'groupName',
   },
   {
-    Header: 'User Group',
+    Header: 'Permission Group',
     source: 'userGroup',
   },
   {
     Header: 'Data Element Code',
     source: 'dataElementCode',
+  },
+  {
+    Header: 'Measure Builder',
+    source: 'measureBuilder',
+  },
+  {
+    Header: 'Measure Builder Config',
+    source: 'measureBuilderConfig',
+    Cell: ({ original: { measureBuilderConfig } }) => prettyJSON(measureBuilderConfig),
+    editConfig: { type: 'jsonEditor' },
   },
   {
     Header: 'Display Type',
@@ -56,7 +70,7 @@ const FIELDS = [
   {
     Header: 'Linked Measures',
     source: 'linkedMeasures',
-    Cell: ({ original: { linkedMeasures } }) => prettyArray(linkedMeasures),
+    Cell: ({ value }) => prettyArray(value),
     editConfig: {
       optionsEndpoint: 'mapOverlays',
       optionLabelKey: 'id',
@@ -68,16 +82,6 @@ const FIELDS = [
     source: 'sortOrder',
   },
   {
-    Header: 'Measure Builder Config',
-    source: 'measureBuilderConfig',
-    Cell: ({ original: { measureBuilderConfig } }) => prettyJSON(measureBuilderConfig),
-    editConfig: { type: 'jsonEditor' },
-  },
-  {
-    Header: 'Measure Builder',
-    source: 'measureBuilder',
-  },
-  {
     Header: 'Presentation Options',
     source: 'presentationOptions',
     Cell: ({ value }) => prettyJSON(value),
@@ -86,7 +90,7 @@ const FIELDS = [
   {
     Header: 'Country Codes',
     source: 'countryCodes',
-    Cell: ({ original: { countryCodes } }) => prettyArray(countryCodes),
+    Cell: ({ value }) => prettyArray(value),
     editConfig: {
       optionsEndpoint: 'entities',
       optionLabelKey: 'code',
@@ -97,7 +101,7 @@ const FIELDS = [
   {
     Header: 'Project Codes',
     source: 'projectCodes',
-    Cell: ({ original: { projectCodes } }) => prettyArray(projectCodes),
+    Cell: ({ value }) => prettyArray(value),
     editConfig: {
       optionsEndpoint: 'projects',
       optionLabelKey: 'code',

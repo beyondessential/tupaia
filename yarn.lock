@@ -5805,6 +5805,11 @@ chai-like@^1.1.1:
   resolved "https://registry.yarnpkg.com/chai-like/-/chai-like-1.1.1.tgz#8c558a414c34514e814d497c772547ceb7958f64"
   integrity sha512-VKa9z/SnhXhkT1zIjtPACFWSoWsqVoaz1Vg+ecrKo5DCKVlgL30F/pEyEvXPBOVwCgLZcWUleCM/C1okaKdTTA==
 
+chai-subset@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/chai-subset/-/chai-subset-1.6.0.tgz#a5d0ca14e329a79596ed70058b6646bd6988cfe9"
+  integrity sha1-pdDKFOMpp5WW7XAFi2ZGvWmIz+k=
+
 chai@^4.1.2:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/chai/-/chai-4.2.0.tgz#760aa72cf20e3795e84b12877ce0e83737aa29e5"

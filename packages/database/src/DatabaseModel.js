@@ -159,7 +159,7 @@ export class DatabaseModel {
 
   // Read the field values and convert them to database friendly representations
   // ready to save to the record.
-  getDatabaseSafeData = async fieldValues => {
+  async getDatabaseSafeData(fieldValues) {
     const data = {};
     const fieldNames = await this.fetchFieldNames();
     fieldNames.forEach(fieldName => {
@@ -170,7 +170,7 @@ export class DatabaseModel {
       }
     });
     return data;
-  };
+  }
 
   async create(fields) {
     const data = await this.getDatabaseSafeData(fields);
