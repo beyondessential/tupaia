@@ -29,7 +29,7 @@
   },
   "overrides": [
     {
-      "files": "src/tests/**",
+      "files": "**/src/tests/**",
       "rules": {
         "func-names": "off",
         "no-unused-expressions": "off"
