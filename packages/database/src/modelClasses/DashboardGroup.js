@@ -21,7 +21,7 @@ export class DashboardGroupModel extends DatabaseModel {
     const transformedData = {};
 
     for (const property in data) {
-      if (toTransform.includes(property)) {
+      if (toTransform.includes(property) && data[property] && !Array.isArray(data[property])) {
         transformedData[property] = data[property].split(',');
       }
     }
