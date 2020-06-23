@@ -3,15 +3,14 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import chai, { expect } from 'chai';
-import chaiAsPromised from 'chai-as-promised';
+import { expect } from 'chai';
 import sinon from 'sinon';
-import sinonChai from 'sinon-chai';
 import winston from 'winston';
 
+import { buildAndInsertSurveys, populateTestData } from '@tupaia/database';
 import { EventPusher } from '../../../../../dhis/pushers/data/event/EventPusher';
 import { EventBuilder } from '../../../../../dhis/pushers/data/event/EventBuilder';
-import { populateTestData, insertSurveyAndScreens, resetTestData } from '../../../../testUtilities';
+import { resetTestData } from '../../../../testUtilities';
 import { Pusher } from '../../../../../dhis/pushers/Pusher';
 import { getModels } from '../../../../getModels';
 import { createDataBrokerStub, resetDataBrokerStubHistory } from './createDataBrokerStub';
@@ -22,10 +21,7 @@ import {
   CHANGE,
   DHIS_REFERENCE,
   SERVER_NAME,
-} from './testData';
-
-chai.use(chaiAsPromised);
-chai.use(sinonChai);
+} from './EventPusher.fixtures';
 
 // relatively simple tests in here as EventBuilder contains a lot of logic, and is tested separately
 describe('EventPusher', () => {
@@ -51,8 +47,8 @@ describe('EventPusher', () => {
 
     beforeEach(async () => {
       // populate default test data
-      await insertSurveyAndScreens({ survey: SURVEY, screens: [[QUESTION]] });
-      await populateTestData(BASELINE_TEST_DATA);
+      await buildAndInsertSurveys(models, [{ ...SURVEY, questions: [QUESTION] }]);
+      await populateTestData(models, BASELINE_TEST_DATA);
     });
 
     afterEach(async () => {
@@ -99,7 +95,7 @@ describe('EventPusher', () => {
           dhis_reference: DHIS_REFERENCE,
           data: `{"program":"${SURVEY.code}", "serverName":"${SERVER_NAME}"}`,
         };
-        await populateTestData({ dhisSyncLog: [syncLogRecord] });
+        await populateTestData(models, { dhisSyncLog: [syncLogRecord] });
 
         const pusher = new EventPusher(models, change, dhisApi, dataBroker);
 
@@ -131,7 +127,7 @@ describe('EventPusher', () => {
           dhis_reference: DHIS_REFERENCE,
           data: `{"program":"${SURVEY.code}", "serverName":"${SERVER_NAME}"}`,
         };
-        await populateTestData({ dhisSyncLog: [syncLogRecord] });
+        await populateTestData(models, { dhisSyncLog: [syncLogRecord] });
 
         const pusher = new EventPusher(models, change, dhisApi, dataBroker);
 
