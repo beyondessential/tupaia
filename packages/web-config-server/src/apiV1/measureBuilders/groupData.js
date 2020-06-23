@@ -5,9 +5,10 @@
 
 import { mapMeasureValuesToGroups } from './helpers';
 import { getMeasureBuilder } from './getMeasureBuilder';
+import { Entity } from '../../models';
 
 export const groupData = async (aggregator, dhisApi, query, measureBuilderConfig = {}, entity) => {
-  const { measureBuilder: builderName } = measureBuilderConfig;
+  const { measureBuilder: builderName, mapDataToCountries } = measureBuilderConfig;
   const { dataElementCode } = query;
 
   const ungroupedData = await getMeasureBuilder(builderName)(
@@ -21,6 +22,17 @@ export const groupData = async (aggregator, dhisApi, query, measureBuilderConfig
   const groupedData = ungroupedData.map(dataElement =>
     mapMeasureValuesToGroups(dataElement, dataElementCode, measureBuilderConfig.groups),
   );
+
+  if (mapDataToCountries) {
+    const results = [];
+    for (const result of groupedData) {
+      const resultEntity = await Entity.findOne({ code: result.organisationUnitCode });
+      const resultCountry = await resultEntity.countryEntity();
+      results.push({ ...result, organisationUnitCode: resultCountry.code });
+    }
+
+    return results;
+  }
 
   return groupedData;
 };

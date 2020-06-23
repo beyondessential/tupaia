@@ -103,8 +103,6 @@ export default class extends DataAggregatingRouteHandler {
     // check permission
     await Promise.all(
       overlays.map(async ({ userGroup }) => {
-        console.log('extends -> buildResponse -> userGroup', userGroup);
-
         const isUserAllowedMeasure = await this.req.userHasAccess(code, userGroup);
         if (!isUserAllowedMeasure) {
           throw new CustomError(accessDeniedForMeasure);
