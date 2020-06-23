@@ -29,9 +29,17 @@ export class DataAggregatingRouteHandler extends RouteHandler {
     const hierarchyId = (await Project.findOne({ code: this.query.projectCode }))
       .entity_hierarchy_id;
 
-    let dataSourceEntities = entityType
-      ? await entity.getDescendantsOfType(entityType, hierarchyId)
-      : await entity.getNearestOrgUnitDescendants(hierarchyId);
+    let dataSourceEntities = [];
+    if (entityType) {
+      const ancestor = await entity.getAncestorOfType(entityType);
+      if (ancestor && ancestor.type !== entity.type) {
+        dataSourceEntities = [ancestor];
+      } else {
+        dataSourceEntities = await entity.getDescendantsOfType(entityType, hierarchyId);
+      }
+    } else {
+      dataSourceEntities = await entity.getNearestOrgUnitDescendants(hierarchyId);
+    }
 
     const countryCodes = [...new Set(dataSourceEntities.map(e => e.country_code))];
     const countryAccessList = await Promise.all(

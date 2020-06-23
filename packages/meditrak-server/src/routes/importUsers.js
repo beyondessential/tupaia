@@ -13,8 +13,8 @@ import {
   hasContent,
   constructIsOneOf,
 } from '@tupaia/utils';
+import { hashAndSaltPassword } from '@tupaia/auth';
 
-import { hashAndSaltPassword } from '../utilities';
 
 export async function importUsers(req, res) {
   try {
