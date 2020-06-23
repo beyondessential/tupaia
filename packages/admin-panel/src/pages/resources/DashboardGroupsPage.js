@@ -27,11 +27,22 @@ const FIELDS = [
     Header: 'Project Codes',
     source: 'projectCodes',
     Cell: ({ value }) => prettyArray(value),
+    editConfig: {
+      optionsEndpoint: 'projects',
+      optionLabelKey: 'code',
+      optionValueKey: 'code',
+      allowMultipleValues: true,
+    },
   },
   {
     Header: 'Dashboard Reports',
     source: 'dashboardReports',
     Cell: ({ value }) => prettyArray(value),
+    editConfig: {
+      optionsEndpoint: 'dashboardReports',
+      optionLabelKey: 'id',
+      allowMultipleValues: true,
+    },
   },
 ];
 

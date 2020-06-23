@@ -32,10 +32,16 @@ class AutocompleteComponent extends React.Component {
       optionLabelKey,
       isLoading,
       results,
-      placeholder,
+      placeholder: customPlaceholder,
       searchTerm,
       allowMultipleValues,
     } = this.props;
+    const getPlaceholder = () => {
+      if (customPlaceholder) {
+        return Array.isArray(customPlaceholder) ? customPlaceholder.join(', ') : customPlaceholder;
+      }
+      return DEFAULT_PLACEHOLDER;
+    };
     const SelectComponent = this.props.canCreateNewOptions ? Creatable : Select;
     return (
       <SelectComponent
@@ -46,7 +52,7 @@ class AutocompleteComponent extends React.Component {
         valueKey={optionLabelKey}
         options={results}
         isLoading={isLoading}
-        placeholder={placeholder || DEFAULT_PLACEHOLDER}
+        placeholder={getPlaceholder()}
         multi={allowMultipleValues}
         clearable={false}
         newOptionCreator={option => ({ [option.valueKey]: searchTerm })}
@@ -64,7 +70,7 @@ AutocompleteComponent.propTypes = {
   onChangeSelection: PropTypes.func.isRequired,
   onClearState: PropTypes.func.isRequired,
   optionLabelKey: PropTypes.string.isRequired,
-  placeholder: PropTypes.string,
+  placeholder: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   results: PropTypes.array,
   searchTerm: PropTypes.string,
   selection: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
