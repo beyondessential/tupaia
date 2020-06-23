@@ -26,6 +26,7 @@ export { Ms1SyncLogModel as Ms1SyncLog } from './Ms1SyncLog';
 export { Ms1SyncQueueModel as Ms1SyncQueue } from './Ms1SyncQueue';
 export { OptionModel as Option } from './Option';
 export { OptionSetModel as OptionSet } from './OptionSet';
+export { PermissionGroupModel as PermissionGroup } from './PermissionGroup';
 export { QuestionModel as Question } from './Question';
 export { SurveyGroupModel as SurveyGroup } from './SurveyGroup';
 export { SurveyModel as Survey } from './Survey';
