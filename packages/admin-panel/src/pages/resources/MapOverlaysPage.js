@@ -71,6 +71,11 @@ const FIELDS = [
     Header: 'Linked Measures',
     source: 'linkedMeasures',
     Cell: ({ value }) => prettyArray(value),
+    editConfig: {
+      optionsEndpoint: 'mapOverlays',
+      optionLabelKey: 'id',
+      allowMultipleValues: true,
+    },
   },
   {
     Header: 'Sort Order',
@@ -79,18 +84,30 @@ const FIELDS = [
   {
     Header: 'Presentation Options',
     source: 'presentationOptions',
-    Cell: ({ original: { presentationOptions } }) => prettyJSON(presentationOptions),
+    Cell: ({ value }) => prettyJSON(value),
     editConfig: { type: 'jsonEditor' },
   },
   {
     Header: 'Country Codes',
     source: 'countryCodes',
     Cell: ({ value }) => prettyArray(value),
+    editConfig: {
+      optionsEndpoint: 'entities',
+      optionLabelKey: 'code',
+      optionValueKey: 'code',
+      allowMultipleValues: true,
+    },
   },
   {
     Header: 'Project Codes',
     source: 'projectCodes',
     Cell: ({ value }) => prettyArray(value),
+    editConfig: {
+      optionsEndpoint: 'projects',
+      optionLabelKey: 'code',
+      optionValueKey: 'code',
+      allowMultipleValues: true,
+    },
   },
 ];
 
