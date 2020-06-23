@@ -72,6 +72,36 @@
   "settings": {
     "files.exclude": {
       "packages/": true
-    }
+    },
+    "cSpell.words": [
+      "analytics",
+      "cacheable",
+      "cleanup",
+      "deleters",
+      "DHIS",
+      "enroll",
+      "enrollment",
+      "enrollments",
+      "eventdate",
+      "geojson",
+      "groupby",
+      "heatmap",
+      "imms",
+      "keyby",
+      "MediTrak",
+      "migrator",
+      "oucode",
+      "preaggregate",
+      "preaggregated",
+      "preaggregating",
+      "preaggregation",
+      "preaggregator",
+      "preaggregators",
+      "promisify",
+      "singularise",
+      "Tongatapu",
+      "Tupaia",
+      "upsert"
+    ]
   }
 }
