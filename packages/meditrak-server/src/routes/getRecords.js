@@ -45,6 +45,7 @@ const CUSTOM_FINDERS = {
     TYPES.SURVEY,
     TYPES.SURVEY_SCREEN_COMPONENT,
   )]: findSurveyScreenComponentsInSurvey,
+  [TYPES.SURVEY_SCREEN_COMPONENT]: findSurveyScreenComponentsInSurvey,
   [createMultiResourceKey(TYPES.SURVEY_RESPONSE, TYPES.ANSWER)]: findAnswersInSurveyResponse,
   [createMultiResourceKey(TYPES.COUNTRY, TYPES.SURVEY)]: findSurveysInCountry,
   [createMultiResourceKey(TYPES.COUNTRY, TYPES.ENTITY)]: findEntitiesInCountry,
