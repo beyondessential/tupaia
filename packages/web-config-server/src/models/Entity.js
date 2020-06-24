@@ -25,6 +25,8 @@ const DISTRICT = 'district';
 const FACILITY = 'facility';
 const SCHOOL = 'school';
 const SUB_DISTRICT = 'sub_district';
+const CATCHMENT = 'catchment';
+const SUB_CATCHMENT = 'sub_catchment';
 const VILLAGE = 'village';
 const WORLD = 'world';
 const PROJECT = 'project';
@@ -38,6 +40,8 @@ export const ENTITY_TYPES = {
   FACILITY,
   SCHOOL,
   SUB_DISTRICT,
+  CATCHMENT,
+  SUB_CATCHMENT,
   VILLAGE,
   WORLD,
   PROJECT,
