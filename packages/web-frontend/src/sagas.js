@@ -13,6 +13,7 @@ import {
   selectOrgUnitChildren,
   selectOrgUnitCountry,
   selectProjectByCode,
+  selectIsProject,
   selectMeasureBarItemById,
   selectActiveProjectCode,
 } from './selectors';

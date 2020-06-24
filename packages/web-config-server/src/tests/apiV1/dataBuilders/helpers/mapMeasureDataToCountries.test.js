@@ -29,7 +29,7 @@ const PARENT_ORG_UNIT = {
 };
 
 describe('mapMeasureDataToCountries()', () => {
-  it.only('replace facility orgUnit codes with their corresponding country codes', async () => {
+  it('replace facility orgUnit codes with their corresponding country codes', async () => {
     const countryAnalytics = await mapMeasureDataToCountries(ANALYTICS);
     countryAnalytics.forEach(analytic => {
       expect(analytic.organisationUnitCode).to.equal(PARENT_ORG_UNIT.code);
