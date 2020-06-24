@@ -3,7 +3,7 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
 
-import { hashAndSaltPassword } from '../utilities';
+import { hashAndSaltPassword } from '@tupaia/auth';
 
 export const editUserAccount = (models, id, { password, ...restOfUpdatedFields }) => {
   let updatedFields = restOfUpdatedFields;

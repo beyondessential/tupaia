@@ -44,7 +44,6 @@ export const createUser = userFields => async (dispatch, getState, { api, analyt
 
   const fields = {
     ...userFields,
-    countryIdentifier: 'id',
     deviceName: DeviceInfo.getDeviceName(),
   };
 
