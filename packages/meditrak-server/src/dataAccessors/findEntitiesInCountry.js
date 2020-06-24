@@ -2,6 +2,8 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
+import { QUERY_CONJUNCTIONS } from '@tupaia/database';
+const { RAW } = QUERY_CONJUNCTIONS;
 
 export const findEntitiesInCountry = async (
   models,
@@ -11,11 +13,19 @@ export const findEntitiesInCountry = async (
   findOrCount = 'find',
 ) => {
   const country = await models.country.findById(countryId);
-  return models.entity[findOrCount](
-    {
-      ...criteria,
-      country_code: country.code,
-    },
-    options,
-  );
+  const { type, ...otherCriteria } = criteria;
+  const dbConditions = {
+    ...otherCriteria,
+    country_code: country.code,
+  };
+
+  if (type) {
+    const { comparator, comparisonValue } = type;
+    dbConditions[RAW] = {
+      sql: `type::text ${comparator} ?`,
+      parameters: [comparisonValue],
+    };
+  }
+
+  return models.entity[findOrCount](dbConditions, options);
 };
