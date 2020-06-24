@@ -96,7 +96,5 @@ export const tableOfValuesForOrgUnits = async (
     query,
     entity,
   );
-  const lala = await builder.build();
-  //console.log('lala', lala);
-  return lala;
+  return builder.build();
 };
