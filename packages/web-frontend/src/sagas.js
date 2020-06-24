@@ -676,6 +676,7 @@ function* fetchMeasureInfo(measureId, organisationUnitCode) {
   const country = selectOrgUnitCountry(state, organisationUnitCode);
   const countryCode = country ? country.organisationUnitCode : undefined;
   const measureParams = selectMeasureBarItemById(state, measureId) || {};
+  const activeProjectCode = state.project.activeProjectCode;
 
   // If the view should be constrained to a date range and isn't, constrain it
   const { startDate, endDate } =
@@ -688,8 +689,8 @@ function* fetchMeasureInfo(measureId, organisationUnitCode) {
     organisationUnitCode,
     startDate: formatDateForApi(startDate),
     endDate: formatDateForApi(endDate),
-    shouldShowAllParentCountryResults: !isMobile() && countryCode !== project.code,
-    projectCode: state.project.activeProjectCode,
+    shouldShowAllParentCountryResults: !isMobile() && countryCode !== activeProjectCode,
+    projectCode: activeProjectCode,
   };
   const requestResourceUrl = `measureData?${queryString.stringify(urlParameters)}`;
 
