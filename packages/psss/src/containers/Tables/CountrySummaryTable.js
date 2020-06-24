@@ -5,6 +5,7 @@
 
 import React from 'react';
 import { CondensedTableBody, FakeHeader } from '@tupaia/ui-components';
+import { COLUMN_WIDTHS } from './constants';
 import {
   ConnectedTable,
   createTotalCasesAccessor,
@@ -12,7 +13,6 @@ import {
   SitesReportedCell,
   WeekAndDateCell,
 } from '../../components';
-import { COLUMN_WIDTHS } from './constants';
 
 const countrySummaryTableColumns = [
   {
