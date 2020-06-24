@@ -106,7 +106,7 @@ export function createUrlForAppState(state) {
   return createUrl({
     dashboardId,
     measureId,
-    currentOrganisationUnitCode,
+    organisationUnitCode: currentOrganisationUnitCode,
     reportId,
     userPage,
     project,
