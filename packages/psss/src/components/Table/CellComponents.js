@@ -66,16 +66,21 @@ const SuccessStyleText = styled.span`
 /*
  * Displays a value as a percentage
  */
-export const PercentageChangeCell = ({ percentageChange }) => {
+export const PercentageChangeCell = ({ percentageChange, className }) => {
   if (percentageChange > 0) {
-    return <WarningStyleText>{`${percentageChange}%`}</WarningStyleText>;
+    return <WarningStyleText className={className}>+{`${percentageChange}%`}</WarningStyleText>;
   }
 
-  return <SuccessStyleText>{percentageChange}</SuccessStyleText>;
+  return <SuccessStyleText className={className}>{percentageChange}</SuccessStyleText>;
 };
 
 PercentageChangeCell.propTypes = {
   percentageChange: PropTypes.number.isRequired,
+  className: PropTypes.string,
+};
+
+PercentageChangeCell.defaultProps = {
+  className: '',
 };
 
 const CountryTitle = styled(MuiLink)`
@@ -90,24 +95,38 @@ const CountryTitle = styled(MuiLink)`
     color: ${COLORS.GREY_DE};
     background-color: ${COLORS.GREY_DE};
   }
+
+  &.MuiLink-button {
+    text-align: left;
+  }
 `;
 
-export const CountryNameCell = ({ name, countryCode }) => {
+export const CountryNameCell = ({ handleClick, name, countryCode }) => {
+  const isButton = handleClick;
+  const to = isButton ? null : 'weekly-reports/samoa';
+  const component = isButton ? 'button' : RouterLink;
+
   return (
-    <CountryTitle to="weekly-reports/samoa" component={RouterLink}>
+    <CountryTitle to={to} onClick={handleClick} component={component}>
       <Avatar src={countryFlagImage(countryCode)} /> {name}
     </CountryTitle>
   );
 };
 
 CountryNameCell.propTypes = {
+  handleClick: PropTypes.func,
   name: PropTypes.string.isRequired,
   countryCode: PropTypes.string,
 };
 
 CountryNameCell.defaultProps = {
+  handleClick: null,
   countryCode: null,
 };
+
+export const CountryNameButtonCreator = handleClick => props => (
+  <CountryNameCell handleClick={handleClick} {...props} />
+);
 
 const CountrySummaryTitle = styled.div`
   color: ${COLORS.TEXT_DARKGREY};
@@ -117,9 +136,9 @@ const CountrySummaryTitle = styled.div`
 `;
 
 export const WeekAndDateCell = ({ week, startDate, endDate }) => {
-  const start = `${format(startDate, 'LLL d')}`;
-  const end = `${format(endDate, 'LLL d')}`;
-  const year = `${format(endDate, 'yyyy')}`;
+  const start = format(startDate, 'LLL d');
+  const end = format(endDate, 'LLL d');
+  const year = format(endDate, 'yyyy');
   return (
     <CountrySummaryTitle>
       <strong>W{week}</strong> {`${start} - ${end}, ${year}`}
@@ -151,7 +170,7 @@ SyndromeCell.propTypes = {
 // Todo: update placeholder number
 export const SitesReportedCell = data => {
   return (
-    <Tooltip title="Submitted: 1day ago">
+    <Tooltip title="Submitted: 1 day ago">
       <DottedUnderline>{`${data.sitesReported}/30`}</DottedUnderline>
     </Tooltip>
   );
