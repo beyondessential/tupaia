@@ -12,11 +12,16 @@ WORKDIR /tupaia
 # that node_modules is built and added to the container cache without changes to code invalidating it
 COPY package.json ./
 COPY yarn.lock ./
+COPY babel.config.json ./
 
 ## copy just the root of each package so it is ready for yarn install, without adding the src
 ## directories, so that code changes don't invalidate the container cache before we've yarn installed
+RUN mkdir -p ./packages/access-policy
+COPY packages/access-policy/. ./packages/access-policy
 RUN mkdir -p ./packages/aggregator
 COPY packages/aggregator/package.json ./packages/aggregator
+RUN mkdir -p ./packages/auth
+COPY packages/auth/. ./packages/auth
 RUN mkdir -p ./packages/data-api
 COPY packages/data-api/package.json ./packages/data-api
 RUN mkdir -p ./packages/data-broker
@@ -44,6 +49,8 @@ RUN SKIP_BUILD_INTERNAL_DEPENDENCIES=true yarn install
 ## add content of all internal dependency packages ready for internal dependencies to be built
 COPY packages/aggregator/. ./packages/aggregator
 COPY packages/data-api/. ./packages/data-api
+COPY packages/auth/. ./packages/auth
+COPY packages/access-policy/. ./packages/access-policy
 COPY packages/data-broker/. ./packages/data-broker
 COPY packages/devops/. ./packages/devops
 COPY packages/database/. ./packages/database
