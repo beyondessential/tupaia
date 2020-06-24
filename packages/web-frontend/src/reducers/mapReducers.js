@@ -192,6 +192,10 @@ function shouldSnapToPosition(state = true, action) {
  * initial state of the map.
  */
 function getAutoTileset() {
+  // default to osm in dev so that we don't pay for tiles when running locally
+  if (process.env.NODE_ENV !== 'production') {
+    return 'osm';
+  }
   const SLOW_LOAD_TIME_THRESHOLD = 2 * 1000; // 2 seconds in milliseconds
   return window.loadTime < SLOW_LOAD_TIME_THRESHOLD ? 'satellite' : 'osm';
 }

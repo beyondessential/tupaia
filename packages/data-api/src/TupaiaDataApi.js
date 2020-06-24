@@ -61,7 +61,7 @@ export class TupaiaDataApi {
     }
     return new SqlQuery(
       `
-      SELECT code, indicator as name
+      SELECT code, name
       FROM question
       WHERE code IN ${SqlQuery.parameteriseArray(dataElementCodes)};
     `,

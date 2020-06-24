@@ -24,6 +24,5 @@ export const replaceValues = (target, replacements) => {
       replacedString = replacedString.replace(new RegExp(`\{${key}\}`, 'g'), value);
     }
   });
-
   return isString ? replacedString : JSON.parse(replacedString);
 };

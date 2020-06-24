@@ -7,6 +7,7 @@ import { expect, assert } from 'chai';
 import { fetchWithTimeout } from '@tupaia/utils';
 import { generateId, generateTestId, generateValueOfType, TYPES } from '@tupaia/database';
 
+import { buildAndInsertSurveys } from '@tupaia/database';
 import { TEST_IMAGE_DATA } from '../../testData';
 import {
   insertEntityAndFacility,
@@ -14,7 +15,6 @@ import {
   oneSecondSleep,
   upsertEntity,
   upsertQuestion,
-  upsertSurvey,
 } from '../../testUtilities';
 import { getImageFilePath, BUCKET_NAME } from '../../../s3/constants';
 
@@ -77,7 +77,7 @@ export const testPostChanges = (app, models, syncQueue) =>
           await upsertQuestion({ id: getQuestionId(i) });
         }
 
-        await upsertSurvey({ id: surveyId });
+        await buildAndInsertSurveys(models, [{ id: surveyId, code: 'TEST_SURVEY' }]);
         await upsertEntity({ id: entityId });
 
         const user = await models.user.findOne();
