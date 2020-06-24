@@ -20,7 +20,6 @@ export const exportChartToExcel = async (
 ) => {
   const { viewId, organisationUnitCode, dashboardGroupId, chartType, projectCode, extraConfig } = chartConfig;
 
-  console.log('chartConfig', chartConfig);
   // Get the data for the chart
   const queryParameters = {
     viewId,
