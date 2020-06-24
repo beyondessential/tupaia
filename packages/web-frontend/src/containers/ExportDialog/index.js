@@ -169,7 +169,7 @@ const mapStateToProps = state => {
   const { currentUserEmail } = authentication;
   const { selectedDisaster } = disaster;
 
-  const project = projectObject && projectObject.active ? projectObject.active.code : null;
+  const project = projectObject ? projectObject.activeProjectCode : null;
 
   return {
     emailAddress: currentUserEmail,
