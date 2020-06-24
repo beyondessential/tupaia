@@ -6,7 +6,7 @@
 export const editSurveyScreenComponent = async (models, id, updatedData) => {
   const screenComponentFields = await models.surveyScreenComponent.fetchFieldNames();
   const updatedScreenComponentData = screenComponentFields.reduce((current, fieldName) => {
-    if (!updatedData[fieldName]) {
+    if (!(fieldName in updatedData)) {
       return current;
     }
     if (fieldName === 'config') {
@@ -17,7 +17,7 @@ export const editSurveyScreenComponent = async (models, id, updatedData) => {
   const questionFields = await models.question.fetchFieldNames();
   const updatedQuestionData = questionFields.reduce(
     (current, fieldName) =>
-      updatedData[fieldName] ? { ...current, [fieldName]: updatedData[fieldName] } : current,
+      fieldName in updatedData ? { ...current, [fieldName]: updatedData[fieldName] } : current,
     {},
   );
   const updates = [];
