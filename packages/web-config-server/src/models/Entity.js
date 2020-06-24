@@ -25,6 +25,8 @@ const DISTRICT = 'district';
 const FACILITY = 'facility';
 const SCHOOL = 'school';
 const SUB_DISTRICT = 'sub_district';
+const CATCHMENT = 'catchment';
+const SUB_CATCHMENT = 'sub_catchment';
 const VILLAGE = 'village';
 const WORLD = 'world';
 const PROJECT = 'project';
@@ -38,6 +40,8 @@ export const ENTITY_TYPES = {
   FACILITY,
   SCHOOL,
   SUB_DISTRICT,
+  CATCHMENT,
+  SUB_CATCHMENT,
   VILLAGE,
   WORLD,
   PROJECT,
@@ -154,7 +158,9 @@ export class Entity extends BaseModel {
    * @param {string} id The id of the entity to fetch ancestors of
    * @param {boolean} [includeWorld=false] Optionally force the top level 'World' to be included
    */
-  async getAllAncestors(includeWorld = false) {
+  async getAllAncestors(includeWorld = false, useCache = true) {
+    if(!useCache) return Entity.getAllAncestors(this.id, includeWorld);
+
     const cacheKey = `ancestors${includeWorld ? 'IncludingWorld' : 'ExcludingWorld'}`;
     if (!this.cache[cacheKey]) {
       this.cache[cacheKey] = await Entity.getAllAncestors(this.id, includeWorld);
@@ -192,7 +198,7 @@ export class Entity extends BaseModel {
   }
 
   async getAncestorOfType(entityType) {
-    const ancestors = await this.getAllAncestors();
+    const ancestors = await this.getAllAncestors(false, false);
     return ancestors.find(ancestor => ancestor.type === entityType);
   }
 
