@@ -41,6 +41,18 @@ export class FakeAPI {
       for (let i = 0; i < 3; i++) {
         data.push(this.outbreak());
       }
+    } else if (endpoint === 'messages') {
+      for (let i = 0; i < 3; i++) {
+        data.push(this.message());
+      }
+    } else if (endpoint === 'activity-feed') {
+      for (let i = 0; i < 3; i++) {
+        data.push(this.activity());
+      }
+    } else if (endpoint === 'affected-sites') {
+      for (let i = 0; i < 3; i++) {
+        data.push(this.affectedSite());
+      }
     } else if (endpoint === 'archive') {
       for (let i = 0; i < 5; i++) {
         data.push(this.alert());
@@ -126,6 +138,18 @@ export class FakeAPI {
     ];
   }
 
+  affectedSite() {
+    const countryWeek = this.countryWeek(0);
+    const sites = [];
+    for (let i = 0; i < 5; i++) {
+      sites.push(this.siteWeek());
+    }
+    return {
+      ...countryWeek,
+      sites,
+    };
+  }
+
   // eslint-disable-next-line class-methods-use-this
   countryWeek(index) {
     return {
@@ -141,8 +165,56 @@ export class FakeAPI {
         min: 0,
         max: 30,
       }),
+      totalCases: faker.random.number({
+        min: 1000,
+        max: 2000,
+      }),
+      percentageChange: faker.random.number({
+        min: -15,
+        max: 15,
+      }),
       syndromes: this.syndromes(),
       status: faker.random.arrayElement(['Submitted', 'Overdue']),
+    };
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  message() {
+    const user = this.user();
+    return {
+      user,
+      message: {
+        id: faker.random.uuid(),
+        created: faker.date.between('2020-04-01', '2020-04-31'),
+        lastUpdated: faker.date.between('2020-05-01', '2020-05-31'),
+        content: faker.lorem.sentences(),
+      },
+    };
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  update() {
+    const user = this.user();
+    return {
+      id: faker.random.uuid(),
+      user,
+      type: faker.random.arrayElement(['note', 'statusChange']),
+      dateTime: faker.date.between('2020-01-01', '2020-04-31'),
+    };
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  activity() {
+    const update1 = this.update();
+    const update2 = this.update();
+    return {
+      id: faker.random.uuid(),
+      week: faker.random.number({
+        min: 1,
+        max: 10,
+      }),
+      dateTime: faker.date.between('2020-04-01', '2020-04-31'),
+      updates: [update1, update2],
     };
   }
 
@@ -226,6 +298,7 @@ export class FakeAPI {
   user() {
     return {
       id: faker.random.uuid(),
+      avatar: faker.internet.avatar(),
       name: faker.name.firstName(),
       surname: faker.name.lastName(),
       email: faker.internet.email(),
