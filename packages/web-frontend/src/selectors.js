@@ -132,7 +132,7 @@ const selectCountriesAsOrgUnits = createSelector([state => state.orgUnits.orgUni
 
 const selectOrgUnitSiblingsAndSelf = createSelector(
   [
-    state => selectActiveProject(state).code,
+    state => state.project.activeProjectCode,
     (state, code) => getOrgUnitParent(selectOrgUnit(state, code)),
     state => selectCountriesAsOrgUnits(state),
     (state, code) => safeGet(countryCache, [state.orgUnits.orgUnitMap, code]),
@@ -200,7 +200,7 @@ export const selectCurrentOrgUnit = createSelector(
 
 export const selectOrgUnitChildren = createSelector(
   [
-    state => selectActiveProject(state).code,
+    state => state.project.activeProjectCode,
     state => selectCountriesAsOrgUnits(state),
     (state, code) => safeGet(countryCache, [state.orgUnits.orgUnitMap, code]),
     (_, code) => code,
@@ -229,7 +229,7 @@ export const selectHasPolygonMeasure = createSelector(
 export const selectAllMeasuresWithDisplayInfo = createSelector(
   [
     state => state.orgUnits.orgUnitMap,
-    state => selectActiveProject(state).code,
+    state => state.project.activeProjectCode,
     state =>
       safeGet(countryCache, [state.orgUnits.orgUnitMap, state.map.measureInfo.currentCountry]),
     state => state.map.measureInfo.measureData,
@@ -337,7 +337,7 @@ export const selectIsProject = createSelector(
 export const selectProjectByCode = (state, code) =>
   state.project.projects.find(p => p.code === code);
 
-export const selectActiveProject = state => state.project.active;
+export const selectActiveProjectCode = state => state.project.activeProjectCode;
 
 export const selectAdjustedProjectBounds = (state, code) => {
   if (code === 'explore' || code === 'disaster') {

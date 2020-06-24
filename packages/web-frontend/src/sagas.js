@@ -12,9 +12,9 @@ import {
   selectOrgUnit,
   selectOrgUnitChildren,
   selectOrgUnitCountry,
-  selectActiveProject,
   selectProjectByCode,
   selectMeasureBarItemById,
+  selectActiveProjectCode,
 } from './selectors';
 import {
   ATTEMPT_CHANGE_PASSWORD,
@@ -442,13 +442,13 @@ function* fetchOrgUnitData(
 
 function* requestOrgUnit(action) {
   const state = yield select();
-  const { organisationUnitCode = selectActiveProject(state).code } = action;
+  const { organisationUnitCode = state.project.activeProjectCode } = action;
   const orgUnit = selectOrgUnit(state, organisationUnitCode);
   if (orgUnit && orgUnit.isComplete) {
     return; // If we already have the complete org unit in reduxStore, just exit early
   }
 
-  yield fetchOrgUnitData(organisationUnitCode, selectActiveProject(state).code);
+  yield fetchOrgUnitData(organisationUnitCode, state.project.activeProjectCode);
 }
 
 function* fetchOrgUnitDataAndChangeOrgUnit(action) {
@@ -468,7 +468,7 @@ function* fetchOrgUnitDataAndChangeOrgUnit(action) {
   try {
     const orgUnitData = yield fetchOrgUnitData(
       organisationUnitCode,
-      selectActiveProject(state).code,
+      state.project.activeProjectCode,
     );
     yield put(
       changeOrgUnitSuccess(
@@ -521,7 +521,9 @@ function* watchOrgUnitChangeAndFetchIt() {
  */
 function* fetchDashboard(action) {
   const { organisationUnitCode } = action.organisationUnit;
-  const projectCode = (yield select(selectActiveProject)).code;
+  const state = yield select();
+  const projectCode = selectActiveProjectCode(state);
+
   const requestResourceUrl = `dashboard?organisationUnitCode=${organisationUnitCode}&projectCode=${projectCode}`;
 
   try {
@@ -538,7 +540,6 @@ function* watchOrgUnitChangeAndFetchDashboard() {
 
 function* fetchViewData(parameters, errorHandler) {
   const { infoViewKey } = parameters;
-  const projectCode = (yield select(selectActiveProject)).code;
 
   // If the view should be constrained to a date range and isn't, constrain it
   const state = yield select();
@@ -557,7 +558,7 @@ function* fetchViewData(parameters, errorHandler) {
   } = parameters;
   const urlParameters = {
     organisationUnitCode,
-    projectCode,
+    projectCode: state.project.activeProjectCode,
     dashboardGroupId,
     viewId,
     drillDownLevel,
@@ -632,13 +633,14 @@ function* watchViewFetchRequests() {
  */
 function* fetchSearchData(action) {
   yield delay(200); // Wait 200 ms in case user keeps typing
+  const { project } = yield select();
   if (action.searchString === '') {
     yield put(fetchSearchSuccess([]));
   } else {
     const urlParameters = {
       criteria: action.searchString,
       limit: 5,
-      projectCode: (yield select(selectActiveProject)).code,
+      projectCode: project.activeProjectCode,
     };
     const requestResourceUrl = `organisationUnitSearch?${queryString.stringify(urlParameters)}`;
     try {
@@ -670,7 +672,6 @@ function* fetchMeasureInfo(measureId, organisationUnitCode) {
     return;
   }
 
-  const project = selectActiveProject(state);
   const country = selectOrgUnitCountry(state, organisationUnitCode);
   const countryCode = country ? country.organisationUnitCode : undefined;
   const measureParams = selectMeasureBarItemById(state, measureId) || {};
@@ -687,7 +688,7 @@ function* fetchMeasureInfo(measureId, organisationUnitCode) {
     startDate: formatDateForApi(startDate),
     endDate: formatDateForApi(endDate),
     shouldShowAllParentCountryResults: !isMobile() && countryCode !== project.code,
-    projectCode: project.code,
+    projectCode: state.project.activeProjectCode,
   };
   const requestResourceUrl = `measureData?${queryString.stringify(urlParameters)}`;
 
@@ -725,7 +726,7 @@ function getSelectedMeasureFromHierarchy(measureHierarchy, selectedMeasureId, pr
 function* fetchCurrentMeasureInfo() {
   const state = yield select();
   const { currentOrganisationUnitCode } = state.global;
-  const { active: activeProject } = state.project;
+  const { activeProjectCode } = state.project;
   const { measureId } = state.map.measureInfo;
   const { measureHierarchy, selectedMeasureId } = state.measureBar;
 
@@ -737,7 +738,7 @@ function* fetchCurrentMeasureInfo() {
       const newMeasure = getSelectedMeasureFromHierarchy(
         measureHierarchy,
         selectedMeasureId,
-        activeProject,
+        selectProjectByCode(state, activeProjectCode),
       );
 
       if (newMeasure !== measureId) {
@@ -792,7 +793,9 @@ function* watchOrgUnitChangeAndFetchMeasureInfo() {
  */
 function* fetchMeasures(action) {
   const { organisationUnitCode } = action.organisationUnit;
-  const projectCode = (yield select(selectActiveProject)).code;
+  const state = yield select();
+  if (selectIsProject(state, organisationUnitCode)) yield put(clearMeasure());
+  const projectCode = selectActiveProjectCode(state);
   const requestResourceUrl = `measures?organisationUnitCode=${organisationUnitCode}&projectCode=${projectCode}`;
   try {
     const measures = yield call(request, requestResourceUrl);
@@ -932,13 +935,15 @@ function* watchAttemptAttemptDrillDown() {
 }
 
 function* resetToExplore() {
+  const state = yield select();
   // default measure will be selected once the org unit has fully changed, just clear for now
   yield put(clearMeasure());
   yield put(clearMeasureHierarchy());
-  yield put(
-    selectProject((yield select(selectProjectByCode, 'explore')) || { code: INITIAL_PROJECT_CODE }),
-  );
   yield put(changeOrgUnit('explore', true));
+
+  if (state.project.projects.length > 0) {
+    yield put(selectProject(INITIAL_PROJECT_CODE));
+  }
 }
 
 function* watchUserChangesAndUpdatePermissions() {

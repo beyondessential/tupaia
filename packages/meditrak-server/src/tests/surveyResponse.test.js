@@ -1,14 +1,18 @@
 import { expect } from 'chai';
 import momentTimezone from 'moment-timezone';
-import { upsertDummyRecord } from '@tupaia/database';
 
+import { buildAndInsertSurveys, generateTestId, upsertDummyRecord } from '@tupaia/database';
 import { TestableApp } from './TestableApp';
+import {
+  upsertEntity,
+  upsertFacility,
+  upsertQuestion,
+} from './testUtilities/database/upsertRecord';
 
-const SURVEY_CODE = 'test-survey-response';
-const ENTITY_ID = 'entity_000000000000_test';
-const ENTITY_NON_CLINIC_ID = 'entity_non_clinic_0_test';
+const ENTITY_ID = generateTestId();
+const ENTITY_NON_CLINIC_ID = generateTestId();
 
-const questionCode = num => `TEST-${num}`;
+const questionCode = key => `TEST-${key}`;
 
 function expectSuccess(response) {
   const { statusCode, body } = response;
@@ -24,114 +28,71 @@ function expectError(response, match) {
   expect(message).to.match(match);
 }
 
+let surveyId;
+
 describe('surveyResponse endpoint', () => {
   const app = new TestableApp();
   const models = app.models;
 
-  let testSurvey = null;
-  let testSurveyScreen = null;
-  let testQuestions = [];
-
   before(async () => {
     await app.authenticate();
-
-    testSurvey = await models.survey.create({
-      code: SURVEY_CODE,
-      name: 'surveyResponse test survey',
-    });
 
     const country = await upsertDummyRecord(models.country);
     const geographicalArea = await upsertDummyRecord(models.geographicalArea, {
       country_id: country.id,
     });
-    await models.facility.create({
-      id: 'survey_response_000_test',
-      name: 'Test survey response clinic',
+    await upsertFacility({
       code: ENTITY_ID,
       geographical_area_id: geographicalArea.id,
       country_id: geographicalArea.country_id,
     });
 
-    await models.entity.create({
+    await upsertEntity({
       id: ENTITY_ID,
       code: ENTITY_ID,
-      name: 'test entity',
       type: 'facility',
     });
 
-    await models.entity.create({
+    await upsertEntity({
       id: ENTITY_NON_CLINIC_ID,
       code: ENTITY_NON_CLINIC_ID,
-      name: 'test non-facility entity',
       type: 'disaster',
     });
 
-    testSurveyScreen = await models.surveyScreen.create({
-      id: 'survey_screen_00000_test',
-      survey_id: testSurvey.id,
-      screen_number: 1,
-    });
-
-    const makeQuestion = async (code, type, options) => {
-      const q = await models.question.create({
-        code: questionCode(code),
-        text: questionCode(code),
-        type: type || code,
-        options,
-      });
-
-      // add it to a survey screen
-      await models.surveyScreenComponent.create({
-        screen_id: testSurveyScreen.id,
-        question_id: q.id,
-        component_number: 1,
-      });
-
-      return q;
-    };
-
-    testQuestions = await Promise.all([
-      makeQuestion(1, 'text'),
-      makeQuestion(2, 'text'),
-      makeQuestion(3, 'text'),
-      makeQuestion('Autocomplete'),
-      makeQuestion('Binary'),
-      makeQuestion('Date'),
-      makeQuestion('FreeText'),
-      makeQuestion('Geolocate'),
-      makeQuestion('Instruction'),
-      makeQuestion('Number'),
-      makeQuestion('Photo'),
-      makeQuestion('Radio', 'Radio', ['RadioA', 'RadioB']),
-      makeQuestion('SubmissionDate'),
-    ]);
-
-    // one question should bypass the "attach to survey screen" step
-    await models.question.create({
+    // This question will not be part of the survey
+    await upsertQuestion({
       code: questionCode('unattached'),
-      text: questionCode('unattached'),
       type: 'FreeText',
     });
-  });
 
-  after(async () => {
-    // has to happen in this order to respect fk constraints
-    await models.surveyScreenComponent.delete({ screen_id: testSurveyScreen.id });
-    await models.surveyScreen.delete({ id: testSurveyScreen.id });
-    await models.surveyResponse.delete({ survey_id: testSurvey.id });
-    await Promise.all([
-      models.facility.delete({ code: ENTITY_ID }),
-      models.entity.delete({ id: ENTITY_ID }),
-      models.entity.delete({ id: ENTITY_NON_CLINIC_ID }),
-      models.database.executeSql(`DELETE FROM "question" WHERE "code" LIKE 'TEST-%';`),
+    const [{ survey }] = await buildAndInsertSurveys(models, [
+      {
+        id: surveyId,
+        code: 'TEST_SURVEY',
+        questions: [
+          { code: questionCode(1), type: 'FreeText' },
+          { code: questionCode(2), type: 'FreeText' },
+          { code: questionCode(3), type: 'FreeText' },
+          { code: questionCode('Autocomplete'), type: 'Autocomplete' },
+          { code: questionCode('Binary'), type: 'Binary' },
+          { code: questionCode('Date'), type: 'Date' },
+          { code: questionCode('FreeText'), type: 'FreeText' },
+          { code: questionCode('Geolocate'), type: 'Geolocate' },
+          { code: questionCode('Instruction'), type: 'Instruction' },
+          { code: questionCode('Number'), type: 'Number' },
+          { code: questionCode('Photo'), type: 'Photo' },
+          { code: questionCode('Radio'), type: 'Radio', options: ['RadioA', 'RadioB'] },
+          { code: questionCode('SubmissionDate'), type: 'SubmissionDate' },
+        ],
+      },
     ]);
-    await models.survey.delete({ id: testSurvey.id });
+    surveyId = survey.id;
   });
 
   it('Should accept a single submission', async () => {
     const response = await app.post('surveyResponse', {
       body: {
-        survey_id: testSurvey.id,
+        survey_id: surveyId,
         entity_id: ENTITY_ID,
         timestamp: 123,
         answers: {
@@ -150,7 +111,7 @@ describe('surveyResponse endpoint', () => {
   it('Should accept multiple answers in a submission', async () => {
     const response = await app.post('surveyResponse', {
       body: {
-        survey_id: testSurvey.id,
+        survey_id: surveyId,
         entity_id: ENTITY_ID,
         timestamp: 123,
         answers: {
@@ -169,7 +130,7 @@ describe('surveyResponse endpoint', () => {
   it('Should pair a submission to a clinic where one exists', async () => {
     const response = await app.post('surveyResponse', {
       body: {
-        survey_id: testSurvey.id,
+        survey_id: surveyId,
         entity_id: ENTITY_ID,
         timestamp: 123,
         answers: {
@@ -194,7 +155,7 @@ describe('surveyResponse endpoint', () => {
   it("Should not pair a submission to a clinic if there isn't one", async () => {
     const response = await app.post('surveyResponse', {
       body: {
-        survey_id: testSurvey.id,
+        survey_id: surveyId,
         entity_id: ENTITY_NON_CLINIC_ID,
         timestamp: 123,
         answers: {
@@ -223,7 +184,7 @@ describe('surveyResponse endpoint', () => {
     const response = await app.post('surveyResponse', {
       body: [
         {
-          survey_id: testSurvey.id,
+          survey_id: surveyId,
           entity_id: ENTITY_ID,
           timestamp: 123,
           answers: {
@@ -231,7 +192,7 @@ describe('surveyResponse endpoint', () => {
           },
         },
         {
-          survey_id: testSurvey.id,
+          survey_id: surveyId,
           entity_id: ENTITY_ID,
           timestamp: 456,
           answers: {
@@ -265,10 +226,10 @@ describe('surveyResponse endpoint', () => {
     expectError(response, /survey_id/);
   });
 
-  it('Should throw if a submission has an missing entity code', async () => {
+  it('Should throw if a submission has a missing entity code', async () => {
     const response = await app.post('surveyResponse', {
       body: {
-        survey_id: testSurvey.id,
+        survey_id: surveyId,
         timestamp: 123,
         answers: {
           [questionCode(1)]: '123',
@@ -283,7 +244,7 @@ describe('surveyResponse endpoint', () => {
   it('Should throw if a submission has an invalid entity id', async () => {
     const response = await app.post('surveyResponse', {
       body: {
-        survey_id: testSurvey.id,
+        survey_id: surveyId,
         entity_id: 'NOT_REAL_000000000000000',
         timestamp: 123,
         answers: {
@@ -298,7 +259,7 @@ describe('surveyResponse endpoint', () => {
   it('Should throw if a submission has an invalid entity code', async () => {
     const response = await app.post('surveyResponse', {
       body: {
-        survey_id: testSurvey.id,
+        survey_id: surveyId,
         entity_code: 'NOT_REAL',
         timestamp: 123,
         answers: {
@@ -313,7 +274,7 @@ describe('surveyResponse endpoint', () => {
   it('Should throw if a submission has an invalid question code', async () => {
     const response = await app.post('surveyResponse', {
       body: {
-        survey_id: testSurvey.id,
+        survey_id: surveyId,
         entity_id: ENTITY_ID,
         timestamp: 123,
         answers: {
@@ -328,7 +289,7 @@ describe('surveyResponse endpoint', () => {
   it('Should throw if a question is not present on the selected survey', async () => {
     const response = await app.post('surveyResponse', {
       body: {
-        survey_id: testSurvey.id,
+        survey_id: surveyId,
         entity_id: ENTITY_ID,
         timestamp: 123,
         answers: {
@@ -343,7 +304,7 @@ describe('surveyResponse endpoint', () => {
   it('Should throw if a survey has no answers', async () => {
     const response = await app.post('surveyResponse', {
       body: {
-        survey_id: testSurvey.id,
+        survey_id: surveyId,
         entity_id: ENTITY_ID,
         timestamp: 123,
         answers: {},
@@ -356,7 +317,7 @@ describe('surveyResponse endpoint', () => {
   it('Should throw if a survey has an answer with no content', async () => {
     const response = await app.post('surveyResponse', {
       body: {
-        survey_id: testSurvey.id,
+        survey_id: surveyId,
         entity_id: ENTITY_ID,
         timestamp: 123,
         answers: {
@@ -372,7 +333,7 @@ describe('surveyResponse endpoint', () => {
   it('Should throw if a survey is missing a timestamp', async () => {
     const response = await app.post('surveyResponse', {
       body: {
-        survey_id: testSurvey.id,
+        survey_id: surveyId,
         entity_id: ENTITY_ID,
         answers: {
           [questionCode(1)]: '123',
@@ -396,7 +357,7 @@ describe('surveyResponse endpoint', () => {
     const timestamp = '2019-07-31T06:48:00+13:00';
     const response = await app.post('surveyResponse', {
       body: {
-        survey_id: testSurvey.id,
+        survey_id: surveyId,
         entity_id: ENTITY_ID,
         timestamp,
         answers: {
@@ -428,7 +389,7 @@ describe('surveyResponse endpoint', () => {
       const { body } = await app.post('surveyResponse', {
         body: {
           timestamp: 123,
-          survey_id: testSurvey.id,
+          survey_id: surveyId,
           entity_id: ENTITY_ID,
           answers: {
             [questionCode('Binary')]: 'Yes',
@@ -454,7 +415,7 @@ describe('surveyResponse endpoint', () => {
       app.post('surveyResponse', {
         body: {
           timestamp: 123,
-          survey_id: testSurvey.id,
+          survey_id: surveyId,
           entity_id: ENTITY_ID,
           answers: { [questionCode(type)]: value },
         },
