@@ -5,6 +5,7 @@
 
 import { getMeasureBuilder } from './getMeasureBuilder';
 import { OPERATOR_TO_VALUE_CHECK } from '../dataBuilders/helpers/checkAgainstConditions';
+import { Entity } from '../../models';
 
 export const fetchComposedData = async (aggregator, dhisApi, query, config, entity) => {
   const { measureBuilders, dataServices } = config || {};
@@ -47,6 +48,15 @@ export const mapMeasureValuesToGroups = (measureValue, dataElementGroupCode, gro
     originalValue,
     [dataElementGroupCode]: valueGroup ? valueGroup[0] : originalValue,
   };
+};
+
+export const mapMeasureDataToCountries = data => {
+  const dataMappedToCountry = data.map(async res => {
+    const resultEntity = await Entity.findOne({ code: res.organisationUnitCode });
+    return { ...res, organisationUnitCode: resultEntity.country_code };
+  });
+
+  return Promise.all(dataMappedToCountry);
 };
 
 export const analyticsToMeasureData = (analytics, customDataKey) =>

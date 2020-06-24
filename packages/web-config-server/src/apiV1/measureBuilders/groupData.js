@@ -3,9 +3,8 @@
  * Copyright (c) 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { mapMeasureValuesToGroups } from './helpers';
+import { mapMeasureValuesToGroups, mapMeasureDataToCountries } from './helpers';
 import { getMeasureBuilder } from './getMeasureBuilder';
-import { Entity } from '../../models';
 
 export const groupData = async (aggregator, dhisApi, query, measureBuilderConfig = {}, entity) => {
   const { measureBuilder: builderName, mapDataToCountries } = measureBuilderConfig;
@@ -23,16 +22,7 @@ export const groupData = async (aggregator, dhisApi, query, measureBuilderConfig
     mapMeasureValuesToGroups(dataElement, dataElementCode, measureBuilderConfig.groups),
   );
 
-  if (mapDataToCountries) {
-    const results = [];
-    for (const result of groupedData) {
-      const resultEntity = await Entity.findOne({ code: result.organisationUnitCode });
-      const resultCountry = await resultEntity.countryEntity();
-      results.push({ ...result, organisationUnitCode: resultCountry.code });
-    }
-
-    return results;
-  }
+  if (mapDataToCountries) return mapMeasureDataToCountries(groupedData);
 
   return groupedData;
 };

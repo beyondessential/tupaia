@@ -35,16 +35,14 @@ const insertMOHProduct = async (db, productCode, productName) => {
   return db.runSql(`
     INSERT INTO "public"."mapOverlay"("id","name","groupName","userGroup","dataElementCode","displayType","customColors","isDataRegional","values","hideFromMenu","hideFromPopup","hideFromLegend","linkedMeasures","sortOrder","measureBuilderConfig","measureBuilder","presentationOptions","countryCodes","projectCodes")
     VALUES
-    (E'RH_${productCode}_Regional',E'${productName}',E'RH Commodity Months of Stock (National Warehouse)',E'Admin',E'${productCode}',E'shading',NULL,TRUE,E'[{"name": "0", "color": "Red", "value": "0"}, {"name": "1-2", "color": "Orange", "value": "1-2"}, {"name": "3-6", "color": "Green", "value": "3-6"}, {"name": ">6", "color": "Yellow", "value": ">6"}, {"name": "No data", "color": "Grey", "value": "null"}]',FALSE,FALSE,FALSE,NULL,0,E'{"groups": {"0": {"value": 0, "operator": "="}, ">6": {"value": 6, "operator": ">"}, "1-2": {"value": [1, 2], "operator": "range"}, "3-6": {"value": [3, 6], "operator": "range"}}, "mapDataToCountries": true, "measureBuilderConfig": {"filter": {"organisationUnit": {"in": ["TO_CPMS", "KI_GEN", "VU_1180_20", "SB_500092"]}}, "dataSourceType": "custom", "aggregationType": "MOST_RECENT"}}',E'groupData',E'{"measureLevel": "Country"}',E'{unfpa}',E'{unfpa,explore}');
+    (E'RH_${productCode}_Regional',E'${productName}',E'RH Commodity Months of Stock (National Warehouse)',E'UNFPA',E'${productCode}',E'shading',NULL,TRUE,E'[{"name": "0", "color": "Red", "value": "0"}, {"name": "1-2", "color": "Orange", "value": "1-2"}, {"name": "3-6", "color": "Green", "value": "3-6"}, {"name": ">6", "color": "Yellow", "value": ">6"}, {"name": "No data", "color": "Grey", "value": "null"}]',FALSE,FALSE,FALSE,NULL,0,E'{"groups": {"0": {"value": 0, "operator": "="}, ">6": {"value": 6, "operator": ">"}, "1-2": {"value": [1, 2], "operator": "range"}, "3-6": {"value": [3, 6], "operator": "range"}}, "mapDataToCountries": true, "measureBuilderConfig": {"filter": {"organisationUnit": {"in": ["TO_CPMS", "KI_GEN", "VU_1180_20", "SB_500092"]}}, "dataSourceType": "custom", "aggregationType": "MOST_RECENT"}}',E'groupData',E'{"measureLevel": "Country"}',E'{unfpa}',E'{unfpa,explore}');
   `);
 };
 
 exports.up = async function(db) {
-  for (const [code, name] of Object.entries(products)) {
-    await insertMOHProduct(db, code, name);
-  }
+  const mapJobs = Object.entries(products).map(([code, name]) => insertMOHProduct(db, code, name));
 
-  return null;
+  return Promise.all(mapJobs);
 };
 
 exports.down = function(db) {
