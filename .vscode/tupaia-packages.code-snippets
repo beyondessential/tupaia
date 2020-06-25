@@ -3,8 +3,8 @@
     "prefix": "cpr",
     "body": [
       "/**",
-      " * Tupaia Config Server",
-      " * Copyright (c) $CURRENT_YEAR Beyond Essential Systems Pty Ltd",
+      " * Tupaia",
+      " * Copyright (c) 2017 - $CURRENT_YEAR Beyond Essential Systems Pty Ltd",
       " */"
     ],
     "description": "Copyright notice"

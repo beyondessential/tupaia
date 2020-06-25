@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 11.2
--- Dumped by pg_dump version 11.2
+-- Dumped from database version 11.3
+-- Dumped by pg_dump version 11.3
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -12,6 +12,7 @@ SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
+SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
@@ -742,7 +743,6 @@ CREATE TABLE public.question (
     id text NOT NULL,
     text text NOT NULL,
     name text,
-    image_data text,
     type text NOT NULL,
     options text[],
     code text,
@@ -785,7 +785,6 @@ CREATE TABLE public.survey (
     id text NOT NULL,
     name text NOT NULL,
     code text NOT NULL,
-    image_data text DEFAULT ''::text,
     permission_group_id text,
     country_ids text[] DEFAULT '{}'::text[],
     can_repeat boolean DEFAULT false,
@@ -1364,6 +1363,14 @@ ALTER TABLE ONLY public.setting
 
 ALTER TABLE ONLY public.setting
     ADD CONSTRAINT setting_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: survey survey_code_unique; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.survey
+    ADD CONSTRAINT survey_code_unique UNIQUE (code);
 
 
 --
@@ -2366,8 +2373,8 @@ ALTER TABLE ONLY public.user_reward
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 11.2
--- Dumped by pg_dump version 11.2
+-- Dumped from database version 11.3
+-- Dumped by pg_dump version 11.3
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -2376,6 +2383,7 @@ SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
+SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
@@ -3147,30 +3155,50 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 719	/20200522031911-laosSchoolsFixUnicefCode	2020-05-22 06:36:39.753
 720	/20200522032405-UpdateMapOverlayHeadings	2020-05-22 06:36:39.887
 721	/20200522055413-ChangeLaosSchoolsOverlayGroupName	2020-05-22 06:36:39.921
-722	/20200522010341-updateLaosSchoolsBinaryDashboard	2020-05-24 22:44:43.751
-723	/20200212052756-RemoveRedundantQuestionsWish	2020-06-11 11:40:47.098
-724	/20200417211027-AllowNullAccessToken	2020-06-11 11:40:47.133
-725	/20200422231733-MoveNoCountryUsersToAdminPanel	2020-06-11 11:40:47.158
-726	/20200423213702-EntityBasedPermissions	2020-06-11 11:40:47.421
-727	/20200503063358-AddTongaDHIS2HealthCertificatesDistributedReport	2020-06-11 11:40:47.511
-728	/20200508034036-UpdateDefaultTimePeriodFormatInDataBuilderConfig	2020-06-11 11:40:47.524
-729	/20200521005057-AddLaosDevelopmentPartnersReport	2020-06-11 11:40:47.532
-730	/20200521102324-AddUtilityServiceBinaryMeasuresBarCharts	2020-06-11 11:40:47.542
-731	/20200521155232-AddResourceSupportBinaryMeasuresBarCharts	2020-06-11 11:40:47.547
-732	/20200522022756-VisualisationsDefinedPerProject	2020-06-11 11:40:47.647
-733	/20200524212939-LimitVisualisationsPerProject	2020-06-11 11:40:47.958
-734	/20200524231548-AddSchoolPercentDashboards	2020-06-11 11:40:47.996
-735	/20200525005457-WipeUserSessions	2020-06-11 11:40:48.006
-736	/20200525044209-NoFunnyPeriods	2020-06-11 11:40:48.016
-737	/20200526005827-RemoveWorldDashboardGroups	2020-06-11 11:40:48.024
-738	/20200528011043-ChangeUNFPAReportsToUseQuarters	2020-06-11 11:40:48.038
-739	/20200528042309-DeleteAnswersForLaosSchoolsSelectVillageQuestions	2020-06-11 11:40:48.491
-740	/20200605045409-CorrectStriveDashboardCase	2020-06-11 11:40:48.5
-741	/20200605051613-SetCovidDefaultDashboard	2020-06-11 11:40:48.506
-742	/20200608220007-RenameQuestionIndicatorToName	2020-06-11 11:40:48.516
-743	/20200608234924-RemoveLaosSchoolsReport	2020-06-11 11:40:48.535
-744	/20200609022031-RemoveLaosSchoolsHeatmaps	2020-06-11 11:40:48.543
-745	/20200609022859-UpdateOverlayHeadingsToRemoveTotal	2020-06-11 11:40:48.616
+722	/20200503063358-AddTongaDHIS2HealthCertificatesDistributedReport	2020-05-26 05:33:22.248
+723	/20200508034036-UpdateDefaultTimePeriodFormatInDataBuilderConfig	2020-05-26 05:33:22.404
+724	/20200522010341-updateLaosSchoolsBinaryDashboard	2020-05-26 05:33:22.531
+725	/20200525044209-NoFunnyPeriods	2020-05-26 05:33:22.587
+726	/20200526005827-RemoveWorldDashboardGroups	2020-05-26 05:33:22.618
+727	/20200212052756-RemoveRedundantQuestionsWish	2020-05-28 07:05:49.153
+728	/20200521005057-AddLaosDevelopmentPartnersReport	2020-05-28 07:05:49.46
+729	/20200524231548-AddSchoolPercentDashboards	2020-05-28 07:05:50.058
+730	/20200522022756-VisualisationsDefinedPerProject	2020-06-01 23:11:11.261
+731	/20200524212939-LimitVisualisationsPerProject	2020-06-01 23:11:12.839
+732	/20200528042309-DeleteAnswersForLaosSchoolsSelectVillageQuestions	2020-06-01 23:11:13.004
+733	/20200521102324-AddUtilityServiceBinaryMeasuresBarCharts	2020-06-05 05:09:17.476
+734	/20200521155232-AddResourceSupportBinaryMeasuresBarCharts	2020-06-05 05:09:17.765
+735	/20200528011043-ChangeUNFPAReportsToUseQuarters	2020-06-05 05:09:17.857
+736	/20200605045409-CorrectStriveDashboardCase	2020-06-05 05:09:17.912
+737	/20200605051613-SetCovidDefaultDashboard	2020-06-11 22:06:48.088
+738	/20200608220007-RenameQuestionIndicatorToName	2020-06-11 22:06:48.184
+739	/20200608234924-RemoveLaosSchoolsReport	2020-06-11 22:06:48.527
+740	/20200609022031-RemoveLaosSchoolsHeatmaps	2020-06-11 22:06:48.594
+741	/20200609022859-UpdateOverlayHeadingsToRemoveTotal	2020-06-11 22:06:48.938
+742	/20200612003644-AddMostVisualisationsToExplore	2020-06-12 01:09:53.702
+743	/20200417211027-AllowNullAccessToken	2020-06-18 21:35:02.61
+744	/20200422231733-MoveNoCountryUsersToAdminPanel	2020-06-18 21:35:02.717
+745	/20200423213702-EntityBasedPermissions	2020-06-18 21:35:03.473
+746	/20200525005457-WipeUserSessions	2020-06-18 21:35:03.546
+747	/20200529000003-MigrateOverlaysToUseNewEntityAggregation	2020-06-18 21:35:05.868
+748	/20200529064523-MoveMeasureLevelToPresentationOptions	2020-06-18 21:35:07.96
+749	/20200601050232-MigrateReportsToUseNewEntityAggregation	2020-06-18 21:35:08.941
+750	/20200602035743-FixConfigForSurveyExportReports	2020-06-18 21:35:11.342
+751	/20200603012534-DeleteSurveyAndQuestionImageData	2020-06-18 21:35:11.364
+752	/20200603012535-ChangeDuplicateSurveyCodes	2020-06-18 21:35:15.127
+753	/20200603014358-AddUniqueCodeConstraintInSurvey	2020-06-18 21:35:15.193
+754	/20200603032358-UseCountrySpecificBcdSurveys	2020-06-18 21:35:15.822
+755	/20200609002315-UpdateSchoolBinaryListMeasures	2020-06-18 21:35:15.925
+756	/20200609045707-UpdateLaosSchoolsBinaryMeasureMapOverlayNames	2020-06-18 21:35:16.046
+757	/20200609045724-RemoveLaosSchoolsBinaryMeasureMapOverlays	2020-06-18 21:35:16.083
+758	/20200609053914-UseTupaiaAsDataServiceForNewLaosSchoolSurveys	2020-06-18 21:35:18.666
+759	/20200609055929-AddMoreLaosSchoolsBinaryMeasuresMapOverlays	2020-06-18 21:35:18.939
+760	/20200609072253-AddLaosSchoolsStudentResourcesMapOverlays	2020-06-18 21:35:19.174
+761	/20200609223042-AddWaterSupplyMapOverlay	2020-06-18 21:35:19.443
+762	/20200612021300-FixIncorrectDashboardGroupProjects	2020-06-18 21:35:19.63
+763	/20200616000806-FixIncorrectDataElementCodesLaosReport	2020-06-18 21:35:19.97
+764	/20200617235154-FixTongaMeaslesOverlaysWithEntityAggregation	2020-06-18 21:35:20.008
+765	/20200618090311-FixEntityAggregationConfig	2020-06-18 21:35:20.071
 \.
 
 
@@ -3178,7 +3206,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 745, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 765, true);
 
 
 --
