@@ -132,12 +132,12 @@ export class Entity extends BaseModel {
     return Entity.database.executeSql(
       `
       WITH RECURSIVE children AS (
-        SELECT ${nonGeoFields.map(() => '?').join(', ')}, 0 AS generation
+        SELECT id, code, "name", parent_id, type, country_code, 0 AS generation
           FROM entity
           WHERE id = ?
 
         UNION ALL
-        SELECT ${nonGeoFields.map(() => 'p.?').join(', ')}, c.generation + 1
+        SELECT p.id, p.code, p."name", p.parent_id, p.type, p.country_code, c.generation + 1
           FROM children c
           JOIN entity p ON p.id = c.parent_id
           ${includeWorld ? '' : `WHERE p.code <> 'World'`}
@@ -148,7 +148,7 @@ export class Entity extends BaseModel {
         ${constructTypesCriteria(types, 'WHERE')}
         ORDER BY generation DESC;
     `,
-      [...nonGeoFields, id, ...nonGeoFields, ...types],
+      [id, ...types],
     );
   }
 
