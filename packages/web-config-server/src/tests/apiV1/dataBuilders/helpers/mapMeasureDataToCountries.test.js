@@ -11,17 +11,14 @@ import { mapMeasureDataToCountries } from '/apiV1/measureBuilders/helpers';
 const ANALYTICS = [
   {
     organisationUnitCode: 'TO_Niuas',
-    orgUnitName: 'Tongatapu',
     dataValues: [{ dataElement: 'A', value: '1' }],
   },
   {
     organisationUnitCode: 'TO_Niuas',
-    orgUnitName: 'Niuas',
     dataValues: [{ dataElement: 'A', value: '2' }],
   },
   {
     organisationUnitCode: 'TO_Niuas',
-    orgUnitName: 'Niuas',
     dataValues: [{ dataElement: 'A', value: '3' }],
   },
 ];
@@ -33,7 +30,10 @@ const PARENT_ORG_UNIT = {
 describe('mapMeasureDataToCountries()', () => {
   before(async () => {
     const models = getTestModels();
-    upsertDummyRecord(models.entity, { code: 'TO_Niuas', country_code: 'TO', name: 'Niuas' }); // last object optional
+    await upsertDummyRecord(models.entity, {
+      code: 'TO_Niuas',
+      country_code: 'TO',
+    });
   });
 
   it('replace facility orgUnit codes with their corresponding country codes', async () => {
