@@ -5,15 +5,63 @@
 
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
+import MuiExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
+import { WarningCloud, Virus } from '@tupaia/ui-components';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { PercentageChangeCell } from './Table';
+import { FlexRow, FlexSpaceBetween } from './Layout';
 
-const Wrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+const ExpandableWrapper = styled(MuiExpansionPanelSummary)`
+  padding: 0;
+
+  .MuiExpansionPanelSummary-content {
+    display: block;
+  }
+
+  .MuiExpansionPanelSummary-content {
+    margin: 0;
+  }
+
+  .Mui-expanded {
+    .psss-card-header-bar {
+      background: #ef5a06;
+      border: 1px solid rgba(239, 90, 6, 0.15);
+      color: white;
+    }
+  }
+`;
+
+// .psss-card-header-bar
+const HeaderBar = styled(FlexSpaceBetween)`
+  background: #ffece1;
+  color: #ef5a06;
+  border: 1px solid rgba(239, 90, 6, 0.15);
+  padding: 5px 12px;
+  transition: color 0.3s ease, background-color 0.3s ease;
+
+  svg {
+    font-size: 16px;
+  }
+`;
+
+const Row = styled(FlexRow)`
+  font-weight: 600;
+  font-size: 11px;
+  line-height: 13px;
+  text-transform: uppercase;
+
+  svg {
+    margin-right: 0.3rem;
+  }
+`;
+
+const HeaderDetails = styled(FlexSpaceBetween)`
   padding: 1rem;
+  margin: 0;
+  border-right: 1px solid ${props => props.theme.palette.grey['400']};
+  border-left: 1px solid ${props => props.theme.palette.grey['400']};
 `;
 
 const Heading = styled(Typography)`
@@ -34,7 +82,7 @@ const Text = styled(Typography)`
   color: ${props => props.theme.palette.text.secondary};
 `;
 
-const FlexRow = styled.div`
+const FlexEnd = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -57,19 +105,28 @@ const HighlightText = styled(PercentageChangeCell)`
 `;
 
 export const CardWeekHeader = ({ heading, subheading, detailText, percentageChange }) => (
-  <Wrapper>
-    <div>
-      <Heading>{heading}</Heading>
-      <Subheading>{subheading}</Subheading>
-    </div>
-    <div>
-      <FlexRow>
-        <SuperText>Prev.Week</SuperText>
-        <HighlightText percentageChange={percentageChange} />
-      </FlexRow>
-      <Text>{detailText}</Text>
-    </div>
-  </Wrapper>
+  <ExpandableWrapper>
+    <HeaderBar className="psss-card-header-bar">
+      <Row>
+        <WarningCloud />
+        Alert
+      </Row>
+      <AddCircleIcon />
+    </HeaderBar>
+    <HeaderDetails>
+      <div>
+        <Heading>{heading}</Heading>
+        <Subheading>{subheading}</Subheading>
+      </div>
+      <div>
+        <FlexEnd>
+          <SuperText>Prev.Week</SuperText>
+          <HighlightText percentageChange={percentageChange} />
+        </FlexEnd>
+        <Text>{detailText}</Text>
+      </div>
+    </HeaderDetails>
+  </ExpandableWrapper>
 );
 
 CardWeekHeader.propTypes = {

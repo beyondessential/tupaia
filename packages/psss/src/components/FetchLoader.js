@@ -10,10 +10,10 @@ export const FetchLoader = ({ children, state }) => {
   const { isLoading, count, isError, errorMessage } = state;
   if (isLoading) {
     return 'Loading...';
-  } else if (count === 0) {
-    return 'There are no messages';
   } else if (isError) {
     return errorMessage;
+  } else if (count === 0) {
+    return 'There are no messages';
   }
 
   return children;

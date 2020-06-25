@@ -68,10 +68,10 @@ const SuccessStyleText = styled.span`
  */
 export const PercentageChangeCell = ({ percentageChange, className }) => {
   if (percentageChange > 0) {
-    return <WarningStyleText className={className}>+{`${percentageChange}%`}</WarningStyleText>;
+    return <WarningStyleText className={className}>+{percentageChange}%</WarningStyleText>;
   }
 
-  return <SuccessStyleText className={className}>{percentageChange}</SuccessStyleText>;
+  return <SuccessStyleText className={className}>{percentageChange}%</SuccessStyleText>;
 };
 
 PercentageChangeCell.propTypes = {

@@ -4,14 +4,18 @@
  */
 
 import React from 'react';
-import { Redirect, Switch } from 'react-router-dom';
+import { Redirect, Switch, Route } from 'react-router-dom';
 import { AlertsOutbreaksView } from '../views/AlertsOutbreaksView';
 import { CountriesReportsView } from '../views/CountriesReportsView';
 import { CountryReportsView } from '../views/CountryReportsView';
+import { Sandbox } from '../views/Sandbox';
 import { PrivateRoute } from './PrivateRoute';
 
 export const PageRoutes = React.memo(() => (
   <Switch>
+    <Route path="/sandbox">
+      <Sandbox />
+    </Route>
     <PrivateRoute exact path="/">
       <CountriesReportsView />
     </PrivateRoute>

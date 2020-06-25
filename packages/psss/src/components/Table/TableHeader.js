@@ -32,7 +32,7 @@ const StyledTableHeader = styled(TableHeader)`
         bottom: -1px;
         content: '';
         background: #f1f1f1;
-        width: 20px;
+        width: 19px;
         border-top: 1px solid ${props => props.theme.palette.grey['400']};
         border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
       }
@@ -44,13 +44,13 @@ const StyledTableHeader = styled(TableHeader)`
       text-align: left;
 
       &:before {
-        left: -20px;
+        left: -19px;
       }
     }
 
     &:last-child {
       &:before {
-        right: -20px;
+        right: -19px;
       }
     }
   }
