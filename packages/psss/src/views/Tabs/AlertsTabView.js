@@ -17,7 +17,7 @@ const DateSubtitle = styled(Typography)`
 `;
 
 export const AlertsTabView = () => {
-  const [isPanelOpen, setIsPanelOpen] = useState(true);
+  const [isPanelOpen, setIsPanelOpen] = useState(false);
   const handlePanelOpen = () => {
     setIsPanelOpen(true);
   };

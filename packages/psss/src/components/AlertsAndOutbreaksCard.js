@@ -10,10 +10,37 @@ import Typography from '@material-ui/core/Typography';
 import MuiExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
-import { WarningCloud, Virus } from '@tupaia/ui-components';
+import MuiExpansionPanel from '@material-ui/core/ExpansionPanel';
+import MuiExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import { Card, WarningCloud, Virus } from '@tupaia/ui-components';
 import { PercentageChangeCell } from './Table';
 import { FlexRow, FlexSpaceBetween } from './Layout';
 import * as COLORS from '../constants/colors';
+
+export const AlertsAndOutbreaksCard = ({ children, ...props }) => (
+  <StyledCard variant="outlined" {...props}>
+    <MuiExpansionPanel>{children}</MuiExpansionPanel>
+  </StyledCard>
+);
+
+AlertsAndOutbreaksCard.propTypes = {
+  children: PropTypes.any.isRequired,
+};
+
+export const AlertsAndOutbreaksCardBody = styled(MuiExpansionPanelDetails)`
+  padding: 0;
+  border-left: 1px solid ${props => props.theme.palette.grey['400']};
+  border-right: 1px solid ${props => props.theme.palette.grey['400']};
+`;
+
+const StyledCard = styled(Card)`
+  border: none;
+  border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
+
+  &:hover {
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1), 0 5px 10px rgba(0, 0, 0, 0.2);
+  }
+`;
 
 const ExpandableWrapper = styled(MuiExpansionPanelSummary)`
   padding: 0;
@@ -155,7 +182,13 @@ const TYPES = {
   OUTBREAK: 'outbreak',
 };
 
-export const CardWeekHeader = ({ heading, subheading, detailText, percentageChange, type }) => (
+export const AlertsAndOutbreaksCardHeader = ({
+  heading,
+  subheading,
+  detailText,
+  percentageChange,
+  type,
+}) => (
   <ExpandableWrapper className={type}>
     <HeaderBar className="psss-card-header-bar">
       <Row>
@@ -181,7 +214,7 @@ export const CardWeekHeader = ({ heading, subheading, detailText, percentageChan
   </ExpandableWrapper>
 );
 
-CardWeekHeader.propTypes = {
+AlertsAndOutbreaksCardHeader.propTypes = {
   type: PropTypes.oneOf([TYPES.ALERT, TYPES.OUTBREAK]),
   heading: PropTypes.string.isRequired,
   subheading: PropTypes.string.isRequired,
@@ -189,6 +222,6 @@ CardWeekHeader.propTypes = {
   percentageChange: PropTypes.number.isRequired,
 };
 
-CardWeekHeader.defaultProps = {
+AlertsAndOutbreaksCardHeader.defaultProps = {
   type: TYPES.ALERT,
 };

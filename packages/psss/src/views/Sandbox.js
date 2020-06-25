@@ -6,10 +6,12 @@ import React from 'react';
 import { format } from 'date-fns';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import MuiExpansionPanel from '@material-ui/core/ExpansionPanel';
-import MuiExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import { Card, CardTabPanel } from '@tupaia/ui-components';
-import { CardWeekHeader } from '../components/CardWeekHeader';
+import { CardTabPanel } from '@tupaia/ui-components';
+import {
+  AlertsAndOutbreaksCard,
+  AlertsAndOutbreaksCardHeader,
+  AlertsAndOutbreaksCardBody,
+} from '../components/AlertsAndOutbreaksCard';
 import { FakeAPI } from '../api';
 import {
   Container,
@@ -58,27 +60,6 @@ const columns = [
   },
 ];
 
-const ExpansionPanelDetails = styled(MuiExpansionPanelDetails)`
-  padding: 0;
-  border-left: 1px solid ${props => props.theme.palette.grey['400']};
-  border-right: 1px solid ${props => props.theme.palette.grey['400']};
-`;
-
-const StyledCard = styled(Card)`
-  border: none;
-  border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
-
-  &:hover {
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
-  }
-`;
-
-const ExpandableCard = ({ children, ...props }) => (
-  <StyledCard variant="outlined" {...props}>
-    <MuiExpansionPanel>{children}</MuiExpansionPanel>
-  </StyledCard>
-);
-
 const fetchSitesData = () => FakeAPI.get('affected-sites');
 
 export const Sandbox = () => {
@@ -96,18 +77,18 @@ export const Sandbox = () => {
                 const endDate = format(week.endDate, 'LLL d');
                 const year = format(week.endDate, 'yyyy');
                 return (
-                  <ExpandableCard key={week.id} mb={5}>
-                    <CardWeekHeader
+                  <AlertsAndOutbreaksCard key={week.id} mb={5}>
+                    <AlertsAndOutbreaksCardHeader
                       type={index === 0 ? 'outbreak' : 'alert'}
                       heading={`Week ${week.week}`}
                       subheading={`${startDate} - ${endDate}, ${year}`}
                       detailText={`Total Cases for all Sites: ${week.totalCases}`}
                       percentageChange={week.percentageChange}
                     />
-                    <ExpansionPanelDetails>
+                    <AlertsAndOutbreaksCardBody>
                       <DottedTable columns={columns} data={week.sites} />
-                    </ExpansionPanelDetails>
-                  </ExpandableCard>
+                    </AlertsAndOutbreaksCardBody>
+                  </AlertsAndOutbreaksCard>
                 );
               })}
             </FetchLoader>

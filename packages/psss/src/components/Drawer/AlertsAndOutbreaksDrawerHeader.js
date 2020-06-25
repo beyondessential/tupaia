@@ -62,7 +62,7 @@ const Heading = styled(Typography)`
   line-height: 2.3rem;
 `;
 
-export const AlertsDrawerHeader = ({
+export const AlertsAndOutbreaksDrawerHeader = ({
   heading,
   subheading,
   dateText,
@@ -89,7 +89,7 @@ export const AlertsDrawerHeader = ({
   </Header>
 );
 
-AlertsDrawerHeader.propTypes = {
+AlertsAndOutbreaksDrawerHeader.propTypes = {
   DropdownMenu: PropTypes.any,
   heading: PropTypes.string.isRequired,
   subheading: PropTypes.string.isRequired,
@@ -99,7 +99,7 @@ AlertsDrawerHeader.propTypes = {
   color: PropTypes.string,
 };
 
-AlertsDrawerHeader.defaultProps = {
+AlertsAndOutbreaksDrawerHeader.defaultProps = {
   DropdownMenu: null,
   avatarUrl: null,
   color: COLORS.BLUE,

@@ -19,7 +19,7 @@ import { connectApi } from '../../api';
 import {
   Drawer,
   DropdownMenu,
-  AlertsDrawerHeader,
+  AlertsAndOutbreaksDrawerHeader,
   AffectedSitesTab,
   ActivityTab,
   NotesTab,
@@ -82,7 +82,7 @@ export const AlertsPanelComponent = ({
   return (
     <Drawer open={isOpen} onClose={handleClose}>
       <DrawerTray heading="Alert Details" onClose={handleClose} Icon={WarningCloud} />
-      <AlertsDrawerHeader
+      <AlertsAndOutbreaksDrawerHeader
         date="Week 9 Feb 25 - Mar 1, 2021"
         dateText="Triggered on:"
         avatarUrl={countryFlagImage('as')}

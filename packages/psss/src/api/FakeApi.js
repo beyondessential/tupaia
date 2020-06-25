@@ -50,7 +50,7 @@ export class FakeAPI {
         data.push(this.activity());
       }
     } else if (endpoint === 'affected-sites') {
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < 8; i++) {
         data.push(this.affectedSite());
       }
     } else if (endpoint === 'archive') {
@@ -146,6 +146,7 @@ export class FakeAPI {
     }
     return {
       ...countryWeek,
+      status: faker.random.arrayElement(['alert', 'outbreak']),
       sites,
     };
   }

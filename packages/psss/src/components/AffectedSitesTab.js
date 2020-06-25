@@ -5,14 +5,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
-import { Card, CardTabPanel } from '@tupaia/ui-components';
+import { CardTabPanel } from '@tupaia/ui-components';
 import {
   createTotalCasesAccessor,
   createPercentageChangeAccessor,
   DottedTable,
   PercentageChangeCell,
 } from './Table';
-import { CardWeekHeader } from './CardWeekHeader';
+import {
+  AlertsAndOutbreaksCard,
+  AlertsAndOutbreaksCardHeader,
+  AlertsAndOutbreaksCardBody,
+} from './AlertsAndOutbreaksCard';
 import { fetchStateShape } from '../hooks';
 import { FetchLoader } from './FetchLoader';
 
@@ -58,15 +62,18 @@ export const AffectedSitesTab = ({ state }) => {
           const endDate = format(week.endDate, 'LLL d');
           const year = format(week.endDate, 'yyyy');
           return (
-            <Card key={week.id} variant="outlined" mb={5}>
-              <CardWeekHeader
+            <AlertsAndOutbreaksCard key={week.id} variant="outlined" mb={5}>
+              <AlertsAndOutbreaksCardHeader
+                type={week.status}
                 heading={`Week ${week.week}`}
                 subheading={`${startDate} - ${endDate}, ${year}`}
                 detailText={`Total Cases for all Sites: ${week.totalCases}`}
                 percentageChange={week.percentageChange}
               />
-              <DottedTable columns={columns} data={week.sites} />
-            </Card>
+              <AlertsAndOutbreaksCardBody>
+                <DottedTable columns={columns} data={week.sites} />
+              </AlertsAndOutbreaksCardBody>
+            </AlertsAndOutbreaksCard>
           );
         })}
       </FetchLoader>
