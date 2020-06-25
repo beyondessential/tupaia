@@ -12,6 +12,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { Autocomplete } from '../autocomplete';
 import { JsonInputField } from './JsonInputField';
 import { DropDownInputField } from './DropDownInputField';
+import { JsonEditor } from './JsonEditor';
 
 export const InputField = ({
   allowMultipleValues,
@@ -27,6 +28,7 @@ export const InputField = ({
   disabled,
   getJsonFieldSchema,
   parentRecord,
+  maxHeight,
 }) => {
   const inputType = optionsEndpoint ? 'autocomplete' : type;
   let inputComponent = null;
@@ -62,6 +64,11 @@ export const InputField = ({
           disabled={disabled}
           getJsonFieldSchema={getJsonFieldSchema}
         />
+      );
+      break;
+    case 'jsonEditor':
+      inputComponent = (
+        <JsonEditor {...{ inputKey, label, value, maxHeight: maxHeight || 100, onChange }} />
       );
       break;
     case 'boolean':
@@ -125,7 +132,13 @@ const processValue = (value, type) => {
 InputField.propTypes = {
   allowMultipleValues: PropTypes.bool,
   label: PropTypes.string.isRequired,
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.bool]),
+  value: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.array,
+    PropTypes.object,
+    PropTypes.bool,
+    PropTypes.number,
+  ]),
   inputKey: PropTypes.string.isRequired,
   optionsEndpoint: PropTypes.string,
   onChange: PropTypes.func.isRequired,

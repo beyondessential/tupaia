@@ -21,6 +21,9 @@ import { SurveyScreenComponentModel } from './SurveyScreenComponent';
 import { SurveyScreenModel } from './SurveyScreen';
 import { UserEntityPermissionModel } from './UserEntityPermission';
 import { UserModel } from './User';
+import { DashboardReportModel } from './DashboardReport';
+import { MapOverlayModel } from './MapOverlay';
+import { DashboardGroupModel } from './DashboardGroup';
 
 // export all models to be used in constructing a ModelRegistry
 export const modelClasses = {
@@ -42,6 +45,9 @@ export const modelClasses = {
   SurveyScreenComponent: SurveyScreenComponentModel,
   User: UserModel,
   UserEntityPermission: UserEntityPermissionModel,
+  DashboardReport: DashboardReportModel,
+  MapOverlay: MapOverlayModel,
+  DashboardGroup: DashboardGroupModel,
 };
 
 // export any models and types that are extended in other packages
@@ -55,3 +61,6 @@ export { PermissionGroupModel } from './PermissionGroup';
 export { SurveyScreenModel } from './SurveyScreen';
 export { SurveyScreenComponentModel } from './SurveyScreenComponent';
 export { UserEntityPermissionModel } from './UserEntityPermission';
+export { DashboardReportModel } from './DashboardReport';
+export { MapOverlayModel } from './MapOverlay';
+export { DashboardGroupModel } from './DashboardGroup';

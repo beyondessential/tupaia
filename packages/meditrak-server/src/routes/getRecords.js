@@ -33,9 +33,13 @@ const GETTABLE_TYPES = [
   TYPES.FEED_ITEM,
   TYPES.OPTION_SET,
   TYPES.OPTION,
+  TYPES.PROJECT,
   TYPES.DISASTER,
   TYPES.DATA_SOURCE,
   TYPES.ACCESS_REQUEST,
+  TYPES.DASHBOARD_REPORT,
+  TYPES.MAP_OVERLAY,
+  TYPES.DASHBOARD_GROUP,
 ];
 
 const createMultiResourceKey = (...recordTypes) => recordTypes.filter(x => x).join('/');
