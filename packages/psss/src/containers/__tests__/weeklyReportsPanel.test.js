@@ -3,11 +3,11 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { render } from 'test-utils';
 import { screen, within, fireEvent } from '@testing-library/react';
 import { WeeklyReportsPanelComponent } from '../Panels';
 import sitesData from './fixtures/sites.fixtures.json';
 import countryData from './fixtures/country.fixtures.json';
+import { render } from '../../utils/test-utils';
 
 const props = {
   countryData: countryData[0].syndromes,

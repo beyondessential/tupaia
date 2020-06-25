@@ -3,10 +3,10 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import React from 'react';
-import { render } from 'test-utils';
 import { screen, fireEvent } from '@testing-library/react';
 import { API } from '../../api';
 import { LoginForm } from '../Forms';
+import { render } from '../../utils/test-utils';
 
 jest.mock('../../api');
 
