@@ -37,7 +37,6 @@ const EXCLUDE_CODES = [
 ];
 
 const DATA_BUILDER_CONFIG = {
-  // dataBuilder: 'restrictedSurveyDownload',
   surveys: [
     { code: 'WISH_2GM', name: '2 - Government mapping' },
     { code: 'WISH_2GMM', name: '2 - Government mapping methods' },
