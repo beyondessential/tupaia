@@ -17,7 +17,7 @@ import { fetchStateShape } from '../hooks';
 import * as COLORS from '../constants/colors';
 
 const Container = styled.div`
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.8rem;
 `;
 
 const HeaderContainer = styled.div`
@@ -29,59 +29,51 @@ const HeaderContainer = styled.div`
   margin-top: 3rem;
 
   &:first-child {
-    margin-top: 0;
+    margin-top: 1rem;
   }
 `;
 
 const Heading = styled(Typography)`
-  font-size: 16px;
-  line-height: 21px;
+  font-size: 1rem;
+  line-height: 1.3rem;
   font-weight: 400;
   color: ${props => props.theme.palette.text.secondary};
   margin-right: 0.5rem;
 `;
 
-const DarkHeading = styled(Heading)`
+const DarkTextSpan = styled.span`
   font-weight: 500;
   color: ${props => props.theme.palette.text.primary};
 `;
 
-const DateHeader = ({ week, dateTime }) => {
-  const date = format(dateTime, 'EEEE, dd MMMM yyyy');
-  return (
-    <HeaderContainer>
-      <FlexRow>
-        <DarkHeading>Week {week} - </DarkHeading>
-        <Heading>{date}</Heading>
-      </FlexRow>
-    </HeaderContainer>
-  );
-};
+const DateHeader = ({ week, dateTime }) => (
+  <HeaderContainer>
+    <Heading>
+      <DarkTextSpan>Week {week} - </DarkTextSpan>
+      {format(dateTime, 'EEEE, dd MMMM yyyy')}
+    </Heading>
+  </HeaderContainer>
+);
 
 DateHeader.propTypes = {
   week: PropTypes.number.isRequired,
   dateTime: PropTypes.instanceOf(Date).isRequired,
 };
 
+const UpdateContainer = styled.div`
+  margin: 0 0.625rem 1rem;
+`;
+
 const Text = styled(Typography)`
   font-weight: 400;
-  font-size: 16px;
+  font-size: 1rem;
   margin-right: 0.3rem;
-  line-height: 19px;
+  line-height: 1.2rem;
   color: ${props => props.theme.palette.text.secondary};
 `;
 
-const LightText = styled(Text)`
+const LightTextSpan = styled.span`
   color: ${props => props.theme.palette.text.tertiary};
-`;
-
-const DarkText = styled(Text)`
-  font-weight: 500;
-  color: ${props => props.theme.palette.text.primary};
-`;
-
-const UpdateContainer = styled.div`
-  margin: 0 0.625rem 1rem;
 `;
 
 const Avatar = styled(MuiAvatar)`
@@ -89,46 +81,51 @@ const Avatar = styled(MuiAvatar)`
 `;
 
 const Time = styled(Typography)`
-  font-size: 14px;
-  line-height: 16px;
+  font-size: 0.875rem;
+  line-height: 1rem;
   color: ${props => props.theme.palette.text.secondary};
   margin-bottom: 0.5rem;
 `;
 
 const Link = styled(MuiLink)`
   text-decoration: underline;
-  font-size: 16px;
-  line-height: 19px;
+  font-size: 1rem;
+  line-height: 1.2rem;
 `;
 
 const UserUpdate = ({ name, avatar, dateTime, type }) => {
-  const time = format(dateTime, 'hh:mm a');
-
   const Update = () => (
     <>
-      <LightText>changed alert status to</LightText>
-      <Text>Outbreak</Text>
+      <LightTextSpan>changed alert status to</LightTextSpan> Outbreak
     </>
   );
 
   const Note = () => (
-    <LightText>
+    <LightTextSpan>
       Added a <Link component="button">note</Link>
-    </LightText>
+    </LightTextSpan>
   );
 
   const UpdateContent = type === 'note' ? Note : Update;
 
   return (
     <UpdateContainer>
-      <Time>{time}</Time>
+      <Time>{format(dateTime, "h:mm aaaaa'm'")}</Time>
       <FlexRow>
         <Avatar src={avatar} />
-        <DarkText>{name}</DarkText>
-        <UpdateContent />
+        <Text>
+          <DarkTextSpan>{name}</DarkTextSpan> <UpdateContent />
+        </Text>
       </FlexRow>
     </UpdateContainer>
   );
+};
+
+UserUpdate.propTypes = {
+  name: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
+  avatar: PropTypes.string.isRequired,
+  dateTime: PropTypes.instanceOf(Date).isRequired,
 };
 
 const AlertWrapper = styled.div`
@@ -144,30 +141,25 @@ const AlertContainer = styled.div`
 `;
 
 const StyledWarningCloud = styled(WarningCloud)`
-  font-size: 30px;
+  font-size: 2rem;
   color: ${COLORS.BLUE};
 `;
 
-const AlertCreatedUpdate = () => {
-  return (
-    <AlertWrapper>
-      <Divider />
-      <AlertContainer>
-        <Time>8:45 am</Time>
-        <FlexRow>
-          <StyledWarningCloud />
-          <DarkText>Alert created</DarkText>
-        </FlexRow>
-      </AlertContainer>
-      <Divider />
-    </AlertWrapper>
-  );
-};
+const AlertCreatedUpdate = ({ dateTime }) => (
+  <AlertWrapper>
+    <Divider />
+    <AlertContainer>
+      <Time>{format(dateTime, "h:mm aaaaa'm'")}</Time>
+      <FlexRow>
+        <StyledWarningCloud />
+        <DarkTextSpan>Alert created</DarkTextSpan>
+      </FlexRow>
+    </AlertContainer>
+    <Divider />
+  </AlertWrapper>
+);
 
-UserUpdate.propTypes = {
-  name: PropTypes.string.isRequired,
-  type: PropTypes.string.isRequired,
-  avatar: PropTypes.string.isRequired,
+AlertCreatedUpdate.propTypes = {
   dateTime: PropTypes.instanceOf(Date).isRequired,
 };
 
@@ -192,7 +184,7 @@ export const ActivityTab = ({ state }) => {
             ))}
           </Container>
         ))}
-        <AlertCreatedUpdate />
+        <AlertCreatedUpdate dateTime={new Date()} />
       </FetchLoader>
     </CardTabPanel>
   );
