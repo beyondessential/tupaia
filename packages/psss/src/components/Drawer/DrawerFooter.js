@@ -8,7 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import * as COLORS from '../../constants';
 
-const DrawerFooterHeight = '125px';
+const DRAWER_FOOTER_HEIGHT = '125px';
 
 const StyledFooter = styled.div`
   position: absolute;
@@ -16,7 +16,7 @@ const StyledFooter = styled.div`
   bottom: 0;
   width: 100%;
   background: ${COLORS.LIGHTGREY};
-  height: ${DrawerFooterHeight};
+  height: ${DRAWER_FOOTER_HEIGHT};
   text-align: center;
   padding: 1.5rem;
   box-shadow: 0px -1px 0px ${COLORS.GREY_DE};

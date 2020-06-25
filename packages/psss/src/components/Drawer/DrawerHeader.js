@@ -14,7 +14,7 @@ const Header = styled.div`
   flex-direction: column;
   color: ${COLORS.WHITE};
   background: ${COLORS.BLUE};
-  height: 200px;
+  height: 12.5rem;
   padding: 0 1.25rem 0.5rem;
 `;
 
