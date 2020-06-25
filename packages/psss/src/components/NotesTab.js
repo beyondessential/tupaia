@@ -16,7 +16,7 @@ const Container = styled.div`
 `;
 
 const StyledUserMessage = styled(UserMessage)`
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 `;
 
 const GreySection = styled.div`

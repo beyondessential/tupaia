@@ -10,18 +10,14 @@ import Typography from '@material-ui/core/Typography';
 import { CardTabPanel, WarningCloud } from '@tupaia/ui-components';
 import MuiAvatar from '@material-ui/core/Avatar';
 import Divider from '@material-ui/core/Divider';
-import * as COLORS from '../constants/colors';
+import MuiLink from '@material-ui/core/Link';
 import { FetchLoader } from './FetchLoader';
+import { FlexRow } from './Layout';
 import { fetchStateShape } from '../hooks';
+import * as COLORS from '../constants/colors';
 
 const Container = styled.div`
   margin-bottom: 1.5rem;
-`;
-
-const FlexRow = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
 `;
 
 const HeaderContainer = styled.div`
@@ -70,7 +66,7 @@ DateHeader.propTypes = {
 const Text = styled(Typography)`
   font-weight: 400;
   font-size: 16px;
-  margin-right: 0.5rem;
+  margin-right: 0.3rem;
   line-height: 19px;
   color: ${props => props.theme.palette.text.secondary};
 `;
@@ -85,7 +81,7 @@ const DarkText = styled(Text)`
 `;
 
 const UpdateContainer = styled.div`
-  margin-bottom: 1rem;
+  margin: 0 0.625rem 1rem;
 `;
 
 const Avatar = styled(MuiAvatar)`
@@ -95,24 +91,30 @@ const Avatar = styled(MuiAvatar)`
 const Time = styled(Typography)`
   font-size: 14px;
   line-height: 16px;
-  color: ${props => props.theme.palette.text.tertiary};
+  color: ${props => props.theme.palette.text.secondary};
   margin-bottom: 0.5rem;
+`;
+
+const Link = styled(MuiLink)`
+  text-decoration: underline;
+  font-size: 16px;
+  line-height: 19px;
 `;
 
 const UserUpdate = ({ name, avatar, dateTime, type }) => {
   const time = format(dateTime, 'hh:mm a');
 
   const Update = () => (
-    <React.Fragment>
+    <>
       <LightText>changed alert status to</LightText>
       <Text>Outbreak</Text>
-    </React.Fragment>
+    </>
   );
 
   const Note = () => (
-    <React.Fragment>
-      <LightText>Added a note</LightText>
-    </React.Fragment>
+    <LightText>
+      Added a <Link component="button">note</Link>
+    </LightText>
   );
 
   const UpdateContent = type === 'note' ? Note : Update;
