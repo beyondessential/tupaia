@@ -8,7 +8,7 @@ import { RouteHandler } from './RouteHandler';
 import { Aggregator } from '/aggregator';
 import { Project } from '/models';
 import { filterEntities } from './utils';
-
+import flatten from 'lodash.flatten';
 /**
  * Interface class for handling routes that fetch data from an aggregator
  * buildResponse must be implemented
@@ -35,8 +35,15 @@ export class DataAggregatingRouteHandler extends RouteHandler {
       if (ancestor && ancestor.type !== entity.type) {
         dataSourceEntities = [ancestor];
       } else {
-        dataSourceEntities = await entity.getDescendantsOfType(entityType, hierarchyId);
+        if (Array.isArray(entityType)) {
+          const entitiesByTypeJobs = entityType.map(async type => entity.getDescendantsOfType(type, hierarchyId));
+          const entitiesByTypes = await Promise.all(entitiesByTypeJobs);
+          dataSourceEntities = flatten([...dataSourceEntities, ...entitiesByTypes]);
+        } else {
+          dataSourceEntities = await entity.getDescendantsOfType(entityType, hierarchyId);
+        }
       }
+
     } else {
       dataSourceEntities = await entity.getNearestOrgUnitDescendants(hierarchyId);
     }

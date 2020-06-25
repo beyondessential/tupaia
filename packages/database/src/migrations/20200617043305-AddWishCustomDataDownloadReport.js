@@ -58,7 +58,7 @@ const DATA_BUILDER_CONFIG = {
     dataBuilder: 'rawDataValues',
     dataBuilderConfig: {
       entityAggregation: {
-        dataSourceEntityType: 'village'
+        dataSourceEntityType: [ "village", "facility" ],
       },
       excludeCodes: EXCLUDE_CODES,
       transformations: ['transpose']
