@@ -18,12 +18,22 @@ exports.setup = function(options, seedLink) {
 };
 
 const DASHBOARD_GROUP_CODES = [
+  'MH_Unfpa_Country',
+  'MH_Unfpa_District',
+  'FM_Unfpa_Country',
+  'FM_Unfpa_District',
+  'FJ_Unfpa_Country',
+  'FJ_Unfpa_District',
   'TO_Unfpa_Country',
+  'TO_Unfpa_District',
   'KI_Unfpa_Country',
-  'DL_Unfpa_Country',
+  'KI_Unfpa_District',
   'SB_Unfpa_Country',
+  'SB_Unfpa_District',
   'VU_Unfpa_Country',
+  'VU_Unfpa_District',
   'WS_Unfpa_Country',
+  'WS_Unfpa_District',
 ];
 
 const REPORT_ID = 'UNFPA_Percentage_Of_Facilities_At_Least_1_Staff_Trained_SRH_Services';
