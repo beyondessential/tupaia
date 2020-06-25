@@ -18,18 +18,33 @@ class RawDataValuesBuilder extends DataBuilder {
 
     const surveyCodeToName = reduceToDictionary(this.config.surveys, 'code', 'name');
 
+    const { surveysConfig = {} } = this.config;
+
     //Loop through each selected survey and fetch the analytics of that survey,
     //then build a matrix around the analytics
     for (let surveyCodeIndex = 0; surveyCodeIndex < surveyCodes.length; surveyCodeIndex++) {
       const surveyCode = surveyCodes[surveyCodeIndex];
 
       const { dataElements: dataElementsMetadata } = await this.fetchDataGroup(surveyCode);
+      const dataElementCodes =
+        this.config.excludeCodes && this.config.excludeCodes.length
+          ? dataElementsMetadata
+              .map(d => d.code)
+              .filter(code => !this.config.excludeCodes.includes(code))
+          : dataElementsMetadata.map(d => d.code);
 
-      const dataElementCodes = this.config.excludeCodes ? 
-            dataElementsMetadata.map(d => d.code).filter(code => !this.config.excludeCodes.includes(code)) 
-            : dataElementsMetadata.map(d => d.code);
+      const surveyConfig = surveysConfig[surveyCode];
+      let additionalQueryConfig = { dataElementCodes };
 
-      const events = await this.fetchEvents({ dataElementCodes }, surveyCode);
+      if (surveyConfig) {
+        const { entityAggregation } = surveyConfig;
+        additionalQueryConfig = {
+          ...additionalQueryConfig,
+          entityAggregation,
+        };
+      }
+
+      const events = await this.fetchEvents(additionalQueryConfig, surveyCode);
 
       const columns = this.buildColumns(events);
 
@@ -45,12 +60,11 @@ class RawDataValuesBuilder extends DataBuilder {
         columns,
         rows,
       };
-    
       let isTransformed = false;
       let newTableData = {};
-      if(this.config.transformations && this.config.transformations.includes('transpose')) {
-          newTableData = this.transposeMatrix(columns, rows);
-          isTransformed = true;
+      if (this.config.transformations && this.config.transformations.includes('transpose')) {
+        newTableData = this.transposeMatrix(columns, rows);
+        isTransformed = true;
       }
 
       data[surveyCodeToName[surveyCode]] = {
@@ -137,32 +151,35 @@ class RawDataValuesBuilder extends DataBuilder {
 
   /* swap columns and rows */
   transposeMatrix = (columns, rows) => {
-    let newRows = [];
+    const newRows = [];
     const columnMap = {};
-    columns.forEach(column=>columnMap[column.key] = {});
-
-    const newColumns = rows.map( row => {
-        for (let col in row) {
-            if(col !== 'dataElement') 
-                columnMap[col][row.dataElement] = row[col];
-        }
-        return ({
-            key: row.dataElement,
-            title: row.dataElement,
-        });
+    columns.forEach(column => {
+      columnMap[column.key] = {};
     });
-    
+
+    const newColumns = rows.map(row => {
+      for (const col in row) {
+        if (col !== 'dataElement') columnMap[col][row.dataElement] = row[col];
+      }
+      return {
+        key: row.dataElement,
+        title: row.dataElement,
+      };
+    });
+
     //bit of a hacky way to add column headers
     const columnHeader = {};
-    newColumns.forEach(col=>columnHeader[col.key] = col.key);
-    newRows.push({dataElement: '', ...columnHeader});
+    newColumns.forEach(col => {
+      columnHeader[col.key] = col.key;
+    });
+    newRows.push({ dataElement: '', ...columnHeader });
 
     columns.forEach(col => {
-        newRows.push({dataElement: '', ...columnMap[col.key]});
+      newRows.push({ dataElement: '', ...columnMap[col.key] });
     });
     return {
-        columns: newColumns,
-        rows: newRows        
+      columns: newColumns,
+      rows: newRows,
     };
   };
 }

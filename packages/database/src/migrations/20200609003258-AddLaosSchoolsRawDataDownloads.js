@@ -1,15 +1,15 @@
 'use strict';
 
+import { insertObject, arrayToDbString } from '../utilities';
+
 var dbm;
 var type;
 var seed;
 
-import { insertObject, arrayToDbString } from '../utilities';
-
 /**
-  * We receive the dbmigrate dependency from dbmigrate initially.
-  * This enables us to not have to rely on NODE_PATH.
-  */
+ * We receive the dbmigrate dependency from dbmigrate initially.
+ * This enables us to not have to rely on NODE_PATH.
+ */
 exports.setup = function(options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
@@ -22,36 +22,55 @@ const DATA_BUILDER_CONFIG = {
   surveys: [
     {
       code: 'SC1RL',
-      name: 'School COVID-19 Response Laos'
+      name: 'School COVID-19 Response Laos',
     },
     {
       code: 'SPDL',
-      name: 'School Dev Partners Laos'
+      name: 'School Dev Partners Laos',
     },
     {
       code: 'SPAL',
-      name: 'School Partner Assistance Laos'
+      name: 'School Partner Assistance Laos',
     },
     {
       code: 'SFL',
-      name: 'School Fundamentals Laos'
-    }
+      name: 'School Fundamentals Laos',
+    },
   ],
   exportDataBuilder: {
     dataBuilder: 'rawDataValues',
     dataBuilderConfig: {
-      entityAggregation: {
-        dataSourceEntityType: 'school'
-      }
-    }
-  }
+      surveysConfig: {
+        SC1RL: {
+          entityAggregation: {
+            dataSourceEntityType: 'school',
+          },
+        },
+        SPDL: {
+          entityAggregation: {
+            dataSourceEntityType: 'school',
+          },
+        },
+        SPAL: {
+          entityAggregation: {
+            dataSourceEntityType: 'country',
+          },
+        },
+        SFL: {
+          entityAggregation: {
+            dataSourceEntityType: 'school',
+          },
+        },
+      },
+    },
+  },
 };
 
 const VIEW_JSON = {
-  name: "Download Laos Schools Raw Data",
-  type: "view",
-  viewType: "dataDownload",
-  periodGranularity: "month"
+  name: 'Download Laos Schools Raw Data',
+  type: 'view',
+  viewType: 'dataDownload',
+  periodGranularity: 'month',
 };
 
 const DASHBOARD_REPORT = {
@@ -66,7 +85,7 @@ const DASHBOARD_GROUPS = [
   'LA_Laos_Schools_Province_Laos_Schools_Super_User',
   'LA_Laos_Schools_District_Laos_Schools_Super_User',
 ];
- 
+
 exports.up = async function(db) {
   await insertObject(db, 'dashboardReport', DASHBOARD_REPORT);
 
@@ -88,5 +107,5 @@ exports.down = async function(db) {
 };
 
 exports._meta = {
-  "version": 1
+  version: 1,
 };
