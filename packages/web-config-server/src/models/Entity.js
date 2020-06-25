@@ -148,7 +148,7 @@ export class Entity extends BaseModel {
         ${constructTypesCriteria(types, 'WHERE')}
         ORDER BY generation DESC;
     `,
-      [...nonGeoFields, id, ...nonGeoFields ...types],
+      [...nonGeoFields, id, ...nonGeoFields, ...types],
     );
   }
 
