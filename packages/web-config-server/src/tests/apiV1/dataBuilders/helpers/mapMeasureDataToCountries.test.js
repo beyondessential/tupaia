@@ -8,7 +8,7 @@ import { mapMeasureDataToCountries } from '/apiV1/measureBuilders/helpers';
 
 const ANALYTICS = [
   {
-    organisationUnitCode: 'TO_Tongatapu',
+    organisationUnitCode: 'TO_Niuas',
     orgUnitName: 'Tongatapu',
     dataValues: [{ dataElement: 'A', value: '1' }],
   },

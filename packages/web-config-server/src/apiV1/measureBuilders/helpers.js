@@ -53,7 +53,7 @@ export const mapMeasureValuesToGroups = (measureValue, dataElementGroupCode, gro
 export const mapMeasureDataToCountries = data => {
   const dataMappedToCountry = data.map(async res => {
     const resultEntity = await Entity.findOne({ code: res.organisationUnitCode });
-    return { ...res, organisationUnitCode: resultEntity.country_code };
+    return { ...res, organisationUnitCode: resultEntity.country_code || res.organisationUnitCode };
   });
 
   return Promise.all(dataMappedToCountry);

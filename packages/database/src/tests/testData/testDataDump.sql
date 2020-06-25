@@ -3199,8 +3199,8 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 763	/20200616000806-FixIncorrectDataElementCodesLaosReport	2020-06-18 21:35:19.97
 764	/20200617235154-FixTongaMeaslesOverlaysWithEntityAggregation	2020-06-18 21:35:20.008
 765	/20200618090311-FixEntityAggregationConfig	2020-06-18 21:35:20.071
+766	/20200618090311-AddRegionalMapOverlaysForUNFPAMOS	2020-06-18 21:36:20.071
 \.
-
 
 --
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
