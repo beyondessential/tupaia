@@ -2,6 +2,7 @@
  * Tupaia MediTrak
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
+
 import { TYPES, generateTestId } from '@tupaia/database';
 import { ANSWER_TYPES } from '../../../../../database/models/Answer';
 
@@ -22,6 +23,7 @@ export const SURVEY = {
   id: generateTestId(),
   code: 'ABC',
   can_repeat: true,
+  questions: [QUESTION],
 };
 
 export const QUESTION = {

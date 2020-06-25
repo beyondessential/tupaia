@@ -4,10 +4,14 @@
  */
 
 import { expect } from 'chai';
-import { generateTestId } from '@tupaia/database';
-import { populateTestData } from '../../../../testUtilities';
+import { generateTestId, populateTestData } from '@tupaia/database';
 import { AggregateDataPusher } from '../../../../../dhis/pushers/data/aggregate/AggregateDataPusher';
-import { ANSWER_CHANGE, ANSWER, ANSWER_DATA_VALUE, SURVEY_RESPONSE } from './testData';
+import {
+  ANSWER_CHANGE,
+  ANSWER,
+  ANSWER_DATA_VALUE,
+  SURVEY_RESPONSE,
+} from './AggregateDataPusher.fixtures';
 
 export const testCreateAnswer = (dhisApi, models, dataBroker) => {
   it('should throw an error if the changed record was not found', async () => {
@@ -43,7 +47,7 @@ export const testCreateAnswer = (dhisApi, models, dataBroker) => {
       id: generateTestId(),
       survey_response_id: moreRecentSurveyResponse.id,
     };
-    await populateTestData({
+    await populateTestData(models, {
       surveyResponse: [moreRecentSurveyResponse],
       answer: [moreRecentAnswer],
     });
