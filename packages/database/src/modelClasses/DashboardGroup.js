@@ -16,23 +16,4 @@ export class DashboardGroupModel extends DatabaseModel {
     return DashboardGroupType;
   }
 
-  /*
-  async getDatabaseSafeData(fieldValues) {
-    const safeData = await super.getDatabaseSafeData(fieldValues);
-    const transformedData = { ...safeData };
-    const toTransform = ['dashboardReports', 'projectCodes'];
-
-    for (const property in safeData) {
-      if (
-        toTransform.includes(property) &&
-        safeData[property] &&
-        !Array.isArray(safeData[property])
-      ) {
-        transformedData[property] = safeData[property].split(',');
-      }
-    }
-
-    return transformedData;
-  }
-  */
 }
