@@ -131,7 +131,7 @@ const selectActiveProjectCountries = createSelector(
       .map(({ countryCode, ...orgUnit }) => {
         return orgUnit[countryCode];
       })
-      .filter(org => org.type === 'Country' && org.parent === activeProjectCode);
+      .filter((org = {}) => org.type === 'Country' && org.parent === activeProjectCode);
     return orgUnits;
   },
 );
