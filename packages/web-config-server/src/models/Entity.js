@@ -128,7 +128,6 @@ export class Entity extends BaseModel {
    * @param {boolean} [includeWorld=false] Optionally force the top level 'World' to be included
    */
   static async getAllAncestors(id, includeWorld = false, types = []) {
-    const nonGeoFields = Entity.fields.filter(field => !Entity.geoFields.includes(field));
     return Entity.database.executeSql(
       `
       WITH RECURSIVE children AS (
