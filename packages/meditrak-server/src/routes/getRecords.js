@@ -87,6 +87,17 @@ const MAX_RECORDS_PER_PAGE = 100;
  */
 export async function getRecords(req, res) {
   const { database, models, params, query } = req;
+
+  //console.log('USER ID', req.userId);
+  /*
+  await models.accessRequest.create({
+    user_id: req.userId,
+    entity_id: '5d3f884414261831bfd9e7c6',
+    message: 'test',
+    permission_group_id: '59085f2dfc6a0715dae508e3',
+  });
+  */
+
   const { parentResource, parentRecordId, resource, recordId } = params;
   const shouldReturnSingleRecord = !!recordId;
   const recordType = resourceToRecordType(resource);
