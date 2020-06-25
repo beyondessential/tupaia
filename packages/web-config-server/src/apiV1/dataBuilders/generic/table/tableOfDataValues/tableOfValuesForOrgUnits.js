@@ -81,7 +81,7 @@ class TableOfValuesForOrgUnitsBuilder extends TableOfDataValuesBuilder {
     });
 
     return rowCategories;
-  }
+  };
 }
 
 export const tableOfValuesForOrgUnits = async (
