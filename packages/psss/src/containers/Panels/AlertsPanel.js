@@ -64,55 +64,51 @@ const menuOptions = [
   },
 ];
 
-export const AlertsPanelComponent = ({
-  isOpen,
-  handleClose,
-  fetchSitesData,
-  fetchNotesData,
-  fetchActivityData,
-}) => {
-  const sitesState = useFetch(fetchSitesData);
-  const notesState = useFetch(fetchNotesData);
-  const activityState = useFetch(fetchActivityData);
+export const AlertsPanelComponent = React.memo(
+  ({ isOpen, handleClose, fetchSitesData, fetchNotesData, fetchActivityData }) => {
+    const sitesState = useFetch(fetchSitesData);
+    const notesState = useFetch(fetchNotesData);
+    const activityState = useFetch(fetchActivityData);
 
-  const handleChange = option => {
-    console.log('handle change...', option);
-  };
+    const handleChange = option => {
+      console.log('handle change...', option);
+    };
 
-  return (
-    <Drawer open={isOpen} onClose={handleClose}>
-      <DrawerTray heading="Alert Details" onClose={handleClose} Icon={WarningCloud} />
-      <AlertsDrawerHeader
-        date="Week 9 Feb 25 - Mar 1, 2021"
-        dateText="Triggered on:"
-        avatarUrl={countryFlagImage('as')}
-        subheading="American Samoa"
-        heading="Acute Fever and Rash (AFR)"
-        DropdownMenu={<DropdownMenu options={menuOptions} onChange={handleChange} />}
-      />
-      <CardTabs>
-        <CardTabList>
-          <CardTab>
-            <LocationOn /> Affected Sites
-          </CardTab>
-          <CardTab>
-            <SpeakerNotes />
-            Notes ({notesState.count})
-          </CardTab>
-          <CardTab>
-            <List />
-            Activity
-          </CardTab>
-        </CardTabList>
-        <CardTabPanels>
-          <AffectedSitesTab state={sitesState} />
-          <NotesTab state={notesState} />
-          <ActivityTab state={activityState} />
-        </CardTabPanels>
-      </CardTabs>
-    </Drawer>
-  );
-};
+    return (
+      <Drawer open={isOpen} onClose={handleClose}>
+        <DrawerTray heading="Alert Details" onClose={handleClose} Icon={WarningCloud} />
+        <AlertsDrawerHeader
+          date="Week 9 Feb 25 - Mar 1, 2021"
+          dateText="Triggered on:"
+          avatarUrl={countryFlagImage('as')}
+          subheading="American Samoa"
+          heading="Acute Fever and Rash (AFR)"
+          DropdownMenu={<DropdownMenu options={menuOptions} onChange={handleChange} />}
+        />
+        <CardTabs>
+          <CardTabList>
+            <CardTab>
+              <LocationOn /> Affected Sites
+            </CardTab>
+            <CardTab>
+              <SpeakerNotes />
+              Notes ({notesState.count})
+            </CardTab>
+            <CardTab>
+              <List />
+              Activity
+            </CardTab>
+          </CardTabList>
+          <CardTabPanels>
+            <AffectedSitesTab state={sitesState} />
+            <NotesTab state={notesState} />
+            <ActivityTab state={activityState} />
+          </CardTabPanels>
+        </CardTabs>
+      </Drawer>
+    );
+  },
+);
 
 AlertsPanelComponent.propTypes = {
   isOpen: PropTypes.bool.isRequired,

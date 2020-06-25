@@ -16,7 +16,7 @@ const DateSubtitle = styled(Typography)`
   color: ${props => props.theme.palette.text.secondary};
 `;
 
-export const AlertsTabView = () => {
+export const AlertsTabView = React.memo(() => {
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const handlePanelOpen = () => {
     setIsPanelOpen(true);
@@ -47,4 +47,4 @@ export const AlertsTabView = () => {
       </Sidebar>
     </Container>
   );
-};
+});

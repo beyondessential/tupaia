@@ -62,31 +62,25 @@ const Heading = styled(Typography)`
   line-height: 2.3rem;
 `;
 
-export const AlertsDrawerHeader = ({
-  heading,
-  subheading,
-  dateText,
-  date,
-  color,
-  avatarUrl,
-  DropdownMenu,
-}) => (
-  <Header color={color}>
-    <SpaceBetween>
+export const AlertsDrawerHeader = React.memo(
+  ({ heading, subheading, dateText, date, color, avatarUrl, DropdownMenu }) => (
+    <Header color={color}>
+      <SpaceBetween>
+        <div>
+          <Text>{dateText}</Text>
+          <Date>{date}</Date>
+        </div>
+        {DropdownMenu}
+      </SpaceBetween>
       <div>
-        <Text>{dateText}</Text>
-        <Date>{date}</Date>
+        <Row>
+          <Avatar src={avatarUrl} />
+          <Subheading>{subheading}</Subheading>
+        </Row>
+        <Heading>{heading}</Heading>
       </div>
-      {DropdownMenu}
-    </SpaceBetween>
-    <div>
-      <Row>
-        <Avatar src={avatarUrl} />
-        <Subheading>{subheading}</Subheading>
-      </Row>
-      <Heading>{heading}</Heading>
-    </div>
-  </Header>
+    </Header>
+  ),
 );
 
 AlertsDrawerHeader.propTypes = {
