@@ -413,6 +413,10 @@ function* watchFetchCountryAccessDataAndFetchIt() {
   yield takeLatest(OPEN_USER_DIALOG, fetchCountryAccessDataIfRequired);
 }
 
+function* watchRequestProjectAccess() {
+  yield takeLatest(REQUEST_PROJECT_ACCESS, fetchCountryAccessDataIfRequired);
+}
+
 /**
  * fetchOrgUnitData
  *
@@ -1025,5 +1029,6 @@ export default [
   watchFetchMeasureSuccess,
   watchChangeOrgUnitSuccess,
   refreshBrowserWhenFinishingUserSession,
+  watchRequestProjectAccess,
   watchGoHomeAndResetToExplore,
 ];
