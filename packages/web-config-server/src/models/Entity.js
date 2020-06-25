@@ -128,15 +128,16 @@ export class Entity extends BaseModel {
    * @param {boolean} [includeWorld=false] Optionally force the top level 'World' to be included
    */
   static async getAllAncestors(id, includeWorld = false, types = []) {
+    const nonGeoFields = this.fields.filter(field => !this.geoFields.includes(field));
     return Entity.database.executeSql(
       `
       WITH RECURSIVE children AS (
-        SELECT id, code, "name", parent_id, type, country_code, 0 AS generation
+        SELECT ${nonGeoFields.map(field => `"${field}", `)} 0 AS generation
           FROM entity
           WHERE id = ?
 
         UNION ALL
-        SELECT p.id, p.code, p."name", p.parent_id, p.type, p.country_code, c.generation + 1
+        SELECT ${nonGeoFields.map(field => `p."${field}", `)}c.generation + 1
           FROM children c
           JOIN entity p ON p.id = c.parent_id
           ${includeWorld ? '' : `WHERE p.code <> 'World'`}
