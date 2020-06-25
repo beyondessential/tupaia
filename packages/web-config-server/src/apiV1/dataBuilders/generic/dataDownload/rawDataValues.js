@@ -18,16 +18,26 @@ class RawDataValuesBuilder extends DataBuilder {
 
     const surveyCodeToName = reduceToDictionary(this.config.surveys, 'code', 'name');
 
+    const { surveysConfig } = this.config;
+
     //Loop through each selected survey and fetch the analytics of that survey,
     //then build a matrix around the analytics
     for (let surveyCodeIndex = 0; surveyCodeIndex < surveyCodes.length; surveyCodeIndex++) {
       const surveyCode = surveyCodes[surveyCodeIndex];
-
       const { dataElements: dataElementsMetadata } = await this.fetchDataGroup(surveyCode);
-
       const dataElementCodes = dataElementsMetadata.map(d => d.code);
+      const surveyConfig = surveysConfig[surveyCode];
+      let additionalQueryConfig = { dataElementCodes };
 
-      const events = await this.fetchEvents({ dataElementCodes }, surveyCode);
+      if (surveyConfig) {
+        const { entityAggregation } = surveyConfig;
+        additionalQueryConfig = {
+          ...additionalQueryConfig,
+          entityAggregation,
+        };
+      }
+
+      const events = await this.fetchEvents(additionalQueryConfig, surveyCode);
 
       const columns = this.buildColumns(events);
 
