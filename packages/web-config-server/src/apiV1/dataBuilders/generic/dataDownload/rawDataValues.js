@@ -24,8 +24,8 @@ class RawDataValuesBuilder extends DataBuilder {
     //then build a matrix around the analytics
     for (let surveyCodeIndex = 0; surveyCodeIndex < surveyCodes.length; surveyCodeIndex++) {
       const surveyCode = surveyCodes[surveyCodeIndex];
-
       const { dataElements: dataElementsMetadata } = await this.fetchDataGroup(surveyCode);
+
       const dataElementCodes =
         this.config.excludeCodes && this.config.excludeCodes.length
           ? dataElementsMetadata
