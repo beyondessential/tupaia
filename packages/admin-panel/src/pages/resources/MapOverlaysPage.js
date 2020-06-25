@@ -30,7 +30,7 @@ const FIELDS = [
   {
     Header: 'Measure Builder Config',
     source: 'measureBuilderConfig',
-    Cell: ({ original: { measureBuilderConfig } }) => prettyJSON(measureBuilderConfig),
+    Cell: ({ value }) => prettyJSON(value),
     editConfig: { type: 'jsonEditor' },
   },
   {
