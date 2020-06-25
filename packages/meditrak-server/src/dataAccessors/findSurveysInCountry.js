@@ -4,7 +4,7 @@
  */
 
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
-const { RAW } = QUERY_CONJUNCTIONS;
+const { AND, RAW } = QUERY_CONJUNCTIONS;
 
 export const findSurveysInCountry = async (
   models,
@@ -16,9 +16,11 @@ export const findSurveysInCountry = async (
   models.survey[findOrCount](
     {
       ...criteria,
-      [RAW]: {
-        sql: `country_ids = '{}' OR ? = ANY(country_ids)`,
-        parameters: [countryId],
+      [AND]: {
+        [RAW]: {
+          sql: `country_ids = '{}' OR ? = ANY(country_ids)`,
+          parameters: [countryId],
+        },
       },
     },
     options,
