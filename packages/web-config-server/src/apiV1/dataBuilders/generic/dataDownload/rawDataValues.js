@@ -25,7 +25,9 @@ class RawDataValuesBuilder extends DataBuilder {
 
       const { dataElements: dataElementsMetadata } = await this.fetchDataGroup(surveyCode);
 
-      const dataElementCodes = dataElementsMetadata.map(d => d.code);
+      const dataElementCodes = this.config.excludeCodes ? 
+            dataElementsMetadata.map(d => d.code).filter(code => !this.config.excludeCodes.includes(code)) 
+            : dataElementsMetadata.map(d => d.code);
 
       const events = await this.fetchEvents({ dataElementCodes }, surveyCode);
 
@@ -39,12 +41,21 @@ class RawDataValuesBuilder extends DataBuilder {
         rows = await this.buildRows(events, dataElementCodeToText);
       }
 
+      const tableData = {
+        columns,
+        rows,
+      };
+    
+      let isTransformed = false;
+      let newTableData = {};
+      if(this.config.transformations && this.config.transformations.includes('transpose')) {
+          newTableData = this.transposeMatrix(columns, rows);
+          isTransformed = true;
+      }
+
       data[surveyCodeToName[surveyCode]] = {
         // need the nested 'data' property to be interpreted as the input to a matrix
-        data: {
-          columns,
-          rows,
-        },
+        data: isTransformed ? newTableData : tableData,
       };
     }
 
@@ -122,6 +133,37 @@ class RawDataValuesBuilder extends DataBuilder {
     });
 
     return builtRows;
+  };
+
+  /* swap columns and rows */
+  transposeMatrix = (columns, rows) => {
+    let newRows = [];
+    const columnMap = {};
+    columns.forEach(column=>columnMap[column.key] = {});
+
+    const newColumns = rows.map( row => {
+        for (let col in row) {
+            if(col !== 'dataElement') 
+                columnMap[col][row.dataElement] = row[col];
+        }
+        return ({
+            key: row.dataElement,
+            title: row.dataElement,
+        });
+    });
+    
+    //bit of a hacky way to add column headers
+    const columnHeader = {};
+    newColumns.forEach(col=>columnHeader[col.key] = col.key);
+    newRows.push({dataElement: '', ...columnHeader});
+
+    columns.forEach(col => {
+        newRows.push({dataElement: '', ...columnMap[col.key]});
+    });
+    return {
+        columns: newColumns,
+        rows: newRows        
+    };
   };
 }
 

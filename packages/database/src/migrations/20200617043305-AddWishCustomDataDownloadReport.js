@@ -54,7 +54,7 @@ const DATA_BUILDER_CONFIG = {
     { code: 'WISH_WMKS', name: 'WISH MACMON KI Survey' },
   ],
   exportDataBuilder: {
-    dataBuilder: 'customDataValues',
+    dataBuilder: 'rawDataValues',
     dataBuilderConfig: {
       entityAggregation: {
         dataSourceEntityType: 'village',
