@@ -12,6 +12,5 @@
     "core-worker": "^0.3.5",
     "nodemailer": "^4.4.2",
     "tar": "^4.0.1"
-  },
-  "devDependencies": {}
+  }
 }
