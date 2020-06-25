@@ -67,6 +67,10 @@ const ExpansionPanelDetails = styled(MuiExpansionPanelDetails)`
 const StyledCard = styled(Card)`
   border: none;
   border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
+
+  &:hover {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  }
 `;
 
 const ExpandableCard = ({ children, ...props }) => (
@@ -87,13 +91,14 @@ export const Sandbox = () => {
         <PanelContainer>
           <CardTabPanel>
             <FetchLoader state={state}>
-              {weeks.map(week => {
+              {weeks.map((week, index) => {
                 const startDate = format(week.startDate, 'LLL d');
                 const endDate = format(week.endDate, 'LLL d');
                 const year = format(week.endDate, 'yyyy');
                 return (
                   <ExpandableCard key={week.id} mb={5}>
                     <CardWeekHeader
+                      type={index === 0 ? 'outbreak' : 'alert'}
                       heading={`Week ${week.week}`}
                       subheading={`${startDate} - ${endDate}, ${year}`}
                       detailText={`Total Cases for all Sites: ${week.totalCases}`}

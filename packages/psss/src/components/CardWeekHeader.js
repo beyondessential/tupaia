@@ -3,15 +3,17 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import React from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import MuiExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
+import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 import { WarningCloud, Virus } from '@tupaia/ui-components';
-import React from 'react';
-import PropTypes from 'prop-types';
 import { PercentageChangeCell } from './Table';
 import { FlexRow, FlexSpaceBetween } from './Layout';
+import * as COLORS from '../constants/colors';
 
 const ExpandableWrapper = styled(MuiExpansionPanelSummary)`
   padding: 0;
@@ -24,22 +26,66 @@ const ExpandableWrapper = styled(MuiExpansionPanelSummary)`
     margin: 0;
   }
 
+  .psss-open-icon {
+    display: block;
+  }
+  .psss-close-icon {
+    display: none;
+  }
+
   .Mui-expanded {
+    .psss-open-icon {
+      display: none;
+    }
+    .psss-close-icon {
+      display: block;
+    }
     .psss-card-header-bar {
       background: #ef5a06;
       border: 1px solid rgba(239, 90, 6, 0.15);
       color: white;
     }
   }
+
+  // Alert variant styles
+  &.alert {
+    .psss-card-header-bar {
+      background: ${COLORS.LIGHT_ORANGE};
+      color: ${COLORS.ORANGE};
+      border: 1px solid rgba(239, 90, 6, 0.15);
+    }
+
+    .Mui-expanded {
+      .psss-card-header-bar {
+        background: ${COLORS.ORANGE};
+        border: 1px solid ${COLORS.ORANGE};
+        color: white;
+      }
+    }
+  }
+
+  // Outbreak variant styles
+  &.outbreak {
+    .psss-card-header-bar {
+      background: ${COLORS.LIGHT_RED};
+      color: ${COLORS.RED};
+      border: 1px solid rgba(209, 51, 51, 0.15);
+    }
+
+    .Mui-expanded {
+      .psss-card-header-bar {
+        background: ${COLORS.RED};
+        border: 1px solid ${COLORS.RED};
+        color: white;
+      }
+    }
+  }
 `;
 
 // .psss-card-header-bar
 const HeaderBar = styled(FlexSpaceBetween)`
-  background: #ffece1;
-  color: #ef5a06;
-  border: 1px solid rgba(239, 90, 6, 0.15);
   padding: 5px 12px;
-  transition: color 0.3s ease, background-color 0.3s ease;
+  transition: color 0.3s ease, background-color 0.3s ease, border 0.3s ease;
 
   svg {
     font-size: 16px;
@@ -104,14 +150,20 @@ const HighlightText = styled(PercentageChangeCell)`
   font-weight: 500;
 `;
 
-export const CardWeekHeader = ({ heading, subheading, detailText, percentageChange }) => (
-  <ExpandableWrapper>
+const TYPES = {
+  ALERT: 'alert',
+  OUTBREAK: 'outbreak',
+};
+
+export const CardWeekHeader = ({ heading, subheading, detailText, percentageChange, type }) => (
+  <ExpandableWrapper className={type}>
     <HeaderBar className="psss-card-header-bar">
       <Row>
-        <WarningCloud />
-        Alert
+        {type === TYPES.OUTBREAK ? <Virus /> : <WarningCloud />}
+        {type === TYPES.OUTBREAK ? 'Outbreak' : 'Alert'}
       </Row>
-      <AddCircleIcon />
+      <RemoveCircleIcon className="psss-close-icon" />
+      <AddCircleIcon className="psss-open-icon" />
     </HeaderBar>
     <HeaderDetails>
       <div>
@@ -130,8 +182,13 @@ export const CardWeekHeader = ({ heading, subheading, detailText, percentageChan
 );
 
 CardWeekHeader.propTypes = {
+  type: PropTypes.oneOf([TYPES.ALERT, TYPES.OUTBREAK]),
   heading: PropTypes.string.isRequired,
   subheading: PropTypes.string.isRequired,
   detailText: PropTypes.string.isRequired,
   percentageChange: PropTypes.number.isRequired,
+};
+
+CardWeekHeader.defaultProps = {
+  type: TYPES.ALERT,
 };
