@@ -18,7 +18,7 @@ class RawDataValuesBuilder extends DataBuilder {
 
     const surveyCodeToName = reduceToDictionary(this.config.surveys, 'code', 'name');
 
-    const { surveysConfig } = this.config;
+    const { surveysConfig = {} } = this.config;
 
     //Loop through each selected survey and fetch the analytics of that survey,
     //then build a matrix around the analytics
