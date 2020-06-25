@@ -1,5 +1,4 @@
 {
-  "extends": ["@beyondessential/eslint-config-beyondessential", "plugin:prettier/recommended"],
   "plugins": ["module-resolver"],
   "rules": {
     "import/no-absolute-path": "off",
