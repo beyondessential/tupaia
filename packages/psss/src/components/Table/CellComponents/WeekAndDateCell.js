@@ -13,7 +13,7 @@ const CountrySummaryTitle = styled.div`
   color: ${COLORS.TEXT_DARKGREY};
   font-weight: 400;
   font-size: 0.9375rem;
-  padding-right: 10px;
+  padding-right: 0.625rem;
 `;
 
 export const WeekAndDateCell = ({ week, startDate, endDate }) => {

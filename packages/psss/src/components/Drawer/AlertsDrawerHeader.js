@@ -16,7 +16,7 @@ const Header = styled.div`
   justify-content: space-between;
   background: ${props => props.color};
   color: ${COLORS.WHITE};
-  height: 235px;
+  height: 15rem;
   padding: 1rem 1.25rem 2rem;
 `;
 
