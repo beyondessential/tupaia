@@ -49,7 +49,7 @@ const FIELDS = [
   {
     Header: 'Values',
     source: 'values',
-    Cell: ({ original: { values } }) => prettyJSON(values),
+    Cell: ({ value }) => prettyJSON(value),
     editConfig: { type: 'jsonEditor' },
   },
   {
