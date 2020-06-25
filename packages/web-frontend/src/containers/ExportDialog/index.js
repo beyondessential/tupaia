@@ -171,7 +171,7 @@ const mapStateToProps = state => {
   return {
     emailAddress: currentUserEmail,
     selectedDisaster,
-    projectCode: project.active.code,
+    projectCode: project.activeProjectCode,
     ...chartExport,
   };
 };
