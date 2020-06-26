@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -104,7 +104,7 @@ const MenuItem = styled(MuiMenuItem)`
 
 export const DropdownMenu = ({ options, onChange }) => {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(options[0].value);
+  const [value, setValue] = useState((options[0] || {}).value);
 
   const handleMenuItemClick = (event, option) => {
     event.preventDefault();
@@ -114,13 +114,13 @@ export const DropdownMenu = ({ options, onChange }) => {
     setOpen(false);
   };
 
-  const handleToggle = () => {
+  const handleToggle = useCallback(() => {
     setOpen(prevOpen => !prevOpen);
-  };
+  }, [setOpen]);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setOpen(false);
-  };
+  }, [setOpen]);
 
   const remainingOptions = options.filter(option => option.value !== value);
 
