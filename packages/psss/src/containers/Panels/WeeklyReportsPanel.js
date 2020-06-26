@@ -16,8 +16,8 @@ import {
 import {
   SiteAddress,
   Drawer,
-  DrawerHeaderContent,
   DrawerFooter,
+  DrawerTray,
   DrawerHeader,
   PercentageChangeCell,
 } from '../../components';
@@ -34,19 +34,23 @@ import { countryFlagImage } from '../../utils';
 
 const columns = [
   {
-    title: 'Title',
+    title: 'Syndromes',
     key: 'title',
-    width: '300px',
+    sortable: false,
   },
   {
-    title: 'Percentage Increase',
+    title: '',
     key: 'percentageChange',
     CellComponent: PercentageChangeCell,
+    sortable: false,
+    width: '80px',
   },
   {
     title: 'Total Cases',
     key: 'totalCases',
     editable: true,
+    sortable: false,
+    width: '80px',
   },
 ];
 
@@ -71,6 +75,12 @@ const GreySection = styled(MainSection)`
   background: ${COLORS.LIGHTGREY};
   box-shadow: 0 1px 0 ${COLORS.GREY_DE};
   padding: 25px 20px;
+`;
+
+const StyledDrawer = styled(Drawer)`
+  .MuiDrawer-paper {
+    padding-bottom: 125px;
+  }
 `;
 
 const WeeklyReportsPanelSubmitButton = handleConfirm => () => {
@@ -105,14 +115,14 @@ export const WeeklyReportsPanelComponent = React.memo(
       countryTableStatus === TABLE_STATUSES.SAVING || sitesTableStatus === TABLE_STATUSES.SAVING;
 
     return (
-      <Drawer open={isOpen} onClose={handleClose}>
-        <DrawerHeader heading="Upcoming report" onClose={handleClose}>
-          <DrawerHeaderContent
-            heading="American Samoa"
-            date="Week 9 Feb 25 - Mar 1, 2020"
-            avatarUrl={countryFlagImage('as')}
-          />
-        </DrawerHeader>
+      <StyledDrawer open={isOpen} onClose={handleClose}>
+        <DrawerTray heading="Upcoming report" onClose={handleClose} />
+        <DrawerHeader
+          trayHeading="Upcoming report"
+          heading="American Samoa"
+          date="Week 9 Feb 25 - Mar 1, 2020"
+          avatarUrl={countryFlagImage('as')}
+        />
         <ErrorAlert>ILI Above Threshold. Please review and verify data.</ErrorAlert>
         <GreySection disabled={isSaving} data-testid="country-reports">
           <EditableTableProvider
@@ -152,7 +162,7 @@ export const WeeklyReportsPanelComponent = React.memo(
           Action={WeeklyReportsPanelSubmitButton(handleConfirm)}
           helperText="Verify data to submit Weekly Report to Regional"
         />
-      </Drawer>
+      </StyledDrawer>
     );
   },
 );
