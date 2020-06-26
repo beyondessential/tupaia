@@ -29,7 +29,7 @@ const BASE_OVERLAY = {
     { name: '21-40%', color: 'Orange', value: '20-40' },
     { name: '41-60%', color: 'Yellow', value: '40-60' },
     { name: '61-80%', color: 'Lime', value: '60-80' },
-    { name: '80-100%', color: 'Green', value: '>80' },
+    { name: '81-100%', color: 'Green', value: '>80' },
   ],
   measureBuilder: 'groupData',
   countryCodes: '{"LA"}',
