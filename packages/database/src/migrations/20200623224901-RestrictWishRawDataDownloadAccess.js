@@ -25,7 +25,7 @@ const NEW_DASHBOARD_GROUP = {
   userGroup: 'Fiji Restricted Data',
   organisationUnitCode: 'FJ',
   dashboardReports: `{ ${REPORT_ID} }`,    
-  name: 'Fiji Restricte1d Data',                
+  name: 'Fiji Restricted Data',
   code: 'WISH_Restricted_Export_Surveys',                
   projectCodes: '{wish}',        
 };
