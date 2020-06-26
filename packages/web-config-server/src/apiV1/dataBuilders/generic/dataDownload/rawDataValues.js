@@ -158,9 +158,9 @@ class RawDataValuesBuilder extends DataBuilder {
     });
 
     const newColumns = rows.map(row => {
-      for (const col in row) {
+      Object.keys(row).forEach(col => {
         if (col !== 'dataElement') columnMap[col][row.dataElement] = row[col];
-      }
+      });
       return {
         key: row.dataElement,
         title: row.dataElement,
