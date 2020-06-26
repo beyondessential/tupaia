@@ -22,10 +22,7 @@ const ANALYTICS = [
     dataValues: [{ dataElement: 'A', value: '3' }],
   },
 ];
-const PARENT_ORG_UNIT = {
-  code: 'TO',
-  name: 'Tonga',
-};
+const ENTITY_COUNTRY_CODE = 'TO';
 
 describe('mapMeasureDataToCountries()', () => {
   before(async () => {
@@ -39,7 +36,7 @@ describe('mapMeasureDataToCountries()', () => {
   it('replace facility orgUnit codes with their corresponding country codes', async () => {
     const countryAnalytics = await mapMeasureDataToCountries(ANALYTICS);
     countryAnalytics.forEach(analytic => {
-      expect(analytic.organisationUnitCode).to.equal(PARENT_ORG_UNIT.code);
+      expect(analytic.organisationUnitCode).to.equal(ENTITY_COUNTRY_CODE);
     });
   });
 });
