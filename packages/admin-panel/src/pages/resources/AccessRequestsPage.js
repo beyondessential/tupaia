@@ -44,8 +44,8 @@ const COLUMNS = [
           },
         },
         {
-          Header: 'Approval Note',
-          source: 'approval_note',
+          Header: 'Note',
+          source: 'note',
           editConfig: { type: 'textarea' },
         },
       ],

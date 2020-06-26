@@ -24,9 +24,9 @@ exports.up = function(db) {
       permission_group_id text REFERENCES permission_group(id),
       approved BOOLEAN DEFAULT NULL,
       created_time TIMESTAMPTZ NOT NULL DEFAULT now(),
-      approving_user_id text DEFAULT NULL,
-      approval_note text DEFAULT NULL,
-      approval_date TIMESTAMPTZ DEFAULT NULL,
+      processed_by text DEFAULT NULL,
+      note text DEFAULT NULL,
+      processed_date TIMESTAMPTZ DEFAULT NULL,
 
       FOREIGN KEY (approving_user_id) REFERENCES user_account(id)
     );
