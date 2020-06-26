@@ -15,7 +15,7 @@ const COUNTRY_WEEKS_LOAD_FINISH = 'COUNTRY_WEEKS_LOAD_FINISH';
 const COUNTRY_WEEKS_LOAD_ERROR = 'COUNTRY_WEEKS_LOAD_ERROR';
 
 // action creators
-export const reloadCountryWeeks = ({ fetchOptions, queryParameters }) => async (
+export const reloadCountryWeeks = ({ fetchOptions = {}, queryParameters = {} }) => async (
   dispatch,
   getState,
   { fakeApi },
@@ -38,7 +38,7 @@ export const reloadCountryWeeks = ({ fetchOptions, queryParameters }) => async (
   }
 };
 
-export const updateWeeklyReportsData = () => reloadCountryWeeks({});
+
 
 // selectors
 const STATUSES = {

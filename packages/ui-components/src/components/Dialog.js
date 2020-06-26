@@ -43,7 +43,6 @@ const DialogTitle = styled(Typography)`
   font-weight: 500;
   font-size: 20px;
   line-height: 20px;
-  color: ${props => props.theme.palette.text.primary};
 `;
 
 const CloseButton = styled(IconButton)`
@@ -53,9 +52,11 @@ const CloseButton = styled(IconButton)`
   color: ${props => props.theme.palette.text.primary};
 `;
 
-export const DialogHeader = ({ title, onClose }) => (
+export const DialogHeader = ({ title, onClose, color }) => (
   <Header>
-    <DialogTitle variant="h3">{title}</DialogTitle>
+    <DialogTitle color={color} variant="h3">
+      {title}
+    </DialogTitle>
     <CloseButton onClick={onClose}>
       <CloseIcon />
     </CloseButton>
@@ -65,6 +66,11 @@ export const DialogHeader = ({ title, onClose }) => (
 DialogHeader.propTypes = {
   title: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
+  color: PropTypes.string,
+};
+
+DialogHeader.defaultProps = {
+  color: 'textPrimary',
 };
 
 export const DialogContent = styled.div`

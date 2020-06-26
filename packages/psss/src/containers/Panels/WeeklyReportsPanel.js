@@ -6,12 +6,13 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
+import Typography from '@material-ui/core/Typography';
 import {
   EditableTableProvider,
   ButtonSelect,
-  Button,
   Card,
   ErrorAlert,
+  Button,
 } from '@tupaia/ui-components';
 import {
   SiteAddress,
@@ -20,13 +21,15 @@ import {
   DrawerTray,
   DrawerHeader,
   PercentageChangeCell,
+  AlertCreatedModal,
 } from '../../components';
 import {
   getSitesForWeek,
   getActiveWeekCountryData,
   closeWeeklyReportsPanel,
-  confirmWeeklyReportsData,
   checkWeeklyReportsPanelIsOpen,
+  checkWeeklyReportAreVerified,
+  confirmWeeklyReportsData,
 } from '../../store';
 import * as COLORS from '../../constants/colors';
 import { CountryReportTable, SiteReportTable } from '../Tables';
@@ -77,22 +80,18 @@ const GreySection = styled(MainSection)`
   padding: 25px 20px;
 `;
 
+const HelperText = styled(Typography)`
+  margin-top: 1rem;
+  font-size: 0.8125rem;
+  line-height: 0.9375rem;
+  color: ${COLORS.TEXT_MIDGREY};
+`;
+
 const StyledDrawer = styled(Drawer)`
   .MuiDrawer-paper {
     padding-bottom: 125px;
   }
 `;
-
-const WeeklyReportsPanelSubmitButton = handleConfirm => () => {
-  const handleClick = () => {
-    handleConfirm();
-  };
-  return (
-    <Button fullWidth onClick={handleClick}>
-      Submit now
-    </Button>
-  );
-};
 
 const TABLE_STATUSES = {
   STATIC: 'static',
@@ -100,10 +99,25 @@ const TABLE_STATUSES = {
 };
 
 export const WeeklyReportsPanelComponent = React.memo(
-  ({ countryData, sitesData, isOpen, handleClose, handleConfirm }) => {
+  ({ countryData, sitesData, isOpen, handleClose, isVerified, handleConfirm }) => {
     const [countryTableStatus, setCountryTableStatus] = useState(TABLE_STATUSES.STATIC);
     const [activeSiteIndex, setActiveSiteIndex] = useState(0);
+    const [submitAttempted, setSubmitAttempted] = useState(false);
     const [sitesTableStatus, setSitesTableStatus] = useState(TABLE_STATUSES.STATIC);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const handleSubmit = () => {
+      if (isVerified) {
+        handleConfirm();
+        setIsModalOpen(true);
+      }
+
+      setSubmitAttempted(true);
+    };
+
+    const handleCloseModal = () => {
+      setIsModalOpen(false);
+    };
 
     if (countryData.length === 0 || sitesData.length === 0) {
       return null;
@@ -113,6 +127,7 @@ export const WeeklyReportsPanelComponent = React.memo(
     const { syndromes: syndromesData } = activeSite;
     const isSaving =
       countryTableStatus === TABLE_STATUSES.SAVING || sitesTableStatus === TABLE_STATUSES.SAVING;
+    const showVerifyMessage = submitAttempted && !isVerified;
 
     return (
       <StyledDrawer open={isOpen} onClose={handleClose}>
@@ -157,33 +172,40 @@ export const WeeklyReportsPanelComponent = React.memo(
             </EditableTableProvider>
           </Card>
         </MainSection>
-        <DrawerFooter
-          disabled={isSaving}
-          Action={WeeklyReportsPanelSubmitButton(handleConfirm)}
-          helperText="Verify data to submit Weekly Report to Regional"
-        />
+        <DrawerFooter disabled={isSaving}>
+          {showVerifyMessage && (
+            <ErrorAlert>ILI Above Threshold. Please review and verify data.</ErrorAlert>
+          )}
+          <Button fullWidth onClick={handleSubmit}>
+            Submit now
+          </Button>
+          <HelperText>Verify data to submit Weekly Report to Regional</HelperText>
+        </DrawerFooter>
+        <AlertCreatedModal isOpen={isModalOpen} handleClose={handleCloseModal} />
       </StyledDrawer>
     );
   },
 );
 
 WeeklyReportsPanelComponent.propTypes = {
+  handleConfirm: PropTypes.func.isRequired,
   countryData: PropTypes.array.isRequired,
   sitesData: PropTypes.array.isRequired,
-  handleConfirm: PropTypes.func.isRequired,
   handleClose: PropTypes.func.isRequired,
   isOpen: PropTypes.bool.isRequired,
+  isVerified: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = state => ({
   isOpen: checkWeeklyReportsPanelIsOpen(state),
   countryData: getActiveWeekCountryData(state),
   sitesData: getSitesForWeek(state),
+  isVerified: checkWeeklyReportAreVerified(state),
 });
 
 const mapDispatchToProps = dispatch => ({
-  handleConfirm: () => dispatch(confirmWeeklyReportsData()),
   handleClose: () => dispatch(closeWeeklyReportsPanel()),
+  handleConfirm: () => dispatch(confirmWeeklyReportsData()),
 });
 
 export const WeeklyReportsPanel = connect(

@@ -14,4 +14,5 @@ export * from './SiteAddress';
 export * from './ActivityTab';
 export * from './FetchLoader';
 export * from './NotesTab';
+export * from './Modal';
 export * from './AffectedSitesTab';
