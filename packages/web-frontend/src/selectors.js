@@ -128,8 +128,8 @@ const selectActiveProjectCountries = createSelector(
   [state => state.orgUnits.orgUnitMap, state => state.project.activeProjectCode],
   (orgUnitMap, activeProjectCode) => {
     const orgUnits = Object.values(orgUnitMap)
-      .map(({ countryCode, ...orgUnit }) => {
-        return orgUnit[countryCode];
+      .map(({ countryCode, ...orgUnits }) => {
+        return orgUnits[countryCode];
       })
       .filter((org = {}) => org.type === 'Country' && org.parent === activeProjectCode);
     return orgUnits;
