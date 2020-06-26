@@ -4,3 +4,4 @@
  */
 
 export * from './useFormFields';
+export * from './useFetchData';

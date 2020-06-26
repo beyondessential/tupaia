@@ -11,3 +11,6 @@ export * from './Table';
 export * from './Drawer';
 export * from './DropdownMenu';
 export * from './SiteAddress';
+export * from './ActivityTab';
+export * from './NotesTab';
+export * from './AffectedSitesTab';
