@@ -10,7 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import { CondensedTableBody, FakeHeader, Table, Button } from '@tupaia/ui-components';
 import { COLUMN_WIDTHS } from './constants';
-import { createTotalCasesAccessor, AlertCell } from '../../components/Table';
+import { createTotalCasesAccessor, AlertCell } from '../../components';
 import {
   openWeeklyReportsPanel,
   getSitesForWeekError,

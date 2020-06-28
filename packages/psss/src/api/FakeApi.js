@@ -50,7 +50,7 @@ export class FakeAPI {
         data.push(this.activity());
       }
     } else if (endpoint === 'affected-sites') {
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < 8; i++) {
         data.push(this.affectedSite());
       }
     } else if (endpoint === 'archive') {
@@ -146,6 +146,7 @@ export class FakeAPI {
     }
     return {
       ...countryWeek,
+      status: faker.random.arrayElement(['alert', 'outbreak']),
       sites,
     };
   }
@@ -263,13 +264,6 @@ export class FakeAPI {
       name: faker.address.country(),
       countryCode: faker.address.countryCode().toLowerCase(),
       syndrome: faker.random.arrayElement(['AFR', 'DIA', 'ILI', 'PF', 'DIL']),
-      syndromeDisplayName: faker.random.arrayElement([
-        'Acute Fever and Rash (AFR)',
-        'Diarrhoea (DIA)',
-        'Influenza-like Illness (ILI)',
-        'Prolonged Fever (AFR)',
-        'Dengue-like Illness (DIL)',
-      ]),
       week: faker.random.number({
         min: 1,
         max: 10,

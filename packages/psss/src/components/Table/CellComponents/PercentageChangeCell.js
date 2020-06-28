@@ -25,7 +25,7 @@ export const PercentageChangeCell = ({ percentageChange, className }) => {
     return <WarningStyleText className={className}>+{percentageChange}%</WarningStyleText>;
   }
 
-  return <SuccessStyleText className={className}>-{percentageChange}%</SuccessStyleText>;
+  return <SuccessStyleText className={className}>{percentageChange}%</SuccessStyleText>;
 };
 
 PercentageChangeCell.propTypes = {
