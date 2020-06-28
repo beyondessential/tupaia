@@ -17,7 +17,7 @@ import {
 } from '@tupaia/ui-components';
 import {
   Drawer,
-  AlertsAndOutbreaksDrawerHeader,
+  AlertsDrawerHeader,
   AffectedSitesTab,
   ActivityTab,
   NotesTab,
@@ -27,7 +27,6 @@ import {
 import * as COLORS from '../../constants/colors';
 import { countryFlagImage } from '../../utils';
 import { connectApi } from '../../api';
-import { AlertsPanelComponent } from './AlertsPanel';
 import { useFetch } from '../../hooks';
 
 const Option = styled.span`
@@ -89,7 +88,7 @@ export const OutbreaksPanelComponent = ({
         onClose={handleClose}
         Icon={Virus}
       />
-      <AlertsAndOutbreaksDrawerHeader
+      <AlertsDrawerHeader
         color={COLORS.RED}
         dateText="Outbreak Start Date:"
         date="Mar 6, 2020"
