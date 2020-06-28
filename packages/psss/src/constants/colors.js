@@ -9,7 +9,7 @@ export const BLACK = '#000000';
 export const BLUE = '#3884B8';
 export const DARK_BLUE = '#135D8F';
 export const YELLOW = '#FFCC24';
-export const RED = '#E21818';
+export const RED = '#D13333';
 export const ORANGE = '#EF5A06';
 export const GREEN = '#02B851';
 export const DARKGREY = '#283238'; // dark background
@@ -23,6 +23,7 @@ export const GREY_72 = '#727D84';
 export const GREY_9F = '#9FA6AA';
 export const GREY_DE = '#DEDEE0'; // use for border colors of cards
 export const GREY_E2 = '#E2E2E2';
+export const GREY_F1 = '#F1F1F1';
 export const GREY_FB = '#FBF9F9';
 
 // Blues
@@ -30,6 +31,7 @@ export const LIGHT_BLUE = '#99D6FF';
 
 // Reds
 export const LIGHT_RED = '#FEE2E2';
+export const LIGHT_ORANGE = '#FFECE1';
 
 // Greens
 export const DARK_GREEN = '#00972E';
