@@ -8,12 +8,17 @@ import PropTypes from 'prop-types';
 import { format } from 'date-fns';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
-import Avatar from '@material-ui/core/Avatar';
+import MuiAvatar from '@material-ui/core/Avatar';
 import { FlexSpaceBetween } from '../Layout';
 
 const Header = styled(FlexSpaceBetween)`
-  padding: 0.7rem 0.5rem 0.7rem 1rem;
+  padding: 0.3rem 0 0.3rem 1rem;
   border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
+`;
+
+const Avatar = styled(MuiAvatar)`
+  width: 35px;
+  height: 35px;
 `;
 
 const Title = styled(Typography)`
@@ -30,7 +35,7 @@ const Date = styled(Title)`
 
 const Time = styled(Date)`
   color: ${props => props.theme.palette.text.secondary};
-  margin-left: 1rem;
+  margin-left: 0.6rem;
 `;
 
 export const UserMessageHeader = ({ user, dateTime, ActionsMenu }) => (
@@ -41,7 +46,7 @@ export const UserMessageHeader = ({ user, dateTime, ActionsMenu }) => (
     </FlexSpaceBetween>
     <FlexSpaceBetween>
       <Date>{format(dateTime, 'dd/MM/yyyy')}</Date>
-      <Time>{format(dateTime, 'hh:mm a')}</Time>
+      <Time>{format(dateTime, "h:mmaaaaa'm'")}</Time>
       {ActionsMenu}
     </FlexSpaceBetween>
   </Header>
@@ -49,7 +54,7 @@ export const UserMessageHeader = ({ user, dateTime, ActionsMenu }) => (
 
 UserMessageHeader.propTypes = {
   user: PropTypes.object.isRequired,
-  dateTime: PropTypes.instanceOf(Date).isRequired,
+  dateTime: PropTypes.object.isRequired,
   ActionsMenu: PropTypes.any,
 };
 

@@ -16,7 +16,7 @@ const FooterContainer = styled.div`
 `;
 
 const FooterInner = styled(FlexSpaceBetween)`
-  padding: 0.5rem 0 0.7rem;
+  padding: 0.6rem 0 0.7rem;
   border-top: 1px solid ${props => props.theme.palette.grey['400']};
 `;
 
@@ -28,7 +28,7 @@ const FooterText = styled(Typography)`
 `;
 
 const FooterUser = styled(FooterText)`
-  margin-left: 0.5rem;
+  margin-right: 0.5rem;
   color: ${props => props.theme.palette.text.primary};
   font-style: normal;
   font-weight: 500;
@@ -42,10 +42,10 @@ const FooterAvatar = styled(Avatar)`
 export const UserMessageFooter = ({ dateTime, user }) => (
   <FooterContainer>
     <FooterInner>
-      <FooterText>Last updated on: {format(dateTime, 'dd/MM/yyyy - hh:mm a')}</FooterText>
+      <FooterText>Last updated on: {format(dateTime, "dd/MM/yyyy - h:mmaaaaa'm'")}</FooterText>
       <FlexSpaceBetween>
-        <FooterAvatar src={user.avatar} />
         <FooterUser>{user.name}</FooterUser>
+        <FooterAvatar src={user.avatar} />
       </FlexSpaceBetween>
     </FooterInner>
   </FooterContainer>
