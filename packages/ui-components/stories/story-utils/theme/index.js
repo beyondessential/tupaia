@@ -10,6 +10,7 @@ const themeName = 'Tupaia-Storybook';
 const palette = {
   primary: {
     main: COLORS.BLUE,
+    light: COLORS.LIGHT_BLUE,
   },
   secondary: {
     main: COLORS.DARK_BLUE,

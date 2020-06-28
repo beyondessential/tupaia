@@ -2,17 +2,20 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-
 import React, { useRef, useEffect, useState } from 'react';
-import { format } from 'date-fns';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import Typography from '@material-ui/core/Typography';
-import Avatar from '@material-ui/core/Avatar';
-import { ActionsMenu } from './ActionsMenu';
-import { Button, OutlinedButton } from './Button';
-import { Card } from './Card';
-import { TextField } from './Inputs';
+import { Button, OutlinedButton } from '../Button';
+import { TextField } from '../Inputs';
+import { Card } from '../Card';
+import { ActionsMenu } from '../ActionsMenu';
+import { FlexEnd } from '../Layout';
+
+const STATUS = {
+  READ_ONLY: 'readOnly',
+  LOADING: 'loading',
+  EDITING: 'editing',
+};
 
 const TextareaField = styled(TextField)`
   margin: 0;
@@ -34,10 +37,6 @@ const TextareaField = styled(TextField)`
   }
 `;
 
-const ReadOnlyField = styled(TextareaField)`
-  margin: 0;
-`;
-
 const MessageView = ({ status, message }) => {
   const inputRef = useRef(null);
 
@@ -52,7 +51,7 @@ const MessageView = ({ status, message }) => {
 
   if (status === STATUS.READ_ONLY) {
     return (
-      <ReadOnlyField
+      <TextareaField
         name="textArea"
         multiline
         value={message}
@@ -83,61 +82,13 @@ const StyledCard = styled(({ focus, ...props }) => <Card {...props} />)`
   box-shadow: ${props => (props.focus ? `0 0 6px ${props.theme.palette.secondary.light}` : 'none')};
 `;
 
-const Flexbox = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const Header = styled(Flexbox)`
-  padding: 0.8rem 0.5rem 0.8rem 1rem;
-  border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
-`;
-
-const Title = styled(Typography)`
-  font-weight: 500;
-  font-size: 0.875rem;
-  line-height: 1rem;
-  margin-left: 0.5rem;
-  color: ${props => props.theme.palette.text.primary};
-`;
-
-const Date = styled(Title)`
-  font-weight: 400;
-`;
-
-const Time = styled(Title)`
-  font-weight: 400;
-  color: ${props => props.theme.palette.text.secondary};
-  margin-left: 1rem;
-`;
-
-const CardActions = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  padding: 20px;
+const CardActions = styled(FlexEnd)`
+  padding: 1.25rem;
   border-top: 1px solid ${props => props.theme.palette.grey['400']};
 `;
 
-const STATUS = {
-  READ_ONLY: 'readOnly',
-  LOADING: 'loading',
-  EDITING: 'editing',
-};
-
-export const UserMessage = ({ user, message, onUpdate, onDelete, className }) => {
+export const UserMessage = ({ Header, Footer, message, onUpdate, onDelete, className }) => {
   const [status, setStatus] = useState(STATUS.READ_ONLY);
-  const date = format(message.dateTime, 'dd/MM/yyyy');
-  const time = format(message.dateTime, 'hh:mm a');
-
-  const handleUpdate = () => {
-    onUpdate(message);
-  };
-
-  const handleCancel = () => {
-    setStatus(STATUS.READ_ONLY);
-  };
 
   const menuOptions = [
     { label: 'Edit', action: () => setStatus(STATUS.EDITING) },
@@ -146,22 +97,13 @@ export const UserMessage = ({ user, message, onUpdate, onDelete, className }) =>
 
   return (
     <StyledCard className={className} variant="outlined" focus={status === STATUS.EDITING}>
-      <Header>
-        <Flexbox>
-          <Avatar src={user.avatar} />
-          <Title>{user.name}</Title>
-        </Flexbox>
-        <Flexbox>
-          <Date>{date}</Date>
-          <Time>{time}</Time>
-          <ActionsMenu options={menuOptions} />
-        </Flexbox>
-      </Header>
+      {React.cloneElement(Header, { ActionsMenu: <ActionsMenu options={menuOptions} /> })}
       <MessageView status={status} message={message.content} />
+      {Footer}
       {status === STATUS.EDITING && (
         <CardActions>
-          <OutlinedButton onClick={handleCancel}>Cancel</OutlinedButton>
-          <Button onClick={handleUpdate}>Update</Button>
+          <OutlinedButton onClick={() => setStatus(STATUS.READ_ONLY)}>Cancel</OutlinedButton>
+          <Button onClick={() => onUpdate(message)}>Update</Button>
         </CardActions>
       )}
     </StyledCard>
@@ -169,11 +111,12 @@ export const UserMessage = ({ user, message, onUpdate, onDelete, className }) =>
 };
 
 UserMessage.propTypes = {
-  className: PropTypes.string,
-  user: PropTypes.object.isRequired,
+  Header: PropTypes.any.isRequired,
+  Footer: PropTypes.any.isRequired,
   message: PropTypes.object.isRequired,
   onUpdate: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
+  className: PropTypes.string,
 };
 
 UserMessage.defaultProps = {

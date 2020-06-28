@@ -6,17 +6,13 @@
 import styled from 'styled-components';
 import * as COLORS from '../../constants';
 
-const DrawerFooterHeight = '125px';
-
 export const DrawerFooter = styled.div`
   position: absolute;
   left: 0;
   bottom: 0;
   width: 100%;
   background: ${COLORS.LIGHTGREY};
-  height: ${DrawerFooterHeight};
   text-align: center;
-  padding: 1.5rem;
   box-shadow: 0px -1px 0px ${COLORS.GREY_DE};
 
   &:after {

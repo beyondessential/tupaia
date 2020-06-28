@@ -11,9 +11,13 @@ const StyledButton = styled(MuiButton)`
   font-size: 0.9375rem;
   line-height: 1;
   letter-spacing: 0;
-  padding: 1em 1.5em;
+  padding: 1em 1.75em;
   box-shadow: none;
   min-width: 3rem;
+
+  .MuiButton-label > svg {
+    margin-right: 0.3rem;
+  }
 
   &.MuiButton-contained {
     border: 1px solid transparent; // used to make the contained buttons the same size as the outlined ones
@@ -45,6 +49,17 @@ Button.defaultProps = {
   isSubmitting: false,
   disabled: false,
 };
+
+export const LightPrimaryButton = styled(Button)`
+  background-color: ${props => props.theme.palette.primary.light};
+  color: ${props => props.theme.palette.primary.main};
+
+  &:hover,
+  &.Mui-disabled {
+    background-color: ${props => props.theme.palette.primary.light};
+    color: ${props => props.theme.palette.primary.main};
+  }
+`;
 
 /*
  * Text Button

@@ -5,7 +5,7 @@
 
 import React from 'react';
 import Box from '@material-ui/core/Box';
-import { ErrorAlert, SmallErrorAlert } from '../src';
+import { ErrorAlert, LightErrorAlert, SmallErrorAlert, SmallLightErrorAlert } from '../src';
 
 export default {
   title: 'Alert',
@@ -17,7 +17,13 @@ export const Alerts = () => (
       <ErrorAlert>ILI Above Threshold. Please review and verify data.</ErrorAlert>
     </Box>
     <Box mb={2}>
-      <SmallErrorAlert>Updating aggregated data will be the source of truth. All individual Sentinel data will be ignored.</SmallErrorAlert>
+      <LightErrorAlert>ILI Above Threshold. Please review and verify data.</LightErrorAlert>
+    </Box>
+    <Box mb={2}>
+      <SmallErrorAlert>ILI Above Threshold. Please review and verify data.</SmallErrorAlert>
+    </Box>
+    <Box mb={2}>
+      <SmallLightErrorAlert>ILI Above Threshold. Please review and verify data.</SmallLightErrorAlert>
     </Box>
   </React.Fragment>
 );

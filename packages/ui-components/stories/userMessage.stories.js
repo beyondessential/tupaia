@@ -5,8 +5,9 @@
 
 import React from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import MuiAlert from '@material-ui/lab/Alert';
-import { UserMessage } from '../src';
+import { UserMessage, UserMessageFooter, UserMessageHeader } from '../src';
 
 export default {
   title: 'UserMessage',
@@ -21,9 +22,9 @@ const StyledAlert = styled(MuiAlert)`
   margin: 1rem;
 `;
 
-const user = {
-  avatarUrl: 'https://www.gravatar.com/avatar/03d39b671d0f4fd5b3dcb28bf4676760',
-  title: 'Dr. Sarah De Jones',
+const exampleUser = {
+  avatar: 'https://www.gravatar.com/avatar/03d39b671d0f4fd5b3dcb28bf4676760',
+  name: 'Dr. Sarah De Jones',
 };
 
 const message = {
@@ -33,16 +34,71 @@ const message = {
   dateTime: new Date(),
 };
 
-export const userMassage = () => {
+export const userMessage = () => {
   const [alertMessage, setAlertMessage] = React.useState(null);
+  const date = new Date();
+
+  const handleUpdate = id => setAlertMessage(`Updating ${id}...`);
+  const handleDelete = id => setAlertMessage(`Deleting ${id}...`);
+
   return (
     <Container>
       {alertMessage && <StyledAlert severity="info">{alertMessage}</StyledAlert>}
       <UserMessage
+        onUpdate={handleUpdate}
+        onDelete={handleDelete}
+        Header={<UserMessageHeader user={exampleUser} dateTime={date} />}
+        Footer={<UserMessageFooter user={exampleUser} dateTime={date} />}
         message={message}
-        user={user}
-        onUpdate={id => setAlertMessage(`Updating ${id}...`)}
-        onDelete={id => setAlertMessage(`Deleting ${id}...`)}
+      />
+    </Container>
+  );
+};
+
+const UserMessageBanner = styled.div`
+  font-size: 0.6875rem;
+  line-height: 0.8rem;
+  text-transform: uppercase;
+  text-align: center;
+  font-weight: 600;
+  color: white;
+  padding: 0.7rem;
+  background: ${props => props.theme.palette.error.main};
+`;
+
+const CustomHeader = ({ user, dateTime, ActionsMenu }) => (
+  <>
+    <UserMessageHeader user={user} dateTime={dateTime} ActionsMenu={ActionsMenu} />
+    <UserMessageBanner>Outbreak confirmed</UserMessageBanner>
+  </>
+);
+
+CustomHeader.propTypes = {
+  user: PropTypes.object.isRequired,
+  dateTime: PropTypes.instanceOf(Date).isRequired,
+  ActionsMenu: PropTypes.any,
+};
+
+CustomHeader.defaultProps = {
+  ActionsMenu: null,
+};
+
+export const customUserMessage = () => {
+  const [alertMessage, setAlertMessage] = React.useState(null);
+  const date = new Date();
+
+  const handleUpdate = id => setAlertMessage(`Updating ${id}...`);
+  const handleDelete = id => setAlertMessage(`Deleting ${id}...`);
+
+  return (
+    <Container>
+      {alertMessage && <StyledAlert severity="info">{alertMessage}</StyledAlert>}
+      <UserMessage
+        onUpdate={handleUpdate}
+        onDelete={handleDelete}
+        Header={<CustomHeader user={exampleUser} dateTime={date} />}
+        Footer={<UserMessageFooter user={exampleUser} dateTime={date} />}
+        message={message}
       />
     </Container>
   );

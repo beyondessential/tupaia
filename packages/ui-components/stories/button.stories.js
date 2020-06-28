@@ -6,10 +6,12 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
 import MuiBox from '@material-ui/core/Box';
+import CheckCircleIcon from '@material-ui/icons/CheckCircleOutline';
 import styled from 'styled-components';
 import { SaveAlt } from '../src/components/Icons';
 import {
   Button,
+  LightPrimaryButton,
   TextButton,
   SmallButton,
   SuccessButton,
@@ -31,7 +33,15 @@ const Container = styled(MuiBox)`
 
 export const primary = () => (
   <Container>
-    <Button onClick={action('Primary button clicked')}>Button</Button>
+    <Button disabled onClick={action('Primary button clicked')}>Button</Button>
+  </Container>
+);
+
+export const lightPrimary = () => (
+  <Container>
+    <LightPrimaryButton disabled>
+      <CheckCircleIcon /> Confirmed
+    </LightPrimaryButton>
   </Container>
 );
 

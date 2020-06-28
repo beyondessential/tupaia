@@ -14,14 +14,14 @@ import styled from 'styled-components';
 const StyledMenu = styled(MuiMenu)`
   .MuiPaper-root {
     position: relative;
-    width: 135px;
+    width: 8.5rem;
     border: 1px solid ${props => props.theme.palette.grey['400']};
     border-radius: 3px;
     overflow: visible;
 
     .MuiList-root {
-      padding-top: 4px;
-      padding-bottom: 4px;
+      padding-top: 0.25rem;
+      padding-bottom: 0.25rem;
     }
 
     &:before,
@@ -48,8 +48,8 @@ const StyledMenu = styled(MuiMenu)`
 `;
 
 const StyledMenuItem = styled(MuiMenuItem)`
-  padding-top: 10px;
-  padding-bottom: 10px;
+  padding-top: 0.625rem;
+  padding-bottom: 0.625rem;
 
   :not(:last-child) {
     border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
@@ -66,18 +66,9 @@ const StyledMenuIcon = styled(MoreVertIcon)`
 
 export const ActionsMenu = ({ options }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
-
-  const handleClick = event => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
   return (
-    <React.Fragment>
-      <IconButton onClick={handleClick}>
+    <>
+      <IconButton onClick={event => setAnchorEl(event.currentTarget)}>
         <StyledMenuIcon />
       </IconButton>
       <StyledMenu
@@ -86,7 +77,7 @@ export const ActionsMenu = ({ options }) => {
         getContentAnchorEl={null}
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
-        onClose={handleClose}
+        onClose={() => setAnchorEl(null)}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: -85,
@@ -97,14 +88,14 @@ export const ActionsMenu = ({ options }) => {
             key={label}
             onClick={() => {
               action();
-              return handleClose();
+              setAnchorEl(null);
             }}
           >
             {label}
           </StyledMenuItem>
         ))}
       </StyledMenu>
-    </React.Fragment>
+    </>
   );
 };
 
