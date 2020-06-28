@@ -15,7 +15,7 @@ export default {
 
 const Container = styled.div`
   padding: 1rem;
-  max-width: 480px;
+  max-width: 490px;
 `;
 
 const StyledAlert = styled(MuiAlert)`
@@ -31,12 +31,12 @@ const message = {
   content:
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit Aliquam id enim id lorem porta rhoncus',
   id: 'user-message-123',
-  dateTime: new Date(),
+  created: new Date(),
+  lastEdited: new Date(),
 };
 
 export const userMessage = () => {
   const [alertMessage, setAlertMessage] = React.useState(null);
-  const date = new Date();
 
   const handleUpdate = id => setAlertMessage(`Updating ${id}...`);
   const handleDelete = id => setAlertMessage(`Deleting ${id}...`);
@@ -47,8 +47,7 @@ export const userMessage = () => {
       <UserMessage
         onUpdate={handleUpdate}
         onDelete={handleDelete}
-        Header={<UserMessageHeader user={exampleUser} dateTime={date} />}
-        Footer={<UserMessageFooter user={exampleUser} dateTime={date} />}
+        Header={<UserMessageHeader user={exampleUser} dateTime={message.created} />}
         message={message}
       />
     </Container>
@@ -85,7 +84,6 @@ CustomHeader.defaultProps = {
 
 export const customUserMessage = () => {
   const [alertMessage, setAlertMessage] = React.useState(null);
-  const date = new Date();
 
   const handleUpdate = id => setAlertMessage(`Updating ${id}...`);
   const handleDelete = id => setAlertMessage(`Deleting ${id}...`);
@@ -96,8 +94,8 @@ export const customUserMessage = () => {
       <UserMessage
         onUpdate={handleUpdate}
         onDelete={handleDelete}
-        Header={<CustomHeader user={exampleUser} dateTime={date} />}
-        Footer={<UserMessageFooter user={exampleUser} dateTime={date} />}
+        Header={<CustomHeader user={exampleUser} dateTime={message.created} />}
+        Footer={<UserMessageFooter user={exampleUser} dateTime={message.lastEdited} />}
         message={message}
       />
     </Container>

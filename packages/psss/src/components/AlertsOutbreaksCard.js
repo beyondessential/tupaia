@@ -17,13 +17,13 @@ import { PercentageChangeCell } from './Table';
 import { FlexRow, FlexSpaceBetween } from './Layout';
 import * as COLORS from '../constants/colors';
 
-export const AlertsAndOutbreaksCard = ({ children, ...props }) => (
+export const AlertsOutbreaksCard = ({ children, ...props }) => (
   <StyledCard variant="outlined" {...props}>
     <MuiExpansionPanel>{children}</MuiExpansionPanel>
   </StyledCard>
 );
 
-AlertsAndOutbreaksCard.propTypes = {
+AlertsOutbreaksCard.propTypes = {
   children: PropTypes.any.isRequired,
 };
 
@@ -182,7 +182,7 @@ const TYPES = {
   OUTBREAK: 'outbreak',
 };
 
-export const AlertsAndOutbreaksCardHeader = ({
+export const AlertsOutbreaksCardHeader = ({
   heading,
   subheading,
   detailText,
@@ -214,7 +214,7 @@ export const AlertsAndOutbreaksCardHeader = ({
   </ExpandableWrapper>
 );
 
-AlertsAndOutbreaksCardHeader.propTypes = {
+AlertsOutbreaksCardHeader.propTypes = {
   type: PropTypes.oneOf([TYPES.ALERT, TYPES.OUTBREAK]),
   heading: PropTypes.string.isRequired,
   subheading: PropTypes.string.isRequired,
@@ -222,6 +222,6 @@ AlertsAndOutbreaksCardHeader.propTypes = {
   percentageChange: PropTypes.number.isRequired,
 };
 
-AlertsAndOutbreaksCardHeader.defaultProps = {
+AlertsOutbreaksCardHeader.defaultProps = {
   type: TYPES.ALERT,
 };

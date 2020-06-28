@@ -13,10 +13,10 @@ import {
   PercentageChangeCell,
 } from './Table';
 import {
-  AlertsAndOutbreaksCard,
-  AlertsAndOutbreaksCardHeader,
+  AlertsOutbreaksCard,
+  AlertsOutbreaksCardHeader,
   AlertsAndOutbreaksCardBody,
-} from './AlertsAndOutbreaksCard';
+} from './AlertsOutbreaksCard';
 import { fetchStateShape } from '../hooks';
 import { FetchLoader } from './FetchLoader';
 
@@ -62,8 +62,8 @@ export const AffectedSitesTab = ({ state }) => {
           const endDate = format(week.endDate, 'LLL d');
           const year = format(week.endDate, 'yyyy');
           return (
-            <AlertsAndOutbreaksCard key={week.id} variant="outlined" mb={5}>
-              <AlertsAndOutbreaksCardHeader
+            <AlertsOutbreaksCard key={week.id} variant="outlined" mb={5}>
+              <AlertsOutbreaksCardHeader
                 type={week.status}
                 heading={`Week ${week.week}`}
                 subheading={`${startDate} - ${endDate}, ${year}`}
@@ -73,7 +73,7 @@ export const AffectedSitesTab = ({ state }) => {
               <AlertsAndOutbreaksCardBody>
                 <DottedTable columns={columns} data={week.sites} />
               </AlertsAndOutbreaksCardBody>
-            </AlertsAndOutbreaksCard>
+            </AlertsOutbreaksCard>
           );
         })}
       </FetchLoader>

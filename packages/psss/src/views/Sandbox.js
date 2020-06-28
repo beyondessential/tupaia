@@ -8,10 +8,10 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { CardTabPanel } from '@tupaia/ui-components';
 import {
-  AlertsAndOutbreaksCard,
-  AlertsAndOutbreaksCardHeader,
+  AlertsOutbreaksCard,
+  AlertsOutbreaksCardHeader,
   AlertsAndOutbreaksCardBody,
-} from '../components/AlertsAndOutbreaksCard';
+} from '../components/AlertsOutbreaksCard';
 import { FakeAPI } from '../api';
 import {
   Container,
@@ -77,8 +77,8 @@ export const Sandbox = () => {
                 const endDate = format(week.endDate, 'LLL d');
                 const year = format(week.endDate, 'yyyy');
                 return (
-                  <AlertsAndOutbreaksCard key={week.id} mb={5}>
-                    <AlertsAndOutbreaksCardHeader
+                  <AlertsOutbreaksCard key={week.id} mb={5}>
+                    <AlertsOutbreaksCardHeader
                       type={index === 0 ? 'outbreak' : 'alert'}
                       heading={`Week ${week.week}`}
                       subheading={`${startDate} - ${endDate}, ${year}`}
@@ -88,7 +88,7 @@ export const Sandbox = () => {
                     <AlertsAndOutbreaksCardBody>
                       <DottedTable columns={columns} data={week.sites} />
                     </AlertsAndOutbreaksCardBody>
-                  </AlertsAndOutbreaksCard>
+                  </AlertsOutbreaksCard>
                 );
               })}
             </FetchLoader>

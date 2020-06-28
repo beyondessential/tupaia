@@ -21,7 +21,7 @@ const TextareaField = styled(TextField)`
   margin: 0;
 
   .MuiInputBase-input {
-    padding: 1.25rem;
+    padding: 1.25rem 1.25rem 1.5rem;
     color: #888888;
     line-height: 1.5;
   }
@@ -112,7 +112,7 @@ export const UserMessage = ({ Header, Footer, message, onUpdate, onDelete, class
 
 UserMessage.propTypes = {
   Header: PropTypes.any.isRequired,
-  Footer: PropTypes.any.isRequired,
+  Footer: PropTypes.any,
   message: PropTypes.object.isRequired,
   onUpdate: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
@@ -120,5 +120,6 @@ UserMessage.propTypes = {
 };
 
 UserMessage.defaultProps = {
+  Footer: null,
   className: null,
 };
