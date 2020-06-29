@@ -78,7 +78,9 @@ CREATE TYPE public.entity_type AS ENUM (
     'case',
     'case_contact',
     'disaster',
-    'school'
+    'school',
+    'catchment',
+    'sub_catchment'
 );
 
 
@@ -248,6 +250,32 @@ CREATE TABLE public.access_request (
 
 
 --
+-- Name: alert; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.alert (
+    id text NOT NULL,
+    entity_id text,
+    data_element_id text,
+    start_time timestamp with time zone DEFAULT now() NOT NULL,
+    end_time timestamp with time zone,
+    event_confirmed_time timestamp with time zone,
+    archived boolean DEFAULT false
+);
+
+
+--
+-- Name: alert_comment; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.alert_comment (
+    id text NOT NULL,
+    alert_id text,
+    comment_id text
+);
+
+
+--
 -- Name: answer; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -314,6 +342,19 @@ CREATE TABLE public.clinic (
     type text,
     category_code character varying(3),
     type_name character varying(30)
+);
+
+
+--
+-- Name: comment; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.comment (
+    id text NOT NULL,
+    user_id text,
+    created_time timestamp with time zone DEFAULT now() NOT NULL,
+    last_modified_time timestamp with time zone DEFAULT now() NOT NULL,
+    text text NOT NULL
 );
 
 
@@ -951,6 +992,22 @@ ALTER TABLE ONLY public.access_request
 
 
 --
+-- Name: alert_comment alert_comment_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.alert_comment
+    ADD CONSTRAINT alert_comment_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: alert alert_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.alert
+    ADD CONSTRAINT alert_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: answer answer_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1004,6 +1061,14 @@ ALTER TABLE ONLY public.clinic
 
 ALTER TABLE ONLY public.clinic
     ADD CONSTRAINT clinic_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: comment comment_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.comment
+    ADD CONSTRAINT comment_pkey PRIMARY KEY (id);
 
 
 --
@@ -1826,6 +1891,20 @@ CREATE TRIGGER access_request_trigger AFTER INSERT OR DELETE OR UPDATE ON public
 
 
 --
+-- Name: alert_comment alert_comment_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER alert_comment_trigger AFTER INSERT OR DELETE OR UPDATE ON public.alert_comment FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
+-- Name: alert alert_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER alert_trigger AFTER INSERT OR DELETE OR UPDATE ON public.alert FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
 -- Name: answer answer_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -1844,6 +1923,13 @@ CREATE TRIGGER api_client_trigger AFTER INSERT OR DELETE OR UPDATE ON public.api
 --
 
 CREATE TRIGGER clinic_trigger AFTER INSERT OR DELETE OR UPDATE ON public.clinic FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
+-- Name: comment comment_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER comment_trigger AFTER INSERT OR DELETE OR UPDATE ON public.comment FOR EACH ROW EXECUTE PROCEDURE public.notification();
 
 
 --
@@ -2110,6 +2196,38 @@ ALTER TABLE ONLY public.access_request
 
 
 --
+-- Name: alert_comment alert_comment_alert_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.alert_comment
+    ADD CONSTRAINT alert_comment_alert_id_fkey FOREIGN KEY (alert_id) REFERENCES public.alert(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: alert_comment alert_comment_comment_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.alert_comment
+    ADD CONSTRAINT alert_comment_comment_id_fkey FOREIGN KEY (comment_id) REFERENCES public.comment(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: alert alert_data_element_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.alert
+    ADD CONSTRAINT alert_data_element_id_fkey FOREIGN KEY (data_element_id) REFERENCES public.data_source(id);
+
+
+--
+-- Name: alert alert_entity_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.alert
+    ADD CONSTRAINT alert_entity_id_fkey FOREIGN KEY (entity_id) REFERENCES public.entity(id);
+
+
+--
 -- Name: answer answer_question_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2155,6 +2273,14 @@ ALTER TABLE ONLY public.clinic
 
 ALTER TABLE ONLY public.clinic
     ADD CONSTRAINT clinic_geographical_area_id_fkey FOREIGN KEY (geographical_area_id) REFERENCES public.geographical_area(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+--
+-- Name: comment comment_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.comment
+    ADD CONSTRAINT comment_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user_account(id);
 
 
 --
@@ -3262,7 +3388,13 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 763	/20200616000806-FixIncorrectDataElementCodesLaosReport	2020-06-18 21:35:19.97
 764	/20200617235154-FixTongaMeaslesOverlaysWithEntityAggregation	2020-06-18 21:35:20.008
 765	/20200618090311-FixEntityAggregationConfig	2020-06-18 21:35:20.071
-766	/20200528043308-createAccessRequestTable	2020-06-23 10:45:45.946
+766	/20200428025025-createAlertsTable	2020-06-29 12:22:19.24
+767	/20200501033538-createCommentTables	2020-06-29 12:22:19.264
+768	/20200528043308-createAccessRequestTable	2020-06-29 12:22:19.28
+769	/20200603115106-AddCatchmentEntityType	2020-06-29 12:22:21.342
+770	/20200603121401-CreateFijiCatchmentAlternateHierarchy	2020-06-29 12:22:25.026
+771	/20200615021108-AddLaosSchoolsMajorDevPartner	2020-06-29 12:22:25.147
+772	/20200618012039-UseTuapaiaAsDataServiceForWishSurveys	2020-06-29 12:22:26.994
 \.
 
 
@@ -3270,7 +3402,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 766, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 772, true);
 
 
 --
