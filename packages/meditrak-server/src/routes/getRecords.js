@@ -101,6 +101,7 @@ export async function getRecords(req, res) {
       columns: columnsString,
       filter: filterString,
       sort: sortString,
+      distinct = false,
     } = query;
 
     // Set up the finder for this record type (sometimes custom, mostly generic)
@@ -127,7 +128,7 @@ export async function getRecords(req, res) {
 
     // First find out how many records there are and generate the pagination headers
     const unprocessedColumns = columnsString && JSON.parse(columnsString);
-    const { sort, multiJoin } = getQueryOptionsForColumns(unprocessedColumns, recordType);
+    let { sort, multiJoin } = getQueryOptionsForColumns(unprocessedColumns, recordType);
     if (!shouldReturnSingleRecord) {
       const numberOfRecords = await findOrCountRecords({ multiJoin }, 'count');
       const lastPage = Math.ceil(numberOfRecords / limit);
@@ -145,9 +146,10 @@ export async function getRecords(req, res) {
       const fullyQualifiedSortKeys = sortKeys.map(sortKey =>
         processColumnSelector(sortKey, recordType),
       );
-      sort.unshift(...fullyQualifiedSortKeys);
+      // if 'distinct', we can't order by any columns that aren't included in the distinct selection
+      sort = distinct ? fullyQualifiedSortKeys : sort.unshift(...fullyQualifiedSortKeys);
     }
-    const options = { multiJoin, columns, limit, offset, sort };
+    const options = { multiJoin, columns, limit, offset, sort, distinct };
     const records = await findOrCountRecords(options);
     // Respond only with the data in each record, stripping out metadata from DatabaseType instances
     const getRecordData = async record =>

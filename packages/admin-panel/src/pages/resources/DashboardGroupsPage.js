@@ -14,14 +14,29 @@ const FIELDS = [
   {
     Header: 'Organisation Level',
     source: 'organisationLevel',
+    editConfig: {
+      optionsEndpoint: 'dashboardGroups',
+      optionLabelKey: 'organisationLevel',
+      optionValueKey: 'organisationLevel',
+    },
   },
   {
     Header: 'Organisation Unit Code',
     source: 'organisationUnitCode',
+    editConfig: {
+      optionsEndpoint: 'entities',
+      optionLabelKey: 'code',
+      optionValueKey: 'code',
+    },
   },
   {
     Header: 'Permission Group',
     source: 'userGroup',
+    editConfig: {
+      optionsEndpoint: 'permissionGroups',
+      optionLabelKey: 'name',
+      optionValueKey: 'name',
+    },
   },
   {
     Header: 'Project Codes',

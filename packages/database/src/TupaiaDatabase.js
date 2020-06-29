@@ -17,6 +17,7 @@ const QUERY_METHODS = {
   INSERT: 'insert',
   UPDATE: 'update',
   SELECT: 'select',
+  DISTINCT: 'distinct',
   DELETE: 'del',
 };
 
@@ -185,7 +186,7 @@ export class TupaiaDatabase {
     return buildQuery(this.connection, ...args);
   }
 
-  find(recordType, where = {}, options = {}, queryMethod = QUERY_METHODS.SELECT) {
+  find(recordType, where = {}, options = {}, queryMethod) {
     if (options.subQuery) {
       const { recordType: subRecordType, where: subWhere, ...subOptions } = options.subQuery;
       options.innerQuery = this.find(subRecordType, subWhere, subOptions);
@@ -193,7 +194,8 @@ export class TupaiaDatabase {
     return this.query(
       {
         recordType,
-        queryMethod,
+        queryMethod:
+          queryMethod || (options.distinct ? QUERY_METHODS.DISTINCT : QUERY_METHODS.SELECT),
       },
       where,
       options,

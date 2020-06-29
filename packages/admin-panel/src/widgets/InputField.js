@@ -40,15 +40,9 @@ export const InputField = ({
           placeholder={value}
           endpoint={optionsEndpoint}
           optionLabelKey={optionLabelKey}
+          optionValueKey={optionValueKey}
           reduxId={inputKey}
-          onChange={selection =>
-            onChange(
-              inputKey,
-              allowMultipleValues
-                ? selection.map(s => s[optionValueKey])
-                : selection[optionValueKey],
-            )
-          }
+          onChange={inputValue => onChange(inputKey, inputValue)}
           canCreateNewOptions={canCreateNewOptions}
           disabled={disabled}
           allowMultipleValues={allowMultipleValues}

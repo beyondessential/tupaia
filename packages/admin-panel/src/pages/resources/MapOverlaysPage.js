@@ -18,6 +18,11 @@ const FIELDS = [
   {
     Header: 'Permission Group',
     source: 'userGroup',
+    editConfig: {
+      optionsEndpoint: 'permissionGroups',
+      optionLabelKey: 'name',
+      optionValueKey: 'name',
+    },
   },
   {
     Header: 'Data Element Code',
@@ -26,6 +31,11 @@ const FIELDS = [
   {
     Header: 'Measure Builder',
     source: 'measureBuilder',
+    editConfig: {
+      optionsEndpoint: 'mapOverlays',
+      optionLabelKey: 'measureBuilder',
+      optionValueKey: 'measureBuilder',
+    },
   },
   {
     Header: 'Measure Builder Config',
@@ -36,6 +46,11 @@ const FIELDS = [
   {
     Header: 'Display Type',
     source: 'displayType',
+    editConfig: {
+      optionsEndpoint: 'mapOverlays',
+      optionLabelKey: 'displayType',
+      optionValueKey: 'displayType',
+    },
   },
   {
     Header: 'Custom Colors',

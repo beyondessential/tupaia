@@ -91,14 +91,34 @@ const mapStateToProps = (state, { reduxId }) => ({
 
 const mapDispatchToProps = (
   dispatch,
-  { endpoint, optionLabelKey, reduxId, onChange, parentRecord },
+  {
+    endpoint,
+    optionLabelKey,
+    optionValueKey,
+    reduxId,
+    onChange,
+    parentRecord,
+    allowMultipleValues,
+  },
 ) => ({
   onChangeSelection: newSelection => {
-    onChange(newSelection);
+    const newValue = allowMultipleValues
+      ? newSelection.map(s => s[optionValueKey])
+      : newSelection[optionValueKey];
+    onChange(newValue);
     dispatch(changeSelection(reduxId, newSelection));
   },
   onChangeSearchTerm: newSearchTerm =>
-    dispatch(changeSearchTerm(reduxId, endpoint, optionLabelKey, newSearchTerm, parentRecord)),
+    dispatch(
+      changeSearchTerm(
+        reduxId,
+        endpoint,
+        optionLabelKey,
+        optionValueKey,
+        newSearchTerm,
+        parentRecord,
+      ),
+    ),
   onClearState: () => dispatch(clearState(reduxId)),
 });
 
