@@ -129,10 +129,6 @@ export const WeeklyReportsPanelComponent = React.memo(
       }
     };
 
-    const handleCloseModal = () => {
-      setIsModalOpen(false);
-    };
-
     if (countryData.length === 0 || sitesData.length === 0) {
       return null;
     }
@@ -205,7 +201,7 @@ export const WeeklyReportsPanelComponent = React.memo(
             )}
           </FooterInner>
         </DrawerFooter>
-        <AlertCreatedModal isOpen={isModalOpen} handleClose={handleCloseModal} />
+        <AlertCreatedModal isOpen={isModalOpen} handleClose={() => setIsModalOpen(false)} />
       </StyledDrawer>
     );
   },

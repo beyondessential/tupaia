@@ -81,43 +81,45 @@ export const OutbreaksPanelComponent = ({
   };
 
   return (
-    <Drawer open={isOpen} onClose={handleClose}>
-      <DrawerTray
-        color={COLORS.RED}
-        heading="Outbreak Details"
-        onClose={handleClose}
-        Icon={Virus}
-      />
-      <AlertsDrawerHeader
-        color={COLORS.RED}
-        dateText="Outbreak Start Date:"
-        date="Mar 6, 2020"
-        avatarUrl={countryFlagImage('as')}
-        subheading="American Samoa"
-        heading="Measles"
-        DropdownMenu={<DropdownMenu options={menuOptions} onChange={handleChange} />}
-      />
-      <CardTabs>
-        <CardTabList>
-          <CardTab>
-            <LocationOn /> Affected Sites
-          </CardTab>
-          <CardTab>
-            <SpeakerNotes />
-            Notes ({notesState.count})
-          </CardTab>
-          <CardTab>
-            <List />
-            Activity
-          </CardTab>
-        </CardTabList>
-        <CardTabPanels>
-          <AffectedSitesTab type="outbreaks" state={sitesState} />
-          <NotesTab state={notesState} />
-          <ActivityTab state={activityState} />
-        </CardTabPanels>
-      </CardTabs>
-    </Drawer>
+    <div>
+      <Drawer open={isOpen} onClose={handleClose}>
+        <DrawerTray
+          color={COLORS.RED}
+          heading="Outbreak Details"
+          onClose={handleClose}
+          Icon={Virus}
+        />
+        <AlertsDrawerHeader
+          color={COLORS.RED}
+          dateText="Outbreak Start Date:"
+          date="Mar 6, 2020"
+          avatarUrl={countryFlagImage('as')}
+          subheading="American Samoa"
+          heading="Measles"
+          DropdownMenu={<DropdownMenu options={menuOptions} onChange={handleChange} />}
+        />
+        <CardTabs>
+          <CardTabList>
+            <CardTab>
+              <LocationOn /> Affected Sites
+            </CardTab>
+            <CardTab>
+              <SpeakerNotes />
+              Notes ({notesState.count})
+            </CardTab>
+            <CardTab>
+              <List />
+              Activity
+            </CardTab>
+          </CardTabList>
+          <CardTabPanels>
+            <AffectedSitesTab type="outbreaks" state={sitesState} />
+            <NotesTab state={notesState} />
+            <ActivityTab state={activityState} />
+          </CardTabPanels>
+        </CardTabs>
+      </Drawer>
+    </div>
   );
 };
 

@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { MoveToInbox, LocationOn, SpeakerNotes, List } from '@material-ui/icons';
@@ -24,6 +24,7 @@ import {
   ActivityTab,
   NotesTab,
   DrawerTray,
+  CreateOutbreakModal,
 } from '../../components';
 import { countryFlagImage } from '../../utils';
 import { useFetch } from '../../hooks';
@@ -66,12 +67,14 @@ const menuOptions = [
 
 export const AlertsPanelComponent = React.memo(
   ({ isOpen, handleClose, fetchSitesData, fetchNotesData, fetchActivityData }) => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const sitesState = useFetch(fetchSitesData);
     const notesState = useFetch(fetchNotesData);
     const activityState = useFetch(fetchActivityData);
 
     const handleChange = option => {
       console.log('handle change...', option);
+      setIsModalOpen(true);
     };
 
     return (
@@ -105,6 +108,7 @@ export const AlertsPanelComponent = React.memo(
             <ActivityTab state={activityState} />
           </CardTabPanels>
         </CardTabs>
+        <CreateOutbreakModal isOpen={isModalOpen} handleClose={() => setIsModalOpen(false)} />
       </Drawer>
     );
   },

@@ -268,7 +268,7 @@ export class FakeAPI {
         'Acute Fever and Rash (AFR)',
         'Diarrhoea (DIA)',
         'Influenza-like Illness (ILI)',
-        'Prolonged Fever (AFR)',
+        'Prolonged Fever (PF)',
         'Dengue-like Illness (DIL)',
       ]),
       week: faker.random.number({

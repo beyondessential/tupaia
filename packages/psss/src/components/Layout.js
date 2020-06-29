@@ -54,6 +54,18 @@ export const FlexRow = styled.div`
   justify-content: flex-start;
 `;
 
+export const FlexStart = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+`;
+
+export const FlexEnd = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+`;
+
 export const FlexSpaceBetween = styled.div`
   display: flex;
   align-items: center;

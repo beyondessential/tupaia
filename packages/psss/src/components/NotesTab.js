@@ -5,7 +5,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { TextField, Button, UserMessage, CardTabPanel } from '@tupaia/ui-components';
+import {
+  TextField,
+  Button,
+  UserMessage,
+  UserMessageHeader,
+  CardTabPanel,
+} from '@tupaia/ui-components';
 import { FetchLoader } from './FetchLoader';
 import * as COLORS from '../constants/colors';
 
@@ -51,10 +57,10 @@ export const NotesTab = ({ state }) => {
             return (
               <StyledUserMessage
                 key={message.id}
-                message={message}
-                user={data.user}
                 onUpdate={handleUpdate}
                 onDelete={handleDelete}
+                Header={<UserMessageHeader user={data.user} dateTime={message.created} />}
+                message={message}
               />
             );
           })}
