@@ -13,6 +13,7 @@ import { GeographicalAreaModel } from './GeographicalArea';
 import { MeditrakDeviceModel } from './MeditrakDevice';
 import { OneTimeLoginModel } from './OneTimeLogin';
 import { PermissionGroupModel } from './PermissionGroup';
+import { ProjectModel } from './Project';
 import { QuestionModel } from './Question';
 import { RefreshTokenModel } from './RefreshToken';
 import { SurveyModel } from './Survey';
@@ -37,6 +38,7 @@ export const modelClasses = {
   MeditrakDevice: MeditrakDeviceModel,
   OneTimeLogin: OneTimeLoginModel,
   PermissionGroup: PermissionGroupModel,
+  Project: ProjectModel,
   Question: QuestionModel,
   RefreshToken: RefreshTokenModel,
   Survey: SurveyModel,

@@ -16,12 +16,20 @@ const FIELDS = [
     Header: 'Message',
     source: 'message',
     editable: false,
-    editConfig: { type: 'textarea' },
+  },
+  {
+    Header: 'Project Code',
+    source: 'project.code',
+    editable: false,
   },
   {
     Header: 'Permission Group',
     source: 'permission_group.name',
-    editConfig: { optionsEndpoint: 'permissionGroups' },
+    editConfig: {
+      optionsEndpoint: 'permissionGroups',
+      instruction:
+        'If a default is shown here, it will give the user access to the project they requested, but please review carefully as some projects have several permission levels.',
+    },
   },
 ];
 

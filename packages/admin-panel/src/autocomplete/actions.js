@@ -38,7 +38,6 @@ export const changeSearchTerm = (
   try {
     const filter = convertSearchTermToFilter({ [labelColumn]: searchTerm });
     const response = await api.get(makeSubstitutionsInString(endpoint, parentRecord), {
-      ...queryParameters,
       filter: JSON.stringify(filter),
       pageSize: MAX_AUTOCOMPLETE_RESULTS,
       sort: JSON.stringify([`${labelColumn} ASC`]),

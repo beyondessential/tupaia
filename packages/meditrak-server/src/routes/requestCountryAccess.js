@@ -26,29 +26,39 @@ const getUserName = async (userId, models) => {
   }
 };
 
-const sendRequest = (userName, countryNames, message, permissionGroup) => {
+const sendRequest = (userName, countryNames, message, project) => {
   const { COUNTRY_REQUEST_EMAIL_ADDRESS } = process.env;
 
-  const emailText = `${userName} has requested access to countries:
-    ${countryNames.join(',\n')}
-
-    For the permission group: ${permissionGroup || 'not specified'}
-
-    With the message:
-    '${message}'
+  const emailText = `
+  ${userName} has requested access to countries:
+${countryNames.map(n => `  -  ${n}`).join('\n')}
+${
+  project
+    ? `
+  For the project ${project.code} (linked to permission groups: ${project.user_groups.join(', ')})
+    `
+    : ''
+}
+  With the message: '${message}'
 `;
   return sendEmail(COUNTRY_REQUEST_EMAIL_ADDRESS, 'Tupaia Country Access Request', emailText);
 };
 
-const createAccessRequests = async (userId, entities, message, permissionGroupId, models) => {
-  for (const entity of entities) {
-    await models.accessRequest.create({
-      user_id: userId,
-      entity_id: entity.id,
-      message,
-      permission_group_id: permissionGroupId,
-    });
-  }
+const createAccessRequests = async (models, userId, entities, message, project) => {
+  // use the first permission group in the project's user_groups as the placeholder permission group
+  // that the access request administrator can choose to accept or change
+  const [placeholderPermissionGroup] = project ? await project.permissionGroups() : [];
+  await Promise.all(
+    entities.map(async ({ id: entityId }) =>
+      models.accessRequest.create({
+        user_id: userId,
+        entity_id: entityId,
+        message,
+        project_id: project ? project.id : null,
+        permission_group_id: placeholderPermissionGroup ? placeholderPermissionGroup.id : null,
+      }),
+    ),
+  );
 };
 
 // fetches entity using the provided ids, or via countries (supports meditrak 1.7.106 and older)
@@ -61,7 +71,7 @@ const fetchEntities = async (models, entityIds, countryIds) => {
 
 export const requestCountryAccess = async (req, res) => {
   const { body: requestBody = {}, userId: requestUserId, params, models } = req;
-  const { countryIds, entityIds, message = '', userGroup } = requestBody;
+  const { countryIds, entityIds, message = '', projectCode } = requestBody;
 
   if ((!countryIds || countryIds.length === 0) && (!entityIds || entityIds.length === 0)) {
     throw new ValidationError('Please select at least one country.');
@@ -76,14 +86,11 @@ export const requestCountryAccess = async (req, res) => {
   }
   const userName = await getUserName(userId, models);
 
-  const permissionGroup = await models.permissionGroup.findOne({ name: userGroup });
-  if (!permissionGroup) {
-    throw new ValidationError(`Permission Group ${userGroup} does not exist`);
-  }
-  await createAccessRequests(userId, entities, message, permissionGroup.id, models);
+  const project = projectCode && (await models.project.findOne({ code: projectCode }));
+  await createAccessRequests(models, userId, entities, message, project);
 
   const countryNames = entities.map(e => e.name);
-  await sendRequest(userName, countryNames, message, userGroup);
+  await sendRequest(userName, countryNames, message, project);
 
   respond(res, { message: 'Country access requested.' }, 200);
 };
