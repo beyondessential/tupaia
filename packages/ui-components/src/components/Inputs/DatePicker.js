@@ -9,6 +9,7 @@ import DateFnsUtils from '@date-io/date-fns';
 import PropTypes from 'prop-types';
 import { KeyboardDatePicker as MuiDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { TextField } from './TextField';
+import { DAY_MONTH_YEAR_DATE_FORMAT } from '../../constants';
 
 const StyledDatePicker = styled(MuiDatePicker)`
   .MuiInputAdornment-positionEnd :before {
@@ -30,7 +31,7 @@ export const DatePicker = props => {
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <StyledDatePicker
         value={value}
-        format="dd/MM/yyyy"
+        format={DAY_MONTH_YEAR_DATE_FORMAT}
         onChange={handleChange}
         animateYearScrolling
         TextFieldComponent={TextField}

@@ -10,6 +10,7 @@ import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import MuiAvatar from '@material-ui/core/Avatar';
 import { FlexSpaceBetween } from '../Layout';
+import { AM_PM_DATE_FORMAT, DAY_MONTH_YEAR_DATE_FORMAT } from '../../constants';
 
 const Header = styled(FlexSpaceBetween)`
   padding: 0.3rem 0 0.3rem 1rem;
@@ -45,8 +46,8 @@ export const UserMessageHeader = ({ user, dateTime, ActionsMenu }) => (
       <Title>{user.name}</Title>
     </FlexSpaceBetween>
     <FlexSpaceBetween>
-      <Date>{format(dateTime, 'dd/MM/yyyy')}</Date>
-      <Time>{format(dateTime, "h:mmaaaaa'm'")}</Time>
+      <Date>{format(dateTime, DAY_MONTH_YEAR_DATE_FORMAT)}</Date>
+      <Time>{format(dateTime, AM_PM_DATE_FORMAT)}</Time>
       {ActionsMenu}
     </FlexSpaceBetween>
   </Header>

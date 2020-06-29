@@ -10,6 +10,7 @@ import { format } from 'date-fns';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FlexSpaceBetween } from '../Layout';
+import { AM_PM_DATE_FORMAT, DAY_MONTH_YEAR_DATE_FORMAT } from '../../constants';
 
 const FooterContainer = styled.div`
   padding: 0 1.25rem;
@@ -42,7 +43,9 @@ const FooterAvatar = styled(Avatar)`
 export const UserMessageFooter = ({ dateTime, user }) => (
   <FooterContainer>
     <FooterInner>
-      <FooterText>Last updated on: {format(dateTime, "dd/MM/yyyy - h:mmaaaaa'm'")}</FooterText>
+      <FooterText>
+        Last updated on: {format(dateTime, `${DAY_MONTH_YEAR_DATE_FORMAT} - ${AM_PM_DATE_FORMAT}`)}
+      </FooterText>
       <FlexSpaceBetween>
         <FooterUser>{user.name}</FooterUser>
         <FooterAvatar src={user.avatar} />
