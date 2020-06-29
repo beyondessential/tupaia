@@ -45,8 +45,9 @@ ${
 };
 
 const createAccessRequests = async (models, userId, entities, message, project) => {
-  // use the first permission group in the project's user_groups as the default permission group
-  const defaultPermissionGroup =
+  // use the first permission group in the project's user_groups as the placeholder permission group
+  // that the access request administrator can choose to accept or change
+  const placeholderPermissionGroup =
     project && (await models.permissionGroup.findOne({ name: project.user_groups[0] }));
   await Promise.all(
     entities.map(async ({ id: entityId }) =>
@@ -55,7 +56,7 @@ const createAccessRequests = async (models, userId, entities, message, project) 
         entity_id: entityId,
         message,
         project_id: project.id,
-        permission_group_id: defaultPermissionGroup.id,
+        permission_group_id: placeholderPermissionGroup.id,
       }),
     ),
   );
