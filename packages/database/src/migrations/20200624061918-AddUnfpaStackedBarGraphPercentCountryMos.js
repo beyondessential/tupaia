@@ -5,24 +5,6 @@ import { insertObject } from '../utilities/migration';
 var dbm;
 var type;
 var seed;
-/*
-Dashboard title: Stock Status by product: MOS mSupply, % of countries
-Dashboard group name: UNFPA
-Dashboard type: Stacked bar chart
-Countries: Tonga, Solomon Islands, Vanuatu, Kiribati
-Entity: National warehouse only
-Vanuatu - CMS (Central Medical Store): VU_1180_20
-Solomon Islands - National Medical Store: SB_500092
-Tonga - CPMS: TO_CPMS
-Kiribati - Tungaru Central Hospital: KI_GEN
-
-Stacked bar graph showing % of countries with MOS in the corresponding 'level group' for each item
-Stock status based on MOS:
-Stock out (MOS 0) = Red stack on the bar
-Below minimum (MOS 1-2) = Orange stack on the bar
-Stocked appropriately (MOS 3-6) = Green stack on the bar
-Overstock (MOS >6) = Yellow stack on the bar
-*/
 
 const dashboardReportId = 'UNFPA_Stock_MOS_By_percent_Countries';
 const dashboardReportTitle = 'Stock Status by product: MOS mSupply, % of countries';
@@ -86,55 +68,74 @@ const products = [
     dataElementCodes: ["MOS_4718f43e", "MOS_3b3994bf"],
   },
 ];
-
-//Stock status based on MOS:
 const groups = {
-  // Stock out (MOS 0) = Red stack on the bar
-  "Stock out (MOS 0)": {
-    "value": 0,
-    "operator": "=",
-    "color": "Red",
+  "MOS_0": {
+    "value": 1,
+    "operator": "<",
   },
-  // Below minimum (MOS 1-2) = Orange stack on the bar
-  "Below minimum (MOS 1-2)": {
-    "value": [1, 2],
+  "MOS_1-2": {
+    "value": [1, 3],
     "operator": "range",
-    "color": "Orange",
   },
-  // Stocked appropriately (MOS 3-6) = Green stack on the bar
-  "Stocked appropriately (MOS 3-6)": {
+  "MOS_3-6": {
     "value": [3, 6],
     "operator": "range",
-    "color": "Green",
   },
-  // Overstock (MOS >6) = Yellow stack on the bar
-  "Overstock (MOS >6)": {
+  "MOS_6": {
     "value": 6,
     "operator": ">",
-    "color": "Yellow"
+  }
+};
+
+//Stock status based on MOS:
+const chartConfig = {
+  // Stock out (MOS 0) = Red stack on the bar
+  "MOS_0": {
+    "label": "Stock out (MOS 0)",
+    "color": "Red",
+    "stackId": 1,
+  },
+  // Below minimum (MOS 1-2) = Orange stack on the bar
+  "MOS_1-2": {
+    "label": "Below minimum (MOS 1-2)",
+    "color": "Orange",
+    "stackId": 1,
+  },
+  // Stocked appropriately (MOS 3-6) = Green stack on the bar
+  "MOS_3-6": {
+    "label": "Stocked appropriately (MOS 3-6)",
+    "color": "Green",
+    "stackId": 1,
+  },
+  // Overstock (MOS >6) = Yellow stack on the bar
+  "MOS_6": {
+    "label": "Overstock (MOS >6)",
+    "color": "Yellow",
+    "stackId": 1,
   }
 };
 
 const filterCodes = ["VU_1180_20", "SB_500092", "TO_CPMS", "KI_GEN"];
-// "measureBuilder": "checkConditions"
 
-const chartConfig = {};
 const dataClasses = {};
+const labels = {};
 products.forEach((product, index) => {
-  const { id, label, dataElementCodes } = product;
-  chartConfig[id] = {
-    label: label,
-    stackId: 1,
-    //legendOrder: index,
-    //color: COLORS[index],
-  };
+  const { id, dataElementCodes, label } = product;
   dataClasses[id] = {
     codes: dataElementCodes,
   };
+  labels[id] = label;
 });
 
 const dataBuilderConfig = {
-
+  "filter": {
+    "organisationUnit": {
+      "in": filterCodes
+    }
+  },
+  "groups": groups,
+  "labels": labels,
+  periodType: 'month'
 };
 
 const viewJson = {
@@ -142,15 +143,16 @@ const viewJson = {
   type: 'chart',
   chartType: 'bar',
   valueType: "percentage",
+  xName: "%",
   periodGranularity: 'month',
+  chartConfig: chartConfig,
 }
 
 const dashboardReport = {
   id: dashboardReportId,
-  dataBuilder: 'sumPerMonth',
-  dataBuilderConfig: dataBuilderConfig,
+  dataBuilder: 'composePercentageInGroupByDataClass',
   dataBuilderConfig: { ...dataBuilderConfig, dataClasses },
-  viewJson: { ...viewJson, chartConfig },
+  viewJson: viewJson,
   dataServices: [
     {
       isDataRegional: true,
