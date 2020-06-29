@@ -17,6 +17,7 @@ class RawDataValuesBuilder extends DataBuilder {
     const data = {};
 
     const surveyCodeToName = reduceToDictionary(this.config.surveys, 'code', 'name');
+    const surveyCodeExcludes = reduceToDictionary(this.config.surveys, 'code', 'excludeCodes');
 
     const { surveysConfig = {} } = this.config;
 
@@ -27,10 +28,10 @@ class RawDataValuesBuilder extends DataBuilder {
       const { dataElements: dataElementsMetadata } = await this.fetchDataGroup(surveyCode);
 
       const dataElementCodes =
-        this.config.excludeCodes && this.config.excludeCodes.length
+        surveyCodeExcludes[surveyCode] && surveyCodeExcludes[surveyCode].length
           ? dataElementsMetadata
               .map(d => d.code)
-              .filter(code => !this.config.excludeCodes.includes(code))
+              .filter(code => !surveyCodeExcludes[surveyCode].includes(code))
           : dataElementsMetadata.map(d => d.code);
 
       const surveyConfig = surveysConfig[surveyCode];

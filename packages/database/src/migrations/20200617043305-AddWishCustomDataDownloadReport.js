@@ -17,64 +17,95 @@ exports.setup = function(options, seedLink) {
 };
 
 const DASHBOARD_GROUP_CODE = 'WISH_Export_Surveys';
-
-const EXCLUDE_CODES = [
-  'FDCIBEA5004', 
-  'FDCIBEA5010',
-  'WFIGM2',
-  'WFI5HIS17',
-  'WFI4SO7',
-  'WFI4AGR5',
-  'WFI4AQU5',
-  'WFICM5',
-  'WFI4RA 5',
-  'WFI4SQ7',
-  'WFIGM2',
-  'WFI4SO11',
-  'WFI4SQ11',
-  'WFI5HOS3',
-  'WFI5HIS3',
-];
-
 const DATA_BUILDER_CONFIG = {
   surveys: [
-    { code: 'WISH_2GM', name: '2 - Government mapping' },
-    { code: 'WISH_2GMM', name: '2 - Government mapping methods' },
-    { code: 'WISH_3CM', name: '3 - Community mapping' },
-    { code: 'WISH_4A', name: '4A - Agriculture' },
-    { code: 'WISH_4FAA', name: '4B - Fisheries and Aquaculture' },
-    { code: 'WISH_4R', name: '4D - Recreation' },
-    { code: 'WISH_4SO', name: '4C - Sanitation Observations' },
-    { code: 'WISH_4SQ', name: '4C - Sanitation Questionnaire' },
-    { code: 'WISH_5HO', name: '5A - Household Observational' },
-    { code: 'WISH_5HIS', name: '5B Household Interview Survey' },
-    { code: 'WISH_6CLD', name: '6 - Chemistry Test Data' },
-    { code: 'WISH_6PLD', name: '6 - Physio Lab datasheet' },
-    { code: 'WISH_6MTD', name: '6 - Microbiology Test Data' },
-    { code: 'WISH_WMKS', name: 'WISH MACMON KI Survey' },
+    {
+      code: 'WISH_2GM',
+      name: '2 - Government mapping',
+      excludeCodes: ['WFIGM2'],
+    },
+    {
+      code: 'WISH_2GMM',
+      name: '2 - Government mapping methods',
+    },
+    {
+      code: 'WISH_3CM',
+      name: '3 - Community mapping',
+      excludeCodes: ['WFICM5'],
+    },
+    {
+      code: 'WISH_4A',
+      name: '4A - Agriculture',
+      excludeCodes: ['WFI4AGR5'],
+    },
+    {
+      code: 'WISH_4FAA',
+      name: '4B - Fisheries and Aquaculture',
+      excludeCodes: ['WFI4AQU5'],
+    },
+    {
+      code: 'WISH_4R',
+      name: '4D - Recreation',
+      excludeCodes: ['WFI4RA 5'],
+    },
+    {
+      code: 'WISH_4SO',
+      name: '4C - Sanitation Observations',
+      excludeCodes: ['WFI4SO11', 'WFI4SO7'],
+    },
+    {
+      code: 'WISH_4SQ',
+      name: '4C - Sanitation Questionnaire',
+      excludeCodes: ['WFI4SQ11', 'WFI4SQ7'],
+    },
+    {
+      code: 'WISH_5HO',
+      name: '5A - Household Observational',
+      excludeCodes: ['WFI5HOS3'],
+    },
+    {
+      code: 'WISH_5HIS',
+      name: '5B Household Interview Survey',
+      excludeCodes: ['WFI5HIS17', 'WFI5HIS3'],
+    },
+    {
+      code: 'WISH_6CLD',
+      name: '6 - Chemistry Test Data',
+    },
+    {
+      code: 'WISH_6PLD',
+      name: '6 - Physio Lab datasheet',
+    },
+    {
+      code: 'WISH_6MTD',
+      name: '6 - Microbiology Test Data',
+    },
+    {
+      code: 'WISH_WMKS',
+      name: 'WISH MACMON KI Survey',
+    },
   ],
   exportDataBuilder: {
     dataBuilder: 'rawDataValues',
     dataBuilderConfig: {
       entityAggregation: {
-        dataSourceEntityType: [ "village", "facility" ],
+        dataSourceEntityType: ['village', 'facility'],
       },
-      excludeCodes: EXCLUDE_CODES,
-      transformations: ['transpose']
+      transformations: ['transpose'],
     },
-  }
+  },
 };
 
 const VIEW_JSON = {
   name: 'Download WISH Survey Data',
   type: 'view',
   viewType: 'dataDownload',
-  periodGranularity: 'year'
+  periodGranularity: 'year',
 };
 
 const REPORT = {
   id: 'WISH_Custom_Export_Surveys',
-  dataBuilder: 'surveyDataExport', //
+  dataBuilder: 'surveyDataExport',
   dataBuilderConfig: DATA_BUILDER_CONFIG,
   viewJson: VIEW_JSON,
 };
@@ -107,5 +138,3 @@ exports.down = function(db) {
 exports._meta = {
   version: 1,
 };
-
-
