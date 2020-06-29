@@ -31,7 +31,7 @@ const sendRequest = (userName, countryNames, message, project) => {
 
   const emailText = `
   ${userName} has requested access to countries:
-    ${countryNames.map(n => `-  ${n}`).join(',\n')}
+${countryNames.map(n => `  -  ${n}`).join('\n')}
 ${
   project
     ? `
@@ -47,8 +47,7 @@ ${
 const createAccessRequests = async (models, userId, entities, message, project) => {
   // use the first permission group in the project's user_groups as the placeholder permission group
   // that the access request administrator can choose to accept or change
-  const placeholderPermissionGroup =
-    project && (await models.permissionGroup.findOne({ name: project.user_groups[0] }));
+  const [placeholderPermissionGroup] = project ? await project.permissionGroups() : [];
   await Promise.all(
     entities.map(async ({ id: entityId }) =>
       models.accessRequest.create({
