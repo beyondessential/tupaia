@@ -27,7 +27,6 @@ export const changeSearchTerm = (
   valueColumn,
   searchTerm,
   parentRecord,
-  queryParameters,
 ) => async (dispatch, getState, { api }) => {
   const fetchId = generateId();
   dispatch({
