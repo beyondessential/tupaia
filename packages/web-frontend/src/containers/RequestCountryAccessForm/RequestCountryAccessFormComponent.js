@@ -44,7 +44,7 @@ export const RequestCountryAccessFormComponent = ({
               fullWidth
               label={country.name}
               key={country.id}
-              name={`countryIds.${country.id}`}
+              name={`entityIds.${country.id}`}
             />
           ))}
           <TextField

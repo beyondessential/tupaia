@@ -109,7 +109,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     onSelectProject: project => {
-      dispatch(selectProject(project));
+      dispatch(selectProject(project.code));
       dispatch(setOverlayComponent(null));
       dispatch(changeOrgUnit(project.homeEntityCode, false));
     },

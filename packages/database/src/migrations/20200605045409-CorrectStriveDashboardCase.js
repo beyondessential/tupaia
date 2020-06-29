@@ -25,8 +25,8 @@ exports.up = function(db) {
 exports.down = function(db) {
   return db.runSql(`
     UPDATE project
-    SET dashboard_group_name = 'Strive PNG';
-    WHERE dashboard_group_name = 'STRIVE PNG'
+    SET dashboard_group_name = 'Strive PNG'
+    WHERE dashboard_group_name = 'STRIVE PNG';
   `);
 };
 
