@@ -20,11 +20,15 @@ export const changeSelection = (reduxId, selection) => ({
   reduxId,
 });
 
-export const changeSearchTerm = (reduxId, endpoint, column, searchTerm, parentRecord) => async (
-  dispatch,
-  getState,
-  { api },
-) => {
+export const changeSearchTerm = (
+  reduxId,
+  endpoint,
+  labelColumn,
+  valueColumn,
+  searchTerm,
+  parentRecord,
+  queryParameters,
+) => async (dispatch, getState, { api }) => {
   const fetchId = generateId();
   dispatch({
     type: AUTOCOMPLETE_INPUT_CHANGE,
@@ -33,11 +37,14 @@ export const changeSearchTerm = (reduxId, endpoint, column, searchTerm, parentRe
     fetchId,
   });
   try {
-    const filter = convertSearchTermToFilter({ [column]: searchTerm });
+    const filter = convertSearchTermToFilter({ [labelColumn]: searchTerm });
     const response = await api.get(makeSubstitutionsInString(endpoint, parentRecord), {
+      ...queryParameters,
       filter: JSON.stringify(filter),
       pageSize: MAX_AUTOCOMPLETE_RESULTS,
-      sort: JSON.stringify([`${column} ASC`]),
+      sort: JSON.stringify([`${labelColumn} ASC`]),
+      columns: JSON.stringify([labelColumn, valueColumn]),
+      distinct: true,
     });
     dispatch({
       type: AUTOCOMPLETE_RESULTS_CHANGE,
