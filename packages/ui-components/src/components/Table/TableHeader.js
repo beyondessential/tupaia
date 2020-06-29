@@ -2,9 +2,9 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
+import React from 'react';
 import styled from 'styled-components';
 import MuiTableSortLabel from '@material-ui/core/TableSortLabel';
-import React from 'react';
 import UnfoldMoreIcon from '@material-ui/icons/UnfoldMore';
 import MuiTableHead from '@material-ui/core/TableHead';
 import MuiTableRow from '@material-ui/core/TableRow';
@@ -33,7 +33,8 @@ export const FakeHeader = styled.div`
 
 const TableHeaderCell = styled(TableCell)`
   height: 50px;
-  padding-right: 1rem;
+  padding-right: 0.8rem;
+  padding-left: 0.8rem;
 `;
 
 const SortLabel = styled(MuiTableSortLabel)`
@@ -50,7 +51,7 @@ const SortLabel = styled(MuiTableSortLabel)`
   }
 `;
 
-export const TableHeader = React.memo(({ columns, order, orderBy, onChangeOrderBy }) => {
+export const TableHeader = React.memo(({ columns, order, orderBy, onChangeOrderBy, className }) => {
   const getContent = (key, sortable, title) =>
     sortable ? (
       <SortLabel
@@ -66,7 +67,7 @@ export const TableHeader = React.memo(({ columns, order, orderBy, onChangeOrderB
     );
 
   return (
-    <MuiTableHead>
+    <MuiTableHead className={className}>
       <MuiTableRow>
         {columns.map(({ key, title, width = null, align = 'center', sortable = true }) => (
           <TableHeaderCell key={key} style={{ width: width }} align={align}>
@@ -83,10 +84,12 @@ TableHeader.propTypes = {
   onChangeOrderBy: PropTypes.func,
   orderBy: PropTypes.string,
   order: PropTypes.string,
+  className: PropTypes.string,
 };
 
 TableHeader.defaultProps = {
   onChangeOrderBy: null,
   orderBy: null,
   order: 'asc',
+  className: null,
 };
