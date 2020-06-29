@@ -17,6 +17,7 @@ import { JsonEditor } from './JsonEditor';
 export const InputField = ({
   allowMultipleValues,
   label,
+  instruction,
   value,
   inputKey,
   optionsEndpoint,
@@ -108,6 +109,11 @@ export const InputField = ({
   return (
     <FormGroup>
       <p>{label}</p>
+      {instruction && (
+        <p>
+          <i>{instruction}</i>
+        </p>
+      )}
       {inputComponent}
     </FormGroup>
   );
@@ -143,6 +149,7 @@ InputField.propTypes = {
   type: PropTypes.string,
   getJsonFieldSchema: PropTypes.func,
   parentRecord: PropTypes.object,
+  instruction: PropTypes.string,
 };
 
 InputField.defaultProps = {
@@ -156,4 +163,5 @@ InputField.defaultProps = {
   type: 'text',
   getJsonFieldSchema: () => [],
   parentRecord: {},
+  instruction: null,
 };
