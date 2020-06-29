@@ -118,7 +118,7 @@ const HeaderBar = styled(FlexSpaceBetween)`
   transition: color 0.3s ease, background-color 0.3s ease, border 0.3s ease;
 
   svg {
-    font-size: 16px;
+    font-size: 1rem;
   }
 `;
 
