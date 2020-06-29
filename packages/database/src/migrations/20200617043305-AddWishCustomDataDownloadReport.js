@@ -22,7 +22,6 @@ const DATA_BUILDER_CONFIG = {
     {
       code: 'WISH_2GM',
       name: '2 - Government mapping',
-      excludeCodes: ['WFIGM2'],
     },
     {
       code: 'WISH_2GMM',
@@ -31,42 +30,34 @@ const DATA_BUILDER_CONFIG = {
     {
       code: 'WISH_3CM',
       name: '3 - Community mapping',
-      excludeCodes: ['WFICM5'],
     },
     {
       code: 'WISH_4A',
       name: '4A - Agriculture',
-      excludeCodes: ['WFI4AGR5'],
     },
     {
       code: 'WISH_4FAA',
       name: '4B - Fisheries and Aquaculture',
-      excludeCodes: ['WFI4AQU5'],
     },
     {
       code: 'WISH_4R',
       name: '4D - Recreation',
-      excludeCodes: ['WFI4RA 5'],
     },
     {
       code: 'WISH_4SO',
       name: '4C - Sanitation Observations',
-      excludeCodes: ['WFI4SO11', 'WFI4SO7'],
     },
     {
       code: 'WISH_4SQ',
       name: '4C - Sanitation Questionnaire',
-      excludeCodes: ['WFI4SQ11', 'WFI4SQ7'],
     },
     {
       code: 'WISH_5HO',
       name: '5A - Household Observational',
-      excludeCodes: ['WFI5HOS3'],
     },
     {
       code: 'WISH_5HIS',
       name: '5B Household Interview Survey',
-      excludeCodes: ['WFI5HIS17', 'WFI5HIS3'],
     },
     {
       code: 'WISH_6CLD',
@@ -93,6 +84,7 @@ const DATA_BUILDER_CONFIG = {
           entityAggregation: {
             dataSourceEntityType: 'facility',
           },
+          excludeCodes: ['WFIGM2'],
         },
         WISH_2GMM: {
           entityAggregation: {
@@ -103,41 +95,49 @@ const DATA_BUILDER_CONFIG = {
           entityAggregation: {
             dataSourceEntityType: 'village',
           },
+          excludeCodes: ['WFICM5'],
         },
         WISH_4A: {
           entityAggregation: {
             dataSourceEntityType: 'village',
           },
+          excludeCodes: ['WFI4AGR5'],
         },
         WISH_4FAA: {
           entityAggregation: {
             dataSourceEntityType: ['village', 'facility'],
           },
+          excludeCodes: ['WFI4AQU5'],
         },
         WISH_4R: {
           entityAggregation: {
             dataSourceEntityType: 'village',
           },
+          excludeCodes: ['WFI4RA 5'],
         },
         WISH_4SO: {
           entityAggregation: {
             dataSourceEntityType: 'village',
           },
+          excludeCodes: ['WFI4SO11', 'WFI4SO7'],
         },
         WISH_4SQ: {
           entityAggregation: {
             dataSourceEntityType: 'village',
           },
+          excludeCodes: ['WFI4SQ11', 'WFI4SQ7'],
         },
         WISH_5HO: {
           entityAggregation: {
             dataSourceEntityType: 'village',
           },
+          excludeCodes: ['WFI5HOS3'],
         },
         WISH_5HIS: {
           entityAggregation: {
             dataSourceEntityType: 'village',
           },
+          excludeCodes: ['WFI5HIS17', 'WFI5HIS3'],
         },
         WISH_6CLD: {
           entityAggregation: {
