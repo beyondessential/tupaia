@@ -38,8 +38,6 @@ export const reloadCountryWeeks = ({ fetchOptions = {}, queryParameters = {} }) 
   }
 };
 
-
-
 // selectors
 const STATUSES = {
   IDLE: 'idle',
