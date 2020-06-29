@@ -147,7 +147,11 @@ export async function getRecords(req, res) {
         processColumnSelector(sortKey, recordType),
       );
       // if 'distinct', we can't order by any columns that aren't included in the distinct selection
-      sort = distinct ? fullyQualifiedSortKeys : sort.unshift(...fullyQualifiedSortKeys);
+      if (distinct) {
+        sort = fullyQualifiedSortKeys;
+      } else {
+        sort.unshift(...fullyQualifiedSortKeys);
+      }
     }
     const options = { multiJoin, columns, limit, offset, sort, distinct };
     const records = await findOrCountRecords(options);
