@@ -3,10 +3,10 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { RouteHandler } from './RouteHandler';
 import { createAggregator } from '@tupaia/aggregator';
-import { Aggregator } from '../aggregator';
-import { Project } from '../models';
+import { RouteHandler } from './RouteHandler';
+import { Aggregator } from '/aggregator';
+import { Project } from '/models';
 import { filterEntities } from './utils';
 
 /**
@@ -16,7 +16,7 @@ import { filterEntities } from './utils';
 export class DataAggregatingRouteHandler extends RouteHandler {
   constructor(req, res) {
     super(req, res);
-    this.aggregator = createAggregator(Aggregator, this.fetchDataSourceEntities);
+    this.aggregator = createAggregator(Aggregator, this);
   }
 
   // Builds the list of entities data should be fetched from, using org unit descendents of the
@@ -25,13 +25,21 @@ export class DataAggregatingRouteHandler extends RouteHandler {
     // if a specific type was specified in either the query or the function parameter, build org
     // units of that type (otherwise we just use the nearest org unit descendants)
 
-    const entityType = this.query.dataSourceEntityType || dataSourceEntityType;
+    const entityType = dataSourceEntityType || this.query.dataSourceEntityType;
     const hierarchyId = (await Project.findOne({ code: this.query.projectCode }))
       .entity_hierarchy_id;
 
-    let dataSourceEntities = entityType
-      ? await entity.getDescendantsOfType(entityType, hierarchyId)
-      : await entity.getNearestOrgUnitDescendants(hierarchyId);
+    let dataSourceEntities = [];
+    if (entityType) {
+      const ancestor = await entity.getAncestorOfType(entityType);
+      if (ancestor && ancestor.type !== entity.type) {
+        dataSourceEntities = [ancestor];
+      } else {
+        dataSourceEntities = await entity.getDescendantsOfType(entityType, hierarchyId);
+      }
+    } else {
+      dataSourceEntities = await entity.getNearestOrgUnitDescendants(hierarchyId);
+    }
 
     const countryCodes = [...new Set(dataSourceEntities.map(e => e.country_code))];
     const countryAccessList = await Promise.all(

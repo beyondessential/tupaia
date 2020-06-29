@@ -9,10 +9,11 @@ import { getPreferredPeriod } from './utils';
  * Filter to get latest period analytics from analytics
  *
  * @param {Array} analytics
- * @param {Object<string, string>} orgUnitToGroupKeys
+ * @param {Object<string, Object<string, string>>} aggregationConfig
  * @returns {Array}
  */
-export const filterLatest = (analytics, orgUnitToGroupKeys) => {
+export const filterLatest = (analytics, aggregationConfig) => {
+  const { orgUnitToGroupKeys } = aggregationConfig;
   const filteredAnalytics = [];
   // Hold on to a cache of the latest analytics found for each data element/organisation unit combo
   const latestAnalyticsCache = {};

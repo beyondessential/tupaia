@@ -1,22 +1,9 @@
 {
-  "extends": ["@beyondessential/eslint-config-beyondessential", "plugin:prettier/recommended"],
-  "plugins": ["react", "react-native"],
-  "parser": "babel-eslint",
+  "plugins": ["react-native"],
   "env": {
-    "browser": true,
-    "node": true
+    "browser": true
   },
   "rules": {
-    "react/prop-types": [2, { "ignore": ["navigation"] }],
-    "react/jsx-boolean-value": ["error", "never"],
-    "react/forbid-prop-types": "off",
-    "jsx-a11y/href-no-hash": "off",
-    "react/prefer-stateless-function": [2, { "ignorePureComponents": true }],
-    "react/jsx-filename-extension": [
-      1,
-      {
-        "extensions": [".js", ".jsx"]
-      }
-    ]
+    "react/prop-types": ["error", { "ignore": ["navigation"] }]
   }
 }

@@ -3,9 +3,9 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 
-import { respond, ValidationError } from '@tupaia/utils';
-import { TYPES } from '@tupaia/database';
 import {
+  respond,
+  ValidationError,
   ObjectValidator,
   constructRecordExistsWithId,
   hasContent,
@@ -14,7 +14,8 @@ import {
   constructIsEmptyOr,
   constructIsOneOf,
   isValidPassword,
-} from '../validation';
+} from '@tupaia/utils';
+import { TYPES } from '@tupaia/database';
 import { resourceToRecordType } from '../utilities';
 import { createUser } from '../dataAccessors';
 import { FEED_ITEM_TYPES } from '../database/models/FeedItem';
@@ -47,23 +48,18 @@ export async function putRecord(req, res) {
 
 const constructValidationRules = (models, recordType) => {
   switch (recordType) {
-    case TYPES.USER_COUNTRY_PERMISSION:
+    case TYPES.USER_ENTITY_PERMISSION:
       return {
         user_id: [constructRecordExistsWithId(models.user)],
-        country_id: [constructRecordExistsWithId(models.country)],
-        permission_group_id: [constructRecordExistsWithId(models.permissionGroup)],
-      };
-
-    case TYPES.USER_FACILITY_PERMISSION:
-      return {
-        user_id: [constructRecordExistsWithId(models.user)],
-        clinic_id: [constructRecordExistsWithId(models.facility)],
-        permission_group_id: [constructRecordExistsWithId(models.permissionGroup)],
-      };
-    case TYPES.USER_GEOGRAPHICAL_AREA_PERMISSION:
-      return {
-        user_id: [constructRecordExistsWithId(models.user)],
-        geographical_area_id: [constructRecordExistsWithId(models.geographicalArea)],
+        entity_id: [
+          constructRecordExistsWithId(models.entity),
+          async entityId => {
+            const entity = await models.entity.findById(entityId);
+            if (entity.type !== 'country') {
+              throw new Error('Only country level permissions are currently supported');
+            }
+          },
+        ],
         permission_group_id: [constructRecordExistsWithId(models.permissionGroup)],
       };
     case TYPES.COUNTRY:

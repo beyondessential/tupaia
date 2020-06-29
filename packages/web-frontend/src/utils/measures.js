@@ -303,7 +303,7 @@ export function getMeasureDisplayInfo(measureData, measureOptions, hiddenMeasure
           displayInfo.icon = valueInfo.icon || displayInfo.icon || SPECTRUM_ICON;
           break;
         case MEASURE_TYPE_SHADING:
-          displayInfo.color = MAP_COLORS[valueInfo.color] || MAP_COLORS.NO_DATA;
+          displayInfo.color = MAP_COLORS[valueInfo.color] || valueInfo.color || MAP_COLORS.NO_DATA;
           break;
         case MEASURE_TYPE_COLOR:
         default:

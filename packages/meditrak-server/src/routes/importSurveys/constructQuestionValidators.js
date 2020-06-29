@@ -3,8 +3,8 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
+import { constructIsOneOf, hasContent, isNumber } from '@tupaia/utils';
 import { ANSWER_TYPES } from '../../database/models/Answer';
-import { constructIsOneOf, hasContent, isNumber } from '../../validation';
 import { splitStringOnComma, splitOnNewLinesOrCommas } from '../utilities';
 import { convertCellToJson, isEmpty, isYesOrNo } from './utilities';
 
@@ -48,7 +48,7 @@ export const constructQuestionValidators = models => ({
     },
   ],
   type: [hasContent, constructIsOneOf(Object.values(ANSWER_TYPES))],
-  indicator: [
+  name: [
     (cell, questionObject) => {
       // Not required for Instruction lines
       if (questionObject.type === 'Instruction') {
@@ -58,9 +58,7 @@ export const constructQuestionValidators = models => ({
     },
     cell => {
       if (cell && cell.length > DHIS_MAX_NAME_LENGTH) {
-        throw new Error(
-          `Question indicators must be shorter than ${DHIS_MAX_NAME_LENGTH} characters`,
-        );
+        throw new Error(`Question names must be shorter than ${DHIS_MAX_NAME_LENGTH} characters`);
       }
       return true;
     },
