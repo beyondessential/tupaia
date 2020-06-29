@@ -55,8 +55,8 @@ const createAccessRequests = async (models, userId, entities, message, project) 
         user_id: userId,
         entity_id: entityId,
         message,
-        project_id: project.id,
-        permission_group_id: placeholderPermissionGroup.id,
+        project_id: project ? project.id : null,
+        permission_group_id: placeholderPermissionGroup ? placeholderPermissionGroup.id : null,
       }),
     ),
   );
