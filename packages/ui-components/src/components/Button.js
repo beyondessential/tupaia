@@ -11,7 +11,7 @@ const StyledButton = styled(MuiButton)`
   font-size: 0.9375rem;
   line-height: 1;
   letter-spacing: 0;
-  padding: 1em 1.5em;
+  padding: 1em 1.75em;
   box-shadow: none;
   min-width: 3rem;
 
@@ -86,7 +86,7 @@ export const SmallButton = styled(Button)`
 /*
  * Light Outlined Button
  */
-const OutlinedButton = props => <Button {...props} variant="outlined" />;
+export const OutlinedButton = props => <Button {...props} variant="outlined" />;
 
 export const LightOutlinedButton = styled(OutlinedButton)`
   color: ${props => props.theme.palette.common.white};
