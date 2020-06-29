@@ -205,7 +205,7 @@ export const AlertsOutbreaksCardHeader = ({
       </div>
       <div>
         <PrevWeek>
-          <SuperText>Prev.Week</SuperText>
+          <SuperText>Prev. Week</SuperText>
           <HighlightText percentageChange={percentageChange} />
         </PrevWeek>
         <Text>{detailText}</Text>

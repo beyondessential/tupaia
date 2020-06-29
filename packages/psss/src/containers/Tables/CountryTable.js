@@ -96,7 +96,7 @@ StatusCell.propTypes = {
 const countryColumns = [
   {
     title: 'Date ',
-    key: 'week',
+    key: 'weekNumber',
     width: COLUMN_WIDTHS.FIRST,
     align: 'left',
     CellComponent: NameCell,
