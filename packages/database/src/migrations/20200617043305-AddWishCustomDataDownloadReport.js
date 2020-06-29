@@ -88,8 +88,77 @@ const DATA_BUILDER_CONFIG = {
   exportDataBuilder: {
     dataBuilder: 'rawDataValues',
     dataBuilderConfig: {
-      entityAggregation: {
-        dataSourceEntityType: ['village', 'facility'],
+      surveysConfig: {
+        WISH_2GM: {
+          entityAggregation: {
+            dataSourceEntityType: 'facility',
+          },
+        },
+        WISH_2GMM: {
+          entityAggregation: {
+            dataSourceEntityType: 'facility',
+          },
+        },
+        WISH_3CM: {
+          entityAggregation: {
+            dataSourceEntityType: 'village',
+          },
+        },
+        WISH_4A: {
+          entityAggregation: {
+            dataSourceEntityType: 'village',
+          },
+        },
+        WISH_4FAA: {
+          entityAggregation: {
+            dataSourceEntityType: ['village', 'facility'],
+          },
+        },
+        WISH_4R: {
+          entityAggregation: {
+            dataSourceEntityType: 'village',
+          },
+        },
+        WISH_4SO: {
+          entityAggregation: {
+            dataSourceEntityType: 'village',
+          },
+        },
+        WISH_4SQ: {
+          entityAggregation: {
+            dataSourceEntityType: 'village',
+          },
+        },
+        WISH_5HO: {
+          entityAggregation: {
+            dataSourceEntityType: 'village',
+          },
+        },
+        WISH_5HIS: {
+          entityAggregation: {
+            dataSourceEntityType: 'village',
+          },
+        },
+        WISH_6CLD: {
+          entityAggregation: {
+            dataSourceEntityType: ['village', 'facility'],
+          },
+        },
+        WISH_6PLD: {
+          entityAggregation: {
+            dataSourceEntityType: ['village', 'facility'],
+          },
+        },
+        WISH_6MTD: {
+          entityAggregation: {
+            dataSourceEntityType: 'village',
+          },
+        },
+        WISH_WMKS: {
+          entityAggregation: {
+            dataSourceEntityType: 'village',
+          },
+        },
       },
       transformations: ['transpose'],
     },
