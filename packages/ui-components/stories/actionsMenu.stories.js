@@ -14,7 +14,7 @@ export default {
 };
 
 const Container = styled(MuiBox)`
-  padding: 1rem;
+  padding: 1rem 1rem 1rem 10rem;
 `;
 
 const StyledAlert = styled(Alert)`
