@@ -65,9 +65,12 @@ const menuOptions = [
   },
 ];
 
+const TabsContext = React.createContext(null);
+
 export const AlertsPanelComponent = React.memo(
   ({ isOpen, handleClose, fetchSitesData, fetchNotesData, fetchActivityData }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [activeTabIndex, setActiveTabIndex] = useState(0);
     const sitesState = useFetch(fetchSitesData);
     const notesState = useFetch(fetchNotesData);
     const activityState = useFetch(fetchActivityData);
@@ -88,8 +91,8 @@ export const AlertsPanelComponent = React.memo(
           heading="Acute Fever and Rash (AFR)"
           DropdownMenu={<DropdownMenu options={menuOptions} onChange={handleChange} />}
         />
-        <CardTabs>
-          <CardTabList>
+        <TabsContext.Provider value={{ activeTabIndex, setActiveTabIndex }}>
+          <CardTabList Context={TabsContext}>
             <CardTab>
               <LocationOn /> Affected Sites
             </CardTab>
@@ -102,12 +105,12 @@ export const AlertsPanelComponent = React.memo(
               Activity
             </CardTab>
           </CardTabList>
-          <CardTabPanels>
+          <CardTabPanels Context={TabsContext}>
             <AffectedSitesTab state={sitesState} />
             <NotesTab state={notesState} />
-            <ActivityTab state={activityState} />
+            <ActivityTab state={activityState} setActiveTabIndex={setActiveTabIndex} />
           </CardTabPanels>
-        </CardTabs>
+        </TabsContext.Provider>
         <CreateOutbreakModal isOpen={isModalOpen} handleClose={() => setIsModalOpen(false)} />
       </Drawer>
     );

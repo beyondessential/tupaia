@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 import MuiTab from '@material-ui/core/Tab';
 import styled from 'styled-components';
 
-const TabsContext = createContext();
+const TabsContext = createContext(null);
 
 /**
  * CardTabs are composable using `CardTabs`, `TabList`, `Tab`, `TabPanels` and `TabPanel`.
@@ -32,8 +32,8 @@ const StyledTabs = styled(MuiTabs)`
   }
 `;
 
-export const CardTabList = ({ children }) => {
-  const { activeIndex, setActiveIndex } = useContext(TabsContext);
+export const CardTabList = ({ children, Context }) => {
+  const { activeIndex, setActiveIndex } = useContext(Context);
   const handleChange = useCallback(
     (event, newValue) => {
       setActiveIndex(newValue);
@@ -49,9 +49,14 @@ export const CardTabList = ({ children }) => {
 
 CardTabList.propTypes = {
   children: PropTypes.array.isRequired,
+  Context: PropTypes.object,
 };
 
-export const CardTab = styled(({ children, ...rest }) => <MuiTab {...rest} label={children} />)`
+CardTabList.defaultProps = {
+  Context: TabsContext,
+};
+
+export const CardTab = styled(({ children, ...props }) => <MuiTab {...props} label={children} />)`
   border-right: 1px solid ${props => props.theme.palette.grey['400']};
   border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
   background: ${props => props.theme.palette.grey['100']};
@@ -70,9 +75,18 @@ export const CardTab = styled(({ children, ...rest }) => <MuiTab {...rest} label
   }
 `;
 
-export const CardTabPanels = ({ children }) => {
-  const { activeIndex } = useContext(TabsContext);
+export const CardTabPanels = ({ children, Context }) => {
+  const { activeIndex } = useContext(Context);
   return children[activeIndex];
+};
+
+CardTabPanels.propTypes = {
+  children: PropTypes.array.isRequired,
+  TabsContext: PropTypes.object,
+};
+
+CardTabPanels.defaultProps = {
+  Context: TabsContext,
 };
 
 export const CardTabPanel = styled.div`

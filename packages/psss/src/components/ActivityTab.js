@@ -16,10 +16,6 @@ import { FlexRow } from './Layout';
 import { fetchStateShape } from '../hooks';
 import * as COLORS from '../constants/colors';
 
-const Container = styled.div`
-  margin-bottom: 1.8rem;
-`;
-
 const HeaderContainer = styled.div`
   background: ${COLORS.LIGHTGREY};
   border: 1px solid ${props => props.theme.palette.grey['400']};
@@ -46,14 +42,14 @@ const DarkTextSpan = styled.span`
   color: ${props => props.theme.palette.text.primary};
 `;
 
-const DateHeader = ({ week, dateTime }) => (
+const DateHeader = React.memo(({ week, dateTime }) => (
   <HeaderContainer>
     <Heading>
       <DarkTextSpan>Week {week} - </DarkTextSpan>
       {format(dateTime, 'EEEE, dd MMMM yyyy')}
     </Heading>
   </HeaderContainer>
-);
+));
 
 DateHeader.propTypes = {
   week: PropTypes.number.isRequired,
@@ -87,13 +83,13 @@ const Time = styled(Typography)`
   margin-bottom: 0.5rem;
 `;
 
-const Link = styled(MuiLink)`
+const StyledLink = styled(MuiLink)`
   text-decoration: underline;
   font-size: 1rem;
   line-height: 1.2rem;
 `;
 
-const UserUpdate = ({ name, avatar, dateTime, type }) => {
+const UserUpdate = React.memo(({ name, avatar, dateTime, type, setActiveTabIndex }) => {
   const Update = () => (
     <>
       <LightTextSpan>changed alert status to</LightTextSpan> Outbreak
@@ -102,7 +98,10 @@ const UserUpdate = ({ name, avatar, dateTime, type }) => {
 
   const Note = () => (
     <LightTextSpan>
-      Added a <Link component="button">note</Link>
+      Added a{' '}
+      <StyledLink onClick={setActiveTabIndex(1)} component="button">
+        note
+      </StyledLink>
     </LightTextSpan>
   );
 
@@ -119,7 +118,7 @@ const UserUpdate = ({ name, avatar, dateTime, type }) => {
       </FlexRow>
     </UpdateContainer>
   );
-};
+});
 
 UserUpdate.propTypes = {
   name: PropTypes.string.isRequired,
@@ -145,7 +144,7 @@ const StyledWarningCloud = styled(WarningCloud)`
   color: ${COLORS.BLUE};
 `;
 
-const AlertCreatedUpdate = ({ dateTime }) => (
+const AlertCreatedUpdate = React.memo(({ dateTime }) => (
   <AlertWrapper>
     <Divider />
     <AlertContainer>
@@ -157,14 +156,19 @@ const AlertCreatedUpdate = ({ dateTime }) => (
     </AlertContainer>
     <Divider />
   </AlertWrapper>
-);
+));
 
 AlertCreatedUpdate.propTypes = {
   dateTime: PropTypes.instanceOf(Date).isRequired,
 };
 
-export const ActivityTab = ({ state }) => {
+const Container = styled.div`
+  margin-bottom: 1.8rem;
+`;
+
+export const ActivityTab = React.memo(({ state, setActiveTabIndex }) => {
   const { data: feed } = state;
+  const exampleDate = new Date();
   return (
     <CardTabPanel>
       <FetchLoader state={state}>
@@ -177,6 +181,7 @@ export const ActivityTab = ({ state }) => {
                   avatar={update.user.avatar}
                   name={update.user.name}
                   dateTime={update.dateTime}
+                  setActiveTabIndex={setActiveTabIndex}
                   type={update.type}
                 />
                 {index < week.updates.length - 1 && <Divider />}
@@ -184,11 +189,11 @@ export const ActivityTab = ({ state }) => {
             ))}
           </Container>
         ))}
-        <AlertCreatedUpdate dateTime={new Date()} />
+        <AlertCreatedUpdate dateTime={exampleDate} />
       </FetchLoader>
     </CardTabPanel>
   );
-};
+});
 
 ActivityTab.propTypes = {
   state: PropTypes.shape(fetchStateShape).isRequired,
