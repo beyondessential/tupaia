@@ -70,8 +70,8 @@ const products = [
 ];
 const groups = {
   "MOS_0": {
-    "value": 1,
-    "operator": "<",
+    "value": 0,
+    "operator": "=",
   },
   "MOS_1-2": {
     "value": [1, 3],
@@ -94,24 +94,28 @@ const chartConfig = {
     "label": "Stock out (MOS 0)",
     "color": "Red",
     "stackId": 1,
+    "legendOrder": 1,
   },
   // Below minimum (MOS 1-2) = Orange stack on the bar
   "MOS_1-2": {
     "label": "Below minimum (MOS 1-2)",
     "color": "Orange",
     "stackId": 1,
+    "legendOrder": 2,
   },
   // Stocked appropriately (MOS 3-6) = Green stack on the bar
   "MOS_3-6": {
     "label": "Stocked appropriately (MOS 3-6)",
     "color": "Green",
     "stackId": 1,
+    "legendOrder": 3,
   },
   // Overstock (MOS >6) = Yellow stack on the bar
   "MOS_6": {
-    "label": "Overstock (MOS >6)",
+    "label": "Overstock (MOS > 6)",
     "color": "Yellow",
     "stackId": 1,
+    "legendOrder": 4,
   }
 };
 
