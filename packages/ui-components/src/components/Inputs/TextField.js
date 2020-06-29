@@ -29,6 +29,10 @@ export const TextField = styled(BaseTextField)`
     border-radius: 3px;
   }
 
+  .MuiSelect-root {
+    color: ${props => props.theme.palette.text.tertiary};
+  }
+
   // Error state
   .MuiInputBase-root.Mui-error {
     background: ${props => props.theme.palette.error.light};
@@ -70,9 +74,8 @@ export const TextField = styled(BaseTextField)`
     position: relative;
     margin-bottom: 4px;
     color: ${props => props.theme.palette.text.secondary};
-    font-size: 0.875rem;
-    line-height: 1;
-    font-weight: 500;
+    font-size: 0.9375rem;
+    line-height: 1.2rem;
     transform: none;
   }
 
