@@ -12,7 +12,6 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import { Provider } from 'react-redux';
 import configureStore from './configureStore';
-import { initHistoryDispatcher } from './utils';
 import { DARKENED_BLUE } from './styles';
 
 import { fetchInitialData } from './actions';
@@ -36,7 +35,7 @@ switch (process.env.REACT_APP_APP_TYPE) {
 
 const store = configureStore();
 
-initHistoryDispatcher(store);
+// initHistoryDispatcher(store); TODO: Will still need for ga (I think?)
 
 class App extends Component {
   constructor(props) {

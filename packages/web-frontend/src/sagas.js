@@ -95,7 +95,7 @@ import {
   REQUEST_ORG_UNIT,
 } from './actions';
 import { isMobile, processMeasureInfo, formatDateForApi } from './utils';
-import { createUrlString } from './utils/historyNavigation';
+import { createUrlString } from './historyNavigation';
 import { getDefaultDates } from './utils/periodGranularities';
 import { INITIAL_MEASURE_ID, INITIAL_PROJECT_CODE, initialOrgUnit } from './defaults';
 import { selectProject } from './projects/actions';
@@ -884,26 +884,23 @@ function* exportChart(action) {
     disasterEndDate: selectedDisaster && formatDateForApi(selectedDisaster.endDate, timeZone),
   });
 
-  const fetchOptions = Object.assign(
-    {},
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        exportUrl,
-        viewId,
-        dashboardGroupId,
-        organisationUnitCode,
-        organisationUnitName,
-        selectedFormat,
-        exportFileName,
-        chartType,
-        extraConfig,
-      }),
+  const fetchOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
     },
-  );
+    body: JSON.stringify({
+      exportUrl,
+      viewId,
+      dashboardGroupId,
+      organisationUnitCode,
+      organisationUnitName,
+      selectedFormat,
+      exportFileName,
+      chartType,
+      extraConfig,
+    }),
+  };
 
   const requestContext = {
     alwaysUseSuppliedErrorFunction: true,

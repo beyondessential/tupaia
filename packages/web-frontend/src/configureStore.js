@@ -12,7 +12,8 @@ import { composeWithDevTools } from 'redux-devtools-extension/logOnlyInProductio
 
 import rootReducer from './reducers';
 import { sanitizers } from './sanitizers';
-import { historyMiddleware, gaMiddleware } from './utils';
+import { historyMiddleware } from './historyNavigation';
+import { gaMiddleware } from './utils';
 
 import globalSagas from './sagas';
 import disasterSagas from './disaster/sagas';
