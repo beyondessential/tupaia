@@ -77,13 +77,13 @@ export const AlertsPanelComponent = React.memo(
       console.log('handle change...', option);
     };
 
-    const NoteLink = ({ children }) => (
+    const NotesTabLink = ({ children }) => (
       <StyledLink component="button" onClick={() => setActiveIndex(1)}>
         {children}
       </StyledLink>
     );
 
-    NoteLink.propTypes = {
+    NotesTabLink.propTypes = {
       children: PropTypes.any.isRequired,
     };
 
@@ -115,7 +115,7 @@ export const AlertsPanelComponent = React.memo(
           <CardTabPanels Context={TabsContext}>
             <AffectedSitesTab state={sitesState} />
             <NotesTab state={notesState} />
-            <ActivityTab state={activityState} NoteLink={NoteLink} />
+            <ActivityTab state={activityState} NotesTabLink={NotesTabLink} />
           </CardTabPanels>
         </TabsContext.Provider>
       </Drawer>

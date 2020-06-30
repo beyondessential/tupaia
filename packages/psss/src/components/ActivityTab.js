@@ -82,7 +82,7 @@ const StyledWarningCloud = styled(WarningCloud)`
   color: ${COLORS.BLUE};
 `;
 
-export const ActivityTab = React.memo(({ state, NoteLink }) => {
+export const ActivityTab = React.memo(({ state, NotesTabLink }) => {
   const { data: feed } = state;
   const exampleDate = new Date();
   return (
@@ -105,7 +105,7 @@ export const ActivityTab = React.memo(({ state, NoteLink }) => {
                     <DarkTextSpan>{update.user.name}</DarkTextSpan>{' '}
                     {update.type === 'note' ? (
                       <LightTextSpan>
-                        Added a <NoteLink>note</NoteLink>
+                        Added a <NotesTabLink>note</NotesTabLink>
                       </LightTextSpan>
                     ) : (
                       <>
@@ -134,5 +134,5 @@ export const ActivityTab = React.memo(({ state, NoteLink }) => {
 
 ActivityTab.propTypes = {
   state: PropTypes.shape(fetchStateShape).isRequired,
-  NoteLink: PropTypes.any.isRequired,
+  NotesTabLink: PropTypes.any.isRequired,
 };
