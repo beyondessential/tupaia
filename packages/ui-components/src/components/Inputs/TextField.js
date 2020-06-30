@@ -9,8 +9,8 @@ import styled from 'styled-components';
 
 const BaseTextField = props => <MuiTextField fullWidth {...props} variant="outlined" />;
 
-const focusColor = '#99d6ff';
-const adornmentColor = '#c4c4c7';
+const FOCUS_COLOUR = '#99d6ff';
+const ADORNMENT_COLOUR = '#c4c4c7';
 
 export const TextField = styled(BaseTextField)`
   margin-bottom: 1.2rem;
@@ -25,7 +25,7 @@ export const TextField = styled(BaseTextField)`
     font-weight: 400;
     font-size: 1rem;
     line-height: 1.2rem;
-    padding: 0.9rem 1rem 1rem;
+    padding: 1rem;
     border-radius: 3px;
   }
 
@@ -61,7 +61,7 @@ export const TextField = styled(BaseTextField)`
   // Focused state
   .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
     border-width: 1px;
-    border-color: ${focusColor};
+    border-color: ${FOCUS_COLOUR};
     box-shadow: 0 0 5px rgba(0, 135, 216, 0.75);
   }
 
@@ -72,23 +72,24 @@ export const TextField = styled(BaseTextField)`
   // The label
   .MuiFormLabel-root {
     position: relative;
-    margin-bottom: 4px;
+    margin-bottom: 3px;
     color: ${props => props.theme.palette.text.secondary};
     font-size: 0.9375rem;
-    line-height: 1.2rem;
+    line-height: 1.125rem;
     transform: none;
   }
 
   // Adornments
   .MuiInputAdornment-root {
-    color: ${adornmentColor};
+    color: ${ADORNMENT_COLOUR};
   }
 
   .MuiInputAdornment-positionStart {
     margin-right: 0;
   }
 
-  .MuiInputBase-inputAdornedStart {
+  .MuiInputBase-inputAdornedStart,
+  .MuiInputBase-adornedStart {
     padding-left: 5px;
   }
 
