@@ -19,15 +19,6 @@ class SurveyType extends DatabaseType {
   async getPermissionGroup() {
     return this.otherModels.permissionGroup.findById(this.permission_group_id);
   }
-
-  async getIsDataForRegionalDhis2() {
-    const dataGroup = await this.dataGroup();
-    if (dataGroup.service_type !== 'dhis') {
-      throw new Error('This survey is not meant for DHIS2 at all');
-    }
-
-    return dataGroup.config.isDataRegional;
-  }
 }
 
 export class SurveyModel extends DatabaseModel {
