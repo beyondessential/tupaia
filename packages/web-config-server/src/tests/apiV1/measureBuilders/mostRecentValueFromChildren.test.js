@@ -4,7 +4,6 @@
  */
 
 import { expect } from 'chai';
-import { it, describe } from 'mocha';
 import sinon from 'sinon';
 
 import { mostRecentValueFromChildren } from '/apiV1/measureBuilders/mostRecentValueFromChildren';
