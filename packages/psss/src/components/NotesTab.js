@@ -15,10 +15,10 @@ import {
 import { FetchLoader } from './FetchLoader';
 import * as COLORS from '../constants/colors';
 
-const greySectionHeight = '225px';
+const GREY_SECTION_HEIGHT = '225px';
 
 const Container = styled.div`
-  padding-bottom: ${greySectionHeight};
+  padding-bottom: ${GREY_SECTION_HEIGHT};
 `;
 
 const StyledUserMessage = styled(UserMessage)`
@@ -27,7 +27,7 @@ const StyledUserMessage = styled(UserMessage)`
 
 const GreySection = styled.div`
   position: absolute;
-  height: ${greySectionHeight};
+  height: ${GREY_SECTION_HEIGHT};
   bottom: 0;
   width: 100%;
   background: ${COLORS.LIGHTGREY};
@@ -38,11 +38,11 @@ export const NotesTab = ({ state }) => {
   const { data: messages } = state;
 
   const handleUpdate = () => {
-    console.log('update');
+    console.log('update....');
   };
 
   const handleDelete = () => {
-    console.log('delete');
+    console.log('delete...');
   };
 
   return (

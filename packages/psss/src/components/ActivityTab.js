@@ -9,14 +9,18 @@ import { format } from 'date-fns';
 import Typography from '@material-ui/core/Typography';
 import { CardTabPanel, WarningCloud } from '@tupaia/ui-components';
 import MuiAvatar from '@material-ui/core/Avatar';
-import Divider from '@material-ui/core/Divider';
 import { FetchLoader } from './FetchLoader';
-import { FlexRow } from './Layout';
+import { FlexStart } from './Layout';
 import { fetchStateShape } from '../hooks';
 import * as COLORS from '../constants/colors';
 
-const Container = styled.div`
-  margin-bottom: 1.8rem;
+const InnerContainer = styled.div`
+  padding: 1.25rem 0.7rem;
+  border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
+
+  &:last-child {
+    border: none;
+  }
 `;
 
 const HeaderContainer = styled.div`
@@ -24,16 +28,7 @@ const HeaderContainer = styled.div`
   border: 1px solid ${props => props.theme.palette.grey['400']};
   border-radius: 3px 3px 0 0;
   padding: 1.25rem;
-  margin-bottom: 1rem;
-  margin-top: 3rem;
-
-  &:first-child {
-    margin-top: 1rem;
-  }
-`;
-
-const UpdateContainer = styled.div`
-  margin: 0 0.625rem 1rem;
+  margin-top: 1.5rem;
 `;
 
 const Heading = styled(Typography)`
@@ -72,12 +67,10 @@ const Time = styled(Typography)`
   margin-bottom: 0.5rem;
 `;
 
-const AlertWrapper = styled.div`
-  margin: 2rem 0;
-`;
-
 const AlertContainer = styled.div`
-  margin: 1.5rem 0;
+  padding: 0.25rem 0.7rem;
+  border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
+  border-top: 1px solid ${props => props.theme.palette.grey['400']};
 
   svg {
     margin-right: 0.5rem;
@@ -96,49 +89,44 @@ export const ActivityTab = React.memo(({ state, NoteLink }) => {
     <CardTabPanel>
       <FetchLoader state={state}>
         {feed.map(week => (
-          <Container key={week.id}>
+          <article key={week.id}>
             <HeaderContainer>
               <Heading>
                 <DarkTextSpan>Week {week.week} - </DarkTextSpan>
                 {format(week.dateTime, 'EEEE, dd MMMM yyyy')}
               </Heading>
             </HeaderContainer>
-            {week.updates.map((update, index) => (
-              <Container key={update.id}>
-                <UpdateContainer>
-                  <Time>{format(update.dateTime, "h:mm aaaaa'm'")}</Time>
-                  <FlexRow>
-                    <Avatar src={update.user.avatar} />
-                    <Text>
-                      <DarkTextSpan>{update.user.name}</DarkTextSpan>{' '}
-                      {update.type === 'note' ? (
-                        <LightTextSpan>
-                          Added a <NoteLink>note</NoteLink>
-                        </LightTextSpan>
-                      ) : (
-                        <>
-                          <LightTextSpan>changed alert status to</LightTextSpan> Outbreak
-                        </>
-                      )}
-                    </Text>
-                  </FlexRow>
-                </UpdateContainer>
-                {index < week.updates.length - 1 && <Divider />}
-              </Container>
+            {week.updates.map(update => (
+              <InnerContainer key={update.id}>
+                <Time>{format(update.dateTime, "h:mm aaaaa'm'")}</Time>
+                <FlexStart>
+                  <Avatar src={update.user.avatar} />
+                  <Text>
+                    <DarkTextSpan>{update.user.name}</DarkTextSpan>{' '}
+                    {update.type === 'note' ? (
+                      <LightTextSpan>
+                        Added a <NoteLink>note</NoteLink>
+                      </LightTextSpan>
+                    ) : (
+                      <>
+                        <LightTextSpan>changed alert status to</LightTextSpan> Outbreak
+                      </>
+                    )}
+                  </Text>
+                </FlexStart>
+              </InnerContainer>
             ))}
-          </Container>
+          </article>
         ))}
-        <AlertWrapper>
-          <Divider />
-          <AlertContainer>
-            <Time>{format(exampleDate, "h:mm aaaaa'm'")}</Time>
-            <FlexRow>
-              <StyledWarningCloud />
+        <AlertContainer>
+          <Time>{format(exampleDate, "h:mm aaaaa'm'")}</Time>
+          <FlexStart>
+            <StyledWarningCloud />
+            <Text>
               <DarkTextSpan>Alert created</DarkTextSpan>
-            </FlexRow>
-          </AlertContainer>
-          <Divider />
-        </AlertWrapper>
+            </Text>
+          </FlexStart>
+        </AlertContainer>
       </FetchLoader>
     </CardTabPanel>
   );
