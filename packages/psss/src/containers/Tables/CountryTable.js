@@ -35,19 +35,19 @@ const CountryWeekSubTitle = styled.div`
   line-height: 1rem;
 `;
 
-const NameCell = ({ week, startDate, endDate }) => {
+const NameCell = ({ weekNumber, startDate, endDate }) => {
   const start = `${format(new Date(startDate), 'LLL d')}`;
   const end = `${format(new Date(endDate), 'LLL d, yyyy')}`;
   return (
     <React.Fragment>
-      <CountryWeekTitle>{`Week ${week}`}</CountryWeekTitle>
+      <CountryWeekTitle>{`Week ${weekNumber}`}</CountryWeekTitle>
       <CountryWeekSubTitle>{`${start} - ${end}`}</CountryWeekSubTitle>
     </React.Fragment>
   );
 };
 
 NameCell.propTypes = {
-  week: PropTypes.number.isRequired,
+  weekNumber: PropTypes.number.isRequired,
   startDate: PropTypes.any.isRequired,
   endDate: PropTypes.any.isRequired,
 };
@@ -96,7 +96,7 @@ StatusCell.propTypes = {
 const countryColumns = [
   {
     title: 'Date ',
-    key: 'week',
+    key: 'weekNumber',
     width: COLUMN_WIDTHS.FIRST,
     align: 'left',
     CellComponent: NameCell,

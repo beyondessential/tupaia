@@ -14,8 +14,17 @@ import MuiExpansionPanel from '@material-ui/core/ExpansionPanel';
 import MuiExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import { Card, WarningCloud, Virus } from '@tupaia/ui-components';
 import { PercentageChangeCell } from './Table';
-import { FlexRow, FlexSpaceBetween } from './Layout';
+import { FlexStart, FlexEnd, FlexSpaceBetween } from './Layout';
 import * as COLORS from '../constants/colors';
+
+const StyledCard = styled(Card)`
+  border: none;
+  border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
+
+  &:hover {
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1), 0 5px 10px rgba(0, 0, 0, 0.2);
+  }
+`;
 
 export const AlertsOutbreaksCard = ({ children, ...props }) => (
   <StyledCard variant="outlined" {...props}>
@@ -33,16 +42,10 @@ export const AlertsAndOutbreaksCardBody = styled(MuiExpansionPanelDetails)`
   border-right: 1px solid ${props => props.theme.palette.grey['400']};
 `;
 
-const StyledCard = styled(Card)`
-  border: none;
-  border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
+const ORANGE_BORDER_COLOR = 'rgba(239, 90, 6, 0.15)';
+const RED_BORDER_COLOR = 'rgba(209, 51, 51, 0.15)';
 
-  &:hover {
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1), 0 5px 10px rgba(0, 0, 0, 0.2);
-  }
-`;
-
-const ExpandableWrapper = styled(MuiExpansionPanelSummary)`
+const BaseWrapper = styled(MuiExpansionPanelSummary)`
   padding: 0;
 
   .MuiExpansionPanelSummary-content {
@@ -68,61 +71,59 @@ const ExpandableWrapper = styled(MuiExpansionPanelSummary)`
       display: block;
     }
     .psss-card-header-bar {
-      background: #ef5a06;
-      border: 1px solid rgba(239, 90, 6, 0.15);
+      background: ${COLORS.ORANGE};
+      border: 1px solid ${ORANGE_BORDER_COLOR};
       color: white;
     }
   }
+`;
 
-  // Alert variant styles
-  &.alert {
-    .psss-card-header-bar {
-      background: ${COLORS.LIGHT_ORANGE};
-      color: ${COLORS.ORANGE};
-      border: 1px solid rgba(239, 90, 6, 0.15);
-    }
-
-    .Mui-expanded {
-      .psss-card-header-bar {
-        background: ${COLORS.ORANGE};
-        border: 1px solid ${COLORS.ORANGE};
-        color: white;
-      }
-    }
+const AlertWrapper = styled(BaseWrapper)`
+  .psss-card-header-bar {
+    background: ${COLORS.LIGHT_ORANGE};
+    color: ${COLORS.ORANGE};
+    border: 1px solid ${ORANGE_BORDER_COLOR};
   }
 
-  // Outbreak variant styles
-  &.outbreak {
+  .Mui-expanded {
     .psss-card-header-bar {
-      background: ${COLORS.LIGHT_RED};
-      color: ${COLORS.RED};
-      border: 1px solid rgba(209, 51, 51, 0.15);
+      background: ${COLORS.ORANGE};
+      border: 1px solid ${COLORS.ORANGE};
+      color: white;
     }
+  }
+`;
 
-    .Mui-expanded {
-      .psss-card-header-bar {
-        background: ${COLORS.RED};
-        border: 1px solid ${COLORS.RED};
-        color: white;
-      }
+const OutbreakWrapper = styled(BaseWrapper)`
+  .psss-card-header-bar {
+    background: ${COLORS.LIGHT_RED};
+    color: ${COLORS.RED};
+    border: 1px solid ${RED_BORDER_COLOR};
+  }
+
+  .Mui-expanded {
+    .psss-card-header-bar {
+      background: ${COLORS.RED};
+      border: 1px solid ${COLORS.RED};
+      color: white;
     }
   }
 `;
 
 // .psss-card-header-bar
 const HeaderBar = styled(FlexSpaceBetween)`
-  padding: 5px 12px;
+  padding: 0.3rem 0.75rem;
   transition: color 0.3s ease, background-color 0.3s ease, border 0.3s ease;
 
   svg {
-    font-size: 16px;
+    font-size: 1rem;
   }
 `;
 
-const Row = styled(FlexRow)`
+const Row = styled(FlexStart)`
   font-weight: 600;
-  font-size: 11px;
-  line-height: 13px;
+  font-size: 0.6875rem;
+  line-height: 0.8rem;
   text-transform: uppercase;
 
   svg {
@@ -155,10 +156,7 @@ const Text = styled(Typography)`
   color: ${props => props.theme.palette.text.secondary};
 `;
 
-const FlexEnd = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
+const PrevWeek = styled(FlexEnd)`
   margin-bottom: 0.5rem;
 `;
 
@@ -188,31 +186,34 @@ export const AlertsOutbreaksCardHeader = ({
   detailText,
   percentageChange,
   type,
-}) => (
-  <ExpandableWrapper className={type}>
-    <HeaderBar className="psss-card-header-bar">
-      <Row>
-        {type === TYPES.OUTBREAK ? <Virus /> : <WarningCloud />}
-        {type === TYPES.OUTBREAK ? 'Outbreak' : 'Alert'}
-      </Row>
-      <RemoveCircleIcon className="psss-close-icon" />
-      <AddCircleIcon className="psss-open-icon" />
-    </HeaderBar>
-    <HeaderDetails>
-      <div>
-        <Heading>{heading}</Heading>
-        <Subheading>{subheading}</Subheading>
-      </div>
-      <div>
-        <FlexEnd>
-          <SuperText>Prev.Week</SuperText>
-          <HighlightText percentageChange={percentageChange} />
-        </FlexEnd>
-        <Text>{detailText}</Text>
-      </div>
-    </HeaderDetails>
-  </ExpandableWrapper>
-);
+}) => {
+  const Wrapper = type === 'alert' ? AlertWrapper : OutbreakWrapper;
+  return (
+    <Wrapper>
+      <HeaderBar className="psss-card-header-bar">
+        <Row>
+          {type === TYPES.OUTBREAK ? <Virus /> : <WarningCloud />}
+          {type === TYPES.OUTBREAK ? 'Outbreak' : 'Alert'}
+        </Row>
+        <RemoveCircleIcon className="psss-close-icon" />
+        <AddCircleIcon className="psss-open-icon" />
+      </HeaderBar>
+      <HeaderDetails>
+        <div>
+          <Heading>{heading}</Heading>
+          <Subheading>{subheading}</Subheading>
+        </div>
+        <div>
+          <PrevWeek>
+            <SuperText>Prev. Week</SuperText>
+            <HighlightText percentageChange={percentageChange} />
+          </PrevWeek>
+          <Text>{detailText}</Text>
+        </div>
+      </HeaderDetails>
+    </Wrapper>
+  );
+};
 
 AlertsOutbreaksCardHeader.propTypes = {
   type: PropTypes.oneOf([TYPES.ALERT, TYPES.OUTBREAK]),

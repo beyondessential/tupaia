@@ -48,22 +48,16 @@ export const Sidebar = styled.aside`
   }
 `;
 
-export const FlexRow = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-`;
-
 export const FlexStart = styled.div`
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: flex-start;
 `;
 
 export const FlexEnd = styled.div`
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: flex-end;
 `;
 
 export const FlexSpaceBetween = styled.div`

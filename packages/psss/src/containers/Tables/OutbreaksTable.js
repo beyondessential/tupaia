@@ -27,7 +27,7 @@ const createColumns = handlePanelOpen => [
   },
   {
     title: 'Alert Start Date',
-    key: 'week',
+    key: 'weekNumber',
     align: 'left',
     width: '220px',
     CellComponent: WeekAndDateCell,

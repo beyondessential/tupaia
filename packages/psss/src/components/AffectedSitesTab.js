@@ -36,7 +36,7 @@ const columns = [
     sortable: false,
   },
   {
-    title: 'Prev.Week',
+    title: 'Prev. Week',
     key: 'percentageChange',
     CellComponent: PercentageChangeCellWrapper,
     accessor: createPercentageChangeAccessor('afr'),
@@ -56,7 +56,7 @@ export const AffectedSitesTab = ({ state }) => {
 
   return (
     <CardTabPanel>
-      <FetchLoader state={state}>
+      <FetchLoader state={state} noDataMessage="There are no affected sites to show">
         {weeks.map(week => {
           const startDate = format(week.startDate, 'LLL d');
           const endDate = format(week.endDate, 'LLL d');
@@ -65,7 +65,7 @@ export const AffectedSitesTab = ({ state }) => {
             <AlertsOutbreaksCard key={week.id} variant="outlined" mb={5}>
               <AlertsOutbreaksCardHeader
                 type={week.status}
-                heading={`Week ${week.week}`}
+                heading={`Week ${week.weekNumber}`}
                 subheading={`${startDate} - ${endDate}, ${year}`}
                 detailText={`Total Cases for all Sites: ${week.totalCases}`}
                 percentageChange={week.percentageChange}

@@ -5,11 +5,18 @@
 import React from 'react';
 import { TableHeader } from '@tupaia/ui-components';
 import styled from 'styled-components';
+import * as COLORS from '../../constants/colors';
 
-const fakeHeaderBackgroundColor = '#f1f1f1';
+const TABLE_HEADER_PADDING = '19px';
 
+/*
+ * The table header is designed to be used with the tables in Table.js
+ * The tables have inner padding and this component is a full width table header
+ * It is not possible to add padding to most table elements so here the impression of table
+ * padding is added wtih before and afters
+ */
 const StyledTableHeader = styled(TableHeader)`
-  background: ${fakeHeaderBackgroundColor};
+  background: ${COLORS.GREY_F1};
 
   .MuiTableCell-head {
     position: relative;
@@ -20,8 +27,8 @@ const StyledTableHeader = styled(TableHeader)`
     border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
     font-weight: 600;
     text-transform: uppercase;
-    font-size: 11px;
-    line-height: 13px;
+    font-size: 0.6875rem;
+    line-height: 0.8rem;
     color: ${props => props.theme.palette.text.secondary};
 
     &:first-child,
@@ -31,8 +38,8 @@ const StyledTableHeader = styled(TableHeader)`
         top: -1px;
         bottom: -1px;
         content: '';
-        background: #f1f1f1;
-        width: 19px;
+        background: ${COLORS.GREY_F1};
+        width: ${TABLE_HEADER_PADDING};
         border-top: 1px solid ${props => props.theme.palette.grey['400']};
         border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
       }
@@ -44,13 +51,13 @@ const StyledTableHeader = styled(TableHeader)`
       text-align: left;
 
       &:before {
-        left: -19px;
+        left: -${TABLE_HEADER_PADDING};
       }
     }
 
     &:last-child {
       &:before {
-        right: -19px;
+        right: -${TABLE_HEADER_PADDING};
       }
     }
   }
