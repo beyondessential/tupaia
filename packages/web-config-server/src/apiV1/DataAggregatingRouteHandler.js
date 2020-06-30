@@ -8,6 +8,7 @@ import { RouteHandler } from './RouteHandler';
 import { Aggregator } from '/aggregator';
 import { Project } from '/models';
 import { filterEntities } from './utils';
+
 /**
  * Interface class for handling routes that fetch data from an aggregator
  * buildResponse must be implemented
