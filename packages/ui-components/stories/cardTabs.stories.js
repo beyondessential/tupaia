@@ -5,6 +5,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
+import MuiLink from '@material-ui/core/Link';
 import Card from '@material-ui/core/Card';
 import { ErrorOutline, NotificationImportant } from '@material-ui/icons';
 import { CardTabs, CardTabList, CardTab, CardTabPanels, CardTabPanel, DataCardTabs } from '../src';
@@ -20,14 +21,14 @@ const Container = styled.div`
 `;
 
 const Tab1Label = () => (
-  <React.Fragment>
+  <>
     <ErrorOutline /> 3 Active Alerts
-  </React.Fragment>
+  </>
 );
 const Tab2Label = () => (
-  <React.Fragment>
+  <>
     <NotificationImportant /> 1 Active Outbreak
-  </React.Fragment>
+  </>
 );
 const Tab1Content = () => (
   <p>
@@ -36,14 +37,14 @@ const Tab1Content = () => (
   </p>
 );
 const Tab2Content = () => (
-  <React.Fragment>
+  <>
     <p>Sed ut perspiciatis unde omnis iste natus error sit </p>
     <ul>
       <li>voluptatem accusantium</li>
       <li>doloremque laudantium</li>
       <li>voluptatem accusantium</li>
     </ul>
-  </React.Fragment>
+  </>
 );
 
 export const simple = () => {
@@ -64,6 +65,36 @@ export const simple = () => {
             <CardTabPanel>Affected Sites...</CardTabPanel>
           </CardTabPanels>
         </CardTabs>
+      </Card>
+    </Container>
+  );
+};
+
+const TabsContext = React.createContext(null);
+
+export const controlled = () => {
+  const [activeIndex, setActiveIndex] = React.useState(0);
+
+  return (
+    <Container style={{ maxWidth: '450px' }}>
+      <Card variant="outlined">
+        <TabsContext.Provider value={{ activeIndex, setActiveIndex }}>
+          <CardTabList Context={TabsContext}>
+            <CardTab>Notes</CardTab>
+            <CardTab>Activity</CardTab>
+            <CardTab>Affected Sites</CardTab>
+          </CardTabList>
+          <CardTabPanels Context={TabsContext}>
+            <CardTabPanel>Notes...</CardTabPanel>
+            <CardTabPanel>Activity...</CardTabPanel>
+            <CardTabPanel>
+              Affected Sites.
+              <MuiLink component="button" onClick={() => setActiveIndex(0)}>
+                View Notes
+              </MuiLink>
+            </CardTabPanel>
+          </CardTabPanels>
+        </TabsContext.Provider>
       </Card>
     </Container>
   );
