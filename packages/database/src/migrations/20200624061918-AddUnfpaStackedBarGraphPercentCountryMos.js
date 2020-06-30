@@ -86,7 +86,6 @@ const groups = {
     "operator": ">",
   }
 };
-
 //Stock status based on MOS:
 const chartConfig = {
   // Stock out (MOS 0) = Red stack on the bar
