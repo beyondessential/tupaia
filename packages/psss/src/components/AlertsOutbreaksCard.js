@@ -45,7 +45,7 @@ export const AlertsAndOutbreaksCardBody = styled(MuiExpansionPanelDetails)`
 const ORANGE_BORDER_COLOR = 'rgba(239, 90, 6, 0.15)';
 const RED_BORDER_COLOR = 'rgba(209, 51, 51, 0.15)';
 
-const ExpandableWrapper = styled(MuiExpansionPanelSummary)`
+const BaseWrapper = styled(MuiExpansionPanelSummary)`
   padding: 0;
 
   .MuiExpansionPanelSummary-content {
@@ -76,38 +76,36 @@ const ExpandableWrapper = styled(MuiExpansionPanelSummary)`
       color: white;
     }
   }
+`;
 
-  // Alert variant styles
-  &.alert {
-    .psss-card-header-bar {
-      background: ${COLORS.LIGHT_ORANGE};
-      color: ${COLORS.ORANGE};
-      border: 1px solid ${ORANGE_BORDER_COLOR};
-    }
-
-    .Mui-expanded {
-      .psss-card-header-bar {
-        background: ${COLORS.ORANGE};
-        border: 1px solid ${COLORS.ORANGE};
-        color: white;
-      }
-    }
+const AlertWrapper = styled(BaseWrapper)`
+  .psss-card-header-bar {
+    background: ${COLORS.LIGHT_ORANGE};
+    color: ${COLORS.ORANGE};
+    border: 1px solid ${ORANGE_BORDER_COLOR};
   }
 
-  // Outbreak variant styles
-  &.outbreak {
+  .Mui-expanded {
     .psss-card-header-bar {
-      background: ${COLORS.LIGHT_RED};
-      color: ${COLORS.RED};
-      border: 1px solid ${RED_BORDER_COLOR};
+      background: ${COLORS.ORANGE};
+      border: 1px solid ${COLORS.ORANGE};
+      color: white;
     }
+  }
+`;
 
-    .Mui-expanded {
-      .psss-card-header-bar {
-        background: ${COLORS.RED};
-        border: 1px solid ${COLORS.RED};
-        color: white;
-      }
+const OutbreakWrapper = styled(BaseWrapper)`
+  .psss-card-header-bar {
+    background: ${COLORS.LIGHT_RED};
+    color: ${COLORS.RED};
+    border: 1px solid ${RED_BORDER_COLOR};
+  }
+
+  .Mui-expanded {
+    .psss-card-header-bar {
+      background: ${COLORS.RED};
+      border: 1px solid ${COLORS.RED};
+      color: white;
     }
   }
 `;
@@ -188,31 +186,34 @@ export const AlertsOutbreaksCardHeader = ({
   detailText,
   percentageChange,
   type,
-}) => (
-  <ExpandableWrapper className={type}>
-    <HeaderBar className="psss-card-header-bar">
-      <Row>
-        {type === TYPES.OUTBREAK ? <Virus /> : <WarningCloud />}
-        {type === TYPES.OUTBREAK ? 'Outbreak' : 'Alert'}
-      </Row>
-      <RemoveCircleIcon className="psss-close-icon" />
-      <AddCircleIcon className="psss-open-icon" />
-    </HeaderBar>
-    <HeaderDetails>
-      <div>
-        <Heading>{heading}</Heading>
-        <Subheading>{subheading}</Subheading>
-      </div>
-      <div>
-        <PrevWeek>
-          <SuperText>Prev. Week</SuperText>
-          <HighlightText percentageChange={percentageChange} />
-        </PrevWeek>
-        <Text>{detailText}</Text>
-      </div>
-    </HeaderDetails>
-  </ExpandableWrapper>
-);
+}) => {
+  const Wrapper = type === 'alert' ? AlertWrapper : OutbreakWrapper;
+  return (
+    <Wrapper>
+      <HeaderBar className="psss-card-header-bar">
+        <Row>
+          {type === TYPES.OUTBREAK ? <Virus /> : <WarningCloud />}
+          {type === TYPES.OUTBREAK ? 'Outbreak' : 'Alert'}
+        </Row>
+        <RemoveCircleIcon className="psss-close-icon" />
+        <AddCircleIcon className="psss-open-icon" />
+      </HeaderBar>
+      <HeaderDetails>
+        <div>
+          <Heading>{heading}</Heading>
+          <Subheading>{subheading}</Subheading>
+        </div>
+        <div>
+          <PrevWeek>
+            <SuperText>Prev. Week</SuperText>
+            <HighlightText percentageChange={percentageChange} />
+          </PrevWeek>
+          <Text>{detailText}</Text>
+        </div>
+      </HeaderDetails>
+    </Wrapper>
+  );
+};
 
 AlertsOutbreaksCardHeader.propTypes = {
   type: PropTypes.oneOf([TYPES.ALERT, TYPES.OUTBREAK]),
