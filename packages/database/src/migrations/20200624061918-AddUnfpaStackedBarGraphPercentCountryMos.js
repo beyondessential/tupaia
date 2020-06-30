@@ -68,6 +68,7 @@ const products = [
     dataElementCodes: ["MOS_4718f43e", "MOS_3b3994bf"],
   },
 ];
+//values should be inclusive
 const groups = {
   "MOS_0": {
     "value": 0,
@@ -75,7 +76,7 @@ const groups = {
   },
   "MOS_1-2": {
     "value": [0, 3],
-    "operator": "rangeExclusive",
+    "operator": "rangeExclusive", 
   },
   "MOS_3-6": {
     "value": [3, 6],
