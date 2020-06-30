@@ -82,13 +82,13 @@ const DATA_BUILDER_CONFIG = {
       surveysConfig: {
         WISH_2GM: {
           entityAggregation: {
-            dataSourceEntityType: 'facility',
+            dataSourceEntityType: 'village',
           },
           excludeCodes: ['WFIGM2'],
         },
         WISH_2GMM: {
           entityAggregation: {
-            dataSourceEntityType: 'facility',
+            dataSourceEntityType: 'village',
           },
         },
         WISH_3CM: {
@@ -105,7 +105,7 @@ const DATA_BUILDER_CONFIG = {
         },
         WISH_4FAA: {
           entityAggregation: {
-            dataSourceEntityType: ['village', 'facility'],
+            dataSourceEntityType: 'village',
           },
           excludeCodes: ['WFI4AQU5'],
         },
@@ -141,12 +141,12 @@ const DATA_BUILDER_CONFIG = {
         },
         WISH_6CLD: {
           entityAggregation: {
-            dataSourceEntityType: ['village', 'facility'],
+            dataSourceEntityType: 'village',
           },
         },
         WISH_6PLD: {
           entityAggregation: {
-            dataSourceEntityType: ['village', 'facility'],
+            dataSourceEntityType: 'village',
           },
         },
         WISH_6MTD: {
