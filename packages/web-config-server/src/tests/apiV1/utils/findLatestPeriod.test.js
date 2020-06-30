@@ -3,7 +3,6 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
 import { expect } from 'chai';
-import { it, describe } from 'mocha';
 
 import { findLatestPeriod } from '/apiV1/utils/findLatestPeriod';
 
@@ -36,12 +35,7 @@ const surveyDatesResponseDataValues = [
 
 describe('findLatestPeriod', () => {
   it('should return results for the latest period', () => {
-    try {
-      const result = findLatestPeriod(surveyDatesResponseDataValues);
-      expect(result).to.equal('20181214');
-      return Promise.resolve();
-    } catch (e) {
-      return Promise.reject(e);
-    }
+    const result = findLatestPeriod(surveyDatesResponseDataValues);
+    expect(result).to.equal('20181214');
   });
 });
