@@ -137,7 +137,7 @@ export default class Row extends Component {
                   cellValue,
                 )
               }
-              color={presentation ? presentation.color : { color: '' }}
+              color={presentation ? presentation.color : ''}
               value={cellValue}
               style={styles.gridCell}
               columnActiveStripStyle={styles.columnActiveStrip}
