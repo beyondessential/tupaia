@@ -5,7 +5,9 @@
  * found in the LICENSE file in the root directory of this source tree.
  */
 
-export { historyMiddleware } from './historyMiddleware';
-export { createUrlString } from './historyNavigation';
-export { selectCurrentProject } from './selectors';
-// TODO: move into sensible files
+import { getUrlComponent } from './historyNavigation';
+import { URL_COMPONENTS } from './constants';
+
+export const selectCurrentProject = () => {
+  return getUrlComponent(URL_COMPONENTS.PROJECT);
+};
