@@ -121,7 +121,7 @@ export const AlertsPanelComponent = React.memo(
             <ActivityTab state={activityState} NoteLink={NoteLink} />
           </CardTabPanels>
         </TabsContext.Provider>
-        <CreateOutbreakModal isOpen={isModalOpen} handleClose={() => setIsModalOpen(false)} />
+        {/*<CreateOutbreakModal isOpen={isModalOpen} handleClose={() => setIsModalOpen(false)} />*/}
       </Drawer>
     );
   },

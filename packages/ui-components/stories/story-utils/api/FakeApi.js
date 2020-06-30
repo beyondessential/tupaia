@@ -13,7 +13,7 @@ export class FakeAPI {
   }
 
   async post() {
-    await this.sleep(3000);
+    await this.sleep(2000);
 
     return {
       status: 'success',

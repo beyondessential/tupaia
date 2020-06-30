@@ -13,6 +13,7 @@ import {
   CardTabPanel,
 } from '@tupaia/ui-components';
 import { FetchLoader } from './FetchLoader';
+import { connectApi } from '../api';
 import * as COLORS from '../constants/colors';
 
 const GREY_SECTION_HEIGHT = '225px';
@@ -34,16 +35,8 @@ const GreySection = styled.div`
   padding: 25px 20px;
 `;
 
-export const NotesTab = ({ state }) => {
+const NotesTabComponent = ({ state, handleUpdate, handleDelete }) => {
   const { data: messages } = state;
-
-  const handleUpdate = () => {
-    console.log('update....');
-  };
-
-  const handleDelete = () => {
-    console.log('delete...');
-  };
 
   return (
     <Container>
@@ -74,6 +67,15 @@ export const NotesTab = ({ state }) => {
   );
 };
 
-NotesTab.propTypes = {
+NotesTabComponent.propTypes = {
   state: PropTypes.object.isRequired,
+  handleUpdate: PropTypes.func.isRequired,
+  handleDelete: PropTypes.func.isRequired,
 };
+
+const mapApiToProps = api => ({
+  handleUpdate: () => api.post(),
+  handleDelete: () => api.post(),
+});
+
+export const NotesTab = connectApi(mapApiToProps)(NotesTabComponent);
