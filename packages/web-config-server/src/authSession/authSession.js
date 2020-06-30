@@ -25,6 +25,13 @@ const auth = () => (req, res, next) => {
   }
 };
 
+// project access rights are determined by their children
+const checkHasProjectAccess = async (entity, accessPolicy) => {
+  const project = await Project.findOne({ code: entity.code });
+  const projectChildren = await entity.getChildren(project.entity_hierarchy_id);
+  return accessPolicy.getPermissionGroups([...new Set(projectChildren.map(c => c.country_code))]);
+};
+
 const authPublicUser = (req, res, next) => {
   setSession(req, { userName: PUBLIC_USER_NAME }); // store new session as public user
   next();
@@ -69,6 +76,11 @@ const addUserAccessHelper = (req, res, next) => {
     if (entity.country_code === 'TL') {
       return false;
     }
+
+    if (entity.isProject()) {
+      return checkHasProjectAccess(entity, accessPolicy);
+    }
+
     const ancestorCodes = await entity.getAncestorCodes();
 
     return accessPolicy.allowsSome([entity.code, ...ancestorCodes], permissionGroup);
@@ -88,13 +100,8 @@ const addUserAccessHelper = (req, res, next) => {
       code: entityCode,
     });
 
-    // project access rights are determined by their children
     if (entity.isProject()) {
-      const project = await Project.findOne({ code: entity.code });
-      const projectChildren = await entity.getChildren(project.entity_hierarchy_id);
-      return accessPolicy.getPermissionGroups([
-        ...new Set(projectChildren.map(c => c.country_code)),
-      ]);
+      return checkHasProjectAccess(entity, accessPolicy);
     }
 
     return accessPolicy.getPermissionGroups([entity.country_code]);
