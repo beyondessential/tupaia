@@ -68,7 +68,7 @@ const Time = styled(Typography)`
 `;
 
 const AlertContainer = styled.div`
-  padding: 0.25rem 0.7rem;
+  padding: 1.25rem 0.7rem;
   border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
   border-top: 1px solid ${props => props.theme.palette.grey['400']};
 
