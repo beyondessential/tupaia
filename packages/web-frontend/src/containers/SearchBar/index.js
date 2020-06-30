@@ -27,6 +27,7 @@ import {
   openMapPopup,
   requestOrgUnit,
 } from '../../actions';
+import { selectCurrentProject } from '../../historyNavigation';
 import { SearchBarItem } from '../../components/SearchBarItem';
 
 const styles = {
@@ -198,9 +199,7 @@ const selectCodeFromOrgUnit = createSelector([orgUnits => orgUnits], orgUnits =>
 const mapStateToProps = state => {
   const { isExpanded, searchResponse, searchString } = state.searchBar;
   const { orgUnitFetchError } = state.orgUnits;
-  const hierarchyData = selectCodeFromOrgUnit(
-    selectOrgUnitChildren(state, state.project.activeProjectCode),
-  );
+  const hierarchyData = selectCodeFromOrgUnit(selectOrgUnitChildren(state, selectCurrentProject()));
   return { isExpanded, searchResponse, searchString, hierarchyData, orgUnitFetchError };
 };
 

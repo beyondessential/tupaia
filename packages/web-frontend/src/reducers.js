@@ -569,7 +569,6 @@ function global(
   state = {
     isSidePanelExpanded: false,
     overlay: !isMobile() && LANDING,
-    currentOrganisationUnitCode: null,
     dashboardConfig: {},
     viewConfigs: {},
     isLoadingOrganisationUnit: false,
@@ -599,7 +598,7 @@ function global(
       return {
         ...state,
         isLoadingOrganisationUnit: false,
-        currentOrganisationUnitCode: action.organisationUnit.organisationUnitCode,
+        //currentOrganisationUnitCode: Tracked in url
       };
     case CHANGE_ORG_UNIT_ERROR:
       return { ...state, isLoadingOrganisationUnit: false };

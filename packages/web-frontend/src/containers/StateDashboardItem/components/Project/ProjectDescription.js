@@ -9,9 +9,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
+import { selectCurrentProject } from '../../../../historyNavigation';
 
 import { WHITE } from '../../../../styles';
-import { selectActiveProjectCode, selectProjectByCode } from '../../../../selectors';
+import { selectProjectByCode } from '../../../../selectors';
 
 const Grid = styled.div`
   display: grid;
@@ -55,8 +56,7 @@ ProjectDescription.propTypes = {
 };
 
 const mapStateToProps = state => {
-  const activeProjectCode = selectActiveProjectCode(state);
-  const project = selectProjectByCode(state, activeProjectCode);
+  const project = selectProjectByCode(state, selectCurrentProject());
 
   return {
     project,

@@ -102,10 +102,10 @@ export class MeasureBar extends Component {
     });
 
     return (
-      <React.Fragment>
+      <>
         {this.renderSelectedMeasure()}
         {items}
-      </React.Fragment>
+      </>
     );
   }
 
@@ -173,22 +173,22 @@ MeasureBar.propTypes = {
   onExpandClick: PropTypes.func.isRequired,
   onSelectMeasure: PropTypes.func.isRequired,
   onClearMeasure: PropTypes.func.isRequired,
-  currentOrganisationUnitCode: PropTypes.string,
-  currentOrganisationUnitName: PropTypes.string,
+  currentOrganisationUnitCode: PropTypes.string.isRequired,
+  currentOrganisationUnitName: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = state => {
   const { currentMeasure, measureHierarchy, isExpanded } = state.measureBar;
   const { isMeasureLoading } = state.map;
-  const { currentOrganisationUnitCode } = state.global;
+  const currentOrganisationUnit = selectCurrentOrgUnit(state);
 
   return {
     currentMeasure,
     measureHierarchy,
     isExpanded,
     isMeasureLoading,
-    currentOrganisationUnitCode,
-    currentOrganisationUnitName: selectCurrentOrgUnit(state).name,
+    currentOrganisationUnitCode: currentOrganisationUnit.code,
+    currentOrganisationUnitName: currentOrganisationUnit.name,
   };
 };
 

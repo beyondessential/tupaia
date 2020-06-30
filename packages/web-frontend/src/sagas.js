@@ -15,7 +15,6 @@ import {
   selectIsProject,
   selectProjectByCode,
   selectMeasureBarItemById,
-  selectActiveProjectCode,
 } from './selectors';
 import {
   ATTEMPT_CHANGE_PASSWORD,
@@ -95,7 +94,11 @@ import {
   REQUEST_ORG_UNIT,
 } from './actions';
 import { isMobile, processMeasureInfo, formatDateForApi } from './utils';
-import { createUrlString } from './historyNavigation';
+import {
+  createUrlString,
+  selectCurrentProject,
+  selectCurrentOrgUnitCode,
+} from './historyNavigation';
 import { getDefaultDates } from './utils/periodGranularities';
 import { INITIAL_MEASURE_ID, INITIAL_PROJECT_CODE, initialOrgUnit } from './defaults';
 import { selectProject } from './projects/actions';
@@ -447,13 +450,14 @@ function* fetchOrgUnitData(
 
 function* requestOrgUnit(action) {
   const state = yield select();
-  const { organisationUnitCode = state.project.activeProjectCode } = action;
+  const activeProjectCode = selectCurrentProject();
+  const { organisationUnitCode = activeProjectCode } = action;
   const orgUnit = selectOrgUnit(state, organisationUnitCode);
   if (orgUnit && orgUnit.isComplete) {
     return; // If we already have the complete org unit in reduxStore, just exit early
   }
 
-  yield fetchOrgUnitData(organisationUnitCode, state.project.activeProjectCode);
+  yield fetchOrgUnitData(organisationUnitCode, activeProjectCode);
 }
 
 function* fetchOrgUnitDataAndChangeOrgUnit(action) {
@@ -471,10 +475,7 @@ function* fetchOrgUnitDataAndChangeOrgUnit(action) {
   }
 
   try {
-    const orgUnitData = yield fetchOrgUnitData(
-      organisationUnitCode,
-      state.project.activeProjectCode,
-    );
+    const orgUnitData = yield fetchOrgUnitData(organisationUnitCode, selectCurrentProject());
     yield put(
       changeOrgUnitSuccess(
         normaliseCountryHierarchyOrgUnitData(orgUnitData),
@@ -527,7 +528,7 @@ function* watchOrgUnitChangeAndFetchIt() {
 function* fetchDashboard(action) {
   const { organisationUnitCode } = action.organisationUnit;
   const state = yield select();
-  const projectCode = selectActiveProjectCode(state);
+  const projectCode = selectCurrentProject();
 
   const requestResourceUrl = `dashboard?organisationUnitCode=${organisationUnitCode}&projectCode=${projectCode}`;
 
@@ -563,7 +564,7 @@ function* fetchViewData(parameters, errorHandler) {
   } = parameters;
   const urlParameters = {
     organisationUnitCode,
-    projectCode: state.project.activeProjectCode,
+    projectCode: selectCurrentProject(),
     dashboardGroupId,
     viewId,
     drillDownLevel,
@@ -638,14 +639,13 @@ function* watchViewFetchRequests() {
  */
 function* fetchSearchData(action) {
   yield delay(200); // Wait 200 ms in case user keeps typing
-  const { project } = yield select();
   if (action.searchString === '') {
     yield put(fetchSearchSuccess([]));
   } else {
     const urlParameters = {
       criteria: action.searchString,
       limit: 5,
-      projectCode: project.activeProjectCode,
+      projectCode: selectCurrentProject(),
     };
     const requestResourceUrl = `organisationUnitSearch?${queryString.stringify(urlParameters)}`;
     try {
@@ -699,7 +699,7 @@ function* fetchMeasureInfo(measureId, organisationUnitCode) {
     startDate: formatDateForApi(startDate),
     endDate: formatDateForApi(endDate),
     shouldShowAllParentCountryResults: !isMobile(),
-    projectCode: state.project.activeProjectCode,
+    projectCode: selectCurrentProject(),
   };
   const requestResourceUrl = `measureData?${queryString.stringify(urlParameters)}`;
 
@@ -736,8 +736,7 @@ function getSelectedMeasureFromHierarchy(measureHierarchy, selectedMeasureId, pr
 
 function* fetchCurrentMeasureInfo() {
   const state = yield select();
-  const { currentOrganisationUnitCode } = state.global;
-  const { activeProjectCode } = state.project;
+  const currentOrganisationUnitCode = selectCurrentOrgUnitCode();
   const { measureId } = state.map.measureInfo;
   const { measureHierarchy, selectedMeasureId } = state.measureBar;
 
@@ -749,7 +748,7 @@ function* fetchCurrentMeasureInfo() {
       const newMeasure = getSelectedMeasureFromHierarchy(
         measureHierarchy,
         selectedMeasureId,
-        selectProjectByCode(state, activeProjectCode),
+        selectProjectByCode(state, selectCurrentProject()),
       );
 
       if (newMeasure !== measureId) {
@@ -806,7 +805,7 @@ function* fetchMeasures(action) {
   const { organisationUnitCode } = action.organisationUnit;
   const state = yield select();
   if (selectIsProject(state, organisationUnitCode)) yield put(clearMeasure());
-  const projectCode = selectActiveProjectCode(state);
+  const projectCode = selectCurrentProject();
   const requestResourceUrl = `measures?organisationUnitCode=${organisationUnitCode}&projectCode=${projectCode}`;
   try {
     const measures = yield call(request, requestResourceUrl);

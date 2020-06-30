@@ -15,6 +15,7 @@ import { SelectListItem } from '../../../components/mobile/SelectListItem';
 import { Dashboard } from '../../../components/mobile/Dashboard';
 import { changeOrgUnit, toggleDashboardSelectExpand, changeDashboardGroup } from '../../../actions';
 import { WHITE } from '../../../styles';
+import { selectCurrentProject } from '../../../historyNavigation';
 import {
   selectCurrentDashboardKey,
   selectOrgUnitChildren,
@@ -89,7 +90,7 @@ const mapStateToProps = state => {
   const { isGroupSelectExpanded } = state.dashboard;
 
   const { dashboardConfig } = state.global;
-  const organisationUnits = selectOrgUnitChildren(state, state.project.activeProjectCode);
+  const organisationUnits = selectOrgUnitChildren(state, selectCurrentProject());
 
   return {
     organisationUnits,

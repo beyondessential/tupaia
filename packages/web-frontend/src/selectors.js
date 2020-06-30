@@ -5,6 +5,7 @@ import {
   getMeasureDisplayInfo,
   calculateRadiusScaleFactor,
 } from './utils/measures';
+import { selectCurrentProject, selectCurrentOrgUnitCode } from './historyNavigation';
 import { initialOrgUnit } from './defaults';
 
 /**
@@ -132,7 +133,7 @@ const selectCountriesAsOrgUnits = createSelector([state => state.orgUnits.orgUni
 
 const selectOrgUnitSiblingsAndSelf = createSelector(
   [
-    state => state.project.activeProjectCode,
+    () => selectCurrentProject(),
     (state, code) => getOrgUnitParent(selectOrgUnit(state, code)),
     state => selectCountriesAsOrgUnits(state),
     (state, code) => safeGet(countryCache, [state.orgUnits.orgUnitMap, code]),
@@ -154,9 +155,8 @@ const getOrgUnitFromCountry = (country, code) => (country && code ? country[code
 
 const selectDisplayLevelAncestor = createSelector(
   [
-    state =>
-      safeGet(countryCache, [state.orgUnits.orgUnitMap, state.global.currentOrganisationUnitCode]),
-    state => state.global.currentOrganisationUnitCode,
+    state => safeGet(countryCache, [state.orgUnits.orgUnitMap, selectCurrentOrgUnitCode()]),
+    () => selectCurrentOrgUnitCode(),
     state => state.map.measureInfo.measureOptions,
   ],
   (country, currentOrganisationUnitCode, measureOptions) => {
@@ -194,13 +194,13 @@ export const selectOrgUnitCountry = createSelector(
 );
 
 export const selectCurrentOrgUnit = createSelector(
-  [state => selectOrgUnit(state, state.global.currentOrganisationUnitCode)],
+  [state => selectOrgUnit(state, selectCurrentOrgUnitCode())],
   currentOrgUnit => currentOrgUnit || {},
 );
 
 export const selectOrgUnitChildren = createSelector(
   [
-    state => state.project.activeProjectCode,
+    () => selectCurrentProject(),
     state => selectCountriesAsOrgUnits(state),
     (state, code) => safeGet(countryCache, [state.orgUnits.orgUnitMap, code]),
     (_, code) => code,
@@ -228,7 +228,7 @@ export const selectHasPolygonMeasure = createSelector(
 
 export const selectAllMeasuresWithDisplayInfo = createSelector(
   [
-    state => state.project.activeProjectCode,
+    () => selectCurrentProject(),
     state =>
       safeGet(countryCache, [state.orgUnits.orgUnitMap, state.map.measureInfo.currentCountry]),
     state => state.map.measureInfo.measureData,
@@ -287,8 +287,7 @@ export const selectAllMeasuresWithDisplayAndOrgUnitData = createSelector(
 
 export const selectRenderedMeasuresWithDisplayInfo = createSelector(
   [
-    state =>
-      safeGet(countryCache, [state.orgUnits.orgUnitMap, state.global.currentOrganisationUnitCode]),
+    state => safeGet(countryCache, [state.orgUnits.orgUnitMap, selectCurrentOrgUnitCode()]),
     selectAllMeasuresWithDisplayAndOrgUnitData,
     selectDisplayLevelAncestor,
     state => state.map.measureInfo.measureOptions,
@@ -332,8 +331,6 @@ export const selectIsProject = createSelector(
 
 export const selectProjectByCode = (state, code) =>
   state.project.projects.find(p => p.code === code);
-
-export const selectActiveProjectCode = state => state.project.activeProjectCode;
 
 export const selectAdjustedProjectBounds = (state, code) => {
   if (code === 'explore' || code === 'disaster') {

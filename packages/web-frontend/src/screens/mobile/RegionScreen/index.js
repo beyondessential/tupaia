@@ -257,14 +257,15 @@ const getMeasureFiltersForHierarchy = measureHierarchy =>
   }));
 
 const mapStateToProps = state => {
-  const { currentOrganisationUnitCode, dashboardConfig, isLoadingOrganisationUnit } = state.global;
+  const { dashboardConfig, isLoadingOrganisationUnit } = state.global;
   const { measureHierarchy, currentMeasure, isExpanded } = state.measureBar;
   const { measureInfo, isMeasureLoading } = state.map;
   const { isGroupSelectExpanded } = state.dashboard;
   const hasSelectedMeasureId = currentMeasure !== undefined;
+  const orgUnit = selectCurrentOrgUnit(state);
 
   const mobileListItems = getListItemsFromOrganisationUnitChildren(
-    selectOrgUnitChildren(state, currentOrganisationUnitCode),
+    selectOrgUnitChildren(state, orgUnit.code),
     isMeasureLoading,
     measureInfo,
   );
@@ -282,7 +283,7 @@ const mapStateToProps = state => {
   return {
     dashboardConfig,
     currentDashboardKey: selectCurrentDashboardKey(state),
-    orgUnit: selectCurrentOrgUnit(state),
+    orgUnit,
     mobileListItems,
     measureFilters,
     selectedFilter,
