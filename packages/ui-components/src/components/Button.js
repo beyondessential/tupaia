@@ -15,6 +15,12 @@ const StyledButton = styled(MuiButton)`
   box-shadow: none;
   min-width: 3rem;
 
+  &.Mui-disabled {
+    opacity: 0.8;
+    background-color: ${props => props.theme.palette.primary.main};
+    color: white;
+  }
+
   .MuiButton-label > svg {
     margin-right: 0.3rem;
   }
@@ -56,6 +62,7 @@ export const LightPrimaryButton = styled(Button)`
 
   &:hover,
   &.Mui-disabled {
+    opacity: 0.8;
     background-color: ${props => props.theme.palette.primary.light};
     color: ${props => props.theme.palette.primary.main};
   }

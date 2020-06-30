@@ -12,6 +12,14 @@ export class FakeAPI {
     });
   }
 
+  async post() {
+    await this.sleep(3000);
+
+    return {
+      status: 'success',
+    };
+  }
+
   async get(endpoint, options) {
     // console.log('OPTIONS', options);
     const data = [];

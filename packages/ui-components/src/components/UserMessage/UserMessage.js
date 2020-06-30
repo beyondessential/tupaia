@@ -49,19 +49,6 @@ const MessageView = ({ status, message }) => {
     }
   }, [status, inputRef]);
 
-  if (status === STATUS.READ_ONLY) {
-    return (
-      <TextareaField
-        name="textArea"
-        multiline
-        value={message}
-        InputProps={{
-          readOnly: true,
-        }}
-      />
-    );
-  }
-
   return (
     <TextareaField
       inputRef={inputRef}
@@ -69,6 +56,9 @@ const MessageView = ({ status, message }) => {
       placeholder="Placeholder text"
       multiline
       defaultValue={message}
+      InputProps={{
+        readOnly: status !== STATUS.EDITING,
+      }}
     />
   );
 };
@@ -90,6 +80,12 @@ const CardActions = styled(FlexEnd)`
 export const UserMessage = ({ Header, Footer, message, onUpdate, onDelete, className }) => {
   const [status, setStatus] = useState(STATUS.READ_ONLY);
 
+  const handleUpdate = async () => {
+    setStatus(STATUS.LOADING);
+    await onUpdate(message.id);
+    setStatus(STATUS.READ_ONLY);
+  };
+
   const menuOptions = [
     { label: 'Edit', action: () => setStatus(STATUS.EDITING) },
     { label: 'Delete', action: () => onDelete(message.id) },
@@ -100,10 +96,17 @@ export const UserMessage = ({ Header, Footer, message, onUpdate, onDelete, class
       {React.cloneElement(Header, { ActionsMenu: <ActionsMenu options={menuOptions} /> })}
       <MessageView status={status} message={message.content} />
       {Footer}
-      {status === STATUS.EDITING && (
+      {status !== STATUS.READ_ONLY && (
         <CardActions>
-          <OutlinedButton onClick={() => setStatus(STATUS.READ_ONLY)}>Cancel</OutlinedButton>
-          <Button onClick={() => onUpdate(message)}>Update</Button>
+          <OutlinedButton
+            onClick={() => setStatus(STATUS.READ_ONLY)}
+            disabled={status === STATUS.LOADING}
+          >
+            Cancel
+          </OutlinedButton>
+          <Button onClick={handleUpdate} isSubmitting={status === STATUS.LOADING}>
+            Update
+          </Button>
         </CardActions>
       )}
     </StyledCard>
