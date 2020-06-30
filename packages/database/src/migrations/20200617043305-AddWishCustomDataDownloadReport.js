@@ -161,6 +161,7 @@ const DATA_BUILDER_CONFIG = {
         },
       },
       transformations: ['transpose'],
+      groupByAncestor: 'sub_catchment',
     },
   },
 };
