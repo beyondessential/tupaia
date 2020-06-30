@@ -7,10 +7,10 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Table, tableColumnShape } from '@tupaia/ui-components';
 import { SimpleTableBody, DottedTableBody, BorderlessTableBody } from './TableBody';
+import { GreyTableHeader } from './TableHeader';
 
 const StyledTable = styled(Table)`
-  padding-left: 1.2rem;
-  padding-right: 1.2rem;
+  padding: 0 1.2rem 0.3rem;
 `;
 
 export const SimpleTable = ({ columns, data }) => {
@@ -45,7 +45,9 @@ BorderlessTable.defaultProps = {
 };
 
 export const DottedTable = ({ columns, data }) => {
-  return <StyledTable Header={false} Body={DottedTableBody} columns={columns} data={data} />;
+  return (
+    <StyledTable Header={GreyTableHeader} Body={DottedTableBody} columns={columns} data={data} />
+  );
 };
 
 DottedTable.propTypes = {

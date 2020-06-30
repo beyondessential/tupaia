@@ -47,3 +47,21 @@ export const Sidebar = styled.aside`
     margin-bottom: 3rem;
   }
 `;
+
+export const FlexStart = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+`;
+
+export const FlexEnd = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+`;
+
+export const FlexSpaceBetween = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;

@@ -16,19 +16,19 @@ const CountrySummaryTitle = styled.div`
   padding-right: 0.625rem;
 `;
 
-export const WeekAndDateCell = ({ week, startDate, endDate }) => {
+export const WeekAndDateCell = ({ weekNumber, startDate, endDate }) => {
   const start = format(startDate, 'LLL d');
   const end = format(endDate, 'LLL d');
   const year = format(endDate, 'yyyy');
   return (
     <CountrySummaryTitle>
-      <strong>W{week}</strong> {`${start} - ${end}, ${year}`}
+      <strong>W{weekNumber}</strong> {`${start} - ${end}, ${year}`}
     </CountrySummaryTitle>
   );
 };
 
 WeekAndDateCell.propTypes = {
-  week: PropTypes.number.isRequired,
+  weekNumber: PropTypes.number.isRequired,
   startDate: PropTypes.instanceOf(Date).isRequired,
   endDate: PropTypes.instanceOf(Date).isRequired,
 };

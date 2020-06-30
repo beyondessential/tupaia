@@ -50,7 +50,7 @@ export class FakeAPI {
         data.push(this.activity());
       }
     } else if (endpoint === 'affected-sites') {
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < 8; i++) {
         data.push(this.affectedSite());
       }
     } else if (endpoint === 'archive') {
@@ -146,6 +146,7 @@ export class FakeAPI {
     }
     return {
       ...countryWeek,
+      status: faker.random.arrayElement(['alert', 'outbreak']),
       sites,
     };
   }
@@ -155,7 +156,7 @@ export class FakeAPI {
     return {
       id: faker.random.uuid(),
       index,
-      week: faker.random.number({
+      weekNumber: faker.random.number({
         min: 1,
         max: 10,
       }),
@@ -209,7 +210,7 @@ export class FakeAPI {
     const update2 = this.update();
     return {
       id: faker.random.uuid(),
-      week: faker.random.number({
+      weekNumber: faker.random.number({
         min: 1,
         max: 10,
       }),
@@ -270,7 +271,7 @@ export class FakeAPI {
         'Prolonged Fever (AFR)',
         'Dengue-like Illness (DIL)',
       ]),
-      week: faker.random.number({
+      weekNumber: faker.random.number({
         min: 1,
         max: 10,
       }),

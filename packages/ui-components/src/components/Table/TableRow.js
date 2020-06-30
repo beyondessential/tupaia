@@ -30,7 +30,7 @@ export const TableRowCells = React.memo(({ columns, rowData }) =>
     return (
       <TableCell background={backgroundColor} key={key} style={{ width: width }} align={align}>
         {CellComponent ? (
-          <CellComponent {...rowData} displayValue={displayValue} columnKey={key} />
+          <CellComponent {...rowData} displayValue={value} columnKey={key} />
         ) : (
           displayValue
         )}
