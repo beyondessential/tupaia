@@ -5,7 +5,14 @@ export const composePercentageInGroupByDataClass = async (
   { dataBuilderConfig, query },
   aggregator,
 ) => {
-  const { dataClasses, dataServices, groups, labels = {}, filter = {} } = dataBuilderConfig;
+  const {
+    dataClasses,
+    dataServices,
+    groups,
+    labels = {},
+    filter = {},
+    fillPercentGroup = '',
+  } = dataBuilderConfig;
   const dataElementCodes = flattenDeep(Object.values(dataClasses).map(({ codes }) => codes));
   const { results, metadata } = await aggregator.fetchAnalytics(
     dataElementCodes,
@@ -41,17 +48,22 @@ export const composePercentageInGroupByDataClass = async (
   });
 
   const { dataElementCodeToName } = metadata;
-  const data = Object.keys(dataClasses).map(id => ({
-    name: labels[id] || dataElementCodeToName[id],
-    ...summedValuesByElement[id],
-  }));
+  const data = Object.keys(dataClasses).map(id => {
+    const dataValues = fillPercentGroup
+      ? fillPercentage(summedValuesByElement[id], fillPercentGroup)
+      : summedValuesByElement[id];
+    return {
+      name: labels[id] || dataElementCodeToName[id],
+      ...dataValues,
+    };
+  });
 
   return {
     data: data,
   };
 };
 
-export const mapValueGroup = (value, groups) => {
+const mapValueGroup = (value, groups) => {
   const group = Object.entries(groups).find(([groupName, groupConfig]) => {
     const groupCheck = OPERATOR_TO_VALUE_CHECK[groupConfig.operator];
     if (!groupCheck) {
@@ -60,4 +72,22 @@ export const mapValueGroup = (value, groups) => {
     return groupCheck(value, groupConfig.value);
   });
   return group ? group[0] : value;
+};
+
+const fillPercentage = (valueGroups, fillPercentGroup) => {
+  let totalPercent = 0;
+  const newValueGroup = { ...valueGroups };
+  if (!valueGroups) {
+    newValueGroup[fillPercentGroup] = 1;
+    return newValueGroup;
+  }
+  Object.keys(valueGroups).forEach(key => {
+    totalPercent += valueGroups[key];
+  });
+  const diff = 1 - totalPercent;
+  const fillGroupValue = valueGroups[fillPercentGroup]
+    ? valueGroups[fillPercentGroup] + diff
+    : diff;
+  newValueGroup[fillPercentGroup] = fillGroupValue;
+  return newValueGroup;
 };

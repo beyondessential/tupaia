@@ -74,8 +74,8 @@ const groups = {
     "operator": "=",
   },
   "MOS_1-2": {
-    "value": [1, 3],
-    "operator": "range",
+    "value": [0, 3],
+    "operator": "rangeExclusive",
   },
   "MOS_3-6": {
     "value": [3, 6],
@@ -139,6 +139,7 @@ const dataBuilderConfig = {
   },
   "groups": groups,
   "labels": labels,
+  "fillPercentGroup": "MOS_0",
   periodType: 'month'
 };
 
