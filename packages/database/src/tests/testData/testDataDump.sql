@@ -748,7 +748,8 @@ CREATE TABLE public.question (
     code text,
     detail text,
     option_set_id character varying,
-    hook text
+    hook text,
+    data_source_id text
 );
 
 
@@ -789,7 +790,8 @@ CREATE TABLE public.survey (
     country_ids text[] DEFAULT '{}'::text[],
     can_repeat boolean DEFAULT false,
     survey_group_id text,
-    integration_metadata jsonb DEFAULT '{"dhis2": {"isDataRegional": true}}'::jsonb
+    integration_metadata jsonb DEFAULT '{}'::jsonb,
+    data_source_id text NOT NULL
 );
 
 
@@ -3199,6 +3201,9 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 763	/20200616000806-FixIncorrectDataElementCodesLaosReport	2020-06-18 21:35:19.97
 764	/20200617235154-FixTongaMeaslesOverlaysWithEntityAggregation	2020-06-18 21:35:20.008
 765	/20200618090311-FixEntityAggregationConfig	2020-06-18 21:35:20.071
+766	/20200622025632-AddDataGroupsForAllSurveys	2020-06-22 13:40:56.124
+767	/20200622025633-AddDataSourceIdColumn	2020-06-22 13:40:56.43
+768	/20200622025634-RemoveDhis2InfoFromSurveyIntegrationMetadata	2020-06-22 13:40:56.505
 \.
 
 
@@ -3206,7 +3211,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 765, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 768, true);
 
 
 --
