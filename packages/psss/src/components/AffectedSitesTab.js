@@ -56,7 +56,7 @@ export const AffectedSitesTab = ({ state }) => {
 
   return (
     <CardTabPanel>
-      <FetchLoader state={state}>
+      <FetchLoader state={state} noDataMessage="There are no affected sites to show">
         {weeks.map(week => {
           const startDate = format(week.startDate, 'LLL d');
           const endDate = format(week.endDate, 'LLL d');

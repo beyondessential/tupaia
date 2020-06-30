@@ -6,14 +6,14 @@
 import PropTypes from 'prop-types';
 import { fetchStateShape } from '../hooks';
 
-export const FetchLoader = ({ children, state }) => {
+export const FetchLoader = ({ children, state, noDataMessage }) => {
   const { isLoading, count, isError, errorMessage } = state;
   if (isLoading) {
     return 'Loading...';
   } else if (isError) {
     return errorMessage;
   } else if (count === 0) {
-    return 'There are no messages';
+    return noDataMessage;
   }
 
   return children;
@@ -21,4 +21,9 @@ export const FetchLoader = ({ children, state }) => {
 
 FetchLoader.propTypes = {
   state: PropTypes.shape(fetchStateShape).isRequired,
+  noDataMessage: PropTypes.string,
+};
+
+FetchLoader.defaultProps = {
+  noDataMessage: 'No results',
 };
