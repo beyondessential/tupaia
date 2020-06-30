@@ -21,10 +21,7 @@ export const composePercentageInGroupByDataClass = async (
     { filter, aggregationType: aggregator.aggregationTypes.MOST_RECENT_PER_ORG_GROUP },
   );
 
-  const groupMap = Object.keys(groups).reduce((acc, cur) => {
-    acc[cur] = 0;
-    return acc;
-  }, {});
+  const groupMap = Object.keys(groups).reduce((map, group) => ({...map, [group]: 0 }), {});
 
   const dataCodesToIds = [];
   Object.keys(dataClasses).forEach(id => {
