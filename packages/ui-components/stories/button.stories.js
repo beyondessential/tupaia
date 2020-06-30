@@ -33,15 +33,15 @@ const Container = styled(MuiBox)`
 
 export const primary = () => (
   <Container>
-    <Button disabled onClick={action('Primary button clicked')}>Button</Button>
+    <Button onClick={action('Primary button clicked')}>
+      Button
+    </Button>
   </Container>
 );
 
 export const lightPrimary = () => (
   <Container>
-    <LightPrimaryButton disabled>
-      <CheckCircleIcon /> Confirmed
-    </LightPrimaryButton>
+    <LightPrimaryButton startIcon={<CheckCircleIcon />}>Confirmed</LightPrimaryButton>
   </Container>
 );
 
@@ -78,7 +78,6 @@ export const lightOutlined = () => (
 export const greyOutlined = () => (
   <Container bgcolor={COLORS.LIGHTGREY}>
     <GreyOutlinedButton>Edit</GreyOutlinedButton>
-    <GreyOutlinedButton disabled>Edit</GreyOutlinedButton>
   </Container>
 );
 

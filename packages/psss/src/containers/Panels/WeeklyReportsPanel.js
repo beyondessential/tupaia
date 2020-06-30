@@ -188,8 +188,8 @@ export const WeeklyReportsPanelComponent = React.memo(
           )}
           <FooterInner>
             {panelStatus === PANEL_STATUSES.SUCCESS ? (
-              <LightPrimaryButton disabled fullWidth>
-                <CheckCircleIcon /> Confirmed
+              <LightPrimaryButton startIcon={<CheckCircleIcon />} disabled fullWidth>
+                Confirmed
               </LightPrimaryButton>
             ) : (
               <>

@@ -21,10 +21,6 @@ const StyledButton = styled(MuiButton)`
     color: white;
   }
 
-  .MuiButton-label > svg {
-    margin-right: 0.3rem;
-  }
-
   &.MuiButton-contained {
     border: 1px solid transparent; // used to make the contained buttons the same size as the outlined ones
   }
@@ -85,6 +81,11 @@ export const WarningButton = styled(Button)`
   &:hover {
     background-color: ${props => props.theme.palette.warning.dark};
   }
+
+  &.Mui-disabled {
+    background-color: ${props => props.theme.palette.warning.main};
+    color: white;
+  }
 `;
 
 /*
@@ -95,6 +96,11 @@ export const SuccessButton = styled(Button)`
 
   &:hover {
     background-color: ${props => props.theme.palette.success.dark};
+  }
+
+  &.Mui-disabled {
+    background-color: ${props => props.theme.palette.success.main};
+    color: white;
   }
 `;
 
@@ -129,6 +135,12 @@ export const LightOutlinedButton = styled(OutlinedButton)`
     border-color: ${props => props.theme.palette.common.white};
     color: ${props => props.theme.palette.primary.main};
   }
+
+  &.Mui-disabled {
+    color: ${props => props.theme.palette.common.white};
+    border-color: ${props => props.theme.palette.common.white};
+    background: none;
+  }
 `;
 
 /*
@@ -142,7 +154,7 @@ export const GreyOutlinedButton = styled(OutlinedButton)`
   padding: 0.8em 1.5em;
 
   &.Mui-disabled {
-    background: #f1f1f1;
+    background: ${props => props.theme.palette.grey['100']};
     border: none;
   }
 

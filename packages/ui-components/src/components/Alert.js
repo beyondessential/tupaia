@@ -13,14 +13,27 @@ const StyledAlert = styled(MuiAlert)`
   padding: 0.9rem 1.25rem 0.9rem 2.5rem;
   align-items: center;
   box-shadow: inset 0px -1px 0px rgba(0, 0, 0, 0.15);
-  background: ${props => props.theme.palette.error.main};
+  // background: ${props => props.theme.palette.error.main};
   color: white;
-  //font-size: 0.8125rem;
 `;
 
 export const ErrorAlert = props => (
   <StyledAlert icon={<Warning fontSize="inherit" />} variant="filled" severity="error" {...props} />
 );
+
+export const SuccessAlert = props => (
+  <StyledAlert
+    icon={<Warning fontSize="inherit" />}
+    variant="filled"
+    severity="success"
+    {...props}
+  />
+);
+
+export const LightSuccessAlert = styled(SuccessAlert)`
+  background: ${props => props.theme.palette.success.light};
+  color: ${props => props.theme.palette.success.light};
+`;
 
 export const LightErrorAlert = styled(ErrorAlert)`
   background: ${props => props.theme.palette.error.light};
