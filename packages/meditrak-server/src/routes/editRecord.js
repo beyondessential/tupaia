@@ -11,7 +11,7 @@ import {
 } from '@tupaia/utils';
 import { TYPES } from '@tupaia/database';
 import { resourceToRecordType } from '../utilities';
-import { editUserAccount, editOption, editOptionSet } from '../dataAccessors';
+import { editUserAccount, editOption, editOptionSet, editSurvey } from '../dataAccessors';
 
 const EDITABLE_RECORD_TYPES = [
   TYPES.USER_ACCOUNT,
@@ -29,6 +29,7 @@ const CUSTOM_RECORD_UPDATERS = {
   [TYPES.USER_ACCOUNT]: editUserAccount,
   [TYPES.OPTION_SET]: editOptionSet,
   [TYPES.OPTION]: editOption,
+  [TYPES.SURVEY]: editSurvey,
 };
 
 /**

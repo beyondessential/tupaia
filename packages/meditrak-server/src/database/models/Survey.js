@@ -16,6 +16,21 @@ class SurveyType extends DatabaseType {
     return this.otherModels.dataSource.findById(this.data_source_id);
   }
 
+  async questions() {
+    const questions = await this.database.executeSql(
+      `
+      SELECT q.* FROM question q
+      JOIN survey_screen_component ssc ON ssc.question_id  = q.id
+      JOIN survey_screen ss ON ss.id = ssc.screen_id 
+      JOIN survey s ON s.id = ss.survey_id 
+      WHERE s.code = ?
+    `,
+      [this.code],
+    );
+
+    return Promise.all(questions.map(this.otherModels.question.generateInstance));
+  }
+
   async getPermissionGroup() {
     return this.otherModels.permissionGroup.findById(this.permission_group_id);
   }

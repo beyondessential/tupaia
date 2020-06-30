@@ -32,6 +32,23 @@ export class DataSourceModel extends DatabaseModel {
 
   getTypes = () => DataSourceModel.types;
 
+  getDataGroupsThatIncludeElement = async dataElementCode => {
+    // TODO this method can be simplified when tupaia-backlog#663 is implemented
+    const dataGroups = await this.database.executeSql(
+      `
+      SELECT ds.* FROM data_source ds
+      JOIN survey s ON s.code = ds.code
+      JOIN survey_screen ss ON ss.survey_id = s.id
+      JOIN survey_screen_component ssc ON ssc.screen_id = ss.id
+      JOIN question q ON q.id = ssc.question_id
+      WHERE q.code = ? AND ds.type = 'dataGroup'
+    `,
+      [dataElementCode],
+    );
+
+    return Promise.all(dataGroups.map(this.generateInstance));
+  };
+
   async getDataElementsInGroup(dataGroupCode) {
     const dataGroup = await this.findOne({
       code: dataGroupCode,

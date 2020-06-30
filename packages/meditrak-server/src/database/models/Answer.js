@@ -33,6 +33,12 @@ export const ANSWER_TYPES = {
   // If adding a new type, add validation in both importSurveys and updateSurveyResponses
 };
 
+export const NON_DATA_ELEMENT_ANSWER_TYPES = [
+  ANSWER_TYPES.INSTRUCTION,
+  ANSWER_TYPES.PRIMARY_ENTITY,
+  ANSWER_TYPES.SUBMISSION_DATE,
+];
+
 class AnswerType extends DatabaseType {
   static databaseType = TYPES.ANSWER;
 
