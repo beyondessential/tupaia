@@ -12,10 +12,6 @@ class SurveyType extends DatabaseType {
     minAppVersion: '0.0.1',
   };
 
-  get dataSourceTypes() {
-    return this.otherModels.dataSource.getTypes();
-  }
-
   async dataGroup() {
     return this.otherModels.dataSource.findById(this.data_source_id);
   }
