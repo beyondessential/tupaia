@@ -11,14 +11,24 @@ import styled from 'styled-components';
 import { TextField } from './TextField';
 
 const KeyboardArrowDown = styled(MuiKeyboardArrowDown)`
-  color: ${props => props.theme.palette.text.tertiary};
+  color: ${props => props.theme.palette.text.secondary};
   font-size: 24px;
   top: calc(50% - 12px);
   right: 0.9rem;
 `;
 
+const StyledTextField = styled(TextField)`
+  .MuiSelect-root {
+    color: ${props => props.theme.palette.text.tertiary};
+
+    &:focus {
+      background: white;
+    }
+  }
+`;
+
 export const SelectField = ({ SelectProps, ...props }) => (
-  <TextField
+  <StyledTextField
     SelectProps={{
       IconComponent: iconProps => <KeyboardArrowDown {...iconProps} />,
       ...SelectProps,
@@ -32,9 +42,11 @@ SelectField.propTypes = {
   SelectProps: PropTypes.object.isRequired,
 };
 
-/**
- * Select field
- */
+const MenuItem = styled(MuiMenuItem)`
+  padding-top: 0.75rem;
+  padding-bottom: 0.5rem;
+`;
+
 export const Select = ({ options, placeholder, defaultValue, ...props }) => {
   const [value, setValue] = useState(defaultValue);
 
@@ -54,13 +66,13 @@ export const Select = ({ options, placeholder, defaultValue, ...props }) => {
       }}
       {...props}
     >
-      <MuiMenuItem value="" disabled>
+      <MenuItem value="" disabled>
         {placeholder}
-      </MuiMenuItem>
+      </MenuItem>
       {options.map(option => (
-        <MuiMenuItem key={option.value} value={option.value}>
+        <MenuItem key={option.value} value={option.value}>
           {option.label}
-        </MuiMenuItem>
+        </MenuItem>
       ))}
     </SelectField>
   );
@@ -79,9 +91,6 @@ Select.defaultProps = {
   defaultValue: '',
 };
 
-/**
- * Native Select field
- */
 export const NativeSelect = ({ options, placeholder, defaultValue, ...props }) => {
   const [value, setValue] = useState('');
 

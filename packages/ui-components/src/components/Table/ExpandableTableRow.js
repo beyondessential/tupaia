@@ -90,7 +90,7 @@ export const ExpandableTableRow = React.memo(
 
 ExpandableTableRow.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape(tableColumnShape)).isRequired,
-  rowData: PropTypes.array.isRequired,
+  rowData: PropTypes.object.isRequired,
   SubComponent: PropTypes.any,
   className: PropTypes.string,
   ExpansionContainer: PropTypes.any,
