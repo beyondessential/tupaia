@@ -37,7 +37,6 @@ export class DataAggregatingRouteHandler extends RouteHandler {
       } else {
         dataSourceEntities = await entity.getDescendantsOfType(entityType, hierarchyId);
       }
-
     } else {
       dataSourceEntities = await entity.getNearestOrgUnitDescendants(hierarchyId);
     }
