@@ -104,7 +104,7 @@ export const UserMessage = ({ Header, Footer, message, onUpdate, onDelete, class
           >
             Cancel
           </OutlinedButton>
-          <Button onClick={handleUpdate} isSubmitting={status === STATUS.LOADING}>
+          <Button onClick={handleUpdate} isLoading={status === STATUS.LOADING}>
             Update
           </Button>
         </CardActions>

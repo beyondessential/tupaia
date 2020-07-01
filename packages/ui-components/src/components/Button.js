@@ -35,20 +35,22 @@ const StyledButton = styled(MuiButton)`
  *
  * Default button is styled as material ui contained with the primary color
  */
-export const Button = ({ children, isSubmitting, disabled, ...props }) => (
-  <StyledButton variant="contained" color="primary" {...props} disabled={isSubmitting || disabled}>
-    {isSubmitting ? 'Loading...' : children}
+export const Button = ({ children, isLoading, loadingText, disabled, ...props }) => (
+  <StyledButton variant="contained" color="primary" {...props} disabled={isLoading || disabled}>
+    {isLoading ? `${loadingText}...` : children}
   </StyledButton>
 );
 
 Button.propTypes = {
   children: PropTypes.node.isRequired,
-  isSubmitting: PropTypes.bool,
+  isLoading: PropTypes.bool,
+  loadingText: PropTypes.string,
   disabled: PropTypes.bool,
 };
 
 Button.defaultProps = {
-  isSubmitting: false,
+  loadingText: 'Loading',
+  isLoading: false,
   disabled: false,
 };
 

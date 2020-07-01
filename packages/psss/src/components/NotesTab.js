@@ -112,7 +112,7 @@ const NotesTabComponent = ({ state, handleUpdate, handleDelete, createNote }) =>
               readOnly: status === STATUS.LOADING,
             }}
           />
-          <Button type="submit" fullWidth isSubmitting={status === STATUS.LOADING}>
+          <Button type="submit" fullWidth isLoading={status === STATUS.LOADING}>
             Add Note
           </Button>
         </form>
