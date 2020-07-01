@@ -15,18 +15,18 @@ exports.setup = function(options, seedLink) {
   type = dbm.dataType;
   seed = seedLink;
 };
-
+WISH_2GMM,WISH_2GM
 const DASHBOARD_GROUP_CODE = 'WISH_Export_Surveys';
 const DATA_BUILDER_CONFIG = {
   surveys: [
-    {
-      code: 'WISH_2GM',
-      name: '2 - Government mapping',
-    },
-    {
-      code: 'WISH_2GMM',
-      name: '2 - Government mapping methods',
-    },
+    // {
+    //   code: 'WISH_2GM',
+    //   name: '2 - Government mapping',
+    // },
+    // {
+    //   code: 'WISH_2GMM',
+    //   name: '2 - Government mapping methods',
+    // },
     {
       code: 'WISH_3CM',
       name: '3 - Community mapping',
@@ -80,17 +80,17 @@ const DATA_BUILDER_CONFIG = {
     dataBuilder: 'rawDataValues',
     dataBuilderConfig: {
       surveysConfig: {
-        WISH_2GM: {
-          entityAggregation: {
-            dataSourceEntityType: 'village',
-          },
-          excludeCodes: ['WFIGM2'],
-        },
-        WISH_2GMM: {
-          entityAggregation: {
-            dataSourceEntityType: 'village',
-          },
-        },
+        // WISH_2GM: {
+        //   entityAggregation: {
+        //     dataSourceEntityType: 'village',
+        //   },
+        //   excludeCodes: ['WFIGM2'],
+        // },
+        // WISH_2GMM: {
+        //   entityAggregation: {
+        //     dataSourceEntityType: 'village',
+        //   },
+        // },
         WISH_3CM: {
           entityAggregation: {
             dataSourceEntityType: 'village',
