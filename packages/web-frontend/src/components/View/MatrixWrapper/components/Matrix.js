@@ -340,7 +340,7 @@ export class Matrix extends PureComponent {
     const isSearchActive = this.isSearchActive();
     const { startColumn, highlightedRow, highlightedColumn } = this.state;
     const { numberOfColumnsPerPage } = this.props;
-    const { columns, presentationOptions, onRowClick, categoryPresentationOptions, appliedPresentationOptionsLocation } = this.props;
+    const { columns, presentationOptions, onRowClick, categoryPresentationOptions } = this.props;
     const [rootRows, childRows] = partition(rows, { categoryId: parent });
 
     return rootRows
@@ -421,7 +421,6 @@ export class Matrix extends PureComponent {
             onMoveColumnPress={this.onMoveColumnPress}
             onMoveColumnRelease={this.onMoveColumnRelease}
             presentationOptions={presentationOptions}
-            appliedPresentationOptionsLocation={appliedPresentationOptionsLocation}
             isNextColumnEnabled={this.isNextColumnEnabled()}
             isPreviousColumnEnabled={this.isPreviousColumnEnabled()}
             isUsingDots={this.getIsUsingDots(presentationOptions)}
@@ -551,7 +550,6 @@ Matrix.propTypes = {
   rows: PropTypes.arrayOf(rowShape),
   title: PropTypes.string,
   presentationOptions: PropTypes.shape(PRESENTATION_OPTIONS_SHAPE).isRequired,
-  appliedPresentationOptionsLocation: PropTypes.object,
   isExporting: PropTypes.bool,
   onSearch: PropTypes.func,
   numberOfColumnsPerPage: PropTypes.number.isRequired,

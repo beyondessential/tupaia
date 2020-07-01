@@ -75,7 +75,6 @@ const buildMatrixDataFromViewContent = viewContent => {
     categories = [],
     presentationOptions = {},
     categoryPresentationOptions = {},
-    appliedPresentationOptionsLocation,
     isExporting,
     valueType = 'text',
   } = viewContent;
@@ -133,7 +132,6 @@ const buildMatrixDataFromViewContent = viewContent => {
     calculatedStyles,
     presentationOptions,
     categoryPresentationOptions,
-    appliedPresentationOptionsLocation,
   };
 };
 
@@ -233,7 +231,6 @@ export class MatrixWrapper extends Component {
       calculatedStyles,
       presentationOptions,
       categoryPresentationOptions,
-      appliedPresentationOptionsLocation,
       maximumColumnWidth,
     } = expandedMatrixData;
     const PeriodSelectorComponent = this.renderPeriodSelector();
@@ -264,7 +261,6 @@ export class MatrixWrapper extends Component {
         calculatedStyles={calculatedStyles}
         presentationOptions={presentationOptions}
         categoryPresentationOptions={categoryPresentationOptions}
-        appliedPresentationOptionsLocation={appliedPresentationOptionsLocation}
         isExporting={isExporting}
         title={titleText}
         onSearch={searchTerm => onChangeConfig({ search: searchTerm })}

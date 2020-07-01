@@ -62,7 +62,6 @@ export default class Row extends Component {
       onMoveColumnPress,
       onMoveColumnRelease,
       presentationOptions,
-      appliedPresentationOptionsLocation,
       isPreviousColumnEnabled,
       isNextColumnEnabled,
       styles,
@@ -126,10 +125,12 @@ export default class Row extends Component {
 
           let applyDotStyle = true;
 
-          if (appliedPresentationOptionsLocation) {
-            if (appliedPresentationOptionsLocation.columnIndexes) {
-              applyDotStyle = appliedPresentationOptionsLocation.columnIndexes.includes(index);
-            }
+          if (
+            presentationOptions &&
+            presentationOptions.applyLocation &&
+            presentationOptions.applyLocation.columnIndexes
+          ) {
+            applyDotStyle = presentationOptions.applyLocation.columnIndexes.includes(index);
           }
 
           return (
@@ -189,7 +190,6 @@ Row.propTypes = {
   onTitleClick: PropTypes.func,
   styles: PropTypes.object.isRequired,
   presentationOptions: PropTypes.shape(PRESENTATION_OPTIONS_SHAPE),
-  appliedPresentationOptionsLocation: PropTypes.object,
   isPreviousColumnEnabled: PropTypes.bool,
   isNextColumnEnabled: PropTypes.bool,
 };
