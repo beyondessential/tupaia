@@ -10,11 +10,11 @@
  * @param {Array} analytics
  * @param {Object} aggregationConfig
  */
-export const sumPerOrgGroup = (analytics, aggregationConfig) => {
+export const countPerOrgGroup = (analytics, aggregationConfig) => {
   const { orgUnitMap = {}, valueToMatch } = aggregationConfig;
-  const valueMapper = valueToMatch ? createValueMapper(valueToMatch) : value => value;
+  const valueMapper = valueToMatch ? createValueMapper(valueToMatch) : () => 1;
 
-  const summedAnalyticsByKey = {};
+  const countAnalyticsByKey = {};
   analytics.forEach(analytic => {
     const organisationUnit =
       (orgUnitMap[analytic.organisationUnit] && orgUnitMap[analytic.organisationUnit].code) ||
@@ -24,14 +24,14 @@ export const sumPerOrgGroup = (analytics, aggregationConfig) => {
     const value = valueMapper(analytic.value);
 
     // If there are no matching response elements already being returned, add it
-    if (!summedAnalyticsByKey[key]) {
-      summedAnalyticsByKey[key] = { ...analytic, value, organisationUnit };
+    if (!countAnalyticsByKey[key]) {
+      countAnalyticsByKey[key] = { ...analytic, value, organisationUnit };
     } else {
-      summedAnalyticsByKey[key].value += value;
+      countAnalyticsByKey[key].value += value;
     }
   });
 
-  return Object.values(summedAnalyticsByKey);
+  return Object.values(countAnalyticsByKey);
 };
 
 const createValueMapper = valueToMatch =>
