@@ -33,39 +33,43 @@ const REPORT_ID = 'UNFPA_RH_Number_Of_Women_Provided_SRH_Services_Matrix';
 
 const DATA_BUILDER_CONFIG = {
   rows: ['Delivery', 'ANC', 'PNC'],
-  cells: [
-    [
-      {
-        calc: 'SUM',
-        dataElement: 'RHS3UNFPA644',
-      },
-    ],
-    [
-      {
-        calc: 'SUM',
-        dataElement: 'RHS3UNFPA633',
-      },
-    ],
-    [
-      {
-        calc: 'SUM',
-        dataElement: 'RHS3UNFPA636',
-      },
-    ],
-  ],
+  cells: [['RHS3UNFPA644'], ['RHS3UNFPA633'], ['RHS3UNFPA636']],
   columns: {
     type: '$period',
     periodType: 'quarter',
-    name: 'Number of Women who received services',
+    name: '# women',
     aggregationType: 'FINAL_EACH_QUARTER',
+    fillEmptyPeriods: true,
   },
+  baselineColumns: [
+    {
+      name: 'Does this facility offer the service?',
+      dataElements: ['RHS3UNFPA536', 'RHS3UNFPA4121', 'RHS3UNFPA464'],
+    },
+    {
+      name: 'Does this facility offer the service 2?',
+      dataElements: ['RHS3UNFPA536', 'RHS3UNFPA4121', 'RHS3UNFPA464'],
+    },
+  ],
 };
 
 const VIEW_JSON = {
-  name: 'Number of women provides SRH services in past 6 months',
+  name: 'Number of women provided SRH services in past 6 months',
   type: 'matrix',
   placeholder: '/static/media/PEHSMatrixPlaceholder.png',
   periodGranularity: 'one_year_at_a_time',
+  presentationOptions: {
+    1: {
+      color: 'green',
+      label: '',
+      description: "**Green** indicates 'Yes' to the corresponding indicator.\n",
+    },
+    0: {
+      color: 'red',
+      label: '',
+      description: "**Red** indicates 'No' to the corresponding indicator.\n",
+    },
+  },
 };
 
 const REPORT = {

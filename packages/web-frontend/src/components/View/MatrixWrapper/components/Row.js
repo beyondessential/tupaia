@@ -131,13 +131,13 @@ export default class Row extends Component {
               onMouseLeave={() => onCellMouseLeave()}
               onClick={() =>
                 onCellClick(
-                  presentation.description === ROW_INFO_KEY
+                  presentation && presentation.description === ROW_INFO_KEY
                     ? { ...presentation, description: rowInfo }
                     : presentation,
                   cellValue,
                 )
               }
-              color={presentation ? presentation.color : { color: '' }}
+              color={presentation ? presentation.color : ''}
               value={cellValue}
               style={styles.gridCell}
               columnActiveStripStyle={styles.columnActiveStrip}

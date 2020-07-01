@@ -4,20 +4,54 @@
  */
 
 import { groupAnalyticsByPeriod } from '@tupaia/dhis-api';
-import { parsePeriodType, periodToDisplayString } from '@tupaia/utils';
+import { parsePeriodType, periodToDisplayString, getPeriodsInRange } from '@tupaia/utils';
 import flatten from 'lodash.flatten';
 import { TableOfDataValuesBuilder } from './tableOfDataValues';
 
 class TableOfValuesPerPeriodBuilder extends TableOfDataValuesBuilder {
-  async buildColumns() {
-    const tableColumns = [];
-    const { columns } = this.config;
+  async fetchAnalyticsAndMetadata() {
+    this.baselineResults = await this.fetchBaselineColumnResults();
 
+    return super.fetchAnalyticsAndMetadata();
+  }
+
+  async fetchBaselineColumnResults() {
+    if (this.config.baselineColumns) {
+      const dataElementCodes = flatten(
+        this.config.baselineColumns.map(baselineColumn => baselineColumn.dataElements),
+      );
+      const { results } = await this.fetchAnalytics(dataElementCodes);
+
+      return results;
+    }
+
+    return null;
+  }
+
+  getPeriodColumns(fillEmptyPeriods, periodType) {
+    if (fillEmptyPeriods) {
+      const { startDate, endDate } = this.query;
+      return getPeriodsInRange(startDate, endDate, periodType);
+    }
+    const groupAnalytics = groupAnalyticsByPeriod(this.results, periodType);
+    return Object.keys(groupAnalytics);
+  }
+
+  async buildColumns() {
+    let tableColumns = [];
+    const { columns, baselineColumns } = this.config;
+
+    if (baselineColumns) {
+      tableColumns = tableColumns.concat(this.buildBaselineColumns(baselineColumns));
+    }
+
+    //Right now only support for 1 period column
     if (typeof columns === 'object' && columns.type === '$period') {
-      const { periodType, name } = columns;
+      const { periodType, name, fillEmptyPeriods } = columns;
       const parsedPeriodType = parsePeriodType(periodType);
-      const groupAnalytics = groupAnalyticsByPeriod(this.results, parsedPeriodType);
-      Object.keys(groupAnalytics).forEach(period => {
+      const periodColumns = this.getPeriodColumns(fillEmptyPeriods, parsedPeriodType);
+
+      periodColumns.forEach(period => {
         const periodDisplayString = periodToDisplayString(period, parsedPeriodType);
 
         tableColumns.push({
@@ -32,10 +66,20 @@ class TableOfValuesPerPeriodBuilder extends TableOfDataValuesBuilder {
     return tableColumns;
   }
 
-  buildDataElementCodes() {
-    const dataElementCodes = flatten(this.config.cells).map(cell => {
-      return cell.dataElement;
+  buildBaselineColumns = baselineColumns => {
+    return baselineColumns.map(baselineColumn => {
+      const { name } = baselineColumn;
+      return {
+        key: name,
+        title: name,
+      };
     });
+  };
+
+  buildDataElementCodes() {
+    const dataElementCodes = flatten(this.config.cells).map(cell =>
+      typeof cell === 'object' ? cell.dataElement : cell,
+    );
 
     return [...new Set(dataElementCodes)];
   }
@@ -43,9 +87,18 @@ class TableOfValuesPerPeriodBuilder extends TableOfDataValuesBuilder {
   getDataElementToRowName() {
     const dataElementToRowName = {};
 
+    if (this.config.baselineColumns) {
+      this.config.baselineColumns.forEach(baselineColumn => {
+        const { dataElements } = baselineColumn;
+        dataElements.forEach((dataElement, index) => {
+          dataElementToRowName[dataElement] = this.tableConfig.rows[index];
+        });
+      });
+    }
+
     this.tableConfig.cells.forEach((cellArray, index) => {
       cellArray.forEach(cell => {
-        const { dataElement } = cell;
+        const dataElement = typeof cell === 'object' ? cell.dataElement : cell;
         dataElementToRowName[dataElement] = this.tableConfig.rows[index];
       });
     });
@@ -65,23 +118,46 @@ class TableOfValuesPerPeriodBuilder extends TableOfDataValuesBuilder {
   }
 
   async buildRows(columns) {
-    console.log('results', this.results);
-
     const baseRows = await this.buildBaseRows();
-    const rowData = { ...baseRows };
     const { periodType } = this.config.columns;
     const parsedPeriodType = parsePeriodType(periodType);
     const dataElementToRowName = this.getDataElementToRowName();
     const groupedAnalyticsByPeriod = groupAnalyticsByPeriod(this.results, parsedPeriodType);
+    let rowData = { ...baseRows };
 
-    Object.entries(groupedAnalyticsByPeriod).forEach(([period, analytics]) => {
-      const analytic = analytics[0];
-      const { dataElement, value } = analytic;
-      const rowName = dataElementToRowName[dataElement];
-      rowData[rowName][period] = value;
+    rowData = this.populateBaselineDataForRows(rowData, dataElementToRowName);
+
+    columns.forEach(({ key }) => {
+      const analytics = groupedAnalyticsByPeriod[key];
+
+      if (analytics) {
+        analytics.forEach(analytic => {
+          const { dataElement, value } = analytic;
+          const rowName = dataElementToRowName[dataElement];
+          rowData[rowName][key] = value;
+        });
+      }
     });
 
     return Object.values(rowData);
+  }
+
+  populateBaselineDataForRows(rowData, dataElementToRowName) {
+    const newRowData = rowData;
+
+    if (this.config.baselineColumns) {
+      this.config.baselineColumns.forEach(baselineColumn => {
+        const { name } = baselineColumn;
+
+        this.baselineResults.forEach(baselineAnalytic => {
+          const { dataElement, value } = baselineAnalytic;
+          const rowName = dataElementToRowName[dataElement];
+          newRowData[rowName][name] = value;
+        });
+      });
+    }
+
+    return newRowData;
   }
 }
 
