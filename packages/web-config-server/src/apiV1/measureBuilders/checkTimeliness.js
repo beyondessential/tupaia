@@ -20,7 +20,7 @@ class CheckTimelinessMeasureBuilder extends DataBuilder {
     return results.map(row => ({
       organisationUnitCode: row.organisationUnit,
       [dataElementCode]: row.value === undefined ? '' : row.value.toString(),
-      submissionDate: periodToMoment(row.period).format('YYYY-MM-DD'),
+      submissionDate: periodToMoment(row.period.toString()).format('YYYY-MM-DD'),
     }));
   }
 }

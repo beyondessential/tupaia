@@ -54,5 +54,5 @@ export const analyticsToMeasureData = (analytics, customDataKey) =>
   analytics.map(({ organisationUnit, dataElement, value, period }) => ({
     organisationUnitCode: organisationUnit,
     [customDataKey || dataElement]: value,
-    submissionDate: periodToMoment(period).format('YYYY-MM-DD'),
+    submissionDate: periodToMoment(period.toString()).format('YYYY-MM-DD'),
   }));
