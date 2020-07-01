@@ -15,7 +15,7 @@ exports.setup = function(options, seedLink) {
   type = dbm.dataType;
   seed = seedLink;
 };
-WISH_2GMM,WISH_2GM
+
 const DASHBOARD_GROUP_CODE = 'WISH_Export_Surveys';
 const DATA_BUILDER_CONFIG = {
   surveys: [
