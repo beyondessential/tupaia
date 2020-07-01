@@ -43,7 +43,7 @@ const DATA_BUILDER_CONFIG = {
   },
   baselineColumns: [
     {
-      name: 'Does this facility offer the service 2?',
+      name: 'Does this facility offer the service?',
       dataElements: ['RHS3UNFPA536', 'RHS3UNFPA4121', 'RHS3UNFPA464'],
     },
   ],
