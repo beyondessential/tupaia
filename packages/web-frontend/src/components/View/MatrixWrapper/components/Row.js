@@ -62,6 +62,7 @@ export default class Row extends Component {
       onMoveColumnPress,
       onMoveColumnRelease,
       presentationOptions,
+      appliedPresentationOptionsLocation,
       isPreviousColumnEnabled,
       isNextColumnEnabled,
       styles,
@@ -123,6 +124,14 @@ export default class Row extends Component {
             };
           }
 
+          let applyDotStyle = true;
+
+          if (appliedPresentationOptionsLocation) {
+            if (appliedPresentationOptionsLocation.columnIndexes) {
+              applyDotStyle = appliedPresentationOptionsLocation.columnIndexes.includes(index);
+            }
+          }
+
           return (
             <Cell
               key={index}
@@ -144,7 +153,7 @@ export default class Row extends Component {
               isActive={isCellActive}
               dotStyle={styles.cellIndicator}
               dotStyleActive={styles.cellIndicatorActive}
-              isUsingDots={isUsingDots}
+              isUsingDots={isUsingDots && applyDotStyle}
             />
           );
         })}
@@ -180,6 +189,7 @@ Row.propTypes = {
   onTitleClick: PropTypes.func,
   styles: PropTypes.object.isRequired,
   presentationOptions: PropTypes.shape(PRESENTATION_OPTIONS_SHAPE),
+  appliedPresentationOptionsLocation: PropTypes.object,
   isPreviousColumnEnabled: PropTypes.bool,
   isNextColumnEnabled: PropTypes.bool,
 };

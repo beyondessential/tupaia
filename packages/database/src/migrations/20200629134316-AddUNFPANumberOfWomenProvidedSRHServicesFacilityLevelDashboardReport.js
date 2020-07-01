@@ -66,6 +66,9 @@ const VIEW_JSON = {
       description: "**Red** indicates 'No' to the corresponding indicator.\n",
     },
   },
+  appliedPresentationOptionsLocation: {
+    columnIndexes: [0],
+  },
 };
 
 const REPORT = {
