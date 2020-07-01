@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import MuiAlert from '@material-ui/lab/Alert';
 import { UserMessage, UserMessageFooter, UserMessageHeader } from '../src';
+import { FakeAPI } from './story-utils/api';
 
 export default {
   title: 'UserMessage',
@@ -35,11 +36,19 @@ const message = {
   lastEdited: new Date(),
 };
 
+const api = new FakeAPI();
+
 export const userMessage = () => {
   const [alertMessage, setAlertMessage] = React.useState(null);
 
-  const handleUpdate = id => setAlertMessage(`Updating ${id}...`);
-  const handleDelete = id => setAlertMessage(`Deleting ${id}...`);
+  const handleUpdate = async id => {
+    await api.post();
+    setAlertMessage(`Updating ${id}...`);
+  };
+  const handleDelete = async id => {
+    await api.post();
+    setAlertMessage(`Deleting ${id}...`);
+  };
 
   return (
     <Container>
