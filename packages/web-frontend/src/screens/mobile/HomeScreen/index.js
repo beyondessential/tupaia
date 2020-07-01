@@ -17,7 +17,6 @@ import { changeOrgUnit, toggleDashboardSelectExpand, changeDashboardGroup } from
 import { WHITE } from '../../../styles';
 import {
   selectCurrentDashboardKey,
-  selectActiveProject,
   selectOrgUnitChildren,
   selectCurrentOrgUnit,
 } from '../../../selectors';
@@ -82,11 +81,15 @@ HomeScreen.propTypes = {
   onChangeOrgUnit: PropTypes.func.isRequired,
 };
 
+HomeScreen.defaultProps = {
+  organisationUnits: [],
+};
+
 const mapStateToProps = state => {
   const { isGroupSelectExpanded } = state.dashboard;
 
   const { dashboardConfig } = state.global;
-  const organisationUnits = selectOrgUnitChildren(state, selectActiveProject(state).code) || [];
+  const organisationUnits = selectOrgUnitChildren(state, state.project.activeProjectCode);
 
   return {
     organisationUnits,
