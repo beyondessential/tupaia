@@ -27,9 +27,9 @@ const links = [
 ];
 
 export const AlertsOutbreaksView = () => (
-  <React.Fragment>
+  <>
     <Header title="Alerts & Outbreaks" />
     <TabsToolbar links={links} />
     <AlertsRoutes />
-  </React.Fragment>
+  </>
 );

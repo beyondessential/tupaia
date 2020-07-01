@@ -82,6 +82,8 @@ const StyledWarningCloud = styled(WarningCloud)`
   color: ${COLORS.BLUE};
 `;
 
+const AM_PM_DATE_FORMAT = "h:mm aaaaa'm'";
+
 export const ActivityTab = React.memo(({ state, NotesTabLink }) => {
   const { data: feed } = state;
   const exampleDate = new Date();
@@ -98,7 +100,7 @@ export const ActivityTab = React.memo(({ state, NotesTabLink }) => {
             </HeaderContainer>
             {week.updates.map(update => (
               <InnerContainer key={update.id}>
-                <Time>{format(update.dateTime, "h:mm aaaaa'm'")}</Time>
+                <Time>{format(update.dateTime, AM_PM_DATE_FORMAT)}</Time>
                 <FlexStart>
                   <Avatar src={update.user.avatar} />
                   <Text>
@@ -119,7 +121,7 @@ export const ActivityTab = React.memo(({ state, NotesTabLink }) => {
           </article>
         ))}
         <AlertContainer>
-          <Time>{format(exampleDate, "h:mm aaaaa'm'")}</Time>
+          <Time>{format(exampleDate, AM_PM_DATE_FORMAT)}</Time>
           <FlexStart>
             <StyledWarningCloud />
             <Text>
