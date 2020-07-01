@@ -31,7 +31,7 @@ const insertMapOverlay = (db, code, name) => {
     'UNFPA',
     '${code}',
     'color',
-    '{}',
+    '{"scaleType": "time", "measureLevel": "Facility"}',
     'valueForOrgGroup',
     '{"measureLevel": "Facility"}',
     '{VU,MH,TO,FM,SB,WS,FJ,KI}',
