@@ -189,6 +189,12 @@ const QUESTION_COLUMNS = [
                     getJsonFieldSchema: () => [{ label: 'Question Id', fieldName: 'questionId' }],
                   },
                   {
+                    label: 'Grandparent Entity',
+                    fieldName: 'grandparentId',
+                    type: 'json',
+                    getJsonFieldSchema: () => [{ label: 'Question Id', fieldName: 'questionId' }],
+                  },
+                  {
                     label: 'Name',
                     fieldName: 'name',
                     type: 'json',
