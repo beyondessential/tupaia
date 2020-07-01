@@ -15,6 +15,12 @@ const StyledButton = styled(MuiButton)`
   box-shadow: none;
   min-width: 3rem;
 
+  &.Mui-disabled {
+    opacity: 0.8;
+    background-color: ${props => props.theme.palette.primary.main};
+    color: white;
+  }
+
   &.MuiButton-contained {
     border: 1px solid transparent; // used to make the contained buttons the same size as the outlined ones
   }
@@ -29,20 +35,22 @@ const StyledButton = styled(MuiButton)`
  *
  * Default button is styled as material ui contained with the primary color
  */
-export const Button = ({ children, isSubmitting, disabled, ...props }) => (
-  <StyledButton variant="contained" color="primary" {...props} disabled={isSubmitting || disabled}>
-    {isSubmitting ? 'Loading...' : children}
+export const Button = ({ children, isLoading, loadingText, disabled, ...props }) => (
+  <StyledButton variant="contained" color="primary" {...props} disabled={isLoading || disabled}>
+    {isLoading ? `${loadingText}...` : children}
   </StyledButton>
 );
 
 Button.propTypes = {
   children: PropTypes.node.isRequired,
-  isSubmitting: PropTypes.bool,
+  isLoading: PropTypes.bool,
+  loadingText: PropTypes.string,
   disabled: PropTypes.bool,
 };
 
 Button.defaultProps = {
-  isSubmitting: false,
+  loadingText: 'Loading',
+  isLoading: false,
   disabled: false,
 };
 
@@ -63,6 +71,11 @@ export const WarningButton = styled(Button)`
   &:hover {
     background-color: ${props => props.theme.palette.warning.dark};
   }
+
+  &.Mui-disabled {
+    background-color: ${props => props.theme.palette.warning.main};
+    color: white;
+  }
 `;
 
 /*
@@ -73,6 +86,11 @@ export const SuccessButton = styled(Button)`
 
   &:hover {
     background-color: ${props => props.theme.palette.success.dark};
+  }
+
+  &.Mui-disabled {
+    background-color: ${props => props.theme.palette.success.main};
+    color: white;
   }
 `;
 
@@ -107,6 +125,12 @@ export const LightOutlinedButton = styled(OutlinedButton)`
     border-color: ${props => props.theme.palette.common.white};
     color: ${props => props.theme.palette.primary.main};
   }
+
+  &.Mui-disabled {
+    color: ${props => props.theme.palette.common.white};
+    border-color: ${props => props.theme.palette.common.white};
+    background: none;
+  }
 `;
 
 /*
@@ -120,7 +144,7 @@ export const GreyOutlinedButton = styled(OutlinedButton)`
   padding: 0.8em 1.5em;
 
   &.Mui-disabled {
-    background: #f1f1f1;
+    background: ${props => props.theme.palette.grey['100']};
     border: none;
   }
 
