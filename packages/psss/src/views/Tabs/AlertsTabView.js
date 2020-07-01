@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
 import { CalendarToday } from '@material-ui/icons';
@@ -16,14 +16,17 @@ const DateSubtitle = styled(Typography)`
   color: ${props => props.theme.palette.text.secondary};
 `;
 
-export const AlertsTabView = () => {
+export const AlertsTabView = React.memo(() => {
   const [isPanelOpen, setIsPanelOpen] = useState(false);
-  const handlePanelOpen = () => {
+
+  const handlePanelOpen = useCallback(() => {
     setIsPanelOpen(true);
-  };
-  const handlePanelClose = () => {
+  }, [setIsPanelOpen]);
+
+  const handlePanelClose = useCallback(() => {
     setIsPanelOpen(false);
-  };
+  }, [setIsPanelOpen]);
+
   return (
     <Container>
       <Main>
@@ -47,4 +50,4 @@ export const AlertsTabView = () => {
       </Sidebar>
     </Container>
   );
-};
+});

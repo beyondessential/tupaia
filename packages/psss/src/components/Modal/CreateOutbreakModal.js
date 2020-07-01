@@ -189,7 +189,7 @@ const NavButtons = () => {
   );
 };
 
-const STATUSES = {
+const STATUS = {
   INITIAL: 'initial',
   LOADING: 'loading',
   ERROR: 'error',
@@ -197,25 +197,25 @@ const STATUSES = {
 };
 
 export const CreateOutbreakModal = ({ isOpen, handleClose }) => {
-  const [status, setStatus] = useState(STATUSES.INITIAL);
+  const [status, setStatus] = useState(STATUS.INITIAL);
 
   const handleConfirm = () => {
-    setStatus(STATUSES.LOADING);
+    setStatus(STATUS.LOADING);
     setTimeout(() => {
-      setStatus(STATUSES.SUCCESS);
+      setStatus(STATUS.SUCCESS);
     }, 1000);
   };
 
   const Body = {
-    [STATUSES.INITIAL]: <CreateOutbreakForm />,
-    [STATUSES.LOADING]: <CreateOutbreakForm isLoading />,
-    [STATUSES.SUCCESS]: <CreateOutbreakSuccess />,
+    [STATUS.INITIAL]: <CreateOutbreakForm />,
+    [STATUS.LOADING]: <CreateOutbreakForm isLoading />,
+    [STATUS.SUCCESS]: <CreateOutbreakSuccess />,
   };
 
   const Actions = {
-    [STATUSES.INITIAL]: <ConfirmButtons handleClose={handleClose} handleConfirm={handleConfirm} />,
-    [STATUSES.LOADING]: <ConfirmButtons disabled />,
-    [STATUSES.SUCCESS]: <NavButtons />,
+    [STATUS.INITIAL]: <ConfirmButtons handleClose={handleClose} handleConfirm={handleConfirm} />,
+    [STATUS.LOADING]: <ConfirmButtons disabled />,
+    [STATUS.SUCCESS]: <NavButtons />,
   };
 
   return (

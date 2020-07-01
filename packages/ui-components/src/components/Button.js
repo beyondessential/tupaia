@@ -6,6 +6,7 @@ import React from 'react';
 import styled from 'styled-components';
 import MuiButton from '@material-ui/core/Button';
 import PropTypes from 'prop-types';
+import MuiLink from '@material-ui/core/Link';
 
 const StyledButton = styled(MuiButton)`
   font-size: 0.9375rem;
@@ -166,3 +167,20 @@ export const GreyOutlinedButton = styled(OutlinedButton)`
     background: none;
   }
 `;
+
+const StyledLink = styled(MuiLink)`
+  text-decoration: underline;
+  font-size: 1em;
+  line-height: 1.2;
+`;
+
+export const LinkButton = ({ children, onClick }) => (
+  <StyledLink component="button" onClick={onClick}>
+    {children}
+  </StyledLink>
+);
+
+LinkButton.propTypes = {
+  onClick: PropTypes.func.isRequired,
+  children: PropTypes.any.isRequired,
+};

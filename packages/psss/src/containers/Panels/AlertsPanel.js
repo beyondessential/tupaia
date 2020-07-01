@@ -6,9 +6,15 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import MuiLink from '@material-ui/core/Link';
 import { MoveToInbox, LocationOn, SpeakerNotes, List } from '@material-ui/icons';
-import { CardTabList, CardTab, CardTabPanels, WarningCloud, Virus } from '@tupaia/ui-components';
+import {
+  CardTabList,
+  CardTab,
+  CardTabPanels,
+  WarningCloud,
+  Virus,
+  LinkButton,
+} from '@tupaia/ui-components';
 import { connectApi } from '../../api';
 import {
   Drawer,
@@ -59,12 +65,6 @@ const menuOptions = [
   },
 ];
 
-const StyledLink = styled(MuiLink)`
-  text-decoration: underline;
-  font-size: 1rem;
-  line-height: 1.2rem;
-`;
-
 const TabsContext = React.createContext(null);
 
 export const AlertsPanelComponent = React.memo(
@@ -78,16 +78,6 @@ export const AlertsPanelComponent = React.memo(
     const handleChange = option => {
       console.log('handle change...', option);
       setIsModalOpen(true);
-    };
-
-    const NotesTabLink = ({ children }) => (
-      <StyledLink component="button" onClick={() => setActiveIndex(1)}>
-        {children}
-      </StyledLink>
-    );
-
-    NotesTabLink.propTypes = {
-      children: PropTypes.any.isRequired,
     };
 
     return (
@@ -118,7 +108,10 @@ export const AlertsPanelComponent = React.memo(
           <CardTabPanels Context={TabsContext}>
             <AffectedSitesTab state={sitesState} />
             <NotesTab state={notesState} />
-            <ActivityTab state={activityState} NotesTabLink={NotesTabLink} />
+            <ActivityTab
+              state={activityState}
+              NotesTabLink={<LinkButton onClick={() => setActiveIndex(1)}>note</LinkButton>}
+            />
           </CardTabPanels>
         </TabsContext.Provider>
         <CreateOutbreakModal isOpen={isModalOpen} handleClose={() => setIsModalOpen(false)} />

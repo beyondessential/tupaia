@@ -13,6 +13,7 @@ const props = {
   countryData: countryData[0].syndromes,
   sitesData,
   isOpen: true,
+  isVerified: true,
   handleClose: () => {
     console.log('close');
   },
@@ -42,6 +43,7 @@ function renderWeeklyReportsPanel() {
       isOpen={props.isOpen}
       handleClose={props.handleClose}
       handleConfirm={props.handleConfirm}
+      isVerified={props.isVerified}
     />,
   );
   const countryReports = screen.getByTestId('country-reports');

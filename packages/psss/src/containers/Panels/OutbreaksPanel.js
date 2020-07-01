@@ -3,17 +3,17 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { LocationOn, SpeakerNotes, List, MoveToInbox } from '@material-ui/icons';
 import {
-  CardTabs,
   CardTabList,
   CardTab,
   CardTabPanels,
   Virus,
   WarningCloud,
+  LinkButton,
 } from '@tupaia/ui-components';
 import {
   Drawer,
@@ -65,6 +65,8 @@ const menuOptions = [
   },
 ];
 
+const TabsContext = React.createContext(null);
+
 export const OutbreaksPanelComponent = ({
   isOpen,
   handleClose,
@@ -72,6 +74,7 @@ export const OutbreaksPanelComponent = ({
   fetchNotesData,
   fetchActivityData,
 }) => {
+  const [activeIndex, setActiveIndex] = useState(0);
   const sitesState = useFetch(fetchSitesData);
   const notesState = useFetch(fetchNotesData);
   const activityState = useFetch(fetchActivityData);
@@ -98,8 +101,8 @@ export const OutbreaksPanelComponent = ({
           heading="Measles"
           DropdownMenu={<DropdownMenu options={menuOptions} onChange={handleChange} />}
         />
-        <CardTabs>
-          <CardTabList>
+        <TabsContext.Provider value={{ activeIndex, setActiveIndex }}>
+          <CardTabList Context={TabsContext}>
             <CardTab>
               <LocationOn /> Affected Sites
             </CardTab>
@@ -112,12 +115,15 @@ export const OutbreaksPanelComponent = ({
               Activity
             </CardTab>
           </CardTabList>
-          <CardTabPanels>
+          <CardTabPanels Context={TabsContext}>
             <AffectedSitesTab type="outbreaks" state={sitesState} />
             <NotesTab state={notesState} />
-            <ActivityTab state={activityState} />
+            <ActivityTab
+              state={activityState}
+              NotesTabLink={<LinkButton onClick={() => setActiveIndex(1)}>note</LinkButton>}
+            />
           </CardTabPanels>
-        </CardTabs>
+        </TabsContext.Provider>
       </Drawer>
     </div>
   );
