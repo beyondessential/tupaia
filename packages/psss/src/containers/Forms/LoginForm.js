@@ -63,7 +63,7 @@ const LoginFormComponent = ({ isPending, isError, error, onLogin }) => {
         onChange={handleFieldChange}
       />
       <Checkbox id="rememberMe" color="primary" label="Remember me" />
-      <StyledButton type="submit" fullWidth isSubmitting={isPending}>
+      <StyledButton type="submit" fullWidth isLoading={isPending}>
         Login to your account
       </StyledButton>
     </form>
