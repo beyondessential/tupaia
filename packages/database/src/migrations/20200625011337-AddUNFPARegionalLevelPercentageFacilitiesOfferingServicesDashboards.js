@@ -57,7 +57,7 @@ const BASE_DASHBOARD = {
           entityAggregation: {
             dataSourceEntityType: 'facility',
             aggregationEntityType: 'country',
-            aggregationType: 'SUM_PER_ORG_GROUP',
+            aggregationType: 'SUM_PER_PERIOD_PER_ORG_GROUP',
           },
         },
       },
@@ -68,7 +68,7 @@ const BASE_DASHBOARD = {
           entityAggregation: {
             dataSourceEntityType: 'facility',
             aggregationEntityType: 'country',
-            aggregationType: 'COUNT_PER_ORG_GROUP',
+            aggregationType: 'COUNT_PER_PERIOD_PER_ORG_GROUP',
           },
         },
       },
@@ -81,27 +81,59 @@ const BASE_DASHBOARD = {
     chartConfig: {
       KI: {
         label: 'Kiribati',
+        yAxisDomain: {
+          min: { type: 'number', value: 0 },
+          max: { type: 'number', value: 1 },
+        },
       },
       VU: {
         label: 'Vanuatu',
+        yAxisDomain: {
+          min: { type: 'number', value: 0 },
+          max: { type: 'number', value: 1 },
+        },
       },
       TO: {
         label: 'Tonga',
+        yAxisDomain: {
+          min: { type: 'number', value: 0 },
+          max: { type: 'number', value: 1 },
+        },
       },
       SB: {
         label: 'Solomon Islands',
+        yAxisDomain: {
+          min: { type: 'number', value: 0 },
+          max: { type: 'number', value: 1 },
+        },
       },
       FJ: {
         label: 'Fiji',
+        yAxisDomain: {
+          min: { type: 'number', value: 0 },
+          max: { type: 'number', value: 1 },
+        },
       },
       MH: {
         label: 'Marshall Islands',
+        yAxisDomain: {
+          min: { type: 'number', value: 0 },
+          max: { type: 'number', value: 1 },
+        },
       },
       WS: {
         label: 'Samoa',
+        yAxisDomain: {
+          min: { type: 'number', value: 0 },
+          max: { type: 'number', value: 1 },
+        },
       },
       FM: {
         label: 'Federated States of Micronesia',
+        yAxisDomain: {
+          min: { type: 'number', value: 0 },
+          max: { type: 'number', value: 1 },
+        },
       },
     },
     valueType: 'percentage',

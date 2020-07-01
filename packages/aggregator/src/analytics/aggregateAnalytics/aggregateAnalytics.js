@@ -13,7 +13,9 @@ import {
   sumEachDataElement,
   sumPreviousPerPeriod,
   sumPerOrgGroup,
+  sumPerPeriodPerOrgGroup,
   countPerOrgGroup,
+  countPerPeriodPerOrgGroup,
   replaceOrgUnitWithOrgGroup,
 } from './aggregations';
 
@@ -90,8 +92,12 @@ export const aggregateAnalytics = (
       return sumPreviousPerPeriod(analytics, aggregationConfig, DAY);
     case AGGREGATION_TYPES.SUM_PER_ORG_GROUP:
       return sumPerOrgGroup(analytics, aggregationConfig);
+    case AGGREGATION_TYPES.SUM_PER_PERIOD_PER_ORG_GROUP:
+      return sumPerPeriodPerOrgGroup(analytics, aggregationConfig);
     case AGGREGATION_TYPES.COUNT_PER_ORG_GROUP:
       return countPerOrgGroup(analytics, aggregationConfig);
+    case AGGREGATION_TYPES.COUNT_PER_PERIOD_PER_ORG_GROUP:
+      return countPerPeriodPerOrgGroup(analytics, aggregationConfig);
     case AGGREGATION_TYPES.REPLACE_ORG_UNIT_WITH_ORG_GROUP:
       return replaceOrgUnitWithOrgGroup(analytics, aggregationConfig);
     case AGGREGATION_TYPES.RAW:
