@@ -63,6 +63,9 @@ const DATA_SOURCE_FIELDS = [
     source: 'service_type',
     editConfig: { default: 'dhis' },
   },
+];
+const DATA_ELEMENT_FIELDS = [
+  ...DATA_SOURCE_FIELDS,
   {
     Header: 'Config',
     source: 'config',
@@ -88,19 +91,38 @@ const DATA_SOURCE_FIELDS = [
     },
   },
 ];
+const DATA_GROUP_FIELDS = [
+  ...DATA_SOURCE_FIELDS,
+  {
+    Header: 'Config',
+    source: 'config',
+    Cell: DataSourceConfigView,
+    editConfig: {
+      type: 'json',
+      default: '{}',
+      getJsonFieldSchema: () => [
+        {
+          label: 'Regional Server (Choose "No" if stored on country specific server)',
+          fieldName: 'isDataRegional',
+          type: 'boolean',
+        },
+      ],
+    },
+  },
+];
 
 const TABS = {
   [DATA_ELEMENTS]: {
     title: 'Data Elements',
     endpoint: 'dataSources',
     baseFilter: { type: { comparisonValue: 'dataElement' } },
-    fields: DATA_SOURCE_FIELDS,
+    fields: DATA_ELEMENT_FIELDS,
     createConfig: {
       title: 'New Data Element',
       actionConfig: {
         editEndpoint: 'dataSource',
         fields: [
-          ...DATA_SOURCE_FIELDS,
+          ...DATA_ELEMENT_FIELDS,
           {
             Header: 'Type',
             source: 'type',
@@ -115,12 +137,27 @@ const TABS = {
     title: 'Data Groups',
     endpoint: 'dataSources',
     baseFilter: { type: { comparisonValue: 'dataGroup' } },
-    fields: DATA_SOURCE_FIELDS,
+    fields: DATA_GROUP_FIELDS,
+    createConfig: {
+      title: 'New Data Group',
+      actionConfig: {
+        editEndpoint: 'dataSource',
+        fields: [
+          ...DATA_GROUP_FIELDS,
+          {
+            Header: 'Type',
+            source: 'type',
+            editConfig: { default: 'dataGroup' },
+            show: false,
+          },
+        ],
+      },
+    },
     expansionTabs: [
       {
         title: 'Data Elements',
         endpoint: 'data_source/{id}/data_source',
-        columns: [...DATA_SOURCE_FIELDS, ...getButtonsConfig(DATA_SOURCE_FIELDS)],
+        columns: [...DATA_ELEMENT_FIELDS, ...getButtonsConfig(DATA_ELEMENT_FIELDS)],
       },
     ],
   },
