@@ -3,18 +3,12 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import MuiLink from '@material-ui/core/Link';
 import { MoveToInbox, LocationOn, SpeakerNotes, List } from '@material-ui/icons';
-import {
-  CardTabs,
-  CardTabList,
-  CardTab,
-  CardTabPanels,
-  WarningCloud,
-  Virus,
-} from '@tupaia/ui-components';
+import { CardTabList, CardTab, CardTabPanels, WarningCloud, Virus } from '@tupaia/ui-components';
 import { connectApi } from '../../api';
 import {
   Drawer,
@@ -64,14 +58,33 @@ const menuOptions = [
   },
 ];
 
+const StyledLink = styled(MuiLink)`
+  text-decoration: underline;
+  font-size: 1rem;
+  line-height: 1.2rem;
+`;
+
+const TabsContext = React.createContext(null);
+
 export const AlertsPanelComponent = React.memo(
   ({ isOpen, handleClose, fetchSitesData, fetchNotesData, fetchActivityData }) => {
+    const [activeIndex, setActiveIndex] = useState(0);
     const sitesState = useFetch(fetchSitesData);
     const notesState = useFetch(fetchNotesData);
     const activityState = useFetch(fetchActivityData);
 
     const handleChange = option => {
       console.log('handle change...', option);
+    };
+
+    const NotesTabLink = ({ children }) => (
+      <StyledLink component="button" onClick={() => setActiveIndex(1)}>
+        {children}
+      </StyledLink>
+    );
+
+    NotesTabLink.propTypes = {
+      children: PropTypes.any.isRequired,
     };
 
     return (
@@ -85,8 +98,8 @@ export const AlertsPanelComponent = React.memo(
           heading="Acute Fever and Rash (AFR)"
           DropdownMenu={<DropdownMenu options={menuOptions} onChange={handleChange} />}
         />
-        <CardTabs>
-          <CardTabList>
+        <TabsContext.Provider value={{ activeIndex, setActiveIndex }}>
+          <CardTabList Context={TabsContext}>
             <CardTab>
               <LocationOn /> Affected Sites
             </CardTab>
@@ -99,12 +112,12 @@ export const AlertsPanelComponent = React.memo(
               Activity
             </CardTab>
           </CardTabList>
-          <CardTabPanels>
+          <CardTabPanels Context={TabsContext}>
             <AffectedSitesTab state={sitesState} />
             <NotesTab state={notesState} />
-            <ActivityTab state={activityState} />
+            <ActivityTab state={activityState} NotesTabLink={NotesTabLink} />
           </CardTabPanels>
-        </CardTabs>
+        </TabsContext.Provider>
       </Drawer>
     );
   },

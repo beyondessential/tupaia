@@ -5,15 +5,11 @@
 
 import React, { useState, createContext, useContext, useCallback } from 'react';
 import MuiTabs from '@material-ui/core/Tabs';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
+import PropTypes from 'prop-types';
 import MuiTab from '@material-ui/core/Tab';
 import styled from 'styled-components';
 
-/*
- * CardTabs
- */
-const TabsContext = createContext();
+const TabsContext = createContext(null);
 
 /**
  * CardTabs are composable using `CardTabs`, `TabList`, `Tab`, `TabPanels` and `TabPanel`.
@@ -26,17 +22,18 @@ export const CardTabs = ({ children }) => {
   );
 };
 
-/*
- * CardTab List
- */
+CardTabs.propTypes = {
+  children: PropTypes.array.isRequired,
+};
+
 const StyledTabs = styled(MuiTabs)`
   .MuiTabs-indicator {
     display: none;
   }
 `;
 
-export const CardTabList = ({ children }) => {
-  const { activeIndex, setActiveIndex } = useContext(TabsContext);
+export const CardTabList = ({ children, Context }) => {
+  const { activeIndex, setActiveIndex } = useContext(Context);
   const handleChange = useCallback(
     (event, newValue) => {
       setActiveIndex(newValue);
@@ -50,10 +47,16 @@ export const CardTabList = ({ children }) => {
   );
 };
 
-/*
- * CardTab
- */
-export const CardTab = styled(({ children, ...rest }) => <MuiTab {...rest} label={children} />)`
+CardTabList.propTypes = {
+  children: PropTypes.array.isRequired,
+  Context: PropTypes.object,
+};
+
+CardTabList.defaultProps = {
+  Context: TabsContext,
+};
+
+export const CardTab = styled(({ children, ...props }) => <MuiTab {...props} label={children} />)`
   border-right: 1px solid ${props => props.theme.palette.grey['400']};
   border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
   background: ${props => props.theme.palette.grey['100']};
@@ -72,26 +75,25 @@ export const CardTab = styled(({ children, ...rest }) => <MuiTab {...rest} label
   }
 `;
 
-/*
- * CardTab Panels
- */
-export const CardTabPanels = ({ children }) => {
-  const { activeIndex } = useContext(TabsContext);
+export const CardTabPanels = ({ children, Context }) => {
+  const { activeIndex } = useContext(Context);
   return children[activeIndex];
 };
 
-/*
- * Card Tab Panel
- */
-export const CardTabPanel = ({ children, ...props }) => (
-  <Typography component="div" {...props}>
-    <Box p={3}>{children}</Box>
-  </Typography>
-);
+CardTabPanels.propTypes = {
+  children: PropTypes.array.isRequired,
+  TabsContext: PropTypes.object,
+};
+
+CardTabPanels.defaultProps = {
+  Context: TabsContext,
+};
+
+export const CardTabPanel = styled.div`
+  padding: 1.5rem;
+`;
 
 /*
- * DataTabs
- *
  * CardTabs with an array api. Each entry in 'data' should contain 'label' and 'content' fields.
  */
 export const DataCardTabs = ({ data }) => {
@@ -109,4 +111,8 @@ export const DataCardTabs = ({ data }) => {
       </CardTabPanels>
     </CardTabs>
   );
+};
+
+DataCardTabs.propTypes = {
+  data: PropTypes.array.isRequired,
 };
