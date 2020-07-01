@@ -56,20 +56,18 @@ class RawDataValuesBuilder extends DataBuilder {
         rows = await this.buildRows(events, dataElementCodeToText);
       }
 
-      const tableData = {
+      let tableData = {
         columns,
         rows,
       };
-      let isTransformed = false;
-      let newTableData = {};
+
       if (this.config.transformations && this.config.transformations.includes('transpose')) {
-        newTableData = this.transposeMatrix(columns, rows);
-        isTransformed = true;
+        tableData = this.transposeMatrix(columns, rows);
       }
 
       data[surveyCodeToName[surveyCode]] = {
         // need the nested 'data' property to be interpreted as the input to a matrix
-        data: isTransformed ? newTableData : tableData,
+        data: tableData,
       };
     }
 
