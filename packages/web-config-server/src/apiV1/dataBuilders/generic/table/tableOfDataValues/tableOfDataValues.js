@@ -226,11 +226,10 @@ export class TableOfDataValuesBuilder extends DataBuilder {
     }
 
     if (this.tableConfig.columns === ORG_UNIT_COL_KEY) {
-      this.tableConfig.columnType = this.tableConfig.columns;
       this.buildOrgsFromResults();
     }
+    
     if (this.tableConfig.columns === ORG_UNIT_WITH_TYPE_COL_KEY) {
-      this.tableConfig.columnType = this.tableConfig.columns;
       this.buildOrgsFromResultsWithCategories();
     }
 
