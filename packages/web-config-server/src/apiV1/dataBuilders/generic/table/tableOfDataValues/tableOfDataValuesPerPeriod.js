@@ -45,7 +45,7 @@ class TableOfValuesPerPeriodBuilder extends TableOfDataValuesBuilder {
       tableColumns = tableColumns.concat(this.buildBaselineColumns(baselineColumns));
     }
 
-    //Right now only support for 1 period column
+    //Only support for 1 period column at the moment
     if (typeof columns === 'object' && columns.type === '$period') {
       const { periodType, name, fillEmptyPeriods } = columns;
       const parsedPeriodType = parsePeriodType(periodType);
@@ -119,25 +119,29 @@ class TableOfValuesPerPeriodBuilder extends TableOfDataValuesBuilder {
 
   async buildRows(columns) {
     const baseRows = await this.buildBaseRows();
-    const { periodType } = this.config.columns;
-    const parsedPeriodType = parsePeriodType(periodType);
     const dataElementToRowName = this.getDataElementToRowName();
-    const groupedAnalyticsByPeriod = groupAnalyticsByPeriod(this.results, parsedPeriodType);
+    const { columns: configColumns } = this.config;
     let rowData = { ...baseRows };
 
     rowData = this.populateBaselineDataForRows(rowData, dataElementToRowName);
 
-    columns.forEach(({ key }) => {
-      const analytics = groupedAnalyticsByPeriod[key];
+    //Only support for 1 period column at the moment
+    if (typeof configColumns === 'object' && configColumns.type === '$period') {
+      const { periodType } = configColumns;
+      const parsedPeriodType = parsePeriodType(periodType);
+      const groupedAnalyticsByPeriod = groupAnalyticsByPeriod(this.results, parsedPeriodType);
+      columns.forEach(({ key }) => {
+        const analytics = groupedAnalyticsByPeriod[key];
 
-      if (analytics) {
-        analytics.forEach(analytic => {
-          const { dataElement, value } = analytic;
-          const rowName = dataElementToRowName[dataElement];
-          rowData[rowName][key] = value;
-        });
-      }
-    });
+        if (analytics) {
+          analytics.forEach(analytic => {
+            const { dataElement, value } = analytic;
+            const rowName = dataElementToRowName[dataElement];
+            rowData[rowName][key] = value;
+          });
+        }
+      });
+    }
 
     return Object.values(rowData);
   }
