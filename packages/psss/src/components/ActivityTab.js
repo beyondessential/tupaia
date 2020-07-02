@@ -106,9 +106,7 @@ export const ActivityTab = React.memo(({ state, NotesTabLink }) => {
                   <Text>
                     <DarkTextSpan>{update.user.name}</DarkTextSpan>{' '}
                     {update.type === 'note' ? (
-                      <LightTextSpan>
-                        Added a <NotesTabLink>note</NotesTabLink>
-                      </LightTextSpan>
+                      <LightTextSpan>Added a {NotesTabLink}</LightTextSpan>
                     ) : (
                       <>
                         <LightTextSpan>changed alert status to</LightTextSpan> Outbreak

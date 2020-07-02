@@ -4,28 +4,29 @@
  */
 
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { MoveToInbox, LocationOn, SpeakerNotes, List } from '@material-ui/icons';
+import PropTypes from 'prop-types';
+import { LocationOn, SpeakerNotes, List, MoveToInbox } from '@material-ui/icons';
 import {
   CardTabList,
   CardTab,
   CardTabPanels,
-  WarningCloud,
   Virus,
+  WarningCloud,
   LinkButton,
 } from '@tupaia/ui-components';
-import { connectApi } from '../../api';
 import {
   Drawer,
-  DropdownMenu,
   AlertsDrawerHeader,
   AffectedSitesTab,
   ActivityTab,
   NotesTab,
   DrawerTray,
+  DropdownMenu,
 } from '../../components';
+import * as COLORS from '../../constants/colors';
 import { countryFlagImage } from '../../utils';
+import { connectApi } from '../../api';
 import { useFetch } from '../../hooks';
 
 const Option = styled.span`
@@ -66,26 +67,38 @@ const menuOptions = [
 
 const TabsContext = React.createContext(null);
 
-export const AlertsPanelComponent = React.memo(
-  ({ isOpen, handleClose, fetchSitesData, fetchNotesData, fetchActivityData }) => {
-    const [activeIndex, setActiveIndex] = useState(0);
-    const sitesState = useFetch(fetchSitesData);
-    const notesState = useFetch(fetchNotesData);
-    const activityState = useFetch(fetchActivityData);
+export const OutbreaksPanelComponent = ({
+  isOpen,
+  handleClose,
+  fetchSitesData,
+  fetchNotesData,
+  fetchActivityData,
+}) => {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const sitesState = useFetch(fetchSitesData);
+  const notesState = useFetch(fetchNotesData);
+  const activityState = useFetch(fetchActivityData);
 
-    const handleChange = option => {
-      console.log('handle change...', option);
-    };
+  const handleChange = option => {
+    console.log('handle change...', option);
+  };
 
-    return (
+  return (
+    <div>
       <Drawer open={isOpen} onClose={handleClose}>
-        <DrawerTray heading="Alert Details" onClose={handleClose} Icon={WarningCloud} />
+        <DrawerTray
+          color={COLORS.RED}
+          heading="Outbreak Details"
+          onClose={handleClose}
+          Icon={Virus}
+        />
         <AlertsDrawerHeader
-          date="Week 9 Feb 25 - Mar 1, 2021"
-          dateText="Triggered on:"
+          color={COLORS.RED}
+          dateText="Outbreak Start Date:"
+          date="Mar 6, 2020"
           avatarUrl={countryFlagImage('as')}
           subheading="American Samoa"
-          heading="Acute Fever and Rash (AFR)"
+          heading="Measles"
           DropdownMenu={<DropdownMenu options={menuOptions} onChange={handleChange} />}
         />
         <TabsContext.Provider value={{ activeIndex, setActiveIndex }}>
@@ -103,7 +116,7 @@ export const AlertsPanelComponent = React.memo(
             </CardTab>
           </CardTabList>
           <CardTabPanels Context={TabsContext}>
-            <AffectedSitesTab state={sitesState} />
+            <AffectedSitesTab type="outbreaks" state={sitesState} />
             <NotesTab state={notesState} />
             <ActivityTab
               state={activityState}
@@ -112,11 +125,11 @@ export const AlertsPanelComponent = React.memo(
           </CardTabPanels>
         </TabsContext.Provider>
       </Drawer>
-    );
-  },
-);
+    </div>
+  );
+};
 
-AlertsPanelComponent.propTypes = {
+OutbreaksPanelComponent.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
   fetchSitesData: PropTypes.func.isRequired,
@@ -130,4 +143,4 @@ const mapApiToProps = api => ({
   fetchActivityData: () => api.get('activity-feed'),
 });
 
-export const AlertsPanel = connectApi(mapApiToProps)(AlertsPanelComponent);
+export const OutbreaksPanel = connectApi(mapApiToProps)(OutbreaksPanelComponent);
