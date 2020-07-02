@@ -14,11 +14,8 @@ export const Cell = ({
   value = '',
   isUsingDots,
 }) => {
-  console.log('isUsingDots', isUsingDots);
-  console.log('color', color);
-  console.log('value', value);
   const linesOfText = value.toString().split('\n');
-  const contents = isUsingDots && color && value !== '' ? ( //If it has color and value is not empty, we can treat it as a dot. Otherwise it can be text (which also works for empty value)
+  const contents = isUsingDots ? (
     <span
       style={{
         ...(isActive ? dotStyleActive : dotStyle),

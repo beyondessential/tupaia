@@ -123,6 +123,16 @@ export default class Row extends Component {
             };
           }
 
+          let applyDotStyle = true;
+
+          if (
+            presentationOptions &&
+            presentationOptions.applyLocation &&
+            presentationOptions.applyLocation.columnIndexes
+          ) {
+            applyDotStyle = presentationOptions.applyLocation.columnIndexes.includes(index);
+          }
+
           return (
             <Cell
               key={index}
@@ -144,7 +154,7 @@ export default class Row extends Component {
               isActive={isCellActive}
               dotStyle={styles.cellIndicator}
               dotStyleActive={styles.cellIndicatorActive}
-              isUsingDots={isUsingDots}
+              isUsingDots={isUsingDots && applyDotStyle}
             />
           );
         })}

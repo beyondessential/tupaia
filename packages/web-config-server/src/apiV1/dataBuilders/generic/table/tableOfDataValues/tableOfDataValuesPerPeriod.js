@@ -45,7 +45,7 @@ class TableOfValuesPerPeriodBuilder extends TableOfDataValuesBuilder {
       tableColumns = tableColumns.concat(this.buildBaselineColumns(baselineColumns));
     }
 
-    //Right now only support for 1 period column
+    //Only support for 1 period column at the moment
     if (typeof columns === 'object' && columns.type === '$period') {
       const { periodType, name, fillEmptyPeriods } = columns;
       const parsedPeriodType = parsePeriodType(periodType);
@@ -126,49 +126,53 @@ class TableOfValuesPerPeriodBuilder extends TableOfDataValuesBuilder {
 
   async buildRows(columns) {
     const baseRows = await this.buildBaseRows();
-    const { periodType } = this.config.columns;
-    const parsedPeriodType = parsePeriodType(periodType);
     const dataElementToRowConfig = this.getDataElementToRowConfig();
-    const groupedAnalyticsByPeriod = groupAnalyticsByPeriod(this.results, parsedPeriodType);
+    const { columns: configColumns } = this.config;
     let rowData = { ...baseRows };
 
     rowData = this.populateBaselineDataForRows(rowData, dataElementToRowConfig);
 
-    columns.forEach(({ key }) => {
-      const analytics = groupedAnalyticsByPeriod[key];
+    //Only support for 1 period column at the moment
+    if (typeof configColumns === 'object' && configColumns.type === '$period') {
+      const { periodType } = configColumns;
+      const parsedPeriodType = parsePeriodType(periodType);
+      const groupedAnalyticsByPeriod = groupAnalyticsByPeriod(this.results, parsedPeriodType);
+      columns.forEach(({ key }) => {
+        const analytics = groupedAnalyticsByPeriod[key];
 
-      if (analytics) {
-        analytics.forEach(analytic => {
-          const { dataElement, value } = analytic;
-          const { rowName, calculationType } = dataElementToRowConfig[dataElement];
-          if (calculationType === 'SUM') {
-            rowData[rowName][key] = (rowData[rowName][key] || 0) + value;
-          } else {
-            throw new Error(`Calculation type ${calculationType} not defined`);
-          }
-        });
+        if (analytics) {
+          analytics.forEach(analytic => {
+            const { dataElement, value } = analytic;
+            const { rowName, calculationType } = dataElementToRowConfig[dataElement];
+            if (calculationType === 'SUM') {
+              rowData[rowName][key] = (rowData[rowName][key] || 0) + value;
+            } else {
+              throw new Error(`Calculation type ${calculationType} not defined`);
+            }
+          });
 
-        // Handle NONE dataElement row.
-        if (dataElementToRowConfig.NONE) {
-          const { rowName, calculationType } = dataElementToRowConfig.NONE;
-          if (calculationType === 'COUNT_ENTITIES_IN_ANALYTICS') {
-            // Hack to avoid using getDataValuesInSets and fetching SurveyDate,
-            // which would be the number of survey responses submitted.
-            rowData[rowName][key] = analytics.reduce(
-              ([entityCount, entitiesSeen], analytic) => {
-                const { organisationUnit } = analytic;
-                return entitiesSeen.includes(organisationUnit)
-                  ? [entityCount, entitiesSeen]
-                  : [entityCount + 1, [...entitiesSeen, organisationUnit]];
-              },
-              [0, []],
-            )[0];
-          } else {
-            throw new Error(`Calculation type ${calculationType} not defined`);
+          // Handle NONE dataElement row.
+          if (dataElementToRowConfig.NONE) {
+            const { rowName, calculationType } = dataElementToRowConfig.NONE;
+            if (calculationType === 'COUNT_ENTITIES_IN_ANALYTICS') {
+              // Hack to avoid using getDataValuesInSets and fetching SurveyDate,
+              // which would be the number of survey responses submitted.
+              rowData[rowName][key] = analytics.reduce(
+                ([entityCount, entitiesSeen], analytic) => {
+                  const { organisationUnit } = analytic;
+                  return entitiesSeen.includes(organisationUnit)
+                    ? [entityCount, entitiesSeen]
+                    : [entityCount + 1, [...entitiesSeen, organisationUnit]];
+                },
+                [0, []],
+              )[0];
+            } else {
+              throw new Error(`Calculation type ${calculationType} not defined`);
+            }
           }
         }
-      }
-    });
+      });
+    }
 
     return Object.values(rowData);
   }
