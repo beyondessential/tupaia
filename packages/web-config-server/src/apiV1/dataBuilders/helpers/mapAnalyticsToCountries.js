@@ -1,8 +1,8 @@
 import { inspect } from 'util';
 import { Entity } from '/models';
 
-export const mapDataToCountries = data => {
-  const dataMappedToCountry = data.map(async res => {
+export const mapAnalyticsToCountries = analytics => {
+  const analyticsMappedToCountry = analytics.map(async res => {
     const resultEntity = await Entity.findOne({ code: res.organisationUnit });
     if (!resultEntity) {
       throw new Error(
@@ -14,10 +14,9 @@ export const mapDataToCountries = data => {
         )}.`,
       );
     }
-    const country = await resultEntity.getCountry();
 
-    return { ...res, organisationUnit: country.name };
+    return { ...res, organisationUnit: resultEntity.country_code };
   });
 
-  return Promise.all(dataMappedToCountry);
+  return Promise.all(analyticsMappedToCountry);
 };

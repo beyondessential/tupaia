@@ -11,8 +11,8 @@ import { groupAnalyticsByPeriod } from '@tupaia/dhis-api';
 import { PERIOD_TYPES, parsePeriodType } from '@tupaia/utils';
 import { DataPerPeriodBuilder } from 'apiV1/dataBuilders/DataPerPeriodBuilder';
 import { PercentagesOfValueCountsBuilder } from '/apiV1/dataBuilders/generic/percentage/percentagesOfValueCounts';
-import { divideValues, mapDataToCountries } from '/apiV1/dataBuilders/helpers';
-import { Facility } from '/models';
+import { divideValues, mapAnalyticsToCountries } from '/apiV1/dataBuilders/helpers';
+import { Facility, Entity } from '/models';
 
 const filterFacility = async (filterCriteria, analytics) => {
   const facilities = await Facility.find({
@@ -119,16 +119,30 @@ class BaseBuilder extends PercentagesOfValueCountsBuilder {
       );
     }
 
+    // Currently all regional data is being displayed against countries.
     if (this.config.isRegional) {
-      const dataWithCountries = await mapDataToCountries(filteredData);
+      const dataWithCountries = await mapAnalyticsToCountries(filteredData);
       const dataByCountry = groupBy(dataWithCountries, result => result.organisationUnit);
+      const countryCodesToName = {};
+      const countryCodesToNamePromises = Object.entries(dataByCountry).map(
+        async ([countryCode]) => {
+          const countryEntity = await Entity.findOne({ code: countryCode });
+          const country = await countryEntity.getCountry();
+          return { [countryCode]: country.name };
+        },
+        {},
+      );
+      (await Promise.all(countryCodesToNamePromises)).forEach(country =>
+        Object.assign(countryCodesToName, country),
+      );
 
-      Object.entries(dataByCountry).forEach(([countryName, data]) => {
+      Object.entries(dataByCountry).forEach(([countryCode, data]) => {
         const { regional } = this.config.dataClasses;
         const numerator = this.calculateFractionPart(regional.numerator, data);
         const denominator = this.calculateFractionPart(regional.denominator, data);
-        percentage[countryName] = divideValues(numerator, denominator);
-        percentage[`${countryName}_metadata`] = { numerator, denominator };
+        const key = countryCodesToName[countryCode];
+        percentage[key] = divideValues(numerator, denominator);
+        percentage[`${key}_metadata`] = { numerator, denominator };
       });
 
       return [percentage];

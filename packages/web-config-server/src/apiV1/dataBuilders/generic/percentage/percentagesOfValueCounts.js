@@ -13,7 +13,7 @@ const COMPARISON_TYPES = {
 };
 const OPERATION_TYPES = {
   GT: (leftOperand, rightOperand) => leftOperand > rightOperand,
-  EQ: (leftOperand, rightOperand) => leftOperand === rightOperand,
+  EQ: (leftOperand, rightOperand) => leftOperand == rightOperand,
   IN: (leftOperand, rightOperand) => rightOperand.includes(leftOperand),
 };
 
@@ -111,13 +111,6 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
   calculateFractionPart = (fraction, analytics) => {
     if (fraction.compare || fraction.operation) {
       const filterAnalyticsFunction = buildFilterAnalyticsFunction(fraction);
-
-      if (!filterAnalyticsFunction) {
-        throw new Error(
-          'Could not create filterAnalyticsFunction from percentagesOfValueCounts config',
-        );
-      }
-
       const filteredAnalytics = analytics.filter(analytic =>
         flatten(fraction.dataValues).includes(analytic.dataElement),
       );
