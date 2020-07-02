@@ -47,7 +47,7 @@ exports.up = async function(db) {
           }
         }
       },
-      "isRegional" : true
+      "isProjectReport" : true
     }',
     
     E'{
@@ -97,7 +97,7 @@ exports.up = async function(db) {
             }
           }
         },
-        "isRegional" : true
+        "isProjectReport" : true
       }',
       
       E'{

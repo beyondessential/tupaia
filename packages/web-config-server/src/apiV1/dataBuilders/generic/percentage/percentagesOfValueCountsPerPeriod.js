@@ -131,7 +131,7 @@ class BaseBuilder extends PercentagesOfValueCountsBuilder {
   }
 
   getDataClassesWithAnalytics = async analytics => {
-    if (this.config.isRegional) {
+    if (this.config.isProjectReport) {
       const dataWithCountries = await mapAnalyticsToCountries(analytics);
       const dataByCountry = groupBy(dataWithCountries, result => result.organisationUnit);
       // Only one data class is supported for country data classes
