@@ -5,17 +5,34 @@
 import React from 'react';
 import thunk from 'redux-thunk';
 import '@testing-library/jest-dom';
-import { combineReducers, createStore, applyMiddleware } from 'redux';
+import { combineReducers, createStore, applyMiddleware, compose } from 'redux';
 import { render } from '@testing-library/react';
 import { AppProviders } from '../AppProviders';
-import { API } from '../api';
+import { API, FakeAPI } from '../api';
 import { createReducers } from '../createReducers';
 
 const reducer = combineReducers(createReducers());
-const store = createStore(reducer, applyMiddleware(thunk.withExtraArgument({ api: API })));
 
-const Providers = props => <AppProviders store={store} {...props} />;
+const enhancers = compose(applyMiddleware(thunk.withExtraArgument({ api: API, fakeApi: FakeAPI })));
 
-const customRender = (ui, options) => render(ui, { wrapper: Providers, ...options });
+const customRender = (ui, defaultState = {}) => {
+  // let store = null;
+  // if (defaultState) {
+  //   store = createStore(
+  //     reducer,
+  //     defaultState,
+  //     enhancers,
+  //   );
+  //   console.log('default state', defaultState);
+  // } else {
+  //   store = createStore(reducer, enhancers);
+  // }
+
+  const store = createStore(reducer, defaultState, enhancers);
+
+  const Providers = props => <AppProviders store={store} {...props} />;
+
+  return render(ui, { wrapper: Providers });
+};
 
 export { customRender as render };
