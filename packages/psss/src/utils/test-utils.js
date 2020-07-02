@@ -16,18 +16,6 @@ const reducer = combineReducers(createReducers());
 const enhancers = compose(applyMiddleware(thunk.withExtraArgument({ api: API, fakeApi: FakeAPI })));
 
 const customRender = (ui, defaultState = {}) => {
-  // let store = null;
-  // if (defaultState) {
-  //   store = createStore(
-  //     reducer,
-  //     defaultState,
-  //     enhancers,
-  //   );
-  //   console.log('default state', defaultState);
-  // } else {
-  //   store = createStore(reducer, enhancers);
-  // }
-
   const store = createStore(reducer, defaultState, enhancers);
 
   const Providers = props => <AppProviders store={store} {...props} />;
