@@ -34,19 +34,19 @@ const Heading = styled(Typography)`
 `;
 
 const Copy = styled(Typography)`
-  font-size: 18px;
-  line-height: 21px;
+  font-size: 1.125rem;
+  line-height: 1.3rem;
   margin-bottom: 1rem;
 `;
 
 const Link = styled(RouterLink)`
   text-decoration: underline;
-  font-size: 18px;
-  line-height: 21px;
+  font-size: 1.125rem;
+  line-height: 1.3rem;
   color: ${COLORS.RED};
 `;
 
-export const AlertCreatedModal = ({ isOpen, handleClose }) => (
+export const AlertCreatedModal = ({ isOpen, alerts, handleClose }) => (
   <Dialog onClose={handleClose} open={isOpen}>
     <DialogHeader onClose={handleClose} title="Alert created" color="error" />
     <DialogContent>
@@ -54,7 +54,11 @@ export const AlertCreatedModal = ({ isOpen, handleClose }) => (
         <Icon />
         <Heading variant="h6">Alert has been created</Heading>
         <Copy>Syndrome is above the threshold and an Alert has been created.</Copy>
-        <Link to="alerts">View alert: Influenza-like Illness (ILI) - W9</Link>
+        {alerts.map(alert => (
+          <Link key={alert.id} to="alerts">
+            View alert: {alert.title}
+          </Link>
+        ))}
       </Container>
     </DialogContent>
     <DialogFooter>
@@ -64,6 +68,7 @@ export const AlertCreatedModal = ({ isOpen, handleClose }) => (
 );
 
 AlertCreatedModal.propTypes = {
+  alerts: PropTypes.array.isRequired,
   isOpen: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
 };

@@ -76,12 +76,9 @@ const StyledExpansionContainer = styled(TableRowExpansionContainer)`
 
 export const VerifiableTableRowComponent = React.memo(props => {
   const { rowData, verifiedStatus, setVerifiedStatus } = props;
-  const key = rowData.id;
-  // const status = verifiedStatuses[key];
-  const status = verifiedStatus;
 
   const WarningButtonComponent = () => {
-    if (status === true) {
+    if (verifiedStatus) {
       return (
         <VerifiedWrapper>
           <VerifiedAlert>
@@ -92,7 +89,7 @@ export const VerifiableTableRowComponent = React.memo(props => {
     }
 
     const handleVerify = () => {
-      setVerifiedStatus(key);
+      setVerifiedStatus(rowData.id);
     };
 
     return (
@@ -107,7 +104,7 @@ export const VerifiableTableRowComponent = React.memo(props => {
   return (
     <BorderlessTableRow
       {...props}
-      expandedValue={status !== null}
+      expandedValue={verifiedStatus !== null}
       SubComponent={WarningButtonComponent}
       ExpansionContainer={StyledExpansionContainer}
     />

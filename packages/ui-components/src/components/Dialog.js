@@ -11,11 +11,11 @@ import CloseIcon from '@material-ui/icons/Close';
 import styled from 'styled-components';
 import { IconButton } from './IconButton';
 
-const backdropColor = 'rgba(65, 77, 85, 0.3)';
+const BACKDROP_COLOUR = 'rgba(65, 77, 85, 0.3)';
 
 const StyledDialog = styled(MuiDialog)`
   .MuiBackdrop-root {
-    background: ${backdropColor};
+    background: ${BACKDROP_COLOUR};
   }
 `;
 
@@ -41,8 +41,8 @@ const Header = styled.div`
 
 const DialogTitle = styled(Typography)`
   font-weight: 500;
-  font-size: 20px;
-  line-height: 20px;
+  font-size: 1.25rem;
+  line-height: 1.25rem;
 `;
 
 const CloseButton = styled(IconButton)`
@@ -73,9 +73,11 @@ DialogHeader.defaultProps = {
   color: 'textPrimary',
 };
 
+const BACKGROUND_COLOUR = '#f9f9f9';
+
 export const DialogContent = styled.div`
   padding: 2.5rem 1.875rem;
-  background-color: #f9f9f9;
+  background-color: ${BACKGROUND_COLOUR};
   text-align: center;
 `;
 
@@ -84,6 +86,6 @@ export const DialogFooter = styled.div`
   align-items: center;
   justify-content: flex-end;
   padding: 1.1rem 1.875rem;
-  background-color: #f9f9f9;
+  background-color: ${BACKGROUND_COLOUR};
   border-top: 1px solid ${props => props.theme.palette.grey['400']};
 `;
