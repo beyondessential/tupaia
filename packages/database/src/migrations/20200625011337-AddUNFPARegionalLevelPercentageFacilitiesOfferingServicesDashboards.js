@@ -137,6 +137,7 @@ const BASE_DASHBOARD = {
       },
     },
     valueType: 'percentage',
+    labelType: 'fractionAndPercentage',
     showPeriodRange: 'dashboardOnly',
     periodGranularity: 'quarter',
   },

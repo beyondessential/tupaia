@@ -14,6 +14,10 @@ export const composePercentagesPerPeriodByOrgUnit = async (config, aggregator, d
     Object.entries(orgUnits).forEach(([orgUnitCode, denominatorValue]) => {
       const numeratorValue = numeratorReponse ? numeratorReponse[orgUnitCode] || 0 : 0;
       dataValue[orgUnitCode] = divideValues(numeratorValue, denominatorValue);
+      dataValue[`${orgUnitCode}_metadata`] = {
+        numerator: numeratorValue,
+        denominator: denominatorValue,
+      };
     });
     data.push(dataValue);
   });
