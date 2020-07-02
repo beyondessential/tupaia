@@ -7,6 +7,7 @@ import { getMeasureBuilder } from './getMeasureBuilder';
 import { OPERATOR_TO_VALUE_CHECK } from '../dataBuilders/helpers/checkAgainstConditions';
 import { Entity } from '../../models';
 import { inspect } from 'util';
+import { periodToMoment } from '@tupaia/utils/dist/period/period';
 
 export const fetchComposedData = async (aggregator, dhisApi, query, config, entity) => {
   const { measureBuilders, dataServices } = config || {};
@@ -72,7 +73,8 @@ export const mapMeasureDataToCountries = data => {
 };
 
 export const analyticsToMeasureData = (analytics, customDataKey) =>
-  analytics.map(({ organisationUnit, dataElement, value }) => ({
+  analytics.map(({ organisationUnit, dataElement, value, period }) => ({
     organisationUnitCode: organisationUnit,
     [customDataKey || dataElement]: value,
+    submissionDate: periodToMoment(period.toString()).format('YYYY-MM-DD'),
   }));
