@@ -3,35 +3,45 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import { createReducer } from '../../utils/createReducer';
+import { reloadCountryWeeks } from './country';
 
 // actions
 const SET_ACTIVE_WEEK = 'SET_ACTIVE_WEEK';
-const OPEN_PANEL = 'OPEN_PANEL';
-const CLOSE_PANEL = 'CLOSE_PANEL';
+const TOGGLE_PANEL = 'TOGGLE_PANEL';
 const VERIFY_SYNDROME = 'VERIFY_SYNDROME';
+const SET_VERIFIED_STATUSES = 'SET_DEFAULT_VERIFIED_STATUSES';
 
 // action creators
-export const openWeeklyReportsPanel = () => (dispatch, getState) => {
+export const openWeeklyReportsPanel = () => dispatch => {
+  dispatch(setDefaultVerifiedStatuses());
+  dispatch({ type: TOGGLE_PANEL, panelIsOpen: true });
+};
+
+export const closeWeeklyReportsPanel = () => ({ type: TOGGLE_PANEL, panelIsOpen: false });
+
+export const setActiveWeek = id => ({ type: SET_ACTIVE_WEEK, id });
+
+export const updateWeeklyReportsData = () => async dispatch => {
+  await dispatch(reloadCountryWeeks({}));
+  dispatch(setDefaultVerifiedStatuses());
+};
+
+export const confirmWeeklyReportsData = () => async dispatch => {
+  console.log('confirm data..., post data to server...');
+  dispatch(updateWeeklyReportsData());
+};
+
+export const updateVerifiedStatus = id => ({ type: VERIFY_SYNDROME, id });
+
+export const setDefaultVerifiedStatuses = () => (dispatch, getState) => {
   const state = getState();
   const activeCountryWeekData = getActiveWeekCountryData(state);
-
   const verifiedStatuses = activeCountryWeekData.reduce(
-    (object, item) => ({
-      ...object,
-      [item.id]: item.percentageChange > 10 ? false : null,
-    }),
+    (statuses, syndrome) => ({ ...statuses, [syndrome.id]: syndrome.isAlert ? false : null }),
     {},
   );
 
-  dispatch({ type: OPEN_PANEL, verifiedStatuses });
-};
-export const closeWeeklyReportsPanel = () => ({ type: CLOSE_PANEL });
-export const setActiveWeek = id => ({ type: SET_ACTIVE_WEEK, id });
-export const updateVerifiedStatus = id => {
-  return { type: VERIFY_SYNDROME, id };
-};
-export const confirmWeeklyReportsData = () => async () => {
-  console.log('confirm data...');
+  dispatch({ type: SET_VERIFIED_STATUSES, verifiedStatuses });
 };
 
 // selectors
@@ -39,8 +49,6 @@ export const checkWeeklyReportsPanelIsOpen = ({ weeklyReports }) =>
   weeklyReports.activeWeek.panelIsOpen;
 
 export const getActiveWeekId = ({ weeklyReports }) => weeklyReports.activeWeek.id;
-
-export const getVerifiedStatuses = ({ weeklyReports }) => weeklyReports.activeWeek.verifiedStatuses;
 
 export const getActiveWeekCountryData = ({ weeklyReports }) => {
   if (weeklyReports.activeWeek.id !== null) {
@@ -54,24 +62,45 @@ export const getActiveWeekCountryData = ({ weeklyReports }) => {
   return [];
 };
 
+export const getSyndromeAlerts = state =>
+  getActiveWeekCountryData(state).reduce(
+    (statuses, syndrome) => (syndrome.isAlert ? [...statuses, syndrome] : statuses),
+    [],
+  );
+
+export const checkHasAlerts = state => getSyndromeAlerts(state).length > 0;
+
+export const getVerifiedStatuses = ({ weeklyReports }) => weeklyReports.activeWeek.verifiedStatuses;
+
+export const getVerifiedStatus = (state, syndromeId) => {
+  const statuses = getVerifiedStatuses(state);
+  return statuses[syndromeId];
+};
+
+export const getUnVerifiedSyndromes = state =>
+  Object.entries(getVerifiedStatuses(state)).reduce(
+    (statuses, [key, value]) => (value === false ? [...statuses, key] : statuses),
+    [],
+  );
+
+export const checkAlertsAreVerified = state => getUnVerifiedSyndromes(state).length > 0;
+
 // reducer
 const defaultState = {
   id: null,
-  verifiedStatuses: {},
   panelIsOpen: false,
+  verifiedStatuses: {},
 };
 
 const actionHandlers = {
   [SET_ACTIVE_WEEK]: ({ id }) => ({
     id,
   }),
-  [OPEN_PANEL]: ({ verifiedStatuses }) => ({
-    panelIsOpen: true,
-    verifiedStatuses,
+  [TOGGLE_PANEL]: ({ panelIsOpen }) => ({
+    panelIsOpen,
   }),
-  [CLOSE_PANEL]: () => ({
-    panelIsOpen: false,
-    verifiedStatus: defaultState.verifiedStatus,
+  [SET_VERIFIED_STATUSES]: ({ verifiedStatuses }) => ({
+    verifiedStatuses,
   }),
   [VERIFY_SYNDROME]: ({ id }, { verifiedStatuses }) => ({
     verifiedStatuses: {
