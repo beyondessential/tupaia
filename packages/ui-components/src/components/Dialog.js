@@ -6,84 +6,84 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import MuiDialog from '@material-ui/core/Dialog';
-import MuiDialogTitle from '@material-ui/core/DialogTitle';
-import MuiDialogContent from '@material-ui/core/DialogContent';
-import MuiDialogActions from '@material-ui/core/DialogActions';
-import MuiDialogContentText from '@material-ui/core/DialogContentText';
-import Close from '@material-ui/icons/Close';
+import Typography from '@material-ui/core/Typography';
+import CloseIcon from '@material-ui/icons/Close';
 import styled from 'styled-components';
-import { LightIconButton } from './IconButton';
+import { IconButton } from './IconButton';
 
-const backdropColor = 'rgba(31, 88, 128, 0.72)';
+const backdropColor = 'rgba(65, 77, 85, 0.3)';
 
-export const Dialog = styled(({ children, ...props }) => (
-  <MuiDialog fullWidth maxWidth="sm" {...props}>
-    {children}
-  </MuiDialog>
-))`
-  .MuiPaper-root {
-    border-radius: 0;
-  }
-
+const StyledDialog = styled(MuiDialog)`
   .MuiBackdrop-root {
     background: ${backdropColor};
   }
 `;
 
-const StyledDialogTitle = styled(MuiDialogTitle)`
+export const Dialog = ({ children, ...props }) => (
+  <StyledDialog fullWidth maxWidth="sm" {...props}>
+    {children}
+  </StyledDialog>
+);
+
+Dialog.propTypes = {
+  children: PropTypes.array.isRequired,
+};
+
+const Header = styled.div`
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: ${props => props.theme.palette.secondary.main};
-  color: white;
-  padding: 0.75rem 1.5rem 0.75rem 2rem;
-  font-weight: bold;
-  font-size: 1.3125rem;
-  line-height: 3.125rem;
+  background: white;
+  padding: 1.3rem 1.875rem 1.25rem;
+  border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
 `;
 
-export const DialogTitle = ({ children, ...props }) => (
-  <StyledDialogTitle {...props} disableTypography>
-    {children}
-    {props.onClose && (
-      <LightIconButton onClick={props.onClose}>
-        <Close />
-      </LightIconButton>
-    )}
-  </StyledDialogTitle>
+const DialogTitle = styled(Typography)`
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 20px;
+`;
+
+const CloseButton = styled(IconButton)`
+  position: absolute;
+  top: 0;
+  right: 0;
+  color: ${props => props.theme.palette.text.primary};
+`;
+
+export const DialogHeader = ({ title, onClose, color }) => (
+  <Header>
+    <DialogTitle color={color} variant="h3">
+      {title}
+    </DialogTitle>
+    <CloseButton onClick={onClose}>
+      <CloseIcon />
+    </CloseButton>
+  </Header>
 );
 
-DialogTitle.propTypes = {
-  children: PropTypes.node.isRequired,
-  onClose: PropTypes.func,
+DialogHeader.propTypes = {
+  title: PropTypes.string.isRequired,
+  onClose: PropTypes.func.isRequired,
+  color: PropTypes.string,
 };
 
-DialogTitle.defaultProps = {
-  onClose: null,
+DialogHeader.defaultProps = {
+  color: 'textPrimary',
 };
 
-export const DialogContent = styled(({ greyBackground, ...props }) => (
-  <MuiDialogContent {...props} />
-))`
-  padding: 1.5rem 1.5rem 1.5rem 2rem;
-  background-color: ${props =>
-    props.greyBackground ? props.theme.palette.grey['400'] : props.theme.palette.common.white};
+export const DialogContent = styled.div`
+  padding: 2.5rem 1.875rem;
+  background-color: #f9f9f9;
+  text-align: center;
 `;
 
-DialogContent.propTypes = {
-  greyBackground: PropTypes.bool,
-};
-
-export const DialogActions = styled(MuiDialogActions)`
-  padding: 1.5rem 1.5rem 1.5rem 2rem;
-  background-color: ${props => props.theme.palette.grey['400']};
-  border-top: 1px solid ${props => props.theme.palette.grey['300']};
-
-  > :not(:first-child) {
-    margin-left: 1rem;
-  }
-`;
-
-export const DialogContentText = styled(MuiDialogContentText)`
-  color: ${props => props.theme.palette.text.primary};
+export const DialogFooter = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 1.1rem 1.875rem;
+  background-color: #f9f9f9;
+  border-top: 1px solid ${props => props.theme.palette.grey['400']};
 `;
