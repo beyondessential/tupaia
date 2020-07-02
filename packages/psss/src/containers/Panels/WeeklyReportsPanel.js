@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
@@ -132,7 +132,7 @@ export const WeeklyReportsPanelComponent = React.memo(
     const isVerified = unVerifiedSyndromes.length === 0;
     const hasAlerts = alerts.length > 0;
 
-    const handleSubmit = () => {
+    const handleSubmit = useCallback(() => {
       if (isVerified) {
         handleConfirm();
 
@@ -144,7 +144,7 @@ export const WeeklyReportsPanelComponent = React.memo(
       } else {
         setPanelStatus(PANEL_STATUSES.SUBMIT_ATTEMPTED);
       }
-    };
+    }, [isVerified, handleConfirm, hasAlerts, setIsModalOpen, setPanelStatus]);
 
     if (countryData.length === 0 || sitesData.length === 0) {
       return null;
