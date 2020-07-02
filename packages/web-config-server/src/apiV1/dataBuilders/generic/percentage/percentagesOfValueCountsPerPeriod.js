@@ -119,10 +119,23 @@ class BaseBuilder extends PercentagesOfValueCountsBuilder {
       );
     }
 
-    // Currently all regional data is being displayed against countries.
+    const dataClassesWithAnalytics = await this.getDataClassesWithAnalytics(filteredData);
+    Object.entries(dataClassesWithAnalytics).forEach(([key, dataClass]) => {
+      const numerator = this.calculateFractionPart(dataClass.numerator, dataClass.analytics);
+      const denominator = this.calculateFractionPart(dataClass.denominator, dataClass.analytics);
+      percentage[key] = divideValues(numerator, denominator);
+      percentage[`${key}_metadata`] = { numerator, denominator };
+    });
+
+    return [percentage];
+  }
+
+  getDataClassesWithAnalytics = async analytics => {
     if (this.config.isRegional) {
-      const dataWithCountries = await mapAnalyticsToCountries(filteredData);
+      const dataWithCountries = await mapAnalyticsToCountries(analytics);
       const dataByCountry = groupBy(dataWithCountries, result => result.organisationUnit);
+      // Only one data class is supported for country data classes
+      const baseDataClass = Object.values(this.config.dataClasses)[0];
       const countryCodesToName = {};
       const countryCodesToNamePromises = Object.entries(dataByCountry).map(
         async ([countryCode]) => {
@@ -136,28 +149,21 @@ class BaseBuilder extends PercentagesOfValueCountsBuilder {
         Object.assign(countryCodesToName, country),
       );
 
-      Object.entries(dataByCountry).forEach(([countryCode, data]) => {
-        const { regional } = this.config.dataClasses;
-        const numerator = this.calculateFractionPart(regional.numerator, data);
-        const denominator = this.calculateFractionPart(regional.denominator, data);
-        const key = countryCodesToName[countryCode];
-        percentage[key] = divideValues(numerator, denominator);
-        percentage[`${key}_metadata`] = { numerator, denominator };
-      });
-
-      return [percentage];
+      return Object.entries(dataByCountry).reduce(
+        (result, [code, analyticsForCountry]) => ({
+          ...result,
+          [countryCodesToName[code]]: { ...baseDataClass, analytics: analyticsForCountry },
+        }),
+        {},
+      );
     }
 
-    Object.entries(this.config.dataClasses).forEach(([name, dataClass]) => {
-      const numerator = this.calculateFractionPart(dataClass.numerator, filteredData);
-      const denominator = this.calculateFractionPart(dataClass.denominator, filteredData);
-      const key = Object.keys(this.config.dataClasses).length > 1 ? name : 'value';
-      percentage[key] = divideValues(numerator, denominator);
-      percentage[`${key}_metadata`] = { numerator, denominator };
-    });
-
-    return [percentage];
-  }
+    const hasMultipleClasses = Object.keys(this.config.dataClasses).length > 1;
+    return Object.entries(this.config.dataClasses).reduce((result, [name, dataClass]) => {
+      const key = hasMultipleClasses ? name : 'value';
+      return { ...result, [key]: { ...dataClass, analytics } };
+    }, {});
+  };
 }
 
 class PercentagesOfValueCountsPerPeriodBuilder extends DataPerPeriodBuilder {
