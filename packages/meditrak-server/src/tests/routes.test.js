@@ -9,7 +9,7 @@ import {
   testGetChangesCount,
   testPostChanges,
   testImportSurveyResponses,
-  testPostSurveyResponses,
+  testPutSurveyResponses,
 } from './routeTests';
 
 describe('Tupaia API', () => {
@@ -29,7 +29,7 @@ describe('Tupaia API', () => {
 
   describe('POST /changes', testPostChanges(app, models, syncQueue));
 
-  describe('POST /surveyResponses', testPostSurveyResponses(app, models, syncQueue));
+  describe('POST /surveyResponses', testPutSurveyResponses(app, models, syncQueue));
 
   describe('POST /import/surveyResponses', testImportSurveyResponses(app, models, syncQueue));
 });
