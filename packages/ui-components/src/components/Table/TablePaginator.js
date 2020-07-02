@@ -6,10 +6,39 @@ import React, { useCallback } from 'react';
 import MuiTableFooter from '@material-ui/core/TableFooter';
 import MuiTableRow from '@material-ui/core/TableRow';
 import MuiTablePagination from '@material-ui/core/TablePagination';
+import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { tableColumnShape } from './tableColumnShape';
 
 const ROWS_PER_PAGE_OPTIONS = [10, 25, 50];
+
+const TableFooter = styled(MuiTableFooter)`
+  .MuiTableCell-footer {
+    padding-top: 40px;
+    border: none;
+  }
+`;
+
+const TablePagination = styled(MuiTablePagination)`
+  .MuiTablePagination-toolbar {
+    color: ${props => props.theme.palette.text.secondary};
+  }
+
+  .MuiButtonBase-root {
+    background-color: ${props => props.theme.palette.grey['200']};
+    padding: 0.5rem;
+    border-radius: 3px;
+
+    &:last-child {
+      margin-left: 0.5rem;
+    }
+
+    &:hover {
+      background-color: ${props => props.theme.palette.primary.main};
+      color: white;
+    }
+  }
+`;
 
 export const TablePaginator = React.memo(
   ({ columns, page, count, rowsPerPage, onChangePage, onChangeRowsPerPage }) => {
@@ -33,9 +62,9 @@ export const TablePaginator = React.memo(
     );
 
     return (
-      <MuiTableFooter>
+      <TableFooter>
         <MuiTableRow>
-          <MuiTablePagination
+          <TablePagination
             rowsPerPageOptions={ROWS_PER_PAGE_OPTIONS}
             colSpan={columns.length}
             page={page}
@@ -45,7 +74,7 @@ export const TablePaginator = React.memo(
             onChangeRowsPerPage={handleChangeRowsPerPage}
           />
         </MuiTableRow>
-      </MuiTableFooter>
+      </TableFooter>
     );
   },
 );
