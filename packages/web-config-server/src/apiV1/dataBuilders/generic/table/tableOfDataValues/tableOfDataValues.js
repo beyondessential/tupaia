@@ -307,9 +307,10 @@ export class TableOfDataValuesBuilder extends DataBuilder {
 
       return Object.entries(totals).reduce((averages, [category, columns]) => {
         const averagedColumns = {};
-        for (const column in columns) {
+
+        Object.keys(columns).forEach(column => {
           averagedColumns[column] = Math.round(columns[column] / categoryRowLengths[category]);
-        }
+        });
 
         return { ...averages, [category]: averagedColumns };
       }, {});

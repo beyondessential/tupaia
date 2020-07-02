@@ -10,31 +10,6 @@ import { DhisApi, DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
 
 const { ORGANISATION_UNIT, TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_TYPE } = DHIS2_RESOURCE_TYPES;
 
-/**
- * @typedef {Object} EntityStub
- * @property {string} id
- * @property {string} [code]
- * @property {string} [parent_id]
- * @property {string} [name]
- * @property {string} [type]
- * @property {Object<string, any>} [metadata]
- * @property {Function} getDhisId
- * @property {Function} hasDhisId
- * @property {Function} isOrganisationUnit
- * @property {Function} setDhisId
- */
-
-/**
- * @typedef {Object} DhisSyncLogStub
- * @property {string} record_id
- * @property {string} data JSON string of the synced record
- */
-
-/**
- * @param {string} id
- * @param {Object<string, any>} [config]
- * @returns {EntityStub}
- */
 export const createEntityStub = (
   id,
   { code, metadata, name, closestOrgUnit, setDhisId, type } = {},
@@ -55,12 +30,6 @@ export const createEntityStub = (
   };
 };
 
-/**
- * @param {Object} [modelStubs]
- * @param {EntityStub[]} [modelStubs.entityRecords]
- * @param {DhisSyncLogStub[]} [modelStubs.dhisSyncLogRecords]
- * @returns {{ entity, dhisSyncLog }}
- */
 export const createModelsStub = ({ entityRecords, dhisSyncLogRecords } = {}) => {
   const entitiesById = keyBy(entityRecords, 'id');
   const syncLogsByRecordId = keyBy(dhisSyncLogRecords, 'record_id');
@@ -75,15 +44,6 @@ export const createModelsStub = ({ entityRecords, dhisSyncLogRecords } = {}) => 
   };
 };
 
-/**
- * @param {Object} [expectedResponses]
- * @param {{ id, displayName }} [expectedResponses.entityType]
- * @param {Array<{ id, code }>} [expectedResponses.entityAttributes]
- * @param {{ id, code }} [expectedResponses.organisationUnit]
- * @param {any} [expectedResponses.deleteRecordById]
- * @param {any} [expectedResponses.updateRecord]
- * @returns {sinon.SinonStubbedInstance<DhisApi>}
- */
 export const createDhisApiStub = ({
   organisationUnit,
   entityType,

@@ -8,10 +8,6 @@ import { reduceToDictionary } from '@tupaia/utils';
 
 class QuestionType extends DatabaseType {
   static databaseType = TYPES.QUESTION;
-
-  static meditrakConfig = {
-    minAppVersion: '0.0.1',
-  };
 }
 
 const HOOKS_BY_ID_CACHE_KEY = 'hooksByQuestionId';
@@ -22,6 +18,10 @@ export class QuestionModel extends DatabaseModel {
   get DatabaseTypeClass() {
     return QuestionType;
   }
+
+  meditrakConfig = {
+    minAppVersion: '0.0.1',
+  };
 
   async getHooksByQuestionId() {
     return this.runCachedFunction(HOOKS_BY_ID_CACHE_KEY, async () => {

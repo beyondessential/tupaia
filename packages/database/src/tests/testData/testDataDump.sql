@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 11.3
--- Dumped by pg_dump version 11.3
+-- Dumped from database version 11.2
+-- Dumped by pg_dump version 11.2
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -12,7 +12,6 @@ SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
-SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
@@ -229,6 +228,24 @@ CREATE FUNCTION public.update_change_time() RETURNS trigger
 SET default_tablespace = '';
 
 SET default_with_oids = false;
+
+--
+-- Name: access_request; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.access_request (
+    id text NOT NULL,
+    user_id text,
+    entity_id text,
+    message text,
+    permission_group_id text,
+    approved boolean,
+    created_time timestamp with time zone DEFAULT now() NOT NULL,
+    approving_user_id text,
+    approval_note text,
+    approval_date timestamp with time zone
+);
+
 
 --
 -- Name: answer; Type: TABLE; Schema: public; Owner: -
@@ -925,6 +942,14 @@ ALTER TABLE ONLY public."dashboardGroup" ALTER COLUMN id SET DEFAULT nextval('pu
 --
 
 ALTER TABLE ONLY public.migrations ALTER COLUMN id SET DEFAULT nextval('public.migrations_id_seq'::regclass);
+
+
+--
+-- Name: access_request access_request_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_pkey PRIMARY KEY (id);
 
 
 --
@@ -1796,6 +1821,13 @@ CREATE INDEX user_entity_permission_user_id_idx ON public.user_entity_permission
 
 
 --
+-- Name: access_request access_request_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER access_request_trigger AFTER INSERT OR DELETE OR UPDATE ON public.access_request FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
 -- Name: answer answer_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -2045,6 +2077,38 @@ CREATE TRIGGER user_entity_permission_trigger AFTER INSERT OR DELETE OR UPDATE O
 --
 
 CREATE TRIGGER user_reward_trigger AFTER INSERT OR DELETE OR UPDATE ON public.user_reward FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
+-- Name: access_request access_request_approving_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_approving_user_id_fkey FOREIGN KEY (approving_user_id) REFERENCES public.user_account(id);
+
+
+--
+-- Name: access_request access_request_entity_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_entity_id_fkey FOREIGN KEY (entity_id) REFERENCES public.entity(id);
+
+
+--
+-- Name: access_request access_request_permission_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_permission_group_id_fkey FOREIGN KEY (permission_group_id) REFERENCES public.permission_group(id);
+
+
+--
+-- Name: access_request access_request_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user_account(id);
 
 
 --
@@ -2375,8 +2439,8 @@ ALTER TABLE ONLY public.user_reward
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 11.3
--- Dumped by pg_dump version 11.3
+-- Dumped from database version 11.2
+-- Dumped by pg_dump version 11.2
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -2385,7 +2449,6 @@ SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
-SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
@@ -3204,8 +3267,8 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 766	/20200622025632-AddDataGroupsForAllSurveys	2020-06-22 13:40:56.124
 767	/20200622025633-AddDataSourceIdColumn	2020-06-22 13:40:56.43
 768	/20200622025634-RemoveDhis2InfoFromSurveyIntegrationMetadata	2020-06-22 13:40:56.505
+766	/20200528043308-createAccessRequestTable	2020-06-23 10:45:45.946
 \.
-
 
 --
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
