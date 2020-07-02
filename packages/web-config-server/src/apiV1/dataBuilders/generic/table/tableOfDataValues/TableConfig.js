@@ -58,7 +58,7 @@ export class TableConfig {
     this.rows = this.baseConfig.rows;
     this.columns = this.baseConfig.columns;
     this.cells = this.baseConfig.cells;
-    this.columnType = this.baseConfig.columnType ? this.baseConfig.columnType : '';
+    this.columnType = this.baseConfig.columnType || '';
 
     if (this.hasMetadataRowCategories()) {
       this.processRowMetadataFields(results);
