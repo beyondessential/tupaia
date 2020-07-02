@@ -33,7 +33,7 @@ import {
   checkWeeklyReportsPanelIsOpen,
   getUnVerifiedSyndromes,
   confirmWeeklyReportsData,
-  checkHasAlerts,
+  getSyndromeAlerts,
 } from '../../store';
 import * as COLORS from '../../constants/colors';
 import { CountryReportTable, SiteReportTable } from '../Tables';
@@ -63,7 +63,7 @@ const columns = [
 
 const MainSection = styled.section`
   position: relative;
-  padding: 30px 20px;
+  padding: 1.8rem 1.25rem;
 
   &:after {
     display: ${props => (props.disabled ? 'block' : 'none')};
@@ -81,7 +81,7 @@ const MainSection = styled.section`
 const GreySection = styled(MainSection)`
   background: ${COLORS.LIGHTGREY};
   box-shadow: 0 1px 0 ${COLORS.GREY_DE};
-  padding: 25px 20px;
+  padding: 1.6rem 1.25rem;
 `;
 
 const HelperText = styled(Typography)`
@@ -122,15 +122,7 @@ const toCommaList = values =>
     .replace(/,(?!.*,)/gim, ' and');
 
 export const WeeklyReportsPanelComponent = React.memo(
-  ({
-    countryData,
-    sitesData,
-    isOpen,
-    handleClose,
-    unVerifiedSyndromes,
-    hasAlerts,
-    handleConfirm,
-  }) => {
+  ({ countryData, sitesData, isOpen, handleClose, unVerifiedSyndromes, alerts, handleConfirm }) => {
     const [panelStatus, setPanelStatus] = useState(PANEL_STATUSES.INITIAL);
     const [countryTableStatus, setCountryTableStatus] = useState(TABLE_STATUSES.STATIC);
     const [sitesTableStatus, setSitesTableStatus] = useState(TABLE_STATUSES.STATIC);
@@ -138,6 +130,7 @@ export const WeeklyReportsPanelComponent = React.memo(
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const isVerified = unVerifiedSyndromes.length === 0;
+    const hasAlerts = alerts.length > 0;
 
     const handleSubmit = () => {
       if (isVerified) {
@@ -231,7 +224,11 @@ export const WeeklyReportsPanelComponent = React.memo(
             </>
           )}
         </DrawerFooter>
-        <AlertCreatedModal isOpen={isModalOpen} handleClose={() => setIsModalOpen(false)} />
+        <AlertCreatedModal
+          isOpen={isModalOpen}
+          alerts={alerts}
+          handleClose={() => setIsModalOpen(false)}
+        />
       </StyledDrawer>
     );
   },
@@ -243,7 +240,7 @@ WeeklyReportsPanelComponent.propTypes = {
   sitesData: PropTypes.array.isRequired,
   handleClose: PropTypes.func.isRequired,
   isOpen: PropTypes.bool.isRequired,
-  hasAlerts: PropTypes.bool.isRequired,
+  alerts: PropTypes.array.isRequired,
   unVerifiedSyndromes: PropTypes.array.isRequired,
 };
 
@@ -252,7 +249,7 @@ const mapStateToProps = state => ({
   countryData: getActiveWeekCountryData(state),
   sitesData: getSitesForWeek(state),
   unVerifiedSyndromes: getUnVerifiedSyndromes(state),
-  hasAlerts: checkHasAlerts(state),
+  alerts: getSyndromeAlerts(state),
 });
 
 const mapDispatchToProps = dispatch => ({
