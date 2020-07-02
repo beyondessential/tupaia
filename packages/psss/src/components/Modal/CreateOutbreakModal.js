@@ -22,6 +22,8 @@ import {
 import CheckCircle from '@material-ui/icons/CheckCircle';
 import Typography from '@material-ui/core/Typography';
 import { FlexSpaceBetween } from '../Layout';
+import { connectApi } from '../../api';
+import * as COLORS from '../../constants/colors';
 
 const Content = styled(DialogContent)`
   text-align: left;
@@ -39,6 +41,7 @@ const Fields = styled(FlexSpaceBetween)`
   }
 `;
 
+// Todo get options from data??
 const options = [
   { label: 'Acute Fever and Rash (AFR)', value: 'afr' },
   { label: 'Diarrhoea (DIA)', value: 'dia' },
@@ -61,7 +64,7 @@ const LoadingScreen = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background: #f9f9f9;
+  background: ${COLORS.LIGHTGREY};
   border: 1px solid ${props => props.theme.palette.grey['400']};
   border-radius: 3px;
   z-index: 10;
@@ -196,14 +199,13 @@ const STATUS = {
   SUCCESS: 'success',
 };
 
-export const CreateOutbreakModal = ({ isOpen, handleClose }) => {
+export const CreateOutbreakModalComponent = ({ isOpen, handleClose, createOutbreak }) => {
   const [status, setStatus] = useState(STATUS.INITIAL);
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     setStatus(STATUS.LOADING);
-    setTimeout(() => {
-      setStatus(STATUS.SUCCESS);
-    }, 1000);
+    await createOutbreak();
+    setStatus(STATUS.SUCCESS);
   };
 
   const Body = {
@@ -227,7 +229,14 @@ export const CreateOutbreakModal = ({ isOpen, handleClose }) => {
   );
 };
 
-CreateOutbreakModal.propTypes = {
+CreateOutbreakModalComponent.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
+  createOutbreak: PropTypes.func.isRequired,
 };
+
+const mapApiToProps = api => ({
+  createOutbreak: () => api.post(),
+});
+
+export const CreateOutbreakModal = connectApi(mapApiToProps)(CreateOutbreakModalComponent);
