@@ -22,6 +22,9 @@ export const composePercentageInGroupByDataClass = async (
   );
 
   const groupMap = Object.keys(groups).reduce((map, group) => ({ ...map, [group]: 0 }), {});
+  const orgUnitCount =
+    new Set(filter.organisationUnit.in).size ||
+    new Set(results.map(res => res.organisationUnit)).size;
 
   const dataCodesToIds = [];
   Object.keys(dataClasses).forEach(id => {
@@ -31,27 +34,62 @@ export const composePercentageInGroupByDataClass = async (
     });
   });
 
-  const summedValuesByElement = {};
-  const orgUnitCount = new Set(results.map(res => res.organisationUnit)).size;
-
-  results.map(({ dataElement, value }) => {
-    const group = mapValueGroup(value, groups);
+  const valuesByDataClass = {};
+  results.forEach(({ dataElement, value, organisationUnit }) => {
     const dataClassId = dataCodesToIds[dataElement];
-    const divisor = orgUnitCount * dataClasses[dataClassId].codes.length;
-    if (!summedValuesByElement[dataClassId]) {
-      summedValuesByElement[dataClassId] = { ...groupMap };
+
+    if (!valuesByDataClass[dataClassId]) {
+      valuesByDataClass[dataClassId] = {};
     }
-    summedValuesByElement[dataClassId][group] += 1 / divisor;
+    if (!valuesByDataClass[dataClassId][organisationUnit]) {
+      valuesByDataClass[dataClassId][organisationUnit] = 0;
+    }
+    valuesByDataClass[dataClassId][organisationUnit] += value;
+  });
+
+  const groupedValuesByDataClass = {};
+
+  Object.keys(valuesByDataClass).forEach(dataClass => {
+    groupedValuesByDataClass[dataClass] = {};
+    Object.keys(valuesByDataClass[dataClass]).forEach(orgUnit => {
+      groupedValuesByDataClass[dataClass][orgUnit] = mapValueGroup(
+        valuesByDataClass[dataClass][orgUnit],
+        groups,
+      );
+    });
+  });
+
+  const groupedCountsByDataClass = {};
+  Object.keys(groupedValuesByDataClass).forEach(dataClass => {
+    groupedCountsByDataClass[dataClass] = {};
+    Object.keys(groupedValuesByDataClass[dataClass]).forEach(orgUnit => {
+      const groupValue = groupedValuesByDataClass[dataClass][orgUnit];
+      if (!groupedCountsByDataClass[dataClass][groupValue]) {
+        groupedCountsByDataClass[dataClass][groupValue] = 0;
+      }
+      groupedCountsByDataClass[dataClass][groupValue] += 1;
+    });
   });
 
   const { dataElementCodeToName } = metadata;
   const data = Object.keys(dataClasses).map(id => {
-    const dataValues = fillPercentGroup
-      ? fillPercentage(summedValuesByElement[id], fillPercentGroup)
-      : summedValuesByElement[id];
+    const dataClassGroups = groupMap;
+    Object.keys(dataClassGroups).forEach(group => {
+      dataClassGroups[group] = groupedCountsByDataClass[id]
+        ? groupedCountsByDataClass[id][group] / orgUnitCount || 0
+        : 0;
+    });
+    if (fillPercentGroup) {
+      let totalPercentage = 0;
+      Object.keys(dataClassGroups).forEach(group => {
+        totalPercentage += dataClassGroups[group];
+      });
+      dataClassGroups[fillPercentGroup] += 1 - totalPercentage;
+    }
+
     return {
       name: labels[id] || dataElementCodeToName[id],
-      ...dataValues,
+      ...dataClassGroups,
     };
   });
 
@@ -69,22 +107,4 @@ const mapValueGroup = (value, groups) => {
     return groupCheck(value, groupConfig.value);
   });
   return group ? group[0] : value;
-};
-
-const fillPercentage = (valueGroups, fillPercentGroup) => {
-  let totalPercent = 0;
-  const newValueGroup = { ...valueGroups };
-  if (!valueGroups) {
-    newValueGroup[fillPercentGroup] = 1;
-    return newValueGroup;
-  }
-  Object.keys(valueGroups).forEach(key => {
-    totalPercent += valueGroups[key];
-  });
-  const diff = 1 - totalPercent;
-  const fillGroupValue = valueGroups[fillPercentGroup]
-    ? valueGroups[fillPercentGroup] + diff
-    : diff;
-  newValueGroup[fillPercentGroup] = fillGroupValue;
-  return newValueGroup;
 };
