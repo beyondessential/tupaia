@@ -124,7 +124,6 @@ class BaseBuilder extends PercentagesOfValueCountsBuilder {
       const dataByCountry = groupBy(dataWithCountries, result => result.organisationUnit);
 
       Object.entries(dataByCountry).forEach(([countryName, data]) => {
-        console.log(countryName, data);
         const { regional } = this.config.dataClasses;
         const numerator = this.calculateFractionPart(regional.numerator, data);
         const denominator = this.calculateFractionPart(regional.denominator, data);
