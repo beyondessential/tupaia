@@ -14,6 +14,7 @@ export const DrawerFooter = styled.div`
   background: ${COLORS.LIGHTGREY};
   text-align: center;
   box-shadow: 0px -1px 0px ${COLORS.GREY_DE};
+  padding: 1.5rem;
 
   &:after {
     display: ${props => (props.disabled ? 'block' : 'none')};

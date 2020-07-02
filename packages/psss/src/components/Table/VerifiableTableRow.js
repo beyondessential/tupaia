@@ -10,7 +10,7 @@ import CheckCircleIcon from '@material-ui/icons/CheckCircleOutline';
 import { TableRowExpansionContainer, WarningButton } from '@tupaia/ui-components';
 import { BorderlessTableRow } from './TableRow';
 import * as COLORS from '../../constants/colors';
-import { getVerifiedStatuses, updateVerifiedStatus } from '../../store';
+import { getVerifiedStatus, updateVerifiedStatus } from '../../store';
 
 const VerifiedAlert = styled.div`
   background-color: ${props => props.theme.palette.warning.light};
@@ -75,9 +75,10 @@ const StyledExpansionContainer = styled(TableRowExpansionContainer)`
 `;
 
 export const VerifiableTableRowComponent = React.memo(props => {
-  const { rowData, verifiedStatuses, setVerifiedStatus } = props;
+  const { rowData, verifiedStatus, setVerifiedStatus } = props;
   const key = rowData.id;
-  const status = verifiedStatuses[key];
+  // const status = verifiedStatuses[key];
+  const status = verifiedStatus;
 
   const WarningButtonComponent = () => {
     if (status === true) {
@@ -115,12 +116,16 @@ export const VerifiableTableRowComponent = React.memo(props => {
 
 VerifiableTableRowComponent.propTypes = {
   rowData: PropTypes.object.isRequired,
-  verifiedStatuses: PropTypes.object.isRequired,
+  verifiedStatus: PropTypes.bool,
   setVerifiedStatus: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = state => ({
-  verifiedStatuses: getVerifiedStatuses(state),
+VerifiableTableRowComponent.defaultProps = {
+  verifiedStatus: null,
+};
+
+const mapStateToProps = (state, { rowData }) => ({
+  verifiedStatus: getVerifiedStatus(state, rowData.id),
 });
 
 const mapDispatchToProps = dispatch => ({

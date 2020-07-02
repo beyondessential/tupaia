@@ -52,7 +52,7 @@ export const AlertCreatedModal = ({ isOpen, handleClose }) => (
     <DialogContent>
       <Container>
         <Icon />
-        <Heading variant="h6">Alert has been crated</Heading>
+        <Heading variant="h6">Alert has been created</Heading>
         <Copy>Syndrome is above the threshold and an Alert has been created.</Copy>
         <Link to="alerts">View alert: Influenza-like Illness (ILI) - W9</Link>
       </Container>
