@@ -3265,7 +3265,6 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 766	/20200528043308-createAccessRequestTable	2020-06-23 10:45:45.946
 \.
 
-
 --
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
