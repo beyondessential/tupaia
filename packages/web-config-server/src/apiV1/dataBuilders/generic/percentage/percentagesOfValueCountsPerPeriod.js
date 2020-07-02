@@ -5,12 +5,13 @@
 import keyBy from 'lodash.keyby';
 import flatten from 'lodash.flatten';
 import isEqual from 'lodash.isequal';
+import groupBy from 'lodash.groupby';
 
 import { groupAnalyticsByPeriod } from '@tupaia/dhis-api';
 import { PERIOD_TYPES, parsePeriodType } from '@tupaia/utils';
 import { DataPerPeriodBuilder } from 'apiV1/dataBuilders/DataPerPeriodBuilder';
 import { PercentagesOfValueCountsBuilder } from '/apiV1/dataBuilders/generic/percentage/percentagesOfValueCounts';
-import { divideValues } from '/apiV1/dataBuilders/helpers';
+import { divideValues, mapDataToCountries } from '/apiV1/dataBuilders/helpers';
 import { Facility } from '/models';
 
 const filterFacility = async (filterCriteria, analytics) => {
@@ -118,6 +119,22 @@ class BaseBuilder extends PercentagesOfValueCountsBuilder {
       );
     }
 
+    if (this.config.isRegional) {
+      const dataWithCountries = await mapDataToCountries(filteredData);
+      const dataByCountry = groupBy(dataWithCountries, result => result.organisationUnit);
+
+      Object.entries(dataByCountry).forEach(([countryName, data]) => {
+        console.log(countryName, data);
+        const { regional } = this.config.dataClasses;
+        const numerator = this.calculateFractionPart(regional.numerator, data);
+        const denominator = this.calculateFractionPart(regional.denominator, data);
+        percentage[countryName] = divideValues(numerator, denominator);
+        percentage[`${countryName}_metadata`] = { numerator, denominator };
+      });
+
+      return [percentage];
+    }
+
     Object.entries(this.config.dataClasses).forEach(([name, dataClass]) => {
       const numerator = this.calculateFractionPart(dataClass.numerator, filteredData);
       const denominator = this.calculateFractionPart(dataClass.denominator, filteredData);
@@ -125,6 +142,7 @@ class BaseBuilder extends PercentagesOfValueCountsBuilder {
       percentage[key] = divideValues(numerator, denominator);
       percentage[`${key}_metadata`] = { numerator, denominator };
     });
+
     return [percentage];
   }
 }
