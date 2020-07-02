@@ -11,31 +11,36 @@
         "id": "afr",
         "title": "Acute Fever and Rash (AFR)",
         "percentageChange": 3,
-        "totalCases": 991
+        "totalCases": 991,
+        "isAlert": false
       },
       {
         "id": "dia",
         "title": "Diarrhoea (DIA)",
         "percentageChange": 15,
-        "totalCases": 782
+        "totalCases": 782,
+        "isAlert": true
       },
       {
         "id": "ili",
         "title": "Influenza-like Illness (ILI)",
         "percentageChange": 1,
-        "totalCases": 386
+        "totalCases": 386,
+        "isAlert": false
       },
       {
         "id": "pf",
         "title": "Prolonged Fever (AFR)",
         "percentageChange": -7,
-        "totalCases": 254
+        "totalCases": 254,
+        "isAlert": false
       },
       {
         "id": "dil",
         "title": "Dengue-like Illness (DIL)",
         "percentageChange": -8,
-        "totalCases": 607
+        "totalCases": 607,
+        "isAlert": false
       }
     ],
     "status": "Overdue"
