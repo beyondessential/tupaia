@@ -65,9 +65,59 @@ exports.up = async function(db) {
     E'[{"isDataRegional": true}]');
   `);
 
+  await db.runSql(`
+    INSERT INTO "public"."dashboardReport"("id","drillDownLevel","dataBuilder","dataBuilderConfig","viewJson","dataServices")
+    VALUES
+    (
+      E'UNFPA_Monthly_5_Methods_of_Contraception_Regional',
+      
+      NULL,
+
+      E'percentagesOfValueCountsPerPeriod',
+      
+      E'{
+        "customFilter" : {
+          "name" : "filterFacility",
+          "comparator" : "="
+        },
+        "periodType" : "quarter",
+        "dataClasses" : {
+          "regional" : {
+            "numerator" : {
+              "dataValues" : [
+                "RHS6UNFPA1355"
+              ],
+              "valueOfInterest" : 1
+            },
+            "denominator" : {
+              "dataValues" : [
+                "RHS6UNFPA1355"
+              ],
+              "valueOfInterest" : "*"
+            }
+          }
+        },
+        "isRegional" : true
+      }',
+      
+      E'{
+        "chartType" : "line",
+        "labelType" : "fractionAndPercentage",
+        "valueType" : "percentage",
+        "chartConfig" : {
+          "$all" : {}
+        },
+        "periodGranularity" : "quarter",
+        "type" : "chart",
+        "name" : "Secondary Health Care Facilities Offering at Least 5 Methods of Contraception (HRFSA)"
+      }',
+      
+      E'[{"isDataRegional": true}]');
+  `);
+
   return db.runSql(`
     update "dashboardGroup"
-    set "dashboardReports" = "dashboardReports" || '{UNFPA_Monthly_3_Methods_of_Contraception_Regional}'
+    set "dashboardReports" = "dashboardReports" || '{UNFPA_Monthly_3_Methods_of_Contraception_Regional, UNFPA_Monthly_5_Methods_of_Contraception_Regional}'
     where "organisationUnitCode" = 'unfpa';
   `);
 };
