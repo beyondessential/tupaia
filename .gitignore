@@ -15,4 +15,4 @@ dump.sql
 *.todo
 **/cypress/screenshots
 **/cypress/videos
-snapshots.js
+/snapshots.js
