@@ -9,7 +9,7 @@ import { ExternalApiSyncQueue } from '../externalApiSync';
 import { Ms1Api } from './api/Ms1Api';
 import { addToSyncLog } from './addToSyncLog';
 import { generateMs1VariableName } from './utilities/generateMs1VariableName';
-import { findQuestionsBySurvey } from '../dataAccessors/findQuestionsBySurvey';
+import { findQuestionsInSurvey } from '../dataAccessors/findQuestionsInSurvey';
 import { Ms1ChangeValidator } from './Ms1ChangeValidator';
 import { Ms1ChangeDetailGenerator } from './Ms1ChangeDetailGenerator';
 
@@ -106,7 +106,7 @@ export async function pushChange(models, change, ms1Api) {
   const answers = await models.answer.find({
     survey_response_id: surveyResponseId,
   });
-  const questions = await findQuestionsBySurvey(models, { survey_id: surveyResponse.survey_id });
+  const questions = await findQuestionsInSurvey(models, surveyResponse.survey_id);
   const questionIdToMs1Variable = {};
   questions.forEach(question => {
     if (!question.name) return;
