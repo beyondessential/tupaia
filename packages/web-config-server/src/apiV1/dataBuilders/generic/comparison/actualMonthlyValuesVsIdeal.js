@@ -41,7 +41,7 @@ export const actualMonthlyValuesVsIdeal = async ({ dataBuilderConfig, query }, a
   finalResult.columns = actualResults
     .map(({ period }) => period)
     .filter((period, index, array) => array.indexOf(period) === index)
-    .sort((period1, period2) => period1 < period2)
+    .sort((period1, period2) => period2 - period1)
     .map(period => ({
       title: utcMoment(period.toString()).format('Do MMM YYYY'),
       key: period,

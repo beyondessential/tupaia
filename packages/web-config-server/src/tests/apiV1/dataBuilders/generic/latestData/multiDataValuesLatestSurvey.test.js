@@ -2,8 +2,8 @@
  * Tupaia MediTrak
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
+
 import { expect } from 'chai';
-import { it, describe } from 'mocha';
 
 import { multiDataValuesLatestSurvey } from '/apiV1/dataBuilders/generic/latestData/multiDataValuesLatestSurvey';
 
@@ -154,91 +154,66 @@ const dhisApiMockup = {
 
 describe('multiDataValuesLatestSurvey', () => {
   it('should have the correct title', async () => {
-    try {
-      const result = await multiDataValuesLatestSurvey(
-        {
-          dataBuilderConfig,
-          query,
-        },
-        aggregatorMockup,
-        dhisApiMockup,
-      );
-      expect(result.data.find(({ dataElement }) => dataElement === 'gH8Ka9ty1f2').name).to.equal(
-        'Photos of damage 6',
-      );
-      return Promise.resolve();
-    } catch (e) {
-      return Promise.reject(e);
-    }
+    const result = await multiDataValuesLatestSurvey(
+      {
+        dataBuilderConfig,
+        query,
+      },
+      aggregatorMockup,
+      dhisApiMockup,
+    );
+    expect(result.data.find(({ dataElement }) => dataElement === 'gH8Ka9ty1f2').name).to.equal(
+      'Photos of damage 6',
+    );
   });
 
   it('should have the correct image', async () => {
-    try {
-      const result = await multiDataValuesLatestSurvey(
-        {
-          dataBuilderConfig,
-          query,
-        },
-        aggregatorMockup,
-        dhisApiMockup,
-      );
-      expect(result.data.find(({ dataElement }) => dataElement === 'gH8Ka9ty1f2').value).to.equal(
-        'https://tupaia.s3.amazonaws.com/dev_uploads/images/1544743303944_108594.png',
-      );
-      return Promise.resolve();
-    } catch (e) {
-      return Promise.reject(e);
-    }
+    const result = await multiDataValuesLatestSurvey(
+      {
+        dataBuilderConfig,
+        query,
+      },
+      aggregatorMockup,
+      dhisApiMockup,
+    );
+    expect(result.data.find(({ dataElement }) => dataElement === 'gH8Ka9ty1f2').value).to.equal(
+      'https://tupaia.s3.amazonaws.com/dev_uploads/images/1544743303944_108594.png',
+    );
   });
 
   it('should have the right number of images', async () => {
-    try {
-      const result = await multiDataValuesLatestSurvey(
-        {
-          dataBuilderConfig,
-          query,
-        },
-        aggregatorMockup,
-        dhisApiMockup,
-      );
-      expect(result.data.length).to.equal(5);
-      return Promise.resolve();
-    } catch (e) {
-      return Promise.reject(e);
-    }
+    const result = await multiDataValuesLatestSurvey(
+      {
+        dataBuilderConfig,
+        query,
+      },
+      aggregatorMockup,
+      dhisApiMockup,
+    );
+    expect(result.data.length).to.equal(5);
   });
 
   it('should handle missing image', async () => {
-    try {
-      const result = await multiDataValuesLatestSurvey(
-        {
-          dataBuilderConfig,
-          query,
-        },
-        aggregatorMockup,
-        dhisApiMockup,
-      );
-      expect(result.data.find(({ dataElement }) => dataElement === 'YGxBoAYFWwt')).to.be.undefined;
-      return Promise.resolve();
-    } catch (e) {
-      return Promise.reject(e);
-    }
+    const result = await multiDataValuesLatestSurvey(
+      {
+        dataBuilderConfig,
+        query,
+      },
+      aggregatorMockup,
+      dhisApiMockup,
+    );
+    expect(result.data.find(({ dataElement }) => dataElement === 'YGxBoAYFWwt')).to.be.undefined;
   });
 
   it('should handle missing survey item', async () => {
-    try {
-      const result = await multiDataValuesLatestSurvey(
-        {
-          dataBuilderConfig,
-          query,
-        },
-        aggregatorMockup,
-        dhisApiMockup,
-      );
-      expect(result.data.find(({ dataElement }) => dataElement === 'iv1g1ZlX4oj')).to.be.undefined;
-      return Promise.resolve();
-    } catch (e) {
-      return Promise.reject(e);
-    }
+    const result = await multiDataValuesLatestSurvey(
+      {
+        dataBuilderConfig,
+        query,
+      },
+      aggregatorMockup,
+      dhisApiMockup,
+    );
+    expect(result.data.find(({ dataElement }) => dataElement === 'iv1g1ZlX4oj')).to.be.undefined;
   });
 });

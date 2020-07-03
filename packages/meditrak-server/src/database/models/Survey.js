@@ -43,6 +43,10 @@ export class SurveyModel extends DatabaseModel {
     return SurveyType;
   }
 
+  meditrakConfig = {
+    minAppVersion: '0.0.1',
+  };
+
   isDeletableViaApi = true;
 }
 

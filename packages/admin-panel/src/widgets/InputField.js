@@ -12,6 +12,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { Autocomplete } from '../autocomplete';
 import { JsonInputField } from './JsonInputField';
 import { DropDownInputField } from './DropDownInputField';
+import { JsonEditor } from './JsonEditor';
 
 const getInputType = ({ options, optionsEndpoint, type }) => {
   if (options) {
@@ -26,6 +27,7 @@ const getInputType = ({ options, optionsEndpoint, type }) => {
 export const InputField = ({
   allowMultipleValues,
   label,
+  instruction,
   value,
   recordData,
   inputKey,
@@ -38,6 +40,8 @@ export const InputField = ({
   canCreateNewOptions,
   disabled,
   getJsonFieldSchema,
+  parentRecord,
+  maxHeight,
 }) => {
   const inputType = getInputType({ options, optionsEndpoint, type });
   let inputComponent = null;
@@ -49,18 +53,13 @@ export const InputField = ({
           placeholder={value}
           endpoint={optionsEndpoint}
           optionLabelKey={optionLabelKey}
+          optionValueKey={optionValueKey}
           reduxId={inputKey}
-          onChange={selection =>
-            onChange(
-              inputKey,
-              allowMultipleValues
-                ? selection.map(s => s[optionValueKey])
-                : selection[optionValueKey],
-            )
-          }
+          onChange={inputValue => onChange(inputKey, inputValue)}
           canCreateNewOptions={canCreateNewOptions}
           disabled={disabled}
           allowMultipleValues={allowMultipleValues}
+          parentRecord={parentRecord}
         />
       );
       break;
@@ -83,6 +82,11 @@ export const InputField = ({
           onChange={selectedOption => onChange(inputKey, selectedOption)}
           disabled={disabled}
         />
+      );
+      break;
+    case 'jsonEditor':
+      inputComponent = (
+        <JsonEditor {...{ inputKey, label, value, maxHeight: maxHeight || 100, onChange }} />
       );
       break;
     case 'boolean':
@@ -128,6 +132,11 @@ export const InputField = ({
   return (
     <FormGroup>
       <p>{label}</p>
+      {instruction && (
+        <p>
+          <i>{instruction}</i>
+        </p>
+      )}
       {inputComponent}
     </FormGroup>
   );
@@ -146,8 +155,14 @@ const processValue = (value, type) => {
 InputField.propTypes = {
   allowMultipleValues: PropTypes.bool,
   label: PropTypes.string.isRequired,
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.bool]),
   recordData: PropTypes.object,
+  value: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.array,
+    PropTypes.object,
+    PropTypes.bool,
+    PropTypes.number,
+  ]),
   inputKey: PropTypes.string.isRequired,
   options: PropTypes.arrayOf(PropTypes.string),
   optionsEndpoint: PropTypes.string,
@@ -158,6 +173,8 @@ InputField.propTypes = {
   disabled: PropTypes.bool,
   type: PropTypes.string,
   getJsonFieldSchema: PropTypes.func,
+  parentRecord: PropTypes.object,
+  instruction: PropTypes.string,
 };
 
 InputField.defaultProps = {
@@ -172,4 +189,6 @@ InputField.defaultProps = {
   disabled: false,
   type: 'text',
   getJsonFieldSchema: () => [],
+  parentRecord: {},
+  instruction: null,
 };

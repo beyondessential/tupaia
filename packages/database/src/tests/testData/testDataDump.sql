@@ -79,7 +79,9 @@ CREATE TYPE public.entity_type AS ENUM (
     'case',
     'case_contact',
     'disaster',
-    'school'
+    'school',
+    'catchment',
+    'sub_catchment'
 );
 
 
@@ -229,6 +231,25 @@ CREATE FUNCTION public.update_change_time() RETURNS trigger
 SET default_tablespace = '';
 
 SET default_with_oids = false;
+
+--
+-- Name: access_request; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.access_request (
+    id text NOT NULL,
+    user_id text,
+    entity_id text,
+    message text,
+    project_id text,
+    permission_group_id text,
+    approved boolean,
+    created_time timestamp with time zone DEFAULT now() NOT NULL,
+    processed_by text,
+    note text,
+    processed_date timestamp with time zone
+);
+
 
 --
 -- Name: answer; Type: TABLE; Schema: public; Owner: -
@@ -928,6 +949,14 @@ ALTER TABLE ONLY public.migrations ALTER COLUMN id SET DEFAULT nextval('public.m
 
 
 --
+-- Name: access_request access_request_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: answer answer_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1029,6 +1058,14 @@ ALTER TABLE ONLY public."dashboardGroup"
 
 ALTER TABLE ONLY public.data_element_data_group
     ADD CONSTRAINT data_element_data_group_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: data_element_data_group data_element_data_group_unique; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.data_element_data_group
+    ADD CONSTRAINT data_element_data_group_unique UNIQUE (data_element_id, data_group_id);
 
 
 --
@@ -1796,6 +1833,13 @@ CREATE INDEX user_entity_permission_user_id_idx ON public.user_entity_permission
 
 
 --
+-- Name: access_request access_request_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER access_request_trigger AFTER INSERT OR DELETE OR UPDATE ON public.access_request FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
 -- Name: answer answer_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -2045,6 +2089,46 @@ CREATE TRIGGER user_entity_permission_trigger AFTER INSERT OR DELETE OR UPDATE O
 --
 
 CREATE TRIGGER user_reward_trigger AFTER INSERT OR DELETE OR UPDATE ON public.user_reward FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
+-- Name: access_request access_request_entity_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_entity_id_fkey FOREIGN KEY (entity_id) REFERENCES public.entity(id);
+
+
+--
+-- Name: access_request access_request_permission_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_permission_group_id_fkey FOREIGN KEY (permission_group_id) REFERENCES public.permission_group(id);
+
+
+--
+-- Name: access_request access_request_processed_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_processed_by_fkey FOREIGN KEY (processed_by) REFERENCES public.user_account(id);
+
+
+--
+-- Name: access_request access_request_project_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_project_id_fkey FOREIGN KEY (project_id) REFERENCES public.project(id);
+
+
+--
+-- Name: access_request access_request_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user_account(id);
 
 
 --
@@ -3201,9 +3285,19 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 763	/20200616000806-FixIncorrectDataElementCodesLaosReport	2020-06-18 21:35:19.97
 764	/20200617235154-FixTongaMeaslesOverlaysWithEntityAggregation	2020-06-18 21:35:20.008
 765	/20200618090311-FixEntityAggregationConfig	2020-06-18 21:35:20.071
-766	/20200622025632-AddDataGroupsForAllSurveys	2020-06-22 13:40:56.124
-767	/20200622025633-AddDataSourceIdColumn	2020-06-22 13:40:56.43
-768	/20200622025634-RemoveDhis2InfoFromSurveyIntegrationMetadata	2020-06-22 13:40:56.505
+766	/20200603115106-AddCatchmentEntityType	2020-06-25 23:29:10.306
+767	/20200615021108-AddLaosSchoolsMajorDevPartner	2020-06-25 23:29:11.339
+768	/20200618012039-UseTuapaiaAsDataServiceForWishSurveys	2020-06-25 23:29:15.379
+769	/20200528043308-createAccessRequestTable	2020-07-02 15:07:33.284
+770	/20200603121401-CreateFijiCatchmentAlternateHierarchy	2020-07-02 15:07:38.384
+771	/20200615045558-AddPopupHeaderFormatToLaosSchoolsOverlays	2020-07-02 15:07:38.981
+772	/20200623065126-AddRegionalMapOverlaysForUNFPAMOS	2020-07-02 15:07:39.124
+773	/20200625074843-AddMapOverlaysForRHServices	2020-07-02 15:07:39.187
+774	/20200701064429-AddMethodsOfContraceptionRegionalDashboards	2020-07-02 15:07:39.43
+775	/20200617021631-AddUniqueConstraintInDataElementDataGroup	2020-07-03 10:08:41.25
+776	/20200622025632-AddDataGroupsForAllSurveys	2020-07-03 10:08:41.879
+777	/20200622025633-AddDataSourceIdColumn	2020-07-03 10:08:42.44
+778	/20200622025634-RemoveDhis2InfoFromSurveyIntegrationMetadata	2020-07-03 10:08:42.543
 \.
 
 
@@ -3211,7 +3305,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 768, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 778, true);
 
 
 --

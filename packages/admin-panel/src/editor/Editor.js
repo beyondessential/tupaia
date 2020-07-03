@@ -29,7 +29,7 @@ export class Editor extends React.PureComponent {
       <div>
         {fields
           .filter(({ show = true }) => show)
-          .map(({ editable = true, editConfig, source, Header, accessor }) => (
+          .map(({ editable = true, editConfig = {}, source, Header, accessor }) => (
             <InputField
               key={source}
               inputKey={source}
