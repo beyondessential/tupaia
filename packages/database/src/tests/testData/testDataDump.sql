@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 11.2
--- Dumped by pg_dump version 11.2
+-- Dumped from database version 11.3
+-- Dumped by pg_dump version 11.3
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -12,6 +12,7 @@ SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
+SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
@@ -78,7 +79,9 @@ CREATE TYPE public.entity_type AS ENUM (
     'case',
     'case_contact',
     'disaster',
-    'school'
+    'school',
+    'catchment',
+    'sub_catchment'
 );
 
 
@@ -238,12 +241,13 @@ CREATE TABLE public.access_request (
     user_id text,
     entity_id text,
     message text,
+    project_id text,
     permission_group_id text,
     approved boolean,
     created_time timestamp with time zone DEFAULT now() NOT NULL,
-    approving_user_id text,
-    approval_note text,
-    approval_date timestamp with time zone
+    processed_by text,
+    note text,
+    processed_date timestamp with time zone
 );
 
 
@@ -1054,6 +1058,14 @@ ALTER TABLE ONLY public."dashboardGroup"
 
 ALTER TABLE ONLY public.data_element_data_group
     ADD CONSTRAINT data_element_data_group_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: data_element_data_group data_element_data_group_unique; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.data_element_data_group
+    ADD CONSTRAINT data_element_data_group_unique UNIQUE (data_element_id, data_group_id);
 
 
 --
@@ -2080,14 +2092,6 @@ CREATE TRIGGER user_reward_trigger AFTER INSERT OR DELETE OR UPDATE ON public.us
 
 
 --
--- Name: access_request access_request_approving_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.access_request
-    ADD CONSTRAINT access_request_approving_user_id_fkey FOREIGN KEY (approving_user_id) REFERENCES public.user_account(id);
-
-
---
 -- Name: access_request access_request_entity_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2101,6 +2105,22 @@ ALTER TABLE ONLY public.access_request
 
 ALTER TABLE ONLY public.access_request
     ADD CONSTRAINT access_request_permission_group_id_fkey FOREIGN KEY (permission_group_id) REFERENCES public.permission_group(id);
+
+
+--
+-- Name: access_request access_request_processed_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_processed_by_fkey FOREIGN KEY (processed_by) REFERENCES public.user_account(id);
+
+
+--
+-- Name: access_request access_request_project_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_project_id_fkey FOREIGN KEY (project_id) REFERENCES public.project(id);
 
 
 --
@@ -2439,8 +2459,8 @@ ALTER TABLE ONLY public.user_reward
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 11.2
--- Dumped by pg_dump version 11.2
+-- Dumped from database version 11.3
+-- Dumped by pg_dump version 11.3
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -2449,6 +2469,7 @@ SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
+SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
@@ -3264,17 +3285,27 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 763	/20200616000806-FixIncorrectDataElementCodesLaosReport	2020-06-18 21:35:19.97
 764	/20200617235154-FixTongaMeaslesOverlaysWithEntityAggregation	2020-06-18 21:35:20.008
 765	/20200618090311-FixEntityAggregationConfig	2020-06-18 21:35:20.071
-766	/20200622025632-AddDataGroupsForAllSurveys	2020-06-22 13:40:56.124
-767	/20200622025633-AddDataSourceIdColumn	2020-06-22 13:40:56.43
-768	/20200622025634-RemoveDhis2InfoFromSurveyIntegrationMetadata	2020-06-22 13:40:56.505
-766	/20200528043308-createAccessRequestTable	2020-06-23 10:45:45.946
+766	/20200603115106-AddCatchmentEntityType	2020-06-25 23:29:10.306
+767	/20200615021108-AddLaosSchoolsMajorDevPartner	2020-06-25 23:29:11.339
+768	/20200618012039-UseTuapaiaAsDataServiceForWishSurveys	2020-06-25 23:29:15.379
+769	/20200528043308-createAccessRequestTable	2020-07-02 15:07:33.284
+770	/20200603121401-CreateFijiCatchmentAlternateHierarchy	2020-07-02 15:07:38.384
+771	/20200615045558-AddPopupHeaderFormatToLaosSchoolsOverlays	2020-07-02 15:07:38.981
+772	/20200623065126-AddRegionalMapOverlaysForUNFPAMOS	2020-07-02 15:07:39.124
+773	/20200625074843-AddMapOverlaysForRHServices	2020-07-02 15:07:39.187
+774	/20200701064429-AddMethodsOfContraceptionRegionalDashboards	2020-07-02 15:07:39.43
+775	/20200617021631-AddUniqueConstraintInDataElementDataGroup	2020-07-03 10:08:41.25
+776	/20200622025632-AddDataGroupsForAllSurveys	2020-07-03 10:08:41.879
+777	/20200622025633-AddDataSourceIdColumn	2020-07-03 10:08:42.44
+778	/20200622025634-RemoveDhis2InfoFromSurveyIntegrationMetadata	2020-07-03 10:08:42.543
 \.
+
 
 --
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 768, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 778, true);
 
 
 --
