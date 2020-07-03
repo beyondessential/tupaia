@@ -14,10 +14,6 @@ Cypress.Commands.add('closestByTestId', { prevSubject: 'element' }, (subject, te
   cy.wrap(subject).closest(`[data-testid="${testId}"]`),
 );
 
-Cypress.Commands.add('containsI', { prevSubject: ['element', 'optional'] }, (subject, searchText) =>
-  cy.wrap(subject).contains(new RegExp(escapeRegex(searchText), 'i')),
-);
-
 Cypress.Commands.add('findByInputName', { prevSubject: 'element' }, (subject, inputName) =>
   cy.wrap(subject).find(`input[name="${inputName}"]`),
 );
