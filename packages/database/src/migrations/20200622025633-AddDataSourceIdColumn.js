@@ -19,11 +19,17 @@ exports.setup = function(options, seedLink) {
 const addDataSourceIdColumn = async (db, tableName, dataSourceType) => {
   await db.addColumn(tableName, 'data_source_id', { type: 'text' });
   await db.runSql(`
-      UPDATE ${tableName}
-      SET data_source_id = data_source.id
-      FROM data_source
-      WHERE data_source.code = ${tableName}.code AND data_source.type = '${dataSourceType}'
-    `);
+    ALTER TABLE ${tableName}
+    ADD CONSTRAINT ${tableName}_data_source_id_fkey
+    FOREIGN KEY (data_source_id)
+    REFERENCES data_source (id)
+  `);
+  await db.runSql(`
+    UPDATE ${tableName}
+    SET data_source_id = data_source.id
+    FROM data_source
+    WHERE data_source.code = ${tableName}.code AND data_source.type = '${dataSourceType}'
+  `);
 };
 
 const removeDataSourceIdColumn = async (db, tableName) =>
