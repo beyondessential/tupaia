@@ -59,6 +59,6 @@ const onChangeUpdateDataGroup = async ({ type: changeType, record }, models) => 
     case 'delete':
       return models.dataSource.deleteById(dataSourceId);
     default:
-      return true;
+      throw new Error(`Non supported change type: ${changeType}`);
   }
 };
