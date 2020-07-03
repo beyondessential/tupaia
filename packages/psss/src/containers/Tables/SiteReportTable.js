@@ -10,7 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import {
   EditableTableContext,
   EditableTable,
-  EditableTableLoader,
+  LoadingContainer,
   GreyOutlinedButton,
   Button,
 } from '@tupaia/ui-components';
@@ -72,7 +72,7 @@ export const SiteReportTableComponent = React.memo(({ onSubmit, tableStatus, set
   };
 
   return (
-    <EditableTableLoader isLoading={tableStatus === TABLE_STATUSES.SAVING}>
+    <LoadingContainer isLoading={tableStatus === TABLE_STATUSES.SAVING}>
       <HeadingRow>
         <HeaderTitle>Sentinel Cases Reported</HeaderTitle>
         <GreyOutlinedButton onClick={handleEdit} disabled={tableStatus === TABLE_STATUSES.EDITABLE}>
@@ -92,7 +92,7 @@ export const SiteReportTableComponent = React.memo(({ onSubmit, tableStatus, set
           <Button onClick={handleSubmit}>Save</Button>
         </ActionsRow>
       )}
-    </EditableTableLoader>
+    </LoadingContainer>
   );
 });
 

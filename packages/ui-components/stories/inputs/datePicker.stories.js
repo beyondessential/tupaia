@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { DatePicker } from '../../src';
 
@@ -16,8 +16,11 @@ const Container = styled.div`
   padding: 2rem;
 `;
 
-export const datePicker = () => (
-  <Container>
-    <DatePicker label="Basic example" />
-  </Container>
-);
+export const datePicker = () => {
+  const [value, setValue] = useState(new Date());
+  return (
+    <Container>
+      <DatePicker label="Basic example" onChange={date => setValue(date)} />
+    </Container>
+  );
+};
