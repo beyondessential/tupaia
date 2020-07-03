@@ -91,7 +91,7 @@ class SurveyEditor {
 
       if (areBothDefinedAndDifferent(serviceType, newServiceType)) {
         throw new Error(
-          `Cannot update service type to '${newServiceType}': question ${dataElement.code} is included in survey ${otherDataGroup.code}, which uses a different service type`,
+          `Cannot update service type to '${newServiceType}': question '${dataElement.code}' is included in survey '${otherDataGroup.code}', which uses a different service type`,
         );
       }
 
