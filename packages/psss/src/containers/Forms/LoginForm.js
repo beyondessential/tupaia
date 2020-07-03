@@ -7,10 +7,10 @@ import { TextField, Button, Checkbox } from '@tupaia/ui-components';
 import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
+import { useForm } from 'react-hook-form';
 import { connect } from 'react-redux';
 import { login, checkIsPending, checkIsError, getError } from '../../store';
 import * as COLORS from '../../constants/colors';
-import { useFormFields } from '../../hooks';
 
 const ErrorMessage = styled.p`
   color: ${COLORS.RED};
@@ -31,38 +31,42 @@ const StyledButton = styled(Button)`
 `;
 
 const LoginFormComponent = ({ isPending, isError, error, onLogin }) => {
-  const [fields, handleFieldChange] = useFormFields({
-    email: '',
-    password: '',
-  });
-
-  const handleSubmit = async event => {
-    event.preventDefault();
-    const { email, password } = fields;
-    onLogin({ email, password });
-  };
-
+  const { handleSubmit, register, errors } = useForm();
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit(({ email, password }) => onLogin({ email, password }))} noValidate>
       <Heading component="h4">Enter your email and password</Heading>
       {isError && <ErrorMessage>{error}</ErrorMessage>}
       <TextField
-        id="email"
         name="email"
         placeholder="Email"
         type="email"
-        value={fields.email}
-        onChange={handleFieldChange}
+        error={!!errors.email}
+        helperText={errors.email && errors.email.message}
+        inputRef={register({
+          required: 'Required',
+          pattern: {
+            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+            message: 'invalid email address',
+          },
+        })}
       />
       <TextField
-        id="password"
         name="password"
         type="password"
         placeholder="Password"
-        value={fields.password}
-        onChange={handleFieldChange}
+        error={!!errors.password}
+        helperText={errors.password && errors.password.message}
+        inputRef={register({
+          required: 'Required',
+        })}
       />
-      <Checkbox id="rememberMe" color="primary" label="Remember me" />
+      <Checkbox
+        name="remember"
+        color="primary"
+        label="Remember me"
+        inputRef={register}
+        defaultValue={false}
+      />
       <StyledButton type="submit" fullWidth isLoading={isPending}>
         Login to your account
       </StyledButton>

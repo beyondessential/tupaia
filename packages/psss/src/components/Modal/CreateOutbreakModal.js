@@ -23,7 +23,6 @@ import CheckCircle from '@material-ui/icons/CheckCircle';
 import Typography from '@material-ui/core/Typography';
 import { FlexSpaceBetween } from '../Layout';
 import { connectApi } from '../../api';
-import { useFormFields } from '../../hooks';
 
 const Content = styled(DialogContent)`
   text-align: left;
@@ -88,16 +87,10 @@ const STATUS = {
 
 export const CreateOutbreakModalComponent = ({ isOpen, handleClose, createOutbreak }) => {
   const [status, setStatus] = useState(STATUS.INITIAL);
-  const [fields, handleFieldChange] = useFormFields({
-    outbreakDiagnosis: '',
-    outbreakDate: null,
-    outbreakNote: '',
-  });
 
   const handleConfirm = async () => {
     setStatus(STATUS.LOADING);
-    console.log('FIELDS', fields);
-    await createOutbreak(fields);
+    await createOutbreak();
     setStatus(STATUS.SUCCESS);
   };
 
@@ -113,23 +106,17 @@ export const CreateOutbreakModalComponent = ({ isOpen, handleClose, createOutbre
               <Select
                 id="outbreak-diagnosis"
                 label="Outbreak diagnosis"
-                value={fields.outbreakDiagnosis}
-                onChange={handleFieldChange}
                 options={options}
               />
               <DatePicker
                 id="outbreak-date"
                 name="outbreak-date"
-                value={fields.outbreakDate}
-                onChange={handleFieldChange}
                 label="Confirmed Outbreak Date"
               />
             </Fields>
             <TextField
               id="outbreak-note"
               name="note"
-              value={fields.outbreakNote}
-              onChange={handleFieldChange}
               placeholder="Add a note"
               multiline
               rows="4"
