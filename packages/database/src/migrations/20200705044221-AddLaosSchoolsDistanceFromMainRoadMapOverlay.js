@@ -85,6 +85,7 @@ const PRESENTATION_OPTIONS = {
   },
   displayOnLevel: 'District',
   measureLevel: 'School',
+  popupHeaderFormat: '{code}: {name}',
 };
 
 const getLargestSortOrderOfGroup = async db =>
