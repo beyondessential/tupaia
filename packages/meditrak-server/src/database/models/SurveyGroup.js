@@ -7,14 +7,14 @@ import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
 
 class SurveyGroupType extends DatabaseType {
   static databaseType = TYPES.SURVEY_GROUP;
-
-  static meditrakConfig = {
-    minAppVersion: '1.6.69',
-  };
 }
 
 export class SurveyGroupModel extends DatabaseModel {
   get DatabaseTypeClass() {
     return SurveyGroupType;
   }
+
+  meditrakConfig = {
+    minAppVersion: '1.6.69',
+  };
 }

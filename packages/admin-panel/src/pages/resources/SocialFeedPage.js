@@ -105,6 +105,7 @@ export const SocialFeedPage = () => (
   <ResourcePage
     title="Social Feed"
     endpoint="feedItems"
+    baseFilter={{ type: 'markdown' }}
     columns={SOCIAL_FEED_COLUMNS}
     editConfig={EDIT_CONFIG}
     createConfig={CREATE_CONFIG}
