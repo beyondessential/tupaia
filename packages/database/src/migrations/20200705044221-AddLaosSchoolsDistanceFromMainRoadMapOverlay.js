@@ -54,7 +54,7 @@ const MEASURE_BUILDER_CONFIG = {
 
 const COUNTRY_CODES = '{"LA"}';
 
-const PROJET_CODES = '{"laos_schools"}';
+const PROJECT_CODES = '{"laos_schools"}';
 
 const VALUES = [
   {
@@ -105,7 +105,7 @@ const MAP_OVERLAY_OBJECT = {
   measureBuilderConfig: MEASURE_BUILDER_CONFIG,
   presentationOptions: PRESENTATION_OPTIONS,
   countryCodes: COUNTRY_CODES,
-  projectCodes: PROJET_CODES,
+  projectCodes: PROJECT_CODES,
 };
 
 exports.up = async function(db) {
