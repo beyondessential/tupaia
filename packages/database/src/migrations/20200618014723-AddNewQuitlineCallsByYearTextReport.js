@@ -18,7 +18,7 @@ exports.setup = function(options, seedLink) {
 
 const REPORT = {
   id: 'TO_HPU_New_Quitline_Calls',
-  dataBuilder: 'sumLatest',
+  dataBuilder: 'sum',
   dataBuilderConfig: {
     dataElementCodes: ['HP216'],
     aggregationType: 'SUM',
