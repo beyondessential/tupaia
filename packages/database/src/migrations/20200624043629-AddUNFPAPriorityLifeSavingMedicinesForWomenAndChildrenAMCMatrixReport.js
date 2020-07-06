@@ -153,7 +153,7 @@ const DATA_BUILDER_CONFIG = {
             'Morphine (sulfate) 10mg/mL (1mL)',
             'Morphine (hydrochloride) 10mg/5mL oral liquid',
             'Morphine 10mg/ml oral liquid',
-            'Morphine (sulfate) 10mg IR tablet, ',
+            'Morphine (sulfate) 10mg IR tablet',
             'Morphine (hydrochloride) 10mg IR tablet',
             'Morphine (hydrochloride) 10mg SR tablet',
             'Morphine (sulfate) 10mg SR tablet',
