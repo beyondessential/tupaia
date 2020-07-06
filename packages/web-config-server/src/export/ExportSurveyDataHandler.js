@@ -64,8 +64,13 @@ export class ExportSurveyDataHandler extends RouteHandler {
       //Header
       let sheet = xlsx.utils.aoa_to_sheet(headerData);
 
+      const skipHeader = !surveyData.skipHeader === 'false';
+
       //Formatted data
-      sheet = xlsx.utils.sheet_add_json(sheet, formattedData, { skipHeader: true, origin: 'A2' });
+      sheet = xlsx.utils.sheet_add_json(sheet, formattedData, {
+        skipHeader: skipHeader,
+        origin: 'A2',
+      });
 
       sheetNames.push(surveyName);
       sheets[surveyName] = sheet;

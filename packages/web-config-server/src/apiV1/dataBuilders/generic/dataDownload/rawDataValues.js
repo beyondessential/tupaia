@@ -1,10 +1,12 @@
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 
 import { reduceToDictionary } from '@tupaia/utils';
+import { transposeMatrix } from '/apiV1/utils';
 
 import moment from 'moment';
 
 const RAW_VALUE_DATE_FORMAT = 'D-M-YYYY h:mma';
+const ROW_HEADER_KEY = 'dataElement'; // row headers live under the key 'dataElement' for historical reasons
 
 class RawDataValuesBuilder extends DataBuilder {
   async build() {
@@ -61,13 +63,16 @@ class RawDataValuesBuilder extends DataBuilder {
         rows,
       };
 
-      if (this.config.transformations && this.config.transformations.includes('transpose')) {
-        tableData = this.transposeMatrix(columns, rows);
+      if (this.config.transformations && this.config.transformations.includes('transposeMatrix')) {
+        tableData = transposeMatrix(tableData, ROW_HEADER_KEY);
       }
+
+      const skipHeader = this.config.hasOwnProperty("skipHeader") ? this.config.skipHeader : true;
 
       data[surveyCodeToName[surveyCode]] = {
         // need the nested 'data' property to be interpreted as the input to a matrix
         data: tableData,
+        skipHeader: skipHeader,
       };
     }
 
@@ -145,40 +150,6 @@ class RawDataValuesBuilder extends DataBuilder {
     });
 
     return builtRows;
-  };
-
-  /* swap columns and rows */
-  transposeMatrix = (columns, rows) => {
-    const newRows = [];
-    const columnMap = {};
-    columns.forEach(column => {
-      columnMap[column.key] = {};
-    });
-
-    const newColumns = rows.map(row => {
-      Object.keys(row).forEach(col => {
-        if (col !== 'dataElement') columnMap[col][row.dataElement] = row[col];
-      });
-      return {
-        key: row.dataElement,
-        title: row.dataElement,
-      };
-    });
-
-    //bit of a hacky way to add column headers
-    const columnHeader = {};
-    newColumns.forEach(col => {
-      columnHeader[col.key] = col.key;
-    });
-    newRows.push({ dataElement: '', ...columnHeader });
-
-    columns.forEach(col => {
-      newRows.push({ dataElement: '', ...columnMap[col.key] });
-    });
-    return {
-      columns: newColumns,
-      rows: newRows,
-    };
   };
 }
 
