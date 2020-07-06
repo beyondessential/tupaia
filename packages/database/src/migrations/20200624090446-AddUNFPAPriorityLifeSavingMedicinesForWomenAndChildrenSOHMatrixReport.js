@@ -415,7 +415,7 @@ const DATA_BUILDER_CONFIG = {
     'SOH_bf4be518',
     'SOH_402924bf',
     'SOH_47d584bf',
-    'SOH_47d584bf',
+    'SOH_3ff944bf',
     'SOH_d2d28620',
     'SOH_47fb04bf',
     'SOH_47fe44bf',
