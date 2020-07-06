@@ -405,12 +405,12 @@ export function fetchCountryAccessDataError(errorMessage) {
  * @param {string} message A message describing the reasons access is requested
  * @param {string} userGroup A specific user (permission) group the user is requesting access for
  */
-export function attemptRequestCountryAccess(entityIds, message = '', userGroup) {
+export function attemptRequestCountryAccess(entityIds, message = '', projectCode) {
   return {
     type: ATTEMPT_REQUEST_COUNTRY_ACCESS,
     entityIds,
     message,
-    userGroup,
+    projectCode,
   };
 }
 

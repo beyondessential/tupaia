@@ -12,8 +12,8 @@ import {
   selectOrgUnit,
   selectOrgUnitChildren,
   selectOrgUnitCountry,
-  selectIsProject,
   selectProjectByCode,
+  selectIsProject,
   selectMeasureBarItemById,
 } from './selectors';
 import {
@@ -359,7 +359,7 @@ function* watchSetPasswordResetToken() {
  *
  */
 function* attemptRequestCountryAccess(action) {
-  const { message, userGroup } = action;
+  const { message, projectCode } = action;
   const entityIds = action.entityIds ? Object.keys(action.entityIds) : [];
 
   const options = {
@@ -370,7 +370,7 @@ function* attemptRequestCountryAccess(action) {
     body: JSON.stringify({
       entityIds,
       message,
-      userGroup,
+      projectCode,
     }),
     alwaysUseSuppliedErrorFunction: true,
   };
@@ -669,12 +669,6 @@ function* watchSearchChange() {
  */
 function* fetchMeasureInfo(measureId, organisationUnitCode) {
   const state = yield select();
-  if (selectIsProject(state, organisationUnitCode)) {
-    // Never want to fetch measures for World org code.
-    yield put(cancelFetchMeasureData());
-    yield put(clearMeasureHierarchy());
-    return;
-  }
 
   if (!measureId || !organisationUnitCode) {
     // Don't try and fetch null measures
@@ -686,6 +680,7 @@ function* fetchMeasureInfo(measureId, organisationUnitCode) {
   const country = selectOrgUnitCountry(state, organisationUnitCode);
   const countryCode = country ? country.organisationUnitCode : undefined;
   const measureParams = selectMeasureBarItemById(state, measureId) || {};
+  const activeProjectCode = selectCurrentProject();
 
   // If the view should be constrained to a date range and isn't, constrain it
   const { startDate, endDate } =
@@ -698,8 +693,8 @@ function* fetchMeasureInfo(measureId, organisationUnitCode) {
     organisationUnitCode,
     startDate: formatDateForApi(startDate),
     endDate: formatDateForApi(endDate),
-    shouldShowAllParentCountryResults: !isMobile(),
-    projectCode: selectCurrentProject(),
+    shouldShowAllParentCountryResults: !isMobile() && countryCode !== activeProjectCode,
+    projectCode: activeProjectCode,
   };
   const requestResourceUrl = `measureData?${queryString.stringify(urlParameters)}`;
 
@@ -740,7 +735,7 @@ function* fetchCurrentMeasureInfo() {
   const { measureId } = state.map.measureInfo;
   const { measureHierarchy, selectedMeasureId } = state.measureBar;
 
-  if (currentOrganisationUnitCode && !selectIsProject(state, currentOrganisationUnitCode)) {
+  if (currentOrganisationUnitCode) {
     const isHeirarchyPopulated = Object.keys(measureHierarchy).length;
 
     // Update the default measure ID
