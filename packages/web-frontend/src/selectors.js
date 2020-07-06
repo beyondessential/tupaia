@@ -124,6 +124,18 @@ const displayInfoCache = createCachedSelector(
  */
 const safeGet = (cache, args) => (cache.keySelector(...args) ? cache(...args) : undefined);
 
+const selectActiveProjectCountries = createSelector(
+  [state => state.orgUnits.orgUnitMap, state => state.project.activeProjectCode],
+  (orgUnitMap, activeProjectCode) => {
+    const orgUnits = Object.values(orgUnitMap)
+      .map(({ countryCode, ...orgUnits }) => {
+        return orgUnits[countryCode];
+      })
+      .filter((org = {}) => org.type === 'Country' && org.parent === activeProjectCode);
+    return orgUnits;
+  },
+);
+
 const selectCountriesAsOrgUnits = createSelector([state => state.orgUnits.orgUnitMap], orgUnitMap =>
   Object.entries(orgUnitMap)
     .map(([countryCode, countryHierarchy]) => getOrgUnitFromCountry(countryHierarchy, countryCode))
@@ -228,6 +240,7 @@ export const selectHasPolygonMeasure = createSelector(
 
 export const selectAllMeasuresWithDisplayInfo = createSelector(
   [
+    state => selectActiveProjectCountries(state),
     state => state.project.activeProjectCode,
     state =>
       safeGet(countryCache, [state.orgUnits.orgUnitMap, state.map.measureInfo.currentCountry]),
@@ -238,6 +251,7 @@ export const selectAllMeasuresWithDisplayInfo = createSelector(
     state => state.map.measureInfo.hiddenMeasures,
   ],
   (
+    projectCountries,
     projectCode,
     country,
     measureData,
@@ -246,20 +260,15 @@ export const selectAllMeasuresWithDisplayInfo = createSelector(
     measureOptions,
     hiddenMeasures,
   ) => {
-    if (
-      !measureLevel ||
-      !currentCountry ||
-      !measureData ||
-      currentCountry === projectCode ||
-      !country
-    ) {
+    if (!currentCountry || !measureData || !country) {
       return [];
     }
 
     const listOfMeasureLevels = measureLevel.split(',');
-    const allOrgUnitsOfLevel = safeGet(allCountryOrgUnitsCache, [country]).filter(orgUnit =>
-      listOfMeasureLevels.includes(orgUnit.type),
-    );
+    let allOrgUnitsOfLevel = safeGet(allCountryOrgUnitsCache, [country]).filter(orgUnit => {
+      return listOfMeasureLevels.includes(orgUnit.type);
+    });
+    if (currentCountry === projectCode) allOrgUnitsOfLevel = projectCountries;
 
     return allOrgUnitsOfLevel.map(orgUnit =>
       safeGet(displayInfoCache, [

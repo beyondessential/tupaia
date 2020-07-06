@@ -34,10 +34,10 @@ export const RequestProjectAccessComponent = ({
   hasRequestCountryAccessCompleted,
   errorMessage,
 }) => {
-  const { name, userGroup } = project;
+  const { name, code } = project;
 
   if (hasRequestCountryAccessCompleted)
-    return <SuccessMessage handleClose={onBackToProjects} projectName={project.name} />;
+    return <SuccessMessage handleClose={onBackToProjects} projectName={name} />;
 
   return (
     <div>
@@ -49,7 +49,7 @@ export const RequestProjectAccessComponent = ({
         isLoading={isFetchingCountryAccessData || isRequestingCountryAccess}
         formError={errorMessage}
         onSubmit={fieldValues =>
-          onAttemptRequestProjectAccess(aggregateFields({ ...fieldValues, userGroup: userGroup }))
+          onAttemptRequestProjectAccess(aggregateFields({ ...fieldValues, projectCode: code }))
         }
         render={submitForm => (
           <React.Fragment>
@@ -111,8 +111,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onAttemptRequestProjectAccess: ({ entityIds, message, userGroup }) =>
-      dispatch(attemptRequestCountryAccess(entityIds, message, userGroup)),
+    onAttemptRequestProjectAccess: ({ entityIds, message, projectCode }) =>
+      dispatch(attemptRequestCountryAccess(entityIds, message, projectCode)),
     onBackToProjects: () => {
       dispatch(setOverlayComponent(LANDING));
       dispatch(closeUserPage());
