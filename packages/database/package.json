@@ -10,7 +10,7 @@
     "migrate": "babel-node ./src/migrate.js up:all --migrations-dir ./src/migrations -v --config-file '../../babel.config.json'",
     "migrate-schema": "babel-node ./src/migrate.js up:schema --migrations-dir ./src/migrations -v --config-file '../../babel.config.json'",
     "migrate-down": "babel-node ./src/migrate.js  down --migrations-dir ./src/migrations -v --config-file '../../babel.config.json'",
-    "migrate-create": "read -p \"Enter migration name: \" MIGRATION_NAME && read -p \"Enter the migration scope ('data' or 'schema'): \" MIGRATION_SCOPE && babel-node ./src/migrate.js create ${MIGRATION_NAME} --migrations-dir ./src/migrations/${MIGRATION_SCOPE} -v --config-file '../../babel.config.json'",
+    "migrate-create": "read -p \"Enter migration name: \" MIGRATION_NAME && read -p \"Enter the migration scope ('data', 'schema', or blank if you have migrations for both that must be run in order): \" MIGRATION_SCOPE && babel-node ./src/migrate.js create ${MIGRATION_NAME} --migrations-dir ./src/migrations/${MIGRATION_SCOPE} -v --config-file '../../babel.config.json'",
     "update-test-data": ". .env && pg_dump -s -O $DB_NAME > src/tests/testData/testDataDump.sql && pg_dump -t migrations -c -O $DB_NAME >> src/tests/testData/testDataDump.sql"
   },
   "dependencies": {
