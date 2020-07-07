@@ -65,10 +65,6 @@ export class DatabaseModel {
     return this.DatabaseTypeClass.joins;
   }
 
-  get meditrakConfig() {
-    return this.DatabaseTypeClass.meditrakConfig;
-  }
-
   // A helper for the 'xById' methods, which disambiguates the id field to ensure joins are handled
   getIdClause(id) {
     return {

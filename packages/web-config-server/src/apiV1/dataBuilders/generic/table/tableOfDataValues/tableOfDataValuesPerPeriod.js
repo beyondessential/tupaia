@@ -56,7 +56,7 @@ class TableOfValuesPerPeriodBuilder extends TableOfDataValuesBuilder {
 
         tableColumns.push({
           key: period,
-          title: `${name}, ${periodDisplayString}`,
+          title: name ? `${name}, ${periodDisplayString}` : periodDisplayString,
         });
       });
     }
@@ -77,33 +77,40 @@ class TableOfValuesPerPeriodBuilder extends TableOfDataValuesBuilder {
   };
 
   buildDataElementCodes() {
-    const dataElementCodes = flatten(this.config.cells).map(cell =>
-      typeof cell === 'object' ? cell.dataElement : cell,
-    );
+    const dataElementCodes = flatten(this.config.cells)
+      .map(cell => (typeof cell === 'object' ? cell.dataElement : cell))
+      .filter(e => e !== 'NONE');
 
     return [...new Set(dataElementCodes)];
   }
 
-  getDataElementToRowName() {
-    const dataElementToRowName = {};
+  getDataElementToRowConfig() {
+    const dataElementToRowConfig = {};
 
     if (this.config.baselineColumns) {
       this.config.baselineColumns.forEach(baselineColumn => {
         const { dataElements } = baselineColumn;
         dataElements.forEach((dataElement, index) => {
-          dataElementToRowName[dataElement] = this.tableConfig.rows[index];
+          dataElementToRowConfig[dataElement] = {
+            rowName: this.tableConfig.rows[index],
+            calculationType: 'SUM',
+          };
         });
       });
     }
 
     this.tableConfig.cells.forEach((cellArray, index) => {
       cellArray.forEach(cell => {
+        const { calc = 'SUM' } = cell;
         const dataElement = typeof cell === 'object' ? cell.dataElement : cell;
-        dataElementToRowName[dataElement] = this.tableConfig.rows[index];
+        dataElementToRowConfig[dataElement] = {
+          rowName: this.tableConfig.rows[index],
+          calculationType: calc,
+        };
       });
     });
 
-    return dataElementToRowName;
+    return dataElementToRowConfig;
   }
 
   buildBaseRows(rows = this.tableConfig.rows, parent = undefined) {
@@ -119,11 +126,11 @@ class TableOfValuesPerPeriodBuilder extends TableOfDataValuesBuilder {
 
   async buildRows(columns) {
     const baseRows = await this.buildBaseRows();
-    const dataElementToRowName = this.getDataElementToRowName();
+    const dataElementToRowConfig = this.getDataElementToRowConfig();
     const { columns: configColumns } = this.config;
     let rowData = { ...baseRows };
 
-    rowData = this.populateBaselineDataForRows(rowData, dataElementToRowName);
+    rowData = this.populateBaselineDataForRows(rowData, dataElementToRowConfig);
 
     //Only support for 1 period column at the moment
     if (typeof configColumns === 'object' && configColumns.type === '$period') {
@@ -136,9 +143,33 @@ class TableOfValuesPerPeriodBuilder extends TableOfDataValuesBuilder {
         if (analytics) {
           analytics.forEach(analytic => {
             const { dataElement, value } = analytic;
-            const rowName = dataElementToRowName[dataElement];
-            rowData[rowName][key] = value;
+            const { rowName, calculationType } = dataElementToRowConfig[dataElement];
+            if (calculationType === 'SUM') {
+              rowData[rowName][key] = (rowData[rowName][key] || 0) + value;
+            } else {
+              throw new Error(`Calculation type ${calculationType} not defined`);
+            }
           });
+
+          // Handle NONE dataElement row.
+          if (dataElementToRowConfig.NONE) {
+            const { rowName, calculationType } = dataElementToRowConfig.NONE;
+            if (calculationType === 'COUNT_ENTITIES_IN_ANALYTICS') {
+              // Hack to avoid using getDataValuesInSets and fetching SurveyDate,
+              // which would be the number of survey responses submitted.
+              rowData[rowName][key] = analytics.reduce(
+                ([entityCount, entitiesSeen], analytic) => {
+                  const { organisationUnit } = analytic;
+                  return entitiesSeen.includes(organisationUnit)
+                    ? [entityCount, entitiesSeen]
+                    : [entityCount + 1, [...entitiesSeen, organisationUnit]];
+                },
+                [0, []],
+              )[0];
+            } else {
+              throw new Error(`Calculation type ${calculationType} not defined`);
+            }
+          }
         }
       });
     }
@@ -146,7 +177,7 @@ class TableOfValuesPerPeriodBuilder extends TableOfDataValuesBuilder {
     return Object.values(rowData);
   }
 
-  populateBaselineDataForRows(rowData, dataElementToRowName) {
+  populateBaselineDataForRows(rowData, dataElementToRowConfig) {
     const newRowData = rowData;
 
     if (this.config.baselineColumns) {
@@ -155,7 +186,7 @@ class TableOfValuesPerPeriodBuilder extends TableOfDataValuesBuilder {
 
         this.baselineResults.forEach(baselineAnalytic => {
           const { dataElement, value } = baselineAnalytic;
-          const rowName = dataElementToRowName[dataElement];
+          const { rowName } = dataElementToRowConfig[dataElement];
           newRowData[rowName][name] = value;
         });
       });
