@@ -55,6 +55,18 @@ Button.defaultProps = {
   disabled: false,
 };
 
+export const LightPrimaryButton = styled(Button)`
+  background-color: ${props => props.theme.palette.primary.light};
+  color: ${props => props.theme.palette.primary.main};
+
+  &:hover,
+  &.Mui-disabled {
+    opacity: 0.8;
+    background-color: ${props => props.theme.palette.primary.light};
+    color: ${props => props.theme.palette.primary.main};
+  }
+`;
+
 /*
  * Text Button
  */

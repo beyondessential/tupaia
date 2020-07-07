@@ -2,16 +2,20 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
+import CheckCircleIcon from '@material-ui/icons/CheckCircleOutline';
+import Typography from '@material-ui/core/Typography';
 import {
   EditableTableProvider,
   ButtonSelect,
-  Button,
   Card,
   ErrorAlert,
+  LightErrorAlert,
+  Button,
+  LightPrimaryButton,
 } from '@tupaia/ui-components';
 import {
   SiteAddress,
@@ -20,13 +24,16 @@ import {
   DrawerTray,
   DrawerHeader,
   PercentageChangeCell,
+  AlertCreatedModal,
 } from '../../components';
 import {
   getSitesForWeek,
   getActiveWeekCountryData,
   closeWeeklyReportsPanel,
-  confirmWeeklyReportsData,
   checkWeeklyReportsPanelIsOpen,
+  getUnVerifiedSyndromes,
+  confirmWeeklyReportsData,
+  getSyndromeAlerts,
 } from '../../store';
 import * as COLORS from '../../constants/colors';
 import { CountryReportTable, SiteReportTable } from '../Tables';
@@ -56,7 +63,7 @@ const columns = [
 
 const MainSection = styled.section`
   position: relative;
-  padding: 30px 20px;
+  padding: 1.8rem 1.25rem;
 
   &:after {
     display: ${props => (props.disabled ? 'block' : 'none')};
@@ -74,36 +81,70 @@ const MainSection = styled.section`
 const GreySection = styled(MainSection)`
   background: ${COLORS.LIGHTGREY};
   box-shadow: 0 1px 0 ${COLORS.GREY_DE};
-  padding: 25px 20px;
+  padding: 1.6rem 1.25rem;
+`;
+
+const HelperText = styled(Typography)`
+  margin-top: 1rem;
+  font-size: 0.8125rem;
+  line-height: 0.9375rem;
+  color: ${COLORS.TEXT_MIDGREY};
 `;
 
 const StyledDrawer = styled(Drawer)`
-  .MuiDrawer-paper {
-    padding-bottom: 125px;
+  .MuiDrawer-paper > div {
+    padding-bottom: 10rem;
   }
 `;
 
-const WeeklyReportsPanelSubmitButton = handleConfirm => () => {
-  const handleClick = () => {
-    handleConfirm();
-  };
-  return (
-    <Button fullWidth onClick={handleClick}>
-      Submit now
-    </Button>
-  );
-};
+const StyledErrorAlert = styled(ErrorAlert)`
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  width: 100%;
+`;
 
 const TABLE_STATUSES = {
   STATIC: 'static',
   SAVING: 'saving',
 };
 
+const PANEL_STATUSES = {
+  INITIAL: 'initial',
+  SUBMIT_ATTEMPTED: 'submitAttempted',
+  SUCCESS: 'success',
+};
+
+const toCommaList = values =>
+  values
+    .join(', ')
+    .toUpperCase()
+    .replace(/,(?!.*,)/gim, ' and');
+
 export const WeeklyReportsPanelComponent = React.memo(
-  ({ countryData, sitesData, isOpen, handleClose, handleConfirm }) => {
+  ({ countryData, sitesData, isOpen, handleClose, unVerifiedSyndromes, alerts, handleConfirm }) => {
+    const [panelStatus, setPanelStatus] = useState(PANEL_STATUSES.INITIAL);
     const [countryTableStatus, setCountryTableStatus] = useState(TABLE_STATUSES.STATIC);
-    const [activeSiteIndex, setActiveSiteIndex] = useState(0);
     const [sitesTableStatus, setSitesTableStatus] = useState(TABLE_STATUSES.STATIC);
+    const [activeSiteIndex, setActiveSiteIndex] = useState(0);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const isVerified = unVerifiedSyndromes.length === 0;
+    const hasAlerts = alerts.length > 0;
+
+    const handleSubmit = useCallback(() => {
+      if (isVerified) {
+        handleConfirm();
+
+        if (hasAlerts) {
+          setIsModalOpen(true);
+        }
+
+        setPanelStatus(PANEL_STATUSES.SUCCESS);
+      } else {
+        setPanelStatus(PANEL_STATUSES.SUBMIT_ATTEMPTED);
+      }
+    }, [isVerified, handleConfirm, hasAlerts, setIsModalOpen, setPanelStatus]);
 
     if (countryData.length === 0 || sitesData.length === 0) {
       return null;
@@ -111,8 +152,11 @@ export const WeeklyReportsPanelComponent = React.memo(
 
     const activeSite = sitesData[activeSiteIndex];
     const { syndromes: syndromesData } = activeSite;
+
     const isSaving =
       countryTableStatus === TABLE_STATUSES.SAVING || sitesTableStatus === TABLE_STATUSES.SAVING;
+    const verificationRequired = panelStatus === PANEL_STATUSES.SUBMIT_ATTEMPTED && !isVerified;
+    const unVerifiedSyndromesList = toCommaList(unVerifiedSyndromes);
 
     return (
       <StyledDrawer open={isOpen} onClose={handleClose}>
@@ -123,7 +167,11 @@ export const WeeklyReportsPanelComponent = React.memo(
           date="Week 9 Feb 25 - Mar 1, 2020"
           avatarUrl={countryFlagImage('as')}
         />
-        <ErrorAlert>ILI Above Threshold. Please review and verify data.</ErrorAlert>
+        {!isVerified && (
+          <LightErrorAlert>
+            {unVerifiedSyndromesList} Above Threshold. Please review and verify data.
+          </LightErrorAlert>
+        )}
         <GreySection disabled={isSaving} data-testid="country-reports">
           <EditableTableProvider
             columns={columns}
@@ -157,10 +205,29 @@ export const WeeklyReportsPanelComponent = React.memo(
             </EditableTableProvider>
           </Card>
         </MainSection>
-        <DrawerFooter
-          disabled={isSaving}
-          Action={WeeklyReportsPanelSubmitButton(handleConfirm)}
-          helperText="Verify data to submit Weekly Report to Regional"
+        <DrawerFooter disabled={isSaving}>
+          {verificationRequired && (
+            <StyledErrorAlert>
+              {unVerifiedSyndromesList} Above Threshold. Please review and verify data.
+            </StyledErrorAlert>
+          )}
+          {panelStatus === PANEL_STATUSES.SUCCESS ? (
+            <LightPrimaryButton startIcon={<CheckCircleIcon />} disabled fullWidth>
+              Confirmed
+            </LightPrimaryButton>
+          ) : (
+            <>
+              <Button fullWidth onClick={handleSubmit} disabled={verificationRequired}>
+                Submit now
+              </Button>
+              <HelperText>Verify data to submit Weekly Report to Regional</HelperText>
+            </>
+          )}
+        </DrawerFooter>
+        <AlertCreatedModal
+          isOpen={isModalOpen}
+          alerts={alerts}
+          handleClose={() => setIsModalOpen(false)}
         />
       </StyledDrawer>
     );
@@ -168,22 +235,26 @@ export const WeeklyReportsPanelComponent = React.memo(
 );
 
 WeeklyReportsPanelComponent.propTypes = {
+  handleConfirm: PropTypes.func.isRequired,
   countryData: PropTypes.array.isRequired,
   sitesData: PropTypes.array.isRequired,
-  handleConfirm: PropTypes.func.isRequired,
   handleClose: PropTypes.func.isRequired,
   isOpen: PropTypes.bool.isRequired,
+  alerts: PropTypes.array.isRequired,
+  unVerifiedSyndromes: PropTypes.array.isRequired,
 };
 
 const mapStateToProps = state => ({
   isOpen: checkWeeklyReportsPanelIsOpen(state),
   countryData: getActiveWeekCountryData(state),
   sitesData: getSitesForWeek(state),
+  unVerifiedSyndromes: getUnVerifiedSyndromes(state),
+  alerts: getSyndromeAlerts(state),
 });
 
 const mapDispatchToProps = dispatch => ({
-  handleConfirm: () => dispatch(confirmWeeklyReportsData()),
   handleClose: () => dispatch(closeWeeklyReportsPanel()),
+  handleConfirm: () => dispatch(confirmWeeklyReportsData()),
 });
 
 export const WeeklyReportsPanel = connect(

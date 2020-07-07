@@ -81,68 +81,32 @@ export class FakeAPI {
   }
 
   // eslint-disable-next-line class-methods-use-this
+  makeSyndrome(code, name) {
+    const percentageChange = faker.random.number({
+      min: -15,
+      max: 15,
+    });
+
+    return {
+      id: code,
+      title: name,
+      percentageChange,
+      totalCases: faker.random.number({
+        min: 0,
+        max: 1000,
+      }),
+      isAlert: percentageChange > 5,
+    };
+  }
+
+  // eslint-disable-next-line class-methods-use-this
   syndromes() {
     return [
-      {
-        id: 'afr',
-        title: 'Acute Fever and Rash (AFR)',
-        percentageChange: faker.random.number({
-          min: -15,
-          max: 15,
-        }),
-        totalCases: faker.random.number({
-          min: 0,
-          max: 1000,
-        }),
-      },
-      {
-        id: 'dia',
-        title: 'Diarrhoea (DIA)',
-        percentageChange: faker.random.number({
-          min: -15,
-          max: 15,
-        }),
-        totalCases: faker.random.number({
-          min: 0,
-          max: 1000,
-        }),
-      },
-      {
-        id: 'ili',
-        title: 'Influenza-like Illness (ILI)',
-        percentageChange: faker.random.number({
-          min: -15,
-          max: 15,
-        }),
-        totalCases: faker.random.number({
-          min: 0,
-          max: 1000,
-        }),
-      },
-      {
-        id: 'pf',
-        title: 'Prolonged Fever (AFR)',
-        percentageChange: faker.random.number({
-          min: -15,
-          max: 15,
-        }),
-        totalCases: faker.random.number({
-          min: 0,
-          max: 1000,
-        }),
-      },
-      {
-        id: 'dil',
-        title: 'Dengue-like Illness (DIL)',
-        percentageChange: faker.random.number({
-          min: -15,
-          max: 15,
-        }),
-        totalCases: faker.random.number({
-          min: 0,
-          max: 1000,
-        }),
-      },
+      this.makeSyndrome('afr', 'Acute Fever and Rash (AFR)'),
+      this.makeSyndrome('ida', 'Diarrhoea (DIA)'),
+      this.makeSyndrome('ili', 'Influenza-like Illness (ILI)'),
+      this.makeSyndrome('pf', 'Prolonged Fever (PF)'),
+      this.makeSyndrome('dil', 'Dengue-like Illness (DIL)'),
     ];
   }
 
