@@ -7,11 +7,12 @@ import {} from 'dotenv/config'; // Load the environment variables into process.e
 import { expect } from 'chai';
 
 import { TestableApp, getAuthorizationHeader } from './TestableApp';
-import { randomEmail, randomString, EMAIL_VERIFIED_STATUS } from './testUtilities';
+import { randomEmail, randomString } from './testUtilities';
 
 describe('Reset Password', () => {
   const app = new TestableApp();
   const models = app.models;
+  const { VERIFIED } = models.user.emailVerifiedStatuses;
 
   const emailAddress = randomEmail();
 
@@ -40,7 +41,7 @@ describe('Reset Password', () => {
       const { userId } = userResponse.body;
       expect(userId).to.exist;
 
-      await models.user.updateById(userId, { verified_email: EMAIL_VERIFIED_STATUS.VERIFIED });
+      await models.user.updateById(userId, { verified_email: VERIFIED });
 
       const result = await app.post('auth/resetPassword', {
         headers,

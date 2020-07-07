@@ -50,7 +50,7 @@ export const setCountryAccessFormFieldValues = fieldValues => ({
   fieldValues,
 });
 
-export const sendCountryAccessRequest = (countryIds, message) => async (
+export const sendCountryAccessRequest = (entityIds, message) => async (
   dispatch,
   getState,
   { api },
@@ -58,7 +58,7 @@ export const sendCountryAccessRequest = (countryIds, message) => async (
   dispatch(beginCountryAccessRequest());
 
   const payload = {
-    countryIds,
+    entityIds,
     message,
   };
 
@@ -84,8 +84,8 @@ export const loadCountriesFromDatabase = () => (dispatch, getState, { database }
 
   countries.forEach(country => {
     if (
-      currentUser.hasCountryAccess(country) ||
-      currentUser.hasPermissionsForItemsWithinCountry(country)
+      currentUser.hasAccessToSomeEntity([country]) ||
+      currentUser.hasAccessToSomeEntity(database.getDescendantsOfCountry(country))
     ) {
       availableCountries.push(country);
     } else {

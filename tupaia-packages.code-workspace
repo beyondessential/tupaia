@@ -1,6 +1,10 @@
 {
   "folders": [
     {
+      "name": "root",
+      "path": "."
+    },
+    {
       "name": "access-policy",
       "path": "packages/access-policy"
     },
@@ -11,6 +15,10 @@
     {
       "name": "aggregator",
       "path": "packages/aggregator"
+    },
+    {
+      "name": "auth",
+      "path": "packages/auth"
     },
     {
       "name": "data-api",
@@ -60,5 +68,50 @@
       "name": "web-frontend",
       "path": "packages/web-frontend"
     }
-  ]
+  ],
+  "settings": {
+    "files.exclude": {
+      "packages/": true
+    },
+    "cSpell.words": [
+      "analytics",
+      "cacheable",
+      "cleanup",
+      "deleters",
+      "DHIS",
+      "enroll",
+      "enrollment",
+      "enrollments",
+      "eventdate",
+      "geojson",
+      "groupby",
+      "heatmap",
+      "imms",
+      "keyby",
+      "MediTrak",
+      "migrator",
+      "oucode",
+      "preaggregate",
+      "preaggregated",
+      "preaggregating",
+      "preaggregation",
+      "preaggregator",
+      "preaggregators",
+      "promisify",
+      "singularise",
+      "Tongatapu",
+      "Tupaia",
+      "upsert"
+    ]
+  },
+  "extensions": {
+    "recommendations": [
+      "dbaeumer.vscode-eslint",
+      "eamodio.gitlens",
+      "esbenp.prettier-vscode",
+      "streetsidesoftware.code-spell-checker",
+      "visualstudioexptteam.vscodeintellicode",
+      "wayou.vscode-todo-highlight"
+    ]
+  }
 }

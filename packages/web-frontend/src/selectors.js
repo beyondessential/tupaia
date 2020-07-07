@@ -124,6 +124,18 @@ const displayInfoCache = createCachedSelector(
  */
 const safeGet = (cache, args) => (cache.keySelector(...args) ? cache(...args) : undefined);
 
+const selectActiveProjectCountries = createSelector(
+  [state => state.orgUnits.orgUnitMap, state => state.project.activeProjectCode],
+  (orgUnitMap, activeProjectCode) => {
+    const orgUnits = Object.values(orgUnitMap)
+      .map(({ countryCode, ...orgUnits }) => {
+        return orgUnits[countryCode];
+      })
+      .filter((org = {}) => org.type === 'Country' && org.parent === activeProjectCode);
+    return orgUnits;
+  },
+);
+
 const selectCountriesAsOrgUnits = createSelector([state => state.orgUnits.orgUnitMap], orgUnitMap =>
   Object.entries(orgUnitMap)
     .map(([countryCode, countryHierarchy]) => getOrgUnitFromCountry(countryHierarchy, countryCode))
@@ -132,7 +144,7 @@ const selectCountriesAsOrgUnits = createSelector([state => state.orgUnits.orgUni
 
 const selectOrgUnitSiblingsAndSelf = createSelector(
   [
-    state => selectActiveProject(state).code,
+    state => state.project.activeProjectCode,
     (state, code) => getOrgUnitParent(selectOrgUnit(state, code)),
     state => selectCountriesAsOrgUnits(state),
     (state, code) => safeGet(countryCache, [state.orgUnits.orgUnitMap, code]),
@@ -200,7 +212,7 @@ export const selectCurrentOrgUnit = createSelector(
 
 export const selectOrgUnitChildren = createSelector(
   [
-    state => selectActiveProject(state).code,
+    state => state.project.activeProjectCode,
     state => selectCountriesAsOrgUnits(state),
     (state, code) => safeGet(countryCache, [state.orgUnits.orgUnitMap, code]),
     (_, code) => code,
@@ -228,7 +240,8 @@ export const selectHasPolygonMeasure = createSelector(
 
 export const selectAllMeasuresWithDisplayInfo = createSelector(
   [
-    state => selectActiveProject(state).code,
+    state => selectActiveProjectCountries(state),
+    state => state.project.activeProjectCode,
     state =>
       safeGet(countryCache, [state.orgUnits.orgUnitMap, state.map.measureInfo.currentCountry]),
     state => state.map.measureInfo.measureData,
@@ -238,6 +251,7 @@ export const selectAllMeasuresWithDisplayInfo = createSelector(
     state => state.map.measureInfo.hiddenMeasures,
   ],
   (
+    projectCountries,
     projectCode,
     country,
     measureData,
@@ -246,20 +260,15 @@ export const selectAllMeasuresWithDisplayInfo = createSelector(
     measureOptions,
     hiddenMeasures,
   ) => {
-    if (
-      !measureLevel ||
-      !currentCountry ||
-      !measureData ||
-      currentCountry === projectCode ||
-      !country
-    ) {
+    if (!currentCountry || !measureData || !country) {
       return [];
     }
 
     const listOfMeasureLevels = measureLevel.split(',');
-    const allOrgUnitsOfLevel = safeGet(allCountryOrgUnitsCache, [country]).filter(orgUnit =>
-      listOfMeasureLevels.includes(orgUnit.type),
-    );
+    let allOrgUnitsOfLevel = safeGet(allCountryOrgUnitsCache, [country]).filter(orgUnit => {
+      return listOfMeasureLevels.includes(orgUnit.type);
+    });
+    if (currentCountry === projectCode) allOrgUnitsOfLevel = projectCountries;
 
     return allOrgUnitsOfLevel.map(orgUnit =>
       safeGet(displayInfoCache, [
@@ -333,7 +342,7 @@ export const selectIsProject = createSelector(
 export const selectProjectByCode = (state, code) =>
   state.project.projects.find(p => p.code === code);
 
-export const selectActiveProject = state => state.project.active;
+export const selectActiveProjectCode = state => state.project.activeProjectCode;
 
 export const selectAdjustedProjectBounds = (state, code) => {
   if (code === 'explore' || code === 'disaster') {
