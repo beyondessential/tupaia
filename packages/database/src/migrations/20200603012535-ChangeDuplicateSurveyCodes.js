@@ -2,7 +2,7 @@
 
 import { arrayToDbString } from '../utilities';
 
-import surveyData from './migrationData/20200603012535-ChangeDuplicateSurveyCodes.json';
+import surveyData from '../migrationData/20200603012535-ChangeDuplicateSurveyCodes.json';
 
 var dbm;
 var type;

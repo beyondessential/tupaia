@@ -1,6 +1,6 @@
 'use strict';
 
-import { DATA_BUILDER_CONFIGS } from './migrationData/20200211002034-UpdateDataBuilders';
+import { DATA_BUILDER_CONFIGS } from '../migrationData/20200211002034-UpdateDataBuilders';
 
 var dbm;
 var type;

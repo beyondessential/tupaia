@@ -14,8 +14,8 @@ exports.setup = function(options, seedLink) {
   seed = seedLink;
 };
 
-const mapOverlays = require('./migrationData/20200524212939-LimitVisualisationsPerProject/MapOverlays.json');
-const dashboardGroups = require('./migrationData/20200524212939-LimitVisualisationsPerProject/DashboardGroups.json');
+const mapOverlays = require('../migrationData/20200524212939-LimitVisualisationsPerProject/MapOverlays.json');
+const dashboardGroups = require('../migrationData/20200524212939-LimitVisualisationsPerProject/DashboardGroups.json');
 
 const setProjectsForTable = async (db, tableName, entries, idIsString = false) =>
   Promise.all(

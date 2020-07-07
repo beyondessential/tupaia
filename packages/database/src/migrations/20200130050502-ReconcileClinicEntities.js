@@ -1,9 +1,9 @@
 import { generateId } from '../utilities/generateId';
-import { newDistricts } from './20200130050502-ReconcileClinicEntities/districts';
-import { newCountries } from './20200130050502-ReconcileClinicEntities/countries';
-import countryDHIS2Data from './20200130050502-ReconcileClinicEntities/missingCountryDHIS2Data.json';
-import districtDHIS2Data from './20200130050502-ReconcileClinicEntities/missingDistrictDHIS2Data.json';
-import facilityDHIS2Data from './20200130050502-ReconcileClinicEntities/missingFacilityDHIS2Data.json';
+import { newDistricts } from '.../migrationData/20200130050502-ReconcileClinicEntities/districts';
+import { newCountries } from '.../migrationData/20200130050502-ReconcileClinicEntities/countries';
+import countryDHIS2Data from '.../migrationData/20200130050502-ReconcileClinicEntities/missingCountryDHIS2Data.json';
+import districtDHIS2Data from '.../migrationData/20200130050502-ReconcileClinicEntities/missingDistrictDHIS2Data.json';
+import facilityDHIS2Data from '.../migrationData/20200130050502-ReconcileClinicEntities/missingFacilityDHIS2Data.json';
 
 var dbm;
 var type;
@@ -173,8 +173,8 @@ exports.up = async function up(db) {
     }
     if (!parentId) {
       const parentRows = await db.runSql(`
-          SELECT e.id AS entity_id, * FROM clinic c 
-            INNER JOIN geographical_area ga ON c.geographical_area_id = ga.id 
+          SELECT e.id AS entity_id, * FROM clinic c
+            INNER JOIN geographical_area ga ON c.geographical_area_id = ga.id
             INNER JOIN entity e ON ga.code = e.code
             WHERE c.id = '${id}';`);
       if (parentRows.rowCount > 0) parentId = parentRows.rows[0].entity_id;

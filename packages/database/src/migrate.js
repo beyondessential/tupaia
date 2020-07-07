@@ -22,6 +22,7 @@ const migrationInstance = DBMigrate.getInstance(
       tupaia: {
         driver: 'pg',
         ...getConnectionConfig(),
+        'migrations-dir': './src/migrations',
       },
     },
   },

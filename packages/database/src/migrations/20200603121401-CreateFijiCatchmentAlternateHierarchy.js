@@ -1,14 +1,14 @@
 'use strict';
 
 import { insertObject, arrayToDbString, generateId } from '../utilities';
-import { FIJI_ENTITIES_PROVINCES } from './migrationData/20200603121401-createWishCatchmentHierarchy/WishProvinces';
-import { FIJI_ENTITIES_SUB_CATCHMENTS } from './migrationData/20200603121401-createWishCatchmentHierarchy/WishCatchments';
+import { FIJI_ENTITIES_PROVINCES } from '../migrationData/20200603121401-createWishCatchmentHierarchy/WishProvinces';
+import { FIJI_ENTITIES_SUB_CATCHMENTS } from '../migrationData/20200603121401-createWishCatchmentHierarchy/WishCatchments';
 import {
   FIJI_ENTITIES_NEW_VILLAGES,
   FIJI_ENTITIES_VILLAGES_HEIRARCHIES,
-} from './migrationData/20200603121401-createWishCatchmentHierarchy/WishVillages';
-import FIJI_ENTITIES_PROVINCES_GEODATA from './migrationData/20200603121401-createWishCatchmentHierarchy/fiji_admin2_province_4326_flat.json';
-import FIJI_ENTITIES_SUBCATCHMENTS_GEODATA from './migrationData/20200603121401-createWishCatchmentHierarchy/fiji_sub-catchments_4326_flat.json';
+} from '../migrationData/20200603121401-createWishCatchmentHierarchy/WishVillages';
+import FIJI_ENTITIES_PROVINCES_GEODATA from '../migrationData/20200603121401-createWishCatchmentHierarchy/fiji_admin2_province_4326_flat.json';
+import FIJI_ENTITIES_SUBCATCHMENTS_GEODATA from '../migrationData/20200603121401-createWishCatchmentHierarchy/fiji_sub-catchments_4326_flat.json';
 
 var dbm;
 var type;

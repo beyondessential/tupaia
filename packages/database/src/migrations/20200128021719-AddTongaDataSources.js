@@ -15,8 +15,8 @@ exports.setup = function(options, seedLink) {
   seed = seedLink;
 };
 
-const dataSourceCodes = require('./migrationData/20200128021719-AddTongaDataSources/AllTongaDataSources.json');
-const specialConfigs = require('./migrationData/20200128021719-AddTongaDataSources/TongaDataSourcesWithCategoryCombos.json');
+const dataSourceCodes = require('../migrationData/20200128021719-AddTongaDataSources/AllTongaDataSources.json');
+const specialConfigs = require('../migrationData/20200128021719-AddTongaDataSources/TongaDataSourcesWithCategoryCombos.json');
 
 exports.up = function(db) {
   const dataSourceValues = dataSourceCodes.map(code => {
