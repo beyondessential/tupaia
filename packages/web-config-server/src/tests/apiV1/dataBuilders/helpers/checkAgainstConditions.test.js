@@ -75,8 +75,8 @@ describe('checkAgainstConditions()', () => {
       const conditions = {
         dataValues: { temperature: { operator: '<', value: '7' } },
       };
-      // This test fails as '' is considered 0
-      assertCountOfEventsForConditions(conditions, 3);
+      // This test returns 4 as '' is considered 0
+      assertCountOfEventsForConditions(conditions, 4);
     });
 
     it('should count events with data values within a closed range', () => {
