@@ -30,6 +30,7 @@ import {
 import { caseAndSpaceInsensitiveEquals, convertCellToJson } from './utilities';
 
 const QUESTION_TYPE_LIST = Object.values(ANSWER_TYPES);
+const DEFAULT_DATA_SOURCE_FIELDS = { service_type: 'dhis', config: { isDataRegional: true } };
 
 const validateQuestionExistence = rows => {
   const isQuestionRow = ({ type }) => QUESTION_TYPE_LIST.includes(type);
@@ -37,6 +38,31 @@ const validateQuestionExistence = rows => {
     throw new ImportValidationError('No questions listed in import file');
   }
   return true;
+};
+
+const findOrCreateDataGroup = async (models, surveyCode) =>
+  models.dataSource.findOrCreate(
+    {
+      type: models.dataSource.getTypes().DATA_GROUP,
+      code: surveyCode,
+    },
+    DEFAULT_DATA_SOURCE_FIELDS,
+  );
+
+const findOrCreateDataElementInGroup = async (models, code, dataGroup) => {
+  const dataElement = await models.dataSource.findOrCreate(
+    {
+      type: models.dataSource.getTypes().DATA_ELEMENT,
+      code,
+    },
+    DEFAULT_DATA_SOURCE_FIELDS,
+  );
+  await models.dataElementDataGroup.findOrCreate({
+    data_element_id: dataElement.id,
+    data_group_id: dataGroup.id,
+  });
+
+  return dataElement;
 };
 
 /**
@@ -72,6 +98,8 @@ export async function importSurveys(req, res) {
       for (const surveySheets of Object.entries(workbook.Sheets)) {
         const [tabName, sheet] = surveySheets;
         const surveyName = extractTabNameFromQuery(tabName, requestedSurveyNames);
+        const surveyCode = generateSurveyCode(surveyName);
+        const dataGroup = await findOrCreateDataGroup(transactingModels, surveyCode);
 
         // Get the survey based on the name of the sheet/tab
         const survey = await transactingModels.survey.findOrCreate(
@@ -80,8 +108,9 @@ export async function importSurveys(req, res) {
           },
           {
             // If no survey with that name is found, give it a code and public permissions
-            code: generateSurveyCode(surveyName),
+            code: surveyCode,
             permission_group_id: permissionGroup.id,
+            data_source_id: dataGroup.id,
           },
         );
         if (!survey) {
@@ -190,6 +219,12 @@ export async function importSurveys(req, res) {
             optionSet,
           } = questionObject;
 
+          const dataElement = await findOrCreateDataElementInGroup(
+            transactingModels,
+            code,
+            dataGroup,
+          );
+
           // Compose question based on details from spreadsheet
           const questionToUpsert = {
             code,
@@ -199,6 +234,7 @@ export async function importSurveys(req, res) {
             detail,
             options: processOptions(options, optionLabels, optionColors),
             option_set_id: await processOptionSetName(transactingModels, optionSet),
+            data_source_id: dataElement.id,
           };
 
           // Either create or update the question depending on if there exists a matching code

@@ -2332,6 +2332,14 @@ ALTER TABLE ONLY public.project
 
 
 --
+-- Name: question question_data_source_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.question
+    ADD CONSTRAINT question_data_source_id_fkey FOREIGN KEY (data_source_id) REFERENCES public.data_source(id);
+
+
+--
 -- Name: question question_option_set_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2353,6 +2361,14 @@ ALTER TABLE ONLY public.refresh_token
 
 ALTER TABLE ONLY public.refresh_token
     ADD CONSTRAINT refresh_token_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user_account(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: survey survey_data_source_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.survey
+    ADD CONSTRAINT survey_data_source_id_fkey FOREIGN KEY (data_source_id) REFERENCES public.data_source(id);
 
 
 --
@@ -3288,16 +3304,16 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 766	/20200603115106-AddCatchmentEntityType	2020-06-25 23:29:10.306
 767	/20200615021108-AddLaosSchoolsMajorDevPartner	2020-06-25 23:29:11.339
 768	/20200618012039-UseTuapaiaAsDataServiceForWishSurveys	2020-06-25 23:29:15.379
-769	/20200528043308-createAccessRequestTable	2020-07-02 15:07:33.284
-770	/20200603121401-CreateFijiCatchmentAlternateHierarchy	2020-07-02 15:07:38.384
-771	/20200615045558-AddPopupHeaderFormatToLaosSchoolsOverlays	2020-07-02 15:07:38.981
-772	/20200623065126-AddRegionalMapOverlaysForUNFPAMOS	2020-07-02 15:07:39.124
-773	/20200625074843-AddMapOverlaysForRHServices	2020-07-02 15:07:39.187
-774	/20200701064429-AddMethodsOfContraceptionRegionalDashboards	2020-07-02 15:07:39.43
-775	/20200617021631-AddUniqueConstraintInDataElementDataGroup	2020-07-03 10:08:41.25
-776	/20200622025632-AddDataGroupsForAllSurveys	2020-07-03 10:08:41.879
-777	/20200622025633-AddDataSourceIdColumn	2020-07-03 10:08:42.44
-778	/20200622025634-RemoveDhis2InfoFromSurveyIntegrationMetadata	2020-07-03 10:08:42.543
+769	/20200528043308-createAccessRequestTable	2020-07-02 21:55:46.686
+770	/20200603121401-CreateFijiCatchmentAlternateHierarchy	2020-07-02 21:55:54.593
+771	/20200615045558-AddPopupHeaderFormatToLaosSchoolsOverlays	2020-07-02 21:55:54.946
+772	/20200623065126-AddRegionalMapOverlaysForUNFPAMOS	2020-07-02 21:55:55.446
+773	/20200625074843-AddMapOverlaysForRHServices	2020-07-02 21:55:55.695
+774	/20200701064429-AddMethodsOfContraceptionRegionalDashboards	2020-07-02 21:55:55.794
+775	/20200617021631-AddUniqueConstraintInDataElementDataGroup	2020-07-06 09:05:52.56
+776	/20200622025632-AddDataGroupsForAllSurveys	2020-07-06 09:05:53.39
+777	/20200622025633-AddDataSourceIdColumn	2020-07-06 09:05:54.114
+778	/20200622025634-RemoveDhis2InfoFromSurveyIntegrationMetadata	2020-07-06 09:05:54.216
 \.
 
 
@@ -3305,7 +3321,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 778, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 781, true);
 
 
 --
