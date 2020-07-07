@@ -63,7 +63,7 @@ class ValueForOrgGroupMeasureBuilder extends DataBuilder {
     //If we group multiple data element codes, dataElementCode is usually 'value'
     const customDataKey = this.config.dataElementCodes ? dataElementCode : null;
 
-    return { data: analyticsToMeasureData(analytics, customDataKey), period };;
+    return { data: analyticsToMeasureData(analytics, customDataKey), period };
   }
 }
 

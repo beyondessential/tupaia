@@ -22,7 +22,7 @@ class CheckTimelinessMeasureBuilder extends DataBuilder {
         organisationUnitCode: row.organisationUnit,
         [dataElementCode]: row.value === undefined ? '' : row.value.toString(),
         submissionDate: periodToMoment(row.period.toString()).format('YYYY-MM-DD'),
-      }));
+      })),
     };
   }
 }

@@ -72,7 +72,7 @@ const PERIOD_TYPE_CONFIG = {
   },
 };
 
-const createFieldToPeriodType = fieldName =>
+const createFieldToNumericPeriodType = fieldName =>
   reduceToDictionary(
     Object.entries(PERIOD_TYPE_CONFIG)
       .filter(([periodType]) => !NON_NUMERIC_PERIOD_TYPES.includes(periodType))
@@ -84,7 +84,7 @@ const createFieldToPeriodType = fieldName =>
     'periodType',
   );
 
-const LENGTH_TO_NUMERIC_PERIOD_TYPE = createFieldToPeriodType('length');
+const LENGTH_TO_NUMERIC_PERIOD_TYPE = createFieldToNumericPeriodType('length');
 
 const createAccessor = field => periodType => get(PERIOD_TYPE_CONFIG, [periodType, field]);
 export const periodTypeToFormat = createAccessor('format');
