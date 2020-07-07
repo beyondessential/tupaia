@@ -3,14 +3,11 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import chai, { expect } from 'chai';
-import deepEqualInAnyOrder from 'deep-equal-in-any-order';
-import { generateTestId } from '@tupaia/database';
+import { expect } from 'chai';
 
+import { buildAndInsertSurveys, generateTestId } from '@tupaia/database';
 import { TestableApp } from '../TestableApp';
-import { upsertEntity, insertSurveyAndScreens } from '../testUtilities';
-
-chai.use(deepEqualInAnyOrder);
+import { upsertEntity } from '../testUtilities';
 
 const QUESTION_IDS = {
   Well: generateTestId(),
@@ -19,39 +16,40 @@ const QUESTION_IDS = {
   Positive: generateTestId(),
 };
 const CASE_CODES = ['TEST_STR_LBR_CASE1', 'TEST_STR_LBR_CASE2'];
-const QUESTIONS = [
-  {
-    id: QUESTION_IDS.Well,
-    code: 'TEST_STR_LBR_WELL',
-    type: 'FreeText',
-    indicator: 'Well',
-    validationCriteria: { mandatory: true },
-  },
-  {
-    id: QUESTION_IDS.Cq,
-    code: 'TEST_STR_LBR_CQ',
-    type: 'Number',
-    indicator: 'CQ',
-    validationCriteria: { mandatory: true },
-  },
-  {
-    id: QUESTION_IDS.Sq,
-    code: 'TEST_STR_LBR_SQ',
-    type: 'Number',
-    indicator: 'SQ',
-    validationCriteria: { mandatory: true },
-  },
-  {
-    id: QUESTION_IDS.Positive,
-    code: 'TEST_STR_LBR_POSITIVE',
-    type: 'Binary',
-    indicator: 'Positive result',
-    validationCriteria: { mandatory: true },
-  },
-];
 const SURVEY = {
   id: generateTestId(),
+  code: 'TEST_SLR',
   name: 'Test - STRIVE Lab Results',
+  questions: [
+    {
+      id: QUESTION_IDS.Well,
+      code: 'TEST_STR_LBR_WELL',
+      type: 'FreeText',
+      name: 'Well',
+      validationCriteria: { mandatory: true },
+    },
+    {
+      id: QUESTION_IDS.Cq,
+      code: 'TEST_STR_LBR_CQ',
+      type: 'Number',
+      name: 'CQ',
+      validationCriteria: { mandatory: true },
+    },
+    {
+      id: QUESTION_IDS.Sq,
+      code: 'TEST_STR_LBR_SQ',
+      type: 'Number',
+      name: 'SQ',
+      validationCriteria: { mandatory: true },
+    },
+    {
+      id: QUESTION_IDS.Positive,
+      code: 'TEST_STR_LBR_POSITIVE',
+      type: 'Binary',
+      name: 'Positive result',
+      validationCriteria: { mandatory: true },
+    },
+  ],
 };
 const EXPECTED_ANSWERS_PER_LAB_RESULT = [
   [
@@ -71,12 +69,6 @@ const LAB_RESULTS = {
   filePath: 'src/tests/testData/striveLabResults.xlsx',
   count: EXPECTED_ANSWERS_PER_LAB_RESULT.length,
 };
-
-const createSurvey = async () =>
-  insertSurveyAndScreens({
-    survey: SURVEY,
-    screens: [QUESTIONS],
-  });
 
 const createEntities = async models =>
   Promise.all(
@@ -106,7 +98,7 @@ describe('POST /import/striveLabResults', async () => {
 
   before(async () => {
     await app.authenticate();
-    await createSurvey();
+    await buildAndInsertSurveys(models, [SURVEY]);
     await createEntities(models);
 
     response = await importLabResults(app);

@@ -17,6 +17,48 @@ const OPERATION_TYPES = {
   IN: (leftOperand, rightOperand) => rightOperand.includes(leftOperand),
 };
 
+const buildFilterAnalyticsFunction = fraction => {
+  if (fraction.compare === COMPARISON_TYPES.COUNT) {
+    if (fraction.dataValues.length !== 2) {
+      throw new Error(
+        'nested array passed to: percentagesOfValueCounts must have exactly 2 sub-arrays for comparison',
+      );
+    }
+
+    const [values, valuesToCompare] = fraction.dataValues;
+    return results => {
+      const set1 = results.filter(r => values.includes(r.dataElement));
+      const set2 = results.filter(r => valuesToCompare.includes(r.dataElement));
+
+      const set1Count = countAnalyticsThatSatisfyConditions(set1, {
+        dataValues: values,
+        valueOfInterest: fraction.valueOfInterest,
+      });
+
+      const count2Count = countAnalyticsThatSatisfyConditions(set2, {
+        dataValues: valuesToCompare,
+        valueOfInterest: fraction.valueOfInterest,
+      });
+
+      return set1Count > 0 && set1Count === count2Count;
+    };
+  }
+
+  if (fraction.operation) {
+    if (fraction.groupBy) {
+      return results => {
+        return results.every(r => {
+          return OPERATION_TYPES[fraction.operation](r.value, fraction.operand);
+        });
+      };
+    }
+
+    return result => OPERATION_TYPES[fraction.operation](result.value, fraction.operand);
+  }
+
+  throw new Error(`Could not parse calculation for: ${fraction}`);
+};
+
 export class PercentagesOfValueCountsBuilder extends DataBuilder {
   getDataElementCodes() {
     const dataElementCodes = Object.values(this.config.dataClasses).reduce(
@@ -68,14 +110,7 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
 
   calculateFractionPart = (fraction, analytics) => {
     if (fraction.compare || fraction.operation) {
-      const filterAnalyticsFunction = this.buildFilterAnalyticsFunction(fraction);
-
-      if (!filterAnalyticsFunction) {
-        throw new Error(
-          'Could not create filterAnalyticsFunction from percentagesOfValueCounts config',
-        );
-      }
-
+      const filterAnalyticsFunction = buildFilterAnalyticsFunction(fraction);
       const filteredAnalytics = analytics.filter(analytic =>
         flatten(fraction.dataValues).includes(analytic.dataElement),
       );
@@ -111,47 +146,6 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
 
     return result;
   };
-
-  buildFilterAnalyticsFunction(fraction) {
-    if (fraction.compare === COMPARISON_TYPES.COUNT) {
-      if (fraction.dataValues.length !== 2) {
-        throw new Error(
-          'nested array passed to: percentagesOfValueCounts must have exactly 2 sub-arrays for comparison',
-        );
-      }
-
-      const [values, valuesToCompare] = fraction.dataValues;
-      return results => {
-        const set1 = results.filter(r => values.includes(r.dataElement));
-        const set2 = results.filter(r => valuesToCompare.includes(r.dataElement));
-
-        const set1Count = countAnalyticsThatSatisfyConditions(set1, {
-          dataValues: values,
-          valueOfInterest: fraction.valueOfInterest,
-        });
-
-        const count2Count = countAnalyticsThatSatisfyConditions(set2, {
-          dataValues: valuesToCompare,
-          valueOfInterest: fraction.valueOfInterest,
-        });
-
-        return set1Count > 0 && set1Count === count2Count;
-      };
-    }
-
-    if (fraction.operation) {
-      if (fraction.groupBy) {
-        return results => {
-          return results.every(r => {
-            return OPERATION_TYPES[fraction.operation](r.value, fraction.operand);
-          });
-        };
-      }
-
-      return result => OPERATION_TYPES[fraction.operation](result.value, fraction.operand);
-      
-    }
-  }
 }
 
 export const percentagesOfValueCounts = async (

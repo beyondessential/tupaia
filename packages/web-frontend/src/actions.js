@@ -401,16 +401,16 @@ export function fetchCountryAccessDataError(errorMessage) {
  * Attempt country access request for the logged in user using confirmation
  * by clicking on Submit button.
  *
- * @param {array} countryIds The ids of the countries the user requests answers
+ * @param {array} entityIds The ids of the countries the user requests answers
  * @param {string} message A message describing the reasons access is requested
  * @param {string} userGroup A specific user (permission) group the user is requesting access for
  */
-export function attemptRequestCountryAccess(countryIds, message = '', userGroup) {
+export function attemptRequestCountryAccess(entityIds, message = '', projectCode) {
   return {
     type: ATTEMPT_REQUEST_COUNTRY_ACCESS,
-    countryIds,
+    entityIds,
     message,
-    userGroup,
+    projectCode,
   };
 }
 

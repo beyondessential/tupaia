@@ -1,0 +1,1 @@
+export { aggregateEvents } from './aggregateEvents';
