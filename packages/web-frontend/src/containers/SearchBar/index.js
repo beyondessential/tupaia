@@ -19,7 +19,7 @@ import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
 import { List, ListItem } from 'material-ui/List';
 import { ControlBar } from '../../components/ControlBar';
-import { selectOrgUnitChildren, selectActiveProject } from '../../selectors';
+import { selectOrgUnitChildren } from '../../selectors';
 import {
   changeSearch,
   toggleSearchExpand,
@@ -199,7 +199,7 @@ const mapStateToProps = state => {
   const { isExpanded, searchResponse, searchString } = state.searchBar;
   const { orgUnitFetchError } = state.orgUnits;
   const hierarchyData = selectCodeFromOrgUnit(
-    selectOrgUnitChildren(state, selectActiveProject(state).code),
+    selectOrgUnitChildren(state, state.project.activeProjectCode),
   );
   return { isExpanded, searchResponse, searchString, hierarchyData, orgUnitFetchError };
 };

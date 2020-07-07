@@ -16,7 +16,7 @@ export const percentPerValuePerOrgUnit = async (
 ) => {
   const {
     dataElementGroupCode,
-    entityAggregation,
+    entityAggregation = {},
     dataServices,
     range,
     valuesOfInterest,

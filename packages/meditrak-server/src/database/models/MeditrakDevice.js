@@ -1,20 +1,12 @@
 /**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
 
-import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
+import { MeditrakDeviceModel as CommonMeditrakDeviceModel } from '@tupaia/database';
 
-export class MeditrakDeviceType extends DatabaseType {
-  static databaseType = TYPES.MEDITRAK_DEVICE;
-}
-
-export class MeditrakDeviceModel extends DatabaseModel {
+export class MeditrakDeviceModel extends CommonMeditrakDeviceModel {
   notifiers = [onUpsertSanitizeConfig];
-
-  get DatabaseTypeClass() {
-    return MeditrakDeviceType;
-  }
 }
 
 const onUpsertSanitizeConfig = async (change, models) => {

@@ -12,6 +12,8 @@ export function generateValueOfType(type, options = {}) {
         .substring(2); // 0.sdf -> sdf
       return options.maxLength ? text.substring(0, options.maxLength) : text;
     }
+    case 'integer':
+      return Math.trunc(Math.random() * 1000);
     case 'double precision':
       return Math.random() * 1000;
     case 'boolean':
