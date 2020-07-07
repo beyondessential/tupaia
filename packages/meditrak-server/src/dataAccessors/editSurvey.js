@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { getDataGroupsThatIncludeElement } from '../database';
 import { NON_DATA_ELEMENT_ANSWER_TYPES } from '../database/models/Answer';
 
 const areBothDefinedAndDifferent = (oldValue, newValue) =>
@@ -82,16 +83,16 @@ class SurveyEditor {
       dataElement,
     );
 
-    const dataGroups = await this.models.dataSource.getDataGroupsThatIncludeElement(
-      dataElement.code,
-    );
+    const dataGroups = await getDataGroupsThatIncludeElement(this.models, dataElement.code);
     const otherDataGroups = dataGroups.filter(({ id }) => id !== this.dataGroup.id);
     otherDataGroups.forEach(otherDataGroup => {
       const { service_type: serviceType, config } = otherDataGroup;
 
       if (areBothDefinedAndDifferent(serviceType, newServiceType)) {
         throw new Error(
-          `Cannot update service type to '${newServiceType}': question '${dataElement.code}' is included in survey '${otherDataGroup.code}', which uses a different service type`,
+          `Cannot update service type to '${newServiceType}': question '${
+            dataElement.code
+          }' is included in survey '${otherDataGroup.code}', which uses a different service type`,
         );
       }
 
