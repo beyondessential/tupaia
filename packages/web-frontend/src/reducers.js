@@ -442,7 +442,7 @@ function requestCountryAccess(
 
 function dashboard(
   state = {
-    currentDashboardKey: '',
+    currentDashboardKey: 'General',
     viewResponses: {},
     contractedWidth: 300, // Set dynamically based on window size.
     expandedWidth: 300, // Overridden by info div.

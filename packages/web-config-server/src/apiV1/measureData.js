@@ -118,8 +118,8 @@ const createDataServices = mapOverlay => {
 };
 
 const getMeasureLevel = mapOverlays => {
-  const aggregationTypes = mapOverlays.map(({ measureBuilderConfig }) =>
-    Entity.translateTypeForFrontend(measureBuilderConfig.aggregationEntityType),
+  const aggregationTypes = mapOverlays.map(
+    ({ presentationOptions }) => presentationOptions.measureLevel,
   );
   return [...new Set(aggregationTypes)].join(',');
 };
@@ -144,7 +144,6 @@ export default class extends DataAggregatingRouteHandler {
 
     // start fetching options
     const optionsTasks = overlays.map(o => this.fetchMeasureOptions(o, this.query));
-
     // start fetching actual data
     const shouldFetchSiblings = this.query.shouldShowAllParentCountryResults === 'true';
     const dataTasks = overlays.map(o => this.fetchMeasureData(o, shouldFetchSiblings));
@@ -231,7 +230,6 @@ export default class extends DataAggregatingRouteHandler {
       measureBuilderConfig,
       ...restOfMapOverlay
     } = mapOverlay;
-
     const { dataSourceType = DATA_SOURCE_TYPES.SINGLE, periodGranularity } =
       measureBuilderConfig || {};
     const { startDate, endDate } = this.query;
@@ -254,6 +252,7 @@ export default class extends DataAggregatingRouteHandler {
       dataSourceType === DATA_SOURCE_TYPES.SINGLE
         ? await this.getOptionsForDataElement(mapOverlay, dataElementCode)
         : {};
+
     const translatedOptions = translateMeasureOptionSet(options, mapOverlay);
 
     return { ...baseOptions, values: translatedOptions };
@@ -266,6 +265,7 @@ export default class extends DataAggregatingRouteHandler {
       dataServices,
       includeOptions: true,
     });
+
     if (!dataElement) {
       throw new Error(`Data element with code ${dataElementCode} not found`);
     }
@@ -291,6 +291,7 @@ export default class extends DataAggregatingRouteHandler {
       measureBuilderConfig,
       measureBuilder,
     } = mapOverlay;
+
     const entityCode = shouldFetchSiblings
       ? await this.getCountryLevelOrgUnitCode()
       : this.entity.code;

@@ -1,5 +1,6 @@
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { getDateRange } from '/apiV1/utils';
+import { periodToMoment } from '@tupaia/utils/dist/period/period';
 
 class CheckTimelinessMeasureBuilder extends DataBuilder {
   async build() {
@@ -20,7 +21,8 @@ class CheckTimelinessMeasureBuilder extends DataBuilder {
       data: results.map(row => ({
         organisationUnitCode: row.organisationUnit,
         [dataElementCode]: row.value === undefined ? '' : row.value.toString(),
-      })),
+        submissionDate: periodToMoment(row.period.toString()).format('YYYY-MM-DD'),
+      }));
     };
   }
 }

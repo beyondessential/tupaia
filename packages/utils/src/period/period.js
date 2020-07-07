@@ -95,6 +95,10 @@ const toMomentShorthand = createAccessor('momentShorthand');
 export const periodTypeToMomentUnit = createAccessor('momentUnit');
 
 export const periodToType = (period = '') => {
+  if (typeof period !== 'string') {
+    throw new Error(`periodToType expects period to be a string, got: ${period}`);
+  }
+
   if (period.includes('Q') && checkNonNumericPeriod(period, PERIOD_TYPES.QUARTER))
     return PERIOD_TYPES.QUARTER;
   else if (period.includes('W') && checkNonNumericPeriod(period, PERIOD_TYPES.WEEK))

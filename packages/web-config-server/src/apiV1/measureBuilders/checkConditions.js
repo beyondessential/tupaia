@@ -9,6 +9,7 @@ class CheckConditionsBuilder extends DataBuilder {
 
     const dataElementCodes = configDataCodes || [queryDataCode];
     const { period, results } = await this.fetchAnalytics(dataElementCodes);
+
     const analytics = results.map(result => ({
       ...result,
       value: checkValueSatisfiesCondition(result.value, condition) ? 1 : 0,
