@@ -3310,10 +3310,6 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 772	/20200623065126-AddRegionalMapOverlaysForUNFPAMOS	2020-07-02 21:55:55.446
 773	/20200625074843-AddMapOverlaysForRHServices	2020-07-02 21:55:55.695
 774	/20200701064429-AddMethodsOfContraceptionRegionalDashboards	2020-07-02 21:55:55.794
-775	/20200617021631-AddUniqueConstraintInDataElementDataGroup	2020-07-06 09:05:52.56
-776	/20200622025632-AddDataGroupsForAllSurveys	2020-07-06 09:05:53.39
-777	/20200622025633-AddDataSourceIdColumn	2020-07-06 09:05:54.114
-778	/20200622025634-RemoveDhis2InfoFromSurveyIntegrationMetadata	2020-07-06 09:05:54.216
 775	/20200624061918-AddUnfpaStackedBarGraphPercentCountryMos	2020-07-07 15:06:28.379
 776	/20200624141424-AddUNFPAReproductiveHealthAtLeast1StaffMemberTrainedSRHServicesReport	2020-07-07 15:06:28.499
 777	/20200629134316-AddUNFPANumberOfWomenProvidedSRHServicesFacilityLevelDashboardReport	2020-07-07 15:06:28.538
@@ -3328,6 +3324,10 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 786	/20200618132339-AddTongaHPUIECRequestsFulFilledByThemeDashboardReport	2020-07-08 01:01:05.676
 787	/20200619015233-AddNewQuitlineCasesBarReportTonga	2020-07-08 01:01:05.776
 788	/20200623013336-AddTongaHPUNumberOfNCDRiskFactorScreeningEventsBySetting	2020-07-08 01:01:05.907
+789	/20200617021631-AddUniqueConstraintInDataElementDataGroup	2020-07-08 16:39:31.814
+790	/20200622025632-AddDataGroupsForAllSurveys	2020-07-08 16:39:32.356
+791	/20200622025633-AddDataSourceIdColumn	2020-07-08 16:39:33.007
+792	/20200622025634-RemoveDhis2InfoFromSurveyIntegrationMetadata	2020-07-08 16:39:33.108
 \.
 
 
@@ -3335,7 +3335,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 788, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 792, true);
 
 
 --
