@@ -74,84 +74,84 @@ export const CreateOutbreakModalComponent = ({ isOpen, handleClose, createOutbre
 
   const handleConfirm = async fields => {
     setStatus(STATUS.LOADING);
-    await createOutbreak();
+    await createOutbreak(fields);
     setStatus(STATUS.SUCCESS);
   };
+
+  if (status === STATUS.SUCCESS) {
+    return (
+      <Dialog onClose={handleClose} open={isOpen}>
+        <DialogHeader onClose={handleClose} title="Confirm Outbreak" />
+        <DialogContent>
+          <TickIcon />
+          <Typography variant="h6" gutterBottom>
+            Outbreak successfully confirmed
+          </Typography>
+          <SuccessText>
+            Please note that this information has been moved to the Outbreak tab.
+          </SuccessText>
+        </DialogContent>
+        <DialogFooter>
+          <OutlinedButton to="/alerts" onClick={handleClose}>
+            Stay on Alerts
+          </OutlinedButton>
+          <Button to="/alerts/outbreaks" component={RouterLink}>
+            Go to Outbreaks
+          </Button>
+        </DialogFooter>
+      </Dialog>
+    );
+  }
 
   return (
     <Dialog onClose={handleClose} open={isOpen}>
       <form onSubmit={handleSubmit(handleConfirm)} noValidate>
         <DialogHeader onClose={handleClose} title="Confirm Outbreak" />
-        {status === STATUS.SUCCESS ? (
-          <DialogContent>
-            <TickIcon />
-            <Typography variant="h6" gutterBottom>
-              Outbreak successfully confirmed
-            </Typography>
-            <SuccessText>
-              Please note that this information has been moved to the Outbreak tab.
-            </SuccessText>
-          </DialogContent>
-        ) : (
-          <LoadingContainer isLoading={status === STATUS.LOADING}>
-            <Content>
-              <Fields>
-                <Controller
-                  as={Select}
-                  placeholder="Please select"
-                  defaultValue=""
-                  rules={{ required: true }}
-                  control={control}
-                  name="diagnosis"
-                  label="Outbreak diagnosis"
-                  options={options}
-                  error={!!errors.diagnosis}
-                  helperText={errors.diagnosis && errors.diagnosis.message}
-                />
-                <DatePicker
-                  name="date"
-                  label="Confirmed Outbreak Date"
-                  error={!!errors.date}
-                  helperText={errors.date && errors.date.message}
-                  inputRef={register({
-                    required: 'Required',
-                  })}
-                />
-              </Fields>
-              <TextField
-                name="note"
-                placeholder="Add a note"
-                error={!!errors.note}
-                helperText={errors.note && errors.note.message}
-                multiline
-                rows="4"
+        <LoadingContainer isLoading={status === STATUS.LOADING}>
+          <Content>
+            <Fields>
+              <Controller
+                as={Select}
+                placeholder="Please select"
+                defaultValue=""
+                rules={{ required: true }}
+                control={control}
+                name="diagnosis"
+                label="Outbreak diagnosis"
+                options={options}
+                error={!!errors.diagnosis}
+                helperText={errors.diagnosis && errors.diagnosis.message}
+              />
+              <DatePicker
+                name="date"
+                label="Confirmed Outbreak Date"
+                error={!!errors.date}
+                helperText={errors.date && errors.date.message}
                 inputRef={register({
                   required: 'Required',
                 })}
               />
-            </Content>
-          </LoadingContainer>
-        )}
+            </Fields>
+            <TextField
+              name="note"
+              placeholder="Add a note"
+              error={!!errors.note}
+              helperText={errors.note && errors.note.message}
+              multiline
+              rows="4"
+              inputRef={register({
+                required: 'Required',
+              })}
+            />
+          </Content>
+        </LoadingContainer>
         <DialogFooter>
-          {status === STATUS.SUCCESS ? (
-            <>
-              <OutlinedButton to="/alerts" onClick={handleClose}>
-                Stay on Alerts
-              </OutlinedButton>
-              <Button to="/alerts/outbreaks" component={RouterLink}>
-                Go to Outbreaks
-              </Button>
-            </>
-          ) : (
-            <>
-              <OutlinedButton onClick={handleClose} disabled={status === STATUS.LOADING}>
-                Cancel
-              </OutlinedButton>
-              <Button type="submit" isLoading={status === STATUS.LOADING} loadingText="Confirming">
-                Confirm
-              </Button>
-            </>
-          )}
+          <OutlinedButton onClick={handleClose} disabled={status === STATUS.LOADING}>
+            Cancel
+          </OutlinedButton>
+          <Button type="submit" isLoading={status === STATUS.LOADING} loadingText="Confirming">
+            Confirm
+          </Button>
         </DialogFooter>
       </form>
     </Dialog>
