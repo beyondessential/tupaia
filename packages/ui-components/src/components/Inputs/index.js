@@ -9,4 +9,5 @@ export * from './ButtonSelect';
 export * from './Autocomplete';
 export * from './AsyncAutocomplete';
 export * from './Select';
+export * from './MultiSelect';
 export * from './DatePicker';

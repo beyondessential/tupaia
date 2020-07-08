@@ -25,6 +25,15 @@ import { FlexSpaceBetween, FlexStart } from '../Layout';
 import { connectApi } from '../../api';
 import * as COLORS from '../../constants';
 
+import MuiInput from '@material-ui/core/Input';
+import MuiInputLabel from '@material-ui/core/InputLabel';
+import MuiMenuItem from '@material-ui/core/MenuItem';
+import MuiFormControl from '@material-ui/core/FormControl';
+import ListItemText from '@material-ui/core/ListItemText';
+import MuiSelect from '@material-ui/core/Select';
+import MuiCheckbox from '@material-ui/core/Checkbox';
+
+
 const countries = [
   { label: 'All Countries', value: 'ALL' },
   { label: 'Afghanistan', value: 'AF' },
@@ -124,6 +133,9 @@ const SuccessText = styled(Typography)`
 `;
 
 export const ExportModalComponent = ({ isOpen, handleClose, createExport }) => {
+  const [country, setCountry] = React.useState([]);
+
+
   const { handleSubmit, register, errors, control } = useForm();
   const [status, setStatus] = useState(STATUS.INITIAL);
 
@@ -151,23 +163,49 @@ export const ExportModalComponent = ({ isOpen, handleClose, createExport }) => {
     );
   }
 
+  const handleChange = (event) => {
+    setCountry(event.target.value);
+  };
+
   return (
     <Dialog onClose={handleClose} open={isOpen}>
       <form onSubmit={handleSubmit(handleConfirm)} noValidate>
         <DialogHeader onClose={handleClose} title="Export Weekly Case Data" />
         <LoadingContainer isLoading={status === STATUS.LOADING}>
           <Content>
-            <Controller
-              as={Select}
-              defaultValue="ALL"
-              rules={{ required: true }}
-              control={control}
-              name="countries"
-              label="Select Counties"
-              options={countries}
-              error={!!errors.diagnosis}
-              helperText={errors.diagnosis && errors.diagnosis.message}
-            />
+            {/*<Controller*/}
+            {/*  as={Select}*/}
+            {/*  defaultValue="ALL"*/}
+            {/*  rules={{ required: true }}*/}
+            {/*  control={control}*/}
+            {/*  name="countries"*/}
+            {/*  label="Select Counties"*/}
+            {/*  options={countries}*/}
+            {/*  error={!!errors.diagnosis}*/}
+            {/*  helperText={errors.diagnosis && errors.diagnosis.message}*/}
+            {/*/>*/}
+
+            <MuiFormControl>
+              <MuiInputLabel id="demo-mutiple-checkbox-label">Tag</MuiInputLabel>
+              <Select
+                labelId="demo-mutiple-checkbox-label"
+                id="demo-mutiple-checkbox"
+                multiple
+                value={country.label}
+                onChange={handleChange}
+                input={<MuiInput />}
+                renderValue={(selected) => selected.join(', ')}
+                MenuProps={MenuProps}
+              >
+                {countries.map((country) => (
+                  <MuiMenuItem key={country.value} value={country.value}>
+                    <Checkbox checked={country.indexOf(name) > -1} />
+                    <ListItemText primary={country.value} />
+                  </MuiMenuItem>
+                ))}
+              </Select>
+            </MuiFormControl>
+
             <Fields>
               <DatePicker
                 name="startWeek"
