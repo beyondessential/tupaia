@@ -6,21 +6,6 @@
 import { equalCaseInsensitive } from './utilities';
 
 const EXPLORE_PROJECT = 'Explore';
-const PUBLIC_USER = 'public';
-
-export const login = () => {
-  cy.server();
-  cy.route(/\/getUser/).as('getUser');
-
-  cy.visit('/');
-  cy.wait('@getUser').then(({ response }) => {
-    if (response.body.name === PUBLIC_USER) {
-      submitLoginForm();
-    } else {
-      closeOverlay();
-    }
-  });
-};
 
 export const submitLoginForm = () => {
   cy.findAllByText(/Sign in/)
@@ -40,7 +25,7 @@ export const submitLoginForm = () => {
   closeOverlay();
 };
 
-const closeOverlay = () => {
+export const closeOverlay = () => {
   cy.findByTestId('overlay-close-btn').click();
 };
 

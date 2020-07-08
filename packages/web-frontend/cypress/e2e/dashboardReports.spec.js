@@ -6,7 +6,6 @@
 import {
   closeOpenDialogs,
   expandDashboardItem,
-  login,
   preserveUserSession,
   selectDashboardGroup,
   selectProject,
@@ -67,7 +66,7 @@ describe('Dashboard reports', () => {
   const reportsByProject = Cypress._.groupBy(REPORTS, 'project');
 
   before(() => {
-    login();
+    cy.login();
   });
 
   beforeEach(() => {
