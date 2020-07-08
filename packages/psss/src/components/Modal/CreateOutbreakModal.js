@@ -20,6 +20,7 @@ import {
   LoadingContainer,
 } from '@tupaia/ui-components';
 import CheckCircle from '@material-ui/icons/CheckCircle';
+import { useForm, Controller } from 'react-hook-form';
 import Typography from '@material-ui/core/Typography';
 import { FlexSpaceBetween } from '../Layout';
 import { connectApi } from '../../api';
@@ -50,33 +51,15 @@ const options = [
 ];
 
 const TickIcon = styled(CheckCircle)`
-  font-size: 2rem;
+  font-size: 2.5rem;
   margin-bottom: 0.3rem;
   color: ${props => props.theme.palette.success.main};
 `;
 
-const CreateOutbreakSuccess = () => (
-  <DialogContent>
-    <TickIcon />
-    <Typography variant="h6" gutterBottom>
-      Outbreak successfully confirmed
-    </Typography>
-    <Typography gutterBottom>
-      Please note this information has been moved to the outbreak tab.
-    </Typography>
-  </DialogContent>
-);
-
-const NavButtons = () => (
-  <>
-    <OutlinedButton to="/alerts" component={RouterLink}>
-      Stay on Alerts
-    </OutlinedButton>
-    <Button to="/alerts/outbreaks" component={RouterLink}>
-      Go to Outbreaks
-    </Button>
-  </>
-);
+const SuccessText = styled(Typography)`
+  font-size: 1rem;
+  margin-top: 1rem;
+`;
 
 const STATUS = {
   INITIAL: 'initial',
@@ -86,9 +69,10 @@ const STATUS = {
 };
 
 export const CreateOutbreakModalComponent = ({ isOpen, handleClose, createOutbreak }) => {
+  const { handleSubmit, register, errors, control } = useForm();
   const [status, setStatus] = useState(STATUS.INITIAL);
 
-  const handleConfirm = async () => {
+  const handleConfirm = async fields => {
     setStatus(STATUS.LOADING);
     await createOutbreak();
     setStatus(STATUS.SUCCESS);
@@ -96,52 +80,80 @@ export const CreateOutbreakModalComponent = ({ isOpen, handleClose, createOutbre
 
   return (
     <Dialog onClose={handleClose} open={isOpen}>
-      <DialogHeader onClose={handleClose} title="Confirm Outbreak" />
-      {status === STATUS.SUCCESS ? (
-        <CreateOutbreakSuccess />
-      ) : (
-        <LoadingContainer isLoading={status === STATUS.LOADING}>
-          <Content>
-            <Fields>
-              <Select
-                id="outbreak-diagnosis"
-                label="Outbreak diagnosis"
-                options={options}
-              />
-              <DatePicker
-                id="outbreak-date"
-                name="outbreak-date"
-                label="Confirmed Outbreak Date"
-              />
-            </Fields>
-            <TextField
-              id="outbreak-note"
-              name="note"
-              placeholder="Add a note"
-              multiline
-              rows="4"
-            />
-          </Content>
-        </LoadingContainer>
-      )}
-      <DialogFooter>
+      <form onSubmit={handleSubmit(handleConfirm)} noValidate>
+        <DialogHeader onClose={handleClose} title="Confirm Outbreak" />
         {status === STATUS.SUCCESS ? (
-          <NavButtons />
+          <DialogContent>
+            <TickIcon />
+            <Typography variant="h6" gutterBottom>
+              Outbreak successfully confirmed
+            </Typography>
+            <SuccessText>
+              Please note that this information has been moved to the Outbreak tab.
+            </SuccessText>
+          </DialogContent>
         ) : (
-          <>
-            <OutlinedButton onClick={handleClose} disabled={status === STATUS.LOADING}>
-              Cancel
-            </OutlinedButton>
-            <Button
-              onClick={handleConfirm}
-              isLoading={status === STATUS.LOADING}
-              loadingText="Confirming"
-            >
-              Confirm
-            </Button>
-          </>
+          <LoadingContainer isLoading={status === STATUS.LOADING}>
+            <Content>
+              <Fields>
+                <Controller
+                  as={Select}
+                  placeholder="Please select"
+                  defaultValue=""
+                  rules={{ required: true }}
+                  control={control}
+                  name="diagnosis"
+                  label="Outbreak diagnosis"
+                  options={options}
+                  error={!!errors.diagnosis}
+                  helperText={errors.diagnosis && errors.diagnosis.message}
+                />
+                <DatePicker
+                  name="date"
+                  label="Confirmed Outbreak Date"
+                  error={!!errors.date}
+                  helperText={errors.date && errors.date.message}
+                  inputRef={register({
+                    required: 'Required',
+                  })}
+                />
+              </Fields>
+              <TextField
+                name="note"
+                placeholder="Add a note"
+                error={!!errors.note}
+                helperText={errors.note && errors.note.message}
+                multiline
+                rows="4"
+                inputRef={register({
+                  required: 'Required',
+                })}
+              />
+            </Content>
+          </LoadingContainer>
         )}
-      </DialogFooter>
+        <DialogFooter>
+          {status === STATUS.SUCCESS ? (
+            <>
+              <OutlinedButton to="/alerts" onClick={handleClose}>
+                Stay on Alerts
+              </OutlinedButton>
+              <Button to="/alerts/outbreaks" component={RouterLink}>
+                Go to Outbreaks
+              </Button>
+            </>
+          ) : (
+            <>
+              <OutlinedButton onClick={handleClose} disabled={status === STATUS.LOADING}>
+                Cancel
+              </OutlinedButton>
+              <Button type="submit" isLoading={status === STATUS.LOADING} loadingText="Confirming">
+                Confirm
+              </Button>
+            </>
+          )}
+        </DialogFooter>
+      </form>
     </Dialog>
   );
 };
