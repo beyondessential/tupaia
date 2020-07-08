@@ -74,11 +74,15 @@
       "packages/": true
     },
     "cSpell.words": [
+      "DHIS",
+      "MediTrak",
+      "Tongatapu",
+      "Tupaia",
       "analytics",
       "cacheable",
       "cleanup",
       "deleters",
-      "DHIS",
+      "dialogs",
       "enroll",
       "enrollment",
       "enrollments",
@@ -88,7 +92,6 @@
       "heatmap",
       "imms",
       "keyby",
-      "MediTrak",
       "migrator",
       "oucode",
       "preaggregate",
@@ -99,8 +102,7 @@
       "preaggregators",
       "promisify",
       "singularise",
-      "Tongatapu",
-      "Tupaia",
+      "testid",
       "upsert"
     ]
   },
