@@ -12,10 +12,10 @@ export const submitLoginForm = () => {
     .as('loginForm');
 
   cy.get('@loginForm')
-    .findByInputName('email')
+    .findByLabelText(/e-?mail/i)
     .type(Cypress.env('USER_EMAIL'));
   cy.get('@loginForm')
-    .findByInputName('password')
+    .findByLabelText(/password/i)
     .type(Cypress.env('USER_PASSWORD'), { log: false });
 
   cy.get('@loginForm')
