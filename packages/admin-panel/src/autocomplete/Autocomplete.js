@@ -11,6 +11,8 @@ import 'react-select/dist/react-select.css';
 import { getAutocompleteState } from './selectors';
 import { changeSelection, changeSearchTerm, clearState } from './actions';
 
+const DEFAULT_PLACEHOLDER = 'Start typing to search';
+
 const shouldCommaCreateOption = () => false;
 
 class AutocompleteComponent extends React.Component {
@@ -30,10 +32,16 @@ class AutocompleteComponent extends React.Component {
       optionLabelKey,
       isLoading,
       results,
-      placeholder,
+      placeholder: customPlaceholder,
       searchTerm,
       allowMultipleValues,
     } = this.props;
+    const getPlaceholder = () => {
+      if (customPlaceholder) {
+        return Array.isArray(customPlaceholder) ? customPlaceholder.join(', ') : customPlaceholder;
+      }
+      return DEFAULT_PLACEHOLDER;
+    };
     const SelectComponent = this.props.canCreateNewOptions ? Creatable : Select;
     return (
       <SelectComponent
@@ -44,7 +52,7 @@ class AutocompleteComponent extends React.Component {
         valueKey={optionLabelKey}
         options={results}
         isLoading={isLoading}
-        placeholder={placeholder}
+        placeholder={getPlaceholder()}
         multi={allowMultipleValues}
         clearable={false}
         newOptionCreator={option => ({ [option.valueKey]: searchTerm })}
@@ -62,7 +70,7 @@ AutocompleteComponent.propTypes = {
   onChangeSelection: PropTypes.func.isRequired,
   onClearState: PropTypes.func.isRequired,
   optionLabelKey: PropTypes.string.isRequired,
-  placeholder: PropTypes.string,
+  placeholder: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   results: PropTypes.array,
   searchTerm: PropTypes.string,
   selection: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
@@ -81,17 +89,37 @@ const mapStateToProps = (state, { reduxId }) => ({
   ...getAutocompleteState(state, reduxId),
 });
 
-const mapDispatchToProps = (dispatch, { endpoint, optionLabelKey, reduxId, onChange }) => ({
+const mapDispatchToProps = (
+  dispatch,
+  {
+    endpoint,
+    optionLabelKey,
+    optionValueKey,
+    reduxId,
+    onChange,
+    parentRecord,
+    allowMultipleValues,
+  },
+) => ({
   onChangeSelection: newSelection => {
-    onChange(newSelection);
+    const newValue = allowMultipleValues
+      ? newSelection.map(s => s[optionValueKey])
+      : newSelection[optionValueKey];
+    onChange(newValue);
     dispatch(changeSelection(reduxId, newSelection));
   },
   onChangeSearchTerm: newSearchTerm =>
-    dispatch(changeSearchTerm(reduxId, endpoint, optionLabelKey, newSearchTerm)),
+    dispatch(
+      changeSearchTerm(
+        reduxId,
+        endpoint,
+        optionLabelKey,
+        optionValueKey,
+        newSearchTerm,
+        parentRecord,
+      ),
+    ),
   onClearState: () => dispatch(clearState(reduxId)),
 });
 
-export const Autocomplete = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(AutocompleteComponent);
+export const Autocomplete = connect(mapStateToProps, mapDispatchToProps)(AutocompleteComponent);

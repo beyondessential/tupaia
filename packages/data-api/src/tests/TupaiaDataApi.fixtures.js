@@ -20,13 +20,13 @@ export const ENTITIES = [auckland, wellington];
 
 const BCD1 = {
   code: 'BCD1',
-  indicator: 'Facility Status',
+  name: 'Facility Status',
   type: 'Radio',
 };
 
 const BCD325 = {
   code: 'BCD325',
-  indicator: 'Days of operation',
+  name: 'Days of operation',
   type: 'Number',
 };
 
@@ -38,12 +38,12 @@ const BCD_SURVEY = {
 
 const CROP_1 = {
   code: 'CROP_1',
-  indicator: 'Number of potatoes grown',
+  name: 'Number of potatoes grown',
   type: 'Number',
 };
 const CROP_2 = {
   code: 'CROP_2',
-  indicator: 'Number of lettuces grown',
+  name: 'Number of lettuces grown',
   type: 'Number',
 };
 
