@@ -24,6 +24,7 @@ import {
   ActivityTab,
   NotesTab,
   DrawerTray,
+  CreateOutbreakModal,
 } from '../../components';
 import { countryFlagImage } from '../../utils';
 import { useFetch } from '../../hooks';
@@ -68,13 +69,16 @@ const TabsContext = React.createContext(null);
 
 export const AlertsPanelComponent = React.memo(
   ({ isOpen, handleClose, fetchSitesData, fetchNotesData, fetchActivityData }) => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const [activeIndex, setActiveIndex] = useState(0);
     const sitesState = useFetch(fetchSitesData);
     const notesState = useFetch(fetchNotesData);
     const activityState = useFetch(fetchActivityData);
 
     const handleChange = option => {
+      // Todo handle Archive option
       console.log('handle change...', option);
+      setIsModalOpen(true);
     };
 
     return (
@@ -111,6 +115,7 @@ export const AlertsPanelComponent = React.memo(
             />
           </CardTabPanels>
         </TabsContext.Provider>
+        <CreateOutbreakModal isOpen={isModalOpen} handleClose={() => setIsModalOpen(false)} />
       </Drawer>
     );
   },

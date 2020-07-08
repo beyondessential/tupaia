@@ -11,7 +11,7 @@ import styled from 'styled-components';
 import {
   EditableTable,
   EditableTableContext,
-  EditableTableLoader,
+  LoadingContainer,
   TableBody,
   GreyOutlinedButton,
   Button,
@@ -63,7 +63,7 @@ export const CountryReportTableComponent = React.memo(
     };
 
     return (
-      <EditableTableLoader isLoading={tableStatus === TABLE_STATUSES.SAVING}>
+      <LoadingContainer isLoading={tableStatus === TABLE_STATUSES.SAVING}>
         <LayoutRow>
           <Typography variant="h5">7/10 Sites Reported</Typography>
           <GreyOutlinedButton
@@ -89,7 +89,7 @@ export const CountryReportTableComponent = React.memo(
             </div>
           </LayoutRow>
         )}
-      </EditableTableLoader>
+      </LoadingContainer>
     );
   },
 );

@@ -10,12 +10,11 @@ import Typography from '@material-ui/core/Typography';
 import {
   EditableTableContext,
   EditableTable,
-  EditableTableLoader,
+  LoadingContainer,
   GreyOutlinedButton,
   Button,
-  FakeHeader,
 } from '@tupaia/ui-components';
-import { DottedTableBody } from '../../components';
+import { DottedTableBody, GreyTableHeader } from '../../components';
 import { updateWeeklyReportsData } from '../../store';
 
 const HeadingRow = styled.div`
@@ -73,18 +72,14 @@ export const SiteReportTableComponent = React.memo(({ onSubmit, tableStatus, set
   };
 
   return (
-    <EditableTableLoader isLoading={tableStatus === TABLE_STATUSES.SAVING}>
+    <LoadingContainer isLoading={tableStatus === TABLE_STATUSES.SAVING}>
       <HeadingRow>
         <HeaderTitle>Sentinel Cases Reported</HeaderTitle>
         <GreyOutlinedButton onClick={handleEdit} disabled={tableStatus === TABLE_STATUSES.EDITABLE}>
           Edit
         </GreyOutlinedButton>
       </HeadingRow>
-      <FakeHeader>
-        <span>SYNDROMES</span>
-        <span>TOTAL CASES</span>
-      </FakeHeader>
-      <StyledEditableTable Header={false} Body={DottedTableBody} />
+      <StyledEditableTable Header={GreyTableHeader} Body={DottedTableBody} />
       {tableStatus === TABLE_STATUSES.EDITABLE && (
         <ActionsRow>
           <Button variant="outlined" onClick={handleCancel}>
@@ -93,7 +88,7 @@ export const SiteReportTableComponent = React.memo(({ onSubmit, tableStatus, set
           <Button onClick={handleSubmit}>Save</Button>
         </ActionsRow>
       )}
-    </EditableTableLoader>
+    </LoadingContainer>
   );
 });
 

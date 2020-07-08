@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import MuiLink from '@material-ui/core/Link';
@@ -15,11 +15,8 @@ import {
   GreyOutlinedButton,
   EditableTableProvider,
   EditableTable,
-  EditableTableLoader,
-  Table,
-  EditableTableContext,
+  LoadingContainer,
 } from '../../src';
-import { FakeAPI } from '../story-utils/api';
 
 export default {
   title: 'Tables/EditableTable',
@@ -78,8 +75,6 @@ const TABLE_STATUSES = {
 };
 
 const SubmitButton = ({ setTableStatus }) => {
-  const { fields } = useContext(EditableTableContext);
-
   const handleSubmit = async () => {
     setTableStatus(TABLE_STATUSES.SAVING);
     await sleep(1000);
@@ -107,10 +102,13 @@ export const editableTable = () => {
   return (
     <Container>
       <EditableTableProvider columns={columns} data={data} tableStatus={tableStatus}>
-        <EditableTableLoader isLoading={tableStatus === TABLE_STATUSES.SAVING}>
+        <LoadingContainer isLoading={tableStatus === TABLE_STATUSES.SAVING}>
           <LayoutRow>
             <Typography variant="h6">Editable Table</Typography>
-            <GreyOutlinedButton onClick={handleEditClick} disabled={tableStatus === TABLE_STATUSES.EDITABLE}>
+            <GreyOutlinedButton
+              onClick={handleEditClick}
+              disabled={tableStatus === TABLE_STATUSES.EDITABLE}
+            >
               Edit
             </GreyOutlinedButton>
           </LayoutRow>
@@ -126,7 +124,7 @@ export const editableTable = () => {
               </div>
             </LayoutRow>
           )}
-        </EditableTableLoader>
+        </LoadingContainer>
       </EditableTableProvider>
     </Container>
   );
