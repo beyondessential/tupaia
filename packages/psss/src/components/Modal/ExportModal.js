@@ -18,9 +18,12 @@ import {
   Checkbox,
   LoadingContainer,
 } from '@tupaia/ui-components';
+import CheckCircle from '@material-ui/icons/CheckCircle';
+import Typography from '@material-ui/core/Typography';
 import { useForm, Controller } from 'react-hook-form';
 import { FlexSpaceBetween, FlexStart } from '../Layout';
 import { connectApi } from '../../api';
+import * as COLORS from '../../constants';
 
 const countries = [
   { label: 'All Countries', value: 'ALL' },
@@ -86,7 +89,17 @@ const Checkboxes = styled(FlexStart)`
 const Fields = styled(FlexSpaceBetween)`
   > div {
     &:first-child {
+      position: relative;
       margin-right: 0.6rem;
+
+      .MuiInputBase-root:after {
+        content: '';
+        position: absolute;
+        left: 100%;
+        top: 50%;
+        width: 50px;
+        border-top: 1px solid ${props => props.theme.palette.text.tertiary};
+      }
     }
 
     &:last-child {
@@ -99,6 +112,17 @@ const Content = styled(DialogContent)`
   text-align: left;
 `;
 
+const TickIcon = styled(CheckCircle)`
+  font-size: 2.5rem;
+  margin-bottom: 0.3rem;
+  color: ${props => props.theme.palette.success.main};
+`;
+
+const SuccessText = styled(Typography)`
+  font-size: 1rem;
+  margin-top: 1rem;
+`;
+
 export const ExportModalComponent = ({ isOpen, handleClose, createExport }) => {
   const { handleSubmit, register, errors, control } = useForm();
   const [status, setStatus] = useState(STATUS.INITIAL);
@@ -108,6 +132,24 @@ export const ExportModalComponent = ({ isOpen, handleClose, createExport }) => {
     await createExport(fields);
     setStatus(STATUS.SUCCESS);
   };
+
+  if (status === STATUS.SUCCESS) {
+    return (
+      <Dialog onClose={handleClose} open={isOpen}>
+        <DialogHeader onClose={handleClose} title="Export Weekly Case Data" />
+        <DialogContent>
+          <TickIcon />
+          <Typography variant="h6" gutterBottom>
+            Data successfully exported
+          </Typography>
+          <SuccessText>Please note that the data was exported to your browser.</SuccessText>
+        </DialogContent>
+        <DialogFooter>
+          <OutlinedButton onClick={handleClose}>Close</OutlinedButton>
+        </DialogFooter>
+      </Dialog>
+    );
+  }
 
   return (
     <Dialog onClose={handleClose} open={isOpen}>
