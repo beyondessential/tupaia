@@ -20,7 +20,7 @@ export const datePicker = () => {
   const [value, setValue] = useState(new Date());
   return (
     <Container>
-      <DatePicker label="Basic example" onChange={date => setValue(date)} />
+      <DatePicker label="Basic example" onChange={setValue} />
     </Container>
   );
 };

@@ -76,6 +76,7 @@ export const AlertsPanelComponent = React.memo(
     const activityState = useFetch(fetchActivityData);
 
     const handleChange = option => {
+      // todo handle changes other than creating an outbreak
       setIsModalOpen(true);
     };
 
