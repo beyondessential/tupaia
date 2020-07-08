@@ -121,122 +121,118 @@ const toCommaList = values =>
     .toUpperCase()
     .replace(/,(?!.*,)/gim, ' and');
 
-export const WeeklyReportsPanelComponent = React.memo(props => {
-  const {
-    countryData,
-    sitesData,
-    isOpen,
-    handleClose,
-    unVerifiedSyndromes,
-    alerts,
-    handleConfirm,
-  } = props;
-  const [panelStatus, setPanelStatus] = useState(PANEL_STATUSES.INITIAL);
-  const [countryTableStatus, setCountryTableStatus] = useState(TABLE_STATUSES.STATIC);
-  const [sitesTableStatus, setSitesTableStatus] = useState(TABLE_STATUSES.STATIC);
-  const [activeSiteIndex, setActiveSiteIndex] = useState(0);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+export const WeeklyReportsPanelComponent = React.memo(
+  ({ countryData, sitesData, isOpen, handleClose, unVerifiedSyndromes, alerts, handleConfirm }) => {
+    const [panelStatus, setPanelStatus] = useState(PANEL_STATUSES.INITIAL);
+    const [countryTableStatus, setCountryTableStatus] = useState(TABLE_STATUSES.STATIC);
+    const [sitesTableStatus, setSitesTableStatus] = useState(TABLE_STATUSES.STATIC);
+    const [activeSiteIndex, setActiveSiteIndex] = useState(0);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const isVerified = unVerifiedSyndromes.length === 0;
-  const hasAlerts = alerts.length > 0;
+    const isVerified = unVerifiedSyndromes.length === 0;
+    const hasAlerts = alerts.length > 0;
 
-  const handleSubmit = useCallback(() => {
-    if (isVerified) {
-      handleConfirm();
+    const handleSubmit = useCallback(() => {
+      if (isVerified) {
+        handleConfirm();
 
-      if (hasAlerts) {
-        setIsModalOpen(true);
+        if (hasAlerts) {
+          setIsModalOpen(true);
+        }
+
+        setPanelStatus(PANEL_STATUSES.SUCCESS);
+      } else {
+        setPanelStatus(PANEL_STATUSES.SUBMIT_ATTEMPTED);
       }
+    }, [isVerified, handleConfirm, hasAlerts, setIsModalOpen, setPanelStatus]);
 
-      setPanelStatus(PANEL_STATUSES.SUCCESS);
-    } else {
-      setPanelStatus(PANEL_STATUSES.SUBMIT_ATTEMPTED);
+    if (countryData.length === 0 || sitesData.length === 0) {
+      return null;
     }
-  }, [isVerified, handleConfirm, hasAlerts, setIsModalOpen, setPanelStatus]);
 
-  if (countryData.length === 0 || sitesData.length === 0) {
-    return null;
-  }
+    const activeSite = sitesData[activeSiteIndex];
+    const { syndromes: syndromesData } = activeSite;
 
-  const activeSite = sitesData[activeSiteIndex];
-  const { syndromes: syndromesData } = activeSite;
+    const isSaving =
+      countryTableStatus === TABLE_STATUSES.SAVING || sitesTableStatus === TABLE_STATUSES.SAVING;
+    const verificationRequired = panelStatus === PANEL_STATUSES.SUBMIT_ATTEMPTED && !isVerified;
+    const unVerifiedSyndromesList = toCommaList(unVerifiedSyndromes);
 
-  const isSaving =
-    countryTableStatus === TABLE_STATUSES.SAVING || sitesTableStatus === TABLE_STATUSES.SAVING;
-  const verificationRequired = panelStatus === PANEL_STATUSES.SUBMIT_ATTEMPTED && !isVerified;
-  const unVerifiedSyndromesList = toCommaList(unVerifiedSyndromes);
-
-  return (
-    <StyledDrawer open={isOpen} onClose={handleClose}>
-      <DrawerTray heading="Upcoming report" onClose={handleClose} />
-      <DrawerHeader
-        trayHeading="Upcoming report"
-        heading="American Samoa"
-        date="Week 9 Feb 25 - Mar 1, 2020"
-        avatarUrl={countryFlagImage('as')}
-      />
-      {!isVerified && (
-        <LightErrorAlert>
-          {unVerifiedSyndromesList} Above Threshold. Please review and verify data.
-        </LightErrorAlert>
-      )}
-      <GreySection disabled={isSaving} data-testid="country-reports">
-        <EditableTableProvider
-          columns={columns}
-          data={countryData}
-          tableStatus={countryTableStatus}
-        >
-          <CountryReportTable
-            tableStatus={countryTableStatus}
-            setTableStatus={setCountryTableStatus}
-          />
-        </EditableTableProvider>
-      </GreySection>
-      <MainSection disabled={isSaving} data-testid="site-reports">
-        <ButtonSelect
-          id="active-site"
-          options={sitesData}
-          onChange={setActiveSiteIndex}
-          index={activeSiteIndex}
+    return (
+      <StyledDrawer open={isOpen} onClose={handleClose}>
+        <DrawerTray heading="Upcoming report" onClose={handleClose} />
+        <DrawerHeader
+          trayHeading="Upcoming report"
+          heading="American Samoa"
+          date="Week 9 Feb 25 - Mar 1, 2020"
+          avatarUrl={countryFlagImage('as')}
         />
-        <SiteAddress address={activeSite.address} contact={activeSite.contact} />
-        <Card variant="outlined" mb={3}>
+        {!isVerified && (
+          <LightErrorAlert>
+            {unVerifiedSyndromesList} Above Threshold. Please review and verify data.
+          </LightErrorAlert>
+        )}
+        <GreySection disabled={isSaving} data-testid="country-reports">
           <EditableTableProvider
             columns={columns}
-            data={syndromesData}
-            tableStatus={sitesTableStatus}
+            data={countryData}
+            tableStatus={countryTableStatus}
           >
-            <SiteReportTable tableStatus={sitesTableStatus} setTableStatus={setSitesTableStatus} />
+            <CountryReportTable
+              tableStatus={countryTableStatus}
+              setTableStatus={setCountryTableStatus}
+            />
           </EditableTableProvider>
-        </Card>
-      </MainSection>
-      <DrawerFooter disabled={isSaving}>
-        {verificationRequired && (
-          <StyledErrorAlert>
-            {unVerifiedSyndromesList} Above Threshold. Please review and verify data.
-          </StyledErrorAlert>
-        )}
-        {panelStatus === PANEL_STATUSES.SUCCESS ? (
-          <LightPrimaryButton startIcon={<CheckCircleIcon />} disabled fullWidth>
-            Confirmed
-          </LightPrimaryButton>
-        ) : (
-          <>
-            <Button fullWidth onClick={handleSubmit} disabled={verificationRequired}>
-              Submit now
-            </Button>
-            <HelperText>Verify data to submit Weekly Report to Regional</HelperText>
-          </>
-        )}
-      </DrawerFooter>
-      <AlertCreatedModal
-        isOpen={isModalOpen}
-        alerts={alerts}
-        handleClose={() => setIsModalOpen(false)}
-      />
-    </StyledDrawer>
-  );
-});
+        </GreySection>
+        <MainSection disabled={isSaving} data-testid="site-reports">
+          <ButtonSelect
+            id="active-site"
+            options={sitesData}
+            onChange={setActiveSiteIndex}
+            index={activeSiteIndex}
+          />
+          <SiteAddress address={activeSite.address} contact={activeSite.contact} />
+          <Card variant="outlined" mb={3}>
+            <EditableTableProvider
+              columns={columns}
+              data={syndromesData}
+              tableStatus={sitesTableStatus}
+            >
+              <SiteReportTable
+                tableStatus={sitesTableStatus}
+                setTableStatus={setSitesTableStatus}
+              />
+            </EditableTableProvider>
+          </Card>
+        </MainSection>
+        <DrawerFooter disabled={isSaving}>
+          {verificationRequired && (
+            <StyledErrorAlert>
+              {unVerifiedSyndromesList} Above Threshold. Please review and verify data.
+            </StyledErrorAlert>
+          )}
+          {panelStatus === PANEL_STATUSES.SUCCESS ? (
+            <LightPrimaryButton startIcon={<CheckCircleIcon />} disabled fullWidth>
+              Confirmed
+            </LightPrimaryButton>
+          ) : (
+            <>
+              <Button fullWidth onClick={handleSubmit} disabled={verificationRequired}>
+                Submit now
+              </Button>
+              <HelperText>Verify data to submit Weekly Report to Regional</HelperText>
+            </>
+          )}
+        </DrawerFooter>
+        <AlertCreatedModal
+          isOpen={isModalOpen}
+          alerts={alerts}
+          handleClose={() => setIsModalOpen(false)}
+        />
+      </StyledDrawer>
+    );
+  },
+);
 
 WeeklyReportsPanelComponent.propTypes = {
   handleConfirm: PropTypes.func.isRequired,
