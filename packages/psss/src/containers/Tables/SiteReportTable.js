@@ -79,10 +79,6 @@ export const SiteReportTableComponent = React.memo(({ onSubmit, tableStatus, set
           Edit
         </GreyOutlinedButton>
       </HeadingRow>
-      {/*<FakeHeader>*/}
-      {/*  <span>SYNDROMES</span>*/}
-      {/*  <span>TOTAL CASES</span>*/}
-      {/*</FakeHeader>*/}
       <StyledEditableTable Header={GreyTableHeader} Body={DottedTableBody} />
       {tableStatus === TABLE_STATUSES.EDITABLE && (
         <ActionsRow>
