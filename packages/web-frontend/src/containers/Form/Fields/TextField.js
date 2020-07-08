@@ -17,7 +17,7 @@ const Container = styled.div`
 
 export const TextField = ({ errors, id, name, fullWidth, validators, ...fieldProps }) => (
   <Container name={name} fullWidth={fullWidth} validators={validators}>
-    <MuiTextField id={id || name} name={name} error={errors.length > 0} fullWidth {...fieldProps} />
+    <MuiTextField id={id} name={name} error={errors.length > 0} fullWidth {...fieldProps} />
     <FieldErrors errors={errors} />
   </Container>
 );
@@ -31,7 +31,7 @@ TextField.propTypes = {
 };
 
 TextField.defaultProps = {
-  id: '',
+  id: undefined,
   errors: [],
   validators: [],
   fullWidth: false,
