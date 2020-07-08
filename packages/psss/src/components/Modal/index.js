@@ -5,3 +5,4 @@
 
 export * from './AlertCreatedModal';
 export * from './CreateOutbreakModal';
+export * from './ExportModal';
