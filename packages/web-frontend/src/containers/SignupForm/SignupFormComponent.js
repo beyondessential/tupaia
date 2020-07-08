@@ -73,7 +73,6 @@ export const SignupFormComponent = ({
         <TextField label="E-mail" name="emailAddress" validators={[emailAddress]} required />
         <TextField label="Contact Number" name="contactNumber" validators={[hasNoAlphaLetters]} />
         <TextField
-          id="signupPassword"
           label="Password"
           name="password"
           type="password"
@@ -81,7 +80,6 @@ export const SignupFormComponent = ({
           required
         />
         <TextField
-          id="signupPasswordConfirm"
           label="Confirm Password"
           name="passwordConfirm"
           type="password"
