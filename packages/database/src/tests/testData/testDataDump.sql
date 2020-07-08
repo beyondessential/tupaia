@@ -3314,6 +3314,20 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 776	/20200622025632-AddDataGroupsForAllSurveys	2020-07-06 09:05:53.39
 777	/20200622025633-AddDataSourceIdColumn	2020-07-06 09:05:54.114
 778	/20200622025634-RemoveDhis2InfoFromSurveyIntegrationMetadata	2020-07-06 09:05:54.216
+775	/20200624061918-AddUnfpaStackedBarGraphPercentCountryMos	2020-07-07 15:06:28.379
+776	/20200624141424-AddUNFPAReproductiveHealthAtLeast1StaffMemberTrainedSRHServicesReport	2020-07-07 15:06:28.499
+777	/20200629134316-AddUNFPANumberOfWomenProvidedSRHServicesFacilityLevelDashboardReport	2020-07-07 15:06:28.538
+778	/20200701000910-AddUNFPANumberOfWomenProvidedSRHServicesNationalProvincialLevelMatrix	2020-07-07 15:06:28.6
+779	/20200617035342-AddCountryAndFacilityTongaHealthPromotionUnitDashboardGroups	2020-07-08 01:01:04.624
+780	/20200617036620-AddActivitySessionsBySettingPieChartTonga	2020-07-08 01:01:04.956
+781	/20200617045942-AddTongaDHIS2HPUPieChartNumberOfBroadcastsByTheme	2020-07-08 01:01:05.092
+782	/20200617054710-AddActivitySessionsBySettingByDistrict	2020-07-08 01:01:05.387
+783	/20200617071021-AddTongaHPUBarChartTotalPhysicalActivityParticipants	2020-07-08 01:01:05.486
+784	/20200618014723-AddNewQuitlineCallsByYearTextReport	2020-07-08 01:01:05.546
+785	/20200618131934-AddTongaHPUIECRequestsFulFilledByTargetGroupDashboardReport	2020-07-08 01:01:05.607
+786	/20200618132339-AddTongaHPUIECRequestsFulFilledByThemeDashboardReport	2020-07-08 01:01:05.676
+787	/20200619015233-AddNewQuitlineCasesBarReportTonga	2020-07-08 01:01:05.776
+788	/20200623013336-AddTongaHPUNumberOfNCDRiskFactorScreeningEventsBySetting	2020-07-08 01:01:05.907
 \.
 
 
@@ -3321,7 +3335,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 781, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 788, true);
 
 
 --
