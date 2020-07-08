@@ -6,12 +6,11 @@
 import '@testing-library/cypress/add-commands';
 
 import snapshot from '@cypress/snapshot';
+import { PUBLIC_USER } from '../constants';
 import { escapeRegex } from './utilities';
 import { closeOverlay, submitLoginForm } from './actions';
 
 snapshot.register();
-
-const PUBLIC_USER = 'public';
 
 Cypress.Commands.add('closestByTestId', { prevSubject: 'element' }, (subject, testId) =>
   cy.wrap(subject).closest(`[data-testid="${testId}"]`),

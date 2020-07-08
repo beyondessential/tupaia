@@ -3,9 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { EXPLORE_PROJECT } from '../constants';
 import { equalCaseInsensitive } from './utilities';
-
-const EXPLORE_PROJECT = 'Explore';
 
 export const submitLoginForm = () => {
   cy.findAllByText(/Sign in/)
