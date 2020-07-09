@@ -78,6 +78,7 @@ export default class DashboardGroup extends Component {
 
     return (
       <GridWrapper
+        data-testid="dashboard-group"
         innerRef={gridElement => {
           this.gridElement = gridElement;
         }}
