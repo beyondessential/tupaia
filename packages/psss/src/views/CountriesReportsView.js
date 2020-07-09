@@ -15,7 +15,7 @@ import {
   WarningCloud,
   Virus,
 } from '@tupaia/ui-components';
-import { Container, Main, Sidebar, Header } from '../components';
+import { Container, Main, Sidebar, Header, WeeklyReportsExportModal } from '../components';
 import { CountriesTable } from '../containers';
 
 const StyledCardContent = styled(CardContent)`
@@ -32,25 +32,25 @@ const ExampleContent = styled.div`
 const tabData = [
   {
     label: (
-      <React.Fragment>
+      <>
         <WarningCloud /> 3 Active Alerts
-      </React.Fragment>
+      </>
     ),
     content: <ExampleContent>Table Content</ExampleContent>,
   },
   {
     label: (
-      <React.Fragment>
+      <>
         <Virus /> 1 Active Outbreak
-      </React.Fragment>
+      </>
     ),
     content: <ExampleContent>Table Content</ExampleContent>,
   },
 ];
 
 export const CountriesReportsView = () => (
-  <React.Fragment>
-    <Header title="Countries" />
+  <>
+    <Header title="Countries" ExportModal={WeeklyReportsExportModal} />
     <BaseToolbar />
     <Container>
       <Main data-testid="countries-table">
@@ -69,5 +69,5 @@ export const CountriesReportsView = () => (
         </Card>
       </Sidebar>
     </Container>
-  </React.Fragment>
+  </>
 );

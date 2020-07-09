@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
+import React, { useState } from 'react';
 import MuiContainer from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
@@ -60,7 +60,9 @@ const StyledH1 = styled(H1)`
   text-transform: capitalize;
 `;
 
-export const Header = ({ title, avatarUrl, back }) => {
+export const Header = ({ title, avatarUrl, back, ExportModal }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
     <HeaderMain>
       <MuiContainer maxWidth="lg">
@@ -77,7 +79,14 @@ export const Header = ({ title, avatarUrl, back }) => {
               {avatarUrl ? <StyledH1>{title}</StyledH1> : <H1>{title}</H1>}
             </HeaderTitle>
           </div>
-          <LightOutlinedButton startIcon={<SaveAlt />}>Export Data</LightOutlinedButton>
+          {ExportModal && (
+            <>
+              <LightOutlinedButton onClick={() => setIsModalOpen(true)} startIcon={<SaveAlt />}>
+                Export Data
+              </LightOutlinedButton>
+              <ExportModal isOpen={isModalOpen} handleClose={() => setIsModalOpen(false)} />
+            </>
+          )}
         </HeaderInner>
       </MuiContainer>
     </HeaderMain>
@@ -88,9 +97,11 @@ Header.propTypes = {
   title: PropTypes.string.isRequired,
   avatarUrl: PropTypes.string,
   back: PropTypes.shape({ title: PropTypes.string.isRequired, url: PropTypes.string.isRequired }),
+  ExportModal: PropTypes.any,
 };
 
 Header.defaultProps = {
   avatarUrl: null,
   back: null,
+  ExportModal: null,
 };
