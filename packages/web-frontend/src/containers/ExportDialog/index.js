@@ -161,7 +161,7 @@ ExportDialog.propTypes = {
   onChartExport: PropTypes.func.isRequired,
   selectedFormat: PropTypes.string.isRequired,
   onSelectFormat: PropTypes.func.isRequired,
-  project: PropTypes.string,
+  projectCode: PropTypes.string,
 };
 
 const mapStateToProps = state => {
@@ -169,12 +169,12 @@ const mapStateToProps = state => {
   const { currentUserEmail } = authentication;
   const { selectedDisaster } = disaster;
 
-  const project = projectObject ? projectObject.activeProjectCode : null;
+  const projectCode = projectObject ? projectObject.activeProjectCode : null;
 
   return {
     emailAddress: currentUserEmail,
     selectedDisaster,
-    project,
+    projectCode,
     ...chartExport,
   };
 };
@@ -203,7 +203,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         chartType,
         extraConfig,
         selectedFormat,
-        project,
+        projectCode,
       } = stateProps;
 
       dispatch(
@@ -217,7 +217,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
           endDate,
           chartType,
           extraConfig,
-          project,
+          projectCode,
           exportFileName: chartType
             ? `tupaia-export-${chartType}.${selectedFormat}`
             : `tupaia-export.${selectedFormat}`,

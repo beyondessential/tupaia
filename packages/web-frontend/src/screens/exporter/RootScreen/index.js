@@ -33,7 +33,7 @@ const {
   endDate,
   disasterStartDate,
   disasterEndDate,
-  project: projectCode,
+  projectCode,
 } = decodeUrl(initialLocation.pathname, initialLocation.search);
 
 const getCurrentDateString = () => {
