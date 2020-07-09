@@ -23,22 +23,24 @@ const Wrapper = styled.div`
   margin-bottom: 1.25rem;
 `;
 
-export const Checkbox = ({ label, ...props }) => {
+export const Checkbox = ({ label, className, ...props }) => {
   if (label) {
     return (
-      <Wrapper>
+      <Wrapper className={className}>
         <MuiFormControlLabel control={<StyledCheckbox {...props} />} label={label} />
       </Wrapper>
     );
   }
 
-  return <StyledCheckbox {...props} />;
+  return <StyledCheckbox className={className} {...props} />;
 };
 
 Checkbox.propTypes = {
   label: PropTypes.string,
+  className: PropTypes.string,
 };
 
 Checkbox.defaultProps = {
   label: null,
+  className: null,
 };
