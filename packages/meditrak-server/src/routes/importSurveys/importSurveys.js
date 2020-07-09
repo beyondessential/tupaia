@@ -27,7 +27,11 @@ import {
   validateSurveyMetadataRow,
   SURVEY_METADATA,
 } from './processSurveyMetadata';
-import { caseAndSpaceInsensitiveEquals, convertCellToJson } from './utilities';
+import {
+  caseAndSpaceInsensitiveEquals,
+  convertCellToJson,
+  findOrCreateSurveyCode,
+} from './utilities';
 
 const QUESTION_TYPE_LIST = Object.values(ANSWER_TYPES);
 
@@ -72,6 +76,7 @@ export async function importSurveys(req, res) {
       for (const surveySheets of Object.entries(workbook.Sheets)) {
         const [tabName, sheet] = surveySheets;
         const surveyName = extractTabNameFromQuery(tabName, requestedSurveyNames);
+        const code = await findOrCreateSurveyCode(transactingModels, surveyName);
 
         // Get the survey based on the name of the sheet/tab
         const survey = await transactingModels.survey.findOrCreate(
@@ -80,7 +85,7 @@ export async function importSurveys(req, res) {
           },
           {
             // If no survey with that name is found, give it a code and public permissions
-            code: generateSurveyCode(surveyName),
+            code,
             permission_group_id: permissionGroup.id,
           },
         );
@@ -282,13 +287,6 @@ export async function importSurveys(req, res) {
     throw new DatabaseError('importing surveys', error);
   }
   respond(res, { message: 'Imported surveys' });
-}
-
-function generateSurveyCode(surveyName) {
-  return surveyName
-    .match(/\b(\w)/g)
-    .join('')
-    .toUpperCase();
 }
 
 async function processOptionSetName(models, name) {

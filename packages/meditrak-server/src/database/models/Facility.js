@@ -8,10 +8,6 @@ import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
 class FacilityType extends DatabaseType {
   static databaseType = TYPES.FACILITY;
 
-  static meditrakConfig = {
-    minAppVersion: '0.0.1',
-  };
-
   // Exposed for access policy creation.
   get organisationUnitCode() {
     return this.code;
@@ -34,4 +30,8 @@ export class FacilityModel extends DatabaseModel {
   get DatabaseTypeClass() {
     return FacilityType;
   }
+
+  meditrakConfig = {
+    minAppVersion: '0.0.1',
+  };
 }

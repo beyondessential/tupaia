@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 11.3
--- Dumped by pg_dump version 11.3
+-- Dumped from database version 11.2
+-- Dumped by pg_dump version 11.2
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -12,7 +12,6 @@ SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
-SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
@@ -79,7 +78,9 @@ CREATE TYPE public.entity_type AS ENUM (
     'case',
     'case_contact',
     'disaster',
-    'school'
+    'school',
+    'catchment',
+    'sub_catchment'
 );
 
 
@@ -229,6 +230,25 @@ CREATE FUNCTION public.update_change_time() RETURNS trigger
 SET default_tablespace = '';
 
 SET default_with_oids = false;
+
+--
+-- Name: access_request; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.access_request (
+    id text NOT NULL,
+    user_id text,
+    entity_id text,
+    message text,
+    project_id text,
+    permission_group_id text,
+    approved boolean,
+    created_time timestamp with time zone DEFAULT now() NOT NULL,
+    processed_by text,
+    note text,
+    processed_date timestamp with time zone
+);
+
 
 --
 -- Name: answer; Type: TABLE; Schema: public; Owner: -
@@ -923,6 +943,14 @@ ALTER TABLE ONLY public."dashboardGroup" ALTER COLUMN id SET DEFAULT nextval('pu
 --
 
 ALTER TABLE ONLY public.migrations ALTER COLUMN id SET DEFAULT nextval('public.migrations_id_seq'::regclass);
+
+
+--
+-- Name: access_request access_request_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_pkey PRIMARY KEY (id);
 
 
 --
@@ -1794,6 +1822,13 @@ CREATE INDEX user_entity_permission_user_id_idx ON public.user_entity_permission
 
 
 --
+-- Name: access_request access_request_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER access_request_trigger AFTER INSERT OR DELETE OR UPDATE ON public.access_request FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
 -- Name: answer answer_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -2043,6 +2078,46 @@ CREATE TRIGGER user_entity_permission_trigger AFTER INSERT OR DELETE OR UPDATE O
 --
 
 CREATE TRIGGER user_reward_trigger AFTER INSERT OR DELETE OR UPDATE ON public.user_reward FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
+-- Name: access_request access_request_entity_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_entity_id_fkey FOREIGN KEY (entity_id) REFERENCES public.entity(id);
+
+
+--
+-- Name: access_request access_request_permission_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_permission_group_id_fkey FOREIGN KEY (permission_group_id) REFERENCES public.permission_group(id);
+
+
+--
+-- Name: access_request access_request_processed_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_processed_by_fkey FOREIGN KEY (processed_by) REFERENCES public.user_account(id);
+
+
+--
+-- Name: access_request access_request_project_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_project_id_fkey FOREIGN KEY (project_id) REFERENCES public.project(id);
+
+
+--
+-- Name: access_request access_request_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user_account(id);
 
 
 --
@@ -2373,8 +2448,8 @@ ALTER TABLE ONLY public.user_reward
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 11.3
--- Dumped by pg_dump version 11.3
+-- Dumped from database version 11.2
+-- Dumped by pg_dump version 11.2
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -2383,7 +2458,6 @@ SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
-SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
@@ -3199,6 +3273,29 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 763	/20200616000806-FixIncorrectDataElementCodesLaosReport	2020-06-18 21:35:19.97
 764	/20200617235154-FixTongaMeaslesOverlaysWithEntityAggregation	2020-06-18 21:35:20.008
 765	/20200618090311-FixEntityAggregationConfig	2020-06-18 21:35:20.071
+766	/20200603115106-AddCatchmentEntityType	2020-06-25 23:29:10.306
+767	/20200615021108-AddLaosSchoolsMajorDevPartner	2020-06-25 23:29:11.339
+768	/20200618012039-UseTuapaiaAsDataServiceForWishSurveys	2020-06-25 23:29:15.379
+769	/20200528043308-createAccessRequestTable	2020-07-02 21:55:46.686
+770	/20200603121401-CreateFijiCatchmentAlternateHierarchy	2020-07-02 21:55:54.593
+771	/20200615045558-AddPopupHeaderFormatToLaosSchoolsOverlays	2020-07-02 21:55:54.946
+772	/20200623065126-AddRegionalMapOverlaysForUNFPAMOS	2020-07-02 21:55:55.446
+773	/20200625074843-AddMapOverlaysForRHServices	2020-07-02 21:55:55.695
+774	/20200701064429-AddMethodsOfContraceptionRegionalDashboards	2020-07-02 21:55:55.794
+775	/20200624061918-AddUnfpaStackedBarGraphPercentCountryMos	2020-07-07 15:06:28.379
+776	/20200624141424-AddUNFPAReproductiveHealthAtLeast1StaffMemberTrainedSRHServicesReport	2020-07-07 15:06:28.499
+777	/20200629134316-AddUNFPANumberOfWomenProvidedSRHServicesFacilityLevelDashboardReport	2020-07-07 15:06:28.538
+778	/20200701000910-AddUNFPANumberOfWomenProvidedSRHServicesNationalProvincialLevelMatrix	2020-07-07 15:06:28.6
+779	/20200617035342-AddCountryAndFacilityTongaHealthPromotionUnitDashboardGroups	2020-07-08 01:01:04.624
+780	/20200617036620-AddActivitySessionsBySettingPieChartTonga	2020-07-08 01:01:04.956
+781	/20200617045942-AddTongaDHIS2HPUPieChartNumberOfBroadcastsByTheme	2020-07-08 01:01:05.092
+782	/20200617054710-AddActivitySessionsBySettingByDistrict	2020-07-08 01:01:05.387
+783	/20200617071021-AddTongaHPUBarChartTotalPhysicalActivityParticipants	2020-07-08 01:01:05.486
+784	/20200618014723-AddNewQuitlineCallsByYearTextReport	2020-07-08 01:01:05.546
+785	/20200618131934-AddTongaHPUIECRequestsFulFilledByTargetGroupDashboardReport	2020-07-08 01:01:05.607
+786	/20200618132339-AddTongaHPUIECRequestsFulFilledByThemeDashboardReport	2020-07-08 01:01:05.676
+787	/20200619015233-AddNewQuitlineCasesBarReportTonga	2020-07-08 01:01:05.776
+788	/20200623013336-AddTongaHPUNumberOfNCDRiskFactorScreeningEventsBySetting	2020-07-08 01:01:05.907
 \.
 
 
@@ -3206,7 +3303,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 765, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 788, true);
 
 
 --
