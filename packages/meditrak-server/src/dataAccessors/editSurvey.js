@@ -90,9 +90,7 @@ class SurveyEditor {
 
       if (areBothDefinedAndDifferent(serviceType, newServiceType)) {
         throw new Error(
-          `Cannot update service type to '${newServiceType}': question '${
-            dataElement.code
-          }' is included in survey '${otherDataGroup.code}', which uses a different service type`,
+          `Cannot update service type to '${newServiceType}': question '${dataElement.code}' is included in survey '${otherDataGroup.code}', which uses a different service type`,
         );
       }
 
@@ -164,9 +162,20 @@ class SurveyEditor {
    */
   updateResource = async model => {
     const updatedFields = this.getUpdatedFieldsForModel(model);
+
+    const isDataSource = model.databaseType === this.models.dataSource.databaseType;
+    const getValue = (fieldName, fieldValue) => {
+      if (isDataSource && fieldName === 'config' && model.type === 'dataElement') {
+        // Retain existing fields in the data source
+        return { ...model.config, ...fieldValue };
+      }
+
+      return fieldValue;
+    };
+
     Object.entries(updatedFields).forEach(([fieldName, fieldValue]) => {
       // eslint-disable-next-line no-param-reassign
-      model[fieldName] = fieldValue;
+      model[fieldName] = getValue(fieldName, fieldValue);
     });
     return model.save();
   };
