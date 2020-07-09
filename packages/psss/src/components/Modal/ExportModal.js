@@ -14,28 +14,19 @@ import {
   DialogFooter,
   DialogHeader,
   DatePicker,
-  Select,
   Checkbox,
   LoadingContainer,
+  MultiSelect,
 } from '@tupaia/ui-components';
 import CheckCircle from '@material-ui/icons/CheckCircle';
 import Typography from '@material-ui/core/Typography';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { FlexSpaceBetween, FlexStart } from '../Layout';
 import { connectApi } from '../../api';
 import * as COLORS from '../../constants';
 
-import MuiInput from '@material-ui/core/Input';
-import MuiInputLabel from '@material-ui/core/InputLabel';
-import MuiMenuItem from '@material-ui/core/MenuItem';
-import MuiFormControl from '@material-ui/core/FormControl';
-import ListItemText from '@material-ui/core/ListItemText';
-import MuiSelect from '@material-ui/core/Select';
-import MuiCheckbox from '@material-ui/core/Checkbox';
-
-
 const countries = [
-  { label: 'All Countries', value: 'ALL' },
+  { label: 'All Countries', value: 'All' },
   { label: 'Afghanistan', value: 'AF' },
   { label: 'Albania', value: 'AL' },
   { label: 'Algeria', value: 'DZ' },
@@ -132,14 +123,14 @@ const SuccessText = styled(Typography)`
   margin-top: 1rem;
 `;
 
+const getLabelForValue = value => countries.find(option => option.value === value).label;
+
 export const ExportModalComponent = ({ isOpen, handleClose, createExport }) => {
-  const [country, setCountry] = React.useState([]);
-
-
   const { handleSubmit, register, errors, control } = useForm();
   const [status, setStatus] = useState(STATUS.INITIAL);
 
   const handleConfirm = async fields => {
+    console.log('FIELDS...', fields);
     setStatus(STATUS.LOADING);
     await createExport(fields);
     setStatus(STATUS.SUCCESS);
@@ -163,48 +154,32 @@ export const ExportModalComponent = ({ isOpen, handleClose, createExport }) => {
     );
   }
 
-  const handleChange = (event) => {
-    setCountry(event.target.value);
-  };
-
   return (
     <Dialog onClose={handleClose} open={isOpen}>
       <form onSubmit={handleSubmit(handleConfirm)} noValidate>
         <DialogHeader onClose={handleClose} title="Export Weekly Case Data" />
         <LoadingContainer isLoading={status === STATUS.LOADING}>
           <Content>
-            {/*<Controller*/}
-            {/*  as={Select}*/}
-            {/*  defaultValue="ALL"*/}
-            {/*  rules={{ required: true }}*/}
-            {/*  control={control}*/}
-            {/*  name="countries"*/}
-            {/*  label="Select Counties"*/}
-            {/*  options={countries}*/}
-            {/*  error={!!errors.diagnosis}*/}
-            {/*  helperText={errors.diagnosis && errors.diagnosis.message}*/}
-            {/*/>*/}
-
-            <MuiFormControl>
-              <MuiInputLabel id="demo-mutiple-checkbox-label">Tag</MuiInputLabel>
-              <Select
-                labelId="demo-mutiple-checkbox-label"
-                id="demo-mutiple-checkbox"
-                multiple
-                value={country.label}
-                onChange={handleChange}
-                input={<MuiInput />}
-                renderValue={(selected) => selected.join(', ')}
-                MenuProps={MenuProps}
-              >
-                {countries.map((country) => (
-                  <MuiMenuItem key={country.value} value={country.value}>
-                    <Checkbox checked={country.indexOf(name) > -1} />
-                    <ListItemText primary={country.value} />
-                  </MuiMenuItem>
-                ))}
-              </Select>
-            </MuiFormControl>
+            <MultiSelect
+              defaultValue={['All']}
+              id="countries"
+              label="Select Counties"
+              options={countries}
+              error={!!errors.diagnosis}
+              inputProps={{
+                name: 'countries',
+                inputRef: ref => {
+                  if (!ref) return;
+                  register({ name: 'countries', value: ref.value });
+                },
+              }}
+              helperText={errors.diagnosis && errors.diagnosis.message}
+              renderValue={values =>
+                values.length > 1
+                  ? `${values.length} Countries Selected`
+                  : getLabelForValue(values[0])
+              }
+            />
 
             <Fields>
               <DatePicker

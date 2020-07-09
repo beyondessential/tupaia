@@ -30,16 +30,18 @@ const options = [
 
 const getLabelForValue = value => options.find(option => option.value === value).label;
 
-export const multiSelect = () => (
-  <Container>
-    <MultiSelect
-      label="Select Countries"
-      defaultValue={['All']}
-      id="multi"
-      options={options}
-      renderValue={values =>
-        values.length > 1 ? `${values.length} Countries Selected` : getLabelForValue(values[0])
-      }
-    />
-  </Container>
-);
+export const multiSelect = () => {
+  return (
+    <Container>
+      <MultiSelect
+        label="Select Countries"
+        defaultValue={['All']}
+        id="multi"
+        options={options}
+        renderValue={values =>
+          values.length > 1 ? `${values.length} Countries Selected` : getLabelForValue(values[0])
+        }
+      />
+    </Container>
+  );
+};

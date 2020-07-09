@@ -4,20 +4,25 @@
  */
 
 import React from 'react';
-import MenuItem from '@material-ui/core/MenuItem';
+import MuiMenuItem from '@material-ui/core/MenuItem';
 import styled from 'styled-components';
-import ListItemText from '@material-ui/core/ListItemText';
-import Checkbox from '@material-ui/core/Checkbox';
 import PropTypes from 'prop-types';
 import { SelectField } from './Select';
+import { Checkbox } from './Checkbox';
+
+const StyledCheckbox = styled(Checkbox)`
+  margin: 0;
+  color: ${props => props.theme.palette.text.secondary};
+  font-size: 1rem;
+`;
+
+const MenuItem = styled(MuiMenuItem)`
+  padding-top: 0;
+  padding-bottom: 0;
+`;
 
 export const MultiSelect = ({ options, placeholder, defaultValue, renderValue, ...props }) => {
   const [selected, setSelected] = React.useState(defaultValue);
-
-  const handleChange = event => {
-    setSelected(event.target.value);
-  };
-
   return (
     <SelectField
       SelectProps={{
@@ -26,13 +31,16 @@ export const MultiSelect = ({ options, placeholder, defaultValue, renderValue, .
         renderValue: selected.length > 0 ? renderValue : () => placeholder,
       }}
       value={selected}
-      onChange={handleChange}
+      onChange={event => setSelected(event.target.value)}
       {...props}
     >
       {options.map(option => (
         <MenuItem key={option.value} value={option.value}>
-          <Checkbox checked={selected.indexOf(option.value) > -1} />
-          <ListItemText primary={option.label} />
+          <StyledCheckbox
+            color="primary"
+            label={option.label}
+            checked={selected.indexOf(option.value) > -1}
+          />
         </MenuItem>
       ))}
     </SelectField>
