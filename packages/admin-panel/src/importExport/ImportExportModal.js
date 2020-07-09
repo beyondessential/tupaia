@@ -40,7 +40,7 @@ export class ImportExportModalComponent extends React.Component {
             inputKey={queryParameter.parameterKey}
             {...queryParameter}
             onChange={this.handleQueryParameterChange}
-            label={queryParameter.instruction}
+            label={queryParameter.label}
             placeholder={queryParameter.label}
             parentRecord={parentRecord}
           />
