@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useCallback, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import DateFnsUtils from '@date-io/date-fns';
 import PropTypes from 'prop-types';
@@ -25,16 +25,7 @@ const StyledDatePicker = styled(MuiDatePicker)`
   }
 `;
 
-export const DatePicker = props => {
-  const [value, setValue] = useState(new Date());
-
-  const handleChange = useCallback(
-    date => {
-      setValue(date);
-    },
-    [setValue],
-  );
-
+export const DatePicker = ({ value, onChange, ...props }) => {
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <StyledDatePicker
@@ -42,7 +33,7 @@ export const DatePicker = props => {
         format={DAY_MONTH_YEAR_DATE_FORMAT}
         keyboardIcon={<CalendarTodayIcon />}
         InputAdornmentProps={{ position: 'start' }}
-        onChange={handleChange}
+        onChange={onChange}
         animateYearScrolling
         TextFieldComponent={TextField}
         {...props}
@@ -53,4 +44,10 @@ export const DatePicker = props => {
 
 DatePicker.propTypes = {
   label: PropTypes.string.isRequired,
+  value: PropTypes.instanceOf(Date),
+  onChange: PropTypes.func.isRequired,
+};
+
+DatePicker.defaultProps = {
+  value: new Date(),
 };
