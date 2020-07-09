@@ -456,33 +456,38 @@ const VIEW_JSON = {
   placeholder: '/static/media/PEHSMatrixPlaceholder.png',
   presentationOptions: {
     red: {
-      max: 0,
-      min: 0,
+      condition: 0,
       color: '#b71c1c',
       label: '',
       description: 'Months of stock: ',
     },
-    type: 'range',
-    green: {
-      max: 6,
-      min: 3,
-      color: '#33691e',
-      label: '',
-      description: 'Months of stock: ',
-    },
     orange: {
-      max: 2,
-      min: 1,
+      condition: {
+        '>': 0,
+        '<': 3,
+      },
       color: '#EE9A30',
       label: '',
       description: 'Months of stock: ',
     },
+    green: {
+      condition: {
+        '>=': 3,
+        '<': 7,
+      },
+      color: '#33691e',
+      label: '',
+      description: 'Months of stock: ',
+    },
     yellow: {
-      min: 6,
+      condition: {
+        '>': 7,
+      },
       color: '#fdd835',
       label: '',
       description: 'Months of stock: ',
     },
+    type: 'condition',
     showRawValue: true,
   },
   periodGranularity: 'month',
