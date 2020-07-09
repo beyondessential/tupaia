@@ -13,3 +13,6 @@ codeship_deploy_key.pub
 codeship_deploy_key
 dump.sql
 *.todo
+**/cypress/screenshots
+**/cypress/videos
+/snapshots.js
