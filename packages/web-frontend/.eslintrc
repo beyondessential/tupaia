@@ -7,7 +7,7 @@
     "import/no-extraneous-dependencies": [
       "error",
       {
-        "devDependencies": ["config/**", "**/test.js", "**/scripts/**"]
+        "devDependencies": ["config/**", "**/test.js", "**/scripts/**", "cypress/**"]
       }
     ],
     // no-did-update-set-state is not needed as per: https://github.com/airbnb/javascript/issues/1875
@@ -16,10 +16,18 @@
   "overrides": [
     {
       "files": ["**/*.test.js"],
+      "plugins": ["jest"],
       "env": {
         "jest": true
-      },
-      "plugins": ["jest"]
+      }
+    },
+    {
+      "files": ["cypress/**"],
+      "plugins": ["cypress"],
+      "env": {
+        "browser": true,
+        "cypress/globals": true
+      }
     }
   ]
 }
