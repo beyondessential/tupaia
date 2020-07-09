@@ -6,4 +6,4 @@
 export { testGetChangesCount } from './changes/get';
 export { testPostChanges } from './changes/post';
 export { testImportSurveyResponses } from './surveyResponse/import';
-export { testPostSurveyResponses } from './surveyResponse/post';
+export { testPutSurveyResponses } from './surveyResponse/put';
