@@ -7,8 +7,6 @@
 import queryString from 'query-string';
 import { createBrowserHistory } from 'history';
 import {
-  getDefaultsForProject,
-  DEFAULT_PROJECT,
   PATH_COMPONENTS,
   SEARCH_COMPONENTS,
   PASSWORD_RESET_PREFIX,
@@ -26,29 +24,7 @@ function createUrl(pathParams, searchParams) {
     return { pathname: userPage };
   }
 
-  const [defaultOrgUnit, defaultDashboard] = getDefaultsForProject(pathParams.PROJECT);
-  const defaultUrlComponents = [DEFAULT_PROJECT, defaultOrgUnit, defaultDashboard];
-
-  const urlComponents = Object.values(pathParams).map((val, i) => val || defaultUrlComponents[i]);
-
-  // use a double-equal as we actually do want to do a casting comparison
-  // (the more verbose alternative would be to render everything to strings first)
-  // eslint-disable-next-line eqeqeq
-  const lastElementsAreEqualOrFalsey = (a, b) =>
-    // eslint-disable-next-line eqeqeq
-    !a[a.length - 1] || !b[b.length - 1] || a[a.length - 1] == b[b.length - 1];
-
-  // Only show enough of the url to represent any difference from the default
-  while (
-    urlComponents.length &&
-    defaultUrlComponents.length &&
-    lastElementsAreEqualOrFalsey(urlComponents, defaultUrlComponents)
-  ) {
-    console.log(urlComponents);
-    urlComponents.pop();
-    defaultUrlComponents.pop();
-  }
-  console.log(urlComponents);
+  const urlComponents = Object.values(pathParams);
 
   const pathname = urlComponents.join('/');
 
@@ -125,7 +101,7 @@ const decodeUrl = (pathname, search) => {
   );
 
   if (!prefixOrProject) {
-    return { ...pathParams, ...searchParams };
+    return { projectSelector: true, ...searchParams };
   }
 
   switch (prefixOrProject) {
@@ -168,10 +144,7 @@ export const setUrlComponent = (component, value) => {
   });
 
   const { pathname, search } = createUrl(pathParams, searchParams);
-
-  const success = pushHistory(`/${pathname}`, search);
   console.log({
-    success,
     searchParams,
     previousComponents,
     location,
@@ -179,6 +152,11 @@ export const setUrlComponent = (component, value) => {
     pathname,
     search,
   });
+  const success = pushHistory(`/${pathname}`, search);
+};
+
+export const clearUrl = () => {
+  const success = pushHistory(`/`, {});
 };
 
 /**

@@ -25,9 +25,10 @@ import {
   CLOSE_ENLARGED_DIALOG,
   CHANGE_MEASURE,
   CLEAR_MEASURE,
+  GO_HOME,
 } from '../actions';
 
-import { setUrlComponent } from './historyNavigation';
+import { setUrlComponent, clearUrl } from './historyNavigation';
 import { URL_COMPONENTS } from './constants';
 
 // TODO: import { gaPageView } from '../utils';
@@ -43,6 +44,9 @@ export const historyMiddleware = () => next => action => {
       break;
     case CHANGE_DASHBOARD_GROUP:
       setUrlComponent(URL_COMPONENTS.DASHBOARD, action.name);
+      break;
+    case GO_HOME:
+      clearUrl();
       break;
 
     // Actions that modify search params

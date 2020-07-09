@@ -426,10 +426,11 @@ function* watchRequestProjectAccess() {
  * Fetch an org unit.
  *
  */
-function* fetchOrgUnitData(
-  organisationUnitCode = initialOrgUnit.organisationUnitCode,
-  projectCode = INITIAL_PROJECT_CODE,
-) {
+function* fetchOrgUnitData(organisationUnitCode, projectCode) {
+  if (!projectCode || !organisationUnitCode)
+    throw new Error(
+      `No projectCode ${projectCode} or org unit when fetching ${organisationUnitCode}`,
+    );
   try {
     yield put(fetchOrgUnit(organisationUnitCode));
     // Build the request url
@@ -936,27 +937,29 @@ function* watchAttemptAttemptDrillDown() {
   yield takeLatest(ATTEMPT_DRILL_DOWN, fetchDrillDownData);
 }
 
-function* resetToExplore() {
+function* resetToProjectSplash() {
+  // TODO
   const state = yield select();
   // default measure will be selected once the org unit has fully changed, just clear for now
   yield put(clearMeasure());
   yield put(clearMeasureHierarchy());
-  yield put(changeOrgUnit('explore', true));
+  //yield put(changeOrgUnit('explore', true));
 
   if (state.project.projects.length > 0) {
-    yield put(selectProject(INITIAL_PROJECT_CODE));
+    //yield put(selectProject(INITIAL_PROJECT_CODE));
   }
 }
 
 function* watchUserChangesAndUpdatePermissions() {
+  // TODO
   // On user login/logout, we should just navigate back to explore project, as we don't know if they have permissions
   // to the current project or organisation unit
-  yield takeLatest(FETCH_LOGOUT_SUCCESS, resetToExplore);
-  yield takeLatest(FETCH_LOGIN_SUCCESS, resetToExplore);
+  yield takeLatest(FETCH_LOGOUT_SUCCESS, resetToProjectSplash);
+  yield takeLatest(FETCH_LOGIN_SUCCESS, resetToProjectSplash);
 }
 
 function* watchGoHomeAndResetToExplore() {
-  yield takeLatest(GO_HOME, resetToExplore);
+  yield takeLatest(GO_HOME, resetToProjectSplash);
 }
 
 function* fetchEnlargedDialogViewContentForPeriod(action) {

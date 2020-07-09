@@ -66,18 +66,5 @@ export const SEARCH_PARAM_KEY_MAP = {
   [VERIFY_EMAIL_TOKEN]: 'verifyEmailToken',
 };
 
-export const DEFAULT_PROJECT = INITIAL_PROJECT_CODE;
-const DEFAULT_ORG_UNIT = initialOrgUnit.organisationUnitCode;
-
 export const PASSWORD_RESET_PREFIX = 'reset-password';
 export const VERIFY_EMAIL_PREFIX = 'verify-email';
-
-const DEFAULT_DASHBOARDS = {
-  [DEFAULT_PROJECT]: 'General',
-  disaster: 'Disaster Response',
-};
-
-export function getDefaultsForProject(projectCode = DEFAULT_PROJECT) {
-  const defaultDashboard = DEFAULT_DASHBOARDS[projectCode] || DEFAULT_DASHBOARDS[DEFAULT_PROJECT];
-  return [DEFAULT_ORG_UNIT, defaultDashboard];
-}
