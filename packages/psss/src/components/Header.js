@@ -2,7 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import React from 'react';
+import React, { useState } from 'react';
 import MuiContainer from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
@@ -13,6 +13,8 @@ import MuiLink from '@material-ui/core/Link';
 import { SaveAlt, LightOutlinedButton } from '@tupaia/ui-components';
 import MuiAvatar from '@material-ui/core/Avatar';
 import * as COLORS from '../constants/colors';
+import { ExportModal } from './Modal';
+import { Container } from './Layout';
 
 const HeaderMain = styled.header`
   background-color: ${COLORS.BLUE};
@@ -61,6 +63,8 @@ const StyledH1 = styled(H1)`
 `;
 
 export const Header = ({ title, avatarUrl, back }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
     <HeaderMain>
       <MuiContainer maxWidth="lg">
@@ -77,7 +81,8 @@ export const Header = ({ title, avatarUrl, back }) => {
               {avatarUrl ? <StyledH1>{title}</StyledH1> : <H1>{title}</H1>}
             </HeaderTitle>
           </div>
-          <LightOutlinedButton startIcon={<SaveAlt />}>Export Data</LightOutlinedButton>
+          <LightOutlinedButton onClick={() => setIsModalOpen(true)} startIcon={<SaveAlt />}>Export Data</LightOutlinedButton>
+          <ExportModal isOpen={isModalOpen} handleClose={() => setIsModalOpen(false)} />
         </HeaderInner>
       </MuiContainer>
     </HeaderMain>
