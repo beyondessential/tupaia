@@ -5,7 +5,6 @@
 
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import {
   Button,
@@ -15,15 +14,13 @@ import {
   DialogFooter,
   DialogHeader,
   DatePicker,
-  Checkbox,
   LoadingContainer,
   MultiSelect,
-  Select,
 } from '@tupaia/ui-components';
 import CheckCircle from '@material-ui/icons/CheckCircle';
 import Typography from '@material-ui/core/Typography';
 import { useForm } from 'react-hook-form';
-import { FlexSpaceBetween, FlexStart } from '../Layout';
+import { FlexSpaceBetween } from '../Layout';
 import { connectApi } from '../../api';
 
 const countries = [
@@ -60,32 +57,12 @@ const countries = [
   { label: 'Canada', value: 'CA' },
 ];
 
-const syndromes = [
-  { label: 'AFR', value: 'AFR' },
-  { label: 'DIA', value: 'DIA' },
-  { label: 'ILI', value: 'ILI' },
-  { label: 'PF', value: 'PF' },
-  { label: 'DLI', value: 'DLI' },
-];
-
 const STATUS = {
   INITIAL: 'initial',
   LOADING: 'loading',
   ERROR: 'error',
   SUCCESS: 'success',
 };
-
-const Checkboxes = styled(FlexStart)`
-  margin-top: 1rem;
-  margin-bottom: 2rem;
-  padding-top: 2rem;
-  border-top: 1px solid ${props => props.theme.palette.grey['400']};
-  border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
-
-  > div {
-    margin-right: 0.4rem;
-  }
-`;
 
 const Fields = styled(FlexSpaceBetween)`
   > div {
@@ -126,31 +103,11 @@ const SuccessText = styled(Typography)`
 
 const getLabelForValue = value => countries.find(option => option.value === value).label;
 
-const getRouteNameByPath = path => {
-  let type = 'home';
-
-  if (path.includes('weekly-report')) {
-    type = 'weekly-reports';
-  } else if (path === '/alerts') {
-    type = 'alerts';
-  } else if (path === '/alerts/outbreaks') {
-    type = 'outbreaks';
-  }
-
-  return type;
-};
-
-export const ExportModalComponent = ({ isOpen, handleClose, createExport }) => {
+export const ExportModalComponent = ({ renderCustomFields, isOpen, handleClose, createExport }) => {
   const { handleSubmit, register, errors } = useForm();
   const [status, setStatus] = useState(STATUS.INITIAL);
 
-  const location = useLocation();
-  const routeName = getRouteNameByPath(location.pathname);
-
-  console.log('location', location, routeName);
-
   const handleConfirm = async fields => {
-    console.log('FIELDS...', fields);
     setStatus(STATUS.LOADING);
     await createExport(fields);
     setStatus(STATUS.SUCCESS);
@@ -187,6 +144,7 @@ export const ExportModalComponent = ({ isOpen, handleClose, createExport }) => {
               options={countries}
               error={!!errors.diagnosis}
               inputProps={{
+                required: true,
                 name: 'countries',
                 inputRef: ref => {
                   if (!ref) return;
@@ -221,40 +179,7 @@ export const ExportModalComponent = ({ isOpen, handleClose, createExport }) => {
                 })}
               />
             </Fields>
-            {routeName !== 'outbreaks' && (
-              <Checkboxes>
-                {syndromes.map(syndrome => (
-                  <Checkbox
-                    key={syndrome.value}
-                    label={syndrome.label}
-                    name={syndrome.value}
-                    color="primary"
-                    defaultChecked
-                    inputRef={register()}
-                  />
-                ))}
-              </Checkboxes>
-            )}
-            {(routeName === 'home' || routeName === 'weekly-reports') && (
-              <Checkbox
-                label="Include all Sentinel sites"
-                color="primary"
-                defaultChecked
-                inputRef={register()}
-              />
-            )}
-            {routeName === 'outbreaks' && (
-              <Select
-                placeholder="Please select"
-                defaultValue=""
-                rules={{ required: true }}
-                name="diagnosis"
-                label="Diagnosis"
-                options={syndromes}
-                error={!!errors.diagnosis}
-                helperText={errors.diagnosis && errors.diagnosis.message}
-              />
-            )}
+            {renderCustomFields(register, errors)}
           </Content>
         </LoadingContainer>
         <DialogFooter>
@@ -274,6 +199,7 @@ ExportModalComponent.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
   createExport: PropTypes.func.isRequired,
+  renderCustomFields: PropTypes.func.isRequired,
 };
 
 const mapApiToProps = api => ({

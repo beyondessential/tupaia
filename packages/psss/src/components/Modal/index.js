@@ -6,3 +6,6 @@
 export * from './AlertCreatedModal';
 export * from './CreateOutbreakModal';
 export * from './ExportModal';
+export * from './WeeklyReportsExportModal';
+export * from './OutbreaksExportModal';
+export * from './AlertsExportModal';

@@ -13,8 +13,6 @@ import MuiLink from '@material-ui/core/Link';
 import { SaveAlt, LightOutlinedButton } from '@tupaia/ui-components';
 import MuiAvatar from '@material-ui/core/Avatar';
 import * as COLORS from '../constants/colors';
-import { ExportModal } from './Modal';
-import { Container } from './Layout';
 
 const HeaderMain = styled.header`
   background-color: ${COLORS.BLUE};
@@ -62,7 +60,7 @@ const StyledH1 = styled(H1)`
   text-transform: capitalize;
 `;
 
-export const Header = ({ title, avatarUrl, back }) => {
+export const Header = ({ title, avatarUrl, back, ExportModal }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
@@ -81,8 +79,14 @@ export const Header = ({ title, avatarUrl, back }) => {
               {avatarUrl ? <StyledH1>{title}</StyledH1> : <H1>{title}</H1>}
             </HeaderTitle>
           </div>
-          <LightOutlinedButton onClick={() => setIsModalOpen(true)} startIcon={<SaveAlt />}>Export Data</LightOutlinedButton>
-          <ExportModal isOpen={isModalOpen} handleClose={() => setIsModalOpen(false)} />
+          {ExportModal && (
+            <>
+              <LightOutlinedButton onClick={() => setIsModalOpen(true)} startIcon={<SaveAlt />}>
+                Export Data
+              </LightOutlinedButton>
+              <ExportModal isOpen={isModalOpen} handleClose={() => setIsModalOpen(false)} />
+            </>
+          )}
         </HeaderInner>
       </MuiContainer>
     </HeaderMain>
@@ -93,9 +97,11 @@ Header.propTypes = {
   title: PropTypes.string.isRequired,
   avatarUrl: PropTypes.string,
   back: PropTypes.shape({ title: PropTypes.string.isRequired, url: PropTypes.string.isRequired }),
+  ExportModal: PropTypes.any,
 };
 
 Header.defaultProps = {
   avatarUrl: null,
   back: null,
+  ExportModal: null,
 };
