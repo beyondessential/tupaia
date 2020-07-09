@@ -26,6 +26,7 @@ import { selectOrgUnit } from '../../../selectors';
 const initialLocation = getInitialLocation();
 const {
   organisationUnitCode,
+  organisationUnitName,
   dashboardId,
   reportId,
   timeZone,
@@ -47,7 +48,7 @@ const getDateRangeString = () => {
   return `Includes data from ${formatDate(startDate)} to ${formatDate(endDate)}.`;
 };
 
-export class RootScreen extends PureComponent {
+export default class RootScreen extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -81,7 +82,6 @@ export class RootScreen extends PureComponent {
 
   renderTitle() {
     const { viewContent } = this.state;
-    const { organisationUnitName } = this.props;
 
     return (
       <h1 style={styles.title}>
@@ -112,16 +112,6 @@ export class RootScreen extends PureComponent {
     );
   }
 }
-
-const mapStateToProps = state => {
-  const orgUnit = selectOrgUnit(state, organisationUnitCode);
-
-  return {
-    organisationUnitName: orgUnit ? orgUnit.name : null,
-  };
-};
-
-export default connect(mapStateToProps, null)(RootScreen);
 
 const TIMESTAMP_HEIGHT = 20;
 
