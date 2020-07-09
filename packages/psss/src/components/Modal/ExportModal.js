@@ -147,6 +147,8 @@ export const ExportModalComponent = ({ renderCustomFields, isOpen, handleClose, 
               inputProps={{
                 required: true,
                 name: 'countries',
+                // This is a work around for with MaterialUI inputRefs
+                // @see https://github.com/react-hook-form/react-hook-form/issues/380
                 inputRef: ref => {
                   if (!ref) return;
                   register({ name: 'countries', value: ref.value });

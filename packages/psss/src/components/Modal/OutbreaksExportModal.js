@@ -32,6 +32,8 @@ export const OutbreaksExportModal = ({ isOpen, handleClose }) => (
         helperText={errors.diagnosis && errors.diagnosis.message}
         inputProps={{
           name: 'diagnosis',
+          // This is a work around for with MaterialUI inputRefs
+          // @see https://github.com/react-hook-form/react-hook-form/issues/380
           inputRef: ref => {
             if (!ref) return;
             register({ required: true, name: 'diagnosis', value: ref.value });
