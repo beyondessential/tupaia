@@ -481,7 +481,7 @@ const VIEW_JSON = {
     },
     yellow: {
       condition: {
-        '>': 7,
+        '>=': 7,
       },
       color: '#fdd835',
       label: '',
