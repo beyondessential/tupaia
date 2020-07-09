@@ -166,7 +166,7 @@ class SurveyEditor {
     const isDataSource = model.databaseType === this.models.dataSource.databaseType;
     const getValue = (fieldName, fieldValue) => {
       if (isDataSource && fieldName === 'config' && model.type === 'dataElement') {
-        // Retain existing fields in the data source
+        // Retain existing fields in the data element
         return { ...model.config, ...fieldValue };
       }
 
