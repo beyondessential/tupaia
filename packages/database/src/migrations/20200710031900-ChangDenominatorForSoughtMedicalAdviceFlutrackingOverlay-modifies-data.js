@@ -1,0 +1,44 @@
+'use strict';
+
+import { arrayToDbString } from '../utilities';
+
+var dbm;
+var type;
+var seed;
+
+const OVERLAYS_TO_CHANGE = [
+  'AU_FLUTRACKING_Sought_Medical_Advice',
+  'AU_FLUTRACKING_LGA_Sought_Medical_Advice',
+];
+
+/**
+ * We receive the dbmigrate dependency from dbmigrate initially.
+ * This enables us to not have to rely on NODE_PATH.
+ */
+exports.setup = function(options, seedLink) {
+  dbm = options.dbmigrate;
+  type = dbm.dataType;
+  seed = seedLink;
+};
+
+exports.up = function(db) {
+  return db.runSql(`
+    update "mapOverlay"
+    set
+      "measureBuilderConfig" = jsonb_set("measureBuilderConfig", '{measureBuilders,denominator,measureBuilderConfig,dataElementCodes}', '["FWV_LGA_004"]')
+    where id in (${arrayToDbString(OVERLAYS_TO_CHANGE)});
+  `);
+};
+
+exports.down = function(db) {
+  return db.runSql(`
+    update "mapOverlay"
+    set
+      "measureBuilderConfig" = jsonb_set("measureBuilderConfig", '{measureBuilders,denominator,measureBuilderConfig,dataElementCodes}', '["FWV_LGA_003"]')
+    where id in (${arrayToDbString(OVERLAYS_TO_CHANGE)});
+  `);
+};
+
+exports._meta = {
+  version: 1,
+};
