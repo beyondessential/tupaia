@@ -1,26 +1,29 @@
+/* eslint-disable no-restricted-syntax */
 import { fetchComposedData } from '/apiV1/dataBuilders/helpers';
 import { divideValues } from '/apiV1/dataBuilders/helpers';
+import { Entity } from '/models';
 
 export const composePercentagesPerPeriodByOrgUnit = async (config, aggregator, dhisApi) => {
   const responses = await fetchComposedData(config, aggregator, dhisApi);
   const { value: percentages } = config.dataBuilderConfig.percentages;
   const data = [];
-  responses[percentages.denominator].data.forEach(denominatorResponse => {
-    const { name, timestamp, ...orgUnits } = denominatorResponse;
+  for (const { name, timestamp, ...orgUnits } of responses[percentages.denominator].data) {
     const numeratorReponse = responses[percentages.numerator].data.find(
       numerator => numerator.name === name && numerator.timestamp === timestamp,
     );
     const dataValue = { name, timestamp };
-    Object.entries(orgUnits).forEach(([orgUnitCode, denominatorValue]) => {
+
+    for (const [orgUnitCode, denominatorValue] of Object.entries(orgUnits)) {
+      const orgUnitName = (await Entity.findOne({ code: orgUnitCode })).name;
       const numeratorValue = numeratorReponse ? numeratorReponse[orgUnitCode] || 0 : 0;
-      dataValue[orgUnitCode] = divideValues(numeratorValue, denominatorValue);
-      dataValue[`${orgUnitCode}_metadata`] = {
+      dataValue[orgUnitName] = divideValues(numeratorValue, denominatorValue);
+      dataValue[`${orgUnitName}_metadata`] = {
         numerator: numeratorValue,
         denominator: denominatorValue,
       };
-    });
+    }
     data.push(dataValue);
-  });
+  }
 
   return { data };
 };

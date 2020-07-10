@@ -79,57 +79,7 @@ const BASE_DASHBOARD = {
     type: 'chart',
     chartType: 'line',
     chartConfig: {
-      KI: {
-        label: 'Kiribati',
-        yAxisDomain: {
-          min: { type: 'number', value: 0 },
-          max: { type: 'number', value: 1 },
-        },
-      },
-      VU: {
-        label: 'Vanuatu',
-        yAxisDomain: {
-          min: { type: 'number', value: 0 },
-          max: { type: 'number', value: 1 },
-        },
-      },
-      TO: {
-        label: 'Tonga',
-        yAxisDomain: {
-          min: { type: 'number', value: 0 },
-          max: { type: 'number', value: 1 },
-        },
-      },
-      SB: {
-        label: 'Solomon Islands',
-        yAxisDomain: {
-          min: { type: 'number', value: 0 },
-          max: { type: 'number', value: 1 },
-        },
-      },
-      FJ: {
-        label: 'Fiji',
-        yAxisDomain: {
-          min: { type: 'number', value: 0 },
-          max: { type: 'number', value: 1 },
-        },
-      },
-      MH: {
-        label: 'Marshall Islands',
-        yAxisDomain: {
-          min: { type: 'number', value: 0 },
-          max: { type: 'number', value: 1 },
-        },
-      },
-      WS: {
-        label: 'Samoa',
-        yAxisDomain: {
-          min: { type: 'number', value: 0 },
-          max: { type: 'number', value: 1 },
-        },
-      },
-      FM: {
-        label: 'Federated States of Micronesia',
+      $all: {
         yAxisDomain: {
           min: { type: 'number', value: 0 },
           max: { type: 'number', value: 1 },
