@@ -21,5 +21,6 @@ export * from './components/Toolbar';
 export * from './components/LoadingContainer';
 export * from './components/Tooltip';
 export * from './components/Table';
+export * from './components/Toast';
 export * from './components/UserMessage';
 export * from './components/ActionsMenu';

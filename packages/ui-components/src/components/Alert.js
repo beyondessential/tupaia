@@ -2,6 +2,7 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
+
 import React from 'react';
 import MuiAlert from '@material-ui/lab/Alert';
 import styled from 'styled-components';
@@ -11,18 +12,16 @@ import PropTypes from 'prop-types';
 const StyledAlert = styled(MuiAlert)`
   border-radius: 0;
   font-weight: 400;
-  padding: 0.9rem 1.25rem 0.9rem 2.5rem;
   align-items: center;
+  padding: 0.9rem 1.25rem 0.9rem 2.5rem;
   box-shadow: inset 0px -1px 0px rgba(0, 0, 0, 0.15);
-  background: ${props => props.theme.palette.grey['400']};
-  color: ${props => props.theme.palette.text.secondary};
 
   .MuiAlert-icon {
     margin-right: 0.5rem;
   }
 `;
 
-const BaseAlert = props => <StyledAlert {...props} variant="filled" />;
+const BaseAlert = props => <StyledAlert variant="filled" {...props} />;
 
 const SuccessAlert = styled(BaseAlert)`
   background: ${props => props.theme.palette.success.main};
@@ -34,12 +33,12 @@ const ErrorAlert = styled(BaseAlert)`
   color: white;
 `;
 
-export const LightSuccessAlert = styled(BaseAlert)`
+const LightSuccessAlert = styled(BaseAlert)`
   background: ${props => props.theme.palette.success.light};
   color: ${props => props.theme.palette.success.main};
 `;
 
-export const LightErrorAlert = styled(BaseAlert)`
+const LightErrorAlert = styled(BaseAlert)`
   background: ${props => props.theme.palette.error.light};
   color: ${props => props.theme.palette.error.main};
 `;
@@ -53,8 +52,11 @@ const TYPES = {
 };
 
 export const Alert = ({ type, ...props }) => {
+  if (!type) {
+    return <BaseAlert {...props} />;
+  }
+
   const AlertComponents = {
-    [TYPES.DEFAULT]: <BaseAlert icon={<Warning fontSize="inherit" />} {...props} />,
     [TYPES.SUCCESS]: <SuccessAlert icon={<CheckCircle fontSize="inherit" />} {...props} />,
     [TYPES.ERROR]: <ErrorAlert icon={<Warning fontSize="inherit" />} {...props} />,
     [TYPES.LIGHT_SUCCESS]: (
@@ -67,10 +69,14 @@ export const Alert = ({ type, ...props }) => {
 };
 
 Alert.propTypes = {
-  type: PropTypes.PropTypes.oneOf(Object.values(TYPES)).isRequired,
+  type: PropTypes.PropTypes.oneOf(Object.values(TYPES)),
 };
 
-export const BaseSmallAlert = styled(BaseAlert)`
+Alert.defaultProps = {
+  type: null,
+};
+
+const BaseSmallAlert = styled(BaseAlert)`
   font-size: 0.8125rem;
   border-radius: 3px;
   padding: 0.5rem 1.25rem 0.5rem 1rem;
@@ -83,29 +89,32 @@ export const BaseSmallAlert = styled(BaseAlert)`
   }
 `;
 
-export const SmallSuccessAlert = styled(BaseSmallAlert)`
+const SmallSuccessAlert = styled(BaseSmallAlert)`
   background: ${props => props.theme.palette.success.main};
   color: white;
 `;
 
-export const SmallErrorAlert = styled(BaseSmallAlert)`
+const SmallErrorAlert = styled(BaseSmallAlert)`
   background: ${props => props.theme.palette.error.main};
   color: white;
 `;
 
-export const SmallLightSuccessAlert = styled(BaseSmallAlert)`
+const SmallLightSuccessAlert = styled(BaseSmallAlert)`
   background: ${props => props.theme.palette.success.light};
   color: ${props => props.theme.palette.success.main};
 `;
 
-export const SmallLightErrorAlert = styled(BaseSmallAlert)`
+const SmallLightErrorAlert = styled(BaseSmallAlert)`
   background: ${props => props.theme.palette.error.light};
   color: ${props => props.theme.palette.error.main};
 `;
 
 export const SmallAlert = ({ type, ...props }) => {
+  if (!type) {
+    return <BaseSmallAlert {...props} />;
+  }
+
   const AlertComponents = {
-    [TYPES.DEFAULT]: <BaseSmallAlert icon={<Warning fontSize="inherit" />} {...props} />,
     [TYPES.SUCCESS]: <SmallSuccessAlert icon={<CheckCircle fontSize="inherit" />} {...props} />,
     [TYPES.ERROR]: <SmallErrorAlert icon={<Warning fontSize="inherit" />} {...props} />,
     [TYPES.LIGHT_SUCCESS]: (
@@ -115,4 +124,12 @@ export const SmallAlert = ({ type, ...props }) => {
   };
 
   return AlertComponents[type];
+};
+
+SmallAlert.propTypes = {
+  type: PropTypes.oneOf(Object.values(TYPES)),
+};
+
+SmallAlert.defaultProps = {
+  type: null,
 };
