@@ -7,7 +7,6 @@ import React from 'react';
 import styled from 'styled-components';
 import MuiBox from '@material-ui/core/Box';
 import { Toast } from '../src';
-import { CheckCircle, Warning } from '@material-ui/icons';
 
 export default {
   title: 'Toast',

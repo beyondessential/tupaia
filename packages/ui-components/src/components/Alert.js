@@ -19,64 +19,34 @@ const StyledAlert = styled(MuiAlert)`
   .MuiAlert-icon {
     margin-right: 0.5rem;
   }
-`;
 
-const BaseAlert = props => <StyledAlert variant="filled" {...props} />;
-
-const SuccessAlert = styled(BaseAlert)`
-  background: ${props => props.theme.palette.success.main};
-  color: white;
-`;
-
-const ErrorAlert = styled(BaseAlert)`
-  background: ${props => props.theme.palette.error.main};
-  color: white;
-`;
-
-const LightSuccessAlert = styled(BaseAlert)`
-  background: ${props => props.theme.palette.success.light};
-  color: ${props => props.theme.palette.success.main};
-`;
-
-const LightErrorAlert = styled(BaseAlert)`
-  background: ${props => props.theme.palette.error.light};
-  color: ${props => props.theme.palette.error.main};
-`;
-
-const TYPES = {
-  DEFAULT: 'default',
-  SUCCESS: 'success',
-  ERROR: 'error',
-  LIGHT_SUCCESS: 'lightSuccess',
-  LIGHT_ERROR: 'lightError',
-};
-
-export const Alert = ({ type, ...props }) => {
-  if (!type) {
-    return <BaseAlert {...props} />;
+  &.MuiAlert-standardError {
+    background: ${props => props.theme.palette.error.light};
+    color: ${props => props.theme.palette.error.main};
   }
+`;
 
-  const AlertComponents = {
-    [TYPES.SUCCESS]: <SuccessAlert icon={<CheckCircle fontSize="inherit" />} {...props} />,
-    [TYPES.ERROR]: <ErrorAlert icon={<Warning fontSize="inherit" />} {...props} />,
-    [TYPES.LIGHT_SUCCESS]: (
-      <LightSuccessAlert icon={<CheckCircle fontSize="inherit" />} {...props} />
-    ),
-    [TYPES.LIGHT_ERROR]: <LightErrorAlert icon={<Warning fontSize="inherit" />} {...props} />,
-  };
-
-  return AlertComponents[type];
-};
+export const Alert = ({ variant, severity, iconMapping, ...props }) => (
+  <StyledAlert variant={variant} severity={severity} iconMapping={iconMapping} {...props} />
+);
 
 Alert.propTypes = {
-  type: PropTypes.PropTypes.oneOf(Object.values(TYPES)),
+  severity: PropTypes.string,
+  variant: PropTypes.string,
+  iconMapping: PropTypes.object,
 };
 
 Alert.defaultProps = {
-  type: null,
+  severity: 'success',
+  variant: 'filled',
+  iconMapping: {
+    success: <CheckCircle />,
+    error: <Warning />,
+    warning: <Warning />,
+  },
 };
 
-const BaseSmallAlert = styled(BaseAlert)`
+const StyledSmallAlert = styled(StyledAlert)`
   font-size: 0.8125rem;
   border-radius: 3px;
   padding: 0.5rem 1.25rem 0.5rem 1rem;
@@ -89,47 +59,22 @@ const BaseSmallAlert = styled(BaseAlert)`
   }
 `;
 
-const SmallSuccessAlert = styled(BaseSmallAlert)`
-  background: ${props => props.theme.palette.success.main};
-  color: white;
-`;
-
-const SmallErrorAlert = styled(BaseSmallAlert)`
-  background: ${props => props.theme.palette.error.main};
-  color: white;
-`;
-
-const SmallLightSuccessAlert = styled(BaseSmallAlert)`
-  background: ${props => props.theme.palette.success.light};
-  color: ${props => props.theme.palette.success.main};
-`;
-
-const SmallLightErrorAlert = styled(BaseSmallAlert)`
-  background: ${props => props.theme.palette.error.light};
-  color: ${props => props.theme.palette.error.main};
-`;
-
-export const SmallAlert = ({ type, ...props }) => {
-  if (!type) {
-    return <BaseSmallAlert {...props} />;
-  }
-
-  const AlertComponents = {
-    [TYPES.SUCCESS]: <SmallSuccessAlert icon={<CheckCircle fontSize="inherit" />} {...props} />,
-    [TYPES.ERROR]: <SmallErrorAlert icon={<Warning fontSize="inherit" />} {...props} />,
-    [TYPES.LIGHT_SUCCESS]: (
-      <SmallLightSuccessAlert icon={<CheckCircle fontSize="inherit" />} {...props} />
-    ),
-    [TYPES.LIGHT_ERROR]: <SmallLightErrorAlert icon={<Warning fontSize="inherit" />} {...props} />,
-  };
-
-  return AlertComponents[type];
-};
+export const SmallAlert = ({ variant, severity, iconMapping, ...props }) => (
+  <StyledSmallAlert variant={variant} severity={severity} iconMapping={iconMapping} {...props} />
+);
 
 SmallAlert.propTypes = {
-  type: PropTypes.oneOf(Object.values(TYPES)),
+  severity: PropTypes.string,
+  variant: PropTypes.string,
+  iconMapping: PropTypes.object,
 };
 
 SmallAlert.defaultProps = {
-  type: null,
+  severity: 'success',
+  variant: 'filled',
+  iconMapping: {
+    success: <CheckCircle fontSize="inherit" />,
+    error: <Warning fontSize="inherit" />,
+    warning: <Warning fontSize="inherit" />,
+  },
 };

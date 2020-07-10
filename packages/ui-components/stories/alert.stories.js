@@ -6,7 +6,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import MuiBox from '@material-ui/core/Box';
-import MuiAlert from '@material-ui/lab/Alert';
 import { Alert, SmallAlert } from '../src';
 
 export default {
@@ -23,13 +22,11 @@ const Container = styled(MuiBox)`
 
 export const Alerts = () => (
   <Container>
-    <Alert type="error">ILI Above Threshold. Please review and verify data.</Alert>
-    <Alert type="success">Message successfully saved.</Alert>
-    <Alert type="lightError">ILI Above Threshold. Please review and verify data.</Alert>
-    <Alert type="lightSuccess">Message successfully saved.</Alert>
-    <SmallAlert type="error">ILI Above Threshold. Please review and verify data.</SmallAlert>
-    <SmallAlert type="success">Message successfully saved.</SmallAlert>
-    <SmallAlert type="lightError">ILI Above Threshold. Please review and verify data.</SmallAlert>
-    <SmallAlert type="lightSuccess">Message successfully saved.</SmallAlert>
+    <Alert severity="error">ILI Above Threshold. Please review and verify data.</Alert>
+    <Alert severity="success">Message successfully saved.</Alert>
+    <Alert severity="error" variant="standard">ILI Above Threshold. Please review and verify data.</Alert>
+    <SmallAlert severity="error">ILI Above Threshold. Please review and verify data.</SmallAlert>
+    <SmallAlert severity="success">Message successfully saved.</SmallAlert>
+    <SmallAlert severity="error" variant="standard">ILI Above Threshold. Please review and verify data.</SmallAlert>
   </Container>
 );
