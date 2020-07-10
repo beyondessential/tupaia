@@ -6,6 +6,7 @@ import React from 'react';
 import MuiAlert from '@material-ui/lab/Alert';
 import styled from 'styled-components';
 import { Warning } from '@material-ui/icons';
+import PropTypes from 'prop-types';
 
 const StyledAlert = styled(MuiAlert)`
   border-radius: 0;
@@ -13,34 +14,57 @@ const StyledAlert = styled(MuiAlert)`
   padding: 0.9rem 1.25rem 0.9rem 2.5rem;
   align-items: center;
   box-shadow: inset 0px -1px 0px rgba(0, 0, 0, 0.15);
-  // background: ${props => props.theme.palette.error.main};
+  background: ${props => props.theme.palette.grey['400']};
+  color: ${props => props.theme.palette.text.secondary};
+`;
+
+const BaseAlert = props => <StyledAlert {...props} variant="filled" />;
+
+const SuccessAlert = styled(BaseAlert)`
+  background: ${props => props.theme.palette.success.main};
   color: white;
 `;
 
-export const ErrorAlert = props => (
-  <StyledAlert icon={<Warning fontSize="inherit" />} variant="filled" severity="error" {...props} />
-);
-
-export const SuccessAlert = props => (
-  <StyledAlert
-    icon={<Warning fontSize="inherit" />}
-    variant="filled"
-    severity="success"
-    {...props}
-  />
-);
-
-export const LightSuccessAlert = styled(SuccessAlert)`
-  background: ${props => props.theme.palette.success.light};
-  color: ${props => props.theme.palette.success.light};
+const ErrorAlert = styled(BaseAlert)`
+  background: ${props => props.theme.palette.error.main};
+  color: white;
 `;
 
-export const LightErrorAlert = styled(ErrorAlert)`
+export const LightSuccessAlert = styled(BaseAlert)`
+  background: ${props => props.theme.palette.success.light};
+  color: ${props => props.theme.palette.success.main};
+`;
+
+export const LightErrorAlert = styled(BaseAlert)`
   background: ${props => props.theme.palette.error.light};
   color: ${props => props.theme.palette.error.main};
 `;
 
-export const SmallErrorAlert = styled(ErrorAlert)`
+const TYPES = {
+  DEFAULT: 'default',
+  SUCCESS: 'success',
+  ERROR: 'error',
+  LIGHT_SUCCESS: 'lightSuccess',
+  LIGHT_ERROR: 'lightError',
+};
+
+export const Alert = ({ type, ...props }) => {
+  const AlertComponents = {
+    [TYPES.DEFAULT]: <BaseAlert icon={<Warning fontSize="inherit" />} {...props} />,
+    [TYPES.SUCCESS]: <SuccessAlert icon={<Warning fontSize="inherit" />} {...props} />,
+    [TYPES.ERROR]: <ErrorAlert icon={<Warning fontSize="inherit" />} {...props} />,
+    [TYPES.LIGHT_SUCCESS]: <LightSuccessAlert icon={<Warning fontSize="inherit" />} {...props} />,
+    [TYPES.LIGHT_ERROR]: <LightErrorAlert icon={<Warning fontSize="inherit" />} {...props} />,
+  };
+
+  return AlertComponents[type];
+};
+
+Alert.propTypes = {
+  type: PropTypes.PropTypes.oneOf(Object.values(TYPES)).isRequired,
+};
+
+export const BaseSmallAlert = styled(BaseAlert)`
   font-size: 0.8125rem;
   border-radius: 3px;
   padding: 0.5rem 1.25rem 0.5rem 1rem;
@@ -53,7 +77,36 @@ export const SmallErrorAlert = styled(ErrorAlert)`
   }
 `;
 
-export const SmallLightErrorAlert = styled(SmallErrorAlert)`
+export const SmallSuccessAlert = styled(BaseSmallAlert)`
+  background: ${props => props.theme.palette.success.main};
+  color: white;
+`;
+
+export const SmallErrorAlert = styled(BaseSmallAlert)`
+  background: ${props => props.theme.palette.error.main};
+  color: white;
+`;
+
+export const SmallLightSuccessAlert = styled(BaseSmallAlert)`
+  background: ${props => props.theme.palette.success.light};
+  color: ${props => props.theme.palette.success.main};
+`;
+
+export const SmallLightErrorAlert = styled(BaseSmallAlert)`
   background: ${props => props.theme.palette.error.light};
   color: ${props => props.theme.palette.error.main};
 `;
+
+export const SmallAlert = ({ type, ...props }) => {
+  const AlertComponents = {
+    [TYPES.DEFAULT]: <BaseSmallAlert icon={<Warning fontSize="inherit" />} {...props} />,
+    [TYPES.SUCCESS]: <SmallSuccessAlert icon={<Warning fontSize="inherit" />} {...props} />,
+    [TYPES.ERROR]: <SmallErrorAlert icon={<Warning fontSize="inherit" />} {...props} />,
+    [TYPES.LIGHT_SUCCESS]: (
+      <SmallLightSuccessAlert icon={<Warning fontSize="inherit" />} {...props} />
+    ),
+    [TYPES.LIGHT_ERROR]: <SmallLightErrorAlert icon={<Warning fontSize="inherit" />} {...props} />,
+  };
+
+  return AlertComponents[type];
+};

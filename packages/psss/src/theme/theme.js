@@ -25,6 +25,7 @@ const palette = {
     light: COLORS.LIGHT_RED,
   },
   success: {
+    light: COLORS.LIGHT_GREEN,
     main: COLORS.GREEN,
     dark: COLORS.DARK_GREEN,
   },

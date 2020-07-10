@@ -4,37 +4,31 @@
  */
 
 import React from 'react';
-import Box from '@material-ui/core/Box';
-import {
-  ErrorAlert,
-  SuccessAlert,
-  LightErrorAlert,
-  SmallErrorAlert,
-  SmallLightErrorAlert,
-} from '../src';
+import styled from 'styled-components';
+import MuiBox from '@material-ui/core/Box';
+import { Alert, SmallAlert } from '../src';
 
 export default {
   title: 'Alert',
 };
 
+const Container = styled(MuiBox)`
+  padding: 1rem 0;
+
+  & > div {
+    margin-bottom: 1rem;
+  }
+`;
+
 export const Alerts = () => (
-  <>
-    <Box mb={2}>
-      <ErrorAlert>ILI Above Threshold. Please review and verify data.</ErrorAlert>
-    </Box>
-    <Box mb={2}>
-      <SuccessAlert>Successfully Updated.</SuccessAlert>
-    </Box>
-    <Box mb={2}>
-      <LightErrorAlert>ILI Above Threshold. Please review and verify data.</LightErrorAlert>
-    </Box>
-    <Box mb={2}>
-      <SmallErrorAlert>ILI Above Threshold. Please review and verify data.</SmallErrorAlert>
-    </Box>
-    <Box mb={2}>
-      <SmallLightErrorAlert>
-        ILI Above Threshold. Please review and verify data.
-      </SmallLightErrorAlert>
-    </Box>
-  </>
+  <Container>
+    <Alert type="error">ILI Above Threshold. Please review and verify data.</Alert>
+    <Alert type="success">Message successfully saved.</Alert>
+    <Alert type="lightError">ILI Above Threshold. Please review and verify data.</Alert>
+    <Alert type="lightSuccess">Message successfully saved.</Alert>
+    <SmallAlert type="error">ILI Above Threshold. Please review and verify data.</SmallAlert>
+    <SmallAlert type="success">ILI Above Threshold. Please review and verify data.</SmallAlert>
+    <SmallAlert type="lightError">ILI Above Threshold. Please review and verify data.</SmallAlert>
+    <SmallAlert type="lightSuccess">ILI Above Threshold. Please review and verify data.</SmallAlert>
+  </Container>
 );
