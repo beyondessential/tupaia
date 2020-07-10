@@ -25,8 +25,13 @@ exports.up = function(db) {
   return db.runSql(`
     update "mapOverlay"
     set
+      "measureBuilderConfig" = jsonb_set("measureBuilderConfig", '{measureBuilders,denominator,measureBuilderConfig,dataElementCodes}', '["LGA_004"]')
+    where id = 'AU_FLUTRACKING_Sought_Medical_Advice';
+
+    update "mapOverlay"
+    set
       "measureBuilderConfig" = jsonb_set("measureBuilderConfig", '{measureBuilders,denominator,measureBuilderConfig,dataElementCodes}', '["FWV_LGA_004"]')
-    where id in (${arrayToDbString(OVERLAYS_TO_CHANGE)});
+    where id = 'AU_FLUTRACKING_LGA_Sought_Medical_Advice';
   `);
 };
 
@@ -34,8 +39,13 @@ exports.down = function(db) {
   return db.runSql(`
     update "mapOverlay"
     set
+      "measureBuilderConfig" = jsonb_set("measureBuilderConfig", '{measureBuilders,denominator,measureBuilderConfig,dataElementCodes}', '["LGA_003"]')
+    where id = 'AU_FLUTRACKING_Sought_Medical_Advice';
+
+    update "mapOverlay"
+    set
       "measureBuilderConfig" = jsonb_set("measureBuilderConfig", '{measureBuilders,denominator,measureBuilderConfig,dataElementCodes}', '["FWV_LGA_003"]')
-    where id in (${arrayToDbString(OVERLAYS_TO_CHANGE)});
+    where id = 'AU_FLUTRACKING_LGA_Sought_Medical_Advice';
   `);
 };
 
