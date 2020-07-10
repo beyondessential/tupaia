@@ -5,7 +5,7 @@
 import React from 'react';
 import MuiAlert from '@material-ui/lab/Alert';
 import styled from 'styled-components';
-import { Warning } from '@material-ui/icons';
+import { CheckCircle, Warning } from '@material-ui/icons';
 import PropTypes from 'prop-types';
 
 const StyledAlert = styled(MuiAlert)`
@@ -16,6 +16,10 @@ const StyledAlert = styled(MuiAlert)`
   box-shadow: inset 0px -1px 0px rgba(0, 0, 0, 0.15);
   background: ${props => props.theme.palette.grey['400']};
   color: ${props => props.theme.palette.text.secondary};
+
+  .MuiAlert-icon {
+    margin-right: 0.5rem;
+  }
 `;
 
 const BaseAlert = props => <StyledAlert {...props} variant="filled" />;
@@ -51,9 +55,11 @@ const TYPES = {
 export const Alert = ({ type, ...props }) => {
   const AlertComponents = {
     [TYPES.DEFAULT]: <BaseAlert icon={<Warning fontSize="inherit" />} {...props} />,
-    [TYPES.SUCCESS]: <SuccessAlert icon={<Warning fontSize="inherit" />} {...props} />,
+    [TYPES.SUCCESS]: <SuccessAlert icon={<CheckCircle fontSize="inherit" />} {...props} />,
     [TYPES.ERROR]: <ErrorAlert icon={<Warning fontSize="inherit" />} {...props} />,
-    [TYPES.LIGHT_SUCCESS]: <LightSuccessAlert icon={<Warning fontSize="inherit" />} {...props} />,
+    [TYPES.LIGHT_SUCCESS]: (
+      <LightSuccessAlert icon={<CheckCircle fontSize="inherit" />} {...props} />
+    ),
     [TYPES.LIGHT_ERROR]: <LightErrorAlert icon={<Warning fontSize="inherit" />} {...props} />,
   };
 
@@ -100,10 +106,10 @@ export const SmallLightErrorAlert = styled(BaseSmallAlert)`
 export const SmallAlert = ({ type, ...props }) => {
   const AlertComponents = {
     [TYPES.DEFAULT]: <BaseSmallAlert icon={<Warning fontSize="inherit" />} {...props} />,
-    [TYPES.SUCCESS]: <SmallSuccessAlert icon={<Warning fontSize="inherit" />} {...props} />,
+    [TYPES.SUCCESS]: <SmallSuccessAlert icon={<CheckCircle fontSize="inherit" />} {...props} />,
     [TYPES.ERROR]: <SmallErrorAlert icon={<Warning fontSize="inherit" />} {...props} />,
     [TYPES.LIGHT_SUCCESS]: (
-      <SmallLightSuccessAlert icon={<Warning fontSize="inherit" />} {...props} />
+      <SmallLightSuccessAlert icon={<CheckCircle fontSize="inherit" />} {...props} />
     ),
     [TYPES.LIGHT_ERROR]: <SmallLightErrorAlert icon={<Warning fontSize="inherit" />} {...props} />,
   };

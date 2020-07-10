@@ -27,8 +27,8 @@ export const Alerts = () => (
     <Alert type="lightError">ILI Above Threshold. Please review and verify data.</Alert>
     <Alert type="lightSuccess">Message successfully saved.</Alert>
     <SmallAlert type="error">ILI Above Threshold. Please review and verify data.</SmallAlert>
-    <SmallAlert type="success">ILI Above Threshold. Please review and verify data.</SmallAlert>
+    <SmallAlert type="success">Message successfully saved.</SmallAlert>
     <SmallAlert type="lightError">ILI Above Threshold. Please review and verify data.</SmallAlert>
-    <SmallAlert type="lightSuccess">ILI Above Threshold. Please review and verify data.</SmallAlert>
+    <SmallAlert type="lightSuccess">Message successfully saved.</SmallAlert>
   </Container>
 );
