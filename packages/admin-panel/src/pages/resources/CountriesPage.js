@@ -54,7 +54,7 @@ const FILTERED_EXPORT_CONFIG = {
   queryParameters: [
     {
       label: 'Surveys to Include',
-      instruction: 'Please enter the names of the surveys to be exported.',
+      secondaryLabel: 'Please enter the names of the surveys to be exported.',
       parameterKey: 'surveyCodes',
       optionsEndpoint: 'country/{id}/surveys',
       optionValueKey: 'code',
