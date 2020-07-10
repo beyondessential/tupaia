@@ -102,18 +102,21 @@ export function createValueMapping(valueObjects, type) {
   return mapping;
 }
 
-function getFormattedValue(value, type, valueInfo, scaleType, valueType) {
+function getFormattedValue(value, type, valueInfo, scaleType, valueType, submissionDate) {
   switch (type) {
     case MEASURE_TYPE_SPECTRUM:
     case MEASURE_TYPE_SHADED_SPECTRUM:
       if (scaleType === SCALE_TYPES.TIME) {
-        return `last submission on ${value}`;
+        return `last submission on ${submissionDate}`;
       }
       return formatDataValue(value, valueType);
     case MEASURE_TYPE_RADIUS:
     case MEASURE_TYPE_ICON:
     case MEASURE_TYPE_COLOR:
     case MEASURE_TYPE_SHADING:
+      if (scaleType === SCALE_TYPES.TIME) {
+        return `last submission on ${submissionDate}`;
+      }
       return valueInfo.name || value;
     default:
       return value;
@@ -226,7 +229,10 @@ export function getValueInfo(value, valueMapping, hiddenValues = {}) {
 export function getFormattedInfo(orgUnitData, measureOption) {
   const { key, valueMapping, type, displayedValueKey, scaleType, valueType } = measureOption;
 
-  if (displayedValueKey && orgUnitData[displayedValueKey]) {
+  if (
+    displayedValueKey &&
+    (orgUnitData[displayedValueKey] || orgUnitData[displayedValueKey] === 0)
+  ) {
     return {
       value: formatDataValue(orgUnitData[displayedValueKey], valueType, orgUnitData.metadata),
     };
@@ -239,7 +245,14 @@ export function getFormattedInfo(orgUnitData, measureOption) {
   if (value === null || value === undefined) return { value: valueInfo.name || 'No data' };
 
   return {
-    value: getFormattedValue(value, type, valueInfo, scaleType, valueType),
+    value: getFormattedValue(
+      value,
+      type,
+      valueInfo,
+      scaleType,
+      valueType,
+      orgUnitData.submissionDate,
+    ),
   };
 }
 

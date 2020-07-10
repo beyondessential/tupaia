@@ -27,7 +27,7 @@ export const ENTITIES_COLUMNS = [
     width: 200,
     actionConfig: {
       exportEndpoint: 'surveyResponses',
-      queryParameter: 'entityIds',
+      rowIdQueryParameter: 'entityIds',
       fileName: '{name} Survey Responses',
     },
   },
@@ -44,17 +44,13 @@ const COLUMNS = [
 const EXPANSION_CONFIG = [
   {
     title: 'Survey Responses',
-    endpoint: 'surveyResponses',
+    endpoint: 'entity/{id}/surveyResponses',
     columns: SURVEY_RESPONSE_COLUMNS,
-    joinFrom: 'id',
-    joinTo: 'entity_id',
     expansionTabs: [
       {
         title: 'Answers',
-        endpoint: 'answers',
+        endpoint: 'surveyResponse/{id}/answers',
         columns: ANSWER_COLUMNS,
-        joinFrom: 'id',
-        joinTo: 'survey_response_id',
       },
     ],
   },

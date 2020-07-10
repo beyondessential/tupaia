@@ -45,10 +45,8 @@ const mapStateToProps = state => {
   const { contractedWidth, expandedWidth } = state.dashboard;
   const currentOrganisationUnit = selectCurrentOrgUnit(state);
   const currentParent = selectOrgUnit(state, currentOrganisationUnit.parent);
-  const currentChildren = selectOrgUnitChildren(
-    state,
-    currentOrganisationUnit.organisationUnitCode,
-  );
+  const currentChildren =
+    selectOrgUnitChildren(state, currentOrganisationUnit.organisationUnitCode) || [];
 
   // If the org unit's grandchildren are polygons and have a measure, display grandchildren
   // rather than children
