@@ -27,7 +27,7 @@ const getInputType = ({ options, optionsEndpoint, type }) => {
 export const InputField = ({
   allowMultipleValues,
   label,
-  instruction,
+  secondaryLabel,
   value,
   recordData,
   inputKey,
@@ -132,9 +132,9 @@ export const InputField = ({
   return (
     <FormGroup>
       <p>{label}</p>
-      {instruction && (
+      {secondaryLabel && (
         <p>
-          <i>{instruction}</i>
+          <i>{secondaryLabel}</i>
         </p>
       )}
       {inputComponent}
@@ -174,7 +174,8 @@ InputField.propTypes = {
   type: PropTypes.string,
   getJsonFieldSchema: PropTypes.func,
   parentRecord: PropTypes.object,
-  instruction: PropTypes.string,
+  secondaryLabel: PropTypes.string,
+  maxHeight: PropTypes.number,
 };
 
 InputField.defaultProps = {
@@ -190,5 +191,6 @@ InputField.defaultProps = {
   type: 'text',
   getJsonFieldSchema: () => [],
   parentRecord: {},
-  instruction: null,
+  secondaryLabel: null,
+  maxHeight: undefined,
 };
