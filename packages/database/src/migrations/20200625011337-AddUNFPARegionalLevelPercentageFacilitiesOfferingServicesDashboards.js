@@ -78,7 +78,14 @@ const BASE_DASHBOARD = {
     name: '% of Facilities offering Services (Family Planning)',
     type: 'chart',
     chartType: 'line',
-    chartConfig: { $all: {} },
+    chartConfig: {
+      $all: {
+        yAxisDomain: {
+          min: { type: 'number', value: 0 },
+          max: { type: 'number', value: 1 },
+        },
+      },
+    },
     valueType: 'percentage',
     labelType: 'fractionAndPercentage',
     showPeriodRange: 'dashboardOnly',
