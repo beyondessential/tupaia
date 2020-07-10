@@ -6,11 +6,6 @@ var dbm;
 var type;
 var seed;
 
-const OVERLAYS_TO_CHANGE = [
-  'AU_FLUTRACKING_Sought_Medical_Advice',
-  'AU_FLUTRACKING_LGA_Sought_Medical_Advice',
-];
-
 /**
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
