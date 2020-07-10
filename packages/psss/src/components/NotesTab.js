@@ -5,13 +5,14 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { useForm } from 'react-hook-form';
 import {
   TextField,
   Button,
   UserMessage,
   UserMessageHeader,
   CardTabPanel,
-  ErrorAlert,
+  Toast,
 } from '@tupaia/ui-components';
 import { FetchLoader } from './FetchLoader';
 import { connectApi } from '../api';
@@ -20,27 +21,19 @@ import * as COLORS from '../constants/colors';
 const GREY_SECTION_HEIGHT = '225px';
 
 const Container = styled.div`
-  padding-bottom: calc(${GREY_SECTION_HEIGHT} + 60px);
+  padding-bottom: calc(${GREY_SECTION_HEIGHT} + 3rem);
 `;
 
 const StyledUserMessage = styled(UserMessage)`
   margin-bottom: 1.5rem;
 `;
 
-const StyledErrorAlert = styled(ErrorAlert)`
+const PositionedToast = styled(Toast)`
   position: absolute;
   bottom: 100%;
-  left: 0;
-  width: 100%;
-`;
-
-const StyledSuccessAlert = styled(ErrorAlert)`
-  position: absolute;
-  bottom: 100%;
-  left: 0;
-  width: 100%;
-  color: #155724;
-  background-color: #d4edda;
+  left: 1.25rem;
+  right: 1.25rem;
+  margin-bottom: 1.25rem;
 `;
 
 const GreySection = styled.div`
@@ -50,6 +43,7 @@ const GreySection = styled.div`
   width: 100%;
   background: ${COLORS.LIGHTGREY};
   padding: 1.5rem 1.25rem;
+  box-shadow: 0px -1px 0px ${props => props.theme.palette.grey['400']};
 `;
 
 const STATUS = {
@@ -62,13 +56,12 @@ const STATUS = {
 const NotesTabComponent = ({ state, handleUpdate, handleDelete, createNote }) => {
   const { data: messages } = state;
   const [status, setStatus] = useState('');
-  const [noteValue, setNoteValue] = useState('');
+  const { handleSubmit, register, errors } = useForm();
 
-  const handleSubmitNote = async event => {
-    event.preventDefault();
+  const handleSubmitNote = async (data, event) => {
     setStatus(STATUS.LOADING);
-    await createNote(noteValue);
-    setNoteValue('');
+    await createNote(data);
+    event.target.reset();
     setStatus(STATUS.SUCCESS);
   };
 
@@ -95,19 +88,24 @@ const NotesTabComponent = ({ state, handleUpdate, handleDelete, createNote }) =>
       </CardTabPanel>
       <GreySection>
         {status === STATUS.ERROR && (
-          <StyledErrorAlert>There was a server error. Please try again.</StyledErrorAlert>
+          <PositionedToast severity="error">A Server Error has occurred</PositionedToast>
         )}
         {status === STATUS.SUCCESS && (
-          <StyledSuccessAlert>Your note was created.</StyledSuccessAlert>
+          <PositionedToast severity="success" timeout={3000}>
+            Note Successfully added
+          </PositionedToast>
         )}
-        <form onSubmit={handleSubmitNote}>
+        <form onSubmit={handleSubmit(handleSubmitNote)}>
           <TextField
-            value={noteValue}
-            onChange={event => setNoteValue(event.target.value)}
-            name="textArea"
+            inputRef={register({
+              required: 'Required',
+            })}
+            name="note"
             placeholder="Type in your notes..."
             multiline
             rows="4"
+            error={!!errors.note}
+            helperText={errors.note && errors.note.message}
             InputProps={{
               readOnly: status === STATUS.LOADING,
             }}
