@@ -8,14 +8,15 @@ export default class extends RouteHandler {
   static PermissionsChecker = PermissionsChecker;
 
   buildResponse = async () => {
-    const { entity } = this;
-    const { code: entityCode, name: entityName } = entity;
+    const { entity, query } = this;
+    const { code: entityCode, name: entityName, country_code: enityCountryCode } = entity;
+    const overlayCode = enityCountryCode || entityCode;
     const userGroups = await this.req.getUserGroups(entityCode);
 
-    // will return undefined if no country level ancestor organisationUnit (e.g. World)
-    const { code: countryCode } = (await entity.getCountry()) || {};
     let mapOverlays = [];
-    if (countryCode) {
+
+    // Projects do not have a country_code
+    if (overlayCode) {
       mapOverlays = await MapOverlay.find({
         [RAW]: {
           sql: `("userGroup" = '' OR "userGroup" IN (${userGroups.map(() => '?').join(',')}))`, // turn `['Public', 'Donor', 'Admin']` into `?,?,?` for binding
@@ -23,9 +24,15 @@ export default class extends RouteHandler {
         },
         [AND]: {
           [RAW]: {
-            sql: '"countryCodes" IS NULL OR :countryCode = ANY("countryCodes")',
+            sql: '"countryCodes" IS NULL OR :overlayCode = ANY("countryCodes")',
             parameters: {
-              countryCode,
+              overlayCode,
+            },
+          },
+          [AND]: {
+            projectCodes: {
+              comparator: '@>',
+              comparisonValue: [query.projectCode],
             },
           },
         },

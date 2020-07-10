@@ -220,7 +220,7 @@ export class DhisService extends Service {
     const events = await this.fetchEventsForPrograms(api, programCodes, query);
     const translatedEvents = await this.translator.translateInboundEvents(events, programCodes[0]);
     const dataElements = await this.pullDataElementMetadata(api, dataSources, {
-      additionalFields: 'valueType',
+      additionalFields: ['valueType'],
     });
 
     return buildAnalyticsFromEvents(translatedEvents, dataElements);

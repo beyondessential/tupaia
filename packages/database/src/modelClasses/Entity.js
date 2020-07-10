@@ -27,6 +27,8 @@ const DISTRICT = 'district';
 const FACILITY = 'facility';
 const SCHOOL = 'school';
 const SUB_DISTRICT = 'sub_district';
+const CATCHMENT = 'catchment';
+const SUB_CATCHMENT = 'sub_catchment';
 const VILLAGE = 'village';
 const WORLD = 'world';
 
@@ -39,6 +41,8 @@ const ENTITY_TYPES = {
   FACILITY,
   SCHOOL,
   SUB_DISTRICT,
+  CATCHMENT,
+  SUB_CATCHMENT,
   VILLAGE,
   WORLD,
 };
@@ -54,11 +58,6 @@ const ORG_UNIT_ENTITY_TYPES = {
 
 class EntityType extends DatabaseType {
   static databaseType = TYPES.ENTITY;
-
-  static meditrakConfig = {
-    ignorableFields: ['region', 'bounds'],
-    minAppVersion: '1.7.102',
-  };
 
   // Exposed for access policy creation.
   get organisationUnitCode() {

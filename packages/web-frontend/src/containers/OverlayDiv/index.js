@@ -77,7 +77,7 @@ export class OverlayDiv extends PureComponent {
         fullWidth={isMobile()}
       >
         <Wrapper>
-          <CloseIcon style={styles.close} onClick={closeOverlay} />
+          <CloseIcon data-testid="overlay-close-btn" style={styles.close} onClick={closeOverlay} />
           {overlay && <OverlayComponent />}
         </Wrapper>
       </Dialog>
@@ -109,7 +109,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     onSelectProject: project => {
-      dispatch(selectProject(project));
+      dispatch(selectProject(project.code));
       dispatch(setOverlayComponent(null));
       dispatch(changeOrgUnit(project.homeEntityCode, false));
     },

@@ -14,6 +14,7 @@ export class SumPerOrgUnitBuilder extends DataPerOrgUnitBuilder {
     const { results } = await this.fetchAnalytics(dataElementCodes, {
       organisationUnitCode: this.entity.code,
     });
+
     return results;
   }
 }

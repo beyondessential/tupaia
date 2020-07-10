@@ -1,24 +1,5 @@
 {
-  "extends": ["@beyondessential/eslint-config-beyondessential", "plugin:prettier/recommended"],
-  "parser": "babel-eslint",
-  "env": {
-    "browser": true,
-    "mocha": true
-  },
   "rules": {
-    "import/no-extraneous-dependencies": ["error", { "devDependencies": ["src/tests/**"] }],
-    "react/jsx-filename-extension": "off",
-    "react/forbid-prop-types": "off",
-    "jsx-a11y/href-no-hash": "off",
     "no-restricted-syntax": ["error", "ForInStatement", "LabeledStatement", "WithStatement"]
-  },
-  "overrides": [
-    {
-      "files": "src/tests/**",
-      "rules": {
-        "func-names": "off",
-        "no-unused-expressions": "off"
-      }
-    }
-  ]
+  }
 }

@@ -4,13 +4,15 @@
  */
 import keyBy from 'lodash.keyby';
 import flatten from 'lodash.flatten';
+import isEqual from 'lodash.isequal';
+import groupBy from 'lodash.groupby';
 
 import { groupAnalyticsByPeriod } from '@tupaia/dhis-api';
 import { PERIOD_TYPES, parsePeriodType } from '@tupaia/utils';
 import { DataPerPeriodBuilder } from 'apiV1/dataBuilders/DataPerPeriodBuilder';
 import { PercentagesOfValueCountsBuilder } from '/apiV1/dataBuilders/generic/percentage/percentagesOfValueCounts';
-import { divideValues } from '/apiV1/dataBuilders/helpers';
-import { Facility } from '/models';
+import { divideValues, mapAnalyticsToCountries } from '/apiV1/dataBuilders/helpers';
+import { Facility, Entity } from '/models';
 
 const filterFacility = async (filterCriteria, analytics) => {
   const facilities = await Facility.find({
@@ -28,7 +30,7 @@ const filterFacility = async (filterCriteria, analytics) => {
   return analytics.filter(({ organisationUnit: orgUnitCode }) => facilitiesByCode[orgUnitCode]);
 };
 
-const { MONTH, YEAR } = PERIOD_TYPES;
+const { MONTH, QUARTER, YEAR } = PERIOD_TYPES;
 const FILTERS = {
   filterFacility,
 };
@@ -41,7 +43,7 @@ class BaseBuilder extends PercentagesOfValueCountsBuilder {
     };
     Object.values(this.config.dataClasses).forEach(({ numerator, denominator }) => {
       codes.numerator.push(flatten(numerator.dataValues));
-      denominator.hasOwnProperty('dataValues') && codes.denominator.push(denominator.dataValues);
+      if (denominator.hasOwnProperty('dataValues')) codes.denominator.push(denominator.dataValues);
     });
 
     return codes;
@@ -55,6 +57,13 @@ class BaseBuilder extends PercentagesOfValueCountsBuilder {
           denominator: this.config.fillEmptyDenominatorValues
             ? this.aggregator.aggregationTypes.FINAL_EACH_MONTH_FILL_EMPTY_MONTHS
             : this.aggregator.aggregationTypes.FINAL_EACH_MONTH,
+        };
+      case QUARTER:
+        return {
+          numerator: this.aggregator.aggregationTypes.FINAL_EACH_QUARTER,
+          denominator: this.config.fillEmptyDenominatorValues
+            ? this.aggregator.aggregationTypes.FINAL_EACH_QUARTER_FILL_EMPTY_QUARTERS
+            : this.aggregator.aggregationTypes.FINAL_EACH_QUARTER,
         };
       case YEAR:
         return {
@@ -86,7 +95,17 @@ class BaseBuilder extends PercentagesOfValueCountsBuilder {
       denominatorAggregationType,
     );
 
-    return [...denominatorResults, ...numeratorResults];
+    const allResults = numeratorResults;
+
+    // Hack to make sure that there are no duplicated analytics returned to count twice.
+    // Would like to have { denominatorResults, numeratorResults }, but can't because of how DataPerPeriodBuilder works
+    denominatorResults.forEach(analytic => {
+      if (!allResults.find(otherAnalytic => isEqual(analytic, otherAnalytic))) {
+        allResults.push(analytic);
+      }
+    });
+
+    return allResults;
   }
 
   async buildData(analytics) {
@@ -100,15 +119,51 @@ class BaseBuilder extends PercentagesOfValueCountsBuilder {
       );
     }
 
-    Object.entries(this.config.dataClasses).forEach(([name, dataClass]) => {
-      const numerator = this.calculateFractionPart(dataClass.numerator, filteredData);
-      const denominator = this.calculateFractionPart(dataClass.denominator, filteredData);
-      const key = Object.keys(this.config.dataClasses).length > 1 ? name : 'value';
+    const dataClassesWithAnalytics = await this.getDataClassesWithAnalytics(filteredData);
+    Object.entries(dataClassesWithAnalytics).forEach(([key, dataClass]) => {
+      const numerator = this.calculateFractionPart(dataClass.numerator, dataClass.analytics);
+      const denominator = this.calculateFractionPart(dataClass.denominator, dataClass.analytics);
       percentage[key] = divideValues(numerator, denominator);
       percentage[`${key}_metadata`] = { numerator, denominator };
     });
+
     return [percentage];
   }
+
+  getDataClassesWithAnalytics = async analytics => {
+    if (this.config.isProjectReport) {
+      const dataWithCountries = await mapAnalyticsToCountries(analytics);
+      const dataByCountry = groupBy(dataWithCountries, result => result.organisationUnit);
+      // Only one data class is supported for country data classes
+      const baseDataClass = Object.values(this.config.dataClasses)[0];
+      const countryCodesToName = {};
+      const countryCodesToNamePromises = Object.entries(dataByCountry).map(
+        async ([countryCode]) => {
+          const countryEntity = await Entity.findOne({ code: countryCode });
+          const country = await countryEntity.getCountry();
+          return { [countryCode]: country.name };
+        },
+        {},
+      );
+      (await Promise.all(countryCodesToNamePromises)).forEach(country =>
+        Object.assign(countryCodesToName, country),
+      );
+
+      return Object.entries(dataByCountry).reduce(
+        (result, [code, analyticsForCountry]) => ({
+          ...result,
+          [countryCodesToName[code]]: { ...baseDataClass, analytics: analyticsForCountry },
+        }),
+        {},
+      );
+    }
+
+    const hasMultipleClasses = Object.keys(this.config.dataClasses).length > 1;
+    return Object.entries(this.config.dataClasses).reduce((result, [name, dataClass]) => {
+      const key = hasMultipleClasses ? name : 'value';
+      return { ...result, [key]: { ...dataClass, analytics } };
+    }, {});
+  };
 }
 
 class PercentagesOfValueCountsPerPeriodBuilder extends DataPerPeriodBuilder {

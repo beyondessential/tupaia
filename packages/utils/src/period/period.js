@@ -12,6 +12,7 @@ const DAY = 'DAY';
 const WEEK = 'WEEK';
 const MONTH = 'MONTH';
 const YEAR = 'YEAR';
+const QUARTER = 'QUARTER';
 
 /**
  * Available period formats for aggregation server data
@@ -20,14 +21,19 @@ export const PERIOD_TYPES = {
   DAY, // e.g. '20180104'
   WEEK, // e.g. '2018W01'
   MONTH, // e.g. '201801'
+  QUARTER, // e.g. '2018Q1'
   YEAR, // e.g. '2018'
 };
+
+const NON_NUMERIC_PERIOD_TYPES = [WEEK, QUARTER];
+
 export const DEFAULT_PERIOD_TYPE = PERIOD_TYPES.DAY;
 
 const PERIOD_TYPE_CONFIG = {
   [DAY]: {
     format: 'YYYYMMDD',
     length: 8,
+    granularityOrder: 1,
     displayFormat: 'Do MMM YYYY',
     momentShorthand: 'd',
     momentUnit: 'day',
@@ -35,6 +41,7 @@ const PERIOD_TYPE_CONFIG = {
   [WEEK]: {
     format: 'GGGG[W]WW',
     length: 7,
+    granularityOrder: 2,
     displayFormat: 'Do MMM YYYY',
     momentShorthand: 'w',
     momentUnit: 'isoWeek',
@@ -42,13 +49,23 @@ const PERIOD_TYPE_CONFIG = {
   [MONTH]: {
     format: 'YYYYMM',
     length: 6,
+    granularityOrder: 3,
     displayFormat: 'MMM YYYY',
     momentShorthand: 'M',
     momentUnit: 'month',
   },
+  [QUARTER]: {
+    format: 'YYYY[Q]Q',
+    length: 'Not a possible length', // bit of a hack to get periodToType to work
+    granularityOrder: 4,
+    displayFormat: '[Q]Q YYYY',
+    momentShorthand: 'Q',
+    momentUnit: 'quarter',
+  },
   [YEAR]: {
     format: 'YYYY',
     length: 4,
+    granularityOrder: 5,
     displayFormat: 'YYYY',
     momentShorthand: 'Y',
     momentUnit: 'year',
@@ -69,11 +86,21 @@ const LENGTH_TO_PERIOD_TYPE = createFieldToPeriodType('length');
 const createAccessor = field => periodType => get(PERIOD_TYPE_CONFIG, [periodType, field]);
 export const periodTypeToFormat = createAccessor('format');
 const periodTypeToLength = createAccessor('length');
+const periodTypeToGranularity = createAccessor('granularityOrder');
 const periodTypeToDisplayFormat = createAccessor('displayFormat');
 const toMomentShorthand = createAccessor('momentShorthand');
 export const periodTypeToMomentUnit = createAccessor('momentUnit');
 
-export const periodToType = (period = '') => LENGTH_TO_PERIOD_TYPE[period.length];
+export const periodToType = (period = '') => {
+  if (typeof period !== 'string') {
+    throw new Error(`periodToType expects period to be a string, got: ${period}`);
+  }
+
+  if (period.includes('Q')) {
+    return PERIOD_TYPES.QUARTER;
+  }
+  return LENGTH_TO_PERIOD_TYPE[period.length];
+};
 
 export const parsePeriodType = periodTypeString => {
   const error = new Error(`Period type must be one of ${Object.values(PERIOD_TYPES)}`);
@@ -123,13 +150,13 @@ export const periodToDisplayString = (period, targetType) => {
  */
 export const convertToPeriod = (period, targetType, isEndPeriod = true) => {
   const sanitizedTargetType = targetType.toUpperCase();
-  // Week periods are a special case because they use different format logic
-  return sanitizedTargetType === WEEK
-    ? convertToWeekPeriod(period, isEndPeriod)
-    : convertToNonWeekPeriod(period, sanitizedTargetType, isEndPeriod);
+  // Non numeric periods are a special case because they use different format logic
+  return NON_NUMERIC_PERIOD_TYPES.includes(sanitizedTargetType)
+    ? convertToNonNumericPeriod(period, sanitizedTargetType, isEndPeriod)
+    : convertToNumericPeriod(period, sanitizedTargetType, isEndPeriod);
 };
 
-const convertToWeekPeriod = (period, isEndPeriod) => {
+const convertToNonNumericPeriod = (period, targetType, isEndPeriod) => {
   const moment = periodToMoment(period);
   const inputType = periodToType(period);
   if (isEndPeriod) {
@@ -138,7 +165,7 @@ const convertToWeekPeriod = (period, isEndPeriod) => {
     moment.startOf(periodTypeToMomentUnit(inputType));
   }
 
-  return moment.format(periodTypeToFormat(WEEK));
+  return moment.format(periodTypeToFormat(targetType));
 };
 
 /**
@@ -146,19 +173,20 @@ const convertToWeekPeriod = (period, isEndPeriod) => {
  * This decision was based on performance, since the `moment.js` implementation
  * was around 30 times slower than the one below
  */
-const convertToNonWeekPeriod = (period, targetType, isEndPeriod) => {
+const convertToNumericPeriod = (period, targetType, isEndPeriod) => {
   let result = period;
-  if (periodToType(period) === WEEK) {
+  const inputType = periodToType(result);
+
+  if (NON_NUMERIC_PERIOD_TYPES.includes(inputType)) {
     result = periodToMoment(result);
     result = isEndPeriod
-      ? result.endOf(periodTypeToMomentUnit(WEEK))
-      : result.startOf(periodTypeToMomentUnit(WEEK));
+      ? result.endOf(periodTypeToMomentUnit(inputType))
+      : result.startOf(periodTypeToMomentUnit(inputType));
+    // If the input type isn't numeric, convert it to day format (which is numeric)
     result = result.format(periodTypeToFormat(DAY));
   }
   // Remove unnecessary characters at the end of the period string
   result = result.substring(0, periodTypeToLength(targetType));
-
-  const inputType = periodToType(result);
 
   switch (targetType) {
     case DAY: {
@@ -192,17 +220,17 @@ const convertToNonWeekPeriod = (period, targetType, isEndPeriod) => {
  * @returns {string}
  */
 export const findCoarsestPeriodType = periodTypes => {
-  let minLength;
+  let maxGranularity;
   let result;
 
   periodTypes.forEach(periodType => {
-    const currentLength = periodTypeToLength(periodType);
-    if (!currentLength) {
+    const currentGranularity = periodTypeToGranularity(periodType);
+    if (!currentGranularity) {
       return;
     }
 
-    if (currentLength < minLength || minLength === undefined) {
-      minLength = currentLength;
+    if (currentGranularity > maxGranularity || maxGranularity === undefined) {
+      maxGranularity = currentGranularity;
       result = periodType;
     }
   });
