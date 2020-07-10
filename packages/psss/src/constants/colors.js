@@ -35,4 +35,3 @@ export const LIGHT_ORANGE = '#FFECE1';
 
 // Greens
 export const DARK_GREEN = '#00972E';
-export const LIGHT_GREEN = '#DAF7D6';
