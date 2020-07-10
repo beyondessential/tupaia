@@ -27,7 +27,7 @@ const DATA_BUILDER_CONFIG = {
 };
 
 const VIEW_JSON = {
-  name: 'Download Reproductive Health Facility Raw Data',
+  name: 'Download Reproductive Health Facility Spot Check Raw Data',
   type: 'view',
   viewType: 'dataDownload',
   periodGranularity: 'month',
