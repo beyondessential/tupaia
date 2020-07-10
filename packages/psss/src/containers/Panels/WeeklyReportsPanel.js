@@ -12,8 +12,7 @@ import {
   EditableTableProvider,
   ButtonSelect,
   Card,
-  ErrorAlert,
-  LightErrorAlert,
+  Alert,
   Button,
   LightPrimaryButton,
 } from '@tupaia/ui-components';
@@ -97,7 +96,7 @@ const StyledDrawer = styled(Drawer)`
   }
 `;
 
-const StyledErrorAlert = styled(ErrorAlert)`
+const PositionedAlert = styled(Alert)`
   position: absolute;
   bottom: 100%;
   left: 0;
@@ -168,9 +167,9 @@ export const WeeklyReportsPanelComponent = React.memo(
           avatarUrl={countryFlagImage('as')}
         />
         {!isVerified && (
-          <LightErrorAlert>
+          <Alert severity="error" variant="standard">
             {unVerifiedSyndromesList} Above Threshold. Please review and verify data.
-          </LightErrorAlert>
+          </Alert>
         )}
         <GreySection disabled={isSaving} data-testid="country-reports">
           <EditableTableProvider
@@ -207,9 +206,9 @@ export const WeeklyReportsPanelComponent = React.memo(
         </MainSection>
         <DrawerFooter disabled={isSaving}>
           {verificationRequired && (
-            <StyledErrorAlert>
+            <PositionedAlert severity="error">
               {unVerifiedSyndromesList} Above Threshold. Please review and verify data.
-            </StyledErrorAlert>
+            </PositionedAlert>
           )}
           {panelStatus === PANEL_STATUSES.SUCCESS ? (
             <LightPrimaryButton startIcon={<CheckCircleIcon />} disabled fullWidth>
