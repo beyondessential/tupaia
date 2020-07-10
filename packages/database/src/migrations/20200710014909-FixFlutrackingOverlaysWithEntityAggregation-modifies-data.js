@@ -57,13 +57,11 @@ const addMeasureLevelToPresentationOptions = async (db, id, measureLevel) => {
 };
 
 exports.up = async function(db) {
-  console.log(arrayToDbString(FLUTRACKING_OVERLAYS));
   const allOverlays = (
     await db.runSql(
       `select * from "mapOverlay" where id in (${arrayToDbString(FLUTRACKING_OVERLAYS)})`,
     )
   ).rows;
-  console.log(allOverlays);
   return Promise.all(
     allOverlays.map(async ({ id, measureBuilderConfig }) => {
       const globalAggregationEntityType = measureBuilderConfig.aggregationEntityType;
