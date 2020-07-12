@@ -15,16 +15,19 @@ exports.setup = function(options, seedLink) {
 };
 
 const mapOverlayId = 'COVID_AU_HOSPITALS_AND_TESTING_SITES';
+const defaultMapOverlayId = 'COVID_AU_State_Total_Number_Confirmed_Cases';
 
 exports.up = function(db) {
   return db.runSql(`
-    UPDATE "mapOverlay" SET "sortOrder" = 1 WHERE id = '${mapOverlayId}'; 
+    UPDATE "mapOverlay" SET "sortOrder" = 1 WHERE id = '${mapOverlayId}';
+    UPDATE "project" SET "default_measure" = '${defaultMapOverlayId}' WHERE "code" = 'covidau'; 
   `);
 };
 
 exports.down = function(db) {
   return db.runSql(`
     UPDATE "mapOverlay" SET "sortOrder" = 0 WHERE id = '${mapOverlayId}'; 
+    UPDATE "project" SET "default_measure" = '126,171' WHERE "code" = 'covidau';
   `);
 };
 
