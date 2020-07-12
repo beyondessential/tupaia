@@ -108,7 +108,7 @@ export class DateRangePicker extends PureComponent {
       selectedEndDate: endDate,
       errorMessage: '',
     };
-    this.onSubmitDateSelection();
+    this.onSubmitDateSelection(true);
   }
 
   getCurrentDates() {
@@ -170,7 +170,7 @@ export class DateRangePicker extends PureComponent {
     this.resetSelectedDates();
   };
 
-  onSubmitDateSelection = () => {
+  onSubmitDateSelection = (forceSetDates = false) => {
     const { onSetDates } = this.props;
     const { startDate, endDate } = this.getBoundingDatesFromSelection();
 
@@ -181,7 +181,11 @@ export class DateRangePicker extends PureComponent {
     } else {
       // Only update if the dates have actually changed by at least one day
       const { startDate: currentStartDate, endDate: currentEndDate } = this.getCurrentDates();
-      if (!currentStartDate.isSame(startDate, 'day') || !currentEndDate.isSame(endDate, 'day')) {
+      if (
+        forceSetDates ||
+        !currentStartDate.isSame(startDate, 'day') ||
+        !currentEndDate.isSame(endDate, 'day')
+      ) {
         onSetDates(startDate, endDate);
       }
       // Close the dialog

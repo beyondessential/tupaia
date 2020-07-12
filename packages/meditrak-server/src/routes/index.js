@@ -18,7 +18,7 @@ import { importUsers } from './importUsers';
 import { importOptionSets } from './importOptionSets';
 import { postChanges } from './postChanges';
 import { pruneChanges } from './pruneChanges';
-import { putRecord } from './putRecord';
+import { addRecord } from './addRecord';
 import { scratchpad } from './scratchpad';
 import { updateSurveyResponses } from './updateSurveyResponses';
 import { createUser } from './createUser';
@@ -61,7 +61,7 @@ export default {
   importOptionSets: catchAsyncErrors(importOptionSets),
   postChanges: catchAsyncErrors(postChanges),
   pruneChanges: catchAsyncErrors(pruneChanges),
-  putRecord: catchAsyncErrors(putRecord),
+  addRecord: catchAsyncErrors(addRecord),
   scratchpad: catchAsyncErrors(scratchpad),
   updateSurveyResponses: catchAsyncErrors(updateSurveyResponses),
   createUser: catchAsyncErrors(createUser),

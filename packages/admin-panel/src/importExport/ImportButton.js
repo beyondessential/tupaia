@@ -9,14 +9,13 @@ import { connect } from 'react-redux';
 import { Button } from 'reactstrap';
 import { openImportDialog } from './actions';
 
-export const ImportButtonComponent = ({ dispatch, label, actionConfig, size }) => (
-  <Button onClick={() => dispatch(openImportDialog(actionConfig))} size={size}>
+export const ImportButtonComponent = ({ dispatch, label, size }) => (
+  <Button onClick={() => dispatch(openImportDialog())} size={size}>
     {label}
   </Button>
 );
 
 ImportButtonComponent.propTypes = {
-  actionConfig: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
   label: PropTypes.string,
   size: PropTypes.string,

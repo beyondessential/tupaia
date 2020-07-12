@@ -18,6 +18,7 @@ describe('checkAgainstConditions()', () => {
       buildEvent({ temperature: '5', result: 'Positive' }),
       buildEvent({ temperature: '7', result: 'Positive Mixed' }),
       buildEvent({ temperature: '2', result: 'Negative' }),
+      buildEvent({ temperature: '', result: '' }),
     ];
     const assertCountOfEventsForConditions = (conditions, expectedResult) =>
       expect(countEventsThatSatisfyConditions(events, conditions)).to.equal(expectedResult);
@@ -35,7 +36,14 @@ describe('checkAgainstConditions()', () => {
       assertCountOfEventsForConditions(conditions, 2);
     });
 
-    it('should return the event count when an "any value" condition is used', () => {
+    it('should be able to check for equality to an empty string', () => {
+      const conditions = {
+        dataValues: { temperature: '' },
+      };
+      assertCountOfEventsForConditions(conditions, 1);
+    });
+
+    it('should return the event count when an "any value" condition is used, not including empty strings', () => {
       const conditions = {
         dataValues: { temperature: '*' },
       };
@@ -67,7 +75,8 @@ describe('checkAgainstConditions()', () => {
       const conditions = {
         dataValues: { temperature: { operator: '<', value: '7' } },
       };
-      assertCountOfEventsForConditions(conditions, 3);
+      // This test returns 4 as '' is considered 0
+      assertCountOfEventsForConditions(conditions, 4);
     });
 
     it('should count events with data values within a closed range', () => {
