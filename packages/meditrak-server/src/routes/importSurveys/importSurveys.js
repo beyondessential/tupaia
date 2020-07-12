@@ -4,6 +4,7 @@
  **/
 
 import xlsx from 'xlsx';
+
 import {
   respond,
   DatabaseError,
@@ -13,7 +14,7 @@ import {
   ObjectValidator,
 } from '@tupaia/utils';
 import { deleteScreensForSurvey, deleteOrphanQuestions } from '../../dataAccessors';
-import { ANSWER_TYPES } from '../../database/models/Answer';
+import { ANSWER_TYPES, NON_DATA_ELEMENT_ANSWER_TYPES } from '../../database/models/Answer';
 import {
   splitStringOnComma,
   splitOnNewLinesOrCommas,
@@ -32,9 +33,10 @@ import {
   convertCellToJson,
   findOrCreateSurveyCode,
 } from './utilities';
+import { assertCanAddDataElementInGroup } from '../../database';
 
 const QUESTION_TYPE_LIST = Object.values(ANSWER_TYPES);
-const DEFAULT_DATA_SOURCE_FIELDS = { service_type: 'dhis', config: { isDataRegional: true } };
+const DEFAULT_SERVICE_TYPE = 'tupaia';
 
 const validateQuestionExistence = rows => {
   const isQuestionRow = ({ type }) => QUESTION_TYPE_LIST.includes(type);
@@ -44,22 +46,33 @@ const validateQuestionExistence = rows => {
   return true;
 };
 
-const findOrCreateDataGroup = async (models, surveyCode) =>
-  models.dataSource.findOrCreate(
+const updateOrCreateDataGroup = async (models, { surveyCode, serviceType }) => {
+  const dataGroup = await models.dataSource.findOrCreate(
     {
       type: models.dataSource.getTypes().DATA_GROUP,
       code: surveyCode,
     },
-    DEFAULT_DATA_SOURCE_FIELDS,
+    { service_type: DEFAULT_SERVICE_TYPE },
   );
 
-const findOrCreateDataElementInGroup = async (models, code, dataGroup) => {
-  const dataElement = await models.dataSource.findOrCreate(
+  if (serviceType && serviceType !== dataGroup.service_type) {
+    dataGroup.service_type = serviceType;
+    await dataGroup.save();
+  }
+
+  return dataGroup;
+};
+
+const updateOrCreateDataElementInGroup = async (models, dataElementCode, dataGroup) => {
+  const fieldsToUpdate = { service_type: dataGroup.service_type };
+
+  await assertCanAddDataElementInGroup(models, dataElementCode, dataGroup.code, fieldsToUpdate);
+  const dataElement = await models.dataSource.updateOrCreate(
     {
       type: models.dataSource.getTypes().DATA_ELEMENT,
-      code,
+      code: dataElementCode,
     },
-    DEFAULT_DATA_SOURCE_FIELDS,
+    fieldsToUpdate,
   );
   await models.dataElementDataGroup.findOrCreate({
     data_element_id: dataElement.id,
@@ -103,7 +116,10 @@ export async function importSurveys(req, res) {
         const [tabName, sheet] = surveySheets;
         const surveyName = extractTabNameFromQuery(tabName, requestedSurveyNames);
         const surveyCode = await findOrCreateSurveyCode(transactingModels, surveyName);
-        const dataGroup = await findOrCreateDataGroup(transactingModels, surveyCode);
+        const dataGroup = await updateOrCreateDataGroup(transactingModels, {
+          surveyCode,
+          serviceType: req.query.serviceType,
+        });
 
         // Get the survey based on the name of the sheet/tab
         const survey = await transactingModels.survey.findOrCreate(
@@ -223,11 +239,14 @@ export async function importSurveys(req, res) {
             optionSet,
           } = questionObject;
 
-          const dataElement = await findOrCreateDataElementInGroup(
-            transactingModels,
-            code,
-            dataGroup,
-          );
+          let dataElement;
+          if (!NON_DATA_ELEMENT_ANSWER_TYPES.includes(type)) {
+            dataElement = await updateOrCreateDataElementInGroup(
+              transactingModels,
+              code,
+              dataGroup,
+            );
+          }
 
           // Compose question based on details from spreadsheet
           const questionToUpsert = {
@@ -238,7 +257,7 @@ export async function importSurveys(req, res) {
             detail,
             options: processOptions(options, optionLabels, optionColors),
             option_set_id: await processOptionSetName(transactingModels, optionSet),
-            data_source_id: dataElement.id,
+            data_source_id: dataElement && dataElement.id,
           };
 
           // Either create or update the question depending on if there exists a matching code
