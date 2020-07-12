@@ -34,6 +34,9 @@ const EDITABLE_RECORD_TYPES = [
   TYPES.ALERT,
   TYPES.COMMENT,
   TYPES.ACCESS_REQUEST,
+  TYPES.DASHBOARD_REPORT,
+  TYPES.MAP_OVERLAY,
+  TYPES.DASHBOARD_GROUP,
 ];
 
 const CUSTOM_RECORD_UPDATERS = {
@@ -43,6 +46,9 @@ const CUSTOM_RECORD_UPDATERS = {
   [TYPES.SURVEY_SCREEN_COMPONENT]: editSurveyScreenComponent,
   [TYPES.ACCESS_REQUEST]: editAccessRequest,
 };
+
+// TODO remove when this task is done https://github.com/beyondessential/tupaia-backlog/issues/723
+const SKIP_ID_VALIDATION = [TYPES.DASHBOARD_REPORT, TYPES.MAP_OVERLAY, TYPES.DASHBOARD_GROUP];
 
 /**
  * Responds to PUT requests by editing a record
@@ -56,9 +62,15 @@ export async function editRecord(req, res) {
   if (!EDITABLE_RECORD_TYPES.includes(recordType)) {
     throw new ValidationError(`${resource} is not a valid PUT endpoint`);
   }
-  const validator = new ObjectValidator({
-    id: [constructRecordExistsWithId(database, recordType)],
-  });
+
+  // TODO remove when this task is done https://github.com/beyondessential/tupaia-backlog/issues/723
+  const validationCriteria = SKIP_ID_VALIDATION.includes(recordType)
+    ? {}
+    : {
+        id: [constructRecordExistsWithId(database, recordType)],
+      };
+
+  const validator = new ObjectValidator(validationCriteria);
   await validator.validate({ id }); // Will throw an error if not valid
 
   // Update the record, using a custom updater if necessary

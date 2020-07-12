@@ -13,7 +13,6 @@ import {
   findSurveyScreenComponentsInSurvey,
   findSurveysInCountry,
   findDataElementsInDataGroup,
-  findOrCountJoinChildren,
 } from '../dataAccessors';
 import { getApiUrl, resourceToRecordType } from '../utilities';
 
@@ -34,11 +33,13 @@ const GETTABLE_TYPES = [
   TYPES.FEED_ITEM,
   TYPES.OPTION_SET,
   TYPES.OPTION,
+  TYPES.PROJECT,
   TYPES.DISASTER,
   TYPES.DATA_SOURCE,
   TYPES.ACCESS_REQUEST,
-  TYPES.ALERT,
-  TYPES.COMMENT,
+  TYPES.DASHBOARD_REPORT,
+  TYPES.MAP_OVERLAY,
+  TYPES.DASHBOARD_GROUP,
 ];
 
 const createMultiResourceKey = (...recordTypes) => recordTypes.filter(x => x).join('/');
@@ -48,6 +49,7 @@ const CUSTOM_FINDERS = {
     TYPES.SURVEY,
     TYPES.SURVEY_SCREEN_COMPONENT,
   )]: findSurveyScreenComponentsInSurvey,
+  [TYPES.SURVEY_SCREEN_COMPONENT]: findSurveyScreenComponentsInSurvey,
   [createMultiResourceKey(TYPES.SURVEY_RESPONSE, TYPES.ANSWER)]: findAnswersInSurveyResponse,
   [createMultiResourceKey(TYPES.COUNTRY, TYPES.SURVEY)]: findSurveysInCountry,
   [createMultiResourceKey(TYPES.COUNTRY, TYPES.ENTITY)]: findEntitiesInCountry,
@@ -61,9 +63,6 @@ const CUSTOM_FOREIGN_KEYS = {
 const getForeignKeyColumn = (recordType, parentRecordType) => {
   const key = createMultiResourceKey(recordType, parentRecordType);
   return CUSTOM_FOREIGN_KEYS[key] || `${parentRecordType}_id`;
-};
-const PARENT_RECORD_FINDERS = {
-  [`${TYPES.ALERT}/${TYPES.COMMENT}`]: findOrCountJoinChildren,
 };
 
 const MAX_RECORDS_PER_PAGE = 100;
@@ -102,6 +101,7 @@ export async function getRecords(req, res) {
       columns: columnsString,
       filter: filterString,
       sort: sortString,
+      distinct = false,
     } = query;
 
     // Set up the finder for this record type (sometimes custom, mostly generic)
@@ -117,32 +117,18 @@ export async function getRecords(req, res) {
         return customFinder(models, parentRecordId, criteria, options, findOrCount);
       }
       if (parentRecordType) {
-        const recordAccessor = PARENT_RECORD_FINDERS[`${parentRecordType}/${recordType}`];
-        if (recordAccessor) {
-          return recordAccessor(
-            models,
-            findOrCount,
-            recordType,
-            parentRecordType,
-            parentRecordId,
-            criteria,
-            options,
-          );
-        }
-
         return database[findOrCount](
           recordType,
           { ...criteria, [getForeignKeyColumn(recordType, parentRecordType)]: parentRecordId },
           options,
         );
       }
-
       return database[findOrCount](recordType, criteria, options);
     };
 
     // First find out how many records there are and generate the pagination headers
     const unprocessedColumns = columnsString && JSON.parse(columnsString);
-    const { sort, multiJoin } = getQueryOptionsForColumns(unprocessedColumns, recordType);
+    let { sort, multiJoin } = getQueryOptionsForColumns(unprocessedColumns, recordType);
     if (!shouldReturnSingleRecord) {
       const numberOfRecords = await findOrCountRecords({ multiJoin }, 'count');
       const lastPage = Math.ceil(numberOfRecords / limit);
@@ -160,9 +146,14 @@ export async function getRecords(req, res) {
       const fullyQualifiedSortKeys = sortKeys.map(sortKey =>
         processColumnSelector(sortKey, recordType),
       );
-      sort.unshift(...fullyQualifiedSortKeys);
+      // if 'distinct', we can't order by any columns that aren't included in the distinct selection
+      if (distinct) {
+        sort = fullyQualifiedSortKeys;
+      } else {
+        sort.unshift(...fullyQualifiedSortKeys);
+      }
     }
-    const options = { multiJoin, columns, limit, offset, sort };
+    const options = { multiJoin, columns, limit, offset, sort, distinct };
     const records = await findOrCountRecords(options);
     // Respond only with the data in each record, stripping out metadata from DatabaseType instances
     const getRecordData = async record =>
