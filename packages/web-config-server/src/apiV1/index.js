@@ -16,7 +16,7 @@ import {
   appResendEmail,
 } from '/appServer';
 import { login, oneTimeLogin, logout } from '/authSession';
-import { exportChart, ExportSurveyResponsesHandler } from '/export';
+import { exportChart, ExportSurveyResponsesHandler, ExportSurveyDataHandler } from '/export';
 import { getUser } from './getUser';
 import ViewHandler from './view';
 import DashBoardHandler from './dashboard';
@@ -47,6 +47,7 @@ export const getRoutesForApiV1 = () => {
   api.post('/resendEmail', catchAsyncErrors(appResendEmail()));
   api.post('/export/chart', catchAsyncErrors(exportChart()));
   api.get('/export/surveyResponses', handleWith(ExportSurveyResponsesHandler));
+  api.get('/export/surveyDataDownload', handleWith(ExportSurveyDataHandler));
   api.get(
     '/organisationUnit',
     apicache.middleware(process.env.ORGANISATION_UNIT_CACHE_PERIOD),
