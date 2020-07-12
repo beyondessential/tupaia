@@ -17,7 +17,7 @@ exports.setup = function(options, seedLink) {
 const arrayToDbString = array => array.map(item => `'${item}'`).join(', ');
 
 const dashboardReportOriginalId = 'UNFPA_Reproductive_Health_Product_MOS';
-const dashboardReportWithFilterId = 'UNFPA_Reproductive_Health_Product_MOS_Regional';
+const dashboardReportWithFilterId = 'UNFPA_Reproductive_Health_Product_MOS_National';
 
 const dashboardGroups = [
   'SB_Unfpa_District',
