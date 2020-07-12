@@ -92,9 +92,7 @@ export const CreateOutbreakModalComponent = ({ isOpen, handleClose, createOutbre
           </SuccessText>
         </DialogContent>
         <DialogFooter>
-          <OutlinedButton to="/alerts" onClick={handleClose}>
-            Stay on Alerts
-          </OutlinedButton>
+          <OutlinedButton onClick={handleClose}>Stay on Alerts</OutlinedButton>
           <Button to="/alerts/outbreaks" component={RouterLink}>
             Go to Outbreaks
           </Button>

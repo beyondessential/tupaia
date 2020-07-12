@@ -6,7 +6,7 @@ import React from 'react';
 import { PhotoAlbum } from '@material-ui/icons';
 import { useParams } from 'react-router-dom';
 import { TabsToolbar, CalendarToday } from '@tupaia/ui-components';
-import { Header } from '../components';
+import { Header, WeeklyReportsExportModal } from '../components';
 import { CountryRoutes } from '../routes/CountryRoutes';
 import { countryFlagImage } from '../utils';
 
@@ -30,10 +30,15 @@ export const CountryReportsView = () => {
     title: 'Countries',
   };
   return (
-    <React.Fragment>
-      <Header title={countryName} back={back} avatarUrl={countryFlagImage('as')} />
+    <>
+      <Header
+        title={countryName}
+        back={back}
+        avatarUrl={countryFlagImage('as')}
+        ExportModal={WeeklyReportsExportModal}
+      />
       <TabsToolbar links={links} />
       <CountryRoutes />
-    </React.Fragment>
+    </>
   );
 };
