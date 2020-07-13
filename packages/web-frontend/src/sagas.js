@@ -893,7 +893,7 @@ function* exportChart(action) {
         exportUrl,
         viewId,
         dashboardGroupId,
-        projectCode: project,
+        projectCode,
         organisationUnitCode,
         organisationUnitName,
         selectedFormat,
