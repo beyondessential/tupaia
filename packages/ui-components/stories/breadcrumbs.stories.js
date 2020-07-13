@@ -7,8 +7,8 @@ import React from 'react';
 import styled from 'styled-components';
 import MuiBox from '@material-ui/core/Box';
 import { Link as RouterLink } from 'react-router-dom';
-import * as COLORS from './story-utils/theme/colors';
-import { RouterProvider } from './story-utils/RouterProvider';
+import * as COLORS from '../helpers/theme/colors';
+import { RouterProvider } from '../helpers/RouterProvider';
 import { Breadcrumbs, LightBreadcrumbs, Tabs, Tab, LightTabs, LightTab } from '../src';
 
 const Container = styled(MuiBox)`

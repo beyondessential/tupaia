@@ -15,8 +15,8 @@ import {
   FakeHeader,
   CondensedTableBody,
 } from '../../src';
-import { useTableData } from '../story-utils/useTableData';
-import * as COLORS from '../story-utils/theme/colors';
+import { useTableData } from '../../helpers/useTableData';
+import * as COLORS from '../../helpers/theme/colors';
 
 export default {
   title: 'Tables/ExpandableTable',

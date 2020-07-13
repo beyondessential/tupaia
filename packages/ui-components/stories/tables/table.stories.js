@@ -5,9 +5,9 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import * as COLORS from '../story-utils/theme/colors';
+import * as COLORS from '../../helpers/theme/colors';
 import { Table } from '../../src';
-import { useTableData } from '../story-utils/useTableData';
+import { useTableData } from '../../helpers/useTableData';
 
 export default {
   title: 'Tables/Table',

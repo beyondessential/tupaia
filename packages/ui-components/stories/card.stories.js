@@ -22,7 +22,7 @@ import {
   CardTabPanels,
   CardTabs,
 } from '../src';
-import * as COLORS from './story-utils/theme/colors';
+import * as COLORS from '../helpers/theme/colors';
 
 export default {
   title: 'Card',

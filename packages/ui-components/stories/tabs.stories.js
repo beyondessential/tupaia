@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import { Dashboard, Warning, NewReleases } from '@material-ui/icons';
 import MuiBox from '@material-ui/core/Box';
 import { Tabs, Tab, LightTabs, LightTab } from '../src';
-import * as COLORS from './story-utils/theme/colors';
+import * as COLORS from '../helpers/theme/colors';
 
 export default {
   title: 'Tabs',

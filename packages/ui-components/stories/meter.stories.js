@@ -9,7 +9,7 @@ import MuiBox from '@material-ui/core/Box';
 import MuiCard from '@material-ui/core/Card';
 import MuiCardContent from '@material-ui/core/CardContent';
 import { BarMeter, CircleMeter } from '../src';
-import * as COLORS from './story-utils/theme/colors';
+import * as COLORS from '../helpers/theme/colors';
 
 export default {
   title: 'Meters',

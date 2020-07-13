@@ -17,10 +17,7 @@ const enhancers = compose(applyMiddleware(thunk.withExtraArgument({ api: API, fa
 
 const customRender = (ui, defaultState = {}) => {
   const store = createStore(reducer, defaultState, enhancers);
-
-  const Providers = props => <AppProviders store={store} {...props} />;
-
-  return render(ui, { wrapper: Providers });
+  return render(<AppProviders store={store}>{ui}</AppProviders>);
 };
 
 export { customRender as render };

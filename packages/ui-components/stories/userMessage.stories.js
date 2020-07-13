@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import MuiAlert from '@material-ui/lab/Alert';
 import { UserMessage, UserMessageFooter, UserMessageHeader } from '../src';
-import { FakeAPI } from './story-utils/api';
+import { FakeAPI } from '../helpers/api';
 
 export default {
   title: 'UserMessage',

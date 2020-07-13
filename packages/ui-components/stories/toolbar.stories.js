@@ -6,7 +6,7 @@
 import React from 'react';
 import { Alarm } from '@material-ui/icons';
 import { TabsToolbar, Clipboard, WarningCloud } from '../src';
-import { RouterProvider } from './story-utils/RouterProvider';
+import { RouterProvider } from '../helpers/RouterProvider';
 
 export default {
   title: 'Toolbar',
