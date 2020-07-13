@@ -146,6 +146,8 @@ class TableOfValuesPerPeriodBuilder extends TableOfDataValuesBuilder {
             const { rowName, calculationType } = dataElementToRowConfig[dataElement];
             if (calculationType === 'SUM') {
               rowData[rowName][key] = (rowData[rowName][key] || 0) + value;
+            } else if (calculationType === 'YESNO') {
+              rowData[rowName][key] = value === 1 ? 'Yes' : (rowData[rowName][key] || 'No');
             } else {
               throw new Error(`Calculation type ${calculationType} not defined`);
             }

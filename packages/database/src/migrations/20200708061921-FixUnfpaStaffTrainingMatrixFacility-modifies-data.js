@@ -27,19 +27,18 @@ const originalDataBuilderConfig = {
     'Have any staff been trained to provide SRH services to adolescents and youth',
   ],
   cells: [
-    ['BAYUI37nJ27'], //RHS4UNFPA809
+    ['BAYUI37nJ27'],
     [
       {
         action: 'SUM',
-        dataValues: ['xDT68q89i7J', 'WGsYZDuaE2w', 'QleUiYGlH2K', 'GtrLIeauSmj', 'PVMX8m9KrgT'], 
-                    //RHS1UNFPA561, RHS1UNFPA57, RHS1UNFPA592, RHS1UNFPA601, RHS1UNFPA61
-        dataElement: 'PVMX8m9KrgT', //RHS1UNFPA61
+        dataValues: ['xDT68q89i7J', 'WGsYZDuaE2w', 'QleUiYGlH2K', 'GtrLIeauSmj', 'PVMX8m9KrgT'],
+        dataElement: 'PVMX8m9KrgT',
       },
     ],
-    ['YRdwZOXcj6s'], //RHS2UNFPA292
-    ['pHp0X0JkZQH'], //RHS3UNFPA5410
-    ['JIvHqMTozrX'], //RHS2UNFPA291
-    ['aoZkMRVLynz'], //RHS2UNFPA240
+    ['YRdwZOXcj6s'],
+    ['pHp0X0JkZQH'],
+    ['JIvHqMTozrX'],
+    ['aoZkMRVLynz'],
   ],
   columns: [
     {
@@ -68,52 +67,49 @@ const newDatabuilderConfig = {
     'Have any staff been trained to provide SRH services to adolescents and youth',
   ],
   cells: [
-    [// 'Staff trained in the provision of modern contraceptives'
+    [
       {
         calc: 'SUM',
         dataElement: 'RHS4UNFPA809',
       },
     ],
-    [// 'ANC (including part time staff)'
+    [
       {
-        // dataElement: 'RHS1UNFPA61',
-        // dataValues: ['RHS1UNFPA561', 'RHS1UNFPA57', 'RHS1UNFPA592', 'RHS1UNFPA601', 'RHS1UNFPA61'],
         calc: 'SUM',
-        dataElement: ['RHS1UNFPA5601', 'RHS1UNFPA57', 'RHS1UNFPA5902', 'RHS1UNFPA60', 'RHS1UNFPA6001', 'RHS1UNFPA61'],
+        dataElement: [
+          'RHS1UNFPA5601',
+          'RHS1UNFPA57',
+          'RHS1UNFPA5902',
+          'RHS1UNFPA60',
+          'RHS1UNFPA6001',
+          'RHS1UNFPA61',
+        ],
       },
     ],
-    [// 'Service providers trained to detect, discuss, and refer clients to services that handle sexual and gender-based violence'
+    [
       {
         calc: 'SUM',
         dataElement: 'RHS2UNFPA292',
       },
     ],
-    [//'Staff trained in delivery services'
+    [
       {
         calc: 'SUM',
         dataElement: 'RHS3UNFPA5410',
       },
     ],
-    [// 'Have any staff been trained to provide services to survivors of rape or other gender based violence?'
-      // {
-      //   calc: 'NONE',
-      //   dataElement: 'RHS2UNFPA291',
-      // },
-      'RHS2UNFPA291',
+    [
+      {
+        calc: 'YESNO',
+        dataElement: 'RHS2UNFPA291',
+      },
     ],
-    [// 'Have any staff been trained to provide SRH services to adolescents and youth'
-      // {
-      //   calc: 'NONE',
-      //   dataElement: 'RHS2UNFPA240',
-      // },
-      'RHS2UNFPA240',
+    [
+      {
+        calc: 'YESNO',
+        dataElement: 'RHS2UNFPA240',
+      },
     ],
-    // [
-    //   {
-    //     calc: 'COUNT_ENTITIES_IN_ANALYTICS',
-    //     dataElement: 'NONE',
-    //   },
-    // ],
   ],
   columns: {
     type: '$period',
@@ -121,15 +117,21 @@ const newDatabuilderConfig = {
     aggregationType: 'FINAL_EACH_QUARTER',
     fillEmptyPeriods: true,
   },
-  // baselineColumns: [
-  //   {
-  //     name: 'Base Line',
-  //     showYear: 'true',
-  //   }
-  // ]
-  // entityAggregation: {
-  //   dataSourceEntityType: 'facility',
-  // },
+  baselineColumns: [
+    {
+      name: 'Base Line',
+      showYear: 'true',
+      dataElements: [
+        'RHS1UNFPA5601',
+        'RHS1UNFPA57',
+        'RHS1UNFPA5902',
+        'RHS1UNFPA60',
+        'RHS1UNFPA6001',
+        'RHS1UNFPA61',
+      ],
+      dataElementGroupCode: 'SRHStaffTraining',
+    },
+  ],
 };
 
 exports.up = function(db) {
