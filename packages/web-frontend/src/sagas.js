@@ -25,7 +25,7 @@ import {
   ATTEMPT_SIGNUP,
   ATTEMPT_CHART_EXPORT,
   ATTEMPT_DRILL_DOWN,
-  CHANGE_ORG_UNIT,
+  ON_SET_ORG_UNIT,
   FETCH_INFO_VIEW_DATA,
   CHANGE_SEARCH,
   CHANGE_MEASURE,
@@ -465,6 +465,7 @@ function* fetchOrgUnitDataAndChangeOrgUnit(action) {
   const state = yield select();
   const { organisationUnitCode, shouldChangeMapBounds } = action;
   const orgUnit = selectOrgUnit(state, organisationUnitCode);
+  console.log(action, state, orgUnit);
   if (orgUnit && orgUnit.isComplete) {
     const orgUnitAndChildren = {
       ...orgUnit,
@@ -517,7 +518,7 @@ function* watchRequestOrgUnitAndFetchIt() {
 }
 
 function* watchOrgUnitChangeAndFetchIt() {
-  yield takeLatest(CHANGE_ORG_UNIT, fetchOrgUnitDataAndChangeOrgUnit);
+  yield takeLatest(ON_SET_ORG_UNIT, fetchOrgUnitDataAndChangeOrgUnit);
 }
 
 /**

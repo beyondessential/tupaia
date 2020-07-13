@@ -19,34 +19,40 @@
 
 import {
   SET_PROJECT,
-  CHANGE_ORG_UNIT_SUCCESS,
+  SET_ORG_UNIT,
   CHANGE_DASHBOARD_GROUP,
   OPEN_ENLARGED_DIALOG,
   CLOSE_ENLARGED_DIALOG,
   CHANGE_MEASURE,
   CLEAR_MEASURE,
   GO_HOME,
+  onSetOrgUnit,
 } from '../actions';
+
+import { onSetProject } from '../projects/actions';
 
 import { setUrlComponent, clearUrl } from './historyNavigation';
 import { URL_COMPONENTS } from './constants';
 
 // TODO: import { gaPageView } from '../utils';
 
-export const historyMiddleware = () => next => action => {
+export const historyMiddleware = ({ dispatch }) => next => action => {
   switch (action.type) {
     // Actions that modify the path
     case SET_PROJECT:
       setUrlComponent(URL_COMPONENTS.PROJECT, action.projectCode);
+      dispatch(onSetProject(action.projectCode));
       break;
-    case CHANGE_ORG_UNIT_SUCCESS:
-      setUrlComponent(URL_COMPONENTS.ORG_UNIT, action.organisationUnit.organisationUnitCode);
+    case SET_ORG_UNIT:
+      setUrlComponent(URL_COMPONENTS.ORG_UNIT, action.organisationUnitCode);
+      dispatch(onSetOrgUnit(action.organisationUnitCode, action.shouldChangeMapBounds));
       break;
     case CHANGE_DASHBOARD_GROUP:
       setUrlComponent(URL_COMPONENTS.DASHBOARD, action.name);
       break;
     case GO_HOME:
       clearUrl();
+      dispatch(onSetProject(null));
       break;
 
     // Actions that modify search params
@@ -63,10 +69,8 @@ export const historyMiddleware = () => next => action => {
       setUrlComponent(URL_COMPONENTS.MEASURE, null);
       break;
     default:
-      console.log('No URL change required');
       return next(action);
   }
 
-  console.log(action);
   return next(action);
 };

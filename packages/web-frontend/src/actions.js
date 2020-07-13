@@ -39,7 +39,8 @@ export const CLEAR_MEASURE_HIERARCHY = 'CLEAR_MEASURE_HIERARCHY';
 export const CHANGE_MEASURE = 'CHANGE_MEASURE';
 export const REQUEST_ORG_UNIT = 'REQUEST_ORG_UNIT';
 export const FETCH_ORG_UNIT = 'FETCH_ORG_UNIT';
-export const CHANGE_ORG_UNIT = 'CHANGE_ORG_UNIT';
+export const SET_ORG_UNIT = 'SET_ORG_UNIT';
+export const ON_SET_ORG_UNIT = 'ON_SET_ORG_UNIT';
 export const CHANGE_POSITION = 'CHANGE_POSITION';
 export const CHANGE_BOUNDS = 'CHANGE_BOUNDS';
 export const CHANGE_SEARCH = 'CHANGE_SEARCH';
@@ -461,15 +462,29 @@ export function fetchOrgUnit(organisationUnitCode) {
 }
 
 /**
- * Changes current Organisational Unit and Map view. Will trigger sagas affecting state for
- * map and the current dashboard.
+ * Changes current Organisational Unit. ONLY sets url.
  */
-export function changeOrgUnit(
+export function changeOrgUnit( // TODO: Rename function and deal with defaults
   organisationUnitCode = initialOrgUnit.organisationUnitCode,
   shouldChangeMapBounds = true,
 ) {
   return {
-    type: CHANGE_ORG_UNIT,
+    type: SET_ORG_UNIT,
+    organisationUnitCode,
+    shouldChangeMapBounds,
+  };
+}
+
+/**
+ * Changes current Organisational Unit and Map view. Will trigger sagas affecting state for
+ * map and the current dashboard.
+ */
+export function onSetOrgUnit( // TODO: Rename function and deal with defaults
+  organisationUnitCode = initialOrgUnit.organisationUnitCode,
+  shouldChangeMapBounds = true,
+) {
+  return {
+    type: ON_SET_ORG_UNIT,
     organisationUnitCode,
     shouldChangeMapBounds,
   };
