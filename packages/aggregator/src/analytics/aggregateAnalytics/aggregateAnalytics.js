@@ -37,7 +37,7 @@ export const aggregateAnalytics = (
         analytics,
         {
           ...aggregationConfig,
-          fillEmptyValues: true,
+          fillEmptyPeriodsTilNow: true,
         },
         DAY,
       );
@@ -56,7 +56,7 @@ export const aggregateAnalytics = (
         analytics,
         {
           ...aggregationConfig,
-          fillEmptyValues: true,
+          fillEmptyPeriodsTilNow: true,
         },
         MONTH,
       );
@@ -67,7 +67,7 @@ export const aggregateAnalytics = (
         analytics,
         {
           ...aggregationConfig,
-          fillEmptyValues: true,
+          fillEmptyPeriodsTilNow: true,
         },
         QUARTER,
       );
@@ -78,7 +78,7 @@ export const aggregateAnalytics = (
         analytics,
         {
           ...aggregationConfig,
-          fillEmptyValues: true,
+          fillEmptyPeriodsTilNow: true,
         },
         YEAR,
       );
