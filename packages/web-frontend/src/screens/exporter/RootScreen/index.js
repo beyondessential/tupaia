@@ -20,7 +20,7 @@ import moment from 'moment-timezone';
 import { ChartWrapper, getIsMatrix, MatrixWrapper } from '../../../components/View';
 import { request } from '../../../utils';
 import { DARK_BLUE, WHITE } from '../../../styles';
-import { selectCurrentOrgUnit } from '../../../selectors';
+import { selectOrgUnit } from '../../../selectors';
 
 // TODO: Replace with selectors
 /*
@@ -28,6 +28,7 @@ const initialLocation = getInitialLocation();
 */
 const {
   organisationUnitCode,
+  organisationUnitName,
   dashboardId,
   reportId,
   timeZone,
@@ -35,8 +36,8 @@ const {
   endDate,
   disasterStartDate,
   disasterEndDate,
-  project: projectCode,
-} = {}; // decodeUrl(initialLocation.pathname, initialLocation.search);
+  projectCode,
+} = {}; //decodeUrl(initialLocation.pathname, initialLocation.search);
 
 const getCurrentDateString = () => {
   const date = moment().tz(timeZone);
@@ -49,7 +50,7 @@ const getDateRangeString = () => {
   return `Includes data from ${formatDate(startDate)} to ${formatDate(endDate)}.`;
 };
 
-export class RootScreen extends PureComponent {
+export default class RootScreen extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -83,7 +84,6 @@ export class RootScreen extends PureComponent {
 
   renderTitle() {
     const { viewContent } = this.state;
-    const { organisationUnitName } = this.props;
 
     return (
       <h1 style={styles.title}>
@@ -114,12 +114,6 @@ export class RootScreen extends PureComponent {
     );
   }
 }
-
-const mapStateToProps = state => ({
-  organisationUnitName: selectCurrentOrgUnit(state).name,
-});
-
-export default connect(mapStateToProps, null)(RootScreen);
 
 const TIMESTAMP_HEIGHT = 20;
 
