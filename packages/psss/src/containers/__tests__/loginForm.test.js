@@ -20,8 +20,6 @@ describe('login form', () => {
     API.reauthenticate.mockResolvedValueOnce({ user: { name: 'tupaia' } });
     render(<LoginForm />);
 
-    screen.debug();
-
     const emailInput = screen.getByPlaceholderText(/email/i);
     const passwordInput = screen.getByPlaceholderText(/password/i);
     const submitButton = screen.getByRole('button', { name: /login*/i });
