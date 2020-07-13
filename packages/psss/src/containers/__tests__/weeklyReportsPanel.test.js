@@ -129,26 +129,4 @@ describe('weekly reports panel', () => {
     expect(alerts.length).toEqual(2);
     expect(submitButton).toBeDisabled();
   });
-
-  const noAlertsState = {
-    auth: {},
-    weeklyReports: {
-      site: defaultState.weeklyReports.site,
-      country: defaultState.weeklyReports.country,
-      activeWeek: {
-        id: ACTIVE_ID,
-        panelIsOpen: true,
-        verifiedStatuses: {},
-      },
-    },
-  };
-
-  it('confirms a created alert', () => {
-    renderWeeklyReportsPanel();
-    const submitButton = screen.getByRole('button', { name: /submit*/i });
-    const verifyButton = screen.getByRole('button', { name: /please verify*/i });
-    fireEvent.click(verifyButton);
-    fireEvent.click(submitButton);
-    expect(screen.getByText(/alert created*/i)).toBeInTheDocument();
-  });
 });
