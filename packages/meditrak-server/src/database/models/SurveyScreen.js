@@ -1,20 +1,12 @@
 /**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
 
-import { DatabaseModel, DatabaseType, TYPES } from '@tupaia/database';
+import { SurveyScreenModel as CommonSurveyScreenModel } from '@tupaia/database';
 
-class SurveyScreenType extends DatabaseType {
-  static databaseType = TYPES.SURVEY_SCREEN;
-
-  static meditrakConfig = {
+export class SurveyScreenModel extends CommonSurveyScreenModel {
+  meditrakConfig = {
     minAppVersion: '0.0.1',
   };
-}
-
-export class SurveyScreenModel extends DatabaseModel {
-  get DatabaseTypeClass() {
-    return SurveyScreenType;
-  }
 }
