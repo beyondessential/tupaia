@@ -62,6 +62,21 @@ class TableOfValuesForOrgUnitsBuilder extends TableOfDataValuesBuilder {
 
     return cleanedRows;
   }
+
+  /**
+   * Return a list of categories that this row is in (A row can be in multiple categories)
+   */
+  returnCategoriesOfARow = (rowName, rows) => {
+    const rowCategories = [];
+
+    Object.values(rows).forEach(row => {
+      if (row.dataElement === rowName && row.categoryId) {
+        rowCategories.push(row.categoryId);
+      }
+    });
+
+    return rowCategories;
+  };
 }
 
 export const tableOfValuesForOrgUnits = async (
