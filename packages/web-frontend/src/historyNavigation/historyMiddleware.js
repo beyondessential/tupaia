@@ -18,7 +18,7 @@
  */
 
 import {
-  SELECT_PROJECT,
+  SET_PROJECT,
   CHANGE_ORG_UNIT_SUCCESS,
   CHANGE_DASHBOARD_GROUP,
   OPEN_ENLARGED_DIALOG,
@@ -36,7 +36,7 @@ import { URL_COMPONENTS } from './constants';
 export const historyMiddleware = () => next => action => {
   switch (action.type) {
     // Actions that modify the path
-    case SELECT_PROJECT:
+    case SET_PROJECT:
       setUrlComponent(URL_COMPONENTS.PROJECT, action.projectCode);
       break;
     case CHANGE_ORG_UNIT_SUCCESS:

@@ -6,7 +6,7 @@ import { setProjects, fetchProjectsError, selectProject } from './actions';
 
 import {
   FETCH_INITIAL_DATA,
-  SELECT_PROJECT,
+  ON_SET_PROJECT,
   changeBounds,
   changeDashboardGroup,
   FETCH_LOGIN_SUCCESS,
@@ -41,14 +41,14 @@ function* watchUserLogoutSuccessAndRefetchProjectData() {
 function* loadProject(action) {
   const state = yield select();
   const project = selectProjectByCode(state, action.projectCode);
-
+  // TODO: Maybe use getCurrentProject here
   yield put(changeBounds(yield select(selectAdjustedProjectBounds, action.projectCode)));
   yield put(changeOrgUnit(action.projectCode));
   yield put(changeDashboardGroup(project.dashboardGroupName));
 }
 
 function* watchSelectProjectAndLoadProjectState() {
-  yield takeLatest(SELECT_PROJECT, loadProject);
+  yield takeLatest(ON_SET_PROJECT, loadProject);
 }
 
 export default [
