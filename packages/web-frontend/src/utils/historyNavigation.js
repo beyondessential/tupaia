@@ -69,6 +69,7 @@ export function decodeUrl(pathname, search) {
     disasterStartDate,
     disasterEndDate,
     verifyEmailToken,
+    organisationUnitName,
   } = queryString.parse(search);
   switch (prefix) {
     case PASSWORD_RESET_PREFIX:
@@ -78,6 +79,7 @@ export function decodeUrl(pathname, search) {
     default:
       return {
         organisationUnitCode,
+        organisationUnitName,
         dashboardId,
         reportId,
         measureId,
@@ -118,6 +120,7 @@ export function createUrl({
   dashboardId,
   measureId,
   organisationUnitCode,
+  organisationUnitName,
   projectCode = DEFAULT_PROJECT,
   reportId,
   timeZone,
@@ -137,6 +140,7 @@ export function createUrl({
     endDate,
     disasterStartDate,
     disasterEndDate,
+    organisationUnitName,
   };
 
   const defaultDashboard = getDefaultDashboardForProject(projectCode);
