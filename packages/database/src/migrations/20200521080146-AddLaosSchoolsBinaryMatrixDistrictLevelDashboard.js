@@ -24,6 +24,7 @@ const REPORT = {
     rows: [
       'Electricity available',
       'Internet connection available',
+      'Telephone available',
       //'Dormitory school',
       'Access to clean water',
       'Functioning toilets',
@@ -58,6 +59,7 @@ const REPORT = {
     cells: [
       'SchFF001',
       'SchFF002',
+      'SchCVD026a',
       //'SchFF003',
       'BCD29_event',
       'BCD32_event',
