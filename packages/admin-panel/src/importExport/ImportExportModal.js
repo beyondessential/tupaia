@@ -29,19 +29,19 @@ export class ImportExportModalComponent extends React.Component {
   }
 
   renderContent() {
-    const { queryParameters, instruction, children, parentRecord, isOpen } = this.props;
+    const { queryParameters, subtitle, children, parentRecord, isOpen } = this.props;
     if (!isOpen) return null;
     return (
       <div>
-        <p>{instruction}</p>
+        <p>{subtitle}</p>
         {queryParameters.map(queryParameter => (
           <InputField
             key={queryParameter.parameterKey}
             inputKey={queryParameter.parameterKey}
             {...queryParameter}
             onChange={this.handleQueryParameterChange}
-            label={queryParameter.instruction}
-            placeholder={queryParameter.label}
+            label={queryParameter.label}
+            secondaryLabel={queryParameter.secondaryLabel}
             parentRecord={parentRecord}
           />
         ))}
@@ -82,7 +82,7 @@ ImportExportModalComponent.propTypes = {
   onDismiss: PropTypes.func.isRequired,
   title: PropTypes.string,
   queryParameters: PropTypes.array,
-  instruction: PropTypes.string,
+  subtitle: PropTypes.string,
   isConfirmDisabled: PropTypes.bool,
   onConfirm: PropTypes.func.isRequired,
   confirmLabel: PropTypes.string.isRequired,
@@ -95,7 +95,7 @@ ImportExportModalComponent.defaultProps = {
   errorMessage: null,
   title: null,
   queryParameters: [],
-  instruction: '',
+  subtitle: '',
   isConfirmDisabled: false,
   parentRecord: {},
   children: null,

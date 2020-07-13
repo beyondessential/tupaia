@@ -68,4 +68,55 @@ export class TupaiaDataApi {
       dataElementCodes,
     ).executeOnDatabase(this.database);
   }
+
+  async fetchDataGroup(dataGroupCode, dataElementCodes) {
+    if (!dataGroupCode) {
+      throw new Error('Please provide a data group code');
+    }
+
+    const dataGroups = await new SqlQuery(
+      `
+      SELECT code, name
+      FROM survey 
+      WHERE survey.code = '${dataGroupCode}'
+    `,
+    ).executeOnDatabase(this.database);
+
+    const dataGroup = dataGroups[0];
+
+    if (!dataGroup) {
+      throw new Error(`Cannot find Survey: ${dataGroupCode}`);
+    }
+
+    let dataGroupMetadata = {
+      ...dataGroup,
+    };
+
+    //dataElementCodes metadata can be optional
+    if (dataElementCodes && Array.isArray(dataElementCodes)) {
+      const sqlQuery = await new SqlQuery(
+        `
+        SELECT question.code, question.name, question.text
+        FROM question 
+        JOIN survey_screen_component on question.id = survey_screen_component.question_id 
+        JOIN survey_screen on survey_screen.id = survey_screen_component.screen_id
+        JOIN survey on survey_screen.survey_id = survey.id 
+        WHERE survey.code = '${dataGroupCode}'
+        AND question.code IN ${SqlQuery.parameteriseArray(dataElementCodes)}
+      `,
+        dataElementCodes,
+      );
+
+      sqlQuery.orderBy('survey_screen.screen_number, survey_screen_component.component_number');
+
+      const dataElementsMetadata = await sqlQuery.executeOnDatabase(this.database);
+
+      dataGroupMetadata = {
+        ...dataGroupMetadata,
+        dataElements: dataElementsMetadata,
+      };
+    }
+
+    return dataGroupMetadata;
+  }
 }
