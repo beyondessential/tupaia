@@ -2,34 +2,51 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
+
 import React from 'react';
 import MuiAlert from '@material-ui/lab/Alert';
 import styled from 'styled-components';
-import { Warning } from '@material-ui/icons';
+import { CheckCircle, Warning } from '@material-ui/icons';
+import PropTypes from 'prop-types';
 
 const StyledAlert = styled(MuiAlert)`
   border-radius: 0;
   font-weight: 400;
-  padding: 0.9rem 1.25rem 0.9rem 2.5rem;
   align-items: center;
+  padding: 0.9rem 1.25rem 0.9rem 2.5rem;
   box-shadow: inset 0px -1px 0px rgba(0, 0, 0, 0.15);
+
+  .MuiAlert-icon {
+    margin-right: 0.5rem;
+  }
+
+  &.MuiAlert-standardError {
+    background: ${props => props.theme.palette.error.light};
+    color: ${props => props.theme.palette.error.main};
+  }
 `;
 
-const StyledErrorAlert = styled(StyledAlert)`
-  background: ${props => props.theme.palette.error.light};
-  color: ${props => props.theme.palette.error.main};
-`;
-
-export const ErrorAlert = props => (
-  <StyledErrorAlert
-    icon={<Warning fontSize="inherit" />}
-    variant="filled"
-    severity="error"
-    {...props}
-  />
+export const Alert = ({ variant, severity, iconMapping, ...props }) => (
+  <StyledAlert variant={variant} severity={severity} iconMapping={iconMapping} {...props} />
 );
 
-export const SmallErrorAlert = styled(ErrorAlert)`
+Alert.propTypes = {
+  severity: PropTypes.string,
+  variant: PropTypes.string,
+  iconMapping: PropTypes.object,
+};
+
+Alert.defaultProps = {
+  severity: 'success',
+  variant: 'filled',
+  iconMapping: {
+    success: <CheckCircle />,
+    error: <Warning />,
+    warning: <Warning />,
+  },
+};
+
+const StyledSmallAlert = styled(StyledAlert)`
   font-size: 0.8125rem;
   border-radius: 3px;
   padding: 0.5rem 1.25rem 0.5rem 1rem;
@@ -41,3 +58,23 @@ export const SmallErrorAlert = styled(ErrorAlert)`
     font-size: 1.5em;
   }
 `;
+
+export const SmallAlert = ({ variant, severity, iconMapping, ...props }) => (
+  <StyledSmallAlert variant={variant} severity={severity} iconMapping={iconMapping} {...props} />
+);
+
+SmallAlert.propTypes = {
+  severity: PropTypes.string,
+  variant: PropTypes.string,
+  iconMapping: PropTypes.object,
+};
+
+SmallAlert.defaultProps = {
+  severity: 'success',
+  variant: 'filled',
+  iconMapping: {
+    success: <CheckCircle fontSize="inherit" />,
+    error: <Warning fontSize="inherit" />,
+    warning: <Warning fontSize="inherit" />,
+  },
+};
