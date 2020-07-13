@@ -7,6 +7,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import CheckCircleIcon from '@material-ui/icons/CheckCircleOutline';
+import Collapse from '@material-ui/core/Collapse';
+import Fade from '@material-ui/core/Fade';
 import Typography from '@material-ui/core/Typography';
 import {
   EditableTableProvider,
@@ -116,9 +118,9 @@ const PANEL_STATUSES = {
 
 const toCommaList = values =>
   values
-    .join(', ')
-    .toUpperCase()
-    .replace(/,(?!.*,)/gim, ' and');
+  .join(', ')
+  .toUpperCase()
+  .replace(/,(?!.*,)/gim, ' and');
 
 export const WeeklyReportsPanelComponent = React.memo(
   ({ countryData, sitesData, isOpen, handleClose, unVerifiedSyndromes, alerts, handleConfirm }) => {
@@ -166,11 +168,11 @@ export const WeeklyReportsPanelComponent = React.memo(
           date="Week 9 Feb 25 - Mar 1, 2020"
           avatarUrl={countryFlagImage('as')}
         />
-        {!isVerified && (
+        <Collapse in={!isVerified}>
           <Alert severity="error" variant="standard">
             {unVerifiedSyndromesList} Above Threshold. Please review and verify data.
           </Alert>
-        )}
+        </Collapse>
         <GreySection disabled={isSaving} data-testid="country-reports">
           <EditableTableProvider
             columns={columns}
@@ -205,11 +207,11 @@ export const WeeklyReportsPanelComponent = React.memo(
           </Card>
         </MainSection>
         <DrawerFooter disabled={isSaving}>
-          {verificationRequired && (
+          <Fade in={verificationRequired}>
             <PositionedAlert severity="error">
               {unVerifiedSyndromesList} Above Threshold. Please review and verify data.
             </PositionedAlert>
-          )}
+          </Fade>
           {panelStatus === PANEL_STATUSES.SUCCESS ? (
             <LightPrimaryButton startIcon={<CheckCircleIcon />} disabled fullWidth>
               Confirmed
