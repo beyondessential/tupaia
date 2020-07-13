@@ -25,6 +25,8 @@ const DISTRICT = 'district';
 const FACILITY = 'facility';
 const SCHOOL = 'school';
 const SUB_DISTRICT = 'sub_district';
+const CATCHMENT = 'catchment';
+const SUB_CATCHMENT = 'sub_catchment';
 const VILLAGE = 'village';
 const WORLD = 'world';
 const PROJECT = 'project';
@@ -38,6 +40,8 @@ export const ENTITY_TYPES = {
   FACILITY,
   SCHOOL,
   SUB_DISTRICT,
+  CATCHMENT,
+  SUB_CATCHMENT,
   VILLAGE,
   WORLD,
   PROJECT,
@@ -127,12 +131,12 @@ export class Entity extends BaseModel {
     return Entity.database.executeSql(
       `
       WITH RECURSIVE children AS (
-        SELECT id, code, "name", parent_id, type, 0 AS generation
+        SELECT id, code, "name", parent_id, type, country_code, 0 AS generation
           FROM entity
           WHERE id = ?
 
         UNION ALL
-        SELECT p.id, p.code, p."name", p.parent_id, p.type, c.generation + 1
+        SELECT p.id, p.code, p."name", p.parent_id, p.type, p.country_code, c.generation + 1
           FROM children c
           JOIN entity p ON p.id = c.parent_id
           ${includeWorld ? '' : `WHERE p.code <> 'World'`}

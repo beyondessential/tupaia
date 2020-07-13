@@ -8,9 +8,6 @@ import { Router } from 'express';
 
 import {
   appSignup,
-  appLogin,
-  appOneTimeLogin,
-  appLogout,
   appChangePassword,
   appRequestResetPassword,
   appGetCountryAccessList,
@@ -18,7 +15,8 @@ import {
   appVerifyEmail,
   appResendEmail,
 } from '/appServer';
-import { exportChart, ExportSurveyResponsesHandler } from '/export';
+import { login, oneTimeLogin, logout } from '/authSession';
+import { exportChart, ExportSurveyResponsesHandler, ExportSurveyDataHandler } from '/export';
 import { getUser } from './getUser';
 import ViewHandler from './view';
 import DashBoardHandler from './dashboard';
@@ -37,10 +35,10 @@ export const getRoutesForApiV1 = () => {
   const api = Router();
   // mount the routes
   api.get('/getUser', catchAsyncErrors(getUser()));
-  api.post('/login', catchAsyncErrors(appLogin()));
-  api.post('/login/oneTimeLogin', catchAsyncErrors(appOneTimeLogin()));
+  api.post('/login', catchAsyncErrors(login));
+  api.post('/login/oneTimeLogin', catchAsyncErrors(oneTimeLogin));
+  api.get('/logout', catchAsyncErrors(logout));
   api.post('/signup', catchAsyncErrors(appSignup()));
-  api.get('/logout', catchAsyncErrors(appLogout()));
   api.post('/changePassword', catchAsyncErrors(appChangePassword()));
   api.post('/resetPassword', catchAsyncErrors(appRequestResetPassword()));
   api.get('/countryAccessList', catchAsyncErrors(appGetCountryAccessList()));
@@ -49,6 +47,7 @@ export const getRoutesForApiV1 = () => {
   api.post('/resendEmail', catchAsyncErrors(appResendEmail()));
   api.post('/export/chart', catchAsyncErrors(exportChart()));
   api.get('/export/surveyResponses', handleWith(ExportSurveyResponsesHandler));
+  api.get('/export/surveyDataDownload', handleWith(ExportSurveyDataHandler));
   api.get(
     '/organisationUnit',
     apicache.middleware(process.env.ORGANISATION_UNIT_CACHE_PERIOD),

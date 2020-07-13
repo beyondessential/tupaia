@@ -18,11 +18,14 @@ export class ModelRegistry {
       ...extraModelClasses,
     };
     this.generateModels();
+    if (this.database.isSingleton) {
+      this.initialiseNotifiers();
+    }
   }
 
-  closeDatabaseConnections() {
+  async closeDatabaseConnections() {
     if (this.database.isSingleton) {
-      this.database.closeConnections();
+      await this.database.closeConnections();
     }
   }
 

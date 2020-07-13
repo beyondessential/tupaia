@@ -3,7 +3,7 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
 
-import 'babel-polyfill';
+import '@babel/polyfill';
 
 import {} from 'dotenv/config'; // Load the environment variables into process.env
 
@@ -29,7 +29,6 @@ const models = new ModelRegistry(database, modelClasses);
  * Set up change handlers e.g. for syncing
  */
 createMeditrakSyncQueue(models);
-models.initialiseNotifiers(); // Notifies users of relevant changes, e.g. permissions granted
 
 /**
  * Set up actual app with routes etc.

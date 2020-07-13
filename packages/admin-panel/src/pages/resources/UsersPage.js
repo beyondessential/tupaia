@@ -5,11 +5,7 @@
 
 import React from 'react';
 import { ResourcePage } from './ResourcePage';
-import {
-  COUNTRY_PERMISSION_COLUMNS,
-  GEOGRAPHICAL_AREA_PERMISSION_COLUMNS,
-  FACILITY_PERMISSION_COLUMNS,
-} from './PermissionsPage';
+import { PERMISSIONS_ENDPOINT, PERMISSIONS_COLUMNS } from './PermissionsPage';
 
 const FIELDS = [
   {
@@ -49,9 +45,14 @@ const EDIT_FIELDS = [
 
 const COLUMNS = [
   {
-    Header: 'Name',
-    source: 'first_name', // Acts as key for filtering
-    accessor: rowData => `${rowData.first_name} ${rowData.last_name}`,
+    Header: 'First Name',
+    source: 'first_name',
+    width: 150,
+  },
+  {
+    Header: 'Last Name',
+    source: 'last_name',
+    width: 150,
   },
   ...FIELDS,
   {
@@ -73,23 +74,9 @@ const COLUMNS = [
 
 const EXPANSION_CONFIG = [
   {
-    title: 'Country Permissions',
-    endpoint: 'userCountryPermissions',
-    columns: COUNTRY_PERMISSION_COLUMNS,
-    joinFrom: 'id',
-    joinTo: 'user_id',
-  },
-  {
-    title: 'Geographical Area Permissions',
-    endpoint: 'userGeographicalAreaPermissions',
-    columns: GEOGRAPHICAL_AREA_PERMISSION_COLUMNS,
-    joinFrom: 'id',
-    joinTo: 'user_id',
-  },
-  {
-    title: 'Facility Permissions',
-    endpoint: 'userClinicPermissions',
-    columns: FACILITY_PERMISSION_COLUMNS,
+    title: 'Permissions',
+    endpoint: PERMISSIONS_ENDPOINT,
+    columns: PERMISSIONS_COLUMNS,
     joinFrom: 'id',
     joinTo: 'user_id',
   },

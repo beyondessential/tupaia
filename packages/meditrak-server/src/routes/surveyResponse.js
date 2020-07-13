@@ -4,16 +4,18 @@
  */
 
 import { keyBy } from 'lodash';
-import { getTimezoneNameFromTimestamp, ValidationError, MultiValidationError } from '@tupaia/utils';
 import {
+  getTimezoneNameFromTimestamp,
+  ValidationError,
+  MultiValidationError,
   ObjectValidator,
   hasContent,
   constructRecordExistsWithId,
   constructRecordExistsWithCode,
-  constructAnswerValidator,
   constructIsEmptyOr,
-} from '../validation';
-import { findQuestionsBySurvey } from '../dataAccessors';
+} from '@tupaia/utils';
+import { constructAnswerValidator } from './utilities/constructAnswerValidator';
+import { findQuestionsInSurvey } from '../dataAccessors';
 
 const createSurveyResponseValidator = models =>
   new ObjectValidator({
@@ -36,7 +38,7 @@ async function validateResponse(models, userId, body) {
     throw new Error('Must provide one of entity_id or entity_code');
   }
 
-  const surveyQuestions = await findQuestionsBySurvey(models, { survey_id: body.survey_id });
+  const surveyQuestions = await findQuestionsInSurvey(models, body.survey_id);
 
   const { answers } = body;
   if (Object.keys(answers).length === 0) {

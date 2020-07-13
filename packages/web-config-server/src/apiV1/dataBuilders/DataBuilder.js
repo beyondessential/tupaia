@@ -48,11 +48,12 @@ export class DataBuilder {
     aggregationType = this.aggregationType,
     aggregationConfig = {},
   ) {
-    const { dataServices, dataSourceEntityType, filter = {} } = this.config;
+    const { dataServices, entityAggregation, dataSourceEntityFilter, filter = {} } = this.config;
     const fetchOptions = {
       programCodes: this.getProgramCodesForAnalytics(),
       dataServices,
-      dataSourceEntityType,
+      entityAggregation,
+      dataSourceEntityFilter,
       ...additionalQueryConfig,
     };
 
@@ -63,13 +64,15 @@ export class DataBuilder {
     });
   }
 
-  async fetchEvents(additionalQueryConfig) {
-    const { programCode, dataServices, dataSourceEntityType } = this.config;
+  async fetchEvents(additionalQueryConfig, overridenProgramCode) {
+    const { programCode, dataServices, entityAggregation, dataSourceEntityFilter } = this.config;
     const { organisationUnitCode, startDate, endDate, trackedEntityInstance, eventId } = this.query;
+    const eventsProgramCode = overridenProgramCode || programCode;
 
-    return this.aggregator.fetchEvents(programCode, {
+    return this.aggregator.fetchEvents(eventsProgramCode, {
       dataServices,
-      dataSourceEntityType,
+      entityAggregation,
+      dataSourceEntityFilter,
       organisationUnitCode,
       startDate,
       endDate,
@@ -84,6 +87,17 @@ export class DataBuilder {
     const { organisationUnitCode } = this.query;
 
     return this.aggregator.fetchDataElements(codes, {
+      organisationUnitCode,
+      dataServices,
+      includeOptions: true,
+    });
+  }
+
+  async fetchDataGroup(code) {
+    const { dataServices } = this.config;
+    const { organisationUnitCode } = this.query;
+
+    return this.aggregator.fetchDataGroup(code, {
       organisationUnitCode,
       dataServices,
       includeOptions: true,

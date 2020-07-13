@@ -20,6 +20,7 @@ import { DIALOG_Z_INDEX, OFF_WHITE, WHITE } from '../../styles';
 import { Error } from '../Error';
 import { DayPicker } from './DayPicker';
 import { MonthPicker } from './MonthPicker';
+import { QuarterPicker } from './QuarterPicker';
 import { WeekPicker } from './WeekPicker';
 import { YearPicker } from './YearPicker';
 import {
@@ -30,7 +31,18 @@ import {
   roundStartEndDates,
 } from '../../utils/periodGranularities';
 
-const { DAY, WEEK, SINGLE_WEEK, MONTH, SINGLE_MONTH, YEAR, SINGLE_YEAR } = GRANULARITIES;
+const {
+  DAY,
+  WEEK,
+  SINGLE_WEEK,
+  MONTH,
+  SINGLE_MONTH,
+  QUARTER,
+  SINGLE_QUARTER,
+  YEAR,
+  SINGLE_YEAR,
+} = GRANULARITIES;
+
 const DEFAULT_GRANULARITY = GRANULARITY_CONFIG[DAY];
 
 const getLabelText = granularity => {
@@ -54,7 +66,7 @@ const DayPickerRow = props => (
   </div>
 );
 
-const WeekPickerRow = ({ isEndDate, ...props }) => (
+const WeekPickerRow = props => (
   <div style={styles.dateRow}>
     <WeekPicker {...props} />
     <YearPicker {...props} isIsoYear />
@@ -64,6 +76,13 @@ const WeekPickerRow = ({ isEndDate, ...props }) => (
 const MonthPickerRow = props => (
   <div style={styles.dateRow}>
     <MonthPicker {...props} />
+    <YearPicker {...props} />
+  </div>
+);
+
+const QuarterPickerRow = props => (
+  <div style={styles.dateRow}>
+    <QuarterPicker {...props} />
     <YearPicker {...props} />
   </div>
 );
@@ -89,7 +108,7 @@ export class DateRangePicker extends PureComponent {
       selectedEndDate: endDate,
       errorMessage: '',
     };
-    this.onSubmitDateSelection();
+    this.onSubmitDateSelection(true);
   }
 
   getCurrentDates() {
@@ -151,7 +170,7 @@ export class DateRangePicker extends PureComponent {
     this.resetSelectedDates();
   };
 
-  onSubmitDateSelection = () => {
+  onSubmitDateSelection = (forceSetDates = false) => {
     const { onSetDates } = this.props;
     const { startDate, endDate } = this.getBoundingDatesFromSelection();
 
@@ -162,7 +181,11 @@ export class DateRangePicker extends PureComponent {
     } else {
       // Only update if the dates have actually changed by at least one day
       const { startDate: currentStartDate, endDate: currentEndDate } = this.getCurrentDates();
-      if (!currentStartDate.isSame(startDate, 'day') || !currentEndDate.isSame(endDate, 'day')) {
+      if (
+        forceSetDates ||
+        !currentStartDate.isSame(startDate, 'day') ||
+        !currentEndDate.isSame(endDate, 'day')
+      ) {
         onSetDates(startDate, endDate);
       }
       // Close the dialog
@@ -240,10 +263,13 @@ export class DateRangePicker extends PureComponent {
         return <DayPickerRow {...pickerRowProps} />;
       case SINGLE_WEEK:
       case WEEK:
-        return <WeekPickerRow isEndDate={isEndDate} {...pickerRowProps} />;
+        return <WeekPickerRow {...pickerRowProps} />;
       case MONTH:
       case SINGLE_MONTH:
         return <MonthPickerRow {...pickerRowProps} />;
+      case QUARTER:
+      case SINGLE_QUARTER:
+        return <QuarterPickerRow {...pickerRowProps} />;
       case YEAR:
       case SINGLE_YEAR:
         return <YearPickerRow {...pickerRowProps} />;

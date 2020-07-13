@@ -107,12 +107,8 @@ class FinalValueAggregator {
     this.cache = cache;
   }
 
-  getContinuousValues(analytics, aggregationPeriod, fillEmptyValuesTilCurrentPeriod) {
-    const periods = getContinuousPeriodsForAnalytics(
-      analytics,
-      aggregationPeriod,
-      fillEmptyValuesTilCurrentPeriod,
-    );
+  getContinuousValues(analytics, aggregationPeriod) {
+    const periods = getContinuousPeriodsForAnalytics(analytics, aggregationPeriod, true);
 
     const values = [];
     this.cache.iterateOrganisationUnitCache(organisationUnitCache => {
@@ -144,22 +140,17 @@ class FinalValueAggregator {
   }
 }
 
-export const getFinalValuePerPeriod = (analytics, aggregationPeriod, inOptions) => {
+export const getFinalValuePerPeriod = (analytics, aggregationConfig, aggregationPeriod) => {
   const defaultOptions = {
-    fillEmptyValues: false,
-    fillEmptyValuesTilCurrentPeriod: false,
+    fillEmptyPeriodsTilNow: false,
     preferredPeriodType: PERIOD_TYPES.YEAR,
   };
 
-  const options = { ...defaultOptions, ...inOptions };
+  const options = { ...defaultOptions, ...aggregationConfig };
   const cache = new FinalValueCache(analytics, aggregationPeriod, options.preferredPeriodType);
   const valueAggregator = new FinalValueAggregator(cache);
 
-  return options.fillEmptyValues
-    ? valueAggregator.getContinuousValues(
-        analytics,
-        aggregationPeriod,
-        options.fillEmptyValuesTilCurrentPeriod,
-      )
+  return options.fillEmptyPeriodsTilNow
+    ? valueAggregator.getContinuousValues(analytics, aggregationPeriod)
     : valueAggregator.getDistinctValues();
 };
