@@ -4,7 +4,6 @@
  */
 
 import { expect } from 'chai';
-import { it, describe } from 'mocha';
 
 import { percentagesByNominatedPairs } from '/apiV1/dataBuilders/generic/percentage/percentagesByNominatedPairs';
 

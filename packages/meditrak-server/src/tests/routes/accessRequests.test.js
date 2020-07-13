@@ -11,22 +11,27 @@ describe('Access Requests', () => {
   const app = new TestableApp();
   const models = app.models;
 
-  const createData = async (email, countryCode, permissionGroupName) => {
+  const createData = async (email, countryCode, projectCode, permissionGroupName) => {
     const { id: userId } = await findOrCreateDummyRecord(models.user, { email });
     const { id: entityId } = await findOrCreateDummyRecord(models.entity, { code: countryCode });
     const { id: permissionGroupId } = await findOrCreateDummyRecord(models.permissionGroup, {
       name: permissionGroupName,
     });
+    await findOrCreateDummyRecord(
+      models.project,
+      { code: projectCode },
+      { user_groups: [permissionGroupName] },
+    );
 
     return { userId, entityId, permissionGroupId };
   };
 
-  const requestCountryAccess = async (userId, entityId, userGroup) => {
+  const requestCountryAccess = async (userId, entityId, projectCode) => {
     return app.post(`user/${userId}/requestCountryAccess`, {
       body: {
         entityIds: [entityId],
         message: "E rab'a te kaitiboo! / Pleased to meet you",
-        userGroup,
+        projectCode,
       },
     });
   };
@@ -38,10 +43,11 @@ describe('Access Requests', () => {
       const { userId, entityId, permissionGroupId } = await createData(
         'test.user@tupaia.org',
         'KI',
-        'Admin',
+        'unfpa',
+        'UNFPA',
       );
 
-      const response1 = await requestCountryAccess(userId, entityId, 'Admin');
+      const response1 = await requestCountryAccess(userId, entityId, 'unfpa');
       expect(response1.statusCode).to.equal(200);
       expect(response1.body).to.deep.equal({ message: 'Country access requested.' });
 
@@ -66,14 +72,15 @@ describe('Access Requests', () => {
       expect(permission).to.be.an('object');
     });
 
-    it('does not creates permission when rejected', async () => {
+    it('does not create permission when rejected', async () => {
       const { userId, entityId, permissionGroupId } = await createData(
         'test.user@tupaia.org',
         'VE',
-        'Admin',
+        'unfpa',
+        'UNFPA',
       );
 
-      const response1 = await requestCountryAccess(userId, entityId, 'Admin');
+      const response1 = await requestCountryAccess(userId, entityId, 'unfpa');
       expect(response1.statusCode).to.equal(200);
       expect(response1.body).to.deep.equal({ message: 'Country access requested.' });
 

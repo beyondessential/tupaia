@@ -18,6 +18,9 @@ import {
   DisasterResponsePage,
   DataSourcesPage,
   AccessRequestsPage,
+  DashboardReportsPage,
+  MapOverlaysPage,
+  DashboardGroupsPage,
 } from './resources';
 import { PermissionDeniedPage } from './PermissionDeniedPage';
 import { StrivePage } from './StrivePage';
@@ -40,4 +43,7 @@ export const PAGES = {
   disaster: userIsAuthenticated(DisasterResponsePage),
   dataSources: userIsAuthenticated(DataSourcesPage),
   accessRequests: userIsAuthenticated(AccessRequestsPage),
+  dashboardReports: userIsAuthenticated(DashboardReportsPage),
+  mapOverlays: userIsAuthenticated(MapOverlaysPage),
+  dashboardGroups: userIsAuthenticated(DashboardGroupsPage),
 };

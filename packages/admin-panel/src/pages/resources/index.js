@@ -16,3 +16,6 @@ export { SocialFeedPage } from './SocialFeedPage';
 export { DisasterResponsePage } from './DisasterResponsePage';
 export { DataSourcesPage } from './DataSourcesPage';
 export { AccessRequestsPage } from './AccessRequestsPage';
+export { DashboardReportsPage } from './DashboardReportsPage';
+export { MapOverlaysPage } from './MapOverlaysPage';
+export { DashboardGroupsPage } from './DashboardGroupsPage';

@@ -32,10 +32,16 @@ class AutocompleteComponent extends React.Component {
       optionLabelKey,
       isLoading,
       results,
-      placeholder,
+      placeholder: customPlaceholder,
       searchTerm,
       allowMultipleValues,
     } = this.props;
+    const getPlaceholder = () => {
+      if (customPlaceholder) {
+        return Array.isArray(customPlaceholder) ? customPlaceholder.join(', ') : customPlaceholder;
+      }
+      return DEFAULT_PLACEHOLDER;
+    };
     const SelectComponent = this.props.canCreateNewOptions ? Creatable : Select;
     return (
       <SelectComponent
@@ -46,7 +52,7 @@ class AutocompleteComponent extends React.Component {
         valueKey={optionLabelKey}
         options={results}
         isLoading={isLoading}
-        placeholder={placeholder || DEFAULT_PLACEHOLDER}
+        placeholder={getPlaceholder()}
         multi={allowMultipleValues}
         clearable={false}
         newOptionCreator={option => ({ [option.valueKey]: searchTerm })}
@@ -64,7 +70,7 @@ AutocompleteComponent.propTypes = {
   onChangeSelection: PropTypes.func.isRequired,
   onClearState: PropTypes.func.isRequired,
   optionLabelKey: PropTypes.string.isRequired,
-  placeholder: PropTypes.string,
+  placeholder: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   results: PropTypes.array,
   searchTerm: PropTypes.string,
   selection: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
@@ -85,14 +91,34 @@ const mapStateToProps = (state, { reduxId }) => ({
 
 const mapDispatchToProps = (
   dispatch,
-  { endpoint, optionLabelKey, reduxId, onChange, parentRecord },
+  {
+    endpoint,
+    optionLabelKey,
+    optionValueKey,
+    reduxId,
+    onChange,
+    parentRecord,
+    allowMultipleValues,
+  },
 ) => ({
   onChangeSelection: newSelection => {
-    onChange(newSelection);
+    const newValue = allowMultipleValues
+      ? newSelection.map(s => s[optionValueKey])
+      : newSelection[optionValueKey];
+    onChange(newValue);
     dispatch(changeSelection(reduxId, newSelection));
   },
   onChangeSearchTerm: newSearchTerm =>
-    dispatch(changeSearchTerm(reduxId, endpoint, optionLabelKey, newSearchTerm, parentRecord)),
+    dispatch(
+      changeSearchTerm(
+        reduxId,
+        endpoint,
+        optionLabelKey,
+        optionValueKey,
+        newSearchTerm,
+        parentRecord,
+      ),
+    ),
   onClearState: () => dispatch(clearState(reduxId)),
 });
 

@@ -65,7 +65,7 @@ const IMPORT_CONFIG = {
   queryParameters: [
     {
       label: 'Option Set Names',
-      instruction:
+      secondaryLabel:
         'Please enter the names of the option sets to be imported. These should match the tab names in the file.',
       parameterKey: 'optionSetNames',
       optionsEndpoint: 'optionSets',

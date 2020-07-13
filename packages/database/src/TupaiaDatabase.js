@@ -17,6 +17,7 @@ const QUERY_METHODS = {
   INSERT: 'insert',
   UPDATE: 'update',
   SELECT: 'select',
+  DISTINCT: 'distinct',
   DELETE: 'del',
 };
 
@@ -185,7 +186,7 @@ export class TupaiaDatabase {
     return buildQuery(this.connection, ...args);
   }
 
-  find(recordType, where = {}, options = {}, queryMethod = QUERY_METHODS.SELECT) {
+  find(recordType, where = {}, options = {}, queryMethod) {
     if (options.subQuery) {
       const { recordType: subRecordType, where: subWhere, ...subOptions } = options.subQuery;
       options.innerQuery = this.find(subRecordType, subWhere, subOptions);
@@ -193,7 +194,8 @@ export class TupaiaDatabase {
     return this.query(
       {
         recordType,
-        queryMethod,
+        queryMethod:
+          queryMethod || (options.distinct ? QUERY_METHODS.DISTINCT : QUERY_METHODS.SELECT),
       },
       where,
       options,
@@ -464,12 +466,20 @@ function buildQuery(connection, queryConfig, where = {}, options = {}) {
   }
 
   // Add filtering (or WHERE) details if provided
+  // Each column can be specified as a string (e.g. 'id'), or if aliasing is required, as an object
+  // with one entry, e.g. { user_id: 'user_account.id' }
   const columns =
     options.columns &&
     options.columns.map(columnSpec => {
       if (typeof columnSpec === 'string') return columnSpec;
       const [alias, selector] = Object.entries(columnSpec)[0];
-      return { [alias]: connection.raw(selector) };
+      // special case to handle selecting geojson - avoid generic handling of functions to keep
+      // out sql injection vulnerabilities
+      if (selector.includes('ST_AsGeoJSON')) {
+        const [, columnSelector] = selector.match(/ST_AsGeoJSON\((.*)\)/);
+        return { [alias]: connection.raw('ST_AsGeoJSON(??)', [columnSelector]) };
+      }
+      return { [alias]: connection.raw('??', [selector]) };
     });
   query = addWhereClause(query[queryMethod](queryMethodParameter || columns), where);
 

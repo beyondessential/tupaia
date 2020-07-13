@@ -21,14 +21,13 @@ exports.up = function(db) {
       user_id text REFERENCES user_account(id),
       entity_id text REFERENCES entity(id),
       message text,
+      project_id text REFERENCES project(id),
       permission_group_id text REFERENCES permission_group(id),
       approved BOOLEAN DEFAULT NULL,
       created_time TIMESTAMPTZ NOT NULL DEFAULT now(),
-      approving_user_id text DEFAULT NULL,
-      approval_note text DEFAULT NULL,
-      approval_date TIMESTAMPTZ DEFAULT NULL,
-
-      FOREIGN KEY (approving_user_id) REFERENCES user_account(id)
+      processed_by text DEFAULT NULL REFERENCES user_account(id),
+      note text DEFAULT NULL,
+      processed_date TIMESTAMPTZ DEFAULT NULL
     );
   `);
 };

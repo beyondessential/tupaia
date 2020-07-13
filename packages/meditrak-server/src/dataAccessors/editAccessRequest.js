@@ -11,14 +11,9 @@ export const editAccessRequest = async (models, id, updatedFields, { userId }) =
     throw new ValidationError(`AccessRequest has already been processed`);
   }
 
-  return models.accessRequest.updateById(
-    id,
-    updatedFields.approved
-      ? {
-          ...updatedFields,
-          approving_user_id: userId,
-          approval_date: new Date(),
-        }
-      : { ...updatedFields, approval_note: null },
-  );
+  return models.accessRequest.updateById(id, {
+    ...updatedFields,
+    processed_by: userId,
+    processed_date: new Date(),
+  });
 };
