@@ -13,6 +13,7 @@ WORKDIR /tupaia
 COPY package.json ./
 COPY yarn.lock ./
 COPY babel.config.json ./
+COPY scripts ./
 
 ## copy just the root of each package so it is ready for yarn install, without adding the src
 ## directories, so that code changes don't invalidate the container cache before we've yarn installed
