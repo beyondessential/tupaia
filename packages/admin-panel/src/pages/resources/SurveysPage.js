@@ -59,7 +59,7 @@ const SURVEY_COLUMNS = [
       fields: [
         ...SURVEY_FIELDS,
         {
-          Header: 'Data Service Type',
+          Header: 'Data Service',
           source: 'data_source.service_type',
           editConfig: {
             options: ['dhis', 'tupaia'],
@@ -291,6 +291,12 @@ const IMPORT_CONFIG = {
       optionsEndpoint: 'surveyGroups',
       canCreateNewOptions: true,
       optionValueKey: 'name',
+    },
+    {
+      label: 'Data service',
+      secondaryLabel: 'Select the data service this survey should use, or leave blank for tupaia',
+      parameterKey: 'serviceType',
+      options: ['dhis', 'tupaia'],
     },
   ],
 };
