@@ -34,7 +34,7 @@ describe('DataSource', () => {
 
     it('unknown service', () => {
       const dataSource = createDataSource({ serviceType: 'random', config: {} });
-      expect(() => dataSource.sanitizeConfig()).to.throw(/config keys .*service/);
+      expect(() => dataSource.sanitizeConfig()).to.throw(/config schema .*service/);
     });
 
     describe('dhis service', () => {

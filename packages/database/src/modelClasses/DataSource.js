@@ -46,9 +46,7 @@ export class DataSourceType extends DatabaseType {
   sanitizeConfig() {
     const configSchema = CONFIG_SCHEMA_BY_TYPE_AND_SERVICE[this.type][this.service_type];
     if (!configSchema) {
-      throw new Error(
-        `Please specify the valid config keys schema for '${this.service_type}' service in the DataSource model`,
-      );
+      throw new Error(`No config schema for '${this.service_type}' service found`);
     }
 
     // `false` values are allowed in config
