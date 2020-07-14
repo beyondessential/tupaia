@@ -11,6 +11,81 @@ const { AND, RAW } = QUERY_CONJUNCTIONS;
 export default class extends RouteHandler {
   static PermissionsChecker = PermissionsChecker;
 
+  /**
+   * Sample Response:
+    {
+      GroupA: [
+        {
+          measureId: 'Laos_Schools_A',
+          name: 'Overlay A',
+          ...presentationOptions,
+          type: 'mapOverlay',
+        },
+        {
+          measureId: 'Laos_Schools_B',
+          name: 'Overlay B',
+          ...presentationOptions,
+          type: 'mapOverlay',
+        },
+        {
+          measureId: 'Laos_Schools_C',
+          name: 'Overlay C',
+          ...presentationOptions,
+          type: 'mapOverlay',
+        }
+      ],
+      GroupB: [
+        {
+          name: 'GroupC',
+          children: [
+            {
+              measureId: 'Laos_Schools_D',
+              name: 'Overlay D',
+              ...presentationOptions,
+              type: 'mapOverlay',
+            }, 
+            {
+              measureId: 'Laos_Schools_E',
+              name: 'Overlay E',
+              ...presentationOptions,
+              type: 'mapOverlay',
+            }, 
+            {
+              measureId: 'Laos_Schools_F',
+              name: 'Overlay F',
+              ...presentationOptions,
+              type: 'mapOverlay',
+            }
+          ],
+          type: 'mapOverlayGroup'
+        }, 
+        {
+          name: 'GroupD',
+          children: [
+            {
+              measureId: 'Laos_Schools_G',
+              name: 'Overlay G',
+              ...presentationOptions,
+              type: 'mapOverlay',
+            }, 
+            {
+              measureId: 'Laos_Schools_H',
+              name: 'Overlay H',
+              ...presentationOptions,
+              type: 'mapOverlay',
+            }, 
+            {
+              measureId: 'Laos_Schools_I',
+              name: 'Overlay I',
+              ...presentationOptions,
+              type: 'mapOverlay',
+            }
+          ],
+          type: 'mapOverlayGroup'
+        }
+      ],
+    }
+     */
   buildResponse = async () => {
     const { entity, query } = this;
     const { code: entityCode, name: entityName, country_code: enityCountryCode } = entity;
