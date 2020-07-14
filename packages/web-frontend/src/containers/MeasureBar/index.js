@@ -21,7 +21,8 @@ import shallowEqual from 'shallowequal';
 import List from '@material-ui/core/List';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-import { ControlBar } from '../../components/ControlBar';
+// import { ControlBar } from '../../components/ControlBar';
+import { Control } from './Control';
 import { changeMeasure, clearMeasure, toggleMeasureExpand } from '../../actions';
 import { HierarchyItem } from '../../components/HierarchyItem';
 import TupaiaIcon from '../../images/TupaiaIcon.svg';
@@ -119,42 +120,31 @@ export class MeasureBar extends Component {
   renderContents() {
     const { isExpanded, measureHierarchy } = this.props;
 
-    if (!isExpanded) return null;
-    if (Object.keys(measureHierarchy).length === 0) return this.renderEmptyMessage();
+    // if (!isExpanded) return null;
+    // if (Object.keys(measureHierarchy).length === 0) return this.renderEmptyMessage();
 
     return this.renderHierarchy();
   }
 
   render() {
-    const { currentMeasure, isExpanded, onExpandClick, isMeasureLoading } = this.props;
-
-    const icon = isMeasureLoading ? (
-      <CircularProgress size={24} thickness={4} />
-    ) : (
-      <TupaiaIcon style={{ height: 26, width: 24 }} />
-    );
+    const {
+      currentMeasure,
+      isExpanded,
+      onExpandClick,
+      isMeasureLoading,
+      currentOrganisationUnitName,
+    } = this.props;
+    const orgName = currentOrganisationUnitName || 'Your current selection';
+    const emptyMessage = `Select an area with valid data. ${orgName} has no map overlays available`;
 
     return (
-      <ControlBar
-        value={this.state.hasNeverBeenChanged ? null : currentMeasure.name}
-        isExpanded={isExpanded}
-        onExpandClick={() => onExpandClick()}
-        icon={icon}
-        style={{
-          background: MAP_OVERLAY_SELECTOR.background,
-          border: MAP_OVERLAY_SELECTOR.border,
-        }}
+      <Control
+        emptyMessage={emptyMessage}
+        selectedOverlayName={currentMeasure.name}
+        isMeasureLoading={isMeasureLoading}
       >
-        <List
-          style={{
-            flexDirection: 'column',
-            overflowY: 'auto',
-            whiteSpace: 'pre-line',
-          }}
-        >
-          {this.renderContents()}
-        </List>
-      </ControlBar>
+        {this.renderContents()}
+      </Control>
     );
   }
 }
