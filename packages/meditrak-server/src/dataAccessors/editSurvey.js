@@ -164,19 +164,18 @@ class SurveyEditor {
     const updatedFields = this.getUpdatedFieldsForModel(model);
 
     const isDataSource = model.databaseType === this.models.dataSource.databaseType;
-    const getValue = (fieldName, fieldValue) => {
-      if (isDataSource && fieldName === 'config' && model.type === 'dataElement') {
-        // Retain existing fields in the data element
-        return { ...model.config, ...fieldValue };
-      }
-
-      return fieldValue;
-    };
-
     Object.entries(updatedFields).forEach(([fieldName, fieldValue]) => {
-      // eslint-disable-next-line no-param-reassign
-      model[fieldName] = getValue(fieldName, fieldValue);
+      /* eslint-disable no-param-reassign */
+      if (isDataSource && fieldName === 'config') {
+        // Retain existing fields in the data element
+        model[fieldName] = { ...model.config, ...fieldValue };
+        model.sanitizeConfig();
+      } else {
+        model[fieldName] = fieldValue;
+      }
+      /* eslint-enable no-param-reassign */
     });
+
     return model.save();
   };
 }
