@@ -68,7 +68,7 @@ export const ActionsMenu = ({ options }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   return (
     <>
-      <IconButton onClick={event => setAnchorEl(event.currentTarget)}>
+      <IconButton aria-label="open" onClick={event => setAnchorEl(event.currentTarget)}>
         <StyledMenuIcon />
       </IconButton>
       <StyledMenu
@@ -85,6 +85,7 @@ export const ActionsMenu = ({ options }) => {
       >
         {options.map(({ label, action }) => (
           <StyledMenuItem
+            role="button"
             key={label}
             onClick={() => {
               action();
