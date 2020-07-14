@@ -5,20 +5,18 @@
 
 import { expect } from 'chai';
 
-import { DataSourceModel } from '../../../modelClasses/DataSource';
+import { DataSourceModel, DataSourceType } from '../../modelClasses/DataSource';
 
 describe('DataSource', () => {
   describe('sanitizeConfig()', () => {
     const database = {};
 
-    const createDataSource = ({ type = 'dataElement', serviceType = 'tupaia', config }) => {
-      const dataSource = new DataSourceModel(database);
-      dataSource.type = type;
-      dataSource.service_type = serviceType;
-      dataSource.config = config;
-
-      return dataSource;
-    };
+    const createDataSource = ({ type = 'dataElement', serviceType = 'tupaia', config }) =>
+      new DataSourceType(new DataSourceModel(database), {
+        type: type,
+        service_type: serviceType,
+        config: config,
+      });
 
     const assertConfigIsSanitized = ({ type, serviceType }, config, expectedConfig) => {
       const dataSource = createDataSource({ type, serviceType, config });

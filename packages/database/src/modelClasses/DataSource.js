@@ -42,6 +42,34 @@ export class DataSourceType extends DatabaseType {
   get dataElementCode() {
     return this.config.dataElementCode || this.code;
   }
+
+  sanitizeConfig() {
+    const configSchema = CONFIG_SCHEMA_BY_TYPE_AND_SERVICE[this.type][this.service_type];
+    if (!configSchema) {
+      throw new Error(
+        `Please specify the valid config keys schema for '${this.service_type}' service in the DataSource model`,
+      );
+    }
+
+    // `false` values are allowed in config
+    const isEmpty = value => !value && value !== false;
+
+    if (!this.config) {
+      this.config = {};
+    }
+    // Clear empty/invalid fields
+    Object.keys(this.config).forEach(key => {
+      if (!configSchema[key] || isEmpty(this.config[key])) {
+        delete this.config[key];
+      }
+    });
+    // Use default values for valid empty fields
+    Object.entries(configSchema).forEach(([key, { default: defaultValue }]) => {
+      if (defaultValue !== undefined && isEmpty(this.config[key])) {
+        this.config[key] = defaultValue;
+      }
+    });
+  }
 }
 
 export class DataSourceModel extends DatabaseModel {
@@ -70,34 +98,6 @@ export class DataSourceModel extends DatabaseModel {
     return this.find({
       id: dataElements.map(({ data_element_id: dataElementId }) => dataElementId),
       type: DATA_ELEMENT,
-    });
-  }
-
-  sanitizeConfig() {
-    const configSchema = CONFIG_SCHEMA_BY_TYPE_AND_SERVICE[this.type][this.service_type];
-    if (!configSchema) {
-      throw new Error(
-        `Please specify the valid config keys schema for '${this.service_type}' service in the DataSource model`,
-      );
-    }
-
-    // `false` values are allowed in config
-    const isEmpty = value => !value && value !== false;
-
-    if (!this.config) {
-      this.config = {};
-    }
-    // Clear empty/invalid fields
-    Object.keys(this.config).forEach(key => {
-      if (!configSchema[key] || isEmpty(this.config[key])) {
-        delete this.config[key];
-      }
-    });
-    // Use default values for valid empty fields
-    Object.entries(configSchema).forEach(([key, { default: defaultValue }]) => {
-      if (defaultValue !== undefined && isEmpty(this.config[key])) {
-        this.config[key] = defaultValue;
-      }
     });
   }
 }
