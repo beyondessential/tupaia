@@ -21,11 +21,14 @@ export default class extends RouteHandler {
     const measures = {};
     // Projects do not have a country_code
     if (overlayCode) {
+      //Find all the accessible map overlays first so that we can put them in the correct map overlay groups
       const accessibleMapOverlays = await this.findAccessibleMapOverlays(
         overlayCode,
         query.projectCode,
         userGroups,
       );
+
+      //Find the accessible map overlay groups using the accessible map overlays above
       mapOverlaysGroupedByGroupName = await this.findAccessibleGroupedMapOverlays(
         accessibleMapOverlays,
       );

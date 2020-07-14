@@ -56,7 +56,6 @@ export class MeasureBar extends Component {
   renderSelectedMeasure() {
     const { currentMeasure, currentOrganisationUnitCode } = this.props;
 
-    console.log('currentMeasure', currentMeasure);
     return (
       <HierarchyItem
         nestedMargin="0px"
