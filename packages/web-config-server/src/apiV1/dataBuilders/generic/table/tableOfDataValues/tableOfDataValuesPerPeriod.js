@@ -12,7 +12,15 @@ class TableOfValuesPerPeriodBuilder extends TableOfDataValuesBuilder {
   async fetchAnalyticsAndMetadata() {
     this.baselineResults = await this.fetchBaselineColumnResults();
 
-    return super.fetchAnalyticsAndMetadata();
+    const { columns } = this.config;
+    let aggregationType;
+
+    if (typeof columns === 'object' && columns.type === '$period') {
+      aggregationType = this.aggregator.aggregationTypes[columns.aggregationType];
+    }
+
+    const result = await super.fetchAnalyticsAndMetadata(aggregationType);
+    return result;
   }
 
   async fetchBaselineColumnResults() {
