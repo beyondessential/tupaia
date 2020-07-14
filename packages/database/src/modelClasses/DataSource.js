@@ -55,7 +55,7 @@ export class DataSourceType extends DatabaseType {
     if (!this.config) {
       this.config = {};
     }
-    // Clear empty/invalid fields
+    // Clear invalid/empty fields
     Object.keys(this.config).forEach(key => {
       if (!configSchema[key] || isEmpty(this.config[key])) {
         delete this.config[key];

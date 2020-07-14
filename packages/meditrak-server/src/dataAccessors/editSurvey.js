@@ -159,7 +159,7 @@ class SurveyEditor {
    */
   updateDataSourceConfig = (model, updatedFields) => {
     if ('config' in updatedFields) {
-      // Retain existing fields in the data source
+      // Retain existing fields in data source config
       // eslint-disable-next-line no-param-reassign
       model.config = { ...model.config, ...updatedFields.config };
     }
