@@ -13,6 +13,7 @@
   },
   "scripts": {
     "build": "react-scripts build",
+    "postbuild": "rm -rf served_build && mv build served_build",
     "cypress:run": "cypress run",
     "cypress:open": "cypress open",
     "eject": "react-scripts eject",
