@@ -15,11 +15,12 @@ import {
 import { INITIAL_PROJECT_CODE } from '../defaults';
 // TODO rename func and decide default situation
 export function selectProject(projectCode) {
+  // forceChangeOrgUnit is false when entering a url manually
   return { type: SET_PROJECT, projectCode };
 }
 
-export function onSetProject(projectCode) {
-  return { type: ON_SET_PROJECT, projectCode };
+export function onSetProject(projectCode, forceChangeOrgUnit = true) {
+  return { type: ON_SET_PROJECT, projectCode, forceChangeOrgUnit };
 }
 
 export function setProjects(data) {

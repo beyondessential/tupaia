@@ -8,6 +8,6 @@
 import { getUrlComponent } from './historyNavigation';
 import { URL_COMPONENTS } from './constants';
 
-export const selectCurrentProject = () => getUrlComponent(URL_COMPONENTS.PROJECT);
+export const selectCurrentProjectCode = () => getUrlComponent(URL_COMPONENTS.PROJECT);
 
 export const selectCurrentOrgUnitCode = () => getUrlComponent(URL_COMPONENTS.ORG_UNIT);

@@ -27,6 +27,12 @@ function createUrl(pathParams, searchParams) {
 
   const urlComponents = PATH_COMPONENTS.map(component => pathParams[component]);
 
+  // remove falsey last elements
+  // e.g. [null, 'hi', 'hey', undefined, ''] => [null, 'hi', 'hey']
+  while (urlComponents.length > 0 && !urlComponents[urlComponents.length - 1]) {
+    urlComponents.pop();
+  }
+
   const pathname = urlComponents.join('/');
 
   return { pathname, search: replaceKeysAndRemoveNull(searchParams, SEARCH_PARAM_KEY_MAP) };

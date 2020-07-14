@@ -15,11 +15,11 @@ import { SelectListItem } from '../../../components/mobile/SelectListItem';
 import { Dashboard } from '../../../components/mobile/Dashboard';
 import { changeOrgUnit, toggleDashboardSelectExpand, changeDashboardGroup } from '../../../actions';
 import { WHITE } from '../../../styles';
-import { selectCurrentProject } from '../../../historyNavigation';
 import {
   selectCurrentDashboardKey,
   selectOrgUnitChildren,
   selectCurrentOrgUnit,
+  selectCurrentProjectCode,
 } from '../../../selectors';
 
 class HomeScreen extends PureComponent {
@@ -90,7 +90,7 @@ const mapStateToProps = state => {
   const { isGroupSelectExpanded } = state.dashboard;
 
   const { dashboardConfig } = state.global;
-  const organisationUnits = selectOrgUnitChildren(state, selectCurrentProject());
+  const organisationUnits = selectOrgUnitChildren(state, selectCurrentProjectCode());
 
   return {
     organisationUnits,

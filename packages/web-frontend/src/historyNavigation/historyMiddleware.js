@@ -46,12 +46,12 @@ export const setInitialState = ({ dispatch }) => {
   }
 
   if (!otherComponents[URL_COMPONENTS.PROJECT]) {
-    dispatch(onSetProject(null));
+    dispatch(onSetProject(null, false));
     return;
   }
 
   dispatch(setOverlayComponent(null));
-  dispatch(onSetProject(otherComponents[URL_COMPONENTS.PROJECT]));
+  dispatch(onSetProject(otherComponents[URL_COMPONENTS.PROJECT], false));
   if (otherComponents[URL_COMPONENTS.ORG_UNIT])
     dispatch(onSetOrgUnit(otherComponents[URL_COMPONENTS.ORG_UNIT], true));
 };

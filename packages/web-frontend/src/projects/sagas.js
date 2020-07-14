@@ -1,4 +1,4 @@
-import { call, put, takeLatest, takeEvery, select } from 'redux-saga/effects';
+import { call, put, take, takeLatest, takeEvery, select } from 'redux-saga/effects';
 
 import request from '../utils/request';
 
@@ -14,9 +14,11 @@ import {
   FETCH_LOGOUT_SUCCESS,
 } from '../actions';
 // import { INITIAL_PROJECT_CODE } from '../defaults';
-import { selectAdjustedProjectBounds, selectProjectByCode } from '../selectors';
-
-import { selectCurrentOrgUnitCode } from '../historyNavigation';
+import {
+  selectAdjustedProjectBounds,
+  selectProjectByCode,
+  selectCurrentOrgUnitCode,
+} from '../selectors';
 
 function* fetchProjectData() {
   try {
@@ -49,7 +51,10 @@ function* loadProject(action) {
   // - Should we use getCurrentProject here rather than action.projectCode? Advantages/disadvantages?
   console.log('loadProject', action);
   //yield call(fetchProjectData);
-  // yield take('SET_PROJECT_DATA');
+  // TODO: Nasty hack, not allowed
+  if (!action.forceChangeOrgUnit) {
+    yield take('SET_PROJECT_DATA');
+  }
   console.log('loadProject passed fetchProjectData', action);
 
   const state = yield select();
@@ -60,7 +65,7 @@ function* loadProject(action) {
   console.log(organisationUnitCode);
   yield put(changeBounds(yield select(selectAdjustedProjectBounds, action.projectCode)));
   console.log('loadProject passed 1', project, project.homeEntityCode || action.projectCode);
-  if (!organisationUnitCode) {
+  if (!organisationUnitCode || action.forceChangeOrgUnit) {
     yield put(changeOrgUnit(project.homeEntityCode || action.projectCode, false));
   }
   console.log('loadProject passed 2');

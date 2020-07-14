@@ -9,10 +9,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { selectCurrentProject } from '../../../../historyNavigation';
 
 import { WHITE } from '../../../../styles';
-import { selectProjectByCode } from '../../../../selectors';
+import { selectCurrentProject } from '../../../../selectors';
 
 const Grid = styled.div`
   display: grid;
@@ -58,7 +57,7 @@ ProjectDescription.propTypes = {
 const mapStateToProps = state => {
   // TODO: select current project returns full project
   // Also, need to bugfix on unfpa/unfpa/UNFPA then click home
-  const project = selectProjectByCode(state, selectCurrentProject());
+  const project = selectCurrentProject(state);
 
   return {
     project,

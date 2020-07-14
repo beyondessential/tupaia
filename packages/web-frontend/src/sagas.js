@@ -9,10 +9,12 @@ import { call, put, delay, takeEvery, takeLatest, select } from 'redux-saga/effe
 import queryString from 'query-string';
 import request from './utils/request';
 import {
+  selectCurrentOrgUnitCode,
   selectOrgUnit,
   selectOrgUnitChildren,
   selectOrgUnitCountry,
-  selectProjectByCode,
+  selectCurrentProjectCode,
+  selectCurrentProject,
   selectIsProject,
   selectMeasureBarItemById,
 } from './selectors';
@@ -94,12 +96,9 @@ import {
   REQUEST_ORG_UNIT,
 } from './actions';
 import { isMobile, processMeasureInfo, formatDateForApi } from './utils';
-import {
-  createUrlString,
-  selectCurrentProject,
-  selectCurrentOrgUnitCode,
-} from './historyNavigation';
+import { createUrlString } from './historyNavigation';
 import { getDefaultDates } from './utils/periodGranularities';
+// TODO: remove all unused imports
 import { INITIAL_MEASURE_ID, INITIAL_PROJECT_CODE, initialOrgUnit } from './defaults';
 import { selectProject } from './projects/actions';
 
@@ -451,7 +450,7 @@ function* fetchOrgUnitData(organisationUnitCode, projectCode) {
 
 function* requestOrgUnit(action) {
   const state = yield select();
-  const activeProjectCode = selectCurrentProject();
+  const activeProjectCode = selectCurrentProjectCode();
   const { organisationUnitCode = activeProjectCode } = action;
   const orgUnit = selectOrgUnit(state, organisationUnitCode);
   if (orgUnit && orgUnit.isComplete) {
@@ -477,7 +476,7 @@ function* fetchOrgUnitDataAndChangeOrgUnit(action) {
   }
 
   try {
-    const orgUnitData = yield fetchOrgUnitData(organisationUnitCode, selectCurrentProject());
+    const orgUnitData = yield fetchOrgUnitData(organisationUnitCode, selectCurrentProjectCode());
     yield put(
       changeOrgUnitSuccess(
         normaliseCountryHierarchyOrgUnitData(orgUnitData),
@@ -529,8 +528,7 @@ function* watchOrgUnitChangeAndFetchIt() {
  */
 function* fetchDashboard(action) {
   const { organisationUnitCode } = action.organisationUnit;
-  const state = yield select();
-  const projectCode = selectCurrentProject();
+  const projectCode = selectCurrentProjectCode();
 
   const requestResourceUrl = `dashboard?organisationUnitCode=${organisationUnitCode}&projectCode=${projectCode}`;
 
@@ -566,7 +564,7 @@ function* fetchViewData(parameters, errorHandler) {
   } = parameters;
   const urlParameters = {
     organisationUnitCode,
-    projectCode: selectCurrentProject(),
+    projectCode: selectCurrentProjectCode(),
     dashboardGroupId,
     viewId,
     drillDownLevel,
@@ -647,7 +645,7 @@ function* fetchSearchData(action) {
     const urlParameters = {
       criteria: action.searchString,
       limit: 5,
-      projectCode: selectCurrentProject(),
+      projectCode: selectCurrentProjectCode(),
     };
     const requestResourceUrl = `organisationUnitSearch?${queryString.stringify(urlParameters)}`;
     try {
@@ -682,7 +680,7 @@ function* fetchMeasureInfo(measureId, organisationUnitCode) {
   const country = selectOrgUnitCountry(state, organisationUnitCode);
   const countryCode = country ? country.organisationUnitCode : undefined;
   const measureParams = selectMeasureBarItemById(state, measureId) || {};
-  const activeProjectCode = selectCurrentProject();
+  const activeProjectCode = selectCurrentProjectCode();
 
   // If the view should be constrained to a date range and isn't, constrain it
   const { startDate, endDate } =
@@ -745,7 +743,7 @@ function* fetchCurrentMeasureInfo() {
       const newMeasure = getSelectedMeasureFromHierarchy(
         measureHierarchy,
         selectedMeasureId,
-        selectProjectByCode(state, selectCurrentProject()),
+        selectCurrentProject(state),
       );
 
       if (newMeasure !== measureId) {
@@ -802,7 +800,7 @@ function* fetchMeasures(action) {
   const { organisationUnitCode } = action.organisationUnit;
   const state = yield select();
   if (selectIsProject(state, organisationUnitCode)) yield put(clearMeasure());
-  const projectCode = selectCurrentProject();
+  const projectCode = selectCurrentProjectCode();
   const requestResourceUrl = `measures?organisationUnitCode=${organisationUnitCode}&projectCode=${projectCode}`;
   try {
     const measures = yield call(request, requestResourceUrl);

@@ -7,5 +7,4 @@
 
 export { historyMiddleware, setInitialState } from './historyMiddleware';
 export { createUrlString } from './historyNavigation';
-export { selectCurrentProject, selectCurrentOrgUnitCode } from './selectors';
-// TODO: move into sensible files
+export { selectCurrentProjectCode, selectCurrentOrgUnitCode } from './selectors';

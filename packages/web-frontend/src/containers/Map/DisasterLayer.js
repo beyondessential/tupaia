@@ -13,7 +13,7 @@ import { LayerGroup } from 'react-leaflet';
 import { selectDisaster } from '../../disaster/actions';
 import { IconMarker } from '../../components/Marker';
 import { DEFAULT_DISASTER_COLOR } from '../../components/Marker/markerColors';
-import { selectCurrentProject } from '../../historyNavigation';
+import { selectCurrentProjectCode } from '../../selectors';
 
 const DisasterMarker = ({ onSelect, ...data }) => (
   <IconMarker
@@ -40,7 +40,7 @@ function DisasterLayer(props) {
 
 const mapStateToProps = ({ disaster }) => ({
   disasters: Object.values(disaster.disasters || {}),
-  isInDisasterMode: selectCurrentProject() === 'disaster',
+  isInDisasterMode: selectCurrentProjectCode() === 'disaster',
 });
 
 const mapDispatchToProps = dispatch => ({

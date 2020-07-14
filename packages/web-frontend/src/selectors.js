@@ -5,9 +5,11 @@ import {
   getMeasureDisplayInfo,
   calculateRadiusScaleFactor,
 } from './utils/measures';
-import { selectCurrentProject, selectCurrentOrgUnitCode } from './historyNavigation';
+import { selectCurrentProjectCode, selectCurrentOrgUnitCode } from './historyNavigation';
 import { initialOrgUnit } from './defaults';
 
+// QUESTION: Good pattern? Selectors folder?
+export { selectCurrentProjectCode, selectCurrentOrgUnitCode };
 /**
  * Selectors
  * These can be handy tools to allow for components/sagas to interact with the redux state, and fetch data from it.
@@ -126,7 +128,7 @@ const displayInfoCache = createCachedSelector(
 const safeGet = (cache, args) => (cache.keySelector(...args) ? cache(...args) : undefined);
 
 const selectActiveProjectCountries = createSelector(
-  [state => state.orgUnits.orgUnitMap, () => selectCurrentProject()],
+  [state => state.orgUnits.orgUnitMap, () => selectCurrentProjectCode()],
   (orgUnitMap, activeProjectCode) => {
     const orgUnits = Object.values(orgUnitMap)
       .map(({ countryCode, ...orgUnits }) => {
@@ -145,7 +147,7 @@ const selectCountriesAsOrgUnits = createSelector([state => state.orgUnits.orgUni
 
 const selectOrgUnitSiblingsAndSelf = createSelector(
   [
-    () => selectCurrentProject(),
+    () => selectCurrentProjectCode(),
     (state, code) => getOrgUnitParent(selectOrgUnit(state, code)),
     state => selectCountriesAsOrgUnits(state),
     (state, code) => safeGet(countryCache, [state.orgUnits.orgUnitMap, code]),
@@ -205,14 +207,20 @@ export const selectOrgUnitCountry = createSelector(
   country => (country ? country[country.countryCode] : undefined),
 );
 
+// QUESTION: Is this a good pattern?
 export const selectCurrentOrgUnit = createSelector(
   [state => selectOrgUnit(state, selectCurrentOrgUnitCode())],
   currentOrgUnit => currentOrgUnit || {},
 );
 
+export const selectCurrentProject = createSelector(
+  [state => selectProjectByCode(state, selectCurrentProjectCode())],
+  currentProject => currentProject || {},
+);
+
 export const selectOrgUnitChildren = createSelector(
   [
-    () => selectCurrentProject(),
+    () => selectCurrentProjectCode(),
     state => selectCountriesAsOrgUnits(state),
     (state, code) => safeGet(countryCache, [state.orgUnits.orgUnitMap, code]),
     (_, code) => code,
@@ -241,7 +249,7 @@ export const selectHasPolygonMeasure = createSelector(
 export const selectAllMeasuresWithDisplayInfo = createSelector(
   [
     state => selectActiveProjectCountries(state),
-    () => selectCurrentProject(),
+    () => selectCurrentProjectCode(),
     state =>
       safeGet(countryCache, [state.orgUnits.orgUnitMap, state.map.measureInfo.currentCountry]),
     state => state.map.measureInfo.measureData,
