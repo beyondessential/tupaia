@@ -16,7 +16,7 @@ start_server="nodemon -w src --exec \"babel-node src --inspect=${1} --config-fil
 echo "Starting server"
 if [[ ${2} == '--skip-internal' || ${2} == '-s' ]]; then
   echo "Skipping internal dependency build and watch"
-  eval $start_server
+  eval ${start_server}
 else
   echo "Internal dependencies are under watch for hot reload (use --skip-internal or -s for faster startup times)"
   for PACKAGE in $(${DIR}/getInternalDependencies.sh); do
