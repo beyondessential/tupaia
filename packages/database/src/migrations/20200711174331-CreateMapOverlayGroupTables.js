@@ -23,7 +23,7 @@ exports.up = function(db) {
       top_level BOOLEAN
     );
 
-    CREATE TABLE public.map_overlay_group_map_overlay (
+    CREATE TABLE public.map_overlay_group_link (
       id TEXT PRIMARY KEY,
       map_overlay_group_id TEXT NOT NULL,
       child_id TEXT NOT NULL,
@@ -36,7 +36,7 @@ exports.down = function(db) {
   return db.runSql(`
     DROP TABLE public.map_overlay_group;
 
-    DROP TABLE public.map_overlay_group_map_overlay;
+    DROP TABLE public.map_overlay_group_link;
   `);
 };
 

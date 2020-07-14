@@ -1,4 +1,4 @@
-import { MapOverlay, MapOverlayGroup, MapOverlayGroupMapOverlay } from '/models';
+import { MapOverlay, MapOverlayGroup, MapOverlayGroupLink } from '/models';
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { RouteHandler } from './RouteHandler';
 import { PermissionsChecker } from './permissions';
@@ -94,7 +94,7 @@ export default class extends RouteHandler {
     const mapOverlayGroupIdToName = reduceToDictionary(mapOverlayGroups, 'id', 'name');
     const mapOverlayGroupIds = mapOverlayGroups.map(mapOverlayGroup => mapOverlayGroup.id);
 
-    const mapOverlayGroupMapOverlays = await MapOverlayGroupMapOverlay.find({
+    const mapOverlayGroupLinks = await MapOverlayGroupLink.find({
       map_overlay_group_id: {
         comparator: 'IN',
         comparisonValue: mapOverlayGroupIds,
@@ -102,7 +102,7 @@ export default class extends RouteHandler {
     });
 
     const mapOverlayGroupMapOverlaysGroupedByGroupId = groupBy(
-      mapOverlayGroupMapOverlays,
+      mapOverlayGroupLinks,
       'map_overlay_group_id',
     );
 
@@ -142,7 +142,7 @@ export default class extends RouteHandler {
       return results;
     }
 
-    const areMapOverlays = this.checkConnectionsChildType(mapOverlayGroupConnections, 'mapOverlay');
+    const areMapOverlays = this.checkLinksChildType(mapOverlayGroupConnections, 'mapOverlay');
 
     //If all of the connections are mapOverlays, this means we have reached the lowest level of the hierarchy
     if (areMapOverlays) {
@@ -170,18 +170,18 @@ export default class extends RouteHandler {
         const mapOverlayGroupConnection = mapOverlayGroupConnections[i];
         const name = mapOverlayGroupIdToName[mapOverlayGroupConnection.child_id];
         const type = 'mapOverlayGroup';
-        const childMapOverlayGroupConnections = await MapOverlayGroupMapOverlay.find({
+        const childMapOverlayGroupLinks = await MapOverlayGroupLink.find({
           map_overlay_group_id: {
             comparator: '=',
             comparisonValue: mapOverlayGroupConnection.child_id,
           },
         });
         const children = await this.findNestedGroupedMapOverlays(
-          childMapOverlayGroupConnections,
+          childMapOverlayGroupLinks,
           accessibleMapOverlays,
         );
-        const areMapOverlayGroups = this.checkConnectionsChildType(
-          childMapOverlayGroupConnections,
+        const areMapOverlayGroups = this.checkLinksChildType(
+          childMapOverlayGroupLinks,
           'mapOverlayGroup',
         );
 
@@ -203,7 +203,7 @@ export default class extends RouteHandler {
     return results;
   };
 
-  checkConnectionsChildType = (connections, childType) => {
+  checkLinksChildType = (connections, childType) => {
     return connections.every(
       mapOverlayGroupConnection => mapOverlayGroupConnection.child_type === childType,
     );
