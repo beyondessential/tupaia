@@ -57,8 +57,9 @@ const updateOrCreateDataGroup = async (models, { surveyCode, serviceType }) => {
 
   if (serviceType && serviceType !== dataGroup.service_type) {
     dataGroup.service_type = serviceType;
-    await dataGroup.save();
   }
+  dataGroup.sanitizeConfig();
+  await dataGroup.save();
 
   return dataGroup;
 };
@@ -74,6 +75,9 @@ const updateOrCreateDataElementInGroup = async (models, dataElementCode, dataGro
     },
     fieldsToUpdate,
   );
+  dataElement.sanitizeConfig();
+  await dataElement.save();
+
   await models.dataElementDataGroup.findOrCreate({
     data_element_id: dataElement.id,
     data_group_id: dataGroup.id,
