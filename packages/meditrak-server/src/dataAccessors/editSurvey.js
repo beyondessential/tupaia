@@ -135,11 +135,35 @@ class SurveyEditor {
    */
   updateResource = async model => {
     const updatedFields = this.getUpdatedFieldsForModel(model);
+    const isDataSource = model.databaseType === this.models.dataSource.databaseType;
+
     Object.entries(updatedFields).forEach(([fieldName, fieldValue]) => {
+      if (isDataSource && (fieldName === 'config' || fieldValue === undefined)) {
+        // Handle config last since its value depends on other fields
+        // For the same reason, do not set model fields to `undefined`
+        // so that the actual record values can be used for config calculation
+        return;
+      }
       // eslint-disable-next-line no-param-reassign
       model[fieldName] = fieldValue;
     });
+    if (isDataSource) {
+      this.updateDataSourceConfig(model, updatedFields);
+    }
+
     return model.save();
+  };
+
+  /**
+   * @param {DatabaseModel} model - mutated
+   */
+  updateDataSourceConfig = (model, updatedFields) => {
+    if ('config' in updatedFields) {
+      // Retain existing fields in the data source
+      // eslint-disable-next-line no-param-reassign
+      model.config = { ...model.config, ...updatedFields.config };
+    }
+    model.sanitizeConfig();
   };
 }
 
