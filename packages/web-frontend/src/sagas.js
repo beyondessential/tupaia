@@ -12,8 +12,8 @@ import {
   selectOrgUnit,
   selectOrgUnitChildren,
   selectOrgUnitCountry,
-  selectIsProject,
   selectProjectByCode,
+  selectIsProject,
   selectMeasureBarItemById,
   selectActiveProjectCode,
 } from './selectors';
@@ -356,7 +356,7 @@ function* watchSetPasswordResetToken() {
  *
  */
 function* attemptRequestCountryAccess(action) {
-  const { message, userGroup } = action;
+  const { message, projectCode } = action;
   const entityIds = action.entityIds ? Object.keys(action.entityIds) : [];
 
   const options = {
@@ -367,7 +367,7 @@ function* attemptRequestCountryAccess(action) {
     body: JSON.stringify({
       entityIds,
       message,
-      userGroup,
+      projectCode,
     }),
     alwaysUseSuppliedErrorFunction: true,
   };
@@ -669,12 +669,6 @@ function* watchSearchChange() {
  */
 function* fetchMeasureInfo(measureId, organisationUnitCode) {
   const state = yield select();
-  if (selectIsProject(state, organisationUnitCode)) {
-    // Never want to fetch measures for World org code.
-    yield put(cancelFetchMeasureData());
-    yield put(clearMeasureHierarchy());
-    return;
-  }
 
   if (!measureId || !organisationUnitCode) {
     // Don't try and fetch null measures
@@ -686,6 +680,7 @@ function* fetchMeasureInfo(measureId, organisationUnitCode) {
   const country = selectOrgUnitCountry(state, organisationUnitCode);
   const countryCode = country ? country.organisationUnitCode : undefined;
   const measureParams = selectMeasureBarItemById(state, measureId) || {};
+  const activeProjectCode = state.project.activeProjectCode;
 
   // If the view should be constrained to a date range and isn't, constrain it
   const { startDate, endDate } =
@@ -698,8 +693,8 @@ function* fetchMeasureInfo(measureId, organisationUnitCode) {
     organisationUnitCode,
     startDate: formatDateForApi(startDate),
     endDate: formatDateForApi(endDate),
-    shouldShowAllParentCountryResults: !isMobile(),
-    projectCode: state.project.activeProjectCode,
+    shouldShowAllParentCountryResults: !isMobile() && countryCode !== activeProjectCode,
+    projectCode: activeProjectCode,
   };
   const requestResourceUrl = `measureData?${queryString.stringify(urlParameters)}`;
 
@@ -741,7 +736,7 @@ function* fetchCurrentMeasureInfo() {
   const { measureId } = state.map.measureInfo;
   const { measureHierarchy, selectedMeasureId } = state.measureBar;
 
-  if (currentOrganisationUnitCode && !selectIsProject(state, currentOrganisationUnitCode)) {
+  if (currentOrganisationUnitCode) {
     const isHeirarchyPopulated = Object.keys(measureHierarchy).length;
 
     // Update the default measure ID
@@ -869,6 +864,7 @@ function* exportChart(action) {
     endDate,
     selectedDisaster,
     extraConfig,
+    projectCode,
   } = action;
 
   const timeZone = getTimeZone();
@@ -882,6 +878,8 @@ function* exportChart(action) {
     endDate: formatDateForApi(endDate, timeZone),
     disasterStartDate: selectedDisaster && formatDateForApi(selectedDisaster.startDate, timeZone),
     disasterEndDate: selectedDisaster && formatDateForApi(selectedDisaster.endDate, timeZone),
+    organisationUnitName,
+    projectCode,
   });
 
   const fetchOptions = Object.assign(
@@ -895,6 +893,7 @@ function* exportChart(action) {
         exportUrl,
         viewId,
         dashboardGroupId,
+        projectCode,
         organisationUnitCode,
         organisationUnitName,
         selectedFormat,

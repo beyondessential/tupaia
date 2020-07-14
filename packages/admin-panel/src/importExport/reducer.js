@@ -10,12 +10,15 @@ import {
   IMPORT_EXPORT_SUCCESS,
   IMPORT_EXPORT_DISMISS,
   IMPORT_DIALOG_OPEN,
+  EXPORT_DIALOG_OPEN,
 } from './constants';
 
 const defaultState = {
-  importEndpoint: null,
   isLoading: false,
   errorMessage: null,
+  parentRecord: null,
+  isImportDialogOpen: false,
+  isExportDialogOpen: false,
 };
 
 const stateChanges = {
@@ -28,8 +31,12 @@ const stateChanges = {
     }
     return defaultState; // If no error, dismiss the whole modal and clear its state
   },
-  [IMPORT_DIALOG_OPEN]: ({ importEndpoint }) => ({
-    importEndpoint,
+  [IMPORT_DIALOG_OPEN]: () => ({
+    isImportDialogOpen: true,
+  }),
+  [EXPORT_DIALOG_OPEN]: ({ parentRecord }) => ({
+    parentRecord,
+    isExportDialogOpen: true,
   }),
 };
 

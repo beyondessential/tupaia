@@ -3,14 +3,18 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
 
-export const convertFilterToString = (unprocessedFilterObject = {}) => {
+export const convertSearchTermToFilter = (unprocessedFilterObject = {}) => {
   const filterObject = {};
   Object.entries(unprocessedFilterObject).forEach(([key, value]) => {
+    if (typeof value !== 'string') {
+      filterObject[key] = value;
+      return;
+    }
+
     filterObject[key] = {
-      comparator: 'LIKE',
+      comparator: `ilike`,
       comparisonValue: `${value}%`,
-      ignoreCase: true,
     };
   });
-  return JSON.stringify(filterObject);
+  return filterObject;
 };

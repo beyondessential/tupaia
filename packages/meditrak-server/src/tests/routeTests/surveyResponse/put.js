@@ -23,7 +23,7 @@ const getRandomNewEntityForSurveyResponse = async (models, surveyResponse) => {
   return entities[randomIntBetween(0, entities.length - 1)].id;
 };
 
-export const testPostSurveyResponses = (app, models, syncQueue) =>
+export const testPutSurveyResponses = (app, models, syncQueue) =>
   function() {
     describe('Update entity for existing survey response', function() {
       let surveyResponseId;
@@ -44,7 +44,7 @@ export const testPostSurveyResponses = (app, models, syncQueue) =>
         numberOfAnswersInSurveyResponse = await models.answer.count({
           survey_response_id: surveyResponseId,
         });
-        response = await app.post(`surveyResponse/${surveyResponseId}`, {
+        response = await app.put(`surveyResponse/${surveyResponseId}`, {
           body: {
             entity_id: newEntityId,
           },
