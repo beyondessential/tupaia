@@ -894,7 +894,7 @@ function* exportChart(action) {
         viewId,
         projectCode,
         dashboardGroupId,
-        projectCode: project,
+        projectCode,
         organisationUnitCode,
         organisationUnitName,
         selectedFormat,
