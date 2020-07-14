@@ -26,7 +26,7 @@ export const TYPES = {
   GEOGRAPHICAL_AREA: 'geographical_area',
   MAP_OVERLAY: 'mapOverlay',
   MAP_OVERLAY_GROUP: 'map_overlay_group',
-  MAP_OVERLAY_GROUP_LINK: 'map_overlay_group_link',
+  MAP_OVERLAY_GROUP_RELATION: 'map_overlay_group_relation',
   MEDITRAK_DEVICE: 'meditrak_device',
   MEDITRAK_SYNC_QUEUE: 'meditrak_sync_queue',
   MS1_SYNC_LOG: 'ms1_sync_log',

@@ -41,21 +41,21 @@ exports.up = async function(db) {
       mapOverlayGroupNameToId[groupName] = mapOverlayGroupId;
     }
 
-    const mapOverlayGroupLink = {
+    const mapOverlayGroupRelation = {
       id: generateId(),
       map_overlay_group_id: mapOverlayGroupId,
       child_id: mapOverlayId,
       child_type: 'mapOverlay',
     };
 
-    await insertObject(db, 'map_overlay_group_link', mapOverlayGroupLink);
+    await insertObject(db, 'map_overlay_group_relation', mapOverlayGroupRelation);
   }
 };
 
 exports.down = function(db) {
   return db.runSql(`
     TRUNCATE TABLE map_overlay_group;
-    TRUNCATE TABLE map_overlay_group_link;
+    TRUNCATE TABLE map_overlay_group_relation;
   `);
 };
 

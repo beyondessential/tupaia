@@ -6,7 +6,7 @@
 export { UserSession } from './UserSession';
 export { MapOverlay } from './MapOverlay';
 export { MapOverlayGroup } from './MapOverlayGroup';
-export { MapOverlayGroupLink } from './MapOverlayGroupLink';
+export { MapOverlayGroupRelation } from './MapOverlayGroupRelation';
 export { DashboardGroup } from './DashboardGroup';
 export { DashboardReport } from './DashboardReport';
 export { Disaster } from './Disaster';
