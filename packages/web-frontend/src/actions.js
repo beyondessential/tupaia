@@ -1021,7 +1021,6 @@ export function closeExportDialog() {
  */
 export function attemptChartExport({
   viewId,
-  projectCode,
   organisationUnitCode,
   organisationUnitName,
   dashboardGroupId,
@@ -1037,7 +1036,6 @@ export function attemptChartExport({
   return {
     type: ATTEMPT_CHART_EXPORT,
     viewId,
-    projectCode,
     organisationUnitCode,
     organisationUnitName,
     dashboardGroupId,
