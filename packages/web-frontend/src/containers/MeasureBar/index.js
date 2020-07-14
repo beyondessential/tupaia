@@ -56,6 +56,7 @@ export class MeasureBar extends Component {
   renderSelectedMeasure() {
     const { currentMeasure, currentOrganisationUnitCode } = this.props;
 
+    console.log('currentMeasure', currentMeasure);
     return (
       <HierarchyItem
         nestedMargin="0px"
@@ -74,22 +75,42 @@ export class MeasureBar extends Component {
       onClearMeasure,
     } = this.props;
 
-    const items = Object.entries(measureHierarchy).map(([categoryName, children]) => {
-      if (!Array.isArray(children)) return null;
-      const nestedItems = children.map(measure => {
-        const onClick =
-          measure.measureId === currentMeasure.measureId
-            ? () => onClearMeasure()
-            : () => this.handleSelectMeasure(measure, currentOrganisationUnitCode);
+    const renderNestedHierachyItems = children => {
+      return children.map(childObject => {
+        let nestedItems;
+
+        if (childObject.type === 'mapOverlayGroup') {
+          nestedItems = renderNestedHierachyItems(childObject.children);
+        }
+
+        let onClick = null;
+
+        if (childObject.type !== 'mapOverlayGroup') {
+          onClick =
+            childObject.measureId === currentMeasure.measureId
+              ? () => onClearMeasure()
+              : () => this.handleSelectMeasure(childObject, currentOrganisationUnitCode);
+        }
+
         return (
           <HierarchyItem
-            label={measure.name}
-            isSelected={measure.measureId === currentMeasure.measureId}
-            key={measure.measureId}
+            label={childObject.name}
+            isSelected={
+              childObject.type === 'mapOverlayGroup'
+                ? null
+                : childObject.measureId === currentMeasure.measureId
+            }
+            key={childObject.measureId}
             onClick={onClick}
+            nestedItems={nestedItems}
           />
         );
       });
+    };
+
+    const items = Object.entries(measureHierarchy).map(([categoryName, children]) => {
+      if (!Array.isArray(children)) return null;
+      const nestedItems = renderNestedHierachyItems(children);
       if (nestedItems.length === 0) return null;
       return (
         <HierarchyItem

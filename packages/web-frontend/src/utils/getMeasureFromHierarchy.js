@@ -21,11 +21,25 @@ export const getMeasureFromHierarchy = (measureHierarchy, measureId) => {
 
   for (let i = 0; i < hierarchyCategories.length; i++) {
     const measureOptions = hierarchyCategories[i];
+    const result = getNestedHierarchyMeasure(measureOptions, measureId);
 
-    for (let m = 0; m < measureOptions.length; m++) {
-      if (measureOptions[m] && measureOptions[m].measureId === measureId) {
-        return measureOptions[m];
+    if (result) {
+      return result;
+    }
+  }
+
+  return null;
+};
+
+const getNestedHierarchyMeasure = (measureOptions, measureId) => {
+  for (let m = 0; m < measureOptions.length; m++) {
+    if (measureOptions[m] && measureOptions[m].type === 'mapOverlayGroup') {
+      const result = getNestedHierarchyMeasure(measureOptions[m].children, measureId);
+      if (result) {
+        return result;
       }
+    } else if (measureOptions[m] && measureOptions[m].measureId === measureId) {
+      return measureOptions[m];
     }
   }
 

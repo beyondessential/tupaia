@@ -1,7 +1,11 @@
-import { MapOverlay } from '/models';
+import { MapOverlay, MapOverlayGroup, MapOverlayGroupMapOverlay } from '/models';
 import { QUERY_CONJUNCTIONS } from '@tupaia/database';
 import { RouteHandler } from './RouteHandler';
 import { PermissionsChecker } from './permissions';
+import { reduceToDictionary } from '@tupaia/utils';
+import keyBy from 'lodash.keyby';
+import groupBy from 'lodash.groupby';
+
 const { AND, RAW } = QUERY_CONJUNCTIONS;
 
 export default class extends RouteHandler {
@@ -13,69 +17,234 @@ export default class extends RouteHandler {
     const overlayCode = enityCountryCode || entityCode;
     const userGroups = await this.req.getUserGroups(entityCode);
 
-    let mapOverlays = [];
-
+    let mapOverlaysGroupedByGroupName = {};
+    const measures = {};
     // Projects do not have a country_code
     if (overlayCode) {
-      mapOverlays = await MapOverlay.find({
-        [RAW]: {
-          sql: `("userGroup" = '' OR "userGroup" IN (${userGroups.map(() => '?').join(',')}))`, // turn `['Public', 'Donor', 'Admin']` into `?,?,?` for binding
-          parameters: userGroups,
-        },
-        [AND]: {
-          [RAW]: {
-            sql: '"countryCodes" IS NULL OR :overlayCode = ANY("countryCodes")',
-            parameters: {
-              overlayCode,
-            },
-          },
-          [AND]: {
-            projectCodes: {
-              comparator: '@>',
-              comparisonValue: [query.projectCode],
-            },
-          },
-        },
+      const accessibleMapOverlays = await this.findAccessibleMapOverlays(
+        overlayCode,
+        query.projectCode,
+        userGroups,
+      );
+      mapOverlaysGroupedByGroupName = await this.findAccessibleGroupedMapOverlays(
+        accessibleMapOverlays,
+      );
+
+      // Sort groups alphabetically
+      const sortedGroupNames = Object.keys(mapOverlaysGroupedByGroupName).sort((a, b) =>
+        a.toLowerCase().localeCompare(b.toLowerCase()),
+      );
+      sortedGroupNames.forEach(a => {
+        measures[a] = mapOverlaysGroupedByGroupName[a];
       });
     }
+
     return {
       organisationUnitType: entity.getOrganisationLevel(),
       organisationUnitCode: entityCode,
       name: entityName,
-      measures: translateOverlaysForResponse(mapOverlays),
+      measures,
     };
   };
-}
 
-// translate and join measures, example at the bottom of file
-const translateOverlaysForResponse = mapOverlays => {
-  const groupedOverlays = {};
-  const returnJson = {};
-  mapOverlays
-    .filter(m => !m.hideFromMenu)
-    .sort((a, b) => a.sortOrder - b.sortOrder)
-    .forEach(({ id, name, groupName, linkedMeasures, presentationOptions }) => {
-      if (!groupedOverlays[groupName]) {
-        groupedOverlays[groupName] = [];
-      }
-
-      const idString = [id, ...(linkedMeasures || [])].sort().join(',');
-
-      groupedOverlays[groupName].push({
-        measureId: idString,
-        name,
-        ...presentationOptions,
-      });
+  /**
+   * Find accessible Map Overlays that have matched entityCode, projectCode and userGroups
+   * @param {*} overlayCode
+   * @param {*} projectCode
+   * @param {*} userGroups
+   */
+  findAccessibleMapOverlays = async (overlayCode, projectCode, userGroups) => {
+    const mapOverlays = await MapOverlay.find({
+      [RAW]: {
+        sql: `("userGroup" = '' OR "userGroup" IN (${userGroups.map(() => '?').join(',')}))`, // turn `['Public', 'Donor', 'Admin']` into `?,?,?` for binding
+        parameters: userGroups,
+      },
+      [AND]: {
+        [RAW]: {
+          sql: '"countryCodes" IS NULL OR :overlayCode = ANY("countryCodes")',
+          parameters: {
+            overlayCode,
+          },
+        },
+        [AND]: {
+          projectCodes: {
+            comparator: '@>',
+            comparisonValue: [projectCode],
+          },
+        },
+      },
     });
 
-  // Sort groups alphabetically
-  const sortedGroupNames = Object.keys(groupedOverlays).sort((a, b) =>
-    a.toLowerCase().localeCompare(b.toLowerCase()),
-  );
-  sortedGroupNames.forEach(a => (returnJson[a] = groupedOverlays[a]));
+    return keyBy(mapOverlays, 'id');
+  };
 
-  return returnJson;
-};
+  /**
+   * Find accessible grouped MapOverlays, starting from the top level MapOverlayGroups
+   * @param {*} accessibleMapOverlays
+   */
+  findAccessibleGroupedMapOverlays = async accessibleMapOverlays => {
+    //Find all the top level Map Overlay Groups
+    const mapOverlayGroups = await MapOverlayGroup.find({
+      top_level: {
+        comparator: '=',
+        comparisonValue: true,
+      },
+    });
+
+    const mapOverlayGroupIdToName = reduceToDictionary(mapOverlayGroups, 'id', 'name');
+    const mapOverlayGroupIds = mapOverlayGroups.map(mapOverlayGroup => mapOverlayGroup.id);
+
+    const mapOverlayGroupMapOverlays = await MapOverlayGroupMapOverlay.find({
+      map_overlay_group_id: {
+        comparator: 'IN',
+        comparisonValue: mapOverlayGroupIds,
+      },
+    });
+
+    const mapOverlayGroupMapOverlaysGroupedByGroupId = groupBy(
+      mapOverlayGroupMapOverlays,
+      'map_overlay_group_id',
+    );
+
+    const groupIds = Object.keys(mapOverlayGroupMapOverlaysGroupedByGroupId);
+    const result = {};
+
+    for (let i = 0; i < groupIds.length; i++) {
+      const groupId = groupIds[i];
+      const name = mapOverlayGroupIdToName[groupId];
+      const mapOverlayGroupConnections = mapOverlayGroupMapOverlaysGroupedByGroupId[groupId];
+      const nestedMapOverlayGroups = await this.findNestedGroupedMapOverlays(
+        mapOverlayGroupConnections,
+        accessibleMapOverlays,
+      );
+
+      const isNonEmptyMapOverlayGroup = this.checkIfGroupedMapOverlaysAreEmpty(
+        nestedMapOverlayGroups,
+      );
+
+      if (isNonEmptyMapOverlayGroup) {
+        result[name] = nestedMapOverlayGroups;
+      }
+    }
+
+    return result;
+  };
+
+  /**
+   * Recursively find the nested grouped MapOverlays.
+   * @param {*} mapOverlayGroupConnections
+   * @param {*} accessibleMapOverlays
+   */
+  findNestedGroupedMapOverlays = async (mapOverlayGroupConnections, accessibleMapOverlays) => {
+    let results = [];
+
+    if (!mapOverlayGroupConnections || !mapOverlayGroupConnections.length) {
+      return results;
+    }
+
+    const areMapOverlays = this.checkConnectionsChildType(mapOverlayGroupConnections, 'mapOverlay');
+
+    //If all of the connections are mapOverlays, this means we have reached the lowest level of the hierarchy
+    if (areMapOverlays) {
+      const mapOverlayIds = mapOverlayGroupConnections.map(
+        mapOverlayGroupConnection => mapOverlayGroupConnection.child_id,
+      );
+      const mapOverlays = Object.values(accessibleMapOverlays).filter(mapOverlay =>
+        mapOverlayIds.includes(mapOverlay.id),
+      );
+
+      results = this.translateOverlaysForResponse(mapOverlays);
+    } else {
+      //Find all the child MapOverlayGroups
+      const mapOverlayGroupIds = mapOverlayGroupConnections.map(m => m.child_id);
+      const mapOverlayGroups = await MapOverlayGroup.find({
+        id: {
+          comparator: 'IN',
+          comparisonValue: mapOverlayGroupIds,
+        },
+      });
+      const mapOverlayGroupIdToName = reduceToDictionary(mapOverlayGroups, 'id', 'name');
+
+      //Recursively find the children of the current MapOverlayGroups
+      for (let i = 0; i < mapOverlayGroupConnections.length; i++) {
+        const mapOverlayGroupConnection = mapOverlayGroupConnections[i];
+        const name = mapOverlayGroupIdToName[mapOverlayGroupConnection.child_id];
+        const type = 'mapOverlayGroup';
+        const childMapOverlayGroupConnections = await MapOverlayGroupMapOverlay.find({
+          map_overlay_group_id: {
+            comparator: '=',
+            comparisonValue: mapOverlayGroupConnection.child_id,
+          },
+        });
+        const children = await this.findNestedGroupedMapOverlays(
+          childMapOverlayGroupConnections,
+          accessibleMapOverlays,
+        );
+        const areMapOverlayGroups = this.checkConnectionsChildType(
+          childMapOverlayGroupConnections,
+          'mapOverlayGroup',
+        );
+
+        //If children are all groups, sort by names.
+        if (areMapOverlayGroups) {
+          children.sort(({ name: a }, { name: b }) =>
+            a.toLowerCase().localeCompare(b.toLowerCase()),
+          );
+        }
+
+        results.push({
+          name,
+          type,
+          children,
+        });
+      }
+    }
+
+    return results;
+  };
+
+  checkConnectionsChildType = (connections, childType) => {
+    return connections.every(
+      mapOverlayGroupConnection => mapOverlayGroupConnection.child_type === childType,
+    );
+  };
+
+  checkIfGroupedMapOverlaysAreEmpty = nestedMapOverlayGroups => {
+    if (!nestedMapOverlayGroups || !nestedMapOverlayGroups.length) {
+      return false;
+    }
+
+    return nestedMapOverlayGroups.every(({ type, children }) => {
+      if (type === 'mapOverlay') {
+        return true;
+      } else if (type === 'mapOverlayGroup' && children && children.length) {
+        return this.checkIfGroupedMapOverlaysAreEmpty(children);
+      }
+
+      return false;
+    });
+  };
+
+  translateOverlaysForResponse = mapOverlays => {
+    const translatedMapOverlays = [];
+
+    mapOverlays
+      .filter(({ presentationOptions: { hideFromMenu } }) => !hideFromMenu)
+      .sort((a, b) => a.sortOrder - b.sortOrder)
+      .forEach(({ id, name, linkedMeasures, presentationOptions }) => {
+        const idString = [id, ...(linkedMeasures || [])].sort().join(',');
+
+        translatedMapOverlays.push({
+          measureId: idString,
+          name,
+          ...presentationOptions,
+          type: 'mapOverlay',
+        });
+      });
+
+    return translatedMapOverlays;
+  };
+}
 
 /*
 *** data builder from:

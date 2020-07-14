@@ -150,6 +150,35 @@ const getSpectrumScaleValues = (measureData, measureOption) => {
   };
 };
 
+export function flattenMeasureHierarchy(measureHierarchy) {
+  const results = [];
+  const flattenGroupedMeasure = ({ children }) => {
+    children.forEach(childObject => {
+      if (
+        childObject.type === 'mapOverlayGroup' &&
+        childObject.children &&
+        childObject.children.length
+      ) {
+        flattenGroupedMeasure(childObject.children);
+      } else {
+        results.push(childObject);
+      }
+    });
+  };
+
+  Object.values(measureHierarchy)
+    .flat()
+    .forEach(measure => {
+      if (measure.type === 'mapOverlay') {
+        results.push(measure);
+      } else {
+        flattenGroupedMeasure(measure);
+      }
+    });
+
+  return results;
+}
+
 export function processMeasureInfo(response) {
   const { measureOptions, measureData, ...rest } = response;
   const hiddenMeasures = {};
