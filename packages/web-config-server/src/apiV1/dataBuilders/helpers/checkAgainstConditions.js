@@ -15,7 +15,7 @@ const ANY_VALUE_CONDITION = '*';
 
 export const checkValueSatisfiesCondition = (value, condition) => {
   if (!isPlainObject(condition)) {
-    return condition === ANY_VALUE_CONDITION || value === condition;
+    return (condition === ANY_VALUE_CONDITION && value !== '') || value === condition;
   }
 
   const { operator, value: targetValue } = condition;

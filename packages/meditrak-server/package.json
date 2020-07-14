@@ -48,6 +48,7 @@
     "xlsx": "^0.10.9"
   },
   "devDependencies": {
+    "concurrently": "^5.2.0",
     "deep-equal-in-any-order": "^1.0.21",
     "nodemon": "^1.17.3",
     "sinon-test": "^2.4.0",
@@ -60,9 +61,8 @@
     "build": "rm -rf dist && babel src -s --out-dir dist --ignore '**src/database/migrations','src/tests/**' --copy-files --no-copy-ignored --config-file '../../babel.config.json'",
     "prestart": "npm run -s build",
     "start": "node dist",
-    "start-dev": "nodemon -w src --exec \"babel-node src --inspect=9999 --config-file '../../babel.config.json'\"",
+    "start-dev": "../../scripts/bash/backendStartDev.sh 9999",
     "start-verbose": "LOG_LEVEL=debug npm run start-dev",
-    "sync-organisation-unit-codes": "babel-node ./src/devops/importOrganisationUnitCodesFromWebsite.js",
     "validate": "babel-node scripts/validate/index.js --config-file '../../babel.config.json'"
   },
   "repository": {
