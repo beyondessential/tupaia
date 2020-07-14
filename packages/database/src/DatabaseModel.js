@@ -32,7 +32,9 @@ export class DatabaseModel {
         this.cache = {}; // invalidate cache on any change
       });
       this.database.addSchemaChangeHandler(() => {
-        this.schema = null; // invalidate cached schema for this model on any change to db schema
+        // invalidate cached schema for this model on any change to db schema
+        this.schema = null;
+        this.fieldNames = null;
       });
     }
   }
