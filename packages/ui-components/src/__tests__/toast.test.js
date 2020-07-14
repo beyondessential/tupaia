@@ -5,7 +5,6 @@
 
 import React from 'react';
 import { screen, waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 import { render } from '../../helpers/testingRenderer';
 import { Toast } from '..';
