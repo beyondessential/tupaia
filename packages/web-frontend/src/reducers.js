@@ -453,6 +453,7 @@ function dashboard(
 ) {
   switch (action.type) {
     case CHANGE_DASHBOARD_GROUP:
+      console.log(action);
       return { ...state, currentDashboardKey: action.name };
     case FETCH_INFO_VIEW_DATA:
       return state;

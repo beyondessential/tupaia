@@ -5,7 +5,7 @@
  * found in the LICENSE file in the root directory of this source tree.
  */
 
-export { historyMiddleware } from './historyMiddleware';
+export { historyMiddleware, setInitialState } from './historyMiddleware';
 export { createUrlString } from './historyNavigation';
 export { selectCurrentProject, selectCurrentOrgUnitCode } from './selectors';
 // TODO: move into sensible files

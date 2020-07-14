@@ -468,6 +468,7 @@ export function changeOrgUnit( // TODO: Rename function and deal with defaults
   organisationUnitCode = initialOrgUnit.organisationUnitCode,
   shouldChangeMapBounds = true,
 ) {
+  console.log('creating change org unit action');
   return {
     type: SET_ORG_UNIT,
     organisationUnitCode,

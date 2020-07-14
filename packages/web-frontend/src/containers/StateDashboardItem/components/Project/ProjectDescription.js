@@ -56,6 +56,8 @@ ProjectDescription.propTypes = {
 };
 
 const mapStateToProps = state => {
+  // TODO: select current project returns full project
+  // Also, need to bugfix on unfpa/unfpa/UNFPA then click home
   const project = selectProjectByCode(state, selectCurrentProject());
 
   return {

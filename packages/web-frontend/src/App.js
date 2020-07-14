@@ -14,6 +14,8 @@ import { Provider } from 'react-redux';
 import configureStore from './configureStore';
 import { DARKENED_BLUE } from './styles';
 
+import { setInitialState } from './historyNavigation';
+
 import { fetchInitialData } from './actions';
 
 // Set up asynchonous import of the RootScreen to enable webpack to do code splitting.
@@ -52,6 +54,7 @@ class App extends Component {
     const { dispatch: rawDispatch } = store;
     const dispatch = action => rawDispatch({ ...action, meta: { preventHistoryUpdate: true } });
     dispatch(fetchInitialData());
+    setInitialState(store);
   }
 
   render() {

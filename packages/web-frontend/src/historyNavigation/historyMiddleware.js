@@ -27,14 +27,34 @@ import {
   CLEAR_MEASURE,
   GO_HOME,
   onSetOrgUnit,
+  setOverlayComponent,
 } from '../actions';
 
 import { onSetProject } from '../projects/actions';
 
-import { setUrlComponent, clearUrl } from './historyNavigation';
+import { setUrlComponent, getCurrentUrlComponents, clearUrl } from './historyNavigation';
 import { URL_COMPONENTS } from './constants';
 
 // TODO: import { gaPageView } from '../utils';
+export const setInitialState = ({ dispatch }) => {
+  const { userPage, ...otherComponents } = getCurrentUrlComponents();
+  console.log(otherComponents);
+
+  if (userPage) {
+    dispatch(setOverlayComponent(null));
+    console.log('Ahhh!');
+  }
+
+  if (!otherComponents[URL_COMPONENTS.PROJECT]) {
+    dispatch(onSetProject(null));
+    return;
+  }
+
+  dispatch(setOverlayComponent(null));
+  dispatch(onSetProject(otherComponents[URL_COMPONENTS.PROJECT]));
+  if (otherComponents[URL_COMPONENTS.ORG_UNIT])
+    dispatch(onSetOrgUnit(otherComponents[URL_COMPONENTS.ORG_UNIT], true));
+};
 
 export const historyMiddleware = ({ dispatch }) => next => action => {
   switch (action.type) {
@@ -44,8 +64,11 @@ export const historyMiddleware = ({ dispatch }) => next => action => {
       dispatch(onSetProject(action.projectCode));
       break;
     case SET_ORG_UNIT:
+      console.log('setting org unit!');
       setUrlComponent(URL_COMPONENTS.ORG_UNIT, action.organisationUnitCode);
+      console.log('middle setting org unit!');
       dispatch(onSetOrgUnit(action.organisationUnitCode, action.shouldChangeMapBounds));
+      console.log('finished setting org unit!');
       break;
     case CHANGE_DASHBOARD_GROUP:
       setUrlComponent(URL_COMPONENTS.DASHBOARD, action.name);
@@ -72,5 +95,6 @@ export const historyMiddleware = ({ dispatch }) => next => action => {
       return next(action);
   }
 
+  console.log(action);
   return next(action);
 };

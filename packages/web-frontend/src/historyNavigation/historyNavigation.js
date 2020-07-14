@@ -21,10 +21,11 @@ const getCurrentLocation = () => history.location;
 function createUrl(pathParams, searchParams) {
   const { userPage } = pathParams;
   if (userPage) {
+    // TODO: userpage stuff
     return { pathname: userPage };
   }
 
-  const urlComponents = Object.values(pathParams);
+  const urlComponents = PATH_COMPONENTS.map(component => pathParams[component]);
 
   const pathname = urlComponents.join('/');
 
@@ -74,10 +75,16 @@ function pushHistory(pathname, searchParams) {
     return false;
   }
 
+  console.log('success with', {
+    pathname,
+    search,
+  });
+
   history.push({
     pathname,
     search,
   });
+  console.log('true s with');
 
   return true;
 }
@@ -124,6 +131,11 @@ const decodeUrl = (pathname, search) => {
   }
 };
 
+export const getCurrentUrlComponents = () => {
+  const location = getCurrentLocation();
+  return decodeUrl(location.pathname, location.search);
+};
+
 /**
  * Sets a component of the url to the specified value
  * @param {String} component A member of URL_COMPONENTS
@@ -153,10 +165,11 @@ export const setUrlComponent = (component, value) => {
     search,
   });
   const success = pushHistory(`/${pathname}`, search);
+  console.log(success);
 };
 
 export const clearUrl = () => {
-  const success = pushHistory(`/`, {});
+  const success = pushHistory('', {});
 };
 
 /**
@@ -172,7 +185,7 @@ export const getUrlComponent = component => {
 };
 
 const replaceKeysAndRemoveNull = (obj, mapping) => {
-  const newObj = {}; // TODO: Write better
+  const newObj = {}; // TODO: Write better (shouldn't need these funcs I don't think)
   Object.entries(obj).forEach(([key, val]) => {
     if (val !== null && val !== undefined) newObj[mapping[key]] = val;
   });
@@ -180,7 +193,7 @@ const replaceKeysAndRemoveNull = (obj, mapping) => {
 };
 
 const swapKeyAndVal = obj => {
-  const newObj = {}; // TODO: Write better
+  const newObj = {};
   Object.entries(obj).forEach(([key, val]) => {
     newObj[val] = key;
   });
