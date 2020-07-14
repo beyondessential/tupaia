@@ -4,5 +4,6 @@
  */
 
 module.exports = {
+  moduleDirectories: ['node_modules', 'helpers'],
   collectCoverageFrom: ['**/src/components/**/*.js'],
 };
