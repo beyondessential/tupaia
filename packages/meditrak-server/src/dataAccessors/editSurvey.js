@@ -2,14 +2,8 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-
-import { getDataGroupsThatIncludeElement } from '../database';
+import { assertCanAddDataElementInGroup } from '../database';
 import { NON_DATA_ELEMENT_ANSWER_TYPES } from '../database/models/Answer';
-
-const areBothDefinedAndDifferent = (oldValue, newValue) =>
-  oldValue !== undefined && newValue !== undefined && oldValue !== newValue;
-
-const getDhis2ServerName = config => `${config.isDataRegional ? '' : 'non '}regional`;
 
 class SurveyEditor {
   constructor(models) {
@@ -71,39 +65,18 @@ class SurveyEditor {
   };
 
   updateDataElements = async dataElements => {
+    const updatedFields = this.updatedFieldsByDbType[this.models.dataSource.databaseType];
+
     const updateDataElement = async dataElement => {
-      await this.assertDataElementCanBeUpdated(dataElement);
+      await assertCanAddDataElementInGroup(
+        this.models,
+        dataElement.code,
+        this.dataGroup.code,
+        updatedFields,
+      );
       await this.updateResource(dataElement);
     };
     return Promise.all(dataElements.map(updateDataElement));
-  };
-
-  assertDataElementCanBeUpdated = async dataElement => {
-    const { service_type: newServiceType, config: newConfig = {} } = this.getUpdatedFieldsForModel(
-      dataElement,
-    );
-
-    const dataGroups = await getDataGroupsThatIncludeElement(this.models, dataElement.code);
-    const otherDataGroups = dataGroups.filter(({ id }) => id !== this.dataGroup.id);
-    otherDataGroups.forEach(otherDataGroup => {
-      const { service_type: serviceType, config } = otherDataGroup;
-
-      if (areBothDefinedAndDifferent(serviceType, newServiceType)) {
-        throw new Error(
-          `Cannot update service type to '${newServiceType}': question '${dataElement.code}' is included in survey '${otherDataGroup.code}', which uses a different service type`,
-        );
-      }
-
-      if (areBothDefinedAndDifferent(config.isDataRegional, newConfig.isDataRegional)) {
-        throw new Error(
-          `Cannot update DHIS server to ${getDhis2ServerName(config)}, since question '${
-            dataElement.code
-          }' is included in survey '${otherDataGroup.code}', which uses the ${getDhis2ServerName(
-            newConfig,
-          )} server`,
-        );
-      }
-    });
   };
 
   createMissingDataElements = async existingDataElements => {

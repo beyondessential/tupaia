@@ -59,7 +59,7 @@ const SURVEY_COLUMNS = [
       fields: [
         ...SURVEY_FIELDS,
         {
-          Header: 'Data Service Type',
+          Header: 'Data Service',
           source: 'data_source.service_type',
           editConfig: {
             options: ['dhis', 'tupaia'],
@@ -259,7 +259,7 @@ const IMPORT_CONFIG = {
   queryParameters: [
     {
       label: 'Survey Names',
-      instruction:
+      secondaryLabel:
         'Please enter the names of the surveys to be imported. These should match the tab names in the file.',
       parameterKey: 'surveyNames',
       optionsEndpoint: 'surveys',
@@ -269,7 +269,7 @@ const IMPORT_CONFIG = {
     },
     {
       label: 'Countries',
-      instruction:
+      secondaryLabel:
         'Select the countries this survey should be available in, or leave blank for all',
       parameterKey: 'countryIds',
       optionsEndpoint: 'countries',
@@ -277,7 +277,7 @@ const IMPORT_CONFIG = {
     },
     {
       label: 'Permission Group',
-      instruction:
+      secondaryLabel:
         'Select the permission group this survey should be available for, or leave blank for Public',
       parameterKey: 'permissionGroup',
       optionsEndpoint: 'permissionGroups',
@@ -285,12 +285,18 @@ const IMPORT_CONFIG = {
     },
     {
       label: 'Survey Group',
-      instruction:
+      secondaryLabel:
         'Select the survey group this survey should be a part of, or leave blank for none',
       parameterKey: 'surveyGroup',
       optionsEndpoint: 'surveyGroups',
       canCreateNewOptions: true,
       optionValueKey: 'name',
+    },
+    {
+      label: 'Data service',
+      secondaryLabel: 'Select the data service this survey should use, or leave blank for tupaia',
+      parameterKey: 'serviceType',
+      options: ['dhis', 'tupaia'],
     },
   ],
 };
