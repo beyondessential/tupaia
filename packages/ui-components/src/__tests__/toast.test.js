@@ -4,9 +4,10 @@
  */
 
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
+import { render } from '../../helpers/testingRenderer';
 import { Toast } from '..';
 
 describe('toast', () => {
@@ -27,7 +28,7 @@ describe('toast', () => {
   });
 
   it('disappears when the timeout is set', async () => {
-    render(<Toast timeout={1000}>Success Message</Toast>);
+    render(<Toast timeout={100}>Success Message</Toast>);
     await waitFor(() => {
       expect(screen.queryByText(/success message/i)).not.toBeVisible();
     });
