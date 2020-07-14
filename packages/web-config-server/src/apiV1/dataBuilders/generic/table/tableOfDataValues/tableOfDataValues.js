@@ -56,9 +56,9 @@ export class TableOfDataValuesBuilder extends DataBuilder {
     return data;
   }
 
-  async fetchAnalyticsAndMetadata(aggregationType) {
+  async fetchAnalyticsAndMetadata() {
     const dataElementCodes = this.buildDataElementCodes();
-    const { results, period } = await this.fetchAnalytics(dataElementCodes, {}, aggregationType);
+    const { results, period } = await this.fetchAnalytics(dataElementCodes);
     const dataElements = await this.fetchDataElements(dataElementCodes);
     const dataElementByCode = keyBy(dataElements, 'code');
     const resultsWithMetadata = results.map(result => ({
