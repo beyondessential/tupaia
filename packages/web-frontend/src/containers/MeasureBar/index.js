@@ -23,7 +23,12 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 // import { ControlBar } from '../../components/ControlBar';
 import { Control } from './Control';
-import { changeMeasure, clearMeasure, toggleMeasureExpand } from '../../actions';
+import {
+  changeMeasure,
+  clearMeasure,
+  toggleMeasureExpand,
+  updateMeasureConfig,
+} from '../../actions';
 import { HierarchyItem } from '../../components/HierarchyItem';
 import TupaiaIcon from '../../images/TupaiaIcon.svg';
 import { MAP_OVERLAY_SELECTOR } from '../../styles';
@@ -133,6 +138,7 @@ export class MeasureBar extends Component {
       onExpandClick,
       isMeasureLoading,
       currentOrganisationUnitName,
+      onUpdateMeasurePeriod,
     } = this.props;
     const orgName = currentOrganisationUnitName || 'Your current selection';
     const emptyMessage = `Select an area with valid data. ${orgName} has no map overlays available`;
@@ -140,8 +146,9 @@ export class MeasureBar extends Component {
     return (
       <Control
         emptyMessage={emptyMessage}
-        selectedOverlayName={currentMeasure.name}
+        selectedMeasure={currentMeasure}
         isMeasureLoading={isMeasureLoading}
+        onUpdateMeasurePeriod={onUpdateMeasurePeriod}
       >
         {this.renderContents()}
       </Control>
@@ -162,6 +169,7 @@ MeasureBar.propTypes = {
   onExpandClick: PropTypes.func.isRequired,
   onSelectMeasure: PropTypes.func.isRequired,
   onClearMeasure: PropTypes.func.isRequired,
+  onUpdateMeasurePeriod: PropTypes.func.isRequired,
   currentOrganisationUnitCode: PropTypes.string,
   currentOrganisationUnitName: PropTypes.string,
 };
@@ -186,6 +194,11 @@ const mapDispatchToProps = dispatch => ({
   onClearMeasure: () => dispatch(clearMeasure()),
   onSelectMeasure: (measure, orgUnitCode) =>
     dispatch(changeMeasure(measure.measureId, orgUnitCode)),
+  onUpdateMeasurePeriod: (startDate, endDate) =>
+    dispatch(updateMeasureConfig({ startDate, endDate })),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(MeasureBar);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(MeasureBar);

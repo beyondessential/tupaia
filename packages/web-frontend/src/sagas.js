@@ -93,6 +93,7 @@ import {
   fetchOrgUnitError,
   fetchOrgUnit,
   REQUEST_ORG_UNIT,
+  UPDATE_MEASURE_CONFIG,
 } from './actions';
 import { isMobile, processMeasureInfo, formatDateForApi } from './utils';
 import { createUrlString } from './utils/historyNavigation';
@@ -710,12 +711,32 @@ function* fetchMeasureInfo(measureId, organisationUnitCode) {
 }
 
 function* fetchMeasureInfoForMeasureChange(action) {
-  const { measureId, organisationUnitCode } = action;
-  yield fetchMeasureInfo(measureId, organisationUnitCode);
+  const { measureId } = action;
+  yield fetchMeasureInfo(measureId);
 }
 
 function* watchMeasureChange() {
   yield takeLatest(CHANGE_MEASURE, fetchMeasureInfoForMeasureChange);
+}
+
+function* fetchMeasureInfoForMeasurePeriodChange() {
+  const state = yield select();
+
+  yield fetchMeasureInfo(
+    state.measureBar.currentMeasure.measureId,
+    state.measureBar.currentMeasureOrganisationUnitCode,
+  );
+
+  yield put(
+    changeMeasure(
+      state.measureBar.currentMeasure.measureId,
+      state.measureBar.currentMeasureOrganisationUnitCode,
+    ),
+  );
+}
+
+function* watchMeasurePeriodChange() {
+  yield takeLatest(UPDATE_MEASURE_CONFIG, fetchMeasureInfoForMeasurePeriodChange);
 }
 
 function getSelectedMeasureFromHierarchy(measureHierarchy, selectedMeasureId, project) {
@@ -1023,4 +1044,5 @@ export default [
   refreshBrowserWhenFinishingUserSession,
   watchRequestProjectAccess,
   watchGoHomeAndResetToExplore,
+  watchMeasurePeriodChange,
 ];

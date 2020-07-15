@@ -136,10 +136,14 @@ const selectActiveProjectCountries = createSelector(
   },
 );
 
-const selectCountriesAsOrgUnits = createSelector([state => state.orgUnits.orgUnitMap], orgUnitMap =>
-  Object.entries(orgUnitMap)
-    .map(([countryCode, countryHierarchy]) => getOrgUnitFromCountry(countryHierarchy, countryCode))
-    .filter(country => country && country.type === 'Country'),
+const selectCountriesAsOrgUnits = createSelector(
+  [state => state.orgUnits.orgUnitMap],
+  orgUnitMap =>
+    Object.entries(orgUnitMap)
+      .map(([countryCode, countryHierarchy]) =>
+        getOrgUnitFromCountry(countryHierarchy, countryCode),
+      )
+      .filter(country => country && country.type === 'Country'),
 );
 
 const selectOrgUnitSiblingsAndSelf = createSelector(
@@ -357,5 +361,21 @@ export const selectMeasureBarItemById = createSelector(
   (measureHierarchy, id) => {
     const flattenedMeasureHierarchy = [].concat(...Object.values(measureHierarchy));
     return flattenedMeasureHierarchy.find(measure => measure.measureId === id);
+  },
+);
+
+export const selectMeasureBarItemCategoryById = createSelector(
+  [state => state.measureBar.measureHierarchy, (_, id) => id],
+  (measureHierarchy, id) => {
+    const categoryMeasureIndex = [];
+    Object.entries(measureHierarchy).forEach(([category, measures]) => {
+      if (measures.some(measure => measure.measureId === id)) {
+        categoryMeasureIndex[0] = category;
+        categoryMeasureIndex[1] = measures.find(measure => measure.measureId === id);
+        categoryMeasureIndex[2] = measures.findIndex(measure => measure.measureId === id);
+      }
+    });
+
+    return categoryMeasureIndex;
   },
 );
