@@ -462,7 +462,7 @@ CREATE TABLE public.disaster (
     type public.disaster_type NOT NULL,
     description text,
     name text NOT NULL,
-    "countryCod" text NOT NULL
+    "countryCode" text NOT NULL
 );
 
 
@@ -903,7 +903,7 @@ CREATE TABLE public."userSession" (
 
 CREATE TABLE public.user_account (
     id text NOT NULL,
-    name text,
+    first_name text,
     last_name text,
     email text NOT NULL,
     gender text,
@@ -1803,7 +1803,7 @@ CREATE INDEX user_account_email_idx ON public.user_account USING btree (email);
 -- Name: user_account_first_name_idx; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX user_account_first_name_idx ON public.user_account USING btree (name);
+CREATE INDEX user_account_first_name_idx ON public.user_account USING btree (first_name);
 
 
 --
@@ -3327,7 +3327,6 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 796	/20200624090446-AddUNFPAPriorityLifeSavingMedicinesForWomenAndChildrenSOHMatrixReport	2020-07-14 15:06:35.984
 797	/20200712224256-ChangeDefaultCovidOverlayToStateTotalCases-modifies-data	2020-07-14 15:06:36.084
 798	/20200601041635-HideUnncessarySurveysFromDemoLand	2020-07-15 01:53:05.395
-799	/20200715035557-Example-modifies-schema	2020-07-15 17:44:03.018
 \.
 
 
@@ -3335,7 +3334,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 799, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 798, true);
 
 
 --
