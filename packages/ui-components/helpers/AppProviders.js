@@ -5,7 +5,7 @@
 
 import React from 'react';
 import { MuiThemeProvider, StylesProvider } from '@material-ui/core/styles';
-import theme from './theme';
+import theme from '../stories/story-utils/theme';
 import { ThemeProvider } from 'styled-components';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import PropTypes from 'prop-types';

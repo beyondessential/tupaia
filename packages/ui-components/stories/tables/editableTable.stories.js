@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import MuiLink from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
-import * as COLORS from '../../helpers/theme/colors';
+import * as COLORS from '../story-utils/theme/colors';
 import { useTableData } from '../../helpers/useTableData';
 import {
   Button,

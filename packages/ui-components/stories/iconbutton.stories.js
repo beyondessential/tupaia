@@ -12,7 +12,7 @@ import {
   ChevronLeft,
 } from '@material-ui/icons';
 import { IconButton, LightIconButton } from '../src';
-import * as COLORS from '../helpers/theme/colors';
+import * as COLORS from './story-utils/theme/colors';
 
 export default {
   title: 'IconButton',

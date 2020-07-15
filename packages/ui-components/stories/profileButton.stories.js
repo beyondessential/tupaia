@@ -13,7 +13,7 @@ import MuiListItemIcon from '@material-ui/core/ListItemIcon';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import MuiListItemText from '@material-ui/core/ListItemText';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import * as COLORS from '../helpers/theme/colors';
+import * as COLORS from './story-utils/theme/colors';
 import { RouterProvider } from '../helpers/RouterProvider';
 import { ProfileButton, LightProfileButton } from '../src';
 

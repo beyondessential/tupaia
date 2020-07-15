@@ -10,9 +10,9 @@ import { format } from 'date-fns';
 import PropTypes from 'prop-types';
 import Avatar from '@material-ui/core/Avatar';
 import { DataFetchingTable, CondensedTableBody, FakeHeader, ExpandableTableBody } from '../../src';
-import { AFRCell, SitesReportedCell } from '../../helpers/TableCells';
-import * as COLORS from '../../helpers/theme/colors';
-import { connectApi } from '../../helpers/api';
+import { AFRCell, SitesReportedCell } from '../story-utils/TableCells';
+import * as COLORS from '../story-utils/theme/colors';
+import { connectApi } from '../story-utils/api';
 
 export default {
   title: 'Tables/DataFetchingTable',

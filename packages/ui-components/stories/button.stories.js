@@ -19,7 +19,7 @@ import {
   LightOutlinedButton,
   GreyOutlinedButton,
 } from '../src';
-import * as COLORS from '../helpers/theme/colors';
+import * as COLORS from './story-utils/theme/colors';
 
 export default {
   title: 'Button',

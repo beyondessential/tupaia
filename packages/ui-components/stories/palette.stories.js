@@ -7,7 +7,7 @@ import React from 'react';
 import MuiBox from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import styled from 'styled-components';
-import * as COLORS from '../helpers/theme/colors';
+import * as COLORS from './story-utils/theme/colors';
 
 export default {
   title: 'Palette',
