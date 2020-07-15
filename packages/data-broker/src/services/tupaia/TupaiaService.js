@@ -20,6 +20,7 @@ export class TupaiaService extends Service {
     };
     this.metadataPullers = {
       [this.dataSourceTypes.DATA_ELEMENT]: this.pullDataElementMetadata.bind(this),
+      [this.dataSourceTypes.DATA_GROUP]: this.pullDataGroupMetadata.bind(this),
     };
   }
 
@@ -72,5 +73,19 @@ export class TupaiaService extends Service {
   async pullDataElementMetadata(dataSources) {
     const dataElementCodes = dataSources.map(({ code }) => code);
     return this.api.fetchDataElements(dataElementCodes);
+  }
+
+  async pullDataGroupMetadata(dataSources) {
+    if (dataSources.length > 1) {
+      throw new Error('Cannot pull metadata from multiple programs at the same time');
+    }
+
+    const [dataSource] = dataSources;
+    const { code: dataGroupCode } = dataSource;
+    const dataElementDataSources = await this.models.dataSource.getDataElementsInGroup(
+      dataGroupCode,
+    );
+    const dataElementCodes = dataElementDataSources.map(({ code }) => code);
+    return this.api.fetchDataGroup(dataGroupCode, dataElementCodes);
   }
 }
