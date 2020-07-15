@@ -52,10 +52,10 @@ const MessageView = ({ status, message }) => {
   return (
     <TextareaField
       inputRef={inputRef}
-      name="textArea"
-      placeholder="Placeholder text"
+      name={`message-${message.id}`}
+      placeholder="Add a message..."
       multiline
-      defaultValue={message}
+      defaultValue={message.content}
       InputProps={{
         readOnly: status !== STATUS.EDITING,
       }}
@@ -65,7 +65,10 @@ const MessageView = ({ status, message }) => {
 
 MessageView.propTypes = {
   status: PropTypes.string.isRequired,
-  message: PropTypes.string.isRequired,
+  message: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    content: PropTypes.string,
+  })
 };
 
 const StyledCard = styled(({ focus, ...props }) => <Card {...props} />)`
@@ -94,7 +97,7 @@ export const UserMessage = ({ Header, Footer, message, onUpdate, onDelete, class
   return (
     <StyledCard className={className} variant="outlined" focus={status === STATUS.EDITING}>
       {React.cloneElement(Header, { ActionsMenu: <ActionsMenu options={menuOptions} /> })}
-      <MessageView status={status} message={message.content} />
+      <MessageView status={status} message={message} />
       {Footer}
       {status !== STATUS.READ_ONLY && (
         <CardActions>
@@ -116,7 +119,10 @@ export const UserMessage = ({ Header, Footer, message, onUpdate, onDelete, class
 UserMessage.propTypes = {
   Header: PropTypes.any.isRequired,
   Footer: PropTypes.any,
-  message: PropTypes.object.isRequired,
+  message: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    content: PropTypes.string,
+  }),
   onUpdate: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
   className: PropTypes.string,
