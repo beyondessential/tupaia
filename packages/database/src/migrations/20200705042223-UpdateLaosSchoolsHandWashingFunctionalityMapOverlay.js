@@ -22,7 +22,13 @@ const OLD_NAME = 'Hand washing facility available';
 
 const FILTER = {
   value: {
-    in: ['3 sets of hand washing tables', '1 set of hand washing table', 'Other', 'No'],
+    in: [
+      '3 sets of hand washing tables',
+      '2 sets of hand washing tables',
+      '1 set of hand washing table',
+      'Other',
+      'No',
+    ],
   },
 };
 
@@ -48,6 +54,11 @@ const NEW_VALUES = [
     name: '3 sets of hand washing tables',
     color: 'yellow',
     value: '3 sets of hand washing tables',
+  },
+  {
+    name: '2 sets of hand washing tables',
+    color: 'blue',
+    value: '2 sets of hand washing tables',
   },
   {
     name: '1 set of hand washing table',
