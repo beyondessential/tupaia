@@ -61,6 +61,5 @@ describe('autocomplete', () => {
     userEvent.click(option);
 
     expect(input.value).toMatch(/chewbacca/i);
-    screen.debug(input);
   });
 });
