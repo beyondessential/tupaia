@@ -15,7 +15,7 @@ import {
   FakeHeader,
   CondensedTableBody,
 } from '../../src';
-import { useTableData } from '../story-utils/useTableData';
+import { useTableData } from '../../helpers/useTableData';
 import * as COLORS from '../story-utils/theme/colors';
 
 export default {

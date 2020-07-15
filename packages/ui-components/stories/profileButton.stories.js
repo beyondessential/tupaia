@@ -14,7 +14,7 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import MuiListItemText from '@material-ui/core/ListItemText';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import * as COLORS from './story-utils/theme/colors';
-import { RouterProvider } from './story-utils/RouterProvider';
+import { RouterProvider } from '../helpers/RouterProvider';
 import { ProfileButton, LightProfileButton } from '../src';
 
 export default {
