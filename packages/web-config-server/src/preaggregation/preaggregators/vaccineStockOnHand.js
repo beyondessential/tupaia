@@ -28,7 +28,7 @@ const orgUnitVaccineListCode = orgUnit => `${orgUnit}_vaccine_list`;
 
 const fetchFridgeData = async aggregator => {
   const fetchConfig = {
-    organisationUnitCode: WORLD,
+    organisationUnitCodes: [WORLD],
     startDate: utcMoment()
       .subtract(LOOKBACK_DAYS, 'days')
       .format(),
