@@ -24,7 +24,7 @@ const COLOR_SCHEME_TO_FUNCTION = {
 const SCALE_TYPE_TO_COLOR_SCHEME = {
   [SCALE_TYPES.PERFORMANCE]: PERFORMANCE_COLOR_SCHEME,
   [SCALE_TYPES.PERFORMANCE_DESC]: PERFORMANCE_COLOR_SCHEME,
-  [SCALE_TYPES.POPULATION]: DEFAULT_COLOR_SCHEME,
+  [SCALE_TYPES.NEUTRAL]: DEFAULT_COLOR_SCHEME,
   [SCALE_TYPES.TIME]: TIME_COLOR_SCHEME,
 };
 
@@ -50,19 +50,20 @@ export function resolveSpectrumColour(scaleType, scaleColorScheme, value, min, m
 
   switch (scaleType) {
     case SCALE_TYPES.PERFORMANCE:
-      return getPerformanceHeatmapColor(normaliseToPercentage(value, min, max));
+      return valueToColor(value);
     case SCALE_TYPES.PERFORMANCE_DESC: {
       const percentage = value || value === 0 ? 1 - normaliseToPercentage(value, min, max) : null;
       return valueToColor(percentage);
     }
     case SCALE_TYPES.TIME:
       // if the value passed is a date locate it in the [min, max] range
-      if (isNaN(value))
-        return getTimeHeatmapColor(getTimeProportion(value, min, max), noDataColour);
-      return getTimeHeatmapColor(value, noDataColour);
+      if (isNaN(value)) return valueToColor(getTimeProportion(value, min, max), noDataColour);
+      return valueToColor(value, noDataColour);
+
     case SCALE_TYPES.NEUTRAL:
+    case SCALE_TYPES.POPULATION:
     default:
-      return getHeatmapColor(value && normaliseToPercentage(value, min, max));
+      return valueToColor(value && normaliseToPercentage(value, min, max));
   }
 }
 
