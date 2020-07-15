@@ -6,7 +6,7 @@
 import React from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import { NavBar, LightProfileButton, HomeButton, WarningCloud, Dashboard } from '../src';
-import { RouterProvider } from './story-utils/RouterProvider';
+import { RouterProvider } from '../helpers/RouterProvider';
 
 export default {
   title: 'NavBar',

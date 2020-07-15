@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import { useState, useEffect } from 'react';
-import { FakeAPI } from './api';
+import { FakeAPI } from '../stories/story-utils/api';
 
 export const useTableData = () => {
   const [data, setData] = useState([]);

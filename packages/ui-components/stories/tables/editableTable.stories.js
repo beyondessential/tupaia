@@ -9,7 +9,7 @@ import styled from 'styled-components';
 import MuiLink from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
 import * as COLORS from '../story-utils/theme/colors';
-import { useTableData } from '../story-utils/useTableData';
+import { useTableData } from '../../helpers/useTableData';
 import {
   Button,
   GreyOutlinedButton,
