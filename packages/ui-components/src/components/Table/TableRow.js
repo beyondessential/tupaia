@@ -11,7 +11,7 @@ import { tableColumnShape } from './tableColumnShape';
 
 export const TableCell = styled(MuiTableCell)`
   height: 70px;
-  padding: 0.4rem 0;
+  padding: 0.4rem 0.3rem;
   font-size: 0.9375rem;
   line-height: 1rem;
   min-width: 4rem;
