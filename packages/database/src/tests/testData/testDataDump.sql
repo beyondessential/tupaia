@@ -188,6 +188,19 @@ CREATE FUNCTION public.notification() RETURNS trigger
 
 
 --
+-- Name: schema_change_notification(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.schema_change_notification() RETURNS event_trigger
+    LANGUAGE plpgsql
+    AS $$
+  BEGIN
+  PERFORM pg_notify('schema_change', 'schema_change');
+  END;
+  $$;
+
+
+--
 -- Name: scrub_geo_data(jsonb, name); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -240,12 +253,13 @@ CREATE TABLE public.access_request (
     user_id text,
     entity_id text,
     message text,
+    project_id text,
     permission_group_id text,
     approved boolean,
     created_time timestamp with time zone DEFAULT now() NOT NULL,
-    approving_user_id text,
-    approval_note text,
-    approval_date timestamp with time zone
+    processed_by text,
+    note text,
+    processed_date timestamp with time zone
 );
 
 
@@ -2164,14 +2178,6 @@ CREATE TRIGGER user_reward_trigger AFTER INSERT OR DELETE OR UPDATE ON public.us
 
 
 --
--- Name: access_request access_request_approving_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.access_request
-    ADD CONSTRAINT access_request_approving_user_id_fkey FOREIGN KEY (approving_user_id) REFERENCES public.user_account(id);
-
-
---
 -- Name: access_request access_request_entity_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2185,6 +2191,22 @@ ALTER TABLE ONLY public.access_request
 
 ALTER TABLE ONLY public.access_request
     ADD CONSTRAINT access_request_permission_group_id_fkey FOREIGN KEY (permission_group_id) REFERENCES public.permission_group(id);
+
+
+--
+-- Name: access_request access_request_processed_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_processed_by_fkey FOREIGN KEY (processed_by) REFERENCES public.user_account(id);
+
+
+--
+-- Name: access_request access_request_project_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_project_id_fkey FOREIGN KEY (project_id) REFERENCES public.project(id);
 
 
 --
@@ -3388,13 +3410,40 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 763	/20200616000806-FixIncorrectDataElementCodesLaosReport	2020-06-18 21:35:19.97
 764	/20200617235154-FixTongaMeaslesOverlaysWithEntityAggregation	2020-06-18 21:35:20.008
 765	/20200618090311-FixEntityAggregationConfig	2020-06-18 21:35:20.071
-766	/20200428025025-createAlertsTable	2020-06-29 12:22:19.24
-767	/20200501033538-createCommentTables	2020-06-29 12:22:19.264
-768	/20200528043308-createAccessRequestTable	2020-06-29 12:22:19.28
-769	/20200603115106-AddCatchmentEntityType	2020-06-29 12:22:21.342
-770	/20200603121401-CreateFijiCatchmentAlternateHierarchy	2020-06-29 12:22:25.026
-771	/20200615021108-AddLaosSchoolsMajorDevPartner	2020-06-29 12:22:25.147
-772	/20200618012039-UseTuapaiaAsDataServiceForWishSurveys	2020-06-29 12:22:26.994
+766	/20200603115106-AddCatchmentEntityType	2020-06-25 23:29:10.306
+767	/20200615021108-AddLaosSchoolsMajorDevPartner	2020-06-25 23:29:11.339
+768	/20200618012039-UseTuapaiaAsDataServiceForWishSurveys	2020-06-25 23:29:15.379
+769	/20200528043308-createAccessRequestTable	2020-07-02 21:55:46.686
+770	/20200603121401-CreateFijiCatchmentAlternateHierarchy	2020-07-02 21:55:54.593
+771	/20200615045558-AddPopupHeaderFormatToLaosSchoolsOverlays	2020-07-02 21:55:54.946
+772	/20200623065126-AddRegionalMapOverlaysForUNFPAMOS	2020-07-02 21:55:55.446
+773	/20200625074843-AddMapOverlaysForRHServices	2020-07-02 21:55:55.695
+774	/20200701064429-AddMethodsOfContraceptionRegionalDashboards	2020-07-02 21:55:55.794
+775	/20200609034143-ChangeBinaryShadedPolygonsMeasuresLaosSchools	2020-07-09 22:25:52.91
+776	/20200609045620-AddStriveReportToNationalLevel	2020-07-09 22:25:53.039
+777	/20200617035342-AddCountryAndFacilityTongaHealthPromotionUnitDashboardGroups	2020-07-09 22:25:53.489
+778	/20200617036620-AddActivitySessionsBySettingPieChartTonga	2020-07-09 22:25:53.753
+779	/20200617045942-AddTongaDHIS2HPUPieChartNumberOfBroadcastsByTheme	2020-07-09 22:25:53.961
+780	/20200617054710-AddActivitySessionsBySettingByDistrict	2020-07-09 22:25:54.214
+781	/20200617071021-AddTongaHPUBarChartTotalPhysicalActivityParticipants	2020-07-09 22:25:54.33
+782	/20200618014723-AddNewQuitlineCallsByYearTextReport	2020-07-09 22:25:54.465
+783	/20200618131934-AddTongaHPUIECRequestsFulFilledByTargetGroupDashboardReport	2020-07-09 22:25:54.587
+784	/20200618132339-AddTongaHPUIECRequestsFulFilledByThemeDashboardReport	2020-07-09 22:25:54.766
+785	/20200619015233-AddNewQuitlineCasesBarReportTonga	2020-07-09 22:25:54.939
+786	/20200623013336-AddTongaHPUNumberOfNCDRiskFactorScreeningEventsBySetting	2020-07-09 22:25:55.197
+787	/20200624061918-AddUnfpaStackedBarGraphPercentCountryMos	2020-07-09 22:25:55.416
+788	/20200624141424-AddUNFPAReproductiveHealthAtLeast1StaffMemberTrainedSRHServicesReport	2020-07-09 22:25:55.609
+789	/20200626014357-AddUNFPAFacilityUseOfStockCardsMatrixReport	2020-07-09 22:25:55.765
+790	/20200629134316-AddUNFPANumberOfWomenProvidedSRHServicesFacilityLevelDashboardReport	2020-07-09 22:25:55.895
+791	/20200701000910-AddUNFPANumberOfWomenProvidedSRHServicesNationalProvincialLevelMatrix	2020-07-09 22:25:55.966
+792	/20200609003258-AddLaosSchoolsRawDataDownloads	2020-07-13 15:06:53.623
+793	/20200624001356-AddTongaCovid19CommodityAvailabilityRadiusMapNationalLevelOverlay	2020-07-13 15:06:54.081
+794	/20200624043629-AddUNFPAPriorityLifeSavingMedicinesForWomenAndChildrenAMCMatrixReport	2020-07-13 15:06:54.365
+795	/20200624090309-AddUNFPAPriorityLifeSavingMedicinesForWomenAndChildrenMOSMatrixReport	2020-07-13 15:06:54.437
+796	/20200624090446-AddUNFPAPriorityLifeSavingMedicinesForWomenAndChildrenSOHMatrixReport	2020-07-13 15:06:54.669
+797	/20200712224256-ChangeDefaultCovidOverlayToStateTotalCases-modifies-data	2020-07-13 15:06:54.711
+798	/20200428025025-createAlertsTable	2020-07-15 15:29:45.539
+799	/20200501033538-createCommentTables	2020-07-15 15:29:45.563
 \.
 
 
@@ -3402,7 +3451,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 772, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 799, true);
 
 
 --
