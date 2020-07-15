@@ -19,7 +19,8 @@ class TableOfValuesForOrgUnitsBuilder extends TableOfDataValuesBuilder {
     return rows.reduce((baseRows, row) => {
       if (typeof row === 'string') {
         const dataElement = stripFromString(row, stripFromDataElementNames);
-        return { ...baseRows, [dataElement]: { dataElement, categoryId: parent } };
+        const key = parent ? `${dataElement}|${parent}` : dataElement;
+        return { ...baseRows, [key]: { dataElement, categoryId: parent } };
       }
 
       const next = this.buildBaseRows(row.rows, row.category);
@@ -32,10 +33,31 @@ class TableOfValuesForOrgUnitsBuilder extends TableOfDataValuesBuilder {
     const columns = this.flattenColumnCategories(columnsRaw);
     const { stripFromDataElementNames, filterEmptyRows } = this.config;
     const rowData = { ...baseRows };
+    const cachedDataElementNameToCategories = {};
+
     this.results.forEach(({ value, organisationUnit, metadata }) => {
       const dataElementName = stripFromString(metadata.name, stripFromDataElementNames);
       const orgUnit = columns.find(col => col.title === organisationUnit);
-      if (orgUnit && rowData[dataElementName]) rowData[dataElementName][orgUnit.key] = value;
+
+      if (orgUnit) {
+        if (rowData[dataElementName]) {
+          rowData[dataElementName][orgUnit.key] = value;
+        } else {
+          let rowCategories = cachedDataElementNameToCategories[dataElementName];
+          if (!rowCategories) {
+            rowCategories = this.returnCategoriesOfARow(dataElementName, baseRows);
+            cachedDataElementNameToCategories[dataElementName] = rowCategories;
+          }
+
+          rowCategories.forEach(rowCategory => {
+            const key = `${dataElementName}|${rowCategory}`;
+
+            if (rowData[key]) {
+              rowData[key][orgUnit.key] = value;
+            }
+          });
+        }
+      }
     });
 
     if (filterEmptyRows) {
@@ -45,6 +67,21 @@ class TableOfValuesForOrgUnitsBuilder extends TableOfDataValuesBuilder {
 
     return Object.values(rowData);
   }
+
+  /**
+   * Return a list of categories that this row is in (A row can be in multiple categories)
+   */
+  returnCategoriesOfARow = (rowName, rows) => {
+    const rowCategories = [];
+
+    Object.values(rows).forEach(row => {
+      if (row.dataElement === rowName && row.categoryId) {
+        rowCategories.push(row.categoryId);
+      }
+    });
+
+    return rowCategories;
+  };
 }
 
 export const tableOfValuesForOrgUnits = async (
