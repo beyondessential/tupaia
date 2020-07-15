@@ -1044,6 +1044,7 @@ export function attemptChartExport({
   exportFileName,
   extraConfig = {},
   selectedFormat = 'pdf',
+  projectCode,
 }) {
   return {
     type: ATTEMPT_CHART_EXPORT,
@@ -1058,6 +1059,7 @@ export function attemptChartExport({
     exportFileName,
     selectedFormat,
     extraConfig,
+    projectCode,
   };
 }
 
