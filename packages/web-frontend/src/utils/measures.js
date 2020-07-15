@@ -224,7 +224,10 @@ export function getValueInfo(value, valueMapping, hiddenValues = {}) {
 export function getFormattedInfo(orgUnitData, measureOption) {
   const { key, valueMapping, type, displayedValueKey, scaleType, valueType } = measureOption;
 
-  if (displayedValueKey && orgUnitData[displayedValueKey]) {
+  if (
+    displayedValueKey &&
+    (orgUnitData[displayedValueKey] || orgUnitData[displayedValueKey] === 0)
+  ) {
     return {
       value: formatDataValue(orgUnitData[displayedValueKey], valueType, orgUnitData.metadata),
     };
