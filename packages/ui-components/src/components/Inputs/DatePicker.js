@@ -45,9 +45,10 @@ export const DatePicker = ({ value, onChange, ...props }) => {
 DatePicker.propTypes = {
   label: PropTypes.string.isRequired,
   value: PropTypes.instanceOf(Date),
-  onChange: PropTypes.func.isRequired,
+  onChange: PropTypes.func,
 };
 
 DatePicker.defaultProps = {
-  value: new Date(),
+  value: new Date(), // RHF controls controls it via defaultValue - ^
+  onChange: () => null, // doesn't get called anyway; https://github.com/react-hook-form/react-hook-form/issues/438#issuecomment-633760140
 };
