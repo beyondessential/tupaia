@@ -23,7 +23,7 @@ const countriesTableColumns = [
     CellComponent: CountryNameCell,
   },
   {
-    title: 'Sites Reported',
+    title: 'Site Reported',
     key: 'sitesReported',
     CellComponent: SitesReportedCell,
     width: COLUMN_WIDTHS.SITES_REPORTED,

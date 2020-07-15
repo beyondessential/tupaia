@@ -103,7 +103,7 @@ export class FakeAPI {
   syndromes() {
     return [
       this.makeSyndrome('afr', 'Acute Fever and Rash (AFR)'),
-      this.makeSyndrome('ida', 'Diarrhoea (DIA)'),
+      this.makeSyndrome('dia', 'Diarrhoea (DIA)'),
       this.makeSyndrome('ili', 'Influenza-like Illness (ILI)'),
       this.makeSyndrome('pf', 'Prolonged Fever (PF)'),
       this.makeSyndrome('dil', 'Dengue-like Illness (DIL)'),
