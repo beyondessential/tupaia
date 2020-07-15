@@ -29,7 +29,8 @@ const exampleUser = {
 };
 
 const message = {
-  content: null,
+  content:
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit Aliquam id enim id lorem porta rhoncus',
   id: 'user-message-123',
   created: new Date(),
   lastEdited: new Date(),
