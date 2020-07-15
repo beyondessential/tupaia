@@ -12,4 +12,4 @@ addParameters({
   ],
 });
 
-addDecorator(storyFn => (<AppProviders>{storyFn()}</AppProviders>));
+addDecorator(storyFn => <AppProviders>{storyFn()}</AppProviders>);

@@ -13,7 +13,6 @@ export const useTableData = () => {
 
   useEffect(() => {
     let isCurrent = true;
-
     (async () => {
       setLoading(true);
       const userData = await API.get('users');
