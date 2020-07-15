@@ -92,7 +92,7 @@ const BASE_DASHBOARD = {
     },
   },
   viewJson: {
-    name: '% of Facilities offering Services',
+    name: '% of Facilities with at least 1 staff member trained',
     type: 'chart',
     chartType: 'line',
     chartConfig: {
@@ -120,9 +120,6 @@ exports.up = async function(db) {
     BASE_DASHBOARD.dataBuilderConfig.dataBuilders.sumFacilitiesWithServicesAvailable.dataBuilderConfig.dataElementCodes = [
       dataElementCode,
     ];
-    // BASE_DASHBOARD.dataBuilderConfig.dataBuilders.countFacilitiesSurveyed.dataBuilderConfig.dataElementCodes = [
-    //   dataElementCode,
-    // ];
     BASE_DASHBOARD.viewJson.name = title;
     await insertObject(db, 'dashboardReport', BASE_DASHBOARD);
     await db.runSql(`
