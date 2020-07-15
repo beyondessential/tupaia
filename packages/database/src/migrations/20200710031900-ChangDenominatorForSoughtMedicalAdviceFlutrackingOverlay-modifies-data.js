@@ -20,7 +20,7 @@ exports.up = function(db) {
   return db.runSql(`
     update "mapOverlay"
     set
-      "measureBuilderConfig" = jsonb_set("measureBuilderConfig", '{measureBuilders,denominator,measureBuilderConfig,dataElementCodes}', '["LGA_004"]')
+      "measureBuilderConfig" = jsonb_set("measureBuilderConfig", '{measureBuilders,denominator,measureBuilderConfig,dataElementCodes}', '["FWV_004"]')
     where id = 'AU_FLUTRACKING_Sought_Medical_Advice';
 
     update "mapOverlay"
@@ -34,7 +34,7 @@ exports.down = function(db) {
   return db.runSql(`
     update "mapOverlay"
     set
-      "measureBuilderConfig" = jsonb_set("measureBuilderConfig", '{measureBuilders,denominator,measureBuilderConfig,dataElementCodes}', '["LGA_003"]')
+      "measureBuilderConfig" = jsonb_set("measureBuilderConfig", '{measureBuilders,denominator,measureBuilderConfig,dataElementCodes}', '["FWV_003"]')
     where id = 'AU_FLUTRACKING_Sought_Medical_Advice';
 
     update "mapOverlay"
