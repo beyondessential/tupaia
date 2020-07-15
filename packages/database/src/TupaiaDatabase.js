@@ -85,7 +85,7 @@ export class TupaiaDatabase {
   getOrCreateChangeChannel() {
     if (!this.changeChannel) {
       this.changeChannel = new DatabaseChangeChannel();
-      this.changeChannel.addChangeHandler(this.notifyChangeHandlers);
+      this.changeChannel.addDataChangeHandler(this.notifyChangeHandlers);
       this.changeChannelPromise = this.changeChannel.ping();
     }
     return this.changeChannel;
@@ -146,6 +146,11 @@ export class TupaiaDatabase {
       this.changeHandlers[collectionName] = {};
     }
     return this.changeHandlers[collectionName];
+  }
+
+  addSchemaChangeHandler(handler) {
+    const changeChannel = this.getOrCreateChangeChannel();
+    return changeChannel.addSchemaChangeHandler(handler);
   }
 
   wrapInTransaction(wrappedFunction) {
