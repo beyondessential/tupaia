@@ -25,7 +25,7 @@ const FILTER = {
     in: [
       '3 sets of hand washing tables',
       '2 sets of hand washing tables',
-      '1 set of hand washing table',
+      '1 set of hand washing tables',
       'Other',
       'No',
     ],
@@ -61,9 +61,9 @@ const NEW_VALUES = [
     value: '2 sets of hand washing tables',
   },
   {
-    name: '1 set of hand washing table',
+    name: '1 set of hand washing tables',
     color: 'teal',
-    value: '1 set of hand washing table',
+    value: '1 set of hand washing tables',
   },
   {
     name: 'Other',
