@@ -7,7 +7,6 @@ import styled from 'styled-components';
 import Typography from '@material-ui/core/Typography';
 import {
   CircleMeter,
-  BaseToolbar,
   Card,
   CardContent,
   CardHeader,
@@ -15,7 +14,14 @@ import {
   WarningCloud,
   Virus,
 } from '@tupaia/ui-components';
-import { Container, Main, Sidebar, Header, WeeklyReportsExportModal } from '../components';
+import {
+  Container,
+  Main,
+  Sidebar,
+  Header,
+  WeeklyReportsExportModal,
+  DateToolbar,
+} from '../components';
 import { CountriesTable } from '../containers';
 
 const StyledCardContent = styled(CardContent)`
@@ -51,7 +57,7 @@ const tabData = [
 export const CountriesReportsView = () => (
   <>
     <Header title="Countries" ExportModal={WeeklyReportsExportModal} />
-    <BaseToolbar />
+    <DateToolbar />
     <Container>
       <Main data-testid="countries-table">
         <CountriesTable />
