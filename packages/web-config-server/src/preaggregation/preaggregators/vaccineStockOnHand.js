@@ -60,9 +60,9 @@ const buildVaccineMetadata = async (aggregator, dhisApi, data) => {
       facilityVaccineListCode
     ].dataElements.map(de => stripFromString(de.code, prependString));
 
-    metadata[facilityCode] = originalDataElementCodes.reduce((orginalToPreaggregated, code) => {
+    metadata[facilityCode] = originalDataElementCodes.reduce((originalToPreaggregated, code) => {
       return {
-        ...orginalToPreaggregated,
+        ...originalToPreaggregated,
         [code]: preaggregatedDataElementCode(code),
       };
     }, {});
