@@ -19,8 +19,12 @@ export class DatabaseChangeChannel extends PGPubSub {
     return super.close();
   }
 
-  addChangeHandler(handler) {
+  addDataChangeHandler(handler) {
     this.addChannel('change', handler);
+  }
+
+  addSchemaChangeHandler(handler) {
+    this.addChannel('schema_change', handler);
   }
 
   publishRecordUpdates(recordType, records, specificHandlerKey) {
