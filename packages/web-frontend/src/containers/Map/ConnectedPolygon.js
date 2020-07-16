@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 
 import { AreaTooltip } from './AreaTooltip';
-import { MAP_COLORS } from '../../styles';
+import { MAP_COLORS, BREWER_PALETTE } from '../../styles';
 import { changeOrgUnit } from '../../actions';
 import {
   selectOrgUnit,
@@ -107,10 +107,13 @@ class ConnectedPolygon extends Component {
     };
 
     if (shade) {
+      //To match with the color in markerIcon.js which uses BREWER_PALETTE
+      const color = BREWER_PALETTE[shade] || shade;
+
       // Work around: color should go through the styled components
       // but there is a rendering bug between Styled Components + Leaflet
       return (
-        <ShadedPolygon {...defaultProps} color={shade}>
+        <ShadedPolygon {...defaultProps} color={color}>
           {tooltip}
         </ShadedPolygon>
       );
