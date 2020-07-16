@@ -156,7 +156,7 @@ MeasureBar.propTypes = {
 const mapStateToProps = state => {
   const { currentMeasure, measureHierarchy, isExpanded } = state.measureBar;
   const { isMeasureLoading } = state.map;
-  const { currentOrganisationUnitCode } = state.global;
+  const { currentOrganisationUnitCode, isLoadingOrganisationUnit } = state.global;
 
   // In the name or normalising our redux state,
   // currentMeasure should be normalised to currentMeasureId,
@@ -169,7 +169,7 @@ const mapStateToProps = state => {
     currentMeasure: selectedMeasureInfo || {},
     measureHierarchy,
     isExpanded,
-    isMeasureLoading,
+    isMeasureLoading: isMeasureLoading || isLoadingOrganisationUnit,
     currentOrganisationUnitCode,
     currentOrganisationUnitName: selectCurrentOrgUnit(state).name,
   };

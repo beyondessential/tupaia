@@ -120,7 +120,9 @@ export const Control = ({
         selected={isMeasureSelected}
         period={selectedMeasure.periodGranularity}
       >
-        <ContentText>{measureText}</ContentText>
+        <ContentText>
+          {isMeasureLoading ? <CircularProgress size={24} thickness={3} /> : measureText}
+        </ContentText>
         {isMeasureSelected && (
           <ExpansionControl
             isExpanded={isExpanded}
