@@ -61,7 +61,6 @@ export function resolveSpectrumColour(scaleType, scaleColorScheme, value, min, m
       return valueToColor(value, noDataColour);
 
     case SCALE_TYPES.NEUTRAL:
-    case SCALE_TYPES.POPULATION:
     default:
       return valueToColor(value && normaliseToPercentage(value, min, max));
   }
