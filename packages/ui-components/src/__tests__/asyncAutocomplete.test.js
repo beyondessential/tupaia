@@ -8,12 +8,18 @@ import 'whatwg-fetch';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { render } from '../../helpers/testingRenderer';
+import { FakeAPI } from '../../stories/story-utils/api';
 import { AsyncAutocomplete } from '..';
 
-const fetchOptions = async query => {
-  const response = await fetch(`https://swapi.dev/api/people/?search=${query}`);
-  const data = await response.json();
-  return data.results;
+const API = new FakeAPI();
+
+const exampleName = 'Chewbacca';
+const exampleNameRegex = /chewbacca/i;
+
+const fetchOptions = async () => {
+  const users = await API.get('users');
+  const knownUser = { id: 'chewy', name: exampleName}
+  return users.data.concat(knownUser);
 };
 
 function renderAsyncAutocomplete() {
@@ -38,12 +44,12 @@ describe('autocomplete', () => {
     renderAsyncAutocomplete();
 
     const input = screen.getByRole('textbox');
-    await userEvent.type(input, 'chew');
+    await userEvent.type(input, exampleName.substring(0, 3));
 
 
     await waitFor(() => {
       expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
-      expect(screen.getByText(/chewbacca/i)).toBeInTheDocument();
+      expect(screen.getByText(exampleNameRegex)).toBeInTheDocument();
     }, { timeout: 3000 });
   });
 
@@ -51,15 +57,15 @@ describe('autocomplete', () => {
     renderAsyncAutocomplete();
 
     const input = screen.getByRole('textbox');
-    await userEvent.type(input, 'chew');
+    await userEvent.type(input, exampleName.substring(0, 3));
 
     await waitFor(() => {
       expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
     }, { timeout: 3000 });
 
-    const option = screen.getByText(/chewbacca/i);
+    const option = screen.getByText(exampleNameRegex);
     userEvent.click(option);
 
-    expect(input.value).toMatch(/chewbacca/i);
+    expect(input.value).toMatch(exampleNameRegex);
   });
 });
