@@ -4,7 +4,6 @@
  */
 
 import { expect } from 'chai';
-import { it, describe } from 'mocha';
 import sinon from 'sinon';
 
 import { mostRecentValueFromChildren } from '/apiV1/measureBuilders/mostRecentValueFromChildren';
@@ -89,6 +88,8 @@ describe('mostRecentValueFromChildren', () => {
       { code: entityCode },
     );
 
-    expect(results).to.deep.equal([{ POP01: 5, organisationUnitCode: 'TO_Haapai' }]);
+    expect(results).to.deep.equal({
+      data: [{ POP01: 5, organisationUnitCode: 'TO_Haapai', submissionDate: '2019-03-20' }],
+    });
   });
 });

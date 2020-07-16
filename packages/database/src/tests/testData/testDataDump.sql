@@ -78,7 +78,9 @@ CREATE TYPE public.entity_type AS ENUM (
     'case',
     'case_contact',
     'disaster',
-    'school'
+    'school',
+    'catchment',
+    'sub_catchment'
 );
 
 
@@ -186,6 +188,19 @@ CREATE FUNCTION public.notification() RETURNS trigger
 
 
 --
+-- Name: schema_change_notification(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.schema_change_notification() RETURNS event_trigger
+    LANGUAGE plpgsql
+    AS $$
+  BEGIN
+  PERFORM pg_notify('schema_change', 'schema_change');
+  END;
+  $$;
+
+
+--
 -- Name: scrub_geo_data(jsonb, name); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -228,6 +243,25 @@ CREATE FUNCTION public.update_change_time() RETURNS trigger
 SET default_tablespace = '';
 
 SET default_with_oids = false;
+
+--
+-- Name: access_request; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.access_request (
+    id text NOT NULL,
+    user_id text,
+    entity_id text,
+    message text,
+    project_id text,
+    permission_group_id text,
+    approved boolean,
+    created_time timestamp with time zone DEFAULT now() NOT NULL,
+    processed_by text,
+    note text,
+    processed_date timestamp with time zone
+);
+
 
 --
 -- Name: answer; Type: TABLE; Schema: public; Owner: -
@@ -742,7 +776,6 @@ CREATE TABLE public.question (
     id text NOT NULL,
     text text NOT NULL,
     name text,
-    image_data text,
     type text NOT NULL,
     options text[],
     code text,
@@ -785,7 +818,6 @@ CREATE TABLE public.survey (
     id text NOT NULL,
     name text NOT NULL,
     code text NOT NULL,
-    image_data text DEFAULT ''::text,
     permission_group_id text,
     country_ids text[] DEFAULT '{}'::text[],
     can_repeat boolean DEFAULT false,
@@ -924,6 +956,14 @@ ALTER TABLE ONLY public."dashboardGroup" ALTER COLUMN id SET DEFAULT nextval('pu
 --
 
 ALTER TABLE ONLY public.migrations ALTER COLUMN id SET DEFAULT nextval('public.migrations_id_seq'::regclass);
+
+
+--
+-- Name: access_request access_request_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_pkey PRIMARY KEY (id);
 
 
 --
@@ -1367,6 +1407,14 @@ ALTER TABLE ONLY public.setting
 
 
 --
+-- Name: survey survey_code_unique; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.survey
+    ADD CONSTRAINT survey_code_unique UNIQUE (code);
+
+
+--
 -- Name: survey_group survey_group_name_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1787,6 +1835,13 @@ CREATE INDEX user_entity_permission_user_id_idx ON public.user_entity_permission
 
 
 --
+-- Name: access_request access_request_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER access_request_trigger AFTER INSERT OR DELETE OR UPDATE ON public.access_request FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
 -- Name: answer answer_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -2036,6 +2091,46 @@ CREATE TRIGGER user_entity_permission_trigger AFTER INSERT OR DELETE OR UPDATE O
 --
 
 CREATE TRIGGER user_reward_trigger AFTER INSERT OR DELETE OR UPDATE ON public.user_reward FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
+-- Name: access_request access_request_entity_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_entity_id_fkey FOREIGN KEY (entity_id) REFERENCES public.entity(id);
+
+
+--
+-- Name: access_request access_request_permission_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_permission_group_id_fkey FOREIGN KEY (permission_group_id) REFERENCES public.permission_group(id);
+
+
+--
+-- Name: access_request access_request_processed_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_processed_by_fkey FOREIGN KEY (processed_by) REFERENCES public.user_account(id);
+
+
+--
+-- Name: access_request access_request_project_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_project_id_fkey FOREIGN KEY (project_id) REFERENCES public.project(id);
+
+
+--
+-- Name: access_request access_request_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user_account(id);
 
 
 --
@@ -2356,6 +2451,14 @@ ALTER TABLE ONLY public.user_entity_permission
 
 ALTER TABLE ONLY public.user_reward
     ADD CONSTRAINT user_reward_user_id_fk FOREIGN KEY (user_id) REFERENCES public.user_account(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: schema_change_trigger; Type: EVENT TRIGGER; Schema: -; Owner: -
+--
+
+CREATE EVENT TRIGGER schema_change_trigger ON ddl_command_end
+   EXECUTE PROCEDURE public.schema_change_notification();
 
 
 --
@@ -3147,30 +3250,83 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 719	/20200522031911-laosSchoolsFixUnicefCode	2020-05-22 06:36:39.753
 720	/20200522032405-UpdateMapOverlayHeadings	2020-05-22 06:36:39.887
 721	/20200522055413-ChangeLaosSchoolsOverlayGroupName	2020-05-22 06:36:39.921
-722	/20200522010341-updateLaosSchoolsBinaryDashboard	2020-05-24 22:44:43.751
-723	/20200212052756-RemoveRedundantQuestionsWish	2020-06-11 11:40:47.098
-724	/20200417211027-AllowNullAccessToken	2020-06-11 11:40:47.133
-725	/20200422231733-MoveNoCountryUsersToAdminPanel	2020-06-11 11:40:47.158
-726	/20200423213702-EntityBasedPermissions	2020-06-11 11:40:47.421
-727	/20200503063358-AddTongaDHIS2HealthCertificatesDistributedReport	2020-06-11 11:40:47.511
-728	/20200508034036-UpdateDefaultTimePeriodFormatInDataBuilderConfig	2020-06-11 11:40:47.524
-729	/20200521005057-AddLaosDevelopmentPartnersReport	2020-06-11 11:40:47.532
-730	/20200521102324-AddUtilityServiceBinaryMeasuresBarCharts	2020-06-11 11:40:47.542
-731	/20200521155232-AddResourceSupportBinaryMeasuresBarCharts	2020-06-11 11:40:47.547
-732	/20200522022756-VisualisationsDefinedPerProject	2020-06-11 11:40:47.647
-733	/20200524212939-LimitVisualisationsPerProject	2020-06-11 11:40:47.958
-734	/20200524231548-AddSchoolPercentDashboards	2020-06-11 11:40:47.996
-735	/20200525005457-WipeUserSessions	2020-06-11 11:40:48.006
-736	/20200525044209-NoFunnyPeriods	2020-06-11 11:40:48.016
-737	/20200526005827-RemoveWorldDashboardGroups	2020-06-11 11:40:48.024
-738	/20200528011043-ChangeUNFPAReportsToUseQuarters	2020-06-11 11:40:48.038
-739	/20200528042309-DeleteAnswersForLaosSchoolsSelectVillageQuestions	2020-06-11 11:40:48.491
-740	/20200605045409-CorrectStriveDashboardCase	2020-06-11 11:40:48.5
-741	/20200605051613-SetCovidDefaultDashboard	2020-06-11 11:40:48.506
-742	/20200608220007-RenameQuestionIndicatorToName	2020-06-11 11:40:48.516
-743	/20200608234924-RemoveLaosSchoolsReport	2020-06-11 11:40:48.535
-744	/20200609022031-RemoveLaosSchoolsHeatmaps	2020-06-11 11:40:48.543
-745	/20200609022859-UpdateOverlayHeadingsToRemoveTotal	2020-06-11 11:40:48.616
+722	/20200503063358-AddTongaDHIS2HealthCertificatesDistributedReport	2020-05-26 05:33:22.248
+723	/20200508034036-UpdateDefaultTimePeriodFormatInDataBuilderConfig	2020-05-26 05:33:22.404
+724	/20200522010341-updateLaosSchoolsBinaryDashboard	2020-05-26 05:33:22.531
+725	/20200525044209-NoFunnyPeriods	2020-05-26 05:33:22.587
+726	/20200526005827-RemoveWorldDashboardGroups	2020-05-26 05:33:22.618
+727	/20200212052756-RemoveRedundantQuestionsWish	2020-05-28 07:05:49.153
+728	/20200521005057-AddLaosDevelopmentPartnersReport	2020-05-28 07:05:49.46
+729	/20200524231548-AddSchoolPercentDashboards	2020-05-28 07:05:50.058
+730	/20200522022756-VisualisationsDefinedPerProject	2020-06-01 23:11:11.261
+731	/20200524212939-LimitVisualisationsPerProject	2020-06-01 23:11:12.839
+732	/20200528042309-DeleteAnswersForLaosSchoolsSelectVillageQuestions	2020-06-01 23:11:13.004
+733	/20200521102324-AddUtilityServiceBinaryMeasuresBarCharts	2020-06-05 05:09:17.476
+734	/20200521155232-AddResourceSupportBinaryMeasuresBarCharts	2020-06-05 05:09:17.765
+735	/20200528011043-ChangeUNFPAReportsToUseQuarters	2020-06-05 05:09:17.857
+736	/20200605045409-CorrectStriveDashboardCase	2020-06-05 05:09:17.912
+737	/20200605051613-SetCovidDefaultDashboard	2020-06-11 22:06:48.088
+738	/20200608220007-RenameQuestionIndicatorToName	2020-06-11 22:06:48.184
+739	/20200608234924-RemoveLaosSchoolsReport	2020-06-11 22:06:48.527
+740	/20200609022031-RemoveLaosSchoolsHeatmaps	2020-06-11 22:06:48.594
+741	/20200609022859-UpdateOverlayHeadingsToRemoveTotal	2020-06-11 22:06:48.938
+742	/20200612003644-AddMostVisualisationsToExplore	2020-06-12 01:09:53.702
+743	/20200417211027-AllowNullAccessToken	2020-06-18 21:35:02.61
+744	/20200422231733-MoveNoCountryUsersToAdminPanel	2020-06-18 21:35:02.717
+745	/20200423213702-EntityBasedPermissions	2020-06-18 21:35:03.473
+746	/20200525005457-WipeUserSessions	2020-06-18 21:35:03.546
+747	/20200529000003-MigrateOverlaysToUseNewEntityAggregation	2020-06-18 21:35:05.868
+748	/20200529064523-MoveMeasureLevelToPresentationOptions	2020-06-18 21:35:07.96
+749	/20200601050232-MigrateReportsToUseNewEntityAggregation	2020-06-18 21:35:08.941
+750	/20200602035743-FixConfigForSurveyExportReports	2020-06-18 21:35:11.342
+751	/20200603012534-DeleteSurveyAndQuestionImageData	2020-06-18 21:35:11.364
+752	/20200603012535-ChangeDuplicateSurveyCodes	2020-06-18 21:35:15.127
+753	/20200603014358-AddUniqueCodeConstraintInSurvey	2020-06-18 21:35:15.193
+754	/20200603032358-UseCountrySpecificBcdSurveys	2020-06-18 21:35:15.822
+755	/20200609002315-UpdateSchoolBinaryListMeasures	2020-06-18 21:35:15.925
+756	/20200609045707-UpdateLaosSchoolsBinaryMeasureMapOverlayNames	2020-06-18 21:35:16.046
+757	/20200609045724-RemoveLaosSchoolsBinaryMeasureMapOverlays	2020-06-18 21:35:16.083
+758	/20200609053914-UseTupaiaAsDataServiceForNewLaosSchoolSurveys	2020-06-18 21:35:18.666
+759	/20200609055929-AddMoreLaosSchoolsBinaryMeasuresMapOverlays	2020-06-18 21:35:18.939
+760	/20200609072253-AddLaosSchoolsStudentResourcesMapOverlays	2020-06-18 21:35:19.174
+761	/20200609223042-AddWaterSupplyMapOverlay	2020-06-18 21:35:19.443
+762	/20200612021300-FixIncorrectDashboardGroupProjects	2020-06-18 21:35:19.63
+763	/20200616000806-FixIncorrectDataElementCodesLaosReport	2020-06-18 21:35:19.97
+764	/20200617235154-FixTongaMeaslesOverlaysWithEntityAggregation	2020-06-18 21:35:20.008
+765	/20200618090311-FixEntityAggregationConfig	2020-06-18 21:35:20.071
+766	/20200603115106-AddCatchmentEntityType	2020-06-25 23:29:10.306
+767	/20200615021108-AddLaosSchoolsMajorDevPartner	2020-06-25 23:29:11.339
+768	/20200618012039-UseTuapaiaAsDataServiceForWishSurveys	2020-06-25 23:29:15.379
+769	/20200528043308-createAccessRequestTable	2020-07-02 21:55:46.686
+770	/20200603121401-CreateFijiCatchmentAlternateHierarchy	2020-07-02 21:55:54.593
+771	/20200615045558-AddPopupHeaderFormatToLaosSchoolsOverlays	2020-07-02 21:55:54.946
+772	/20200623065126-AddRegionalMapOverlaysForUNFPAMOS	2020-07-02 21:55:55.446
+773	/20200625074843-AddMapOverlaysForRHServices	2020-07-02 21:55:55.695
+774	/20200701064429-AddMethodsOfContraceptionRegionalDashboards	2020-07-02 21:55:55.794
+775	/20200609034143-ChangeBinaryShadedPolygonsMeasuresLaosSchools	2020-07-09 22:25:52.91
+776	/20200609045620-AddStriveReportToNationalLevel	2020-07-09 22:25:53.039
+777	/20200617035342-AddCountryAndFacilityTongaHealthPromotionUnitDashboardGroups	2020-07-09 22:25:53.489
+778	/20200617036620-AddActivitySessionsBySettingPieChartTonga	2020-07-09 22:25:53.753
+779	/20200617045942-AddTongaDHIS2HPUPieChartNumberOfBroadcastsByTheme	2020-07-09 22:25:53.961
+780	/20200617054710-AddActivitySessionsBySettingByDistrict	2020-07-09 22:25:54.214
+781	/20200617071021-AddTongaHPUBarChartTotalPhysicalActivityParticipants	2020-07-09 22:25:54.33
+782	/20200618014723-AddNewQuitlineCallsByYearTextReport	2020-07-09 22:25:54.465
+783	/20200618131934-AddTongaHPUIECRequestsFulFilledByTargetGroupDashboardReport	2020-07-09 22:25:54.587
+784	/20200618132339-AddTongaHPUIECRequestsFulFilledByThemeDashboardReport	2020-07-09 22:25:54.766
+785	/20200619015233-AddNewQuitlineCasesBarReportTonga	2020-07-09 22:25:54.939
+786	/20200623013336-AddTongaHPUNumberOfNCDRiskFactorScreeningEventsBySetting	2020-07-09 22:25:55.197
+787	/20200624061918-AddUnfpaStackedBarGraphPercentCountryMos	2020-07-09 22:25:55.416
+788	/20200624141424-AddUNFPAReproductiveHealthAtLeast1StaffMemberTrainedSRHServicesReport	2020-07-09 22:25:55.609
+789	/20200626014357-AddUNFPAFacilityUseOfStockCardsMatrixReport	2020-07-09 22:25:55.765
+790	/20200629134316-AddUNFPANumberOfWomenProvidedSRHServicesFacilityLevelDashboardReport	2020-07-09 22:25:55.895
+791	/20200701000910-AddUNFPANumberOfWomenProvidedSRHServicesNationalProvincialLevelMatrix	2020-07-09 22:25:55.966
+792	/20200609003258-AddLaosSchoolsRawDataDownloads	2020-07-14 15:06:35.034
+793	/20200624001356-AddTongaCovid19CommodityAvailabilityRadiusMapNationalLevelOverlay	2020-07-14 15:06:35.436
+794	/20200624043629-AddUNFPAPriorityLifeSavingMedicinesForWomenAndChildrenAMCMatrixReport	2020-07-14 15:06:35.743
+795	/20200624090309-AddUNFPAPriorityLifeSavingMedicinesForWomenAndChildrenMOSMatrixReport	2020-07-14 15:06:35.828
+796	/20200624090446-AddUNFPAPriorityLifeSavingMedicinesForWomenAndChildrenSOHMatrixReport	2020-07-14 15:06:35.984
+797	/20200712224256-ChangeDefaultCovidOverlayToStateTotalCases-modifies-data	2020-07-14 15:06:36.084
+798	/20200601041635-HideUnncessarySurveysFromDemoLand	2020-07-15 01:53:05.395
 \.
 
 
@@ -3178,7 +3334,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 745, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 798, true);
 
 
 --

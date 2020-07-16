@@ -1,6 +1,6 @@
 import { expect } from 'chai';
-import { upsertDummyRecord } from '@tupaia/database';
 
+import { generateTestId, upsertDummyRecord } from '@tupaia/database';
 import { TestableApp } from './TestableApp';
 import { registerHook } from '../hooks';
 
@@ -48,9 +48,10 @@ describe('Question hooks', () => {
     await app.authenticate();
 
     testSurvey = await models.survey.create({
-      id: 'question_hook_surve_test',
+      id: generateTestId(),
       code: 'test-question-hook-survey',
       name: 'Question hooks test survey',
+      data_source_id: generateTestId(),
     });
 
     const country = await upsertDummyRecord(models.country);
@@ -92,7 +93,7 @@ describe('Question hooks', () => {
       const spy = createHookSpy('testHook');
 
       // submit a survey response
-      const response = await app.post('surveyResponse', {
+      await app.post('surveyResponse', {
         body: {
           survey_id: testSurvey.id,
           entity_id: ENTITY_ID,
@@ -112,12 +113,12 @@ describe('Question hooks', () => {
 
     it('Should have access to the whole survey response', async () => {
       let answerValues = null;
-      registerHook('wholeSurvey', async ({ question, answer, surveyResponse }) => {
+      registerHook('wholeSurvey', async ({ surveyResponse }) => {
         const answers = await surveyResponse.getAnswers();
         answerValues = answers.map(x => x.text);
       });
 
-      const response = await app.post('surveyResponse', {
+      await app.post('surveyResponse', {
         body: {
           survey_id: testSurvey.id,
           entity_id: ENTITY_ID,
@@ -218,7 +219,7 @@ describe('Question hooks', () => {
       expect(beforeEntity.bounds).to.be.null;
 
       // submit a survey response
-      const response = await app.post('surveyResponse', {
+      await app.post('surveyResponse', {
         body: {
           survey_id: testSurvey.id,
           entity_id: ENTITY_ID,
@@ -247,7 +248,7 @@ describe('Question hooks', () => {
       expect(beforeEntity.image_url).to.not.equal(TEST_URL);
 
       // submit a survey response
-      const response = await app.post('surveyResponse', {
+      await app.post('surveyResponse', {
         body: {
           survey_id: testSurvey.id,
           entity_id: ENTITY_ID,
@@ -280,7 +281,7 @@ describe('Question hooks', () => {
         expect(beforeEntity).to.be.null;
 
         // submit a survey response
-        const response = await app.post('surveyResponse', {
+        await app.post('surveyResponse', {
           body: {
             survey_id: testSurvey.id,
             entity_id: ENTITY_ID,

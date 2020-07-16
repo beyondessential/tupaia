@@ -72,6 +72,48 @@
   "settings": {
     "files.exclude": {
       "packages/": true
-    }
+    },
+    "cSpell.words": [
+      "DHIS",
+      "MediTrak",
+      "Tongatapu",
+      "Tupaia",
+      "analytics",
+      "cacheable",
+      "cleanup",
+      "deleters",
+      "dialogs",
+      "enroll",
+      "enrollment",
+      "enrollments",
+      "eventdate",
+      "geojson",
+      "groupby",
+      "heatmap",
+      "imms",
+      "keyby",
+      "migrator",
+      "oucode",
+      "preaggregate",
+      "preaggregated",
+      "preaggregating",
+      "preaggregation",
+      "preaggregator",
+      "preaggregators",
+      "promisify",
+      "singularise",
+      "testid",
+      "upsert"
+    ]
+  },
+  "extensions": {
+    "recommendations": [
+      "dbaeumer.vscode-eslint",
+      "eamodio.gitlens",
+      "esbenp.prettier-vscode",
+      "streetsidesoftware.code-spell-checker",
+      "visualstudioexptteam.vscodeintellicode",
+      "wayou.vscode-todo-highlight"
+    ]
   }
 }

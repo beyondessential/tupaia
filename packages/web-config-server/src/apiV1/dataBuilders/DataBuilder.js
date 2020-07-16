@@ -64,11 +64,12 @@ export class DataBuilder {
     });
   }
 
-  async fetchEvents(additionalQueryConfig) {
+  async fetchEvents(additionalQueryConfig, overridenProgramCode) {
     const { programCode, dataServices, entityAggregation, dataSourceEntityFilter } = this.config;
     const { organisationUnitCode, startDate, endDate, trackedEntityInstance, eventId } = this.query;
+    const eventsProgramCode = overridenProgramCode || programCode;
 
-    return this.aggregator.fetchEvents(programCode, {
+    return this.aggregator.fetchEvents(eventsProgramCode, {
       dataServices,
       entityAggregation,
       dataSourceEntityFilter,
@@ -86,6 +87,17 @@ export class DataBuilder {
     const { organisationUnitCode } = this.query;
 
     return this.aggregator.fetchDataElements(codes, {
+      organisationUnitCode,
+      dataServices,
+      includeOptions: true,
+    });
+  }
+
+  async fetchDataGroup(code) {
+    const { dataServices } = this.config;
+    const { organisationUnitCode } = this.query;
+
+    return this.aggregator.fetchDataGroup(code, {
       organisationUnitCode,
       dataServices,
       includeOptions: true,

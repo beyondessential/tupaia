@@ -1,5 +1,6 @@
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { getDateRange } from '/apiV1/utils';
+import { periodToMoment } from '@tupaia/utils/dist/period/period';
 
 class CheckTimelinessMeasureBuilder extends DataBuilder {
   async build() {
@@ -16,10 +17,13 @@ class CheckTimelinessMeasureBuilder extends DataBuilder {
     const results = await this.dhisApi.getDataValuesInSets(dhisParameters, this.entity);
 
     // annotate each facility with the corresponding data from dhis
-    return results.map(row => ({
-      organisationUnitCode: row.organisationUnit,
-      [dataElementCode]: row.value === undefined ? '' : row.value.toString(),
-    }));
+    return {
+      data: results.map(row => ({
+        organisationUnitCode: row.organisationUnit,
+        [dataElementCode]: row.value === undefined ? '' : row.value.toString(),
+        submissionDate: periodToMoment(row.period.toString()).format('YYYY-MM-DD'),
+      })),
+    };
   }
 }
 

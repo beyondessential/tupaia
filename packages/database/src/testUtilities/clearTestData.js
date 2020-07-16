@@ -14,7 +14,10 @@ const getDeleteStatement = (table, extraConditions = []) => {
 // tables are in a significant order, ensuring any foreign keys are cleaned up correctly
 const TABLES_TO_CLEAR = [
   'api_request_log',
+  'access_request',
   'answer',
+  'data_element_data_group',
+  'data_source',
   'survey_response',
   'survey_screen_component',
   'survey_screen',
