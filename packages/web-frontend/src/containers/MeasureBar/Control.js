@@ -1,6 +1,5 @@
 import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { Transition } from 'react-transition-group';
 import styled from 'styled-components';
 import Layers from '@material-ui/icons/Layers';
 import UpArrow from '@material-ui/icons/ArrowDropUp';
@@ -78,19 +77,17 @@ const ExpandedContent = styled.div`
   color: #fff;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
-  flex-grow: 1;
-  flex-basis: 0;
   overflow-y: scroll;
-  transition: max-height 400ms ease;
-  padding: 0px;
-  max-height: 0px;
+  padding: 8px;
+  flex-basis: 0;
+  flex-grow: 1;
 `;
 
-const ExpansionControl = ({ isExpanded, toggleMeasures }) =>
+const ExpansionControl = ({ isExpanded, expand, minimise }) =>
   isExpanded ? (
-    <UpArrow onClick={toggleMeasures} fontSize="large" />
+    <UpArrow onClick={minimise} fontSize="large" />
   ) : (
-    <DownArrow onClick={toggleMeasures} fontSize="large" />
+    <DownArrow onClick={expand} fontSize="large" />
   );
 
 export const Control = ({
@@ -104,25 +101,12 @@ export const Control = ({
   const measureText = selectedMeasure.name || emptyMessage;
 
   const [isExpanded, handleExpansion] = useState(false);
-  const toggleMeasures = useCallback(() => handleExpansion(!isExpanded), [isExpanded]);
+  const expandMeasures = useCallback(() => handleExpansion(true), [isExpanded]);
+  const minimiseMeasures = useCallback(() => handleExpansion(false), [isExpanded]);
   const updateMeasurePeriod = useCallback(
     (startDate, endDate) => onUpdateMeasurePeriod(startDate, endDate),
-    [selectedMeasure],
+    [onUpdateMeasurePeriod],
   );
-
-  // animation states
-  const transitionStyles = {
-    entering: { 'max-height': '0px', padding: '0px' },
-    entered: { 'max-height': '100%', padding: '8px' },
-    exiting: { 'max-height': '0px', padding: '8px' },
-    exited: { 'max-height': '0px', padding: '8px 0px' },
-  };
-
-  // const onChangeConfig = newConfigFields => {
-  //   this.setState(previousState => ({
-  //     extraChartConfig: { ...previousState.extraChartConfig, ...newConfigFields },
-  //   }));
-  // };
 
   return (
     <Container>
@@ -138,7 +122,11 @@ export const Control = ({
       >
         <ContentText>{measureText}</ContentText>
         {isMeasureSelected && (
-          <ExpansionControl isExpanded={isExpanded} toggleMeasures={toggleMeasures} />
+          <ExpansionControl
+            isExpanded={isExpanded}
+            expand={expandMeasures}
+            minimise={minimiseMeasures}
+          />
         )}
       </Content>
       {isMeasureSelected && selectedMeasure.periodGranularity && (
@@ -152,18 +140,13 @@ export const Control = ({
           />
         </MeasureDatePicker>
       )}
-      <Transition in={isExpanded} timeout={400} appear exit unmountOnExit>
-        {state => (
-          <ExpandedContent
-            style={{
-              ...transitionStyles[state],
-            }}
-          >
-            <SubHeader>Select an overlay</SubHeader>
-            {children}
-          </ExpandedContent>
-        )}
-      </Transition>
+
+      {isExpanded && (
+        <ExpandedContent>
+          <SubHeader>Select an overlay</SubHeader>
+          {children}
+        </ExpandedContent>
+      )}
     </Container>
   );
 };
@@ -188,5 +171,6 @@ Control.defaultProps = {
 
 ExpansionControl.propTypes = {
   isExpanded: PropTypes.func.isRequired,
-  toggleMeasures: PropTypes.func.isRequired,
+  expand: PropTypes.func.isRequired,
+  minimise: PropTypes.func.isRequired,
 };

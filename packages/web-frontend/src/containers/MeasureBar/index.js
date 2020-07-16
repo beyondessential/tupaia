@@ -18,10 +18,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import shallowEqual from 'shallowequal';
 
-import List from '@material-ui/core/List';
-import CircularProgress from '@material-ui/core/CircularProgress';
-
-// import { ControlBar } from '../../components/ControlBar';
 import { Control } from './Control';
 import {
   changeMeasure,
@@ -30,9 +26,7 @@ import {
   updateMeasureConfig,
 } from '../../actions';
 import { HierarchyItem } from '../../components/HierarchyItem';
-import TupaiaIcon from '../../images/TupaiaIcon.svg';
-import { MAP_OVERLAY_SELECTOR } from '../../styles';
-import { selectCurrentOrgUnit } from '../../selectors';
+import { selectCurrentOrgUnit, selectMeasureBarItemById } from '../../selectors';
 
 export class MeasureBar extends Component {
   constructor(props) {
@@ -122,20 +116,9 @@ export class MeasureBar extends Component {
     return `Select an area with valid data. ${orgName} has no map overlays available`;
   }
 
-  renderContents() {
-    const { isExpanded, measureHierarchy } = this.props;
-
-    // if (!isExpanded) return null;
-    // if (Object.keys(measureHierarchy).length === 0) return this.renderEmptyMessage();
-
-    return this.renderHierarchy();
-  }
-
   render() {
     const {
       currentMeasure,
-      isExpanded,
-      onExpandClick,
       isMeasureLoading,
       currentOrganisationUnitName,
       onUpdateMeasurePeriod,
@@ -150,7 +133,7 @@ export class MeasureBar extends Component {
         isMeasureLoading={isMeasureLoading}
         onUpdateMeasurePeriod={onUpdateMeasurePeriod}
       >
-        {this.renderContents()}
+        {this.renderHierarchy()}
       </Control>
     );
   }
@@ -164,14 +147,10 @@ const MeasureShape = PropTypes.shape({
 MeasureBar.propTypes = {
   currentMeasure: MeasureShape.isRequired,
   measureHierarchy: PropTypes.shape({}).isRequired,
-  isExpanded: PropTypes.bool.isRequired,
   isMeasureLoading: PropTypes.bool.isRequired,
-  onExpandClick: PropTypes.func.isRequired,
   onSelectMeasure: PropTypes.func.isRequired,
   onClearMeasure: PropTypes.func.isRequired,
   onUpdateMeasurePeriod: PropTypes.func.isRequired,
-  currentOrganisationUnitCode: PropTypes.string,
-  currentOrganisationUnitName: PropTypes.string,
 };
 
 const mapStateToProps = state => {
@@ -179,8 +158,15 @@ const mapStateToProps = state => {
   const { isMeasureLoading } = state.map;
   const { currentOrganisationUnitCode } = state.global;
 
+  // In the name or normalising our redux state,
+  // currentMeasure should be normalised to currentMeasureId,
+  // and measureInfo selected from measureHierarchy like this.
+  // Using this approach so a larger normalisation refactor is one file easier
+  // in the future.
+  const selectedMeasureInfo = selectMeasureBarItemById(state, currentMeasure.measureId);
+
   return {
-    currentMeasure,
+    currentMeasure: selectedMeasureInfo || {},
     measureHierarchy,
     isExpanded,
     isMeasureLoading,
@@ -198,7 +184,4 @@ const mapDispatchToProps = dispatch => ({
     dispatch(updateMeasureConfig({ startDate, endDate })),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(MeasureBar);
+export default connect(mapStateToProps, mapDispatchToProps)(MeasureBar);

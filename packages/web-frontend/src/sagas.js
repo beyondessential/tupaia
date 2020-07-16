@@ -711,8 +711,8 @@ function* fetchMeasureInfo(measureId, organisationUnitCode) {
 }
 
 function* fetchMeasureInfoForMeasureChange(action) {
-  const { measureId } = action;
-  yield fetchMeasureInfo(measureId);
+  const { measureId, organisationUnitCode } = action;
+  yield fetchMeasureInfo(measureId, organisationUnitCode);
 }
 
 function* watchMeasureChange() {
@@ -725,13 +725,6 @@ function* fetchMeasureInfoForMeasurePeriodChange() {
   yield fetchMeasureInfo(
     state.measureBar.currentMeasure.measureId,
     state.measureBar.currentMeasureOrganisationUnitCode,
-  );
-
-  yield put(
-    changeMeasure(
-      state.measureBar.currentMeasure.measureId,
-      state.measureBar.currentMeasureOrganisationUnitCode,
-    ),
   );
 }
 
