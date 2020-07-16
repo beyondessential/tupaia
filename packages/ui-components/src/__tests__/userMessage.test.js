@@ -49,6 +49,8 @@ describe('user message', () => {
     userEvent.click(screen.getByRole('button', { name: /update/i }));
     expect(input.value).toBe(newMessage);
 
+    // Fix the "not wrapped in act warning"
+    // see: https://github.com/testing-library/react-testing-library/issues/523
     await waitForElementToBeRemoved(() => screen.getByText(/loading/i));
   });
 });
