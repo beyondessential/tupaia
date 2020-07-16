@@ -37,7 +37,7 @@ const REPORT = {
 
       //New (order is important here)
       'Functioning water filters',
-      'Textbooks and additional learning material received',,
+      'Textbooks and additional learning material received',
       'COVID-19 posters and materials received',
       'Thermometer(s) received for taking temperature',
       'Hygiene promotion training in last 3 years',
