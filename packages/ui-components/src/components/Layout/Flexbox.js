@@ -22,3 +22,9 @@ export const FlexEnd = styled.div`
   justify-content: flex-end;
   align-items: center;
 `;
+
+export const FlexCenter = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
