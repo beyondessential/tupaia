@@ -1,4 +1,5 @@
-import { getDataElementFromId, findLatestPeriod } from '/apiV1/utils';
+import { getDataElementFromId } from '/apiV1/utils';
+import { getMostRecentPeriod } from '@tupaia/utils';
 
 export const multiDataValuesLatestSurvey = async (
   { dataBuilderConfig, entity },
@@ -10,7 +11,7 @@ export const multiDataValuesLatestSurvey = async (
     { dataElementGroupCode: surveyDataElementCode },
     entity,
   );
-  const latestPeriod = findLatestPeriod(surveyDatesResponseDataValues);
+  const latestPeriod = getMostRecentPeriod(surveyDatesResponseDataValues.map(srv => srv.period));
   if (!latestPeriod) {
     return null;
   }
