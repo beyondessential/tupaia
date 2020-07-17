@@ -64,6 +64,7 @@ const TO_INSERT = [
         },
         measureLevel: 'School',
         displayOnLevel: 'District',
+        popupHeaderFormat: '{code}: {name}',
       },
     },
     tableName: 'mapOverlay',
