@@ -92,7 +92,6 @@ const TO_INSERT = [
         valueType: 'fractionAndPercentage',
         disableRenameLegend: true,
         measureLevel: 'District', // Means province
-        popupHeaderFormat: '{code}: {name}',
       },
       measureBuilderConfig: {
         groups: {
