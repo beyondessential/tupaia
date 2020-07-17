@@ -5,6 +5,7 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { useForm, Controller } from 'react-hook-form';
 import { DatePicker } from '../../src';
 
 export default {
@@ -18,9 +19,20 @@ const Container = styled.div`
 
 export const datePicker = () => {
   const [value, setValue] = useState(new Date());
+  const { register, control } = useForm();
+
   return (
     <Container>
-      <DatePicker label="Basic example" onChange={setValue} />
+      <DatePicker label="Basic example" onChange={setValue} value={value} />
+      <Controller
+        as={<DatePicker label="Form example" name="dateField" />}
+        control={control}
+        defaultValue={new Date()}
+        name="dateField"
+        inputRef={register({
+          required: 'Required',
+        })}
+      />
     </Container>
   );
 };

@@ -22,6 +22,7 @@ export class DatabaseModel {
     this.schema = null;
 
     this.cache = {};
+
     // If this model uses the singleton database, it is probably long running, so be sure to
     // invalidate the cache any time a change is detected. Non-singleton models are those created
     // during transactions, so are short lived and unlikely to need cache invalidation - thus we
@@ -29,6 +30,11 @@ export class DatabaseModel {
     if (this.database.isSingleton) {
       this.database.addChangeHandlerForCollection(this.DatabaseTypeClass.databaseType, () => {
         this.cache = {}; // invalidate cache on any change
+      });
+      this.database.addSchemaChangeHandler(() => {
+        // invalidate cached schema for this model on any change to db schema
+        this.schema = null;
+        this.fieldNames = null;
       });
     }
   }

@@ -19,7 +19,7 @@ import {
 } from '@tupaia/ui-components';
 import CheckCircle from '@material-ui/icons/CheckCircle';
 import Typography from '@material-ui/core/Typography';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { FlexSpaceBetween } from '../Layout';
 import { connectApi } from '../../api';
 
@@ -105,7 +105,7 @@ const SuccessText = styled(Typography)`
 const getLabelForValue = value => countries.find(option => option.value === value).label;
 
 export const ExportModalComponent = ({ renderCustomFields, isOpen, handleClose, createExport }) => {
-  const { handleSubmit, register, errors } = useForm();
+  const { handleSubmit, register, errors, control } = useForm();
   const [status, setStatus] = useState(STATUS.INITIAL);
 
   const handleConfirm = async fields => {
@@ -163,18 +163,22 @@ export const ExportModalComponent = ({ renderCustomFields, isOpen, handleClose, 
             />
 
             <Fields>
-              <DatePicker
+              <Controller
+                as={<DatePicker label="Start Week" name="startWeek" />}
+                control={control}
                 name="startWeek"
-                label="Start Week"
+                defaultValue={new Date()}
                 error={!!errors.startWeek}
                 helperText={errors.startWeek && errors.startWeek.message}
                 inputRef={register({
                   required: 'Required',
                 })}
               />
-              <DatePicker
+              <Controller
+                as={<DatePicker label="End Week" name="endWeek" />}
+                control={control}
                 name="endWeek"
-                label="End Week"
+                defaultValue={new Date()}
                 error={!!errors.endWeek}
                 helperText={errors.endWeek && errors.endWeek.message}
                 inputRef={register({

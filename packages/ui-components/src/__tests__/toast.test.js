@@ -9,27 +9,36 @@ import userEvent from '@testing-library/user-event';
 import { render } from '../../helpers/testingRenderer';
 import { Toast } from '..';
 
+const exampleString = 'Success Message';
+const exampleStringRegex = /success message/i;
+
 describe('toast', () => {
   it('renders', async () => {
-    render(<Toast>Success Message</Toast>);
-    const toast = screen.getByText(/success message/i);
-    expect(toast).toBeInTheDocument();
+    render(<Toast>{exampleString}</Toast>);
+
+    expect(screen.getByText(exampleStringRegex)).toBeInTheDocument();
   });
 
   it('disappears when the close button is clicked', async () => {
-    render(<Toast>Success Message</Toast>);
+    render(<Toast>{exampleString}</Toast>);
+
+    expect(screen.getByText(exampleStringRegex)).toBeVisible();
+
     const closeBtn = screen.getByRole('button', { name: /close/i });
     userEvent.click(closeBtn);
 
     await waitFor(() => {
-      expect(screen.queryByText(/success message/i)).not.toBeVisible();
+      expect(screen.queryByText(exampleStringRegex)).not.toBeVisible();
     });
   });
 
   it('disappears when the timeout is set', async () => {
-    render(<Toast timeout={100}>Success Message</Toast>);
+    render(<Toast timeout={300}>{exampleString}</Toast>);
+
+    expect(screen.getByText(exampleStringRegex)).toBeVisible();
+
     await waitFor(() => {
-      expect(screen.queryByText(/success message/i)).not.toBeVisible();
+      expect(screen.queryByText(exampleStringRegex)).not.toBeVisible();
     });
   });
 });

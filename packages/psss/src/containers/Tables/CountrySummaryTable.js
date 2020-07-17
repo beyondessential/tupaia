@@ -23,7 +23,7 @@ const countrySummaryTableColumns = [
     CellComponent: WeekAndDateCell,
   },
   {
-    title: 'Site Reported',
+    title: 'Sites Reported',
     key: 'sitesReported',
     CellComponent: SitesReportedCell,
     width: COLUMN_WIDTHS.SITES_REPORTED,
