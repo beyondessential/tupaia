@@ -20,6 +20,11 @@ This opens all packages as roots in the workspace, and means linting etc. will w
 - [web-config-server](https://github.com/beyondessential/tupaia/blob/dev/packages/web-config-server/README.md)
 - [web-frontend](https://github.com/beyondessential/tupaia/blob/dev/packages/web-frontend/README.md)
 
+Any of the main packages can be run using `yarn workspace @tupaia/package-name start-dev`.
+In the case of the two servers, this will also build and watch all of the internal dependencies, so
+that hot reload detects changes to other packages within the mono-repo. As this delays startup time,
+if you prefer to prebuild internal dependencies, add `--skip-internal` to the above command.
+
 ### Internal dependencies
 
 See also https://docs.beyondessential.com.au/books/software-development/page/internal-dependencies

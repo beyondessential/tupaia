@@ -2578,6 +2578,14 @@ ALTER TABLE ONLY public.user_reward
 
 
 --
+-- Name: schema_change_trigger; Type: EVENT TRIGGER; Schema: -; Owner: -
+--
+
+CREATE EVENT TRIGGER schema_change_trigger ON ddl_command_end
+   EXECUTE PROCEDURE public.schema_change_notification();
+
+
+--
 -- PostgreSQL database dump complete
 --
 
@@ -3436,14 +3444,15 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 789	/20200626014357-AddUNFPAFacilityUseOfStockCardsMatrixReport	2020-07-09 22:25:55.765
 790	/20200629134316-AddUNFPANumberOfWomenProvidedSRHServicesFacilityLevelDashboardReport	2020-07-09 22:25:55.895
 791	/20200701000910-AddUNFPANumberOfWomenProvidedSRHServicesNationalProvincialLevelMatrix	2020-07-09 22:25:55.966
-792	/20200609003258-AddLaosSchoolsRawDataDownloads	2020-07-13 15:06:53.623
-793	/20200624001356-AddTongaCovid19CommodityAvailabilityRadiusMapNationalLevelOverlay	2020-07-13 15:06:54.081
-794	/20200624043629-AddUNFPAPriorityLifeSavingMedicinesForWomenAndChildrenAMCMatrixReport	2020-07-13 15:06:54.365
-795	/20200624090309-AddUNFPAPriorityLifeSavingMedicinesForWomenAndChildrenMOSMatrixReport	2020-07-13 15:06:54.437
-796	/20200624090446-AddUNFPAPriorityLifeSavingMedicinesForWomenAndChildrenSOHMatrixReport	2020-07-13 15:06:54.669
-797	/20200712224256-ChangeDefaultCovidOverlayToStateTotalCases-modifies-data	2020-07-13 15:06:54.711
-798	/20200428025025-createAlertsTable	2020-07-15 15:29:45.539
-799	/20200501033538-createCommentTables	2020-07-15 15:29:45.563
+792	/20200609003258-AddLaosSchoolsRawDataDownloads	2020-07-14 15:06:35.034
+793	/20200624001356-AddTongaCovid19CommodityAvailabilityRadiusMapNationalLevelOverlay	2020-07-14 15:06:35.436
+794	/20200624043629-AddUNFPAPriorityLifeSavingMedicinesForWomenAndChildrenAMCMatrixReport	2020-07-14 15:06:35.743
+795	/20200624090309-AddUNFPAPriorityLifeSavingMedicinesForWomenAndChildrenMOSMatrixReport	2020-07-14 15:06:35.828
+796	/20200624090446-AddUNFPAPriorityLifeSavingMedicinesForWomenAndChildrenSOHMatrixReport	2020-07-14 15:06:35.984
+797	/20200712224256-ChangeDefaultCovidOverlayToStateTotalCases-modifies-data	2020-07-14 15:06:36.084
+798	/20200601041635-HideUnncessarySurveysFromDemoLand	2020-07-15 01:53:05.395
+799	/20200428025025-createAlertsTable	2020-07-15 15:29:45.539
+800	/20200501033538-createCommentTables	2020-07-15 15:29:45.563
 \.
 
 
@@ -3451,7 +3460,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 799, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 800, true);
 
 
 --

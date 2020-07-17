@@ -10,8 +10,8 @@ import { mapMeasureValuesToGroups } from './helpers';
 export class GroupEventsPerOrgUnitBuilder extends DataPerOrgUnitBuilder {
   getBaseBuilderClass = () => CountEventsBuilder;
 
-  async fetchResults() {
-    return this.fetchEvents({ useDeprecatedApi: false });
+  async fetchResultsAndPeriod() {
+    return { results: await this.fetchEvents({ useDeprecatedApi: false }), period: null };
   }
 
   formatData(data) {
