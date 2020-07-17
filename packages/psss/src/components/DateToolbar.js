@@ -6,14 +6,16 @@ import React, { useState } from 'react';
 
 import clsx from 'clsx';
 
+import { CustomToolbar } from './CustomToolbar';
+
 import Typography from '@material-ui/core/Typography';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import endOfWeek from 'date-fns/endOfWeek';
 import format from 'date-fns/format';
-import isValid from 'date-fns/isValid';
-import startOfWeek from 'date-fns/startOfWeek';
+import getISOWeek from 'date-fns/get_iso_week';
+import startOfISOWeek from 'date-fns/start_of_iso_week';
+import endOfISOWeek from 'date-fns/end_of_iso_week';
 import isWithinInterval from 'date-fns/isWithinInterval';
 import isSameDay from 'date-fns/isSameDay';
 import { createStyles } from '@material-ui/styles';
@@ -79,20 +81,13 @@ const styles = createStyles(theme => ({
   },
 }));
 
-export const DateToolbarComponent = props => {
+export const DateToolbarComponent = ({ classes }) => {
   const [value, setValue] = useState(new Date());
   const [isOpen, setIsOpen] = useState(false);
 
-  const formatWeekSelectLabel = (date, invalidLabel) => {
-    return `Week of ${format(startOfWeek(date), 'MMM do')}`;
-  };
-
   const renderWeekPickerDay = (date, selectedDate, dayInCurrentMonth) => {
-    const { classes } = props;
-    const selectedDateClone = new Date(selectedDate.getTime());
-
-    const start = startOfWeek(selectedDateClone);
-    const end = endOfWeek(selectedDateClone);
+    const start = startOfISOWeek(selectedDate);
+    const end = endOfISOWeek(selectedDate);
 
     const dayIsBetween = isWithinInterval(date, { start, end });
     const isFirstDay = isSameDay(date, start);
@@ -118,11 +113,6 @@ export const DateToolbarComponent = props => {
     );
   };
 
-  const handleDateChange = date => {
-    console.log('date change...', date);
-    setValue({ selectedDate: startOfWeek(new Date(date.getTime())) });
-  };
-
   return (
     <BaseToolbar>
       <Container>
@@ -132,15 +122,15 @@ export const DateToolbarComponent = props => {
           </LightIconButton>
           <DatePicker
             label="Date"
-            onChange={handleDateChange}
+            onChange={date => setValue(startOfISOWeek(date))}
             value={value}
             open={isOpen}
             onClose={() => setIsOpen(false)}
             TextFieldComponent={() => null}
             renderDay={renderWeekPickerDay}
-            labelFunc={formatWeekSelectLabel}
+            ToolbarComponent={CustomToolbar}
           />
-          <Text variant="h5">Week 10 . Feb 25 2020 - Mar 1, 2020</Text>
+          <Text variant="h5">{`Week ${getISOWeek(value)} &#183; ${format(value, 'MMM d , yyyy')}`}</Text>
         </FlexStart>
         <FlexEnd>
           <LightIconButton>
