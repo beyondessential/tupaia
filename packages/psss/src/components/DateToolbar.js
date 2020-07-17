@@ -113,6 +113,9 @@ export const DateToolbarComponent = ({ classes }) => {
     );
   };
 
+  const start = format(startOfISOWeek(value), 'MMM d');
+  const end = format(endOfISOWeek(value), 'MMM d , yyyy');
+
   return (
     <BaseToolbar>
       <Container>
@@ -130,7 +133,9 @@ export const DateToolbarComponent = ({ classes }) => {
             renderDay={renderWeekPickerDay}
             ToolbarComponent={CustomToolbar}
           />
-          <Text variant="h5">{`Week ${getISOWeek(value)} &#183; ${format(value, 'MMM d , yyyy')}`}</Text>
+          <Text variant="h5">
+            Week {getISOWeek(value)} <span>&#183;</span> {start} - {end}
+          </Text>
         </FlexStart>
         <FlexEnd>
           <LightIconButton>
