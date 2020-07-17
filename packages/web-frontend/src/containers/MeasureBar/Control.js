@@ -51,6 +51,7 @@ const Content = styled.div`
 
 const ContentText = styled.div`
   padding: 8px;
+  min-height: ${({ selected }) => (!selected ? '40px' : 'inherit')};
 `;
 
 const SubHeader = styled.div`
@@ -66,9 +67,8 @@ const MeasureDatePicker = styled.div`
   padding: 16px 8px;
   display: flex;
   justify-content: center;
-  border-bottom-left-radius: ${({ expanded, selected }) => (!expanded && selected ? '5px' : '0px')};
-  border-bottom-right-radius: ${({ expanded, selected }) =>
-    !expanded && selected ? '5px' : '0px'};
+  border-bottom-left-radius: ${({ expanded }) => (!expanded ? '5px' : '0px')};
+  border-bottom-right-radius: ${({ expanded }) => (!expanded ? '5px' : '0px')};
 `;
 
 const ExpandedContent = styled.div`
@@ -77,7 +77,7 @@ const ExpandedContent = styled.div`
   color: #fff;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
-  overflow-y: scroll;
+  overflow-y: auto;
   padding: 8px;
   flex-basis: 0;
   flex-grow: 1;
@@ -89,6 +89,12 @@ const ExpansionControl = ({ isExpanded, expand, minimise }) =>
   ) : (
     <DownArrow onClick={expand} fontSize="large" />
   );
+
+ExpansionControl.propTypes = {
+  isExpanded: PropTypes.bool.isRequired,
+  expand: PropTypes.func.isRequired,
+  minimise: PropTypes.func.isRequired,
+};
 
 export const Control = ({
   emptyMessage,
@@ -120,8 +126,8 @@ export const Control = ({
         selected={isMeasureSelected}
         period={selectedMeasure.periodGranularity}
       >
-        <ContentText>
-          {isMeasureLoading ? <CircularProgress size={24} thickness={3} /> : measureText}
+        <ContentText selected={isMeasureSelected}>
+          {isMeasureLoading ? '' : measureText}
         </ContentText>
         {isMeasureSelected && (
           <ExpansionControl
@@ -132,7 +138,7 @@ export const Control = ({
         )}
       </Content>
       {isMeasureSelected && selectedMeasure.periodGranularity && (
-        <MeasureDatePicker selected={isMeasureSelected} expanded={isExpanded}>
+        <MeasureDatePicker expanded={isExpanded}>
           <DateRangePicker
             granularity={selectedMeasure.periodGranularity}
             startDate={selectedMeasure.startDate}
@@ -169,10 +175,4 @@ Control.propTypes = {
 Control.defaultProps = {
   isMeasureLoading: false,
   selectedMeasure: {},
-};
-
-ExpansionControl.propTypes = {
-  isExpanded: PropTypes.func.isRequired,
-  expand: PropTypes.func.isRequired,
-  minimise: PropTypes.func.isRequired,
 };
