@@ -14,30 +14,6 @@ exports.setup = function(options, seedLink) {
   seed = seedLink;
 };
 
-const dropMapOverlayRedundantColumns = async db => {
-  await db.runSql(`
-    ALTER TABLE "mapOverlay" 
-    DROP COLUMN "displayType", 
-    DROP COLUMN "customColors", 
-    DROP COLUMN "values", 
-    DROP COLUMN "hideFromMenu", 
-    DROP COLUMN "hideFromPopup", 
-    DROP COLUMN "hideFromLegend";
-`);
-};
-
-const recreateMapOverlayRedundantColumns = async db => {
-  await db.runSql(`
-    ALTER TABLE "mapOverlay" 
-    ADD COLUMN "displayType" text, 
-    ADD COLUMN "customColors" text,
-    ADD COLUMN "values" jsonb, 
-    ADD COLUMN "hideFromMenu" boolean, 
-    ADD COLUMN "hideFromPopup" boolean,
-    ADD COLUMN "hideFromLegend" boolean;
-`);
-};
-
 const selectAllMapOverlays = async db => db.runSql('SELECT * FROM "mapOverlay";');
 
 exports.up = async function(db) {
@@ -106,13 +82,9 @@ exports.up = async function(db) {
     `);
     }),
   );
-
-  await dropMapOverlayRedundantColumns(db);
 };
 
 exports.down = async function(db) {
-  await recreateMapOverlayRedundantColumns(db);
-
   const mapOverlayRows = await selectAllMapOverlays(db).rows;
 
   await Promise.all(
