@@ -188,6 +188,19 @@ CREATE FUNCTION public.notification() RETURNS trigger
 
 
 --
+-- Name: schema_change_notification(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.schema_change_notification() RETURNS event_trigger
+    LANGUAGE plpgsql
+    AS $$
+  BEGIN
+  PERFORM pg_notify('schema_change', 'schema_change');
+  END;
+  $$;
+
+
+--
 -- Name: scrub_geo_data(jsonb, name); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -2441,6 +2454,14 @@ ALTER TABLE ONLY public.user_reward
 
 
 --
+-- Name: schema_change_trigger; Type: EVENT TRIGGER; Schema: -; Owner: -
+--
+
+CREATE EVENT TRIGGER schema_change_trigger ON ddl_command_end
+   EXECUTE PROCEDURE public.schema_change_notification();
+
+
+--
 -- PostgreSQL database dump complete
 --
 
@@ -3282,20 +3303,30 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 772	/20200623065126-AddRegionalMapOverlaysForUNFPAMOS	2020-07-02 21:55:55.446
 773	/20200625074843-AddMapOverlaysForRHServices	2020-07-02 21:55:55.695
 774	/20200701064429-AddMethodsOfContraceptionRegionalDashboards	2020-07-02 21:55:55.794
-775	/20200624061918-AddUnfpaStackedBarGraphPercentCountryMos	2020-07-07 15:06:28.379
-776	/20200624141424-AddUNFPAReproductiveHealthAtLeast1StaffMemberTrainedSRHServicesReport	2020-07-07 15:06:28.499
-777	/20200629134316-AddUNFPANumberOfWomenProvidedSRHServicesFacilityLevelDashboardReport	2020-07-07 15:06:28.538
-778	/20200701000910-AddUNFPANumberOfWomenProvidedSRHServicesNationalProvincialLevelMatrix	2020-07-07 15:06:28.6
-779	/20200617035342-AddCountryAndFacilityTongaHealthPromotionUnitDashboardGroups	2020-07-08 01:01:04.624
-780	/20200617036620-AddActivitySessionsBySettingPieChartTonga	2020-07-08 01:01:04.956
-781	/20200617045942-AddTongaDHIS2HPUPieChartNumberOfBroadcastsByTheme	2020-07-08 01:01:05.092
-782	/20200617054710-AddActivitySessionsBySettingByDistrict	2020-07-08 01:01:05.387
-783	/20200617071021-AddTongaHPUBarChartTotalPhysicalActivityParticipants	2020-07-08 01:01:05.486
-784	/20200618014723-AddNewQuitlineCallsByYearTextReport	2020-07-08 01:01:05.546
-785	/20200618131934-AddTongaHPUIECRequestsFulFilledByTargetGroupDashboardReport	2020-07-08 01:01:05.607
-786	/20200618132339-AddTongaHPUIECRequestsFulFilledByThemeDashboardReport	2020-07-08 01:01:05.676
-787	/20200619015233-AddNewQuitlineCasesBarReportTonga	2020-07-08 01:01:05.776
-788	/20200623013336-AddTongaHPUNumberOfNCDRiskFactorScreeningEventsBySetting	2020-07-08 01:01:05.907
+775	/20200609034143-ChangeBinaryShadedPolygonsMeasuresLaosSchools	2020-07-09 22:25:52.91
+776	/20200609045620-AddStriveReportToNationalLevel	2020-07-09 22:25:53.039
+777	/20200617035342-AddCountryAndFacilityTongaHealthPromotionUnitDashboardGroups	2020-07-09 22:25:53.489
+778	/20200617036620-AddActivitySessionsBySettingPieChartTonga	2020-07-09 22:25:53.753
+779	/20200617045942-AddTongaDHIS2HPUPieChartNumberOfBroadcastsByTheme	2020-07-09 22:25:53.961
+780	/20200617054710-AddActivitySessionsBySettingByDistrict	2020-07-09 22:25:54.214
+781	/20200617071021-AddTongaHPUBarChartTotalPhysicalActivityParticipants	2020-07-09 22:25:54.33
+782	/20200618014723-AddNewQuitlineCallsByYearTextReport	2020-07-09 22:25:54.465
+783	/20200618131934-AddTongaHPUIECRequestsFulFilledByTargetGroupDashboardReport	2020-07-09 22:25:54.587
+784	/20200618132339-AddTongaHPUIECRequestsFulFilledByThemeDashboardReport	2020-07-09 22:25:54.766
+785	/20200619015233-AddNewQuitlineCasesBarReportTonga	2020-07-09 22:25:54.939
+786	/20200623013336-AddTongaHPUNumberOfNCDRiskFactorScreeningEventsBySetting	2020-07-09 22:25:55.197
+787	/20200624061918-AddUnfpaStackedBarGraphPercentCountryMos	2020-07-09 22:25:55.416
+788	/20200624141424-AddUNFPAReproductiveHealthAtLeast1StaffMemberTrainedSRHServicesReport	2020-07-09 22:25:55.609
+789	/20200626014357-AddUNFPAFacilityUseOfStockCardsMatrixReport	2020-07-09 22:25:55.765
+790	/20200629134316-AddUNFPANumberOfWomenProvidedSRHServicesFacilityLevelDashboardReport	2020-07-09 22:25:55.895
+791	/20200701000910-AddUNFPANumberOfWomenProvidedSRHServicesNationalProvincialLevelMatrix	2020-07-09 22:25:55.966
+792	/20200609003258-AddLaosSchoolsRawDataDownloads	2020-07-14 15:06:35.034
+793	/20200624001356-AddTongaCovid19CommodityAvailabilityRadiusMapNationalLevelOverlay	2020-07-14 15:06:35.436
+794	/20200624043629-AddUNFPAPriorityLifeSavingMedicinesForWomenAndChildrenAMCMatrixReport	2020-07-14 15:06:35.743
+795	/20200624090309-AddUNFPAPriorityLifeSavingMedicinesForWomenAndChildrenMOSMatrixReport	2020-07-14 15:06:35.828
+796	/20200624090446-AddUNFPAPriorityLifeSavingMedicinesForWomenAndChildrenSOHMatrixReport	2020-07-14 15:06:35.984
+797	/20200712224256-ChangeDefaultCovidOverlayToStateTotalCases-modifies-data	2020-07-14 15:06:36.084
+798	/20200601041635-HideUnncessarySurveysFromDemoLand	2020-07-15 01:53:05.395
 \.
 
 
@@ -3303,7 +3334,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 788, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 798, true);
 
 
 --

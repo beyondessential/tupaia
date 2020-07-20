@@ -92,7 +92,7 @@ const getLabels = (scaleType, min, max, valueType) => {
   switch (scaleType) {
     case SCALE_TYPES.PERFORMANCE:
     case SCALE_TYPES.PERFORMANCE_DESC:
-    case SCALE_TYPES.POPULATION:
+    case SCALE_TYPES.NEUTRAL:
       return { left: formatDataValue(min, valueType), right: formatDataValue(max, valueType) };
     case SCALE_TYPES.TIME:
       return { left: '0 days', right: `${moment(max).diff(min, 'days')} days old` };
@@ -121,7 +121,7 @@ const SpectrumLegend = ({
       break;
     case SCALE_TYPES.PERFORMANCE:
     case SCALE_TYPES.PERFORMANCE_DESC:
-    case SCALE_TYPES.POPULATION:
+    case SCALE_TYPES.NEUTRAL:
     default: {
       const increment = (max - min) / 100;
 
