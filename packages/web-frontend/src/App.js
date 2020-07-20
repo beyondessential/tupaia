@@ -5,7 +5,7 @@
  * found in the LICENSE file in the root directory of this source tree.
  */
 
-import React, { Component } from 'react';
+import React, { Component, useCallback } from 'react';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { MuiThemeProvider as V0MuiThemeProvider } from 'material-ui';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
@@ -15,7 +15,7 @@ import configureStore from './configureStore';
 import { initHistoryDispatcher } from './utils';
 import { DARKENED_BLUE } from './styles';
 
-import { DateRangePicker } from './components/DateRangePicker';
+import { NewDateRangePicker, DateRangePicker } from './components/DateRangePicker';
 
 import { fetchInitialData } from './actions';
 
@@ -57,6 +57,10 @@ class App extends Component {
     dispatch(fetchInitialData());
   }
 
+  update(startDate, endDate) {
+    console.log('update...', startDate, endDate);
+  }
+
   render() {
     const { RootScreen } = this.state;
     return (
@@ -65,8 +69,16 @@ class App extends Component {
           theme={createMuiTheme({ palette: { type: 'dark', primary: { main: DARKENED_BLUE } } })}
         >
           <V0MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
-            {/*{RootScreen ? <RootScreen /> : null}*/}
-            <DateRangePicker />
+            {RootScreen ? <RootScreen /> : null}
+            {/*<div style={{ width: 340 }}>*/}
+              {/*<DateRangePicker granularity="one_year_at_a_time" onSetDates={this.update} />*/}
+              {/*<DateRangePicker*/}
+              {/*  startDate="2019-01-01"*/}
+              {/*  endDate="2020-06-30"*/}
+              {/*  granularity="year"*/}
+              {/*  onSetDates={this.update}*/}
+              {/*/>*/}
+            {/*</div>*/}
           </V0MuiThemeProvider>
         </MuiThemeProvider>
       </Provider>

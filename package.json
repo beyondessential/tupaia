@@ -7,7 +7,6 @@
     ]
   },
   "scripts": {
-    "postinstall": "test -n \"$SKIP_BUILD_INTERNAL_DEPENDENCIES\" || yarn build-internal-dependencies",
     "update-codeship-env-vars": "./packages/devops/scripts/ci/updateCiEnvVars.sh",
     "update-parameter-store-env-vars": "./scripts/bash/updateParameterStoreEnvVars.sh",
     "build-admin-panel": "yarn workspace @tupaia/admin-panel build",

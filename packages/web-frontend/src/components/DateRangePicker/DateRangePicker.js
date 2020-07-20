@@ -1,24 +1,20 @@
-/**
- * Tupaia Web
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd.
- * This source code is licensed under the AGPL-3.0 license
- * found in the LICENSE file in the root directory of this source tree.
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
+
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DateRangeIcon from '@material-ui/icons/DateRange';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
-import MuiIconButton from '@material-ui/core/IconButton';
-import styled from 'styled-components';
-import { DIALOG_Z_INDEX } from '../../styles';
+import { DIALOG_Z_INDEX, OFF_WHITE, WHITE } from '../../styles';
 import { Error } from '../Error';
 import { DayPicker } from './DayPicker';
 import { MonthPicker } from './MonthPicker';
@@ -47,11 +43,6 @@ const {
 
 const DEFAULT_GRANULARITY = GRANULARITY_CONFIG[DAY];
 
-const StyledDateRow = styled.div`
-  display: flex;
-  margin-top: 30px;
-`;
-
 const getLabelText = granularity => {
   switch (granularity) {
     default:
@@ -66,215 +57,311 @@ const getLabelText = granularity => {
 };
 
 const DayPickerRow = props => (
-  <StyledDateRow>
+  <div style={styles.dateRow}>
     <DayPicker {...props} />
     <MonthPicker {...props} />
     <YearPicker {...props} />
-  </StyledDateRow>
+  </div>
 );
 
 const WeekPickerRow = props => (
-  <StyledDateRow>
+  <div style={styles.dateRow}>
     <WeekPicker {...props} />
     <YearPicker {...props} isIsoYear />
-  </StyledDateRow>
+  </div>
 );
 
 const MonthPickerRow = props => (
-  <StyledDateRow>
+  <div style={styles.dateRow}>
     <MonthPicker {...props} />
     <YearPicker {...props} />
-  </StyledDateRow>
+  </div>
 );
 
 const QuarterPickerRow = props => (
-  <StyledDateRow>
+  <div style={styles.dateRow}>
     <QuarterPicker {...props} />
     <YearPicker {...props} />
-  </StyledDateRow>
+  </div>
 );
 
 const YearPickerRow = props => (
-  <StyledDateRow>
+  <div style={styles.dateRow}>
     <YearPicker {...props} />
-  </StyledDateRow>
+  </div>
 );
 
-// Todo: maybe this can be refactored?
-// eslint-disable-next-line react/prop-types
-const DateRow = ({ date, granularity, onChange }) => {
-  const minMomentDate = moment('20150101');
-  const pickerRowProps = {
-    momentDateValue: date,
-    minMomentDate: minMomentDate,
-    maxMomentDate: moment(),
-    onChange: onChange,
-  };
-  switch (granularity) {
-    default:
-    case DAY:
-      return <DayPickerRow {...pickerRowProps} />;
-    case SINGLE_WEEK:
-    case WEEK:
-      return <WeekPickerRow {...pickerRowProps} />;
-    case MONTH:
-    case SINGLE_MONTH:
-      return <MonthPickerRow {...pickerRowProps} />;
-    case QUARTER:
-    case SINGLE_QUARTER:
-      return <QuarterPickerRow {...pickerRowProps} />;
-    case YEAR:
-    case SINGLE_YEAR:
-      return <YearPickerRow {...pickerRowProps} />;
-  }
-};
-
-const FlexRow = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-`;
-
-const IconButton = styled(MuiIconButton)`
-  color: white;
-`;
-
-const Label = styled.div`
-  color: white;
-  font-size: 16px;
-  line-height: 19px;
-`;
-
-// eslint-disable-next-line react/prop-types
-const DateLabel = ({ isSingleDate, granularity, startDate, endDate }) => {
-  if (!startDate || !endDate) {
-    return <Label>{getLabelText(granularity)}</Label>;
+export class DateRangePicker extends PureComponent {
+  constructor(props) {
+    super(props);
+    console.log("DATE RANGE PICKER", props);
+    this.minMomentDate = moment('20150101');
+    this.maxMomentDate = moment();
+    this.defaultStartDate = this.isSingleDate ? moment() : this.minMomentDate;
+    this.defaultEndDate = this.isSingleDate ? this.defaultStartDate : this.maxMomentDate;
+    this.isSingleDate = GRANULARITIES_WITH_ONE_DATE.includes(this.props.granularity);
+    const { startDate, endDate } = this.getCurrentDates();
+    this.state = {
+      isOpen: false,
+      selectedStartDate: startDate,
+      selectedEndDate: endDate,
+      errorMessage: '',
+    };
+    this.onSubmitDateSelection(true);
   }
 
-  const { momentUnit, rangeFormat } = GRANULARITY_CONFIG[granularity] || DEFAULT_GRANULARITY;
-  const formattedStartDate = startDate.format(rangeFormat);
-  const formattedEndDate = endDate.startOf(momentUnit).format(rangeFormat);
+  getCurrentDates() {
+    const { startDate, endDate } = this.props;
+    return {
+      startDate: startDate ? moment(startDate) : this.defaultStartDate,
+      endDate: endDate ? moment(endDate) : this.defaultEndDate,
+    };
+  }
 
-  const label = isSingleDate ? formattedStartDate : `${formattedStartDate} - ${formattedEndDate}`;
+  getBoundingDatesFromSelection() {
+    const { granularity } = this.props;
+    const { startDate: fallbackStartDate, endDate: fallbackEndDate } = this.getCurrentDates();
 
-  return <Label>{label}</Label>;
-};
+    const { selectedStartDate, selectedEndDate } = this.state;
 
-export const DateRangePicker = ({ startDate, endDate, granularity, onSetDates, isLoading }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedStartDate, setSelectedStartDate] = useState(moment(startDate));
-  const [selectedEndDate, setSelectedEndDate] = useState(moment(endDate));
-  const [errorMessage, setErrorMessage] = useState('');
+    const endDate = selectedEndDate || fallbackEndDate;
+    const startDate = this.isSingleDate ? endDate.clone() : selectedStartDate || fallbackStartDate;
 
-  const isSingleDate = GRANULARITIES_WITH_ONE_DATE.includes(granularity);
+    // Round dates to the unit of granularity
+    return roundStartEndDates(granularity, startDate, endDate);
+  }
+
+  getDatesAsString() {
+    const { granularity } = this.props;
+    const { startDate, endDate } = this.getCurrentDates();
+
+    if (!startDate || !endDate) {
+      return getLabelText(granularity);
+    }
+
+    const { momentUnit, rangeFormat } = GRANULARITY_CONFIG[granularity] || DEFAULT_GRANULARITY;
+    const formattedStartDate = startDate.format(rangeFormat);
+    const formattedEndDate = endDate.startOf(momentUnit).format(rangeFormat);
+
+    return this.isSingleDate ? formattedStartDate : `${formattedStartDate} - ${formattedEndDate}`;
+  }
 
   // Number of periods to move may be negative if changing to the previous period
-  const changePeriod = numberOfPeriodsToMove => {
-    if (!isSingleDate) {
+  changePeriod = numberOfPeriodsToMove => {
+    if (!this.isSingleDate) {
       throw new Error('Can only change period for single unit date pickers (e.g. one month)');
     }
+    const { granularity } = this.props;
+    const { startDate, endDate } = this.getCurrentDates();
 
     const { momentShorthand } = GRANULARITY_CONFIG[granularity];
-    setSelectedStartDate(selectedStartDate.clone().add(numberOfPeriodsToMove, momentShorthand));
-    setSelectedEndDate(selectedEndDate.clone().add(numberOfPeriodsToMove, momentShorthand));
-    onSetDates(selectedStartDate, selectedEndDate);
-  };
-
-  const onCancelDateSelection = () => {
-    setIsOpen(false);
-    setErrorMessage('');
-  };
-
-  const onSubmitDateSelection = () => {
-    if (!isSingleDate && selectedStartDate.isAfter(selectedEndDate)) {
-      return setErrorMessage('Start date must be before end date');
-    }
-
-    const { roundedStartDate, roundedEndDate } = roundStartEndDates(
-      granularity,
-      isSingleDate ? selectedEndDate.clone() : selectedStartDate,
-      selectedEndDate,
+    this.setState(
+      {
+        selectedStartDate: startDate.clone().add(numberOfPeriodsToMove, momentShorthand),
+        selectedEndDate: endDate.clone().add(numberOfPeriodsToMove, momentShorthand),
+      },
+      this.onSubmitDateSelection,
     );
-
-    // Only update if the dates have actually changed by at least one day
-    if (
-      !roundedStartDate.isSame(selectedStartDate, 'day') ||
-      !roundedEndDate.isSame(selectedEndDate, 'day')
-    ) {
-      // Update the external control values!
-      onSetDates(selectedStartDate, selectedEndDate);
-    }
-    // Close the dialog
-    setIsOpen(false);
-    return setErrorMessage('');
   };
 
-  return (
-    <FlexRow>
-      <FlexRow>
-        <IconButton onClick={() => setIsOpen(true)} aria-label="open">
-          <DateRangeIcon />
-        </IconButton>
-        <FlexRow>
-          <DateLabel
-            isSingleDate={isSingleDate}
-            granularit={granularity}
-            startDate={selectedStartDate}
-            endDate={selectedEndDate}
-          />
-        </FlexRow>
-        {isSingleDate && (
-          <FlexRow>
-            <IconButton type="button" onClick={() => changePeriod(-1)} disabled={isLoading}>
-              <ChevronLeftIcon />
-            </IconButton>
-            <IconButton type="button" onClick={() => changePeriod(1)} disabled={isLoading}>
-              <ChevronRightIcon />
-            </IconButton>
-          </FlexRow>
+  onCancelDateSelection = () => {
+    this.setState({ isOpen: false, errorMessage: '' });
+    this.resetSelectedDates();
+  };
+
+  onSubmitDateSelection = (forceSetDates = false) => {
+    const { onSetDates } = this.props;
+    const { startDate, endDate } = this.getBoundingDatesFromSelection();
+
+    if (startDate.isAfter(endDate)) {
+      this.setState({
+        errorMessage: 'Start date must be before end date',
+      });
+    } else {
+      // Only update if the dates have actually changed by at least one day
+      const { startDate: currentStartDate, endDate: currentEndDate } = this.getCurrentDates();
+      if (
+        forceSetDates ||
+        !currentStartDate.isSame(startDate, 'day') ||
+        !currentEndDate.isSame(endDate, 'day')
+      ) {
+        onSetDates(startDate, endDate);
+      }
+      // Close the dialog
+      this.setState({ isOpen: false, errorMessage: '' });
+    }
+  };
+
+  resetSelectedDates() {
+    const { startDate: selectedStartDate, endDate: selectedEndDate } = this.getCurrentDates();
+    this.setState({
+      selectedStartDate,
+      selectedEndDate,
+    });
+  }
+
+  renderSelectedPeriodInfo() {
+    const { isLoading, style } = this.props;
+    const dateString = this.getDatesAsString();
+    const buttonStyle = isLoading ? styles.button : { ...styles.button, ...styles.buttonBorder };
+    return (
+      <div style={{ ...styles.wrapper, ...style }}>
+        {this.isSingleDate && (
+          <button
+            style={{ ...styles.button, ...styles.leftButton }}
+            type="button"
+            onClick={() => {
+              this.changePeriod(-1);
+            }}
+            disabled={isLoading}
+          >
+            {'<'}
+          </button>
         )}
-      </FlexRow>
-      <Dialog
-        modal="true"
-        open={isOpen}
-        style={{ zIndex: DIALOG_Z_INDEX + 1 }}
-        PaperProps={{ style: { width: '75%', maxWidth: '700px' } }}
-      >
-        <DialogTitle>{getLabelText(granularity)}</DialogTitle>
-        <DialogContent>
-          {!isSingleDate && (
-            <DateRow
-              granularity={granularity}
-              date={selectedStartDate}
-              onChange={setSelectedStartDate}
-            />
+        <button style={buttonStyle} type="button" onClick={() => this.setState({ isOpen: true })}>
+          {isLoading ? (
+            <CircularProgress style={styles.buttonIcon} size={15} thickness={2} />
+          ) : (
+            <DateRangeIcon style={styles.buttonIcon} />
           )}
-          <DateRow granularity={granularity} date={selectedEndDate} onChange={setSelectedEndDate} />
-          {errorMessage ? <Error>{errorMessage}</Error> : null}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={onCancelDateSelection}>Cancel</Button>
-          <Button color="primary" onClick={onSubmitDateSelection} variant="contained">
-            Submit
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </FlexRow>
-  );
-};
+          {dateString}
+        </button>
+        {this.isSingleDate && (
+          <button
+            style={{ ...styles.button, ...styles.rightButton }}
+            type="button"
+            onClick={() => {
+              this.changePeriod(1);
+            }}
+            disabled={isLoading}
+          >
+            {'>'}
+          </button>
+        )}
+      </div>
+    );
+  }
+
+  renderDateRow(isEndDate = false) {
+    const { minMomentDate, maxMomentDate, defaultStartDate, defaultEndDate } = this;
+    const { selectedStartDate = defaultStartDate, selectedEndDate = defaultEndDate } = this.state;
+    const { granularity } = this.props;
+    const dateValue = isEndDate ? selectedEndDate : selectedStartDate;
+
+    const stateKey = isEndDate ? 'selectedEndDate' : 'selectedStartDate';
+
+    const pickerRowProps = {
+      momentDateValue: dateValue,
+      minMomentDate: minMomentDate,
+      maxMomentDate: maxMomentDate,
+      onChange: newDate => this.setState({ [stateKey]: newDate }),
+    };
+    switch (granularity) {
+      default:
+      case DAY:
+        return <DayPickerRow {...pickerRowProps} />;
+      case SINGLE_WEEK:
+      case WEEK:
+        return <WeekPickerRow {...pickerRowProps} />;
+      case MONTH:
+      case SINGLE_MONTH:
+        return <MonthPickerRow {...pickerRowProps} />;
+      case QUARTER:
+      case SINGLE_QUARTER:
+        return <QuarterPickerRow {...pickerRowProps} />;
+      case YEAR:
+      case SINGLE_YEAR:
+        return <YearPickerRow {...pickerRowProps} />;
+    }
+  }
+
+  render() {
+    const { style, granularity } = this.props;
+    const { errorMessage } = this.state;
+
+    return (
+      <div style={{ ...styles.wrapper, ...style }}>
+        {this.renderSelectedPeriodInfo()}
+        <Dialog
+          modal="true"
+          open={this.state.isOpen}
+          style={styles.dialog}
+          PaperProps={{ style: styles.dialogContainer }}
+        >
+          <DialogTitle>{getLabelText(granularity)}</DialogTitle>
+          <DialogContent>
+            {!this.isSingleDate && this.renderDateRow()}
+            {this.renderDateRow(true)}
+            {errorMessage ? <Error>{errorMessage}</Error> : null}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.onCancelDateSelection}>Cancel</Button>
+            <Button color="primary" onClick={this.onSubmitDateSelection} variant="contained">
+              Submit
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
+    );
+  }
+}
 
 DateRangePicker.propTypes = {
-  startDate: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-  endDate: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  style: PropTypes.shape({}),
   granularity: GRANULARITY_SHAPE,
   onSetDates: PropTypes.func,
+  startDate: PropTypes.string.isRequired,
+  endDate: PropTypes.string.isRequired,
   isLoading: PropTypes.bool,
 };
 
 DateRangePicker.defaultProps = {
-  startDate: {},
-  endDate: {},
+  style: {},
   granularity: DAY,
   onSetDates: () => {},
   isLoading: false,
+};
+
+const styles = {
+  dialog: {
+    zIndex: DIALOG_Z_INDEX + 1,
+  },
+  dialogContainer: {
+    width: '75%',
+    maxWidth: '700px',
+  },
+  wrapper: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
+  dateRow: {
+    display: 'flex',
+    marginTop: 30,
+  },
+  button: {
+    cursor: 'pointer',
+    outline: 'none',
+    border: 0,
+    padding: 0,
+    backgroundColor: 'transparent',
+    display: 'flex',
+    color: OFF_WHITE,
+    paddingBottom: 5,
+    paddingRight: 5,
+  },
+  buttonBorder: {
+    borderBottom: `1px solid ${OFF_WHITE}`,
+  },
+  buttonIcon: {
+    marginRight: 5,
+    width: 15,
+    height: 15,
+    color: WHITE,
+  },
+  leftButton: {
+    paddingRight: 10,
+  },
+  rightButton: {
+    paddingLeft: 10,
+  },
 };
