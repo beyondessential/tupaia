@@ -4,9 +4,22 @@ import { reduceToDictionary } from '@tupaia/utils';
 import { transposeMatrix } from '/apiV1/utils';
 
 import moment from 'moment';
+import flatten from 'lodash.flatten';
 
 const RAW_VALUE_DATE_FORMAT = 'D-M-YYYY h:mma';
 const ROW_HEADER_KEY = 'dataElement'; // row headers live under the key 'dataElement' for historical reasons
+const expandSurveyCodes = surveys => {
+  return flatten(
+    surveys.map(survey => {
+      return survey.codes
+        ? survey.codes.map(code => ({
+            code: code,
+            name: `${survey.name}-${code}`,
+          }))
+        : survey;
+    }),
+  );
+};
 
 class RawDataValuesBuilder extends DataBuilder {
   async build() {
@@ -18,7 +31,11 @@ class RawDataValuesBuilder extends DataBuilder {
   async fetchResults(surveyCodes) {
     const data = {};
 
-    const surveyCodeToName = reduceToDictionary(this.config.surveys, 'code', 'name');
+    const surveyCodeToName = reduceToDictionary(
+      expandSurveyCodes(this.config.surveys),
+      'code',
+      'name',
+    );
 
     const { surveysConfig = {} } = this.config;
 
