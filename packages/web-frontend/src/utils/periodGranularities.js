@@ -107,11 +107,11 @@ export const GRANULARITY_SHAPE = PropTypes.oneOf([
   SINGLE_YEAR,
 ]);
 
-export function roundStartEndDates(granularity, startDate = moment(), endDate = moment()) {
+export function roundStartEndDates(granularity, startDate, endDate) {
   const { momentUnit } = GRANULARITY_CONFIG[granularity];
   return {
-    startDate: startDate.clone().startOf(momentUnit),
-    endDate: endDate.clone().endOf(momentUnit),
+    roundedStartDate: startDate.clone().startOf(momentUnit),
+    roundedEndDate: endDate.clone().endOf(momentUnit),
   };
 }
 

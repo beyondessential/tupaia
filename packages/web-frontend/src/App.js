@@ -15,6 +15,8 @@ import configureStore from './configureStore';
 import { initHistoryDispatcher } from './utils';
 import { DARKENED_BLUE } from './styles';
 
+import { DateRangePicker } from './components/DateRangePicker';
+
 import { fetchInitialData } from './actions';
 
 // Set up asynchonous import of the RootScreen to enable webpack to do code splitting.
@@ -63,7 +65,8 @@ class App extends Component {
           theme={createMuiTheme({ palette: { type: 'dark', primary: { main: DARKENED_BLUE } } })}
         >
           <V0MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
-            {RootScreen ? <RootScreen /> : null}
+            {/*{RootScreen ? <RootScreen /> : null}*/}
+            <DateRangePicker />
           </V0MuiThemeProvider>
         </MuiThemeProvider>
       </Provider>
