@@ -6,6 +6,7 @@
  */
 
 import React, { Component, useCallback } from 'react';
+import moment from 'moment';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { MuiThemeProvider as V0MuiThemeProvider } from 'material-ui';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
@@ -45,6 +46,8 @@ class App extends Component {
     super(props);
     this.state = {
       RootScreen: null,
+      startDate: null,
+      endDate: null,
     };
   }
 
@@ -57,8 +60,9 @@ class App extends Component {
     dispatch(fetchInitialData());
   }
 
-  update(startDate, endDate) {
-    console.log('update...', startDate, endDate);
+  updateDates(startDate, endDate) {
+    console.log('update', startDate, endDate);
+    this.setState({ startDate: startDate, endDate: endDate });
   }
 
   render() {
@@ -71,13 +75,18 @@ class App extends Component {
           <V0MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
             {RootScreen ? <RootScreen /> : null}
             {/*<div style={{ width: 340 }}>*/}
-              {/*<DateRangePicker granularity="one_year_at_a_time" onSetDates={this.update} />*/}
-              {/*<DateRangePicker*/}
-              {/*  startDate="2019-01-01"*/}
-              {/*  endDate="2020-06-30"*/}
-              {/*  granularity="year"*/}
-              {/*  onSetDates={this.update}*/}
-              {/*/>*/}
+            {/*  <NewDateRangePicker*/}
+            {/*    granularity="one_year_at_a_time"*/}
+            {/*    onSetDates={this.updateDates.bind(this)}*/}
+            {/*    startDate={this.state.startDate}*/}
+            {/*    endDate={this.state.endDate}*/}
+            {/*  />*/}
+            {/*  <DateRangePicker*/}
+            {/*    startDate="2019-01-01"*/}
+            {/*    endDate="2020-06-30"*/}
+            {/*    granularity="year"*/}
+            {/*    onSetDates={this.update}*/}
+            {/*  />*/}
             {/*</div>*/}
           </V0MuiThemeProvider>
         </MuiThemeProvider>

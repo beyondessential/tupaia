@@ -6,7 +6,7 @@ import UpArrow from '@material-ui/icons/ArrowDropUp';
 import DownArrow from '@material-ui/icons/ArrowDropDown';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-import { DateRangePicker } from '../../components/DateRangePicker';
+import { DateRangePicker, NewDateRangePicker } from '../../components/DateRangePicker';
 import { CONTROL_BAR_WIDTH, TUPAIA_ORANGE, MAP_OVERLAY_SELECTOR } from '../../styles';
 
 const Container = styled.div`
@@ -64,9 +64,9 @@ const SubHeader = styled.div`
 
 const MeasureDatePicker = styled.div`
   background: #203e5c;
-  padding: 16px 8px;
-  display: flex;
-  justify-content: center;
+  //padding: 16px 8px;
+  //display: flex;
+  //justify-content: center;
   border-bottom-left-radius: ${({ expanded }) => (!expanded ? '5px' : '0px')};
   border-bottom-right-radius: ${({ expanded }) => (!expanded ? '5px' : '0px')};
 `;
@@ -109,10 +109,12 @@ export const Control = ({
   const [isExpanded, handleExpansion] = useState(false);
   const expandMeasures = useCallback(() => handleExpansion(true), [isExpanded]);
   const minimiseMeasures = useCallback(() => handleExpansion(false), [isExpanded]);
-  const updateMeasurePeriod = useCallback(
-    (startDate, endDate) => onUpdateMeasurePeriod(startDate, endDate),
-    [onUpdateMeasurePeriod],
-  );
+
+  const updateMeasurePeriod = (startDate, endDate) => {
+    console.log('start date', startDate.toString());
+    console.log('end date', endDate.toString());
+    onUpdateMeasurePeriod(startDate, endDate);
+  };
 
   return (
     <Container>
@@ -139,7 +141,7 @@ export const Control = ({
       </Content>
       {isMeasureSelected && selectedMeasure.periodGranularity && (
         <MeasureDatePicker expanded={isExpanded}>
-          <DateRangePicker
+          <NewDateRangePicker
             granularity={selectedMeasure.periodGranularity}
             startDate={selectedMeasure.startDate}
             endDate={selectedMeasure.endDate}

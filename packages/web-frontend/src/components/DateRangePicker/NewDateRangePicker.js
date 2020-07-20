@@ -213,13 +213,84 @@ const DateLabel = ({ isSingleDate, granularity, startDate, endDate }) => {
   );
 };
 
-export const NewDateRangePicker = ({ startDate, endDate, granularity, onSetDates, isLoading }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedStartDate, setSelectedStartDate] = useState(moment(startDate));
-  const [selectedEndDate, setSelectedEndDate] = useState(moment(endDate));
+const DatePickerDialog = ({ isOpen, onClose, granularity, startDate, endDate, onSetNewDates }) => {
+  const [selectedStartDate, setSelectedStartDate] = useState(startDate);
+  const [selectedEndDate, setSelectedEndDate] = useState(endDate);
   const [errorMessage, setErrorMessage] = useState('');
 
   const isSingleDate = GRANULARITIES_WITH_ONE_DATE.includes(granularity);
+
+  const onCancelDateSelection = () => {
+    onClose();
+    setErrorMessage('');
+  };
+
+  const onSubmit = () => {
+    if (!isSingleDate && selectedStartDate.isAfter(selectedEndDate)) {
+      return setErrorMessage('Start date must be before end date');
+    }
+
+    const start = isSingleDate ? selectedEndDate.clone() : selectedStartDate;
+    const { startDate: roundedStartDate, endDate: roundedEndDate } = roundStartEndDates(
+      granularity,
+      start,
+      selectedEndDate,
+    );
+
+    // Only update if the dates have actually changed by at least one day
+    if (
+      !selectedStartDate.isSame(roundedStartDate, 'day') ||
+      !selectedEndDate.isSame(roundedEndDate, 'day')
+    ) {
+      // Update the external control values!
+      onSetNewDates(roundedStartDate, roundedEndDate);
+    }
+    // Close the dialog
+    onClose();
+    return setErrorMessage('');
+  };
+
+  return (
+    <Dialog
+      modal="true"
+      open={isOpen}
+      style={{ zIndex: DIALOG_Z_INDEX + 1 }}
+      PaperProps={{ style: { width: '75%', maxWidth: '700px' } }}
+    >
+      <DialogTitle>{getLabelText(granularity)}</DialogTitle>
+      <DialogContent>
+        {!isSingleDate && (
+          <DateRow
+            granularity={granularity}
+            date={selectedStartDate}
+            onChange={setSelectedStartDate}
+          />
+        )}
+        <DateRow granularity={granularity} date={selectedEndDate} onChange={setSelectedEndDate} />
+        {errorMessage ? <Error>{errorMessage}</Error> : null}
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onCancelDateSelection}>Cancel</Button>
+        <Button color="primary" onClick={onSubmit} variant="contained">
+          Submit
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
+
+export const NewDateRangePicker = ({ startDate, endDate, granularity, onSetDates, isLoading }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const isSingleDate = GRANULARITIES_WITH_ONE_DATE.includes(granularity);
+
+  const minMomentDate = moment('20150101');
+  const maxMomentDate = moment();
+  const defaultStartDate = isSingleDate ? moment() : minMomentDate;
+  const defaultEndDate = isSingleDate ? defaultStartDate : maxMomentDate;
+
+  const currentStartDate = startDate ? moment(startDate) : defaultStartDate;
+  const currentEndDate = endDate ? moment(endDate) : defaultEndDate;
 
   // Number of periods to move may be negative if changing to the previous period
   const changePeriod = numberOfPeriodsToMove => {
@@ -228,38 +299,16 @@ export const NewDateRangePicker = ({ startDate, endDate, granularity, onSetDates
     }
 
     const { momentShorthand } = GRANULARITY_CONFIG[granularity];
-    setSelectedStartDate(selectedStartDate.clone().add(numberOfPeriodsToMove, momentShorthand));
-    setSelectedEndDate(selectedEndDate.clone().add(numberOfPeriodsToMove, momentShorthand));
-    onSetDates(selectedStartDate, selectedEndDate);
-  };
+    const newStartDate = currentStartDate.clone().add(numberOfPeriodsToMove, momentShorthand);
+    const newEndDate = currentEndDate.clone().add(numberOfPeriodsToMove, momentShorthand);
 
-  const onCancelDateSelection = () => {
-    setIsOpen(false);
-    setErrorMessage('');
-  };
-
-  const onSubmitDateSelection = () => {
-    if (!isSingleDate && selectedStartDate.isAfter(selectedEndDate)) {
-      return setErrorMessage('Start date must be before end date');
-    }
-
-    const { roundedStartDate, roundedEndDate } = roundStartEndDates(
+    const { startDate: roundedStartDate, endDate: roundedEndDate } = roundStartEndDates(
       granularity,
-      isSingleDate ? selectedEndDate.clone() : selectedStartDate,
-      selectedEndDate,
+      newStartDate,
+      newEndDate,
     );
 
-    // Only update if the dates have actually changed by at least one day
-    if (
-      !roundedStartDate.isSame(selectedStartDate, 'day') ||
-      !roundedEndDate.isSame(selectedEndDate, 'day')
-    ) {
-      // Update the external control values!
-      onSetDates(selectedStartDate, selectedEndDate);
-    }
-    // Close the dialog
-    setIsOpen(false);
-    return setErrorMessage('');
+    onSetDates(roundedStartDate, roundedEndDate);
   };
 
   return (
@@ -272,8 +321,8 @@ export const NewDateRangePicker = ({ startDate, endDate, granularity, onSetDates
           <DateLabel
             isSingleDate={isSingleDate}
             granularit={granularity}
-            startDate={selectedStartDate}
-            endDate={selectedEndDate}
+            startDate={currentStartDate}
+            endDate={currentEndDate}
           />
         </FlexRow>
         {isSingleDate && (
@@ -287,31 +336,17 @@ export const NewDateRangePicker = ({ startDate, endDate, granularity, onSetDates
           </FlexRow>
         )}
       </FlexSpaceBetween>
-      <Dialog
-        modal="true"
-        open={isOpen}
-        style={{ zIndex: DIALOG_Z_INDEX + 1 }}
-        PaperProps={{ style: { width: '75%', maxWidth: '700px' } }}
-      >
-        <DialogTitle>{getLabelText(granularity)}</DialogTitle>
-        <DialogContent>
-          {!isSingleDate && (
-            <DateRow
-              granularity={granularity}
-              date={selectedStartDate}
-              onChange={setSelectedStartDate}
-            />
-          )}
-          <DateRow granularity={granularity} date={selectedEndDate} onChange={setSelectedEndDate} />
-          {errorMessage ? <Error>{errorMessage}</Error> : null}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={onCancelDateSelection}>Cancel</Button>
-          <Button color="primary" onClick={onSubmitDateSelection} variant="contained">
-            Submit
-          </Button>
-        </DialogActions>
-      </Dialog>
+      {/* Bug in Mui that doesn't unmount modal */}
+      {isOpen && (
+        <DatePickerDialog
+          granularity={granularity}
+          startDate={currentStartDate}
+          endDate={currentEndDate}
+          isOpen={isOpen}
+          onClose={() => setIsOpen(false)}
+          onSetNewDates={onSetDates}
+        />
+      )}
     </>
   );
 };
@@ -325,8 +360,8 @@ NewDateRangePicker.propTypes = {
 };
 
 NewDateRangePicker.defaultProps = {
-  startDate: {},
-  endDate: {},
+  startDate: null,
+  endDate: null,
   granularity: DAY,
   onSetDates: () => {},
   isLoading: false,
