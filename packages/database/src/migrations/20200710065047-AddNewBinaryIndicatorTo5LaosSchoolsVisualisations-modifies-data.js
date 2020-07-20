@@ -214,9 +214,6 @@ const BAR_CHART_IDS = [
   'LA_Laos_Schools_Service_Availability_Percentage_Preschool',
   'LA_Laos_Schools_Service_Availability_Percentage_Primary',
   'LA_Laos_Schools_Service_Availability_Percentage_Secondary',
-  'LA_Laos_Schools_Resources_Percentage_Preschool',
-  'LA_Laos_Schools_Resources_Percentage_Primary',
-  'LA_Laos_Schools_Resources_Percentage_Secondary',
 ];
 
 const BAR_CHART_CONFIG = {
@@ -244,15 +241,7 @@ exports.up = async function(db) {
     where 
       id in (${arrayToDbString(BAR_CHART_IDS)});
   `);
-  // Issue 609
-  await db.runSql(`
-    update 
-      "dashboardReport"
-    set
-      "dataBuilderConfig" = jsonb_set("dataBuilderConfig", '{dataElementToString,${DATA_ELEMENT_CODE}}','"${NAME}"')
-    where 
-      id = 'LAOS_SCHOOL_BINARY_TABLE';
-  `);
+  // Issue 609: Will be deleted, don't worry about it
   // Issue 611 - Card not merged yet so will make changes there
 };
 
@@ -271,15 +260,7 @@ exports.down = async function(db) {
     where 
       id in (${arrayToDbString(BAR_CHART_IDS)});
   `);
-  // Issue 609
-  await db.runSql(`
-    update 
-      "dashboardReport"
-    set
-      "dataBuilderConfig" = jsonb_set("dataBuilderConfig", '{dataElementToString,${DATA_ELEMENT_CODE}}','"${NAME}"')
-    where 
-      id = 'LAOS_SCHOOL_BINARY_TABLE';
-  `);
+  // Issue 609: Will be deleted, don't worry about it
   // Issue 611 - Card not merged yet so will make changes there
 };
 
