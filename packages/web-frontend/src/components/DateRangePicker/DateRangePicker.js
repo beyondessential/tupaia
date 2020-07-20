@@ -149,6 +149,34 @@ const getDatesAsString = (isSingleDate, granularity, startDate, endDate) => {
   return isSingleDate ? formattedStartDate : `${formattedStartDate} - ${formattedEndDate}`;
 };
 
+// eslint-disable-next-line react/prop-types
+const DateRow = ({ date, granularity, onChange }) => {
+  const minMomentDate = moment('20150101');
+  const pickerRowProps = {
+    momentDateValue: date,
+    minMomentDate: minMomentDate,
+    maxMomentDate: moment(),
+    onChange: onChange,
+  };
+  switch (granularity) {
+    default:
+    case DAY:
+      return <DayPickerRow {...pickerRowProps} />;
+    case SINGLE_WEEK:
+    case WEEK:
+      return <WeekPickerRow {...pickerRowProps} />;
+    case MONTH:
+    case SINGLE_MONTH:
+      return <MonthPickerRow {...pickerRowProps} />;
+    case QUARTER:
+    case SINGLE_QUARTER:
+      return <QuarterPickerRow {...pickerRowProps} />;
+    case YEAR:
+    case SINGLE_YEAR:
+      return <YearPickerRow {...pickerRowProps} />;
+  }
+};
+
 export const DateRangePicker = ({
   startDate,
   endDate,
@@ -173,23 +201,23 @@ export const DateRangePicker = ({
     const { momentShorthand } = GRANULARITY_CONFIG[granularity];
     setSelectedStartDate(selectedStartDate.clone().add(numberOfPeriodsToMove, momentShorthand));
     setSelectedEndDate(selectedEndDate.clone().add(numberOfPeriodsToMove, momentShorthand));
+    onSetDates(selectedStartDate, selectedEndDate);
   };
 
   const onCancelDateSelection = () => {
     setIsOpen(false);
     setErrorMessage('');
-    resetSelectedDates();
   };
 
   const onSubmitDateSelection = () => {
-    if (selectedStartDate.isAfter(selectedEndDate)) {
+    if (!isSingleDate && selectedStartDate.isAfter(selectedEndDate)) {
       return setErrorMessage('Start date must be before end date');
     }
 
     const { roundedStartDate, roundedEndDate } = roundStartEndDates(
       granularity,
-      selectedStartDate,
       isSingleDate ? selectedEndDate.clone() : selectedStartDate,
+      selectedEndDate,
     );
 
     // Only update if the dates have actually changed by at least one day
@@ -205,20 +233,11 @@ export const DateRangePicker = ({
     return setErrorMessage('');
   };
 
-  const resetSelectedDates = () => {
-    setSelectedStartDate(moment(startDate));
-    setSelectedEndDate(moment(endDate));
-  };
+  const dateString = getDatesAsString(isSingleDate, granularity, selectedEndDate, selectedEndDate);
+  const buttonStyle = isLoading ? styles.button : { ...styles.button, ...styles.buttonBorder };
 
-  const renderSelectedPeriodInfo = () => {
-    const dateString = getDatesAsString(
-      isSingleDate,
-      granularity,
-      selectedEndDate,
-      selectedEndDate,
-    );
-    const buttonStyle = isLoading ? styles.button : { ...styles.button, ...styles.buttonBorder };
-    return (
+  return (
+    <div style={{ ...styles.wrapper, ...style }}>
       <div style={{ ...styles.wrapper, ...style }}>
         {isSingleDate && (
           <button
@@ -253,41 +272,6 @@ export const DateRangePicker = ({
           </button>
         )}
       </div>
-    );
-  };
-
-  const renderDateRow = (isEndDate = false) => {
-    const minMomentDate = moment('20150101');
-    const pickerRowProps = {
-      momentDateValue: isEndDate ? selectedEndDate : selectedStartDate,
-      minMomentDate: minMomentDate,
-      maxMomentDate: moment(),
-      onChange: newDate => {
-        return isEndDate ? setSelectedEndDate(newDate) : setSelectedStartDate(newDate);
-      },
-    };
-    switch (granularity) {
-      default:
-      case DAY:
-        return <DayPickerRow {...pickerRowProps} />;
-      case SINGLE_WEEK:
-      case WEEK:
-        return <WeekPickerRow {...pickerRowProps} />;
-      case MONTH:
-      case SINGLE_MONTH:
-        return <MonthPickerRow {...pickerRowProps} />;
-      case QUARTER:
-      case SINGLE_QUARTER:
-        return <QuarterPickerRow {...pickerRowProps} />;
-      case YEAR:
-      case SINGLE_YEAR:
-        return <YearPickerRow {...pickerRowProps} />;
-    }
-  };
-
-  return (
-    <div style={{ ...styles.wrapper, ...style }}>
-      {renderSelectedPeriodInfo()}
       <Dialog
         modal="true"
         open={isOpen}
@@ -296,8 +280,14 @@ export const DateRangePicker = ({
       >
         <DialogTitle>{getLabelText(granularity)}</DialogTitle>
         <DialogContent>
-          {!isSingleDate && renderDateRow()}
-          {renderDateRow(true)}
+          {!isSingleDate && (
+            <DateRow
+              granularity={granularity}
+              date={selectedStartDate}
+              onChange={setSelectedStartDate}
+            />
+          )}
+          <DateRow granularity={granularity} date={selectedEndDate} onChange={setSelectedEndDate} />
           {errorMessage ? <Error>{errorMessage}</Error> : null}
         </DialogContent>
         <DialogActions>
