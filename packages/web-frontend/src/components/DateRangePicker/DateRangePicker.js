@@ -5,18 +5,20 @@
  * found in the LICENSE file in the root directory of this source tree.
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DateRangeIcon from '@material-ui/icons/DateRange';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
-import { DIALOG_Z_INDEX, OFF_WHITE, WHITE } from '../../styles';
+import MuiIconButton from '@material-ui/core/IconButton';
+import styled from 'styled-components';
+import { DIALOG_Z_INDEX } from '../../styles';
 import { Error } from '../Error';
 import { DayPicker } from './DayPicker';
 import { MonthPicker } from './MonthPicker';
@@ -45,49 +47,10 @@ const {
 
 const DEFAULT_GRANULARITY = GRANULARITY_CONFIG[DAY];
 
-const styles = {
-  dialog: {
-    zIndex: DIALOG_Z_INDEX + 1,
-  },
-  dialogContainer: {
-    width: '75%',
-    maxWidth: '700px',
-  },
-  wrapper: {
-    display: 'flex',
-    flexDirection: 'row',
-  },
-  dateRow: {
-    display: 'flex',
-    marginTop: 30,
-  },
-  button: {
-    cursor: 'pointer',
-    outline: 'none',
-    border: 0,
-    padding: 0,
-    backgroundColor: 'transparent',
-    display: 'flex',
-    color: OFF_WHITE,
-    paddingBottom: 5,
-    paddingRight: 5,
-  },
-  buttonBorder: {
-    borderBottom: `1px solid ${OFF_WHITE}`,
-  },
-  buttonIcon: {
-    marginRight: 5,
-    width: 15,
-    height: 15,
-    color: WHITE,
-  },
-  leftButton: {
-    paddingRight: 10,
-  },
-  rightButton: {
-    paddingLeft: 10,
-  },
-};
+const StyledDateRow = styled.div`
+  display: flex;
+  margin-top: 30px;
+`;
 
 const getLabelText = granularity => {
   switch (granularity) {
@@ -103,52 +66,41 @@ const getLabelText = granularity => {
 };
 
 const DayPickerRow = props => (
-  <div style={styles.dateRow}>
+  <StyledDateRow>
     <DayPicker {...props} />
     <MonthPicker {...props} />
     <YearPicker {...props} />
-  </div>
+  </StyledDateRow>
 );
 
 const WeekPickerRow = props => (
-  <div style={styles.dateRow}>
+  <StyledDateRow>
     <WeekPicker {...props} />
     <YearPicker {...props} isIsoYear />
-  </div>
+  </StyledDateRow>
 );
 
 const MonthPickerRow = props => (
-  <div style={styles.dateRow}>
+  <StyledDateRow>
     <MonthPicker {...props} />
     <YearPicker {...props} />
-  </div>
+  </StyledDateRow>
 );
 
 const QuarterPickerRow = props => (
-  <div style={styles.dateRow}>
+  <StyledDateRow>
     <QuarterPicker {...props} />
     <YearPicker {...props} />
-  </div>
+  </StyledDateRow>
 );
 
 const YearPickerRow = props => (
-  <div style={styles.dateRow}>
+  <StyledDateRow>
     <YearPicker {...props} />
-  </div>
+  </StyledDateRow>
 );
 
-const getDatesAsString = (isSingleDate, granularity, startDate, endDate) => {
-  if (!startDate || !endDate) {
-    return getLabelText(granularity);
-  }
-
-  const { momentUnit, rangeFormat } = GRANULARITY_CONFIG[granularity] || DEFAULT_GRANULARITY;
-  const formattedStartDate = startDate.format(rangeFormat);
-  const formattedEndDate = endDate.startOf(momentUnit).format(rangeFormat);
-
-  return isSingleDate ? formattedStartDate : `${formattedStartDate} - ${formattedEndDate}`;
-};
-
+// Todo: maybe this can be refactored?
 // eslint-disable-next-line react/prop-types
 const DateRow = ({ date, granularity, onChange }) => {
   const minMomentDate = moment('20150101');
@@ -177,14 +129,38 @@ const DateRow = ({ date, granularity, onChange }) => {
   }
 };
 
-export const DateRangePicker = ({
-  startDate,
-  endDate,
-  granularity,
-  onSetDates,
-  isLoading,
-  style,
-}) => {
+const FlexRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`;
+
+const IconButton = styled(MuiIconButton)`
+  color: white;
+`;
+
+const Label = styled.div`
+  color: white;
+  font-size: 16px;
+  line-height: 19px;
+`;
+
+// eslint-disable-next-line react/prop-types
+const DateLabel = ({ isSingleDate, granularity, startDate, endDate }) => {
+  if (!startDate || !endDate) {
+    return <Label>{getLabelText(granularity)}</Label>;
+  }
+
+  const { momentUnit, rangeFormat } = GRANULARITY_CONFIG[granularity] || DEFAULT_GRANULARITY;
+  const formattedStartDate = startDate.format(rangeFormat);
+  const formattedEndDate = endDate.startOf(momentUnit).format(rangeFormat);
+
+  const label = isSingleDate ? formattedStartDate : `${formattedStartDate} - ${formattedEndDate}`;
+
+  return <Label>{label}</Label>;
+};
+
+export const DateRangePicker = ({ startDate, endDate, granularity, onSetDates, isLoading }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedStartDate, setSelectedStartDate] = useState(moment(startDate));
   const [selectedEndDate, setSelectedEndDate] = useState(moment(endDate));
@@ -233,50 +209,36 @@ export const DateRangePicker = ({
     return setErrorMessage('');
   };
 
-  const dateString = getDatesAsString(isSingleDate, granularity, selectedEndDate, selectedEndDate);
-  const buttonStyle = isLoading ? styles.button : { ...styles.button, ...styles.buttonBorder };
-
   return (
-    <div style={{ ...styles.wrapper, ...style }}>
-      <div style={{ ...styles.wrapper, ...style }}>
+    <FlexRow>
+      <FlexRow>
+        <IconButton onClick={() => setIsOpen(true)} aria-label="open">
+          <DateRangeIcon />
+        </IconButton>
+        <FlexRow>
+          <DateLabel
+            isSingleDate={isSingleDate}
+            granularit={granularity}
+            startDate={selectedStartDate}
+            endDate={selectedEndDate}
+          />
+        </FlexRow>
         {isSingleDate && (
-          <button
-            style={{ ...styles.button, ...styles.leftButton }}
-            type="button"
-            onClick={() => {
-              changePeriod(-1);
-            }}
-            disabled={isLoading}
-          >
-            {'<'}
-          </button>
+          <FlexRow>
+            <IconButton type="button" onClick={() => changePeriod(-1)} disabled={isLoading}>
+              <ChevronLeftIcon />
+            </IconButton>
+            <IconButton type="button" onClick={() => changePeriod(1)} disabled={isLoading}>
+              <ChevronRightIcon />
+            </IconButton>
+          </FlexRow>
         )}
-        <button style={buttonStyle} type="button" onClick={() => setIsOpen(true)}>
-          {isLoading ? (
-            <CircularProgress style={styles.buttonIcon} size={15} thickness={2} />
-          ) : (
-            <DateRangeIcon style={styles.buttonIcon} />
-          )}
-          {dateString}
-        </button>
-        {isSingleDate && (
-          <button
-            style={{ ...styles.button, ...styles.rightButton }}
-            type="button"
-            onClick={() => {
-              changePeriod(1);
-            }}
-            disabled={isLoading}
-          >
-            {'>'}
-          </button>
-        )}
-      </div>
+      </FlexRow>
       <Dialog
         modal="true"
         open={isOpen}
-        style={styles.dialog}
-        PaperProps={{ style: styles.dialogContainer }}
+        style={{ zIndex: DIALOG_Z_INDEX + 1 }}
+        PaperProps={{ style: { width: '75%', maxWidth: '700px' } }}
       >
         <DialogTitle>{getLabelText(granularity)}</DialogTitle>
         <DialogContent>
@@ -297,14 +259,13 @@ export const DateRangePicker = ({
           </Button>
         </DialogActions>
       </Dialog>
-    </div>
+    </FlexRow>
   );
 };
 
 DateRangePicker.propTypes = {
   startDate: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   endDate: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-  style: PropTypes.shape({}),
   granularity: GRANULARITY_SHAPE,
   onSetDates: PropTypes.func,
   isLoading: PropTypes.bool,
@@ -313,7 +274,6 @@ DateRangePicker.propTypes = {
 DateRangePicker.defaultProps = {
   startDate: {},
   endDate: {},
-  style: {},
   granularity: DAY,
   onSetDates: () => {},
   isLoading: false,
