@@ -36,3 +36,7 @@ export { parseCoordinates } from './parseCoordinates';
 export { composeBuiltData } from './composeBuiltData';
 export { sumResults } from './sumResults';
 export { getAggregatePeriod } from './getAggregatePeriod';
+export {
+  findAccessibleMapOverlays,
+  findAccessibleGroupedMapOverlays,
+} from './findAccessibleGroupedMapOverlays';

@@ -66,50 +66,47 @@ export class MeasureBar extends Component {
     );
   }
 
+  renderNestedHierarchyItems(children) {
+    const { currentMeasure, currentOrganisationUnitCode, onClearMeasure } = this.props;
+
+    return children.map(childObject => {
+      let nestedItems;
+
+      if (childObject.type === 'mapOverlayGroup') {
+        nestedItems = this.renderNestedHierarchyItems(childObject.children);
+      }
+
+      let onClick = null;
+
+      if (childObject.type !== 'mapOverlayGroup') {
+        onClick =
+          childObject.measureId === currentMeasure.measureId
+            ? () => onClearMeasure()
+            : () => this.handleSelectMeasure(childObject, currentOrganisationUnitCode);
+      }
+
+      return (
+        <HierarchyItem
+          label={childObject.name}
+          isSelected={
+            childObject.type === 'mapOverlayGroup'
+              ? null
+              : childObject.measureId === currentMeasure.measureId
+          }
+          key={childObject.measureId}
+          onClick={onClick}
+          nestedItems={nestedItems}
+        />
+      );
+    });
+  }
+
   renderHierarchy() {
-    const {
-      currentMeasure,
-      measureHierarchy,
-      currentOrganisationUnitCode,
-      onClearMeasure,
-    } = this.props;
-
-    const renderNestedHierachyItems = children => {
-      return children.map(childObject => {
-        let nestedItems;
-
-        if (childObject.type === 'mapOverlayGroup') {
-          nestedItems = renderNestedHierachyItems(childObject.children);
-        }
-
-        let onClick = null;
-
-        if (childObject.type !== 'mapOverlayGroup') {
-          onClick =
-            childObject.measureId === currentMeasure.measureId
-              ? () => onClearMeasure()
-              : () => this.handleSelectMeasure(childObject, currentOrganisationUnitCode);
-        }
-
-        return (
-          <HierarchyItem
-            label={childObject.name}
-            isSelected={
-              childObject.type === 'mapOverlayGroup'
-                ? null
-                : childObject.measureId === currentMeasure.measureId
-            }
-            key={childObject.measureId}
-            onClick={onClick}
-            nestedItems={nestedItems}
-          />
-        );
-      });
-    };
+    const { measureHierarchy } = this.props;
 
     const items = Object.entries(measureHierarchy).map(([categoryName, children]) => {
       if (!Array.isArray(children)) return null;
-      const nestedItems = renderNestedHierachyItems(children);
+      const nestedItems = this.renderNestedHierarchyItems(children);
       if (nestedItems.length === 0) return null;
       return (
         <HierarchyItem

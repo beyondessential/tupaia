@@ -34,7 +34,6 @@ exports.up = async function(db) {
         id: mapOverlayGroupId,
         name: groupName,
         code: groupName.split(' ').join('_'),
-        top_level: true,
       };
 
       await insertObject(db, 'map_overlay_group', mapOverlayGroup);

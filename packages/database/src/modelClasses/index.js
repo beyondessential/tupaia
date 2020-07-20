@@ -24,6 +24,8 @@ import { UserEntityPermissionModel } from './UserEntityPermission';
 import { UserModel } from './User';
 import { DashboardReportModel } from './DashboardReport';
 import { MapOverlayModel } from './MapOverlay';
+import { MapOverlayGroupModel } from './MapOverlayGroup';
+import { MapOverlayGroupRelationModel } from './MapOverlayGroupRelation';
 import { DashboardGroupModel } from './DashboardGroup';
 
 // export all models to be used in constructing a ModelRegistry
@@ -49,6 +51,8 @@ export const modelClasses = {
   UserEntityPermission: UserEntityPermissionModel,
   DashboardReport: DashboardReportModel,
   MapOverlay: MapOverlayModel,
+  MapOverlayGroup: MapOverlayGroupModel,
+  MapOverlayGroupRelation: MapOverlayGroupRelationModel,
   DashboardGroup: DashboardGroupModel,
 };
 
@@ -65,4 +69,6 @@ export { SurveyScreenComponentModel } from './SurveyScreenComponent';
 export { UserEntityPermissionModel } from './UserEntityPermission';
 export { DashboardReportModel } from './DashboardReport';
 export { MapOverlayModel } from './MapOverlay';
+export { MapOverlayGroupModel } from './MapOverlayGroup';
+export { MapOverlayGroupRelationModel } from './MapOverlayGroupRelation';
 export { DashboardGroupModel } from './DashboardGroup';

@@ -19,8 +19,7 @@ exports.up = function(db) {
     CREATE TABLE public.map_overlay_group (
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
-      code TEXT NOT NULL,
-      top_level BOOLEAN
+      code TEXT NOT NULL
     );
 
     CREATE TABLE public.map_overlay_group_relation (

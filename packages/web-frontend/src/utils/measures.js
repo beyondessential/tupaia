@@ -158,11 +158,7 @@ export function flattenMeasureHierarchy(measureHierarchy) {
   const results = [];
   const flattenGroupedMeasure = ({ children }) => {
     children.forEach(childObject => {
-      if (
-        childObject.type === 'mapOverlayGroup' &&
-        childObject.children &&
-        childObject.children.length
-      ) {
+      if (childObject.children && childObject.children.length) {
         flattenGroupedMeasure(childObject.children);
       } else {
         results.push(childObject);

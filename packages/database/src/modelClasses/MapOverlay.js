@@ -15,5 +15,4 @@ export class MapOverlayModel extends DatabaseModel {
   get DatabaseTypeClass() {
     return MapOverlayType;
   }
-
 }
