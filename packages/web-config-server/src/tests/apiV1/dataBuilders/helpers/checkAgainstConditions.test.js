@@ -13,7 +13,7 @@ const buildEvent = dataValueMap => ({
 });
 
 describe('checkAgainstConditions', () => {
-  describe.only('checkValueSatisfiesCondition()', () => {
+  describe('checkValueSatisfiesCondition()', () => {
     it('should throw an error if given an unknown operator', () => {
       expect(() => checkValueSatisfiesCondition('hello', { operator: 'NOT_VALID' })).to.throw(
         "Unknown operator: 'NOT_VALID'",
