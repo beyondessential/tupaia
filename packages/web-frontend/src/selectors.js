@@ -5,11 +5,15 @@ import {
   getMeasureDisplayInfo,
   calculateRadiusScaleFactor,
 } from './utils/measures';
-import { selectCurrentProjectCode, selectCurrentOrgUnitCode } from './historyNavigation';
+import {
+  selectCurrentProjectCode,
+  selectCurrentOrgUnitCode,
+  selectCurrentDashboardGroupCode,
+} from './historyNavigation';
 import { initialOrgUnit } from './defaults';
 
 // QUESTION: Good pattern? Selectors folder?
-export { selectCurrentProjectCode, selectCurrentOrgUnitCode };
+export { selectCurrentProjectCode, selectCurrentOrgUnitCode, selectCurrentDashboardGroupCode };
 /**
  * Selectors
  * These can be handy tools to allow for components/sagas to interact with the redux state, and fetch data from it.
@@ -336,7 +340,8 @@ export const selectRadiusScaleFactor = createSelector(
 );
 
 export const selectCurrentDashboardKey = createSelector(
-  [state => state.global.dashboardConfig, state => state.dashboard.currentDashboardKey],
+  // TODO need to consolidate names here
+  [state => state.global.dashboardConfig, selectCurrentDashboardGroupCode],
   (dashboardConfig, currentDashboardKey) =>
     dashboardConfig[currentDashboardKey] ? currentDashboardKey : Object.keys(dashboardConfig)[0],
 );

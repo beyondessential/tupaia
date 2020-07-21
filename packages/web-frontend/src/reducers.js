@@ -442,7 +442,7 @@ function requestCountryAccess(
 
 function dashboard(
   state = {
-    currentDashboardKey: 'General',
+    //currentDashboardKey: 'General',
     viewResponses: {},
     contractedWidth: 300, // Set dynamically based on window size.
     expandedWidth: 300, // Overridden by info div.
@@ -452,9 +452,9 @@ function dashboard(
   action,
 ) {
   switch (action.type) {
-    case CHANGE_DASHBOARD_GROUP:
-      console.log(action);
-      return { ...state, currentDashboardKey: action.name };
+    //case CHANGE_DASHBOARD_GROUP:
+    //console.log(action);
+    //return { ...state, currentDashboardKey: action.name };
     case FETCH_INFO_VIEW_DATA:
       return state;
     case FETCH_INFO_VIEW_DATA_SUCCESS: {

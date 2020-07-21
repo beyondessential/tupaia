@@ -107,9 +107,6 @@ export const historyMiddleware = state => next => action => {
     default:
       return next(action);
   }
-  if (newLocation !== oldLocation || true) {
-    //dispatch(doUpdateUrl(newLocation));
-  }
 
   console.log(action, newLocation.pathname, oldLocation.pathname);
   return next(action);

@@ -18,6 +18,7 @@ import {
   selectAdjustedProjectBounds,
   selectProjectByCode,
   selectCurrentOrgUnitCode,
+  selectCurrentDashboardGroupCode,
 } from '../selectors';
 
 function* fetchProjectData() {
@@ -69,7 +70,10 @@ function* loadProject(action) {
     yield put(changeOrgUnit(project.homeEntityCode || action.projectCode, false));
   }
   console.log('loadProject passed 2');
-  yield put(changeDashboardGroup(project.dashboardGroupName));
+  const dashboardGroupCode = selectCurrentDashboardGroupCode(state);
+  if (!dashboardGroupCode || action.forceChangeOrgUnit) {
+    yield put(changeDashboardGroup(project.dashboardGroupName));
+  }
   console.log('loadProject passed everything', action);
 }
 
