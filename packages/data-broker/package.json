@@ -12,6 +12,7 @@
     "@tupaia/data-api": "1.0.0",
     "@tupaia/database": "1.0.0",
     "@tupaia/dhis-api": "1.0.0",
+    "@tupaia/indicators": "1.0.0",
     "@tupaia/utils": "1.0.0",
     "case": "^1.5.5",
     "lodash.flatten": "^4.4.0",
