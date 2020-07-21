@@ -527,7 +527,7 @@ function measureBar(
     isExpanded: false,
     selectedMeasureId: null,
     currentMeasure: {},
-    measureHierarchy: {},
+    measureHierarchy: [],
     currentMeasureOrganisationUnitCode: null,
     error: null,
   },
