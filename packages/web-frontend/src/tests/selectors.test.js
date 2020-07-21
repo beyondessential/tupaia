@@ -135,6 +135,7 @@ describe('selectors', () => {
       });
     });
   });
+
   describe('functionality', () => {
     describe('selectOrgUnit', () => {
       it('can select world', () => {

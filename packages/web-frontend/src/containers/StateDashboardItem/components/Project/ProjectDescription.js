@@ -40,18 +40,21 @@ const Footer = styled(FullWidthRow)`
 `;
 
 function ProjectDescription({ project }) {
-  return (
+  const { description, names } = project;
+  return description && names ? (
     <Grid>
-      <FullWidthRow>{project.description}</FullWidthRow>
+      <FullWidthRow>{description}</FullWidthRow>
       <Footer>
-        <Countries>{project.names.join(', ')}</Countries>
+        <Countries>{names.join(', ')}</Countries>
       </Footer>
     </Grid>
+  ) : (
+    'No project selected'
   );
 }
 
 ProjectDescription.propTypes = {
-  project: PropTypes.shape({}).isRequired,
+  project: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = state => {

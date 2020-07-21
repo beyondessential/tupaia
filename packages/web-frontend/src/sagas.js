@@ -450,7 +450,7 @@ function* fetchOrgUnitData(organisationUnitCode, projectCode) {
 
 function* requestOrgUnit(action) {
   const state = yield select();
-  const activeProjectCode = selectCurrentProjectCode();
+  const activeProjectCode = selectCurrentProjectCode(state);
   const { organisationUnitCode = activeProjectCode } = action;
   const orgUnit = selectOrgUnit(state, organisationUnitCode);
   if (orgUnit && orgUnit.isComplete) {
@@ -476,7 +476,10 @@ function* fetchOrgUnitDataAndChangeOrgUnit(action) {
   }
 
   try {
-    const orgUnitData = yield fetchOrgUnitData(organisationUnitCode, selectCurrentProjectCode());
+    const orgUnitData = yield fetchOrgUnitData(
+      organisationUnitCode,
+      selectCurrentProjectCode(state),
+    );
     yield put(
       changeOrgUnitSuccess(
         normaliseCountryHierarchyOrgUnitData(orgUnitData),
@@ -528,7 +531,8 @@ function* watchOrgUnitChangeAndFetchIt() {
  */
 function* fetchDashboard(action) {
   const { organisationUnitCode } = action.organisationUnit;
-  const projectCode = selectCurrentProjectCode();
+  const state = yield select();
+  const projectCode = selectCurrentProjectCode(state);
 
   const requestResourceUrl = `dashboard?organisationUnitCode=${organisationUnitCode}&projectCode=${projectCode}`;
 
@@ -564,7 +568,7 @@ function* fetchViewData(parameters, errorHandler) {
   } = parameters;
   const urlParameters = {
     organisationUnitCode,
-    projectCode: selectCurrentProjectCode(),
+    projectCode: selectCurrentProjectCode(state),
     dashboardGroupId,
     viewId,
     drillDownLevel,
@@ -642,10 +646,11 @@ function* fetchSearchData(action) {
   if (action.searchString === '') {
     yield put(fetchSearchSuccess([]));
   } else {
+    const state = yield select();
     const urlParameters = {
       criteria: action.searchString,
       limit: 5,
-      projectCode: selectCurrentProjectCode(),
+      projectCode: selectCurrentProjectCode(state),
     };
     const requestResourceUrl = `organisationUnitSearch?${queryString.stringify(urlParameters)}`;
     try {
@@ -680,7 +685,7 @@ function* fetchMeasureInfo(measureId, organisationUnitCode) {
   const country = selectOrgUnitCountry(state, organisationUnitCode);
   const countryCode = country ? country.organisationUnitCode : undefined;
   const measureParams = selectMeasureBarItemById(state, measureId) || {};
-  const activeProjectCode = selectCurrentProjectCode();
+  const activeProjectCode = selectCurrentProjectCode(state);
 
   // If the view should be constrained to a date range and isn't, constrain it
   const { startDate, endDate } =
@@ -731,7 +736,7 @@ function getSelectedMeasureFromHierarchy(measureHierarchy, selectedMeasureId, pr
 
 function* fetchCurrentMeasureInfo() {
   const state = yield select();
-  const currentOrganisationUnitCode = selectCurrentOrgUnitCode();
+  const currentOrganisationUnitCode = selectCurrentOrgUnitCode(state);
   const { measureId } = state.map.measureInfo;
   const { measureHierarchy, selectedMeasureId } = state.measureBar;
 
@@ -800,7 +805,7 @@ function* fetchMeasures(action) {
   const { organisationUnitCode } = action.organisationUnit;
   const state = yield select();
   if (selectIsProject(state, organisationUnitCode)) yield put(clearMeasure());
-  const projectCode = selectCurrentProjectCode();
+  const projectCode = selectCurrentProjectCode(state);
   const requestResourceUrl = `measures?organisationUnitCode=${organisationUnitCode}&projectCode=${projectCode}`;
   try {
     const measures = yield call(request, requestResourceUrl);
@@ -868,6 +873,7 @@ function* exportChart(action) {
 
   const timeZone = getTimeZone();
 
+  // TODO
   const exportUrl = createUrlString({
     dashboardId: dashboardGroupId,
     reportId: viewId,

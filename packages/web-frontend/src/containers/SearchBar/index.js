@@ -199,7 +199,7 @@ const mapStateToProps = state => {
   const { isExpanded, searchResponse, searchString } = state.searchBar;
   const { orgUnitFetchError } = state.orgUnits;
   const hierarchyData = selectCodeFromOrgUnit(
-    selectOrgUnitChildren(state, selectCurrentProjectCode()),
+    selectOrgUnitChildren(state, selectCurrentProjectCode(state)),
   );
   return { isExpanded, searchResponse, searchString, hierarchyData, orgUnitFetchError };
 };

@@ -14,9 +14,9 @@ import { Provider } from 'react-redux';
 import configureStore from './configureStore';
 import { DARKENED_BLUE } from './styles';
 
-import { setInitialState } from './historyNavigation';
+import { reactToInitialState, initHistoryDispatcher } from './historyNavigation';
 
-import { fetchInitialData } from './actions';
+import { fetchInitialData, doUpdateUrl } from './actions';
 
 // Set up asynchonous import of the RootScreen to enable webpack to do code splitting.
 // Based on https://serverless-stack.com/chapters/code-splitting-in-create-react-app.html
@@ -37,7 +37,7 @@ switch (process.env.REACT_APP_APP_TYPE) {
 
 const store = configureStore();
 
-// initHistoryDispatcher(store); TODO: Will still need for ga (I think?)
+initHistoryDispatcher(store); // TODO: Will still need for ga (I think?)
 
 class App extends Component {
   constructor(props) {
@@ -54,7 +54,7 @@ class App extends Component {
     const { dispatch: rawDispatch } = store;
     const dispatch = action => rawDispatch({ ...action, meta: { preventHistoryUpdate: true } });
     dispatch(fetchInitialData());
-    setInitialState(store);
+    reactToInitialState(store);
   }
 
   render() {

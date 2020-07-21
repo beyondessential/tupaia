@@ -33,7 +33,7 @@ function createUrl(pathParams, searchParams) {
     urlComponents.pop();
   }
 
-  const pathname = urlComponents.join('/');
+  const pathname = `/${urlComponents.join('/')}`;
 
   return { pathname, search: replaceKeysAndRemoveNull(searchParams, SEARCH_PARAM_KEY_MAP) };
 }
@@ -81,41 +81,35 @@ function pushHistory(pathname, searchParams) {
     return false;
   }
 
-  console.log('success with', {
-    pathname,
-    search,
-  });
-
   history.push({
     pathname,
     search,
   });
-  console.log('true s with');
 
   return true;
 }
 
 const decodeUrl = (pathname, search) => {
-  if (pathname[0] === '/') {
-    // ignore starting slash if one is provided
-    return decodeUrl(pathname.slice(1), search);
-  }
-  const pathParams = {};
-  const [prefixOrProject, ...restOfPath] = pathname.split('/');
-  const [, ...restOfComponents] = PATH_COMPONENTS;
-
-  restOfPath.forEach((value, i) => {
-    pathParams[restOfComponents[i]] = value;
-  });
-
+  // Search
   const searchParams = replaceKeysAndRemoveNull(
     queryString.parse(search),
     swapKeyAndVal(SEARCH_PARAM_KEY_MAP),
   );
 
-  if (!prefixOrProject) {
+  // Path
+  const cleanPathname = pathname[0] === '/' ? pathname.slice(1) : pathname;
+
+  if (cleanPathname === '') {
     return { projectSelector: true, ...searchParams };
   }
+
+  const pathParams = {};
+  const [prefixOrProject, ...restOfPath] = cleanPathname.split('/');
+  const [, ...restOfComponents] = PATH_COMPONENTS;
+
+  restOfPath.forEach((value, i) => {
+    pathParams[restOfComponents[i]] = value;
+  });
 
   switch (prefixOrProject) {
     case PASSWORD_RESET_PREFIX:
@@ -147,8 +141,8 @@ export const getCurrentUrlComponents = () => {
  * @param {String} component A member of URL_COMPONENTS
  * @param {*} value The value to set it to
  */
-export const setUrlComponent = (component, value) => {
-  const location = getCurrentLocation();
+export const setUrlComponent = (component, value, initialLocation) => {
+  const location = initialLocation;
   const previousComponents = decodeUrl(location.pathname, location.search);
 
   const pathParams = {};
@@ -162,32 +156,23 @@ export const setUrlComponent = (component, value) => {
   });
 
   const { pathname, search } = createUrl(pathParams, searchParams);
-  console.log({
-    searchParams,
-    previousComponents,
-    location,
-    new: getCurrentLocation(),
-    pathname,
-    search,
-  });
-  const success = pushHistory(`/${pathname}`, search);
-  console.log(success);
+  return { pathname, search };
 };
 
 export const clearUrl = () => {
-  const success = pushHistory('', {});
+  return { pathname: '/', search: '' };
 };
 
 /**
  * Sets a component of the url to the specified value
- * @param {String} component A member of URL_COMPONENTS
+ * @param {string} component A member of URL_COMPONENTS
+ * @param {object} location An object with a pathname and search component (// TODO: maybe should be a string? Also new name)
  * @param {*} value The value to set it to
  */
-export const getUrlComponent = component => {
-  const location = getCurrentLocation();
+export const getUrlComponent = (component, location) => {
   const components = decodeUrl(location.pathname, location.search);
-
-  return components[component];
+  const value = components[component];
+  return value === '' ? undefined : value;
 };
 
 const replaceKeysAndRemoveNull = (obj, mapping) => {

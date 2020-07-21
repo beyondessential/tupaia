@@ -28,6 +28,7 @@ import {
   GO_HOME,
   onSetOrgUnit,
   setOverlayComponent,
+  doUpdateUrl,
 } from '../actions';
 
 import { onSetProject } from '../projects/actions';
@@ -36,7 +37,7 @@ import { setUrlComponent, getCurrentUrlComponents, clearUrl } from './historyNav
 import { URL_COMPONENTS } from './constants';
 
 // TODO: import { gaPageView } from '../utils';
-export const setInitialState = ({ dispatch }) => {
+export const reactToInitialState = ({ dispatch }) => {
   const { userPage, ...otherComponents } = getCurrentUrlComponents();
   console.log(otherComponents);
 
@@ -56,45 +57,78 @@ export const setInitialState = ({ dispatch }) => {
     dispatch(onSetOrgUnit(otherComponents[URL_COMPONENTS.ORG_UNIT], true));
 };
 
-export const historyMiddleware = ({ dispatch }) => next => action => {
+export const historyMiddleware = state => next => action => {
+  const { dispatch } = state;
+  const oldLocation = state.getState().routing;
+  let newLocation = oldLocation;
   switch (action.type) {
     // Actions that modify the path
     case SET_PROJECT:
-      setUrlComponent(URL_COMPONENTS.PROJECT, action.projectCode);
+      newLocation = setUrlComponent(URL_COMPONENTS.PROJECT, action.projectCode, newLocation);
       dispatch(onSetProject(action.projectCode));
       break;
     case SET_ORG_UNIT:
-      console.log('setting org unit!');
-      setUrlComponent(URL_COMPONENTS.ORG_UNIT, action.organisationUnitCode);
-      console.log('middle setting org unit!');
+      newLocation = setUrlComponent(
+        URL_COMPONENTS.ORG_UNIT,
+        action.organisationUnitCode,
+        newLocation,
+      );
       dispatch(onSetOrgUnit(action.organisationUnitCode, action.shouldChangeMapBounds));
-      console.log('finished setting org unit!');
       break;
     case CHANGE_DASHBOARD_GROUP:
-      setUrlComponent(URL_COMPONENTS.DASHBOARD, action.name);
+      newLocation = setUrlComponent(URL_COMPONENTS.DASHBOARD, action.name, newLocation);
       break;
     case GO_HOME:
-      clearUrl();
+      newLocation = clearUrl();
       dispatch(onSetProject(null));
       break;
 
     // Actions that modify search params
     case OPEN_ENLARGED_DIALOG:
-      setUrlComponent(URL_COMPONENTS.REPORT, action.viewContent.viewId);
+      newLocation = setUrlComponent(URL_COMPONENTS.REPORT, action.viewContent.viewId, newLocation);
       break;
     case CLOSE_ENLARGED_DIALOG:
-      setUrlComponent(URL_COMPONENTS.REPORT, null);
+      newLocation = setUrlComponent(URL_COMPONENTS.REPORT, null, newLocation);
       break;
     case CHANGE_MEASURE:
-      setUrlComponent(URL_COMPONENTS.MEASURE, action.measureId);
+      newLocation = setUrlComponent(URL_COMPONENTS.MEASURE, action.measureId, newLocation);
       break;
     case CLEAR_MEASURE:
-      setUrlComponent(URL_COMPONENTS.MEASURE, null);
+      newLocation = setUrlComponent(URL_COMPONENTS.MEASURE, null, newLocation);
       break;
     default:
       return next(action);
   }
+  if (newLocation !== oldLocation || true) {
+    dispatch(doUpdateUrl(newLocation));
+  }
 
   console.log(action);
   return next(action);
+};
+
+export const initHistoryDispatcher = store => {
+  // Update Redux if we navigated via browser's back/forward
+  // most browsers restore scroll position automatically
+  // as long as we make content scrolling happen on document.body
+  window.addEventListener('popstate', () => {
+    // here `doUpdateUrl` is an action creator that
+    // takes the new url and stores it in Redux.
+    store.dispatch(doUpdateUrl(window.location.pathname));
+  });
+
+  // The other part of the two-way binding is updating the displayed
+  // URL in the browser if we change it inside our app state in Redux.
+  // We can simply subscribe to Redux and update it if it's different.
+  store.subscribe(() => {
+    const { pathname } = store.getState().routing;
+    if (location.pathname !== pathname) {
+      console.log(pathname, location.pathname);
+      window.history.pushState(null, '', pathname);
+      // Force scroll to top this is what browsers normally do when
+      // navigating by clicking a link.
+      // Without this, scroll stays wherever it was which can be quite odd.
+      document.body.scrollTop = 0;
+    }
+  });
 };

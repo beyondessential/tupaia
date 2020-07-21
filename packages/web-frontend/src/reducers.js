@@ -816,6 +816,19 @@ function drillDown(
   }
 }
 
+const initialState = {
+  pathname: typeof location !== 'undefined' ? location.pathname : '/',
+};
+
+function routing(state = initialState, action) {
+  //console.log(state, action);
+  if (action.type === 'UPDATE_URL') {
+    console.log(state, action);
+    return action.location;
+  }
+  return state;
+}
+
 /**
  * Reach into the dashboard config, and pull out all views from every dashboard group/permission
  * level, then return them keyed by unique view id
@@ -857,4 +870,5 @@ export default combineReducers({
   disaster,
   project,
   orgUnits,
+  routing,
 });

@@ -38,9 +38,9 @@ function DisasterLayer(props) {
   return <LayerGroup>{markers}</LayerGroup>;
 }
 
-const mapStateToProps = ({ disaster }) => ({
-  disasters: Object.values(disaster.disasters || {}),
-  isInDisasterMode: selectCurrentProjectCode() === 'disaster',
+const mapStateToProps = state => ({
+  disasters: Object.values(state.disaster.disasters || {}),
+  isInDisasterMode: selectCurrentProjectCode(state) === 'disaster',
 });
 
 const mapDispatchToProps = dispatch => ({

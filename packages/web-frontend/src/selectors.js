@@ -128,7 +128,7 @@ const displayInfoCache = createCachedSelector(
 const safeGet = (cache, args) => (cache.keySelector(...args) ? cache(...args) : undefined);
 
 const selectActiveProjectCountries = createSelector(
-  [state => state.orgUnits.orgUnitMap, () => selectCurrentProjectCode()],
+  [state => state.orgUnits.orgUnitMap, state => selectCurrentProjectCode(state)],
   (orgUnitMap, activeProjectCode) => {
     const orgUnits = Object.values(orgUnitMap)
       .map(({ countryCode, ...orgUnits }) => {
@@ -147,7 +147,7 @@ const selectCountriesAsOrgUnits = createSelector([state => state.orgUnits.orgUni
 
 const selectOrgUnitSiblingsAndSelf = createSelector(
   [
-    () => selectCurrentProjectCode(),
+    state => selectCurrentProjectCode(state),
     (state, code) => getOrgUnitParent(selectOrgUnit(state, code)),
     state => selectCountriesAsOrgUnits(state),
     (state, code) => safeGet(countryCache, [state.orgUnits.orgUnitMap, code]),
@@ -169,8 +169,8 @@ const getOrgUnitFromCountry = (country, code) => (country && code ? country[code
 
 const selectDisplayLevelAncestor = createSelector(
   [
-    state => safeGet(countryCache, [state.orgUnits.orgUnitMap, selectCurrentOrgUnitCode()]),
-    () => selectCurrentOrgUnitCode(),
+    state => safeGet(countryCache, [state.orgUnits.orgUnitMap, selectCurrentOrgUnitCode(state)]),
+    state => selectCurrentOrgUnitCode(state),
     state => state.map.measureInfo.measureOptions,
   ],
   (country, currentOrganisationUnitCode, measureOptions) => {
@@ -209,18 +209,18 @@ export const selectOrgUnitCountry = createSelector(
 
 // QUESTION: Is this a good pattern?
 export const selectCurrentOrgUnit = createSelector(
-  [state => selectOrgUnit(state, selectCurrentOrgUnitCode())],
+  [state => selectOrgUnit(state, selectCurrentOrgUnitCode(state))],
   currentOrgUnit => currentOrgUnit || {},
 );
 
 export const selectCurrentProject = createSelector(
-  [state => selectProjectByCode(state, selectCurrentProjectCode())],
+  [state => selectProjectByCode(state, selectCurrentProjectCode(state))],
   currentProject => currentProject || {},
 );
 
 export const selectOrgUnitChildren = createSelector(
   [
-    () => selectCurrentProjectCode(),
+    state => selectCurrentProjectCode(state),
     state => selectCountriesAsOrgUnits(state),
     (state, code) => safeGet(countryCache, [state.orgUnits.orgUnitMap, code]),
     (_, code) => code,
@@ -249,7 +249,7 @@ export const selectHasPolygonMeasure = createSelector(
 export const selectAllMeasuresWithDisplayInfo = createSelector(
   [
     state => selectActiveProjectCountries(state),
-    () => selectCurrentProjectCode(),
+    state => selectCurrentProjectCode(state),
     state =>
       safeGet(countryCache, [state.orgUnits.orgUnitMap, state.map.measureInfo.currentCountry]),
     state => state.map.measureInfo.measureData,
@@ -304,7 +304,7 @@ export const selectAllMeasuresWithDisplayAndOrgUnitData = createSelector(
 
 export const selectRenderedMeasuresWithDisplayInfo = createSelector(
   [
-    state => safeGet(countryCache, [state.orgUnits.orgUnitMap, selectCurrentOrgUnitCode()]),
+    state => safeGet(countryCache, [state.orgUnits.orgUnitMap, selectCurrentOrgUnitCode(state)]),
     selectAllMeasuresWithDisplayAndOrgUnitData,
     selectDisplayLevelAncestor,
     state => state.map.measureInfo.measureOptions,
