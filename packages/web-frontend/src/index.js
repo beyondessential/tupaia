@@ -7,7 +7,6 @@
 
 import React from 'react';
 import { StylesProvider } from '@material-ui/styles';
-
 import ReactDOM from 'react-dom';
 import App from './App';
 import { unregister } from './registerServiceWorker';

@@ -41,7 +41,7 @@ const hoverBlue = '#2196f3';
 const IconButton = styled(MuiIconButton)`
   color: white;
   transition: color 0.2s ease;
-  
+
   .MuiSvgIcon-root {
     font-size: 22px;
   }
