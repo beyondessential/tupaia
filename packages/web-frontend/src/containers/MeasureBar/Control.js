@@ -93,7 +93,7 @@ const ExpandedContent = styled.div`
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
   overflow-y: auto;
-  padding: 8px;
+  padding: 15px;
   flex-basis: 0;
   flex-grow: 1;
 `;
