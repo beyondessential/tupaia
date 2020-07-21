@@ -15,6 +15,8 @@ const getDeleteStatement = (table, extraConditions = []) => {
 const TABLES_TO_CLEAR = [
   'api_request_log',
   'access_request',
+  'alert_comment',
+  'alert',
   'answer',
   'data_element_data_group',
   'data_source',
@@ -28,6 +30,8 @@ const TABLES_TO_CLEAR = [
   'dhis_sync_queue',
   'clinic',
   'entity',
+  'data_source',
+  'comment',
   'entity_relation',
   'geographical_area',
   'country',
