@@ -125,6 +125,10 @@ export async function importSurveys(req, res) {
           serviceType: req.query.serviceType,
         });
 
+        // Clear all existing data element/data group associations
+        // We will re-create the ones required by the survey while processing its questions
+        await models.dataElementDataGroup.delete({ data_group_id: dataGroup.id });
+
         // Get the survey based on the name of the sheet/tab
         const survey = await transactingModels.survey.findOrCreate(
           {
