@@ -73,28 +73,28 @@ class App extends Component {
           theme={createMuiTheme({ palette: { type: 'dark', primary: { main: DARKENED_BLUE } } })}
         >
           <V0MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
-            {/*{RootScreen ? <RootScreen /> : null}*/}
-            <div style={{ width: 340 }}>
-              <NewDateRangePicker
-                granularity="one_day_at_a_time"
-                onSetDates={this.updateDates.bind(this)}
-                startDate={this.state.startDate}
-                endDate={this.state.endDate}
-              />
-              <NewDateRangePicker
-                align="center"
-                granularity="one_day_at_a_time"
-                onSetDates={this.updateDates.bind(this)}
-                startDate={this.state.startDate}
-                endDate={this.state.endDate}
-              />
-              {/*<DateRangePicker*/}
-              {/*  granularity="one_day_at_a_time"*/}
-              {/*  onSetDates={this.updateDates.bind(this)}*/}
-              {/*  startDate={this.state.startDate}*/}
-              {/*  endDate={this.state.endDate}*/}
-              {/*/>*/}
-            </div>
+            {RootScreen ? <RootScreen /> : null}
+            {/*<div style={{ width: 340 }}>*/}
+            {/*  <NewDateRangePicker*/}
+            {/*    granularity="one_year_at_a_time"*/}
+            {/*    onSetDates={this.updateDates.bind(this)}*/}
+            {/*    startDate={this.state.startDate}*/}
+            {/*    endDate={this.state.endDate}*/}
+            {/*  />*/}
+            {/*  <NewDateRangePicker*/}
+            {/*    align="center"*/}
+            {/*    granularity="one_year_at_a_time"*/}
+            {/*    onSetDates={this.updateDates.bind(this)}*/}
+            {/*    startDate={this.state.startDate}*/}
+            {/*    endDate={this.state.endDate}*/}
+            {/*  />*/}
+            {/*  <DateRangePicker*/}
+            {/*    granularity="one_day_at_a_time"*/}
+            {/*    onSetDates={this.updateDates.bind(this)}*/}
+            {/*    startDate={this.state.startDate}*/}
+            {/*    endDate={this.state.endDate}*/}
+            {/*  />*/}
+            {/*</div>*/}
           </V0MuiThemeProvider>
         </MuiThemeProvider>
       </Provider>

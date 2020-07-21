@@ -107,6 +107,19 @@ export const GRANULARITY_SHAPE = PropTypes.oneOf([
   SINGLE_YEAR,
 ]);
 
+export const getGranularityLabelText = granularity => {
+  switch (granularity) {
+    default:
+      return 'Select Dates';
+    case SINGLE_WEEK:
+      return 'Select Week';
+    case SINGLE_MONTH:
+      return 'Select Month';
+    case SINGLE_YEAR:
+      return 'Select Year';
+  }
+};
+
 export function roundStartEndDates(granularity, startDate = moment(), endDate = moment()) {
   const { momentUnit } = GRANULARITY_CONFIG[granularity];
   return {
