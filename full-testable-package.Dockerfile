@@ -59,6 +59,7 @@ COPY packages/data-broker/. ./packages/data-broker
 COPY packages/devops/. ./packages/devops
 COPY packages/database/. ./packages/database
 COPY packages/dhis-api/. ./packages/dhis-api
+COPY packages/indicators/. ./packages/indicators
 COPY packages/utils/. ./packages/utils
 COPY packages/ui-components/. ./packages/ui-components
 
