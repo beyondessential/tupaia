@@ -65,6 +65,7 @@ export const historyMiddleware = state => next => action => {
     // Actions that modify the path
     case SET_PROJECT:
       newLocation = setUrlComponent(URL_COMPONENTS.PROJECT, action.projectCode, newLocation);
+      dispatch(doUpdateUrl(newLocation));
       dispatch(onSetProject(action.projectCode));
       break;
     case SET_ORG_UNIT:
@@ -73,37 +74,44 @@ export const historyMiddleware = state => next => action => {
         action.organisationUnitCode,
         newLocation,
       );
+      dispatch(doUpdateUrl(newLocation));
       dispatch(onSetOrgUnit(action.organisationUnitCode, action.shouldChangeMapBounds));
       break;
     case CHANGE_DASHBOARD_GROUP:
       newLocation = setUrlComponent(URL_COMPONENTS.DASHBOARD, action.name, newLocation);
+      dispatch(doUpdateUrl(newLocation));
       break;
     case GO_HOME:
       newLocation = clearUrl();
+      dispatch(doUpdateUrl(newLocation));
       dispatch(onSetProject(null));
       break;
 
     // Actions that modify search params
     case OPEN_ENLARGED_DIALOG:
       newLocation = setUrlComponent(URL_COMPONENTS.REPORT, action.viewContent.viewId, newLocation);
+      dispatch(doUpdateUrl(newLocation));
       break;
     case CLOSE_ENLARGED_DIALOG:
       newLocation = setUrlComponent(URL_COMPONENTS.REPORT, null, newLocation);
+      dispatch(doUpdateUrl(newLocation));
       break;
     case CHANGE_MEASURE:
       newLocation = setUrlComponent(URL_COMPONENTS.MEASURE, action.measureId, newLocation);
+      dispatch(doUpdateUrl(newLocation));
       break;
     case CLEAR_MEASURE:
       newLocation = setUrlComponent(URL_COMPONENTS.MEASURE, null, newLocation);
+      dispatch(doUpdateUrl(newLocation));
       break;
     default:
       return next(action);
   }
   if (newLocation !== oldLocation || true) {
-    dispatch(doUpdateUrl(newLocation));
+    //dispatch(doUpdateUrl(newLocation));
   }
 
-  console.log(action);
+  console.log(action, newLocation.pathname, oldLocation.pathname);
   return next(action);
 };
 
