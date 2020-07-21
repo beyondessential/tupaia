@@ -66,10 +66,6 @@ const findNestedGroupedMapOverlays = async (
         childMapOverlayGroupRelations,
         accessibleMapOverlays,
       );
-      const areMapOverlayGroups = checkRelationsChildType(
-        childMapOverlayGroupRelations,
-        'mapOverlayGroup',
-      );
 
       mapOverlayGroupResults.push({
         name,
@@ -86,12 +82,6 @@ const findNestedGroupedMapOverlays = async (
   //Concat the groups and the overlays so that Groups are always on top of Overlays. 
   //Overlays are already sorted by sortOrder at this stage
   return mapOverlayGroupResults.concat(mapOverlayResults);
-};
-
-const checkRelationsChildType = (connections, childType) => {
-  return connections.every(
-    mapOverlayGroupConnection => mapOverlayGroupConnection.child_type === childType,
-  );
 };
 
 const checkIfGroupedMapOverlaysAreEmpty = nestedMapOverlayGroups => {
