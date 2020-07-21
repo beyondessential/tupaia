@@ -160,6 +160,7 @@ export class EnlargedDialogContent extends PureComponent {
     return (
       <div style={styles.periodSelector}>
         <DateRangePicker
+          align="center"
           granularity={periodGranularity}
           onSetDates={onSetDateRange}
           startDate={startDate}
@@ -241,6 +242,7 @@ const styles = {
     display: 'flex',
     justifyContent: 'center',
     marginTop: 5,
+    marginBottom: 5,
   },
   periodSelectorMenu: {
     marginTop: 0,

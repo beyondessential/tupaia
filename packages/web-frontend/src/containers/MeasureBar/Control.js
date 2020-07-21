@@ -1,12 +1,10 @@
 import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import Layers from '@material-ui/icons/Layers';
+import LayersIcon from '@material-ui/icons/Layers';
 import UpArrow from '@material-ui/icons/ArrowDropUp';
-import DownArrow from '@material-ui/icons/ArrowDropDown';
-import CircularProgress from '@material-ui/core/CircularProgress';
-
-import { DateRangePicker, NewDateRangePicker } from '../../components/DateRangePicker';
+import Typography from '@material-ui/core/Typography';
+import { DateRangePicker } from '../../components/DateRangePicker';
 import { CONTROL_BAR_WIDTH, TUPAIA_ORANGE, MAP_OVERLAY_SELECTOR } from '../../styles';
 
 const Container = styled.div`
@@ -25,33 +23,51 @@ const Header = styled.div`
   text-transform: uppercase;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
-  padding: 8px;
+  padding: 10px 15px 8px;
   font-size: 0.75rem;
   display: flex;
   align-items: center;
-`;
 
-const Content = styled.div`
-  background: ${MAP_OVERLAY_SELECTOR.background};
-  color: #fff;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom-left-radius: ${({ expanded, selected, period }) =>
-    !expanded && (!selected || !period) ? '5px' : '0px'};
-  border-bottom-right-radius: ${({ expanded, selected, period }) =>
-    !expanded && (!selected || !period) ? '5px' : '0px'};
-
-  svg {
-    margin: 8px;
-    border-left: 1px solid white;
-    padding-left: 3px;
+  .MuiSvgIcon-root {
+    font-size: 21px;
+    margin-right: 5px;
   }
 `;
 
-const ContentText = styled.div`
-  padding: 8px;
-  min-height: ${({ selected }) => (!selected ? '40px' : 'inherit')};
+const Content = styled.div`
+  display: flex;
+  padding: 12px 15px;
+  background: ${MAP_OVERLAY_SELECTOR.background};
+  color: #ffffff;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom-left-radius: ${({ expanded, selected, period }) =>
+    !expanded && (!selected || !period) ? '5px' : '0'};
+  border-bottom-right-radius: ${({ expanded, selected, period }) =>
+    !expanded && (!selected || !period) ? '5px' : '0'};
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  .MuiSvgIcon-root {
+    transition: transform 0.3s ease;
+    transform: rotate(${({ expanded }) => (expanded ? '180deg' : '0deg')});
+  }
+`;
+
+const IconWrapper = styled.div`
+  display: flex;
+  border-left: 1px solid rgba(255, 255, 255, 0.5);
+  padding: 2px 0 2px 10px;
+`;
+
+const ContentText = styled(Typography)`
+  font-size: 16px;
+`;
+
+const EmptyContentText = styled(ContentText)`
+  padding-right: 6px;
 `;
 
 const SubHeader = styled.div`
@@ -63,12 +79,10 @@ const SubHeader = styled.div`
 `;
 
 const MeasureDatePicker = styled.div`
-  //display: flex;
-  //justify-content: center;
   background: #203e5c;
   padding: 16px 8px;
-  border-bottom-left-radius: ${({ expanded }) => (!expanded ? '5px' : '0px')};
-  border-bottom-right-radius: ${({ expanded }) => (!expanded ? '5px' : '0px')};
+  border-bottom-left-radius: ${({ expanded }) => (!expanded ? '5px' : '0')};
+  border-bottom-right-radius: ${({ expanded }) => (!expanded ? '5px' : '0')};
 `;
 
 const ExpandedContent = styled.div`
@@ -83,19 +97,6 @@ const ExpandedContent = styled.div`
   flex-grow: 1;
 `;
 
-const ExpansionControl = ({ isExpanded, expand, minimise }) =>
-  isExpanded ? (
-    <UpArrow onClick={minimise} fontSize="large" />
-  ) : (
-    <DownArrow onClick={expand} fontSize="large" />
-  );
-
-ExpansionControl.propTypes = {
-  isExpanded: PropTypes.bool.isRequired,
-  expand: PropTypes.func.isRequired,
-  minimise: PropTypes.func.isRequired,
-};
-
 export const Control = ({
   emptyMessage,
   selectedMeasure,
@@ -103,45 +104,46 @@ export const Control = ({
   onUpdateMeasurePeriod,
   children,
 }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
   const isMeasureSelected = !!selectedMeasure.name;
-  const measureText = selectedMeasure.name || emptyMessage;
-
-  const [isExpanded, handleExpansion] = useState(false);
-  const expandMeasures = useCallback(() => handleExpansion(true), [isExpanded]);
-  const minimiseMeasures = useCallback(() => handleExpansion(false), [isExpanded]);
+  const toggleMeasures = useCallback(() => {
+    if (isExpanded) {
+      setIsExpanded(false);
+    } else {
+      setIsExpanded(true);
+    }
+  }, [isExpanded, setIsExpanded]);
 
   const updateMeasurePeriod = (startDate, endDate) => {
-    console.log('start date', startDate.toString());
-    console.log('end date', endDate.toString());
     onUpdateMeasurePeriod(startDate, endDate);
   };
 
   return (
     <Container>
       <Header>
-        <Layers />
-        &nbsp; Map overlays &nbsp;
-        {isMeasureLoading && <CircularProgress size={24} thickness={3} />}
+        <LayersIcon />
+        Map overlays
       </Header>
       <Content
         expanded={isExpanded}
         selected={isMeasureSelected}
         period={selectedMeasure.periodGranularity}
+        onClick={toggleMeasures}
       >
-        <ContentText selected={isMeasureSelected}>
-          {isMeasureLoading ? '' : measureText}
-        </ContentText>
-        {isMeasureSelected && (
-          <ExpansionControl
-            isExpanded={isExpanded}
-            expand={expandMeasures}
-            minimise={minimiseMeasures}
-          />
+        {isMeasureSelected ? (
+          <>
+            <ContentText>{isMeasureLoading ? 'Loading...' : selectedMeasure.name}</ContentText>
+            <IconWrapper>
+              <UpArrow />
+            </IconWrapper>
+          </>
+        ) : (
+          <EmptyContentText>{emptyMessage}</EmptyContentText>
         )}
       </Content>
       {isMeasureSelected && selectedMeasure.periodGranularity && (
         <MeasureDatePicker expanded={isExpanded}>
-          <NewDateRangePicker
+          <DateRangePicker
             granularity={selectedMeasure.periodGranularity}
             startDate={selectedMeasure.startDate}
             endDate={selectedMeasure.endDate}
@@ -150,7 +152,6 @@ export const Control = ({
           />
         </MeasureDatePicker>
       )}
-
       {isExpanded && (
         <ExpandedContent>
           <SubHeader>Select an overlay</SubHeader>
