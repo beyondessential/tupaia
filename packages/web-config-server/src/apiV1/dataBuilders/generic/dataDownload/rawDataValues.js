@@ -24,7 +24,20 @@ const expandSurveyCodes = surveys => {
 class RawDataValuesBuilder extends DataBuilder {
   async build() {
     const surveyCodes = this.query.surveyCodes;
-    const data = await this.fetchResults(surveyCodes.split(','));
+    let data = await this.fetchResults(surveyCodes.split(','));
+
+    if (this.config.transformations && this.config.transformations.includes('mergeSurveys')) {
+      // data = doMergeLogic(data, surveyConfig);
+      console.log('doMergeLogic', data);
+    }
+
+    //Possibly sort logic here?
+
+    if (this.config.transformations && this.config.transformations.includes('transpose')) {
+      // data = doTransformLogic(data, surveyConfig);
+      console.log('doTransformLogic', data);
+    }
+
     return { data };
   }
 
@@ -79,14 +92,10 @@ class RawDataValuesBuilder extends DataBuilder {
         rows = await this.buildRows(events, dataElementCodeToText);
       }
 
-      let tableData = {
+      const tableData = {
         columns,
         rows,
       };
-
-      if (this.config.transformations && this.config.transformations.includes('transposeMatrix')) {
-        tableData = transposeMatrix(tableData, ROW_HEADER_KEY);
-      }
 
       const { skipHeader = true } = this.config;
 

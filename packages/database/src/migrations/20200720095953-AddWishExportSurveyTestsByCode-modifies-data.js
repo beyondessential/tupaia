@@ -27,7 +27,7 @@ const DASHBOARD_GROUP_CODE = 'WISH_Export_Surveys';
 const DATA_BUILDER_CONFIG = {
   surveys: [
     {
-      name: 'Combined Test Data',
+      name: 'Aligned Sample Tests',
       codes: ['WISH_6CLD', 'WISH_6PLD', 'WISH_6MTD'],
     },
   ],
