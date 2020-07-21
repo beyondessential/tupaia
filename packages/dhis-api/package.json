@@ -1,11 +1,11 @@
 {
   "name": "@tupaia/dhis-api",
-  "private": true,
   "version": "1.0.0",
   "main": "dist/index.js",
+  "private": true,
   "scripts": {
-    "build": "babel src --out-dir dist --source-maps --ignore 'src/tests/**' --config-file '../../babel.config.json'",
-    "test": "nyc --reporter=lcov mocha",
+    "build": "babel src --out-dir dist --ignore 'src/tests/**' --config-file '../../babel.config.json'",
+    "test": "mocha",
     "test-coverage": "cross-env NODE_ENV=test nyc mocha"
   },
   "dependencies": {
@@ -17,6 +17,6 @@
     "moment": "^2.22.2",
     "simple-oauth2": "^1.5.0",
     "urlencode": "^1.1.0",
-    "winston": "^3.3.3"
+    "winston": "^3.1.0"
   }
 }

@@ -37,7 +37,7 @@ export class DataBroker {
   createService(dataSources) {
     // `dataSourceSpec` is defined for a single `service_type`
     const { service_type: serviceType } = dataSources[0];
-    return createService(this.models, serviceType);
+    return createService(this.models, serviceType, this);
   }
 
   async push(dataSourceSpec, data) {

@@ -1,0 +1,8 @@
+{
+  "all": true,
+  "extension": [".js", ".ts"],
+  "exclude": ["src/tests/**"],
+  "include": ["src/**"],
+  "instrument": false,
+  "sourceMap": false
+}
