@@ -139,10 +139,9 @@ const FlexRow = styled.div`
 
 const FlexSpaceBetween = styled.div`
   display: flex;
-  flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  padding: 20px;
+  //padding: 20px;
 `;
 
 const IconButton = styled(MuiIconButton)`
@@ -175,13 +174,16 @@ const Label = styled(Typography)`
 
 const LabelContainer = styled.div`
   border-left: 1px solid rgba(255, 255, 255, 0.5);
-  padding-left: 20px;
+  padding-left: 18px;
+  margin-left: 6px;
 `;
 
 const ResetLabel = styled(Link)`
   color: #2196f3;
   font-size: 12px;
   line-height: 14px;
+  margin-top: 5px;
+  margin-bottom: 3px;
 `;
 
 // eslint-disable-next-line react/prop-types
@@ -191,10 +193,6 @@ const DateLabel = ({ isSingleDate, granularity, startDate, endDate }) => {
   const formattedStartDate = startDate.format(rangeFormat);
   const formattedEndDate = endDate.startOf(momentUnit).format(rangeFormat);
 
-  const handleReset = () => {
-    console.log('reset button');
-  };
-
   if (!startDate || !endDate) {
     labelText = getLabelText(granularity);
   } else if (isSingleDate) {
@@ -203,9 +201,13 @@ const DateLabel = ({ isSingleDate, granularity, startDate, endDate }) => {
     labelText = `${formattedStartDate} - ${formattedEndDate}`;
   }
 
+  const handleReset = () => {
+    console.log('reset button');
+  };
+
   return (
     <LabelContainer>
-      <Label gutterBottom>{labelText}</Label>
+      <Label>{labelText}</Label>
       <ResetLabel component="button" onClick={handleReset}>
         Reset to default
       </ResetLabel>
@@ -213,7 +215,14 @@ const DateLabel = ({ isSingleDate, granularity, startDate, endDate }) => {
   );
 };
 
-const DatePickerDialog = ({ isOpen, onClose, granularity, startDate, endDate, onSetNewDates }) => {
+const DatePickerDialog = ({
+  isOpen,
+  onClose,
+  granularity,
+  startDate,
+  endDate,
+  onSetNewDates,
+}) => {
   const [selectedStartDate, setSelectedStartDate] = useState(startDate);
   const [selectedEndDate, setSelectedEndDate] = useState(endDate);
   const [errorMessage, setErrorMessage] = useState('');
@@ -230,18 +239,14 @@ const DatePickerDialog = ({ isOpen, onClose, granularity, startDate, endDate, on
       return setErrorMessage('Start date must be before end date');
     }
 
-    const start = isSingleDate ? selectedEndDate.clone() : selectedStartDate;
     const { startDate: roundedStartDate, endDate: roundedEndDate } = roundStartEndDates(
       granularity,
-      start,
+      isSingleDate ? selectedEndDate.clone() : selectedStartDate,
       selectedEndDate,
     );
 
     // Only update if the dates have actually changed by at least one day
-    if (
-      !selectedStartDate.isSame(roundedStartDate, 'day') ||
-      !selectedEndDate.isSame(roundedEndDate, 'day')
-    ) {
+    if (!startDate.isSame(roundedStartDate, 'day') || !endDate.isSame(roundedEndDate, 'day')) {
       // Update the external control values!
       onSetNewDates(roundedStartDate, roundedEndDate);
     }
@@ -279,7 +284,7 @@ const DatePickerDialog = ({ isOpen, onClose, granularity, startDate, endDate, on
   );
 };
 
-export const NewDateRangePicker = ({ startDate, endDate, granularity, onSetDates, isLoading }) => {
+export const NewDateRangePicker = ({ startDate, endDate, granularity, onSetDates, isLoading, align }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const isSingleDate = GRANULARITIES_WITH_ONE_DATE.includes(granularity);
@@ -314,22 +319,29 @@ export const NewDateRangePicker = ({ startDate, endDate, granularity, onSetDates
   return (
     <>
       <FlexSpaceBetween>
+        {isSingleDate && align === 'center' && (
+          <ArrowButton type="button" onClick={() => changePeriod(-1)} disabled={isLoading}>
+            <KeyboardArrowLeftIcon />
+          </ArrowButton>
+        )}
         <FlexRow>
           <IconButton onClick={() => setIsOpen(true)} aria-label="open">
             <DateRangeIcon />
           </IconButton>
           <DateLabel
             isSingleDate={isSingleDate}
-            granularit={granularity}
+            granularity={granularity}
             startDate={currentStartDate}
             endDate={currentEndDate}
           />
         </FlexRow>
         {isSingleDate && (
           <FlexRow>
-            <ArrowButton type="button" onClick={() => changePeriod(-1)} disabled={isLoading}>
-              <KeyboardArrowLeftIcon />
-            </ArrowButton>
+            {align === 'left' && (
+              <ArrowButton type="button" onClick={() => changePeriod(-1)} disabled={isLoading}>
+                <KeyboardArrowLeftIcon />
+              </ArrowButton>
+            )}
             <ArrowButton type="button" onClick={() => changePeriod(1)} disabled={isLoading}>
               <KeyboardArrowRightIcon />
             </ArrowButton>
@@ -357,6 +369,7 @@ NewDateRangePicker.propTypes = {
   granularity: GRANULARITY_SHAPE,
   onSetDates: PropTypes.func,
   isLoading: PropTypes.bool,
+  align: PropTypes.string,
 };
 
 NewDateRangePicker.defaultProps = {
@@ -365,4 +378,5 @@ NewDateRangePicker.defaultProps = {
   granularity: DAY,
   onSetDates: () => {},
   isLoading: false,
+  align: 'left',
 };

@@ -63,10 +63,10 @@ const SubHeader = styled.div`
 `;
 
 const MeasureDatePicker = styled.div`
-  background: #203e5c;
-  //padding: 16px 8px;
   //display: flex;
   //justify-content: center;
+  background: #203e5c;
+  padding: 16px 8px;
   border-bottom-left-radius: ${({ expanded }) => (!expanded ? '5px' : '0px')};
   border-bottom-right-radius: ${({ expanded }) => (!expanded ? '5px' : '0px')};
 `;
