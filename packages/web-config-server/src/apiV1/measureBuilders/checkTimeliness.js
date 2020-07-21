@@ -17,11 +17,13 @@ class CheckTimelinessMeasureBuilder extends DataBuilder {
     const results = await this.dhisApi.getDataValuesInSets(dhisParameters, this.entity);
 
     // annotate each facility with the corresponding data from dhis
-    return results.map(row => ({
-      organisationUnitCode: row.organisationUnit,
-      [dataElementCode]: row.value === undefined ? '' : row.value.toString(),
-      submissionDate: periodToMoment(row.period.toString()).format('YYYY-MM-DD'),
-    }));
+    return {
+      data: results.map(row => ({
+        organisationUnitCode: row.organisationUnit,
+        [dataElementCode]: row.value === undefined ? '' : row.value.toString(),
+        submissionDate: periodToMoment(row.period.toString()).format('YYYY-MM-DD'),
+      })),
+    };
   }
 }
 

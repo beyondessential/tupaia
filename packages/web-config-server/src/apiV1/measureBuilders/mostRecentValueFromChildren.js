@@ -27,5 +27,5 @@ export const mostRecentValueFromChildren = async (
     },
   );
 
-  return analyticsToMeasureData(results);
+  return { data: analyticsToMeasureData(results) };
 };

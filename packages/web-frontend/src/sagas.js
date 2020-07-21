@@ -892,6 +892,7 @@ function* exportChart(action) {
       body: JSON.stringify({
         exportUrl,
         viewId,
+        projectCode,
         dashboardGroupId,
         projectCode,
         organisationUnitCode,
