@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import LayersIcon from '@material-ui/icons/Layers';
 import DownArrow from '@material-ui/icons/ArrowDropDown';
 import Typography from '@material-ui/core/Typography';
+import Fade from '@material-ui/core/Fade';
 import { DateRangePicker } from '../../components/DateRangePicker';
 import { CONTROL_BAR_WIDTH, TUPAIA_ORANGE, MAP_OVERLAY_SELECTOR } from '../../styles';
 
@@ -152,12 +153,12 @@ export const Control = ({
           />
         </MeasureDatePicker>
       )}
-      {isExpanded && (
+      <Fade in={isExpanded}>
         <ExpandedContent>
           <SubHeader>Select an overlay</SubHeader>
           {children}
         </ExpandedContent>
-      )}
+      </Fade>
     </Container>
   );
 };
