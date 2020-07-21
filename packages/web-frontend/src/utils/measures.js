@@ -159,20 +159,18 @@ export function flattenMeasureHierarchy(measureHierarchy) {
   const flattenGroupedMeasure = ({ children }) => {
     children.forEach(childObject => {
       if (childObject.children && childObject.children.length) {
-        flattenGroupedMeasure(childObject.children);
+        flattenGroupedMeasure(childObject);
       } else {
         results.push(childObject);
       }
     });
   };
 
-  Object.values(measureHierarchy)
-    .flat()
-    .forEach(measure => {
-      if (measure.type === 'mapOverlay') {
-        results.push(measure);
-      } else {
+  measureHierarchy.forEach(measure => {
+      if (measure.children) {
         flattenGroupedMeasure(measure);
+      } else {
+        results.push(measure);
       }
     });
 

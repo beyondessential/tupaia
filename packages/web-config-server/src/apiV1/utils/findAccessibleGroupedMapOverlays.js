@@ -12,70 +12,80 @@ const { AND, RAW } = QUERY_CONJUNCTIONS;
 const findNestedGroupedMapOverlays = async (
   mapOverlayGroupModel,
   mapOverlayGroupRelationModel,
-  mapOverlayGroupRelations,
+  mapOverlayItemRelations,
   accessibleMapOverlays,
 ) => {
-  const results = [];
+  let mapOverlayResults = [];
+  let mapOverlayGroupResults = [];
 
-  if (!mapOverlayGroupRelations || !mapOverlayGroupRelations.length) {
-    return results;
+  if (!mapOverlayItemRelations || !mapOverlayItemRelations.length) {
+    return [];
   }
 
-  const mapOverlayItemIds = mapOverlayGroupRelations.map(m => m.child_id);
+  const mapOverlayRelations = mapOverlayItemRelations.filter(m => m.child_type === 'mapOverlay');
 
-  const areMapOverlays = checkRelationsChildType(mapOverlayGroupRelations, 'mapOverlay');
+  //If there are map overlay relations, add them to the results
+  if (mapOverlayRelations.length) {
+    const mapOverlayIds = mapOverlayRelations.map(m => m.child_id);
 
-  //If all of the connections are mapOverlays, this means we have reached the lowest level of the hierarchy
-  if (areMapOverlays) {
     const mapOverlays = Object.values(accessibleMapOverlays).filter(mapOverlay =>
-      mapOverlayItemIds.includes(mapOverlay.id),
+      mapOverlayIds.includes(mapOverlay.id),
     );
 
-    return translateOverlaysForResponse(mapOverlays);
+    mapOverlayResults = translateOverlaysForResponse(mapOverlays);
   }
 
-  //Find all the child MapOverlayGroups
-  const mapOverlayGroups = await mapOverlayGroupModel.find({
-    id: mapOverlayItemIds,
-  });
+  const mapOverlayGroupRelations = mapOverlayItemRelations.filter(
+    m => m.child_type === 'mapOverlayGroup',
+  );
 
-  const mapOverlayGroupIdToName = reduceToDictionary(mapOverlayGroups, 'id', 'name');
+  //If there are map overlay group relations, recursively find the nested groups
+  if (mapOverlayGroupRelations.length) {
+    const mapOverlayGroupIds = mapOverlayGroupRelations.map(m => m.child_id);
 
-  //Recursively find the children of the current MapOverlayGroups
-  for (let i = 0; i < mapOverlayGroupRelations.length; i++) {
-    const mapOverlayGroupRelation = mapOverlayGroupRelations[i];
-    const name = mapOverlayGroupIdToName[mapOverlayGroupRelation.child_id];
-    const type = 'mapOverlayGroup';
-    const childMapOverlayGroupRelations = await mapOverlayGroupRelationModel.find({
-      map_overlay_group_id: {
-        comparator: '=',
-        comparisonValue: mapOverlayGroupRelation.child_id,
-      },
+    //Find all the child MapOverlayGroups
+    const mapOverlayGroups = await mapOverlayGroupModel.find({
+      id: mapOverlayGroupIds,
     });
-    const children = await findNestedGroupedMapOverlays(
-      mapOverlayGroupModel,
-      mapOverlayGroupRelationModel,
-      childMapOverlayGroupRelations,
-      accessibleMapOverlays,
-    );
-    const areMapOverlayGroups = checkRelationsChildType(
-      childMapOverlayGroupRelations,
-      'mapOverlayGroup',
-    );
 
-    //If children are all groups, sort by names.
-    if (areMapOverlayGroups) {
-      children.sort(getSortByKey('name'));
+    const mapOverlayGroupIdToName = reduceToDictionary(mapOverlayGroups, 'id', 'name');
+
+    //Recursively find the children of the current MapOverlayGroups
+    for (let i = 0; i < mapOverlayGroupRelations.length; i++) {
+      const mapOverlayGroupRelation = mapOverlayGroupRelations[i];
+      const name = mapOverlayGroupIdToName[mapOverlayGroupRelation.child_id];
+      const childMapOverlayGroupRelations = await mapOverlayGroupRelationModel.find({
+        map_overlay_group_id: {
+          comparator: '=',
+          comparisonValue: mapOverlayGroupRelation.child_id,
+        },
+      });
+      const children = await findNestedGroupedMapOverlays(
+        mapOverlayGroupModel,
+        mapOverlayGroupRelationModel,
+        childMapOverlayGroupRelations,
+        accessibleMapOverlays,
+      );
+      const areMapOverlayGroups = checkRelationsChildType(
+        childMapOverlayGroupRelations,
+        'mapOverlayGroup',
+      );
+
+      mapOverlayGroupResults.push({
+        name,
+        children,
+      });
     }
-
-    results.push({
-      name,
-      type,
-      children,
-    });
   }
 
-  return results;
+  //Sort the groups by names.
+  if (mapOverlayGroupResults.length) {
+    mapOverlayGroupResults.sort(getSortByKey('name'));
+  }
+
+  //Concat the groups and the overlays so that Groups are always on top of Overlays. 
+  //Overlays are already sorted by sortOrder at this stage
+  return mapOverlayGroupResults.concat(mapOverlayResults);
 };
 
 const checkRelationsChildType = (connections, childType) => {
@@ -89,12 +99,12 @@ const checkIfGroupedMapOverlaysAreEmpty = nestedMapOverlayGroups => {
     return false;
   }
 
-  return nestedMapOverlayGroups.every(({ type, children }) => {
-    if (type === 'mapOverlay') {
+  return nestedMapOverlayGroups.every(({ children }) => {
+    if (!children) {
       return true;
     }
 
-    return children && children.length > 0 ? checkIfGroupedMapOverlaysAreEmpty(children) : false;
+    return children.length > 0 ? checkIfGroupedMapOverlaysAreEmpty(children) : false;
   });
 };
 
@@ -109,7 +119,6 @@ const translateOverlaysForResponse = mapOverlays =>
         measureId: idString,
         name,
         ...presentationOptions,
-        type: 'mapOverlay',
       };
     });
 
@@ -163,7 +172,7 @@ export const findAccessibleGroupedMapOverlays = async (
   );
   const relationsByGroupId = groupBy(mapOverlayGroupRelations, 'map_overlay_group_id');
   const groupIds = Object.keys(relationsByGroupId);
-  const result = {};
+  const result = [];
 
   for (let i = 0; i < groupIds.length; i++) {
     const groupId = groupIds[i];
@@ -179,7 +188,10 @@ export const findAccessibleGroupedMapOverlays = async (
     const isNonEmptyMapOverlayGroup = checkIfGroupedMapOverlaysAreEmpty(nestedMapOverlayGroups);
 
     if (isNonEmptyMapOverlayGroup) {
-      result[name] = nestedMapOverlayGroups;
+      result.push({
+        name,
+        children: nestedMapOverlayGroups,
+      });
     }
   }
 

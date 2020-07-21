@@ -7,30 +7,38 @@ export default class extends RouteHandler {
 
   /*** 
    * Sample Response:
-    {
-      GroupA: [
-        {
-          measureId: 'Laos_Schools_A',
-          name: 'Overlay A',
-          ...presentationOptions,
-          type: 'mapOverlay',
-        }
-      ],
-      GroupB: [
-        {
-          name: 'GroupC',
-          children: [
+       {
+          organisationUnitType: 'Country',
+          organisationUnitCode: 'LA',
+          name: 'Laos',
+          measures: [
             {
-              measureId: 'Laos_Schools_D',
-              name: 'Overlay D',
-              ...presentationOptions,
-              type: 'mapOverlay',
-            }, 
+              name: 'GroupA',
+              children: [
+                {
+                  measureId: 'Laos_Schools_A',
+                  name: 'Overlay A',
+                  ...presentationOptions,
+                }
+              ],
+            },
+            {
+              name: 'GroupB',
+              children: [
+                {
+                  name: 'GroupC',
+                  children: [
+                    {
+                      measureId: 'Laos_Schools_D',
+                      name: 'Overlay D',
+                      ...presentationOptions,
+                    }, 
+                  ],
+                }, 
+              ],
+            }
           ],
-          type: 'mapOverlayGroup'
-        }, 
-      ],
-    }
+        }
   ***/
   buildResponse = async () => {
     const { entity, query } = this;
@@ -38,8 +46,7 @@ export default class extends RouteHandler {
     const overlayCode = enityCountryCode || entityCode;
     const userGroups = await this.req.getUserGroups(entityCode);
 
-    let mapOverlaysByGroupName = {};
-    const measures = {};
+    let accessibleMapOverlayGroups = [];
     // Projects do not have a country_code
     if (overlayCode) {
       //Find all the accessible map overlays first so that we can put them in the correct map overlay groups
@@ -51,28 +58,23 @@ export default class extends RouteHandler {
       );
 
       //Find the accessible map overlay groups using the accessible map overlays above
-      mapOverlaysByGroupName = await findAccessibleGroupedMapOverlays(
+      accessibleMapOverlayGroups = await findAccessibleGroupedMapOverlays(
         this.req.models.mapOverlayGroup,
         this.req.models.mapOverlayGroupRelation,
         accessibleMapOverlays,
       );
 
-      console.log('mapOverlaysByGroupName', mapOverlaysByGroupName);
-
       // Sort groups alphabetically
-      const sortedGroupNames = Object.keys(mapOverlaysByGroupName).sort((a, b) =>
-        a.toLowerCase().localeCompare(b.toLowerCase()),
+      accessibleMapOverlayGroups = accessibleMapOverlayGroups.sort((a, b) =>
+        a.name.toLowerCase().localeCompare(b.name.toLowerCase()),
       );
-      sortedGroupNames.forEach(a => {
-        measures[a] = mapOverlaysByGroupName[a];
-      });
     }
 
     return {
       organisationUnitType: entity.getOrganisationLevel(),
       organisationUnitCode: entityCode,
       name: entityName,
-      measures,
+      measures: accessibleMapOverlayGroups,
     };
   };
 }

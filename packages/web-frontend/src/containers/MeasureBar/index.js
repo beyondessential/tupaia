@@ -72,13 +72,13 @@ export class MeasureBar extends Component {
     return children.map(childObject => {
       let nestedItems;
 
-      if (childObject.type === 'mapOverlayGroup') {
+      if (childObject.children && childObject.children.length) {
         nestedItems = this.renderNestedHierarchyItems(childObject.children);
       }
 
       let onClick = null;
 
-      if (childObject.type !== 'mapOverlayGroup') {
+      if (!childObject.children) {
         onClick =
           childObject.measureId === currentMeasure.measureId
             ? () => onClearMeasure()
@@ -89,9 +89,7 @@ export class MeasureBar extends Component {
         <HierarchyItem
           label={childObject.name}
           isSelected={
-            childObject.type === 'mapOverlayGroup'
-              ? null
-              : childObject.measureId === currentMeasure.measureId
+            childObject.children ? null : childObject.measureId === currentMeasure.measureId
           }
           key={childObject.measureId}
           onClick={onClick}
@@ -104,16 +102,16 @@ export class MeasureBar extends Component {
   renderHierarchy() {
     const { measureHierarchy } = this.props;
 
-    const items = Object.entries(measureHierarchy).map(([categoryName, children]) => {
+    const items = measureHierarchy.map(({name: groupName, children}) => {
       if (!Array.isArray(children)) return null;
       const nestedItems = this.renderNestedHierarchyItems(children);
       if (nestedItems.length === 0) return null;
       return (
         <HierarchyItem
           nestedMargin="0px"
-          label={categoryName}
+          label={groupName}
           nestedItems={nestedItems}
-          key={categoryName}
+          key={groupName}
         />
       );
     });

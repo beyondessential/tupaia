@@ -535,7 +535,7 @@ function measureBar(
 ) {
   switch (action.type) {
     case CLEAR_MEASURE_HIERARCHY:
-      return { ...state, measureHierarchy: {} };
+      return { ...state, measureHierarchy: [] };
     case CLEAR_MEASURE:
       return { ...state, currentMeasure: {}, selectedMeasureId: null };
     case CHANGE_MEASURE:
