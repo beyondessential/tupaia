@@ -22,7 +22,6 @@ import {
   GRANULARITIES,
   GRANULARITIES_WITH_ONE_DATE,
   roundStartEndDates,
-  getGranularityLabelText,
 } from '../../utils/periodGranularities';
 import { MIN_DATE_PICKER_DATE } from './constants';
 
@@ -79,6 +78,19 @@ const DateRow = ({ granularity, ...props }) => {
   }
 };
 
+const getLabelText = granularity => {
+  switch (granularity) {
+    default:
+      return 'Select Dates';
+    case SINGLE_WEEK:
+      return 'Select Week';
+    case SINGLE_MONTH:
+      return 'Select Month';
+    case SINGLE_YEAR:
+      return 'Select Year';
+  }
+};
+
 const StyledDateRow = styled.div`
   display: flex;
   margin-top: 30px;
@@ -132,7 +144,7 @@ export const DatePickerDialog = ({
       style={{ zIndex: DIALOG_Z_INDEX + 1 }}
       PaperProps={{ style: { width: '75%', maxWidth: '700px' } }}
     >
-      <DialogTitle>{getGranularityLabelText(granularity)}</DialogTitle>
+      <DialogTitle>{getLabelText(granularity)}</DialogTitle>
       <DialogContent>
         {!isSingleDate && (
           <StyledDateRow>

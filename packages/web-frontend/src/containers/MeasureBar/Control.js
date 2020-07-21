@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import LayersIcon from '@material-ui/icons/Layers';
-import UpArrow from '@material-ui/icons/ArrowDropUp';
+import DownArrow from '@material-ui/icons/ArrowDropDown';
 import Typography from '@material-ui/core/Typography';
 import { DateRangePicker } from '../../components/DateRangePicker';
 import { CONTROL_BAR_WIDTH, TUPAIA_ORANGE, MAP_OVERLAY_SELECTOR } from '../../styles';
@@ -124,24 +124,24 @@ export const Control = ({
         <LayersIcon />
         Map overlays
       </Header>
-      <Content
-        expanded={isExpanded}
-        selected={isMeasureSelected}
-        period={selectedMeasure.periodGranularity}
-        onClick={toggleMeasures}
-      >
-        {isMeasureSelected ? (
-          <>
-            <ContentText>{isMeasureLoading ? 'Loading...' : selectedMeasure.name}</ContentText>
-            <IconWrapper>
-              <UpArrow />
-            </IconWrapper>
-          </>
-        ) : (
+      {!isMeasureSelected ? (
+        <Content>
           <EmptyContentText>{emptyMessage}</EmptyContentText>
-        )}
-      </Content>
-      {isMeasureSelected && selectedMeasure.periodGranularity && (
+        </Content>
+      ) : (
+        <Content
+          expanded={isExpanded}
+          selected={isMeasureSelected}
+          period={selectedMeasure.periodGranularity}
+          onClick={toggleMeasures}
+        >
+          <ContentText>{isMeasureLoading ? 'Loading...' : selectedMeasure.name}</ContentText>
+          <IconWrapper>
+            <DownArrow />
+          </IconWrapper>
+        </Content>
+      )}
+      {selectedMeasure.periodGranularity && (
         <MeasureDatePicker expanded={isExpanded}>
           <DateRangePicker
             granularity={selectedMeasure.periodGranularity}
