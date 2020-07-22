@@ -1,6 +1,7 @@
 import { Aggregator as BaseAggregator } from '@tupaia/aggregator';
 import { QueryBuilder } from './QueryBuilder';
 import { buildAggregationOptions } from './buildAggregationOptions';
+import { Project } from '/models';
 
 export class Aggregator extends BaseAggregator {
   constructor(dataBroker, routeHandler) {
@@ -16,6 +17,8 @@ export class Aggregator extends BaseAggregator {
   ) {
     const queryBuilder = new QueryBuilder(originalQuery, replacementValues, this.routeHandler);
     const dataSourceEntities = await queryBuilder.getDataSourceEntities();
+    const hierarchyId = (await Project.findOne({ code: this.routeHandler.query.projectCode }))
+      .entity_hierarchy_id;
 
     const fetchOptions = await queryBuilder.build(dataSourceEntities);
 
@@ -24,6 +27,7 @@ export class Aggregator extends BaseAggregator {
       initialAggregationOptions,
       dataSourceEntities,
       entityAggregationOptions,
+      hierarchyId,
     );
 
     return super.fetchAnalytics(dataElementCodes, fetchOptions, aggregationOptions);
@@ -32,6 +36,8 @@ export class Aggregator extends BaseAggregator {
   async fetchEvents(programCode, originalQuery, replacementValues) {
     const queryBuilder = new QueryBuilder(originalQuery, replacementValues, this.routeHandler);
     const dataSourceEntities = await queryBuilder.getDataSourceEntities();
+    const hierarchyId = (await Project.findOne({ code: this.routeHandler.query.projectCode }))
+      .entity_hierarchy_id;
 
     queryBuilder.replaceOrgUnitCodes(dataSourceEntities);
     queryBuilder.makeEventReplacements();
@@ -41,6 +47,7 @@ export class Aggregator extends BaseAggregator {
       {}, // No input aggregation for events (yet)
       dataSourceEntities,
       entityAggregationOptions,
+      hierarchyId,
     );
 
     return super.fetchEvents(programCode, queryBuilder.getQuery(), aggregationOptions);
