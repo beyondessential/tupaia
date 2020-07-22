@@ -16,8 +16,10 @@ import {
 } from '../../utils/periodGranularities';
 import { MIN_DATE_PICKER_DATE } from '../../components/DateRangePicker/constants';
 
-const minMomentDate = moment(MIN_DATE_PICKER_DATE);
-const maxMomentDate = moment();
+const MIN_MOMENT_DATE = moment(MIN_DATE_PICKER_DATE);
+const MAX_MOMENT_DATE = moment();
+const START_DATE = '2016-09-23';
+const END_DATE = '2018-03-20';
 
 describe('dateRangePicker', () => {
   for (let [key, value] of Object.entries(GRANULARITY_CONFIG)) {
@@ -25,8 +27,8 @@ describe('dateRangePicker', () => {
       render(<DateRangePicker granularity={key} />);
 
       const labelText = screen.getByLabelText('active-date');
-      const startDate = minMomentDate.format(value.rangeFormat);
-      const endDate = maxMomentDate.startOf(value.momentUnit).format(value.rangeFormat);
+      const startDate = MIN_MOMENT_DATE.format(value.rangeFormat);
+      const endDate = MAX_MOMENT_DATE.startOf(value.momentUnit).format(value.rangeFormat);
 
       if (GRANULARITIES_WITH_ONE_DATE.includes(key)) {
         expect(labelText).toHaveTextContent(endDate);
@@ -38,11 +40,11 @@ describe('dateRangePicker', () => {
 
   for (let [key, value] of Object.entries(GRANULARITY_CONFIG)) {
     it(`can display set start and end dates for ${key} granularity`, () => {
-      render(<DateRangePicker startDate="2016-09-23" endDate="2018-03-20" granularity={key} />);
+      render(<DateRangePicker startDate={START_DATE} endDate={END_DATE} granularity={key} />);
 
       const labelText = screen.getByLabelText('active-date');
-      const startDate = moment('2016-09-23').format(value.rangeFormat);
-      const endDate = moment('2018-03-20')
+      const startDate = moment(START_DATE).format(value.rangeFormat);
+      const endDate = moment(END_DATE)
         .startOf(value.momentUnit)
         .format(value.rangeFormat);
 
@@ -56,8 +58,8 @@ describe('dateRangePicker', () => {
 });
 
 const ControlledDateRangePicker = ({ granularity }) => {
-  const [startDate, setStartDate] = React.useState('2016-09-23');
-  const [endDate, setEndDate] = React.useState('2018-03-20');
+  const [startDate, setStartDate] = React.useState(START_DATE);
+  const [endDate, setEndDate] = React.useState(END_DATE);
 
   const handleUpdate = (startDate, endDate) => {
     setStartDate(startDate);
@@ -86,7 +88,7 @@ describe('controlled dateRangePicker', () => {
 
         userEvent.click(prev);
 
-        const prevEndDate = moment('2018-03-20')
+        const prevEndDate = moment(END_DATE)
           .add(-1, value.momentShorthand)
           .startOf(value.momentUnit)
           .format(value.rangeFormat);
@@ -96,15 +98,34 @@ describe('controlled dateRangePicker', () => {
         userEvent.click(next);
         userEvent.click(next);
 
-        const nextEndDate = moment('2018-03-20')
-        .add(1, value.momentShorthand)
-        .startOf(value.momentUnit)
-        .format(value.rangeFormat);
+        const nextEndDate = moment(END_DATE)
+          .add(1, value.momentShorthand)
+          .startOf(value.momentUnit)
+          .format(value.rangeFormat);
 
         expect(labelText).toHaveTextContent(nextEndDate);
       });
     }
   }
 
-  test.todo('reset button');
+  for (let [key, value] of Object.entries(GRANULARITY_CONFIG)) {
+    if (GRANULARITIES_WITH_ONE_DATE.includes(key)) {
+      it(`can be reset for ${key} granularity`, () => {
+        render(<ControlledDateRangePicker granularity={key} />);
+
+        const labelText = screen.getByLabelText('active-date');
+        const prev = screen.getByRole('button', { name: 'prev' });
+        const reset = screen.getByRole('button', { name: /reset*/i });
+
+        userEvent.click(prev);
+        userEvent.click(prev);
+        userEvent.click(reset);
+
+        const endDate = moment(END_DATE)
+          .startOf(value.momentUnit)
+          .format(value.rangeFormat);
+        expect(labelText).toHaveTextContent(endDate);
+      });
+    }
+  }
 });
