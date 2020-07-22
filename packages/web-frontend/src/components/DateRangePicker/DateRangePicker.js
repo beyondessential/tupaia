@@ -90,7 +90,7 @@ const getDatesAsString = (isSingleDate, granularity, startDate, endDate) => {
   const formattedStartDate = startDate.format(rangeFormat);
   const formattedEndDate = endDate.startOf(momentUnit).format(rangeFormat);
 
-  return isSingleDate ? formattedStartDate : `${formattedStartDate} - ${formattedEndDate}`;
+  return isSingleDate ? formattedEndDate : `${formattedStartDate} - ${formattedEndDate}`;
 };
 
 const minMomentDate = moment(MIN_DATE_PICKER_DATE);

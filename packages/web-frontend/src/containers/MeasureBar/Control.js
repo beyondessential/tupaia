@@ -136,7 +136,7 @@ export const Control = ({
           period={selectedMeasure.periodGranularity}
           onClick={toggleMeasures}
         >
-          <ContentText>{isMeasureLoading ? 'Loading...' : selectedMeasure.name}</ContentText>
+          <ContentText>{selectedMeasure.name}</ContentText>
           <IconWrapper>
             <DownArrow />
           </IconWrapper>
