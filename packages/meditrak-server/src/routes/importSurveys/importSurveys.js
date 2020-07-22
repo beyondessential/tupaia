@@ -65,16 +65,20 @@ const updateOrCreateDataGroup = async (models, { surveyCode, serviceType }) => {
 };
 
 const updateOrCreateDataElementInGroup = async (models, dataElementCode, dataGroup) => {
-  const fieldsToUpdate = { service_type: dataGroup.service_type };
+  const { service_type: serviceType, config } = dataGroup;
 
-  await assertCanAddDataElementInGroup(models, dataElementCode, dataGroup.code, fieldsToUpdate);
+  await assertCanAddDataElementInGroup(models, dataElementCode, dataGroup.code, {
+    service_type: serviceType,
+    config,
+  });
   const dataElement = await models.dataSource.updateOrCreate(
     {
       type: models.dataSource.getTypes().DATA_ELEMENT,
       code: dataElementCode,
     },
-    fieldsToUpdate,
+    { service_type: serviceType },
   );
+  dataElement.config = { ...dataElement.config, ...config };
   dataElement.sanitizeConfig();
   await dataElement.save();
 
