@@ -737,10 +737,10 @@ function* fetchCurrentMeasureInfo() {
   const { measureHierarchy, selectedMeasureId } = state.measureBar;
 
   if (currentOrganisationUnitCode) {
-    const isHeirarchyPopulated = Object.keys(measureHierarchy).length;
+    const isHierarchyPopulated = measureHierarchy.length;
 
     // Update the default measure ID
-    if (isHeirarchyPopulated) {
+    if (isHierarchyPopulated) {
       const newMeasure = getSelectedMeasureFromHierarchy(
         measureHierarchy,
         selectedMeasureId,

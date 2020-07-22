@@ -135,7 +135,7 @@ export class MeasureBar extends Component {
     const { isExpanded, measureHierarchy } = this.props;
 
     if (!isExpanded) return null;
-    if (Object.keys(measureHierarchy).length === 0) return this.renderEmptyMessage();
+    if (measureHierarchy.length === 0) return this.renderEmptyMessage();
 
     return this.renderHierarchy();
   }
@@ -181,7 +181,7 @@ const MeasureShape = PropTypes.shape({
 
 MeasureBar.propTypes = {
   currentMeasure: MeasureShape.isRequired,
-  measureHierarchy: PropTypes.shape({}).isRequired,
+  measureHierarchy: PropTypes.array.isRequired,
   isExpanded: PropTypes.bool.isRequired,
   isMeasureLoading: PropTypes.bool.isRequired,
   onExpandClick: PropTypes.func.isRequired,
