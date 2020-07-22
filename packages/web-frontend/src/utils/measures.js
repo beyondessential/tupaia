@@ -167,12 +167,12 @@ export function flattenMeasureHierarchy(measureHierarchy) {
   };
 
   measureHierarchy.forEach(measure => {
-      if (measure.children) {
-        flattenGroupedMeasure(measure);
-      } else {
-        results.push(measure);
-      }
-    });
+    if (measure.children) {
+      flattenGroupedMeasure(measure);
+    } else {
+      results.push(measure);
+    }
+  });
 
   return results;
 }
