@@ -76,13 +76,13 @@ export class EntityHierarchyBuilder {
         : await this.getNextGeneration(entities, hierarchyId);
 
     // if we've made it to the leaf nodes, return an empty array
-    if (relations.length === 0) {
+    if (!relations || relations.length === 0) {
       return [];
     }
 
     // keep recursing through the hierarchy
     const generations = await this.recurseNonCanonicalHierarchy(relations, hierarchyId, direction);
-    return [...relations, ...generations];
+    return [...[].concat(relations), ...[].concat(generations)];
   }
 
   getNextGeneration = async (parents, hierarchyId) => {
