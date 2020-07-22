@@ -26,7 +26,7 @@ git reset --hard origin/${BRANCH}
 yarn install
 
 # For each package, get the latest and deploy it
-for PACKAGE in "meditrak-server" "web-config-server" "web-frontend" "admin-panel"; do
+for PACKAGE in "meditrak-server" "web-config-server" "web-frontend" "admin-panel" "psss"; do
     # Set up .env to match the environment variables stored in SSM parameter store
     cd ${HOME_DIRECTORY}/packages/$PACKAGE
     rm .env

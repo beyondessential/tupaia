@@ -7,6 +7,7 @@
 
 import generateUUID from 'bson-objectid';
 import moment from 'moment';
+import RNFS from 'react-native-fs';
 
 import { synchroniseDatabase } from '../../sync';
 import { getFileInDocumentsPath, imageDataIsFileName } from '../../utilities';
@@ -15,7 +16,7 @@ import { SURVEY_SUBMIT, SURVEY_SUBMIT_SUCCESS } from '../constants';
 import { addMessage } from '../../messages';
 import { goBack } from '../../navigation';
 import { getAnswers, getScreens, getValidQuestions } from '../selectors';
-import { changeAnswer, saveImage, selectSurvey, validateScreen } from './actions';
+import { changeAnswer, selectSurvey, validateScreen } from './actions';
 import {
   doesScreenHaveValidationErrors,
   getDefaultEntitySettingKey,
@@ -31,13 +32,14 @@ const getValidatedScreens = (dispatch, getState) => {
   return getScreens(getState()); // Re-fetch state now validation is added
 };
 
-const processAnswerForDatabase = async (dispatch, questionId, type, answer) => {
+const processAnswerForDatabase = async (database, questionId, type, answer) => {
   let processedAnswer = answer;
   if (type === 'Photo' && imageDataIsFileName(answer)) {
     const localFilename = getFileInDocumentsPath(answer);
     const fileId = generateUUID().toString();
 
-    dispatch(saveImage(localFilename, fileId));
+    const imageData = await RNFS.readFile(localFilename, 'base64');
+    database.saveImage(fileId, imageData);
     processedAnswer = fileId;
   }
 
@@ -117,7 +119,7 @@ const processQuestions = async (dispatch, getState, database, userId, questions)
       }
       default:
         answersToSubmit.push(
-          await processAnswerForDatabase(dispatch, question.id, question.type, answer),
+          await processAnswerForDatabase(database, question.id, question.type, answer),
         );
         break;
     }
