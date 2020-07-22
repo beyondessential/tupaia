@@ -345,6 +345,11 @@ export const selectProjectByCode = (state, code) =>
 
 export const selectActiveProjectCode = state => state.project.activeProjectCode;
 
+export const selectActiveProject = createSelector(
+  [state => selectProjectByCode(state, state.project.activeProjectCode)],
+  activeProject => activeProject || {},
+);
+
 export const selectAdjustedProjectBounds = (state, code) => {
   if (code === 'explore' || code === 'disaster') {
     return initialOrgUnit.location.bounds;

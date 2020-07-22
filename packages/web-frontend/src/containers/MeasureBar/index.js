@@ -26,7 +26,11 @@ import { changeMeasure, clearMeasure, toggleMeasureExpand } from '../../actions'
 import { HierarchyItem } from '../../components/HierarchyItem';
 import TupaiaIcon from '../../images/TupaiaIcon.svg';
 import { MAP_OVERLAY_SELECTOR } from '../../styles';
-import { selectCurrentOrgUnit } from '../../selectors';
+import {
+  selectCurrentOrgUnit,
+  selectActiveProject,
+  selectMeasureBarItemById,
+} from '../../selectors';
 
 export class MeasureBar extends Component {
   constructor(props) {
@@ -54,14 +58,14 @@ export class MeasureBar extends Component {
   };
 
   renderSelectedMeasure() {
-    const { currentMeasure, currentOrganisationUnitCode } = this.props;
+    const { currentMeasure, currentOrganisationUnitCode, defaultMeasure } = this.props;
 
     return (
       <HierarchyItem
         nestedMargin="0px"
-        label={currentMeasure.name}
-        isSelected={currentMeasure.measureId}
-        onClick={() => this.handleSelectMeasure(currentMeasure, currentOrganisationUnitCode)}
+        label={defaultMeasure.name}
+        isSelected={currentMeasure.measureId === defaultMeasure.measureId}
+        onClick={() => this.handleSelectMeasure(defaultMeasure, currentOrganisationUnitCode)}
       />
     );
   }
@@ -189,12 +193,15 @@ MeasureBar.propTypes = {
   onClearMeasure: PropTypes.func.isRequired,
   currentOrganisationUnitCode: PropTypes.string,
   currentOrganisationUnitName: PropTypes.string,
+  defaultMeasure: MeasureShape.isRequired,
 };
 
 const mapStateToProps = state => {
   const { currentMeasure, measureHierarchy, isExpanded } = state.measureBar;
   const { isMeasureLoading } = state.map;
   const { currentOrganisationUnitCode } = state.global;
+  const activeProject = selectActiveProject(state);
+  const defaultMeasure = selectMeasureBarItemById(state, activeProject.defaultMeasure) || {};
 
   return {
     currentMeasure,
@@ -203,6 +210,7 @@ const mapStateToProps = state => {
     isMeasureLoading,
     currentOrganisationUnitCode,
     currentOrganisationUnitName: selectCurrentOrgUnit(state).name,
+    defaultMeasure: defaultMeasure,
   };
 };
 
