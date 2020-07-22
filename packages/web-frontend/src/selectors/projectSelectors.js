@@ -1,6 +1,13 @@
 import { createSelector } from 'reselect';
-import { selectCurrentProjectCode } from './urlSelectors';
-import { initialOrgUnit } from '../../defaults';
+import { initialOrgUnit } from '../defaults';
+
+import { getUrlComponent, URL_COMPONENTS } from '../historyNavigation';
+
+import { selectLocation } from './utils';
+
+export const selectCurrentProjectCode = createSelector([selectLocation], location =>
+  getUrlComponent(URL_COMPONENTS.PROJECT, location),
+);
 
 export const selectIsProject = createSelector(
   [state => state.project.projects, (_, code) => code],

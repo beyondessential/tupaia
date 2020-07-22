@@ -1,5 +1,10 @@
-import createCachedSelector from 're-reselect';
-import { getMeasureDisplayInfo } from '../../utils/measures';
+import { createSelector } from 'reselect';
+import { createCachedSelector } from 're-reselect';
+
+import { getUrlComponent, URL_COMPONENTS } from '../historyNavigation';
+
+import { selectCurrentProjectCode } from './projectSelectors';
+import { getOrgUnitFromCountry, selectLocation, safeGet } from './utils';
 
 /**
  * Private caches
@@ -87,37 +92,9 @@ const ancestorsCache = createCachedSelector(
   },
 )((_, code, level) => `${code}_${level}`);
 
-const displayInfoCache = createCachedSelector(
-  [
-    measureOptions => measureOptions,
-    (_, hiddenMeasures) => hiddenMeasures,
-    (_, __, data) => data,
-    (_, __, ___, organisationUnitCode) => organisationUnitCode,
-  ],
-  (options = [], hiddenMeasures, data, organisationUnitCode) => {
-    return {
-      organisationUnitCode,
-      ...data,
-      ...getMeasureDisplayInfo({ ...data }, options, hiddenMeasures),
-    };
-  },
-)((_, __, ___, organisationUnitCode) => organisationUnitCode);
-
-// Private utility functions
-
-/**
- * Should be used as a wrapper when accessing caches, to ensure we aren't caching invalid lookups
- */
-const safeGet = (cache, args) => (cache.keySelector(...args) ? cache(...args) : undefined);
-
-// Not sure where these go?
-export const getOrgUnitFromCountry = (country, code) =>
-  country && code ? country[code] : undefined;
-
-const getOrgUnitFromMeasureData = (measureData, code) =>
-  measureData.find(val => val.organisationUnitCode === code);
-
-// These selectors are the only ones that can access caches, and must do so through safeGet.
+export const selectCurrentOrgUnitCode = createSelector([selectLocation], location =>
+  getUrlComponent(URL_COMPONENTS.ORG_UNIT, location),
+);
 
 export const selectOrgUnitChildrenFromCache = (country, parentCode) =>
   safeGet(orgUnitChildrenCache, [country, parentCode]);
@@ -130,13 +107,78 @@ export const selectAncestors = (country, code, level) =>
 
 export const selectAllOrgUnitsInCountry = country => safeGet(allCountryOrgUnitsCache, [country]);
 
-export const selectDisplayInfo = (state, orgUnit) =>
-  safeGet(displayInfoCache, [
-    state.map.measureInfo.measureOptions,
-    state.map.measureInfo.hiddenMeasures,
-    getOrgUnitFromMeasureData(state.map.measureInfo.measureData, orgUnit.organisationUnitCode),
-    orgUnit.organisationUnitCode,
-  ]);
-
 export const selectDescendantsFromCache = (country, code) =>
   safeGet(descendantsCache, [country, code]);
+export const selectOrgUnit = createSelector(
+  [selectCountryHeirachy, (_, code) => code],
+  getOrgUnitFromCountry,
+);
+
+export const selectOrgUnitCountry = createSelector([selectCountryHeirachy], country =>
+  country ? country[country.countryCode] : undefined,
+);
+
+// QUESTION: Is this a good pattern?
+export const selectCurrentOrgUnit = createSelector(
+  [state => selectOrgUnit(state, selectCurrentOrgUnitCode(state))],
+  currentOrgUnit => currentOrgUnit || {},
+);
+
+export const selectCountriesAsOrgUnits = createSelector(
+  [state => state.orgUnits.orgUnitMap],
+  orgUnitMap =>
+    Object.entries(orgUnitMap)
+      .map(([countryCode, countryHierarchy]) =>
+        getOrgUnitFromCountry(countryHierarchy, countryCode),
+      )
+      .filter(country => country && country.type === 'Country'),
+);
+
+export const selectOrgUnitChildren = createSelector(
+  [
+    state => selectCurrentProjectCode(state),
+    state => selectCountriesAsOrgUnits(state),
+    selectCountryHeirachy,
+    (_, code) => code,
+  ],
+  (projectCode, countriesAsOrgUnits, country, code) =>
+    code === projectCode ? countriesAsOrgUnits : selectOrgUnitChildrenFromCache(country, code),
+);
+
+const selectOrgUnitSiblingsAndSelf = createSelector(
+  [
+    state => selectCurrentProjectCode(state),
+    (state, code) => getOrgUnitParent(selectOrgUnit(state, code)),
+    state => selectCountriesAsOrgUnits(state),
+    state => selectCountryHeirachy(state),
+  ],
+  (projectCode, parentCode, countriesAsOrgUnits, country) => {
+    if (!parentCode) {
+      return [];
+    }
+    return parentCode === projectCode
+      ? countriesAsOrgUnits
+      : selectOrgUnitChildrenFromCache(country, parentCode);
+  },
+);
+
+export const selectOrgUnitSiblings = createSelector(
+  [selectOrgUnitSiblingsAndSelf, (_, code) => code],
+  (siblings, code) => {
+    return siblings.filter(orgUnit => orgUnit.organisationUnitCode !== code);
+  },
+);
+
+export const selectActiveProjectCountries = createSelector(
+  [state => state.orgUnits.orgUnitMap, state => selectCurrentProjectCode(state)],
+  (orgUnitMap, activeProjectCode) => {
+    const orgUnits = Object.values(orgUnitMap)
+      .map(({ countryCode, ...orgUnits }) => {
+        return orgUnits[countryCode];
+      })
+      .filter((org = {}) => org.type === 'Country' && org.parent === activeProjectCode);
+    return orgUnits;
+  },
+);
+
+const getOrgUnitParent = orgUnit => (orgUnit ? orgUnit.parent : undefined);

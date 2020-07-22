@@ -1,18 +1,7 @@
 import { createSelector } from 'reselect';
 import { POLYGON_MEASURE_TYPES, calculateRadiusScaleFactor } from '../utils/measures';
 import { getMeasureFromHierarchy } from '../utils';
-import {
-  selectCurrentProjectCode,
-  selectCurrentOrgUnitCode,
-  selectCurrentOverlayCode,
-  selectCurrentOrgUnit,
-  selectCountryHeirachy,
-  selectAncestors,
-  selectAllOrgUnitsInCountry,
-  selectDisplayInfo,
-  selectDescendantsFromCache,
-  getOrgUnitFromCountry,
-} from './baseSelectors';
+import { getOrgUnitFromCountry } from './utils';
 
 // QUESTION: Good pattern? Selectors folder?
 
@@ -25,18 +14,6 @@ import {
  */
 
 // Private selectors
-
-const selectActiveProjectCountries = createSelector(
-  [state => state.orgUnits.orgUnitMap, state => selectCurrentProjectCode(state)],
-  (orgUnitMap, activeProjectCode) => {
-    const orgUnits = Object.values(orgUnitMap)
-      .map(({ countryCode, ...orgUnits }) => {
-        return orgUnits[countryCode];
-      })
-      .filter((org = {}) => org.type === 'Country' && org.parent === activeProjectCode);
-    return orgUnits;
-  },
-);
 
 const selectDisplayLevelAncestor = createSelector(
   [selectCurrentOrgUnit, selectCurrentOrgUnitCode, state => state.map.measureInfo.measureOptions],
