@@ -82,7 +82,8 @@ export class EntityHierarchyBuilder {
 
     // keep recursing through the hierarchy
     const generations = await this.recurseNonCanonicalHierarchy(relations, hierarchyId, direction);
-    return [...[].concat(relations), ...[].concat(generations)];
+    // using concat here because relations and generations aren't guaranteed to be arrays
+    return [].concat(relations).concat(generations);
   }
 
   getNextGeneration = async (parents, hierarchyId) => {

@@ -141,7 +141,7 @@ export class Entity extends BaseModel {
 
   async getCountry(hierarchyId) {
     if (this.type === COUNTRY) return this;
-    return await this.getAncestorOfType(COUNTRY, hierarchyId);
+    return this.getAncestorOfType(COUNTRY, hierarchyId);
   }
 
   async getChildren(hierarchyId) {
