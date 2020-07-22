@@ -193,7 +193,7 @@ MeasureBar.propTypes = {
   onClearMeasure: PropTypes.func.isRequired,
   currentOrganisationUnitCode: PropTypes.string,
   currentOrganisationUnitName: PropTypes.string,
-  defaultMeasure: MeasureShape.isRequired,
+  defaultMeasure: MeasureShape,
 };
 
 const mapStateToProps = state => {
