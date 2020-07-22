@@ -57,7 +57,7 @@ export class MeasureBar extends Component {
     this.props.onSelectMeasure(measure, organisationUnitCode);
   };
 
-  renderSelectedMeasure() {
+  renderDefaultMeasure() {
     const { currentMeasure, currentOrganisationUnitCode, defaultMeasure } = this.props;
 
     return (
@@ -104,9 +104,9 @@ export class MeasureBar extends Component {
   }
 
   renderHierarchy() {
-    const { measureHierarchy } = this.props;
+    const { measureHierarchy, defaultMeasure } = this.props;
 
-    const items = measureHierarchy.map(({name: groupName, children}) => {
+    const items = measureHierarchy.map(({ name: groupName, children }) => {
       if (!Array.isArray(children)) return null;
       const nestedItems = this.renderNestedHierarchyItems(children);
       if (nestedItems.length === 0) return null;
@@ -122,7 +122,7 @@ export class MeasureBar extends Component {
 
     return (
       <React.Fragment>
-        {this.renderSelectedMeasure()}
+        {defaultMeasure ? this.renderDefaultMeasure() : null}
         {items}
       </React.Fragment>
     );
@@ -201,7 +201,7 @@ const mapStateToProps = state => {
   const { isMeasureLoading } = state.map;
   const { currentOrganisationUnitCode } = state.global;
   const activeProject = selectActiveProject(state);
-  const defaultMeasure = selectMeasureBarItemById(state, activeProject.defaultMeasure) || {};
+  const defaultMeasure = selectMeasureBarItemById(state, activeProject.defaultMeasure);
 
   return {
     currentMeasure,
