@@ -66,7 +66,10 @@ export function resolveSpectrumColour(scaleType, scaleColorScheme, value, min, m
 }
 
 const normaliseToPercentage = (value, min = 0, max = 1) => {
-  return (value - min) / (max - min);
+  const normalisedValue = (value - min) / (max - min);
+
+  // Always clamp the result between 0 and 1
+  return Math.max(0, Math.min(1, normalisedValue));
 };
 /**
  * Takes a value and return a hsl color string for use as a style

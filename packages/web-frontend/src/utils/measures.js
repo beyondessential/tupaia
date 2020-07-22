@@ -124,7 +124,16 @@ function getFormattedValue(value, type, valueInfo, scaleType, valueType, submiss
 }
 
 const getSpectrumScaleValues = (measureData, measureOption) => {
-  const { key, scaleType, valueType, scaleMin, scaleMax, startDate, endDate } = measureOption;
+  const {
+    key,
+    scaleType,
+    valueType,
+    scaleMin,
+    scaleMax,
+    startDate,
+    endDate,
+    shouldHardLimitSpectrumRange = false,
+  } = measureOption;
 
   if (scaleType === SCALE_TYPES.TIME) {
     return { min: startDate, max: endDate };
@@ -136,21 +145,32 @@ const getSpectrumScaleValues = (measureData, measureOption) => {
     return getExtremesOfData(
       scaleMin || 0,
       scaleMax === 'auto' ? null : scaleMax || 1,
+      shouldHardLimitSpectrumRange,
       flattenedMeasureData,
     );
   }
 
-  return getExtremesOfData(scaleMin, scaleMax, flattenedMeasureData);
+  return getExtremesOfData(scaleMin, scaleMax, shouldHardLimitSpectrumRange, flattenedMeasureData);
 };
 
-const getExtremesOfData = (manualMin, manualMax, data) => {
+const getExtremesOfData = (manualMin, manualMax, shouldHardLimitSpectrumRange, data) => {
   // coerce to number before checking for isNan, identical to "isNaN(scaleMin)". Allows for '0' and true to be valid
   const hasNumberScaleMin = !Number.isNaN(Number(manualMin));
   const hasNumberScaleMax = !Number.isNaN(Number(manualMax));
 
+  const dataMin = Math.min(...data);
+  const dataMax = Math.max(...data);
+
+  if (shouldHardLimitSpectrumRange) {
+    return {
+      min: hasNumberScaleMin ? manualMin : dataMin,
+      max: hasNumberScaleMax ? manualMax : dataMax,
+    };
+  }
+
   return {
-    min: hasNumberScaleMin ? Math.min(manualMin, ...data) : Math.min(...data),
-    max: hasNumberScaleMax ? Math.max(manualMax, ...data) : Math.max(...data),
+    min: hasNumberScaleMin ? Math.min(manualMin, dataMin) : dataMin,
+    max: hasNumberScaleMax ? Math.max(manualMax, dataMax) : dataMax,
   };
 };
 
