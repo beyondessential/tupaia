@@ -210,7 +210,7 @@ const mapStateToProps = state => {
     isMeasureLoading,
     currentOrganisationUnitCode,
     currentOrganisationUnitName: selectCurrentOrgUnit(state).name,
-    defaultMeasure: defaultMeasure,
+    defaultMeasure,
   };
 };
 
