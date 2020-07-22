@@ -34,8 +34,14 @@ function createUrl(pathParams, searchParams) {
   }
 
   const pathname = `/${urlComponents.join('/')}`;
-
-  return { pathname, search: replaceKeysAndRemoveNull(searchParams, SEARCH_PARAM_KEY_MAP) };
+  const search = replaceKeysAndRemoveNull(searchParams, SEARCH_PARAM_KEY_MAP);
+  const hi =
+    searchParams && Object.keys(replaceKeysAndRemoveNull(searchParams, SEARCH_PARAM_KEY_MAP)).length
+      ? `?${Object.entries(replaceKeysAndRemoveNull(searchParams, SEARCH_PARAM_KEY_MAP))
+          .map(([key, val]) => `${key}=${val}`)
+          .join('&')}`
+      : '';
+  return { pathname, search };
 }
 
 export function createUrlString(params) {
@@ -63,7 +69,7 @@ function isLocationEqual(a, b) {
     */
 }
 
-function pushHistory(pathname, searchParams) {
+export function pushHistory(pathname, searchParams) {
   const location = getCurrentLocation();
 
   const search = queryString.stringify(searchParams);
@@ -156,6 +162,7 @@ export const setUrlComponent = (component, value, initialLocation) => {
   });
 
   const { pathname, search } = createUrl(pathParams, searchParams);
+  console.log('setting!', component, value, pathname, search);
   return { pathname, search };
 };
 

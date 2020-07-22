@@ -7,8 +7,8 @@
 
 import { createSelector } from 'reselect';
 
-import { getUrlComponent } from './historyNavigation';
-import { URL_COMPONENTS } from './constants';
+import { getUrlComponent } from '../historyNavigation/historyNavigation';
+import { URL_COMPONENTS } from '../historyNavigation/constants';
 
 const selectLocation = state => state.routing;
 

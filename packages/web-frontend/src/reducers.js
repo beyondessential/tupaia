@@ -36,7 +36,7 @@ import {
   ATTEMPT_REQUEST_COUNTRY_ACCESS,
   CHANGE_SIDE_BAR_CONTRACTED_WIDTH,
   CHANGE_SIDE_BAR_EXPANDED_WIDTH,
-  CHANGE_MEASURE,
+  ON_SET_MEASURE,
   CLEAR_MEASURE_HIERARCHY,
   ON_SET_ORG_UNIT,
   CHANGE_SEARCH,
@@ -528,7 +528,7 @@ function measureBar(
   state = {
     isExpanded: false,
     selectedMeasureId: null,
-    currentMeasure: {},
+    //currentMeasure: {},
     measureHierarchy: {},
     currentMeasureOrganisationUnitCode: null,
     error: null,
@@ -539,13 +539,13 @@ function measureBar(
     case CLEAR_MEASURE_HIERARCHY:
       return { ...state, measureHierarchy: {} };
     case CLEAR_MEASURE:
-      return { ...state, currentMeasure: {}, selectedMeasureId: null };
-    case CHANGE_MEASURE:
+      return { ...state, currentMeasure: {} /*, selectedMeasureId: null TODO*/ };
+    case ON_SET_MEASURE:
       return {
         ...state,
         hiddenMeasures: {},
-        currentMeasure: getMeasureFromHierarchy(state.measureHierarchy, action.measureId) || {},
-        selectedMeasureId: action.measureId,
+        //currentMeasure: getMeasureFromHierarchy(state.measureHierarchy, action.measureId) || {},
+        //selectedMeasureId: action.measureId, now stored in url // TODO
         currentMeasureOrganisationUnitCode: action.organisationUnitCode,
       };
     case TOGGLE_MEASURE_EXPAND:
@@ -556,8 +556,8 @@ function measureBar(
         measureHierarchy: action.response.measures,
         // If a new set of measures has come through, refresh the currentMeasure using the currently
         // selected measure id.
-        currentMeasure:
-          getMeasureFromHierarchy(action.response.measures, state.selectedMeasureId) || {},
+        // should remove this key
+        //currentMeasure: getMeasureFromHierarchy(action.response.measures, 'hi TODO') || {},
         error: null,
       };
     case FETCH_MEASURES_ERROR:

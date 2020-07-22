@@ -4,16 +4,18 @@ import {
   POLYGON_MEASURE_TYPES,
   getMeasureDisplayInfo,
   calculateRadiusScaleFactor,
-} from './utils/measures';
+} from '../utils/measures';
+import { getMeasureFromHierarchy } from '../utils';
 import {
   selectCurrentProjectCode,
   selectCurrentOrgUnitCode,
   selectCurrentDashboardGroupCode,
-} from './historyNavigation';
-import { initialOrgUnit } from './defaults';
+  selectCurrentOverlayCode,
+} from '../historyNavigation';
+import { initialOrgUnit } from '../defaults';
 
 // QUESTION: Good pattern? Selectors folder?
-export { selectCurrentProjectCode, selectCurrentOrgUnitCode, selectCurrentDashboardGroupCode };
+
 /**
  * Selectors
  * These can be handy tools to allow for components/sagas to interact with the redux state, and fetch data from it.
@@ -220,6 +222,12 @@ export const selectCurrentOrgUnit = createSelector(
 export const selectCurrentProject = createSelector(
   [state => selectProjectByCode(state, selectCurrentProjectCode(state))],
   currentProject => currentProject || {},
+);
+
+export const selectCurrentMeasure = createSelector(
+  [selectCurrentOverlayCode, state => state.measureBar.measureHierarchy],
+  (currentMeasureId, measureHierarchy) =>
+    getMeasureFromHierarchy(measureHierarchy, currentMeasureId),
 );
 
 export const selectOrgUnitChildren = createSelector(

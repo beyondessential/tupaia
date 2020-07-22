@@ -15,6 +15,7 @@ import {
   selectOrgUnitCountry,
   selectCurrentProjectCode,
   selectCurrentProject,
+  selectCurrentOverlayCode,
   selectIsProject,
   selectMeasureBarItemById,
 } from './selectors';
@@ -30,7 +31,7 @@ import {
   ON_SET_ORG_UNIT,
   FETCH_INFO_VIEW_DATA,
   CHANGE_SEARCH,
-  CHANGE_MEASURE,
+  ON_SET_MEASURE,
   FIND_USER_LOGGEDIN,
   FETCH_LOGOUT_SUCCESS,
   FETCH_LOGIN_SUCCESS,
@@ -720,7 +721,7 @@ function* fetchMeasureInfoForMeasureChange(action) {
 }
 
 function* watchMeasureChange() {
-  yield takeLatest(CHANGE_MEASURE, fetchMeasureInfoForMeasureChange);
+  yield takeLatest(ON_SET_MEASURE, fetchMeasureInfoForMeasureChange);
 }
 
 function getSelectedMeasureFromHierarchy(measureHierarchy, selectedMeasureId, project) {
@@ -738,7 +739,8 @@ function* fetchCurrentMeasureInfo() {
   const state = yield select();
   const currentOrganisationUnitCode = selectCurrentOrgUnitCode(state);
   const { measureId } = state.map.measureInfo;
-  const { measureHierarchy, selectedMeasureId } = state.measureBar;
+  const { measureHierarchy } = state.measureBar;
+  const selectedMeasureId = selectCurrentOverlayCode(state);
 
   if (currentOrganisationUnitCode) {
     const isHeirarchyPopulated = Object.keys(measureHierarchy).length;

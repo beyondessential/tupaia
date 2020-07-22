@@ -7,4 +7,3 @@
 
 export { historyMiddleware, reactToInitialState, initHistoryDispatcher } from './historyMiddleware';
 export { createUrlString } from './historyNavigation';
-export * from './selectors';

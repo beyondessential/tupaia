@@ -23,7 +23,7 @@ import {
   CHANGE_DASHBOARD_GROUP,
   OPEN_ENLARGED_DIALOG,
   CLOSE_ENLARGED_DIALOG,
-  CHANGE_MEASURE,
+  SET_MEASURE,
   CLEAR_MEASURE,
   GO_HOME,
   onSetOrgUnit,
@@ -33,7 +33,12 @@ import {
 
 import { onSetProject } from '../projects/actions';
 
-import { setUrlComponent, getCurrentUrlComponents, clearUrl } from './historyNavigation';
+import {
+  setUrlComponent,
+  getCurrentUrlComponents,
+  clearUrl,
+  pushHistory,
+} from './historyNavigation';
 import { URL_COMPONENTS } from './constants';
 
 // TODO: import { gaPageView } from '../utils';
@@ -55,6 +60,9 @@ export const reactToInitialState = ({ dispatch }) => {
   dispatch(onSetProject(otherComponents[URL_COMPONENTS.PROJECT], false));
   if (otherComponents[URL_COMPONENTS.ORG_UNIT])
     dispatch(onSetOrgUnit(otherComponents[URL_COMPONENTS.ORG_UNIT], true));
+
+  if (otherComponents[URL_COMPONENTS.MEASURE])
+    dispatch(onSetMeasure(otherComponents[URL_COMPONENTS.ORG_UNIT], true));
 };
 
 export const historyMiddleware = state => next => action => {
@@ -96,7 +104,7 @@ export const historyMiddleware = state => next => action => {
       newLocation = setUrlComponent(URL_COMPONENTS.REPORT, null, newLocation);
       dispatch(doUpdateUrl(newLocation));
       break;
-    case CHANGE_MEASURE:
+    case SET_MEASURE:
       newLocation = setUrlComponent(URL_COMPONENTS.MEASURE, action.measureId, newLocation);
       dispatch(doUpdateUrl(newLocation));
       break;
@@ -126,14 +134,11 @@ export const initHistoryDispatcher = store => {
   // URL in the browser if we change it inside our app state in Redux.
   // We can simply subscribe to Redux and update it if it's different.
   store.subscribe(() => {
-    const { pathname } = store.getState().routing;
-    if (location.pathname !== pathname) {
+    const { pathname, search } = store.getState().routing;
+    if (location.pathname !== pathname || location.search !== search) {
       console.log(pathname, location.pathname);
-      window.history.pushState(null, '', pathname);
-      // Force scroll to top this is what browsers normally do when
-      // navigating by clicking a link.
-      // Without this, scroll stays wherever it was which can be quite odd.
-      document.body.scrollTop = 0;
+      // window.history.pushState(null, '', pathname + search);
+      pushHistory(pathname, search);
     }
   });
 };
