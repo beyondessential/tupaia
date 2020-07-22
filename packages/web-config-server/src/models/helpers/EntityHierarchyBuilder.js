@@ -4,7 +4,7 @@
  */
 const asc = 'asc';
 const desc = 'desc';
-const newCache = { asc: {}, desc: {} };
+const newCache = () => ({ asc: {}, desc: {} });
 
 const constructTypesCriteria = (types, prefix) =>
   types.length > 0 ? `${prefix} type IN (${types.map(() => '?').join(',')})` : '';
