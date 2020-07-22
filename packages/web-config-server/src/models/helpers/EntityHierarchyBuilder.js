@@ -114,7 +114,7 @@ export class EntityHierarchyBuilder {
         })
       : null;
     if (parentAlternativeRelation) {
-      return this.models.entity.findOne({ id: parentAlternativeRelation.id });
+      return this.models.entity.findOne({ id: parentAlternativeRelation.parent_id });
     }
     return this.models.entity.findOne({ id: child.parent_id });
   };
