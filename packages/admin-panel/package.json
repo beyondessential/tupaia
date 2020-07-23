@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
+    "@material-ui/core": "^4.9.11",
+    "@material-ui/icons": "^4.9.1",
+    "@material-ui/styles": "^4.9.10",
     "@tupaia/access-policy": "3.0.0",
     "@tupaia/utils": "1.0.0",
     "bootstrap": "^4.3.1",
@@ -13,9 +16,10 @@
     "parse-link-header": "^1.0.1",
     "prop-types": "^15.6.0",
     "query-string": "^5.1.1",
-    "react": "^16.2.0",
+    "react": "^16.13.1",
+    "react-autobind": "^1.0.6",
     "react-datepicker": "^1.6.0",
-    "react-dom": "^16.2.0",
+    "react-dom": "^16.13.1",
     "react-icons": "^2.2.7",
     "react-redux": "^5.0.6",
     "react-router": "^4.2.0",
@@ -28,6 +32,7 @@
     "redux-auth-wrapper": "^2.0.1",
     "redux-persist": "5.0.0-beta.7",
     "redux-thunk": "^2.2.0",
+    "styled-components": "^5.1.0",
     "uuid": "^3.2.1"
   },
   "devDependencies": {
