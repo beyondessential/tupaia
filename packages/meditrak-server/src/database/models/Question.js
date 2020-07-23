@@ -13,6 +13,8 @@ class QuestionType extends DatabaseType {
 const HOOKS_BY_ID_CACHE_KEY = 'hooksByQuestionId';
 
 export class QuestionModel extends DatabaseModel {
+  notifiers = [onChangeUpdateDataElement];
+
   get DatabaseTypeClass() {
     return QuestionType;
   }
@@ -32,3 +34,16 @@ export class QuestionModel extends DatabaseModel {
     });
   }
 }
+
+const onChangeUpdateDataElement = async ({ type: changeType, record }, models) => {
+  const { code, data_source_id: dataSourceId } = record;
+
+  switch (changeType) {
+    case 'update':
+      return models.dataSource.updateById(dataSourceId, { code });
+    case 'delete':
+      return models.dataSource.deleteById(dataSourceId);
+    default:
+      throw new Error(`Non supported change type: ${changeType}`);
+  }
+};
