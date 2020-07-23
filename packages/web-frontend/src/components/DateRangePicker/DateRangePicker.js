@@ -149,6 +149,7 @@ export const DateRangePicker = ({
         {isSingleDate && align === 'center' && (
           <ArrowButton
             type="button"
+            aria-label="prev"
             onClick={() => changePeriod(-1)}
             disabled={isLoading || prevDisabled}
           >
@@ -160,7 +161,7 @@ export const DateRangePicker = ({
             <DateRangeIcon />
           </IconButton>
           <LabelContainer>
-            <Label>{labelText}</Label>
+            <Label aria-label="active-date">{labelText}</Label>
             <ResetLabel component="button" onClick={handleReset}>
               Reset to default
             </ResetLabel>
@@ -171,6 +172,7 @@ export const DateRangePicker = ({
             {align === 'left' && (
               <ArrowButton
                 type="button"
+                aria-label="prev"
                 onClick={() => changePeriod(-1)}
                 disabled={isLoading || prevDisabled}
               >
@@ -179,6 +181,7 @@ export const DateRangePicker = ({
             )}
             <ArrowButton
               type="button"
+              aria-label="next"
               onClick={() => changePeriod(1)}
               disabled={isLoading || nextDisabled}
             >
