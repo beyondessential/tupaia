@@ -5,29 +5,18 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import autobind from 'react-autobind';
 import { connect } from 'react-redux';
 import { exportData } from './actions';
 import { ImportExportModal } from './ImportExportModal';
 
-export class ExportModalComponent extends React.Component {
-  constructor(props) {
-    super(props);
-    autobind(this);
-  }
-
-  render() {
-    const { onExport, isOpen, ...restOfProps } = this.props;
-    return (
-      <ImportExportModal
-        confirmLabel="Export"
-        onConfirm={(queryParameters, parentRecord) => onExport(queryParameters, parentRecord)}
-        isOpen={isOpen}
-        {...restOfProps}
-      />
-    );
-  }
-}
+const ExportModalComponent = ({ onExport, isOpen, ...restOfProps }) => (
+  <ImportExportModal
+    confirmLabel="Export"
+    onConfirm={(queryParameters, parentRecord) => onExport(queryParameters, parentRecord)}
+    isOpen={isOpen}
+    {...restOfProps}
+  />
+);
 
 ExportModalComponent.propTypes = {
   onExport: PropTypes.func.isRequired,

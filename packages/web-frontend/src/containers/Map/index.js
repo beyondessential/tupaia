@@ -33,14 +33,7 @@ import {
 } from '../../actions';
 
 const mapStateToProps = state => {
-  const {
-    isAnimating,
-    shouldSnapToPosition,
-    position,
-    innerAreas,
-    measureInfo,
-    tileSet,
-  } = state.map;
+  const { isAnimating, shouldSnapToPosition, position, measureInfo, tileSet } = state.map;
   const { isSidePanelExpanded } = state.global;
   const { contractedWidth, expandedWidth } = state.dashboard;
   const currentOrganisationUnit = selectCurrentOrgUnit(state);
@@ -66,7 +59,6 @@ const mapStateToProps = state => {
 
   return {
     position,
-    innerAreas: displayedChildren,
     currentOrganisationUnit,
     currentParent,
     displayedChildren,

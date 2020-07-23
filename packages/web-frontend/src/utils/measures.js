@@ -144,7 +144,6 @@ const getSpectrumScaleValues = (measureData, measureOption) => {
 };
 
 const getExtremesOfData = (manualMin, manualMax, data) => {
-  console.log(manualMax, manualMin, data);
   // coerce to number before checking for isNan, identical to "isNaN(scaleMin)". Allows for '0' and true to be valid
   const hasNumberScaleMin = !Number.isNaN(Number(manualMin));
   const hasNumberScaleMax = !Number.isNaN(Number(manualMax));
