@@ -113,7 +113,7 @@ export class MeasureBar extends Component {
     const { currentOrganisationUnitName } = this.props;
     const orgName = currentOrganisationUnitName || 'Your current selection';
 
-    return `Select an area with valid data. ${orgName} has no map overlays available`;
+    return `Select an area with valid data. ${orgName} has no map overlays available.`;
   }
 
   render() {
@@ -124,7 +124,7 @@ export class MeasureBar extends Component {
       onUpdateMeasurePeriod,
     } = this.props;
     const orgName = currentOrganisationUnitName || 'Your current selection';
-    const emptyMessage = `Select an area with valid data. ${orgName} has no map overlays available`;
+    const emptyMessage = `Select an area with valid data. ${orgName} has no map overlays available.`;
 
     return (
       <Control
