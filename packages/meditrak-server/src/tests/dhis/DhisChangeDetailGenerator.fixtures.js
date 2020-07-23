@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+
 export const REGIONAL_SURVEY_RESPONSE = {
   id: 'survey_response_is_regional',
   survey_id: 'survey_is_regional',
@@ -14,11 +16,21 @@ const STUBBED_MODEL_DATA = {
   survey: [
     {
       id: 'survey_is_regional',
-      getIsDataForRegionalDhis2: () => true,
+      data_source_id: 'survey_is_regional_dataGroup',
     },
     {
       id: 'survey_is_not_regional',
-      getIsDataForRegionalDhis2: () => false,
+      data_source_id: 'survey_is_not_regional_dataGroup',
+    },
+  ],
+  data_source: [
+    {
+      id: 'survey_is_regional_dataGroup',
+      config: { isDataRegional: true },
+    },
+    {
+      id: 'survey_is_not_regional_dataGroup',
+      config: { isDataRegional: false },
     },
   ],
   entity: [
@@ -34,7 +46,8 @@ const STUBBED_MODEL_DATA = {
   survey_response: [REGIONAL_SURVEY_RESPONSE, TONGA_SURVEY_RESPONSE],
 };
 
-const stubFind = type => ({ id: ids }) => STUBBED_MODEL_DATA[type].filter(r => ids.includes(r.id));
+const stubFind = type => async ({ id: ids }) =>
+  STUBBED_MODEL_DATA[type].filter(r => ids.includes(r.id));
 
 export const MODELS = {
   entity: {
@@ -50,5 +63,24 @@ export const MODELS = {
   },
   survey: {
     find: stubFind('survey'),
+  },
+  database: {
+    find: sinon
+      .stub()
+      .withArgs('survey', sinon.match({ 'survey.id': sinon.match.array }), {
+        joinWith: 'data_source',
+        joinCondition: ['data_source.id', 'survey.data_source.id'],
+        columns: ['survey.id', 'data_source.config'],
+      })
+      .callsFake(async (t, { 'survey.id': surveyIds }) =>
+        surveyIds.map(surveyId => {
+          const find = (type, targetId) =>
+            STUBBED_MODEL_DATA[type].find(({ id }) => id === targetId);
+
+          const survey = find('survey', surveyId);
+          const dataSource = find('data_source', survey.data_source_id);
+          return { id: survey.id, config: dataSource.config };
+        }),
+      ),
   },
 };

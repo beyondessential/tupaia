@@ -16,6 +16,7 @@ import {
   editUserAccount,
   editOption,
   editOptionSet,
+  editSurvey,
   editSurveyScreenComponent,
 } from '../dataAccessors';
 
@@ -43,6 +44,7 @@ const CUSTOM_RECORD_UPDATERS = {
   [TYPES.USER_ACCOUNT]: editUserAccount,
   [TYPES.OPTION_SET]: editOptionSet,
   [TYPES.OPTION]: editOption,
+  [TYPES.SURVEY]: editSurvey,
   [TYPES.SURVEY_SCREEN_COMPONENT]: editSurveyScreenComponent,
   [TYPES.ACCESS_REQUEST]: editAccessRequest,
 };
