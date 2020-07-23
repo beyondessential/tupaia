@@ -54,13 +54,15 @@ const IconButton = styled(MuiIconButton)`
 
 const ArrowButton = styled(MuiIconButton)`
   color: white;
-  border-radius: 5px;
+  border-radius: 3px;
   padding: 0;
-  background: #072849;
+  background: rgba(0, 0, 0, 0.2);
   margin-left: 5px;
+  transition: color 0.2s ease;
 
   &:hover {
-    background: ${hoverBlue};
+    background: rgba(0, 0, 0, 0.2);
+    color: ${hoverBlue};
   }
 `;
 
@@ -77,10 +79,14 @@ const LabelContainer = styled.div`
 `;
 
 const ResetLabel = styled(Link)`
-  color: ${hoverBlue};
+  color: rgba(255, 255, 255, 0.6);
   font-size: 12px;
   line-height: 14px;
   margin-top: 3px;
+
+  &:hover {
+    color: white;
+  }
 `;
 
 const DEFAULT_GRANULARITY = GRANULARITY_CONFIG[GRANULARITIES.DAY];

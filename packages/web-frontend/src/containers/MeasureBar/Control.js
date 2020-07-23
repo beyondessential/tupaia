@@ -16,9 +16,15 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
+
+  // Apply anti-aliasing to the control scope until it is added globally
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 `;
 
 const Header = styled.div`
+  display: flex;
+  font-weight: 500;
   background: ${TUPAIA_ORANGE};
   color: #ffffff;
   text-transform: uppercase;
@@ -26,7 +32,6 @@ const Header = styled.div`
   border-top-right-radius: 5px;
   padding: 10px 15px 8px;
   font-size: 0.75rem;
-  display: flex;
   align-items: center;
 
   .MuiSvgIcon-root {
