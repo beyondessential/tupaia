@@ -9,12 +9,12 @@ import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 export class MaxSumPerOrgUnitBuilder extends DataPerOrgUnitBuilder {
   getBaseBuilderClass = () => MaxSumBuilder;
 
-  async fetchResultsAndPeriod() {
+  async fetchResults() {
     const { dataElementCodes } = this.config;
-    const { results, period } = await this.fetchAnalytics(dataElementCodes, {
+    const { results } = await this.fetchAnalytics(dataElementCodes, {
       organisationUnitCode: this.entity.code,
     });
-    return { results, period };
+    return results;
   }
 }
 

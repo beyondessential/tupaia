@@ -11,7 +11,6 @@ import { Polygon } from 'react-leaflet';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
-import { getSingleFormattedValue } from '../../utils';
 import { AreaTooltip } from './AreaTooltip';
 import { MAP_COLORS, BREWER_PALETTE } from '../../styles';
 import { changeOrgUnit } from '../../actions';
@@ -21,6 +20,7 @@ import {
   selectAllMeasuresWithDisplayInfo,
 } from '../../selectors';
 import ActivePolygon from './ActivePolygon';
+import { getSingleFormattedValue } from '../../utils';
 
 const { POLYGON_BLUE, POLYGON_HIGHLIGHT } = MAP_COLORS;
 
@@ -136,7 +136,6 @@ ConnectedPolygon.propTypes = {
     PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number))),
   ),
   hasMeasureData: PropTypes.bool,
-  measureOptions: PropTypes.arrayOf(PropTypes.object),
   hasChildren: PropTypes.bool,
   hasShadedChildren: PropTypes.bool,
   shade: PropTypes.string,
@@ -144,6 +143,7 @@ ConnectedPolygon.propTypes = {
     value: PropTypes.any,
     originalValue: PropTypes.any,
   }),
+  measureOptions: PropTypes.arrayOf(PropTypes.object),
 };
 
 ConnectedPolygon.defaultProps = {
@@ -153,11 +153,11 @@ ConnectedPolygon.defaultProps = {
   onChangeOrgUnit: () => {},
   coordinates: undefined,
   hasMeasureData: false,
-  measureOptions: [],
   hasChildren: false,
   hasShadedChildren: false,
   shade: undefined,
   orgUnitMeasureData: undefined,
+  measureOptions: undefined,
 };
 
 const mapStateToProps = (state, givenProps) => {

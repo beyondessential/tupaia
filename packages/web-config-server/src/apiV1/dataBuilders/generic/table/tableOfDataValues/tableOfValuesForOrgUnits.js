@@ -3,9 +3,9 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import flatten from 'lodash.flatten';
-import { stripFromString } from '@tupaia/utils';
 import { TableOfDataValuesBuilder } from './tableOfDataValues';
+
+import { stripFromString } from '@tupaia/utils';
 
 class TableOfValuesForOrgUnitsBuilder extends TableOfDataValuesBuilder {
   /**
@@ -14,53 +14,58 @@ class TableOfValuesForOrgUnitsBuilder extends TableOfDataValuesBuilder {
    * }
    */
 
-  buildBaseRows(rows = this.tableConfig.rows, parent = undefined, baseCellIndex = 0) {
-    const { stripFromDataElementNames, cells } = this.config;
-    const flatCells = flatten(cells);
-    let currentCellIndex = baseCellIndex;
+  buildBaseRows(rows = this.tableConfig.rows, parent = undefined) {
+    const { stripFromDataElementNames } = this.config;
     return rows.reduce((baseRows, row) => {
       if (typeof row === 'string') {
         const dataElement = stripFromString(row, stripFromDataElementNames);
-        const dataCode = flatCells[currentCellIndex];
-        currentCellIndex++;
-        return [...baseRows, { dataCode, dataElement, categoryId: parent }];
+        const key = parent ? `${dataElement}|${parent}` : dataElement;
+        return { ...baseRows, [key]: { dataElement, categoryId: parent } };
       }
 
-      const next = this.buildBaseRows(row.rows, row.category, currentCellIndex);
-      currentCellIndex += next.length;
-      return [...baseRows, ...next];
-    }, []);
+      const next = this.buildBaseRows(row.rows, row.category);
+      return { ...baseRows, ...next };
+    }, {});
   }
 
   buildRows(columnsRaw) {
     const baseRows = this.buildBaseRows();
     const columns = this.flattenColumnCategories(columnsRaw);
-    const { filterEmptyRows } = this.config;
-    const rowData = [...baseRows];
-    this.results.forEach(({ value, organisationUnit, metadata }) => {
-      const dataCode = metadata.code;
-      const orgUnit = columns.find(col => col.title === organisationUnit);
-      if (orgUnit) {
-        rowData
-          .filter(row => row.dataCode === dataCode)
-          .forEach(row => {
-            row[orgUnit.key] = value;
-          });
-      }
-    });
+    const { stripFromDataElementNames, filterEmptyRows } = this.config;
+    const rowData = { ...baseRows };
+    const cachedDataElementNameToCategories = {};
 
-    // Clean unneeded fields from rowData object
-    const cleanedRows = rowData.map(row => {
-      const { dataCode, categoryId, ...restOfRow } = row;
-      return categoryId ? { categoryId, ...restOfRow } : { ...restOfRow };
+    this.results.forEach(({ value, organisationUnit, metadata }) => {
+      const dataElementName = stripFromString(metadata.name, stripFromDataElementNames);
+      const orgUnit = columns.find(col => col.title === organisationUnit);
+
+      if (orgUnit) {
+        if (rowData[dataElementName]) {
+          rowData[dataElementName][orgUnit.key] = value;
+        } else {
+          let rowCategories = cachedDataElementNameToCategories[dataElementName];
+          if (!rowCategories) {
+            rowCategories = this.returnCategoriesOfARow(dataElementName, baseRows);
+            cachedDataElementNameToCategories[dataElementName] = rowCategories;
+          }
+
+          rowCategories.forEach(rowCategory => {
+            const key = `${dataElementName}|${rowCategory}`;
+
+            if (rowData[key]) {
+              rowData[key][orgUnit.key] = value;
+            }
+          });
+        }
+      }
     });
 
     if (filterEmptyRows) {
       const cols = columns.map(c => c.key);
-      return cleanedRows.filter(r => cols.some(x => r[x]));
+      return Object.values(rowData).filter(r => cols.some(x => r[x]));
     }
 
-    return cleanedRows;
+    return Object.values(rowData);
   }
 
   /**

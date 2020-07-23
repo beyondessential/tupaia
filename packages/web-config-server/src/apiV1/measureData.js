@@ -2,7 +2,7 @@ import { CustomError } from '@tupaia/utils';
 import { getMeasureBuilder } from '/apiV1/measureBuilders/getMeasureBuilder';
 import { getDhisApiInstance } from '/dhis';
 import { Entity, MapOverlay } from '/models';
-import { getDateRange, getAggregatePeriod } from './utils';
+import { getDateRange } from './utils';
 import { DataAggregatingRouteHandler } from './DataAggregatingRouteHandler';
 import { MapOverlayPermissionsChecker } from './permissions';
 import { DATA_SOURCE_TYPES } from './dataBuilders/dataSourceTypes';
@@ -33,35 +33,8 @@ const accessDeniedForMeasure = {
   },
 };
 
-const buildMeasureData = (overlays, measureDataResponsesByMeasureId) => {
-  const measureDataResponses = overlays.map(({ id, dataElementCode }) => {
-    const { data: measureDataResponse } = measureDataResponsesByMeasureId[id];
-    measureDataResponse.forEach(obj => {
-      obj[id] = obj[dataElementCode];
-      delete obj[dataElementCode];
-    });
-    return measureDataResponse;
-  });
-
-  /**
-   * measureDataResponses: [
-   *     [
-   *       { organisationUnitCode: 'OrgA', measure_id_1: 0 },
-   *       { organisationUnitCode: 'OrgB', measure_id_1: 1 },
-   *     ],
-   *     [
-   *       { organisationUnitCode: 'OrgA', measure_id_2: 100 },
-   *       { organisationUnitCode: 'OrgB', measure_id_2: -100 },
-   *     ],
-   * ]
-   */
-
+const buildMeasureData = measureDataResponses => {
   const measureDataByOrgUnit = {};
-  // measureDataByOrgUnit: {
-  //  OrgA: { organisationUnitCode: 'OrgA', measureY: 100, measure_id_1: 0 },
-  //  OrgB: { organisationUnitCode: 'OrgB', measureY: -100, measure_id_1: 1 },
-  // }
-
   // Using `forEach` instead of `reduce` with a spread operator on the accumulator
   // since it is much faster
   measureDataResponses.forEach(response => {
@@ -71,12 +44,7 @@ const buildMeasureData = (overlays, measureDataResponsesByMeasureId) => {
     });
   });
 
-  return {
-    data: Object.values(measureDataByOrgUnit),
-    period: getAggregatePeriod(
-      Object.values(measureDataResponsesByMeasureId).map(({ period }) => period),
-    ),
-  };
+  return Object.values(measureDataByOrgUnit);
 };
 
 function getMostCommon(elements) {
@@ -153,52 +121,41 @@ export default class extends DataAggregatingRouteHandler {
     const measureDataResponsesByMeasureId = (
       await Promise.all(dataTasks)
     ).reduce((dataResponse, current) => ({ ...dataResponse, ...current }));
+    const measureDataResponses = overlays.map(({ id, dataElementCode }) => {
+      const measureDataResponse = measureDataResponsesByMeasureId[id];
+      measureDataResponse.forEach(obj => {
+        obj[id] = obj[dataElementCode];
+        delete obj[dataElementCode];
+      });
+      return measureDataResponse;
+    });
 
-    /* Data arrives as an array of responses (one for each measure) containing an array of org
-     * units. We need to rearrange it so that it's a 1D array of objects with the values
-     * assigned to the appropriate keys, and replace the keys with the ids of the overlay
-     * they came from (this is to avoid duplicate 'value' keys which causes a bug)
-     *
-     * measureDataResponsesByMeasureId: {
-     *   measure_id_1: {
-     *     data: [
-     *       { organisationUnitCode: 'OrgA', measureZ: 0 },
-     *       { organisationUnitCode: 'OrgB', measureZ: 1 },
-     *     ],
-     *     period: {
-     *       latestAvailable: '20200301',
-     *       earliestAvailable: '20190501',
-     *       requested: '201901;201902;201903...',
-     *     }
-     *   }
-     *   measure_id_2: {
-     *     data: [
-     *       { organisationUnitCode: 'OrgA', measureY: 100 },
-     *       { organisationUnitCode: 'OrgB', measureY: -100 },
-     *     ],
-     *     period: {
-     *       latestAvailable: '20200401',
-     *       earliestAvailable: '20190501',
-     *       requested: '201901;201902;201903...',
-     *     }
-     *   }
-     * }
-     *
-     * measureData: [
-     *  { organisationUnitCode: 'OrgA', measure_id_2: 100, measure_id_1: 0 },
-     *  { organisationUnitCode: 'OrgB', measure_id_2: -100, measure_id_1: 1 },
-     * ]
-     * period: {
-     *   latestAvailable: '20200401',
-     *   earliestAvailable: '20190501',
-     *   requested: '201901;201902;201903...',
-     * }
-     */
+    // Data arrives as an array of responses (one for each measure) containing an array of org
+    // units. We need to rearrange it so that it's a 1D array of objects with the values
+    // assigned to the appropriate keys.
+    //
+    // RESPONSE: [
+    //  [
+    //    { organisationUnitCode: 'OrgA', measureZ: 0 },
+    //    { organisationUnitCode: 'OrgB', measureZ: 1 }
+    //  ],
+    //  [
+    //    { organisationUnitCode: 'OrgA', measureY: 100 },
+    //    { organisationUnitCode: 'OrgB', measureY: -100 }
+    //  ],
+    // ]
+    //
+    // COMPILED: {
+    //  OrgA: { organisationUnitCode: 'OrgA', measureY: 100, measureZ: 0 },
+    //  OrgB: { organisationUnitCode: 'OrgB', measureY: -100, measureZ: 1 },
+    // }
+    //
+    // RETURN: [
+    //  { organisationUnitCode: 'OrgA', measureY: 100, measureZ: 0 },
+    //  { organisationUnitCode: 'OrgB', measureY: -100, measureZ: 1 },
+    // ]
 
-    const { period, data: measureData } = buildMeasureData(
-      overlays,
-      measureDataResponsesByMeasureId,
-    );
+    const measureData = buildMeasureData(measureDataResponses);
 
     measureOptions
       .filter(mo => mo.displayedValueKey)
@@ -213,7 +170,6 @@ export default class extends DataAggregatingRouteHandler {
       measureLevel: getMeasureLevel(overlays),
       measureOptions,
       measureData,
-      period,
     };
   };
 

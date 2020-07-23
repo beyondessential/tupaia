@@ -16,7 +16,7 @@ export const ENTITY_TYPE = {
 export const SCALE_TYPES = {
   PERFORMANCE: 'performance',
   PERFORMANCE_DESC: 'performanceDesc',
-  NEUTRAL: 'neutral',
+  POPULATION: 'population',
   TIME: 'time',
 };
 

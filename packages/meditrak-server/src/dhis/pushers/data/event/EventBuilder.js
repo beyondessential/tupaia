@@ -64,11 +64,7 @@ export class EventBuilder {
 
   async enrollTrackedEntityAndGetTrackerEventFields(entity, programCode) {
     const trackedEntityId = entity.getDhisId();
-    const program = await this.fetchProgram(programCode);
-    if (!program) {
-      throw new Error(`Program ${programCode} was not found on DHIS2`);
-    }
-    const { id: programId, programStages } = program;
+    const { id: programId, programStages } = await this.fetchProgram(programCode);
     const { code: orgUnitCode } = await entity.fetchClosestOrganisationUnit();
     const { id: orgUnitDhisId } = await this.fetchOrganisationUnit(orgUnitCode);
     await enrollTrackedEntityInProgramIfNotEnrolled(this.api, {

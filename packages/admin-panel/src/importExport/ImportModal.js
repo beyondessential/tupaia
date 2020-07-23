@@ -5,6 +5,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import autobind from 'react-autobind';
 import { connect } from 'react-redux';
 import { importData } from './actions';
 import { ImportExportModal } from './ImportExportModal';
@@ -15,16 +16,12 @@ export class ImportModalComponent extends React.Component {
     this.state = {
       file: null,
     };
+    autobind(this);
   }
 
-  static getDerivedStateFromProps(props) {
-    const { isOpen } = props;
-    return isOpen ? null : { file: null };
-  }
-
-  handleFiles = ({ target }) => {
+  handleFiles({ target }) {
     this.setState({ file: target.files[0] });
-  };
+  }
 
   render() {
     const { file } = this.state;

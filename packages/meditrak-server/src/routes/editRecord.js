@@ -31,8 +31,6 @@ const EDITABLE_RECORD_TYPES = [
   TYPES.OPTION_SET,
   TYPES.OPTION,
   TYPES.DATA_SOURCE,
-  TYPES.ALERT,
-  TYPES.COMMENT,
   TYPES.ACCESS_REQUEST,
   TYPES.DASHBOARD_REPORT,
   TYPES.MAP_OVERLAY,
@@ -60,7 +58,7 @@ export async function editRecord(req, res) {
 
   // Validate that the record matches required format
   if (!EDITABLE_RECORD_TYPES.includes(recordType)) {
-    throw new ValidationError(`${resource} is not a valid PUT endpoint`);
+    throw new ValidationError(`${resource} is not a valid POST endpoint`);
   }
 
   // TODO remove when this task is done https://github.com/beyondessential/tupaia-backlog/issues/723

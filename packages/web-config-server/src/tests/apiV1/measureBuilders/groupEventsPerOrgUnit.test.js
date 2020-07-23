@@ -114,15 +114,12 @@ describe('groupEventsPerOrgUnit', () => {
   it('should group counts of events into buckets', async () => {
     return expect(
       groupEventsPerOrgUnit(createAggregator(), {}, query, config, entity),
-    ).to.eventually.deep.equal({
-      data: [
-        { organisationUnitCode: 'oneEventLand', value: 'lessThanTwo', originalValue: 1 },
-        { organisationUnitCode: 'twoEventLand', value: 'twoToThree', originalValue: 2 },
-        { organisationUnitCode: 'threeEventLand', value: 'twoToThree', originalValue: 3 },
-        { organisationUnitCode: 'fourEventLand', value: 'fourOrMore', originalValue: 4 },
-      ],
-      period: null,
-    });
+    ).to.eventually.deep.equal([
+      { organisationUnitCode: 'oneEventLand', value: 'lessThanTwo', originalValue: 1 },
+      { organisationUnitCode: 'twoEventLand', value: 'twoToThree', originalValue: 2 },
+      { organisationUnitCode: 'threeEventLand', value: 'twoToThree', originalValue: 3 },
+      { organisationUnitCode: 'fourEventLand', value: 'fourOrMore', originalValue: 4 },
+    ]);
   });
 
   it('should keep original value if there is no appropriate bucket', async () => {
@@ -137,15 +134,12 @@ describe('groupEventsPerOrgUnit', () => {
     };
     return expect(
       groupEventsPerOrgUnit(createAggregator(), {}, query, newConfig, entity),
-    ).to.eventually.deep.equal({
-      data: [
-        { organisationUnitCode: 'oneEventLand', value: 1, originalValue: 1 },
-        { organisationUnitCode: 'twoEventLand', value: 2, originalValue: 2 },
-        { organisationUnitCode: 'threeEventLand', value: 'threeOrMore', originalValue: 3 },
-        { organisationUnitCode: 'fourEventLand', value: 'threeOrMore', originalValue: 4 },
-      ],
-      period: null,
-    });
+    ).to.eventually.deep.equal([
+      { organisationUnitCode: 'oneEventLand', value: 1, originalValue: 1 },
+      { organisationUnitCode: 'twoEventLand', value: 2, originalValue: 2 },
+      { organisationUnitCode: 'threeEventLand', value: 'threeOrMore', originalValue: 3 },
+      { organisationUnitCode: 'fourEventLand', value: 'threeOrMore', originalValue: 4 },
+    ]);
   });
 
   it('should throw an error if there is no grouping check defined for operator', async () => {

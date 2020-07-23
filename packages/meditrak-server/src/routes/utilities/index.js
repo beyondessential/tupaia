@@ -4,7 +4,6 @@
  */
 
 export { constructAnswerValidator } from './constructAnswerValidator';
-export { constructNewRecordValidationRules } from './constructNewRecordValidationRules';
 export {
   extractTabNameFromQuery,
   splitStringOn,

@@ -56,7 +56,7 @@ const PERIOD_TYPE_CONFIG = {
   },
   [QUARTER]: {
     format: 'YYYY[Q]Q',
-    length: 6,
+    length: 'Not a possible length', // bit of a hack to get periodToType to work
     granularityOrder: 4,
     displayFormat: '[Q]Q YYYY',
     momentShorthand: 'Q',
@@ -72,19 +72,16 @@ const PERIOD_TYPE_CONFIG = {
   },
 };
 
-const createFieldToNumericPeriodType = fieldName =>
+const createFieldToPeriodType = fieldName =>
   reduceToDictionary(
-    Object.entries(PERIOD_TYPE_CONFIG)
-      .filter(([periodType]) => !NON_NUMERIC_PERIOD_TYPES.includes(periodType))
-      .map(([periodType, { [fieldName]: field }]) => ({
-        [fieldName]: field,
-        periodType,
-      })),
+    Object.entries(PERIOD_TYPE_CONFIG).map(([periodType, { [fieldName]: field }]) => ({
+      [fieldName]: field,
+      periodType,
+    })),
     fieldName,
     'periodType',
   );
-
-const LENGTH_TO_NUMERIC_PERIOD_TYPE = createFieldToNumericPeriodType('length');
+const LENGTH_TO_PERIOD_TYPE = createFieldToPeriodType('length');
 
 const createAccessor = field => periodType => get(PERIOD_TYPE_CONFIG, [periodType, field]);
 export const periodTypeToFormat = createAccessor('format');
@@ -99,38 +96,11 @@ export const periodToType = (period = '') => {
     throw new Error(`periodToType expects period to be a string, got: ${period}`);
   }
 
-  if (period.includes('Q') && checkNonNumericPeriod(period, PERIOD_TYPES.QUARTER))
+  if (period.includes('Q')) {
     return PERIOD_TYPES.QUARTER;
-  else if (period.includes('W') && checkNonNumericPeriod(period, PERIOD_TYPES.WEEK))
-    return PERIOD_TYPES.WEEK;
-  else if (Number.isNaN(Number(period))) return undefined;
-
-  return LENGTH_TO_NUMERIC_PERIOD_TYPE[period.length];
+  }
+  return LENGTH_TO_PERIOD_TYPE[period.length];
 };
-
-const checkNonNumericPeriod = (period, potentialType) => {
-  if (period.length !== periodTypeToLength(potentialType)) return false;
-
-  const requiredFormat = periodTypeToFormat(potentialType);
-  // Allow letters in square brackets to be non-numeric
-  const formatToCheck = requiredFormat.replace(/\[.\]/g, '?');
-  let isValidFormat = true;
-  // Makes sure all characters except the non-numeric one are numeric
-  formatToCheck.split('').forEach((char, index) => {
-    if (char === '?') {
-      // Allowed to be a non-numeric character
-    } else if (Number.isNaN(Number(period[index]))) isValidFormat = false;
-  });
-
-  return isValidFormat;
-};
-
-/**
- *
- * @param {any} period
- * @returns {boolean}
- */
-export const isValidPeriod = period => typeof period === 'string' && !!periodToType(period);
 
 export const parsePeriodType = periodTypeString => {
   const error = new Error(`Period type must be one of ${Object.values(PERIOD_TYPES)}`);
@@ -267,14 +237,6 @@ export const findCoarsestPeriodType = periodTypes => {
 
   return result;
 };
-
-/**
- * @param {string} period1
- * @param {string} period2
- * @returns {boolean}
- */
-export const isCoarserPeriod = (period1, period2) =>
-  periodTypeToGranularity(periodToType(period1)) > periodTypeToGranularity(periodToType(period2));
 
 /**
  * Returns all periods in a specified range (inclusive)

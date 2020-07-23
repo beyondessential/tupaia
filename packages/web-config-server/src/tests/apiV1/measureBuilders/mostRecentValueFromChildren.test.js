@@ -88,8 +88,8 @@ describe('mostRecentValueFromChildren', () => {
       { code: entityCode },
     );
 
-    expect(results).to.deep.equal({
-      data: [{ POP01: 5, organisationUnitCode: 'TO_Haapai', submissionDate: '2019-03-20' }],
-    });
+    expect(results).to.deep.equal([
+      { POP01: 5, organisationUnitCode: 'TO_Haapai', submissionDate: '2019-03-20' },
+    ]);
   });
 });

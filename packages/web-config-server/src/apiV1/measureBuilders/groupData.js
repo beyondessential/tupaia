@@ -10,7 +10,7 @@ export const groupData = async (aggregator, dhisApi, query, measureBuilderConfig
   const { measureBuilder: builderName, mapDataToCountries } = measureBuilderConfig;
   const { dataElementCode } = query;
 
-  const { data: ungroupedData, period } = await getMeasureBuilder(builderName)(
+  const ungroupedData = await getMeasureBuilder(builderName)(
     aggregator,
     dhisApi,
     query,
@@ -22,9 +22,7 @@ export const groupData = async (aggregator, dhisApi, query, measureBuilderConfig
     mapMeasureValuesToGroups(dataElement, dataElementCode, measureBuilderConfig.groups),
   );
 
-  const returnData = mapDataToCountries
-    ? await mapMeasureDataToCountries(groupedData)
-    : groupedData;
+  if (mapDataToCountries) return mapMeasureDataToCountries(groupedData);
 
-  return { data: returnData, period };
+  return groupedData;
 };

@@ -13,7 +13,6 @@ import {
   findSurveyScreenComponentsInSurvey,
   findSurveysInCountry,
   findDataElementsInDataGroup,
-  findOrCountJoinChildren,
 } from '../dataAccessors';
 import { getApiUrl, resourceToRecordType } from '../utilities';
 
@@ -37,8 +36,6 @@ const GETTABLE_TYPES = [
   TYPES.PROJECT,
   TYPES.DISASTER,
   TYPES.DATA_SOURCE,
-  TYPES.ALERT,
-  TYPES.COMMENT,
   TYPES.ACCESS_REQUEST,
   TYPES.DASHBOARD_REPORT,
   TYPES.MAP_OVERLAY,
@@ -66,9 +63,6 @@ const CUSTOM_FOREIGN_KEYS = {
 const getForeignKeyColumn = (recordType, parentRecordType) => {
   const key = createMultiResourceKey(recordType, parentRecordType);
   return CUSTOM_FOREIGN_KEYS[key] || `${parentRecordType}_id`;
-};
-const PARENT_RECORD_FINDERS = {
-  [`${TYPES.ALERT}/${TYPES.COMMENT}`]: findOrCountJoinChildren,
 };
 
 const MAX_RECORDS_PER_PAGE = 100;
@@ -123,19 +117,6 @@ export async function getRecords(req, res) {
         return customFinder(models, parentRecordId, criteria, options, findOrCount);
       }
       if (parentRecordType) {
-        const recordAccessor = PARENT_RECORD_FINDERS[`${parentRecordType}/${recordType}`];
-        if (recordAccessor) {
-          return recordAccessor(
-            models,
-            findOrCount,
-            recordType,
-            parentRecordType,
-            parentRecordId,
-            criteria,
-            options,
-          );
-        }
-
         return database[findOrCount](
           recordType,
           { ...criteria, [getForeignKeyColumn(recordType, parentRecordType)]: parentRecordId },

@@ -28,7 +28,6 @@ export class TestableApp {
     this.database.generateId = generateTestId;
 
     this.app = createApp(this.database, this.models);
-    this.user = {};
     autobind(this);
   }
 
@@ -42,8 +41,6 @@ export class TestableApp {
       app_version: '999.999.999',
     };
     const response = await this.post('auth', { headers, body });
-
-    this.user = response.body.user;
     this.authToken = response.body.accessToken;
   }
 
@@ -60,11 +57,6 @@ export class TestableApp {
   put(endpoint, options, apiVersion = DEFAULT_API_VERSION) {
     const versionedEndpoint = getVersionedEndpoint(endpoint, apiVersion);
     return this.addOptionsToRequest(supertest(this.app).put(versionedEndpoint), options);
-  }
-
-  delete(endpoint, options, apiVersion = DEFAULT_API_VERSION) {
-    const versionedEndpoint = getVersionedEndpoint(endpoint, apiVersion);
-    return this.addOptionsToRequest(supertest(this.app).delete(versionedEndpoint), options);
   }
 
   addOptionsToRequest(request, { headers, body } = {}) {

@@ -207,7 +207,6 @@ export const tableOfValuesPerPeriod = async (
     dataBuilderConfig,
     query,
     entity,
-    dataBuilderConfig.columns.aggregationType, //columns is mandatory in the config of this dataBuilder
   );
   return builder.build();
 };

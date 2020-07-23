@@ -23,10 +23,10 @@ export const groupSumDataPerOrgUnit = async (
     entity,
     measureBuilderConfig.aggregationType,
   );
-  const { data: ungroupedData, period } = await builder.build();
+  const responseObject = await builder.build();
 
-  const groupedData = ungroupedData.map(dataElement =>
+  const groupedData = responseObject.map(dataElement =>
     mapMeasureValuesToGroups(dataElement, query.dataElementCode, measureBuilderConfig.groups),
   );
-  return { data: groupedData, period };
+  return groupedData;
 };

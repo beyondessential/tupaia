@@ -20,5 +20,3 @@ export { findFormattedDisasters } from './findFormattedDisasters';
 export { editSurveyScreenComponent } from './editSurveyScreenComponent';
 export { findSurveyScreenComponentsInSurvey } from './findSurveyScreenComponentsInSurvey';
 export { findDataElementsInDataGroup } from './findDataElementsInDataGroup';
-export { createJoinChild } from './createJoinChild';
-export { findOrCountJoinChildren } from './findOrCountJoinChildren';

@@ -54,9 +54,9 @@ export class DataPerOrgUnitBuilder extends DataBuilder {
    * @abstract
    * @returns {Promise<Array>}
    */
-  async fetchResultsAndPeriod() {
+  async fetchResults() {
     throw new Error(
-      'Any subclass of DataPerOrgUnitBuilder must implement the "fetchResultsAndPeriod" method',
+      'Any subclass of DataPerOrgUnitBuilder must implement the "fetchResults" method',
     );
   }
 
@@ -72,7 +72,7 @@ export class DataPerOrgUnitBuilder extends DataBuilder {
 
     const processResultsForOrgUnit = async ([organisationUnitCode, result]) => {
       if (!result) {
-        return null;
+        return;
       }
 
       const data = await baseBuilder.buildData(result);
@@ -98,9 +98,9 @@ export class DataPerOrgUnitBuilder extends DataBuilder {
    * @public
    */
   async build() {
-    const { results, period } = await this.fetchResultsAndPeriod();
+    const results = await this.fetchResults();
     const data = await this.buildData(results);
 
-    return { period, data: this.formatData(data) };
+    return this.formatData(data);
   }
 }

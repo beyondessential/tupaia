@@ -5,6 +5,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import autobind from 'react-autobind';
 import { connect } from 'react-redux';
 import { dismissDialog } from './actions';
 import { AsyncModal, InputField } from '../widgets';
@@ -13,55 +14,43 @@ export class ImportExportModalComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      values: {},
+      queryParameters: {},
     };
+    autobind(this);
   }
 
-  static getDerivedStateFromProps(props) {
-    const { isOpen } = props;
-    return isOpen ? null : { values: {} };
-  }
-
-  handleValueChange = (key, value) => {
+  handleQueryParameterChange(parameterKey, value) {
     this.setState(prevState => ({
-      values: {
-        ...prevState.values,
-        [key]: value,
+      queryParameters: {
+        ...prevState.queryParameters,
+        [parameterKey]: value,
       },
     }));
-  };
+  }
 
-  renderContent = () => {
-    const { values } = this.state;
+  renderContent() {
     const { queryParameters, subtitle, children, parentRecord, isOpen } = this.props;
-
     if (!isOpen) return null;
     return (
       <div>
         <p>{subtitle}</p>
-        {queryParameters.map(queryParameter => {
-          const { parameterKey, label, secondaryLabel } = queryParameter;
-
-          return (
-            <InputField
-              key={parameterKey}
-              inputKey={parameterKey}
-              value={values[parameterKey]}
-              {...queryParameter}
-              onChange={this.handleValueChange}
-              label={label}
-              secondaryLabel={secondaryLabel}
-              parentRecord={parentRecord}
-            />
-          );
-        })}
+        {queryParameters.map(queryParameter => (
+          <InputField
+            key={queryParameter.parameterKey}
+            inputKey={queryParameter.parameterKey}
+            {...queryParameter}
+            onChange={this.handleQueryParameterChange}
+            label={queryParameter.label}
+            secondaryLabel={queryParameter.secondaryLabel}
+            parentRecord={parentRecord}
+          />
+        ))}
         {children}
       </div>
     );
-  };
+  }
 
   render() {
-    const { values } = this.state;
     const {
       isLoading,
       errorMessage,
@@ -71,7 +60,7 @@ export class ImportExportModalComponent extends React.Component {
       onConfirm,
       confirmLabel,
     } = this.props;
-
+    const { queryParameters } = this.state;
     return (
       <AsyncModal
         isLoading={isLoading}
@@ -79,7 +68,7 @@ export class ImportExportModalComponent extends React.Component {
         renderContent={this.renderContent}
         isConfirmDisabled={isConfirmDisabled}
         confirmLabel={confirmLabel}
-        onConfirm={() => onConfirm(values)}
+        onConfirm={() => onConfirm(queryParameters)}
         onDismiss={onDismiss}
         title={title}
       />
@@ -119,7 +108,7 @@ const mapStateToProps = ({ importExport: importExportState }, { onConfirm }) => 
     isLoading,
     errorMessage,
     parentRecord,
-    onConfirm: values => onConfirm(values, parentRecord),
+    onConfirm: queryParameters => onConfirm(queryParameters, parentRecord),
   };
 };
 
