@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 11.2
--- Dumped by pg_dump version 11.2
+-- Dumped from database version 11.3
+-- Dumped by pg_dump version 11.3
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -12,6 +12,7 @@ SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
+SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
@@ -264,6 +265,32 @@ CREATE TABLE public.access_request (
 
 
 --
+-- Name: alert; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.alert (
+    id text NOT NULL,
+    entity_id text,
+    data_element_id text,
+    start_time timestamp with time zone DEFAULT now() NOT NULL,
+    end_time timestamp with time zone,
+    event_confirmed_time timestamp with time zone,
+    archived boolean DEFAULT false
+);
+
+
+--
+-- Name: alert_comment; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.alert_comment (
+    id text NOT NULL,
+    alert_id text,
+    comment_id text
+);
+
+
+--
 -- Name: answer; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -330,6 +357,19 @@ CREATE TABLE public.clinic (
     type text,
     category_code character varying(3),
     type_name character varying(30)
+);
+
+
+--
+-- Name: comment; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.comment (
+    id text NOT NULL,
+    user_id text,
+    created_time timestamp with time zone DEFAULT now() NOT NULL,
+    last_modified_time timestamp with time zone DEFAULT now() NOT NULL,
+    text text NOT NULL
 );
 
 
@@ -781,7 +821,8 @@ CREATE TABLE public.question (
     code text,
     detail text,
     option_set_id character varying,
-    hook text
+    hook text,
+    data_source_id text
 );
 
 
@@ -822,7 +863,8 @@ CREATE TABLE public.survey (
     country_ids text[] DEFAULT '{}'::text[],
     can_repeat boolean DEFAULT false,
     survey_group_id text,
-    integration_metadata jsonb DEFAULT '{"dhis2": {"isDataRegional": true}}'::jsonb
+    integration_metadata jsonb DEFAULT '{}'::jsonb,
+    data_source_id text NOT NULL
 );
 
 
@@ -967,6 +1009,22 @@ ALTER TABLE ONLY public.access_request
 
 
 --
+-- Name: alert_comment alert_comment_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.alert_comment
+    ADD CONSTRAINT alert_comment_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: alert alert_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.alert
+    ADD CONSTRAINT alert_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: answer answer_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1023,6 +1081,14 @@ ALTER TABLE ONLY public.clinic
 
 
 --
+-- Name: comment comment_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.comment
+    ADD CONSTRAINT comment_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: country country_code_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1068,6 +1134,14 @@ ALTER TABLE ONLY public."dashboardGroup"
 
 ALTER TABLE ONLY public.data_element_data_group
     ADD CONSTRAINT data_element_data_group_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: data_element_data_group data_element_data_group_unique; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.data_element_data_group
+    ADD CONSTRAINT data_element_data_group_unique UNIQUE (data_element_id, data_group_id);
 
 
 --
@@ -1842,6 +1916,20 @@ CREATE TRIGGER access_request_trigger AFTER INSERT OR DELETE OR UPDATE ON public
 
 
 --
+-- Name: alert_comment alert_comment_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER alert_comment_trigger AFTER INSERT OR DELETE OR UPDATE ON public.alert_comment FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
+-- Name: alert alert_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER alert_trigger AFTER INSERT OR DELETE OR UPDATE ON public.alert FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
 -- Name: answer answer_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -1860,6 +1948,13 @@ CREATE TRIGGER api_client_trigger AFTER INSERT OR DELETE OR UPDATE ON public.api
 --
 
 CREATE TRIGGER clinic_trigger AFTER INSERT OR DELETE OR UPDATE ON public.clinic FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
+-- Name: comment comment_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER comment_trigger AFTER INSERT OR DELETE OR UPDATE ON public.comment FOR EACH ROW EXECUTE PROCEDURE public.notification();
 
 
 --
@@ -2134,6 +2229,38 @@ ALTER TABLE ONLY public.access_request
 
 
 --
+-- Name: alert_comment alert_comment_alert_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.alert_comment
+    ADD CONSTRAINT alert_comment_alert_id_fkey FOREIGN KEY (alert_id) REFERENCES public.alert(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: alert_comment alert_comment_comment_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.alert_comment
+    ADD CONSTRAINT alert_comment_comment_id_fkey FOREIGN KEY (comment_id) REFERENCES public.comment(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: alert alert_data_element_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.alert
+    ADD CONSTRAINT alert_data_element_id_fkey FOREIGN KEY (data_element_id) REFERENCES public.data_source(id);
+
+
+--
+-- Name: alert alert_entity_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.alert
+    ADD CONSTRAINT alert_entity_id_fkey FOREIGN KEY (entity_id) REFERENCES public.entity(id);
+
+
+--
 -- Name: answer answer_question_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2179,6 +2306,14 @@ ALTER TABLE ONLY public.clinic
 
 ALTER TABLE ONLY public.clinic
     ADD CONSTRAINT clinic_geographical_area_id_fkey FOREIGN KEY (geographical_area_id) REFERENCES public.geographical_area(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+--
+-- Name: comment comment_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.comment
+    ADD CONSTRAINT comment_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user_account(id);
 
 
 --
@@ -2334,6 +2469,14 @@ ALTER TABLE ONLY public.project
 
 
 --
+-- Name: question question_data_source_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.question
+    ADD CONSTRAINT question_data_source_id_fkey FOREIGN KEY (data_source_id) REFERENCES public.data_source(id);
+
+
+--
 -- Name: question question_option_set_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2355,6 +2498,14 @@ ALTER TABLE ONLY public.refresh_token
 
 ALTER TABLE ONLY public.refresh_token
     ADD CONSTRAINT refresh_token_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user_account(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: survey survey_data_source_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.survey
+    ADD CONSTRAINT survey_data_source_id_fkey FOREIGN KEY (data_source_id) REFERENCES public.data_source(id);
 
 
 --
@@ -2469,8 +2620,8 @@ CREATE EVENT TRIGGER schema_change_trigger ON ddl_command_end
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 11.2
--- Dumped by pg_dump version 11.2
+-- Dumped from database version 11.3
+-- Dumped by pg_dump version 11.3
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -2479,6 +2630,7 @@ SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
+SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
@@ -3327,6 +3479,8 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 796	/20200624090446-AddUNFPAPriorityLifeSavingMedicinesForWomenAndChildrenSOHMatrixReport	2020-07-14 15:06:35.984
 797	/20200712224256-ChangeDefaultCovidOverlayToStateTotalCases-modifies-data	2020-07-14 15:06:36.084
 798	/20200601041635-HideUnncessarySurveysFromDemoLand	2020-07-15 01:53:05.395
+799	/20200428025025-createAlertsTable	2020-07-15 15:29:45.539
+800	/20200501033538-createCommentTables	2020-07-15 15:29:45.563
 \.
 
 
@@ -3334,7 +3488,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 798, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 800, true);
 
 
 --

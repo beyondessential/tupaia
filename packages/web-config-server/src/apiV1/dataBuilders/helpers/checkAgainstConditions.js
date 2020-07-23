@@ -1,8 +1,9 @@
 import isPlainObject from 'lodash.isplainobject';
 
-export const OPERATOR_TO_VALUE_CHECK = {
+const OPERATOR_TO_VALUE_CHECK = {
   '=': (value, target) => value === target,
   '>=': (value, target) => value >= target,
+  '<=': (value, target) => value <= target,
   '>': (value, target) => value > target,
   '<': (value, target) => value < target,
   range: (value, target) => target[0] <= value && value <= target[1],
@@ -11,9 +12,13 @@ export const OPERATOR_TO_VALUE_CHECK = {
   in: (value, target) => target.includes(value),
 };
 
+const NUMERIC_OPERATORS = ['>=', '<=', '>', '<', 'range', 'rangeExclusive'];
+
 const ANY_VALUE_CONDITION = '*';
 
 export const checkValueSatisfiesCondition = (value, condition) => {
+  if (value === undefined) return false;
+
   if (!isPlainObject(condition)) {
     return (condition === ANY_VALUE_CONDITION && value !== '') || value === condition;
   }
@@ -24,6 +29,9 @@ export const checkValueSatisfiesCondition = (value, condition) => {
   if (!checkValue) {
     throw new Error(`Unknown operator: '${operator}'`);
   }
+
+  // Prevents '' (no data) being cast to 0 and giving incorrect results
+  if (NUMERIC_OPERATORS.includes(operator) && value === '') return false;
 
   return checkValue(value, targetValue);
 };
@@ -41,7 +49,7 @@ export const countEventsThatSatisfyConditions = (events, conditions) => {
         ? dataValues.find(dv => dv.dataElement === dataElement)
         : dataValues[dataElement];
       const value = isPlainObject(dataValue) ? dataValue.value : dataValue;
-      return value !== undefined && checkValueSatisfiesCondition(value, condition);
+      return checkValueSatisfiesCondition(value, condition);
     });
 
   return events.filter(eventHasTargetValues).length;
