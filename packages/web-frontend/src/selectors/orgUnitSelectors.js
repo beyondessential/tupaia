@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { createCachedSelector } from 're-reselect';
+import createCachedSelector from 're-reselect';
 
 import { getUrlComponent, URL_COMPONENTS } from '../historyNavigation';
 
