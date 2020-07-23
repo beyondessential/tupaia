@@ -7,13 +7,10 @@
 
 import { createSelector } from 'reselect';
 
-import { getUrlComponent } from '../../historyNavigation/historyNavigation';
-import { URL_COMPONENTS } from '../../historyNavigation/constants';
+import { getUrlComponent, URL_COMPONENTS } from '../historyNavigation';
 
-export const selectCurrentUserPage = createSelector([selectLocation], location =>
+import { selectLocation } from './utils';
+
+const selectCurrentUserPage = createSelector([selectLocation], location =>
   getUrlComponent(URL_COMPONENTS.USER_PAGE, location),
-);
-
-export const selectCurrentExpandedReportCode = createSelector([selectLocation], location =>
-  getUrlComponent(URL_COMPONENTS.REPORT, location),
 );

@@ -11,7 +11,10 @@ import {
   selectCurrentDashboardGroupCode,
   selectCurrentOverlayCode,
   selectCurrentExpandedReportCode,
-} from '../historyNavigation';
+} from '../../selectors';
+
+// QUESTION: Can I test these here even though it doesn't match the file structure of the
+// actual code because it is easier to write and understand the tests?
 
 describe.only('urlSelectors', () => {
   it('should select from an empty url', () => {

@@ -1,7 +1,4 @@
 export const state = {
-  global: {
-    currentOrganisationUnitCode: 'TO',
-  },
   orgUnits: {
     orgUnitMap: {
       World: {
@@ -75,5 +72,15 @@ export const state = {
         countryCode: 'PG',
       },
     },
+  },
+  project: {
+    projects: [
+      { code: 'PROJECT_1', data: 4, bounds: 'BOUNDS_1' },
+      { code: 'PROJECT_2', data: 6, bounds: 'BOUNDS_2' },
+    ],
+  },
+  routing: {
+    pathname: '/PROJECT_1/TO/A%20DASHBOARD',
+    search: '?overlay=abc%20123',
   },
 };

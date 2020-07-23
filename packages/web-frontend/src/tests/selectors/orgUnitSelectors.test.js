@@ -10,8 +10,8 @@ import {
   selectOrgUnitChildren,
   selectCurrentOrgUnit,
   selectOrgUnitSiblings,
-} from '../selectors';
-import { state } from './selectors.test.state';
+} from '../../selectors';
+import { state } from './selectors.test.fixtures';
 
 const insertOrgUnit = (testState, country, orgUnit) => {
   return {
@@ -29,7 +29,7 @@ const insertOrgUnit = (testState, country, orgUnit) => {
   };
 };
 
-describe('selectors', () => {
+describe('orgUnitSelectors', () => {
   describe('memoization', () => {
     describe('selectOrgUnit', () => {
       it('recomputes by country', () => {

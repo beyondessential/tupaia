@@ -7,8 +7,9 @@
 
 import { createSelector } from 'reselect';
 
-import { getUrlComponent } from '../../historyNavigation/historyNavigation';
-import { URL_COMPONENTS } from '../../historyNavigation/constants';
+import { getUrlComponent, URL_COMPONENTS } from '../historyNavigation';
+
+import { selectLocation } from './utils';
 
 export const selectCurrentUserPage = createSelector([selectLocation], location =>
   getUrlComponent(URL_COMPONENTS.USER_PAGE, location),

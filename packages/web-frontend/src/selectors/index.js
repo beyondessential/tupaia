@@ -22,7 +22,11 @@ export {
   selectAdjustedProjectBounds,
 } from './projectSelectors';
 
-export { selectCurrentDashboardGroupCode, selectCurrentDashboardKey } from './dashboardSelectors';
+export {
+  selectCurrentDashboardGroupCode,
+  selectCurrentExpandedReportCode,
+  selectCurrentDashboardKey,
+} from './dashboardSelectors';
 
 export { selectCurrentOverlayCode } from './measureSelectors';
 
