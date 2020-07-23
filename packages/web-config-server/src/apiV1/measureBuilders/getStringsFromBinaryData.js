@@ -12,7 +12,17 @@ export class GetStringsFromBinaryDataBuilder extends DataBuilder {
 
     const stringArrayByOrgUnit = [];
     results.forEach(({ dataElement, value, organisationUnit }) => {
-      const stringValue = value ? dataElementToString[dataElement] : '';
+      let stringValue;
+
+      if (typeof dataElementToString[dataElement] === 'object') {
+        const { valueOfInterest, stringToConvert } = dataElementToString[dataElement];
+        if (valueOfInterest === value) {
+          stringValue = stringToConvert;
+        }
+      } else {
+        stringValue = value ? dataElementToString[dataElement] : '';
+      }
+
       if (stringValue) {
         if (stringArrayByOrgUnit[organisationUnit]) {
           stringArrayByOrgUnit[organisationUnit].push(stringValue);
