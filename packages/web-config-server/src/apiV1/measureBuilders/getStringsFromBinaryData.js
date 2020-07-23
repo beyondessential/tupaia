@@ -15,9 +15,9 @@ export class GetStringsFromBinaryDataBuilder extends DataBuilder {
       let stringValue;
 
       if (typeof dataElementToString[dataElement] === 'object') {
-        const { valueOfInterest, stringToConvert } = dataElementToString[dataElement];
+        const { valueOfInterest, convertToString } = dataElementToString[dataElement];
         if (valueOfInterest === value) {
-          stringValue = stringToConvert;
+          stringValue = convertToString;
         }
       } else {
         stringValue = value ? dataElementToString[dataElement] : '';

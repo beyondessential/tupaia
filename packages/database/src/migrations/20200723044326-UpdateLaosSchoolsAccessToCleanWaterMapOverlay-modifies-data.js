@@ -77,43 +77,43 @@ const NEW_MEASURE_BUILDER_CONFIG = {
     dataElementToString: {
       SchCVD010a: {
         valueOfInterest: 'Yes',
-        stringToConvert: 'Water system (num papa)',
+        convertToString: 'Water system (num papa)',
       },
       SchCVD010b: {
         valueOfInterest: 'Yes',
-        stringToConvert: 'Water borehole',
+        convertToString: 'Water borehole',
       },
       SchCVD010c: {
         valueOfInterest: 'Yes',
-        stringToConvert: 'Wells',
+        convertToString: 'Wells',
       },
       SchCVD010d: {
         valueOfInterest: 'Yes',
-        stringToConvert: 'Water connection from community gravity-fed water system',
+        convertToString: 'Water connection from community gravity-fed water system',
       },
       SchCVD010f: {
         valueOfInterest: 'Yes',
-        stringToConvert: 'Water from pond',
+        convertToString: 'Water from pond',
       },
       SchCVD010e: {
         valueOfInterest: 'Yes',
-        stringToConvert: 'Water from river',
+        convertToString: 'Water from river',
       },
       SchCVD010g: {
         valueOfInterest: 'Yes',
-        stringToConvert: 'Water reservoir',
+        convertToString: 'Water reservoir',
       },
       SchCVD010i: {
         valueOfInterest: 'Yes',
-        stringToConvert: 'Rainwater harvesting',
+        convertToString: 'Rainwater harvesting',
       },
       SchCVD010h: {
         valueOfInterest: 'Yes',
-        stringToConvert: 'Other water source',
+        convertToString: 'Other water source',
       },
       BCD29_event: {
         valueOfInterest: 'No',
-        stringToConvert: 'No',
+        convertToString: 'No',
       },
     },
   },
