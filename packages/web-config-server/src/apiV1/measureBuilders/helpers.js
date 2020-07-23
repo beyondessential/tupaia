@@ -52,7 +52,7 @@ export const mapMeasureValuesToGroups = (measureValue, dataElementGroupCode, gro
   };
 };
 
-export const mapMeasureDataToCountries = data => {
+export const mapMeasureDataToCountries = async data => {
   const dataMappedToCountry = data.map(async res => {
     const resultEntity = await Entity.findOne({ code: res.organisationUnitCode });
     if (!resultEntity) {

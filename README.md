@@ -16,8 +16,14 @@ This opens all packages as roots in the workspace, and means linting etc. will w
 - [admin-panel](https://github.com/beyondessential/tupaia/blob/dev/packages/admin-panel/README.md)
 - [meditrak-app](https://github.com/beyondessential/tupaia/blob/dev/packages/meditrak-app/README.md)
 - [meditrak-server](https://github.com/beyondessential/tupaia/blob/dev/packages/meditrak-server/README.md)
+- [psss](https://github.com/beyondessential/tupaia/blob/dev/packages/psss/README.md)
 - [web-config-server](https://github.com/beyondessential/tupaia/blob/dev/packages/web-config-server/README.md)
 - [web-frontend](https://github.com/beyondessential/tupaia/blob/dev/packages/web-frontend/README.md)
+
+Any of the main packages can be run using `yarn workspace @tupaia/package-name start-dev`.
+In the case of the two servers, this will also build and watch all of the internal dependencies, so
+that hot reload detects changes to other packages within the mono-repo. As this delays startup time,
+if you prefer to prebuild internal dependencies, add `--skip-internal` to the above command.
 
 ### Internal dependencies
 
@@ -30,6 +36,7 @@ See also https://docs.beyondessential.com.au/books/software-development/page/int
 - [data-broker](https://github.com/beyondessential/tupaia/blob/dev/packages/data-broker/README.md)
 - [devops](https://github.com/beyondessential/tupaia/blob/dev/packages/devops/README.md)
 - [dhis-api](https://github.com/beyondessential/tupaia/blob/dev/packages/dhis-api/README.md)
+- [ui-components](https://github.com/beyondessential/tupaia/blob/dev/packages/ui-components/README.md)
 - [utils](https://github.com/beyondessential/tupaia/blob/dev/packages/utils/README.md)
 
 ## Getting started
