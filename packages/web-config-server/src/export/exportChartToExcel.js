@@ -18,7 +18,7 @@ export const exportChartToExcel = async (
   sessionCookie,
   emailAddress,
 ) => {
-  const { viewId, organisationUnitCode, dashboardGroupId, chartType, projectCode, extraConfig } = chartConfig;
+  const { viewId, organisationUnitCode, dashboardGroupId, projectCode, extraConfig } = chartConfig;
 
   // Get the data for the chart
   const queryParameters = {
