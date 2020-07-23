@@ -4,16 +4,12 @@
  */
 
 import React from 'react';
-import { screen, waitFor } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import moment from 'moment';
 import { render } from '../testableRender';
 import { DateRangePicker } from '../../components/DateRangePicker';
-import {
-  GRANULARITIES,
-  GRANULARITY_CONFIG,
-  GRANULARITIES_WITH_ONE_DATE,
-} from '../../utils/periodGranularities';
+import { GRANULARITY_CONFIG, GRANULARITIES_WITH_ONE_DATE } from '../../utils/periodGranularities';
 import { MIN_DATE_PICKER_DATE } from '../../components/DateRangePicker/constants';
 
 const MIN_MOMENT_DATE = moment(MIN_DATE_PICKER_DATE);
@@ -22,7 +18,7 @@ const START_DATE = '2016-09-23';
 const END_DATE = '2018-03-20';
 
 describe('dateRangePicker', () => {
-  for (let [key, value] of Object.entries(GRANULARITY_CONFIG)) {
+  Object.entries(GRANULARITY_CONFIG).forEach(([key, value]) => {
     it(`can display with default values for ${key} granularity`, () => {
       render(<DateRangePicker granularity={key} />);
 
@@ -36,9 +32,9 @@ describe('dateRangePicker', () => {
         expect(labelText).toHaveTextContent(`${startDate} - ${endDate}`);
       }
     });
-  }
+  });
 
-  for (let [key, value] of Object.entries(GRANULARITY_CONFIG)) {
+  Object.entries(GRANULARITY_CONFIG).forEach(([key, value]) => {
     it(`can display set start and end dates for ${key} granularity`, () => {
       render(<DateRangePicker startDate={START_DATE} endDate={END_DATE} granularity={key} />);
 
@@ -54,16 +50,16 @@ describe('dateRangePicker', () => {
         expect(labelText).toHaveTextContent(`${startDate} - ${endDate}`);
       }
     });
-  }
+  });
 });
 
 const ControlledDateRangePicker = ({ granularity }) => {
   const [startDate, setStartDate] = React.useState(START_DATE);
   const [endDate, setEndDate] = React.useState(END_DATE);
 
-  const handleUpdate = (startDate, endDate) => {
-    setStartDate(startDate);
-    setEndDate(endDate);
+  const handleUpdate = (start, end) => {
+    setStartDate(start);
+    setEndDate(end);
   };
 
   return (
@@ -77,7 +73,7 @@ const ControlledDateRangePicker = ({ granularity }) => {
 };
 
 describe('controlled dateRangePicker', () => {
-  for (let [key, value] of Object.entries(GRANULARITY_CONFIG)) {
+  Object.entries(GRANULARITY_CONFIG).forEach(([key, value]) => {
     if (GRANULARITIES_WITH_ONE_DATE.includes(key)) {
       it(`can click to increase and decrease dates for ${key} granularity`, () => {
         render(<ControlledDateRangePicker granularity={key} />);
@@ -106,9 +102,9 @@ describe('controlled dateRangePicker', () => {
         expect(labelText).toHaveTextContent(nextEndDate);
       });
     }
-  }
+  });
 
-  for (let [key, value] of Object.entries(GRANULARITY_CONFIG)) {
+  Object.entries(GRANULARITY_CONFIG).forEach(([key, value]) => {
     if (GRANULARITIES_WITH_ONE_DATE.includes(key)) {
       it(`can be reset for ${key} granularity`, () => {
         render(<ControlledDateRangePicker granularity={key} />);
@@ -127,5 +123,5 @@ describe('controlled dateRangePicker', () => {
         expect(labelText).toHaveTextContent(endDate);
       });
     }
-  }
+  });
 });
