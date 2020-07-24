@@ -4,7 +4,9 @@
  **/
 
 import { get } from 'lodash';
-import { getUniqueEntries } from '@tupaia/utils';
+
+import { TYPES } from '@tupaia/database';
+import { getUniqueEntries, reduceToDictionary } from '@tupaia/utils';
 import { ChangeDetailGenerator } from '../externalApiSync';
 
 // Store certain details for faster sync processing
@@ -33,13 +35,7 @@ export class DhisChangeDetailGenerator extends ChangeDetailGenerator {
 
   async generateSurveyResponseDetails(surveyResponses) {
     if (surveyResponses.length === 0) return {};
-    const surveyIds = getUniqueEntries(surveyResponses.map(r => r.survey_id));
-    const surveys = await this.models.survey.find({ id: surveyIds });
-    const isDataRegionalBySurveyId = {};
-    surveys.forEach(s => {
-      isDataRegionalBySurveyId[s.id] = s.getIsDataForRegionalDhis2();
-    });
-
+    const isDataRegionalBySurveyId = await this.getIsDataRegionalBySurveyId(surveyResponses);
     const entityIds = getUniqueEntries(surveyResponses.map(r => r.entity_id));
     const entities = await this.models.entity.find({ id: entityIds });
     const orgUnitByEntityId = {};
@@ -60,6 +56,21 @@ export class DhisChangeDetailGenerator extends ChangeDetailGenerator {
     });
     return changeDetailsById;
   }
+
+  getIsDataRegionalBySurveyId = async surveyResponses => {
+    const surveyIds = getUniqueEntries(surveyResponses.map(r => r.survey_id));
+    const surveyData = await this.models.database.find(
+      TYPES.SURVEY,
+      { [`${TYPES.SURVEY}.id`]: surveyIds },
+      {
+        joinWith: TYPES.DATA_SOURCE,
+        joinCondition: [`${TYPES.DATA_SOURCE}.id`, `${TYPES.SURVEY}.data_source_id`],
+        columns: [`${TYPES.SURVEY}.id`, `${TYPES.DATA_SOURCE}.config`],
+      },
+    );
+
+    return reduceToDictionary(surveyData, 'id', ({ config }) => config.isDataRegional);
+  };
 
   generateDetails = async updateChanges => {
     // entities

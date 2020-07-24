@@ -41,6 +41,10 @@
       "path": "packages/dhis-api"
     },
     {
+      "name": "eslint-config-typescript",
+      "path": "packages/eslint-config-typescript"
+    },
+    {
       "name": "export-chart-lambda",
       "path": "packages/export-chart-lambda"
     },
@@ -78,9 +82,6 @@
     }
   ],
   "settings": {
-    "files.exclude": {
-      "packages/": true
-    },
     "cSpell.words": [
       "DHIS",
       "MediTrak",
@@ -110,9 +111,16 @@
       "preaggregators",
       "promisify",
       "singularise",
+      "Tongatapu",
+      "Tupaia",
+      "updaters",
       "testid",
       "upsert"
-    ]
+    ],
+    "eslint.validate": ["typescript", "typescriptreact"],
+    "files.exclude": {
+      "packages/": true
+    }
   },
   "extensions": {
     "recommendations": [

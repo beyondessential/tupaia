@@ -85,20 +85,25 @@ export const flattenToObject = objectCollection => {
 };
 
 /**
- * Creates a dictionary which maps `keyProperty` of every object in `objectCollection` to `valueProperty`
+ * Creates a dictionary which maps the values of a selected field to another field
+ * Available field (key/value) mapper types:
+ * * `string`: uses the provided string as the field key
+ * * `Function`, will receive the object as its input eg object => object.value * 2
  *
  * @param {ObjectCollection} objectCollection
- * @param {string} keyProperty
- * @param {string} valueProperty
- * @return {Object.<string, string>}
+ * @param {string|Function} keyMapper
+ * @param {string|Function} valueMapper
+ * @return {Object<string, string>}
  */
-export const reduceToDictionary = (objectCollection, keyProperty, valueProperty) => {
+export const reduceToDictionary = (objectCollection, keyMapper, valueMapper) => {
   const objects = collectionToArray(objectCollection);
+  const getFieldValue = (object, fieldMapper) =>
+    typeof fieldMapper === 'function' ? fieldMapper(object) : object[fieldMapper];
 
   const dictionary = {};
   // Using `forEach` is much quicker than using `reduce` with a spread operator on the accumulator
-  objects.forEach(({ [keyProperty]: key, [valueProperty]: value }) => {
-    dictionary[key] = value;
+  objects.forEach(object => {
+    dictionary[getFieldValue(object, keyMapper)] = getFieldValue(object, valueMapper);
   });
   return dictionary;
 };
