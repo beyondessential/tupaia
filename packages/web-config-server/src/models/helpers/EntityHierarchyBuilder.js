@@ -62,28 +62,38 @@ export class EntityHierarchyBuilder {
    * @param {string} hierarchyId   The specific hierarchy to follow through entity_relation
    */
   async getDescendantsNonCanonically(entityId, hierarchyId) {
-    return this.recurseNonCanonicalHierarchy([{ id: entityId }], hierarchyId, desc);
+    return this.recurseDescNonCanonicalHierarchy([{ id: entityId }], hierarchyId);
   }
 
   async getAncestorsNonCanonically(entityId, hierarchyId) {
-    return this.recurseNonCanonicalHierarchy([{ id: entityId }], hierarchyId, asc);
+    return this.recurseAscNonCanonicalHierarchy([{ id: entityId }], hierarchyId);
   }
 
-  async recurseNonCanonicalHierarchy(entities, hierarchyId, direction) {
-    const relations =
-      direction === asc
-        ? await this.getPreviousGeneration(entities, hierarchyId)
-        : await this.getNextGeneration(entities, hierarchyId);
+  async recurseDescNonCanonicalHierarchy(parents, hierarchyId) {
+    const children = await this.getNextGeneration(parents, hierarchyId);
 
     // if we've made it to the leaf nodes, return an empty array
-    if (!relations || relations.length === 0) {
+    if (children.length === 0) {
       return [];
     }
 
     // keep recursing through the hierarchy
-    const generations = await this.recurseNonCanonicalHierarchy(relations, hierarchyId, direction);
-    // using concat here because relations and generations aren't guaranteed to be arrays
-    return [].concat(relations).concat(generations);
+    const descendants = await this.recurseDescNonCanonicalHierarchy(children, hierarchyId);
+    return [...children, ...descendants];
+  }
+
+  async recurseAscNonCanonicalHierarchy(child, hierarchyId) {
+    // We have the assumption that we return single entities for parent search unlike children search
+    const parent = await this.getPreviousGeneration(child, hierarchyId);
+
+    // if no more parents, return an empty array
+    if (!parent) {
+      return [];
+    }
+
+    // keep recursing through the hierarchy
+    const grandparent = await this.recurseAscNonCanonicalHierarchy(parent, hierarchyId);
+    return grandparent ? [parent, ...grandparent] : [parent];
   }
 
   getNextGeneration = async (parents, hierarchyId) => {
