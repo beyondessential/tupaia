@@ -124,16 +124,7 @@ function getFormattedValue(value, type, valueInfo, scaleType, valueType, submiss
 }
 
 const getSpectrumScaleValues = (measureData, measureOption) => {
-  const {
-    key,
-    scaleType,
-    valueType,
-    scaleMin,
-    scaleMax,
-    startDate,
-    endDate,
-    shouldHardLimitSpectrumRange = false,
-  } = measureOption;
+  const { key, scaleType, valueType, scale = {}, startDate, endDate } = measureOption;
 
   if (scaleType === SCALE_TYPES.TIME) {
     return { min: startDate, max: endDate };
@@ -141,37 +132,28 @@ const getSpectrumScaleValues = (measureData, measureOption) => {
 
   const flattenedMeasureData = flattenNumericalMeasureData(measureData, key);
 
-  if (valueType === VALUE_TYPES.PERCENTAGE) {
-    return getExtremesOfData(
-      scaleMin || 0,
-      scaleMax === 'auto' ? null : scaleMax || 1,
-      shouldHardLimitSpectrumRange,
-      flattenedMeasureData,
-    );
-  }
+  const defaultScale =
+    valueType === VALUE_TYPES.PERCENTAGE
+      ? { min: { floating: 0 }, max: { floating: 1 } }
+      : { min: {}, max: {} };
 
-  return getExtremesOfData(scaleMin, scaleMax, shouldHardLimitSpectrumRange, flattenedMeasureData);
-};
+  const { min: manualMin = defaultScale.min, max: manualMax = defaultScale.max } = scale;
 
-const getExtremesOfData = (manualMin, manualMax, shouldHardLimitSpectrumRange, data) => {
-  // coerce to number before checking for isNan, identical to "isNaN(scaleMin)". Allows for '0' and true to be valid
-  const hasNumberScaleMin = !Number.isNaN(Number(manualMin));
-  const hasNumberScaleMax = !Number.isNaN(Number(manualMax));
+  const dataMin = Math.min(...flattenedMeasureData);
+  const dataMax = Math.max(...flattenedMeasureData);
 
-  const dataMin = Math.min(...data);
-  const dataMax = Math.max(...data);
+  const { floating: floatingMin, fixed: fixedMin } = manualMin;
+  const { floating: floatingMax, fixed: fixedMax } = manualMax;
 
-  if (shouldHardLimitSpectrumRange) {
-    return {
-      min: hasNumberScaleMin ? manualMin : dataMin,
-      max: hasNumberScaleMax ? manualMax : dataMax,
-    };
-  }
+  let min = dataMin;
+  if (floatingMin && floatingMin !== 'auto') min = Math.min(min, floatingMin);
+  if (fixedMin) min = Math.max(min, fixedMin);
 
-  return {
-    min: hasNumberScaleMin ? Math.min(manualMin, dataMin) : dataMin,
-    max: hasNumberScaleMax ? Math.max(manualMax, dataMax) : dataMax,
-  };
+  let max = dataMax;
+  if (floatingMax && floatingMax !== 'auto') max = Math.max(max, floatingMax);
+  if (fixedMax) max = Math.min(max, fixedMax);
+
+  return { min, max };
 };
 
 export function processMeasureInfo(response) {

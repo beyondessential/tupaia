@@ -37,20 +37,48 @@ exports.setup = function(options, seedLink) {
   seed = seedLink;
 };
 
-exports.up = function(db) {
-  return db.runSql(`
+exports.up = async function(db) {
+  const overlays = await db.runSql(
+    `select * from "mapOverlay" where id in (${arrayToDbString(OVERLAYS_TO_LIMIT)})`,
+  );
+  return Promise.all(
+    overlays.rows.map(({ id, presentationOptions }) =>
+      db.runSql(`
     UPDATE "mapOverlay"
-    SET "presentationOptions" = jsonb_set("presentationOptions", '{shouldHardLimitSpectrumRange}', 'true')
-    WHERE id in (${arrayToDbString(OVERLAYS_TO_LIMIT)});
-  `);
+    SET "presentationOptions" = jsonb_set("presentationOptions", '{scale}', '${JSON.stringify({
+      max: {
+        fixed: presentationOptions.scale.max.floating,
+      },
+      min: {
+        fixed: presentationOptions.scale.min.floating,
+      },
+    })}')
+    WHERE id = '${id}';
+  `),
+    ),
+  );
 };
 
-exports.down = function(db) {
-  return db.runSql(`
-    UPDATE "mapOverlay"
-    SET "presentationOptions" = "presentationOptions" - 'shouldHardLimitSpectrumRange'
-    WHERE id in (${arrayToDbString(OVERLAYS_TO_LIMIT)});
-  `);
+exports.down = async function(db) {
+  const overlays = await db.runSql(
+    `select * from "mapOverlay" where id in (${arrayToDbString(OVERLAYS_TO_LIMIT)})`,
+  );
+  return Promise.all(
+    overlays.rows.map(({ id, presentationOptions }) =>
+      db.runSql(`
+        UPDATE "mapOverlay"
+        SET "presentationOptions" = jsonb_set("presentationOptions", '{scale}', '${JSON.stringify({
+          max: {
+            floating: presentationOptions.scale.max.fixed,
+          },
+          min: {
+            floating: presentationOptions.scale.min.fixed,
+          },
+        })}')
+        WHERE id = '${id}';
+      `),
+    ),
+  );
 };
 
 exports._meta = {
