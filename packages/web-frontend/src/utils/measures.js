@@ -40,6 +40,9 @@ export const MEASURE_VALUE_NULL = 'null';
 export const POLYGON_MEASURE_TYPES = [MEASURE_TYPE_SHADING, MEASURE_TYPE_SHADED_SPECTRUM];
 export const SPECTRUM_MEASURE_TYPES = [MEASURE_TYPE_SPECTRUM, MEASURE_TYPE_SHADED_SPECTRUM];
 
+const SPECTRUM_SCALE_DEFAULT = { left: {}, right: {} };
+const PERCENTAGE_SPECTRUM_SCALE_DEFAULT = { left: { max: 0 }, right: { min: 1 } };
+
 export function autoAssignColors(values) {
   if (!values) return [];
 
@@ -156,8 +159,8 @@ const clampScaleValues = (initialScale, measureOption) => {
 
   const defaultScale =
     valueType === VALUE_TYPES.PERCENTAGE
-      ? { left: { max: 0 }, right: { min: 1 } }
-      : { left: {}, right: {} };
+      ? PERCENTAGE_SPECTRUM_SCALE_DEFAULT
+      : SPECTRUM_SCALE_DEFAULT;
 
   const { left = defaultScale.left, right = defaultScale.right } = scaleBounds;
   const { min, max } = initialScale;
