@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { ImportModal, ImportButton } from '../importExport';
-import { Body, Header, Title } from './Page';
+import { Body } from './Page';
 
 const importConfig = {
   title: 'Import Lab Results',

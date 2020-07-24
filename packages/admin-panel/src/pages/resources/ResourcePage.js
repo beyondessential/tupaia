@@ -6,20 +6,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { DataFetchingTable } from '../../table';
-import { ImportModal, ExportModal, ImportButton } from '../../importExport';
-import { EditModal, CreateButton } from '../../editor';
-import { Body, Header, HeaderButtons, Title } from '../Page';
+import { ImportModal, ExportModal } from '../../importExport';
+import { EditModal } from '../../editor';
+import { Body } from '../Page';
 
 export const ResourcePage = ({
   columns,
-  createConfig,
   editConfig,
   endpoint,
   expansionTabs,
   importConfig,
   filteredExportConfig,
   onProcessDataForSave,
-  title,
   baseFilter,
 }) => (
   <>
