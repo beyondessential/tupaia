@@ -151,34 +151,4 @@ export class EntityHierarchyBuilder {
     );
     return results.map(result => this.models.entity.load(result));
   }
-
-  /**
-   * Fetch all ancestors of a given entity, by default excluding 'World'
-   * @param {string} id The id of the entity to fetch ancestors of
-   * @param {boolean} [includeWorld=false] Optionally force the top level 'World' to be included
-   */
-  async getAncestorsCanonically(id, includeWorld = false, types = []) {
-    const results = await this.models.entity.database.executeSql(
-      `
-      WITH RECURSIVE children AS (
-        SELECT id, code, "name", parent_id, type, country_code, 0 AS generation
-          FROM entity
-          WHERE id = ?
-
-        UNION ALL
-        SELECT p.id, p.code, p."name", p.parent_id, p.type, p.country_code, c.generation + 1
-          FROM children c
-          JOIN entity p ON p.id = c.parent_id
-          ${includeWorld ? '' : `WHERE p.code <> 'World'`}
-
-      )
-      SELECT *
-        FROM children
-        ${constructTypesCriteria(types, 'WHERE')}
-        ORDER BY generation DESC;
-    `,
-      [id, ...types],
-    );
-    return results.map(result => this.models.entity.load(result));
-  }
 }
