@@ -6,20 +6,15 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import { LightOutlinedButton, TabsToolbar } from '@tupaia/ui-components';
-import { NewNavBar as Navbar, Footer } from './widgets';
+import { Navbar, Footer } from './widgets';
 import { ROUTES } from './routes';
 import { Header, HeaderButtons, Title } from './pages/Page';
-import { LoginView } from './authentication/LoginView';
-import { PrivateRoute } from './authentication/PrivateRoute';
 
 export const App = () => (
   <Router>
     <Switch>
-      <Route path="/login" exact>
-        <LoginView />
-      </Route>
       {ROUTES.map(route => (
-        <PrivateRoute key={route.to} path={route.to}>
+        <Route key={route.to} path={route.to}>
           <Navbar links={ROUTES} />
           <Header>
             <Title>{route.label}</Title>
@@ -36,7 +31,7 @@ export const App = () => (
             ))}
             <Redirect to={route.to} />
           </Switch>
-        </PrivateRoute>
+        </Route>
       ))}
       <Redirect to="/surveys" />
     </Switch>
