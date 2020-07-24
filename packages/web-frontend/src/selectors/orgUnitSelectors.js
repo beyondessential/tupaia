@@ -96,7 +96,7 @@ export const selectCurrentOrgUnitCode = createSelector([selectLocation], locatio
   getUrlComponent(URL_COMPONENTS.ORG_UNIT, location),
 );
 
-export const selectOrgUnitChildrenFromCache = (country, parentCode) =>
+const selectOrgUnitChildrenFromCache = (country, parentCode) =>
   safeGet(orgUnitChildrenCache, [country, parentCode]);
 
 export const selectCountryHeirachy = (state, code) =>
@@ -109,6 +109,7 @@ export const selectAllOrgUnitsInCountry = country => safeGet(allCountryOrgUnitsC
 
 export const selectDescendantsFromCache = (country, code) =>
   safeGet(descendantsCache, [country, code]);
+
 export const selectOrgUnit = createSelector(
   [selectCountryHeirachy, (_, code) => code],
   getOrgUnitFromCountry,
@@ -142,7 +143,9 @@ export const selectOrgUnitChildren = createSelector(
     (_, code) => code,
   ],
   (projectCode, countriesAsOrgUnits, country, code) =>
-    code === projectCode ? countriesAsOrgUnits : selectOrgUnitChildrenFromCache(country, code),
+    console.log(country) || code === projectCode
+      ? countriesAsOrgUnits
+      : selectOrgUnitChildrenFromCache(country, code),
 );
 
 const selectOrgUnitSiblingsAndSelf = createSelector(
@@ -150,7 +153,7 @@ const selectOrgUnitSiblingsAndSelf = createSelector(
     state => selectCurrentProjectCode(state),
     (state, code) => getOrgUnitParent(selectOrgUnit(state, code)),
     state => selectCountriesAsOrgUnits(state),
-    state => selectCountryHeirachy(state),
+    selectCountryHeirachy,
   ],
   (projectCode, parentCode, countriesAsOrgUnits, country) => {
     if (!parentCode) {

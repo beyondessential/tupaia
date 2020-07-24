@@ -31,7 +31,7 @@ const testState2 = {
   },
 };
 
-describe('projectSelectors', () => {
+describe('userPageSelectors', () => {
   describe('memoization', () => {
     describe('selectProjectByCode', () => {
       it('recomputes by code or by state change', () => {

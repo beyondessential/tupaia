@@ -75,12 +75,12 @@ export const state = {
   },
   project: {
     projects: [
-      { code: 'PROJECT_1', data: 4, bounds: 'BOUNDS_1' },
-      { code: 'PROJECT_2', data: 6, bounds: 'BOUNDS_2' },
+      { code: 'explore', data: 4, bounds: 'BOUNDS_1' },
+      { code: 'covidau', data: 6, bounds: 'BOUNDS_2' },
     ],
   },
   routing: {
-    pathname: '/PROJECT_1/TO/A%20DASHBOARD',
+    pathname: '/explore/TO/UNFPA',
     search: '?overlay=abc%20123',
   },
 };

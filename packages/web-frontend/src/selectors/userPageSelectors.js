@@ -14,7 +14,3 @@ import { selectLocation } from './utils';
 export const selectCurrentUserPage = createSelector([selectLocation], location =>
   getUrlComponent(URL_COMPONENTS.USER_PAGE, location),
 );
-
-export const selectCurrentExpandedReportCode = createSelector([selectLocation], location =>
-  getUrlComponent(URL_COMPONENTS.REPORT, location),
-);
