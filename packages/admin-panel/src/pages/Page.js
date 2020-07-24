@@ -5,8 +5,30 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import Typography from '@material-ui/core/Typography';
+import MuiContainer from '@material-ui/core/Container';
+import styled from 'styled-components';
 
-export const Header = ({ children }) => <div style={localStyles.headerContainer}>{children}</div>;
+const HeaderMain = styled.header`
+  background-color: ${props => props.theme.palette.primary.main};
+  color: white;
+`;
+
+const HeaderInner = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 190px;
+  padding-bottom: 1.25rem;
+`;
+
+export const Header = ({ children }) => (
+  <HeaderMain>
+    <MuiContainer maxWidth="lg">
+      <HeaderInner>{children}</HeaderInner>
+    </MuiContainer>
+  </HeaderMain>
+);
 
 Header.propTypes = {
   children: PropTypes.node,
@@ -16,7 +38,7 @@ Header.defaultProps = {
   children: null,
 };
 
-export const Title = ({ children }) => <h3>{children}</h3>;
+export const Title = ({ children }) => <Typography variant="h1">{children}</Typography>;
 
 Title.propTypes = {
   children: PropTypes.node,
@@ -26,9 +48,13 @@ Title.defaultProps = {
   children: null,
 };
 
-export const HeaderButtons = ({ children }) => (
-  <div style={localStyles.headerButtonContainer}>{children}</div>
-);
+const HeaderButtonContainer = styled.div`
+  display: grid;
+  grid-auto-flow: column;
+  column-gap: 20px;
+`;
+
+export const HeaderButtons = ({ children }) => <HeaderButtonContainer>{children}</HeaderButtonContainer>;
 
 HeaderButtons.propTypes = {
   children: PropTypes.node,
@@ -38,7 +64,7 @@ HeaderButtons.defaultProps = {
   children: null,
 };
 
-export const Body = ({ children }) => <div>{children}</div>;
+export const Body = ({ children }) => <MuiContainer maxWidth="lg">{children}</MuiContainer>;
 
 Body.propTypes = {
   children: PropTypes.node,
@@ -46,31 +72,4 @@ Body.propTypes = {
 
 Body.defaultProps = {
   children: null,
-};
-
-export const Page = ({ children }) => <div style={localStyles.pageContainer}>{children}</div>;
-
-Page.propTypes = {
-  children: PropTypes.node,
-};
-
-Page.defaultProps = {
-  children: null,
-};
-
-const localStyles = {
-  pageContainer: {
-    padding: '0px 40px',
-  },
-  headerContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-end',
-  },
-  headerButtonContainer: {
-    display: 'grid',
-    gridAutoFlow: 'column',
-    columnGap: 20,
-  },
 };

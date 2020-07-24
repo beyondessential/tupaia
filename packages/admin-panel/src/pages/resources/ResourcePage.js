@@ -5,11 +5,10 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-
 import { DataFetchingTable } from '../../table';
 import { ImportModal, ExportModal, ImportButton } from '../../importExport';
 import { EditModal, CreateButton } from '../../editor';
-import { Body, Header, HeaderButtons, Title, Page } from '../Page';
+import { Body, Header, HeaderButtons, Title } from '../Page';
 
 export const ResourcePage = ({
   columns,
@@ -23,14 +22,7 @@ export const ResourcePage = ({
   title,
   baseFilter,
 }) => (
-  <Page>
-    <Header>
-      <Title>{title}</Title>
-      <HeaderButtons>
-        {importConfig && <ImportButton {...importConfig} />}
-        {createConfig && <CreateButton {...createConfig} />}
-      </HeaderButtons>
-    </Header>
+  <>
     <Body>
       <DataFetchingTable
         columns={columns}
@@ -43,7 +35,7 @@ export const ResourcePage = ({
     {importConfig && <ImportModal {...importConfig} />}
     {filteredExportConfig && <ExportModal {...filteredExportConfig} />}
     <EditModal {...editConfig} onProcessDataForSave={onProcessDataForSave} />
-  </Page>
+  </>
 );
 
 ResourcePage.propTypes = {
