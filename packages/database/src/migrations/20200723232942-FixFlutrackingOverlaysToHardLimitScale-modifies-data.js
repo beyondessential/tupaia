@@ -37,6 +37,26 @@ exports.setup = function(options, seedLink) {
   seed = seedLink;
 };
 
+const makeScaleBoundsConfig = presentationOptions => {
+  const scaleBounds = {};
+  if (presentationOptions.scaleBounds.left.max || presentationOptions.scaleBounds.left.max === 0) {
+    scaleBounds.left = {
+      min: presentationOptions.scaleBounds.left.max,
+      max: presentationOptions.scaleBounds.left.max,
+    };
+  }
+  if (
+    presentationOptions.scaleBounds.right.min ||
+    presentationOptions.scaleBounds.right.min === 0
+  ) {
+    scaleBounds.right = {
+      min: presentationOptions.scaleBounds.right.min,
+      max: presentationOptions.scaleBounds.right.min,
+    };
+  }
+  return scaleBounds;
+};
+
 exports.up = async function(db) {
   const overlays = await db.runSql(
     `select * from "mapOverlay" where id in (${arrayToDbString(OVERLAYS_TO_LIMIT)})`,
@@ -45,14 +65,9 @@ exports.up = async function(db) {
     overlays.rows.map(({ id, presentationOptions }) =>
       db.runSql(`
     UPDATE "mapOverlay"
-    SET "presentationOptions" = jsonb_set("presentationOptions", '{scale}', '${JSON.stringify({
-      max: {
-        fixed: presentationOptions.scale.max.floating,
-      },
-      min: {
-        fixed: presentationOptions.scale.min.floating,
-      },
-    })}')
+    SET "presentationOptions" = jsonb_set("presentationOptions", '{scaleBounds}', '${JSON.stringify(
+      makeScaleBoundsConfig(presentationOptions),
+    )}')
     WHERE id = '${id}';
   `),
     ),
@@ -63,18 +78,20 @@ exports.down = async function(db) {
   const overlays = await db.runSql(
     `select * from "mapOverlay" where id in (${arrayToDbString(OVERLAYS_TO_LIMIT)})`,
   );
-  return Promise.all(
+  await Promise.all(
     overlays.rows.map(({ id, presentationOptions }) =>
       db.runSql(`
         UPDATE "mapOverlay"
-        SET "presentationOptions" = jsonb_set("presentationOptions", '{scale}', '${JSON.stringify({
-          max: {
-            floating: presentationOptions.scale.max.fixed,
+        SET "presentationOptions" = jsonb_set("presentationOptions", '{scaleBounds}', '${JSON.stringify(
+          {
+            left: {
+              max: presentationOptions.scaleBounds.left.max,
+            },
+            right: {
+              min: presentationOptions.scaleBounds.right.min,
+            },
           },
-          min: {
-            floating: presentationOptions.scale.min.fixed,
-          },
-        })}')
+        )}')
         WHERE id = '${id}';
       `),
     ),

@@ -124,7 +124,7 @@ function getFormattedValue(value, type, valueInfo, scaleType, valueType, submiss
 }
 
 const getSpectrumScaleValues = (measureData, measureOption) => {
-  const { key, scaleType, valueType, scale = {}, startDate, endDate } = measureOption;
+  const { key, scaleType, startDate, endDate } = measureOption;
 
   if (scaleType === SCALE_TYPES.TIME) {
     return { min: startDate, max: endDate };
@@ -132,28 +132,47 @@ const getSpectrumScaleValues = (measureData, measureOption) => {
 
   const flattenedMeasureData = flattenNumericalMeasureData(measureData, key);
 
-  const defaultScale =
-    valueType === VALUE_TYPES.PERCENTAGE
-      ? { min: { floating: 0 }, max: { floating: 1 } }
-      : { min: {}, max: {} };
-
-  const { min: manualMin = defaultScale.min, max: manualMax = defaultScale.max } = scale;
-
   const dataMin = Math.min(...flattenedMeasureData);
   const dataMax = Math.max(...flattenedMeasureData);
 
-  const { floating: floatingMin, fixed: fixedMin } = manualMin;
-  const { floating: floatingMax, fixed: fixedMax } = manualMax;
-
-  let min = dataMin;
-  if (floatingMin && floatingMin !== 'auto') min = Math.min(min, floatingMin);
-  if (fixedMin) min = Math.max(min, fixedMin);
-
-  let max = dataMax;
-  if (floatingMax && floatingMax !== 'auto') max = Math.max(max, floatingMax);
-  if (fixedMax) max = Math.min(max, fixedMax);
+  const { min, max } = clampScaleValues({ min: dataMin, max: dataMax }, measureOption);
 
   return { min, max };
+};
+
+const clampScaleValues = (initialScale, measureOption) => {
+  const { valueType, scaleBounds } = measureOption;
+
+  /**
+   * The scaleBounds config clamps the values between leftMin and max
+   * e.g. with
+   * leftMin: 0
+   * leftMax: 3
+   * if dataMin is 2 the left label on the scale will be 2.
+   * if dataMin is -100 the left label on the scale will be 0.
+   * if dataMin is +100 the left label on the scale will be 3.
+   * And similarly with right/dataMax
+   */
+
+  const defaultScale =
+    valueType === VALUE_TYPES.PERCENTAGE
+      ? { left: { max: 0 }, right: { min: 1 } }
+      : { left: {}, right: {} };
+
+  const { left = defaultScale.left, right = defaultScale.right } = scaleBounds;
+  const { min, max } = initialScale;
+
+  return { min: clampValue(min, left), max: clampValue(max, right) };
+};
+
+const clampValue = (value, config) => {
+  const { min, max } = config;
+  let clampedValue = value;
+
+  if ((min || min === 0) && min !== 'auto') clampedValue = Math.max(clampedValue, min);
+  if ((max || max === 0) && max !== 'auto') clampedValue = Math.min(clampedValue, max);
+
+  return clampedValue;
 };
 
 export function processMeasureInfo(response) {

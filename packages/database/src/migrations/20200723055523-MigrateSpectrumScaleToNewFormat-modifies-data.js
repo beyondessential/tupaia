@@ -15,33 +15,45 @@ exports.setup = function(options, seedLink) {
   type = dbm.dataType;
   seed = seedLink;
 };
+const makeScaleBoundsConfig = presentationOptions => {
+  const scaleBounds = {};
+  if (presentationOptions.scaleMin || presentationOptions.scaleMin === 0) {
+    scaleBounds.left = {
+      max: presentationOptions.scaleMin,
+    };
+  }
+  if (presentationOptions.scaleMax || presentationOptions.scaleMax === 0) {
+    scaleBounds.right = {
+      min: presentationOptions.scaleMax,
+    };
+  }
+  return scaleBounds;
+};
 
 exports.up = async function(db) {
   const overlays = await db.runSql(`select * from "mapOverlay"`);
   return Promise.all(
     overlays.rows.map(
       ({ id, presentationOptions }) =>
-        (presentationOptions.scaleMax || presentationOptions.scaleMin) &&
+        (presentationOptions.scaleMax ||
+          presentationOptions.scaleMin ||
+          presentationOptions.scaleMax === 0 ||
+          presentationOptions.scaleMin === 0) &&
         db.runSql(`
-        UPDATE "mapOverlay"
-        SET "presentationOptions" = jsonb_set("presentationOptions", '{scale}', '${JSON.stringify({
-          max: {
-            floating: presentationOptions.scaleMax,
-          },
-          min: {
-            floating: presentationOptions.scaleMin,
-          },
-        })}')
-        WHERE id = '${id}';
+          UPDATE "mapOverlay"
+          SET "presentationOptions" = jsonb_set("presentationOptions", '{scaleBounds}', '${JSON.stringify(
+            makeScaleBoundsConfig(presentationOptions),
+          )}')
+          WHERE id = '${id}';
 
-        UPDATE "mapOverlay"
-        SET "presentationOptions" = "presentationOptions" - 'scaleMin'
-        WHERE id = '${id}';
+          UPDATE "mapOverlay"
+          SET "presentationOptions" = "presentationOptions" - 'scaleMin'
+          WHERE id = '${id}';
 
-        UPDATE "mapOverlay"
-        SET "presentationOptions" = "presentationOptions" - 'scaleMax'
-        WHERE id = '${id}';
-      `),
+          UPDATE "mapOverlay"
+          SET "presentationOptions" = "presentationOptions" - 'scaleMax'
+          WHERE id = '${id}';
+        `),
     ),
   );
 };
@@ -50,21 +62,28 @@ exports.down = async function(db) {
   const overlays = await db.runSql(`select * from "mapOverlay"`);
   return Promise.all(
     overlays.rows.map(async ({ id, presentationOptions }) => {
-      if (!presentationOptions.scale) return;
-      if (presentationOptions.scale.min.floating) {
+      if (!presentationOptions.scaleBounds) return;
+      if (
+        presentationOptions.scaleBounds.left &&
+        (presentationOptions.scaleBounds.left.max || presentationOptions.scaleBounds.left.max === 0)
+      ) {
         await db.runSql(`
           UPDATE "mapOverlay"
           SET "presentationOptions" = jsonb_set("presentationOptions", '{scaleMin}', '${JSON.stringify(
-            presentationOptions.scale.min.floating,
+            presentationOptions.scaleBounds.left.max,
           )}')
           WHERE id = '${id}';
         `);
       }
-      if (presentationOptions.scale.max.floating) {
+      if (
+        presentationOptions.scaleBounds.right &&
+        (presentationOptions.scaleBounds.right.min ||
+          presentationOptions.scaleBounds.right.min === 0)
+      ) {
         await db.runSql(`
           UPDATE "mapOverlay"
           SET "presentationOptions" = jsonb_set("presentationOptions", '{scaleMax}', '${JSON.stringify(
-            presentationOptions.scale.max.floating,
+            presentationOptions.scaleBounds.right.min,
           )}')
           WHERE id = '${id}';
         `);
@@ -72,7 +91,7 @@ exports.down = async function(db) {
 
       await db.runSql(`
         UPDATE "mapOverlay"
-        SET "presentationOptions" = "presentationOptions" - 'scale'
+        SET "presentationOptions" = "presentationOptions" - 'scaleBounds'
         WHERE id = '${id}';
       `);
     }),
