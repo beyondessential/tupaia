@@ -94,6 +94,8 @@ const ProjectPageComponent = ({
 
 ProjectPageComponent.propTypes = {
   onSelectProject: PropTypes.func.isRequired,
+  openLoginDialog: PropTypes.func.isRequired,
+  isUserLoggedIn: PropTypes.func.isRequired,
   onRequestProjectAccess: PropTypes.func.isRequired,
   projects: PropTypes.arrayOf(PropTypes.shape({})),
 };
@@ -112,9 +114,15 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => ({
   onSelectProject: project => {
-    dispatch(selectProject(project.code));
-    dispatch(setOverlayComponent(null));
-    dispatch(changeOrgUnit(project.homeEntityCode, false));
+    if (project.longDescription) {
+      dispatch(selectProject(project.code));
+      dispatch(setOverlayComponent('projectLanding'));
+      dispatch(changeOrgUnit(project.homeEntityCode, false));
+    } else {
+      dispatch(selectProject(project.code));
+      dispatch(setOverlayComponent(null));
+      dispatch(changeOrgUnit(project.homeEntityCode, false));
+    }
   },
   onRequestProjectAccess: project => {
     dispatch(setRequestingAccess(project));

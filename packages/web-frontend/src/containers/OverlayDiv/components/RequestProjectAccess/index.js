@@ -10,6 +10,7 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import { connect } from 'react-redux';
 
 import { PrimaryButton } from '../../../../components/Buttons';
@@ -21,8 +22,12 @@ import {
   setOverlayComponent,
   closeUserPage,
 } from '../../../../actions';
-import { LANDING } from '../../constants';
+import { LANDING, OVERLAY_PADDING } from '../../constants';
 import { SuccessMessage } from './SuccessMessage';
+
+const Container = styled.div`
+  padding: ${OVERLAY_PADDING};
+`;
 
 export const RequestProjectAccessComponent = ({
   project,
@@ -40,7 +45,7 @@ export const RequestProjectAccessComponent = ({
     return <SuccessMessage handleClose={onBackToProjects} projectName={name} />;
 
   return (
-    <div>
+    <Container>
       <p>
         Requesting access for &nbsp;
         <b>{name}</b>
@@ -52,7 +57,7 @@ export const RequestProjectAccessComponent = ({
           onAttemptRequestProjectAccess(aggregateFields({ ...fieldValues, projectCode: code }))
         }
         render={submitForm => (
-          <React.Fragment>
+          <>
             {countries.map(country => (
               <CheckboxField
                 fullWidth
@@ -71,15 +76,18 @@ export const RequestProjectAccessComponent = ({
             <PrimaryButton variant="contained" onClick={submitForm}>
               Request access
             </PrimaryButton>
-          </React.Fragment>
+          </>
         )}
       />
-    </div>
+    </Container>
   );
 };
 
 RequestProjectAccessComponent.propTypes = {
-  project: PropTypes.shape({}).isRequired,
+  project: PropTypes.shape({
+    name: PropTypes.string,
+    code: PropTypes.string,
+  }).isRequired,
   countries: PropTypes.arrayOf(PropTypes.object).isRequired,
   errorMessage: PropTypes.string.isRequired,
   onBackToProjects: PropTypes.func.isRequired,

@@ -14,6 +14,7 @@ export class Project extends BaseModel {
     'user_groups',
     'entity_id',
     'description',
+    'long_description',
     'sort_order',
     'image_url',
     'logo_url',
@@ -26,7 +27,7 @@ export class Project extends BaseModel {
     return Project.database.executeSql(`
       select p.id, p.code,
             to_json(sub.child_id) AS entity_ids,
-            E."name", p.description,
+            E."name", p.description, p.long_description,
             p.sort_order, p.user_groups,
             p.entity_id, p.image_url,
             p.logo_url, p.dashboard_group_name,

@@ -21,13 +21,14 @@ import CloseIcon from 'material-ui/svg-icons/navigation/close';
 import styled from 'styled-components';
 import { isMobile } from '../../utils';
 import { DARK_BLUE, DIALOG_Z_INDEX } from '../../styles';
-import { setOverlayComponent, changeOrgUnit } from '../../actions';
+import { setOverlayComponent } from '../../actions';
 import { selectProject } from '../../projects/actions';
 import { LandingPage } from './components/LandingPage';
+import { ProjectLandingPage } from './components/ProjectLandingPage';
 import { RequestProjectAccess } from './components/RequestProjectAccess';
 import Disaster from './components/Disaster';
 import { selectProjectByCode } from '../../selectors';
-import { OVERLAY_PADDING, LANDING, DISASTER, REQUEST_PROJECT_ACCESS } from './constants';
+import { LANDING, PROJECT_LANDING, DISASTER, REQUEST_PROJECT_ACCESS } from './constants';
 
 const styles = {
   dialogContainer: {
@@ -51,7 +52,6 @@ const styles = {
 };
 
 const Wrapper = styled.div`
-  padding: ${OVERLAY_PADDING};
   text-align: center;
   position: relative;
   overflow-x: hidden;
@@ -59,9 +59,24 @@ const Wrapper = styled.div`
 
 export class OverlayDiv extends PureComponent {
   render() {
-    const { overlay, closeOverlay, isUserLoggedIn } = this.props;
+    const {
+      overlay,
+      closeOverlay,
+      isUserLoggedIn,
+      selectExploreProject,
+      viewProjectList,
+      activeProject,
+    } = this.props;
     const components = {
       [LANDING]: () => <LandingPage isUserLoggedIn={isUserLoggedIn} transition />,
+      [PROJECT_LANDING]: () => (
+        <ProjectLandingPage
+          selectExplore={selectExploreProject}
+          viewProjects={viewProjectList}
+          project={activeProject}
+          closeOverlay={closeOverlay}
+        />
+      ),
       [DISASTER]: Disaster,
       [REQUEST_PROJECT_ACCESS]: RequestProjectAccess,
     };
@@ -88,7 +103,9 @@ export class OverlayDiv extends PureComponent {
 OverlayDiv.propTypes = {
   overlay: PropTypes.node,
   closeOverlay: PropTypes.func.isRequired,
-  onSelectProject: PropTypes.func.isRequired,
+  viewProjectList: PropTypes.func.isRequired,
+  activeProject: PropTypes.shape({}).isRequired,
+  selectExploreProject: PropTypes.func.isRequired,
   isUserLoggedIn: PropTypes.bool.isRequired,
 };
 
@@ -98,25 +115,27 @@ OverlayDiv.defaultProps = {
 
 const mapStateToProps = state => {
   const exploreProject = selectProjectByCode(state, 'explore');
+  const activeProject = selectProjectByCode(state, state.project.activeProjectCode);
 
   return {
     overlay: state.global.overlay,
     isUserLoggedIn: state.authentication.isUserLoggedIn,
+    activeProject,
     exploreProject,
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    onSelectProject: project => {
-      dispatch(selectProject(project.code));
-      dispatch(setOverlayComponent(null));
-      dispatch(changeOrgUnit(project.homeEntityCode, false));
-    },
-    closeOverlay: () => {
-      dispatch(setOverlayComponent(null));
-    },
-  };
-};
+const mergeProps = (stateProps, { dispatch }, ownProps) => ({
+  ...ownProps,
+  ...stateProps,
+  selectExploreProject: () => {
+    dispatch(setOverlayComponent(null));
+    dispatch(selectProject(stateProps.exploreProject.code));
+  },
+  viewProjectList: () => dispatch(setOverlayComponent(LANDING)),
+  closeOverlay: () => {
+    dispatch(setOverlayComponent(null));
+  },
+});
 
-export default connect(mapStateToProps, mapDispatchToProps)(OverlayDiv);
+export default connect(mapStateToProps, null, mergeProps)(OverlayDiv);

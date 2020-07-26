@@ -80,8 +80,4 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => ({
   onLogin: () => dispatch(login(stateProps.emailAddress, stateProps.password)),
 });
 
-export const LoginModal = connect(
-  mapStateToProps,
-  null,
-  mergeProps,
-)(LoginModalComponent);
+export const LoginModal = connect(mapStateToProps, null, mergeProps)(LoginModalComponent);
