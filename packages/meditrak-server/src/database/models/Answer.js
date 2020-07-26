@@ -33,6 +33,14 @@ export const ANSWER_TYPES = {
   // If adding a new type, add validation in both importSurveys and updateSurveyResponses
 };
 
+// these answer types are not stored as data, because they either don't take any answer, or their data
+// is used as metadata for the survey response rather than being stored as a standard answer
+export const NON_DATA_ELEMENT_ANSWER_TYPES = [
+  ANSWER_TYPES.INSTRUCTION,
+  ANSWER_TYPES.PRIMARY_ENTITY,
+  ANSWER_TYPES.SUBMISSION_DATE,
+];
+
 class AnswerType extends DatabaseType {
   static databaseType = TYPES.ANSWER;
 

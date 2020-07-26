@@ -9,7 +9,6 @@
     "@material-ui/icons": "^3.0.1",
     "@material-ui/styles": "^4.7.1",
     "email-validator": "^1.1.1",
-    "eslint-plugin-jest": "^22.1.2",
     "history": "^4.7.2",
     "is-mobile": "^0.2.2",
     "leaflet": "^1.1.0",
