@@ -5,6 +5,7 @@
 
 import React from 'react';
 import { ResourcePage } from './ResourcePage';
+import Typography from '@material-ui/core/Typography';
 
 const FIELDS = [
   {
@@ -56,7 +57,7 @@ const FIELDS = [
       if (row.value && row.value.title) {
         return (
           <div>
-            <h4>{row.value.title}</h4>
+            <Typography variant="h3">{row.value.title}</Typography>
             <img src={row.value.image} alt={row.value.title} />
             <div>{row.value.body}</div>
           </div>
