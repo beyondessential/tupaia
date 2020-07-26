@@ -13,6 +13,7 @@ import { withRouter } from 'react-router';
 import { ConnectedRouter } from 'react-router-redux';
 import { PersistGate } from 'redux-persist/lib/integration/react';
 import 'react-table/react-table.css';
+
 import { theme } from './theme';
 import { history, store, persistor } from './store';
 import { AppContainer } from './App';
