@@ -11,6 +11,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/lib/integration/react';
 import 'react-table/react-table.css';
+
 import { theme } from './theme';
 import { store, persistor } from './store';
 import { App } from './App';
