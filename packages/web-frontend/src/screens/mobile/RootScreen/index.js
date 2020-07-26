@@ -21,7 +21,6 @@ import Footer from '../../../components/mobile/Footer';
 import { ENTITY_TYPE } from '../../../constants';
 import OverlayDiv from '../../../containers/OverlayDiv';
 import { selectCurrentOrgUnit } from '../../../selectors';
-import './mobile-styles.css';
 
 const ORG_UNIT_TYPE_TO_COMPONENT = {
   [ENTITY_TYPE.COUNTRY]: RegionScreen,
