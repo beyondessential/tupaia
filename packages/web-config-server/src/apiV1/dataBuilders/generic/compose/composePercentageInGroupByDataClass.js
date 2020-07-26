@@ -1,5 +1,5 @@
 import flattenDeep from 'lodash.flattendeep';
-import { OPERATOR_TO_VALUE_CHECK } from '/apiV1/dataBuilders/helpers/checkAgainstConditions';
+import { checkValueSatisfiesCondition } from '/apiV1/dataBuilders/helpers/checkAgainstConditions';
 
 export const composePercentageInGroupByDataClass = async (
   { dataBuilderConfig, query },
@@ -99,12 +99,8 @@ export const composePercentageInGroupByDataClass = async (
 };
 
 const mapValueGroup = (value, groups) => {
-  const group = Object.entries(groups).find(([groupName, groupConfig]) => {
-    const groupCheck = OPERATOR_TO_VALUE_CHECK[groupConfig.operator];
-    if (!groupCheck) {
-      throw new Error(`No function defined for operator: ${groupConfig.operator}`);
-    }
-    return groupCheck(value, groupConfig.value);
-  });
+  const group = Object.entries(groups).find(([groupName, groupConfig]) =>
+    checkValueSatisfiesCondition(value, groupConfig),
+  );
   return group ? group[0] : value;
 };
