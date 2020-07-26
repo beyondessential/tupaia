@@ -22,6 +22,7 @@ import { request } from '../../../utils';
 import { decodeUrl, getInitialLocation } from '../../../utils/historyNavigation';
 import { DARK_BLUE, WHITE } from '../../../styles';
 import { selectOrgUnit } from '../../../selectors';
+import './exporter-styles.css';
 
 const initialLocation = getInitialLocation();
 const {
