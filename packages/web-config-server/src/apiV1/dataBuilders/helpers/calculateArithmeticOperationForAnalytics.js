@@ -5,7 +5,7 @@ const ARITHMETIC_OPERATOR = {
   SUBTRACT: 'SUBTRACT',
 };
 
-const calculateOperationPart = (analytics, dataValues) => {
+const calculateOperand = (analytics, dataValues) => {
   let sum = 0;
 
   analytics.forEach(({ dataElement, value }) => {
@@ -17,10 +17,10 @@ const calculateOperationPart = (analytics, dataValues) => {
   return sum;
 };
 
-export const calculateAnalyticArithmeticOperation = (analytics, arithmeticConfig) => {
+export const calculateArithmeticOperationForAnalytics = (analytics, arithmeticConfig) => {
   const { operator, firstOperand, secondOperand } = arithmeticConfig;
-  const firstResult = calculateOperationPart(analytics, firstOperand.dataValues);
-  const secondResult = calculateOperationPart(analytics, secondOperand.dataValues);
+  const firstResult = calculateOperand(analytics, firstOperand.dataValues);
+  const secondResult = calculateOperand(analytics, secondOperand.dataValues);
 
   switch (operator) {
     case ARITHMETIC_OPERATOR.DIVIDE:
