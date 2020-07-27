@@ -7,7 +7,11 @@ import groupBy from 'lodash.groupby';
 import zipObject from 'lodash.zipobject';
 
 import { addPrefixToCell } from './TableConfig';
-import { countAnalyticsThatSatisfyConditions, divideValues } from '/apiV1/dataBuilders/helpers';
+import {
+  countAnalyticsThatSatisfyConditions,
+  divideValues,
+  calculateAnalyticArithmeticOperation,
+} from '/apiV1/dataBuilders/helpers';
 
 const groupByMetadata = (groupedResults, metadataField) => {
   const newResults = {};
@@ -59,4 +63,12 @@ export const getPercentageCountOfValuesByCell = (cells, results) => {
     );
   });
   return percentageCountOfValuesByCell;
+};
+
+export const getCalculatedValuesByCell = (cells, results) => {
+  const calculatedValuesByCell = {};
+  cells.forEach(cell => {
+    calculatedValuesByCell[cell.key] = calculateAnalyticArithmeticOperation(results, cell);
+  });
+  return calculatedValuesByCell;
 };
