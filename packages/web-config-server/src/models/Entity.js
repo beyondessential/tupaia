@@ -73,7 +73,7 @@ export class Entity extends BaseModel {
     'attributes',
   ];
 
-  static thinFields = ['id', 'code', 'type', 'parent_id', 'country_code'];
+  static thinFields = ['id', 'code', 'type', 'parent_id', 'country_code', 'name'];
 
   static geoFields = ['point', 'region', 'bounds'];
 
@@ -151,7 +151,7 @@ export class Entity extends BaseModel {
   }
 
   async getCountry(hierarchyId) {
-    if (this.type === COUNTRY) return this;
+    if (this.isCountry()) return this;
     return this.getAncestorOfType(COUNTRY, hierarchyId);
   }
 
