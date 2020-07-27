@@ -69,25 +69,11 @@ const insertDataSources = async (db, questions, surveyCode) => {
       code: questions[i].code,
       type: 'dataElement',
     });
-
-    const dataElementDataGroupResults = await db.runSql(
-      `SELECT * FROM data_element_data_group WHERE data_element_id = '${dataElementId}' AND data_group_id = '${dataGroupId}'`,
-    );
-
-    if (!dataElementDataGroupResults.rows.length) {
-      await insertObject(db, 'data_element_data_group', {
-        id: generateId(),
-        data_element_id: dataElementId,
-        data_group_id: dataGroupId,
-      });
-    } else {
-      console.log('questions[i].code', questions[i].code);
-      console.log(
-        `SELECT * FROM data_element_data_group WHERE data_element_id = '${dataElementId}' AND data_group_id = '${dataGroupId}'`,
-      );
-
-      console.log('========================================');
-    }
+    await insertObject(db, 'data_element_data_group', {
+      id: generateId(),
+      data_element_id: dataElementId,
+      data_group_id: dataGroupId,
+    });
   }
 };
 
