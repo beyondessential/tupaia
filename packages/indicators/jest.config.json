@@ -1,0 +1,3 @@
+{
+  "collectCoverageFrom": ["src/**/*.ts"]
+}

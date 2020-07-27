@@ -5,6 +5,6 @@
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "strict": true,
-    "types": ["node"]
+    "types": ["node", "jest"]
   }
 }
