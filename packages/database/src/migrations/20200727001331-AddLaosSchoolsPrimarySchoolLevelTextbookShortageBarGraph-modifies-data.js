@@ -24,10 +24,16 @@ const LAO_LANGUAGE = 'Lao Language';
 const MATHEMATICS = 'Mathematics';
 const WORLD_AROUND_US = 'World Around Us';
 
+const GRADE_1 = 'Grade 1';
+const GRADE_2 = 'Grade 2';
+const GRADE_3 = 'Grade 3';
+const GRADE_4 = 'Grade 4';
+const GRADE_5 = 'Grade 5';
+
 const DATA_BUILDER_CONFIG = {
   dataClasses: {
     [LAO_LANGUAGE]: {
-      G1: {
+      [GRADE_1]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop011', 'SchPop012'],
@@ -36,7 +42,7 @@ const DATA_BUILDER_CONFIG = {
           dataValues: ['STCL001'],
         },
       },
-      G2: {
+      [GRADE_2]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop013', 'SchPop014'],
@@ -45,7 +51,7 @@ const DATA_BUILDER_CONFIG = {
           dataValues: ['STCL020'],
         },
       },
-      G3: {
+      [GRADE_3]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop015', 'SchPop016'],
@@ -54,7 +60,7 @@ const DATA_BUILDER_CONFIG = {
           dataValues: ['STCL039'],
         },
       },
-      G4: {
+      [GRADE_4]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop017', 'SchPop018'],
@@ -63,7 +69,7 @@ const DATA_BUILDER_CONFIG = {
           dataValues: ['STCL058'],
         },
       },
-      G5: {
+      [GRADE_5]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop019', 'SchPop020'],
@@ -74,7 +80,7 @@ const DATA_BUILDER_CONFIG = {
       },
     },
     [MATHEMATICS]: {
-      G1: {
+      [GRADE_1]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop011', 'SchPop012'],
@@ -83,7 +89,7 @@ const DATA_BUILDER_CONFIG = {
           dataValues: ['STCL002'],
         },
       },
-      G2: {
+      [GRADE_2]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop013', 'SchPop014'],
@@ -92,7 +98,7 @@ const DATA_BUILDER_CONFIG = {
           dataValues: ['STCL021'],
         },
       },
-      G3: {
+      [GRADE_3]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop015', 'SchPop016'],
@@ -101,7 +107,7 @@ const DATA_BUILDER_CONFIG = {
           dataValues: ['STCL040'],
         },
       },
-      G4: {
+      [GRADE_4]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop017', 'SchPop018'],
@@ -110,7 +116,7 @@ const DATA_BUILDER_CONFIG = {
           dataValues: ['STCL059'],
         },
       },
-      G5: {
+      [GRADE_5]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop019', 'SchPop020'],
@@ -121,7 +127,7 @@ const DATA_BUILDER_CONFIG = {
       },
     },
     [WORLD_AROUND_US]: {
-      G1: {
+      [GRADE_1]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop011', 'SchPop012'],
@@ -130,7 +136,7 @@ const DATA_BUILDER_CONFIG = {
           dataValues: ['STCL003'],
         },
       },
-      G2: {
+      [GRADE_2]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop013', 'SchPop014'],
@@ -139,7 +145,7 @@ const DATA_BUILDER_CONFIG = {
           dataValues: ['STCL022'],
         },
       },
-      G3: {
+      [GRADE_3]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop015', 'SchPop016'],
@@ -148,7 +154,7 @@ const DATA_BUILDER_CONFIG = {
           dataValues: ['STCL041'],
         },
       },
-      G4: {
+      [GRADE_4]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop017', 'SchPop018'],
@@ -157,7 +163,7 @@ const DATA_BUILDER_CONFIG = {
           dataValues: ['STCL060'],
         },
       },
-      G5: {
+      [GRADE_5]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop019', 'SchPop020'],

@@ -23,10 +23,14 @@ const REPORT_ID = 'Laos_Schools_School_Textbooks_Shortage_Upper_Secondary_School
 const LAO_LANGUAGE_AND_LITERATURE = 'Lao Language & Literature';
 const MATHEMATICS = 'Mathematics';
 
+const GRADE_10 = 'Grade 10';
+const GRADE_11 = 'Grade 11';
+const GRADE_12 = 'Grade 12';
+
 const DATA_BUILDER_CONFIG = {
   dataClasses: {
     [LAO_LANGUAGE_AND_LITERATURE]: {
-      G10: {
+      [GRADE_10]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop029', 'SchPop030'],
@@ -35,7 +39,7 @@ const DATA_BUILDER_CONFIG = {
           dataValues: ['STCL080'],
         },
       },
-      G11: {
+      [GRADE_11]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop031', 'SchPop032'],
@@ -44,7 +48,7 @@ const DATA_BUILDER_CONFIG = {
           dataValues: ['STCL096'],
         },
       },
-      G12: {
+      [GRADE_12]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop033', 'SchPop034'],
@@ -55,7 +59,7 @@ const DATA_BUILDER_CONFIG = {
       },
     },
     [MATHEMATICS]: {
-      G10: {
+      [GRADE_10]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop029', 'SchPop030'],
@@ -64,7 +68,7 @@ const DATA_BUILDER_CONFIG = {
           dataValues: ['STCL081'],
         },
       },
-      G11: {
+      [GRADE_11]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop031', 'SchPop032'],
@@ -73,7 +77,7 @@ const DATA_BUILDER_CONFIG = {
           dataValues: ['STCL097'],
         },
       },
-      G12: {
+      [GRADE_12]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop033', 'SchPop034'],

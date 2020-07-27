@@ -29,10 +29,15 @@ const ENGLISH = 'English';
 const FRENCH = 'French';
 const MATHEMATICS_EXERCISE_BOOK = 'Mathematics Exercise Book';
 
+const GRADE_6 = 'Grade 6';
+const GRADE_7 = 'Grade 7';
+const GRADE_8 = 'Grade 8';
+const GRADE_9 = 'Grade 9';
+
 const DATA_BUILDER_CONFIG = {
   dataClasses: {
     [LAO_LANGUAGE]: {
-      G6: {
+      [GRADE_6]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop021', 'SchPop022'],
@@ -41,7 +46,7 @@ const DATA_BUILDER_CONFIG = {
           dataValues: ['STCL004'],
         },
       },
-      G7: {
+      [GRADE_7]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop023', 'SchPop024'],
@@ -50,7 +55,7 @@ const DATA_BUILDER_CONFIG = {
           dataValues: ['STCL023'],
         },
       },
-      G8: {
+      [GRADE_8]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop025', 'SchPop026'],
@@ -59,7 +64,7 @@ const DATA_BUILDER_CONFIG = {
           dataValues: ['STCL042'],
         },
       },
-      G9: {
+      [GRADE_9]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop027', 'SchPop028'],
@@ -70,7 +75,7 @@ const DATA_BUILDER_CONFIG = {
       },
     },
     [MATHEMATICS]: {
-      G6: {
+      [GRADE_6]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop021', 'SchPop022'],
@@ -79,7 +84,7 @@ const DATA_BUILDER_CONFIG = {
           dataValues: ['STCL005'],
         },
       },
-      G7: {
+      [GRADE_7]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop023', 'SchPop024'],
@@ -88,7 +93,7 @@ const DATA_BUILDER_CONFIG = {
           dataValues: ['STCL024'],
         },
       },
-      G8: {
+      [GRADE_8]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop025', 'SchPop026'],
@@ -97,7 +102,7 @@ const DATA_BUILDER_CONFIG = {
           dataValues: ['STCL043'],
         },
       },
-      G9: {
+      [GRADE_9]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop027', 'SchPop028'],
@@ -108,7 +113,7 @@ const DATA_BUILDER_CONFIG = {
       },
     },
     [NATURAL_SCIENCE]: {
-      G6: {
+      [GRADE_6]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop021', 'SchPop022'],
@@ -117,7 +122,7 @@ const DATA_BUILDER_CONFIG = {
           dataValues: ['STCL006'],
         },
       },
-      G7: {
+      [GRADE_7]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop023', 'SchPop024'],
@@ -126,7 +131,7 @@ const DATA_BUILDER_CONFIG = {
           dataValues: ['STCL025'],
         },
       },
-      G8: {
+      [GRADE_8]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop025', 'SchPop026'],
@@ -135,7 +140,7 @@ const DATA_BUILDER_CONFIG = {
           dataValues: ['STCL044'],
         },
       },
-      G9: {
+      [GRADE_9]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop027', 'SchPop028'],
@@ -146,7 +151,7 @@ const DATA_BUILDER_CONFIG = {
       },
     },
     [POLITICAL_SCIENCE]: {
-      G6: {
+      [GRADE_6]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop021', 'SchPop022'],
@@ -155,7 +160,7 @@ const DATA_BUILDER_CONFIG = {
           dataValues: ['STCL007'],
         },
       },
-      G7: {
+      [GRADE_7]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop023', 'SchPop024'],
@@ -164,7 +169,7 @@ const DATA_BUILDER_CONFIG = {
           dataValues: ['STCL026'],
         },
       },
-      G8: {
+      [GRADE_8]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop025', 'SchPop026'],
@@ -173,7 +178,7 @@ const DATA_BUILDER_CONFIG = {
           dataValues: ['STCL045'],
         },
       },
-      G9: {
+      [GRADE_9]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop027', 'SchPop028'],
@@ -184,7 +189,7 @@ const DATA_BUILDER_CONFIG = {
       },
     },
     [ICT]: {
-      G6: {
+      [GRADE_6]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop021', 'SchPop022'],
@@ -193,7 +198,7 @@ const DATA_BUILDER_CONFIG = {
           dataValues: ['STCL008'],
         },
       },
-      G7: {
+      [GRADE_7]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop023', 'SchPop024'],
@@ -202,7 +207,7 @@ const DATA_BUILDER_CONFIG = {
           dataValues: ['STCL027'],
         },
       },
-      G8: {
+      [GRADE_8]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop025', 'SchPop026'],
@@ -211,7 +216,7 @@ const DATA_BUILDER_CONFIG = {
           dataValues: ['STCL046'],
         },
       },
-      G9: {
+      [GRADE_9]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop027', 'SchPop028'],
@@ -222,7 +227,7 @@ const DATA_BUILDER_CONFIG = {
       },
     },
     [ENGLISH]: {
-      G6: {
+      [GRADE_6]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop021', 'SchPop022'],
@@ -231,7 +236,7 @@ const DATA_BUILDER_CONFIG = {
           dataValues: ['STCL009'],
         },
       },
-      G7: {
+      [GRADE_7]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop023', 'SchPop024'],
@@ -240,7 +245,7 @@ const DATA_BUILDER_CONFIG = {
           dataValues: ['STCL028'],
         },
       },
-      G8: {
+      [GRADE_8]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop025', 'SchPop026'],
@@ -249,7 +254,7 @@ const DATA_BUILDER_CONFIG = {
           dataValues: ['STCL047'],
         },
       },
-      G9: {
+      [GRADE_9]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop027', 'SchPop028'],
@@ -260,7 +265,7 @@ const DATA_BUILDER_CONFIG = {
       },
     },
     [FRENCH]: {
-      G6: {
+      [GRADE_6]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop021', 'SchPop022'],
@@ -269,7 +274,7 @@ const DATA_BUILDER_CONFIG = {
           dataValues: ['STCL010'],
         },
       },
-      G7: {
+      [GRADE_7]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop023', 'SchPop024'],
@@ -278,7 +283,7 @@ const DATA_BUILDER_CONFIG = {
           dataValues: ['STCL029'],
         },
       },
-      G8: {
+      [GRADE_8]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop025', 'SchPop026'],
@@ -287,7 +292,7 @@ const DATA_BUILDER_CONFIG = {
           dataValues: ['STCL048'],
         },
       },
-      G9: {
+      [GRADE_9]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop027', 'SchPop028'],
@@ -298,7 +303,7 @@ const DATA_BUILDER_CONFIG = {
       },
     },
     [MATHEMATICS_EXERCISE_BOOK]: {
-      G6: {
+      [GRADE_6]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop021', 'SchPop022'],
@@ -307,7 +312,7 @@ const DATA_BUILDER_CONFIG = {
           dataValues: ['STCL011'],
         },
       },
-      G7: {
+      [GRADE_7]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop023', 'SchPop024'],
@@ -316,7 +321,7 @@ const DATA_BUILDER_CONFIG = {
           dataValues: ['STCL030'],
         },
       },
-      G8: {
+      [GRADE_8]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop025', 'SchPop026'],
@@ -325,7 +330,7 @@ const DATA_BUILDER_CONFIG = {
           dataValues: ['STCL049'],
         },
       },
-      G9: {
+      [GRADE_9]: {
         operator: 'SUBTRACT',
         firstOperand: {
           dataValues: ['SchPop027', 'SchPop028'],

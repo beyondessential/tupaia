@@ -5,7 +5,7 @@
 
 import flattenDeep from 'lodash.flattendeep';
 
-import { calculateAnalyticArithmeticOperation } from '/apiV1/dataBuilders/helpers';
+import { calculateArithmeticOperationForAnalytics } from '/apiV1/dataBuilders/helpers';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 
 /**
@@ -50,7 +50,7 @@ class CalcPerSeriesDataBuilder extends DataBuilder {
           dataByClass[seriesKey] = { name: seriesKey };
         }
 
-        dataByClass[seriesKey][classKey] = calculateAnalyticArithmeticOperation(
+        dataByClass[seriesKey][classKey] = calculateArithmeticOperationForAnalytics(
           results,
           seriesConfig,
         );
