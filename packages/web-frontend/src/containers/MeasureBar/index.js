@@ -22,7 +22,7 @@ import List from '@material-ui/core/List';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { ControlBar } from '../../components/ControlBar';
-import { changeMeasure, clearMeasure, toggleMeasureExpand } from '../../actions';
+import { setMeasure, clearMeasure, toggleMeasureExpand } from '../../actions';
 import { HierarchyItem } from '../../components/HierarchyItem';
 import TupaiaIcon from '../../images/TupaiaIcon.svg';
 import { MAP_OVERLAY_SELECTOR } from '../../styles';
@@ -196,7 +196,7 @@ const mapDispatchToProps = dispatch => ({
   onExpandClick: () => dispatch(toggleMeasureExpand()),
   onClearMeasure: () => dispatch(clearMeasure()),
   onSelectMeasure: (measure, orgUnitCode) => {
-    dispatch(changeMeasure(measure.measureId, orgUnitCode));
+    dispatch(setMeasure(measure.measureId, orgUnitCode));
   },
 });
 

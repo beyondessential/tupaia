@@ -54,7 +54,7 @@ export const selectCurrentOverlayCode = createSelector([selectLocation], locatio
 export const selectCurrentMeasure = createSelector(
   [selectCurrentOverlayCode, state => state.measureBar.measureHierarchy],
   (currentMeasureId, measureHierarchy) =>
-    getMeasureFromHierarchy(measureHierarchy, currentMeasureId),
+    getMeasureFromHierarchy(measureHierarchy, currentMeasureId) || {},
 );
 
 const selectDisplayLevelAncestor = createSelector(

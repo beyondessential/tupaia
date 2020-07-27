@@ -19,7 +19,7 @@ import StaticMap from '../../../components/StaticMap';
 import { filterShape } from '../../../components/mobile/FilterSelect';
 import {
   setOrgUnit,
-  changeMeasure,
+  setMeasure,
   toggleMeasureExpand,
   toggleDashboardSelectExpand,
   changeDashboardGroup,
@@ -263,7 +263,6 @@ const mapStateToProps = state => {
   const { measureInfo, isMeasureLoading } = state.map;
   const { isGroupSelectExpanded } = state.dashboard;
   const currentMeasure = selectCurrentMeasure(state);
-  const hasSelectedMeasureId = currentMeasure !== undefined; //TODO: maybe should be {} like other selectors
   const orgUnit = selectCurrentOrgUnit(state);
 
   const mobileListItems = getListItemsFromOrganisationUnitChildren(
@@ -278,7 +277,7 @@ const mapStateToProps = state => {
 
   const measureFilters = getMeasureFiltersForHierarchy(measureHierarchy);
 
-  const selectedFilter = hasSelectedMeasureId
+  const selectedFilter = currentMeasure.measureId
     ? { label: currentMeasure.name, id: `${currentMeasure.measureId}` }
     : { label: '' };
 
@@ -298,7 +297,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  onChangeMeasure: (measureId, orgUnit) => dispatch(changeMeasure(measureId, orgUnit)),
+  onChangeMeasure: (measureId, orgUnit) => dispatch(setMeasure(measureId, orgUnit)),
   onClearMeasure: () => dispatch(clearMeasure()),
   onToggleMeasureExpand: () => dispatch(toggleMeasureExpand()),
   onToggleDashboardSelectExpand: () => dispatch(toggleDashboardSelectExpand()),

@@ -513,7 +513,7 @@ export function changeBounds(bounds) {
  * @param {string} measureId
  * @param {string} organisationUnitCode
  */
-export function changeMeasure(measureId, organisationUnitCode) {
+export function setMeasure(measureId, organisationUnitCode) {
   return {
     type: SET_MEASURE,
     measureId,

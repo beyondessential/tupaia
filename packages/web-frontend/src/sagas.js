@@ -41,9 +41,8 @@ import {
   DIALOG_PAGE_REQUEST_COUNTRY_ACCESS,
   FINISH_USER_SESSION,
   SET_VERIFY_EMAIL_TOKEN,
-  changeMeasure,
+  setMeasure,
   clearMeasure,
-  clearMeasureHierarchy,
   findLoggedIn,
   fetchChangePasswordSuccess,
   fetchChangePasswordError,
@@ -59,7 +58,6 @@ import {
   displayUnverified,
   fetchUserSignupError,
   fetchOrgUnitSuccess,
-  setOrgUnit,
   changeOrgUnitSuccess,
   changeOrgUnitError,
   fetchDashboardSuccess,
@@ -750,14 +748,14 @@ function* fetchCurrentMeasureInfo() {
         selectCurrentProject(state),
       );
       if (newMeasure !== selectedMeasureId) {
-        yield put(changeMeasure(newMeasure, currentOrganisationUnitCode));
+        yield put(setMeasure(newMeasure, currentOrganisationUnitCode));
       }
     } else {
       /** Ensure measure is selected if there is a current measure selected in the case
        * it is not selected through the measureBar UI
        * i.e. page reloaded when on org with measure selected
        */
-      yield put(changeMeasure(selectedMeasureId, currentOrganisationUnitCode));
+      yield put(setMeasure(selectedMeasureId, currentOrganisationUnitCode));
     }
   }
 }
@@ -785,7 +783,7 @@ function* fetchMeasureInfoForNewOrgUnit(action) {
   }
 
   if (measureId) {
-    yield put(changeMeasure(measureId, organisationUnitCode));
+    yield put(setMeasure(measureId, organisationUnitCode));
   }
 }
 
