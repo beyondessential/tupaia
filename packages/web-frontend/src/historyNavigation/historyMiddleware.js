@@ -45,7 +45,6 @@ import {
 
 import { URL_COMPONENTS } from './constants';
 
-// TODO: import { gaPageView } from '../utils';
 export const reactToInitialState = ({ dispatch }) => {
   const { userPage, ...otherComponents } = getInitialtUrlComponents();
   console.log(otherComponents);

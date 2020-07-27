@@ -119,7 +119,6 @@ export const selectOrgUnitCountry = createSelector([selectCountryHeirachy], coun
   country ? country[country.countryCode] : undefined,
 );
 
-// QUESTION: Is this a good pattern?
 export const selectCurrentOrgUnit = createSelector(
   [state => selectOrgUnit(state, selectCurrentOrgUnitCode(state))],
   currentOrgUnit => currentOrgUnit || {},

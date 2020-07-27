@@ -548,9 +548,6 @@ function measureBar(
       return {
         ...state,
         measureHierarchy: action.response.measures,
-        // TODO: If a new set of measures has come through, refresh the currentMeasure using the currently
-        // selected measure id.
-        //currentMeasure: getMeasureFromHierarchy(action.response.measures, 'hi') || {},
         error: null,
       };
     case FETCH_MEASURES_ERROR:

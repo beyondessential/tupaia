@@ -97,9 +97,6 @@ import {
 import { isMobile, processMeasureInfo, formatDateForApi } from './utils';
 import { createUrlString } from './historyNavigation';
 import { getDefaultDates } from './utils/periodGranularities';
-// TODO: remove all unused imports
-import { INITIAL_MEASURE_ID, INITIAL_PROJECT_CODE, initialOrgUnit } from './defaults';
-import { selectProject } from './projects/actions';
 
 /**
  * attemptChangePassword
@@ -726,9 +723,8 @@ function getSelectedMeasureFromHierarchy(measureHierarchy, selectedMeasureId, pr
 
   if (measures.find(m => m.measureId === selectedMeasureId)) return selectedMeasureId;
   else if (measures.find(m => m.measureId === projectMeasureId)) return projectMeasureId;
-  else if (measures.find(m => m.measureId === INITIAL_MEASURE_ID)) return INITIAL_MEASURE_ID;
   else if (measures.length) return measures[0].measureId;
-  return INITIAL_MEASURE_ID;
+  return null;
 }
 
 function* fetchCurrentMeasureInfo() {
@@ -869,7 +865,7 @@ function* exportChart(action) {
 
   const timeZone = getTimeZone();
 
-  // TODO
+  // TODO: Exports!
   const exportUrl = createUrlString({
     dashboardId: dashboardGroupId,
     reportId: viewId,
@@ -943,7 +939,7 @@ function* watchAttemptAttemptDrillDown() {
 }
 
 function* resetToProjectSplash(action) {
-  // TODO
+  // TODO: Make sure all of this functionality works, including login/logout
   const state = yield select();
   // default measure will be selected once the org unit has fully changed, just clear for now
   // yield put(clearMeasure());
@@ -956,7 +952,6 @@ function* resetToProjectSplash(action) {
 }
 
 function* watchUserChangesAndUpdatePermissions() {
-  // TODO
   // On user login/logout, we should just navigate back to explore project, as we don't know if they have permissions
   // to the current project or organisation unit
   yield takeLatest(FETCH_LOGOUT_SUCCESS, resetToProjectSplash);

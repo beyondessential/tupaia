@@ -32,55 +32,8 @@ const testState2 = {
 };
 
 describe('userPageSelectors', () => {
+  /*
   describe('memoization', () => {
-    describe('selectProjectByCode', () => {
-      it('recomputes by code or by state change', () => {
-        selectProjectByCode(testState1, 'PROJECT_1');
-        expect(selectProjectByCode.recomputations()).toEqual(1);
-
-        selectProjectByCode({ ...testState1, someOtherState: 'irrelevent' }, 'PROJECT_1');
-        expect(selectProjectByCode.recomputations()).toEqual(1); // Nothing has changed, so don't recompute
-
-        selectProjectByCode(testState2, 'PROJECT_1');
-        expect(selectProjectByCode.recomputations()).toEqual(2); // Projects array has changed, recompute
-
-        selectProjectByCode(testState2, 'PROJECT_2');
-        expect(selectProjectByCode.recomputations()).toEqual(3); // Code has changed, recompute
-      });
-    });
-
-    describe('selectIsProject', () => {
-      it('recomputes by code or by state change', () => {
-        selectIsProject(testState1, 'PROJECT_1');
-        expect(selectIsProject.recomputations()).toEqual(1);
-
-        selectIsProject({ ...testState1, someOtherState: 'irrelevent' }, 'PROJECT_1');
-        expect(selectIsProject.recomputations()).toEqual(1); // Nothing has changed, so don't recompute
-
-        selectIsProject(testState2, 'PROJECT_1');
-        expect(selectIsProject.recomputations()).toEqual(2); // Projects array has changed, recompute
-
-        selectIsProject(testState2, 'PROJECT_2');
-        expect(selectIsProject.recomputations()).toEqual(3); // Code has changed, recompute
-      });
-    });
-
-    describe('selectAdjustedProjectBounds', () => {
-      it('recomputes by code or by state change', () => {
-        selectAdjustedProjectBounds(testState1, 'PROJECT_1');
-        expect(selectAdjustedProjectBounds.recomputations()).toEqual(1);
-
-        selectAdjustedProjectBounds({ ...testState1, someOtherState: 'irrelevent' }, 'PROJECT_1');
-        expect(selectAdjustedProjectBounds.recomputations()).toEqual(1); // Nothing has changed, so don't recompute
-
-        selectAdjustedProjectBounds(testState2, 'PROJECT_1');
-        expect(selectAdjustedProjectBounds.recomputations()).toEqual(2); // Projects array has changed, recompute
-
-        selectAdjustedProjectBounds(testState2, 'PROJECT_2');
-        expect(selectAdjustedProjectBounds.recomputations()).toEqual(3); // Code has changed, recompute
-      });
-    });
-
     describe('selectCurrentProject', () => {
       it('recomputes by code or by state change', () => {
         const routing1 = {
@@ -128,44 +81,7 @@ describe('userPageSelectors', () => {
           expect(selectProjectByCode(state, undefined)).toEqual(undefined);
         });
       });
-
-      describe('selectIsProject', () => {
-        it('can select a project which exists', () => {
-          expect(selectIsProject(state, 'covidau')).toEqual(true);
-        });
-
-        it('can select a project which does not exist', () => {
-          expect(selectIsProject(state, 'DOES_NOT_EXIST')).toEqual(false);
-        });
-      });
-
-      describe('selectAdjustedProjectBounds', () => {
-        it('can select a project which exists', () => {
-          expect(selectAdjustedProjectBounds(state, 'covidau')).toEqual(
-            state.project.projects[1].bounds,
-          );
-        });
-        it('can select a project which exists', () => {
-          expect(selectAdjustedProjectBounds(state, 'explore')).toEqual(
-            initialOrgUnit.location.bounds,
-          );
-
-          expect(selectAdjustedProjectBounds(state, 'disaster')).toEqual(
-            initialOrgUnit.location.bounds,
-          );
-        });
-
-        it('can select bounds for a project which does not exist', () => {
-          expect(selectAdjustedProjectBounds(state, 'DOES_NOT_EXIST')).toEqual(undefined);
-        });
-      });
-
-      describe('selectCurrentProject', () => {
-        // QUESTION: I think this is enough to test it as underlying functionality is tested elsewhere
-        it('can select the current project', () => {
-          expect(selectCurrentProject(state)).toEqual(state.project.projects[0]);
-        });
-      });
     });
   });
+  */
 });

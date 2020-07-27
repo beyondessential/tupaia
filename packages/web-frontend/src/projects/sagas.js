@@ -47,8 +47,7 @@ function* loadProject(action) {
   // - Make sure projects are loaded, I think the below works
   // - Why not change map bounds on change org unit/ wow the regression
   // - Should we use getCurrentProject here rather than action.projectCode? Advantages/disadvantages?
-  //yield call(fetchProjectData);
-  // TODO: Nasty hack, not allowed
+  // -How to do the below properly?
   let state = yield select();
 
   if (!(state.project.projects.length > 0)) {
