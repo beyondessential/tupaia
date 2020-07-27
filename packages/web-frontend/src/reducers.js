@@ -453,7 +453,6 @@ function dashboard(
 ) {
   switch (action.type) {
     //case CHANGE_DASHBOARD_GROUP:
-    //console.log(action);
     //return { ...state, currentDashboardKey: action.name };
     case FETCH_INFO_VIEW_DATA:
       return state;
@@ -516,7 +515,6 @@ function searchBar(
       // Clear search results on logout incase of permission change
       return { ...state, isExpanded: false, searchResponse: null, searchString: '' };
     case ON_SET_PROJECT:
-      console.log(action);
       // Clear search results on project change to fetch alternative hierarchy
       return { ...state, isExpanded: false, searchResponse: null, searchString: '' };
     default:
@@ -821,9 +819,8 @@ const initialState = {
 };
 
 function routing(state = initialState, action) {
-  //console.log(state, action);
   if (action.type === 'UPDATE_URL') {
-    console.log(state, action);
+    console.log(action.location);
     return action.location;
   }
   return state;

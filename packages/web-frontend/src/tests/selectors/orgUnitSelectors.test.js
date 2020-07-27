@@ -74,17 +74,17 @@ describe('orgUnitSelectors', () => {
       it('recomputes by code or by state change', () => {
         const routing1 = {
           pathname: '/PROJECT_1/TO/A%20DASHBOARD',
-          search: '?overlay=abc%20123',
+          search: { MEASURE: 'abc%20123' },
         };
 
         const routing2 = {
           pathname: '/PROJECT_1/TO/A%20DASHBOARD',
-          search: '?overlay=abc%20123',
+          search: { MEASURE: 'abc%20123' },
         };
 
         const routing3 = {
           pathname: '/PROJECT_2/TO_HfevaHC/A%20DASHBOARD',
-          search: '?overlay=abc%20123',
+          search: { MEASURE: 'abc%20123' },
         };
         const testState4 = {
           orgUnits: {

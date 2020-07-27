@@ -465,7 +465,6 @@ function* fetchOrgUnitDataAndChangeOrgUnit(action) {
   const state = yield select();
   const { organisationUnitCode, shouldChangeMapBounds } = action;
   const orgUnit = selectOrgUnit(state, organisationUnitCode);
-  console.log(action, state, orgUnit);
   if (orgUnit && orgUnit.isComplete) {
     const orgUnitAndChildren = {
       ...orgUnit,
@@ -675,7 +674,7 @@ function* watchSearchChange() {
  */
 function* fetchMeasureInfo(measureId, organisationUnitCode) {
   const state = yield select();
-
+  console.log(state, measureId, organisationUnitCode);
   if (!measureId || !organisationUnitCode) {
     // Don't try and fetch null measures
     yield put(cancelFetchMeasureData());
@@ -948,17 +947,17 @@ function* watchAttemptAttemptDrillDown() {
   yield takeLatest(ATTEMPT_DRILL_DOWN, fetchDrillDownData);
 }
 
-function* resetToProjectSplash() {
+function* resetToProjectSplash(action) {
   // TODO
   const state = yield select();
   // default measure will be selected once the org unit has fully changed, just clear for now
-  yield put(clearMeasure());
-  yield put(clearMeasureHierarchy());
+  // yield put(clearMeasure());
+  //yield put(clearMeasureHierarchy());
   //yield put(changeOrgUnit('explore', true));
 
-  if (state.project.projects.length > 0) {
-    //yield put(selectProject(INITIAL_PROJECT_CODE));
-  }
+  //if (state.project.projects.length > 0) {
+  //yield put(selectProject(INITIAL_PROJECT_CODE));
+  //}
 }
 
 function* watchUserChangesAndUpdatePermissions() {

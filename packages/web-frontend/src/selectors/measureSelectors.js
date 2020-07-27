@@ -44,13 +44,8 @@ const selectOrgUnitFromMeasureData = createSelector(
   (measureData, code) => measureData.find(val => val.organisationUnitCode === code),
 );
 
-export const selectDisplayInfo = (state, orgUnit) =>
-  safeGet(displayInfoCache, [
-    state.map.measureInfo.measureOptions,
-    state.map.measureInfo.hiddenMeasures,
-    selectOrgUnitFromMeasureData,
-    orgUnit.organisationUnitCode,
-  ]);
+// TODO: fix
+export const selectDisplayInfo = args => safeGet(displayInfoCache, args);
 
 export const selectCurrentOverlayCode = createSelector([selectLocation], location =>
   getUrlComponent(URL_COMPONENTS.MEASURE, location),
@@ -96,10 +91,21 @@ export const selectAllMeasuresWithDisplayInfo = createSelector(
     state => selectCurrentProjectCode(state),
     state => selectCountryHeirachy(state, state.map.measureInfo.currentCountry),
     state => state.map.measureInfo.measureData,
+    state => state.map.measureInfo.measureOptions,
+    state => state.map.measureInfo.hiddenMeasures,
     state => state.map.measureInfo.currentCountry,
     state => state.map.measureInfo.measureLevel,
   ],
-  (projectCountries, projectCode, country, measureData, currentCountry, measureLevel) => {
+  (
+    projectCountries,
+    projectCode,
+    country,
+    measureData,
+    measureOptions,
+    hiddenMeasures,
+    currentCountry,
+    measureLevel,
+  ) => {
     if (!currentCountry || !measureData || !country) {
       return [];
     }
@@ -110,7 +116,14 @@ export const selectAllMeasuresWithDisplayInfo = createSelector(
     });
     if (currentCountry === projectCode) allOrgUnitsOfLevel = projectCountries;
 
-    return allOrgUnitsOfLevel.map(orgUnit => getDisplayInfo(state, orgUnit));
+    return allOrgUnitsOfLevel.map(orgUnit =>
+      selectDisplayInfo([
+        measureOptions,
+        hiddenMeasures,
+        measureData.find(val => val.organisationUnitCode === orgUnit.organisationUnitCode),
+        orgUnit.organisationUnitCode,
+      ]),
+    );
   },
 );
 

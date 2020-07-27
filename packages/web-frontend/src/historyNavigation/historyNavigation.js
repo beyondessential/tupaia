@@ -14,65 +14,37 @@ import {
   VERIFY_EMAIL_PREFIX,
 } from './constants';
 
+// Functions dealing with history directly
 const history = createBrowserHistory();
 
-const getCurrentLocation = () => history.location;
+// Capture on app init.
+const initialLocation = history.location;
 
-function createUrl(pathParams, searchParams) {
-  const { userPage } = pathParams;
-  if (userPage) {
-    // TODO: userpage stuff
-    return { pathname: userPage };
-  }
+export const getCurrentLocation = () => history.location;
 
-  const urlComponents = PATH_COMPONENTS.map(component => pathParams[component]);
+export const getInitialtUrlComponents = () => {
+  const { pathname, search } = translateLocationToInternal(initialLocation);
+  console.log(search);
+  return decodeUrl(pathname, search);
+};
 
-  // remove falsey last elements
-  // e.g. [null, 'hi', 'hey', undefined, ''] => [null, 'hi', 'hey']
-  while (urlComponents.length > 0 && !urlComponents[urlComponents.length - 1]) {
-    urlComponents.pop();
-  }
+const translateLocationToInternal = location => {
+  const { pathname, search } = location;
+  return {
+    pathname,
+    search: replaceKeysAndRemoveNull(
+      queryString.parse(queryString.parse(search)),
+      swapKeyAndVal(SEARCH_PARAM_KEY_MAP),
+    ),
+  };
+};
 
-  const pathname = `/${urlComponents.join('/')}`;
-  const search = replaceKeysAndRemoveNull(searchParams, SEARCH_PARAM_KEY_MAP);
-  const hi =
-    searchParams && Object.keys(replaceKeysAndRemoveNull(searchParams, SEARCH_PARAM_KEY_MAP)).length
-      ? `?${Object.entries(replaceKeysAndRemoveNull(searchParams, SEARCH_PARAM_KEY_MAP))
-          .map(([key, val]) => `${key}=${val}`)
-          .join('&')}`
-      : '';
-  return { pathname, search };
-}
-
-export function createUrlString(params) {
-  const location = createUrl(params);
-  const query = queryString.stringify(location.search);
-  return `${location.pathname}?${query}`;
-}
-
-function isLocationEqual(a, b) {
-  return false; // TODO
-  /*
-    const { measureId: prevMeasureId, ...prev } = decodeUrl(a.pathname, a.search);
-    const { measureId: nextMeasureId, ...next } = decodeUrl(b.pathname, b.search);
-  
-    if (!Object.keys(prev).every(k => prev[k] === next[k])) {
-      return false;
-    }
-  
-    if (prevMeasureId && nextMeasureId && prevMeasureId !== nextMeasureId) {
-      // only update history if measures are different, not when going from null to non-null
-      return false;
-    }
-  
-    return true;
-    */
-}
-
-export function pushHistory(pathname, searchParams) {
+export function pushHistory(pathname, searchParams = {}) {
   const location = getCurrentLocation();
 
-  const search = queryString.stringify(searchParams);
+  const search = queryString.stringify(
+    replaceKeysAndRemoveNull(searchParams, SEARCH_PARAM_KEY_MAP),
+  );
 
   const oldSearch = location.search.replace('?', ''); // remove the ? for comparisons
 
@@ -95,18 +67,36 @@ export function pushHistory(pathname, searchParams) {
   return true;
 }
 
+// Helper functions
+function createUrl(pathParams, searchParams) {
+  const { userPage } = pathParams;
+  if (userPage) {
+    // TODO: userpage stuff
+    return { pathname: userPage };
+  }
+
+  const urlComponents = PATH_COMPONENTS.map(component => pathParams[component]);
+
+  // remove falsey last elements
+  // e.g. [null, 'hi', 'hey', undefined, ''] => [null, 'hi', 'hey']
+  while (urlComponents.length > 0 && !urlComponents[urlComponents.length - 1]) {
+    urlComponents.pop();
+  }
+
+  const pathname = `/${urlComponents.join('/')}`;
+  return { pathname, search: searchParams };
+}
+
+export function createUrlString(params) {
+  const location = createUrl(params); // TODO
+  const query = queryString.stringify(location.search);
+  return `${location.pathname}?${query}`;
+}
+
 const decodeUrl = (pathname, search) => {
-  // Search
-  const searchParams = replaceKeysAndRemoveNull(
-    queryString.parse(search),
-    swapKeyAndVal(SEARCH_PARAM_KEY_MAP),
-  );
-
-  // Path
   const cleanPathname = pathname[0] === '/' ? pathname.slice(1) : pathname;
-
   if (cleanPathname === '') {
-    return { projectSelector: true, ...searchParams };
+    return { projectSelector: true, ...search };
   }
 
   const pathParams = {};
@@ -119,27 +109,16 @@ const decodeUrl = (pathname, search) => {
 
   switch (prefixOrProject) {
     case PASSWORD_RESET_PREFIX:
-      return {
-        userPage: prefixOrProject,
-        PASSWORD_RESET_TOKEN: searchParams.PASSWORD_RESET_TOKEN,
-      };
+      return { userPage: prefixOrProject, ...search };
     case VERIFY_EMAIL_PREFIX:
-      return {
-        userPage: prefixOrProject,
-        VERIFY_EMAIL_TOKEN: searchParams.VERIFY_EMAIL_TOKEN,
-      };
+      return { userPage: prefixOrProject, ...search };
     default:
       return {
         PROJECT: prefixOrProject,
         ...pathParams,
-        ...searchParams,
+        ...search,
       };
   }
-};
-
-export const getCurrentUrlComponents = () => {
-  const location = getCurrentLocation();
-  return decodeUrl(location.pathname, location.search);
 };
 
 /**
@@ -162,7 +141,7 @@ export const setUrlComponent = (component, value, initialLocation) => {
   });
 
   const { pathname, search } = createUrl(pathParams, searchParams);
-  console.log('setting!', component, value, pathname, search);
+  console.log(search, searchParams, pathname, pathParams, previousComponents, initialLocation);
   return { pathname, search };
 };
 
@@ -178,9 +157,29 @@ export const clearUrl = () => {
  */
 export const getUrlComponent = (component, location) => {
   const components = decodeUrl(location.pathname, location.search);
+  // console.log(components);
   const value = components[component];
   return value === '' ? undefined : value;
 };
+
+function isLocationEqual(a, b) {
+  return false; // TODO
+  /*
+    const { measureId: prevMeasureId, ...prev } = decodeUrl(a.pathname, a.search);
+    const { measureId: nextMeasureId, ...next } = decodeUrl(b.pathname, b.search);
+  
+    if (!Object.keys(prev).every(k => prev[k] === next[k])) {
+      return false;
+    }
+  
+    if (prevMeasureId && nextMeasureId && prevMeasureId !== nextMeasureId) {
+      // only update history if measures are different, not when going from null to non-null
+      return false;
+    }
+  
+    return true;
+    */
+}
 
 const replaceKeysAndRemoveNull = (obj, mapping) => {
   const newObj = {}; // TODO: Write better (shouldn't need these funcs I don't think)

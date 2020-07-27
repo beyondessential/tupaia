@@ -530,6 +530,21 @@ export function changeMeasure(measureId, organisationUnitCode) {
 }
 
 /**
+ * Changes current measure, should change features rendered on map after saga data fetch.
+ * Updates currentMeasure in measureBar.
+ *
+ * @param {string} measureId
+ * @param {string} organisationUnitCode
+ */
+export function onSetMeasure(measureId, organisationUnitCode) {
+  return {
+    type: ON_SET_MEASURE,
+    measureId,
+    organisationUnitCode,
+  };
+}
+
+/**
  * Changes current zoomLevel, reflected in map. Adds value to zoomLevel min-max 1-15.
  *
  * @param {number} value

@@ -143,9 +143,7 @@ export const selectOrgUnitChildren = createSelector(
     (_, code) => code,
   ],
   (projectCode, countriesAsOrgUnits, country, code) =>
-    console.log(country) || code === projectCode
-      ? countriesAsOrgUnits
-      : selectOrgUnitChildrenFromCache(country, code),
+    code === projectCode ? countriesAsOrgUnits : selectOrgUnitChildrenFromCache(country, code),
 );
 
 const selectOrgUnitSiblingsAndSelf = createSelector(

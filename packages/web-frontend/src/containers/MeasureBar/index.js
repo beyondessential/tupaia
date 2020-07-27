@@ -187,7 +187,7 @@ const mapStateToProps = state => {
     measureHierarchy,
     isExpanded,
     isMeasureLoading,
-    currentOrganisationUnitCode: currentOrganisationUnit.code,
+    currentOrganisationUnitCode: currentOrganisationUnit.organisationUnitCode,
     currentOrganisationUnitName: currentOrganisationUnit.name,
   };
 };
@@ -195,8 +195,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
   onExpandClick: () => dispatch(toggleMeasureExpand()),
   onClearMeasure: () => dispatch(clearMeasure()),
-  onSelectMeasure: (measure, orgUnitCode) =>
-    dispatch(changeMeasure(measure.measureId, orgUnitCode)),
+  onSelectMeasure: (measure, orgUnitCode) => {
+    dispatch(changeMeasure(measure.measureId, orgUnitCode));
+  },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(MeasureBar);

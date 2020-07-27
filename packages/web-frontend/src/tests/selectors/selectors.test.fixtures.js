@@ -81,6 +81,6 @@ export const state = {
   },
   routing: {
     pathname: '/explore/TO/UNFPA',
-    search: '?overlay=abc%20123',
+    search: { MEASURE: 'abc%20123' },
   },
 };

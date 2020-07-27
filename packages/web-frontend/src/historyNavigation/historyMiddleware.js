@@ -29,22 +29,27 @@ import {
   onSetOrgUnit,
   setOverlayComponent,
   doUpdateUrl,
+  onSetMeasure,
 } from '../actions';
 
 import { onSetProject } from '../projects/actions';
 
 import {
   setUrlComponent,
-  getCurrentUrlComponents,
+  getCurrentLocation,
+  getInitialtUrlComponents,
+  initialLocation,
   clearUrl,
   pushHistory,
 } from './historyNavigation';
+
 import { URL_COMPONENTS } from './constants';
 
 // TODO: import { gaPageView } from '../utils';
 export const reactToInitialState = ({ dispatch }) => {
-  const { userPage, ...otherComponents } = getCurrentUrlComponents();
+  const { userPage, ...otherComponents } = getInitialtUrlComponents();
   console.log(otherComponents);
+  dispatch(doUpdateUrl(initialLocation));
 
   if (userPage) {
     dispatch(setOverlayComponent(null));
@@ -62,7 +67,12 @@ export const reactToInitialState = ({ dispatch }) => {
     dispatch(onSetOrgUnit(otherComponents[URL_COMPONENTS.ORG_UNIT], true));
 
   if (otherComponents[URL_COMPONENTS.MEASURE])
-    dispatch(onSetMeasure(otherComponents[URL_COMPONENTS.ORG_UNIT], true));
+    dispatch(
+      onSetMeasure(
+        otherComponents[URL_COMPONENTS.MEASURE],
+        otherComponents[URL_COMPONENTS.ORG_UNIT],
+      ),
+    );
 };
 
 export const historyMiddleware = state => next => action => {
@@ -106,17 +116,19 @@ export const historyMiddleware = state => next => action => {
       break;
     case SET_MEASURE:
       newLocation = setUrlComponent(URL_COMPONENTS.MEASURE, action.measureId, newLocation);
+      console.log('alkd;jwegawrghnwarighweoifj', action);
       dispatch(doUpdateUrl(newLocation));
+      dispatch(onSetMeasure(action.measureId, action.organisationUnitCode));
       break;
     case CLEAR_MEASURE:
       newLocation = setUrlComponent(URL_COMPONENTS.MEASURE, null, newLocation);
+      console.log('HEOOOOOOOOOOOOOOOOOOOO');
       dispatch(doUpdateUrl(newLocation));
       break;
     default:
       return next(action);
   }
 
-  console.log(action, newLocation.pathname, oldLocation.pathname);
   return next(action);
 };
 
@@ -127,17 +139,16 @@ export const initHistoryDispatcher = store => {
   window.addEventListener('popstate', () => {
     // here `doUpdateUrl` is an action creator that
     // takes the new url and stores it in Redux.
-    store.dispatch(doUpdateUrl(window.location.pathname));
+    store.dispatch(doUpdateUrl(window.location));
   });
 
   // The other part of the two-way binding is updating the displayed
   // URL in the browser if we change it inside our app state in Redux.
   // We can simply subscribe to Redux and update it if it's different.
   store.subscribe(() => {
+    const currentLocation = getCurrentLocation();
     const { pathname, search } = store.getState().routing;
-    if (location.pathname !== pathname || location.search !== search) {
-      console.log(pathname, location.pathname);
-      // window.history.pushState(null, '', pathname + search);
+    if (currentLocation.pathname !== pathname || currentLocation.search !== search) {
       pushHistory(pathname, search);
     }
   });
