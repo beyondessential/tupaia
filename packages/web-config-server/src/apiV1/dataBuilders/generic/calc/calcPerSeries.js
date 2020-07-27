@@ -10,22 +10,30 @@ import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 
 /**
  * Config Example:
- * {
- *   series: {
- *     Males: {
- *       dataClasses: {
- *         Diabetes: ['CH60', 'CH61'],
- *         Hypertension: ['CH62', 'CH63'],
- *       },
- *     },
- *     Females: {
- *       dataClasses: {
- *         Diabetes: ['CH64', 'CH65'],
- *         Hypertension: ['CH66', 'CH67'],
- *       },
- *     },
- *   },
- * }
+  {
+    dataClasses: {
+      'Lao Language': {
+        G6: {
+          operator: 'SUBTRACT',
+          firstOperand: {
+            dataValues: ['SchPop021', 'SchPop022'],
+          },
+          secondOperand: {
+            dataValues: ['STCL004'],
+          },
+        },
+        G7: {
+          operator: 'SUBTRACT',
+          firstOperand: {
+            dataValues: ['SchPop023', 'SchPop024'],
+          },
+          secondOperand: {
+            dataValues: ['STCL023'],
+          },
+        },
+      }
+    }
+  }
  */
 
 class CalcPerSeriesDataBuilder extends DataBuilder {
