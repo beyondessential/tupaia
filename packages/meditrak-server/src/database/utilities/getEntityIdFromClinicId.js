@@ -1,9 +1,7 @@
 /**
- * Tupaia MediTrak
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-
-const MIN_APP_VERSION = '0.0.1';
 
 // Required for backwards compatibility for meditrak instances
 // that use clinic_id against SurveyResponse
@@ -19,16 +17,3 @@ export async function getEntityIdFromClinicId(models, clinicId) {
 
   return entity.id;
 }
-
-/**
- * Returns database types that are supported by every app version ("universal")
- *
- * @param {ModelRegistry} models
- * @returns {string[]}
- */
-export const getUniversalTypes = models => {
-  const minAppVersionByType = models.getMinAppVersionByType();
-  return Object.keys(minAppVersionByType).filter(
-    type => minAppVersionByType[type] === MIN_APP_VERSION,
-  );
-};

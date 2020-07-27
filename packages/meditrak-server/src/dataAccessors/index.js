@@ -8,6 +8,7 @@ export { editAccessRequest } from './editAccessRequest';
 export { editUserAccount } from './editUserAccount';
 export { editOption } from './editOption';
 export { editOptionSet } from './editOptionSet';
+export { editSurvey } from './editSurvey';
 export { findEntitiesInCountry } from './findEntitiesInCountry';
 export { findSurveysInCountry } from './findSurveysInCountry';
 export { findQuestionsInSurvey } from './findQuestionsInSurvey';
