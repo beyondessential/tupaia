@@ -12,7 +12,6 @@ export * from './generic/link';
 export * from './generic/orgUnit';
 export * from './generic/percentage';
 export * from './generic/sum';
-export * from './generic/calc';
 export * from './generic/table';
 
 /** Modules */
