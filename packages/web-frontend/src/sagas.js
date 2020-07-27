@@ -674,7 +674,6 @@ function* watchSearchChange() {
  */
 function* fetchMeasureInfo(measureId, organisationUnitCode) {
   const state = yield select();
-  console.log(state, measureId, organisationUnitCode);
   if (!measureId || !organisationUnitCode) {
     // Don't try and fetch null measures
     yield put(cancelFetchMeasureData());
@@ -737,7 +736,6 @@ function getSelectedMeasureFromHierarchy(measureHierarchy, selectedMeasureId, pr
 function* fetchCurrentMeasureInfo() {
   const state = yield select();
   const currentOrganisationUnitCode = selectCurrentOrgUnitCode(state);
-  const { measureId } = state.map.measureInfo;
   const { measureHierarchy } = state.measureBar;
   const selectedMeasureId = selectCurrentOverlayCode(state);
 
@@ -751,8 +749,7 @@ function* fetchCurrentMeasureInfo() {
         selectedMeasureId,
         selectCurrentProject(state),
       );
-
-      if (newMeasure !== measureId) {
+      if (newMeasure !== selectedMeasureId) {
         yield put(changeMeasure(newMeasure, currentOrganisationUnitCode));
       }
     } else {
@@ -760,7 +757,7 @@ function* fetchCurrentMeasureInfo() {
        * it is not selected through the measureBar UI
        * i.e. page reloaded when on org with measure selected
        */
-      yield put(changeMeasure(measureId, currentOrganisationUnitCode));
+      yield put(changeMeasure(selectedMeasureId, currentOrganisationUnitCode));
     }
   }
 }

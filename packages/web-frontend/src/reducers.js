@@ -525,8 +525,6 @@ function searchBar(
 function measureBar(
   state = {
     isExpanded: false,
-    selectedMeasureId: null,
-    //currentMeasure: {},
     measureHierarchy: {},
     currentMeasureOrganisationUnitCode: null,
     error: null,
@@ -537,13 +535,11 @@ function measureBar(
     case CLEAR_MEASURE_HIERARCHY:
       return { ...state, measureHierarchy: {} };
     case CLEAR_MEASURE:
-      return { ...state, currentMeasure: {} /*, selectedMeasureId: null TODO*/ };
+      return { ...state };
     case ON_SET_MEASURE:
       return {
         ...state,
         hiddenMeasures: {},
-        //currentMeasure: getMeasureFromHierarchy(state.measureHierarchy, action.measureId) || {},
-        //selectedMeasureId: action.measureId, now stored in url // TODO
         currentMeasureOrganisationUnitCode: action.organisationUnitCode,
       };
     case TOGGLE_MEASURE_EXPAND:
@@ -552,10 +548,9 @@ function measureBar(
       return {
         ...state,
         measureHierarchy: action.response.measures,
-        // If a new set of measures has come through, refresh the currentMeasure using the currently
+        // TODO: If a new set of measures has come through, refresh the currentMeasure using the currently
         // selected measure id.
-        // should remove this key
-        //currentMeasure: getMeasureFromHierarchy(action.response.measures, 'hi TODO') || {},
+        //currentMeasure: getMeasureFromHierarchy(action.response.measures, 'hi') || {},
         error: null,
       };
     case FETCH_MEASURES_ERROR:

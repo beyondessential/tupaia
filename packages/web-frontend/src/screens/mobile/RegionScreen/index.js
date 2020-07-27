@@ -33,6 +33,7 @@ import {
   selectCurrentDashboardKey,
   selectCurrentOrgUnit,
   selectOrgUnitChildren,
+  selectCurrentMeasure,
 } from '../../../selectors';
 
 const MAP_WIDTH = 420;
@@ -258,10 +259,11 @@ const getMeasureFiltersForHierarchy = measureHierarchy =>
 
 const mapStateToProps = state => {
   const { dashboardConfig, isLoadingOrganisationUnit } = state.global;
-  const { measureHierarchy, currentMeasure, isExpanded } = state.measureBar;
+  const { measureHierarchy, isExpanded } = state.measureBar;
   const { measureInfo, isMeasureLoading } = state.map;
   const { isGroupSelectExpanded } = state.dashboard;
-  const hasSelectedMeasureId = currentMeasure !== undefined;
+  const currentMeasure = selectCurrentMeasure(state);
+  const hasSelectedMeasureId = currentMeasure !== undefined; //TODO: maybe should be {} like other selectors
   const orgUnit = selectCurrentOrgUnit(state);
 
   const mobileListItems = getListItemsFromOrganisationUnitChildren(

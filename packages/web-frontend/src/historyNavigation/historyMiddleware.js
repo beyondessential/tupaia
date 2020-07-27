@@ -38,7 +38,7 @@ import {
   setUrlComponent,
   getCurrentLocation,
   getInitialtUrlComponents,
-  initialLocation,
+  getInternalInitialLocation,
   clearUrl,
   pushHistory,
 } from './historyNavigation';
@@ -49,7 +49,7 @@ import { URL_COMPONENTS } from './constants';
 export const reactToInitialState = ({ dispatch }) => {
   const { userPage, ...otherComponents } = getInitialtUrlComponents();
   console.log(otherComponents);
-  dispatch(doUpdateUrl(initialLocation));
+  dispatch(doUpdateUrl(getInternalInitialLocation()));
 
   if (userPage) {
     dispatch(setOverlayComponent(null));

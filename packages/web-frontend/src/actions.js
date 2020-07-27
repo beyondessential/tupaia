@@ -515,8 +515,7 @@ export function changeBounds(bounds) {
 }
 
 /**
- * Changes current measure, should change features rendered on map after saga data fetch.
- * Updates currentMeasure in measureBar.
+ * Updates url only.
  *
  * @param {string} measureId
  * @param {string} organisationUnitCode
@@ -530,8 +529,7 @@ export function changeMeasure(measureId, organisationUnitCode) {
 }
 
 /**
- * Changes current measure, should change features rendered on map after saga data fetch.
- * Updates currentMeasure in measureBar.
+ * On change current measure, should change features rendered on map after saga data fetch.
  *
  * @param {string} measureId
  * @param {string} organisationUnitCode

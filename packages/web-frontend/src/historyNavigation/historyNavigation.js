@@ -20,6 +20,9 @@ const history = createBrowserHistory();
 // Capture on app init.
 const initialLocation = history.location;
 
+// TODO: This isn't a great way to do this
+export const getInternalInitialLocation = () => translateLocationToInternal(initialLocation);
+
 export const getCurrentLocation = () => history.location;
 
 export const getInitialtUrlComponents = () => {
@@ -33,7 +36,7 @@ const translateLocationToInternal = location => {
   return {
     pathname,
     search: replaceKeysAndRemoveNull(
-      queryString.parse(queryString.parse(search)),
+      queryString.parse(search),
       swapKeyAndVal(SEARCH_PARAM_KEY_MAP),
     ),
   };
@@ -84,7 +87,7 @@ function createUrl(pathParams, searchParams) {
   }
 
   const pathname = `/${urlComponents.join('/')}`;
-  return { pathname, search: searchParams };
+  return { pathname, search: replaceKeysAndRemoveNull(searchParams, {}) }; //TODO: Not like this
 }
 
 export function createUrlString(params) {
@@ -126,9 +129,8 @@ const decodeUrl = (pathname, search) => {
  * @param {String} component A member of URL_COMPONENTS
  * @param {*} value The value to set it to
  */
-export const setUrlComponent = (component, value, initialLocation) => {
-  const location = initialLocation;
-  const previousComponents = decodeUrl(location.pathname, location.search);
+export const setUrlComponent = (component, value, baseLocation) => {
+  const previousComponents = decodeUrl(baseLocation.pathname, baseLocation.search);
 
   const pathParams = {};
   PATH_COMPONENTS.forEach(param => {
@@ -141,7 +143,6 @@ export const setUrlComponent = (component, value, initialLocation) => {
   });
 
   const { pathname, search } = createUrl(pathParams, searchParams);
-  console.log(search, searchParams, pathname, pathParams, previousComponents, initialLocation);
   return { pathname, search };
 };
 
@@ -184,7 +185,7 @@ function isLocationEqual(a, b) {
 const replaceKeysAndRemoveNull = (obj, mapping) => {
   const newObj = {}; // TODO: Write better (shouldn't need these funcs I don't think)
   Object.entries(obj).forEach(([key, val]) => {
-    if (val !== null && val !== undefined) newObj[mapping[key]] = val;
+    if (val !== null && val !== undefined) newObj[mapping[key] || key] = val; // TODO: Not like this
   });
   return newObj;
 };
