@@ -63,7 +63,7 @@ export class EntityHierarchyBuilder {
   }
 
   async getAncestorsNonCanonically(entityId, hierarchyId) {
-    return this.recursivelyFetchAncestors([{ id: entityId }], hierarchyId);
+    return this.recursivelyFetchAncestors({ id: entityId }, hierarchyId);
   }
 
   async recursivelyFetchDescendants(parents, hierarchyId) {
