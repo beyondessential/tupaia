@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { ImportModal, ImportButton } from '../importExport';
-import { Body, Header, Title, Page } from './Page';
+import { Body } from './Page';
 
 const importConfig = {
   title: 'Import Lab Results',
@@ -11,13 +11,10 @@ const importConfig = {
 };
 
 export const StrivePage = () => (
-  <Page>
-    <Header>
-      <Title>Strive</Title>
-    </Header>
+  <>
     <Body>
       <ImportButton {...importConfig} label="Import Lab Results" />
     </Body>
     <ImportModal {...importConfig} />
-  </Page>
+  </>
 );

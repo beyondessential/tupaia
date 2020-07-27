@@ -9,16 +9,12 @@ import { MuiThemeProvider, StylesProvider } from '@material-ui/core/styles';
 import { ThemeProvider } from 'styled-components';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { Provider } from 'react-redux';
-import { withRouter } from 'react-router';
-import { ConnectedRouter } from 'react-router-redux';
 import { PersistGate } from 'redux-persist/lib/integration/react';
 import 'react-table/react-table.css';
 
 import { theme } from './theme';
-import { history, store, persistor } from './store';
-import { AppContainer } from './App';
-
-const RoutingApp = withRouter(AppContainer);
+import { store, persistor } from './store';
+import { App } from './App';
 
 renderReactApp(
   <Provider store={store}>
@@ -27,9 +23,7 @@ renderReactApp(
         <MuiThemeProvider theme={theme}>
           <ThemeProvider theme={theme}>
             <CssBaseline />
-            <ConnectedRouter history={history}>
-              <RoutingApp />
-            </ConnectedRouter>
+            <App />
           </ThemeProvider>
         </MuiThemeProvider>
       </StylesProvider>

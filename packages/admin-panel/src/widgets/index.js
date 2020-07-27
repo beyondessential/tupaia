@@ -10,3 +10,4 @@ export { IconButton } from './IconButton';
 export { InputField } from './InputField';
 export { Navbar } from './Navbar';
 export { Tabs } from './Tabs';
+export { Footer } from './Footer';
