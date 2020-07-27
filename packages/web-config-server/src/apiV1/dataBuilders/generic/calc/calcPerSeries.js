@@ -42,8 +42,8 @@ class CalcPerSeriesDataBuilder extends DataBuilder {
    */
   async build() {
     const { results, period } = await this.fetchResults();
-
     const dataByClass = {};
+
     Object.entries(this.config.dataClasses).forEach(([classKey, series]) => {
       Object.entries(series).forEach(([seriesKey, seriesConfig]) => {
         if (!dataByClass[seriesKey]) {
@@ -74,18 +74,6 @@ class CalcPerSeriesDataBuilder extends DataBuilder {
 
     return analyticsResults;
   }
-
-  calculateOperationPart = (results, dataValues) => {
-    let sum = 0;
-
-    results.forEach(({ dataElement, value }) => {
-      if (dataValues.includes(dataElement)) {
-        sum += value || 0;
-      }
-    });
-
-    return sum;
-  };
 }
 
 export const calcPerSeries = async ({ dataBuilderConfig, query, entity }, aggregator, dhisApi) => {
