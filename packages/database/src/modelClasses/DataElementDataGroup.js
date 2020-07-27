@@ -21,7 +21,7 @@ class DataElementDataGroupType extends DatabaseType {
       }
 
       return dataGroup.service_type !== dataElement.service_type
-        ? 'Data element must have the same service as the data group it belongs to'
+        ? 'Data element must use the same service as the data group it belongs to'
         : null;
     },
   ]);

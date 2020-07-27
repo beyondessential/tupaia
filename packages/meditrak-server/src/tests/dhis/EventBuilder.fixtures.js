@@ -49,9 +49,7 @@ export const SURVEYS = {
     code: 'CUSTOM_OU',
     name: 'Survey using a custom org unit specified in the response',
     integration_metadata: {
-      dhis2: {
-        eventOrgUnit: { questionId: eventOrgUnitQuestionId },
-      },
+      eventOrgUnit: { questionId: eventOrgUnitQuestionId },
     },
     questions: [
       {
