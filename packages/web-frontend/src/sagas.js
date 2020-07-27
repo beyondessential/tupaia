@@ -59,6 +59,7 @@ import {
   displayUnverified,
   fetchUserSignupError,
   fetchOrgUnitSuccess,
+  setOrgUnit,
   changeOrgUnitSuccess,
   changeOrgUnitError,
   fetchDashboardSuccess,
@@ -78,7 +79,6 @@ import {
   fetchChartExportError,
   fetchDrillDownSuccess,
   fetchDrillDownError,
-  changeOrgUnit,
   SET_ENLARGED_DIALOG_DATE_RANGE,
   updateEnlargedDialog,
   updateEnlargedDialogError,
@@ -950,7 +950,7 @@ function* resetToProjectSplash(action) {
   // default measure will be selected once the org unit has fully changed, just clear for now
   // yield put(clearMeasure());
   //yield put(clearMeasureHierarchy());
-  //yield put(changeOrgUnit('explore', true));
+  //yield put(setOrgUnit('explore', true));
 
   //if (state.project.projects.length > 0) {
   //yield put(selectProject(INITIAL_PROJECT_CODE));

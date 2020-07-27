@@ -466,11 +466,7 @@ export function fetchOrgUnit(organisationUnitCode) {
 /**
  * Changes current Organisational Unit. ONLY sets url.
  */
-export function changeOrgUnit( // TODO: Rename function and deal with defaults
-  organisationUnitCode = initialOrgUnit.organisationUnitCode,
-  shouldChangeMapBounds = true,
-) {
-  console.log('creating change org unit action');
+export function setOrgUnit(organisationUnitCode, shouldChangeMapBounds = true) {
   return {
     type: SET_ORG_UNIT,
     organisationUnitCode,
@@ -482,10 +478,7 @@ export function changeOrgUnit( // TODO: Rename function and deal with defaults
  * Changes current Organisational Unit and Map view. Will trigger sagas affecting state for
  * map and the current dashboard.
  */
-export function onSetOrgUnit( // TODO: Rename function and deal with defaults
-  organisationUnitCode = initialOrgUnit.organisationUnitCode,
-  shouldChangeMapBounds = true,
-) {
+export function onSetOrgUnit(organisationUnitCode, shouldChangeMapBounds = true) {
   return {
     type: ON_SET_ORG_UNIT,
     organisationUnitCode,

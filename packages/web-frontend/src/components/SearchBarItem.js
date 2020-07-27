@@ -11,7 +11,7 @@ import PropTypes from 'prop-types';
 import { createSelector } from 'reselect';
 import { connect } from 'react-redux';
 import { HierarchyItem } from './HierarchyItem';
-import { changeOrgUnit, openMapPopup } from '../actions';
+import { setOrgUnit, openMapPopup } from '../actions';
 import { selectOrgUnit, selectOrgUnitChildren } from '../selectors';
 
 const ICON_BY_ORG_UNIT_TYPE = {
@@ -92,7 +92,7 @@ const mapStateToProps = (state, props) => {
 const mapDispatchToProps = dispatch => {
   return {
     onClick: organisationUnitCode => {
-      dispatch(changeOrgUnit(organisationUnitCode));
+      dispatch(setOrgUnit(organisationUnitCode));
       dispatch(openMapPopup(organisationUnitCode));
     },
   };

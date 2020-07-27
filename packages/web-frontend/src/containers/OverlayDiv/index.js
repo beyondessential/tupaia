@@ -21,12 +21,10 @@ import CloseIcon from 'material-ui/svg-icons/navigation/close';
 import styled from 'styled-components';
 import { isMobile } from '../../utils';
 import { DARK_BLUE, DIALOG_Z_INDEX } from '../../styles';
-import { setOverlayComponent, changeOrgUnit } from '../../actions';
-import { selectProject } from '../../projects/actions';
+import { setOverlayComponent } from '../../actions';
 import { LandingPage } from './components/LandingPage';
 import { RequestProjectAccess } from './components/RequestProjectAccess';
 import Disaster from './components/Disaster';
-import { selectProjectByCode } from '../../selectors';
 import { OVERLAY_PADDING, LANDING, DISASTER, REQUEST_PROJECT_ACCESS } from './constants';
 
 const styles = {

@@ -1,8 +1,8 @@
-import { call, put, take, takeLatest, takeEvery, select } from 'redux-saga/effects';
+import { call, put, take, takeLatest, select } from 'redux-saga/effects';
 
 import request from '../utils/request';
 
-import { setProjects, fetchProjectsError, selectProject } from './actions';
+import { setProjects, fetchProjectsError } from './actions';
 
 import {
   FETCH_INITIAL_DATA,
@@ -10,7 +10,7 @@ import {
   changeBounds,
   changeDashboardGroup,
   FETCH_LOGIN_SUCCESS,
-  changeOrgUnit,
+  setOrgUnit,
   FETCH_LOGOUT_SUCCESS,
 } from '../actions';
 // import { INITIAL_PROJECT_CODE } from '../defaults';
@@ -61,7 +61,7 @@ function* loadProject(action) {
   const organisationUnitCode = selectCurrentOrgUnitCode(state);
   yield put(changeBounds(yield select(selectAdjustedProjectBounds, action.projectCode)));
   if (!organisationUnitCode || action.forceChangeOrgUnit) {
-    yield put(changeOrgUnit(project.homeEntityCode || action.projectCode, false));
+    yield put(setOrgUnit(project.homeEntityCode || action.projectCode, false));
   }
   const dashboardGroupCode = selectCurrentDashboardGroupCode(state);
   if (!dashboardGroupCode || action.forceChangeOrgUnit) {

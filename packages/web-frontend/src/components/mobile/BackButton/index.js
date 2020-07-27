@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 import BackIcon from 'material-ui/svg-icons/hardware/keyboard-arrow-left';
 import { connect } from 'react-redux';
 
-import { changeOrgUnit } from '../../../actions';
+import { setOrgUnit } from '../../../actions';
 import { DARK_BLUE, MOBILE_MARGIN_SIZE, WHITE } from '../../../styles';
 
 const BackButton = ({ orgUnit, onSelectParent }) => (
@@ -51,5 +51,5 @@ BackButton.propTypes = {
 };
 
 export default connect(null, dispatch => ({
-  onSelectParent: orgUnit => dispatch(changeOrgUnit(orgUnit.parent)),
+  onSelectParent: orgUnit => dispatch(setOrgUnit(orgUnit.parent)),
 }))(BackButton);

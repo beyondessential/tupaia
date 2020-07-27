@@ -14,7 +14,7 @@ import ExploreIcon from '@material-ui/icons/ExploreOutlined';
 
 import { REQUEST_PROJECT_ACCESS } from '../../constants';
 import { selectProject, setRequestingAccess } from '../../../../projects/actions';
-import { setOverlayComponent, changeOrgUnit } from '../../../../actions';
+import { setOverlayComponent, setOrgUnit } from '../../../../actions';
 import { ProjectCard } from './ProjectCard';
 
 // code for general explore mode project.
@@ -114,7 +114,7 @@ const mapDispatchToProps = dispatch => ({
   onSelectProject: project => {
     dispatch(selectProject(project.code));
     dispatch(setOverlayComponent(null));
-    // dispatch(changeOrgUnit(project.homeEntityCode, false)); // QUESTION: This should happen no matter how the project is selected?
+    // dispatch(setOrgUnit(project.homeEntityCode, false)); // QUESTION: Should this happen no matter how the project is selected?
   },
   onRequestProjectAccess: project => {
     dispatch(setRequestingAccess(project));
