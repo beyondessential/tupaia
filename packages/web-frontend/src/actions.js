@@ -16,7 +16,6 @@
  */
 
 import { initialOrgUnit } from './defaults';
-import { getSiblingItems, storeSiblingItems } from './utils';
 
 export const FETCH_INITIAL_DATA = 'FETCH_INITIAL_DATA';
 export const ATTEMPT_CHANGE_PASSWORD = 'ATTEMPT_CHANGE_PASSWORD';
@@ -37,10 +36,12 @@ export const ATTEMPT_RESET_TOKEN_LOGIN = 'ATTEMPT_RESET_TOKEN_LOGIN';
 export const CHANGE_SIDE_BAR_CONTRACTED_WIDTH = 'CHANGE_SIDE_BAR_CONTRACTED_WIDTH';
 export const CHANGE_SIDE_BAR_EXPANDED_WIDTH = 'CHANGE_SIDE_BAR_EXPANDED_WIDTH';
 export const CLEAR_MEASURE_HIERARCHY = 'CLEAR_MEASURE_HIERARCHY';
-export const CHANGE_MEASURE = 'CHANGE_MEASURE';
+export const SET_MEASURE = 'SET_MEASURE';
+export const ON_SET_MEASURE = 'ON_SET_MEASURE';
 export const REQUEST_ORG_UNIT = 'REQUEST_ORG_UNIT';
 export const FETCH_ORG_UNIT = 'FETCH_ORG_UNIT';
-export const CHANGE_ORG_UNIT = 'CHANGE_ORG_UNIT';
+export const SET_ORG_UNIT = 'SET_ORG_UNIT';
+export const ON_SET_ORG_UNIT = 'ON_SET_ORG_UNIT';
 export const CHANGE_POSITION = 'CHANGE_POSITION';
 export const CHANGE_BOUNDS = 'CHANGE_BOUNDS';
 export const CHANGE_SEARCH = 'CHANGE_SEARCH';
@@ -135,9 +136,11 @@ export const VIEW_DISASTER = 'VIEW_DISASTER';
 export const TOGGLE_DASHBOARD_SELECT_EXPAND = 'TOGGLE_DASHBOARD_SELECT_EXPAND';
 export const SET_MOBILE_DASHBOARD_EXPAND = 'SET_MOBILE_DASHBOARD_EXPAND';
 export const SET_PROJECT_DATA = 'SET_PROJECT_DATA';
-export const SELECT_PROJECT = 'SELECT_PROJECT';
+export const SET_PROJECT = 'SET_PROJECT';
+export const ON_SET_PROJECT = 'ON_SET_PROJECT';
 export const FETCH_PROJECTS_ERROR = 'FETCH_PROJECTS_ERROR';
 export const REQUEST_PROJECT_ACCESS = 'REQUEST_PROJECT_ACCESS';
+export const UPDATE_URL = 'UPDATE_URL';
 
 export function fetchInitialData() {
   return {
@@ -461,15 +464,30 @@ export function fetchOrgUnit(organisationUnitCode) {
 }
 
 /**
+ * Changes current Organisational Unit. ONLY sets url.
+ */
+export function changeOrgUnit( // TODO: Rename function and deal with defaults
+  organisationUnitCode = initialOrgUnit.organisationUnitCode,
+  shouldChangeMapBounds = true,
+) {
+  console.log('creating change org unit action');
+  return {
+    type: SET_ORG_UNIT,
+    organisationUnitCode,
+    shouldChangeMapBounds,
+  };
+}
+
+/**
  * Changes current Organisational Unit and Map view. Will trigger sagas affecting state for
  * map and the current dashboard.
  */
-export function changeOrgUnit(
+export function onSetOrgUnit( // TODO: Rename function and deal with defaults
   organisationUnitCode = initialOrgUnit.organisationUnitCode,
   shouldChangeMapBounds = true,
 ) {
   return {
-    type: CHANGE_ORG_UNIT,
+    type: ON_SET_ORG_UNIT,
     organisationUnitCode,
     shouldChangeMapBounds,
   };
@@ -497,15 +515,28 @@ export function changeBounds(bounds) {
 }
 
 /**
- * Changes current measure, should change features rendered on map after saga data fetch.
- * Updates currentMeasure in measureBar.
+ * Updates url only.
  *
  * @param {string} measureId
  * @param {string} organisationUnitCode
  */
 export function changeMeasure(measureId, organisationUnitCode) {
   return {
-    type: CHANGE_MEASURE,
+    type: SET_MEASURE,
+    measureId,
+    organisationUnitCode,
+  };
+}
+
+/**
+ * On change current measure, should change features rendered on map after saga data fetch.
+ *
+ * @param {string} measureId
+ * @param {string} organisationUnitCode
+ */
+export function onSetMeasure(measureId, organisationUnitCode) {
+  return {
+    type: ON_SET_MEASURE,
     measureId,
     organisationUnitCode,
   };
@@ -1171,4 +1202,8 @@ export function updateEnlargedDialogError(errorMessage) {
     type: UPDATE_ENLARGED_DIALOG_ERROR,
     errorMessage,
   };
+}
+
+export function doUpdateUrl(location) {
+  return { type: 'UPDATE_URL', location };
 }

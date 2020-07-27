@@ -36,9 +36,9 @@ import {
   ATTEMPT_REQUEST_COUNTRY_ACCESS,
   CHANGE_SIDE_BAR_CONTRACTED_WIDTH,
   CHANGE_SIDE_BAR_EXPANDED_WIDTH,
-  CHANGE_MEASURE,
+  ON_SET_MEASURE,
   CLEAR_MEASURE_HIERARCHY,
-  CHANGE_ORG_UNIT,
+  ON_SET_ORG_UNIT,
   CHANGE_SEARCH,
   CLEAR_MEASURE,
   FETCH_CHANGE_PASSWORD_ERROR,
@@ -106,7 +106,7 @@ import {
   TOGGLE_DASHBOARD_SELECT_EXPAND,
   SET_MOBILE_DASHBOARD_EXPAND,
   REQUEST_PROJECT_ACCESS,
-  SELECT_PROJECT,
+  ON_SET_PROJECT,
 } from './actions';
 
 function authentication(
@@ -442,7 +442,7 @@ function requestCountryAccess(
 
 function dashboard(
   state = {
-    currentDashboardKey: 'General',
+    //currentDashboardKey: 'General',
     viewResponses: {},
     contractedWidth: 300, // Set dynamically based on window size.
     expandedWidth: 300, // Overridden by info div.
@@ -452,8 +452,8 @@ function dashboard(
   action,
 ) {
   switch (action.type) {
-    case CHANGE_DASHBOARD_GROUP:
-      return { ...state, currentDashboardKey: action.name };
+    //case CHANGE_DASHBOARD_GROUP:
+    //return { ...state, currentDashboardKey: action.name };
     case FETCH_INFO_VIEW_DATA:
       return state;
     case FETCH_INFO_VIEW_DATA_SUCCESS: {
@@ -514,7 +514,7 @@ function searchBar(
     case FETCH_LOGOUT_SUCCESS:
       // Clear search results on logout incase of permission change
       return { ...state, isExpanded: false, searchResponse: null, searchString: '' };
-    case SELECT_PROJECT:
+    case ON_SET_PROJECT:
       // Clear search results on project change to fetch alternative hierarchy
       return { ...state, isExpanded: false, searchResponse: null, searchString: '' };
     default:
@@ -525,8 +525,6 @@ function searchBar(
 function measureBar(
   state = {
     isExpanded: false,
-    selectedMeasureId: null,
-    currentMeasure: {},
     measureHierarchy: {},
     currentMeasureOrganisationUnitCode: null,
     error: null,
@@ -537,13 +535,11 @@ function measureBar(
     case CLEAR_MEASURE_HIERARCHY:
       return { ...state, measureHierarchy: {} };
     case CLEAR_MEASURE:
-      return { ...state, currentMeasure: {}, selectedMeasureId: null };
-    case CHANGE_MEASURE:
+      return { ...state };
+    case ON_SET_MEASURE:
       return {
         ...state,
         hiddenMeasures: {},
-        currentMeasure: getMeasureFromHierarchy(state.measureHierarchy, action.measureId) || {},
-        selectedMeasureId: action.measureId,
         currentMeasureOrganisationUnitCode: action.organisationUnitCode,
       };
     case TOGGLE_MEASURE_EXPAND:
@@ -552,10 +548,9 @@ function measureBar(
       return {
         ...state,
         measureHierarchy: action.response.measures,
-        // If a new set of measures has come through, refresh the currentMeasure using the currently
+        // TODO: If a new set of measures has come through, refresh the currentMeasure using the currently
         // selected measure id.
-        currentMeasure:
-          getMeasureFromHierarchy(action.response.measures, state.selectedMeasureId) || {},
+        //currentMeasure: getMeasureFromHierarchy(action.response.measures, 'hi') || {},
         error: null,
       };
     case FETCH_MEASURES_ERROR:
@@ -569,7 +564,6 @@ function global(
   state = {
     isSidePanelExpanded: false,
     overlay: !isMobile() && LANDING,
-    currentOrganisationUnitCode: null,
     dashboardConfig: {},
     viewConfigs: {},
     isLoadingOrganisationUnit: false,
@@ -590,7 +584,7 @@ function global(
         ...state,
         isSidePanelExpanded: true,
       };
-    case CHANGE_ORG_UNIT:
+    case ON_SET_ORG_UNIT:
       return {
         ...state,
         isLoadingOrganisationUnit: true,
@@ -599,7 +593,7 @@ function global(
       return {
         ...state,
         isLoadingOrganisationUnit: false,
-        currentOrganisationUnitCode: action.organisationUnit.organisationUnitCode,
+        //currentOrganisationUnitCode: Tracked in url
       };
     case CHANGE_ORG_UNIT_ERROR:
       return { ...state, isLoadingOrganisationUnit: false };
@@ -815,6 +809,18 @@ function drillDown(
   }
 }
 
+const initialState = {
+  pathname: typeof location !== 'undefined' ? location.pathname : '/',
+};
+
+function routing(state = initialState, action) {
+  if (action.type === 'UPDATE_URL') {
+    console.log(action.location);
+    return action.location;
+  }
+  return state;
+}
+
 /**
  * Reach into the dashboard config, and pull out all views from every dashboard group/permission
  * level, then return them keyed by unique view id
@@ -856,4 +862,5 @@ export default combineReducers({
   disaster,
   project,
   orgUnits,
+  routing,
 });

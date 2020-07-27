@@ -5,24 +5,17 @@
  * found in the LICENSE file in the root directory of this source tree.
  */
 
-import { SET_PROJECT_DATA, SELECT_PROJECT, REQUEST_PROJECT_ACCESS } from '../actions';
-import { INITIAL_PROJECT_CODE } from '../defaults';
+import { SET_PROJECT_DATA, REQUEST_PROJECT_ACCESS } from '../actions';
 
 export default function projects(
   state = {
     projects: [],
-    activeProjectCode: INITIAL_PROJECT_CODE,
     requestingAccess: null,
     error: '',
   },
   action,
 ) {
   switch (action.type) {
-    case SELECT_PROJECT:
-      return {
-        ...state,
-        activeProjectCode: action.projectCode,
-      };
     case SET_PROJECT_DATA:
       return {
         ...state,
@@ -33,6 +26,7 @@ export default function projects(
         ...state,
         requestingAccess: action.project,
       };
+    //case SET_PROJECT: // Active project state is handled by the url
     default:
       return state;
   }
