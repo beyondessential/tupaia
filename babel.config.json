@@ -39,5 +39,6 @@
     "test": {
       "plugins": ["istanbul"]
     }
-  }
+  },
+  "ignore": ["**/src/tests", "**/src/__tests__", "**/src/database/migrations"]
 }
