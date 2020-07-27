@@ -19,11 +19,13 @@ import moment from 'moment-timezone';
 
 import { ChartWrapper, getIsMatrix, MatrixWrapper } from '../../../components/View';
 import { request } from '../../../utils';
-import { decodeUrl, getInitialLocation } from '../../../utils/historyNavigation';
 import { DARK_BLUE, WHITE } from '../../../styles';
 import { selectOrgUnit } from '../../../selectors';
 
+// TODO: Replace with selectors
+/*
 const initialLocation = getInitialLocation();
+*/
 const {
   organisationUnitCode,
   organisationUnitName,
@@ -35,7 +37,7 @@ const {
   disasterStartDate,
   disasterEndDate,
   projectCode,
-} = decodeUrl(initialLocation.pathname, initialLocation.search);
+} = {}; //decodeUrl(initialLocation.pathname, initialLocation.search);
 
 const getCurrentDateString = () => {
   const date = moment().tz(timeZone);
