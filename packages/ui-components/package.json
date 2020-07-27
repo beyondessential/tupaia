@@ -15,9 +15,9 @@
   "scripts": {
     "storybook": "start-storybook -s ./public -p 6006",
     "build": "cross-env NODE_ENV=production webpack",
-    "test": "jest",
-    "test:coverage": "jest --coverage",
-    "test:watch": "jest --watch"
+    "test": "jest --env=jest-environment-jsdom-sixteen",
+    "test:coverage": "yarn test --coverage",
+    "test:watch": "yarn test --watch"
   },
   "dependencies": {
     "@babel/core": "^7.9.0",
@@ -29,7 +29,6 @@
     "@material-ui/styles": "^4.9.10",
     "date-fns": "^2.12.0",
     "faker": "^4.1.0",
-    "jest": "^26.1.0",
     "lodash.throttle": "^4.1.1",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
@@ -54,7 +53,6 @@
     "babel-loader": "^8.1.0",
     "babel-preset-react-app": "^9.1.2",
     "cross-env": "^7.0.2",
-    "eslint-plugin-jest": "^23.18.0",
     "eslint-plugin-react-hooks": "^4.0.8",
     "faker": "^4.1.0",
     "react-hook-form": "^6.0.6",

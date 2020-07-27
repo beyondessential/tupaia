@@ -3,11 +3,11 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { getMeasureBuilder } from './getMeasureBuilder';
-import { OPERATOR_TO_VALUE_CHECK } from '../dataBuilders/helpers/checkAgainstConditions';
-import { Entity } from '../../models';
 import { inspect } from 'util';
 import { periodToMoment } from '@tupaia/utils/dist/period/period';
+import { getMeasureBuilder } from './getMeasureBuilder';
+import { checkValueSatisfiesCondition } from '../dataBuilders/helpers/checkAgainstConditions';
+import { Entity } from '../../models';
 
 export const fetchComposedData = async (aggregator, dhisApi, query, config, entity) => {
   const { measureBuilders, dataServices } = config || {};
@@ -37,13 +37,9 @@ export const fetchComposedData = async (aggregator, dhisApi, query, config, enti
 
 export const mapMeasureValuesToGroups = (measureValue, dataElementGroupCode, groups) => {
   const { [dataElementGroupCode]: originalValue } = measureValue;
-  const valueGroup = Object.entries(groups).find(([groupName, groupConfig]) => {
-    const groupCheck = OPERATOR_TO_VALUE_CHECK[groupConfig.operator];
-    if (!groupCheck) {
-      throw new Error(`No function defined for operator: ${groupConfig.operator}`);
-    }
-    return groupCheck(originalValue, groupConfig.value);
-  });
+  const valueGroup = Object.entries(groups).find(([groupName, groupConfig]) =>
+    checkValueSatisfiesCondition(originalValue, groupConfig),
+  );
 
   return {
     ...measureValue,
