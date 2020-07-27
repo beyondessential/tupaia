@@ -19,6 +19,8 @@ import {
   selectOrgUnit,
   selectHasPolygonMeasure,
   selectAllMeasuresWithDisplayInfo,
+  selectCurrentOverlayCode,
+  selectOrgUnitChildren,
 } from '../../selectors';
 import ActivePolygon from './ActivePolygon';
 
@@ -49,12 +51,13 @@ export const ShadedPolygon = styled(Polygon)`
  * measure
  */
 class ConnectedPolygon extends Component {
-  shouldComponentUpdate(nextProps) {
-    const { measureId, coordinates } = this.props;
+  /*shouldComponentUpdate(nextProps) { // TODO: reinstate. Problem: http://localhost:8088/covidau/AU_Victoria/COVID-19
+    const { measureId, coordinates, hasShadedChildren } = this.props;
     if (nextProps.measureId !== measureId) return true;
     if (coordinates !== nextProps.coordinates) return true;
+    if (hasShadedChildren !== nextProps.hasShadedChildren) return true;
     return false;
-  }
+  }*/
 
   getTooltip(name) {
     const { isChildArea, hasMeasureData, orgUnitMeasureData, measureOptions } = this.props;
@@ -161,8 +164,10 @@ ConnectedPolygon.defaultProps = {
 };
 
 const mapStateToProps = (state, givenProps) => {
-  const { organisationUnitCode, organisationUnitChildren } = givenProps.area;
-  const { measureId, measureData, measureOptions } = state.map.measureInfo;
+  const { organisationUnitCode } = givenProps.area;
+  const { measureData, measureOptions } = state.map.measureInfo;
+  const measureId = selectCurrentOverlayCode(state);
+  const organisationUnitChildren = selectOrgUnitChildren(state, organisationUnitCode);
 
   let shade;
   let orgUnitMeasureData;

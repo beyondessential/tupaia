@@ -8,8 +8,8 @@
 import { combineReducers } from 'redux';
 
 import {
-  CHANGE_MEASURE,
-  CHANGE_ORG_UNIT,
+  ON_SET_MEASURE,
+  ON_SET_ORG_UNIT,
   CHANGE_POSITION,
   CHANGE_BOUNDS,
   CHANGE_TILE_SET,
@@ -127,7 +127,7 @@ function measureInfo(state = {}, action) {
 
 function isMeasureLoading(state = false, action) {
   switch (action.type) {
-    case CHANGE_MEASURE:
+    case ON_SET_MEASURE:
       return true;
     case FETCH_MEASURE_DATA_ERROR:
     case FETCH_MEASURE_DATA_SUCCESS:
@@ -177,7 +177,7 @@ function shouldSnapToPosition(state = true, action) {
     case CHANGE_BOUNDS:
       return true;
 
-    case CHANGE_ORG_UNIT:
+    case ON_SET_ORG_UNIT:
     case CHANGE_ORG_UNIT_SUCCESS:
       return action.shouldChangeMapBounds ? true : state;
 

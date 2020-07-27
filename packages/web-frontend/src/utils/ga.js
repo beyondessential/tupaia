@@ -9,8 +9,8 @@ import {
   ATTEMPT_LOGOUT,
   ATTEMPT_LOGIN,
   FETCH_LOGIN_SUCCESS,
-  CHANGE_ORG_UNIT,
-  CHANGE_MEASURE,
+  ON_SET_ORG_UNIT,
+  ON_SET_MEASURE,
   CHANGE_TILE_SET,
   TOGGLE_INFO_PANEL,
   SET_OVERLAY_COMPONENT,
@@ -51,13 +51,13 @@ export const gaMiddleware = () => next => action => {
         gaEvent('User', 'Log out');
         break;
 
-      case CHANGE_ORG_UNIT:
+      case ON_SET_ORG_UNIT:
         if (action.organisationUnitCode !== initialOrgUnit.organisationUnitCode) {
           gaEvent('Organisation Unit', 'Change', action.organisationUnitCode);
         }
         break;
 
-      case CHANGE_MEASURE:
+      case ON_SET_MEASURE:
         gaEvent('Measure', 'Change', action.measureId);
         break;
 

@@ -1,4 +1,4 @@
-import { call, put, takeLatest, select } from 'redux-saga/effects';
+import { call, put, take, takeLatest, takeEvery, select } from 'redux-saga/effects';
 
 import request from '../utils/request';
 
@@ -6,21 +6,25 @@ import { setProjects, fetchProjectsError, selectProject } from './actions';
 
 import {
   FETCH_INITIAL_DATA,
-  SELECT_PROJECT,
+  ON_SET_PROJECT,
   changeBounds,
   changeDashboardGroup,
   FETCH_LOGIN_SUCCESS,
-  requestOrgUnit,
+  changeOrgUnit,
   FETCH_LOGOUT_SUCCESS,
 } from '../actions';
-import { INITIAL_PROJECT_CODE } from '../defaults';
-import { selectAdjustedProjectBounds, selectProjectByCode } from '../selectors';
+// import { INITIAL_PROJECT_CODE } from '../defaults';
+import {
+  selectAdjustedProjectBounds,
+  selectProjectByCode,
+  selectCurrentOrgUnitCode,
+  selectCurrentDashboardGroupCode,
+} from '../selectors';
 
 function* fetchProjectData() {
   try {
     const { projects } = yield call(request, 'projects', fetchProjectsError);
     yield put(setProjects(projects));
-    yield put(selectProject(INITIAL_PROJECT_CODE));
   } catch (error) {
     console.error(error);
   }
@@ -39,17 +43,34 @@ function* watchUserLogoutSuccessAndRefetchProjectData() {
 }
 
 function* loadProject(action) {
-  const state = yield select();
-  const project = selectProjectByCode(state, action.projectCode);
+  // QUESTION:
+  // - Make sure projects are loaded, I think the below works
+  // - Why not change map bounds on change org unit/ wow the regression
+  // - Should we use getCurrentProject here rather than action.projectCode? Advantages/disadvantages?
+  //yield call(fetchProjectData);
+  // TODO: Nasty hack, not allowed
+  let state = yield select();
 
+  if (!(state.project.projects.length > 0)) {
+    yield take('SET_PROJECT_DATA');
+  }
+
+  state = yield select();
+  const project = selectProjectByCode(state, action.projectCode) || {};
+
+  const organisationUnitCode = selectCurrentOrgUnitCode(state);
   yield put(changeBounds(yield select(selectAdjustedProjectBounds, action.projectCode)));
-  yield put(requestOrgUnit(action.projectCode));
-  yield put(changeDashboardGroup(project.dashboardGroupName));
+  if (!organisationUnitCode || action.forceChangeOrgUnit) {
+    yield put(changeOrgUnit(project.homeEntityCode || action.projectCode, false));
+  }
+  const dashboardGroupCode = selectCurrentDashboardGroupCode(state);
+  if (!dashboardGroupCode || action.forceChangeOrgUnit) {
+    yield put(changeDashboardGroup(project.dashboardGroupName));
+  }
 }
 
 function* watchSelectProjectAndLoadProjectState() {
-  // eslint-disable-next-line func-names
-  yield takeLatest(SELECT_PROJECT, loadProject);
+  yield takeLatest(ON_SET_PROJECT, loadProject);
 }
 
 export default [

@@ -88,7 +88,6 @@ export class OverlayDiv extends PureComponent {
 OverlayDiv.propTypes = {
   overlay: PropTypes.node,
   closeOverlay: PropTypes.func.isRequired,
-  onSelectProject: PropTypes.func.isRequired,
   isUserLoggedIn: PropTypes.bool.isRequired,
 };
 
@@ -97,22 +96,14 @@ OverlayDiv.defaultProps = {
 };
 
 const mapStateToProps = state => {
-  const exploreProject = selectProjectByCode(state, 'explore');
-
   return {
     overlay: state.global.overlay,
     isUserLoggedIn: state.authentication.isUserLoggedIn,
-    exploreProject,
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    onSelectProject: project => {
-      dispatch(selectProject(project.code));
-      dispatch(setOverlayComponent(null));
-      dispatch(changeOrgUnit(project.homeEntityCode, false));
-    },
     closeOverlay: () => {
       dispatch(setOverlayComponent(null));
     },

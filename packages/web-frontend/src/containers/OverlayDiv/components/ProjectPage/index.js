@@ -114,7 +114,7 @@ const mapDispatchToProps = dispatch => ({
   onSelectProject: project => {
     dispatch(selectProject(project.code));
     dispatch(setOverlayComponent(null));
-    dispatch(changeOrgUnit(project.homeEntityCode, false));
+    // dispatch(changeOrgUnit(project.homeEntityCode, false)); // QUESTION: This should happen no matter how the project is selected?
   },
   onRequestProjectAccess: project => {
     dispatch(setRequestingAccess(project));

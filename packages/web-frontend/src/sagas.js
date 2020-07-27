@@ -9,13 +9,15 @@ import { call, put, delay, takeEvery, takeLatest, select } from 'redux-saga/effe
 import queryString from 'query-string';
 import request from './utils/request';
 import {
+  selectCurrentOrgUnitCode,
   selectOrgUnit,
   selectOrgUnitChildren,
   selectOrgUnitCountry,
-  selectProjectByCode,
+  selectCurrentProjectCode,
+  selectCurrentProject,
+  selectCurrentOverlayCode,
   selectIsProject,
   selectMeasureBarItemById,
-  selectActiveProjectCode,
 } from './selectors';
 import {
   ATTEMPT_CHANGE_PASSWORD,
@@ -26,10 +28,10 @@ import {
   ATTEMPT_SIGNUP,
   ATTEMPT_CHART_EXPORT,
   ATTEMPT_DRILL_DOWN,
-  CHANGE_ORG_UNIT,
+  ON_SET_ORG_UNIT,
   FETCH_INFO_VIEW_DATA,
   CHANGE_SEARCH,
-  CHANGE_MEASURE,
+  ON_SET_MEASURE,
   FIND_USER_LOGGEDIN,
   FETCH_LOGOUT_SUCCESS,
   FETCH_LOGIN_SUCCESS,
@@ -95,8 +97,9 @@ import {
   REQUEST_ORG_UNIT,
 } from './actions';
 import { isMobile, processMeasureInfo, formatDateForApi } from './utils';
-import { createUrlString } from './utils/historyNavigation';
+import { createUrlString } from './historyNavigation';
 import { getDefaultDates } from './utils/periodGranularities';
+// TODO: remove all unused imports
 import { INITIAL_MEASURE_ID, INITIAL_PROJECT_CODE, initialOrgUnit } from './defaults';
 import { selectProject } from './projects/actions';
 
@@ -423,10 +426,11 @@ function* watchRequestProjectAccess() {
  * Fetch an org unit.
  *
  */
-function* fetchOrgUnitData(
-  organisationUnitCode = initialOrgUnit.organisationUnitCode,
-  projectCode = INITIAL_PROJECT_CODE,
-) {
+function* fetchOrgUnitData(organisationUnitCode, projectCode) {
+  if (!projectCode || !organisationUnitCode)
+    throw new Error(
+      `No projectCode ${projectCode} or org unit when fetching ${organisationUnitCode}`,
+    );
   try {
     yield put(fetchOrgUnit(organisationUnitCode));
     // Build the request url
@@ -447,13 +451,14 @@ function* fetchOrgUnitData(
 
 function* requestOrgUnit(action) {
   const state = yield select();
-  const { organisationUnitCode = state.project.activeProjectCode } = action;
+  const activeProjectCode = selectCurrentProjectCode(state);
+  const { organisationUnitCode = activeProjectCode } = action;
   const orgUnit = selectOrgUnit(state, organisationUnitCode);
   if (orgUnit && orgUnit.isComplete) {
     return; // If we already have the complete org unit in reduxStore, just exit early
   }
 
-  yield fetchOrgUnitData(organisationUnitCode, state.project.activeProjectCode);
+  yield fetchOrgUnitData(organisationUnitCode, activeProjectCode);
 }
 
 function* fetchOrgUnitDataAndChangeOrgUnit(action) {
@@ -473,7 +478,7 @@ function* fetchOrgUnitDataAndChangeOrgUnit(action) {
   try {
     const orgUnitData = yield fetchOrgUnitData(
       organisationUnitCode,
-      state.project.activeProjectCode,
+      selectCurrentProjectCode(state),
     );
     yield put(
       changeOrgUnitSuccess(
@@ -515,7 +520,7 @@ function* watchRequestOrgUnitAndFetchIt() {
 }
 
 function* watchOrgUnitChangeAndFetchIt() {
-  yield takeLatest(CHANGE_ORG_UNIT, fetchOrgUnitDataAndChangeOrgUnit);
+  yield takeLatest(ON_SET_ORG_UNIT, fetchOrgUnitDataAndChangeOrgUnit);
 }
 
 /**
@@ -527,7 +532,7 @@ function* watchOrgUnitChangeAndFetchIt() {
 function* fetchDashboard(action) {
   const { organisationUnitCode } = action.organisationUnit;
   const state = yield select();
-  const projectCode = selectActiveProjectCode(state);
+  const projectCode = selectCurrentProjectCode(state);
 
   const requestResourceUrl = `dashboard?organisationUnitCode=${organisationUnitCode}&projectCode=${projectCode}`;
 
@@ -563,7 +568,7 @@ function* fetchViewData(parameters, errorHandler) {
   } = parameters;
   const urlParameters = {
     organisationUnitCode,
-    projectCode: state.project.activeProjectCode,
+    projectCode: selectCurrentProjectCode(state),
     dashboardGroupId,
     viewId,
     drillDownLevel,
@@ -638,14 +643,14 @@ function* watchViewFetchRequests() {
  */
 function* fetchSearchData(action) {
   yield delay(200); // Wait 200 ms in case user keeps typing
-  const { project } = yield select();
   if (action.searchString === '') {
     yield put(fetchSearchSuccess([]));
   } else {
+    const state = yield select();
     const urlParameters = {
       criteria: action.searchString,
       limit: 5,
-      projectCode: project.activeProjectCode,
+      projectCode: selectCurrentProjectCode(state),
     };
     const requestResourceUrl = `organisationUnitSearch?${queryString.stringify(urlParameters)}`;
     try {
@@ -669,7 +674,6 @@ function* watchSearchChange() {
  */
 function* fetchMeasureInfo(measureId, organisationUnitCode) {
   const state = yield select();
-
   if (!measureId || !organisationUnitCode) {
     // Don't try and fetch null measures
     yield put(cancelFetchMeasureData());
@@ -680,7 +684,7 @@ function* fetchMeasureInfo(measureId, organisationUnitCode) {
   const country = selectOrgUnitCountry(state, organisationUnitCode);
   const countryCode = country ? country.organisationUnitCode : undefined;
   const measureParams = selectMeasureBarItemById(state, measureId) || {};
-  const activeProjectCode = state.project.activeProjectCode;
+  const activeProjectCode = selectCurrentProjectCode(state);
 
   // If the view should be constrained to a date range and isn't, constrain it
   const { startDate, endDate } =
@@ -715,7 +719,7 @@ function* fetchMeasureInfoForMeasureChange(action) {
 }
 
 function* watchMeasureChange() {
-  yield takeLatest(CHANGE_MEASURE, fetchMeasureInfoForMeasureChange);
+  yield takeLatest(ON_SET_MEASURE, fetchMeasureInfoForMeasureChange);
 }
 
 function getSelectedMeasureFromHierarchy(measureHierarchy, selectedMeasureId, project) {
@@ -731,10 +735,9 @@ function getSelectedMeasureFromHierarchy(measureHierarchy, selectedMeasureId, pr
 
 function* fetchCurrentMeasureInfo() {
   const state = yield select();
-  const { currentOrganisationUnitCode } = state.global;
-  const { activeProjectCode } = state.project;
-  const { measureId } = state.map.measureInfo;
-  const { measureHierarchy, selectedMeasureId } = state.measureBar;
+  const currentOrganisationUnitCode = selectCurrentOrgUnitCode(state);
+  const { measureHierarchy } = state.measureBar;
+  const selectedMeasureId = selectCurrentOverlayCode(state);
 
   if (currentOrganisationUnitCode) {
     const isHeirarchyPopulated = Object.keys(measureHierarchy).length;
@@ -744,10 +747,9 @@ function* fetchCurrentMeasureInfo() {
       const newMeasure = getSelectedMeasureFromHierarchy(
         measureHierarchy,
         selectedMeasureId,
-        selectProjectByCode(state, activeProjectCode),
+        selectCurrentProject(state),
       );
-
-      if (newMeasure !== measureId) {
+      if (newMeasure !== selectedMeasureId) {
         yield put(changeMeasure(newMeasure, currentOrganisationUnitCode));
       }
     } else {
@@ -755,7 +757,7 @@ function* fetchCurrentMeasureInfo() {
        * it is not selected through the measureBar UI
        * i.e. page reloaded when on org with measure selected
        */
-      yield put(changeMeasure(measureId, currentOrganisationUnitCode));
+      yield put(changeMeasure(selectedMeasureId, currentOrganisationUnitCode));
     }
   }
 }
@@ -801,7 +803,7 @@ function* fetchMeasures(action) {
   const { organisationUnitCode } = action.organisationUnit;
   const state = yield select();
   if (selectIsProject(state, organisationUnitCode)) yield put(clearMeasure());
-  const projectCode = selectActiveProjectCode(state);
+  const projectCode = selectCurrentProjectCode(state);
   const requestResourceUrl = `measures?organisationUnitCode=${organisationUnitCode}&projectCode=${projectCode}`;
   try {
     const measures = yield call(request, requestResourceUrl);
@@ -869,6 +871,7 @@ function* exportChart(action) {
 
   const timeZone = getTimeZone();
 
+  // TODO
   const exportUrl = createUrlString({
     dashboardId: dashboardGroupId,
     reportId: viewId,
@@ -882,28 +885,24 @@ function* exportChart(action) {
     projectCode,
   });
 
-  const fetchOptions = Object.assign(
-    {},
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        exportUrl,
-        viewId,
-        projectCode,
-        dashboardGroupId,
-        projectCode,
-        organisationUnitCode,
-        organisationUnitName,
-        selectedFormat,
-        exportFileName,
-        chartType,
-        extraConfig,
-      }),
+  const fetchOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
     },
-  );
+    body: JSON.stringify({
+      exportUrl,
+      viewId,
+      projectCode,
+      dashboardGroupId,
+      organisationUnitCode,
+      organisationUnitName,
+      selectedFormat,
+      exportFileName,
+      chartType,
+      extraConfig,
+    }),
+  };
 
   const requestContext = {
     alwaysUseSuppliedErrorFunction: true,
@@ -945,27 +944,29 @@ function* watchAttemptAttemptDrillDown() {
   yield takeLatest(ATTEMPT_DRILL_DOWN, fetchDrillDownData);
 }
 
-function* resetToExplore() {
+function* resetToProjectSplash(action) {
+  // TODO
   const state = yield select();
   // default measure will be selected once the org unit has fully changed, just clear for now
-  yield put(clearMeasure());
-  yield put(clearMeasureHierarchy());
-  yield put(changeOrgUnit('explore', true));
+  // yield put(clearMeasure());
+  //yield put(clearMeasureHierarchy());
+  //yield put(changeOrgUnit('explore', true));
 
-  if (state.project.projects.length > 0) {
-    yield put(selectProject(INITIAL_PROJECT_CODE));
-  }
+  //if (state.project.projects.length > 0) {
+  //yield put(selectProject(INITIAL_PROJECT_CODE));
+  //}
 }
 
 function* watchUserChangesAndUpdatePermissions() {
+  // TODO
   // On user login/logout, we should just navigate back to explore project, as we don't know if they have permissions
   // to the current project or organisation unit
-  yield takeLatest(FETCH_LOGOUT_SUCCESS, resetToExplore);
-  yield takeLatest(FETCH_LOGIN_SUCCESS, resetToExplore);
+  yield takeLatest(FETCH_LOGOUT_SUCCESS, resetToProjectSplash);
+  yield takeLatest(FETCH_LOGIN_SUCCESS, resetToProjectSplash);
 }
 
 function* watchGoHomeAndResetToExplore() {
-  yield takeLatest(GO_HOME, resetToExplore);
+  yield takeLatest(GO_HOME, resetToProjectSplash);
 }
 
 function* fetchEnlargedDialogViewContentForPeriod(action) {
