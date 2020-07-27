@@ -6,9 +6,6 @@ const asc = 'asc';
 const desc = 'desc';
 const newCache = () => ({ asc: {}, desc: {} });
 
-const constructTypesCriteria = (types, prefix) =>
-  types.length > 0 ? `${prefix} type IN (${types.map(() => '?').join(',')})` : '';
-
 export class EntityHierarchyBuilder {
   constructor(entityModel, entityRelationModel) {
     this.models = {
@@ -62,14 +59,14 @@ export class EntityHierarchyBuilder {
    * @param {string} hierarchyId   The specific hierarchy to follow through entity_relation
    */
   async getDescendantsNonCanonically(entityId, hierarchyId) {
-    return this.recurseDescNonCanonicalHierarchy([{ id: entityId }], hierarchyId);
+    return this.recursivelyFetchDescendants([{ id: entityId }], hierarchyId);
   }
 
   async getAncestorsNonCanonically(entityId, hierarchyId) {
-    return this.recurseAscNonCanonicalHierarchy([{ id: entityId }], hierarchyId);
+    return this.recursivelyFetchAncestors([{ id: entityId }], hierarchyId);
   }
 
-  async recurseDescNonCanonicalHierarchy(parents, hierarchyId) {
+  async recursivelyFetchDescendants(parents, hierarchyId) {
     const children = await this.getNextGeneration(parents, hierarchyId);
 
     // if we've made it to the leaf nodes, return an empty array
@@ -78,11 +75,11 @@ export class EntityHierarchyBuilder {
     }
 
     // keep recursing through the hierarchy
-    const descendants = await this.recurseDescNonCanonicalHierarchy(children, hierarchyId);
+    const descendants = await this.recursivelyFetchDescendants(children, hierarchyId);
     return [...children, ...descendants];
   }
 
-  async recurseAscNonCanonicalHierarchy(child, hierarchyId) {
+  async recursivelyFetchAncestors(child, hierarchyId) {
     // We have the assumption that we return single entities for parent search unlike children search
     const parent = await this.getPreviousGeneration(child, hierarchyId);
 
@@ -92,7 +89,7 @@ export class EntityHierarchyBuilder {
     }
 
     // keep recursing through the hierarchy
-    const grandparent = await this.recurseAscNonCanonicalHierarchy(parent, hierarchyId);
+    const grandparent = await this.recursivelyFetchAncestors(parent, hierarchyId);
     return grandparent ? [parent, ...grandparent] : [parent];
   }
 
