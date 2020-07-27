@@ -10,7 +10,7 @@ import { addPrefixToCell } from './TableConfig';
 import {
   countAnalyticsThatSatisfyConditions,
   divideValues,
-  calculateAnalyticArithmeticOperation,
+  calculateArithmeticOperationForAnalytics,
 } from '/apiV1/dataBuilders/helpers';
 
 const groupByMetadata = (groupedResults, metadataField) => {
@@ -68,7 +68,7 @@ export const getPercentageCountOfValuesByCell = (cells, results) => {
 export const getCalculatedValuesByCell = (cells, results) => {
   const calculatedValuesByCell = {};
   cells.forEach(cell => {
-    calculatedValuesByCell[cell.key] = calculateAnalyticArithmeticOperation(results, cell);
+    calculatedValuesByCell[cell.key] = calculateArithmeticOperationForAnalytics(results, cell);
   });
   return calculatedValuesByCell;
 };
