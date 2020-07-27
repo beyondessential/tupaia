@@ -115,15 +115,21 @@ export class EntityHierarchyBuilder {
   getPreviousGeneration = async (child, hierarchyId) => {
     // get any matching alternative hierarchy relationships leading out of this child
     const parentAlternativeRelation = hierarchyId
-      ? await this.models.entityRelation.findOne({
-          child_id: child.id,
-          entity_hierarchy_id: hierarchyId,
-        })
+      ? await this.models.entityRelation.findOne(
+          {
+            child_id: child.id,
+            entity_hierarchy_id: hierarchyId,
+          },
+          { thinObject: true },
+        )
       : null;
     if (parentAlternativeRelation) {
-      return this.models.entity.findOne({ id: parentAlternativeRelation.parent_id });
+      return this.models.entity.findOne(
+        { id: parentAlternativeRelation.parent_id },
+        { thinObject: true },
+      );
     }
-    return this.models.entity.findOne({ id: child.parent_id });
+    return this.models.entity.findOne({ id: child.parent_id }, { thinObject: true });
   };
 
   async getDescendantsCanonically(entityId) {

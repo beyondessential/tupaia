@@ -73,11 +73,22 @@ export class Entity extends BaseModel {
     'attributes',
   ];
 
+  static thinFields = ['id', 'code', 'type', 'parent_id', 'country_code'];
+
   static geoFields = ['point', 'region', 'bounds'];
 
   static getColumnSpecs = tableAlias => {
+    return this.buildColumnSpecs(tableAlias, false);
+  };
+
+  static getThinColumnSpecs = tableAlias => {
+    return this.buildColumnSpecs(tableAlias, true);
+  };
+
+  static buildColumnSpecs = (tableAlias, thinFields = false) => {
     const tableAliasPrefix = tableAlias ? `${tableAlias}.` : '';
-    return Entity.fields.map(field => {
+    const fields = thinFields ? Entity.thinFields : Entity.fields;
+    return fields.map(field => {
       if (Entity.geoFields.includes(field)) {
         return { [field]: `ST_AsGeoJSON(${tableAliasPrefix}${field})` };
       }
@@ -158,6 +169,7 @@ export class Entity extends BaseModel {
   }
 
   async getAncestorOfType(entityType, hierarchyId) {
+    if (this.type === entityType) return [this];
     const ancestors = await this.getAncestors(hierarchyId);
     return ancestors.find(ancestor => ancestor.type === entityType);
   }
@@ -185,23 +197,26 @@ export class Entity extends BaseModel {
   }
 
   static async findOne(conditions, loadOptions, queryOptions) {
+    const isThinObject = loadOptions && loadOptions.thinObject;
     return super.findOne(conditions, loadOptions, {
       ...queryOptions,
-      columns: Entity.getColumnSpecs(),
+      columns: isThinObject ? Entity.getThinColumnSpecs() : Entity.getColumnSpecs(),
     });
   }
 
   static async find(conditions, loadOptions, queryOptions) {
+    const isThinObject = loadOptions && loadOptions.thinObject;
     return super.find(conditions, loadOptions, {
       ...queryOptions,
-      columns: Entity.getColumnSpecs(),
+      columns: isThinObject ? Entity.getThinColumnSpecs() : Entity.getColumnSpecs(),
     });
   }
 
   static async findById(id, loadOptions, queryOptions) {
+    const isThinObject = loadOptions && loadOptions.thinObject;
     return super.findById(id, loadOptions, {
       ...queryOptions,
-      columns: Entity.getColumnSpecs(),
+      columns: isThinObject ? Entity.getThinColumnSpecs() : Entity.getColumnSpecs(),
     });
   }
 
