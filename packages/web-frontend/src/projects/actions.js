@@ -12,14 +12,13 @@ import {
   FETCH_PROJECTS_ERROR,
   REQUEST_PROJECT_ACCESS,
 } from '../actions';
-import { INITIAL_PROJECT_CODE } from '../defaults';
 // TODO rename func and decide default situation
 export function selectProject(projectCode) {
-  // forceChangeOrgUnit is false when entering a url manually
   return { type: SET_PROJECT, projectCode };
 }
 
 export function onSetProject(projectCode, forceChangeOrgUnit = true) {
+  // forceChangeOrgUnit is false when entering a url manually
   return { type: ON_SET_PROJECT, projectCode, forceChangeOrgUnit };
 }
 

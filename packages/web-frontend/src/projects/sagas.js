@@ -25,7 +25,6 @@ function* fetchProjectData() {
   try {
     const { projects } = yield call(request, 'projects', fetchProjectsError);
     yield put(setProjects(projects));
-    // yield put(selectProject(INITIAL_PROJECT_CODE)); No need.
   } catch (error) {
     console.error(error);
   }
@@ -50,11 +49,13 @@ function* loadProject(action) {
   // - Should we use getCurrentProject here rather than action.projectCode? Advantages/disadvantages?
   //yield call(fetchProjectData);
   // TODO: Nasty hack, not allowed
-  if (!action.forceChangeOrgUnit) {
+  let state = yield select();
+
+  if (!(state.project.projects.length > 0)) {
     yield take('SET_PROJECT_DATA');
   }
 
-  const state = yield select();
+  state = yield select();
   const project = selectProjectByCode(state, action.projectCode) || {};
 
   const organisationUnitCode = selectCurrentOrgUnitCode(state);
