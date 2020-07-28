@@ -9,41 +9,43 @@ export class EntityHierarchyBuilder {
       entity: entityModel,
       entityRelation: entityRelationModel,
     };
-    this.cachedAscPromises = {};
-    this.cachedDescPromises = {};
-    entityModel.addChangeHandler(this.invalidateCache);
-    entityRelationModel.addChangeHandler(this.invalidateCache);
+    this.cachedAncestorPromises = {};
+    this.cachedDescendantPromises = {};
+    entityModel.addChangeHandler(this.invalidateCaches);
+    entityRelationModel.addChangeHandler(this.invalidateCaches);
   }
 
-  invalidateCache() {
-    this.cachedAscPromises = {};
-    this.cachedDescPromises = {};
+  invalidateCaches() {
+    this.cachedAncestorPromises = {};
+    this.cachedDescendantPromises = {};
   }
 
-  getCacheKey = (entityId, hierarchyId = 'canonical') => `${entityId}_${hierarchyId}`;
+  getCacheKey = (entityId, hierarchyId) => `${entityId}_${hierarchyId}`;
 
   async getDescendants(entityId, hierarchyId) {
     const cacheKey = this.getCacheKey(entityId, hierarchyId);
-    if (!this.cachedDescPromises[cacheKey]) {
+    if (!this.cachedDescendantPromises[cacheKey]) {
       if (hierarchyId) {
-        this.cachedDescPromises[cacheKey] = this.getDescendantsNonCanonically(
-          entityId,
+        const rootEntity = { id: entityId };
+        this.cachedDescendantPromises[cacheKey] = this.recursivelyFetchDescendants(
+          [rootEntity],
           hierarchyId,
         );
       } else {
         // no alternative hierarchy prescribed, use the faster all-in-one sql query
-        this.cachedDescPromises[cacheKey] = this.getDescendantsCanonically(entityId);
+        this.cachedDescendantPromises[cacheKey] = this.getDescendantsCanonically(entityId);
       }
     }
-    return this.cachedDescPromises[cacheKey];
+    return this.cachedDescendantPromises[cacheKey];
   }
 
   async getAncestors(entityId, hierarchyId) {
     const cacheKey = this.getCacheKey(entityId, hierarchyId);
-    if (!this.cachedAscPromises[cacheKey]) {
-      this.cachedAscPromises[cacheKey] = this.getAncestorsNonCanonically(entityId, hierarchyId);
+    if (!this.cachedAncestorPromises[cacheKey]) {
+      const entity = await this.models.entity.findOne({ id: entityId }, { thinObject: true });
+      this.cachedAncestorPromises[cacheKey] = this.recursivelyFetchAncestors(entity, hierarchyId);
     }
-    return this.cachedAscPromises[cacheKey];
+    return this.cachedAncestorPromises[cacheKey];
   }
 
   async getChildren(entityId, hierarchyId) {
@@ -57,15 +59,6 @@ export class EntityHierarchyBuilder {
    * @param {string} entityId      The entity to start at
    * @param {string} hierarchyId   The specific hierarchy to follow through entity_relation
    */
-  async getDescendantsNonCanonically(entityId, hierarchyId) {
-    return this.recursivelyFetchDescendants([{ id: entityId }], hierarchyId);
-  }
-
-  async getAncestorsNonCanonically(entityId, hierarchyId) {
-    const entity = await this.models.entity.findOne({ id: entityId }, { thinObject: true });
-    return this.recursivelyFetchAncestors(entity, hierarchyId);
-  }
-
   async recursivelyFetchDescendants(parents, hierarchyId) {
     const children = await this.getNextGeneration(parents, hierarchyId);
 
@@ -77,20 +70,6 @@ export class EntityHierarchyBuilder {
     // keep recursing through the hierarchy
     const descendants = await this.recursivelyFetchDescendants(children, hierarchyId);
     return [...children, ...descendants];
-  }
-
-  async recursivelyFetchAncestors(child, hierarchyId) {
-    // We have the assumption that we return single entities for parent search unlike children search
-    const parent = await this.getPreviousGeneration(child, hierarchyId);
-
-    // if no more parents, return an empty array
-    if (!parent) {
-      return [];
-    }
-
-    // keep recursing through the hierarchy
-    const grandparent = await this.recursivelyFetchAncestors(parent, hierarchyId);
-    return grandparent ? [parent, ...grandparent] : [parent];
   }
 
   getNextGeneration = async (parents, hierarchyId) => {
@@ -108,13 +87,28 @@ export class EntityHierarchyBuilder {
       return this.models.entity.find({ id: childIds });
     }
 
+    // no hierarchy specific relations, get next generation following canonical relationships
     const canonicalTypes = Object.values(this.models.entity.orgUnitEntityTypes);
     return this.models.entity.find({ parent_id: parentIds, type: canonicalTypes });
   };
 
+  async recursivelyFetchAncestors(child, hierarchyId) {
+    // We have the assumption that we return single entities for parent search unlike children search
+    const parent = await this.getPreviousGeneration(child, hierarchyId);
+
+    // if no more parents, return an empty array
+    if (!parent) {
+      return [];
+    }
+
+    // keep recursing through the hierarchy
+    const grandparent = await this.recursivelyFetchAncestors(parent, hierarchyId);
+    return grandparent ? [parent, ...grandparent] : [parent];
+  }
+
   getPreviousGeneration = async (child, hierarchyId) => {
-    // get any matching alternative hierarchy relationships leading out of this child
-    const parentAlternativeRelation = hierarchyId
+    // get any matching hierarchy specific relationships leading out of this child
+    const parentRelation = hierarchyId
       ? await this.models.entityRelation.findOne(
           {
             child_id: child.id,
@@ -123,17 +117,17 @@ export class EntityHierarchyBuilder {
           { thinObject: true },
         )
       : null;
-    if (parentAlternativeRelation) {
-      return this.models.entity.findOne(
-        { id: parentAlternativeRelation.parent_id },
-        { thinObject: true },
-      );
+    if (parentRelation) {
+      return this.models.entity.findOne({ id: parentRelation.parent_id }, { thinObject: true });
     }
+
+    // no parent via specific hierarchy, follow canonical relationship
     return child.parent_id
       ? this.models.entity.findOne({ id: child.parent_id }, { thinObject: true })
       : null;
   };
 
+  // faster way to recurse through canonical hierarchy using pure sql
   async getDescendantsCanonically(entityId) {
     const canonicalTypes = Object.values(this.models.entity.orgUnitEntityTypes).join("','");
     const results = await this.models.entity.database.executeSql(
