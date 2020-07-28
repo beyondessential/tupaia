@@ -3,7 +3,6 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-export { AsyncModal } from './AsyncModal';
 export { ConfirmDeleteModal } from './ConfirmDeleteModal';
 export { Icon } from './Icon';
 export { IconButton } from './IconButton';

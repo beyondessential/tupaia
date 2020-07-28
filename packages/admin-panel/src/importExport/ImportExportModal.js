@@ -5,9 +5,18 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import {
+  Button,
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  OutlinedButton,
+  Toast,
+} from '@tupaia/ui-components';
 import { connect } from 'react-redux';
 import { dismissDialog } from './actions';
-import { AsyncModal, InputField } from '../widgets';
+import { InputField } from '../widgets';
 
 export class ImportExportModalComponent extends React.Component {
   constructor(props) {
@@ -31,35 +40,6 @@ export class ImportExportModalComponent extends React.Component {
     }));
   };
 
-  renderContent = () => {
-    const { values } = this.state;
-    const { queryParameters, subtitle, children, parentRecord, isOpen } = this.props;
-
-    if (!isOpen) return null;
-    return (
-      <div>
-        <p>{subtitle}</p>
-        {queryParameters.map(queryParameter => {
-          const { parameterKey, label, secondaryLabel } = queryParameter;
-
-          return (
-            <InputField
-              key={parameterKey}
-              inputKey={parameterKey}
-              value={values[parameterKey]}
-              {...queryParameter}
-              onChange={this.handleValueChange}
-              label={label}
-              secondaryLabel={secondaryLabel}
-              parentRecord={parentRecord}
-            />
-          );
-        })}
-        {children}
-      </div>
-    );
-  };
-
   render() {
     const { values } = this.state;
     const {
@@ -70,19 +50,56 @@ export class ImportExportModalComponent extends React.Component {
       isConfirmDisabled,
       onConfirm,
       confirmLabel,
+      queryParameters,
+      subtitle,
+      children,
+      parentRecord,
+      isOpen,
     } = this.props;
 
+    if (!isOpen) return null;
+
     return (
-      <AsyncModal
-        isLoading={isLoading}
-        errorMessage={errorMessage}
-        renderContent={this.renderContent}
-        isConfirmDisabled={isConfirmDisabled}
-        confirmLabel={confirmLabel}
-        onConfirm={() => onConfirm(values)}
-        onDismiss={onDismiss}
-        title={title}
-      />
+      <Dialog onClose={onDismiss} open={isOpen}>
+        <DialogHeader onClose={onDismiss} title={title} />
+        <DialogContent>
+          {isLoading ? (
+            'Please be patient, this can take some time...'
+          ) : (
+            <>
+              <p>{subtitle}</p>
+              {queryParameters.map(queryParameter => {
+                const { parameterKey, label, secondaryLabel } = queryParameter;
+                return (
+                  <InputField
+                    key={parameterKey}
+                    inputKey={parameterKey}
+                    value={values[parameterKey]}
+                    {...queryParameter}
+                    onChange={this.handleValueChange}
+                    label={label}
+                    secondaryLabel={secondaryLabel}
+                    parentRecord={parentRecord}
+                  />
+                );
+              })}
+              {children}
+            </>
+          )}
+          {errorMessage && <Toast severity="error">{errorMessage}</Toast>}
+        </DialogContent>
+        <DialogFooter>
+          <OutlinedButton onClick={onDismiss} disabled={isLoading}>
+            {errorMessage ? 'Dismiss' : 'Cancel'}
+          </OutlinedButton>
+          <Button
+            onClick={() => onConfirm(values)}
+            disabled={!!errorMessage || isLoading || isConfirmDisabled}
+          >
+            {confirmLabel}
+          </Button>
+        </DialogFooter>
+      </Dialog>
     );
   }
 }

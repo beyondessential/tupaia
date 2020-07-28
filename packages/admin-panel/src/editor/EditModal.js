@@ -6,32 +6,44 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import styled from 'styled-components';
+import {
+  Button,
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  Toast,
+} from '@tupaia/ui-components';
 import { closeEditModal, editField, saveEdits } from './actions';
 import { getEditorState, getIsUnchanged } from './selectors';
-import { AsyncModal } from '../widgets';
 import { Editor } from './Editor';
 
-export const EditModalComponent = props => {
-  const {
-    errorMessage,
-    isLoading,
-    onDismiss,
-    onEditField,
-    onSave,
-    recordData,
-    title,
-    fields,
-    isUnchanged,
-  } = props;
+const Content = styled(DialogContent)`
+  text-align: left;
+  min-height: 500px;
+`;
+
+export const EditModalComponent = ({
+  errorMessage,
+  isLoading,
+  onDismiss,
+  onEditField,
+  onSave,
+  recordData,
+  title,
+  fields,
+  isUnchanged,
+}) => {
+  const isOpen = !!fields;
+
   return (
-    <AsyncModal
-      isLoading={isLoading}
-      errorMessage={errorMessage}
-      confirmLabel={'Save'}
-      dismissLabel={'Cancel'}
-      title={title}
-      renderContent={() =>
-        fields && (
+    <Dialog onClose={onDismiss} open={isOpen}>
+      <DialogHeader onClose={onDismiss} title={title} />
+      <Content>
+        {!fields || isLoading ? (
+          'Please be patient, this can take some time...'
+        ) : (
           <Editor
             fields={fields}
             recordData={recordData}
@@ -39,12 +51,18 @@ export const EditModalComponent = props => {
               onEditField(getFieldToEditFromSource(fieldSource), newValue)
             }
           />
-        )
-      }
-      onConfirm={onSave}
-      onDismiss={onDismiss}
-      isConfirmDisabled={isUnchanged}
-    />
+        )}
+        {errorMessage && <Toast severity="error">{errorMessage}</Toast>}
+      </Content>
+      <DialogFooter>
+        <Button variant="outlined" onClick={onDismiss} disabled={isLoading}>
+          {errorMessage ? 'Dismiss' : 'Cancel'}
+        </Button>
+        <Button onClick={onSave} disabled={!!errorMessage || isLoading || isUnchanged}>
+          Save
+        </Button>
+      </DialogFooter>
+    </Dialog>
   );
 };
 
