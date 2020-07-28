@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import ReactTable from 'react-table';
 import { Alert } from 'reactstrap';
-import { Tabs, ConfirmModal } from '../widgets';
+import { Tabs, ConfirmDeleteModal } from '../widgets';
 import {
   cancelAction,
   changeExpansions,
@@ -46,7 +46,7 @@ class DataFetchingTableComponent extends React.Component {
   renderConfirmModal() {
     const { confirmActionMessage, onConfirmAction, onCancelAction } = this.props;
     return (
-      <ConfirmModal
+      <ConfirmDeleteModal
         message={confirmActionMessage}
         onConfirm={onConfirmAction}
         onCancel={onCancelAction}

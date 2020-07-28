@@ -96,13 +96,13 @@ const typography = {
     letterSpacing: 0,
   },
   body1: {
-    fontSize: '0.9375rem',
+    fontSize: '1.125rem',
     fontWeight: 400,
     lineHeight: 1.18,
     letterSpacing: 0,
   },
   body2: {
-    fontSize: '0.875rem',
+    fontSize: '1rem',
     fontWeight: 400,
     lineHeight: 1.18,
     letterSpacing: 0,
