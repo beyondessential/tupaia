@@ -5,6 +5,7 @@
 
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import {
   Button,
   Dialog,
@@ -17,6 +18,11 @@ import {
 import { connect } from 'react-redux';
 import { dismissDialog } from './actions';
 import { InputField } from '../widgets';
+
+const Content = styled(DialogContent)`
+  text-align: left;
+  min-height: 500px;
+`;
 
 export const ImportExportModalComponent = ({
   isLoading,
@@ -41,12 +47,10 @@ export const ImportExportModalComponent = ({
     }));
   };
 
-  if (!isOpen) return null;
-
   return (
     <Dialog onClose={onDismiss} open={isOpen}>
       <DialogHeader onClose={onDismiss} title={title} />
-      <DialogContent>
+      <Content>
         {isLoading ? (
           'Please be patient, this can take some time...'
         ) : (
@@ -71,7 +75,7 @@ export const ImportExportModalComponent = ({
           </>
         )}
         {errorMessage && <Toast severity="error">{errorMessage}</Toast>}
-      </DialogContent>
+      </Content>
       <DialogFooter>
         <OutlinedButton onClick={onDismiss} disabled={isLoading}>
           {errorMessage ? 'Dismiss' : 'Cancel'}
