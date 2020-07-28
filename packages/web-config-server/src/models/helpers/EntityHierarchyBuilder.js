@@ -2,9 +2,6 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-const asc = 'asc';
-const desc = 'desc';
-const newCache = () => ({ asc: {}, desc: {} });
 
 export class EntityHierarchyBuilder {
   constructor(entityModel, entityRelationModel) {
@@ -12,39 +9,41 @@ export class EntityHierarchyBuilder {
       entity: entityModel,
       entityRelation: entityRelationModel,
     };
-    this.cachedPromises = newCache();
+    this.cachedAscPromises = {};
+    this.cachedDescPromises = {};
     entityModel.addChangeHandler(this.invalidateCache);
     entityRelationModel.addChangeHandler(this.invalidateCache);
   }
 
   invalidateCache() {
-    this.cachedPromises = newCache();
+    this.cachedAscPromises = {};
+    this.cachedDescPromises = {};
   }
 
   getCacheKey = (entityId, hierarchyId = 'canonical') => `${entityId}_${hierarchyId}`;
 
   async getDescendants(entityId, hierarchyId) {
     const cacheKey = this.getCacheKey(entityId, hierarchyId);
-    if (!this.cachedPromises[desc][cacheKey]) {
+    if (!this.cachedDescPromises[cacheKey]) {
       if (hierarchyId) {
-        this.cachedPromises[desc][cacheKey] = this.getDescendantsNonCanonically(
+        this.cachedDescPromises[cacheKey] = this.getDescendantsNonCanonically(
           entityId,
           hierarchyId,
         );
       } else {
         // no alternative hierarchy prescribed, use the faster all-in-one sql query
-        this.cachedPromises[desc][cacheKey] = this.getDescendantsCanonically(entityId);
+        this.cachedDescPromises[cacheKey] = this.getDescendantsCanonically(entityId);
       }
     }
-    return this.cachedPromises[desc][cacheKey];
+    return this.cachedDescPromises[cacheKey];
   }
 
   async getAncestors(entityId, hierarchyId) {
     const cacheKey = this.getCacheKey(entityId, hierarchyId);
-    if (!this.cachedPromises[asc][cacheKey]) {
-      this.cachedPromises[asc][cacheKey] = this.getAncestorsNonCanonically(entityId, hierarchyId);
+    if (!this.cachedAscPromises[cacheKey]) {
+      this.cachedAscPromises[cacheKey] = this.getAncestorsNonCanonically(entityId, hierarchyId);
     }
-    return this.cachedPromises[asc][cacheKey];
+    return this.cachedAscPromises[cacheKey];
   }
 
   async getChildren(entityId, hierarchyId) {
