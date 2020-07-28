@@ -19,6 +19,8 @@ import {
   selectOrgUnit,
   selectHasPolygonMeasure,
   selectAllMeasuresWithDisplayInfo,
+  selectCurrentOverlayCode,
+  selectOrgUnitChildren,
 } from '../../selectors';
 import ActivePolygon from './ActivePolygon';
 
@@ -161,8 +163,10 @@ ConnectedPolygon.defaultProps = {
 };
 
 const mapStateToProps = (state, givenProps) => {
-  const { organisationUnitCode, organisationUnitChildren } = givenProps.area;
-  const { measureId, measureData, measureOptions } = state.map.measureInfo;
+  const { organisationUnitCode } = givenProps.area;
+  const { measureData, measureOptions } = state.map.measureInfo;
+  const measureId = selectCurrentOverlayCode(state);
+  const organisationUnitChildren = selectOrgUnitChildren(state, organisationUnitCode);
 
   let shade;
   let orgUnitMeasureData;

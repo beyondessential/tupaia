@@ -19,6 +19,7 @@ import {
   selectCurrentDashboardKey,
   selectOrgUnitChildren,
   selectCurrentOrgUnit,
+  selectCurrentProjectCode,
 } from '../../../selectors';
 
 class HomeScreen extends PureComponent {
@@ -89,7 +90,7 @@ const mapStateToProps = state => {
   const { isGroupSelectExpanded } = state.dashboard;
 
   const { dashboardConfig } = state.global;
-  const organisationUnits = selectOrgUnitChildren(state, state.project.activeProjectCode);
+  const organisationUnits = selectOrgUnitChildren(state, selectCurrentProjectCode(state));
 
   return {
     organisationUnits,

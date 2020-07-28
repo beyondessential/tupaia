@@ -9,13 +9,15 @@ import { call, put, delay, takeEvery, takeLatest, select } from 'redux-saga/effe
 import queryString from 'query-string';
 import request from './utils/request';
 import {
+  selectCurrentOrgUnitCode,
   selectOrgUnit,
   selectOrgUnitChildren,
   selectOrgUnitCountry,
-  selectProjectByCode,
+  selectCurrentProjectCode,
+  selectCurrentProject,
+  selectCurrentOverlayCode,
   selectIsProject,
   selectMeasureBarItemById,
-  selectActiveProjectCode,
 } from './selectors';
 import {
   ATTEMPT_CHANGE_PASSWORD,
@@ -447,13 +449,14 @@ function* fetchOrgUnitData(
 
 function* requestOrgUnit(action) {
   const state = yield select();
-  const { organisationUnitCode = state.project.activeProjectCode } = action;
+  const activeProjectCode = selectCurrentProjectCode(state);
+  const { organisationUnitCode = activeProjectCode } = action;
   const orgUnit = selectOrgUnit(state, organisationUnitCode);
   if (orgUnit && orgUnit.isComplete) {
     return; // If we already have the complete org unit in reduxStore, just exit early
   }
 
-  yield fetchOrgUnitData(organisationUnitCode, state.project.activeProjectCode);
+  yield fetchOrgUnitData(organisationUnitCode, activeProjectCode);
 }
 
 function* fetchOrgUnitDataAndChangeOrgUnit(action) {
@@ -473,7 +476,7 @@ function* fetchOrgUnitDataAndChangeOrgUnit(action) {
   try {
     const orgUnitData = yield fetchOrgUnitData(
       organisationUnitCode,
-      state.project.activeProjectCode,
+      selectCurrentProjectCode(state),
     );
     yield put(
       changeOrgUnitSuccess(
@@ -527,7 +530,7 @@ function* watchOrgUnitChangeAndFetchIt() {
 function* fetchDashboard(action) {
   const { organisationUnitCode } = action.organisationUnit;
   const state = yield select();
-  const projectCode = selectActiveProjectCode(state);
+  const projectCode = selectCurrentProjectCode(state);
 
   const requestResourceUrl = `dashboard?organisationUnitCode=${organisationUnitCode}&projectCode=${projectCode}`;
 
@@ -563,7 +566,7 @@ function* fetchViewData(parameters, errorHandler) {
   } = parameters;
   const urlParameters = {
     organisationUnitCode,
-    projectCode: state.project.activeProjectCode,
+    projectCode: selectCurrentProjectCode(state),
     dashboardGroupId,
     viewId,
     drillDownLevel,
@@ -638,14 +641,14 @@ function* watchViewFetchRequests() {
  */
 function* fetchSearchData(action) {
   yield delay(200); // Wait 200 ms in case user keeps typing
-  const { project } = yield select();
   if (action.searchString === '') {
     yield put(fetchSearchSuccess([]));
   } else {
+    const state = yield select();
     const urlParameters = {
       criteria: action.searchString,
       limit: 5,
-      projectCode: project.activeProjectCode,
+      projectCode: selectCurrentProjectCode(state),
     };
     const requestResourceUrl = `organisationUnitSearch?${queryString.stringify(urlParameters)}`;
     try {
@@ -680,7 +683,7 @@ function* fetchMeasureInfo(measureId, organisationUnitCode) {
   const country = selectOrgUnitCountry(state, organisationUnitCode);
   const countryCode = country ? country.organisationUnitCode : undefined;
   const measureParams = selectMeasureBarItemById(state, measureId) || {};
-  const activeProjectCode = state.project.activeProjectCode;
+  const activeProjectCode = selectCurrentProjectCode(state);
 
   // If the view should be constrained to a date range and isn't, constrain it
   const { startDate, endDate } =
@@ -731,10 +734,9 @@ function getSelectedMeasureFromHierarchy(measureHierarchy, selectedMeasureId, pr
 
 function* fetchCurrentMeasureInfo() {
   const state = yield select();
-  const { currentOrganisationUnitCode } = state.global;
-  const { activeProjectCode } = state.project;
-  const { measureId } = state.map.measureInfo;
-  const { measureHierarchy, selectedMeasureId } = state.measureBar;
+  const currentOrganisationUnitCode = selectCurrentOrgUnitCode(state);
+  const { measureHierarchy } = state.measureBar;
+  const selectedMeasureId = selectCurrentOverlayCode(state);
 
   if (currentOrganisationUnitCode) {
     const isHeirarchyPopulated = Object.keys(measureHierarchy).length;
@@ -744,10 +746,10 @@ function* fetchCurrentMeasureInfo() {
       const newMeasure = getSelectedMeasureFromHierarchy(
         measureHierarchy,
         selectedMeasureId,
-        selectProjectByCode(state, activeProjectCode),
+        selectCurrentProject(state),
       );
 
-      if (newMeasure !== measureId) {
+      if (newMeasure !== selectedMeasureId) {
         yield put(changeMeasure(newMeasure, currentOrganisationUnitCode));
       }
     } else {
@@ -755,7 +757,7 @@ function* fetchCurrentMeasureInfo() {
        * it is not selected through the measureBar UI
        * i.e. page reloaded when on org with measure selected
        */
-      yield put(changeMeasure(measureId, currentOrganisationUnitCode));
+      yield put(changeMeasure(selectedMeasureId, currentOrganisationUnitCode));
     }
   }
 }
@@ -801,7 +803,7 @@ function* fetchMeasures(action) {
   const { organisationUnitCode } = action.organisationUnit;
   const state = yield select();
   if (selectIsProject(state, organisationUnitCode)) yield put(clearMeasure());
-  const projectCode = selectActiveProjectCode(state);
+  const projectCode = selectCurrentProjectCode(state);
   const requestResourceUrl = `measures?organisationUnitCode=${organisationUnitCode}&projectCode=${projectCode}`;
   try {
     const measures = yield call(request, requestResourceUrl);
@@ -882,28 +884,24 @@ function* exportChart(action) {
     projectCode,
   });
 
-  const fetchOptions = Object.assign(
-    {},
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        exportUrl,
-        viewId,
-        projectCode,
-        dashboardGroupId,
-        projectCode,
-        organisationUnitCode,
-        organisationUnitName,
-        selectedFormat,
-        exportFileName,
-        chartType,
-        extraConfig,
-      }),
+  const fetchOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
     },
-  );
+    body: JSON.stringify({
+      exportUrl,
+      viewId,
+      projectCode,
+      dashboardGroupId,
+      organisationUnitCode,
+      organisationUnitName,
+      selectedFormat,
+      exportFileName,
+      chartType,
+      extraConfig,
+    }),
+  };
 
   const requestContext = {
     alwaysUseSuppliedErrorFunction: true,
