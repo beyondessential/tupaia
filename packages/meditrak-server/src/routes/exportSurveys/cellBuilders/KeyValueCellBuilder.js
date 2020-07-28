@@ -8,13 +8,13 @@ export class KeyValueCellBuilder {
     this.models = models;
   }
 
-  async fetchQuestionCode({ questionId }) {
+  fetchQuestionCode = async ({ questionId }) => {
     const question = await this.models.question.findById(questionId);
     if (!question) {
       throw new Error(`Could not find a question with id matching ${questionId}`);
     }
     return question.code;
-  }
+  };
 
   // disable class-methods-use-this for functions that are candidates for subclass overriding
   /*eslint-disable class-methods-use-this */

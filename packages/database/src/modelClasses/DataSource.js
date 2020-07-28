@@ -14,11 +14,59 @@ const DATA_SOURCE_TYPES = {
   DATA_GROUP,
 };
 
+const SERVICE_TYPES = {
+  DHIS: 'dhis',
+  TUPAIA: 'tupaia',
+};
+
+const CONFIG_SCHEMA_BY_TYPE_AND_SERVICE = {
+  [DATA_SOURCE_TYPES.DATA_ELEMENT]: {
+    [SERVICE_TYPES.DHIS]: {
+      categoryOptionCombo: {},
+      dataElementCode: {},
+      isDataRegional: { default: true },
+    },
+    [SERVICE_TYPES.TUPAIA]: {},
+  },
+  [DATA_SOURCE_TYPES.DATA_GROUP]: {
+    [SERVICE_TYPES.DHIS]: {
+      isDataRegional: { default: true },
+    },
+    [SERVICE_TYPES.TUPAIA]: {},
+  },
+};
+
 export class DataSourceType extends DatabaseType {
   static databaseType = TYPES.DATA_SOURCE;
 
   get dataElementCode() {
     return this.config.dataElementCode || this.code;
+  }
+
+  sanitizeConfig() {
+    const configSchema = CONFIG_SCHEMA_BY_TYPE_AND_SERVICE[this.type][this.service_type];
+    if (!configSchema) {
+      throw new Error(`No config schema for '${this.service_type}' service found`);
+    }
+
+    // `false` values are allowed in config
+    const isEmpty = value => !value && value !== false;
+
+    if (!this.config) {
+      this.config = {};
+    }
+    // Clear invalid/empty fields
+    Object.keys(this.config).forEach(key => {
+      if (!configSchema[key] || isEmpty(this.config[key])) {
+        delete this.config[key];
+      }
+    });
+    // Use default values for valid empty fields
+    Object.entries(configSchema).forEach(([key, { default: defaultValue }]) => {
+      if (defaultValue !== undefined && isEmpty(this.config[key])) {
+        this.config[key] = defaultValue;
+      }
+    });
   }
 }
 
