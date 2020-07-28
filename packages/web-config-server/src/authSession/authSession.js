@@ -81,9 +81,7 @@ const addUserAccessHelper = (req, res, next) => {
       return (await Promise.all(accessByChildrenPromises)).some(hasAccess => hasAccess);
     }
 
-    const ancestorCodes = await entity.getAncestorCodes();
-
-    return accessPolicy.allowsSome([entity.code, ...ancestorCodes], permissionGroup);
+    return accessPolicy.allows(entity.country_code, permissionGroup);
   };
 
   req.getUserGroups = async entityCode => {
