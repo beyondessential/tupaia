@@ -74,11 +74,11 @@ const addUserAccessHelper = (req, res, next) => {
     if (entity.isProject()) {
       const project = await Project.findOne({ code: entity.code });
       const projectChildren = await entity.getChildren(project.entity_hierarchy_id);
-      const accessByChildrenPromises = projectChildren.map(childCode =>
-        req.userHasAccess(childCode, permissionGroup),
-      );
 
-      return (await Promise.all(accessByChildrenPromises)).some(hasAccess => hasAccess);
+      return accessPolicy.allowsSome(
+        projectChildren.map(c => c.country_code),
+        permissionGroup,
+      );
     }
 
     return accessPolicy.allows(entity.country_code, permissionGroup);
