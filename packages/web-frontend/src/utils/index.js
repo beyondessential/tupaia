@@ -19,7 +19,6 @@ export { getCenterAndZoomForBounds } from './getCenterAndZoomForBounds';
 export { mapBoxToken } from './mapbox';
 export { getFacilityThumbnailUrl } from './getFacilityThumbnailUrl';
 export { getMapUrl } from './getMapUrl';
-export { initHistoryDispatcher, historyMiddleware } from './historyNavigation';
 export { OverlayContainer, OverlayView } from './overlayContainer';
 export { getMeasureFromHierarchy } from './getMeasureFromHierarchy';
 export {
