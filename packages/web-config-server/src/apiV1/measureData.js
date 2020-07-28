@@ -230,8 +230,8 @@ export default class extends DataAggregatingRouteHandler {
       measureBuilderConfig,
       ...restOfMapOverlay
     } = mapOverlay;
-    const { dataSourceType = DATA_SOURCE_TYPES.SINGLE, periodGranularity } =
-      measureBuilderConfig || {};
+    const { dataSourceType = DATA_SOURCE_TYPES.SINGLE } = measureBuilderConfig || {};
+    const { periodGranularity } = presentationOptions;
     const { startDate, endDate } = this.query;
     const dates = periodGranularity ? getDateRange(periodGranularity, startDate, endDate) : {};
 
