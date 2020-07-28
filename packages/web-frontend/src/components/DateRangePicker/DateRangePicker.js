@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import Link from '@material-ui/core/Link';
@@ -122,6 +122,10 @@ export const DateRangePicker = ({
 
   const currentStartDate = startDate ? moment(startDate) : defaultStartDate;
   const currentEndDate = endDate ? moment(endDate) : defaultEndDate;
+
+  useEffect(() => {
+    onSetDates(currentStartDate, currentEndDate);
+  }, []);
 
   // Number of periods to move may be negative if changing to the previous period
   const changePeriod = numberOfPeriodsToMove => {
