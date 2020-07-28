@@ -9,6 +9,10 @@ import { TYPES } from '../types';
 
 class MapOverlayGroupRelationType extends DatabaseType {
   static databaseType = TYPES.MAP_OVERLAY_GROUP_RELATION;
+
+  async findChildRelations() {
+    return this.model.find({ map_overlay_group_id: this.child_id });
+  }
 }
 
 export class MapOverlayGroupRelationModel extends DatabaseModel {
@@ -16,7 +20,7 @@ export class MapOverlayGroupRelationModel extends DatabaseModel {
     return MapOverlayGroupRelationType;
   }
 
-  async findChildRelations(mapOverlayGroupIds) {
+  async findGroupRelations(mapOverlayGroupIds) {
     return this.find({
       map_overlay_group_id: {
         comparator: 'IN',

@@ -51,7 +51,7 @@ export default class extends RouteHandler {
     if (overlayCode) {
       //Find all the accessible map overlays first so that we can put them in the correct map overlay groups
       const accessibleMapOverlays = await findAccessibleMapOverlays(
-        this.req.models.mapOverlay,
+        this.req.models,
         overlayCode,
         query.projectCode,
         userGroups,
@@ -59,8 +59,7 @@ export default class extends RouteHandler {
 
       //Find the accessible map overlay groups using the accessible map overlays above
       accessibleMapOverlayGroups = await findAccessibleGroupedMapOverlays(
-        this.req.models.mapOverlayGroup,
-        this.req.models.mapOverlayGroupRelation,
+        this.req.models,
         accessibleMapOverlays,
       );
 
