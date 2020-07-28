@@ -1,13 +1,13 @@
 /**
- * Tupaia MediTrak
- * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
- **/
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
 
 import { DatabaseModel } from '../DatabaseModel';
 import { DatabaseType } from '../DatabaseType';
 import { TYPES } from '../types';
 
-class RefreshTokenType extends DatabaseType {
+export class RefreshTokenType extends DatabaseType {
   static databaseType = TYPES.REFRESH_TOKEN;
 
   async meditrakDevice() {

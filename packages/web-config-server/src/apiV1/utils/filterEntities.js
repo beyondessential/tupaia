@@ -4,6 +4,15 @@
  */
 const FILTER_TYPE_TO_METHOD = {
   '=': (entity, field, filterValue) => entity[field] === filterValue,
+  in: (entity, field, filterValue) => filterValue.includes(entity[field]),
+};
+
+const applyFilter = (entities, field, operator, value) => {
+  const filterMethod = FILTER_TYPE_TO_METHOD[operator];
+
+  return filterMethod
+    ? entities.filter(entity => filterMethod(entity, field, value))
+    : entities;
 };
 
 /**
@@ -35,10 +44,17 @@ const filterEntitiesByAttributes = (entities, attributesFilter) => {
  * We shouldn't have to migrate any existing `entityFilter`, it should still support the existing simple format.
  */
 const filterEntitiesByField = (entities, field, filterValue, operator = '=') => {
-  const filterMethod = FILTER_TYPE_TO_METHOD[operator];
-  return filterMethod
-    ? entities.filter(entity => filterMethod(entity, field, filterValue))
-    : entities;
+  if (typeof filterValue === 'object') {
+    let filteredEntities = entities;
+
+    Object.entries(filterValue).forEach(([individualFilterOperator, individualFilterValue]) => {
+      filteredEntities = applyFilter(filteredEntities, field, individualFilterOperator, individualFilterValue);
+    });
+
+    return filteredEntities;
+  }
+
+  return applyFilter(entities, field, operator, filterValue);
 };
 
 /**

@@ -9,7 +9,7 @@ import fs from 'fs';
 import { truncateString } from 'sussol-utilities';
 import { DatabaseError, ValidationError } from '@tupaia/utils';
 
-import { findAnswersBySurveyResponse, findQuestionsBySurvey } from '../dataAccessors';
+import { findAnswersInSurveyResponse, findQuestionsInSurvey } from '../dataAccessors';
 const FILE_LOCATION = 'exports';
 const FILE_PREFIX = 'survey_response_export';
 export const EXPORT_DATE_FORMAT = 'D-M-YYYY h:mma';
@@ -170,9 +170,7 @@ export async function exportSurveyResponses(req, res) {
         exportData[1].push(currentEntity.code);
         exportData[2].push(responseName);
         exportData[3].push(dateString);
-        const answers = await findAnswersBySurveyResponse(models, {
-          survey_response_id: currentSurveyResponse.id,
-        });
+        const answers = await findAnswersInSurveyResponse(models, currentSurveyResponse.id);
         const answersByQuestionId = {};
         answers.forEach(({ 'question.id': questionId, text }) => {
           answersByQuestionId[questionId] = text;
@@ -237,7 +235,7 @@ export async function exportSurveyResponses(req, res) {
         ];
       } else {
         // Get the current set of questions, in the order they appear in the survey
-        const questions = await findQuestionsBySurvey(models, { survey_id: currentSurvey.id });
+        const questions = await findQuestionsInSurvey(models, currentSurvey.id);
 
         // Add any questions that are in survey responses but no longer in the survey
         const questionIdsSeen = {};

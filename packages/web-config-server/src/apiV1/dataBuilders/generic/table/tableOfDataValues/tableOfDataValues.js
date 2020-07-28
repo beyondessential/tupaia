@@ -220,16 +220,18 @@ export class TableOfDataValuesBuilder extends DataBuilder {
 
   async buildColumns() {
     const buildColumn = (column, index) => ({ key: getColumnKey(index), title: column });
-    this.tableConfig.columnType = this.tableConfig.columns;
 
     if (this.tableConfig.hasColumnMetadataTranslator()) {
       this.results = await this.tableConfig.processColumnMetadataTranslator(this.results);
     }
 
-    if (this.tableConfig.columnType === ORG_UNIT_COL_KEY) this.buildOrgsFromResults();
-
-    if (this.tableConfig.columnType === ORG_UNIT_WITH_TYPE_COL_KEY)
+    if (this.tableConfig.columns === ORG_UNIT_COL_KEY) {
+      this.buildOrgsFromResults();
+    }
+    
+    if (this.tableConfig.columns === ORG_UNIT_WITH_TYPE_COL_KEY) {
       this.buildOrgsFromResultsWithCategories();
+    }
 
     if (!this.hasColumnsInCategories(this.tableConfig.columns)) {
       return this.tableConfig.columns.map(buildColumn);
@@ -307,9 +309,10 @@ export class TableOfDataValuesBuilder extends DataBuilder {
 
       return Object.entries(totals).reduce((averages, [category, columns]) => {
         const averagedColumns = {};
-        for (const column in columns) {
+
+        Object.keys(columns).forEach(column => {
           averagedColumns[column] = Math.round(columns[column] / categoryRowLengths[category]);
-        }
+        });
 
         return { ...averages, [category]: averagedColumns };
       }, {});

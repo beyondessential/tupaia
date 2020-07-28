@@ -3,6 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
+export { mapAnalyticsToCountries } from './mapAnalyticsToCountries';
 export { divideValues } from './divideValues';
 export { groupEvents } from './groupEvents';
 export { fetchComposedData } from './fetchComposedData';

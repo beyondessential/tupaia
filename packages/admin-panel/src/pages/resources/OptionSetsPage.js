@@ -52,10 +52,8 @@ const OPTION_COLUMNS = [
 const EXPANSION_CONFIG = [
   {
     title: 'Options',
-    endpoint: 'options',
+    endpoint: 'optionSet/{id}/options',
     columns: OPTION_COLUMNS,
-    joinFrom: 'id',
-    joinTo: 'option_set_id',
   },
 ];
 
@@ -67,7 +65,7 @@ const IMPORT_CONFIG = {
   queryParameters: [
     {
       label: 'Option Set Names',
-      instruction:
+      secondaryLabel:
         'Please enter the names of the option sets to be imported. These should match the tab names in the file.',
       parameterKey: 'optionSetNames',
       optionsEndpoint: 'optionSets',

@@ -45,9 +45,14 @@ const EDIT_FIELDS = [
 
 const COLUMNS = [
   {
-    Header: 'Name',
-    source: 'first_name', // Acts as key for filtering
-    accessor: rowData => `${rowData.first_name} ${rowData.last_name}`,
+    Header: 'First Name',
+    source: 'first_name',
+    width: 150,
+  },
+  {
+    Header: 'Last Name',
+    source: 'last_name',
+    width: 150,
   },
   ...FIELDS,
   {

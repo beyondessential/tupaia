@@ -10,9 +10,6 @@ const getFacilitiesData = async (aggregator, parentCode, period, shouldOnlyRetur
   const aggregationType = shouldOnlyReturnCurrentStatus
     ? aggregator.aggregationTypes.MOST_RECENT
     : aggregator.aggregationTypes.FINAL_EACH_MONTH_FILL_EMPTY_MONTHS;
-  const extraParams = shouldOnlyReturnCurrentStatus
-    ? { aggregationType }
-    : { aggregationType, aggregationConfig: { fillEmptyValuesTilCurrentPeriod: true } };
 
   const { results } = await aggregator.fetchAnalytics(
     ['BCD1'],
@@ -22,7 +19,7 @@ const getFacilitiesData = async (aggregator, parentCode, period, shouldOnlyRetur
       entityAggregation: { dataSourceEntityType: 'facility' },
     },
     {},
-    { ...extraParams },
+    { aggregationType },
   );
   return results;
 };

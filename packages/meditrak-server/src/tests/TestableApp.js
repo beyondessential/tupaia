@@ -6,6 +6,8 @@ import {} from 'dotenv/config'; // Load the environment variables into process.e
 import supertest from 'supertest';
 import autobind from 'react-autobind';
 
+import { generateTestId } from '@tupaia/database';
+
 import { createApp } from '../app';
 import { getModels } from './getModels';
 
@@ -21,8 +23,12 @@ export const getAuthorizationHeader = () => {
 export class TestableApp {
   constructor() {
     this.models = getModels();
+
     this.database = this.models.database;
+    this.database.generateId = generateTestId;
+
     this.app = createApp(this.database, this.models);
+    this.user = {};
     autobind(this);
   }
 
@@ -36,6 +42,8 @@ export class TestableApp {
       app_version: '999.999.999',
     };
     const response = await this.post('auth', { headers, body });
+
+    this.user = response.body.user;
     this.authToken = response.body.accessToken;
   }
 
@@ -47,6 +55,16 @@ export class TestableApp {
   post(endpoint, options, apiVersion = DEFAULT_API_VERSION) {
     const versionedEndpoint = getVersionedEndpoint(endpoint, apiVersion);
     return this.addOptionsToRequest(supertest(this.app).post(versionedEndpoint), options);
+  }
+
+  put(endpoint, options, apiVersion = DEFAULT_API_VERSION) {
+    const versionedEndpoint = getVersionedEndpoint(endpoint, apiVersion);
+    return this.addOptionsToRequest(supertest(this.app).put(versionedEndpoint), options);
+  }
+
+  delete(endpoint, options, apiVersion = DEFAULT_API_VERSION) {
+    const versionedEndpoint = getVersionedEndpoint(endpoint, apiVersion);
+    return this.addOptionsToRequest(supertest(this.app).delete(versionedEndpoint), options);
   }
 
   addOptionsToRequest(request, { headers, body } = {}) {

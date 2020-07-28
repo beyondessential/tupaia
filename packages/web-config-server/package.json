@@ -7,10 +7,9 @@
   "scripts": {
     "lint": "eslint --ext .js  --ignore-pattern __tests__/ .",
     "lint:all": "yarn run lint \"src/**/*.{js,jsx}\"",
-    "dev": "nodemon -w src --exec \"babel-node src --inspect=9997 --config-file '../../babel.config.json'\"",
     "build": "babel src --out-dir dist --config-file '../../babel.config.json'",
     "start": "node dist",
-    "start-dev": "npm run -s dev",
+    "start-dev": "../../scripts/bash/backendStartDev.sh 9997",
     "start-verbose": "LOG_LEVEL=debug npm run start-dev",
     "prestart": "npm run -s build",
     "test": "mocha",
@@ -75,6 +74,7 @@
   "devDependencies": {
     "babel-plugin-module-resolver": "^3.2.0",
     "chai-like": "^1.1.1",
+    "concurrently": "^5.2.0",
     "csvtojson": "^1.1.5",
     "eslint-import-resolver-babel-module": "^4.0.0",
     "eslint-plugin-import": "^2.18.0",

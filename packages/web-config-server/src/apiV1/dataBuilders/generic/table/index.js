@@ -4,6 +4,7 @@ export {
   tableOfDataValuesWithCalc,
   tableOfValuesForOrgUnits,
   tableOfPercentagesOfValueCounts,
+  tableOfValuesPerPeriod,
 } from './tableOfDataValues';
 export { tableOfEvents } from './tableOfEvents';
 export { simpleTableOfEvents } from './simpleTableOfEvents';

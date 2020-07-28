@@ -111,7 +111,6 @@ export class MeasureBar extends Component {
 
   renderEmptyMessage() {
     const { currentOrganisationUnitName } = this.props;
-
     const orgName = currentOrganisationUnitName || 'Your current selection';
 
     return `Select an area with valid data. ${orgName} has no map overlays available`;

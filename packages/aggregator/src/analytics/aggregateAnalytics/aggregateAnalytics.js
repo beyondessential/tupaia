@@ -8,10 +8,14 @@ import { AGGREGATION_TYPES } from '../../aggregationTypes';
 import {
   filterLatest,
   getFinalValuePerPeriod,
+  getSumValuePerPeriod,
   sumAcrossPeriods,
   sumEachDataElement,
   sumPreviousPerPeriod,
   sumPerOrgGroup,
+  sumPerPeriodPerOrgGroup,
+  countPerOrgGroup,
+  countPerPeriodPerOrgGroup,
   replaceOrgUnitWithOrgGroup,
 } from './aggregations';
 
@@ -37,7 +41,7 @@ export const aggregateAnalytics = (
         analytics,
         {
           ...aggregationConfig,
-          fillEmptyValues: true,
+          fillEmptyPeriodsTilNow: true,
         },
         DAY,
       );
@@ -56,7 +60,7 @@ export const aggregateAnalytics = (
         analytics,
         {
           ...aggregationConfig,
-          fillEmptyValues: true,
+          fillEmptyPeriodsTilNow: true,
         },
         MONTH,
       );
@@ -67,10 +71,12 @@ export const aggregateAnalytics = (
         analytics,
         {
           ...aggregationConfig,
-          fillEmptyValues: true,
+          fillEmptyPeriodsTilNow: true,
         },
         QUARTER,
       );
+    case AGGREGATION_TYPES.SUM_EACH_QUARTER:
+      return getSumValuePerPeriod(analytics, aggregationConfig, QUARTER);
     case AGGREGATION_TYPES.FINAL_EACH_YEAR:
       return getFinalValuePerPeriod(analytics, aggregationConfig, YEAR);
     case AGGREGATION_TYPES.FINAL_EACH_YEAR_FILL_EMPTY_YEARS:
@@ -78,7 +84,7 @@ export const aggregateAnalytics = (
         analytics,
         {
           ...aggregationConfig,
-          fillEmptyValues: true,
+          fillEmptyPeriodsTilNow: true,
         },
         YEAR,
       );
@@ -86,6 +92,12 @@ export const aggregateAnalytics = (
       return sumPreviousPerPeriod(analytics, aggregationConfig, DAY);
     case AGGREGATION_TYPES.SUM_PER_ORG_GROUP:
       return sumPerOrgGroup(analytics, aggregationConfig);
+    case AGGREGATION_TYPES.SUM_PER_PERIOD_PER_ORG_GROUP:
+      return sumPerPeriodPerOrgGroup(analytics, aggregationConfig);
+    case AGGREGATION_TYPES.COUNT_PER_ORG_GROUP:
+      return countPerOrgGroup(analytics, aggregationConfig);
+    case AGGREGATION_TYPES.COUNT_PER_PERIOD_PER_ORG_GROUP:
+      return countPerPeriodPerOrgGroup(analytics, aggregationConfig);
     case AGGREGATION_TYPES.REPLACE_ORG_UNIT_WITH_ORG_GROUP:
       return replaceOrgUnitWithOrgGroup(analytics, aggregationConfig);
     case AGGREGATION_TYPES.RAW:

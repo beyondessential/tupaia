@@ -79,7 +79,9 @@ CREATE TYPE public.entity_type AS ENUM (
     'case',
     'case_contact',
     'disaster',
-    'school'
+    'school',
+    'catchment',
+    'sub_catchment'
 );
 
 
@@ -187,6 +189,19 @@ CREATE FUNCTION public.notification() RETURNS trigger
 
 
 --
+-- Name: schema_change_notification(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.schema_change_notification() RETURNS event_trigger
+    LANGUAGE plpgsql
+    AS $$
+  BEGIN
+  PERFORM pg_notify('schema_change', 'schema_change');
+  END;
+  $$;
+
+
+--
 -- Name: scrub_geo_data(jsonb, name); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -229,6 +244,51 @@ CREATE FUNCTION public.update_change_time() RETURNS trigger
 SET default_tablespace = '';
 
 SET default_with_oids = false;
+
+--
+-- Name: access_request; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.access_request (
+    id text NOT NULL,
+    user_id text,
+    entity_id text,
+    message text,
+    project_id text,
+    permission_group_id text,
+    approved boolean,
+    created_time timestamp with time zone DEFAULT now() NOT NULL,
+    processed_by text,
+    note text,
+    processed_date timestamp with time zone
+);
+
+
+--
+-- Name: alert; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.alert (
+    id text NOT NULL,
+    entity_id text,
+    data_element_id text,
+    start_time timestamp with time zone DEFAULT now() NOT NULL,
+    end_time timestamp with time zone,
+    event_confirmed_time timestamp with time zone,
+    archived boolean DEFAULT false
+);
+
+
+--
+-- Name: alert_comment; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.alert_comment (
+    id text NOT NULL,
+    alert_id text,
+    comment_id text
+);
+
 
 --
 -- Name: answer; Type: TABLE; Schema: public; Owner: -
@@ -297,6 +357,19 @@ CREATE TABLE public.clinic (
     type text,
     category_code character varying(3),
     type_name character varying(30)
+);
+
+
+--
+-- Name: comment; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.comment (
+    id text NOT NULL,
+    user_id text,
+    created_time timestamp with time zone DEFAULT now() NOT NULL,
+    last_modified_time timestamp with time zone DEFAULT now() NOT NULL,
+    text text NOT NULL
 );
 
 
@@ -748,7 +821,8 @@ CREATE TABLE public.question (
     code text,
     detail text,
     option_set_id character varying,
-    hook text
+    hook text,
+    data_source_id text
 );
 
 
@@ -789,7 +863,8 @@ CREATE TABLE public.survey (
     country_ids text[] DEFAULT '{}'::text[],
     can_repeat boolean DEFAULT false,
     survey_group_id text,
-    integration_metadata jsonb DEFAULT '{"dhis2": {"isDataRegional": true}}'::jsonb
+    integration_metadata jsonb DEFAULT '{}'::jsonb,
+    data_source_id text NOT NULL
 );
 
 
@@ -926,6 +1001,30 @@ ALTER TABLE ONLY public.migrations ALTER COLUMN id SET DEFAULT nextval('public.m
 
 
 --
+-- Name: access_request access_request_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: alert_comment alert_comment_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.alert_comment
+    ADD CONSTRAINT alert_comment_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: alert alert_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.alert
+    ADD CONSTRAINT alert_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: answer answer_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -982,6 +1081,14 @@ ALTER TABLE ONLY public.clinic
 
 
 --
+-- Name: comment comment_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.comment
+    ADD CONSTRAINT comment_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: country country_code_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1027,6 +1134,14 @@ ALTER TABLE ONLY public."dashboardGroup"
 
 ALTER TABLE ONLY public.data_element_data_group
     ADD CONSTRAINT data_element_data_group_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: data_element_data_group data_element_data_group_unique; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.data_element_data_group
+    ADD CONSTRAINT data_element_data_group_unique UNIQUE (data_element_id, data_group_id);
 
 
 --
@@ -1794,6 +1909,27 @@ CREATE INDEX user_entity_permission_user_id_idx ON public.user_entity_permission
 
 
 --
+-- Name: access_request access_request_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER access_request_trigger AFTER INSERT OR DELETE OR UPDATE ON public.access_request FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
+-- Name: alert_comment alert_comment_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER alert_comment_trigger AFTER INSERT OR DELETE OR UPDATE ON public.alert_comment FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
+-- Name: alert alert_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER alert_trigger AFTER INSERT OR DELETE OR UPDATE ON public.alert FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
 -- Name: answer answer_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -1812,6 +1948,13 @@ CREATE TRIGGER api_client_trigger AFTER INSERT OR DELETE OR UPDATE ON public.api
 --
 
 CREATE TRIGGER clinic_trigger AFTER INSERT OR DELETE OR UPDATE ON public.clinic FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
+-- Name: comment comment_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER comment_trigger AFTER INSERT OR DELETE OR UPDATE ON public.comment FOR EACH ROW EXECUTE PROCEDURE public.notification();
 
 
 --
@@ -2046,6 +2189,78 @@ CREATE TRIGGER user_reward_trigger AFTER INSERT OR DELETE OR UPDATE ON public.us
 
 
 --
+-- Name: access_request access_request_entity_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_entity_id_fkey FOREIGN KEY (entity_id) REFERENCES public.entity(id);
+
+
+--
+-- Name: access_request access_request_permission_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_permission_group_id_fkey FOREIGN KEY (permission_group_id) REFERENCES public.permission_group(id);
+
+
+--
+-- Name: access_request access_request_processed_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_processed_by_fkey FOREIGN KEY (processed_by) REFERENCES public.user_account(id);
+
+
+--
+-- Name: access_request access_request_project_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_project_id_fkey FOREIGN KEY (project_id) REFERENCES public.project(id);
+
+
+--
+-- Name: access_request access_request_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user_account(id);
+
+
+--
+-- Name: alert_comment alert_comment_alert_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.alert_comment
+    ADD CONSTRAINT alert_comment_alert_id_fkey FOREIGN KEY (alert_id) REFERENCES public.alert(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: alert_comment alert_comment_comment_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.alert_comment
+    ADD CONSTRAINT alert_comment_comment_id_fkey FOREIGN KEY (comment_id) REFERENCES public.comment(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: alert alert_data_element_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.alert
+    ADD CONSTRAINT alert_data_element_id_fkey FOREIGN KEY (data_element_id) REFERENCES public.data_source(id);
+
+
+--
+-- Name: alert alert_entity_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.alert
+    ADD CONSTRAINT alert_entity_id_fkey FOREIGN KEY (entity_id) REFERENCES public.entity(id);
+
+
+--
 -- Name: answer answer_question_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2091,6 +2306,14 @@ ALTER TABLE ONLY public.clinic
 
 ALTER TABLE ONLY public.clinic
     ADD CONSTRAINT clinic_geographical_area_id_fkey FOREIGN KEY (geographical_area_id) REFERENCES public.geographical_area(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+--
+-- Name: comment comment_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.comment
+    ADD CONSTRAINT comment_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user_account(id);
 
 
 --
@@ -2246,6 +2469,14 @@ ALTER TABLE ONLY public.project
 
 
 --
+-- Name: question question_data_source_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.question
+    ADD CONSTRAINT question_data_source_id_fkey FOREIGN KEY (data_source_id) REFERENCES public.data_source(id);
+
+
+--
 -- Name: question question_option_set_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2267,6 +2498,14 @@ ALTER TABLE ONLY public.refresh_token
 
 ALTER TABLE ONLY public.refresh_token
     ADD CONSTRAINT refresh_token_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user_account(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: survey survey_data_source_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.survey
+    ADD CONSTRAINT survey_data_source_id_fkey FOREIGN KEY (data_source_id) REFERENCES public.data_source(id);
 
 
 --
@@ -2363,6 +2602,14 @@ ALTER TABLE ONLY public.user_entity_permission
 
 ALTER TABLE ONLY public.user_reward
     ADD CONSTRAINT user_reward_user_id_fk FOREIGN KEY (user_id) REFERENCES public.user_account(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: schema_change_trigger; Type: EVENT TRIGGER; Schema: -; Owner: -
+--
+
+CREATE EVENT TRIGGER schema_change_trigger ON ddl_command_end
+   EXECUTE PROCEDURE public.schema_change_notification();
 
 
 --
@@ -3199,6 +3446,41 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 763	/20200616000806-FixIncorrectDataElementCodesLaosReport	2020-06-18 21:35:19.97
 764	/20200617235154-FixTongaMeaslesOverlaysWithEntityAggregation	2020-06-18 21:35:20.008
 765	/20200618090311-FixEntityAggregationConfig	2020-06-18 21:35:20.071
+766	/20200603115106-AddCatchmentEntityType	2020-06-25 23:29:10.306
+767	/20200615021108-AddLaosSchoolsMajorDevPartner	2020-06-25 23:29:11.339
+768	/20200618012039-UseTuapaiaAsDataServiceForWishSurveys	2020-06-25 23:29:15.379
+769	/20200528043308-createAccessRequestTable	2020-07-02 21:55:46.686
+770	/20200603121401-CreateFijiCatchmentAlternateHierarchy	2020-07-02 21:55:54.593
+771	/20200615045558-AddPopupHeaderFormatToLaosSchoolsOverlays	2020-07-02 21:55:54.946
+772	/20200623065126-AddRegionalMapOverlaysForUNFPAMOS	2020-07-02 21:55:55.446
+773	/20200625074843-AddMapOverlaysForRHServices	2020-07-02 21:55:55.695
+774	/20200701064429-AddMethodsOfContraceptionRegionalDashboards	2020-07-02 21:55:55.794
+775	/20200609034143-ChangeBinaryShadedPolygonsMeasuresLaosSchools	2020-07-09 22:25:52.91
+776	/20200609045620-AddStriveReportToNationalLevel	2020-07-09 22:25:53.039
+777	/20200617035342-AddCountryAndFacilityTongaHealthPromotionUnitDashboardGroups	2020-07-09 22:25:53.489
+778	/20200617036620-AddActivitySessionsBySettingPieChartTonga	2020-07-09 22:25:53.753
+779	/20200617045942-AddTongaDHIS2HPUPieChartNumberOfBroadcastsByTheme	2020-07-09 22:25:53.961
+780	/20200617054710-AddActivitySessionsBySettingByDistrict	2020-07-09 22:25:54.214
+781	/20200617071021-AddTongaHPUBarChartTotalPhysicalActivityParticipants	2020-07-09 22:25:54.33
+782	/20200618014723-AddNewQuitlineCallsByYearTextReport	2020-07-09 22:25:54.465
+783	/20200618131934-AddTongaHPUIECRequestsFulFilledByTargetGroupDashboardReport	2020-07-09 22:25:54.587
+784	/20200618132339-AddTongaHPUIECRequestsFulFilledByThemeDashboardReport	2020-07-09 22:25:54.766
+785	/20200619015233-AddNewQuitlineCasesBarReportTonga	2020-07-09 22:25:54.939
+786	/20200623013336-AddTongaHPUNumberOfNCDRiskFactorScreeningEventsBySetting	2020-07-09 22:25:55.197
+787	/20200624061918-AddUnfpaStackedBarGraphPercentCountryMos	2020-07-09 22:25:55.416
+788	/20200624141424-AddUNFPAReproductiveHealthAtLeast1StaffMemberTrainedSRHServicesReport	2020-07-09 22:25:55.609
+789	/20200626014357-AddUNFPAFacilityUseOfStockCardsMatrixReport	2020-07-09 22:25:55.765
+790	/20200629134316-AddUNFPANumberOfWomenProvidedSRHServicesFacilityLevelDashboardReport	2020-07-09 22:25:55.895
+791	/20200701000910-AddUNFPANumberOfWomenProvidedSRHServicesNationalProvincialLevelMatrix	2020-07-09 22:25:55.966
+792	/20200609003258-AddLaosSchoolsRawDataDownloads	2020-07-14 15:06:35.034
+793	/20200624001356-AddTongaCovid19CommodityAvailabilityRadiusMapNationalLevelOverlay	2020-07-14 15:06:35.436
+794	/20200624043629-AddUNFPAPriorityLifeSavingMedicinesForWomenAndChildrenAMCMatrixReport	2020-07-14 15:06:35.743
+795	/20200624090309-AddUNFPAPriorityLifeSavingMedicinesForWomenAndChildrenMOSMatrixReport	2020-07-14 15:06:35.828
+796	/20200624090446-AddUNFPAPriorityLifeSavingMedicinesForWomenAndChildrenSOHMatrixReport	2020-07-14 15:06:35.984
+797	/20200712224256-ChangeDefaultCovidOverlayToStateTotalCases-modifies-data	2020-07-14 15:06:36.084
+798	/20200601041635-HideUnncessarySurveysFromDemoLand	2020-07-15 01:53:05.395
+799	/20200428025025-createAlertsTable	2020-07-15 15:29:45.539
+800	/20200501033538-createCommentTables	2020-07-15 15:29:45.563
 \.
 
 
@@ -3206,7 +3488,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 765, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 800, true);
 
 
 --

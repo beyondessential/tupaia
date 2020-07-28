@@ -41,9 +41,17 @@ export const LoginFormComponent = React.memo(
     ]);
     const renderForm = useCallback(
       submitForm => (
-        <React.Fragment>
-          <TextField fullWidth label="E-mail" name="email" validators={[emailAddress]} required />
+        <>
+          <TextField
+            id="login-email"
+            fullWidth
+            label="E-mail"
+            name="email"
+            validators={[emailAddress]}
+            required
+          />
           <PasswordField
+            id="login-password"
             fullWidth
             label="Password"
             name="password"
@@ -53,7 +61,7 @@ export const LoginFormComponent = React.memo(
           />
           <ForgotPassword handleClick={onClickResetPassword} />
           <SubmitButton text="Sign in" handleClick={submitForm} />
-        </React.Fragment>
+        </>
       ),
       [onClickResetPassword],
     );

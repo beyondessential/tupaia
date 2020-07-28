@@ -5,71 +5,81 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import autobind from 'react-autobind';
 import { connect } from 'react-redux';
-import { importData, dismissDialog } from './actions';
-import {
-  getIsProcessing,
-  getIsPreparingImport,
-  getImportRecordType,
-  getErrorMessage,
-} from './selectors';
+import { dismissDialog } from './actions';
 import { AsyncModal, InputField } from '../widgets';
 
 export class ImportExportModalComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      file: null,
-      queryParameter: {},
+      values: {},
     };
-    autobind(this);
   }
 
-  handleFiles({ target }) {
-    this.setState({ file: target.files[0] });
+  static getDerivedStateFromProps(props) {
+    const { isOpen } = props;
+    return isOpen ? null : { values: {} };
   }
 
-  handleQueryParameterChange(parameterKey, value) {
-    this.setState({
-      queryParameters: {
-        ...this.state.queryParameters,
-        [parameterKey]: value,
+  handleValueChange = (key, value) => {
+    this.setState(prevState => ({
+      values: {
+        ...prevState.values,
+        [key]: value,
       },
-    });
-  }
+    }));
+  };
 
-  renderContent() {
-    const { isPreparingImport, queryParameters, instruction } = this.props;
-    return isPreparingImport ? (
+  renderContent = () => {
+    const { values } = this.state;
+    const { queryParameters, subtitle, children, parentRecord, isOpen } = this.props;
+
+    if (!isOpen) return null;
+    return (
       <div>
-        <p>{instruction}</p>
-        {queryParameters.map(queryParameter => (
-          <InputField
-            key={queryParameter.parameterKey}
-            inputKey={queryParameter.parameterKey}
-            {...queryParameter}
-            onChange={this.handleQueryParameterChange}
-            label={queryParameter.instruction}
-            placeholder={queryParameter.label}
-          />
-        ))}
-        <input type={'file'} onChange={event => this.handleFiles(event)} />
+        <p>{subtitle}</p>
+        {queryParameters.map(queryParameter => {
+          const { parameterKey, label, secondaryLabel } = queryParameter;
+
+          return (
+            <InputField
+              key={parameterKey}
+              inputKey={parameterKey}
+              value={values[parameterKey]}
+              {...queryParameter}
+              onChange={this.handleValueChange}
+              label={label}
+              secondaryLabel={secondaryLabel}
+              parentRecord={parentRecord}
+            />
+          );
+        })}
+        {children}
       </div>
-    ) : null;
-  }
+    );
+  };
 
   render() {
-    const { isLoading, errorMessage, onImport, onDismiss, title } = this.props;
-    const { file, queryParameters } = this.state;
+    const { values } = this.state;
+    const {
+      isLoading,
+      errorMessage,
+      onDismiss,
+      title,
+      isConfirmDisabled,
+      onConfirm,
+      confirmLabel,
+    } = this.props;
+
     return (
       <AsyncModal
         isLoading={isLoading}
         errorMessage={errorMessage}
         renderContent={this.renderContent}
-        isConfirmDisabled={!file}
-        onConfirm={() => onImport(file, queryParameters)}
-        confirmLabel={'Import'}
+        isConfirmDisabled={isConfirmDisabled}
+        confirmLabel={confirmLabel}
+        onConfirm={() => onConfirm(values)}
         onDismiss={onDismiss}
         title={title}
       />
@@ -79,38 +89,45 @@ export class ImportExportModalComponent extends React.Component {
 
 ImportExportModalComponent.propTypes = {
   errorMessage: PropTypes.string,
-  isPreparingImport: PropTypes.bool.isRequired,
   isLoading: PropTypes.bool.isRequired,
   onDismiss: PropTypes.func.isRequired,
-  onImport: PropTypes.func.isRequired,
   title: PropTypes.string,
   queryParameters: PropTypes.array,
-  instruction: PropTypes.string,
+  subtitle: PropTypes.string,
+  isConfirmDisabled: PropTypes.bool,
+  onConfirm: PropTypes.func.isRequired,
+  confirmLabel: PropTypes.string.isRequired,
+  children: PropTypes.element,
+  parentRecord: PropTypes.object,
+  isOpen: PropTypes.bool.isRequired,
 };
 
 ImportExportModalComponent.defaultProps = {
   errorMessage: null,
   title: null,
   queryParameters: [],
-  instruction: '',
+  subtitle: '',
+  isConfirmDisabled: false,
+  parentRecord: {},
+  children: null,
 };
 
-const mapStateToProps = state => ({
-  isPreparingImport: getIsPreparingImport(state),
-  isLoading: getIsProcessing(state),
-  errorMessage: getErrorMessage(state),
-  importEndpoint: getImportRecordType(state),
-});
+const mapStateToProps = ({ importExport: importExportState }, { onConfirm }) => {
+  const { isLoading, errorMessage, parentRecord } = importExportState;
 
-const mergeProps = ({ importEndpoint, ...restOfStateProps }, { dispatch }, ownProps) => ({
-  ...restOfStateProps,
-  ...ownProps,
+  return {
+    isLoading,
+    errorMessage,
+    parentRecord,
+    onConfirm: values => onConfirm(values, parentRecord),
+  };
+};
+
+const mapDispatchToProps = dispatch => ({
   onDismiss: () => dispatch(dismissDialog()),
-  onImport: (...args) => dispatch(importData(importEndpoint, ...args)),
 });
 
 export const ImportExportModal = connect(
   mapStateToProps,
-  null,
-  mergeProps,
+  mapDispatchToProps,
 )(ImportExportModalComponent);

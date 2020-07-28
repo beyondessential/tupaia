@@ -67,7 +67,7 @@ export const SignupFormComponent = ({
     formError={signupFailedMessage}
     onSubmit={fieldValues => onAttemptUserSignup(fieldValues)}
     render={submitForm => (
-      <React.Fragment>
+      <>
         <TextField label="First Name" name="firstName" required />
         <TextField label="Last Name" name="lastName" required />
         <TextField label="E-mail" name="emailAddress" validators={[emailAddress]} required />
@@ -98,7 +98,7 @@ export const SignupFormComponent = ({
           &nbsp;to learn more
         </LearnMore>
         <SubmitButton text="Create account" handleClick={submitForm} />
-      </React.Fragment>
+      </>
     )}
   />
 );

@@ -41,12 +41,20 @@
       "path": "packages/dhis-api"
     },
     {
+      "name": "eslint-config-typescript",
+      "path": "packages/eslint-config-typescript"
+    },
+    {
       "name": "export-chart-lambda",
       "path": "packages/export-chart-lambda"
     },
     {
       "name": "meditrak-app",
       "path": "packages/meditrak-app"
+    },
+    {
+      "name": "psss",
+      "path": "packages/psss"
     },
     {
       "name": "meditrak-server",
@@ -70,15 +78,16 @@
     }
   ],
   "settings": {
-    "files.exclude": {
-      "packages/": true
-    },
     "cSpell.words": [
+      "DHIS",
+      "MediTrak",
+      "Tongatapu",
+      "Tupaia",
       "analytics",
       "cacheable",
       "cleanup",
       "deleters",
-      "DHIS",
+      "dialogs",
       "enroll",
       "enrollment",
       "enrollments",
@@ -88,7 +97,6 @@
       "heatmap",
       "imms",
       "keyby",
-      "MediTrak",
       "migrator",
       "oucode",
       "preaggregate",
@@ -101,8 +109,14 @@
       "singularise",
       "Tongatapu",
       "Tupaia",
+      "updaters",
+      "testid",
       "upsert"
-    ]
+    ],
+    "eslint.validate": ["typescript", "typescriptreact"],
+    "files.exclude": {
+      "packages/": true
+    }
   },
   "extensions": {
     "recommendations": [

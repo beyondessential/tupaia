@@ -66,7 +66,7 @@ export const createUser = async (req, res) => {
   }
 
   const existingUsers = await models.user.find({
-    email: { comparisonValue: emailAddress, ignoreCase: true },
+    email: { comparisonValue: emailAddress, comparator: 'ilike' },
   });
   if (existingUsers.length > 0) {
     throw new UnauthenticatedError('Existing user found with same email address.');

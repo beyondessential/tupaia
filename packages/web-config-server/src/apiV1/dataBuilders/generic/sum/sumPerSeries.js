@@ -41,7 +41,7 @@ class SumPerSeriesDataBuilder extends DataBuilder {
    */
   async build() {
     const { results, period } = await this.fetchResults();
-    const sumByDataElement = keyBy(results, 'dataElement');
+    const sumByDataElement = this.calculateSumByDataElement(results);
 
     const dataByClass = {};
     Object.entries(this.config.series).forEach(([seriesKey, dataClasses]) => {
@@ -50,10 +50,7 @@ class SumPerSeriesDataBuilder extends DataBuilder {
           dataByClass[classKey] = { name: classKey };
         }
 
-        const sum = sumBy(dataElements, dataElement => {
-          const { value } = sumByDataElement[dataElement] || { value: 0 };
-          return value;
-        });
+        const sum = sumBy(dataElements, dataElement => sumByDataElement[dataElement]) || 0;
         dataByClass[classKey][seriesKey] = sum;
       });
     });
@@ -70,6 +67,15 @@ class SumPerSeriesDataBuilder extends DataBuilder {
 
     return analyticsResults;
   }
+
+  calculateSumByDataElement = results =>
+    results.reduce(
+      (sum, { dataElement, value }) => ({
+        ...sum,
+        [dataElement]: (sum[dataElement] || 0) + value,
+      }),
+      {},
+    );
 }
 
 export const sumLatestPerSeries = async (
@@ -84,6 +90,23 @@ export const sumLatestPerSeries = async (
     query,
     entity,
     aggregator.aggregationTypes.SUM_MOST_RECENT_PER_FACILITY,
+  );
+
+  return builder.build();
+};
+
+export const sumPerMonthPerSeries = async (
+  { dataBuilderConfig, query, entity },
+  aggregator,
+  dhisApi,
+) => {
+  const builder = new SumPerSeriesDataBuilder(
+    aggregator,
+    dhisApi,
+    dataBuilderConfig,
+    query,
+    entity,
+    aggregator.aggregationTypes.FINAL_EACH_MONTH,
   );
 
   return builder.build();

@@ -12,12 +12,26 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { Autocomplete } from '../autocomplete';
 import { JsonInputField } from './JsonInputField';
 import { DropDownInputField } from './DropDownInputField';
+import { JsonEditor } from './JsonEditor';
+
+const getInputType = ({ options, optionsEndpoint, type }) => {
+  if (options) {
+    return 'enum';
+  }
+  if (optionsEndpoint) {
+    return 'autocomplete';
+  }
+  return type;
+};
 
 export const InputField = ({
   allowMultipleValues,
   label,
+  secondaryLabel,
   value,
+  recordData,
   inputKey,
+  options,
   optionsEndpoint,
   optionLabelKey,
   optionValueKey,
@@ -26,8 +40,10 @@ export const InputField = ({
   canCreateNewOptions,
   disabled,
   getJsonFieldSchema,
+  parentRecord,
+  maxHeight,
 }) => {
-  const inputType = optionsEndpoint ? 'autocomplete' : type;
+  const inputType = getInputType({ options, optionsEndpoint, type });
   let inputComponent = null;
 
   switch (inputType) {
@@ -37,18 +53,13 @@ export const InputField = ({
           placeholder={value}
           endpoint={optionsEndpoint}
           optionLabelKey={optionLabelKey}
+          optionValueKey={optionValueKey}
           reduxId={inputKey}
-          onChange={selection =>
-            onChange(
-              inputKey,
-              allowMultipleValues
-                ? selection.map(s => s[optionValueKey])
-                : selection[optionValueKey],
-            )
-          }
+          onChange={inputValue => onChange(inputKey, inputValue)}
           canCreateNewOptions={canCreateNewOptions}
           disabled={disabled}
           allowMultipleValues={allowMultipleValues}
+          parentRecord={parentRecord}
         />
       );
       break;
@@ -56,10 +67,26 @@ export const InputField = ({
       inputComponent = (
         <JsonInputField
           value={value}
+          recordData={recordData}
           onChange={inputValue => onChange(inputKey, inputValue)}
           disabled={disabled}
           getJsonFieldSchema={getJsonFieldSchema}
         />
+      );
+      break;
+    case 'enum':
+      inputComponent = (
+        <DropDownInputField
+          value={value}
+          options={options.map(option => ({ label: option, value: option }))}
+          onChange={selectedOption => onChange(inputKey, selectedOption)}
+          disabled={disabled}
+        />
+      );
+      break;
+    case 'jsonEditor':
+      inputComponent = (
+        <JsonEditor {...{ inputKey, label, value, maxHeight: maxHeight || 100, onChange }} />
       );
       break;
     case 'boolean':
@@ -105,6 +132,11 @@ export const InputField = ({
   return (
     <FormGroup>
       <p>{label}</p>
+      {secondaryLabel && (
+        <p>
+          <i>{secondaryLabel}</i>
+        </p>
+      )}
       {inputComponent}
     </FormGroup>
   );
@@ -123,8 +155,16 @@ const processValue = (value, type) => {
 InputField.propTypes = {
   allowMultipleValues: PropTypes.bool,
   label: PropTypes.string.isRequired,
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.bool]),
+  recordData: PropTypes.object,
+  value: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.array,
+    PropTypes.object,
+    PropTypes.bool,
+    PropTypes.number,
+  ]),
   inputKey: PropTypes.string.isRequired,
+  options: PropTypes.arrayOf(PropTypes.string),
   optionsEndpoint: PropTypes.string,
   onChange: PropTypes.func.isRequired,
   optionLabelKey: PropTypes.string,
@@ -133,11 +173,16 @@ InputField.propTypes = {
   disabled: PropTypes.bool,
   type: PropTypes.string,
   getJsonFieldSchema: PropTypes.func,
+  parentRecord: PropTypes.object,
+  secondaryLabel: PropTypes.string,
+  maxHeight: PropTypes.number,
 };
 
 InputField.defaultProps = {
   allowMultipleValues: false,
   value: null,
+  recordData: {},
+  options: null,
   optionsEndpoint: null,
   optionLabelKey: 'name',
   optionValueKey: 'id',
@@ -145,4 +190,7 @@ InputField.defaultProps = {
   disabled: false,
   type: 'text',
   getJsonFieldSchema: () => [],
+  parentRecord: {},
+  secondaryLabel: null,
+  maxHeight: undefined,
 };

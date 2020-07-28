@@ -9,10 +9,6 @@ import { hasContent } from '@tupaia/utils';
 class OptionType extends DatabaseType {
   static databaseType = TYPES.OPTION;
 
-  static meditrakConfig = {
-    minAppVersion: '1.7.92',
-  };
-
   static fieldValidators = new Map()
     .set('value', [
       hasContent,
@@ -46,6 +42,10 @@ export class OptionModel extends DatabaseModel {
   get DatabaseTypeClass() {
     return OptionType;
   }
+
+  meditrakConfig = {
+    minAppVersion: '1.7.92',
+  };
 }
 
 const findFieldConflict = async (field, valueToCompare, model) => {

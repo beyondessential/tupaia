@@ -113,7 +113,7 @@ const styles = {
   },
 };
 
-const mapStateProps = ({ drillDown, enlargedDialog }) => ({
+const mapStateToProps = ({ drillDown, enlargedDialog }) => ({
   ...enlargedDialog,
   isDrillDownVisible: drillDown.isVisible,
 });
@@ -172,7 +172,7 @@ const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => ({
 });
 
 export const EnlargedDialog = connect(
-  mapStateProps,
+  mapStateToProps,
   mapDispatchToProps,
   mergeProps,
 )(EnlargedDialogComponent);

@@ -7,6 +7,7 @@ import keyBy from 'lodash.keyby';
 
 import { divideValues } from '/apiV1/dataBuilders/helpers';
 import { fetchComposedData } from '/apiV1/measureBuilders/helpers';
+import { getAggregatePeriod } from '/apiV1/utils';
 
 /**
  * Configuration schema
@@ -40,8 +41,9 @@ export const composePercentagePerOrgUnit = async (aggregator, dhisApi, query, co
   const { dataElementCode } = query;
 
   const responses = await fetchComposedData(aggregator, dhisApi, query, config, entity);
-  const numeratorsByOrgUnit = keyBy(responses.numerator, 'organisationUnitCode');
-  const denominatorsByOrgUnit = keyBy(responses.denominator, 'organisationUnitCode');
+  const { numerator, denominator } = responses;
+  const numeratorsByOrgUnit = await keyBy(numerator.data, 'organisationUnitCode');
+  const denominatorsByOrgUnit = await keyBy(denominator.data, 'organisationUnitCode');
 
   const fractionsByOrgUnit = {};
   Object.keys(numeratorsByOrgUnit).forEach(orgUnit => {
@@ -59,6 +61,7 @@ export const composePercentagePerOrgUnit = async (aggregator, dhisApi, query, co
       };
     }
   });
+  const period = getAggregatePeriod([numerator.period, denominator.period]);
 
-  return Object.values(fractionsByOrgUnit);
+  return { data: Object.values(fractionsByOrgUnit), period };
 };

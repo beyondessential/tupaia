@@ -59,24 +59,41 @@ const SURVEY_COLUMNS = [
       fields: [
         ...SURVEY_FIELDS,
         {
+          Header: 'Data Service',
+          source: 'data_source.service_type',
+          editConfig: {
+            options: ['dhis', 'tupaia'],
+            setFieldsOnChange: (newValue, currentRecord) => {
+              const { isDataRegional = true } = currentRecord['data_source.config'];
+              const config = newValue === 'dhis' ? { isDataRegional } : {};
+              return { 'data_source.config': config };
+            },
+          },
+        },
+        {
+          Header: 'Data Service Configuration',
+          source: 'data_source.config',
+          editConfig: {
+            type: 'json',
+            getJsonFieldSchema: (_, { recordData }) =>
+              recordData['data_source.service_type'] === 'dhis'
+                ? [
+                    {
+                      label:
+                        'Stored On Regional Server (Choose "No" if stored on country specific server)',
+                      fieldName: 'isDataRegional',
+                      type: 'boolean',
+                    },
+                  ]
+                : [],
+          },
+        },
+        {
           Header: 'Integration Details',
           source: 'integration_metadata',
           editConfig: {
             type: 'json',
             getJsonFieldSchema: () => [
-              {
-                label: 'DHIS2',
-                fieldName: 'dhis2',
-                type: 'json',
-                getJsonFieldSchema: () => [
-                  {
-                    label:
-                      'Stored On Regional Server (Choose "No" if stored on country specific server)',
-                    fieldName: 'isDataRegional',
-                    type: 'boolean',
-                  },
-                ],
-              },
               {
                 label: 'MS1',
                 fieldName: 'ms1',
@@ -137,17 +154,91 @@ const QUESTION_FIELDS = [
     Header: 'Detail',
     source: 'detail',
   },
+  {
+    Header: 'Question Label',
+    source: 'question_label',
+  },
+  {
+    Header: 'Detail Label',
+    source: 'detail_label',
+  },
 ];
 
 const QUESTION_COLUMNS = [
   ...QUESTION_FIELDS,
   {
+    Header: 'Config',
+    source: 'config',
+  },
+  {
     Header: 'Edit',
     type: 'edit',
     source: 'id',
     actionConfig: {
-      editEndpoint: 'question',
-      fields: QUESTION_FIELDS,
+      editEndpoint: 'surveyScreenComponent',
+      fields: [
+        ...QUESTION_FIELDS,
+        {
+          Header: 'Config',
+          source: 'config',
+          editConfig: {
+            type: 'json',
+            getJsonFieldSchema: () => [
+              {
+                label: 'Entity',
+                fieldName: 'entity',
+                type: 'json',
+                getJsonFieldSchema: () => [
+                  {
+                    label: 'Accepted Types (comma separated values)',
+                    fieldName: 'type',
+                    csv: true,
+                  },
+                  {
+                    label: 'Create New',
+                    fieldName: 'createNew',
+                    type: 'boolean',
+                  },
+                  {
+                    label: 'Parent Entity',
+                    fieldName: 'parentId',
+                    type: 'json',
+                    getJsonFieldSchema: () => [{ label: 'Question Id', fieldName: 'questionId' }],
+                  },
+                  {
+                    label: 'Grandparent Entity',
+                    fieldName: 'grandparentId',
+                    type: 'json',
+                    getJsonFieldSchema: () => [{ label: 'Question Id', fieldName: 'questionId' }],
+                  },
+                  {
+                    label: 'Name',
+                    fieldName: 'name',
+                    type: 'json',
+                    getJsonFieldSchema: () => [{ label: 'Question Id', fieldName: 'questionId' }],
+                  },
+                  {
+                    label: 'Code',
+                    fieldName: 'code',
+                    type: 'json',
+                    getJsonFieldSchema: () => [{ label: 'Question Id', fieldName: 'questionId' }],
+                  },
+                ],
+              },
+              {
+                label: 'Code Generator',
+                fieldName: 'codeGenerator',
+                type: 'json',
+                getJsonFieldSchema: () => [
+                  { label: 'Type', fieldName: 'type' },
+                  { label: 'Prefix', fieldName: 'prefix' },
+                  { label: 'Length', fieldName: 'length' },
+                ],
+              },
+            ],
+          },
+        },
+      ],
     },
   },
 ];
@@ -155,10 +246,8 @@ const QUESTION_COLUMNS = [
 const EXPANSION_CONFIG = [
   {
     title: 'Questions',
-    endpoint: 'questions',
+    endpoint: 'survey/{id}/surveyScreenComponents',
     columns: QUESTION_COLUMNS,
-    joinFrom: 'id',
-    joinTo: 'survey_id',
   },
 ];
 
@@ -170,7 +259,7 @@ const IMPORT_CONFIG = {
   queryParameters: [
     {
       label: 'Survey Names',
-      instruction:
+      secondaryLabel:
         'Please enter the names of the surveys to be imported. These should match the tab names in the file.',
       parameterKey: 'surveyNames',
       optionsEndpoint: 'surveys',
@@ -180,7 +269,7 @@ const IMPORT_CONFIG = {
     },
     {
       label: 'Countries',
-      instruction:
+      secondaryLabel:
         'Select the countries this survey should be available in, or leave blank for all',
       parameterKey: 'countryIds',
       optionsEndpoint: 'countries',
@@ -188,7 +277,7 @@ const IMPORT_CONFIG = {
     },
     {
       label: 'Permission Group',
-      instruction:
+      secondaryLabel:
         'Select the permission group this survey should be available for, or leave blank for Public',
       parameterKey: 'permissionGroup',
       optionsEndpoint: 'permissionGroups',
@@ -196,12 +285,18 @@ const IMPORT_CONFIG = {
     },
     {
       label: 'Survey Group',
-      instruction:
+      secondaryLabel:
         'Select the survey group this survey should be a part of, or leave blank for none',
       parameterKey: 'surveyGroup',
       optionsEndpoint: 'surveyGroups',
       canCreateNewOptions: true,
       optionValueKey: 'name',
+    },
+    {
+      label: 'Data service',
+      secondaryLabel: 'Select the data service this survey should use, or leave blank for tupaia',
+      parameterKey: 'serviceType',
+      options: ['dhis', 'tupaia'],
     },
   ],
 };

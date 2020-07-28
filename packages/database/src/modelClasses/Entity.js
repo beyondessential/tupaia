@@ -59,11 +59,6 @@ const ORG_UNIT_ENTITY_TYPES = {
 class EntityType extends DatabaseType {
   static databaseType = TYPES.ENTITY;
 
-  static meditrakConfig = {
-    ignorableFields: ['region', 'bounds'],
-    minAppVersion: '1.7.102',
-  };
-
   // Exposed for access policy creation.
   get organisationUnitCode() {
     return this.code;

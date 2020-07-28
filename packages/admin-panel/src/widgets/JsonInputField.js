@@ -11,10 +11,13 @@ import { InputField } from './InputField';
 const DEFAULT_FIELD_TYPE = 'textarea';
 
 export class JsonInputField extends PureComponent {
-  onFieldValueChange(fieldName, fieldValue) {
+  onFieldValueChange(fieldName, fieldValue, csv) {
     const { onChange } = this.props;
+
+    const updatedFieldValue = csv ? fieldValue.split(',').map(value => value.trim()) : fieldValue;
+
     const jsonFieldValues = this.getJsonFieldValues();
-    onChange({ ...jsonFieldValues, [fieldName]: fieldValue });
+    onChange({ ...jsonFieldValues, [fieldName]: updatedFieldValue });
   }
 
   getJsonFieldValues() {
@@ -44,13 +47,15 @@ export class JsonInputField extends PureComponent {
         <Card>
           <CardBody>
             {jsonFieldSchema.map(
-              ({ label, fieldName, type = DEFAULT_FIELD_TYPE, ...inputFieldProps }) => (
+              ({ label, fieldName, type = DEFAULT_FIELD_TYPE, csv, ...inputFieldProps }) => (
                 <InputField
                   key={fieldName}
                   label={label}
                   value={jsonFieldValues[fieldName]}
                   inputKey={fieldName}
-                  onChange={(inputKey, fieldValue) => this.onFieldValueChange(inputKey, fieldValue)}
+                  onChange={(inputKey, fieldValue) =>
+                    this.onFieldValueChange(inputKey, fieldValue, csv)
+                  }
                   disabled={disabled}
                   type={type}
                   {...inputFieldProps}
@@ -67,7 +72,7 @@ export class JsonInputField extends PureComponent {
 JsonInputField.propTypes = {
   getJsonFieldSchema: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
-  value: PropTypes.oneOf(PropTypes.string, PropTypes.object),
+  value: PropTypes.oneOf([PropTypes.string, PropTypes.object]),
   disabled: PropTypes.bool,
 };
 

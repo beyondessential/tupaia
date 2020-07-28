@@ -1,0 +1,417 @@
+[
+  {
+    "id": "69f02f6b-6030-426f-aaf3-d96bc3f6ef35",
+    "index": 0,
+    "week": 9,
+    "startDate": "2020-01-18T10:17:03.138Z",
+    "endDate": "2020-02-18T19:34:32.604Z",
+    "sitesReported": 7,
+    "syndromes": [
+      {
+        "id": "afr",
+        "title": "Acute Fever and Rash (AFR)",
+        "percentageChange": 3,
+        "totalCases": 991,
+        "isAlert": false
+      },
+      {
+        "id": "dia",
+        "title": "Diarrhoea (DIA)",
+        "percentageChange": 15,
+        "totalCases": 782,
+        "isAlert": true
+      },
+      {
+        "id": "ili",
+        "title": "Influenza-like Illness (ILI)",
+        "percentageChange": 1,
+        "totalCases": 386,
+        "isAlert": false
+      },
+      {
+        "id": "pf",
+        "title": "Prolonged Fever (AFR)",
+        "percentageChange": -7,
+        "totalCases": 254,
+        "isAlert": false
+      },
+      {
+        "id": "dil",
+        "title": "Dengue-like Illness (DIL)",
+        "percentageChange": -8,
+        "totalCases": 607,
+        "isAlert": false
+      }
+    ],
+    "status": "Overdue"
+  },
+  {
+    "id": "b3420aab-0f81-418d-9b5c-869225fdd0c9",
+    "index": 1,
+    "week": 1,
+    "startDate": "2020-01-08T12:54:51.941Z",
+    "endDate": "2020-02-26T00:20:32.640Z",
+    "sitesReported": 25,
+    "syndromes": [
+      {
+        "id": "afr",
+        "title": "Acute Fever and Rash (AFR)",
+        "percentageChange": -5,
+        "totalCases": 210
+      },
+      {
+        "id": "dia",
+        "title": "Diarrhoea (DIA)",
+        "percentageChange": 1,
+        "totalCases": 338
+      },
+      {
+        "id": "ili",
+        "title": "Influenza-like Illness (ILI)",
+        "percentageChange": 1,
+        "totalCases": 171
+      },
+      {
+        "id": "pf",
+        "title": "Prolonged Fever (AFR)",
+        "percentageChange": -8,
+        "totalCases": 689
+      },
+      {
+        "id": "dil",
+        "title": "Dengue-like Illness (DIL)",
+        "percentageChange": 1,
+        "totalCases": 367
+      }
+    ],
+    "status": "Overdue"
+  },
+  {
+    "id": "75acf68b-0b59-48c6-85b6-2f9b536d0586",
+    "index": 2,
+    "week": 10,
+    "startDate": "2020-01-02T04:13:47.757Z",
+    "endDate": "2020-02-26T15:02:52.472Z",
+    "sitesReported": 29,
+    "syndromes": [
+      {
+        "id": "afr",
+        "title": "Acute Fever and Rash (AFR)",
+        "percentageChange": 3,
+        "totalCases": 168
+      },
+      {
+        "id": "dia",
+        "title": "Diarrhoea (DIA)",
+        "percentageChange": 5,
+        "totalCases": 768
+      },
+      {
+        "id": "ili",
+        "title": "Influenza-like Illness (ILI)",
+        "percentageChange": 10,
+        "totalCases": 559
+      },
+      {
+        "id": "pf",
+        "title": "Prolonged Fever (AFR)",
+        "percentageChange": 5,
+        "totalCases": 844
+      },
+      {
+        "id": "dil",
+        "title": "Dengue-like Illness (DIL)",
+        "percentageChange": -4,
+        "totalCases": 324
+      }
+    ],
+    "status": "Overdue"
+  },
+  {
+    "id": "b685df84-41dd-4d44-9acd-153f36d6e43a",
+    "index": 3,
+    "week": 10,
+    "startDate": "2020-01-03T20:10:21.937Z",
+    "endDate": "2020-02-06T16:11:14.236Z",
+    "sitesReported": 18,
+    "syndromes": [
+      {
+        "id": "afr",
+        "title": "Acute Fever and Rash (AFR)",
+        "percentageChange": 6,
+        "totalCases": 931
+      },
+      {
+        "id": "dia",
+        "title": "Diarrhoea (DIA)",
+        "percentageChange": 8,
+        "totalCases": 772
+      },
+      {
+        "id": "ili",
+        "title": "Influenza-like Illness (ILI)",
+        "percentageChange": -4,
+        "totalCases": 617
+      },
+      {
+        "id": "pf",
+        "title": "Prolonged Fever (AFR)",
+        "percentageChange": 14,
+        "totalCases": 13
+      },
+      {
+        "id": "dil",
+        "title": "Dengue-like Illness (DIL)",
+        "percentageChange": 3,
+        "totalCases": 851
+      }
+    ],
+    "status": "Submitted"
+  },
+  {
+    "id": "25b12e12-2c7f-4693-a0f9-55ba8dc9d66a",
+    "index": 4,
+    "week": 3,
+    "startDate": "2020-01-27T06:28:31.600Z",
+    "endDate": "2020-02-05T09:05:01.251Z",
+    "sitesReported": 17,
+    "syndromes": [
+      {
+        "id": "afr",
+        "title": "Acute Fever and Rash (AFR)",
+        "percentageChange": -12,
+        "totalCases": 173
+      },
+      {
+        "id": "dia",
+        "title": "Diarrhoea (DIA)",
+        "percentageChange": 12,
+        "totalCases": 415
+      },
+      {
+        "id": "ili",
+        "title": "Influenza-like Illness (ILI)",
+        "percentageChange": 12,
+        "totalCases": 925
+      },
+      {
+        "id": "pf",
+        "title": "Prolonged Fever (AFR)",
+        "percentageChange": 1,
+        "totalCases": 834
+      },
+      {
+        "id": "dil",
+        "title": "Dengue-like Illness (DIL)",
+        "percentageChange": 6,
+        "totalCases": 423
+      }
+    ],
+    "status": "Submitted"
+  },
+  {
+    "id": "b2810ed9-c7d0-466c-8f3e-17d31d2ec772",
+    "index": 5,
+    "week": 2,
+    "startDate": "2020-01-04T13:47:46.426Z",
+    "endDate": "2020-02-07T12:19:43.484Z",
+    "sitesReported": 27,
+    "syndromes": [
+      {
+        "id": "afr",
+        "title": "Acute Fever and Rash (AFR)",
+        "percentageChange": -12,
+        "totalCases": 10
+      },
+      {
+        "id": "dia",
+        "title": "Diarrhoea (DIA)",
+        "percentageChange": -14,
+        "totalCases": 703
+      },
+      {
+        "id": "ili",
+        "title": "Influenza-like Illness (ILI)",
+        "percentageChange": 3,
+        "totalCases": 635
+      },
+      {
+        "id": "pf",
+        "title": "Prolonged Fever (AFR)",
+        "percentageChange": -7,
+        "totalCases": 41
+      },
+      {
+        "id": "dil",
+        "title": "Dengue-like Illness (DIL)",
+        "percentageChange": 5,
+        "totalCases": 645
+      }
+    ],
+    "status": "Submitted"
+  },
+  {
+    "id": "7c0873a8-c3eb-4fac-89ce-a9ae3e6ebe80",
+    "index": 6,
+    "week": 3,
+    "startDate": "2020-01-22T09:46:31.307Z",
+    "endDate": "2020-02-23T13:22:49.496Z",
+    "sitesReported": 5,
+    "syndromes": [
+      {
+        "id": "afr",
+        "title": "Acute Fever and Rash (AFR)",
+        "percentageChange": 7,
+        "totalCases": 877
+      },
+      {
+        "id": "dia",
+        "title": "Diarrhoea (DIA)",
+        "percentageChange": 1,
+        "totalCases": 212
+      },
+      {
+        "id": "ili",
+        "title": "Influenza-like Illness (ILI)",
+        "percentageChange": -9,
+        "totalCases": 358
+      },
+      {
+        "id": "pf",
+        "title": "Prolonged Fever (AFR)",
+        "percentageChange": -8,
+        "totalCases": 141
+      },
+      {
+        "id": "dil",
+        "title": "Dengue-like Illness (DIL)",
+        "percentageChange": 8,
+        "totalCases": 589
+      }
+    ],
+    "status": "Overdue"
+  },
+  {
+    "id": "43ea91bf-66fc-4275-ba34-9ea01efd4e70",
+    "index": 7,
+    "week": 2,
+    "startDate": "2020-01-25T21:27:34.006Z",
+    "endDate": "2020-02-03T01:54:54.108Z",
+    "sitesReported": 7,
+    "syndromes": [
+      {
+        "id": "afr",
+        "title": "Acute Fever and Rash (AFR)",
+        "percentageChange": 7,
+        "totalCases": 636
+      },
+      {
+        "id": "dia",
+        "title": "Diarrhoea (DIA)",
+        "percentageChange": 8,
+        "totalCases": 232
+      },
+      {
+        "id": "ili",
+        "title": "Influenza-like Illness (ILI)",
+        "percentageChange": -9,
+        "totalCases": 316
+      },
+      {
+        "id": "pf",
+        "title": "Prolonged Fever (AFR)",
+        "percentageChange": -12,
+        "totalCases": 402
+      },
+      {
+        "id": "dil",
+        "title": "Dengue-like Illness (DIL)",
+        "percentageChange": -5,
+        "totalCases": 321
+      }
+    ],
+    "status": "Submitted"
+  },
+  {
+    "id": "6741a2f9-7683-4478-ab9d-e6d90971930e",
+    "index": 8,
+    "week": 4,
+    "startDate": "2020-01-24T02:34:49.788Z",
+    "endDate": "2020-02-14T11:49:17.072Z",
+    "sitesReported": 0,
+    "syndromes": [
+      {
+        "id": "afr",
+        "title": "Acute Fever and Rash (AFR)",
+        "percentageChange": 6,
+        "totalCases": 513
+      },
+      {
+        "id": "dia",
+        "title": "Diarrhoea (DIA)",
+        "percentageChange": -15,
+        "totalCases": 79
+      },
+      {
+        "id": "ili",
+        "title": "Influenza-like Illness (ILI)",
+        "percentageChange": -7,
+        "totalCases": 424
+      },
+      {
+        "id": "pf",
+        "title": "Prolonged Fever (AFR)",
+        "percentageChange": -11,
+        "totalCases": 35
+      },
+      {
+        "id": "dil",
+        "title": "Dengue-like Illness (DIL)",
+        "percentageChange": -6,
+        "totalCases": 610
+      }
+    ],
+    "status": "Overdue"
+  },
+  {
+    "id": "865f79a7-2c7f-4251-a4fd-e07617fff119",
+    "index": 9,
+    "week": 8,
+    "startDate": "2020-01-27T10:47:46.003Z",
+    "endDate": "2020-02-08T23:33:28.112Z",
+    "sitesReported": 29,
+    "syndromes": [
+      {
+        "id": "afr",
+        "title": "Acute Fever and Rash (AFR)",
+        "percentageChange": -10,
+        "totalCases": 538
+      },
+      {
+        "id": "dia",
+        "title": "Diarrhoea (DIA)",
+        "percentageChange": -8,
+        "totalCases": 773
+      },
+      {
+        "id": "ili",
+        "title": "Influenza-like Illness (ILI)",
+        "percentageChange": 1,
+        "totalCases": 802
+      },
+      {
+        "id": "pf",
+        "title": "Prolonged Fever (AFR)",
+        "percentageChange": -3,
+        "totalCases": 377
+      },
+      {
+        "id": "dil",
+        "title": "Dengue-like Illness (DIL)",
+        "percentageChange": 3,
+        "totalCases": 707
+      }
+    ],
+    "status": "Submitted"
+  }
+]

@@ -11,8 +11,9 @@ import { Polygon } from 'react-leaflet';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
+import { getSingleFormattedValue } from '../../utils';
 import { AreaTooltip } from './AreaTooltip';
-import { MAP_COLORS } from '../../styles';
+import { MAP_COLORS, BREWER_PALETTE } from '../../styles';
 import { changeOrgUnit } from '../../actions';
 import {
   selectOrgUnit,
@@ -20,7 +21,6 @@ import {
   selectAllMeasuresWithDisplayInfo,
 } from '../../selectors';
 import ActivePolygon from './ActivePolygon';
-import { getSingleFormattedValue } from '../../utils';
 
 const { POLYGON_BLUE, POLYGON_HIGHLIGHT } = MAP_COLORS;
 
@@ -107,10 +107,13 @@ class ConnectedPolygon extends Component {
     };
 
     if (shade) {
+      //To match with the color in markerIcon.js which uses BREWER_PALETTE
+      const color = BREWER_PALETTE[shade] || shade;
+
       // Work around: color should go through the styled components
       // but there is a rendering bug between Styled Components + Leaflet
       return (
-        <ShadedPolygon {...defaultProps} color={shade}>
+        <ShadedPolygon {...defaultProps} color={color}>
           {tooltip}
         </ShadedPolygon>
       );
@@ -133,6 +136,7 @@ ConnectedPolygon.propTypes = {
     PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number))),
   ),
   hasMeasureData: PropTypes.bool,
+  measureOptions: PropTypes.arrayOf(PropTypes.object),
   hasChildren: PropTypes.bool,
   hasShadedChildren: PropTypes.bool,
   shade: PropTypes.string,
@@ -140,7 +144,6 @@ ConnectedPolygon.propTypes = {
     value: PropTypes.any,
     originalValue: PropTypes.any,
   }),
-  measureOptions: PropTypes.arrayOf(PropTypes.object),
 };
 
 ConnectedPolygon.defaultProps = {
@@ -150,11 +153,11 @@ ConnectedPolygon.defaultProps = {
   onChangeOrgUnit: () => {},
   coordinates: undefined,
   hasMeasureData: false,
+  measureOptions: [],
   hasChildren: false,
   hasShadedChildren: false,
   shade: undefined,
   orgUnitMeasureData: undefined,
-  measureOptions: undefined,
 };
 
 const mapStateToProps = (state, givenProps) => {

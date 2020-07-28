@@ -13,8 +13,14 @@ import {
   SocialFeedPage,
   SurveyResponsesPage,
   SurveysPage,
+  QuestionsPage,
   UsersPage,
   DisasterResponsePage,
+  DataSourcesPage,
+  AccessRequestsPage,
+  DashboardReportsPage,
+  MapOverlaysPage,
+  DashboardGroupsPage,
 } from './resources';
 import { PermissionDeniedPage } from './PermissionDeniedPage';
 import { StrivePage } from './StrivePage';
@@ -29,9 +35,15 @@ export const PAGES = {
   permissionGroups: userIsAuthenticated(PermissionGroupsPage),
   surveyResponses: userIsAuthenticated(SurveyResponsesPage),
   surveys: userIsAuthenticated(SurveysPage),
+  questions: userIsAuthenticated(QuestionsPage),
   users: userIsAuthenticated(UsersPage),
   socialFeed: userIsAuthenticated(SocialFeedPage),
   optionSets: userIsAuthenticated(OptionSetsPage),
   strive: userIsAuthenticated(StrivePage),
   disaster: userIsAuthenticated(DisasterResponsePage),
+  dataSources: userIsAuthenticated(DataSourcesPage),
+  accessRequests: userIsAuthenticated(AccessRequestsPage),
+  dashboardReports: userIsAuthenticated(DashboardReportsPage),
+  mapOverlays: userIsAuthenticated(MapOverlaysPage),
+  dashboardGroups: userIsAuthenticated(DashboardGroupsPage),
 };

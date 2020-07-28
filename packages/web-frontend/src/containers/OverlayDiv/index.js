@@ -77,7 +77,7 @@ export class OverlayDiv extends PureComponent {
         fullWidth={isMobile()}
       >
         <Wrapper>
-          <CloseIcon style={styles.close} onClick={closeOverlay} />
+          <CloseIcon data-testid="overlay-close-btn" style={styles.close} onClick={closeOverlay} />
           {overlay && <OverlayComponent />}
         </Wrapper>
       </Dialog>

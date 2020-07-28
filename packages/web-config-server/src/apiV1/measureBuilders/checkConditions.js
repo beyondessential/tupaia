@@ -8,14 +8,19 @@ class CheckConditionsBuilder extends DataBuilder {
     const { condition, dataElementCodes: configDataCodes } = this.config;
 
     const dataElementCodes = configDataCodes || [queryDataCode];
-    const { results } = await this.fetchAnalytics(dataElementCodes);
+    const { period, results } = await this.fetchAnalytics(dataElementCodes);
+
     const analytics = results.map(result => ({
       ...result,
       value: checkValueSatisfiesCondition(result.value, condition) ? 1 : 0,
     }));
-    return queryDataCode === 'value'
-      ? analyticsToMeasureData(analytics, 'value')
-      : analyticsToMeasureData(analytics);
+    return {
+      data:
+        queryDataCode === 'value'
+          ? analyticsToMeasureData(analytics, 'value')
+          : analyticsToMeasureData(analytics),
+      period,
+    };
   }
 }
 

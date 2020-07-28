@@ -14,7 +14,7 @@ describe('array', () => {
       expect(min([-2, 1, 3, 10])).to.equal(-2);
     });
 
-    it('should `undefined` for a non compatible input', () => {
+    it('should return `undefined` for a non compatible input', () => {
       [undefined, null, []].forEach(input => expect(min(input)).to.equal(undefined));
     });
   });
@@ -25,7 +25,7 @@ describe('array', () => {
       expect(max([-20, 1, 3, 10])).to.equal(10);
     });
 
-    it('should `undefined` for a non compatible input', () => {
+    it('should return `undefined` for a non compatible input', () => {
       [undefined, null, []].forEach(input => expect(max(input)).to.equal(undefined));
     });
   });

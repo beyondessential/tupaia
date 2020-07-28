@@ -95,13 +95,24 @@ export class PopupMarker extends PureComponent {
     );
   }
 }
+const buildHeaderText = (data, popupHeaderFormat) => {
+  const { organisationUnitCode, name } = data;
+  const replacements = {
+    code: organisationUnitCode,
+    name: name,
+  };
+  return Object.entries(replacements).reduce((text, [key, value]) => text.replace(`{${key}}`, value), popupHeaderFormat);
+};
 
 export const MeasurePopup = ({ data, measureOptions, onOrgUnitClick }) => {
-  const { name, coordinates, organisationUnitCode } = data;
-
+  const { coordinates, organisationUnitCode } = data;
+  const { popupHeaderFormat = '{name}' } = measureOptions.reduce(
+    (all, mo) => ({ ...all, ...mo }),
+    {},
+  );
   return (
     <PopupMarker
-      headerText={name}
+      headerText={buildHeaderText(data, popupHeaderFormat)}
       buttonText="See Dashboard"
       coordinates={coordinates}
       onDetailButtonClick={() => onOrgUnitClick(organisationUnitCode)}

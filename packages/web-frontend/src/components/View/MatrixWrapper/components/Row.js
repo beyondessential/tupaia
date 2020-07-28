@@ -123,6 +123,16 @@ export default class Row extends Component {
             };
           }
 
+          let applyDotStyle = true;
+
+          if (
+            presentationOptions &&
+            presentationOptions.applyLocation &&
+            presentationOptions.applyLocation.columnIndexes
+          ) {
+            applyDotStyle = presentationOptions.applyLocation.columnIndexes.includes(index);
+          }
+
           return (
             <Cell
               key={index}
@@ -131,20 +141,20 @@ export default class Row extends Component {
               onMouseLeave={() => onCellMouseLeave()}
               onClick={() =>
                 onCellClick(
-                  presentation.description === ROW_INFO_KEY
+                  presentation && presentation.description === ROW_INFO_KEY
                     ? { ...presentation, description: rowInfo }
                     : presentation,
                   cellValue,
                 )
               }
-              color={presentation ? presentation.color : { color: '' }}
+              color={presentation ? presentation.color : ''}
               value={cellValue}
               style={styles.gridCell}
               columnActiveStripStyle={styles.columnActiveStrip}
               isActive={isCellActive}
               dotStyle={styles.cellIndicator}
               dotStyleActive={styles.cellIndicatorActive}
-              isUsingDots={isUsingDots}
+              isUsingDots={isUsingDots && applyDotStyle}
             />
           );
         })}

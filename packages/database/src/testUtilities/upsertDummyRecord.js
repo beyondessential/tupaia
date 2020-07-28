@@ -43,7 +43,7 @@ const generateDummyRecord = async (model, overrides = {}) => {
     const getValue = () => {
       // in order of precedence, we want to use:
       // - the value passed in explicitly in overrides, generally hard coded for the specific test
-      if (overrides[fieldName]) return overrides[fieldName];
+      if (overrides[fieldName] !== undefined) return overrides[fieldName];
       // - the value stored in CUSTOM_DUMMY_VALUES, even if that is 'null'
       const { databaseType } = model;
       if (

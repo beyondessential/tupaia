@@ -24,6 +24,10 @@ const LEFT_LINKS = [
     path: '/surveys',
   },
   {
+    label: 'Questions',
+    path: '/questions',
+  },
+  {
     label: 'Survey Responses',
     path: '/survey-responses',
   },
@@ -38,6 +42,18 @@ const LEFT_LINKS = [
   {
     label: 'Countries',
     path: '/countries',
+  },
+  {
+    label: 'Dashboard Reports',
+    path: '/dashboard-reports',
+  },
+  {
+    label: 'Map Overlays',
+    path: '/map-overlays',
+  },
+  {
+    label: 'Dashboard Groups',
+    path: '/dashboard-groups',
   },
   {
     label: 'Permissions',
@@ -59,6 +75,14 @@ const LEFT_LINKS = [
     label: 'Disasters',
     path: '/disaster',
   },
+  {
+    label: 'Data Sources',
+    path: '/data-sources',
+  },
+  {
+    label: 'Access Requests',
+    path: '/access-requests',
+  },
 ];
 
 const App = props => {
@@ -70,7 +94,7 @@ const App = props => {
   return (
     <div>
       <Navbar
-        brandName={'Tupaia Admin'}
+        brandName="Tupaia Admin"
         leftLinks={LEFT_LINKS}
         rightLinks={isUserAuthenticated ? [loginLink] : []}
         onNavigate={onNavigate}

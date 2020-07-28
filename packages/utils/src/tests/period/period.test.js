@@ -18,6 +18,8 @@ import {
   periodToDisplayString,
   parsePeriodType,
   periodToTimestamp,
+  isValidPeriod,
+  isCoarserPeriod,
 } from '../../period/period';
 
 const { DAY, WEEK, MONTH, QUARTER, YEAR } = PERIOD_TYPES;
@@ -52,6 +54,11 @@ context('periodTypes', () => {
 
     it('should return undefined for invalid input', () => {
       expect(periodToType('20165')).to.equal(undefined);
+      expect(periodToType('2016W5')).to.equal(undefined);
+      expect(periodToType('!VALID')).to.equal(undefined);
+      expect(periodToType('!VALID_WITH_W')).to.equal(undefined);
+      expect(periodToType('W122020')).to.equal(undefined);
+      expect(periodToType('2021Q10')).to.equal(undefined);
     });
 
     it('year', () => {
@@ -72,6 +79,32 @@ context('periodTypes', () => {
 
     it('day', () => {
       expect(periodToType('20160501')).to.equal(DAY);
+    });
+  });
+
+  describe('isValidPeriod', () => {
+    it('should return false for empty input', () => {
+      expect(isValidPeriod()).to.equal(false);
+    });
+
+    it('should return false for invalid input', () => {
+      expect(isValidPeriod('20165')).to.equal(false);
+    });
+
+    it('should return false for non-strings', () => {
+      expect(isValidPeriod(2016)).to.equal(false);
+      expect(isValidPeriod(['2', '0', '2', '0', '0', '2'])).to.equal(false);
+      expect(isValidPeriod({ period: '202002' })).to.equal(false);
+      expect(isValidPeriod(true)).to.equal(false);
+      expect(isValidPeriod(moment())).to.equal(false);
+    });
+
+    it('should return true for valid periods', () => {
+      expect(isValidPeriod('2016')).to.equal(true);
+      expect(isValidPeriod('201605')).to.equal(true);
+      expect(isValidPeriod('2016W12')).to.equal(true);
+      expect(isValidPeriod('2016Q2')).to.equal(true);
+      expect(isValidPeriod('20160502')).to.equal(true);
     });
   });
 
@@ -359,6 +392,30 @@ context('periodTypes', () => {
     it('should detect a daily period', () => {
       expect(findCoarsestPeriodType([DAY])).to.equal(DAY);
       expect(findCoarsestPeriodType([DAY, DAY])).to.equal(DAY);
+    });
+  });
+
+  describe('isCoarserPeriod', () => {
+    it('should return false if either of the periods are not valid', () => {
+      expect(isCoarserPeriod('2012')).to.equal(false);
+      expect(isCoarserPeriod()).to.equal(false);
+      expect(isCoarserPeriod('NOT_A_PERIOD', '2016W22')).to.equal(false);
+      expect(isCoarserPeriod('2016Q1', 'NOT_A_PERIOD')).to.equal(false);
+      expect(isCoarserPeriod('NOT_A_PERIOD', 'NEITHER_IS_THIS')).to.equal(false);
+    });
+    it('should detect if the first period is more coarse', () => {
+      expect(isCoarserPeriod('2016', '2016Q2')).to.equal(true);
+      expect(isCoarserPeriod('201605', '2016Q2')).to.equal(false);
+      expect(isCoarserPeriod('2016W08', '20101010')).to.equal(true);
+      expect(isCoarserPeriod('2016Q2', '2013W02')).to.equal(true);
+      expect(isCoarserPeriod('20160502', '2010')).to.equal(false);
+    });
+    it('should return false if the period types are the same', () => {
+      expect(isCoarserPeriod('2012', '2016')).to.equal(false);
+      expect(isCoarserPeriod('201405', '201601')).to.equal(false);
+      expect(isCoarserPeriod('2016W08', '2016W22')).to.equal(false);
+      expect(isCoarserPeriod('2016Q1', '2016Q2')).to.equal(false);
+      expect(isCoarserPeriod('20160505', '20111202')).to.equal(false);
     });
   });
 

@@ -6,7 +6,7 @@
 import xlsx from 'xlsx';
 import { DatabaseError } from '@tupaia/utils';
 
-import { findQuestionsBySurvey } from '../../dataAccessors';
+import { findQuestionsInSurvey } from '../../dataAccessors';
 import { RowBuilder } from './RowBuilder';
 import { SurveyMetadataConfigCellBuilder } from './cellBuilders';
 
@@ -38,7 +38,7 @@ export class SurveyExporter {
 
       for (let i = 0; i < surveys.length; i += 1) {
         const currentSurvey = surveys[i];
-        const rows = await findQuestionsBySurvey(this.models, { survey_id: currentSurvey.id });
+        const rows = await findQuestionsInSurvey(this.models, currentSurvey.id);
         const rowBuilder = new RowBuilder(this.models, rows);
 
         const rowsForExport = await Promise.all(rows.map(rowBuilder.build));

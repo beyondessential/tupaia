@@ -7,23 +7,23 @@
 
 import { KeyValueCellBuilder } from './KeyValueCellBuilder';
 
-const ENTITY_CONFIG_VALUE_PROCESSORS = {
+const SPECIAL_VALUE_PROCESSORS = {
   type: value => value.join(','),
   createNew: value => (value ? 'Yes' : 'No'),
 };
-const ENTITY_CONFIG_SPECIAL_KEYS = {
+const KEY_TRANSLATION = {
   parentId: 'parent',
   grandparentId: 'grandparent',
 };
 
 export class EntityConfigCellBuilder extends KeyValueCellBuilder {
   processKey(key) {
-    return ENTITY_CONFIG_SPECIAL_KEYS[key] || key;
+    return KEY_TRANSLATION[key] || key;
   }
 
   async processValue(value, key) {
-    return ENTITY_CONFIG_VALUE_PROCESSORS[key]
-      ? ENTITY_CONFIG_VALUE_PROCESSORS[key](value)
+    return SPECIAL_VALUE_PROCESSORS[key]
+      ? SPECIAL_VALUE_PROCESSORS[key](value)
       : this.fetchQuestionCode(value);
   }
 

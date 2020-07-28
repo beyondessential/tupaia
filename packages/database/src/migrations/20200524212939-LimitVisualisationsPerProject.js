@@ -33,6 +33,8 @@ exports.up = async function(db) {
   await setProjectsForTable(db, 'dashboardGroup', dashboardGroups, false);
 };
 
+const LAOS_SCHOOLS_PROJECT_CODE = 'laos_schools';
+
 const resetVizToPriorProjectCodes = async (db, tableName, defaultProjectCodes) =>
   db.runSql(`
     UPDATE "${tableName}"

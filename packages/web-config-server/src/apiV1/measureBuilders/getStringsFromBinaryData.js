@@ -8,7 +8,7 @@ import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 export class GetStringsFromBinaryDataBuilder extends DataBuilder {
   async build() {
     const { dataElementToString } = this.config;
-    const { results } = await this.fetchAnalytics(Object.keys(dataElementToString));
+    const { period, results } = await this.fetchAnalytics(Object.keys(dataElementToString));
 
     const stringArrayByOrgUnit = [];
     results.forEach(({ dataElement, value, organisationUnit }) => {
@@ -22,10 +22,13 @@ export class GetStringsFromBinaryDataBuilder extends DataBuilder {
       }
     });
 
-    return Object.entries(stringArrayByOrgUnit).map(([organisationUnitCode, valueArray]) => ({
-      organisationUnitCode,
-      value: valueArray.join(', '),
-    }));
+    return {
+      data: Object.entries(stringArrayByOrgUnit).map(([organisationUnitCode, valueArray]) => ({
+        organisationUnitCode,
+        value: valueArray.join(', '),
+      })),
+      period,
+    };
   }
 }
 

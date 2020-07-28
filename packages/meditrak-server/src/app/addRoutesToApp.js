@@ -33,7 +33,7 @@ const {
   createUser,
   changePassword,
   requestCountryAccess,
-  putRecord,
+  addRecord,
   getUserRewards,
   requestPasswordReset,
   requestResendEmail,
@@ -91,6 +91,7 @@ export function addRoutesToApp(app) {
   app.get('(/v[0-9]+)/socialFeed', getSocialFeed);
   app.get('(/v[0-9]+)/me/rewards', getUserRewards);
   app.get('(/v[0-9]+)/me/countries', getCountryAccessList);
+  app.get('(/v[0-9]+)/:parentResource/:parentRecordId/:resource/:recordId?', getRecords);
   app.get('(/v[0-9]+)/:resource/:recordId?', getRecords);
 
   /**
@@ -120,17 +121,20 @@ export function addRoutesToApp(app) {
   app.post('(/v[0-9]+)?/user', createUser);
   app.post('(/v[0-9]+)/me/requestCountryAccess', requestCountryAccess);
   app.post('(/v[0-9]+)/me/changePassword', changePassword);
-  app.post('(/v[0-9]+)/:resource/:id', editRecord);
   app.post('(/v[0-9]+)/surveyResponse', surveyResponse);
+  app.post('(/v[0-9]+)/:resource', addRecord);
+  app.post('(/v[0-9]+)/:parentResource/:parentRecordId/:resource', addRecord);
 
   /**
    * PUT routes
    */
-  app.put('(/v[0-9]+)/:resource', putRecord);
+  app.put('(/v[0-9]+)/:parentResource/:parentRecordId/:resource/:id', editRecord);
+  app.put('(/v[0-9]+)/:resource/:id', editRecord);
 
   /**
    * DELETE routes
    **/
+  app.delete('(/v[0-9]+)/:parentResource/:parentRecordId/:resource/:recordId', deleteRecord);
   app.delete('(/v[0-9]+)/:resource/:recordId', deleteRecord);
 
   /**

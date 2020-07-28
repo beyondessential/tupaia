@@ -115,9 +115,7 @@ const EXPANSION_CONFIG = [
   {
     title: 'Answers',
     columns: ANSWER_COLUMNS,
-    endpoint: 'answers',
-    joinFrom: 'id',
-    joinTo: 'survey_response_id',
+    endpoint: 'surveyResponse/{id}/answers',
   },
 ];
 

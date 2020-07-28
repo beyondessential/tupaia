@@ -7,17 +7,18 @@ import { expect } from 'chai';
 import { flatten } from 'lodash';
 import sinon from 'sinon';
 
+import { generateTestId } from '@tupaia/database';
 import { SurveyResponseImporter } from '../../../routes/utilities';
 import * as SurveyResponse from '../../../routes/surveyResponse';
 
 const ENTITY_IDS = {
-  '1989': '5d8c4d7963af199371da0560',
-  '1993': '5d8c4d7963af199371da0561',
-  September: '5d8c4d7963af199371da0562',
-  April: '5d8c4d7963af199371da0573',
+  '1989': generateTestId(),
+  '1993': generateTestId(),
+  September: generateTestId(),
+  April: generateTestId(),
 };
-const SURVEY1 = { id: '5d8c4d7963af199371da0570', name: 'Year of birth' };
-const SURVEY2 = { id: '5d8c4d7963af199371da0571', name: 'Month of birth' };
+const SURVEY1 = { id: generateTestId(), name: 'Year of birth' };
+const SURVEY2 = { id: generateTestId(), name: 'Month of birth' };
 const SHEET1 = SURVEY1.name;
 const SHEET2 = SURVEY2.name;
 const ROWS_BY_SURVEY = {
@@ -32,12 +33,12 @@ const ROWS_BY_SURVEY = {
 };
 const RESULTS_BY_SURVEY_ID = {
   [SURVEY1.id]: [
-    { surveyResponseId: '5d8c4d7963af199371da0582', answerIds: ['5d8c4d7963af199371da0583'] },
-    { surveyResponseId: '5d8c4d7963af199371da0584', answerIds: ['5d8c4d7963af199371da0585'] },
+    { surveyResponseId: generateTestId(), answerIds: [generateTestId()] },
+    { surveyResponseId: generateTestId(), answerIds: [generateTestId()] },
   ],
   [SURVEY2.id]: [
-    { surveyResponseId: '5d8c4d7963af199371da0586', answerIds: ['5d8c4d7963af199371da0587'] },
-    { surveyResponseId: '5d8c4d7963af199371da0588', answerIds: ['5d8c4d7963af199371da0589'] },
+    { surveyResponseId: generateTestId(), answerIds: [generateTestId()] },
+    { surveyResponseId: generateTestId(), answerIds: [generateTestId()] },
   ],
 };
 const ALL_RESULTS = flatten(Object.values(RESULTS_BY_SURVEY_ID));

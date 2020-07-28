@@ -4,7 +4,7 @@
  */
 
 import generateId from 'uuid/v1';
-import { convertFilterToString } from '../utilities';
+import { convertSearchTermToFilter, makeSubstitutionsInString } from '../utilities';
 import {
   AUTOCOMPLETE_INPUT_CHANGE,
   AUTOCOMPLETE_RESULTS_CHANGE,
@@ -20,11 +20,14 @@ export const changeSelection = (reduxId, selection) => ({
   reduxId,
 });
 
-export const changeSearchTerm = (reduxId, endpoint, column, searchTerm) => async (
-  dispatch,
-  getState,
-  { api },
-) => {
+export const changeSearchTerm = (
+  reduxId,
+  endpoint,
+  labelColumn,
+  valueColumn,
+  searchTerm,
+  parentRecord,
+) => async (dispatch, getState, { api }) => {
   const fetchId = generateId();
   dispatch({
     type: AUTOCOMPLETE_INPUT_CHANGE,
@@ -33,8 +36,14 @@ export const changeSearchTerm = (reduxId, endpoint, column, searchTerm) => async
     fetchId,
   });
   try {
-    const filter = convertFilterToString({ [column]: searchTerm });
-    const response = await api.get(endpoint, { filter, pageSize: MAX_AUTOCOMPLETE_RESULTS });
+    const filter = convertSearchTermToFilter({ [labelColumn]: searchTerm });
+    const response = await api.get(makeSubstitutionsInString(endpoint, parentRecord), {
+      filter: JSON.stringify(filter),
+      pageSize: MAX_AUTOCOMPLETE_RESULTS,
+      sort: JSON.stringify([`${labelColumn} ASC`]),
+      columns: JSON.stringify([labelColumn, valueColumn]),
+      distinct: true,
+    });
     dispatch({
       type: AUTOCOMPLETE_RESULTS_CHANGE,
       results: response.body,

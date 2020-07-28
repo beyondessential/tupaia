@@ -9,9 +9,12 @@ import { CountEventsBuilder } from '/apiV1/dataBuilders/generic/count/countEvent
 export class CountEventsPerOrgUnitBuilder extends DataPerOrgUnitBuilder {
   getBaseBuilderClass = () => CountEventsBuilder;
 
-  async fetchResults() {
+  async fetchResultsAndPeriod() {
     const dataElementCodes = Object.keys(this.config.dataValues);
-    return this.fetchEvents({ dataElementCodes, useDeprecatedApi: false });
+    return {
+      results: await this.fetchEvents({ dataElementCodes, useDeprecatedApi: false }),
+      period: null,
+    };
   }
 }
 

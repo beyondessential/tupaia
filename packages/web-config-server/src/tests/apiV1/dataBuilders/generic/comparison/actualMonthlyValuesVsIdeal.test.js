@@ -2,8 +2,8 @@
  * Tupaia MediTrak
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
+
 import { expect } from 'chai';
-import { it, describe } from 'mocha';
 
 import { actualMonthlyValuesVsIdeal } from '/apiV1/dataBuilders/generic/comparison/actualMonthlyValuesVsIdeal';
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
@@ -157,59 +157,42 @@ const aggregatorMockup = {
 const dhisApiMockup = {};
 
 describe('actualMonthlyValuesVsIdeal', () => {
-  it('should have dates in order', async () => {
-    try {
-      const result = await actualMonthlyValuesVsIdeal(
-        {
-          dataBuilderConfig,
-          query,
-        },
-        aggregatorMockup,
-        dhisApiMockup,
-      );
-      expect(result.columns[0].key).to.equal('ideal');
-      expect(result.columns[1].key).to.equal(20181113);
-      expect(result.columns[2].key).to.equal(20171113);
-      expect(result.columns[3].key).to.equal(20131113);
-      return Promise.resolve();
-    } catch (e) {
-      return Promise.reject(e);
-    }
+  it('should have dates in desc order', async () => {
+    const result = await actualMonthlyValuesVsIdeal(
+      {
+        dataBuilderConfig,
+        query,
+      },
+      aggregatorMockup,
+      dhisApiMockup,
+    );
+    const keys = result.columns.map(({ key }) => key);
+    expect(keys).to.deep.equal(['ideal', 20181113, 20171113, 20131113]);
   });
 
   it('should have Sclerotherapy needle be 80 for 20131113', async () => {
-    try {
-      const result = await actualMonthlyValuesVsIdeal(
-        {
-          dataBuilderConfig,
-          query,
-        },
-        aggregatorMockup,
-        dhisApiMockup,
-      );
-      expect(result.rows[0]['20131113']).to.equal(80);
-      return Promise.resolve();
-    } catch (e) {
-      return Promise.reject(e);
-    }
+    const result = await actualMonthlyValuesVsIdeal(
+      {
+        dataBuilderConfig,
+        query,
+      },
+      aggregatorMockup,
+      dhisApiMockup,
+    );
+    expect(result.rows[0]['20131113']).to.equal(80);
   });
 
   it("should have balloon dilators be 'No data' for 20131113", async () => {
-    try {
-      const result = await actualMonthlyValuesVsIdeal(
-        {
-          dataBuilderConfig,
-          query,
-        },
-        aggregatorMockup,
-        dhisApiMockup,
-      );
-      expect(result.rows.find(row => row.dataElement === 'Balloon dilators')['20131113']).to.equal(
-        NO_DATA_AVAILABLE,
-      );
-      return Promise.resolve();
-    } catch (e) {
-      return Promise.reject(e);
-    }
+    const result = await actualMonthlyValuesVsIdeal(
+      {
+        dataBuilderConfig,
+        query,
+      },
+      aggregatorMockup,
+      dhisApiMockup,
+    );
+    expect(result.rows.find(row => row.dataElement === 'Balloon dilators')['20131113']).to.equal(
+      NO_DATA_AVAILABLE,
+    );
   });
 });

@@ -69,6 +69,18 @@ const addUserAccessHelper = (req, res, next) => {
     if (entity.country_code === 'TL') {
       return false;
     }
+
+    // project access rights are determined by their children
+    if (entity.isProject()) {
+      const project = await Project.findOne({ code: entity.code });
+      const projectChildren = await entity.getChildren(project.entity_hierarchy_id);
+      const accessByChildrenPromises = projectChildren.map(childCode =>
+        req.userHasAccess(childCode, permissionGroup),
+      );
+
+      return (await Promise.all(accessByChildrenPromises)).some(hasAccess => hasAccess);
+    }
+
     const ancestorCodes = await entity.getAncestorCodes();
 
     return accessPolicy.allowsSome([entity.code, ...ancestorCodes], permissionGroup);

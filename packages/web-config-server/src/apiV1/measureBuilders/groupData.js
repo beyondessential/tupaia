@@ -3,14 +3,14 @@
  * Copyright (c) 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { mapMeasureValuesToGroups } from './helpers';
+import { mapMeasureValuesToGroups, mapMeasureDataToCountries } from './helpers';
 import { getMeasureBuilder } from './getMeasureBuilder';
 
 export const groupData = async (aggregator, dhisApi, query, measureBuilderConfig = {}, entity) => {
-  const { measureBuilder: builderName } = measureBuilderConfig;
+  const { measureBuilder: builderName, mapDataToCountries } = measureBuilderConfig;
   const { dataElementCode } = query;
 
-  const ungroupedData = await getMeasureBuilder(builderName)(
+  const { data: ungroupedData, period } = await getMeasureBuilder(builderName)(
     aggregator,
     dhisApi,
     query,
@@ -21,5 +21,10 @@ export const groupData = async (aggregator, dhisApi, query, measureBuilderConfig
   const groupedData = ungroupedData.map(dataElement =>
     mapMeasureValuesToGroups(dataElement, dataElementCode, measureBuilderConfig.groups),
   );
-  return groupedData;
+
+  const returnData = mapDataToCountries
+    ? await mapMeasureDataToCountries(groupedData)
+    : groupedData;
+
+  return { data: returnData, period };
 };
