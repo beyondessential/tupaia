@@ -13,11 +13,13 @@ export default class extends RouteHandler {
     // based on organisationLevel, organisationUnit, userGroups and ancestors
     // return all matching userGroup and dashboard group name configs
     // (can have same userGroup in different dashboard group names)
+    const hierarchyId = await this.fetchHierarchyId();
     const dashboardGroups = await DashboardGroup.getDashboardGroups(
       userGroups,
       organisationLevel,
       entity,
       query.projectCode,
+      hierarchyId,
     );
 
     // Aggregate dashboardGroups into api response format

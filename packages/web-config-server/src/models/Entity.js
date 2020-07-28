@@ -56,9 +56,6 @@ const ORG_UNIT_TYPE_LEVELS = {
   [VILLAGE]: 6,
 };
 
-const constructTypesCriteria = (types, prefix) =>
-  types.length > 0 ? `${prefix} type IN (${types.map(() => '?').join(',')})` : '';
-
 export class Entity extends BaseModel {
   static databaseType = TYPES.ENTITY;
 
@@ -76,9 +73,16 @@ export class Entity extends BaseModel {
     'attributes',
   ];
 
+  // a set of basic fields so that entities used for search etc. can be as light as possible
+  static minimalFields = ['id', 'code', 'type', 'parent_id', 'country_code', 'name'];
+
   static geoFields = ['point', 'region', 'bounds'];
 
   static getColumnSpecs = tableAlias => {
+    return this.buildColumnSpecs(tableAlias, false);
+  };
+
+  static buildColumnSpecs = tableAlias => {
     const tableAliasPrefix = tableAlias ? `${tableAlias}.` : '';
     return Entity.fields.map(field => {
       if (Entity.geoFields.includes(field)) {
@@ -123,45 +127,13 @@ export class Entity extends BaseModel {
   }
 
   /**
-   * Fetch all ancestors of a given entity, by default excluding 'World'
-   * @param {string} id The id of the entity to fetch ancestors of
-   * @param {boolean} [includeWorld=false] Optionally force the top level 'World' to be included
-   */
-  static async getAllAncestors(id, includeWorld = false, types = []) {
-    return Entity.database.executeSql(
-      `
-      WITH RECURSIVE children AS (
-        SELECT id, code, "name", parent_id, type, country_code, 0 AS generation
-          FROM entity
-          WHERE id = ?
-
-        UNION ALL
-        SELECT p.id, p.code, p."name", p.parent_id, p.type, p.country_code, c.generation + 1
-          FROM children c
-          JOIN entity p ON p.id = c.parent_id
-          ${includeWorld ? '' : `WHERE p.code <> 'World'`}
-
-      )
-      SELECT *
-        FROM children
-        ${constructTypesCriteria(types, 'WHERE')}
-        ORDER BY generation DESC;
-    `,
-      [id, ...types],
-    );
-  }
-
-  /**
    * Fetch all ancestors of the current entity, by default excluding 'World'
    * @param {string} id The id of the entity to fetch ancestors of
    * @param {boolean} [includeWorld=false] Optionally force the top level 'World' to be included
    */
-  async getAllAncestors(includeWorld = false) {
-    const cacheKey = `ancestors${includeWorld ? 'IncludingWorld' : 'ExcludingWorld'}`;
-    if (!this.cache[cacheKey]) {
-      this.cache[cacheKey] = await Entity.getAllAncestors(this.id, includeWorld);
-    }
-    return this.cache[cacheKey];
+  async getAncestors(includeWorld = false, hierarchyId) {
+    const ancestors = await Entity.hierarchyBuilder.getAncestors(this.id, hierarchyId);
+    return includeWorld ? ancestors : ancestors.filter(ancestor => ancestor.type !== WORLD);
   }
 
   /**
@@ -169,15 +141,14 @@ export class Entity extends BaseModel {
    * @param {string} id The id of the entity to fetch ancestor codes of
    * @param {boolean} [includeWorld=false] Optionally force the top level 'World' to be included
    */
-  async getAncestorCodes(includeWorld = false) {
-    const ancestors = await this.getAllAncestors(includeWorld);
+  async getAncestorCodes(includeWorld = false, hierarchyId) {
+    const ancestors = await this.getAncestors(includeWorld, hierarchyId);
     return ancestors.map(({ code }) => code);
   }
 
-  async getCountry() {
-    if (this.type === COUNTRY) return this;
-    const ancestors = await Entity.getAllAncestors(this.id, false, [COUNTRY]);
-    return ancestors.length > 0 ? ancestors[0] : null;
+  async getCountry(hierarchyId) {
+    if (this.isCountry()) return this;
+    return this.getAncestorOfType(COUNTRY, hierarchyId);
   }
 
   async getChildren(hierarchyId) {
@@ -193,8 +164,9 @@ export class Entity extends BaseModel {
     return entity ? entity.getDescendantsOfType(ENTITY_TYPES.FACILITY) : [];
   }
 
-  async getAncestorOfType(entityType) {
-    const ancestors = await this.getAllAncestors();
+  async getAncestorOfType(entityType, hierarchyId) {
+    if (this.type === entityType) return [this];
+    const ancestors = await this.getAncestors(hierarchyId);
     return ancestors.find(ancestor => ancestor.type === entityType);
   }
 
@@ -222,22 +194,22 @@ export class Entity extends BaseModel {
 
   static async findOne(conditions, loadOptions, queryOptions) {
     return super.findOne(conditions, loadOptions, {
-      ...queryOptions,
       columns: Entity.getColumnSpecs(),
+      ...queryOptions, // columns can be overridden by client
     });
   }
 
   static async find(conditions, loadOptions, queryOptions) {
     return super.find(conditions, loadOptions, {
-      ...queryOptions,
       columns: Entity.getColumnSpecs(),
+      ...queryOptions, // columns can be overridden by client
     });
   }
 
   static async findById(id, loadOptions, queryOptions) {
     return super.findById(id, loadOptions, {
-      ...queryOptions,
       columns: Entity.getColumnSpecs(),
+      ...queryOptions, // columns can be overridden by client
     });
   }
 
