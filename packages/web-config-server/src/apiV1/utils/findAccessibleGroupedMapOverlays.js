@@ -53,9 +53,7 @@ const findNestedGroupedMapOverlays = async (
     for (let i = 0; i < mapOverlayGroupRelations.length; i++) {
       const mapOverlayGroupRelation = mapOverlayGroupRelations[i];
       const name = mapOverlayGroupIdToName[mapOverlayGroupRelation.child_id];
-      const childMapOverlayGroupRelations = await models.mapOverlayGroupRelation.findChildRelations(
-        mapOverlayGroupRelation.child_id,
-      );
+      const childMapOverlayGroupRelations = await mapOverlayGroupRelation.findChildRelations();
       const children = await findNestedGroupedMapOverlays(
         models,
         childMapOverlayGroupRelations,
