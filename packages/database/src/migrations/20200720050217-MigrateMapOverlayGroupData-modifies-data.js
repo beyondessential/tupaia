@@ -18,6 +18,16 @@ exports.setup = function(options, seedLink) {
 
 const selectAllMapOverlays = async db => db.runSql('SELECT * FROM "mapOverlay";');
 
+const generateMapOverlayGroupCode = groupName => {
+  const splittedGroupNames = groupName
+    .replace(/[^\w\s]/gi, '') //Retain only alphanumeric characters, underscores and spaces.
+    .trim()
+    .split(' ');
+
+  //remove empty elements
+  return splittedGroupNames.filter(name => name !== '').join('_');
+};
+
 exports.up = async function(db) {
   const mapOverlays = await selectAllMapOverlays(db);
 
@@ -33,7 +43,7 @@ exports.up = async function(db) {
       const mapOverlayGroup = {
         id: mapOverlayGroupId,
         name: groupName,
-        code: groupName.split(' ').join('_'),
+        code: generateMapOverlayGroupCode(groupName),
       };
 
       await insertObject(db, 'map_overlay_group', mapOverlayGroup);
