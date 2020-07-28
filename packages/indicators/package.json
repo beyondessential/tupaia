@@ -14,9 +14,5 @@
   "dependencies": {
     "@tupaia/aggregator": "1.0.0",
     "@tupaia/utils": "1.0.0"
-  },
-  "devDependencies": {
-    "@babel/preset-typescript": "^7.10.1",
-    "typescript": "^3.9.3"
   }
 }
