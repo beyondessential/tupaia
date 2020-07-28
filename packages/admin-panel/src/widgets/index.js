@@ -4,7 +4,7 @@
  */
 
 export { AsyncModal } from './AsyncModal';
-export { ConfirmModal } from './ConfirmModal';
+export { ConfirmDeleteModal } from './ConfirmDeleteModal';
 export { Icon } from './Icon';
 export { IconButton } from './IconButton';
 export { InputField } from './InputField';
