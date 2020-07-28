@@ -25,7 +25,7 @@ export class MapOverlayGroupRelationModel extends DatabaseModel {
     });
   }
 
-  async findChildRelations() {
-    return this.find({ map_overlay_group_id: this.child_id });
+  async findChildRelations(childId) {
+    return this.find({ map_overlay_group_id: childId });
   }
 }
