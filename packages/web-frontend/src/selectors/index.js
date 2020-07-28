@@ -34,6 +34,7 @@ export {
   selectCurrentDashboardGroupCode,
   selectCurrentExpandedReportCode,
   selectCurrentDashboardKey,
+  selectDataForEnlargedDialog,
 } from './dashboardSelectors';
 
 export {

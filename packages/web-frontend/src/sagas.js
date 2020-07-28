@@ -18,6 +18,7 @@ import {
   selectCurrentOverlayCode,
   selectIsProject,
   selectMeasureBarItemById,
+  selectDataForEnlargedDialog,
 } from './selectors';
 import {
   ATTEMPT_CHANGE_PASSWORD,
@@ -558,7 +559,7 @@ function* fetchViewData(parameters, errorHandler) {
     dashboardGroupId,
     viewId,
     drillDownLevel,
-    isExpanded,
+    isExpanded, // TODO: This isn't really needed
     extraUrlParameters,
   } = parameters;
   const urlParameters = {
@@ -964,8 +965,11 @@ function* watchGoHomeAndResetToExplore() {
 
 function* fetchEnlargedDialogViewContentForPeriod(action) {
   const state = yield select();
+  console.log('STATEEEEEEEEEEEEEEE', state);
   const { viewContent, infoViewKey } = state.enlargedDialog;
-  const { viewId, organisationUnitCode, dashboardGroupId } = viewContent;
+  console.log('STATEEEEEEEEEEEEEEE1', state);
+  const { viewId, organisationUnitCode, dashboardGroupId } = selectDataForEnlargedDialog(state);
+  console.log('STATEEEEEEEEEEEEEEE2', state);
 
   const parameters = {
     ...action,
@@ -976,7 +980,9 @@ function* fetchEnlargedDialogViewContentForPeriod(action) {
     infoViewKey,
   };
 
+  console.log('asdfkljhadswf', parameters);
   const viewData = yield call(fetchViewData, parameters, updateEnlargedDialogError);
+  console.log('aaaaaaaaaaaaaaaaaaaaaaaaa', viewData);
   if (viewData) {
     yield put(updateEnlargedDialog(viewData));
   }

@@ -98,6 +98,7 @@ export default class extends DataAggregatingRouteHandler {
   }
 
   translateViewJson(viewJson) {
+    // TODO: This should 100% be frontend
     // if a dashboard is expanded, we remove any placeholder it may normally display
     return this.query.isExpanded === 'true' ? { ...viewJson, placeholder: undefined } : viewJson;
   }

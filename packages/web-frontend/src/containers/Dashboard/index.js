@@ -270,6 +270,7 @@ const mapStateToProps = state => {
   } else if (currentOrganisationUnit.location && currentOrganisationUnit.location.bounds) {
     currentOrganisationUnitBounds = currentOrganisationUnit.location.bounds;
   }
+  console.log(dashboardConfig);
   return {
     currentOrganisationUnit,
     currentOrganisationUnitBounds,

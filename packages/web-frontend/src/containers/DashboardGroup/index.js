@@ -69,6 +69,7 @@ export default class DashboardGroup extends Component {
         />
       );
     });
+    console.log({ tab, subTabs, allViews, uniqueViews, infoViews });
     return infoViews;
   }
 

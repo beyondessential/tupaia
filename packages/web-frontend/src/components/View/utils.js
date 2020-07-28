@@ -47,8 +47,10 @@ export const getViewWrapper = ({ type, viewType }) => {
       return MatrixWrapper;
     default:
     case 'view': {
+      console.log(type, viewType);
       const ViewWrapper = VIEW_TYPES[viewType];
       if (!ViewWrapper) {
+        console.log('type, viewType');
         return (
           <div style={VIEW_STYLES.newChartComing}>
             <h2 style={VIEW_STYLES.title}>New dashboard element coming soon</h2>

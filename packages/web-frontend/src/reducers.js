@@ -91,8 +91,8 @@ import {
   FETCH_CHART_EXPORT_SUCCESS,
   FETCH_CHART_EXPORT_ERROR,
   SELECT_CHART_EXPORT_FORMAT,
-  OPEN_ENLARGED_DIALOG,
-  CLOSE_ENLARGED_DIALOG,
+  ON_SET_ENLARGED_REPORT,
+  CLOSE_ENLARGED_REPORT,
   UPDATE_ENLARGED_DIALOG,
   CLOSE_DRILL_DOWN,
   ATTEMPT_DRILL_DOWN,
@@ -454,8 +454,6 @@ function dashboard(
   switch (action.type) {
     //case CHANGE_DASHBOARD_GROUP:
     //return { ...state, currentDashboardKey: action.name };
-    case FETCH_INFO_VIEW_DATA:
-      return state;
     case FETCH_INFO_VIEW_DATA_SUCCESS: {
       const { infoViewKey, response } = action;
       const viewResponses = { ...state.viewResponses };
@@ -484,6 +482,7 @@ function dashboard(
       return { ...state, isGroupSelectExpanded: !state.isGroupSelectExpanded };
     case SET_MOBILE_DASHBOARD_EXPAND:
       return { ...state, isMobileDashboardExpanded: action.shouldExpand };
+    case FETCH_INFO_VIEW_DATA:
     default:
       return state;
   }
@@ -702,7 +701,7 @@ function enlargedDialog(
   action,
 ) {
   switch (action.type) {
-    case OPEN_ENLARGED_DIALOG:
+    case ON_SET_ENLARGED_REPORT:
       return {
         ...state,
         isVisible: true,
@@ -715,7 +714,7 @@ function enlargedDialog(
         endDate: null,
       };
 
-    case CLOSE_ENLARGED_DIALOG:
+    case CLOSE_ENLARGED_REPORT:
       return {
         ...state,
         isVisible: false,
@@ -794,7 +793,7 @@ function drillDown(
         currentLevel: action.drillDownLevel,
       };
 
-    case CLOSE_ENLARGED_DIALOG:
+    case CLOSE_ENLARGED_REPORT:
     case CLOSE_DRILL_DOWN:
       return {
         ...state,

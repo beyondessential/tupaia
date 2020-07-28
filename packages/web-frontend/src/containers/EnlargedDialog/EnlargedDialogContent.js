@@ -108,7 +108,7 @@ export class EnlargedDialogContent extends PureComponent {
       viewProps.onSetDateRange = this.onSetDateRange;
       viewProps.onChangeConfig = this.onChangeConfig;
     }
-
+    console.log(ViewWrapper, this.props);
     return <ViewWrapper {...viewProps} />;
   }
 
@@ -192,7 +192,7 @@ export class EnlargedDialogContent extends PureComponent {
       ...styles.body,
       padding: isMatrix ? 0 : 20,
     };
-
+    console.log({ props: this.props });
     return (
       <div data-testid="enlarged-dialog">
         {this.renderTitle()}

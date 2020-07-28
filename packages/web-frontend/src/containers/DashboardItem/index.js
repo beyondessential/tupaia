@@ -67,6 +67,7 @@ export class DashboardItem extends Component {
     if (!viewContent) {
       fetchContent(organisationUnitCode, dashboardGroupId, viewId, infoViewKey, project);
     } else if (isEmpty(viewContent.data)) {
+      console.log('fetching', this.props);
       fetchContent(organisationUnitCode, dashboardGroupId, viewId, infoViewKey, project);
     }
   }

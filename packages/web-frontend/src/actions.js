@@ -116,8 +116,9 @@ export const ATTEMPT_CHART_EXPORT = 'ATTEMPT_CHART_EXPORT';
 export const FETCH_CHART_EXPORT_SUCCESS = 'FETCH_SIGNUP_SUCCESS';
 export const FETCH_CHART_EXPORT_ERROR = 'FETCH_CHART_EXPORT_ERROR';
 export const SELECT_CHART_EXPORT_FORMAT = 'SELECT_CHART_EXPORT_FORMAT';
-export const OPEN_ENLARGED_DIALOG = 'OPEN_ENLARGED_DIALOG';
-export const CLOSE_ENLARGED_DIALOG = 'CLOSE_ENLARGED_DIALOG';
+export const SET_ENLARGED_REPORT = 'SET_ENLARGED_REPORT';
+export const ON_SET_ENLARGED_REPORT = 'ON_SET_ENLARGED_REPORT';
+export const CLOSE_ENLARGED_REPORT = 'CLOSE_ENLARGED_REPORT';
 export const SET_ENLARGED_DIALOG_DATE_RANGE = 'SET_ENLARGED_DIALOG_DATE_RANGE';
 export const UPDATE_ENLARGED_DIALOG = 'UPDATE_ENLARGED_DIALOG';
 export const UPDATE_ENLARGED_DIALOG_ERROR = 'UPDATE_ENLARGED_DIALOG_ERROR';
@@ -1104,13 +1105,24 @@ export function selectChartExportFormat(format) {
 
 export function closeEnlargedDialog() {
   return {
-    type: CLOSE_ENLARGED_DIALOG,
+    type: CLOSE_ENLARGED_REPORT,
   };
 }
 
+// Only changes id in url
 export function openEnlargedDialog(viewContent, organisationUnitName, infoViewKey) {
   return {
-    type: OPEN_ENLARGED_DIALOG,
+    type: SET_ENLARGED_REPORT,
+    viewContent,
+    organisationUnitName,
+    infoViewKey,
+  };
+}
+
+// Only changes id in url
+export function onOpenEnlargedDialog(viewContent, organisationUnitName, infoViewKey) {
+  return {
+    type: ON_SET_ENLARGED_REPORT,
     viewContent,
     organisationUnitName,
     infoViewKey,
@@ -1198,5 +1210,5 @@ export function updateEnlargedDialogError(errorMessage) {
 }
 
 export function doUpdateUrl(location) {
-  return { type: 'UPDATE_URL', location };
+  return { type: UPDATE_URL, location };
 }

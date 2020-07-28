@@ -21,8 +21,8 @@ import {
   SET_PROJECT,
   SET_ORG_UNIT,
   CHANGE_DASHBOARD_GROUP,
-  OPEN_ENLARGED_DIALOG,
-  CLOSE_ENLARGED_DIALOG,
+  SET_ENLARGED_REPORT,
+  CLOSE_ENLARGED_REPORT,
   SET_MEASURE,
   CLEAR_MEASURE,
   GO_HOME,
@@ -30,6 +30,8 @@ import {
   setOverlayComponent,
   doUpdateUrl,
   onSetMeasure,
+  onOpenEnlargedDialog,
+  setEnlargedDashboardDateRange,
 } from '../actions';
 
 import { onSetProject } from '../projects/actions';
@@ -72,6 +74,11 @@ export const reactToInitialState = ({ dispatch }) => {
         otherComponents[URL_COMPONENTS.ORG_UNIT],
       ),
     );
+
+  if (otherComponents[URL_COMPONENTS.REPORT]) {
+    dispatch(onOpenEnlargedDialog(null, null, otherComponents[URL_COMPONENTS.REPORT]));
+    //dispatch(setEnlargedDashboardDateRange());
+  }
 };
 
 export const historyMiddleware = state => next => action => {
@@ -105,11 +112,14 @@ export const historyMiddleware = state => next => action => {
       break;
 
     // Actions that modify search params
-    case OPEN_ENLARGED_DIALOG:
+    case SET_ENLARGED_REPORT:
       newLocation = setUrlComponent(URL_COMPONENTS.REPORT, action.viewContent.viewId, newLocation);
       dispatch(doUpdateUrl(newLocation));
+      dispatch(
+        onOpenEnlargedDialog(action.viewContent, action.organisationUnitName, action.viewId),
+      );
       break;
-    case CLOSE_ENLARGED_DIALOG:
+    case CLOSE_ENLARGED_REPORT:
       newLocation = setUrlComponent(URL_COMPONENTS.REPORT, null, newLocation);
       dispatch(doUpdateUrl(newLocation));
       break;
