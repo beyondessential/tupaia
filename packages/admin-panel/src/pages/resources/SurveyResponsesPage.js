@@ -31,7 +31,8 @@ const date = {
 const dateOfData = {
   Header: 'Date of Data',
   source: 'submission_time',
-  accessor: row => utcMoment(row.submission_time || row.end_time).format('ddd MMM YYYY HH:mm:ss Z'),
+  accessor: row =>
+    utcMoment(row.submission_time || row.end_time).format('ddd MMM DD YYYY HH:mm:ss Z'),
   filterable: false,
   editConfig: {
     type: 'date',
