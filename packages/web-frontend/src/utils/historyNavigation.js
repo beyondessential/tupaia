@@ -35,6 +35,7 @@ import {
 
 import { gaPageView } from '.';
 import { selectProject } from '../projects/actions';
+import { selectCurrentMeasure } from '../selectors';
 
 const DEFAULT_PROJECT = 'explore';
 const PASSWORD_RESET_PREFIX = 'reset-password';
@@ -95,7 +96,7 @@ export function decodeUrl(pathname, search) {
 
 export function createUrlForAppState(state) {
   const dashboardId = state.dashboard.currentDashboardKey;
-  const measureId = state.measureBar.currentMeasure.measureId;
+  const measureId = selectCurrentMeasure(state).measureId;
 
   const { currentOrganisationUnitCode } = state.global;
   const reportId = state.enlargedDialog.viewContent.viewId;

@@ -1,10 +1,8 @@
 import { createSelector } from 'reselect';
 import createCachedSelector from 're-reselect';
 
-import { getUrlComponent, URL_COMPONENTS } from '../historyNavigation';
-
 import { selectCurrentProjectCode } from './projectSelectors';
-import { getOrgUnitFromCountry, selectLocation, safeGet } from './utils';
+import { getOrgUnitFromCountry, safeGet } from './utils';
 
 /**
  * Private caches
@@ -92,9 +90,7 @@ const ancestorsCache = createCachedSelector(
   },
 )((_, code, level) => `${code}_${level}`);
 
-export const selectCurrentOrgUnitCode = createSelector([selectLocation], location =>
-  getUrlComponent(URL_COMPONENTS.ORG_UNIT, location),
-);
+export const selectCurrentOrgUnitCode = state => state.global.currentOrganisationUnitCode;
 
 const selectOrgUnitChildrenFromCache = (country, parentCode) =>
   safeGet(orgUnitChildrenCache, [country, parentCode]);

@@ -34,7 +34,6 @@ export {
   selectCurrentDashboardGroupCode,
   selectCurrentExpandedReportCode,
   selectCurrentDashboardKey,
-  selectDataForEnlargedDialog,
 } from './dashboardSelectors';
 
 export {
@@ -45,5 +44,5 @@ export {
   selectRenderedMeasuresWithDisplayInfo,
   selectRadiusScaleFactor,
   selectMeasureBarItemById,
-  selectCurrentOverlayCode,
+  selectCurrentMeasureId,
 } from './measureSelectors';

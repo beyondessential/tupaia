@@ -15,7 +15,7 @@ import {
   selectOrgUnitCountry,
   selectCurrentProjectCode,
   selectCurrentProject,
-  selectCurrentOverlayCode,
+  selectCurrentMeasureId,
   selectIsProject,
   selectMeasureBarItemById,
 } from './selectors';
@@ -736,7 +736,7 @@ function* fetchCurrentMeasureInfo() {
   const state = yield select();
   const currentOrganisationUnitCode = selectCurrentOrgUnitCode(state);
   const { measureHierarchy } = state.measureBar;
-  const selectedMeasureId = selectCurrentOverlayCode(state);
+  const selectedMeasureId = selectCurrentMeasureId(state);
 
   if (currentOrganisationUnitCode) {
     const isHeirarchyPopulated = Object.keys(measureHierarchy).length;

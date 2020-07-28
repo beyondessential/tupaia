@@ -8,9 +8,7 @@ import {
   calculateRadiusScaleFactor,
 } from '../utils/measures';
 
-import { getUrlComponent, URL_COMPONENTS } from '../historyNavigation';
-
-import { selectLocation, safeGet, getOrgUnitFromCountry } from './utils';
+import { safeGet, getOrgUnitFromCountry } from './utils';
 import {
   selectCurrentOrgUnit,
   selectCurrentOrgUnitCode,
@@ -39,20 +37,17 @@ const displayInfoCache = createCachedSelector(
   },
 )((_, __, ___, organisationUnitCode) => organisationUnitCode);
 
-const selectOrgUnitFromMeasureData = createSelector(
-  [state => state.map.measureInfo.measureData, (_, orgUnit) => orgUnit.organisationUnitCode],
-  (measureData, code) => measureData.find(val => val.organisationUnitCode === code),
-);
+const getOrgUnitFromMeasureData = (measureData, code) =>
+  measureData.find(val => val.organisationUnitCode === code);
 
-// TODO: fix
-export const selectDisplayInfo = args => safeGet(displayInfoCache, args);
+// TODO: Refactor to be more general
+const selectDisplayInfo = (measureOptions, hiddenMeasures, measureData, organisationUnitCode) =>
+  safeGet(displayInfoCache, [measureOptions, hiddenMeasures, measureData, organisationUnitCode]);
 
-export const selectCurrentOverlayCode = createSelector([selectLocation], location =>
-  getUrlComponent(URL_COMPONENTS.MEASURE, location),
-);
+export const selectCurrentMeasureId = state => state.measureBar.selectedMeasureId;
 
 export const selectCurrentMeasure = createSelector(
-  [selectCurrentOverlayCode, state => state.measureBar.measureHierarchy],
+  [selectCurrentMeasureId, state => state.measureBar.measureHierarchy],
   (currentMeasureId, measureHierarchy) =>
     getMeasureFromHierarchy(measureHierarchy, currentMeasureId) || {},
 );
@@ -115,14 +110,13 @@ export const selectAllMeasuresWithDisplayInfo = createSelector(
       return listOfMeasureLevels.includes(orgUnit.type);
     });
     if (currentCountry === projectCode) allOrgUnitsOfLevel = projectCountries;
-
     return allOrgUnitsOfLevel.map(orgUnit =>
-      selectDisplayInfo([
+      selectDisplayInfo(
         measureOptions,
         hiddenMeasures,
-        measureData.find(val => val.organisationUnitCode === orgUnit.organisationUnitCode),
+        getOrgUnitFromMeasureData(measureData, orgUnit.organisationUnitCode),
         orgUnit.organisationUnitCode,
-      ]),
+      ),
     );
   },
 );

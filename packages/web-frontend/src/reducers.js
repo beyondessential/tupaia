@@ -526,7 +526,6 @@ function measureBar(
   state = {
     isExpanded: false,
     selectedMeasureId: null,
-    currentMeasure: {},
     measureHierarchy: {},
     currentMeasureOrganisationUnitCode: null,
     error: null,
@@ -537,12 +536,11 @@ function measureBar(
     case CLEAR_MEASURE_HIERARCHY:
       return { ...state, measureHierarchy: {} };
     case CLEAR_MEASURE:
-      return { ...state, currentMeasure: {}, selectedMeasureId: null };
+      return { ...state, selectedMeasureId: null };
     case CHANGE_MEASURE:
       return {
         ...state,
         hiddenMeasures: {},
-        currentMeasure: getMeasureFromHierarchy(state.measureHierarchy, action.measureId) || {},
         selectedMeasureId: action.measureId,
         currentMeasureOrganisationUnitCode: action.organisationUnitCode,
       };
@@ -552,10 +550,6 @@ function measureBar(
       return {
         ...state,
         measureHierarchy: action.response.measures,
-        // If a new set of measures has come through, refresh the currentMeasure using the currently
-        // selected measure id.
-        currentMeasure:
-          getMeasureFromHierarchy(action.response.measures, state.selectedMeasureId) || {},
         error: null,
       };
     case FETCH_MEASURES_ERROR:
