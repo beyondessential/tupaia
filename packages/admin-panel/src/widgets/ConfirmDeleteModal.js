@@ -37,8 +37,8 @@ export const ConfirmDeleteModal = ({ message, onConfirm, onCancel }) => (
     <DialogContent>
       <Container>
         <Icon />
-        <Heading variant="h6">Are you sure you want to delete this record?</Heading>
-        <Typography>Once deleted this can&apos;t be undone</Typography>
+        <Heading variant="h6">{message}</Heading>
+        <Typography>Once deleted this can&apos;t be undone.</Typography>
       </Container>
     </DialogContent>
     <DialogFooter>
