@@ -9,12 +9,16 @@ import { LightOutlinedButton, TabsToolbar } from '@tupaia/ui-components';
 import { Navbar, Footer } from './widgets';
 import { ROUTES } from './routes';
 import { Header, HeaderButtons, Title } from './pages/Page';
+import { PrivateRoute, LoginView } from './authentication';
 
 export const App = () => (
   <Router>
     <Switch>
+      <Route path="/login" exact>
+        <LoginView />
+      </Route>
       {ROUTES.map(route => (
-        <Route key={route.to} path={route.to}>
+        <PrivateRoute key={route.to} path={route.to}>
           <Navbar links={ROUTES} />
           <Header>
             <Title>{route.label}</Title>
@@ -31,7 +35,7 @@ export const App = () => (
             ))}
             <Redirect to={route.to} />
           </Switch>
-        </Route>
+        </PrivateRoute>
       ))}
       <Redirect to="/surveys" />
     </Switch>

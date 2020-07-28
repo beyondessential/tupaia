@@ -4,7 +4,8 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { HomeButton, Button, NavBar as BaseNavBar } from '@tupaia/ui-components';
+import { HomeButton, NavBar as BaseNavBar } from '@tupaia/ui-components';
+import { ProfileButton } from '../authentication';
 
 const Home = () => <HomeButton source="/admin-panel-logo-white.svg" />;
 
@@ -16,7 +17,7 @@ const isTabActive = (match, location) => {
 };
 
 export const Navbar = ({ links }) => (
-  <BaseNavBar HomeButton={Home} links={links} Profile={Button} isTabActive={isTabActive} />
+  <BaseNavBar HomeButton={Home} links={links} Profile={ProfileButton} isTabActive={isTabActive} />
 );
 
 Navbar.propTypes = {
