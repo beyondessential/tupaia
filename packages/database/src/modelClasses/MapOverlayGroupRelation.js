@@ -16,12 +16,16 @@ export class MapOverlayGroupRelationModel extends DatabaseModel {
     return MapOverlayGroupRelationType;
   }
 
-  async findChildRelations(mapOverlayGroupIds) {
+  async findGroupRelations(mapOverlayGroupIds) {
     return this.find({
       map_overlay_group_id: {
         comparator: 'IN',
         comparisonValue: mapOverlayGroupIds,
       },
     });
+  }
+
+  async findChildRelations() {
+    return this.find({ map_overlay_group_id: this.child_id });
   }
 }
