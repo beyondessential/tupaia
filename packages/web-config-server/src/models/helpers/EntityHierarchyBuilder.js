@@ -42,7 +42,11 @@ export class EntityHierarchyBuilder {
   async getAncestors(entityId, hierarchyId) {
     const cacheKey = this.getCacheKey(entityId, hierarchyId);
     if (!this.cachedAncestorPromises[cacheKey]) {
-      const entity = await this.models.entity.findOne({ id: entityId }, { thinObject: true });
+      const entity = await this.models.entity.findOne(
+        { id: entityId },
+        {},
+        { columns: this.models.entity.minimalFields },
+      );
       this.cachedAncestorPromises[cacheKey] = this.recursivelyFetchAncestors(entity, hierarchyId);
     }
     return this.cachedAncestorPromises[cacheKey];
@@ -109,21 +113,26 @@ export class EntityHierarchyBuilder {
   getPreviousGeneration = async (child, hierarchyId) => {
     // get any matching hierarchy specific relationships leading out of this child
     const parentRelation = hierarchyId
-      ? await this.models.entityRelation.findOne(
-          {
-            child_id: child.id,
-            entity_hierarchy_id: hierarchyId,
-          },
-          { thinObject: true },
-        )
+      ? await this.models.entityRelation.findOne({
+          child_id: child.id,
+          entity_hierarchy_id: hierarchyId,
+        })
       : null;
     if (parentRelation) {
-      return this.models.entity.findOne({ id: parentRelation.parent_id }, { thinObject: true });
+      return this.models.entity.findOne(
+        { id: parentRelation.parent_id },
+        {},
+        { columns: this.models.entity.minimalFields },
+      );
     }
 
     // no parent via specific hierarchy, follow canonical relationship
     return child.parent_id
-      ? this.models.entity.findOne({ id: child.parent_id }, { thinObject: true })
+      ? this.models.entity.findOne(
+          { id: child.parent_id },
+          {},
+          { columns: this.models.entity.minimalFields },
+        )
       : null;
   };
 

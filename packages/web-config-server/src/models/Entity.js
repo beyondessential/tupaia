@@ -73,7 +73,8 @@ export class Entity extends BaseModel {
     'attributes',
   ];
 
-  static thinFields = ['id', 'code', 'type', 'parent_id', 'country_code', 'name'];
+  // a set of basic fields so that entities used for search etc. can be as light as possible
+  static minimalFields = ['id', 'code', 'type', 'parent_id', 'country_code', 'name'];
 
   static geoFields = ['point', 'region', 'bounds'];
 
@@ -81,14 +82,9 @@ export class Entity extends BaseModel {
     return this.buildColumnSpecs(tableAlias, false);
   };
 
-  static getThinColumnSpecs = tableAlias => {
-    return this.buildColumnSpecs(tableAlias, true);
-  };
-
-  static buildColumnSpecs = (tableAlias, thinFields = false) => {
+  static buildColumnSpecs = tableAlias => {
     const tableAliasPrefix = tableAlias ? `${tableAlias}.` : '';
-    const fields = thinFields ? Entity.thinFields : Entity.fields;
-    return fields.map(field => {
+    return Entity.fields.map(field => {
       if (Entity.geoFields.includes(field)) {
         return { [field]: `ST_AsGeoJSON(${tableAliasPrefix}${field})` };
       }
@@ -197,26 +193,23 @@ export class Entity extends BaseModel {
   }
 
   static async findOne(conditions, loadOptions, queryOptions) {
-    const isThinObject = loadOptions && loadOptions.thinObject;
     return super.findOne(conditions, loadOptions, {
-      ...queryOptions,
-      columns: isThinObject ? Entity.getThinColumnSpecs() : Entity.getColumnSpecs(),
+      columns: Entity.getColumnSpecs(),
+      ...queryOptions, // columns can be overridden by client
     });
   }
 
   static async find(conditions, loadOptions, queryOptions) {
-    const isThinObject = loadOptions && loadOptions.thinObject;
     return super.find(conditions, loadOptions, {
-      ...queryOptions,
-      columns: isThinObject ? Entity.getThinColumnSpecs() : Entity.getColumnSpecs(),
+      columns: Entity.getColumnSpecs(),
+      ...queryOptions, // columns can be overridden by client
     });
   }
 
   static async findById(id, loadOptions, queryOptions) {
-    const isThinObject = loadOptions && loadOptions.thinObject;
     return super.findById(id, loadOptions, {
-      ...queryOptions,
-      columns: isThinObject ? Entity.getThinColumnSpecs() : Entity.getColumnSpecs(),
+      columns: Entity.getColumnSpecs(),
+      ...queryOptions, // columns can be overridden by client
     });
   }
 
