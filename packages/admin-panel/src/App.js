@@ -9,8 +9,7 @@ import { LightOutlinedButton, TabsToolbar } from '@tupaia/ui-components';
 import { Navbar, Footer } from './widgets';
 import { ROUTES } from './routes';
 import { Header, HeaderButtons, Title } from './pages/Page';
-import { LoginView } from './authentication/LoginView';
-import { PrivateRoute } from './authentication/PrivateRoute';
+import { PrivateRoute, LoginView } from './authentication';
 
 export const App = () => (
   <Router>
