@@ -60,8 +60,6 @@ const getOrgUnitToAncestorMap = async (orgUnits, aggregationEntityType, hierarch
   const addOrgUnitToMap = async orgUnit => {
     if (orgUnit.type !== aggregationEntityType) {
       const ancestor = await orgUnit.getAncestorOfType(aggregationEntityType, hierarchyId);
-      console.log('orgUnit.type, aggregationEntityType', orgUnit.type, aggregationEntityType);
-      console.log('ancestor', ancestor);
       if (ancestor) {
         orgUnitToAncestor[orgUnit.code] = { code: ancestor.code, name: ancestor.name };
       } else {
