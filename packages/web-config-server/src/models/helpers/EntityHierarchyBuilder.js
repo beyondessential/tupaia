@@ -62,7 +62,8 @@ export class EntityHierarchyBuilder {
   }
 
   async getAncestorsNonCanonically(entityId, hierarchyId) {
-    return this.recursivelyFetchAncestors({ id: entityId }, hierarchyId);
+    const entity = await this.models.entity.findOne({ id: entityId }, { thinObject: true });
+    return this.recursivelyFetchAncestors(entity, hierarchyId);
   }
 
   async recursivelyFetchDescendants(parents, hierarchyId) {
@@ -128,7 +129,9 @@ export class EntityHierarchyBuilder {
         { thinObject: true },
       );
     }
-    return this.models.entity.findOne({ id: child.parent_id }, { thinObject: true });
+    return child.parent_id
+      ? this.models.entity.findOne({ id: child.parent_id }, { thinObject: true })
+      : null;
   };
 
   async getDescendantsCanonically(entityId) {
