@@ -87,5 +87,8 @@
   "homepage": "https://github.com/beyondessential/tupaia",
   "mocha": {
     "extends": "../../.mocharc.json"
+  },
+  "nyc": {
+    "extends": "../../.nycrc.json"
   }
 }

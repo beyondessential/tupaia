@@ -21,5 +21,8 @@
   },
   "mocha": {
     "extends": "../../.mocharc.json"
+  },
+  "nyc": {
+    "extends": "../../.nycrc.json"
   }
 }
