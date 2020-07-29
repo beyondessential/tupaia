@@ -6,15 +6,7 @@
  */
 
 /**
- * History navigation.
- *
- * Url writing and interpreting for Tupaia. Urls are in the format
- *
- * /[project_code]/[entity_code]?m={measureId}&p={overlayPageName}
- *
- * eg
- * /PROJECT_CODE/ENTITY_CODE?m=124 - Load the given entity with measure 124 active.
- * /?p=about - Loads the home page with about overlay shown.
+ * History middleware. This specifies the interface between the site and the url
  */
 
 import {
@@ -31,9 +23,9 @@ import {
 
 import {
   setUrlComponent,
-  getCurrentLocation,
+  getRawCurrentLocation,
   getInitialtUrlComponents,
-  getInternalInitialLocation,
+  getInitialLocation,
   clearUrl,
   pushHistory,
 } from './historyNavigation';
@@ -42,7 +34,7 @@ import { URL_COMPONENTS } from './constants';
 
 export const reactToInitialState = ({ dispatch }) => {
   const { userPage, ...otherComponents } = getInitialtUrlComponents();
-  dispatch(doUpdateUrl(getInternalInitialLocation()));
+  dispatch(doUpdateUrl(getInitialLocation()));
   // This will be implemented in future PRs
 };
 
@@ -111,7 +103,7 @@ export const initHistoryDispatcher = store => {
   // URL in the browser if we change it inside our app state in Redux.
   // We can simply subscribe to Redux and update it if it's different.
   store.subscribe(() => {
-    const currentLocation = getCurrentLocation();
+    const currentLocation = getRawCurrentLocation();
     const { pathname, search } = store.getState().routing;
     if (currentLocation.pathname !== pathname || currentLocation.search !== search) {
       pushHistory(pathname, search);

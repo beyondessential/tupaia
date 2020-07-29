@@ -5,8 +5,6 @@
  * found in the LICENSE file in the root directory of this source tree.
  */
 
-import { INITIAL_PROJECT_CODE, initialOrgUnit } from '../defaults';
-
 // Path components
 const PROJECT = 'PROJECT';
 const ORG_UNIT = 'ORG_UNIT';
