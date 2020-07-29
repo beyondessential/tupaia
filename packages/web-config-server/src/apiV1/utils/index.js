@@ -36,4 +36,5 @@ export { parseCoordinates } from './parseCoordinates';
 export { composeBuiltData } from './composeBuiltData';
 export { sumResults } from './sumResults';
 export { transposeMatrix } from './transposeMatrix';
+export { mergeSurveys } from './mergeSurveys';
 export { getAggregatePeriod } from './getAggregatePeriod';

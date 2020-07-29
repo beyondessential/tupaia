@@ -1,7 +1,7 @@
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 
 import { reduceToDictionary } from '@tupaia/utils';
-import { transposeMatrix } from '/apiV1/utils';
+import { transposeMatrix, mergeSurveys } from '/apiV1/utils';
 
 import moment from 'moment';
 import flatten from 'lodash.flatten';
@@ -14,7 +14,7 @@ const expandSurveyCodes = surveys => {
       return survey.codes
         ? survey.codes.map(code => ({
             code: code,
-            name: `${survey.name}-${code}`,
+            name: `${code}-${survey.name}`,
           }))
         : survey;
     }),
@@ -24,24 +24,22 @@ const expandSurveyCodes = surveys => {
 class RawDataValuesBuilder extends DataBuilder {
   async build() {
     const surveyCodes = this.query.surveyCodes;
-    const data = await this.fetchResults(surveyCodes.split(','));
+    let transformableData = await this.fetchResults(surveyCodes.split(','));
 
     if (this.config.transformations && this.config.transformations.includes('mergeSurveys')) {
-      // data = doMergeLogic(data, surveyConfig);
-      console.log('doMergeLogic', data);
+      transformableData = mergeSurveys(transformableData);
     }
 
     if (this.config.transformations && this.config.transformations.includes('transposeMatrix')) {
-      Object.entries(data).forEach(([key, value]) => {
-        data[key].data = transposeMatrix(value.data, ROW_HEADER_KEY);
+      Object.entries(transformableData).forEach(([key, value]) => {
+        transformableData[key].data = transposeMatrix(value.data, ROW_HEADER_KEY);
       });
     }
-
-    return { data };
+    return { data: transformableData };
   }
 
   async fetchResults(surveyCodes) {
-    const data = {};
+    const buildData = {};
 
     const surveyCodeToName = reduceToDictionary(
       expandSurveyCodes(this.config.surveys),
@@ -81,30 +79,24 @@ class RawDataValuesBuilder extends DataBuilder {
         ? await this.sortEventsByAncestor(events, this.config.sortByAncestor)
         : events;
 
-      const columns = this.buildColumns(sortedEvents);
+      const builtColumns = this.buildColumns(sortedEvents);
 
       const dataElementCodeToText = reduceToDictionary(dataElementsMetadata, 'code', 'text');
 
-      let rows = [];
-
-      if (columns && columns.length) {
-        rows = await this.buildRows(events, dataElementCodeToText);
-      }
-
-      const tableData = {
-        columns,
-        rows,
-      };
+      const builtRows = await this.buildRows(sortedEvents, dataElementCodeToText);
 
       const { skipHeader = true } = this.config;
 
-      data[surveyCodeToName[surveyCode]] = {
+      buildData[surveyCodeToName[surveyCode]] = {
         // need the nested 'data' property to be interpreted as the input to a matrix
-        data: tableData,
-        skipHeader,
+        data: {
+          columns: builtColumns,
+          rows: builtRows,
+        },
+        skipHeader: skipHeader,
       };
     }
-    return data;
+    return buildData;
   }
 
   /**
