@@ -4,15 +4,16 @@
  */
 
 import flatten from 'lodash.flatten';
-import { getCalculatedValuesByCell } from './getValuesByCell';
+import flattenDeep from 'lodash.flattendeep';
 
+import { getCalculatedValuesByCell } from './getValuesByCell';
 import { TableOfDataValuesBuilder } from './tableOfDataValues';
 
 class TableOfCalculatedValues extends TableOfDataValuesBuilder {
   buildDataElementCodes() {
-    const dataElementCodes = flatten(
-      flatten(this.config.cells).map(cell =>
-        cell.firstOperand.dataValues.concat(cell.secondOperand.dataValues),
+    const dataElementCodes = flattenDeep(
+      this.config.cells.map(row =>
+        row.map(cell => cell.operands.map(operand => operand.dataValues)),
       ),
     );
     return [...new Set(dataElementCodes)];
