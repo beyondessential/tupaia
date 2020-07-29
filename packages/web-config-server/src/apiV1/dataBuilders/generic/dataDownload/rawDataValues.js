@@ -48,7 +48,7 @@ class RawDataValuesBuilder extends DataBuilder {
 
       const events = await this.fetchEvents(additionalQueryConfig, surveyCode);
 
-      const sortedEvents = this.config.hasOwnProperty('sortByAncestor')
+      const sortedEvents = this.config.sortByAncestor
         ? await this.sortEventsByAncestor(events, this.config.sortByAncestor)
         : events; // Default to sorting by entity name/code ?
 
