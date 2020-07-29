@@ -282,7 +282,7 @@ const EDIT_CONFIG = {
   title: 'Edit Survey',
 };
 
-export const SurveysPage = () => (
+export const SurveysPage = props => (
   <ResourcePage
     title="Surveys"
     endpoint="surveys"
@@ -290,5 +290,6 @@ export const SurveysPage = () => (
     expansionTabs={EXPANSION_CONFIG}
     importConfig={IMPORT_CONFIG}
     editConfig={EDIT_CONFIG}
+    {...props}
   />
 );

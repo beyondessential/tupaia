@@ -111,7 +111,7 @@ const CREATE_CONFIG = {
   },
 };
 
-export const UsersPage = () => (
+export const UsersPage = props => (
   <ResourcePage
     title="Users"
     endpoint="users"
@@ -120,5 +120,6 @@ export const UsersPage = () => (
     importConfig={IMPORT_CONFIG}
     editConfig={EDIT_CONFIG}
     createConfig={CREATE_CONFIG}
+    {...props}
   />
 );

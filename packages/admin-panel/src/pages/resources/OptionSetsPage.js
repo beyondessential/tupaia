@@ -80,7 +80,7 @@ const EDIT_CONFIG = {
   title: 'Edit Option Set',
 };
 
-export const OptionSetsPage = () => (
+export const OptionSetsPage = props => (
   <ResourcePage
     title="Option Sets"
     endpoint="optionSets"
@@ -88,5 +88,6 @@ export const OptionSetsPage = () => (
     expansionTabs={EXPANSION_CONFIG}
     importConfig={IMPORT_CONFIG}
     editConfig={EDIT_CONFIG}
+    {...props}
   />
 );

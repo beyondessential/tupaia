@@ -79,12 +79,13 @@ const CREATE_CONFIG = {
   },
 };
 
-export const PermissionsPage = () => (
+export const PermissionsPage = props => (
   <ResourcePage
     title="Permissions"
     endpoint={PERMISSIONS_ENDPOINT}
     columns={FIELDS}
     editConfig={EDIT_CONFIG}
     createConfig={CREATE_CONFIG}
+    {...props}
   />
 );

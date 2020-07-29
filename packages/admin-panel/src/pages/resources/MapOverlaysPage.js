@@ -139,11 +139,12 @@ const COLUMNS = [
   },
 ];
 
-export const MapOverlaysPage = () => (
+export const MapOverlaysPage = props => (
   <ResourcePage
     title="Map Overlays"
     endpoint="mapOverlays"
     columns={COLUMNS}
+    {...props}
     editConfig={{
       title: 'Edit Map Overlay',
     }}

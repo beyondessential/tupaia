@@ -108,7 +108,7 @@ const DATA_GROUP_FIELDS = [
   },
 ];
 
-export const DataGroupsPage = () => (
+export const DataGroupsPage = props => (
   <ResourcePage
     title="Data Groups"
     endpoint="dataSources"
@@ -137,10 +137,11 @@ export const DataGroupsPage = () => (
         ],
       },
     }}
+    {...props}
   />
 );
 
-export const DataElementsPage = () => (
+export const DataElementsPage = props => (
   <ResourcePage
     title="Data Elements"
     endpoint="dataSources"
@@ -162,5 +163,6 @@ export const DataElementsPage = () => (
         ],
       },
     }}
+    {...props}
   />
 );

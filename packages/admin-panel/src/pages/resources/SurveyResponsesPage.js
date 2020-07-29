@@ -126,7 +126,7 @@ const IMPORT_CONFIG = {
   },
 };
 
-export const SurveyResponsesPage = () => (
+export const SurveyResponsesPage = props => (
   <ResourcePage
     title="Survey Responses"
     endpoint="surveyResponses"
@@ -134,5 +134,6 @@ export const SurveyResponsesPage = () => (
     expansionTabs={EXPANSION_CONFIG}
     importConfig={IMPORT_CONFIG}
     editConfig={EDIT_CONFIG}
+    {...props}
   />
 );

@@ -54,7 +54,9 @@ const HeaderButtonContainer = styled.div`
   column-gap: 20px;
 `;
 
-export const HeaderButtons = ({ children }) => <HeaderButtonContainer>{children}</HeaderButtonContainer>;
+export const HeaderButtons = ({ children }) => (
+  <HeaderButtonContainer>{children}</HeaderButtonContainer>
+);
 
 HeaderButtons.propTypes = {
   children: PropTypes.node,
@@ -64,12 +66,22 @@ HeaderButtons.defaultProps = {
   children: null,
 };
 
-export const Body = ({ children }) => <MuiContainer maxWidth="lg">{children}</MuiContainer>;
+const MinHeightContainer = styled(MuiContainer)`
+  min-height: 400px;
+`;
+
+export const Body = ({ children, className }) => (
+  <MinHeightContainer className={className} maxWidth="lg">
+    {children}
+  </MinHeightContainer>
+);
 
 Body.propTypes = {
   children: PropTypes.node,
+  className: PropTypes.string,
 };
 
 Body.defaultProps = {
   children: null,
+  className: '',
 };

@@ -9,5 +9,6 @@ export { IconButton } from './IconButton';
 export { InputField } from './InputField';
 export { Navbar } from './Navbar';
 export { Tabs } from './Tabs';
+export { Header } from './Header';
 export { Footer } from './Footer';
 export { ModalContentProvider } from './ModalContentProvider';

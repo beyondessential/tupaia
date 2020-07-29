@@ -92,12 +92,13 @@ const EDIT_CONFIG = {
   title: 'Edit Question',
 };
 
-export const QuestionsPage = () => (
+export const QuestionsPage = props => (
   <ResourcePage
     title="Questions"
     endpoint="questions"
     columns={QUESTION_COLUMNS}
     expansionTabs={EXPANSION_CONFIG}
     editConfig={EDIT_CONFIG}
+    {...props}
   />
 );

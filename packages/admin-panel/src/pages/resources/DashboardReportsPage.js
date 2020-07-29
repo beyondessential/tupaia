@@ -52,7 +52,7 @@ const COLUMNS = [
   },
 ];
 
-export const DashboardReportsPage = () => (
+export const DashboardReportsPage = props => (
   <ResourcePage
     title="Dashboard Reports"
     endpoint="dashboardReports"
@@ -60,5 +60,6 @@ export const DashboardReportsPage = () => (
     editConfig={{
       title: 'Edit Dashboard Report',
     }}
+    {...props}
   />
 );

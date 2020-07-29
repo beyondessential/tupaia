@@ -102,7 +102,7 @@ const CREATE_CONFIG = {
   },
 };
 
-export const SocialFeedPage = () => (
+export const SocialFeedPage = props => (
   <ResourcePage
     title="Social Feed"
     endpoint="feedItems"
@@ -113,5 +113,6 @@ export const SocialFeedPage = () => (
     onProcessDataForSave={data => {
       data.type = 'markdown'; // eslint-disable-line no-param-reassign
     }}
+    {...props}
   />
 );

@@ -65,12 +65,13 @@ const IMPORT_CONFIG = {
   },
 };
 
-export const EntitiesPage = () => (
+export const EntitiesPage = props => (
   <ResourcePage
     title="Entities"
     endpoint="entities"
     columns={COLUMNS}
     expansionTabs={EXPANSION_CONFIG}
     importConfig={IMPORT_CONFIG}
+    {...props}
   />
 );

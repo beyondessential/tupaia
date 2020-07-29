@@ -54,11 +54,12 @@ const IMPORT_CONFIG = {
   },
 };
 
-export const DisasterResponsePage = () => (
+export const DisasterResponsePage = props => (
   <ResourcePage
     title="Disasters"
     endpoint="disaster"
     columns={DISASTER_FIELDS}
     importConfig={IMPORT_CONFIG}
+    {...props}
   />
 );

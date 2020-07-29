@@ -6,9 +6,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { DataFetchingTable } from '../../table';
-import { ImportModal, ExportModal, ImportButton } from '../../importExport';
-import { EditModal, CreateButton } from '../../editor';
+import { ImportModal, ExportModal } from '../../importExport';
+import { EditModal } from '../../editor';
+import { Header } from '../../widgets';
 import { Body } from '../Page';
+import { usePortalWithCallback } from '../../utilities';
 
 export const ResourcePage = ({
   columns,
@@ -20,24 +22,31 @@ export const ResourcePage = ({
   filteredExportConfig,
   onProcessDataForSave,
   baseFilter,
-}) => (
-  <>
-    {importConfig && <ImportButton {...importConfig} />}
-    {createConfig && <CreateButton {...createConfig} />}
-    <Body>
-      <DataFetchingTable
-        columns={columns}
-        endpoint={endpoint}
-        expansionTabs={expansionTabs}
-        reduxId={endpoint}
-        baseFilter={baseFilter}
-      />
-    </Body>
-    {importConfig && <ImportModal {...importConfig} />}
-    {filteredExportConfig && <ExportModal {...filteredExportConfig} />}
-    <EditModal {...editConfig} onProcessDataForSave={onProcessDataForSave} />
-  </>
-);
+  title,
+  getHeaderEl,
+}) => {
+  const HeaderPortal = usePortalWithCallback(
+    <Header title={title} importConfig={importConfig} createConfig={createConfig} />,
+    getHeaderEl,
+  );
+  return (
+    <>
+      {HeaderPortal}
+      <Body>
+        <DataFetchingTable
+          columns={columns}
+          endpoint={endpoint}
+          expansionTabs={expansionTabs}
+          reduxId={endpoint}
+          baseFilter={baseFilter}
+        />
+      </Body>
+      {importConfig && <ImportModal {...importConfig} />}
+      {filteredExportConfig && <ExportModal {...filteredExportConfig} />}
+      <EditModal {...editConfig} onProcessDataForSave={onProcessDataForSave} />
+    </>
+  );
+};
 
 ResourcePage.propTypes = {
   columns: PropTypes.array.isRequired,
