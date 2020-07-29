@@ -11,7 +11,7 @@ import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 /**
  * Config Example:
   {
-    dataClasses: {
+    series: {
       'Lao Language': {
         'Grade 1': {
           operator: 'SUBTRACT',
