@@ -6,13 +6,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { DataFetchingTable } from '../../table';
-import { ImportModal, ExportModal } from '../../importExport';
-import { EditModal } from '../../editor';
+import { ImportModal, ExportModal, ImportButton } from '../../importExport';
+import { EditModal, CreateButton } from '../../editor';
 import { Body } from '../Page';
 
 export const ResourcePage = ({
   columns,
   editConfig,
+  createConfig,
   endpoint,
   expansionTabs,
   importConfig,
@@ -21,6 +22,8 @@ export const ResourcePage = ({
   baseFilter,
 }) => (
   <>
+    {importConfig && <ImportButton {...importConfig} />}
+    {createConfig && <CreateButton {...createConfig} />}
     <Body>
       <DataFetchingTable
         columns={columns}
