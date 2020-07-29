@@ -13,6 +13,8 @@ import queryString from 'query-string';
 import {
   PATH_COMPONENTS,
   SEARCH_PARAM_KEY_MAP,
+  PASSWORD_RESET_PREFIX,
+  VERIFY_EMAIL_PREFIX,
 } from './constants';
 
 export const translateLocationToInternal = location => {
