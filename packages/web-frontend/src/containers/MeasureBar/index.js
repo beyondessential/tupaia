@@ -26,7 +26,11 @@ import { changeMeasure, clearMeasure, toggleMeasureExpand } from '../../actions'
 import { HierarchyItem } from '../../components/HierarchyItem';
 import TupaiaIcon from '../../images/TupaiaIcon.svg';
 import { MAP_OVERLAY_SELECTOR } from '../../styles';
-import { selectCurrentOrgUnit } from '../../selectors';
+import {
+  selectCurrentOrgUnit,
+  selectActiveProject,
+  selectMeasureBarItemById,
+} from '../../selectors';
 
 export class MeasureBar extends Component {
   constructor(props) {
@@ -53,15 +57,15 @@ export class MeasureBar extends Component {
     this.props.onSelectMeasure(measure, organisationUnitCode);
   };
 
-  renderSelectedMeasure() {
-    const { currentMeasure, currentOrganisationUnitCode } = this.props;
+  renderDefaultMeasure() {
+    const { currentMeasure, currentOrganisationUnitCode, defaultMeasure } = this.props;
 
     return (
       <HierarchyItem
         nestedMargin="0px"
-        label={currentMeasure.name}
-        isSelected={currentMeasure.measureId}
-        onClick={() => this.handleSelectMeasure(currentMeasure, currentOrganisationUnitCode)}
+        label={defaultMeasure.name}
+        isSelected={currentMeasure.measureId === defaultMeasure.measureId}
+        onClick={() => this.handleSelectMeasure(defaultMeasure, currentOrganisationUnitCode)}
       />
     );
   }
@@ -100,9 +104,9 @@ export class MeasureBar extends Component {
   }
 
   renderHierarchy() {
-    const { measureHierarchy } = this.props;
+    const { measureHierarchy, defaultMeasure } = this.props;
 
-    const items = measureHierarchy.map(({name: groupName, children}) => {
+    const items = measureHierarchy.map(({ name: groupName, children }) => {
       if (!Array.isArray(children)) return null;
       const nestedItems = this.renderNestedHierarchyItems(children);
       if (nestedItems.length === 0) return null;
@@ -118,7 +122,7 @@ export class MeasureBar extends Component {
 
     return (
       <React.Fragment>
-        {this.renderSelectedMeasure()}
+        {defaultMeasure ? this.renderDefaultMeasure() : null}
         {items}
       </React.Fragment>
     );
@@ -189,12 +193,15 @@ MeasureBar.propTypes = {
   onClearMeasure: PropTypes.func.isRequired,
   currentOrganisationUnitCode: PropTypes.string,
   currentOrganisationUnitName: PropTypes.string,
+  defaultMeasure: MeasureShape,
 };
 
 const mapStateToProps = state => {
   const { currentMeasure, measureHierarchy, isExpanded } = state.measureBar;
   const { isMeasureLoading } = state.map;
   const { currentOrganisationUnitCode } = state.global;
+  const activeProject = selectActiveProject(state);
+  const defaultMeasure = selectMeasureBarItemById(state, activeProject.defaultMeasure);
 
   return {
     currentMeasure,
@@ -203,6 +210,7 @@ const mapStateToProps = state => {
     isMeasureLoading,
     currentOrganisationUnitCode,
     currentOrganisationUnitName: selectCurrentOrgUnit(state).name,
+    defaultMeasure,
   };
 };
 
