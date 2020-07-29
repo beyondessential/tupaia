@@ -50,7 +50,7 @@ class RawDataValuesBuilder extends DataBuilder {
 
       const sortedEvents = this.config.sortByAncestor
         ? await this.sortEventsByAncestor(events, this.config.sortByAncestor)
-        : events; // Default to sorting by entity name/code ?
+        : events;
 
       const columns = this.buildColumns(sortedEvents);
 
