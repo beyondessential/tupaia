@@ -4,7 +4,6 @@
  */
 
 export { ConfirmDeleteModal } from './ConfirmDeleteModal';
-export { Icon } from './Icon';
 export { IconButton } from './IconButton';
 export { InputField } from './InputField';
 export { Navbar } from './Navbar';
