@@ -17,8 +17,5 @@
   "bugs": {
     "url": "https://github.com/beyondessential/tupaia/issues"
   },
-  "homepage": "https://github.com/beyondessential/tupaia",
-  "mocha": {
-    "extends": "../../.mocharc.json"
-  }
+  "homepage": "https://github.com/beyondessential/tupaia"
 }

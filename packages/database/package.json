@@ -26,11 +26,5 @@
     "rand-token": "^1.0.1",
     "react-autobind": "1.0.6",
     "winston": "3.2.1"
-  },
-  "mocha": {
-    "extends": "../../.mocharc.json"
-  },
-  "nyc": {
-    "extends": "../../.nycrc.json"
   }
 }
