@@ -76,7 +76,7 @@ class RawDataValuesBuilder extends DataBuilder {
       data[surveyCodeToName[surveyCode]] = {
         // need the nested 'data' property to be interpreted as the input to a matrix
         data: tableData,
-        skipHeader: skipHeader,
+        skipHeader,
       };
     }
 
