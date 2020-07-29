@@ -71,7 +71,7 @@ class RawDataValuesBuilder extends DataBuilder {
         tableData = transposeMatrix(tableData, ROW_HEADER_KEY);
       }
 
-      const skipHeader = this.config.hasOwnProperty('skipHeader') ? this.config.skipHeader : true;
+      const { skipHeader = true } = this.config;
 
       data[surveyCodeToName[surveyCode]] = {
         // need the nested 'data' property to be interpreted as the input to a matrix
