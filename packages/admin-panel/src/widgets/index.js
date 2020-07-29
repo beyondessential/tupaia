@@ -10,3 +10,4 @@ export { InputField } from './InputField';
 export { Navbar } from './Navbar';
 export { Tabs } from './Tabs';
 export { Footer } from './Footer';
+export { ModalContentProvider } from './ModalContentProvider';

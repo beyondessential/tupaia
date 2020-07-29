@@ -12,8 +12,8 @@ import {
   DialogHeader,
   ErrorOutlinedButton,
   WarningButton,
-  WarningCloud,
 } from '@tupaia/ui-components';
+import DeleteIcon from '@material-ui/icons/Delete';
 import Typography from '@material-ui/core/Typography';
 import styled from 'styled-components';
 
@@ -21,7 +21,7 @@ const Container = styled.div`
   margin: 1rem 0 3rem;
 `;
 
-const Icon = styled(WarningCloud)`
+const Icon = styled(DeleteIcon)`
   font-size: 2.4rem;
   color: ${props => props.theme.palette.error.main};
   margin-bottom: 0.8rem;

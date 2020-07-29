@@ -5,24 +5,10 @@
 
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import {
-  Button,
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  OutlinedButton,
-  Toast,
-} from '@tupaia/ui-components';
+import { Button, Dialog, DialogFooter, DialogHeader, OutlinedButton } from '@tupaia/ui-components';
 import { connect } from 'react-redux';
 import { dismissDialog } from './actions';
-import { InputField } from '../widgets';
-
-const Content = styled(DialogContent)`
-  text-align: left;
-  min-height: 500px;
-`;
+import { ModalContentProvider, InputField } from '../widgets';
 
 export const ImportExportModalComponent = ({
   isLoading,
@@ -48,34 +34,31 @@ export const ImportExportModalComponent = ({
   };
 
   return (
-    <Dialog onClose={onDismiss} open={isOpen}>
-      <DialogHeader onClose={onDismiss} title={title} />
-      <Content>
-        {isLoading ? (
-          'Please be patient, this can take some time...'
-        ) : (
-          <>
-            <p>{subtitle}</p>
-            {queryParameters.map(queryParameter => {
-              const { parameterKey, label, secondaryLabel } = queryParameter;
-              return (
-                <InputField
-                  key={parameterKey}
-                  inputKey={parameterKey}
-                  value={values[parameterKey]}
-                  {...queryParameter}
-                  onChange={handleValueChange}
-                  label={label}
-                  secondaryLabel={secondaryLabel}
-                  parentRecord={parentRecord}
-                />
-              );
-            })}
-            {children}
-          </>
-        )}
-        {errorMessage && <Toast severity="error">{errorMessage}</Toast>}
-      </Content>
+    <Dialog onClose={onDismiss} open={isOpen} disableBackdropClick>
+      <DialogHeader
+        onClose={onDismiss}
+        title={errorMessage ? 'Error' : title}
+        color={errorMessage ? 'error' : 'textPrimary'}
+      />
+      <ModalContentProvider errorMessage={errorMessage} isLoading={isLoading}>
+        <p>{subtitle}</p>
+        {queryParameters.map(queryParameter => {
+          const { parameterKey, label, secondaryLabel } = queryParameter;
+          return (
+            <InputField
+              key={parameterKey}
+              inputKey={parameterKey}
+              value={values[parameterKey]}
+              {...queryParameter}
+              onChange={handleValueChange}
+              label={label}
+              secondaryLabel={secondaryLabel}
+              parentRecord={parentRecord}
+            />
+          );
+        })}
+        {children}
+      </ModalContentProvider>
       <DialogFooter>
         <OutlinedButton onClick={onDismiss} disabled={isLoading}>
           {errorMessage ? 'Dismiss' : 'Cancel'}

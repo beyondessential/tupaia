@@ -6,23 +6,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import styled from 'styled-components';
-import {
-  Button,
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  Toast,
-} from '@tupaia/ui-components';
+import { Button, Dialog, DialogFooter, DialogHeader } from '@tupaia/ui-components';
 import { closeEditModal, editField, saveEdits } from './actions';
 import { getEditorState, getIsUnchanged } from './selectors';
 import { Editor } from './Editor';
-
-const Content = styled(DialogContent)`
-  text-align: left;
-  min-height: 500px;
-`;
+import { ModalContentProvider } from '../widgets';
 
 export const EditModalComponent = ({
   errorMessage,
@@ -34,37 +22,28 @@ export const EditModalComponent = ({
   title,
   fields,
   isUnchanged,
-}) => {
-  const isOpen = !!fields;
-
-  return (
-    <Dialog onClose={onDismiss} open={isOpen}>
-      <DialogHeader onClose={onDismiss} title={title} />
-      <Content>
-        {!fields || isLoading ? (
-          'Please be patient, this can take some time...'
-        ) : (
-          <Editor
-            fields={fields}
-            recordData={recordData}
-            onEditField={(fieldSource, newValue) =>
-              onEditField(getFieldToEditFromSource(fieldSource), newValue)
-            }
-          />
-        )}
-        {errorMessage && <Toast severity="error">{errorMessage}</Toast>}
-      </Content>
-      <DialogFooter>
-        <Button variant="outlined" onClick={onDismiss} disabled={isLoading}>
-          {errorMessage ? 'Dismiss' : 'Cancel'}
-        </Button>
-        <Button onClick={onSave} disabled={!!errorMessage || isLoading || isUnchanged}>
-          Save
-        </Button>
-      </DialogFooter>
-    </Dialog>
-  );
-};
+}) => (
+  <Dialog onClose={onDismiss} open={!!fields} disableBackdropClick>
+    <DialogHeader onClose={onDismiss} title={title} />
+    <ModalContentProvider errorMessage={errorMessage} isLoading={isLoading || !fields}>
+      <Editor
+        fields={fields}
+        recordData={recordData}
+        onEditField={(fieldSource, newValue) =>
+          onEditField(getFieldToEditFromSource(fieldSource), newValue)
+        }
+      />
+    </ModalContentProvider>
+    <DialogFooter>
+      <Button variant="outlined" onClick={onDismiss} disabled={isLoading}>
+        {errorMessage ? 'Dismiss' : 'Cancel'}
+      </Button>
+      <Button onClick={onSave} disabled={!!errorMessage || isLoading || isUnchanged}>
+        Save
+      </Button>
+    </DialogFooter>
+  </Dialog>
+);
 
 EditModalComponent.propTypes = {
   errorMessage: PropTypes.string,
