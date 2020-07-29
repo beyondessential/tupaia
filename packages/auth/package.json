@@ -18,5 +18,8 @@
     "@beyondessential/tupaia-access-policy": "^2.5.0",
     "@tupaia/access-policy": "3.0.0",
     "@tupaia/database": "1.0.0"
+  },
+  "mocha": {
+    "extends": "../../.mocharc.json"
   }
 }

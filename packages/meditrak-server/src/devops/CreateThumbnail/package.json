@@ -14,6 +14,7 @@
     "test-lambda": "lambda-local -l CreateThumbnail.js -h handler -e ./testEvent.json -t 20",
     "package-for-lambda": "rm -f CreateThumbnail.zip && zip -r CreateThumbnail.zip ./ && echo \"Uploading to AWS...\" && aws lambda update-function-code --function-name CreateThumbnail --zip-file fileb://CreateThumbnail.zip"
   },
-  "author": "",
-  "license": "ISC"
+  "mocha": {
+    "extends": "../../.mocharc.json"
+  }
 }
