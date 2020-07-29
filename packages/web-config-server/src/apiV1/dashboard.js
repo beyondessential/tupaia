@@ -1,7 +1,7 @@
 import { DashboardGroup, DashboardReport } from '/models';
 import { RouteHandler } from './RouteHandler';
 import { PermissionsChecker } from './permissions';
-import { checkEntityAgainstCondition } from './utils';
+import { checkEntityAgainstConditions } from './utils';
 
 export default class extends RouteHandler {
   static PermissionsChecker = PermissionsChecker;
@@ -60,11 +60,7 @@ export default class extends RouteHandler {
                 const { displayOnEntityConditions, ...restOfViewJson } = viewJson; //Avoid sending displayOnEntityConditions to the frontend
                 const view = { viewId, ...restOfViewJson, requiresDataFetch: !!dataBuilder };
 
-                if (displayOnEntityConditions) {
-                  if (checkEntityAgainstCondition(entity, displayOnEntityConditions)) {
-                    views.push(view);
-                  }
-                } else {
+                if (checkEntityAgainstConditions(entity, displayOnEntityConditions)) {
                   views.push(view);
                 }
               }

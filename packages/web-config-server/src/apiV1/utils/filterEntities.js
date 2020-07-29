@@ -10,9 +10,7 @@ const FILTER_TYPE_TO_METHOD = {
 const applyFilter = (entities, field, operator, value) => {
   const filterMethod = FILTER_TYPE_TO_METHOD[operator];
 
-  return filterMethod
-    ? entities.filter(entity => filterMethod(entity, field, value))
-    : entities;
+  return filterMethod ? entities.filter(entity => filterMethod(entity, field, value)) : entities;
 };
 
 /**
@@ -48,7 +46,12 @@ const filterEntitiesByField = (entities, field, filterValue, operator = '=') => 
     let filteredEntities = entities;
 
     Object.entries(filterValue).forEach(([individualFilterOperator, individualFilterValue]) => {
-      filteredEntities = applyFilter(filteredEntities, field, individualFilterOperator, individualFilterValue);
+      filteredEntities = applyFilter(
+        filteredEntities,
+        field,
+        individualFilterOperator,
+        individualFilterValue,
+      );
     });
 
     return filteredEntities;
@@ -83,6 +86,6 @@ export const filterEntities = (entities, entityFilter) => {
   return filteredEntities;
 };
 
-export const checkEntityAgainstCondition = (entity, conditions) => {
+export const checkEntityAgainstConditions = (entity, conditions = {}) => {
   return filterEntities([entity], conditions).length === 1;
 };

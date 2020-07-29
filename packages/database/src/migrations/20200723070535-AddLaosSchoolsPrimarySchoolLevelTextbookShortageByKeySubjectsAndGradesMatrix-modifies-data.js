@@ -41,312 +41,372 @@ const DATA_BUILDER_CONFIG = {
       {
         key: 'Lao_Language_Textbook_Student_Ratio_G1',
         operator: 'DIVIDE',
-        firstOperand: {
-          dataValues: ['STCL001'],
-        },
-        secondOperand: {
-          dataValues: ['SchPop011', 'SchPop012'],
-        },
+        operands: [
+          {
+            dataValues: ['STCL001'],
+          },
+          {
+            dataValues: ['SchPop011', 'SchPop012'],
+          },
+        ],
       },
       {
         key: 'Lao_Language_Textbook_Student_Ratio_G2',
         operator: 'DIVIDE',
-        firstOperand: {
-          dataValues: ['STCL020'],
-        },
-        secondOperand: {
-          dataValues: ['SchPop013', 'SchPop014'],
-        },
+        operands: [
+          {
+            dataValues: ['STCL020'],
+          },
+          {
+            dataValues: ['SchPop013', 'SchPop014'],
+          },
+        ],
       },
       {
         key: 'Lao_Language_Textbook_Student_Ratio_G3',
         operator: 'DIVIDE',
-        firstOperand: {
-          dataValues: ['STCL039'],
-        },
-        secondOperand: {
-          dataValues: ['SchPop015', 'SchPop016'],
-        },
+        operands: [
+          {
+            dataValues: ['STCL039'],
+          },
+          {
+            dataValues: ['SchPop015', 'SchPop016'],
+          },
+        ],
       },
       {
         key: 'Lao_Language_Textbook_Student_Ratio_G4',
         operator: 'DIVIDE',
-        firstOperand: {
-          dataValues: ['STCL058'],
-        },
-        secondOperand: {
-          dataValues: ['SchPop017', 'SchPop018'],
-        },
+        operands: [
+          {
+            dataValues: ['STCL058'],
+          },
+          {
+            dataValues: ['SchPop017', 'SchPop018'],
+          },
+        ],
       },
       {
         key: 'Lao_Language_Textbook_Student_Ratio_G5',
         operator: 'DIVIDE',
-        firstOperand: {
-          dataValues: ['STCL077'],
-        },
-        secondOperand: {
-          dataValues: ['SchPop019', 'SchPop020'],
-        },
+        operands: [
+          {
+            dataValues: ['STCL077'],
+          },
+          {
+            dataValues: ['SchPop019', 'SchPop020'],
+          },
+        ],
       },
     ],
     [
       {
         key: 'Lao_Language_Shortage_Ratio_G1',
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop011', 'SchPop012'],
-        },
-        secondOperand: {
-          dataValues: ['STCL001'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop011', 'SchPop012'],
+          },
+          {
+            dataValues: ['STCL001'],
+          },
+        ],
       },
       {
         key: 'Lao_Language_Shortage_Ratio_G2',
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop013', 'SchPop014'],
-        },
-        secondOperand: {
-          dataValues: ['STCL020'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop013', 'SchPop014'],
+          },
+          {
+            dataValues: ['STCL020'],
+          },
+        ],
       },
       {
         key: 'Lao_Language_Shortage_Ratio_G3',
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop015', 'SchPop016'],
-        },
-        secondOperand: {
-          dataValues: ['STCL039'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop015', 'SchPop016'],
+          },
+          {
+            dataValues: ['STCL039'],
+          },
+        ],
       },
       {
         key: 'Lao_Language_Shortage_Ratio_G4',
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop017', 'SchPop018'],
-        },
-        secondOperand: {
-          dataValues: ['STCL058'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop017', 'SchPop018'],
+          },
+          {
+            dataValues: ['STCL058'],
+          },
+        ],
       },
       {
         key: 'Lao_Language_Shortage_Ratio_G5',
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop019', 'SchPop020'],
-        },
-        secondOperand: {
-          dataValues: ['STCL077'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop019', 'SchPop020'],
+          },
+          {
+            dataValues: ['STCL077'],
+          },
+        ],
       },
     ],
     [
       {
         key: 'Mathematics_Textbook_Student_Ratio_G1',
         operator: 'DIVIDE',
-        firstOperand: {
-          dataValues: ['STCL002'],
-        },
-        secondOperand: {
-          dataValues: ['SchPop011', 'SchPop012'],
-        },
+        operands: [
+          {
+            dataValues: ['STCL002'],
+          },
+          {
+            dataValues: ['SchPop011', 'SchPop012'],
+          },
+        ],
       },
       {
         key: 'Mathematics_Textbook_Student_Ratio_G2',
         operator: 'DIVIDE',
-        firstOperand: {
-          dataValues: ['STCL021'],
-        },
-        secondOperand: {
-          dataValues: ['SchPop013', 'SchPop014'],
-        },
+        operands: [
+          {
+            dataValues: ['STCL021'],
+          },
+          {
+            dataValues: ['SchPop013', 'SchPop014'],
+          },
+        ],
       },
       {
         key: 'Mathematics_Textbook_Student_Ratio_G3',
         operator: 'DIVIDE',
-        firstOperand: {
-          dataValues: ['STCL040'],
-        },
-        secondOperand: {
-          dataValues: ['SchPop015', 'SchPop016'],
-        },
+        operands: [
+          {
+            dataValues: ['STCL040'],
+          },
+          {
+            dataValues: ['SchPop015', 'SchPop016'],
+          },
+        ],
       },
       {
         key: 'Mathematics_Textbook_Student_Ratio_G4',
         operator: 'DIVIDE',
-        firstOperand: {
-          dataValues: ['STCL059'],
-        },
-        secondOperand: {
-          dataValues: ['SchPop017', 'SchPop018'],
-        },
+        operands: [
+          {
+            dataValues: ['STCL059'],
+          },
+          {
+            dataValues: ['SchPop017', 'SchPop018'],
+          },
+        ],
       },
       {
         key: 'Mathematics_Textbook_Student_Ratio_G5',
         operator: 'DIVIDE',
-        firstOperand: {
-          dataValues: ['STCL078'],
-        },
-        secondOperand: {
-          dataValues: ['SchPop019', 'SchPop020'],
-        },
+        operands: [
+          {
+            dataValues: ['STCL078'],
+          },
+          {
+            dataValues: ['SchPop019', 'SchPop020'],
+          },
+        ],
       },
     ],
     [
       {
         key: 'Mathematics_Shortage_Ratio_G1',
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop011', 'SchPop012'],
-        },
-        secondOperand: {
-          dataValues: ['STCL002'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop011', 'SchPop012'],
+          },
+          {
+            dataValues: ['STCL002'],
+          },
+        ],
       },
       {
         key: 'Mathematics_Shortage_Ratio_G2',
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop013', 'SchPop014'],
-        },
-        secondOperand: {
-          dataValues: ['STCL021'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop013', 'SchPop014'],
+          },
+          {
+            dataValues: ['STCL021'],
+          },
+        ],
       },
       {
         key: 'Mathematics_Shortage_Ratio_G3',
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop015', 'SchPop016'],
-        },
-        secondOperand: {
-          dataValues: ['STCL040'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop015', 'SchPop016'],
+          },
+          {
+            dataValues: ['STCL040'],
+          },
+        ],
       },
       {
         key: 'Mathematics_Shortage_Ratio_G4',
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop017', 'SchPop018'],
-        },
-        secondOperand: {
-          dataValues: ['STCL059'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop017', 'SchPop018'],
+          },
+          {
+            dataValues: ['STCL059'],
+          },
+        ],
       },
       {
         key: 'Mathematics_Shortage_Ratio_G5',
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop019', 'SchPop020'],
-        },
-        secondOperand: {
-          dataValues: ['STCL078'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop019', 'SchPop020'],
+          },
+          {
+            dataValues: ['STCL078'],
+          },
+        ],
       },
     ],
     [
       {
         key: 'World_Around_Us_Textbook_Student_Ratio_G1',
         operator: 'DIVIDE',
-        firstOperand: {
-          dataValues: ['STCL003'],
-        },
-        secondOperand: {
-          dataValues: ['SchPop011', 'SchPop012'],
-        },
+        operands: [
+          {
+            dataValues: ['STCL003'],
+          },
+          {
+            dataValues: ['SchPop011', 'SchPop012'],
+          },
+        ],
       },
       {
         key: 'World_Around_Us_Textbook_Student_Ratio_G2',
         operator: 'DIVIDE',
-        firstOperand: {
-          dataValues: ['STCL022'],
-        },
-        secondOperand: {
-          dataValues: ['SchPop013', 'SchPop014'],
-        },
+        operands: [
+          {
+            dataValues: ['STCL022'],
+          },
+          {
+            dataValues: ['SchPop013', 'SchPop014'],
+          },
+        ],
       },
       {
         key: 'World_Around_Us_Textbook_Student_Ratio_G3',
         operator: 'DIVIDE',
-        firstOperand: {
-          dataValues: ['STCL041'],
-        },
-        secondOperand: {
-          dataValues: ['SchPop015', 'SchPop016'],
-        },
+        operands: [
+          {
+            dataValues: ['STCL041'],
+          },
+          {
+            dataValues: ['SchPop015', 'SchPop016'],
+          },
+        ],
       },
       {
         key: 'World_Around_Us_Textbook_Student_Ratio_G4',
         operator: 'DIVIDE',
-        firstOperand: {
-          dataValues: ['STCL060'],
-        },
-        secondOperand: {
-          dataValues: ['SchPop017', 'SchPop018'],
-        },
+        operands: [
+          {
+            dataValues: ['STCL060'],
+          },
+          {
+            dataValues: ['SchPop017', 'SchPop018'],
+          },
+        ],
       },
       {
         key: 'World_Around_Us_Textbook_Student_Ratio_G5',
         operator: 'DIVIDE',
-        firstOperand: {
-          dataValues: ['STCL079'],
-        },
-        secondOperand: {
-          dataValues: ['SchPop019', 'SchPop020'],
-        },
+        operands: [
+          {
+            dataValues: ['STCL079'],
+          },
+          {
+            dataValues: ['SchPop019', 'SchPop020'],
+          },
+        ],
       },
     ],
     [
       {
         key: 'World_Around_Us_Shortage_Ratio_G1',
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop011', 'SchPop012'],
-        },
-        secondOperand: {
-          dataValues: ['STCL003'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop011', 'SchPop012'],
+          },
+          {
+            dataValues: ['STCL003'],
+          },
+        ],
       },
       {
         key: 'World_Around_Us_Shortage_Ratio_G2',
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop013', 'SchPop014'],
-        },
-        secondOperand: {
-          dataValues: ['STCL022'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop013', 'SchPop014'],
+          },
+          {
+            dataValues: ['STCL022'],
+          },
+        ],
       },
       {
         key: 'World_Around_Us_Shortage_Ratio_G3',
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop015', 'SchPop016'],
-        },
-        secondOperand: {
-          dataValues: ['STCL041'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop015', 'SchPop016'],
+          },
+          {
+            dataValues: ['STCL041'],
+          },
+        ],
       },
       {
         key: 'World_Around_Us_Shortage_Ratio_G4',
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop017', 'SchPop018'],
-        },
-        secondOperand: {
-          dataValues: ['STCL060'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop017', 'SchPop018'],
+          },
+          {
+            dataValues: ['STCL060'],
+          },
+        ],
       },
       {
         key: 'World_Around_Us_Shortage_Ratio_G5',
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop019', 'SchPop020'],
-        },
-        secondOperand: {
-          dataValues: ['STCL079'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop019', 'SchPop020'],
+          },
+          {
+            dataValues: ['STCL079'],
+          },
+        ],
       },
     ],
   ],
