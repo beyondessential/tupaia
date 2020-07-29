@@ -24,18 +24,17 @@ const expandSurveyCodes = surveys => {
 class RawDataValuesBuilder extends DataBuilder {
   async build() {
     const surveyCodes = this.query.surveyCodes;
-    let data = await this.fetchResults(surveyCodes.split(','));
+    const data = await this.fetchResults(surveyCodes.split(','));
 
     if (this.config.transformations && this.config.transformations.includes('mergeSurveys')) {
       // data = doMergeLogic(data, surveyConfig);
       console.log('doMergeLogic', data);
     }
 
-    //Possibly sort logic here?
-
-    if (this.config.transformations && this.config.transformations.includes('transpose')) {
-      // data = doTransformLogic(data, surveyConfig);
-      console.log('doTransformLogic', data);
+    if (this.config.transformations && this.config.transformations.includes('transposeMatrix')) {
+      Object.entries(data).forEach(([key, value]) => {
+        data[key].data = transposeMatrix(value.data, ROW_HEADER_KEY);
+      });
     }
 
     return { data };
@@ -105,7 +104,6 @@ class RawDataValuesBuilder extends DataBuilder {
         skipHeader,
       };
     }
-
     return data;
   }
 
