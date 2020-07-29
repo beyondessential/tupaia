@@ -48,7 +48,11 @@ class RawDataValuesBuilder extends DataBuilder {
 
       const events = await this.fetchEvents(additionalQueryConfig, surveyCode);
 
-      const columns = this.buildColumns(events);
+      const sortedEvents = this.config.hasOwnProperty('sortByAncestor')
+        ? await this.sortEventsByAncestor(events, this.config.sortByAncestor)
+        : events; // Default to sorting by entity name/code ?
+
+      const columns = this.buildColumns(sortedEvents);
 
       const dataElementCodeToText = reduceToDictionary(dataElementsMetadata, 'code', 'text');
 
@@ -67,7 +71,7 @@ class RawDataValuesBuilder extends DataBuilder {
         tableData = transposeMatrix(tableData, ROW_HEADER_KEY);
       }
 
-      const skipHeader = this.config.hasOwnProperty("skipHeader") ? this.config.skipHeader : true;
+      const skipHeader = this.config.hasOwnProperty('skipHeader') ? this.config.skipHeader : true;
 
       data[surveyCodeToName[surveyCode]] = {
         // need the nested 'data' property to be interpreted as the input to a matrix
