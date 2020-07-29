@@ -18,8 +18,12 @@ describe('DataBroker', () => {
   let serviceStub;
   let modelsStub;
 
-  const assertCreateServiceWasInvokedCorrectly = () => {
-    expect(createServiceStub).to.have.been.calledOnceWithExactly(modelsStub, 'testServiceType');
+  const assertCreateServiceWasInvokedCorrectly = dataBroker => {
+    expect(createServiceStub).to.have.been.calledOnceWithExactly(
+      modelsStub,
+      'testServiceType',
+      dataBroker,
+    );
   };
 
   before(() => {
@@ -46,17 +50,17 @@ describe('DataBroker', () => {
 
   it('push()', async () => {
     const data = { value: 2 };
-
-    await new DataBroker().push(DATA_SOURCE_SPECS.POP01, data);
-    assertCreateServiceWasInvokedCorrectly();
+    const dataBroker = new DataBroker();
+    await dataBroker.push(DATA_SOURCE_SPECS.POP01, data);
+    assertCreateServiceWasInvokedCorrectly(dataBroker);
     expect(serviceStub.push).to.have.been.calledOnceWithExactly([DATA_SOURCES.POP01], data);
   });
 
   it('delete()', async () => {
     const data = { value: 2 };
-
-    await new DataBroker().delete(DATA_SOURCE_SPECS.POP01, data, options);
-    assertCreateServiceWasInvokedCorrectly();
+    const dataBroker = new DataBroker();
+    await dataBroker.delete(DATA_SOURCE_SPECS.POP01, data, options);
+    assertCreateServiceWasInvokedCorrectly(dataBroker);
     expect(serviceStub.delete).to.have.been.calledOnceWithExactly(
       DATA_SOURCES.POP01,
       data,
@@ -75,9 +79,10 @@ describe('DataBroker', () => {
       ));
 
     it('single code', async () => {
-      await new DataBroker().pull(DATA_SOURCE_SPECS.POP01, options);
+      const dataBroker = new DataBroker();
+      await dataBroker.pull(DATA_SOURCE_SPECS.POP01, options);
 
-      assertCreateServiceWasInvokedCorrectly();
+      assertCreateServiceWasInvokedCorrectly(dataBroker);
       expect(serviceStub.pull).to.have.been.calledOnceWithExactly(
         [DATA_SOURCES.POP01],
         'dataElement',
@@ -86,9 +91,10 @@ describe('DataBroker', () => {
     });
 
     it('multiple codes', async () => {
-      await new DataBroker().pull({ code: ['POP01', 'POP02'], type: 'dataElement' }, options);
+      const dataBroker = new DataBroker();
+      await dataBroker.pull({ code: ['POP01', 'POP02'], type: 'dataElement' }, options);
 
-      assertCreateServiceWasInvokedCorrectly();
+      assertCreateServiceWasInvokedCorrectly(dataBroker);
       expect(serviceStub.pull).to.have.been.calledOnceWithExactly(
         dataSources,
         'dataElement',
