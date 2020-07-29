@@ -6,11 +6,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button } from 'reactstrap';
+import { LightOutlinedButton, SaveAlt } from '@tupaia/ui-components';
 import { openImportDialog } from './actions';
 
-export const ImportButtonComponent = ({ dispatch, label, size }) => (
-  <Button onClick={() => dispatch(openImportDialog())} size={size}>
+export const ImportButtonComponent = ({ dispatch, label, Button }) => (
+  <Button startIcon={<SaveAlt />} onClick={() => dispatch(openImportDialog())}>
     {label}
   </Button>
 );
@@ -18,12 +18,12 @@ export const ImportButtonComponent = ({ dispatch, label, size }) => (
 ImportButtonComponent.propTypes = {
   dispatch: PropTypes.func.isRequired,
   label: PropTypes.string,
-  size: PropTypes.string,
+  Button: PropTypes.element,
 };
 
 ImportButtonComponent.defaultProps = {
   label: 'Import',
-  size: 'lg',
+  Button: LightOutlinedButton,
 };
 
 export const ImportButton = connect()(ImportButtonComponent);

@@ -6,11 +6,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import EditIcon from '@material-ui/icons/Edit';
 import { IconButton } from '../widgets';
 import { openEditModal } from './actions';
 
 export const EditButtonComponent = ({ dispatch, value: recordId, actionConfig }) => (
-  <IconButton icon={'cog'} onClick={() => dispatch(openEditModal(actionConfig, recordId))} />
+  <IconButton onClick={() => dispatch(openEditModal(actionConfig, recordId))}>
+    <EditIcon />
+  </IconButton>
 );
 
 EditButtonComponent.propTypes = {
