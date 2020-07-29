@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 import { PERMISSIONS_ENDPOINT, PERMISSIONS_COLUMNS } from './PermissionsPage';
 
@@ -111,7 +112,7 @@ const CREATE_CONFIG = {
   },
 };
 
-export const UsersPage = props => (
+export const UsersPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Users"
     endpoint="users"
@@ -120,6 +121,10 @@ export const UsersPage = props => (
     importConfig={IMPORT_CONFIG}
     editConfig={EDIT_CONFIG}
     createConfig={CREATE_CONFIG}
-    {...props}
+    getHeaderEl={getHeaderEl}
   />
 );
+
+UsersPage.propTypes = {
+  getHeaderEl: PropTypes.func.isRequired,
+};

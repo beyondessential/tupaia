@@ -8,8 +8,7 @@ import PropTypes from 'prop-types';
 import { DataFetchingTable } from '../../table';
 import { ImportModal, ExportModal } from '../../importExport';
 import { EditModal } from '../../editor';
-import { Header } from '../../widgets';
-import { Body } from '../Page';
+import { Header, PageBody } from '../../widgets';
 import { usePortalWithCallback } from '../../utilities';
 
 export const ResourcePage = ({
@@ -32,7 +31,7 @@ export const ResourcePage = ({
   return (
     <>
       {HeaderPortal}
-      <Body>
+      <PageBody>
         <DataFetchingTable
           columns={columns}
           endpoint={endpoint}
@@ -40,7 +39,7 @@ export const ResourcePage = ({
           reduxId={endpoint}
           baseFilter={baseFilter}
         />
-      </Body>
+      </PageBody>
       {importConfig && <ImportModal {...importConfig} />}
       {filteredExportConfig && <ExportModal {...filteredExportConfig} />}
       <EditModal {...editConfig} onProcessDataForSave={onProcessDataForSave} />
@@ -49,6 +48,7 @@ export const ResourcePage = ({
 };
 
 ResourcePage.propTypes = {
+  getHeaderEl: PropTypes.func.isRequired,
   columns: PropTypes.array.isRequired,
   createConfig: PropTypes.object,
   editConfig: PropTypes.object,

@@ -5,11 +5,10 @@
 
 import React from 'react';
 import { Button } from '@tupaia/ui-components';
-import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import { ImportModal, ImportButton } from '../importExport';
-import { Body } from './Page';
 import { usePortalWithCallback } from '../utilities';
-import { Header } from '../widgets';
+import { Header, PageBody } from '../widgets';
 
 const importConfig = {
   title: 'Import Lab Results',
@@ -17,10 +16,6 @@ const importConfig = {
     importEndpoint: 'striveLabResults',
   },
 };
-
-const StyledBody = styled(Body)`
-  padding-top: 2rem;
-`;
 
 export const StrivePage = ({ getHeaderEl }) => {
   const HeaderPortal = usePortalWithCallback(
@@ -30,10 +25,14 @@ export const StrivePage = ({ getHeaderEl }) => {
   return (
     <>
       {HeaderPortal}
-      <StyledBody>
+      <PageBody>
         <ImportButton {...importConfig} Button={Button} label="Import Lab Results" />
-      </StyledBody>
+      </PageBody>
       <ImportModal {...importConfig} />
     </>
   );
+};
+
+StrivePage.propTypes = {
+  getHeaderEl: PropTypes.func.isRequired,
 };

@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-
+import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 
 // export for use on users page
@@ -79,13 +79,17 @@ const CREATE_CONFIG = {
   },
 };
 
-export const PermissionsPage = props => (
+export const PermissionsPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Permissions"
     endpoint={PERMISSIONS_ENDPOINT}
     columns={FIELDS}
     editConfig={EDIT_CONFIG}
     createConfig={CREATE_CONFIG}
-    {...props}
+    getHeaderEl={getHeaderEl}
   />
 );
+
+PermissionsPage.propTypes = {
+  getHeaderEl: PropTypes.func.isRequired,
+};

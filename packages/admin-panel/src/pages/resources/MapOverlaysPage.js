@@ -1,5 +1,11 @@
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+
 import React from 'react';
 import { ResourcePage } from './ResourcePage';
+import PropTypes from 'prop-types';
 import { prettyJSON, prettyArray } from '../../utilities/pretty';
 
 const FIELDS = [
@@ -139,14 +145,18 @@ const COLUMNS = [
   },
 ];
 
-export const MapOverlaysPage = props => (
+export const MapOverlaysPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Map Overlays"
     endpoint="mapOverlays"
     columns={COLUMNS}
-    {...props}
+    getHeaderEl={getHeaderEl}
     editConfig={{
       title: 'Edit Map Overlay',
     }}
   />
 );
+
+MapOverlaysPage.propTypes = {
+  getHeaderEl: PropTypes.func.isRequired,
+};

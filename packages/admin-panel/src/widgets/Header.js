@@ -5,18 +5,43 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { HeaderButtons, Title, Header as HeaderComponent } from '../pages/Page';
+import styled from 'styled-components';
+import MuiContainer from '@material-ui/core/Container';
+import Typography from '@material-ui/core/Typography';
 import { ImportButton } from '../importExport';
 import { CreateButton } from '../editor';
 
+const HeaderButtonContainer = styled.div`
+  display: grid;
+  grid-auto-flow: column;
+  column-gap: 20px;
+`;
+
+const HeaderMain = styled.header`
+  background-color: ${props => props.theme.palette.primary.main};
+  color: white;
+`;
+
+const HeaderInner = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 190px;
+  padding-bottom: 1.25rem;
+`;
+
 export const Header = ({ title, importConfig, createConfig }) => (
-  <HeaderComponent>
-    <Title>{title}</Title>
-    <HeaderButtons>
-      {importConfig && <ImportButton {...importConfig} />}
-      {createConfig && <CreateButton {...createConfig} />}
-    </HeaderButtons>
-  </HeaderComponent>
+  <HeaderMain>
+    <MuiContainer maxWidth="lg">
+      <HeaderInner>
+        <Typography variant="h1">{title}</Typography>
+        <HeaderButtonContainer>
+          {importConfig && <ImportButton {...importConfig} />}
+          {createConfig && <CreateButton {...createConfig} />}
+        </HeaderButtonContainer>
+      </HeaderInner>
+    </MuiContainer>
+  </HeaderMain>
 );
 
 Header.propTypes = {

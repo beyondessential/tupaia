@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 
 const id = {
@@ -54,12 +55,16 @@ const IMPORT_CONFIG = {
   },
 };
 
-export const DisasterResponsePage = props => (
+export const DisasterResponsePage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Disasters"
     endpoint="disaster"
     columns={DISASTER_FIELDS}
     importConfig={IMPORT_CONFIG}
-    {...props}
+    getHeaderEl={getHeaderEl}
   />
 );
+
+DisasterResponsePage.propTypes = {
+  getHeaderEl: PropTypes.func.isRequired,
+};
