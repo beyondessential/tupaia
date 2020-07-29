@@ -138,6 +138,7 @@ export const SET_PROJECT_DATA = 'SET_PROJECT_DATA';
 export const SELECT_PROJECT = 'SELECT_PROJECT';
 export const FETCH_PROJECTS_ERROR = 'FETCH_PROJECTS_ERROR';
 export const REQUEST_PROJECT_ACCESS = 'REQUEST_PROJECT_ACCESS';
+export const UPDATE_URL = 'UPDATE_URL';
 
 export function fetchInitialData() {
   return {
@@ -1171,4 +1172,8 @@ export function updateEnlargedDialogError(errorMessage) {
     type: UPDATE_ENLARGED_DIALOG_ERROR,
     errorMessage,
   };
+}
+
+export function doUpdateUrl(location) {
+  return { type: UPDATE_URL, location };
 }

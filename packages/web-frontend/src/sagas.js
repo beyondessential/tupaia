@@ -95,7 +95,7 @@ import {
   REQUEST_ORG_UNIT,
 } from './actions';
 import { isMobile, processMeasureInfo, formatDateForApi } from './utils';
-import { createUrlString } from './utils/historyNavigation';
+import { createUrlString } from './historyNavigation';
 import { getDefaultDates } from './utils/periodGranularities';
 import { INITIAL_MEASURE_ID, INITIAL_PROJECT_CODE, initialOrgUnit } from './defaults';
 import { selectProject } from './projects/actions';

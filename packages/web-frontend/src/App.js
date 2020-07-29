@@ -16,7 +16,7 @@ import { DARKENED_BLUE } from './styles';
 
 import { reactToInitialState, initHistoryDispatcher } from './historyNavigation';
 
-import { fetchInitialData, doUpdateUrl } from './actions';
+import { fetchInitialData } from './actions';
 
 // Set up asynchonous import of the RootScreen to enable webpack to do code splitting.
 // Based on https://serverless-stack.com/chapters/code-splitting-in-create-react-app.html
@@ -51,9 +51,9 @@ class App extends Component {
     const { default: RootScreen } = await importRootScreen();
     this.setState({ RootScreen });
 
-    const { dispatch: rawDispatch } = store;
-    const dispatch = action => rawDispatch({ ...action, meta: { preventHistoryUpdate: true } });
+    const { dispatch } = store;
     dispatch(fetchInitialData());
+
     reactToInitialState(store);
   }
 

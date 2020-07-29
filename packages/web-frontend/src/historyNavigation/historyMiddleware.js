@@ -18,23 +18,16 @@
  */
 
 import {
-  SET_PROJECT,
-  SET_ORG_UNIT,
+  SELECT_PROJECT,
+  CHANGE_ORG_UNIT,
   CHANGE_DASHBOARD_GROUP,
-  SET_ENLARGED_REPORT,
-  CLOSE_ENLARGED_REPORT,
-  SET_MEASURE,
+  OPEN_ENLARGED_DIALOG,
+  CLOSE_ENLARGED_DIALOG,
+  CHANGE_MEASURE,
   CLEAR_MEASURE,
   GO_HOME,
-  onSetOrgUnit,
-  setOverlayComponent,
   doUpdateUrl,
-  onSetMeasure,
-  onOpenEnlargedDialog,
-  setEnlargedDashboardDateRange,
 } from '../actions';
-
-import { onSetProject } from '../projects/actions';
 
 import {
   setUrlComponent,
@@ -49,36 +42,8 @@ import { URL_COMPONENTS } from './constants';
 
 export const reactToInitialState = ({ dispatch }) => {
   const { userPage, ...otherComponents } = getInitialtUrlComponents();
-  console.log(otherComponents);
   dispatch(doUpdateUrl(getInternalInitialLocation()));
-
-  if (userPage) {
-    dispatch(setOverlayComponent(null));
-    console.log('Ahhh!');
-  }
-
-  if (!otherComponents[URL_COMPONENTS.PROJECT]) {
-    dispatch(onSetProject(null, false));
-    return;
-  }
-
-  dispatch(setOverlayComponent(null));
-  dispatch(onSetProject(otherComponents[URL_COMPONENTS.PROJECT], false));
-  if (otherComponents[URL_COMPONENTS.ORG_UNIT])
-    dispatch(onSetOrgUnit(otherComponents[URL_COMPONENTS.ORG_UNIT], true));
-
-  if (otherComponents[URL_COMPONENTS.MEASURE])
-    dispatch(
-      onSetMeasure(
-        otherComponents[URL_COMPONENTS.MEASURE],
-        otherComponents[URL_COMPONENTS.ORG_UNIT],
-      ),
-    );
-
-  if (otherComponents[URL_COMPONENTS.REPORT]) {
-    dispatch(onOpenEnlargedDialog(null, null, otherComponents[URL_COMPONENTS.REPORT]));
-    //dispatch(setEnlargedDashboardDateRange());
-  }
+  // This will be implemented in future PRs
 };
 
 export const historyMiddleware = state => next => action => {
@@ -87,19 +52,17 @@ export const historyMiddleware = state => next => action => {
   let newLocation = oldLocation;
   switch (action.type) {
     // Actions that modify the path
-    case SET_PROJECT:
+    case SELECT_PROJECT:
       newLocation = setUrlComponent(URL_COMPONENTS.PROJECT, action.projectCode, newLocation);
       dispatch(doUpdateUrl(newLocation));
-      dispatch(onSetProject(action.projectCode));
       break;
-    case SET_ORG_UNIT:
+    case CHANGE_ORG_UNIT:
       newLocation = setUrlComponent(
         URL_COMPONENTS.ORG_UNIT,
         action.organisationUnitCode,
         newLocation,
       );
       dispatch(doUpdateUrl(newLocation));
-      dispatch(onSetOrgUnit(action.organisationUnitCode, action.shouldChangeMapBounds));
       break;
     case CHANGE_DASHBOARD_GROUP:
       newLocation = setUrlComponent(URL_COMPONENTS.DASHBOARD, action.name, newLocation);
@@ -108,30 +71,23 @@ export const historyMiddleware = state => next => action => {
     case GO_HOME:
       newLocation = clearUrl();
       dispatch(doUpdateUrl(newLocation));
-      dispatch(onSetProject(null));
       break;
 
     // Actions that modify search params
-    case SET_ENLARGED_REPORT:
+    case OPEN_ENLARGED_DIALOG:
       newLocation = setUrlComponent(URL_COMPONENTS.REPORT, action.viewContent.viewId, newLocation);
       dispatch(doUpdateUrl(newLocation));
-      dispatch(
-        onOpenEnlargedDialog(action.viewContent, action.organisationUnitName, action.viewId),
-      );
       break;
-    case CLOSE_ENLARGED_REPORT:
+    case CLOSE_ENLARGED_DIALOG:
       newLocation = setUrlComponent(URL_COMPONENTS.REPORT, null, newLocation);
       dispatch(doUpdateUrl(newLocation));
       break;
-    case SET_MEASURE:
+    case CHANGE_MEASURE:
       newLocation = setUrlComponent(URL_COMPONENTS.MEASURE, action.measureId, newLocation);
-      console.log('alkd;jwegawrghnwarighweoifj', action);
       dispatch(doUpdateUrl(newLocation));
-      dispatch(onSetMeasure(action.measureId, action.organisationUnitCode));
       break;
     case CLEAR_MEASURE:
       newLocation = setUrlComponent(URL_COMPONENTS.MEASURE, null, newLocation);
-      console.log('HEOOOOOOOOOOOOOOOOOOOO');
       dispatch(doUpdateUrl(newLocation));
       break;
     default:
