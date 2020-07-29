@@ -13,23 +13,27 @@ import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
   {
     dataClasses: {
       'Lao Language': {
-        G6: {
+        'Grade 1': {
           operator: 'SUBTRACT',
-          firstOperand: {
-            dataValues: ['SchPop021', 'SchPop022'],
-          },
-          secondOperand: {
-            dataValues: ['STCL004'],
-          },
+          operands: [
+            {
+              dataValues: ['SchPop011', 'SchPop012'],
+            },
+            {
+              dataValues: ['STCL001'],
+            },
+          ],
         },
-        G7: {
+        'Grade 2': {
           operator: 'SUBTRACT',
-          firstOperand: {
-            dataValues: ['SchPop023', 'SchPop024'],
-          },
-          secondOperand: {
-            dataValues: ['STCL023'],
-          },
+          operands: [
+            {
+              dataValues: ['SchPop013', 'SchPop014'],
+            },
+            {
+              dataValues: ['STCL020'],
+            },
+          ],
         },
       }
     }
@@ -37,20 +41,17 @@ import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
  */
 
 class CalcPerSeriesDataBuilder extends DataBuilder {
-  /**
-   * @returns {NamedValuesOutput}
-   */
   async build() {
     const { results, period } = await this.fetchResults();
     const dataByClass = {};
 
-    Object.entries(this.config.dataClasses).forEach(([classKey, series]) => {
-      Object.entries(series).forEach(([seriesKey, seriesConfig]) => {
-        if (!dataByClass[seriesKey]) {
-          dataByClass[seriesKey] = { name: seriesKey };
+    Object.entries(this.config.series).forEach(([seriesKey, dataClasses]) => {
+      Object.entries(dataClasses).forEach(([classKey, seriesConfig]) => {
+        if (!dataByClass[classKey]) {
+          dataByClass[classKey] = { name: classKey };
         }
 
-        dataByClass[seriesKey][classKey] = calculateArithmeticOperationForAnalytics(
+        dataByClass[classKey][seriesKey] = calculateArithmeticOperationForAnalytics(
           results,
           seriesConfig,
         );
@@ -63,16 +64,12 @@ class CalcPerSeriesDataBuilder extends DataBuilder {
 
   async fetchResults() {
     const dataElements = flattenDeep(
-      Object.values(this.config.dataClasses).map(dataClasses =>
-        Object.values(dataClasses).map(({ firstOperand, secondOperand }) =>
-          firstOperand.dataValues.concat(secondOperand.dataValues),
-        ),
+      Object.values(this.config.series).map(series =>
+        Object.values(series).map(({ operands }) => operands.map(operand => operand.dataValues)),
       ),
     );
 
-    const analyticsResults = await this.fetchAnalytics(dataElements);
-
-    return analyticsResults;
+    return this.fetchAnalytics(dataElements);
   }
 }
 

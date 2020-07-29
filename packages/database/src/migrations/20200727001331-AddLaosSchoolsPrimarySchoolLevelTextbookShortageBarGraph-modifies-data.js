@@ -31,146 +31,176 @@ const GRADE_4 = 'Grade 4';
 const GRADE_5 = 'Grade 5';
 
 const DATA_BUILDER_CONFIG = {
-  dataClasses: {
+  series: {
     [LAO_LANGUAGE]: {
       [GRADE_1]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop011', 'SchPop012'],
-        },
-        secondOperand: {
-          dataValues: ['STCL001'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop011', 'SchPop012'],
+          },
+          {
+            dataValues: ['STCL001'],
+          },
+        ],
       },
       [GRADE_2]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop013', 'SchPop014'],
-        },
-        secondOperand: {
-          dataValues: ['STCL020'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop013', 'SchPop014'],
+          },
+          {
+            dataValues: ['STCL020'],
+          },
+        ],
       },
       [GRADE_3]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop015', 'SchPop016'],
-        },
-        secondOperand: {
-          dataValues: ['STCL039'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop015', 'SchPop016'],
+          },
+          {
+            dataValues: ['STCL039'],
+          },
+        ],
       },
       [GRADE_4]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop017', 'SchPop018'],
-        },
-        secondOperand: {
-          dataValues: ['STCL058'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop017', 'SchPop018'],
+          },
+          {
+            dataValues: ['STCL058'],
+          },
+        ],
       },
       [GRADE_5]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop019', 'SchPop020'],
-        },
-        secondOperand: {
-          dataValues: ['STCL077'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop019', 'SchPop020'],
+          },
+          {
+            dataValues: ['STCL077'],
+          },
+        ],
       },
     },
     [MATHEMATICS]: {
       [GRADE_1]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop011', 'SchPop012'],
-        },
-        secondOperand: {
-          dataValues: ['STCL002'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop011', 'SchPop012'],
+          },
+          {
+            dataValues: ['STCL002'],
+          },
+        ],
       },
       [GRADE_2]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop013', 'SchPop014'],
-        },
-        secondOperand: {
-          dataValues: ['STCL021'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop013', 'SchPop014'],
+          },
+          {
+            dataValues: ['STCL021'],
+          },
+        ],
       },
       [GRADE_3]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop015', 'SchPop016'],
-        },
-        secondOperand: {
-          dataValues: ['STCL040'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop015', 'SchPop016'],
+          },
+          {
+            dataValues: ['STCL040'],
+          },
+        ],
       },
       [GRADE_4]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop017', 'SchPop018'],
-        },
-        secondOperand: {
-          dataValues: ['STCL059'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop017', 'SchPop018'],
+          },
+          {
+            dataValues: ['STCL059'],
+          },
+        ],
       },
       [GRADE_5]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop019', 'SchPop020'],
-        },
-        secondOperand: {
-          dataValues: ['STCL078'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop019', 'SchPop020'],
+          },
+          {
+            dataValues: ['STCL078'],
+          },
+        ],
       },
     },
     [WORLD_AROUND_US]: {
       [GRADE_1]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop011', 'SchPop012'],
-        },
-        secondOperand: {
-          dataValues: ['STCL003'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop011', 'SchPop012'],
+          },
+          {
+            dataValues: ['STCL003'],
+          },
+        ],
       },
       [GRADE_2]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop013', 'SchPop014'],
-        },
-        secondOperand: {
-          dataValues: ['STCL022'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop013', 'SchPop014'],
+          },
+          {
+            dataValues: ['STCL022'],
+          },
+        ],
       },
       [GRADE_3]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop015', 'SchPop016'],
-        },
-        secondOperand: {
-          dataValues: ['STCL041'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop015', 'SchPop016'],
+          },
+          {
+            dataValues: ['STCL041'],
+          },
+        ],
       },
       [GRADE_4]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop017', 'SchPop018'],
-        },
-        secondOperand: {
-          dataValues: ['STCL060'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop017', 'SchPop018'],
+          },
+          {
+            dataValues: ['STCL060'],
+          },
+        ],
       },
       [GRADE_5]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop019', 'SchPop020'],
-        },
-        secondOperand: {
-          dataValues: ['STCL079'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop019', 'SchPop020'],
+          },
+          {
+            dataValues: ['STCL079'],
+          },
+        ],
       },
     },
   },

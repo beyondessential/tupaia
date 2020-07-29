@@ -35,309 +35,373 @@ const GRADE_8 = 'Grade 8';
 const GRADE_9 = 'Grade 9';
 
 const DATA_BUILDER_CONFIG = {
-  dataClasses: {
+  series: {
     [LAO_LANGUAGE]: {
       [GRADE_6]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop021', 'SchPop022'],
-        },
-        secondOperand: {
-          dataValues: ['STCL004'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop021', 'SchPop022'],
+          },
+          {
+            dataValues: ['STCL004'],
+          },
+        ],
       },
       [GRADE_7]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop023', 'SchPop024'],
-        },
-        secondOperand: {
-          dataValues: ['STCL023'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop023', 'SchPop024'],
+          },
+          {
+            dataValues: ['STCL023'],
+          },
+        ],
       },
       [GRADE_8]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop025', 'SchPop026'],
-        },
-        secondOperand: {
-          dataValues: ['STCL042'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop025', 'SchPop026'],
+          },
+          {
+            dataValues: ['STCL042'],
+          },
+        ],
       },
       [GRADE_9]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop027', 'SchPop028'],
-        },
-        secondOperand: {
-          dataValues: ['STCL061'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop027', 'SchPop028'],
+          },
+          {
+            dataValues: ['STCL061'],
+          },
+        ],
       },
     },
     [MATHEMATICS]: {
       [GRADE_6]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop021', 'SchPop022'],
-        },
-        secondOperand: {
-          dataValues: ['STCL005'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop021', 'SchPop022'],
+          },
+          {
+            dataValues: ['STCL005'],
+          },
+        ],
       },
       [GRADE_7]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop023', 'SchPop024'],
-        },
-        secondOperand: {
-          dataValues: ['STCL024'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop023', 'SchPop024'],
+          },
+          {
+            dataValues: ['STCL024'],
+          },
+        ],
       },
       [GRADE_8]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop025', 'SchPop026'],
-        },
-        secondOperand: {
-          dataValues: ['STCL043'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop025', 'SchPop026'],
+          },
+          {
+            dataValues: ['STCL043'],
+          },
+        ],
       },
       [GRADE_9]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop027', 'SchPop028'],
-        },
-        secondOperand: {
-          dataValues: ['STCL062'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop027', 'SchPop028'],
+          },
+          {
+            dataValues: ['STCL062'],
+          },
+        ],
       },
     },
     [NATURAL_SCIENCE]: {
       [GRADE_6]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop021', 'SchPop022'],
-        },
-        secondOperand: {
-          dataValues: ['STCL006'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop021', 'SchPop022'],
+          },
+          {
+            dataValues: ['STCL006'],
+          },
+        ],
       },
       [GRADE_7]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop023', 'SchPop024'],
-        },
-        secondOperand: {
-          dataValues: ['STCL025'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop023', 'SchPop024'],
+          },
+          {
+            dataValues: ['STCL025'],
+          },
+        ],
       },
       [GRADE_8]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop025', 'SchPop026'],
-        },
-        secondOperand: {
-          dataValues: ['STCL044'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop025', 'SchPop026'],
+          },
+          {
+            dataValues: ['STCL044'],
+          },
+        ],
       },
       [GRADE_9]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop027', 'SchPop028'],
-        },
-        secondOperand: {
-          dataValues: ['STCL063'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop027', 'SchPop028'],
+          },
+          {
+            dataValues: ['STCL063'],
+          },
+        ],
       },
     },
     [POLITICAL_SCIENCE]: {
       [GRADE_6]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop021', 'SchPop022'],
-        },
-        secondOperand: {
-          dataValues: ['STCL007'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop021', 'SchPop022'],
+          },
+          {
+            dataValues: ['STCL007'],
+          },
+        ],
       },
       [GRADE_7]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop023', 'SchPop024'],
-        },
-        secondOperand: {
-          dataValues: ['STCL026'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop023', 'SchPop024'],
+          },
+          {
+            dataValues: ['STCL026'],
+          },
+        ],
       },
       [GRADE_8]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop025', 'SchPop026'],
-        },
-        secondOperand: {
-          dataValues: ['STCL045'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop025', 'SchPop026'],
+          },
+          {
+            dataValues: ['STCL045'],
+          },
+        ],
       },
       [GRADE_9]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop027', 'SchPop028'],
-        },
-        secondOperand: {
-          dataValues: ['STCL064'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop027', 'SchPop028'],
+          },
+          {
+            dataValues: ['STCL064'],
+          },
+        ],
       },
     },
     [ICT]: {
       [GRADE_6]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop021', 'SchPop022'],
-        },
-        secondOperand: {
-          dataValues: ['STCL008'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop021', 'SchPop022'],
+          },
+          {
+            dataValues: ['STCL008'],
+          },
+        ],
       },
       [GRADE_7]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop023', 'SchPop024'],
-        },
-        secondOperand: {
-          dataValues: ['STCL027'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop023', 'SchPop024'],
+          },
+          {
+            dataValues: ['STCL027'],
+          },
+        ],
       },
       [GRADE_8]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop025', 'SchPop026'],
-        },
-        secondOperand: {
-          dataValues: ['STCL046'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop025', 'SchPop026'],
+          },
+          {
+            dataValues: ['STCL046'],
+          },
+        ],
       },
       [GRADE_9]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop027', 'SchPop028'],
-        },
-        secondOperand: {
-          dataValues: ['STCL065'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop027', 'SchPop028'],
+          },
+          {
+            dataValues: ['STCL065'],
+          },
+        ],
       },
     },
     [ENGLISH]: {
       [GRADE_6]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop021', 'SchPop022'],
-        },
-        secondOperand: {
-          dataValues: ['STCL009'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop021', 'SchPop022'],
+          },
+          {
+            dataValues: ['STCL009'],
+          },
+        ],
       },
       [GRADE_7]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop023', 'SchPop024'],
-        },
-        secondOperand: {
-          dataValues: ['STCL028'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop023', 'SchPop024'],
+          },
+          {
+            dataValues: ['STCL028'],
+          },
+        ],
       },
       [GRADE_8]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop025', 'SchPop026'],
-        },
-        secondOperand: {
-          dataValues: ['STCL047'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop025', 'SchPop026'],
+          },
+          {
+            dataValues: ['STCL047'],
+          },
+        ],
       },
       [GRADE_9]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop027', 'SchPop028'],
-        },
-        secondOperand: {
-          dataValues: ['STCL066'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop027', 'SchPop028'],
+          },
+          {
+            dataValues: ['STCL066'],
+          },
+        ],
       },
     },
     [FRENCH]: {
       [GRADE_6]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop021', 'SchPop022'],
-        },
-        secondOperand: {
-          dataValues: ['STCL010'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop021', 'SchPop022'],
+          },
+          {
+            dataValues: ['STCL010'],
+          },
+        ],
       },
       [GRADE_7]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop023', 'SchPop024'],
-        },
-        secondOperand: {
-          dataValues: ['STCL029'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop023', 'SchPop024'],
+          },
+          {
+            dataValues: ['STCL029'],
+          },
+        ],
       },
       [GRADE_8]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop025', 'SchPop026'],
-        },
-        secondOperand: {
-          dataValues: ['STCL048'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop025', 'SchPop026'],
+          },
+          {
+            dataValues: ['STCL048'],
+          },
+        ],
       },
       [GRADE_9]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop027', 'SchPop028'],
-        },
-        secondOperand: {
-          dataValues: ['STCL067'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop027', 'SchPop028'],
+          },
+          {
+            dataValues: ['STCL067'],
+          },
+        ],
       },
     },
     [MATHEMATICS_EXERCISE_BOOK]: {
       [GRADE_6]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop021', 'SchPop022'],
-        },
-        secondOperand: {
-          dataValues: ['STCL011'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop021', 'SchPop022'],
+          },
+          {
+            dataValues: ['STCL011'],
+          },
+        ],
       },
       [GRADE_7]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop023', 'SchPop024'],
-        },
-        secondOperand: {
-          dataValues: ['STCL030'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop023', 'SchPop024'],
+          },
+          {
+            dataValues: ['STCL030'],
+          },
+        ],
       },
       [GRADE_8]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop025', 'SchPop026'],
-        },
-        secondOperand: {
-          dataValues: ['STCL049'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop025', 'SchPop026'],
+          },
+          {
+            dataValues: ['STCL049'],
+          },
+        ],
       },
       [GRADE_9]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop027', 'SchPop028'],
-        },
-        secondOperand: {
-          dataValues: ['STCL068'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop027', 'SchPop028'],
+          },
+          {
+            dataValues: ['STCL068'],
+          },
+        ],
       },
     },
   },

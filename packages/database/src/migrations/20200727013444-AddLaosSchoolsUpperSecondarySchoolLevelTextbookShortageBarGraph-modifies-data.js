@@ -28,63 +28,75 @@ const GRADE_11 = 'Grade 11';
 const GRADE_12 = 'Grade 12';
 
 const DATA_BUILDER_CONFIG = {
-  dataClasses: {
+  series: {
     [LAO_LANGUAGE_AND_LITERATURE]: {
       [GRADE_10]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop029', 'SchPop030'],
-        },
-        secondOperand: {
-          dataValues: ['STCL080'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop029', 'SchPop030'],
+          },
+          {
+            dataValues: ['STCL080'],
+          },
+        ],
       },
       [GRADE_11]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop031', 'SchPop032'],
-        },
-        secondOperand: {
-          dataValues: ['STCL096'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop031', 'SchPop032'],
+          },
+          {
+            dataValues: ['STCL096'],
+          },
+        ],
       },
       [GRADE_12]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop033', 'SchPop034'],
-        },
-        secondOperand: {
-          dataValues: ['STCL112'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop033', 'SchPop034'],
+          },
+          {
+            dataValues: ['STCL112'],
+          },
+        ],
       },
     },
     [MATHEMATICS]: {
       [GRADE_10]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop029', 'SchPop030'],
-        },
-        secondOperand: {
-          dataValues: ['STCL081'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop029', 'SchPop030'],
+          },
+          {
+            dataValues: ['STCL081'],
+          },
+        ],
       },
       [GRADE_11]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop031', 'SchPop032'],
-        },
-        secondOperand: {
-          dataValues: ['STCL097'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop031', 'SchPop032'],
+          },
+          {
+            dataValues: ['STCL097'],
+          },
+        ],
       },
       [GRADE_12]: {
         operator: 'SUBTRACT',
-        firstOperand: {
-          dataValues: ['SchPop033', 'SchPop034'],
-        },
-        secondOperand: {
-          dataValues: ['STCL113'],
-        },
+        operands: [
+          {
+            dataValues: ['SchPop033', 'SchPop034'],
+          },
+          {
+            dataValues: ['STCL113'],
+          },
+        ],
       },
     },
   },
