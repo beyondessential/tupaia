@@ -126,8 +126,34 @@ class List extends PureComponent {
     );
   }
 
+  renderCategoryItems(items, title, titleStyles = styles.title) {
+    const { selectedItems, selectedItemHighlightColor } = this.props;
+
+    return (
+      <div style={styles.wrapper}>
+        {title && (
+          <div style={styles.header}>
+            <h2 style={titleStyles}>{title}</h2>
+          </div>
+        )}
+        {items.map((item, index) => {
+          if (item.items) {
+            return this.renderCategoryItems(item.items, item.title, styles.nestedTitle);
+          }
+
+          return this.renderListItem(
+            item,
+            index === 0,
+            selectedItems.includes(item.key),
+            selectedItemHighlightColor,
+          );
+        })}
+      </div>
+    );
+  }
+
   render() {
-    const { items, selectedItems, selectedItemHighlightColor, title } = this.props;
+    const { items, title } = this.props;
     return (
       <div style={styles.wrapper}>
         {title && (
@@ -135,16 +161,7 @@ class List extends PureComponent {
             <h2 style={styles.title}>{title}</h2>
           </div>
         )}
-        <ul style={styles.list}>
-          {items.map((item, index) =>
-            this.renderListItem(
-              item,
-              index === 0,
-              selectedItems.includes(item.key),
-              selectedItemHighlightColor,
-            ),
-          )}
-        </ul>
+        <ul style={styles.list}>{this.renderCategoryItems(items)}</ul>
       </div>
     );
   }
@@ -164,6 +181,12 @@ const styles = {
   },
   title: {
     fontSize: 18,
+    margin: 0,
+    padding: 0,
+    flexShrink: 1,
+  },
+  nestedTitle: {
+    fontSize: 15,
     margin: 0,
     padding: 0,
     flexShrink: 1,

@@ -9,23 +9,22 @@
  * Find a measure by measure id from within a hierarchy.
  */
 
-export const getMeasureFromHierarchy = (measureHierarchy, measureId) => {
-  if (!measureId || !measureHierarchy) {
+export const getMeasureFromHierarchy = (measureHierarchies, measureId) => {
+  if (!measureId || !measureHierarchies) {
     return null;
   }
 
-  const hierarchyCategories = Object.values(measureHierarchy);
-  if (!hierarchyCategories) {
-    return null;
-  }
+  for (let i = 0; i < measureHierarchies.length; i++) {
+    const measureOptions = measureHierarchies[i];
 
-  for (let i = 0; i < hierarchyCategories.length; i++) {
-    const measureOptions = hierarchyCategories[i];
+    if (measureOptions.children) {
+      const result = getMeasureFromHierarchy(measureOptions.children, measureId);
 
-    for (let m = 0; m < measureOptions.length; m++) {
-      if (measureOptions[m] && measureOptions[m].measureId === measureId) {
-        return measureOptions[m];
+      if (result) {
+        return result;
       }
+    } else if (measureOptions.measureId === measureId) {
+      return measureOptions;
     }
   }
 

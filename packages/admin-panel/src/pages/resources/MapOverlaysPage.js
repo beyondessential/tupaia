@@ -12,10 +12,6 @@ const FIELDS = [
     source: 'name',
   },
   {
-    Header: 'Group Name',
-    source: 'groupName',
-  },
-  {
     Header: 'Permission Group',
     source: 'userGroup',
     editConfig: {

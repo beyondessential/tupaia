@@ -94,7 +94,7 @@ import {
   fetchOrgUnit,
   REQUEST_ORG_UNIT,
 } from './actions';
-import { isMobile, processMeasureInfo, formatDateForApi } from './utils';
+import { isMobile, processMeasureInfo, formatDateForApi, flattenMeasureHierarchy } from './utils';
 import { createUrlString } from './utils/historyNavigation';
 import { getDefaultDates } from './utils/periodGranularities';
 import { INITIAL_MEASURE_ID, INITIAL_PROJECT_CODE, initialOrgUnit } from './defaults';
@@ -720,7 +720,7 @@ function* watchMeasureChange() {
 
 function getSelectedMeasureFromHierarchy(measureHierarchy, selectedMeasureId, project) {
   const projectMeasureId = project.defaultMeasure;
-  const measures = Object.values(measureHierarchy).flat();
+  const measures = flattenMeasureHierarchy(measureHierarchy);
 
   if (measures.find(m => m.measureId === selectedMeasureId)) return selectedMeasureId;
   else if (measures.find(m => m.measureId === projectMeasureId)) return projectMeasureId;
@@ -737,10 +737,10 @@ function* fetchCurrentMeasureInfo() {
   const { measureHierarchy, selectedMeasureId } = state.measureBar;
 
   if (currentOrganisationUnitCode) {
-    const isHeirarchyPopulated = Object.keys(measureHierarchy).length;
+    const isHierarchyPopulated = measureHierarchy.length;
 
     // Update the default measure ID
-    if (isHeirarchyPopulated) {
+    if (isHierarchyPopulated) {
       const newMeasure = getSelectedMeasureFromHierarchy(
         measureHierarchy,
         selectedMeasureId,

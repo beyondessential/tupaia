@@ -12,7 +12,6 @@ export class MapOverlay extends BaseModel {
   static fields = [
     'id',
     'name',
-    'groupName',
     'userGroup',
     'dataElementCode',
     'isDataRegional',

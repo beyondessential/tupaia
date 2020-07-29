@@ -527,7 +527,7 @@ function measureBar(
     isExpanded: false,
     selectedMeasureId: null,
     currentMeasure: {},
-    measureHierarchy: {},
+    measureHierarchy: [],
     currentMeasureOrganisationUnitCode: null,
     error: null,
   },
@@ -535,7 +535,7 @@ function measureBar(
 ) {
   switch (action.type) {
     case CLEAR_MEASURE_HIERARCHY:
-      return { ...state, measureHierarchy: {} };
+      return { ...state, measureHierarchy: [] };
     case CLEAR_MEASURE:
       return { ...state, currentMeasure: {}, selectedMeasureId: null };
     case CHANGE_MEASURE:
