@@ -120,15 +120,17 @@ export class DataBuilder {
    */
   async sortEventsByAncestor(events, ancestorType) {
     const hierarchyId = await this.fetchEntityHierarchyId();
-    const mappedEvents = await events.map(async event => {
-      const entity = await Entity.findOne({ code: event.orgUnit });
-      const ancestor = await entity.getAncestorOfType(ancestorType, hierarchyId);
+    const mappedEvents = await Promise.all(
+      events.map(async event => {
+        const entity = await Entity.findOne({ code: event.orgUnit });
+        const ancestor = await entity.getAncestorOfType(ancestorType, hierarchyId);
 
-      return {
-        ...event,
-        sortName: ancestor ? `${ancestor.name}_${event.orgUnitName}` : event.orgUnitName,
-      };
-    });
+        return {
+          ...event,
+          sortName: ancestor ? `${ancestor.name}_${event.orgUnitName}` : event.orgUnitName,
+        };
+      }),
+    );
     return mappedEvents.sort(getSortByKey('sortName'));
   }
 
