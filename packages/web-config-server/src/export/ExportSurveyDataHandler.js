@@ -68,7 +68,7 @@ export class ExportSurveyDataHandler extends RouteHandler {
 
       //Formatted data
       sheet = xlsx.utils.sheet_add_json(sheet, formattedData, {
-        skipHeader: skipHeader,
+        skipHeader,
         origin: 'A2',
       });
 

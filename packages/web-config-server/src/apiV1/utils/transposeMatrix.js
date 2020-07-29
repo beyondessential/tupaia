@@ -3,7 +3,7 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
 
-/* take a object with columns and rows and return an object with rows and columns switched */
+/* take an object with columns and rows and return an object with rows and columns switched */
 export const transposeMatrix = ({ columns, rows }, rowHeaderKey = 'dataElement') => {
   // Set up a row per column, we'll fill data later
   const newRows = columns.map(() => {
