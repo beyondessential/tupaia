@@ -1,0 +1,10 @@
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+{
+  "root": true,
+  "plugins": ["eslint-plugin-cypress"],
+  "extends": ["plugin:cypress/recommended"],
+  "env": { "cypress/globals": true }
+}

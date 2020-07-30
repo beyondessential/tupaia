@@ -1,0 +1,284 @@
+[
+  {
+    "id": "ff46611a-312e-47de-9339-0a4e10674d03",
+    "name": "South Billieland",
+    "sitesReported": 15,
+    "address": {
+      "name": "South Billieland Health Clinic",
+      "district": "South Billieland District 96799",
+      "country": "Antigua and Barbuda"
+    },
+    "contact": {
+      "name": "Winifred Wisozk",
+      "department": "Regional Identity Designer",
+      "email": "Lea.Armstrong13@yahoo.com"
+    },
+    "syndromes": [
+      {
+        "id": "afr",
+        "title": "Acute Fever and Rash (AFR)",
+        "percentageChange": 6,
+        "totalCases": 773
+      },
+      {
+        "id": "dia",
+        "title": "Diarrhoea (DIA)",
+        "percentageChange": -4,
+        "totalCases": 343
+      },
+      {
+        "id": "ili",
+        "title": "Influenza-like Illness (ILI)",
+        "percentageChange": 6,
+        "totalCases": 739
+      },
+      {
+        "id": "pf",
+        "title": "Prolonged Fever (AFR)",
+        "percentageChange": -2,
+        "totalCases": 910
+      },
+      {
+        "id": "dil",
+        "title": "Dengue-like Illness (DIL)",
+        "percentageChange": 4,
+        "totalCases": 371
+      }
+    ]
+  },
+  {
+    "id": "2525dd3b-e99c-4b27-a9a8-cfa1875dd115",
+    "name": "Port Winston",
+    "sitesReported": 0,
+    "address": {
+      "name": "Port Winston Health Clinic",
+      "district": "Port Winston District 96799",
+      "country": "Saint Barthelemy"
+    },
+    "contact": {
+      "name": "Everette Frami",
+      "department": "Global Integration Director",
+      "email": "Karley83@yahoo.com"
+    },
+    "syndromes": [
+      {
+        "id": "afr",
+        "title": "Acute Fever and Rash (AFR)",
+        "percentageChange": -1,
+        "totalCases": 63
+      },
+      {
+        "id": "dia",
+        "title": "Diarrhoea (DIA)",
+        "percentageChange": -2,
+        "totalCases": 633
+      },
+      {
+        "id": "ili",
+        "title": "Influenza-like Illness (ILI)",
+        "percentageChange": 10,
+        "totalCases": 446
+      },
+      {
+        "id": "pf",
+        "title": "Prolonged Fever (AFR)",
+        "percentageChange": -12,
+        "totalCases": 284
+      },
+      {
+        "id": "dil",
+        "title": "Dengue-like Illness (DIL)",
+        "percentageChange": -6,
+        "totalCases": 866
+      }
+    ]
+  },
+  {
+    "id": "b7f0161d-3e99-41f3-b6e2-a201bffd17aa",
+    "name": "Tarastad",
+    "sitesReported": 18,
+    "address": {
+      "name": "Tarastad Health Clinic",
+      "district": "Tarastad District 96799",
+      "country": "Uzbekistan"
+    },
+    "contact": {
+      "name": "Everette Bailey Jr.",
+      "department": "Investor Paradigm Facilitator",
+      "email": "Stone_Quigley35@hotmail.com"
+    },
+    "syndromes": [
+      {
+        "id": "afr",
+        "title": "Acute Fever and Rash (AFR)",
+        "percentageChange": 2,
+        "totalCases": 889
+      },
+      {
+        "id": "dia",
+        "title": "Diarrhoea (DIA)",
+        "percentageChange": 7,
+        "totalCases": 161
+      },
+      {
+        "id": "ili",
+        "title": "Influenza-like Illness (ILI)",
+        "percentageChange": -2,
+        "totalCases": 470
+      },
+      {
+        "id": "pf",
+        "title": "Prolonged Fever (AFR)",
+        "percentageChange": 9,
+        "totalCases": 934
+      },
+      {
+        "id": "dil",
+        "title": "Dengue-like Illness (DIL)",
+        "percentageChange": -15,
+        "totalCases": 726
+      }
+    ]
+  },
+  {
+    "id": "3241abb6-8ea1-438c-ba46-38a2fa178869",
+    "name": "East Vaughnborough",
+    "sitesReported": 16,
+    "address": {
+      "name": "East Vaughnborough Health Clinic",
+      "district": "East Vaughnborough District 96799",
+      "country": "Kazakhstan"
+    },
+    "contact": {
+      "name": "Miss Jasmin Dare",
+      "department": "Future Brand Liaison",
+      "email": "Gilbert.Collins@hotmail.com"
+    },
+    "syndromes": [
+      {
+        "id": "afr",
+        "title": "Acute Fever and Rash (AFR)",
+        "percentageChange": 3,
+        "totalCases": 574
+      },
+      {
+        "id": "dia",
+        "title": "Diarrhoea (DIA)",
+        "percentageChange": -4,
+        "totalCases": 850
+      },
+      {
+        "id": "ili",
+        "title": "Influenza-like Illness (ILI)",
+        "percentageChange": -10,
+        "totalCases": 774
+      },
+      {
+        "id": "pf",
+        "title": "Prolonged Fever (AFR)",
+        "percentageChange": -15,
+        "totalCases": 793
+      },
+      {
+        "id": "dil",
+        "title": "Dengue-like Illness (DIL)",
+        "percentageChange": 5,
+        "totalCases": 94
+      }
+    ]
+  },
+  {
+    "id": "87b69581-2048-44c6-b558-e50e0f0934e9",
+    "name": "Port Dougmouth",
+    "sitesReported": 9,
+    "address": {
+      "name": "Port Dougmouth Health Clinic",
+      "district": "Port Dougmouth District 96799",
+      "country": "Palestinian Territory"
+    },
+    "contact": {
+      "name": "Edythe DuBuque",
+      "department": "National Usability Consultant",
+      "email": "Frankie_Ratke@yahoo.com"
+    },
+    "syndromes": [
+      {
+        "id": "afr",
+        "title": "Acute Fever and Rash (AFR)",
+        "percentageChange": 0,
+        "totalCases": 820
+      },
+      {
+        "id": "dia",
+        "title": "Diarrhoea (DIA)",
+        "percentageChange": -4,
+        "totalCases": 217
+      },
+      {
+        "id": "ili",
+        "title": "Influenza-like Illness (ILI)",
+        "percentageChange": -5,
+        "totalCases": 430
+      },
+      {
+        "id": "pf",
+        "title": "Prolonged Fever (AFR)",
+        "percentageChange": 14,
+        "totalCases": 780
+      },
+      {
+        "id": "dil",
+        "title": "Dengue-like Illness (DIL)",
+        "percentageChange": 2,
+        "totalCases": 23
+      }
+    ]
+  },
+  {
+    "id": "49e02cca-1f73-41ce-ba09-62e5261939fa",
+    "name": "Bernardoborough",
+    "sitesReported": 6,
+    "address": {
+      "name": "Bernardoborough Health Clinic",
+      "district": "Bernardoborough District 96799",
+      "country": "Bahrain"
+    },
+    "contact": {
+      "name": "Hunter Spencer",
+      "department": "Dynamic Quality Designer",
+      "email": "Ulises3@hotmail.com"
+    },
+    "syndromes": [
+      {
+        "id": "afr",
+        "title": "Acute Fever and Rash (AFR)",
+        "percentageChange": 5,
+        "totalCases": 360
+      },
+      {
+        "id": "dia",
+        "title": "Diarrhoea (DIA)",
+        "percentageChange": -11,
+        "totalCases": 311
+      },
+      {
+        "id": "ili",
+        "title": "Influenza-like Illness (ILI)",
+        "percentageChange": -6,
+        "totalCases": 29
+      },
+      {
+        "id": "pf",
+        "title": "Prolonged Fever (AFR)",
+        "percentageChange": 12,
+        "totalCases": 577
+      },
+      {
+        "id": "dil",
+        "title": "Dengue-like Illness (DIL)",
+        "percentageChange": -12,
+        "totalCases": 923
+      }
+    ]
+  }
+]

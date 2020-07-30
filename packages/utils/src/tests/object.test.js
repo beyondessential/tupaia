@@ -145,19 +145,41 @@ describe('object', () => {
   });
 
   describe('reduceToDictionary()', () => {
-    const expectedResult = {
-      id1: 10,
-      id2: 20,
-    };
-
-    it('should create a dictionary out of an array of objects', () => {
-      expect(reduceToDictionary([object1, object2], 'id', 'value')).to.deep.equal(expectedResult);
+    it('should accept either an array or a dictionary of objects as input', () => {
+      expect(reduceToDictionary([object1, object2], 'id', 'value')).to.deep.equal(
+        reduceToDictionary({ id1: object1, id2: object2 }, 'id', 'value'),
+      );
     });
 
-    it('should create a dictionary out of an object dictionary', () => {
-      expect(reduceToDictionary({ id1: object1, id2: object2 }, 'id', 'value')).to.deep.equal(
-        expectedResult,
-      );
+    describe('key mappers', () => {
+      it('string', () => {
+        const result = reduceToDictionary([object1, object2], 'id', 'value');
+        expect(Object.keys(result)).to.deep.equal(['id1', 'id2']);
+      });
+
+      it('function', () => {
+        const result = reduceToDictionary([object1, object2], object => object.value / 100, 'id');
+        expect(Object.keys(result)).to.deep.equal(['0.1', '0.2']);
+      });
+    });
+
+    describe('value mappers', () => {
+      it('string', () => {
+        const result = reduceToDictionary([object1, object2], 'id', 'value');
+        expect(Object.values(result)).to.deep.equal([10, 20]);
+      });
+
+      it('function', () => {
+        const result = reduceToDictionary([object1, object2], 'id', object => object.value / 100);
+        expect(Object.values(result)).to.deep.equal([0.1, 0.2]);
+      });
+    });
+
+    it('should combine key and value mappers into an object', () => {
+      expect(reduceToDictionary([object1, object2], 'id', 'value')).to.deep.equal({
+        id1: 10,
+        id2: 20,
+      });
     });
   });
 

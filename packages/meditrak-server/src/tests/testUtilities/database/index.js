@@ -5,6 +5,8 @@
 
 export { insertEntityAndFacility } from './insertEntityAndFacility';
 export { resetTestData } from './resetTestData';
+export { createEntity, createDataElement, createAlert } from './createAlert';
+export { createComment } from './createComment';
 export {
   upsertAnswer,
   upsertEntity,

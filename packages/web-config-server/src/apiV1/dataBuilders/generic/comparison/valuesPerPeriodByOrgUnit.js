@@ -62,3 +62,11 @@ export const sumPreviousValuesPerDayByOrgUnit = async (queryConfig, aggregator, 
     dhisApi,
     aggregator.aggregationTypes.SUM_PREVIOUS_EACH_DAY,
   );
+
+export const sumValuesPerQuarterByOrgUnit = async (queryConfig, aggregator, dhisApi) =>
+  valuesPerPeriodByOrgUnit(
+    queryConfig,
+    aggregator,
+    dhisApi,
+    aggregator.aggregationTypes.SUM_EACH_QUARTER,
+  );
