@@ -332,7 +332,6 @@ const BASE_MEASURE_BUILDER_CONFIG = {
 
 const PRESENTATION_OPTIONS = {
   displayType: 'spectrum',
-  valueType: 'number',
   scaleType: 'neutral',
   hideByDefault: {
     null: true,
