@@ -39,7 +39,7 @@ class RawDataValuesBuilder extends DataBuilder {
   }
 
   async fetchResults(surveyCodes) {
-    const buildData = {};
+    const builtData = {};
 
     const surveyCodeToName = reduceToDictionary(
       expandSurveyCodes(this.config.surveys),
@@ -87,7 +87,7 @@ class RawDataValuesBuilder extends DataBuilder {
 
       const { skipHeader = true } = this.config;
 
-      buildData[surveyCodeToName[surveyCode]] = {
+      builtData[surveyCodeToName[surveyCode]] = {
         // need the nested 'data' property to be interpreted as the input to a matrix
         data: {
           columns: builtColumns,
@@ -96,7 +96,7 @@ class RawDataValuesBuilder extends DataBuilder {
         skipHeader: skipHeader,
       };
     }
-    return buildData;
+    return builtData;
   }
 
   /**
