@@ -26,7 +26,7 @@ import { changeMeasure, clearMeasure, toggleMeasureExpand } from '../../actions'
 import { HierarchyItem } from '../../components/HierarchyItem';
 import TupaiaIcon from '../../images/TupaiaIcon.svg';
 import { MAP_OVERLAY_SELECTOR } from '../../styles';
-import { selectCurrentOrgUnit } from '../../selectors';
+import { selectCurrentOrgUnit, selectCurrentMeasure } from '../../selectors';
 
 export class MeasureBar extends Component {
   constructor(props) {
@@ -172,22 +172,23 @@ MeasureBar.propTypes = {
   onExpandClick: PropTypes.func.isRequired,
   onSelectMeasure: PropTypes.func.isRequired,
   onClearMeasure: PropTypes.func.isRequired,
-  currentOrganisationUnitCode: PropTypes.string,
-  currentOrganisationUnitName: PropTypes.string,
+  currentOrganisationUnitCode: PropTypes.string.isRequired,
+  currentOrganisationUnitName: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = state => {
-  const { currentMeasure, measureHierarchy, isExpanded } = state.measureBar;
+  const { measureHierarchy, isExpanded } = state.measureBar;
   const { isMeasureLoading } = state.map;
-  const { currentOrganisationUnitCode } = state.global;
+  const currentOrganisationUnit = selectCurrentOrgUnit(state);
+  const currentMeasure = selectCurrentMeasure(state);
 
   return {
     currentMeasure,
     measureHierarchy,
     isExpanded,
     isMeasureLoading,
-    currentOrganisationUnitCode,
-    currentOrganisationUnitName: selectCurrentOrgUnit(state).name,
+    currentOrganisationUnitCode: currentOrganisationUnit.organisationUnitCode,
+    currentOrganisationUnitName: currentOrganisationUnit.name,
   };
 };
 

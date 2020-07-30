@@ -16,7 +16,6 @@
  */
 
 import { initialOrgUnit } from './defaults';
-import { getSiblingItems, storeSiblingItems } from './utils';
 
 export const FETCH_INITIAL_DATA = 'FETCH_INITIAL_DATA';
 export const ATTEMPT_CHANGE_PASSWORD = 'ATTEMPT_CHANGE_PASSWORD';
@@ -499,7 +498,7 @@ export function changeBounds(bounds) {
 
 /**
  * Changes current measure, should change features rendered on map after saga data fetch.
- * Updates currentMeasure in measureBar.
+ * Updates selectedMeasureId in measureBar.
  *
  * @param {string} measureId
  * @param {string} organisationUnitCode
