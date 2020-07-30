@@ -29,16 +29,16 @@ class RawDataValuesBuilder extends DataBuilder {
       const { dataElements: dataElementsMetadata } = await this.fetchDataGroup(surveyCode);
       const surveyConfig = surveysConfig[surveyCode];
 
-      const dataElementCodes =
-        surveyConfig && surveyConfig.excludeCodes && surveyConfig.excludeCodes.length
-          ? dataElementsMetadata
-              .map(d => d.code)
-              .filter(code => !surveyConfig.excludeCodes.includes(code))
-          : dataElementsMetadata.map(d => d.code);
-
+      const dataElementCodes = dataElementsMetadata.map(d => d.code);
       let additionalQueryConfig = { dataElementCodes };
 
       if (surveyConfig) {
+        const { excludeCodes = [] } = surveyConfig;
+        if (excludeCodes.length > 0) {
+          additionalQueryConfig.dataElementCodes = dataElementCodes.filter(
+            code => !excludeCodes.includes(code),
+          );
+        }
         const { entityAggregation } = surveyConfig;
         additionalQueryConfig = {
           ...additionalQueryConfig,
