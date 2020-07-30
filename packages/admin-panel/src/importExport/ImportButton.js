@@ -18,7 +18,7 @@ export const ImportButtonComponent = ({ dispatch, label, Button }) => (
 ImportButtonComponent.propTypes = {
   dispatch: PropTypes.func.isRequired,
   label: PropTypes.string,
-  Button: PropTypes.element,
+  Button: PropTypes.any,
 };
 
 ImportButtonComponent.defaultProps = {
