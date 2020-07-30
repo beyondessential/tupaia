@@ -106,8 +106,8 @@ export class EntityHierarchyBuilder {
     }
 
     // keep recursing through the hierarchy
-    const grandparent = await this.recursivelyFetchAncestors(parent, hierarchyId);
-    return grandparent ? [parent, ...grandparent] : [parent];
+    const ancestors = await this.recursivelyFetchAncestors(parent, hierarchyId);
+    return [parent, ...ancestors];
   }
 
   getPreviousGeneration = async (child, hierarchyId) => {
