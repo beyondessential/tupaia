@@ -21,7 +21,6 @@
     "url": "git+https://github.com/beyondessential/tupaia"
   },
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
-  "license": "MIT",
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
     "@tupaia/access-policy": "3.0.0",
