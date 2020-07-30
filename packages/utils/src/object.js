@@ -40,13 +40,15 @@ export const getKeysSortedByValues = (object, options = {}) => {
  * Can be used in `Array.prototype.sort` for an array of objects
  *
  * @param {string} key
- * @param {{ ascending: boolean }} options
+ * @param {{ ascending: boolean }{ nestedKey: string }} options
  * @returns {Function} A `(object1: object, object2: object) => number` function
  */
-export function getSortByKey(key, options) {
+export function getSortByKey(key, options = {}) {
+  const { nestedKey = false } = options;
+
   const compareValuesAscending = (a, b) => {
-    const valueA = a[key];
-    const valueB = b[key];
+    const valueA = nestedKey && a[key] ? a[key][nestedKey] : a[key];
+    const valueB = nestedKey && b[key] ? b[key][nestedKey] : b[key];
 
     if (typeof valueA === 'string' && typeof valueB === 'string') {
       return valueA.localeCompare(valueB, undefined, { numeric: true });
@@ -58,7 +60,7 @@ export function getSortByKey(key, options) {
     return valueA > valueB ? 1 : 0;
   };
 
-  const { ascending = true } = options || {};
+  const { ascending = true } = options;
   return (a, b) => {
     const ascValue = compareValuesAscending(a, b);
     return ascending ? ascValue : ascValue * -1;
