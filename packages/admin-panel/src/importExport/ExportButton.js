@@ -6,11 +6,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import ImportExportIcon from '@material-ui/icons/ImportExport';
 import { IconButton } from '../widgets';
 import { exportData, openFilteredExportDialog } from './actions';
 
 const ExportButtonComponent = ({ onClick }) => {
-  return <IconButton icon="download" onClick={onClick} />;
+  return (
+    <IconButton onClick={onClick}>
+      <ImportExportIcon />
+    </IconButton>
+  );
 };
 
 ExportButtonComponent.propTypes = {
