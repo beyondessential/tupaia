@@ -38,7 +38,7 @@ describe('projectSelectors', () => {
         selectProjectByCode(testState1, 'PROJECT_1');
         expect(selectProjectByCode.recomputations()).toEqual(1);
 
-        selectProjectByCode({ ...testState1, someOtherState: 'irrelevent' }, 'PROJECT_1');
+        selectProjectByCode({ ...testState1, someOtherState: 'irrelevant' }, 'PROJECT_1');
         expect(selectProjectByCode.recomputations()).toEqual(1); // Nothing has changed, so don't recompute
 
         selectProjectByCode(testState2, 'PROJECT_1');
@@ -54,7 +54,7 @@ describe('projectSelectors', () => {
         selectIsProject(testState1, 'PROJECT_1');
         expect(selectIsProject.recomputations()).toEqual(1);
 
-        selectIsProject({ ...testState1, someOtherState: 'irrelevent' }, 'PROJECT_1');
+        selectIsProject({ ...testState1, someOtherState: 'irrelevant' }, 'PROJECT_1');
         expect(selectIsProject.recomputations()).toEqual(1); // Nothing has changed, so don't recompute
 
         selectIsProject(testState2, 'PROJECT_1');
@@ -70,7 +70,7 @@ describe('projectSelectors', () => {
         selectAdjustedProjectBounds(testState1, 'PROJECT_1');
         expect(selectAdjustedProjectBounds.recomputations()).toEqual(1);
 
-        selectAdjustedProjectBounds({ ...testState1, someOtherState: 'irrelevent' }, 'PROJECT_1');
+        selectAdjustedProjectBounds({ ...testState1, someOtherState: 'irrelevant' }, 'PROJECT_1');
         expect(selectAdjustedProjectBounds.recomputations()).toEqual(1); // Nothing has changed, so don't recompute
 
         selectAdjustedProjectBounds(testState2, 'PROJECT_1');
@@ -89,18 +89,18 @@ describe('projectSelectors', () => {
         };
 
         const routing2 = {
-          pathname: '/PROJECT_1/TO/A%20DASHBOARD',
+          pathname: '/PROJECT_1/PG/ANOTHER%20DASHBOARD',
           search: '?overlay=abc%20123',
         };
 
         const routing3 = {
-          pathname: '/PROJECT_2/TO/A%20DASHBOARD',
+          pathname: '/PROJECT_2/PG/ANOTHER%20DASHBOARD',
           search: '?overlay=abc%20123',
         };
         selectCurrentProject({ ...testState1, routing: routing1 });
         expect(selectCurrentProject.recomputations()).toEqual(1);
 
-        selectCurrentProject({ ...testState1, routing: routing1, someOtherState: 'irrelevent' });
+        selectCurrentProject({ ...testState1, routing: routing1, someOtherState: 'irrelevant' });
         expect(selectCurrentProject.recomputations()).toEqual(1); // Nothing has changed, so don't recompute
 
         selectCurrentProject({ ...testState2, routing: routing1 });
@@ -120,6 +120,15 @@ describe('projectSelectors', () => {
           expect(selectProjectByCode(state, 'explore')).toEqual(state.project.projects[0]);
         });
 
+        it('returns undefined when trying to select a project when there are no projects in the store', () => {
+          expect(
+            selectProjectByCode(
+              { ...state, project: { ...state.project, projects: null } },
+              'explore',
+            ),
+          ).toEqual(undefined);
+        });
+
         it('can select a project code which does not exist', () => {
           expect(selectProjectByCode(state, 'DOES_NOT_EXIST')).toEqual(undefined);
         });
@@ -130,22 +139,22 @@ describe('projectSelectors', () => {
       });
 
       describe('selectIsProject', () => {
-        it('can select a project which exists', () => {
+        it('returns `true` for an existing project', () => {
           expect(selectIsProject(state, 'covidau')).toEqual(true);
         });
 
-        it('can select a project which does not exist', () => {
+        it('returns `false` for a project which does not exist', () => {
           expect(selectIsProject(state, 'DOES_NOT_EXIST')).toEqual(false);
         });
       });
 
       describe('selectAdjustedProjectBounds', () => {
-        it('can select a project which exists', () => {
+        it('can select bounds for a project which exists', () => {
           expect(selectAdjustedProjectBounds(state, 'covidau')).toEqual(
             state.project.projects[1].bounds,
           );
         });
-        it('can select a project which exists', () => {
+        it('can select bounds for the `explore` and `disaster` projects', () => {
           expect(selectAdjustedProjectBounds(state, 'explore')).toEqual(
             initialOrgUnit.location.bounds,
           );
@@ -161,7 +170,6 @@ describe('projectSelectors', () => {
       });
 
       describe('selectCurrentProject', () => {
-        // QUESTION: I think this is enough to test it as underlying functionality is tested elsewhere
         it('can select the current project', () => {
           expect(selectCurrentProject(state)).toEqual(state.project.projects[0]);
         });

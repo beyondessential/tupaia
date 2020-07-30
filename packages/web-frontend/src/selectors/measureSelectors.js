@@ -14,7 +14,7 @@ import {
   selectCurrentOrgUnitCode,
   selectAncestors,
   selectActiveProjectCountries,
-  selectCountryHeirachy,
+  selectCountryHierarchy,
   selectAllOrgUnitsInCountry,
   selectDescendantsFromCache,
 } from './orgUnitSelectors';
@@ -84,7 +84,7 @@ export const selectAllMeasuresWithDisplayInfo = createSelector(
   [
     state => selectActiveProjectCountries(state),
     state => selectCurrentProjectCode(state),
-    state => selectCountryHeirachy(state, state.map.measureInfo.currentCountry),
+    state => selectCountryHierarchy(state, state.map.measureInfo.currentCountry),
     state => state.map.measureInfo.measureData,
     state => state.map.measureInfo.measureOptions,
     state => state.map.measureInfo.hiddenMeasures,
@@ -123,7 +123,7 @@ export const selectAllMeasuresWithDisplayInfo = createSelector(
 
 export const selectAllMeasuresWithDisplayAndOrgUnitData = createSelector(
   [
-    state => selectCountryHeirachy(state, state.map.measureInfo.currentCountry),
+    state => selectCountryHierarchy(state, state.map.measureInfo.currentCountry),
     selectAllMeasuresWithDisplayInfo,
   ],
   (country, allMeasureData) =>
@@ -152,7 +152,7 @@ export const selectRenderedMeasuresWithDisplayInfo = createSelector(
 
     const allDescendantCodesOfAncestor = selectDescendantsFromCache(
       country,
-      displaylevelAncestor,
+      displaylevelAncestor.organisationUnitCode,
     ).map(descendant => descendant.organisationUnitCode);
 
     return allMeasuresWithMeasureInfo.filter(measure =>

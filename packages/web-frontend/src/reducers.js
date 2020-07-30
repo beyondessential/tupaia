@@ -20,7 +20,7 @@ import map from './reducers/mapReducers';
 import disaster from './disaster/reducers';
 import project from './projects/reducers';
 import orgUnits from './reducers/orgUnitReducers';
-import { getMeasureFromHierarchy, isMobile } from './utils';
+import { isMobile } from './utils';
 import { LANDING } from './containers/OverlayDiv/constants';
 import { getUniqueViewId } from './utils/getUniqueViewId';
 import { EMAIL_VERIFIED_STATUS } from './containers/EmailVerification';

@@ -95,7 +95,7 @@ export const selectCurrentOrgUnitCode = state => state.global.currentOrganisatio
 const selectOrgUnitChildrenFromCache = (country, parentCode) =>
   safeGet(orgUnitChildrenCache, [country, parentCode]);
 
-export const selectCountryHeirachy = (state, code) =>
+export const selectCountryHierarchy = (state, code) =>
   safeGet(countryCache, [state.orgUnits.orgUnitMap, code]);
 
 export const selectAncestors = (country, code, level) =>
@@ -107,11 +107,11 @@ export const selectDescendantsFromCache = (country, code) =>
   safeGet(descendantsCache, [country, code]);
 
 export const selectOrgUnit = createSelector(
-  [selectCountryHeirachy, (_, code) => code],
+  [selectCountryHierarchy, (_, code) => code],
   getOrgUnitFromCountry,
 );
 
-export const selectOrgUnitCountry = createSelector([selectCountryHeirachy], country =>
+export const selectOrgUnitCountry = createSelector([selectCountryHierarchy], country =>
   country ? country[country.countryCode] : undefined,
 );
 
@@ -134,7 +134,7 @@ export const selectOrgUnitChildren = createSelector(
   [
     state => selectCurrentProjectCode(state),
     state => selectCountriesAsOrgUnits(state),
-    selectCountryHeirachy,
+    selectCountryHierarchy,
     (_, code) => code,
   ],
   (projectCode, countriesAsOrgUnits, country, code) =>
@@ -146,7 +146,7 @@ const selectOrgUnitSiblingsAndSelf = createSelector(
     state => selectCurrentProjectCode(state),
     (state, code) => getOrgUnitParent(selectOrgUnit(state, code)),
     state => selectCountriesAsOrgUnits(state),
-    selectCountryHeirachy,
+    selectCountryHierarchy,
   ],
   (projectCode, parentCode, countriesAsOrgUnits, country) => {
     if (!parentCode) {

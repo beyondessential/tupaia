@@ -7,7 +7,6 @@
 
 import {
   selectOrgUnit,
-  selectOrgUnitCountry,
   selectCurrentOrgUnit,
   selectOrgUnitChildren,
   selectOrgUnitSiblings,
@@ -78,12 +77,12 @@ describe('orgUnitSelectors', () => {
         };
 
         const routing2 = {
-          pathname: '/PROJECT_1/TO/A%20DASHBOARD',
+          pathname: '/PROJECT_2/TO/ANOTHER%20DASHBOARD',
           search: { MEASURE: 'abc%20123' },
         };
 
         const routing3 = {
-          pathname: '/PROJECT_2/TO_HfevaHC/A%20DASHBOARD',
+          pathname: '/PROJECT_2/TO_HfevaHC/ANOTHER%20DASHBOARD',
           search: { MEASURE: 'abc%20123' },
         };
         const testState4 = {
@@ -102,14 +101,14 @@ describe('orgUnitSelectors', () => {
         selectCurrentOrgUnit({ ...testState1, routing: routing1 });
         expect(selectCurrentOrgUnit.recomputations()).toEqual(1);
 
-        selectCurrentOrgUnit({ ...testState1, routing: routing1, someOtherState: 'irrelevent' });
+        selectCurrentOrgUnit({ ...testState1, routing: routing1, someOtherState: 'irrelevant' });
         expect(selectCurrentOrgUnit.recomputations()).toEqual(1); // Nothing has changed, so don't recompute
 
         selectCurrentOrgUnit({ ...testState2, routing: routing1 });
-        expect(selectCurrentOrgUnit.recomputations()).toEqual(1); // Org unit array has changed, but not the relevent country, do not recompute
+        expect(selectCurrentOrgUnit.recomputations()).toEqual(1); // Org unit array has changed, but not the relevant country, do not recompute
 
         selectCurrentOrgUnit({ ...testState3, routing: routing1 });
-        expect(selectCurrentOrgUnit.recomputations()).toEqual(1); // The relevent country has changed, but the org unit itself hasn't, don't recompute
+        expect(selectCurrentOrgUnit.recomputations()).toEqual(1); // The relevant country has changed, but the org unit itself hasn't, don't recompute
 
         selectCurrentOrgUnit({ ...testState4, routing: routing1 });
         expect(selectCurrentOrgUnit.recomputations()).toEqual(2); // The org unit itself has changed, recompute
@@ -163,7 +162,7 @@ describe('orgUnitSelectors', () => {
       it('can select from state', () => {
         expect(selectCurrentOrgUnit(state)).toEqual(state.orgUnits.orgUnitMap.TO.TO);
       });
-      it('can select if code is undefined', () => {
+      it('can select if the path is invalid', () => {
         expect(
           selectCurrentOrgUnit({ ...state, routing: { pathname: 'NOT_A_VALID_PATH' } }),
         ).toEqual({});
