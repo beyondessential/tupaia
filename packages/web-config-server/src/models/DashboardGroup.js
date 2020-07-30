@@ -27,7 +27,7 @@ export class DashboardGroup extends BaseModel {
     projectCode,
     hierarchyId,
   ) {
-    const ancestorCodes = await entity.getAncestorCodes(true, hierarchyId);
+    const ancestorCodes = await entity.getAncestorCodes(hierarchyId);
     const entityCodes = [...ancestorCodes, entity.code];
     const results = await DashboardGroup.find({
       organisationLevel,
