@@ -1,0 +1,24 @@
+{
+  "extends": [
+    "@beyondessential/eslint-config-beyondessential",
+    "plugin:prettier/recommended",
+    "plugin:react-hooks/recommended"
+  ],
+  "parser": "babel-eslint",
+  "env": {
+    "browser": true,
+    "mocha": true,
+    "jest/globals": true
+  },
+  "rules": {
+    "react/jsx-one-expression-per-line": "off",
+    "react/jsx-filename-extension": "off",
+    "react/forbid-prop-types": "off",
+    "jsx-a11y/href-no-hash": "off",
+    "no-restricted-syntax": ["error", "ForInStatement", "LabeledStatement", "WithStatement"],
+    "import/no-extraneous-dependencies": [
+      "error",
+      { "devDependencies": true, "optionalDependencies": true, "peerDependencies": true }
+    ]
+  }
+}
