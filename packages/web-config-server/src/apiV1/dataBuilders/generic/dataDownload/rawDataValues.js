@@ -93,7 +93,7 @@ class RawDataValuesBuilder extends DataBuilder {
           columns: builtColumns,
           rows: builtRows,
         },
-        skipHeader: skipHeader,
+        skipHeader,
       };
     }
     return builtData;
