@@ -39,25 +39,19 @@ const DATA_BUILDER_CONFIG = {
           entityAggregation: {
             dataSourceEntityType: 'village',
           },
-          join: {
-            code: 'WFIPDS2',
-          },
+          mergeDataValue: 'WFIPDS2',
         },
         WISH_6PLD: {
           entityAggregation: {
             dataSourceEntityType: 'village',
           },
-          join: {
-            code: 'WFIPHDS3',
-          },
+          mergeDataValue: 'WFIPHDS3',
         },
         WISH_6MTD: {
           entityAggregation: {
             dataSourceEntityType: 'village',
           },
-          join: {
-            code: 'WFIBDS2',
-          },
+          mergeDataValue: 'WFIBDS2',
         },
       },
       transformations: ['mergeSurveys', 'transposeMatrix'],
