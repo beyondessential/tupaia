@@ -4,20 +4,7 @@
  */
 
 import React from 'react';
-import {
-  Assignment,
-  AssignmentInd,
-  InsertChart,
-  Map,
-  QuestionAnswer,
-  PeopleAlt,
-  Person,
-  VerifiedUser,
-  Flag,
-  SupervisedUserCircle,
-  Storage,
-  Public,
-} from '@material-ui/icons';
+import { Assignment, InsertChart, PeopleAlt, Flag, Storage } from '@material-ui/icons';
 import { StrivePage } from './pages/StrivePage';
 import {
   CountriesPage,
@@ -48,38 +35,32 @@ export const ROUTES = [
       {
         label: 'Surveys',
         to: '',
-        icon: <Assignment />,
-        component: <SurveysPage />,
+        component: SurveysPage,
       },
       {
         label: 'Questions',
         to: '/questions',
-        icon: <Assignment />,
-        component: <QuestionsPage />,
+        component: QuestionsPage,
       },
       {
         label: 'Option Sets',
         to: '/option-sets',
-        icon: <Assignment />,
-        component: <OptionSetsPage />,
+        component: OptionSetsPage,
       },
       {
         label: 'Data Elements',
         to: '/data-elements',
-        icon: <Assignment />,
-        component: <DataElementsPage />,
+        component: DataElementsPage,
       },
       {
         label: 'Data Groups',
         to: '/data-groups',
-        icon: <Assignment />,
-        component: <DataGroupsPage />,
+        component: DataGroupsPage,
       },
       {
         label: 'Survey Responses',
         to: '/survey-responses',
-        icon: <Assignment />,
-        component: <SurveyResponsesPage />,
+        component: SurveyResponsesPage,
       },
     ],
   },
@@ -91,26 +72,22 @@ export const ROUTES = [
       {
         label: 'Dashboard Reports',
         to: '',
-        icon: <InsertChart />,
-        component: <DashboardReportsPage />,
+        component: DashboardReportsPage,
       },
       {
         label: 'Dashboard Groups',
         to: '/dashboard-groups',
-        icon: <InsertChart />,
-        component: <DashboardGroupsPage />,
+        component: DashboardGroupsPage,
       },
       {
         label: 'Map Overlays',
         to: '/map-overlays',
-        icon: <Map />,
-        component: <MapOverlaysPage />,
+        component: MapOverlaysPage,
       },
       {
         label: 'Social Feed',
         to: '/social-feed',
-        icon: <QuestionAnswer />,
-        component: <SocialFeedPage />,
+        component: SocialFeedPage,
       },
     ],
   },
@@ -122,26 +99,22 @@ export const ROUTES = [
       {
         label: 'Users',
         to: '',
-        icon: <Person />,
-        component: <UsersPage />,
+        component: UsersPage,
       },
       {
         label: 'Permissions',
         to: '/permissions',
-        icon: <VerifiedUser />,
-        component: <PermissionsPage />,
+        component: PermissionsPage,
       },
       {
         label: 'Permission Groups',
         to: '/permission-groups',
-        icon: <SupervisedUserCircle />,
-        component: <PermissionGroupsPage />,
+        component: PermissionGroupsPage,
       },
       {
         label: 'Access Requests',
         to: '/access-requests',
-        icon: <AssignmentInd />,
-        component: <AccessRequestsPage />,
+        component: AccessRequestsPage,
       },
     ],
   },
@@ -153,14 +126,12 @@ export const ROUTES = [
       {
         label: 'Entities',
         to: '',
-        icon: <Storage />,
-        component: <EntitiesPage />,
+        component: EntitiesPage,
       },
       {
         label: 'Countries',
         to: '/countries',
-        icon: <Public />,
-        component: <CountriesPage />,
+        component: CountriesPage,
       },
     ],
   },
@@ -172,14 +143,12 @@ export const ROUTES = [
       {
         label: 'Strive',
         to: '',
-        icon: <Flag />,
-        component: <StrivePage />,
+        component: StrivePage,
       },
       {
         label: 'Disaster',
         to: '/disaster',
-        icon: <Flag />,
-        component: <DisasterResponsePage />,
+        component: DisasterResponsePage,
       },
     ],
   },

@@ -28,7 +28,7 @@ const ProfileLinks = ({ onLogout }) => {
   };
 
   return (
-    <React.Fragment>
+    <>
       <ListItemLink to="/profile">
         <MuiListItemIcon>
           <AccountCircleIcon />
@@ -41,7 +41,7 @@ const ProfileLinks = ({ onLogout }) => {
         </MuiListItemIcon>
         <MuiListItemText primary="Logout" />
       </StyledListItem>
-    </React.Fragment>
+    </>
   );
 };
 
