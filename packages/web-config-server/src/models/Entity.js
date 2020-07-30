@@ -129,20 +129,17 @@ export class Entity extends BaseModel {
   /**
    * Fetch all ancestors of the current entity, by default excluding 'World'
    * @param {string} id The id of the entity to fetch ancestors of
-   * @param {boolean} [includeWorld=false] Optionally force the top level 'World' to be included
    */
-  async getAncestors(includeWorld = false, hierarchyId) {
-    const ancestors = await Entity.hierarchyBuilder.getAncestors(this.id, hierarchyId);
-    return includeWorld ? ancestors : ancestors.filter(ancestor => ancestor.type !== WORLD);
+  async getAncestors(hierarchyId) {
+    return Entity.hierarchyBuilder.getAncestors(this.id, hierarchyId);
   }
 
   /**
    * Fetch the codes of all ancestors of the current entity, by default excluding 'World'
    * @param {string} id The id of the entity to fetch ancestor codes of
-   * @param {boolean} [includeWorld=false] Optionally force the top level 'World' to be included
    */
-  async getAncestorCodes(includeWorld = false, hierarchyId) {
-    const ancestors = await this.getAncestors(includeWorld, hierarchyId);
+  async getAncestorCodes(hierarchyId) {
+    const ancestors = await this.getAncestors(hierarchyId);
     return ancestors.map(({ code }) => code);
   }
 
@@ -166,7 +163,7 @@ export class Entity extends BaseModel {
 
   async getAncestorOfType(entityType, hierarchyId) {
     if (this.type === entityType) return [this];
-    const ancestors = await this.getAncestors(true, hierarchyId);
+    const ancestors = await this.getAncestors(hierarchyId);
     return ancestors.find(ancestor => ancestor.type === entityType);
   }
 
