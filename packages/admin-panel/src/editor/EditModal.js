@@ -26,13 +26,15 @@ export const EditModalComponent = ({
   <Dialog onClose={onDismiss} open={!!fields} disableBackdropClick>
     <DialogHeader onClose={onDismiss} title={title} />
     <ModalContentProvider errorMessage={errorMessage} isLoading={isLoading || !fields}>
-      <Editor
-        fields={fields}
-        recordData={recordData}
-        onEditField={(fieldSource, newValue) =>
-          onEditField(getFieldToEditFromSource(fieldSource), newValue)
-        }
-      />
+      {fields && (
+        <Editor
+          fields={fields}
+          recordData={recordData}
+          onEditField={(fieldSource, newValue) =>
+            onEditField(getFieldToEditFromSource(fieldSource), newValue)
+          }
+        />
+      )}
     </ModalContentProvider>
     <DialogFooter>
       <Button variant="outlined" onClick={onDismiss} disabled={isLoading}>
