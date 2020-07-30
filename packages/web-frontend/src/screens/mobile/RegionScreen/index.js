@@ -33,6 +33,7 @@ import {
   selectCurrentDashboardKey,
   selectCurrentOrgUnit,
   selectOrgUnitChildren,
+  selectCurrentMeasure,
 } from '../../../selectors';
 
 const MAP_WIDTH = 420;
@@ -257,14 +258,15 @@ const getMeasureFiltersForHierarchy = measureHierarchy =>
   }));
 
 const mapStateToProps = state => {
-  const { currentOrganisationUnitCode, dashboardConfig, isLoadingOrganisationUnit } = state.global;
-  const { measureHierarchy, currentMeasure, isExpanded } = state.measureBar;
+  const { dashboardConfig, isLoadingOrganisationUnit } = state.global;
+  const { measureHierarchy, isExpanded } = state.measureBar;
   const { measureInfo, isMeasureLoading } = state.map;
   const { isGroupSelectExpanded } = state.dashboard;
-  const hasSelectedMeasureId = currentMeasure !== undefined;
+  const currentMeasure = selectCurrentMeasure(state);
+  const orgUnit = selectCurrentOrgUnit(state);
 
   const mobileListItems = getListItemsFromOrganisationUnitChildren(
-    selectOrgUnitChildren(state, currentOrganisationUnitCode),
+    selectOrgUnitChildren(state, orgUnit.code),
     isMeasureLoading,
     measureInfo,
   );
@@ -275,14 +277,14 @@ const mapStateToProps = state => {
 
   const measureFilters = getMeasureFiltersForHierarchy(measureHierarchy);
 
-  const selectedFilter = hasSelectedMeasureId
+  const selectedFilter = currentMeasure.measureId
     ? { label: currentMeasure.name, id: `${currentMeasure.measureId}` }
     : { label: '' };
 
   return {
     dashboardConfig,
     currentDashboardKey: selectCurrentDashboardKey(state),
-    orgUnit: selectCurrentOrgUnit(state),
+    orgUnit,
     mobileListItems,
     measureFilters,
     selectedFilter,
