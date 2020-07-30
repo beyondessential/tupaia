@@ -85,10 +85,7 @@ export class EventBuilder {
 
   async fetchOrganisationUnitCode() {
     const survey = await this.surveyResponse.survey();
-    const eventOrgUnitQuestionId = get(
-      survey,
-      'integration_metadata.dhis2.eventOrgUnit.questionId',
-    );
+    const eventOrgUnitQuestionId = get(survey, 'integration_metadata.eventOrgUnit.questionId');
     const { code: orgUnitCode } = eventOrgUnitQuestionId
       ? await this.fetchCustomEventOrgUnit(eventOrgUnitQuestionId)
       : await this.fetchDefaultEventOrgUnit();

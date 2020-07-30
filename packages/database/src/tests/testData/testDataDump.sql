@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 11.2
--- Dumped by pg_dump version 11.2
+-- Dumped from database version 11.3
+-- Dumped by pg_dump version 11.3
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -12,6 +12,7 @@ SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
+SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
@@ -820,7 +821,8 @@ CREATE TABLE public.question (
     code text,
     detail text,
     option_set_id character varying,
-    hook text
+    hook text,
+    data_source_id text
 );
 
 
@@ -861,7 +863,8 @@ CREATE TABLE public.survey (
     country_ids text[] DEFAULT '{}'::text[],
     can_repeat boolean DEFAULT false,
     survey_group_id text,
-    integration_metadata jsonb DEFAULT '{"dhis2": {"isDataRegional": true}}'::jsonb
+    integration_metadata jsonb DEFAULT '{}'::jsonb,
+    data_source_id text NOT NULL
 );
 
 
@@ -1131,6 +1134,14 @@ ALTER TABLE ONLY public."dashboardGroup"
 
 ALTER TABLE ONLY public.data_element_data_group
     ADD CONSTRAINT data_element_data_group_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: data_element_data_group data_element_data_group_unique; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.data_element_data_group
+    ADD CONSTRAINT data_element_data_group_unique UNIQUE (data_element_id, data_group_id);
 
 
 --
@@ -2458,6 +2469,14 @@ ALTER TABLE ONLY public.project
 
 
 --
+-- Name: question question_data_source_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.question
+    ADD CONSTRAINT question_data_source_id_fkey FOREIGN KEY (data_source_id) REFERENCES public.data_source(id);
+
+
+--
 -- Name: question question_option_set_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2479,6 +2498,14 @@ ALTER TABLE ONLY public.refresh_token
 
 ALTER TABLE ONLY public.refresh_token
     ADD CONSTRAINT refresh_token_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user_account(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: survey survey_data_source_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.survey
+    ADD CONSTRAINT survey_data_source_id_fkey FOREIGN KEY (data_source_id) REFERENCES public.data_source(id);
 
 
 --
@@ -2593,8 +2620,8 @@ CREATE EVENT TRIGGER schema_change_trigger ON ddl_command_end
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 11.2
--- Dumped by pg_dump version 11.2
+-- Dumped from database version 11.3
+-- Dumped by pg_dump version 11.3
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -2603,6 +2630,7 @@ SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
+SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
