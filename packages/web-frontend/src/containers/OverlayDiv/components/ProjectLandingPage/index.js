@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import ReactMarkdown from 'react-markdown/with-html';
 import Button from '@material-ui/core/Button';
 import ExploreIcon from '@material-ui/icons/ExploreOutlined';
 import LeftArrow from '@material-ui/icons/KeyboardBackspace';
+import { FluTrackingAustralia } from './ProjectContents';
 
 import logo from '../../../../images/tupaia-logo-white.png';
 
@@ -102,6 +102,11 @@ const LogoImage = styled.div`
 `;
 
 export const ProjectLandingPage = ({ selectExplore, viewProjects, project, closeOverlay }) => {
+  const components = {
+    covidau: () => <FluTrackingAustralia />,
+  };
+  const ProjectContent = components[project.code];
+
   return (
     <>
       <Header>
@@ -132,7 +137,7 @@ export const ProjectLandingPage = ({ selectExplore, viewProjects, project, close
         </ViewProjectButton>
       </ProjectHeader>
       <ProjectBody>
-        <ReactMarkdown source={project.longDescription} escapeHtml={false} />
+        <ProjectContent />
       </ProjectBody>
     </>
   );
@@ -148,5 +153,6 @@ ProjectLandingPage.propTypes = {
     names: PropTypes.string,
     logoUrl: PropTypes.string,
     imageUrl: PropTypes.string,
+    code: PropTypes.string,
   }).isRequired,
 };

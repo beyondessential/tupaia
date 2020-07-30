@@ -8,7 +8,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import ReactMarkdown from 'react-markdown/with-html';
 import Lock from '@material-ui/icons/Lock';
 import Button from '@material-ui/core/Button';
 

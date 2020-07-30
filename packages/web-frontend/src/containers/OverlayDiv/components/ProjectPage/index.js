@@ -12,7 +12,11 @@ import styled from 'styled-components';
 import Button from '@material-ui/core/Button';
 import ExploreIcon from '@material-ui/icons/ExploreOutlined';
 
-import { REQUEST_PROJECT_ACCESS } from '../../constants';
+import {
+  REQUEST_PROJECT_ACCESS,
+  PROJECT_LANDING,
+  PROJECTS_WITH_LANDING_PAGES,
+} from '../../constants';
 import { selectProject, setRequestingAccess } from '../../../../projects/actions';
 import { setOverlayComponent, changeOrgUnit } from '../../../../actions';
 import { ProjectCard } from './ProjectCard';
@@ -61,7 +65,10 @@ const ProjectPageComponent = ({
   projects,
 }) => {
   const exploreProject = projects.find(p => p.code === EXPLORE_CODE);
-  const selectExploreProject = React.useCallback(() => onSelectProject(exploreProject));
+  const selectExploreProject = React.useCallback(() => onSelectProject(exploreProject), [
+    onSelectProject,
+    exploreProject,
+  ]);
 
   const projectsWithAccess = renderProjectsWithFilter(
     projects,
@@ -114,15 +121,11 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => ({
   onSelectProject: project => {
-    if (project.longDescription) {
-      dispatch(selectProject(project.code));
-      dispatch(setOverlayComponent('projectLanding'));
-      dispatch(changeOrgUnit(project.homeEntityCode, false));
-    } else {
-      dispatch(selectProject(project.code));
-      dispatch(setOverlayComponent(null));
-      dispatch(changeOrgUnit(project.homeEntityCode, false));
-    }
+    dispatch(selectProject(project.code));
+    dispatch(
+      setOverlayComponent(PROJECTS_WITH_LANDING_PAGES[project.code] ? PROJECT_LANDING : null),
+    );
+    dispatch(changeOrgUnit(project.homeEntityCode, false));
   },
   onRequestProjectAccess: project => {
     dispatch(setRequestingAccess(project));
