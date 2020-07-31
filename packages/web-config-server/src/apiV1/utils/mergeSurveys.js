@@ -1,32 +1,64 @@
 /**
- * Tupaia Config Server
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-/* take a object with columns and rows and return an object with rows and columns switched */
-export const mergeSurveys = (surveys, surveyConfig) => {
-  const sheetName = 'Aligned Test Data';
+/* join mulitplre data into single table joining on key */
+export const mergeSurveys = (surveys, config) => {
+  const { name } = config.surveys[0];
   let mergedSurveyData = {};
 
   Object.keys(surveys).forEach(survey => {
-
     if (!mergedSurveyData.data) {
       mergedSurveyData = { ...surveys[survey] };
     } else {
       mergedSurveyData.data = mergeInData(mergedSurveyData.data, surveys[survey].data);
     }
   });
-  //console.log('mergedData[sheetName].data.rows.length', mergedData[sheetName].data.rows.length);
-  return { [sheetName]: mergedSurveyData };
+  //console.log('mergedData[name].data.rows.length', mergedData[name].data.rows.length);
+  return { [name]: mergedSurveyData };
 };
 
 const mergeInData = (currentData, newData) => {
-  const mergedData = currentData;
-  if (!newData) return mergedData;
+  if (!newData) return currentData;
 
-  const mergeColumns = currentData.columns.concat(newData.columns);
-  mergedData.columns = mergeColumns;
-  const mergeRows = currentData.rows.concat(newData.rows);
-  mergedData.rows = mergeRows;
-  return { ...mergedData };
+  const mergedData = {};
+  mergedData.rows = currentData.rows.concat(newData.rows);
+
+  const mergedColumns = [];
+  const currentColumns = currentData.columns;
+  const newColumns = newData.columns;
+  const compareColumns = (currentCol, newCol) => {
+    if (!newCol || newCol.mergeCompareValue < currentCol.mergeCompareValue) return 1;
+    if (!currentCol || newCol.mergeCompareValue > currentCol.mergeCompareValue) return -1;
+    return 0;
+  };
+
+  let nextCurrentColumn = currentColumns.shift();
+  let nextNewColumn = newColumns.shift();
+
+  while (currentColumns.length + newColumns.length > 0) {
+    const compareState = compareColumns(nextCurrentColumn, nextNewColumn);
+
+    if (compareState === 0) {
+      mergedColumns.push(nextCurrentColumn);
+      nextCurrentColumn = currentColumns.shift();
+      mergedColumns.push(nextNewColumn);
+      nextNewColumn = newColumns.shift();
+    }
+
+    if (compareState < 0) {
+      mergedColumns.push(nextNewColumn);
+      nextNewColumn = newColumns.shift();
+    }
+
+    if (compareState > 0) {
+      mergedColumns.push(nextCurrentColumn);
+      nextCurrentColumn = currentColumns.shift();
+    }
+  }
+
+  mergedData.columns = mergedColumns;
+
+  return mergedData;
 };
