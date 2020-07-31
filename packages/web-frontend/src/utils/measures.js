@@ -380,3 +380,22 @@ export function flattenNumericalMeasureData(measureData, key) {
   // eslint-disable-next-line no-restricted-globals
   return measureData.map(v => parseFloat(v[key])).filter(x => !isNaN(x));
 }
+
+export const findMeasureFromFlattenMeasureList = (flattenedMeasures, measureIdString) => {
+  if (!measureIdString) {
+    return null;
+  }
+
+  const targetMeasureIds = measureIdString.split(',');
+
+  return flattenedMeasures.find(({ measureId }) => {
+    const measureIds = measureId.split(',');
+    //check if all the measureIds match with the id we want to find (there can be more than 1 id in measureId if they are linked measures)
+    return targetMeasureIds.every(targetMeasureId => measureIds.includes(targetMeasureId));
+  });
+};
+
+export const getMeasureFromHierarchy = (measureHierarchies, measureId) => {
+  const flattenedMeasures = flattenMeasureHierarchy(measureHierarchies);
+  return findMeasureFromFlattenMeasureList(flattenedMeasures, measureId);
+};

@@ -94,7 +94,13 @@ import {
   fetchOrgUnit,
   REQUEST_ORG_UNIT,
 } from './actions';
-import { isMobile, processMeasureInfo, formatDateForApi, flattenMeasureHierarchy } from './utils';
+import {
+  isMobile,
+  processMeasureInfo,
+  formatDateForApi,
+  flattenMeasureHierarchy,
+  findMeasureFromFlattenMeasureList,
+} from './utils';
 import { createUrlString } from './utils/historyNavigation';
 import { getDefaultDates } from './utils/periodGranularities';
 import { INITIAL_MEASURE_ID, INITIAL_PROJECT_CODE, initialOrgUnit } from './defaults';
@@ -722,9 +728,10 @@ function getSelectedMeasureFromHierarchy(measureHierarchy, selectedMeasureId, pr
   const projectMeasureId = project.defaultMeasure;
   const measures = flattenMeasureHierarchy(measureHierarchy);
 
-  if (measures.find(m => m.measureId === selectedMeasureId)) return selectedMeasureId;
-  else if (measures.find(m => m.measureId === projectMeasureId)) return projectMeasureId;
-  else if (measures.find(m => m.measureId === INITIAL_MEASURE_ID)) return INITIAL_MEASURE_ID;
+  if (findMeasureFromFlattenMeasureList(measures, selectedMeasureId)) return selectedMeasureId;
+  else if (findMeasureFromFlattenMeasureList(measures, projectMeasureId)) return projectMeasureId;
+  else if (findMeasureFromFlattenMeasureList(measures, INITIAL_MEASURE_ID))
+    return INITIAL_MEASURE_ID;
   else if (measures.length) return measures[0].measureId;
   return INITIAL_MEASURE_ID;
 }

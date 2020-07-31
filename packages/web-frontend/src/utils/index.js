@@ -21,13 +21,14 @@ export { getFacilityThumbnailUrl } from './getFacilityThumbnailUrl';
 export { getMapUrl } from './getMapUrl';
 export { initHistoryDispatcher, historyMiddleware } from './historyNavigation';
 export { OverlayContainer, OverlayView } from './overlayContainer';
-export { getMeasureFromHierarchy } from './getMeasureFromHierarchy';
 export {
   processMeasureInfo,
   getMeasureDisplayInfo,
   getSingleFormattedValue,
   flattenNumericalMeasureData,
   flattenMeasureHierarchy,
+  findMeasureFromFlattenMeasureList,
+  getMeasureFromHierarchy,
 } from './measures';
 export { default as ga, gaEvent, gaPageView, gaMiddleware } from './ga';
 export { formatDateForApi } from './formatDateForApi';
