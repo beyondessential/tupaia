@@ -44,7 +44,7 @@ export const getKeysSortedByValues = (object, options = {}) => {
  * @returns {Function} A `(object1: object, object2: object) => number` function
  */
 export function getSortByKey(key, options = {}) {
-  const { nestedKey = false } = options;
+  const { nestedKey = false } = options || {};
 
   const compareValuesAscending = (a, b) => {
     const valueA = nestedKey && a[key] ? a[key][nestedKey] : a[key];
@@ -60,7 +60,7 @@ export function getSortByKey(key, options = {}) {
     return valueA > valueB ? 1 : 0;
   };
 
-  const { ascending = true } = options;
+  const { ascending = true } = options || {};
   return (a, b) => {
     const ascValue = compareValuesAscending(a, b);
     return ascending ? ascValue : ascValue * -1;
