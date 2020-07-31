@@ -21,7 +21,7 @@ import {
   doUpdateUrl,
 } from '../actions';
 
-import { setUrlComponent, getRawCurrentLocation, clearUrl, pushHistory } from './historyNavigation';
+import { setUrlComponent, clearUrl, attemptPushHistory } from './historyNavigation';
 
 import { URL_COMPONENTS } from './constants';
 
@@ -93,10 +93,7 @@ export const initHistoryDispatcher = store => {
   // URL in the browser if we change it inside our app state in Redux.
   // We can simply subscribe to Redux and update it if it's different.
   store.subscribe(() => {
-    const currentLocation = getRawCurrentLocation();
     const { pathname, search } = store.getState().routing;
-    if (currentLocation.pathname !== pathname || currentLocation.search !== search) {
-      pushHistory(pathname, search);
-    }
+    attemptPushHistory(pathname, search);
   });
 };

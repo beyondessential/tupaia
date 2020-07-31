@@ -9,7 +9,7 @@
  * History utils. These are helper functions that aren't used outside of historyNavigation.
  */
 import queryString from 'query-string';
-import { pickBy, invert } from 'lodash';
+import { invert } from 'lodash';
 
 import {
   PATH_COMPONENTS,
@@ -20,7 +20,7 @@ import {
   URL_COMPONENTS,
 } from './constants';
 
-export const createUrl = params => {
+export const createLocation = params => {
   const { userPage } = params;
   if (userPage) {
     // TODO: Userpage logic to come in future PR
@@ -28,11 +28,11 @@ export const createUrl = params => {
   }
 
   const urlComponents = PATH_COMPONENTS.map(component => params[component]);
-  const searchComponents = SEARCH_COMPONENTS.map(component => params[component]);
-  const cleanedSearchComponents = pickBy(
-    searchComponents,
-    (component, value) => value !== undefined,
-  );
+  const searchComponents = {};
+  SEARCH_COMPONENTS.forEach(component => {
+    const value = params[component];
+    if (value !== undefined) searchComponents[component] = value;
+  });
 
   // remove falsy last elements
   // e.g. [null, 'hi', 'hey', undefined, ''] => [null, 'hi', 'hey']
@@ -41,7 +41,7 @@ export const createUrl = params => {
   }
 
   const pathname = `/${urlComponents.join('/')}`;
-  return { pathname, search: cleanedSearchComponents };
+  return { pathname, search: searchComponents };
 };
 
 export const decodeUrl = (pathname, search) => {

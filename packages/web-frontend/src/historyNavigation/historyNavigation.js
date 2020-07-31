@@ -26,14 +26,14 @@ export const getInitialLocation = () => ({
   search: translateSearchToInternal(initialLocation.search),
 });
 
-export const getRawCurrentLocation = () => history.location;
+const getRawCurrentLocation = () => history.location;
 
-export const getInitialtUrlComponents = () => {
+export const getInitialUrlComponents = () => {
   const { pathname, search } = getInitialLocation();
   return decodeUrl(pathname, search);
 };
 
-export function pushHistory(pathname, searchParams = {}) {
+export function attemptPushHistory(pathname, searchParams = {}) {
   const location = getRawCurrentLocation();
 
   const search = translateSearchToExternal(searchParams);
@@ -64,16 +64,16 @@ export function pushHistory(pathname, searchParams = {}) {
  * @param {String} params An object containing the parameters to set in the url
  */
 export function createUrlString(params) {
-  const location = createUrl(params);
-  const query = translateSearchToExternal(location.search);
-  return `${location.pathname}?${query}`;
+  const { pathname, search } = createUrl(params);
+  const query = translateSearchToExternal(search);
+  return `${pathname}?${query}`;
 }
 
 /**
  * Returns a new location with a component of the url set to the specified value
  * @param {String} component A member of URL_COMPONENTS
- * @param {*} value The value to set it to
- * @param {Object} baseLocation The existing url
+ * @param {String} value The value to set it to
+ * @param {Object} baseLocation The existing location
  */
 export const setUrlComponent = (component, value, baseLocation) => {
   const previousComponents = decodeUrl(baseLocation.pathname, baseLocation.search);
@@ -83,8 +83,7 @@ export const setUrlComponent = (component, value, baseLocation) => {
     params[param] = param === component ? value : previousComponents[param];
   });
 
-  const { pathname, search } = createUrl(params);
-  return { pathname, search };
+  return createUrl(params);
 };
 
 /**
@@ -96,7 +95,7 @@ export const clearUrl = () => {
 
 /**
  * Gets a component of the url
- * @param {string} component A member of URL_COMPONENTS
+ * @param {String} component A member of URL_COMPONENTS
  * @param {object} location An object with a pathname and search component
  */
 export const getUrlComponent = (component, location) => {

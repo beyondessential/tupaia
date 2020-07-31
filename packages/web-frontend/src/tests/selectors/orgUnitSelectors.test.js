@@ -208,7 +208,6 @@ describe('orgUnitSelectors', () => {
         expect(selectOrgUnitSiblings(state, 'World')).toEqual([]);
       });
       it('can select siblings of country', () => {
-        // TODO: refactor for projects
         expect(selectOrgUnitSiblings(state, 'TO')).toEqual([state.orgUnits.orgUnitMap.PG.PG]);
       });
       it('can select siblings of district, including facility', () => {
