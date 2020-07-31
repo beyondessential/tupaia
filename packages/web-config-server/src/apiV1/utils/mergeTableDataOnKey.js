@@ -28,8 +28,10 @@ const mergeInData = (currentData, newData) => {
   mergedData.rows = currentData.rows.concat(newData.rows);
 
   const mergedColumns = [];
+
+  const doCompare = getSortByKey('mergeCompareValue');
+
   const compareColumns = (currentCols, newCols) => {
-    const doCompare = getSortByKey('mergeCompareValue');
     //Assume out of loop if both lengths = 0;
     if (newCols.length < 1) return -1;
     if (currentCols.length < 1) return 1;
