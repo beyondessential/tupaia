@@ -301,9 +301,9 @@ const OVERLAYS_IN_HIERARCHY = {
 };
 
 const GROUP_CODE_TO_NAME = {
-  Laos_Schools_Textbook_student_Ratio_Group: 'Textbook-student Ratio',
-  Laos_Schools_Textbook_student_Ratio_Primary_Group: 'Primary Textbook-student Ratio',
-  Laos_Schools_Textbook_student_Ratio_Secondary_Group: 'Secondary Textbook-student Ratio',
+  Laos_Schools_Textbook_student_Ratio_Group: 'Textbook-Student Ratio',
+  Laos_Schools_Textbook_student_Ratio_Primary_Group: 'Primary Textbook-Student Ratio',
+  Laos_Schools_Textbook_student_Ratio_Secondary_Group: 'Secondary Textbook-Student Ratio',
 };
 
 const BASE_MEASURE_BUILDER_CONFIG = {
