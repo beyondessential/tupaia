@@ -4,15 +4,16 @@
  * This source code is licensed under the AGPL-3.0 license
  * found in the LICENSE file in the root directory of this source tree.
  */
-import queryString from 'query-string';
 import { createBrowserHistory } from 'history';
-import {
-  PATH_COMPONENTS,
-  SEARCH_COMPONENTS,
-  SEARCH_PARAM_KEY_MAP,
-} from './constants';
+import { URL_COMPONENTS } from './constants';
 
-import { translateLocationToInternal, decodeUrl, createUrl, replaceKeysAndRemoveNull, isLocationEqual } from './utils';
+import {
+  decodeUrl,
+  createUrl,
+  translateSearchToInternal,
+  translateSearchToExternal,
+  isLocationEqual,
+} from './utils';
 
 // Functions dealing with history directly
 const history = createBrowserHistory();
@@ -20,7 +21,10 @@ const history = createBrowserHistory();
 // Capture on app init.
 const initialLocation = history.location;
 
-export const getInitialLocation = () => translateLocationToInternal(initialLocation);
+export const getInitialLocation = () => ({
+  pathname: initialLocation.pathname,
+  search: translateSearchToInternal(initialLocation.search),
+});
 
 export const getRawCurrentLocation = () => history.location;
 
@@ -32,9 +36,7 @@ export const getInitialtUrlComponents = () => {
 export function pushHistory(pathname, searchParams = {}) {
   const location = getRawCurrentLocation();
 
-  const search = queryString.stringify(
-    replaceKeysAndRemoveNull(searchParams, SEARCH_PARAM_KEY_MAP),
-  );
+  const search = translateSearchToExternal(searchParams);
 
   const oldSearch = location.search.replace('?', ''); // remove the ? for comparisons
 
@@ -62,9 +64,8 @@ export function pushHistory(pathname, searchParams = {}) {
  * @param {String} params An object containing the parameters to set in the url
  */
 export function createUrlString(params) {
-  return null; // TODO: This function currently doesn't work
   const location = createUrl(params);
-  const query = queryString.stringify(location.search);
+  const query = translateSearchToExternal(location.search);
   return `${location.pathname}?${query}`;
 }
 
@@ -77,17 +78,12 @@ export function createUrlString(params) {
 export const setUrlComponent = (component, value, baseLocation) => {
   const previousComponents = decodeUrl(baseLocation.pathname, baseLocation.search);
 
-  const pathParams = {};
-  PATH_COMPONENTS.forEach(param => {
-    pathParams[param] = param === component ? value : previousComponents[param];
+  const params = {};
+  Object.values(URL_COMPONENTS).forEach(param => {
+    params[param] = param === component ? value : previousComponents[param];
   });
 
-  const searchParams = {};
-  SEARCH_COMPONENTS.forEach(param => {
-    searchParams[param] = param === component ? value : previousComponents[param];
-  });
-
-  const { pathname, search } = createUrl(pathParams, searchParams);
+  const { pathname, search } = createUrl(params);
   return { pathname, search };
 };
 
@@ -95,7 +91,7 @@ export const setUrlComponent = (component, value, baseLocation) => {
  * Returns a location which represents the root.
  */
 export const clearUrl = () => {
-  return { pathname: '/', search: {} };
+  return createUrl({});
 };
 
 /**

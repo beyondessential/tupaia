@@ -9,43 +9,40 @@
  * History utils. These are helper functions that aren't used outside of historyNavigation.
  */
 import queryString from 'query-string';
+import { pickBy, invert } from 'lodash';
 
 import {
   PATH_COMPONENTS,
+  SEARCH_COMPONENTS,
   SEARCH_PARAM_KEY_MAP,
   PASSWORD_RESET_PREFIX,
   VERIFY_EMAIL_PREFIX,
+  URL_COMPONENTS,
 } from './constants';
 
-export const translateLocationToInternal = location => {
-  const { pathname, search } = location;
-  return {
-    pathname,
-    search: replaceKeysAndRemoveNull(
-      queryString.parse(search),
-      swapKeyAndVal(SEARCH_PARAM_KEY_MAP),
-    ),
-  };
-};
-
-export const createUrl = (pathParams, searchParams) => {
-  const { userPage } = pathParams;
+export const createUrl = params => {
+  const { userPage } = params;
   if (userPage) {
-    // TODO: need more specification for userPage
+    // TODO: Userpage logic to come in future PR
     return { pathname: `/${userPage}` };
   }
 
-  const urlComponents = PATH_COMPONENTS.map(component => pathParams[component]);
+  const urlComponents = PATH_COMPONENTS.map(component => params[component]);
+  const searchComponents = SEARCH_COMPONENTS.map(component => params[component]);
+  const cleanedSearchComponents = pickBy(
+    searchComponents,
+    (component, value) => value !== undefined,
+  );
 
-  // remove falsey last elements
+  // remove falsy last elements
   // e.g. [null, 'hi', 'hey', undefined, ''] => [null, 'hi', 'hey']
   while (urlComponents.length > 0 && !urlComponents[urlComponents.length - 1]) {
     urlComponents.pop();
   }
 
   const pathname = `/${urlComponents.join('/')}`;
-  return { pathname, search: replaceKeysAndRemoveNull(searchParams, {}) }; //TODO: Not like this
-}
+  return { pathname, search: cleanedSearchComponents };
+};
 
 export const decodeUrl = (pathname, search) => {
   const cleanPathname = pathname[0] === '/' ? pathname.slice(1) : pathname;
@@ -76,36 +73,38 @@ export const decodeUrl = (pathname, search) => {
 };
 
 export const isLocationEqual = (a, b) => {
-  return false; // TODO
-  /* Old implementation below:
-    const { measureId: prevMeasureId, ...prev } = decodeUrl(a.pathname, a.search);
-    const { measureId: nextMeasureId, ...next } = decodeUrl(b.pathname, b.search);
-  
-    if (!Object.keys(prev).every(k => prev[k] === next[k])) {
-      return false;
-    }
-  
-    if (prevMeasureId && nextMeasureId && prevMeasureId !== nextMeasureId) {
-      // only update history if measures are different, not when going from null to non-null
-      return false;
-    }
-  
-    return true;
-    */
-}
+  const { [URL_COMPONENTS.MEASURE]: prevMeasureId, ...prev } = decodeUrl(a.pathname, a.search);
+  const { [URL_COMPONENTS.MEASURE]: nextMeasureId, ...next } = decodeUrl(b.pathname, b.search);
 
-export const replaceKeysAndRemoveNull = (obj, mapping) => {
-  const newObj = {}; // TODO: Write better (shouldn't need these funcs I don't think)
-  Object.entries(obj).forEach(([key, val]) => {
-    if (val !== null && val !== undefined) newObj[mapping[key] || key] = val; // TODO: Not like this
-  });
-  return newObj;
+  if (!Object.keys(prev).every(k => prev[k] === next[k])) {
+    return false;
+  }
+
+  if (prevMeasureId && nextMeasureId && prevMeasureId !== nextMeasureId) {
+    // only update history if measures are different, not when going from null to non-null
+    return false;
+  }
+
+  return true;
 };
 
-const swapKeyAndVal = obj => {
+export const translateSearchToInternal = search => {
+  const externalSearchParams = queryString.parse(search);
+  const invertedMap = invert(SEARCH_PARAM_KEY_MAP);
+
+  return replaceKeysAndRemoveNull(externalSearchParams, invertedMap);
+};
+
+export const translateSearchToExternal = search => {
+  const externalSearchParams = replaceKeysAndRemoveNull(search, SEARCH_PARAM_KEY_MAP);
+
+  return queryString.stringify(externalSearchParams);
+};
+
+const replaceKeysAndRemoveNull = (obj, mapping) => {
   const newObj = {};
   Object.entries(obj).forEach(([key, val]) => {
-    newObj[val] = key;
+    if (val !== null && val !== undefined) newObj[mapping[key]] = val;
   });
   return newObj;
 };

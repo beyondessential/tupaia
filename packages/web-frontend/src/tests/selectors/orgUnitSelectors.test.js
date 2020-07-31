@@ -180,13 +180,12 @@ describe('orgUnitSelectors', () => {
       });
     });
 
+    // TODO: The below tests are also failing on dev and therefore are not fixed in this PR
     describe('selectOrgUnitChildren', () => {
       it('can select children of world', () => {
-        // TODO: It actually can't
         expect(selectOrgUnitChildren(state, 'World')).toContain(state.orgUnits.orgUnitMap.TO.TO);
       });
       it('can select children of a project', () => {
-        // TODO: Should be able to...
         expect(selectOrgUnitChildren(state, 'explore')).toContain(state.orgUnits.orgUnitMap.TO.TO);
       });
       it('can select children of country', () => {

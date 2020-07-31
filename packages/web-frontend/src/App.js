@@ -37,7 +37,7 @@ switch (process.env.REACT_APP_APP_TYPE) {
 
 const store = configureStore();
 
-initHistoryDispatcher(store); // TODO: Will still need for ga (I think?)
+initHistoryDispatcher(store);
 
 class App extends Component {
   constructor(props) {

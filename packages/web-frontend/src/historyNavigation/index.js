@@ -6,5 +6,5 @@
  */
 
 export { historyMiddleware, reactToInitialState, initHistoryDispatcher } from './historyMiddleware';
-export { createUrlString, getUrlComponent } from './historyNavigation';
+export { createUrlString, getUrlComponent, getInitialLocation } from './historyNavigation';
 export { URL_COMPONENTS } from './constants';

@@ -44,22 +44,6 @@ describe.only('urlSelectors', () => {
     expect(selectCurrentExpandedReportCode(testState)).toEqual('report1');
     expect(selectCurrentOverlayCode(testState)).toEqual('2,3');
   });
-  /*
-  it('should be able to translate "%20" to " "', () => {
-    const testState = {
-      routing: {
-        pathname: '/SOME_PROJECT/AN%20ORG_UNIT/A%20DASHBOARD',
-        search: { REPORT: undefined, MEASURE: 'abc%20123' },
-      },
-    };
-    expect(selectCurrentProjectCode(testState)).toEqual('SOME_PROJECT');
-    expect(selectCurrentOrgUnitCode(testState)).toEqual('AN ORG_UNIT');
-    expect(selectCurrentDashboardGroupCode(testState)).toEqual('A DASHBOARD');
-    expect(selectCurrentOverlayCode(testState)).toEqual('abc 123');
-    expect(selectCurrentExpandedReportCode(testState)).toEqual(undefined);
-    //TODO Is this wanted behaviour?
-  });
-*/
   it('should select from a reset-password url', () => {
     const testState = {
       routing: {
@@ -72,7 +56,6 @@ describe.only('urlSelectors', () => {
     expect(selectCurrentDashboardGroupCode(testState)).toEqual(undefined);
     expect(selectCurrentOverlayCode(testState)).toEqual(undefined);
     expect(selectCurrentExpandedReportCode(testState)).toEqual(undefined);
-    //TODO add tests
   });
 
   it('should select from a verify-email url', () => {
@@ -87,6 +70,5 @@ describe.only('urlSelectors', () => {
     expect(selectCurrentDashboardGroupCode(testState)).toEqual(undefined);
     expect(selectCurrentOverlayCode(testState)).toEqual(undefined);
     expect(selectCurrentExpandedReportCode(testState)).toEqual(undefined);
-    //TODO add tests
   });
 });

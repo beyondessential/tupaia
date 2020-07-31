@@ -21,27 +21,17 @@ import {
   doUpdateUrl,
 } from '../actions';
 
-import {
-  setUrlComponent,
-  getRawCurrentLocation,
-  getInitialtUrlComponents,
-  getInitialLocation,
-  clearUrl,
-  pushHistory,
-} from './historyNavigation';
+import { setUrlComponent, getRawCurrentLocation, clearUrl, pushHistory } from './historyNavigation';
 
 import { URL_COMPONENTS } from './constants';
 
-export const reactToInitialState = ({ dispatch }) => {
-  const { userPage, ...otherComponents } = getInitialtUrlComponents();
-  dispatch(doUpdateUrl(getInitialLocation()));
+export const reactToInitialState = () => {
   // This will be implemented in future PRs
 };
 
 export const historyMiddleware = state => next => action => {
   const { dispatch } = state;
-  const oldLocation = state.getState().routing;
-  let newLocation = oldLocation;
+  let newLocation = state.getState().routing;
   switch (action.type) {
     // Actions that modify the path
     case SELECT_PROJECT:

@@ -22,7 +22,7 @@ import { request } from '../../../utils';
 import { DARK_BLUE, WHITE } from '../../../styles';
 import { selectOrgUnit } from '../../../selectors';
 
-// TODO: Replace with selectors
+// TODO: Export functionality to come in future PR.
 /*
 const initialLocation = getInitialLocation();
 */
