@@ -1,7 +1,7 @@
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 
 import { reduceToDictionary } from '@tupaia/utils';
-import { transposeMatrix, mergeSurveys } from '/apiV1/utils';
+import { transposeMatrix, mergeTableDataOnKey } from '/apiV1/utils';
 
 import moment from 'moment';
 import flatten from 'lodash.flatten';
@@ -28,7 +28,7 @@ class RawDataValuesBuilder extends DataBuilder {
     let transformableData = await this.fetchResults(surveyCodes.split(','));
 
     if (transformations.includes('mergeSurveys')) {
-      transformableData = mergeSurveys(transformableData, this.config);
+      transformableData = mergeTableDataOnKey(transformableData, this.config);
     }
 
     if (transformations.includes('transposeMatrix')) {

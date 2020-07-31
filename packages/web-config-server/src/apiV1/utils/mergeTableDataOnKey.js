@@ -7,19 +7,18 @@ import { getSortByKey } from '@tupaia/utils';
 /* Join multiple table data into single table joining on mergeCompareValue
  * We rely on the data being sorted by mergeCompareValue
  */
-export const mergeSurveys = (surveys, config) => {
-  const { name } = config.surveys[0];
-  let mergedSurveyData = {};
+export const mergeTableDataOnKey = (tableData, name) => {
+  let mergedTableData = {};
 
-  Object.keys(surveys).forEach(survey => {
-    if (!mergedSurveyData.data) {
-      mergedSurveyData = { ...surveys[survey] };
+  Object.keys(tableData).forEach(table => {
+    if (!mergedTableData.data) {
+      mergedTableData = { ...tableData[table] };
     } else {
-      mergedSurveyData.data = mergeInData(mergedSurveyData.data, surveys[survey].data);
+      mergedTableData.data = mergeInData(mergedTableData.data, tableData[table].data);
     }
   });
 
-  return { [name]: mergedSurveyData };
+  return { [name]: mergedTableData };
 };
 
 const mergeInData = (currentData, newData) => {
