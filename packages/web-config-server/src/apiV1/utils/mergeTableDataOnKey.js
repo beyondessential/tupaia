@@ -6,7 +6,28 @@ import { getSortByKey } from '@tupaia/utils';
 
 /* Join multiple table data into single table joining on mergeCompareValue
  * We rely on the data being sorted by mergeCompareValue
- */
+ *
+ * tableData is expected to be of format:
+ *
+ *  tableData = {
+ *    sheet1: {
+ *      data: {
+ *        cols: [],
+ *        rows: [],
+ *        mergeCompareValue: 'compareValue',
+ *      }
+ *     },
+ *    sheet2: {
+ *      data: {
+ *        cols: [],
+ *        rows: [],
+ *        mergeCompareValue: 'compareValue',
+ *      }
+ *     },
+ *    ...
+ *   };
+ *
+ *  */
 export const mergeTableDataOnKey = (tableData, name) => {
   let mergedTableData = {};
 
