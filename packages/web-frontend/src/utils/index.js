@@ -27,7 +27,7 @@ export {
   getSingleFormattedValue,
   flattenNumericalMeasureData,
   flattenMeasureHierarchy,
-  findMeasureFromFlattenMeasureList,
+  findMeasureFromFlattenedMeasureList,
   getMeasureFromHierarchy,
 } from './measures';
 export { default as ga, gaEvent, gaPageView, gaMiddleware } from './ga';

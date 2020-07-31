@@ -99,7 +99,7 @@ import {
   processMeasureInfo,
   formatDateForApi,
   flattenMeasureHierarchy,
-  findMeasureFromFlattenMeasureList,
+  findMeasureFromFlattenedMeasureList,
 } from './utils';
 import { createUrlString } from './utils/historyNavigation';
 import { getDefaultDates } from './utils/periodGranularities';
@@ -728,9 +728,9 @@ function getSelectedMeasureFromHierarchy(measureHierarchy, selectedMeasureId, pr
   const projectMeasureId = project.defaultMeasure;
   const measures = flattenMeasureHierarchy(measureHierarchy);
 
-  if (findMeasureFromFlattenMeasureList(measures, selectedMeasureId)) return selectedMeasureId;
-  else if (findMeasureFromFlattenMeasureList(measures, projectMeasureId)) return projectMeasureId;
-  else if (findMeasureFromFlattenMeasureList(measures, INITIAL_MEASURE_ID))
+  if (findMeasureFromFlattenedMeasureList(measures, selectedMeasureId)) return selectedMeasureId;
+  else if (findMeasureFromFlattenedMeasureList(measures, projectMeasureId)) return projectMeasureId;
+  else if (findMeasureFromFlattenedMeasureList(measures, INITIAL_MEASURE_ID))
     return INITIAL_MEASURE_ID;
   else if (measures.length) return measures[0].measureId;
   return INITIAL_MEASURE_ID;

@@ -5,7 +5,7 @@ import {
   getMeasureDisplayInfo,
   calculateRadiusScaleFactor,
   flattenMeasureHierarchy,
-  findMeasureFromFlattenMeasureList,
+  findMeasureFromFlattenedMeasureList,
 } from './utils/measures';
 import { initialOrgUnit } from './defaults';
 
@@ -363,6 +363,6 @@ export const selectMeasureBarItemById = createSelector(
   [state => state.measureBar.measureHierarchy, (_, id) => id],
   (measureHierarchy, id) => {
     const flattenedMeasureHierarchy = flattenMeasureHierarchy(measureHierarchy);
-    return findMeasureFromFlattenMeasureList(flattenedMeasureHierarchy, id);
+    return findMeasureFromFlattenedMeasureList(flattenedMeasureHierarchy, id);
   },
 );
