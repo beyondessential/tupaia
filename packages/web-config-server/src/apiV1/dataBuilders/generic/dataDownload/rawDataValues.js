@@ -24,13 +24,14 @@ const expandSurveyCodes = surveys => {
 class RawDataValuesBuilder extends DataBuilder {
   async build() {
     const surveyCodes = this.query.surveyCodes;
+    const { transformations = [] } = this.config;
     let transformableData = await this.fetchResults(surveyCodes.split(','));
 
-    if (this.config.transformations && this.config.transformations.includes('mergeSurveys')) {
-      transformableData = mergeSurveys(transformableData);
+    if (transformations.includes('mergeSurveys')) {
+      transformableData = mergeSurveys(transformableData, this.config);
     }
 
-    if (this.config.transformations && this.config.transformations.includes('transposeMatrix')) {
+    if (transformations.includes('transposeMatrix')) {
       Object.entries(transformableData).forEach(([key, value]) => {
         transformableData[key].data = transposeMatrix(value.data, ROW_HEADER_KEY);
       });
@@ -75,29 +76,51 @@ class RawDataValuesBuilder extends DataBuilder {
 
       const events = await this.fetchEvents(additionalQueryConfig, surveyCode);
 
-      const sortedEvents = this.config.sortByAncestor
-        ? await this.sortEventsByAncestor(events, this.config.sortByAncestor)
-        : events;
+      const mergeDataValue = surveyConfig.mergeDataValue;
+      const sortByAncestor = this.config.sortByAncestor;
 
-      const builtColumns = this.buildColumns(sortedEvents);
+      const sortedEvents = await this.sortEvents(events, { mergeDataValue, sortByAncestor });
+
+      const sortedMappedEvents = mergeDataValue
+        ? sortedEvents.map(e => ({
+            ...e,
+            mergeCompareValue: e.dataValues[mergeDataValue] || mergeDataValue,
+          }))
+        : sortedEvents;
+
+      const columns = this.buildColumns(sortedMappedEvents);
 
       const dataElementCodeToText = reduceToDictionary(dataElementsMetadata, 'code', 'text');
 
-      const builtRows = await this.buildRows(sortedEvents, dataElementCodeToText);
+      const rows = await this.buildRows(sortedEvents, dataElementCodeToText);
 
+      const data = {
+        columns,
+        rows,
+      };
       const { skipHeader = true } = this.config;
 
       builtData[surveyCodeToName[surveyCode]] = {
         // need the nested 'data' property to be interpreted as the input to a matrix
-        data: {
-          columns: builtColumns,
-          rows: builtRows,
-        },
+        data,
         skipHeader,
       };
     }
     return builtData;
   }
+
+  sortEvents = async (events, sortKeys) => {
+    if (!sortKeys) return events;
+
+    // If we are merging sorting on that key takes precedence
+    // for performance of merge and avoid ancestor lookup
+    if (sortKeys.mergeDataValue) return this.sortEventsByDataValue(events, sortKeys.mergeDataValue);
+
+    if (sortKeys.sortByAncestor) return this.sortEventsByAncestor(events, sortKeys.sortByAncestor);
+
+    //default unsorted
+    return events;
+  };
 
   /**
    * Build columns for each organisationUnit - period combination
@@ -105,11 +128,12 @@ class RawDataValuesBuilder extends DataBuilder {
   buildColumns = events => {
     const builtColumnsMap = {};
 
-    events.forEach(({ event }) => {
+    events.forEach(({ event, mergeCompareValue }) => {
       //event = id of survey_response
       builtColumnsMap[event] = {
         key: event,
         title: event,
+        mergeCompareValue,
       };
     });
 
