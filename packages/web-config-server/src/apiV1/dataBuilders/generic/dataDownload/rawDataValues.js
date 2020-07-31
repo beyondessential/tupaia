@@ -28,7 +28,8 @@ class RawDataValuesBuilder extends DataBuilder {
     let transformableData = await this.fetchResults(surveyCodes.split(','));
 
     if (transformations.includes('mergeSurveys')) {
-      transformableData = mergeTableDataOnKey(transformableData, this.config.surveys[0].name);
+      const mergedTableName = this.config.surveys[0].name;
+      transformableData = mergeTableDataOnKey(transformableData, mergedTableName);
     }
 
     if (transformations.includes('transposeMatrix')) {
@@ -76,6 +77,7 @@ class RawDataValuesBuilder extends DataBuilder {
 
       const events = await this.fetchEvents(additionalQueryConfig, surveyCode);
 
+      // Optional sorting config
       const mergeDataValue = surveyConfig.mergeDataValue;
       const sortByAncestor = this.config.sortByAncestor;
 
@@ -130,6 +132,7 @@ class RawDataValuesBuilder extends DataBuilder {
 
     events.forEach(({ event, mergeCompareValue }) => {
       //event = id of survey_response
+      //mergeCompareValue = optional dataValue to merge tables
       builtColumnsMap[event] = {
         key: event,
         title: event,

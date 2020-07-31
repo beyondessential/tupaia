@@ -12,16 +12,23 @@ import { getSortByKey } from '@tupaia/utils';
  *  tableData = {
  *    sheet1: {
  *      data: {
- *        cols: [],
- *        rows: [],
- *        mergeCompareValue: 'compareValue',
+ *        cols: [ { key: event,
+                    title: event,
+                    mergeCompareValue: string,
+                  }, 
+                  ...
+                ],
+ *        rows: [ { key: value }, 
+                    ...
+                ],
+ *        skipHeader: boolean, (optional)
  *      }
  *     },
  *    sheet2: {
  *      data: {
- *        cols: [],
- *        rows: [],
- *        mergeCompareValue: 'compareValue',
+ *        cols: [...],
+ *        rows: [...],
+ *        skipHeader: boolean, (optional)
  *      }
  *     },
  *    ...
@@ -30,19 +37,20 @@ import { getSortByKey } from '@tupaia/utils';
  *  */
 export const mergeTableDataOnKey = (tableData, name) => {
   let mergedTableData = {};
+  const doCompare = getSortByKey('mergeCompareValue');
 
   Object.keys(tableData).forEach(table => {
     if (!mergedTableData.data) {
       mergedTableData = { ...tableData[table] };
     } else {
-      mergedTableData.data = mergeInData(mergedTableData.data, tableData[table].data);
+      mergedTableData.data = mergeInData(mergedTableData.data, tableData[table].data, doCompare);
     }
   });
 
   return { [name]: mergedTableData };
 };
 
-const mergeInData = (currentData, newData) => {
+const mergeInData = (currentData, newData, comparator) => {
   if (!newData) return currentData;
 
   const mergedData = {};
@@ -50,13 +58,12 @@ const mergeInData = (currentData, newData) => {
 
   const mergedColumns = [];
 
-  const doCompare = getSortByKey('mergeCompareValue');
 
   const compareColumns = (currentCols, newCols) => {
     //Assume out of loop if both lengths = 0;
     if (newCols.length < 1) return -1;
     if (currentCols.length < 1) return 1;
-    return doCompare(currentCols[0], newCols[0]);
+    return comparator(currentCols[0], newCols[0]);
   };
 
   const getMergeKey = (currentKey, newKey) => `${currentKey}-${newKey}`;
