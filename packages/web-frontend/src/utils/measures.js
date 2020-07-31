@@ -143,29 +143,22 @@ const getSpectrumScaleValues = (measureData, measureOption) => {
   return { min, max };
 };
 
-const clampScaleValues = (initialScale, measureOption) => {
+const clampScaleValues = (dataBounds, measureOption) => {
   const { valueType, scaleBounds } = measureOption;
-
-  /**
-   * The scaleBounds config clamps the values between leftMin and max
-   * e.g. with
-   * leftMin: 0
-   * leftMax: 3
-   * if dataMin is 2 the left label on the scale will be 2.
-   * if dataMin is -100 the left label on the scale will be 0.
-   * if dataMin is +100 the left label on the scale will be 3.
-   * And similarly with right/dataMax
-   */
 
   const defaultScale =
     valueType === VALUE_TYPES.PERCENTAGE
       ? PERCENTAGE_SPECTRUM_SCALE_DEFAULT
       : SPECTRUM_SCALE_DEFAULT;
 
-  const { left = defaultScale.left, right = defaultScale.right } = scaleBounds;
-  const { min, max } = initialScale;
+  const leftBoundConfig = scaleBounds.left || defaultScale.left;
+  const rightBoundConfig = scaleBounds.right || defaultScale.right;
+  const { min: minDataValue, max: maxDataValue } = dataBounds;
 
-  return { min: clampValue(min, left), max: clampValue(max, right) };
+  return {
+    min: clampValue(minDataValue, leftBoundConfig),
+    max: clampValue(maxDataValue, rightBoundConfig),
+  };
 };
 
 const clampValue = (value, config) => {
