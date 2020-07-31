@@ -4,8 +4,9 @@
  */
 
 import React from 'react';
-import { ResourcePage } from './ResourcePage';
 import Typography from '@material-ui/core/Typography';
+import PropTypes from 'prop-types';
+import { ResourcePage } from './ResourcePage';
 
 const FIELDS = [
   {
@@ -102,7 +103,7 @@ const CREATE_CONFIG = {
   },
 };
 
-export const SocialFeedPage = () => (
+export const SocialFeedPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Social Feed"
     endpoint="feedItems"
@@ -113,5 +114,10 @@ export const SocialFeedPage = () => (
     onProcessDataForSave={data => {
       data.type = 'markdown'; // eslint-disable-line no-param-reassign
     }}
+    getHeaderEl={getHeaderEl}
   />
 );
+
+SocialFeedPage.propTypes = {
+  getHeaderEl: PropTypes.func.isRequired,
+};

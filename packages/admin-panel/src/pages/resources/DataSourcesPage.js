@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-
+import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 
 const localStyles = {
@@ -108,7 +108,7 @@ const DATA_GROUP_FIELDS = [
   },
 ];
 
-export const DataGroupsPage = () => (
+export const DataGroupsPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Data Groups"
     endpoint="dataSources"
@@ -137,10 +137,15 @@ export const DataGroupsPage = () => (
         ],
       },
     }}
+    getHeaderEl={getHeaderEl}
   />
 );
 
-export const DataElementsPage = () => (
+DataGroupsPage.propTypes = {
+  getHeaderEl: PropTypes.func.isRequired,
+};
+
+export const DataElementsPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Data Elements"
     endpoint="dataSources"
@@ -162,5 +167,10 @@ export const DataElementsPage = () => (
         ],
       },
     }}
+    getHeaderEl={getHeaderEl}
   />
 );
+
+DataElementsPage.propTypes = {
+  getHeaderEl: PropTypes.func.isRequired,
+};
