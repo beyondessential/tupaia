@@ -28,7 +28,7 @@ class RawDataValuesBuilder extends DataBuilder {
     let transformableData = await this.fetchResults(surveyCodes.split(','));
 
     if (transformations.includes('mergeSurveys')) {
-      transformableData = mergeTableDataOnKey(transformableData, this.config);
+      transformableData = mergeTableDataOnKey(transformableData, this.config.surveys[0].name);
     }
 
     if (transformations.includes('transposeMatrix')) {
