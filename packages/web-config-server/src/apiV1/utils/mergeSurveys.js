@@ -2,8 +2,11 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
+import { getSortByKey } from '@tupaia/utils';
 
-/* join mulitplre data into single table joining on key */
+/* Join multiple table data into single table joining on mergeCompareValue
+ * We rely on the data being sorted by mergeCompareValue
+ */
 export const mergeSurveys = (surveys, config) => {
   const { name } = config.surveys[0];
   let mergedSurveyData = {};
@@ -15,7 +18,7 @@ export const mergeSurveys = (surveys, config) => {
       mergedSurveyData.data = mergeInData(mergedSurveyData.data, surveys[survey].data);
     }
   });
-  //console.log('mergedData[name].data.rows.length', mergedData[name].data.rows.length);
+
   return { [name]: mergedSurveyData };
 };
 
@@ -26,35 +29,61 @@ const mergeInData = (currentData, newData) => {
   mergedData.rows = currentData.rows.concat(newData.rows);
 
   const mergedColumns = [];
-  const currentColumns = currentData.columns;
-  const newColumns = newData.columns;
-  const compareColumns = (currentCol, newCol) => {
-    if (!newCol || newCol.mergeCompareValue < currentCol.mergeCompareValue) return 1;
-    if (!currentCol || newCol.mergeCompareValue > currentCol.mergeCompareValue) return -1;
-    return 0;
+  const compareColumns = (currentCols, newCols) => {
+    const doCompare = getSortByKey('mergeCompareValue');
+    //Assume out of loop if both lengths = 0;
+    if (newCols.length < 1) return -1;
+    if (currentCols.length < 1) return 1;
+    return doCompare(currentCols[0], newCols[0]);
   };
 
-  let nextCurrentColumn = currentColumns.shift();
-  let nextNewColumn = newColumns.shift();
+  const getMergeKey = (currentKey, newKey) => `${currentKey}-${newKey}`;
 
+  const zipColumns = (currentCol, newCol) => {
+    // Loop through rows and switch keys
+    const mergedCol = currentCol;
+    mergedCol.key = getMergeKey(currentCol.key, newCol.key);
+    return mergedCol;
+  };
+
+  // We are assuming keys are unique across columns
+  // true for events. Be Warned in other cases!
+  const mergeRowKeys = (row, currentKey, newKey) => {
+    const alteredRow = row;
+    const mergedKey = getMergeKey(currentKey, newKey);
+    if (row.hasOwnProperty(currentKey)) {
+      alteredRow[mergedKey] = row[currentKey];
+      delete alteredRow[currentKey];
+    }
+    if (row.hasOwnProperty(newKey)) {
+      alteredRow[mergedKey] = row[newKey];
+      delete alteredRow[newKey];
+    }
+    return alteredRow;
+  };
+
+  const currentColumns = currentData.columns;
+  const newColumns = newData.columns;
+
+  // assume both columns are sorted by mergeCompareValue
+  // compare each head column.mergeCompareValue
+  // shift the lesser head or combine if equal
   while (currentColumns.length + newColumns.length > 0) {
-    const compareState = compareColumns(nextCurrentColumn, nextNewColumn);
+    const compareState = compareColumns(currentColumns, newColumns);
 
     if (compareState === 0) {
-      mergedColumns.push(nextCurrentColumn);
-      nextCurrentColumn = currentColumns.shift();
-      mergedColumns.push(nextNewColumn);
-      nextNewColumn = newColumns.shift();
-    }
-
-    if (compareState < 0) {
-      mergedColumns.push(nextNewColumn);
-      nextNewColumn = newColumns.shift();
+      mergedData.rows = mergedData.rows.map(row => {
+        return mergeRowKeys(row, currentColumns[0].key, newColumns[0].key);
+      });
+      mergedColumns.push(zipColumns(newColumns.shift(), currentColumns.shift()));
     }
 
     if (compareState > 0) {
-      mergedColumns.push(nextCurrentColumn);
-      nextCurrentColumn = currentColumns.shift();
+      mergedColumns.push(newColumns.shift());
+    }
+
+    if (compareState < 0) {
+      mergedColumns.push(currentColumns.shift());
     }
   }
 
