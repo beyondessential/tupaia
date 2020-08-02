@@ -1,8 +1,13 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { FormGroup, Input } from 'reactstrap';
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
 
-export const JsonEditor = ({ inputKey, label, value, maxHeight, onChange }) => {
+import React from 'react';
+import { TextField } from '@tupaia/ui-components';
+import PropTypes from 'prop-types';
+
+export const JsonEditor = ({ inputKey, label, secondaryLabel, value, onChange }) => {
   let editorValue = '';
 
   switch (typeof value) {
@@ -21,12 +26,15 @@ export const JsonEditor = ({ inputKey, label, value, maxHeight, onChange }) => {
       editorValue = value.toString();
   }
 
-  const height = editorValue.split('\n').length * 27;
+  const rows = editorValue.split('\n').length;
 
   return (
-    <Input
-      style={{ height, maxHeight }}
+    <TextField
+      label={label}
+      helperText={secondaryLabel}
+      rows={rows < 8 ? rows : 8}
       type="textarea"
+      multiline
       value={editorValue}
       onChange={event => onChange(inputKey, event.target.value)}
     />
@@ -36,7 +44,12 @@ export const JsonEditor = ({ inputKey, label, value, maxHeight, onChange }) => {
 JsonEditor.propTypes = {
   inputKey: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
-  value: PropTypes.any.isRequired,
-  maxHeight: PropTypes.number.isRequired,
+  value: PropTypes.any,
   onChange: PropTypes.func.isRequired,
+  secondaryLabel: PropTypes.string,
+};
+
+JsonEditor.defaultProps = {
+  secondaryLabel: null,
+  value: null,
 };
