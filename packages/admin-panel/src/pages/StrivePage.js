@@ -6,6 +6,7 @@
 import React from 'react';
 import { Button } from '@tupaia/ui-components';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import { ImportModal, ImportButton } from '../importExport';
 import { usePortalWithCallback } from '../utilities';
 import { Header, PageBody } from '../widgets';
@@ -17,6 +18,10 @@ const importConfig = {
   },
 };
 
+const StyledBody = styled(PageBody)`
+  padding-top: 2rem;
+`;
+
 export const StrivePage = ({ getHeaderEl }) => {
   const HeaderPortal = usePortalWithCallback(
     <Header title="Strive" importConfig={importConfig} />,
@@ -25,9 +30,9 @@ export const StrivePage = ({ getHeaderEl }) => {
   return (
     <>
       {HeaderPortal}
-      <PageBody>
+      <StyledBody>
         <ImportButton {...importConfig} Button={Button} label="Import Lab Results" />
-      </PageBody>
+      </StyledBody>
       <ImportModal {...importConfig} />
     </>
   );

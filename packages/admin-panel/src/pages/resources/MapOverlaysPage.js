@@ -4,9 +4,9 @@
  */
 
 import React from 'react';
-import { ResourcePage } from './ResourcePage';
 import PropTypes from 'prop-types';
-import { prettyJSON, prettyArray } from '../../utilities/pretty';
+import { ResourcePage } from './ResourcePage';
+import { prettyJSON, prettyArray } from '../../utilities';
 
 const FIELDS = [
   {

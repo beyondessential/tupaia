@@ -5,11 +5,16 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import { DataFetchingTable } from '../../table';
 import { ImportModal, ExportModal } from '../../importExport';
 import { EditModal } from '../../editor';
 import { Header, PageBody } from '../../widgets';
 import { usePortalWithCallback } from '../../utilities';
+
+const Container = styled(PageBody)`
+  overflow: auto;
+`;
 
 export const ResourcePage = ({
   columns,
@@ -31,7 +36,7 @@ export const ResourcePage = ({
   return (
     <>
       {HeaderPortal}
-      <PageBody>
+      <Container>
         <DataFetchingTable
           columns={columns}
           endpoint={endpoint}
@@ -39,7 +44,7 @@ export const ResourcePage = ({
           reduxId={endpoint}
           baseFilter={baseFilter}
         />
-      </PageBody>
+      </Container>
       {importConfig && <ImportModal {...importConfig} />}
       {filteredExportConfig && <ExportModal {...filteredExportConfig} />}
       <EditModal {...editConfig} onProcessDataForSave={onProcessDataForSave} />

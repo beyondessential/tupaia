@@ -28,7 +28,7 @@ export const App = () => {
           <div ref={headerEl} />
           <Switch>
             {ROUTES.map(route => (
-              <PrivateRoute key={route.to} path={route.to}>
+              <Route key={route.to} path={route.to}>
                 <TabsToolbar links={route.tabs} />
                 <Switch>
                   {route.tabs.map(tab => (
@@ -38,7 +38,7 @@ export const App = () => {
                   ))}
                   <Redirect to={route.to} />
                 </Switch>
-              </PrivateRoute>
+              </Route>
             ))}
             <Redirect to="surveys" />
           </Switch>

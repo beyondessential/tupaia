@@ -38,9 +38,10 @@ export const ModalContentProvider = ({ isLoading, errorMessage, children }) => {
 ModalContentProvider.propTypes = {
   isLoading: PropTypes.bool.isRequired,
   errorMessage: PropTypes.string,
-  children: PropTypes.any.isRequired,
+  children: PropTypes.any,
 };
 
 ModalContentProvider.defaultProps = {
   errorMessage: null,
+  children: null,
 };
