@@ -44,7 +44,7 @@ export const JsonEditor = ({ inputKey, label, secondaryLabel, value, onChange })
 JsonEditor.propTypes = {
   inputKey: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
-  value: PropTypes.any,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.array]),
   onChange: PropTypes.func.isRequired,
   secondaryLabel: PropTypes.string,
 };

@@ -5,9 +5,9 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { TextField, Select, DatePicker, RadioGroup } from '@tupaia/ui-components';
-import { FormGroup } from 'reactstrap';
 import moment from 'moment';
+import { TextField, DatePicker, RadioGroup } from '@tupaia/ui-components';
+import { FormGroup } from 'reactstrap';
 import 'react-datepicker/dist/react-datepicker.css';
 import { Autocomplete } from '../autocomplete';
 import { JsonInputField } from './JsonInputField';
@@ -77,21 +77,20 @@ export const InputField = ({
       );
       break;
     case 'boolean':
-      const handleRadioChange = event => {
-        let val = event.target.value;
-
-        if (val === 'true') {
-          val = true;
-        } else if (val === 'false') {
-          val = false;
-        }
-
-        onChange(inputKey, val);
-      };
       inputComponent = (
         <RadioGroup
           label={label}
-          onChange={handleRadioChange}
+          onChange={event => {
+            let val = event.target.value;
+
+            if (val === 'true') {
+              val = true;
+            } else if (val === 'false') {
+              val = false;
+            }
+
+            onChange(inputKey, val);
+          }}
           options={[
             {
               label: 'Yes',
@@ -152,9 +151,7 @@ export const InputField = ({
 
 const processValue = (value, type) => {
   if (type === 'datetime-local') {
-    const formattedDateString =
-      value && moment(value).isValid ? moment(value).format('YYYY-MM-DDTHH:mm') : '';
-    return formattedDateString;
+    return value && moment(value).isValid ? moment(value).format('YYYY-MM-DDTHH:mm') : '';
   }
 
   return value;
