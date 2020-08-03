@@ -80,17 +80,7 @@ export const InputField = ({
       inputComponent = (
         <RadioGroup
           label={label}
-          onChange={event => {
-            let val = event.target.value;
-
-            if (val === 'true') {
-              val = true;
-            } else if (val === 'false') {
-              val = false;
-            }
-
-            onChange(inputKey, val);
-          }}
+          onChange={event => onChange(inputKey, event.target.value === 'true')} // convert to boolean value
           options={[
             {
               label: 'Yes',

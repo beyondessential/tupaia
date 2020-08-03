@@ -61,17 +61,17 @@ export const JsonInputField = ({
         <CardContent>
           {jsonFieldSchema.map(
             ({
-              label: lbl,
+              label: fieldLabel,
               fieldName,
-              secondaryLabel: secondLbl,
+              secondaryLabel: fieldSecondaryLabel,
               type = DEFAULT_FIELD_TYPE,
               csv,
               ...inputFieldProps
             }) => (
               <InputField
                 key={fieldName}
-                label={lbl}
-                secondaryLabel={secondLbl}
+                label={fieldLabel}
+                secondaryLabel={fieldSecondaryLabel}
                 value={jsonFieldValues[fieldName]}
                 inputKey={fieldName}
                 onChange={(inputKey, fieldValue) => onFieldValueChange(inputKey, fieldValue, csv)}
