@@ -54,22 +54,22 @@ const PROJECT_CODES = '{"laos_schools"}';
 
 const VALUES = [
   {
-    name: 'Provided less than 1 year ago',
+    name: 'Yes, provided less than 1 year ago',
     color: 'yellow',
     value: 'Provided less than 1 year ago',
   },
   {
-    name: 'Provided less than 2 years ago',
+    name: 'Yes, provided less than 2 years ago',
     color: 'blue',
     value: 'Provided less than 2 years ago',
   },
   {
-    name: 'Provided less than 3 years ago',
+    name: 'Yes, provided less than 3 years ago',
     color: 'teal',
     value: 'Provided less than 3 years ago',
   },
   {
-    name: 'Provided over 4 years ago',
+    name: 'Yes, provided over 4 years ago',
     color: 'green',
     value: 'Provided over 4 years ago',
   },
@@ -89,10 +89,7 @@ const PRESENTATION_OPTIONS = {
   popupHeaderFormat: '{code}: {name}',
 };
 
-const getLargestSortOrderOfGroup = async db =>
-  db.runSql(
-    `SELECT "sortOrder" FROM "mapOverlay" WHERE "groupName" = '${GROUP_NAME}' ORDER BY "sortOrder" DESC LIMIT 1;`,
-  );
+const OLD_OVERLAY_SORT_ORDER = 19;
 
 const MAP_OVERLAY_OBJECT = {
   id: MAP_OVERLAY_ID,
@@ -108,6 +105,7 @@ const MAP_OVERLAY_OBJECT = {
   presentationOptions: PRESENTATION_OPTIONS,
   countryCodes: COUNTRY_CODES,
   projectCodes: PROJECT_CODES,
+  sortOrder: OLD_OVERLAY_SORT_ORDER,
 };
 
 const OVERLAY_IDS_TO_REMOVE = [
@@ -116,12 +114,7 @@ const OVERLAY_IDS_TO_REMOVE = [
 ];
 
 exports.up = async function(db) {
-  const largestSortOrderOfGroup = (await getLargestSortOrderOfGroup(db)).rows[0].sortOrder;
-
-  await insertObject(db, 'mapOverlay', {
-    ...MAP_OVERLAY_OBJECT,
-    sortOrder: largestSortOrderOfGroup + 1,
-  });
+  await insertObject(db, 'mapOverlay', MAP_OVERLAY_OBJECT);
 
   //Remove these 2 map overlays and add a new consolidated one
   await db.runSql(`	
