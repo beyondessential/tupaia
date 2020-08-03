@@ -43,11 +43,11 @@ const DASHBOARD_REPORT = {
 //Tonga, Kiribati, Fiji, Marshall Islands, FSM, Solomon Islands, Vanuatu, Samoa
 const COUNTRY_ORG_UNITS = ['TO', 'KI', 'FJ', 'SB', 'VU', 'WS', 'MH', 'FM'];
 
-const BASE_CODE = '_UNFPA_Raw_Data_Downloads_Country_Admin';
+const BASE_CODE = '_UNFPA_Raw_Data_Downloads_Country';
 
 const DASHBOARD_GROUP_CONFIG = {
   organisationLevel: 'Country',
-  userGroup: 'Admin',
+  userGroup: 'UNFPA',
   dashboardReports: `{${REPORT_ID}}`,
   name: 'UNFPA Raw Data Downloads',
   projectCodes: '{unfpa}',
