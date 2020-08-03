@@ -130,7 +130,7 @@ export class DataBuilder {
       entityCodeToAncestor[entity.code] = allAncestors[index].code;
     });
     const mappedEvents = events.map(event => {
-      const sortName = `${entityCodeToAncestor[event.orgUnitName]}_${event.orgUnitName}`;
+      const sortName = `${entityCodeToAncestor[event.orgUnit]}_${event.orgUnitName}`;
       return {
         ...event,
         sortName,
