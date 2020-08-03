@@ -22,7 +22,7 @@ const FIELDS = [
       optionsEndpoint: 'permissionGroups',
       optionLabelKey: 'name',
       optionValueKey: 'name',
-      sourceIdKey: 'userGroup',
+      sourceKey: 'userGroup',
     },
   },
   {
@@ -36,7 +36,7 @@ const FIELDS = [
       optionsEndpoint: 'mapOverlays',
       optionLabelKey: 'measureBuilder',
       optionValueKey: 'measureBuilder',
-      sourceIdKey: 'measureBuilder',
+      sourceKey: 'measureBuilder',
     },
   },
   {
@@ -52,7 +52,7 @@ const FIELDS = [
       optionsEndpoint: 'mapOverlays',
       optionLabelKey: 'displayType',
       optionValueKey: 'displayType',
-      sourceIdKey: 'displayType',
+      sourceKey: 'displayType',
     },
   },
   {
@@ -92,7 +92,7 @@ const FIELDS = [
     editConfig: {
       optionsEndpoint: 'mapOverlays',
       optionLabelKey: 'id',
-      sourceIdKey: 'linkedMeasures',
+      sourceKey: 'linkedMeasures',
       allowMultipleValues: true,
     },
   },
@@ -114,7 +114,7 @@ const FIELDS = [
       optionsEndpoint: 'entities',
       optionLabelKey: 'code',
       optionValueKey: 'code',
-      sourceIdKey: 'countryCodes',
+      sourceKey: 'countryCodes',
       allowMultipleValues: true,
     },
   },
@@ -126,7 +126,7 @@ const FIELDS = [
       optionsEndpoint: 'projects',
       optionLabelKey: 'code',
       optionValueKey: 'code',
-      sourceIdKey: 'projectCodes',
+      sourceKey: 'projectCodes',
       allowMultipleValues: true,
     },
   },
