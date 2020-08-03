@@ -8,7 +8,7 @@ export const transposeMatrix = ({ columns, rows }, rowHeaderKey = 'dataElement')
 
   // set up a column per row
   const newColumns = rows.map((row, rowIndex) => {
-    //key should remain unique as may mess with other operations
+    // make column key unique (rows may not come with unique headers)
     return {
       key: uniqueRowHeader(row[rowHeaderKey], rowIndex),
       title: row[rowHeaderKey],
