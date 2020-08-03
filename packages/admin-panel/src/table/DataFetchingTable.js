@@ -155,7 +155,7 @@ const ExpansionContainer = styled.div`
   }
 `;
 
-const CheckboxIcon = styled(IndeterminateCheckBox)`
+const IndeterminateCheckboxIcon = styled(IndeterminateCheckBox)`
   transition: color 0.2s ease;
 
   &:hover {
@@ -240,7 +240,7 @@ class DataFetchingTableComponent extends React.Component {
         FilterComponent={ColumnFilter}
         ThComponent={TableHeadCell}
         ExpanderComponent={({ isExpanded }) =>
-          isExpanded ? <AddBox color="primary" /> : <CheckboxIcon />
+          isExpanded ? <AddBox color="primary" /> : <IndeterminateCheckboxIcon />
         }
         SubComponent={
           expansionTabs &&

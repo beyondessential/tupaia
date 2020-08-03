@@ -6,26 +6,41 @@
 import React from 'react';
 import styled from 'styled-components';
 import UnfoldMoreIcon from '@material-ui/icons/UnfoldMore';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import PropTypes from 'prop-types';
 
 const FlexRow = styled.div`
   display: flex;
   align-items: center;
+
+  .MuiSvgIcon-root {
+    font-size: 18px;
+  }
 `;
 
-const SortIcon = styled(UnfoldMoreIcon)`
-  font-size: 18px;
-`;
+const getSortIcon = className => {
+  if (className.includes('-sort-asc')) {
+    return ExpandMoreIcon;
+  } else if (className.includes('-sort-desc')) {
+    return ExpandLessIcon;
+  } else if (className.includes('-cursor-pointer')) {
+    return UnfoldMoreIcon;
+  }
+
+  return null;
+};
 
 export const TableHeadCell = ({ toggleSort, className, children, ...props }) => {
-  const isSortable = className.includes('-cursor-pointer');
+  console.log('props', className);
+  const SortIcon = getSortIcon(className);
   return (
     <FlexRow
-      className={`rt-th ${isSortable && '-cursor-pointer'}`}
+      className={`rt-th ${className.includes('-cursor-pointer') ? '-cursor-pointer' : ''}`}
       onClick={e => toggleSort && toggleSort(e)}
       {...props}
     >
-      {isSortable && <SortIcon />}
+      {SortIcon && <SortIcon />}
       {children}
     </FlexRow>
   );
