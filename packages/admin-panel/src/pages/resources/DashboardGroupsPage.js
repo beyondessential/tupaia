@@ -18,6 +18,7 @@ const FIELDS = [
       optionsEndpoint: 'dashboardGroups',
       optionLabelKey: 'organisationLevel',
       optionValueKey: 'organisationLevel',
+      sourceIdKey: 'organisationLevel',
     },
   },
   {
@@ -27,6 +28,7 @@ const FIELDS = [
       optionsEndpoint: 'entities',
       optionLabelKey: 'code',
       optionValueKey: 'code',
+      sourceIdKey: 'organisationUnitCode',
     },
   },
   {
@@ -36,6 +38,7 @@ const FIELDS = [
       optionsEndpoint: 'permissionGroups',
       optionLabelKey: 'name',
       optionValueKey: 'name',
+      sourceIdKey: 'userGroup',
     },
   },
   {
@@ -46,6 +49,7 @@ const FIELDS = [
       optionsEndpoint: 'projects',
       optionLabelKey: 'code',
       optionValueKey: 'code',
+      sourceIdKey: 'projectCodes',
       allowMultipleValues: true,
     },
   },
@@ -56,6 +60,7 @@ const FIELDS = [
     editConfig: {
       optionsEndpoint: 'dashboardReports',
       optionLabelKey: 'id',
+      sourceIdKey: 'dashboardReports',
       allowMultipleValues: true,
     },
   },
