@@ -32,10 +32,11 @@ const StyledRadioGroup = styled(MuiRadioGroup)`
   flex-direction: row;
   border: 1px solid ${props => props.theme.palette.grey['400']};
   border-radius: 3px;
+  overflow: hidden;
 `;
 
 const FormControlLabel = styled(MuiFormControlLabel)`
-  padding: 0.6rem 1rem 0.6rem 0.6rem;
+  padding: 0.6rem 1.2rem 0.6rem 0.6rem;
   margin: 0;
   border-right: 1px solid ${props => props.theme.palette.grey['400']};
   font-size: 1rem;
@@ -64,33 +65,45 @@ const Radio = styled(MuiRadio)`
   }
 `;
 
-export const RadioGroup = ({ options, value, onChange, label, name, className }) => {
-  return (
-    <FormControl component="fieldset" className={className} color="primary">
-      <FormLabel component="legend">{label}</FormLabel>
-      <StyledRadioGroup aria-label={name} name={name} value={value} onChange={onChange}>
-        {options.map(option => (
-          <FormControlLabel
-            control={<Radio />}
-            key={option.value}
-            value={option.value}
-            label={option.label}
-          />
-        ))}
-      </StyledRadioGroup>
-    </FormControl>
-  );
-};
+export const RadioGroup = ({
+  options,
+  value,
+  onChange,
+  label,
+  name,
+  className,
+  labelKey,
+  valueKey,
+}) => (
+  <FormControl component="fieldset" className={className} color="primary">
+    <FormLabel component="legend">{label}</FormLabel>
+    <StyledRadioGroup aria-label={name} name={name} value={value} onChange={onChange}>
+      {options.map(option => (
+        <FormControlLabel
+          control={<Radio />}
+          key={option[valueKey].toString()}
+          value={option[valueKey]}
+          label={option[labelKey]}
+        />
+      ))}
+    </StyledRadioGroup>
+  </FormControl>
+);
 
 RadioGroup.propTypes = {
-  label: PropTypes.string,
-  className: PropTypes.string,
+  onChange: PropTypes.func.isRequired,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]).isRequired,
   name: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
+  options: PropTypes.array.isRequired,
+  label: PropTypes.string,
+  className: PropTypes.string,
+  labelKey: PropTypes.string,
+  valueKey: PropTypes.string,
 };
 
 RadioGroup.defaultProps = {
   label: null,
   className: null,
+  labelKey: 'label',
+  valueKey: 'value',
 };

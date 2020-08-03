@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { RadioGroup } from '../../src';
 
@@ -30,7 +30,7 @@ const options = [
   },
 ];
 
-export const radioGroup = () => {
+export const SimpleExample = () => {
   const [value, setValue] = useState('female');
 
   return (
@@ -46,8 +46,22 @@ export const radioGroup = () => {
   );
 };
 
-export const booleanField = () => {
+export const BooleanField = () => {
   const [value, setValue] = useState(true);
+
+  const handleChange = useCallback(
+    event => {
+      let val = event.target.value;
+
+      if (val === 'true') {
+        val = true;
+      } else if (val === 'false') {
+        val = false;
+      }
+      setValue(val);
+    },
+    [setValue],
+  );
 
   return (
     <Container>
@@ -65,7 +79,7 @@ export const booleanField = () => {
           },
         ]}
         value={value}
-        onChange={e => setValue(e.target.value)}
+        onChange={handleChange}
       />
     </Container>
   );
