@@ -245,10 +245,10 @@ export class CartesianChart extends PureComponent {
   formatXAxisTick = tickData => {
     const { viewContent } = this.props;
     const { periodGranularity, data, presentationOptions = {} } = viewContent;
-    const { chartFormat } = presentationOptions;
+    const { periodTickFormat } = presentationOptions;
 
     return getIsTimeSeries(data)
-      ? formatTimestampForChart(tickData, periodGranularity, chartFormat)
+      ? formatTimestampForChart(tickData, periodGranularity, periodTickFormat)
       : tickData;
   };
 
