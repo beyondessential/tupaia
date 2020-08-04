@@ -424,6 +424,7 @@ const NEW_DISTRICT_MEASURE_BUILDER_CONFIG = {
       value: 'SchDP_UNIC',
       operator: '=',
     },
+    //New Code
     SchCVD022l: {
       value: 'SchCVD022l',
       operator: '=',
@@ -580,6 +581,7 @@ const NEW_DISTRICT_PRESENTATION_OPTIONS = {
       color: 'saddleBrown',
       value: 'SchDP_WV',
     },
+    //New Code
     {
       name: 'Other',
       color: 'cyan',
