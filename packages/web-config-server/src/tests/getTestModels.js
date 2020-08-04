@@ -4,7 +4,12 @@
  */
 import { TupaiaDatabase, ModelRegistry } from '@tupaia/database';
 
-export const getTestModels = () => {
-  const database = new TupaiaDatabase();
-  return new ModelRegistry(database);
-};
+let modelsSingleton = null;
+export function getTestModels() {
+  if (!modelsSingleton) {
+    const database = new TupaiaDatabase();
+    modelsSingleton = new ModelRegistry(database);
+  }
+
+  return modelsSingleton;
+}
