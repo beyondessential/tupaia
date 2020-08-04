@@ -55,7 +55,7 @@ const DATA_BUILDER_CONFIG = {
         },
       },
       transformations: ['mergeSurveys', 'transposeMatrix'],
-      skipHeader: 'false',
+      skipHeader: false,
     },
   },
 };
