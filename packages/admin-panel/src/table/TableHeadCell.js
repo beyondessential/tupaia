@@ -32,7 +32,6 @@ const getSortIcon = className => {
 };
 
 export const TableHeadCell = ({ toggleSort, className, children, ...props }) => {
-  console.log('props', className);
   const SortIcon = getSortIcon(className);
   return (
     <FlexRow
