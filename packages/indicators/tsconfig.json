@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "allowUnreachableCode": false,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "strict": true,
+    "types": ["node", "jest"]
+  }
+}

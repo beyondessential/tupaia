@@ -13,6 +13,7 @@
     "build-admin-panel": "yarn workspace @tupaia/admin-panel build",
     "build-web-frontend": "yarn workspace @tupaia/web-frontend build",
     "build-internal-dependencies": "./scripts/bash/buildInternalDependencies.sh",
+    "build-internal-dependencies:dev": "./scripts/bash/buildInternalDependencies.sh --withTypes",
     "migrate": "yarn workspace @tupaia/database migrate",
     "migrate-create": "yarn workspace @tupaia/database migrate-create",
     "migrate-down": "yarn workspace @tupaia/database migrate-down",
@@ -43,6 +44,7 @@
     "@babel/plugin-transform-runtime": "^7.0.0",
     "@babel/polyfill": "^7.10.1",
     "@babel/preset-env": "^7.0.0",
+    "@babel/preset-typescript": "^7.10.1",
     "@babel/register": "^7.10.1",
     "@babel/runtime-corejs2": "^7.10.2",
     "@beyondessential/eslint-config-beyondessential": "2.5.0",
@@ -65,6 +67,7 @@
     "prettier": "^1.17.1",
     "sinon": "^9.0.2",
     "sinon-chai": "^3.5.0",
+    "typescript": "^3.9.3",
     "winston": "^3.1.0"
   }
 }
