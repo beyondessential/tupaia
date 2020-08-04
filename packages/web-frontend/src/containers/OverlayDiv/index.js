@@ -21,7 +21,7 @@ import CloseIcon from 'material-ui/svg-icons/navigation/close';
 import styled from 'styled-components';
 import { isMobile } from '../../utils';
 import { DARK_BLUE, DIALOG_Z_INDEX } from '../../styles';
-import { setOverlayComponent } from '../../actions';
+import { setOverlayComponent, changeOrgUnit } from '../../actions';
 import { selectProject } from '../../projects/actions';
 import { LandingPage } from './components/LandingPage';
 import { ProjectLandingPage } from './components/ProjectLandingPage';
@@ -64,9 +64,15 @@ export class OverlayDiv extends PureComponent {
       closeOverlay,
       isUserLoggedIn,
       selectExploreProject,
+      selectProjectOrgUnit,
       viewProjectList,
       activeProject,
     } = this.props;
+
+    const scrollToTop = () => {
+      document.getElementById('overlay-wrapper').scrollTop = 0;
+    };
+
     const components = {
       [LANDING]: () => <LandingPage isUserLoggedIn={isUserLoggedIn} transition />,
       [PROJECT_LANDING]: () => (
@@ -74,7 +80,8 @@ export class OverlayDiv extends PureComponent {
           selectExplore={selectExploreProject}
           viewProjects={viewProjectList}
           project={activeProject}
-          closeOverlay={closeOverlay}
+          viewProjectOrgUnit={selectProjectOrgUnit}
+          scrollToTop={scrollToTop}
         />
       ),
       [DISASTER]: Disaster,
@@ -91,7 +98,7 @@ export class OverlayDiv extends PureComponent {
         fullScreen={isMobile()}
         fullWidth={isMobile()}
       >
-        <Wrapper>
+        <Wrapper id="overlay-wrapper">
           <CloseIcon data-testid="overlay-close-btn" style={styles.close} onClick={closeOverlay} />
           {overlay && <OverlayComponent />}
         </Wrapper>
@@ -106,6 +113,7 @@ OverlayDiv.propTypes = {
   viewProjectList: PropTypes.func.isRequired,
   activeProject: PropTypes.shape({}).isRequired,
   selectExploreProject: PropTypes.func.isRequired,
+  selectProjectOrgUnit: PropTypes.func.isRequired,
   isUserLoggedIn: PropTypes.bool.isRequired,
 };
 
@@ -129,8 +137,12 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => ({
   ...ownProps,
   ...stateProps,
   selectExploreProject: () => {
-    dispatch(setOverlayComponent(null));
     dispatch(selectProject(stateProps.exploreProject.code));
+    dispatch(setOverlayComponent(null));
+  },
+  selectProjectOrgUnit: () => {
+    dispatch(setOverlayComponent(null));
+    dispatch(changeOrgUnit(stateProps.activeProject.homeEntityCode, false));
   },
   viewProjectList: () => dispatch(setOverlayComponent(LANDING)),
   closeOverlay: () => {

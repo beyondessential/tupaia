@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Button from '@material-ui/core/Button';
@@ -101,11 +101,19 @@ const LogoImage = styled.div`
   right: 36px;
 `;
 
-export const ProjectLandingPage = ({ selectExplore, viewProjects, project, closeOverlay }) => {
+export const ProjectLandingPage = ({
+  selectExplore,
+  viewProjectOrgUnit,
+  viewProjects,
+  project,
+  scrollToTop,
+}) => {
   const components = {
     covidau: () => <FluTrackingAustralia />,
   };
   const ProjectContent = components[project.code];
+
+  useEffect(() => scrollToTop(), []);
 
   return (
     <>
@@ -132,7 +140,7 @@ export const ProjectLandingPage = ({ selectExplore, viewProjects, project, close
           <h2>{project.name}</h2>
           <Countries>{project.names.join(', ')}</Countries>
         </div>
-        <ViewProjectButton onClick={closeOverlay} color="primary" variant="contained">
+        <ViewProjectButton onClick={viewProjectOrgUnit} color="primary" variant="contained">
           View project
         </ViewProjectButton>
       </ProjectHeader>
@@ -146,7 +154,8 @@ export const ProjectLandingPage = ({ selectExplore, viewProjects, project, close
 ProjectLandingPage.propTypes = {
   selectExplore: PropTypes.func.isRequired,
   viewProjects: PropTypes.func.isRequired,
-  closeOverlay: PropTypes.func.isRequired,
+  scrollToTop: PropTypes.func.isRequired,
+  viewProjectOrgUnit: PropTypes.func.isRequired,
   project: PropTypes.shape({
     name: PropTypes.string,
     longDescription: PropTypes.string,

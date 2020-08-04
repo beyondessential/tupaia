@@ -121,11 +121,13 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => ({
   onSelectProject: project => {
-    dispatch(selectProject(project.code));
-    dispatch(
-      setOverlayComponent(PROJECTS_WITH_LANDING_PAGES[project.code] ? PROJECT_LANDING : null),
-    );
-    dispatch(changeOrgUnit(project.homeEntityCode, false));
+    if (PROJECTS_WITH_LANDING_PAGES[project.code]) {
+      dispatch(setOverlayComponent(PROJECT_LANDING));
+      dispatch(selectProject(project.code));
+    } else {
+      dispatch(selectProject(project.code));
+      dispatch(changeOrgUnit(project.homeEntityCode, false));
+    }
   },
   onRequestProjectAccess: project => {
     dispatch(setRequestingAccess(project));

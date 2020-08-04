@@ -63,7 +63,7 @@ export const FluTrackingAustralia = () => (
       <a target="_blank" rel="noopener noreferrer" href="https://info.flutracking.net/">
         <SolidButton>More information</SolidButton>
       </a>
-      <a target="_blank" rel="noopener noreferrer" href="https://info.flutracking.net/">
+      <a target="_blank" rel="noopener noreferrer" href="https://www.flutracking.net/Join">
         <GhostButton>Join now!</GhostButton>
       </a>
     </section>
