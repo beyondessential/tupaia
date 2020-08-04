@@ -18,8 +18,8 @@ exports.setup = function(options, seedLink) {
 
 const SCHOOL_INDICATORS_OVERLAY_GROUP = {
   id: generateId(),
-  name: 'School Indicators',
-  code: 'Laos_Schools_School_Indicators_Group',
+  name: 'School Indicators EiE - Sub-national Levels',
+  code: 'Laos_Schools_School_Indicators_EiE_Sub_National_Group',
 };
 
 const SCHOOL_INDICATORS_DISTRICT_OVERLAY_GROUP = {
