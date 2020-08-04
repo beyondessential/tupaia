@@ -27,8 +27,8 @@ export {
   getSingleFormattedValue,
   flattenNumericalMeasureData,
   flattenMeasureHierarchy,
-  findMeasureFromFlattenedMeasureList,
   getMeasureFromHierarchy,
+  isMeasureHierarchyEmpty,
 } from './measures';
 export { default as ga, gaEvent, gaPageView, gaMiddleware } from './ga';
 export { formatDateForApi } from './formatDateForApi';

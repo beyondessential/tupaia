@@ -4,8 +4,7 @@ import {
   POLYGON_MEASURE_TYPES,
   getMeasureDisplayInfo,
   calculateRadiusScaleFactor,
-  flattenMeasureHierarchy,
-  findMeasureFromFlattenedMeasureList,
+  getMeasureFromHierarchy,
 } from './utils/measures';
 import { initialOrgUnit } from './defaults';
 
@@ -362,7 +361,6 @@ export const selectAdjustedProjectBounds = (state, code) => {
 export const selectMeasureBarItemById = createSelector(
   [state => state.measureBar.measureHierarchy, (_, id) => id],
   (measureHierarchy, id) => {
-    const flattenedMeasureHierarchy = flattenMeasureHierarchy(measureHierarchy);
-    return findMeasureFromFlattenedMeasureList(flattenedMeasureHierarchy, id);
+    return getMeasureFromHierarchy(measureHierarchy, id);
   },
 );

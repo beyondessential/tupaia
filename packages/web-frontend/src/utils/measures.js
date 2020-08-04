@@ -381,12 +381,13 @@ export function flattenNumericalMeasureData(measureData, key) {
   return measureData.map(v => parseFloat(v[key])).filter(x => !isNaN(x));
 }
 
-export const findMeasureFromFlattenedMeasureList = (flattenedMeasures, measureIdString) => {
+export const getMeasureFromHierarchy = (measureHierarchy, measureIdString) => {
   if (!measureIdString) {
     return null;
   }
 
   const targetMeasureIds = measureIdString.split(',');
+  const flattenedMeasures = flattenMeasureHierarchy(measureHierarchy);
 
   return flattenedMeasures.find(({ measureId }) => {
     const measureIds = measureId.split(',');
@@ -395,7 +396,6 @@ export const findMeasureFromFlattenedMeasureList = (flattenedMeasures, measureId
   });
 };
 
-export const getMeasureFromHierarchy = (measureHierarchies, measureId) => {
-  const flattenedMeasures = flattenMeasureHierarchy(measureHierarchies);
-  return findMeasureFromFlattenedMeasureList(flattenedMeasures, measureId);
+export const isMeasureHierarchyEmpty = measureHierarchy => {
+  return flattenMeasureHierarchy(measureHierarchy).length === 0;
 };
