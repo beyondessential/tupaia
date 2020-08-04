@@ -5,3 +5,4 @@
 
 export { SyncQueue } from './SyncQueue';
 export { createMeditrakSyncQueue } from './createMeditrakSyncQueue';
+export * from './utilities';

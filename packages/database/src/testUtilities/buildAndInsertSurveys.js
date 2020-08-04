@@ -15,12 +15,17 @@ const buildAndInsertQuestion = async (models, surveyScreen, { code, ...questionP
 };
 
 const buildAndInsertDataGroup = async (models, dataGroupProperties) =>
-  findOrCreateDummyRecord(models.dataSource, {
-    service_type: 'dhis',
-    config: { isDataRegional: false },
-    ...dataGroupProperties,
-    type: 'dataGroup',
-  });
+  findOrCreateDummyRecord(
+    models.dataSource,
+    {
+      ...dataGroupProperties,
+      type: 'dataGroup',
+    },
+    {
+      service_type: 'dhis',
+      config: { isDataRegional: false },
+    },
+  );
 
 const buildAndInsertSurvey = async (
   models,

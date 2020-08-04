@@ -14,12 +14,24 @@ import { JsonInputField } from './JsonInputField';
 import { DropDownInputField } from './DropDownInputField';
 import { JsonEditor } from './JsonEditor';
 
+const getInputType = ({ options, optionsEndpoint, type }) => {
+  if (options) {
+    return 'enum';
+  }
+  if (optionsEndpoint) {
+    return 'autocomplete';
+  }
+  return type;
+};
+
 export const InputField = ({
   allowMultipleValues,
   label,
   secondaryLabel,
   value,
+  recordData,
   inputKey,
+  options,
   optionsEndpoint,
   optionLabelKey,
   optionValueKey,
@@ -31,7 +43,7 @@ export const InputField = ({
   parentRecord,
   maxHeight,
 }) => {
-  const inputType = optionsEndpoint ? 'autocomplete' : type;
+  const inputType = getInputType({ options, optionsEndpoint, type });
   let inputComponent = null;
 
   switch (inputType) {
@@ -55,9 +67,20 @@ export const InputField = ({
       inputComponent = (
         <JsonInputField
           value={value}
+          recordData={recordData}
           onChange={inputValue => onChange(inputKey, inputValue)}
           disabled={disabled}
           getJsonFieldSchema={getJsonFieldSchema}
+        />
+      );
+      break;
+    case 'enum':
+      inputComponent = (
+        <DropDownInputField
+          value={value}
+          options={options.map(option => ({ label: option, value: option }))}
+          onChange={selectedOption => onChange(inputKey, selectedOption)}
+          disabled={disabled}
         />
       );
       break;
@@ -132,6 +155,7 @@ const processValue = (value, type) => {
 InputField.propTypes = {
   allowMultipleValues: PropTypes.bool,
   label: PropTypes.string.isRequired,
+  recordData: PropTypes.object,
   value: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.array,
@@ -140,6 +164,7 @@ InputField.propTypes = {
     PropTypes.number,
   ]),
   inputKey: PropTypes.string.isRequired,
+  options: PropTypes.arrayOf(PropTypes.string),
   optionsEndpoint: PropTypes.string,
   onChange: PropTypes.func.isRequired,
   optionLabelKey: PropTypes.string,
@@ -156,6 +181,8 @@ InputField.propTypes = {
 InputField.defaultProps = {
   allowMultipleValues: false,
   value: null,
+  recordData: {},
+  options: null,
   optionsEndpoint: null,
   optionLabelKey: 'name',
   optionValueKey: 'id',
