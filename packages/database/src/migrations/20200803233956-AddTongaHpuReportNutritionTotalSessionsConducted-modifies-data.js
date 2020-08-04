@@ -39,7 +39,6 @@ const dataBuilderConfig = {
       codes: ['HP299a', 'HP323a'],
     },
   },
-  //programCode: 'HP08',
   periodType: 'month',
 };
 const viewJson = {
@@ -52,6 +51,7 @@ const viewJson = {
   yName: 'Number of Clients',
   presentationOptions: {
     hideAverage: true,
+    chartFormat: 'MMM',
   },
 };
 
