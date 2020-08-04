@@ -13,6 +13,7 @@
     "build-admin-panel": "yarn workspace @tupaia/admin-panel build",
     "build-web-frontend": "yarn workspace @tupaia/web-frontend build",
     "build-internal-dependencies": "./scripts/bash/buildInternalDependencies.sh",
+    "build-internal-dependencies:dev": "./scripts/bash/buildInternalDependencies.sh --withTypes",
     "migrate": "yarn workspace @tupaia/database migrate",
     "migrate-create": "yarn workspace @tupaia/database migrate-create",
     "migrate-down": "yarn workspace @tupaia/database migrate-down",
