@@ -2,7 +2,7 @@
  * Tupaia Config Server
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
-import { getSortByKey, getUniqueEntries } from '@tupaia/utils';
+import { getSortByKey, getSortByExtractedValue, getUniqueEntries } from '@tupaia/utils';
 
 import { Project, Entity } from '/models';
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
@@ -140,7 +140,7 @@ export class DataBuilder {
   }
 
   sortEventsByDataValue = (events, dataValue) =>
-    events.sort(getSortByKey('dataValues', { nestedKey: dataValue }));
+    events.sort(getSortByExtractedValue(e => e.dataValues[dataValue]));
 
   sortDataByName = data => data.sort(getSortByKey('name'));
 

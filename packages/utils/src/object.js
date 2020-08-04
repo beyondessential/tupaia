@@ -40,17 +40,27 @@ export const getKeysSortedByValues = (object, options = {}) => {
  * Can be used in `Array.prototype.sort` for an array of objects
  *
  * @param {string} key
- * @param {{ ascending: boolean, nestedKey: string }} options
+ * @param {{ ascending: boolean }} options
  * @returns {Function} A `(object1: object, object2: object) => number` function
  */
-export function getSortByKey(key, options = {}) {
-  const { nestedKey } = options || {};
+export function getSortByKey(key, options) {
+  return getSortByExtractedValue(o => o[key], options);
+}
 
+/**
+ * Returns a callback which compares two objects using the provided `function` .
+ * Can be used in `Array.prototype.sort` for an array of objects
+ *
+ * @param {Function} valueExtractor function to extract the comparison value
+ * @param {{ ascending: boolean }} options
+ * @returns {Function} A `(object1: object, object2: object) => number` function
+ */
+export function getSortByExtractedValue(valueExtractor, options) {
   const compareValuesAscending = (a, b) => {
-    const valueA = nestedKey && a[key] ? a[key][nestedKey] : a[key];
-    const valueB = nestedKey && b[key] ? b[key][nestedKey] : b[key];
+    const valueA = valueExtractor(a);
+    const valueB = valueExtractor(b);
 
-    if (typeof valueA === 'string' && typeof valueB === 'string') {
+    if (typeof valueA === 'string' && typeof valueB === 'string') { 
       return valueA.localeCompare(valueB, undefined, { numeric: true });
     }
 
