@@ -69,6 +69,7 @@ const SURVEY_COLUMNS = [
                 label: 'DHIS2',
                 fieldName: 'dhis2',
                 type: 'json',
+                variant: 'grey',
                 getJsonFieldSchema: () => [
                   {
                     label:
@@ -82,6 +83,7 @@ const SURVEY_COLUMNS = [
                 label: 'MS1',
                 fieldName: 'ms1',
                 type: 'json',
+                variant: 'grey',
                 getJsonFieldSchema: () => [
                   {
                     label: 'Endpoint',
