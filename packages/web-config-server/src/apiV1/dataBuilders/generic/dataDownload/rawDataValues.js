@@ -78,15 +78,15 @@ class RawDataValuesBuilder extends DataBuilder {
       const events = await this.fetchEvents(additionalQueryConfig, surveyCode);
 
       // Optional sorting config
-      const mergeDataValue = surveyConfig.mergeDataValue;
+      const mergeRowKey = surveyConfig.mergeRowKey;
       const sortByAncestor = this.config.sortByAncestor;
 
-      const sortedEvents = await this.sortEvents(events, { mergeDataValue, sortByAncestor });
+      const sortedEvents = await this.sortEvents(events, { mergeRowKey, sortByAncestor });
 
-      const sortedMappedEvents = mergeDataValue
+      const sortedMappedEvents = mergeRowKey
         ? sortedEvents.map(e => ({
             ...e,
-            mergeCompareValue: e.dataValues[mergeDataValue] || mergeDataValue,
+            mergeCompareValue: e.dataValues[mergeRowKey],
           }))
         : sortedEvents;
 
@@ -116,7 +116,7 @@ class RawDataValuesBuilder extends DataBuilder {
 
     // If we are merging sorting on that key takes precedence
     // for performance of merge and avoid ancestor lookup
-    if (sortKeys.mergeDataValue) return this.sortEventsByDataValue(events, sortKeys.mergeDataValue);
+    if (sortKeys.mergeRowKey) return this.sortEventsByDataValue(events, sortKeys.mergeRowKey);
 
     if (sortKeys.sortByAncestor) return this.sortEventsByAncestor(events, sortKeys.sortByAncestor);
 
