@@ -46,10 +46,16 @@ if [ $with_types == "true" ]; then
   done
 fi
 
-echo "Concurrently building internal dependencies in batches of ${CONCURRENT_BUILD_BATCH_SIZE}"
-total_build_commands=${#build_commands[@]}
-for ((start_index=0; start_index<${total_build_commands}; start_index+=${CONCURRENT_BUILD_BATCH_SIZE})); do
-  echo "yarn concurrently ${build_commands[@]:${start_index}:${CONCURRENT_BUILD_BATCH_SIZE}}"
-  eval "yarn concurrently ${build_commands[@]:${start_index}:${CONCURRENT_BUILD_BATCH_SIZE}}"
-done
+if [[ $watch == "true" ]]; then
+  echo "Concurrently building and watching all internal dependencies"
+  echo "yarn concurrently ${build_commands[@]}"
+  eval "yarn concurrently ${build_commands[@]}"
+else
+  echo "Concurrently building internal dependencies in batches of ${CONCURRENT_BUILD_BATCH_SIZE}"
+  total_build_commands=${#build_commands[@]}
+  for ((start_index=0; start_index<${total_build_commands}; start_index+=${CONCURRENT_BUILD_BATCH_SIZE})); do
+    echo "yarn concurrently ${build_commands[@]:${start_index}:${CONCURRENT_BUILD_BATCH_SIZE}}"
+    eval "yarn concurrently ${build_commands[@]:${start_index}:${CONCURRENT_BUILD_BATCH_SIZE}}"
+  done
+fi
 
