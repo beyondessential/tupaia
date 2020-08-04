@@ -2,6 +2,8 @@
 
 DIR=`dirname "$0"`
 
+CONCURRENT_BUILD_BATCH_SIZE=5
+
 USAGE="Usage: buildInternalDependencies.sh [--watch] [--withTypes]"
 
 watch=false
@@ -30,19 +32,24 @@ done
 [[ $watch = "true" ]] && build_args="--watch" || build_args=""
 [[ $watch = "true" ]] && build_ts_args="--watch" || build_ts_args=""
 
-concurrent_build_commands=""
+build_commands=()
 
 # Build dependencies
 for PACKAGE in $(${DIR}/getInternalDependencies.sh); do
-  concurrent_build_commands="${concurrent_build_commands} \"yarn workspace @tupaia/${PACKAGE} build $build_args\""
+  build_commands+=("\"yarn workspace @tupaia/${PACKAGE} build $build_args\"")
 done
 
 # Build types
 if [ $with_types == "true" ]; then
   for PACKAGE in $(${DIR}/getTypedInternalDependencies.sh); do
-    concurrent_build_commands="${concurrent_build_commands} \"yarn workspace @tupaia/${PACKAGE} build:ts $build_ts_args\""
+    build_commands+=("\"yarn workspace @tupaia/${PACKAGE} build:ts $build_ts_args\"")
   done
 fi
 
-echo yarn concurrently ${concurrent_build_commands}
-eval "yarn concurrently ${concurrent_build_commands}"
+echo "Concurrently building internal dependencies in batches of ${CONCURRENT_BUILD_BATCH_SIZE}"
+total_build_commands=${#build_commands[@]}
+for ((start_index=0; start_index<${total_build_commands}; start_index+=${CONCURRENT_BUILD_BATCH_SIZE})); do
+  echo "yarn concurrently ${build_commands[@]:${start_index}:${CONCURRENT_BUILD_BATCH_SIZE}}"
+  eval "yarn concurrently ${build_commands[@]:${start_index}:${CONCURRENT_BUILD_BATCH_SIZE}}"
+done
+
