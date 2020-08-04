@@ -3,7 +3,6 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 import flatten from 'lodash.flatten';
-import keyBy from 'lodash.keyby';
 import winston from 'winston';
 
 import {
@@ -29,7 +28,7 @@ const orgUnitVaccineListCode = orgUnit => `${orgUnit}_vaccine_list`;
 
 const fetchFridgeData = async aggregator => {
   const fetchConfig = {
-    organisationUnitCode: WORLD,
+    organisationUnitCodes: [WORLD],
     startDate: utcMoment()
       .subtract(LOOKBACK_DAYS, 'days')
       .format(),
@@ -53,36 +52,32 @@ const buildVaccineMetadata = async (aggregator, dhisApi, data) => {
   const orgUnitVaccineLists = await getDataElementGroups(dhisApi, vaccineListCodes);
 
   const metadata = {};
-  for (const facility in metadataByFacility) {
-    const facilityVaccineListCode = orgUnitVaccineListCode(facility);
-    if (!orgUnitVaccineLists[facilityVaccineListCode]) continue;
+  Object.keys(metadataByFacility).forEach(facilityCode => {
+    const facilityVaccineListCode = orgUnitVaccineListCode(facilityCode);
+    if (!orgUnitVaccineLists[facilityVaccineListCode]) return;
 
     const originalDataElementCodes = orgUnitVaccineLists[
       facilityVaccineListCode
     ].dataElements.map(de => stripFromString(de.code, prependString));
-    const originalDataElements = await aggregator.fetchDataElements(originalDataElementCodes, {
-      organisationUnitCode: WORLD,
-    });
-    const originalDataElementByCode = keyBy(originalDataElements, 'code');
 
-    metadata[facility] = originalDataElementCodes.reduce((codesById, code) => {
+    metadata[facilityCode] = originalDataElementCodes.reduce((originalToPreaggregated, code) => {
       return {
-        ...codesById,
-        [originalDataElementByCode[code].id]: preaggregatedDataElementCode(code),
+        ...originalToPreaggregated,
+        [code]: preaggregatedDataElementCode(code),
       };
     }, {});
-  }
+  });
 
   return metadata;
 };
 
 const buildDataValues = (metadata, data) => {
   const dataValuesByOrgUnit = {};
-  for (const event of data) {
+  data.forEach(event => {
     const metadataForOrgUnit = metadata[event.orgUnit];
     // If there's no vaccine list set up on dhis2 for this org unit,
     // we assume it is safe to ignore.
-    if (!metadataForOrgUnit) continue;
+    if (!metadataForOrgUnit) return;
 
     const existingEvent = dataValuesByOrgUnit[event.orgUnit];
     if (!existingEvent || existingEvent.period < event.eventDate) {
@@ -97,7 +92,7 @@ const buildDataValues = (metadata, data) => {
 
       dataValuesByOrgUnit[event.orgUnit] = { period: event.eventDate, data: newData };
     }
-  }
+  });
 
   return flatten(Object.values(dataValuesByOrgUnit).map(x => x.data));
 };
