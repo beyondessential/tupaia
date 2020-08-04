@@ -1,10 +1,11 @@
 {
   "name": "@tupaia/aggregator",
-  "private": true,
   "version": "1.0.0",
   "main": "dist/index.js",
+  "private": true,
   "scripts": {
-    "build": "babel src --out-dir dist --source-maps --ignore 'src/tests/**' --config-file '../../babel.config.json'",
+    "build": "babel src --out-dir dist --ignore 'src/tests/**' --config-file '../../babel.config.json'",
+    "build:ts": "tsc",
     "test": "mocha",
     "test-coverage": "cross-env NODE_ENV=test nyc mocha"
   },
@@ -12,6 +13,6 @@
     "@tupaia/data-broker": "1.0.0",
     "@tupaia/utils": "1.0.0",
     "lodash.groupby": "^4.6.0",
-    "winston": "^3.3.3"
+    "winston": "^3.1.0"
   }
 }
