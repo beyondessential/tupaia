@@ -5,13 +5,12 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FormGroup, Input } from 'reactstrap';
-import DatePicker from 'react-datepicker';
 import moment from 'moment';
+import { TextField, DatePicker, RadioGroup } from '@tupaia/ui-components';
+import { FormGroup } from 'reactstrap';
 import 'react-datepicker/dist/react-datepicker.css';
 import { Autocomplete } from '../autocomplete';
 import { JsonInputField } from './JsonInputField';
-import { DropDownInputField } from './DropDownInputField';
 import { JsonEditor } from './JsonEditor';
 
 export const InputField = ({
@@ -29,7 +28,7 @@ export const InputField = ({
   disabled,
   getJsonFieldSchema,
   parentRecord,
-  maxHeight,
+  variant,
 }) => {
   const inputType = optionsEndpoint ? 'autocomplete' : type;
   let inputComponent = null;
@@ -37,39 +36,51 @@ export const InputField = ({
   switch (inputType) {
     case 'autocomplete':
       inputComponent = (
-        <Autocomplete
-          placeholder={value}
-          endpoint={optionsEndpoint}
-          optionLabelKey={optionLabelKey}
-          optionValueKey={optionValueKey}
-          reduxId={inputKey}
-          onChange={inputValue => onChange(inputKey, inputValue)}
-          canCreateNewOptions={canCreateNewOptions}
-          disabled={disabled}
-          allowMultipleValues={allowMultipleValues}
-          parentRecord={parentRecord}
-        />
+        <FormGroup>
+          <p>{label}</p>
+          {secondaryLabel && (
+            <p>
+              <i>{secondaryLabel}</i>
+            </p>
+          )}
+          <Autocomplete
+            placeholder={value}
+            endpoint={optionsEndpoint}
+            optionLabelKey={optionLabelKey}
+            optionValueKey={optionValueKey}
+            reduxId={inputKey}
+            onChange={inputValue => onChange(inputKey, inputValue)}
+            canCreateNewOptions={canCreateNewOptions}
+            disabled={disabled}
+            allowMultipleValues={allowMultipleValues}
+            parentRecord={parentRecord}
+          />
+        </FormGroup>
       );
       break;
     case 'json':
       inputComponent = (
         <JsonInputField
+          label={label}
+          secondaryLabel={secondaryLabel}
           value={value}
           onChange={inputValue => onChange(inputKey, inputValue)}
           disabled={disabled}
           getJsonFieldSchema={getJsonFieldSchema}
+          variant={variant}
         />
       );
       break;
     case 'jsonEditor':
       inputComponent = (
-        <JsonEditor {...{ inputKey, label, value, maxHeight: maxHeight || 100, onChange }} />
+        <JsonEditor label={label} inputKey={inputKey} value={value} onChange={onChange} />
       );
       break;
     case 'boolean':
       inputComponent = (
-        <DropDownInputField
-          value={value}
+        <RadioGroup
+          label={label}
+          onChange={event => onChange(inputKey, event.target.value === 'true')} // convert to boolean value
           options={[
             {
               label: 'Yes',
@@ -80,50 +91,57 @@ export const InputField = ({
               value: false,
             },
           ]}
-          onChange={selectedOption => onChange(inputKey, selectedOption)}
+          value={value}
           disabled={disabled}
+          helperText={secondaryLabel}
         />
       );
       break;
     case 'date':
       inputComponent = (
         <DatePicker
-          selected={moment(value).isValid() ? moment(value) : null}
+          label={label}
+          helperText={secondaryLabel}
+          value={moment(value).isValid() ? moment(value) : null}
           onChange={date => onChange(inputKey, date.toISOString())}
           disabled={disabled}
         />
       );
       break;
-    default:
+    case 'textarea':
       inputComponent = (
-        <Input
+        <TextField
+          label={label}
           value={processValue(value, type) || ''}
           onChange={event => onChange(inputKey, event.target.value)}
           disabled={disabled}
+          helperText={secondaryLabel}
+          multiline
+          type="textarea"
+          rows="4"
+        />
+      );
+      break;
+    default:
+      inputComponent = (
+        <TextField
+          label={label}
+          value={processValue(value, type) || ''}
+          onChange={event => onChange(inputKey, event.target.value)}
+          disabled={disabled}
+          helperText={secondaryLabel}
           type={type}
         />
       );
       break;
   }
 
-  return (
-    <FormGroup>
-      <p>{label}</p>
-      {secondaryLabel && (
-        <p>
-          <i>{secondaryLabel}</i>
-        </p>
-      )}
-      {inputComponent}
-    </FormGroup>
-  );
+  return inputComponent;
 };
 
 const processValue = (value, type) => {
   if (type === 'datetime-local') {
-    const formattedDateString =
-      value && moment(value).isValid ? moment(value).format('YYYY-MM-DDTHH:mm') : '';
-    return formattedDateString;
+    return value && moment(value).isValid ? moment(value).format('YYYY-MM-DDTHH:mm') : '';
   }
 
   return value;
@@ -150,7 +168,7 @@ InputField.propTypes = {
   getJsonFieldSchema: PropTypes.func,
   parentRecord: PropTypes.object,
   secondaryLabel: PropTypes.string,
-  maxHeight: PropTypes.number,
+  variant: PropTypes.string,
 };
 
 InputField.defaultProps = {
@@ -165,5 +183,5 @@ InputField.defaultProps = {
   getJsonFieldSchema: () => [],
   parentRecord: {},
   secondaryLabel: null,
-  maxHeight: undefined,
+  variant: null,
 };
