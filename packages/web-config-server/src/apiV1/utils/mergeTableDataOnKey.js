@@ -73,8 +73,10 @@ const mergeInData = (currentData, newData, comparator) => {
 
   const zipColumns = (currentCol, newCol) => {
     // Loop through rows and switch keys
-    const mergedCol = currentCol;
+    const mergedCol = {};
     mergedCol.key = getMergeKey(currentCol.key, newCol.key);
+    mergedCol.title = getMergeKey(currentCol.key, newCol.key);
+    mergedCol.mergeCompareValue = currentCol.mergeCompareValue;
     return mergedCol;
   };
 
@@ -104,10 +106,10 @@ const mergeInData = (currentData, newData, comparator) => {
     const compareState = compareColumns(currentColumns, newColumns);
 
     if (compareState === 0) {
-      mergedData.rows = mergedData.rows.map(row => {
-        return mergeRowKeys(row, currentColumns[0].key, newColumns[0].key);
+      mergedData.rows = mergedData.rows.map(r => {
+        return mergeRowKeys(r, currentColumns[0].key, newColumns[0].key);
       });
-      mergedColumns.push(zipColumns(newColumns.shift(), currentColumns.shift()));
+      mergedColumns.push(zipColumns(currentColumns.shift(), newColumns.shift()));
     }
 
     if (compareState > 0) {

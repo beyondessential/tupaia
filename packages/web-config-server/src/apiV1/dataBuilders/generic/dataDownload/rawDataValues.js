@@ -81,7 +81,7 @@ class RawDataValuesBuilder extends DataBuilder {
       const mergeRowKey = surveyConfig.mergeRowKey;
       const ancestorTypeForSort =
         this.config.ancestorSortConfig && this.config.ancestorSortConfig.type;
-      
+
       const sortedEvents = await this.sortEvents(rawEvents, { mergeRowKey, ancestorTypeForSort });
 
       const sortedMappedEvents = mergeRowKey
