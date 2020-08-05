@@ -47,7 +47,8 @@ class RawDataValuesBuilder extends DataBuilder {
       }
 
       const rawEvents = await this.fetchEvents(additionalQueryConfig, surveyCode);
-      const ancestorTypeForSort = this.config.sortByAncestor && this.config.sortByAncestor.type;
+      const ancestorTypeForSort =
+        this.config.ancestorSortConfig && this.config.ancestorSortConfig.type;
       const sortedEvents = ancestorTypeForSort
         ? await this.sortEventsByAncestor(rawEvents, ancestorTypeForSort)
         : rawEvents;
@@ -107,8 +108,8 @@ class RawDataValuesBuilder extends DataBuilder {
     const builtRows = [];
 
     const ancestorRow =
-      this.config.sortByAncestor && this.config.sortByAncestor.showInExport
-        ? { ancestor: this.config.sortByAncestor.type }
+      this.config.ancestorSortConfig && this.config.ancestorSortConfig.showInExport
+        ? { ancestor: this.config.ancestorSortConfig.type }
         : {};
 
     const DEFAULT_DATA_KEY_TO_TEXT = {
