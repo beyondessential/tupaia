@@ -37,13 +37,13 @@ import { getSortByKey } from '@tupaia/utils';
  *  */
 export const mergeTableDataOnKey = (tableData, name) => {
   let mergedTableData = {};
-  const doCompare = getSortByKey('mergeCompareValue');
+  const compareByMergeValue = getSortByKey('mergeCompareValue');
 
   Object.keys(tableData).forEach(table => {
     if (!mergedTableData.data) {
       mergedTableData = { ...tableData[table] };
     } else {
-      mergedTableData.data = mergeInData(mergedTableData.data, tableData[table].data, doCompare);
+      mergedTableData.data = mergeInData(mergedTableData.data, tableData[table].data, compareByMergeValue);
     }
   });
 
@@ -57,7 +57,6 @@ const mergeInData = (currentData, newData, comparator) => {
   mergedData.rows = currentData.rows.concat(newData.rows);
 
   const mergedColumns = [];
-
 
   const compareColumns = (currentCols, newCols) => {
     //Assume out of loop if both lengths = 0;
@@ -78,7 +77,7 @@ const mergeInData = (currentData, newData, comparator) => {
   // We are assuming keys are unique across columns
   // true for events. Be Warned in other cases!
   const mergeRowKeys = (row, currentKey, newKey) => {
-    const alteredRow = row;
+    const alteredRow = [...row];
     const mergedKey = getMergeKey(currentKey, newKey);
     if (row.hasOwnProperty(currentKey)) {
       alteredRow[mergedKey] = row[currentKey];
