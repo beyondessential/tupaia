@@ -25,14 +25,15 @@ class RawDataValuesBuilder extends DataBuilder {
   async build() {
     const surveyCodes = this.query.surveyCodes;
     const { transformations = [] } = this.config;
+    const transformationTypes = transformations.map(t => t.type);
     let transformableData = await this.fetchResults(surveyCodes.split(','));
 
-    if (transformations.includes('mergeSurveys')) {
+    if (transformationTypes.includes('mergeSurveys')) {
       const mergedTableName = this.config.surveys[0].name;
       transformableData = mergeTableDataOnKey(transformableData, mergedTableName);
     }
 
-    if (transformations.includes('transposeMatrix')) {
+    if (transformationTypes.includes('transposeMatrix')) {
       Object.entries(transformableData).forEach(([key, value]) => {
         transformableData[key].data = transposeMatrix(value.data, ROW_HEADER_KEY);
       });
@@ -119,7 +120,8 @@ class RawDataValuesBuilder extends DataBuilder {
     // for performance of merge and avoid ancestor lookup
     if (sortKeys.mergeRowKey) return this.sortEventsByDataValue(events, sortKeys.mergeRowKey);
 
-    if (sortKeys.ancestorTypeForSort) return this.sortEventsByAncestor(events, sortKeys.ancestorTypeForSort);
+    if (sortKeys.ancestorTypeForSort)
+      return this.sortEventsByAncestor(events, sortKeys.ancestorTypeForSort);
 
     //default unsorted
     return events;
