@@ -1,6 +1,6 @@
 'use strict';
 
-import { insertObject, arrayToDbString } from '../utilities';
+import { generateId, insertObject, arrayToDbString } from '../utilities';
 
 var dbm;
 var type;
@@ -21,8 +21,6 @@ const MAP_OVERLAY_ID = 'Laos_Schools_School_Indicators_Functioning_Computer';
 const NAME = 'Functioning computer';
 
 const DATA_ELEMENT_CODE = 'value';
-
-const GROUP_NAME = 'School Indicators EiE';
 
 const USER_GROUP = 'Laos Schools User';
 
@@ -81,6 +79,8 @@ const VALUES = [
 ];
 
 const PRESENTATION_OPTIONS = {
+  displayType: DISPLAY_TYPE,
+  values: VALUES,
   hideByDefault: {
     null: true,
   },
@@ -95,11 +95,8 @@ const MAP_OVERLAY_OBJECT = {
   id: MAP_OVERLAY_ID,
   name: NAME,
   dataElementCode: DATA_ELEMENT_CODE,
-  groupName: GROUP_NAME,
   userGroup: USER_GROUP,
-  displayType: DISPLAY_TYPE,
   isDataRegional: true,
-  values: VALUES,
   measureBuilder: MEASURE_BUILDER,
   measureBuilderConfig: MEASURE_BUILDER_CONFIG,
   presentationOptions: PRESENTATION_OPTIONS,
@@ -113,8 +110,20 @@ const OVERLAY_IDS_TO_REMOVE = [
   'Laos_Schools_When_Was_Computer_Provided',
 ];
 
+const selectSchoolIndicatorsEiEGroup = async db =>
+  db.runSql(`SELECT * FROM map_overlay_group where code = 'School_Indicators_EiE'`);
+
 exports.up = async function(db) {
+  const group = (await selectSchoolIndicatorsEiEGroup(db)).rows[0];
+
   await insertObject(db, 'mapOverlay', MAP_OVERLAY_OBJECT);
+
+  await insertObject(db, 'map_overlay_group_relation', {
+    id: generateId(),
+    map_overlay_group_id: group.id,
+    child_id: MAP_OVERLAY_OBJECT.id,
+    child_type: 'mapOverlay',
+  });
 
   //Remove these 2 map overlays and add a new consolidated one
   await db.runSql(`	
