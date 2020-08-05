@@ -68,7 +68,10 @@ class RawDataValuesBuilder extends DataBuilder {
         rows,
       };
 
-      if (this.config.transformations && this.config.transformations.includes('transposeMatrix')) {
+      const transformationTypes = this.config.transformations
+        ? this.config.transformations.map(t => t.type)
+        : [];
+      if (transformationTypes.includes('transposeMatrix')) {
         tableData = transposeMatrix(tableData, ROW_HEADER_KEY);
       }
 
