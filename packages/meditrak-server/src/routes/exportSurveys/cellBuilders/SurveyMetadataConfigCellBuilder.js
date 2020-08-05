@@ -3,18 +3,28 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
+/* eslint-disable class-methods-use-this */
+
 import { KeyValueCellBuilder } from './KeyValueCellBuilder';
 
 export class SurveyMetadataConfigCellBuilder extends KeyValueCellBuilder {
-  async processValue(value) {
-    return this.fetchQuestionCode(value);
+  valueProcessors = {
+    eventOrgUnit: this.fetchQuestionCode,
+    dataService: value => value,
+  };
+
+  async processValue(value, key) {
+    return this.valueProcessors[key](value);
   }
 
-  // disable class-methods-use-this for functions that are overriding parent methods
-  /*eslint-disable class-methods-use-this */
-  extractRelevantObject(metadata) {
-    const { eventOrgUnit } = metadata.dhis2 || {};
-    return eventOrgUnit ? { eventOrgUnit } : {};
+  extractRelevantObject(inputObject) {
+    const output = {};
+    Object.keys(this.valueProcessors).forEach(key => {
+      if (inputObject[key]) {
+        output[key] = inputObject[key];
+      }
+    });
+
+    return output;
   }
-  /*eslint-enable class-methods-use-this */
 }

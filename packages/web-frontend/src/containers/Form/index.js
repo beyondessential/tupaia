@@ -31,7 +31,7 @@ export class Form extends React.Component {
       if (!React.isValidElement(child)) throw new Error('Invalid Field element as child of Form');
 
       const { name, defaultValue } = child.props;
-      if (defaultValue !== null) defaultValues[name] = defaultValue; // should allow falsy values as defaults
+      if (defaultValue !== null && defaultValue !== undefined) defaultValues[name] = defaultValue; // should allow falsy values as defaults
     });
 
     this.state = {

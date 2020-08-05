@@ -22,7 +22,9 @@ export const groupData = async (aggregator, dhisApi, query, measureBuilderConfig
     mapMeasureValuesToGroups(dataElement, dataElementCode, measureBuilderConfig.groups),
   );
 
-  const returnData = mapDataToCountries ? mapMeasureDataToCountries(groupedData) : groupedData;
+  const returnData = mapDataToCountries
+    ? await mapMeasureDataToCountries(groupedData)
+    : groupedData;
 
   return { data: returnData, period };
 };

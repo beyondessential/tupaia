@@ -13,6 +13,7 @@ import {
   findSurveyScreenComponentsInSurvey,
   findSurveysInCountry,
   findDataElementsInDataGroup,
+  findOrCountJoinChildren,
 } from '../dataAccessors';
 import { getApiUrl, resourceToRecordType } from '../utilities';
 
@@ -36,6 +37,8 @@ const GETTABLE_TYPES = [
   TYPES.PROJECT,
   TYPES.DISASTER,
   TYPES.DATA_SOURCE,
+  TYPES.ALERT,
+  TYPES.COMMENT,
   TYPES.ACCESS_REQUEST,
   TYPES.DASHBOARD_REPORT,
   TYPES.MAP_OVERLAY,
@@ -64,6 +67,9 @@ const getForeignKeyColumn = (recordType, parentRecordType) => {
   const key = createMultiResourceKey(recordType, parentRecordType);
   return CUSTOM_FOREIGN_KEYS[key] || `${parentRecordType}_id`;
 };
+const PARENT_RECORD_FINDERS = {
+  [`${TYPES.ALERT}/${TYPES.COMMENT}`]: findOrCountJoinChildren,
+};
 
 const MAX_RECORDS_PER_PAGE = 100;
 
@@ -76,13 +82,13 @@ const MAX_RECORDS_PER_PAGE = 100;
  * using the 'sort' query parameter, and filtering using any other query parameter.
  * As with most endpoints, you must also pass in a Bearer auth header with an access token
  * Examples:
- *     https://api.tupaia.org/v2/countries?sort=[name DESC]
+ *     https://api.tupaia.org/v2/countries?sort=["name DESC"]
  *       Get all countries, sorted alphabetically by name in reverse order
  *     https://api.tupaia.org/v2/surveyResponse/5a5d1c66ae07fb3fb025c3a3
  *       Get a specific survey response
  *     https://api.tupaia.org/v2/surveyResponse/5a5d1c66ae07fb3fb025c3a3/answers
  *       Get the answers of a specific survey response
- *     https://api.tupaia.org/v2/answers?pageSize=100&page=3&filter={survey_response_id:5a5d1c66ae07fb3fb025c3a3}
+ *     https://api.tupaia.org/v2/answers?pageSize=100&page=3&filter={"survey_response_id":"5a5d1c66ae07fb3fb025c3a3"}
  *       Get the fourth page of 100 answers for a given survey response
  */
 export async function getRecords(req, res) {
@@ -117,6 +123,19 @@ export async function getRecords(req, res) {
         return customFinder(models, parentRecordId, criteria, options, findOrCount);
       }
       if (parentRecordType) {
+        const recordAccessor = PARENT_RECORD_FINDERS[`${parentRecordType}/${recordType}`];
+        if (recordAccessor) {
+          return recordAccessor(
+            models,
+            findOrCount,
+            recordType,
+            parentRecordType,
+            parentRecordId,
+            criteria,
+            options,
+          );
+        }
+
         return database[findOrCount](
           recordType,
           { ...criteria, [getForeignKeyColumn(recordType, parentRecordType)]: parentRecordId },

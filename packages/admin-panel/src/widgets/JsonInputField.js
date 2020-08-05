@@ -72,7 +72,7 @@ export class JsonInputField extends PureComponent {
 JsonInputField.propTypes = {
   getJsonFieldSchema: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
-  value: PropTypes.oneOf(PropTypes.string, PropTypes.object),
+  value: PropTypes.oneOf([PropTypes.string, PropTypes.object]),
   disabled: PropTypes.bool,
 };
 
