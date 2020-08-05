@@ -127,6 +127,7 @@ const mapDispatchToProps = dispatch => ({
     } else {
       dispatch(selectProject(project.code));
       dispatch(changeOrgUnit(project.homeEntityCode, false));
+      dispatch(setOverlayComponent(null));
     }
   },
   onRequestProjectAccess: project => {
