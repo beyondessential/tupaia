@@ -49,7 +49,6 @@
     "case-sensitive-paths-webpack-plugin": "1.1.4",
     "chalk": "1.1.3",
     "css-loader": "0.28.1",
-    "cypress": "^4.9.0",
     "dotenv": "4.0.0",
     "eslint-loader": "^2.1.1",
     "eslint-plugin-cypress": "^2.11.1",
