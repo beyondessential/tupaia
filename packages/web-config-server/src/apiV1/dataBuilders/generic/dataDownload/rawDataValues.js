@@ -20,7 +20,12 @@ class RawDataValuesBuilder extends DataBuilder {
 
     const surveyCodeToName = reduceToDictionary(this.config.surveys, 'code', 'name');
 
-    const { surveysConfig = {} } = this.config;
+    const { surveysConfig = {}, transformations = [] } = this.config;
+    const transformationTypes = transformations.map(t => t.type);
+    const tranformationMap = {};
+    transformations.forEach(transformation => {
+      tranformationMap[transformation.type] = transformation;
+    });
 
     //Loop through each selected survey and fetch the analytics of that survey,
     //then build a matrix around the analytics
@@ -48,7 +53,7 @@ class RawDataValuesBuilder extends DataBuilder {
 
       const rawEvents = await this.fetchEvents(additionalQueryConfig, surveyCode);
       const ancestorTypeForSort =
-        this.config.ancestorSortConfig && this.config.ancestorSortConfig.type;
+        transformationTypes.includes('ancestorSort') && tranformationMap.ancestorSort.ancestorType;
       const sortedEvents = ancestorTypeForSort
         ? await this.sortEventsByAncestor(rawEvents, ancestorTypeForSort)
         : rawEvents;
@@ -60,16 +65,17 @@ class RawDataValuesBuilder extends DataBuilder {
       let rows = [];
 
       if (columns && columns.length) {
-        rows = await this.buildRows(sortedEvents, dataElementCodeToText);
+        const ancestorRow =
+          transformationTypes.includes('ancestorSort') && tranformationMap.ancestorSort.showInExport
+            ? { ancestor: tranformationMap.ancestorSort.ancestorType }
+            : {};
+        rows = await this.buildRows(sortedEvents, dataElementCodeToText, ancestorRow);
       }
 
       let tableData = {
         columns,
         rows,
       };
-
-      const { transformations = [] } = this.config;
-      const transformationTypes = transformations.map(t => t.type);
 
       if (transformationTypes.includes('transposeMatrix')) {
         tableData = transposeMatrix(tableData, ROW_HEADER_KEY);
@@ -107,13 +113,8 @@ class RawDataValuesBuilder extends DataBuilder {
   /**
    * Build row values for data elements of different organisationUnit - period combination
    */
-  buildRows = async (events, dataElementCodeToText) => {
+  buildRows = async (events, dataElementCodeToText, ancestorRow = {}) => {
     const builtRows = [];
-
-    const ancestorRow =
-      this.config.ancestorSortConfig && this.config.ancestorSortConfig.showInExport
-        ? { ancestor: this.config.ancestorSortConfig.type }
-        : {};
 
     const DEFAULT_DATA_KEY_TO_TEXT = {
       entityCode: 'Entity Code',
