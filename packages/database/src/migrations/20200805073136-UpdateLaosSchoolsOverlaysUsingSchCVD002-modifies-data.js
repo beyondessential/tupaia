@@ -14,6 +14,10 @@ exports.setup = function(options, seedLink) {
   seed = seedLink;
 };
 
+const OLD_NAME = 'Has been used as quarantine centre';
+
+const NEW_NAME = 'School used as quarantine centre';
+
 const OLD_PRESENTATION_OPTIONS = {
   values: [
     {
@@ -73,7 +77,8 @@ const OVERLAY_ID = 'Laos_Schools_Used_As_Quarantine_Centre';
 exports.up = function(db) {
   return db.runSql(`
     UPDATE "mapOverlay"
-    SET "presentationOptions" = '${JSON.stringify(NEW_PRESENTATION_OPTIONS)}'
+    SET "presentationOptions" = '${JSON.stringify(NEW_PRESENTATION_OPTIONS)}',
+    name = '${NEW_NAME}'
     WHERE id = '${OVERLAY_ID}';
   `);
 };
@@ -81,7 +86,8 @@ exports.up = function(db) {
 exports.down = function(db) {
   return db.runSql(`
     UPDATE "mapOverlay"
-    SET "presentationOptions" = '${JSON.stringify(OLD_PRESENTATION_OPTIONS)}'
+    SET "presentationOptions" = '${JSON.stringify(OLD_PRESENTATION_OPTIONS)}',
+    name = '${OLD_NAME}'
     WHERE id = '${OVERLAY_ID}';
   `);
 };
