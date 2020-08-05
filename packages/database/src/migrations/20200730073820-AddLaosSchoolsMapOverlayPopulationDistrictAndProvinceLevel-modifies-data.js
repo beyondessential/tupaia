@@ -1,6 +1,6 @@
 'use strict';
 
-import { insertObject, arrayToDbString } from '../utilities';
+import { generateId, insertObject, arrayToDbString } from '../utilities';
 
 var dbm;
 var type;
@@ -33,8 +33,6 @@ const MAP_OVERLAYS = [
 
 const DATA_ELEMENT_CODE = 'value';
 
-const GROUP_NAME = 'Population';
-
 const USER_GROUP = 'Laos Schools User';
 
 const DISPLAY_TYPE = 'shaded-spectrum';
@@ -66,6 +64,8 @@ const COUNTRY_CODES = '{"LA"}';
 const PROJECT_CODES = '{"laos_schools"}';
 
 const BASE_PRESENTATION_OPTIONS = {
+  displayType: DISPLAY_TYPE,
+  values: VALUES,
   scaleMax: 'auto',
   scaleMin: 0,
   scaleType: 'neutral',
@@ -74,41 +74,58 @@ const BASE_PRESENTATION_OPTIONS = {
 
 const BASE_MAP_OVERLAY_OBJECT = {
   dataElementCode: DATA_ELEMENT_CODE,
-  groupName: GROUP_NAME,
   userGroup: USER_GROUP,
-  displayType: DISPLAY_TYPE,
-  values: VALUES,
   isDataRegional: true,
   measureBuilder: MEASURE_BUILDER,
   countryCodes: COUNTRY_CODES,
   projectCodes: PROJECT_CODES,
 };
 
+const POPULATION_GROUP = {
+  id: generateId(),
+  name: 'Population',
+  code: 'Laos_Schools_Population_Group',
+};
+
 exports.up = async function(db) {
-  await Promise.all(
-    MAP_OVERLAYS.map((overlay, index) => {
-      const { name, id, aggregationEntityType, measureLevel } = overlay;
-      return insertObject(db, 'mapOverlay', {
-        ...BASE_MAP_OVERLAY_OBJECT,
-        name,
-        id,
-        measureBuilderConfig: {
-          ...BASE_MEASURE_BUILDER_CONFIG,
-          entityAggregation: { ...BASE_ENTITY_AGGREGATION, aggregationEntityType },
-        },
-        presentationOptions: {
-          ...BASE_PRESENTATION_OPTIONS,
-          measureLevel,
-        },
-        sortOrder: index,
-      });
-    }),
-  );
+  await insertObject(db, 'map_overlay_group', POPULATION_GROUP);
+
+  for (let index = 0; index < MAP_OVERLAYS.length; index++) {
+    const { name, id, aggregationEntityType, measureLevel } = MAP_OVERLAYS[index];
+
+    await insertObject(db, 'mapOverlay', {
+      ...BASE_MAP_OVERLAY_OBJECT,
+      name,
+      id,
+      measureBuilderConfig: {
+        ...BASE_MEASURE_BUILDER_CONFIG,
+        entityAggregation: { ...BASE_ENTITY_AGGREGATION, aggregationEntityType },
+      },
+      presentationOptions: {
+        ...BASE_PRESENTATION_OPTIONS,
+        measureLevel,
+      },
+      sortOrder: index,
+    });
+
+    await insertObject(db, 'map_overlay_group_relation', {
+      id: generateId(),
+      map_overlay_group_id: POPULATION_GROUP.id,
+      child_id: id,
+      child_type: 'mapOverlay',
+    });
+  }
 };
 
 exports.down = function(db) {
-  return db.runSql(`	
-    DELETE FROM "mapOverlay" WHERE "id" in (${arrayToDbString(MAP_OVERLAYS.map(o => o.id))});	
+  return db.runSql(`
+    DELETE FROM map_overlay_group_relation WHERE child_id in (${arrayToDbString(
+      MAP_OVERLAYS.map(o => o.id),
+    )});
+
+    DELETE FROM "mapOverlay" WHERE id in (${arrayToDbString(MAP_OVERLAYS.map(o => o.id))});
+
+    DELETE FROM map_overlay_group WHERE code = '${POPULATION_GROUP.code}';
   `);
 };
 
