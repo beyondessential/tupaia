@@ -134,12 +134,11 @@ export class DataBuilder {
       const sortName = `${ancestorCode}_${event.orgUnitName}`;
       return {
         ...event,
-        orgUnitAncestorType: ancestorType,
         orgUnitAncestor: ancestorCode,
         sortName,
       };
     });
-    return mappedEvents.sort(getSortByKey('sortName'));
+    return mappedEvents.sort(getSortByKey('sortName')).map(({ sortName, ...event }) => event);
   }
 
   sortDataByName = data => data.sort(getSortByKey('name'));

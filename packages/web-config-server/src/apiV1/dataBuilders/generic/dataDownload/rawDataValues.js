@@ -110,15 +110,11 @@ class RawDataValuesBuilder extends DataBuilder {
       entityCode: 'Entity Code',
       name: 'Name',
       date: 'Date',
+      ancestor: this.config.sortByAncestor, // may be undefined, in which case we don't include the ancestor in the metadata rows
     };
-
-    const ADDITIONAL_DATA_TO_TEXT = Object(events[0]).hasOwnProperty('orgUnitAncestorType')
-      ? { ancestor: events[0].orgUnitAncestorType }
-      : {};
 
     const dataKeyToName = {
       ...DEFAULT_DATA_KEY_TO_TEXT,
-      ...ADDITIONAL_DATA_TO_TEXT,
       ...dataElementCodeToText,
     };
 
@@ -132,11 +128,7 @@ class RawDataValuesBuilder extends DataBuilder {
       //Build a row for each organisationUnit - period combination
       events.forEach(({ event, orgUnit, orgUnitName, eventDate, dataValues, orgUnitAncestor }) => {
         Object.entries(dataValues).forEach(([code, dataValue]) => {
-          if (
-            dataKey === code ||
-            DEFAULT_DATA_KEY_TO_TEXT[dataKey] ||
-            ADDITIONAL_DATA_TO_TEXT[dataKey]
-          ) {
+          if (dataKey === code || DEFAULT_DATA_KEY_TO_TEXT[dataKey]) {
             let value;
 
             switch (dataKey) {
