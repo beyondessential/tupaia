@@ -5,7 +5,6 @@
 
 import groupBy from 'lodash.groupby';
 import keyBy from 'lodash.keyby';
-import invert from 'lodash.invert';
 import winston from 'winston';
 import { getSortByKey, reduceToDictionary } from '@tupaia/utils';
 import { DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';

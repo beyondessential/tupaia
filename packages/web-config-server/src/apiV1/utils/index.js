@@ -38,3 +38,7 @@ export { sumResults } from './sumResults';
 export { transposeMatrix } from './transposeMatrix';
 export { mergeTableDataOnKey } from './mergeTableDataOnKey';
 export { getAggregatePeriod } from './getAggregatePeriod';
+export {
+  findAccessibleMapOverlays,
+  findAccessibleGroupedMapOverlays,
+} from './findAccessibleGroupedMapOverlays';

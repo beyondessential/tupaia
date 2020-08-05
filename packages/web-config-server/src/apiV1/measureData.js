@@ -224,23 +224,34 @@ export default class extends DataAggregatingRouteHandler {
       userGroup,
       isDataRegional, // don't include these in response
       dataElementCode,
-      displayType,
-      values,
       presentationOptions,
       measureBuilderConfig,
       ...restOfMapOverlay
     } = mapOverlay;
+
+    const {
+      displayType,
+      values,
+      hideFromMenu,
+      hideFromLegend,
+      hideFromPopup,
+      ...restOfPresentationOptions
+    } = presentationOptions;
+
     const { dataSourceType = DATA_SOURCE_TYPES.SINGLE, periodGranularity } =
       measureBuilderConfig || {};
     const { startDate, endDate } = this.query;
     const dates = periodGranularity ? getDateRange(periodGranularity, startDate, endDate) : {};
 
     const baseOptions = {
-      ...presentationOptions,
+      ...restOfPresentationOptions,
       ...restOfMapOverlay,
       type: displayType,
       key: id,
       periodGranularity,
+      hideFromMenu: hideFromMenu || false,
+      hideFromLegend: hideFromLegend || false,
+      hideFromPopup: hideFromPopup || false,
       ...dates,
     };
 
@@ -315,7 +326,10 @@ export default class extends DataAggregatingRouteHandler {
 }
 
 function translateMeasureOptionSet(measureOptions, mapOverlay) {
-  const { customColors, displayType } = mapOverlay;
+  const {
+    presentationOptions: { customColors },
+    displayType,
+  } = mapOverlay;
 
   if (!measureOptions) {
     // don't auto-assign options to radius measures

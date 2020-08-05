@@ -26,16 +26,29 @@ const TinyProgress = () => (
   </TinyProgressContainer>
 );
 
-const renderList = (filterItem, onFilterchange, currentFilter) => {
-  let listItems;
-  if (filterItem.items) {
-    listItems = filterItem.items
-      .map(item => ({
+const buildListItems = items => {
+  return items
+    .map(item => {
+      if (item.items) {
+        return {
+          title: item.category,
+          items: buildListItems(item.items),
+        };
+      }
+
+      return {
         data: item.id,
         key: item.id,
         title: item.label,
-      }))
-      .sort((a, b) => a.title.localeCompare(b.title));
+      };
+    })
+    .sort((a, b) => a.title.localeCompare(b.title));
+};
+
+const renderList = (filterItem, onFilterchange, currentFilter) => {
+  let listItems;
+  if (filterItem.items) {
+    listItems = buildListItems(filterItem.items);
   } else {
     listItems = [
       {

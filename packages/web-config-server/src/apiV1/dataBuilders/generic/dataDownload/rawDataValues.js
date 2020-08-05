@@ -75,13 +75,13 @@ class RawDataValuesBuilder extends DataBuilder {
         };
       }
 
-      const events = await this.fetchEvents(additionalQueryConfig, surveyCode);
+      const rawEvents = await this.fetchEvents(additionalQueryConfig, surveyCode);
 
       // Optional sorting config
       const mergeRowKey = surveyConfig.mergeRowKey;
       const sortByAncestor = this.config.sortByAncestor;
 
-      const sortedEvents = await this.sortEvents(events, { mergeRowKey, sortByAncestor });
+      const sortedEvents = await this.sortEvents(rawEvents, { mergeRowKey, sortByAncestor });
 
       const sortedMappedEvents = mergeRowKey
         ? sortedEvents.map(e => ({
@@ -94,7 +94,7 @@ class RawDataValuesBuilder extends DataBuilder {
 
       const dataElementCodeToText = reduceToDictionary(dataElementsMetadata, 'code', 'text');
 
-      const rows = await this.buildRows(sortedEvents, dataElementCodeToText);
+      const rows = await this.buildRows(sortedMappedEvents, dataElementCodeToText);
 
       const data = {
         columns,
@@ -155,8 +155,13 @@ class RawDataValuesBuilder extends DataBuilder {
       date: 'Date',
     };
 
+    const ADDITIONAL_DATA_TO_TEXT = Object(events[0]).hasOwnProperty('orgUnitAncestorType')
+      ? { ancestor: events[0].orgUnitAncestorType }
+      : {};
+
     const dataKeyToName = {
       ...DEFAULT_DATA_KEY_TO_TEXT,
+      ...ADDITIONAL_DATA_TO_TEXT,
       ...dataElementCodeToText,
     };
 
@@ -168,9 +173,13 @@ class RawDataValuesBuilder extends DataBuilder {
       };
 
       //Build a row for each organisationUnit - period combination
-      events.forEach(({ event, orgUnit, orgUnitName, eventDate, dataValues }) => {
+      events.forEach(({ event, orgUnit, orgUnitName, eventDate, dataValues, orgUnitAncestor }) => {
         Object.entries(dataValues).forEach(([code, dataValue]) => {
-          if (dataKey === code || DEFAULT_DATA_KEY_TO_TEXT[dataKey]) {
+          if (
+            dataKey === code ||
+            DEFAULT_DATA_KEY_TO_TEXT[dataKey] ||
+            ADDITIONAL_DATA_TO_TEXT[dataKey]
+          ) {
             let value;
 
             switch (dataKey) {
@@ -182,6 +191,9 @@ class RawDataValuesBuilder extends DataBuilder {
                 break;
               case 'date':
                 value = moment(eventDate).format(RAW_VALUE_DATE_FORMAT);
+                break;
+              case 'ancestor':
+                value = orgUnitAncestor;
                 break;
               default:
                 value = dataValue;
