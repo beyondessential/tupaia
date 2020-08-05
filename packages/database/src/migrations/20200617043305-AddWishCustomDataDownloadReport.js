@@ -125,19 +125,19 @@ const DATA_BUILDER_CONFIG = {
           entityAggregation: {
             dataSourceEntityType: 'village',
           },
-          excludeCodes: ['WFI4SQ11', 'WFI4SQ7'],
+          excludeCodes: ['WFI4SQ11', 'WFI4SQ7', 'WFI4SQ13', 'WFI4SQ12'],
         },
         WISH_5HO: {
           entityAggregation: {
             dataSourceEntityType: 'village',
           },
-          excludeCodes: ['WFI5HOS3'],
+          excludeCodes: ['WFI5HOS3', 'WFI4SQ13', 'WFI5HOS4', 'WFI5HOS5'],
         },
         WISH_5HIS: {
           entityAggregation: {
             dataSourceEntityType: 'village',
           },
-          excludeCodes: ['WFI5HIS17', 'WFI5HIS3'],
+          excludeCodes: ['WFI5HIS17', 'WFI5HIS3', 'WFI5HIS5', 'WFI5HIS4'],
         },
         WISH_6CLD: {
           entityAggregation: {
@@ -148,6 +148,7 @@ const DATA_BUILDER_CONFIG = {
           entityAggregation: {
             dataSourceEntityType: 'village',
           },
+          excludeCodes: ['WFIPHDS7', 'WFIPHDS9', 'WFIPHDS8'],
         },
         WISH_6MTD: {
           entityAggregation: {
