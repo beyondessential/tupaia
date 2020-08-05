@@ -45,6 +45,7 @@ const DATA_BUILDER_CONFIG = {
           entityAggregation: {
             dataSourceEntityType: 'village',
           },
+          excludeCodes: ['WFIPHDS7', 'WFIPHDS9', 'WFIPHDS8'],
           mergeRowKey: 'WFIPHDS3',
         },
         WISH_6MTD: {
