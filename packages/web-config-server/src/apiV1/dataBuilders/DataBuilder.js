@@ -125,16 +125,16 @@ export class DataBuilder {
     const allAncestors = await Promise.all(
       await allEntities.map(entity => entity.getAncestorOfType(ancestorType, hierarchyId)),
     );
-    const entityCodeToAncestor = {};
+    const entityNameToAncestor = {};
     allEntities.forEach((entity, index) => {
-      entityCodeToAncestor[entity.code] = allAncestors[index].code;
+      entityNameToAncestor[entity.code] = allAncestors[index].name;
     });
     const mappedEvents = events.map(event => {
-      const ancestorCode = entityCodeToAncestor[event.orgUnit];
-      const sortName = `${ancestorCode}_${event.orgUnitName}`;
+      const ancestor = entityNameToAncestor[event.orgUnit];
+      const sortName = `${ancestor}_${event.orgUnitName}`;
       return {
         ...event,
-        orgUnitAncestor: ancestorCode,
+        orgUnitAncestor: ancestor,
         sortName,
       };
     });
