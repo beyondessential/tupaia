@@ -37,3 +37,7 @@ export { composeBuiltData } from './composeBuiltData';
 export { sumResults } from './sumResults';
 export { transposeMatrix } from './transposeMatrix';
 export { getAggregatePeriod } from './getAggregatePeriod';
+export {
+  findAccessibleMapOverlays,
+  findAccessibleGroupedMapOverlays,
+} from './findAccessibleGroupedMapOverlays';
