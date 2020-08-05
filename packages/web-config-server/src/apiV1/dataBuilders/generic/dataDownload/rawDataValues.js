@@ -47,9 +47,9 @@ class RawDataValuesBuilder extends DataBuilder {
       }
 
       const rawEvents = await this.fetchEvents(additionalQueryConfig, surveyCode);
-
-      const sortedEvents = this.config.sortByAncestor
-        ? await this.sortEventsByAncestor(rawEvents, this.config.sortByAncestor)
+      const sortByAncestor = this.config.sortByAncestor && this.config.sortByAncestor.type;
+      const sortedEvents = sortByAncestor
+        ? await this.sortEventsByAncestor(rawEvents, sortByAncestor)
         : rawEvents;
 
       const columns = this.buildColumns(sortedEvents);
@@ -106,11 +106,16 @@ class RawDataValuesBuilder extends DataBuilder {
   buildRows = async (events, dataElementCodeToText) => {
     const builtRows = [];
 
+    const ancestorRow =
+      this.config.sortByAncestor && this.config.sortByAncestor.showInExport
+        ? { ancestor: this.config.sortByAncestor.type }
+        : {};
+
     const DEFAULT_DATA_KEY_TO_TEXT = {
       entityCode: 'Entity Code',
       name: 'Name',
       date: 'Date',
-      ancestor: this.config.sortByAncestor, // may be undefined, in which case we don't include the ancestor in the metadata rows
+      ...ancestorRow, // may be undefined, in which case we don't include the ancestor in the metadata rows
     };
 
     const dataKeyToName = {
