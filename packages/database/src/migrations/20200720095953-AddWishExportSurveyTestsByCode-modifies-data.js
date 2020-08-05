@@ -55,7 +55,7 @@ const DATA_BUILDER_CONFIG = {
           mergeRowKey: 'WFIBDS2',
         },
       },
-      transformations: ['mergeSurveys', 'transposeMatrix'],
+      transformations: [{ type: 'mergeSurveys' }, { type: 'transposeMatrix' }],
       skipHeader: false,
     },
   },
