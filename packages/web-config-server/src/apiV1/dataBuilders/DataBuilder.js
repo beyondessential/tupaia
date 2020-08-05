@@ -127,19 +127,18 @@ export class DataBuilder {
     );
     const entityCodeToAncestor = {};
     allEntities.forEach((entity, index) => {
-      entityCodeToAncestor[entity.code] = allAncestors[index].code;
+      entityCodeToAncestor[entity.code] = allAncestors[index].name;
     });
     const mappedEvents = events.map(event => {
-      const ancestorCode = entityCodeToAncestor[event.orgUnit];
-      const sortName = `${ancestorCode}_${event.orgUnitName}`;
+      const ancestor = entityCodeToAncestor[event.orgUnit];
+      const sortName = `${ancestor}_${event.orgUnitName}`;
       return {
         ...event,
-        orgUnitAncestorType: ancestorType,
-        orgUnitAncestor: ancestorCode,
+        orgUnitAncestor: ancestor,
         sortName,
       };
     });
-    return mappedEvents.sort(getSortByKey('sortName'));
+    return mappedEvents.sort(getSortByKey('sortName')).map(({ sortName, ...event }) => event);
   }
 
   sortEventsByDataValue = (events, dataValue) =>

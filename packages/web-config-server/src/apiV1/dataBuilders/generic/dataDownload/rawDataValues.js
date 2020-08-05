@@ -79,9 +79,10 @@ class RawDataValuesBuilder extends DataBuilder {
 
       // Optional sorting config
       const mergeRowKey = surveyConfig.mergeRowKey;
-      const sortByAncestor = this.config.sortByAncestor;
-
-      const sortedEvents = await this.sortEvents(rawEvents, { mergeRowKey, sortByAncestor });
+      const ancestorTypeForSort =
+        this.config.ancestorSortConfig && this.config.ancestorSortConfig.type;
+      
+      const sortedEvents = await this.sortEvents(rawEvents, { mergeRowKey, ancestorTypeForSort });
 
       const sortedMappedEvents = mergeRowKey
         ? sortedEvents.map(e => ({
@@ -118,7 +119,7 @@ class RawDataValuesBuilder extends DataBuilder {
     // for performance of merge and avoid ancestor lookup
     if (sortKeys.mergeRowKey) return this.sortEventsByDataValue(events, sortKeys.mergeRowKey);
 
-    if (sortKeys.sortByAncestor) return this.sortEventsByAncestor(events, sortKeys.sortByAncestor);
+    if (sortKeys.ancestorTypeForSort) return this.sortEventsByAncestor(events, sortKeys.ancestorTypeForSort);
 
     //default unsorted
     return events;
@@ -149,19 +150,20 @@ class RawDataValuesBuilder extends DataBuilder {
   buildRows = async (events, dataElementCodeToText) => {
     const builtRows = [];
 
+    const ancestorRow =
+      this.config.ancestorSortConfig && this.config.ancestorSortConfig.showInExport
+        ? { ancestor: this.config.ancestorSortConfig.type }
+        : {};
+
     const DEFAULT_DATA_KEY_TO_TEXT = {
       entityCode: 'Entity Code',
       name: 'Name',
       date: 'Date',
+      ...ancestorRow, // may be undefined, in which case we don't include the ancestor in the metadata rows
     };
-
-    const ADDITIONAL_DATA_TO_TEXT = Object(events[0]).hasOwnProperty('orgUnitAncestorType')
-      ? { ancestor: events[0].orgUnitAncestorType }
-      : {};
 
     const dataKeyToName = {
       ...DEFAULT_DATA_KEY_TO_TEXT,
-      ...ADDITIONAL_DATA_TO_TEXT,
       ...dataElementCodeToText,
     };
 
@@ -175,11 +177,7 @@ class RawDataValuesBuilder extends DataBuilder {
       //Build a row for each organisationUnit - period combination
       events.forEach(({ event, orgUnit, orgUnitName, eventDate, dataValues, orgUnitAncestor }) => {
         Object.entries(dataValues).forEach(([code, dataValue]) => {
-          if (
-            dataKey === code ||
-            DEFAULT_DATA_KEY_TO_TEXT[dataKey] ||
-            ADDITIONAL_DATA_TO_TEXT[dataKey]
-          ) {
+          if (dataKey === code || DEFAULT_DATA_KEY_TO_TEXT[dataKey]) {
             let value;
 
             switch (dataKey) {
