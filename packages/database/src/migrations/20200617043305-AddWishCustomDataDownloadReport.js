@@ -161,8 +161,10 @@ const DATA_BUILDER_CONFIG = {
           },
         },
       },
-      transformations: [{ type: 'transposeMatrix' }],
-      ancestorSortConfig: { type: 'sub_catchment', showInExport: true },
+      transformations: [
+        { type: 'ancestorSort', ancestorType: 'sub_catchment', showInExport: true },
+        { type: 'transposeMatrix' },
+      ],
       skipHeader: false,
     },
   },

@@ -26,6 +26,11 @@ class RawDataValuesBuilder extends DataBuilder {
     const surveyCodes = this.query.surveyCodes;
     const { transformations = [] } = this.config;
     const transformationTypes = transformations.map(t => t.type);
+    const tranformationMap = {};
+    transformations.forEach(transformation => {
+      tranformationMap[transformation.type] = transformation;
+    });
+
     let transformableData = await this.fetchResults(surveyCodes.split(','));
 
     if (transformationTypes.includes('mergeSurveys')) {
@@ -50,7 +55,12 @@ class RawDataValuesBuilder extends DataBuilder {
       'name',
     );
 
-    const { surveysConfig = {} } = this.config;
+    const { surveysConfig = {}, transformations = [] } = this.config;
+    const transformationTypes = transformations.map(t => t.type);
+    const tranformationMap = {};
+    transformations.forEach(transformation => {
+      tranformationMap[transformation.type] = transformation;
+    });
 
     //Loop through each selected survey and fetch the analytics of that survey,
     //then build a matrix around the analytics
@@ -81,7 +91,7 @@ class RawDataValuesBuilder extends DataBuilder {
       // Optional sorting config
       const mergeRowKey = surveyConfig.mergeRowKey;
       const ancestorTypeForSort =
-        this.config.ancestorSortConfig && this.config.ancestorSortConfig.type;
+        transformationTypes.includes('ancestorSort') && tranformationMap.ancestorSort.ancestorType;
 
       const sortedEvents = await this.sortEvents(rawEvents, { mergeRowKey, ancestorTypeForSort });
 
@@ -96,7 +106,11 @@ class RawDataValuesBuilder extends DataBuilder {
 
       const dataElementCodeToText = reduceToDictionary(dataElementsMetadata, 'code', 'text');
 
-      const rows = await this.buildRows(sortedMappedEvents, dataElementCodeToText);
+      const ancestorRowKey =
+        transformationTypes.includes('ancestorSort') && tranformationMap.ancestorSort.showInExport
+          ? { ancestor: tranformationMap.ancestorSort.ancestorType }
+          : {};
+      const rows = await this.buildRows(sortedEvents, dataElementCodeToText, ancestorRowKey);
 
       const data = {
         columns,
@@ -149,19 +163,14 @@ class RawDataValuesBuilder extends DataBuilder {
   /**
    * Build row values for data elements of different organisationUnit - period combination
    */
-  buildRows = async (events, dataElementCodeToText) => {
+  buildRows = async (events, dataElementCodeToText, ancestorRowKey = {}) => {
     const builtRows = [];
-
-    const ancestorRow =
-      this.config.ancestorSortConfig && this.config.ancestorSortConfig.showInExport
-        ? { ancestor: this.config.ancestorSortConfig.type }
-        : {};
 
     const DEFAULT_DATA_KEY_TO_TEXT = {
       entityCode: 'Entity Code',
       name: 'Name',
       date: 'Date',
-      ...ancestorRow, // may be undefined, in which case we don't include the ancestor in the metadata rows
+      ...ancestorRowKey, // may be undefined, in which case we don't include the ancestor in the metadata rows
     };
 
     const dataKeyToName = {
