@@ -110,7 +110,10 @@ class RawDataValuesBuilder extends DataBuilder {
         transformationTypes.includes('ancestorSort') && tranformationMap.ancestorSort.showInExport
           ? { ancestor: tranformationMap.ancestorSort.ancestorType }
           : {};
-      const rows = await this.buildRows(sortedEvents, dataElementCodeToText, ancestorRowKey);
+      const rows =
+        columns &&
+        columns.length &&
+        (await this.buildRows(sortedEvents, dataElementCodeToText, ancestorRowKey));
 
       const data = {
         columns,
