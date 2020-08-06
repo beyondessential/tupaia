@@ -13,6 +13,7 @@ import { DataElementDataGroupModel } from './DataElementDataGroup';
 import { DataSourceModel } from './DataSource';
 import { EntityModel } from './Entity';
 import { GeographicalAreaModel } from './GeographicalArea';
+import { IndicatorModel } from './Indicator';
 import { MeditrakDeviceModel } from './MeditrakDevice';
 import { RefreshTokenModel } from './RefreshToken';
 import { OneTimeLoginModel } from './OneTimeLogin';
@@ -41,6 +42,7 @@ export const modelClasses = {
   DataSource: DataSourceModel,
   Entity: EntityModel,
   GeographicalArea: GeographicalAreaModel,
+  Indicator: IndicatorModel,
   MeditrakDevice: MeditrakDeviceModel,
   OneTimeLogin: OneTimeLoginModel,
   PermissionGroup: PermissionGroupModel,

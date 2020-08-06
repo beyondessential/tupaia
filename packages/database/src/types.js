@@ -27,6 +27,7 @@ export const TYPES = {
   FACILITY: 'clinic',
   FEED_ITEM: 'feed_item',
   GEOGRAPHICAL_AREA: 'geographical_area',
+  INDICATOR: 'indicator',
   MAP_OVERLAY: 'mapOverlay',
   MEDITRAK_DEVICE: 'meditrak_device',
   MEDITRAK_SYNC_QUEUE: 'meditrak_sync_queue',
