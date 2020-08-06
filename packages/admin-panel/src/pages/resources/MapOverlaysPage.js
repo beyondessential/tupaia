@@ -12,10 +12,6 @@ const FIELDS = [
     source: 'name',
   },
   {
-    Header: 'Group Name',
-    source: 'groupName',
-  },
-  {
     Header: 'Permission Group',
     source: 'userGroup',
     editConfig: {
@@ -46,43 +42,8 @@ const FIELDS = [
     editConfig: { type: 'jsonEditor' },
   },
   {
-    Header: 'Display Type',
-    source: 'displayType',
-    editConfig: {
-      optionsEndpoint: 'mapOverlays',
-      optionLabelKey: 'displayType',
-      optionValueKey: 'displayType',
-      sourceKey: 'displayType',
-    },
-  },
-  {
-    Header: 'Custom Colors',
-    source: 'customColors',
-  },
-  {
     Header: 'isDataRegional',
     source: 'isDataRegional',
-    type: 'boolean',
-  },
-  {
-    Header: 'Values',
-    source: 'values',
-    Cell: ({ value }) => prettyJSON(value),
-    editConfig: { type: 'jsonEditor' },
-  },
-  {
-    Header: 'Hide From Menu',
-    source: 'hideFromMenu',
-    type: 'boolean',
-  },
-  {
-    Header: 'Hide From Popup',
-    source: 'hideFromPopup',
-    type: 'boolean',
-  },
-  {
-    Header: 'Hide From Legend',
-    source: 'hideFromLegend',
     type: 'boolean',
   },
   {

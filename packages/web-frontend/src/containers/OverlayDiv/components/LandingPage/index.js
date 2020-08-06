@@ -15,11 +15,13 @@ import ExploreIcon from '@material-ui/icons/ExploreOutlined';
 import logo from '../../../../images/tupaia-logo-white.png';
 import { LoginPage } from './LoginPage';
 import { ProjectPage } from '../ProjectPage';
+import { OVERLAY_PADDING } from '../../constants';
 
 const Container = styled.div`
   display: grid;
   grid-auto-flow: row;
   grid-template-rows: auto 1fr auto;
+  padding: ${OVERLAY_PADDING};
 `;
 
 const Logo = styled.img`

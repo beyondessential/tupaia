@@ -16,3 +16,4 @@ dump.sql
 **/cypress/screenshots
 **/cypress/videos
 /snapshots.js
+.idea
