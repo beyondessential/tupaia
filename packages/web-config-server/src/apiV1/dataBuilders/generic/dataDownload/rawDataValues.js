@@ -156,7 +156,7 @@ class RawDataValuesBuilder extends DataBuilder {
       builtColumnsMap[event] = {
         key: event,
         title: event,
-        ...(mergeCompareValue ? { mergeCompareValue } : {}),
+        mergeCompareValue,
       };
     });
 
