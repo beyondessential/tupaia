@@ -340,8 +340,7 @@ export default class extends DataAggregatingRouteHandler {
 
 function translateMeasureOptionSet(measureOptions, mapOverlay) {
   const {
-    presentationOptions: { customColors },
-    displayType,
+    presentationOptions: { customColors, displayType },
   } = mapOverlay;
 
   if (!measureOptions) {
