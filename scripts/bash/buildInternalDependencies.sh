@@ -58,4 +58,3 @@ else
     eval "yarn concurrently ${build_commands[@]:${start_index}:${CONCURRENT_BUILD_BATCH_SIZE}}"
   done
 fi
-
