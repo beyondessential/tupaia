@@ -1,5 +1,9 @@
 /* take an object with columns and rows and return an object with rows and columns switched */
-export const transposeMatrix = ({ columns, rows }, rowHeaderKey = 'dataElement') => {
+export const transposeMatrix = (
+  { columns, rows },
+  rowHeaderKey = 'dataElement',
+  useTitlePrefix = false,
+) => {
   const uniqueRowHeader = (text, prefix) => `${prefix}-${text}`;
   // Set up a row per column, we'll fill data later
   const newRows = columns.map(() => {
@@ -11,7 +15,7 @@ export const transposeMatrix = ({ columns, rows }, rowHeaderKey = 'dataElement')
     // make column key unique (rows may not come with unique headers)
     return {
       key: uniqueRowHeader(row[rowHeaderKey], rowIndex),
-      title: row[rowHeaderKey],
+      title: useTitlePrefix ? uniqueRowHeader(row[rowHeaderKey], rowIndex) : row[rowHeaderKey],
     };
   });
 

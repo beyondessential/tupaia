@@ -39,8 +39,11 @@ class RawDataValuesBuilder extends DataBuilder {
     }
 
     if (transformationTypes.includes('transposeMatrix')) {
+      // Merged survey columns get combined on same title. This should be moved to config
+      // or exportSurveyDataHandler should use array of array instead of map
+      const useTitlePrefix = transformationTypes.includes('mergeSurveys');
       Object.entries(transformableData).forEach(([key, value]) => {
-        transformableData[key].data = transposeMatrix(value.data, ROW_HEADER_KEY);
+        transformableData[key].data = transposeMatrix(value.data, ROW_HEADER_KEY, useTitlePrefix);
       });
     }
     return { data: transformableData };
