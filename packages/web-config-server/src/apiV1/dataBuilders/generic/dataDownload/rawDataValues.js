@@ -34,7 +34,7 @@ class RawDataValuesBuilder extends DataBuilder {
     let transformableData = await this.fetchResults(surveyCodes.split(','));
 
     if (transformationTypes.includes('mergeSurveys')) {
-      const mergedTableName = this.config.surveys[0].name;
+      const mergedTableName = tranformationMap.mergeSurveys.mergedTableName;
       transformableData = mergeTableDataOnKey(transformableData, mergedTableName);
     }
 
@@ -111,9 +111,9 @@ class RawDataValuesBuilder extends DataBuilder {
           ? { ancestor: tranformationMap.ancestorSort.ancestorType }
           : {};
       const rows =
-        columns &&
-        columns.length &&
-        (await this.buildRows(sortedEvents, dataElementCodeToText, ancestorRowKey));
+        columns && columns.length
+          ? await this.buildRows(sortedMappedEvents, dataElementCodeToText, ancestorRowKey)
+          : [];
 
       const data = {
         columns,

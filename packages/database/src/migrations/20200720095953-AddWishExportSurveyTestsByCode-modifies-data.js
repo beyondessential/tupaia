@@ -55,7 +55,10 @@ const DATA_BUILDER_CONFIG = {
           mergeRowKey: 'WFIBDS2',
         },
       },
-      transformations: [{ type: 'mergeSurveys' }, { type: 'transposeMatrix' }],
+      transformations: [
+        { type: 'mergeSurveys', mergedTableName: 'Aligned Sample Tests' },
+        { type: 'transposeMatrix' },
+      ],
       skipHeader: false,
     },
   },
