@@ -75,24 +75,20 @@ const dataBuilder = 'sumPerMonthPerSeries';
 const dataBuilderConfig = {
   series: {
     Male: {
-      dataClasses: {
-        '10 - 19 years': ['HP299b', 'HP323aa'],
-        '20 - 29 years': ['HP300a', 'HP324a'],
-        '30 - 39 years': ['HP301a', 'HP325a'],
-        '40 - 49 years': ['HP302a_m', 'HP326a_m'],
-        '50 - 59 years': ['HP302b_m', 'HP326b_m'],
-        '60 + years': ['HP303', 'HP327'],
-      },
+      '10 - 19 years': ['HP299b', 'HP323aa'],
+      '20 - 29 years': ['HP300a', 'HP324a'],
+      '30 - 39 years': ['HP301a', 'HP325a'],
+      '40 - 49 years': ['HP302a_m', 'HP326a_m'],
+      '50 - 59 years': ['HP302b_m', 'HP326b_m'],
+      '60 + years': ['HP303', 'HP327'],
     },
     Female: {
-      dataClasses: {
-        '10 - 19 years': ['HP299c', 'HP323ab'],
-        '20 - 29 years': ['HP300b', 'HP324b'],
-        '30 - 39 years': ['HP301b', 'HP325b'],
-        '40 - 49 years': ['HP302a_f', 'HP326a_f'],
-        '50 - 59 years': ['HP302b_f', 'HP326b_f'],
-        '60 + years': ['HP304', 'HP328'],
-      },
+      '10 - 19 years': ['HP299c', 'HP323ab'],
+      '20 - 29 years': ['HP300b', 'HP324b'],
+      '30 - 39 years': ['HP301b', 'HP325b'],
+      '40 - 49 years': ['HP302a_f', 'HP326a_f'],
+      '50 - 59 years': ['HP302b_f', 'HP326b_f'],
+      '60 + years': ['HP304', 'HP328'],
     },
   },
   // programCode: 'HP08',
@@ -107,10 +103,10 @@ const viewJson = {
     Male: { stackId: 1 },
     Female: { stackId: 2 },
   },
-  defaultTimePeriod: {
-    unit: 'year',
-    offset: -1
-  },
+  // defaultTimePeriod: {
+  //   unit: 'year',
+  //   offset: -1,
+  // },
 };
 
 const dataServices = [{ isDataRegional: false }];
