@@ -51,7 +51,7 @@ const viewJson = {
   yName: 'Number of Clients',
   presentationOptions: {
     hideAverage: true,
-    periodTickFormat: 'MMM',
+    periodTickFormat: 'MMMM',
   },
 };
 
