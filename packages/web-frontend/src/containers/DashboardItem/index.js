@@ -121,8 +121,8 @@ const mapStateToProps = (state, { infoViewKey }) => {
   //Issue: https://github.com/beyondessential/tupaia-backlog/issues/937
   //Ideally, the currentOrganisationUnit should always be similar to the organisationUnit of the view content
   //However, sometimes, we have timing issue when changing the current organisation unit and opening the enlarge dialog at the same time.
-  //So, we pass in the name of the organisation unit of the orgUnit inside viewContent instead of always assuming it's the same with the current organisation unit to avoid confusion 
-  //that the org unit doesn't match with the data showing
+  //So, we pass in the name of the organisation unit of the orgUnit inside viewContent instead of always assuming 
+  //it's the same with the current organisation unit to avoid confusion that the org unit doesn't match with the data showing
   const viewContentOrganisationUnit = viewContent
     ? selectOrgUnit(state, viewContent.organisationUnitCode)
     : null;
