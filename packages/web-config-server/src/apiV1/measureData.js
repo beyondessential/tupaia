@@ -1,3 +1,5 @@
+import keyBy from 'lodash.keyby';
+
 import { CustomError } from '@tupaia/utils';
 import { getMeasureBuilder } from '/apiV1/measureBuilders/getMeasureBuilder';
 import { getDhisApiInstance } from '/dhis';
@@ -130,7 +132,18 @@ export default class extends DataAggregatingRouteHandler {
   buildResponse = async () => {
     const { code } = this.entity;
     const { measureId } = this.query;
-    const overlays = await MapOverlay.find({ id: measureId.split(',') });
+    const measureIds = measureId.split(',');
+    const overlayResults = await MapOverlay.find({ id: measureIds });
+
+    //Re-order the overlays array to follow the order in measureIds
+    const overlaysById = keyBy(overlayResults, 'id');
+    const overlays = [];
+
+    measureIds.forEach(id => {
+      if (overlaysById[id]) {
+        overlays.push(overlaysById[id]);
+      }
+    });
 
     // check permission
     await Promise.all(
@@ -224,23 +237,34 @@ export default class extends DataAggregatingRouteHandler {
       userGroup,
       isDataRegional, // don't include these in response
       dataElementCode,
-      displayType,
-      values,
       presentationOptions,
       measureBuilderConfig,
       ...restOfMapOverlay
     } = mapOverlay;
+
+    const {
+      displayType,
+      values,
+      hideFromMenu,
+      hideFromLegend,
+      hideFromPopup,
+      ...restOfPresentationOptions
+    } = presentationOptions;
+
     const { dataSourceType = DATA_SOURCE_TYPES.SINGLE, periodGranularity } =
       measureBuilderConfig || {};
     const { startDate, endDate } = this.query;
     const dates = periodGranularity ? getDateRange(periodGranularity, startDate, endDate) : {};
 
     const baseOptions = {
-      ...presentationOptions,
+      ...restOfPresentationOptions,
       ...restOfMapOverlay,
       type: displayType,
       key: id,
       periodGranularity,
+      hideFromMenu: hideFromMenu || false,
+      hideFromLegend: hideFromLegend || false,
+      hideFromPopup: hideFromPopup || false,
       ...dates,
     };
 
@@ -315,7 +339,9 @@ export default class extends DataAggregatingRouteHandler {
 }
 
 function translateMeasureOptionSet(measureOptions, mapOverlay) {
-  const { customColors, displayType } = mapOverlay;
+  const {
+    presentationOptions: { customColors, displayType },
+  } = mapOverlay;
 
   if (!measureOptions) {
     // don't auto-assign options to radius measures
