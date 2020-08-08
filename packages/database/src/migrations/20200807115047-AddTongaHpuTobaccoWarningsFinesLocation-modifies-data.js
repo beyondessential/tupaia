@@ -57,6 +57,7 @@ const dataBuilderConfig = {
       Other: ['HP271'],
     },
   },
+  dataClassKeyOrder: ['School', 'Workplace', 'Church Halls', 'Other'],
   periodType: 'year',
 };
 
