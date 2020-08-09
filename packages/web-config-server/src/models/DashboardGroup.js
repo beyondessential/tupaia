@@ -19,19 +19,29 @@ export class DashboardGroup extends BaseModel {
     'projectCodes',
   ];
 
+  // Return all dashboardGroups with matching organisationLevel and organisationUnits
+  static async getAllDashboardGroups(organisationLevel, entity, projectCode) {
+    return this.fetchDashboardGroups(
+      entity,
+      this.buildDashboardGroupQueryParams(projectCode, { organisationLevel }),
+    );
+  }
+
   // Return dashboardGroup with matching userGroups, organisationLevel and organisationUnits
   static async getDashboardGroups(userGroups = [], organisationLevel, entity, projectCode) {
+    return this.fetchDashboardGroups(
+      entity,
+      this.buildDashboardGroupQueryParams(projectCode, {
+        organisationLevel,
+        userGroup: userGroups,
+      }),
+    );
+  }
+
+  static async fetchDashboardGroups(entity, params) {
     const ancestorCodes = await entity.getAncestorCodes(true);
     const entityCodes = [...ancestorCodes, entity.code];
-    const results = await DashboardGroup.find({
-      organisationLevel,
-      userGroup: userGroups, // Passing an array will cause the database to do an 'IN'
-      organisationUnitCode: entityCodes, // As above, an array uses 'IN'
-      projectCodes: {
-        comparator: '@>',
-        comparisonValue: [projectCode],
-      },
-    });
+    const results = await DashboardGroup.find({ ...params, organisationUnitCode: entityCodes });
     const dashboardGroups = {};
     results.forEach(dashboardGroup => {
       const { name, userGroup, organisationUnitCode } = dashboardGroup;
@@ -52,6 +62,16 @@ export class DashboardGroup extends BaseModel {
     });
 
     return dashboardGroups;
+  }
+
+  static buildDashboardGroupQueryParams(projectCode, params) {
+    return {
+      ...params,
+      projectCodes: {
+        comparator: '@>',
+        comparisonValue: [projectCode],
+      },
+    };
   }
   /* eslint-disable */
   /*
