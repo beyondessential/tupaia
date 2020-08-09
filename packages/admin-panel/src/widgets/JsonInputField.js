@@ -34,15 +34,7 @@ const getJsonFieldValues = value => {
 };
 
 export const JsonInputField = props => {
-  const {
-    onChange,
-      value,
-      getJsonFieldSchema,
-      disabled,
-      label,
-      secondaryLabel,
-      variant,
-  } = props;
+  const { onChange, value, getJsonFieldSchema, disabled, label, secondaryLabel, variant } = props;
   const jsonFieldValues = getJsonFieldValues(value);
   const jsonFieldSchema = getJsonFieldSchema(value, props);
   const CardVariant = variant === 'grey' ? GreyCard : Card;

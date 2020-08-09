@@ -13,7 +13,7 @@ const Container = styled.footer`
 
   span,
   a {
-    color: #C4C4C4;
+    color: #c4c4c4;
     font-size: 12px;
     line-height: 14px;
     margin-right: 1rem;
