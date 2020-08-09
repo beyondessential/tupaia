@@ -11,7 +11,7 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import { InputField } from './InputField';
 
-const DEFAULT_FIELD_TYPE = 'textarea';
+const DEFAULT_FIELD_TYPE = 'text';
 
 const GreyCard = styled(Card)`
   background: #f9f9f9;
@@ -33,17 +33,18 @@ const getJsonFieldValues = value => {
   return {};
 };
 
-export const JsonInputField = ({
-  onChange,
-  value,
-  getJsonFieldSchema,
-  disabled,
-  label,
-  secondaryLabel,
-  variant,
-}) => {
+export const JsonInputField = props => {
+  const {
+    onChange,
+      value,
+      getJsonFieldSchema,
+      disabled,
+      label,
+      secondaryLabel,
+      variant,
+  } = props;
   const jsonFieldValues = getJsonFieldValues(value);
-  const jsonFieldSchema = getJsonFieldSchema();
+  const jsonFieldSchema = getJsonFieldSchema(value, props);
   const CardVariant = variant === 'grey' ? GreyCard : Card;
 
   const onFieldValueChange = (fieldName, fieldValue, csv) => {

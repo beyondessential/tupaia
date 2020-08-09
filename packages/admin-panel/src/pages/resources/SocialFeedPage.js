@@ -47,6 +47,7 @@ const FIELDS = [
         {
           label: 'Body (accepts basic markdown)',
           fieldName: 'body',
+          type: 'textarea',
         },
         {
           label: 'Link',

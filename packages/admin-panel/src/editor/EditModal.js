@@ -13,6 +13,11 @@ import { getEditorState, getIsUnchanged } from './selectors';
 import { Editor } from './Editor';
 import { ModalContentProvider } from '../widgets';
 
+const getFieldSourceToEdit = field => {
+  const { source, editConfig = {} } = field;
+  return editConfig.optionsEndpoint ? `${source.split('.')[0]}_id` : source;
+};
+
 export const EditModalComponent = ({
   errorMessage,
   isLoading,
@@ -109,8 +114,3 @@ export const EditModal = connect(
   mapDispatchToProps,
   mergeProps,
 )(EditModalComponent);
-
-const getFieldSourceToEdit = field => {
-  const { source, editConfig = {} } = field;
-  return editConfig.optionsEndpoint ? `${source.split('.')[0]}_id` : source;
-};

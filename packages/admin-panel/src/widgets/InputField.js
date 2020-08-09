@@ -6,7 +6,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import { TextField, DatePicker, RadioGroup } from '@tupaia/ui-components';
+import { TextField, DatePicker, RadioGroup, Select } from '@tupaia/ui-components';
 import { FormGroup } from 'reactstrap';
 import 'react-datepicker/dist/react-datepicker.css';
 import { Autocomplete } from '../autocomplete';
@@ -86,7 +86,7 @@ export const InputField = ({
       break;
     case 'enum':
       inputComponent = (
-        <DropDownInputField
+        <Select
           value={value}
           options={options.map(option => ({ label: option, value: option }))}
           onChange={selectedOption => onChange(inputKey, selectedOption)}
