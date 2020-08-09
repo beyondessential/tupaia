@@ -127,11 +127,11 @@ export const formatMatrixDataForExcelAoA = (
       const formattedRowData = rows
         .filter(({ categoryId }) => rowCategoryKey === categoryId)
         .map(formatRowData);
-      formattedData.push(formattedRowData);
+      formattedData.push(...formattedRowData);
     });
   } else {
     // This table has no row categories, just one set of rows
-    formattedData.push(rows.map(formatRowData));
+    formattedData.push(...rows.map(formatRowData));
   }
   return formattedData;
 };
