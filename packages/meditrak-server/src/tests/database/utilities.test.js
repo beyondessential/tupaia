@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 
 import { ModelRegistry } from '@tupaia/database';
-import { getUniversalTypes } from '../../database/utilities';
+import { getUniversalTypes } from '../../database/utilities/getUniversalTypes';
 
 const modelsStub = sinon.createStubInstance(ModelRegistry, {
   getMinAppVersionByType: {

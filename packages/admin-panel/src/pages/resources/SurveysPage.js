@@ -60,25 +60,41 @@ const SURVEY_COLUMNS = [
       fields: [
         ...SURVEY_FIELDS,
         {
+          Header: 'Data Service',
+          source: 'data_source.service_type',
+          editConfig: {
+            options: ['dhis', 'tupaia'],
+            setFieldsOnChange: (newValue, currentRecord) => {
+              const { isDataRegional = true } = currentRecord['data_source.config'];
+              const config = newValue === 'dhis' ? { isDataRegional } : {};
+              return { 'data_source.config': config };
+            },
+          },
+        },
+        {
+          Header: 'Data Service Configuration',
+          source: 'data_source.config',
+          editConfig: {
+            type: 'json',
+            getJsonFieldSchema: (_, { recordData }) =>
+              recordData['data_source.service_type'] === 'dhis'
+                ? [
+                    {
+                      label:
+                        'Stored On Regional Server (Choose "No" if stored on country specific server)',
+                      fieldName: 'isDataRegional',
+                      type: 'boolean',
+                    },
+                  ]
+                : [],
+          },
+        },
+        {
           Header: 'Integration Details',
           source: 'integration_metadata',
           editConfig: {
             type: 'json',
             getJsonFieldSchema: () => [
-              {
-                label: 'DHIS2',
-                fieldName: 'dhis2',
-                type: 'json',
-                variant: 'grey',
-                getJsonFieldSchema: () => [
-                  {
-                    label:
-                      'Stored On Regional Server (Choose "No" if stored on country specific server)',
-                    fieldName: 'isDataRegional',
-                    type: 'boolean',
-                  },
-                ],
-              },
               {
                 label: 'MS1',
                 fieldName: 'ms1',
@@ -277,6 +293,12 @@ const IMPORT_CONFIG = {
       optionsEndpoint: 'surveyGroups',
       canCreateNewOptions: true,
       optionValueKey: 'name',
+    },
+    {
+      label: 'Data service',
+      secondaryLabel: 'Select the data service this survey should use, or leave blank for tupaia',
+      parameterKey: 'serviceType',
+      options: ['dhis', 'tupaia'],
     },
   ],
 };

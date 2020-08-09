@@ -10,26 +10,27 @@ import { mapMeasureDataToCountries } from '/apiV1/measureBuilders/helpers';
 
 const ANALYTICS = [
   {
-    organisationUnitCode: 'TO_Niuas',
+    organisationUnitCode: 'TEST_FACILITY',
     dataValues: [{ dataElement: 'A', value: '1' }],
   },
   {
-    organisationUnitCode: 'TO_Niuas',
+    organisationUnitCode: 'TEST_FACILITY',
     dataValues: [{ dataElement: 'A', value: '2' }],
   },
   {
-    organisationUnitCode: 'TO_Niuas',
+    organisationUnitCode: 'TEST_FACILITY',
     dataValues: [{ dataElement: 'A', value: '3' }],
   },
 ];
-const ENTITY_COUNTRY_CODE = 'TO';
+const ENTITY_COUNTRY_CODE = 'DL';
+let models;
 
 describe('mapMeasureDataToCountries()', () => {
   before(async () => {
-    const models = getTestModels();
+    models = getTestModels();
     await upsertDummyRecord(models.entity, {
-      code: 'TO_Niuas',
-      country_code: 'TO',
+      code: 'TEST_FACILITY',
+      country_code: ENTITY_COUNTRY_CODE,
     });
   });
 

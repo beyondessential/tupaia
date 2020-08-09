@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import keyBy from 'lodash.keyby';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Button, Dialog, DialogFooter, DialogHeader } from '@tupaia/ui-components';
@@ -22,30 +23,35 @@ export const EditModalComponent = ({
   title,
   fields,
   isUnchanged,
-}) => (
-  <Dialog onClose={onDismiss} open={!!fields} disableBackdropClick>
-    <DialogHeader onClose={onDismiss} title={title} />
-    <ModalContentProvider errorMessage={errorMessage} isLoading={isLoading || !fields}>
-      {fields && (
-        <Editor
-          fields={fields}
-          recordData={recordData}
-          onEditField={(fieldSource, newValue) =>
-            onEditField(getFieldToEditFromSource(fieldSource), newValue)
-          }
-        />
-      )}
-    </ModalContentProvider>
-    <DialogFooter>
-      <Button variant="outlined" onClick={onDismiss} disabled={isLoading}>
-        {errorMessage ? 'Dismiss' : 'Cancel'}
-      </Button>
-      <Button onClick={onSave} disabled={!!errorMessage || isLoading || isUnchanged}>
-        Save
-      </Button>
-    </DialogFooter>
-  </Dialog>
-);
+}) => {
+  const fieldsBySource = keyBy(fields, 'source');
+
+  return (
+    <Dialog onClose={onDismiss} open={!!fields} disableBackdropClick>
+      <DialogHeader onClose={onDismiss} title={title} />
+      <ModalContentProvider errorMessage={errorMessage} isLoading={isLoading || !fields}>
+        {fields && (
+          <Editor
+            fields={fields}
+            recordData={recordData}
+            onEditField={(fieldSource, newValue) => {
+              const fieldSourceToEdit = getFieldSourceToEdit(fieldsBySource[fieldSource]);
+              return onEditField(fieldSourceToEdit(fieldSource), newValue);
+            }}
+          />
+        )}
+      </ModalContentProvider>
+      <DialogFooter>
+        <Button variant="outlined" onClick={onDismiss} disabled={isLoading}>
+          {errorMessage ? 'Dismiss' : 'Cancel'}
+        </Button>
+        <Button onClick={onSave} disabled={!!errorMessage || isLoading || isUnchanged}>
+          Save
+        </Button>
+      </DialogFooter>
+    </Dialog>
+  );
+};
 
 EditModalComponent.propTypes = {
   errorMessage: PropTypes.string,
@@ -104,9 +110,7 @@ export const EditModal = connect(
   mergeProps,
 )(EditModalComponent);
 
-const getFieldToEditFromSource = source => {
-  if (source.includes('.')) {
-    return `${source.split('.')[0]}_id`;
-  }
-  return source;
+const getFieldSourceToEdit = field => {
+  const { source, editConfig = {} } = field;
+  return editConfig.optionsEndpoint ? `${source.split('.')[0]}_id` : source;
 };
