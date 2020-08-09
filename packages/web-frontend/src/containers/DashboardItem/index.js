@@ -79,14 +79,13 @@ export class DashboardItem extends Component {
       viewConfig,
       infoViewKey,
       organisationUnitName,
-      viewContentOrganisationUnitName,
     } = this.props;
     return (
       <View
         viewContent={viewContent}
         viewConfig={viewConfig}
         organisationUnitName={organisationUnitName}
-        onEnlarge={() => onEnlarge(viewContent, viewContentOrganisationUnitName, infoViewKey)}
+        onEnlarge={() => onEnlarge(viewContent, organisationUnitName, infoViewKey)}
         isSidePanelExpanded={isSidePanelExpanded}
       />
     );
@@ -99,7 +98,6 @@ DashboardItem.propTypes = {
   fetchContent: PropTypes.func.isRequired,
   infoViewKey: PropTypes.string.isRequired,
   organisationUnitName: PropTypes.string,
-  viewContentOrganisationUnitName: PropTypes.string,
   organisationUnit: PropTypes.shape({}),
   onEnlarge: PropTypes.func,
   isSidePanelExpanded: PropTypes.bool,
@@ -109,7 +107,6 @@ DashboardItem.defaultProps = {
   viewContent: null,
   isSidePanelExpanded: false,
   organisationUnitName: '',
-  viewContentOrganisationUnitName: '',
   organisationUnit: null,
   onEnlarge: () => {},
 };
@@ -126,15 +123,14 @@ const mapStateToProps = (state, { infoViewKey }) => {
   const viewContentOrganisationUnit = viewContent
     ? selectOrgUnit(state, viewContent.organisationUnitCode)
     : null;
-  const viewContentOrganisationUnitName = viewContentOrganisationUnit
+  const organisationUnitName = viewContentOrganisationUnit
     ? viewContentOrganisationUnit.name
     : currentOrganisationUnit.name;
 
   return {
     viewContent,
-    viewContentOrganisationUnitName,
     organisationUnit: currentOrganisationUnit, // Necessary for merge props.
-    organisationUnitName: currentOrganisationUnit.name,
+    organisationUnitName,
   };
 };
 
