@@ -6,7 +6,7 @@ import { requestFromTupaiaConfigServer } from './requestFromTupaiaConfigServer';
 import { USER_SESSION_CONFIG } from '/authSession';
 import { RouteHandler } from '/apiV1/RouteHandler';
 import { ExportSurveyResponsesPermissionsChecker } from '/apiV1/permissions';
-import { formatMatrixDataForExcel } from './excelFormatters/formatMatrixDataForExcel';
+import { formatMatrixDataForExcelAoA } from './excelFormatters/formatMatrixDataForExcel';
 
 const EXPORT_FILE_TITLE = 'survey_response_export';
 const EXPORT_DIRECTORY = 'exports';
@@ -56,9 +56,10 @@ export class ExportSurveyDataHandler extends RouteHandler {
         : `No data for ${surveyName} ${this.getExportDatesString(startDate, endDate)}`;
 
       const headerData = [[header]];
-
+      // Using array of arrays (aoa) input as transformations like mergeSurveys
+      // increases the likelyhood of columns with same title (leads to missing keys in object json (aoo))
       const formattedData = surveyData.data.columns.length
-        ? formatMatrixDataForExcel(surveyData.data)
+        ? formatMatrixDataForExcelAoA(surveyData.data)
         : [];
 
       //Header
@@ -66,8 +67,8 @@ export class ExportSurveyDataHandler extends RouteHandler {
 
       const { skipHeader = true } = surveyData;
 
-      //Formatted data
-      sheet = xlsx.utils.sheet_add_json(sheet, formattedData, {
+      //Formatted data using array of arrays input
+      sheet = xlsx.utils.sheet_add_aoa(sheet, formattedData, {
         skipHeader,
         origin: 'A2',
       });
