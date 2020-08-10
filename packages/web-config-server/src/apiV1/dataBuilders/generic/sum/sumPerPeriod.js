@@ -110,3 +110,6 @@ export const sumPerWeek = (config, aggregator, dhisApi) =>
 
 export const sumPerMonth = (config, aggregator, dhisApi) =>
   sumPerPeriod(config, aggregator, dhisApi, aggregator.aggregationTypes.FINAL_EACH_MONTH);
+
+export const sumPerYear = (config, aggregator, dhisApi) =>
+  sumPerPeriod(config, aggregator, dhisApi, aggregator.aggregationTypes.FINAL_EACH_YEAR);
