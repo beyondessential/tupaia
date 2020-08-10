@@ -91,7 +91,7 @@ const dataBuilderConfig = {
       '60 + years': ['HP304', 'HP328'],
     },
   },
-  // programCode: 'HP08',
+  programCode: 'HP08',
   periodType: 'month',
 };
 const viewJson = {
@@ -103,10 +103,6 @@ const viewJson = {
     Male: { stackId: 1 },
     Female: { stackId: 2 },
   },
-  // defaultTimePeriod: {
-  //   unit: 'year',
-  //   offset: -1,
-  // },
 };
 
 const dataServices = [{ isDataRegional: false }];
