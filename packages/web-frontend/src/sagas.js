@@ -96,7 +96,14 @@ import {
   fetchOrgUnit,
   REQUEST_ORG_UNIT,
 } from './actions';
-import { isMobile, processMeasureInfo, formatDateForApi } from './utils';
+import {
+  isMobile,
+  processMeasureInfo,
+  formatDateForApi,
+  flattenMeasureHierarchy,
+  getMeasureFromHierarchy,
+  isMeasureHierarchyEmpty,
+} from './utils';
 import { createUrlString, URL_COMPONENTS } from './historyNavigation';
 import { getDefaultDates } from './utils/periodGranularities';
 import { INITIAL_MEASURE_ID, INITIAL_PROJECT_CODE, initialOrgUnit } from './defaults';
@@ -723,12 +730,13 @@ function* watchMeasureChange() {
 
 function getSelectedMeasureFromHierarchy(measureHierarchy, selectedMeasureId, project) {
   const projectMeasureId = project.defaultMeasure;
-  const measures = Object.values(measureHierarchy).flat();
 
-  if (measures.find(m => m.measureId === selectedMeasureId)) return selectedMeasureId;
-  else if (measures.find(m => m.measureId === projectMeasureId)) return projectMeasureId;
-  else if (measures.find(m => m.measureId === INITIAL_MEASURE_ID)) return INITIAL_MEASURE_ID;
-  else if (measures.length) return measures[0].measureId;
+  if (getMeasureFromHierarchy(measureHierarchy, selectedMeasureId)) return selectedMeasureId;
+  else if (getMeasureFromHierarchy(measureHierarchy, projectMeasureId)) return projectMeasureId;
+  else if (getMeasureFromHierarchy(measureHierarchy, INITIAL_MEASURE_ID)) return INITIAL_MEASURE_ID;
+  else if (!isMeasureHierarchyEmpty(measureHierarchy))
+    return flattenMeasureHierarchy(measureHierarchy)[0].measureId;
+
   return INITIAL_MEASURE_ID;
 }
 
@@ -739,10 +747,10 @@ function* fetchCurrentMeasureInfo() {
   const selectedMeasureId = selectCurrentMeasureId(state);
 
   if (currentOrganisationUnitCode) {
-    const isHeirarchyPopulated = Object.keys(measureHierarchy).length;
+    const isHierarchyPopulated = measureHierarchy.length;
 
     // Update the default measure ID
-    if (isHeirarchyPopulated) {
+    if (isHierarchyPopulated) {
       const newMeasure = getSelectedMeasureFromHierarchy(
         measureHierarchy,
         selectedMeasureId,
