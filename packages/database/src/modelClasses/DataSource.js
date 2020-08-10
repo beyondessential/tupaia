@@ -17,6 +17,7 @@ const DATA_SOURCE_TYPES = {
 const SERVICE_TYPES = {
   DHIS: 'dhis',
   TUPAIA: 'tupaia',
+  INDICATOR: 'indicator',
 };
 
 const CONFIG_SCHEMA_BY_TYPE_AND_SERVICE = {
@@ -27,12 +28,14 @@ const CONFIG_SCHEMA_BY_TYPE_AND_SERVICE = {
       isDataRegional: { default: true },
     },
     [SERVICE_TYPES.TUPAIA]: {},
+    [SERVICE_TYPES.INDICATOR]: {},
   },
   [DATA_SOURCE_TYPES.DATA_GROUP]: {
     [SERVICE_TYPES.DHIS]: {
       isDataRegional: { default: true },
     },
     [SERVICE_TYPES.TUPAIA]: {},
+    [SERVICE_TYPES.INDICATOR]: {},
   },
 };
 
@@ -72,6 +75,8 @@ export class DataSourceType extends DatabaseType {
 
 export class DataSourceModel extends DatabaseModel {
   static types = DATA_SOURCE_TYPES;
+
+  SERVICE_TYPES = SERVICE_TYPES;
 
   // eslint-disable-next-line class-methods-use-this
   get DatabaseTypeClass() {
