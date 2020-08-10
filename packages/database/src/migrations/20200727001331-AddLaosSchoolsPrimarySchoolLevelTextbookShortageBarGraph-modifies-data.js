@@ -210,9 +210,9 @@ const DATA_BUILDER_CONFIG = {
 };
 
 const CHART_CONFIG = {
-  [LAO_LANGUAGE]: { stackId: 1 },
-  [MATHEMATICS]: { stackId: 2 },
-  [WORLD_AROUND_US]: { stackId: 3 },
+  [LAO_LANGUAGE]: { legendOrder: 1 },
+  [MATHEMATICS]: { legendOrder: 2 },
+  [WORLD_AROUND_US]: { legendOrder: 3 },
 };
 
 const VIEW_JSON = {

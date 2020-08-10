@@ -106,8 +106,8 @@ const DATA_BUILDER_CONFIG = {
 };
 
 const CHART_CONFIG = {
-  [LAO_LANGUAGE_AND_LITERATURE]: { stackId: 1 },
-  [MATHEMATICS]: { stackId: 2 },
+  [LAO_LANGUAGE_AND_LITERATURE]: { legendOrder: 1 },
+  [MATHEMATICS]: { legendOrder: 2 },
 };
 
 const VIEW_JSON = {

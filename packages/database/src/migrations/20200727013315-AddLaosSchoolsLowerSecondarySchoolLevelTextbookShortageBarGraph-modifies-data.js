@@ -411,14 +411,14 @@ const DATA_BUILDER_CONFIG = {
 };
 
 const CHART_CONFIG = {
-  [LAO_LANGUAGE]: { stackId: 1 },
-  [MATHEMATICS]: { stackId: 2 },
-  [NATURAL_SCIENCE]: { stackId: 3 },
-  [POLITICAL_SCIENCE]: { stackId: 4 },
-  [ICT]: { stackId: 5 },
-  [ENGLISH]: { stackId: 6 },
-  [FRENCH]: { stackId: 7 },
-  [MATHEMATICS_EXERCISE_BOOK]: { stackId: 8 },
+  [LAO_LANGUAGE]: { legendOrder: 1 },
+  [MATHEMATICS]: { legendOrder: 2 },
+  [NATURAL_SCIENCE]: { legendOrder: 3 },
+  [POLITICAL_SCIENCE]: { legendOrder: 4 },
+  [ICT]: { legendOrder: 5 },
+  [ENGLISH]: { legendOrder: 6 },
+  [FRENCH]: { legendOrder: 7 },
+  [MATHEMATICS_EXERCISE_BOOK]: { legendOrder: 8 },
 };
 
 const VIEW_JSON = {
