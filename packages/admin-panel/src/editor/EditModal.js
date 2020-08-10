@@ -41,7 +41,7 @@ export const EditModalComponent = ({
             recordData={recordData}
             onEditField={(fieldSource, newValue) => {
               const fieldSourceToEdit = getFieldSourceToEdit(fieldsBySource[fieldSource]);
-              return onEditField(fieldSourceToEdit(fieldSource), newValue);
+              return onEditField(fieldSourceToEdit, newValue);
             }}
           />
         )}

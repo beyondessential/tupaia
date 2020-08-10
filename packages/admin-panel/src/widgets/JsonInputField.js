@@ -11,13 +11,6 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import { InputField } from './InputField';
 
-const DEFAULT_FIELD_TYPE = 'text';
-
-const GreyCard = styled(Card)`
-  background: #f9f9f9;
-  margin-bottom: 20px;
-`;
-
 const getJsonFieldValues = value => {
   if (value) {
     if (typeof value === 'string') {
@@ -33,6 +26,17 @@ const getJsonFieldValues = value => {
   return {};
 };
 
+const DEFAULT_FIELD_TYPE = 'text';
+
+const GreyCard = styled(Card)`
+  background: #f9f9f9;
+  margin-bottom: 20px;
+`;
+
+const Container = styled.div`
+  margin-bottom: 20px;
+`;
+
 export const JsonInputField = props => {
   const { onChange, value, getJsonFieldSchema, disabled, label, secondaryLabel, variant } = props;
   const jsonFieldValues = getJsonFieldValues(value);
@@ -45,7 +49,7 @@ export const JsonInputField = props => {
   };
 
   return (
-    <div>
+    <Container>
       <Typography variant="h6" gutterBottom>
         {label}
       </Typography>
@@ -76,7 +80,7 @@ export const JsonInputField = props => {
           )}
         </CardContent>
       </CardVariant>
-    </div>
+    </Container>
   );
 };
 

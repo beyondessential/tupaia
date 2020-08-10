@@ -74,7 +74,7 @@ export const InputField = ({
       inputComponent = (
         <JsonInputField
           label={label}
-          secondaryLabel={secondaryLabel}
+          helperText={secondaryLabel}
           value={value}
           recordData={recordData}
           onChange={inputValue => onChange(inputKey, inputValue)}
@@ -87,16 +87,18 @@ export const InputField = ({
     case 'enum':
       inputComponent = (
         <Select
+          label={label}
+          helperText={secondaryLabel}
           value={value}
-          options={options.map(option => ({ label: option, value: option }))}
-          onChange={selectedOption => onChange(inputKey, selectedOption)}
+          options={options}
+          onChange={event => onChange(inputKey, event.target.value)}
           disabled={disabled}
         />
       );
       break;
     case 'jsonEditor':
       inputComponent = (
-        <JsonEditor label={label} inputKey={inputKey} value={value} onChange={onChange} />
+        <JsonEditor label={label} inputKey={inputKey} value={value} onChange={onChange} helperText={secondaryLabel} />
       );
       break;
     case 'boolean':
