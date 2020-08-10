@@ -111,3 +111,20 @@ export const sumPerMonthPerSeries = async (
 
   return builder.build();
 };
+
+export const sumPerYearPerSeries = async (
+  { dataBuilderConfig, query, entity },
+  aggregator,
+  dhisApi,
+) => {
+  const builder = new SumPerSeriesDataBuilder(
+    aggregator,
+    dhisApi,
+    dataBuilderConfig,
+    query,
+    entity,
+    aggregator.aggregationTypes.FINAL_EACH_YEAR,
+  );
+
+  return builder.build();
+};

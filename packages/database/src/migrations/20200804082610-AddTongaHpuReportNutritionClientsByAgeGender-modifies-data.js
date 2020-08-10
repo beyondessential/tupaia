@@ -71,7 +71,7 @@ exports.setup = function(options, seedLink) {
 
 const dashboardGroups = ['TO_Health_Promotion_Unit_Country'];
 const reportId = 'TO_HPU_Nutrition_Counselling_Clients_By_Age_Gender';
-const dataBuilder = 'sumPerMonthPerSeries';
+const dataBuilder = 'sumPerYearPerSeries';
 const dataBuilderConfig = {
   series: {
     Male: {
@@ -91,8 +91,7 @@ const dataBuilderConfig = {
       '60 + years': ['HP304', 'HP328'],
     },
   },
-  programCode: 'HP08',
-  periodType: 'month',
+  periodType: 'year',
 };
 const viewJson = {
   name: 'Nutrition Counselling Clients by Age and Gender',
@@ -103,6 +102,10 @@ const viewJson = {
     Male: { stackId: 1 },
     Female: { stackId: 2 },
   },
+  // defaultTimePeriod: {
+  //   unit: 'year',
+  //   offset: -1,
+  // },
 };
 
 const dataServices = [{ isDataRegional: false }];
