@@ -114,6 +114,7 @@ const VIEW_JSON = {
   name: 'Textbook Shortage: Upper Secondary',
   type: 'chart',
   chartType: 'bar',
+  valueType: 'number',
   periodGranularity: 'month',
   chartConfig: CHART_CONFIG,
   displayOnEntityConditions: {
