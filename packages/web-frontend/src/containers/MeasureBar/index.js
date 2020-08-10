@@ -26,7 +26,12 @@ import { changeMeasure, clearMeasure, toggleMeasureExpand } from '../../actions'
 import { HierarchyItem } from '../../components/HierarchyItem';
 import TupaiaIcon from '../../images/TupaiaIcon.svg';
 import { MAP_OVERLAY_SELECTOR } from '../../styles';
-import { selectCurrentOrgUnit, selectCurrentMeasure } from '../../selectors';
+import {
+  selectCurrentOrgUnit,
+  selectCurrentMeasure,
+  selectCurrentProject,
+  selectMeasureBarItemById,
+} from '../../selectors';
 
 export class MeasureBar extends Component {
   constructor(props) {
@@ -53,59 +58,74 @@ export class MeasureBar extends Component {
     this.props.onSelectMeasure(measure, organisationUnitCode);
   };
 
-  renderSelectedMeasure() {
-    const { currentMeasure, currentOrganisationUnitCode } = this.props;
+  renderDefaultMeasure() {
+    const { currentMeasure, currentOrganisationUnitCode, defaultMeasure } = this.props;
 
     return (
       <HierarchyItem
         nestedMargin="0px"
-        label={currentMeasure.name}
-        isSelected={currentMeasure.measureId}
-        onClick={() => this.handleSelectMeasure(currentMeasure, currentOrganisationUnitCode)}
+        label={defaultMeasure.name}
+        isSelected={currentMeasure.measureId === defaultMeasure.measureId}
+        onClick={() => this.handleSelectMeasure(defaultMeasure, currentOrganisationUnitCode)}
       />
     );
   }
 
-  renderHierarchy() {
-    const {
-      currentMeasure,
-      measureHierarchy,
-      currentOrganisationUnitCode,
-      onClearMeasure,
-    } = this.props;
+  renderNestedHierarchyItems(children) {
+    const { currentMeasure, currentOrganisationUnitCode, onClearMeasure } = this.props;
 
-    const items = Object.entries(measureHierarchy).map(([categoryName, children]) => {
-      if (!Array.isArray(children)) return null;
-      const nestedItems = children.map(measure => {
-        const onClick =
-          measure.measureId === currentMeasure.measureId
+    return children.map(childObject => {
+      let nestedItems;
+
+      if (childObject.children && childObject.children.length) {
+        nestedItems = this.renderNestedHierarchyItems(childObject.children);
+      }
+
+      let onClick = null;
+
+      if (!childObject.children) {
+        onClick =
+          childObject.measureId === currentMeasure.measureId
             ? () => onClearMeasure()
-            : () => this.handleSelectMeasure(measure, currentOrganisationUnitCode);
-        return (
-          <HierarchyItem
-            label={measure.name}
-            isSelected={measure.measureId === currentMeasure.measureId}
-            key={measure.measureId}
-            onClick={onClick}
-          />
-        );
-      });
+            : () => this.handleSelectMeasure(childObject, currentOrganisationUnitCode);
+      }
+
+      return (
+        <HierarchyItem
+          label={childObject.name}
+          isSelected={
+            childObject.children ? null : childObject.measureId === currentMeasure.measureId
+          }
+          key={childObject.measureId}
+          onClick={onClick}
+          nestedItems={nestedItems}
+        />
+      );
+    });
+  }
+
+  renderHierarchy() {
+    const { measureHierarchy, defaultMeasure } = this.props;
+
+    const items = measureHierarchy.map(({ name: groupName, children }) => {
+      if (!Array.isArray(children)) return null;
+      const nestedItems = this.renderNestedHierarchyItems(children);
       if (nestedItems.length === 0) return null;
       return (
         <HierarchyItem
           nestedMargin="0px"
-          label={categoryName}
+          label={groupName}
           nestedItems={nestedItems}
-          key={categoryName}
+          key={groupName}
         />
       );
     });
 
     return (
-      <React.Fragment>
-        {this.renderSelectedMeasure()}
+      <>
+        {defaultMeasure ? this.renderDefaultMeasure() : null}
         {items}
-      </React.Fragment>
+      </>
     );
   }
 
@@ -120,7 +140,7 @@ export class MeasureBar extends Component {
     const { isExpanded, measureHierarchy } = this.props;
 
     if (!isExpanded) return null;
-    if (Object.keys(measureHierarchy).length === 0) return this.renderEmptyMessage();
+    if (measureHierarchy.length === 0) return this.renderEmptyMessage();
 
     return this.renderHierarchy();
   }
@@ -166,14 +186,15 @@ const MeasureShape = PropTypes.shape({
 
 MeasureBar.propTypes = {
   currentMeasure: MeasureShape.isRequired,
-  measureHierarchy: PropTypes.shape({}).isRequired,
+  measureHierarchy: PropTypes.array.isRequired,
   isExpanded: PropTypes.bool.isRequired,
   isMeasureLoading: PropTypes.bool.isRequired,
   onExpandClick: PropTypes.func.isRequired,
   onSelectMeasure: PropTypes.func.isRequired,
   onClearMeasure: PropTypes.func.isRequired,
-  currentOrganisationUnitCode: PropTypes.string.isRequired,
-  currentOrganisationUnitName: PropTypes.string.isRequired,
+  currentOrganisationUnitCode: PropTypes.string,
+  currentOrganisationUnitName: PropTypes.string,
+  defaultMeasure: MeasureShape,
 };
 
 const mapStateToProps = state => {
@@ -182,6 +203,9 @@ const mapStateToProps = state => {
   const currentOrganisationUnit = selectCurrentOrgUnit(state);
   const currentMeasure = selectCurrentMeasure(state);
 
+  const activeProject = selectCurrentProject(state);
+  const defaultMeasure = selectMeasureBarItemById(state, activeProject.defaultMeasure);
+
   return {
     currentMeasure,
     measureHierarchy,
@@ -189,6 +213,7 @@ const mapStateToProps = state => {
     isMeasureLoading,
     currentOrganisationUnitCode: currentOrganisationUnit.organisationUnitCode,
     currentOrganisationUnitName: currentOrganisationUnit.name,
+    defaultMeasure,
   };
 };
 
