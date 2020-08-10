@@ -25,8 +25,12 @@ const onChangeUpdateDataElement = async ({ type: changeType, record }, models) =
   switch (changeType) {
     case 'update':
       return models.dataSource.findOrCreate(
-        { code, type: models.dataSource.getTypes().DATA_ELEMENT },
-        { service_type: models.dataSource.SERVICE_TYPES.INDICATOR },
+        {
+          code,
+          type: models.dataSource.getTypes().DATA_ELEMENT,
+          service_type: models.dataSource.SERVICE_TYPES.INDICATOR,
+        },
+        {},
       );
     case 'delete':
       return models.dataSource.delete({ code });
