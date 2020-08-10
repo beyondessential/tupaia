@@ -43,6 +43,11 @@ import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 class CalcPerSeriesDataBuilder extends DataBuilder {
   async build() {
     const { results, period } = await this.fetchResults();
+
+    if (!results.length) {
+      return { data: [] };
+    }
+
     const dataByClass = {};
 
     Object.entries(this.config.series).forEach(([seriesKey, dataClasses]) => {
