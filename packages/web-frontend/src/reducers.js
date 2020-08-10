@@ -529,7 +529,7 @@ function measureBar(
     isExpanded: false,
     selectedMeasureId: null,
     currentMeasure: {},
-    measureHierarchy: {},
+    measureHierarchy: [],
     currentMeasureOrganisationUnitCode: null,
     error: null,
   },
@@ -537,7 +537,7 @@ function measureBar(
 ) {
   switch (action.type) {
     case CLEAR_MEASURE_HIERARCHY:
-      return { ...state, measureHierarchy: {} };
+      return { ...state, measureHierarchy: [] };
     case CLEAR_MEASURE:
       return { ...state, currentMeasure: {}, selectedMeasureId: null };
     case CHANGE_MEASURE:
@@ -549,13 +549,21 @@ function measureBar(
         currentMeasureOrganisationUnitCode: action.organisationUnitCode,
       };
     case UPDATE_MEASURE_CONFIG: {
-      const { category, measure, measureIndex } = selectMeasureBarItemCategoryById(
+      const { name, categoryIndex, measure, measureIndex } = selectMeasureBarItemCategoryById(
         { measureBar: state },
         state.currentMeasure.measureId,
       );
+      console.log('name', name);
+      console.log('measureIndex', measureIndex);
+      console.log('measure', measure);
+      console.log('categoryIndex', categoryIndex);
 
-      const measureHierarchy = { ...state.measureHierarchy };
-      measureHierarchy[category][measureIndex] = { ...measure, ...action.measureConfig };
+      const measureHierarchy = [...state.measureHierarchy];
+
+      measureHierarchy[categoryIndex].children[measureIndex] = {
+        ...measure,
+        ...action.measureConfig,
+      };
 
       return {
         ...state,
