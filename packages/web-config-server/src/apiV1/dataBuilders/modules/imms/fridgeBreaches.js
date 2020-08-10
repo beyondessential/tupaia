@@ -49,7 +49,12 @@ export const fridgeBreaches = async (queryConfig, aggregator, dhisApi) => {
     return resultRow;
   });
 
-  if (entity.isFacility()) return { rows, columns };
+  if (entity.isFacility()) {
+    return {
+      rows: rows.map(({ categoryId, ...r }) => r), // remove categoryId if not grouping by facility
+      columns,
+    };
+  }
   return { rows: [...rows, ...Object.values(categories)], columns };
 };
 
