@@ -67,7 +67,7 @@ export const RequestProjectAccessComponent = ({
               />
             ))}
             <TextField
-              label="Why would you like access this project?"
+              label="Why would you like access to this project?"
               name="message"
               multiline
               rows="4"

@@ -9,9 +9,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
+import Button from '@material-ui/core/Button';
 
 import { WHITE } from '../../../../styles';
-import { selectCurrentOrgUnit } from '../../../../selectors';
+import { selectCurrentOrgUnit, selectActiveProject } from '../../../../selectors';
+
+import { REQUEST_PROJECT_ACCESS } from '../../../OverlayDiv/constants';
+import { setRequestingAccess } from '../../../../projects/actions';
+import { setOverlayComponent } from '../../../../actions';
 
 const Grid = styled.div`
   display: grid;
@@ -28,35 +33,53 @@ const FullWidthRow = styled.div`
   padding: 16px;
 `;
 
-function NoAccessDashboard({ currentOrgUnitType }) {
-  const description = `You do not currently have access to view project data ${
+function NoAccessDashboard({ currentOrgUnitType, project, onRequestProjectAccess }) {
+  const noAccessMessage = `You do not currently have access to view project data ${
     currentOrgUnitType === 'Project'
       ? 'at the project level view'
       : `for the selected ${currentOrgUnitType.toLowerCase()}`
-  }. If you believe you should be granted access to view this data, 
-  please click on your profile name at the top of the screen 
-  and select ‘Request Country Access’ or send an email directly to the project coordinators.`;
+  }.`;
+  const requestAccessMessage = `If you believe you should be granted access to view this data, 
+  you may`;
   return (
     <Grid>
-      <FullWidthRow>{description}</FullWidthRow>
+      <FullWidthRow>{noAccessMessage}</FullWidthRow>
+      <FullWidthRow>
+        {requestAccessMessage}
+        <Button onClick={() => onRequestProjectAccess(project)} color="primary">
+          Request access
+        </Button>
+      </FullWidthRow>
     </Grid>
   );
 }
 
 NoAccessDashboard.propTypes = {
   currentOrgUnitType: PropTypes.string,
+  project: PropTypes.object,
+  onRequestProjectAccess: PropTypes.func,
 };
 
 NoAccessDashboard.defaultProps = {
   currentOrgUnitType: 'area',
+  project: {},
+  onRequestProjectAccess: () => {},
 };
 
 const mapStateToProps = state => {
   const currentOrgUnit = selectCurrentOrgUnit(state);
 
   return {
+    project: selectActiveProject(state),
     currentOrgUnitType: currentOrgUnit.type,
   };
 };
 
-export default connect(mapStateToProps)(NoAccessDashboard);
+const mapDispatchToProps = dispatch => ({
+  onRequestProjectAccess: project => {
+    dispatch(setRequestingAccess(project));
+    dispatch(setOverlayComponent(REQUEST_PROJECT_ACCESS));
+  },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(NoAccessDashboard);
