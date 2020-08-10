@@ -7,7 +7,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { TextField, DatePicker, RadioGroup, Select } from '@tupaia/ui-components';
-import { FormGroup } from 'reactstrap';
 import 'react-datepicker/dist/react-datepicker.css';
 import { Autocomplete } from '../autocomplete';
 import { JsonInputField } from './JsonInputField';
@@ -48,33 +47,27 @@ export const InputField = ({
   switch (inputType) {
     case 'autocomplete':
       inputComponent = (
-        <FormGroup>
-          <p>{label}</p>
-          {secondaryLabel && (
-            <p>
-              <i>{secondaryLabel}</i>
-            </p>
-          )}
-          <Autocomplete
-            placeholder={value}
-            endpoint={optionsEndpoint}
-            optionLabelKey={optionLabelKey}
-            optionValueKey={optionValueKey}
-            reduxId={inputKey}
-            onChange={inputValue => onChange(inputKey, inputValue)}
-            canCreateNewOptions={canCreateNewOptions}
-            disabled={disabled}
-            allowMultipleValues={allowMultipleValues}
-            parentRecord={parentRecord}
-          />
-        </FormGroup>
+        <Autocomplete
+          placeholder={value}
+          label={label}
+          helperText={secondaryLabel}
+          endpoint={optionsEndpoint}
+          optionLabelKey={optionLabelKey}
+          optionValueKey={optionValueKey}
+          reduxId={inputKey}
+          onChange={inputValue => onChange(inputKey, inputValue)}
+          canCreateNewOptions={canCreateNewOptions}
+          disabled={disabled}
+          allowMultipleValues={allowMultipleValues}
+          parentRecord={parentRecord}
+        />
       );
       break;
     case 'json':
       inputComponent = (
         <JsonInputField
           label={label}
-          secondaryLabel={secondaryLabel}
+          helperText={secondaryLabel}
           value={value}
           recordData={recordData}
           onChange={inputValue => onChange(inputKey, inputValue)}
@@ -87,16 +80,24 @@ export const InputField = ({
     case 'enum':
       inputComponent = (
         <Select
+          label={label}
+          helperText={secondaryLabel}
           value={value}
-          options={options.map(option => ({ label: option, value: option }))}
-          onChange={selectedOption => onChange(inputKey, selectedOption)}
+          options={options}
+          onChange={event => onChange(inputKey, event.target.value)}
           disabled={disabled}
         />
       );
       break;
     case 'jsonEditor':
       inputComponent = (
-        <JsonEditor label={label} inputKey={inputKey} value={value} onChange={onChange} />
+        <JsonEditor
+          label={label}
+          inputKey={inputKey}
+          value={value}
+          onChange={onChange}
+          helperText={secondaryLabel}
+        />
       );
       break;
     case 'boolean':
@@ -182,7 +183,7 @@ InputField.propTypes = {
     PropTypes.number,
   ]),
   inputKey: PropTypes.string.isRequired,
-  options: PropTypes.arrayOf(PropTypes.string),
+  options: PropTypes.arrayOf(PropTypes.object),
   optionsEndpoint: PropTypes.string,
   onChange: PropTypes.func.isRequired,
   optionLabelKey: PropTypes.string,
