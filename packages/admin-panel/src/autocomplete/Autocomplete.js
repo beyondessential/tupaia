@@ -20,7 +20,7 @@ const Chip = styled(MuiChip)`
 `;
 
 const getPlaceholder = (placeholder, selection) => {
-  if (selection.length) {
+  if (selection && selection.length) {
     return null;
   }
 
@@ -54,9 +54,16 @@ const AutocompleteComponent = React.memo(
       };
     }, []);
 
+    let value = selection;
+
+    // If value is null and  multiple is true mui autocomplete will crash
+    if (allowMultipleValues && selection === null && !searchTerm) {
+      value = [];
+    }
+
     return (
       <AutocompleteBase
-        value={selection}
+        value={value}
         label={label}
         options={results}
         loading={isLoading}
