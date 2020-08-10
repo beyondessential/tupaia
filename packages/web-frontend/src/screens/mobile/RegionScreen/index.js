@@ -247,15 +247,30 @@ const getListItemsFromOrganisationUnitChildren = (
   }));
 };
 
-const getMeasureFiltersForHierarchy = measureHierarchy =>
-  Object.keys(measureHierarchy).map(categoryName => ({
-    category: categoryName,
-    items: measureHierarchy[categoryName].map(measure => ({
-      label: measure.name,
-      id: String(measure.measureId),
-      value: measure,
-    })),
-  }));
+const getMeasureFiltersForHierarchy = measureHierarchy => {
+  const results = [];
+
+  measureHierarchy.forEach(measureObject => {
+    if (measureObject.children) {
+      const category = {
+        category: measureObject.name,
+        items: getMeasureFiltersForHierarchy(measureObject.children),
+      };
+
+      results.push(category);
+    } else {
+      const measure = {
+        label: measureObject.name,
+        id: String(measureObject.measureId),
+        value: measureObject,
+      };
+
+      results.push(measure);
+    }
+  });
+
+  return results;
+};
 
 const mapStateToProps = state => {
   const { dashboardConfig, isLoadingOrganisationUnit } = state.global;
