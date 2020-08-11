@@ -169,7 +169,7 @@ const DATA_BUILDER_CONFIG = {
           showInExport: true,
         },
         { type: 'transposeMatrix' },
-        { type: 'rowSortByColumns', columns: [['Sub Catchment'], ['Name'], ['Date']] },
+        { type: 'sortByColumns', columns: [['Sub Catchment'], ['Name'], ['Date']] },
       ],
       skipHeader: false,
     },

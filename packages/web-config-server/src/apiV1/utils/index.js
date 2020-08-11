@@ -35,7 +35,7 @@ export { mapDataSourcesToElementCodes } from './mapDataSourcesToElementCodes';
 export { parseCoordinates } from './parseCoordinates';
 export { composeBuiltData } from './composeBuiltData';
 export { sumResults } from './sumResults';
-export { transposeMatrix, sortRowsByColumnArray } from './matrixUtils';
+export { transposeMatrix, sortByColumns } from './matrixUtils';
 export { getAggregatePeriod } from './getAggregatePeriod';
 export {
   findAccessibleMapOverlays,

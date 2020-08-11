@@ -46,7 +46,7 @@ export const transposeMatrix = ({ columns, rows }, rowHeaderKey = 'dataElement')
 // Given table data of rows and columns and an array of column headers to sort by
 // note that the column header may not exist in table data
 // return table data with rows sorted by those columns in order specified
-export const sortRowsByColumnArray = ({ columns, rows }, columnsToSortBy = []) => {
+export const sortByColumns = ({ columns, rows }, columnsToSortBy = []) => {
   // No columns specified we're done return data
   if (columnsToSortBy.length < 1) return { columns, rows };
 

@@ -1,7 +1,7 @@
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 
 import { reduceToDictionary } from '@tupaia/utils';
-import { transposeMatrix, sortRowsByColumnArray } from '/apiV1/utils';
+import { transposeMatrix, sortByColumns } from '/apiV1/utils';
 
 import moment from 'moment';
 import keyBy from 'lodash.keyby';
@@ -29,11 +29,11 @@ class RawDataValuesBuilder extends DataBuilder {
       });
     }
 
-    if (transformations.rowSortByColumns) {
+    if (transformations.sortByColumns) {
       Object.entries(transformableData).forEach(([key, value]) => {
-        transformableData[key].data = sortRowsByColumnArray(
+        transformableData[key].data = sortByColumns(
           value.data,
-          transformations.rowSortByColumns.columns,
+          transformations.sortByColumns.columns,
         );
       });
     }
