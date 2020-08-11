@@ -69,7 +69,7 @@ exports.setup = function(options, seedLink) {
 // HP303 + HP327 = 60+ male
 // HP304 + HP328 = 60+ female
 
-const dashboardGroups = ['TO_Health_Promotion_Unit_Country'];
+const dashboardGroups = 'TO_Health_Promotion_Unit_Country';
 const reportId = 'TO_HPU_Nutrition_Counselling_Clients_By_Age_Gender';
 const dataBuilder = 'sumPerYearPerSeries';
 const dataBuilderConfig = {
