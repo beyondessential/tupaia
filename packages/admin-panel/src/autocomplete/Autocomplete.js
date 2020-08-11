@@ -5,62 +5,89 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import throttle from 'lodash.throttle';
 import { connect } from 'react-redux';
-import Select, { Creatable } from 'react-select';
-import 'react-select/dist/react-select.css';
+import MuiChip from '@material-ui/core/Chip';
+import styled from 'styled-components';
+import { Autocomplete as AutocompleteBase } from '@tupaia/ui-components';
 import { getAutocompleteState } from './selectors';
 import { changeSelection, changeSearchTerm, clearState } from './actions';
 
-const DEFAULT_PLACEHOLDER = 'Start typing to search';
+const Chip = styled(MuiChip)`
+  &:first-child {
+    margin-left: 6px;
+  }
+`;
 
-const shouldCommaCreateOption = () => false;
-
-class AutocompleteComponent extends React.Component {
-  componentWillMount() {
-    this.props.onChangeSearchTerm(''); // Fetch the initial list of options
+const getPlaceholder = (placeholder, selection) => {
+  if (selection && selection.length) {
+    return null;
   }
 
-  componentWillUnmount() {
-    this.props.onClearState();
+  if (placeholder) {
+    return Array.isArray(placeholder) ? placeholder.join(', ') : placeholder;
   }
+  return 'Start typing to search';
+};
 
-  render() {
-    const {
-      selection,
-      onChangeSelection,
-      onChangeSearchTerm,
-      optionLabelKey,
-      isLoading,
-      results,
-      placeholder: customPlaceholder,
-      searchTerm,
-      allowMultipleValues,
-    } = this.props;
-    const getPlaceholder = () => {
-      if (customPlaceholder) {
-        return Array.isArray(customPlaceholder) ? customPlaceholder.join(', ') : customPlaceholder;
-      }
-      return DEFAULT_PLACEHOLDER;
-    };
-    const SelectComponent = this.props.canCreateNewOptions ? Creatable : Select;
+const AutocompleteComponent = React.memo(
+  ({
+    onChangeSelection,
+    onChangeSearchTerm,
+    selection,
+    isLoading,
+    results,
+    label,
+    onClearState,
+    optionLabelKey,
+    allowMultipleValues,
+    canCreateNewOptions,
+    searchTerm,
+    placeholder,
+    helperText,
+  }) => {
+    React.useEffect(() => {
+      onChangeSearchTerm('');
+
+      return () => {
+        onClearState();
+      };
+    }, []);
+
+    let value = selection;
+
+    // If value is null and  multiple is true mui autocomplete will crash
+    if (allowMultipleValues && selection === null && !searchTerm) {
+      value = [];
+    }
+
     return (
-      <SelectComponent
-        value={selection}
-        onChange={onChangeSelection}
-        onInputChange={onChangeSearchTerm}
-        labelKey={optionLabelKey}
-        valueKey={optionLabelKey}
+      <AutocompleteBase
+        value={value}
+        label={label}
         options={results}
-        isLoading={isLoading}
-        placeholder={getPlaceholder()}
-        multi={allowMultipleValues}
-        clearable={false}
-        newOptionCreator={option => ({ [option.valueKey]: searchTerm })}
-        shouldKeyDownEventCreateNewOption={shouldCommaCreateOption}
+        loading={isLoading}
+        onChange={onChangeSelection}
+        onInputChange={throttle((event, newValue) => onChangeSearchTerm(newValue), 50)}
+        inputValue={searchTerm}
+        placeholder={getPlaceholder(placeholder, selection)}
+        helperText={helperText}
+        muiProps={{
+          freeSolo: canCreateNewOptions,
+          disableClearable: allowMultipleValues,
+          multiple: allowMultipleValues,
+          selectOnFocus: canCreateNewOptions,
+          clearOnBlur: canCreateNewOptions,
+          handleHomeEndKeys: canCreateNewOptions,
+          renderTags: (values, getTagProps) =>
+            values.map((option, index) => (
+              <Chip color="primary" label={option[optionLabelKey]} {...getTagProps({ index })} />
+            )),
+        }}
       />
     );
-  }
-}
+  },
+);
 
 AutocompleteComponent.propTypes = {
   allowMultipleValues: PropTypes.bool,
@@ -70,24 +97,32 @@ AutocompleteComponent.propTypes = {
   onChangeSelection: PropTypes.func.isRequired,
   onClearState: PropTypes.func.isRequired,
   optionLabelKey: PropTypes.string.isRequired,
-  placeholder: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
-  results: PropTypes.array,
+  results: PropTypes.arrayOf(PropTypes.object),
   searchTerm: PropTypes.string,
+  placeholder: PropTypes.oneOfType([PropTypes.array, PropTypes.string]),
+  label: PropTypes.string,
+  helperText: PropTypes.string,
   selection: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
 };
 
 AutocompleteComponent.defaultProps = {
   allowMultipleValues: false,
-  placeholder: null,
-  selection: undefined,
-  results: undefined,
+  selection: [],
+  results: [],
   canCreateNewOptions: false,
-  searchTerm: '',
+  searchTerm: null,
+  placeholder: null,
+  label: null,
+  helperText: null,
 };
 
-const mapStateToProps = (state, { reduxId }) => ({
-  ...getAutocompleteState(state, reduxId),
-});
+const mapStateToProps = (state, { reduxId }) => {
+  const { selection, searchTerm, results, isLoading, fetchId } = getAutocompleteState(
+    state,
+    reduxId,
+  );
+  return { selection, searchTerm, results, isLoading, fetchId };
+};
 
 const mapDispatchToProps = (
   dispatch,
@@ -101,12 +136,24 @@ const mapDispatchToProps = (
     allowMultipleValues,
   },
 ) => ({
-  onChangeSelection: newSelection => {
-    const newValue = allowMultipleValues
-      ? newSelection.map(s => s[optionValueKey])
-      : newSelection[optionValueKey];
-    onChange(newValue);
-    dispatch(changeSelection(reduxId, newSelection));
+  onChangeSelection: (event, newSelection, reason) => {
+    if (newSelection === null) {
+      onChange(null);
+    } else if (allowMultipleValues) {
+      const newValue = newSelection.map(s => s[optionValueKey]);
+      onChange(newValue);
+    } else {
+      onChange(newSelection[optionValueKey]);
+    }
+
+    // @see https://material-ui.com/api/autocomplete/ for a description of reasons
+    if (reason === 'create-option') {
+      const newValues = newSelection;
+      newValues[newValues.length - 1] = { [optionLabelKey]: event.target.value };
+      dispatch(changeSelection(reduxId, newValues));
+    } else {
+      dispatch(changeSelection(reduxId, newSelection));
+    }
   },
   onChangeSearchTerm: newSearchTerm =>
     dispatch(

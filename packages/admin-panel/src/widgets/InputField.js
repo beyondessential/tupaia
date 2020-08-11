@@ -7,7 +7,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { TextField, DatePicker, RadioGroup, Select } from '@tupaia/ui-components';
-import { FormGroup } from 'reactstrap';
 import 'react-datepicker/dist/react-datepicker.css';
 import { Autocomplete } from '../autocomplete';
 import { JsonInputField } from './JsonInputField';
@@ -48,26 +47,20 @@ export const InputField = ({
   switch (inputType) {
     case 'autocomplete':
       inputComponent = (
-        <FormGroup>
-          <p>{label}</p>
-          {secondaryLabel && (
-            <p>
-              <i>{secondaryLabel}</i>
-            </p>
-          )}
-          <Autocomplete
-            placeholder={value}
-            endpoint={optionsEndpoint}
-            optionLabelKey={optionLabelKey}
-            optionValueKey={optionValueKey}
-            reduxId={inputKey}
-            onChange={inputValue => onChange(inputKey, inputValue)}
-            canCreateNewOptions={canCreateNewOptions}
-            disabled={disabled}
-            allowMultipleValues={allowMultipleValues}
-            parentRecord={parentRecord}
-          />
-        </FormGroup>
+        <Autocomplete
+          placeholder={value}
+          label={label}
+          helperText={secondaryLabel}
+          endpoint={optionsEndpoint}
+          optionLabelKey={optionLabelKey}
+          optionValueKey={optionValueKey}
+          reduxId={inputKey}
+          onChange={inputValue => onChange(inputKey, inputValue)}
+          canCreateNewOptions={canCreateNewOptions}
+          disabled={disabled}
+          allowMultipleValues={allowMultipleValues}
+          parentRecord={parentRecord}
+        />
       );
       break;
     case 'json':
@@ -98,7 +91,13 @@ export const InputField = ({
       break;
     case 'jsonEditor':
       inputComponent = (
-        <JsonEditor label={label} inputKey={inputKey} value={value} onChange={onChange} helperText={secondaryLabel} />
+        <JsonEditor
+          label={label}
+          inputKey={inputKey}
+          value={value}
+          onChange={onChange}
+          helperText={secondaryLabel}
+        />
       );
       break;
     case 'boolean':
@@ -184,7 +183,7 @@ InputField.propTypes = {
     PropTypes.number,
   ]),
   inputKey: PropTypes.string.isRequired,
-  options: PropTypes.arrayOf(PropTypes.string),
+  options: PropTypes.arrayOf(PropTypes.object),
   optionsEndpoint: PropTypes.string,
   onChange: PropTypes.func.isRequired,
   optionLabelKey: PropTypes.string,

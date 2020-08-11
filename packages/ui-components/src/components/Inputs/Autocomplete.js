@@ -56,6 +56,7 @@ export const Autocomplete = ({
   required,
   helperText,
   onInputChange,
+  inputValue,
   muiProps,
 }) => (
   <StyledAutocomplete
@@ -67,6 +68,7 @@ export const Autocomplete = ({
     loading={loading}
     disableClearable={loading}
     onInputChange={onInputChange}
+    inputValue={inputValue}
     getOptionSelected={(option, selected) => option[labelKey] === selected[labelKey]}
     getOptionLabel={option => (option ? option[labelKey] : '')}
     popupIcon={<KeyboardArrowDown />}
@@ -104,6 +106,7 @@ Autocomplete.propTypes = {
   disabled: PropTypes.bool,
   helperText: PropTypes.string,
   value: PropTypes.any,
+  inputValue: PropTypes.any,
   onChange: PropTypes.func,
   labelKey: PropTypes.string,
   placeholder: PropTypes.string,
@@ -122,6 +125,7 @@ Autocomplete.defaultProps = {
   disabled: false,
   helperText: undefined,
   value: undefined,
+  inputValue: undefined,
   onChange: undefined,
   onInputChange: undefined,
   muiProps: undefined,
