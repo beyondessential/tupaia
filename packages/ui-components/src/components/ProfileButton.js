@@ -103,7 +103,6 @@ export const ProfileButton = ({ user, MenuOptions, className }) => {
   };
 
   const open = Boolean(anchorEl);
-  const id = open ? 'simple-popper' : undefined;
   const userInitial = user.name.substring(0, 1);
   const userFirstName = user.firstName ? user.firstName : user.name.replace(/ .*/, '');
 
@@ -117,7 +116,6 @@ export const ProfileButton = ({ user, MenuOptions, className }) => {
         {userFirstName}
       </StyledButton>
       <Popper
-        id={id}
         keepMounted
         disablePortal
         anchorEl={anchorEl}
