@@ -29,9 +29,9 @@ export const reactToInitialState = () => {
   // This will be implemented in future PRs
 };
 
-export const historyMiddleware = state => next => action => {
-  const { dispatch } = state;
-  let newLocation = state.getState().routing;
+export const historyMiddleware = store => next => action => {
+  const { dispatch } = store;
+  let newLocation = store.getState().routing;
   switch (action.type) {
     // Actions that modify the path
     case SELECT_PROJECT:
@@ -73,7 +73,6 @@ export const historyMiddleware = state => next => action => {
       dispatch(doUpdateUrl(newLocation));
       break;
     default:
-      return next(action);
   }
 
   return next(action);

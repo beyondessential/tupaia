@@ -20,7 +20,7 @@ import {
   URL_COMPONENTS,
 } from './constants';
 
-export const createLocation = params => {
+export const createUrl = params => {
   const { userPage } = params;
   if (userPage) {
     // TODO: Userpage logic to come in future PR
@@ -40,7 +40,7 @@ export const createLocation = params => {
     urlComponents.pop();
   }
 
-  const pathname = `/${urlComponents.join('/')}`;
+  const pathname = `/${urlComponents.map(component => component || 'loading').join('/')}`;
   return { pathname, search: searchComponents };
 };
 
