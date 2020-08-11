@@ -56,8 +56,15 @@ const DATA_BUILDER_CONFIG = {
         },
       },
       transformations: [
+        {
+          type: 'ancestorMapping',
+          ancestorType: 'sub_catchment',
+          label: 'Sub Catchment',
+          showInExport: true,
+        },
         { type: 'mergeSurveys', mergedTableName: 'Aligned Sample Tests' },
         { type: 'transposeMatrix' },
+        { type: 'sortByColumns', columns: [['Sub Catchment'], ['Name'], ['Date']] },
       ],
       skipHeader: false,
     },
