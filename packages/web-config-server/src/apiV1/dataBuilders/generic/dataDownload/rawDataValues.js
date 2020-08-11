@@ -73,7 +73,7 @@ class RawDataValuesBuilder extends DataBuilder {
       }
 
       const rawEvents = await this.fetchEvents(additionalQueryConfig, surveyCode);
-      console.log('ancestorMappingConfig', ancestorMappingConfig);
+
       const mappedEvents =
         ancestorMappingConfig && ancestorMappingConfig.ancestorType
           ? await this.mapAncestorOfTypeToEvents(rawEvents, ancestorMappingConfig.ancestorType)
