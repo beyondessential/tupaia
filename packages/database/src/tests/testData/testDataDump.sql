@@ -91,7 +91,8 @@ CREATE TYPE public.entity_type AS ENUM (
 
 CREATE TYPE public.service_type AS ENUM (
     'dhis',
-    'tupaia'
+    'tupaia',
+    'indicator'
 );
 
 
@@ -603,6 +604,18 @@ CREATE TABLE public.geographical_area (
     country_id text NOT NULL,
     parent_id text,
     code text
+);
+
+
+--
+-- Name: indicator; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.indicator (
+    id text NOT NULL,
+    code text,
+    builder text NOT NULL,
+    config jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
 
@@ -1294,6 +1307,22 @@ ALTER TABLE ONLY public.feed_item
 
 ALTER TABLE ONLY public.geographical_area
     ADD CONSTRAINT geographical_area_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: indicator indicator_code_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.indicator
+    ADD CONSTRAINT indicator_code_key UNIQUE (code);
+
+
+--
+-- Name: indicator indicator_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.indicator
+    ADD CONSTRAINT indicator_pkey PRIMARY KEY (id);
 
 
 --
@@ -2064,6 +2093,13 @@ CREATE TRIGGER entity_trigger AFTER INSERT OR DELETE OR UPDATE ON public.entity 
 --
 
 CREATE TRIGGER geographical_area_trigger AFTER INSERT OR DELETE OR UPDATE ON public.geographical_area FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
+-- Name: indicator indicator_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER indicator_trigger AFTER INSERT OR DELETE OR UPDATE ON public.indicator FOR EACH ROW EXECUTE PROCEDURE public.notification();
 
 
 --
@@ -3573,6 +3609,8 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 836	/20200727071629-RemoveSchoolLevelBinaryIndicatorTable-modifies-data	2020-08-06 22:02:04.68
 837	/20200804010531-ChangeStriveProjectDefaultMapOverlay-modifies-data	2020-08-06 22:02:04.721
 838	/20200804021343-UpdateCOVIDAUProjectBackgroundUrl-modifies-data	2020-08-06 22:02:04.747
+839	/20200720231712-AddIndicatorDataSourceType-modifies-schema	2020-08-11 12:23:21.287
+841	/20200804033230-AddIndicatorTable-modifies-schema	2020-08-11 12:23:21.454
 \.
 
 
@@ -3580,7 +3618,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 838, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 841, true);
 
 
 --
