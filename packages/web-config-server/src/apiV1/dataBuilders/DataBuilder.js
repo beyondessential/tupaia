@@ -116,9 +116,9 @@ export class DataBuilder {
   }
 
   /**
-   * Fetch ancestor of type for each organisationUnit in event and sort alphabetically
+   * Fetch ancestor of type for each organisationUnit in event
    */
-  async sortEventsByAncestor(events, ancestorType) {
+  async mapAncestorOfTypeToEvents(events, ancestorType) {
     const hierarchyId = await this.fetchEntityHierarchyId();
     const allEntityCodes = getUniqueEntries(events.map(e => e.orgUnit));
     const allEntities = await Entity.find({ code: allEntityCodes });
@@ -131,15 +131,15 @@ export class DataBuilder {
     });
     const mappedEvents = events.map(event => {
       const ancestor = entityCodeToAncestor[event.orgUnit];
-      const sortName = `${ancestor}_${event.orgUnitName}`;
       return {
         ...event,
         orgUnitAncestor: ancestor,
-        sortName,
       };
     });
-    return mappedEvents.sort(getSortByKey('sortName')).map(({ sortName, ...event }) => event);
+    return mappedEvents;
   }
+
+  sortEventsByAncestor = events => events.sort(getSortByKey('orgUnitAncestor'));
 
   sortEventsByDataValue = (events, dataValue) =>
     events.sort(getSortByExtractedValue(e => e.dataValues[dataValue]));
