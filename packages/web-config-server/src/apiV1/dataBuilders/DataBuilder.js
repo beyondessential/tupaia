@@ -139,9 +139,6 @@ export class DataBuilder {
     return mappedEvents;
   }
 
-  sortEventsByAncestor = (events, ancestorType) =>
-    events.sort(getSortByKey(ancestorType)).map(({ sortName, ...event }) => event);
-
   sortDataByName = data => data.sort(getSortByKey('name'));
 
   areDataAvailable = data => data.some(({ value }) => value !== NO_DATA_AVAILABLE);
