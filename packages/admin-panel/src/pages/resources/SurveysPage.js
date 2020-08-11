@@ -69,7 +69,7 @@ const SURVEY_COLUMNS = [
                 value: 'dhis',
               },
               {
-                label: 'Tupaua',
+                label: 'Tupaia',
                 value: 'tupaia',
               },
             ],
