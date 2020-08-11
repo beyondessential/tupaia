@@ -304,14 +304,17 @@ function changePassword(
         isRequestingChangePassword: true,
         changePasswordFailedMessage: '',
       };
-    case FETCH_CHANGE_PASSWORD_ERROR:
+    case FETCH_CHANGE_PASSWORD_ERROR: {
+      const errorMessage =
+        state.passwordResetToken.length > 0
+          ? 'This password reset link has already been used.'
+          : 'Something went wrong during password change, please check the form and try again';
       return {
         ...state,
         isRequestingChangePassword: false,
-        changePasswordFailedMessage:
-          action.error ||
-          'Something went wrong during password change, please check the form and try again',
+        changePasswordFailedMessage: action.error || errorMessage,
       };
+    }
     case FETCH_CHANGE_PASSWORD_SUCCESS:
       return {
         ...state,
@@ -527,7 +530,7 @@ function measureBar(
     isExpanded: false,
     selectedMeasureId: null,
     currentMeasure: {},
-    measureHierarchy: {},
+    measureHierarchy: [],
     currentMeasureOrganisationUnitCode: null,
     error: null,
   },
@@ -535,7 +538,7 @@ function measureBar(
 ) {
   switch (action.type) {
     case CLEAR_MEASURE_HIERARCHY:
-      return { ...state, measureHierarchy: {} };
+      return { ...state, measureHierarchy: [] };
     case CLEAR_MEASURE:
       return { ...state, currentMeasure: {}, selectedMeasureId: null };
     case CHANGE_MEASURE:
