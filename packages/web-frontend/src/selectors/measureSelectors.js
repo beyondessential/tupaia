@@ -10,7 +10,6 @@ import {
 
 import { safeGet, getOrgUnitFromCountry } from './utils';
 import {
-  selectCurrentOrgUnit,
   selectCurrentOrgUnitCode,
   selectAncestors,
   selectActiveProjectCountries,
@@ -53,7 +52,11 @@ export const selectCurrentMeasure = createSelector(
 );
 
 const selectDisplayLevelAncestor = createSelector(
-  [selectCurrentOrgUnit, selectCurrentOrgUnitCode, state => state.map.measureInfo.measureOptions],
+  [
+    state => selectCountryHierarchy(state, selectCurrentOrgUnitCode(state)),
+    selectCurrentOrgUnitCode,
+    state => state.map.measureInfo.measureOptions,
+  ],
   (country, currentOrganisationUnitCode, measureOptions) => {
     if (!country || !currentOrganisationUnitCode || !measureOptions) {
       return undefined;
@@ -135,7 +138,7 @@ export const selectAllMeasuresWithDisplayAndOrgUnitData = createSelector(
 
 export const selectRenderedMeasuresWithDisplayInfo = createSelector(
   [
-    selectCurrentOrgUnit,
+    state => selectCountryHierarchy(state, selectCurrentOrgUnitCode(state)),
     selectAllMeasuresWithDisplayAndOrgUnitData,
     selectDisplayLevelAncestor,
     state => state.map.measureInfo.measureOptions,
