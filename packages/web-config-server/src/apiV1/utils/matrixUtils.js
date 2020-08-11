@@ -1,3 +1,5 @@
+import { getSortByKey } from '@tupaia/utils';
+
 /* take an object with columns and rows and return an object with rows and columns switched */
 export const transposeMatrix = ({ columns, rows }, rowHeaderKey = 'dataElement') => {
   const uniqueRowHeader = (text, prefix) => `${prefix}-${text}`;
@@ -39,4 +41,40 @@ export const transposeMatrix = ({ columns, rows }, rowHeaderKey = 'dataElement')
     columns: newColumns,
     rows: newRows,
   };
+};
+
+// Given table data of rows and columns and an array of column headers to sort by
+// note that the column header may not exist in table data
+// return table data with rows sorted by those columns in order specified
+export const sortRowsByColumnArray = ({ columns, rows }, columnsToSortBy = []) => {
+  // No columns specified we're done return data
+  if (columnsToSortBy.length < 1) return { columns, rows };
+
+  const getRecursiveRowsOnKeysSorter = keyArray => {
+    const resetKeys = () => [...keyArray];
+
+    const recursivelyCompareValuesAscending = (a, b, keys = resetKeys()) => {
+      if (keys.length < 1) return 0;
+      const currentKey = keys[0];
+      if (!b[currentKey]) return -1;
+      if (!a[currentKey]) return 1;
+      const sorter = getSortByKey(currentKey);
+      if (sorter(a, b) > 0) return 1;
+      if (sorter(a, b) < 0) return -1;
+      return keys.length > 0 ? recursivelyCompareValuesAscending(a, b, keys.slice(1)) : 0;
+    };
+
+    return recursivelyCompareValuesAscending;
+  };
+
+  //sanitise the column list and find keys
+  const keySortList = columnsToSortBy
+    .map(sortHeader => {
+      const columnFound = columns.find(column => column.title === sortHeader[0]);
+      return columnFound ? columnFound.key : '';
+    })
+    .filter(key => key !== '');
+  const headerRow = rows.shift();
+  const sortedRows = rows.sort(getRecursiveRowsOnKeysSorter(keySortList));
+  return { columns, rows: [headerRow, ...sortedRows] };
 };

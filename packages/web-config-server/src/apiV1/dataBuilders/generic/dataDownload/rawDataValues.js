@@ -1,9 +1,10 @@
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 
 import { reduceToDictionary } from '@tupaia/utils';
-import { transposeMatrix } from '/apiV1/utils';
+import { transposeMatrix, sortRowsByColumnArray } from '/apiV1/utils';
 
 import moment from 'moment';
+import keyBy from 'lodash.keyby';
 
 const RAW_VALUE_DATE_FORMAT = 'D-M-YYYY h:mma';
 const ROW_HEADER_KEY = 'dataElement'; // row headers live under the key 'dataElement' for historical reasons
@@ -11,21 +12,41 @@ const ROW_HEADER_KEY = 'dataElement'; // row headers live under the key 'dataEle
 class RawDataValuesBuilder extends DataBuilder {
   async build() {
     const surveyCodes = this.query.surveyCodes;
-    const data = await this.fetchResults(surveyCodes.split(','));
-    return { data };
+
+    const { transformations: tranformationConfigs = [] } = this.config;
+    const transformations = keyBy(tranformationConfigs, 'type');
+
+    const ancestorMappingConfig = transformations.ancestorMapping;
+
+    const transformableData = await this.fetchResults(
+      surveyCodes.split(','),
+      ancestorMappingConfig,
+    );
+
+    if (transformations.transposeMatrix) {
+      Object.entries(transformableData).forEach(([key, value]) => {
+        transformableData[key].data = transposeMatrix(value.data, ROW_HEADER_KEY);
+      });
+    }
+
+    if (transformations.rowSortByColumns) {
+      Object.entries(transformableData).forEach(([key, value]) => {
+        transformableData[key].data = sortRowsByColumnArray(
+          value.data,
+          transformations.rowSortByColumns.columns,
+        );
+      });
+    }
+
+    return { data: transformableData };
   }
 
-  async fetchResults(surveyCodes) {
-    const data = {};
+  async fetchResults(surveyCodes, ancestorMappingConfig) {
+    const builtData = {};
 
     const surveyCodeToName = reduceToDictionary(this.config.surveys, 'code', 'name');
 
-    const { surveysConfig = {}, transformations = [] } = this.config;
-    const transformationTypes = transformations.map(t => t.type);
-    const tranformationMap = {};
-    transformations.forEach(transformation => {
-      tranformationMap[transformation.type] = transformation;
-    });
+    const { surveysConfig = {} } = this.config;
 
     //Loop through each selected survey and fetch the analytics of that survey,
     //then build a matrix around the analytics
@@ -52,13 +73,13 @@ class RawDataValuesBuilder extends DataBuilder {
       }
 
       const rawEvents = await this.fetchEvents(additionalQueryConfig, surveyCode);
-      const ancestorTypeForSort =
-        transformationTypes.includes('ancestorSort') && tranformationMap.ancestorSort.ancestorType;
-      const sortedEvents = ancestorTypeForSort
-        ? await this.sortEventsByAncestor(rawEvents, ancestorTypeForSort)
-        : rawEvents;
+      console.log('ancestorMappingConfig', ancestorMappingConfig);
+      const mappedEvents =
+        ancestorMappingConfig && ancestorMappingConfig.ancestorType
+          ? await this.mapAncestorOfTypeToEvents(rawEvents, ancestorMappingConfig.ancestorType)
+          : rawEvents;
 
-      const columns = this.buildColumns(sortedEvents);
+      const columns = this.buildColumns(mappedEvents);
 
       const dataElementCodeToText = reduceToDictionary(dataElementsMetadata, 'code', 'text');
 
@@ -66,31 +87,27 @@ class RawDataValuesBuilder extends DataBuilder {
 
       if (columns && columns.length) {
         const ancestorRow =
-          transformationTypes.includes('ancestorSort') && tranformationMap.ancestorSort.showInExport
-            ? { ancestor: tranformationMap.ancestorSort.ancestorType }
+          ancestorMappingConfig && ancestorMappingConfig.showInExport
+            ? { ancestor: ancestorMappingConfig.label }
             : {};
-        rows = await this.buildRows(sortedEvents, dataElementCodeToText, ancestorRow);
+        rows = await this.buildRows(mappedEvents, dataElementCodeToText, ancestorRow);
       }
 
-      let tableData = {
+      const data = {
         columns,
         rows,
       };
 
-      if (transformationTypes.includes('transposeMatrix')) {
-        tableData = transposeMatrix(tableData, ROW_HEADER_KEY);
-      }
-
       const { skipHeader = true } = this.config;
 
-      data[surveyCodeToName[surveyCode]] = {
+      builtData[surveyCodeToName[surveyCode]] = {
         // need the nested 'data' property to be interpreted as the input to a matrix
-        data: tableData,
+        data,
         skipHeader,
       };
     }
 
-    return data;
+    return builtData;
   }
 
   /**

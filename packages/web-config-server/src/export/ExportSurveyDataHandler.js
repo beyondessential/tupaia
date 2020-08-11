@@ -6,7 +6,7 @@ import { requestFromTupaiaConfigServer } from './requestFromTupaiaConfigServer';
 import { USER_SESSION_CONFIG } from '/authSession';
 import { RouteHandler } from '/apiV1/RouteHandler';
 import { ExportSurveyResponsesPermissionsChecker } from '/apiV1/permissions';
-import { formatMatrixDataForExcelAoA } from './excelFormatters/formatMatrixDataForExcel';
+import { formatMatrixDataForExcel } from './excelFormatters/formatMatrixDataForExcel';
 
 const EXPORT_FILE_TITLE = 'survey_response_export';
 const EXPORT_DIRECTORY = 'exports';
@@ -59,7 +59,7 @@ export class ExportSurveyDataHandler extends RouteHandler {
       // Using array of arrays (aoa) input as transformations like mergeSurveys
       // increases the likelyhood of columns with same title (leads to missing keys in object json (aoo))
       const formattedData = surveyData.data.columns.length
-        ? formatMatrixDataForExcelAoA(surveyData.data)
+        ? formatMatrixDataForExcel(surveyData.data)
         : [];
 
       //Header

@@ -162,8 +162,14 @@ const DATA_BUILDER_CONFIG = {
         },
       },
       transformations: [
-        { type: 'ancestorSort', ancestorType: 'sub_catchment', showInExport: true },
+        {
+          type: 'ancestorMapping',
+          ancestorType: 'sub_catchment',
+          label: 'Sub Catchment',
+          showInExport: true,
+        },
         { type: 'transposeMatrix' },
+        { type: 'rowSortByColumns', columns: [['Sub Catchment'], ['Name'], ['Date']] },
       ],
       skipHeader: false,
     },
