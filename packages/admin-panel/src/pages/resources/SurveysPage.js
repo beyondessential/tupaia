@@ -313,7 +313,7 @@ const IMPORT_CONFIG = {
           value: 'dhis',
         },
         {
-          label: 'Tupaua',
+          label: 'Tupaia',
           value: 'tupaia',
         },
       ],
