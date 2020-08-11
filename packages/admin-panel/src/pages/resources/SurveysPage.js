@@ -63,7 +63,16 @@ const SURVEY_COLUMNS = [
           Header: 'Data Service',
           source: 'data_source.service_type',
           editConfig: {
-            options: ['dhis', 'tupaia'],
+            options: [
+              {
+                label: 'DHIS',
+                value: 'dhis',
+              },
+              {
+                label: 'Tupaua',
+                value: 'tupaia',
+              },
+            ],
             setFieldsOnChange: (newValue, currentRecord) => {
               const { isDataRegional = true } = currentRecord['data_source.config'];
               const config = newValue === 'dhis' ? { isDataRegional } : {};
@@ -298,7 +307,16 @@ const IMPORT_CONFIG = {
       label: 'Data service',
       secondaryLabel: 'Select the data service this survey should use, or leave blank for tupaia',
       parameterKey: 'serviceType',
-      options: ['dhis', 'tupaia'],
+      options: [
+        {
+          label: 'DHIS',
+          value: 'dhis',
+        },
+        {
+          label: 'Tupaia',
+          value: 'tupaia',
+        },
+      ],
     },
   ],
 };

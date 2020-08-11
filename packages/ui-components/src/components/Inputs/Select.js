@@ -47,8 +47,8 @@ const MenuItem = styled(MuiMenuItem)`
   padding-bottom: 0.5rem;
 `;
 
-export const Select = ({ options, placeholder, defaultValue, ...props }) => {
-  const [value, setValue] = useState(defaultValue);
+export const Select = ({ value, onChange, options, placeholder, defaultValue, ...props }) => {
+  const [localValue, setValue] = useState(defaultValue);
 
   const handleChange = useCallback(
     event => {
@@ -57,10 +57,12 @@ export const Select = ({ options, placeholder, defaultValue, ...props }) => {
     [setValue],
   );
 
+  const isControlled = value !== null;
+
   return (
     <SelectField
-      value={value}
-      onChange={handleChange}
+      value={isControlled ? value : localValue}
+      onChange={isControlled ? onChange : handleChange}
       SelectProps={{
         displayEmpty: true,
       }}
@@ -84,15 +86,19 @@ Select.propTypes = {
   options: PropTypes.array.isRequired,
   placeholder: PropTypes.string,
   defaultValue: PropTypes.any,
+  value: PropTypes.any,
+  onChange: PropTypes.func,
 };
 
 Select.defaultProps = {
   placeholder: 'Please select',
   defaultValue: '',
+  value: null,
+  onChange: null,
 };
 
-export const NativeSelect = ({ options, placeholder, defaultValue, ...props }) => {
-  const [value, setValue] = useState('');
+export const NativeSelect = ({ value, onChange, options, placeholder, defaultValue, ...props }) => {
+  const [localValue, setValue] = useState(defaultValue);
 
   const handleChange = useCallback(
     event => {
@@ -101,10 +107,12 @@ export const NativeSelect = ({ options, placeholder, defaultValue, ...props }) =
     [setValue],
   );
 
+  const isControlled = value !== null;
+
   return (
     <SelectField
-      value={value}
-      onChange={handleChange}
+      value={isControlled ? value : localValue}
+      onChange={isControlled ? onChange : handleChange}
       SelectProps={{
         native: true,
       }}
@@ -128,9 +136,13 @@ NativeSelect.propTypes = {
   options: PropTypes.array.isRequired,
   placeholder: PropTypes.string,
   defaultValue: PropTypes.any,
+  value: PropTypes.any,
+  onChange: PropTypes.func,
 };
 
 NativeSelect.defaultProps = {
   placeholder: 'Please select',
   defaultValue: '',
+  value: null,
+  onChange: null,
 };

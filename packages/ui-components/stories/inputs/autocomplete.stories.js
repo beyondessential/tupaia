@@ -5,6 +5,7 @@
 
 import React, { useState, useCallback } from 'react';
 import Typography from '@material-ui/core/Typography';
+import Chip from '@material-ui/core/Chip';
 import styled from 'styled-components';
 import { Autocomplete } from '../../src';
 
@@ -103,7 +104,7 @@ export const controlled = () => {
   );
 };
 
-export const muiProps = () => (
+export const freeText = () => (
   <Container>
     <Autocomplete
       label="Mui Props Example"
@@ -116,3 +117,47 @@ export const muiProps = () => (
     />
   </Container>
 );
+
+export const Tags = () => {
+  const [value, setValue] = useState([]);
+  const [inputValue, setInputValue] = useState('');
+
+  const handleChange = (event, newValue, reason) => {
+    if (reason === 'create-option') {
+      newValue[newValue.length - 1] = { name: event.target.value };
+      setValue(newValue);
+    } else {
+      setValue(newValue);
+    }
+  };
+
+  return (
+    <Container>
+      <Autocomplete
+        label="Mui Props Example"
+        options={options}
+        onChange={handleChange}
+        inputValue={inputValue}
+        onInputChange={(event, newInputValue) => {
+          console.log('new', newInputValue);
+          setInputValue(newInputValue);
+        }}
+        value={value}
+        placeholder="Search..."
+        helperText="Type free text or select an option"
+        muiProps={{
+          freeSolo: true,
+          disableClearable: true,
+          selectOnFocus: true,
+          clearOnBlur: true,
+          handleHomeEndKeys: true,
+          multiple: true,
+          renderTags: (value, getTagProps) =>
+            value.map((option, index) => (
+              <Chip color="primary" label={option.name} {...getTagProps({ index })} />
+            )),
+        }}
+      />
+    </Container>
+  );
+};
