@@ -55,14 +55,12 @@ function NoAccessDashboard({ currentOrgUnitType, project, onRequestProjectAccess
 
 NoAccessDashboard.propTypes = {
   currentOrgUnitType: PropTypes.string,
-  project: PropTypes.object,
-  onRequestProjectAccess: PropTypes.func,
+  project: PropTypes.object.isRequired,
+  onRequestProjectAccess: PropTypes.func.isRequired,
 };
 
 NoAccessDashboard.defaultProps = {
   currentOrgUnitType: 'area',
-  project: {},
-  onRequestProjectAccess: () => {},
 };
 
 const mapStateToProps = state => {
