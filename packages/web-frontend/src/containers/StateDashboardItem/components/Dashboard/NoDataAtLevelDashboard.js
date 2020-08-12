@@ -18,7 +18,6 @@ const Grid = styled.div`
   grid-template-columns: auto;
   grid-template-rows: auto auto;
   text-align: center;
-  position: relative;
   background: #272832;
   color: ${WHITE};
 `;
