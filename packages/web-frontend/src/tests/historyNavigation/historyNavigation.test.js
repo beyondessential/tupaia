@@ -52,7 +52,6 @@ describe('historyNavigation', () => {
     });
   });
   describe('getLocationComponentValue', () => {
-    // QUESTION: Handled in selectors test?
     it('should be able to set project', () => {
       expect(getLocationComponentValue(baseLocation, URL_COMPONENTS.PROJECT)).toEqual('PROJECT_1');
     });
