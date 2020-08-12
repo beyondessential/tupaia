@@ -8,6 +8,7 @@ import { getIsProductionEnvironment } from '../devops';
 const LOWEST_PRIORITY = 5;
 const BAD_REQUEST_LIMIT = 7;
 const MAX_CHANGES_PER_BATCH = 20000; // breaks in production at around 50k changes
+const SERVER_START_TIME = Date.now(); // used to avoid syncing old changes in non-production environments
 
 export class ExternalApiSyncQueue {
   constructor(
@@ -112,10 +113,20 @@ export class ExternalApiSyncQueue {
       is_dead_letter: false,
       is_deleted: false,
     };
+    // on non-production environments, avoid syncing the same changes to DHIS2 from multiple
+    // different deployments, as DHIS2 can't handle it
     if (!getIsProductionEnvironment()) {
+      // don't sync records older than priority 5, to avoid multiple deployments syncing the same
+      // records that are going around and around the queue
       criteria.priority = {
         comparator: '<',
         comparisonValue: 5,
+      };
+      // don't sync changes that happened before the server was started, to avoid multiple
+      // deployments syncing identical changes that came from the overnight snapshot
+      criteria.change_time = {
+        comparator: '>',
+        comparisonValue: SERVER_START_TIME,
       };
     }
     const changes = await this.syncQueueModel.find(criteria, {
