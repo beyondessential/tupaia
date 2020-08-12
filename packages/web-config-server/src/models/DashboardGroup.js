@@ -20,17 +20,25 @@ export class DashboardGroup extends BaseModel {
   ];
 
   // Return all dashboardGroups with matching organisationLevel and organisationUnits
-  static async getAllDashboardGroups(organisationLevel, entity, projectCode) {
+  static async getAllDashboardGroups(organisationLevel, entity, projectCode, hierarchyId) {
     return this.fetchDashboardGroups(
       entity,
-      this.buildDashboardGroupQueryParams(projectCode, { organisationLevel }),
+      hierarchyId,
+      this.buildDashboardGroupQueryParams(projectCode, { organisationLevel, hierarchyId }),
     );
   }
 
   // Return dashboardGroup with matching userGroups, organisationLevel and organisationUnits
-  static async getDashboardGroups(userGroups = [], organisationLevel, entity, projectCode) {
+  static async getDashboardGroups(
+    userGroups = [],
+    organisationLevel,
+    entity,
+    projectCode,
+    hierarchyId,
+  ) {
     return this.fetchDashboardGroups(
       entity,
+      hierarchyId,
       this.buildDashboardGroupQueryParams(projectCode, {
         organisationLevel,
         userGroup: userGroups,
@@ -38,8 +46,8 @@ export class DashboardGroup extends BaseModel {
     );
   }
 
-  static async fetchDashboardGroups(entity, params) {
-    const ancestorCodes = await entity.getAncestorCodes(true);
+  static async fetchDashboardGroups(entity, hierarchyId, params) {
+    const ancestorCodes = await entity.getAncestorCodes(hierarchyId);
     const entityCodes = [...ancestorCodes, entity.code];
     const results = await DashboardGroup.find({ ...params, organisationUnitCode: entityCodes });
     const dashboardGroups = {};

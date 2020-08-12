@@ -1,6 +1,7 @@
 import { DashboardGroup, DashboardReport } from '/models';
 import { RouteHandler } from './RouteHandler';
 import { PermissionsChecker } from './permissions';
+import { checkEntityAgainstConditions } from './utils';
 
 const NO_DATA_AT_LEVEL_DASHBOARD_ID = 'no_data_at_level';
 const NO_ACCESS_DASHBOARD_ID = 'no_access';
@@ -16,11 +17,13 @@ export default class extends RouteHandler {
     // based on organisationLevel, organisationUnit, userGroups and ancestors
     // return all matching userGroup and dashboard group name configs
     // (can have same userGroup in different dashboard group names)
+    const hierarchyId = await this.fetchHierarchyId();
     const dashboardGroups = await DashboardGroup.getDashboardGroups(
       userGroups,
       organisationLevel,
       entity,
       query.projectCode,
+      hierarchyId,
     );
 
     const allDashboardGroups = await DashboardGroup.getAllDashboardGroups(
@@ -31,7 +34,7 @@ export default class extends RouteHandler {
 
     // No dashboards available
     if (!Object.keys(dashboardGroups).length && !Object.keys(allDashboardGroups).length) {
-      const noDataAtLevelDashboard = await this.fetchDashboardViews([
+      const noDataAtLevelDashboard = await this.fetchDashboardViews(entity, [
         NO_DATA_AT_LEVEL_DASHBOARD_ID,
       ]);
       return { General: { Public: { views: noDataAtLevelDashboard } } };
@@ -39,7 +42,7 @@ export default class extends RouteHandler {
 
     // No access to available dashboards
     if (!Object.keys(dashboardGroups).length && Object.keys(allDashboardGroups).length) {
-      const noAccessDashboard = await this.fetchDashboardViews([NO_ACCESS_DASHBOARD_ID]);
+      const noAccessDashboard = await this.fetchDashboardViews(entity, [NO_ACCESS_DASHBOARD_ID]);
       return { General: { Public: { views: noAccessDashboard } } };
     }
 
@@ -69,8 +72,8 @@ export default class extends RouteHandler {
                 dashboardReports: dashboardReportIds,
               } = dashboardGroups[dashboardGroupName][userGroupKey];
               // from { General: { Public: {} } to { General: { Public: { views: [...] } }
-
               returnJson[dashboardGroupName][userGroupKey].views = await this.fetchDashboardViews(
+                entity,
                 dashboardReportIds,
               );
               // from { General: { Public: {} } to { General: { Public: { dashboardGroupId: 11 } }
@@ -84,16 +87,24 @@ export default class extends RouteHandler {
     return returnJson;
   };
 
-  fetchDashboardViews = async dashboardReportIds => {
-    return Promise.all(
-      dashboardReportIds.map(async viewId => {
-        const report = await DashboardReport.findOne({
-          id: viewId,
-          drillDownLevel: null, //drillDownLevel = null so that only the parent reports are selected, we don't want drill down reports at this level.
-        });
-        return { viewId, ...report.viewJson, requiresDataFetch: !!report.dataBuilder };
-      }),
-    );
+  fetchDashboardViews = async (entity, dashboardReportIds) => {
+    const views = [];
+    for (let i = 0; i < dashboardReportIds.length; i++) {
+      const viewId = dashboardReportIds[i];
+      const report = await DashboardReport.findOne({
+        id: viewId,
+        drillDownLevel: null, //drillDownLevel = null so that only the parent reports are selected, we don't want drill down reports at this level.
+      });
+
+      const { viewJson, dataBuilder } = report;
+      const { displayOnEntityConditions, ...restOfViewJson } = viewJson; //Avoid sending displayOnEntityConditions to the frontend
+      const view = { viewId, ...restOfViewJson, requiresDataFetch: !!dataBuilder };
+
+      if (checkEntityAgainstConditions(entity, displayOnEntityConditions)) {
+        views.push(view);
+      }
+    }
+    return views;
   };
 }
 

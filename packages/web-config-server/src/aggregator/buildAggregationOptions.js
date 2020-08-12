@@ -11,6 +11,7 @@ export const buildAggregationOptions = async (
   initialAggregationOptions,
   dataSourceEntities = [],
   entityAggregationOptions,
+  hierarchyId,
 ) => {
   const {
     aggregations,
@@ -39,6 +40,7 @@ export const buildAggregationOptions = async (
     aggregationEntityType,
     entityAggregationType,
     entityAggregationConfig,
+    hierarchyId,
   );
 
   return {
@@ -52,16 +54,16 @@ export const buildAggregationOptions = async (
 };
 
 // Will return a map for every org unit (regardless of type) in orgUnits to its ancestor of type aggregationEntityType
-const getOrgUnitToAncestorMap = async (orgUnits, aggregationEntityType) => {
+const getOrgUnitToAncestorMap = async (orgUnits, aggregationEntityType, hierarchyId) => {
   if (!orgUnits || orgUnits.length === 0) return {};
   const orgUnitToAncestor = {};
   const addOrgUnitToMap = async orgUnit => {
     if (orgUnit.type !== aggregationEntityType) {
-      const ancestor = await orgUnit.getAncestorOfType(aggregationEntityType);
+      const ancestor = await orgUnit.getAncestorOfType(aggregationEntityType, hierarchyId);
       if (ancestor) {
         orgUnitToAncestor[orgUnit.code] = { code: ancestor.code, name: ancestor.name };
       } else {
-        winston.warn(`No ancestor of type ${aggregationEntityType} found for ${orgUnit.code}`);
+        winston.warn(`No ancestor of type ${aggregationEntityType} found for ${orgUnit.code}, hierarchyId = ${hierarchyId}`);
       }
     }
   };
@@ -79,7 +81,12 @@ const fetchEntityAggregationConfig = async (
   aggregationEntityType,
   entityAggregationType = DEFAULT_ENTITY_AGGREGATION_TYPE,
   entityAggregationConfig,
+  hierarchyId,
 ) => {
-  const orgUnitMap = await getOrgUnitToAncestorMap(dataSourceEntities, aggregationEntityType);
+  const orgUnitMap = await getOrgUnitToAncestorMap(
+    dataSourceEntities,
+    aggregationEntityType,
+    hierarchyId,
+  );
   return { type: entityAggregationType, config: { ...entityAggregationConfig, orgUnitMap } };
 };
