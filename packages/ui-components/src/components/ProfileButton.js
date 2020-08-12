@@ -26,9 +26,17 @@ const StyledListItem = styled(MuiListItem)`
   }
 `;
 
-export const ProfileButtonItem = props => (
-  <StyledListItem button component={RouterLink} {...props} />
+export const ProfileButtonItem = ({ button, ...props }) => (
+  <StyledListItem button={button} component={button ? null : RouterLink} {...props} />
 );
+
+ProfileButtonItem.propTypes = {
+  button: PropTypes.bool,
+};
+
+ProfileButtonItem.defaultProps = {
+  button: false,
+};
 
 const Paper = styled.div`
   background: white;
@@ -115,13 +123,7 @@ export const ProfileButton = ({ user, MenuOptions, className }) => {
       >
         {userFirstName}
       </StyledButton>
-      <Popper
-        keepMounted
-        disablePortal
-        anchorEl={anchorEl}
-        open={open}
-        placement="bottom-end"
-      >
+      <Popper keepMounted disablePortal anchorEl={anchorEl} open={open} placement="bottom-end">
         <Paper>
           <Header>
             <Avatar>{userInitial}</Avatar>

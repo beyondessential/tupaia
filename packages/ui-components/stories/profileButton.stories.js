@@ -30,7 +30,14 @@ const exampleUser = {
 const ProfileLinks = () => (
   <>
     <ProfileButtonItem to="/profile">Edit Profile</ProfileButtonItem>
-    <ProfileButtonItem to="/logout">Logout</ProfileButtonItem>
+    <ProfileButtonItem
+      button
+      onClick={() => {
+        console.log('button click...');
+      }}
+    >
+      Logout
+    </ProfileButtonItem>
   </>
 );
 

@@ -8,20 +8,14 @@ import PropTypes from 'prop-types';
 import { ProfileButton as BaseProfileButton, ProfileButtonItem } from '@tupaia/ui-components';
 import { getCurrentUser, logout } from '../store';
 
-const ProfileLinksComponent = ({ onLogout }) => {
-  const handleClickLogout = () => {
-    onLogout();
-  };
-
-  return (
-    <>
-      <ProfileButtonItem to="/profile">Edit Profile</ProfileButtonItem>
-      <ProfileButtonItem button to="/logout" onClick={handleClickLogout}>
-        Logout
-      </ProfileButtonItem>
-    </>
-  );
-};
+const ProfileLinksComponent = ({ onLogout }) => (
+  <>
+    <ProfileButtonItem to="/profile">Edit Profile</ProfileButtonItem>
+    <ProfileButtonItem button onClick={onLogout}>
+      Logout
+    </ProfileButtonItem>
+  </>
+);
 
 ProfileLinksComponent.propTypes = {
   onLogout: PropTypes.func.isRequired,
