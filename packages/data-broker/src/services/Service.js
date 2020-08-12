@@ -38,4 +38,12 @@ export class Service {
   async pull() {
     throw new Error('Any subclass of Service must implement the "pull" method');
   }
+
+  /**
+   * @abstract
+   */
+  // eslint-disable-next-line class-methods-use-this
+  async pullMetadata() {
+    throw new Error('Any subclass of Service must implement the "pullMetadata" method');
+  }
 }
