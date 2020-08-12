@@ -16,41 +16,42 @@ exports.setup = function(options, seedLink) {
   seed = seedLink;
 };
 
-const REPORT_ID = 'WISH_Export_Surveys';
+const reportId = 'WISH_Export_Surveys';
 
-const OLD_DASHBOARD_GROUP_CODE = 'WISH_Export_Surveys';
+const oldDashboardGroupCode = 'WISH_Export_Surveys';
+const newDashboardGroupCode = 'WISH_Restricted_Export_Surveys';
 
-const NEW_DASHBOARD_GROUP = {
+const newDashboardGroup = {
   organisationLevel: 'Country',
   userGroup: 'Fiji Restricted Data',
   organisationUnitCode: 'FJ',
-  dashboardReports: `{ ${REPORT_ID} }`,
+  dashboardReports: `{ ${reportId} }`,
   name: 'WISH Fiji Restricted Downloads',
-  code: 'WISH_Restricted_Export_Surveys',
+  code: newDashboardGroupCode,
   projectCodes: '{wish}',
 };
 
 exports.up = async function(db) {
-  await insertObject(db, 'dashboardGroup', NEW_DASHBOARD_GROUP);
+  await insertObject(db, 'dashboardGroup', newDashboardGroup);
   return db.runSql(`
     UPDATE
       "dashboardGroup"
     SET
-      "dashboardReports" = array_remove("dashboardReports", '${REPORT_ID}')
+      "dashboardReports" = array_remove("dashboardReports", '${reportId}')
     WHERE
-      "code" ='${OLD_DASHBOARD_GROUP_CODE}';
+      "code" ='${oldDashboardGroupCode}';
   `);
 };
 
 exports.down = async function(db) {
-  await db.runSql(`DELETE FROM "dashboardGroup" WHERE code = '${NEW_DASHBOARD_GROUP.code}';`);
+  await db.runSql(`DELETE FROM "dashboardGroup" WHERE code = '${newDashboardGroup.code}';`);
   await db.runSql(`
     UPDATE
       "dashboardGroup"
     SET
-      "dashboardReports" = "dashboardReports" || '{ ${REPORT_ID} }'
+      "dashboardReports" = "dashboardReports" || '{ ${reportId} }'
     WHERE
-      "code" = '${OLD_DASHBOARD_GROUP_CODE}';
+      "code" = '${oldDashboardGroupCode}';
   `);
 };
 
