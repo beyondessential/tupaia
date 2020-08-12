@@ -7,12 +7,13 @@
     "build": "babel src --out-dir dist --ignore 'src/__tests__/**' --extensions '.ts' --config-file '../../babel.config.json'",
     "lint": "tsc; eslint . --ext .ts",
     "lint:fix": "yarn lint --fix",
-    "test": "jest --passWithNoTests",
+    "test": "jest",
     "test:coverage": "jest --coverage",
     "test:watch": "jest --watch"
   },
   "dependencies": {
     "@tupaia/aggregator": "1.0.0",
-    "@tupaia/utils": "1.0.0"
+    "@tupaia/data-broker": "1.0.0",
+    "@tupaia/database": "1.0.0"
   }
 }

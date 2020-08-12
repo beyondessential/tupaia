@@ -3,8 +3,10 @@
     "allowUnreachableCode": false,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
+    "module": "CommonJS",
     "noEmit": true,
     "strict": true,
+    "target": "ES6",
     "types": ["node", "jest"]
   }
 }
