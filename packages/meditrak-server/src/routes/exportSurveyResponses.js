@@ -142,7 +142,9 @@ export async function exportSurveyResponses(req, res) {
         survey => survey.country_ids.length === 0 || survey.country_ids.includes(countryId),
       );
     }
-
+    if (!surveys || surveys.length < 1) {
+      throw new ValidationError('Survey not found. Please check permissions');
+    }
     const sortAndLimitSurveyResponses =
       latest === 'true' ? { sort: ['end_time DESC'], limit: 1 } : {};
 

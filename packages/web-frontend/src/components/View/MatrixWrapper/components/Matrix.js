@@ -345,7 +345,7 @@ export class Matrix extends PureComponent {
 
     return rootRows
       .map(({ description, category, categoryId, rowInfo, ...cellData }, index) => {
-        const rowKey = `${description}_${index}`;
+        const rowKey = parent ? `${parent}_${description}_${index}` : `${description}_${index}`;
         const isRowHighlighted = rowKey === highlightedRow;
 
         if (category) {
