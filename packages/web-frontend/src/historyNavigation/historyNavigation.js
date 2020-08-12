@@ -30,12 +30,10 @@ export function attemptPushHistory(pathname, searchParams = {}) {
 
   const oldSearch = location.search.replace('?', ''); // remove the ? for comparisons
 
-  // Prevent duplicate pushes.
   if (isLocationEqual(location, { pathname, search })) {
     if (pathname !== location.pathname || search !== oldSearch) {
       // We have a url that is functionally equivalent but different in string representation.
-      // This could could be switching the prefix (project), so let's assume
-      // that the updated version is "more correct" and update the history without a push.
+      // Let's assume that the updated version is "more correct" and update the history without a push.
       history.replace({ pathname, search });
     }
     return false;
