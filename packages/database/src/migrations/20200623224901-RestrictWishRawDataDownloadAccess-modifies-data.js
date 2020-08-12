@@ -16,10 +16,15 @@ exports.setup = function(options, seedLink) {
   seed = seedLink;
 };
 
+// move this report from old dashboardGroup to newly created dashboardGroup 
 const reportId = 'WISH_Export_Surveys';
 
 const oldDashboardGroupCode = 'WISH_Export_Surveys';
 const newDashboardGroupCode = 'WISH_Restricted_Export_Surveys';
+
+//Rename the old dashboardGroup
+const oldDashboardGroupName = 'Fiji Data Downloads';
+const newDashboardGroupName = ' WISH Fiji data downloads';
 
 const newDashboardGroup = {
   organisationLevel: 'Country',
@@ -37,7 +42,8 @@ exports.up = async function(db) {
     UPDATE
       "dashboardGroup"
     SET
-      "dashboardReports" = array_remove("dashboardReports", '${reportId}')
+      "dashboardReports" = array_remove("dashboardReports", '${reportId}'),
+      "name" = '${newDashboardGroupName}'
     WHERE
       "code" ='${oldDashboardGroupCode}';
   `);
@@ -49,7 +55,8 @@ exports.down = async function(db) {
     UPDATE
       "dashboardGroup"
     SET
-      "dashboardReports" = "dashboardReports" || '{ ${reportId} }'
+      "dashboardReports" = "dashboardReports" || '{ ${reportId} }',
+      "name" = '${oldDashboardGroupName}'
     WHERE
       "code" = '${oldDashboardGroupCode}';
   `);
