@@ -7,6 +7,7 @@
 
 import { createBrowserHistory } from 'history';
 
+import { updateHistoryLocation } from '../actions';
 import {
   decodeLocation,
   createLocation,
@@ -71,26 +72,6 @@ export function createUrlString(params) {
 }
 
 /**
- * Returns a new location with a component of the url set to the specified value
- * @param {Object} baseLocation The existing location
- * @param {String} component A member of URL_COMPONENTS
- * @param {String} value The value to set it to
- */
-export const setLocationComponent = (baseLocation, component, value) => {
-  const previousComponents = decodeLocation(baseLocation);
-  const params = { ...previousComponents, [component]: value };
-
-  return createLocation(params);
-};
-
-/**
- * Returns a location which represents the root.
- */
-export const clearLocation = () => {
-  return createLocation({});
-};
-
-/**
  * Gets a component of the url
  * @param {object} location An object with a pathname and search component
  * @param {String} component A member of URL_COMPONENTS
@@ -99,4 +80,23 @@ export const getLocationComponentValue = (location, component) => {
   const components = decodeLocation(location);
   const value = components[component];
   return value === '' ? undefined : value;
+};
+
+export const setLocationComponent = (store, component, value) => {
+  const { dispatch } = store;
+  const { routing } = store.getState();
+
+  const previousComponents = decodeLocation(routing);
+  const params = { ...previousComponents, [component]: value };
+
+  const newLocation = createLocation(params);
+
+  dispatch(updateHistoryLocation(newLocation));
+};
+
+export const clearLocation = store => {
+  const { dispatch } = store;
+  const newLocation = createLocation({});
+
+  dispatch(updateHistoryLocation(newLocation));
 };

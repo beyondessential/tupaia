@@ -20,7 +20,7 @@ import {
   GO_HOME,
   updateHistoryLocation,
 } from '../actions';
-import { setLocationComponent, clearLocation, attemptPushHistory } from './historyNavigation';
+import { attemptPushHistory, setLocationComponent, clearLocation } from './historyNavigation';
 import { URL_COMPONENTS } from './constants';
 
 export const reactToInitialState = () => {
@@ -31,30 +31,30 @@ export const historyMiddleware = store => next => action => {
   switch (action.type) {
     // Actions that modify the path
     case SELECT_PROJECT:
-      dispatchLocationUpdate(store, URL_COMPONENTS.PROJECT, action.projectCode);
+      setLocationComponent(store, URL_COMPONENTS.PROJECT, action.projectCode);
       break;
     case CHANGE_ORG_UNIT:
-      dispatchLocationUpdate(store, URL_COMPONENTS.ORG_UNIT, action.organisationUnitCode);
+      setLocationComponent(store, URL_COMPONENTS.ORG_UNIT, action.organisationUnitCode);
       break;
     case CHANGE_DASHBOARD_GROUP:
-      dispatchLocationUpdate(store, URL_COMPONENTS.DASHBOARD, action.name);
+      setLocationComponent(store, URL_COMPONENTS.DASHBOARD, action.name);
       break;
     case GO_HOME:
-      dispatchClearLocation(store);
+      clearLocation(store);
       break;
 
     // Actions that modify search params
     case OPEN_ENLARGED_DIALOG:
-      dispatchLocationUpdate(store, URL_COMPONENTS.REPORT, action.viewContent.viewId);
+      setLocationComponent(store, URL_COMPONENTS.REPORT, action.viewContent.viewId);
       break;
     case CLOSE_ENLARGED_DIALOG:
-      dispatchLocationUpdate(store, URL_COMPONENTS.REPORT, null);
+      setLocationComponent(store, URL_COMPONENTS.REPORT, null);
       break;
     case CHANGE_MEASURE:
-      dispatchLocationUpdate(store, URL_COMPONENTS.MEASURE, action.measureId);
+      setLocationComponent(store, URL_COMPONENTS.MEASURE, action.measureId);
       break;
     case CLEAR_MEASURE:
-      dispatchLocationUpdate(store, URL_COMPONENTS.MEASURE, null);
+      setLocationComponent(store, URL_COMPONENTS.MEASURE, null);
       break;
     default:
   }
@@ -81,17 +81,4 @@ export const initHistoryDispatcher = store => {
     const { pathname, search } = store.getState().routing;
     attemptPushHistory(pathname, search);
   });
-};
-
-const dispatchLocationUpdate = (store, component, value) => {
-  const { dispatch } = store;
-  const { routing } = store.getState();
-
-  const newLocation = setLocationComponent(routing, component, value);
-  dispatch(updateHistoryLocation(newLocation));
-};
-
-const dispatchClearLocation = store => {
-  const { dispatch } = store;
-  dispatch(updateHistoryLocation(clearLocation()));
 };
