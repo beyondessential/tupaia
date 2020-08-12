@@ -4,76 +4,43 @@
  */
 import React from 'react';
 import { connect } from 'react-redux';
-import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import MuiListItem from '@material-ui/core/ListItem';
-import { Link as RouterLink } from 'react-router-dom';
-import MuiListItemIcon from '@material-ui/core/ListItemIcon';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import MuiListItemText from '@material-ui/core/ListItemText';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import Avatar from '@material-ui/core/Avatar';
-import { LightProfileButton } from '@tupaia/ui-components';
-import { getUserFullName } from './selectors';
+import { ProfileButton as BaseProfileButton, ProfileButtonItem } from '@tupaia/ui-components';
 import { logout } from './actions';
+import { getUser } from './selectors';
 
-const StyledListItem = styled(MuiListItem)`
-  padding-right: 3rem;
-`;
+const ProfileLinksComponent = ({ onLogout }) => (
+  <>
+    <ProfileButtonItem to="/profile">Edit Profile</ProfileButtonItem>
+    <ProfileButtonItem button onClick={onLogout}>
+      Logout
+    </ProfileButtonItem>
+  </>
+);
 
-const ListItemLink = props => <StyledListItem button component={RouterLink} {...props} />;
-
-const ProfileLinks = ({ onLogout }) => {
-  const handleClickLogout = () => {
-    onLogout();
-  };
-
-  return (
-    <>
-      <ListItemLink to="/profile">
-        <MuiListItemIcon>
-          <AccountCircleIcon />
-        </MuiListItemIcon>
-        <MuiListItemText primary="Profile" />
-      </ListItemLink>
-      <StyledListItem button onClick={handleClickLogout}>
-        <MuiListItemIcon>
-          <ExitToAppIcon />
-        </MuiListItemIcon>
-        <MuiListItemText primary="Logout" />
-      </StyledListItem>
-    </>
-  );
-};
-
-ProfileLinks.propTypes = {
+ProfileLinksComponent.propTypes = {
   onLogout: PropTypes.func.isRequired,
 };
 
-const ProfileButtonComponent = ({ onLogout, userName }) => {
-  const firstLetter = userName.substring(0, 1);
+const ProfileLinks = connect(null, dispatch => ({
+  onLogout: () => dispatch(logout()),
+}))(ProfileLinksComponent);
 
-  return (
-    <LightProfileButton
-      startIcon={<Avatar>{firstLetter}</Avatar>}
-      listItems={<ProfileLinks onLogout={onLogout} />}
-    >
-      {userName}
-    </LightProfileButton>
-  );
-};
+const ProfileButtonComponent = ({ user }) => (
+  <BaseProfileButton user={user} MenuOptions={ProfileLinks} />
+);
 
 ProfileButtonComponent.propTypes = {
-  onLogout: PropTypes.func.isRequired,
-  userName: PropTypes.string.isRequired,
+  user: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    email: PropTypes.string.isRequired,
+    firstName: PropTypes.string,
+  }).isRequired,
 };
 
-const mapStateToProps = state => ({
-  userName: getUserFullName(state),
-});
-
-const mapDispatchToProps = dispatch => ({
-  onLogout: () => dispatch(logout()),
-});
-
-export const ProfileButton = connect(mapStateToProps, mapDispatchToProps)(ProfileButtonComponent);
+export const ProfileButton = connect(
+  state => ({
+    user: getUser(state),
+  }),
+  null,
+)(ProfileButtonComponent);
