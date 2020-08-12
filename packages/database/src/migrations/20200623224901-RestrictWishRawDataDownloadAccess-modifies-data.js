@@ -24,7 +24,7 @@ const newDashboardGroupCode = 'WISH_Restricted_Export_Surveys';
 
 //Rename the old dashboardGroup
 const oldDashboardGroupName = 'Fiji Data Downloads';
-const newDashboardGroupName = ' WISH Fiji data downloads';
+const newDashboardGroupName = 'WISH Fiji Data Downloads';
 
 const newDashboardGroup = {
   organisationLevel: 'Country',
