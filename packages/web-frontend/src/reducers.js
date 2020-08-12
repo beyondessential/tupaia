@@ -811,7 +811,7 @@ function drillDown(
 }
 
 function routing(state = getInitialLocation(), action) {
-  if (action.type === 'UPDATE_URL') {
+  if (action.type === 'UPDATE_HISTORY_LOCATION') {
     return action.location;
   }
   return state;
