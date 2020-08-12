@@ -6,8 +6,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import ReactTable from 'react-table';
-import { Alert } from 'reactstrap';
+import { SmallAlert } from '@tupaia/ui-components';
 import styled from 'styled-components';
 import { IndeterminateCheckBox, AddBox } from '@material-ui/icons';
 import { Tabs, ConfirmDeleteModal } from '../widgets';
@@ -29,130 +28,12 @@ import { getTableState, getIsFetchingData } from './selectors';
 import { generateConfigForColumnType } from './columnTypes';
 import { getIsChangingDataOnServer } from '../dataChangeListener';
 import { makeSubstitutionsInString } from '../utilities';
+import { customPagination } from './customPagination';
+import { ExpansionContainer } from './ExpansionContainer';
+import { StyledReactTable } from './StyledReactTable';
 
-const BORDER_COLOR = '#dedee0';
-
-const StyledReactTable = styled(ReactTable)`
-  margin-top: 40px;
-  margin-bottom: 40px;
-  background: white;
-  border: none;
-
-  .rt-table {
-    overflow: visible; // to make box shadows visible
-  }
-
-  .rt-tbody .rt-tr .rt-td,
-  .rt-thead.-header .rt-th,
-  .rt-thead.-filters .rt-th {
-    border-right: none;
-  }
-
-  // Header
-  .rt-thead.-header {
-    border-top-left-radius: 3px;
-    border-top-right-radius: 3px;
-    border: 1px solid ${BORDER_COLOR};
-    box-shadow: none;
-
-    .rt-th {
-      font-weight: 500;
-      font-size: 16px;
-      line-height: 19px;
-      color: #414d55;
-      text-align: left;
-      padding: 6px 5px;
-    }
-  }
-
-  // Filters
-  .rt-thead.-filters {
-    background: #f1f1f1;
-    border-bottom: 1px solid ${BORDER_COLOR};
-    border-left: 1px solid ${BORDER_COLOR};
-    border-right: 1px solid ${BORDER_COLOR};
-
-    .rt-th {
-      text-align: left;
-      padding-top: 1rem;
-      padding-bottom: 1rem;
-
-      .MuiFormControl-root {
-        margin-bottom: 0;
-      }
-
-      .MuiInputBase-input {
-        height: auto;
-        border: none;
-        font-size: 1rem;
-        line-height: 1.2rem;
-        padding: 1rem;
-      }
-    }
-  }
-
-  // Body
-  .rt-tbody {
-    overflow: visible;
-    background: white;
-    border-left: 1px solid ${BORDER_COLOR};
-    border-right: 1px solid ${BORDER_COLOR};
-  }
-
-  // Row
-  .rt-tbody .rt-tr-group {
-    border-bottom: 1px solid ${BORDER_COLOR};
-  }
-
-  .rt-tr {
-    padding-left: 10px;
-    padding-right: 25px;
-    z-index: 1;
-    align-items: center;
-
-    .rt-td {
-      font-size: 15px;
-      line-height: 18px;
-      color: #6f7b82;
-      padding-top: 1rem;
-      padding-bottom: 1rem;
-    }
-
-    .rt-expandable {
-      position: relative;
-      top: 2px;
-    }
-  }
-`;
-
-const ExpansionContainer = styled.div`
-  position: relative;
-  padding: 0 20px 20px;
-
-  .ReactTable {
-    margin-top: 12px;
-    margin-bottom: 12px;
-  }
-
-  .rt-thead.-header {
-    border-top: none;
-    border-left: none;
-    border-right: none;
-  }
-
-  .rt-tr {
-    padding-right: 5px;
-  }
-
-  &:after {
-    position: absolute;
-    top: -72px;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    content: '';
-    box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
-  }
+const StyledAlert = styled(SmallAlert)`
+  margin-top: 30px;
 `;
 
 const IndeterminateCheckboxIcon = styled(IndeterminateCheckBox)`
@@ -242,6 +123,7 @@ class DataFetchingTableComponent extends React.Component {
         ExpanderComponent={({ isExpanded }) =>
           isExpanded ? <AddBox color="primary" /> : <IndeterminateCheckboxIcon />
         }
+        getPaginationProps={customPagination}
         SubComponent={
           expansionTabs &&
           (({ original: rowData, index }) => {
@@ -279,7 +161,11 @@ class DataFetchingTableComponent extends React.Component {
     const { errorMessage } = this.props;
     return (
       <>
-        {errorMessage && <Alert color="danger">{errorMessage}</Alert>}
+        {errorMessage && (
+          <StyledAlert severity="error" variant="standard">
+            {errorMessage}
+          </StyledAlert>
+        )}
         {this.renderReactTable()}
         {this.renderConfirmModal()}
       </>
