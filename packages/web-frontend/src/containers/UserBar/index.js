@@ -29,6 +29,7 @@ import {
   DIALOG_PAGE_RESET_PASSWORD,
   DIALOG_PAGE_REQUEST_COUNTRY_ACCESS,
   DIALOG_PAGE_VERIFICATION_PAGE,
+  DIALOG_PAGE_ONE_TIME_LOGIN,
 } from '../../actions';
 import { LoginForm } from '../LoginForm';
 import { EmailVerification, EmailVerifyNag } from '../EmailVerification';
@@ -38,7 +39,8 @@ import { ChangePasswordForm } from '../ChangePasswordForm';
 import { RequestCountryAccessForm } from '../RequestCountryAccessForm';
 import UserMenu from '../UserMenu';
 import { LANDING } from '../OverlayDiv/constants';
-import { USER_BAR_STYLES, DARK_BLUE, WHITE } from '../../styles';
+import { USER_BAR_STYLES, DARK_BLUE, ERROR, FORM_BLUE, WHITE } from '../../styles';
+import { OneTimeLoginForm } from '../ResetPasswordOneTimeLoginForm';
 import { LightThemeProvider } from '../../styles/LightThemeProvider';
 
 export class UserBar extends Component {
@@ -47,6 +49,9 @@ export class UserBar extends Component {
 
     switch (dialogPage) {
       case DIALOG_PAGE_LOGIN:
+        return 'Log in';
+
+      case DIALOG_PAGE_ONE_TIME_LOGIN:
         return 'Log in';
 
       case DIALOG_PAGE_REQUEST_RESET_PASSWORD:
@@ -80,6 +85,7 @@ export class UserBar extends Component {
       case DIALOG_PAGE_REQUEST_RESET_PASSWORD:
       case DIALOG_PAGE_RESET_PASSWORD:
       case DIALOG_PAGE_REQUEST_COUNTRY_ACCESS:
+      case DIALOG_PAGE_ONE_TIME_LOGIN:
         return 480;
       default:
         return 730;
@@ -106,7 +112,7 @@ export class UserBar extends Component {
   }
 
   renderDialogContent() {
-    const { dialogPage, onOpenUserPage, onCloseUserDialog } = this.props;
+    const { dialogPage, onOpenUserPage, onCloseUserDialog, onOpenLandingPage } = this.props;
 
     switch (dialogPage) {
       case DIALOG_PAGE_LOGIN:
@@ -114,6 +120,13 @@ export class UserBar extends Component {
           <LoginForm
             onClickSignup={() => onOpenUserPage(DIALOG_PAGE_SIGNUP)}
             onClickResetPassword={() => onOpenUserPage(DIALOG_PAGE_REQUEST_RESET_PASSWORD)}
+          />
+        );
+
+      case DIALOG_PAGE_ONE_TIME_LOGIN:
+        return (
+          <OneTimeLoginForm
+            onNavigateToRequestPasswordReset={() => { onCloseUserDialog(); onOpenLandingPage(); }}
           />
         );
 
@@ -177,6 +190,7 @@ UserBar.propTypes = {
   isDialogVisible: PropTypes.bool.isRequired,
   dialogPage: PropTypes.oneOf([
     DIALOG_PAGE_LOGIN,
+    DIALOG_PAGE_ONE_TIME_LOGIN,
     DIALOG_PAGE_SIGNUP,
     DIALOG_PAGE_CHANGE_PASSWORD,
     DIALOG_PAGE_REQUEST_RESET_PASSWORD,
