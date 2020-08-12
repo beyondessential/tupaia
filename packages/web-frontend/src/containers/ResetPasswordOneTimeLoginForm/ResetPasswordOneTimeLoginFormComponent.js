@@ -7,9 +7,9 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import { PrimaryButton } from '../../components/Buttons';
 import { Form } from '../Form';
-import styled from 'styled-components';
 
 const FullWidth = styled.div`
   text-align: left;
@@ -17,13 +17,12 @@ const FullWidth = styled.div`
 `;
 
 export const ResetPasswordOneTimeLoginFormComponent = ({
-    isRequestingLogin,
-    onAttemptOneTimeLogin,
-    oneTimeLoginFailedMessage,
-    passwordResetToken,
-    onNavigateToRequestPasswordReset,
-  }) => {
-
+  isRequestingLogin,
+  onAttemptOneTimeLogin,
+  oneTimeLoginFailedMessage,
+  passwordResetToken,
+  onNavigateToRequestPasswordReset,
+}) => {
   return (
     <>
       <Form
@@ -43,12 +42,25 @@ export const ResetPasswordOneTimeLoginFormComponent = ({
           </>
         )}
       />
-      { oneTimeLoginFailedMessage &&
-        <p style={{textAlign: 'center'}}>Please <a href="#" onClick={e => { e.preventDefault(); onNavigateToRequestPasswordReset(); }}>
-          request a new password reset link</a></p>
-      }
+      {oneTimeLoginFailedMessage && (
+        <p style={{ textAlign: 'center' }}>
+          {
+            // eslint complains (correctly) that this isn't a real link, it can be changed after #770 implemented
+            /* eslint-disable */
+          }
+          Please <a href="#" onClick={e => { e.preventDefault(); onNavigateToRequestPasswordReset(); }}>request a
+          new password reset link</a>
+          {
+            /* eslint-enable */
+          }
+        </p>
+      )}
     </>
   );
+};
+
+ResetPasswordOneTimeLoginFormComponent.defaultProps = {
+  oneTimeLoginFailedMessage: null,
 };
 
 ResetPasswordOneTimeLoginFormComponent.propTypes = {

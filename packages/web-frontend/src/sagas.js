@@ -95,8 +95,6 @@ import {
   ATTEMPT_RESET_TOKEN_LOGIN,
   fetchResetTokenLoginError,
   fetchResetTokenLoginSuccess,
-  SET_PASSWORD_RESET_TOKEN,
-  DIALOG_PAGE_ONE_TIME_LOGIN,
   openUserPage,
   FETCH_RESET_TOKEN_LOGIN_SUCCESS,
   DIALOG_PAGE_RESET_PASSWORD,
@@ -358,7 +356,6 @@ function* attemptTokenLogin(action) {
     yield put(findLoggedIn(false, true)); //default to email verified for one time login to prevent a nag screen
 
     yield put(fetchResetTokenLoginSuccess());
-
   } catch (error) {
     yield put(error.errorFunction(error));
   }
@@ -369,13 +366,13 @@ function* watchAttemptTokenLogin() {
 }
 
 function* openResetPasswordDialog() {
-  yield put(openUserPage(DIALOG_PAGE_RESET_PASSWORD))
+  yield put(openUserPage(DIALOG_PAGE_RESET_PASSWORD));
 }
 
 function* watchFetchResetTokenLoginSuccess() {
   // After #770 is done, this chaining would be better suited to something like a 'redirectTo' after login argument
   // which would take you to the url of this dialog page. For now, we need to call an action to display it
-  yield takeLatest(FETCH_RESET_TOKEN_LOGIN_SUCCESS, openResetPasswordDialog)
+  yield takeLatest(FETCH_RESET_TOKEN_LOGIN_SUCCESS, openResetPasswordDialog);
 }
 
 /**
@@ -925,28 +922,24 @@ function* exportChart(action) {
     projectCode,
   });
 
-  const fetchOptions = Object.assign(
-    {},
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        exportUrl,
-        viewId,
-        projectCode,
-        dashboardGroupId,
-        projectCode,
-        organisationUnitCode,
-        organisationUnitName,
-        selectedFormat,
-        exportFileName,
-        chartType,
-        extraConfig,
-      }),
+  const fetchOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
     },
-  );
+    body: JSON.stringify({
+      exportUrl,
+      viewId,
+      dashboardGroupId,
+      projectCode,
+      organisationUnitCode,
+      organisationUnitName,
+      selectedFormat,
+      exportFileName,
+      chartType,
+      extraConfig,
+    }),
+  };
 
   const requestContext = {
     alwaysUseSuppliedErrorFunction: true,

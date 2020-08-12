@@ -21,7 +21,6 @@ import { createBrowserHistory } from 'history';
 import queryString from 'query-string';
 
 import {
-  DIALOG_PAGE_RESET_PASSWORD,
   changeOrgUnit,
   changeMeasure,
   changeDashboardGroup,
@@ -30,7 +29,8 @@ import {
   setPasswordResetToken,
   setVerifyEmailToken,
   openUserPage,
-  findLoggedIn, DIALOG_PAGE_ONE_TIME_LOGIN,
+  findLoggedIn,
+  DIALOG_PAGE_ONE_TIME_LOGIN,
 } from '../actions';
 
 import { gaPageView } from '.';

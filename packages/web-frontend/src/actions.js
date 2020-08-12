@@ -16,7 +16,6 @@
  */
 
 import { initialOrgUnit } from './defaults';
-import { getSiblingItems, storeSiblingItems } from './utils';
 
 export const FETCH_INITIAL_DATA = 'FETCH_INITIAL_DATA';
 export const ATTEMPT_CHANGE_PASSWORD = 'ATTEMPT_CHANGE_PASSWORD';
@@ -236,7 +235,7 @@ export function fetchUserLoginError(errors) {
 export function attemptResetTokenLogin(passwordResetToken) {
   return {
     type: ATTEMPT_RESET_TOKEN_LOGIN,
-    passwordResetToken: passwordResetToken
+    passwordResetToken: passwordResetToken,
   };
 }
 

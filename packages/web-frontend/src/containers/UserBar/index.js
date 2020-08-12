@@ -126,7 +126,10 @@ export class UserBar extends Component {
       case DIALOG_PAGE_ONE_TIME_LOGIN:
         return (
           <OneTimeLoginForm
-            onNavigateToRequestPasswordReset={() => { onCloseUserDialog(); onOpenLandingPage(); }}
+            onNavigateToRequestPasswordReset={() => {
+              onCloseUserDialog();
+              onOpenLandingPage();
+            }}
           />
         );
 
