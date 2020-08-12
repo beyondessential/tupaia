@@ -15,8 +15,7 @@ import {
   PATH_COMPONENTS,
   SEARCH_COMPONENTS,
   SEARCH_PARAM_KEY_MAP,
-  PASSWORD_RESET_PREFIX,
-  VERIFY_EMAIL_PREFIX,
+  USER_PAGE_PREFIXES,
   URL_COMPONENTS,
 } from './constants';
 
@@ -51,26 +50,23 @@ export const decodeLocation = ({ pathname, search }) => {
     return { projectSelector: true, ...search };
   }
 
-  const pathParams = {};
   const [prefixOrProject, ...restOfPath] = cleanPathname.split('/');
+
+  if (USER_PAGE_PREFIXES.includes(prefixOrProject)) {
+    return { userPage: prefixOrProject, ...search };
+  }
+
   const [, ...restOfComponents] = PATH_COMPONENTS;
 
+  const pathParams = { PROJECT: prefixOrProject };
   restOfPath.forEach((value, i) => {
     pathParams[restOfComponents[i]] = value;
   });
 
-  switch (prefixOrProject) {
-    case PASSWORD_RESET_PREFIX:
-      return { userPage: prefixOrProject, ...search };
-    case VERIFY_EMAIL_PREFIX:
-      return { userPage: prefixOrProject, ...search };
-    default:
-      return {
-        PROJECT: prefixOrProject,
-        ...pathParams,
-        ...search,
-      };
-  }
+  return {
+    ...pathParams,
+    ...search,
+  };
 };
 
 export const isLocationEqual = (a, b) => {

@@ -18,6 +18,7 @@ const baseLocation = {
     REPORT: 'report1',
   },
 };
+
 describe('historyNavigation', () => {
   describe('setLocationComponent', () => {
     it('should be able to set project', () => {
@@ -26,24 +27,28 @@ describe('historyNavigation', () => {
         search: baseLocation.search,
       });
     });
+
     it('should be able to set org unit', () => {
       expect(setLocationComponent(baseLocation, URL_COMPONENTS.ORG_UNIT, 'ORG_UNIT_2')).toEqual({
         pathname: '/PROJECT_1/ORG_UNIT_2/GROUP_1',
         search: baseLocation.search,
       });
     });
+
     it('should be able to set dashboard', () => {
       expect(setLocationComponent(baseLocation, URL_COMPONENTS.DASHBOARD, 'GROUP_2')).toEqual({
         pathname: '/PROJECT_1/ORG_UNIT_1/GROUP_2',
         search: baseLocation.search,
       });
     });
+
     it('should be able to set measure', () => {
       expect(setLocationComponent(baseLocation, URL_COMPONENTS.MEASURE, 'overlay2')).toEqual({
         pathname: baseLocation.pathname,
         search: { ...baseLocation.search, MEASURE: 'overlay2' },
       });
     });
+
     it('should be able to set expanded report', () => {
       expect(setLocationComponent(baseLocation, URL_COMPONENTS.REPORT, 'report2')).toEqual({
         pathname: baseLocation.pathname,
@@ -51,6 +56,7 @@ describe('historyNavigation', () => {
       });
     });
   });
+
   describe('getLocationComponentValue', () => {
     it('should be able to set project', () => {
       expect(getLocationComponentValue(baseLocation, URL_COMPONENTS.PROJECT)).toEqual('PROJECT_1');
