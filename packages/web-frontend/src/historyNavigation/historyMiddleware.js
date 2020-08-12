@@ -1,6 +1,6 @@
 /**
  * Tupaia Web
- * Copyright (c) 2019 Beyond Essential Systems Pty Ltd.
+ * Copyright (c) 2020 Beyond Essential Systems Pty Ltd.
  * This source code is licensed under the AGPL-3.0 license
  * found in the LICENSE file in the root directory of this source tree.
  */
@@ -20,9 +20,7 @@ import {
   GO_HOME,
   doUpdateUrl,
 } from '../actions';
-
 import { setUrlComponent, clearUrl, attemptPushHistory } from './historyNavigation';
-
 import { URL_COMPONENTS } from './constants';
 
 export const reactToInitialState = () => {
@@ -78,6 +76,8 @@ export const historyMiddleware = store => next => action => {
   return next(action);
 };
 
+// This function and the corresponding architecture are from this blog post:
+// https://read.reduxbook.com/markdown/part2/09-routing.html
 export const initHistoryDispatcher = store => {
   // Update Redux if we navigated via browser's back/forward
   // most browsers restore scroll position automatically
