@@ -7,9 +7,9 @@ var type;
 var seed;
 
 /**
-  * We receive the dbmigrate dependency from dbmigrate initially.
-  * This enables us to not have to rely on NODE_PATH.
-  */
+ * We receive the dbmigrate dependency from dbmigrate initially.
+ * This enables us to not have to rely on NODE_PATH.
+ */
 exports.setup = function(options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
@@ -24,12 +24,11 @@ const NEW_DASHBOARD_GROUP = {
   organisationLevel: 'Country',
   userGroup: 'Fiji Restricted Data',
   organisationUnitCode: 'FJ',
-  dashboardReports: `{ ${REPORT_ID} }`,    
-  name: 'Fiji Restricted Data',
-  code: 'WISH_Restricted_Export_Surveys',                
-  projectCodes: '{wish}',        
+  dashboardReports: `{ ${REPORT_ID} }`,
+  name: 'WISH Fiji Restricted Downloads',
+  code: 'WISH_Restricted_Export_Surveys',
+  projectCodes: '{wish}',
 };
-
 
 exports.up = async function(db) {
   await insertObject(db, 'dashboardGroup', NEW_DASHBOARD_GROUP);
@@ -41,7 +40,6 @@ exports.up = async function(db) {
     WHERE
       "code" ='${OLD_DASHBOARD_GROUP_CODE}';
   `);
-  
 };
 
 exports.down = async function(db) {
@@ -57,5 +55,5 @@ exports.down = async function(db) {
 };
 
 exports._meta = {
-  "version": 1
+  version: 1,
 };
