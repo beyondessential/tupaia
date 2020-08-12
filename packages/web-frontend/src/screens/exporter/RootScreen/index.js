@@ -37,7 +37,7 @@ const {
   disasterStartDate,
   disasterEndDate,
   projectCode,
-} = {}; //decodeUrl(initialLocation.pathname, initialLocation.search);
+} = {}; //decodeLocation(initialLocation);
 
 const getCurrentDateString = () => {
   const date = moment().tz(timeZone);

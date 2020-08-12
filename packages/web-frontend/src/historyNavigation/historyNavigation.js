@@ -6,33 +6,22 @@
  */
 
 import { createBrowserHistory } from 'history';
-import { URL_COMPONENTS } from './constants';
 
 import {
-  decodeUrl,
-  createUrl,
+  decodeLocation,
+  createLocation,
   translateSearchToInternal,
   translateSearchToExternal,
   isLocationEqual,
 } from './utils';
 
-// Functions dealing with history directly
+/* All code dealing with history directly */
 const history = createBrowserHistory();
 
 // Capture on app init.
 const initialLocation = history.location;
 
-export const getInitialLocation = () => ({
-  pathname: initialLocation.pathname,
-  search: translateSearchToInternal(initialLocation.search),
-});
-
 const getRawCurrentLocation = () => history.location;
-
-export const getInitialUrlComponents = () => {
-  const { pathname, search } = getInitialLocation();
-  return decodeUrl(pathname, search);
-};
 
 export function attemptPushHistory(pathname, searchParams = {}) {
   const location = getRawCurrentLocation();
@@ -59,48 +48,55 @@ export function attemptPushHistory(pathname, searchParams = {}) {
 
   return true;
 }
+/* End of code dealing with history directly */
+
+export const getInitialLocation = () => ({
+  pathname: initialLocation.pathname,
+  search: translateSearchToInternal(initialLocation.search),
+});
+
+// TODO: Use this in future PR
+export const getInitialLocationComponents = () => {
+  return decodeLocation(getInitialLocation());
+};
 
 /**
  * Returns a string representing the url given certain parameters
  * @param {String} params An object containing the parameters to set in the url
  */
 export function createUrlString(params) {
-  const { pathname, search } = createUrl(params);
+  const { pathname, search } = createLocation(params);
   const query = translateSearchToExternal(search);
   return `${pathname}?${query}`;
 }
 
 /**
  * Returns a new location with a component of the url set to the specified value
+ * @param {Object} baseLocation The existing location
  * @param {String} component A member of URL_COMPONENTS
  * @param {String} value The value to set it to
- * @param {Object} baseLocation The existing location
  */
-export const setUrlComponent = (component, value, baseLocation) => {
-  const previousComponents = decodeUrl(baseLocation.pathname, baseLocation.search);
+export const setLocationComponent = (baseLocation, component, value) => {
+  const previousComponents = decodeLocation(baseLocation);
+  const params = { ...previousComponents, [component]: value };
 
-  const params = {};
-  Object.values(URL_COMPONENTS).forEach(param => {
-    params[param] = param === component ? value : previousComponents[param];
-  });
-
-  return createUrl(params);
+  return createLocation(params);
 };
 
 /**
  * Returns a location which represents the root.
  */
-export const clearUrl = () => {
-  return createUrl({});
+export const clearLocation = () => {
+  return createLocation({});
 };
 
 /**
  * Gets a component of the url
- * @param {String} component A member of URL_COMPONENTS
  * @param {object} location An object with a pathname and search component
+ * @param {String} component A member of URL_COMPONENTS
  */
-export const getUrlComponent = (component, location) => {
-  const components = decodeUrl(location.pathname, location.search);
+export const getLocationComponentValue = (location, component) => {
+  const components = decodeLocation(location);
   const value = components[component];
   return value === '' ? undefined : value;
 };

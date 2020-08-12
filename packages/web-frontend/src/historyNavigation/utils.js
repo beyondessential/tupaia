@@ -20,31 +20,32 @@ import {
   URL_COMPONENTS,
 } from './constants';
 
-export const createUrl = params => {
+export const createLocation = params => {
   const { userPage } = params;
   if (userPage) {
     // TODO: Userpage logic to come in future PR
     return { pathname: `/${userPage}` };
   }
 
-  const urlComponents = PATH_COMPONENTS.map(component => params[component]);
+  const pathComponents = PATH_COMPONENTS.map(component => params[component]);
+
+  // remove falsy last elements
+  // e.g. [null, 'hi', 'hey', undefined, ''] => [null, 'hi', 'hey']
+  while (pathComponents.length > 0 && !pathComponents[pathComponents.length - 1]) {
+    pathComponents.pop();
+  }
+  const pathname = `/${pathComponents.map(component => component || 'loading').join('/')}`;
+
   const searchComponents = {};
   SEARCH_COMPONENTS.forEach(component => {
     const value = params[component];
     if (value !== undefined) searchComponents[component] = value;
   });
 
-  // remove falsy last elements
-  // e.g. [null, 'hi', 'hey', undefined, ''] => [null, 'hi', 'hey']
-  while (urlComponents.length > 0 && !urlComponents[urlComponents.length - 1]) {
-    urlComponents.pop();
-  }
-
-  const pathname = `/${urlComponents.map(component => component || 'loading').join('/')}`;
   return { pathname, search: searchComponents };
 };
 
-export const decodeUrl = (pathname, search) => {
+export const decodeLocation = ({ pathname, search }) => {
   const cleanPathname = pathname[0] === '/' ? pathname.slice(1) : pathname;
   if (cleanPathname === '') {
     return { projectSelector: true, ...search };
@@ -73,8 +74,8 @@ export const decodeUrl = (pathname, search) => {
 };
 
 export const isLocationEqual = (a, b) => {
-  const { [URL_COMPONENTS.MEASURE]: prevMeasureId, ...prev } = decodeUrl(a.pathname, a.search);
-  const { [URL_COMPONENTS.MEASURE]: nextMeasureId, ...next } = decodeUrl(b.pathname, b.search);
+  const { [URL_COMPONENTS.MEASURE]: prevMeasureId, ...prev } = decodeLocation(a);
+  const { [URL_COMPONENTS.MEASURE]: nextMeasureId, ...next } = decodeLocation(b);
 
   if (!Object.keys(prev).every(k => prev[k] === next[k])) {
     return false;
@@ -92,16 +93,16 @@ export const translateSearchToInternal = search => {
   const externalSearchParams = queryString.parse(search);
   const invertedMap = invert(SEARCH_PARAM_KEY_MAP);
 
-  return replaceKeysAndRemoveNull(externalSearchParams, invertedMap);
+  return replaceKeysAndRemoveEmpty(externalSearchParams, invertedMap);
 };
 
 export const translateSearchToExternal = search => {
-  const externalSearchParams = replaceKeysAndRemoveNull(search, SEARCH_PARAM_KEY_MAP);
+  const externalSearchParams = replaceKeysAndRemoveEmpty(search, SEARCH_PARAM_KEY_MAP);
 
   return queryString.stringify(externalSearchParams);
 };
 
-const replaceKeysAndRemoveNull = (obj, mapping) => {
+const replaceKeysAndRemoveEmpty = (obj, mapping) => {
   const newObj = {};
   Object.entries(obj).forEach(([key, val]) => {
     if (val !== null && val !== undefined) newObj[mapping[key]] = val;

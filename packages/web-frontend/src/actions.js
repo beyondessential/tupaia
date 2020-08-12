@@ -1173,6 +1173,6 @@ export function updateEnlargedDialogError(errorMessage) {
   };
 }
 
-export function doUpdateUrl(location) {
+export function updateHistoryLocation(location) {
   return { type: UPDATE_URL, location };
 }

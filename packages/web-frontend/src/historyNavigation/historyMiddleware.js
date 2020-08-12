@@ -18,9 +18,9 @@ import {
   CHANGE_MEASURE,
   CLEAR_MEASURE,
   GO_HOME,
-  doUpdateUrl,
+  updateHistoryLocation,
 } from '../actions';
-import { setUrlComponent, clearUrl, attemptPushHistory } from './historyNavigation';
+import { setLocationComponent, clearLocation, attemptPushHistory } from './historyNavigation';
 import { URL_COMPONENTS } from './constants';
 
 export const reactToInitialState = () => {
@@ -28,47 +28,33 @@ export const reactToInitialState = () => {
 };
 
 export const historyMiddleware = store => next => action => {
-  const { dispatch } = store;
-  let newLocation = store.getState().routing;
   switch (action.type) {
     // Actions that modify the path
     case SELECT_PROJECT:
-      newLocation = setUrlComponent(URL_COMPONENTS.PROJECT, action.projectCode, newLocation);
-      dispatch(doUpdateUrl(newLocation));
+      dispatchLocationUpdate(store, URL_COMPONENTS.PROJECT, action.projectCode);
       break;
     case CHANGE_ORG_UNIT:
-      newLocation = setUrlComponent(
-        URL_COMPONENTS.ORG_UNIT,
-        action.organisationUnitCode,
-        newLocation,
-      );
-      dispatch(doUpdateUrl(newLocation));
+      dispatchLocationUpdate(store, URL_COMPONENTS.ORG_UNIT, action.organisationUnitCode);
       break;
     case CHANGE_DASHBOARD_GROUP:
-      newLocation = setUrlComponent(URL_COMPONENTS.DASHBOARD, action.name, newLocation);
-      dispatch(doUpdateUrl(newLocation));
+      dispatchLocationUpdate(store, URL_COMPONENTS.DASHBOARD, action.name);
       break;
     case GO_HOME:
-      newLocation = clearUrl();
-      dispatch(doUpdateUrl(newLocation));
+      dispatchClearLocation(store);
       break;
 
     // Actions that modify search params
     case OPEN_ENLARGED_DIALOG:
-      newLocation = setUrlComponent(URL_COMPONENTS.REPORT, action.viewContent.viewId, newLocation);
-      dispatch(doUpdateUrl(newLocation));
+      dispatchLocationUpdate(store, URL_COMPONENTS.REPORT, action.viewContent.viewId);
       break;
     case CLOSE_ENLARGED_DIALOG:
-      newLocation = setUrlComponent(URL_COMPONENTS.REPORT, null, newLocation);
-      dispatch(doUpdateUrl(newLocation));
+      dispatchLocationUpdate(store, URL_COMPONENTS.REPORT, null);
       break;
     case CHANGE_MEASURE:
-      newLocation = setUrlComponent(URL_COMPONENTS.MEASURE, action.measureId, newLocation);
-      dispatch(doUpdateUrl(newLocation));
+      dispatchLocationUpdate(store, URL_COMPONENTS.MEASURE, action.measureId);
       break;
     case CLEAR_MEASURE:
-      newLocation = setUrlComponent(URL_COMPONENTS.MEASURE, null, newLocation);
-      dispatch(doUpdateUrl(newLocation));
+      dispatchLocationUpdate(store, URL_COMPONENTS.MEASURE, null);
       break;
     default:
   }
@@ -83,9 +69,9 @@ export const initHistoryDispatcher = store => {
   // most browsers restore scroll position automatically
   // as long as we make content scrolling happen on document.body
   window.addEventListener('popstate', () => {
-    // here `doUpdateUrl` is an action creator that
-    // takes the new url and stores it in Redux.
-    store.dispatch(doUpdateUrl(window.location));
+    // here `updateHistoryLocation` is an action creator that
+    // takes the new location and stores it in Redux.
+    store.dispatch(updateHistoryLocation(window.location));
   });
 
   // The other part of the two-way binding is updating the displayed
@@ -95,4 +81,17 @@ export const initHistoryDispatcher = store => {
     const { pathname, search } = store.getState().routing;
     attemptPushHistory(pathname, search);
   });
+};
+
+const dispatchLocationUpdate = (store, component, value) => {
+  const { dispatch } = store;
+  const { routing } = store.getState();
+
+  const newLocation = setLocationComponent(routing, component, value);
+  dispatch(updateHistoryLocation(newLocation));
+};
+
+const dispatchClearLocation = store => {
+  const { dispatch } = store;
+  dispatch(updateHistoryLocation(clearLocation()));
 };

@@ -5,7 +5,10 @@
  * found in the LICENSE file in the root directory of this source tree.
  */
 
-import { setUrlComponent, getUrlComponent } from '../../historyNavigation/historyNavigation';
+import {
+  setLocationComponent,
+  getLocationComponentValue,
+} from '../../historyNavigation/historyNavigation';
 import { URL_COMPONENTS } from '../../historyNavigation/constants';
 
 const baseLocation = {
@@ -16,42 +19,42 @@ const baseLocation = {
   },
 };
 describe('historyNavigation', () => {
-  describe('setUrlComponent', () => {
+  describe('setLocationComponent', () => {
     it('should be able to set project', () => {
-      expect(setUrlComponent(URL_COMPONENTS.PROJECT, 'PROJECT_2', baseLocation)).toEqual({
+      expect(setLocationComponent(baseLocation, URL_COMPONENTS.PROJECT, 'PROJECT_2')).toEqual({
         pathname: '/PROJECT_2/ORG_UNIT_1/GROUP_1',
         search: baseLocation.search,
       });
     });
     it('should be able to set org unit', () => {
-      expect(setUrlComponent(URL_COMPONENTS.ORG_UNIT, 'ORG_UNIT_2', baseLocation)).toEqual({
+      expect(setLocationComponent(baseLocation, URL_COMPONENTS.ORG_UNIT, 'ORG_UNIT_2')).toEqual({
         pathname: '/PROJECT_1/ORG_UNIT_2/GROUP_1',
         search: baseLocation.search,
       });
     });
     it('should be able to set dashboard', () => {
-      expect(setUrlComponent(URL_COMPONENTS.DASHBOARD, 'GROUP_2', baseLocation)).toEqual({
+      expect(setLocationComponent(baseLocation, URL_COMPONENTS.DASHBOARD, 'GROUP_2')).toEqual({
         pathname: '/PROJECT_1/ORG_UNIT_1/GROUP_2',
         search: baseLocation.search,
       });
     });
     it('should be able to set measure', () => {
-      expect(setUrlComponent(URL_COMPONENTS.MEASURE, 'overlay2', baseLocation)).toEqual({
+      expect(setLocationComponent(baseLocation, URL_COMPONENTS.MEASURE, 'overlay2')).toEqual({
         pathname: baseLocation.pathname,
         search: { ...baseLocation.search, MEASURE: 'overlay2' },
       });
     });
     it('should be able to set expanded report', () => {
-      expect(setUrlComponent(URL_COMPONENTS.REPORT, 'report2', baseLocation)).toEqual({
+      expect(setLocationComponent(baseLocation, URL_COMPONENTS.REPORT, 'report2')).toEqual({
         pathname: baseLocation.pathname,
         search: { ...baseLocation.search, REPORT: 'report2' },
       });
     });
   });
-  describe('getUrlComponent', () => {
+  describe('getLocationComponentValue', () => {
     // QUESTION: Handled in selectors test?
     it('should be able to set project', () => {
-      expect(getUrlComponent(URL_COMPONENTS.PROJECT, baseLocation)).toEqual('PROJECT_1');
+      expect(getLocationComponentValue(baseLocation, URL_COMPONENTS.PROJECT)).toEqual('PROJECT_1');
     });
   });
 });
