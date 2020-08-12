@@ -30,6 +30,7 @@ export default class extends RouteHandler {
       organisationLevel,
       entity,
       query.projectCode,
+      hierarchyId,
     );
 
     // No dashboards available

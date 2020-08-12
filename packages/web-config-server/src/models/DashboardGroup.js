@@ -24,7 +24,7 @@ export class DashboardGroup extends BaseModel {
     return this.fetchDashboardGroups(
       entity,
       hierarchyId,
-      this.buildDashboardGroupQueryParams(projectCode, { organisationLevel, hierarchyId }),
+      this.buildDashboardGroupQueryParams(projectCode, { organisationLevel }),
     );
   }
 
