@@ -127,6 +127,7 @@ export class UserBar extends Component {
         return (
           <OneTimeLoginForm
             onNavigateToRequestPasswordReset={() => {
+              // This prop can be changed to a simple link/removed after url based routing implemented in #770
               onCloseUserDialog();
               onOpenLandingPage();
             }}
