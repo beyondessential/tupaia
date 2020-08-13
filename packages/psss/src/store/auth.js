@@ -59,13 +59,13 @@ export const getActiveEntity = state => {
   const user = getCurrentUser(state);
   const accessPolicy = new AccessPolicy(user.accessPolicy);
   // Todo: Update with the correct access policy check
-  const worldPermission = accessPolicy.allows('World', 'Admin');
+  const worldPermission = accessPolicy.allows('DL', 'Public');
   if (worldPermission) {
     return 'World';
   }
   // console.log('access policy', user.accessPolicy);
   // Todo: Return the correct activeCountry
-  return 'American Samoa';
+  return 'AS';
 };
 
 export const checkIsRegionalUser = state => {
