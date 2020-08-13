@@ -42,7 +42,7 @@ export const exportChartToExcel = async (
   const formattedData = formatMatrixDataForExcel(data, extraConfig.export);
 
   // Export out to an excel file
-  const sheet = xlsx.utils.json_to_sheet(formattedData);
+  const sheet = xlsx.utils.aoa_to_sheet(formattedData);
   const sheetName = `Export on ${moment().format('Do MMM YY')}`;
   const workbook = { SheetNames: [sheetName], Sheets: { [sheetName]: sheet } };
   if (!(await fs.existsSync(EXPORT_DIRECTORY))) {
