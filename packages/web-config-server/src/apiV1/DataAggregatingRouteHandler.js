@@ -26,12 +26,11 @@ export class DataAggregatingRouteHandler extends RouteHandler {
     // units of that type (otherwise we just use the nearest org unit descendants)
 
     const entityType = dataSourceEntityType || this.query.dataSourceEntityType;
-    const hierarchyId = (await Project.findOne({ code: this.query.projectCode }))
-      .entity_hierarchy_id;
+    const hierarchyId = await this.fetchHierarchyId();
 
     let dataSourceEntities = [];
     if (entityType) {
-      const ancestor = await entity.getAncestorOfType(entityType);
+      const ancestor = await entity.getAncestorOfType(entityType, hierarchyId);
       if (ancestor && ancestor.type !== entity.type) {
         dataSourceEntities = [ancestor];
       } else {
