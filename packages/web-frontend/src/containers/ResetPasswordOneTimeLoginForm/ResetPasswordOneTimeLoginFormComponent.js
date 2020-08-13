@@ -18,6 +18,17 @@ const FullWidth = styled.div`
   grid-column: 1 / -1;
 `;
 
+const FormErrorMessage = styled.div`
+  background: #fcf8e2;
+  border: 1px solid #faecca;
+  box-sizing: border-box;
+  border-radius: 3px;
+  padding: 15px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #8b6e37;
+`;
+
 let Container = styled.div``;
 
 if (isMobile()) {
@@ -38,33 +49,36 @@ export const ResetPasswordOneTimeLoginFormComponent = ({
       <Form
         isLoading={isRequestingLogin}
         onSubmit={() => onAttemptOneTimeLogin(passwordResetToken)}
-        formError={oneTimeLoginFailedMessage}
         render={submitForm => (
           <>
+            {oneTimeLoginFailedMessage && (
+              <FullWidth>
+                <FormErrorMessage>
+                  <span>The email link has expired or already been used.</span>
+                  <br />
+                  {
+                    // eslint complains (correctly) that this isn't a real link, it can be changed after #770 implemented
+                    /* eslint-disable */
+                  }
+                  <a href="#request-password-reset" onClick={e => { e.preventDefault(); onNavigateToRequestPasswordReset(); }}>Click here to request a
+                    new password reset link</a>
+                  {
+                    /* eslint-enable */
+                  }
+                </FormErrorMessage>
+              </FullWidth>
+            )}
             <FullWidth>
-              <p>Continue to finish resetting your password</p>
+              <p>Click the button below to set a new password.</p>
             </FullWidth>
             <FullWidth>
-              <PrimaryButton variant="contained" onClick={submitForm}>
-                Continue
+              <PrimaryButton fullWidth variant="contained" onClick={submitForm}>
+                Reset Password Now
               </PrimaryButton>
             </FullWidth>
           </>
         )}
       />
-      {oneTimeLoginFailedMessage && (
-        <p style={{ textAlign: 'center' }}>
-          {
-            // eslint complains (correctly) that this isn't a real link, it can be changed after #770 implemented
-            /* eslint-disable */
-          }
-          Please <a href="#" onClick={e => { e.preventDefault(); onNavigateToRequestPasswordReset(); }}>request a
-          new password reset link</a>
-          {
-            /* eslint-enable */
-          }
-        </p>
-      )}
     </Container>
   );
 };

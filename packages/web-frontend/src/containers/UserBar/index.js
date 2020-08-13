@@ -52,7 +52,7 @@ export class UserBar extends Component {
         return 'Log in';
 
       case DIALOG_PAGE_ONE_TIME_LOGIN:
-        return 'Log in';
+        return 'Reset Password';
 
       case DIALOG_PAGE_REQUEST_RESET_PASSWORD:
         return 'Reset password';
