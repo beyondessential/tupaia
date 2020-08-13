@@ -41,45 +41,43 @@ export const ResetPasswordOneTimeLoginFormComponent = ({
   oneTimeLoginFailedMessage,
   passwordResetToken,
   onNavigateToRequestPasswordReset,
-}) => {
-  return (
-    <Container>
-      <Form
-        isLoading={isRequestingLogin}
-        onSubmit={() => onAttemptOneTimeLogin(passwordResetToken)}
-        render={submitForm => (
-          <>
-            {oneTimeLoginFailedMessage && (
-              <FullWidth>
-                <FormErrorMessage>
-                  <span>The email link has expired or already been used.</span>
-                  <br />
-                  {
-                    // eslint complains (correctly) that this isn't a real link, it can be changed after #770 implemented
-                    /* eslint-disable */
-                  }
-                  <a href="#request-password-reset" onClick={e => { e.preventDefault(); onNavigateToRequestPasswordReset(); }}>Click here to request a
-                    new password reset link</a>
-                  {
-                    /* eslint-enable */
-                  }
-                </FormErrorMessage>
-              </FullWidth>
-            )}
+}) => (
+  <Container>
+    <Form
+      isLoading={isRequestingLogin}
+      onSubmit={() => onAttemptOneTimeLogin(passwordResetToken)}
+      render={submitForm => (
+        <>
+          {oneTimeLoginFailedMessage && (
             <FullWidth>
-              <p>Click the button below to set a new password.</p>
+              <FormErrorMessage>
+                <span>The email link has expired or already been used.</span>
+                <br />
+                {
+                  // eslint complains (correctly) that this isn't a real link, it can be changed after #770 implemented
+                  /* eslint-disable */
+                }
+                <a href="#request-password-reset" onClick={e => { e.preventDefault(); onNavigateToRequestPasswordReset(); }}>Click here to request a
+                  new password reset link</a>
+                {
+                  /* eslint-enable */
+                }
+              </FormErrorMessage>
             </FullWidth>
-            <FullWidth>
-              <PrimaryButton fullWidth variant="contained" onClick={submitForm}>
-                Reset Password Now
-              </PrimaryButton>
-            </FullWidth>
-          </>
-        )}
-      />
-    </Container>
-  );
-};
+          )}
+          <FullWidth>
+            <p>Click the button below to set a new password.</p>
+          </FullWidth>
+          <FullWidth>
+            <PrimaryButton fullWidth variant="contained" onClick={submitForm}>
+              Reset Password Now
+            </PrimaryButton>
+          </FullWidth>
+        </>
+      )}
+    />
+  </Container>
+);
 
 ResetPasswordOneTimeLoginFormComponent.defaultProps = {
   oneTimeLoginFailedMessage: null,
