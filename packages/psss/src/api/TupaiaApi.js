@@ -7,6 +7,7 @@
 // https://docs.cypress.io/guides/guides/network-requests.html#Testing-Strategies
 import 'whatwg-fetch';
 import { stringifyQuery } from '@tupaia/utils';
+import { AccessPolicy } from '@tupaia/access-policy';
 import { getAccessToken, getRefreshToken, loginSuccess, loginError } from '../store';
 
 const [CLIENT_BASIC_AUTH_HEADER, PSSS_API_URL] = [
@@ -53,6 +54,13 @@ export class TupaiaApi {
     const { accessToken, refreshToken, user } = authenticationDetails;
     if (!accessToken || !refreshToken || !user) {
       throw new Error('Invalid response from auth server');
+    }
+    // Todo: Update with correct access policy check
+    const hasAdminPanelAccess = new AccessPolicy(user.accessPolicy).allowsSome(null, 'Public');
+    if (!hasAdminPanelAccess) {
+      throw new Error(
+        'Your permissions for Tupaia do not allow you to view the Pacific Syndromic Surveillance System',
+      );
     }
     return authenticationDetails;
   }

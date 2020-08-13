@@ -58,11 +58,13 @@ export const checkIsLoggedIn = state => !!getCurrentUser(state) && checkIsSucces
 export const getActiveEntity = state => {
   const user = getCurrentUser(state);
   const accessPolicy = new AccessPolicy(user.accessPolicy);
+  // Todo: Update with the correct access policy check
   const worldPermission = accessPolicy.allows('World', 'Admin');
   if (worldPermission) {
     return 'World';
   }
-  console.log('access policy', user.accessPolicy);
+  // console.log('access policy', user.accessPolicy);
+  // Todo: Return the correct activeCountry
   return 'American Samoa';
 };
 
