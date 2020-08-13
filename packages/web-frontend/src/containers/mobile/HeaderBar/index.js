@@ -28,8 +28,11 @@ import {
   DIALOG_PAGE_REQUEST_RESET_PASSWORD,
   DIALOG_PAGE_RESET_PASSWORD,
   DIALOG_PAGE_REQUEST_COUNTRY_ACCESS,
+  DIALOG_PAGE_ONE_TIME_LOGIN,
+  closeUserPage,
 } from '../../../actions';
 import { SignupOverlay } from '../SignupOverlay';
+import { OneTimeLoginForm } from '../../ResetPasswordOneTimeLoginForm';
 import { LightThemeProvider } from '../../../styles/LightThemeProvider';
 
 const Container = styled.div`
@@ -55,6 +58,7 @@ const HeaderBar = React.memo(props => {
     searchIsExpanded,
     onToggleUserMenuExpand,
     userMenuIsExpanded,
+    isOneTimeLoginExpanded,
     changePasswordIsExpanded,
     resetPasswordIsExpanded,
     requestCountryAccessIsExpanded,
@@ -88,6 +92,13 @@ const HeaderBar = React.memo(props => {
       {isLoginExpanded && !isUserLoggedIn && (
         <LoginForm openSignupOverlay={handleOpenSignupOverlay} />
       )}
+      {isOneTimeLoginExpanded && !isLoginExpanded && (
+        <OneTimeLoginForm
+          onNavigateToRequestPasswordReset={() => {
+            toggleMenuExpanded(true);
+          }}
+        />
+      )}
       {isSignupOpen && <SignupOverlay closeSignupOverlay={handleCloseSignupOverlay} />}
       {searchIsExpanded && <SearchOverlay />}
       {userMenuIsExpanded && <UserMenuOverlay />}
@@ -119,6 +130,7 @@ const HeaderBar = React.memo(props => {
 HeaderBar.propTypes = {
   searchIsExpanded: PropTypes.bool,
   userMenuIsExpanded: PropTypes.bool,
+  isOneTimeLoginExpanded: PropTypes.bool,
   changePasswordIsExpanded: PropTypes.bool,
   resetPasswordIsExpanded: PropTypes.bool,
   requestCountryAccessIsExpanded: PropTypes.bool,
@@ -134,6 +146,7 @@ HeaderBar.propTypes = {
 HeaderBar.defaultProps = {
   searchIsExpanded: false,
   userMenuIsExpanded: false,
+  isOneTimeLoginExpanded: false,
   changePasswordIsExpanded: false,
   resetPasswordIsExpanded: false,
   requestCountryAccessIsExpanded: false,
@@ -156,6 +169,7 @@ const mapStateToProps = state => {
   return {
     searchIsExpanded: isExpanded,
     userMenuIsExpanded: isDialogVisible && dialogPage === DIALOG_PAGE_USER_MENU,
+    isOneTimeLoginExpanded: isDialogVisible && dialogPage === DIALOG_PAGE_ONE_TIME_LOGIN,
     changePasswordIsExpanded:
       (isDialogVisible && dialogPage === DIALOG_PAGE_CHANGE_PASSWORD) ||
       dialogPage === DIALOG_PAGE_RESET_PASSWORD,
@@ -173,6 +187,7 @@ const mapDispatchToProps = dispatch => ({
   onToggleSearchExpand: () => delayMobileTapCallback(() => dispatch(toggleSearchExpand())),
   onToggleUserMenuExpand: () =>
     delayMobileTapCallback(() => dispatch(openUserPage(DIALOG_PAGE_USER_MENU))),
+  onUserMenuCollapse: () => dispatch(closeUserPage()),
   onRefreshCurrentUser: () => dispatch(findLoggedIn()),
   dispatch,
 });

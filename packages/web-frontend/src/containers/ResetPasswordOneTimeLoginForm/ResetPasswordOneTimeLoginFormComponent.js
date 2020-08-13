@@ -10,11 +10,21 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { PrimaryButton } from '../../components/Buttons';
 import { Form } from '../Form';
+import { WHITE } from '../../styles';
+import { isMobile } from '../../utils';
 
 const FullWidth = styled.div`
   text-align: left;
   grid-column: 1 / -1;
 `;
+
+let Container = styled.div``;
+
+if (isMobile()) {
+  Container = styled.div`
+    color: ${WHITE};
+  `;
+}
 
 export const ResetPasswordOneTimeLoginFormComponent = ({
   isRequestingLogin,
@@ -24,7 +34,7 @@ export const ResetPasswordOneTimeLoginFormComponent = ({
   onNavigateToRequestPasswordReset,
 }) => {
   return (
-    <>
+    <Container>
       <Form
         isLoading={isRequestingLogin}
         onSubmit={() => onAttemptOneTimeLogin(passwordResetToken)}
@@ -55,7 +65,7 @@ export const ResetPasswordOneTimeLoginFormComponent = ({
           }
         </p>
       )}
-    </>
+    </Container>
   );
 };
 
