@@ -9,13 +9,14 @@ import { AlertsOutbreaksView } from '../views/AlertsOutbreaksView';
 import { CountriesReportsView } from '../views/CountriesReportsView';
 import { CountryReportsView } from '../views/CountryReportsView';
 import { PrivateRoute } from './PrivateRoute';
+import { checkIsAuthorisedForCountry } from '../store';
 
 export const PageRoutes = React.memo(() => (
   <Switch>
     <PrivateRoute exact path="/">
       <CountriesReportsView />
     </PrivateRoute>
-    <PrivateRoute path="/weekly-reports/:countryName">
+    <PrivateRoute path="/weekly-reports/:countryName" accessPolicy={checkIsAuthorisedForCountry}>
       <CountryReportsView />
     </PrivateRoute>
     <PrivateRoute path="/alerts">

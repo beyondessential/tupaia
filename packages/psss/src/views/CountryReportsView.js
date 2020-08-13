@@ -11,7 +11,7 @@ import { TabsToolbar, CalendarToday } from '@tupaia/ui-components';
 import { Header, HeaderAvatarTitle, WeeklyReportsExportModal } from '../components';
 import { CountryRoutes } from '../routes/CountryRoutes';
 import { countryFlagImage } from '../utils';
-import { checkIsRegionalUser, getActiveEntity } from '../store';
+import { checkIsRegionalUser } from '../store';
 
 const links = [
   {
@@ -26,12 +26,8 @@ const links = [
   },
 ];
 
-export const CountryReportsViewComponent = ({ isRegionalUser, activeEntity }) => {
+export const CountryReportsViewComponent = ({ isRegionalUser }) => {
   const { countryName } = useParams();
-
-  if (!isRegionalUser && activeEntity.toLowerCase() !== countryName) {
-    return 'You do not have access to view this page';
-  }
 
   let back = null;
 
@@ -57,12 +53,10 @@ export const CountryReportsViewComponent = ({ isRegionalUser, activeEntity }) =>
 
 CountryReportsViewComponent.propTypes = {
   isRegionalUser: PropTypes.bool.isRequired,
-  activeEntity: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = state => ({
   isRegionalUser: checkIsRegionalUser(state),
-  activeEntity: getActiveEntity(state),
 });
 
 export const CountryReportsView = connect(mapStateToProps)(CountryReportsViewComponent);
