@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { AccessPolicy } from '@tupaia/access-policy';
 import { createReducer } from '../utils/createReducer';
 
 // actions
@@ -53,6 +54,38 @@ export const checkIsPending = ({ auth }) => auth.status === 'pending';
 export const checkIsSuccess = ({ auth }) => auth.status === 'success';
 export const checkIsError = ({ auth }) => auth.status === 'error';
 export const checkIsLoggedIn = state => !!getCurrentUser(state) && checkIsSuccess(state);
+
+const getActiveEntityByUser = user => {
+  const accessPolicy = new AccessPolicy(user.accessPolicy);
+  // Todo: Update with the correct access policy check
+  const worldPermission = accessPolicy.allows('DL', 'Admin');
+  if (worldPermission) {
+    return 'World';
+  }
+  // console.log('access policy', user.accessPolicy);
+  // Todo: Return the correct activeCountry
+  return 'AS';
+};
+
+export const getActiveEntity = state => {
+  const user = getCurrentUser(state);
+  return getActiveEntityByUser(user);
+};
+
+export const checkIsRegionalUser = state => {
+  const activeEntity = getActiveEntity(state);
+  return activeEntity === 'World';
+};
+
+export const checkIsAuthorisedForCountry = (match, user) => {
+  const activeEntity = getActiveEntityByUser(user);
+
+  if (activeEntity === 'World') {
+    return true;
+  }
+
+  return activeEntity.toLowerCase() === match.params.countryName;
+};
 
 // reducer
 const defaultState = {

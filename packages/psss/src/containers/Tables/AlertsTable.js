@@ -4,6 +4,7 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import {
   ConnectedTable,
   SyndromeCell,
@@ -11,15 +12,20 @@ import {
   CountryNameButtonCreator,
   WeekAndDateCell,
 } from '../../components';
+import { checkIsRegionalUser, getActiveEntity } from '../../store';
 
-const createColumns = handlePanelOpen => [
-  {
-    title: 'Country',
-    key: 'name',
-    width: '28%',
-    align: 'left',
-    CellComponent: CountryNameButtonCreator(handlePanelOpen),
-  },
+const createColumns = (isRegionalUser, handlePanelOpen) => [
+  ...(isRegionalUser
+    ? [
+        {
+          title: 'Country',
+          key: 'name',
+          width: '28%',
+          align: 'left',
+          CellComponent: CountryNameButtonCreator(handlePanelOpen),
+        },
+      ]
+    : []),
   {
     title: 'Syndrome',
     key: 'syndrome',
@@ -53,10 +59,22 @@ const createColumns = handlePanelOpen => [
   },
 ];
 
-export const AlertsTable = React.memo(({ handlePanelOpen }) => (
-  <ConnectedTable endpoint="alerts" columns={createColumns(handlePanelOpen)} />
-));
+export const AlertsTableComponent = React.memo(
+  ({ handlePanelOpen, isRegionalUser, activeEntity }) => (
+    // Todo: user activeEntity to filter alerts
+    <ConnectedTable endpoint="alerts" columns={createColumns(isRegionalUser, handlePanelOpen)} />
+  ),
+);
 
-AlertsTable.propTypes = {
+AlertsTableComponent.propTypes = {
   handlePanelOpen: PropTypes.func.isRequired,
+  isRegionalUser: PropTypes.bool.isRequired,
+  activeEntity: PropTypes.string.isRequired,
 };
+
+const mapStateToProps = state => ({
+  isRegionalUser: checkIsRegionalUser(state),
+  activeEntity: getActiveEntity(state),
+});
+
+export const AlertsTable = connect(mapStateToProps)(AlertsTableComponent);
