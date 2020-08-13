@@ -313,6 +313,7 @@ const BASE_MEASURE_BUILDER_CONFIG = {
       measureBuilder: 'sumLatestPerOrgUnit',
       measureBuilderConfig: {
         dataElementCodes: null,
+        requireDataForAllElements: true,
         entityAggregation: {
           dataSourceEntityType: 'school',
         },
@@ -322,6 +323,7 @@ const BASE_MEASURE_BUILDER_CONFIG = {
       measureBuilder: 'sumLatestPerOrgUnit',
       measureBuilderConfig: {
         dataElementCodes: null,
+        requireDataForAllElements: true,
         entityAggregation: {
           dataSourceEntityType: 'school',
         },
