@@ -21,9 +21,9 @@ export const ensurePermissionCheck = async (req, res, next) => {
   const originalResSend = res.send;
 
   //Assign generic checkPermission method to req
-  //Every endpoint will have to call req.checkPermissions() to authorize the resources.
-  req.checkPermissions = async permissionChecker => {
-    await checkPermissions(req, permissionChecker); //req should have all the info to checkPermission including accessPolicy
+  //Every endpoint will have to call req.checkPermissions(permissionsChecker) to authorize the resources.
+  req.checkPermissions = async permissionsChecker => {
+    await checkPermissions(req, permissionsChecker); //req should have all the info to checkPermission including accessPolicy
   };
 
   //when permissionChecked is flagged, reset send method
