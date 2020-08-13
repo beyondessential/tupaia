@@ -56,8 +56,8 @@ export class TupaiaApi {
       throw new Error('Invalid response from auth server');
     }
     // Todo: Update with correct access policy check
-    const hasAdminPanelAccess = new AccessPolicy(user.accessPolicy).allowsSome(null, 'Public');
-    if (!hasAdminPanelAccess) {
+    const hasPsssAccess = new AccessPolicy(user.accessPolicy).allowsSome(null, 'Public');
+    if (!hasPsssAccess) {
       throw new Error(
         'Your permissions for Tupaia do not allow you to view the Pacific Syndromic Surveillance System',
       );
