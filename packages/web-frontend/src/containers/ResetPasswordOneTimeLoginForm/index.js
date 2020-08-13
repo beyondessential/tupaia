@@ -18,16 +18,14 @@ import { connect } from 'react-redux';
 import { ResetPasswordOneTimeLoginFormComponent } from './ResetPasswordOneTimeLoginFormComponent';
 import { attemptResetTokenLogin } from '../../actions';
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = state => {
   const { passwordResetToken } = state.changePassword;
   const { oneTimeLoginFailedMessage, isRequestingLogin } = state.authentication;
-  const { onNavigateToRequestPasswordReset } = ownProps;
 
   return {
     passwordResetToken,
     oneTimeLoginFailedMessage,
     isRequestingLogin,
-    onNavigateToRequestPasswordReset,
   };
 };
 
