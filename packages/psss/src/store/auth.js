@@ -3,6 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { AccessPolicy } from '@tupaia/access-policy';
 import { createReducer } from '../utils/createReducer';
 
 // actions
@@ -53,6 +54,22 @@ export const checkIsPending = ({ auth }) => auth.status === 'pending';
 export const checkIsSuccess = ({ auth }) => auth.status === 'success';
 export const checkIsError = ({ auth }) => auth.status === 'error';
 export const checkIsLoggedIn = state => !!getCurrentUser(state) && checkIsSuccess(state);
+
+export const getActiveEntity = state => {
+  const user = getCurrentUser(state);
+  const accessPolicy = new AccessPolicy(user.accessPolicy);
+  const worldPermission = accessPolicy.allows('World', 'Admin');
+  if (worldPermission) {
+    return 'World';
+  }
+  console.log('access policy', user.accessPolicy);
+  return 'American Samoa';
+};
+
+export const checkIsRegionalUser = state => {
+  const activeEntity = getActiveEntity(state);
+  return activeEntity === 'World';
+};
 
 // reducer
 const defaultState = {
