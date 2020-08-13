@@ -12,7 +12,7 @@ import {
   CountryNameButtonCreator,
   WeekAndDateCell,
 } from '../../components';
-import { checkIsRegionalUser } from '../../store';
+import { checkIsRegionalUser, getActiveEntity } from '../../store';
 
 const createColumns = (isRegionalUser, handlePanelOpen) => [
   ...(isRegionalUser
@@ -59,17 +59,22 @@ const createColumns = (isRegionalUser, handlePanelOpen) => [
   },
 ];
 
-export const AlertsTableComponent = React.memo(({ handlePanelOpen, isRegionalUser }) => (
-  <ConnectedTable endpoint="alerts" columns={createColumns(isRegionalUser, handlePanelOpen)} />
-));
+export const AlertsTableComponent = React.memo(
+  ({ handlePanelOpen, isRegionalUser, activeEntity }) => (
+    // Todo: user activeEntity to filter alerts
+    <ConnectedTable endpoint="alerts" columns={createColumns(isRegionalUser, handlePanelOpen)} />
+  ),
+);
 
 AlertsTableComponent.propTypes = {
   handlePanelOpen: PropTypes.func.isRequired,
   isRegionalUser: PropTypes.bool.isRequired,
+  activeEntity: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = state => ({
   isRegionalUser: checkIsRegionalUser(state),
+  activeEntity: getActiveEntity(state),
 });
 
 export const AlertsTable = connect(mapStateToProps)(AlertsTableComponent);
