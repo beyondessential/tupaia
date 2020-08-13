@@ -15,7 +15,10 @@ import { ModalContentProvider } from '../widgets';
 
 const getFieldSourceToEdit = field => {
   const { source, editConfig = {} } = field;
-  return editConfig.optionsEndpoint ? `${source.split('.')[0]}_id` : source;
+  if (editConfig.optionsEndpoint) {
+    return editConfig.sourceKey || `${source.split('.')[0]}_id`;
+  }
+  return source;
 };
 
 export const EditModalComponent = ({
