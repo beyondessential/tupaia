@@ -54,11 +54,8 @@ class SumPerSeriesDataBuilder extends DataBuilder {
         dataByClass[classKey][seriesKey] = sum;
       });
     });
-    const { dataClassKeyOrder = [] } = this.config;
-    const data =
-      dataClassKeyOrder.length > 0
-        ? dataClassKeyOrder.map(dataClassKey => dataByClass[dataClassKey])
-        : this.sortDataByName(Object.values(dataByClass));
+
+    const data = this.sortDataByName(Object.values(dataByClass));
     return { data, period };
   }
 

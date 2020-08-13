@@ -1,27 +1,41 @@
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 
 import { reduceToDictionary } from '@tupaia/utils';
-import { transposeMatrix, sortByColumns } from '/apiV1/utils';
+import { transposeMatrix, mergeTableDataOnKey, sortByColumns } from '/apiV1/utils';
 
 import moment from 'moment';
+import flatten from 'lodash.flatten';
 import keyBy from 'lodash.keyby';
 
 const RAW_VALUE_DATE_FORMAT = 'D-M-YYYY h:mma';
 const ROW_HEADER_KEY = 'dataElement'; // row headers live under the key 'dataElement' for historical reasons
+const expandSurveyCodes = surveys => {
+  return flatten(
+    surveys.map(survey => {
+      return survey.codes
+        ? survey.codes.map(code => ({
+            code: code,
+            name: `${code}-${survey.name}`,
+          }))
+        : survey;
+    }),
+  );
+};
 
 class RawDataValuesBuilder extends DataBuilder {
   async build() {
     const surveyCodes = this.query.surveyCodes;
-
     const { transformations: tranformationConfigs = [] } = this.config;
     const transformations = keyBy(tranformationConfigs, 'type');
 
     const ancestorMappingConfig = transformations.ancestorMapping;
 
-    const transformableData = await this.fetchResults(
-      surveyCodes.split(','),
-      ancestorMappingConfig,
-    );
+    let transformableData = await this.fetchResults(surveyCodes.split(','), ancestorMappingConfig);
+
+    if (transformations.mergeSurveys) {
+      const mergedTableName = transformations.mergeSurveys.mergedTableName;
+      transformableData = mergeTableDataOnKey(transformableData, mergedTableName);
+    }
 
     if (transformations.transposeMatrix) {
       Object.entries(transformableData).forEach(([key, value]) => {
@@ -44,7 +58,11 @@ class RawDataValuesBuilder extends DataBuilder {
   async fetchResults(surveyCodes, ancestorMappingConfig) {
     const builtData = {};
 
-    const surveyCodeToName = reduceToDictionary(this.config.surveys, 'code', 'name');
+    const surveyCodeToName = reduceToDictionary(
+      expandSurveyCodes(this.config.surveys),
+      'code',
+      'name',
+    );
 
     const { surveysConfig = {} } = this.config;
 
@@ -79,25 +97,39 @@ class RawDataValuesBuilder extends DataBuilder {
           ? await this.mapAncestorOfTypeToEvents(rawEvents, ancestorMappingConfig.ancestorType)
           : rawEvents;
 
-      const columns = this.buildColumns(mappedEvents);
+      // Optional sorting config bit of performance hacking here
+      // merge needs data sorted on mergeRowKey
+      const mergeRowKey = surveyConfig.mergeRowKey;
+      const ancestorKey = ancestorMappingConfig && ancestorMappingConfig.ancestorType;
+      const sortedEvents = await this.sortEvents(mappedEvents, {
+        mergeRowKey,
+        ancestorKey,
+      });
+
+      const sortedMappedEvents = mergeRowKey
+        ? sortedEvents.map(e => ({
+            ...e,
+            mergeCompareValue: e.dataValues[mergeRowKey],
+          }))
+        : sortedEvents;
+
+      const columns = this.buildColumns(sortedMappedEvents);
 
       const dataElementCodeToText = reduceToDictionary(dataElementsMetadata, 'code', 'text');
 
-      let rows = [];
-
-      if (columns && columns.length) {
-        const ancestorRow =
-          ancestorMappingConfig && ancestorMappingConfig.showInExport
-            ? { ancestor: ancestorMappingConfig.label }
-            : {};
-        rows = await this.buildRows(mappedEvents, dataElementCodeToText, ancestorRow);
-      }
+      const ancestorRow =
+        ancestorMappingConfig && ancestorMappingConfig.showInExport
+          ? { ancestor: ancestorMappingConfig.label }
+          : {};
+      const rows =
+        columns && columns.length
+          ? await this.buildRows(mappedEvents, dataElementCodeToText, ancestorRow)
+          : [];
 
       const data = {
         columns,
         rows,
       };
-
       const { skipHeader = true } = this.config;
 
       builtData[surveyCodeToName[surveyCode]] = {
@@ -110,17 +142,33 @@ class RawDataValuesBuilder extends DataBuilder {
     return builtData;
   }
 
+  sortEvents = async (events, sortKeys) => {
+    if (!sortKeys) return events;
+
+    // If we are merging sorting on that key takes precedence
+    // for performance of merge and avoid ancestor lookup
+    if (sortKeys.mergeRowKey) return this.sortEventsByDataValue(events, sortKeys.mergeRowKey);
+
+    // this is a performance hack for some cases fetching ancestors and sorting
+    if (sortKeys.ancestorKey) return this.sortEventsByAncestor(events);
+
+    //default unsorted
+    return events;
+  };
+
   /**
    * Build columns for each organisationUnit - period combination
    */
   buildColumns = events => {
     const builtColumnsMap = {};
 
-    events.forEach(({ event }) => {
+    events.forEach(({ event, mergeCompareValue }) => {
       //event = id of survey_response
+      //mergeCompareValue = optional dataValue to merge tables
       builtColumnsMap[event] = {
         key: event,
         title: event,
+        mergeCompareValue,
       };
     });
 
@@ -130,14 +178,14 @@ class RawDataValuesBuilder extends DataBuilder {
   /**
    * Build row values for data elements of different organisationUnit - period combination
    */
-  buildRows = async (events, dataElementCodeToText, ancestorRow = {}) => {
+  buildRows = async (events, dataElementCodeToText, ancestorRowKey = {}) => {
     const builtRows = [];
 
     const DEFAULT_DATA_KEY_TO_TEXT = {
       entityCode: 'Entity Code',
       name: 'Name',
       date: 'Date',
-      ...ancestorRow, // may be undefined, in which case we don't include the ancestor in the metadata rows
+      ...ancestorRowKey, // may be undefined, in which case we don't include the ancestor in the metadata rows
     };
 
     const dataKeyToName = {
