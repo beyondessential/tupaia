@@ -63,8 +63,16 @@ const groupByAllOrgUnitParentNames = async (events, options) => {
 const GROUP_BY_VALUE_TO_METHOD = {
   allOrgUnitNames: groupByAllOrgUnitNames,
   allOrgUnitParentNames: groupByAllOrgUnitParentNames,
+  nothing: events => {
+    return { all: events };
+  }, // used for testing
 };
 
+/**
+ * @param {array} events
+ * @param {object} groupBySpecs
+ * @returns {Promise<object>} object of groupName => eventsForGroup
+ */
 export const groupEvents = async (events, groupBySpecs = {}) => {
   const { type, options } = groupBySpecs;
   const groupByMethod = GROUP_BY_VALUE_TO_METHOD[type];
