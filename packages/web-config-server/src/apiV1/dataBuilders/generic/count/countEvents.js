@@ -5,7 +5,11 @@
 
 import { getSortByKey } from '@tupaia/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { countEventsThatSatisfyConditions, groupEvents } from '/apiV1/dataBuilders/helpers';
+import {
+  countEventsThatSatisfyConditions,
+  groupEvents,
+  getAllDataElementCodes,
+} from '/apiV1/dataBuilders/helpers';
 
 /**
  * Configuration schema
@@ -33,9 +37,17 @@ export class CountEventsBuilder extends DataBuilder {
   }
 
   async fetchResults() {
-    const dataElementCodes = Object.keys(this.config.dataValues || {});
+    const dataElementCodes = this.getDataElementCodes();
     const events = await this.fetchEvents({ useDeprecatedApi: false, dataElementCodes });
     return events;
+  }
+
+  getDataElementCodes() {
+    const { groupBy } = this.config;
+    if (groupBy) {
+      return getAllDataElementCodes(groupBy);
+    }
+    return Object.keys(this.config.dataValues || {});
   }
 
   async buildData(events) {
