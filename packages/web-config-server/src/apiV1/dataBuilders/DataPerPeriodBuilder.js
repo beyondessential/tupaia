@@ -88,6 +88,7 @@ export class DataPerPeriodBuilder extends DataBuilder {
         name: periodToDisplayString(period),
       }));
 
+      console.log(resultsForPeriod, newData);
       data.push(...newData);
     };
     await Promise.all(Object.entries(resultsByPeriod).map(processResultsForPeriod));

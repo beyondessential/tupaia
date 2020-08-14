@@ -73,7 +73,7 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
         }
         return Object.keys(config.dataValues);
       }
-      throw new Error('Not able to extract dataElementCodes from config');
+      return [];
     };
 
     const codes = {
@@ -89,8 +89,13 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
       codes.denominator = codes.denominator.concat(denominatorCodesForClass);
     });
 
+    // This ensures each bit of data is only fetched once.
+    // Both sets of results will be available when building.
+    const uniqueNumeratorCodes = new Set(codes.numerator);
+    codes.denominator.forEach(elem => uniqueNumeratorCodes.delete(elem));
+
     return {
-      numerator: [...new Set(codes.numerator)],
+      numerator: [...uniqueNumeratorCodes],
       denominator: [...new Set(codes.denominator)],
     };
   }
@@ -105,7 +110,10 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
   // eslint-disable-next-line class-methods-use-this
   getAggregationType() {
     // Can be overwritten in child class
-    return undefined;
+    return {
+      numerator: undefined,
+      denominator: undefined,
+    };
   }
 
   async fetchResults() {
@@ -120,6 +128,11 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
       {},
       numeratorAggregationType,
     );
+
+    if (denominatorCodes.length === 0) {
+      return numeratorResults;
+    }
+
     const { results: denominatorResults } = await this.fetchAnalytics(
       denominatorCodes,
       {},
