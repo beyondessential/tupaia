@@ -52,9 +52,10 @@ export const ShadedPolygon = styled(Polygon)`
  */
 class ConnectedPolygon extends Component {
   shouldComponentUpdate(nextProps) {
-    const { measureId, coordinates } = this.props;
+    const { measureId, coordinates, orgUnitMeasureData } = this.props;
     if (nextProps.measureId !== measureId) return true;
-    if (coordinates !== nextProps.coordinates) return true;
+    if (nextProps.coordinates !== coordinates) return true;
+    if (nextProps.orgUnitMeasureData !== orgUnitMeasureData) return true;
     return false;
   }
 

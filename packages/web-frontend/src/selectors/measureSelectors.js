@@ -1,3 +1,10 @@
+/**
+ * Tupaia Web
+ * Copyright (c) 2020 Beyond Essential Systems Pty Ltd.
+ * This source code is licensed under the AGPL-3.0 license
+ * found in the LICENSE file in the root directory of this source tree.
+ */
+
 import { createSelector } from 'reselect';
 import createCachedSelector from 're-reselect';
 
@@ -7,10 +14,8 @@ import {
   POLYGON_MEASURE_TYPES,
   calculateRadiusScaleFactor,
 } from '../utils/measures';
-
 import { safeGet, getOrgUnitFromCountry } from './utils';
 import {
-  selectCurrentOrgUnit,
   selectCurrentOrgUnitCode,
   selectAncestors,
   selectActiveProjectCountries,
@@ -18,7 +23,6 @@ import {
   selectAllOrgUnitsInCountry,
   selectDescendantsFromCache,
 } from './orgUnitSelectors';
-
 import { selectCurrentProjectCode } from './projectSelectors';
 
 const displayInfoCache = createCachedSelector(
@@ -53,7 +57,11 @@ export const selectCurrentMeasure = createSelector(
 );
 
 const selectDisplayLevelAncestor = createSelector(
-  [selectCurrentOrgUnit, selectCurrentOrgUnitCode, state => state.map.measureInfo.measureOptions],
+  [
+    state => selectCountryHierarchy(state, selectCurrentOrgUnitCode(state)),
+    selectCurrentOrgUnitCode,
+    state => state.map.measureInfo.measureOptions,
+  ],
   (country, currentOrganisationUnitCode, measureOptions) => {
     if (!country || !currentOrganisationUnitCode || !measureOptions) {
       return undefined;
@@ -135,7 +143,7 @@ export const selectAllMeasuresWithDisplayAndOrgUnitData = createSelector(
 
 export const selectRenderedMeasuresWithDisplayInfo = createSelector(
   [
-    selectCurrentOrgUnit,
+    state => selectCountryHierarchy(state, selectCurrentOrgUnitCode(state)),
     selectAllMeasuresWithDisplayAndOrgUnitData,
     selectDisplayLevelAncestor,
     state => state.map.measureInfo.measureOptions,

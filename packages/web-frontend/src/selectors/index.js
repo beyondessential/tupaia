@@ -1,4 +1,11 @@
 /**
+ * Tupaia Web
+ * Copyright (c) 2020 Beyond Essential Systems Pty Ltd.
+ * This source code is licensed under the AGPL-3.0 license
+ * found in the LICENSE file in the root directory of this source tree.
+ */
+
+/**
  * Selectors
  * These can be handy tools to allow for components/sagas to interact with the redux state, and fetch data from it.
  * It allows us to define usefully composed aspects of the state, so that clients are not so tightly coupled with the
@@ -8,8 +15,9 @@
 
 /**
  * Public Selectors
- * The selectors exported below are the ones consumed by components/sagas/everything else. So far it has seemed a good practice to
- * standardise all public selectors to accept the whole `state` as the first parameter. The state is easily accessible
+ * The selectors exported below are the ones consumed by components/sagas/everything else.
+ *
+ * All selectors accept the whole `state` as the first parameter. The state is easily accessible
  * from mapStateToProps in components, and via `yield select()` in sagas.
  */
 

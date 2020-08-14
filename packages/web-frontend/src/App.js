@@ -12,8 +12,9 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import { Provider } from 'react-redux';
 import configureStore from './configureStore';
-import { initHistoryDispatcher } from './utils';
 import { DARKENED_BLUE } from './styles';
+
+import { reactToInitialState, initHistoryDispatcher } from './historyNavigation';
 
 import { fetchInitialData } from './actions';
 
@@ -50,9 +51,10 @@ class App extends Component {
     const { default: RootScreen } = await importRootScreen();
     this.setState({ RootScreen });
 
-    const { dispatch: rawDispatch } = store;
-    const dispatch = action => rawDispatch({ ...action, meta: { preventHistoryUpdate: true } });
+    const { dispatch } = store;
     dispatch(fetchInitialData());
+
+    reactToInitialState(store);
   }
 
   render() {

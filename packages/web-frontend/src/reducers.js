@@ -24,6 +24,7 @@ import { isMobile } from './utils';
 import { LANDING } from './containers/OverlayDiv/constants';
 import { getUniqueViewId } from './utils/getUniqueViewId';
 import { EMAIL_VERIFIED_STATUS } from './containers/EmailVerification';
+import { getInitialLocation } from './historyNavigation';
 
 // Import Action Types
 import {
@@ -809,6 +810,13 @@ function drillDown(
   }
 }
 
+function routing(state = getInitialLocation(), action) {
+  if (action.type === 'UPDATE_HISTORY_LOCATION') {
+    return action.location;
+  }
+  return state;
+}
+
 /**
  * Reach into the dashboard config, and pull out all views from every dashboard group/permission
  * level, then return them keyed by unique view id
@@ -850,4 +858,5 @@ export default combineReducers({
   disaster,
   project,
   orgUnits,
+  routing,
 });
