@@ -66,16 +66,12 @@ export class DataPerOrgUnitBuilder extends DataBuilder {
   }
 
   async buildData(results) {
-    const { requireDataForAllElements } = this.config;
     const { dataElementCode } = this.query;
     const resultsByOrgUnit = await this.groupResultsByOrgUnitCode(results);
     const baseBuilder = this.getBaseBuilder();
 
     const processResultsForOrgUnit = async ([organisationUnitCode, result]) => {
-      if (!result) {
-        return null;
-      }
-      if (requireDataForAllElements && !this.areAllElementsInResults(result)) {
+      if (!this.validateResults(result)) {
         return null;
       }
 

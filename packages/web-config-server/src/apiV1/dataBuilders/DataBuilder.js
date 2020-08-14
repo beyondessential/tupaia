@@ -2,7 +2,6 @@
  * Tupaia Config Server
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
-import keyBy from 'lodash.keyby';
 
 import { getSortByKey, getSortByExtractedValue, getUniqueEntries } from '@tupaia/utils';
 
@@ -150,10 +149,16 @@ export class DataBuilder {
 
   areDataAvailable = data => data.some(({ value }) => value !== NO_DATA_AVAILABLE);
 
-  areAllElementsInResults = results => {
-    const { dataElementCodes } = this.config;
-    const resultItemsByElement = keyBy(results, 'dataElement');
-    return dataElementCodes.every(dataElement => resultItemsByElement[dataElement]);
+  // Returns true if the results are valid and false otherwise
+  validateResults = results => {
+    const { dataElementCodes, requireDataForAllElements } = this.config;
+    if (!results) return false;
+
+    if (requireDataForAllElements) {
+      const allDataElementsInResult = results.map(({ dataElement: de }) => de);
+      return dataElementCodes.every(dataElement => allDataElementsInResult.includes(dataElement));
+    }
+    return true;
   };
 
   areEventResults = results => !!(results[0] && results[0].event);
