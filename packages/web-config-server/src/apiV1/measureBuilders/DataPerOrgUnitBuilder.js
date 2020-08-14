@@ -66,7 +66,7 @@ export class DataPerOrgUnitBuilder extends DataBuilder {
   }
 
   async buildData(results) {
-    const { requireDataForAllElements, dataElementCodes } = this.config;
+    const { requireDataForAllElements } = this.config;
     const { dataElementCode } = this.query;
     const resultsByOrgUnit = await this.groupResultsByOrgUnitCode(results);
     const baseBuilder = this.getBaseBuilder();
@@ -75,12 +75,8 @@ export class DataPerOrgUnitBuilder extends DataBuilder {
       if (!result) {
         return null;
       }
-
-      if (requireDataForAllElements) {
-        const allDataElementsInResult = result.map(({ dataElement: de }) => de);
-        if (!dataElementCodes.every(dataElement => allDataElementsInResult.includes(dataElement))) {
-          return null;
-        }
+      if (requireDataForAllElements && !this.areAllElementsInResults(result)) {
+        return null;
       }
 
       const data = await baseBuilder.buildData(result);

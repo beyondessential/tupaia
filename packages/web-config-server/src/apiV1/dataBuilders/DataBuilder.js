@@ -2,6 +2,8 @@
  * Tupaia Config Server
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
+import keyBy from 'lodash.keyby';
+
 import { getSortByKey, getSortByExtractedValue, getUniqueEntries } from '@tupaia/utils';
 
 import { Project, Entity } from '/models';
@@ -147,6 +149,12 @@ export class DataBuilder {
   sortDataByName = data => data.sort(getSortByKey('name'));
 
   areDataAvailable = data => data.some(({ value }) => value !== NO_DATA_AVAILABLE);
+
+  areAllElementsInResults = results => {
+    const { dataElementCodes } = this.config;
+    const resultItemsByElement = keyBy(results, 'dataElement');
+    return dataElementCodes.every(dataElement => resultItemsByElement[dataElement]);
+  };
 
   areEventResults = results => !!(results[0] && results[0].event);
 }
