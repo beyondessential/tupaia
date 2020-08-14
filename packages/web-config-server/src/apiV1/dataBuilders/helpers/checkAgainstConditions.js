@@ -69,3 +69,21 @@ export const countAnalyticsThatSatisfyConditions = (analytics, conditions) => {
 
   return analytics.filter(analyticHasTargetValue).length;
 };
+
+/**
+ * @param {Object} groupedAnalytics
+ * @param {Conditions} [conditions]
+ * @returns {number}
+ */
+export const countAnalyticsGroupsThatSatisfyConditions = (groupedAnalytics, conditions) => {
+  const { dataValues: valueConditions = {} } = conditions || {};
+
+  const groupedAnalyticsHasTargetValues = analytics =>
+    Object.entries(valueConditions).every(([dataElement, condition]) => {
+      const analytic = analytics.find(({ dataElement: de }) => de === dataElement);
+
+      const { value } = analytic || {};
+      return checkValueSatisfiesCondition(value, condition);
+    });
+  return Object.values(groupedAnalytics).filter(groupedAnalyticsHasTargetValues).length;
+};

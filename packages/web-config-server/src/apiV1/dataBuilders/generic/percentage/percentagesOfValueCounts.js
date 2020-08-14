@@ -3,9 +3,14 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 import flatten from 'lodash.flatten';
+import isEqual from 'lodash.isequal';
 import groupBy from 'lodash.groupby';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { divideValues, countAnalyticsThatSatisfyConditions } from '/apiV1/dataBuilders/helpers';
+import {
+  divideValues,
+  countAnalyticsThatSatisfyConditions,
+  countAnalyticsGroupsThatSatisfyConditions,
+} from '/apiV1/dataBuilders/helpers';
 
 const ORG_UNIT_COUNT = '$orgUnitCount';
 const COMPARISON_TYPES = {
@@ -61,17 +66,33 @@ const buildFilterAnalyticsFunction = fraction => {
 
 export class PercentagesOfValueCountsBuilder extends DataBuilder {
   getDataElementCodes() {
-    const dataElementCodes = Object.values(this.config.dataClasses).reduce(
-      (codes, { numerator, denominator }) =>
-        codes.concat(
-          flatten(numerator.dataValues),
-          denominator.hasOwnProperty('dataValues') && denominator.dataValues,
-        ),
-      [],
-    );
+    const getCodesFromConfig = config => {
+      if (config.hasOwnProperty('dataValues')) {
+        if (Array.isArray(config.dataValues)) {
+          return flatten(config.dataValues);
+        }
+        return Object.keys(config.dataValues);
+      }
+      throw new Error('Not able to extract dataElementCodes from config');
+    };
 
-    //Remove duplicated data element codes if there's any
-    return [...new Set(dataElementCodes)];
+    const codes = {
+      numerator: [],
+      denominator: [],
+    };
+
+    Object.values(this.config.dataClasses).forEach(({ numerator, denominator }) => {
+      const numeratorCodesForClass = getCodesFromConfig(numerator);
+      codes.numerator = codes.numerator.concat(numeratorCodesForClass);
+
+      const denominatorCodesForClass = getCodesFromConfig(denominator);
+      codes.denominator = codes.denominator.concat(denominatorCodesForClass);
+    });
+
+    return {
+      numerator: [...new Set(codes.numerator)],
+      denominator: [...new Set(codes.denominator)],
+    };
   }
 
   async build() {
@@ -81,10 +102,41 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
     return { data: this.areDataAvailable(data) ? data : [] };
   }
 
+  // eslint-disable-next-line class-methods-use-this
+  getAggregationType() {
+    // Can be overwritten in child class
+    return undefined;
+  }
+
   async fetchResults() {
-    const dataElementCodes = this.getDataElementCodes();
-    const { results } = await this.fetchAnalytics(dataElementCodes);
-    return results;
+    const { numerator: numeratorCodes, denominator: denominatorCodes } = this.getDataElementCodes();
+    const {
+      numerator: numeratorAggregationType,
+      denominator: denominatorAggregationType,
+    } = this.getAggregationType();
+
+    const { results: numeratorResults } = await this.fetchAnalytics(
+      numeratorCodes,
+      {},
+      numeratorAggregationType,
+    );
+    const { results: denominatorResults } = await this.fetchAnalytics(
+      denominatorCodes,
+      {},
+      denominatorAggregationType,
+    );
+
+    const allResults = numeratorResults;
+
+    // Hack to make sure that there are no duplicated analytics returned to count twice.
+    // Would like to have { denominatorResults, numeratorResults }, but can't because of how DataPerPeriodBuilder works
+    denominatorResults.forEach(analytic => {
+      if (!allResults.find(otherAnalytic => isEqual(analytic, otherAnalytic))) {
+        allResults.push(analytic);
+      }
+    });
+
+    return allResults;
   }
 
   buildData(analytics) {
@@ -120,6 +172,9 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
         filterAnalyticsFunction,
         fraction.groupBy,
       );
+    } else if (fraction.groupBeforeCounting) {
+      const groupedAnalytics = groupBy(analytics, fraction.groupBy);
+      return countAnalyticsGroupsThatSatisfyConditions(groupedAnalytics, fraction);
     } else if (fraction === ORG_UNIT_COUNT) {
       return [...new Set(analytics.map(data => data.organisationUnit))].length;
     }
