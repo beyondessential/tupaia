@@ -1,0 +1,1 @@
+export { calcPerSeries } from './calcPerSeries';

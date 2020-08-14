@@ -1,6 +1,6 @@
-import { respond } from '@tupaia/utils';
-import { Entity } from '/models';
-import { PermissionsError } from '@tupaia/utils';
+import { respond, PermissionsError } from '@tupaia/utils';
+import { Entity, Project } from '/models';
+
 import { ValidationError } from '@tupaia/utils/dist/errors';
 
 /**
@@ -49,5 +49,9 @@ export class RouteHandler {
       const response = await this.buildResponse();
       respond(this.res, response);
     }
+  }
+
+  async fetchHierarchyId() {
+    return (await Project.findOne({ code: this.query.projectCode })).entity_hierarchy_id;
   }
 }
