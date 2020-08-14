@@ -4,6 +4,7 @@
  */
 
 import { Entity } from '/models';
+import { getEventsThatSatisfyConditions } from './checkAgainstConditions';
 
 const getOrgUnits = async ({ parentCode, type }) => {
   const parentOrgUnit = await Entity.findOne({ code: parentCode });
@@ -60,12 +61,24 @@ const groupByAllOrgUnitParentNames = async (events, options) => {
   return eventsByOrgUnitName;
 };
 
+const groupByDataValues = (events, options) => {
+  const groupedEvents = {};
+  for (const groupingName of Object.keys(options)) {
+    groupedEvents[groupingName] = getEventsThatSatisfyConditions(
+      events,
+      options[groupingName].conditions,
+    );
+  }
+  return groupedEvents;
+};
+
 const GROUP_BY_VALUE_TO_METHOD = {
   allOrgUnitNames: groupByAllOrgUnitNames,
   allOrgUnitParentNames: groupByAllOrgUnitParentNames,
   nothing: events => {
     return { all: events };
   }, // used for testing
+  dataValues: groupByDataValues,
 };
 
 /**
