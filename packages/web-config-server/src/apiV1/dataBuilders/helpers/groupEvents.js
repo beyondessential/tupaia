@@ -64,10 +64,7 @@ const groupByAllOrgUnitParentNames = async (events, options) => {
 const groupByDataValues = (events, options) => {
   const groupedEvents = {};
   for (const groupingName of Object.keys(options)) {
-    groupedEvents[groupingName] = getEventsThatSatisfyConditions(
-      events,
-      options[groupingName].conditions,
-    );
+    groupedEvents[groupingName] = getEventsThatSatisfyConditions(events, options[groupingName]);
   }
   return groupedEvents;
 };
@@ -94,4 +91,19 @@ export const groupEvents = async (events, groupBySpecs = {}) => {
   }
 
   return groupByMethod(events, options);
+};
+
+/**
+ * @param {object} groupBySpecs
+ * @returns {array<string>} data element codes used in this grouping config
+ */
+export const getAllDataElementCodes = groupBySpecs => {
+  if (groupBySpecs.type === 'dataValues') {
+    let allDataElementCodes = [];
+    Object.values(groupBySpecs.options).forEach(grouping => {
+      allDataElementCodes = [...allDataElementCodes, ...Object.keys(grouping.dataValues)];
+    });
+    return allDataElementCodes;
+  }
+  return [];
 };

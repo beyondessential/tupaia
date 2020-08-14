@@ -5,7 +5,7 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 
-import { groupEvents } from '/apiV1/dataBuilders/helpers/groupEvents';
+import { groupEvents, getAllDataElementCodes } from '/apiV1/dataBuilders/helpers/groupEvents';
 import * as Models from '/models/Entity';
 
 const EVENTS_1 = [
@@ -30,6 +30,9 @@ const EVENTS_2 = [
       { dataElement: 'A', value: '10' },
       { dataElement: 'B', value: '21' },
     ],
+  },
+  {
+    dataValues: [{ dataElement: 'C', value: '30' }],
   },
 ];
 
@@ -114,14 +117,10 @@ describe('groupEvents()', () => {
         type: 'dataValues',
         options: {
           GROUPING_1: {
-            conditions: {
-              dataValues: { A: { operator: '=', value: '10' } },
-            },
+            dataValues: { A: { operator: '=', value: '10' } },
           },
           GROUPING_2: {
-            conditions: {
-              dataValues: { B: { operator: '=', value: '21' } },
-            },
+            dataValues: { B: { operator: '=', value: '21' } },
           },
         },
       }),
@@ -151,15 +150,13 @@ describe('groupEvents()', () => {
     });
   });
 
-  it('uses a union type condition check when grouping by dataValues', () =>
+  it('uses a union type condition check when grouping by dataValues', () => {
     expect(
       groupEvents(EVENTS_2, {
         type: 'dataValues',
         options: {
           GROUPING_1: {
-            conditions: {
-              dataValues: { A: { operator: '=', value: '10' }, B: { operator: '=', value: '21' } },
-            },
+            dataValues: { A: { operator: '=', value: '10' }, B: { operator: '=', value: '21' } },
           },
         },
       }),
@@ -172,5 +169,29 @@ describe('groupEvents()', () => {
           ],
         },
       ],
-    }));
+    });
+  });
+
+  it('getAllDataElementCodes returns empty by default', () =>
+    expect(
+      getAllDataElementCodes({
+        type: 'allOrgUnitNames',
+        options: { parentCode: 'TO', type: 'district' },
+      }),
+    ).to.deep.equal([]));
+
+  it('getAllDataElementCodes finds all data element codes used in conditionals', () =>
+    expect(
+      getAllDataElementCodes({
+        type: 'dataValues',
+        options: {
+          GROUPING_1: {
+            dataValues: { A: { operator: '=', value: '10' } },
+          },
+          GROUPING_2: {
+            dataValues: { B: { operator: '=', value: '21' } },
+          },
+        },
+      }),
+    ).to.deep.equal(['A', 'B']));
 });
