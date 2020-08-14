@@ -1,12 +1,14 @@
 import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import moment from 'moment';
 import LayersIcon from '@material-ui/icons/Layers';
 import DownArrow from '@material-ui/icons/ArrowDropDown';
 import Typography from '@material-ui/core/Typography';
 import Fade from '@material-ui/core/Fade';
 import { DateRangePicker } from '../../components/DateRangePicker';
 import { CONTROL_BAR_WIDTH, TUPAIA_ORANGE, MAP_OVERLAY_SELECTOR } from '../../styles';
+import { GRANULARITY_CONFIG } from '../../utils/periodGranularities';
 
 const Container = styled.div`
   width: ${CONTROL_BAR_WIDTH}px;
@@ -111,6 +113,7 @@ export const Control = ({
   children,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const { periodGranularity } = selectedMeasure;
   const isMeasureSelected = !!selectedMeasure.name;
   const toggleMeasures = useCallback(() => {
     if (isExpanded) {
@@ -121,7 +124,8 @@ export const Control = ({
   }, [isExpanded, setIsExpanded]);
 
   const updateMeasurePeriod = (startDate, endDate) => {
-    onUpdateMeasurePeriod(startDate, endDate);
+    const period = GRANULARITY_CONFIG[periodGranularity].momentUnit;
+    onUpdateMeasurePeriod(moment(startDate).startOf(period), moment(endDate).endOf(period));
   };
 
   return (
@@ -172,8 +176,8 @@ Control.propTypes = {
   selectedMeasure: PropTypes.shape({
     name: PropTypes.string,
     periodGranularity: PropTypes.string,
-    startDate: PropTypes.string,
-    endDate: PropTypes.string,
+    startDate: PropTypes.shape({}),
+    endDate: PropTypes.shape({}),
   }),
   emptyMessage: PropTypes.string.isRequired,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]).isRequired,

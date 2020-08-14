@@ -549,14 +549,10 @@ function measureBar(
         currentMeasureOrganisationUnitCode: action.organisationUnitCode,
       };
     case UPDATE_MEASURE_CONFIG: {
-      const { name, categoryIndex, measure, measureIndex } = selectMeasureBarItemCategoryById(
+      const { categoryIndex, measure, measureIndex } = selectMeasureBarItemCategoryById(
         { measureBar: state },
         state.currentMeasure.measureId,
       );
-      console.log('name', name);
-      console.log('measureIndex', measureIndex);
-      console.log('measure', measure);
-      console.log('categoryIndex', categoryIndex);
 
       const measureHierarchy = [...state.measureHierarchy];
 

@@ -165,9 +165,6 @@ export function flattenMeasureHierarchy(measureHierarchy) {
       }
     });
   };
-  console.log('==== measures:168 ====');
-  console.log(measureHierarchy);
-  console.log('--------------------------------------');
   measureHierarchy.forEach(measure => {
     if (measure.children) {
       flattenGroupedMeasure(measure);
