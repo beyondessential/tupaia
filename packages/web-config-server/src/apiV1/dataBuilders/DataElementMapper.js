@@ -55,7 +55,6 @@ export class DataElementMapper {
   }
 
   mapDataSourceCodesToElementCodes = async (codes, dataSourceType) => {
-    console.log(codes, dataSourceType);
     switch (dataSourceType) {
       case SINGLE: {
         const map = {};

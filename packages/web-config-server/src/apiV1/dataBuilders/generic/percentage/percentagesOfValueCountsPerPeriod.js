@@ -35,7 +35,6 @@ const FILTERS = {
 
 class BaseBuilder extends PercentagesOfValueCountsBuilder {
   getAggregationType() {
-    console.log(parsePeriodType(this.config.periodType));
     switch (parsePeriodType(this.config.periodType)) {
       case MONTH:
         return {
@@ -133,7 +132,6 @@ class PercentagesOfValueCountsPerPeriodBuilder extends DataPerPeriodBuilder {
   }
 
   formatData(data) {
-    console.log(data);
     return this.areDataAvailable(data) ? data : [];
   }
 }
