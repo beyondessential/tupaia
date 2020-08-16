@@ -5,12 +5,13 @@
 import { PermissionsError } from '@tupaia/utils';
 
 const checkPermissions = async (req, permissionsChecker) => {
+  const { accessPolicy, flagPermissionChecked } = req;
   //Need to pass in a real permissionChecker function to be executed.
-  if (req.flagPermissionChecked && permissionsChecker) {
-    req.flagPermissionChecked();
+  if (flagPermissionChecked && permissionsChecker) {
+    flagPermissionChecked();
 
     try {
-      await permissionsChecker(req);
+      await permissionsChecker(accessPolicy);
     } catch (e) {
       throw new PermissionsError(e.message);
     }

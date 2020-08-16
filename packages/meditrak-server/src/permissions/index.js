@@ -4,3 +4,4 @@
  **/
 
 export { ensurePermissionCheck } from './permissions';
+export * from './checkers';
