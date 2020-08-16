@@ -9,6 +9,9 @@ import { InternalServerError, UnsupportedApiVersionError } from '@tupaia/utils';
 import { logApiRequest } from './logApiRequest';
 
 import { authenticationMiddleware } from '../auth';
+
+import { ensurePermissionCheck } from '../permissions';
+
 import routes from '../routes';
 
 const {
@@ -68,6 +71,11 @@ export function addRoutesToApp(app) {
    * Log every request in the api hit table
    **/
   app.use(logApiRequest);
+
+  /**
+   * Attach authorisation middleware before route handlers
+   */
+  app.use(ensurePermissionCheck);
 
   /**
    * Legacy routes to be eventually removed
