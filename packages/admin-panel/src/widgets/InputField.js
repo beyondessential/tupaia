@@ -6,8 +6,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import { TextField, DatePicker, RadioGroup, Select } from '@tupaia/ui-components';
-import 'react-datepicker/dist/react-datepicker.css';
+import { TextField, DatePicker, DateTimePicker, RadioGroup, Select } from '@tupaia/ui-components';
 import { Autocomplete } from '../autocomplete';
 import { JsonInputField } from './JsonInputField';
 import { JsonEditor } from './JsonEditor';
@@ -132,11 +131,22 @@ export const InputField = ({
         />
       );
       break;
+    case 'datetime-local':
+      inputComponent = (
+        <DateTimePicker
+          label={label}
+          helperText={secondaryLabel}
+          value={value && moment(value).isValid ? moment(value).format('YYYY-MM-DDTHH:mm') : ''}
+          onChange={date => onChange(inputKey, date.toISOString())}
+          disabled={disabled}
+        />
+      );
+      break;
     case 'textarea':
       inputComponent = (
         <TextField
           label={label}
-          value={processValue(value, type) || ''}
+          value={value || ''}
           onChange={event => onChange(inputKey, event.target.value)}
           disabled={disabled}
           helperText={secondaryLabel}
@@ -150,7 +160,7 @@ export const InputField = ({
       inputComponent = (
         <TextField
           label={label}
-          value={processValue(value, type) || ''}
+          value={value || ''}
           onChange={event => onChange(inputKey, event.target.value)}
           disabled={disabled}
           helperText={secondaryLabel}
@@ -161,14 +171,6 @@ export const InputField = ({
   }
 
   return inputComponent;
-};
-
-const processValue = (value, type) => {
-  if (type === 'datetime-local') {
-    return value && moment(value).isValid ? moment(value).format('YYYY-MM-DDTHH:mm') : '';
-  }
-
-  return value;
 };
 
 InputField.propTypes = {

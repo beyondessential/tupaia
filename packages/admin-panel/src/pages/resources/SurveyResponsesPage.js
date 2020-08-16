@@ -33,7 +33,7 @@ const dateOfData = {
   accessor: row => new Date(row.submission_time || row.end_time).toString(),
   filterable: false,
   editConfig: {
-    type: 'date',
+    type: 'datetime-local',
   },
 };
 

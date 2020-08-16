@@ -8,9 +8,13 @@ import styled from 'styled-components';
 import DateFnsUtils from '@date-io/date-fns';
 import PropTypes from 'prop-types';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
-import { KeyboardDatePicker as MuiDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
+import {
+  KeyboardDatePicker as MuiDatePicker,
+  KeyboardDateTimePicker as MuiDateTimePicker,
+  MuiPickersUtilsProvider,
+} from '@material-ui/pickers';
 import { TextField } from './TextField';
-import { DAY_MONTH_YEAR_DATE_FORMAT } from '../../constants';
+import { DAY_MONTH_YEAR_DATE_FORMAT, AM_PM_DATE_FORMAT } from '../../constants';
 
 const StyledDatePicker = styled(MuiDatePicker)`
   .MuiInputBase-input {
@@ -25,30 +29,65 @@ const StyledDatePicker = styled(MuiDatePicker)`
   }
 `;
 
-export const DatePicker = ({ value, onChange, ...props }) => {
-  return (
-    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-      <StyledDatePicker
-        value={value}
-        format={DAY_MONTH_YEAR_DATE_FORMAT}
-        keyboardIcon={<CalendarTodayIcon />}
-        InputAdornmentProps={{ position: 'start' }}
-        onChange={onChange}
-        animateYearScrolling
-        TextFieldComponent={TextField}
-        {...props}
-      />
-    </MuiPickersUtilsProvider>
-  );
-};
+export const DatePicker = ({ label, value, onChange, className, format }) => (
+  <MuiPickersUtilsProvider utils={DateFnsUtils}>
+    <StyledDatePicker
+      label={label}
+      value={value}
+      format={format}
+      keyboardIcon={<CalendarTodayIcon />}
+      InputAdornmentProps={{ position: 'start' }}
+      onChange={onChange}
+      animateYearScrolling
+      TextFieldComponent={TextField}
+      className={className}
+    />
+  </MuiPickersUtilsProvider>
+);
 
 DatePicker.propTypes = {
   label: PropTypes.string.isRequired,
+  className: PropTypes.string,
   value: PropTypes.instanceOf(Date),
   onChange: PropTypes.func,
+  format: PropTypes.string,
 };
 
 DatePicker.defaultProps = {
   value: new Date(), // RHF controls controls it via defaultValue - ^
   onChange: () => null, // doesn't get called anyway; https://github.com/react-hook-form/react-hook-form/issues/438#issuecomment-633760140
+  className: null,
+  format: DAY_MONTH_YEAR_DATE_FORMAT,
+};
+
+export const DateTimePicker = ({ label, value, onChange, className, format }) => (
+  <MuiPickersUtilsProvider utils={DateFnsUtils}>
+    <StyledDatePicker
+      as={MuiDateTimePicker}
+      label={label}
+      value={value}
+      keyboardIcon={<CalendarTodayIcon />}
+      InputAdornmentProps={{ position: 'start' }}
+      format={format}
+      onChange={onChange}
+      animateYearScrolling
+      TextFieldComponent={TextField}
+      className={className}
+    />
+  </MuiPickersUtilsProvider>
+);
+
+DateTimePicker.propTypes = {
+  label: PropTypes.string.isRequired,
+  className: PropTypes.string,
+  value: PropTypes.instanceOf(Date),
+  onChange: PropTypes.func,
+  format: PropTypes.string,
+};
+
+DateTimePicker.defaultProps = {
+  value: new Date(), // RHF controls controls it via defaultValue - ^
+  onChange: () => null, // doesn't get called anyway; https://github.com/react-hook-form/react-hook-form/issues/438#issuecomment-633760140
+  className: null,
+  format: `${DAY_MONTH_YEAR_DATE_FORMAT} ${AM_PM_DATE_FORMAT}`,
 };
