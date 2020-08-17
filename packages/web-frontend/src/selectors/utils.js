@@ -14,4 +14,4 @@ export const getOrgUnitFromCountry = (country, code) =>
   country && code ? country[code] : undefined;
 
 export const selectLocation = state =>
-  state.routing || { pathname: 'only so tests pass/ TODO / remove this' };
+  state.routing || { pathname: 'only so tests pass/ TODO: remove after all URL selector PRs' };

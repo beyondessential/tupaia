@@ -36,7 +36,7 @@ export const reactToInitialState = ({ dispatch }) => {
   const { userPage, projectSelector, ...otherComponents } = getInitialLocationComponents();
 
   if (userPage) {
-    // To implement in a future PR
+    // TODO: Implemented in userPage PR
     dispatch(goHome());
   }
 

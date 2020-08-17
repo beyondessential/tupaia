@@ -94,7 +94,6 @@ import {
   fetchOrgUnitError,
   fetchOrgUnit,
   REQUEST_ORG_UNIT,
-  setOrgUnit,
 } from './actions';
 import {
   isMobile,
@@ -107,7 +106,6 @@ import {
 import { createUrlString, URL_COMPONENTS } from './historyNavigation';
 import { getDefaultDates } from './utils/periodGranularities';
 import { INITIAL_MEASURE_ID, INITIAL_PROJECT_CODE, initialOrgUnit } from './defaults';
-import { setProject } from './projects/actions';
 
 /**
  * attemptChangePassword
@@ -964,15 +962,8 @@ function* watchAttemptAttemptDrillDown() {
 }
 
 function* resetToProjectSplash() {
-  //const state = yield select();
-  // default measure will be selected once the org unit has fully changed, just clear for now
   yield put(clearMeasure());
   yield put(clearMeasureHierarchy());
-  //yield put(setOrgUnit('explore', true));
-
-  //if (state.project.projects.length > 0) {
-  //  yield put(setProject(INITIAL_PROJECT_CODE));
-  //}
 }
 
 function* watchUserChangesAndUpdatePermissions() {

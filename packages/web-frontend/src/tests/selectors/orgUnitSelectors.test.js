@@ -54,7 +54,6 @@ const testState3 = {
   },
 };
 
-// TODO: The below tests should work after the 'org unit/project' PR
 describe('orgUnitSelectors', () => {
   describe('memoization', () => {
     describe('selectOrgUnit', () => {

@@ -463,7 +463,7 @@ export function fetchOrgUnit(organisationUnitCode) {
 }
 
 /**
- * Changes current Organisational Unit. ONLY sets url and doesn't trigger side effects.
+ * Changes the current Organisational Unit. ONLY sets url and doesn't trigger side effects.
  */
 export function setOrgUnit(organisationUnitCode, shouldChangeMapBounds = true) {
   return {
