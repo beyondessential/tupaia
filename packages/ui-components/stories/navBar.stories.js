@@ -4,8 +4,14 @@
  */
 
 import React from 'react';
-import Avatar from '@material-ui/core/Avatar';
-import { NavBar, LightProfileButton, HomeButton, WarningCloud, Dashboard } from '../src';
+import {
+  NavBar,
+  ProfileButton,
+  HomeButton,
+  WarningCloud,
+  Dashboard,
+  ProfileButtonItem,
+} from '../src';
 import { RouterProvider } from '../helpers/RouterProvider';
 
 export default {
@@ -13,7 +19,20 @@ export default {
   decorators: [story => <RouterProvider>{story()}</RouterProvider>],
 };
 
-const Profile = () => <LightProfileButton startIcon={<Avatar>T</Avatar>}>Tom</LightProfileButton>;
+const exampleUser = {
+  name: 'Catherine Bell',
+  firstName: 'Catherine',
+  email: 'catherine@beyondessential.com.au',
+};
+
+const ProfileLinks = () => (
+  <>
+    <ProfileButtonItem to="/profile">Edit Profile</ProfileButtonItem>
+    <ProfileButtonItem to="/logout">Logout</ProfileButtonItem>
+  </>
+);
+
+const Profile = () => <ProfileButton user={exampleUser} MenuOptions={ProfileLinks} />;
 
 const links = [
   {
