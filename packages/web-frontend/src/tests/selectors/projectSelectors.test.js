@@ -32,7 +32,7 @@ const testState2 = {
 };
 
 // TODO: The below tests should work after the 'org unit/project' PR
-describe.skip('projectSelectors', () => {
+describe('projectSelectors', () => {
   describe('memoization', () => {
     describe('selectProjectByCode', () => {
       it('recomputes by code or by state change', () => {
@@ -114,66 +114,63 @@ describe.skip('projectSelectors', () => {
         expect(selectCurrentProject.recomputations()).toEqual(3); // Code has changed, recompute
       });
     });
+  });
 
-    describe('functionality', () => {
-      describe('selectProjectByCode', () => {
-        it('can select a project', () => {
-          expect(selectProjectByCode(state, 'explore')).toEqual(state.project.projects[0]);
-        });
-
-        it('returns undefined when trying to select a project when there are no projects in the store', () => {
-          expect(
-            selectProjectByCode(
-              { ...state, project: { ...state.project, projects: null } },
-              'explore',
-            ),
-          ).toEqual(undefined);
-        });
-
-        it('can select a project code which does not exist', () => {
-          expect(selectProjectByCode(state, 'DOES_NOT_EXIST')).toEqual(undefined);
-        });
-
-        it('can select undefined', () => {
-          expect(selectProjectByCode(state, undefined)).toEqual(undefined);
-        });
+  describe('functionality', () => {
+    describe('selectProjectByCode', () => {
+      it('can select a project', () => {
+        expect(selectProjectByCode(state, 'explore')).toEqual(state.project.projects[0]);
       });
 
-      describe('selectIsProject', () => {
-        it('returns `true` for an existing project', () => {
-          expect(selectIsProject(state, 'covidau')).toEqual(true);
-        });
-
-        it('returns `false` for a project which does not exist', () => {
-          expect(selectIsProject(state, 'DOES_NOT_EXIST')).toEqual(false);
-        });
+      it('returns undefined when trying to select a project when there are no projects in the store', () => {
+        expect(
+          selectProjectByCode({ ...state, project: { ...state.project, projects: [] } }, 'explore'),
+        ).toEqual(undefined);
       });
 
-      describe('selectAdjustedProjectBounds', () => {
-        it('can select bounds for a project which exists', () => {
-          expect(selectAdjustedProjectBounds(state, 'covidau')).toEqual(
-            state.project.projects[1].bounds,
-          );
-        });
-        it('can select bounds for the `explore` and `disaster` projects', () => {
-          expect(selectAdjustedProjectBounds(state, 'explore')).toEqual(
-            initialOrgUnit.location.bounds,
-          );
-
-          expect(selectAdjustedProjectBounds(state, 'disaster')).toEqual(
-            initialOrgUnit.location.bounds,
-          );
-        });
-
-        it('can select bounds for a project which does not exist', () => {
-          expect(selectAdjustedProjectBounds(state, 'DOES_NOT_EXIST')).toEqual(undefined);
-        });
+      it('can select a project code which does not exist', () => {
+        expect(selectProjectByCode(state, 'DOES_NOT_EXIST')).toEqual(undefined);
       });
 
-      describe('selectCurrentProject', () => {
-        it('can select the current project', () => {
-          expect(selectCurrentProject(state)).toEqual(state.project.projects[0]);
-        });
+      it('can select undefined', () => {
+        expect(selectProjectByCode(state, undefined)).toEqual(undefined);
+      });
+    });
+
+    describe('selectIsProject', () => {
+      it('returns `true` for an existing project', () => {
+        expect(selectIsProject(state, 'covidau')).toEqual(true);
+      });
+
+      it('returns `false` for a project which does not exist', () => {
+        expect(selectIsProject(state, 'DOES_NOT_EXIST')).toEqual(false);
+      });
+    });
+
+    describe('selectAdjustedProjectBounds', () => {
+      it('can select bounds for a project which exists', () => {
+        expect(selectAdjustedProjectBounds(state, 'covidau')).toEqual(
+          state.project.projects[1].bounds,
+        );
+      });
+      it('can select bounds for the `explore` and `disaster` projects', () => {
+        expect(selectAdjustedProjectBounds(state, 'explore')).toEqual(
+          initialOrgUnit.location.bounds,
+        );
+
+        expect(selectAdjustedProjectBounds(state, 'disaster')).toEqual(
+          initialOrgUnit.location.bounds,
+        );
+      });
+
+      it('can select bounds for a project which does not exist', () => {
+        expect(selectAdjustedProjectBounds(state, 'DOES_NOT_EXIST')).toEqual(undefined);
+      });
+    });
+
+    describe('selectCurrentProject', () => {
+      it('can select the current project', () => {
+        expect(selectCurrentProject(state)).toEqual(state.project.projects[0]);
       });
     });
   });

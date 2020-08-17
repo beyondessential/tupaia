@@ -57,7 +57,7 @@ const testState3 = {
 // TODO: The below tests should work after the 'org unit/project' PR
 describe('orgUnitSelectors', () => {
   describe('memoization', () => {
-    describe.skip('selectOrgUnit', () => {
+    describe('selectOrgUnit', () => {
       it('recomputes by country', () => {
         selectOrgUnit(testState1, 'TO');
         expect(selectOrgUnit.recomputations()).toEqual(1);
@@ -70,7 +70,7 @@ describe('orgUnitSelectors', () => {
       });
     });
 
-    describe.skip('selectCurrentOrgUnit', () => {
+    describe('selectCurrentOrgUnit', () => {
       it('recomputes by code or by state change', () => {
         const routing1 = {
           pathname: '/PROJECT_1/TO/A%20DASHBOARD',
@@ -122,7 +122,7 @@ describe('orgUnitSelectors', () => {
       });
     });
 
-    describe.skip('selectOrgUnitChildren', () => {
+    describe('selectOrgUnitChildren', () => {
       it('recomputes by orgUnitMap', () => {
         selectOrgUnitChildren(testState1, 'TO');
         expect(selectOrgUnitChildren.recomputations()).toEqual(1);
@@ -132,7 +132,7 @@ describe('orgUnitSelectors', () => {
       });
     });
 
-    describe.skip('selectOrgUnitSiblings', () => {
+    describe('selectOrgUnitSiblings', () => {
       it('recomputes by orgUnitMap', () => {
         selectOrgUnitSiblings(testState1, 'TO');
         expect(selectOrgUnitSiblings.recomputations()).toEqual(1);
@@ -144,7 +144,7 @@ describe('orgUnitSelectors', () => {
   });
 
   describe('functionality', () => {
-    describe.skip('selectOrgUnit', () => {
+    describe('selectOrgUnit', () => {
       it('can select world', () => {
         expect(selectOrgUnit(state, 'World')).toEqual(state.orgUnits.orgUnitMap.World.World);
       });
@@ -159,7 +159,7 @@ describe('orgUnitSelectors', () => {
       });
     });
 
-    describe.skip('selectCurrentOrgUnit', () => {
+    describe('selectCurrentOrgUnit', () => {
       it('can select from state', () => {
         expect(selectCurrentOrgUnit(state)).toEqual(state.orgUnits.orgUnitMap.TO.TO);
       });
@@ -181,12 +181,12 @@ describe('orgUnitSelectors', () => {
       });
     });
 
-    // TODO: The below tests are also failing on dev and therefore are not fixed in this PR
-    describe.skip('selectOrgUnitChildren', () => {
-      it('can select children of world', () => {
+    // TODO: The below skipped tests are also failing on dev and therefore are not fixed in this PR
+    describe('selectOrgUnitChildren', () => {
+      it.skip('can select children of world', () => {
         expect(selectOrgUnitChildren(state, 'World')).toContain(state.orgUnits.orgUnitMap.TO.TO);
       });
-      it('can select children of a project', () => {
+      it.skip('can select children of a project', () => {
         expect(selectOrgUnitChildren(state, 'explore')).toContain(state.orgUnits.orgUnitMap.TO.TO);
       });
       it('can select children of country', () => {
@@ -204,11 +204,11 @@ describe('orgUnitSelectors', () => {
       });
     });
 
-    describe.skip('selectOrgUnitSiblings', () => {
+    describe('selectOrgUnitSiblings', () => {
       it('can select siblings of world', () => {
         expect(selectOrgUnitSiblings(state, 'World')).toEqual([]);
       });
-      it('can select siblings of country', () => {
+      it.skip('can select siblings of country', () => {
         expect(selectOrgUnitSiblings(state, 'TO')).toEqual([state.orgUnits.orgUnitMap.PG.PG]);
       });
       it('can select siblings of district, including facility', () => {
