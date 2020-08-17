@@ -40,6 +40,9 @@ export const MEASURE_VALUE_NULL = 'null';
 export const POLYGON_MEASURE_TYPES = [MEASURE_TYPE_SHADING, MEASURE_TYPE_SHADED_SPECTRUM];
 export const SPECTRUM_MEASURE_TYPES = [MEASURE_TYPE_SPECTRUM, MEASURE_TYPE_SHADED_SPECTRUM];
 
+const SPECTRUM_SCALE_DEFAULT = { left: {}, right: {} };
+const PERCENTAGE_SPECTRUM_SCALE_DEFAULT = { left: { max: 0 }, right: { min: 1 } };
+
 export function autoAssignColors(values) {
   if (!values) return [];
 
@@ -124,7 +127,7 @@ function getFormattedValue(value, type, valueInfo, scaleType, valueType, submiss
 }
 
 const getSpectrumScaleValues = (measureData, measureOption) => {
-  const { key, scaleType, valueType, scaleMin, scaleMax, startDate, endDate } = measureOption;
+  const { key, scaleType, startDate, endDate } = measureOption;
 
   if (scaleType === SCALE_TYPES.TIME) {
     return { min: startDate, max: endDate };
@@ -132,26 +135,40 @@ const getSpectrumScaleValues = (measureData, measureOption) => {
 
   const flattenedMeasureData = flattenNumericalMeasureData(measureData, key);
 
-  if (valueType === VALUE_TYPES.PERCENTAGE) {
-    return getExtremesOfData(
-      scaleMin || 0,
-      scaleMax === 'auto' ? null : scaleMax || 1,
-      flattenedMeasureData,
-    );
-  }
+  const dataMin = Math.min(...flattenedMeasureData);
+  const dataMax = Math.max(...flattenedMeasureData);
 
-  return getExtremesOfData(scaleMin, scaleMax, flattenedMeasureData);
+  const { min, max } = clampScaleValues({ min: dataMin, max: dataMax }, measureOption);
+
+  return { min, max };
 };
 
-const getExtremesOfData = (manualMin, manualMax, data) => {
-  // coerce to number before checking for isNan, identical to "isNaN(scaleMin)". Allows for '0' and true to be valid
-  const hasNumberScaleMin = !Number.isNaN(Number(manualMin));
-  const hasNumberScaleMax = !Number.isNaN(Number(manualMax));
+const clampScaleValues = (dataBounds, measureOption) => {
+  const { valueType, scaleBounds } = measureOption;
+
+  const defaultScale =
+    valueType === VALUE_TYPES.PERCENTAGE
+      ? PERCENTAGE_SPECTRUM_SCALE_DEFAULT
+      : SPECTRUM_SCALE_DEFAULT;
+
+  const leftBoundConfig = scaleBounds.left || defaultScale.left;
+  const rightBoundConfig = scaleBounds.right || defaultScale.right;
+  const { min: minDataValue, max: maxDataValue } = dataBounds;
 
   return {
-    min: hasNumberScaleMin ? Math.min(manualMin, ...data) : Math.min(...data),
-    max: hasNumberScaleMax ? Math.max(manualMax, ...data) : Math.max(...data),
+    min: clampValue(minDataValue, leftBoundConfig),
+    max: clampValue(maxDataValue, rightBoundConfig),
   };
+};
+
+const clampValue = (value, config) => {
+  const { min, max } = config;
+  let clampedValue = value;
+
+  if ((min || min === 0) && min !== 'auto') clampedValue = Math.max(clampedValue, min);
+  if ((max || max === 0) && max !== 'auto') clampedValue = Math.min(clampedValue, max);
+
+  return clampedValue;
 };
 
 export function flattenMeasureHierarchy(measureHierarchy) {
