@@ -5,6 +5,7 @@
 
 import jwt from 'jsonwebtoken';
 import { respond, reduceToDictionary } from '@tupaia/utils';
+import { checkNoPermissions } from '../permissions';
 
 const GRANT_TYPES = {
   PASSWORD: 'password',
@@ -122,6 +123,8 @@ const checkAuthentication = async req => {
  * Override grants to do recursive authentication, for example when creating a new user.
  **/
 export async function authenticate(req, res) {
+  await req.checkPermissions(checkNoPermissions);
+
   const { refreshToken, user, accessPolicy } = await checkAuthentication(req);
   const permissionGroupsByCountryId = await extractPermissionGroupsIfLegacy(
     req.models,
