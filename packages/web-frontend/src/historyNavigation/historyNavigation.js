@@ -53,7 +53,6 @@ export const getInitialLocation = () => ({
   search: translateSearchToInternal(initialLocation.search),
 });
 
-// TODO: Use this in future PR
 export const getInitialLocationComponents = () => {
   return decodeLocation(getInitialLocation());
 };

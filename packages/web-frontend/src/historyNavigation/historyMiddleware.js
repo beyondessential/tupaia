@@ -20,13 +20,35 @@ import {
   GO_HOME,
   updateHistoryLocation,
   onSetOrgUnit,
+  setOverlayComponent,
+  goHome,
 } from '../actions';
 import { onSetProject } from '../projects/actions';
-import { setLocationComponent, clearLocation, attemptPushHistory } from './historyNavigation';
+import {
+  setLocationComponent,
+  clearLocation,
+  attemptPushHistory,
+  getInitialLocationComponents,
+} from './historyNavigation';
 import { URL_COMPONENTS } from './constants';
 
-export const reactToInitialState = () => {
-  // This will be implemented in future PRs
+export const reactToInitialState = ({ dispatch }) => {
+  const { userPage, projectSelector, ...otherComponents } = getInitialLocationComponents();
+
+  if (userPage) {
+    // To implement in a future PR
+    dispatch(goHome());
+  }
+
+  if (projectSelector) {
+    // No need to do anything, this is the default
+    return;
+  }
+
+  dispatch(setOverlayComponent(null));
+  dispatch(onSetProject(otherComponents[URL_COMPONENTS.PROJECT], false));
+  if (otherComponents[URL_COMPONENTS.ORG_UNIT])
+    dispatch(onSetOrgUnit(otherComponents[URL_COMPONENTS.ORG_UNIT], true));
 };
 
 export const historyMiddleware = store => next => action => {
