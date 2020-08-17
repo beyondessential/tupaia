@@ -7,6 +7,6 @@ module.exports = {
   stories: ['../stories/**/*.stories.js'],
   "addons": [
     "@storybook/addon-essentials",
-    "@storybook/preset-create-react-app"
+    "@storybook/addon-actions"
   ]
 };
