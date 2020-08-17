@@ -26,9 +26,9 @@ export class IndicatorService extends Service {
     throw new Error('Data deletion is not supported in IndicatorService');
   }
 
-  async pull(dataSources, type) {
+  async pull(dataSources, type, options) {
     const pullData = this.pullers[type];
-    return pullData(dataSources);
+    return pullData(dataSources, options);
   }
 
   async pullAnalytics(dataSources, options) {

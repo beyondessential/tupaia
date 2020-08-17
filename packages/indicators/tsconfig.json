@@ -5,8 +5,8 @@
     "forceConsistentCasingInFileNames": true,
     "module": "CommonJS",
     "noEmit": true,
+    "skipLibCheck": true,
     "strict": true,
-    "target": "ES6",
-    "types": ["node", "jest"]
+    "target": "ES2019"
   }
 }
