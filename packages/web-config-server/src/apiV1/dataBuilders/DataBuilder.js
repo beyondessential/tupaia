@@ -2,9 +2,9 @@
  * Tupaia Config Server
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
-import { getSortByKey } from '@tupaia/utils';
+import { getSortByKey, getSortByExtractedValue, getUniqueEntries } from '@tupaia/utils';
 
-import { Project } from '/models';
+import { Project, Entity } from '/models';
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 
 export class DataBuilder {
@@ -114,6 +114,35 @@ export class DataBuilder {
     const entityHierarchyId = await this.fetchEntityHierarchyId();
     return this.entity.getDescendantsOfType(type, entityHierarchyId);
   }
+
+  /**
+   * Fetch ancestor of type for each organisationUnit in event
+   */
+  async mapAncestorOfTypeToEvents(events, ancestorType) {
+    const hierarchyId = await this.fetchEntityHierarchyId();
+    const allEntityCodes = getUniqueEntries(events.map(e => e.orgUnit));
+    const allEntities = await Entity.find({ code: allEntityCodes });
+    const allAncestors = await Promise.all(
+      await allEntities.map(entity => entity.getAncestorOfType(ancestorType, hierarchyId)),
+    );
+    const entityCodeToAncestor = {};
+    allEntities.forEach((entity, index) => {
+      entityCodeToAncestor[entity.code] = allAncestors[index].name;
+    });
+    const mappedEvents = events.map(event => {
+      const ancestor = entityCodeToAncestor[event.orgUnit];
+      return {
+        ...event,
+        orgUnitAncestor: ancestor,
+      };
+    });
+    return mappedEvents;
+  }
+
+  sortEventsByAncestor = events => events.sort(getSortByKey('orgUnitAncestor'));
+
+  sortEventsByDataValue = (events, dataValue) =>
+    events.sort(getSortByExtractedValue(e => e.dataValues[dataValue]));
 
   sortDataByName = data => data.sort(getSortByKey('name'));
 

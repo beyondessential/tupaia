@@ -15,6 +15,7 @@ export {
   flattenToObject,
   getKeysSortedByValues,
   getSortByKey,
+  getSortByExtractedValue,
   mapKeys,
   mapValues,
   reduceToDictionary,
