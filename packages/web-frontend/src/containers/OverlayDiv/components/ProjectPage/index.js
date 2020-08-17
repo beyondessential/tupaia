@@ -126,7 +126,6 @@ const mapDispatchToProps = dispatch => ({
       dispatch(setProject(project.code));
     } else {
       dispatch(setProject(project.code));
-      dispatch(setOrgUnit(project.homeEntityCode, false));
       dispatch(setOverlayComponent(null));
     }
   },

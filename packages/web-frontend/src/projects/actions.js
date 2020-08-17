@@ -12,15 +12,13 @@ import {
   FETCH_PROJECTS_ERROR,
   REQUEST_PROJECT_ACCESS,
 } from '../actions';
-import { INITIAL_PROJECT_CODE } from '../defaults';
 
 export function setProject(projectCode) {
   return { type: SET_PROJECT, projectCode };
 }
 
-export function onSetProject(projectCode, forceChangeOrgUnit = true) {
-  // forceChangeOrgUnit is false when entering a url manually
-  return { type: ON_SET_PROJECT, projectCode, forceChangeOrgUnit };
+export function onSetProject(projectCode) {
+  return { type: ON_SET_PROJECT, projectCode };
 }
 
 export function setProjects(data) {

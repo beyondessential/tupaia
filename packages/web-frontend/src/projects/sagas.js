@@ -2,7 +2,7 @@ import { call, put, take, takeLatest, select } from 'redux-saga/effects';
 
 import request from '../utils/request';
 
-import { setProjects, fetchProjectsError, setProject } from './actions';
+import { setProjects, fetchProjectsError } from './actions';
 
 import {
   FETCH_INITIAL_DATA,
@@ -13,7 +13,6 @@ import {
   setOrgUnit,
   FETCH_LOGOUT_SUCCESS,
 } from '../actions';
-import { INITIAL_PROJECT_CODE } from '../defaults';
 import {
   selectAdjustedProjectBounds,
   selectProjectByCode,
@@ -25,7 +24,6 @@ function* fetchProjectData() {
   try {
     const { projects } = yield call(request, 'projects', fetchProjectsError);
     yield put(setProjects(projects));
-    // yield put(setProject(INITIAL_PROJECT_CODE));
   } catch (error) {
     console.error(error);
   }
@@ -44,13 +42,9 @@ function* watchUserLogoutSuccessAndRefetchProjectData() {
 }
 
 function* loadProject(action) {
-  // QUESTION:
-  // - Make sure projects are loaded, I think the below works
-  // - Why not change map bounds on change org unit/ wow the regression
-  // - Should we use getCurrentProject here rather than action.projectCode? Advantages/disadvantages?
-  // -How to do the below properly?
   let state = yield select();
 
+  // QUESTION: We need to make sure projects are loaded before we try and select one, I think the below works but is there a better way?
   if (!(state.project.projects.length > 0)) {
     yield take('SET_PROJECT_DATA');
   }
@@ -60,11 +54,13 @@ function* loadProject(action) {
 
   const organisationUnitCode = selectCurrentOrgUnitCode(state);
   yield put(changeBounds(yield select(selectAdjustedProjectBounds, action.projectCode)));
-  if (!organisationUnitCode || action.forceChangeOrgUnit) {
+  if (!organisationUnitCode) {
     yield put(setOrgUnit(project.homeEntityCode || action.projectCode, false));
   }
+
+  // TODO: This will be fixed in the dashboard PR
   const dashboardGroupCode = selectCurrentDashboardKey(state);
-  if (!dashboardGroupCode || action.forceChangeOrgUnit) {
+  if (!dashboardGroupCode) {
     yield put(changeDashboardGroup(project.dashboardGroupName));
   }
 }
