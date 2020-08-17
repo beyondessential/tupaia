@@ -1,6 +1,6 @@
 'use strict';
 
-import { arrayToDbString, arrayToDbArrayString } from '../utilities';
+import { arrayToDbString, arrayToDoubleQuotedDbString } from '../utilities';
 
 var dbm;
 var type;
@@ -125,7 +125,7 @@ exports.up = async function(db) {
         compositeDataBuilder.paths.map(async path => {
           await db.runSql(`
             UPDATE "dashboardReport"
-            SET "dataBuilderConfig" = jsonb_set("dataBuilderConfig", '{"dataBuilders", ${arrayToDbArrayString(
+            SET "dataBuilderConfig" = jsonb_set("dataBuilderConfig", '{"dataBuilders", ${arrayToDoubleQuotedDbString(
               path,
             )}, "dataBuilder"}', '"sumPerPeriod"')
             WHERE id = '${compositeDataBuilder.id}';
@@ -133,7 +133,7 @@ exports.up = async function(db) {
 
           await db.runSql(`
             UPDATE "dashboardReport"
-            SET "dataBuilderConfig" = jsonb_set("dataBuilderConfig", '{"dataBuilders", ${arrayToDbArrayString(
+            SET "dataBuilderConfig" = jsonb_set("dataBuilderConfig", '{"dataBuilders", ${arrayToDoubleQuotedDbString(
               path,
             )}, "dataBuilderConfig", "aggregationType"}', '"${
             compositeDataBuilder.aggregationType

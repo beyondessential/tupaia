@@ -2,7 +2,7 @@ export { generateId, getHighestPossibleIdForGivenTime } from './generateId';
 export {
   insertObject,
   arrayToDbString,
-  arrayToDbArrayString,
+  arrayToDoubleQuotedDbString,
   codeToId,
   updateValues,
   removeArrayValue,

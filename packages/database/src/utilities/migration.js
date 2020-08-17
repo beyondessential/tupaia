@@ -24,7 +24,7 @@ export const insertObject = async (db, table, data, onError) =>
   db.insert(table, Object.keys(data), Object.values(data), onError);
 
 export const arrayToDbString = array => array.map(item => `'${item}'`).join(', ');
-export const arrayToDbArrayString = array => array.map(item => `"${item}"`).join(', ');
+export const arrayToDoubleQuotedDbString = array => array.map(item => `"${item}"`).join(', '); // For formatting Postgres text[]
 
 export const codeToId = async (db, table, code) => {
   const record = await db.runSql(`SELECT id FROM "${table}" WHERE code = '${code}'`);
