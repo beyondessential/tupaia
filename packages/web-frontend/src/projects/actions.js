@@ -14,7 +14,7 @@ import {
 } from '../actions';
 import { INITIAL_PROJECT_CODE } from '../defaults';
 
-export function setProject(projectCode = INITIAL_PROJECT_CODE) {
+export function setProject(projectCode) {
   return { type: SET_PROJECT, projectCode };
 }
 
