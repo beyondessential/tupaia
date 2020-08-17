@@ -1,3 +1,5 @@
+import keyBy from 'lodash.keyby';
+
 import { CustomError } from '@tupaia/utils';
 import { getMeasureBuilder } from '/apiV1/measureBuilders/getMeasureBuilder';
 import { getDhisApiInstance } from '/dhis';
@@ -130,7 +132,18 @@ export default class extends DataAggregatingRouteHandler {
   buildResponse = async () => {
     const { code } = this.entity;
     const { measureId } = this.query;
-    const overlays = await MapOverlay.find({ id: measureId.split(',') });
+    const measureIds = measureId.split(',');
+    const overlayResults = await MapOverlay.find({ id: measureIds });
+
+    //Re-order the overlays array to follow the order in measureIds
+    const overlaysById = keyBy(overlayResults, 'id');
+    const overlays = [];
+
+    measureIds.forEach(id => {
+      if (overlaysById[id]) {
+        overlays.push(overlaysById[id]);
+      }
+    });
 
     // check permission
     await Promise.all(
@@ -239,7 +252,7 @@ export default class extends DataAggregatingRouteHandler {
     } = presentationOptions;
 
     const { dataSourceType = DATA_SOURCE_TYPES.SINGLE, periodGranularity } =
-      measureBuilderConfig || {};
+    measureBuilderConfig || {};
     const { startDate, endDate } = this.query;
     const dates = periodGranularity ? getDateRange(periodGranularity, startDate, endDate) : {};
 
@@ -327,8 +340,7 @@ export default class extends DataAggregatingRouteHandler {
 
 function translateMeasureOptionSet(measureOptions, mapOverlay) {
   const {
-    presentationOptions: { customColors },
-    displayType,
+    presentationOptions: { customColors, displayType },
   } = mapOverlay;
 
   if (!measureOptions) {

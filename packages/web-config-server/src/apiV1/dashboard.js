@@ -1,6 +1,7 @@
 import { DashboardGroup, DashboardReport } from '/models';
 import { RouteHandler } from './RouteHandler';
 import { PermissionsChecker } from './permissions';
+import { checkEntityAgainstConditions } from './utils';
 
 export default class extends RouteHandler {
   static PermissionsChecker = PermissionsChecker;
@@ -13,11 +14,13 @@ export default class extends RouteHandler {
     // based on organisationLevel, organisationUnit, userGroups and ancestors
     // return all matching userGroup and dashboard group name configs
     // (can have same userGroup in different dashboard group names)
+    const hierarchyId = await this.fetchHierarchyId();
     const dashboardGroups = await DashboardGroup.getDashboardGroups(
       userGroups,
       organisationLevel,
       entity,
       query.projectCode,
+      hierarchyId,
     );
 
     // Aggregate dashboardGroups into api response format
@@ -46,15 +49,23 @@ export default class extends RouteHandler {
                 dashboardReports: dashboardReportIds,
               } = dashboardGroups[dashboardGroupName][userGroupKey];
               // from { General: { Public: {} } to { General: { Public: { views: [...] } }
-              const views = await Promise.all(
-                dashboardReportIds.map(async viewId => {
-                  const report = await DashboardReport.findOne({
-                    id: viewId,
-                    drillDownLevel: null, //drillDownLevel = null so that only the parent reports are selected, we don't want drill down reports at this level.
-                  });
-                  return { viewId, ...report.viewJson, requiresDataFetch: !!report.dataBuilder };
-                }),
-              );
+              const views = [];
+
+              for (let i = 0; i < dashboardReportIds.length; i++) {
+                const viewId = dashboardReportIds[i];
+                const report = await DashboardReport.findOne({
+                  id: viewId,
+                  drillDownLevel: null, //drillDownLevel = null so that only the parent reports are selected, we don't want drill down reports at this level.
+                });
+
+                const { viewJson, dataBuilder } = report;
+                const { displayOnEntityConditions, ...restOfViewJson } = viewJson; //Avoid sending displayOnEntityConditions to the frontend
+                const view = { viewId, ...restOfViewJson, requiresDataFetch: !!dataBuilder };
+
+                if (checkEntityAgainstConditions(entity, displayOnEntityConditions)) {
+                  views.push(view);
+                }
+              }
 
               returnJson[dashboardGroupName][userGroupKey].views = views;
               // from { General: { Public: {} } to { General: { Public: { dashboardGroupId: 11 } }
