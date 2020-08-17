@@ -4,7 +4,6 @@
  */
 
 import { Aggregator } from '@tupaia/aggregator';
-
 import {
   getAggregationsByCode,
   extractDataElementCodesFromFormula,

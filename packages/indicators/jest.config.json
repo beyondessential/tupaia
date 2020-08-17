@@ -1,6 +1,6 @@
 {
+  "clearMocks": true,
   "collectCoverageFrom": ["src/**/*.ts"],
   "coveragePathIgnorePatterns": ["node_modules", "__tests__", ".d.ts"],
-  "clearMocks": true,
   "testMatch": ["**/__tests__/**/*.test.ts"]
 }

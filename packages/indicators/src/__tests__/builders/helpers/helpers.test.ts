@@ -14,7 +14,7 @@ import { createAggregator } from './helpers.stubs';
 
 describe('helpers', () => {
   describe('extractDataElementCodesFromFormula()', () => {
-    const testData = [
+    const testData: [string, string, string[]][] = [
       ['single letter codes', 'A + B', ['A', 'B']],
       ['multi letter codes', 'BCD01 + BCD02', ['BCD01', 'BCD02']],
       ['continuous whitespace', ' BCD01  +  BCD02 ', ['BCD01', 'BCD02']],
@@ -27,7 +27,7 @@ describe('helpers', () => {
     ];
 
     it.each(testData)('%s', (_, formula, expected) => {
-      expect(extractDataElementCodesFromFormula(formula as string)).toEqual(new Set(expected));
+      expect(extractDataElementCodesFromFormula(formula)).toEqual(new Set(expected));
     });
   });
 
