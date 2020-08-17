@@ -9,24 +9,22 @@ import styled from 'styled-components';
 import { PrimaryButton } from '../src/components/Buttons';
 import { SubmitButton } from '../src/containers/Form/common/SubmitButton';
 
-export default {
-  title: 'Button',
-  component: PrimaryButton,
-};
-
 const Container = styled(MuiBox)`
-  max-width: 1200px;
   padding: 1rem;
 `;
 
-export const Primary = () => (
-  <Container>
-    <PrimaryButton>Button</PrimaryButton>
-  </Container>
-);
+export default {
+  title: 'Button',
+  component: PrimaryButton,
+  decorators: [
+    Story => (
+      <Container>
+        <Story />
+      </Container>
+    ),
+  ],
+};
 
-export const Submit = () => (
-  <Container>
-    <SubmitButton text="Sign in" />
-  </Container>
-);
+export const Primary = () => <PrimaryButton>Button</PrimaryButton>;
+
+export const Submit = () => <SubmitButton text="Sign in" />;
