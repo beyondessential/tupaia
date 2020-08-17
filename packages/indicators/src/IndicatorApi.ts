@@ -3,40 +3,49 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+import { capital } from 'case';
+
 import { Aggregator } from '@tupaia/aggregator';
-import { utcMoment } from '@tupaia/utils';
-
-interface TupaiaDatabase {}
-interface DataBroker {}
-
-const ANALYTICS_DATE_FORMAT = 'YYYY-MM-DD';
+import { DataBroker } from '@tupaia/data-broker';
+import * as builders from './builders';
+import { Analytic, FetchOptions, ModelRegistry } from './types';
 
 export class IndicatorApi {
-  database: TupaiaDatabase;
-  aggregator: Aggregator;
+  private models: ModelRegistry;
+  private aggregator: Aggregator;
 
-  constructor(database: TupaiaDatabase, dataBroker: DataBroker) {
-    this.database = database;
+  constructor(models: ModelRegistry, dataBroker: DataBroker) {
+    this.models = models;
     this.aggregator = new Aggregator(dataBroker);
   }
 
-  async fetchAnalytics(options) {
-    const { dataElementCodes, ...restOfOptions } = options;
-    // TODO implement indicator builder pattern
-    return dataElementCodes.map(code => ({
-      dataElement: code,
-      organisationUnit: 'TO',
-      date: utcMoment().format(ANALYTICS_DATE_FORMAT),
-      value: 15,
-    }));
+  async buildAnalytics(codes: string[], fetchOptions: FetchOptions): Promise<Analytic[]> {
+    const indicators = await this.models.indicator.find({ code: codes });
+
+    const analytics: Analytic[] = [];
+    await Promise.all(
+      indicators.map(async indicator => {
+        const newAnalytics = await this.buildAnalyticsForIndicator(indicator, fetchOptions);
+        analytics.push(...newAnalytics);
+      }),
+    );
+
+    return analytics;
   }
 
-  async fetchEvents() {
-    throw new Error('Event based indicators are not currently supported');
-  }
+  private buildAnalyticsForIndicator = (indicator, fetchOptions: FetchOptions) => {
+    const { builder, config } = indicator;
+    const buildAnalytics = this.getBuilderFunction(builder);
+    return buildAnalytics({ aggregator: this.aggregator, config, fetchOptions });
+  };
 
-  async fetchDataElements(dataElementCodes) {
-    // TODO fetch an array of { code, name } objects from the indicators table
-    return dataElementCodes.map(code => ({ code, name: code }));
-  }
+  private getBuilderFunction = (builderName: string) => {
+    const builderFunctionName = `build${capital(builderName)}`;
+    const builderFunction = builders[builderFunctionName];
+    if (!builderFunction) {
+      throw new Error(`'${builderName}' is not an indicator builder`);
+    }
+
+    return builderFunction;
+  };
 }

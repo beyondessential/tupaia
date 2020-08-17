@@ -14,6 +14,12 @@
   "dependencies": {
     "@tupaia/aggregator": "1.0.0",
     "@tupaia/data-broker": "1.0.0",
-    "@tupaia/database": "1.0.0"
+    "@tupaia/database": "1.0.0",
+    "@tupaia/eslint-config-typescript": "1.0.0",
+    "case": "^1.5.3",
+    "lodash.groupby": "^4.6.0"
+  },
+  "eslintConfig": {
+    "extends": "@tupaia/eslint-config-typescript"
   }
 }

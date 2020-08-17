@@ -16,7 +16,7 @@ export const createService = (models, type, dataBroker) => {
     case 'tupaia':
       return new TupaiaService(models, new TupaiaDataApi(models.database));
     case 'indicator':
-      return new IndicatorService(models, new IndicatorApi(models.database, dataBroker));
+      return new IndicatorService(models, new IndicatorApi(models, dataBroker));
     default:
       throw new Error(`Invalid service type: ${type}`);
   }
