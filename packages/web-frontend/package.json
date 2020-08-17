@@ -44,6 +44,8 @@
   "devDependencies": {
     "@cypress/snapshot": "^2.1.7",
     "@testing-library/cypress": "^6.0.0",
+    "@storybook/addon-actions": "^6.0.10",
+    "@storybook/addon-essentials": "^6.0.10",
     "@storybook/react": "^6.0.10",
     "autoprefixer": "7.1.0",
     "babel-preset-react-app": "^9.1.2",

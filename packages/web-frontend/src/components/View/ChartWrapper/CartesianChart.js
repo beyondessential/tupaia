@@ -98,13 +98,13 @@ const LEGEND_ALL_DATA = {
   stackId: 1,
 };
 /**
- * Note
- * ----
+ * Cartesian Chart types using recharts
+ * @see https://recharts.org
+ *
  * Ideally, we would want to extract the various chart subcomponents (Axis, Legend etc)
  * to independent components to isolate their behavior. Unfortunately, for some reason recharts
  * does not work with wrapped components, so we just render everything here
  */
-
 export class CartesianChart extends PureComponent {
   constructor(props) {
     super(props);
@@ -434,12 +434,7 @@ export class CartesianChart extends PureComponent {
       return null;
     }
 
-    return chartConfig.referenceAreas.map(areaProps=> {
-      console.log('props', areaProps);
-      return (
-        <ReferenceArea {...areaProps} />
-      )
-    });
+    return chartConfig.referenceAreas.map(areaProps => <ReferenceArea {...areaProps} />);
   };
 
   renderReferenceLines = () => {
@@ -628,6 +623,7 @@ export class CartesianChart extends PureComponent {
 CartesianChart.propTypes = {
   isEnlarged: PropTypes.bool,
   isExporting: PropTypes.bool,
+  /** The main chart configuration */
   viewContent: PropTypes.shape(VIEW_CONTENT_SHAPE),
 };
 

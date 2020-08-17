@@ -1,42 +1,26 @@
 [
   {
-    "name": "Balwyn",
-    "value": 0.593
+    "name": "Tonga",
+    "value": 0.94
   },
   {
-    "name": "Hawthorn East",
-    "value": 0.271
+    "name": "Vanuatu",
+    "value": 0.95
   },
   {
-    "name": "Kerang",
-    "value": 0.61
+    "name": "Nauru",
+    "value": 0.88
   },
   {
-    "name": "Lake Charm",
-    "value": 0.203
+    "name": "Tuvalu",
+    "value": 0.79
   },
   {
-    "name": "Marla",
-    "value": 0.271
+    "name": "Fiji",
+    "value": 1.0
   },
   {
-    "name": "Mont Albert",
-    "value": 0.492
-  },
-  {
-    "name": "National Medical Warehouse",
-    "value": 0.576
-  },
-  {
-    "name": "Port Douglas",
-    "value": 0.085
-  },
-  {
-    "name": "Swan Hill",
-    "value": 0.254
-  },
-  {
-    "name": "Thornbury",
-    "value": 0.322
+    "name": "Kiribati",
+    "value": 0.19
   }
 ]
