@@ -10,7 +10,7 @@
  * @property {string} [expects]
  */
 
-const replaceLinesFromTextStart = (text, lineCount) =>
+const removeLinesFromTextStart = (text, lineCount) =>
   text
     .split('\n')
     .slice(lineCount)
@@ -59,7 +59,7 @@ class JestMatcherFactory {
    * Standard jest error messages include a "matcher hint" in the first line of the error,
    * followed by an empty line and the diff
    */
-  extractDiffFromMessage = message => replaceLinesFromTextStart(message, 2);
+  extractDiffFromMessage = message => removeLinesFromTextStart(message, 2);
 
   createNegationDiff = (received, ...expected) =>
     [
