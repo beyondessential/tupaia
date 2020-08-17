@@ -240,7 +240,7 @@ export class CartesianChart extends PureComponent {
     if (chartType === BAR) {
       return !isExporting ? 'preserveStartEnd' : 0;
     }
-    return isEnlarged ? 'preservedStartEnd' : 0;
+    return isEnlarged ? 'preserveStartEnd' : 0;
   };
 
   formatXAxisTick = tickData => {

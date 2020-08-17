@@ -6,7 +6,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { CartesianChart } from '../../src/components/View/ChartWrapper/CartesianChart';
-import data from './cartesianData.json';
+import data from './data/line.json';
 
 const Container = styled.div`
   margin: 1rem auto;
@@ -15,7 +15,7 @@ const Container = styled.div`
 `;
 
 export default {
-  title: 'Chart/Cartesian',
+  title: 'Chart/Line',
   component: CartesianChart,
   decorators: [
     Story => (
@@ -28,8 +28,8 @@ export default {
 
 const Template = args => <CartesianChart {...args} />;
 
-export const Simple = Template.bind({});
-Simple.args = {
+export const SimpleLine = Template.bind({});
+SimpleLine.args = {
   isEnlarged: true,
   viewContent: {
     data: data,
@@ -42,14 +42,14 @@ Simple.args = {
     type: 'chart',
     xName: 'Clinic',
     yName: '%',
-    chartType: 'bar',
+    chartType: 'line',
     valueType: 'percentage',
     periodGranularity: 'month',
   },
 };
 
-export const ReferenceAreas = Template.bind({});
-ReferenceAreas.args = {
+export const LineReferenceAreas = Template.bind({});
+LineReferenceAreas.args = {
   isEnlarged: true,
   viewContent: {
     data: data,
@@ -62,7 +62,7 @@ ReferenceAreas.args = {
     type: 'chart',
     xName: 'Clinic',
     yName: '%',
-    chartType: 'bar',
+    chartType: 'line',
     valueType: 'percentage',
     periodGranularity: 'month',
     chartConfig: {
@@ -98,7 +98,6 @@ ReferenceAreas.args = {
         {
           key: 4,
           y1: 0.8,
-          y2: 1.0,
           stroke: '#6ab04c',
           fill: '#6ab04c',
           fillOpacity: 0.5,
