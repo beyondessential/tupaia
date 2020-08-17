@@ -6,15 +6,21 @@
  */
 
 import {
-  SELECT_PROJECT,
+  SET_PROJECT,
+  ON_SET_PROJECT,
   SET_PROJECT_DATA,
   FETCH_PROJECTS_ERROR,
   REQUEST_PROJECT_ACCESS,
 } from '../actions';
 import { INITIAL_PROJECT_CODE } from '../defaults';
 
-export function selectProject(projectCode = INITIAL_PROJECT_CODE) {
-  return { type: SELECT_PROJECT, projectCode };
+export function setProject(projectCode = INITIAL_PROJECT_CODE) {
+  return { type: SET_PROJECT, projectCode };
+}
+
+export function onSetProject(projectCode, forceChangeOrgUnit = true) {
+  // forceChangeOrgUnit is false when entering a url manually
+  return { type: ON_SET_PROJECT, projectCode, forceChangeOrgUnit };
 }
 
 export function setProjects(data) {
