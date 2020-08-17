@@ -36,8 +36,12 @@ export const ensurePermissionCheck = async (req, res, next) => {
   //Modify the send method of res to send back NoPermissionCheckError.
   //If Permission is already checked, req.flagPermissionsChecked() should have already been called, which will reset res.send() back to normal
   //If Permission is not yet checked, res.send() will execute like below, sending back NoPermissionCheckError.
-  res.send = () => {
+  res.send = (...args) => {
     res.send = originalResSend;
+    // allow errors to be sent without a permissions check
+    if (res.statusCode < 200 || res.statusCode >= 300) {
+      res.send(...args);
+    }
     res.status(501).send({
       error: 'No permission check was implemented for this endpoint',
     });
