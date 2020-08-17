@@ -14,7 +14,7 @@ export default class extends RouteHandler {
   // allow passing straight through, results are limited by permissions
   static PermissionsChecker = NoPermissionRequiredChecker;
 
-  async getMatchingEntites(searchString, entities, limit) {
+  async getMatchingEntities(searchString, entities, limit) {
     const safeSearchString = searchString.replace(/[-[\]{}()*+?.,\\^$|#\\]/g, '\\$&'); // Need to escape special regex chars from query
     const comparators = [
       entity => new RegExp(`^${safeSearchString}`, 'i').test(entity.name), // Name starts with query string
@@ -22,8 +22,8 @@ export default class extends RouteHandler {
     ];
 
     const allResults = [];
-    for (let comparitorIndex = 0; comparitorIndex < comparators.length; comparitorIndex++) {
-      const comparator = comparators[comparitorIndex];
+    for (let comparatorIndex = 0; comparatorIndex < comparators.length; comparatorIndex++) {
+      const comparator = comparators[comparatorIndex];
       for (
         let entityIndex = 0;
         entityIndex < entities.length && allResults.length < limit;
@@ -44,7 +44,7 @@ export default class extends RouteHandler {
     const projectEntity = await Entity.findOne({ id: project.entity_id });
 
     const allEntities = await projectEntity.getDescendants(project.entity_hierarchy_id);
-    const matchingEntities = await this.getMatchingEntites(searchString, allEntities, limit);
+    const matchingEntities = await this.getMatchingEntities(searchString, allEntities, limit);
 
     const childIdToParentId = await EntityRelation.getChildIdToParentIdMap(
       project.entity_hierarchy_id,

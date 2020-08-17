@@ -6,10 +6,11 @@
 import { DashboardReport } from '/models';
 import { PermissionsError } from '@tupaia/utils';
 import { DashboardPermissionsChecker } from './DashboardPermissionsChecker';
+import flatten from 'lodash.flatten';
 
 const getAllowedSurveyCodes = dataBuilderConfig => {
   const { surveys, surveyCodes } = dataBuilderConfig;
-  return surveys ? surveys.map(({ code }) => code) : surveyCodes;
+  return surveys ? flatten(surveys.map(({ code, codes }) => codes || code)) : surveyCodes;
 };
 
 export class ExportSurveyResponsesPermissionsChecker extends DashboardPermissionsChecker {
