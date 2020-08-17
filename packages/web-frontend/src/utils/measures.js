@@ -82,28 +82,32 @@ export function createValueMapping(valueObjects, type) {
   // add a "no data" object to the mapping if there isn't one present already
   const requiresNull = !Object.keys(mapping).some(k => k === MEASURE_VALUE_NULL);
   if (requiresNull) {
-    switch (type) {
-      case MEASURE_TYPE_ICON:
-        mapping.null = { icon: UNKNOWN_ICON, name: 'No data' };
-        break;
-      case MEASURE_TYPE_SHADING:
-      case MEASURE_TYPE_COLOR:
-        mapping.null = { color: UNKNOWN_COLOR, name: 'No data' };
-        break;
-      case MEASURE_TYPE_RADIUS:
-        mapping.null = { name: 'No data' };
-        break;
-      case MEASURE_TYPE_SPECTRUM:
-      case MEASURE_TYPE_SHADED_SPECTRUM:
-        mapping.null = { name: 'No data' };
-        break;
-      default:
-        break;
-    }
+    mapping[MEASURE_VALUE_NULL] = getNullValueMapping(type);
   }
 
   return mapping;
 }
+
+const getNullValueMapping = type => {
+  const baseMapping = {
+    name: 'No data',
+    value: MEASURE_VALUE_NULL,
+  };
+
+  switch (type) {
+    case MEASURE_TYPE_ICON:
+      baseMapping.icon = UNKNOWN_ICON;
+      break;
+    case MEASURE_TYPE_SHADING:
+    case MEASURE_TYPE_COLOR:
+      baseMapping.color = UNKNOWN_COLOR;
+      break;
+    default:
+      break;
+  }
+
+  return baseMapping;
+};
 
 function getFormattedValue(value, type, valueInfo, scaleType, valueType, submissionDate) {
   switch (type) {
