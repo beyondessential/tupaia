@@ -19,7 +19,9 @@ import {
   CLEAR_MEASURE,
   GO_HOME,
   updateHistoryLocation,
+  onSetOrgUnit,
 } from '../actions';
+import { onSetProject } from '../projects/actions';
 import { setLocationComponent, clearLocation, attemptPushHistory } from './historyNavigation';
 import { URL_COMPONENTS } from './constants';
 
@@ -28,13 +30,16 @@ export const reactToInitialState = () => {
 };
 
 export const historyMiddleware = store => next => action => {
+  const { dispatch } = store;
   switch (action.type) {
     // Actions that modify the path
     case SET_PROJECT:
       dispatchLocationUpdate(store, URL_COMPONENTS.PROJECT, action.projectCode);
+      dispatch(onSetProject(action.projectCode));
       break;
     case SET_ORG_UNIT:
       dispatchLocationUpdate(store, URL_COMPONENTS.ORG_UNIT, action.organisationUnitCode);
+      dispatch(onSetOrgUnit(action.organisationUnitCode));
       break;
     case CHANGE_DASHBOARD_GROUP:
       dispatchLocationUpdate(store, URL_COMPONENTS.DASHBOARD, action.name);
