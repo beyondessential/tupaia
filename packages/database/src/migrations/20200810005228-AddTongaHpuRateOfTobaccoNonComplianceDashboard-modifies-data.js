@@ -30,23 +30,25 @@ const REPORT = {
     },
     dataBuilders: {
       sumInspectionsWithTobaccoNonCompliance: {
-        dataBuilder: 'sumPerYear',
+        dataBuilder: 'sumPerPeriod',
         dataBuilderConfig: {
           dataClasses: {
             value: {
               codes: ['HP254', 'HP255', 'HP256', 'HP257', 'HP258', 'HP259', 'HP260', 'HP261'],
             },
           },
+          aggregationType: 'SUM_EACH_YEAR',
         },
       },
       sumRestrictedPublicAreasInspected: {
-        dataBuilder: 'sumPerYear',
+        dataBuilder: 'sumPerPeriod',
         dataBuilderConfig: {
           dataClasses: {
             value: {
               codes: ['HP253'],
             },
           },
+          aggregationType: 'SUM_EACH_YEAR',
         },
       },
     },
@@ -58,6 +60,20 @@ const REPORT = {
     valueType: 'percentage',
     periodGranularity: 'year',
     labelType: 'fractionAndPercentage',
+    chartConfig: {
+      $all: {
+        yAxisDomain: {
+          max: {
+            type: 'number',
+            value: 1,
+          },
+          min: {
+            type: 'number',
+            value: 0,
+          },
+        },
+      },
+    },
   },
   dataServices: [
     {
