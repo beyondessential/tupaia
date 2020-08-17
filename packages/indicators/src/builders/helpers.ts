@@ -34,7 +34,7 @@ export const fetchAnalytics = async (
   aggregationsByCode: Record<string, Aggregation[]>,
   fetchOptions: FetchOptions,
 ): Promise<Analytic[]> => {
-  const aggregationsJsonToCodes = groupBy(Object.keys(aggregationsByCode), code =>
+  const aggregationJsonToCodes = groupBy(Object.keys(aggregationsByCode), code =>
     JSON.stringify(aggregationsByCode[code]),
   );
 
@@ -43,8 +43,8 @@ export const fetchAnalytics = async (
   // but only one collection can be provided in an aggregator call
   // Group data elements per aggregation collection to minimise aggregator calls
   await Promise.all(
-    Object.entries(aggregationsJsonToCodes).map(async ([aggregationsJson, codes]) => {
-      const aggregations = JSON.parse(aggregationsJson);
+    Object.entries(aggregationJsonToCodes).map(async ([aggregationJson, codes]) => {
+      const aggregations = JSON.parse(aggregationJson);
       const { results } = await aggregator.fetchAnalytics(codes, fetchOptions, { aggregations });
       analytics.push(...results);
     }),
