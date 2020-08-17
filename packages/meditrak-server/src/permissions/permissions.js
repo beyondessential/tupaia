@@ -41,6 +41,7 @@ export const ensurePermissionCheck = async (req, res, next) => {
     // allow errors to be sent without a permissions check
     if (res.statusCode < 200 || res.statusCode >= 300) {
       res.send(...args);
+      return;
     }
     res.status(501).send({
       error: 'No permission check was implemented for this endpoint',
