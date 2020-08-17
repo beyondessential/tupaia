@@ -5,7 +5,7 @@
  * found in the LICENSE file in the root directory of this source tree.
  */
 
-import { SET_PROJECT_DATA, SELECT_PROJECT, REQUEST_PROJECT_ACCESS } from '../actions';
+import { SET_PROJECT_DATA, ON_SET_PROJECT, REQUEST_PROJECT_ACCESS } from '../actions';
 import { INITIAL_PROJECT_CODE } from '../defaults';
 
 export default function projects(
@@ -18,7 +18,7 @@ export default function projects(
   action,
 ) {
   switch (action.type) {
-    case SELECT_PROJECT:
+    case ON_SET_PROJECT:
       return {
         ...state,
         activeProjectCode: action.projectCode,

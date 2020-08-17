@@ -10,8 +10,8 @@
  */
 
 import {
-  SELECT_PROJECT,
-  CHANGE_ORG_UNIT,
+  SET_PROJECT,
+  SET_ORG_UNIT,
   CHANGE_DASHBOARD_GROUP,
   OPEN_ENLARGED_DIALOG,
   CLOSE_ENLARGED_DIALOG,
@@ -30,10 +30,10 @@ export const reactToInitialState = () => {
 export const historyMiddleware = store => next => action => {
   switch (action.type) {
     // Actions that modify the path
-    case SELECT_PROJECT:
+    case SET_PROJECT:
       dispatchLocationUpdate(store, URL_COMPONENTS.PROJECT, action.projectCode);
       break;
-    case CHANGE_ORG_UNIT:
+    case SET_ORG_UNIT:
       dispatchLocationUpdate(store, URL_COMPONENTS.ORG_UNIT, action.organisationUnitCode);
       break;
     case CHANGE_DASHBOARD_GROUP:

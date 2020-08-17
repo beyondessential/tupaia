@@ -23,7 +23,7 @@ import { selectOrgUnitChildren, selectCurrentProjectCode } from '../../selectors
 import {
   changeSearch,
   toggleSearchExpand,
-  changeOrgUnit,
+  setOrgUnit,
   openMapPopup,
   requestOrgUnit,
 } from '../../actions';
@@ -212,7 +212,7 @@ const mapDispatchToProps = dispatch => {
     onSearchBlur: (isExpanded, isSafeToCloseResults) =>
       isExpanded && isSafeToCloseResults && dispatch(toggleSearchExpand()),
     onOrgUnitClick: organisationUnitCode => {
-      dispatch(changeOrgUnit(organisationUnitCode));
+      dispatch(setOrgUnit(organisationUnitCode));
       dispatch(openMapPopup(organisationUnitCode));
     },
     requestRootOrgUnit: () => dispatch(requestOrgUnit()),

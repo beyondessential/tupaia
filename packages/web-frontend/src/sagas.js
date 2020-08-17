@@ -28,7 +28,7 @@ import {
   ATTEMPT_SIGNUP,
   ATTEMPT_CHART_EXPORT,
   ATTEMPT_DRILL_DOWN,
-  CHANGE_ORG_UNIT,
+  ON_SET_ORG_UNIT,
   FETCH_INFO_VIEW_DATA,
   CHANGE_SEARCH,
   CHANGE_MEASURE,
@@ -78,7 +78,6 @@ import {
   fetchChartExportError,
   fetchDrillDownSuccess,
   fetchDrillDownError,
-  changeOrgUnit,
   SET_ENLARGED_DIALOG_DATE_RANGE,
   updateEnlargedDialog,
   updateEnlargedDialogError,
@@ -95,6 +94,7 @@ import {
   fetchOrgUnitError,
   fetchOrgUnit,
   REQUEST_ORG_UNIT,
+  setOrgUnit,
 } from './actions';
 import {
   isMobile,
@@ -107,7 +107,7 @@ import {
 import { createUrlString, URL_COMPONENTS } from './historyNavigation';
 import { getDefaultDates } from './utils/periodGranularities';
 import { INITIAL_MEASURE_ID, INITIAL_PROJECT_CODE, initialOrgUnit } from './defaults';
-import { selectProject } from './projects/actions';
+import { setProject } from './projects/actions';
 
 /**
  * attemptChangePassword
@@ -525,7 +525,7 @@ function* watchRequestOrgUnitAndFetchIt() {
 }
 
 function* watchOrgUnitChangeAndFetchIt() {
-  yield takeLatest(CHANGE_ORG_UNIT, fetchOrgUnitDataAndChangeOrgUnit);
+  yield takeLatest(ON_SET_ORG_UNIT, fetchOrgUnitDataAndChangeOrgUnit);
 }
 
 /**
@@ -968,10 +968,10 @@ function* resetToExplore() {
   // default measure will be selected once the org unit has fully changed, just clear for now
   yield put(clearMeasure());
   yield put(clearMeasureHierarchy());
-  yield put(changeOrgUnit('explore', true));
+  yield put(setOrgUnit('explore', true));
 
   if (state.project.projects.length > 0) {
-    yield put(selectProject(INITIAL_PROJECT_CODE));
+    yield put(setProject(INITIAL_PROJECT_CODE));
   }
 }
 

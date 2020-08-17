@@ -2,11 +2,11 @@ import { call, put, takeLatest, select } from 'redux-saga/effects';
 
 import request from '../utils/request';
 
-import { setProjects, fetchProjectsError, selectProject } from './actions';
+import { setProjects, fetchProjectsError, setProject } from './actions';
 
 import {
   FETCH_INITIAL_DATA,
-  SELECT_PROJECT,
+  ON_SET_PROJECT,
   changeBounds,
   changeDashboardGroup,
   FETCH_LOGIN_SUCCESS,
@@ -20,7 +20,7 @@ function* fetchProjectData() {
   try {
     const { projects } = yield call(request, 'projects', fetchProjectsError);
     yield put(setProjects(projects));
-    yield put(selectProject(INITIAL_PROJECT_CODE));
+    yield put(setProject(INITIAL_PROJECT_CODE));
   } catch (error) {
     console.error(error);
   }
@@ -49,7 +49,7 @@ function* loadProject(action) {
 
 function* watchSelectProjectAndLoadProjectState() {
   // eslint-disable-next-line func-names
-  yield takeLatest(SELECT_PROJECT, loadProject);
+  yield takeLatest(ON_SET_PROJECT, loadProject);
 }
 
 export default [

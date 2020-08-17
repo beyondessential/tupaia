@@ -18,7 +18,7 @@ import {
   FETCH_INITIAL_DATA,
   changeBounds,
   setOverlayComponent,
-  changeOrgUnit,
+  setOrgUnit,
 } from '../actions';
 import { DISASTER } from '../containers/OverlayDiv/constants';
 import { formatDateForApi } from '../utils';
@@ -84,9 +84,9 @@ function* watchViewDisasterAndZoomToBounds() {
 
     if (bounds.length > 0) {
       yield put(changeBounds(bounds));
-      yield put(changeOrgUnit(disaster.countryCode, false));
+      yield put(setOrgUnit(disaster.countryCode, false));
     } else {
-      yield put(changeOrgUnit(disaster.countryCode, true));
+      yield put(setOrgUnit(disaster.countryCode, true));
     }
   });
 }

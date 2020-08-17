@@ -17,8 +17,8 @@ import {
   PROJECT_LANDING,
   PROJECTS_WITH_LANDING_PAGES,
 } from '../../constants';
-import { selectProject, setRequestingAccess } from '../../../../projects/actions';
-import { setOverlayComponent, changeOrgUnit } from '../../../../actions';
+import { setProject, setRequestingAccess } from '../../../../projects/actions';
+import { setOverlayComponent, setOrgUnit } from '../../../../actions';
 import { ProjectCard } from './ProjectCard';
 
 // code for general explore mode project.
@@ -123,10 +123,10 @@ const mapDispatchToProps = dispatch => ({
   onSelectProject: project => {
     if (PROJECTS_WITH_LANDING_PAGES[project.code]) {
       dispatch(setOverlayComponent(PROJECT_LANDING));
-      dispatch(selectProject(project.code));
+      dispatch(setProject(project.code));
     } else {
-      dispatch(selectProject(project.code));
-      dispatch(changeOrgUnit(project.homeEntityCode, false));
+      dispatch(setProject(project.code));
+      dispatch(setOrgUnit(project.homeEntityCode, false));
       dispatch(setOverlayComponent(null));
     }
   },
