@@ -3,21 +3,22 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
+/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-env jest */
+
+require('jest-chain');
+require('jest-extended');
 
 const { addCustomJestMatchers } = require('@tupaia/utils');
 
 const customMatchers = [
   {
-    type: 'and',
     description: {
       name: 'toHaveBeenCalledOnceWith',
       receives: 'jest.fn()',
     },
-    matchers: [
-      expectChain => expectChain.toHaveBeenCalledTimes(1),
-      (expectChain, ...expected) => expectChain.toHaveBeenCalledWith(...expected),
-    ],
+    matcher: (expectChain, ...expected) =>
+      expectChain.toHaveBeenCalledTimes(1).toHaveBeenCalledWith(...expected),
   },
 ];
 

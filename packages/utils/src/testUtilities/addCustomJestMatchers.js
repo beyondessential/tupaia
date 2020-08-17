@@ -20,32 +20,18 @@ class JestMatcherFactory {
   constructor(expect, extendApi) {
     this.expect = expect;
     this.extendApi = extendApi;
-    this.matcherTypeToConstructor = {
-      and: this.createAndMatcher,
-    };
-  }
-
-  create(config) {
-    const { type } = config;
-    const createMatcher = this.matcherTypeToConstructor[type];
-    if (!createMatcher) {
-      throw new Error(`Invalid matcher type: ${type}`);
-    }
-    return createMatcher(config);
   }
 
   /**
    * Joins all matchers in the config with AND logic
-   * @param {{ type: 'and', description: Description, matchers: Function[] }} config
+   * @param {{ description: Description, matcher: Function }} config
    */
-  createAndMatcher = config => (received, ...expected) => {
-    const { description, matchers } = config;
+  create = config => (received, ...expected) => {
+    const { description, matcher } = config;
 
     try {
-      matchers.forEach(matcher => {
-        const expectChain = this.isNot ? this.expect(received).not : this.expect(received);
-        matcher(expectChain, ...expected);
-      });
+      const expectChain = this.isNot ? this.expect(received).not : this.expect(received);
+      matcher(expectChain, ...expected);
     } catch (error) {
       const diff = this.extractDiffFromMessage(error.message);
       return this.createFailureResponse(description, diff);
