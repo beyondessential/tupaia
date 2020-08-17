@@ -18,7 +18,7 @@ exports.up = function(db) {
   return db.createTable('indicator', {
     columns: {
       id: { type: 'text', primaryKey: true },
-      code: { type: 'text', unique: true },
+      code: { type: 'text', notNull: true, unique: true },
       builder: { type: 'text', notNull: true },
       config: { type: 'jsonb', notNull: true, defaultValue: '{}' },
     },
