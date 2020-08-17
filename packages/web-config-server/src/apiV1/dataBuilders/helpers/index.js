@@ -10,7 +10,7 @@ export { calculateArithmeticOperationForAnalytics } from './calculateArithmeticO
 export { groupEvents, getAllDataElementCodes } from './groupEvents';
 export { fetchComposedData } from './fetchComposedData';
 export { addMetadataToEvents, isMetadataKey, metadataKeysToDataElementMap } from './eventMetadata';
-export { flatToSeries } from './series';
+export { composeDataByDataClass } from './composeDataByDataClass';
 export {
   checkValueSatisfiesCondition,
   getEventsThatSatisfyConditions,

@@ -9,7 +9,7 @@ import {
   countEventsThatSatisfyConditions,
   groupEvents,
   getAllDataElementCodes,
-  flatToSeries,
+  composeDataByDataClass,
 } from '/apiV1/dataBuilders/helpers';
 
 /**
@@ -79,7 +79,7 @@ export class CountEventsBuilder extends DataBuilder {
 
   transformSeries(data) {
     const { series } = this.config;
-    return series ? this.sortDataByName(Object.values(flatToSeries(data, series))) : data;
+    return series ? this.sortDataByName(composeDataByDataClass(data, series)) : data;
   }
 }
 

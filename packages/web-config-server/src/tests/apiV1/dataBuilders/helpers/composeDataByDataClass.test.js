@@ -1,10 +1,10 @@
 import { expect } from 'chai';
-import { flatToSeries } from '../../../../apiV1/dataBuilders/helpers/series';
+import { composeDataByDataClass } from '../../../../apiV1/dataBuilders/helpers/composeDataByDataClass';
 
-describe('series', () => {
-  it('flatToSeries', () =>
+describe('composeDataByDataClass', () => {
+  it('composeDataByDataClass', () =>
     expect(
-      flatToSeries(
+      composeDataByDataClass(
         [
           {
             name: 'FEMALE_10_TO_19',

@@ -1,9 +1,11 @@
 /**
+ * Transforms data from a flat array into an array grouped by series
+ *
  * @param {array of Object<name, value>} data e.g. [ { name: A, value: 1 }, { name: B, value: 2 } ]
  * @param seriesConfig
  * @returns {array of Object<name, ...>} e.g. [ { name: 'Age', A: 1, B: 2 } ]
  */
-export const flatToSeries = (data, seriesConfig) => {
+export const composeDataByDataClass = (data, seriesConfig) => {
   const transformedAsObj = {};
 
   Object.entries(seriesConfig).forEach(([seriesLabel, values]) => {
