@@ -110,10 +110,7 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
   // eslint-disable-next-line class-methods-use-this
   getAggregationType() {
     // Can be overwritten in child class
-    return {
-      numerator: undefined,
-      denominator: undefined,
-    };
+    return {};
   }
 
   async fetchResults() {

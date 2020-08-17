@@ -75,8 +75,8 @@ export const countAnalyticsThatSatisfyConditions = (analytics, conditions) => {
  * @param {Conditions} [conditions]
  * @returns {number}
  */
-export const countAnalyticsGroupsThatSatisfyConditions = (groupedAnalytics, conditions) => {
-  const { dataValues: valueConditions = {} } = conditions || {};
+export const countAnalyticsGroupsThatSatisfyConditions = (groupedAnalytics, conditions = {}) => {
+  const { dataValues: valueConditions = {} } = conditions;
 
   const groupedAnalyticsHasTargetValues = analytics =>
     Object.entries(valueConditions).every(([dataElement, condition]) => {
