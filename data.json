@@ -1,0 +1,19 @@
+{
+  "name": "Daily Fridge Temperatures",
+  "type": "chart",
+  "chartType": "line",
+  "valueType": "text",
+  "chartConfig": {
+    "Max": {
+      "color": "#f44336",
+      "labelType": "timestamp",
+      "referenceValue": 8
+    },
+    "Min": {
+      "color": "#2196f3",
+      "labelType": "timestamp",
+      "referenceValue": 2
+    }
+  },
+  "periodGranularity": "day"
+}

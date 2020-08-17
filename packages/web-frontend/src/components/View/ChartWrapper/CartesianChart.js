@@ -12,6 +12,7 @@ import {
   Legend,
   Line,
   LineChart,
+  ReferenceArea,
   ReferenceLine,
   ResponsiveContainer,
   Text,
@@ -426,6 +427,21 @@ export class CartesianChart extends PureComponent {
     );
   };
 
+  renderReferenceAreas = () => {
+    const { chartConfig = {} } = this.state;
+
+    if (!('referenceAreas' in chartConfig)) {
+      return null;
+    }
+
+    return chartConfig.referenceAreas.map(areaProps=> {
+      console.log('props', areaProps);
+      return (
+        <ReferenceArea {...areaProps} />
+      )
+    });
+  };
+
   renderReferenceLines = () => {
     const { viewContent } = this.props;
     const { chartType } = viewContent;
@@ -595,6 +611,7 @@ export class CartesianChart extends PureComponent {
           data={this.filterDisabledData(data)}
           margin={isExporting ? { left: 20, right: 20, top: 20, bottom: 20 } : undefined}
         >
+          {this.renderReferenceAreas()}
           {this.renderXAxis()}
           {this.renderYAxes()}
           {this.renderTooltip()}
