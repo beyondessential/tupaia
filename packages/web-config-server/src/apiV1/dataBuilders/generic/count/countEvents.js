@@ -9,6 +9,7 @@ import {
   countEventsThatSatisfyConditions,
   groupEvents,
   getAllDataElementCodes,
+  flatToSeries,
 } from '/apiV1/dataBuilders/helpers';
 
 /**
@@ -53,13 +54,15 @@ export class CountEventsBuilder extends DataBuilder {
   async buildData(events) {
     const eventGroups = await this.groupEvents(events);
 
-    return Object.entries(eventGroups)
+    const groupedData = Object.entries(eventGroups)
       .reduce(
         (result, [groupName, eventsForGroup]) =>
           result.concat(this.buildDataForGroup(eventsForGroup, groupName)),
         [],
       )
       .sort(getSortByKey('name'));
+
+    return this.transformSeries(groupedData);
   }
 
   async groupEvents(events) {
@@ -72,6 +75,11 @@ export class CountEventsBuilder extends DataBuilder {
     const value = countEventsThatSatisfyConditions(events, { dataValues });
 
     return [{ name, value }];
+  }
+
+  transformSeries(data) {
+    const { series } = this.config;
+    return series ? this.sortDataByName(Object.values(flatToSeries(data, series))) : data;
   }
 }
 
