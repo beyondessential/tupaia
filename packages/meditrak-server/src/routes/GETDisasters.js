@@ -15,8 +15,9 @@ const columns = {
 };
 
 /**
- * Handles endpoint:
+ * Handles endpoints:
  * - /disaster
+ * - /disaster/:disasterId
  */
 export class GETDisasters extends GETHandler {
   // fail permissions checking if they definitely don't have access to the user groups required to
