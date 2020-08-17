@@ -36,7 +36,7 @@ export async function getChanges(req, res) {
   const { database, models } = req;
   const { limit = MAX_CHANGES_RETURNED, offset = 0 } = req.query;
 
-  req.checkPermissions(checkNoPermissions);
+  await req.checkPermissions(checkNoPermissions);
 
   try {
     const filter = await getChangesFilter(req);

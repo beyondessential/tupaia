@@ -22,7 +22,7 @@ const isLegacyRequest = req => !req.query.appVersion;
  * Responds to GET requests to the /changes/count endpoint
  */
 export async function countChanges(req, res) {
-  req.checkPermissions(checkNoPermissions);
+  await req.checkPermissions(checkNoPermissions);
 
   try {
     if (isLegacyRequest(req)) {

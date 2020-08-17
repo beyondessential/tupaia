@@ -18,7 +18,7 @@ export const getSocialFeed = async (req, res) => {
   } = query;
   const pageNumber = parseInt(page, 10);
 
-  req.checkPermissions(checkNoPermissions);
+  await req.checkPermissions(checkNoPermissions);
 
   // @todo: Use user access policy to determine the type of information appearing in the feed.
   const conditions = {};

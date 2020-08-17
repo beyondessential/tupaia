@@ -10,7 +10,7 @@ export const requestPasswordReset = async (req, res) => {
   const { body, models } = req;
   const { emailAddress } = body;
 
-  req.checkPermissions(checkNoPermissions);
+  await req.checkPermissions(checkNoPermissions);
 
   if (!emailAddress) {
     throw new FormValidationError('No email address provided', ['emailAddress']);
