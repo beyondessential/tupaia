@@ -2,6 +2,7 @@ import { respond, UnverifiedError, FormValidationError } from '@tupaia/utils';
 import { encryptPassword } from '@tupaia/auth';
 
 import { sendEmail } from '../utilities';
+import { checkNoPermissions } from '../permissions';
 
 export const sendVerifyEmail = async (req, userId) => {
   const { models } = req;
@@ -31,6 +32,8 @@ export async function verifyEmail(req, res) {
   const { token } = req.body;
   const { UNVERIFIED, NEW_USER, VERIFIED } = models.user.emailVerifiedStatuses;
 
+  req.checkPermissions(checkNoPermissions);
+
   // search for unverified emails first - if we don't find any try for emails already verified so we don't pass an error back if the user clicks the link twice
   const verifiedUser =
     (await verifyEmailHelper(models, [UNVERIFIED, NEW_USER], token)) ||
@@ -59,6 +62,9 @@ async function verifyEmailHelper(models, searchCondition, token) {
 export const requestResendEmail = async (req, res) => {
   const { body, models } = req;
   const { emailAddress } = body;
+
+  req.checkPermissions(checkNoPermissions);
+
   if (!emailAddress) {
     throw new FormValidationError('No email address provided', ['emailAddress']);
   }

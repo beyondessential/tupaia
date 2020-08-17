@@ -10,6 +10,13 @@ import { BES_ADMIN_PERMISSION_GROUP, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from 
 ////
 
 /**
+ * Returns true all the time. This is for any route handlers that do not need permissions.
+ */
+export const checkNoPermissions = () => {
+  return true;
+};
+
+/**
  * Returns true if all of the permissions checkers pass, or throws an error
  * @param {function[]} permissionsCheckers  Each permission checking function should return true or throw an error
  * @param {string} errorMessage
