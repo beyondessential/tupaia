@@ -25,7 +25,7 @@ const DASHBOARD = {
     dataElementCodes: ['HP253'],
   },
   viewJson: {
-    name: 'Number of public areas inspected for Tobacco Compliance',
+    name: 'Number of Public Areas Inspected for Tobacco Compliance',
     type: 'view',
     viewType: 'singleValue',
     valueType: 'number',
