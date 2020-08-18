@@ -61,6 +61,12 @@ class JestMatcherFactory {
    */
   extractDiffFromMessage = message => removeLinesFromTextStart(message, 2);
 
+  /**
+   * Diff to be shown when a "negated" expectation chain (i.e. one containing a `.not` matcher)
+   * is fulfilled, contrary to the expectations. Example:
+   * `expect(1 + 1).not.toBe(2)` // Expected: not 2, Received: 2
+   * The format used is the same that jest uses for those cases
+   */
   createNegationDiff = (received, ...expected) =>
     [
       `Expected: not ${this.utils.printExpected(...expected)}`,
