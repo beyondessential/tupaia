@@ -731,7 +731,7 @@ function* fetchMeasureInfoForMeasurePeriodChange() {
   const state = yield select();
 
   yield fetchMeasureInfo(
-    state.measureBar.currentMeasure.measureId,
+    state.measureBar.selectedMeasureId,
     state.measureBar.currentMeasureOrganisationUnitCode,
   );
 }
