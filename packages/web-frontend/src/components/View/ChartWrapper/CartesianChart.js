@@ -428,13 +428,13 @@ export class CartesianChart extends PureComponent {
   };
 
   renderReferenceAreas = () => {
-    const { chartConfig = {} } = this.state;
+    const { viewContent } = this.props;
 
-    if (!('referenceAreas' in chartConfig)) {
+    if (!('referenceAreas' in viewContent)) {
       return null;
     }
 
-    return chartConfig.referenceAreas.map(areaProps => <ReferenceArea {...areaProps} />);
+    return viewContent.referenceAreas.map(areaProps => <ReferenceArea {...areaProps} />);
   };
 
   renderReferenceLines = () => {
