@@ -4,7 +4,6 @@
  */
 
 import { BES_ADMIN_PERMISSION_GROUP, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from './constants';
-import { checkEntitiesImportPermissions } from './imports';
 
 const DEFAULT_ERROR_MESSAGE = 'Your permissions do not allow access to the requested resource';
 
