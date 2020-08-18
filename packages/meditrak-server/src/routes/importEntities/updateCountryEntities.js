@@ -3,11 +3,10 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { getCode as getCountryIsoCode } from 'countrynames';
-
 import { ImportValidationError } from '@tupaia/utils';
 import { getEntityObjectValidator } from './getEntityObjectValidator';
 import { getOrCreateParentEntity } from './getOrCreateParentEntity';
+import { getCountryCode } from '../utilities/getCountryCode';
 
 const DEFAULT_TYPE_NAMES = {
   1: 'Hospital',
@@ -27,14 +26,6 @@ function getDefaultTypeDetails(type) {
     );
   }
   return { categoryCode, typeName };
-}
-
-function getCountryCode(countryName, entityObjects) {
-  // Use the country ISO code if there's a direct match, otherwise base on the two letter facility
-  // code prefix
-  const country = getCountryIsoCode(countryName) || entityObjects[0].code.substring(0, 2);
-  if (!country) throw new ImportValidationError(`${countryName} is not a recognised country`);
-  return country;
 }
 
 export async function updateCountryEntities(transactingModels, countryName, entityObjects) {

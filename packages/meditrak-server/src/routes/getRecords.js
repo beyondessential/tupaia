@@ -16,6 +16,11 @@ import {
   findOrCountJoinChildren,
 } from '../dataAccessors';
 import { getApiUrl, resourceToRecordType } from '../utilities';
+import {
+  checkAnyPermissions,
+  hasBESAdminAccess,
+  hasTupaiaAdminPanelUserAccess,
+} from '../permissions';
 
 const GETTABLE_TYPES = [
   TYPES.ANSWER,
@@ -100,6 +105,14 @@ export async function getRecords(req, res) {
   if (!GETTABLE_TYPES.includes(recordType)) {
     throw new ValidationError(`${recordType} is not a valid GET endpoint`);
   }
+
+  await req.checkPermissions(
+    checkAnyPermissions(
+      [hasBESAdminAccess, hasTupaiaAdminPanelUserAccess],
+      'No permissions to get records',
+    ),
+  );
+
   try {
     const {
       pageSize: limit = MAX_RECORDS_PER_PAGE,
