@@ -24,19 +24,20 @@ class JestMatcherFactory {
 
   /**
    * Joins all matchers in the config with AND logic
-   * @param {{ description: Description, matcher: Function }} config
+   * @param {{ description: Description, matcher: Function, negationDiff: Function }} config
    */
   create = config => (received, ...expected) => {
     const { description, matcher } = config;
 
     try {
       const expectChain = this.isNot ? this.expect(received).not : this.expect(received);
-      matcher(expectChain, ...expected);
+      matcher(expectChain, expected);
     } catch (error) {
       const diff = this.extractDiffFromMessage(error.message);
       return this.createFailureResponse(description, diff);
     }
-    const diff = this.createNegationDiff(received, ...expected);
+
+    const diff = this.createNegationDiff(config, received, expected);
     return this.createSuccessResponse(description, diff);
   };
 
@@ -63,15 +64,21 @@ class JestMatcherFactory {
 
   /**
    * Diff to be shown when a "negated" expectation chain (i.e. one containing a `.not` matcher)
-   * is fulfilled, contrary to the expectations. Example:
+   * is fulfilled, contrary to the expectations.
+   *
+   * Example:
    * `expect(1 + 1).not.toBe(2)` // Expected: not 2, Received: 2
-   * The format used is the same that jest uses for those cases
    */
-  createNegationDiff = (received, ...expected) =>
-    [
-      `Expected: not ${this.extendApi.utils.printExpected(...expected)}`,
-      `Received: ${this.extendApi.utils.printReceived(received)}`,
-    ].join('\n');
+  createNegationDiff = (config, received, expected) => {
+    const { negationDiff } = config;
+
+    return negationDiff
+      ? negationDiff(this.extendApi, received, expected)
+      : [
+          `Expected: not ${this.extendApi.utils.printExpected(expected)}`,
+          `Received: ${this.extendApi.utils.printReceived(received)}`,
+        ].join('\n');
+  };
 
   descriptionToMatcherHint = description =>
     this.extendApi.utils.matcherHint(description.name, description.receives, description.expects);

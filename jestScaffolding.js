@@ -17,8 +17,12 @@ const customMatchers = [
       name: 'toHaveBeenCalledOnceWith',
       receives: 'jest.fn()',
     },
-    matcher: (expectChain, ...expected) =>
+    matcher: (expectChain, expected) =>
       expectChain.toHaveBeenCalledTimes(1).toHaveBeenCalledWith(...expected),
+    negationDiff: (extendApi, _, expected) =>
+      `Expected not to have been called ${extendApi.utils.RECEIVED_COLOR(
+        'once',
+      )} with ${extendApi.utils.printReceived(expected)}`,
   },
 ];
 
