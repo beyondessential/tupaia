@@ -6,7 +6,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import { CartesianChart } from '../../src/components/View/ChartWrapper/CartesianChart';
-import { CheckboxField } from '../../src/containers/Form/Fields';
 import data from './data/composed.json';
 
 const Container = styled.div`
@@ -61,56 +60,4 @@ Composed.args = {
       },
     },
   },
-};
-
-const Options = styled.div`
-  padding: 1rem 3rem;
-`;
-
-// Todo: Either refactor Chart component to be controllable or delete this story
-export const Filterable = () => {
-  const [showLine, setShowLine] = React.useState(true);
-
-  const chartConfig = {
-    value1: {
-      chartType: 'bar',
-      color: '#6ab04c',
-      stackId: 'a',
-      referenceValue: '0.5',
-    },
-    value2: {
-      chartType: 'bar',
-      color: '#f0932b',
-      stackId: 'a',
-    },
-  };
-
-  const lineConfig = {
-    value3: {
-      chartType: 'line',
-      color: '#ffffff',
-      referenceValue: '1.1',
-    },
-  };
-
-  const config = {
-    ...Composed.args.viewContent,
-    chartConfig: { ...chartConfig, ...(showLine && lineConfig) },
-  };
-
-  return (
-    <Container>
-      <Options>
-        <CheckboxField
-          name="showLine"
-          label="Show line"
-          onChange={event => {
-            setShowLine(event.target.checked);
-          }}
-          value={showLine}
-        />
-      </Options>
-      <CartesianChart viewContent={config} isEnlarged />
-    </Container>
-  );
 };
