@@ -186,7 +186,6 @@ export function flattenMeasureHierarchy(measureHierarchy) {
       }
     });
   };
-
   measureHierarchy.forEach(measure => {
     if (measure.children) {
       flattenGroupedMeasure(measure);
