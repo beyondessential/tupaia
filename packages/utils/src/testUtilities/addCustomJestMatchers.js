@@ -30,7 +30,6 @@ class JestMatcherFactory {
   }
 
   /**
-   * Joins all matchers in the config with AND logic
    * @param {MatcherConfig} config
    */
   create = config => (received, ...expected) => {
