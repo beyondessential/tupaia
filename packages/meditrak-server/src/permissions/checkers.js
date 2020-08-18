@@ -76,6 +76,6 @@ export const hasTupaiaAdminPanelAccess = checkOrThrow(accessPolicy =>
   accessPolicy.allowsSome(null, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP),
 );
 export const hasEntitiesImportPermissions = checkOrThrow(
-  (accessPolicy, models, entitiesByCountryName,) =>
+  (accessPolicy, models, entitiesByCountryName) =>
     checkEntitiesImportPermissions(accessPolicy, models, entitiesByCountryName),
 );
