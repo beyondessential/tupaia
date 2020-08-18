@@ -10,6 +10,13 @@
  * @property {string} [expects]
  */
 
+/**
+ * @typedef {Object} MatcherConfig
+ * @property {Description} description
+ * @property {Function} matcher
+ * @property {Function} [negationDiff]
+ */
+
 const removeLinesFromTextStart = (text, lineCount) =>
   text
     .split('\n')
@@ -24,7 +31,7 @@ class JestMatcherFactory {
 
   /**
    * Joins all matchers in the config with AND logic
-   * @param {{ description: Description, matcher: Function, negationDiff: Function }} config
+   * @param {MatcherConfig} config
    */
   create = config => (received, ...expected) => {
     const { description, matcher } = config;
