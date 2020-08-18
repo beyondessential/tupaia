@@ -52,19 +52,7 @@ export const LineReferenceAreas = Template.bind({});
 LineReferenceAreas.args = {
   isEnlarged: true,
   viewContent: {
-    data: data,
-    viewId: '13',
-    organisationUnitCode: 'DL',
-    dashboardGroupId: '108',
-    startDate: '2015-01-01',
-    endDate: '2020-08-31',
-    name: 'Medicines Availability by Clinic',
-    type: 'chart',
-    xName: 'Clinic',
-    yName: '%',
-    chartType: 'line',
-    valueType: 'percentage',
-    periodGranularity: 'month',
+    ...SimpleLine.args.viewContent,
     chartConfig: {
       value: 'value',
       referenceAreas: [

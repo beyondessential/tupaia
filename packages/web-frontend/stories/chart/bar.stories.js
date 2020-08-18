@@ -52,19 +52,7 @@ export const StackedBar = Template.bind({});
 StackedBar.args = {
   isEnlarged: true,
   viewContent: {
-    data: data,
-    viewId: '13',
-    organisationUnitCode: 'DL',
-    dashboardGroupId: '108',
-    startDate: '2015-01-01',
-    endDate: '2020-08-31',
-    name: 'Medicines Availability by Clinic',
-    type: 'chart',
-    xName: 'Clinic',
-    yName: '%',
-    chartType: 'bar',
-    valueType: 'percentage',
-    periodGranularity: 'month',
+    ...SimpleBar.args.viewContent,
     chartConfig: {
       value: {
         chartType: 'bar',
@@ -84,19 +72,7 @@ export const BarReferenceAreas = Template.bind({});
 BarReferenceAreas.args = {
   isEnlarged: true,
   viewContent: {
-    data: data,
-    viewId: '13',
-    organisationUnitCode: 'DL',
-    dashboardGroupId: '108',
-    startDate: '2015-01-01',
-    endDate: '2020-08-31',
-    name: 'Medicines Availability by Clinic',
-    type: 'chart',
-    xName: 'Clinic',
-    yName: '%',
-    chartType: 'bar',
-    valueType: 'percentage',
-    periodGranularity: 'month',
+    ...SimpleBar.args.viewContent,
     referenceAreas: [
       {
         key: 1,
@@ -128,7 +104,6 @@ BarReferenceAreas.args = {
       {
         key: 4,
         y1: 0.8,
-        // y2: 1.0,
         stroke: '#6ab04c',
         fill: '#6ab04c',
         fillOpacity: 0.5,
