@@ -4,7 +4,7 @@
  */
 
 import { Aggregator } from '@tupaia/aggregator';
-import { DatabaseModel } from '@tupaia/database';
+import { DatabaseModel, DatabaseType } from '@tupaia/database';
 
 export interface Analytic {
   dataElement: string;
@@ -13,8 +13,19 @@ export interface Analytic {
   value: number;
 }
 
+export interface IndicatorType extends DatabaseType {
+  id: string;
+  code: string;
+  builder: string;
+  config: Record<string, unknown>;
+}
+
+export interface IndicatorModel extends DatabaseModel {
+  find: (dbConditions: Record<string, unknown>) => Promise<IndicatorType[]>;
+}
+
 export interface ModelRegistry {
-  [key: string]: DatabaseModel;
+  indicator: IndicatorModel;
 }
 
 export interface Builder<C extends {}> {

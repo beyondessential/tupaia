@@ -8,7 +8,7 @@ import { capital } from 'case';
 import { Aggregator } from '@tupaia/aggregator';
 import { DataBroker } from '@tupaia/data-broker';
 import * as builders from './builders';
-import { Analytic, FetchOptions, ModelRegistry } from './types';
+import { Analytic, FetchOptions, ModelRegistry, IndicatorType } from './types';
 
 export class IndicatorApi {
   private models: ModelRegistry;
@@ -33,7 +33,10 @@ export class IndicatorApi {
     return analytics;
   }
 
-  private buildAnalyticsForIndicator = async (indicator, fetchOptions: FetchOptions) => {
+  private buildAnalyticsForIndicator = async (
+    indicator: IndicatorType,
+    fetchOptions: FetchOptions,
+  ) => {
     const { builder, config } = indicator;
     const buildAnalytics = this.getBuilderFunction(builder);
     return buildAnalytics({ aggregator: this.aggregator, config, fetchOptions });
