@@ -13,8 +13,11 @@ export const hasSurveysImportPermissions = async (
   //If countries are selected when import surveys, it will update the country_ids of the survey
   //So we need to check if the user has TUPAIA_ADMIN_PANEL_PERMISSION_GROUP to the new specified countries for the surveys
   if (newCountryIds) {
-    const newCountryEntities = await models.entity.find({
+    const newCountries = await models.country.find({
       id: newCountryIds,
+    });
+    const newCountryEntities = await models.entity.find({
+      code: newCountries.map(newCountry => newCountry.code),
     });
     const newCountryEntityCodes = newCountryEntities.map(newCountryEntity => newCountryEntity.code);
 
@@ -27,7 +30,7 @@ export const hasSurveysImportPermissions = async (
     throw new Error("Insufficient permissions to the surveys' countries");
   }
 
-  const surveys = models.survey.find({
+  const surveys = await models.survey.find({
     name: surveyNames,
   });
 
@@ -38,7 +41,7 @@ export const hasSurveysImportPermissions = async (
       id: survey.country_ids,
     });
     const surveyCountryEntities = await models.entity.find({
-      id: surveyCountries.map(surveyCountry => surveyCountry.code),
+      code: surveyCountries.map(surveyCountry => surveyCountry.code),
     });
     const surveyPermissionGroup = await models.permissionGroup.findOne({
       id: survey.permission_group_id,
