@@ -47,7 +47,7 @@ Composed.args = {
     valueType: 'percentage',
     periodGranularity: 'month',
     chartConfig: {
-      value: {
+      value1: {
         chartType: 'bar',
         color: '#6ab04c',
       },
@@ -63,29 +63,13 @@ Composed.args = {
   },
 };
 
-const filterableBaseConfig = {
-  data: data,
-  viewId: '13',
-  organisationUnitCode: 'DL',
-  dashboardGroupId: '108',
-  startDate: '2015-01-01',
-  endDate: '2020-08-31',
-  name: 'Medicines Availability by Clinic',
-  type: 'chart',
-  xName: 'Clinic',
-  yName: '%',
-  chartType: 'composed',
-  valueType: 'percentage',
-  periodGranularity: 'month',
-};
-
 const Options = styled.div`
   padding: 1rem 3rem;
 `;
 
 // Todo: Either refactor Chart component to be controllable or delete this story
 export const Filterable = () => {
-  const [showLine, setShowLine] = React.useState(false);
+  const [showLine, setShowLine] = React.useState(true);
 
   const chartConfig = {
     value1: {
@@ -110,7 +94,7 @@ export const Filterable = () => {
   };
 
   const config = {
-    ...filterableBaseConfig,
+    ...Composed.args.viewContent,
     chartConfig: { ...chartConfig, ...(showLine && lineConfig) },
   };
 
