@@ -69,8 +69,8 @@ class JestMatcherFactory {
    */
   createNegationDiff = (received, ...expected) =>
     [
-      `Expected: not ${this.utils.printExpected(...expected)}`,
-      `Received: ${this.utils.printReceived(received)}`,
+      `Expected: not ${this.extendApi.utils.printExpected(...expected)}`,
+      `Received: ${this.extendApi.utils.printReceived(received)}`,
     ].join('\n');
 
   descriptionToMatcherHint = description =>
