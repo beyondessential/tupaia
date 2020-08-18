@@ -20,7 +20,7 @@ const customMatchers = [
     matcher: (expectChain, expected) =>
       expectChain.toHaveBeenCalledTimes(1).toHaveBeenCalledWith(...expected),
     negationDiff: (extendApi, _, expected) =>
-      `Expected not to have been called ${extendApi.utils.RECEIVED_COLOR(
+      `Expected spy not to have been called ${extendApi.utils.RECEIVED_COLOR(
         'once',
       )} with ${extendApi.utils.printReceived(expected)}`,
   },

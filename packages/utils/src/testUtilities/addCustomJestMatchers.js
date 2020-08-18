@@ -30,8 +30,7 @@ class JestMatcherFactory {
     const { description, matcher } = config;
 
     try {
-      const expectChain = this.isNot ? this.expect(received).not : this.expect(received);
-      matcher(expectChain, expected);
+      matcher(this.expect(received), expected);
     } catch (error) {
       const diff = this.extractDiffFromMessage(error.message);
       return this.createFailureResponse(description, diff);
@@ -81,7 +80,9 @@ class JestMatcherFactory {
   };
 
   descriptionToMatcherHint = description =>
-    this.extendApi.utils.matcherHint(description.name, description.receives, description.expects);
+    this.extendApi.utils.matcherHint(description.name, description.receives, description.expects, {
+      isNot: this.extendApi.isNot,
+    });
 }
 
 export const addCustomJestMatchers = (expect, customMatchers) => {
