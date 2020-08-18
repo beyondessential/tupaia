@@ -34,14 +34,14 @@ export const fetchAnalytics = async (
   aggregationsByCode: Record<string, Aggregation[]>,
   fetchOptions: FetchOptions,
 ): Promise<Analytic[]> => {
+  // A different collection of aggregations may be required for each data element code,
+  // but only one collection can be provided in an aggregator call
+  // Group data elements per aggregation collection to minimise aggregator calls
   const aggregationJsonToCodes = groupBy(Object.keys(aggregationsByCode), code =>
     JSON.stringify(aggregationsByCode[code]),
   );
 
   const analytics: Analytic[] = [];
-  // A different collection of aggregations may be required for each data element code,
-  // but only one collection can be provided in an aggregator call
-  // Group data elements per aggregation collection to minimise aggregator calls
   await Promise.all(
     Object.entries(aggregationJsonToCodes).map(async ([aggregationJson, codes]) => {
       const aggregations = JSON.parse(aggregationJson);
