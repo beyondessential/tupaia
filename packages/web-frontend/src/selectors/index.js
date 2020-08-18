@@ -49,4 +49,5 @@ export {
   selectRadiusScaleFactor,
   selectMeasureBarItemById,
   selectCurrentMeasureId,
+  selectMeasureBarItemCategoryById,
 } from './measureSelectors';

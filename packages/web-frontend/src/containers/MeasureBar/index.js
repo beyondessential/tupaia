@@ -18,14 +18,14 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import shallowEqual from 'shallowequal';
 
-import List from '@material-ui/core/List';
-import CircularProgress from '@material-ui/core/CircularProgress';
-
-import { ControlBar } from '../../components/ControlBar';
-import { changeMeasure, clearMeasure, toggleMeasureExpand } from '../../actions';
+import { Control } from './Control';
+import {
+  changeMeasure,
+  clearMeasure,
+  toggleMeasureExpand,
+  updateMeasureConfig,
+} from '../../actions';
 import { HierarchyItem } from '../../components/HierarchyItem';
-import TupaiaIcon from '../../images/TupaiaIcon.svg';
-import { MAP_OVERLAY_SELECTOR } from '../../styles';
 import {
   selectCurrentOrgUnit,
   selectCurrentMeasure,
@@ -133,48 +133,28 @@ export class MeasureBar extends Component {
     const { currentOrganisationUnitName } = this.props;
     const orgName = currentOrganisationUnitName || 'Your current selection';
 
-    return `Select an area with valid data. ${orgName} has no map overlays available`;
-  }
-
-  renderContents() {
-    const { isExpanded, measureHierarchy } = this.props;
-
-    if (!isExpanded) return null;
-    if (measureHierarchy.length === 0) return this.renderEmptyMessage();
-
-    return this.renderHierarchy();
+    return `Select an area with valid data. ${orgName} has no map overlays available.`;
   }
 
   render() {
-    const { currentMeasure, isExpanded, onExpandClick, isMeasureLoading } = this.props;
-
-    const icon = isMeasureLoading ? (
-      <CircularProgress size={24} thickness={4} />
-    ) : (
-      <TupaiaIcon style={{ height: 26, width: 24 }} />
-    );
+    const {
+      currentMeasure,
+      isMeasureLoading,
+      currentOrganisationUnitName,
+      onUpdateMeasurePeriod,
+    } = this.props;
+    const orgName = currentOrganisationUnitName || 'Your current selection';
+    const emptyMessage = `Select an area with valid data. ${orgName} has no map overlays available.`;
 
     return (
-      <ControlBar
-        value={this.state.hasNeverBeenChanged ? null : currentMeasure.name}
-        isExpanded={isExpanded}
-        onExpandClick={() => onExpandClick()}
-        icon={icon}
-        style={{
-          background: MAP_OVERLAY_SELECTOR.background,
-          border: MAP_OVERLAY_SELECTOR.border,
-        }}
+      <Control
+        emptyMessage={emptyMessage}
+        selectedMeasure={currentMeasure}
+        isMeasureLoading={isMeasureLoading}
+        onUpdateMeasurePeriod={onUpdateMeasurePeriod}
       >
-        <List
-          style={{
-            flexDirection: 'column',
-            overflowY: 'auto',
-            whiteSpace: 'pre-line',
-          }}
-        >
-          {this.renderContents()}
-        </List>
-      </ControlBar>
+        {this.renderHierarchy()}
+      </Control>
     );
   }
 }
@@ -189,9 +169,9 @@ MeasureBar.propTypes = {
   measureHierarchy: PropTypes.array.isRequired,
   isExpanded: PropTypes.bool.isRequired,
   isMeasureLoading: PropTypes.bool.isRequired,
-  onExpandClick: PropTypes.func.isRequired,
   onSelectMeasure: PropTypes.func.isRequired,
   onClearMeasure: PropTypes.func.isRequired,
+  onUpdateMeasurePeriod: PropTypes.func.isRequired,
   currentOrganisationUnitCode: PropTypes.string,
   currentOrganisationUnitName: PropTypes.string,
   defaultMeasure: MeasureShape,
@@ -200,19 +180,27 @@ MeasureBar.propTypes = {
 const mapStateToProps = state => {
   const { measureHierarchy, isExpanded } = state.measureBar;
   const { isMeasureLoading } = state.map;
+  const { isLoadingOrganisationUnit } = state.global;
+
   const currentOrganisationUnit = selectCurrentOrgUnit(state);
   const currentMeasure = selectCurrentMeasure(state);
-
   const activeProject = selectCurrentProject(state);
+
+  // In the name or normalising our redux state,
+  // currentMeasure should be normalised to currentMeasureId,
+  // and measureInfo selected from measureHierarchy like this.
+  // Using this approach so a larger normalisation refactor is one file easier
+  // in the future.
+  const selectedMeasureInfo = selectMeasureBarItemById(state, currentMeasure.measureId);
   const defaultMeasure = selectMeasureBarItemById(state, activeProject.defaultMeasure);
 
   return {
-    currentMeasure,
+    currentMeasure: selectedMeasureInfo || {},
     measureHierarchy,
     isExpanded,
-    isMeasureLoading,
     currentOrganisationUnitCode: currentOrganisationUnit.organisationUnitCode,
     currentOrganisationUnitName: currentOrganisationUnit.name,
+    isMeasureLoading: isMeasureLoading || isLoadingOrganisationUnit,
     defaultMeasure,
   };
 };
@@ -222,6 +210,8 @@ const mapDispatchToProps = dispatch => ({
   onClearMeasure: () => dispatch(clearMeasure()),
   onSelectMeasure: (measure, orgUnitCode) =>
     dispatch(changeMeasure(measure.measureId, orgUnitCode)),
+  onUpdateMeasurePeriod: (startDate, endDate) =>
+    dispatch(updateMeasureConfig({ startDate, endDate })),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(MeasureBar);

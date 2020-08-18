@@ -37,6 +37,7 @@ export const CHANGE_SIDE_BAR_CONTRACTED_WIDTH = 'CHANGE_SIDE_BAR_CONTRACTED_WIDT
 export const CHANGE_SIDE_BAR_EXPANDED_WIDTH = 'CHANGE_SIDE_BAR_EXPANDED_WIDTH';
 export const CLEAR_MEASURE_HIERARCHY = 'CLEAR_MEASURE_HIERARCHY';
 export const CHANGE_MEASURE = 'CHANGE_MEASURE';
+export const UPDATE_MEASURE_CONFIG = 'UPDATE_MEASURE_CONFIG';
 export const REQUEST_ORG_UNIT = 'REQUEST_ORG_UNIT';
 export const FETCH_ORG_UNIT = 'FETCH_ORG_UNIT';
 export const SET_ORG_UNIT = 'SET_ORG_UNIT';
@@ -521,6 +522,18 @@ export function changeMeasure(measureId, organisationUnitCode) {
     type: CHANGE_MEASURE,
     measureId,
     organisationUnitCode,
+  };
+}
+
+/**
+ * Updates measure config for current measure in measureBar.
+ *
+ * @param {object} measureConfig
+ */
+export function updateMeasureConfig(measureConfig) {
+  return {
+    type: UPDATE_MEASURE_CONFIG,
+    measureConfig,
   };
 }
 

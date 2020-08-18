@@ -25,6 +25,7 @@ import { LANDING } from './containers/OverlayDiv/constants';
 import { getUniqueViewId } from './utils/getUniqueViewId';
 import { EMAIL_VERIFIED_STATUS } from './containers/EmailVerification';
 import { getInitialLocation } from './historyNavigation';
+import { selectMeasureBarItemCategoryById } from './selectors';
 
 // Import Action Types
 import {
@@ -38,6 +39,7 @@ import {
   CHANGE_SIDE_BAR_CONTRACTED_WIDTH,
   CHANGE_SIDE_BAR_EXPANDED_WIDTH,
   CHANGE_MEASURE,
+  UPDATE_MEASURE_CONFIG,
   CLEAR_MEASURE_HIERARCHY,
   ON_SET_ORG_UNIT,
   CHANGE_SEARCH,
@@ -548,6 +550,24 @@ function measureBar(
         selectedMeasureId: action.measureId,
         currentMeasureOrganisationUnitCode: action.organisationUnitCode,
       };
+    case UPDATE_MEASURE_CONFIG: {
+      const { categoryIndex, measure, measureIndex } = selectMeasureBarItemCategoryById(
+        { measureBar: state },
+        state.currentMeasure.measureId,
+      );
+
+      const measureHierarchy = [...state.measureHierarchy];
+
+      measureHierarchy[categoryIndex].children[measureIndex] = {
+        ...measure,
+        ...action.measureConfig,
+      };
+
+      return {
+        ...state,
+        measureHierarchy,
+      };
+    }
     case TOGGLE_MEASURE_EXPAND:
       return { ...state, isExpanded: !state.isExpanded };
     case FETCH_MEASURES_SUCCESS:
