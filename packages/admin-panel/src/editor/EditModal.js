@@ -3,6 +3,7 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
 
+import keyBy from 'lodash.keyby';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -23,6 +24,8 @@ export const EditModalComponent = props => {
     fields,
     isUnchanged,
   } = props;
+  const fieldsBySource = keyBy(fields, 'source');
+
   return (
     <AsyncModal
       isLoading={isLoading}
@@ -35,9 +38,10 @@ export const EditModalComponent = props => {
           <Editor
             fields={fields}
             recordData={recordData}
-            onEditField={(fieldSource, newValue) =>
-              onEditField(getFieldToEditFromSource(fieldSource), newValue)
-            }
+            onEditField={(fieldSource, newValue) => {
+              const fieldSourceToEdit = getFieldSourceToEdit(fieldsBySource[fieldSource]);
+              return onEditField(fieldSourceToEdit, newValue);
+            }}
           />
         )
       }
@@ -105,9 +109,10 @@ export const EditModal = connect(
   mergeProps,
 )(EditModalComponent);
 
-const getFieldToEditFromSource = source => {
-  if (source.includes('.')) {
-    return `${source.split('.')[0]}_id`;
+const getFieldSourceToEdit = field => {
+  const { source, editConfig = {} } = field;
+  if (editConfig.optionsEndpoint) {
+    return editConfig.sourceKey || `${source.split('.')[0]}_id`;
   }
   return source;
 };

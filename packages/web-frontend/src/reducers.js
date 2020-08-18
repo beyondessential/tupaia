@@ -24,6 +24,7 @@ import { getMeasureFromHierarchy, isMobile } from './utils';
 import { LANDING } from './containers/OverlayDiv/constants';
 import { getUniqueViewId } from './utils/getUniqueViewId';
 import { EMAIL_VERIFIED_STATUS } from './containers/EmailVerification';
+import { selectMeasureBarItemCategoryById } from './selectors';
 
 // Import Action Types
 import {
@@ -37,6 +38,7 @@ import {
   CHANGE_SIDE_BAR_CONTRACTED_WIDTH,
   CHANGE_SIDE_BAR_EXPANDED_WIDTH,
   CHANGE_MEASURE,
+  UPDATE_MEASURE_CONFIG,
   CLEAR_MEASURE_HIERARCHY,
   CHANGE_ORG_UNIT,
   CHANGE_SEARCH,
@@ -304,14 +306,17 @@ function changePassword(
         isRequestingChangePassword: true,
         changePasswordFailedMessage: '',
       };
-    case FETCH_CHANGE_PASSWORD_ERROR:
+    case FETCH_CHANGE_PASSWORD_ERROR: {
+      const errorMessage =
+        state.passwordResetToken.length > 0
+          ? 'This password reset link has already been used.'
+          : 'Something went wrong during password change, please check the form and try again';
       return {
         ...state,
         isRequestingChangePassword: false,
-        changePasswordFailedMessage:
-          action.error ||
-          'Something went wrong during password change, please check the form and try again',
+        changePasswordFailedMessage: action.error || errorMessage,
       };
+    }
     case FETCH_CHANGE_PASSWORD_SUCCESS:
       return {
         ...state,
@@ -527,7 +532,7 @@ function measureBar(
     isExpanded: false,
     selectedMeasureId: null,
     currentMeasure: {},
-    measureHierarchy: {},
+    measureHierarchy: [],
     currentMeasureOrganisationUnitCode: null,
     error: null,
   },
@@ -535,7 +540,7 @@ function measureBar(
 ) {
   switch (action.type) {
     case CLEAR_MEASURE_HIERARCHY:
-      return { ...state, measureHierarchy: {} };
+      return { ...state, measureHierarchy: [] };
     case CLEAR_MEASURE:
       return { ...state, currentMeasure: {}, selectedMeasureId: null };
     case CHANGE_MEASURE:
@@ -546,6 +551,24 @@ function measureBar(
         selectedMeasureId: action.measureId,
         currentMeasureOrganisationUnitCode: action.organisationUnitCode,
       };
+    case UPDATE_MEASURE_CONFIG: {
+      const { categoryIndex, measure, measureIndex } = selectMeasureBarItemCategoryById(
+        { measureBar: state },
+        state.currentMeasure.measureId,
+      );
+
+      const measureHierarchy = [...state.measureHierarchy];
+
+      measureHierarchy[categoryIndex].children[measureIndex] = {
+        ...measure,
+        ...action.measureConfig,
+      };
+
+      return {
+        ...state,
+        measureHierarchy,
+      };
+    }
     case TOGGLE_MEASURE_EXPAND:
       return { ...state, isExpanded: !state.isExpanded };
     case FETCH_MEASURES_SUCCESS:

@@ -20,8 +20,14 @@ export class DashboardGroup extends BaseModel {
   ];
 
   // Return dashboardGroup with matching userGroups, organisationLevel and organisationUnits
-  static async getDashboardGroups(userGroups = [], organisationLevel, entity, projectCode) {
-    const ancestorCodes = await entity.getAncestorCodes(true);
+  static async getDashboardGroups(
+    userGroups = [],
+    organisationLevel,
+    entity,
+    projectCode,
+    hierarchyId,
+  ) {
+    const ancestorCodes = await entity.getAncestorCodes(hierarchyId);
     const entityCodes = [...ancestorCodes, entity.code];
     const results = await DashboardGroup.find({
       organisationLevel,

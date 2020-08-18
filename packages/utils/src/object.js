@@ -44,11 +44,23 @@ export const getKeysSortedByValues = (object, options = {}) => {
  * @returns {Function} A `(object1: object, object2: object) => number` function
  */
 export function getSortByKey(key, options) {
-  const compareValuesAscending = (a, b) => {
-    const valueA = a[key];
-    const valueB = b[key];
+  return getSortByExtractedValue(o => o[key], options);
+}
 
-    if (typeof valueA === 'string' && typeof valueB === 'string') {
+/**
+ * Returns a callback which compares two objects using the provided `function` .
+ * Can be used in `Array.prototype.sort` for an array of objects
+ *
+ * @param {Function} valueExtractor function to extract the comparison value
+ * @param {{ ascending: boolean }} options
+ * @returns {Function} A `(object1: object, object2: object) => number` function
+ */
+export function getSortByExtractedValue(valueExtractor, options) {
+  const compareValuesAscending = (a, b) => {
+    const valueA = valueExtractor(a);
+    const valueB = valueExtractor(b);
+
+    if (typeof valueA === 'string' && typeof valueB === 'string') { 
       return valueA.localeCompare(valueB, undefined, { numeric: true });
     }
 
@@ -85,20 +97,25 @@ export const flattenToObject = objectCollection => {
 };
 
 /**
- * Creates a dictionary which maps `keyProperty` of every object in `objectCollection` to `valueProperty`
+ * Creates a dictionary which maps the values of a selected field to another field
+ * Available field (key/value) mapper types:
+ * * `string`: uses the provided string as the field key
+ * * `Function`, will receive the object as its input eg object => object.value * 2
  *
  * @param {ObjectCollection} objectCollection
- * @param {string} keyProperty
- * @param {string} valueProperty
- * @return {Object.<string, string>}
+ * @param {string|Function} keyMapper
+ * @param {string|Function} valueMapper
+ * @return {Object<string, string>}
  */
-export const reduceToDictionary = (objectCollection, keyProperty, valueProperty) => {
+export const reduceToDictionary = (objectCollection, keyMapper, valueMapper) => {
   const objects = collectionToArray(objectCollection);
+  const getFieldValue = (object, fieldMapper) =>
+    typeof fieldMapper === 'function' ? fieldMapper(object) : object[fieldMapper];
 
   const dictionary = {};
   // Using `forEach` is much quicker than using `reduce` with a spread operator on the accumulator
-  objects.forEach(({ [keyProperty]: key, [valueProperty]: value }) => {
-    dictionary[key] = value;
+  objects.forEach(object => {
+    dictionary[getFieldValue(object, keyMapper)] = getFieldValue(object, valueMapper);
   });
   return dictionary;
 };

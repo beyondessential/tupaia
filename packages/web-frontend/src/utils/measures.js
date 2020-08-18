@@ -40,6 +40,9 @@ export const MEASURE_VALUE_NULL = 'null';
 export const POLYGON_MEASURE_TYPES = [MEASURE_TYPE_SHADING, MEASURE_TYPE_SHADED_SPECTRUM];
 export const SPECTRUM_MEASURE_TYPES = [MEASURE_TYPE_SPECTRUM, MEASURE_TYPE_SHADED_SPECTRUM];
 
+const SPECTRUM_SCALE_DEFAULT = { left: {}, right: {} };
+const PERCENTAGE_SPECTRUM_SCALE_DEFAULT = { left: { max: 0 }, right: { min: 1 } };
+
 export function autoAssignColors(values) {
   if (!values) return [];
 
@@ -79,28 +82,32 @@ export function createValueMapping(valueObjects, type) {
   // add a "no data" object to the mapping if there isn't one present already
   const requiresNull = !Object.keys(mapping).some(k => k === MEASURE_VALUE_NULL);
   if (requiresNull) {
-    switch (type) {
-      case MEASURE_TYPE_ICON:
-        mapping.null = { icon: UNKNOWN_ICON, name: 'No data' };
-        break;
-      case MEASURE_TYPE_SHADING:
-      case MEASURE_TYPE_COLOR:
-        mapping.null = { color: UNKNOWN_COLOR, name: 'No data' };
-        break;
-      case MEASURE_TYPE_RADIUS:
-        mapping.null = { name: 'No data' };
-        break;
-      case MEASURE_TYPE_SPECTRUM:
-      case MEASURE_TYPE_SHADED_SPECTRUM:
-        mapping.null = { name: 'No data' };
-        break;
-      default:
-        break;
-    }
+    mapping[MEASURE_VALUE_NULL] = getNullValueMapping(type);
   }
 
   return mapping;
 }
+
+const getNullValueMapping = type => {
+  const baseMapping = {
+    name: 'No data',
+    value: MEASURE_VALUE_NULL,
+  };
+
+  switch (type) {
+    case MEASURE_TYPE_ICON:
+      baseMapping.icon = UNKNOWN_ICON;
+      break;
+    case MEASURE_TYPE_SHADING:
+    case MEASURE_TYPE_COLOR:
+      baseMapping.color = UNKNOWN_COLOR;
+      break;
+    default:
+      break;
+  }
+
+  return baseMapping;
+};
 
 function getFormattedValue(value, type, valueInfo, scaleType, valueType, submissionDate) {
   switch (type) {
@@ -124,7 +131,7 @@ function getFormattedValue(value, type, valueInfo, scaleType, valueType, submiss
 }
 
 const getSpectrumScaleValues = (measureData, measureOption) => {
-  const { key, scaleType, valueType, scaleMin, scaleMax, startDate, endDate } = measureOption;
+  const { key, scaleType, startDate, endDate } = measureOption;
 
   if (scaleType === SCALE_TYPES.TIME) {
     return { min: startDate, max: endDate };
@@ -132,27 +139,63 @@ const getSpectrumScaleValues = (measureData, measureOption) => {
 
   const flattenedMeasureData = flattenNumericalMeasureData(measureData, key);
 
-  if (valueType === VALUE_TYPES.PERCENTAGE) {
-    return getExtremesOfData(
-      scaleMin || 0,
-      scaleMax === 'auto' ? null : scaleMax || 1,
-      flattenedMeasureData,
-    );
-  }
+  const dataMin = Math.min(...flattenedMeasureData);
+  const dataMax = Math.max(...flattenedMeasureData);
 
-  return getExtremesOfData(scaleMin, scaleMax, flattenedMeasureData);
+  const { min, max } = clampScaleValues({ min: dataMin, max: dataMax }, measureOption);
+
+  return { min, max };
 };
 
-const getExtremesOfData = (manualMin, manualMax, data) => {
-  // coerce to number before checking for isNan, identical to "isNaN(scaleMin)". Allows for '0' and true to be valid
-  const hasNumberScaleMin = !Number.isNaN(Number(manualMin));
-  const hasNumberScaleMax = !Number.isNaN(Number(manualMax));
+const clampScaleValues = (dataBounds, measureOption) => {
+  const { valueType, scaleBounds } = measureOption;
+
+  const defaultScale =
+    valueType === VALUE_TYPES.PERCENTAGE
+      ? PERCENTAGE_SPECTRUM_SCALE_DEFAULT
+      : SPECTRUM_SCALE_DEFAULT;
+
+  const leftBoundConfig = scaleBounds.left || defaultScale.left;
+  const rightBoundConfig = scaleBounds.right || defaultScale.right;
+  const { min: minDataValue, max: maxDataValue } = dataBounds;
 
   return {
-    min: hasNumberScaleMin ? Math.min(manualMin, ...data) : Math.min(...data),
-    max: hasNumberScaleMax ? Math.max(manualMax, ...data) : Math.max(...data),
+    min: clampValue(minDataValue, leftBoundConfig),
+    max: clampValue(maxDataValue, rightBoundConfig),
   };
 };
+
+const clampValue = (value, config) => {
+  const { min, max } = config;
+  let clampedValue = value;
+
+  if ((min || min === 0) && min !== 'auto') clampedValue = Math.max(clampedValue, min);
+  if ((max || max === 0) && max !== 'auto') clampedValue = Math.min(clampedValue, max);
+
+  return clampedValue;
+};
+
+export function flattenMeasureHierarchy(measureHierarchy) {
+  const results = [];
+  const flattenGroupedMeasure = ({ children }) => {
+    children.forEach(childObject => {
+      if (childObject.children && childObject.children.length) {
+        flattenGroupedMeasure(childObject);
+      } else {
+        results.push(childObject);
+      }
+    });
+  };
+  measureHierarchy.forEach(measure => {
+    if (measure.children) {
+      flattenGroupedMeasure(measure);
+    } else {
+      results.push(measure);
+    }
+  });
+
+  return results;
+}
 
 export function processMeasureInfo(response) {
   const { measureOptions, measureData, ...rest } = response;
@@ -357,3 +400,22 @@ export function flattenNumericalMeasureData(measureData, key) {
   // eslint-disable-next-line no-restricted-globals
   return measureData.map(v => parseFloat(v[key])).filter(x => !isNaN(x));
 }
+
+export const getMeasureFromHierarchy = (measureHierarchy, measureIdString) => {
+  if (!measureIdString) {
+    return null;
+  }
+
+  const targetMeasureIds = measureIdString.split(',');
+  const flattenedMeasures = flattenMeasureHierarchy(measureHierarchy);
+
+  return flattenedMeasures.find(({ measureId }) => {
+    const measureIds = measureId.split(',');
+    //check if all the measureIds match with the id we want to find (there can be more than 1 id in measureId if they are linked measures)
+    return targetMeasureIds.every(targetMeasureId => measureIds.includes(targetMeasureId));
+  });
+};
+
+export const isMeasureHierarchyEmpty = measureHierarchy => {
+  return flattenMeasureHierarchy(measureHierarchy).length === 0;
+};

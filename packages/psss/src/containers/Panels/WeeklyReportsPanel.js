@@ -118,9 +118,9 @@ const PANEL_STATUSES = {
 
 const toCommaList = values =>
   values
-  .join(', ')
-  .toUpperCase()
-  .replace(/,(?!.*,)/gim, ' and');
+    .join(', ')
+    .toUpperCase()
+    .replace(/,(?!.*,)/gim, ' and');
 
 export const WeeklyReportsPanelComponent = React.memo(
   ({ countryData, sitesData, isOpen, handleClose, unVerifiedSyndromes, alerts, handleConfirm }) => {

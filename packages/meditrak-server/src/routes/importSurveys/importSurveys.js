@@ -4,6 +4,7 @@
  **/
 
 import xlsx from 'xlsx';
+
 import {
   respond,
   DatabaseError,
@@ -13,7 +14,7 @@ import {
   ObjectValidator,
 } from '@tupaia/utils';
 import { deleteScreensForSurvey, deleteOrphanQuestions } from '../../dataAccessors';
-import { ANSWER_TYPES } from '../../database/models/Answer';
+import { ANSWER_TYPES, NON_DATA_ELEMENT_ANSWER_TYPES } from '../../database/models/Answer';
 import {
   splitStringOnComma,
   splitOnNewLinesOrCommas,
@@ -32,8 +33,10 @@ import {
   convertCellToJson,
   findOrCreateSurveyCode,
 } from './utilities';
+import { assertCanAddDataElementInGroup } from '../../database';
 
 const QUESTION_TYPE_LIST = Object.values(ANSWER_TYPES);
+const DEFAULT_SERVICE_TYPE = 'tupaia';
 
 const validateQuestionExistence = rows => {
   const isQuestionRow = ({ type }) => QUESTION_TYPE_LIST.includes(type);
@@ -41,6 +44,50 @@ const validateQuestionExistence = rows => {
     throw new ImportValidationError('No questions listed in import file');
   }
   return true;
+};
+
+const updateOrCreateDataGroup = async (models, { surveyCode, serviceType }) => {
+  const dataGroup = await models.dataSource.findOrCreate(
+    {
+      type: models.dataSource.getTypes().DATA_GROUP,
+      code: surveyCode,
+    },
+    { service_type: DEFAULT_SERVICE_TYPE },
+  );
+
+  if (serviceType && serviceType !== dataGroup.service_type) {
+    dataGroup.service_type = serviceType;
+  }
+  dataGroup.sanitizeConfig();
+  await dataGroup.save();
+
+  return dataGroup;
+};
+
+const updateOrCreateDataElementInGroup = async (models, dataElementCode, dataGroup) => {
+  const { service_type: serviceType, config } = dataGroup;
+
+  await assertCanAddDataElementInGroup(models, dataElementCode, dataGroup.code, {
+    service_type: serviceType,
+    config,
+  });
+  const dataElement = await models.dataSource.updateOrCreate(
+    {
+      type: models.dataSource.getTypes().DATA_ELEMENT,
+      code: dataElementCode,
+    },
+    { service_type: serviceType },
+  );
+  dataElement.config = { ...dataElement.config, ...config };
+  dataElement.sanitizeConfig();
+  await dataElement.save();
+
+  await models.dataElementDataGroup.findOrCreate({
+    data_element_id: dataElement.id,
+    data_group_id: dataGroup.id,
+  });
+
+  return dataElement;
 };
 
 /**
@@ -76,7 +123,15 @@ export async function importSurveys(req, res) {
       for (const surveySheets of Object.entries(workbook.Sheets)) {
         const [tabName, sheet] = surveySheets;
         const surveyName = extractTabNameFromQuery(tabName, requestedSurveyNames);
-        const code = await findOrCreateSurveyCode(transactingModels, surveyName);
+        const surveyCode = await findOrCreateSurveyCode(transactingModels, surveyName);
+        const dataGroup = await updateOrCreateDataGroup(transactingModels, {
+          surveyCode,
+          serviceType: req.query.serviceType,
+        });
+
+        // Clear all existing data element/data group associations
+        // We will re-create the ones required by the survey while processing its questions
+        await transactingModels.dataElementDataGroup.delete({ data_group_id: dataGroup.id });
 
         // Get the survey based on the name of the sheet/tab
         const survey = await transactingModels.survey.findOrCreate(
@@ -85,8 +140,9 @@ export async function importSurveys(req, res) {
           },
           {
             // If no survey with that name is found, give it a code and public permissions
-            code,
+            code: surveyCode,
             permission_group_id: permissionGroup.id,
+            data_source_id: dataGroup.id,
           },
         );
         if (!survey) {
@@ -195,6 +251,15 @@ export async function importSurveys(req, res) {
             optionSet,
           } = questionObject;
 
+          let dataElement;
+          if (!NON_DATA_ELEMENT_ANSWER_TYPES.includes(type)) {
+            dataElement = await updateOrCreateDataElementInGroup(
+              transactingModels,
+              code,
+              dataGroup,
+            );
+          }
+
           // Compose question based on details from spreadsheet
           const questionToUpsert = {
             code,
@@ -204,6 +269,7 @@ export async function importSurveys(req, res) {
             detail,
             options: processOptions(options, optionLabels, optionColors),
             option_set_id: await processOptionSetName(transactingModels, optionSet),
+            data_source_id: dataElement && dataElement.id,
           };
 
           // Either create or update the question depending on if there exists a matching code

@@ -14,14 +14,7 @@ import {
   WarningCloud,
   Virus,
 } from '@tupaia/ui-components';
-import {
-  Container,
-  Main,
-  Sidebar,
-  Header,
-  WeeklyReportsExportModal,
-  DateToolbar,
-} from '../components';
+import { DateToolbar, Container, Main, Sidebar, Header, HeaderTitle, WeeklyReportsExportModal } from '../components';
 import { CountriesTable } from '../containers';
 
 const StyledCardContent = styled(CardContent)`
@@ -56,7 +49,7 @@ const tabData = [
 
 export const CountriesReportsView = () => (
   <>
-    <Header title="Countries" ExportModal={WeeklyReportsExportModal} />
+    <Header Title={<HeaderTitle title="Countries" />} ExportModal={WeeklyReportsExportModal} />
     <DateToolbar />
     <Container>
       <Main data-testid="countries-table">

@@ -12,16 +12,13 @@ const FIELDS = [
     source: 'name',
   },
   {
-    Header: 'Group Name',
-    source: 'groupName',
-  },
-  {
     Header: 'Permission Group',
     source: 'userGroup',
     editConfig: {
       optionsEndpoint: 'permissionGroups',
       optionLabelKey: 'name',
       optionValueKey: 'name',
+      sourceKey: 'userGroup',
     },
   },
   {
@@ -35,6 +32,7 @@ const FIELDS = [
       optionsEndpoint: 'mapOverlays',
       optionLabelKey: 'measureBuilder',
       optionValueKey: 'measureBuilder',
+      sourceKey: 'measureBuilder',
     },
   },
   {
@@ -44,42 +42,8 @@ const FIELDS = [
     editConfig: { type: 'jsonEditor' },
   },
   {
-    Header: 'Display Type',
-    source: 'displayType',
-    editConfig: {
-      optionsEndpoint: 'mapOverlays',
-      optionLabelKey: 'displayType',
-      optionValueKey: 'displayType',
-    },
-  },
-  {
-    Header: 'Custom Colors',
-    source: 'customColors',
-  },
-  {
     Header: 'isDataRegional',
     source: 'isDataRegional',
-    type: 'boolean',
-  },
-  {
-    Header: 'Values',
-    source: 'values',
-    Cell: ({ value }) => prettyJSON(value),
-    editConfig: { type: 'jsonEditor' },
-  },
-  {
-    Header: 'Hide From Menu',
-    source: 'hideFromMenu',
-    type: 'boolean',
-  },
-  {
-    Header: 'Hide From Popup',
-    source: 'hideFromPopup',
-    type: 'boolean',
-  },
-  {
-    Header: 'Hide From Legend',
-    source: 'hideFromLegend',
     type: 'boolean',
   },
   {
@@ -89,6 +53,7 @@ const FIELDS = [
     editConfig: {
       optionsEndpoint: 'mapOverlays',
       optionLabelKey: 'id',
+      sourceKey: 'linkedMeasures',
       allowMultipleValues: true,
     },
   },
@@ -110,6 +75,7 @@ const FIELDS = [
       optionsEndpoint: 'entities',
       optionLabelKey: 'code',
       optionValueKey: 'code',
+      sourceKey: 'countryCodes',
       allowMultipleValues: true,
     },
   },
@@ -121,6 +87,7 @@ const FIELDS = [
       optionsEndpoint: 'projects',
       optionLabelKey: 'code',
       optionValueKey: 'code',
+      sourceKey: 'projectCodes',
       allowMultipleValues: true,
     },
   },
