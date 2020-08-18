@@ -33,7 +33,7 @@ export class IndicatorApi {
     return analytics;
   }
 
-  private buildAnalyticsForIndicator = (indicator, fetchOptions: FetchOptions) => {
+  private buildAnalyticsForIndicator = async (indicator, fetchOptions: FetchOptions) => {
     const { builder, config } = indicator;
     const buildAnalytics = this.getBuilderFunction(builder);
     return buildAnalytics({ aggregator: this.aggregator, config, fetchOptions });
