@@ -4,7 +4,7 @@
  */
 
 import { BES_ADMIN_PERMISSION_GROUP, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from './constants';
-import { checkEntitiesImportPermissions } from './imports';
+import { checkEntitiesImportPermissions, checkSurveysImportPermissions } from './imports';
 
 const DEFAULT_ERROR_MESSAGE = 'Your permissions do not allow access to the requested resource';
 
@@ -78,4 +78,8 @@ export const hasTupaiaAdminPanelAccess = checkOrThrow(accessPolicy =>
 export const hasEntitiesImportPermissions = checkOrThrow(
   (accessPolicy, models, entitiesByCountryName) =>
     checkEntitiesImportPermissions(accessPolicy, models, entitiesByCountryName),
+);
+export const hasSurveysImportPermissions = checkOrThrow(
+  (accessPolicy, models, surveyNames, countryIds) =>
+    checkSurveysImportPermissions(accessPolicy, models, surveyNames, countryIds),
 );

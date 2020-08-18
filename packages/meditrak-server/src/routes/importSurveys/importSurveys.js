@@ -34,6 +34,11 @@ import {
   findOrCreateSurveyCode,
 } from './utilities';
 import { assertCanAddDataElementInGroup } from '../../database';
+import {
+  checkAnyPermissions,
+  hasBESAdminAccess,
+  hasSurveysImportPermissions,
+} from '../../permissions';
 
 const QUESTION_TYPE_LIST = Object.values(ANSWER_TYPES);
 const DEFAULT_SERVICE_TYPE = 'tupaia';
@@ -111,6 +116,27 @@ export async function importSurveys(req, res) {
       if (!permissionGroup) {
         throw new DatabaseError('finding permission group');
       }
+
+      const surveyNames = Object.entries(workbook.Sheets).map(([tabName]) => {
+        return extractTabNameFromQuery(tabName, requestedSurveyNames);
+      });
+
+      const importSurveysPermissionsChecker = async accessPolicy => {
+        return hasSurveysImportPermissions(
+          accessPolicy,
+          transactingModels,
+          surveyNames,
+          req.query.countryIds,
+        );
+      };
+
+      //Need at least TupaiaAdminPanelUserAccess or BESAdminAccess to proceed
+      await req.checkPermissions(
+        checkAnyPermissions(
+          [hasBESAdminAccess, importSurveysPermissionsChecker],
+          'You need either BES Admin or Tupaia Admin Panel access to import surveys',
+        ),
+      );
 
       let surveyGroup;
       if (req.query.surveyGroup) {
