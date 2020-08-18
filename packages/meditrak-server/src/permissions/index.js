@@ -6,3 +6,4 @@
 export { ensurePermissionCheck } from './permissions';
 export * from './constants';
 export * from './checkers';
+export { hasEntitiesImportPermissions, hasSurveysImportPermissions } from './imports';

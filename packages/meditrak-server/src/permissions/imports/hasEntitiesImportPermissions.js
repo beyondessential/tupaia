@@ -5,24 +5,18 @@
 import { getCountryCode } from '../../routes/utilities/getCountryCode';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../constants';
 
-export const checkEntitiesImportPermissions = async (
-  accessPolicy,
-  models,
-  entitiesByCountryName,
-) => {
+export const hasEntitiesImportPermissions = async (accessPolicy, entitiesByCountryName) => {
   const countryCodes = Object.entries(entitiesByCountryName).map(([countryName, entities]) => {
     return getCountryCode(countryName, entities);
   });
 
-  const countryEntities = await models.entity.find({ code: countryCodes });
-
-  for (let i = 0; i < countryEntities.length; i++) {
-    const countryEntity = countryEntities[i];
+  for (let i = 0; i < countryCodes.length; i++) {
+    const countryCode = countryCodes[i];
 
     //If user doesn't have TUPAIA_ADMIN_PANEL_PERMISSION_GROUP access
     // to ANY of the countries of the entities being imported, it should fail!
-    if (!accessPolicy.allows(countryEntity, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP)) {
-      return false;
+    if (!accessPolicy.allows(countryCode, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP)) {
+      throw new Error(`No permission for country ${countryCode}`);
     }
   }
 

@@ -121,20 +121,19 @@ export async function importSurveys(req, res) {
         return extractTabNameFromQuery(tabName, requestedSurveyNames);
       });
 
-      const importSurveysPermissionsChecker = async accessPolicy => {
-        return hasSurveysImportPermissions(
+      const importSurveysPermissionsChecker = async accessPolicy =>
+        hasSurveysImportPermissions(
           accessPolicy,
           transactingModels,
           surveyNames,
           req.query.countryIds,
         );
-      };
 
       //Need at least TupaiaAdminPanelUserAccess or BESAdminAccess to proceed
       await req.checkPermissions(
         checkAnyPermissions(
           [hasBESAdminAccess, importSurveysPermissionsChecker],
-          'You need either BES Admin or Tupaia Admin Panel access to import surveys',
+          "You need either BES Admin or Tupaia Admin Panel access to the surveys' countries to import them",
         ),
       );
 

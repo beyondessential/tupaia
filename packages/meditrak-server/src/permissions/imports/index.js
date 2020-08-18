@@ -2,5 +2,5 @@
  * Tupaia MediTrak
  * Copyright (c) 2020 Beyond Essential Systems Pty Ltd
  **/
-export { checkEntitiesImportPermissions } from './checkEntitiesImportPermissions';
-export { checkSurveysImportPermissions } from './checkSurveysImportPermissions';
+export { hasEntitiesImportPermissions } from './hasEntitiesImportPermissions';
+export { hasSurveysImportPermissions } from './hasSurveysImportPermissions';

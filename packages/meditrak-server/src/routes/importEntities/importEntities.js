@@ -26,19 +26,17 @@ export async function importEntities(req, res) {
       throw new UploadError(error);
     }
 
+    const importEntitiesPermissionsChecker = async accessPolicy =>
+      hasEntitiesImportPermissions(accessPolicy, entitiesByCountryName);
+
+    await req.checkPermissions(
+      checkAnyPermissions(
+        [hasBESAdminAccess, importEntitiesPermissionsChecker],
+        'You need either BES Admin or Tupaia Admin Panel access to the countries of the entities to import them',
+      ),
+    );
+
     await models.wrapInTransaction(async transactingModels => {
-      const importEntitiesPermissionsChecker = async accessPolicy => {
-        await hasEntitiesImportPermissions(accessPolicy, transactingModels, entitiesByCountryName);
-      };
-
-      //Need at least TupaiaAdminPanelUserAccess or BESAdminAccess to proceed
-      await req.checkPermissions(
-        checkAnyPermissions(
-          [hasBESAdminAccess, importEntitiesPermissionsChecker],
-          'You need either BES Admin or Tupaia Admin Panel access to the countries of the entities to import them',
-        ),
-      );
-
       for (const countryEntries of Object.entries(entitiesByCountryName)) {
         const [countryName, entities] = countryEntries;
 
