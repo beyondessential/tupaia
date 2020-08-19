@@ -52,6 +52,24 @@ const ArrowButton = styled(LightIconButton)`
   }
 `;
 
+const CalendarButton = styled(LightIconButton)`
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 3px;
+  margin-right: 0.5rem;
+
+  .MuiSvgIcon-root {
+    font-size: 1.2rem;
+  }
+`;
+
+const Dot = styled.span`
+  position: relative;
+  line-height: 1rem;
+  top: 3px;
+  font-size: 2rem;
+  margin: 0 3px;
+`;
+
 export const DateToolbar = () => {
   const now = new Date();
   /* Value is always the start of the isoWeek */
@@ -79,9 +97,9 @@ export const DateToolbar = () => {
     <BaseToolbar>
       <Container>
         <FlexStart>
-          <LightIconButton onClick={() => setIsOpen(true)}>
+          <CalendarButton onClick={() => setIsOpen(true)}>
             <CalendarTodayIcon />
-          </LightIconButton>
+          </CalendarButton>
           <WeekPicker
             label="Date"
             onChange={date => setValue(startOfISOWeek(date))}
@@ -90,7 +108,7 @@ export const DateToolbar = () => {
             onClose={() => setIsOpen(false)}
           />
           <Text variant="h5">
-            Week {getISOWeek(value)} <span>&#183;</span> {start} - {end}
+            Week {getISOWeek(value)} <Dot>&#183;</Dot> {start} &ndash; {end}
           </Text>
         </FlexStart>
         <FlexEnd>
