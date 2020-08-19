@@ -16,7 +16,7 @@ exports.setup = function(options, seedLink) {
   seed = seedLink;
 };
 
-const DASHBOARD_GROUPS = ['TO_Health_Promotion_Unit_Country'];
+const DASHBOARD_GROUP = 'TO_Health_Promotion_Unit_Country';
 const DASHBOARD = {
   id: 'TO_HPU_Number_Of_Inspected_Areas_For_Tobacco_Compliance',
   dataBuilder: 'sum',
@@ -44,7 +44,7 @@ exports.up = async function(db) {
   return db.runSql(`
      UPDATE "dashboardGroup"
      SET "dashboardReports" = "dashboardReports" || '{ ${DASHBOARD.id} }'
-     WHERE "code" = '${DASHBOARD_GROUPS}';
+     WHERE "code" = '${DASHBOARD_GROUP}';
    `);
 };
 
@@ -54,7 +54,7 @@ exports.down = function(db) {
 
      UPDATE "dashboardGroup"
      SET "dashboardReports" = array_remove("dashboardReports", '${DASHBOARD.id}')
-     WHERE "code" = '${DASHBOARD_GROUPS}';
+     WHERE "code" = '${DASHBOARD_GROUP}';
    `);
 };
 
