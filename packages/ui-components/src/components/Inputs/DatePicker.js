@@ -7,7 +7,7 @@ import React from 'react';
 import styled from 'styled-components';
 import DateFnsUtils from '@date-io/date-fns';
 import PropTypes from 'prop-types';
-import auLocale from "date-fns/locale/en-AU";
+import auLocale from 'date-fns/locale/en-AU';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import { KeyboardDatePicker as MuiDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { TextField } from './TextField';

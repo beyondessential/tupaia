@@ -4,13 +4,14 @@
  */
 
 import React from 'react';
+import PropTypes from 'prop-types';
+import styled from 'styled-components';
+import format from 'date-fns/format';
 import PickerToolbar from '@material-ui/pickers/_shared/PickerToolbar';
 import Typography from '@material-ui/core/Typography';
 import getISOWeek from 'date-fns/get_iso_week';
 import startOfISOWeek from 'date-fns/start_of_iso_week';
 import endOfISOWeek from 'date-fns/end_of_iso_week';
-import format from 'date-fns/format';
-import styled from 'styled-components';
 
 const PickerBar = styled(PickerToolbar)`
   display: flex;
@@ -22,7 +23,7 @@ const Heading = styled(Typography)`
   color: white;
 `;
 
-export const CustomToolbar = ({ date, isLandscape, title }) => {
+export const WeekPickerToolbar = ({ date, isLandscape, title }) => {
   const start = format(startOfISOWeek(date), 'MMM d');
   const end = format(endOfISOWeek(date), 'MMM d , yyyy');
   return (
@@ -35,4 +36,15 @@ export const CustomToolbar = ({ date, isLandscape, title }) => {
       </Heading>
     </PickerBar>
   );
+};
+
+WeekPickerToolbar.propTypes = {
+  date: PropTypes.instanceOf(Date).isRequired,
+  title: PropTypes.string,
+  isLandscape: PropTypes.bool,
+};
+
+WeekPickerToolbar.defaultProps = {
+  isLandscape: true,
+  title: null,
 };

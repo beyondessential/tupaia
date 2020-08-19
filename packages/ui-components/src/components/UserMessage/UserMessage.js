@@ -68,7 +68,7 @@ MessageView.propTypes = {
   message: PropTypes.shape({
     id: PropTypes.string.isRequired,
     content: PropTypes.string,
-  })
+  }),
 };
 
 const StyledCard = styled(({ focus, ...props }) => <Card {...props} />)`

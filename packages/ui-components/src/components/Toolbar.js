@@ -16,7 +16,7 @@ const ToolbarWrapper = styled.div`
   background-color: ${props => props.theme.palette.secondary.main};
   height: ${toolbarHeight};
   color: ${props => props.theme.palette.common.white};
-  
+
   > div {
     height: 100%;
   }

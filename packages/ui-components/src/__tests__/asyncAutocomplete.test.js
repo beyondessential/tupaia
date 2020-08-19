@@ -17,7 +17,7 @@ const exampleNameRegex = /chewbacca/i;
 
 const fetchOptions = async () => {
   const users = await API.get('users');
-  const knownUser = { id: 'chewy', name: exampleName}
+  const knownUser = { id: 'chewy', name: exampleName };
   return users.data.concat(knownUser);
 };
 
@@ -29,7 +29,7 @@ function renderAsyncAutocomplete() {
       muiProps={{
         disablePortal: true,
       }}
-    />
+    />,
   );
 }
 
@@ -45,11 +45,13 @@ describe('autocomplete', () => {
     const input = screen.getByRole('textbox');
     await userEvent.type(input, exampleName.substring(0, 3));
 
-
-    await waitFor(() => {
-      expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
-      expect(screen.getByText(exampleNameRegex)).toBeInTheDocument();
-    }, { timeout: 3000 });
+    await waitFor(
+      () => {
+        expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
+        expect(screen.getByText(exampleNameRegex)).toBeInTheDocument();
+      },
+      { timeout: 3000 },
+    );
   });
 
   it('can select an option', async () => {
@@ -58,9 +60,12 @@ describe('autocomplete', () => {
     const input = screen.getByRole('textbox');
     await userEvent.type(input, exampleName.substring(0, 3));
 
-    await waitFor(() => {
-      expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
-    }, { timeout: 3000 });
+    await waitFor(
+      () => {
+        expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
+      },
+      { timeout: 3000 },
+    );
 
     const option = screen.getByText(exampleNameRegex);
     userEvent.click(option);
