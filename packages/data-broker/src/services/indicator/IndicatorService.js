@@ -10,10 +10,6 @@ export class IndicatorService extends Service {
     super(models);
 
     this.api = api;
-    this.pullers = {
-      [this.dataSourceTypes.DATA_ELEMENT]: this.pullAnalytics.bind(this),
-      [this.dataSourceTypes.DATA_GROUP]: this.pullEvents.bind(this),
-    };
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -27,8 +23,10 @@ export class IndicatorService extends Service {
   }
 
   async pull(dataSources, type, options) {
-    const pullData = this.pullers[type];
-    return pullData(dataSources, options);
+    if (type === this.dataSourceTypes.DATA_GROUP) {
+      throw new Error('Event pulling is not supported in IndicatorService');
+    }
+    return this.pullAnalytics(dataSources, options);
   }
 
   async pullAnalytics(dataSources, options) {
@@ -40,11 +38,6 @@ export class IndicatorService extends Service {
       // or remove entirely in #tupaia-backlog/issues/1154
       metadata: { dataElementCodeToName: {} },
     };
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  async pullEvents() {
-    throw new Error('Event pulling is not supported in IndicatorService');
   }
 
   // eslint-disable-next-line class-methods-use-this
