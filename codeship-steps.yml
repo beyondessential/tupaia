@@ -51,28 +51,28 @@
       command: chmod 600 /root/.ssh/id_rsa
     - name: pull latest and install dependencies
       command: './packages/devops/scripts/ci/pullLatest.sh'
-# - type: parallel
-#   name: deploy-all
-#   service: deployment
-#   steps:
-#     - type: serial
-#       name: deploy-backends
-#       steps:
-#         - type: parallel
-#           name: restart-backends
-#           steps:
-#             - name: deploy-web-config-server
-#               command: './packages/devops/scripts/ci/deployBackend.sh web-config-server'
-#             - name: deploy-meditrak-server
-#               command: './packages/devops/scripts/ci/deployBackend.sh meditrak-server'
-#         # run migrations immediately after backend deployment has finished so there is minimal time for code/db mismatch
-#         - name: run db migrations
-#           command: './packages/devops/scripts/ci/runMigrations.sh'
-#     # build front ends in serial because they consume a lot of resources, and can crash deployment if run in parallel
-#     - type: serial
-#       name: deploy-frontends
-#       steps:
-#         - name: deploy-web-frontend
-#           command: './packages/devops/scripts/ci/deployFrontend.sh web-frontend'
-#         - name: deploy-admin-panel
-#           command: './packages/devops/scripts/ci/deployFrontend.sh admin-panel'
+- type: parallel
+  name: deploy-all
+  service: deployment
+  steps:
+    - type: serial
+      name: deploy-backends
+      steps:
+        - type: parallel
+          name: restart-backends
+          steps:
+            - name: deploy-web-config-server
+              command: './packages/devops/scripts/ci/deployBackend.sh web-config-server'
+            - name: deploy-meditrak-server
+              command: './packages/devops/scripts/ci/deployBackend.sh meditrak-server'
+        # run migrations immediately after backend deployment has finished so there is minimal time for code/db mismatch
+        - name: run db migrations
+          command: './packages/devops/scripts/ci/runMigrations.sh'
+    # build front ends in serial because they consume a lot of resources, and can crash deployment if run in parallel
+    - type: serial
+      name: deploy-frontends
+      steps:
+        - name: deploy-web-frontend
+          command: './packages/devops/scripts/ci/deployFrontend.sh web-frontend'
+        - name: deploy-admin-panel
+          command: './packages/devops/scripts/ci/deployFrontend.sh admin-panel'
