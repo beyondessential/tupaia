@@ -72,6 +72,7 @@ export const historyMiddleware = store => next => action => {
     case CHANGE_DASHBOARD_GROUP:
       dispatchLocationUpdate(store, URL_COMPONENTS.DASHBOARD, action.name);
       break;
+    // TODO: Investigate GO_HOME once all url functionality is implemented.
     case GO_HOME:
       dispatchClearLocation(store);
       break;
