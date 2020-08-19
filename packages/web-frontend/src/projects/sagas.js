@@ -6,7 +6,7 @@ import { setProjects, fetchProjectsError } from './actions';
 
 import {
   FETCH_INITIAL_DATA,
-  ON_SET_PROJECT,
+  SET_PROJECT,
   changeBounds,
   changeDashboardGroup,
   FETCH_LOGIN_SUCCESS,
@@ -66,8 +66,7 @@ function* loadProject(action) {
 }
 
 function* watchSelectProjectAndLoadProjectState() {
-  // eslint-disable-next-line func-names
-  yield takeLatest(ON_SET_PROJECT, loadProject);
+  yield takeLatest(SET_PROJECT, loadProject);
 }
 
 export default [

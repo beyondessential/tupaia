@@ -28,7 +28,7 @@ import {
   ATTEMPT_SIGNUP,
   ATTEMPT_CHART_EXPORT,
   ATTEMPT_DRILL_DOWN,
-  ON_SET_ORG_UNIT,
+  SET_ORG_UNIT,
   FETCH_INFO_VIEW_DATA,
   CHANGE_SEARCH,
   CHANGE_MEASURE,
@@ -524,7 +524,7 @@ function* watchRequestOrgUnitAndFetchIt() {
 }
 
 function* watchOrgUnitChangeAndFetchIt() {
-  yield takeLatest(ON_SET_ORG_UNIT, fetchOrgUnitDataAndChangeOrgUnit);
+  yield takeLatest(SET_ORG_UNIT, fetchOrgUnitDataAndChangeOrgUnit);
 }
 
 /**

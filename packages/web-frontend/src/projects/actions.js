@@ -7,7 +7,6 @@
 
 import {
   SET_PROJECT,
-  ON_SET_PROJECT,
   SET_PROJECT_DATA,
   FETCH_PROJECTS_ERROR,
   REQUEST_PROJECT_ACCESS,
@@ -15,10 +14,6 @@ import {
 
 export function setProject(projectCode) {
   return { type: SET_PROJECT, projectCode };
-}
-
-export function onSetProject(projectCode) {
-  return { type: ON_SET_PROJECT, projectCode };
 }
 
 export function setProjects(data) {
