@@ -1,7 +1,7 @@
 #!/bin/bash
 DIR=`dirname "$0"`
 
-CONCURRENT_BUILD_BATCH_SIZE=5
+CONCURRENT_BUILD_BATCH_SIZE=3
 
 concurrent_build_commands=()
 for PACKAGE in $(${DIR}/getInternalDependencies.sh); do
