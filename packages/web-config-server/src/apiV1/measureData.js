@@ -252,7 +252,7 @@ export default class extends DataAggregatingRouteHandler {
     } = presentationOptions;
 
     const { dataSourceType = DATA_SOURCE_TYPES.SINGLE, periodGranularity } =
-      measureBuilderConfig || {};
+    measureBuilderConfig || {};
     const { startDate, endDate } = this.query;
     const dates = periodGranularity ? getDateRange(periodGranularity, startDate, endDate) : {};
 
