@@ -12,8 +12,8 @@ import {
 import { Builder, AggregationSpecs, FetchOptions } from '../types';
 
 interface ArithmeticConfig {
-  formula: string;
-  aggregation: AggregationSpecs;
+  readonly formula: string;
+  readonly aggregation: AggregationSpecs;
 }
 
 const validateConfig = (config: ArithmeticConfig) => {

@@ -4,13 +4,13 @@
  */
 
 import { Aggregator } from '@tupaia/aggregator';
-import { DatabaseModel, DatabaseType } from '@tupaia/database';
+import { DatabaseType } from '@tupaia/database';
 
 export interface Analytic {
-  dataElement: string;
-  organisationUnit: string;
-  period: string;
-  value: number;
+  readonly dataElement: string;
+  readonly organisationUnit: string;
+  readonly period: string;
+  readonly value: number;
 }
 
 export interface IndicatorType extends DatabaseType {
@@ -20,12 +20,12 @@ export interface IndicatorType extends DatabaseType {
   config: Record<string, unknown>;
 }
 
-export interface IndicatorModel extends DatabaseModel {
-  find: (dbConditions: Record<string, unknown>) => Promise<IndicatorType[]>;
+interface DatabaseModel<T> {
+  find: (dbConditions: Record<string, unknown>) => Promise<T[]>;
 }
 
 export interface ModelRegistry {
-  indicator: IndicatorModel;
+  readonly indicator: DatabaseModel<IndicatorType>;
 }
 
 export interface Builder<C extends {}> {
@@ -33,13 +33,13 @@ export interface Builder<C extends {}> {
 }
 
 export interface Aggregation {
-  type: string;
-  config?: Record<string, unknown>;
+  readonly type: string;
+  readonly config?: Record<string, unknown>;
 }
 
 /**
  * Used to define the aggregation(s) that should be used for each data element in an indicator.
  */
-export type AggregationSpecs = Record<string, string | string[]>;
+export type AggregationSpecs = Readonly<Record<string, string | string[]>>;
 
-export type FetchOptions = Record<string, unknown>;
+export type FetchOptions = Readonly<Record<string, unknown>>;
