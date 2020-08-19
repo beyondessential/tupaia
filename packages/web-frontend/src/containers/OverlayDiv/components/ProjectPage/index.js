@@ -18,7 +18,7 @@ import {
   PROJECTS_WITH_LANDING_PAGES,
 } from '../../constants';
 import { setProject, setRequestingAccess } from '../../../../projects/actions';
-import { setOverlayComponent, setOrgUnit } from '../../../../actions';
+import { setOverlayComponent } from '../../../../actions';
 import { ProjectCard } from './ProjectCard';
 
 // code for general explore mode project.

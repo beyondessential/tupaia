@@ -43,22 +43,21 @@ function* watchUserLogoutSuccessAndRefetchProjectData() {
 
 function* loadProject(action) {
   let state = yield select();
-
-  // QUESTION: We need to make sure projects are loaded before we try and select one, I think the below works but is there a better way?
-  if (!(state.project.projects.length > 0)) {
+  if (state.project.projects.length === 0) {
     yield take('SET_PROJECT_DATA');
   }
 
   state = yield select();
-  const project = selectProjectByCode(state, action.projectCode);
 
-  const organisationUnitCode = selectCurrentOrgUnitCode(state);
   yield put(changeBounds(yield select(selectAdjustedProjectBounds, action.projectCode)));
+
+  const project = selectProjectByCode(state, action.projectCode);
+  const organisationUnitCode = selectCurrentOrgUnitCode(state);
   if (!organisationUnitCode) {
     yield put(setOrgUnit(project.homeEntityCode || action.projectCode, false));
   }
 
-  // TODO: This will be fixed in the dashboard PR
+  // TODO: This will be fixed in the dashboard PR (including standardizing code vs key)
   const dashboardGroupCode = selectCurrentDashboardKey(state);
   if (!dashboardGroupCode) {
     yield put(changeDashboardGroup(project.dashboardGroupName));
