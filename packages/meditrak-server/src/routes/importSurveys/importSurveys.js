@@ -129,7 +129,6 @@ export async function importSurveys(req, res) {
           req.query.countryIds,
         );
 
-      //Need at least TupaiaAdminPanelUserAccess or BESAdminAccess to proceed
       await req.checkPermissions(
         checkAnyPermissions(
           [hasBESAdminAccess, importSurveysPermissionsChecker],

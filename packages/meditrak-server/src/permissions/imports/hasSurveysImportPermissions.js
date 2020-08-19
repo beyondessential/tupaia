@@ -21,13 +21,16 @@ export const hasSurveysImportPermissions = async (
     });
     const newCountryEntityCodes = newCountryEntities.map(newCountryEntity => newCountryEntity.code);
 
-    if (!accessPolicy.allowsSome(newCountryEntityCodes, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP)) {
-      throw new Error("Insufficient permissions to the surveys' countries");
+    if (!accessPolicy.allowsAll(newCountryEntityCodes, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP)) {
+      const entitiesString = newCountryEntityCodes.join(',');
+      throw new Error(
+        `Need ${TUPAIA_ADMIN_PANEL_PERMISSION_GROUP} access to entities ${entitiesString} to import the surveys`,
+      );
     }
   } else if (!accessPolicy.allowsSome(null, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP)) {
     //if no countryIds is specified (which means the survey will be public to all countries),
     //need to have TUPAIA_ADMIN_PANEL_PERMISSION_GROUP at least to 1 country
-    throw new Error("Insufficient permissions to the surveys' countries");
+    throw new Error(`Need ${TUPAIA_ADMIN_PANEL_PERMISSION_GROUP} access to import the surveys`);
   }
 
   const surveys = await models.survey.find({
@@ -50,11 +53,18 @@ export const hasSurveysImportPermissions = async (
       surveyCountryEntity => surveyCountryEntity.code,
     );
 
-    if (
-      !accessPolicy.allowsSome(surveyCountryEntityCodes, surveyPermissionGroup.name) ||
-      !accessPolicy.allowsSome(surveyCountryEntityCodes, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP)
-    ) {
-      throw new Error(`Insufficient permissions to import survey ${survey.name}`);
+    if (!accessPolicy.allowsAll(surveyCountryEntityCodes, surveyPermissionGroup.name)) {
+      const entitiesString = surveyCountryEntityCodes.join(',');
+      throw new Error(
+        `Need ${surveyPermissionGroup.name} access to entities ${entitiesString} to import survey ${survey.name}`,
+      );
+    }
+
+    if (!accessPolicy.allowsAll(surveyCountryEntityCodes, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP)) {
+      const entitiesString = surveyCountryEntityCodes.join(',');
+      throw new Error(
+        `Need ${TUPAIA_ADMIN_PANEL_PERMISSION_GROUP} access to entities ${entitiesString} to import survey ${survey.name}`,
+      );
     }
   }
 
