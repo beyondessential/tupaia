@@ -27,11 +27,7 @@ import { MIN_DATE } from './constants';
 const Container = styled(FlexSpaceBetween)`
   width: 66%;
   height: 100%;
-  padding-right: 30px;
-`;
-
-const Text = styled(Typography)`
-  margin-right: 1.5rem;
+  padding-right: 1.8rem;
 `;
 
 const TodayButton = styled(SmallButton)`
@@ -53,21 +49,36 @@ const ArrowButton = styled(LightIconButton)`
 `;
 
 const CalendarButton = styled(LightIconButton)`
-  background: rgba(0, 0, 0, 0.15);
+  background-color: rgba(0, 0, 0, 0.15);
   border-radius: 3px;
-  margin-right: 0.5rem;
+  margin-right: 0.6rem;
+  padding-top: 0.6rem;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.25);
+  }
 
   .MuiSvgIcon-root {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
   }
 `;
 
 const Dot = styled.span`
   position: relative;
   line-height: 1rem;
-  top: 3px;
-  font-size: 2rem;
-  margin: 0 3px;
+  top: 0.25rem;
+  font-size: 2.1rem;
+  margin: 0 0.4rem 0 0.2rem;
+`;
+
+const Text = styled(Typography)`
+  font-weight: 400;
+  margin-right: 1.5rem;
+`;
+
+const MediumText = styled.span`
+  font-weight: 500;
 `;
 
 export const DateToolbar = () => {
@@ -108,7 +119,10 @@ export const DateToolbar = () => {
             onClose={() => setIsOpen(false)}
           />
           <Text variant="h5">
-            Week {getISOWeek(value)} <Dot>&#183;</Dot> {start} &ndash; {end}
+            <MediumText>
+              Week {getISOWeek(value)} <Dot>&#183;</Dot>
+            </MediumText>
+            {start} &#8211; {end}
           </Text>
         </FlexStart>
         <FlexEnd>
