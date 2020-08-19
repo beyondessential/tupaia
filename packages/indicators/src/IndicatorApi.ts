@@ -21,16 +21,10 @@ export class IndicatorApi {
 
   async buildAnalytics(codes: string[], fetchOptions: FetchOptions): Promise<Analytic[]> {
     const indicators = await this.models.indicator.find({ code: codes });
-
-    const analytics: Analytic[] = [];
-    await Promise.all(
-      indicators.map(async indicator => {
-        const newAnalytics = await this.buildAnalyticsForIndicator(indicator, fetchOptions);
-        analytics.push(...newAnalytics);
-      }),
+    const nestedAnalytics = await Promise.all(
+      indicators.map(async indicator => this.buildAnalyticsForIndicator(indicator, fetchOptions)),
     );
-
-    return analytics;
+    return nestedAnalytics.flat();
   }
 
   private buildAnalyticsForIndicator = async (
