@@ -111,5 +111,15 @@ export const EditModal = connect(
 
 const getFieldSourceToEdit = field => {
   const { source, editConfig = {} } = field;
-  return editConfig.optionsEndpoint ? `${source.split('.')[0]}_id` : source;
+  if (editConfig.optionsEndpoint) {
+    if (editConfig.sourceKey) {
+      return editConfig.sourceKey;
+    }
+    const sourceComponents = source.split('.');
+    if (sourceComponents.length > 1) {
+      const [resource] = sourceComponents;
+      return `${resource}_id`;
+    }
+  }
+  return source;
 };

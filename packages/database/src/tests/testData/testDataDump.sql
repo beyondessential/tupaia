@@ -613,21 +613,14 @@ CREATE TABLE public.geographical_area (
 CREATE TABLE public."mapOverlay" (
     id text NOT NULL,
     name text NOT NULL,
-    "groupName" text NOT NULL,
     "userGroup" text NOT NULL,
     "dataElementCode" text NOT NULL,
-    "displayType" text,
-    "customColors" text,
     "isDataRegional" boolean DEFAULT true,
-    "values" jsonb,
-    "hideFromMenu" boolean DEFAULT false NOT NULL,
-    "hideFromPopup" boolean DEFAULT false NOT NULL,
-    "hideFromLegend" boolean DEFAULT false NOT NULL,
     "linkedMeasures" text[],
     "sortOrder" real DEFAULT 0 NOT NULL,
     "measureBuilderConfig" jsonb,
     "measureBuilder" character varying,
-    "presentationOptions" jsonb,
+    "presentationOptions" jsonb DEFAULT '{}'::jsonb NOT NULL,
     "countryCodes" text[],
     "projectCodes" text[] DEFAULT '{}'::text[]
 );
@@ -650,6 +643,29 @@ CREATE SEQUENCE public."mapOverlay_id_seq"
 --
 
 ALTER SEQUENCE public."mapOverlay_id_seq" OWNED BY public."mapOverlay".id;
+
+
+--
+-- Name: map_overlay_group; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.map_overlay_group (
+    id text NOT NULL,
+    name text NOT NULL,
+    code text NOT NULL
+);
+
+
+--
+-- Name: map_overlay_group_relation; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.map_overlay_group_relation (
+    id text NOT NULL,
+    map_overlay_group_id text NOT NULL,
+    child_id text NOT NULL,
+    child_type text NOT NULL
+);
 
 
 --
@@ -1294,6 +1310,22 @@ ALTER TABLE ONLY public.meditrak_device
 
 ALTER TABLE ONLY public."mapOverlay"
     ADD CONSTRAINT "mapOverlay_id_key" UNIQUE (id);
+
+
+--
+-- Name: map_overlay_group map_overlay_group_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.map_overlay_group
+    ADD CONSTRAINT map_overlay_group_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: map_overlay_group_relation map_overlay_group_relation_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.map_overlay_group_relation
+    ADD CONSTRAINT map_overlay_group_relation_pkey PRIMARY KEY (id);
 
 
 --
@@ -2042,6 +2074,20 @@ CREATE TRIGGER install_id_trigger AFTER INSERT OR DELETE OR UPDATE ON public.med
 
 
 --
+-- Name: map_overlay_group_relation map_overlay_group_relation_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER map_overlay_group_relation_trigger AFTER INSERT OR DELETE OR UPDATE ON public.map_overlay_group_relation FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
+-- Name: map_overlay_group map_overlay_group_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER map_overlay_group_trigger AFTER INSERT OR DELETE OR UPDATE ON public.map_overlay_group FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
 -- Name: mapOverlay mapoverlay_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -2434,6 +2480,14 @@ ALTER TABLE ONLY public.geographical_area
 
 ALTER TABLE ONLY public.meditrak_device
     ADD CONSTRAINT install_id_user_account_id_fk FOREIGN KEY (user_id) REFERENCES public.user_account(id) ON UPDATE RESTRICT ON DELETE CASCADE;
+
+
+--
+-- Name: map_overlay_group_relation map_overlay_group_relation_map_overlay_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.map_overlay_group_relation
+    ADD CONSTRAINT map_overlay_group_relation_map_overlay_group_id_fkey FOREIGN KEY (map_overlay_group_id) REFERENCES public.map_overlay_group(id);
 
 
 --
@@ -3472,15 +3526,53 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 789	/20200626014357-AddUNFPAFacilityUseOfStockCardsMatrixReport	2020-07-09 22:25:55.765
 790	/20200629134316-AddUNFPANumberOfWomenProvidedSRHServicesFacilityLevelDashboardReport	2020-07-09 22:25:55.895
 791	/20200701000910-AddUNFPANumberOfWomenProvidedSRHServicesNationalProvincialLevelMatrix	2020-07-09 22:25:55.966
-792	/20200609003258-AddLaosSchoolsRawDataDownloads	2020-07-14 15:06:35.034
-793	/20200624001356-AddTongaCovid19CommodityAvailabilityRadiusMapNationalLevelOverlay	2020-07-14 15:06:35.436
-794	/20200624043629-AddUNFPAPriorityLifeSavingMedicinesForWomenAndChildrenAMCMatrixReport	2020-07-14 15:06:35.743
-795	/20200624090309-AddUNFPAPriorityLifeSavingMedicinesForWomenAndChildrenMOSMatrixReport	2020-07-14 15:06:35.828
-796	/20200624090446-AddUNFPAPriorityLifeSavingMedicinesForWomenAndChildrenSOHMatrixReport	2020-07-14 15:06:35.984
-797	/20200712224256-ChangeDefaultCovidOverlayToStateTotalCases-modifies-data	2020-07-14 15:06:36.084
-798	/20200601041635-HideUnncessarySurveysFromDemoLand	2020-07-15 01:53:05.395
-799	/20200428025025-createAlertsTable	2020-07-15 15:29:45.539
-800	/20200501033538-createCommentTables	2020-07-15 15:29:45.563
+792	/20200502045201-AddFlutrackingParticipantsPerCapita	2020-07-16 21:41:43.261
+793	/20200503031746-Add9FlutrackingOverlays	2020-07-16 21:41:44.48
+794	/20200503043133-UpdateTongaHouseholdsToUseNeutralScale	2020-07-16 21:41:44.537
+795	/20200510011141-AddFlutrackingOverlaysToLGALevel	2020-07-16 21:41:44.987
+796	/20200521080146-AddLaosSchoolsBinaryMatrixDistrictLevelDashboard	2020-07-16 21:41:45.202
+797	/20200601041635-HideUnncessarySurveysFromDemoLand	2020-07-16 21:41:45.42
+798	/20200603043404-UpdateFlutrackingOverlaysToHaveAProject	2020-07-16 21:41:45.64
+799	/20200609003258-AddLaosSchoolsRawDataDownloads	2020-07-16 21:41:45.829
+800	/20200624001356-AddTongaCovid19CommodityAvailabilityRadiusMapNationalLevelOverlay	2020-07-16 21:41:46.063
+801	/20200624043629-AddUNFPAPriorityLifeSavingMedicinesForWomenAndChildrenAMCMatrixReport	2020-07-16 21:41:46.186
+802	/20200624090309-AddUNFPAPriorityLifeSavingMedicinesForWomenAndChildrenMOSMatrixReport	2020-07-16 21:41:46.411
+803	/20200624090446-AddUNFPAPriorityLifeSavingMedicinesForWomenAndChildrenSOHMatrixReport	2020-07-16 21:41:46.611
+804	/20200705044221-AddLaosSchoolsDistanceFromMainRoadMapOverlay	2020-07-16 21:41:46.906
+805	/20200706011442-UpdateMultiBarBarChartPercentageOfUtilityAvailabilityOfSchoolsLaosSchools	2020-07-16 21:41:47.138
+806	/20200706023151-UpdateMultiBarBarChartPercentageOfResourcesSupportReceivedOfSchoolsLaosSchools	2020-07-16 21:41:47.511
+807	/20200706073546-UpdateMajorDevelopmentPartnerOverlayToDevelopmentPartnerSupportOverlay	2020-07-16 21:41:47.618
+808	/20200710014909-FixFlutrackingOverlaysWithEntityAggregation-modifies-data	2020-07-16 21:41:47.934
+809	/20200710081638-AddUNFPARepHealthProdMOSReportToProvinceLevel-modifies-data	2020-07-16 21:41:48.106
+810	/20200710131831-AddRHOverlayToMsupplyCountries-modifies-data	2020-07-16 21:41:48.209
+811	/20200712224256-ChangeDefaultCovidOverlayToStateTotalCases-modifies-data	2020-07-16 21:41:48.261
+812	/20200713035339-FixVaccineReportReorderCells-modifies-data	2020-07-16 21:41:48.317
+813	/20200715235459-AddGPSTagAndAbilityToAttachPhotoToLaosSchools-modifies-data	2020-07-16 21:41:48.452
+814	/20200428025025-createAlertsTable	2020-07-23 23:00:35.162
+815	/20200501033538-createCommentTables	2020-07-23 23:00:35.498
+816	/20200617021631-AddUniqueConstraintInDataElementDataGroup	2020-07-23 23:00:35.98
+817	/20200622025632-AddDataGroupsForAllSurveys	2020-07-23 23:00:37.449
+818	/20200622025633-AddDataSourceIdColumn	2020-07-23 23:00:39.494
+819	/20200622025634-RemoveDhis2InfoFromSurveyIntegrationMetadata	2020-07-23 23:00:39.805
+820	/20200705042223-UpdateLaosSchoolsHandWashingFunctionalityMapOverlay	2020-07-23 23:00:40.11
+821	/20200710031900-ChangDenominatorForSoughtMedicalAdviceFlutrackingOverlay-modifies-data	2020-07-23 23:00:40.165
+822	/20200710065047-AddNewBinaryIndicatorTo5LaosSchoolsVisualisations-modifies-data	2020-07-23 23:00:40.519
+823	/20200716001701-ChangeUnfpaStaffMatrixFacilityBaselineDate-modifies-data	2020-07-23 23:00:40.569
+824	/20200625011337-AddUNFPARegionalLevelPercentageFacilitiesOfferingServicesDashboards	2020-07-28 22:33:32.881
+825	/20200713235756-AddUnfpaRegionalLevelAtLest1StaffTrained-modifies-data	2020-07-28 22:33:33.259
+826	/20200727002031-ChangeUNFPAProjectPermissionGroup-modifies-data	2020-07-28 22:33:33.291
+827	/20200723044326-UpdateLaosSchoolsAccessToCleanWaterMapOverlay-modifies-data	2020-08-06 22:02:00.975
+828	/20200724235329-MoveFrontEndMapOverlayInfoToPresentationOptionsColumn-modifies-data	2020-08-06 22:02:01.857
+829	/20200724235629-DropFrontEndMapOverlayInfoColumns-modifies-schema	2020-08-06 22:02:02.07
+830	/20200725050059-CreateMapOverlayGroupTables-modifies-schema	2020-08-06 22:02:02.225
+831	/20200725050217-MigrateMapOverlayGroupData-modifies-data	2020-08-06 22:02:03.693
+832	/20200725080640-DropMapOverlayGroupNameColumn-modifies-schema	2020-08-06 22:02:03.817
+833	/20200726010801-CategoriseLaosSchoolsDropOutRatesMapOverlays-modifies-data	2020-08-06 22:02:04.263
+834	/20200726031440-AddFluTrackingLandingPage-modifies-data	2020-08-06 22:02:04.3
+835	/20200726083032-CategoriseLaosSchoolsRepetitionRatesMapOverlays-modifies-data	2020-08-06 22:02:04.61
+836	/20200727071629-RemoveSchoolLevelBinaryIndicatorTable-modifies-data	2020-08-06 22:02:04.68
+837	/20200804010531-ChangeStriveProjectDefaultMapOverlay-modifies-data	2020-08-06 22:02:04.721
+838	/20200804021343-UpdateCOVIDAUProjectBackgroundUrl-modifies-data	2020-08-06 22:02:04.747
 \.
 
 
@@ -3488,7 +3580,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 800, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 838, true);
 
 
 --
