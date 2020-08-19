@@ -11,11 +11,10 @@ import { Aggregation, AggregationSpecs, Analytic, FetchOptions } from '../types'
 const FORMULA_SYMBOLS = ['(', ')', '+', '-', '*', '/'];
 
 export const extractDataElementCodesFromFormula = (formula: string) => {
-  const regex = `[${FORMULA_SYMBOLS.map(s => `\\${s}`).join('')}]`;
-  const codes = formula
-    .replace(new RegExp(regex, 'g'), '')
-    .split(' ')
-    .filter(c => c !== '');
+  const nonCodeSymbols = FORMULA_SYMBOLS.map(s => `\\${s}`)
+    .concat(' ')
+    .join('');
+  const codes = formula.split(new RegExp(`[${nonCodeSymbols}]`, 'g')).filter(c => c !== '');
 
   return new Set(codes);
 };

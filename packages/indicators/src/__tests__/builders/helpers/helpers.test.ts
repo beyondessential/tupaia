@@ -17,7 +17,8 @@ describe('helpers', () => {
     const testData: [string, string, string[]][] = [
       ['single letter codes', 'A + B', ['A', 'B']],
       ['multi letter codes', 'BCD01 + BCD02', ['BCD01', 'BCD02']],
-      ['continuous whitespace', ' BCD01  +  BCD02 ', ['BCD01', 'BCD02']],
+      ['excessive whitespace', ' BCD01  +  BCD02 ', ['BCD01', 'BCD02']],
+      ['no whitespace', 'BCD01+BCD02', ['BCD01', 'BCD02']],
       ['same code multiple times', 'BCD01 * BCD02 + BCD01', ['BCD01', 'BCD02']],
       [
         'all symbols',
