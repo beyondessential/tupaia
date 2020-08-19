@@ -5,11 +5,12 @@
 
 import {
   extractDataElementCodesFromFormula,
-  getAggregationsByCode,
   fetchAnalytics,
+  getAggregationsByCode,
+  groupKeysByValueJson,
 } from '../../../builders/helpers';
 import { Aggregation } from '../../../types';
-import { AggregationResponseConfig, AGGREGATION_RESPONSE_CONFIG } from './helpers.fixtures';
+import { AGGREGATION_RESPONSE_CONFIG } from './helpers.fixtures';
 import { createAggregator } from './helpers.stubs';
 
 describe('helpers', () => {
@@ -62,6 +63,92 @@ describe('helpers', () => {
     });
   });
 
+  describe('groupKeysByValueJson()', () => {
+    it('single key', () => {
+      const value = [{ alpha: 1, beta: 2 }, 3, true];
+      const valueJson = JSON.stringify(value);
+      expect(groupKeysByValueJson({ key: value })).toStrictEqual({ [valueJson]: ['key'] });
+    });
+
+    describe('object values', () => {
+      // Use getters instead of raw values to make sure that functionality
+      // also works for deep object equality
+      const getAlpha = () => ({ initial: 'A', order: 1 });
+      const getReverseAlpha = () => ({ order: 1, initial: 'A' });
+      const getBeta = () => ({ initial: 'B', order: 2 });
+
+      const alphaJson = JSON.stringify(getAlpha());
+      const reverseAlphaJson = JSON.stringify(getReverseAlpha());
+      const betaJson = JSON.stringify(getBeta());
+
+      const testData: [string, Record<string, {}>, Record<string, string[]>][] = [
+        [
+          'different entries',
+          { alpha: getAlpha(), beta: getBeta() },
+          { [alphaJson]: ['alpha'], [betaJson]: ['beta'] },
+        ],
+        [
+          'same entries, same order',
+          { alpha1: getAlpha(), alpha2: getAlpha() },
+          { [alphaJson]: ['alpha1', 'alpha2'] },
+        ],
+        [
+          'same entries, different order',
+          { alpha: getAlpha(), reverseAlpha: getReverseAlpha() },
+          { [alphaJson]: ['alpha'], [reverseAlphaJson]: ['reverseAlpha'] },
+        ],
+        [
+          'same and different entries',
+          { alpha1: getAlpha(), beta: getBeta(), alpha2: getAlpha() },
+          { [alphaJson]: ['alpha1', 'alpha2'], [betaJson]: ['beta'] },
+        ],
+      ];
+
+      it.each(testData)('%s', (_, object, expected) =>
+        expect(groupKeysByValueJson(object)).toStrictEqual(expected),
+      );
+    });
+
+    describe('array values', () => {
+      // Use getters instead of raw values to make sure that functionality
+      // also works for deep object equality
+      const getUpper = () => ['A', 'B'];
+      const getReverseUpper = () => ['B', 'A'];
+      const getLower = () => ['a', 'b'];
+
+      const upperJson = JSON.stringify(getUpper());
+      const reverseUpperJson = JSON.stringify(getReverseUpper());
+      const lowerJson = JSON.stringify(getLower());
+
+      const testData: [string, Record<string, unknown[]>, Record<string, string[]>][] = [
+        [
+          'different items',
+          { upper: getUpper(), lower: getLower() },
+          { [upperJson]: ['upper'], [lowerJson]: ['lower'] },
+        ],
+        [
+          'same items, same order',
+          { upper1: getUpper(), upper2: getUpper() },
+          { [upperJson]: ['upper1', 'upper2'] },
+        ],
+        [
+          'same items, different order',
+          { upper: getUpper(), reverseUpper: getReverseUpper() },
+          { [upperJson]: ['upper'], [reverseUpperJson]: ['reverseUpper'] },
+        ],
+        [
+          'same and different items',
+          { upper1: getUpper(), lower: getLower(), upper2: getUpper() },
+          { [upperJson]: ['upper1', 'upper2'], [lowerJson]: ['lower'] },
+        ],
+      ];
+
+      it.each(testData)('%s', (_, object, expected) =>
+        expect(groupKeysByValueJson(object)).toStrictEqual(expected),
+      );
+    });
+  });
+
   describe('fetchAnalytics()', () => {
     const aggregator = createAggregator(AGGREGATION_RESPONSE_CONFIG);
 
@@ -80,42 +167,18 @@ describe('helpers', () => {
       );
     });
 
-    describe('grouping fetches by aggregations', () => {
-      const testData: [string, (keyof AggregationResponseConfig)[], { value: number }[]][] = [
-        ['single data element', ['BCD01'], [{ value: 1 }]],
-        [
-          'data elements with different aggregations',
-          ['BCD01', 'BCD02'],
-          [{ value: 1 }, { value: 2 }],
-        ],
-        [
-          'data elements with the same aggregations',
-          ['BCD02', 'BCD03'],
-          [{ value: 2 }, { value: 3 }],
-        ],
-        [
-          'data elements with the same aggregations in different order',
-          ['BCD03', 'BCD04'],
-          [{ value: 3 }, { value: 4 }],
-        ],
-        [
-          'data elements with same and different aggregations',
-          ['BCD02', 'BCD03', 'BCD04'],
-          [{ value: 2 }, { value: 3 }, { value: 4 }],
-        ],
-      ];
+    it('fetches the expected analytics for a variety of same/different aggregations per data element', () => {
+      const aggregationsByCode = {
+        BCD01: AGGREGATION_RESPONSE_CONFIG.BCD01.expectedAggregations,
+        BCD02: AGGREGATION_RESPONSE_CONFIG.BCD02.expectedAggregations,
+        BCD03: AGGREGATION_RESPONSE_CONFIG.BCD03.expectedAggregations,
+        BCD04: AGGREGATION_RESPONSE_CONFIG.BCD04.expectedAggregations,
+      };
+      const expectedResults = [{ value: 1 }, { value: 2 }, { value: 3 }, { value: 4 }];
 
-      it.each(testData)('%s', (_, dataElementCodes, expected) => {
-        const aggregationsByCode = Object.fromEntries(
-          dataElementCodes.map(code => [
-            code,
-            AGGREGATION_RESPONSE_CONFIG[code].expectedAggregations,
-          ]),
-        );
-        return expect(fetchAnalytics(aggregator, aggregationsByCode, {})).resolves.toStrictEqual(
-          expected,
-        );
-      });
+      return expect(fetchAnalytics(aggregator, aggregationsByCode, {})).resolves.toStrictEqual(
+        expectedResults,
+      );
     });
   });
 });
