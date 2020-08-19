@@ -28,45 +28,21 @@ exports.setup = function(options, seedLink) {
 
 const dashboardGroup = 'TO_Health_Promotion_Unit_Country';
 const reportId = 'Tonga_HPU_Number_New_Quitline_Calls_District';
-const dataBuilder = 'composePercentagesPerPeriodByOrgUnit'; // 'percentPerValuePerOrgUnit';
+const dataBuilder = 'sumByOrgUnit';
 const dataBuilderConfig = {
-  percentages: {
-    value: {
-      numerator: 'countDistrictCalls',
-      denominator: 'countCountryCalls',
-    },
-  },
-  dataBuilders: {
-    countDistrictCalls: {
-      dataBuilder: 'sumByOrgUnit', //'sumValuesPerMonthByOrgUnit',
-      dataBuilderConfig: {
-        dataElementCodes: ['HP216'],
-        entityAggregation: {
-          // aggregationType: 'COUNT_PER_PERIOD_PER_ORG_GROUP',
-          dataSourceEntityType: 'facility',
-          aggregationEntityType: 'district',
-        },
-      },
-    },
-    countCountryCalls: {
-      dataBuilder: 'sumByOrgUnit', //'sumValuesPerMonthByOrgUnit',
-      dataBuilderConfig: {
-        dataElementCodes: ['HP216'],
-        entityAggregation: {
-          // aggregationType: 'SUM_PER_PERIOD_PER_ORG_GROUP',
-          dataSourceEntityType: 'facility',
-          aggregationEntityType: 'district',
-        },
-      },
-    },
+  aggregationType: 'SUM_PER_ORG_GROUP',
+  dataElementCodes: ['HP216'],
+  entityAggregation: {
+    dataSourceEntityType: 'facility',
+    aggregationEntityType: 'district',
   },
 };
 const viewJson = {
   name: 'Number of New Quitline Calls',
   type: 'chart',
   chartType: 'pie',
-  valueType: 'fractionAndPercentage',
-  periodGranularity: 'month',
+  valueType: 'Percentage',
+  periodGranularity: 'one_year_at_a_time',
 };
 
 const dataServices = [{ isDataRegional: false }];

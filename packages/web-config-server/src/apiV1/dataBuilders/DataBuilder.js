@@ -6,6 +6,7 @@ import { getSortByKey, getSortByExtractedValue, getUniqueEntries } from '@tupaia
 
 import { Project, Entity } from '/models';
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
+import { transformValue } from 'apiV1/dataBuilders/transform';
 
 export class DataBuilder {
   static NO_DATA_AVAILABLE = NO_DATA_AVAILABLE;
@@ -138,6 +139,17 @@ export class DataBuilder {
     });
     return mappedEvents;
   }
+
+  mapOrgUnitCodesToNames = async orgUnitCodes => {
+    const orgUnitNames = {};
+    if (!orgUnitCodes || orgUnitCodes.length < 1) return orgUnitNames;
+    await Promise.all(
+      orgUnitCodes.map(async orgUnitCode => {
+        orgUnitNames[orgUnitCode] = await transformValue('orgUnitCodeToName', orgUnitCode);
+      }),
+    );
+    return orgUnitNames;
+  };
 
   sortEventsByAncestor = events => events.sort(getSortByKey('orgUnitAncestor'));
 
