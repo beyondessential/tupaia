@@ -50,7 +50,7 @@ function* loadProject(action) {
   }
 
   state = yield select();
-  const project = selectProjectByCode(state, action.projectCode) || {};
+  const project = selectProjectByCode(state, action.projectCode);
 
   const organisationUnitCode = selectCurrentOrgUnitCode(state);
   yield put(changeBounds(yield select(selectAdjustedProjectBounds, action.projectCode)));

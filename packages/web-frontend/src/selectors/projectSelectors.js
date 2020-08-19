@@ -23,7 +23,7 @@ export const selectIsProject = createSelector(
 
 export const selectProjectByCode = createSelector(
   [selectAllProjects, (_, code) => code],
-  (projects, code) => projects.find(p => p.code === code),
+  (projects, code) => projects.find(p => p.code === code) || {},
 );
 
 export const selectCurrentProject = createSelector(
