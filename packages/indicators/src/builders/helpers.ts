@@ -28,6 +28,9 @@ export const getAggregationsByCode = (aggregationSpecs: AggregationSpecs) =>
     }),
   );
 
+export const groupKeysByValueJson = (object: Record<string, unknown>) =>
+  groupBy(Object.keys(object), code => JSON.stringify(object[code]));
+
 export const fetchAnalytics = async (
   aggregator: Aggregator,
   aggregationsByCode: Record<string, Aggregation[]>,
@@ -36,9 +39,7 @@ export const fetchAnalytics = async (
   // A different collection of aggregations may be required for each data element code,
   // but only one collection can be provided in an aggregator call
   // Group data elements per aggregation collection to minimise aggregator calls
-  const aggregationJsonToCodes = groupBy(Object.keys(aggregationsByCode), code =>
-    JSON.stringify(aggregationsByCode[code]),
-  );
+  const aggregationJsonToCodes = groupKeysByValueJson(aggregationsByCode);
 
   const analytics: Analytic[] = [];
   await Promise.all(
