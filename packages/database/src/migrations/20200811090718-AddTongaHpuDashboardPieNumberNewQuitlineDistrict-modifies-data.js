@@ -7,9 +7,9 @@ var type;
 var seed;
 
 /**
-  * We receive the dbmigrate dependency from dbmigrate initially.
-  * This enables us to not have to rely on NODE_PATH.
-  */
+ * We receive the dbmigrate dependency from dbmigrate initially.
+ * This enables us to not have to rely on NODE_PATH.
+ */
 exports.setup = function(options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
@@ -23,48 +23,50 @@ exports.setup = function(options, seedLink) {
 // Data source survey question code: HP216
 // Numerator: value of a particular district
 // Denominator:
-// No data by district yet - build functionality (just do total national number now) 
+// No data by district yet - build functionality (just do total national number now)
 // or put this one on hold until this data coming in.
 
-// 'percentPerValuePerOrgUnit',
-//           `{
-//     "type": "chart",
-//     "name": "Service Status By Facility",
-//     "xName": "Facility",
-//     "yName": "%",
-//     "chartType": "bar",
-//     "valueType": "percentage",
-//     "presentationOptions": {
-//       "1": {
-//         "color": "#279A63", "label": "Green"
-//       },
-//       "2": {
-//         "color": "#EE9A30", "label": "Orange"
-//       },
-//       "3": {
-//         "color": "#EE4230", "label": "Red"
-//       }
-//     }
-//   }`,
-//           `{
-//     "apiRoute": "analytics",
-//     "dataElementCodes": [ "DE_GROUP-PEHSS" ],
-//     "organisationUnitIsGroup":true,
-//     "aggregationType": "ALL"
-
-const dashboardGroups = ['TO_Health_Promotion_Unit_Country'];
+const dashboardGroup = 'TO_Health_Promotion_Unit_Country';
 const reportId = 'Tonga_HPU_Number_New_Quitline_Calls_District';
-const dataBuilder = 'percentPerValuePerOrgUnit';
+const dataBuilder = 'composePercentagesPerPeriodByOrgUnit'; // 'percentPerValuePerOrgUnit';
 const dataBuilderConfig = {
-  dataElementCodes: ['HP216'],
-  programCode: 'HP04',
+  percentages: {
+    value: {
+      numerator: 'countDistrictCalls',
+      denominator: 'countCountryCalls',
+    },
+  },
+  dataBuilders: {
+    countDistrictCalls: {
+      dataBuilder: 'sumByOrgUnit', //'sumValuesPerMonthByOrgUnit',
+      dataBuilderConfig: {
+        dataElementCodes: ['HP216'],
+        entityAggregation: {
+          // aggregationType: 'COUNT_PER_PERIOD_PER_ORG_GROUP',
+          dataSourceEntityType: 'facility',
+          aggregationEntityType: 'district',
+        },
+      },
+    },
+    countCountryCalls: {
+      dataBuilder: 'sumByOrgUnit', //'sumValuesPerMonthByOrgUnit',
+      dataBuilderConfig: {
+        dataElementCodes: ['HP216'],
+        entityAggregation: {
+          // aggregationType: 'SUM_PER_PERIOD_PER_ORG_GROUP',
+          dataSourceEntityType: 'facility',
+          aggregationEntityType: 'district',
+        },
+      },
+    },
+  },
 };
 const viewJson = {
-  name: 'Health Talks and Training: Setting Type',
+  name: 'Number of New Quitline Calls',
   type: 'chart',
   chartType: 'pie',
   valueType: 'fractionAndPercentage',
-  periodGranularity: 'one_year_at_a_time',
+  periodGranularity: 'month',
 };
 
 const dataServices = [{ isDataRegional: false }];
@@ -83,7 +85,7 @@ exports.up = async function(db) {
   return db.runSql(`
      UPDATE "dashboardGroup"
      SET "dashboardReports" = "dashboardReports" || '{ ${report.id} }'
-     WHERE "code" = '${dashboardGroups}';
+     WHERE "code" = '${dashboardGroup}';
    `);
 };
 
@@ -92,9 +94,9 @@ exports.down = function(db) {
      DELETE FROM "dashboardReport" WHERE id = '${report.id}';
      UPDATE "dashboardGroup"
      SET "dashboardReports" = array_remove("dashboardReports", '${report.id}')
-     WHERE "code" = '${dashboardGroups}';
+     WHERE "code" = '${dashboardGroup}';
    `);
 };
 exports._meta = {
-  "version": 1
+  version: 1,
 };
