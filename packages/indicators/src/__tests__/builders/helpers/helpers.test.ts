@@ -72,7 +72,7 @@ describe('helpers', () => {
 
     describe('object values', () => {
       // Use getters instead of raw values to make sure that functionality
-      // also works for deep object equality
+      // does not depend on strict object equality ('===')
       const getAlpha = () => ({ initial: 'A', order: 1 });
       const getReverseAlpha = () => ({ order: 1, initial: 'A' });
       const getBeta = () => ({ initial: 'B', order: 2 });
@@ -111,7 +111,7 @@ describe('helpers', () => {
 
     describe('array values', () => {
       // Use getters instead of raw values to make sure that functionality
-      // also works for deep object equality
+      // does not depend on strict array equality ('===')
       const getUpper = () => ['A', 'B'];
       const getReverseUpper = () => ['B', 'A'];
       const getLower = () => ['a', 'b'];
