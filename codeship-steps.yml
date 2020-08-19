@@ -41,16 +41,16 @@
 #               service: testing
 #               command: './packages/devops/scripts/ci/testInternalDependencies.sh'
 
-- type: serial
-  name: pull latest into ec2
-  service: deployment
-  steps:
-    - name: reinstate SSH Private Key File
-      command: /bin/bash -c "echo -e $PRIVATE_SSH_KEY >> /root/.ssh/id_rsa"
-    - name: chmod id_rsa
-      command: chmod 600 /root/.ssh/id_rsa
-    - name: pull latest and install dependencies
-      command: './packages/devops/scripts/ci/pullLatest.sh'
+# - type: serial
+#   name: pull latest into ec2
+#   service: deployment
+#   steps:
+#     - name: reinstate SSH Private Key File
+#       command: /bin/bash -c "echo -e $PRIVATE_SSH_KEY >> /root/.ssh/id_rsa"
+#     - name: chmod id_rsa
+#       command: chmod 600 /root/.ssh/id_rsa
+#     - name: pull latest and install dependencies
+#       command: './packages/devops/scripts/ci/pullLatest.sh'
 - type: parallel
   name: deploy-all
   service: deployment
