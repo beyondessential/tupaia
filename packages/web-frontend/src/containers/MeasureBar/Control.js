@@ -6,6 +6,7 @@ import LayersIcon from '@material-ui/icons/Layers';
 import DownArrow from '@material-ui/icons/ArrowDropDown';
 import Typography from '@material-ui/core/Typography';
 import Fade from '@material-ui/core/Fade';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { DateRangePicker } from '../../components/DateRangePicker';
 import { CONTROL_BAR_WIDTH, TUPAIA_ORANGE, MAP_OVERLAY_SELECTOR } from '../../styles';
 import { GRANULARITY_CONFIG } from '../../utils/periodGranularities';
@@ -145,7 +146,9 @@ export const Control = ({
           period={selectedMeasure.periodGranularity}
           onClick={toggleMeasures}
         >
-          <ContentText>{selectedMeasure.name}</ContentText>
+          <ContentText>
+            {isMeasureLoading ? <CircularProgress size={22} /> : selectedMeasure.name}
+          </ContentText>
           <IconWrapper>
             <DownArrow />
           </IconWrapper>

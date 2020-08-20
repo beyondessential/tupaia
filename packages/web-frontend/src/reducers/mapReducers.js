@@ -24,6 +24,7 @@ import {
   HIDE_MAP_MEASURE,
   UNHIDE_MAP_MEASURE,
   CLEAR_MEASURE,
+  UPDATE_MEASURE_CONFIG,
 } from '../actions';
 
 import { MARKER_TYPES } from '../constants';
@@ -127,6 +128,7 @@ function measureInfo(state = {}, action) {
 
 function isMeasureLoading(state = false, action) {
   switch (action.type) {
+    case UPDATE_MEASURE_CONFIG:
     case CHANGE_MEASURE:
       return true;
     case FETCH_MEASURE_DATA_ERROR:
