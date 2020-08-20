@@ -48,9 +48,9 @@ export const reactToInitialState = store => {
   }
 
   dispatch(setOverlayComponent(null));
-  dispatch(setProject(otherComponents[URL_COMPONENTS.PROJECT], false));
+  dispatch(setProject(otherComponents[URL_COMPONENTS.PROJECT]));
   if (otherComponents[URL_COMPONENTS.ORG_UNIT])
-    dispatch(setOrgUnit(otherComponents[URL_COMPONENTS.ORG_UNIT], true));
+    dispatch(setOrgUnit(otherComponents[URL_COMPONENTS.ORG_UNIT]));
 };
 
 export const historyMiddleware = store => next => action => {
