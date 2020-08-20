@@ -6,16 +6,11 @@
  */
 
 import React, { Component } from 'react';
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-import { MuiThemeProvider as V0MuiThemeProvider } from 'material-ui';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import { Provider } from 'react-redux';
+
 import configureStore from './configureStore';
-import { DARKENED_BLUE } from './styles';
-
+import { AppStyleProviders } from './AppStyleProviders';
 import { reactToInitialState, initHistoryDispatcher } from './historyNavigation';
-
 import { fetchInitialData } from './actions';
 
 // Set up asynchonous import of the RootScreen to enable webpack to do code splitting.
@@ -61,13 +56,7 @@ class App extends Component {
     const { RootScreen } = this.state;
     return (
       <Provider store={store}>
-        <MuiThemeProvider
-          theme={createMuiTheme({ palette: { type: 'dark', primary: { main: DARKENED_BLUE } } })}
-        >
-          <V0MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
-            {RootScreen ? <RootScreen /> : null}
-          </V0MuiThemeProvider>
-        </MuiThemeProvider>
+        <AppStyleProviders>{RootScreen ? <RootScreen /> : null}</AppStyleProviders>
       </Provider>
     );
   }
