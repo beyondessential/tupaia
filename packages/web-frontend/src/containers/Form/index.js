@@ -14,7 +14,7 @@ import { validateField } from './utils';
 
 const FormGrid = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 10px;
   padding: 18px;
 `;
@@ -27,7 +27,7 @@ export class Form extends React.Component {
 
     const defaultValues = {};
     React.Children.forEach(this.formChildren, child => {
-      if (!child.props.name) return;
+      if (!child || !child.props.name) return;
       if (!React.isValidElement(child)) throw new Error('Invalid Field element as child of Form');
 
       const { name, defaultValue } = child.props;
@@ -92,10 +92,11 @@ export class Form extends React.Component {
     });
   };
 
-  submitForm = () => {
+  submitForm = event => {
+    event.preventDefault();
     const fieldErrors = {};
     React.Children.forEach(this.formChildren, child => {
-      if (!child.props.name) return;
+      if (!child || !child.props.name) return;
 
       const errors = validateField(this.state.fieldValues, child.props);
       if (errors.length > 0) fieldErrors[child.props.name] = errors;
@@ -107,6 +108,8 @@ export class Form extends React.Component {
 
   renderChildren = () => {
     return React.Children.map(this.props.render(this.submitForm).props.children, child => {
+      if (child === null) return null;
+
       const { hidden, name } = child.props;
       if (hidden) return null;
 
@@ -120,16 +123,16 @@ export class Form extends React.Component {
   };
 
   render() {
-    const { isLoading, formError, formSuccess } = this.props;
+    const { isLoading, formError, formSuccess, Grid } = this.props;
 
     return (
       <form onSubmit={this.submitForm} noValidate>
         {isLoading && <LoadingIndicator />}
-        <FormGrid>
+        <Grid>
           {formSuccess && <FormSuccess message={formSuccess} />}
           {this.renderChildren()}
           {formError && <FormError error={formError} />}
-        </FormGrid>
+        </Grid>
       </form>
     );
   }
@@ -141,10 +144,12 @@ Form.propTypes = {
   isLoading: PropTypes.bool,
   render: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
+  Grid: PropTypes.any,
 };
 
 Form.defaultProps = {
   isLoading: false,
   formError: null,
   formSuccess: null,
+  Grid: FormGrid,
 };

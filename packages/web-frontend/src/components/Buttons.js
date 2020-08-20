@@ -11,9 +11,9 @@ import Button from '@material-ui/core/Button';
 import { WHITE, PRIMARY_BLUE, BREWER_PALETTE } from '../styles';
 
 export const PrimaryButton = styled(Button)`
-  margin: 0 auto;
   color: ${WHITE};
   background: ${PRIMARY_BLUE};
+  padding: 6px 8px 7px;
 
   :hover {
     background: ${BREWER_PALETTE.blue};

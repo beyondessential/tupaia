@@ -46,10 +46,13 @@ const LightFormTheme = styled.div`
   label,
   .MuiFormLabel-root,
   .MuiCheckbox-root,
-  .MuiButton-text,
   .MuiInput-underline::before {
     color: black;
     border-color: black;
+  }
+
+  .MuiInput-underline:hover:not(.Mui-disabled):before {
+    border-bottom: 2px solid black;
   }
 
   p {
@@ -66,6 +69,10 @@ const LightFormTheme = styled.div`
 
   .MuiInputBase-input {
     color: ${DARK_BLUE};
+  }
+
+  button.MuiButtonBase-root {
+    margin-top: 20px;
   }
 `;
 

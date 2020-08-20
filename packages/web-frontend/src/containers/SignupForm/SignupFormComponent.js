@@ -44,6 +44,13 @@ const TermsLink = styled(FormLink)`
   font-size: 14px;
 `;
 
+const FormGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 18px;
+`;
+
 const TermsLabel = () => (
   <TermsAndConditions>
     I agree to the&nbsp;
@@ -66,6 +73,7 @@ export const SignupFormComponent = ({
     isLoading={isRequestingSignup}
     formError={signupFailedMessage}
     onSubmit={fieldValues => onAttemptUserSignup(fieldValues)}
+    Grid={FormGrid}
     render={submitForm => (
       <>
         <TextField label="First Name" name="firstName" required />

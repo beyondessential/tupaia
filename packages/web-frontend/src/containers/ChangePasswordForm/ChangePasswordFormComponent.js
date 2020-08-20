@@ -54,7 +54,7 @@ export const ChangePasswordFormComponent = ({
       formError={changePasswordFailedMessage}
       onSubmit={fieldValues => onAttemptChangePassword(fieldValues)}
       render={submitForm => (
-        <React.Fragment>
+        <>
           {useResetToken ? (
             <TextField name="passwordResetToken" hidden defaultValue={passwordResetToken} />
           ) : (
@@ -82,10 +82,10 @@ export const ChangePasswordFormComponent = ({
             required
             validators={[passwordLength, passwordMatch]}
           />
-          <PrimaryButton variant="contained" onClick={submitForm}>
+          <PrimaryButton onClick={submitForm} fullWidth>
             Change password
           </PrimaryButton>
-        </React.Fragment>
+        </>
       )}
     />
   );
