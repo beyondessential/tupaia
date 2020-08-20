@@ -18,6 +18,7 @@ const FIELDS = [
       optionsEndpoint: 'permissionGroups',
       optionLabelKey: 'name',
       optionValueKey: 'name',
+      sourceKey: 'userGroup',
     },
   },
   {
@@ -31,6 +32,7 @@ const FIELDS = [
       optionsEndpoint: 'mapOverlays',
       optionLabelKey: 'measureBuilder',
       optionValueKey: 'measureBuilder',
+      sourceKey: 'measureBuilder',
     },
   },
   {
@@ -51,6 +53,7 @@ const FIELDS = [
     editConfig: {
       optionsEndpoint: 'mapOverlays',
       optionLabelKey: 'id',
+      sourceKey: 'linkedMeasures',
       allowMultipleValues: true,
     },
   },
@@ -72,6 +75,7 @@ const FIELDS = [
       optionsEndpoint: 'entities',
       optionLabelKey: 'code',
       optionValueKey: 'code',
+      sourceKey: 'countryCodes',
       allowMultipleValues: true,
     },
   },
@@ -83,6 +87,7 @@ const FIELDS = [
       optionsEndpoint: 'projects',
       optionLabelKey: 'code',
       optionValueKey: 'code',
+      sourceKey: 'projectCodes',
       allowMultipleValues: true,
     },
   },
