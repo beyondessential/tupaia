@@ -12,10 +12,9 @@ import InfoIcon from '@material-ui/icons/Info';
 
 import { Form } from '../Form';
 import { TextField, CheckboxField } from '../Form/Fields';
-import { FormLink } from '../Form/common';
+import { FormLink, SubmitButton as Submit } from '../Form/common';
 import { passwordLength, passwordMatch, emailAddress, hasNoAlphaLetters } from '../Form/validators';
 import { WHITE } from '../../styles/index';
-import { SubmitButton } from '../Form/common/SubmitButton';
 
 const LearnMore = styled.div`
   font-size: 14px;
@@ -42,6 +41,10 @@ const TermsAndConditions = styled.div`
 const TermsLink = styled(FormLink)`
   text-decoration: underline;
   font-size: 14px;
+`;
+
+const SubmitButton = styled(Submit)`
+  justify-self: end;
 `;
 
 const FormGrid = styled.div`
