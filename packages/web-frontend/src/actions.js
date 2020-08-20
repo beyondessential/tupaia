@@ -499,7 +499,7 @@ export function changeBounds(bounds) {
 
 /**
  * Changes current measure, should change features rendered on map after saga data fetch.
- * Updates selectedMeasureId in measureBar.
+ * Updates the current measureId in the url.
  * @param {string} measureId
  */
 export function setMeasure(measureId) {

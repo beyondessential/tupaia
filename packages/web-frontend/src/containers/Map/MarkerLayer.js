@@ -150,12 +150,12 @@ export class MarkerLayer extends Component {
       displayPolygons,
     } = this.props;
     if (!measureData || !measureData.length) return null;
-    
+
     if (isMeasureLoading) return null;
     const processedData = measureData
-    .filter(data => data.coordinates && data.coordinates.length === 2)
-    .filter(displayInfo => !displayInfo.isHidden);
-    
+      .filter(data => data.coordinates && data.coordinates.length === 2)
+      .filter(displayInfo => !displayInfo.isHidden);
+
     //for radius overlay sort desc radius to place smaller circles over larger circles
     if (hasRadiusLayer(measureOptions)) {
       processedData.sort((a, b) => {
@@ -191,7 +191,7 @@ export class MarkerLayer extends Component {
       );
     });
   }
-  
+
   render() {
     return <LayerGroup>{this.renderMeasures()}</LayerGroup>;
   }

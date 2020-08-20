@@ -676,8 +676,9 @@ function* watchSearchChange() {
  * Fetches data for a measure and write it to map state by calling fetchMeasureSuccess.
  *
  */
-function* fetchMeasureInfo(measureId, organisationUnitCode) {
+function* fetchMeasureInfo(measureId) {
   const state = yield select();
+  const organisationUnitCode = selectCurrentOrgUnitCode(state);
 
   if (!measureId || !organisationUnitCode) {
     // Don't try and fetch null measures
@@ -719,10 +720,7 @@ function* fetchMeasureInfo(measureId, organisationUnitCode) {
 }
 
 function* fetchMeasureInfoForMeasureChange(action) {
-  const { measureId } = action;
-  const state = yield select();
-  const organisationUnitCode = selectCurrentOrgUnitCode(state);
-  yield fetchMeasureInfo(measureId, organisationUnitCode);
+  yield fetchMeasureInfo(action.measureId);
 }
 
 function* watchMeasureChange() {
@@ -733,7 +731,7 @@ function* fetchMeasureInfoForMeasurePeriodChange() {
   const state = yield select();
   const currentMeasureId = selectCurrentMeasureId(state);
 
-  yield fetchMeasureInfo(currentMeasureId, selectCurrentOrgUnitCode(state));
+  yield fetchMeasureInfo(currentMeasureId);
 }
 
 function* watchMeasurePeriodChange() {

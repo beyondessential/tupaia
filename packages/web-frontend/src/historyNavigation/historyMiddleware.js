@@ -60,18 +60,13 @@ export const reactToInitialState = store => {
 export const historyMiddleware = store => next => action => {
   if (action.meta && action.meta.preventHistoryUpdate) return next(action);
 
-  const { dispatch: rawDispatch } = store;
-  const dispatch = a => rawDispatch({ ...a, meta: { preventHistoryUpdate: true } });
-
   switch (action.type) {
     // Actions that modify the path
     case SET_PROJECT:
       dispatchLocationUpdate(store, URL_COMPONENTS.PROJECT, action.projectCode);
-      dispatch(setProject(action.projectCode));
       break;
     case SET_ORG_UNIT:
       dispatchLocationUpdate(store, URL_COMPONENTS.ORG_UNIT, action.organisationUnitCode);
-      dispatch(setOrgUnit(action.organisationUnitCode));
       break;
     case CHANGE_DASHBOARD_GROUP:
       dispatchLocationUpdate(store, URL_COMPONENTS.DASHBOARD, action.name);
@@ -90,7 +85,6 @@ export const historyMiddleware = store => next => action => {
       break;
     case SET_MEASURE:
       dispatchLocationUpdate(store, URL_COMPONENTS.MEASURE, action.measureId);
-      dispatch(setMeasure(action.measureId));
       break;
     case CLEAR_MEASURE:
       dispatchLocationUpdate(store, URL_COMPONENTS.MEASURE, null);
