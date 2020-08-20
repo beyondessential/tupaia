@@ -15,8 +15,7 @@ const MAX_RECORDS_PER_PAGE = 100;
 const extractResourceFromEndpoint = endpoint => endpoint.split('/')[1];
 
 /**
- * Responds to arbitrary GET requests to endpoints that relate to record types listed in the
- * GETTABLE_TYPES constant.
+ * Responds to GET requests for a resource.
  * The endpoints should take the camel case form of the record, and be the plural form, unless you
  * are requesting a specific record by its id.
  * These endpoints also support pagination using 'pageSize' and 'page' query parameters, sorting
