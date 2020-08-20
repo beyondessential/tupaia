@@ -17,7 +17,7 @@ import { WeekPickerToolbar } from './WeekPickerToolbar';
 import { MIN_DATE } from './constants';
 
 /**
- * Customisation fo the DatePicker is not easily possible using styled-components
+ * Customisation of the DatePicker is not easily possible using styled-components
  * so have had to use a createStyles solution
  */
 const styles = createStyles(theme => ({
@@ -90,7 +90,7 @@ export const WeekPickerComponent = ({ label, value, onChange, isOpen, onClose, c
     return (
       <div className={wrapperClassName}>
         <IconButton className={dayClassName}>
-          <span> {format(date, 'd')} </span>
+          <span>{format(date, 'd')}</span>
         </IconButton>
       </div>
     );
