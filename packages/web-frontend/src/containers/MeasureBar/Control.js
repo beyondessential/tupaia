@@ -4,8 +4,8 @@ import styled from 'styled-components';
 import moment from 'moment';
 import LayersIcon from '@material-ui/icons/Layers';
 import DownArrow from '@material-ui/icons/ArrowDropDown';
-import Typography from '@material-ui/core/Typography';
 import Fade from '@material-ui/core/Fade';
+import LastUpdated from './LastUpdated';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { DateRangePicker } from '../../components/DateRangePicker';
 import { CONTROL_BAR_WIDTH, TUPAIA_ORANGE, MAP_OVERLAY_SELECTOR } from '../../styles';
@@ -13,21 +13,17 @@ import { GRANULARITY_CONFIG } from '../../utils/periodGranularities';
 
 const Container = styled.div`
   width: ${CONTROL_BAR_WIDTH}px;
-  pointer-events: auto;
   cursor: auto;
   min-height: 0; /* firefox vertical scroll */
   display: flex;
   flex-direction: column;
   height: 100%;
-
-  // Apply anti-aliasing to the control scope until it is added globally
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 `;
 
 const Header = styled.div`
   display: flex;
   font-weight: 500;
+  pointer-events: auto;
   background: ${TUPAIA_ORANGE};
   color: #ffffff;
   text-transform: uppercase;
@@ -45,6 +41,7 @@ const Header = styled.div`
 
 const Content = styled.div`
   display: flex;
+  pointer-events: auto;
   padding: 12px 15px;
   background: ${MAP_OVERLAY_SELECTOR.background};
   color: #ffffff;
@@ -71,7 +68,7 @@ const IconWrapper = styled.div`
   padding: 2px 0 2px 10px;
 `;
 
-const ContentText = styled(Typography)`
+const ContentText = styled.div`
   font-size: 16px;
 `;
 
@@ -81,13 +78,15 @@ const EmptyContentText = styled(ContentText)`
 
 const SubHeader = styled.div`
   color: ${TUPAIA_ORANGE};
-  font-size: 0.7rem;
-  font-weight: 400;
+  font-size: 12px;
+  font-weight: 500;
   padding: 4px;
   text-transform: uppercase;
+  margin-bottom: 10px;
 `;
 
 const MeasureDatePicker = styled.div`
+  pointer-events: auto;
   background: #203e5c;
   padding: 16px 8px;
   border-bottom-left-radius: ${({ expanded }) => (!expanded ? '5px' : '0')};
@@ -95,6 +94,7 @@ const MeasureDatePicker = styled.div`
 `;
 
 const ExpandedContent = styled.div`
+  pointer-events: auto;
   background: #203e5c;
   border-top: 1px solid rgba(255, 255, 255, 0.25);
   color: #fff;
@@ -165,12 +165,13 @@ export const Control = ({
           />
         </MeasureDatePicker>
       )}
-      <Fade in={isExpanded}>
+      <Fade in={isExpanded} mountOnEnter unmountOnExit exit={false}>
         <ExpandedContent>
           <SubHeader>Select an overlay</SubHeader>
           {children}
         </ExpandedContent>
       </Fade>
+      <LastUpdated />
     </Container>
   );
 };
