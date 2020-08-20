@@ -54,19 +54,19 @@
   name: deploy-all
   service: deployment
   steps:
-    # - type: serial
-    #   name: deploy-backends
-    #   steps:
-    #     - type: parallel
-    #       name: restart-backends
-    #       steps:
-    #         - name: deploy-web-config-server
-    #           command: './packages/devops/scripts/ci/deployBackend.sh web-config-server'
-    #         - name: deploy-meditrak-server
-    #           command: './packages/devops/scripts/ci/deployBackend.sh meditrak-server'
-    #     # run migrations immediately after backend deployment has finished so there is minimal time for code/db mismatch
-    #     - name: run db migrations
-    #       command: './packages/devops/scripts/ci/runMigrations.sh'
+    - type: serial
+      name: deploy-backends
+      steps:
+        - type: serial
+          name: restart-backends
+          steps:
+            - name: deploy-web-config-server
+              command: './packages/devops/scripts/ci/deployBackend.sh web-config-server'
+            - name: deploy-meditrak-server
+              command: './packages/devops/scripts/ci/deployBackend.sh meditrak-server'
+        # run migrations immediately after backend deployment has finished so there is minimal time for code/db mismatch
+        - name: run db migrations
+          command: './packages/devops/scripts/ci/runMigrations.sh'
     # build front ends in serial because they consume a lot of resources, and can crash deployment if run in parallel
     - type: serial
       name: deploy-frontends
