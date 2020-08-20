@@ -40,7 +40,6 @@
 #             - name: test-internal-dependencies
 #               service: testing
 #               command: './packages/devops/scripts/ci/testInternalDependencies.sh'
-
 - type: serial
   name: pull latest into ec2
   service: deployment
