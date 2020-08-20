@@ -1,45 +1,46 @@
-# - type: parallel
-#   name: validate-and-test
-#   steps:
-#     - type: parallel
-#       name: validate
-#       steps:
-#         - name: validate branch name
-#           service: validation
-#           command: './packages/devops/scripts/ci/validateBranchName.sh'
-#         - type: parallel
-#           name: validate all code
-#           steps:
-#             - name: validate meditrak-server code
-#               service: validation
-#               command: './packages/devops/scripts/ci/validateCode.sh meditrak-server'
-#             - name: validate web-config-server code
-#               service: validation
-#               command: './packages/devops/scripts/ci/validateCode.sh web-config-server'
-#     - type: serial
-#       name: test
-#       steps:
-#         - type: parallel # they're in containers, so even though they generally use one db, they're sandboxed
-#           name: test-all
-#           steps:
-#             - name: test-meditrak-server
-#               service: testing
-#               command: './packages/devops/scripts/ci/testBackend.sh meditrak-server'
-#             - name: test-web-config-server
-#               service: testing
-#               command: './packages/devops/scripts/ci/testBackend.sh web-config-server'
-#             - name: test-database
-#               service: testing
-#               command: './packages/devops/scripts/ci/testBackend.sh database'
-#             - name: test-data-api
-#               service: testing
-#               command: './packages/devops/scripts/ci/testBackend.sh data-api'
-#             - name: test-auth
-#               service: testing
-#               command: './packages/devops/scripts/ci/testBackend.sh auth'
-#             - name: test-internal-dependencies
-#               service: testing
-#               command: './packages/devops/scripts/ci/testInternalDependencies.sh'
+- type: parallel
+  name: validate-and-test
+  steps:
+    - type: parallel
+      name: validate
+      steps:
+        - name: validate branch name
+          service: validation
+          command: './packages/devops/scripts/ci/validateBranchName.sh'
+        - type: parallel
+          name: validate all code
+          steps:
+            - name: validate meditrak-server code
+              service: validation
+              command: './packages/devops/scripts/ci/validateCode.sh meditrak-server'
+            - name: validate web-config-server code
+              service: validation
+              command: './packages/devops/scripts/ci/validateCode.sh web-config-server'
+    - type: serial
+      name: test
+      steps:
+        - type: parallel # they're in containers, so even though they generally use one db, they're sandboxed
+          name: test-all
+          steps:
+            - name: test-meditrak-server
+              service: testing
+              command: './packages/devops/scripts/ci/testBackend.sh meditrak-server'
+            - name: test-web-config-server
+              service: testing
+              command: './packages/devops/scripts/ci/testBackend.sh web-config-server'
+            - name: test-database
+              service: testing
+              command: './packages/devops/scripts/ci/testBackend.sh database'
+            - name: test-data-api
+              service: testing
+              command: './packages/devops/scripts/ci/testBackend.sh data-api'
+            - name: test-auth
+              service: testing
+              command: './packages/devops/scripts/ci/testBackend.sh auth'
+            - name: test-internal-dependencies
+              service: testing
+              command: './packages/devops/scripts/ci/testInternalDependencies.sh'
+
 - type: serial
   name: pull latest into ec2
   service: deployment
