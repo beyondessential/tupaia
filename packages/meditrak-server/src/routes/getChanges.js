@@ -6,7 +6,7 @@
 import { respond, DatabaseError } from '@tupaia/utils';
 import { TYPES } from '@tupaia/database';
 import { getChangesFilter, getColumnsForMeditrakApp } from './utilities';
-import { checkNoPermissions } from '../permissions';
+import { allowNoPermissions } from '../permissions';
 
 const MAX_CHANGES_RETURNED = 100;
 
@@ -36,7 +36,7 @@ export async function getChanges(req, res) {
   const { database, models } = req;
   const { limit = MAX_CHANGES_RETURNED, offset = 0 } = req.query;
 
-  await req.checkPermissions(checkNoPermissions);
+  await req.assertPermissions(allowNoPermissions);
 
   try {
     const filter = await getChangesFilter(req);

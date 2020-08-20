@@ -9,18 +9,24 @@ export class RouteHandler {
     this.res = res;
   }
 
-  async checkPermissions(permissionsChecker) {
-    return this.req.checkPermissions(permissionsChecker);
+  async handle() {
+    await this.assertUserHasAccess(); // run base permissions check for this endpoint
+    return this.handleRequest();
+  }
+
+  async assertPermissions(assertion) {
+    return this.req.assertPermissions(assertion);
   }
 
   /**
-   * All GET handlers should provide a concrete permissions gate implementation.
-   * This is the "gate" because there may be additional permissions filtering required in the body
-   * of the handler, but the gate will check whether the user should have any access to the endpoint
-   * whatsoever, and throw an error if they shouldn't get any further.
+   * All route handlers should provide a concrete "permissions gate" implementation, to check the
+   * basic level of access to the resource.
+   * There may be additional permissions filtering required in the body of the handler, but this
+   * will check whether the user should have any access to the endpoint whatsoever, and throw an
+   * error if they shouldn't get any further.
    */
-  checkPermissionsGate() {
-    throw new Error(`'checkPermissionsGate' must be implemented by every GETHandler`);
+  assertUserHasAccess() {
+    throw new Error(`'assertUserHasAccess' must be implemented by every GETHandler`);
   }
 
   async handleRequest() {

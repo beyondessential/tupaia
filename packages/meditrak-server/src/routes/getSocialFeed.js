@@ -4,7 +4,7 @@
  **/
 import { respond } from '@tupaia/utils';
 import { getLeaderboard } from '../social';
-import { checkNoPermissions } from '../permissions';
+import { allowNoPermissions } from '../permissions';
 
 const DEFAULT_NUMBER_PER_PAGE = 20;
 
@@ -18,7 +18,7 @@ export const getSocialFeed = async (req, res) => {
   } = query;
   const pageNumber = parseInt(page, 10);
 
-  await req.checkPermissions(checkNoPermissions);
+  await req.assertPermissions(allowNoPermissions);
 
   // @todo: Use user access policy to determine the type of information appearing in the feed.
   const conditions = {};

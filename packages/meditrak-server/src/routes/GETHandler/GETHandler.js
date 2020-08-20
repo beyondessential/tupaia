@@ -45,7 +45,6 @@ export class GETHandler extends RouteHandler {
   }
 
   async handleRequest() {
-    await this.checkPermissionsGate(); // run base permissions check for this endpoint
     const { headers = {}, body } = await this.buildResponse();
     Object.entries(headers).forEach(([key, value]) => this.res.set(key, value));
     respond(this.res, body);
