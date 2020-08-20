@@ -47,7 +47,7 @@ const catchAsyncErrors = routeHandler => (res, req, next) => {
 const useRouteHandler = HandlerClass =>
   catchAsyncErrors(async (res, req) => {
     const handler = new HandlerClass(res, req);
-    await handler.handleRequest(handler);
+    await handler.handle();
   });
 
 export default {

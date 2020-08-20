@@ -6,7 +6,7 @@
 import { GETHandler } from './GETHandler';
 
 export class GETAnswers extends GETHandler {
-  checkPermissionsGate() {
-    return this.checkPermissions(() => true);
+  assertUserHasAccess() {
+    return this.assertPermissions(() => true);
   }
 }

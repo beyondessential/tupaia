@@ -4,13 +4,13 @@
  **/
 import { respond, DatabaseError, FormValidationError } from '@tupaia/utils';
 import { sendEmail } from '../utilities';
-import { checkNoPermissions } from '../permissions';
+import { allowNoPermissions } from '../permissions';
 
 export const requestPasswordReset = async (req, res) => {
   const { body, models } = req;
   const { emailAddress } = body;
 
-  await req.checkPermissions(checkNoPermissions);
+  await req.assertPermissions(allowNoPermissions);
 
   if (!emailAddress) {
     throw new FormValidationError('No email address provided', ['emailAddress']);

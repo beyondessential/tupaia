@@ -6,7 +6,7 @@
 import { respond, DatabaseError, UnauthenticatedError } from '@tupaia/utils';
 import { getChangesFilter } from '../utilities';
 import { LegacyCountChangesHandler } from './LegacyCountChangesHandler';
-import { checkNoPermissions } from '../../permissions';
+import { allowNoPermissions } from '../../permissions';
 
 const handleNonLegacyRequest = async (req, res) => {
   const { models } = req;
@@ -22,7 +22,7 @@ const isLegacyRequest = req => !req.query.appVersion;
  * Responds to GET requests to the /changes/count endpoint
  */
 export async function countChanges(req, res) {
-  await req.checkPermissions(checkNoPermissions);
+  await req.assertPermissions(allowNoPermissions);
 
   try {
     if (isLegacyRequest(req)) {
