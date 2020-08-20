@@ -50,7 +50,7 @@
       command: chmod 600 /root/.ssh/id_rsa
     - name: pull latest and install dependencies
       command: './packages/devops/scripts/ci/pullLatest.sh'
-- type: parallel
+- type: serial
   name: deploy-all
   service: deployment
   steps:
