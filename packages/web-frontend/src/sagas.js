@@ -819,7 +819,6 @@ function* watchOrgUnitChangeAndFetchMeasureInfo() {
 function* fetchMeasures(action) {
   const { organisationUnitCode } = action.organisationUnit;
   const state = yield select();
-  // TODO: Investigate
   if (selectIsProject(state, organisationUnitCode)) yield put(clearMeasure());
   const projectCode = selectCurrentProjectCode(state);
   const requestResourceUrl = `measures?organisationUnitCode=${organisationUnitCode}&projectCode=${projectCode}`;
@@ -973,8 +972,9 @@ function* watchAttemptAttemptDrillDown() {
   yield takeLatest(ATTEMPT_DRILL_DOWN, fetchDrillDownData);
 }
 
+// TODO: Make sure that the GO_HOME functionality is consistent and doesn't duplicate code
+// (specific PR for it)
 function* resetToProjectSplash() {
-  //TODO: yield put(clearMeasure());
   yield put(clearMeasureHierarchy());
 }
 
