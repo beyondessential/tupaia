@@ -31,7 +31,7 @@ import {
   SET_ORG_UNIT,
   FETCH_INFO_VIEW_DATA,
   CHANGE_SEARCH,
-  CHANGE_MEASURE,
+  SET_MEASURE,
   FIND_USER_LOGGEDIN,
   FETCH_LOGOUT_SUCCESS,
   FETCH_LOGIN_SUCCESS,
@@ -41,7 +41,7 @@ import {
   DIALOG_PAGE_REQUEST_COUNTRY_ACCESS,
   FINISH_USER_SESSION,
   SET_VERIFY_EMAIL_TOKEN,
-  changeMeasure,
+  setMeasure,
   clearMeasure,
   clearMeasureHierarchy,
   findLoggedIn,
@@ -719,21 +719,21 @@ function* fetchMeasureInfo(measureId, organisationUnitCode) {
 }
 
 function* fetchMeasureInfoForMeasureChange(action) {
-  const { measureId, organisationUnitCode } = action;
+  const { measureId } = action;
+  const state = yield select();
+  const organisationUnitCode = selectCurrentOrgUnitCode(state);
   yield fetchMeasureInfo(measureId, organisationUnitCode);
 }
 
 function* watchMeasureChange() {
-  yield takeLatest(CHANGE_MEASURE, fetchMeasureInfoForMeasureChange);
+  yield takeLatest(SET_MEASURE, fetchMeasureInfoForMeasureChange);
 }
 
 function* fetchMeasureInfoForMeasurePeriodChange() {
   const state = yield select();
+  const currentMeasureId = selectCurrentMeasureId(state);
 
-  yield fetchMeasureInfo(
-    state.measureBar.selectedMeasureId,
-    state.measureBar.currentMeasureOrganisationUnitCode,
-  );
+  yield fetchMeasureInfo(currentMeasureId, selectCurrentOrgUnitCode(state));
 }
 
 function* watchMeasurePeriodChange() {
@@ -770,14 +770,14 @@ function* fetchCurrentMeasureInfo() {
       );
 
       if (newMeasure !== selectedMeasureId) {
-        yield put(changeMeasure(newMeasure, currentOrganisationUnitCode));
+        yield put(setMeasure(newMeasure));
       }
     } else {
       /** Ensure measure is selected if there is a current measure selected in the case
        * it is not selected through the measureBar UI
        * i.e. page reloaded when on org with measure selected
        */
-      yield put(changeMeasure(selectedMeasureId, currentOrganisationUnitCode));
+      yield put(setMeasure(selectedMeasureId));
     }
   }
 }
@@ -794,18 +794,17 @@ function* watchFetchMeasureSuccess() {
 }
 
 function* fetchMeasureInfoForNewOrgUnit(action) {
-  const { organisationUnitCode, countryCode } = action.organisationUnit;
-  const { measureId, oldOrgUnitCountry } = yield select(state => ({
-    measureId: state.map.measureInfo.measureId,
-    oldOrgUnitCountry: state.map.measureInfo.currentCountry,
-  }));
+  const { countryCode } = action.organisationUnit;
+  const state = yield select();
+  const measureId = selectCurrentMeasureId(state);
+  const oldOrgUnitCountry = state.map.measureInfo.currentCountry;
   if (oldOrgUnitCountry === countryCode) {
     // We are in the same country as before, no need to refetch measureData
     return;
   }
 
   if (measureId) {
-    yield put(changeMeasure(measureId, organisationUnitCode));
+    yield put(setMeasure(measureId));
   }
 }
 
@@ -822,6 +821,7 @@ function* watchOrgUnitChangeAndFetchMeasureInfo() {
 function* fetchMeasures(action) {
   const { organisationUnitCode } = action.organisationUnit;
   const state = yield select();
+  // TODO: Investigate
   if (selectIsProject(state, organisationUnitCode)) yield put(clearMeasure());
   const projectCode = selectCurrentProjectCode(state);
   const requestResourceUrl = `measures?organisationUnitCode=${organisationUnitCode}&projectCode=${projectCode}`;
@@ -976,13 +976,12 @@ function* watchAttemptAttemptDrillDown() {
 }
 
 function* resetToProjectSplash() {
-  yield put(clearMeasure());
+  //TODO: yield put(clearMeasure());
   yield put(clearMeasureHierarchy());
 }
 
 function* watchUserChangesAndUpdatePermissions() {
-  // On user login/logout, we should just navigate back to explore project, as we don't know if they have permissions
-  // to the current project or organisation unit
+  // On user login/logout, we should just reset to the initial landing page
   yield takeLatest(FETCH_LOGOUT_SUCCESS, resetToProjectSplash);
   yield takeLatest(FETCH_LOGIN_SUCCESS, resetToProjectSplash);
 }

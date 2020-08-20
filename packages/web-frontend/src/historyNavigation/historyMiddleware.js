@@ -15,11 +15,12 @@ import {
   CHANGE_DASHBOARD_GROUP,
   OPEN_ENLARGED_DIALOG,
   CLOSE_ENLARGED_DIALOG,
-  CHANGE_MEASURE,
+  SET_MEASURE,
   CLEAR_MEASURE,
   GO_HOME,
   updateHistoryLocation,
   setOrgUnit,
+  setMeasure,
   setOverlayComponent,
   goHome,
 } from '../actions';
@@ -51,6 +52,9 @@ export const reactToInitialState = store => {
   dispatch(setProject(otherComponents[URL_COMPONENTS.PROJECT]));
   if (otherComponents[URL_COMPONENTS.ORG_UNIT])
     dispatch(setOrgUnit(otherComponents[URL_COMPONENTS.ORG_UNIT]));
+
+  if (otherComponents[URL_COMPONENTS.MEASURE])
+    dispatch(setMeasure(otherComponents[URL_COMPONENTS.MEASURE]));
 };
 
 export const historyMiddleware = store => next => action => {
@@ -84,8 +88,9 @@ export const historyMiddleware = store => next => action => {
     case CLOSE_ENLARGED_DIALOG:
       dispatchLocationUpdate(store, URL_COMPONENTS.REPORT, null);
       break;
-    case CHANGE_MEASURE:
+    case SET_MEASURE:
       dispatchLocationUpdate(store, URL_COMPONENTS.MEASURE, action.measureId);
+      dispatch(setMeasure(action.measureId));
       break;
     case CLEAR_MEASURE:
       dispatchLocationUpdate(store, URL_COMPONENTS.MEASURE, null);

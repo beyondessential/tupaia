@@ -19,12 +19,7 @@ import { connect } from 'react-redux';
 import shallowEqual from 'shallowequal';
 
 import { Control } from './Control';
-import {
-  changeMeasure,
-  clearMeasure,
-  toggleMeasureExpand,
-  updateMeasureConfig,
-} from '../../actions';
+import { setMeasure, clearMeasure, toggleMeasureExpand, updateMeasureConfig } from '../../actions';
 import { HierarchyItem } from '../../components/HierarchyItem';
 import {
   selectCurrentOrgUnit,
@@ -48,14 +43,14 @@ export class MeasureBar extends Component {
     return true;
   }
 
-  handleSelectMeasure = (measure, organisationUnitCode) => {
+  handleSelectMeasure = measure => {
     if (this.state.hasNeverBeenChanged) {
       this.setState({
         hasNeverBeenChanged: false,
       });
     }
 
-    this.props.onSelectMeasure(measure, organisationUnitCode);
+    this.props.onSelectMeasure(measure);
   };
 
   renderDefaultMeasure() {
@@ -186,16 +181,10 @@ const mapStateToProps = state => {
   const currentMeasure = selectCurrentMeasure(state);
   const activeProject = selectCurrentProject(state);
 
-  // In the name or normalising our redux state,
-  // currentMeasure should be normalised to currentMeasureId,
-  // and measureInfo selected from measureHierarchy like this.
-  // Using this approach so a larger normalisation refactor is one file easier
-  // in the future.
-  const selectedMeasureInfo = selectMeasureBarItemById(state, currentMeasure.measureId);
   const defaultMeasure = selectMeasureBarItemById(state, activeProject.defaultMeasure);
 
   return {
-    currentMeasure: selectedMeasureInfo || {},
+    currentMeasure,
     measureHierarchy,
     isExpanded,
     currentOrganisationUnitCode: currentOrganisationUnit.organisationUnitCode,
@@ -208,10 +197,21 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
   onExpandClick: () => dispatch(toggleMeasureExpand()),
   onClearMeasure: () => dispatch(clearMeasure()),
-  onSelectMeasure: (measure, orgUnitCode) =>
-    dispatch(changeMeasure(measure.measureId, orgUnitCode)),
-  onUpdateMeasurePeriod: (startDate, endDate) =>
-    dispatch(updateMeasureConfig({ startDate, endDate })),
+  onSelectMeasure: measure => dispatch(setMeasure(measure.measureId)),
+  dispatch,
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(MeasureBar);
+const mergeProps = (stateProps, dispatchProps, ownProps) => {
+  const { dispatch } = dispatchProps;
+  const { currentMeasure } = stateProps;
+
+  return {
+    ...stateProps,
+    ...dispatchProps,
+    ...ownProps,
+    onUpdateMeasurePeriod: (startDate, endDate) =>
+      dispatch(updateMeasureConfig(currentMeasure.measureId, { startDate, endDate })),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(MeasureBar);

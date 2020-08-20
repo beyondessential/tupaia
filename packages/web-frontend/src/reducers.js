@@ -38,12 +38,11 @@ import {
   ATTEMPT_REQUEST_COUNTRY_ACCESS,
   CHANGE_SIDE_BAR_CONTRACTED_WIDTH,
   CHANGE_SIDE_BAR_EXPANDED_WIDTH,
-  CHANGE_MEASURE,
+  SET_MEASURE,
   UPDATE_MEASURE_CONFIG,
   CLEAR_MEASURE_HIERARCHY,
   SET_ORG_UNIT,
   CHANGE_SEARCH,
-  CLEAR_MEASURE,
   FETCH_CHANGE_PASSWORD_ERROR,
   FETCH_CHANGE_PASSWORD_SUCCESS,
   FETCH_COUNTRY_ACCESS_DATA_SUCCESS,
@@ -531,9 +530,7 @@ function searchBar(
 function measureBar(
   state = {
     isExpanded: false,
-    selectedMeasureId: null,
     measureHierarchy: [],
-    currentMeasureOrganisationUnitCode: null,
     error: null,
   },
   action,
@@ -541,19 +538,15 @@ function measureBar(
   switch (action.type) {
     case CLEAR_MEASURE_HIERARCHY:
       return { ...state, measureHierarchy: [] };
-    case CLEAR_MEASURE:
-      return { ...state, selectedMeasureId: null };
-    case CHANGE_MEASURE:
+    case SET_MEASURE:
       return {
         ...state,
         hiddenMeasures: {},
-        selectedMeasureId: action.measureId,
-        currentMeasureOrganisationUnitCode: action.organisationUnitCode,
       };
     case UPDATE_MEASURE_CONFIG: {
       const { categoryIndex, measure, measureIndex } = selectMeasureBarItemCategoryById(
         { measureBar: state },
-        state.selectedMeasureId,
+        action.measureId,
       );
 
       const measureHierarchy = [...state.measureHierarchy];

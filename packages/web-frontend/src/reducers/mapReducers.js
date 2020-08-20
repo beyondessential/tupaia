@@ -8,7 +8,7 @@
 import { combineReducers } from 'redux';
 
 import {
-  CHANGE_MEASURE,
+  SET_MEASURE,
   SET_ORG_UNIT,
   CHANGE_POSITION,
   CHANGE_BOUNDS,
@@ -129,7 +129,7 @@ function measureInfo(state = {}, action) {
 function isMeasureLoading(state = false, action) {
   switch (action.type) {
     case UPDATE_MEASURE_CONFIG:
-    case CHANGE_MEASURE:
+    case SET_MEASURE:
       return true;
     case FETCH_MEASURE_DATA_ERROR:
     case FETCH_MEASURE_DATA_SUCCESS:

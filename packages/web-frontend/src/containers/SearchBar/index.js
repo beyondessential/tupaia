@@ -80,12 +80,15 @@ export class SearchBar extends PureComponent {
     };
   }
 
+  // QUESTION: I'm pretty sure that this isn't needed, can I get rid of it and the related sagas then?
+  /*
   componentWillMount() {
     const { hierarchyData, requestRootOrgUnit } = this.props;
     if (!hierarchyData || !Array.isArray(hierarchyData) || hierarchyData.length < 2) {
       requestRootOrgUnit();
     }
   }
+  */
 
   renderSearchResults() {
     const { searchResponse, onOrgUnitClick, searchString } = this.props;
