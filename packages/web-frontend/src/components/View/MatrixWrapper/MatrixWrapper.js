@@ -320,6 +320,10 @@ const styles = {
     height: '100%',
     justifyContent: 'center',
   },
+  periodSelector: {
+    paddingRight: 5,
+    marginLeft: -10,
+  },
   matrixRef: {
     height: 'inherit',
   },

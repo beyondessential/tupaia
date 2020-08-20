@@ -93,6 +93,7 @@ import {
   fetchOrgUnitError,
   fetchOrgUnit,
   REQUEST_ORG_UNIT,
+  UPDATE_MEASURE_CONFIG,
 } from './actions';
 import {
   isMobile,
@@ -725,14 +726,27 @@ function* watchMeasureChange() {
   yield takeLatest(CHANGE_MEASURE, fetchMeasureInfoForMeasureChange);
 }
 
+function* fetchMeasureInfoForMeasurePeriodChange() {
+  const state = yield select();
+
+  yield fetchMeasureInfo(
+    state.measureBar.currentMeasure.measureId,
+    state.measureBar.currentMeasureOrganisationUnitCode,
+  );
+}
+
+function* watchMeasurePeriodChange() {
+  yield takeLatest(UPDATE_MEASURE_CONFIG, fetchMeasureInfoForMeasurePeriodChange);
+}
+
 function getSelectedMeasureFromHierarchy(measureHierarchy, selectedMeasureId, project) {
   const projectMeasureId = project.defaultMeasure;
-
   if (getMeasureFromHierarchy(measureHierarchy, selectedMeasureId)) return selectedMeasureId;
   else if (getMeasureFromHierarchy(measureHierarchy, projectMeasureId)) return projectMeasureId;
   else if (getMeasureFromHierarchy(measureHierarchy, INITIAL_MEASURE_ID)) return INITIAL_MEASURE_ID;
-  else if (!isMeasureHierarchyEmpty(measureHierarchy))
+  else if (!isMeasureHierarchyEmpty(measureHierarchy)) {
     return flattenMeasureHierarchy(measureHierarchy)[0].measureId;
+  }
 
   return INITIAL_MEASURE_ID;
 }
@@ -1036,4 +1050,5 @@ export default [
   refreshBrowserWhenFinishingUserSession,
   watchRequestProjectAccess,
   watchGoHomeAndResetToExplore,
+  watchMeasurePeriodChange,
 ];

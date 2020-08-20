@@ -9,6 +9,7 @@ export { getDhisConfig } from './dhis';
 export * from './errors';
 export { Multilock } from './Multilock';
 export * from './period';
+export * from './testUtilities';
 export { getCountryNameFromCode } from './getCountryNameFromCode';
 export { getUniqueEntries } from './getUniqueEntries';
 export {
