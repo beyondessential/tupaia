@@ -99,9 +99,6 @@ const getDatesAsString = (isSingleDate, granularity, startDate, endDate) => {
   return isSingleDate ? formattedEndDate : `${formattedStartDate} - ${formattedEndDate}`;
 };
 
-const minMomentDate = moment(MIN_DATE_PICKER_DATE);
-const maxMomentDate = moment();
-
 export const DateRangePicker = ({
   startDate,
   endDate,
@@ -117,14 +114,23 @@ export const DateRangePicker = ({
   const isSingleDate = GRANULARITIES_WITH_ONE_DATE.includes(granularity);
   const { momentShorthand } = GRANULARITY_CONFIG[granularity];
 
+  const minMomentDate = moment(MIN_DATE_PICKER_DATE);
+  const maxMomentDate = moment();
+
   const defaultStartDate = isSingleDate ? moment() : minMomentDate;
   const defaultEndDate = isSingleDate ? defaultStartDate : maxMomentDate;
 
   const currentStartDate = startDate ? moment(startDate) : defaultStartDate;
   const currentEndDate = endDate ? moment(endDate) : defaultEndDate;
 
+  const { startDate: roundedCurrentStartDate, endDate: roundedCurrentEndDate } = roundStartEndDates(
+    granularity,
+    currentStartDate,
+    currentEndDate,
+  );
+
   useEffect(() => {
-    onSetDates(currentStartDate, currentEndDate);
+    onSetDates(roundedCurrentStartDate, roundedCurrentEndDate);
   }, []);
 
   // Number of periods to move may be negative if changing to the previous period
@@ -133,8 +139,8 @@ export const DateRangePicker = ({
       throw new Error('Can only change period for single unit date pickers (e.g. one month)');
     }
 
-    let newStartDate = currentStartDate.clone().add(numberOfPeriodsToMove, momentShorthand);
-    let newEndDate = currentEndDate.clone().add(numberOfPeriodsToMove, momentShorthand);
+    const newStartDate = currentStartDate.clone().add(numberOfPeriodsToMove, momentShorthand);
+    const newEndDate = currentEndDate.clone().add(numberOfPeriodsToMove, momentShorthand);
 
     const { startDate: roundedStartDate, endDate: roundedEndDate } = roundStartEndDates(
       granularity,
