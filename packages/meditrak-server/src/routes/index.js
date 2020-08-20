@@ -10,7 +10,8 @@ import { editRecord } from './editRecord';
 import { exportSurveyResponses } from './exportSurveyResponses';
 import { exportSurveys } from './exportSurveys';
 import { getChanges } from './getChanges';
-import { getRecords } from './getRecords';
+import { GETAnswers } from './GETAnswers';
+import { GETDisasters } from './GETDisasters';
 import { importEntities } from './importEntities';
 import { importStriveLabResults } from './importStriveLabResults';
 import { importSurveys } from './importSurveys';
@@ -44,6 +45,12 @@ const catchAsyncErrors = routeHandler => (res, req, next) => {
   }
 };
 
+const useRouteHandler = HandlerClass =>
+  catchAsyncErrors(async (res, req) => {
+    const handler = new HandlerClass(res, req);
+    await handler.handle();
+  });
+
 export default {
   authenticate: catchAsyncErrors(authenticate),
   countChanges: catchAsyncErrors(countChanges),
@@ -52,7 +59,8 @@ export default {
   exportSurveyResponses: catchAsyncErrors(exportSurveyResponses),
   exportSurveys: catchAsyncErrors(exportSurveys),
   getChanges: catchAsyncErrors(getChanges),
-  getRecords: catchAsyncErrors(getRecords),
+  getAnswers: useRouteHandler(GETAnswers),
+  getDisasters: useRouteHandler(GETDisasters),
   importEntities: catchAsyncErrors(importEntities),
   importStriveLabResults: catchAsyncErrors(importStriveLabResults),
   importSurveys: catchAsyncErrors(importSurveys),
