@@ -4,7 +4,11 @@
  */
 
 import { GETHandler } from './GETHandler';
-import { checkAnyPermissions, hasBESAdminAccess, hasTupaiaAdminPanelAccess } from '../permissions';
+import {
+  assertAnyPermissions,
+  assertBESAdminAccess,
+  assertTupaiaAdminPanelAccess,
+} from '../permissions';
 
 const columns = {
   id: 'disaster.id',
@@ -22,10 +26,10 @@ const columns = {
 export class GETDisasters extends GETHandler {
   // fail permissions checking if they definitely don't have access to the user groups required to
   // view disasters
-  async checkPermissionsGate() {
-    await this.checkPermissions(
-      checkAnyPermissions(
-        [hasBESAdminAccess, hasTupaiaAdminPanelAccess],
+  async assertUserHasAccess() {
+    await this.assertPermissions(
+      assertAnyPermissions(
+        [assertBESAdminAccess, assertTupaiaAdminPanelAccess],
         'You need either BES Admin or Tupaia Admin Panel access to view disasters',
       ),
     );
