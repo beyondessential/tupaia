@@ -41,7 +41,7 @@ import {
   CHANGE_MEASURE,
   UPDATE_MEASURE_CONFIG,
   CLEAR_MEASURE_HIERARCHY,
-  CHANGE_ORG_UNIT,
+  SET_ORG_UNIT,
   CHANGE_SEARCH,
   CLEAR_MEASURE,
   FETCH_CHANGE_PASSWORD_ERROR,
@@ -109,7 +109,7 @@ import {
   TOGGLE_DASHBOARD_SELECT_EXPAND,
   SET_MOBILE_DASHBOARD_EXPAND,
   REQUEST_PROJECT_ACCESS,
-  SELECT_PROJECT,
+  SET_PROJECT,
 } from './actions';
 
 function authentication(
@@ -520,7 +520,7 @@ function searchBar(
     case FETCH_LOGOUT_SUCCESS:
       // Clear search results on logout incase of permission change
       return { ...state, isExpanded: false, searchResponse: null, searchString: '' };
-    case SELECT_PROJECT:
+    case SET_PROJECT:
       // Clear search results on project change to fetch alternative hierarchy
       return { ...state, isExpanded: false, searchResponse: null, searchString: '' };
     default:
@@ -587,7 +587,6 @@ function global(
   state = {
     isSidePanelExpanded: false,
     overlay: !isMobile() && LANDING,
-    currentOrganisationUnitCode: null,
     dashboardConfig: {},
     viewConfigs: {},
     isLoadingOrganisationUnit: false,
@@ -608,7 +607,7 @@ function global(
         ...state,
         isSidePanelExpanded: true,
       };
-    case CHANGE_ORG_UNIT:
+    case SET_ORG_UNIT:
       return {
         ...state,
         isLoadingOrganisationUnit: true,
@@ -617,7 +616,6 @@ function global(
       return {
         ...state,
         isLoadingOrganisationUnit: false,
-        currentOrganisationUnitCode: action.organisationUnit.organisationUnitCode,
       };
     case CHANGE_ORG_UNIT_ERROR:
       return { ...state, isLoadingOrganisationUnit: false };

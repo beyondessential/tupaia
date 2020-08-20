@@ -40,7 +40,7 @@ export const CHANGE_MEASURE = 'CHANGE_MEASURE';
 export const UPDATE_MEASURE_CONFIG = 'UPDATE_MEASURE_CONFIG';
 export const REQUEST_ORG_UNIT = 'REQUEST_ORG_UNIT';
 export const FETCH_ORG_UNIT = 'FETCH_ORG_UNIT';
-export const CHANGE_ORG_UNIT = 'CHANGE_ORG_UNIT';
+export const SET_ORG_UNIT = 'SET_ORG_UNIT';
 export const CHANGE_POSITION = 'CHANGE_POSITION';
 export const CHANGE_BOUNDS = 'CHANGE_BOUNDS';
 export const CHANGE_SEARCH = 'CHANGE_SEARCH';
@@ -135,7 +135,7 @@ export const VIEW_DISASTER = 'VIEW_DISASTER';
 export const TOGGLE_DASHBOARD_SELECT_EXPAND = 'TOGGLE_DASHBOARD_SELECT_EXPAND';
 export const SET_MOBILE_DASHBOARD_EXPAND = 'SET_MOBILE_DASHBOARD_EXPAND';
 export const SET_PROJECT_DATA = 'SET_PROJECT_DATA';
-export const SELECT_PROJECT = 'SELECT_PROJECT';
+export const SET_PROJECT = 'SET_PROJECT';
 export const FETCH_PROJECTS_ERROR = 'FETCH_PROJECTS_ERROR';
 export const REQUEST_PROJECT_ACCESS = 'REQUEST_PROJECT_ACCESS';
 export const UPDATE_HISTORY_LOCATION = 'UPDATE_HISTORY_LOCATION';
@@ -462,15 +462,15 @@ export function fetchOrgUnit(organisationUnitCode) {
 }
 
 /**
- * Changes current Organisational Unit and Map view. Will trigger sagas affecting state for
- * map and the current dashboard.
+ * Changes the current Organisation Unit. Sets org unit in the url and triggers side effects.
+ * Will trigger sagas affecting state for map and the current dashboard.
+ *
+ * @param {string} organisationUnitCode
+ * @param {boolean} shouldChangeMapBounds
  */
-export function changeOrgUnit(
-  organisationUnitCode = initialOrgUnit.organisationUnitCode,
-  shouldChangeMapBounds = true,
-) {
+export function setOrgUnit(organisationUnitCode, shouldChangeMapBounds = true) {
   return {
-    type: CHANGE_ORG_UNIT,
+    type: SET_ORG_UNIT,
     organisationUnitCode,
     shouldChangeMapBounds,
   };

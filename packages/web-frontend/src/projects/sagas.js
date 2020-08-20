@@ -1,26 +1,29 @@
-import { call, put, takeLatest, select } from 'redux-saga/effects';
+import { call, put, take, takeLatest, select } from 'redux-saga/effects';
 
 import request from '../utils/request';
 
-import { setProjects, fetchProjectsError, selectProject } from './actions';
+import { setProjects, fetchProjectsError } from './actions';
 
 import {
   FETCH_INITIAL_DATA,
-  SELECT_PROJECT,
+  SET_PROJECT,
   changeBounds,
   changeDashboardGroup,
   FETCH_LOGIN_SUCCESS,
-  requestOrgUnit,
+  setOrgUnit,
   FETCH_LOGOUT_SUCCESS,
 } from '../actions';
-import { INITIAL_PROJECT_CODE } from '../defaults';
-import { selectAdjustedProjectBounds, selectProjectByCode } from '../selectors';
+import {
+  selectAdjustedProjectBounds,
+  selectProjectByCode,
+  selectCurrentOrgUnitCode,
+  selectCurrentDashboardKey,
+} from '../selectors';
 
 function* fetchProjectData() {
   try {
     const { projects } = yield call(request, 'projects', fetchProjectsError);
     yield put(setProjects(projects));
-    yield put(selectProject(INITIAL_PROJECT_CODE));
   } catch (error) {
     console.error(error);
   }
@@ -39,17 +42,30 @@ function* watchUserLogoutSuccessAndRefetchProjectData() {
 }
 
 function* loadProject(action) {
-  const state = yield select();
-  const project = selectProjectByCode(state, action.projectCode);
+  let state = yield select();
+  if (state.project.projects.length === 0) {
+    yield take('SET_PROJECT_DATA');
+  }
+
+  state = yield select();
 
   yield put(changeBounds(yield select(selectAdjustedProjectBounds, action.projectCode)));
-  yield put(requestOrgUnit(action.projectCode));
-  yield put(changeDashboardGroup(project.dashboardGroupName));
+
+  const project = selectProjectByCode(state, action.projectCode);
+  const organisationUnitCode = selectCurrentOrgUnitCode(state);
+  if (!organisationUnitCode) {
+    yield put(setOrgUnit(project.homeEntityCode || action.projectCode, false));
+  }
+
+  // TODO: This will be fixed in the dashboard PR (including standardizing code vs key)
+  const dashboardGroupCode = selectCurrentDashboardKey(state);
+  if (!dashboardGroupCode) {
+    yield put(changeDashboardGroup(project.dashboardGroupName));
+  }
 }
 
 function* watchSelectProjectAndLoadProjectState() {
-  // eslint-disable-next-line func-names
-  yield takeLatest(SELECT_PROJECT, loadProject);
+  yield takeLatest(SET_PROJECT, loadProject);
 }
 
 export default [

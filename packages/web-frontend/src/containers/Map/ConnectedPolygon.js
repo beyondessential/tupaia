@@ -14,7 +14,7 @@ import styled from 'styled-components';
 import { getSingleFormattedValue } from '../../utils';
 import { AreaTooltip } from './AreaTooltip';
 import { MAP_COLORS, BREWER_PALETTE } from '../../styles';
-import { changeOrgUnit } from '../../actions';
+import { setOrgUnit } from '../../actions';
 import {
   selectOrgUnit,
   selectHasPolygonMeasure,
@@ -208,7 +208,7 @@ const mapStateToProps = (state, givenProps) => {
 
 const mapDispatchToProps = dispatch => ({
   onChangeOrgUnit: (organisationUnitCode, shouldChangeMapBounds = true) => {
-    dispatch(changeOrgUnit(organisationUnitCode, shouldChangeMapBounds));
+    dispatch(setOrgUnit(organisationUnitCode, shouldChangeMapBounds));
   },
 });
 

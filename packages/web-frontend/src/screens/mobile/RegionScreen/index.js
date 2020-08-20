@@ -18,7 +18,7 @@ import { Dashboard } from '../../../components/mobile/Dashboard';
 import StaticMap from '../../../components/StaticMap';
 import { filterShape } from '../../../components/mobile/FilterSelect';
 import {
-  changeOrgUnit,
+  setOrgUnit,
   changeMeasure,
   toggleMeasureExpand,
   toggleDashboardSelectExpand,
@@ -316,7 +316,7 @@ const mapDispatchToProps = dispatch => ({
   onClearMeasure: () => dispatch(clearMeasure()),
   onToggleMeasureExpand: () => dispatch(toggleMeasureExpand()),
   onToggleDashboardSelectExpand: () => dispatch(toggleDashboardSelectExpand()),
-  onChangeOrgUnit: organisationUnitCode => dispatch(changeOrgUnit(organisationUnitCode, false)),
+  onChangeOrgUnit: organisationUnitCode => dispatch(setOrgUnit(organisationUnitCode, false)),
   onChangeDashboardGroup: name => dispatch(changeDashboardGroup(name)),
 });
 

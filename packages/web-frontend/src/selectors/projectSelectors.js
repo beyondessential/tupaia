@@ -7,10 +7,14 @@
 
 import { createSelector } from 'reselect';
 import { initialOrgUnit } from '../defaults';
+import { getLocationComponentValue, URL_COMPONENTS } from '../historyNavigation';
+import { selectLocation } from './utils';
 
 const selectAllProjects = state => state.project.projects;
 
-export const selectCurrentProjectCode = state => state.project.activeProjectCode;
+export const selectCurrentProjectCode = createSelector([selectLocation], location =>
+  getLocationComponentValue(location, URL_COMPONENTS.PROJECT),
+);
 
 export const selectIsProject = createSelector(
   [selectAllProjects, (_, code) => code],
@@ -19,7 +23,7 @@ export const selectIsProject = createSelector(
 
 export const selectProjectByCode = createSelector(
   [selectAllProjects, (_, code) => code],
-  (projects, code) => projects.find(p => p.code === code),
+  (projects, code) => projects.find(p => p.code === code) || {},
 );
 
 export const selectCurrentProject = createSelector(

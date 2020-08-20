@@ -21,8 +21,8 @@ import CloseIcon from 'material-ui/svg-icons/navigation/close';
 import styled from 'styled-components';
 import { isMobile } from '../../utils';
 import { DARK_BLUE, DIALOG_Z_INDEX } from '../../styles';
-import { setOverlayComponent, changeOrgUnit } from '../../actions';
-import { selectProject } from '../../projects/actions';
+import { setOverlayComponent, setOrgUnit } from '../../actions';
+import { setProject } from '../../projects/actions';
 import { LandingPage } from './components/LandingPage';
 import { ProjectLandingPage } from './components/ProjectLandingPage';
 import { RequestProjectAccess } from './components/RequestProjectAccess';
@@ -137,15 +137,16 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => ({
   ...ownProps,
   ...stateProps,
   selectExploreProject: () => {
-    dispatch(selectProject(stateProps.exploreProject.code));
+    dispatch(setProject(stateProps.exploreProject.code));
     dispatch(setOverlayComponent(null));
   },
   selectProjectOrgUnit: () => {
     dispatch(setOverlayComponent(null));
-    dispatch(changeOrgUnit(stateProps.activeProject.homeEntityCode, false));
+    dispatch(setOrgUnit(stateProps.activeProject.homeEntityCode, false));
   },
   viewProjectList: () => dispatch(setOverlayComponent(LANDING)),
   closeOverlay: () => {
+    dispatch(setProject(stateProps.exploreProject.code));
     dispatch(setOverlayComponent(null));
   },
 });

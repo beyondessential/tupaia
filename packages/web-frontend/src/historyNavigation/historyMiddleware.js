@@ -10,8 +10,8 @@
  */
 
 import {
-  SELECT_PROJECT,
-  CHANGE_ORG_UNIT,
+  SET_PROJECT,
+  SET_ORG_UNIT,
   CHANGE_DASHBOARD_GROUP,
   OPEN_ENLARGED_DIALOG,
   CLOSE_ENLARGED_DIALOG,
@@ -19,26 +19,60 @@ import {
   CLEAR_MEASURE,
   GO_HOME,
   updateHistoryLocation,
+  setOrgUnit,
+  setOverlayComponent,
+  goHome,
 } from '../actions';
-import { setLocationComponent, clearLocation, attemptPushHistory } from './historyNavigation';
+import { setProject } from '../projects/actions';
+import {
+  setLocationComponent,
+  clearLocation,
+  attemptPushHistory,
+  getInitialLocationComponents,
+} from './historyNavigation';
 import { URL_COMPONENTS } from './constants';
 
-export const reactToInitialState = () => {
-  // This will be implemented in future PRs
+export const reactToInitialState = store => {
+  const { dispatch: rawDispatch } = store;
+  const dispatch = action => rawDispatch({ ...action, meta: { preventHistoryUpdate: true } });
+
+  const { userPage, projectSelector, ...otherComponents } = getInitialLocationComponents();
+  if (userPage) {
+    // TODO: Implemented in userPage PR
+    dispatch(goHome());
+  }
+
+  if (projectSelector) {
+    // No need to do anything, this is the default
+    return;
+  }
+
+  dispatch(setOverlayComponent(null));
+  dispatch(setProject(otherComponents[URL_COMPONENTS.PROJECT]));
+  if (otherComponents[URL_COMPONENTS.ORG_UNIT])
+    dispatch(setOrgUnit(otherComponents[URL_COMPONENTS.ORG_UNIT]));
 };
 
 export const historyMiddleware = store => next => action => {
+  if (action.meta && action.meta.preventHistoryUpdate) return next(action);
+
+  const { dispatch: rawDispatch } = store;
+  const dispatch = a => rawDispatch({ ...a, meta: { preventHistoryUpdate: true } });
+
   switch (action.type) {
     // Actions that modify the path
-    case SELECT_PROJECT:
+    case SET_PROJECT:
       dispatchLocationUpdate(store, URL_COMPONENTS.PROJECT, action.projectCode);
+      dispatch(setProject(action.projectCode));
       break;
-    case CHANGE_ORG_UNIT:
+    case SET_ORG_UNIT:
       dispatchLocationUpdate(store, URL_COMPONENTS.ORG_UNIT, action.organisationUnitCode);
+      dispatch(setOrgUnit(action.organisationUnitCode));
       break;
     case CHANGE_DASHBOARD_GROUP:
       dispatchLocationUpdate(store, URL_COMPONENTS.DASHBOARD, action.name);
       break;
+    // TODO: Investigate GO_HOME once all url functionality is implemented.
     case GO_HOME:
       dispatchClearLocation(store);
       break;
@@ -71,6 +105,7 @@ export const initHistoryDispatcher = store => {
   window.addEventListener('popstate', () => {
     // here `updateHistoryLocation` is an action creator that
     // takes the new location and stores it in Redux.
+    // TODO: popstate app reactions will be handled in the relevant PR
     store.dispatch(updateHistoryLocation(window.location));
   });
 

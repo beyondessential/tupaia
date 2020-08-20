@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { LayerGroup } from 'react-leaflet';
 import { createSelector } from 'reselect';
-import { changeOrgUnit, openMapPopup, closeMapPopup } from '../../actions';
+import { setOrgUnit, openMapPopup, closeMapPopup } from '../../actions';
 import { CircleProportionMarker, IconMarker, MeasurePopup } from '../../components/Marker';
 import {
   selectHasPolygonMeasure,
@@ -46,10 +46,10 @@ const MeasureMarker = props => {
   if (radius && icon) {
     const { markerRef, ...otherProps } = props;
     return (
-      <React.Fragment>
+      <>
         <CircleProportionMarker markerRef={() => null} {...otherProps} />
         <IconMarker {...otherProps} markerRef={markerRef} />
-      </React.Fragment>
+      </>
     );
   }
   if (radius) {
@@ -235,7 +235,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => ({
   onChangeOrgUnit: (organisationUnitCode, shouldChangeMapBounds = false) => {
-    dispatch(changeOrgUnit(organisationUnitCode, shouldChangeMapBounds));
+    dispatch(setOrgUnit(organisationUnitCode, shouldChangeMapBounds));
   },
   onPopupOpen: orgUnitCode => dispatch(openMapPopup(orgUnitCode)),
   onPopupClose: orgUnitCode => dispatch(closeMapPopup(orgUnitCode)),

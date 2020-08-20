@@ -28,7 +28,7 @@ import {
   ATTEMPT_SIGNUP,
   ATTEMPT_CHART_EXPORT,
   ATTEMPT_DRILL_DOWN,
-  CHANGE_ORG_UNIT,
+  SET_ORG_UNIT,
   FETCH_INFO_VIEW_DATA,
   CHANGE_SEARCH,
   CHANGE_MEASURE,
@@ -78,7 +78,6 @@ import {
   fetchChartExportError,
   fetchDrillDownSuccess,
   fetchDrillDownError,
-  changeOrgUnit,
   SET_ENLARGED_DIALOG_DATE_RANGE,
   updateEnlargedDialog,
   updateEnlargedDialogError,
@@ -108,7 +107,6 @@ import {
 import { createUrlString, URL_COMPONENTS } from './historyNavigation';
 import { getDefaultDates } from './utils/periodGranularities';
 import { INITIAL_MEASURE_ID, INITIAL_PROJECT_CODE, initialOrgUnit } from './defaults';
-import { selectProject } from './projects/actions';
 
 /**
  * attemptChangePassword
@@ -526,7 +524,7 @@ function* watchRequestOrgUnitAndFetchIt() {
 }
 
 function* watchOrgUnitChangeAndFetchIt() {
-  yield takeLatest(CHANGE_ORG_UNIT, fetchOrgUnitDataAndChangeOrgUnit);
+  yield takeLatest(SET_ORG_UNIT, fetchOrgUnitDataAndChangeOrgUnit);
 }
 
 /**
@@ -977,27 +975,20 @@ function* watchAttemptAttemptDrillDown() {
   yield takeLatest(ATTEMPT_DRILL_DOWN, fetchDrillDownData);
 }
 
-function* resetToExplore() {
-  const state = yield select();
-  // default measure will be selected once the org unit has fully changed, just clear for now
+function* resetToProjectSplash() {
   yield put(clearMeasure());
   yield put(clearMeasureHierarchy());
-  yield put(changeOrgUnit('explore', true));
-
-  if (state.project.projects.length > 0) {
-    yield put(selectProject(INITIAL_PROJECT_CODE));
-  }
 }
 
 function* watchUserChangesAndUpdatePermissions() {
   // On user login/logout, we should just navigate back to explore project, as we don't know if they have permissions
   // to the current project or organisation unit
-  yield takeLatest(FETCH_LOGOUT_SUCCESS, resetToExplore);
-  yield takeLatest(FETCH_LOGIN_SUCCESS, resetToExplore);
+  yield takeLatest(FETCH_LOGOUT_SUCCESS, resetToProjectSplash);
+  yield takeLatest(FETCH_LOGIN_SUCCESS, resetToProjectSplash);
 }
 
-function* watchGoHomeAndResetToExplore() {
-  yield takeLatest(GO_HOME, resetToExplore);
+function* watchGoHomeAndResetToProjectSplash() {
+  yield takeLatest(GO_HOME, resetToProjectSplash);
 }
 
 function* fetchEnlargedDialogViewContentForPeriod(action) {
@@ -1059,6 +1050,6 @@ export default [
   watchChangeOrgUnitSuccess,
   refreshBrowserWhenFinishingUserSession,
   watchRequestProjectAccess,
-  watchGoHomeAndResetToExplore,
+  watchGoHomeAndResetToProjectSplash,
   watchMeasurePeriodChange,
 ];

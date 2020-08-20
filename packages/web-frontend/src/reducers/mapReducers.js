@@ -9,7 +9,7 @@ import { combineReducers } from 'redux';
 
 import {
   CHANGE_MEASURE,
-  CHANGE_ORG_UNIT,
+  SET_ORG_UNIT,
   CHANGE_POSITION,
   CHANGE_BOUNDS,
   CHANGE_TILE_SET,
@@ -177,7 +177,7 @@ function shouldSnapToPosition(state = true, action) {
     case CHANGE_BOUNDS:
       return true;
 
-    case CHANGE_ORG_UNIT:
+    case SET_ORG_UNIT:
     case CHANGE_ORG_UNIT_SUCCESS:
       return action.shouldChangeMapBounds ? true : state;
 

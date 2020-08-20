@@ -81,7 +81,7 @@ export class CustomMap extends Component {
   };
 
   checkZoomOutToParentOrgUnit(bounds) {
-    const { currentParent, changeOrgUnit } = this.props;
+    const { currentParent, setOrgUnit } = this.props;
 
     // Maybe we need to zoom out to a parent!
     // First, check if there's a valid parent to zoom out to
@@ -90,7 +90,7 @@ export class CustomMap extends Component {
         // Now check if we're at a reasonable zoom level to switch to that parent
         const difference = checkBoundsDifference(currentParent.location.bounds, bounds);
         if (difference > CHANGE_TO_PARENT_PERCENTAGE) {
-          changeOrgUnit(currentParent.organisationUnitCode, false);
+          setOrgUnit(currentParent.organisationUnitCode, false);
         }
       }
     }
@@ -168,7 +168,7 @@ export class CustomMap extends Component {
 
 CustomMap.propTypes = {
   ...Map.propTypes,
-  changeOrgUnit: PropTypes.func.isRequired,
+  setOrgUnit: PropTypes.func.isRequired,
   changePosition: PropTypes.func.isRequired,
 
   /* eslint-disable react/forbid-prop-types */
