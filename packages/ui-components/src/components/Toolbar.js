@@ -13,9 +13,13 @@ import { LightTab, LightTabs } from './Tabs';
 const toolbarHeight = '65px';
 
 const ToolbarWrapper = styled.div`
-  background-color: ${props => props.theme.palette.primary.main};
+  background-color: ${props => props.theme.palette.secondary.main};
   height: ${toolbarHeight};
   color: ${props => props.theme.palette.common.white};
+
+  > div {
+    height: 100%;
+  }
 `;
 
 export const BaseToolbar = ({ children }) => (

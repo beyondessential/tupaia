@@ -16,7 +16,6 @@ import styled from 'styled-components';
 import { MapControl } from '../containers/MapControl';
 import MeasureLegend from '../containers/MeasureLegend';
 import MeasureBar from '../containers/MeasureBar';
-import LastUpdated from '../containers/MeasureBar/LastUpdated';
 import { CONTROL_BAR_PADDING } from '../styles';
 
 const FlexDiv = styled.div`
@@ -46,7 +45,6 @@ export const MapDiv = () => {
     <FlexDiv>
       <TopRow>
         <MeasureBar />
-        <LastUpdated />
       </TopRow>
       <BottomRow>
         <MeasureLegend />
