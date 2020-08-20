@@ -84,8 +84,7 @@ export class GETHandler extends RouteHandler {
   }
 
   getRecordId() {
-    const { recordId } = this.req.params;
-    return recordId;
+    return this.req.params.recordId;
   }
 
   getDbQueryCriteria() {
