@@ -24,6 +24,7 @@ const {
   getChanges,
   getAnswers,
   getDisasters,
+  getSurveyResponses,
   getSocialFeed,
   importEntities,
   importStriveLabResults,
@@ -101,6 +102,7 @@ export function addRoutesToApp(app) {
   app.get('(/v[0-9]+)/me/countries', getCountryAccessList);
   app.get('(/v[0-9]+)/answer/:recordId?', getAnswers);
   app.get('(/v[0-9]+)/disaster/:recordId?', getDisasters);
+  app.get('(/v[0-9]+)/surveyResponse/:recordId?', getSurveyResponses);
 
   /**
    * POST routes
