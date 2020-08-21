@@ -538,10 +538,8 @@ function* fetchDashboard(action) {
 
   try {
     const dashboard = yield call(request, requestResourceUrl, fetchDashboardError);
-    console.log(state, projectCode, requestResourceUrl, dashboard);
     yield put(fetchDashboardSuccess(dashboard));
   } catch (error) {
-    console.log(error);
     yield put(error.errorFunction(error));
   }
 }
