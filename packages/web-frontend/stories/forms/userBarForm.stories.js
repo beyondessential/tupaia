@@ -7,49 +7,13 @@ import React from 'react';
 import styled from 'styled-components';
 import { ChangePasswordFormComponent } from '../../src/containers/ChangePasswordForm/ChangePasswordFormComponent';
 import { RequestCountryAccessFormComponent } from '../../src/containers/RequestCountryAccessForm/RequestCountryAccessFormComponent';
-import { DARK_BLUE, ERROR, FORM_BLUE } from '../../src/styles';
 import { Form } from '../../src/containers/Form';
+import { LightThemeProvider } from '../../src/styles/LightThemeProvider';
 
 const MockUserBar = styled.div`
   margin: 1rem auto;
   max-width: 500px;
   padding: 1rem 1rem 1.5rem;
-  background: white;
-
-  // theme. Todo: refactor to be re-usable
-  p,
-  a,
-  label,
-  .MuiFormLabel-root,
-  .MuiCheckbox-root,
-  .MuiInput-underline::before {
-    color: black;
-    border-color: black;
-  }
-
-  .MuiInput-underline:hover:not(.Mui-disabled):before {
-    border-bottom: 2px solid black;
-  }
-
-  p {
-    padding: 18px;
-  }
-
-  .Mui-error {
-    color: ${ERROR};
-  }
-
-  .Mui-focused {
-    color: ${FORM_BLUE};
-  }
-
-  .MuiInputBase-input {
-    color: ${DARK_BLUE};
-  }
-
-  button.MuiButtonBase-root {
-    margin-top: 20px;
-  }
 `;
 
 export default {
@@ -59,7 +23,9 @@ export default {
   decorators: [
     Story => (
       <MockUserBar>
-        <Story />
+        <LightThemeProvider>
+          <Story />
+        </LightThemeProvider>
       </MockUserBar>
     ),
   ],

@@ -9,6 +9,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
+import Typography from '@material-ui/core/Typography';
 
 import SearchOverlay from '../SearchOverlay';
 import { LoginForm } from '../../LoginForm';
@@ -29,10 +30,23 @@ import {
   DIALOG_PAGE_REQUEST_COUNTRY_ACCESS,
 } from '../../../actions';
 import { SignupOverlay } from '../SignupOverlay';
+import { LightThemeProvider } from '../../../styles/LightThemeProvider';
 
 const Container = styled.div`
   display: grid;
   grid-auto-flow: row;
+`;
+
+const MobileFormHeader = styled.div`
+  text-align: center;
+  color: white;
+  padding: 1.5rem 0;
+`;
+
+const MobileFormHeading = styled(Typography)`
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 23px;
 `;
 
 const HeaderBar = React.memo(props => {
@@ -78,10 +92,26 @@ const HeaderBar = React.memo(props => {
       {searchIsExpanded && <SearchOverlay />}
       {userMenuIsExpanded && <UserMenuOverlay />}
       {changePasswordIsExpanded && (
-        <ChangePasswordForm useResetToken={dialogPage === DIALOG_PAGE_RESET_PASSWORD} />
+        <>
+          <MobileFormHeader>
+            <MobileFormHeading variant="h3">Reset your password</MobileFormHeading>
+          </MobileFormHeader>
+          <LightThemeProvider>
+            <ChangePasswordForm useResetToken={dialogPage === DIALOG_PAGE_RESET_PASSWORD} />
+          </LightThemeProvider>
+        </>
       )}
       {resetPasswordIsExpanded && <RequestResetPasswordForm />}
-      {requestCountryAccessIsExpanded && <RequestCountryAccessForm />}
+      {requestCountryAccessIsExpanded && (
+        <>
+          <MobileFormHeader>
+            <MobileFormHeading variant="h3">Request access to countries</MobileFormHeading>
+          </MobileFormHeader>
+          <LightThemeProvider>
+            <RequestCountryAccessForm />
+          </LightThemeProvider>
+        </>
+      )}
     </Container>
   );
 });

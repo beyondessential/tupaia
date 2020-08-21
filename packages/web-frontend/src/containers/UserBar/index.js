@@ -38,43 +38,8 @@ import { ChangePasswordForm } from '../ChangePasswordForm';
 import { RequestCountryAccessForm } from '../RequestCountryAccessForm';
 import UserMenu from '../UserMenu';
 import { LANDING } from '../OverlayDiv/constants';
-import { USER_BAR_STYLES, DARK_BLUE, ERROR, FORM_BLUE, WHITE } from '../../styles';
-
-const LightFormTheme = styled.div`
-  p,
-  a,
-  label,
-  .MuiFormLabel-root,
-  .MuiCheckbox-root,
-  .MuiInput-underline::before {
-    color: black;
-    border-color: black;
-  }
-
-  .MuiInput-underline:hover:not(.Mui-disabled):before {
-    border-bottom: 2px solid black;
-  }
-
-  p {
-    padding: 18px;
-  }
-
-  .Mui-error {
-    color: ${ERROR};
-  }
-
-  .Mui-focused {
-    color: ${FORM_BLUE};
-  }
-
-  .MuiInputBase-input {
-    color: ${DARK_BLUE};
-  }
-
-  button.MuiButtonBase-root {
-    margin-top: 20px;
-  }
-`;
+import { USER_BAR_STYLES, DARK_BLUE, WHITE } from '../../styles';
+import { LightThemeProvider } from '../../styles/LightThemeProvider';
 
 export class UserBar extends Component {
   getDialogTitle() {
@@ -166,21 +131,21 @@ export class UserBar extends Component {
       case DIALOG_PAGE_CHANGE_PASSWORD:
       case DIALOG_PAGE_RESET_PASSWORD:
         return (
-          <LightFormTheme>
+          <LightThemeProvider>
             <ChangePasswordForm
               onClickChangePassword={() => onOpenUserPage(DIALOG_PAGE_CHANGE_PASSWORD)}
               useResetToken={dialogPage === DIALOG_PAGE_RESET_PASSWORD}
             />
-          </LightFormTheme>
+          </LightThemeProvider>
         );
 
       case DIALOG_PAGE_REQUEST_COUNTRY_ACCESS:
         return (
-          <LightFormTheme>
+          <LightThemeProvider>
             <RequestCountryAccessForm
               onClickRequestCountryAccess={() => onOpenUserPage(DIALOG_PAGE_REQUEST_COUNTRY_ACCESS)}
             />
-          </LightFormTheme>
+          </LightThemeProvider>
         );
 
       case DIALOG_PAGE_VERIFICATION_PAGE:
@@ -235,6 +200,7 @@ const styles = {
     color: DARK_BLUE,
     backgroundColor: WHITE,
     overflowY: 'auto',
+    borderRadius: 0,
   },
 };
 

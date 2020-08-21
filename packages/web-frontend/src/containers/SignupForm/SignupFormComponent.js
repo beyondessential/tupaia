@@ -52,6 +52,10 @@ const FormGrid = styled.div`
   grid-template-columns: 1fr 1fr;
   gap: 10px;
   padding: 18px;
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 const TermsLabel = () => (

@@ -16,6 +16,7 @@ import { WHITE } from '../../styles';
 import { Form } from '../Form';
 import { TextField } from '../Form/Fields';
 import { emailAddress } from '../Form/validators';
+import { SubmitButton } from '../Form/common';
 import { PrimaryButton } from '../../components/Buttons';
 import { ForgotPassword } from './ForgotPassword';
 import { RequestResetPasswordForm } from '../RequestResetPasswordForm';
@@ -29,7 +30,7 @@ const Signup = styled.div`
   text-align: left;
   color: ${WHITE};
   border-top: 1px solid #000;
-  display: flex;
+  //display: flex;
 
   h4 {
     margin: 0;
@@ -61,7 +62,7 @@ export const MobileLoginFormComponent = ({
           formError={loginFailedMessage}
           onSubmit={({ email, password }) => onAttemptUserLogin(email, password)}
           render={submitForm => (
-            <React.Fragment>
+            <>
               <TextField
                 fullWidth
                 label="E-mail"
@@ -70,26 +71,20 @@ export const MobileLoginFormComponent = ({
                 required
               />
               <TextField fullWidth label="Password" name="password" type="password" required />
-              <PrimaryButton onClick={submitForm} variant="contained">
-                Sign in
-              </PrimaryButton>
+              <PrimaryButton onClick={submitForm}>Sign in</PrimaryButton>
               <ForgotPassword handleClick={handleRequestReset} />
-            </React.Fragment>
+            </>
           )}
         />
       )}
 
       <Signup>
-        <div>
-          <h4>Need an account?</h4>
-          <p>
-            Sign up to access more regions and assist in data collection using our free app for
-            Android and iOS
-          </p>
-        </div>
-        <PrimaryButton onClick={openSignupOverlay} variant="contained">
-          Sign up
-        </PrimaryButton>
+        <h4>Need an account?</h4>
+        <p>
+          Sign up to access more regions and assist in data collection using our free app for
+          Android and iOS
+        </p>
+        <SubmitButton text="Sign up" handleClick={openSignupOverlay} />
       </Signup>
     </Container>
   );
