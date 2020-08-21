@@ -68,7 +68,7 @@ export default class extends RouteHandler {
         a.name.toLowerCase().localeCompare(b.name.toLowerCase()),
       );
     }
-
+    
     return {
       organisationUnitType: entity.getOrganisationLevel(),
       organisationUnitCode: entityCode,
