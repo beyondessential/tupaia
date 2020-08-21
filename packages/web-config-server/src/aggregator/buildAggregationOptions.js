@@ -55,7 +55,6 @@ export const buildAggregationOptions = async (
 
 // Will return a map for every entity (regardless of type) in entities to its ancestor of type aggregationEntityType
 const ANCESTOR_FETCH_BATCH_SIZE = 1000;
-let callNumber = 1;
 const getEntityToAncestorMap = async (entities, aggregationEntityType, hierarchyId) => {
   if (!entities || entities.length === 0) return {};
   const entityToAncestor = {};
