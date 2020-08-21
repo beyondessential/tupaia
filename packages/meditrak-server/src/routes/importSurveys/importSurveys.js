@@ -34,11 +34,8 @@ import {
   findOrCreateSurveyCode,
 } from './utilities';
 import { assertCanAddDataElementInGroup } from '../../database';
-import {
-  checkAnyPermissions,
-  hasBESAdminAccess,
-  hasSurveysImportPermissions,
-} from '../../permissions';
+import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
+import { checkCanImportSurveys } from './checkCanImportSurveys';
 
 const QUESTION_TYPE_LIST = Object.values(ANSWER_TYPES);
 const DEFAULT_SERVICE_TYPE = 'tupaia';
@@ -122,18 +119,10 @@ export async function importSurveys(req, res) {
       });
 
       const importSurveysPermissionsChecker = async accessPolicy =>
-        hasSurveysImportPermissions(
-          accessPolicy,
-          transactingModels,
-          surveyNames,
-          req.query.countryIds,
-        );
+        checkCanImportSurveys(accessPolicy, transactingModels, surveyNames, req.query.countryIds);
 
       await req.checkPermissions(
-        checkAnyPermissions(
-          [hasBESAdminAccess, importSurveysPermissionsChecker],
-          "You need either BES Admin or Tupaia Admin Panel access to the surveys' countries to import them",
-        ),
+        assertAnyPermissions([assertBESAdminAccess, importSurveysPermissionsChecker]),
       );
 
       let surveyGroup;

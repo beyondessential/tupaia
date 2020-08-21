@@ -22,7 +22,8 @@ const {
   exportSurveyResponses,
   exportSurveys,
   getChanges,
-  getRecords,
+  getAnswers,
+  getDisasters,
   getSocialFeed,
   importEntities,
   importStriveLabResults,
@@ -98,8 +99,8 @@ export function addRoutesToApp(app) {
   app.get('(/v[0-9]+)/socialFeed', getSocialFeed);
   app.get('(/v[0-9]+)/me/rewards', getUserRewards);
   app.get('(/v[0-9]+)/me/countries', getCountryAccessList);
-  app.get('(/v[0-9]+)/:parentResource/:parentRecordId/:resource/:recordId?', getRecords);
-  app.get('(/v[0-9]+)/:resource/:recordId?', getRecords);
+  app.get('(/v[0-9]+)/answer/:recordId?', getAnswers);
+  app.get('(/v[0-9]+)/disaster/:recordId?', getDisasters);
 
   /**
    * POST routes

@@ -3,10 +3,9 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { ImportValidationError } from '@tupaia/utils';
+import { ImportValidationError, getCountryCode } from '@tupaia/utils';
 import { getEntityObjectValidator } from './getEntityObjectValidator';
 import { getOrCreateParentEntity } from './getOrCreateParentEntity';
-import { getCountryCode } from '../utilities/getCountryCode';
 
 const DEFAULT_TYPE_NAMES = {
   1: 'Hospital',

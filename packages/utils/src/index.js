@@ -10,6 +10,7 @@ export * from './errors';
 export { Multilock } from './Multilock';
 export * from './period';
 export { getCountryNameFromCode } from './getCountryNameFromCode';
+export { getCountryCode } from './getCountryCode';
 export { getUniqueEntries } from './getUniqueEntries';
 export {
   flattenToObject,
