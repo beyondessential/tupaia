@@ -30,8 +30,16 @@ const PrimaryButtonTemplate = args => <PrimaryButton {...args} />;
 export const Primary = PrimaryButtonTemplate.bind({});
 Primary.args = {
   children: 'Button',
+  disabled: false,
 };
 Primary.argTypes = { onClick: { action: 'clicked' } };
+
+export const Disabled = PrimaryButtonTemplate.bind({});
+Disabled.args = {
+  children: 'Button',
+  disabled: true,
+};
+Disabled.argTypes = { onClick: { action: 'clicked' } };
 
 const SubmitButtonTemplate = args => <SubmitButton {...args} />;
 

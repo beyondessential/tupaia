@@ -30,7 +30,6 @@ const Signup = styled.div`
   text-align: left;
   color: ${WHITE};
   border-top: 1px solid #000;
-  //display: flex;
 
   h4 {
     margin: 0;

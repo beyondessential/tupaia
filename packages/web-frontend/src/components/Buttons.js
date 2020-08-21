@@ -13,7 +13,12 @@ import { WHITE, PRIMARY_BLUE, BREWER_PALETTE } from '../styles';
 export const PrimaryButton = styled(Button)`
   color: ${WHITE};
   background: ${PRIMARY_BLUE};
-  padding: 6px 8px 7px;
+  padding: 6px 12px 7px;
+
+  &.MuiButton-root.Mui-disabled {
+    color: ${WHITE};
+    opacity: 0.5;
+  }
 
   :hover {
     background: ${BREWER_PALETTE.blue};
