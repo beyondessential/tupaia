@@ -146,7 +146,7 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => ({
   },
   viewProjectList: () => dispatch(setOverlayComponent(LANDING)),
   closeOverlay: () => {
-    if (!stateProps.activeProject) dispatch(setProject(stateProps.exploreProject.code));
+    if (!stateProps.activeProject.code) dispatch(setProject(stateProps.exploreProject.code));
     dispatch(setOverlayComponent(null));
   },
 });
