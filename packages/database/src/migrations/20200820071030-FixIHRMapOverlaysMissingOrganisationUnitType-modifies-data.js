@@ -17,17 +17,17 @@ exports.setup = function(options, seedLink) {
 exports.up = function(db) {
   return db.runSql(`
     UPDATE "mapOverlay"
-    SET "measureBuilderConfig" = "measureBuilderConfig" || '{ "organisationUnitType" : "district" }'
+    SET "measureBuilderConfig" = "measureBuilderConfig" || '{ "entityAggregation": { "aggregationType": "REPLACE_ORG_UNIT_WITH_ORG_GROUP", "dataSourceEntityType": "facility", "aggregationEntityType": "district" }, "aggregationType": "MOST_RECENT_PER_ORG_GROUP" }'
+    WHERE "measureBuilder" = 'mostRecentValueFromChildren';
+
+    UPDATE "mapOverlay"
+    SET "measureBuilder" = 'valueForOrgGroup'
     WHERE "measureBuilder" = 'mostRecentValueFromChildren';
   `);
 };
 
 exports.down = function(db) {
-  return db.runSql(`
-    UPDATE "mapOverlay"
-    SET "measureBuilderConfig" = '{}'
-    WHERE "measureBuilder" = 'mostRecentValueFromChildren';
-  `);
+  return null;
 };
 
 exports._meta = {
