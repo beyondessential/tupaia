@@ -17,7 +17,7 @@ import {
   selectAdjustedProjectBounds,
   selectProjectByCode,
   selectCurrentOrgUnitCode,
-  selectCurrentDashboardKey,
+  selectIsDashboardKeyDefined,
 } from '../selectors';
 
 function* fetchProjectData() {
@@ -48,17 +48,17 @@ function* loadProject(action) {
   }
 
   state = yield select();
-
+  // If the project was set in the url, preserve the other parameters if they are
+  // also set
+  const forceUpdate = !action.meta || !action.meta.preventHistoryUpdate;
   yield put(changeBounds(yield select(selectAdjustedProjectBounds, action.projectCode)));
 
   const project = selectProjectByCode(state, action.projectCode);
   const organisationUnitCode = selectCurrentOrgUnitCode(state);
-  if (!organisationUnitCode) {
+  if (!organisationUnitCode || forceUpdate) {
     yield put(setOrgUnit(project.homeEntityCode || action.projectCode, false));
   }
-  // TODO: Move to setOrgUnit?
-  const currentDashboardKey = selectCurrentDashboardKey(state);
-  if (!currentDashboardKey) {
+  if (selectIsDashboardKeyDefined(state) || forceUpdate) {
     yield put(setDashboardKey(project.dashboardGroupName));
   }
 }

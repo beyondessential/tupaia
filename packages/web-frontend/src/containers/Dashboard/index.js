@@ -19,7 +19,6 @@ import shallowEqual from 'shallowequal';
 import Dialog from '@material-ui/core/Dialog';
 import StaticMap from '../../components/StaticMap';
 
-import { initialOrgUnit } from '../../defaults';
 import { DASHBOARD_STYLES, DASHBOARD_META_MARGIN } from '../../styles';
 import { setDashboardKey, closeDropdownOverlays } from '../../actions';
 import DashboardGroup from '../DashboardGroup';
@@ -92,7 +91,7 @@ export class Dashboard extends Component {
           2 /* Multiply by 2 to render maps that look sharp when expanded */
         }
         style={DASHBOARD_STYLES.metaImage}
-        showBox={currentOrganisationUnitBounds !== initialOrgUnit.location.bounds}
+        showBox // TODO: Confirm this is ok
       />
     );
   }
@@ -261,7 +260,7 @@ const mapStateToProps = state => {
   const { isLoadingOrganisationUnit, dashboardConfig, isSidePanelExpanded, project } = state.global;
   const { contractedWidth } = state.dashboard;
   const currentOrganisationUnit = selectCurrentOrgUnit(state);
-  let currentOrganisationUnitBounds = initialOrgUnit.location.bounds;
+  let currentOrganisationUnitBounds = null; // TODO: Make sure this is ok
   if (currentOrganisationUnit.type === 'Project') {
     currentOrganisationUnitBounds = selectAdjustedProjectBounds(
       state,

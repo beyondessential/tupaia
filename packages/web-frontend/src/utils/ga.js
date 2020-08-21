@@ -23,7 +23,7 @@ import {
   OPEN_USER_DIALOG,
   CLOSE_USER_DIALOG,
 } from '../actions';
-import { initialOrgUnit } from '../defaults';
+import { DEFAULT_BOUNDS } from '../defaults';
 
 const ga = window.ga || (() => {});
 
@@ -52,9 +52,7 @@ export const gaMiddleware = () => next => action => {
         break;
 
       case SET_ORG_UNIT:
-        if (action.organisationUnitCode !== initialOrgUnit.organisationUnitCode) {
-          gaEvent('Organisation Unit', 'Change', action.organisationUnitCode);
-        }
+        gaEvent('Organisation Unit', 'Change', action.organisationUnitCode);
         break;
 
       case SET_MEASURE:

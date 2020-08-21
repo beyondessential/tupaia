@@ -106,7 +106,7 @@ import {
 } from './utils';
 import { createUrlString, URL_COMPONENTS } from './historyNavigation';
 import { getDefaultDates } from './utils/periodGranularities';
-import { INITIAL_MEASURE_ID, INITIAL_PROJECT_CODE, initialOrgUnit } from './defaults';
+import { DEFAULT_MEASURE_ID } from './defaults';
 
 /**
  * attemptChangePassword
@@ -431,10 +431,7 @@ function* watchRequestProjectAccess() {
  * Fetch an org unit.
  *
  */
-function* fetchOrgUnitData(
-  organisationUnitCode = initialOrgUnit.organisationUnitCode,
-  projectCode = INITIAL_PROJECT_CODE,
-) {
+function* fetchOrgUnitData(organisationUnitCode, projectCode) {
   try {
     yield put(fetchOrgUnit(organisationUnitCode));
     // Build the request url
@@ -537,13 +534,14 @@ function* fetchDashboard(action) {
   const { organisationUnitCode } = action.organisationUnit;
   const state = yield select();
   const projectCode = selectCurrentProjectCode(state);
-
   const requestResourceUrl = `dashboard?organisationUnitCode=${organisationUnitCode}&projectCode=${projectCode}`;
 
   try {
     const dashboard = yield call(request, requestResourceUrl, fetchDashboardError);
+    console.log(state, projectCode, requestResourceUrl, dashboard);
     yield put(fetchDashboardSuccess(dashboard));
   } catch (error) {
+    console.log(error);
     yield put(error.errorFunction(error));
   }
 }
@@ -742,12 +740,12 @@ function getSelectedMeasureFromHierarchy(measureHierarchy, selectedMeasureId, pr
   const projectMeasureId = project.defaultMeasure;
   if (getMeasureFromHierarchy(measureHierarchy, selectedMeasureId)) return selectedMeasureId;
   else if (getMeasureFromHierarchy(measureHierarchy, projectMeasureId)) return projectMeasureId;
-  else if (getMeasureFromHierarchy(measureHierarchy, INITIAL_MEASURE_ID)) return INITIAL_MEASURE_ID;
+  else if (getMeasureFromHierarchy(measureHierarchy, DEFAULT_MEASURE_ID)) return DEFAULT_MEASURE_ID;
   else if (!isMeasureHierarchyEmpty(measureHierarchy)) {
     return flattenMeasureHierarchy(measureHierarchy)[0].measureId;
   }
 
-  return INITIAL_MEASURE_ID;
+  return DEFAULT_MEASURE_ID;
 }
 
 function* fetchCurrentMeasureInfo() {

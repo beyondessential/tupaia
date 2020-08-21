@@ -14,3 +14,8 @@ export const selectCurrentDashboardKey = createSelector(
   (dashboardConfig, currentDashboardKey) =>
     dashboardConfig[currentDashboardKey] ? currentDashboardKey : Object.keys(dashboardConfig)[0],
 );
+
+export const selectIsDashboardKeyDefined = createSelector(
+  [selectCurrentDashboardKeyFromLocation],
+  rawCurrentDashboardKey => !rawCurrentDashboardKey,
+);
