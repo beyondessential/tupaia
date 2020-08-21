@@ -26,7 +26,7 @@ export default function configureStore(initialState) {
   const store = createStore(
     rootReducer,
     initialState,
-    // The order of historyMiddleware and sagaMiddleware in important here
+    // historyMiddleware must be first so it runs before sagaMiddleware
     composeEnhancers(applyMiddleware(historyMiddleware, sagaMiddleware, gaMiddleware)),
   );
 
