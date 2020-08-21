@@ -26,9 +26,9 @@ class SurveyDataExportBuilder extends DataBuilder {
     const { surveys } = this.config;
 
     return {
-      data: surveys.map(({ name, code }) => ({
+      data: surveys.map(({ name, code, codes }) => ({
         name,
-        value: code,
+        value: codes || code,
       })),
       downloadUrl: buildExportUrl(this.req, 'surveyDataDownload', {
         ...this.query,
