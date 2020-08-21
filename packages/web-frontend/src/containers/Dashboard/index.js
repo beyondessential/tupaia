@@ -29,7 +29,7 @@ import {
   selectCurrentOrgUnit,
   selectAdjustedProjectBounds,
 } from '../../selectors';
-
+import { DEFAULT_BOUNDS } from '../../defaults';
 const IMAGE_HEIGHT_RATIO = 0.5;
 
 export class Dashboard extends Component {
@@ -91,7 +91,7 @@ export class Dashboard extends Component {
           2 /* Multiply by 2 to render maps that look sharp when expanded */
         }
         style={DASHBOARD_STYLES.metaImage}
-        showBox // TODO: Confirm this is ok
+        showBox={currentOrganisationUnitBounds !== DEFAULT_BOUNDS}
       />
     );
   }
@@ -260,7 +260,7 @@ const mapStateToProps = state => {
   const { isLoadingOrganisationUnit, dashboardConfig, isSidePanelExpanded, project } = state.global;
   const { contractedWidth } = state.dashboard;
   const currentOrganisationUnit = selectCurrentOrgUnit(state);
-  let currentOrganisationUnitBounds = null; // TODO: Make sure this is ok
+  let currentOrganisationUnitBounds = DEFAULT_BOUNDS;
   if (currentOrganisationUnit.type === 'Project') {
     currentOrganisationUnitBounds = selectAdjustedProjectBounds(
       state,

@@ -15,7 +15,6 @@
  * In the future we may want to refactor, moving each action into the appropriate container folder.
  */
 
-
 export const FETCH_INITIAL_DATA = 'FETCH_INITIAL_DATA';
 export const ATTEMPT_CHANGE_PASSWORD = 'ATTEMPT_CHANGE_PASSWORD';
 export const ATTEMPT_LOGIN = 'ATTEMPT_LOGIN';
@@ -442,7 +441,7 @@ export function fetchRequestCountryAccessError(errorMessage) {
  * @param {object} organisationUnit
  */
 export function requestOrgUnit(organisationUnitCode) {
-  // TODO: delete this action
+  // TODO: delete this action after approval
   return {
     type: REQUEST_ORG_UNIT,
     organisationUnitCode,

@@ -142,7 +142,7 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => ({
   },
   selectProjectOrgUnit: () => {
     dispatch(setOverlayComponent(null));
-    dispatch(setOrgUnit(stateProps.activeProject.homeEntityCode, false)); // TODO: REWORK
+    dispatch(setOrgUnit(stateProps.activeProject.homeEntityCode, false));
   },
   viewProjectList: () => dispatch(setOverlayComponent(LANDING)),
   closeOverlay: () => {
