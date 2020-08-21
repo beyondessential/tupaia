@@ -5,12 +5,12 @@ export const mostRecentValueFromChildren = async (
   aggregator,
   dhisApi,
   { dataElementCode },
-  { aggregationEntityType, dataServices },
+  { organisationUnitType, dataServices },
   entity,
 ) => {
   const organisationUnits = await getChildOrganisationUnits(
     {
-      type: aggregationEntityType,
+      type: organisationUnitType,
       organisationUnitGroupCode: entity.code,
     },
     dhisApi,
