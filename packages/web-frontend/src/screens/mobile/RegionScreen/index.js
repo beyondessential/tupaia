@@ -19,7 +19,7 @@ import StaticMap from '../../../components/StaticMap';
 import { filterShape } from '../../../components/mobile/FilterSelect';
 import {
   setOrgUnit,
-  changeMeasure,
+  setMeasure,
   toggleMeasureExpand,
   toggleDashboardSelectExpand,
   changeDashboardGroup,
@@ -312,7 +312,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  onChangeMeasure: (measureId, orgUnit) => dispatch(changeMeasure(measureId, orgUnit)),
+  onChangeMeasure: measureId => dispatch(setMeasure(measureId)),
   onClearMeasure: () => dispatch(clearMeasure()),
   onToggleMeasureExpand: () => dispatch(toggleMeasureExpand()),
   onToggleDashboardSelectExpand: () => dispatch(toggleDashboardSelectExpand()),
@@ -321,15 +321,13 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { orgUnit } = stateProps;
   const { onChangeMeasure, onClearMeasure } = dispatchProps;
 
   return {
     ...stateProps,
     ...dispatchProps,
     ...ownProps,
-    onChangeMeasure: measure =>
-      measure ? onChangeMeasure(measure.measureId, orgUnit.organisationUnitCode) : onClearMeasure(),
+    onChangeMeasure: measure => (measure ? onChangeMeasure(measure.measureId) : onClearMeasure()),
   };
 };
 

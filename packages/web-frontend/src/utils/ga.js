@@ -10,7 +10,7 @@ import {
   ATTEMPT_LOGIN,
   FETCH_LOGIN_SUCCESS,
   SET_ORG_UNIT,
-  CHANGE_MEASURE,
+  SET_MEASURE,
   CHANGE_TILE_SET,
   TOGGLE_INFO_PANEL,
   SET_OVERLAY_COMPONENT,
@@ -57,7 +57,7 @@ export const gaMiddleware = () => next => action => {
         }
         break;
 
-      case CHANGE_MEASURE:
+      case SET_MEASURE:
         gaEvent('Measure', 'Change', action.measureId);
         break;
 

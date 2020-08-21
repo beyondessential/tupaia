@@ -36,7 +36,7 @@ export const ATTEMPT_RESET_TOKEN_LOGIN = 'ATTEMPT_RESET_TOKEN_LOGIN';
 export const CHANGE_SIDE_BAR_CONTRACTED_WIDTH = 'CHANGE_SIDE_BAR_CONTRACTED_WIDTH';
 export const CHANGE_SIDE_BAR_EXPANDED_WIDTH = 'CHANGE_SIDE_BAR_EXPANDED_WIDTH';
 export const CLEAR_MEASURE_HIERARCHY = 'CLEAR_MEASURE_HIERARCHY';
-export const CHANGE_MEASURE = 'CHANGE_MEASURE';
+export const SET_MEASURE = 'SET_MEASURE';
 export const UPDATE_MEASURE_CONFIG = 'UPDATE_MEASURE_CONFIG';
 export const REQUEST_ORG_UNIT = 'REQUEST_ORG_UNIT';
 export const FETCH_ORG_UNIT = 'FETCH_ORG_UNIT';
@@ -499,16 +499,13 @@ export function changeBounds(bounds) {
 
 /**
  * Changes current measure, should change features rendered on map after saga data fetch.
- * Updates selectedMeasureId in measureBar.
- *
+ * Updates the current measureId in the url.
  * @param {string} measureId
- * @param {string} organisationUnitCode
  */
-export function changeMeasure(measureId, organisationUnitCode) {
+export function setMeasure(measureId) {
   return {
-    type: CHANGE_MEASURE,
+    type: SET_MEASURE,
     measureId,
-    organisationUnitCode,
   };
 }
 
@@ -517,9 +514,10 @@ export function changeMeasure(measureId, organisationUnitCode) {
  *
  * @param {object} measureConfig
  */
-export function updateMeasureConfig(measureConfig) {
+export function updateMeasureConfig(measureId, measureConfig) {
   return {
     type: UPDATE_MEASURE_CONFIG,
+    measureId,
     measureConfig,
   };
 }

@@ -14,7 +14,8 @@ import {
   POLYGON_MEASURE_TYPES,
   calculateRadiusScaleFactor,
 } from '../utils/measures';
-import { safeGet, getOrgUnitFromCountry } from './utils';
+import { getLocationComponentValue, URL_COMPONENTS } from '../historyNavigation';
+import { safeGet, selectLocation, getOrgUnitFromCountry } from './utils';
 import {
   selectCurrentOrgUnitCode,
   selectAncestors,
@@ -48,7 +49,9 @@ const getOrgUnitFromMeasureData = (measureData, code) =>
 const selectDisplayInfo = (measureOptions, hiddenMeasures, measureData, organisationUnitCode) =>
   safeGet(displayInfoCache, [measureOptions, hiddenMeasures, measureData, organisationUnitCode]);
 
-export const selectCurrentMeasureId = state => state.measureBar.selectedMeasureId;
+export const selectCurrentMeasureId = createSelector([selectLocation], location =>
+  getLocationComponentValue(location, URL_COMPONENTS.MEASURE),
+);
 
 export const selectCurrentMeasure = createSelector(
   [selectCurrentMeasureId, state => state.measureBar.measureHierarchy],
