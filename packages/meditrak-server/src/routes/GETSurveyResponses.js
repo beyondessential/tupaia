@@ -9,6 +9,7 @@ import {
   assertAnyPermissions,
   assertBESAdminAccess,
   assertSurveyResponsePermissions,
+  hasSurveyResponsePermissions,
 } from '../permissions';
 
 /**
@@ -37,5 +38,22 @@ export class GETSurveyResponses extends GETHandler {
     );
 
     return surveyResponse;
+  }
+
+  async findRecords(criteria, options) {
+    const surveyResponsePermissionFilter = surveyResponse =>
+      hasSurveyResponsePermissions(this.req.accessPolicy, this.models, surveyResponse);
+
+    const surveyResponses = await this.database.find(this.recordType, criteria, options);
+    const permissionResults = await Promise.all(
+      surveyResponses.map(surveyResponsePermissionFilter),
+    );
+    const filteredResponses = surveyResponses.filter((_, index) => permissionResults[index]);
+
+    if (!filteredResponses.length) {
+      throw new Error('Your permissions do not allow access to any of the requested resources');
+    }
+
+    return filteredResponses;
   }
 }
