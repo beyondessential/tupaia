@@ -44,6 +44,9 @@
   "devDependencies": {
     "@cypress/snapshot": "^2.1.7",
     "@testing-library/cypress": "^6.0.0",
+    "@storybook/addon-actions": "^6.0.10",
+    "@storybook/addon-essentials": "^6.0.10",
+    "@storybook/react": "^6.0.10",
     "@testing-library/jest-dom": "^5.9.0",
     "@testing-library/react": "^10.0.6",
     "@testing-library/user-event": "^12.0.11",
@@ -90,6 +93,7 @@
     "build-exporter": "REACT_APP_APP_TYPE=exporter node scripts/build.js && rm -rf builds/exporter && mv build builds/exporter",
     "test": "node scripts/test.js --env=jsdom",
     "cypress:run": "cypress run",
-    "cypress:open": "cypress open"
+    "cypress:open": "cypress open",
+    "storybook": "start-storybook -s ./public -p 6006"
   }
 }
