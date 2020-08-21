@@ -13,7 +13,7 @@ import { connect } from 'react-redux';
 import { ExpandableList } from '../../../components/mobile/ExpandableList';
 import { SelectListItem } from '../../../components/mobile/SelectListItem';
 import { Dashboard } from '../../../components/mobile/Dashboard';
-import { setOrgUnit, toggleDashboardSelectExpand, changeDashboardGroup } from '../../../actions';
+import { setOrgUnit, toggleDashboardSelectExpand, setDashboardKey } from '../../../actions';
 import { WHITE } from '../../../styles';
 import {
   selectCurrentDashboardKey,
@@ -105,7 +105,7 @@ const mapDispatchToProps = dispatch => {
   return {
     onChangeOrgUnit: organisationUnitCode => dispatch(setOrgUnit(organisationUnitCode, false)),
     onToggleDashboardSelectExpand: () => dispatch(toggleDashboardSelectExpand()),
-    onChangeDashboardGroup: name => dispatch(changeDashboardGroup(name)),
+    onChangeDashboardGroup: name => dispatch(setDashboardKey(name)),
   };
 };
 

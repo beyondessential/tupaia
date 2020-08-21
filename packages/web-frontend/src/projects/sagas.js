@@ -8,7 +8,7 @@ import {
   FETCH_INITIAL_DATA,
   SET_PROJECT,
   changeBounds,
-  changeDashboardGroup,
+  setDashboardKey,
   FETCH_LOGIN_SUCCESS,
   setOrgUnit,
   FETCH_LOGOUT_SUCCESS,
@@ -56,11 +56,10 @@ function* loadProject(action) {
   if (!organisationUnitCode) {
     yield put(setOrgUnit(project.homeEntityCode || action.projectCode, false));
   }
-
-  // TODO: This will be fixed in the dashboard PR (including standardizing code vs key)
-  const dashboardGroupCode = selectCurrentDashboardKey(state);
-  if (!dashboardGroupCode) {
-    yield put(changeDashboardGroup(project.dashboardGroupName));
+  // TODO: Move to setOrgUnit?
+  const currentDashboardKey = selectCurrentDashboardKey(state);
+  if (!currentDashboardKey) {
+    yield put(setDashboardKey(project.dashboardGroupName));
   }
 }
 

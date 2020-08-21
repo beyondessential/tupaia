@@ -21,7 +21,7 @@ import StaticMap from '../../components/StaticMap';
 
 import { initialOrgUnit } from '../../defaults';
 import { DASHBOARD_STYLES, DASHBOARD_META_MARGIN } from '../../styles';
-import { changeDashboardGroup, closeDropdownOverlays } from '../../actions';
+import { setDashboardKey, closeDropdownOverlays } from '../../actions';
 import DashboardGroup from '../DashboardGroup';
 import { getFacilityThumbnailUrl } from '../../utils';
 import { DropDownMenu } from '../../components/DropDownMenu';
@@ -285,7 +285,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onChangeDashboardGroup: name => dispatch(changeDashboardGroup(name)),
+    onChangeDashboardGroup: name => dispatch(setDashboardKey(name)),
     onDashboardClicked: () => dispatch(closeDropdownOverlays()),
   };
 };

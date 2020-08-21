@@ -17,7 +17,7 @@ import { Dashboard } from '../../../components/mobile/Dashboard';
 import BackButton from '../../../components/mobile/BackButton';
 import { DARK_BLUE, MOBILE_MARGIN_SIZE, WHITE } from '../../../styles';
 import { getFacilityThumbnailUrl, getMapUrl } from '../../../utils';
-import { toggleDashboardSelectExpand, changeDashboardGroup } from '../../../actions';
+import { toggleDashboardSelectExpand, setDashboardKey } from '../../../actions';
 import { selectCurrentDashboardKey, selectCurrentOrgUnit } from '../../../selectors';
 
 class FacilityScreen extends PureComponent {
@@ -203,7 +203,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => ({
   onToggleDashboardSelectExpand: () => dispatch(toggleDashboardSelectExpand()),
-  onChangeDashboardGroup: name => dispatch(changeDashboardGroup(name)),
+  onChangeDashboardGroup: name => dispatch(setDashboardKey(name)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(FacilityScreen);

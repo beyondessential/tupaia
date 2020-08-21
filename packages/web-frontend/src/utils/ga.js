@@ -14,7 +14,7 @@ import {
   CHANGE_TILE_SET,
   TOGGLE_INFO_PANEL,
   SET_OVERLAY_COMPONENT,
-  CHANGE_DASHBOARD_GROUP,
+  SET_DASHBOARD_KEY,
   CHANGE_SEARCH,
   TOGGLE_MEASURE_EXPAND,
   TOGGLE_SEARCH_EXPAND,
@@ -81,7 +81,7 @@ export const gaMiddleware = () => next => action => {
         gaEvent('Pages', 'Open Overlay Component', action.component);
         break;
 
-      case CHANGE_DASHBOARD_GROUP:
+      case SET_DASHBOARD_KEY:
         gaEvent('Dashboard', 'Change Tab', action.name);
         break;
 

@@ -22,7 +22,7 @@ import {
   setMeasure,
   toggleMeasureExpand,
   toggleDashboardSelectExpand,
-  changeDashboardGroup,
+  setDashboardKey,
   clearMeasure,
 } from '../../../actions';
 import { DARK_BLUE, MOBILE_MARGIN_SIZE, WHITE } from '../../../styles';
@@ -317,7 +317,7 @@ const mapDispatchToProps = dispatch => ({
   onToggleMeasureExpand: () => dispatch(toggleMeasureExpand()),
   onToggleDashboardSelectExpand: () => dispatch(toggleDashboardSelectExpand()),
   onChangeOrgUnit: organisationUnitCode => dispatch(setOrgUnit(organisationUnitCode, false)),
-  onChangeDashboardGroup: name => dispatch(changeDashboardGroup(name)),
+  onChangeDashboardGroup: name => dispatch(setDashboardKey(name)),
 });
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {

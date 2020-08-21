@@ -12,7 +12,7 @@
 import {
   SET_PROJECT,
   SET_ORG_UNIT,
-  CHANGE_DASHBOARD_GROUP,
+  SET_DASHBOARD_KEY,
   OPEN_ENLARGED_DIALOG,
   CLOSE_ENLARGED_DIALOG,
   SET_MEASURE,
@@ -68,7 +68,7 @@ export const historyMiddleware = store => next => action => {
     case SET_ORG_UNIT:
       dispatchLocationUpdate(store, URL_COMPONENTS.ORG_UNIT, action.organisationUnitCode);
       break;
-    case CHANGE_DASHBOARD_GROUP:
+    case SET_DASHBOARD_KEY:
       dispatchLocationUpdate(store, URL_COMPONENTS.DASHBOARD, action.name);
       break;
     // TODO: Investigate GO_HOME once all url functionality is implemented.

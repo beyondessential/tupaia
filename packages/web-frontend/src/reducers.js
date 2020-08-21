@@ -33,7 +33,7 @@ import {
   ATTEMPT_LOGIN,
   ATTEMPT_SIGNUP,
   ATTEMPT_LOGOUT,
-  CHANGE_DASHBOARD_GROUP,
+  SET_DASHBOARD_KEY,
   ATTEMPT_RESET_PASSWORD,
   ATTEMPT_REQUEST_COUNTRY_ACCESS,
   CHANGE_SIDE_BAR_CONTRACTED_WIDTH,
@@ -447,7 +447,6 @@ function requestCountryAccess(
 
 function dashboard(
   state = {
-    currentDashboardKey: 'General',
     viewResponses: {},
     contractedWidth: 300, // Set dynamically based on window size.
     expandedWidth: 300, // Overridden by info div.
@@ -457,8 +456,6 @@ function dashboard(
   action,
 ) {
   switch (action.type) {
-    case CHANGE_DASHBOARD_GROUP:
-      return { ...state, currentDashboardKey: action.name };
     case FETCH_INFO_VIEW_DATA:
       return state;
     case FETCH_INFO_VIEW_DATA_SUCCESS: {
@@ -489,6 +486,7 @@ function dashboard(
       return { ...state, isGroupSelectExpanded: !state.isGroupSelectExpanded };
     case SET_MOBILE_DASHBOARD_EXPAND:
       return { ...state, isMobileDashboardExpanded: action.shouldExpand };
+    case SET_DASHBOARD_KEY: // QUESTION: Should I leave a comment here saying that it's in the URL or just delete it?
     default:
       return state;
   }
