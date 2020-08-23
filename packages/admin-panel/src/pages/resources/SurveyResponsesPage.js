@@ -3,6 +3,8 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
+import { utcMoment } from '@tupaia/utils';
+
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
@@ -22,7 +24,7 @@ const assessorName = {
 const date = {
   Header: 'Date of Survey',
   source: 'end_time',
-  accessor: row => new Date(row.end_time).toString(),
+  accessor: row => utcMoment(row.end_time).format('ddd MMM DD YYYY HH:mm:ss Z'),
   filterable: false,
   editable: false,
 };
@@ -30,7 +32,8 @@ const date = {
 const dateOfData = {
   Header: 'Date of Data',
   source: 'submission_time',
-  accessor: row => new Date(row.submission_time || row.end_time).toString(),
+  accessor: row =>
+    utcMoment(row.submission_time || row.end_time).format('ddd MMM DD YYYY HH:mm:ss Z'),
   filterable: false,
   editConfig: {
     type: 'datetime-local',
