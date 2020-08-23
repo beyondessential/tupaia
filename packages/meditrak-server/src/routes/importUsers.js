@@ -14,9 +14,11 @@ import {
   constructIsOneOf,
 } from '@tupaia/utils';
 import { hashAndSaltPassword } from '@tupaia/auth';
-
+import { assertBESAdminAccess } from '../permissions';
 
 export async function importUsers(req, res) {
+  await req.assertPermissions(assertBESAdminAccess);
+
   try {
     const { models } = req;
     if (!req.file) {
