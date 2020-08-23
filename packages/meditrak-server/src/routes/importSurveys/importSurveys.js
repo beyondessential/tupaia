@@ -121,7 +121,7 @@ export async function importSurveys(req, res) {
       const importSurveysPermissionsChecker = async accessPolicy =>
         checkCanImportSurveys(accessPolicy, transactingModels, surveyNames, req.query.countryIds);
 
-      await req.checkPermissions(
+      await req.assertPermissions(
         assertAnyPermissions([assertBESAdminAccess, importSurveysPermissionsChecker]),
       );
 

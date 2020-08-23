@@ -11,13 +11,10 @@ export const checkCanImportSurveys = async (accessPolicy, models, surveyNames, n
     const newCountries = await models.country.find({
       id: newCountryIds,
     });
-    const newCountryEntities = await models.entity.find({
-      code: newCountries.map(newCountry => newCountry.code),
-    });
-    const newCountryEntityCodes = newCountryEntities.map(newCountryEntity => newCountryEntity.code);
+    const newCountryCodes = newCountries.map(newCountry => newCountry.code);
 
-    if (!accessPolicy.allowsAll(newCountryEntityCodes, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP)) {
-      const entitiesString = newCountryEntityCodes.join(',');
+    if (!accessPolicy.allowsAll(newCountryCodes, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP)) {
+      const entitiesString = newCountryCodes.join(',');
       throw new Error(
         `Need ${TUPAIA_ADMIN_PANEL_PERMISSION_GROUP} access to entities ${entitiesString} to import the surveys`,
       );
@@ -38,27 +35,22 @@ export const checkCanImportSurveys = async (accessPolicy, models, surveyNames, n
     const surveyCountries = await models.country.find({
       id: survey.country_ids,
     });
-    const surveyCountryEntities = await models.entity.find({
-      code: surveyCountries.map(surveyCountry => surveyCountry.code),
-    });
     const surveyPermissionGroup = await models.permissionGroup.findOne({
       id: survey.permission_group_id,
     });
-    const surveyCountryEntityCodes = surveyCountryEntities.map(
-      surveyCountryEntity => surveyCountryEntity.code,
-    );
+    const surveyCountryCodes = surveyCountries.map(c => c.code);
+    const surveyCountryNames = surveyCountries.map(c => c.name);
+    const countryNames = surveyCountryNames.join(',');
 
-    if (!accessPolicy.allowsAll(surveyCountryEntityCodes, surveyPermissionGroup.name)) {
-      const entitiesString = surveyCountryEntityCodes.join(',');
+    if (!accessPolicy.allowsAll(surveyCountryCodes, surveyPermissionGroup.name)) {
       throw new Error(
-        `Need ${surveyPermissionGroup.name} access to entities ${entitiesString} to import survey ${survey.name}`,
+        `Need ${surveyPermissionGroup.name} access to countries ${countryNames} to import survey ${survey.name}`,
       );
     }
 
-    if (!accessPolicy.allowsAll(surveyCountryEntityCodes, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP)) {
-      const entitiesString = surveyCountryEntityCodes.join(',');
+    if (!accessPolicy.allowsAll(surveyCountryCodes, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP)) {
       throw new Error(
-        `Need ${TUPAIA_ADMIN_PANEL_PERMISSION_GROUP} access to entities ${entitiesString} to import survey ${survey.name}`,
+        `Need ${TUPAIA_ADMIN_PANEL_PERMISSION_GROUP} access to countries ${countryNames} to import survey ${survey.name}`,
       );
     }
   }

@@ -44,6 +44,9 @@ export class AccessPolicy {
    * @param {*} permissionGroup
    */
   allowsAll(entities, permissionGroup) {
+    if (!entities || !entities.length) {
+      return false;
+    }
     return entities.every(entity => this.allows(entity, permissionGroup));
   }
 
