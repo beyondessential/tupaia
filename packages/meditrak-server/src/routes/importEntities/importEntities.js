@@ -8,7 +8,7 @@ import { populateCoordinatesForCountry } from './populateCoordinatesForCountry';
 import { updateCountryEntities } from './updateCountryEntities';
 import { extractEntitiesByCountryName } from './extractEntitiesByCountryName';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
-import { checkCanImportEntities } from './checkCanImportEntities';
+import { assertCanImportEntities } from './assertCanImportEntities';
 /**
  * Responds to POST requests to the /import/entities endpoint
  */
@@ -23,7 +23,7 @@ export async function importEntities(req, res) {
     }
 
     const importEntitiesPermissionsChecker = async accessPolicy =>
-      checkCanImportEntities(accessPolicy, models, entitiesByCountryName);
+      assertCanImportEntities(accessPolicy, entitiesByCountryName);
 
     await req.assertPermissions(
       assertAnyPermissions([assertBESAdminAccess, importEntitiesPermissionsChecker]),

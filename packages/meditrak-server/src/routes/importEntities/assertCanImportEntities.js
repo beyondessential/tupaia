@@ -5,7 +5,7 @@
 import { getCountryCode } from '@tupaia/utils';
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../permissions';
 
-export const checkCanImportEntities = async (accessPolicy, models, entitiesByCountryName) => {
+export const assertCanImportEntities = async (accessPolicy, entitiesByCountryName) => {
   const countryCodes = Object.entries(entitiesByCountryName).map(([countryName, entities]) => {
     return getCountryCode(countryName, entities);
   });
@@ -16,9 +16,9 @@ export const checkCanImportEntities = async (accessPolicy, models, entitiesByCou
     //If user doesn't have TUPAIA_ADMIN_PANEL_PERMISSION_GROUP access
     // to ANY of the countries of the entities being imported, it should fail!
     if (!accessPolicy.allows(countryCode, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP)) {
-      const country = await models.country.findOne({ code: countryCode });
+      const countryName = Object.keys(entitiesByCountryName)[i];
       throw new Error(
-        `Need ${TUPAIA_ADMIN_PANEL_PERMISSION_GROUP} acccess to country ${country.name}`,
+        `Need ${TUPAIA_ADMIN_PANEL_PERMISSION_GROUP} acccess to country ${countryName}`,
       );
     }
   }
