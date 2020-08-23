@@ -11,12 +11,14 @@ export const checkCanImportSurveys = async (accessPolicy, models, surveyNames, n
     const newCountries = await models.country.find({
       id: newCountryIds,
     });
-    const newCountryCodes = newCountries.map(newCountry => newCountry.code);
+    const newCountryCodes = newCountries.map(c => c.code);
 
     if (!accessPolicy.allowsAll(newCountryCodes, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP)) {
-      const entitiesString = newCountryCodes.join(',');
+      const newCountryNames = newCountries.map(c => c.name);
+      const newCountryNamesString = newCountryNames.join(',');
+
       throw new Error(
-        `Need ${TUPAIA_ADMIN_PANEL_PERMISSION_GROUP} access to entities ${entitiesString} to import the surveys`,
+        `Need ${TUPAIA_ADMIN_PANEL_PERMISSION_GROUP} access to ${newCountryNamesString} to import the surveys`,
       );
     }
   } else if (!accessPolicy.allowsSome(null, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP)) {
@@ -40,17 +42,17 @@ export const checkCanImportSurveys = async (accessPolicy, models, surveyNames, n
     });
     const surveyCountryCodes = surveyCountries.map(c => c.code);
     const surveyCountryNames = surveyCountries.map(c => c.name);
-    const countryNames = surveyCountryNames.join(',');
+    const surveyCountryNamesString = surveyCountryNames.join(',');
 
     if (!accessPolicy.allowsAll(surveyCountryCodes, surveyPermissionGroup.name)) {
       throw new Error(
-        `Need ${surveyPermissionGroup.name} access to countries ${countryNames} to import survey ${survey.name}`,
+        `Need ${surveyPermissionGroup.name} access to ${surveyCountryNamesString} to import the survey ${survey.name}`,
       );
     }
 
     if (!accessPolicy.allowsAll(surveyCountryCodes, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP)) {
       throw new Error(
-        `Need ${TUPAIA_ADMIN_PANEL_PERMISSION_GROUP} access to countries ${countryNames} to import survey ${survey.name}`,
+        `Need ${TUPAIA_ADMIN_PANEL_PERMISSION_GROUP} access to ${surveyCountryNamesString} to import the survey ${survey.name}`,
       );
     }
   }
