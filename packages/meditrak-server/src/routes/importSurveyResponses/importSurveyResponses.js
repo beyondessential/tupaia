@@ -17,15 +17,20 @@ import {
   takesIdForm,
   constructIsOneOf,
 } from '@tupaia/utils';
-import { ANSWER_TYPES } from '../database/models/Answer';
-import { constructAnswerValidator } from './utilities/constructAnswerValidator';
-import { EXPORT_DATE_FORMAT, INFO_COLUMN_HEADERS, INFO_ROW_HEADERS } from './exportSurveyResponses';
+import { ANSWER_TYPES } from '../../database/models/Answer';
+import { constructAnswerValidator } from '../utilities/constructAnswerValidator';
+import {
+  EXPORT_DATE_FORMAT,
+  INFO_COLUMN_HEADERS,
+  INFO_ROW_HEADERS,
+} from '../exportSurveyResponses';
+import { checkCanImportSurveyResponses } from './checkCanImportSurveyResponses';
 
 /**
  * Updates existing survey responses by importing the new answers from an Excel file, and either
  * updating or creating each answer as appropriate
  */
-export async function updateSurveyResponses(req, res) {
+export async function importSurveyResponses(req, res) {
   try {
     if (!req.file) {
       throw new UploadError();
@@ -35,6 +40,21 @@ export async function updateSurveyResponses(req, res) {
       const workbook = xlsx.readFile(req.file.path);
       // Go through each sheet in the workbook and process the updated survey responses
       const sheets = Object.values(workbook.Sheets);
+      const entitiesByPermissionGroup = await getEntitiesByPermissionGroup(
+        transactingModels,
+        sheets,
+      );
+
+      const importSurveyResponsePermissionsChecker = async accessPolicy => {
+        await checkCanImportSurveyResponses(
+          accessPolicy,
+          transactingModels,
+          entitiesByPermissionGroup,
+        );
+      };
+
+      await req.assertPermissions(importSurveyResponsePermissionsChecker);
+
       for (let sheetIndex = 0; sheetIndex < sheets.length; sheetIndex++) {
         const sheet = sheets[sheetIndex];
         const tabName = Object.keys(workbook.Sheets)[sheetIndex];
@@ -44,11 +64,11 @@ export async function updateSurveyResponses(req, res) {
 
         // Create new survey responses where required
         let firstSurveyResponseId;
-        const maxCell = sheet['!ref'].split(':')[1]; // The range property of the sheet looks like "A1:E56"
-        const { c: maxColumnIndex, r: maxRowIndex } = xlsx.utils.decode_cell(maxCell);
+        const { maxColumnIndex, maxRowIndex } = getMaxRowColumnIndex(sheet);
+
         for (let columnIndex = 0; columnIndex <= maxColumnIndex; columnIndex++) {
           const columnHeader = getColumnHeader(sheet, columnIndex);
-          if (columnIndex < INFO_COLUMN_HEADERS.length) {
+          if (isInfoColumn(columnIndex)) {
             // Just an info column, validate and move on
             if (columnHeader !== INFO_COLUMN_HEADERS[columnIndex]) {
               throw new ImportValidationError(`Missing ${INFO_COLUMN_HEADERS[columnIndex]} column`);
@@ -198,10 +218,55 @@ export async function updateSurveyResponses(req, res) {
     if (error.respond) {
       throw error; // Already a custom error with a responder
     } else {
-      throw new DatabaseError('updating survey responses', error);
+      throw new DatabaseError('Import survey responses', error);
     }
   }
 }
+
+const getEntitiesByPermissionGroup = async (models, sheets) => {
+  let firstSurveyResponseId;
+  let firstSurveyResponse;
+  let permissionGroup;
+  let survey;
+  const entitiesByPermissionGroupToCheck = {};
+
+  for (let sheetIndex = 0; sheetIndex < sheets.length; sheetIndex++) {
+    const sheet = sheets[sheetIndex];
+    const { maxColumnIndex } = getMaxRowColumnIndex(sheet);
+
+    for (let columnIndex = 0; columnIndex <= maxColumnIndex; columnIndex++) {
+      const columnHeader = getColumnHeader(sheet, columnIndex);
+
+      if (!isInfoColumn(columnIndex)) {
+        //Will only be run once so accessing to the db won't be expensive
+        if (!firstSurveyResponseId) {
+          firstSurveyResponseId = columnHeader;
+          firstSurveyResponse = await models.surveyResponse.findById(firstSurveyResponseId);
+          survey = await models.survey.findById(firstSurveyResponse.survey_id);
+          permissionGroup = await models.permissionGroup.findById(survey.permission_group_id);
+        }
+
+        const entityCode = getInfoForColumn(sheet, columnIndex, 'Entity Code');
+
+        if (!entitiesByPermissionGroupToCheck[permissionGroup.name]) {
+          entitiesByPermissionGroupToCheck[permissionGroup.name] = [];
+        }
+
+        entitiesByPermissionGroupToCheck[permissionGroup.name].push(entityCode);
+      }
+    }
+  }
+
+  return entitiesByPermissionGroupToCheck;
+};
+
+const isInfoColumn = columnIndex => columnIndex < INFO_COLUMN_HEADERS.length;
+
+const getMaxRowColumnIndex = sheet => {
+  const maxCell = sheet['!ref'].split(':')[1]; // The range property of the sheet looks like "A1:E56"
+  const { c: maxColumnIndex, r: maxRowIndex } = xlsx.utils.decode_cell(maxCell);
+  return { maxColumnIndex, maxRowIndex };
+};
 
 async function updateSubmissionTimeIfRequired(models, surveyResponseId, newSubmissionTimeString) {
   const surveyResponse = await models.surveyResponse.findById(surveyResponseId);

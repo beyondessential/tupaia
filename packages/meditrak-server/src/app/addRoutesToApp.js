@@ -32,7 +32,7 @@ const {
   importOptionSets,
   postChanges,
   pruneChanges,
-  updateSurveyResponses,
+  importSurveyResponses,
   createUser,
   changePassword,
   requestCountryAccess,
@@ -120,7 +120,7 @@ export function addRoutesToApp(app) {
   app.post(
     '(/v[0-9]+)/import/surveyResponses',
     upload.single('surveyResponses'),
-    updateSurveyResponses,
+    importSurveyResponses,
   );
   app.post('(/v[0-9]+)/import/disaster', upload.single('disaster'), importDisaster);
   app.post('(/v[0-9]+)/import/users', upload.single('users'), importUsers);
