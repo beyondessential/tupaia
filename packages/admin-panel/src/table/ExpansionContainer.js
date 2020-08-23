@@ -12,6 +12,7 @@ export const ExpansionContainer = styled.div`
   .ReactTable {
     margin-top: 12px;
     margin-bottom: 12px;
+    z-index: 1;
   }
 
   .rt-thead.-header {
