@@ -4,10 +4,10 @@
  */
 
 import React from 'react';
-import { Button } from '@tupaia/ui-components';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { ImportModal, ImportButton } from '../importExport';
+import Typography from '@material-ui/core/Typography';
+import { ImportModal } from '../importExport';
 import { usePortalWithCallback } from '../utilities';
 import { Header, PageBody } from '../widgets';
 
@@ -31,7 +31,10 @@ export const StrivePage = ({ getHeaderEl }) => {
     <>
       {HeaderPortal}
       <StyledBody>
-        <ImportButton {...importConfig} Button={Button} label="Import Lab Results" />
+        <Typography variant="h4" gutterBottom>
+          Import lab results
+        </Typography>
+        <Typography>Use the above Import button to import lab results.</Typography>
       </StyledBody>
       <ImportModal {...importConfig} />
     </>
