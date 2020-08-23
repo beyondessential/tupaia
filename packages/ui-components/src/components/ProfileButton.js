@@ -5,86 +5,152 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import MuiButton from '@material-ui/core/Button';
-import MuiMenu from '@material-ui/core/Menu';
 import PropTypes from 'prop-types';
-import ExpandMore from '@material-ui/icons/ExpandMore';
-import Avatar from '@material-ui/core/Avatar';
-import MuiListSubheader from '@material-ui/core/ListSubheader';
+import { Link as RouterLink } from 'react-router-dom';
+import MuiButton from '@material-ui/core/Button';
+import MuiAvatar from '@material-ui/core/Avatar';
+import Popper from '@material-ui/core/Popper';
 import MuiList from '@material-ui/core/List';
+import MuiListItem from '@material-ui/core/ListItem';
+import { FlexStart } from './Layout';
+
+const StyledListItem = styled(MuiListItem)`
+  font-size: 0.875rem;
+  line-height: 1rem;
+  padding: 0.5rem 1.25rem;
+  color: ${props => props.theme.palette.text.secondary};
+
+  &:hover {
+    color: ${props => props.theme.palette.text.primary};
+    background: none;
+  }
+`;
+
+export const ProfileButtonItem = ({ button, ...props }) => (
+  <StyledListItem button={button} component={button ? null : RouterLink} {...props} />
+);
+
+ProfileButtonItem.propTypes = {
+  button: PropTypes.bool,
+};
+
+ProfileButtonItem.defaultProps = {
+  button: false,
+};
+
+const Paper = styled.div`
+  background: white;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
+  border-radius: 5px;
+  margin-top: 0.3rem;
+  min-width: 13rem;
+`;
+
+const Avatar = styled(MuiAvatar)`
+  color: white;
+  background: ${props => props.theme.palette.success.main};
+  font-weight: 600;
+`;
+
+const Header = styled(FlexStart)`
+  align-items: flex-end;
+  padding: 1.125rem 0 0.75rem;
+  margin: 0 1.25rem 0.2rem 1.25rem;
+  border-bottom: 1px solid ${props => props.theme.palette.grey['400']};
+`;
+
+const Details = styled.div`
+  padding-left: 0.5rem;
+  padding-right: 0.3rem;
+`;
+
+const NameText = styled.div`
+  font-size: 1rem;
+  line-height: 1.2rem;
+  margin-bottom: 0.3rem;
+  color: ${props => props.theme.palette.text.secondary};
+`;
+
+const EmailText = styled.div`
+  font-size: 0.8rem;
+  line-height: 0.9rem;
+  letter-spacing: -0.01em;
+  color: ${props => props.theme.palette.text.tertiary};
+`;
 
 const StyledButton = styled(MuiButton)`
-  .MuiAvatar-root {
-    height: 30px;
-    width: 30px;
+  color: white;
+  background: ${props => props.theme.palette.secondary.main};
+  border-radius: 3.25rem;
+  padding: 0.25rem 0.75rem 0.3rem 0.8rem;
+  font-weight: 400;
+  letter-spacing: 0;
+
+  &:hover {
+    background: ${props => props.theme.palette.secondary.main};
   }
 
   .MuiAvatar-root {
-    color: ${props => props.theme.palette.text.primary};
+    height: 1.3rem;
+    width: 1.3rem;
   }
 
-  .MuiSvgIcon-root {
-    transition: transform 0.3s ease;
-  }
-`;
-
-const Menu = styled(MuiMenu)`
-  .MuiMenu-list {
-    padding: 0;
+  .MuiAvatar-root {
+    color: white;
+    background: ${props => props.theme.palette.success.main};
+    font-size: 0.8rem;
+    font-weight: 600;
   }
 `;
 
-/*
- * Profile button
- */
-export const ProfileButton = ({ children, listItems, ...props }) => {
+export const ProfileButton = ({ user, MenuOptions, className }) => {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleClick = event => {
-    setAnchorEl(event.currentTarget);
+    setAnchorEl(anchorEl ? null : event.currentTarget);
   };
 
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  const open = Boolean(anchorEl);
+  const userInitial = user.name.substring(0, 1);
+  const userFirstName = user.firstName ? user.firstName : user.name.replace(/ .*/, '');
 
   return (
-    <React.Fragment>
+    <>
       <StyledButton
-        endIcon={<ExpandMore style={{ transform: anchorEl ? 'rotate(180deg)' : 'rotate(0)' }} />}
-        startIcon={<Avatar />}
         onClick={handleClick}
-        {...props}
+        className={className}
+        endIcon={<Avatar>{userInitial}</Avatar>}
       >
-        {children}
+        {userFirstName}
       </StyledButton>
-      <Menu
-        keepMounted
-        disablePortal
-        getContentAnchorEl={null}
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleClose}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
-        }}
-      >
-        <MuiList subheader={<MuiListSubheader>Profile</MuiListSubheader>}>{listItems}</MuiList>
-      </Menu>
-    </React.Fragment>
+      <Popper keepMounted disablePortal anchorEl={anchorEl} open={open} placement="bottom-end">
+        <Paper>
+          <Header>
+            <Avatar>{userInitial}</Avatar>
+            <Details>
+              <NameText>{user.name}</NameText>
+              <EmailText>{user.email}</EmailText>
+            </Details>
+          </Header>
+          <MuiList>
+            <MenuOptions />
+          </MuiList>
+        </Paper>
+      </Popper>
+    </>
   );
 };
 
 ProfileButton.propTypes = {
-  children: PropTypes.any.isRequired,
-  listItems: PropTypes.any.isRequired,
+  user: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    email: PropTypes.string.isRequired,
+    firstName: PropTypes.string,
+  }).isRequired,
+  MenuOptions: PropTypes.any.isRequired,
+  className: PropTypes.string,
 };
 
-export const LightProfileButton = styled(ProfileButton)`
-  color: ${props => props.theme.palette.common.white};
-
-  .MuiAvatar-root {
-    color: white;
-  }
-`;
+ProfileButton.defaultProps = {
+  className: null,
+};
