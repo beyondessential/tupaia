@@ -66,8 +66,11 @@ const AutocompleteComponent = React.memo(
         value={value}
         label={label}
         options={results}
+        getOptionSelected={(option, selected) =>
+          option[optionLabelKey] === selected[optionLabelKey]
+        }
+        getOptionLabel={option => (option ? option[optionLabelKey] : '')}
         loading={isLoading}
-        labelKey={optionLabelKey}
         onChange={onChangeSelection}
         onInputChange={throttle((event, newValue) => onChangeSearchTerm(newValue), 50)}
         inputValue={searchTerm}
@@ -82,7 +85,7 @@ const AutocompleteComponent = React.memo(
           handleHomeEndKeys: canCreateNewOptions,
           renderTags: (values, getTagProps) =>
             values.map((option, index) => (
-              <Chip color="primary" label={option[optionLabelKey]} {...getTagProps({ index })} />
+              <Chip color="primary" label={option} {...getTagProps({ index })} />
             )),
         }}
       />
@@ -137,7 +140,7 @@ const mapDispatchToProps = (
     allowMultipleValues,
   },
 ) => ({
-  onChangeSelection: (event, newSelection, reason) => {
+  onChangeSelection: (event, newSelection) => {
     if (newSelection === null) {
       onChange(null);
     } else if (allowMultipleValues) {
@@ -147,14 +150,7 @@ const mapDispatchToProps = (
       onChange(newSelection[optionValueKey]);
     }
 
-    // @see https://material-ui.com/api/autocomplete/ for a description of reasons
-    if (reason === 'create-option') {
-      const newValues = newSelection;
-      newValues[newValues.length - 1] = { [optionLabelKey]: event.target.value };
-      dispatch(changeSelection(reduxId, newValues));
-    } else {
-      dispatch(changeSelection(reduxId, newSelection));
-    }
+    dispatch(changeSelection(reduxId, newSelection));
   },
   onChangeSearchTerm: newSearchTerm =>
     dispatch(

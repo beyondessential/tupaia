@@ -33,34 +33,39 @@ const options = [
   { id: 12, name: 'Sentinel Site Twelve' },
 ];
 
-export const simple = () => (
+export const Simple = () => (
   <Container>
     <Autocomplete
       id="simple-autocomplete"
       label="Simple Auto Complete"
-      options={options}
+      options={options.map(option => option.name)}
       placeholder="Search..."
     />
   </Container>
 );
 
-export const disabled = () => (
+export const Disabled = () => (
   <Container>
-    <Autocomplete label="Simple Auto Complete" options={options} placeholder="Search..." disabled />
+    <Autocomplete
+      label="Simple Auto Complete"
+      options={options.map(option => option.name)}
+      placeholder="Search..."
+      disabled
+    />
   </Container>
 );
 
-export const noLabel = () => (
+export const NoLabel = () => (
   <Container>
-    <Autocomplete options={options} placeholder="Search..." />
+    <Autocomplete options={options.map(option => option.name)} placeholder="Search..." />
   </Container>
 );
 
-export const helperText = () => (
+export const HelperText = () => (
   <Container>
     <Autocomplete
       label="Helper Text Example"
-      options={options}
+      options={options.map(option => option.name)}
       placeholder="Search..."
       helperText="This field is required"
       required
@@ -68,11 +73,11 @@ export const helperText = () => (
   </Container>
 );
 
-export const error = () => (
+export const Error = () => (
   <Container>
     <Autocomplete
       label="Simple Auto Complete"
-      options={options}
+      options={options.map(option => option.name)}
       placeholder="Search..."
       helperText="Please try again!"
       error
@@ -80,7 +85,7 @@ export const error = () => (
   </Container>
 );
 
-export const controlled = () => {
+export const Controlled = () => {
   const [value, setValue] = useState(null);
 
   const handleChange = useCallback(
@@ -94,21 +99,54 @@ export const controlled = () => {
     <Container>
       <Autocomplete
         label="Controlled Auto Complete"
-        options={options}
+        options={options.map(option => option.name)}
         onChange={handleChange}
         value={value}
         placeholder="Search..."
       />
-      <Typography>Selected Value: {value ? value.name : 'none'}</Typography>
+      <Typography>Selected Value: {value}</Typography>
     </Container>
   );
 };
 
-export const freeText = () => (
+/**
+ * Use custom keys to have different labels to saved values
+ * This could be useful if you need to save the selected option as an object
+ */
+export const CustomKeys = () => {
+  const [value, setValue] = useState(null);
+
+  const handleChange = useCallback(
+    (event, newValue) => {
+      setValue(newValue);
+    },
+    [setValue],
+  );
+
+  const valueKey = 'id';
+  const labelKey = 'name';
+
+  return (
+    <Container>
+      <Autocomplete
+        label="Controlled Auto Complete"
+        options={options}
+        getOptionSelected={(option, selected) => option[valueKey] === selected[valueKey]}
+        getOptionLabel={option => (option ? option[labelKey] : '')}
+        onChange={handleChange}
+        value={value}
+        placeholder="Search..."
+      />
+      <Typography>Selected Value: {value ? JSON.stringify(value) : 'none'}</Typography>
+    </Container>
+  );
+};
+
+export const FreeText = () => (
   <Container>
     <Autocomplete
       label="Mui Props Example"
-      options={options}
+      options={options.map(option => option.name)}
       placeholder="Search..."
       helperText="Type free text or select an option"
       muiProps={{
@@ -122,24 +160,22 @@ export const Tags = () => {
   const [value, setValue] = useState([]);
   const [inputValue, setInputValue] = useState('');
 
-  const handleChange = (event, newValue, reason) => {
-    if (reason === 'create-option') {
-      newValue[newValue.length - 1] = { name: event.target.value };
+  const handleChange = useCallback(
+    (event, newValue) => {
       setValue(newValue);
-    } else {
-      setValue(newValue);
-    }
-  };
+    },
+    [setValue],
+  );
 
   return (
     <Container>
       <Autocomplete
         label="Mui Props Example"
-        options={options}
+        options={options.map(option => option.name)}
+        defaultValue={['Sentinel Site Twelve']}
         onChange={handleChange}
         inputValue={inputValue}
         onInputChange={(event, newInputValue) => {
-          console.log('new', newInputValue);
           setInputValue(newInputValue);
         }}
         value={value}
@@ -147,14 +183,13 @@ export const Tags = () => {
         helperText="Type free text or select an option"
         muiProps={{
           freeSolo: true,
-          disableClearable: true,
+          multiple: true,
           selectOnFocus: true,
           clearOnBlur: true,
           handleHomeEndKeys: true,
-          multiple: true,
-          renderTags: (value, getTagProps) =>
-            value.map((option, index) => (
-              <Chip color="primary" label={option.name} {...getTagProps({ index })} />
+          renderTags: (selected, getTagProps) =>
+            selected.map((option, index) => (
+              <Chip color="primary" label={option} {...getTagProps({ index })} />
             )),
         }}
       />

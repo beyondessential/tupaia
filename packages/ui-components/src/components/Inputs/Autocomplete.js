@@ -39,14 +39,12 @@ const StyledAutocomplete = styled(MuiAutocomplete)`
   }
 `;
 
-/**
- * Autocomplete
- */
 export const Autocomplete = ({
   options,
   id,
   label,
-  labelKey,
+  getOptionSelected,
+  getOptionLabel,
   value,
   onChange,
   loading,
@@ -69,8 +67,8 @@ export const Autocomplete = ({
     disableClearable={loading}
     onInputChange={onInputChange}
     inputValue={inputValue}
-    getOptionSelected={(option, selected) => option[labelKey] === selected[labelKey]}
-    getOptionLabel={option => (option ? option[labelKey] : '')}
+    getOptionSelected={getOptionSelected}
+    getOptionLabel={getOptionLabel}
     popupIcon={<KeyboardArrowDown />}
     PaperComponent={StyledPaper}
     renderInput={params => (
@@ -84,10 +82,10 @@ export const Autocomplete = ({
         InputProps={{
           ...params.InputProps,
           endAdornment: (
-            <React.Fragment>
+            <>
               {loading ? <CircularProgress color="inherit" size={20} /> : null}
               {params.InputProps.endAdornment}
-            </React.Fragment>
+            </>
           ),
         }}
       />
@@ -108,7 +106,8 @@ Autocomplete.propTypes = {
   value: PropTypes.any,
   inputValue: PropTypes.any,
   onChange: PropTypes.func,
-  labelKey: PropTypes.string,
+  getOptionSelected: PropTypes.func,
+  getOptionLabel: PropTypes.func,
   placeholder: PropTypes.string,
   onInputChange: PropTypes.func,
   muiProps: PropTypes.object,
@@ -116,13 +115,14 @@ Autocomplete.propTypes = {
 
 Autocomplete.defaultProps = {
   label: '',
-  labelKey: 'name',
   placeholder: '',
   required: false,
   loading: false,
   error: false,
   id: undefined,
   disabled: false,
+  getOptionSelected: undefined,
+  getOptionLabel: undefined,
   helperText: undefined,
   value: undefined,
   inputValue: undefined,
