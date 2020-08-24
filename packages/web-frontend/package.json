@@ -51,7 +51,7 @@
     "@testing-library/react": "^10.0.6",
     "@testing-library/user-event": "^12.0.11",
     "autoprefixer": "7.1.0",
-    "babel-jest": "^26..1.0",
+    "babel-jest": "^26.1.0",
     "babel-preset-react-app": "^9.1.2",
     "case-sensitive-paths-webpack-plugin": "1.1.4",
     "chalk": "1.1.3",

@@ -78,6 +78,7 @@
     }
   ],
   "settings": {
+    "cSpell.language": "en-GB",
     "cSpell.words": [
       "DHIS",
       "MediTrak",
