@@ -3,7 +3,7 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Dialog, DialogFooter, DialogHeader, OutlinedButton } from '@tupaia/ui-components';
 import { connect } from 'react-redux';
@@ -32,6 +32,11 @@ export const ImportExportModalComponent = ({
       [key]: value,
     }));
   };
+
+  // clear form state when modal is opened or closed
+  useEffect(() => {
+    setValues({});
+  }, [isOpen]);
 
   return (
     <Dialog onClose={onDismiss} open={isOpen} disableBackdropClick>
