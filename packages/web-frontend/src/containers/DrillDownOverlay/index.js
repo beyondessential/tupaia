@@ -15,6 +15,7 @@ import { TRANS_BLACK, DIALOG_Z_INDEX, WHITE } from '../../styles';
 import { attemptDrillDown, closeDrillDown, goToDrillDownLevel } from '../../actions';
 import { VIEW_CONTENT_SHAPE } from '../../components/View';
 import { EnlargedDialogContent } from '../EnlargedDialog';
+import { selectCurrentExpandedReportCode } from '../../selectors';
 
 class DrillDownOverlayComponent extends PureComponent {
   renderContent() {
@@ -107,24 +108,29 @@ DrillDownOverlayComponent.defaultProps = {
   viewContent: null,
 };
 
-const mapStateToProps = ({ drillDown, enlargedDialog }) => ({
-  viewContent: drillDown.levelContents[drillDown.currentLevel],
-  currentLevel: drillDown.currentLevel,
-  isLoading: drillDown.isLoading,
-  enlargedDialog,
-});
+const mapStateToProps = state => {
+  const { drillDown, enlargedDialog } = state;
+  const { currentLevel, isLoading, levelContents } = drillDown;
+
+  return {
+    viewContent: levelContents[currentLevel],
+    currentLevel,
+    isLoading,
+    enlargedDialog, // TODO: may not be needed
+    infoViewKey: selectCurrentExpandedReportCode(state),
+  };
+};
 
 const mergeProps = (stateProps, { dispatch }, ownProps) => {
   return {
     ...stateProps,
     ...ownProps,
     onDrillDown: chartItem => {
-      const { viewContent, currentLevel, enlargedDialog } = stateProps;
+      const { viewContent, currentLevel, infoViewKey } = stateProps;
       const { drillDown } = viewContent;
       if (!drillDown) {
         return;
       }
-      const { infoViewKey } = enlargedDialog;
       const { parameterLink, keyLink } = drillDown;
       dispatch(
         attemptDrillDown(

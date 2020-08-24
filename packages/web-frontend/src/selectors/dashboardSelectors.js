@@ -7,7 +7,9 @@ const selectCurrentDashboardGroupCodeFromLocation = createSelector([selectLocati
   getLocationComponentValue(location, URL_COMPONENTS.DASHBOARD),
 );
 
-export const selectCurrentExpandedReportCode = state => state.enlargedDialog.viewId;
+export const selectCurrentExpandedReportCode = createSelector([selectLocation], location =>
+  getLocationComponentValue(location, URL_COMPONENTS.REPORT),
+);
 
 export const selectCurrentDashboardGroupCode = createSelector(
   [state => state.global.dashboardConfig, selectCurrentDashboardGroupCodeFromLocation],

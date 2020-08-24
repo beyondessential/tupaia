@@ -23,6 +23,7 @@ import {
   setMeasure,
   setOverlayComponent,
   goHome,
+  openEnlargedDialog,
 } from '../actions';
 import { setProject } from '../projects/actions';
 import { DEFAULT_PROJECT_CODE } from '../defaults';
@@ -39,6 +40,7 @@ export const reactToInitialState = store => {
   const dispatch = action => rawDispatch({ ...action, meta: { preventHistoryUpdate: true } });
 
   const { userPage, projectSelector, ...otherComponents } = getInitialLocationComponents();
+  console.log({ userPage, projectSelector, ...otherComponents });
   if (userPage) {
     // TODO: Implemented in userPage PR
     dispatch(goHome());
@@ -57,6 +59,10 @@ export const reactToInitialState = store => {
 
   if (otherComponents[URL_COMPONENTS.MEASURE])
     dispatch(setMeasure(otherComponents[URL_COMPONENTS.MEASURE]));
+
+  if (otherComponents[URL_COMPONENTS.REPORT])
+  // Need to wait for viewContent here...  
+  //dispatch(openEnlargedDialog(otherComponents[URL_COMPONENTS.REPORT]));
 };
 
 export const historyMiddleware = store => next => action => {

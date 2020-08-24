@@ -18,6 +18,7 @@ import { EnlargedDialogContent } from './EnlargedDialogContent';
 import { getIsMatrix, getIsDataDownload, VIEW_CONTENT_SHAPE } from '../../components/View';
 import { isMobile } from '../../utils';
 import { DIALOG_Z_INDEX } from '../../styles';
+import { selectCurrentExpandedReportCode } from '../../selectors';
 class EnlargedDialogComponent extends PureComponent {
   render() {
     const {
@@ -113,9 +114,10 @@ const styles = {
   },
 };
 
-const mapStateToProps = ({ drillDown, enlargedDialog }) => ({
-  ...enlargedDialog,
-  isDrillDownVisible: drillDown.isVisible,
+const mapStateToProps = state => ({
+  ...state.enlargedDialog,
+  isDrillDownVisible: state.drillDown.isVisible,
+  infoViewKey: selectCurrentExpandedReportCode(state),
 });
 
 const mapDispatchToProps = dispatch => ({

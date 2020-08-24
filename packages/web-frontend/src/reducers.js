@@ -708,7 +708,6 @@ function enlargedDialog(
     isVisible: false,
     isLoading: false,
     viewContent: { type: '', data: [] },
-    infoViewKey: '',
     organisationUnitName: '',
     errorMessage: '',
     startDate: null,
@@ -723,7 +722,6 @@ function enlargedDialog(
         isVisible: true,
         isLoading: false,
         viewContent: action.viewContent,
-        infoViewKey: action.infoViewKey,
         organisationUnitName: action.organisationUnitName,
         errorMessage: '',
         startDate: null,
@@ -735,7 +733,6 @@ function enlargedDialog(
         ...state,
         isVisible: false,
         viewContent: {},
-        infoViewKey: '',
         organisationUnitName: '',
       };
 
