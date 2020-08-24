@@ -1,5 +1,6 @@
 {
   "name": "tupaia",
+  "private": true,
   "description": "Mono-repo for the Tupaia project, mapping health data across the Pacific",
   "repository": {
     "type": "git",
