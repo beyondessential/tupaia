@@ -441,7 +441,6 @@ export function fetchRequestCountryAccessError(errorMessage) {
  * @param {object} organisationUnit
  */
 export function requestOrgUnit(organisationUnitCode) {
-  // TODO: delete this action after approval
   return {
     type: REQUEST_ORG_UNIT,
     organisationUnitCode,
