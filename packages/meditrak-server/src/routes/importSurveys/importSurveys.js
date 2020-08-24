@@ -35,7 +35,7 @@ import {
 } from './utilities';
 import { assertCanAddDataElementInGroup } from '../../database';
 import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
-import { checkCanImportSurveys } from './checkCanImportSurveys';
+import { assertCanImportSurveys } from './assertCanImportSurveys';
 
 const QUESTION_TYPE_LIST = Object.values(ANSWER_TYPES);
 const DEFAULT_SERVICE_TYPE = 'tupaia';
@@ -119,7 +119,7 @@ export async function importSurveys(req, res) {
       });
 
       const importSurveysPermissionsChecker = async accessPolicy =>
-        checkCanImportSurveys(accessPolicy, transactingModels, surveyNames, req.query.countryIds);
+        assertCanImportSurveys(accessPolicy, transactingModels, surveyNames, req.query.countryIds);
 
       await req.assertPermissions(
         assertAnyPermissions([assertBESAdminAccess, importSurveysPermissionsChecker]),
