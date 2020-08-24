@@ -41,8 +41,7 @@ if you prefer to prebuild internal dependencies, add `--skip-internal` to the ab
 
 ### Secrets
 
-Most packages will require a .env file, which can usually be found in lastpass. Use the LOCAL entry
-if one exists for the package, otherwise use the DEV entry.
+Most packages will require a .env file. `.env.example` files indicate the required variables per package.
 
 ### Dependencies
 
