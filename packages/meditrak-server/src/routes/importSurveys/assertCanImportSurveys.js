@@ -58,13 +58,10 @@ export const assertCanImportSurveys = async (accessPolicy, models, surveyNames, 
     //they need to have TUPAIA_ADMIN_PANEL_PERMISSION_GROUP to all countries.
     //NOTE: for existing surveys, we don't have to worry about this because when no countries are specified when importing existing surveys
     //the countries of the existing surveys will be kept the same.
-    const countries = await models.country.find();
-    const countryCodes = countries.map(c => c.code);
+    const allCountries = await models.country.find();
+    const allCountryCodes = allCountries.map(c => c.code);
 
-    if (!accessPolicy.allowsAll(countryCodes, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP)) {
-      //if no countryIds is specified (which means the survey will be available to the
-      //specified permission group in all countries),
-      //need to have TUPAIA_ADMIN_PANEL_PERMISSION_GROUP to all countries
+    if (!accessPolicy.allowsAll(allCountryCodes, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP)) {
       throw new Error(
         `Need ${TUPAIA_ADMIN_PANEL_PERMISSION_GROUP} access to all countries if no countries are specified to import any new surveys`,
       );
