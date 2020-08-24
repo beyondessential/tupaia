@@ -1,6 +1,17 @@
 {
-  "private": true,
   "name": "tupaia",
+  "private": true,
+  "description": "Mono-repo for the Tupaia project, mapping health data across the Pacific",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beyondessential/tupaia.git"
+  },
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "license": "SEE LICENSE IN LICENSE",
+  "bugs": {
+    "url": "https://github.com/beyondessential/tupaia-backlog/issues"
+  },
+  "homepage": "https://github.com/beyondessential/tupaia",
   "workspaces": {
     "packages": [
       "packages/*"

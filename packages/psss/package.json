@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "description": "Pacific Syndromic Surveillance System",
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
-  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/beyondessential/tupaia"
