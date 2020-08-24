@@ -110,7 +110,11 @@ class TableOfEventsBuilder extends DataBuilder {
     const rowValues = {};
     const processColumn = async ([key, { additionalData = [], shouldNumberLines }]) => {
       const cellValues = await this.buildCellValues(event, key, additionalData);
-      rowValues[key] = this.valuesToString(cellValues, shouldNumberLines);
+
+      //Avoid sending no data
+      if (Object.keys(cellValues).length) {
+        rowValues[key] = this.valuesToString(cellValues, shouldNumberLines);
+      }
     };
     await Promise.all(Object.entries(this.config.columns).map(processColumn));
 
@@ -129,7 +133,6 @@ class TableOfEventsBuilder extends DataBuilder {
     const formattedValues = this.getFormattedValues(values);
     const shouldAddNumbers = shouldNumberLines && formattedValues.length > 1;
     const finalValues = shouldAddNumbers ? this.addLineNumbers(formattedValues) : formattedValues;
-
     return finalValues.join('\n');
   }
 

@@ -148,7 +148,7 @@ const getSpectrumScaleValues = (measureData, measureOption) => {
 };
 
 const clampScaleValues = (dataBounds, measureOption) => {
-  const { valueType, scaleBounds } = measureOption;
+  const { valueType, scaleBounds = {} } = measureOption;
 
   const defaultScale =
     valueType === VALUE_TYPES.PERCENTAGE
