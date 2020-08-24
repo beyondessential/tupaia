@@ -33,7 +33,7 @@ import {
   ATTEMPT_LOGIN,
   ATTEMPT_SIGNUP,
   ATTEMPT_LOGOUT,
-  SET_DASHBOARD_KEY,
+  SET_DASHBOARD_GROUP,
   ATTEMPT_RESET_PASSWORD,
   ATTEMPT_REQUEST_COUNTRY_ACCESS,
   CHANGE_SIDE_BAR_CONTRACTED_WIDTH,
@@ -486,7 +486,6 @@ function dashboard(
       return { ...state, isGroupSelectExpanded: !state.isGroupSelectExpanded };
     case SET_MOBILE_DASHBOARD_EXPAND:
       return { ...state, isMobileDashboardExpanded: action.shouldExpand };
-    case SET_DASHBOARD_KEY: // QUESTION: Should I leave a comment here saying that it's in the URL or just delete it?
     default:
       return state;
   }

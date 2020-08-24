@@ -29,7 +29,7 @@ export const FETCH_RESEND_EMAIL_ERROR = 'FETCH_RESEND_EMAIL_ERROR';
 export const DIALOG_PAGE_VERIFICATION_PAGE = 'DIALOG_PAGE_VERIFICATION_PAGE';
 export const ATTEMPT_REQUEST_COUNTRY_ACCESS = 'ATTEMPT_REQUEST_COUNTRY_ACCESS';
 export const ATTEMPT_SIGNUP = 'ATTEMPT_SIGNUP';
-export const SET_DASHBOARD_KEY = 'SET_DASHBOARD_KEY';
+export const SET_DASHBOARD_GROUP = 'SET_DASHBOARD_GROUP';
 export const ATTEMPT_RESET_TOKEN_LOGIN = 'ATTEMPT_RESET_TOKEN_LOGIN';
 export const CHANGE_SIDE_BAR_CONTRACTED_WIDTH = 'CHANGE_SIDE_BAR_CONTRACTED_WIDTH';
 export const CHANGE_SIDE_BAR_EXPANDED_WIDTH = 'CHANGE_SIDE_BAR_EXPANDED_WIDTH';
@@ -797,11 +797,11 @@ export function showTupaiaInfo() {
 /**
  * Changes the currently selected Tab in DataPanel
  *
- * @param  {string} name  The dashboard group name
+ * @param  {string} name  The dashboard group name (also known as it's key)
  */
-export function setDashboardKey(name) {
+export function setDashboardGroup(name) {
   return {
-    type: SET_DASHBOARD_KEY,
+    type: SET_DASHBOARD_GROUP,
     name,
   };
 }

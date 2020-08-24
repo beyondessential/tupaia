@@ -20,7 +20,7 @@ import Dialog from '@material-ui/core/Dialog';
 import StaticMap from '../../components/StaticMap';
 
 import { DASHBOARD_STYLES, DASHBOARD_META_MARGIN } from '../../styles';
-import { setDashboardKey, closeDropdownOverlays } from '../../actions';
+import { setDashboardGroup, closeDropdownOverlays } from '../../actions';
 import DashboardGroup from '../DashboardGroup';
 import { getFacilityThumbnailUrl } from '../../utils';
 import { DropDownMenu } from '../../components/DropDownMenu';
@@ -284,7 +284,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onChangeDashboardGroup: name => dispatch(setDashboardKey(name)),
+    onChangeDashboardGroup: name => dispatch(setDashboardGroup(name)),
     onDashboardClicked: () => dispatch(closeDropdownOverlays()),
   };
 };

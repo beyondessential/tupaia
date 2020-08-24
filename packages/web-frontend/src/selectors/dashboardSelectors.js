@@ -17,5 +17,5 @@ export const selectCurrentDashboardKey = createSelector(
 
 export const selectIsDashboardKeyDefined = createSelector(
   [selectCurrentDashboardKeyFromLocation],
-  rawCurrentDashboardKey => !rawCurrentDashboardKey,
+  rawCurrentDashboardKey => !!rawCurrentDashboardKey,
 );
