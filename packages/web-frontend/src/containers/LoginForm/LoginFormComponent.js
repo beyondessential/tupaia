@@ -67,7 +67,7 @@ export const LoginFormComponent = React.memo(
           />
           <FlexRow>
             <ForgotPassword handleClick={onClickResetPassword} />
-            <SubmitButton text="Sign in" handleClick={submitForm} />
+            <SubmitButton handleClick={submitForm}>Sign in</SubmitButton>
           </FlexRow>
         </>
       ),

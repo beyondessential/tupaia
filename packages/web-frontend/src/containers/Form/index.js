@@ -123,16 +123,16 @@ export class Form extends React.Component {
   };
 
   render() {
-    const { isLoading, formError, formSuccess, Grid } = this.props;
+    const { isLoading, formError, formSuccess, GridComponent } = this.props;
 
     return (
       <form onSubmit={this.submitForm} noValidate>
         {isLoading && <LoadingIndicator />}
-        <Grid>
+        <GridComponent>
           {formSuccess && <FormSuccess message={formSuccess} />}
           {this.renderChildren()}
           {formError && <FormError error={formError} />}
-        </Grid>
+        </GridComponent>
       </form>
     );
   }
@@ -144,12 +144,12 @@ Form.propTypes = {
   isLoading: PropTypes.bool,
   render: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
-  Grid: PropTypes.any,
+  GridComponent: PropTypes.elementType,
 };
 
 Form.defaultProps = {
   isLoading: false,
   formError: null,
   formSuccess: null,
-  Grid: FormGrid,
+  GridComponent: FormGrid,
 };

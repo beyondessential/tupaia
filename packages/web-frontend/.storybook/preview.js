@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { addDecorator, addParameters } from '@storybook/react';
+import { addDecorator } from '@storybook/react';
 import { AppStyleProviders } from '../src/AppStyleProviders';
 import { DARK_BLUE, WHITE } from '../src/styles';
 

@@ -3,14 +3,14 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { PrimaryButton } from '../../../components/Buttons';
 
-const ButtonComponent = ({ text, handleClick, className }) => (
+const ButtonComponent = ({ children, handleClick, className }) => (
   <PrimaryButton onClick={handleClick} className={className} type="submit">
-    {text}
+    {children}
   </PrimaryButton>
 );
 
 ButtonComponent.propTypes = {
-  text: PropTypes.string.isRequired,
+  children: PropTypes.node.isRequired,
   handleClick: PropTypes.func,
   className: PropTypes.string,
 };

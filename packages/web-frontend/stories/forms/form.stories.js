@@ -46,8 +46,8 @@ SimpleForm.args = {
     <>
       <TextField name="firstName" label="First Name" />
       <TextField name="lastName" label="Last Name" />
-      <SubmitButton text="Submit" gutterTop />
+      <SubmitButton gutterTop>Submit</SubmitButton>
     </>
   ),
-  Grid: FormGrid,
+  GridComponent: FormGrid,
 };

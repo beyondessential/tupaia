@@ -80,7 +80,7 @@ export const SignupFormComponent = ({
     isLoading={isRequestingSignup}
     formError={signupFailedMessage}
     onSubmit={fieldValues => onAttemptUserSignup(fieldValues)}
-    Grid={FormGrid}
+    GridComponent={FormGrid}
     render={submitForm => (
       <>
         <TextField label="First Name" name="firstName" required />
@@ -112,7 +112,7 @@ export const SignupFormComponent = ({
           </a>
           &nbsp;to learn more
         </LearnMore>
-        <SubmitButton text="Create account" handleClick={submitForm} />
+        <SubmitButton handleClick={submitForm}>Create account</SubmitButton>
       </>
     )}
   />

@@ -83,7 +83,7 @@ export const MobileLoginFormComponent = ({
           Sign up to access more regions and assist in data collection using our free app for
           Android and iOS
         </p>
-        <SubmitButton text="Sign up" handleClick={openSignupOverlay} />
+        <SubmitButton handleClick={openSignupOverlay}>Sign up</SubmitButton>
       </Signup>
     </Container>
   );

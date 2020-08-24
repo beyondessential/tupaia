@@ -74,7 +74,9 @@ export const RequestProjectAccessComponent = ({
               rows="4"
               fullWidth
             />
-            <SubmitButton handleClick={submitForm} text="Request access" gutterTop />
+            <SubmitButton handleClick={submitForm} gutterTop>
+              Request access
+            </SubmitButton>
           </>
         )}
       />

@@ -43,7 +43,9 @@ export const EmailVerificationComponent = ({
                 validators={[emailAddress]}
                 required
               />
-              <SubmitButton text="Re-send Email" handleClick={submitForm} gutterTop />
+              <SubmitButton handleClick={submitForm} gutterTop>
+                Re-send Email
+              </SubmitButton>
             </>
           )}
         />
