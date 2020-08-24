@@ -111,10 +111,10 @@
       "preaggregators",
       "promisify",
       "singularise",
-      "Tongatapu",
-      "Tupaia",
-      "updaters",
+      "spec",
+      "specs",
       "testid",
+      "updaters",
       "upsert"
     ],
     "eslint.validate": ["typescript", "typescriptreact"],

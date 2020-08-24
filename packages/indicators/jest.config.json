@@ -1,3 +1,6 @@
 {
-  "collectCoverageFrom": ["src/**/*.ts"]
+  "clearMocks": true,
+  "collectCoverageFrom": ["src/**/*.ts"],
+  "coveragePathIgnorePatterns": ["node_modules", "__tests__", ".d.ts"],
+  "testMatch": ["**/__tests__/**/*.test.ts"]
 }
