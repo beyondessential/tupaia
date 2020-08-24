@@ -25,6 +25,7 @@ import {
   goHome,
 } from '../actions';
 import { setProject } from '../projects/actions';
+import { DEFAULT_PROJECT_CODE } from '../defaults';
 import {
   setLocationComponent,
   clearLocation,
@@ -44,7 +45,8 @@ export const reactToInitialState = store => {
   }
 
   if (projectSelector) {
-    // No need to do anything, this is the default
+    // Set project to explore, this is the default
+    rawDispatch(setProject(DEFAULT_PROJECT_CODE));
     return;
   }
 
@@ -73,6 +75,7 @@ export const historyMiddleware = store => next => action => {
       break;
     // TODO: Investigate GO_HOME once all url functionality is implemented.
     case GO_HOME:
+      // Completely clear location, explore project will be set in a saga.
       dispatchClearLocation(store);
       break;
 

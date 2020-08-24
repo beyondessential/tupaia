@@ -106,7 +106,8 @@ import {
 } from './utils';
 import { createUrlString, URL_COMPONENTS } from './historyNavigation';
 import { getDefaultDates } from './utils/periodGranularities';
-import { DEFAULT_MEASURE_ID } from './defaults';
+import { DEFAULT_MEASURE_ID, DEFAULT_PROJECT_CODE } from './defaults';
+import { setProject } from './projects/actions';
 
 /**
  * attemptChangePassword
@@ -972,6 +973,7 @@ function* watchAttemptAttemptDrillDown() {
 // (specific PR for it)
 function* resetToProjectSplash() {
   yield put(clearMeasureHierarchy());
+  yield put(setProject(DEFAULT_PROJECT_CODE));
 }
 
 function* watchUserChangesAndUpdatePermissions() {
