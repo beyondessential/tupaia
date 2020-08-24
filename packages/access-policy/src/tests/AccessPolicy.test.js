@@ -42,6 +42,54 @@ describe('AccessPolicy', () => {
     });
   });
 
+  describe('allowsAll', () => {
+    it('should allow access to an entity that has at least one permission group, when no permission group is specified', () => {
+      expect(accessPolicy.allowsAll(['DL'])).to.equal(true);
+    });
+
+    it('should not allow access to an entity that has no permission groups', () => {
+      expect(accessPolicy.allowsAll(['VU'])).to.equal(false);
+    });
+
+    it('should allow access to a permission group when a matching entity is specified', () => {
+      expect(accessPolicy.allowsAll(['DL'], 'Public')).to.equal(true);
+    });
+
+    it('should allow access to a permission group when ALL of the specified entities are matched', () => {
+      expect(accessPolicy.allowsAll(['DL', 'KI'], 'Public')).to.equal(true);
+    });
+
+    it('should not allow access to a permission group when ANY of the specified entities is not matched', () => {
+      expect(accessPolicy.allowsAll(['DL', 'DL_North_West', 'VU'], 'Public')).to.equal(false);
+    });
+
+    it('should not allow access to a permission group that exists for a different entity than those specified', () => {
+      expect(accessPolicy.allowsAll(['DL', 'DL_North_West', 'VU'], 'Admin')).to.equal(false);
+    });
+
+    it('should allow access to a permission group that includes spaces', () => {
+      expect(accessPolicy.allowsAll(['SB'], 'Royal Australasian College of Surgeons')).to.equal(
+        true,
+      );
+    });
+
+    it('should not allow access if no entities are specified or the list is empty, along with a permission group', () => {
+      expect(accessPolicy.allowsAll(undefined, 'Royal Australasian College of Surgeons')).to.equal(
+        false,
+      );
+      expect(accessPolicy.allowsAll(null, 'Royal Australasian College of Surgeons')).to.equal(
+        false,
+      );
+      expect(accessPolicy.allowsAll([], 'Royal Australasian College of Surgeons')).to.equal(false);
+    });
+
+    it('should not allow access if no entities or permission group are specified', () => {
+      expect(accessPolicy.allowsAll([])).to.equal(false);
+      expect(accessPolicy.allowsAll()).to.equal(false);
+      expect(accessPolicy.allowsAll(null)).to.equal(false);
+    });
+  });
+
   describe('allowsSome', () => {
     it('should allow access to an entity that has at least one permission group, when no permission group is specified', () => {
       expect(accessPolicy.allowsSome(['DL'])).to.equal(true);
