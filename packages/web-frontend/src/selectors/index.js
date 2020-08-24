@@ -38,7 +38,11 @@ export {
   selectAdjustedProjectBounds,
 } from './projectSelectors';
 
-export { selectCurrentExpandedReportCode, selectCurrentDashboardKey } from './dashboardSelectors';
+export {
+  selectCurrentExpandedReportCode,
+  selectIsDashboardGroupCodeDefined,
+  selectCurrentDashboardGroupCode,
+} from './dashboardSelectors';
 
 export {
   selectCurrentMeasure,

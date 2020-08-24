@@ -13,10 +13,10 @@ import { connect } from 'react-redux';
 import { ExpandableList } from '../../../components/mobile/ExpandableList';
 import { SelectListItem } from '../../../components/mobile/SelectListItem';
 import { Dashboard } from '../../../components/mobile/Dashboard';
-import { setOrgUnit, toggleDashboardSelectExpand, changeDashboardGroup } from '../../../actions';
+import { setOrgUnit, toggleDashboardSelectExpand, setDashboardGroup } from '../../../actions';
 import { WHITE } from '../../../styles';
 import {
-  selectCurrentDashboardKey,
+  selectCurrentDashboardGroupCode,
   selectOrgUnitChildren,
   selectCurrentOrgUnit,
   selectCurrentProjectCode,
@@ -33,7 +33,7 @@ class HomeScreen extends PureComponent {
       onChangeOrgUnit,
       currentOrganisationUnit,
       dashboardConfig,
-      currentDashboardKey,
+      currentDashboardGroupCode,
       onToggleDashboardSelectExpand,
       dashboardFilterIsExpanded,
       onChangeDashboardGroup,
@@ -44,7 +44,7 @@ class HomeScreen extends PureComponent {
         <Dashboard
           orgUnit={currentOrganisationUnit}
           dashboardConfig={dashboardConfig}
-          currentDashboardKey={currentDashboardKey}
+          currentDashboardGroupCode={currentDashboardGroupCode}
           toggleFilter={onToggleDashboardSelectExpand}
           filterIsExpanded={dashboardFilterIsExpanded}
           handleFilterChange={name => onChangeDashboardGroup(name)}
@@ -97,7 +97,7 @@ const mapStateToProps = state => {
     currentOrganisationUnit: selectCurrentOrgUnit(state),
     dashboardFilterIsExpanded: isGroupSelectExpanded,
     dashboardConfig,
-    currentDashboardKey: selectCurrentDashboardKey(state),
+    currentDashboardGroupCode: selectCurrentDashboardGroupCode(state),
   };
 };
 
@@ -105,7 +105,7 @@ const mapDispatchToProps = dispatch => {
   return {
     onChangeOrgUnit: organisationUnitCode => dispatch(setOrgUnit(organisationUnitCode, false)),
     onToggleDashboardSelectExpand: () => dispatch(toggleDashboardSelectExpand()),
-    onChangeDashboardGroup: name => dispatch(changeDashboardGroup(name)),
+    onChangeDashboardGroup: name => dispatch(setDashboardGroup(name)),
   };
 };
 

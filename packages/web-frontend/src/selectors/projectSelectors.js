@@ -6,7 +6,7 @@
  */
 
 import { createSelector } from 'reselect';
-import { initialOrgUnit } from '../defaults';
+import { DEFAULT_BOUNDS } from '../defaults';
 import { getLocationComponentValue, URL_COMPONENTS } from '../historyNavigation';
 import { selectLocation } from './utils';
 
@@ -35,7 +35,7 @@ export const selectAdjustedProjectBounds = createSelector(
   [selectProjectByCode, (_, code) => code],
   (project, code) => {
     if (code === 'explore' || code === 'disaster') {
-      return initialOrgUnit.location.bounds;
+      return DEFAULT_BOUNDS;
     }
     return project && project.bounds;
   },

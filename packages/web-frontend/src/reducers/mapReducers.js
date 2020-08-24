@@ -28,11 +28,9 @@ import {
 } from '../actions';
 
 import { MARKER_TYPES } from '../constants';
-import { initialOrgUnit } from '../defaults';
+import { DEFAULT_BOUNDS } from '../defaults';
 
-const defaultBounds = initialOrgUnit.location.bounds;
-
-function position(state = { bounds: defaultBounds }, action) {
+function position(state = { bounds: DEFAULT_BOUNDS }, action) {
   switch (action.type) {
     case CHANGE_ORG_UNIT_SUCCESS: {
       if (action.shouldChangeMapBounds) {

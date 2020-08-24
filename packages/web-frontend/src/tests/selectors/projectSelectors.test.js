@@ -11,7 +11,7 @@ import {
   selectIsProject,
   selectAdjustedProjectBounds,
 } from '../../selectors';
-import { initialOrgUnit } from '../../defaults';
+import { DEFAULT_BOUNDS } from '../../defaults';
 import { state } from './selectors.test.fixtures';
 
 const testState1 = {
@@ -153,13 +153,9 @@ describe('projectSelectors', () => {
         );
       });
       it('can select bounds for the `explore` and `disaster` projects', () => {
-        expect(selectAdjustedProjectBounds(state, 'explore')).toEqual(
-          initialOrgUnit.location.bounds,
-        );
+        expect(selectAdjustedProjectBounds(state, 'explore')).toEqual(DEFAULT_BOUNDS);
 
-        expect(selectAdjustedProjectBounds(state, 'disaster')).toEqual(
-          initialOrgUnit.location.bounds,
-        );
+        expect(selectAdjustedProjectBounds(state, 'disaster')).toEqual(DEFAULT_BOUNDS);
       });
 
       it('can select bounds for a project which does not exist', () => {

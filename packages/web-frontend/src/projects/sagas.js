@@ -8,7 +8,7 @@ import {
   FETCH_INITIAL_DATA,
   SET_PROJECT,
   changeBounds,
-  changeDashboardGroup,
+  setDashboardGroup,
   FETCH_LOGIN_SUCCESS,
   setOrgUnit,
   FETCH_LOGOUT_SUCCESS,
@@ -17,7 +17,7 @@ import {
   selectAdjustedProjectBounds,
   selectProjectByCode,
   selectCurrentOrgUnitCode,
-  selectCurrentDashboardKey,
+  selectIsDashboardGroupCodeDefined,
 } from '../selectors';
 
 function* fetchProjectData() {
@@ -48,19 +48,18 @@ function* loadProject(action) {
   }
 
   state = yield select();
-
+  // If the project was set in the url, preserve the other parameters if they are
+  // also set
+  const forceUpdate = !(action.meta && action.meta.preventHistoryUpdate);
   yield put(changeBounds(yield select(selectAdjustedProjectBounds, action.projectCode)));
 
   const project = selectProjectByCode(state, action.projectCode);
   const organisationUnitCode = selectCurrentOrgUnitCode(state);
-  if (!organisationUnitCode) {
+  if (!organisationUnitCode || forceUpdate) {
     yield put(setOrgUnit(project.homeEntityCode || action.projectCode, false));
   }
-
-  // TODO: This will be fixed in the dashboard PR (including standardizing code vs key)
-  const dashboardGroupCode = selectCurrentDashboardKey(state);
-  if (!dashboardGroupCode) {
-    yield put(changeDashboardGroup(project.dashboardGroupName));
+  if (!selectIsDashboardGroupCodeDefined(state) || forceUpdate) {
+    yield put(setDashboardGroup(project.dashboardGroupName));
   }
 }
 

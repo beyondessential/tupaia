@@ -14,7 +14,7 @@ import {
   CHANGE_TILE_SET,
   TOGGLE_INFO_PANEL,
   SET_OVERLAY_COMPONENT,
-  CHANGE_DASHBOARD_GROUP,
+  SET_DASHBOARD_GROUP,
   CHANGE_SEARCH,
   TOGGLE_MEASURE_EXPAND,
   TOGGLE_SEARCH_EXPAND,
@@ -23,7 +23,7 @@ import {
   OPEN_USER_DIALOG,
   CLOSE_USER_DIALOG,
 } from '../actions';
-import { initialOrgUnit } from '../defaults';
+import { DEFAULT_BOUNDS } from '../defaults';
 
 const ga = window.ga || (() => {});
 
@@ -52,9 +52,7 @@ export const gaMiddleware = () => next => action => {
         break;
 
       case SET_ORG_UNIT:
-        if (action.organisationUnitCode !== initialOrgUnit.organisationUnitCode) {
-          gaEvent('Organisation Unit', 'Change', action.organisationUnitCode);
-        }
+        gaEvent('Organisation Unit', 'Change', action.organisationUnitCode);
         break;
 
       case SET_MEASURE:
@@ -81,7 +79,7 @@ export const gaMiddleware = () => next => action => {
         gaEvent('Pages', 'Open Overlay Component', action.component);
         break;
 
-      case CHANGE_DASHBOARD_GROUP:
+      case SET_DASHBOARD_GROUP:
         gaEvent('Dashboard', 'Change Tab', action.name);
         break;
 
