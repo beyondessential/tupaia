@@ -84,7 +84,7 @@ const AutocompleteComponent = React.memo(
             const filtered = filter(options, params);
 
             // Suggest the creation of a new value
-            if (params.inputValue !== '') {
+            if (canCreateNewOptions && params.inputValue !== '') {
               filtered.push({
                 [optionLabelKey]: params.inputValue,
               });
