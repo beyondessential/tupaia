@@ -1,5 +1,4 @@
 {
-  "private": true,
   "name": "tupaia",
   "workspaces": {
     "packages": [
