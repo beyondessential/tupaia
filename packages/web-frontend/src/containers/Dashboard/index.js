@@ -25,7 +25,7 @@ import DashboardGroup from '../DashboardGroup';
 import { getFacilityThumbnailUrl } from '../../utils';
 import { DropDownMenu } from '../../components/DropDownMenu';
 import {
-  selectCurrentDashboardKey,
+  selectCurrentDashboardGroupCode,
   selectCurrentOrgUnit,
   selectAdjustedProjectBounds,
 } from '../../selectors';
@@ -175,7 +175,7 @@ export class Dashboard extends Component {
   }
 
   renderGroupsDropdown() {
-    const { onChangeDashboardGroup, currentDashboardKey, sections, project } = this.props;
+    const { onChangeDashboardGroup, currentDashboardGroupCode, sections, project } = this.props;
 
     // sort group names based on current project
     const groupNames = Object.entries(sections).reduce((names, entry) => {
@@ -201,7 +201,7 @@ export class Dashboard extends Component {
 
     return (
       <DropDownMenu
-        selectedOption={currentDashboardKey}
+        selectedOption={currentDashboardGroupCode}
         options={groupNames}
         onChange={onChangeDashboardGroup}
         menuListStyle={DASHBOARD_STYLES.groupsDropDownMenu}
@@ -221,7 +221,7 @@ export class Dashboard extends Component {
   }
 
   render() {
-    const { onDashboardClicked, isLoading, sections, currentDashboardKey } = this.props;
+    const { onDashboardClicked, isLoading, sections, currentDashboardGroupCode } = this.props;
 
     return (
       <div
@@ -235,7 +235,7 @@ export class Dashboard extends Component {
         {this.renderHeader()}
         <div style={DASHBOARD_STYLES.content}>
           {this.renderGroupsDropdown()}
-          {this.renderGroup(sections[currentDashboardKey])}
+          {this.renderGroup(sections[currentDashboardGroupCode])}
         </div>
         {this.renderFloatingHeader()}
         {this.renderEnlargePopup()}
@@ -246,7 +246,7 @@ export class Dashboard extends Component {
 
 Dashboard.propTypes = {
   onChangeDashboardGroup: PropTypes.func.isRequired,
-  currentDashboardKey: PropTypes.string,
+  currentDashboardGroupCode: PropTypes.string,
   currentOrganisationUnit: PropTypes.object,
   currentOrganisationUnitBounds: PropTypes.arrayOf(PropTypes.string),
   onDashboardClicked: PropTypes.func.isRequired,
@@ -273,7 +273,7 @@ const mapStateToProps = state => {
     currentOrganisationUnit,
     currentOrganisationUnitBounds,
     sections: dashboardConfig,
-    currentDashboardKey: selectCurrentDashboardKey(state),
+    currentDashboardGroupCode: selectCurrentDashboardGroupCode(state),
     mapIsAnimating: isAnimating,
     isLoading: isLoadingOrganisationUnit,
     isSidePanelExpanded,

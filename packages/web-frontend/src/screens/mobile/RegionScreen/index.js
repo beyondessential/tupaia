@@ -30,7 +30,7 @@ import { getMapUrl } from '../../../utils';
 import { getSingleFormattedValue } from '../../../utils/measures';
 import { ENTITY_TYPE } from '../../../constants';
 import {
-  selectCurrentDashboardKey,
+  selectCurrentDashboardGroupCode,
   selectCurrentOrgUnit,
   selectOrgUnitChildren,
   selectCurrentMeasure,
@@ -114,7 +114,7 @@ class RegionScreen extends PureComponent {
       onChangeOrgUnit,
       isLoading,
       isMeasureLoading,
-      currentDashboardKey,
+      currentDashboardGroupCode,
       onChangeDashboardGroup,
       title,
     } = this.props;
@@ -125,7 +125,7 @@ class RegionScreen extends PureComponent {
         <Dashboard
           orgUnit={orgUnit}
           dashboardConfig={dashboardConfig}
-          currentDashboardKey={currentDashboardKey}
+          currentDashboardGroupCode={currentDashboardGroupCode}
           toggleFilter={onToggleDashboardSelectExpand}
           filterIsExpanded={dashboardFilterIsExpanded}
           handleFilterChange={onChangeDashboardGroup}
@@ -298,7 +298,7 @@ const mapStateToProps = state => {
 
   return {
     dashboardConfig,
-    currentDashboardKey: selectCurrentDashboardKey(state),
+    currentDashboardGroupCode: selectCurrentDashboardGroupCode(state),
     orgUnit,
     mobileListItems,
     measureFilters,

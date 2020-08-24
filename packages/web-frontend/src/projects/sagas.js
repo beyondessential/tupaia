@@ -17,7 +17,7 @@ import {
   selectAdjustedProjectBounds,
   selectProjectByCode,
   selectCurrentOrgUnitCode,
-  selectIsDashboardKeyDefined,
+  selectIsDashboardGroupCodeDefined,
 } from '../selectors';
 
 function* fetchProjectData() {
@@ -58,7 +58,7 @@ function* loadProject(action) {
   if (!organisationUnitCode || forceUpdate) {
     yield put(setOrgUnit(project.homeEntityCode || action.projectCode, false));
   }
-  if (!selectIsDashboardKeyDefined(state) || forceUpdate) {
+  if (!selectIsDashboardGroupCodeDefined(state) || forceUpdate) {
     yield put(setDashboardGroup(project.dashboardGroupName));
   }
 }

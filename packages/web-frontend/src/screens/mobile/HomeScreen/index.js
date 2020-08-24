@@ -16,7 +16,7 @@ import { Dashboard } from '../../../components/mobile/Dashboard';
 import { setOrgUnit, toggleDashboardSelectExpand, setDashboardGroup } from '../../../actions';
 import { WHITE } from '../../../styles';
 import {
-  selectCurrentDashboardKey,
+  selectCurrentDashboardGroupCode,
   selectOrgUnitChildren,
   selectCurrentOrgUnit,
   selectCurrentProjectCode,
@@ -33,7 +33,7 @@ class HomeScreen extends PureComponent {
       onChangeOrgUnit,
       currentOrganisationUnit,
       dashboardConfig,
-      currentDashboardKey,
+      currentDashboardGroupCode,
       onToggleDashboardSelectExpand,
       dashboardFilterIsExpanded,
       onChangeDashboardGroup,
@@ -44,7 +44,7 @@ class HomeScreen extends PureComponent {
         <Dashboard
           orgUnit={currentOrganisationUnit}
           dashboardConfig={dashboardConfig}
-          currentDashboardKey={currentDashboardKey}
+          currentDashboardGroupCode={currentDashboardGroupCode}
           toggleFilter={onToggleDashboardSelectExpand}
           filterIsExpanded={dashboardFilterIsExpanded}
           handleFilterChange={name => onChangeDashboardGroup(name)}
@@ -97,7 +97,7 @@ const mapStateToProps = state => {
     currentOrganisationUnit: selectCurrentOrgUnit(state),
     dashboardFilterIsExpanded: isGroupSelectExpanded,
     dashboardConfig,
-    currentDashboardKey: selectCurrentDashboardKey(state),
+    currentDashboardGroupCode: selectCurrentDashboardGroupCode(state),
   };
 };
 

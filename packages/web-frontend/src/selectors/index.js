@@ -40,8 +40,8 @@ export {
 
 export {
   selectCurrentExpandedReportCode,
-  selectIsDashboardKeyDefined,
-  selectCurrentDashboardKey,
+  selectIsDashboardGroupCodeDefined,
+  selectCurrentDashboardGroupCode,
 } from './dashboardSelectors';
 
 export {
