@@ -85,7 +85,7 @@ const AutocompleteComponent = React.memo(
           handleHomeEndKeys: canCreateNewOptions,
           renderTags: (values, getTagProps) =>
             values.map((option, index) => (
-              <Chip color="primary" label={option} {...getTagProps({ index })} />
+              <Chip color="primary" label={option[optionLabelKey]} {...getTagProps({ index })} />
             )),
         }}
       />
@@ -140,17 +140,27 @@ const mapDispatchToProps = (
     allowMultipleValues,
   },
 ) => ({
-  onChangeSelection: (event, newSelection) => {
+  onChangeSelection: (event, newSelection, reason) => {
     if (newSelection === null) {
       onChange(null);
     } else if (allowMultipleValues) {
-      const newValue = newSelection.map(s => s[optionValueKey]);
-      onChange(newValue);
+      const newValues = newSelection.map(selected => selected[optionValueKey]);
+      if (reason === 'create-option') {
+        newValues[newValues.length - 1] = event.target.value;
+      }
+      onChange(newValues);
     } else {
       onChange(newSelection[optionValueKey]);
     }
 
-    dispatch(changeSelection(reduxId, newSelection));
+    // // @see https://material-ui.com/api/autocomplete/ for a description of reasons
+    if (reason === 'create-option') {
+      const newValues = newSelection;
+      newValues[newValues.length - 1] = { [optionLabelKey]: event.target.value };
+      dispatch(changeSelection(reduxId, newValues));
+    } else {
+      dispatch(changeSelection(reduxId, newSelection));
+    }
   },
   onChangeSearchTerm: newSearchTerm =>
     dispatch(
