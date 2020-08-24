@@ -27,8 +27,6 @@ if you prefer to prebuild internal dependencies, add `--skip-internal` to the ab
 
 ### Internal dependencies
 
-See also https://docs.beyondessential.com.au/books/software-development/page/internal-dependencies
-
 - [access-policy](https://github.com/beyondessential/tupaia/blob/dev/packages/access-policy/README.md)
 - [aggregator](https://github.com/beyondessential/tupaia/blob/dev/packages/aggregator/README.md)
 - [auth](https://github.com/beyondessential/tupaia/blob/dev/packages/auth/README.md)
@@ -77,5 +75,3 @@ Most of the packages support the following scripts for testing:
 yarn test # runs the tests
 yarn test-coverage # runs the tests and displays code coverage
 ```
-
-See also the docs page on [Test setup (mocha)](https://docs.beyondessential.com.au/books/software-development/page/test-setup-%28mocha%29)
