@@ -5,7 +5,9 @@
 import { Aggregator } from '@tupaia/aggregator';
 import winston from '/log';
 
+const ENTITY_AGGREGATION_ORDER_AFTER = 'AFTER';
 const DEFAULT_ENTITY_AGGREGATION_TYPE = Aggregator.aggregationTypes.REPLACE_ORG_UNIT_WITH_ORG_GROUP;
+const DEFAULT_ENTITY_AGGREGATION_ORDER = ENTITY_AGGREGATION_ORDER_AFTER;
 
 export const buildAggregationOptions = async (
   initialAggregationOptions,
@@ -23,6 +25,7 @@ export const buildAggregationOptions = async (
     aggregationEntityType,
     aggregationType: entityAggregationType,
     aggregationConfig: entityAggregationConfig,
+    aggregationOrder: entityAggregationOrder = DEFAULT_ENTITY_AGGREGATION_ORDER,
   } = entityAggregationOptions;
 
   // Note aggregationType and aggregationConfig might be undefined
@@ -44,11 +47,10 @@ export const buildAggregationOptions = async (
   );
 
   return {
-    aggregations: [
-      // entity aggregation always happens last, this should be configurable
-      ...inputAggregations,
-      entityAggregation,
-    ],
+    aggregations:
+      entityAggregationOrder === ENTITY_AGGREGATION_ORDER_AFTER
+        ? [...inputAggregations, entityAggregation]
+        : [entityAggregation, ...inputAggregations],
     ...restOfOptions,
   };
 };
@@ -63,7 +65,9 @@ const getOrgUnitToAncestorMap = async (orgUnits, aggregationEntityType, hierarch
       if (ancestor) {
         orgUnitToAncestor[orgUnit.code] = { code: ancestor.code, name: ancestor.name };
       } else {
-        winston.warn(`No ancestor of type ${aggregationEntityType} found for ${orgUnit.code}, hierarchyId = ${hierarchyId}`);
+        winston.warn(
+          `No ancestor of type ${aggregationEntityType} found for ${orgUnit.code}, hierarchyId = ${hierarchyId}`,
+        );
       }
     }
   };
