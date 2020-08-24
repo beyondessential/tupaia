@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import throttle from 'lodash.throttle';
 import { connect } from 'react-redux';
 import MuiChip from '@material-ui/core/Chip';
+import { createFilterOptions } from '@material-ui/lab/Autocomplete';
 import styled from 'styled-components';
 import { Autocomplete as AutocompleteBase } from '@tupaia/ui-components';
 import { getAutocompleteState } from './selectors';
@@ -29,6 +30,8 @@ const getPlaceholder = (placeholder, selection) => {
   }
   return 'Start typing to search';
 };
+
+const filter = createFilterOptions();
 
 const AutocompleteComponent = React.memo(
   ({
@@ -77,6 +80,18 @@ const AutocompleteComponent = React.memo(
         placeholder={getPlaceholder(placeholder, selection)}
         helperText={helperText}
         muiProps={{
+          filterOptions: (options, params) => {
+            const filtered = filter(options, params);
+
+            // Suggest the creation of a new value
+            if (params.inputValue !== '') {
+              filtered.push({
+                [optionLabelKey]: params.inputValue,
+              });
+            }
+
+            return filtered;
+          },
           freeSolo: canCreateNewOptions,
           disableClearable: allowMultipleValues,
           multiple: allowMultipleValues,
@@ -153,7 +168,7 @@ const mapDispatchToProps = (
       onChange(newSelection[optionValueKey]);
     }
 
-    // // @see https://material-ui.com/api/autocomplete/ for a description of reasons
+    // @see https://material-ui.com/api/autocomplete for a description of reasons
     if (reason === 'create-option') {
       const newValues = newSelection;
       newValues[newValues.length - 1] = { [optionLabelKey]: event.target.value };
