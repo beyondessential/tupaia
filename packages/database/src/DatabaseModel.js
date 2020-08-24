@@ -115,18 +115,22 @@ export class DatabaseModel {
     return this.generateInstance(result);
   }
 
-  async findManyById(ids) {
-    if (!ids) {
-      throw new Error(`Cannot search for ${this.databaseType} by id without providing the ids`);
+  async findManyByColumn(column, values) {
+    if (!values) {
+      throw new Error(`Cannot search for ${this.databaseType} by id without providing the values`);
     }
     const records = [];
     const batchSize = this.database.maxBindingsPerQuery;
-    for (let i = 0; i < ids.length; i += batchSize) {
-      const batchOfIds = ids.slice(i, i + batchSize);
-      const batchOfRecords = await this.find({ id: batchOfIds });
+    for (let i = 0; i < values.length; i += batchSize) {
+      const batchOfValues = values.slice(i, i + batchSize);
+      const batchOfRecords = await this.find({ [column]: batchOfValues });
       records.push(...batchOfRecords);
     }
     return records;
+  }
+
+  async findManyById(ids) {
+    return this.findManyByColumn('id', ids);
   }
 
   async findOne(dbConditions, customQueryOptions = {}) {

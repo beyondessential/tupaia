@@ -223,14 +223,18 @@ export async function importSurveyResponses(req, res) {
   }
 }
 
+//Only extract the entities and permission group to perform permissions check.
+//No validation is done here since it's out of scope and is already done when
+//the real import happens
 const getEntitiesByPermissionGroup = async (models, sheets) => {
-  let firstSurveyResponseId;
-  let firstSurveyResponse;
-  let permissionGroup;
-  let survey;
-  const entitiesByPermissionGroupToCheck = {};
+  const entitiesGroupedByPermissionGroup = {};
 
   for (let sheetIndex = 0; sheetIndex < sheets.length; sheetIndex++) {
+    let firstSurveyResponseId;
+    let firstSurveyResponse;
+    let permissionGroup;
+    let survey;
+
     const sheet = sheets[sheetIndex];
     const { maxColumnIndex } = getMaxRowColumnIndex(sheet);
 
@@ -238,7 +242,7 @@ const getEntitiesByPermissionGroup = async (models, sheets) => {
       const columnHeader = getColumnHeader(sheet, columnIndex);
 
       if (!isInfoColumn(columnIndex)) {
-        //Will only be run once so accessing to the db won't be expensive
+        //Will only be run once per sheet so won't be db expensive
         if (!firstSurveyResponseId) {
           firstSurveyResponseId = columnHeader;
           firstSurveyResponse = await models.surveyResponse.findById(firstSurveyResponseId);
@@ -248,16 +252,16 @@ const getEntitiesByPermissionGroup = async (models, sheets) => {
 
         const entityCode = getInfoForColumn(sheet, columnIndex, 'Entity Code');
 
-        if (!entitiesByPermissionGroupToCheck[permissionGroup.name]) {
-          entitiesByPermissionGroupToCheck[permissionGroup.name] = [];
+        if (!entitiesGroupedByPermissionGroup[permissionGroup.name]) {
+          entitiesGroupedByPermissionGroup[permissionGroup.name] = [];
         }
 
-        entitiesByPermissionGroupToCheck[permissionGroup.name].push(entityCode);
+        entitiesGroupedByPermissionGroup[permissionGroup.name].push(entityCode);
       }
     }
   }
 
-  return entitiesByPermissionGroupToCheck;
+  return entitiesGroupedByPermissionGroup;
 };
 
 const isInfoColumn = columnIndex => columnIndex < INFO_COLUMN_HEADERS.length;

@@ -3,7 +3,8 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import xlsx from 'xlsx';
+import keyBy from 'lodash.keyBy';
+ import xlsx from 'xlsx';
 
 import { mapKeys, respond, WorkBookParser, UploadError } from '@tupaia/utils';
 import { SurveyResponseImporter } from '../utilities';
@@ -45,16 +46,24 @@ const createImporter = models => {
 
 const getEntitiesByPermissionGroup = async (models, inputsPerSurvey) => {
   const entitiesByPermissionGroup = {};
+  const surveyNames = Object.keys(inputsPerSurvey);
+  const surveys = await models.survey.find({ name: surveyNames });
+  const permissionGroups = await models.permissionGroup.findManyById(
+    surveys.map(s => s.permission_group_id),
+  );
+  const surveysByName = keyBy(surveys, 'name');
+  const permissionGroupsById = keyBy(permissionGroups, 'id');
 
-  for (let i = 0; i < Object.entries(inputsPerSurvey).length; i++) {
-    const [surveyName, surveyResponses] = Object.entries(inputsPerSurvey)[i];
-    const survey = await models.survey.findOne({ name: surveyName });
+  for (let i = 0; i < surveyNames.length; i++) {
+    const surveyName = surveyNames[i];
+    const surveyResponses = inputsPerSurvey[surveyName];
+    const survey = surveysByName[surveyName];
 
     if (!survey) {
       throw new Error(`Cannot find survey ${surveyName}`);
     }
 
-    const permissionGroup = await models.permissionGroup.findById(survey.permission_group_id);
+    const permissionGroup = permissionGroupsById[survey.permission_group_id];
 
     surveyResponses.forEach(surveyResponse => {
       const { entityCode } = surveyResponse;
