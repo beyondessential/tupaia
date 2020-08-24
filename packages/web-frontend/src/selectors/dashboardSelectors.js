@@ -2,6 +2,7 @@ import { createSelector } from 'reselect';
 
 import { getLocationComponentValue, URL_COMPONENTS } from '../historyNavigation';
 import { selectLocation } from './utils';
+import { selectCurrentOrgUnit } from './orgUnitSelectors';
 
 const selectCurrentDashboardGroupCodeFromLocation = createSelector([selectLocation], location =>
   getLocationComponentValue(location, URL_COMPONENTS.DASHBOARD),
@@ -22,4 +23,14 @@ export const selectCurrentDashboardGroupCode = createSelector(
 export const selectIsDashboardGroupCodeDefined = createSelector(
   [selectCurrentDashboardGroupCodeFromLocation],
   rawCurrentDashboardGroupCode => !!rawCurrentDashboardGroupCode,
+);
+
+export const selectCurrentExpandedViewContent = createSelector(
+  [
+    selectCurrentDashboardGroupCode,
+    selectCurrentOrgUnit,
+    selectCurrentExpandedReportCode,
+    state => state.dashboard.viewResponses,
+  ],
+  (dashboardGroupCode, orgUnit, infoViewKey, viewResponses) => viewResponses[infoViewKey],
 );

@@ -19,6 +19,7 @@ import {
   selectIsProject,
   selectMeasureBarItemById,
   selectCurrentExpandedReportCode,
+  selectCurrentExpandedViewContent,
 } from './selectors';
 import {
   ATTEMPT_CHANGE_PASSWORD,
@@ -997,8 +998,8 @@ function* watchGoHomeAndResetToDefaultProject() {
 
 function* fetchEnlargedDialogViewContentForPeriod(action) {
   const state = yield select();
-  const { viewContent } = state.enlargedDialog;
-  const infoViewKey = selectCurrentExpandedReportCode();
+  const viewContent = selectCurrentExpandedViewContent(state);
+  const infoViewKey = selectCurrentExpandedReportCode(state);
   const { viewId, organisationUnitCode, dashboardGroupId } = viewContent;
 
   const parameters = {

@@ -18,7 +18,12 @@ import { EnlargedDialogContent } from './EnlargedDialogContent';
 import { getIsMatrix, getIsDataDownload, VIEW_CONTENT_SHAPE } from '../../components/View';
 import { isMobile } from '../../utils';
 import { DIALOG_Z_INDEX } from '../../styles';
-import { selectCurrentExpandedReportCode } from '../../selectors';
+import {
+  selectCurrentExpandedReportCode,
+  selectCurrentExpandedViewContent,
+  selectCurrentOrgUnit,
+} from '../../selectors';
+import { LoadingIndicator } from '../Form/common';
 class EnlargedDialogComponent extends PureComponent {
   render() {
     const {
@@ -32,9 +37,12 @@ class EnlargedDialogComponent extends PureComponent {
       isLoading,
       isVisible,
     } = this.props;
-
     if (!isVisible) {
       return null;
+    }
+
+    if (!viewContent) {
+      return <LoadingIndicator />;
     }
 
     const hasBigData =
@@ -118,6 +126,8 @@ const mapStateToProps = state => ({
   ...state.enlargedDialog,
   isDrillDownVisible: state.drillDown.isVisible,
   infoViewKey: selectCurrentExpandedReportCode(state),
+  viewContent: selectCurrentExpandedViewContent(state),
+  organisationUnitName: selectCurrentOrgUnit(state).name,
 });
 
 const mapDispatchToProps = dispatch => ({

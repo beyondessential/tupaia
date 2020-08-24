@@ -61,8 +61,7 @@ export const reactToInitialState = store => {
     dispatch(setMeasure(otherComponents[URL_COMPONENTS.MEASURE]));
 
   if (otherComponents[URL_COMPONENTS.REPORT])
-  // Need to wait for viewContent here...  
-  //dispatch(openEnlargedDialog(otherComponents[URL_COMPONENTS.REPORT]));
+    dispatch(openEnlargedDialog(otherComponents[URL_COMPONENTS.REPORT]));
 };
 
 export const historyMiddleware = store => next => action => {
@@ -87,7 +86,7 @@ export const historyMiddleware = store => next => action => {
 
     // Actions that modify search params
     case OPEN_ENLARGED_DIALOG:
-      dispatchLocationUpdate(store, URL_COMPONENTS.REPORT, action.viewContent.viewId);
+      dispatchLocationUpdate(store, URL_COMPONENTS.REPORT, action.infoViewKey);
       break;
     case CLOSE_ENLARGED_DIALOG:
       dispatchLocationUpdate(store, URL_COMPONENTS.REPORT, null);

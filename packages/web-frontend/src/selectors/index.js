@@ -42,6 +42,7 @@ export {
   selectCurrentExpandedReportCode,
   selectIsDashboardGroupCodeDefined,
   selectCurrentDashboardGroupCode,
+  selectCurrentExpandedViewContent,
 } from './dashboardSelectors';
 
 export {

@@ -15,7 +15,7 @@ import { TRANS_BLACK, DIALOG_Z_INDEX, WHITE } from '../../styles';
 import { attemptDrillDown, closeDrillDown, goToDrillDownLevel } from '../../actions';
 import { VIEW_CONTENT_SHAPE } from '../../components/View';
 import { EnlargedDialogContent } from '../EnlargedDialog';
-import { selectCurrentExpandedReportCode } from '../../selectors';
+import { selectCurrentExpandedReportCode, selectCurrentOrgUnit } from '../../selectors';
 
 class DrillDownOverlayComponent extends PureComponent {
   renderContent() {
@@ -118,6 +118,8 @@ const mapStateToProps = state => {
     isLoading,
     enlargedDialog, // TODO: may not be needed
     infoViewKey: selectCurrentExpandedReportCode(state),
+    // viewContent: selectCurrentExpandedViewContent(state),
+    // organisationUnitName: selectCurrentOrgUnit(state).name,
   };
 };
 

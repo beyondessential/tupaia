@@ -85,7 +85,7 @@ export class DashboardItem extends Component {
         viewContent={viewContent}
         viewConfig={viewConfig}
         organisationUnitName={organisationUnitName}
-        onEnlarge={() => onEnlarge(viewContent, organisationUnitName, infoViewKey)}
+        onEnlarge={() => onEnlarge(infoViewKey)}
         isSidePanelExpanded={isSidePanelExpanded}
       />
     );
@@ -127,8 +127,7 @@ const mapDispatchToProps = dispatch => ({
     dispatch(
       fetchDashboardItemData(organisationUnitCode, dashboardGroupId, viewId, infoViewKey, project),
     ),
-  onEnlarge: (viewContent, organisationUnitName, infoViewKey) =>
-    dispatch(openEnlargedDialog(viewContent, organisationUnitName, infoViewKey)),
+  onEnlarge: infoViewKey => dispatch(openEnlargedDialog(infoViewKey)),
   dispatch, // Necessary for merge props.
 });
 

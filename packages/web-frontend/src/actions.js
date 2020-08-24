@@ -1093,11 +1093,9 @@ export function closeEnlargedDialog() {
   };
 }
 
-export function openEnlargedDialog(viewContent, organisationUnitName, infoViewKey) {
+export function openEnlargedDialog(infoViewKey) {
   return {
     type: OPEN_ENLARGED_DIALOG,
-    viewContent,
-    organisationUnitName,
     infoViewKey,
   };
 }
