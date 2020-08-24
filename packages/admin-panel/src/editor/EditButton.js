@@ -19,7 +19,7 @@ export const EditButtonComponent = ({ dispatch, value: recordId, actionConfig })
 EditButtonComponent.propTypes = {
   actionConfig: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
-  value: PropTypes.string.isRequired,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
 };
 
 export const EditButton = connect()(EditButtonComponent);

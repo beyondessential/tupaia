@@ -67,6 +67,7 @@ const AutocompleteComponent = React.memo(
         label={label}
         options={results}
         loading={isLoading}
+        labelKey={optionLabelKey}
         onChange={onChangeSelection}
         onInputChange={throttle((event, newValue) => onChangeSearchTerm(newValue), 50)}
         inputValue={searchTerm}
