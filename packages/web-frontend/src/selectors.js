@@ -364,3 +364,24 @@ export const selectMeasureBarItemById = createSelector(
     return getMeasureFromHierarchy(measureHierarchy, id);
   },
 );
+
+export const selectMeasureBarItemCategoryById = createSelector(
+  [state => state.measureBar.measureHierarchy, (_, id) => id],
+  (measureHierarchy, id) => {
+    let categoryMeasureIndex = {};
+    
+    measureHierarchy.forEach(({ name, children }, categoryIndex) => {
+      const selectedMeasureIndex = children.findIndex(measure => measure.measureId === id);
+      if (selectedMeasureIndex > -1) {
+        categoryMeasureIndex = {
+          name,
+          categoryIndex,
+          measureIndex: selectedMeasureIndex,
+          measure: children[selectedMeasureIndex],
+        };
+      }
+    });
+
+    return categoryMeasureIndex;
+  },
+);
