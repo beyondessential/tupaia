@@ -81,7 +81,7 @@ export const InputField = ({
         <Select
           label={label}
           helperText={secondaryLabel}
-          value={value}
+          value={value || ''}
           options={options}
           onChange={event => onChange(inputKey, event.target.value)}
           disabled={disabled}

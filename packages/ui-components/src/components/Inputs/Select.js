@@ -57,7 +57,7 @@ export const Select = ({ value, onChange, options, placeholder, defaultValue, ..
     [setValue],
   );
 
-  const isControlled = value !== null;
+  const isControlled = onChange !== null;
 
   return (
     <SelectField
@@ -93,7 +93,7 @@ Select.propTypes = {
 Select.defaultProps = {
   placeholder: 'Please select',
   defaultValue: '',
-  value: null,
+  value: '',
   onChange: null,
 };
 
