@@ -13,5 +13,6 @@ export { addMetadataToEvents, isMetadataKey, metadataKeysToDataElementMap } from
 export {
   checkValueSatisfiesCondition,
   countAnalyticsThatSatisfyConditions,
+  countAnalyticsGroupsThatSatisfyConditions,
   countEventsThatSatisfyConditions,
 } from './checkAgainstConditions';
