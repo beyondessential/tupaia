@@ -6,4 +6,8 @@
 export const getUniqueViewId = ({ organisationUnitCode, dashboardGroupId, viewId }) =>
   [organisationUnitCode, dashboardGroupId, viewId].join('___');
 
-export const getViewIdFromInfoViewKey = infoViewKey => infoViewKey.split('___')[2]; //TODO: better handle error.
+export const getViewIdFromInfoViewKey = infoViewKey => {
+  const infoViewKeyParams = infoViewKey.split('___');
+  if (infoViewKeyParams && infoViewKeyParams.length === 3) return infoViewKeyParams[2];
+  return null;
+};

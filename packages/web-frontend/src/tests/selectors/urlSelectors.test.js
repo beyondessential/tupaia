@@ -8,13 +8,12 @@
 import {
   selectCurrentOrgUnitCode,
   selectCurrentProjectCode,
-  selectCurrentDashboardGroupCode,
+  selectCurrentDashboardGroupCodeFromLocation,
   selectCurrentMeasureId,
   selectCurrentExpandedViewId,
 } from '../../selectors';
 
-// TODO: The below tests should work after all PRs are complete
-describe.skip('urlSelectors', () => {
+describe('urlSelectors', () => {
   it('should select from an empty url', () => {
     const testState = {
       routing: {
@@ -24,7 +23,7 @@ describe.skip('urlSelectors', () => {
     };
     expect(selectCurrentProjectCode(testState)).toEqual(undefined);
     expect(selectCurrentOrgUnitCode(testState)).toEqual(undefined);
-    expect(selectCurrentDashboardGroupCode(testState)).toEqual(undefined);
+    expect(selectCurrentDashboardGroupCodeFromLocation(testState)).toEqual(undefined);
     expect(selectCurrentMeasureId(testState)).toEqual(undefined);
     expect(selectCurrentExpandedViewId(testState)).toEqual(undefined);
   });
@@ -38,7 +37,7 @@ describe.skip('urlSelectors', () => {
     };
     expect(selectCurrentProjectCode(testState)).toEqual('SOME_PROJECT');
     expect(selectCurrentOrgUnitCode(testState)).toEqual('AN_ORG_UNIT');
-    expect(selectCurrentDashboardGroupCode(testState)).toEqual('A_DASHBOARD');
+    expect(selectCurrentDashboardGroupCodeFromLocation(testState)).toEqual('A_DASHBOARD');
     expect(selectCurrentExpandedViewId(testState)).toEqual('report1');
     expect(selectCurrentMeasureId(testState)).toEqual('2,3');
   });
@@ -51,7 +50,7 @@ describe.skip('urlSelectors', () => {
     };
     expect(selectCurrentProjectCode(testState)).toEqual(undefined);
     expect(selectCurrentOrgUnitCode(testState)).toEqual(undefined);
-    expect(selectCurrentDashboardGroupCode(testState)).toEqual(undefined);
+    expect(selectCurrentDashboardGroupCodeFromLocation(testState)).toEqual(undefined);
     expect(selectCurrentMeasureId(testState)).toEqual(undefined);
     expect(selectCurrentExpandedViewId(testState)).toEqual(undefined);
   });
@@ -65,7 +64,7 @@ describe.skip('urlSelectors', () => {
     };
     expect(selectCurrentProjectCode(testState)).toEqual(undefined);
     expect(selectCurrentOrgUnitCode(testState)).toEqual(undefined);
-    expect(selectCurrentDashboardGroupCode(testState)).toEqual(undefined);
+    expect(selectCurrentDashboardGroupCodeFromLocation(testState)).toEqual(undefined);
     expect(selectCurrentMeasureId(testState)).toEqual(undefined);
     expect(selectCurrentExpandedViewId(testState)).toEqual(undefined);
   });

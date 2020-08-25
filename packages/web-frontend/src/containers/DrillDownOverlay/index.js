@@ -109,17 +109,14 @@ DrillDownOverlayComponent.defaultProps = {
 };
 
 const mapStateToProps = state => {
-  const { drillDown, enlargedDialog } = state;
+  const { drillDown } = state;
   const { currentLevel, isLoading, levelContents } = drillDown;
 
   return {
     viewContent: levelContents[currentLevel],
     currentLevel,
     isLoading,
-    enlargedDialog, // TODO: may not be needed
     infoViewKey: selectCurrentInfoViewKey(state),
-    // viewContent: selectCurrentExpandedViewContent(state),
-    // organisationUnitName: selectCurrentOrgUnit(state).name,
   };
 };
 

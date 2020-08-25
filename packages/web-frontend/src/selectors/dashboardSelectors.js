@@ -5,8 +5,9 @@ import { getUniqueViewId } from '../utils';
 import { selectLocation } from './utils';
 import { selectCurrentOrgUnitCode } from './orgUnitSelectors';
 
-const selectCurrentDashboardGroupCodeFromLocation = createSelector([selectLocation], location =>
-  getLocationComponentValue(location, URL_COMPONENTS.DASHBOARD),
+export const selectCurrentDashboardGroupCodeFromLocation = createSelector(
+  [selectLocation],
+  location => getLocationComponentValue(location, URL_COMPONENTS.DASHBOARD),
 );
 
 export const selectCurrentExpandedViewId = createSelector([selectLocation], location =>
