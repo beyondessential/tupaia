@@ -73,12 +73,10 @@ export class EntityHierarchyCacher {
   async getNextGeneration(parents, hierarchyId) {
     // get any matching alternative hierarchy relationships leading out of these parents
     const parentIds = parents.map(p => p.id);
-    const hierarchyLinks = hierarchyId
-      ? await this.database.find(ENTITY_RELATION, {
-          parent_id: parentIds,
-          entity_hierarchy_id: hierarchyId,
-        })
-      : [];
+    const hierarchyLinks = await this.database.find(ENTITY_RELATION, {
+      parent_id: parentIds,
+      entity_hierarchy_id: hierarchyId,
+    });
     const childIds = hierarchyLinks.map(l => l.child_id);
 
     if (childIds.length > 0) {
