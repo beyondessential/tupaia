@@ -7,7 +7,7 @@ Backend for the MediTrak health facility survey and mapping software
 - Need to have the following installed
   - Node
   - yarn
-- Add a .env file to the root directory, and enter valid environment variables based on LastPass
+- Add a .env file to the root directory. The required variables are listed in `.env.example`
 - `yarn` (to install dependencies)
 - `yarn start-dev` to run in dev mode or `yarn start` to build and run production
 
