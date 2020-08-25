@@ -1,7 +1,6 @@
 {
   "name": "@tupaia/admin-panel",
   "version": "1.0.0",
-  "private": true,
   "dependencies": {
     "@tupaia/access-policy": "3.0.0",
     "@tupaia/utils": "1.0.0",
