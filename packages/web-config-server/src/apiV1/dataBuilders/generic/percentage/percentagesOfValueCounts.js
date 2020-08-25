@@ -120,11 +120,11 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
       denominator: denominatorAggregationType,
     } = this.getAggregationType();
 
-    const { results: numeratorResults } = await this.fetchAnalytics(
-      numeratorCodes,
-      {},
-      numeratorAggregationType,
-    );
+    let numeratorResults = [];
+    if (numeratorCodes.length > 0) {
+      numeratorResults = (await this.fetchAnalytics(numeratorCodes, {}, numeratorAggregationType))
+        .results;
+    }
 
     if (denominatorCodes.length === 0) {
       return numeratorResults;
