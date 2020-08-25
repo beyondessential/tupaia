@@ -136,10 +136,15 @@ export const InputField = ({
         <DateTimePicker
           label={label}
           helperText={secondaryLabel}
+          format="yyyy-MM-dd HH:mm"
           value={
             value && moment(value).isValid ? moment(value).format('YYYY-MM-DDTHH:mm') : new Date()
           }
-          onChange={date => onChange(inputKey, date.toISOString())}
+          onChange={date => {
+            if (date && moment(date).isValid()) {
+              onChange(inputKey, moment(date).toISOString());
+            }
+          }}
           disabled={disabled}
         />
       );

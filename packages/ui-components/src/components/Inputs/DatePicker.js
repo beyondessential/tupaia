@@ -20,12 +20,12 @@ import { DAY_MONTH_YEAR_DATE_FORMAT, AM_PM_DATE_FORMAT } from '../../constants';
 const StyledDatePicker = styled(MuiDatePicker)`
   .MuiInputBase-input {
     padding-left: 0;
-    color: ${props => props.theme.palette.text.tertiary};
+    color: ${props => props.theme.palette.text.secondary};
   }
 
   .MuiButtonBase-root.MuiIconButton-root {
     top: -1px;
-    color: ${props => props.theme.palette.text.tertiary};
+    color: ${props => props.theme.palette.text.secondary};
     padding: 0.5rem;
   }
 `;
