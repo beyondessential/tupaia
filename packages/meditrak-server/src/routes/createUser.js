@@ -14,6 +14,7 @@ import {
 } from '@tupaia/utils';
 import { createUser as createUserAccessor } from '../dataAccessors';
 import { sendVerifyEmail } from './verifyEmail';
+import { assertBESAdminAccess } from '../permissions';
 
 const PERMISSION_GROUPS = {
   PUBLIC: 'Public',
@@ -24,6 +25,8 @@ const PERMISSION_GROUPS = {
 const DEMO_LAND_NAME = 'Demo Land';
 
 export const createUser = async (req, res) => {
+  await req.assertPermissions(assertBESAdminAccess);
+
   const { models } = req;
   const requestBody = req.body ? req.body : {};
 
