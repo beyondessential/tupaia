@@ -40,7 +40,6 @@ export const reactToInitialState = store => {
   const dispatch = action => rawDispatch({ ...action, meta: { preventHistoryUpdate: true } });
 
   const { userPage, projectSelector, ...otherComponents } = getInitialLocationComponents();
-  console.log({ userPage, projectSelector, ...otherComponents });
   if (userPage) {
     // TODO: Implemented in userPage PR
     dispatch(goHome());
