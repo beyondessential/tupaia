@@ -7,6 +7,7 @@ import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
+import moment from 'moment';
 
 const FIELDS = [
   {
@@ -26,6 +27,10 @@ const FIELDS = [
   {
     Header: 'Creation date',
     source: 'creation_date',
+    accessor: row =>
+      moment(row.creation_date)
+        .local()
+        .toString(),
     editConfig: {
       type: 'datetime-local',
     },
