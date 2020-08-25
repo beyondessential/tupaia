@@ -268,7 +268,7 @@ export class TupaiaDatabase {
   async createMany(recordType, records) {
     // generate ids for any records that don't have them
     const sanitizedRecords = records.map(r => (r.id ? r : { id: this.generateId(), ...r }));
-    this.query({
+    await this.query({
       recordType,
       queryMethod: QUERY_METHODS.INSERT,
       queryMethodParameter: sanitizedRecords,
