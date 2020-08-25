@@ -121,18 +121,25 @@ describe('projectSelectors', () => {
         expect(selectProjectByCode(state, 'explore')).toEqual(state.project.projects[0]);
       });
 
-      it('returns undefined when trying to select a project when there are no projects in the store', () => {
+      it('returns an empty object when trying to select a project when there are no projects in the store', () => {
         expect(
           selectProjectByCode({ ...state, project: { ...state.project, projects: [] } }, 'explore'),
-        ).toEqual(undefined);
+        ).toEqual({});
       });
 
-      it('can select a project code which does not exist', () => {
-        expect(selectProjectByCode(state, 'DOES_NOT_EXIST')).toEqual(undefined);
+      it("returns an empty object when trying to select a project that doesn't exist", () => {
+        expect(selectProjectByCode(state, 'DOES_NOT_EXIST')).toEqual({});
       });
 
-      it('can select undefined', () => {
-        expect(selectProjectByCode(state, undefined)).toEqual(undefined);
+      it('returned empty objects are shallow equal', () => {
+        const project1 = selectProjectByCode(
+          { ...state, project: { ...state.project, projects: [] } },
+          'explore',
+        );
+        const project2 = selectProjectByCode(state, 'DOES_NOT_EXIST');
+        const project3 = selectProjectByCode(state, undefined);
+        expect(project1 === project2).toBe(true);
+        expect(project3 === project2).toBe(true);
       });
     });
 

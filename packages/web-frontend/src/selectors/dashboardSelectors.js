@@ -9,7 +9,7 @@ const selectCurrentDashboardGroupCodeFromLocation = createSelector([selectLocati
   getLocationComponentValue(location, URL_COMPONENTS.DASHBOARD),
 );
 
-const selectCurrentExpandedViewId = createSelector([selectLocation], location =>
+export const selectCurrentExpandedViewId = createSelector([selectLocation], location =>
   getLocationComponentValue(location, URL_COMPONENTS.REPORT),
 );
 

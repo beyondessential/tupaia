@@ -21,14 +21,15 @@ export const selectIsProject = createSelector(
   (projects, code) => projects.some(project => project.code === code),
 );
 
+const EMPTY_PROJECT = {};
 export const selectProjectByCode = createSelector(
   [selectAllProjects, (_, code) => code],
-  (projects, code) => projects.find(p => p.code === code) || {},
+  (projects, code) => projects.find(p => p.code === code) || EMPTY_PROJECT,
 );
 
 export const selectCurrentProject = createSelector(
   [state => selectProjectByCode(state, selectCurrentProjectCode(state))],
-  currentProject => currentProject || {},
+  currentProject => currentProject,
 );
 
 export const selectAdjustedProjectBounds = createSelector(
