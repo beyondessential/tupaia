@@ -53,6 +53,16 @@ export const TextField = styled(BaseTextField)`
     }
   }
 
+  // disabled
+  .MuiInputBase-input.Mui-disabled {
+    color: ${props => props.theme.palette.text.secondary};
+    background-color: ${props => props.theme.palette.grey['100']};
+  }
+
+  .MuiOutlinedInput-root.Mui-disabled .MuiOutlinedInput-notchedOutline {
+    border-color: ${props => props.theme.palette.grey['400']};
+  }
+
   // Hover state
   .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
     border-color: ${props => props.theme.palette.grey['400']};
