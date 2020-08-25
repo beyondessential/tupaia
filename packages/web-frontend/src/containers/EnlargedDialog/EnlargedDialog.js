@@ -23,7 +23,7 @@ import {
   selectCurrentExpandedViewContent,
   selectCurrentOrgUnit,
 } from '../../selectors';
-import { LoadingIndicator } from '../Form/common';
+
 class EnlargedDialogComponent extends PureComponent {
   render() {
     const {
@@ -39,10 +39,6 @@ class EnlargedDialogComponent extends PureComponent {
     } = this.props;
     if (!isVisible) {
       return null;
-    }
-
-    if (!viewContent) {
-      return <LoadingIndicator />;
     }
 
     const hasBigData =
