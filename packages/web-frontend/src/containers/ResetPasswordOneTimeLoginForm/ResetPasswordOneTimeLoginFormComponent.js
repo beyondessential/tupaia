@@ -8,13 +8,6 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { PrimaryButton } from '../../components/Buttons';
 import { Form } from '../Form';
-import { WHITE } from '../../styles';
-import { isMobile } from '../../utils';
-
-const FullWidth = styled.div`
-  text-align: left;
-  grid-column: 1 / -1;
-`;
 
 const FormErrorMessage = styled.div`
   background: #fcf8e2;
@@ -22,18 +15,23 @@ const FormErrorMessage = styled.div`
   box-sizing: border-box;
   border-radius: 3px;
   padding: 15px;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.5;
+  margin-bottom: 10px;
   color: #8b6e37;
 `;
 
-let Container = styled.div``;
+const Link = styled.a`
+  color: #2096f3;
+`;
 
-if (isMobile()) {
-  Container = styled.div`
-    color: ${WHITE};
-  `;
-}
+const Container = styled.div`
+  padding: 15px 0 0;
+`;
+
+const Text = styled.div`
+  font-size: 18px;
+`;
 
 export const ResetPasswordOneTimeLoginFormComponent = ({
   isRequestingLogin,
@@ -49,30 +47,28 @@ export const ResetPasswordOneTimeLoginFormComponent = ({
       render={submitForm => (
         <>
           {oneTimeLoginFailedMessage && (
-            <FullWidth>
-              <FormErrorMessage>
-                <span>The email link has expired or already been used.</span>
-                <br />
-                {
-                  // eslint complains (correctly) that this isn't a real link, it can be changed after #770 implemented
-                  /* eslint-disable */
-                }
-                <a href="#request-password-reset" onClick={e => { e.preventDefault(); onNavigateToRequestPasswordReset(); }}>Click here to request a
-                  new password reset link</a>
-                {
-                  /* eslint-enable */
-                }
-              </FormErrorMessage>
-            </FullWidth>
+            <FormErrorMessage>
+              <div>The email link has expired or already been used.</div>
+              {
+                // eslint complains (correctly) that this isn't a real link, it can be changed after #770 implemented
+                /* eslint-disable */
+              }
+              <Link
+                href="#request-password-reset"
+                onClick={e => {
+                  e.preventDefault();
+                  onNavigateToRequestPasswordReset();
+                }}
+              >
+                Click here to request a new password reset link
+              </Link>
+              {/* eslint-enable */}
+            </FormErrorMessage>
           )}
-          <FullWidth>
-            <p>Click the button below to set a new password.</p>
-          </FullWidth>
-          <FullWidth>
-            <PrimaryButton fullWidth variant="contained" onClick={submitForm}>
-              Reset Password Now
-            </PrimaryButton>
-          </FullWidth>
+          <Text>Click the button below to set a new password.</Text>
+          <PrimaryButton fullWidth onClick={submitForm} disabled={!!oneTimeLoginFailedMessage}>
+            Reset Password Now
+          </PrimaryButton>
         </>
       )}
     />

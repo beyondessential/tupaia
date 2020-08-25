@@ -10,8 +10,6 @@ export const LightThemeProvider = styled.div`
   background: ${WHITE};
   padding-bottom: 20px;
 
-  p,
-  a,
   label,
   .MuiFormLabel-root,
   .MuiCheckbox-root,
@@ -22,10 +20,6 @@ export const LightThemeProvider = styled.div`
 
   .MuiInput-underline:hover:not(.Mui-disabled):before {
     border-bottom: 2px solid black;
-  }
-
-  p {
-    padding: 18px;
   }
 
   .Mui-error {

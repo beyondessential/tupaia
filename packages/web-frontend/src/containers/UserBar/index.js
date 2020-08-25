@@ -11,7 +11,6 @@
  * The controls for signing in, info, account etc.
  */
 import React, { Component } from 'react';
-import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Dialog from '@material-ui/core/Dialog';
@@ -39,7 +38,7 @@ import { ChangePasswordForm } from '../ChangePasswordForm';
 import { RequestCountryAccessForm } from '../RequestCountryAccessForm';
 import UserMenu from '../UserMenu';
 import { LANDING } from '../OverlayDiv/constants';
-import { USER_BAR_STYLES, DARK_BLUE, ERROR, FORM_BLUE, WHITE } from '../../styles';
+import { USER_BAR_STYLES, DARK_BLUE, WHITE } from '../../styles';
 import { OneTimeLoginForm } from '../ResetPasswordOneTimeLoginForm';
 import { LightThemeProvider } from '../../styles/LightThemeProvider';
 
@@ -125,13 +124,15 @@ export class UserBar extends Component {
 
       case DIALOG_PAGE_ONE_TIME_LOGIN:
         return (
-          <OneTimeLoginForm
-            onNavigateToRequestPasswordReset={() => {
-              // This prop can be changed to a simple link/removed after url based routing implemented in #770
-              onCloseUserDialog();
-              onOpenLandingPage();
-            }}
-          />
+          <LightThemeProvider>
+            <OneTimeLoginForm
+              onNavigateToRequestPasswordReset={() => {
+                // This prop can be changed to a simple link/removed after url based routing implemented in #770
+                onCloseUserDialog();
+                onOpenLandingPage();
+              }}
+            />
+          </LightThemeProvider>
         );
 
       case DIALOG_PAGE_REQUEST_RESET_PASSWORD:

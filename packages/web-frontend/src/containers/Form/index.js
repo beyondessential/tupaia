@@ -17,6 +17,7 @@ const FormGrid = styled.div`
   grid-template-columns: 1fr;
   gap: 10px;
   padding: 18px;
+  text-align: left;
 `;
 
 export class Form extends React.Component {

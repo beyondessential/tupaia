@@ -93,12 +93,14 @@ const HeaderBar = React.memo(props => {
         <LoginForm openSignupOverlay={handleOpenSignupOverlay} />
       )}
       {isOneTimeLoginExpanded && !isLoginExpanded && (
-        <OneTimeLoginForm
-          onNavigateToRequestPasswordReset={() => {
-            // This prop can be changed to a simple link/removed after url based routing implemented in #770
-            toggleMenuExpanded(true);
-          }}
-        />
+        <LightThemeProvider>
+          <OneTimeLoginForm
+            onNavigateToRequestPasswordReset={() => {
+              // This prop can be changed to a simple link/removed after url based routing implemented in #770
+              toggleMenuExpanded(true);
+            }}
+          />
+        </LightThemeProvider>
       )}
       {isSignupOpen && <SignupOverlay closeSignupOverlay={handleCloseSignupOverlay} />}
       {searchIsExpanded && <SearchOverlay />}

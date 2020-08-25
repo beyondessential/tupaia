@@ -7,13 +7,14 @@ import React from 'react';
 import styled from 'styled-components';
 import { ChangePasswordFormComponent } from '../../src/containers/ChangePasswordForm/ChangePasswordFormComponent';
 import { RequestCountryAccessFormComponent } from '../../src/containers/RequestCountryAccessForm/RequestCountryAccessFormComponent';
+import { ResetPasswordOneTimeLoginFormComponent } from '../../src/containers/ResetPasswordOneTimeLoginForm/ResetPasswordOneTimeLoginFormComponent';
 import { Form } from '../../src/containers/Form';
 import { LightThemeProvider } from '../../src/styles/LightThemeProvider';
 
 const MockUserBar = styled.div`
   margin: 1rem auto;
-  max-width: 500px;
-  padding: 1rem 1rem 1.5rem;
+  max-width: 480px;
+  padding: 8px 24px;
 `;
 
 export default {
@@ -79,4 +80,17 @@ RequestCountryAccessForm.args = {
 RequestCountryAccessForm.argTypes = {
   onAttemptRequestCountryAccess: { action: 'submitted' },
   onClose: { action: 'closed' },
+};
+
+const ResetPasswordOneTimeLoginFormTemplate = args => (
+  <ResetPasswordOneTimeLoginFormComponent {...args} />
+);
+
+export const ResetPasswordOneTimeLoginForm = ResetPasswordOneTimeLoginFormTemplate.bind({});
+ResetPasswordOneTimeLoginForm.args = {
+  isRequestingLogin: false,
+  onAttemptOneTimeLogin: false,
+  oneTimeLoginFailedMessage: false,
+  passwordResetToken: '',
+  onNavigateToRequestPasswordReset: '',
 };
