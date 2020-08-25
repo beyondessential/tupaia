@@ -153,7 +153,7 @@ const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => ({
     const { viewContent, organisationUnitName, startDate, endDate } = stateProps;
     const { viewId, organisationUnitCode, dashboardGroupId, chartType, exportConfig } = viewContent;
 
-    const formats = getIsMatrix(viewContent) ? ['pdf', 'xlsx'] : ['pdf', 'png'];
+    const formats = getIsMatrix(viewContent) ? ['xlsx'] : ['png'];
 
     dispatch(
       openExportDialog({

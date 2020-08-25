@@ -648,7 +648,7 @@ function chartExport(
     isLoading: false,
     isComplete: false,
     errorMessage: '',
-    formats: ['png', 'pdf'],
+    formats: ['png'],
     organisationUnitCode: '',
     organisationUnitName: '',
     viewId: '',
