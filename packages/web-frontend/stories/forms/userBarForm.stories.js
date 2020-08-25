@@ -94,3 +94,15 @@ ResetPasswordOneTimeLoginForm.args = {
   passwordResetToken: '',
   onNavigateToRequestPasswordReset: '',
 };
+ResetPasswordOneTimeLoginForm.argTypes = {
+  isRequestingLogin: {
+    control: {
+      type: 'boolean',
+    },
+  },
+  oneTimeLoginFailedMessage: {
+    control: {
+      type: 'boolean',
+    },
+  },
+};
