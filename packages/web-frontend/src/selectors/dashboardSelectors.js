@@ -1,14 +1,15 @@
 import { createSelector } from 'reselect';
 
 import { getLocationComponentValue, URL_COMPONENTS } from '../historyNavigation';
+import { getUniqueViewId } from '../utils';
 import { selectLocation } from './utils';
-import { selectCurrentOrgUnit } from './orgUnitSelectors';
+import { selectCurrentOrgUnitCode } from './orgUnitSelectors';
 
 const selectCurrentDashboardGroupCodeFromLocation = createSelector([selectLocation], location =>
   getLocationComponentValue(location, URL_COMPONENTS.DASHBOARD),
 );
 
-export const selectCurrentExpandedReportCode = createSelector([selectLocation], location =>
+const selectCurrentExpandedViewId = createSelector([selectLocation], location =>
   getLocationComponentValue(location, URL_COMPONENTS.REPORT),
 );
 
@@ -20,17 +21,33 @@ export const selectCurrentDashboardGroupCode = createSelector(
       : Object.keys(dashboardConfig)[0],
 );
 
+export const selectCurrentDashboardGroupId = createSelector(
+  [state => state.global.dashboardConfig, selectCurrentDashboardGroupCode],
+  (dashboardConfig, currentDashboardGroupCode) => {
+    const dashboardGroup = dashboardConfig[currentDashboardGroupCode];
+    if (!dashboardGroup) return null;
+    return Object.values(dashboardGroup)[0].dashboardGroupId;
+  },
+);
+
 export const selectIsDashboardGroupCodeDefined = createSelector(
   [selectCurrentDashboardGroupCodeFromLocation],
   rawCurrentDashboardGroupCode => !!rawCurrentDashboardGroupCode,
 );
 
+export const selectCurrentInfoViewKey = createSelector(
+  [selectCurrentDashboardGroupId, selectCurrentOrgUnitCode, selectCurrentExpandedViewId],
+  (dashboardGroupId, organisationUnitCode, viewId) =>
+    getUniqueViewId({
+      organisationUnitCode,
+      dashboardGroupId,
+      viewId,
+    }),
+);
+
 export const selectCurrentExpandedViewContent = createSelector(
-  [
-    selectCurrentDashboardGroupCode,
-    selectCurrentOrgUnit,
-    selectCurrentExpandedReportCode,
-    state => state.dashboard.viewResponses,
-  ],
-  (dashboardGroupCode, orgUnit, infoViewKey, viewResponses) => viewResponses[infoViewKey],
+  [selectCurrentInfoViewKey, state => state.dashboard.viewResponses],
+  (infoViewKey, viewResponses) => {
+    return viewResponses[infoViewKey];
+  },
 );

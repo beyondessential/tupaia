@@ -39,7 +39,7 @@ export {
 } from './projectSelectors';
 
 export {
-  selectCurrentExpandedReportCode,
+  selectCurrentInfoViewKey,
   selectIsDashboardGroupCodeDefined,
   selectCurrentDashboardGroupCode,
   selectCurrentExpandedViewContent,

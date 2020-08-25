@@ -18,7 +18,7 @@ import {
   selectCurrentMeasureId,
   selectIsProject,
   selectMeasureBarItemById,
-  selectCurrentExpandedReportCode,
+  selectCurrentInfoViewKey,
   selectCurrentExpandedViewContent,
 } from './selectors';
 import {
@@ -999,7 +999,7 @@ function* watchGoHomeAndResetToDefaultProject() {
 function* fetchEnlargedDialogViewContentForPeriod(action) {
   const state = yield select();
   const viewContent = selectCurrentExpandedViewContent(state);
-  const infoViewKey = selectCurrentExpandedReportCode(state);
+  const infoViewKey = selectCurrentInfoViewKey(state);
   const { viewId, organisationUnitCode, dashboardGroupId } = viewContent;
 
   const parameters = {

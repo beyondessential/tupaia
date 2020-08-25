@@ -1093,10 +1093,10 @@ export function closeEnlargedDialog() {
   };
 }
 
-export function openEnlargedDialog(infoViewKey) {
+export function openEnlargedDialog(viewId) {
   return {
     type: OPEN_ENLARGED_DIALOG,
-    infoViewKey,
+    viewId,
   };
 }
 

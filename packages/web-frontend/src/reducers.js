@@ -22,7 +22,7 @@ import project from './projects/reducers';
 import orgUnits from './reducers/orgUnitReducers';
 import { isMobile } from './utils';
 import { LANDING } from './containers/OverlayDiv/constants';
-import { getUniqueViewId } from './utils/getUniqueViewId';
+import { getUniqueViewId } from './utils';
 import { EMAIL_VERIFIED_STATUS } from './containers/EmailVerification';
 import { getInitialLocation } from './historyNavigation';
 import { selectMeasureBarItemCategoryById } from './selectors';

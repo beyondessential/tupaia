@@ -4,13 +4,13 @@
  * This source code is licensed under the AGPL-3.0 license
  * found in the LICENSE file in the root directory of this source tree.
  */
-
+/*
 import {
   selectCurrentOrgUnitCode,
   selectCurrentProjectCode,
   selectCurrentDashboardGroupCode,
   selectCurrentOverlayCode,
-  selectCurrentExpandedReportCode,
+  selectCurrentExpandedViewId,
 } from '../../selectors';
 
 // TODO: The below tests should work after all PRs are complete
@@ -26,7 +26,7 @@ describe.skip('urlSelectors', () => {
     expect(selectCurrentOrgUnitCode(testState)).toEqual(undefined);
     expect(selectCurrentDashboardGroupCode(testState)).toEqual(undefined);
     expect(selectCurrentOverlayCode(testState)).toEqual(undefined);
-    expect(selectCurrentExpandedReportCode(testState)).toEqual(undefined);
+    expect(selectCurrentExpandedViewId(testState)).toEqual(undefined);
   });
 
   it('should select from a normal url', () => {
@@ -39,7 +39,7 @@ describe.skip('urlSelectors', () => {
     expect(selectCurrentProjectCode(testState)).toEqual('SOME_PROJECT');
     expect(selectCurrentOrgUnitCode(testState)).toEqual('AN_ORG_UNIT');
     expect(selectCurrentDashboardGroupCode(testState)).toEqual('A_DASHBOARD');
-    expect(selectCurrentExpandedReportCode(testState)).toEqual('report1');
+    expect(selectCurrentExpandedViewId(testState)).toEqual('report1');
     expect(selectCurrentOverlayCode(testState)).toEqual('2,3');
   });
   it('should select from a reset-password url', () => {
@@ -53,7 +53,7 @@ describe.skip('urlSelectors', () => {
     expect(selectCurrentOrgUnitCode(testState)).toEqual(undefined);
     expect(selectCurrentDashboardGroupCode(testState)).toEqual(undefined);
     expect(selectCurrentOverlayCode(testState)).toEqual(undefined);
-    expect(selectCurrentExpandedReportCode(testState)).toEqual(undefined);
+    expect(selectCurrentExpandedViewId(testState)).toEqual(undefined);
   });
 
   it('should select from a verify-email url', () => {
@@ -67,6 +67,7 @@ describe.skip('urlSelectors', () => {
     expect(selectCurrentOrgUnitCode(testState)).toEqual(undefined);
     expect(selectCurrentDashboardGroupCode(testState)).toEqual(undefined);
     expect(selectCurrentOverlayCode(testState)).toEqual(undefined);
-    expect(selectCurrentExpandedReportCode(testState)).toEqual(undefined);
+    expect(selectCurrentExpandedViewId(testState)).toEqual(undefined);
   });
 });
+*/

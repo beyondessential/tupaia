@@ -44,6 +44,7 @@ import { isEmpty } from 'lodash';
 import { View } from '../../components/View';
 import { fetchDashboardItemData, openEnlargedDialog } from '../../actions';
 import { selectCurrentOrgUnit } from '../../selectors';
+import { getViewIdFromInfoViewKey } from '../../utils';
 
 export class DashboardItem extends Component {
   componentWillMount() {
@@ -85,7 +86,7 @@ export class DashboardItem extends Component {
         viewContent={viewContent}
         viewConfig={viewConfig}
         organisationUnitName={organisationUnitName}
-        onEnlarge={() => onEnlarge(infoViewKey)}
+        onEnlarge={() => onEnlarge(getViewIdFromInfoViewKey(infoViewKey))}
         isSidePanelExpanded={isSidePanelExpanded}
       />
     );
@@ -127,7 +128,7 @@ const mapDispatchToProps = dispatch => ({
     dispatch(
       fetchDashboardItemData(organisationUnitCode, dashboardGroupId, viewId, infoViewKey, project),
     ),
-  onEnlarge: infoViewKey => dispatch(openEnlargedDialog(infoViewKey)),
+  onEnlarge: viewId => dispatch(openEnlargedDialog(viewId)),
   dispatch, // Necessary for merge props.
 });
 

@@ -19,7 +19,7 @@ import { getIsMatrix, getIsDataDownload, VIEW_CONTENT_SHAPE } from '../../compon
 import { isMobile } from '../../utils';
 import { DIALOG_Z_INDEX } from '../../styles';
 import {
-  selectCurrentExpandedReportCode,
+  selectCurrentInfoViewKey,
   selectCurrentExpandedViewContent,
   selectCurrentOrgUnit,
 } from '../../selectors';
@@ -125,7 +125,7 @@ const styles = {
 const mapStateToProps = state => ({
   ...state.enlargedDialog,
   isDrillDownVisible: state.drillDown.isVisible,
-  infoViewKey: selectCurrentExpandedReportCode(state),
+  infoViewKey: selectCurrentInfoViewKey(state),
   viewContent: selectCurrentExpandedViewContent(state),
   organisationUnitName: selectCurrentOrgUnit(state).name,
 });
