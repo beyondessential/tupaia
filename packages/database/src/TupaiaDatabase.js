@@ -266,14 +266,14 @@ export class TupaiaDatabase {
   }
 
   async createMany(recordType, records) {
-    // TODO could be more efficient to create all records in one query
-    const recordsCreated = [];
-    for (let i = 0; i < records.length; i++) {
-      const record = records[i];
-      const recordCreated = await this.create(recordType, record);
-      recordsCreated.push(recordCreated);
-    }
-    return recordsCreated;
+    // generate ids for any records that don't have them
+    const sanitizedRecords = records.map(r => (r.id ? r : { id: this.generateId(), ...r }));
+    this.query({
+      recordType,
+      queryMethod: QUERY_METHODS.INSERT,
+      queryMethodParameter: sanitizedRecords,
+    });
+    return sanitizedRecords;
   }
 
   /**

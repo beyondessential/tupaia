@@ -31,6 +31,21 @@ export const codeToId = async (db, table, code) => {
   return record.rows[0] && record.rows[0].id;
 };
 
+export const createForeignKeyConfig = (
+  localTable,
+  localColumn,
+  foreignTable,
+  foreignColumn = 'id',
+) => ({
+  name: `${localTable}_${localColumn}_${foreignTable}_${foreignColumn}_fk`,
+  table: foreignTable,
+  rules: {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  },
+  mapping: foreignColumn,
+});
+
 /**
  * @param {Object<string, any>} params
  * @throws {RequiredParameterError}
