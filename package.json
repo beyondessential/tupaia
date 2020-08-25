@@ -1,6 +1,17 @@
 {
-  "private": true,
   "name": "tupaia",
+  "private": true,
+  "description": "Mono-repo for the Tupaia project, mapping health data across the Pacific",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beyondessential/tupaia.git"
+  },
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "license": "SEE LICENSE IN LICENSE",
+  "bugs": {
+    "url": "https://github.com/beyondessential/tupaia-backlog/issues"
+  },
+  "homepage": "https://github.com/beyondessential/tupaia",
   "workspaces": {
     "packages": [
       "packages/*"
@@ -66,7 +77,6 @@
     "eslint-plugin-jest-formatting": "^2.0.0",
     "eslint-plugin-prettier": "^3.1.4",
     "jest": "^26.1.0",
-    "jest-chain": "^1.1.5",
     "jest-environment-jsdom-sixteen": "^1.0.3",
     "jest-extended": "^0.11.5",
     "mocha": "^6.2.0",

@@ -14,8 +14,7 @@ For contributor's code of conduct - see the [code-of-conduct.md](https://gitlab.
 
 First, install project dependencies by running `yarn install`.
 
-Find Tupaia Config Server .env Environment Variables in lastpass, and copy to repo's directory as `.env`
-(with no text before the `.`).
+Add a .env file to the root directory. The required variables are listed in `.env.example`.
 
 Set up postgres on your machine and create the database 'tupaia', with credentials matching those in
 the .env file.

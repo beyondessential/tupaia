@@ -2,7 +2,6 @@
   "name": "@tupaia/database",
   "version": "1.0.0",
   "main": "dist/index.js",
-  "private": true,
   "scripts": {
     "build": "babel src --out-dir dist --ignore '**/migrations','src/tests/**' --config-file '../../babel.config.json'",
     "build:ts": "tsc",
