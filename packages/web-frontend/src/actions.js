@@ -660,7 +660,6 @@ export function fetchDashboardItemData(
   dashboardGroupId,
   viewId,
   infoViewKey,
-  dashboardItemViewMode,
   startDate,
   endDate,
 ) {
@@ -670,7 +669,6 @@ export function fetchDashboardItemData(
     dashboardGroupId,
     viewId,
     infoViewKey,
-    dashboardItemViewMode,
     startDate,
     endDate,
   };

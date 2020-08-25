@@ -63,12 +63,12 @@ export class DashboardItem extends Component {
 
   updateCharts() {
     const { viewContent, viewConfig, fetchContent, infoViewKey } = this.props;
-    const { viewId, dashboardGroupId, organisationUnitCode, project } = viewConfig;
+    const { viewId, dashboardGroupId, organisationUnitCode } = viewConfig;
 
     if (!viewContent) {
-      fetchContent(organisationUnitCode, dashboardGroupId, viewId, infoViewKey, project);
+      fetchContent(organisationUnitCode, dashboardGroupId, viewId, infoViewKey);
     } else if (isEmpty(viewContent.data)) {
-      fetchContent(organisationUnitCode, dashboardGroupId, viewId, infoViewKey, project);
+      fetchContent(organisationUnitCode, dashboardGroupId, viewId, infoViewKey);
     }
   }
 
@@ -124,10 +124,8 @@ const mapStateToProps = (state, { infoViewKey }) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  fetchContent: (organisationUnitCode, dashboardGroupId, viewId, infoViewKey, project) =>
-    dispatch(
-      fetchDashboardItemData(organisationUnitCode, dashboardGroupId, viewId, infoViewKey, project),
-    ),
+  fetchContent: (organisationUnitCode, dashboardGroupId, viewId, infoViewKey) =>
+    dispatch(fetchDashboardItemData(organisationUnitCode, dashboardGroupId, viewId, infoViewKey)),
   onEnlarge: viewId => dispatch(openEnlargedDialog(viewId)),
   dispatch, // Necessary for merge props.
 });
