@@ -20,9 +20,8 @@ import map from './reducers/mapReducers';
 import disaster from './disaster/reducers';
 import project from './projects/reducers';
 import orgUnits from './reducers/orgUnitReducers';
-import { isMobile } from './utils';
+import { isMobile, getUniqueViewId } from './utils';
 import { LANDING } from './containers/OverlayDiv/constants';
-import { getUniqueViewId } from './utils';
 import { EMAIL_VERIFIED_STATUS } from './containers/EmailVerification';
 import { getInitialLocation } from './historyNavigation';
 import { selectMeasureBarItemCategoryById } from './selectors';
@@ -706,7 +705,7 @@ function enlargedDialog(
   state = {
     isVisible: false,
     isLoading: false,
-    viewContent: { type: '', data: [] },
+    viewContent: null,
     organisationUnitName: '',
     errorMessage: '',
     startDate: null,
@@ -729,7 +728,7 @@ function enlargedDialog(
       return {
         ...state,
         isVisible: false,
-        viewContent: {},
+        viewContent: null,
         organisationUnitName: '',
       };
 

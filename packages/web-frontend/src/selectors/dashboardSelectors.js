@@ -46,8 +46,12 @@ export const selectCurrentInfoViewKey = createSelector(
 );
 
 export const selectCurrentExpandedViewContent = createSelector(
-  [selectCurrentInfoViewKey, state => state.dashboard.viewResponses],
-  (infoViewKey, viewResponses) => {
-    return viewResponses[infoViewKey];
+  [
+    state => state.enlargedDialog.viewContent,
+    selectCurrentInfoViewKey,
+    state => state.dashboard.viewResponses,
+  ],
+  (viewContent, infoViewKey, viewResponses) => {
+    return viewContent || viewResponses[infoViewKey];
   },
 );
