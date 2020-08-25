@@ -58,7 +58,6 @@
     "@babel/runtime-corejs2": "^7.10.2",
     "@beyondessential/eslint-config-beyondessential": "2.5.0",
     "@tupaia/utils": "1.0.0",
-    "@types/lodash.groupby": "^4.6.0",
     "babel-eslint": "^9.0.0",
     "babel-loader": "^8.0.0",
     "babel-plugin-istanbul": "^4.1.6",
