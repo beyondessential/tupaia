@@ -47,7 +47,7 @@ const ENTITY_TYPES = {
   WORLD,
 };
 
-const ORG_UNIT_ENTITY_TYPES = {
+export const ORG_UNIT_ENTITY_TYPES = {
   WORLD,
   COUNTRY,
   DISTRICT,

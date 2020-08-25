@@ -7,7 +7,7 @@ import morgan from 'morgan';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import { TupaiaDatabase, ModelRegistry } from '@tupaia/database';
+import { TupaiaDatabase, ModelRegistry, EntityHierarchyCacher } from '@tupaia/database';
 import { Authenticator } from '@tupaia/auth';
 import { getRoutesForApiV1 } from './apiV1';
 import { bindUserSessions } from './authSession';
@@ -17,7 +17,7 @@ import { handleError } from './utils';
 import './log';
 import winston from 'winston';
 
-export function createApp() {
+export async function createApp() {
   const app = express();
 
   app.server = http.createServer(app);
@@ -47,6 +47,10 @@ export function createApp() {
 
   // Connect to db
   const database = new TupaiaDatabase();
+
+  // Pre-cache entity hierarchy details
+  const entityHierarchyCacher = new EntityHierarchyCacher(database);
+  await entityHierarchyCacher.buildAndCacheAll();
 
   // Attach database to legacy singleton models
   BaseModel.database = database;

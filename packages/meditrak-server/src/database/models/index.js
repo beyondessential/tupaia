@@ -16,7 +16,6 @@ export { DhisSyncQueueModel as DhisSyncQueue } from './DhisSyncQueue';
 export { DisasterEventModel as DisasterEvent } from './DisasterEvent';
 export { DisasterModel as Disaster } from './Disaster';
 export { EntityModel as Entity } from './Entity';
-export { EntityRelationModel as EntityRelation } from './EntityRelation';
 export { FacilityModel as Facility } from './Facility';
 export { FeedItemModel as FeedItem } from './FeedItem';
 export { GeographicalAreaModel as GeographicalArea } from './GeographicalArea';
