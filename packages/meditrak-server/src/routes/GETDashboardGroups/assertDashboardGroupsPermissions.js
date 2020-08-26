@@ -46,7 +46,7 @@ export const assertDashboardGroupsPermissions = async (accessPolicy, models, das
   ]);
 
   if (!filteredDashboardGroups.length) {
-    throw new Error('You do not have permissions for this dashboard report');
+    throw new Error('You do not have permissions for this dashboard group');
   }
 
   return true;

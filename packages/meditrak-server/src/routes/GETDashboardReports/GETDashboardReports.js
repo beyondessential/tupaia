@@ -16,7 +16,6 @@ import {
  */
 export class GETDashboardReports extends GETHandler {
   async assertUserHasAccess() {
-    // Is there a way to check they have any permission group that may contain survey responses?
     return this.assertPermissions(allowNoPermissions);
   }
 
