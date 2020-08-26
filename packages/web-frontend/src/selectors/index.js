@@ -39,9 +39,11 @@ export {
 } from './projectSelectors';
 
 export {
-  selectCurrentExpandedReportCode,
+  selectCurrentInfoViewKey,
   selectIsDashboardGroupCodeDefined,
   selectCurrentDashboardGroupCode,
+  selectCurrentExpandedViewContent,
+  selectCurrentExpandedViewId,
 } from './dashboardSelectors';
 
 export {

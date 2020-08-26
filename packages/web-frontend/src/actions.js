@@ -660,7 +660,6 @@ export function fetchDashboardItemData(
   dashboardGroupId,
   viewId,
   infoViewKey,
-  dashboardItemViewMode,
   startDate,
   endDate,
 ) {
@@ -670,7 +669,6 @@ export function fetchDashboardItemData(
     dashboardGroupId,
     viewId,
     infoViewKey,
-    dashboardItemViewMode,
     startDate,
     endDate,
   };
@@ -1093,12 +1091,10 @@ export function closeEnlargedDialog() {
   };
 }
 
-export function openEnlargedDialog(viewContent, organisationUnitName, infoViewKey) {
+export function openEnlargedDialog(viewId) {
   return {
     type: OPEN_ENLARGED_DIALOG,
-    viewContent,
-    organisationUnitName,
-    infoViewKey,
+    viewId,
   };
 }
 

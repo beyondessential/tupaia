@@ -18,6 +18,8 @@ import {
   selectCurrentMeasureId,
   selectIsProject,
   selectMeasureBarItemById,
+  selectCurrentInfoViewKey,
+  selectCurrentExpandedViewContent,
 } from './selectors';
 import {
   ATTEMPT_CHANGE_PASSWORD,
@@ -973,7 +975,6 @@ function* watchAttemptAttemptDrillDown() {
 // (specific PR for it)
 function* resetToProjectSplash() {
   yield put(clearMeasureHierarchy());
-  yield put(setProject(DEFAULT_PROJECT_CODE));
 }
 
 function* watchUserChangesAndUpdatePermissions() {
@@ -986,9 +987,19 @@ function* watchGoHomeAndResetToProjectSplash() {
   yield takeLatest(GO_HOME, resetToProjectSplash);
 }
 
+function* resetToDefaultProject() {
+  // TODO: make sure that this function is considered in the GO_HOME PR.
+  yield put(setProject(DEFAULT_PROJECT_CODE));
+}
+
+function* watchGoHomeAndResetToDefaultProject() {
+  yield takeLatest(GO_HOME, resetToDefaultProject);
+}
+
 function* fetchEnlargedDialogViewContentForPeriod(action) {
   const state = yield select();
-  const { viewContent, infoViewKey } = state.enlargedDialog;
+  const viewContent = selectCurrentExpandedViewContent(state);
+  const infoViewKey = selectCurrentInfoViewKey(state);
   const { viewId, organisationUnitCode, dashboardGroupId } = viewContent;
 
   const parameters = {
@@ -1046,5 +1057,6 @@ export default [
   refreshBrowserWhenFinishingUserSession,
   watchRequestProjectAccess,
   watchGoHomeAndResetToProjectSplash,
+  watchGoHomeAndResetToDefaultProject,
   watchMeasurePeriodChange,
 ];
