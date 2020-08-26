@@ -45,16 +45,7 @@ export const reactToInitialState = store => {
 
   const { userPage, projectSelector, ...otherComponents } = getInitialLocationComponents();
   if (userPage) {
-    switch (userPage) {
-      case PASSWORD_RESET_PREFIX:
-        dispatch(setPasswordResetToken(otherComponents[URL_COMPONENTS.PASSWORD_RESET_TOKEN]));
-        dispatch(openUserPage(DIALOG_PAGE_RESET_PASSWORD));
-        break;
-      case VERIFY_EMAIL_PREFIX:
-        dispatch(setVerifyEmailToken(otherComponents[URL_COMPONENTS.VERIFY_EMAIL_TOKEN]));
-        break;
-      default:
-    }
+    reactToUserPage(userPage, otherComponents, dispatch);
     return;
   }
 
@@ -66,6 +57,7 @@ export const reactToInitialState = store => {
 
   dispatch(setOverlayComponent(null));
   dispatch(setProject(otherComponents[URL_COMPONENTS.PROJECT]));
+
   if (otherComponents[URL_COMPONENTS.ORG_UNIT])
     dispatch(setOrgUnit(otherComponents[URL_COMPONENTS.ORG_UNIT]));
 
@@ -74,6 +66,20 @@ export const reactToInitialState = store => {
 
   if (otherComponents[URL_COMPONENTS.REPORT])
     dispatch(openEnlargedDialog(otherComponents[URL_COMPONENTS.REPORT]));
+};
+
+const reactToUserPage = (userPage, initialComponents, dispatch) => {
+  switch (userPage) {
+    case PASSWORD_RESET_PREFIX:
+      dispatch(setPasswordResetToken(initialComponents[URL_COMPONENTS.PASSWORD_RESET_TOKEN]));
+      dispatch(openUserPage(DIALOG_PAGE_RESET_PASSWORD));
+      break;
+    case VERIFY_EMAIL_PREFIX:
+      dispatch(setVerifyEmailToken(initialComponents[URL_COMPONENTS.VERIFY_EMAIL_TOKEN]));
+      break;
+    default:
+      console.error('Unhandled user page', userPage);
+  }
 };
 
 export const historyMiddleware = store => next => action => {
