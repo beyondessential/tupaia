@@ -35,6 +35,6 @@ export class GETDashboardGroups extends GETHandler {
   async findRecords(criteria, options) {
     const dashboardGroups = await this.database.find(this.recordType, criteria, options);
 
-    return filterDashboardGroupsByPermissions(this.req.accessPolicy, this.models, dashboardGroups);
+    return filterDashboardGroupsByPermissions(this.accessPolicy, this.models, dashboardGroups);
   }
 }

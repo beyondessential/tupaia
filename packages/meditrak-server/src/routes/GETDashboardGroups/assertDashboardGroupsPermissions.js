@@ -5,8 +5,13 @@
 import keyBy from 'lodash.keyby';
 
 import { hasAccessToEntityForVisualisation } from '../utilities';
+import { hasBESAdminAccess } from '../../permissions';
 
 export const filterDashboardGroupsByPermissions = async (accessPolicy, models, dashboardGroups) => {
+  if (hasBESAdminAccess(accessPolicy)) {
+    return dashboardGroups;
+  }
+
   const allEntityCodes = [...new Set(dashboardGroups.map(dg => dg.organisationUnitCode))];
   const entities = await models.entity.find({ code: allEntityCodes });
   const entityByCode = keyBy(entities, 'code');

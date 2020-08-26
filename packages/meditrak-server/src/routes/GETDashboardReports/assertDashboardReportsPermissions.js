@@ -6,12 +6,17 @@ import flattenDeep from 'lodash.flattendeep';
 import keyBy from 'lodash.keyby';
 
 import { hasAccessToEntityForVisualisation } from '../utilities';
+import { hasBESAdminAccess } from '../../permissions';
 
 export const filterDashboardReportsByPermissions = async (
   accessPolicy,
   models,
   dashboardReports,
 ) => {
+  if (hasBESAdminAccess(accessPolicy)) {
+    return dashboardReports;
+  }
+
   const dashboardReportIds = dashboardReports.map(d => d.id);
   const dashboardGroupsGroupedByReportId = await models.dashboardGroup.findDashboardGroupsGroupedByReportId(
     dashboardReportIds,

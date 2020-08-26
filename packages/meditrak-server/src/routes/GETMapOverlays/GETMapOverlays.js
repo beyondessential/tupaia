@@ -33,6 +33,6 @@ export class GETMapOverlays extends GETHandler {
   async findRecords(criteria, options) {
     const mapOverlays = await this.database.find(this.recordType, criteria, options);
 
-    return filterMapOverlaysByPermissions(this.req.accessPolicy, this.models, mapOverlays);
+    return filterMapOverlaysByPermissions(this.accessPolicy, this.models, mapOverlays);
   }
 }

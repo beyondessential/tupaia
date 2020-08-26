@@ -5,7 +5,13 @@
 import flattenDeep from 'lodash.flattendeep';
 import keyBy from 'lodash.keyby';
 
+import { hasBESAdminAccess } from '../../permissions';
+
 export const filterMapOverlaysByPermissions = async (accessPolicy, models, mapOverlays) => {
+  if (hasBESAdminAccess(accessPolicy)) {
+    return mapOverlays;
+  }
+
   const allEntityCodes = [...new Set(flattenDeep(mapOverlays.map(m => m.countryCodes)))];
   const entities = await models.entity.find({ code: allEntityCodes });
   const entityByCode = keyBy(entities, 'code');
