@@ -23,6 +23,10 @@ import {
   setMeasure,
   setOverlayComponent,
   goHome,
+  setVerifyEmailToken,
+  setPasswordResetToken,
+  openUserPage,
+  DIALOG_PAGE_RESET_PASSWORD,
   openEnlargedDialog,
 } from '../actions';
 import { setProject } from '../projects/actions';
@@ -33,7 +37,7 @@ import {
   attemptPushHistory,
   getInitialLocationComponents,
 } from './historyNavigation';
-import { URL_COMPONENTS } from './constants';
+import { URL_COMPONENTS, PASSWORD_RESET_PREFIX, VERIFY_EMAIL_PREFIX } from './constants';
 
 export const reactToInitialState = store => {
   const { dispatch: rawDispatch } = store;
@@ -41,8 +45,8 @@ export const reactToInitialState = store => {
 
   const { userPage, projectSelector, ...otherComponents } = getInitialLocationComponents();
   if (userPage) {
-    // TODO: Implemented in userPage PR
-    dispatch(goHome());
+    reactToUserPage(userPage, otherComponents, dispatch);
+    return;
   }
 
   if (projectSelector) {
@@ -53,6 +57,7 @@ export const reactToInitialState = store => {
 
   dispatch(setOverlayComponent(null));
   dispatch(setProject(otherComponents[URL_COMPONENTS.PROJECT]));
+
   if (otherComponents[URL_COMPONENTS.ORG_UNIT])
     dispatch(setOrgUnit(otherComponents[URL_COMPONENTS.ORG_UNIT]));
 
@@ -61,6 +66,20 @@ export const reactToInitialState = store => {
 
   if (otherComponents[URL_COMPONENTS.REPORT])
     dispatch(openEnlargedDialog(otherComponents[URL_COMPONENTS.REPORT]));
+};
+
+const reactToUserPage = (userPage, initialComponents, dispatch) => {
+  switch (userPage) {
+    case PASSWORD_RESET_PREFIX:
+      dispatch(setPasswordResetToken(initialComponents[URL_COMPONENTS.PASSWORD_RESET_TOKEN]));
+      dispatch(openUserPage(DIALOG_PAGE_RESET_PASSWORD));
+      break;
+    case VERIFY_EMAIL_PREFIX:
+      dispatch(setVerifyEmailToken(initialComponents[URL_COMPONENTS.VERIFY_EMAIL_TOKEN]));
+      break;
+    default:
+      console.error('Unhandled user page', userPage);
+  }
 };
 
 export const historyMiddleware = store => next => action => {
