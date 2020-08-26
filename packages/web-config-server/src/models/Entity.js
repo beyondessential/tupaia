@@ -13,9 +13,8 @@ import {
   translateRegionForFrontend,
 } from '/utils/geoJson';
 import { BaseModel } from './BaseModel';
-import { EntityRelation } from './EntityRelation';
+import { AncestorDescendantRelation } from './AncestorDescendantRelation';
 import { Project } from './Project';
-import { EntityHierarchyBuilder } from './helpers/EntityHierarchyBuilder';
 
 const CASE = 'case';
 const CASE_CONTACT = 'case_contact';
@@ -119,8 +118,6 @@ export class Entity extends BaseModel {
     VILLAGE,
   };
 
-  static hierarchyBuilder = new EntityHierarchyBuilder(Entity, EntityRelation);
-
   constructor() {
     super();
     this.cache = {};
@@ -130,8 +127,9 @@ export class Entity extends BaseModel {
    * Fetch all ancestors of the current entity, by default excluding 'World'
    * @param {string} id The id of the entity to fetch ancestors of
    */
-  async getAncestors(hierarchyId) {
-    return Entity.hierarchyBuilder.getAncestors(this.id, hierarchyId);
+  async getAncestors(hierarchyId, criteria) {
+    const ids = await AncestorDescendantRelation.getAncestorIds(this.id, hierarchyId, criteria);
+    return Entity.find({ id: ids });
   }
 
   /**
@@ -139,8 +137,7 @@ export class Entity extends BaseModel {
    * @param {string} id The id of the entity to fetch ancestor codes of
    */
   async getAncestorCodes(hierarchyId) {
-    const ancestors = await this.getAncestors(hierarchyId);
-    return ancestors.map(({ code }) => code);
+    return AncestorDescendantRelation.getAncestorCodes(this.id, hierarchyId);
   }
 
   async getCountry(hierarchyId) {
@@ -149,11 +146,13 @@ export class Entity extends BaseModel {
   }
 
   async getChildren(hierarchyId) {
-    return Entity.hierarchyBuilder.getChildren(this.id, hierarchyId);
+    const ids = await AncestorDescendantRelation.getChildIds(this.id, hierarchyId);
+    return Entity.find({ id: ids });
   }
 
   async getDescendants(hierarchyId) {
-    return Entity.hierarchyBuilder.getDescendants(this.id, hierarchyId);
+    const ids = await AncestorDescendantRelation.getDescendantIds(this.id, hierarchyId);
+    return Entity.find({ id: ids });
   }
 
   static async getFacilitiesOfOrgUnit(organisationUnitCode) {
@@ -163,22 +162,21 @@ export class Entity extends BaseModel {
 
   async getAncestorOfType(entityType, hierarchyId) {
     if (this.type === entityType) return this;
-    const ancestors = await this.getAncestors(hierarchyId);
-    return ancestors.find(ancestor => ancestor.type === entityType);
+    const [ancestor] = await this.getAncestors(hierarchyId, { type: entityType });
+    return ancestor;
   }
 
   // assumes all entities of the given type are found at the same level in the hierarchy tree
   async getDescendantsOfType(entityType, hierarchyId) {
     if (this.type === entityType) return [this];
-    const descendants = await this.getDescendants(hierarchyId);
-    return descendants.filter(d => d.type === entityType);
+    return this.getDescendants(hierarchyId, { type: entityType });
   }
 
   async getNearestOrgUnitDescendants(hierarchyId) {
     const orgUnitEntityTypes = new Set(Object.values(Entity.orgUnitEntityTypes));
     // if this is an org unit, don't worry about going deeper
     if (orgUnitEntityTypes.has(this.type)) return [this];
-
+    // TODO check that descendants are still returned in the same order
     // get descendants and return all of the first type that is an org unit type
     // we rely on descendants being returned in order, with those higher in the hierarchy first
     const descendants = await this.getDescendants(hierarchyId);

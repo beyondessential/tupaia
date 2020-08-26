@@ -13,4 +13,5 @@ export { Facility } from './Facility';
 export { EntityHierarchy } from './EntityHierarchy';
 export { EntityRelation } from './EntityRelation';
 export { Entity } from './Entity';
+export { AncestorDescendantRelation } from './AncestorDescendantRelation';
 export { Project } from './Project';
