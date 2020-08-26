@@ -61,9 +61,9 @@ export async function importSurveyResponses(req, res) {
         const deletedColumnHeaders = new Set();
         const questionIds = [];
         const newSurveyResponseIds = {};
+        const survey = await getSurveyFromSheet(models, sheet);
 
         // Create new survey responses where required
-        let firstSurveyResponseId;
         const { maxColumnIndex, maxRowIndex } = getMaxRowColumnIndex(sheet);
 
         for (let columnIndex = 0; columnIndex <= maxColumnIndex; columnIndex++) {
@@ -77,22 +77,12 @@ export async function importSurveyResponses(req, res) {
             // A column representing a survey response
             try {
               if (checkIsNewSurveyResponse(columnHeader)) {
-                // Create a new survey response
-                if (!firstSurveyResponseId) {
-                  throw new Error(
-                    'Each tab of the import file must have at least one previously submitted survey as the first entry',
-                  );
-                }
-                const firstSurveyResponse = await transactingModels.surveyResponse.findById(
-                  firstSurveyResponseId,
-                );
                 const entityCode = getInfoForColumn(sheet, columnIndex, 'Entity Code');
                 const entity = await transactingModels.entity.findOne({ code: entityCode });
-
                 const user = await transactingModels.user.findById(req.userId);
                 const surveyDate = getDateForColumn(sheet, columnIndex);
                 const newSurveyResponse = await transactingModels.surveyResponse.create({
-                  survey_id: firstSurveyResponse.survey_id, // All survey responses within a sheet should be for the same survey
+                  survey_id: survey.id, // All survey responses within a sheet should be for the same survey
                   assessor_name: `${user.first_name} ${user.last_name}`,
                   user_id: user.id,
                   entity_id: entity.id,
@@ -105,9 +95,6 @@ export async function importSurveyResponses(req, res) {
                 // Validate that every header takes id form, i.e. is an existing or deleted response
                 await hasContent(columnHeader);
                 await takesIdForm(columnHeader);
-                if (!firstSurveyResponseId) {
-                  firstSurveyResponseId = columnHeader;
-                }
               }
             } catch (error) {
               throw new ImportValidationError(
@@ -230,26 +217,13 @@ const getEntitiesByPermissionGroup = async (models, sheets) => {
   const entitiesGroupedByPermissionGroup = {};
 
   for (let sheetIndex = 0; sheetIndex < sheets.length; sheetIndex++) {
-    let firstSurveyResponseId;
-    let firstSurveyResponse;
-    let permissionGroup;
-    let survey;
-
     const sheet = sheets[sheetIndex];
     const { maxColumnIndex } = getMaxRowColumnIndex(sheet);
+    const survey = await getSurveyFromSheet(models, sheet);
+    const permissionGroup = await models.permissionGroup.findById(survey.permission_group_id);
 
     for (let columnIndex = 0; columnIndex <= maxColumnIndex; columnIndex++) {
-      const columnHeader = getColumnHeader(sheet, columnIndex);
-
       if (!isInfoColumn(columnIndex)) {
-        //Will only be run once per sheet so won't be db expensive
-        if (!firstSurveyResponseId) {
-          firstSurveyResponseId = columnHeader;
-          firstSurveyResponse = await models.surveyResponse.findById(firstSurveyResponseId);
-          survey = await models.survey.findById(firstSurveyResponse.survey_id);
-          permissionGroup = await models.permissionGroup.findById(survey.permission_group_id);
-        }
-
         const entityCode = getInfoForColumn(sheet, columnIndex, 'Entity Code');
 
         if (!entitiesGroupedByPermissionGroup[permissionGroup.name]) {
@@ -336,4 +310,17 @@ function checkIsNewSurveyResponse(columnHeader) {
 function getCellContents(sheet, columnIndex, rowIndex) {
   const cell = sheet[xlsx.utils.encode_cell({ c: columnIndex, r: rowIndex })];
   return cell === undefined ? '' : cell.v; // Extract the value of the cell if it wasn't blank
+}
+
+async function getSurveyFromSheet(models, sheet) {
+  const firstSurveyResponseId = getColumnHeader(sheet, INFO_COLUMN_HEADERS.length);
+
+  if (!firstSurveyResponseId) {
+    throw new Error(
+      'Each tab of the import file must have at least one previously submitted survey as the first entry',
+    );
+  }
+
+  const firstSurveyResponse = await models.surveyResponse.findById(firstSurveyResponseId);
+  return models.survey.findById(firstSurveyResponse.survey_id);
 }

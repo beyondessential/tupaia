@@ -117,7 +117,9 @@ export class DatabaseModel {
 
   async findManyByColumn(column, values) {
     if (!values) {
-      throw new Error(`Cannot search for ${this.databaseType} by id without providing the values`);
+      throw new Error(
+        `Cannot search for ${this.databaseType} by ${column} without providing the values`,
+      );
     }
     const records = [];
     const batchSize = this.database.maxBindingsPerQuery;
