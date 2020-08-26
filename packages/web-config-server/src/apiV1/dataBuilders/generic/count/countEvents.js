@@ -5,7 +5,12 @@
 
 import { getSortByKey } from '@tupaia/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { countEventsThatSatisfyConditions, groupEvents } from '/apiV1/dataBuilders/helpers';
+import {
+  countEventsThatSatisfyConditions,
+  groupEvents,
+  getAllDataElementCodes,
+  composeDataByDataClass,
+} from '/apiV1/dataBuilders/helpers';
 
 /**
  * Configuration schema
@@ -33,21 +38,31 @@ export class CountEventsBuilder extends DataBuilder {
   }
 
   async fetchResults() {
-    const dataElementCodes = Object.keys(this.config.dataValues || {});
+    const dataElementCodes = this.getDataElementCodes();
     const events = await this.fetchEvents({ useDeprecatedApi: false, dataElementCodes });
     return events;
+  }
+
+  getDataElementCodes() {
+    const { groupBy } = this.config;
+    if (groupBy) {
+      return getAllDataElementCodes(groupBy);
+    }
+    return Object.keys(this.config.dataValues || {});
   }
 
   async buildData(events) {
     const eventGroups = await this.groupEvents(events);
 
-    return Object.entries(eventGroups)
+    const groupedData = Object.entries(eventGroups)
       .reduce(
         (result, [groupName, eventsForGroup]) =>
           result.concat(this.buildDataForGroup(eventsForGroup, groupName)),
         [],
       )
       .sort(getSortByKey('name'));
+
+    return this.transformSeries(groupedData);
   }
 
   async groupEvents(events) {
@@ -60,6 +75,11 @@ export class CountEventsBuilder extends DataBuilder {
     const value = countEventsThatSatisfyConditions(events, { dataValues });
 
     return [{ name, value }];
+  }
+
+  transformSeries(data) {
+    const { series } = this.config;
+    return series ? this.sortDataByName(composeDataByDataClass(data, series)) : data;
   }
 }
 
