@@ -27,7 +27,7 @@ export const filterDashboardReportsByPermissions = async (
   for (let i = 0; i < Object.entries(dashboardGroupsGroupedByReportId).length; i++) {
     const entry = Object.entries(dashboardGroupsGroupedByReportId)[i];
     const [dashboardReportId, dashboardGroups] = entry;
-    let hasAccessToDashboardReport = false;
+    let hasAccessToDashboardGroup = false;
 
     for (let j = 0; j < dashboardGroups.length; j++) {
       const dashboardGroup = dashboardGroups[j];
@@ -36,7 +36,7 @@ export const filterDashboardReportsByPermissions = async (
 
       //permissionGroup and organisationUnitCode are the 2 values for checking access for a dashboard group
       //If there are multiple dashboardGroups having the same permissionGroup and organisationUnitCode, we can reuse the same access value.
-      let hasAccessToDashboardGroup = accessCache[`${permissionGroup}|${organisationUnitCode}`];
+      hasAccessToDashboardGroup = accessCache[`${permissionGroup}|${organisationUnitCode}`];
 
       if (hasAccessToDashboardGroup === undefined) {
         hasAccessToDashboardGroup = await hasAccessToEntityForVisualisation(
@@ -50,12 +50,11 @@ export const filterDashboardReportsByPermissions = async (
 
       //If a user has access to 1 dashboard group of a report => the user is allowed to see the report.
       if (hasAccessToDashboardGroup) {
-        hasAccessToDashboardReport = true;
         break;
       }
     }
 
-    if (hasAccessToDashboardReport) {
+    if (hasAccessToDashboardGroup) {
       filteredDashboardReports.push(dashboardReportById[dashboardReportId]);
     }
   }
