@@ -12,6 +12,7 @@ const FIELDS = [
   {
     Header: 'Code',
     source: 'code',
+    type: 'tooltip',
   },
   {
     Header: 'Name',
@@ -40,6 +41,7 @@ const FIELDS = [
   {
     Header: 'Permission Group',
     source: 'userGroup',
+    type: 'tooltip',
     editConfig: {
       optionsEndpoint: 'permissionGroups',
       optionLabelKey: 'name',

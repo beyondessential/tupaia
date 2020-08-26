@@ -12,6 +12,7 @@ const FIELDS = [
   {
     Header: 'Email Address',
     source: 'email',
+    type: 'tooltip',
   },
   {
     Header: 'Phone Number',
@@ -24,6 +25,7 @@ const FIELDS = [
   {
     Header: 'Employer',
     source: 'employer',
+    type: 'tooltip',
   },
 ];
 

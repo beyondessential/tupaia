@@ -21,6 +21,7 @@ const FIELDS = [
   {
     Header: 'Data Builder',
     source: 'dataBuilder',
+    type: 'tooltip',
   },
   {
     Header: 'Data Builder Config',

@@ -11,6 +11,7 @@ const SURVEY_FIELDS = [
   {
     Header: 'Name',
     source: 'name',
+    type: 'tooltip',
   },
   {
     Header: 'Code',
