@@ -10,8 +10,8 @@ import {
   groupKeysByValueJson,
 } from '../../../builders/helpers';
 import { Aggregation } from '../../../types';
-import { AGGREGATION_RESPONSE_CONFIG } from './helpers.fixtures';
-import { createAggregator } from './helpers.stubs';
+import { createAggregator } from '../stubs';
+import { ANALYTIC_RESPONSE_CONFIG } from './helpers.fixtures';
 
 describe('helpers', () => {
   describe('extractDataElementCodesFromFormula()', () => {
@@ -104,9 +104,9 @@ describe('helpers', () => {
         ],
       ];
 
-      it.each(testData)('%s', (_, object, expected) =>
-        expect(groupKeysByValueJson(object)).toStrictEqual(expected),
-      );
+      it.each(testData)('%s', (_, object, expected) => {
+        expect(groupKeysByValueJson(object)).toStrictEqual(expected);
+      });
     });
 
     describe('array values', () => {
@@ -143,42 +143,46 @@ describe('helpers', () => {
         ],
       ];
 
-      it.each(testData)('%s', (_, object, expected) =>
-        expect(groupKeysByValueJson(object)).toStrictEqual(expected),
-      );
+      it.each(testData)('%s', (_, object, expected) => {
+        expect(groupKeysByValueJson(object)).toStrictEqual(expected);
+      });
     });
   });
 
   describe('fetchAnalytics()', () => {
-    const aggregator = createAggregator(AGGREGATION_RESPONSE_CONFIG);
+    const aggregator = createAggregator(Object.values(ANALYTIC_RESPONSE_CONFIG));
 
     it('uses the provided fetchOptions', async () => {
       const fetchOptions = { organisationUnitCodes: ['TO'] };
       await fetchAnalytics(
         aggregator,
-        { BCD01: AGGREGATION_RESPONSE_CONFIG.BCD01.expectedAggregations },
+        { BCD01: ANALYTIC_RESPONSE_CONFIG.BCD01.aggregations },
         fetchOptions,
       );
 
-      expect(aggregator.fetchAnalytics).toHaveBeenCalledWith(
+      expect(aggregator.fetchAnalytics).toHaveBeenCalledOnceWith(
         expect.anything(),
         fetchOptions,
         expect.anything(),
       );
     });
 
-    it('fetches the expected analytics for a variety of same/different aggregations per data element', () => {
+    it('fetches the expected analytics for a variety of same/different aggregations per data element', async () => {
       const aggregationsByCode = {
-        BCD01: AGGREGATION_RESPONSE_CONFIG.BCD01.expectedAggregations,
-        BCD02: AGGREGATION_RESPONSE_CONFIG.BCD02.expectedAggregations,
-        BCD03: AGGREGATION_RESPONSE_CONFIG.BCD03.expectedAggregations,
-        BCD04: AGGREGATION_RESPONSE_CONFIG.BCD04.expectedAggregations,
+        BCD01: ANALYTIC_RESPONSE_CONFIG.BCD01.aggregations,
+        BCD02: ANALYTIC_RESPONSE_CONFIG.BCD02.aggregations,
+        BCD03: ANALYTIC_RESPONSE_CONFIG.BCD03.aggregations,
+        BCD04: ANALYTIC_RESPONSE_CONFIG.BCD04.aggregations,
       };
-      const expectedResults = [{ value: 1 }, { value: 2 }, { value: 3 }, { value: 4 }];
 
-      return expect(fetchAnalytics(aggregator, aggregationsByCode, {})).resolves.toStrictEqual(
-        expectedResults,
-      );
+      return expect(
+        fetchAnalytics(aggregator, aggregationsByCode, {}),
+      ).resolves.toIncludeSameMembers([
+        ANALYTIC_RESPONSE_CONFIG.BCD01.analytic,
+        ANALYTIC_RESPONSE_CONFIG.BCD02.analytic,
+        ANALYTIC_RESPONSE_CONFIG.BCD03.analytic,
+        ANALYTIC_RESPONSE_CONFIG.BCD04.analytic,
+      ]);
     });
   });
 });

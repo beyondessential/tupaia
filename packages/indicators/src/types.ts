@@ -6,11 +6,14 @@
 import { Aggregator } from '@tupaia/aggregator';
 import { DatabaseType } from '@tupaia/database';
 
-export interface Analytic {
-  readonly dataElement: string;
+export interface AnalyticValue {
   readonly organisationUnit: string;
   readonly period: string;
   readonly value: number;
+}
+
+export interface Analytic extends AnalyticValue {
+  readonly dataElement: string;
 }
 
 export interface IndicatorType extends DatabaseType {
@@ -28,8 +31,10 @@ export interface ModelRegistry {
   readonly indicator: DatabaseModel<IndicatorType>;
 }
 
-export interface Builder<C extends {}> {
-  (input: { aggregator: Aggregator; config: C; fetchOptions: FetchOptions }): Promise<Analytic[]>;
+export interface Builder<C extends {} = {}> {
+  (input: { aggregator: Aggregator; config: C; fetchOptions: FetchOptions }): Promise<
+    AnalyticValue[]
+  >;
 }
 
 export interface Aggregation {

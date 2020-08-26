@@ -3806,6 +3806,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
+"@beyondessential/arithmetic@beyondessential/arithmetic#v1.0.1":
+  version "1.0.0"
+  resolved "git+ssh://git@github.com/beyondessential/arithmetic.git#107e588b06db80ea837cc6bc1b5573e52df37318"
+
 "@beyondessential/eslint-config-beyondessential@2.5.0":
   version "2.5.0"
   resolved "https://registry.yarnpkg.com/@beyondessential/eslint-config-beyondessential/-/eslint-config-beyondessential-2.5.0.tgz#f68ec767054e4f68a2b03b45a5ca07f79f231a02"
