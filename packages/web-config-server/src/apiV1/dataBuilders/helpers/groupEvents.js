@@ -4,6 +4,7 @@
  */
 
 import { Entity } from '/models';
+import { getEventsThatSatisfyConditions } from './checkAgainstConditions';
 
 const getOrgUnits = async ({ parentCode, type }) => {
   const parentOrgUnit = await Entity.findOne({ code: parentCode });
@@ -60,11 +61,28 @@ const groupByAllOrgUnitParentNames = async (events, options) => {
   return eventsByOrgUnitName;
 };
 
+const groupByDataValues = (events, options) => {
+  const groupedEvents = {};
+  for (const groupingName of Object.keys(options)) {
+    groupedEvents[groupingName] = getEventsThatSatisfyConditions(events, options[groupingName]);
+  }
+  return groupedEvents;
+};
+
 const GROUP_BY_VALUE_TO_METHOD = {
   allOrgUnitNames: groupByAllOrgUnitNames,
   allOrgUnitParentNames: groupByAllOrgUnitParentNames,
+  nothing: events => {
+    return { all: events };
+  }, // used for testing
+  dataValues: groupByDataValues,
 };
 
+/**
+ * @param {array} events
+ * @param {object} groupBySpecs
+ * @returns {Promise<object>} object of groupName => eventsForGroup
+ */
 export const groupEvents = async (events, groupBySpecs = {}) => {
   const { type, options } = groupBySpecs;
   const groupByMethod = GROUP_BY_VALUE_TO_METHOD[type];
@@ -73,4 +91,19 @@ export const groupEvents = async (events, groupBySpecs = {}) => {
   }
 
   return groupByMethod(events, options);
+};
+
+/**
+ * @param {object} groupBySpecs
+ * @returns {array<string>} data element codes used in this grouping config
+ */
+export const getAllDataElementCodes = groupBySpecs => {
+  if (groupBySpecs.type === 'dataValues') {
+    let allDataElementCodes = [];
+    Object.values(groupBySpecs.options).forEach(grouping => {
+      allDataElementCodes = [...allDataElementCodes, ...Object.keys(grouping.dataValues)];
+    });
+    return allDataElementCodes;
+  }
+  return [];
 };

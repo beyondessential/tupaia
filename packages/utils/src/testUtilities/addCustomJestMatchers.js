@@ -32,11 +32,11 @@ class JestMatcherFactory {
   /**
    * @param {MatcherConfig} config
    */
-  create = config => (received, ...expected) => {
+  create = config => async (received, ...expected) => {
     const { description, matcher } = config;
 
     try {
-      matcher(this.expect(received), expected);
+      await matcher(this.expect(received), expected);
     } catch (error) {
       const diff = this.extractDiffFromMessage(error.message);
       return this.createFailureResponse(description, diff);

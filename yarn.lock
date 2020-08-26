@@ -15964,11 +15964,6 @@ jake@^10.6.1:
     filelist "^1.0.1"
     minimatch "^3.0.4"
 
-jest-chain@^1.1.5:
-  version "1.1.5"
-  resolved "https://registry.yarnpkg.com/jest-chain/-/jest-chain-1.1.5.tgz#57b804d7d23f7c8455b62051795cfe5c444fa262"
-  integrity sha512-bTx51vQP/6/XVDrMtz0WmT3wZoXvj5QAAnw1to+o6pvtjcwTIVuB6uR5URRXH/9rHf1WuM1UgsfVTWhTC/QAzw==
-
 jest-changed-files@^24.9.0:
   version "24.9.0"
   resolved "https://registry.yarnpkg.com/jest-changed-files/-/jest-changed-files-24.9.0.tgz#08d8c15eb79a7fa3fc98269bc14b451ee82f8039"
