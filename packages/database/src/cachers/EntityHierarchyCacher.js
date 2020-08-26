@@ -30,7 +30,8 @@ export class EntityHierarchyCacher {
 
   async buildAndCacheProject(project) {
     const { entity_id: projectEntityId, entity_hierarchy_id: hierarchyId } = project;
-    return this.recursivelyFetchAndCacheDescendants(hierarchyId, projectEntityId);
+    const projectEntity = await this.database.findOne(ENTITY, { id: projectEntityId });
+    return this.recursivelyFetchAndCacheDescendants(hierarchyId, projectEntity);
   }
 
   /**
@@ -38,38 +39,38 @@ export class EntityHierarchyCacher {
    * At each generation, choose children via 'entity_relation' if any exist, or the canonical
    * entity.parent_id if none do
    * @param {string} hierarchyId   The specific hierarchy to follow through entity_relation
-   * @param {string} parentId      The id of the entity to start at
-   * @param {Entity[]} ancestorIds Ids of all ancestors above this parent, for caching
+   * @param {string} parent        The entity to start at
+   * @param {Entity[]} ancestors   All ancestors above this parent, for caching
    */
-  async recursivelyFetchAndCacheDescendants(hierarchyId, parentId, ancestorIds = []) {
+  async recursivelyFetchAndCacheDescendants(hierarchyId, parent, ancestors = []) {
     // check whether this generation/hierarchy combo has already been cached to avoid doing it again
     // on startup, or when two projects share a hierarchy (at time of writing none do, but db schema
     // makes it possible)
     const alreadyCached = !!(await this.database.findOne(ANCESTOR_DESCENDANT_RELATION, {
       hierarchy_id: hierarchyId,
-      ancestor_id: parentId,
+      ancestor_id: parent.id,
     }));
     if (alreadyCached) {
       return;
     }
 
     // get the next generation of entities
-    const childIds = await this.getNextGeneration(hierarchyId, parentId);
+    const children = await this.getNextGeneration(hierarchyId, parent.id);
 
-    // if childIds is empty, we've made it to the leaf nodes
-    if (childIds.length === 0) {
+    // if children is empty, we've made it to the leaf nodes
+    if (children.length === 0) {
       return;
     }
 
     // cache this generation
-    const parentAndAncestorIds = [parentId, ...ancestorIds];
-    await this.cacheGeneration(hierarchyId, childIds, parentAndAncestorIds);
+    const parentAndAncestors = [parent, ...ancestors];
+    await this.cacheGeneration(hierarchyId, children, parentAndAncestors);
 
     // keep recursing through the hierarchy
     const taskQueue = new AsyncTaskQueue(BATCH_SIZE);
-    const childTasks = childIds.map(childId =>
+    const childTasks = children.map(child =>
       taskQueue.add(() =>
-        this.recursivelyFetchAndCacheDescendants(hierarchyId, childId, parentAndAncestorIds),
+        this.recursivelyFetchAndCacheDescendants(hierarchyId, child, parentAndAncestors),
       ),
     );
     await Promise.all(childTasks);
@@ -84,33 +85,37 @@ export class EntityHierarchyCacher {
     const childIds = hierarchyLinks.map(l => l.child_id);
 
     if (childIds.length > 0) {
-      return childIds;
+      return this.database.find(ENTITY, { id: childIds });
     }
 
     // no hierarchy specific relations, get next generation following canonical relationships
     const canonicalTypes = Object.values(ORG_UNIT_ENTITY_TYPES);
-    const children = await this.database.find(
+    return this.database.find(
       ENTITY,
       { parent_id: entityId, type: canonicalTypes },
-      { columns: ['id'] },
+      { columns: ['id', 'code', 'type', 'name'] },
     );
-    return children.map(c => c.id);
   }
 
   /**
    * Stores the generation of ancestor/descendant info in the database
    * @param {string} hierarchyId
-   * @param {Entity[]} entityIds
-   * @param {Entity[]} ancestorIds In order of generational distance, with immediate parent at index 0
+   * @param {Entity[]} entitiesOfGeneration
+   * @param {Entity[]} ancestors In order of generational distance, with immediate parent at index 0
    */
-  async cacheGeneration(hierarchyId, entityIds, ancestorIds) {
+  async cacheGeneration(hierarchyId, entitiesOfGeneration, ancestors) {
     const records = [];
-    ancestorIds.forEach((ancestorId, ancestorIndex) =>
-      entityIds.forEach(entityId => {
+    ancestors.forEach((ancestor, ancestorIndex) =>
+      entitiesOfGeneration.forEach(entity => {
         records.push({
           hierarchy_id: hierarchyId,
-          ancestor_id: ancestorId,
-          descendant_id: entityId,
+          ancestor_id: ancestor.id,
+          ancestor_code: ancestor.code,
+          ancestor_type: ancestor.type,
+          ancestor_name: ancestor.name,
+          descendant_id: entity.id,
+          descendant_code: entity.code,
+          descendant_type: entity.type,
           generational_distance: ancestorIndex + 1,
         });
       }),
