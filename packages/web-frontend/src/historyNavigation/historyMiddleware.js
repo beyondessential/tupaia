@@ -54,9 +54,7 @@ export const reactToInitialState = store => {
         dispatch(setVerifyEmailToken(otherComponents[URL_COMPONENTS.VERIFY_EMAIL_TOKEN]));
         break;
       default:
-        break;
     }
-    rawDispatch(goHome());
     return;
   }
 
@@ -68,10 +66,9 @@ export const reactToInitialState = store => {
 
   dispatch(setOverlayComponent(null));
   dispatch(setProject(otherComponents[URL_COMPONENTS.PROJECT]));
-  if (otherComponents[URL_COMPONENTS.ORG_UNIT]) {
+  if (otherComponents[URL_COMPONENTS.ORG_UNIT])
     dispatch(setOrgUnit(otherComponents[URL_COMPONENTS.ORG_UNIT]));
-    dispatch(openMapPopup(otherComponents[URL_COMPONENTS.ORG_UNIT]));
-  }
+
   if (otherComponents[URL_COMPONENTS.MEASURE])
     dispatch(setMeasure(otherComponents[URL_COMPONENTS.MEASURE]));
 
