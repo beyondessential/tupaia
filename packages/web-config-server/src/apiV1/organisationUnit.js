@@ -36,6 +36,7 @@ export default class extends RouteHandler {
       ...countryDescendants,
     ]);
 
+    // todo replace with AncestorDescendantRelation, then remove EntityRelation model
     const childIdToParentId = await EntityRelation.getChildIdToParentIdMap(
       project.entity_hierarchy_id,
     );
