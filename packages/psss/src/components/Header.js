@@ -12,6 +12,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import MuiLink from '@material-ui/core/Link';
 import { SaveAlt, LightOutlinedButton } from '@tupaia/ui-components';
 import MuiAvatar from '@material-ui/core/Avatar';
+import { FlexSpaceBetween, FlexStart } from './Layout';
 import * as COLORS from '../constants/colors';
 
 const HeaderMain = styled.header`
@@ -19,10 +20,7 @@ const HeaderMain = styled.header`
   color: ${COLORS.WHITE};
 `;
 
-const HeaderInner = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+const HeaderInner = styled(FlexSpaceBetween)`
   height: 190px;
   padding-bottom: 1.25rem;
 `;
@@ -41,11 +39,6 @@ const HeaderBack = styled(MuiLink)`
   }
 `;
 
-const HeaderTitle = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
 const Avatar = styled(MuiAvatar)`
   height: 5rem;
   width: 5rem;
@@ -60,7 +53,67 @@ const StyledH1 = styled(H1)`
   text-transform: capitalize;
 `;
 
-export const Header = ({ title, avatarUrl, back, ExportModal }) => {
+export const HeaderTitle = ({ title }) => <H1>{title}</H1>;
+
+HeaderTitle.propTypes = {
+  title: PropTypes.string.isRequired,
+};
+
+export const HeaderAvatarTitle = ({ title, avatarUrl }) => {
+  return (
+    <FlexStart>
+      <Avatar src={avatarUrl} />
+      <StyledH1>{title}</StyledH1>
+    </FlexStart>
+  );
+};
+
+HeaderAvatarTitle.propTypes = {
+  title: PropTypes.string.isRequired,
+  avatarUrl: PropTypes.string,
+};
+
+HeaderAvatarTitle.defaultProps = {
+  avatarUrl: null,
+};
+
+const SubHeading = styled(H1)`
+  font-size: 1.3rem;
+  line-height: 1.5rem;
+  font-weight: 400;
+`;
+
+const SmallAvatar = styled(MuiAvatar)`
+  height: 2.5rem;
+  width: 2.5rem;
+  margin-right: 0.8rem;
+`;
+
+const SubHeadingContainer = styled(FlexStart)`
+  margin-bottom: 0.8rem;
+`;
+
+export const HeaderTitleWithSubHeading = ({ title, subHeading, avatarUrl }) => (
+  <>
+    <SubHeadingContainer>
+      <SmallAvatar src={avatarUrl} />
+      <SubHeading variant="h3">{subHeading}</SubHeading>
+    </SubHeadingContainer>
+    <HeaderTitle title={title} />
+  </>
+);
+
+HeaderTitleWithSubHeading.propTypes = {
+  title: PropTypes.string.isRequired,
+  subHeading: PropTypes.string.isRequired,
+  avatarUrl: PropTypes.string,
+};
+
+HeaderTitleWithSubHeading.defaultProps = {
+  avatarUrl: null,
+};
+
+export const Header = ({ Title, back, ExportModal }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
@@ -74,10 +127,7 @@ export const Header = ({ title, avatarUrl, back, ExportModal }) => {
                 Back to {back.title}
               </HeaderBack>
             )}
-            <HeaderTitle>
-              {avatarUrl && <Avatar src={avatarUrl} />}
-              {avatarUrl ? <StyledH1>{title}</StyledH1> : <H1>{title}</H1>}
-            </HeaderTitle>
+            {Title}
           </div>
           {ExportModal && (
             <>
@@ -94,14 +144,12 @@ export const Header = ({ title, avatarUrl, back, ExportModal }) => {
 };
 
 Header.propTypes = {
-  title: PropTypes.string.isRequired,
-  avatarUrl: PropTypes.string,
+  Title: PropTypes.any.isRequired,
   back: PropTypes.shape({ title: PropTypes.string.isRequired, url: PropTypes.string.isRequired }),
   ExportModal: PropTypes.any,
 };
 
 Header.defaultProps = {
-  avatarUrl: null,
   back: null,
   ExportModal: null,
 };

@@ -11,6 +11,8 @@ import { NavLink } from 'react-router-dom';
 import { LightTab } from './Tabs';
 
 const Wrapper = styled.nav`
+  position: relative;
+  z-index: 1;
   background-color: ${props => props.theme.palette.primary.main};
 `;
 
@@ -19,6 +21,7 @@ const borderColor = 'rgba(255, 255, 255, 0.2)';
 const Inner = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: center;
   border-bottom: 1px solid ${borderColor};
 `;
 

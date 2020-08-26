@@ -30,7 +30,7 @@ To work on Tupaia MediTrak, first you'll need to install the following
 Steps to get working:
 
 - Clone this repository (see notes below if using Windows)
-- Add a .env file to the root directory (look in lastpass)
+- Add a .env file to the root directory. The required variables are listed in `.env.example`
 - `yarn`
 - Start your emulator or plug in your device and make sure USB debugging is enabled
 - If you are developing/building for ios:

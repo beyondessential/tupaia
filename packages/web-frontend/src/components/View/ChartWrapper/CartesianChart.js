@@ -12,6 +12,7 @@ import {
   Legend,
   Line,
   LineChart,
+  ReferenceArea,
   ReferenceLine,
   ResponsiveContainer,
   Text,
@@ -97,13 +98,13 @@ const LEGEND_ALL_DATA = {
   stackId: 1,
 };
 /**
- * Note
- * ----
+ * Cartesian Chart types using recharts
+ * @see https://recharts.org
+ *
  * Ideally, we would want to extract the various chart subcomponents (Axis, Legend etc)
  * to independent components to isolate their behavior. Unfortunately, for some reason recharts
  * does not work with wrapped components, so we just render everything here
  */
-
 export class CartesianChart extends PureComponent {
   constructor(props) {
     super(props);
@@ -239,14 +240,17 @@ export class CartesianChart extends PureComponent {
     if (chartType === BAR) {
       return !isExporting ? 'preserveStartEnd' : 0;
     }
-    return isEnlarged ? 'preservedStartEnd' : 0;
+    return isEnlarged ? 'preserveStartEnd' : 0;
   };
 
   formatXAxisTick = tickData => {
     const { viewContent } = this.props;
-    const { periodGranularity, data } = viewContent;
+    const { periodGranularity, data, presentationOptions = {} } = viewContent;
+    const { periodTickFormat } = presentationOptions;
 
-    return getIsTimeSeries(data) ? formatTimestampForChart(tickData, periodGranularity) : tickData;
+    return getIsTimeSeries(data)
+      ? formatTimestampForChart(tickData, periodGranularity, periodTickFormat)
+      : tickData;
   };
 
   formatLegend = (value, { color }) => {
@@ -423,6 +427,16 @@ export class CartesianChart extends PureComponent {
     );
   };
 
+  renderReferenceAreas = () => {
+    const { viewContent } = this.props;
+
+    if (!('referenceAreas' in viewContent)) {
+      return null;
+    }
+
+    return viewContent.referenceAreas.map(areaProps => <ReferenceArea {...areaProps} />);
+  };
+
   renderReferenceLines = () => {
     const { viewContent } = this.props;
     const { chartType } = viewContent;
@@ -592,6 +606,7 @@ export class CartesianChart extends PureComponent {
           data={this.filterDisabledData(data)}
           margin={isExporting ? { left: 20, right: 20, top: 20, bottom: 20 } : undefined}
         >
+          {this.renderReferenceAreas()}
           {this.renderXAxis()}
           {this.renderYAxes()}
           {this.renderTooltip()}
@@ -608,6 +623,7 @@ export class CartesianChart extends PureComponent {
 CartesianChart.propTypes = {
   isEnlarged: PropTypes.bool,
   isExporting: PropTypes.bool,
+  /** The main chart configuration */
   viewContent: PropTypes.shape(VIEW_CONTENT_SHAPE),
 };
 

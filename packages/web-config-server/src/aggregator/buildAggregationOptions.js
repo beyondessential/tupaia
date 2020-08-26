@@ -11,6 +11,7 @@ export const buildAggregationOptions = async (
   initialAggregationOptions,
   dataSourceEntities = [],
   entityAggregationOptions,
+  hierarchyId,
 ) => {
   const {
     aggregations,
@@ -39,6 +40,7 @@ export const buildAggregationOptions = async (
     aggregationEntityType,
     entityAggregationType,
     entityAggregationConfig,
+    hierarchyId,
   );
 
   return {
@@ -51,22 +53,28 @@ export const buildAggregationOptions = async (
   };
 };
 
-// Will return a map for every org unit (regardless of type) in orgUnits to its ancestor of type aggregationEntityType
-const getOrgUnitToAncestorMap = async (orgUnits, aggregationEntityType) => {
-  if (!orgUnits || orgUnits.length === 0) return {};
-  const orgUnitToAncestor = {};
-  const addOrgUnitToMap = async orgUnit => {
-    if (orgUnit.type !== aggregationEntityType) {
-      const ancestor = await orgUnit.getAncestorOfType(aggregationEntityType);
+// Will return a map for every entity (regardless of type) in entities to its ancestor of type aggregationEntityType
+const ANCESTOR_FETCH_BATCH_SIZE = 1000;
+const getEntityToAncestorMap = async (entities, aggregationEntityType, hierarchyId) => {
+  if (!entities || entities.length === 0) return {};
+  const entityToAncestor = {};
+  const addEntityToMap = async entity => {
+    if (entity.type !== aggregationEntityType) {
+      const ancestor = await entity.getAncestorOfType(aggregationEntityType, hierarchyId);
       if (ancestor) {
-        orgUnitToAncestor[orgUnit.code] = { code: ancestor.code, name: ancestor.name };
+        entityToAncestor[entity.code] = { code: ancestor.code, name: ancestor.name };
       } else {
-        winston.warn(`No ancestor of type ${aggregationEntityType} found for ${orgUnit.code}`);
+        winston.warn(
+          `No ancestor of type ${aggregationEntityType} found for ${entity.code}, hierarchyId = ${hierarchyId}`,
+        );
       }
     }
   };
-  await Promise.all(orgUnits.map(orgUnit => addOrgUnitToMap(orgUnit)));
-  return orgUnitToAncestor;
+  for (let i = 0; i < entities.length; i += ANCESTOR_FETCH_BATCH_SIZE) {
+    const batchOfEntities = entities.slice(i, i + ANCESTOR_FETCH_BATCH_SIZE);
+    await Promise.all(batchOfEntities.map(entity => addEntityToMap(entity)));
+  }
+  return entityToAncestor;
 };
 
 const shouldAggregateEntities = (dataSourceEntities, aggregationEntityType) =>
@@ -79,7 +87,15 @@ const fetchEntityAggregationConfig = async (
   aggregationEntityType,
   entityAggregationType = DEFAULT_ENTITY_AGGREGATION_TYPE,
   entityAggregationConfig,
+  hierarchyId,
 ) => {
-  const orgUnitMap = await getOrgUnitToAncestorMap(dataSourceEntities, aggregationEntityType);
-  return { type: entityAggregationType, config: { ...entityAggregationConfig, orgUnitMap } };
+  const entityToAncestorMap = await getEntityToAncestorMap(
+    dataSourceEntities,
+    aggregationEntityType,
+    hierarchyId,
+  );
+  return {
+    type: entityAggregationType,
+    config: { ...entityAggregationConfig, orgUnitMap: entityToAncestorMap },
+  };
 };
