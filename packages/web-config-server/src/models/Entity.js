@@ -127,9 +127,9 @@ export class Entity extends BaseModel {
    * Fetch all ancestors of the current entity, by default excluding 'World'
    * @param {string} id The id of the entity to fetch ancestors of
    */
-  async getAncestors(hierarchyId, criteria) {
-    const ids = await AncestorDescendantRelation.getAncestorIds(this.id, hierarchyId, criteria);
-    return Entity.find({ id: ids });
+  async getAncestors(hierarchyId, criteria = {}) {
+    const ancestorIds = await AncestorDescendantRelation.getAncestorIds(this.id, hierarchyId);
+    return Entity.find({ id: ancestorIds, ...criteria });
   }
 
   /**
@@ -137,7 +137,8 @@ export class Entity extends BaseModel {
    * @param {string} id The id of the entity to fetch ancestor codes of
    */
   async getAncestorCodes(hierarchyId) {
-    return AncestorDescendantRelation.getAncestorCodes(this.id, hierarchyId);
+    const ancestors = await this.getAncestors(hierarchyId);
+    return ancestors.map(a => a.code);
   }
 
   async getCountry(hierarchyId) {
@@ -145,14 +146,14 @@ export class Entity extends BaseModel {
     return this.getAncestorOfType(COUNTRY, hierarchyId);
   }
 
-  async getChildren(hierarchyId) {
-    const ids = await AncestorDescendantRelation.getChildIds(this.id, hierarchyId);
-    return Entity.find({ id: ids });
+  async getChildren(hierarchyId, criteria = {}) {
+    const childIds = await AncestorDescendantRelation.getChildIds(this.id, hierarchyId);
+    return Entity.find({ id: childIds, ...criteria });
   }
 
-  async getDescendants(hierarchyId) {
-    const ids = await AncestorDescendantRelation.getDescendantIds(this.id, hierarchyId);
-    return Entity.find({ id: ids });
+  async getDescendants(hierarchyId, criteria = {}) {
+    const descendantIds = await AncestorDescendantRelation.getDescendantIds(this.id, hierarchyId);
+    return Entity.find({ id: descendantIds, ...criteria });
   }
 
   static async getFacilitiesOfOrgUnit(organisationUnitCode) {
@@ -222,6 +223,35 @@ export class Entity extends BaseModel {
       {},
     );
   };
+
+  static async fetchDescendantToAncestorCodeAndName(entityIds, hierarchyId, ancestorType) {
+    const ancestorDescendantRelations = await this.database.executeSqlInBatches(
+      entityIds,
+      batchOfEntityIds => [
+        `
+          SELECT descendant.code as descendant_code, ancestor.code as ancestor_code, ancestor.name as ancestor_name
+          FROM
+            ancestor_descendant_relation
+          JOIN
+            entity as ancestor on ancestor.id = ancestor_descendant_relation.ancestor_id
+          JOIN
+            entity as descendant ON descendant.id = ancestor_descendant_relation.descendant_id
+          WHERE
+            descendant.id IN (${batchOfEntityIds.map(() => '?').join(',')})
+          AND
+            ancestor_descendant_relation.hierarchy_id = ?
+          AND
+            ancestor.type = ?
+        `,
+        [...batchOfEntityIds, hierarchyId, ancestorType],
+      ],
+    );
+    const entityCodeToAncestorMap = {};
+    ancestorDescendantRelations.forEach(r => {
+      entityCodeToAncestorMap[r.descendant_code] = { code: r.ancestor_code, name: r.ancestor_name };
+    });
+    return entityCodeToAncestorMap;
+  }
 
   static getDhisLevel(type) {
     const level = ORG_UNIT_TYPE_LEVELS[type];

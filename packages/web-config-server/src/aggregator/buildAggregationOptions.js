@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 import { Aggregator } from '@tupaia/aggregator';
-import { AncestorDescendantRelation } from '/models';
+import { Entity } from '/models';
 
 const ENTITY_AGGREGATION_ORDER_AFTER = 'AFTER';
 const DEFAULT_ENTITY_AGGREGATION_TYPE = Aggregator.aggregationTypes.REPLACE_ORG_UNIT_WITH_ORG_GROUP;
@@ -67,10 +67,10 @@ const fetchEntityAggregationConfig = async (
   entityAggregationConfig,
   hierarchyId,
 ) => {
-  const entityToAncestorMap = await AncestorDescendantRelation.getEntityCodeToAncestorMap(
-    dataSourceEntities,
+  const entityToAncestorMap = await Entity.fetchDescendantToAncestorCodeAndName(
+    dataSourceEntities.map(e => e.id),
     hierarchyId,
-    { ancestor_type: aggregationEntityType },
+    aggregationEntityType,
   );
   return {
     type: entityAggregationType,
