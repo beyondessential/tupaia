@@ -40,7 +40,6 @@ export {
 
 export {
   selectCurrentInfoViewKey,
-  selectCurrentDashboardGroupCodeFromLocation,
   selectIsDashboardGroupCodeDefined,
   selectCurrentDashboardGroupCode,
   selectCurrentExpandedViewContent,

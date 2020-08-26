@@ -138,8 +138,8 @@ describe('projectSelectors', () => {
         );
         const project2 = selectProjectByCode(state, 'DOES_NOT_EXIST');
         const project3 = selectProjectByCode(state, undefined);
-        expect(project1 === project2).toBe(true);
-        expect(project3 === project2).toBe(true);
+        expect(project1).toBe(project2);
+        expect(project2).toBe(project3);
       });
     });
 

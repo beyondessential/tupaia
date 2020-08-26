@@ -8,10 +8,10 @@
 import {
   selectCurrentOrgUnitCode,
   selectCurrentProjectCode,
-  selectCurrentDashboardGroupCodeFromLocation,
   selectCurrentMeasureId,
   selectCurrentExpandedViewId,
 } from '../../selectors';
+import { selectCurrentDashboardGroupCodeFromLocation } from '../../selectors/dashboardSelectors';
 
 describe('urlSelectors', () => {
   it('should select from an empty url', () => {
