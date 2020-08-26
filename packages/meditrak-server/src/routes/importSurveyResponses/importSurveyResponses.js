@@ -17,15 +17,20 @@ import {
   takesIdForm,
   constructIsOneOf,
 } from '@tupaia/utils';
-import { ANSWER_TYPES } from '../database/models/Answer';
-import { constructAnswerValidator } from './utilities/constructAnswerValidator';
-import { EXPORT_DATE_FORMAT, INFO_COLUMN_HEADERS, INFO_ROW_HEADERS } from './exportSurveyResponses';
+import { ANSWER_TYPES } from '../../database/models/Answer';
+import { constructAnswerValidator } from '../utilities/constructAnswerValidator';
+import {
+  EXPORT_DATE_FORMAT,
+  INFO_COLUMN_HEADERS,
+  INFO_ROW_HEADERS,
+} from '../exportSurveyResponses';
+import { assertCanImportSurveyResponses } from './assertCanImportSurveyResponses';
 
 /**
  * Updates existing survey responses by importing the new answers from an Excel file, and either
  * updating or creating each answer as appropriate
  */
-export async function updateSurveyResponses(req, res) {
+export async function importSurveyResponses(req, res) {
   try {
     if (!req.file) {
       throw new UploadError();
@@ -35,20 +40,35 @@ export async function updateSurveyResponses(req, res) {
       const workbook = xlsx.readFile(req.file.path);
       // Go through each sheet in the workbook and process the updated survey responses
       const sheets = Object.values(workbook.Sheets);
+      const entitiesByPermissionGroup = await getEntitiesByPermissionGroup(
+        transactingModels,
+        sheets,
+      );
+
+      const importSurveyResponsePermissionsChecker = async accessPolicy => {
+        await assertCanImportSurveyResponses(
+          accessPolicy,
+          transactingModels,
+          entitiesByPermissionGroup,
+        );
+      };
+
+      await req.assertPermissions(importSurveyResponsePermissionsChecker);
+
       for (let sheetIndex = 0; sheetIndex < sheets.length; sheetIndex++) {
         const sheet = sheets[sheetIndex];
         const tabName = Object.keys(workbook.Sheets)[sheetIndex];
         const deletedColumnHeaders = new Set();
         const questionIds = [];
         const newSurveyResponseIds = {};
+        const survey = await getSurveyFromSheet(models, sheet);
 
         // Create new survey responses where required
-        let firstSurveyResponseId;
-        const maxCell = sheet['!ref'].split(':')[1]; // The range property of the sheet looks like "A1:E56"
-        const { c: maxColumnIndex, r: maxRowIndex } = xlsx.utils.decode_cell(maxCell);
+        const { maxColumnIndex, maxRowIndex } = getMaxRowColumnIndex(sheet);
+
         for (let columnIndex = 0; columnIndex <= maxColumnIndex; columnIndex++) {
           const columnHeader = getColumnHeader(sheet, columnIndex);
-          if (columnIndex < INFO_COLUMN_HEADERS.length) {
+          if (isInfoColumn(columnIndex)) {
             // Just an info column, validate and move on
             if (columnHeader !== INFO_COLUMN_HEADERS[columnIndex]) {
               throw new ImportValidationError(`Missing ${INFO_COLUMN_HEADERS[columnIndex]} column`);
@@ -57,22 +77,12 @@ export async function updateSurveyResponses(req, res) {
             // A column representing a survey response
             try {
               if (checkIsNewSurveyResponse(columnHeader)) {
-                // Create a new survey response
-                if (!firstSurveyResponseId) {
-                  throw new Error(
-                    'Each tab of the import file must have at least one previously submitted survey as the first entry',
-                  );
-                }
-                const firstSurveyResponse = await transactingModels.surveyResponse.findById(
-                  firstSurveyResponseId,
-                );
                 const entityCode = getInfoForColumn(sheet, columnIndex, 'Entity Code');
                 const entity = await transactingModels.entity.findOne({ code: entityCode });
-
                 const user = await transactingModels.user.findById(req.userId);
                 const surveyDate = getDateForColumn(sheet, columnIndex);
                 const newSurveyResponse = await transactingModels.surveyResponse.create({
-                  survey_id: firstSurveyResponse.survey_id, // All survey responses within a sheet should be for the same survey
+                  survey_id: survey.id, // All survey responses within a sheet should be for the same survey
                   assessor_name: `${user.first_name} ${user.last_name}`,
                   user_id: user.id,
                   entity_id: entity.id,
@@ -85,9 +95,6 @@ export async function updateSurveyResponses(req, res) {
                 // Validate that every header takes id form, i.e. is an existing or deleted response
                 await hasContent(columnHeader);
                 await takesIdForm(columnHeader);
-                if (!firstSurveyResponseId) {
-                  firstSurveyResponseId = columnHeader;
-                }
               }
             } catch (error) {
               throw new ImportValidationError(
@@ -198,10 +205,46 @@ export async function updateSurveyResponses(req, res) {
     if (error.respond) {
       throw error; // Already a custom error with a responder
     } else {
-      throw new DatabaseError('updating survey responses', error);
+      throw new DatabaseError('Import survey responses', error);
     }
   }
 }
+
+//Only extract the entities and permission group to perform permissions check.
+//No validation is done here since it's out of scope and is already done when
+//the real import happens
+const getEntitiesByPermissionGroup = async (models, sheets) => {
+  const entitiesGroupedByPermissionGroup = {};
+
+  for (let sheetIndex = 0; sheetIndex < sheets.length; sheetIndex++) {
+    const sheet = sheets[sheetIndex];
+    const { maxColumnIndex } = getMaxRowColumnIndex(sheet);
+    const survey = await getSurveyFromSheet(models, sheet);
+    const permissionGroup = await models.permissionGroup.findById(survey.permission_group_id);
+
+    for (let columnIndex = 0; columnIndex <= maxColumnIndex; columnIndex++) {
+      if (!isInfoColumn(columnIndex)) {
+        const entityCode = getInfoForColumn(sheet, columnIndex, 'Entity Code');
+
+        if (!entitiesGroupedByPermissionGroup[permissionGroup.name]) {
+          entitiesGroupedByPermissionGroup[permissionGroup.name] = [];
+        }
+
+        entitiesGroupedByPermissionGroup[permissionGroup.name].push(entityCode);
+      }
+    }
+  }
+
+  return entitiesGroupedByPermissionGroup;
+};
+
+const isInfoColumn = columnIndex => columnIndex < INFO_COLUMN_HEADERS.length;
+
+const getMaxRowColumnIndex = sheet => {
+  const maxCell = sheet['!ref'].split(':')[1]; // The range property of the sheet looks like "A1:E56"
+  const { c: maxColumnIndex, r: maxRowIndex } = xlsx.utils.decode_cell(maxCell);
+  return { maxColumnIndex, maxRowIndex };
+};
 
 async function updateSubmissionTimeIfRequired(models, surveyResponseId, newSubmissionTimeString) {
   const surveyResponse = await models.surveyResponse.findById(surveyResponseId);
@@ -267,4 +310,17 @@ function checkIsNewSurveyResponse(columnHeader) {
 function getCellContents(sheet, columnIndex, rowIndex) {
   const cell = sheet[xlsx.utils.encode_cell({ c: columnIndex, r: rowIndex })];
   return cell === undefined ? '' : cell.v; // Extract the value of the cell if it wasn't blank
+}
+
+async function getSurveyFromSheet(models, sheet) {
+  const firstSurveyResponseId = getColumnHeader(sheet, INFO_COLUMN_HEADERS.length);
+
+  if (!firstSurveyResponseId) {
+    throw new Error(
+      'Each tab of the import file must have at least one previously submitted survey as the first entry',
+    );
+  }
+
+  const firstSurveyResponse = await models.surveyResponse.findById(firstSurveyResponseId);
+  return models.survey.findById(firstSurveyResponse.survey_id);
 }

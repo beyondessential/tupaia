@@ -20,7 +20,7 @@ import { importOptionSets } from './importOptionSets';
 import { postChanges } from './postChanges';
 import { pruneChanges } from './pruneChanges';
 import { addRecord } from './addRecord';
-import { updateSurveyResponses } from './updateSurveyResponses';
+import { importSurveyResponses } from './importSurveyResponses';
 import { createUser } from './createUser';
 import { changePassword } from './changePassword';
 import { requestCountryAccess } from './requestCountryAccess';
@@ -69,7 +69,7 @@ export default {
   postChanges: catchAsyncErrors(postChanges),
   pruneChanges: catchAsyncErrors(pruneChanges),
   addRecord: catchAsyncErrors(addRecord),
-  updateSurveyResponses: catchAsyncErrors(updateSurveyResponses),
+  importSurveyResponses: catchAsyncErrors(importSurveyResponses),
   createUser: catchAsyncErrors(createUser),
   changePassword: catchAsyncErrors(changePassword),
   requestCountryAccess: catchAsyncErrors(requestCountryAccess),
