@@ -50,7 +50,7 @@ export class AncestorDescendantRelation extends BaseModel {
   }
 
   static async getChildIds(entityId, hierarchyId, criteria) {
-    return AncestorDescendantRelation.getDescendants(entityId, hierarchyId, {
+    return AncestorDescendantRelation.getDescendantIds(entityId, hierarchyId, {
       ...criteria,
       generational_distance: 1,
     });
