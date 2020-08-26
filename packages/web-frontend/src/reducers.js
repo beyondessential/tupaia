@@ -20,9 +20,8 @@ import map from './reducers/mapReducers';
 import disaster from './disaster/reducers';
 import project from './projects/reducers';
 import orgUnits from './reducers/orgUnitReducers';
-import { isMobile } from './utils';
+import { isMobile, getUniqueViewId } from './utils';
 import { LANDING } from './containers/OverlayDiv/constants';
-import { getUniqueViewId } from './utils/getUniqueViewId';
 import { EMAIL_VERIFIED_STATUS } from './containers/EmailVerification';
 import { getInitialLocation } from './historyNavigation';
 import { selectMeasureBarItemCategoryById } from './selectors';
@@ -33,7 +32,6 @@ import {
   ATTEMPT_LOGIN,
   ATTEMPT_SIGNUP,
   ATTEMPT_LOGOUT,
-  SET_DASHBOARD_GROUP,
   ATTEMPT_RESET_PASSWORD,
   ATTEMPT_REQUEST_COUNTRY_ACCESS,
   CHANGE_SIDE_BAR_CONTRACTED_WIDTH,
@@ -707,8 +705,7 @@ function enlargedDialog(
   state = {
     isVisible: false,
     isLoading: false,
-    viewContent: { type: '', data: [] },
-    infoViewKey: '',
+    viewContent: null,
     organisationUnitName: '',
     errorMessage: '',
     startDate: null,
@@ -722,9 +719,6 @@ function enlargedDialog(
         ...state,
         isVisible: true,
         isLoading: false,
-        viewContent: action.viewContent,
-        infoViewKey: action.infoViewKey,
-        organisationUnitName: action.organisationUnitName,
         errorMessage: '',
         startDate: null,
         endDate: null,
@@ -734,8 +728,7 @@ function enlargedDialog(
       return {
         ...state,
         isVisible: false,
-        viewContent: {},
-        infoViewKey: '',
+        viewContent: null,
         organisationUnitName: '',
       };
 

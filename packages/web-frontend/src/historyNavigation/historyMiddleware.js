@@ -23,6 +23,7 @@ import {
   setMeasure,
   setOverlayComponent,
   goHome,
+  openEnlargedDialog,
 } from '../actions';
 import { setProject } from '../projects/actions';
 import { DEFAULT_PROJECT_CODE } from '../defaults';
@@ -57,6 +58,9 @@ export const reactToInitialState = store => {
 
   if (otherComponents[URL_COMPONENTS.MEASURE])
     dispatch(setMeasure(otherComponents[URL_COMPONENTS.MEASURE]));
+
+  if (otherComponents[URL_COMPONENTS.REPORT])
+    dispatch(openEnlargedDialog(otherComponents[URL_COMPONENTS.REPORT]));
 };
 
 export const historyMiddleware = store => next => action => {
@@ -81,7 +85,7 @@ export const historyMiddleware = store => next => action => {
 
     // Actions that modify search params
     case OPEN_ENLARGED_DIALOG:
-      dispatchLocationUpdate(store, URL_COMPONENTS.REPORT, action.viewContent.viewId);
+      dispatchLocationUpdate(store, URL_COMPONENTS.REPORT, action.viewId);
       break;
     case CLOSE_ENLARGED_DIALOG:
       dispatchLocationUpdate(store, URL_COMPONENTS.REPORT, null);

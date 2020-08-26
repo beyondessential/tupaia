@@ -16,6 +16,10 @@ import { state } from './selectors.test.fixtures';
 const shallowEqualTonga = { TO: { organisationUnitCode: 'TO', name: 'Tonga' } };
 const testState1 = {
   orgUnits: { orgUnitMap: { TO: shallowEqualTonga } },
+  routing: {
+    pathname: '/PROJECT_1/TO/A%20DASHBOARD',
+    search: { MEASURE: 'abc%20123' },
+  },
 };
 
 // A different country changes
@@ -30,6 +34,10 @@ const testState2 = {
         },
       },
     },
+  },
+  routing: {
+    pathname: '/PROJECT_1/TO/A%20DASHBOARD',
+    search: { MEASURE: 'abc%20123' },
   },
 };
 
@@ -51,6 +59,10 @@ const testState3 = {
         },
       },
     },
+  },
+  routing: {
+    pathname: '/PROJECT_1/TO/A%20DASHBOARD',
+    search: { MEASURE: 'abc%20123' },
   },
 };
 
