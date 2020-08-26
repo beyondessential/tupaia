@@ -7,6 +7,7 @@ import { capital } from 'case';
 
 import { Aggregator } from '@tupaia/aggregator';
 import { DataBroker } from '@tupaia/data-broker';
+import { getSortByKey } from '@tupaia/utils';
 import * as builders from './builders';
 import { Analytic, Builder, FetchOptions, IndicatorType, ModelRegistry } from './types';
 
@@ -24,7 +25,7 @@ export class IndicatorApi {
     const nestedAnalytics = await Promise.all(
       indicators.map(async indicator => this.buildAnalyticsForIndicator(indicator, fetchOptions)),
     );
-    return nestedAnalytics.flat();
+    return nestedAnalytics.flat().sort(getSortByKey('period'));
   }
 
   private buildAnalyticsForIndicator = async (
