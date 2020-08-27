@@ -19,6 +19,7 @@ exports.setup = function(options, seedLink) {
 const PROJECT_CODE = 'laos_eoc';
 const DASHBOARDGROUP_NAME = 'Laos Emergency Operations';
 const DASHBOARDGROUP_CODE = 'LAOS_EOC_Project';
+const DASHBOARDGROUP_COUNTRY_CODE = 'LAOS_EOC_Country';
 const USER_GROUP = 'Laos EOC User';
 
 export const hierarchyNameToId = async (db, name) => {
@@ -34,6 +35,15 @@ exports.up = async function(db) {
     dashboardReports: '{project_details}',
     name: DASHBOARDGROUP_NAME,
     code: DASHBOARDGROUP_CODE,
+    projectCodes: `{${PROJECT_CODE}}`,
+  });
+  await insertObject(db, 'dashboardGroup', {
+    organisationLevel: 'Country',
+    userGroup: USER_GROUP,
+    organisationUnitCode: 'LA',
+    dashboardReports: '{project_details}',
+    name: DASHBOARDGROUP_NAME,
+    code: DASHBOARDGROUP_COUNTRY_CODE,
     projectCodes: `{${PROJECT_CODE}}`,
   });
   await insertObject(db, 'entity', {
@@ -73,9 +83,9 @@ exports.down = async function(db) {
   const hierarchyId = await hierarchyNameToId(db, PROJECT_CODE);
 
   await db.runSql(`DELETE FROM "dashboardGroup" WHERE code = '${DASHBOARDGROUP_CODE}'`);
+  await db.runSql(`DELETE FROM project WHERE code = '${PROJECT_CODE}'`);
   await db.runSql(`DELETE FROM entity_relation WHERE entity_hierarchy_id = '${hierarchyId}'`);
   await db.runSql(`DELETE FROM entity_hierarchy WHERE name = '${PROJECT_CODE}'`);
-  await db.runSql(`DELETE FROM project WHERE code = '${PROJECT_CODE}'`);
   await db.runSql(`DELETE FROM entity WHERE code = '${PROJECT_CODE}'`);
 };
 
