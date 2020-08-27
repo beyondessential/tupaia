@@ -3,9 +3,9 @@
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  */
 
-import { utcMoment } from '@tupaia/utils';
-
 import React from 'react';
+import PropTypes from 'prop-types';
+import moment from 'moment';
 import { ResourcePage } from './ResourcePage';
 
 const surveyName = {
@@ -23,7 +23,10 @@ const assessorName = {
 const date = {
   Header: 'Date of Survey',
   source: 'end_time',
-  accessor: row => utcMoment(row.end_time).format('ddd MMM DD YYYY HH:mm:ss Z'),
+  accessor: row =>
+    moment(row.end_time)
+      .local()
+      .toString(),
   filterable: false,
   editable: false,
 };
@@ -32,10 +35,12 @@ const dateOfData = {
   Header: 'Date of Data',
   source: 'submission_time',
   accessor: row =>
-    utcMoment(row.submission_time || row.end_time).format('ddd MMM DD YYYY HH:mm:ss Z'),
+    moment(row.submission_time || row.end_time)
+      .local()
+      .toString(),
   filterable: false,
   editConfig: {
-    type: 'date',
+    type: 'datetime-local',
   },
 };
 
@@ -129,7 +134,7 @@ const IMPORT_CONFIG = {
   },
 };
 
-export const SurveyResponsesPage = () => (
+export const SurveyResponsesPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Survey Responses"
     endpoint="surveyResponses"
@@ -137,5 +142,10 @@ export const SurveyResponsesPage = () => (
     expansionTabs={EXPANSION_CONFIG}
     importConfig={IMPORT_CONFIG}
     editConfig={EDIT_CONFIG}
+    getHeaderEl={getHeaderEl}
   />
 );
+
+SurveyResponsesPage.propTypes = {
+  getHeaderEl: PropTypes.func.isRequired,
+};

@@ -6,4 +6,6 @@
 export * from './actions';
 export * from './selectors';
 export { reducer } from './reducer';
-export { LoginModal } from './LoginModal';
+export { ProfileButton } from './ProfileButton';
+export { LoginView } from './LoginView';
+export { PrivateRoute } from './PrivateRoute';

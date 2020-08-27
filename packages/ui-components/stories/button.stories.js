@@ -17,6 +17,7 @@ import {
   SuccessButton,
   WarningButton,
   LightOutlinedButton,
+  ErrorOutlinedButton,
   GreyOutlinedButton,
 } from '../src';
 import * as COLORS from './story-utils/theme/colors';
@@ -33,9 +34,7 @@ const Container = styled(MuiBox)`
 
 export const primary = () => (
   <Container>
-    <Button onClick={action('Primary button clicked')}>
-      Button
-    </Button>
+    <Button onClick={action('Primary button clicked')}>Button</Button>
   </Container>
 );
 
@@ -66,6 +65,12 @@ export const success = () => (
 export const outlined = () => (
   <Container>
     <Button variant="outlined">Outlined</Button>
+  </Container>
+);
+
+export const errorOutlined = () => (
+  <Container>
+    <ErrorOutlinedButton>Outlined</ErrorOutlinedButton>
   </Container>
 );
 

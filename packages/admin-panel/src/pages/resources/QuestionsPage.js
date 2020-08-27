@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 
 const QUESTION_FIELDS = [
@@ -92,12 +93,17 @@ const EDIT_CONFIG = {
   title: 'Edit Question',
 };
 
-export const QuestionsPage = () => (
+export const QuestionsPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Questions"
     endpoint="questions"
     columns={QUESTION_COLUMNS}
     expansionTabs={EXPANSION_CONFIG}
     editConfig={EDIT_CONFIG}
+    getHeaderEl={getHeaderEl}
   />
 );
+
+QuestionsPage.propTypes = {
+  getHeaderEl: PropTypes.func.isRequired,
+};

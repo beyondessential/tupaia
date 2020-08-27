@@ -1,4 +1,10 @@
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+
 import React from 'react';
+import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 import { prettyArray } from '../../utilities/pretty';
 
@@ -79,7 +85,7 @@ const COLUMNS = [
   },
 ];
 
-export const DashboardGroupsPage = () => (
+export const DashboardGroupsPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Dashboard Groups"
     endpoint="dashboardGroups"
@@ -87,5 +93,10 @@ export const DashboardGroupsPage = () => (
     editConfig={{
       title: 'Edit Dashboard Group',
     }}
+    getHeaderEl={getHeaderEl}
   />
 );
+
+DashboardGroupsPage.propTypes = {
+  getHeaderEl: PropTypes.func.isRequired,
+};
