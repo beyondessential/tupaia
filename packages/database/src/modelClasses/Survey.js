@@ -15,4 +15,8 @@ export class SurveyModel extends DatabaseModel {
   get DatabaseTypeClass() {
     return SurveyType;
   }
+
+  async getSurveysBySurveyGroupId(surveyGroupId) {
+    return this.find({ survey_group_id: surveyGroupId });
+  }
 }
