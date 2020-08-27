@@ -138,10 +138,17 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
 
     const allResults = numeratorResults;
 
+    const numeratorResultsMap = {};
+    numeratorResults.forEach(analytic => {
+      const { organisationUnit, dataElement, value, period } = analytic;
+      numeratorResultsMap[`${organisationUnit}|${dataElement}|${value}|${period}`] = analytic;
+    });
+
     // Hack to make sure that there are no duplicated analytics returned to count twice.
     // Would like to have { denominatorResults, numeratorResults }, but can't because of how DataPerPeriodBuilder works
     denominatorResults.forEach(analytic => {
-      if (!allResults.find(otherAnalytic => isEqual(analytic, otherAnalytic))) {
+      const { organisationUnit, dataElement, value, period } = analytic;
+      if (numeratorResultsMap[`${organisationUnit}|${dataElement}|${value}|${period}`] === undefined) {
         allResults.push(analytic);
       }
     });
