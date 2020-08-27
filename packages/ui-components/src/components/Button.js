@@ -119,6 +119,17 @@ export const SmallButton = styled(Button)`
  */
 export const OutlinedButton = props => <Button {...props} variant="outlined" />;
 
+export const ErrorOutlinedButton = styled(OutlinedButton)`
+  color: ${props => props.theme.palette.error.main};
+  border-color: ${props => props.theme.palette.error.main};
+
+  &:hover {
+    background-color: rgb(85 65 65 / 4%);
+    color: ${props => props.theme.palette.error.main};
+    border-color: ${props => props.theme.palette.error.main};
+  }
+`;
+
 export const LightOutlinedButton = styled(OutlinedButton)`
   color: ${props => props.theme.palette.common.white};
   border-color: ${props => props.theme.palette.common.white};

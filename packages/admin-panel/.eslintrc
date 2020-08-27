@@ -1,4 +1,8 @@
 {
+  "extends": [
+    "@beyondessential/eslint-config-beyondessential",
+    "plugin:prettier/recommended"
+  ],
   "env": {
     "browser": true
   }

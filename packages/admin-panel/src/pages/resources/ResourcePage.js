@@ -5,48 +5,55 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-
+import styled from 'styled-components';
 import { DataFetchingTable } from '../../table';
-import { ImportModal, ExportModal, ImportButton } from '../../importExport';
-import { EditModal, CreateButton } from '../../editor';
-import { Body, Header, HeaderButtons, Title, Page } from '../Page';
+import { ImportModal, ExportModal } from '../../importExport';
+import { EditModal } from '../../editor';
+import { Header, PageBody } from '../../widgets';
+import { usePortalWithCallback } from '../../utilities';
+
+const Container = styled(PageBody)`
+  overflow: auto;
+`;
 
 export const ResourcePage = ({
   columns,
-  createConfig,
   editConfig,
+  createConfig,
   endpoint,
   expansionTabs,
   importConfig,
   filteredExportConfig,
   onProcessDataForSave,
-  title,
   baseFilter,
-}) => (
-  <Page>
-    <Header>
-      <Title>{title}</Title>
-      <HeaderButtons>
-        {importConfig && <ImportButton {...importConfig} />}
-        {createConfig && <CreateButton {...createConfig} />}
-      </HeaderButtons>
-    </Header>
-    <Body>
-      <DataFetchingTable
-        columns={columns}
-        endpoint={endpoint}
-        expansionTabs={expansionTabs}
-        reduxId={endpoint}
-        baseFilter={baseFilter}
-      />
-    </Body>
-    {importConfig && <ImportModal {...importConfig} />}
-    {filteredExportConfig && <ExportModal {...filteredExportConfig} />}
-    <EditModal {...editConfig} onProcessDataForSave={onProcessDataForSave} />
-  </Page>
-);
+  title,
+  getHeaderEl,
+}) => {
+  const HeaderPortal = usePortalWithCallback(
+    <Header title={title} importConfig={importConfig} createConfig={createConfig} />,
+    getHeaderEl,
+  );
+  return (
+    <>
+      {HeaderPortal}
+      <Container>
+        <DataFetchingTable
+          columns={columns}
+          endpoint={endpoint}
+          expansionTabs={expansionTabs}
+          reduxId={endpoint}
+          baseFilter={baseFilter}
+        />
+      </Container>
+      {importConfig && <ImportModal {...importConfig} />}
+      {filteredExportConfig && <ExportModal {...filteredExportConfig} />}
+      <EditModal {...editConfig} onProcessDataForSave={onProcessDataForSave} />
+    </>
+  );
+};
 
 ResourcePage.propTypes = {
+  getHeaderEl: PropTypes.func.isRequired,
   columns: PropTypes.array.isRequired,
   createConfig: PropTypes.object,
   editConfig: PropTypes.object,
