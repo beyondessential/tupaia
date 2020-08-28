@@ -51,15 +51,14 @@
       command: chmod 600 /root/.ssh/id_rsa
     - name: pull latest and install dependencies
       command: './packages/devops/scripts/ci/pullLatest.sh'
-
-- type: parallel
+- type: serial
   name: deploy-all
   service: deployment
   steps:
     - type: serial
       name: deploy-backends
       steps:
-        - type: parallel
+        - type: serial
           name: restart-backends
           steps:
             - name: deploy-web-config-server
@@ -77,3 +76,5 @@
           command: './packages/devops/scripts/ci/deployFrontend.sh web-frontend'
         - name: deploy-admin-panel
           command: './packages/devops/scripts/ci/deployFrontend.sh admin-panel'
+        - name: deploy-psss
+          command: './packages/devops/scripts/ci/deployFrontend.sh psss'

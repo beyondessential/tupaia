@@ -1,6 +1,12 @@
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+
 import React from 'react';
+import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
-import { prettyJSON, prettyArray } from '../../utilities/pretty';
+import { prettyJSON, prettyArray } from '../../utilities';
 
 const FIELDS = [
   {
@@ -18,6 +24,7 @@ const FIELDS = [
       optionsEndpoint: 'permissionGroups',
       optionLabelKey: 'name',
       optionValueKey: 'name',
+      sourceKey: 'userGroup',
     },
   },
   {
@@ -31,6 +38,7 @@ const FIELDS = [
       optionsEndpoint: 'mapOverlays',
       optionLabelKey: 'measureBuilder',
       optionValueKey: 'measureBuilder',
+      sourceKey: 'measureBuilder',
     },
   },
   {
@@ -51,6 +59,7 @@ const FIELDS = [
     editConfig: {
       optionsEndpoint: 'mapOverlays',
       optionLabelKey: 'id',
+      sourceKey: 'linkedMeasures',
       allowMultipleValues: true,
     },
   },
@@ -72,6 +81,7 @@ const FIELDS = [
       optionsEndpoint: 'entities',
       optionLabelKey: 'code',
       optionValueKey: 'code',
+      sourceKey: 'countryCodes',
       allowMultipleValues: true,
     },
   },
@@ -83,6 +93,7 @@ const FIELDS = [
       optionsEndpoint: 'projects',
       optionLabelKey: 'code',
       optionValueKey: 'code',
+      sourceKey: 'projectCodes',
       allowMultipleValues: true,
     },
   },
@@ -101,13 +112,18 @@ const COLUMNS = [
   },
 ];
 
-export const MapOverlaysPage = () => (
+export const MapOverlaysPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Map Overlays"
     endpoint="mapOverlays"
     columns={COLUMNS}
+    getHeaderEl={getHeaderEl}
     editConfig={{
       title: 'Edit Map Overlay',
     }}
   />
 );
+
+MapOverlaysPage.propTypes = {
+  getHeaderEl: PropTypes.func.isRequired,
+};

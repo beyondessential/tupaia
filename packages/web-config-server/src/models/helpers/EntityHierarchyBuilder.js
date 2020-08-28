@@ -2,35 +2,57 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
+import { AsyncTaskQueue } from '@tupaia/utils';
 
+const BATCH_SIZE = 20; // tuned to have optimal performance
 export class EntityHierarchyBuilder {
   constructor(entityModel, entityRelationModel) {
     this.models = {
       entity: entityModel,
       entityRelation: entityRelationModel,
     };
-    this.cachedPromises = {};
-    entityModel.addChangeHandler(this.invalidateCache);
-    entityRelationModel.addChangeHandler(this.invalidateCache);
+    this.cachedAncestorPromises = {};
+    this.cachedDescendantPromises = {};
+    this.taskQueue = new AsyncTaskQueue(BATCH_SIZE);
+    entityModel.addChangeHandler(this.invalidateCaches);
+    entityRelationModel.addChangeHandler(this.invalidateCaches);
   }
 
-  invalidateCache = () => {
-    this.cachedPromises = {};
-  };
+  invalidateCaches() {
+    this.cachedAncestorPromises = {};
+    this.cachedDescendantPromises = {};
+  }
 
-  getCacheKey = (entityId, hierarchyId = 'canonical') => `${entityId}_${hierarchyId}`;
+  getCacheKey = (entityId, hierarchyId) => `${entityId}_${hierarchyId}`;
 
   async getDescendants(entityId, hierarchyId) {
     const cacheKey = this.getCacheKey(entityId, hierarchyId);
-    if (!this.cachedPromises[cacheKey]) {
-      if (hierarchyId) {
-        this.cachedPromises[cacheKey] = this.getDescendantsNonCanonically(entityId, hierarchyId);
-      } else {
+    if (!this.cachedDescendantPromises[cacheKey]) {
+      this.cachedDescendantPromises[cacheKey] = this.taskQueue.add(async () => {
+        if (hierarchyId) {
+          const rootEntity = { id: entityId };
+          return this.recursivelyFetchDescendants([rootEntity], hierarchyId);
+        }
         // no alternative hierarchy prescribed, use the faster all-in-one sql query
-        this.cachedPromises[cacheKey] = this.getDescendantsCanonically(entityId);
-      }
+        return this.getDescendantsCanonically(entityId);
+      });
     }
-    return this.cachedPromises[cacheKey];
+    return this.cachedDescendantPromises[cacheKey];
+  }
+
+  async getAncestors(entityId, hierarchyId) {
+    const cacheKey = this.getCacheKey(entityId, hierarchyId);
+    if (!this.cachedAncestorPromises[cacheKey]) {
+      this.cachedAncestorPromises[cacheKey] = this.taskQueue.add(async () => {
+        const entity = await this.models.entity.findOne(
+          { id: entityId },
+          {},
+          { columns: this.models.entity.minimalFields },
+        );
+        return this.recursivelyFetchAncestors(entity, hierarchyId);
+      });
+    }
+    return this.cachedAncestorPromises[cacheKey];
   }
 
   async getChildren(entityId, hierarchyId) {
@@ -44,11 +66,7 @@ export class EntityHierarchyBuilder {
    * @param {string} entityId      The entity to start at
    * @param {string} hierarchyId   The specific hierarchy to follow through entity_relation
    */
-  async getDescendantsNonCanonically(entityId, hierarchyId) {
-    return this.recurseNonCononicalHierarchy([{ id: entityId }], hierarchyId);
-  }
-
-  async recurseNonCononicalHierarchy(parents, hierarchyId) {
+  async recursivelyFetchDescendants(parents, hierarchyId) {
     const children = await this.getNextGeneration(parents, hierarchyId);
 
     // if we've made it to the leaf nodes, return an empty array
@@ -56,8 +74,8 @@ export class EntityHierarchyBuilder {
       return [];
     }
 
-    // keep recursing down the hierarchy
-    const descendants = await this.recurseNonCononicalHierarchy(children, hierarchyId);
+    // keep recursing through the hierarchy
+    const descendants = await this.recursivelyFetchDescendants(children, hierarchyId);
     return [...children, ...descendants];
   }
 
@@ -76,10 +94,52 @@ export class EntityHierarchyBuilder {
       return this.models.entity.find({ id: childIds });
     }
 
+    // no hierarchy specific relations, get next generation following canonical relationships
     const canonicalTypes = Object.values(this.models.entity.orgUnitEntityTypes);
     return this.models.entity.find({ parent_id: parentIds, type: canonicalTypes });
   };
 
+  async recursivelyFetchAncestors(child, hierarchyId) {
+    // We have the assumption that we return single entities for parent search unlike children search
+    const parent = await this.getPreviousGeneration(child, hierarchyId);
+
+    // if no more parents, return an empty array
+    if (!parent) {
+      return [];
+    }
+
+    // keep recursing through the hierarchy
+    const ancestors = await this.recursivelyFetchAncestors(parent, hierarchyId);
+    return [parent, ...ancestors];
+  }
+
+  getPreviousGeneration = async (child, hierarchyId) => {
+    // get any matching hierarchy specific relationships leading out of this child
+    const parentRelation = hierarchyId
+      ? await this.models.entityRelation.findOne({
+          child_id: child.id,
+          entity_hierarchy_id: hierarchyId,
+        })
+      : null;
+    if (parentRelation) {
+      return this.models.entity.findOne(
+        { id: parentRelation.parent_id },
+        {},
+        { columns: this.models.entity.minimalFields },
+      );
+    }
+
+    // no parent via specific hierarchy, follow canonical relationship
+    return child.parent_id
+      ? this.models.entity.findOne(
+          { id: child.parent_id },
+          {},
+          { columns: this.models.entity.minimalFields },
+        )
+      : null;
+  };
+
+  // faster way to recurse through canonical hierarchy using pure sql
   async getDescendantsCanonically(entityId) {
     const canonicalTypes = Object.values(this.models.entity.orgUnitEntityTypes).join("','");
     const results = await this.models.entity.database.executeSql(

@@ -5,28 +5,37 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
+import { TextButton } from '@tupaia/ui-components';
 
-const getTabStyle = isActive => {
-  if (isActive) {
-    return { ...localStyles.tab, ...localStyles.tabActive };
-  }
+const StyledTabs = styled.div`
+  border-bottom: 1px solid #eee;
+`;
 
-  return localStyles.tab;
-};
+const Tab = styled(TextButton)`
+  display: inline-block;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 21px;
+  outline: none;
+  background-color: transparent;
+  border: none;
+  color: ${props => props.active};
+`;
 
-export const Tabs = ({ tabs, onSelectTab, activeValue, style }) => (
-  <div style={{ ...localStyles.tabs, ...style }}>
+export const Tabs = ({ tabs, onSelectTab, activeValue }) => (
+  <StyledTabs>
     {tabs.map(({ label, value }) => (
-      <button
+      <Tab
         onClick={() => onSelectTab(value)}
         key={value}
-        style={getTabStyle(activeValue === value)}
-        type={'button'}
+        active={activeValue === value ? '#3884b8' : '#666'}
+        type="button"
       >
         {label}
-      </button>
+      </Tab>
     ))}
-  </div>
+  </StyledTabs>
 );
 
 Tabs.propTypes = {
@@ -38,31 +47,4 @@ Tabs.propTypes = {
   ).isRequired,
   activeValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   onSelectTab: PropTypes.func.isRequired,
-  style: PropTypes.object,
-};
-
-Tabs.defaultProps = {
-  style: {},
-};
-
-const localStyles = {
-  tabs: {
-    borderBottom: '1px solid #eee',
-  },
-  tab: {
-    padding: 10,
-    display: 'inline-block',
-    color: '#666',
-    outline: 'none',
-    backgroundColor: 'transparent',
-    border: 'none',
-    cursor: 'pointer',
-  },
-  tabActive: {
-    padding: 10,
-    display: 'inline-block',
-    color: 'black',
-    borderBottom: '1px solid black',
-    fontWeight: 'bold',
-  },
 };

@@ -6,7 +6,7 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { WarningCloud, TabsToolbar, Virus } from '@tupaia/ui-components';
 import { Archive } from '@material-ui/icons';
-import { Header, OutbreaksExportModal, AlertsExportModal } from '../components';
+import { Header, HeaderTitle, OutbreaksExportModal, AlertsExportModal } from '../components';
 import { AlertsRoutes } from '../routes/AlertsRoutes';
 
 const links = [
@@ -34,7 +34,7 @@ export const AlertsOutbreaksView = () => {
     : AlertsExportModal;
   return (
     <>
-      <Header title="Alerts & Outbreaks" ExportModal={ExportModal} />
+      <Header Title={<HeaderTitle title="Alerts & Outbreaks" />} ExportModal={ExportModal} />
       <TabsToolbar links={links} />
       <AlertsRoutes />
     </>

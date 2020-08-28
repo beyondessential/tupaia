@@ -36,6 +36,17 @@ const Container = styled.div`
   }
 `;
 
+const FlexRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16px;
+
+  > button {
+    flex: 1;
+  }
+`;
+
 const SuccessMessage = () => (
   <CheckEmailMessage>
     Please check your email for further instructions on how to reset your password.
@@ -57,17 +68,19 @@ export const RequestResetPasswordFormComponent = ({
         formError={resetPasswordFailedMessage}
         onSubmit={({ email }) => onAttemptResetPassword(email)}
         render={submitForm => (
-          <React.Fragment>
+          <>
             {hasResetPasswordCompleted ? (
               <SuccessMessage />
             ) : (
               <TextField fullWidth label="E-mail" name="email" required />
             )}
-            <Button disabled={hasResetPasswordCompleted} variant="outlined" onClick={submitForm}>
-              Reset Password
-            </Button>
-            <Button onClick={onClickCancel}>Back</Button>
-          </React.Fragment>
+            <FlexRow>
+              <Button disabled={hasResetPasswordCompleted} variant="outlined" onClick={submitForm}>
+                Reset Password
+              </Button>
+              <Button onClick={onClickCancel}>Back</Button>
+            </FlexRow>
+          </>
         )}
       />
     </Container>

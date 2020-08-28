@@ -54,7 +54,7 @@ for PACKAGE in "meditrak-server" "web-config-server" "web-frontend" "admin-panel
       # It's a server, start the pm2 process
       echo "Starting ${PACKAGE}"
       yarn build
-      pm2 start --name $PACKAGE dist --wait-ready --listen-timeout 15000
+      pm2 start --name $PACKAGE dist --wait-ready --listen-timeout 15000 --time
     else
       # It's a static site, build it
       echo "Building ${PACKAGE}"

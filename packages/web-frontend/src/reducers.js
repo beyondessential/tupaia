@@ -24,6 +24,7 @@ import { getMeasureFromHierarchy, isMobile } from './utils';
 import { LANDING } from './containers/OverlayDiv/constants';
 import { getUniqueViewId } from './utils/getUniqueViewId';
 import { EMAIL_VERIFIED_STATUS } from './containers/EmailVerification';
+import { selectMeasureBarItemCategoryById } from './selectors';
 
 // Import Action Types
 import {
@@ -37,6 +38,7 @@ import {
   CHANGE_SIDE_BAR_CONTRACTED_WIDTH,
   CHANGE_SIDE_BAR_EXPANDED_WIDTH,
   CHANGE_MEASURE,
+  UPDATE_MEASURE_CONFIG,
   CLEAR_MEASURE_HIERARCHY,
   CHANGE_ORG_UNIT,
   CHANGE_SEARCH,
@@ -107,6 +109,7 @@ import {
   SET_MOBILE_DASHBOARD_EXPAND,
   REQUEST_PROJECT_ACCESS,
   SELECT_PROJECT,
+  FETCH_RESET_TOKEN_LOGIN_ERROR,
 } from './actions';
 
 function authentication(
@@ -118,6 +121,7 @@ function authentication(
     currentUserEmail: '',
     isRequestingLogin: false,
     loginFailedMessage: null,
+    oneTimeLoginFailedMessage: null,
     showSessionExpireDialog: false,
     successMessage: '',
     emailVerified: EMAIL_VERIFIED_STATUS.VERIFIED,
@@ -173,6 +177,14 @@ function authentication(
         isUserLoggedIn: false,
         isRequestingLogin: false,
         loginFailedMessage: 'Wrong e-mail or password',
+        errors: action.errors,
+      };
+    case FETCH_RESET_TOKEN_LOGIN_ERROR:
+      return {
+        ...state,
+        isUserLoggedIn: false,
+        isRequestingLogin: false,
+        oneTimeLoginFailedMessage: 'Reset token is invalid or already used',
         errors: action.errors,
       };
     case FETCH_EMAIL_VERIFY_SUCCESS:
@@ -304,14 +316,17 @@ function changePassword(
         isRequestingChangePassword: true,
         changePasswordFailedMessage: '',
       };
-    case FETCH_CHANGE_PASSWORD_ERROR:
+    case FETCH_CHANGE_PASSWORD_ERROR: {
+      const errorMessage =
+        state.passwordResetToken.length > 0
+          ? 'This password reset link has already been used.'
+          : 'Something went wrong during password change, please check the form and try again';
       return {
         ...state,
         isRequestingChangePassword: false,
-        changePasswordFailedMessage:
-          action.error ||
-          'Something went wrong during password change, please check the form and try again',
+        changePasswordFailedMessage: action.error || errorMessage,
       };
+    }
     case FETCH_CHANGE_PASSWORD_SUCCESS:
       return {
         ...state,
@@ -546,6 +561,24 @@ function measureBar(
         selectedMeasureId: action.measureId,
         currentMeasureOrganisationUnitCode: action.organisationUnitCode,
       };
+    case UPDATE_MEASURE_CONFIG: {
+      const { categoryIndex, measure, measureIndex } = selectMeasureBarItemCategoryById(
+        { measureBar: state },
+        state.currentMeasure.measureId,
+      );
+
+      const measureHierarchy = [...state.measureHierarchy];
+
+      measureHierarchy[categoryIndex].children[measureIndex] = {
+        ...measure,
+        ...action.measureConfig,
+      };
+
+      return {
+        ...state,
+        measureHierarchy,
+      };
+    }
     case TOGGLE_MEASURE_EXPAND:
       return { ...state, isExpanded: !state.isExpanded };
     case FETCH_MEASURES_SUCCESS:
