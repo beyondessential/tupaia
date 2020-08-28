@@ -31,7 +31,7 @@ const api = () => {
     const response = await fetch(`https://swapi.dev/api/people/?search=${query}`);
     await sleep(500); // For demoing loading state
     const data = await response.json();
-    return data.results;
+    return data.results.map(option => option.name);
   };
 
   return {
@@ -39,28 +39,25 @@ const api = () => {
   };
 };
 
-export const simple = () => {
-  const fetchOptions = useCallback(api().get, []);
+export const Simple = () => {
   return (
     <Container>
       <AsyncAutocomplete
         id="simple-autocomplete"
         label="Async Auto Complete"
-        fetchOptions={fetchOptions}
+        fetchOptions={api().get}
         placeholder="Search..."
       />
     </Container>
   );
 };
 
-export const disabled = () => {
-  const fetchOptions = useCallback(api().get, []);
-
+export const Disabled = () => {
   return (
     <Container>
       <AsyncAutocomplete
         label="Simple Auto Complete"
-        fetchOptions={fetchOptions}
+        fetchOptions={api().get}
         placeholder="Search..."
         disabled
       />
@@ -68,24 +65,20 @@ export const disabled = () => {
   );
 };
 
-export const noLabel = () => {
-  const fetchOptions = useCallback(api().get, []);
-
+export const NoLabel = () => {
   return (
     <Container>
-      <AsyncAutocomplete fetchOptions={fetchOptions} placeholder="Search..." />
+      <AsyncAutocomplete fetchOptions={api().get} placeholder="Search..." />
     </Container>
   );
 };
 
-export const helperText = () => {
-  const fetchOptions = useCallback(api().get, []);
-
+export const HelperText = () => {
   return (
     <Container>
       <AsyncAutocomplete
         label="Helper Text Example"
-        fetchOptions={fetchOptions}
+        fetchOptions={api().get}
         placeholder="Search..."
         helperText="This field is required"
         required
@@ -94,14 +87,12 @@ export const helperText = () => {
   );
 };
 
-export const error = () => {
-  const fetchOptions = useCallback(api().get, []);
-
+export const Error = () => {
   return (
     <Container>
       <AsyncAutocomplete
         label="Simple Auto Complete"
-        fetchOptions={fetchOptions}
+        fetchOptions={api().get}
         placeholder="Search..."
         helperText="Please try again!"
         error
@@ -110,7 +101,7 @@ export const error = () => {
   );
 };
 
-export const controlled = () => {
+export const Controlled = () => {
   const [value, setValue] = useState(null);
 
   const handleChange = useCallback(
@@ -120,15 +111,13 @@ export const controlled = () => {
     [setValue],
   );
 
-  const fetchOptions = useCallback(api().get, []);
-
   return (
     <Container>
       <AsyncAutocomplete
         label="Async Auto Complete"
         onChange={handleChange}
         value={value}
-        fetchOptions={fetchOptions}
+        fetchOptions={api().get}
         placeholder="Search..."
       />
       <Typography>Selected Value: {value ? value.name : 'none'}</Typography>
@@ -136,14 +125,12 @@ export const controlled = () => {
   );
 };
 
-export const muiProps = () => {
-  const fetchOptions = useCallback(api().get, []);
-
+export const MuiProps = () => {
   return (
     <Container>
       <AsyncAutocomplete
         label="Mui Props Example"
-        fetchOptions={fetchOptions}
+        fetchOptions={api().get}
         placeholder="Search..."
         helperText="Type free text or select an option"
         muiProps={{

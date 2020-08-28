@@ -6,9 +6,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import ReactTable from 'react-table';
-import { Alert } from 'reactstrap';
-import { Tabs, ConfirmModal } from '../widgets';
+import { SmallAlert } from '@tupaia/ui-components';
+import styled from 'styled-components';
+import { IndeterminateCheckBox, AddBox } from '@material-ui/icons';
+import { Tabs, ConfirmDeleteModal } from '../widgets';
+import { TableHeadCell } from './TableHeadCell';
+import { ColumnFilter } from './ColumnFilter';
 import {
   cancelAction,
   changeExpansions,
@@ -25,6 +28,21 @@ import { getTableState, getIsFetchingData } from './selectors';
 import { generateConfigForColumnType } from './columnTypes';
 import { getIsChangingDataOnServer } from '../dataChangeListener';
 import { makeSubstitutionsInString } from '../utilities';
+import { customPagination } from './customPagination';
+import { ExpansionContainer } from './ExpansionContainer';
+import { StyledReactTable } from './StyledReactTable';
+
+const StyledAlert = styled(SmallAlert)`
+  margin-top: 30px;
+`;
+
+const IndeterminateCheckboxIcon = styled(IndeterminateCheckBox)`
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: ${props => props.theme.palette.primary.main};
+  }
+`;
 
 class DataFetchingTableComponent extends React.Component {
   componentWillMount() {
@@ -46,7 +64,7 @@ class DataFetchingTableComponent extends React.Component {
   renderConfirmModal() {
     const { confirmActionMessage, onConfirmAction, onCancelAction } = this.props;
     return (
-      <ConfirmModal
+      <ConfirmDeleteModal
         message={confirmActionMessage}
         onConfirm={onConfirmAction}
         onCancel={onCancelAction}
@@ -80,7 +98,7 @@ class DataFetchingTableComponent extends React.Component {
     } = this.props;
 
     return (
-      <ReactTable
+      <StyledReactTable
         columns={columns}
         data={data}
         manual
@@ -100,6 +118,12 @@ class DataFetchingTableComponent extends React.Component {
         loading={isFetchingData || isChangingDataOnServer}
         filterable
         freezeWhenExpanded
+        FilterComponent={ColumnFilter}
+        ThComponent={TableHeadCell}
+        ExpanderComponent={({ isExpanded }) =>
+          isExpanded ? <AddBox color="primary" /> : <IndeterminateCheckboxIcon />
+        }
+        getPaginationProps={customPagination}
         SubComponent={
           expansionTabs &&
           (({ original: rowData, index }) => {
@@ -110,7 +134,7 @@ class DataFetchingTableComponent extends React.Component {
             const { title, endpoint, ...restOfProps } = expansionItem;
             // Each table needs a unique id so that we can keep track of state separately in redux
             return (
-              <div style={localStyles.expansion}>
+              <ExpansionContainer>
                 <Tabs
                   tabs={expansionTabs.map(({ title: tabTitle }, tabIndex) => ({
                     label: tabTitle,
@@ -125,7 +149,7 @@ class DataFetchingTableComponent extends React.Component {
                   key={expansionTab} // Triggers refresh of data.
                   {...restOfProps}
                 />
-              </div>
+              </ExpansionContainer>
             );
           })
         }
@@ -136,11 +160,15 @@ class DataFetchingTableComponent extends React.Component {
   render() {
     const { errorMessage } = this.props;
     return (
-      <div style={localStyles.container}>
-        {errorMessage && <Alert color={'danger'}>{errorMessage}</Alert>}
+      <>
+        {errorMessage && (
+          <StyledAlert severity="error" variant="standard">
+            {errorMessage}
+          </StyledAlert>
+        )}
         {this.renderReactTable()}
         {this.renderConfirmModal()}
-      </div>
+      </>
     );
   }
 }
@@ -229,15 +257,6 @@ const formatColumnForReactTable = (originalColumn, reduxId) => {
     ...generateConfigForColumnType(type, actionConfig, reduxId), // Add custom Cell/width/etc.
     ...restOfColumn,
   };
-};
-
-const localStyles = {
-  container: {
-    padding: '20px 0px',
-  },
-  expansion: {
-    padding: '0 20px 20px',
-  },
 };
 
 export const DataFetchingTable = connect(
