@@ -39,9 +39,9 @@ export const checkValueSatisfiesCondition = (value, condition) => {
 /**
  * @param {Event[]} events
  * @param {Conditions} [conditions]
- * @returns {number}
+ * @returns {Event[]}
  */
-export const countEventsThatSatisfyConditions = (events, conditions) => {
+export const getEventsThatSatisfyConditions = (events, conditions) => {
   const { dataValues: valueConditions = {} } = conditions || {};
   const eventHasTargetValues = ({ dataValues }) =>
     Object.entries(valueConditions).every(([dataElement, condition]) => {
@@ -52,7 +52,31 @@ export const countEventsThatSatisfyConditions = (events, conditions) => {
       return checkValueSatisfiesCondition(value, condition);
     });
 
-  return events.filter(eventHasTargetValues).length;
+  return events.filter(eventHasTargetValues);
+};
+
+/**
+ * @param {AnalyticsResult[]} analytics
+ * @param {Conditions} [conditions]
+ * @returns {AnalyticsResult[]}
+ */
+export const getAnalyticsThatSatisfyConditions = (analytics, conditions) => {
+  const { dataValues = [], valueOfInterest } = conditions || {};
+  const analyticHasTargetValue = ({ dataElement, value }) => {
+    if (!dataValues.includes(dataElement)) return false;
+    return checkValueSatisfiesCondition(value, valueOfInterest);
+  };
+
+  return analytics.filter(analyticHasTargetValue);
+};
+
+/**
+ * @param {Event[]} events
+ * @param {Conditions} [conditions]
+ * @returns {number}
+ */
+export const countEventsThatSatisfyConditions = (events, conditions) => {
+  return getEventsThatSatisfyConditions(events, conditions).length;
 };
 
 /**
@@ -61,13 +85,7 @@ export const countEventsThatSatisfyConditions = (events, conditions) => {
  * @returns {number}
  */
 export const countAnalyticsThatSatisfyConditions = (analytics, conditions) => {
-  const { dataValues = [], valueOfInterest } = conditions || {};
-  const analyticHasTargetValue = ({ dataElement, value }) => {
-    if (!dataValues.includes(dataElement)) return false;
-    return checkValueSatisfiesCondition(value, valueOfInterest);
-  };
-
-  return analytics.filter(analyticHasTargetValue).length;
+  return getAnalyticsThatSatisfyConditions(analytics, conditions).length;
 };
 
 /**
