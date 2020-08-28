@@ -10,5 +10,6 @@ export {
   createUrlString,
   getLocationComponentValue,
   getInitialLocation,
+  getInitialLocationComponents,
 } from './historyNavigation';
 export { URL_COMPONENTS } from './constants';

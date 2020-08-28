@@ -22,8 +22,9 @@ import {
 export const createLocation = params => {
   const { userPage } = params;
   if (userPage) {
-    // TODO: Userpage logic to come in future PR
-    return { pathname: `/${userPage}` };
+    // Userpage locations are created by the backend,
+    // this is good enough for here
+    return { pathname: `/${userPage}`, search: {} };
   }
 
   const pathComponents = PATH_COMPONENTS.map(component => params[component]);

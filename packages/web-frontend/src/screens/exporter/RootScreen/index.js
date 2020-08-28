@@ -13,19 +13,14 @@
  * displays the correct chart.
  */
 import React, { PureComponent } from 'react';
-import { connect } from 'react-redux';
 import queryString from 'query-string';
 import moment from 'moment-timezone';
 
 import { ChartWrapper, getIsMatrix, MatrixWrapper } from '../../../components/View';
 import { request } from '../../../utils';
 import { DARK_BLUE, WHITE } from '../../../styles';
-import { selectOrgUnit } from '../../../selectors';
+import { getInitialLocationComponents } from '../../../historyNavigation';
 
-// TODO: Export functionality to come in future PR.
-/*
-const initialLocation = getInitialLocation();
-*/
 const {
   organisationUnitCode,
   organisationUnitName,
@@ -37,7 +32,7 @@ const {
   disasterStartDate,
   disasterEndDate,
   projectCode,
-} = {}; //decodeLocation(initialLocation);
+} = getInitialLocationComponents();
 
 const getCurrentDateString = () => {
   const date = moment().tz(timeZone);

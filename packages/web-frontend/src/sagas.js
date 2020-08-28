@@ -916,6 +916,7 @@ function* exportChart(action) {
     END_DATE,
     DISASTER_START_DATE,
     DISASTER_END_DATE,
+    ORG_UNIT_NAME,
   } = URL_COMPONENTS;
 
   const exportUrl = createUrlString({
@@ -929,6 +930,7 @@ function* exportChart(action) {
       selectedDisaster && formatDateForApi(selectedDisaster.startDate, timeZone),
     [DISASTER_END_DATE]: selectedDisaster && formatDateForApi(selectedDisaster.endDate, timeZone),
     [PROJECT]: projectCode,
+    [ORG_UNIT_NAME]: organisationUnitName,
   });
 
   const fetchOptions = {
