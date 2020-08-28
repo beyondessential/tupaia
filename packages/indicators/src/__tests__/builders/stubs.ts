@@ -4,8 +4,7 @@
  */
 
 import { Aggregator } from '@tupaia/aggregator';
-import { Aggregation } from '../../types';
-import { Analytic } from '../../../../aggregator/dist/analytics/filterAnalytics';
+import { Analytic, Aggregation } from '../../types';
 
 export type AnalyticResponseFixture = {
   code: string;
