@@ -12,6 +12,10 @@ import { exportSurveys } from './exportSurveys';
 import { getChanges } from './getChanges';
 import { GETAnswers } from './GETAnswers';
 import { GETDisasters } from './GETDisasters';
+import { GETQuestions } from './GETQuestions';
+import { GETPermissionGroups } from './GETPermissionGroups';
+import { GETOptions } from './GETOptions';
+import { GETOptionSets } from './GETOptionSets';
 import { importEntities } from './importEntities';
 import { importStriveLabResults } from './importStriveLabResults';
 import { importSurveys } from './importSurveys';
@@ -61,6 +65,10 @@ export default {
   getChanges: catchAsyncErrors(getChanges),
   getAnswers: useRouteHandler(GETAnswers),
   getDisasters: useRouteHandler(GETDisasters),
+  getQuestions: useRouteHandler(GETQuestions),
+  getPermissionGroups: useRouteHandler(GETPermissionGroups),
+  getOptions: useRouteHandler(GETOptions),
+  getOptionSets: useRouteHandler(GETOptionSets),
   importEntities: catchAsyncErrors(importEntities),
   importStriveLabResults: catchAsyncErrors(importStriveLabResults),
   importSurveys: catchAsyncErrors(importSurveys),

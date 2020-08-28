@@ -24,6 +24,10 @@ const {
   getChanges,
   getAnswers,
   getDisasters,
+  getQuestions,
+  getPermissionGroups,
+  getOptions,
+  getOptionSets,
   getSocialFeed,
   importEntities,
   importStriveLabResults,
@@ -101,6 +105,10 @@ export function addRoutesToApp(app) {
   app.get('(/v[0-9]+)/me/countries', getCountryAccessList);
   app.get('(/v[0-9]+)/answer/:recordId?', getAnswers);
   app.get('(/v[0-9]+)/disaster/:recordId?', getDisasters);
+  app.get('(/v[0-9]+)/questions/:recordId?', getQuestions);
+  app.get('(/v[0-9]+)/permissionGroups/:recordId?', getPermissionGroups);
+  app.get('(/v[0-9]+)/options/:recordId?', getOptions);
+  app.get('(/v[0-9]+)/optionSets/:recordId?', getOptionSets);
 
   /**
    * POST routes
