@@ -10,8 +10,7 @@ import {
   extractDataElementCodesFromFormula,
   fetchAnalytics,
 } from './helpers';
-import { AnalyticValue, Builder, AggregationSpecs, FetchOptions } from '../types';
-import { Analytic } from '@tupaia/aggregator/dist/analytics/filterAnalytics';
+import { Analytic, AnalyticValue, Builder, AggregationSpecs, FetchOptions } from '../types';
 
 export interface ArithmeticConfig {
   readonly formula: string;

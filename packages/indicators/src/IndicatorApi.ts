@@ -3,11 +3,9 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { capital } from 'case';
-
 import { Aggregator } from '@tupaia/aggregator';
 import { DataBroker } from '@tupaia/data-broker';
-import { getSortByKey } from '@tupaia/utils';
+import { getSortByKey, upperFirst } from '@tupaia/utils';
 import * as builders from './builders';
 import { Analytic, Builder, FetchOptions, IndicatorType, ModelRegistry } from './types';
 
@@ -44,7 +42,7 @@ export class IndicatorApi {
   };
 
   private getBuilderFunction = (builderName: string): Builder => {
-    const builderFunctionName = `build${capital(builderName)}`;
+    const builderFunctionName = `build${upperFirst(builderName)}`;
     const builderFunction = builders[builderFunctionName];
     if (!builderFunction) {
       throw new Error(`'${builderName}' is not an indicator builder`);
