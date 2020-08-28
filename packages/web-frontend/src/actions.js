@@ -103,6 +103,7 @@ export const OPEN_MAP_POPUP = 'OPEN_MAP_POPUP';
 export const CLOSE_MAP_POPUP = 'CLOSE_MAP_POPUP';
 export const DIALOG_PAGE_CHANGE_PASSWORD = 'DIALOG_PAGE_CHANGE_PASSWORD';
 export const DIALOG_PAGE_LOGIN = 'DIALOG_PAGE_LOGIN';
+export const DIALOG_PAGE_ONE_TIME_LOGIN = 'DIALOG_PAGE_ONE_TIME_LOGIN';
 export const DIALOG_PAGE_REQUEST_RESET_PASSWORD = 'DIALOG_PAGE_REQUEST_RESET_PASSWORD';
 export const DIALOG_PAGE_REQUEST_COUNTRY_ACCESS = 'DIALOG_PAGE_REQUEST_COUNTRY_ACCESS';
 export const DIALOG_PAGE_SIGNUP = 'DIALOG_PAGE_SIGNUP';
@@ -149,8 +150,8 @@ export function fetchInitialData() {
  * confirmation by clicking on Change password button.
  *
  * @param  {string} oldPassword Registered user's old password
- * @param  {string} pasword Registered user's new password
- * @param  {string} paswordConfirm Confirmation of new password
+ * @param  {string} password Registered user's new password
+ * @param  {string} passwordConfirm Confirmation of new password
  */
 export function attemptChangePassword(oldPassword, password, passwordConfirm, passwordResetToken) {
   return {
@@ -222,6 +223,39 @@ export function fetchUserLoginError(errors) {
     type: FETCH_LOGIN_ERROR,
     errors,
     errorMessage: 'Wrong e-mail or password',
+  };
+}
+
+/**
+ * Attempt login using a one time token.
+ *
+ * @param  {string} passwordResetToken
+ */
+export function attemptResetTokenLogin(passwordResetToken) {
+  return {
+    type: ATTEMPT_RESET_TOKEN_LOGIN,
+    passwordResetToken: passwordResetToken,
+  };
+}
+
+/**
+ * Success logging in with one time token
+ */
+export function fetchResetTokenLoginSuccess() {
+  return {
+    type: FETCH_RESET_TOKEN_LOGIN_SUCCESS,
+  };
+}
+
+/**
+ * Changes state to communicate error to login some user
+ *
+ * @param {object} errors  response from saga on failed fetch
+ */
+export function fetchResetTokenLoginError(errors) {
+  return {
+    type: FETCH_RESET_TOKEN_LOGIN_ERROR,
+    errors,
   };
 }
 

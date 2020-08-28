@@ -4,9 +4,9 @@
  */
 
 export const DEFAULT_AUTOCOMPLETE_STATE = {
-  selection: null,
+  selection: [],
   searchTerm: '',
-  results: null,
+  results: [],
   isLoading: false,
   fetchId: null,
 };

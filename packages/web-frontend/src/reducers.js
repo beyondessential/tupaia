@@ -107,6 +107,7 @@ import {
   SET_MOBILE_DASHBOARD_EXPAND,
   REQUEST_PROJECT_ACCESS,
   SET_PROJECT,
+  FETCH_RESET_TOKEN_LOGIN_ERROR,
 } from './actions';
 
 function authentication(
@@ -118,6 +119,7 @@ function authentication(
     currentUserEmail: '',
     isRequestingLogin: false,
     loginFailedMessage: null,
+    oneTimeLoginFailedMessage: null,
     showSessionExpireDialog: false,
     successMessage: '',
     emailVerified: EMAIL_VERIFIED_STATUS.VERIFIED,
@@ -173,6 +175,14 @@ function authentication(
         isUserLoggedIn: false,
         isRequestingLogin: false,
         loginFailedMessage: 'Wrong e-mail or password',
+        errors: action.errors,
+      };
+    case FETCH_RESET_TOKEN_LOGIN_ERROR:
+      return {
+        ...state,
+        isUserLoggedIn: false,
+        isRequestingLogin: false,
+        oneTimeLoginFailedMessage: 'Reset token is invalid or already used',
         errors: action.errors,
       };
     case FETCH_EMAIL_VERIFY_SUCCESS:
