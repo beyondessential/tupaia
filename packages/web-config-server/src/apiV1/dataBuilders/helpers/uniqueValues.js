@@ -1,4 +1,4 @@
-const NO_UNIQUE_VALUE = 'NO_UNIQUE_VALUE';
+export const NO_UNIQUE_VALUE = 'NO_UNIQUE_VALUE';
 
 export const uniqueValueFromEvents = (events, config) => {
   const { valueToSelect } = config;
