@@ -29,21 +29,39 @@ class JestMatcherFactory {
     this.extendApi = extendApi;
   }
 
+  isAsync = config => config.matcher.constructor.name === 'AsyncFunction';
+
   /**
    * @param {MatcherConfig} config
    */
-  create = config => async (received, ...expected) => {
+  create = config => {
     const { description, matcher } = config;
 
-    try {
-      await matcher(this.expect(received), expected);
-    } catch (error) {
+    const onError = error => {
       const diff = this.extractDiffFromMessage(error.message);
       return this.createFailureResponse(description, diff);
-    }
+    };
+    const onSuccess = (received, expected) => {
+      const diff = this.createNegationDiff(config, received, expected);
+      return this.createSuccessResponse(description, diff);
+    };
 
-    const diff = this.createNegationDiff(config, received, expected);
-    return this.createSuccessResponse(description, diff);
+    const createMatcher = this.isAsync(config) ? this.createAsync : this.createSync;
+    return createMatcher(matcher, onError, onSuccess);
+  };
+
+  createAsync = (matcher, onError, onSuccess) => async (received, ...expected) =>
+    matcher(this.expect(received), expected)
+      .then(() => onSuccess(received, expected))
+      .catch(onError);
+
+  createSync = (matcher, onError, onSuccess) => (received, ...expected) => {
+    try {
+      matcher(this.expect(received), expected);
+    } catch (error) {
+      return onError(error);
+    }
+    return onSuccess(received, expected);
   };
 
   createSuccessResponse = (description, diff) => ({

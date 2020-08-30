@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 
 const COLUMNS = [
@@ -30,11 +31,16 @@ const CREATE_CONFIG = {
   },
 };
 
-export const PermissionGroupsPage = () => (
+export const PermissionGroupsPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Permission Groups"
     endpoint="permissionGroups"
     columns={COLUMNS}
     createConfig={CREATE_CONFIG}
+    getHeaderEl={getHeaderEl}
   />
 );
+
+PermissionGroupsPage.propTypes = {
+  getHeaderEl: PropTypes.func.isRequired,
+};

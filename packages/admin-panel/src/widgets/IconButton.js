@@ -3,35 +3,19 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Button } from 'reactstrap';
-import { Icon } from '.';
+import MuiIconButton from '@material-ui/core/IconButton';
+import styled from 'styled-components';
 
-export const IconButton = ({ icon, children, ...buttonProps }) => {
-  return (
-    <div style={localStyles.container}>
-      <Button {...buttonProps}>
-        <Icon name={icon} />
-        {children}
-      </Button>
-    </div>
-  );
-};
+export const IconButton = styled(MuiIconButton)`
+  background-color: #dedee0;
+  color: #9aa8b0;
+  border-radius: 3px;
+  width: 40px;
+  height: 40px;
+  transition: background-color 0.2s ease, color 0.2s ease;
 
-IconButton.propTypes = {
-  icon: PropTypes.string.isRequired,
-  children: PropTypes.array,
-};
-
-IconButton.defaultProps = {
-  children: [],
-};
-
-const localStyles = {
-  container: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
-};
+  &:hover {
+    background-color: ${props => props.theme.palette.primary.main};
+    color: white;
+  }
+`;
