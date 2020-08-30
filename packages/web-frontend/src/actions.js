@@ -16,7 +16,6 @@
  */
 
 import { initialOrgUnit } from './defaults';
-import { getSiblingItems, storeSiblingItems } from './utils';
 
 export const FETCH_INITIAL_DATA = 'FETCH_INITIAL_DATA';
 export const ATTEMPT_CHANGE_PASSWORD = 'ATTEMPT_CHANGE_PASSWORD';
@@ -38,6 +37,7 @@ export const CHANGE_SIDE_BAR_CONTRACTED_WIDTH = 'CHANGE_SIDE_BAR_CONTRACTED_WIDT
 export const CHANGE_SIDE_BAR_EXPANDED_WIDTH = 'CHANGE_SIDE_BAR_EXPANDED_WIDTH';
 export const CLEAR_MEASURE_HIERARCHY = 'CLEAR_MEASURE_HIERARCHY';
 export const CHANGE_MEASURE = 'CHANGE_MEASURE';
+export const UPDATE_MEASURE_CONFIG = 'UPDATE_MEASURE_CONFIG';
 export const REQUEST_ORG_UNIT = 'REQUEST_ORG_UNIT';
 export const FETCH_ORG_UNIT = 'FETCH_ORG_UNIT';
 export const CHANGE_ORG_UNIT = 'CHANGE_ORG_UNIT';
@@ -105,6 +105,7 @@ export const OPEN_MAP_POPUP = 'OPEN_MAP_POPUP';
 export const CLOSE_MAP_POPUP = 'CLOSE_MAP_POPUP';
 export const DIALOG_PAGE_CHANGE_PASSWORD = 'DIALOG_PAGE_CHANGE_PASSWORD';
 export const DIALOG_PAGE_LOGIN = 'DIALOG_PAGE_LOGIN';
+export const DIALOG_PAGE_ONE_TIME_LOGIN = 'DIALOG_PAGE_ONE_TIME_LOGIN';
 export const DIALOG_PAGE_REQUEST_RESET_PASSWORD = 'DIALOG_PAGE_REQUEST_RESET_PASSWORD';
 export const DIALOG_PAGE_REQUEST_COUNTRY_ACCESS = 'DIALOG_PAGE_REQUEST_COUNTRY_ACCESS';
 export const DIALOG_PAGE_SIGNUP = 'DIALOG_PAGE_SIGNUP';
@@ -150,8 +151,8 @@ export function fetchInitialData() {
  * confirmation by clicking on Change password button.
  *
  * @param  {string} oldPassword Registered user's old password
- * @param  {string} pasword Registered user's new password
- * @param  {string} paswordConfirm Confirmation of new password
+ * @param  {string} password Registered user's new password
+ * @param  {string} passwordConfirm Confirmation of new password
  */
 export function attemptChangePassword(oldPassword, password, passwordConfirm, passwordResetToken) {
   return {
@@ -223,6 +224,39 @@ export function fetchUserLoginError(errors) {
     type: FETCH_LOGIN_ERROR,
     errors,
     errorMessage: 'Wrong e-mail or password',
+  };
+}
+
+/**
+ * Attempt login using a one time token.
+ *
+ * @param  {string} passwordResetToken
+ */
+export function attemptResetTokenLogin(passwordResetToken) {
+  return {
+    type: ATTEMPT_RESET_TOKEN_LOGIN,
+    passwordResetToken: passwordResetToken,
+  };
+}
+
+/**
+ * Success logging in with one time token
+ */
+export function fetchResetTokenLoginSuccess() {
+  return {
+    type: FETCH_RESET_TOKEN_LOGIN_SUCCESS,
+  };
+}
+
+/**
+ * Changes state to communicate error to login some user
+ *
+ * @param {object} errors  response from saga on failed fetch
+ */
+export function fetchResetTokenLoginError(errors) {
+  return {
+    type: FETCH_RESET_TOKEN_LOGIN_ERROR,
+    errors,
   };
 }
 
@@ -508,6 +542,18 @@ export function changeMeasure(measureId, organisationUnitCode) {
     type: CHANGE_MEASURE,
     measureId,
     organisationUnitCode,
+  };
+}
+
+/**
+ * Updates measure config for current measure in measureBar.
+ *
+ * @param {object} measureConfig
+ */
+export function updateMeasureConfig(measureConfig) {
+  return {
+    type: UPDATE_MEASURE_CONFIG,
+    measureConfig,
   };
 }
 

@@ -1,4 +1,10 @@
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+
 import React from 'react';
+import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 
 const FIELDS = [
@@ -61,7 +67,7 @@ const COLUMNS = [
   },
 ];
 
-export const AccessRequestsPage = () => (
+export const AccessRequestsPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Access Requests"
     endpoint="accessRequests"
@@ -70,5 +76,10 @@ export const AccessRequestsPage = () => (
       title: 'Edit & Approve Access Request',
     }}
     baseFilter={{ approved: null }}
+    getHeaderEl={getHeaderEl}
   />
 );
+
+AccessRequestsPage.propTypes = {
+  getHeaderEl: PropTypes.func.isRequired,
+};

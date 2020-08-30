@@ -2,6 +2,7 @@
  * Tupaia Config Server
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
+
 import { getSortByKey, getSortByExtractedValue, getUniqueEntries } from '@tupaia/utils';
 
 import { Project, Entity } from '/models';
@@ -159,6 +160,18 @@ export class DataBuilder {
   sortDataByName = data => data.sort(getSortByKey('name'));
 
   areDataAvailable = data => data.some(({ value }) => value !== NO_DATA_AVAILABLE);
+
+  // Returns true if the results are valid and false otherwise
+  validateResults = results => {
+    const { dataElementCodes, requireDataForAllElements } = this.config;
+    if (!results) return false;
+
+    if (requireDataForAllElements) {
+      const allDataElementsInResult = results.map(({ dataElement: de }) => de);
+      return dataElementCodes.every(dataElement => allDataElementsInResult.includes(dataElement));
+    }
+    return true;
+  };
 
   areEventResults = results => !!(results[0] && results[0].event);
 }

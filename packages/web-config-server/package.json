@@ -2,7 +2,6 @@
   "name": "@tupaia/web-config-server",
   "version": "0.0.0",
   "description": "Config server for tupaia.org",
-  "private": true,
   "main": "dist",
   "scripts": {
     "lint": "eslint --ext .js  --ignore-pattern __tests__/ .",

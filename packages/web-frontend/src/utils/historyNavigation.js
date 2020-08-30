@@ -21,7 +21,6 @@ import { createBrowserHistory } from 'history';
 import queryString from 'query-string';
 
 import {
-  DIALOG_PAGE_RESET_PASSWORD,
   changeOrgUnit,
   changeMeasure,
   changeDashboardGroup,
@@ -31,6 +30,7 @@ import {
   setVerifyEmailToken,
   openUserPage,
   findLoggedIn,
+  DIALOG_PAGE_ONE_TIME_LOGIN,
 } from '../actions';
 
 import { gaPageView } from '.';
@@ -199,7 +199,7 @@ function reactToHistory(location, store) {
     switch (userPage) {
       case PASSWORD_RESET_PREFIX:
         dispatch(setPasswordResetToken(passwordResetToken));
-        dispatch(openUserPage(DIALOG_PAGE_RESET_PASSWORD));
+        dispatch(openUserPage(DIALOG_PAGE_ONE_TIME_LOGIN));
         dispatch(changeOrgUnit()); // load world dashboard in background
         break;
       case VERIFY_EMAIL:
