@@ -903,6 +903,7 @@ function* exportChart(action) {
     extraConfig,
     projectCode,
   } = action;
+  console.log(action);
 
   const timeZone = getTimeZone();
 
@@ -952,14 +953,17 @@ function* exportChart(action) {
     }),
   };
 
+  console.log(exportUrl, fetchOptions);
   const requestContext = {
     alwaysUseSuppliedErrorFunction: true,
   };
 
   try {
     yield call(request, requestResourceUrl, fetchChartExportError, fetchOptions, requestContext);
+    console.log('success!!');
     yield put(fetchChartExportSuccess());
   } catch (error) {
+    console.log('error :(');
     yield put(error.errorFunction(error.message));
   }
 }

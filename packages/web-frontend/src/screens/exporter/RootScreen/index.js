@@ -33,6 +33,18 @@ const {
   disasterEndDate,
   projectCode,
 } = getInitialLocationComponents();
+console.log({
+  organisationUnitCode,
+  organisationUnitName,
+  dashboardId,
+  reportId,
+  timeZone,
+  startDate,
+  endDate,
+  disasterStartDate,
+  disasterEndDate,
+  projectCode,
+});
 
 const getCurrentDateString = () => {
   const date = moment().tz(timeZone);
@@ -69,7 +81,9 @@ export default class RootScreen extends PureComponent {
       projectCode,
     };
     const requestResourceUrl = `view?${queryString.stringify(urlParameters)}`;
+    console.log(requestResourceUrl);
     const viewContent = await request(requestResourceUrl, this.handleError, {});
+    console.log(viewContent);
     this.setState({ viewContent, isLoading: false });
   }
 
