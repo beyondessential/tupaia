@@ -22,29 +22,16 @@ import { DARK_BLUE, WHITE } from '../../../styles';
 import { getInitialLocationComponents, URL_COMPONENTS } from '../../../historyNavigation';
 
 const {
-  PROJECT,
-  ORG_UNIT,
-  DASHBOARD,
-  REPORT,
-  TIMEZONE,
-  START_DATE,
-  END_DATE,
-  DISASTER_START_DATE,
-  DISASTER_END_DATE,
-  ORG_UNIT_NAME,
-} = URL_COMPONENTS;
-
-const {
-  [ORG_UNIT]: organisationUnitCode,
-  [ORG_UNIT_NAME]: organisationUnitName,
-  [DASHBOARD]: dashboardId,
-  [REPORT]: reportId,
-  [TIMEZONE]: timeZone,
-  [START_DATE]: startDate,
-  [END_DATE]: endDate,
-  [DISASTER_START_DATE]: disasterStartDate,
-  [DISASTER_END_DATE]: disasterEndDate,
-  [PROJECT]: projectCode,
+  [URL_COMPONENTS.ORG_UNIT]: organisationUnitCode,
+  [URL_COMPONENTS.ORG_UNIT_NAME]: organisationUnitName,
+  [URL_COMPONENTS.DASHBOARD]: dashboardId,
+  [URL_COMPONENTS.REPORT]: reportId,
+  [URL_COMPONENTS.TIMEZONE]: timeZone,
+  [URL_COMPONENTS.START_DATE]: startDate,
+  [URL_COMPONENTS.END_DATE]: endDate,
+  [URL_COMPONENTS.DISASTER_START_DATE]: disasterStartDate,
+  [URL_COMPONENTS.DISASTER_END_DATE]: disasterEndDate,
+  [URL_COMPONENTS.PROJECT]: projectCode,
 } = getInitialLocationComponents();
 
 const getCurrentDateString = () => {

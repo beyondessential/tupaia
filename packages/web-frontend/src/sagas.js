@@ -906,31 +906,19 @@ function* exportChart(action) {
 
   const timeZone = getTimeZone();
 
-  const {
-    PROJECT,
-    ORG_UNIT,
-    DASHBOARD,
-    REPORT,
-    TIMEZONE,
-    START_DATE,
-    END_DATE,
-    DISASTER_START_DATE,
-    DISASTER_END_DATE,
-    ORG_UNIT_NAME,
-  } = URL_COMPONENTS;
-
   const exportUrl = createUrlString({
-    [DASHBOARD]: dashboardGroupId,
-    [REPORT]: viewId,
-    [ORG_UNIT]: organisationUnitCode,
-    [TIMEZONE]: timeZone,
-    [START_DATE]: formatDateForApi(startDate, timeZone),
-    [END_DATE]: formatDateForApi(endDate, timeZone),
-    [DISASTER_START_DATE]:
+    [URL_COMPONENTS.DASHBOARD]: dashboardGroupId,
+    [URL_COMPONENTS.REPORT]: viewId,
+    [URL_COMPONENTS.ORG_UNIT]: organisationUnitCode,
+    [URL_COMPONENTS.TIMEZONE]: timeZone,
+    [URL_COMPONENTS.START_DATE]: formatDateForApi(startDate, timeZone),
+    [URL_COMPONENTS.END_DATE]: formatDateForApi(endDate, timeZone),
+    [URL_COMPONENTS.DISASTER_START_DATE]:
       selectedDisaster && formatDateForApi(selectedDisaster.startDate, timeZone),
-    [DISASTER_END_DATE]: selectedDisaster && formatDateForApi(selectedDisaster.endDate, timeZone),
-    [PROJECT]: projectCode,
-    [ORG_UNIT_NAME]: organisationUnitName,
+    [URL_COMPONENTS.DISASTER_END_DATE]:
+      selectedDisaster && formatDateForApi(selectedDisaster.endDate, timeZone),
+    [URL_COMPONENTS.PROJECT]: projectCode,
+    [URL_COMPONENTS.ORG_UNIT_NAME]: organisationUnitName,
   });
 
   const fetchOptions = {
