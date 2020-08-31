@@ -13,31 +13,26 @@
  * displays the correct chart.
  */
 import React, { PureComponent } from 'react';
-import { connect } from 'react-redux';
 import queryString from 'query-string';
 import moment from 'moment-timezone';
 
 import { ChartWrapper, getIsMatrix, MatrixWrapper } from '../../../components/View';
 import { request } from '../../../utils';
 import { DARK_BLUE, WHITE } from '../../../styles';
-import { selectOrgUnit } from '../../../selectors';
+import { getInitialLocationComponents, URL_COMPONENTS } from '../../../historyNavigation';
 
-// TODO: Export functionality to come in future PR.
-/*
-const initialLocation = getInitialLocation();
-*/
 const {
-  organisationUnitCode,
-  organisationUnitName,
-  dashboardId,
-  reportId,
-  timeZone,
-  startDate,
-  endDate,
-  disasterStartDate,
-  disasterEndDate,
-  projectCode,
-} = {}; //decodeLocation(initialLocation);
+  [URL_COMPONENTS.ORG_UNIT]: organisationUnitCode,
+  [URL_COMPONENTS.ORG_UNIT_NAME]: organisationUnitName,
+  [URL_COMPONENTS.DASHBOARD]: dashboardId,
+  [URL_COMPONENTS.REPORT]: reportId,
+  [URL_COMPONENTS.TIMEZONE]: timeZone,
+  [URL_COMPONENTS.START_DATE]: startDate,
+  [URL_COMPONENTS.END_DATE]: endDate,
+  [URL_COMPONENTS.DISASTER_START_DATE]: disasterStartDate,
+  [URL_COMPONENTS.DISASTER_END_DATE]: disasterEndDate,
+  [URL_COMPONENTS.PROJECT]: projectCode,
+} = getInitialLocationComponents();
 
 const getCurrentDateString = () => {
   const date = moment().tz(timeZone);
