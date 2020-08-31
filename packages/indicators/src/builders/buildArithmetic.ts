@@ -3,16 +3,15 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { runArithmetic } from '@beyondessential/arithmetic';
+import { getVariables, runArithmetic } from '@beyondessential/arithmetic';
+
 import { Aggregator } from '@tupaia/aggregator';
-import {
-  getAggregationsByCode,
-  extractDataElementCodesFromFormula,
-  fetchAnalytics,
-} from './helpers';
-import { Analytic, AnalyticValue, Builder, AggregationSpecs, FetchOptions } from '../types';
+import { hasContent, isAString, isPlainObject } from '@tupaia/utils';
+import { getAggregationsByCode, fetchAnalytics, validateConfig } from './helpers';
+import { Analytic, Builder, AggregationSpecs, FetchOptions } from '../types';
 
 export interface ArithmeticConfig {
+  readonly [key: string]: unknown;
   readonly formula: string;
   readonly aggregation: AggregationSpecs;
 }
@@ -23,17 +22,20 @@ interface AnalyticalEvent {
   dataValues: Record<Analytic['dataElement'], Analytic['value']>;
 }
 
-const validateConfig = (config: ArithmeticConfig) => {
-  const { formula, aggregation } = config;
-  const codesInFormula = extractDataElementCodesFromFormula(formula);
-
-  codesInFormula.forEach(codeInFormula => {
-    if (!Object.keys(aggregation).includes(codeInFormula)) {
-      throw new Error(
-        `Data element ${codeInFormula} is referenced in the formula but has no aggregation defined`,
-      );
+const assertAggregationIsDefinedForCodesInFormula = (
+  aggregation: string,
+  { formula }: { formula: ArithmeticConfig['formula'] },
+) => {
+  getVariables(formula).forEach(code => {
+    if (!Object.keys(aggregation).includes(code)) {
+      throw new Error(`'${code}' is referenced in the formula but has no aggregation defined`);
     }
   });
+};
+
+const configValidators = {
+  formula: [hasContent, isAString],
+  aggregation: [hasContent, isPlainObject, assertAggregationIsDefinedForCodesInFormula],
 };
 
 const analyticsToAnalyticalEvents = (analytics: Analytic[]): AnalyticalEvent[] => {
@@ -74,15 +76,11 @@ const buildAnalyticValues = (analyticalEvents: AnalyticalEvent[], formula: strin
     value: runArithmetic(formula, dataValues),
   }));
 
-export const buildArithmetic: Builder<ArithmeticConfig> = async (input: {
-  aggregator: Aggregator;
-  config: ArithmeticConfig;
-  fetchOptions: FetchOptions;
-}): Promise<AnalyticValue[]> => {
-  const { aggregator, config, fetchOptions } = input;
-  const { formula, aggregation: aggregationSpecs } = config;
+export const buildArithmetic: Builder = async input => {
+  const { aggregator, config: configInput, fetchOptions } = input;
+  const config = await validateConfig<ArithmeticConfig>(configInput, configValidators);
 
-  validateConfig(config);
+  const { formula, aggregation: aggregationSpecs } = config;
   const events = await fetchAnalyticalEvents(aggregator, aggregationSpecs, fetchOptions);
   return buildAnalyticValues(events, formula);
 };

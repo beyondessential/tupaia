@@ -14,11 +14,36 @@ const aggregationsByCode = (codes: string[]) =>
 describe('buildArithmetic', () => {
   const aggregator = createAggregator(ANALYTIC_RESPONSE_FIXTURES);
 
-  it('throws an error if a data element referenced in the formula has no defined aggregation', async () => {
-    const config = { formula: 'A + B', aggregation: { A: 'MOST_RECENT' } };
-    return expect(buildArithmetic({ aggregator, config, fetchOptions: {} })).toBeRejectedWith(
-      /B.* has no aggregation defined/,
+  describe('throws for invalid config', () => {
+    const testData: [string, {}, RegExp][] = [
+      ['undefined formula', { aggregation: {} }, /Error .*formula.* empty/],
+      ['formula is not a string', { formula: {}, aggregation: {} }, /Error .*formula.* string/],
+      ['undefined aggregation', { formula: 'A + B' }, /Error .*aggregation.* empty/],
+      [
+        'aggregation is not an object',
+        { formula: 'A + B', aggregation: 'MOST_RECENT' },
+        /Error .*aggregation.* object/,
+      ],
+      [
+        'a data element referenced in the formula has no defined aggregation',
+        { formula: 'A + B', aggregation: { A: 'MOST_RECENT' } },
+        /B.* has no aggregation defined/,
+      ],
+    ];
+
+    it.each(testData)('%s', async (_, config, expectedError) =>
+      expect(buildArithmetic({ aggregator, config, fetchOptions: {} })).toBeRejectedWith(
+        expectedError,
+      ),
     );
+  });
+
+  it('resolves for valid config', async () => {
+    const config = {
+      formula: '2 * A + B',
+      aggregation: { A: 'MOST_RECENT', B: ['SUM', 'MOST_RECENT'] },
+    };
+    return expect(buildArithmetic({ aggregator, config, fetchOptions: {} })).toResolve();
   });
 
   it('calls `aggregator.fetchAnalytics` with `fetchOptions`', async () => {

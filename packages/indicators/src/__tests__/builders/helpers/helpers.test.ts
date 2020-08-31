@@ -4,33 +4,35 @@
  */
 
 import {
-  extractDataElementCodesFromFormula,
   fetchAnalytics,
   getAggregationsByCode,
   groupKeysByValueJson,
+  validateConfig,
 } from '../../../builders/helpers';
 import { Aggregation } from '../../../types';
 import { createAggregator } from '../stubs';
 import { ANALYTIC_RESPONSE_CONFIG } from './helpers.fixtures';
 
 describe('helpers', () => {
-  describe('extractDataElementCodesFromFormula()', () => {
-    const testData: [string, string, string[]][] = [
-      ['single letter codes', 'A + B', ['A', 'B']],
-      ['multi letter codes', 'BCD01 + BCD02', ['BCD01', 'BCD02']],
-      ['excessive whitespace', ' BCD01  +  BCD02 ', ['BCD01', 'BCD02']],
-      ['no whitespace', 'BCD01+BCD02', ['BCD01', 'BCD02']],
-      ['same code multiple times', 'BCD01 * BCD02 + BCD01', ['BCD01', 'BCD02']],
-      [
-        'all symbols',
-        '(BCD01 + BCD02) / ((BCD03 * BCD04) - BCD05)',
-        ['BCD01', 'BCD02', 'BCD03', 'BCD04', 'BCD05'],
-      ],
-    ];
+  describe('validateConfig', () => {
+    const assertIsNotNegative = (value: number) => {
+      if (value < 0) {
+        throw new Error('Must be >= 0');
+      }
+    };
 
-    it.each(testData)('%s', (_, formula, expected) => {
-      expect(extractDataElementCodesFromFormula(formula)).toEqual(new Set(expected));
-    });
+    const configValidators = {
+      countFemale: [assertIsNotNegative],
+      countMale: [assertIsNotNegative],
+    };
+
+    it('should throw if a field is invalid', async () =>
+      expect(validateConfig({ countFemale: -1, countMale: 2 }, configValidators)).toBeRejectedWith(
+        `Error in field 'countFemale': Must be >= 0`,
+      ));
+
+    it('should not throw if all fields are valid', () =>
+      expect(validateConfig({ countFemale: 1, countMale: 2 }, configValidators)).toResolve());
   });
 
   describe('getAggregationsByCode()', () => {

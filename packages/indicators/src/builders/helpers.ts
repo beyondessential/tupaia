@@ -6,17 +6,18 @@
 import groupBy from 'lodash.groupby';
 
 import { Aggregator } from '@tupaia/aggregator';
+import { ObjectValidator } from '@tupaia/utils';
 import { Aggregation, AggregationSpecs, Analytic, FetchOptions } from '../types';
 
-const FORMULA_SYMBOLS = ['(', ')', '+', '-', '*', '/'];
-
-export const extractDataElementCodesFromFormula = (formula: string) => {
-  const nonCodeSymbols = FORMULA_SYMBOLS.map(s => `\\${s}`)
-    .concat(' ')
-    .join('');
-  const codes = formula.split(new RegExp(`[${nonCodeSymbols}]`, 'g')).filter(c => c !== '');
-
-  return new Set(codes);
+export const validateConfig = async <T extends {}>(config: {}, validators = {}): Promise<T> => {
+  await new ObjectValidator(validators).validate(
+    config,
+    (error: string, field: string) => new Error(`Error in field '${field}': ${error}`),
+  );
+  // Ideally we wouldn't return a value; we would define the return type as `asserts config is T`
+  // Since async assertions are not supported yet, we return the asserted type as a workaround:
+  // https://github.com/microsoft/TypeScript/issues/37515
+  return config as T;
 };
 
 export const getAggregationsByCode = (aggregationSpecs: AggregationSpecs) =>

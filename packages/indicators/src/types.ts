@@ -41,10 +41,12 @@ export interface ModelRegistry {
   readonly indicator: DatabaseModel<IndicatorFields, IndicatorType>;
 }
 
-export interface Builder<C extends {} = {}> {
-  (input: { aggregator: Aggregator; config: C; fetchOptions: FetchOptions }): Promise<
-    AnalyticValue[]
-  >;
+export interface Builder {
+  (input: {
+    aggregator: Aggregator;
+    config: IndicatorFields['config'];
+    fetchOptions: FetchOptions;
+  }): Promise<AnalyticValue[]>;
 }
 
 export interface Aggregation {

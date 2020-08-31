@@ -2,6 +2,6 @@
   "clearMocks": true,
   "collectCoverageFrom": ["src/**/*.ts"],
   "coveragePathIgnorePatterns": ["node_modules", "__tests__", ".d.ts"],
-  "setupFilesAfterEnv": ["../../jestScaffolding.js"],
+  "setupFilesAfterEnv": ["../../jestScaffolding.js", "./src/__tests__/scaffolding.ts"],
   "testMatch": ["**/__tests__/**/*.test.ts"]
 }

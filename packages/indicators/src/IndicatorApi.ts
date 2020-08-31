@@ -43,11 +43,10 @@ export class IndicatorApi {
 
   private getBuilderFunction = (builderName: string): Builder => {
     const builderFunctionName = `build${upperFirst(builderName)}`;
-    const builderFunction = builders[builderFunctionName];
-    if (!builderFunction) {
+    if (!(builderFunctionName in builders)) {
       throw new Error(`'${builderName}' is not an indicator builder`);
     }
 
-    return builderFunction;
+    return builders[builderFunctionName as keyof typeof builders];
   };
 }
