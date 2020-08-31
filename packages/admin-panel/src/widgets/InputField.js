@@ -11,8 +11,6 @@ import { Autocomplete } from '../autocomplete';
 import { JsonInputField } from './JsonInputField';
 import { JsonEditor } from './JsonEditor';
 
-const now = new Date();
-
 const getInputType = ({ options, optionsEndpoint, type }) => {
   if (options) {
     return 'enum';
@@ -139,7 +137,9 @@ export const InputField = ({
           label={label}
           helperText={secondaryLabel}
           format="yyyy-MM-dd HH:mm"
-          value={value && moment(value).isValid ? moment(value).format('YYYY-MM-DDTHH:mm') : now}
+          value={
+            value && moment(value).isValid ? moment(value).format('YYYY-MM-DDTHH:mm') : new Date()
+          }
           onChange={date => {
             if (date && moment(date).isValid()) {
               onChange(inputKey, moment(date).toISOString());
