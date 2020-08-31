@@ -34,7 +34,6 @@ import {
   FETCH_LOGOUT_SUCCESS,
   FETCH_LOGIN_SUCCESS,
   GO_HOME,
-  SET_PASSWORD_RESET_TOKEN,
   OPEN_USER_DIALOG,
   DIALOG_PAGE_REQUEST_COUNTRY_ACCESS,
   FINISH_USER_SESSION,
@@ -93,6 +92,13 @@ import {
   fetchOrgUnitError,
   fetchOrgUnit,
   REQUEST_ORG_UNIT,
+  ATTEMPT_RESET_TOKEN_LOGIN,
+  fetchResetTokenLoginError,
+  fetchResetTokenLoginSuccess,
+  openUserPage,
+  FETCH_RESET_TOKEN_LOGIN_SUCCESS,
+  DIALOG_PAGE_RESET_PASSWORD,
+  UPDATE_MEASURE_CONFIG,
 } from './actions';
 import {
   isMobile,
@@ -341,19 +347,32 @@ function* attemptTokenLogin(action) {
     yield call(
       request,
       requestResourceUrl,
-      fetchUserLoginError,
+      fetchResetTokenLoginError,
       fetchOptions,
       requestContext,
       false,
     );
+
     yield put(findLoggedIn(false, true)); //default to email verified for one time login to prevent a nag screen
+
+    yield put(fetchResetTokenLoginSuccess());
   } catch (error) {
     yield put(error.errorFunction(error));
   }
 }
 
-function* watchSetPasswordResetToken() {
-  yield takeLatest(SET_PASSWORD_RESET_TOKEN, attemptTokenLogin);
+function* watchAttemptTokenLogin() {
+  yield takeLatest(ATTEMPT_RESET_TOKEN_LOGIN, attemptTokenLogin);
+}
+
+function* openResetPasswordDialog() {
+  yield put(openUserPage(DIALOG_PAGE_RESET_PASSWORD));
+}
+
+function* watchFetchResetTokenLoginSuccess() {
+  // After #770 is done, this chaining would be better suited to something like a 'redirectTo' after login argument
+  // which would take you to the url of this dialog page. For now, we need to call an action to display it
+  yield takeLatest(FETCH_RESET_TOKEN_LOGIN_SUCCESS, openResetPasswordDialog);
 }
 
 /**
@@ -725,14 +744,27 @@ function* watchMeasureChange() {
   yield takeLatest(CHANGE_MEASURE, fetchMeasureInfoForMeasureChange);
 }
 
+function* fetchMeasureInfoForMeasurePeriodChange() {
+  const state = yield select();
+
+  yield fetchMeasureInfo(
+    state.measureBar.currentMeasure.measureId,
+    state.measureBar.currentMeasureOrganisationUnitCode,
+  );
+}
+
+function* watchMeasurePeriodChange() {
+  yield takeLatest(UPDATE_MEASURE_CONFIG, fetchMeasureInfoForMeasurePeriodChange);
+}
+
 function getSelectedMeasureFromHierarchy(measureHierarchy, selectedMeasureId, project) {
   const projectMeasureId = project.defaultMeasure;
-
   if (getMeasureFromHierarchy(measureHierarchy, selectedMeasureId)) return selectedMeasureId;
   else if (getMeasureFromHierarchy(measureHierarchy, projectMeasureId)) return projectMeasureId;
   else if (getMeasureFromHierarchy(measureHierarchy, INITIAL_MEASURE_ID)) return INITIAL_MEASURE_ID;
-  else if (!isMeasureHierarchyEmpty(measureHierarchy))
+  else if (!isMeasureHierarchyEmpty(measureHierarchy)) {
     return flattenMeasureHierarchy(measureHierarchy)[0].measureId;
+  }
 
   return INITIAL_MEASURE_ID;
 }
@@ -890,28 +922,24 @@ function* exportChart(action) {
     projectCode,
   });
 
-  const fetchOptions = Object.assign(
-    {},
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        exportUrl,
-        viewId,
-        projectCode,
-        dashboardGroupId,
-        projectCode,
-        organisationUnitCode,
-        organisationUnitName,
-        selectedFormat,
-        exportFileName,
-        chartType,
-        extraConfig,
-      }),
+  const fetchOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
     },
-  );
+    body: JSON.stringify({
+      exportUrl,
+      viewId,
+      dashboardGroupId,
+      projectCode,
+      organisationUnitCode,
+      organisationUnitName,
+      selectedFormat,
+      exportFileName,
+      chartType,
+      extraConfig,
+    }),
+  };
 
   const requestContext = {
     alwaysUseSuppliedErrorFunction: true,
@@ -1028,7 +1056,7 @@ export default [
   watchAttemptAttemptDrillDown,
   watchUserChangesAndUpdatePermissions,
   watchSetEnlargedDialogSelectedPeriodFilterAndRefreshViewContent,
-  watchSetPasswordResetToken,
+  watchAttemptTokenLogin,
   watchResendEmailVerificationAndFetchIt,
   watchSetVerifyEmailToken,
   watchFetchMeasureSuccess,
@@ -1036,4 +1064,6 @@ export default [
   refreshBrowserWhenFinishingUserSession,
   watchRequestProjectAccess,
   watchGoHomeAndResetToExplore,
+  watchFetchResetTokenLoginSuccess,
+  watchMeasurePeriodChange,
 ];
