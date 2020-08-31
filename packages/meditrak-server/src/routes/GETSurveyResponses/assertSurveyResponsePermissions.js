@@ -4,7 +4,7 @@
  */
 
 import { keyBy } from 'lodash';
-import BES_ADMIN_PERMISSION_GROUP from '../../permissions/constants';
+import { BES_ADMIN_PERMISSION_GROUP } from '../../permissions/constants';
 
 export const hasSurveyResponsePermissions = async (accessPolicy, models, surveyResponse) => {
   const entity = await models.entity.findById(surveyResponse.entity_id);
