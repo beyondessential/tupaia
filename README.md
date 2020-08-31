@@ -1,5 +1,7 @@
 # Tupaia
 
+[![Codeship Status for beyondessential/tupaia#dev](https://app.codeship.com/projects/70159bc0-0dac-0138-fdcb-260b82737f4e/status?branch=dev)](https://app.codeship.com/projects/379708)
+
 > This is a [mono-repo](https://github.com/babel/babel/blob/master/doc/design/monorepo.md)
 
 It is set up using `yarn workspaces`, meaning any command you would normally run inside a package can
@@ -27,8 +29,6 @@ if you prefer to prebuild internal dependencies, add `--skip-internal` to the ab
 
 ### Internal dependencies
 
-See also https://docs.beyondessential.com.au/books/software-development/page/internal-dependencies
-
 - [access-policy](https://github.com/beyondessential/tupaia/blob/dev/packages/access-policy/README.md)
 - [aggregator](https://github.com/beyondessential/tupaia/blob/dev/packages/aggregator/README.md)
 - [auth](https://github.com/beyondessential/tupaia/blob/dev/packages/auth/README.md)
@@ -43,8 +43,7 @@ See also https://docs.beyondessential.com.au/books/software-development/page/int
 
 ### Secrets
 
-Most packages will require a .env file, which can usually be found in lastpass. Use the LOCAL entry
-if one exists for the package, otherwise use the DEV entry.
+Most packages will require a .env file. `.env.example` files indicate the required variables per package.
 
 ### Dependencies
 
@@ -77,5 +76,3 @@ Most of the packages support the following scripts for testing:
 yarn test # runs the tests
 yarn test-coverage # runs the tests and displays code coverage
 ```
-
-See also the docs page on [Test setup (mocha)](https://docs.beyondessential.com.au/books/software-development/page/test-setup-%28mocha%29)

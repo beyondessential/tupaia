@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "REST API for Meditrak",
   "main": "handler.js",
-  "private": true,
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
     "@tupaia/access-policy": "3.0.0",

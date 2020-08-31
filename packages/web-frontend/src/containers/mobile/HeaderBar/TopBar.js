@@ -33,9 +33,11 @@ const ToolbarButton = styled.button`
   border-radius: 4px;
   vertical-align: top;
   color: ${WHITE};
-  :focus {
-    background: 'rgba(255,255,255,0.1)';
+
+  &:focus {
+    background: rgba(255, 255, 255, 0.1);
   }
+
   svg {
     vertical-align: middle;
     margin-left: 5px;

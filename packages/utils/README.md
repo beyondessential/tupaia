@@ -4,6 +4,12 @@ Utility functions that are helpful across multiple packages
 
 See [here](https://github.com/beyondessential/tupaia/blob/dev/packages/utils/src/index.js) for the currently exported functions
 
+### Requirements
+
+Any consumer is expected to load the following into environment variables:
+
+- IS_PRODUCTION_ENVIRONMENT
+
 ### Making changes
 
 Handily, yarn workspaces is able to treat this as a package being pulled from npm, but we never
