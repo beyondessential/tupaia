@@ -30,7 +30,12 @@ export function attemptPushHistory(pathname, searchParams = {}) {
 
   const oldSearch = location.search.replace('?', ''); // remove the ? for comparisons
 
-  if (isLocationEqual(location, { pathname, search })) {
+  if (
+    isLocationEqual(
+      { pathname: location.pathname, search: translateSearchToInternal(location.search) },
+      { pathname, search: translateSearchToInternal(search) },
+    )
+  ) {
     if (pathname !== location.pathname || search !== oldSearch) {
       // We have a url that is functionally equivalent but different in string representation.
       // Let's assume that the updated version is "more correct" and update the history without a push.
@@ -46,6 +51,13 @@ export function attemptPushHistory(pathname, searchParams = {}) {
 
   return true;
 }
+
+export const addPopStateListener = callback => {
+  history.listen((location, action) => {
+    if (action !== 'POP') return;
+    callback({ pathname: location.pathname, search: translateSearchToInternal(location.search) });
+  });
+};
 /* End of code dealing with history directly */
 
 export const getInitialLocation = () => ({

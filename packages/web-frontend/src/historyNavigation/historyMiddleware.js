@@ -22,7 +22,6 @@ import {
   setOrgUnit,
   setMeasure,
   setOverlayComponent,
-  goHome,
   setVerifyEmailToken,
   setPasswordResetToken,
   openUserPage,
@@ -35,15 +34,22 @@ import {
   setLocationComponent,
   clearLocation,
   attemptPushHistory,
-  getInitialLocationComponents,
+  getInitialLocation,
+  addPopStateListener,
+  getCurrentLocation,
 } from './historyNavigation';
+import { decodeLocation } from './utils';
 import { URL_COMPONENTS, PASSWORD_RESET_PREFIX, VERIFY_EMAIL_PREFIX } from './constants';
 
 export const reactToInitialState = store => {
+  reactToLocationChange(store, getInitialLocation());
+};
+
+const reactToLocationChange = (store, location) => {
   const { dispatch: rawDispatch } = store;
   const dispatch = action => rawDispatch({ ...action, meta: { preventHistoryUpdate: true } });
 
-  const { userPage, projectSelector, ...otherComponents } = getInitialLocationComponents();
+  const { userPage, projectSelector, ...otherComponents } = decodeLocation(location);
   if (userPage) {
     reactToUserPage(userPage, otherComponents, dispatch);
     return;
@@ -127,11 +133,9 @@ export const initHistoryDispatcher = store => {
   // Update Redux if we navigated via browser's back/forward
   // most browsers restore scroll position automatically
   // as long as we make content scrolling happen on document.body
-  window.addEventListener('popstate', () => {
-    // here `updateHistoryLocation` is an action creator that
-    // takes the new location and stores it in Redux.
-    // TODO: popstate app reactions will be handled in the relevant PR
-    store.dispatch(updateHistoryLocation(window.location));
+  addPopStateListener(location => {
+    store.dispatch(updateHistoryLocation(location));
+    reactToLocationChange(store, location);
   });
 
   // The other part of the two-way binding is updating the displayed
