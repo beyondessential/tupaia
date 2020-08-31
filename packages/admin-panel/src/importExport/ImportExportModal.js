@@ -105,11 +105,10 @@ ImportExportModalComponent.defaultProps = {
 };
 
 const mapStateToProps = ({ importExport: importExportState }, { onConfirm }) => {
-  const { isLoading, errorMessage, parentRecord } = importExportState;
+  const { isLoading, parentRecord } = importExportState;
 
   return {
     isLoading,
-    errorMessage,
     parentRecord,
     onConfirm: values => onConfirm(values, parentRecord),
   };
