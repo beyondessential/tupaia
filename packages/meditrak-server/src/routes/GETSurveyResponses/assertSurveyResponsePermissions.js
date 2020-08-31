@@ -3,7 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import keyBy from 'lodash.keyby';
+import { keyBy } from 'lodash';
+import BES_ADMIN_PERMISSION_GROUP from '../../permissions/constants';
 
 export const hasSurveyResponsePermissions = async (accessPolicy, models, surveyResponse) => {
   const entity = await models.entity.findById(surveyResponse.entity_id);
@@ -22,6 +23,9 @@ export const assertSurveyResponsePermissions = async (accessPolicy, models, surv
 };
 
 export const filterSurveyResponsesByPermissions = async (accessPolicy, surveyResponses, models) => {
+  if (accessPolicy.allowsSome(null, BES_ADMIN_PERMISSION_GROUP)) {
+    return surveyResponses;
+  }
   const entities = await models.entity.findManyById(surveyResponses.map(sr => sr.entity_id));
   const surveys = await models.survey.findManyById(surveyResponses.map(sr => sr.survey_id));
   const permissionGroups = await models.permissionGroup.findManyById(

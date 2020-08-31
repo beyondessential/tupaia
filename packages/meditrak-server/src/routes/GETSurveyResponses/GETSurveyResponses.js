@@ -36,7 +36,7 @@ export class GETSurveyResponses extends GETHandler {
 
   async findRecords(criteria, options) {
     const surveyResponses = await super.findRecords(criteria, options);
-    const filteredResponses = filterSurveyResponsesByPermissions(
+    const filteredResponses = await filterSurveyResponsesByPermissions(
       this.req.accessPolicy,
       surveyResponses,
       this.models,
