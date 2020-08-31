@@ -46,6 +46,7 @@ export const createLocation = params => {
 };
 
 export const decodeLocation = ({ pathname, search }) => {
+  console.log('decoding: ', pathname, search);
   const cleanPathname = pathname[0] === '/' ? pathname.slice(1) : pathname;
   if (cleanPathname === '') {
     return { projectSelector: true, ...search };
@@ -63,6 +64,7 @@ export const decodeLocation = ({ pathname, search }) => {
   restOfPath.forEach((value, i) => {
     pathParams[restOfComponents[i]] = value;
   });
+  console.log('decoding: ', pathParams, search);
 
   return {
     ...pathParams,
