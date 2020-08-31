@@ -19,20 +19,34 @@ import moment from 'moment-timezone';
 import { ChartWrapper, getIsMatrix, MatrixWrapper } from '../../../components/View';
 import { request } from '../../../utils';
 import { DARK_BLUE, WHITE } from '../../../styles';
-import { getInitialLocationComponents } from '../../../historyNavigation';
+import { getInitialLocationComponents, URL_COMPONENTS } from '../../../historyNavigation';
 
 const {
-  organisationUnitCode,
-  organisationUnitName,
-  dashboardId,
-  reportId,
-  timeZone,
-  startDate,
-  endDate,
-  disasterStartDate,
-  disasterEndDate,
-  projectCode,
+  PROJECT,
+  ORG_UNIT,
+  DASHBOARD,
+  REPORT,
+  TIMEZONE,
+  START_DATE,
+  END_DATE,
+  DISASTER_START_DATE,
+  DISASTER_END_DATE,
+  ORG_UNIT_NAME,
+} = URL_COMPONENTS;
+
+const {
+  [ORG_UNIT]: organisationUnitCode,
+  [ORG_UNIT_NAME]: organisationUnitName,
+  [DASHBOARD]: dashboardId,
+  [REPORT]: reportId,
+  [TIMEZONE]: timeZone,
+  [START_DATE]: startDate,
+  [END_DATE]: endDate,
+  [DISASTER_START_DATE]: disasterStartDate,
+  [DISASTER_END_DATE]: disasterEndDate,
+  [PROJECT]: projectCode,
 } = getInitialLocationComponents();
+
 console.log({
   organisationUnitCode,
   organisationUnitName,
