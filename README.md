@@ -1,6 +1,6 @@
 # Tupaia
 
-[![Codeship Status for beyondessential/tupaia](https://app.codeship.com/projects/70159bc0-0dac-0138-fdcb-260b82737f4e/status?branch=master)](https://app.codeship.com/projects/379708)
+[![Codeship Status for beyondessential/tupaia#dev](https://app.codeship.com/projects/70159bc0-0dac-0138-fdcb-260b82737f4e/status?branch=dev)](https://app.codeship.com/projects/379708)
 
 > This is a [mono-repo](https://github.com/babel/babel/blob/master/doc/design/monorepo.md)
 
