@@ -6,17 +6,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
-import { prettyJSON } from '../../utilities/pretty';
 
 const FIELDS = [
   {
     Header: 'ID',
     source: 'id',
+    type: 'tooltip',
   },
   {
     Header: 'Drill Down Level',
     source: 'drillDownLevel',
-    width: 150,
   },
   {
     Header: 'Data Builder',
@@ -26,22 +25,19 @@ const FIELDS = [
   {
     Header: 'Data Builder Config',
     source: 'dataBuilderConfig',
-    width: 350,
-    Cell: ({ value }) => prettyJSON(value),
+    type: 'jsonTooltip',
     editConfig: { type: 'jsonEditor' },
   },
   {
     Header: 'View JSON',
     source: 'viewJson',
-    width: 350,
-    Cell: ({ value }) => prettyJSON(value),
+    type: 'jsonTooltip',
     editConfig: { type: 'jsonEditor' },
   },
   {
     Header: 'Data Services',
     source: 'dataServices',
-    width: 250,
-    Cell: ({ value }) => prettyJSON(value),
+    type: 'jsonTooltip',
     editConfig: { type: 'jsonEditor' },
   },
 ];

@@ -6,7 +6,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
-import { prettyArray } from '../../utilities/pretty';
+import { prettyArray } from '../../utilities';
 
 const FIELDS = [
   {

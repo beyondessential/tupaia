@@ -14,12 +14,22 @@ const Cell = styled.div`
   text-overflow: ellipsis;
 `;
 
-export const Tooltip = row => (
-  <TooltipComponent title={row.value} placement="top-start">
-    <Cell>{row.value}</Cell>
+export const Tooltip = ({ value }) => (
+  <TooltipComponent title={value} placement="top-start">
+    <Cell>{value}</Cell>
   </TooltipComponent>
 );
 
 Tooltip.propTypes = {
-  row: PropTypes.object.isRequired,
+  value: PropTypes.string.isRequired,
+};
+
+export const JSONTooltip = ({ value }) => (
+  <TooltipComponent title={<pre>{JSON.stringify(value, null, 1)}</pre>}>
+    <Cell>{JSON.stringify(value)}</Cell>
+  </TooltipComponent>
+);
+
+JSONTooltip.propTypes = {
+  value: PropTypes.object.isRequired,
 };
