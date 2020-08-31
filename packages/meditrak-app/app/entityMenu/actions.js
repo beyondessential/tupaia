@@ -22,10 +22,13 @@ const getEntityFilters = (state, database, questionId) => {
   const filters = { countryCode };
 
   const question = getQuestion(state, questionId);
-  const { parentId, type } = question.config.entity;
+  const { parentId, grandparentId, type } = question.config.entity;
   filters.type = type;
   if (parentId && parentId.questionId) {
     filters['parent.id'] = getAnswerForQuestion(state, parentId.questionId);
+  }
+  if (grandparentId && grandparentId.questionId) {
+    filters['parent.parent.id'] = getAnswerForQuestion(state, grandparentId.questionId);
   }
 
   return filters;
@@ -47,9 +50,9 @@ export const loadEntitiesFromDatabase = (isPrimaryEntity, questionId) => (
   const permsCheck = isPrimaryEntity ? getPermsCheckFunction(database, surveyId) : () => true;
 
   const filters = getEntityFilters(state, database, questionId);
-  const entityResults = database.getEntities(searchTerm, filters);
+  const entities = database.getEntities(searchTerm, filters);
 
-  const filteredEntities = Array.from(entityResults)
+  const filteredEntities = entities
     .filter(permsCheck)
     .map(thisEntity => thisEntity.getReduxStoreData());
 

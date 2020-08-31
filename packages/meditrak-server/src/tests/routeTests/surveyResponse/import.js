@@ -4,7 +4,7 @@
  */
 
 import { expect } from 'chai';
-import { generateTestId } from '@tupaia/database';
+import { buildAndInsertSurveys } from '@tupaia/database';
 import { oneSecondSleep, upsertEntity } from '../../testUtilities';
 
 const TEST_DATA_FOLDER = 'src/tests/testData';
@@ -134,16 +134,8 @@ export const testImportSurveyResponses = (app, models, syncQueue) =>
           addQuestion('faccc42a44705c02b9e_test', 'FreeText'),
         ]);
 
-        const surveyId = generateTestId();
-        await models.survey.updateOrCreate(
-          {
-            id: surveyId,
-          },
-          {
-            name: 'Test survey',
-            code: 'TEST_SURVEY',
-          },
-        );
+        const [{ survey }] = await buildAndInsertSurveys(models, [{ code: 'TEST_SURVEY' }]);
+        const surveyId = survey.id;
 
         const entityId = 'entity_000000000001_test';
 

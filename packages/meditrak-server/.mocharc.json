@@ -1,6 +1,0 @@
-{
-  "exit": true,
-  "require": ["babel-register", "babel-polyfill"],
-  "spec": "./!(node_modules)/**/*.test.js",
-  "timeout": 100000
-}

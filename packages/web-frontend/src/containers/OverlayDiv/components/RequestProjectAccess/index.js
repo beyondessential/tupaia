@@ -10,10 +10,12 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import { connect } from 'react-redux';
 
 import { PrimaryButton } from '../../../../components/Buttons';
 import { Form } from '../../../Form';
+import { SubmitButton } from '../../../Form/common';
 import { TextField, CheckboxField } from '../../../Form/Fields';
 import { aggregateFields } from '../../../Form/utils';
 import {
@@ -21,8 +23,12 @@ import {
   setOverlayComponent,
   closeUserPage,
 } from '../../../../actions';
-import { LANDING } from '../../constants';
+import { LANDING, OVERLAY_PADDING } from '../../constants';
 import { SuccessMessage } from './SuccessMessage';
+
+const Container = styled.div`
+  padding: ${OVERLAY_PADDING};
+`;
 
 export const RequestProjectAccessComponent = ({
   project,
@@ -34,13 +40,13 @@ export const RequestProjectAccessComponent = ({
   hasRequestCountryAccessCompleted,
   errorMessage,
 }) => {
-  const { name, userGroup } = project;
+  const { name, code } = project;
 
   if (hasRequestCountryAccessCompleted)
-    return <SuccessMessage handleClose={onBackToProjects} projectName={project.name} />;
+    return <SuccessMessage handleClose={onBackToProjects} projectName={name} />;
 
   return (
-    <div>
+    <Container>
       <p>
         Requesting access for &nbsp;
         <b>{name}</b>
@@ -49,16 +55,16 @@ export const RequestProjectAccessComponent = ({
         isLoading={isFetchingCountryAccessData || isRequestingCountryAccess}
         formError={errorMessage}
         onSubmit={fieldValues =>
-          onAttemptRequestProjectAccess(aggregateFields({ ...fieldValues, userGroup: userGroup }))
+          onAttemptRequestProjectAccess(aggregateFields({ ...fieldValues, projectCode: code }))
         }
         render={submitForm => (
-          <React.Fragment>
+          <>
             {countries.map(country => (
               <CheckboxField
                 fullWidth
                 label={country.name}
                 key={country.id}
-                name={`countryIds.${country.id}`}
+                name={`entityIds.${country.id}`}
               />
             ))}
             <TextField
@@ -68,18 +74,21 @@ export const RequestProjectAccessComponent = ({
               rows="4"
               fullWidth
             />
-            <PrimaryButton variant="contained" onClick={submitForm}>
+            <SubmitButton handleClick={submitForm} gutterTop>
               Request access
-            </PrimaryButton>
-          </React.Fragment>
+            </SubmitButton>
+          </>
         )}
       />
-    </div>
+    </Container>
   );
 };
 
 RequestProjectAccessComponent.propTypes = {
-  project: PropTypes.shape({}).isRequired,
+  project: PropTypes.shape({
+    name: PropTypes.string,
+    code: PropTypes.string,
+  }).isRequired,
   countries: PropTypes.arrayOf(PropTypes.object).isRequired,
   errorMessage: PropTypes.string.isRequired,
   onBackToProjects: PropTypes.func.isRequired,
@@ -111,8 +120,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onAttemptRequestProjectAccess: ({ countryIds, message, userGroup }) =>
-      dispatch(attemptRequestCountryAccess(countryIds, message, userGroup)),
+    onAttemptRequestProjectAccess: ({ entityIds, message, projectCode }) =>
+      dispatch(attemptRequestCountryAccess(entityIds, message, projectCode)),
     onBackToProjects: () => {
       dispatch(setOverlayComponent(LANDING));
       dispatch(closeUserPage());

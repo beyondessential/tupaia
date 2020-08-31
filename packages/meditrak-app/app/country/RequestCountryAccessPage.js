@@ -14,7 +14,6 @@ import {
 } from 'react-native';
 import { MenuContext } from 'react-native-menu';
 import PropTypes from 'prop-types';
-import { hasAccess } from '@beyondessential/tupaia-access-policy';
 
 import {
   Form,
@@ -123,7 +122,7 @@ export class RequestCountryAccessPage extends React.Component {
     const countries = getCountries();
 
     const restrictedCountries = countries
-      .filter(country => !hasAccess(accessPolicy, 'surveys', [country.code]))
+      .filter(country => !accessPolicy.allows(country.code))
       .map(country => ({
         key: country.id,
         label: country.name,
@@ -143,7 +142,7 @@ export class RequestCountryAccessPage extends React.Component {
       .filter(fieldName => formFieldValues[fieldName]); // Filter out any checkboxes not checked.
 
     onSubmitFields({
-      countryIds: selectedCountries,
+      entityIds: selectedCountries,
       message: formFieldValues.message,
     });
   }

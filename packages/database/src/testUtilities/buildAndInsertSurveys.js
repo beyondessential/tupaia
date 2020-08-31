@@ -7,16 +7,53 @@ import { findOrCreateDummyRecord, upsertDummyRecord } from './upsertDummyRecord'
 
 const buildAndInsertQuestion = async (models, surveyScreen, { code, ...questionProperties }) => {
   const question = await findOrCreateDummyRecord(models.question, { code }, questionProperties);
-  await upsertDummyRecord(models.surveyScreenComponent, {
+  const surveyScreenComponent = await upsertDummyRecord(models.surveyScreenComponent, {
     screen_id: surveyScreen.id,
     question_id: question.id,
   });
+  return { question, surveyScreenComponent };
 };
 
-const buildAndInsertSurvey = async (models, { questions, code, ...surveyProperties }) => {
-  const survey = await findOrCreateDummyRecord(models.survey, { code }, surveyProperties);
+const buildAndInsertDataGroup = async (models, dataGroupProperties) =>
+  findOrCreateDummyRecord(
+    models.dataSource,
+    {
+      ...dataGroupProperties,
+      type: 'dataGroup',
+    },
+    {
+      service_type: 'dhis',
+      config: { isDataRegional: false },
+    },
+  );
+
+const buildAndInsertSurvey = async (
+  models,
+  { dataGroup: dataGroupProps, questions: questionProps = [], code, ...surveyProps },
+) => {
+  const dataGroup = await buildAndInsertDataGroup(models, { code, ...dataGroupProps });
+
+  const survey = await findOrCreateDummyRecord(
+    models.survey,
+    { code },
+    { ...surveyProps, data_source_id: dataGroup.id },
+  );
   const surveyScreen = await upsertDummyRecord(models.surveyScreen, { survey_id: survey.id });
-  await Promise.all(questions.map(q => buildAndInsertQuestion(models, surveyScreen, q)));
+
+  const surveyScreenComponents = [];
+  const questions = [];
+  const processQuestion = async q => {
+    const { surveyScreenComponent, question } = await buildAndInsertQuestion(
+      models,
+      surveyScreen,
+      q,
+    );
+    surveyScreenComponents.push(surveyScreenComponent);
+    questions.push(question);
+  };
+  await Promise.all(questionProps.map(processQuestion));
+
+  return { survey, surveyScreen, surveyScreenComponents, questions, dataGroup };
 };
 
 /**
@@ -29,6 +66,9 @@ const buildAndInsertSurvey = async (models, { questions, code, ...surveyProperti
  *     id: 'id',
  *     code: 'code',
  *     can_repeat: true,
+ *     dataGroup: {
+ *       service_type: 'tupaia'
+ *     },
  *     questions: [
  *      { code: 'BCD1', text: 'Facility status?' },
  *      { code: 'BCD2', text: 'Opening hours?' },
@@ -37,6 +77,17 @@ const buildAndInsertSurvey = async (models, { questions, code, ...surveyProperti
  *   ..., // can handle more than one survey
  * ]);
  * ```
+ *
+ * @returns {Array<{ survey, surveyScreen, surveyScreenComponents, questions, dataGroup }>}
  */
-export const buildAndInsertSurveys = async (models, surveys) =>
-  Promise.all(surveys.map(s => buildAndInsertSurvey(models, s)));
+export const buildAndInsertSurveys = async (models, surveys) => {
+  const createdModels = [];
+  await Promise.all(
+    surveys.map(async survey => {
+      const newCreatedModels = await buildAndInsertSurvey(models, survey);
+      createdModels.push(newCreatedModels);
+    }),
+  );
+
+  return createdModels;
+};

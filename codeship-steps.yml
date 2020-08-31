@@ -5,16 +5,17 @@
       name: validate
       steps:
         - name: validate branch name
-          service: meditrak-server-validation
+          service: validation
           command: './packages/devops/scripts/ci/validateBranchName.sh'
         - type: parallel
           name: validate all code
-          services:
-            - meditrak-server-validation
-            - web-config-server-validation
           steps:
-            - name: validate package code
-              command: './packages/devops/scripts/ci/validateCode.sh'
+            - name: validate meditrak-server code
+              service: validation
+              command: './packages/devops/scripts/ci/validateCode.sh meditrak-server'
+            - name: validate web-config-server code
+              service: validation
+              command: './packages/devops/scripts/ci/validateCode.sh web-config-server'
     - type: serial
       name: test
       steps:
@@ -22,19 +23,22 @@
           name: test-all
           steps:
             - name: test-meditrak-server
-              service: meditrak-server-testing
-              command: './packages/devops/scripts/ci/testBackend.sh'
+              service: testing
+              command: './packages/devops/scripts/ci/testBackend.sh meditrak-server'
             - name: test-web-config-server
-              service: web-config-server-testing
-              command: './packages/devops/scripts/ci/testBackend.sh'
+              service: testing
+              command: './packages/devops/scripts/ci/testBackend.sh web-config-server'
             - name: test-database
-              service: database-testing
-              command: './packages/devops/scripts/ci/testBackend.sh'
+              service: testing
+              command: './packages/devops/scripts/ci/testBackend.sh database'
             - name: test-data-api
-              service: data-api-testing
-              command: './packages/devops/scripts/ci/testBackend.sh'
+              service: testing
+              command: './packages/devops/scripts/ci/testBackend.sh data-api'
+            - name: test-auth
+              service: testing
+              command: './packages/devops/scripts/ci/testBackend.sh auth'
             - name: test-internal-dependencies
-              service: internal-dependency-testing
+              service: testing
               command: './packages/devops/scripts/ci/testInternalDependencies.sh'
 
 - type: serial
@@ -47,15 +51,14 @@
       command: chmod 600 /root/.ssh/id_rsa
     - name: pull latest and install dependencies
       command: './packages/devops/scripts/ci/pullLatest.sh'
-
-- type: parallel
+- type: serial
   name: deploy-all
   service: deployment
   steps:
     - type: serial
       name: deploy-backends
       steps:
-        - type: parallel
+        - type: serial
           name: restart-backends
           steps:
             - name: deploy-web-config-server
@@ -73,3 +76,5 @@
           command: './packages/devops/scripts/ci/deployFrontend.sh web-frontend'
         - name: deploy-admin-panel
           command: './packages/devops/scripts/ci/deployFrontend.sh admin-panel'
+        - name: deploy-psss
+          command: './packages/devops/scripts/ci/deployFrontend.sh psss'

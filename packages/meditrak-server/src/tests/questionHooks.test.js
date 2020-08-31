@@ -1,20 +1,45 @@
 import { expect } from 'chai';
-import { upsertDummyRecord } from '@tupaia/database';
 
+import { generateTestId, upsertDummyRecord } from '@tupaia/database';
 import { TestableApp } from './TestableApp';
 import { registerHook } from '../hooks';
+import { buildAndInsertSurveys } from '@tupaia/database/dist/testUtilities/buildAndInsertSurveys';
 
-const ENTITY_ID = 'test-hook-entity-0000000';
+const ENTITY_ID = generateTestId();
+
+const GENERIC_SURVEY_ID = generateTestId();
+const ENTITY_CREATION_SURVEY_ID = generateTestId();
+const SURVEYS = [
+  {
+    id: GENERIC_SURVEY_ID,
+    code: 'test-generic-hook-survey',
+    questions: [
+      { code: 'TEST_test', type: 'Text', hook: 'testHook' },
+      { code: 'TEST_geo', type: 'Geolocate', hook: 'entityCoordinates' },
+      { code: 'TEST_image', type: 'Text', hook: 'entityImage' },
+      { code: 'TEST_backdate-test', type: 'Text', hook: 'backdateTestHook' },
+      { code: 'TEST_whole-survey-a', type: 'Text', hook: 'wholeSurvey' },
+      { code: 'TEST_whole-survey-b', type: 'Text' },
+    ],
+  },
+  {
+    id: ENTITY_CREATION_SURVEY_ID,
+    code: 'test-entity-creation-hook-survey',
+    questions: [
+      // Hooks already registered by the app
+      { code: 'TEST_create-code', type: 'Text', hook: 'entityCreate' },
+      { code: 'TEST_create-geo', type: 'Geolocate', hook: 'entityCreate_location' },
+      { code: 'TEST_create-name', type: 'Text', hook: 'entityCreate_name' },
+      { code: 'TEST_create-image-url', type: 'Text', hook: 'entityCreate_image_url' },
+      { code: 'TEST_create-type', type: 'Text', hook: 'entityCreate_type' },
+    ],
+  },
+];
 
 describe('Question hooks', () => {
   const app = new TestableApp();
   const models = app.models;
   const database = models.database;
-
-  const questionCode = num => `TEST-${num}`;
-
-  let testSurvey = null;
-  let testSurveyScreen = null;
 
   const createHookSpy = name => {
     // register the hook
@@ -26,39 +51,15 @@ describe('Question hooks', () => {
     return spy;
   };
 
-  const makeQuestion = async (code, type, hook) => {
-    const q = await models.question.create({
-      code: questionCode(code),
-      text: questionCode(code),
-      type: type || code,
-      hook,
-    });
-
-    // add it to a survey screen
-    await models.surveyScreenComponent.create({
-      screen_id: testSurveyScreen.id,
-      question_id: q.id,
-      component_number: 1,
-    });
-
-    return q;
-  };
-
   before(async () => {
     await app.authenticate();
-
-    testSurvey = await models.survey.create({
-      id: 'question_hook_surve_test',
-      code: 'test-question-hook-survey',
-      name: 'Question hooks test survey',
-    });
 
     const country = await upsertDummyRecord(models.country);
     const geographicalArea = await upsertDummyRecord(models.geographicalArea, {
       country_id: country.id,
     });
     await models.facility.create({
-      id: 'question_hook_00000_test',
+      id: generateTestId(),
       name: 'Test question hook clinic',
       code: 'test-question-hook-clinic',
       geographical_area_id: geographicalArea.id,
@@ -72,19 +73,7 @@ describe('Question hooks', () => {
       type: models.entity.types.FACILITY,
     });
 
-    testSurveyScreen = await models.surveyScreen.create({
-      id: 'hooks_survey_screen_test',
-      survey_id: testSurvey.id,
-      screen_number: 1,
-    });
-
-    await makeQuestion('test', 'Text', 'testHook');
-    await makeQuestion('geo', 'Geolocate', 'entityCoordinates');
-    await makeQuestion('image', 'Text', 'entityImage');
-    await makeQuestion('backdate-test', 'Text', 'backdateTestHook');
-
-    await makeQuestion('whole-survey-a', 'Text', 'wholeSurvey');
-    await makeQuestion('whole-survey-b', 'Text');
+    await buildAndInsertSurveys(models, SURVEYS);
   });
 
   describe('Basic functionality', () => {
@@ -92,13 +81,13 @@ describe('Question hooks', () => {
       const spy = createHookSpy('testHook');
 
       // submit a survey response
-      const response = await app.post('surveyResponse', {
+      await app.post('surveyResponse', {
         body: {
-          survey_id: testSurvey.id,
+          survey_id: GENERIC_SURVEY_ID,
           entity_id: ENTITY_ID,
           timestamp: 123,
           answers: {
-            [questionCode('test')]: 'CHECK',
+            TEST_test: 'CHECK',
           },
         },
       });
@@ -112,19 +101,19 @@ describe('Question hooks', () => {
 
     it('Should have access to the whole survey response', async () => {
       let answerValues = null;
-      registerHook('wholeSurvey', async ({ question, answer, surveyResponse }) => {
+      registerHook('wholeSurvey', async ({ surveyResponse }) => {
         const answers = await surveyResponse.getAnswers();
         answerValues = answers.map(x => x.text);
       });
 
-      const response = await app.post('surveyResponse', {
+      await app.post('surveyResponse', {
         body: {
-          survey_id: testSurvey.id,
+          survey_id: GENERIC_SURVEY_ID,
           entity_id: ENTITY_ID,
           timestamp: 123,
           answers: {
-            [questionCode('whole-survey-a')]: 'Answer A',
-            [questionCode('whole-survey-b')]: 'Answer B',
+            'TEST_whole-survey-a': 'Answer A',
+            'TEST_whole-survey-b': 'Answer B',
           },
         },
       });
@@ -142,11 +131,11 @@ describe('Question hooks', () => {
 
         await app.post('surveyResponse', {
           body: {
-            survey_id: testSurvey.id,
+            survey_id: GENERIC_SURVEY_ID,
             entity_id: ENTITY_ID,
             timestamp: 123,
             answers: {
-              [questionCode('backdate-test')]: 'test',
+              'TEST_backdate-test': 'test',
             },
           },
         });
@@ -159,11 +148,11 @@ describe('Question hooks', () => {
 
         await app.post('surveyResponse', {
           body: {
-            survey_id: testSurvey.id,
+            survey_id: GENERIC_SURVEY_ID,
             entity_id: ENTITY_ID,
             timestamp: 223,
             answers: {
-              [questionCode('backdate-test')]: 'test',
+              'TEST_backdate-test': 'test',
             },
           },
         });
@@ -178,11 +167,11 @@ describe('Question hooks', () => {
 
         await app.post('surveyResponse', {
           body: {
-            survey_id: testSurvey.id,
+            survey_id: GENERIC_SURVEY_ID,
             entity_id: ENTITY_ID,
             timestamp: 999,
             answers: {
-              [questionCode('backdate-test')]: 'test',
+              'TEST_backdate-test': 'test',
             },
           },
         });
@@ -195,11 +184,11 @@ describe('Question hooks', () => {
 
         await app.post('surveyResponse', {
           body: {
-            survey_id: testSurvey.id,
+            survey_id: GENERIC_SURVEY_ID,
             entity_id: ENTITY_ID,
             timestamp: 888,
             answers: {
-              [questionCode('backdate-test')]: 'test',
+              'TEST_backdate-test': 'test',
             },
           },
         });
@@ -218,13 +207,13 @@ describe('Question hooks', () => {
       expect(beforeEntity.bounds).to.be.null;
 
       // submit a survey response
-      const response = await app.post('surveyResponse', {
+      await app.post('surveyResponse', {
         body: {
-          survey_id: testSurvey.id,
+          survey_id: GENERIC_SURVEY_ID,
           entity_id: ENTITY_ID,
           timestamp: 123,
           answers: {
-            [questionCode('geo')]: JSON.stringify({
+            TEST_geo: JSON.stringify({
               latitude: 10,
               longitude: 10,
             }),
@@ -247,13 +236,13 @@ describe('Question hooks', () => {
       expect(beforeEntity.image_url).to.not.equal(TEST_URL);
 
       // submit a survey response
-      const response = await app.post('surveyResponse', {
+      await app.post('surveyResponse', {
         body: {
-          survey_id: testSurvey.id,
+          survey_id: GENERIC_SURVEY_ID,
           entity_id: ENTITY_ID,
           timestamp: 123,
           answers: {
-            [questionCode('image')]: TEST_URL,
+            TEST_image: TEST_URL,
           },
         },
       });
@@ -265,31 +254,22 @@ describe('Question hooks', () => {
     });
 
     describe('Entity creation', () => {
-      before(async () => {
-        // create some questions -- hooks already reg'd by the app
-        await makeQuestion('create-code', 'Text', 'entityCreate');
-        await makeQuestion('create-geo', 'Geolocate', 'entityCreate_location');
-        await makeQuestion('create-name', 'Text', 'entityCreate_name');
-        await makeQuestion('create-image-url', 'Text', 'entityCreate_image_url');
-        await makeQuestion('create-type', 'Text', 'entityCreate_type');
-      });
-
       it('Should create an entity', async () => {
         const TEST_URL = 'https://facilities.com/test-dynamic.jpg';
         const beforeEntity = await models.entity.findOne({ code: 'test_code' });
         expect(beforeEntity).to.be.null;
 
         // submit a survey response
-        const response = await app.post('surveyResponse', {
+        await app.post('surveyResponse', {
           body: {
-            survey_id: testSurvey.id,
+            survey_id: ENTITY_CREATION_SURVEY_ID,
             entity_id: ENTITY_ID,
             timestamp: 123,
             answers: {
-              [questionCode('create-code')]: 'test_code',
-              [questionCode('create-name')]: 'Test Dynamic Entity',
-              [questionCode('create-image-url')]: TEST_URL,
-              [questionCode('create-type')]: 'disaster',
+              'TEST_create-code': 'test_code',
+              'TEST_create-name': 'Test Dynamic Entity',
+              'TEST_create-image-url': TEST_URL,
+              'TEST_create-type': 'disaster',
             },
           },
         });
@@ -313,14 +293,14 @@ describe('Question hooks', () => {
         // submit a survey response
         await app.post('surveyResponse', {
           body: {
-            survey_id: testSurvey.id,
+            survey_id: ENTITY_CREATION_SURVEY_ID,
             entity_id: ENTITY_ID,
             timestamp: 123,
             answers: {
-              [questionCode('create-code')]: DUP_CODE,
-              [questionCode('create-name')]: 'Dupe Entity',
-              [questionCode('create-image-url')]: TEST_URL,
-              [questionCode('create-type')]: 'disaster',
+              'TEST_create-code': DUP_CODE,
+              'TEST_create-name': 'Dupe Entity',
+              'TEST_create-image-url': TEST_URL,
+              'TEST_create-type': 'disaster',
             },
           },
         });
@@ -336,13 +316,13 @@ describe('Question hooks', () => {
         // submit a second survey response with slightly different data
         await app.post('surveyResponse', {
           body: {
-            survey_id: testSurvey.id,
+            survey_id: ENTITY_CREATION_SURVEY_ID,
             entity_id: ENTITY_ID,
             timestamp: 123,
             answers: {
-              [questionCode('create-code')]: DUP_CODE,
-              [questionCode('create-name')]: 'Dupe Entity 2',
-              [questionCode('create-type')]: 'facility',
+              'TEST_create-code': DUP_CODE,
+              'TEST_create-name': 'Dupe Entity 2',
+              'TEST_create-type': 'facility',
             },
           },
         });
@@ -355,26 +335,6 @@ describe('Question hooks', () => {
         expect(entity.type).to.equal('facility');
         expect(entity.image_url).to.equal(TEST_URL);
       });
-
-      after(async () => {
-        // delete all the entities we made
-        await models.entity.delete({ parent_id: ENTITY_ID });
-
-        // questions will get deleted in the `after` block below
-      });
     });
-  });
-
-  after(async () => {
-    // has to happen in this order to respect fk constraints
-    await models.surveyScreenComponent.delete({ screen_id: testSurveyScreen.id });
-    await models.surveyScreen.delete({ id: testSurveyScreen.id });
-    await models.surveyResponse.delete({ survey_id: testSurvey.id });
-    await Promise.all([
-      models.facility.delete({ code: 'test-question-hook-clinic' }),
-      models.entity.delete({ id: ENTITY_ID }),
-      models.database.executeSql(`DELETE FROM "question" WHERE "code" LIKE 'TEST-%';`),
-    ]);
-    await models.survey.delete({ id: testSurvey.id });
   });
 });

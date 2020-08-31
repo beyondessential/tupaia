@@ -1,4 +1,4 @@
-import { constructIsNotPresentOr, constructIsOneOf, isNumber } from '../../../../validation';
+import { constructIsNotPresentOr, constructIsOneOf, isNumber } from '@tupaia/utils';
 import { JsonFieldValidator } from '../JsonFieldValidator';
 import { CODE_GENERATORS } from '../../codeGenerators';
 

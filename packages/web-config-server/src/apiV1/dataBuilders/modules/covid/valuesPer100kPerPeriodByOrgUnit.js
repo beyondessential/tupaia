@@ -28,7 +28,6 @@ class ValuesPer100kPerPeriodByOrgUnitBuilder extends DataBuilder {
       [populationDataElement],
       {},
       this.aggregator.aggregationTypes.FINAL_EACH_DAY_FILL_EMPTY_DAYS,
-      { fillEmptyValuesTilCurrentPeriod: true },
     );
 
     this.query.period = originalQueryPeriod;

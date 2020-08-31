@@ -17,7 +17,7 @@ describe('sumPreviousPerPeriod()', () => {
       { dataElement: 1, organisationUnit: 1, period: '20200102', value: 2 },
       { dataElement: 1, organisationUnit: 1, period: '20200103', value: 3 },
     ];
-    expect(sumPreviousPerPeriod(testAnalytics, DAY, null)).to.have.same.deep.members([
+    expect(sumPreviousPerPeriod(testAnalytics, {}, DAY)).to.have.same.deep.members([
       { dataElement: 1, organisationUnit: 1, period: '20200101', value: 1 },
       { dataElement: 1, organisationUnit: 1, period: '20200102', value: 3 },
       { dataElement: 1, organisationUnit: 1, period: '20200103', value: 6 },
@@ -36,7 +36,7 @@ describe('sumPreviousPerPeriod()', () => {
       { dataElement: 1, organisationUnit: 2, period: '20200102', value: 7 },
       { dataElement: 2, organisationUnit: 2, period: '20200102', value: 8 },
     ];
-    expect(sumPreviousPerPeriod(testAnalytics, DAY, null)).to.have.same.deep.members([
+    expect(sumPreviousPerPeriod(testAnalytics, {}, DAY)).to.have.same.deep.members([
       { dataElement: 1, organisationUnit: 1, period: '20200101', value: 1 },
       { dataElement: 2, organisationUnit: 1, period: '20200101', value: 2 },
       { dataElement: 1, organisationUnit: 2, period: '20200101', value: 3 },
@@ -55,7 +55,7 @@ describe('sumPreviousPerPeriod()', () => {
       //{ dataElement: 1, organisationUnit: 1, period: '20200102', value: 2 },
       { dataElement: 1, organisationUnit: 1, period: '20200103', value: 3 },
     ];
-    expect(sumPreviousPerPeriod(testAnalytics, DAY, null)).to.have.same.deep.members([
+    expect(sumPreviousPerPeriod(testAnalytics, {}, DAY)).to.have.same.deep.members([
       { dataElement: 1, organisationUnit: 1, period: '20200101', value: 1 },
       { dataElement: 1, organisationUnit: 1, period: '20200102', value: 1 },
       { dataElement: 1, organisationUnit: 1, period: '20200103', value: 4 },
@@ -64,7 +64,7 @@ describe('sumPreviousPerPeriod()', () => {
 
   it('should sum with no analytics', () => {
     const testAnalytics = [];
-    expect(sumPreviousPerPeriod(testAnalytics, DAY, null)).to.have.same.deep.members([]);
+    expect(sumPreviousPerPeriod(testAnalytics, {}, DAY)).to.have.same.deep.members([]);
   });
 
   it('should only return results within requestedPeriod if oldest request period > oldest data', () => {
@@ -74,7 +74,7 @@ describe('sumPreviousPerPeriod()', () => {
       { dataElement: 1, organisationUnit: 1, period: '20200103', value: 3 },
     ];
     expect(
-      sumPreviousPerPeriod(testAnalytics, DAY, '20200102;20200103;20200104'),
+      sumPreviousPerPeriod(testAnalytics, { requestedPeriod: '20200102;20200103;20200104' }, DAY),
     ).to.have.same.deep.members([
       { dataElement: 1, organisationUnit: 1, period: '20200102', value: 3 },
       { dataElement: 1, organisationUnit: 1, period: '20200103', value: 6 },
@@ -88,7 +88,7 @@ describe('sumPreviousPerPeriod()', () => {
       { dataElement: 1, organisationUnit: 1, period: '20200103', value: 3 },
     ];
     expect(
-      sumPreviousPerPeriod(testAnalytics, DAY, '20191231;20200101;20200102'),
+      sumPreviousPerPeriod(testAnalytics, { requestedPeriod: '20191231;20200101;20200102' }, DAY),
     ).to.have.same.deep.members([
       { dataElement: 1, organisationUnit: 1, period: '20200101', value: 1 },
       { dataElement: 1, organisationUnit: 1, period: '20200102', value: 3 },
@@ -101,12 +101,12 @@ describe('sumPreviousPerPeriod()', () => {
       //{ dataElement: 1, organisationUnit: 1, period: '20200102', value: 2 },
       { dataElement: 1, organisationUnit: 1, period: '20200103', value: 3 },
     ];
-    expect(sumPreviousPerPeriod(testAnalytics, DAY, '20200102;20200103')).to.have.same.deep.members(
-      [
-        { dataElement: 1, organisationUnit: 1, period: '20200102', value: 1 },
-        { dataElement: 1, organisationUnit: 1, period: '20200103', value: 4 },
-      ],
-    );
+    expect(
+      sumPreviousPerPeriod(testAnalytics, { requestedPeriod: '20200102;20200103' }, DAY),
+    ).to.have.same.deep.members([
+      { dataElement: 1, organisationUnit: 1, period: '20200102', value: 1 },
+      { dataElement: 1, organisationUnit: 1, period: '20200103', value: 4 },
+    ]);
   });
 
   // It won't work with non numeric periods. eg: 2020W2
@@ -125,7 +125,7 @@ describe('sumPreviousPerPeriod()', () => {
       { dataElement: 2, organisationUnit: 1, period: '2020', value: 8 },
     ];
     expect(
-      sumPreviousPerPeriod(testAnalytics, YEAR, '2019;2020;2021;2022'),
+      sumPreviousPerPeriod(testAnalytics, { requestedPeriod: '2019;2020;2021;2022' }, YEAR),
     ).to.have.same.deep.members([
       { dataElement: 1, organisationUnit: 1, period: '2019', value: 9 },
       { dataElement: 2, organisationUnit: 1, period: '2019', value: 2 },

@@ -1,6 +1,5 @@
-import { ValidationError } from '@tupaia/utils';
+import { ValidationError, constructIsOneOf } from '@tupaia/utils';
 import { splitStringOnComma } from '../utilities';
-import { constructIsOneOf } from '../../validation';
 import { isYesOrNo } from './utilities';
 
 export const validateIsYesOrNo = value => {

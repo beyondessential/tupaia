@@ -3,21 +3,16 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"No tests specified\" && exit 0"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/beyondessential/tupaia.git"
   },
   "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
-  "license": "ISC",
   "bugs": {
     "url": "https://github.com/beyondessential/tupaia/issues"
   },
-  "homepage": "https://github.com/beyondessential/tupaia#readme",
-  "devDependencies": {
-    "generate-nginx-config": "^0.1.8"
-  }
+  "homepage": "https://github.com/beyondessential/tupaia#readme"
 }

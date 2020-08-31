@@ -4,43 +4,16 @@
  **/
 
 import { Object as RealmObject } from 'realm';
-import {
-  hasAccess,
-  hasNestedPermissions,
-  someChildHasAccess,
-} from '@beyondessential/tupaia-access-policy';
-
-const ACCESS_OBJECT_TYPE = 'surveys';
+import { AccessPolicy } from '@tupaia/access-policy';
 
 export class User extends RealmObject {
-  get accessPolicy() {
-    if (!this.parsedAccessPolicy) {
-      this.parsedAccessPolicy = JSON.parse(this.accessPolicyData);
-    }
-
-    return this.parsedAccessPolicy;
+  constructor(...args) {
+    super(...args);
+    this.accessPolicy = new AccessPolicy(this.accessPolicyData);
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  set accessPolicy(data) {
-    throw new Error('Cannot change user access policy');
-  }
-
-  hasCountryAccess(country, permissionGroupName = '') {
-    return hasAccess(this.accessPolicy, ACCESS_OBJECT_TYPE, [country.code], permissionGroupName);
-  }
-
-  hasAccessToSurveyInCountry(survey, country) {
-    return someChildHasAccess(
-      this.accessPolicy,
-      ACCESS_OBJECT_TYPE,
-      [country.code],
-      survey.permissionGroup.name,
-    );
-  }
-
-  hasPermissionsForItemsWithinCountry(country) {
-    return hasNestedPermissions(this.accessPolicy, ACCESS_OBJECT_TYPE, [country.code]);
+  hasAccessToSomeEntity(entities) {
+    return this.accessPolicy.allowsSome(entities.map(e => e.code));
   }
 
   /**
@@ -49,22 +22,20 @@ export class User extends RealmObject {
    **/
   hasAccessToSurveyInEntity(survey, entity) {
     const { permissionGroup } = survey;
+    if (!permissionGroup) return false; // this survey is not fully synced yet, don't show it
     return this.hasEntityAccess(entity, permissionGroup.name);
   }
 
-  // User has access if they have access to the entity itself, or some parent geographical
-  // area/country and aren't denied access further down the geographical hierarchy.
-  //
-  // @see https://github.com/beyondessential/tupaia-access-policy
+  // User has access if they have access to the entity itself, or some ancestor entity
   hasEntityAccess(entity, permissionGroupName = '') {
-    const entityPath = [];
+    const entities = [];
     let currentEntity = entity;
     while (currentEntity && currentEntity.type !== 'world') {
-      entityPath.unshift(currentEntity.code);
+      entities.push(currentEntity.code);
       currentEntity = currentEntity.parent;
     }
 
-    return hasAccess(this.accessPolicy, ACCESS_OBJECT_TYPE, entityPath, permissionGroupName);
+    return this.accessPolicy.allowsSome(entities, permissionGroupName);
   }
 }
 

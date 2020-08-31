@@ -18,15 +18,19 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import shallowEqual from 'shallowequal';
 
-import List from '@material-ui/core/List';
-import CircularProgress from '@material-ui/core/CircularProgress';
-
-import { ControlBar } from '../../components/ControlBar';
-import { changeMeasure, clearMeasure, toggleMeasureExpand } from '../../actions';
+import { Control } from './Control';
+import {
+  changeMeasure,
+  clearMeasure,
+  toggleMeasureExpand,
+  updateMeasureConfig,
+} from '../../actions';
 import { HierarchyItem } from '../../components/HierarchyItem';
-import TupaiaIcon from '../../images/TupaiaIcon.svg';
-import { MAP_OVERLAY_SELECTOR } from '../../styles';
-import { selectCurrentOrgUnit } from '../../selectors';
+import {
+  selectCurrentOrgUnit,
+  selectActiveProject,
+  selectMeasureBarItemById,
+} from '../../selectors';
 
 export class MeasureBar extends Component {
   constructor(props) {
@@ -53,57 +57,72 @@ export class MeasureBar extends Component {
     this.props.onSelectMeasure(measure, organisationUnitCode);
   };
 
-  renderSelectedMeasure() {
-    const { currentMeasure, currentOrganisationUnitCode } = this.props;
+  renderDefaultMeasure() {
+    const { currentMeasure, currentOrganisationUnitCode, defaultMeasure } = this.props;
 
     return (
       <HierarchyItem
         nestedMargin="0px"
-        label={currentMeasure.name}
-        isSelected={currentMeasure.measureId}
-        onClick={() => this.handleSelectMeasure(currentMeasure, currentOrganisationUnitCode)}
+        label={defaultMeasure.name}
+        isSelected={currentMeasure.measureId === defaultMeasure.measureId}
+        onClick={() => this.handleSelectMeasure(defaultMeasure, currentOrganisationUnitCode)}
       />
     );
   }
 
-  renderHierarchy() {
-    const {
-      currentMeasure,
-      measureHierarchy,
-      currentOrganisationUnitCode,
-      onClearMeasure,
-    } = this.props;
+  renderNestedHierarchyItems(children) {
+    const { currentMeasure, currentOrganisationUnitCode, onClearMeasure } = this.props;
 
-    const items = Object.entries(measureHierarchy).map(([categoryName, children]) => {
-      if (!Array.isArray(children)) return null;
-      const nestedItems = children.map(measure => {
-        const onClick =
-          measure.measureId === currentMeasure.measureId
+    return children.map(childObject => {
+      let nestedItems;
+
+      if (childObject.children && childObject.children.length) {
+        nestedItems = this.renderNestedHierarchyItems(childObject.children);
+      }
+
+      let onClick = null;
+
+      if (!childObject.children) {
+        onClick =
+          childObject.measureId === currentMeasure.measureId
             ? () => onClearMeasure()
-            : () => this.handleSelectMeasure(measure, currentOrganisationUnitCode);
-        return (
-          <HierarchyItem
-            label={measure.name}
-            isSelected={measure.measureId === currentMeasure.measureId}
-            key={measure.measureId}
-            onClick={onClick}
-          />
-        );
-      });
+            : () => this.handleSelectMeasure(childObject, currentOrganisationUnitCode);
+      }
+
+      return (
+        <HierarchyItem
+          label={childObject.name}
+          isSelected={
+            childObject.children ? null : childObject.measureId === currentMeasure.measureId
+          }
+          key={childObject.measureId}
+          onClick={onClick}
+          nestedItems={nestedItems}
+        />
+      );
+    });
+  }
+
+  renderHierarchy() {
+    const { measureHierarchy, defaultMeasure } = this.props;
+
+    const items = measureHierarchy.map(({ name: groupName, children }) => {
+      if (!Array.isArray(children)) return null;
+      const nestedItems = this.renderNestedHierarchyItems(children);
       if (nestedItems.length === 0) return null;
       return (
         <HierarchyItem
           nestedMargin="0px"
-          label={categoryName}
+          label={groupName}
           nestedItems={nestedItems}
-          key={categoryName}
+          key={groupName}
         />
       );
     });
 
     return (
       <React.Fragment>
-        {this.renderSelectedMeasure()}
+        {defaultMeasure ? this.renderDefaultMeasure() : null}
         {items}
       </React.Fragment>
     );
@@ -111,51 +130,30 @@ export class MeasureBar extends Component {
 
   renderEmptyMessage() {
     const { currentOrganisationUnitName } = this.props;
-
     const orgName = currentOrganisationUnitName || 'Your current selection';
 
-    return `Select an area with valid data. ${orgName} has no map overlays available`;
-  }
-
-  renderContents() {
-    const { isExpanded, measureHierarchy } = this.props;
-
-    if (!isExpanded) return null;
-    if (Object.keys(measureHierarchy).length === 0) return this.renderEmptyMessage();
-
-    return this.renderHierarchy();
+    return `Select an area with valid data. ${orgName} has no map overlays available.`;
   }
 
   render() {
-    const { currentMeasure, isExpanded, onExpandClick, isMeasureLoading } = this.props;
-
-    const icon = isMeasureLoading ? (
-      <CircularProgress size={24} thickness={4} />
-    ) : (
-      <TupaiaIcon style={{ height: 26, width: 24 }} />
-    );
+    const {
+      currentMeasure,
+      isMeasureLoading,
+      currentOrganisationUnitName,
+      onUpdateMeasurePeriod,
+    } = this.props;
+    const orgName = currentOrganisationUnitName || 'Your current selection';
+    const emptyMessage = `Select an area with valid data. ${orgName} has no map overlays available.`;
 
     return (
-      <ControlBar
-        value={this.state.hasNeverBeenChanged ? null : currentMeasure.name}
-        isExpanded={isExpanded}
-        onExpandClick={() => onExpandClick()}
-        icon={icon}
-        style={{
-          background: MAP_OVERLAY_SELECTOR.background,
-          border: MAP_OVERLAY_SELECTOR.border,
-        }}
+      <Control
+        emptyMessage={emptyMessage}
+        selectedMeasure={currentMeasure}
+        isMeasureLoading={isMeasureLoading}
+        onUpdateMeasurePeriod={onUpdateMeasurePeriod}
       >
-        <List
-          style={{
-            flexDirection: 'column',
-            overflowY: 'auto',
-            whiteSpace: 'pre-line',
-          }}
-        >
-          {this.renderContents()}
-        </List>
-      </ControlBar>
+        {this.renderHierarchy()}
+      </Control>
     );
   }
 }
@@ -167,28 +165,39 @@ const MeasureShape = PropTypes.shape({
 
 MeasureBar.propTypes = {
   currentMeasure: MeasureShape.isRequired,
-  measureHierarchy: PropTypes.shape({}).isRequired,
+  measureHierarchy: PropTypes.array.isRequired,
   isExpanded: PropTypes.bool.isRequired,
   isMeasureLoading: PropTypes.bool.isRequired,
-  onExpandClick: PropTypes.func.isRequired,
   onSelectMeasure: PropTypes.func.isRequired,
   onClearMeasure: PropTypes.func.isRequired,
+  onUpdateMeasurePeriod: PropTypes.func.isRequired,
   currentOrganisationUnitCode: PropTypes.string,
   currentOrganisationUnitName: PropTypes.string,
+  defaultMeasure: MeasureShape,
 };
 
 const mapStateToProps = state => {
   const { currentMeasure, measureHierarchy, isExpanded } = state.measureBar;
   const { isMeasureLoading } = state.map;
-  const { currentOrganisationUnitCode } = state.global;
+  const { currentOrganisationUnitCode, isLoadingOrganisationUnit } = state.global;
+
+  // In the name or normalising our redux state,
+  // currentMeasure should be normalised to currentMeasureId,
+  // and measureInfo selected from measureHierarchy like this.
+  // Using this approach so a larger normalisation refactor is one file easier
+  // in the future.
+  const selectedMeasureInfo = selectMeasureBarItemById(state, currentMeasure.measureId);
+  const activeProject = selectActiveProject(state);
+  const defaultMeasure = selectMeasureBarItemById(state, activeProject.defaultMeasure);
 
   return {
-    currentMeasure,
+    currentMeasure: selectedMeasureInfo || {},
     measureHierarchy,
     isExpanded,
-    isMeasureLoading,
+    isMeasureLoading: isMeasureLoading || isLoadingOrganisationUnit,
     currentOrganisationUnitCode,
     currentOrganisationUnitName: selectCurrentOrgUnit(state).name,
+    defaultMeasure,
   };
 };
 
@@ -197,6 +206,8 @@ const mapDispatchToProps = dispatch => ({
   onClearMeasure: () => dispatch(clearMeasure()),
   onSelectMeasure: (measure, orgUnitCode) =>
     dispatch(changeMeasure(measure.measureId, orgUnitCode)),
+  onUpdateMeasurePeriod: (startDate, endDate) =>
+    dispatch(updateMeasureConfig({ startDate, endDate })),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(MeasureBar);

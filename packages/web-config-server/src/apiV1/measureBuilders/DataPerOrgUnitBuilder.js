@@ -7,12 +7,7 @@
 
 import groupBy from 'lodash.groupby';
 
-import {
-  getDataSourceEntityType,
-  getAggregationEntityType,
-} from '/apiV1/dataBuilders/helpers/getDataSourceEntityType';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { ENTITY_TYPES, Entity } from '/models/Entity';
 
 /**
  * @abstract
@@ -59,57 +54,15 @@ export class DataPerOrgUnitBuilder extends DataBuilder {
    * @abstract
    * @returns {Promise<Array>}
    */
-  async fetchResults() {
+  async fetchResultsAndPeriod() {
     throw new Error(
-      'Any subclass of DataPerOrgUnitBuilder must implement the "fetchResults" method',
+      'Any subclass of DataPerOrgUnitBuilder must implement the "fetchResultsAndPeriod" method',
     );
   }
 
   async groupResultsByOrgUnitCode(results) {
     const orgUnitKey = this.areEventResults(results) ? 'orgUnit' : 'organisationUnit';
-
-    const dataSourceToAggregateMapper = async () => {
-      // This functionalilty should be developed upon into a generic dataSource -> aggregation Entity mapping
-      // eg. village -> facility, facility -> country, etc.
-      // For now it only supports mapping to self, and mapping village -> facility
-      const aggregationEntityType = getAggregationEntityType(this.config);
-      const dataSourceEntityType = getDataSourceEntityType(this.config, aggregationEntityType);
-
-      if (dataSourceEntityType === aggregationEntityType) {
-        // No mapping required, mapper just returns original orgUnitCode
-        return orgUnitCode => orgUnitCode;
-      }
-
-      switch (dataSourceEntityType) {
-        case 'school': {
-          // create school -> ancestor mapper
-          const schoolToAnscestorCode = {};
-          const addSchoolToMap = async schoolCode => {
-            const school = await Entity.findOne({ code: schoolCode });
-            if (school) {
-              const ancestor = await school.getAncestorOfType(aggregationEntityType);
-              if (ancestor) {
-                schoolToAnscestorCode[school.code] = ancestor.code;
-              }
-            }
-          };
-          const schools = results.map(({ [orgUnitKey]: orgUnit }) => orgUnit);
-          await Promise.all(schools.map(school => addSchoolToMap(school)));
-          return orgUnitCode => schoolToAnscestorCode[orgUnitCode];
-        }
-        case ENTITY_TYPES.VILLAGE: {
-          // Create village -> facility mapper
-          const villageCodes = results.map(({ [orgUnitKey]: orgUnit }) => orgUnit);
-          const villageToFacilityCode = await Entity.fetchChildToParentCode(villageCodes);
-          return orgUnitCode => villageToFacilityCode[orgUnitCode];
-        }
-        default:
-          return orgUnitCode => orgUnitCode;
-      }
-    };
-
-    const mapper = await dataSourceToAggregateMapper();
-    return groupBy(results, ({ [orgUnitKey]: orgUnitCode }) => mapper(orgUnitCode));
+    return groupBy(results, ({ [orgUnitKey]: orgUnitCode }) => orgUnitCode);
   }
 
   async buildData(results) {
@@ -118,8 +71,8 @@ export class DataPerOrgUnitBuilder extends DataBuilder {
     const baseBuilder = this.getBaseBuilder();
 
     const processResultsForOrgUnit = async ([organisationUnitCode, result]) => {
-      if (!result) {
-        return;
+      if (!this.validateResults(result)) {
+        return null;
       }
 
       const data = await baseBuilder.buildData(result);
@@ -145,9 +98,9 @@ export class DataPerOrgUnitBuilder extends DataBuilder {
    * @public
    */
   async build() {
-    const results = await this.fetchResults();
+    const { results, period } = await this.fetchResultsAndPeriod();
     const data = await this.buildData(results);
 
-    return this.formatData(data);
+    return { period, data: this.formatData(data) };
   }
 }

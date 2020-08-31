@@ -15,14 +15,15 @@ const Container = styled.div`
   grid-column: ${({ fullWidth }) => fullWidth && '1 / -1'};
 `;
 
-export const TextField = ({ errors, name, fullWidth, validators, ...fieldProps }) => (
+export const TextField = ({ errors, id, name, fullWidth, validators, ...fieldProps }) => (
   <Container name={name} fullWidth={fullWidth} validators={validators}>
-    <MuiTextField name={name} error={errors.length > 0} fullWidth {...fieldProps} />
+    <MuiTextField id={id} name={name} error={errors.length > 0} fullWidth {...fieldProps} />
     <FieldErrors errors={errors} />
   </Container>
 );
 
 TextField.propTypes = {
+  id: PropTypes.string,
   name: PropTypes.string.isRequired,
   validators: PropTypes.arrayOf(PropTypes.object),
   errors: PropTypes.arrayOf(PropTypes.string),
@@ -30,6 +31,7 @@ TextField.propTypes = {
 };
 
 TextField.defaultProps = {
+  id: undefined,
   errors: [],
   validators: [],
   fullWidth: false,

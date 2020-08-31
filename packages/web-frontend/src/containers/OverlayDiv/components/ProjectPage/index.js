@@ -12,7 +12,11 @@ import styled from 'styled-components';
 import Button from '@material-ui/core/Button';
 import ExploreIcon from '@material-ui/icons/ExploreOutlined';
 
-import { REQUEST_PROJECT_ACCESS } from '../../constants';
+import {
+  REQUEST_PROJECT_ACCESS,
+  PROJECT_LANDING,
+  PROJECTS_WITH_LANDING_PAGES,
+} from '../../constants';
 import { selectProject, setRequestingAccess } from '../../../../projects/actions';
 import { setOverlayComponent, changeOrgUnit } from '../../../../actions';
 import { ProjectCard } from './ProjectCard';
@@ -61,7 +65,10 @@ const ProjectPageComponent = ({
   projects,
 }) => {
   const exploreProject = projects.find(p => p.code === EXPLORE_CODE);
-  const selectExploreProject = React.useCallback(() => onSelectProject(exploreProject));
+  const selectExploreProject = React.useCallback(() => onSelectProject(exploreProject), [
+    onSelectProject,
+    exploreProject,
+  ]);
 
   const projectsWithAccess = renderProjectsWithFilter(
     projects,
@@ -94,6 +101,8 @@ const ProjectPageComponent = ({
 
 ProjectPageComponent.propTypes = {
   onSelectProject: PropTypes.func.isRequired,
+  openLoginDialog: PropTypes.func.isRequired,
+  isUserLoggedIn: PropTypes.func.isRequired,
   onRequestProjectAccess: PropTypes.func.isRequired,
   projects: PropTypes.arrayOf(PropTypes.shape({})),
 };
@@ -112,9 +121,14 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => ({
   onSelectProject: project => {
-    dispatch(selectProject(project));
-    dispatch(setOverlayComponent(null));
-    dispatch(changeOrgUnit(project.homeEntityCode, false));
+    if (PROJECTS_WITH_LANDING_PAGES[project.code]) {
+      dispatch(setOverlayComponent(PROJECT_LANDING));
+      dispatch(selectProject(project.code));
+    } else {
+      dispatch(selectProject(project.code));
+      dispatch(changeOrgUnit(project.homeEntityCode, false));
+      dispatch(setOverlayComponent(null));
+    }
   },
   onRequestProjectAccess: project => {
     dispatch(setRequestingAccess(project));

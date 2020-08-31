@@ -11,6 +11,15 @@ export const hexToRgba = (hex, opacity) => {
 /** Functions used to get matrix chart dot colors from presentation options */
 const PRESENTATION_TYPES = {
   RANGE: 'range',
+  CONDITION: 'condition',
+};
+
+const CONDITION_TYPE = {
+  '=': (value, filterValue) => value === filterValue,
+  '>': (value, filterValue) => value > filterValue,
+  '<': (value, filterValue) => value < filterValue,
+  '>=': (value, filterValue) => value >= filterValue,
+  '<=': (value, filterValue) => value <= filterValue,
 };
 
 const getPresentationOptionFromRange = (options, value) => {
@@ -23,10 +32,35 @@ const getPresentationOptionFromRange = (options, value) => {
 
 const getPresentationOptionFromKey = (options, value) => findByKey(options, value, false) || null;
 
-export const getPresentationOption = (options, value) =>
-  options.type === PRESENTATION_TYPES.RANGE
-    ? getPresentationOptionFromRange(options, value)
-    : getPresentationOptionFromKey(options, value);
+const getPresentationOptionFromCondition = (options, value) => {
+  const option = Object.values(options).find(({ condition }) => {
+    if (typeof condition === 'object') {
+      //Check if the value satisfies all the conditions if condition is an object
+      return Object.entries(condition).every(([operator, conditionalValue]) => {
+        const checkConditionMethod = CONDITION_TYPE[operator];
+
+        return checkConditionMethod ? checkConditionMethod(value, conditionalValue) : false;
+      });
+    }
+
+    //If condition is not an object, assume its the value we want to check (with '=' operator)
+    const checkConditionMethod = CONDITION_TYPE['='];
+    return checkConditionMethod(value, condition);
+  });
+
+  return option;
+};
+
+export const getPresentationOption = (options, value) => {
+  switch (options.type) {
+    case PRESENTATION_TYPES.RANGE:
+      return getPresentationOptionFromRange(options, value);
+    case PRESENTATION_TYPES.CONDITION:
+      return getPresentationOptionFromCondition(options, value);
+    default:
+      return getPresentationOptionFromKey(options, value);
+  }
+};
 
 const rgbToHsl = (r, g, b) => {
   const max = Math.max(r, g, b);

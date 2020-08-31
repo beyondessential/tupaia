@@ -5,7 +5,6 @@
 /* eslint-disable no-restricted-syntax */ // Necessary for await's inside for loops.
 /* eslint-disable no-await-in-loop */
 
-import RNFS from 'react-native-fs';
 import generateUUID from 'bson-objectid';
 import {
   getCurrentScreen,
@@ -63,7 +62,7 @@ export const initialiseSurveys = () => (dispatch, getState, { database }) => {
   const currentUser = database.getCurrentUser();
   const country = database.getCountry(countryId);
   surveyList
-    .filter(survey => currentUser.hasAccessToSurveyInCountry(survey, country))
+    .filter(survey => currentUser.hasAccessToSurveyInEntity(survey, country))
     .forEach(survey => {
       surveys[survey.id] = survey.getReduxStoreData();
     });
@@ -234,16 +233,6 @@ export const moveSurveyScreens = numberOfScreens => (dispatch, getState) => {
   toIndex = Math.min(toIndex, getTotalNumberOfScreens(state));
 
   dispatch(moveToSurveyScreen(toIndex));
-};
-
-export const saveImage = (localFilename, fileId) => async (
-  dispatch,
-  getState,
-  { database, analytics },
-) => {
-  const imageData = await RNFS.readFile(localFilename, 'base64');
-  database.saveImage(fileId, imageData);
-  analytics.trackEvent('Image Upload', { fileId });
 };
 
 export const validateComponent = (screenIndex, componentIndex, validationCriteria, answer) => (

@@ -17,6 +17,7 @@ export default class HeaderRow extends PureComponent {
     const {
       styles,
       searchTerm,
+      searchPlaceholder,
       onSearchTermChange,
       isSearchActive,
       renderPeriodSelector,
@@ -30,7 +31,7 @@ export default class HeaderRow extends PureComponent {
       <div style={styles.searchBox}>
         <input
           type="text"
-          placeholder="eg Surgical"
+          placeholder={searchPlaceholder}
           onChange={event => onSearchTermChange(event.target.value)}
           value={searchTerm}
           style={styles.searchBoxInput}

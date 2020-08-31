@@ -30,7 +30,7 @@ To work on Tupaia MediTrak, first you'll need to install the following
 Steps to get working:
 
 - Clone this repository (see notes below if using Windows)
-- Add a .env file to the root directory (look in lastpass)
+- Add a .env file to the root directory. The required variables are listed in `.env.example`
 - `yarn`
 - Start your emulator or plug in your device and make sure USB debugging is enabled
 - If you are developing/building for ios:
@@ -85,15 +85,18 @@ However, by default Genymotion is packaged with an older version of the android 
 The only solution I found for this is to install the Android cli tools for windows and keep them in sync with the version on WSL. To do this, perform the above steps to download JDK 8 and the Android SDK again but this time for windows.
 
 Once installed use the sdkmanager to install the Android SDK packages, run:
+
 ```
 sdkmanager.bat --install platform-tools
 sdkmanager.bat --install platforms;android-<version>
 sdkmanager.bat --install build-tools;<version>
 sdkmanager.bat --licenses
 ```
+
 Note (for the package versions, just make them consistent with whatever was installed in WSL when runnning `react-native run-android`)
 
 Now you just need to make Genymotion use the newly installed ADB server, do this by:
+
 1. Launch Genymotion
 2. Click 'Settings'
 3. Select 'ADB Settings'
@@ -125,3 +128,5 @@ Use Genymotion to create a virtual device, and then install the app and debug by
 ### Testing
 
 A manual test plan for the Meditrak app is located [here](__tests__/ManualTests.md)
+
+Note that we currently support version 1.7.81 and above

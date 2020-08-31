@@ -1,2 +1,3 @@
 #!/bin/bash
-yarn --cwd ./packages/${CI_PACKAGE} validate
+PACKAGE=$1
+yarn --cwd ./packages/${PACKAGE} validate

@@ -8,7 +8,7 @@
   - RestoreCode: tupaia (if production)
   - RestoreFrom: tupaia (if dev, i.e. should be recloned from production nightly)
 - Add ElasticIP
-- Attach the role MeditrakServerParameterStoreRole to grant access to parameter store and lambda invocation
+- Attach the role TupaiaServerRole to grant access to parameter store, lambda invocation, and cloudwatch monitoring
 
 # node
 
@@ -89,7 +89,7 @@ AWS_PROFILE=certbot certbot-auto certonly -d *.tupaia.org -d tupaia.org --dns-ro
 
 - `mkdir /home/ubuntu/logs/`
 - `crontab -e`
-- Paste in `0 14 * * * AWS_PROFILE=certbot /usr/local/bin/certbot-auto renew --no-self-upgrade --dns-route53 --non-interactive --server https://acme-v02.api.letsencrypt.org/directory --post-hook "sudo service nginx reload" >> /home/ubuntu/logs/certbot-auto.txt` (14 UTC is midnight AEST)
+- Paste in `0 14 * * * /home/ubuntu/tupaia/packages/devops/scripts/utility/renewSslCertificate.sh >> /home/ubuntu/logs/certbot-auto.txt` (14 UTC is midnight AEST)
   - For apache Wordpress sites use `0 14 * * * AWS_PROFILE=certbot /usr/local/bin/certbot-auto renew --no-self-upgrade --dns-route53 --non-interactive --server https://acme-v02.api.letsencrypt.org/directory --post-hook "sudo /opt/bitnami/ctlscript.sh restart apache" >> /home/bitnami/logs/certbot-auto.txt` instead
 - Save and exit
 
@@ -277,6 +277,106 @@ sudo apt install jq
 mkdir ~/logs
 crontab -e
 @reboot /home/ubuntu/tupaia/packages/devops/scripts/deployment/startup.sh >> /home/ubuntu/logs/deployment_log.txt
+```
+
+# monitoring
+
+### Add cloudwatch monitoring agent
+
+Install requirements
+
+```
+wget https://s3.amazonaws.com/amazoncloudwatch-agent/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb
+sudo dpkg -i -E ./amazon-cloudwatch-agent.deb
+rm amazon-cloudwatch-agent.deb
+sudo apt-get install collectd
+```
+
+Set up config, saving the following as /opt/aws/amazon-cloudwatch-agent/bin/config.json
+
+```
+{
+	"agent": {
+		"metrics_collection_interval": 60,
+		"run_as_user": "root"
+	},
+	"metrics": {
+		"append_dimensions": {
+			"AutoScalingGroupName": "${aws:AutoScalingGroupName}",
+			"ImageId": "${aws:ImageId}",
+			"InstanceId": "${aws:InstanceId}",
+			"InstanceType": "${aws:InstanceType}"
+		},
+		"metrics_collected": {
+			"collectd": {
+				"metrics_aggregation_interval": 60
+			},
+			"cpu": {
+				"measurement": [
+					"cpu_usage_idle",
+					"cpu_usage_iowait",
+					"cpu_usage_user",
+					"cpu_usage_system"
+				],
+				"metrics_collection_interval": 60,
+				"totalcpu": true
+			},
+			"disk": {
+				"measurement": [
+					"used_percent",
+					"inodes_free"
+				],
+				"metrics_collection_interval": 60,
+				"resources": [
+					"*"
+				]
+			},
+			"diskio": {
+				"measurement": [
+					"io_time",
+					"write_bytes",
+					"read_bytes",
+					"writes",
+					"reads"
+				],
+				"metrics_collection_interval": 60,
+				"resources": [
+					"*"
+				]
+			},
+			"mem": {
+				"measurement": [
+					"mem_used_percent"
+				],
+				"metrics_collection_interval": 60
+			},
+			"netstat": {
+				"measurement": [
+					"tcp_established",
+					"tcp_time_wait"
+				],
+				"metrics_collection_interval": 60
+			},
+			"statsd": {
+				"metrics_aggregation_interval": 60,
+				"metrics_collection_interval": 10,
+				"service_address": ":8125"
+			},
+			"swap": {
+				"measurement": [
+					"swap_used_percent"
+				],
+				"metrics_collection_interval": 60
+			}
+		}
+	}
+}
+```
+
+Start the cloudwatch agent
+
+```
+sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c file:/opt/aws/amazon-cloudwatch-agent/bin/config.json -s
 ```
 
 # codeship

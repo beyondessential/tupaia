@@ -6,7 +6,8 @@
 import React from 'react';
 import { EditButton } from '../../editor';
 import { DeleteButton } from './DeleteButton';
-import { ExportButton } from '../../importExport';
+import { ExportButton, FilteredExportButton } from '../../importExport';
+import { BooleanSelectFilter } from './columnFilters';
 
 const generateCustomCell = (CustomCell, actionConfig, reduxId) => props => (
   <CustomCell actionConfig={actionConfig} reduxId={reduxId} {...props} />
@@ -22,6 +23,7 @@ const BUTTON_COLUMN_OPTIONS = {
 const CUSTOM_CELL_COMPONENTS = {
   edit: EditButton,
   export: ExportButton,
+  filteredExport: FilteredExportButton,
   delete: DeleteButton,
   boolean: ({ value }) => (value ? 'Yes' : 'No'),
 };
@@ -41,6 +43,12 @@ export const generateConfigForColumnType = (type, actionConfig, reduxId) => {
       ...config,
       ...BUTTON_COLUMN_OPTIONS,
       width: BUTTON_WIDTH,
+    };
+  }
+  if (type === 'boolean') {
+    config = {
+      ...config,
+      Filter: BooleanSelectFilter,
     };
   }
   return config;

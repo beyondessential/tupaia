@@ -39,7 +39,7 @@ function DisasterLayer(props) {
 
 const mapStateToProps = ({ disaster, project }) => ({
   disasters: Object.values(disaster.disasters || {}),
-  isInDisasterMode: project.active.code === 'disaster',
+  isInDisasterMode: project.activeProjectCode === 'disaster',
 });
 
 const mapDispatchToProps = dispatch => ({

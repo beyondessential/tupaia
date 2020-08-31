@@ -1,82 +1,28 @@
 # In setting up these services, I have tried to minimise how much is loaded into each container for
 # each step in order to speed up those individual step build + run times
-# - 'validation' services include a nodejs container, plus the full repo code, and any node_modules
+# - 'validation' service includes a nodejs container, plus the full repo code, and any node_modules
 #   dependencies for the package in question
-# - 'testing' services are the same as the validation services, but additionally depend on the db
+# - 'testing' service is the same as the validation service, but additionally depends on the db
 #   service (see below)
 # - the db service provides a postgres db with postgis (and takes a little while to run, thus the
 #   splitting of the above services so validation isn't slower than it should be)
 # - the deployment service just uses the base alpine image + ssh to log into
 #   an ec2 instance and deploy the latest version of the code for each package
 
-meditrak-server-validation:
+validation:
   build:
     dockerfile: full-testable-package.Dockerfile
-    args:
-      package: meditrak-server
-  environment:
-    CI_PACKAGE: meditrak-server
+  cached: true
+  default_cache_branch: 'dev'
 
-web-config-server-validation:
+testing:
   build:
     dockerfile: full-testable-package.Dockerfile
-    args:
-      package: web-config-server
-  environment:
-    CI_PACKAGE: web-config-server
-
-meditrak-server-testing:
-  build:
-    dockerfile: full-testable-package.Dockerfile
-    args:
-      package: meditrak-server
   depends_on:
     - db
-  encrypted_env_file: ./packages/meditrak-server/ci-env-vars.encrypted
-  environment:
-    CI_PACKAGE: meditrak-server
-
-web-config-server-testing:
-  build:
-    dockerfile: full-testable-package.Dockerfile
-    args:
-      package: web-config-server
-  depends_on:
-    - db
-  encrypted_env_file: ./packages/web-config-server/ci-env-vars.encrypted
-  environment:
-    CI_PACKAGE: web-config-server
-
-database-testing:
-  build:
-    dockerfile: full-testable-package.Dockerfile
-    args:
-      package: database
-  depends_on:
-    - db
-  encrypted_env_file: ./packages/web-config-server/ci-env-vars.encrypted # for the db credentials
-  environment:
-    CI_PACKAGE: database
-
-data-api-testing:
-  build:
-    dockerfile: full-testable-package.Dockerfile
-    args:
-      package: data-api
-  depends_on:
-    - db
-  encrypted_env_file: ./packages/web-config-server/ci-env-vars.encrypted # for the db credentials
-  environment:
-    CI_PACKAGE: data-api
-
-internal-dependency-testing:
-  build:
-    dockerfile: full-testable-package.Dockerfile
-    args:
-      package: database
-  encrypted_env_file: ./packages/database/ci-env-vars.encrypted
-  environment:
-    CI_PACKAGE: database
+  encrypted_env_file: ./ci-env-vars.encrypted # all individual .env files combined and encrypted
+  cached: true
+  default_cache_branch: 'dev'
 
 db:
   image: mdillon/postgis:9.6-alpine
@@ -84,9 +30,9 @@ db:
 deployment:
   build:
     dockerfile: deploy-only.Dockerfile
-  encrypted_env_file: ./packages/devops/ci-env-vars.encrypted
-  environment:
-    CI_PACKAGE: devops
+  encrypted_env_file: ./ci-env-vars.encrypted
   volumes:
     # mapping to `.ssh` directory ensures that `id_rsa` file persists to subsequent steps
     - ./.ssh:/root/.ssh
+  cached: true
+  default_cache_branch: 'dev'

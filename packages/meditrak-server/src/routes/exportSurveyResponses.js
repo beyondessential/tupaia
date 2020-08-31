@@ -9,7 +9,7 @@ import fs from 'fs';
 import { truncateString } from 'sussol-utilities';
 import { DatabaseError, ValidationError } from '@tupaia/utils';
 
-import { findAnswersBySurveyResponse, findQuestionsBySurvey } from '../dataAccessors';
+import { findAnswersInSurveyResponse, findQuestionsInSurvey } from '../dataAccessors';
 const FILE_LOCATION = 'exports';
 const FILE_PREFIX = 'survey_response_export';
 export const EXPORT_DATE_FORMAT = 'D-M-YYYY h:mma';
@@ -49,15 +49,6 @@ const getBaseExport = infoColumnHeaders => [
   ...INFO_ROW_HEADERS.map(rowHeader => getValuesForRowHeader(rowHeader, infoColumnHeaders)),
 ];
 
-// Ensure user has access to this survey for this country
-// TODO: Make more fine grained once we have finer grained permissions
-// Eg: by facility or geo area
-const checkUserHasSurveyAccess = async (survey, user, country) => {
-  const ACCESS_OBJECT_TYPE = 'surveys';
-  const permissionGroup = await survey.getPermissionGroup();
-  return user.hasAccess(ACCESS_OBJECT_TYPE, [country.code], permissionGroup.name);
-};
-
 /**
  * Responds to GET requests to the /export/surveyResponses endpoint, exporting an excel document
  * containing the relevant survey responses
@@ -65,8 +56,7 @@ const checkUserHasSurveyAccess = async (survey, user, country) => {
  * @param {func}    res - function to call with response, takes (Error error, Object result)
  */
 export async function exportSurveyResponses(req, res) {
-  const { models, userId } = req;
-  const user = await models.user.findOne({ id: userId });
+  const { models, accessPolicy } = req;
   const { surveyResponseId } = req.params;
   const {
     surveyCodes,
@@ -152,7 +142,9 @@ export async function exportSurveyResponses(req, res) {
         survey => survey.country_ids.length === 0 || survey.country_ids.includes(countryId),
       );
     }
-
+    if (!surveys || surveys.length < 1) {
+      throw new ValidationError('Survey not found. Please check permissions');
+    }
     const sortAndLimitSurveyResponses =
       latest === 'true' ? { sort: ['end_time DESC'], limit: 1 } : {};
 
@@ -163,7 +155,8 @@ export async function exportSurveyResponses(req, res) {
     };
     for (let surveyIndex = 0; surveyIndex < surveys.length; surveyIndex++) {
       const currentSurvey = surveys[surveyIndex];
-      const hasSurveyAccess = await checkUserHasSurveyAccess(currentSurvey, user, country);
+      const permissionGroup = await currentSurvey.getPermissionGroup();
+      const hasSurveyAccess = accessPolicy.allows(country.code, permissionGroup.name);
       if (!hasSurveyAccess) {
         exportData = [[`You do not have export access to ${currentSurvey.name}`]];
         addDataToSheet(currentSurvey.name, exportData);
@@ -179,9 +172,7 @@ export async function exportSurveyResponses(req, res) {
         exportData[1].push(currentEntity.code);
         exportData[2].push(responseName);
         exportData[3].push(dateString);
-        const answers = await findAnswersBySurveyResponse(models, {
-          survey_response_id: currentSurveyResponse.id,
-        });
+        const answers = await findAnswersInSurveyResponse(models, currentSurveyResponse.id);
         const answersByQuestionId = {};
         answers.forEach(({ 'question.id': questionId, text }) => {
           answersByQuestionId[questionId] = text;
@@ -246,7 +237,7 @@ export async function exportSurveyResponses(req, res) {
         ];
       } else {
         // Get the current set of questions, in the order they appear in the survey
-        const questions = await findQuestionsBySurvey(models, { survey_id: currentSurvey.id });
+        const questions = await findQuestionsInSurvey(models, currentSurvey.id);
 
         // Add any questions that are in survey responses but no longer in the survey
         const questionIdsSeen = {};

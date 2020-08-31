@@ -99,7 +99,7 @@ export const ProjectCard = ({
   accessType,
 }) => {
   return (
-    <Card>
+    <Card data-testid="project-card">
       <Header>
         <img alt="project background" src={imageUrl} />
         {logoUrl && (

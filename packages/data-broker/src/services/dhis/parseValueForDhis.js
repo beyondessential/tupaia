@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { formatDateForDHIS2 } from './formatDateForDHIS2';
+import { formatDateForDHIS2, formatDateTimeForDHIS2 } from './formatDateForDHIS2';
 import {
   INTEGER,
   NUMBER,
@@ -50,8 +50,9 @@ export function parseValueForDhis(value, valueType) {
 
     // dates
     case DATE:
-    case DATETIME:
       return formatDateForDHIS2(value);
+    case DATETIME:
+      return formatDateTimeForDHIS2(value);
 
     // plain text
     case TEXT:

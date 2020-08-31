@@ -7,6 +7,7 @@ import { CartesianChart } from './CartesianChart';
 import { CHART_TYPES } from './chartTypes';
 import { PieChart } from './PieChart';
 import { parseChartConfig } from './parseChartConfig';
+import { getIsTimeSeries } from './helpers';
 
 const UnknownChart = () => (
   <div style={VIEW_STYLES.newChartComing}>
@@ -17,15 +18,18 @@ const UnknownChart = () => (
 export class ChartWrapper extends PureComponent {
   getViewContent() {
     const { viewContent } = this.props;
-    const { chartConfig } = viewContent;
-
+    const { chartConfig, data } = viewContent;
     return chartConfig
       ? {
           ...viewContent,
+          data: this.sortData(data),
           chartConfig: parseChartConfig(viewContent),
         }
-      : viewContent;
+      : { ...viewContent, data: this.sortData(data) };
   }
+
+  sortData = data =>
+    getIsTimeSeries(data) ? data.sort((a, b) => a.timestamp - b.timestamp) : data;
 
   render() {
     const viewContent = this.getViewContent();

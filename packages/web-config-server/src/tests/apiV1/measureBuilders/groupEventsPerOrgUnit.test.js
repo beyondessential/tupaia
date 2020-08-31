@@ -12,6 +12,7 @@ const organisationUnitCode = 'PG';
 const programCode = 'SCRF';
 const dataServices = [{ isDataRegional: true }];
 const dataSourceEntityType = 'village';
+const dataSourceEntityFilter = undefined;
 
 const query = { organisationUnitCode, dataElementCode: 'value' };
 const entity = { code: organisationUnitCode };
@@ -36,8 +37,12 @@ const config = {
   dataServices,
   groups,
   dataSourceType: 'custom',
-  dataSourceEntityType,
-  aggregationEntityType: 'village',
+  dataSourceEntityFilter,
+  entityAggregation: {
+    aggregationType: 'REPLACE_ORG_UNIT_WITH_ORG_GROUP',
+    dataSourceEntityType,
+    aggregationEntityType: 'facility',
+  },
 };
 
 const events = [
@@ -89,7 +94,8 @@ const createAggregator = () => {
     .resolves([])
     .withArgs(programCode, {
       dataServices,
-      dataSourceEntityType: dataSourceEntityType,
+      entityAggregation: config.entityAggregation,
+      dataSourceEntityFilter: dataSourceEntityFilter,
       organisationUnitCode: organisationUnitCode,
       startDate: undefined,
       endDate: undefined,
@@ -108,12 +114,15 @@ describe('groupEventsPerOrgUnit', () => {
   it('should group counts of events into buckets', async () => {
     return expect(
       groupEventsPerOrgUnit(createAggregator(), {}, query, config, entity),
-    ).to.eventually.deep.equal([
-      { organisationUnitCode: 'oneEventLand', value: 'lessThanTwo', originalValue: 1 },
-      { organisationUnitCode: 'twoEventLand', value: 'twoToThree', originalValue: 2 },
-      { organisationUnitCode: 'threeEventLand', value: 'twoToThree', originalValue: 3 },
-      { organisationUnitCode: 'fourEventLand', value: 'fourOrMore', originalValue: 4 },
-    ]);
+    ).to.eventually.deep.equal({
+      data: [
+        { organisationUnitCode: 'oneEventLand', value: 'lessThanTwo', originalValue: 1 },
+        { organisationUnitCode: 'twoEventLand', value: 'twoToThree', originalValue: 2 },
+        { organisationUnitCode: 'threeEventLand', value: 'twoToThree', originalValue: 3 },
+        { organisationUnitCode: 'fourEventLand', value: 'fourOrMore', originalValue: 4 },
+      ],
+      period: null,
+    });
   });
 
   it('should keep original value if there is no appropriate bucket', async () => {
@@ -128,12 +137,15 @@ describe('groupEventsPerOrgUnit', () => {
     };
     return expect(
       groupEventsPerOrgUnit(createAggregator(), {}, query, newConfig, entity),
-    ).to.eventually.deep.equal([
-      { organisationUnitCode: 'oneEventLand', value: 1, originalValue: 1 },
-      { organisationUnitCode: 'twoEventLand', value: 2, originalValue: 2 },
-      { organisationUnitCode: 'threeEventLand', value: 'threeOrMore', originalValue: 3 },
-      { organisationUnitCode: 'fourEventLand', value: 'threeOrMore', originalValue: 4 },
-    ]);
+    ).to.eventually.deep.equal({
+      data: [
+        { organisationUnitCode: 'oneEventLand', value: 1, originalValue: 1 },
+        { organisationUnitCode: 'twoEventLand', value: 2, originalValue: 2 },
+        { organisationUnitCode: 'threeEventLand', value: 'threeOrMore', originalValue: 3 },
+        { organisationUnitCode: 'fourEventLand', value: 'threeOrMore', originalValue: 4 },
+      ],
+      period: null,
+    });
   });
 
   it('should throw an error if there is no grouping check defined for operator', async () => {
@@ -148,6 +160,6 @@ describe('groupEventsPerOrgUnit', () => {
     };
     return expect(
       groupEventsPerOrgUnit(createAggregator(), {}, query, newConfig, entity),
-    ).to.be.rejectedWith('No function defined for operator: no-op');
+    ).to.be.rejectedWith("Unknown operator: 'no-op'");
   });
 });

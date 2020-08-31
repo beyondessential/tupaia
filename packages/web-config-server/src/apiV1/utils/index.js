@@ -25,17 +25,20 @@ export { getDataElementGroups } from './getDataElementGroups';
 export { getDataElementGroupSets } from './getDataElementGroupSets';
 export { getDataElementsInGroupSet } from './getDataElementsInGroupSet';
 export isSingleValue from './isSingleValue';
-export {
-  hasReportAccessToOrganisationUnit,
-  getReportUserGroupAccessRightsForOrganisationUnit,
-} from './hasAccess';
 export { timestampToPeriod } from './timestampToPeriod';
 export { timestampToPeriodName } from './timestampToPeriodName';
 export { limitRange } from './limitRange';
 export { regexLabel } from './regexLabel';
-export { findLatestPeriod } from './findLatestPeriod';
+export { filterEntities, checkEntityAgainstConditions } from './filterEntities';
 export { getDateRange } from './getDateRange';
 export { mapDataSourcesToElementCodes } from './mapDataSourcesToElementCodes';
 export { parseCoordinates } from './parseCoordinates';
 export { composeBuiltData } from './composeBuiltData';
 export { sumResults } from './sumResults';
+export { mergeTableDataOnKey } from './mergeTableDataOnKey';
+export { transposeMatrix, sortByColumns } from './matrixUtils';
+export { getAggregatePeriod } from './getAggregatePeriod';
+export {
+  findAccessibleMapOverlays,
+  findAccessibleGroupedMapOverlays,
+} from './findAccessibleGroupedMapOverlays';

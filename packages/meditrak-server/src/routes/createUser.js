@@ -2,11 +2,18 @@
  * Tupaia MediTrak
  * Copyright (c) 2017 Beyond Essential Systems Pty Ltd
  **/
-import { respond, FormValidationError, UnauthenticatedError } from '@tupaia/utils';
-import { ObjectValidator, fieldHasContent, isEmail, isValidPassword } from '../validation';
+import {
+  respond,
+  FormValidationError,
+  UnauthenticatedError,
+  ObjectValidator,
+  hasNoAlphaLetters,
+  fieldHasContent,
+  isEmail,
+  isValidPassword,
+} from '@tupaia/utils';
 import { createUser as createUserAccessor } from '../dataAccessors';
 import { sendVerifyEmail } from './verifyEmail';
-import { hasNoAlphaLetters } from '../validation/validatorFunctions';
 
 const PERMISSION_GROUPS = {
   PUBLIC: 'Public',
@@ -40,7 +47,6 @@ export const createUser = async (req, res) => {
     contactNumber: contactNumber ? [hasNoAlphaLetters] : [],
     employer: [fieldHasContent],
     position: [fieldHasContent],
-    deviceName: [fieldHasContent],
   };
 
   // Most errors are checked using the ObjectValidator except for a few specific ones which are easier to check here in createUser
@@ -60,7 +66,7 @@ export const createUser = async (req, res) => {
   }
 
   const existingUsers = await models.user.find({
-    email: { comparisonValue: emailAddress, ignoreCase: true },
+    email: { comparisonValue: emailAddress, comparator: 'ilike' },
   });
   if (existingUsers.length > 0) {
     throw new UnauthenticatedError('Existing user found with same email address.');

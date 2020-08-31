@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 import { ENTITIES_COLUMNS } from './EntitiesPage';
 
@@ -23,23 +24,16 @@ const COLUMNS = [
   {
     Header: 'Export Survey Responses',
     source: 'id',
-    type: 'export',
+    type: 'filteredExport',
     width: 200,
-    actionConfig: {
-      exportEndpoint: 'surveyResponses',
-      queryParameter: 'countryId',
-      fileName: '{name} Survey Responses',
-    },
   },
 ];
 
 const EXPANSION_CONFIG = [
   {
     title: 'Entities',
-    endpoint: 'entities',
+    endpoint: 'country/{id}/entities',
     columns: ENTITIES_COLUMNS,
-    joinFrom: 'code',
-    joinTo: 'code',
   },
 ];
 
@@ -51,12 +45,37 @@ const CREATE_CONFIG = {
   },
 };
 
-export const CountriesPage = () => (
+const FILTERED_EXPORT_CONFIG = {
+  title: 'Export Survey Responses for Country',
+  actionConfig: {
+    exportEndpoint: 'surveyResponses',
+    rowIdQueryParameter: 'countryId',
+    fileName: '{name} Survey Responses',
+  },
+  queryParameters: [
+    {
+      label: 'Surveys to Include',
+      secondaryLabel: 'Please enter the names of the surveys to be exported.',
+      parameterKey: 'surveyCodes',
+      optionsEndpoint: 'country/{id}/surveys',
+      optionValueKey: 'code',
+      allowMultipleValues: true,
+    },
+  ],
+};
+
+export const CountriesPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Countries"
     endpoint="countries"
     columns={COLUMNS}
     expansionTabs={EXPANSION_CONFIG}
     createConfig={CREATE_CONFIG}
+    filteredExportConfig={FILTERED_EXPORT_CONFIG}
+    getHeaderEl={getHeaderEl}
   />
 );
+
+CountriesPage.propTypes = {
+  getHeaderEl: PropTypes.func.isRequired,
+};

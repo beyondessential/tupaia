@@ -2,17 +2,17 @@
   "name": "@tupaia/database",
   "version": "1.0.0",
   "main": "dist/index.js",
-  "private": true,
   "scripts": {
-    "build": "babel src --out-dir dist --ignore '**/migrations','src/tests/**'",
+    "build": "babel src --out-dir dist --ignore '**/migrations','src/tests/**' --config-file '../../babel.config.json'",
     "test": "mocha",
     "test-coverage": "cross-env NODE_ENV=test nyc mocha",
-    "migrate": "babel-node ./src/migrate.js up --migrations-dir ./src/migrations -v",
-    "migrate-down": "babel-node ./src/migrate.js  down --migrations-dir ./src/migrations -v",
-    "migrate-create": "read -p \"Enter migration name: \" MIGRATION_NAME && babel-node ./src/migrate.js create ${MIGRATION_NAME} --migrations-dir ./src/migrations -v",
+    "migrate": "babel-node ./src/migrate.js up --migrations-dir ./src/migrations -v --config-file '../../babel.config.json'",
+    "migrate-down": "babel-node ./src/migrate.js  down --migrations-dir ./src/migrations -v --config-file '../../babel.config.json'",
+    "migrate-create": "read -p \"Enter migration name: \" MIGRATION_NAME && read -p \"Enter the scope of this migration ('schema' or 'data'): \" MIGRATION_SCOPE && babel-node ./src/migrate.js create ${MIGRATION_NAME}-modifies-${MIGRATION_SCOPE} --migrations-dir ./src/migrations -v --config-file '../../babel.config.json'",
     "update-test-data": ". .env && pg_dump -s -O $DB_NAME > src/tests/testData/testDataDump.sql && pg_dump -t migrations -c -O $DB_NAME >> src/tests/testData/testDataDump.sql"
   },
   "dependencies": {
+    "@tupaia/auth": "1.0.0",
     "@tupaia/utils": "1.0.0",
     "db-migrate": "^0.11.5",
     "db-migrate-pg": "^0.4.0",
@@ -22,24 +22,8 @@
     "os": "0.1.1",
     "pg": "7.10.0",
     "pg-pubsub": "0.3.0",
+    "rand-token": "^1.0.1",
     "react-autobind": "1.0.6",
     "winston": "3.2.1"
-  },
-  "devDependencies": {
-    "babel-cli": "^6.24.1",
-    "babel-core": "^6.23.1",
-    "babel-eslint": "^7.2.3",
-    "babel-loader": "^6.3.1",
-    "babel-plugin-array-includes": "^2.0.3",
-    "babel-plugin-istanbul": "^4.1.6",
-    "babel-plugin-syntax-async-functions": "^6.13.0",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-es2015": "^6.22.0",
-    "babel-preset-stage-0": "^6.22.0",
-    "chai": "^4.1.2",
-    "chai-as-promised": "^7.1.1",
-    "cross-env": "^7.0.1",
-    "mocha": "^6.2.0",
-    "nyc": "^14.1.1"
   }
 }

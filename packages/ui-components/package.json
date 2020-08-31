@@ -1,0 +1,57 @@
+{
+  "name": "@tupaia/ui-components",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "description": "A library of user interface components for the Tupaia project.",
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beyondessential/tupaia"
+  },
+  "bugs": {
+    "url": "https://github.com/beyondessential/tupaia/issues"
+  },
+  "homepage": "https://github.com/beyondessential/tupaia",
+  "scripts": {
+    "storybook": "start-storybook -s ./public -p 6006",
+    "build": "cross-env NODE_ENV=production webpack",
+    "test": "jest --env=jest-environment-jsdom-sixteen",
+    "test:coverage": "yarn test --coverage",
+    "test:watch": "yarn test --watch"
+  },
+  "dependencies": {
+    "@babel/core": "^7.9.0",
+    "@date-io/date-fns": "1.x",
+    "@material-ui/core": "^4.9.8",
+    "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.47",
+    "@material-ui/pickers": "^3.2.10",
+    "@material-ui/styles": "^4.9.10",
+    "date-fns": "^2.12.0",
+    "faker": "^4.1.0",
+    "lodash.throttle": "^4.1.1",
+    "prop-types": "^15.7.2",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-router": "^5.1.2",
+    "react-router-dom": "^5.1.2",
+    "styled-components": "^5.0.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.0",
+    "@storybook/addon-essentials": "^6.0.10",
+    "@storybook/react": "^6.0.10",
+    "@testing-library/jest-dom": "^5.11.0",
+    "@testing-library/react": "^10.4.5",
+    "@testing-library/user-event": "^12.0.11",
+    "babel-loader": "^8.1.0",
+    "babel-preset-react-app": "^9.1.2",
+    "cross-env": "^7.0.2",
+    "eslint-plugin-react-hooks": "^4.0.8",
+    "faker": "^4.1.0",
+    "react-hook-form": "^6.0.6",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11"
+  }
+}

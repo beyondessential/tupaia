@@ -15,8 +15,16 @@ export class DatabaseChangeChannel extends PGPubSub {
     this.addChannel('ping', this.notifyPingListeners);
   }
 
-  addChangeHandler(handler) {
+  async close() {
+    return super.close();
+  }
+
+  addDataChangeHandler(handler) {
     this.addChannel('change', handler);
+  }
+
+  addSchemaChangeHandler(handler) {
+    this.addChannel('schema_change', handler);
   }
 
   publishRecordUpdates(recordType, records, specificHandlerKey) {

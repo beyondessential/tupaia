@@ -5,7 +5,7 @@
 
 import { dateStringToPeriod, convertPeriodStringToDateRange } from '@tupaia/utils';
 
-// converts from the TupaiaDataApi representation (which uses 'date') to the
+// converts from the TupaiaDataApi/IndicatorApi representation (which uses 'date') to the
 // format expected by consumers of analytics (which uses 'period')
 export const translateAnalyticsForConsumer = analytics =>
   analytics.map(({ date, ...a }) => ({
@@ -13,7 +13,9 @@ export const translateAnalyticsForConsumer = analytics =>
     period: dateStringToPeriod(date),
   }));
 
-export const translateOptionsForTupaiaDataApi = ({ period, ...restOfOptions }) => {
+// converts from the options requested by data-broker clients (which may use 'period') to that used
+// by tupaia internal apis (TupaiaDataApi/IndicatorApi)
+export const translateOptionsForApi = ({ period, ...restOfOptions }) => {
   if (!period) return restOfOptions;
   const [startDate, endDate] = convertPeriodStringToDateRange(period);
   return {

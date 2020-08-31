@@ -58,6 +58,11 @@ export class TableConfig {
     this.rows = this.baseConfig.rows;
     this.columns = this.baseConfig.columns;
     this.cells = this.baseConfig.cells;
+    // Sometimes columns is specified with a list orgUnits with a columnType like '$orgUnit'
+    // Other times columns can be specified with variable e.g. '$orgUnit' and no columnType
+    // columnType is used in build() to check whether codes should be converted to names
+    // This is a bit of legacy debt that could do with refactor.
+    this.columnType = this.baseConfig.columnType || this.columns;
 
     if (this.hasMetadataRowCategories()) {
       this.processRowMetadataFields(results);
@@ -122,6 +127,21 @@ export class TableConfig {
 
   hasMetadataCategories() {
     return this.hasMetadataRowCategories() || this.hasMetadataColumnCategories();
+  }
+
+  hasRowDataElements() {
+    return (
+      this.baseConfig.rows[0].hasOwnProperty('code') ||
+      (this.baseConfig.rows[0].rows && this.baseConfig.rows[0].rows[0].hasOwnProperty('code'))
+    );
+  }
+
+  hasRowDescriptions() {
+    return (
+      this.baseConfig.rows[0].hasOwnProperty('descriptionDataElement') ||
+      (this.baseConfig.rows[0].rows &&
+        this.baseConfig.rows[0].rows[0].hasOwnProperty('descriptionDataElement'))
+    );
   }
 
   hasRowCategories() {

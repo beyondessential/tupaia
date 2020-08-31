@@ -46,6 +46,22 @@ export const openEditModal = ({ editEndpoint, fields }, recordId) => async (
       });
     }
   } else {
+    // set default values
+    for (const field of fields) {
+      if (field.editConfig && field.editConfig.default) {
+        const {
+          source: fieldKey,
+          editConfig: { default: newValue },
+        } = field;
+
+        dispatch({
+          type: EDITOR_FIELD_EDIT,
+          fieldKey,
+          newValue,
+        });
+      }
+    }
+
     dispatch({
       type: EDITOR_OPEN_CREATOR,
       fields,
@@ -67,9 +83,9 @@ export const saveEdits = (endpoint, editedFields, isNew) => async (dispatch, get
   });
   try {
     if (isNew) {
-      await api.put(endpoint, null, editedFields);
-    } else {
       await api.post(endpoint, null, editedFields);
+    } else {
+      await api.put(endpoint, null, editedFields);
     }
     dispatch({
       type: EDITOR_DATA_EDIT_SUCCESS,

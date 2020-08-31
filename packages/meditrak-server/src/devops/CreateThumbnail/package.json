@@ -10,10 +10,8 @@
     "png-to-jpeg": "^1.0.1"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "echo \"No tests specified\" && exit 0",
     "test-lambda": "lambda-local -l CreateThumbnail.js -h handler -e ./testEvent.json -t 20",
     "package-for-lambda": "rm -f CreateThumbnail.zip && zip -r CreateThumbnail.zip ./ && echo \"Uploading to AWS...\" && aws lambda update-function-code --function-name CreateThumbnail --zip-file fileb://CreateThumbnail.zip"
-  },
-  "author": "",
-  "license": "ISC"
+  }
 }

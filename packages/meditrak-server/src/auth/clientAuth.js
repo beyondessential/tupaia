@@ -5,8 +5,7 @@
 
 import { parse as parseAuthHeader } from 'basic-auth';
 import { UnauthenticatedError, DatabaseError } from '@tupaia/utils';
-
-import { encryptPassword } from '../utilities';
+import { encryptPassword } from '@tupaia/auth';
 
 async function getAPIClient(authHeader, apiClientModel) {
   const authHeaderComponents = parseAuthHeader(authHeader);

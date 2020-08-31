@@ -2,8 +2,8 @@
  * Tupaia MediTrak
  * Copyright (c) 2020 Beyond Essential Systems Pty Ltd
  */
+
 import { expect } from 'chai';
-import { it, describe } from 'mocha';
 
 import { mapOrgUnitToGroupCodes } from '/apiV1/utils/mapOrgUnitToGroupCodes';
 

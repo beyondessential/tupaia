@@ -7,6 +7,7 @@ import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import errorHandler from 'api-error-handler';
+import { Authenticator } from '@tupaia/auth';
 
 import { addRoutesToApp } from './addRoutesToApp';
 
@@ -24,11 +25,13 @@ export function createApp(database, models) {
   app.use(errorHandler());
 
   /**
-   * Add database to be attached to req for every route
+   * Add singletons to be attached to req for every route
    **/
+  const authenticator = new Authenticator(models);
   app.use((req, res, next) => {
     req.database = database;
     req.models = models;
+    req.authenticator = authenticator;
     next();
   });
 

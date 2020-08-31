@@ -1,0 +1,187 @@
+[
+  {
+    "name": "Basic Clinic Data Kiribati",
+    "oldCode": "BCD",
+    "newCode": "BCD_KI"
+  },
+  {
+    "name": "Basic Clinic Data Tonga",
+    "oldCode": "BCD",
+    "newCode": "BCD_TO"
+  },
+  {
+    "name": "Basic Clinic Data Vanuatu",
+    "oldCode": "BCD",
+    "newCode": "BCD_VU"
+  },
+  {
+    "name": "Basic Clinic Data Timor",
+    "oldCode": "BCD",
+    "newCode": "BCD_TL"
+  },
+  {
+    "name": "Basic Clinic Data",
+    "oldCode": "BCD",
+    "newCode": "BCD"
+  },
+  {
+    "name": "Basic Clinic Data Tokelau",
+    "oldCode": "BCD",
+    "newCode": "BCD_TK"
+  },
+  {
+    "name": "Basic Clinic Data Cook Islands",
+    "oldCode": "BCD",
+    "newCode": "BCD_CK"
+  },
+  {
+    "name": "Basic Clinic Data Demo Land",
+    "oldCode": "BCD",
+    "newCode": "BCD_DL"
+  },
+  {
+    "name": "Basic Clinic Data Solomon Islands",
+    "oldCode": "BCD",
+    "newCode": "BCD_SB"
+  },
+  {
+    "name": "Basic Clinic Data Nauru",
+    "oldCode": "BCDN",
+    "newCode": "BCD_NR"
+  },
+  {
+    "name": "Basic Facility Data Venezuela",
+    "oldCode": "BCD",
+    "newCode": "BCD_VE"
+  },
+  {
+    "name": "Monday Surveillance",
+    "oldCode": "MS",
+    "newCode": "SURV_MO"
+  },
+  {
+    "name": "Tuesday Surveillance",
+    "oldCode": "TS",
+    "newCode": "SURV_TU"
+  },
+  {
+    "name": "Wednesday Surveillance",
+    "oldCode": "WS",
+    "newCode": "SURV_WE"
+  },
+  {
+    "name": "Thursday Surveillance",
+    "oldCode": "TS",
+    "newCode": "SURV_TH"
+  },
+  {
+    "name": "Friday Surveillance",
+    "oldCode": "FS",
+    "newCode": "SURV_FR"
+  },
+  {
+    "name": "Saturday Surveillance",
+    "oldCode": "SS",
+    "newCode": "SURV_SA"
+  },
+  {
+    "name": "Sunday Surveillance",
+    "oldCode": "SS",
+    "newCode": "SURV_SU"
+  },
+  {
+    "name": "Functional Space",
+    "oldCode": "FS",
+    "newCode": "FS"
+  },
+  {
+    "name": "Staff & Equipment",
+    "oldCode": "PEHS",
+    "newCode": "PEHS_SE"
+  },
+  {
+    "name": "General Clinical Services",
+    "oldCode": "PEHS",
+    "newCode": "PEHS_GCS"
+  },
+  {
+    "name": "Maternal & Family Planning",
+    "oldCode": "PEHS",
+    "newCode": "PEHS_MFP"
+  },
+  {
+    "name": "Mental Health & Rehabilitation",
+    "oldCode": "PEHS",
+    "newCode": "PEHS_MHR"
+  },
+  {
+    "name": "Communicable Diseases",
+    "oldCode": "PEHS",
+    "newCode": "PEHS_CD"
+  },
+  {
+    "name": "Gender Based Violence",
+    "oldCode": "PEHS",
+    "newCode": "PEHS_GBV"
+  },
+  {
+    "name": "NCDs",
+    "oldCode": "PEHS",
+    "newCode": "PEHS_NCD"
+  },
+  {
+    "name": "ENT & Audiology Services",
+    "oldCode": "PEHS",
+    "newCode": "PEHS_EAS"
+  },
+  {
+    "name": "Diagnostic Services",
+    "oldCode": "PEHS",
+    "newCode": "PEHS_DS"
+  },
+  {
+    "name": "Oral Health Services",
+    "oldCode": "PEHS",
+    "newCode": "PEHS_OHS"
+  },
+  {
+    "name": "School Fundamentals DL (obsolete)",
+    "oldCode": "SFD",
+    "newCode": "SFD_O"
+  },
+  {
+    "name": "Tupaia Survey",
+    "oldCode": "TS",
+    "newCode": "TS"
+  },
+  {
+    "name": "General Information",
+    "oldCode": "VISV",
+    "newCode": "VISV_GI"
+  },
+  {
+    "name": "Malaria Survey",
+    "oldCode": "VISV",
+    "newCode": "VISV_MS"
+  },
+  {
+    "name": "TB Survey",
+    "oldCode": "VISV",
+    "newCode": "VISV_TB"
+  },
+  {
+    "name": "Validation Test_2",
+    "oldCode": "VT",
+    "newCode": "VT2"
+  },
+  {
+    "name": "Validation Test",
+    "oldCode": "VT",
+    "newCode": "VT"
+  },
+  {
+    "name": "WASH Survey",
+    "oldCode": "WS",
+    "newCode": "WS"
+  }
+]

@@ -133,6 +133,7 @@ export class View extends Component {
     if (!viewContent) {
       return (
         <div
+          data-testid="view"
           style={{
             ...viewContainerStyle,
             ...VIEW_STYLES.loadingContainer,
@@ -145,7 +146,7 @@ export class View extends Component {
 
     if (viewContent.error) {
       return (
-        <div style={viewContainerStyle}>
+        <div data-testid="view" style={viewContainerStyle}>
           <p style={VIEW_STYLES.text}>{`Error: ${viewContent.error.message}`}</p>
         </div>
       );
@@ -162,7 +163,7 @@ export class View extends Component {
       const { startDate, endDate } = viewContent;
       const periodDependent = startDate && endDate;
       return (
-        <div style={viewContainerStyle}>
+        <div data-testid="view" style={viewContainerStyle}>
           <h2 style={VIEW_STYLES.title}>
             {viewContent.name}
             <br />
@@ -203,7 +204,7 @@ export class View extends Component {
     );
 
     return (
-      <div style={getContainerStyle(viewContainerStyle, viewContent)}>
+      <div data-testid="view" style={getContainerStyle(viewContainerStyle, viewContent)}>
         <OverlayView>
           {title}
           <ViewWrapper viewContent={viewContent} />

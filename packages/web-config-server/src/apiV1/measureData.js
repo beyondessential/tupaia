@@ -1,8 +1,10 @@
+import keyBy from 'lodash.keyby';
+
 import { CustomError } from '@tupaia/utils';
 import { getMeasureBuilder } from '/apiV1/measureBuilders/getMeasureBuilder';
 import { getDhisApiInstance } from '/dhis';
 import { Entity, MapOverlay } from '/models';
-import { getDateRange } from './utils';
+import { getDateRange, getAggregatePeriod } from './utils';
 import { DataAggregatingRouteHandler } from './DataAggregatingRouteHandler';
 import { MapOverlayPermissionsChecker } from './permissions';
 import { DATA_SOURCE_TYPES } from './dataBuilders/dataSourceTypes';
@@ -33,8 +35,35 @@ const accessDeniedForMeasure = {
   },
 };
 
-const buildMeasureData = measureDataResponses => {
+const buildMeasureData = (overlays, measureDataResponsesByMeasureId) => {
+  const measureDataResponses = overlays.map(({ id, dataElementCode }) => {
+    const { data: measureDataResponse } = measureDataResponsesByMeasureId[id];
+    measureDataResponse.forEach(obj => {
+      obj[id] = obj[dataElementCode];
+      delete obj[dataElementCode];
+    });
+    return measureDataResponse;
+  });
+
+  /**
+   * measureDataResponses: [
+   *     [
+   *       { organisationUnitCode: 'OrgA', measure_id_1: 0 },
+   *       { organisationUnitCode: 'OrgB', measure_id_1: 1 },
+   *     ],
+   *     [
+   *       { organisationUnitCode: 'OrgA', measure_id_2: 100 },
+   *       { organisationUnitCode: 'OrgB', measure_id_2: -100 },
+   *     ],
+   * ]
+   */
+
   const measureDataByOrgUnit = {};
+  // measureDataByOrgUnit: {
+  //  OrgA: { organisationUnitCode: 'OrgA', measureY: 100, measure_id_1: 0 },
+  //  OrgB: { organisationUnitCode: 'OrgB', measureY: -100, measure_id_1: 1 },
+  // }
+
   // Using `forEach` instead of `reduce` with a spread operator on the accumulator
   // since it is much faster
   measureDataResponses.forEach(response => {
@@ -44,7 +73,12 @@ const buildMeasureData = measureDataResponses => {
     });
   });
 
-  return Object.values(measureDataByOrgUnit);
+  return {
+    data: Object.values(measureDataByOrgUnit),
+    period: getAggregatePeriod(
+      Object.values(measureDataResponsesByMeasureId).map(({ period }) => period),
+    ),
+  };
 };
 
 function getMostCommon(elements) {
@@ -86,8 +120,8 @@ const createDataServices = mapOverlay => {
 };
 
 const getMeasureLevel = mapOverlays => {
-  const aggregationTypes = mapOverlays.map(({ measureBuilderConfig }) =>
-    Entity.translateTypeForFrontend(measureBuilderConfig.aggregationEntityType),
+  const aggregationTypes = mapOverlays.map(
+    ({ presentationOptions }) => presentationOptions.measureLevel,
   );
   return [...new Set(aggregationTypes)].join(',');
 };
@@ -98,7 +132,18 @@ export default class extends DataAggregatingRouteHandler {
   buildResponse = async () => {
     const { code } = this.entity;
     const { measureId } = this.query;
-    const overlays = await MapOverlay.find({ id: measureId.split(',') });
+    const measureIds = measureId.split(',');
+    const overlayResults = await MapOverlay.find({ id: measureIds });
+
+    //Re-order the overlays array to follow the order in measureIds
+    const overlaysById = keyBy(overlayResults, 'id');
+    const overlays = [];
+
+    measureIds.forEach(id => {
+      if (overlaysById[id]) {
+        overlays.push(overlaysById[id]);
+      }
+    });
 
     // check permission
     await Promise.all(
@@ -112,7 +157,6 @@ export default class extends DataAggregatingRouteHandler {
 
     // start fetching options
     const optionsTasks = overlays.map(o => this.fetchMeasureOptions(o, this.query));
-
     // start fetching actual data
     const shouldFetchSiblings = this.query.shouldShowAllParentCountryResults === 'true';
     const dataTasks = overlays.map(o => this.fetchMeasureData(o, shouldFetchSiblings));
@@ -123,40 +167,51 @@ export default class extends DataAggregatingRouteHandler {
       await Promise.all(dataTasks)
     ).reduce((dataResponse, current) => ({ ...dataResponse, ...current }));
 
-    const measureDataResponses = overlays.map(({ id, dataElementCode }) => {
-      const measureDataResponse = measureDataResponsesByMeasureId[id];
-      measureDataResponse.forEach(obj => {
-        obj[id] = obj[dataElementCode];
-        delete obj[dataElementCode];
-      });
-      return measureDataResponse;
-    });
+    /* Data arrives as an array of responses (one for each measure) containing an array of org
+     * units. We need to rearrange it so that it's a 1D array of objects with the values
+     * assigned to the appropriate keys, and replace the keys with the ids of the overlay
+     * they came from (this is to avoid duplicate 'value' keys which causes a bug)
+     *
+     * measureDataResponsesByMeasureId: {
+     *   measure_id_1: {
+     *     data: [
+     *       { organisationUnitCode: 'OrgA', measureZ: 0 },
+     *       { organisationUnitCode: 'OrgB', measureZ: 1 },
+     *     ],
+     *     period: {
+     *       latestAvailable: '20200301',
+     *       earliestAvailable: '20190501',
+     *       requested: '201901;201902;201903...',
+     *     }
+     *   }
+     *   measure_id_2: {
+     *     data: [
+     *       { organisationUnitCode: 'OrgA', measureY: 100 },
+     *       { organisationUnitCode: 'OrgB', measureY: -100 },
+     *     ],
+     *     period: {
+     *       latestAvailable: '20200401',
+     *       earliestAvailable: '20190501',
+     *       requested: '201901;201902;201903...',
+     *     }
+     *   }
+     * }
+     *
+     * measureData: [
+     *  { organisationUnitCode: 'OrgA', measure_id_2: 100, measure_id_1: 0 },
+     *  { organisationUnitCode: 'OrgB', measure_id_2: -100, measure_id_1: 1 },
+     * ]
+     * period: {
+     *   latestAvailable: '20200401',
+     *   earliestAvailable: '20190501',
+     *   requested: '201901;201902;201903...',
+     * }
+     */
 
-    // Data arrives as an array of responses (one for each measure) containing an array of org
-    // units. We need to rearrange it so that it's a 1D array of objects with the values
-    // assigned to the appropriate keys.
-    //
-    // RESPONSE: [
-    //  [
-    //    { organisationUnitCode: 'OrgA', measureZ: 0 },
-    //    { organisationUnitCode: 'OrgB', measureZ: 1 }
-    //  ],
-    //  [
-    //    { organisationUnitCode: 'OrgA', measureY: 100 },
-    //    { organisationUnitCode: 'OrgB', measureY: -100 }
-    //  ],
-    // ]
-    //
-    // COMPILED: {
-    //  OrgA: { organisationUnitCode: 'OrgA', measureY: 100, measureZ: 0 },
-    //  OrgB: { organisationUnitCode: 'OrgB', measureY: -100, measureZ: 1 },
-    // }
-    //
-    // RETURN: [
-    //  { organisationUnitCode: 'OrgA', measureY: 100, measureZ: 0 },
-    //  { organisationUnitCode: 'OrgB', measureY: -100, measureZ: 1 },
-    // ]
-    const measureData = buildMeasureData(measureDataResponses);
+    const { period, data: measureData } = buildMeasureData(
+      overlays,
+      measureDataResponsesByMeasureId,
+    );
 
     measureOptions
       .filter(mo => mo.displayedValueKey)
@@ -171,6 +226,7 @@ export default class extends DataAggregatingRouteHandler {
       measureLevel: getMeasureLevel(overlays),
       measureOptions,
       measureData,
+      period,
     };
   };
 
@@ -181,24 +237,34 @@ export default class extends DataAggregatingRouteHandler {
       userGroup,
       isDataRegional, // don't include these in response
       dataElementCode,
-      displayType,
-      values,
       presentationOptions,
       measureBuilderConfig,
       ...restOfMapOverlay
     } = mapOverlay;
 
+    const {
+      displayType,
+      values,
+      hideFromMenu,
+      hideFromLegend,
+      hideFromPopup,
+      ...restOfPresentationOptions
+    } = presentationOptions;
+
     const { dataSourceType = DATA_SOURCE_TYPES.SINGLE, periodGranularity } =
-      measureBuilderConfig || {};
+    measureBuilderConfig || {};
     const { startDate, endDate } = this.query;
     const dates = periodGranularity ? getDateRange(periodGranularity, startDate, endDate) : {};
 
     const baseOptions = {
-      ...presentationOptions,
+      ...restOfPresentationOptions,
       ...restOfMapOverlay,
       type: displayType,
       key: id,
       periodGranularity,
+      hideFromMenu: hideFromMenu || false,
+      hideFromLegend: hideFromLegend || false,
+      hideFromPopup: hideFromPopup || false,
       ...dates,
     };
 
@@ -210,6 +276,7 @@ export default class extends DataAggregatingRouteHandler {
       dataSourceType === DATA_SOURCE_TYPES.SINGLE
         ? await this.getOptionsForDataElement(mapOverlay, dataElementCode)
         : {};
+
     const translatedOptions = translateMeasureOptionSet(options, mapOverlay);
 
     return { ...baseOptions, values: translatedOptions };
@@ -222,6 +289,7 @@ export default class extends DataAggregatingRouteHandler {
       dataServices,
       includeOptions: true,
     });
+
     if (!dataElement) {
       throw new Error(`Data element with code ${dataElementCode} not found`);
     }
@@ -247,6 +315,7 @@ export default class extends DataAggregatingRouteHandler {
       measureBuilderConfig,
       measureBuilder,
     } = mapOverlay;
+
     const entityCode = shouldFetchSiblings
       ? await this.getCountryLevelOrgUnitCode()
       : this.entity.code;
@@ -270,7 +339,9 @@ export default class extends DataAggregatingRouteHandler {
 }
 
 function translateMeasureOptionSet(measureOptions, mapOverlay) {
-  const { customColors, displayType } = mapOverlay;
+  const {
+    presentationOptions: { customColors, displayType },
+  } = mapOverlay;
 
   if (!measureOptions) {
     // don't auto-assign options to radius measures

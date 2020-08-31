@@ -344,8 +344,8 @@ export class Matrix extends PureComponent {
     const [rootRows, childRows] = partition(rows, { categoryId: parent });
 
     return rootRows
-      .map(({ description, category, categoryId, ...cellData }, index) => {
-        const rowKey = `${description}_${index}`;
+      .map(({ description, category, categoryId, rowInfo, ...cellData }, index) => {
+        const rowKey = parent ? `${parent}_${description}_${index}` : `${description}_${index}`;
         const isRowHighlighted = rowKey === highlightedRow;
 
         if (category) {
@@ -390,12 +390,12 @@ export class Matrix extends PureComponent {
           );
         }
 
-        if (isSearchActive && !this.doesMatchSearch(row.dataElement)) {
+        if (isSearchActive && !this.doesMatchSearch(description)) {
           return null;
         }
 
         const rowData = columns.map(({ key, isGroupHeader }) => ({
-          value: cellData[key],
+          value: isNaN(cellData[key]) ? cellData[key] : Math.round(cellData[key] * 1000) / 1000, //round the numeric values UP TO 3 decimal places
           isGroupBoundary: isGroupHeader,
         }));
 
@@ -425,6 +425,7 @@ export class Matrix extends PureComponent {
             isPreviousColumnEnabled={this.isPreviousColumnEnabled()}
             isUsingDots={this.getIsUsingDots(presentationOptions)}
             styles={styles}
+            rowInfo={rowInfo}
           />
         );
       })
@@ -436,10 +437,13 @@ export class Matrix extends PureComponent {
     const { columns, title, renderPeriodSelector } = this.props;
     const { startColumn, searchTerm } = this.state;
     const { numberOfColumnsPerPage } = this.props;
+    const searchPlaceholder =
+      (this.props.rows[0] && `e.g. ${this.props.rows[0].description}`) || 'Search rows';
 
     return (
       <HeaderRow
         title={title}
+        searchPlaceholder={searchPlaceholder}
         columns={columns}
         startColumn={startColumn}
         numberOfColumnsPerPage={numberOfColumnsPerPage}
@@ -466,10 +470,11 @@ export class Matrix extends PureComponent {
       ...this.props.presentationOptions,
       ...this.props.categoryPresentationOptions,
     };
-    const { label, description, color } = selectedPresentationOption;
+    const { mainTitle, label, description, color } = selectedPresentationOption;
 
     return (
       <DescriptionOverlay
+        mainTitle={mainTitle}
         header={label}
         body={`${description || ''} ${
           allPresentationOptions.showRawValue ? selectedCellValue : ''

@@ -294,6 +294,10 @@ const getStyles = (isPrintMode, cellCharacters) => {
     descriptionOverlayIcon: {
       marginBottom: 10,
     },
+    descriptionOverlayMainTitle: {
+      position: 'absolute',
+      top: 20,
+    }
   };
 
   const gridCellChanger = {

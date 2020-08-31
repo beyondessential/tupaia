@@ -33,8 +33,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onAttemptRequestCountryAccess: ({ countryIds, message }) =>
-      dispatch(attemptRequestCountryAccess(countryIds, message)),
+    onAttemptRequestCountryAccess: ({ entityIds, message }) =>
+      dispatch(attemptRequestCountryAccess(entityIds, message)),
     onClose: () => dispatch(closeUserPage()),
   };
 };

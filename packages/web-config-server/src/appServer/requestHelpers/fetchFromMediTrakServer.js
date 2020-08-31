@@ -1,9 +1,6 @@
-import { fetchWithTimeout, stringifyQuery } from '@tupaia/utils';
+import { CustomError, fetchWithTimeout, stringifyQuery } from '@tupaia/utils';
 import { UserSession } from '/models';
-import { refreshAccessToken } from './refreshAccessToken';
-import { CustomError } from '@tupaia/utils';
-
-const TUPAIA_CONFIG_SERVER_DEVICE_NAME = 'Tupaia Config Server';
+import { refreshAndSaveAccessToken } from './refreshAndSaveAccessToken';
 
 /**
  * Send request to Meditrak server and handle responses.
@@ -27,8 +24,9 @@ export const fetchFromMediTrakServer = async (endpoint, payload, queryParameters
       ...headers,
     },
   };
+
   if (payload) {
-    config.body = JSON.stringify({ deviceName: TUPAIA_CONFIG_SERVER_DEVICE_NAME, ...payload });
+    config.body = JSON.stringify(payload);
   }
 
   const response = await fetchWithTimeout(url, config);
@@ -66,25 +64,29 @@ export const fetchFromMeditrakServerUsingTokens = async (
   userName,
 ) => {
   const UNAUTHORIZED_STATUS_CODE = 401;
-  const { accessToken, refreshToken } = await UserSession.findOne({ userName });
-  const newHeaders = headers;
-  newHeaders.Authorization = `Bearer ${accessToken}`;
+  const fetchWithAccessToken = async token =>
+    fetchFromMediTrakServer(endpoint, payload, queryParameters, {
+      ...headers,
+      Authorization: `Bearer ${token}`,
+    });
 
-  try {
-    return await fetchFromMediTrakServer(endpoint, payload, queryParameters, newHeaders);
-  } catch (error) {
-    // If the error is not related to authorization, throw it
-    if (error.statusCode !== UNAUTHORIZED_STATUS_CODE) {
-      throw error;
-    }
+  const refreshAccessAndFetch = async refreshToken => {
+    const newAccessToken = await refreshAndSaveAccessToken(refreshToken, userName);
+    return fetchWithAccessToken(newAccessToken);
+  };
+
+  const { accessToken, refreshToken } = await UserSession.findOne({ userName });
+  if (!accessToken) {
+    return refreshAccessAndFetch(refreshToken);
   }
 
-  // If request was not authorized, refresh access token and try once more
   try {
-    const newAccessToken = await refreshAccessToken(refreshToken, userName);
-    newHeaders.Authorization = `Bearer ${newAccessToken}`;
-    return await fetchFromMediTrakServer(endpoint, payload, queryParameters, newHeaders);
+    return await fetchWithAccessToken(accessToken);
   } catch (error) {
+    // if the error is unauthorized, could be an expired access token
+    if (error.statusCode === UNAUTHORIZED_STATUS_CODE) {
+      return refreshAccessAndFetch(refreshToken);
+    }
     throw error;
   }
 };

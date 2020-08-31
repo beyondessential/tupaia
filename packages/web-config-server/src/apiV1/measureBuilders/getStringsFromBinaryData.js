@@ -8,11 +8,21 @@ import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 export class GetStringsFromBinaryDataBuilder extends DataBuilder {
   async build() {
     const { dataElementToString } = this.config;
-    const { results } = await this.fetchAnalytics(Object.keys(dataElementToString));
+    const { period, results } = await this.fetchAnalytics(Object.keys(dataElementToString));
 
     const stringArrayByOrgUnit = [];
     results.forEach(({ dataElement, value, organisationUnit }) => {
-      const stringValue = value ? dataElementToString[dataElement] : '';
+      let stringValue;
+
+      if (typeof dataElementToString[dataElement] === 'object') {
+        const { valueOfInterest, displayString } = dataElementToString[dataElement];
+        if (valueOfInterest === value) {
+          stringValue = displayString;
+        }
+      } else {
+        stringValue = value ? dataElementToString[dataElement] : '';
+      }
+
       if (stringValue) {
         if (stringArrayByOrgUnit[organisationUnit]) {
           stringArrayByOrgUnit[organisationUnit].push(stringValue);
@@ -22,10 +32,13 @@ export class GetStringsFromBinaryDataBuilder extends DataBuilder {
       }
     });
 
-    return Object.entries(stringArrayByOrgUnit).map(([organisationUnitCode, valueArray]) => ({
-      organisationUnitCode,
-      value: valueArray.join(', '),
-    }));
+    return {
+      data: Object.entries(stringArrayByOrgUnit).map(([organisationUnitCode, valueArray]) => ({
+        organisationUnitCode,
+        value: valueArray.join(', '),
+      })),
+      period,
+    };
   }
 }
 

@@ -3,9 +3,9 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { TableOfDataValuesBuilder } from './tableOfDataValues';
-
+import flatten from 'lodash.flatten';
 import { stripFromString } from '@tupaia/utils';
+import { TableOfDataValuesBuilder } from './tableOfDataValues';
 
 class TableOfValuesForOrgUnitsBuilder extends TableOfDataValuesBuilder {
   /**
@@ -14,36 +14,69 @@ class TableOfValuesForOrgUnitsBuilder extends TableOfDataValuesBuilder {
    * }
    */
 
-  buildBaseRows(rows = this.tableConfig.rows, parent = undefined) {
-    const { stripFromDataElementNames } = this.config;
+  buildBaseRows(rows = this.tableConfig.rows, parent = undefined, baseCellIndex = 0) {
+    const { stripFromDataElementNames, cells } = this.config;
+    const flatCells = flatten(cells);
+    let currentCellIndex = baseCellIndex;
     return rows.reduce((baseRows, row) => {
       if (typeof row === 'string') {
         const dataElement = stripFromString(row, stripFromDataElementNames);
-        return { ...baseRows, [dataElement]: { dataElement, categoryId: parent } };
+        const dataCode = flatCells[currentCellIndex];
+        currentCellIndex++;
+        return [...baseRows, { dataCode, dataElement, categoryId: parent }];
       }
 
-      const next = this.buildBaseRows(row.rows, row.category);
-      return { ...baseRows, ...next };
-    }, {});
+      const next = this.buildBaseRows(row.rows, row.category, currentCellIndex);
+      currentCellIndex += next.length;
+      return [...baseRows, ...next];
+    }, []);
   }
 
   buildRows(columnsRaw) {
+    const baseRows = this.buildBaseRows();
     const columns = this.flattenColumnCategories(columnsRaw);
-    const { stripFromDataElementNames, filterEmptyRows } = this.config;
-    const rowData = { ...this.baseRows };
+    const { filterEmptyRows } = this.config;
+    const rowData = [...baseRows];
     this.results.forEach(({ value, organisationUnit, metadata }) => {
-      const dataElementName = stripFromString(metadata.name, stripFromDataElementNames);
+      const dataCode = metadata.code;
       const orgUnit = columns.find(col => col.title === organisationUnit);
-      if (orgUnit) rowData[dataElementName][orgUnit.key] = value;
+      if (orgUnit) {
+        rowData
+          .filter(row => row.dataCode === dataCode)
+          .forEach(row => {
+            row[orgUnit.key] = value;
+          });
+      }
+    });
+
+    // Clean unneeded fields from rowData object
+    const cleanedRows = rowData.map(row => {
+      const { dataCode, categoryId, ...restOfRow } = row;
+      return categoryId ? { categoryId, ...restOfRow } : { ...restOfRow };
     });
 
     if (filterEmptyRows) {
       const cols = columns.map(c => c.key);
-      return Object.values(rowData).filter(r => cols.some(x => r[x]));
+      return cleanedRows.filter(r => cols.some(x => r[x]));
     }
 
-    return Object.values(rowData);
+    return cleanedRows;
   }
+
+  /**
+   * Return a list of categories that this row is in (A row can be in multiple categories)
+   */
+  returnCategoriesOfARow = (rowName, rows) => {
+    const rowCategories = [];
+
+    Object.values(rows).forEach(row => {
+      if (row.dataElement === rowName && row.categoryId) {
+        rowCategories.push(row.categoryId);
+      }
+    });
+
+    return rowCategories;
+  };
 }
 
 export const tableOfValuesForOrgUnits = async (

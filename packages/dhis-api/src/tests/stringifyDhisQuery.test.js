@@ -34,7 +34,7 @@ describe('stringifyDhisQuery', () => {
 
   it('should do not use query continuation by default', () => {
     const query = { code: 'test' };
-    expect(stringifyDhisQuery(query)).to.equal(stringifyDhisQuery(query), false);
+    expect(stringifyDhisQuery(query)).to.equal(stringifyDhisQuery(query, false));
   });
 
   it('should ignore undefined and null values', () => {

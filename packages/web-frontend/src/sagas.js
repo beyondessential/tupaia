@@ -12,10 +12,10 @@ import {
   selectOrgUnit,
   selectOrgUnitChildren,
   selectOrgUnitCountry,
-  selectIsProject,
-  selectActiveProject,
   selectProjectByCode,
+  selectIsProject,
   selectMeasureBarItemById,
+  selectActiveProjectCode,
 } from './selectors';
 import {
   ATTEMPT_CHANGE_PASSWORD,
@@ -34,7 +34,6 @@ import {
   FETCH_LOGOUT_SUCCESS,
   FETCH_LOGIN_SUCCESS,
   GO_HOME,
-  SET_PASSWORD_RESET_TOKEN,
   OPEN_USER_DIALOG,
   DIALOG_PAGE_REQUEST_COUNTRY_ACCESS,
   FINISH_USER_SESSION,
@@ -93,8 +92,22 @@ import {
   fetchOrgUnitError,
   fetchOrgUnit,
   REQUEST_ORG_UNIT,
+  ATTEMPT_RESET_TOKEN_LOGIN,
+  fetchResetTokenLoginError,
+  fetchResetTokenLoginSuccess,
+  openUserPage,
+  FETCH_RESET_TOKEN_LOGIN_SUCCESS,
+  DIALOG_PAGE_RESET_PASSWORD,
+  UPDATE_MEASURE_CONFIG,
 } from './actions';
-import { isMobile, processMeasureInfo, formatDateForApi } from './utils';
+import {
+  isMobile,
+  processMeasureInfo,
+  formatDateForApi,
+  flattenMeasureHierarchy,
+  getMeasureFromHierarchy,
+  isMeasureHierarchyEmpty,
+} from './utils';
 import { createUrlString } from './utils/historyNavigation';
 import { getDefaultDates } from './utils/periodGranularities';
 import { INITIAL_MEASURE_ID, INITIAL_PROJECT_CODE, initialOrgUnit } from './defaults';
@@ -334,19 +347,32 @@ function* attemptTokenLogin(action) {
     yield call(
       request,
       requestResourceUrl,
-      fetchUserLoginError,
+      fetchResetTokenLoginError,
       fetchOptions,
       requestContext,
       false,
     );
+
     yield put(findLoggedIn(false, true)); //default to email verified for one time login to prevent a nag screen
+
+    yield put(fetchResetTokenLoginSuccess());
   } catch (error) {
     yield put(error.errorFunction(error));
   }
 }
 
-function* watchSetPasswordResetToken() {
-  yield takeLatest(SET_PASSWORD_RESET_TOKEN, attemptTokenLogin);
+function* watchAttemptTokenLogin() {
+  yield takeLatest(ATTEMPT_RESET_TOKEN_LOGIN, attemptTokenLogin);
+}
+
+function* openResetPasswordDialog() {
+  yield put(openUserPage(DIALOG_PAGE_RESET_PASSWORD));
+}
+
+function* watchFetchResetTokenLoginSuccess() {
+  // After #770 is done, this chaining would be better suited to something like a 'redirectTo' after login argument
+  // which would take you to the url of this dialog page. For now, we need to call an action to display it
+  yield takeLatest(FETCH_RESET_TOKEN_LOGIN_SUCCESS, openResetPasswordDialog);
 }
 
 /**
@@ -356,8 +382,8 @@ function* watchSetPasswordResetToken() {
  *
  */
 function* attemptRequestCountryAccess(action) {
-  const { message, userGroup } = action;
-  const countryIds = action.countryIds ? Object.keys(action.countryIds) : [];
+  const { message, projectCode } = action;
+  const entityIds = action.entityIds ? Object.keys(action.entityIds) : [];
 
   const options = {
     method: 'POST',
@@ -365,9 +391,9 @@ function* attemptRequestCountryAccess(action) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      countryIds: countryIds,
+      entityIds,
       message,
-      userGroup,
+      projectCode,
     }),
     alwaysUseSuppliedErrorFunction: true,
   };
@@ -413,7 +439,7 @@ function* watchFetchCountryAccessDataAndFetchIt() {
   yield takeLatest(OPEN_USER_DIALOG, fetchCountryAccessDataIfRequired);
 }
 
-function* watchFetchCountryAccessDataAndFetchItTEST() {
+function* watchRequestProjectAccess() {
   yield takeLatest(REQUEST_PROJECT_ACCESS, fetchCountryAccessDataIfRequired);
 }
 
@@ -447,13 +473,13 @@ function* fetchOrgUnitData(
 
 function* requestOrgUnit(action) {
   const state = yield select();
-  const { organisationUnitCode = selectActiveProject(state).code } = action;
+  const { organisationUnitCode = state.project.activeProjectCode } = action;
   const orgUnit = selectOrgUnit(state, organisationUnitCode);
   if (orgUnit && orgUnit.isComplete) {
     return; // If we already have the complete org unit in reduxStore, just exit early
   }
 
-  yield fetchOrgUnitData(organisationUnitCode, selectActiveProject(state).code);
+  yield fetchOrgUnitData(organisationUnitCode, state.project.activeProjectCode);
 }
 
 function* fetchOrgUnitDataAndChangeOrgUnit(action) {
@@ -473,7 +499,7 @@ function* fetchOrgUnitDataAndChangeOrgUnit(action) {
   try {
     const orgUnitData = yield fetchOrgUnitData(
       organisationUnitCode,
-      selectActiveProject(state).code,
+      state.project.activeProjectCode,
     );
     yield put(
       changeOrgUnitSuccess(
@@ -526,7 +552,10 @@ function* watchOrgUnitChangeAndFetchIt() {
  */
 function* fetchDashboard(action) {
   const { organisationUnitCode } = action.organisationUnit;
-  const requestResourceUrl = `dashboard?organisationUnitCode=${organisationUnitCode}`;
+  const state = yield select();
+  const projectCode = selectActiveProjectCode(state);
+
+  const requestResourceUrl = `dashboard?organisationUnitCode=${organisationUnitCode}&projectCode=${projectCode}`;
 
   try {
     const dashboard = yield call(request, requestResourceUrl, fetchDashboardError);
@@ -542,7 +571,6 @@ function* watchOrgUnitChangeAndFetchDashboard() {
 
 function* fetchViewData(parameters, errorHandler) {
   const { infoViewKey } = parameters;
-  const projectCode = (yield select(selectActiveProject)).code;
 
   // If the view should be constrained to a date range and isn't, constrain it
   const state = yield select();
@@ -561,7 +589,7 @@ function* fetchViewData(parameters, errorHandler) {
   } = parameters;
   const urlParameters = {
     organisationUnitCode,
-    projectCode,
+    projectCode: state.project.activeProjectCode,
     dashboardGroupId,
     viewId,
     drillDownLevel,
@@ -636,13 +664,14 @@ function* watchViewFetchRequests() {
  */
 function* fetchSearchData(action) {
   yield delay(200); // Wait 200 ms in case user keeps typing
+  const { project } = yield select();
   if (action.searchString === '') {
     yield put(fetchSearchSuccess([]));
   } else {
     const urlParameters = {
       criteria: action.searchString,
       limit: 5,
-      projectCode: (yield select(selectActiveProject)).code,
+      projectCode: project.activeProjectCode,
     };
     const requestResourceUrl = `organisationUnitSearch?${queryString.stringify(urlParameters)}`;
     try {
@@ -666,12 +695,6 @@ function* watchSearchChange() {
  */
 function* fetchMeasureInfo(measureId, organisationUnitCode) {
   const state = yield select();
-  if (selectIsProject(state, organisationUnitCode)) {
-    // Never want to fetch measures for World org code.
-    yield put(cancelFetchMeasureData());
-    yield put(clearMeasureHierarchy());
-    return;
-  }
 
   if (!measureId || !organisationUnitCode) {
     // Don't try and fetch null measures
@@ -680,10 +703,10 @@ function* fetchMeasureInfo(measureId, organisationUnitCode) {
     return;
   }
 
-  const project = selectActiveProject(state);
   const country = selectOrgUnitCountry(state, organisationUnitCode);
   const countryCode = country ? country.organisationUnitCode : undefined;
   const measureParams = selectMeasureBarItemById(state, measureId) || {};
+  const activeProjectCode = state.project.activeProjectCode;
 
   // If the view should be constrained to a date range and isn't, constrain it
   const { startDate, endDate } =
@@ -696,8 +719,8 @@ function* fetchMeasureInfo(measureId, organisationUnitCode) {
     organisationUnitCode,
     startDate: formatDateForApi(startDate),
     endDate: formatDateForApi(endDate),
-    shouldShowAllParentCountryResults: !isMobile(),
-    projectCode: project.code,
+    shouldShowAllParentCountryResults: !isMobile() && countryCode !== activeProjectCode,
+    projectCode: activeProjectCode,
   };
   const requestResourceUrl = `measureData?${queryString.stringify(urlParameters)}`;
 
@@ -721,33 +744,47 @@ function* watchMeasureChange() {
   yield takeLatest(CHANGE_MEASURE, fetchMeasureInfoForMeasureChange);
 }
 
+function* fetchMeasureInfoForMeasurePeriodChange() {
+  const state = yield select();
+
+  yield fetchMeasureInfo(
+    state.measureBar.currentMeasure.measureId,
+    state.measureBar.currentMeasureOrganisationUnitCode,
+  );
+}
+
+function* watchMeasurePeriodChange() {
+  yield takeLatest(UPDATE_MEASURE_CONFIG, fetchMeasureInfoForMeasurePeriodChange);
+}
+
 function getSelectedMeasureFromHierarchy(measureHierarchy, selectedMeasureId, project) {
   const projectMeasureId = project.defaultMeasure;
-  const measures = Object.values(measureHierarchy).flat();
+  if (getMeasureFromHierarchy(measureHierarchy, selectedMeasureId)) return selectedMeasureId;
+  else if (getMeasureFromHierarchy(measureHierarchy, projectMeasureId)) return projectMeasureId;
+  else if (getMeasureFromHierarchy(measureHierarchy, INITIAL_MEASURE_ID)) return INITIAL_MEASURE_ID;
+  else if (!isMeasureHierarchyEmpty(measureHierarchy)) {
+    return flattenMeasureHierarchy(measureHierarchy)[0].measureId;
+  }
 
-  if (measures.find(m => m.measureId === selectedMeasureId)) return selectedMeasureId;
-  else if (measures.find(m => m.measureId === projectMeasureId)) return projectMeasureId;
-  else if (measures.find(m => m.measureId === INITIAL_MEASURE_ID)) return INITIAL_MEASURE_ID;
-  else if (measures.length) return measures[0].measureId;
   return INITIAL_MEASURE_ID;
 }
 
 function* fetchCurrentMeasureInfo() {
   const state = yield select();
   const { currentOrganisationUnitCode } = state.global;
-  const { active: activeProject } = state.project;
+  const { activeProjectCode } = state.project;
   const { measureId } = state.map.measureInfo;
   const { measureHierarchy, selectedMeasureId } = state.measureBar;
 
-  if (currentOrganisationUnitCode && !selectIsProject(state, currentOrganisationUnitCode)) {
-    const isHeirarchyPopulated = Object.keys(measureHierarchy).length;
+  if (currentOrganisationUnitCode) {
+    const isHierarchyPopulated = measureHierarchy.length;
 
     // Update the default measure ID
-    if (isHeirarchyPopulated) {
+    if (isHierarchyPopulated) {
       const newMeasure = getSelectedMeasureFromHierarchy(
         measureHierarchy,
         selectedMeasureId,
-        activeProject,
+        selectProjectByCode(state, activeProjectCode),
       );
 
       if (newMeasure !== measureId) {
@@ -804,7 +841,8 @@ function* fetchMeasures(action) {
   const { organisationUnitCode } = action.organisationUnit;
   const state = yield select();
   if (selectIsProject(state, organisationUnitCode)) yield put(clearMeasure());
-  const requestResourceUrl = `measures?organisationUnitCode=${organisationUnitCode}`;
+  const projectCode = selectActiveProjectCode(state);
+  const requestResourceUrl = `measures?organisationUnitCode=${organisationUnitCode}&projectCode=${projectCode}`;
   try {
     const measures = yield call(request, requestResourceUrl);
     yield put(fetchMeasuresSuccess(measures));
@@ -866,6 +904,7 @@ function* exportChart(action) {
     endDate,
     selectedDisaster,
     extraConfig,
+    projectCode,
   } = action;
 
   const timeZone = getTimeZone();
@@ -879,28 +918,28 @@ function* exportChart(action) {
     endDate: formatDateForApi(endDate, timeZone),
     disasterStartDate: selectedDisaster && formatDateForApi(selectedDisaster.startDate, timeZone),
     disasterEndDate: selectedDisaster && formatDateForApi(selectedDisaster.endDate, timeZone),
+    organisationUnitName,
+    projectCode,
   });
 
-  const fetchOptions = Object.assign(
-    {},
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        exportUrl,
-        viewId,
-        dashboardGroupId,
-        organisationUnitCode,
-        organisationUnitName,
-        selectedFormat,
-        exportFileName,
-        chartType,
-        extraConfig,
-      }),
+  const fetchOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
     },
-  );
+    body: JSON.stringify({
+      exportUrl,
+      viewId,
+      dashboardGroupId,
+      projectCode,
+      organisationUnitCode,
+      organisationUnitName,
+      selectedFormat,
+      exportFileName,
+      chartType,
+      extraConfig,
+    }),
+  };
 
   const requestContext = {
     alwaysUseSuppliedErrorFunction: true,
@@ -943,13 +982,15 @@ function* watchAttemptAttemptDrillDown() {
 }
 
 function* resetToExplore() {
+  const state = yield select();
   // default measure will be selected once the org unit has fully changed, just clear for now
   yield put(clearMeasure());
   yield put(clearMeasureHierarchy());
-  yield put(
-    selectProject((yield select(selectProjectByCode, 'explore')) || { code: INITIAL_PROJECT_CODE }),
-  );
   yield put(changeOrgUnit('explore', true));
+
+  if (state.project.projects.length > 0) {
+    yield put(selectProject(INITIAL_PROJECT_CODE));
+  }
 }
 
 function* watchUserChangesAndUpdatePermissions() {
@@ -1015,12 +1056,14 @@ export default [
   watchAttemptAttemptDrillDown,
   watchUserChangesAndUpdatePermissions,
   watchSetEnlargedDialogSelectedPeriodFilterAndRefreshViewContent,
-  watchSetPasswordResetToken,
+  watchAttemptTokenLogin,
   watchResendEmailVerificationAndFetchIt,
   watchSetVerifyEmailToken,
   watchFetchMeasureSuccess,
   watchChangeOrgUnitSuccess,
   refreshBrowserWhenFinishingUserSession,
-  watchFetchCountryAccessDataAndFetchItTEST,
+  watchRequestProjectAccess,
   watchGoHomeAndResetToExplore,
+  watchFetchResetTokenLoginSuccess,
+  watchMeasurePeriodChange,
 ];

@@ -4,9 +4,13 @@
  */
 
 export const TYPES = {
+  ALERT: 'alert',
+  ALERT_COMMENT: 'alert_comment',
   ANSWER: 'answer',
+  ACCESS_REQUEST: 'access_request',
   API_CLIENT: 'api_client',
   API_REQUEST_LOG: 'api_request_log',
+  COMMENT: 'comment',
   COUNTRY: 'country',
   DASHBOARD_GROUP: 'dashboardGroup',
   DASHBOARD_REPORT: 'dashboardReport',
@@ -17,7 +21,6 @@ export const TYPES = {
   DISASTER: 'disaster',
   DISASTER_EVENT: 'disasterEvent',
   ENTITY_HIERARCHY: 'entity_hierarchy',
-  ENTITY_RELATION_TYPE: 'entity_relation_type',
   ENTITY_RELATION: 'entity_relation',
   ENTITY: 'entity',
   ERROR_LOG: 'error_log',
@@ -25,6 +28,8 @@ export const TYPES = {
   FEED_ITEM: 'feed_item',
   GEOGRAPHICAL_AREA: 'geographical_area',
   MAP_OVERLAY: 'mapOverlay',
+  MAP_OVERLAY_GROUP: 'map_overlay_group',
+  MAP_OVERLAY_GROUP_RELATION: 'map_overlay_group_relation',
   MEDITRAK_DEVICE: 'meditrak_device',
   MEDITRAK_SYNC_QUEUE: 'meditrak_sync_queue',
   MS1_SYNC_LOG: 'ms1_sync_log',
@@ -43,9 +48,7 @@ export const TYPES = {
   SURVEY_SCREEN: 'survey_screen',
   SURVEY: 'survey',
   USER_ACCOUNT: 'user_account',
-  USER_COUNTRY_PERMISSION: 'user_country_permission',
-  USER_FACILITY_PERMISSION: 'user_clinic_permission',
-  USER_GEOGRAPHICAL_AREA_PERMISSION: 'user_geographical_area_permission',
+  USER_ENTITY_PERMISSION: 'user_entity_permission',
   USER_REWARD: 'user_reward',
   USER_SESSION: 'userSession',
 };

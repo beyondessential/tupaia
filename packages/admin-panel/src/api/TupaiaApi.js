@@ -6,13 +6,8 @@
 import { saveAs } from 'file-saver';
 
 import { stringifyQuery } from '@tupaia/utils';
-import {
-  getAccessToken,
-  getRefreshToken,
-  loginSuccess,
-  loginError,
-  validateUserIsAuthenticated,
-} from '../authentication';
+import { AccessPolicy } from '@tupaia/access-policy';
+import { getAccessToken, getRefreshToken, loginSuccess, loginError } from '../authentication';
 
 const AUTH_API_ENDPOINT = 'auth';
 const FETCH_TIMEOUT = 45 * 1000; // 45 seconds in milliseconds
@@ -55,7 +50,11 @@ export class TupaiaApi {
       if (!accessToken || !refreshToken || !user) {
         throw new Error('Invalid response from auth server');
       }
-      if (!validateUserIsAuthenticated(user)) {
+      const hasAdminPanelAccess = new AccessPolicy(user.accessPolicy).allowsSome(
+        null,
+        'Tupaia Admin Panel',
+      );
+      if (!hasAdminPanelAccess) {
         throw new Error('Your permissions for Tupaia do not allow you to view the admin panel');
       }
       return authenticationDetails;

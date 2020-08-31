@@ -4,12 +4,15 @@
  **/
 
 import { get } from 'lodash';
-import { getUniqueEntries } from '@tupaia/utils';
+
+import { TYPES } from '@tupaia/database';
+import { getUniqueEntries, reduceToDictionary } from '@tupaia/utils';
 import { ChangeDetailGenerator } from '../externalApiSync';
 
 // Store certain details for faster sync processing
 export class DhisChangeDetailGenerator extends ChangeDetailGenerator {
   async generateEntityDetails(entities) {
+    if (entities.length === 0) return {};
     const changeDetailsById = {};
     entities.forEach(entity => {
       const isDataRegional = get(entity, 'metadata.dhis.isDataRegional', true);
@@ -19,6 +22,7 @@ export class DhisChangeDetailGenerator extends ChangeDetailGenerator {
   }
 
   async generateAnswerDetails(answers) {
+    if (answers.length === 0) return {};
     const surveyResponseIds = getUniqueEntries(answers.map(a => a.survey_response_id));
     const surveyResponses = await this.models.surveyResponse.find({ id: surveyResponseIds });
     const surveyResponseDetailsById = await this.generateSurveyResponseDetails(surveyResponses);
@@ -30,13 +34,8 @@ export class DhisChangeDetailGenerator extends ChangeDetailGenerator {
   }
 
   async generateSurveyResponseDetails(surveyResponses) {
-    const surveyIds = getUniqueEntries(surveyResponses.map(r => r.survey_id));
-    const surveys = await this.models.survey.find({ id: surveyIds });
-    const isDataRegionalBySurveyId = {};
-    surveys.forEach(s => {
-      isDataRegionalBySurveyId[s.id] = s.getIsDataForRegionalDhis2();
-    });
-
+    if (surveyResponses.length === 0) return {};
+    const isDataRegionalBySurveyId = await this.getIsDataRegionalBySurveyId(surveyResponses);
     const entityIds = getUniqueEntries(surveyResponses.map(r => r.entity_id));
     const entities = await this.models.entity.find({ id: entityIds });
     const orgUnitByEntityId = {};
@@ -57,6 +56,21 @@ export class DhisChangeDetailGenerator extends ChangeDetailGenerator {
     });
     return changeDetailsById;
   }
+
+  getIsDataRegionalBySurveyId = async surveyResponses => {
+    const surveyIds = getUniqueEntries(surveyResponses.map(r => r.survey_id));
+    const surveyData = await this.models.database.find(
+      TYPES.SURVEY,
+      { [`${TYPES.SURVEY}.id`]: surveyIds },
+      {
+        joinWith: TYPES.DATA_SOURCE,
+        joinCondition: [`${TYPES.DATA_SOURCE}.id`, `${TYPES.SURVEY}.data_source_id`],
+        columns: [`${TYPES.SURVEY}.id`, `${TYPES.DATA_SOURCE}.config`],
+      },
+    );
+
+    return reduceToDictionary(surveyData, 'id', ({ config }) => config.isDataRegional);
+  };
 
   generateDetails = async updateChanges => {
     // entities
@@ -80,6 +94,6 @@ export class DhisChangeDetailGenerator extends ChangeDetailGenerator {
       ...surveyResponseDetailsById,
     };
 
-    return updateChanges.map(c => JSON.stringify(detailsByChangeId[c.record_id]));
+    return updateChanges.map(c => JSON.stringify(detailsByChangeId[c.record.id]));
   };
 }

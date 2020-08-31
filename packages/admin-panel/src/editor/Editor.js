@@ -7,20 +7,32 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { InputField } from '../widgets';
 
-export const Editor = props => {
-  const { fields, recordData, onEditField } = props;
+export const Editor = ({ fields, recordData, onEditField }) => {
+  const onInputChange = (inputKey, inputValue, editConfig = {}) => {
+    const { setFieldsOnChange } = editConfig;
+    if (setFieldsOnChange) {
+      const newFields = setFieldsOnChange(inputValue, recordData);
+      Object.entries(newFields).forEach(([fieldKey, fieldValue]) => {
+        onEditField(fieldKey, fieldValue);
+      });
+    }
+
+    onEditField(inputKey, inputValue);
+  };
+
   return (
     <div>
       {fields
         .filter(({ show = true }) => show)
-        .map(({ editable = true, editConfig, source, Header, accessor }) => (
+        .map(({ editable = true, editConfig = {}, source, Header, accessor }) => (
           <InputField
             key={source}
             inputKey={source}
             label={Header}
-            onChange={onEditField}
+            onChange={(inputKey, inputValue) => onInputChange(inputKey, inputValue, editConfig)}
             value={accessor ? accessor(recordData) : recordData[source]}
             disabled={!editable}
+            recordData={recordData}
             {...editConfig}
           />
         ))}

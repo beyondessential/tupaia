@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 import { SURVEY_RESPONSE_COLUMNS, ANSWER_COLUMNS } from './SurveyResponsesPage';
 
@@ -27,7 +28,7 @@ export const ENTITIES_COLUMNS = [
     width: 200,
     actionConfig: {
       exportEndpoint: 'surveyResponses',
-      queryParameter: 'entityIds',
+      rowIdQueryParameter: 'entityIds',
       fileName: '{name} Survey Responses',
     },
   },
@@ -44,17 +45,13 @@ const COLUMNS = [
 const EXPANSION_CONFIG = [
   {
     title: 'Survey Responses',
-    endpoint: 'surveyResponses',
+    endpoint: 'entity/{id}/surveyResponses',
     columns: SURVEY_RESPONSE_COLUMNS,
-    joinFrom: 'id',
-    joinTo: 'entity_id',
     expansionTabs: [
       {
         title: 'Answers',
-        endpoint: 'answers',
+        endpoint: 'surveyResponse/{id}/answers',
         columns: ANSWER_COLUMNS,
-        joinFrom: 'id',
-        joinTo: 'survey_response_id',
       },
     ],
   },
@@ -62,19 +59,24 @@ const EXPANSION_CONFIG = [
 
 const IMPORT_CONFIG = {
   title: 'Import Entities',
-  instruction:
+  subtitle:
     'Please note that if this is the first time a country is being imported, you will need to restart meditrak-server post-import for it to sync to DHIS2.', // hope to fix one day in https://github.com/beyondessential/meditrak-server/issues/481
   actionConfig: {
     importEndpoint: 'entities',
   },
 };
 
-export const EntitiesPage = () => (
+export const EntitiesPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Entities"
     endpoint="entities"
     columns={COLUMNS}
     expansionTabs={EXPANSION_CONFIG}
     importConfig={IMPORT_CONFIG}
+    getHeaderEl={getHeaderEl}
   />
 );
+
+EntitiesPage.propTypes = {
+  getHeaderEl: PropTypes.func.isRequired,
+};

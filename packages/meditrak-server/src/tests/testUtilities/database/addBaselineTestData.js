@@ -24,15 +24,6 @@ export async function addBaselineTestData() {
     },
   );
 
-  await models.country.findOrCreate(
-    {
-      code: 'DL',
-    },
-    {
-      name: 'Demo Land',
-    },
-  );
-
   const adminGroup = await models.permissionGroup.findOrCreate(
     {
       name: 'Admin',

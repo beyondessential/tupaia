@@ -1,24 +1,9 @@
 {
-  "env": {
-    "mocha": true
-  },
-  "extends": ["@beyondessential/eslint-config-beyondessential", "plugin:prettier/recommended"],
-  "parser": "babel-eslint",
-  "plugins": ["import", "module-resolver"],
+  "plugins": ["module-resolver"],
   "rules": {
     "import/no-absolute-path": "off",
-    "import/no-extraneous-dependencies": ["error", { "devDependencies": ["src/tests/**"] }],
     "module-resolver/use-alias": "warn"
   },
-  "overrides": [
-    {
-      "files": "src/tests/**",
-      "rules": {
-        "func-names": "off",
-        "no-unused-expressions": "off"
-      }
-    }
-  ],
   "settings": {
     "import/resolver": {
       "babel-module": {}

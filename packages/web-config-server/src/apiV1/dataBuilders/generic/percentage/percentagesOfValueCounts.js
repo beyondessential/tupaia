@@ -3,9 +3,14 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 import flatten from 'lodash.flatten';
+import isEqual from 'lodash.isequal';
 import groupBy from 'lodash.groupby';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { divideValues, countAnalyticsThatSatisfyConditions } from '/apiV1/dataBuilders/helpers';
+import {
+  divideValues,
+  countAnalyticsThatSatisfyConditions,
+  countAnalyticsGroupsThatSatisfyConditions,
+} from '/apiV1/dataBuilders/helpers';
 
 const ORG_UNIT_COUNT = '$orgUnitCount';
 const COMPARISON_TYPES = {
@@ -17,19 +22,82 @@ const OPERATION_TYPES = {
   IN: (leftOperand, rightOperand) => rightOperand.includes(leftOperand),
 };
 
+const buildFilterAnalyticsFunction = fraction => {
+  if (fraction.compare === COMPARISON_TYPES.COUNT) {
+    if (fraction.dataValues.length !== 2) {
+      throw new Error(
+        'nested array passed to: percentagesOfValueCounts must have exactly 2 sub-arrays for comparison',
+      );
+    }
+
+    const [values, valuesToCompare] = fraction.dataValues;
+    return results => {
+      const set1 = results.filter(r => values.includes(r.dataElement));
+      const set2 = results.filter(r => valuesToCompare.includes(r.dataElement));
+
+      const set1Count = countAnalyticsThatSatisfyConditions(set1, {
+        dataValues: values,
+        valueOfInterest: fraction.valueOfInterest,
+      });
+
+      const count2Count = countAnalyticsThatSatisfyConditions(set2, {
+        dataValues: valuesToCompare,
+        valueOfInterest: fraction.valueOfInterest,
+      });
+
+      return set1Count > 0 && set1Count === count2Count;
+    };
+  }
+
+  if (fraction.operation) {
+    if (fraction.groupBy) {
+      return results => {
+        return results.every(r => {
+          return OPERATION_TYPES[fraction.operation](r.value, fraction.operand);
+        });
+      };
+    }
+
+    return result => OPERATION_TYPES[fraction.operation](result.value, fraction.operand);
+  }
+
+  throw new Error(`Could not parse calculation for: ${fraction}`);
+};
+
 export class PercentagesOfValueCountsBuilder extends DataBuilder {
   getDataElementCodes() {
-    const dataElementCodes = Object.values(this.config.dataClasses).reduce(
-      (codes, { numerator, denominator }) =>
-        codes.concat(
-          flatten(numerator.dataValues),
-          denominator.hasOwnProperty('dataValues') && denominator.dataValues,
-        ),
-      [],
-    );
+    const getCodesFromConfig = config => {
+      if (config.hasOwnProperty('dataValues')) {
+        if (Array.isArray(config.dataValues)) {
+          return flatten(config.dataValues);
+        }
+        return Object.keys(config.dataValues);
+      }
+      return [];
+    };
 
-    //Remove duplicated data element codes if there's any
-    return [...new Set(dataElementCodes)];
+    const codes = {
+      numerator: [],
+      denominator: [],
+    };
+
+    Object.values(this.config.dataClasses).forEach(({ numerator, denominator }) => {
+      const numeratorCodesForClass = getCodesFromConfig(numerator);
+      codes.numerator = codes.numerator.concat(numeratorCodesForClass);
+
+      const denominatorCodesForClass = getCodesFromConfig(denominator);
+      codes.denominator = codes.denominator.concat(denominatorCodesForClass);
+    });
+
+    // This ensures each bit of data is only fetched once.
+    // Both sets of results will be available when building.
+    const uniqueNumeratorCodes = new Set(codes.numerator);
+    codes.denominator.forEach(elem => uniqueNumeratorCodes.delete(elem));
+
+    return {
+      numerator: [...uniqueNumeratorCodes],
+      denominator: [...new Set(codes.denominator)],
+    };
   }
 
   async build() {
@@ -39,10 +107,53 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
     return { data: this.areDataAvailable(data) ? data : [] };
   }
 
+  // eslint-disable-next-line class-methods-use-this
+  getAggregationType() {
+    // Can be overwritten in child class
+    return {};
+  }
+
   async fetchResults() {
-    const dataElementCodes = this.getDataElementCodes();
-    const { results } = await this.fetchAnalytics(dataElementCodes);
-    return results;
+    const { numerator: numeratorCodes, denominator: denominatorCodes } = this.getDataElementCodes();
+    const {
+      numerator: numeratorAggregationType,
+      denominator: denominatorAggregationType,
+    } = this.getAggregationType();
+
+    let numeratorResults = [];
+    if (numeratorCodes.length > 0) {
+      numeratorResults = (await this.fetchAnalytics(numeratorCodes, {}, numeratorAggregationType))
+        .results;
+    }
+
+    if (denominatorCodes.length === 0) {
+      return numeratorResults;
+    }
+
+    const { results: denominatorResults } = await this.fetchAnalytics(
+      denominatorCodes,
+      {},
+      denominatorAggregationType,
+    );
+
+    const getResultMapKey = ({organisationUnit, dataElement, value, period}) => `${organisationUnit}|${dataElement}|${value}|${period}`;
+
+    const allResults = numeratorResults;
+
+    const numeratorResultsSet = new Set();
+    numeratorResults.forEach(analytic => {
+      numeratorResultsSet.add(getResultMapKey(analytic));
+    });
+
+    // Hack to make sure that there are no duplicated analytics returned to count twice.
+    // Would like to have { denominatorResults, numeratorResults }, but can't because of how DataPerPeriodBuilder works
+    denominatorResults.forEach(analytic => {
+      if (!numeratorResultsSet.has(getResultMapKey(analytic))) {
+        allResults.push(analytic);
+      }
+    });
+
+    return allResults;
   }
 
   buildData(analytics) {
@@ -68,14 +179,7 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
 
   calculateFractionPart = (fraction, analytics) => {
     if (fraction.compare || fraction.operation) {
-      const filterAnalyticsFunction = this.buildFilterAnalyticsFunction(fraction);
-
-      if (!filterAnalyticsFunction) {
-        throw new Error(
-          'Could not create filterAnalyticsFunction from percentagesOfValueCounts config',
-        );
-      }
-
+      const filterAnalyticsFunction = buildFilterAnalyticsFunction(fraction);
       const filteredAnalytics = analytics.filter(analytic =>
         flatten(fraction.dataValues).includes(analytic.dataElement),
       );
@@ -85,6 +189,9 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
         filterAnalyticsFunction,
         fraction.groupBy,
       );
+    } else if (fraction.groupBeforeCounting) {
+      const groupedAnalytics = groupBy(analytics, fraction.groupBy);
+      return countAnalyticsGroupsThatSatisfyConditions(groupedAnalytics, fraction);
     } else if (fraction === ORG_UNIT_COUNT) {
       return [...new Set(analytics.map(data => data.organisationUnit))].length;
     }
@@ -111,49 +218,6 @@ export class PercentagesOfValueCountsBuilder extends DataBuilder {
 
     return result;
   };
-
-  buildFilterAnalyticsFunction(fraction) {
-    if (fraction.compare === COMPARISON_TYPES.COUNT) {
-      if (fraction.dataValues.length !== 2) {
-        throw new Error(
-          'nested array passed to: percentagesOfValueCounts must have exactly 2 sub-arrays for comparison',
-        );
-      }
-
-      const [values, valuesToCompare] = fraction.dataValues;
-      return results => {
-        const set1 = results.filter(r => values.includes(r.dataElement));
-        const set2 = results.filter(r => valuesToCompare.includes(r.dataElement));
-
-        const set1Count = countAnalyticsThatSatisfyConditions(set1, {
-          dataValues: values,
-          valueOfInterest: fraction.valueOfInterest,
-        });
-
-        const count2Count = countAnalyticsThatSatisfyConditions(set2, {
-          dataValues: valuesToCompare,
-          valueOfInterest: fraction.valueOfInterest,
-        });
-
-        return set1Count > 0 && set1Count === count2Count;
-      };
-    }
-
-    if (fraction.operation) {
-      if (fraction.groupBy) {
-        return results => {
-          return results.every(r => {
-            return OPERATION_TYPES[fraction.operation](r.value, fraction.operand);
-          });
-        };
-      }
-
-      return result => {
-          return OPERATION_TYPES[fraction.operation](result.value, fraction.operand);
-      }
-      
-    }
-  }
 }
 
 export const percentagesOfValueCounts = async (

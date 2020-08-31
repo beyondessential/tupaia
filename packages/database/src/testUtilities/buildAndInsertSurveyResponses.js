@@ -5,23 +5,19 @@
 
 import { findOrCreateDummyRecord, upsertDummyRecord } from './upsertDummyRecord';
 
-const buildAndInsertAnswer = async (
-  models,
-  surveyResponse,
-  { questionCode, ...answerProperties },
-) => {
+const buildAndInsertAnswer = async (models, surveyResponse, questionCode, answerText) => {
   const question = await findOrCreateDummyRecord(models.question, { code: questionCode });
-  await upsertDummyRecord(models.answer, {
+  return upsertDummyRecord(models.answer, {
     question_id: question.id,
     survey_response_id: surveyResponse.id,
-    ...answerProperties,
+    text: answerText,
   });
 };
 
 const buildAndInsertSurveyResponse = async (
   models,
   user,
-  { answers, entityCode, surveyCode, ...surveyResponseProperties },
+  { answers: answerData, entityCode, surveyCode, ...surveyResponseProperties },
 ) => {
   const entity = await findOrCreateDummyRecord(models.entity, { code: entityCode });
   const survey = await findOrCreateDummyRecord(models.survey, { code: surveyCode });
@@ -31,7 +27,15 @@ const buildAndInsertSurveyResponse = async (
     survey_id: survey.id,
     ...surveyResponseProperties,
   });
-  await Promise.all(answers.map(a => buildAndInsertAnswer(models, surveyResponse, a)));
+
+  const answers = [];
+  const processAnswer = async ([questionCode, answerText]) => {
+    const answer = await buildAndInsertAnswer(models, surveyResponse, questionCode, answerText);
+    answers.push(answer);
+  };
+  await Promise.all(Object.entries(answerData).map(processAnswer));
+
+  return { surveyResponse, answers };
 };
 
 /**
@@ -51,8 +55,19 @@ const buildAndInsertSurveyResponse = async (
  *   ..., // can handle more than one survey response
  * ]);
  * ```
+ *
+ * @returns {Array<{ surveyResponse, answers }>}
  */
 export const buildAndInsertSurveyResponses = async (models, surveyResponses) => {
   const user = await upsertDummyRecord(models.user);
-  return Promise.all(surveyResponses.map(s => buildAndInsertSurveyResponse(models, user, s)));
+  const createdModels = [];
+
+  await Promise.all(
+    surveyResponses.map(async surveyResponse => {
+      const newCreatedModels = await buildAndInsertSurveyResponse(models, user, surveyResponse);
+      createdModels.push(newCreatedModels);
+    }),
+  );
+
+  return createdModels;
 };

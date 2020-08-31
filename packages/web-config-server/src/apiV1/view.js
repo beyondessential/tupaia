@@ -75,6 +75,7 @@ export default class extends DataAggregatingRouteHandler {
 
     const { viewJson, dataBuilderConfig, dataBuilder, dataServices } = dashboardReport;
     this.viewJson = this.translateViewJson(viewJson);
+
     this.dataBuilderConfig = this.translateDataBuilderConfig(dataBuilderConfig, dataServices);
 
     const dataBuilderData = await this.buildDataBuilderData(dataBuilder);

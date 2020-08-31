@@ -3,10 +3,8 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import chai, { expect } from 'chai';
-import chaiAsPromised from 'chai-as-promised';
+import { expect } from 'chai';
 import sinon from 'sinon';
-import sinonChai from 'sinon-chai';
 import winston from 'winston';
 import { DHIS2_RESOURCE_TYPES } from '@tupaia/dhis-api';
 
@@ -14,9 +12,6 @@ import { Pusher } from '../../../../dhis/pushers/Pusher';
 
 import { TrackedEntityPusher } from '../../../../dhis/pushers/entity/TrackedEntityPusher';
 import { createEntityStub, createModelsStub, createDhisApiStub } from './helpers';
-
-chai.use(chaiAsPromised);
-chai.use(sinonChai);
 
 const { TRACKED_ENTITY_INSTANCE } = DHIS2_RESOURCE_TYPES;
 

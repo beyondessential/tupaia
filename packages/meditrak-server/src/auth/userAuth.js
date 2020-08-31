@@ -30,9 +30,6 @@ export function getUserIDFromToken(authHeader) {
       throw error;
     }
   }
-  if (tokenClaims.role !== 'Admin') {
-    throw new UnauthenticatedError('Not authenticated to access resource');
-  }
 
   return tokenClaims.userId;
 }

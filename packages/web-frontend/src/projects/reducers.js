@@ -11,7 +11,7 @@ import { INITIAL_PROJECT_CODE } from '../defaults';
 export default function projects(
   state = {
     projects: [],
-    active: { code: INITIAL_PROJECT_CODE },
+    activeProjectCode: INITIAL_PROJECT_CODE,
     requestingAccess: null,
     error: '',
   },
@@ -21,7 +21,7 @@ export default function projects(
     case SELECT_PROJECT:
       return {
         ...state,
-        active: action.project,
+        activeProjectCode: action.projectCode,
       };
     case SET_PROJECT_DATA:
       return {

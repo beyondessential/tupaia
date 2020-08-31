@@ -10,13 +10,13 @@
  * Values can be nested by separating each level with '.'
  * Eg.input:
  * {
- *   'countryIds.5a8cde073ec0d40a17295255': true,
- *   'countryIds.59085f69fc6a0715dae508f6': false,
+ *   'entityIds.5a8cde073ec0d40a17295255': true,
+ *   'entityIds.59085f69fc6a0715dae508f6': false,
  * }
  *
  * Output:
  * {
- *   countryIds: {
+ *   entityIds: {
  *     5a8cde073ec0d40a17295255: true
  *     59085f69fc6a0715dae508f6: false
  *   }

@@ -4,47 +4,67 @@
  */
 
 import React from 'react';
+import keyBy from 'lodash.keyby';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Button, Dialog, DialogFooter, DialogHeader } from '@tupaia/ui-components';
 import { closeEditModal, editField, saveEdits } from './actions';
 import { getEditorState, getIsUnchanged } from './selectors';
-import { AsyncModal } from '../widgets';
 import { Editor } from './Editor';
+import { ModalContentProvider } from '../widgets';
 
-export const EditModalComponent = props => {
-  const {
-    errorMessage,
-    isLoading,
-    onDismiss,
-    onEditField,
-    onSave,
-    recordData,
-    title,
-    fields,
-    isUnchanged,
-  } = props;
+const getFieldSourceToEdit = field => {
+  const { source, editConfig = {} } = field;
+  if (editConfig.optionsEndpoint) {
+    if (editConfig.sourceKey) {
+      return editConfig.sourceKey;
+    }
+    const sourceComponents = source.split('.');
+    if (sourceComponents.length > 1) {
+      const [resource] = sourceComponents;
+      return `${resource}_id`;
+    }
+  }
+  return source;
+};
+
+export const EditModalComponent = ({
+  errorMessage,
+  isLoading,
+  onDismiss,
+  onEditField,
+  onSave,
+  recordData,
+  title,
+  fields,
+  isUnchanged,
+}) => {
+  const fieldsBySource = keyBy(fields, 'source');
+
   return (
-    <AsyncModal
-      isLoading={isLoading}
-      errorMessage={errorMessage}
-      confirmLabel={'Save'}
-      dismissLabel={'Cancel'}
-      title={title}
-      renderContent={() =>
-        fields && (
+    <Dialog onClose={onDismiss} open={!!fields} disableBackdropClick>
+      <DialogHeader onClose={onDismiss} title={title} />
+      <ModalContentProvider errorMessage={errorMessage} isLoading={isLoading || !fields}>
+        {fields && (
           <Editor
             fields={fields}
             recordData={recordData}
-            onEditField={(fieldSource, newValue) =>
-              onEditField(getFieldToEditFromSource(fieldSource), newValue)
-            }
+            onEditField={(fieldSource, newValue) => {
+              const fieldSourceToEdit = getFieldSourceToEdit(fieldsBySource[fieldSource]);
+              return onEditField(fieldSourceToEdit, newValue);
+            }}
           />
-        )
-      }
-      onConfirm={onSave}
-      onDismiss={onDismiss}
-      isConfirmDisabled={isUnchanged}
-    />
+        )}
+      </ModalContentProvider>
+      <DialogFooter>
+        <Button variant="outlined" onClick={onDismiss} disabled={isLoading}>
+          {errorMessage ? 'Dismiss' : 'Cancel'}
+        </Button>
+        <Button onClick={onSave} disabled={!!errorMessage || isLoading || isUnchanged}>
+          Save
+        </Button>
+      </DialogFooter>
+    </Dialog>
   );
 };
 
@@ -104,10 +124,3 @@ export const EditModal = connect(
   mapDispatchToProps,
   mergeProps,
 )(EditModalComponent);
-
-const getFieldToEditFromSource = source => {
-  if (source.includes('.')) {
-    return `${source.split('.')[0]}_id`;
-  }
-  return source;
-};

@@ -1,25 +1,88 @@
 {
-  "private": true,
   "name": "tupaia",
+  "private": true,
+  "description": "Mono-repo for the Tupaia project, mapping health data across the Pacific",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beyondessential/tupaia.git"
+  },
+  "author": "Beyond Essential Systems <admin@tupaia.org> (https://beyondessential.com.au)",
+  "license": "SEE LICENSE IN LICENSE",
+  "bugs": {
+    "url": "https://github.com/beyondessential/tupaia-backlog/issues"
+  },
+  "homepage": "https://github.com/beyondessential/tupaia",
   "workspaces": {
     "packages": [
       "packages/*"
-    ],
-    "nohoist": [
-      "@tupaia/meditrak-app/**"
     ]
   },
   "scripts": {
-    "postinstall": "yarn build-internal-dependencies",
+    "postinstall": "test -n \"$SKIP_BUILD_INTERNAL_DEPENDENCIES\" || yarn build-internal-dependencies",
     "update-codeship-env-vars": "./packages/devops/scripts/ci/updateCiEnvVars.sh",
-    "update-parameter-store-env-vars": "./packages/devops/scripts/utility/updateParameterStoreEnvVars.sh",
+    "update-parameter-store-env-vars": "./scripts/bash/updateParameterStoreEnvVars.sh",
     "build-admin-panel": "yarn workspace @tupaia/admin-panel build",
     "build-web-frontend": "yarn workspace @tupaia/web-frontend build",
-    "build-internal-dependencies": "./packages/devops/scripts/ci/buildInternalDependencies.sh",
+    "build-internal-dependencies": "./scripts/bash/buildInternalDependencies.sh",
     "migrate": "yarn workspace @tupaia/database migrate",
     "migrate-create": "yarn workspace @tupaia/database migrate-create",
     "migrate-down": "yarn workspace @tupaia/database migrate-down",
-    "dump-database": "./packages/devops/scripts/utility/dumpDb.sh",
-    "refresh-database": "./packages/devops/scripts/utility/refreshDb.sh"
+    "dump-database": "./scripts/bash/dumpDb.sh",
+    "refresh-database": "./scripts/bash/refreshDb.sh",
+    "test-all": "node ./scripts/node/testAll --silent"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.0.0",
+    "@babel/core": "^7.0.0",
+    "@babel/node": "^7.10.1",
+    "@babel/plugin-proposal-class-properties": "^7.0.0",
+    "@babel/plugin-proposal-decorators": "^7.0.0",
+    "@babel/plugin-proposal-do-expressions": "^7.0.0",
+    "@babel/plugin-proposal-export-default-from": "^7.0.0",
+    "@babel/plugin-proposal-export-namespace-from": "^7.0.0",
+    "@babel/plugin-proposal-function-bind": "^7.0.0",
+    "@babel/plugin-proposal-function-sent": "^7.0.0",
+    "@babel/plugin-proposal-json-strings": "^7.0.0",
+    "@babel/plugin-proposal-logical-assignment-operators": "^7.0.0",
+    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.0.0",
+    "@babel/plugin-proposal-numeric-separator": "^7.0.0",
+    "@babel/plugin-proposal-optional-chaining": "^7.0.0",
+    "@babel/plugin-proposal-pipeline-operator": "^7.0.0",
+    "@babel/plugin-proposal-throw-expressions": "^7.0.0",
+    "@babel/plugin-syntax-dynamic-import": "^7.0.0",
+    "@babel/plugin-syntax-import-meta": "^7.0.0",
+    "@babel/plugin-transform-runtime": "^7.0.0",
+    "@babel/polyfill": "^7.10.1",
+    "@babel/preset-env": "^7.0.0",
+    "@babel/register": "^7.10.1",
+    "@babel/runtime-corejs2": "^7.10.2",
+    "@beyondessential/eslint-config-beyondessential": "2.5.0",
+    "@tupaia/utils": "1.0.0",
+    "babel-eslint": "^9.0.0",
+    "babel-loader": "^8.0.0",
+    "babel-plugin-istanbul": "^4.1.6",
+    "babel-plugin-syntax-async-functions": "^6.13.0",
+    "chai": "^4.1.2",
+    "chai-as-promised": "^7.1.1",
+    "concurrently": "^5.2.0",
+    "cross-env": "^7.0.1",
+    "cypress": "^4.11.0",
+    "eslint": "7.2.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-jest": "^23.18.0",
+    "eslint-plugin-jest-formatting": "^2.0.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "jest": "^26.1.0",
+    "jest-environment-jsdom-sixteen": "^1.0.3",
+    "jest-extended": "^0.11.5",
+    "mocha": "^6.2.0",
+    "nyc": "^14.1.1",
+    "prettier": "^1.17.1",
+    "sinon": "^9.0.2",
+    "sinon-chai": "^3.5.0",
+    "winston": "^3.1.0"
+  },
+  "engines": {
+    "node": "^10.15.0"
   }
 }

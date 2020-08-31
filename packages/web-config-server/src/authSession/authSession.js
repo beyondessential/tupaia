@@ -1,9 +1,6 @@
 import {} from 'dotenv/config'; // Load the environment variables into process.env
 import session from 'client-sessions';
-import {
-  hasReportAccessToOrganisationUnit,
-  getReportUserGroupAccessRightsForOrganisationUnit,
-} from '/apiV1/utils';
+
 import { getAccessPolicyForUser } from './getAccessPolicyForUser';
 import { PUBLIC_USER_NAME } from './publicAccess';
 import { Entity, Project } from '/models';
@@ -37,89 +34,89 @@ const checkAllowedUnauthRoutes = req =>
   allowedUnauthRoutes.some(allowedRoute => req.originalUrl.endsWith(allowedRoute));
 
 const getUserAccessPolicyFromSession = async req => {
-  const userName = req.session.userJson.userName;
-  return getAccessPolicyForUser(userName);
+  if (!req.accessPolicy) {
+    const { userName } = req.session.userJson;
+    req.accessPolicy = getAccessPolicyForUser(userName);
+  }
+  return req.accessPolicy;
 };
 
 export const setSession = (req, userInfo) => {
+  req.accessPolicy = null; // reset access policy cache so it is rebuilt
   req.session = { userJson: { ...userInfo } };
   req.lastuser = { userName: userInfo.userName };
 };
 
-export const addUserAccessHelper = (req, res, next) => {
-  req.userHasAccess = async (entityOrCode, userGroup = '') => {
+const addUserAccessHelper = (req, res, next) => {
+  req.userHasAccess = async (entityOrCode, permissionGroup = '') => {
+    const accessPolicy = await getUserAccessPolicyFromSession(req);
+    if (!accessPolicy) {
+      return false;
+    }
+
     const entity =
       typeof entityOrCode === 'string'
-        ? await Entity.findOne({ code: entityOrCode })
+        ? await Entity.findOne({
+            code: entityOrCode,
+          })
         : entityOrCode;
 
     // Assume user always has access to all world items.
     if (entity.code === 'World') {
       return true;
     }
-
-    const accessPolicy = await getUserAccessPolicyFromSession(req);
-    if (!accessPolicy) {
+    // Timor-Leste is temporarily turned off
+    if (entity.country_code === 'TL') {
       return false;
     }
 
-    const ancestorCodes = await entity.getAncestorCodes();
-
-    return hasReportAccessToOrganisationUnit(accessPolicy, entity.code, ancestorCodes, userGroup);
-  };
-
-  req.getUserGroupAccessRights = async entityCode => {
-    const accessPolicy = await getUserAccessPolicyFromSession(req);
-    if (!accessPolicy) {
-      return {};
-    }
-
-    const entity = await Entity.findOne({ code: entityCode });
-    const ancestorCodes = await entity.getAncestorCodes();
-
-    return getReportUserGroupAccessRightsForOrganisationUnit(
-      accessPolicy,
-      entityCode,
-      ancestorCodes,
-    );
-  };
-
-  req.getUserGroups = async entityCode => {
-    if (entityCode === 'World' || entityCode === 'explore') {
-      return ['Public']; // At this stage, all users have Public access to the World and explore project dashboards
-    }
-
-    const entity = await Entity.findOne({ code: entityCode });
+    // project access rights are determined by their children
     if (entity.isProject()) {
       const project = await Project.findOne({ code: entity.code });
       const projectChildren = await entity.getChildren(project.entity_hierarchy_id);
 
-      const projectAccessRights = [];
-      for (const entity of projectChildren) {
-        const userGroupAccessRights = await req.getUserGroupAccessRights(entity.code);
-
-        Object.keys(userGroupAccessRights).forEach(
-          userGroup =>
-            userGroupAccessRights[userGroup] === true && projectAccessRights.push(userGroup),
-        );
-      }
-      return [...new Set(projectAccessRights)];
+      return accessPolicy.allowsSome(
+        projectChildren.map(c => c.country_code),
+        permissionGroup,
+      );
     }
 
-    const userGroupAccessRights = await req.getUserGroupAccessRights(entityCode);
-    return Object.keys(userGroupAccessRights).filter(
-      userGroup => userGroupAccessRights[userGroup] === true,
-    );
+    return accessPolicy.allows(entity.country_code, permissionGroup);
   };
 
+  req.getUserGroups = async entityCode => {
+    if (entityCode === 'World') {
+      return ['Public']; // At this stage, all users have Public access to the World dashboard
+    }
+
+    const accessPolicy = await getUserAccessPolicyFromSession(req);
+    if (!accessPolicy) {
+      return [];
+    }
+
+    const entity = await Entity.findOne({
+      code: entityCode,
+    });
+
+    // project access rights are determined by their children
+    if (entity.isProject()) {
+      const project = await Project.findOne({ code: entity.code });
+      const projectChildren = await entity.getChildren(project.entity_hierarchy_id);
+      return accessPolicy.getPermissionGroups([
+        ...new Set(projectChildren.map(c => c.country_code)),
+      ]);
+    }
+
+    return accessPolicy.getPermissionGroups([entity.country_code]);
+  };
   next();
 };
-
 const USER_SESSION_COOKIE_TIMEOUT = 24 * 60 * 60 * 1000;
 const LAST_USER_SESSION_COOKIE_TIMEOUT = 7 * 24 * 60 * 60 * 1000;
 
 export const USER_SESSION_CONFIG = {
-  cookieName: 'session',
+  cookieName: 'sessionV2', // changed name to ignore old sessions after access policy refactor
+  requestKey: 'session', // use it as `req.session` rather than `req.sessionV2`
   secret: process.env.USER_SESSION_COOKIE_SECRET,
   secure: false,
   httpOnly: false,

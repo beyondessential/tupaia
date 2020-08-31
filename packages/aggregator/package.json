@@ -2,9 +2,8 @@
   "name": "@tupaia/aggregator",
   "version": "1.0.0",
   "main": "dist/index.js",
-  "private": true,
   "scripts": {
-    "build": "babel src --out-dir dist --ignore 'src/tests/**'",
+    "build": "babel src --out-dir dist --ignore 'src/tests/**' --config-file '../../babel.config.json'",
     "test": "mocha",
     "test-coverage": "cross-env NODE_ENV=test nyc mocha"
   },
@@ -13,24 +12,5 @@
     "@tupaia/utils": "1.0.0",
     "lodash.groupby": "^4.6.0",
     "winston": "^3.1.0"
-  },
-  "devDependencies": {
-    "babel-cli": "^6.24.1",
-    "babel-core": "^6.23.1",
-    "babel-eslint": "^7.2.3",
-    "babel-loader": "^6.3.1",
-    "babel-plugin-array-includes": "^2.0.3",
-    "babel-plugin-istanbul": "^4.1.6",
-    "babel-plugin-syntax-async-functions": "^6.13.0",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-es2015": "^6.22.0",
-    "babel-preset-stage-0": "^6.22.0",
-    "chai": "^4.1.2",
-    "chai-as-promised": "^7.1.1",
-    "cross-env": "^7.0.1",
-    "mocha": "^6.2.0",
-    "nyc": "^14.1.1",
-    "sinon": "^7.3.2",
-    "sinon-chai": "^3.3.0"
   }
 }

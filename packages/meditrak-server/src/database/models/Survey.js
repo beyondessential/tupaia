@@ -12,26 +12,53 @@ class SurveyType extends DatabaseType {
     minAppVersion: '0.0.1',
   };
 
+  async dataGroup() {
+    return this.otherModels.dataSource.findById(this.data_source_id);
+  }
+
+  async questions() {
+    const questions = await this.database.executeSql(
+      `
+      SELECT q.* FROM question q
+      JOIN survey_screen_component ssc ON ssc.question_id  = q.id
+      JOIN survey_screen ss ON ss.id = ssc.screen_id 
+      JOIN survey s ON s.id = ss.survey_id 
+      WHERE s.code = ?
+    `,
+      [this.code],
+    );
+
+    return Promise.all(questions.map(this.otherModels.question.generateInstance));
+  }
+
   async getPermissionGroup() {
     return this.otherModels.permissionGroup.findById(this.permission_group_id);
-  }
-
-  getIsIntegratedWithDhis2() {
-    return !!this.integration_metadata.dhis2;
-  }
-
-  getIsDataForRegionalDhis2() {
-    if (!this.integration_metadata.dhis2) {
-      throw new Error('This survey is not meant for DHIS2 at all');
-    }
-    return this.integration_metadata.dhis2.isDataRegional;
   }
 }
 
 export class SurveyModel extends DatabaseModel {
+  notifiers = [onChangeUpdateDataGroup];
+
   get DatabaseTypeClass() {
     return SurveyType;
   }
 
+  meditrakConfig = {
+    minAppVersion: '0.0.1',
+  };
+
   isDeletableViaApi = true;
 }
+
+const onChangeUpdateDataGroup = async ({ type: changeType, record }, models) => {
+  const { code, data_source_id: dataSourceId } = record;
+
+  switch (changeType) {
+    case 'update':
+      return models.dataSource.updateById(dataSourceId, { code });
+    case 'delete':
+      return models.dataSource.deleteById(dataSourceId);
+    default:
+      throw new Error(`Non supported change type: ${changeType}`);
+  }
+};

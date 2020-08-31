@@ -7,10 +7,13 @@ import formatLinkHeader from 'format-link-header';
 import { TYPES, JOIN_TYPES, DatabaseType } from '@tupaia/database';
 import { respond, DatabaseError, ValidationError } from '@tupaia/utils';
 import {
-  findQuestionsBySurvey,
-  findAnswersBySurveyResponse,
-  findEditableFeedItems,
+  findAnswersInSurveyResponse,
+  findEntitiesInCountry,
   findFormattedDisasters,
+  findSurveyScreenComponentsInSurvey,
+  findSurveysInCountry,
+  findDataElementsInDataGroup,
+  findOrCountJoinChildren,
 } from '../dataAccessors';
 import { getApiUrl, resourceToRecordType } from '../utilities';
 
@@ -24,22 +27,48 @@ const GETTABLE_TYPES = [
   TYPES.SURVEY_RESPONSE,
   TYPES.USER_ACCOUNT,
   TYPES.QUESTION,
-  TYPES.USER_COUNTRY_PERMISSION,
-  TYPES.USER_FACILITY_PERMISSION,
-  TYPES.USER_GEOGRAPHICAL_AREA_PERMISSION,
+  TYPES.SURVEY_SCREEN_COMPONENT,
+  TYPES.USER_ENTITY_PERMISSION,
   TYPES.PERMISSION_GROUP,
   TYPES.SURVEY_GROUP,
   TYPES.FEED_ITEM,
   TYPES.OPTION_SET,
   TYPES.OPTION,
+  TYPES.PROJECT,
   TYPES.DISASTER,
+  TYPES.DATA_SOURCE,
+  TYPES.ALERT,
+  TYPES.COMMENT,
+  TYPES.ACCESS_REQUEST,
+  TYPES.DASHBOARD_REPORT,
+  TYPES.MAP_OVERLAY,
+  TYPES.DASHBOARD_GROUP,
 ];
 
+const createMultiResourceKey = (...recordTypes) => recordTypes.filter(x => x).join('/');
 const CUSTOM_FINDERS = {
-  [TYPES.QUESTION]: findQuestionsBySurvey,
-  [TYPES.ANSWER]: findAnswersBySurveyResponse,
-  [TYPES.FEED_ITEM]: findEditableFeedItems,
-  [TYPES.DISASTER]: findFormattedDisasters,
+  [TYPES.DISASTER]: (models, parentRecordId, criteria) => findFormattedDisasters(models, criteria),
+  [createMultiResourceKey(
+    TYPES.SURVEY,
+    TYPES.SURVEY_SCREEN_COMPONENT,
+  )]: findSurveyScreenComponentsInSurvey,
+  [TYPES.SURVEY_SCREEN_COMPONENT]: findSurveyScreenComponentsInSurvey,
+  [createMultiResourceKey(TYPES.SURVEY_RESPONSE, TYPES.ANSWER)]: findAnswersInSurveyResponse,
+  [createMultiResourceKey(TYPES.COUNTRY, TYPES.SURVEY)]: findSurveysInCountry,
+  [createMultiResourceKey(TYPES.COUNTRY, TYPES.ENTITY)]: findEntitiesInCountry,
+  [createMultiResourceKey(TYPES.DATA_SOURCE, TYPES.DATA_SOURCE)]: findDataElementsInDataGroup,
+};
+const CUSTOM_FOREIGN_KEYS = {
+  [createMultiResourceKey(TYPES.USER_COUNTRY_PERMISSION, TYPES.USER_ACCOUNT)]: 'user_id',
+  [createMultiResourceKey(TYPES.USER_GEOGRAPHICAL_AREA_PERMISSION, TYPES.USER_ACCOUNT)]: 'user_id',
+  [createMultiResourceKey(TYPES.USER_FACILITY_PERMISSION, TYPES.USER_ACCOUNT)]: 'user_id',
+};
+const getForeignKeyColumn = (recordType, parentRecordType) => {
+  const key = createMultiResourceKey(recordType, parentRecordType);
+  return CUSTOM_FOREIGN_KEYS[key] || `${parentRecordType}_id`;
+};
+const PARENT_RECORD_FINDERS = {
+  [`${TYPES.ALERT}/${TYPES.COMMENT}`]: findOrCountJoinChildren,
 };
 
 const MAX_RECORDS_PER_PAGE = 100;
@@ -53,18 +82,21 @@ const MAX_RECORDS_PER_PAGE = 100;
  * using the 'sort' query parameter, and filtering using any other query parameter.
  * As with most endpoints, you must also pass in a Bearer auth header with an access token
  * Examples:
- *     https://api.tupaia.org/v2/countries?sort=[name DESC]
+ *     https://api.tupaia.org/v2/countries?sort=["name DESC"]
  *       Get all countries, sorted alphabetically by name in reverse order
  *     https://api.tupaia.org/v2/surveyResponse/5a5d1c66ae07fb3fb025c3a3
  *       Get a specific survey response
- *     https://api.tupaia.org/v2/answers?pageSize=100&page=3&filter={survey_response_id:5a5d1c66ae07fb3fb025c3a3}
+ *     https://api.tupaia.org/v2/surveyResponse/5a5d1c66ae07fb3fb025c3a3/answers
+ *       Get the answers of a specific survey response
+ *     https://api.tupaia.org/v2/answers?pageSize=100&page=3&filter={"survey_response_id":"5a5d1c66ae07fb3fb025c3a3"}
  *       Get the fourth page of 100 answers for a given survey response
  */
 export async function getRecords(req, res) {
   const { database, models, params, query } = req;
-  const { resource, recordId } = params;
+  const { parentResource, parentRecordId, resource, recordId } = params;
   const shouldReturnSingleRecord = !!recordId;
   const recordType = resourceToRecordType(resource);
+  const parentRecordType = resourceToRecordType(parentResource);
   if (!GETTABLE_TYPES.includes(recordType)) {
     throw new ValidationError(`${recordType} is not a valid GET endpoint`);
   }
@@ -75,26 +107,47 @@ export async function getRecords(req, res) {
       columns: columnsString,
       filter: filterString,
       sort: sortString,
+      distinct = false,
     } = query;
 
     // Set up the finder for this record type (sometimes custom, mostly generic)
     const findOrCountRecords = (options, findOrCount = 'find') => {
       const filter = filterString ? JSON.parse(filterString) : {};
-      let criteria = CUSTOM_FINDERS[recordType]
-        ? filter
-        : processColumnSelectorKeys(filter, recordType);
+      const customFinder = CUSTOM_FINDERS[createMultiResourceKey(parentRecordType, recordType)];
+      let criteria = customFinder ? filter : processColumnSelectorKeys(filter, recordType);
       // If a specific record was requested through the route, just find that
       if (shouldReturnSingleRecord) {
         criteria = { [`${recordType}.id`]: recordId };
       }
-      return CUSTOM_FINDERS[recordType]
-        ? CUSTOM_FINDERS[recordType](models, criteria, options, findOrCount)
-        : database[findOrCount](recordType, criteria, options);
+      if (customFinder) {
+        return customFinder(models, parentRecordId, criteria, options, findOrCount);
+      }
+      if (parentRecordType) {
+        const recordAccessor = PARENT_RECORD_FINDERS[`${parentRecordType}/${recordType}`];
+        if (recordAccessor) {
+          return recordAccessor(
+            models,
+            findOrCount,
+            recordType,
+            parentRecordType,
+            parentRecordId,
+            criteria,
+            options,
+          );
+        }
+
+        return database[findOrCount](
+          recordType,
+          { ...criteria, [getForeignKeyColumn(recordType, parentRecordType)]: parentRecordId },
+          options,
+        );
+      }
+      return database[findOrCount](recordType, criteria, options);
     };
 
     // First find out how many records there are and generate the pagination headers
     const unprocessedColumns = columnsString && JSON.parse(columnsString);
-    const { sort, multiJoin } = getQueryOptionsForColumns(unprocessedColumns, recordType);
+    let { sort, multiJoin } = getQueryOptionsForColumns(unprocessedColumns, recordType);
     if (!shouldReturnSingleRecord) {
       const numberOfRecords = await findOrCountRecords({ multiJoin }, 'count');
       const lastPage = Math.ceil(numberOfRecords / limit);
@@ -112,9 +165,14 @@ export async function getRecords(req, res) {
       const fullyQualifiedSortKeys = sortKeys.map(sortKey =>
         processColumnSelector(sortKey, recordType),
       );
-      sort.unshift(...fullyQualifiedSortKeys);
+      // if 'distinct', we can't order by any columns that aren't included in the distinct selection
+      if (distinct) {
+        sort = fullyQualifiedSortKeys;
+      } else {
+        sort.unshift(...fullyQualifiedSortKeys);
+      }
     }
-    const options = { multiJoin, columns, limit, offset, sort };
+    const options = { multiJoin, columns, limit, offset, sort, distinct };
     const records = await findOrCountRecords(options);
     // Respond only with the data in each record, stripping out metadata from DatabaseType instances
     const getRecordData = async record =>

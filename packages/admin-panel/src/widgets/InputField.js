@@ -5,19 +5,30 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FormGroup, Input } from 'reactstrap';
-import DatePicker from 'react-datepicker';
 import moment from 'moment';
-import 'react-datepicker/dist/react-datepicker.css';
+import { TextField, DatePicker, DateTimePicker, RadioGroup, Select } from '@tupaia/ui-components';
 import { Autocomplete } from '../autocomplete';
 import { JsonInputField } from './JsonInputField';
-import { DropDownInputField } from './DropDownInputField';
+import { JsonEditor } from './JsonEditor';
+
+const getInputType = ({ options, optionsEndpoint, type }) => {
+  if (options) {
+    return 'enum';
+  }
+  if (optionsEndpoint) {
+    return 'autocomplete';
+  }
+  return type;
+};
 
 export const InputField = ({
   allowMultipleValues,
   label,
+  secondaryLabel,
   value,
+  recordData,
   inputKey,
+  options,
   optionsEndpoint,
   optionLabelKey,
   optionValueKey,
@@ -26,8 +37,10 @@ export const InputField = ({
   canCreateNewOptions,
   disabled,
   getJsonFieldSchema,
+  parentRecord,
+  variant,
 }) => {
-  const inputType = optionsEndpoint ? 'autocomplete' : type;
+  const inputType = getInputType({ options, optionsEndpoint, type });
   let inputComponent = null;
 
   switch (inputType) {
@@ -35,37 +48,62 @@ export const InputField = ({
       inputComponent = (
         <Autocomplete
           placeholder={value}
+          label={label}
+          helperText={secondaryLabel}
           endpoint={optionsEndpoint}
           optionLabelKey={optionLabelKey}
+          optionValueKey={optionValueKey}
           reduxId={inputKey}
-          onChange={selection =>
-            onChange(
-              inputKey,
-              allowMultipleValues
-                ? selection.map(s => s[optionValueKey])
-                : selection[optionValueKey],
-            )
-          }
+          onChange={inputValue => onChange(inputKey, inputValue)}
           canCreateNewOptions={canCreateNewOptions}
           disabled={disabled}
           allowMultipleValues={allowMultipleValues}
+          parentRecord={parentRecord}
         />
       );
       break;
     case 'json':
       inputComponent = (
         <JsonInputField
+          label={label}
+          helperText={secondaryLabel}
           value={value}
+          recordData={recordData}
           onChange={inputValue => onChange(inputKey, inputValue)}
           disabled={disabled}
           getJsonFieldSchema={getJsonFieldSchema}
+          variant={variant}
+        />
+      );
+      break;
+    case 'enum':
+      inputComponent = (
+        <Select
+          label={label}
+          helperText={secondaryLabel}
+          value={value || ''}
+          options={options}
+          onChange={event => onChange(inputKey, event.target.value)}
+          disabled={disabled}
+        />
+      );
+      break;
+    case 'jsonEditor':
+      inputComponent = (
+        <JsonEditor
+          label={label}
+          inputKey={inputKey}
+          value={value}
+          onChange={onChange}
+          helperText={secondaryLabel}
         />
       );
       break;
     case 'boolean':
       inputComponent = (
-        <DropDownInputField
-          value={value}
+        <RadioGroup
+          label={label}
+          onChange={event => onChange(inputKey, event.target.value === 'true')} // convert to boolean value
           options={[
             {
               label: 'Yes',
@@ -76,55 +114,85 @@ export const InputField = ({
               value: false,
             },
           ]}
-          onChange={selectedOption => onChange(inputKey, selectedOption)}
+          value={value}
           disabled={disabled}
+          helperText={secondaryLabel}
         />
       );
       break;
     case 'date':
       inputComponent = (
         <DatePicker
-          selected={moment(value).isValid() ? moment(value) : null}
+          label={label}
+          helperText={secondaryLabel}
+          value={moment(value).isValid() ? moment(value) : null}
           onChange={date => onChange(inputKey, date.toISOString())}
           disabled={disabled}
         />
       );
       break;
-    default:
+    case 'datetime-local':
       inputComponent = (
-        <Input
-          value={processValue(value, type) || ''}
+        <DateTimePicker
+          label={label}
+          helperText={secondaryLabel}
+          format="yyyy-MM-dd HH:mm"
+          value={
+            value && moment(value).isValid ? moment(value).format('YYYY-MM-DDTHH:mm') : new Date()
+          }
+          onChange={date => {
+            if (date && moment(date).isValid()) {
+              onChange(inputKey, moment(date).toISOString());
+            }
+          }}
+          disabled={disabled}
+        />
+      );
+      break;
+    case 'textarea':
+      inputComponent = (
+        <TextField
+          label={label}
+          value={value || ''}
           onChange={event => onChange(inputKey, event.target.value)}
           disabled={disabled}
+          helperText={secondaryLabel}
+          multiline
+          type="textarea"
+          rows="4"
+        />
+      );
+      break;
+    default:
+      inputComponent = (
+        <TextField
+          label={label}
+          value={value || ''}
+          onChange={event => onChange(inputKey, event.target.value)}
+          disabled={disabled}
+          helperText={secondaryLabel}
           type={type}
         />
       );
       break;
   }
 
-  return (
-    <FormGroup>
-      <p>{label}</p>
-      {inputComponent}
-    </FormGroup>
-  );
-};
-
-const processValue = (value, type) => {
-  if (type === 'datetime-local') {
-    const formattedDateString =
-      value && moment(value).isValid ? moment(value).format('YYYY-MM-DDTHH:mm') : '';
-    return formattedDateString;
-  }
-
-  return value;
+  return inputComponent;
 };
 
 InputField.propTypes = {
   allowMultipleValues: PropTypes.bool,
   label: PropTypes.string.isRequired,
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.bool]),
+  recordData: PropTypes.object,
+  value: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.array,
+    PropTypes.object,
+    PropTypes.bool,
+    PropTypes.number,
+  ]),
   inputKey: PropTypes.string.isRequired,
+  options: PropTypes.arrayOf(PropTypes.object),
   optionsEndpoint: PropTypes.string,
   onChange: PropTypes.func.isRequired,
   optionLabelKey: PropTypes.string,
@@ -133,11 +201,16 @@ InputField.propTypes = {
   disabled: PropTypes.bool,
   type: PropTypes.string,
   getJsonFieldSchema: PropTypes.func,
+  parentRecord: PropTypes.object,
+  secondaryLabel: PropTypes.string,
+  variant: PropTypes.string,
 };
 
 InputField.defaultProps = {
   allowMultipleValues: false,
   value: null,
+  recordData: {},
+  options: null,
   optionsEndpoint: null,
   optionLabelKey: 'name',
   optionValueKey: 'id',
@@ -145,4 +218,7 @@ InputField.defaultProps = {
   disabled: false,
   type: 'text',
   getJsonFieldSchema: () => [],
+  parentRecord: {},
+  secondaryLabel: null,
+  variant: null,
 };

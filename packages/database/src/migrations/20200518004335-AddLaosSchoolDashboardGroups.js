@@ -7,9 +7,9 @@ var seed;
 import { insertObject, arrayToDbString } from '../utilities';
 
 /**
-  * We receive the dbmigrate dependency from dbmigrate initially.
-  * This enables us to not have to rely on NODE_PATH.
-  */
+ * We receive the dbmigrate dependency from dbmigrate initially.
+ * This enables us to not have to rely on NODE_PATH.
+ */
 exports.setup = function(options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
@@ -76,7 +76,7 @@ const LAOS_SCHOOLS_DASHBOARD_GROUPS = [
     organisationLevel: 'School',
     userGroup: LAOS_SCHOOLS_SUPER_USER_GROUP,
     name: LAOS_SCHOOLS_MOES_VIEW_NAME,
-  }
+  },
 ];
 
 const BASIC_LAOS_SCHOOLS_DASHBOARD_GROUP_OBJECT = {
@@ -86,14 +86,14 @@ const BASIC_LAOS_SCHOOLS_DASHBOARD_GROUP_OBJECT = {
 
 exports.up = async function(db) {
   await Promise.all(
-    LAOS_SCHOOLS_DASHBOARD_GROUPS.map((dashboardGroup) => {
+    LAOS_SCHOOLS_DASHBOARD_GROUPS.map(dashboardGroup => {
       const { code, organisationLevel, userGroup, name } = dashboardGroup;
       return insertObject(db, 'dashboardGroup', {
         ...BASIC_LAOS_SCHOOLS_DASHBOARD_GROUP_OBJECT,
         code,
         organisationLevel,
         userGroup,
-        name
+        name,
       });
     }),
   );
@@ -102,10 +102,12 @@ exports.up = async function(db) {
 exports.down = async function(db) {
   await db.runSql(`	
     DELETE FROM "dashboardGroup" 
-    WHERE "code" in (${arrayToDbString(LAOS_SCHOOLS_DASHBOARD_GROUPS.map(dashboardGroup => dashboardGroup.code))});	
+    WHERE "code" in (${arrayToDbString(
+      LAOS_SCHOOLS_DASHBOARD_GROUPS.map(dashboardGroup => dashboardGroup.code),
+    )});	
   `);
 };
 
 exports._meta = {
-  "version": 1
+  version: 1,
 };

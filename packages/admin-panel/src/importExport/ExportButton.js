@@ -6,18 +6,26 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import ImportExportIcon from '@material-ui/icons/ImportExport';
 import { IconButton } from '../widgets';
-import { exportData } from '.';
+import { exportData, openFilteredExportDialog } from './actions';
 
-export const ExportButtonComponent = ({ dispatch, value, row, actionConfig }) => (
-  <IconButton icon={'download'} onClick={() => dispatch(exportData(actionConfig, value, row))} />
-);
-
-ExportButtonComponent.propTypes = {
-  actionConfig: PropTypes.object.isRequired,
-  dispatch: PropTypes.func.isRequired,
-  value: PropTypes.string.isRequired,
-  row: PropTypes.object.isRequired,
+const ExportButtonComponent = ({ onClick }) => {
+  return (
+    <IconButton onClick={onClick}>
+      <ImportExportIcon />
+    </IconButton>
+  );
 };
 
-export const ExportButton = connect()(ExportButtonComponent);
+ExportButtonComponent.propTypes = {
+  onClick: PropTypes.func.isRequired,
+};
+
+export const ExportButton = connect(null, (dispatch, { row, actionConfig }) => ({
+  onClick: () => dispatch(exportData(actionConfig, row)),
+}))(ExportButtonComponent);
+
+export const FilteredExportButton = connect(null, (dispatch, { row }) => ({
+  onClick: () => dispatch(openFilteredExportDialog(row)),
+}))(ExportButtonComponent);

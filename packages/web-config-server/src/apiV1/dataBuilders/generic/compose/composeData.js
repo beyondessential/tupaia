@@ -1,5 +1,5 @@
 import { fetchComposedData } from '/apiV1/dataBuilders/helpers';
-import { NO_DATA_AVAILABLE } from '../../constants'
+import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 /**
  * Configuration schema
  * @typedef {Object} ComposeDataConfig
@@ -23,7 +23,7 @@ import { NO_DATA_AVAILABLE } from '../../constants'
  *    }
  * }
  * ```
- * Will return [{ name: builder1, ... }, { name: builder2, ... }]
+ * Will return { data: [{ name: builder1, ... }, { name: builder2, ... }] }
  */
 
 export const composeData = async (config, aggregator, dhisApi) => {

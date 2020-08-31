@@ -139,6 +139,7 @@ export class EnlargedDialogContent extends PureComponent {
           </IconButton>
         ) : null}
         <IconButton
+          data-testid="enlarged-dialog-close-btn"
           style={styles.toolbarButton}
           iconStyle={styles.toolbarButtonIcon}
           onClick={onCloseOverlay}
@@ -159,6 +160,7 @@ export class EnlargedDialogContent extends PureComponent {
     return (
       <div style={styles.periodSelector}>
         <DateRangePicker
+          align="center"
           granularity={periodGranularity}
           onSetDates={onSetDateRange}
           startDate={startDate}
@@ -193,7 +195,7 @@ export class EnlargedDialogContent extends PureComponent {
     };
 
     return (
-      <React.Fragment>
+      <div data-testid="enlarged-dialog">
         {this.renderTitle()}
         <DialogContent style={contentStyle}>
           {this.renderToolbar()}
@@ -201,7 +203,7 @@ export class EnlargedDialogContent extends PureComponent {
           {this.renderBody()}
           {this.renderPeriodRange()}
         </DialogContent>
-      </React.Fragment>
+      </div>
     );
   }
 }
@@ -240,6 +242,7 @@ const styles = {
     display: 'flex',
     justifyContent: 'center',
     marginTop: 5,
+    marginBottom: 5,
   },
   periodSelectorMenu: {
     marginTop: 0,

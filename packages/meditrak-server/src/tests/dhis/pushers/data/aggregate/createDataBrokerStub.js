@@ -4,7 +4,7 @@
  */
 import sinon from 'sinon';
 import { DataBroker } from '@tupaia/data-broker';
-import { SERVER_NAME } from './testData';
+import { SERVER_NAME } from './AggregateDataPusher.fixtures';
 
 const DEFAULT_DIAGNOSTICS = {
   wasSuccessful: true,

@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 10.12
--- Dumped by pg_dump version 10.12
+-- Dumped from database version 11.3
+-- Dumped by pg_dump version 11.3
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -15,20 +15,6 @@ SET check_function_bodies = false;
 SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
-
---
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
-
-
---
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: -
---
-
-COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
-
 
 --
 -- Name: postgis; Type: EXTENSION; Schema: -; Owner: -
@@ -93,7 +79,9 @@ CREATE TYPE public.entity_type AS ENUM (
     'case',
     'case_contact',
     'disaster',
-    'school'
+    'school',
+    'catchment',
+    'sub_catchment'
 );
 
 
@@ -102,7 +90,8 @@ CREATE TYPE public.entity_type AS ENUM (
 --
 
 CREATE TYPE public.service_type AS ENUM (
-    'dhis'
+    'dhis',
+    'tupaia'
 );
 
 
@@ -200,6 +189,19 @@ CREATE FUNCTION public.notification() RETURNS trigger
 
 
 --
+-- Name: schema_change_notification(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.schema_change_notification() RETURNS event_trigger
+    LANGUAGE plpgsql
+    AS $$
+  BEGIN
+  PERFORM pg_notify('schema_change', 'schema_change');
+  END;
+  $$;
+
+
+--
 -- Name: scrub_geo_data(jsonb, name); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -242,6 +244,51 @@ CREATE FUNCTION public.update_change_time() RETURNS trigger
 SET default_tablespace = '';
 
 SET default_with_oids = false;
+
+--
+-- Name: access_request; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.access_request (
+    id text NOT NULL,
+    user_id text,
+    entity_id text,
+    message text,
+    project_id text,
+    permission_group_id text,
+    approved boolean,
+    created_time timestamp with time zone DEFAULT now() NOT NULL,
+    processed_by text,
+    note text,
+    processed_date timestamp with time zone
+);
+
+
+--
+-- Name: alert; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.alert (
+    id text NOT NULL,
+    entity_id text,
+    data_element_id text,
+    start_time timestamp with time zone DEFAULT now() NOT NULL,
+    end_time timestamp with time zone,
+    event_confirmed_time timestamp with time zone,
+    archived boolean DEFAULT false
+);
+
+
+--
+-- Name: alert_comment; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.alert_comment (
+    id text NOT NULL,
+    alert_id text,
+    comment_id text
+);
+
 
 --
 -- Name: answer; Type: TABLE; Schema: public; Owner: -
@@ -314,6 +361,19 @@ CREATE TABLE public.clinic (
 
 
 --
+-- Name: comment; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.comment (
+    id text NOT NULL,
+    user_id text,
+    created_time timestamp with time zone DEFAULT now() NOT NULL,
+    last_modified_time timestamp with time zone DEFAULT now() NOT NULL,
+    text text NOT NULL
+);
+
+
+--
 -- Name: country; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -335,7 +395,8 @@ CREATE TABLE public."dashboardGroup" (
     "organisationUnitCode" text NOT NULL,
     "dashboardReports" text[] DEFAULT '{}'::text[] NOT NULL,
     name text NOT NULL,
-    code text
+    code text,
+    "projectCodes" text[] DEFAULT '{}'::text[]
 );
 
 
@@ -392,7 +453,7 @@ CREATE TABLE public.data_source (
     code text NOT NULL,
     type public.data_source_type NOT NULL,
     service_type public.service_type NOT NULL,
-    config jsonb NOT NULL
+    config jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
 
@@ -552,22 +613,16 @@ CREATE TABLE public.geographical_area (
 CREATE TABLE public."mapOverlay" (
     id text NOT NULL,
     name text NOT NULL,
-    "groupName" text NOT NULL,
     "userGroup" text NOT NULL,
     "dataElementCode" text NOT NULL,
-    "displayType" text,
-    "customColors" text,
     "isDataRegional" boolean DEFAULT true,
-    "values" jsonb,
-    "hideFromMenu" boolean DEFAULT false NOT NULL,
-    "hideFromPopup" boolean DEFAULT false NOT NULL,
-    "hideFromLegend" boolean DEFAULT false NOT NULL,
     "linkedMeasures" text[],
     "sortOrder" real DEFAULT 0 NOT NULL,
     "measureBuilderConfig" jsonb,
     "measureBuilder" character varying,
-    "presentationOptions" jsonb,
-    "countryCodes" text[]
+    "presentationOptions" jsonb DEFAULT '{}'::jsonb NOT NULL,
+    "countryCodes" text[],
+    "projectCodes" text[] DEFAULT '{}'::text[]
 );
 
 
@@ -588,6 +643,29 @@ CREATE SEQUENCE public."mapOverlay_id_seq"
 --
 
 ALTER SEQUENCE public."mapOverlay_id_seq" OWNED BY public."mapOverlay".id;
+
+
+--
+-- Name: map_overlay_group; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.map_overlay_group (
+    id text NOT NULL,
+    name text NOT NULL,
+    code text NOT NULL
+);
+
+
+--
+-- Name: map_overlay_group_relation; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.map_overlay_group_relation (
+    id text NOT NULL,
+    map_overlay_group_id text NOT NULL,
+    child_id text NOT NULL,
+    child_type text NOT NULL
+);
 
 
 --
@@ -753,14 +831,14 @@ CREATE TABLE public.project (
 CREATE TABLE public.question (
     id text NOT NULL,
     text text NOT NULL,
-    indicator text,
-    image_data text,
+    name text,
     type text NOT NULL,
     options text[],
     code text,
     detail text,
     option_set_id character varying,
-    hook text
+    hook text,
+    data_source_id text
 );
 
 
@@ -797,12 +875,12 @@ CREATE TABLE public.survey (
     id text NOT NULL,
     name text NOT NULL,
     code text NOT NULL,
-    image_data text DEFAULT ''::text,
     permission_group_id text,
     country_ids text[] DEFAULT '{}'::text[],
     can_repeat boolean DEFAULT false,
     survey_group_id text,
-    integration_metadata jsonb DEFAULT '{"dhis2": {"isDataRegional": true}}'::jsonb
+    integration_metadata jsonb DEFAULT '{}'::jsonb,
+    data_source_id text NOT NULL
 );
 
 
@@ -871,7 +949,7 @@ CREATE TABLE public.survey_screen_component (
 CREATE TABLE public."userSession" (
     id text NOT NULL,
     "userName" text NOT NULL,
-    "accessToken" text NOT NULL,
+    "accessToken" text,
     "refreshToken" text NOT NULL,
     "accessPolicy" jsonb
 );
@@ -898,38 +976,14 @@ CREATE TABLE public.user_account (
 
 
 --
--- Name: user_clinic_permission; Type: TABLE; Schema: public; Owner: -
+-- Name: user_entity_permission; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.user_clinic_permission (
+CREATE TABLE public.user_entity_permission (
     id text NOT NULL,
-    user_id text NOT NULL,
-    clinic_id text NOT NULL,
-    permission_group_id text NOT NULL
-);
-
-
---
--- Name: user_country_permission; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.user_country_permission (
-    id text NOT NULL,
-    user_id text NOT NULL,
-    country_id text NOT NULL,
-    permission_group_id text NOT NULL
-);
-
-
---
--- Name: user_geographical_area_permission; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.user_geographical_area_permission (
-    id text NOT NULL,
-    user_id text NOT NULL,
-    geographical_area_id text NOT NULL,
-    permission_group_id text NOT NULL
+    user_id text,
+    entity_id text,
+    permission_group_id text
 );
 
 
@@ -960,6 +1014,30 @@ ALTER TABLE ONLY public."dashboardGroup" ALTER COLUMN id SET DEFAULT nextval('pu
 --
 
 ALTER TABLE ONLY public.migrations ALTER COLUMN id SET DEFAULT nextval('public.migrations_id_seq'::regclass);
+
+
+--
+-- Name: access_request access_request_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: alert_comment alert_comment_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.alert_comment
+    ADD CONSTRAINT alert_comment_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: alert alert_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.alert
+    ADD CONSTRAINT alert_pkey PRIMARY KEY (id);
 
 
 --
@@ -1019,6 +1097,14 @@ ALTER TABLE ONLY public.clinic
 
 
 --
+-- Name: comment comment_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.comment
+    ADD CONSTRAINT comment_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: country country_code_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1064,6 +1150,14 @@ ALTER TABLE ONLY public."dashboardGroup"
 
 ALTER TABLE ONLY public.data_element_data_group
     ADD CONSTRAINT data_element_data_group_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: data_element_data_group data_element_data_group_unique; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.data_element_data_group
+    ADD CONSTRAINT data_element_data_group_unique UNIQUE (data_element_id, data_group_id);
 
 
 --
@@ -1216,6 +1310,22 @@ ALTER TABLE ONLY public.meditrak_device
 
 ALTER TABLE ONLY public."mapOverlay"
     ADD CONSTRAINT "mapOverlay_id_key" UNIQUE (id);
+
+
+--
+-- Name: map_overlay_group map_overlay_group_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.map_overlay_group
+    ADD CONSTRAINT map_overlay_group_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: map_overlay_group_relation map_overlay_group_relation_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.map_overlay_group_relation
+    ADD CONSTRAINT map_overlay_group_relation_pkey PRIMARY KEY (id);
 
 
 --
@@ -1403,6 +1513,14 @@ ALTER TABLE ONLY public.setting
 
 
 --
+-- Name: survey survey_code_unique; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.survey
+    ADD CONSTRAINT survey_code_unique UNIQUE (code);
+
+
+--
 -- Name: survey_group survey_group_name_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1491,27 +1609,11 @@ ALTER TABLE ONLY public.user_account
 
 
 --
--- Name: user_clinic_permission user_clinic_permission_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: user_entity_permission user_entity_permission_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.user_clinic_permission
-    ADD CONSTRAINT user_clinic_permission_pkey PRIMARY KEY (id);
-
-
---
--- Name: user_country_permission user_country_permission_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.user_country_permission
-    ADD CONSTRAINT user_country_permission_pkey PRIMARY KEY (id);
-
-
---
--- Name: user_geographical_area_permission user_geographical_area_permission_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.user_geographical_area_permission
-    ADD CONSTRAINT user_geographical_area_permission_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.user_entity_permission
+    ADD CONSTRAINT user_entity_permission_pkey PRIMARY KEY (id);
 
 
 --
@@ -1818,24 +1920,45 @@ CREATE INDEX user_account_last_name_idx ON public.user_account USING btree (last
 
 
 --
--- Name: user_country_permission_country_id_idx; Type: INDEX; Schema: public; Owner: -
+-- Name: user_entity_permission_entity_id_idx; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX user_country_permission_country_id_idx ON public.user_country_permission USING btree (country_id);
-
-
---
--- Name: user_country_permission_permission_group_id_idx; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX user_country_permission_permission_group_id_idx ON public.user_country_permission USING btree (permission_group_id);
+CREATE INDEX user_entity_permission_entity_id_idx ON public.user_entity_permission USING btree (entity_id);
 
 
 --
--- Name: user_country_permission_user_id_idx; Type: INDEX; Schema: public; Owner: -
+-- Name: user_entity_permission_permission_group_id_idx; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX user_country_permission_user_id_idx ON public.user_country_permission USING btree (user_id);
+CREATE INDEX user_entity_permission_permission_group_id_idx ON public.user_entity_permission USING btree (permission_group_id);
+
+
+--
+-- Name: user_entity_permission_user_id_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX user_entity_permission_user_id_idx ON public.user_entity_permission USING btree (user_id);
+
+
+--
+-- Name: access_request access_request_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER access_request_trigger AFTER INSERT OR DELETE OR UPDATE ON public.access_request FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
+-- Name: alert_comment alert_comment_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER alert_comment_trigger AFTER INSERT OR DELETE OR UPDATE ON public.alert_comment FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
+-- Name: alert alert_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER alert_trigger AFTER INSERT OR DELETE OR UPDATE ON public.alert FOR EACH ROW EXECUTE PROCEDURE public.notification();
 
 
 --
@@ -1857,6 +1980,13 @@ CREATE TRIGGER api_client_trigger AFTER INSERT OR DELETE OR UPDATE ON public.api
 --
 
 CREATE TRIGGER clinic_trigger AFTER INSERT OR DELETE OR UPDATE ON public.clinic FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
+-- Name: comment comment_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER comment_trigger AFTER INSERT OR DELETE OR UPDATE ON public.comment FOR EACH ROW EXECUTE PROCEDURE public.notification();
 
 
 --
@@ -1941,6 +2071,20 @@ CREATE TRIGGER geographical_area_trigger AFTER INSERT OR DELETE OR UPDATE ON pub
 --
 
 CREATE TRIGGER install_id_trigger AFTER INSERT OR DELETE OR UPDATE ON public.meditrak_device FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
+-- Name: map_overlay_group_relation map_overlay_group_relation_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER map_overlay_group_relation_trigger AFTER INSERT OR DELETE OR UPDATE ON public.map_overlay_group_relation FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
+-- Name: map_overlay_group map_overlay_group_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER map_overlay_group_trigger AFTER INSERT OR DELETE OR UPDATE ON public.map_overlay_group FOR EACH ROW EXECUTE PROCEDURE public.notification();
 
 
 --
@@ -2077,24 +2221,10 @@ CREATE TRIGGER user_account_trigger AFTER INSERT OR DELETE OR UPDATE ON public.u
 
 
 --
--- Name: user_clinic_permission user_clinic_permission_trigger; Type: TRIGGER; Schema: public; Owner: -
+-- Name: user_entity_permission user_entity_permission_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER user_clinic_permission_trigger AFTER INSERT OR DELETE OR UPDATE ON public.user_clinic_permission FOR EACH ROW EXECUTE PROCEDURE public.notification();
-
-
---
--- Name: user_country_permission user_country_permission_trigger; Type: TRIGGER; Schema: public; Owner: -
---
-
-CREATE TRIGGER user_country_permission_trigger AFTER INSERT OR DELETE OR UPDATE ON public.user_country_permission FOR EACH ROW EXECUTE PROCEDURE public.notification();
-
-
---
--- Name: user_geographical_area_permission user_geographical_area_permission_trigger; Type: TRIGGER; Schema: public; Owner: -
---
-
-CREATE TRIGGER user_geographical_area_permission_trigger AFTER INSERT OR DELETE OR UPDATE ON public.user_geographical_area_permission FOR EACH ROW EXECUTE PROCEDURE public.notification();
+CREATE TRIGGER user_entity_permission_trigger AFTER INSERT OR DELETE OR UPDATE ON public.user_entity_permission FOR EACH ROW EXECUTE PROCEDURE public.notification();
 
 
 --
@@ -2102,6 +2232,78 @@ CREATE TRIGGER user_geographical_area_permission_trigger AFTER INSERT OR DELETE 
 --
 
 CREATE TRIGGER user_reward_trigger AFTER INSERT OR DELETE OR UPDATE ON public.user_reward FOR EACH ROW EXECUTE PROCEDURE public.notification();
+
+
+--
+-- Name: access_request access_request_entity_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_entity_id_fkey FOREIGN KEY (entity_id) REFERENCES public.entity(id);
+
+
+--
+-- Name: access_request access_request_permission_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_permission_group_id_fkey FOREIGN KEY (permission_group_id) REFERENCES public.permission_group(id);
+
+
+--
+-- Name: access_request access_request_processed_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_processed_by_fkey FOREIGN KEY (processed_by) REFERENCES public.user_account(id);
+
+
+--
+-- Name: access_request access_request_project_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_project_id_fkey FOREIGN KEY (project_id) REFERENCES public.project(id);
+
+
+--
+-- Name: access_request access_request_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.access_request
+    ADD CONSTRAINT access_request_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user_account(id);
+
+
+--
+-- Name: alert_comment alert_comment_alert_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.alert_comment
+    ADD CONSTRAINT alert_comment_alert_id_fkey FOREIGN KEY (alert_id) REFERENCES public.alert(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: alert_comment alert_comment_comment_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.alert_comment
+    ADD CONSTRAINT alert_comment_comment_id_fkey FOREIGN KEY (comment_id) REFERENCES public.comment(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: alert alert_data_element_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.alert
+    ADD CONSTRAINT alert_data_element_id_fkey FOREIGN KEY (data_element_id) REFERENCES public.data_source(id);
+
+
+--
+-- Name: alert alert_entity_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.alert
+    ADD CONSTRAINT alert_entity_id_fkey FOREIGN KEY (entity_id) REFERENCES public.entity(id);
 
 
 --
@@ -2150,6 +2352,14 @@ ALTER TABLE ONLY public.clinic
 
 ALTER TABLE ONLY public.clinic
     ADD CONSTRAINT clinic_geographical_area_id_fkey FOREIGN KEY (geographical_area_id) REFERENCES public.geographical_area(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+--
+-- Name: comment comment_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.comment
+    ADD CONSTRAINT comment_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user_account(id);
 
 
 --
@@ -2273,6 +2483,14 @@ ALTER TABLE ONLY public.meditrak_device
 
 
 --
+-- Name: map_overlay_group_relation map_overlay_group_relation_map_overlay_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.map_overlay_group_relation
+    ADD CONSTRAINT map_overlay_group_relation_map_overlay_group_id_fkey FOREIGN KEY (map_overlay_group_id) REFERENCES public.map_overlay_group(id);
+
+
+--
 -- Name: one_time_login one_time_logins_user_id_users_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2305,6 +2523,14 @@ ALTER TABLE ONLY public.project
 
 
 --
+-- Name: question question_data_source_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.question
+    ADD CONSTRAINT question_data_source_id_fkey FOREIGN KEY (data_source_id) REFERENCES public.data_source(id);
+
+
+--
 -- Name: question question_option_set_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2326,6 +2552,14 @@ ALTER TABLE ONLY public.refresh_token
 
 ALTER TABLE ONLY public.refresh_token
     ADD CONSTRAINT refresh_token_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user_account(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: survey survey_data_source_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.survey
+    ADD CONSTRAINT survey_data_source_id_fkey FOREIGN KEY (data_source_id) REFERENCES public.data_source(id);
 
 
 --
@@ -2393,75 +2627,27 @@ ALTER TABLE ONLY public.survey
 
 
 --
--- Name: user_clinic_permission user_clinic_permission_clinic_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: user_entity_permission user_entity_permission_entity_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.user_clinic_permission
-    ADD CONSTRAINT user_clinic_permission_clinic_id_fk FOREIGN KEY (clinic_id) REFERENCES public.clinic(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: user_clinic_permission user_clinic_permission_permission_group_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.user_clinic_permission
-    ADD CONSTRAINT user_clinic_permission_permission_group_id_fk FOREIGN KEY (permission_group_id) REFERENCES public.permission_group(id) ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE ONLY public.user_entity_permission
+    ADD CONSTRAINT user_entity_permission_entity_id_fkey FOREIGN KEY (entity_id) REFERENCES public.entity(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
--- Name: user_clinic_permission user_clinic_permission_user_account_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: user_entity_permission user_entity_permission_permission_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.user_clinic_permission
-    ADD CONSTRAINT user_clinic_permission_user_account_id_fk FOREIGN KEY (user_id) REFERENCES public.user_account(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: user_country_permission user_country_permission_country_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.user_country_permission
-    ADD CONSTRAINT user_country_permission_country_id_fkey FOREIGN KEY (country_id) REFERENCES public.country(id) ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE ONLY public.user_entity_permission
+    ADD CONSTRAINT user_entity_permission_permission_group_id_fkey FOREIGN KEY (permission_group_id) REFERENCES public.permission_group(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
--- Name: user_country_permission user_country_permission_permission_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: user_entity_permission user_entity_permission_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.user_country_permission
-    ADD CONSTRAINT user_country_permission_permission_group_id_fkey FOREIGN KEY (permission_group_id) REFERENCES public.permission_group(id) ON UPDATE CASCADE ON DELETE RESTRICT;
-
-
---
--- Name: user_country_permission user_country_permission_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.user_country_permission
-    ADD CONSTRAINT user_country_permission_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user_account(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: user_geographical_area_permission user_geographical_area_permission_geographical_area_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.user_geographical_area_permission
-    ADD CONSTRAINT user_geographical_area_permission_geographical_area_id_fk FOREIGN KEY (geographical_area_id) REFERENCES public.geographical_area(id) ON UPDATE RESTRICT ON DELETE CASCADE;
-
-
---
--- Name: user_geographical_area_permission user_geographical_area_permission_permission_group_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.user_geographical_area_permission
-    ADD CONSTRAINT user_geographical_area_permission_permission_group_id_fk FOREIGN KEY (permission_group_id) REFERENCES public.permission_group(id) ON UPDATE RESTRICT ON DELETE CASCADE;
-
-
---
--- Name: user_geographical_area_permission user_geographical_area_permission_user_account_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.user_geographical_area_permission
-    ADD CONSTRAINT user_geographical_area_permission_user_account_id_fk FOREIGN KEY (user_id) REFERENCES public.user_account(id) ON UPDATE RESTRICT ON DELETE CASCADE;
+ALTER TABLE ONLY public.user_entity_permission
+    ADD CONSTRAINT user_entity_permission_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.user_account(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
@@ -2473,6 +2659,14 @@ ALTER TABLE ONLY public.user_reward
 
 
 --
+-- Name: schema_change_trigger; Type: EVENT TRIGGER; Schema: -; Owner: -
+--
+
+CREATE EVENT TRIGGER schema_change_trigger ON ddl_command_end
+   EXECUTE PROCEDURE public.schema_change_notification();
+
+
+--
 -- PostgreSQL database dump complete
 --
 
@@ -2480,8 +2674,8 @@ ALTER TABLE ONLY public.user_reward
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 10.12
--- Dumped by pg_dump version 10.12
+-- Dumped from database version 11.3
+-- Dumped by pg_dump version 11.3
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -3198,32 +3392,187 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 655	/20200505222240-updateTongaPehsMatrixIncFacType	2020-05-12 05:53:43.305
 656	/20200506040950-UpdateSumPerPeriodDataBuilderConfigInReports	2020-05-12 05:53:43.985
 657	/20200507033858-AddAttributesToEntityTable	2020-05-12 05:53:54.462
-658	/20200424054821-ShiftAnnualFanafanaolaDashboardsToShowPreviousYearData	2020-05-12 15:05:08.076
-659	/20200326052907-AddStriveReportFebrileIllnessAndRDTPositive	2020-05-13 01:06:15.754
-660	/20200405234315-AddStriveReportFebrileCasesByWeek	2020-05-13 01:06:15.891
-661	/20200406010511-AddRDTTotalTestsVsPercentagePositiveComposedReportStrive	2020-05-13 01:06:15.988
-662	/20200406013942-AddStriveVillageFebrileIllessDiscreteShadedPolygonsMapOverlay	2020-05-13 01:06:16.026
-663	/20200406061858-AddStriveVillagePercentMRDTPositiveShadedSpectrumMapOverlay	2020-05-13 01:06:16.048
-664	/20200407044756-Add3TypeOfStriveVillagePercentMRDTPositiveShadedSpectrumMapOverlay	2020-05-13 01:06:16.117
-665	/20200408002104-AddStriveFacilityRadiusOverlayTestNumber	2020-05-13 01:06:16.197
-666	/20200408044353-Add4StriveMapOverlays	2020-05-13 01:06:16.39
-667	/20200414065121-AddStriveOverlayPercentmRDTPositiveAndTestsSourceWTF	2020-05-13 01:06:16.494
-668	/20200415034908-AddStriveOverlayAllCasesByFacilityBubbleCRF	2020-05-13 01:06:16.571
-669	/20200504025438-UseNumberValueForDataValueFilter	2020-05-13 01:06:16.747
-670	/20200504065336-UseNumberForValueFilterInOverlays	2020-05-13 01:06:16.844
-671	/20200512023653-UseNumberForValueFilterInReports	2020-05-13 01:06:16.909
-672	/20200513022041-UpdateRdtTestsTotalConfig	2020-05-13 02:44:47.531
-673	/20200430065532-AddTongaNotifiableDiseasesStackedBar	2020-05-13 04:29:38.751
-674	/20200505233853-AddTongaIsolationAdmissionsInitialDiagnosisStackedBar	2020-05-13 04:29:38.902
-675	/20200505234922-AddTongaSuspectedCasesNotifiableDiseasesStackedBar	2020-05-13 04:29:39.015
-676	/20200506001638-AddTongaContactsTracedStackedBar	2020-05-13 04:29:39.148
-677	/20200506041900-AddLabConfirmedSTICasesPerMonthReport	2020-05-13 04:29:39.228
-678	/20200504224323-AddSchoolEntityType	2020-05-13 05:32:21.564
-679	/20200505015116-AddEntityHierarchyIdToProjectTable	2020-05-13 16:13:23.862
-680	/20200506031906-ChangeRootEntityToProjects	2020-05-13 16:13:24.123
-681	/20200506224325-AddLaosSchoolsProject	2020-05-13 16:13:24.19
-682	/20200507020955-AddLaosSchoolAlternativeHierarchyRelations	2020-05-13 16:13:30.319
-683	/20200507070444-AddLaosSchoolsSchoolTypeMapOverlay	2020-05-13 17:58:12.839
+658	/20200326052907-AddStriveReportFebrileIllnessAndRDTPositive	2020-05-13 03:13:08.331
+659	/20200405234315-AddStriveReportFebrileCasesByWeek	2020-05-13 03:13:08.484
+660	/20200406010511-AddRDTTotalTestsVsPercentagePositiveComposedReportStrive	2020-05-13 03:13:08.623
+661	/20200406013942-AddStriveVillageFebrileIllessDiscreteShadedPolygonsMapOverlay	2020-05-13 03:13:08.687
+662	/20200406061858-AddStriveVillagePercentMRDTPositiveShadedSpectrumMapOverlay	2020-05-13 03:13:08.745
+663	/20200407044756-Add3TypeOfStriveVillagePercentMRDTPositiveShadedSpectrumMapOverlay	2020-05-13 03:13:08.84
+664	/20200408002104-AddStriveFacilityRadiusOverlayTestNumber	2020-05-13 03:13:09.046
+665	/20200408044353-Add4StriveMapOverlays	2020-05-13 03:13:09.378
+666	/20200414065121-AddStriveOverlayPercentmRDTPositiveAndTestsSourceWTF	2020-05-13 03:13:09.515
+667	/20200415034908-AddStriveOverlayAllCasesByFacilityBubbleCRF	2020-05-13 03:13:09.593
+668	/20200424054821-ShiftAnnualFanafanaolaDashboardsToShowPreviousYearData	2020-05-13 03:13:09.662
+669	/20200504025438-UseNumberValueForDataValueFilter	2020-05-13 03:13:09.751
+670	/20200504065336-UseNumberForValueFilterInOverlays	2020-05-13 03:13:09.834
+671	/20200512023653-UseNumberForValueFilterInReports	2020-05-13 03:13:09.938
+672	/20200513022041-UpdateRdtTestsTotalConfig	2020-05-13 03:13:10.011
+673	/20200430065532-AddTongaNotifiableDiseasesStackedBar	2020-05-13 05:15:17.737
+674	/20200505233853-AddTongaIsolationAdmissionsInitialDiagnosisStackedBar	2020-05-13 05:15:18.125
+675	/20200505234922-AddTongaSuspectedCasesNotifiableDiseasesStackedBar	2020-05-13 05:15:18.248
+676	/20200506001638-AddTongaContactsTracedStackedBar	2020-05-13 05:15:18.376
+677	/20200506041900-AddLabConfirmedSTICasesPerMonthReport	2020-05-13 05:15:18.471
+678	/20200416023232-ShiftFanafanaolaDashboardsToShowPreviousMonthData	2020-05-18 05:15:38.271
+679	/20200429021341-AddUNFPAReproductiveHealthProductsMonthOfStockReport	2020-05-18 05:15:38.491
+680	/20200504224323-AddSchoolEntityType	2020-05-18 05:15:41.126
+681	/20200520034215-RemoveDhisIntegrationMetadataForLaosSchoolsSurveys	2020-05-20 08:06:10.353
+682	/20200505015116-AddEntityHierarchyIdToProjectTable	2020-05-22 04:53:18.839
+683	/20200506031906-ChangeRootEntityToProjects	2020-05-22 04:53:20.049
+684	/20200506224325-AddLaosSchoolsProject	2020-05-22 04:53:20.474
+685	/20200507020955-AddLaosSchoolAlternativeHierarchyRelations	2020-05-22 04:53:35.326
+686	/20200507070444-AddLaosSchoolsSchoolTypeMapOverlay	2020-05-22 04:53:35.509
+687	/20200513054910-AddLaosSchoolsRadiusOverlays	2020-05-22 04:53:35.744
+688	/20200513063247-AddLaosSchoolBinaryMeasureMapOverlays	2020-05-22 04:53:35.894
+689	/20200513230725-AddLaosSchoolsDevPartnerOverlay	2020-05-22 04:53:36.095
+690	/20200514014908-AddProjectDashboardGroups	2020-05-22 04:53:36.374
+691	/20200514045247-RemoveWorldAsChildOfProjects	2020-05-22 04:53:36.667
+692	/20200514144900-AddLaosSchoolNumberOfChildrenHeatMap	2020-05-22 04:53:36.845
+693	/20200515041112-AddTupaiaToDataSourceServiceTypes	2020-05-22 04:53:41.052
+694	/20200518011240-AddDevelopmentPartnerPinOverlay	2020-05-22 04:53:41.138
+695	/20200518035908-AddDefaultValueForDataSourceConfig	2020-05-22 04:53:41.173
+696	/20200518035909-UseTupaiaAsDataServiceForLaosSchoolsSurveys	2020-05-22 04:53:43.205
+697	/20200519020537-AddLaosSchoolsDormitoryMapOverlay	2020-05-22 04:53:43.376
+698	/20200520071141-FixCaseInLaosSchoFixCaseInLaosSchoolsOverlays	2020-05-22 04:53:43.491
+699	/20200520090416-UpdateMapOverlaysDormitorySchools	2020-05-22 04:53:43.52
+700	/20200520112832-FixGroupingValuesInLaosSchoolsBinaryMeasuresOverlays	2020-05-22 04:53:43.716
+701	/20200520223152-UpdateMapOverlaysDevPartners	2020-05-22 04:53:43.911
+702	/20200521062959-AddIHRDashboardGroupToExplore	2020-05-22 04:53:44.003
+703	/20200522020712-SetLaosSchoolsDefaultDashboardAndOverlay	2020-05-22 04:53:44.032
+704	/20200514054511-AddBinaryShadedPolygonMeasuresLaosSchools	2020-05-22 06:36:37.011
+705	/20200515021226-AddLaosSchoolShadedPolygonsForDropOutRatesDistrictLevel	2020-05-22 06:36:37.239
+706	/20200517062602-AddLaosSchoolShadedPolygonsForRepetitionRatesDistrictLevel	2020-05-22 06:36:37.513
+707	/20200518004335-AddLaosSchoolDashboardGroups	2020-05-22 06:36:37.763
+708	/20200518020921-AddLaosSchoolsMaleFemalePieCharts	2020-05-22 06:36:38.023
+709	/20200519074549-AddLaosSchoolShadedPolygonsForDropOutRatesProvinceLevel	2020-05-22 06:36:38.222
+710	/20200519074621-AddLaosSchoolShadedPolygonsForRepetitionRatesProvinceLevel	2020-05-22 06:36:38.381
+711	/20200520044744-AddDropoutAndRepeatRatesByGradeBarLaosSchools	2020-05-22 06:36:38.648
+712	/20200520223705-AddLaosSchoolsLanguageOfStudentsPieChart	2020-05-22 06:36:38.777
+713	/20200521034842-AddLaosSchoolBinaryDashbaord	2020-05-22 06:36:38.865
+714	/20200521055848-RemoveUnwantedDataVisualizationsFromLaos	2020-05-22 06:36:39.074
+715	/20200521215551-AddBCD1ToInternalDataFetch	2020-05-22 06:36:39.228
+716	/20200521221711-FixLaosSchoolsBinaryMeasureMapOverlayNameTypo	2020-05-22 06:36:39.349
+717	/20200521221800-UpdateLaosSchoolsPieChartsDataServices	2020-05-22 06:36:39.552
+718	/20200522020600-FixNamesForLaosSchoolsOverlays	2020-05-22 06:36:39.714
+719	/20200522031911-laosSchoolsFixUnicefCode	2020-05-22 06:36:39.753
+720	/20200522032405-UpdateMapOverlayHeadings	2020-05-22 06:36:39.887
+721	/20200522055413-ChangeLaosSchoolsOverlayGroupName	2020-05-22 06:36:39.921
+722	/20200503063358-AddTongaDHIS2HealthCertificatesDistributedReport	2020-05-26 05:33:22.248
+723	/20200508034036-UpdateDefaultTimePeriodFormatInDataBuilderConfig	2020-05-26 05:33:22.404
+724	/20200522010341-updateLaosSchoolsBinaryDashboard	2020-05-26 05:33:22.531
+725	/20200525044209-NoFunnyPeriods	2020-05-26 05:33:22.587
+726	/20200526005827-RemoveWorldDashboardGroups	2020-05-26 05:33:22.618
+727	/20200212052756-RemoveRedundantQuestionsWish	2020-05-28 07:05:49.153
+728	/20200521005057-AddLaosDevelopmentPartnersReport	2020-05-28 07:05:49.46
+729	/20200524231548-AddSchoolPercentDashboards	2020-05-28 07:05:50.058
+730	/20200522022756-VisualisationsDefinedPerProject	2020-06-01 23:11:11.261
+731	/20200524212939-LimitVisualisationsPerProject	2020-06-01 23:11:12.839
+732	/20200528042309-DeleteAnswersForLaosSchoolsSelectVillageQuestions	2020-06-01 23:11:13.004
+733	/20200521102324-AddUtilityServiceBinaryMeasuresBarCharts	2020-06-05 05:09:17.476
+734	/20200521155232-AddResourceSupportBinaryMeasuresBarCharts	2020-06-05 05:09:17.765
+735	/20200528011043-ChangeUNFPAReportsToUseQuarters	2020-06-05 05:09:17.857
+736	/20200605045409-CorrectStriveDashboardCase	2020-06-05 05:09:17.912
+737	/20200605051613-SetCovidDefaultDashboard	2020-06-11 22:06:48.088
+738	/20200608220007-RenameQuestionIndicatorToName	2020-06-11 22:06:48.184
+739	/20200608234924-RemoveLaosSchoolsReport	2020-06-11 22:06:48.527
+740	/20200609022031-RemoveLaosSchoolsHeatmaps	2020-06-11 22:06:48.594
+741	/20200609022859-UpdateOverlayHeadingsToRemoveTotal	2020-06-11 22:06:48.938
+742	/20200612003644-AddMostVisualisationsToExplore	2020-06-12 01:09:53.702
+743	/20200417211027-AllowNullAccessToken	2020-06-18 21:35:02.61
+744	/20200422231733-MoveNoCountryUsersToAdminPanel	2020-06-18 21:35:02.717
+745	/20200423213702-EntityBasedPermissions	2020-06-18 21:35:03.473
+746	/20200525005457-WipeUserSessions	2020-06-18 21:35:03.546
+747	/20200529000003-MigrateOverlaysToUseNewEntityAggregation	2020-06-18 21:35:05.868
+748	/20200529064523-MoveMeasureLevelToPresentationOptions	2020-06-18 21:35:07.96
+749	/20200601050232-MigrateReportsToUseNewEntityAggregation	2020-06-18 21:35:08.941
+750	/20200602035743-FixConfigForSurveyExportReports	2020-06-18 21:35:11.342
+751	/20200603012534-DeleteSurveyAndQuestionImageData	2020-06-18 21:35:11.364
+752	/20200603012535-ChangeDuplicateSurveyCodes	2020-06-18 21:35:15.127
+753	/20200603014358-AddUniqueCodeConstraintInSurvey	2020-06-18 21:35:15.193
+754	/20200603032358-UseCountrySpecificBcdSurveys	2020-06-18 21:35:15.822
+755	/20200609002315-UpdateSchoolBinaryListMeasures	2020-06-18 21:35:15.925
+756	/20200609045707-UpdateLaosSchoolsBinaryMeasureMapOverlayNames	2020-06-18 21:35:16.046
+757	/20200609045724-RemoveLaosSchoolsBinaryMeasureMapOverlays	2020-06-18 21:35:16.083
+758	/20200609053914-UseTupaiaAsDataServiceForNewLaosSchoolSurveys	2020-06-18 21:35:18.666
+759	/20200609055929-AddMoreLaosSchoolsBinaryMeasuresMapOverlays	2020-06-18 21:35:18.939
+760	/20200609072253-AddLaosSchoolsStudentResourcesMapOverlays	2020-06-18 21:35:19.174
+761	/20200609223042-AddWaterSupplyMapOverlay	2020-06-18 21:35:19.443
+762	/20200612021300-FixIncorrectDashboardGroupProjects	2020-06-18 21:35:19.63
+763	/20200616000806-FixIncorrectDataElementCodesLaosReport	2020-06-18 21:35:19.97
+764	/20200617235154-FixTongaMeaslesOverlaysWithEntityAggregation	2020-06-18 21:35:20.008
+765	/20200618090311-FixEntityAggregationConfig	2020-06-18 21:35:20.071
+766	/20200603115106-AddCatchmentEntityType	2020-06-25 23:29:10.306
+767	/20200615021108-AddLaosSchoolsMajorDevPartner	2020-06-25 23:29:11.339
+768	/20200618012039-UseTuapaiaAsDataServiceForWishSurveys	2020-06-25 23:29:15.379
+769	/20200528043308-createAccessRequestTable	2020-07-02 21:55:46.686
+770	/20200603121401-CreateFijiCatchmentAlternateHierarchy	2020-07-02 21:55:54.593
+771	/20200615045558-AddPopupHeaderFormatToLaosSchoolsOverlays	2020-07-02 21:55:54.946
+772	/20200623065126-AddRegionalMapOverlaysForUNFPAMOS	2020-07-02 21:55:55.446
+773	/20200625074843-AddMapOverlaysForRHServices	2020-07-02 21:55:55.695
+774	/20200701064429-AddMethodsOfContraceptionRegionalDashboards	2020-07-02 21:55:55.794
+775	/20200609034143-ChangeBinaryShadedPolygonsMeasuresLaosSchools	2020-07-09 22:25:52.91
+776	/20200609045620-AddStriveReportToNationalLevel	2020-07-09 22:25:53.039
+777	/20200617035342-AddCountryAndFacilityTongaHealthPromotionUnitDashboardGroups	2020-07-09 22:25:53.489
+778	/20200617036620-AddActivitySessionsBySettingPieChartTonga	2020-07-09 22:25:53.753
+779	/20200617045942-AddTongaDHIS2HPUPieChartNumberOfBroadcastsByTheme	2020-07-09 22:25:53.961
+780	/20200617054710-AddActivitySessionsBySettingByDistrict	2020-07-09 22:25:54.214
+781	/20200617071021-AddTongaHPUBarChartTotalPhysicalActivityParticipants	2020-07-09 22:25:54.33
+782	/20200618014723-AddNewQuitlineCallsByYearTextReport	2020-07-09 22:25:54.465
+783	/20200618131934-AddTongaHPUIECRequestsFulFilledByTargetGroupDashboardReport	2020-07-09 22:25:54.587
+784	/20200618132339-AddTongaHPUIECRequestsFulFilledByThemeDashboardReport	2020-07-09 22:25:54.766
+785	/20200619015233-AddNewQuitlineCasesBarReportTonga	2020-07-09 22:25:54.939
+786	/20200623013336-AddTongaHPUNumberOfNCDRiskFactorScreeningEventsBySetting	2020-07-09 22:25:55.197
+787	/20200624061918-AddUnfpaStackedBarGraphPercentCountryMos	2020-07-09 22:25:55.416
+788	/20200624141424-AddUNFPAReproductiveHealthAtLeast1StaffMemberTrainedSRHServicesReport	2020-07-09 22:25:55.609
+789	/20200626014357-AddUNFPAFacilityUseOfStockCardsMatrixReport	2020-07-09 22:25:55.765
+790	/20200629134316-AddUNFPANumberOfWomenProvidedSRHServicesFacilityLevelDashboardReport	2020-07-09 22:25:55.895
+791	/20200701000910-AddUNFPANumberOfWomenProvidedSRHServicesNationalProvincialLevelMatrix	2020-07-09 22:25:55.966
+792	/20200502045201-AddFlutrackingParticipantsPerCapita	2020-07-16 21:41:43.261
+793	/20200503031746-Add9FlutrackingOverlays	2020-07-16 21:41:44.48
+794	/20200503043133-UpdateTongaHouseholdsToUseNeutralScale	2020-07-16 21:41:44.537
+795	/20200510011141-AddFlutrackingOverlaysToLGALevel	2020-07-16 21:41:44.987
+796	/20200521080146-AddLaosSchoolsBinaryMatrixDistrictLevelDashboard	2020-07-16 21:41:45.202
+797	/20200601041635-HideUnncessarySurveysFromDemoLand	2020-07-16 21:41:45.42
+798	/20200603043404-UpdateFlutrackingOverlaysToHaveAProject	2020-07-16 21:41:45.64
+799	/20200609003258-AddLaosSchoolsRawDataDownloads	2020-07-16 21:41:45.829
+800	/20200624001356-AddTongaCovid19CommodityAvailabilityRadiusMapNationalLevelOverlay	2020-07-16 21:41:46.063
+801	/20200624043629-AddUNFPAPriorityLifeSavingMedicinesForWomenAndChildrenAMCMatrixReport	2020-07-16 21:41:46.186
+802	/20200624090309-AddUNFPAPriorityLifeSavingMedicinesForWomenAndChildrenMOSMatrixReport	2020-07-16 21:41:46.411
+803	/20200624090446-AddUNFPAPriorityLifeSavingMedicinesForWomenAndChildrenSOHMatrixReport	2020-07-16 21:41:46.611
+804	/20200705044221-AddLaosSchoolsDistanceFromMainRoadMapOverlay	2020-07-16 21:41:46.906
+805	/20200706011442-UpdateMultiBarBarChartPercentageOfUtilityAvailabilityOfSchoolsLaosSchools	2020-07-16 21:41:47.138
+806	/20200706023151-UpdateMultiBarBarChartPercentageOfResourcesSupportReceivedOfSchoolsLaosSchools	2020-07-16 21:41:47.511
+807	/20200706073546-UpdateMajorDevelopmentPartnerOverlayToDevelopmentPartnerSupportOverlay	2020-07-16 21:41:47.618
+808	/20200710014909-FixFlutrackingOverlaysWithEntityAggregation-modifies-data	2020-07-16 21:41:47.934
+809	/20200710081638-AddUNFPARepHealthProdMOSReportToProvinceLevel-modifies-data	2020-07-16 21:41:48.106
+810	/20200710131831-AddRHOverlayToMsupplyCountries-modifies-data	2020-07-16 21:41:48.209
+811	/20200712224256-ChangeDefaultCovidOverlayToStateTotalCases-modifies-data	2020-07-16 21:41:48.261
+812	/20200713035339-FixVaccineReportReorderCells-modifies-data	2020-07-16 21:41:48.317
+813	/20200715235459-AddGPSTagAndAbilityToAttachPhotoToLaosSchools-modifies-data	2020-07-16 21:41:48.452
+814	/20200428025025-createAlertsTable	2020-07-23 23:00:35.162
+815	/20200501033538-createCommentTables	2020-07-23 23:00:35.498
+816	/20200617021631-AddUniqueConstraintInDataElementDataGroup	2020-07-23 23:00:35.98
+817	/20200622025632-AddDataGroupsForAllSurveys	2020-07-23 23:00:37.449
+818	/20200622025633-AddDataSourceIdColumn	2020-07-23 23:00:39.494
+819	/20200622025634-RemoveDhis2InfoFromSurveyIntegrationMetadata	2020-07-23 23:00:39.805
+820	/20200705042223-UpdateLaosSchoolsHandWashingFunctionalityMapOverlay	2020-07-23 23:00:40.11
+821	/20200710031900-ChangDenominatorForSoughtMedicalAdviceFlutrackingOverlay-modifies-data	2020-07-23 23:00:40.165
+822	/20200710065047-AddNewBinaryIndicatorTo5LaosSchoolsVisualisations-modifies-data	2020-07-23 23:00:40.519
+823	/20200716001701-ChangeUnfpaStaffMatrixFacilityBaselineDate-modifies-data	2020-07-23 23:00:40.569
+824	/20200625011337-AddUNFPARegionalLevelPercentageFacilitiesOfferingServicesDashboards	2020-07-28 22:33:32.881
+825	/20200713235756-AddUnfpaRegionalLevelAtLest1StaffTrained-modifies-data	2020-07-28 22:33:33.259
+826	/20200727002031-ChangeUNFPAProjectPermissionGroup-modifies-data	2020-07-28 22:33:33.291
+827	/20200723044326-UpdateLaosSchoolsAccessToCleanWaterMapOverlay-modifies-data	2020-08-06 22:02:00.975
+828	/20200724235329-MoveFrontEndMapOverlayInfoToPresentationOptionsColumn-modifies-data	2020-08-06 22:02:01.857
+829	/20200724235629-DropFrontEndMapOverlayInfoColumns-modifies-schema	2020-08-06 22:02:02.07
+830	/20200725050059-CreateMapOverlayGroupTables-modifies-schema	2020-08-06 22:02:02.225
+831	/20200725050217-MigrateMapOverlayGroupData-modifies-data	2020-08-06 22:02:03.693
+832	/20200725080640-DropMapOverlayGroupNameColumn-modifies-schema	2020-08-06 22:02:03.817
+833	/20200726010801-CategoriseLaosSchoolsDropOutRatesMapOverlays-modifies-data	2020-08-06 22:02:04.263
+834	/20200726031440-AddFluTrackingLandingPage-modifies-data	2020-08-06 22:02:04.3
+835	/20200726083032-CategoriseLaosSchoolsRepetitionRatesMapOverlays-modifies-data	2020-08-06 22:02:04.61
+836	/20200727071629-RemoveSchoolLevelBinaryIndicatorTable-modifies-data	2020-08-06 22:02:04.68
+837	/20200804010531-ChangeStriveProjectDefaultMapOverlay-modifies-data	2020-08-06 22:02:04.721
+838	/20200804021343-UpdateCOVIDAUProjectBackgroundUrl-modifies-data	2020-08-06 22:02:04.747
 \.
 
 
@@ -3231,7 +3580,7 @@ COPY public.migrations (id, name, run_on) FROM stdin;
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 683, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 838, true);
 
 
 --

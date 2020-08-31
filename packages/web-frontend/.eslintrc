@@ -1,35 +1,33 @@
 {
-  "extends": ["@beyondessential/eslint-config-beyondessential", "plugin:prettier/recommended"],
-  "parser": "babel-eslint",
   "env": {
-    "browser": true,
-    "node": true
+    "browser": true
   },
   "rules": {
-    "react/jsx-boolean-value": ["error", "never"],
-    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
     "react/jsx-wrap-multilines": ["error", { "prop": "ignore" }],
-    "import/no-extraneous-dependencies": ["error", {
-      // This is fine
-      // https://github.com/airbnb/javascript/blob/master/packages/eslint-config-airbnb-base/rules/imports.js#L70
-      "devDependencies": [
-        "config/**",
-        "**/test.js",
-        "**/scripts/**"
-      ],
-      "optionalDependencies": false
-    }],
-    
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        "devDependencies": ["config/**", "**/test.js", "**/scripts/**", "cypress/**"]
+      }
+    ],
     // no-did-update-set-state is not needed as per: https://github.com/airbnb/javascript/issues/1875
     "react/no-did-update-set-state": 0
   },
   "overrides": [
     {
       "files": ["**/*.test.js"],
+      "plugins": ["jest"],
       "env": {
-        "jest": true // now **/*.test.js files' env has both es6 *and* jest
-      },
-      "plugins": ["jest"]
+        "jest": true
+      }
+    },
+    {
+      "files": ["cypress/**"],
+      "plugins": ["cypress"],
+      "env": {
+        "browser": true,
+        "cypress/globals": true
+      }
     }
   ]
 }

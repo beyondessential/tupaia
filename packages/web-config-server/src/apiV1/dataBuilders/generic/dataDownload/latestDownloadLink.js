@@ -5,7 +5,11 @@ export const latestDownloadLink = async ({ req, query, dataBuilderConfig }) => {
   const downloadLinkJson = {
     viewType: 'singleDownloadLink',
     name: name || 'Download full survey response',
-    value: buildExportUrl(req, 'surveyResponses', { ...query, surveyCodes, latest: true }),
+    value: buildExportUrl(req, 'surveyResponses', {
+      ...query,
+      surveyCodes: surveyCodes.join(','),
+      latest: true,
+    }),
   };
   return { data: [downloadLinkJson] };
 };

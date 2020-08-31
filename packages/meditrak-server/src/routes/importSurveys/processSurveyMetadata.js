@@ -1,10 +1,10 @@
-import { convertCellToJson } from './utilities';
 import {
+  ImportValidationError,
+  ObjectValidator,
   constructAtMostOneItem,
   constructIsNotPresentOr,
-} from '../../validation/validatorFunctions';
-import { ImportValidationError } from '@tupaia/utils';
-import { ObjectValidator } from '../../validation';
+} from '@tupaia/utils';
+import { convertCellToJson } from './utilities';
 import { JsonFieldValidator } from './Validator/JsonFieldValidator';
 
 export const SURVEY_METADATA = 'SurveyMetadata';
@@ -47,7 +47,7 @@ export const processSurveyMetadataRow = async (models, rows, rowIndex, surveyId)
   if (eventOrgUnit) {
     const survey = await models.survey.findById(surveyId);
     const { id: questionId } = await models.question.findOne({ code: eventOrgUnit });
-    survey.integration_metadata.dhis2.eventOrgUnit = { questionId };
+    survey.integration_metadata.eventOrgUnit = { questionId };
     await survey.save();
   }
 };

@@ -1,32 +1,52 @@
 import { Aggregator as BaseAggregator } from '@tupaia/aggregator';
 import { QueryBuilder } from './QueryBuilder';
+import { buildAggregationOptions } from './buildAggregationOptions';
 
 export class Aggregator extends BaseAggregator {
-  constructor(dataBroker, fetchDataSourceEntities) {
+  constructor(dataBroker, routeHandler) {
     super(dataBroker);
-    this.fetchDataSourceEntities = fetchDataSourceEntities;
+    this.routeHandler = routeHandler;
   }
 
-  async fetchAnalytics(dataElementCodes, originalQuery, replacementValues, ...otherParams) {
-    const queryBuilder = new QueryBuilder(
-      originalQuery,
-      replacementValues,
-      this.fetchDataSourceEntities,
-    );
-    const query = await queryBuilder.build();
+  async fetchAnalytics(
+    dataElementCodes,
+    originalQuery,
+    replacementValues,
+    initialAggregationOptions = {},
+  ) {
+    const queryBuilder = new QueryBuilder(originalQuery, replacementValues, this.routeHandler);
+    const dataSourceEntities = await queryBuilder.getDataSourceEntities();
+    const hierarchyId = await this.routeHandler.fetchHierarchyId();
 
-    return super.fetchAnalytics(dataElementCodes, query, ...otherParams);
+    const fetchOptions = await queryBuilder.build(dataSourceEntities);
+
+    const entityAggregationOptions = queryBuilder.getEntityAggregationOptions();
+    const aggregationOptions = await buildAggregationOptions(
+      initialAggregationOptions,
+      dataSourceEntities,
+      entityAggregationOptions,
+      hierarchyId,
+    );
+
+    return super.fetchAnalytics(dataElementCodes, fetchOptions, aggregationOptions);
   }
 
   async fetchEvents(programCode, originalQuery, replacementValues) {
-    const queryBuilder = new QueryBuilder(
-      originalQuery,
-      replacementValues,
-      this.fetchDataSourceEntities,
-    );
-    await queryBuilder.fetchAndReplaceOrgUnitCodes();
+    const queryBuilder = new QueryBuilder(originalQuery, replacementValues, this.routeHandler);
+    const dataSourceEntities = await queryBuilder.getDataSourceEntities();
+    const hierarchyId = await this.routeHandler.fetchHierarchyId();
+
+    queryBuilder.replaceOrgUnitCodes(dataSourceEntities);
     queryBuilder.makeEventReplacements();
 
-    return super.fetchEvents(programCode, queryBuilder.query);
+    const entityAggregationOptions = queryBuilder.getEntityAggregationOptions();
+    const aggregationOptions = await buildAggregationOptions(
+      {}, // No input aggregation for events (yet)
+      dataSourceEntities,
+      entityAggregationOptions,
+      hierarchyId,
+    );
+
+    return super.fetchEvents(programCode, queryBuilder.getQuery(), aggregationOptions);
   }
 }

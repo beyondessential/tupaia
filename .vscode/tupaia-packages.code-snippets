@@ -1,0 +1,25 @@
+{
+  "Copyright": {
+    "prefix": "cpr",
+    "body": [
+      "/**",
+      " * Tupaia",
+      " * Copyright (c) 2017 - $CURRENT_YEAR Beyond Essential Systems Pty Ltd",
+      " */"
+    ],
+    "description": "Copyright notice"
+  },
+  "abstract method": {
+    "prefix": "absm",
+    "body": [
+      "/**",
+      " * @abstract",
+      " */",
+      "// eslint-disable-next-line class-methods-use-this",
+      "$1() {",
+      "\tthrow new Error('Any subclass of ${2:$TM_FILENAME_BASE} must implement the \"$1\" method');",
+      "}"
+    ],
+    "description": "Abstract method"
+  }
+}

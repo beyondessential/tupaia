@@ -11,7 +11,9 @@ const RESOURCE_TRANSLATIONS = {
   user: TYPES.USER_ACCOUNT,
   facilities: TYPES.FACILITY,
   facility: TYPES.FACILITY,
-  user_facility_permission: TYPES.USER_FACILITY_PERMISSION,
+  dashboard_group: TYPES.DASHBOARD_GROUP, // because of camel case table name
+  dashboard_report: TYPES.DASHBOARD_REPORT,  // because of camel case table name
+  map_overlay: TYPES.MAP_OVERLAY,  // because of camel case table name
 };
 
 // This utility function takes in a resource, or endpoint, and converts it to the record type we

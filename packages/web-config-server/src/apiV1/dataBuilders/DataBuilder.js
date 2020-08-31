@@ -2,9 +2,10 @@
  * Tupaia Config Server
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
-import { getSortByKey } from '@tupaia/utils';
 
-import { Project } from '/models';
+import { getSortByKey, getSortByExtractedValue, getUniqueEntries } from '@tupaia/utils';
+
+import { Project, Entity } from '/models';
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 
 export class DataBuilder {
@@ -48,11 +49,12 @@ export class DataBuilder {
     aggregationType = this.aggregationType,
     aggregationConfig = {},
   ) {
-    const { dataServices, dataSourceEntityType, filter = {} } = this.config;
+    const { dataServices, entityAggregation, dataSourceEntityFilter, filter = {} } = this.config;
     const fetchOptions = {
       programCodes: this.getProgramCodesForAnalytics(),
       dataServices,
-      dataSourceEntityType,
+      entityAggregation,
+      dataSourceEntityFilter,
       ...additionalQueryConfig,
     };
 
@@ -63,13 +65,15 @@ export class DataBuilder {
     });
   }
 
-  async fetchEvents(additionalQueryConfig) {
-    const { programCode, dataServices, dataSourceEntityType } = this.config;
+  async fetchEvents(additionalQueryConfig, overridenProgramCode) {
+    const { programCode, dataServices, entityAggregation, dataSourceEntityFilter } = this.config;
     const { organisationUnitCode, startDate, endDate, trackedEntityInstance, eventId } = this.query;
+    const eventsProgramCode = overridenProgramCode || programCode;
 
-    return this.aggregator.fetchEvents(programCode, {
+    return this.aggregator.fetchEvents(eventsProgramCode, {
       dataServices,
-      dataSourceEntityType,
+      entityAggregation,
+      dataSourceEntityFilter,
       organisationUnitCode,
       startDate,
       endDate,
@@ -90,6 +94,17 @@ export class DataBuilder {
     });
   }
 
+  async fetchDataGroup(code) {
+    const { dataServices } = this.config;
+    const { organisationUnitCode } = this.query;
+
+    return this.aggregator.fetchDataGroup(code, {
+      organisationUnitCode,
+      dataServices,
+      includeOptions: true,
+    });
+  }
+
   async fetchEntityHierarchyId() {
     const { projectCode } = this.query;
     const project = await Project.findOne({ code: projectCode });
@@ -101,9 +116,50 @@ export class DataBuilder {
     return this.entity.getDescendantsOfType(type, entityHierarchyId);
   }
 
+  /**
+   * Fetch ancestor of type for each organisationUnit in event
+   */
+  async mapAncestorOfTypeToEvents(events, ancestorType) {
+    const hierarchyId = await this.fetchEntityHierarchyId();
+    const allEntityCodes = getUniqueEntries(events.map(e => e.orgUnit));
+    const allEntities = await Entity.find({ code: allEntityCodes });
+    const allAncestors = await Promise.all(
+      await allEntities.map(entity => entity.getAncestorOfType(ancestorType, hierarchyId)),
+    );
+    const entityCodeToAncestor = {};
+    allEntities.forEach((entity, index) => {
+      entityCodeToAncestor[entity.code] = allAncestors[index].name;
+    });
+    const mappedEvents = events.map(event => {
+      const ancestor = entityCodeToAncestor[event.orgUnit];
+      return {
+        ...event,
+        orgUnitAncestor: ancestor,
+      };
+    });
+    return mappedEvents;
+  }
+
+  sortEventsByAncestor = events => events.sort(getSortByKey('orgUnitAncestor'));
+
+  sortEventsByDataValue = (events, dataValue) =>
+    events.sort(getSortByExtractedValue(e => e.dataValues[dataValue]));
+
   sortDataByName = data => data.sort(getSortByKey('name'));
 
   areDataAvailable = data => data.some(({ value }) => value !== NO_DATA_AVAILABLE);
+
+  // Returns true if the results are valid and false otherwise
+  validateResults = results => {
+    const { dataElementCodes, requireDataForAllElements } = this.config;
+    if (!results) return false;
+
+    if (requireDataForAllElements) {
+      const allDataElementsInResult = results.map(({ dataElement: de }) => de);
+      return dataElementCodes.every(dataElement => allDataElementsInResult.includes(dataElement));
+    }
+    return true;
+  };
 
   areEventResults = results => !!(results[0] && results[0].event);
 }

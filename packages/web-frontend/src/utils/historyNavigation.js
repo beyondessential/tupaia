@@ -21,7 +21,6 @@ import { createBrowserHistory } from 'history';
 import queryString from 'query-string';
 
 import {
-  DIALOG_PAGE_RESET_PASSWORD,
   changeOrgUnit,
   changeMeasure,
   changeDashboardGroup,
@@ -31,9 +30,8 @@ import {
   setVerifyEmailToken,
   openUserPage,
   findLoggedIn,
+  DIALOG_PAGE_ONE_TIME_LOGIN,
 } from '../actions';
-
-import { selectActiveProject } from '../selectors';
 
 import { gaPageView } from '.';
 import { selectProject } from '../projects/actions';
@@ -71,6 +69,7 @@ export function decodeUrl(pathname, search) {
     disasterStartDate,
     disasterEndDate,
     verifyEmailToken,
+    organisationUnitName,
   } = queryString.parse(search);
   switch (prefix) {
     case PASSWORD_RESET_PREFIX:
@@ -80,10 +79,11 @@ export function decodeUrl(pathname, search) {
     default:
       return {
         organisationUnitCode,
+        organisationUnitName,
         dashboardId,
         reportId,
         measureId,
-        project: prefix || DEFAULT_PROJECT,
+        projectCode: prefix || DEFAULT_PROJECT,
         timeZone,
         startDate,
         endDate,
@@ -101,20 +101,18 @@ export function createUrlForAppState(state) {
   const reportId = state.enlargedDialog.viewContent.viewId;
   const userPage = '';
 
-  const project = selectActiveProject(state).code;
-
   return createUrl({
     dashboardId,
     measureId,
-    currentOrganisationUnitCode,
+    organisationUnitCode: currentOrganisationUnitCode,
     reportId,
     userPage,
-    project,
+    projectCode: state.project.activeProjectCode,
   });
 }
 
-function getDefaultDashboardForProject(project) {
-  return DEFAULT_DASHBOARDS[project] || DEFAULT_DASHBOARDS[DEFAULT_PROJECT];
+function getDefaultDashboardForProject(projectCode) {
+  return DEFAULT_DASHBOARDS[projectCode] || DEFAULT_DASHBOARDS[DEFAULT_PROJECT];
 }
 
 export function createUrl({
@@ -122,7 +120,8 @@ export function createUrl({
   dashboardId,
   measureId,
   organisationUnitCode,
-  project = DEFAULT_PROJECT,
+  organisationUnitName,
+  projectCode = DEFAULT_PROJECT,
   reportId,
   timeZone,
   startDate,
@@ -141,14 +140,15 @@ export function createUrl({
     endDate,
     disasterStartDate,
     disasterEndDate,
+    organisationUnitName,
   };
 
-  const defaultDashboard = getDefaultDashboardForProject(project);
+  const defaultDashboard = getDefaultDashboardForProject(projectCode);
 
   const defaultUrlComponents = [DEFAULT_PROJECT, 'explore', defaultDashboard, null];
 
   const urlComponents = [
-    project,
+    projectCode,
     organisationUnitCode || 'explore',
     dashboardId || defaultDashboard,
     reportId,
@@ -188,7 +188,7 @@ function reactToHistory(location, store) {
     organisationUnitCode,
     dashboardId,
     measureId,
-    project,
+    projectCode,
   } = decodeUrl(location.pathname, location.search);
 
   const state = store.getState();
@@ -199,7 +199,7 @@ function reactToHistory(location, store) {
     switch (userPage) {
       case PASSWORD_RESET_PREFIX:
         dispatch(setPasswordResetToken(passwordResetToken));
-        dispatch(openUserPage(DIALOG_PAGE_RESET_PASSWORD));
+        dispatch(openUserPage(DIALOG_PAGE_ONE_TIME_LOGIN));
         dispatch(changeOrgUnit()); // load world dashboard in background
         break;
       case VERIFY_EMAIL:
@@ -223,14 +223,14 @@ function reactToHistory(location, store) {
 
   if (measureId !== state.measureBar.selectedMeasureId) {
     dispatch(changeMeasure(measureId, organisationUnitCode));
-
-    if (dashboardId !== state.dashboard.currentDashboardKey) {
-      dispatch(changeDashboardGroup(dashboardId));
-    }
   }
 
-  if (project !== selectActiveProject(state).code) {
-    dispatch(selectProject({ code: project }));
+  if (dashboardId !== state.dashboard.currentDashboardKey) {
+    dispatch(changeDashboardGroup(dashboardId));
+  }
+
+  if (projectCode !== state.project.activeProjectCode) {
+    dispatch(selectProject(projectCode));
   }
 }
 

@@ -1,12 +1,7 @@
 import { respond, UnverifiedError, FormValidationError } from '@tupaia/utils';
+import { encryptPassword } from '@tupaia/auth';
 
-import { sendEmail, encryptPassword } from '../utilities';
-
-export const EMAIL_VERIFIED_STATUS = {
-  UNVERIFIED: 'unverified',
-  VERIFIED: 'verified',
-  NEW_USER: 'new_user',
-};
+import { sendEmail } from '../utilities';
 
 export const sendVerifyEmail = async (req, userId) => {
   const { models } = req;
@@ -23,7 +18,7 @@ const sendEmailVerification = async user => {
                     Please click on the following link to register your email address
 
                     ${resetUrl}
-                    
+
                     If you believe this email was sent to you in error, please contact us immediately at
                     admin@tupaia.org.
                     `;
@@ -34,17 +29,15 @@ const sendEmailVerification = async user => {
 export async function verifyEmail(req, res) {
   const { models } = req;
   const { token } = req.body;
+  const { UNVERIFIED, NEW_USER, VERIFIED } = models.user.emailVerifiedStatuses;
 
   // search for unverified emails first - if we don't find any try for emails already verified so we don't pass an error back if the user clicks the link twice
   const verifiedUser =
-    (await verifyEmailHelper(
-      models,
-      [EMAIL_VERIFIED_STATUS.UNVERIFIED, EMAIL_VERIFIED_STATUS.NEW_USER],
-      token,
-    )) || (await verifyEmailHelper(models, EMAIL_VERIFIED_STATUS.VERIFIED, token));
+    (await verifyEmailHelper(models, [UNVERIFIED, NEW_USER], token)) ||
+    (await verifyEmailHelper(models, VERIFIED, token));
 
   if (verifiedUser) {
-    verifiedUser.verified_email = EMAIL_VERIFIED_STATUS.VERIFIED;
+    verifiedUser.verified_email = VERIFIED;
     await models.user.updateById(verifiedUser.id, verifiedUser);
 
     respond(res, { emailVerified: 'true' });
@@ -75,7 +68,7 @@ export const requestResendEmail = async (req, res) => {
   });
 
   // if the user doesn't exist or the email address has already been verified do not give the user any extra information
-  if (!user || user.verified_email === EMAIL_VERIFIED_STATUS.VERIFIED) {
+  if (!user || user.checkIsEmailVerified()) {
     throw new FormValidationError(`Unable to send verification email to ${emailAddress}`);
   }
 

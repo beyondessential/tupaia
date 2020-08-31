@@ -4,7 +4,7 @@
  */
 
 import { expect } from 'chai';
-import { populateTestData } from '../../../../testUtilities';
+import { populateTestData } from '@tupaia/database';
 import { AggregateDataPusher } from '../../../../../dhis/pushers/data/aggregate/AggregateDataPusher';
 import {
   SURVEY_RESPONSE_DATA_VALUE,
@@ -12,7 +12,7 @@ import {
   SURVEY_RESPONSE_CHANGE,
   getSyncLog,
   SERVER_NAME,
-} from './testData';
+} from './AggregateDataPusher.fixtures';
 
 export const testUpdateSurveyResponse = (dhisApi, models, dataBroker) => {
   it('should delete the previously synced data values, and post new values if the period has changed', async () => {
@@ -20,7 +20,7 @@ export const testUpdateSurveyResponse = (dhisApi, models, dataBroker) => {
     const previouslySyncedPeriod = '20190101';
     const syncLogRecord = getSyncLog(change);
     syncLogRecord.data.period = previouslySyncedPeriod;
-    await populateTestData({ dhisSyncLog: [syncLogRecord] });
+    await populateTestData(models, { dhisSyncLog: [syncLogRecord] });
     const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
 
     const result = await pusher.push();
@@ -46,7 +46,7 @@ export const testUpdateSurveyResponse = (dhisApi, models, dataBroker) => {
     const previouslySyncedOrgUnit = 'AAA1';
     const syncLogRecord = getSyncLog(change);
     syncLogRecord.data.orgUnit = previouslySyncedOrgUnit;
-    await populateTestData({ dhisSyncLog: [syncLogRecord] });
+    await populateTestData(models, { dhisSyncLog: [syncLogRecord] });
     const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
 
     const result = await pusher.push();

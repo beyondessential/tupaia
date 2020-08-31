@@ -26,7 +26,7 @@ git reset --hard origin/${BRANCH}
 yarn install
 
 # For each package, get the latest and deploy it
-for PACKAGE in "meditrak-server" "web-config-server" "web-frontend" "admin-panel"; do
+for PACKAGE in "meditrak-server" "web-config-server" "web-frontend" "admin-panel" "psss"; do
     # Set up .env to match the environment variables stored in SSM parameter store
     cd ${HOME_DIRECTORY}/packages/$PACKAGE
     rm .env
@@ -54,7 +54,7 @@ for PACKAGE in "meditrak-server" "web-config-server" "web-frontend" "admin-panel
       # It's a server, start the pm2 process
       echo "Starting ${PACKAGE}"
       yarn build
-      pm2 start --name $PACKAGE dist --wait-ready --listen-timeout 15000
+      pm2 start --name $PACKAGE dist --wait-ready --listen-timeout 15000 --time
     else
       # It's a static site, build it
       echo "Building ${PACKAGE}"

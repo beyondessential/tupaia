@@ -4,8 +4,7 @@
  */
 
 import { expect } from 'chai';
-import { generateTestId } from '@tupaia/database';
-import { populateTestData } from '../../../../testUtilities';
+import { generateTestId, populateTestData } from '@tupaia/database';
 import { AggregateDataPusher } from '../../../../../dhis/pushers/data/aggregate/AggregateDataPusher';
 import { DummySyncQueue } from '../../../../DummySyncQueue';
 import {
@@ -16,7 +15,7 @@ import {
   getFailedSyncLog,
   getSyncLog,
   SERVER_NAME,
-} from './testData';
+} from './AggregateDataPusher.fixtures';
 
 export const testDeleteAnswer = (dhisApi, models, dataBroker) => {
   afterEach(async () => {
@@ -36,7 +35,7 @@ export const testDeleteAnswer = (dhisApi, models, dataBroker) => {
   it('should mark as successful if the answer never successfully synced', async () => {
     const change = await models.dhisSyncQueue.findById(ANSWER_CHANGE.id);
     change.type = 'delete';
-    await populateTestData({ dhisSyncLog: [getFailedSyncLog(change)] });
+    await populateTestData(models, { dhisSyncLog: [getFailedSyncLog(change)] });
     const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
 
     const result = await pusher.push();
@@ -47,7 +46,7 @@ export const testDeleteAnswer = (dhisApi, models, dataBroker) => {
   it('should delete if the answer previously synced successfully', async () => {
     const change = await models.dhisSyncQueue.findById(ANSWER_CHANGE.id);
     change.type = 'delete';
-    await populateTestData({ dhisSyncLog: [getSyncLog(change)] });
+    await populateTestData(models, { dhisSyncLog: [getSyncLog(change)] });
     const pusher = new AggregateDataPusher(models, change, dhisApi, dataBroker);
 
     const result = await pusher.push();
@@ -73,7 +72,7 @@ export const testDeleteAnswer = (dhisApi, models, dataBroker) => {
       survey_response_id: nextMostRecentSurveyResponse.id,
       text: '3',
     };
-    await populateTestData({
+    await populateTestData(models, {
       surveyResponse: [nextMostRecentSurveyResponse],
       answer: [nextMostRecentAnswer],
     });
@@ -82,7 +81,7 @@ export const testDeleteAnswer = (dhisApi, models, dataBroker) => {
     await models.answer.deleteById(ANSWER.id);
     const change = await models.dhisSyncQueue.findById(ANSWER_CHANGE.id);
     change.type = 'delete';
-    await populateTestData({ dhisSyncLog: [getSyncLog(change)] });
+    await populateTestData(models, { dhisSyncLog: [getSyncLog(change)] });
 
     // set up dummy sync queue to listen for changes
     const syncQueue = new DummySyncQueue();

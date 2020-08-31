@@ -30,7 +30,7 @@ exports.down = function(db) {
   return db.runSql(`
     UPDATE "dashboardReport"
     SET
-      "dataBuilderConfig" = "dataBuilderConfig" || '{"period":"LAST_12_MONTHS;THIS_MONTH"}'
+      "dataBuilderConfig" = "dataBuilderConfig" || '{"period":"LAST_12_MONTHS;THIS_MONTH"}',
       "viewJson" = "viewJson" - 'defaultTimePeriod'
     WHERE "id" IN ${dashboardReportIds};
   `);

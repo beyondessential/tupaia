@@ -1,4 +1,10 @@
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+
 import React from 'react';
+import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 
 const OPTION_SET_FIELDS = [
@@ -52,10 +58,8 @@ const OPTION_COLUMNS = [
 const EXPANSION_CONFIG = [
   {
     title: 'Options',
-    endpoint: 'options',
+    endpoint: 'optionSet/{id}/options',
     columns: OPTION_COLUMNS,
-    joinFrom: 'id',
-    joinTo: 'option_set_id',
   },
 ];
 
@@ -67,7 +71,7 @@ const IMPORT_CONFIG = {
   queryParameters: [
     {
       label: 'Option Set Names',
-      instruction:
+      secondaryLabel:
         'Please enter the names of the option sets to be imported. These should match the tab names in the file.',
       parameterKey: 'optionSetNames',
       optionsEndpoint: 'optionSets',
@@ -82,7 +86,7 @@ const EDIT_CONFIG = {
   title: 'Edit Option Set',
 };
 
-export const OptionSetsPage = () => (
+export const OptionSetsPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Option Sets"
     endpoint="optionSets"
@@ -90,5 +94,10 @@ export const OptionSetsPage = () => (
     expansionTabs={EXPANSION_CONFIG}
     importConfig={IMPORT_CONFIG}
     editConfig={EDIT_CONFIG}
+    getHeaderEl={getHeaderEl}
   />
 );
+
+OptionSetsPage.propTypes = {
+  getHeaderEl: PropTypes.func.isRequired,
+};

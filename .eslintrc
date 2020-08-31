@@ -1,0 +1,39 @@
+{
+  "extends": ["@beyondessential/eslint-config-beyondessential", "plugin:prettier/recommended"],
+  "parser": "babel-eslint",
+  "env": {
+    "mocha": true
+  },
+  "rules": {
+    "import/no-extraneous-dependencies": [
+      "error",
+      { "devDependencies": ["**/src/tests/**"], "packageDir": ["../../", "."] }
+    ],
+    "import/no-unresolved": [
+      "error",
+      {
+        "ignore": [
+          "^@tupaia/access-policy$",
+          "^@tupaia/aggregator$",
+          "^@tupaia/auth$",
+          "^@tupaia/data-api$",
+          "^@tupaia/data-broker$",
+          "^@tupaia/database$",
+          "^@tupaia/dhis-api$",
+          "^@tupaia/utils$"
+        ]
+      }
+    ],
+    "max-classes-per-file": ["error", 2],
+    "react/forbid-prop-types": "off"
+  },
+  "overrides": [
+    {
+      "files": "**/src/tests/**",
+      "rules": {
+        "func-names": "off",
+        "no-unused-expressions": "off"
+      }
+    }
+  ]
+}

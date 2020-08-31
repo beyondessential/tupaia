@@ -3,114 +3,123 @@
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  */
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import autobind from 'react-autobind';
+import { Button, Dialog, DialogFooter, DialogHeader, OutlinedButton } from '@tupaia/ui-components';
 import { connect } from 'react-redux';
-import { importData, dismissDialog } from './actions';
-import {
-  getIsProcessing,
-  getIsPreparingImport,
-  getImportRecordType,
-  getErrorMessage,
-} from './selectors';
-import { AsyncModal, InputField } from '../widgets';
+import { dismissDialog } from './actions';
+import { ModalContentProvider, InputField } from '../widgets';
 
-export class ImportExportModalComponent extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      file: null,
-      queryParameter: {},
-    };
-    autobind(this);
-  }
+export const ImportExportModalComponent = ({
+  isLoading,
+  errorMessage,
+  onDismiss,
+  title,
+  isConfirmDisabled,
+  onConfirm,
+  confirmLabel,
+  queryParameters,
+  subtitle,
+  children,
+  parentRecord,
+  isOpen,
+}) => {
+  const [values, setValues] = useState({});
 
-  handleFiles({ target }) {
-    this.setState({ file: target.files[0] });
-  }
+  const handleValueChange = (key, value) => {
+    setValues(prevState => ({
+      ...prevState,
+      [key]: value,
+    }));
+  };
 
-  handleQueryParameterChange(parameterKey, value) {
-    this.setState({
-      queryParameters: {
-        ...this.state.queryParameters,
-        [parameterKey]: value,
-      },
-    });
-  }
+  // clear form state when modal is opened or closed
+  useEffect(() => {
+    setValues({});
+  }, [isOpen]);
 
-  renderContent() {
-    const { isPreparingImport, queryParameters, instruction } = this.props;
-    return isPreparingImport ? (
-      <div>
-        <p>{instruction}</p>
-        {queryParameters.map(queryParameter => (
-          <InputField
-            key={queryParameter.parameterKey}
-            inputKey={queryParameter.parameterKey}
-            {...queryParameter}
-            onChange={this.handleQueryParameterChange}
-            label={queryParameter.instruction}
-            placeholder={queryParameter.label}
-          />
-        ))}
-        <input type={'file'} onChange={event => this.handleFiles(event)} />
-      </div>
-    ) : null;
-  }
-
-  render() {
-    const { isLoading, errorMessage, onImport, onDismiss, title } = this.props;
-    const { file, queryParameters } = this.state;
-    return (
-      <AsyncModal
-        isLoading={isLoading}
-        errorMessage={errorMessage}
-        renderContent={this.renderContent}
-        isConfirmDisabled={!file}
-        onConfirm={() => onImport(file, queryParameters)}
-        confirmLabel={'Import'}
-        onDismiss={onDismiss}
-        title={title}
+  return (
+    <Dialog onClose={onDismiss} open={isOpen} disableBackdropClick>
+      <DialogHeader
+        onClose={onDismiss}
+        title={errorMessage ? 'Error' : title}
+        color={errorMessage ? 'error' : 'textPrimary'}
       />
-    );
-  }
-}
+      <ModalContentProvider errorMessage={errorMessage} isLoading={isLoading}>
+        <p>{subtitle}</p>
+        {queryParameters.map(queryParameter => {
+          const { parameterKey, label, secondaryLabel } = queryParameter;
+          return (
+            <InputField
+              key={parameterKey}
+              inputKey={parameterKey}
+              value={values[parameterKey]}
+              {...queryParameter}
+              onChange={handleValueChange}
+              label={label}
+              secondaryLabel={secondaryLabel}
+              parentRecord={parentRecord}
+            />
+          );
+        })}
+        {children}
+      </ModalContentProvider>
+      <DialogFooter>
+        <OutlinedButton onClick={onDismiss} disabled={isLoading}>
+          {errorMessage ? 'Dismiss' : 'Cancel'}
+        </OutlinedButton>
+        <Button
+          onClick={() => onConfirm(values)}
+          disabled={!!errorMessage || isLoading || isConfirmDisabled}
+        >
+          {confirmLabel}
+        </Button>
+      </DialogFooter>
+    </Dialog>
+  );
+};
 
 ImportExportModalComponent.propTypes = {
-  errorMessage: PropTypes.string,
-  isPreparingImport: PropTypes.bool.isRequired,
   isLoading: PropTypes.bool.isRequired,
   onDismiss: PropTypes.func.isRequired,
-  onImport: PropTypes.func.isRequired,
+  onConfirm: PropTypes.func.isRequired,
+  confirmLabel: PropTypes.string.isRequired,
+  isOpen: PropTypes.bool.isRequired,
+  errorMessage: PropTypes.string,
   title: PropTypes.string,
+  subtitle: PropTypes.string,
+  isConfirmDisabled: PropTypes.bool,
+  children: PropTypes.element,
   queryParameters: PropTypes.array,
-  instruction: PropTypes.string,
+  parentRecord: PropTypes.object,
 };
 
 ImportExportModalComponent.defaultProps = {
   errorMessage: null,
   title: null,
   queryParameters: [],
-  instruction: '',
+  subtitle: '',
+  isConfirmDisabled: false,
+  parentRecord: {},
+  children: null,
 };
 
-const mapStateToProps = state => ({
-  isPreparingImport: getIsPreparingImport(state),
-  isLoading: getIsProcessing(state),
-  errorMessage: getErrorMessage(state),
-  importEndpoint: getImportRecordType(state),
-});
+const mapStateToProps = ({ importExport: importExportState }, { onConfirm }) => {
+  const { isLoading, errorMessage, parentRecord } = importExportState;
 
-const mergeProps = ({ importEndpoint, ...restOfStateProps }, { dispatch }, ownProps) => ({
-  ...restOfStateProps,
-  ...ownProps,
+  return {
+    isLoading,
+    errorMessage,
+    parentRecord,
+    onConfirm: values => onConfirm(values, parentRecord),
+  };
+};
+
+const mapDispatchToProps = dispatch => ({
   onDismiss: () => dispatch(dismissDialog()),
-  onImport: (...args) => dispatch(importData(importEndpoint, ...args)),
 });
 
 export const ImportExportModal = connect(
   mapStateToProps,
-  null,
-  mergeProps,
+  mapDispatchToProps,
 )(ImportExportModalComponent);

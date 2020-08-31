@@ -24,6 +24,7 @@ import {
   HIDE_MAP_MEASURE,
   UNHIDE_MAP_MEASURE,
   CLEAR_MEASURE,
+  UPDATE_MEASURE_CONFIG,
 } from '../actions';
 
 import { MARKER_TYPES } from '../constants';
@@ -127,6 +128,7 @@ function measureInfo(state = {}, action) {
 
 function isMeasureLoading(state = false, action) {
   switch (action.type) {
+    case UPDATE_MEASURE_CONFIG:
     case CHANGE_MEASURE:
       return true;
     case FETCH_MEASURE_DATA_ERROR:
@@ -192,6 +194,10 @@ function shouldSnapToPosition(state = true, action) {
  * initial state of the map.
  */
 function getAutoTileset() {
+  // default to osm in dev so that we don't pay for tiles when running locally
+  if (process.env.NODE_ENV !== 'production') {
+    return 'osm';
+  }
   const SLOW_LOAD_TIME_THRESHOLD = 2 * 1000; // 2 seconds in milliseconds
   return window.loadTime < SLOW_LOAD_TIME_THRESHOLD ? 'satellite' : 'osm';
 }

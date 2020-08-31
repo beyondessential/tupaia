@@ -14,13 +14,13 @@ import {
   FETCH_LOGOUT_SUCCESS,
 } from '../actions';
 import { INITIAL_PROJECT_CODE } from '../defaults';
-import { selectAdjustedProjectBounds } from '../selectors';
+import { selectAdjustedProjectBounds, selectProjectByCode } from '../selectors';
 
 function* fetchProjectData() {
   try {
     const { projects } = yield call(request, 'projects', fetchProjectsError);
     yield put(setProjects(projects));
-    yield put(selectProject(projects.find(p => p.code === INITIAL_PROJECT_CODE)));
+    yield put(selectProject(INITIAL_PROJECT_CODE));
   } catch (error) {
     console.error(error);
   }
@@ -38,13 +38,18 @@ function* watchUserLogoutSuccessAndRefetchProjectData() {
   yield takeLatest(FETCH_LOGOUT_SUCCESS, fetchProjectData);
 }
 
+function* loadProject(action) {
+  const state = yield select();
+  const project = selectProjectByCode(state, action.projectCode);
+
+  yield put(changeBounds(yield select(selectAdjustedProjectBounds, action.projectCode)));
+  yield put(requestOrgUnit(action.projectCode));
+  yield put(changeDashboardGroup(project.dashboardGroupName));
+}
+
 function* watchSelectProjectAndLoadProjectState() {
   // eslint-disable-next-line func-names
-  yield takeLatest(SELECT_PROJECT, function*(action) {
-    yield put(changeBounds(yield select(selectAdjustedProjectBounds, action.project.code)));
-    yield put(changeDashboardGroup(action.project.dashboardGroupName));
-    yield put(requestOrgUnit(action.project.code));
-  });
+  yield takeLatest(SELECT_PROJECT, loadProject);
 }
 
 export default [

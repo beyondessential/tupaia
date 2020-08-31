@@ -25,7 +25,7 @@ import {
   SORTING_CHANGE,
 } from './constants';
 import { getTableState } from './selectors';
-import { convertFilterToString } from '../utilities';
+import { convertSearchTermToFilter } from '../utilities';
 
 export const changePage = (reduxId, pageIndex) => ({
   type: PAGE_INDEX_CHANGE,
@@ -79,11 +79,11 @@ export const refreshData = (reduxId, endpoint, columns, baseFilter, tableState) 
   const { pageIndex, pageSize, filters, sorting } = tableState;
 
   // Set up filter
-  const filterObject = baseFilter;
+  const filterObject = { ...baseFilter };
   filters.forEach(({ id, value }) => {
     filterObject[id] = value;
   });
-  const filterString = convertFilterToString(filterObject);
+  const filterString = JSON.stringify(convertSearchTermToFilter(filterObject));
 
   // Set up sort
   const sortObjects = sorting.map(({ id, desc }) => {
@@ -148,7 +148,7 @@ export const confirmAction = reduxId => (dispatch, getState) => {
 export const requestDeleteRecord = (reduxId, endpoint, id) => ({
   type: ACTION_REQUEST,
   reduxId,
-  confirmMessage: "Are you sure you want to delete this record? It can't be undone!",
+  confirmMessage: 'Are you sure you want to delete this record?',
   actionCreator: () => deleteRecordFromTable(reduxId, endpoint, id),
 });
 

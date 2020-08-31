@@ -4,7 +4,7 @@
  */
 import sinon from 'sinon';
 import { DhisApi } from '@tupaia/dhis-api';
-import { ORGANISATION_UNIT_ID } from './testData';
+import { ORGANISATION_UNIT_ID } from './AggregateDataPusher.fixtures';
 
 // taken directly from a DHIS2 api call, with redundant info stripped out
 const SUCCESS_DIAGNOSTICS = {

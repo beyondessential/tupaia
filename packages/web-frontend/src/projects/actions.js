@@ -13,8 +13,8 @@ import {
 } from '../actions';
 import { INITIAL_PROJECT_CODE } from '../defaults';
 
-export function selectProject(project = INITIAL_PROJECT_CODE) {
-  return { type: SELECT_PROJECT, project };
+export function selectProject(projectCode = INITIAL_PROJECT_CODE) {
+  return { type: SELECT_PROJECT, projectCode };
 }
 
 export function setProjects(data) {

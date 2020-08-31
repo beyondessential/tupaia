@@ -1,0 +1,9 @@
+{
+  "baseUrl": "http://localhost:8088",
+  "integrationFolder": "cypress/e2e",
+  "ignoreTestFiles": "snapshots.js",
+  "viewportHeight": 900,
+  "viewportWidth": 1400,
+  "useRelativeSnapshots": true,
+  "experimentalFetchPolyfill": true
+}

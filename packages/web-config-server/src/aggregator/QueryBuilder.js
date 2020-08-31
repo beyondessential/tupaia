@@ -6,10 +6,10 @@ import { getDefaultPeriod } from '/utils';
 import { Entity } from '/models';
 
 export class QueryBuilder {
-  constructor(originalQuery, replacementValues = {}, fetchDataSourceEntities) {
+  constructor(originalQuery, replacementValues = {}, routeHandler) {
     this.query = { ...originalQuery };
     this.replacementValues = replacementValues;
-    this.fetchDataSourceEntities = fetchDataSourceEntities;
+    this.routeHandler = routeHandler;
   }
 
   getQueryParameter(parameterKey) {
@@ -17,9 +17,9 @@ export class QueryBuilder {
   }
 
   // Ensure the standard dimensions of period, start/end date, and organisation unit are set up
-  async build() {
+  async build(dataSourceEntities) {
     this.makePeriodReplacements();
-    await this.fetchAndReplaceOrgUnitCodes();
+    this.replaceOrgUnitCodes(dataSourceEntities);
     this.makeEventReplacements();
     return this.query;
   }
@@ -33,16 +33,27 @@ export class QueryBuilder {
     }
   }
 
-  async fetchAndReplaceOrgUnitCodes() {
-    const organisationUnitCode = this.getQueryParameter('organisationUnitCode');
-    const entity = await Entity.findOne({ code: organisationUnitCode });
-    const dataSourceEntities = await this.fetchDataSourceEntities(
-      entity,
-      this.getQueryParameter('dataSourceEntityType'),
-    );
+  replaceOrgUnitCodes(dataSourceEntities) {
     this.query.organisationUnitCodes = dataSourceEntities.map(e => e.code);
     delete this.query.organisationUnitCode;
   }
+
+  async getDataSourceEntities() {
+    const organisationUnitCode = this.getQueryParameter('organisationUnitCode');
+    const entity = await Entity.findOne({ code: organisationUnitCode });
+    const dataSourceEntities = await this.routeHandler.fetchDataSourceEntities(
+      entity,
+      (this.getQueryParameter('entityAggregation') || {}).dataSourceEntityType,
+      this.getQueryParameter('dataSourceEntityFilter'),
+    );
+    return dataSourceEntities;
+  }
+
+  getEntityAggregationOptions() {
+    return this.getQueryParameter('entityAggregation') || {};
+  }
+
+  getQuery = () => this.query;
 
   // Adds standard period, start date and end date
   makePeriodReplacements() {

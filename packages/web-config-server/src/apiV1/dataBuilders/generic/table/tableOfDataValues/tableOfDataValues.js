@@ -28,9 +28,9 @@ export class TableOfDataValuesBuilder extends DataBuilder {
     const { results, period } = await this.fetchAnalyticsAndMetadata();
     this.results = results;
     this.tableConfig = new TableConfig(this.config, this.results);
-    this.baseRows = this.buildBaseRows();
     this.valuesByCell = this.buildValuesByCell();
     this.totalCalculator = new TotalCalculator(this.tableConfig, this.valuesByCell);
+    this.rowsToDescriptions = {};
 
     const columns = await this.buildColumns();
     const rows = await this.buildRows(columns);
@@ -78,7 +78,8 @@ export class TableOfDataValuesBuilder extends DataBuilder {
   }
 
   async buildRows() {
-    return this.buildBaseRows().map((baseRow, rowIndex) => ({
+    const baseRows = await this.buildBaseRows();
+    return baseRows.map((baseRow, rowIndex) => ({
       ...baseRow,
       ...this.buildRowValues(rowIndex),
     }));
@@ -87,23 +88,110 @@ export class TableOfDataValuesBuilder extends DataBuilder {
   /**
    * @returns {{ dataElement: string, categoryId: (string:undefined) }}
    */
-  buildBaseRows() {
-    return this.tableConfig.hasRowCategories()
-      ? flatten(
-          this.tableConfig.rows.map(({ category: categoryId, rows }) => {
-            return rows.map(dataElement => {
-              if (dataElement.category) {
-                return {
-                  category: dataElement.category,
-                  categoryId,
-                  rows: dataElement.rows || rows,
-                };
-              }
-              return { dataElement, categoryId };
-            });
-          }),
-        )
-      : this.tableConfig.rows.map(dataElement => ({ dataElement }));
+  async buildBaseRows() {
+    if (this.tableConfig.hasRowCategories()) {
+      if (this.tableConfig.hasRowDescriptions()) await this.buildRowDescriptions();
+      if (this.tableConfig.hasRowDataElements()) {
+        const rowDataElementCodes = flatten(
+          this.tableConfig.rows.map(({ rows }) => rows.map(row => row.code)),
+        );
+
+        const { results } = await this.fetchAnalytics(rowDataElementCodes, {
+          entityAggregation: {
+            dataSourceEntityType: this.config.rowDataSourceEntityType,
+          },
+        });
+        const rowsWithData = results.map(result => result.dataElement);
+        this.tableConfig.rows = this.tableConfig.rows.map(({ rows, category }) => {
+          if (this.tableConfig.hasRowDescriptions()) {
+            rows
+              .filter(row => rowsWithData.includes(row.code))
+              .forEach(row => {
+                this.rowsToDescriptions[row.name] = this.rowDescriptionResults[
+                  row.descriptionDataElement
+                ];
+              });
+          }
+
+          const rowsFromData = rows.filter(row => rowsWithData.includes(row.code)).map(r => r.name);
+
+          return { rows: rowsFromData, category };
+        });
+      }
+
+      return flatten(
+        this.tableConfig.rows.map(({ category: categoryId, rows }) => {
+          return rows.map(dataElement => {
+            if (dataElement.category) {
+              return {
+                category: dataElement.category,
+                categoryId,
+                rows: dataElement.rows || rows,
+              };
+            }
+
+            const rowData = {
+              dataElement: dataElement.hasOwnProperty('name') ? dataElement.name : dataElement,
+              categoryId,
+            };
+            const rowInfo = this.rowsToDescriptions[rowData.dataElement];
+            if (rowInfo) return { ...rowData, rowInfo };
+
+            return rowData;
+          });
+        }),
+      );
+    }
+
+    if (this.tableConfig.hasRowDataElements()) {
+      if (this.tableConfig.hasRowDescriptions()) await this.buildRowDescriptions();
+      const rowDataElementCodes = this.tableConfig.rows.map(row => row.code);
+
+      const { results } = await this.fetchAnalytics(rowDataElementCodes, {
+        entityAggregation: {
+          dataSourceEntityType: this.config.rowDataSourceEntityType,
+        },
+      });
+      const rowsWithData = results.map(result => result.dataElement);
+
+      if (this.tableConfig.hasRowDescriptions()) {
+        this.tableConfig.rows
+          .filter(row => rowsWithData.includes(row.code))
+          .forEach(row => {
+            this.rowsToDescriptions[row.name] = this.rowDescriptionResults[
+              row.descriptionDataElement
+            ];
+          });
+      }
+      this.tableConfig.rows = this.tableConfig.rows.filter(row => rowsWithData.includes(row.code));
+    }
+
+    return this.tableConfig.rows.map(dataElement => {
+      const rowData = {
+        dataElement: dataElement.hasOwnProperty('name') ? dataElement.name : dataElement,
+      };
+      const rowInfo = this.rowsToDescriptions && this.rowsToDescriptions[rowData.dataElement];
+      if (rowInfo) return { ...rowData, rowInfo };
+
+      return rowData;
+    });
+  }
+
+  async buildRowDescriptions() {
+    let rowDescriptionDataElementCodes = [];
+    if (this.tableConfig.hasRowCategories()) {
+      rowDescriptionDataElementCodes = flatten(
+        this.tableConfig.rows.map(({ rows }) => rows.map(row => row.descriptionDataElement)),
+      );
+    } else {
+      rowDescriptionDataElementCodes = this.tableConfig.rows.map(row => row.descriptionDataElement);
+    }
+
+    const { results: rowDescriptionResults } = await this.fetchAnalytics(
+      rowDescriptionDataElementCodes,
+    );
+
+    this.rowDescriptionResults = reduceToDictionary(rowDescriptionResults, 'dataElement', 'value');
   }
 
   buildRowValues(rowIndex) {
@@ -132,16 +220,18 @@ export class TableOfDataValuesBuilder extends DataBuilder {
 
   async buildColumns() {
     const buildColumn = (column, index) => ({ key: getColumnKey(index), title: column });
-    this.tableConfig.columnType = this.tableConfig.columns;
 
     if (this.tableConfig.hasColumnMetadataTranslator()) {
       this.results = await this.tableConfig.processColumnMetadataTranslator(this.results);
     }
 
-    if (this.tableConfig.columnType === ORG_UNIT_COL_KEY) this.buildOrgsFromResults();
-
-    if (this.tableConfig.columnType === ORG_UNIT_WITH_TYPE_COL_KEY)
+    if (this.tableConfig.columns === ORG_UNIT_COL_KEY) {
+      this.buildOrgsFromResults();
+    }
+    
+    if (this.tableConfig.columns === ORG_UNIT_WITH_TYPE_COL_KEY) {
       this.buildOrgsFromResultsWithCategories();
+    }
 
     if (!this.hasColumnsInCategories(this.tableConfig.columns)) {
       return this.tableConfig.columns.map(buildColumn);
@@ -219,9 +309,10 @@ export class TableOfDataValuesBuilder extends DataBuilder {
 
       return Object.entries(totals).reduce((averages, [category, columns]) => {
         const averagedColumns = {};
-        for (const column in columns) {
+
+        Object.keys(columns).forEach(column => {
           averagedColumns[column] = Math.round(columns[column] / categoryRowLengths[category]);
-        }
+        });
 
         return { ...averages, [category]: averagedColumns };
       }, {});
