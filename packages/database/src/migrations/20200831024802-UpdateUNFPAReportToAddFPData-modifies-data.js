@@ -43,6 +43,14 @@ const OLD_CONFIG = {
       },
     ],
   ],
+  columns: {
+    type: '$period',
+    periodType: 'quarter',
+    aggregationType: 'FINAL_EACH_QUARTER',
+  },
+  entityAggregation: {
+    dataSourceEntityType: 'facility',
+  },
 };
 
 const NEW_CONFIG = {
@@ -79,31 +87,74 @@ const NEW_CONFIG = {
       },
     ],
   ],
+  columns: {
+    type: '$period',
+    periodType: 'quarter',
+    aggregationType: 'FINAL_EACH_QUARTER',
+  },
+  entityAggregation: {
+    dataSourceEntityType: 'facility',
+  },
 };
+
+const OLD_CONFIG_FACILITY = {
+  rows: ['Delivery', 'ANC', 'PNC'],
+  cells: [['RHS3UNFPA644'], ['RHS3UNFPA633'], ['RHS3UNFPA636']],
+  columns: {
+    name: '# women',
+    type: '$period',
+    periodType: 'quarter',
+    aggregationType: 'FINAL_EACH_QUARTER',
+    fillEmptyPeriods: true,
+  },
+  baselineColumns: [
+    {
+      name: 'Does this facility offer the service?',
+      dataElements: ['RHS3UNFPA536', 'RHS3UNFPA4121', 'RHS3UNFPA464'],
+    },
+  ],
+};
+
+const NEW_CONFIG_FACILITY = {
+  rows: ['Delivery', 'ANC', 'PNC', 'Family Planning'],
+  cells: [['RHS3UNFPA644'], ['RHS3UNFPA633'], ['RHS3UNFPA636'], ['RHS4UNFPA878']],
+  columns: {
+    name: '# women',
+    type: '$period',
+    periodType: 'quarter',
+    aggregationType: 'FINAL_EACH_QUARTER',
+    fillEmptyPeriods: true,
+  },
+  baselineColumns: [
+    {
+      name: 'Does this facility offer the service?',
+      dataElements: ['RHS3UNFPA536', 'RHS3UNFPA4121', 'RHS3UNFPA464', 'RHS3UNFPA536'],
+    },
+  ],
+};
+
 exports.up = function(db) {
   return db.runSql(`
     update "dashboardReport"
-    set
-      "dataBuilderConfig" = jsonb_set(
-          jsonb_set("dataBuilderConfig", '{cells}', '${JSON.stringify(NEW_CONFIG.cells)}'),
-          '{rows}',
-          '${JSON.stringify(NEW_CONFIG.rows)}'
-        )
+    set "dataBuilderConfig" = '${JSON.stringify(NEW_CONFIG)}'::jsonb
     where id = 'UNFPA_RH_Number_Of_Women_Provided_SRH_Services_Matrix_National_Provincial';
+
+    update "dashboardReport"
+    set "dataBuilderConfig" = '${JSON.stringify(NEW_CONFIG_FACILITY)}'::jsonb
+    where id = 'UNFPA_RH_Number_Of_Women_Provided_SRH_Services_Matrix';
   `);
 };
 
 exports.down = function(db) {
   return db.runSql(`
-  update "dashboardReport"
-  set
-    "dataBuilderConfig" = jsonb_set(
-        jsonb_set("dataBuilderConfig", '{cells}', '${JSON.stringify(OLD_CONFIG.cells)}'),
-        '{rows}',
-        '${JSON.stringify(OLD_CONFIG.rows)}'
-      )
-  where id = 'UNFPA_RH_Number_Of_Women_Provided_SRH_Services_Matrix_National_Provincial';
-`);
+    update "dashboardReport"
+    set "dataBuilderConfig" = '${JSON.stringify(OLD_CONFIG)}'::jsonb
+    where id = 'UNFPA_RH_Number_Of_Women_Provided_SRH_Services_Matrix_National_Provincial';
+
+    update "dashboardReport"
+    set "dataBuilderConfig" = '${JSON.stringify(OLD_CONFIG_FACILITY)}'::jsonb
+    where id = 'UNFPA_RH_Number_Of_Women_Provided_SRH_Services_Matrix';
+  `);
 };
 
 exports._meta = {
