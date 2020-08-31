@@ -26,12 +26,15 @@ describe('helpers', () => {
       countMale: [assertIsNotNegative],
     };
 
+    it('should resolve for empty validators', () =>
+      expect(validateConfig({ random: 'string' })).toResolve());
+
     it('should throw if a field is invalid', async () =>
       expect(validateConfig({ countFemale: -1, countMale: 2 }, configValidators)).toBeRejectedWith(
         `Error in field 'countFemale': Must be >= 0`,
       ));
 
-    it('should not throw if all fields are valid', () =>
+    it('should resolve if all fields are valid', () =>
       expect(validateConfig({ countFemale: 1, countMale: 2 }, configValidators)).toResolve());
   });
 
