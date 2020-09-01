@@ -99,7 +99,7 @@ describe('buildArithmetic', () => {
           formula: 'A_To_2019 / (A_To_2019 + B_To_2019 - C_To_2019)',
           aggregation: getAggregationForCodes(['A_To_2019', 'B_To_2019', 'C_To_2019']),
         },
-        [{ organisationUnit: 'TO', period: '2019', value: Infinity }],
+        [],
       ],
       [
         'some data elements are undefined in the orgUnit/period combo',

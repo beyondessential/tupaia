@@ -70,11 +70,13 @@ const fetchAnalyticalEvents = async (
 };
 
 const buildAnalyticValues = (analyticalEvents: AnalyticalEvent[], formula: string) =>
-  analyticalEvents.map(({ organisationUnit, period, dataValues }) => ({
-    organisationUnit,
-    period,
-    value: runArithmetic(formula, dataValues),
-  }));
+  analyticalEvents
+    .map(({ organisationUnit, period, dataValues }) => ({
+      organisationUnit,
+      period,
+      value: runArithmetic(formula, dataValues),
+    }))
+    .filter(({ value }) => isFinite(value));
 
 export const buildArithmetic: Builder = async input => {
   const { aggregator, config: configInput, fetchOptions } = input;
