@@ -128,7 +128,7 @@ const NEW_CONFIG_FACILITY = {
   baselineColumns: [
     {
       name: 'Does this facility offer the service?',
-      dataElements: ['RHS3UNFPA536', 'RHS3UNFPA4121', 'RHS3UNFPA464', 'RHS3UNFPA536'],
+      dataElements: ['RHS3UNFPA536', 'RHS3UNFPA4121', 'RHS3UNFPA464', 'RHS4UNFPA807'],
     },
   ],
 };
