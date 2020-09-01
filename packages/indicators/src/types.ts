@@ -16,6 +16,12 @@ export interface Analytic extends AnalyticValue {
   readonly dataElement: string;
 }
 
+export interface AnalyticCluster {
+  organisationUnit: Analytic['organisationUnit'];
+  period: Analytic['period'];
+  dataValues: Record<Analytic['dataElement'], Analytic['value']>;
+}
+
 type TypeFields = Record<string, string | number | {}>;
 
 type DatabaseType<F extends TypeFields> = BaseDatabaseType & F;

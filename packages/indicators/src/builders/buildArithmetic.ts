@@ -6,20 +6,15 @@
 import { getVariables, runArithmetic } from '@beyondessential/arithmetic';
 
 import { Aggregator } from '@tupaia/aggregator';
+import { analyticsToAnalyticClusters } from '@tupaia/data-broker';
 import { hasContent, isAString, isPlainObject } from '@tupaia/utils';
 import { getAggregationsByCode, fetchAnalytics, validateConfig } from './helpers';
-import { Analytic, Builder, AggregationSpecs, FetchOptions } from '../types';
+import { AnalyticCluster, Builder, AggregationSpecs, FetchOptions } from '../types';
 
 export interface ArithmeticConfig {
   readonly [key: string]: unknown;
   readonly formula: string;
   readonly aggregation: AggregationSpecs;
-}
-
-interface AnalyticalEvent {
-  organisationUnit: Analytic['organisationUnit'];
-  period: Analytic['period'];
-  dataValues: Record<Analytic['dataElement'], Analytic['value']>;
 }
 
 const assertAggregationIsDefinedForCodesInFormula = (
@@ -38,39 +33,25 @@ const configValidators = {
   aggregation: [hasContent, isPlainObject, assertAggregationIsDefinedForCodesInFormula],
 };
 
-const analyticsToAnalyticalEvents = (analytics: Analytic[]): AnalyticalEvent[] => {
-  const eventMap: Record<string, AnalyticalEvent> = {};
-  analytics.forEach(analytic => {
-    const { dataElement, organisationUnit, period, value } = analytic;
-    const key = `${organisationUnit}__${period}`;
-    if (!eventMap[key]) {
-      eventMap[key] = { organisationUnit, period, dataValues: {} };
-    }
-    eventMap[key].dataValues[dataElement] = value;
-  });
-
-  return Object.values(eventMap);
-};
-
-const fetchAnalyticalEvents = async (
+const fetchAnalyticClusters = async (
   aggregator: Aggregator,
   aggregationSpecs: AggregationSpecs,
   fetchOptions: FetchOptions,
 ) => {
   const aggregationsByCode = getAggregationsByCode(aggregationSpecs);
   const analytics = await fetchAnalytics(aggregator, aggregationsByCode, fetchOptions);
-  const events = analyticsToAnalyticalEvents(analytics);
+  const clusters = analyticsToAnalyticClusters(analytics);
 
   const allElements = Object.keys(aggregationsByCode);
-  const checkEventIncludesAllElements = (event: AnalyticalEvent) =>
-    allElements.every(member => member in event.dataValues);
+  const checkClusterIncludesAllElements = (cluster: AnalyticCluster) =>
+    allElements.every(member => member in cluster.dataValues);
 
-  // Remove events that do not include all elements referenced in the specs
-  return events.filter(checkEventIncludesAllElements);
+  // Remove clusters that do not include all elements referenced in the specs
+  return clusters.filter(checkClusterIncludesAllElements);
 };
 
-const buildAnalyticValues = (analyticalEvents: AnalyticalEvent[], formula: string) =>
-  analyticalEvents
+const buildAnalyticValues = (analyticClusters: AnalyticCluster[], formula: string) =>
+  analyticClusters
     .map(({ organisationUnit, period, dataValues }) => ({
       organisationUnit,
       period,
@@ -83,6 +64,6 @@ export const buildArithmetic: Builder = async input => {
   const config = await validateConfig<ArithmeticConfig>(configInput, configValidators);
 
   const { formula, aggregation: aggregationSpecs } = config;
-  const events = await fetchAnalyticalEvents(aggregator, aggregationSpecs, fetchOptions);
-  return buildAnalyticValues(events, formula);
+  const clusters = await fetchAnalyticClusters(aggregator, aggregationSpecs, fetchOptions);
+  return buildAnalyticValues(clusters, formula);
 };
