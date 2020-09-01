@@ -10,9 +10,9 @@ type ArrayDataElement = [string, string, string, number]; // dataElement, orgUni
 /**
  * Code format: `valueHint_orgUnits_periods`
  * Eg for `A_ToPg_20192020`:
- * A => value using 1 (B for 2, C for 3 etc)
- * ToPg => defined in orgUnits: TO, PG
- * 20192020 => defined in periods: 2019, 2020
+ * A => analytic values use 1 (B for 2, C for 3 etc)
+ * ToPg => analytics exist for orgUnits: TO, PG
+ * 20192020 => analytics exist for periods: 2019, 2020
  */
 const ARRAY_DATA_ELEMENTS: ArrayDataElement[] = [
   ['A_To_2019', 'TO', '2019', 1],
