@@ -15,7 +15,6 @@ import {
 } from '@tupaia/utils';
 import { hashAndSaltPassword } from '@tupaia/auth';
 
-
 export async function importUsers(req, res) {
   try {
     const { models } = req;
@@ -27,7 +26,7 @@ export async function importUsers(req, res) {
     await models.wrapInTransaction(async transactingModels => {
       for (const countries of Object.entries(workbook.Sheets)) {
         const [countryName, sheet] = countries;
-        const country = await transactingModels.country.findOrCreate({ name: countryName });
+        const countryEntity = await transactingModels.entity.findOrCreate({ name: countryName });
         const users = xlsx.utils.sheet_to_json(sheet);
         const emails = []; // An array to hold all emails, allowing duplicate checking
         for (let i = 0; i < users.length; i++) {
@@ -66,9 +65,9 @@ export async function importUsers(req, res) {
               countryName,
             );
           }
-          await transactingModels.userCountryPermission.findOrCreate({
+          await transactingModels.userEntityPermission.findOrCreate({
             user_id: user.id,
-            country_id: country.id,
+            entity_id: countryEntity.id,
             permission_group_id: permissionGroup.id,
           });
         }
