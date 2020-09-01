@@ -1031,7 +1031,7 @@ export function openExportDialog({
   dashboardGroupId,
   startDate,
   endDate,
-  formats = ['pdf', 'png'],
+  formats = ['png'],
   chartType,
   extraConfig = {},
 }) {
@@ -1071,7 +1071,7 @@ export function attemptChartExport({
   selectedDisaster,
   exportFileName,
   extraConfig = {},
-  selectedFormat = 'pdf',
+  selectedFormat = 'png',
   projectCode,
 }) {
   return {

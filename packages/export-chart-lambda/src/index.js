@@ -34,54 +34,13 @@ exports.handler = async (event, context, callback) => {
 };
 
 const exportMultiPage = async (page, { fileType, extraConfig, tmpFileName }) => {
-  if (fileType !== 'pdf') {
-    throw new Error('Multi page export must be pdf');
-  }
-
-  // Initialise the chart exporter. This turns the chart into a clipped, pageable UI that
-  // can be modified by the exporter.
-  await page.evaluate(`window.tupaiaExportProps.initExporter(${JSON.stringify(extraConfig)})`);
-
-  const files = [];
-  let exportComplete = false;
-  let pageCounter = 0;
-  while (!exportComplete) {
-    const fileName = `/tmp/page-${pageCounter}.pdf`;
-    files.push(fileName);
-
-    await page.pdf({
-      path: fileName,
-      format: 'A4',
-      printBackground: true,
-      landscape: true,
-    });
-
-    // Run the next page script which advanced to the next column or row and returns true.
-    // Returns false if there was no page to advance to.
-    exportComplete = !(await page.evaluate('window.tupaiaExportProps.moveToNextExportPage()'));
-    pageCounter++;
-    console.log(`Created ${fileName}`);
-  }
-
-  console.log('Screenshots complete');
-  await coreWorkerProcess(
-    `/opt/bin/gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile=${tmpFileName} ${files.join(
-      ' ',
-    )}`,
-  ).death();
-  console.log('Screenshot combining complete');
+  // Currently multi-page is only supported in excel chart exports (matrix charts)
+  // https://github.com/beyondessential/tupaia-backlog/issues/630 
+  throw new Error('Multi page export not supported');
 };
 
 const exportSinglePage = async (page, { fileType, tmpFileName }) => {
-  if (fileType === 'pdf') {
-    await page.pdf({
-      path: tmpFileName,
-      format: 'A4',
-      printBackground: true,
-      landscape: true,
-      pageRanges: '1',
-    });
-  } else if (fileType === 'png') {
+  if (fileType === 'png') {
     await page.screenshot({
       path: tmpFileName,
       fullPage: true,
