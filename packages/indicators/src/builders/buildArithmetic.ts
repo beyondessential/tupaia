@@ -23,11 +23,11 @@ interface AnalyticalEvent {
 }
 
 const assertAggregationIsDefinedForCodesInFormula = (
-  aggregation: string,
+  aggregation: AggregationSpecs,
   { formula }: { formula: ArithmeticConfig['formula'] },
 ) => {
   getVariables(formula).forEach(code => {
-    if (!Object.keys(aggregation).includes(code)) {
+    if (!(code in aggregation)) {
       throw new Error(`'${code}' is referenced in the formula but has no aggregation defined`);
     }
   });
@@ -63,7 +63,7 @@ const fetchAnalyticalEvents = async (
 
   const allElements = Object.keys(aggregationsByCode);
   const checkEventIncludesAllElements = (event: AnalyticalEvent) =>
-    allElements.every(member => Object.keys(event.dataValues).includes(member));
+    allElements.every(member => member in event.dataValues);
 
   // Remove events that do not include all elements referenced in the specs
   return events.filter(checkEventIncludesAllElements);
