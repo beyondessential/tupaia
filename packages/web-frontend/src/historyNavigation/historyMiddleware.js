@@ -36,7 +36,6 @@ import {
   attemptPushHistory,
   getInitialLocation,
   addPopStateListener,
-  getCurrentLocation,
 } from './historyNavigation';
 import { decodeLocation } from './utils';
 import { URL_COMPONENTS, PASSWORD_RESET_PREFIX, VERIFY_EMAIL_PREFIX } from './constants';
@@ -142,8 +141,8 @@ export const initHistoryDispatcher = store => {
   // URL in the browser if we change it inside our app state in Redux.
   // We can simply subscribe to Redux and update it if it's different.
   store.subscribe(() => {
-    const { pathname, search } = store.getState().routing;
-    attemptPushHistory(pathname, search);
+    const location = store.getState().routing;
+    attemptPushHistory(location);
   });
 };
 
