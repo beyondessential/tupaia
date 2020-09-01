@@ -8,7 +8,7 @@ import get from 'lodash.get';
 import { jest } from '@jest/globals';
 
 /**
- * Usage examples
+ * Usage:
  *
  * ```js
  * const mockDhisApi = createJestMockInstance('@tupaia/dhis-api', 'DhisApi');
