@@ -1,7 +1,5 @@
 'use strict';
 
-import {} from '../utilities';
-
 var dbm;
 var type;
 var seed;
