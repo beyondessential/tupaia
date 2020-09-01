@@ -42,12 +42,12 @@ export const createLocation = params => {
     if (value !== undefined) searchComponents[component] = value;
   });
 
-  return { pathname, search: translateSearchToExternal(searchComponents) };
+  return { pathname, search: stringifySearch(searchComponents) };
 };
 
 export const decodeLocation = ({ pathname, search }) => {
   const cleanPathname = pathname[0] === '/' ? pathname.slice(1) : pathname;
-  const searchParams = translateSearchToInternal(search);
+  const searchParams = parseSearch(search);
   if (cleanPathname === '') {
     return { projectSelector: true, ...searchParams };
   }
@@ -87,14 +87,14 @@ export const isLocationEqual = (a, b) => {
   return true;
 };
 
-export const translateSearchToInternal = search => {
+const parseSearch = search => {
   const externalSearchParams = queryString.parse(search);
   const invertedMap = invert(SEARCH_PARAM_KEY_MAP);
 
   return replaceKeysAndRemoveEmpty(externalSearchParams, invertedMap);
 };
 
-export const translateSearchToExternal = search => {
+const stringifySearch = search => {
   const externalSearchParams = replaceKeysAndRemoveEmpty(search, SEARCH_PARAM_KEY_MAP);
 
   return queryString.stringify(externalSearchParams);

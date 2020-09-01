@@ -64,21 +64,16 @@ const reactToLocationChange = (store, location, previousLocation) => {
 
   dispatch(setOverlayComponent(null));
 
-  const project = otherComponents[URL_COMPONENTS.PROJECT];
-  if (project && project !== previousComponents[URL_COMPONENTS.PROJECT])
-    dispatch(setProject(project));
+  const setComponentIfUpdated = (componentKey, setComponent) => {
+    const component = otherComponents[componentKey];
+    if (component && component !== previousComponents[componentKey])
+      dispatch(setComponent(component));
+  };
 
-  const orgUnit = otherComponents[URL_COMPONENTS.ORG_UNIT];
-  if (orgUnit && orgUnit !== previousComponents[URL_COMPONENTS.ORG_UNIT])
-    dispatch(setOrgUnit(orgUnit));
-
-  const measure = otherComponents[URL_COMPONENTS.MEASURE];
-  if (measure && measure !== previousComponents[URL_COMPONENTS.MEASURE])
-    dispatch(setMeasure(measure));
-
-  const report = otherComponents[URL_COMPONENTS.REPORT];
-  if (report && report !== previousComponents[URL_COMPONENTS.REPORT])
-    dispatch(openEnlargedDialog(report));
+  setComponentIfUpdated(URL_COMPONENTS.PROJECT, setProject);
+  setComponentIfUpdated(URL_COMPONENTS.ORG_UNIT, setOrgUnit);
+  setComponentIfUpdated(URL_COMPONENTS.URL_COMPONENTS, setMeasure);
+  setComponentIfUpdated(URL_COMPONENTS.REPORT, openEnlargedDialog);
 };
 
 const reactToUserPage = (userPage, initialComponents, dispatch) => {
