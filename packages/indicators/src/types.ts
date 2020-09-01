@@ -4,32 +4,55 @@
  */
 
 import { Aggregator } from '@tupaia/aggregator';
-import { DatabaseType } from '@tupaia/database';
+import { DatabaseType as BaseDatabaseType } from '@tupaia/database';
 
-export interface Analytic {
-  readonly dataElement: string;
+export interface AnalyticValue {
   readonly organisationUnit: string;
   readonly period: string;
   readonly value: number;
 }
 
-export interface IndicatorType extends DatabaseType {
+export interface Analytic extends AnalyticValue {
+  readonly dataElement: string;
+}
+
+export interface AnalyticCluster {
+  organisationUnit: Analytic['organisationUnit'];
+  period: Analytic['period'];
+  dataValues: Record<Analytic['dataElement'], Analytic['value']>;
+}
+
+type TypeFields = Record<string, string | number | {}>;
+
+type DatabaseType<F extends TypeFields> = BaseDatabaseType & F;
+
+type DbConditions<F extends TypeFields> = Partial<
+  Record<keyof F, number | number[] | string | string[]>
+>;
+
+interface DatabaseModel<F extends TypeFields, T extends DatabaseType<F>> {
+  find: (dbConditions: DbConditions<F>) => Promise<T[]>;
+}
+
+export type IndicatorFields = {
   id: string;
   code: string;
   builder: string;
   config: Record<string, unknown>;
-}
+};
 
-interface DatabaseModel<T> {
-  find: (dbConditions: Record<string, unknown>) => Promise<T[]>;
-}
+export type IndicatorType = DatabaseType<IndicatorFields>;
 
 export interface ModelRegistry {
-  readonly indicator: DatabaseModel<IndicatorType>;
+  readonly indicator: DatabaseModel<IndicatorFields, IndicatorType>;
 }
 
-export interface Builder<C extends {}> {
-  (input: { aggregator: Aggregator; config: C; fetchOptions: FetchOptions }): Promise<Analytic[]>;
+export interface Builder {
+  (input: {
+    aggregator: Aggregator;
+    config: IndicatorFields['config'];
+    fetchOptions: FetchOptions;
+  }): Promise<AnalyticValue[]>;
 }
 
 export interface Aggregation {

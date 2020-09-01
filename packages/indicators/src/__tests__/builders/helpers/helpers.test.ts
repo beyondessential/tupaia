@@ -4,33 +4,38 @@
  */
 
 import {
-  extractDataElementCodesFromFormula,
   fetchAnalytics,
   getAggregationsByCode,
   groupKeysByValueJson,
+  validateConfig,
 } from '../../../builders/helpers';
 import { Aggregation } from '../../../types';
-import { AGGREGATION_RESPONSE_CONFIG } from './helpers.fixtures';
-import { createAggregator } from './helpers.stubs';
+import { createAggregator } from '../stubs';
+import { ANALYTIC_RESPONSE_CONFIG } from './helpers.fixtures';
 
 describe('helpers', () => {
-  describe('extractDataElementCodesFromFormula()', () => {
-    const testData: [string, string, string[]][] = [
-      ['single letter codes', 'A + B', ['A', 'B']],
-      ['multi letter codes', 'BCD01 + BCD02', ['BCD01', 'BCD02']],
-      ['excessive whitespace', ' BCD01  +  BCD02 ', ['BCD01', 'BCD02']],
-      ['no whitespace', 'BCD01+BCD02', ['BCD01', 'BCD02']],
-      ['same code multiple times', 'BCD01 * BCD02 + BCD01', ['BCD01', 'BCD02']],
-      [
-        'all symbols',
-        '(BCD01 + BCD02) / ((BCD03 * BCD04) - BCD05)',
-        ['BCD01', 'BCD02', 'BCD03', 'BCD04', 'BCD05'],
-      ],
-    ];
+  describe('validateConfig', () => {
+    const assertIsNotNegative = (value: number) => {
+      if (value < 0) {
+        throw new Error('Must be >= 0');
+      }
+    };
 
-    it.each(testData)('%s', (_, formula, expected) => {
-      expect(extractDataElementCodesFromFormula(formula)).toEqual(new Set(expected));
-    });
+    const configValidators = {
+      countFemale: [assertIsNotNegative],
+      countMale: [assertIsNotNegative],
+    };
+
+    it('should resolve for empty validators', () =>
+      expect(validateConfig({ random: 'string' })).toResolve());
+
+    it('should throw if a field is invalid', async () =>
+      expect(validateConfig({ countFemale: -1, countMale: 2 }, configValidators)).toBeRejectedWith(
+        `Error in field 'countFemale': Must be >= 0`,
+      ));
+
+    it('should resolve if all fields are valid', () =>
+      expect(validateConfig({ countFemale: 1, countMale: 2 }, configValidators)).toResolve());
   });
 
   describe('getAggregationsByCode()', () => {
@@ -104,9 +109,9 @@ describe('helpers', () => {
         ],
       ];
 
-      it.each(testData)('%s', (_, object, expected) =>
-        expect(groupKeysByValueJson(object)).toStrictEqual(expected),
-      );
+      it.each(testData)('%s', (_, object, expected) => {
+        expect(groupKeysByValueJson(object)).toStrictEqual(expected);
+      });
     });
 
     describe('array values', () => {
@@ -143,42 +148,46 @@ describe('helpers', () => {
         ],
       ];
 
-      it.each(testData)('%s', (_, object, expected) =>
-        expect(groupKeysByValueJson(object)).toStrictEqual(expected),
-      );
+      it.each(testData)('%s', (_, object, expected) => {
+        expect(groupKeysByValueJson(object)).toStrictEqual(expected);
+      });
     });
   });
 
   describe('fetchAnalytics()', () => {
-    const aggregator = createAggregator(AGGREGATION_RESPONSE_CONFIG);
+    const aggregator = createAggregator(Object.values(ANALYTIC_RESPONSE_CONFIG));
 
     it('uses the provided fetchOptions', async () => {
       const fetchOptions = { organisationUnitCodes: ['TO'] };
       await fetchAnalytics(
         aggregator,
-        { BCD01: AGGREGATION_RESPONSE_CONFIG.BCD01.expectedAggregations },
+        { BCD01: ANALYTIC_RESPONSE_CONFIG.BCD01.aggregations },
         fetchOptions,
       );
 
-      expect(aggregator.fetchAnalytics).toHaveBeenCalledWith(
+      expect(aggregator.fetchAnalytics).toHaveBeenCalledOnceWith(
         expect.anything(),
         fetchOptions,
         expect.anything(),
       );
     });
 
-    it('fetches the expected analytics for a variety of same/different aggregations per data element', () => {
+    it('fetches the expected analytics for a variety of same/different aggregations per data element', async () => {
       const aggregationsByCode = {
-        BCD01: AGGREGATION_RESPONSE_CONFIG.BCD01.expectedAggregations,
-        BCD02: AGGREGATION_RESPONSE_CONFIG.BCD02.expectedAggregations,
-        BCD03: AGGREGATION_RESPONSE_CONFIG.BCD03.expectedAggregations,
-        BCD04: AGGREGATION_RESPONSE_CONFIG.BCD04.expectedAggregations,
+        BCD01: ANALYTIC_RESPONSE_CONFIG.BCD01.aggregations,
+        BCD02: ANALYTIC_RESPONSE_CONFIG.BCD02.aggregations,
+        BCD03: ANALYTIC_RESPONSE_CONFIG.BCD03.aggregations,
+        BCD04: ANALYTIC_RESPONSE_CONFIG.BCD04.aggregations,
       };
-      const expectedResults = [{ value: 1 }, { value: 2 }, { value: 3 }, { value: 4 }];
 
-      return expect(fetchAnalytics(aggregator, aggregationsByCode, {})).resolves.toStrictEqual(
-        expectedResults,
-      );
+      return expect(
+        fetchAnalytics(aggregator, aggregationsByCode, {}),
+      ).resolves.toIncludeSameMembers([
+        ANALYTIC_RESPONSE_CONFIG.BCD01.analytic,
+        ANALYTIC_RESPONSE_CONFIG.BCD02.analytic,
+        ANALYTIC_RESPONSE_CONFIG.BCD03.analytic,
+        ANALYTIC_RESPONSE_CONFIG.BCD04.analytic,
+      ]);
     });
   });
 });

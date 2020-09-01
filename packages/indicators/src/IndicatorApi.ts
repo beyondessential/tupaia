@@ -3,12 +3,11 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { capital } from 'case';
-
 import { Aggregator } from '@tupaia/aggregator';
 import { DataBroker } from '@tupaia/data-broker';
+import { getSortByKey, upperFirst } from '@tupaia/utils';
 import * as builders from './builders';
-import { Analytic, FetchOptions, ModelRegistry, IndicatorType } from './types';
+import { Analytic, Builder, FetchOptions, IndicatorType, ModelRegistry } from './types';
 
 export class IndicatorApi {
   private models: ModelRegistry;
@@ -24,25 +23,30 @@ export class IndicatorApi {
     const nestedAnalytics = await Promise.all(
       indicators.map(async indicator => this.buildAnalyticsForIndicator(indicator, fetchOptions)),
     );
-    return nestedAnalytics.flat();
+    return nestedAnalytics.flat().sort(getSortByKey('period'));
   }
 
   private buildAnalyticsForIndicator = async (
     indicator: IndicatorType,
     fetchOptions: FetchOptions,
   ) => {
-    const { builder, config } = indicator;
-    const buildAnalytics = this.getBuilderFunction(builder);
-    return buildAnalytics({ aggregator: this.aggregator, config, fetchOptions });
+    const { code, builder, config } = indicator;
+    const buildAnalyticValues = this.getBuilderFunction(builder);
+    const analyticValues = await buildAnalyticValues({
+      aggregator: this.aggregator,
+      config,
+      fetchOptions,
+    });
+
+    return analyticValues.map(value => ({ ...value, dataElement: code }));
   };
 
-  private getBuilderFunction = (builderName: string) => {
-    const builderFunctionName = `build${capital(builderName)}`;
-    const builderFunction = builders[builderFunctionName];
-    if (!builderFunction) {
+  private getBuilderFunction = (builderName: string): Builder => {
+    const builderFunctionName = `build${upperFirst(builderName)}`;
+    if (!(builderFunctionName in builders)) {
       throw new Error(`'${builderName}' is not an indicator builder`);
     }
 
-    return builderFunction;
+    return builders[builderFunctionName as keyof typeof builders];
   };
 }

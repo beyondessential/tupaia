@@ -26,7 +26,7 @@ export {
 export { asynchronouslyFetchValuesForObject, fetchWithTimeout, stringifyQuery } from './request';
 export { replaceValues } from './replaceValues';
 export { respond } from './respond';
-export { singularise, stripFromString } from './string';
+export { singularise, stripFromString, upperFirst } from './string';
 export * from './validation';
 export { WorkBookParser } from './WorkBookParser';
 export { checkValueSatisfiesCondition } from './checkValueSatisfiesCondition';
