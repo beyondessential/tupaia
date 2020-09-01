@@ -25,7 +25,7 @@ import {
   setVerifyEmailToken,
   setPasswordResetToken,
   openUserPage,
-  DIALOG_PAGE_RESET_PASSWORD,
+  DIALOG_PAGE_ONE_TIME_LOGIN,
   openEnlargedDialog,
 } from '../actions';
 import { setProject } from '../projects/actions';
@@ -85,7 +85,7 @@ const reactToUserPage = (userPage, initialComponents, dispatch) => {
   switch (userPage) {
     case PASSWORD_RESET_PREFIX:
       dispatch(setPasswordResetToken(initialComponents[URL_COMPONENTS.PASSWORD_RESET_TOKEN]));
-      dispatch(openUserPage(DIALOG_PAGE_RESET_PASSWORD));
+      dispatch(openUserPage(DIALOG_PAGE_ONE_TIME_LOGIN));
       break;
     case VERIFY_EMAIL_PREFIX:
       dispatch(setVerifyEmailToken(initialComponents[URL_COMPONENTS.VERIFY_EMAIL_TOKEN]));
