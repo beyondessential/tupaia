@@ -138,8 +138,6 @@ export const historyMiddleware = store => next => action => {
 // https://read.reduxbook.com/markdown/part2/09-routing.html
 export const initHistoryDispatcher = store => {
   // Update Redux if we navigated via browser's back/forward
-  // most browsers restore scroll position automatically
-  // as long as we make content scrolling happen on document.body
   addPopStateListener(location => {
     const previousLocation = store.getState().routing;
     store.dispatch(updateHistoryLocation(location));
