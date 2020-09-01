@@ -20,7 +20,6 @@ import { selectCurrentProjectCode } from '../../selectors';
 
 const formatLabels = {
   png: 'PNG',
-  pdf: 'PDF',
   xlsx: 'Excel (Raw Data)',
 };
 
