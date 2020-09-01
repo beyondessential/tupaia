@@ -23,3 +23,5 @@ export const stripFromString = (originalString, toStripOff = '') =>
     .replace(new RegExp(toStripOff), '') // strip toStripOff from anywhere in the string
     .replace(new RegExp(' {2,}'), ' ') // replace any double spaces left in middle of string with a single space
     .trim();
+
+export const upperFirst = text => `${text.charAt(0).toUpperCase()}${text.slice(1)}`;

@@ -3,23 +3,27 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-export const AGGREGATION_RESPONSE_CONFIG = {
+import { AnalyticResponseFixture } from '../stubs';
+
+export const ANALYTIC_RESPONSE_CONFIG: Record<string, AnalyticResponseFixture> = {
   BCD01: {
-    expectedAggregations: [{ type: 'FINAL_EACH_WEEK' }],
-    results: [{ value: 1 }],
+    code: 'BCD01',
+    aggregations: [{ type: 'FINAL_EACH_WEEK' }],
+    analytic: { dataElement: 'BCD01', organisationUnit: 'TO', period: '20200101', value: 1 },
   },
   BCD02: {
-    expectedAggregations: [{ type: 'FINAL_EACH_WEEK' }, { type: 'SUM' }],
-    results: [{ value: 2 }],
+    code: 'BCD02',
+    aggregations: [{ type: 'FINAL_EACH_WEEK' }, { type: 'SUM' }],
+    analytic: { dataElement: 'BCD01', organisationUnit: 'TO', period: '20200101', value: 2 },
   },
   BCD03: {
-    expectedAggregations: [{ type: 'FINAL_EACH_WEEK' }, { type: 'SUM' }],
-    results: [{ value: 3 }],
+    code: 'BCD03',
+    aggregations: [{ type: 'FINAL_EACH_WEEK' }, { type: 'SUM' }],
+    analytic: { dataElement: 'BCD01', organisationUnit: 'TO', period: '20200101', value: 3 },
   },
   BCD04: {
-    expectedAggregations: [{ type: 'SUM' }, { type: 'FINAL_EACH_WEEK' }],
-    results: [{ value: 4 }],
+    code: 'BCD04',
+    aggregations: [{ type: 'SUM' }, { type: 'FINAL_EACH_WEEK' }],
+    analytic: { dataElement: 'BCD01', organisationUnit: 'TO', period: '20200101', value: 4 },
   },
 };
-
-export type AggregationResponseConfig = typeof AGGREGATION_RESPONSE_CONFIG;

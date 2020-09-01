@@ -12,10 +12,11 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
+    "@beyondessential/arithmetic": "^2.0.0",
     "@tupaia/aggregator": "1.0.0",
     "@tupaia/data-broker": "1.0.0",
     "@tupaia/database": "1.0.0",
-    "case": "^1.5.3",
+    "@tupaia/utils": "1.0.0",
     "lodash.groupby": "^4.6.0"
   },
   "devDependencies": {
