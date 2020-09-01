@@ -3,7 +3,6 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { jest } from '@jest/globals';
 import get from 'lodash.get';
 
 /**
