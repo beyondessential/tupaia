@@ -115,6 +115,7 @@ import { createUrlString, URL_COMPONENTS } from './historyNavigation';
 import { getDefaultDates } from './utils/periodGranularities';
 import { DEFAULT_MEASURE_ID, DEFAULT_PROJECT_CODE } from './defaults';
 import { setProject } from './projects/actions';
+import { LANDING } from './containers/OverlayDiv/constants';
 
 /**
  * attemptChangePassword
@@ -357,7 +358,6 @@ function* attemptTokenLogin(action) {
     );
 
     yield put(findLoggedIn(false, true)); //default to email verified for one time login to prevent a nag screen
-
     yield put(fetchResetTokenLoginSuccess());
   } catch (error) {
     yield put(error.errorFunction(error));
@@ -980,10 +980,13 @@ function* watchAttemptAttemptDrillDown() {
   yield takeLatest(ATTEMPT_DRILL_DOWN, fetchDrillDownData);
 }
 
-// TODO: Make sure that the GO_HOME functionality is consistent and doesn't duplicate code
-// (specific PR for it)
-function* resetToProjectSplash() {
+function* resetToProjectSplash(action) {
+  // prevent the autoLogin when opening the site from messing up the routing
+  if (action.type === FETCH_LOGIN_SUCCESS && action.shouldCloseDialog) return;
+
   yield put(clearMeasureHierarchy());
+  yield put(setOverlayComponent(LANDING));
+  yield put(setProject(DEFAULT_PROJECT_CODE));
 }
 
 function* watchUserChangesAndUpdatePermissions() {
@@ -994,15 +997,6 @@ function* watchUserChangesAndUpdatePermissions() {
 
 function* watchGoHomeAndResetToProjectSplash() {
   yield takeLatest(GO_HOME, resetToProjectSplash);
-}
-
-function* resetToDefaultProject() {
-  // TODO: make sure that this function is considered in the GO_HOME PR.
-  yield put(setProject(DEFAULT_PROJECT_CODE));
-}
-
-function* watchGoHomeAndResetToDefaultProject() {
-  yield takeLatest(GO_HOME, resetToDefaultProject);
 }
 
 function* fetchEnlargedDialogViewContentForPeriod(action) {
@@ -1066,7 +1060,6 @@ export default [
   refreshBrowserWhenFinishingUserSession,
   watchRequestProjectAccess,
   watchGoHomeAndResetToProjectSplash,
-  watchGoHomeAndResetToDefaultProject,
   watchFetchResetTokenLoginSuccess,
   watchMeasurePeriodChange,
 ];
