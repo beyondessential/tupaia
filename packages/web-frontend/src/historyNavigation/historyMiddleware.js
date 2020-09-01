@@ -41,10 +41,10 @@ import { decodeLocation } from './utils';
 import { URL_COMPONENTS, PASSWORD_RESET_PREFIX, VERIFY_EMAIL_PREFIX } from './constants';
 
 export const reactToInitialState = store => {
-  reactToLocationChange(store, getInitialLocation());
+  reactToLocationChange(store, getInitialLocation(), clearLocation());
 };
 
-const reactToLocationChange = (store, location) => {
+const reactToLocationChange = (store, location, previousLocation) => {
   const { dispatch: rawDispatch } = store;
   const dispatch = action => rawDispatch({ ...action, meta: { preventHistoryUpdate: true } });
 
@@ -60,17 +60,25 @@ const reactToLocationChange = (store, location) => {
     return;
   }
 
+  const previousComponents = decodeLocation(previousLocation);
+
   dispatch(setOverlayComponent(null));
-  dispatch(setProject(otherComponents[URL_COMPONENTS.PROJECT]));
 
-  if (otherComponents[URL_COMPONENTS.ORG_UNIT])
-    dispatch(setOrgUnit(otherComponents[URL_COMPONENTS.ORG_UNIT]));
+  const project = otherComponents[URL_COMPONENTS.PROJECT];
+  if (project && project !== previousComponents[URL_COMPONENTS.PROJECT])
+    dispatch(setProject(project));
 
-  if (otherComponents[URL_COMPONENTS.MEASURE])
-    dispatch(setMeasure(otherComponents[URL_COMPONENTS.MEASURE]));
+  const orgUnit = otherComponents[URL_COMPONENTS.ORG_UNIT];
+  if (orgUnit && orgUnit !== previousComponents[URL_COMPONENTS.ORG_UNIT])
+    dispatch(setOrgUnit(orgUnit));
 
-  if (otherComponents[URL_COMPONENTS.REPORT])
-    dispatch(openEnlargedDialog(otherComponents[URL_COMPONENTS.REPORT]));
+  const measure = otherComponents[URL_COMPONENTS.MEASURE];
+  if (measure && measure !== previousComponents[URL_COMPONENTS.MEASURE])
+    dispatch(setMeasure(measure));
+
+  const report = otherComponents[URL_COMPONENTS.REPORT];
+  if (report && report !== previousComponents[URL_COMPONENTS.REPORT])
+    dispatch(openEnlargedDialog(report));
 };
 
 const reactToUserPage = (userPage, initialComponents, dispatch) => {
@@ -133,8 +141,9 @@ export const initHistoryDispatcher = store => {
   // most browsers restore scroll position automatically
   // as long as we make content scrolling happen on document.body
   addPopStateListener(location => {
+    const previousLocation = store.getState().routing;
     store.dispatch(updateHistoryLocation(location));
-    reactToLocationChange(store, location);
+    reactToLocationChange(store, location, previousLocation);
   });
 
   // The other part of the two-way binding is updating the displayed
