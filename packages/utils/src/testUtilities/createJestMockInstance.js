@@ -3,9 +3,8 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import get from 'lodash.get';
-
 import { jest } from '@jest/globals';
+import get from 'lodash.get';
 
 /**
  * Usage:
