@@ -76,7 +76,7 @@ const COLUMNS = [
 const EXPANSION_CONFIG = [
   {
     title: 'Permissions',
-    endpoint: PERMISSIONS_ENDPOINT,
+    endpoint: `user/{id}/${PERMISSIONS_ENDPOINT}`,
     columns: PERMISSIONS_COLUMNS,
     joinFrom: 'id',
     joinTo: 'user_id',
