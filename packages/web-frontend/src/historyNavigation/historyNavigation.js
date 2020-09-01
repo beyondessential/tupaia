@@ -7,13 +7,7 @@
 
 import { createBrowserHistory } from 'history';
 
-import {
-  decodeLocation,
-  createLocation,
-  translateSearchToInternal,
-  translateSearchToExternal,
-  isLocationEqual,
-} from './utils';
+import { decodeLocation, createLocation, isLocationEqual } from './utils';
 
 /* All code dealing with history directly */
 const history = createBrowserHistory();
@@ -21,37 +15,35 @@ const history = createBrowserHistory();
 // Capture on app init.
 const initialLocation = history.location;
 
-const getRawCurrentLocation = () => history.location;
+const getCurrentLocation = () => history.location;
 
-export function attemptPushHistory(pathname, searchParams = {}) {
-  const location = getRawCurrentLocation();
+export function attemptPushHistory(newLocation) {
+  const currentLocation = getCurrentLocation();
 
-  const search = translateSearchToExternal(searchParams);
-
-  const oldSearch = location.search.replace('?', ''); // remove the ? for comparisons
-
-  if (isLocationEqual(location, { pathname, search })) {
-    if (pathname !== location.pathname || search !== oldSearch) {
+  if (isLocationEqual(currentLocation, newLocation)) {
+    if (
+      newLocation.pathname !== currentLocation.pathname ||
+      newLocation.search !== currentLocation.search
+    ) {
       // We have a url that is functionally equivalent but different in string representation.
       // Let's assume that the updated version is "more correct" and update the history without a push.
-      history.replace({ pathname, search });
+      history.replace(newLocation);
     }
     return false;
   }
-
-  history.push({
-    pathname,
-    search,
-  });
+  history.push(newLocation);
 
   return true;
 }
+
+export const addPopStateListener = callback => {
+  history.listen((location, action) => {
+    if (action === 'POP') callback(location);
+  });
+};
 /* End of code dealing with history directly */
 
-export const getInitialLocation = () => ({
-  pathname: initialLocation.pathname,
-  search: translateSearchToInternal(initialLocation.search),
-});
+export const getInitialLocation = () => initialLocation;
 
 export const getInitialLocationComponents = () => {
   return decodeLocation(getInitialLocation());
@@ -63,8 +55,7 @@ export const getInitialLocationComponents = () => {
  */
 export function createUrlString(params) {
   const { pathname, search } = createLocation(params);
-  const query = translateSearchToExternal(search);
-  return `${pathname}?${query}`;
+  return `${pathname}${search}`;
 }
 
 /**

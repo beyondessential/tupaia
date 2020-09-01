@@ -22,7 +22,6 @@ import {
   setOrgUnit,
   setMeasure,
   setOverlayComponent,
-  goHome,
   setVerifyEmailToken,
   setPasswordResetToken,
   openUserPage,
@@ -35,15 +34,21 @@ import {
   setLocationComponent,
   clearLocation,
   attemptPushHistory,
-  getInitialLocationComponents,
+  getInitialLocation,
+  addPopStateListener,
 } from './historyNavigation';
+import { decodeLocation } from './utils';
 import { URL_COMPONENTS, PASSWORD_RESET_PREFIX, VERIFY_EMAIL_PREFIX } from './constants';
 
 export const reactToInitialState = store => {
+  reactToLocationChange(store, getInitialLocation(), clearLocation());
+};
+
+const reactToLocationChange = (store, location, previousLocation) => {
   const { dispatch: rawDispatch } = store;
   const dispatch = action => rawDispatch({ ...action, meta: { preventHistoryUpdate: true } });
 
-  const { userPage, projectSelector, ...otherComponents } = getInitialLocationComponents();
+  const { userPage, projectSelector, ...otherComponents } = decodeLocation(location);
   if (userPage) {
     reactToUserPage(userPage, otherComponents, dispatch);
     return;
@@ -55,17 +60,20 @@ export const reactToInitialState = store => {
     return;
   }
 
+  const previousComponents = decodeLocation(previousLocation);
+
   dispatch(setOverlayComponent(null));
-  dispatch(setProject(otherComponents[URL_COMPONENTS.PROJECT]));
 
-  if (otherComponents[URL_COMPONENTS.ORG_UNIT])
-    dispatch(setOrgUnit(otherComponents[URL_COMPONENTS.ORG_UNIT]));
+  const setComponentIfUpdated = (componentKey, setComponent) => {
+    const component = otherComponents[componentKey];
+    if (component && component !== previousComponents[componentKey])
+      dispatch(setComponent(component));
+  };
 
-  if (otherComponents[URL_COMPONENTS.MEASURE])
-    dispatch(setMeasure(otherComponents[URL_COMPONENTS.MEASURE]));
-
-  if (otherComponents[URL_COMPONENTS.REPORT])
-    dispatch(openEnlargedDialog(otherComponents[URL_COMPONENTS.REPORT]));
+  setComponentIfUpdated(URL_COMPONENTS.PROJECT, setProject);
+  setComponentIfUpdated(URL_COMPONENTS.ORG_UNIT, setOrgUnit);
+  setComponentIfUpdated(URL_COMPONENTS.URL_COMPONENTS, setMeasure);
+  setComponentIfUpdated(URL_COMPONENTS.REPORT, openEnlargedDialog);
 };
 
 const reactToUserPage = (userPage, initialComponents, dispatch) => {
@@ -125,21 +133,18 @@ export const historyMiddleware = store => next => action => {
 // https://read.reduxbook.com/markdown/part2/09-routing.html
 export const initHistoryDispatcher = store => {
   // Update Redux if we navigated via browser's back/forward
-  // most browsers restore scroll position automatically
-  // as long as we make content scrolling happen on document.body
-  window.addEventListener('popstate', () => {
-    // here `updateHistoryLocation` is an action creator that
-    // takes the new location and stores it in Redux.
-    // TODO: popstate app reactions will be handled in the relevant PR
-    store.dispatch(updateHistoryLocation(window.location));
+  addPopStateListener(location => {
+    const previousLocation = store.getState().routing;
+    store.dispatch(updateHistoryLocation(location));
+    reactToLocationChange(store, location, previousLocation);
   });
 
   // The other part of the two-way binding is updating the displayed
   // URL in the browser if we change it inside our app state in Redux.
   // We can simply subscribe to Redux and update it if it's different.
   store.subscribe(() => {
-    const { pathname, search } = store.getState().routing;
-    attemptPushHistory(pathname, search);
+    const location = store.getState().routing;
+    attemptPushHistory(location);
   });
 };
 

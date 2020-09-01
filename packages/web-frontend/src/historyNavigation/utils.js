@@ -24,7 +24,7 @@ export const createLocation = params => {
   if (userPage) {
     // Userpage locations are created by the backend,
     // this is good enough for here
-    return { pathname: `/${userPage}`, search: {} };
+    return { pathname: `/${userPage}`, search: '' };
   }
 
   const pathComponents = PATH_COMPONENTS.map(component => params[component]);
@@ -42,19 +42,20 @@ export const createLocation = params => {
     if (value !== undefined) searchComponents[component] = value;
   });
 
-  return { pathname, search: searchComponents };
+  return { pathname, search: stringifySearch(searchComponents) };
 };
 
 export const decodeLocation = ({ pathname, search }) => {
   const cleanPathname = pathname[0] === '/' ? pathname.slice(1) : pathname;
+  const searchParams = parseSearch(search);
   if (cleanPathname === '') {
-    return { projectSelector: true, ...search };
+    return { projectSelector: true, ...searchParams };
   }
 
   const [prefixOrProject, ...restOfPath] = cleanPathname.split('/');
 
   if (USER_PAGE_PREFIXES.includes(prefixOrProject)) {
-    return { userPage: prefixOrProject, ...search };
+    return { userPage: prefixOrProject, ...searchParams };
   }
 
   const [, ...restOfComponents] = PATH_COMPONENTS;
@@ -66,7 +67,7 @@ export const decodeLocation = ({ pathname, search }) => {
 
   return {
     ...pathParams,
-    ...search,
+    ...searchParams,
   };
 };
 
@@ -86,14 +87,14 @@ export const isLocationEqual = (a, b) => {
   return true;
 };
 
-export const translateSearchToInternal = search => {
+const parseSearch = search => {
   const externalSearchParams = queryString.parse(search);
   const invertedMap = invert(SEARCH_PARAM_KEY_MAP);
 
   return replaceKeysAndRemoveEmpty(externalSearchParams, invertedMap);
 };
 
-export const translateSearchToExternal = search => {
+const stringifySearch = search => {
   const externalSearchParams = replaceKeysAndRemoveEmpty(search, SEARCH_PARAM_KEY_MAP);
 
   return queryString.stringify(externalSearchParams);
