@@ -14,6 +14,8 @@ export const ImportModalComponent = ({ onImport, isOpen, errorMessage, ...props 
   const [value, setValue] = useState('');
 
   // Handle case of the file changing since it was uploaded
+  // This is a workaround to handle an edge case in the file field error states
+  // For more details see the tech debt issue. @see https://github.com/beyondessential/tupaia-backlog/issues/1211
   useEffect(() => {
     if (errorMessage === 'Failed to fetch') {
       setFile(null);
@@ -34,7 +36,7 @@ export const ImportModalComponent = ({ onImport, isOpen, errorMessage, ...props 
 
   const fileErrorMessage =
     errorMessage === 'Failed to fetch'
-      ? 'The file has changed, please upload it again.'
+      ? 'Failed to upload, probably because the import file has been edited. Please reselect it and try again.'
       : errorMessage;
 
   return (
