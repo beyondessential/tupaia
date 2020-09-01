@@ -116,7 +116,7 @@ import { getDefaultDates } from './utils/periodGranularities';
 import { DEFAULT_MEASURE_ID, DEFAULT_PROJECT_CODE } from './defaults';
 import { setProject } from './projects/actions';
 import { LANDING } from './containers/OverlayDiv/constants';
-
+import { LOGIN_TYPES } from './constants';
 /**
  * attemptChangePassword
  *
@@ -236,7 +236,7 @@ function* attemptUserLogin(action) {
       requestContext,
       false,
     );
-    yield put(findLoggedIn(true, response.emailVerified));
+    yield put(findLoggedIn(LOGIN_TYPES.MANUAL, response.emailVerified));
   } catch (error) {
     const errorMessage = error.response ? yield error.response.json() : {};
     if (errorMessage.details && errorMessage.details === 'Email address not yet verified') {
@@ -357,7 +357,7 @@ function* attemptTokenLogin(action) {
       false,
     );
 
-    yield put(findLoggedIn(false, true)); //default to email verified for one time login to prevent a nag screen
+    yield put(findLoggedIn(LOGIN_TYPES.TOKEN, true)); //default to email verified for one time login to prevent a nag screen
     yield put(fetchResetTokenLoginSuccess());
   } catch (error) {
     yield put(error.errorFunction(error));
@@ -864,7 +864,7 @@ function* findUserLoggedIn(action) {
   try {
     const userData = yield call(request, requestResourceUrl);
     if (userData.name !== 'public') {
-      yield put(fetchUserLoginSuccess(userData.name, userData.email, action.shouldCloseDialog));
+      yield put(fetchUserLoginSuccess(userData.name, userData.email, action.loginType));
     } else {
       yield put(findUserLoginFailed());
     }
@@ -981,8 +981,8 @@ function* watchAttemptAttemptDrillDown() {
 }
 
 function* resetToProjectSplash(action) {
-  // prevent the autoLogin when opening the site from messing up the routing
-  if (action.type === FETCH_LOGIN_SUCCESS && action.shouldCloseDialog) return;
+  // Only reset to project splash on manual login to avoid messing up routing
+  if (action.type === FETCH_LOGIN_SUCCESS && action.loginType !== LOGIN_TYPES.MANUAL) return;
 
   yield put(clearMeasureHierarchy());
   yield put(setOverlayComponent(LANDING));

@@ -22,7 +22,6 @@ import {
   attemptUserLogout,
   closeDropdownOverlays,
   openUserPage,
-  findLoggedIn,
   DIALOG_PAGE_LOGIN,
   DIALOG_PAGE_CHANGE_PASSWORD,
   DIALOG_PAGE_REQUEST_COUNTRY_ACCESS,
