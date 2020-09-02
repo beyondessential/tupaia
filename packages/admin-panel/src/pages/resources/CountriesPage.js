@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 import { ENTITIES_COLUMNS } from './EntitiesPage';
 
@@ -63,7 +64,7 @@ const FILTERED_EXPORT_CONFIG = {
   ],
 };
 
-export const CountriesPage = () => (
+export const CountriesPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Countries"
     endpoint="countries"
@@ -71,5 +72,10 @@ export const CountriesPage = () => (
     expansionTabs={EXPANSION_CONFIG}
     createConfig={CREATE_CONFIG}
     filteredExportConfig={FILTERED_EXPORT_CONFIG}
+    getHeaderEl={getHeaderEl}
   />
 );
+
+CountriesPage.propTypes = {
+  getHeaderEl: PropTypes.func.isRequired,
+};

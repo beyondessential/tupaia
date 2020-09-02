@@ -19,5 +19,16 @@
     "validator": "^8.2.0",
     "winston": "^3.1.0",
     "xlsx": "^0.10.9"
+  },
+  "eslintConfig": {
+    "extends": "../../.eslintrc",
+    "overrides": [
+      {
+        "files": "**/src/testUtilities/**",
+        "env": {
+          "jest": true
+        }
+      }
+    ]
   }
 }

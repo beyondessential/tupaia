@@ -15,6 +15,7 @@ import { connect } from 'react-redux';
 
 import { PrimaryButton } from '../../../../components/Buttons';
 import { Form } from '../../../Form';
+import { SubmitButton } from '../../../Form/common';
 import { TextField, CheckboxField } from '../../../Form/Fields';
 import { aggregateFields } from '../../../Form/utils';
 import {
@@ -67,15 +68,15 @@ export const RequestProjectAccessComponent = ({
               />
             ))}
             <TextField
-              label="Why would you like access this project?"
+              label="Why would you like access to this project?"
               name="message"
               multiline
               rows="4"
               fullWidth
             />
-            <PrimaryButton variant="contained" onClick={submitForm}>
+            <SubmitButton handleClick={submitForm} gutterTop>
               Request access
-            </PrimaryButton>
+            </SubmitButton>
           </>
         )}
       />

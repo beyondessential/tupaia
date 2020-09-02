@@ -17,7 +17,11 @@ const CheckEmailMessage = styled.p`
   padding: 0 15px;
 `;
 
-const EmailVerificationComponent = ({ onResendEmail, hasSentEmail, messageFailEmailVerify }) => {
+export const EmailVerificationComponent = ({
+  onResendEmail,
+  hasSentEmail,
+  messageFailEmailVerify,
+}) => {
   const titleText = 'Sign in to Tupaia';
 
   return hasSentEmail ? (
@@ -31,7 +35,7 @@ const EmailVerificationComponent = ({ onResendEmail, hasSentEmail, messageFailEm
           errorMessage={messageFailEmailVerify}
           onSubmit={email => onResendEmail(email)}
           render={submitForm => (
-            <React.Fragment>
+            <>
               <TextField
                 fullWidth
                 label="E-mail"
@@ -39,8 +43,10 @@ const EmailVerificationComponent = ({ onResendEmail, hasSentEmail, messageFailEm
                 validators={[emailAddress]}
                 required
               />
-              <SubmitButton text="Re-send Email" handleClick={submitForm} />
-            </React.Fragment>
+              <SubmitButton handleClick={submitForm} gutterTop>
+                Re-send Email
+              </SubmitButton>
+            </>
           )}
         />
       </div>
