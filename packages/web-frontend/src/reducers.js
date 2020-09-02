@@ -109,6 +109,7 @@ import {
   SET_PROJECT,
   FETCH_RESET_TOKEN_LOGIN_ERROR,
 } from './actions';
+import { LOGIN_TYPES } from './constants';
 
 function authentication(
   state = {
@@ -159,7 +160,7 @@ function authentication(
         currentUserEmail: action.email,
         isUserLoggedIn: true,
         isRequestingLogin: false,
-        isDialogVisible: action.shouldCloseDialog ? false : state.isDialogVisible,
+        isDialogVisible: action.loginType === LOGIN_TYPES.MANUAL ? false : state.isDialogVisible,
         emailVerified: state.emailVerified,
       };
     case SHOW_UNVERIFIED_LOGIN:

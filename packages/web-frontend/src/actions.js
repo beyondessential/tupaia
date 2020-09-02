@@ -204,12 +204,12 @@ export function attemptUserLogin(emailAddress, password) {
  *
  * @param {string} username     Logged user's username
  */
-export function fetchUserLoginSuccess(username, email, shouldCloseDialog) {
+export function fetchUserLoginSuccess(username, email, loginType) {
   return {
     type: FETCH_LOGIN_SUCCESS,
     email,
     username,
-    shouldCloseDialog,
+    loginType,
   };
 }
 
@@ -935,10 +935,10 @@ export function clearMeasureHierarchy() {
   };
 }
 
-export function findLoggedIn(shouldCloseDialog, emailVerified) {
+export function findLoggedIn(loginType, emailVerified) {
   return {
     type: FIND_USER_LOGGEDIN,
-    shouldCloseDialog,
+    loginType,
     emailVerified,
   };
 }

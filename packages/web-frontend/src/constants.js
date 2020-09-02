@@ -26,3 +26,9 @@ export const MARKER_TYPES = {
   CIRCLE_HEATMAP: 'circleHeatmap',
   SQUARE: 'square',
 };
+
+export const LOGIN_TYPES = {
+  AUTO: 'auto',
+  TOKEN: 'token',
+  MANUAL: 'manual',
+};

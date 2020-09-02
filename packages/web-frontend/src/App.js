@@ -11,7 +11,8 @@ import { Provider } from 'react-redux';
 import configureStore from './configureStore';
 import { AppStyleProviders } from './AppStyleProviders';
 import { reactToInitialState, initHistoryDispatcher } from './historyNavigation';
-import { fetchInitialData } from './actions';
+import { fetchInitialData, findLoggedIn } from './actions';
+import { LOGIN_TYPES } from './constants';
 
 // Set up asynchonous import of the RootScreen to enable webpack to do code splitting.
 // Based on https://serverless-stack.com/chapters/code-splitting-in-create-react-app.html
@@ -48,6 +49,7 @@ class App extends Component {
 
     const { dispatch } = store;
     dispatch(fetchInitialData());
+    dispatch(findLoggedIn(LOGIN_TYPES.AUTO));
 
     reactToInitialState(store);
   }
