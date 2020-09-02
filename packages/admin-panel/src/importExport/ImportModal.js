@@ -35,7 +35,7 @@ export const ImportModalComponent = ({ onImport, isOpen, errorMessage, ...props 
   };
 
   const fileErrorMessage =
-    errorMessage === 'Failed to fetch'
+    errorMessage === 'Failed to fetch' || errorMessage === 'Network request timed out'
       ? 'Failed to upload, probably because the import file has been edited. Please reselect it and try again.'
       : errorMessage;
 
