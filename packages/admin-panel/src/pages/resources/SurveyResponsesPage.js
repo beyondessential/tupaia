@@ -12,6 +12,7 @@ const surveyName = {
   Header: 'Survey',
   source: 'survey.name',
   editable: false,
+  type: 'tooltip',
 };
 
 const assessorName = {
@@ -101,10 +102,12 @@ const ANSWER_FIELDS = [
     Header: 'Question',
     source: 'question.text',
     editable: false,
+    type: 'tooltip',
   },
   {
     Header: 'Answer',
     source: 'text',
+    type: 'tooltip',
   },
 ];
 
