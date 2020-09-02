@@ -136,12 +136,14 @@ const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => ({
       return;
     }
     const { parameterLink, keyLink } = drillDown;
-
+    // Todo: add config for drillDown view here
     dispatch(
       attemptDrillDown(
         {
           infoViewKey,
           ...viewContent,
+          defaultTimePeriod: null,
+          periodGranularity: null,
         },
         parameterLink,
         chartItem[keyLink],

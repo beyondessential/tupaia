@@ -9,12 +9,12 @@
     "build": "babel src --out-dir dist --config-file '../../babel.config.json'",
     "start": "node dist",
     "start-dev": "../../scripts/bash/backendStartDev.sh 9997",
+    "dev": "nodemon -w src --exec \"babel-node src --inspect=9997 --config-file '../../babel.config.json'\""},
     "start-verbose": "LOG_LEVEL=debug npm run start-dev",
     "prestart": "npm run -s build",
     "test": "mocha",
     "test-coverage": "cross-env NODE_ENV=test nyc mocha",
-    "validate": "babel-node scripts/validate/index.js --config-file '../../babel.config.json'"
-  },
+    "validate": "babel-node scripts/validate/index.js --config-file '../../babel.config.json'",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/beyondessential/tupaia"

@@ -107,11 +107,10 @@ DrillDownOverlayComponent.defaultProps = {
   viewContent: null,
 };
 
-const mapStateToProps = ({ drillDown, enlargedDialog }) => ({
+const mapStateToProps = ({ drillDown }) => ({
   viewContent: drillDown.levelContents[drillDown.currentLevel],
   currentLevel: drillDown.currentLevel,
   isLoading: drillDown.isLoading,
-  enlargedDialog,
 });
 
 const mergeProps = (stateProps, { dispatch }, ownProps) => {
@@ -126,6 +125,7 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => {
       }
       const { infoViewKey } = enlargedDialog;
       const { parameterLink, keyLink } = drillDown;
+
       dispatch(
         attemptDrillDown(
           {
