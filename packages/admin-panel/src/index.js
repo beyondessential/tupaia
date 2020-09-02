@@ -5,25 +5,28 @@
 
 import React from 'react';
 import { render as renderReactApp } from 'react-dom';
+import { MuiThemeProvider, StylesProvider } from '@material-ui/core/styles';
+import { ThemeProvider } from 'styled-components';
+import CssBaseline from '@material-ui/core/CssBaseline';
 import { Provider } from 'react-redux';
-import { withRouter } from 'react-router';
-import { ConnectedRouter } from 'react-router-redux';
 import { PersistGate } from 'redux-persist/lib/integration/react';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-table/react-table.css';
 
-import { history, store, persistor } from './store';
-import { AppContainer } from './App';
-import './index.css';
-
-const RoutingApp = withRouter(AppContainer);
+import { theme } from './theme';
+import { store, persistor } from './store';
+import { App } from './App';
 
 renderReactApp(
   <Provider store={store}>
     <PersistGate persistor={persistor} loading={null}>
-      <ConnectedRouter history={history}>
-        <RoutingApp />
-      </ConnectedRouter>
+      <StylesProvider injectFirst>
+        <MuiThemeProvider theme={theme}>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <App />
+          </ThemeProvider>
+        </MuiThemeProvider>
+      </StylesProvider>
     </PersistGate>
   </Provider>,
   document.getElementById('root'),

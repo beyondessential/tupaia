@@ -6,14 +6,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import DeleteIcon from '@material-ui/icons/Delete';
 import { IconButton } from '../../widgets';
 import { requestDeleteRecord } from '../actions';
 
 const DeleteButtonComponent = ({ dispatch, value, actionConfig, reduxId }) => (
-  <IconButton
-    icon={'minus-circle'}
-    onClick={() => dispatch(requestDeleteRecord(reduxId, actionConfig.endpoint, value))}
-  />
+  <IconButton onClick={() => dispatch(requestDeleteRecord(reduxId, actionConfig.endpoint, value))}>
+    <DeleteIcon />
+  </IconButton>
 );
 
 DeleteButtonComponent.propTypes = {

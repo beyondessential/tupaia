@@ -71,7 +71,7 @@ export class DataPerOrgUnitBuilder extends DataBuilder {
     const baseBuilder = this.getBaseBuilder();
 
     const processResultsForOrgUnit = async ([organisationUnitCode, result]) => {
-      if (!result) {
+      if (!this.validateResults(result)) {
         return null;
       }
 

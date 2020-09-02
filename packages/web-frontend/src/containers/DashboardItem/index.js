@@ -43,7 +43,7 @@ import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 import { View } from '../../components/View';
 import { fetchDashboardItemData, openEnlargedDialog } from '../../actions';
-import { selectCurrentOrgUnit } from '../../selectors';
+import { selectCurrentOrgUnit, selectOrgUnit } from '../../selectors';
 
 export class DashboardItem extends Component {
   componentWillMount() {
@@ -114,11 +114,23 @@ DashboardItem.defaultProps = {
 const mapStateToProps = (state, { infoViewKey }) => {
   const { viewResponses } = state.dashboard;
   const currentOrganisationUnit = selectCurrentOrgUnit(state);
+  const viewContent = viewResponses[infoViewKey];
+  //Issue: https://github.com/beyondessential/tupaia-backlog/issues/937
+  //Ideally, the currentOrganisationUnit should always be similar to the organisationUnit of the view content
+  //However, sometimes, we have timing issue when changing the current organisation unit and opening the enlarge dialog at the same time.
+  //So, we find and pass in the name of the orgUnit in viewContent instead of always assuming
+  //it's the same with the currentOrganisationUnit. This will avoid confusion that the org unit name doesn't match with the data showing.
+  const viewContentOrganisationUnit = viewContent
+    ? selectOrgUnit(state, viewContent.organisationUnitCode)
+    : null;
+  const organisationUnitName = viewContentOrganisationUnit
+    ? viewContentOrganisationUnit.name
+    : currentOrganisationUnit.name;
 
   return {
-    viewContent: viewResponses[infoViewKey],
+    viewContent,
     organisationUnit: currentOrganisationUnit, // Necessary for merge props.
-    organisationUnitName: currentOrganisationUnit.name,
+    organisationUnitName,
   };
 };
 

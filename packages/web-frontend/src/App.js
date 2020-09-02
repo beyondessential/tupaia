@@ -6,14 +6,10 @@
  */
 
 import React, { Component } from 'react';
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-import { MuiThemeProvider as V0MuiThemeProvider } from 'material-ui';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import { Provider } from 'react-redux';
 import configureStore from './configureStore';
 import { initHistoryDispatcher } from './utils';
-import { DARKENED_BLUE } from './styles';
+import { AppStyleProviders } from './AppStyleProviders';
 
 import { fetchInitialData } from './actions';
 
@@ -59,13 +55,7 @@ class App extends Component {
     const { RootScreen } = this.state;
     return (
       <Provider store={store}>
-        <MuiThemeProvider
-          theme={createMuiTheme({ palette: { type: 'dark', primary: { main: DARKENED_BLUE } } })}
-        >
-          <V0MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
-            {RootScreen ? <RootScreen /> : null}
-          </V0MuiThemeProvider>
-        </MuiThemeProvider>
+        <AppStyleProviders>{RootScreen ? <RootScreen /> : null}</AppStyleProviders>
       </Provider>
     );
   }

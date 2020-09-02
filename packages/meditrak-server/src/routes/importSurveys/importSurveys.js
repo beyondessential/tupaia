@@ -34,6 +34,8 @@ import {
   findOrCreateSurveyCode,
 } from './utilities';
 import { assertCanAddDataElementInGroup } from '../../database';
+import { assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
+import { assertCanImportSurveys } from './assertCanImportSurveys';
 
 const QUESTION_TYPE_LIST = Object.values(ANSWER_TYPES);
 const DEFAULT_SERVICE_TYPE = 'tupaia';
@@ -111,6 +113,17 @@ export async function importSurveys(req, res) {
       if (!permissionGroup) {
         throw new DatabaseError('finding permission group');
       }
+
+      const surveyNames = Object.entries(workbook.Sheets).map(([tabName]) => {
+        return extractTabNameFromQuery(tabName, requestedSurveyNames);
+      });
+
+      const importSurveysPermissionsChecker = async accessPolicy =>
+        assertCanImportSurveys(accessPolicy, transactingModels, surveyNames, req.query.countryIds);
+
+      await req.assertPermissions(
+        assertAnyPermissions([assertBESAdminAccess, importSurveysPermissionsChecker]),
+      );
 
       let surveyGroup;
       if (req.query.surveyGroup) {
