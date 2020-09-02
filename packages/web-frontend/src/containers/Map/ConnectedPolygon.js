@@ -178,7 +178,6 @@ const mapStateToProps = (state, givenProps) => {
   if (selectHasPolygonMeasure(state)) {
     const measureOrgUnits = selectAllMeasuresWithDisplayInfo(state);
     const measureOrgUnitCodes = measureOrgUnits.map(orgUnit => orgUnit.organisationUnitCode);
-    console.log(measureOrgUnits);
 
     hasShadedChildren =
       organisationUnitChildren &&
