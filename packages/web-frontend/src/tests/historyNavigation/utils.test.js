@@ -9,10 +9,7 @@ import { decodeLocation } from '../../historyNavigation/utils';
 
 const baseLocation = {
   pathname: '/PROJECT_1/ORG_UNIT_1/GROUP_1',
-  search: {
-    MEASURE: 'overlay1',
-    REPORT: 'report1',
-  },
+  search: '?overlay=overlay1&report=report1',
 };
 
 describe('historyNavigation/utils', () => {

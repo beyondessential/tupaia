@@ -97,7 +97,7 @@ const parseSearch = search => {
 const stringifySearch = search => {
   const externalSearchParams = replaceKeysAndRemoveEmpty(search, SEARCH_PARAM_KEY_MAP);
 
-  return queryString.stringify(externalSearchParams);
+  return `?${queryString.stringify(externalSearchParams)}`;
 };
 
 const replaceKeysAndRemoveEmpty = (obj, mapping) => {

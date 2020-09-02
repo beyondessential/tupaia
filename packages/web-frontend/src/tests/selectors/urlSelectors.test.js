@@ -18,7 +18,7 @@ describe('urlSelectors', () => {
     const testState = {
       routing: {
         pathname: '',
-        search: {},
+        search: '',
       },
     };
     expect(selectCurrentProjectCode(testState)).toEqual(undefined);
@@ -32,7 +32,7 @@ describe('urlSelectors', () => {
     const testState = {
       routing: {
         pathname: '/SOME_PROJECT/AN_ORG_UNIT/A_DASHBOARD',
-        search: { REPORT: 'report1', MEASURE: '2,3' },
+        search: '?report=report1&overlay=2,3',
       },
     };
     expect(selectCurrentProjectCode(testState)).toEqual('SOME_PROJECT');
@@ -45,7 +45,7 @@ describe('urlSelectors', () => {
     const testState = {
       routing: {
         pathname: '/reset-password',
-        search: { PASSWORD_RESET_TOKEN: 'abc123' },
+        search: '?password-reset-token=abc123',
       },
     };
     expect(selectCurrentProjectCode(testState)).toEqual(undefined);
@@ -59,7 +59,7 @@ describe('urlSelectors', () => {
     const testState = {
       routing: {
         pathname: '/verify-email',
-        search: { VERIFY_EMAIL_TOKEN: 'abc123' },
+        search: '?verify-email-token=abc123',
       },
     };
     expect(selectCurrentProjectCode(testState)).toEqual(undefined);

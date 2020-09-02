@@ -13,10 +13,7 @@ import { URL_COMPONENTS } from '../../historyNavigation/constants';
 
 const baseLocation = {
   pathname: '/PROJECT_1/ORG_UNIT_1/GROUP_1',
-  search: {
-    MEASURE: 'overlay1',
-    REPORT: 'report1',
-  },
+  search: '?overlay=overlay1&report=report1',
 };
 
 describe('historyNavigation', () => {
@@ -45,14 +42,14 @@ describe('historyNavigation', () => {
     it('should be able to set measure', () => {
       expect(setLocationComponent(baseLocation, URL_COMPONENTS.MEASURE, 'overlay2')).toEqual({
         pathname: baseLocation.pathname,
-        search: { ...baseLocation.search, MEASURE: 'overlay2' },
+        search: '?overlay=overlay2&report=report1',
       });
     });
 
     it('should be able to set expanded report', () => {
       expect(setLocationComponent(baseLocation, URL_COMPONENTS.REPORT, 'report2')).toEqual({
         pathname: baseLocation.pathname,
-        search: { ...baseLocation.search, REPORT: 'report2' },
+        search: '?overlay=overlay1&report=report2',
       });
     });
   });
