@@ -192,7 +192,6 @@ describe('orgUnitSelectors', () => {
       });
     });
 
-    // TODO: The below skipped tests are also failing on dev and therefore are not fixed in this PR
     describe('selectOrgUnitChildren', () => {
       it.skip('can select children of world', () => {
         expect(selectOrgUnitChildren(state, 'World')).toContain(state.orgUnits.orgUnitMap.TO.TO);

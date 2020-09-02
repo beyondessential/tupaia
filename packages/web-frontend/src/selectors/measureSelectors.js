@@ -45,7 +45,6 @@ const displayInfoCache = createCachedSelector(
 const getOrgUnitFromMeasureData = (measureData, code) =>
   measureData.find(val => val.organisationUnitCode === code);
 
-// TODO: Refactor to be more general
 const selectDisplayInfo = (measureOptions, hiddenMeasures, measureData, organisationUnitCode) =>
   safeGet(displayInfoCache, [measureOptions, hiddenMeasures, measureData, organisationUnitCode]);
 
