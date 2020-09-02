@@ -11,11 +11,10 @@ import { hasContent, isAString, isPlainObject } from '@tupaia/utils';
 import { getAggregationsByCode, fetchAnalytics, validateConfig } from './helpers';
 import { AnalyticCluster, Builder, AggregationSpecs, FetchOptions } from '../types';
 
-export interface ArithmeticConfig {
-  readonly [key: string]: unknown;
+export type ArithmeticConfig = {
   readonly formula: string;
   readonly aggregation: AggregationSpecs;
-}
+};
 
 const assertAggregationIsDefinedForCodesInFormula = (
   aggregation: AggregationSpecs,
