@@ -4,6 +4,7 @@
  */
 
 import { Aggregator } from '@tupaia/aggregator';
+import { createJestMockInstance } from '@tupaia/utils';
 import { Analytic, Aggregation } from '../../types';
 
 export type AnalyticResponseFixture = {
@@ -12,7 +13,7 @@ export type AnalyticResponseFixture = {
   analytic: Analytic;
 };
 
-export const createAggregator = (responseFixtures: AnalyticResponseFixture[]) => {
+export const createAggregator = (responseFixtures: AnalyticResponseFixture[]): Aggregator => {
   /**
    * Looks for the provided codes and aggregations in the input
    * and returns analytics for all matched items
@@ -31,5 +32,5 @@ export const createAggregator = (responseFixtures: AnalyticResponseFixture[]) =>
       .map(({ analytic }) => analytic),
   });
 
-  return { fetchAnalytics: jest.fn(fetchAnalytics) } as Aggregator;
+  return createJestMockInstance('@tupaia/aggregator', 'Aggregator', { fetchAnalytics });
 };
