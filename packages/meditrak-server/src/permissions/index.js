@@ -5,4 +5,3 @@
 
 export { ensurePermissionCheck } from './permissions';
 export * from './assertions';
-export * from './get';

@@ -3,13 +3,12 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { GETHandler } from './GETHandler';
+import { GETHandler } from '../GETHandler';
 import {
-  allowNoPermissions,
-  assertAnyPermissions,
-  assertBESAdminAccess,
   assertSurveyResponsePermissions,
-} from '../permissions';
+  filterSurveyResponsesByPermissions,
+} from './assertSurveyResponsePermissions';
+import { allowNoPermissions, assertAnyPermissions, assertBESAdminAccess } from '../../permissions';
 
 /**
  * Handles endpoints:
@@ -23,11 +22,7 @@ export class GETSurveyResponses extends GETHandler {
   }
 
   async findSingleRecord(surveyResponseId, options) {
-    const surveyResponse = await this.database.findOne(
-      this.recordType,
-      { [`${this.recordType}.id`]: surveyResponseId },
-      options,
-    );
+    const surveyResponse = await super.findSingleRecord(surveyResponseId, options);
 
     const surveyResponseChecker = accessPolicy =>
       assertSurveyResponsePermissions(accessPolicy, this.models, surveyResponse);
@@ -37,5 +32,20 @@ export class GETSurveyResponses extends GETHandler {
     );
 
     return surveyResponse;
+  }
+
+  async findRecords(criteria, options) {
+    const surveyResponses = await super.findRecords(criteria, options);
+    const filteredResponses = await filterSurveyResponsesByPermissions(
+      this.req.accessPolicy,
+      surveyResponses,
+      this.models,
+    );
+
+    if (!filteredResponses.length) {
+      throw new Error('Your permissions do not allow access to any of the requested resources');
+    }
+
+    return filteredResponses;
   }
 }
