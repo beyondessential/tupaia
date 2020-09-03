@@ -11,6 +11,7 @@ const SURVEY_FIELDS = [
   {
     Header: 'Name',
     source: 'name',
+    type: 'tooltip',
   },
   {
     Header: 'Code',
@@ -147,6 +148,7 @@ const QUESTION_FIELDS = [
   {
     Header: 'Code',
     source: 'code',
+    type: 'tooltip',
     editable: false,
   },
   {
@@ -156,22 +158,27 @@ const QUESTION_FIELDS = [
   {
     Header: 'Name',
     source: 'name',
+    type: 'tooltip',
   },
   {
     Header: 'Question',
     source: 'text',
+    type: 'tooltip',
   },
   {
     Header: 'Detail',
     source: 'detail',
+    type: 'tooltip',
   },
   {
     Header: 'Question Label',
     source: 'question_label',
+    type: 'tooltip',
   },
   {
     Header: 'Detail Label',
     source: 'detail_label',
+    type: 'tooltip',
   },
 ];
 
