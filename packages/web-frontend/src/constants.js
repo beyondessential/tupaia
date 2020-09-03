@@ -26,3 +26,5 @@ export const MARKER_TYPES = {
   CIRCLE_HEATMAP: 'circleHeatmap',
   SQUARE: 'square',
 };
+
+export const TUPAIA_LIGHT_LOGO_SRC = 'images/tupaia-logo-light.svg';
