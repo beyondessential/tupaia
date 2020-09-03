@@ -41,7 +41,7 @@ export const InputField = ({
   variant,
 }) => {
   const inputType = getInputType({ options, optionsEndpoint, type });
-  let inputComponent = null;
+  let inputComponent;
 
   switch (inputType) {
     case 'autocomplete':

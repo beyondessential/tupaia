@@ -15,13 +15,17 @@ const Cell = styled.div`
 `;
 
 export const Tooltip = ({ value }) => (
-  <TooltipComponent title={value} placement="top-start">
+  <TooltipComponent title={value || ''} placement="top-start">
     <Cell>{value}</Cell>
   </TooltipComponent>
 );
 
 Tooltip.propTypes = {
-  value: PropTypes.string.isRequired,
+  value: PropTypes.oneOfType([PropTypes.object, PropTypes.array, PropTypes.string]),
+};
+
+Tooltip.defaultProps = {
+  value: '',
 };
 
 export const JSONTooltip = ({ value }) => (
@@ -31,5 +35,9 @@ export const JSONTooltip = ({ value }) => (
 );
 
 JSONTooltip.propTypes = {
-  value: PropTypes.object.isRequired,
+  value: PropTypes.oneOfType([PropTypes.object, PropTypes.array, PropTypes.string]),
+};
+
+JSONTooltip.defaultProps = {
+  value: '',
 };
