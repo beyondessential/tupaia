@@ -64,16 +64,19 @@ export class DataBroker {
   async pull(dataSourceSpec, options) {
     const dataSources = await this.fetchDataSources(dataSourceSpec);
     let results;
-    const pullForServiceAndType = async dataSourceGroup => {
-      const { type, service_type: serviceType } = dataSourceGroup[0];
+    const pullForServiceAndType = async dataSourcesForService => {
+      if (countDistinct(dataSourcesForService, 'type') > 1) {
+        throw new Error('Cannot pull multiple types of data in one call');
+      }
+      const { type, service_type: serviceType } = dataSourcesForService[0];
       const service = this.createService(serviceType);
-      const resultsForGroup = await service.pull(dataSourceGroup, type, options);
+      const resultsForService = await service.pull(dataSourcesForService, type, options);
       const mergeResults = this.resultMergers[type];
-      results = mergeResults(results, resultsForGroup);
+      results = mergeResults(results, resultsForService);
     };
 
-    const dataSourceGroups = Object.values(groupBy(dataSources, 'service_type'));
-    await Promise.all(dataSourceGroups.map(pullForServiceAndType));
+    const dataSourcesByService = groupBy(dataSources, 'service_type');
+    await Promise.all(Object.values(dataSourcesByService).map(pullForServiceAndType));
     return results;
   }
 

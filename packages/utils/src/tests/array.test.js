@@ -29,7 +29,7 @@ describe('array', () => {
       expect(countDistinct([0, 1, 0, 1, 1, 2])).to.equal(3);
     });
 
-    describe('different mapper types', () => {
+    describe('custom mappers', () => {
       it('function', () => {
         expect(countDistinct([1.1, 2, 1.3], Math.floor)).to.equal(2);
       });
@@ -46,10 +46,6 @@ describe('array', () => {
             'gender',
           ),
         ).to.equal(2);
-      });
-
-      it('undefined', () => {
-        expect(countDistinct([1, 2, 3, 2, 2, 1, 4])).to.equal(4);
       });
     });
   });
