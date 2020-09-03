@@ -103,8 +103,8 @@ const LogoImage = styled.div`
 `;
 
 export const ProjectLandingPage = ({
+  closeOverlay,
   selectExplore,
-  viewProjectOrgUnit,
   viewProjects,
   project,
   scrollToTop,
@@ -143,7 +143,7 @@ export const ProjectLandingPage = ({
           <h2>{project.name}</h2>
           <Countries>{project.names.join(', ')}</Countries>
         </div>
-        <ViewProjectButton onClick={viewProjectOrgUnit} color="primary" variant="contained">
+        <ViewProjectButton onClick={closeOverlay} color="primary" variant="contained">
           View project
         </ViewProjectButton>
       </ProjectHeader>
@@ -158,7 +158,7 @@ ProjectLandingPage.propTypes = {
   selectExplore: PropTypes.func.isRequired,
   viewProjects: PropTypes.func.isRequired,
   scrollToTop: PropTypes.func.isRequired,
-  viewProjectOrgUnit: PropTypes.func.isRequired,
+  closeOverlay: PropTypes.func.isRequired,
   project: PropTypes.shape({
     name: PropTypes.string,
     longDescription: PropTypes.string,
