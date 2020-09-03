@@ -107,10 +107,13 @@ DrillDownOverlayComponent.defaultProps = {
   viewContent: null,
 };
 
-const mapStateToProps = ({ drillDown }) => ({
-  viewContent: drillDown.levelContents[drillDown.currentLevel] && drillDown.levelContents[drillDown.currentLevel].viewContent,
+const mapStateToProps = ({ drillDown, enlargedDialog }) => ({
+  viewContent:
+    drillDown.levelContents[drillDown.currentLevel] &&
+    drillDown.levelContents[drillDown.currentLevel].viewContent,
   currentLevel: drillDown.currentLevel,
   isLoading: drillDown.isLoading,
+  enlargedDialog,
 });
 
 const mergeProps = (stateProps, { dispatch }, ownProps) => {

@@ -84,6 +84,7 @@ EnlargedDialogComponent.propTypes = {
   organisationUnitName: PropTypes.string.isRequired,
   onDrillDown: PropTypes.func,
   onSetDateRange: PropTypes.func,
+  onSetDrillDownDateRange: PropTypes.func,
   isLoading: PropTypes.bool,
   isVisible: PropTypes.bool,
   isDrillDownVisible: PropTypes.bool,
@@ -92,6 +93,7 @@ EnlargedDialogComponent.propTypes = {
 EnlargedDialogComponent.defaultProps = {
   onDrillDown: () => {},
   onSetDateRange: () => {},
+  onSetDrillDownDateRange: () => {},
   isLoading: false,
   isVisible: false,
   isDrillDownVisible: false,
@@ -115,11 +117,11 @@ const styles = {
   },
 };
 
-const mapStateToProps = ({ global, drillDown, enlargedDialog }) =>  ({
+const mapStateToProps = ({ global, drillDown, enlargedDialog }) => ({
   ...enlargedDialog,
   viewConfigs: global.viewConfigs,
   isDrillDownVisible: drillDown.isVisible,
-})
+});
 
 const mapDispatchToProps = dispatch => ({
   onCloseOverlay: () => dispatch(closeEnlargedDialog()),
@@ -136,7 +138,7 @@ const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => ({
   ...ownProps,
   onDrillDown: chartItem => {
     const { viewContent, infoViewKey, viewConfigs } = stateProps;
-    const { drillDown, dashboardGroupId, organisationUnitCode } = viewContent;
+    const { drillDown, dashboardGroupId, organisationUnitCode, viewId } = viewContent;
     if (!drillDown) {
       return;
     }
@@ -153,7 +155,7 @@ const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => ({
           organisationUnitCode,
           ...config,
           infoViewKey: newKey,
-          viewId: 'TO_CD_Validation_CD3'
+          viewId,
         },
         parameterLink,
         chartItem[keyLink],
