@@ -818,7 +818,12 @@ function drillDown(
       return {
         ...state,
         isLoading: false,
-        levelContents: { ...state.levelContents, [action.drillDownLevel]: action.viewContent },
+        levelContents: {
+          ...state.levelContents,
+          [action.drillDownLevel]: {
+            viewContent: action.viewContent,
+          },
+        },
       };
 
     case FETCH_DRILL_DOWN_ERROR:

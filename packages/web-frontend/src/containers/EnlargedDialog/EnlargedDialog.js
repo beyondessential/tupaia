@@ -12,6 +12,7 @@ import {
   closeEnlargedDialog,
   openExportDialog,
   setEnlargedDashboardDateRange,
+  setDrillDownDateRange,
 } from '../../actions';
 import { DrillDownOverlay } from '../DrillDownOverlay';
 import { EnlargedDialogContent } from './EnlargedDialogContent';
@@ -28,6 +29,7 @@ class EnlargedDialogComponent extends PureComponent {
       organisationUnitName,
       onDrillDown,
       onSetDateRange,
+      onSetDrillDownDateRange,
       isLoading,
       isVisible,
     } = this.props;
@@ -47,7 +49,7 @@ class EnlargedDialogComponent extends PureComponent {
 
     const drillDownOverlay = isDrillDownVisible ? (
       <DrillDownOverlay
-        onSetDateRange={onSetDateRange}
+        onSetDateRange={onSetDrillDownDateRange}
         organisationUnitName={organisationUnitName}
       />
     ) : null;
@@ -123,6 +125,8 @@ const mapDispatchToProps = dispatch => ({
   onCloseOverlay: () => dispatch(closeEnlargedDialog()),
   onSetDateRange: (startDate, endDate) =>
     dispatch(setEnlargedDashboardDateRange(startDate, endDate)),
+  onSetDrillDownDateRange: (startDate, endDate) =>
+    dispatch(setDrillDownDateRange(startDate, endDate)),
   dispatch,
 });
 

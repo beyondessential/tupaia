@@ -119,6 +119,7 @@ export const SELECT_CHART_EXPORT_FORMAT = 'SELECT_CHART_EXPORT_FORMAT';
 export const OPEN_ENLARGED_DIALOG = 'OPEN_ENLARGED_DIALOG';
 export const CLOSE_ENLARGED_DIALOG = 'CLOSE_ENLARGED_DIALOG';
 export const SET_ENLARGED_DIALOG_DATE_RANGE = 'SET_ENLARGED_DIALOG_DATE_RANGE';
+export const SET_DRILL_DOWN_DATE_RANGE = 'SET_DRILL_DOWN_DATE_RANGE';
 export const UPDATE_ENLARGED_DIALOG = 'UPDATE_ENLARGED_DIALOG';
 export const UPDATE_ENLARGED_DIALOG_ERROR = 'UPDATE_ENLARGED_DIALOG_ERROR';
 export const CLOSE_DRILL_DOWN = 'CLOSE_DRILL_DOWN';
@@ -1202,6 +1203,15 @@ export function setEnlargedDashboardDateRange(startDate, endDate) {
     type: SET_ENLARGED_DIALOG_DATE_RANGE,
     startDate,
     endDate,
+  };
+}
+
+export function setDrillDownDateRange(startDate, endDate) {
+  return {
+    type: SET_DRILL_DOWN_DATE_RANGE,
+    startDate,
+    endDate,
+    drillDownLevel: 1, // Drill down date range is only supported one layer deep
   };
 }
 

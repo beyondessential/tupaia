@@ -108,7 +108,7 @@ DrillDownOverlayComponent.defaultProps = {
 };
 
 const mapStateToProps = ({ drillDown }) => ({
-  viewContent: drillDown.levelContents[drillDown.currentLevel],
+  viewContent: drillDown.levelContents[drillDown.currentLevel] && drillDown.levelContents[drillDown.currentLevel].viewContent,
   currentLevel: drillDown.currentLevel,
   isLoading: drillDown.isLoading,
 });
