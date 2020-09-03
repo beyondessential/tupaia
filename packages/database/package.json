@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "dist/index.js",
   "scripts": {
-    "build": "babel src --out-dir dist --ignore '**/migrations','src/tests/**' --config-file '../../babel.config.json'",
+    "build": "babel src --out-dir dist --source-maps --ignore '**/migrations','src/tests/**' --config-file '../../babel.config.json'",
     "build:ts": "tsc",
     "test": "mocha",
     "test-coverage": "cross-env NODE_ENV=test nyc mocha",

@@ -21,6 +21,7 @@ const FIELDS = [
   {
     Header: 'Message',
     source: 'message',
+    type: 'tooltip',
     editable: false,
   },
   {
