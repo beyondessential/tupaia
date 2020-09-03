@@ -4,7 +4,7 @@
  */
 
 // Data elements and groups share the same codes on purpose, to assert that
-// `DataBroker` can still distinguish them by their type
+// `DataBroker` can still distinguish them using their type
 export const DATA_ELEMENTS = {
   TEST_01: { code: 'TEST_01', type: 'dataElement', service_type: 'test', config: {} },
   TEST_02: { code: 'TEST_02', type: 'dataElement', service_type: 'test', config: {} },

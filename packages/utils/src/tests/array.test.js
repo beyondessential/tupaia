@@ -29,7 +29,7 @@ describe('array', () => {
       expect(countDistinct([0, 1, 0, 1, 1, 2])).to.equal(3);
     });
 
-    describe('different mappers', () => {
+    describe('different mapper types', () => {
       it('function', () => {
         expect(countDistinct([1.1, 2, 1.3], Math.floor)).to.equal(2);
       });
