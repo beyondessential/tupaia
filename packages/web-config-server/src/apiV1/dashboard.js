@@ -100,7 +100,7 @@ export default class extends RouteHandler {
         const { viewJson, dataBuilder, drillDownLevel } = report;
         const { displayOnEntityConditions, ...restOfViewJson } = viewJson; //Avoid sending displayOnEntityConditions to the frontend
         const viewKey = drillDownLevel ? `${viewId}_${drillDownLevel}` : viewId;
-        const view = { viewId, drillDownLevel, ...restOfViewJson, requiresDataFetch: !!dataBuilder };
+        const view = { viewId: viewKey, drillDownLevel, ...restOfViewJson, requiresDataFetch: !!dataBuilder };
 
         if (drillDownLevel) {
           console.log('drilldown');

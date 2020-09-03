@@ -113,10 +113,11 @@ const styles = {
   },
 };
 
-const mapStateToProps = ({ drillDown, enlargedDialog }) => ({
+const mapStateToProps = ({ global, drillDown, enlargedDialog }) =>  ({
   ...enlargedDialog,
+  viewConfigs: global.viewConfigs,
   isDrillDownVisible: drillDown.isVisible,
-});
+})
 
 const mapDispatchToProps = dispatch => ({
   onCloseOverlay: () => dispatch(closeEnlargedDialog()),
@@ -130,20 +131,25 @@ const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => ({
   ...dispatchProps,
   ...ownProps,
   onDrillDown: chartItem => {
-    const { viewContent, infoViewKey } = stateProps;
-    const { drillDown } = viewContent;
+    const { viewContent, infoViewKey, viewConfigs } = stateProps;
+    const { drillDown, dashboardGroupId, organisationUnitCode } = viewContent;
     if (!drillDown) {
       return;
     }
+
+    const newKey = `${infoViewKey}_1`;
+    const config = viewConfigs[newKey];
+
     const { parameterLink, keyLink } = drillDown;
-    // Todo: add config for drillDown view here
+
     dispatch(
       attemptDrillDown(
         {
-          infoViewKey,
-          ...viewContent,
-          defaultTimePeriod: null,
-          periodGranularity: null,
+          dashboardGroupId,
+          organisationUnitCode,
+          ...config,
+          infoViewKey: newKey,
+          viewId: 'TO_CD_Validation_CD3'
         },
         parameterLink,
         chartItem[keyLink],
