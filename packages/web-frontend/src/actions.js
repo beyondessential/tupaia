@@ -546,7 +546,7 @@ export function changeMeasure(measureId, organisationUnitCode) {
 }
 
 /**
- * Updates measure config for the measure with id measureId in measureBar.
+ * Updates measure config for the  current measure in measureBar.
  *
  * @param {object} measureConfig
  */
