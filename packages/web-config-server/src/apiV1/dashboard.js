@@ -102,10 +102,6 @@ export default class extends RouteHandler {
         const viewKey = drillDownLevel ? `${viewId}_${drillDownLevel}` : viewId;
         const view = { viewId: viewKey, drillDownLevel, ...restOfViewJson, requiresDataFetch: !!dataBuilder };
 
-        if (drillDownLevel) {
-          console.log('drilldown');
-        }
-
         if (checkEntityAgainstConditions(entity, displayOnEntityConditions)) {
           views.push(view);
         }
