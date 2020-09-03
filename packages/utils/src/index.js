@@ -3,7 +3,7 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-export { min, max } from './array';
+export { countDistinct, min, max } from './array';
 export { AsyncTaskQueue } from './AsyncTaskQueue';
 export { getTimezoneNameFromTimestamp, utcMoment } from './datetime';
 export { getDhisConfig } from './dhis';
