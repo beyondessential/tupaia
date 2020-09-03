@@ -69,11 +69,9 @@ const reactToLocationChange = (store, location, previousLocation) => {
       dispatch(setComponent(component));
   };
 
-  if (PROJECTS_WITH_LANDING_PAGES[otherComponents[URL_COMPONENTS.PROJECT]]) {
-    dispatch(setOverlayComponent(PROJECT_LANDING));
-  } else {
-    dispatch(setOverlayComponent(null));
-  }
+  const isLandingPageProject = PROJECTS_WITH_LANDING_PAGES[otherComponents[URL_COMPONENTS.PROJECT]];
+  const overlayComponent = isLandingPageProject ? PROJECT_LANDING : null;
+  dispatch(setOverlayComponent(overlayComponent));
   setComponentIfUpdated(URL_COMPONENTS.PROJECT, setProject);
   setComponentIfUpdated(URL_COMPONENTS.ORG_UNIT, setOrgUnit);
   setComponentIfUpdated(URL_COMPONENTS.URL_COMPONENTS, setMeasure);
