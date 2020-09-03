@@ -5,6 +5,7 @@ import Button from '@material-ui/core/Button';
 import ExploreIcon from '@material-ui/icons/ExploreOutlined';
 import LeftArrow from '@material-ui/icons/KeyboardBackspace';
 import { FluTrackingAustralia } from './ProjectContents';
+import { LoadingIndicator } from '../../../Form/common';
 
 import logo from '../../../../images/tupaia-logo-white.png';
 
@@ -108,6 +109,8 @@ export const ProjectLandingPage = ({
   project,
   scrollToTop,
 }) => {
+  if (!project.code) return <LoadingIndicator />;
+
   const components = {
     covidau: () => <FluTrackingAustralia />,
   };
