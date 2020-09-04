@@ -89,7 +89,7 @@ ImportExportModalComponent.propTypes = {
   title: PropTypes.string,
   subtitle: PropTypes.string,
   isConfirmDisabled: PropTypes.bool,
-  children: PropTypes.element,
+  children: PropTypes.node,
   queryParameters: PropTypes.array,
   parentRecord: PropTypes.object,
 };

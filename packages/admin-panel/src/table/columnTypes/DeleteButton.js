@@ -17,7 +17,9 @@ const DeleteButtonComponent = ({ dispatch, value, actionConfig, reduxId }) => (
 );
 
 DeleteButtonComponent.propTypes = {
-  actionConfig: PropTypes.object.isRequired,
+  actionConfig: PropTypes.PropTypes.shape({
+    endpoint: PropTypes.string,
+  }).isRequired,
   dispatch: PropTypes.func.isRequired,
   value: PropTypes.string.isRequired,
   reduxId: PropTypes.string.isRequired,
