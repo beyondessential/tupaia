@@ -13,12 +13,8 @@ class AnalyticsBuilder extends DataBuilder {
   }
 }
 
-export const analytics = (
-  { dataBuilderConfig, query, entity },
-  aggregator,
-  dhisApi,
-  aggregationType,
-) => {
+export const analytics = ({ dataBuilderConfig, query, entity }, aggregator, dhisApi) => {
+  const { aggregationType } = dataBuilderConfig;
   const builder = new AnalyticsBuilder(
     aggregator,
     dhisApi,
