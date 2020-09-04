@@ -63,22 +63,28 @@ export class DataBroker {
 
   async pull(dataSourceSpec, options) {
     const dataSources = await this.fetchDataSources(dataSourceSpec);
-    let results;
-    const pullForServiceAndType = async dataSourcesForService => {
-      if (countDistinct(dataSourcesForService, 'type') > 1) {
-        throw new Error('Cannot pull multiple types of data in one call');
-      }
-      const { type, service_type: serviceType } = dataSourcesForService[0];
-      const service = this.createService(serviceType);
-      const resultsForService = await service.pull(dataSourcesForService, type, options);
-      const mergeResults = this.resultMergers[type];
-      results = mergeResults(results, resultsForService);
-    };
+    if (countDistinct(dataSources, 'type') > 1) {
+      throw new Error('Cannot pull multiple types of data in one call');
+    }
 
     const dataSourcesByService = groupBy(dataSources, 'service_type');
-    await Promise.all(Object.values(dataSourcesByService).map(pullForServiceAndType));
-    return results;
+    const nestedResults = await Promise.all(
+      Object.values(dataSourcesByService).map(dataSourcesForService =>
+        this.pullForServiceAndType(dataSourcesForService, options),
+      ),
+    );
+    const mergeResults = this.resultMergers[dataSources[0].type];
+
+    return nestedResults.reduce((results, resultsForService) =>
+      mergeResults(results, resultsForService),
+    );
   }
+
+  pullForServiceAndType = async (dataSources, options) => {
+    const { type, service_type: serviceType } = dataSources[0];
+    const service = this.createService(serviceType);
+    return service.pull(dataSources, type, options);
+  };
 
   mergeAnalytics = (target = { results: [], metadata: {} }, source) => ({
     results: target.results.concat(source.results),
