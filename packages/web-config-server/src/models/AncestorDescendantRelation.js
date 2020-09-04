@@ -14,7 +14,7 @@ export class AncestorDescendantRelation extends BaseModel {
   static async getAncestorIds(entityId, hierarchyId) {
     const records = await AncestorDescendantRelation.find({
       descendant_id: entityId,
-      hierarchy_id: hierarchyId,
+      entity_hierarchy_id: hierarchyId,
     });
     return records.map(r => r.ancestor_id);
   }
@@ -22,7 +22,7 @@ export class AncestorDescendantRelation extends BaseModel {
   static async getDescendantIds(entityId, hierarchyId, criteria) {
     const records = await AncestorDescendantRelation.find({
       ancestor_id: entityId,
-      hierarchy_id: hierarchyId,
+      entity_hierarchy_id: hierarchyId,
       ...criteria,
     });
     return records.map(r => r.descendant_id);

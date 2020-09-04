@@ -239,7 +239,7 @@ export class Entity extends BaseModel {
           WHERE
             descendant.id IN (${batchOfEntityIds.map(() => '?').join(',')})
           AND
-            ancestor_descendant_relation.hierarchy_id = ?
+            ancestor_descendant_relation.entity_hierarchy_id = ?
           AND
             ancestor.type = ?
         `,
