@@ -14,3 +14,4 @@ export { EntityRelation } from './EntityRelation';
 export { Entity } from './Entity';
 export { AncestorDescendantRelation } from './AncestorDescendantRelation';
 export { Project } from './Project';
+export { getModelRegistry } from './modelRegistry';

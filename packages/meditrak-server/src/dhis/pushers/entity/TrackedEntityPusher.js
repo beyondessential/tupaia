@@ -47,7 +47,7 @@ export class TrackedEntityPusher extends EntityPusher {
   async buildRecord(entity) {
     const typeId = await this.fetchTrackedEntityTypeId(entity);
     const attributes = await this.buildAttributes(entity);
-    const { code: orgUnitCode } = await entity.fetchClosestOrganisationUnit();
+    const { code: orgUnitCode } = await entity.fetchNearestOrgUnitAncestor();
     const { id: orgUnit } = await this.fetchOrganisationUnitByCode(orgUnitCode);
 
     const record = {

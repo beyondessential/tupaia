@@ -13,11 +13,7 @@ import { TYPES } from '../types';
  * https://github.com/beyondessential/tupaia-backlog/issues/427
  */
 
-/**
- * Maximum number of parents an entity can have.
- * Used to avoid infinite loops while traversing the entity hierarchy
- */
-const MAX_ENTITY_HIERARCHY_LEVELS = 100;
+const DEFAULT_ENTITY_HIERARCHY = 'explore';
 
 const CASE = 'case';
 const CASE_CONTACT = 'case_contact';
@@ -55,6 +51,9 @@ export const ORG_UNIT_ENTITY_TYPES = {
   FACILITY,
   VILLAGE,
 };
+
+const ANCESTORS = 'ancestors';
+const DESCENDANTS = 'descendants';
 
 class EntityType extends DatabaseType {
   static databaseType = TYPES.ENTITY;
@@ -112,24 +111,67 @@ class EntityType extends DatabaseType {
     return parent.type === COUNTRY;
   }
 
+  async getAncestors(hierarchyId, ancestorEntityType, parentOnly) {
+    return this.model.getAncestorsOfEntity(this.id, hierarchyId, ancestorEntityType, parentOnly);
+  }
+
+  async getDescendants(hierarchyId, descendantEntityType, childrenOnly) {
+    return this.model.getDescendantsOfEntity(
+      this.id,
+      hierarchyId,
+      descendantEntityType,
+      childrenOnly,
+    );
+  }
+
+  async getAncestorOfType(entityType, hierarchyId) {
+    if (this.type === entityType) return this;
+    const [ancestor] = await this.getAncestors(hierarchyId, entityType);
+    return ancestor;
+  }
+
+  async getDescendantsOfType(entityType, hierarchyId) {
+    if (this.type === entityType) return [this];
+    return this.getDescendants(hierarchyId, entityType);
+  }
+
+  async getNearestOrgUnitDescendants(hierarchyId) {
+    const orgUnitEntityTypes = new Set(Object.values(ORG_UNIT_ENTITY_TYPES));
+    // if this is an org unit, don't worry about going deeper
+    if (orgUnitEntityTypes.has(this.type)) return [this];
+    // get descendants and return all of the first type that is an org unit type
+    // we rely on descendants being returned in order, with those higher in the hierarchy first
+    const descendants = await this.getDescendants(hierarchyId);
+    const nearestOrgUnitDescendant = descendants.find(d => orgUnitEntityTypes.has(d.type));
+    if (!nearestOrgUnitDescendant) {
+      return [];
+    }
+    return descendants.filter(d => d.type === nearestOrgUnitDescendant.type);
+  }
+
+  async fetchDefaultEntityHierarchyId() {
+    const hierarchy = await this.otherModels.entityHierarchy.findOne({
+      name: DEFAULT_ENTITY_HIERARCHY,
+    });
+    return hierarchy.id;
+  }
+
   /**
    * Fetches the closest node in the entity hierarchy that is an organisation unit,
    * starting from the entity itself and traversing the hierarchy up
    *
    * @returns {EntityType}
-   * @throws {Error}
    */
-  async fetchClosestOrganisationUnit() {
-    let currentEntity = this;
-    for (let i = 0; i < MAX_ENTITY_HIERARCHY_LEVELS; i++) {
-      if (currentEntity.isOrganisationUnit()) {
-        return currentEntity;
-      }
-
-      currentEntity = await currentEntity.fetchParent();
-    }
-
-    throw new Error(`Maximum of (${MAX_ENTITY_HIERARCHY_LEVELS}) entity hierarchy levels reached`);
+  async fetchNearestOrgUnitAncestor(hierarchyId) {
+    const orgUnitEntityTypes = new Set(Object.values(ORG_UNIT_ENTITY_TYPES));
+    // if this is an org unit, don't worry about going deeper
+    if (orgUnitEntityTypes.has(this.type)) return [this];
+    // if no hierarchy id was passed in, use the default hierarchy
+    const entityHierarchyId = hierarchyId || (await this.fetchDefaultEntityHierarchyId());
+    // get ancestors and return the first that is an org unit type
+    // we rely on ancestors being returned in order of proximity to this entity
+    const ancestors = await this.getAncestors(entityHierarchyId);
+    return ancestors.find(d => orgUnitEntityTypes.has(d.type));
   }
 }
 
@@ -192,6 +234,114 @@ export class EntityModel extends DatabaseModel {
         WHERE "code" = ?;
       `,
       shouldSetBounds ? [geojson, geojson, code] : [geojson, code],
+    );
+  }
+
+  async fetchAncestorDetailsByDescendantCode(...args) {
+    const cacheKey = `fetchAncestorDetailsByDescendantCode:${JSON.stringify(args)}`;
+    const [descendantCodes, hierarchyId, ancestorType] = args;
+    return this.runCachedFunction(cacheKey, async () => {
+      const ancestorDescendantRelations = await this.database.executeSqlInBatches(
+        descendantCodes,
+        batchOfDescendantCodes => [
+          `
+          SELECT descendant.code as descendant_code, ancestor.code as ancestor_code, ancestor.name as ancestor_name
+          FROM
+            ancestor_descendant_relation
+          JOIN
+            entity as ancestor on ancestor.id = ancestor_descendant_relation.ancestor_id
+          JOIN
+            entity as descendant ON descendant.id = ancestor_descendant_relation.descendant_id
+          WHERE
+            descendant.code IN (${batchOfDescendantCodes.map(() => '?').join(',')})
+          AND
+            ancestor_descendant_relation.hierarchy_id = ?
+          AND
+            ancestor.type = ?
+          ORDER BY
+            generational_distance ASC
+        `,
+          [...batchOfDescendantCodes, hierarchyId, ancestorType],
+        ],
+      );
+      const ancestorDetailsByDescendantCode = {};
+      ancestorDescendantRelations.forEach(r => {
+        ancestorDetailsByDescendantCode[r.descendant_code] = {
+          code: r.ancestor_code,
+          name: r.ancestor_name,
+        };
+      });
+      return ancestorDetailsByDescendantCode;
+    });
+  }
+
+  async getRelationsOfEntity(...args) {
+    const cacheKey = `getRelationsOfEntity:${JSON.stringify(args)}`;
+    const [
+      entityId,
+      hierarchyId,
+      ancestorsOrDescendants,
+      entityTypeOfRelations,
+      immediateRelativesOnly,
+    ] = args;
+    const [joinTablesOn, filterByEntityId] =
+      ancestorsOrDescendants === ANCESTORS
+        ? ['ancestor_id', 'descendant_id']
+        : ['descendant_id', 'ancestor_id'];
+    return this.runCachedFunction(cacheKey, async () =>
+      this.findWithSql(
+        `
+        SELECT entity.*
+        FROM
+          entity
+        JOIN
+          ancestor_descendant_relation ON entity.id = ${joinTablesOn}
+        WHERE
+          ${filterByEntityId} = ?
+        AND
+          hierarchy_id = ?
+        ${
+          entityTypeOfRelations
+            ? `
+        AND
+          entity.type = ?
+        `
+            : ''
+        }
+        ${
+          immediateRelativesOnly
+            ? `
+        AND
+          generational_distance = 1
+        `
+            : ''
+        }
+        ORDER BY
+          generational_distance ASC
+        ;
+      `,
+        [entityId, hierarchyId, entityTypeOfRelations].filter(p => !!p),
+      ),
+    );
+  }
+
+  async getAncestorsOfEntity(entityId, hierarchyId, ancestorEntityType, parentOnly) {
+    return this.getRelationsOfEntity(
+      entityId,
+      hierarchyId,
+      ANCESTORS,
+      ancestorEntityType,
+      parentOnly,
+    );
+  }
+
+  async getDescendantsOfEntity(entityId, hierarchyId, descendantEntityType, childrenOnly) {
+    return this.getRelationsOfEntity(
+      entityId,
+      hierarchyId,
+      DESCENDANTS,
+      descendantEntityType,
+      childrenOnly,
     );
   }
 }
