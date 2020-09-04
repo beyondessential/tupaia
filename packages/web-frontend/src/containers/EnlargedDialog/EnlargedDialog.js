@@ -136,24 +136,31 @@ const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => ({
   ...stateProps,
   ...dispatchProps,
   ...ownProps,
+  // When drilling down, we use the date range of the first layer as default but respect the granularity of the second layer
   onDrillDown: chartItem => {
     const { viewContent, infoViewKey, viewConfigs } = stateProps;
+    // Get first layer config
     const {
       drillDown,
       drillDownLevel: currentDrillDownLevel,
       dashboardGroupId,
       organisationUnitCode,
       viewId,
+      startDate,
+      endDate,
     } = viewContent;
+
     if (!drillDown) {
       return;
     }
 
     const newDrillDownLevel = currentDrillDownLevel + 1;
 
-    const newKey = `${infoViewKey}_${newDrillDownLevel}`;
-    const config = viewConfigs[newKey];
-
+    // Get second layer config
+    // A special key signature is set up for drill down report configs
+    // @see extractViewsFromAllDashboards in reducers.js
+    const drillDownConfigKey = `${infoViewKey}_${newDrillDownLevel}`;
+    const drillDownConfig = viewConfigs[drillDownConfigKey];
     const { parameterLink, keyLink } = drillDown;
 
     dispatch(
@@ -161,10 +168,12 @@ const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => ({
         {
           dashboardGroupId,
           organisationUnitCode,
-          ...config,
-          infoViewKey: newKey,
+          ...drillDownConfig,
+          infoViewKey: drillDownConfigKey,
           viewId,
         },
+        startDate,
+        endDate,
         parameterLink,
         chartItem[keyLink],
         newDrillDownLevel,

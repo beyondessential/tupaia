@@ -1146,15 +1146,15 @@ export function closeDrillDown() {
   };
 }
 
-export function attemptDrillDown(viewContent, parameterLink, parameterValue, drillDownLevel) {
-  const {
-    viewId,
-    organisationUnitCode,
-    dashboardGroupId,
-    startDate,
-    endDate,
-    infoViewKey,
-  } = viewContent;
+export function attemptDrillDown(
+  viewContent,
+  startDate,
+  endDate,
+  parameterLink,
+  parameterValue,
+  drillDownLevel,
+) {
+  const { viewId, organisationUnitCode, dashboardGroupId, infoViewKey } = viewContent;
   return {
     type: ATTEMPT_DRILL_DOWN,
     organisationUnitCode,
