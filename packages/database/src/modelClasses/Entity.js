@@ -255,7 +255,7 @@ export class EntityModel extends DatabaseModel {
           WHERE
             descendant.code IN (${batchOfDescendantCodes.map(() => '?').join(',')})
           AND
-            ancestor_descendant_relation.hierarchy_id = ?
+            ancestor_descendant_relation.entity_hierarchy_id = ?
           AND
             ancestor.type = ?
           ORDER BY
@@ -299,7 +299,7 @@ export class EntityModel extends DatabaseModel {
         WHERE
           ${filterByEntityId} = ?
         AND
-          hierarchy_id = ?
+          entity_hierarchy_id = ?
         ${
           entityTypeOfRelations
             ? `
