@@ -46,7 +46,7 @@ export class EntityHierarchyCacher {
     // on startup, or when two projects share a hierarchy (at time of writing none do, but db schema
     // makes it possible)
     const alreadyCached = !!(await this.database.findOne(ANCESTOR_DESCENDANT_RELATION, {
-      hierarchy_id: hierarchyId,
+      entity_hierarchy_id: hierarchyId,
       ancestor_id: parentId,
     }));
     if (alreadyCached) {
@@ -108,7 +108,7 @@ export class EntityHierarchyCacher {
     ancestorIds.forEach((ancestorId, ancestorIndex) =>
       entityIds.forEach(entityId => {
         records.push({
-          hierarchy_id: hierarchyId,
+          entity_hierarchy_id: hierarchyId,
           ancestor_id: ancestorId,
           descendant_id: entityId,
           generational_distance: ancestorIndex + 1,
