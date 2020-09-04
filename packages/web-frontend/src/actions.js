@@ -1206,12 +1206,12 @@ export function setEnlargedDashboardDateRange(startDate, endDate) {
   };
 }
 
-export function setDrillDownDateRange(startDate, endDate) {
+export function setDrillDownDateRange(startDate, endDate, currentLevel) {
   return {
     type: SET_DRILL_DOWN_DATE_RANGE,
     startDate,
     endDate,
-    drillDownLevel: 1, // Drill down date range is only supported one layer deep
+    drillDownLevel: currentLevel,
   };
 }
 

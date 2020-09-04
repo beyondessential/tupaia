@@ -12,7 +12,12 @@ import CircularProgress from 'material-ui/CircularProgress';
 import BackIcon from 'material-ui/svg-icons/hardware/keyboard-arrow-left';
 
 import { TRANS_BLACK, DIALOG_Z_INDEX, WHITE } from '../../styles';
-import { attemptDrillDown, closeDrillDown, goToDrillDownLevel } from '../../actions';
+import {
+  attemptDrillDown,
+  closeDrillDown,
+  goToDrillDownLevel,
+  setDrillDownDateRange,
+} from '../../actions';
 import { VIEW_CONTENT_SHAPE } from '../../components/View';
 import { EnlargedDialogContent } from '../EnlargedDialog';
 
@@ -120,6 +125,10 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => {
   return {
     ...stateProps,
     ...ownProps,
+    onSetDateRange: (startDate, endDate) => {
+      const { currentLevel } = stateProps;
+      ownProps.onSetDateRange(startDate, endDate, currentLevel);
+    },
     onDrillDown: chartItem => {
       const { viewContent, currentLevel, enlargedDialog } = stateProps;
       const { drillDown } = viewContent;

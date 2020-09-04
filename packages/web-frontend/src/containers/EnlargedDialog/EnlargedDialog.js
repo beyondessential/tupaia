@@ -127,8 +127,8 @@ const mapDispatchToProps = dispatch => ({
   onCloseOverlay: () => dispatch(closeEnlargedDialog()),
   onSetDateRange: (startDate, endDate) =>
     dispatch(setEnlargedDashboardDateRange(startDate, endDate)),
-  onSetDrillDownDateRange: (startDate, endDate) =>
-    dispatch(setDrillDownDateRange(startDate, endDate)),
+  onSetDrillDownDateRange: (startDate, endDate, currentLevel) =>
+    dispatch(setDrillDownDateRange(startDate, endDate, currentLevel)),
   dispatch,
 });
 
@@ -138,12 +138,20 @@ const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => ({
   ...ownProps,
   onDrillDown: chartItem => {
     const { viewContent, infoViewKey, viewConfigs } = stateProps;
-    const { drillDown, dashboardGroupId, organisationUnitCode, viewId } = viewContent;
+    const {
+      drillDown,
+      drillDownLevel: currentDrillDownLevel,
+      dashboardGroupId,
+      organisationUnitCode,
+      viewId,
+    } = viewContent;
     if (!drillDown) {
       return;
     }
 
-    const newKey = `${infoViewKey}_1`;
+    const newDrillDownLevel = currentDrillDownLevel + 1;
+
+    const newKey = `${infoViewKey}_${newDrillDownLevel}`;
     const config = viewConfigs[newKey];
 
     const { parameterLink, keyLink } = drillDown;
@@ -159,7 +167,7 @@ const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => ({
         },
         parameterLink,
         chartItem[keyLink],
-        1,
+        newDrillDownLevel,
       ),
     );
   },
