@@ -2,6 +2,7 @@
 export { blankDataBuilder } from './blankDataBuilder';
 
 /** Generics */
+export * from './generic/analytics';
 export * from './generic/average';
 export * from './generic/comparison';
 export * from './generic/compose';

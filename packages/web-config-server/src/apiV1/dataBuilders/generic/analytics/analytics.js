@@ -1,0 +1,31 @@
+/**
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+
+import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
+
+class AnalyticsBuilder extends DataBuilder {
+  async build() {
+    const { dataElementCodes } = this.config;
+    const { results } = await this.fetchAnalytics(dataElementCodes);
+    return { data: results };
+  }
+}
+
+export const analytics = (
+  { dataBuilderConfig, query, entity },
+  aggregator,
+  dhisApi,
+  aggregationType,
+) => {
+  const builder = new AnalyticsBuilder(
+    aggregator,
+    dhisApi,
+    dataBuilderConfig,
+    query,
+    entity,
+    aggregationType,
+  );
+  return builder.build();
+};
