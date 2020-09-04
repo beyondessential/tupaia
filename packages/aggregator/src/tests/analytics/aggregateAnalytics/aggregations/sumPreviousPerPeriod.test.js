@@ -5,13 +5,13 @@
 
 import { expect } from 'chai';
 import { PERIOD_TYPES } from '@tupaia/utils';
-import { sumPreviousPerPeriod } from '../../../analytics/aggregateAnalytics/aggregations';
+import { sumPreviousPerPeriod } from '../../../../analytics/aggregateAnalytics/aggregations';
 
 const DAY = PERIOD_TYPES.DAY;
 const YEAR = PERIOD_TYPES.YEAR;
 
 describe('sumPreviousPerPeriod()', () => {
-  it('should sum accross periods', () => {
+  it('should sum across periods', () => {
     const testAnalytics = [
       { dataElement: 1, organisationUnit: 1, period: '20200101', value: 1 },
       { dataElement: 1, organisationUnit: 1, period: '20200102', value: 2 },

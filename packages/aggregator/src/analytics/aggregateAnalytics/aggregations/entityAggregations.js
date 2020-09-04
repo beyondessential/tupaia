@@ -25,7 +25,7 @@ const valuePerOrgGroup = (analytics, aggregationConfig, valueMapper, keyMapper) 
       (orgUnitMap[analytic.organisationUnit] && orgUnitMap[analytic.organisationUnit].code) ||
       analytic.organisationUnit;
     const key = keyMapper(analytic, organisationUnit);
-    const value = filterValueMapper(analytic.value) ? 0 : valueMapper(analytic.value);
+    const value = filterValueMapper(analytic.value) ? valueMapper(analytic.value) : 0;
 
     // If there are no matching response elements already being returned, add it
     if (!analyticsByKey[key]) {
