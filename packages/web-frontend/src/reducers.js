@@ -867,7 +867,7 @@ function extractViewsFromAllDashboards(dashboardConfig) {
         const uniqueViewId = getUniqueViewId({
           dashboardGroupId,
           organisationUnitCode,
-          viewId: view.viewId,
+          viewId: view.drillDownLevel ? `${view.viewId}_${view.drillDownLevel}` : view.viewId,
         });
         viewConfigs[uniqueViewId] = view;
       });

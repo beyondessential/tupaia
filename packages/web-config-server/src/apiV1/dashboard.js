@@ -99,15 +99,17 @@ export default class extends RouteHandler {
       reports.forEach(report => {
         const { viewJson, dataBuilder, drillDownLevel } = report;
         const { displayOnEntityConditions, ...restOfViewJson } = viewJson; //Avoid sending displayOnEntityConditions to the frontend
-        const viewKey = drillDownLevel ? `${viewId}_${drillDownLevel}` : viewId;
-        const view = { viewId: viewKey, drillDownLevel, ...restOfViewJson, requiresDataFetch: !!dataBuilder };
+        const view = {
+          viewId,
+          drillDownLevel,
+          ...restOfViewJson,
+          requiresDataFetch: !!dataBuilder,
+        };
 
         if (checkEntityAgainstConditions(entity, displayOnEntityConditions)) {
           views.push(view);
         }
-      })
-
-
+      });
     }
     return views;
   };
