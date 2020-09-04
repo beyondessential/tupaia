@@ -67,14 +67,14 @@ describe('entityAggregations', () => {
       ]);
     });
 
-    it('should use valueToMatch with sum', () => {
+    it('should use conditions with sum', () => {
       const testAnalytics = [
         { dataElement: 'element1', organisationUnit: 'org1', period: '20200101', value: 2 },
         { dataElement: 'element1', organisationUnit: 'org2', period: '20200102', value: 1 },
         { dataElement: 'element1', organisationUnit: 'org3', period: '20200103', value: 2 },
       ];
       expect(
-        sumPerOrgGroup(testAnalytics, { orgUnitMap, valueToMatch: 2 }),
+        sumPerOrgGroup(testAnalytics, { orgUnitMap, condition: { operator: '=', value: 2 } }),
       ).to.have.same.deep.members([
         { dataElement: 'element1', organisationUnit: 'parent1', period: '20200101', value: 4 },
         { dataElement: 'element1', organisationUnit: 'parent2', period: '20200102', value: 0 },
@@ -109,28 +109,17 @@ describe('entityAggregations', () => {
   });
 
   describe('countPerOrgGroup()', () => {
-    it('should use valueToMatch any key (*)', () => {
-      const testAnalytics = [
-        { dataElement: 'element1', organisationUnit: 'org1', period: '20200101', value: null },
-        { dataElement: 'element1', organisationUnit: 'org2', period: '20200102', value: 'No' },
-        { dataElement: 'element1', organisationUnit: 'org3', period: '20200103', value: false },
-      ];
-      expect(
-        countPerOrgGroup(testAnalytics, { orgUnitMap, valueToMatch: '*' }),
-      ).to.have.same.deep.members([
-        { dataElement: 'element1', organisationUnit: 'parent1', period: '20200101', value: 2 },
-        { dataElement: 'element1', organisationUnit: 'parent2', period: '20200102', value: 1 },
-      ]);
-    });
-
-    it('should use valueToMatch to count', () => {
+    it('should use conditions to count', () => {
       const testAnalytics = [
         { dataElement: 'element1', organisationUnit: 'org1', period: '20200101', value: 'Yes' },
         { dataElement: 'element1', organisationUnit: 'org2', period: '20200102', value: 'No' },
         { dataElement: 'element1', organisationUnit: 'org3', period: '20200103', value: 'Yes' },
       ];
       expect(
-        countPerOrgGroup(testAnalytics, { orgUnitMap, valueToMatch: 'Yes' }),
+        countPerOrgGroup(testAnalytics, {
+          orgUnitMap,
+          condition: { operator: '=', value: 'Yes' },
+        }),
       ).to.have.same.deep.members([
         { dataElement: 'element1', organisationUnit: 'parent1', period: '20200101', value: 2 },
         { dataElement: 'element1', organisationUnit: 'parent2', period: '20200102', value: 0 },

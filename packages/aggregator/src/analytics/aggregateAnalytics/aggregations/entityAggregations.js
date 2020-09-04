@@ -14,10 +14,8 @@ import { checkValueSatisfiesCondition } from '@tupaia/utils';
  * @param {Function} keyMapper
  */
 const valuePerOrgGroup = (analytics, aggregationConfig, valueMapper, keyMapper) => {
-  const { orgUnitMap = {}, valueToMatch, condition } = aggregationConfig;
-  let filterValueMapper = () => true;
-  if (valueToMatch) filterValueMapper = createFilterValueMapper(valueToMatch);
-  if (condition) filterValueMapper = createFilterValueMapper(condition);
+  const { orgUnitMap = {}, condition } = aggregationConfig;
+  const filterValueMapper = condition ? createFilterValueMapper(condition) : () => true;
 
   const analyticsByKey = {};
   analytics.forEach(analytic => {
