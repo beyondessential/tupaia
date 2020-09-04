@@ -22,10 +22,10 @@ exports.up = async function(db) {
   await db.createTable(TABLE_NAME, {
     columns: {
       id: { type: 'text', primaryKey: true },
-      hierarchy_id: {
+      entity_hierarchy_id: {
         type: 'text',
         notNull: true,
-        foreignKey: createForeignKeyConfig(TABLE_NAME, 'hierarchy_id', 'entity_hierarchy'),
+        foreignKey: createForeignKeyConfig(TABLE_NAME, 'entity_hierarchy_id', 'entity_hierarchy'),
       },
       ancestor_id: {
         type: 'text',
