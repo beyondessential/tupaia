@@ -26,7 +26,7 @@ export default class extends RouteHandler {
   async getEntityAndCountryDataByCode(projectCode) {
     const project = await Project.findOne({ code: projectCode });
     const projectEntity = await Entity.findOne({ id: project.entity_id });
-    const country = await this.entity.countryEntity();
+    const country = await this.entity.country();
     const countryDescendants = country
       ? await country.getDescendants(project.entity_hierarchy_id)
       : [];

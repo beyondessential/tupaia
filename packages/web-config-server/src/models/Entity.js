@@ -136,11 +136,6 @@ export class Entity extends BaseModel {
     return ancestors.map(a => a.code);
   }
 
-  async getCountry(hierarchyId) {
-    if (this.isCountry()) return this;
-    return this.getAncestorOfType(COUNTRY, hierarchyId);
-  }
-
   async getChildren(hierarchyId, criteria = {}) {
     const childIds = await AncestorDescendantRelation.getChildIds(this.id, hierarchyId);
     return Entity.find({ id: childIds, ...criteria });
@@ -267,12 +262,4 @@ export class Entity extends BaseModel {
     return this.parentId ? Entity.findById(this.parent_id) : undefined;
   }
 
-  async countryEntity() {
-    if (this.type === COUNTRY) {
-      return this;
-    } else if (this.country_code) {
-      return Entity.findOne({ code: this.country_code });
-    }
-    return undefined;
-  }
 }

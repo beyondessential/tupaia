@@ -63,10 +63,6 @@ class EntityType extends DatabaseType {
     return this.code;
   }
 
-  async country() {
-    return this.otherModels.country.findOne({ code: this.country_code });
-  }
-
   isFacility() {
     return this.type === FACILITY;
   }
@@ -104,6 +100,10 @@ class EntityType extends DatabaseType {
 
   async fetchParent() {
     return this.model.findById(this.parent_id);
+  async country() {
+    return this.model.findOne({ code: this.country_code });
+  }
+
   }
 
   async hasCountryParent() {
