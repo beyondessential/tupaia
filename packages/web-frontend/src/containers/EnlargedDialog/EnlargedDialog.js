@@ -12,13 +12,13 @@ import {
   closeEnlargedDialog,
   openExportDialog,
   setEnlargedDashboardDateRange,
-  setDrillDownDateRange,
 } from '../../actions';
 import { DrillDownOverlay } from '../DrillDownOverlay';
 import { EnlargedDialogContent } from './EnlargedDialogContent';
 import { getIsMatrix, getIsDataDownload, VIEW_CONTENT_SHAPE } from '../../components/View';
 import { isMobile } from '../../utils';
 import { DIALOG_Z_INDEX } from '../../styles';
+
 class EnlargedDialogComponent extends PureComponent {
   render() {
     const {
@@ -29,7 +29,6 @@ class EnlargedDialogComponent extends PureComponent {
       organisationUnitName,
       onDrillDown,
       onSetDateRange,
-      onSetDrillDownDateRange,
       isLoading,
       isVisible,
     } = this.props;
@@ -48,10 +47,7 @@ class EnlargedDialogComponent extends PureComponent {
     };
 
     const drillDownOverlay = isDrillDownVisible ? (
-      <DrillDownOverlay
-        onSetDateRange={onSetDrillDownDateRange}
-        organisationUnitName={organisationUnitName}
-      />
+      <DrillDownOverlay organisationUnitName={organisationUnitName} />
     ) : null;
     return (
       <Dialog
@@ -84,7 +80,6 @@ EnlargedDialogComponent.propTypes = {
   organisationUnitName: PropTypes.string.isRequired,
   onDrillDown: PropTypes.func,
   onSetDateRange: PropTypes.func,
-  onSetDrillDownDateRange: PropTypes.func,
   isLoading: PropTypes.bool,
   isVisible: PropTypes.bool,
   isDrillDownVisible: PropTypes.bool,
@@ -93,7 +88,6 @@ EnlargedDialogComponent.propTypes = {
 EnlargedDialogComponent.defaultProps = {
   onDrillDown: () => {},
   onSetDateRange: () => {},
-  onSetDrillDownDateRange: () => {},
   isLoading: false,
   isVisible: false,
   isDrillDownVisible: false,
@@ -127,8 +121,6 @@ const mapDispatchToProps = dispatch => ({
   onCloseOverlay: () => dispatch(closeEnlargedDialog()),
   onSetDateRange: (startDate, endDate) =>
     dispatch(setEnlargedDashboardDateRange(startDate, endDate)),
-  onSetDrillDownDateRange: (startDate, endDate, currentLevel) =>
-    dispatch(setDrillDownDateRange(startDate, endDate, currentLevel)),
   dispatch,
 });
 

@@ -23,7 +23,7 @@ import { EnlargedDialogContent } from '../EnlargedDialog';
 
 class DrillDownOverlayComponent extends PureComponent {
   renderContent() {
-    const { viewContent, onDrillDown, onBack, ...restOfProps } = this.props;
+    const { viewContent, onDrillDown, onBack, onSetDateRange, ...restOfProps } = this.props;
     return (
       <EnlargedDialogContent
         onCloseOverlay={onBack}
@@ -33,6 +33,7 @@ class DrillDownOverlayComponent extends PureComponent {
         viewContent={viewContent}
         onDrillDown={onDrillDown}
         isVisible
+        onSetDateRange={onSetDateRange}
         {...restOfProps}
       />
     );
@@ -105,6 +106,7 @@ DrillDownOverlayComponent.propTypes = {
   onBack: PropTypes.func.isRequired,
   viewContent: PropTypes.shape(VIEW_CONTENT_SHAPE),
   onDrillDown: PropTypes.func.isRequired,
+  onSetDateRange: PropTypes.func.isRequired,
 };
 
 DrillDownOverlayComponent.defaultProps = {
@@ -127,7 +129,7 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => {
     ...ownProps,
     onSetDateRange: (startDate, endDate) => {
       const { currentLevel } = stateProps;
-      ownProps.onSetDateRange(startDate, endDate, currentLevel);
+      dispatch(setDrillDownDateRange(startDate, endDate, currentLevel));
     },
     onDrillDown: chartItem => {
       const { viewContent, currentLevel, enlargedDialog } = stateProps;
