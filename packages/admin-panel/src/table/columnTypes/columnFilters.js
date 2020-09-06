@@ -4,6 +4,7 @@
  */
 import React from 'react';
 import { Select } from '@tupaia/ui-components';
+import PropTypes from 'prop-types';
 /*
  * Makes boolean fields work with the database filter
  * https://github.com/tannerlinsley/react-table/tree/v6/examples/custom-filtering
@@ -22,3 +23,15 @@ export const BooleanSelectFilter = ({ filter, onChange }) => (
     value={filter ? filter.value : ''}
   />
 );
+
+BooleanSelectFilter.propTypes = {
+  filter: PropTypes.PropTypes.shape({
+    value: PropTypes.string,
+  }),
+  onChange: PropTypes.func,
+};
+
+BooleanSelectFilter.defaultProps = {
+  filter: null,
+  onChange: null,
+};

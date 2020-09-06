@@ -12,6 +12,7 @@ export const ENTITIES_COLUMNS = [
   {
     Header: 'Name',
     source: 'name',
+    type: 'tooltip',
   },
   {
     Header: 'Code',
