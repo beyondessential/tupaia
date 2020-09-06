@@ -3,10 +3,9 @@
     [
       "@babel/plugin-transform-runtime",
       {
-        "corejs": 2
+        "corejs": 3
       }
     ],
-    "syntax-async-functions",
     "@babel/plugin-syntax-dynamic-import",
     "@babel/plugin-syntax-import-meta",
     "@babel/plugin-proposal-class-properties",

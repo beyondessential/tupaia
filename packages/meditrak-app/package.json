@@ -109,7 +109,7 @@
     "react-navigation": "^1.5.8",
     "react-navigation-redux-helpers": "^1.0.3",
     "react-redux": "^5.0.7",
-    "realm": "^2.29.1",
+    "realm": "^6.1.0",
     "redux": "^3.7.2",
     "redux-persist": "^5.9.1",
     "redux-persist-error-handler": "^0.1.1",
