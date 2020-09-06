@@ -128,7 +128,6 @@ const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => ({
   ...stateProps,
   ...dispatchProps,
   ...ownProps,
-  // When drilling down, we use the date range of the first layer as default but respect the granularity of the second layer
   onDrillDown: chartItem => {
     const { viewContent, infoViewKey, viewConfigs } = stateProps;
     // Get first layer config
@@ -154,6 +153,17 @@ const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => ({
     const drillDownConfigKey = `${infoViewKey}_${newDrillDownLevel}`;
     const drillDownConfig = viewConfigs[drillDownConfigKey];
     const { parameterLink, keyLink } = drillDown;
+    const { periodGranularity } = drillDownConfig;
+
+    let defaultStartDate = null;
+    let defaultEndDate = null;
+
+    // If the second layer has periodGranularity set,
+    // constrain the fetch by 1st layer date range
+    if (periodGranularity) {
+      defaultStartDate = startDate;
+      defaultEndDate = endDate;
+    }
 
     dispatch(
       attemptDrillDown(
@@ -164,8 +174,8 @@ const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => ({
           infoViewKey: drillDownConfigKey,
           viewId,
         },
-        startDate,
-        endDate,
+        defaultStartDate,
+        defaultEndDate,
         parameterLink,
         chartItem[keyLink],
         newDrillDownLevel,
