@@ -62,7 +62,7 @@ export const CheckboxField = ({ name, label, fullWidth, errors, validators, ...c
 
 CheckboxField.propTypes = {
   name: PropTypes.string.isRequired,
-  label: PropTypes.string.isRequired,
+  label: PropTypes.node.isRequired,
   validators: PropTypes.arrayOf(PropTypes.object),
   errors: PropTypes.arrayOf(PropTypes.string),
   fullWidth: PropTypes.bool,

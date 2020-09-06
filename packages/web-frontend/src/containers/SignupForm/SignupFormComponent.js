@@ -12,10 +12,9 @@ import InfoIcon from '@material-ui/icons/Info';
 
 import { Form } from '../Form';
 import { TextField, CheckboxField } from '../Form/Fields';
-import { FormLink } from '../Form/common';
+import { FormLink, SubmitButton as Submit } from '../Form/common';
 import { passwordLength, passwordMatch, emailAddress, hasNoAlphaLetters } from '../Form/validators';
 import { WHITE } from '../../styles/index';
-import { SubmitButton } from '../Form/common/SubmitButton';
 
 const LearnMore = styled.div`
   font-size: 14px;
@@ -44,6 +43,21 @@ const TermsLink = styled(FormLink)`
   font-size: 14px;
 `;
 
+const SubmitButton = styled(Submit)`
+  justify-self: end;
+`;
+
+const FormGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 18px;
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
 const TermsLabel = () => (
   <TermsAndConditions>
     I agree to the&nbsp;
@@ -66,6 +80,7 @@ export const SignupFormComponent = ({
     isLoading={isRequestingSignup}
     formError={signupFailedMessage}
     onSubmit={fieldValues => onAttemptUserSignup(fieldValues)}
+    GridComponent={FormGrid}
     render={submitForm => (
       <>
         <TextField label="First Name" name="firstName" required />
@@ -97,7 +112,7 @@ export const SignupFormComponent = ({
           </a>
           &nbsp;to learn more
         </LearnMore>
-        <SubmitButton text="Create account" handleClick={submitForm} />
+        <SubmitButton handleClick={submitForm}>Create account</SubmitButton>
       </>
     )}
   />

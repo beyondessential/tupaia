@@ -3,8 +3,6 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 import keyBy from 'lodash.keyby';
-import flatten from 'lodash.flatten';
-import isEqual from 'lodash.isequal';
 import groupBy from 'lodash.groupby';
 
 import { groupAnalyticsByPeriod } from '@tupaia/dhis-api';
@@ -36,19 +34,6 @@ const FILTERS = {
 };
 
 class BaseBuilder extends PercentagesOfValueCountsBuilder {
-  getDataElementCodes() {
-    const codes = {
-      numerator: [],
-      denominator: [],
-    };
-    Object.values(this.config.dataClasses).forEach(({ numerator, denominator }) => {
-      codes.numerator.push(flatten(numerator.dataValues));
-      if (denominator.hasOwnProperty('dataValues')) codes.denominator.push(denominator.dataValues);
-    });
-
-    return codes;
-  }
-
   getAggregationType() {
     switch (parsePeriodType(this.config.periodType)) {
       case MONTH:
@@ -75,37 +60,6 @@ class BaseBuilder extends PercentagesOfValueCountsBuilder {
       default:
         throw new Error('Unsupported aggregation type');
     }
-  }
-
-  async fetchResults() {
-    const { numerator: numeratorCodes, denominator: denominatorCodes } = this.getDataElementCodes();
-    const {
-      numerator: numeratorAggregationType,
-      denominator: denominatorAggregationType,
-    } = this.getAggregationType();
-
-    const { results: numeratorResults } = await this.fetchAnalytics(
-      numeratorCodes,
-      {},
-      numeratorAggregationType,
-    );
-    const { results: denominatorResults } = await this.fetchAnalytics(
-      denominatorCodes,
-      {},
-      denominatorAggregationType,
-    );
-
-    const allResults = numeratorResults;
-
-    // Hack to make sure that there are no duplicated analytics returned to count twice.
-    // Would like to have { denominatorResults, numeratorResults }, but can't because of how DataPerPeriodBuilder works
-    denominatorResults.forEach(analytic => {
-      if (!allResults.find(otherAnalytic => isEqual(analytic, otherAnalytic))) {
-        allResults.push(analytic);
-      }
-    });
-
-    return allResults;
   }
 
   async buildData(analytics) {

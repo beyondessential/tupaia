@@ -5,6 +5,7 @@
 
 import React, { useState, useCallback } from 'react';
 import Typography from '@material-ui/core/Typography';
+import Chip from '@material-ui/core/Chip';
 import styled from 'styled-components';
 import { Autocomplete } from '../../src';
 
@@ -32,34 +33,39 @@ const options = [
   { id: 12, name: 'Sentinel Site Twelve' },
 ];
 
-export const simple = () => (
+export const Simple = () => (
   <Container>
     <Autocomplete
       id="simple-autocomplete"
       label="Simple Auto Complete"
-      options={options}
+      options={options.map(option => option.name)}
       placeholder="Search..."
     />
   </Container>
 );
 
-export const disabled = () => (
+export const Disabled = () => (
   <Container>
-    <Autocomplete label="Simple Auto Complete" options={options} placeholder="Search..." disabled />
+    <Autocomplete
+      label="Simple Auto Complete"
+      options={options.map(option => option.name)}
+      placeholder="Search..."
+      disabled
+    />
   </Container>
 );
 
-export const noLabel = () => (
+export const NoLabel = () => (
   <Container>
-    <Autocomplete options={options} placeholder="Search..." />
+    <Autocomplete options={options.map(option => option.name)} placeholder="Search..." />
   </Container>
 );
 
-export const helperText = () => (
+export const HelperText = () => (
   <Container>
     <Autocomplete
       label="Helper Text Example"
-      options={options}
+      options={options.map(option => option.name)}
       placeholder="Search..."
       helperText="This field is required"
       required
@@ -67,11 +73,11 @@ export const helperText = () => (
   </Container>
 );
 
-export const error = () => (
+export const Error = () => (
   <Container>
     <Autocomplete
       label="Simple Auto Complete"
-      options={options}
+      options={options.map(option => option.name)}
       placeholder="Search..."
       helperText="Please try again!"
       error
@@ -79,7 +85,7 @@ export const error = () => (
   </Container>
 );
 
-export const controlled = () => {
+export const Controlled = () => {
   const [value, setValue] = useState(null);
 
   const handleChange = useCallback(
@@ -93,21 +99,54 @@ export const controlled = () => {
     <Container>
       <Autocomplete
         label="Controlled Auto Complete"
-        options={options}
+        options={options.map(option => option.name)}
         onChange={handleChange}
         value={value}
         placeholder="Search..."
       />
-      <Typography>Selected Value: {value ? value.name : 'none'}</Typography>
+      <Typography>Selected Value: {value}</Typography>
     </Container>
   );
 };
 
-export const muiProps = () => (
+/**
+ * Use custom keys to have different labels to saved values
+ * This could be useful if you need to save the selected option as an object
+ */
+export const CustomKeys = () => {
+  const [value, setValue] = useState(null);
+
+  const handleChange = useCallback(
+    (event, newValue) => {
+      setValue(newValue);
+    },
+    [setValue],
+  );
+
+  const valueKey = 'id';
+  const labelKey = 'name';
+
+  return (
+    <Container>
+      <Autocomplete
+        label="Controlled Auto Complete"
+        options={options}
+        getOptionSelected={(option, selected) => option[valueKey] === selected[valueKey]}
+        getOptionLabel={option => (option ? option[labelKey] : '')}
+        onChange={handleChange}
+        value={value}
+        placeholder="Search..."
+      />
+      <Typography>Selected Value: {value ? JSON.stringify(value) : 'none'}</Typography>
+    </Container>
+  );
+};
+
+export const FreeText = () => (
   <Container>
     <Autocomplete
       label="Mui Props Example"
-      options={options}
+      options={options.map(option => option.name)}
       placeholder="Search..."
       helperText="Type free text or select an option"
       muiProps={{
@@ -116,3 +155,44 @@ export const muiProps = () => (
     />
   </Container>
 );
+
+export const Tags = () => {
+  const [value, setValue] = useState([]);
+  const [inputValue, setInputValue] = useState('');
+
+  const handleChange = useCallback(
+    (event, newValue) => {
+      setValue(newValue);
+    },
+    [setValue],
+  );
+
+  return (
+    <Container>
+      <Autocomplete
+        label="Mui Props Example"
+        options={options.map(option => option.name)}
+        defaultValue={['Sentinel Site Twelve']}
+        onChange={handleChange}
+        inputValue={inputValue}
+        onInputChange={(event, newInputValue) => {
+          setInputValue(newInputValue);
+        }}
+        value={value}
+        placeholder="Search..."
+        helperText="Type free text or select an option"
+        muiProps={{
+          freeSolo: true,
+          multiple: true,
+          selectOnFocus: true,
+          clearOnBlur: true,
+          handleHomeEndKeys: true,
+          renderTags: (selected, getTagProps) =>
+            selected.map((option, index) => (
+              <Chip color="primary" label={option} {...getTagProps({ index })} />
+            )),
+        }}
+      />
+    </Container>
+  );
+};
