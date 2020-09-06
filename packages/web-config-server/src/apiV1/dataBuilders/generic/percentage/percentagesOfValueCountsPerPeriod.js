@@ -93,8 +93,7 @@ class BaseBuilder extends PercentagesOfValueCountsBuilder {
       const countryCodesToName = {};
       const countryCodesToNamePromises = Object.entries(dataByCountry).map(
         async ([countryCode]) => {
-          const countryEntity = await Entity.findOne({ code: countryCode });
-          const country = await countryEntity.getCountry();
+          const country = await Entity.findOne({ code: countryCode });
           return { [countryCode]: country.name };
         },
         {},
