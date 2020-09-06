@@ -20,18 +20,22 @@ const QUESTION_FIELDS = [
   {
     Header: 'Name',
     source: 'name',
+    type: 'tooltip',
   },
   {
     Header: 'Question',
     source: 'text',
+    type: 'tooltip',
   },
   {
     Header: 'Legacy Options',
     source: 'options',
+    type: 'tooltip',
   },
   {
     Header: 'Detail',
     source: 'detail',
+    type: 'tooltip',
   },
   {
     Header: 'Option Set Id',

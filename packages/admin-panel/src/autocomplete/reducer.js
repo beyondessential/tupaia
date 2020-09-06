@@ -32,7 +32,7 @@ const stateChanges = {
     ...payload,
     searchTerm: '',
   }),
-  [AUTOCOMPLETE_SEARCH_FAILURE]: ({ fetchId, ...restOfPayload }, currentState) => {
+  [AUTOCOMPLETE_SEARCH_FAILURE]: ({ fetchId }, currentState) => {
     const currentFetchId = getFetchId(currentState);
     if (fetchId !== currentFetchId) return {}; // From a previous fetch request, ignore it
     return {

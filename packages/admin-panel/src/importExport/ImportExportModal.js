@@ -89,7 +89,7 @@ ImportExportModalComponent.propTypes = {
   title: PropTypes.string,
   subtitle: PropTypes.string,
   isConfirmDisabled: PropTypes.bool,
-  children: PropTypes.element,
+  children: PropTypes.node,
   queryParameters: PropTypes.array,
   parentRecord: PropTypes.object,
 };
@@ -105,11 +105,10 @@ ImportExportModalComponent.defaultProps = {
 };
 
 const mapStateToProps = ({ importExport: importExportState }, { onConfirm }) => {
-  const { isLoading, errorMessage, parentRecord } = importExportState;
+  const { isLoading, parentRecord } = importExportState;
 
   return {
     isLoading,
-    errorMessage,
     parentRecord,
     onConfirm: values => onConfirm(values, parentRecord),
   };

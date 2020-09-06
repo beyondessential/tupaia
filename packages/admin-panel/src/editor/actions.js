@@ -47,7 +47,7 @@ export const openEditModal = ({ editEndpoint, fields }, recordId) => async (
     }
   } else {
     // set default values
-    for (const field of fields) {
+    fields.forEach(field => {
       if (field.editConfig && field.editConfig.default) {
         const {
           source: fieldKey,
@@ -60,7 +60,7 @@ export const openEditModal = ({ editEndpoint, fields }, recordId) => async (
           newValue,
         });
       }
-    }
+    });
 
     dispatch({
       type: EDITOR_OPEN_CREATOR,
