@@ -258,8 +258,4 @@ export class Entity extends BaseModel {
     return Project.findOne({ entity_id: this.id });
   }
 
-  async parent() {
-    return this.parentId ? Entity.findById(this.parent_id) : undefined;
-  }
-
 }

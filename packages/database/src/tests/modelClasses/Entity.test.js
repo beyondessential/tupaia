@@ -59,12 +59,12 @@ describe('EntityModel', () => {
     });
   });
 
-  describe('fetchParent()', () => {
+  describe('parent()', () => {
     it('should return the parent entity', async () => {
       const parentEntity = await upsertEntity();
       const entity = await upsertEntity({ parent_id: parentEntity.id });
 
-      const result = await entity.fetchParent();
+      const result = await entity.parent();
       assertHaveEqualIds(parentEntity, result);
     });
   });

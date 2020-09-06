@@ -98,16 +98,16 @@ class EntityType extends DatabaseType {
     return !!this.getDhisId();
   }
 
-  async fetchParent() {
-    return this.model.findById(this.parent_id);
   async country() {
     return this.model.findOne({ code: this.country_code });
   }
 
+  async parent() {
+    return this.parentId ? this.model.findById(this.parent_id) : undefined;
   }
 
   async hasCountryParent() {
-    const parent = await this.fetchParent();
+    const parent = await this.parent();
     return parent.type === COUNTRY;
   }
 
