@@ -10,26 +10,18 @@ const SORT_DIRECTION = {
 };
 
 /**
- * @param {string[]} periods An array of periods
- * @returns {string | null} Most recent period from the input array.
- *
- * Assumes all periods are start periods (e.g. 202002 is earlier than 20200202)
+ * @param {string[]} periods
+ * @returns {string | null} Most recent period in the input
  */
 export const getMostRecentPeriod = periods => sortPeriods(periods, SORT_DIRECTION.DESC)[0] || null;
 
 /**
- * @param {string[]} periods An array of periods
- * @returns {string | null} Most ancient period from the input array.
- *
- * Assumes all periods are start periods (e.g. 202002 is earlier than 20200202)
+ * @param {string[]} periods
+ * @returns {string | null} Most ancient period in the input
  */
 export const getMostAncientPeriod = periods => sortPeriods(periods, SORT_DIRECTION.ASC)[0] || null;
 
 /**
- * @param {string[]} periods An array of periods
- * @param {boolean} direction Whether to use descending order or not
- * @returns {string | null} Most extreme period from the input array based on gettingMostRecent.
- *
  * Assumes all periods are start periods (e.g. 202002 is earlier than 20200202)
  */
 const sortPeriods = (periods = [], direction) =>
