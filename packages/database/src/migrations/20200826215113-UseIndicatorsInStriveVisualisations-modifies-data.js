@@ -5,7 +5,7 @@ import {
   indicators,
   reportChanges,
   overlayChanges,
-} from './migrationData/20200826215113-UseIndicatorsInStriveVisualisations-modifies-data';
+} from './migrationData/20200826215113-UseIndicatorsInStriveVisualisations';
 
 var dbm;
 var type;

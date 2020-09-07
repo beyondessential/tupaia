@@ -23,7 +23,7 @@ describe('analytics', () => {
     aggregator.fetchAnalytics.resetHistory();
   });
 
-  it('uses the `dataElementCodes` specified in the config', async () => {
+  it('fetches analytics using the `dataElementCodes` specified in the config', async () => {
     const dataElementCodes = ['TEST01', 'TEST02'];
     await analytics({ dataBuilderConfig: { dataElementCodes } }, aggregator);
     expect(aggregator.fetchAnalytics).to.have.been.calledOnceWith(dataElementCodes);

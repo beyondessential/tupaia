@@ -38,7 +38,7 @@ describe('analyticsPerPeriod', () => {
   it('uses an `aggregationType` if specified in the config', async () => {
     const aggregationType = 'SUM';
     await analyticsPerPeriod(
-      { dataBuilderConfig: { dataElementCodes: [], aggregationType } },
+      { dataBuilderConfig: { dataElementCode: 'CASES', aggregationType } },
       aggregator,
     );
     expect(aggregator.fetchAnalytics).to.have.been.calledOnceWith(
@@ -52,11 +52,11 @@ describe('analyticsPerPeriod', () => {
   describe('series config', () => {
     const dataBuilderConfig = {
       series: [
-        { key: 'cases', dataElementCodes: ['CASES'] },
-        { key: 'population', dataElementCodes: ['POP'] },
+        { key: 'cases', dataElementCode: 'CASES' },
+        { key: 'population', dataElementCode: 'POP' },
       ],
     };
-    it('uses the `dataElementCodes` included in series specified in the config', async () => {
+    it('fetches analytics using data element codes specified in config `series`', async () => {
       await analyticsPerPeriod({ dataBuilderConfig }, aggregator);
       expect(aggregator.fetchAnalytics).to.have.been.calledOnceWith(
         sinon.match.array.contains(['CASES', 'POP']).and(sinon.match.has('length', 2)),
@@ -73,15 +73,15 @@ describe('analyticsPerPeriod', () => {
   });
 
   describe('non-series config', () => {
-    it('uses the `dataElementCodes` included in the config', async () => {
-      const dataElementCodes = ['CASES'];
-      await analyticsPerPeriod({ dataBuilderConfig: { dataElementCodes } }, aggregator);
-      expect(aggregator.fetchAnalytics).to.have.been.calledOnceWith(dataElementCodes);
+    it('fetches analytics using the `dataElementCode` specified in the config', async () => {
+      const dataElementCode = 'CASES';
+      await analyticsPerPeriod({ dataBuilderConfig: { dataElementCode } }, aggregator);
+      expect(aggregator.fetchAnalytics).to.have.been.calledOnceWith([dataElementCode]);
     });
 
     it('returns timestamped results using the default series key, sorted by timestamp', async () =>
       expect(
-        analyticsPerPeriod({ dataBuilderConfig: { dataElementCodes: ['CASES'] } }, aggregator),
+        analyticsPerPeriod({ dataBuilderConfig: { dataElementCode: 'CASES' } }, aggregator),
       ).to.eventually.deep.equal({
         data: [
           { timestamp: TIMESTAMPS['2019-01-01T00:00:00Z'], value: 10 },

@@ -14,26 +14,46 @@ exports.setup = function(options, seedLink) {
   seed = seedLink;
 };
 
-const REPORT_ID = 'Imms_FridgeDailyTemperatures';
+const REPORT = {
+  id: 'Imms_FridgeDailyTemperatures',
+  new: {
+    dataBuilder: 'analyticsPerPeriod',
+    config: {
+      series: [
+        { key: 'Max', dataElementCode: 'FRIDGE_MAX_TEMP' },
+        { key: 'Min', dataElementCode: 'FRIDGE_MIN_TEMP' },
+      ],
+      programCode: 'FRIDGE_DAILY',
+      aggregationType: 'FINAL_EACH_DAY',
+    },
+  },
+  old: {
+    dataBuilder: 'finalValuesPerDay',
+    config: {
+      series: [
+        { key: 'Max', dataElementCodes: ['FRIDGE_MAX_TEMP'] },
+        { key: 'Min', dataElementCodes: ['FRIDGE_MIN_TEMP'] },
+      ],
+      programCode: 'FRIDGE_DAILY',
+    },
+  },
+};
 
-exports.up = async function(db) {
+const updateReport = (db, { id, dataBuilder, config }) =>
   db.runSql(
     `UPDATE "dashboardReport"
     SET
-      "dataBuilder" = 'analyticsPerPeriod',
-      "dataBuilderConfig" = jsonb_set("dataBuilderConfig", '{aggregationType}', '"FINAL_EACH_DAY"')
-    WHERE id = '${REPORT_ID}';`,
+      "dataBuilder" = '${dataBuilder}',
+      "dataBuilderConfig" ='${JSON.stringify(config)}'
+    WHERE id = '${id}';`,
   );
+
+exports.up = async function(db) {
+  await updateReport(db, { id: REPORT.id, ...REPORT.new });
 };
 
 exports.down = async function(db) {
-  db.runSql(
-    `UPDATE "dashboardReport"
-    SET
-      "dataBuilder" = 'finalValuesPerDay',
-      "dataBuilderConfig" = "dataBuilderConfig" - 'aggregationType'
-    WHERE id = '${REPORT_ID}';`,
-  );
+  await updateReport(db, { id: REPORT.id, ...REPORT.old });
 };
 
 exports._meta = {

@@ -89,14 +89,14 @@ export const reportChanges = [
           positive: {
             dataBuilder: 'analyticsPerPeriod',
             dataBuilderConfig: {
-              dataElementCodes: [indicators.mrdtPositiveConsultationsAgainstTestsWeekly.code],
+              dataElementCode: indicators.mrdtPositiveConsultationsAgainstTestsWeekly.code,
               aggregationType: 'FINAL_EACH_WEEK',
             },
           },
           consultations: {
             dataBuilder: 'analyticsPerPeriod',
             dataBuilderConfig: {
-              dataElementCodes: ['SSWT1001'],
+              dataElementCode: 'SSWT1001',
               aggregationType: 'FINAL_EACH_WEEK',
             },
           },
@@ -151,14 +151,14 @@ export const reportChanges = [
           'mRDT Total': {
             dataBuilder: 'analyticsPerPeriod',
             dataBuilderConfig: {
-              dataElementCodes: ['SSWT1072'],
+              dataElementCode: 'SSWT1072',
               aggregationType: 'FINAL_EACH_WEEK',
             },
           },
           'mRDT Positive Percentage': {
             dataBuilder: 'analyticsPerPeriod',
             dataBuilderConfig: {
-              dataElementCodes: [indicators.mrdtPositiveConsultationsAgainstTestsWeekly.code],
+              dataElementCode: indicators.mrdtPositiveConsultationsAgainstTestsWeekly.code,
               aggregationType: 'FINAL_EACH_WEEK',
             },
           },

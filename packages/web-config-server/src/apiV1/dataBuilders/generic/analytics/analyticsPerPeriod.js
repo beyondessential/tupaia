@@ -3,7 +3,7 @@
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
 
-import { periodToTimestamp } from '@tupaia/utils';
+import { periodToTimestamp, reduceToDictionary } from '@tupaia/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 
 class AnalyticsPerPeriodBuilder extends DataBuilder {
@@ -17,17 +17,10 @@ class AnalyticsPerPeriodBuilder extends DataBuilder {
   }
 
   getDataElementToSeriesKey() {
-    const dataElementToSeriesKey = {};
-    this.getSeries().forEach(({ key, dataElementCodes }) => {
-      dataElementCodes.forEach(dataElementCode => {
-        dataElementToSeriesKey[dataElementCode] = key;
-      });
-    });
-    return dataElementToSeriesKey;
-  }
-
-  getSeries() {
-    return this.config.series || [{ key: 'value', dataElementCodes: this.config.dataElementCodes }];
+    const series = this.config.series || [
+      { key: 'value', dataElementCode: this.config.dataElementCode },
+    ];
+    return reduceToDictionary(series, 'dataElementCode', 'key');
   }
 
   getResultsPerPeriod = results => {
