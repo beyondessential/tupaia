@@ -13,6 +13,7 @@ import { getChanges } from './getChanges';
 import { GETAnswers } from './GETAnswers';
 import { GETDisasters } from './GETDisasters';
 import { GETSurveyGroups } from './GETSurveyGroups';
+import { GETSurveyResponses } from './GETSurveyResponses';
 import { GETQuestions } from './GETQuestions';
 import { GETPermissionGroups } from './GETPermissionGroups';
 import { GETOptions } from './GETOptions';
@@ -67,6 +68,7 @@ export default {
   getAnswers: useRouteHandler(GETAnswers),
   getDisasters: useRouteHandler(GETDisasters),
   getSurveyGroups: useRouteHandler(GETSurveyGroups),
+  getSurveyResponses: useRouteHandler(GETSurveyResponses),
   getQuestions: useRouteHandler(GETQuestions),
   getPermissionGroups: useRouteHandler(GETPermissionGroups),
   getOptions: useRouteHandler(GETOptions),

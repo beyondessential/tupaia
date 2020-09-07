@@ -25,6 +25,7 @@ const {
   getAnswers,
   getDisasters,
   getSurveyGroups,
+  getSurveyResponses,
   getQuestions,
   getPermissionGroups,
   getOptions,
@@ -107,6 +108,7 @@ export function addRoutesToApp(app) {
   app.get('(/v[0-9]+)/answer/:recordId?', getAnswers);
   app.get('(/v[0-9]+)/disaster/:recordId?', getDisasters);
   app.get('(/v[0-9]+)/surveyGroups/:recordId?', getSurveyGroups);
+  app.get('(/v[0-9]+)/surveyResponses/:recordId?', getSurveyResponses);
   app.get('(/v[0-9]+)/questions/:recordId?', getQuestions);
   app.get('(/v[0-9]+)/permissionGroups/:recordId?', getPermissionGroups);
   app.get('(/v[0-9]+)/options/:recordId?', getOptions);
