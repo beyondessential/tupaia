@@ -28,6 +28,7 @@ import {
 } from './orgUnitSelectors';
 import { selectCurrentProjectCode, selectCurrentProject } from './projectSelectors';
 import { DEFAULT_MEASURE_ID } from '../defaults';
+import { GRANULARITIES } from '../utils/periodGranularities';
 
 const displayInfoCache = createCachedSelector(
   [
@@ -56,9 +57,8 @@ export const selectCurrentMeasureId = createSelector([selectLocation], location 
 );
 
 export const selectCurrentMeasure = createSelector(
-  [selectCurrentMeasureId, state => state.measureBar.measureHierarchy],
-  (currentMeasureId, measureHierarchy) =>
-    getMeasureFromHierarchy(measureHierarchy, currentMeasureId) || {},
+  [state => selectMeasureBarItemById(state, selectCurrentMeasureId(state))],
+  currentMeasure => currentMeasure || {},
 );
 
 const selectDisplayLevelAncestor = createSelector(
@@ -226,4 +226,9 @@ export const selectDefaultMeasureId = createSelector(
 
     return DEFAULT_MEASURE_ID;
   },
+);
+
+export const selectCurrentPeriodGranularity = createSelector(
+  [selectCurrentMeasure],
+  measure => measure.periodGranularity || GRANULARITIES.DAY,
 );

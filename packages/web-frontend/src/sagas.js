@@ -5,7 +5,7 @@
  * found in the LICENSE file in the root directory of this source tree.
  */
 
-import { call, put, delay, takeEvery, takeLatest, select } from 'redux-saga/effects';
+import { call, take, put, delay, takeEvery, takeLatest, select } from 'redux-saga/effects';
 import queryString from 'query-string';
 import request from './utils/request';
 import {
@@ -104,6 +104,8 @@ import {
   DIALOG_PAGE_RESET_PASSWORD,
   UPDATE_MEASURE_CONFIG,
   SET_DRILL_DOWN_DATE_RANGE,
+  updateMeasureConfig,
+  UPDATE_MEASURE_CONFIG_ONCE_HIERARCHY_LOADS,
 } from './actions';
 import { isMobile, processMeasureInfo, formatDateForApi } from './utils';
 import { createUrlString, URL_COMPONENTS } from './historyNavigation';
@@ -740,8 +742,21 @@ function* watchMeasureChange() {
   yield takeLatest(SET_MEASURE, fetchMeasureInfoForMeasureChange);
 }
 
+function* watchMeasurePeriodChange() {
+  yield takeLatest(UPDATE_MEASURE_CONFIG, fetchMeasureInfoForMeasureChange);
+}
 
+function* watchTryUpdateMeasureConfigAndWaitForHierarchyLoad() {
+  yield takeLatest(
+    UPDATE_MEASURE_CONFIG_ONCE_HIERARCHY_LOADS,
+    updateMeasureConfigOnceHierarchyLoads,
+  );
+}
 
+function* updateMeasureConfigOnceHierarchyLoads(action) {
+  yield take(FETCH_MEASURES_SUCCESS);
+  yield put(updateMeasureConfig(action.measureId, action.measureConfig));
+}
 
 function* fetchCurrentMeasureInfo() {
   const state = yield select();
@@ -1075,4 +1090,5 @@ export default [
   watchGoHomeAndResetToProjectSplash,
   watchFetchResetTokenLoginSuccess,
   watchMeasurePeriodChange,
+  watchTryUpdateMeasureConfigAndWaitForHierarchyLoad,
 ];

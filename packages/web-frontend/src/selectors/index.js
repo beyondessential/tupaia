@@ -58,4 +58,5 @@ export {
   selectMeasureBarItemCategoryById,
   selectIsMeasureInHierarchy,
   selectDefaultMeasureId,
+  selectCurrentPeriodGranularity,
 } from './measureSelectors';

@@ -27,6 +27,8 @@ import {
   openUserPage,
   DIALOG_PAGE_ONE_TIME_LOGIN,
   openEnlargedDialog,
+  UPDATE_MEASURE_CONFIG,
+  updateMeasureConfigOnceHierarchyLoads,
 } from '../actions';
 import { setProject } from '../projects/actions';
 import { DEFAULT_PROJECT_CODE } from '../defaults';
@@ -37,9 +39,14 @@ import {
   getInitialLocation,
   addPopStateListener,
 } from './historyNavigation';
-import { decodeLocation } from './utils';
+import {
+  decodeLocation,
+  convertObjectToUrlPeriodString,
+  convertUrlPeriodStringToObject,
+} from './utils';
 import { URL_COMPONENTS, PASSWORD_RESET_PREFIX, VERIFY_EMAIL_PREFIX } from './constants';
 import { PROJECTS_WITH_LANDING_PAGES, PROJECT_LANDING } from '../containers/OverlayDiv/constants';
+import { selectCurrentPeriodGranularity } from '../selectors';
 
 export const reactToInitialState = store => {
   reactToLocationChange(store, getInitialLocation(), clearLocation());
@@ -76,6 +83,11 @@ const reactToLocationChange = (store, location, previousLocation) => {
   setComponentIfUpdated(URL_COMPONENTS.ORG_UNIT, setOrgUnit);
   setComponentIfUpdated(URL_COMPONENTS.URL_COMPONENTS, setMeasure);
   setComponentIfUpdated(URL_COMPONENTS.REPORT, openEnlargedDialog);
+
+  const currentMeasureId = otherComponents[URL_COMPONENTS.MEASURE];
+  const measurePeriod = otherComponents[URL_COMPONENTS.MEASURE_PERIOD];
+  if (measurePeriod && measurePeriod !== previousComponents[URL_COMPONENTS.MEASURE_PERIOD])
+    dispatchSetMeasurePeriod(store, currentMeasureId, measurePeriod);
 };
 
 const reactToUserPage = (userPage, initialComponents, dispatch) => {
@@ -124,6 +136,16 @@ export const historyMiddleware = store => next => action => {
     case CLEAR_MEASURE:
       dispatchLocationUpdate(store, URL_COMPONENTS.MEASURE, null);
       break;
+    case UPDATE_MEASURE_CONFIG:
+      dispatchLocationUpdate(
+        store,
+        URL_COMPONENTS.MEASURE_PERIOD,
+        convertObjectToUrlPeriodString(
+          action.measureConfig,
+          selectCurrentPeriodGranularity(store.getState()),
+        ),
+      );
+      break;
     default:
   }
 
@@ -160,4 +182,13 @@ const dispatchLocationUpdate = (store, component, value) => {
 const dispatchClearLocation = store => {
   const { dispatch } = store;
   dispatch(updateHistoryLocation(clearLocation()));
+};
+
+const dispatchSetMeasurePeriod = async (store, currentMeasureId, periodString) => {
+  const { dispatch } = store;
+  await setTimeout(() => 1, 1000);
+  const periodGranularity = selectCurrentPeriodGranularity(store.getState());
+  const { startDate, endDate } = convertUrlPeriodStringToObject(periodString, periodGranularity);
+  console.log(startDate, endDate, currentMeasureId, periodString, periodGranularity);
+  dispatch(updateMeasureConfigOnceHierarchyLoads(currentMeasureId, { startDate, endDate }));
 };

@@ -10,6 +10,7 @@
  */
 import queryString from 'query-string';
 import { invert } from 'lodash';
+import moment from 'moment';
 
 import {
   PATH_COMPONENTS,
@@ -18,6 +19,7 @@ import {
   USER_PAGE_PREFIXES,
   URL_COMPONENTS,
 } from './constants';
+import { GRANULARITY_CONFIG, GRANULARITIES_WITH_ONE_DATE } from '../utils/periodGranularities';
 
 export const createLocation = params => {
   const { userPage } = params;
@@ -85,6 +87,27 @@ export const isLocationEqual = (a, b) => {
   }
 
   return true;
+};
+
+export const convertUrlPeriodStringToObject = (periodString, periodGranularity) => {
+  const [startDate, endDate] = periodString.split('-');
+
+  return {
+    startDate: moment(startDate, GRANULARITY_CONFIG[periodGranularity].urlFormat),
+    endDate: moment(endDate || startDate, GRANULARITY_CONFIG[periodGranularity].urlFormat),
+  };
+};
+
+export const convertObjectToUrlPeriodString = ({ startDate, endDate }, periodGranularity) => {
+  if (GRANULARITIES_WITH_ONE_DATE.includes(periodGranularity)) {
+    if (!startDate.isSame(endDate)) {
+      console.error('Not good');
+    }
+    return startDate.format(GRANULARITY_CONFIG[periodGranularity].urlFormat);
+  }
+  return `${startDate.format(GRANULARITY_CONFIG[periodGranularity].urlFormat)}-${endDate.format(
+    GRANULARITY_CONFIG[periodGranularity].urlFormat,
+  )}`;
 };
 
 const parseSearch = search => {
