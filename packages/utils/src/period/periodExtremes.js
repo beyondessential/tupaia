@@ -22,24 +22,23 @@ export const getMostAncientPeriod = periods => getPeriodExtreme(periods, false);
 
 /**
  * @param {string[]} periods An array of periods
- * @param {boolean} gettingMostRecent Should the function return the most recent period?
+ * @param {boolean} descending Whether to use descending order or not
  * @returns {string | null} Most extreme period from the input array based on gettingMostRecent.
  *
  * Assumes all periods are start periods (e.g. 202002 is earlier than 20200202)
  */
-const getPeriodExtreme = (periods, gettingMostRecent) => {
-  if (!periods || periods.length === 0) return null;
-
+const getPeriodExtreme = (periods = [], descending) => {
   const sortedPeriods = [...periods]
     .filter(period => isValidPeriod(period))
     .sort((p1, p2) => {
-      if (periodToTimestamp(p1) < periodToTimestamp(p2)) return gettingMostRecent;
-      else if (periodToTimestamp(p1) > periodToTimestamp(p2)) return !gettingMostRecent;
-      // Timestamps are equal
-      return isCoarserPeriod(p1, p2);
+      const timestamp1 = periodToTimestamp(p1);
+      const timestamp2 = periodToTimestamp(p2);
+
+      if (timestamp1 === timestamp2) {
+        return isCoarserPeriod(p1, p2) ? 1 : -1;
+      }
+      return (timestamp1 - timestamp2) * (descending ? -1 : 1);
     });
 
-  if (sortedPeriods.length === 0) return null;
-
-  return sortedPeriods[0];
+  return sortedPeriods[0] || null;
 };
