@@ -8,7 +8,7 @@ import { getPercentageCountOfValuesByCell } from './getValuesByCell';
 
 import { TableOfDataValuesBuilder } from './tableOfDataValues';
 
-class TableOfPercentagesOfValueCounts extends TableOfDataValuesBuilder {
+class TableOfPercentagesOfValueCountsBuilder extends TableOfDataValuesBuilder {
   buildDataElementCodes() {
     const dataElementCodes = flatten(
       flatten(this.config.cells).map(cell =>
@@ -28,11 +28,12 @@ class TableOfPercentagesOfValueCounts extends TableOfDataValuesBuilder {
 }
 
 export const tableOfPercentagesOfValueCounts = async (
-  { dataBuilderConfig, query, entity },
+  { models, dataBuilderConfig, query, entity },
   aggregator,
   dhisApi,
 ) => {
-  const builder = new TableOfPercentagesOfValueCounts(
+  const builder = new TableOfPercentagesOfValueCountsBuilder(
+    models,
     aggregator,
     dhisApi,
     dataBuilderConfig,

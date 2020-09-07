@@ -78,8 +78,13 @@ class CalcPerSeriesDataBuilder extends DataBuilder {
   }
 }
 
-export const calcPerSeries = async ({ dataBuilderConfig, query, entity }, aggregator, dhisApi) => {
+export const calcPerSeries = async (
+  { models, dataBuilderConfig, query, entity },
+  aggregator,
+  dhisApi,
+) => {
   const builder = new CalcPerSeriesDataBuilder(
+    models,
     aggregator,
     dhisApi,
     dataBuilderConfig,

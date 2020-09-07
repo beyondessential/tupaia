@@ -36,11 +36,18 @@ import { getAggregatePeriod } from '/apiV1/utils';
  * ```
  */
 
-export const composePercentagePerOrgUnit = async (aggregator, dhisApi, query, config, entity) => {
+export const composePercentagePerOrgUnit = async (
+  models,
+  aggregator,
+  dhisApi,
+  query,
+  config,
+  entity,
+) => {
   const { fractionType } = config;
   const { dataElementCode } = query;
 
-  const responses = await fetchComposedData(aggregator, dhisApi, query, config, entity);
+  const responses = await fetchComposedData(models, aggregator, dhisApi, query, config, entity);
   const { numerator, denominator } = responses;
   const numeratorsByOrgUnit = await keyBy(numerator.data, 'organisationUnitCode');
   const denominatorsByOrgUnit = await keyBy(denominator.data, 'organisationUnitCode');

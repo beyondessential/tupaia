@@ -5,7 +5,7 @@
 
 import { getSortByKey, getSortByExtractedValue, getUniqueEntries } from '@tupaia/utils';
 
-import { Project, getModelRegistry } from '/models';
+import { Project } from '/models';
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 
 export class DataBuilder {
@@ -19,14 +19,14 @@ export class DataBuilder {
    * @param {Entity} [entity]
    * @param {string} [aggregationType]
    */
-  constructor(aggregator, dhisApi, config, query, entity, aggregationType) {
+  constructor(models, aggregator, dhisApi, config, query, entity, aggregationType) {
+    this.models = models;
     this.aggregator = aggregator;
     this.dhisApi = dhisApi;
     this.config = config || {};
     this.query = query;
     this.entity = entity;
     this.aggregationType = aggregationType;
-    this.models = getModelRegistry();
   }
 
   // eslint-disable-next-line class-methods-use-this

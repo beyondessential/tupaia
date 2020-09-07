@@ -228,7 +228,7 @@ export class TableOfDataValuesBuilder extends DataBuilder {
     if (this.tableConfig.columns === ORG_UNIT_COL_KEY) {
       this.buildOrgsFromResults();
     }
-    
+
     if (this.tableConfig.columns === ORG_UNIT_WITH_TYPE_COL_KEY) {
       this.buildOrgsFromResultsWithCategories();
     }
@@ -390,11 +390,12 @@ export class TableOfDataValuesBuilder extends DataBuilder {
 }
 
 export const tableOfDataValues = async (
-  { dataBuilderConfig, query, entity },
+  { models, dataBuilderConfig, query, entity },
   aggregator,
   dhisApi,
 ) => {
   const builder = new TableOfDataValuesBuilder(
+    models,
     aggregator,
     dhisApi,
     dataBuilderConfig,

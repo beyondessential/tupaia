@@ -78,8 +78,9 @@ class CountOperationalFacilitiesByTypeBuilder extends DataBuilder {
 
 // Number of Operational Facilities by Facility Type
 export const countOperationalFacilitiesByType = async (queryConfig, aggregator, dhisApi) => {
-  const { dataBuilderConfig, query, entity } = queryConfig;
+  const { models, dataBuilderConfig, query, entity } = queryConfig;
   const builder = new CountOperationalFacilitiesByTypeBuilder(
+    models,
     aggregator,
     dhisApi,
     dataBuilderConfig,

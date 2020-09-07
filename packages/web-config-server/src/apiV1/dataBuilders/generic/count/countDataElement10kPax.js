@@ -44,11 +44,12 @@ class CountDataElement10kPaxBuilder extends DataBuilder {
 }
 
 export const countDataElement10kPax = async (
-  { dataBuilderConfig, query, entity },
+  { models, dataBuilderConfig, query, entity },
   aggregator,
   dhisApi,
 ) => {
   const builder = new CountDataElement10kPaxBuilder(
+    models,
     aggregator,
     dhisApi,
     dataBuilderConfig,

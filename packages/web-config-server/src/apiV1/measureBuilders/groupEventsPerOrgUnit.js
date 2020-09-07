@@ -23,6 +23,7 @@ export class GroupEventsPerOrgUnitBuilder extends DataPerOrgUnitBuilder {
 }
 
 export const groupEventsPerOrgUnit = async (
+  models,
   aggregator,
   dhisApi,
   query,
@@ -30,6 +31,7 @@ export const groupEventsPerOrgUnit = async (
   entity,
 ) => {
   const builder = new GroupEventsPerOrgUnitBuilder(
+    models,
     aggregator,
     dhisApi,
     measureBuilderConfig,

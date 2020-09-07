@@ -9,7 +9,7 @@ import { getMeasureBuilder } from './getMeasureBuilder';
 import { checkValueSatisfiesCondition } from '../dataBuilders/helpers/checkAgainstConditions';
 import { Entity } from '../../models';
 
-export const fetchComposedData = async (aggregator, dhisApi, query, config, entity) => {
+export const fetchComposedData = async (models, aggregator, dhisApi, query, config, entity) => {
   const { measureBuilders, dataServices } = config || {};
   if (!measureBuilders) {
     throw new Error('Measure builders not provided');
@@ -20,6 +20,7 @@ export const fetchComposedData = async (aggregator, dhisApi, query, config, enti
     const { measureBuilder: builderName, measureBuilderConfig: builderConfig } = builderData;
     const buildMeasure = getMeasureBuilder(builderName);
     responses[builderKey] = await buildMeasure(
+      models,
       aggregator,
       dhisApi,
       query,

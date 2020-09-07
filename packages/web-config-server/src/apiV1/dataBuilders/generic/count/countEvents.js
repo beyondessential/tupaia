@@ -83,7 +83,18 @@ export class CountEventsBuilder extends DataBuilder {
   }
 }
 
-export const countEvents = async ({ dataBuilderConfig, query, entity }, aggregator, dhisApi) => {
-  const builder = new CountEventsBuilder(aggregator, dhisApi, dataBuilderConfig, query, entity);
+export const countEvents = async (
+  { models, dataBuilderConfig, query, entity },
+  aggregator,
+  dhisApi,
+) => {
+  const builder = new CountEventsBuilder(
+    models,
+    aggregator,
+    dhisApi,
+    dataBuilderConfig,
+    query,
+    entity,
+  );
   return builder.build();
 };

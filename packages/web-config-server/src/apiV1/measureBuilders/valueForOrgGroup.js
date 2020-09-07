@@ -68,6 +68,7 @@ class ValueForOrgGroupMeasureBuilder extends DataBuilder {
 }
 
 export const valueForOrgGroup = async (
+  models,
   aggregator,
   dhisApi,
   query,
@@ -75,6 +76,7 @@ export const valueForOrgGroup = async (
   entity,
 ) => {
   const builder = new ValueForOrgGroupMeasureBuilder(
+    models,
     aggregator,
     dhisApi,
     measureBuilderConfig,

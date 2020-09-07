@@ -38,8 +38,9 @@ class CountOperationalFacilitiesByCountryBuilder extends DataBuilder {
 }
 
 export const countOperationalFacilitiesByCountry = async (queryConfig, aggregator, dhisApi) => {
-  const { dataBuilderConfig, query, entity } = queryConfig;
+  const { models, dataBuilderConfig, query, entity } = queryConfig;
   const builder = new CountOperationalFacilitiesByCountryBuilder(
+    models,
     aggregator,
     dhisApi,
     dataBuilderConfig,

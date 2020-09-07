@@ -189,7 +189,18 @@ class TableOfEventsBuilder extends DataBuilder {
   }
 }
 
-export const tableOfEvents = async ({ dataBuilderConfig, query, entity }, aggregator, dhisApi) => {
-  const builder = new TableOfEventsBuilder(aggregator, dhisApi, dataBuilderConfig, query, entity);
+export const tableOfEvents = async (
+  { models, dataBuilderConfig, query, entity },
+  aggregator,
+  dhisApi,
+) => {
+  const builder = new TableOfEventsBuilder(
+    models,
+    aggregator,
+    dhisApi,
+    dataBuilderConfig,
+    query,
+    entity,
+  );
   return builder.build();
 };

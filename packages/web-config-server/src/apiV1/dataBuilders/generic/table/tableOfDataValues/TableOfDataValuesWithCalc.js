@@ -114,11 +114,12 @@ class TableOfDataValuesWithCalcBuilder extends TableOfDataValuesBuilder {
 }
 
 export const tableOfDataValuesWithCalc = async (
-  { dataBuilderConfig, query, entity },
+  { models, dataBuilderConfig, query, entity },
   aggregator,
   dhisApi,
 ) => {
   const builder = new TableOfDataValuesWithCalcBuilder(
+    models,
     aggregator,
     dhisApi,
     dataBuilderConfig,

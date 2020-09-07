@@ -65,7 +65,18 @@ class StockoutsDataBuilder extends DataBuilder {
   };
 }
 
-export const stockouts = async ({ dataBuilderConfig, query, entity }, aggregator, dhisApi) => {
-  const builder = new StockoutsDataBuilder(aggregator, dhisApi, dataBuilderConfig, query, entity);
+export const stockouts = async (
+  { models, dataBuilderConfig, query, entity },
+  aggregator,
+  dhisApi,
+) => {
+  const builder = new StockoutsDataBuilder(
+    models,
+    aggregator,
+    dhisApi,
+    dataBuilderConfig,
+    query,
+    entity,
+  );
   return builder.build();
 };
