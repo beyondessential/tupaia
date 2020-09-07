@@ -12,7 +12,6 @@ import { Authenticator } from '@tupaia/auth';
 import { getRoutesForApiV1 } from './apiV1';
 import { bindUserSessions } from './authSession';
 import { BaseModel } from './models/BaseModel';
-import { setSingletonModelRegistry } from './models/modelRegistry';
 import { handleError } from './utils';
 
 import './log';
@@ -58,7 +57,6 @@ export async function createApp() {
 
   // Attach newer model registry to req, along with the authenticator
   const modelRegistry = new ModelRegistry(database);
-  setSingletonModelRegistry(modelRegistry);
   const authenticator = new Authenticator(modelRegistry);
   app.use((req, res, next) => {
     req.models = modelRegistry;
