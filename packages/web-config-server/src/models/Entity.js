@@ -241,8 +241,4 @@ export class Entity extends BaseModel {
       region: translateRegionForFrontend(region),
     };
   }
-  async project() {
-    return Project.findOne({ entity_id: this.id });
-  }
-
 }
