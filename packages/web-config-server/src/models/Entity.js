@@ -127,11 +127,6 @@ export class Entity extends BaseModel {
     return Entity.find({ id: ancestorIds, ...criteria });
   }
 
-  async getChildren(hierarchyId, criteria = {}) {
-    const childIds = await AncestorDescendantRelation.getChildIds(this.id, hierarchyId);
-    return Entity.find({ id: childIds, ...criteria });
-  }
-
   async getDescendants(hierarchyId, criteria = {}) {
     const descendantIds = await AncestorDescendantRelation.getDescendantIds(this.id, hierarchyId);
     return Entity.find({ id: descendantIds, ...criteria });

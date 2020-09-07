@@ -188,6 +188,10 @@ class EntityType extends DatabaseType {
     const ancestors = await this.getAncestors(hierarchyId);
     return ancestors.map(a => a.code);
   }
+
+  async getChildren(hierarchyId) {
+    return this.getDescendants(hierarchyId, undefined, true);
+  }
 }
 
 export class EntityModel extends DatabaseModel {
