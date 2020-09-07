@@ -30,17 +30,21 @@ describe('Permissions checker for GETSurveyGroups', async () => {
   before(async () => {
     //Set up the survey groups and their surveys
     surveyGroup1 = await findOrCreateDummyRecord(models.surveyGroup, {
-      id: 'TEST_SURVEY_GROUP_1',
+      id: 'survey_group_1_test',
       name: `Test survey group 1`,
     });
     surveyGroup2 = await findOrCreateDummyRecord(models.surveyGroup, {
-      id: 'TEST_SURVEY_GROUP_2',
+      id: 'survey_group_2_test',
       name: `Test survey group 2`,
     });
     surveyGroups = [surveyGroup1, surveyGroup2];
 
-    const adminPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, { name: 'Admin' });
-    const donorPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, { name: 'Donor' });
+    const adminPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
+      name: 'Admin',
+    });
+    const donorPermissionGroup = await findOrCreateDummyRecord(models.permissionGroup, {
+      name: 'Donor',
+    });
     const vanuatuCountry = await findOrCreateDummyRecord(models.country, { code: 'VU' });
     const laosCountry = await findOrCreateDummyRecord(models.country, { code: 'LA' });
 
@@ -50,28 +54,28 @@ describe('Permissions checker for GETSurveyGroups', async () => {
         name: 'Test Survey 1',
         permission_group_id: adminPermissionGroup.id,
         country_ids: [vanuatuCountry.id],
-        survey_group_id: 'TEST_SURVEY_GROUP_1',
+        survey_group_id: 'survey_group_1_test',
       },
       {
         code: 'TEST_SURVEY_2',
         name: 'Test Survey 2',
         permission_group_id: adminPermissionGroup.id,
         country_ids: [vanuatuCountry.id],
-        survey_group_id: 'TEST_SURVEY_GROUP_1',
+        survey_group_id: 'survey_group_1_test',
       },
       {
         code: 'TEST_SURVEY_3',
         name: 'Test Survey 3',
         permission_group_id: donorPermissionGroup.id,
         country_ids: [vanuatuCountry.id],
-        survey_group_id: 'TEST_SURVEY_GROUP_1',
+        survey_group_id: 'survey_group_1_test',
       },
       {
         code: 'TEST_SURVEY_4',
         name: 'Test Survey 4',
         permission_group_id: adminPermissionGroup.id,
         country_ids: [laosCountry.id],
-        survey_group_id: 'TEST_SURVEY_GROUP_2',
+        survey_group_id: 'survey_group_2_test',
       },
     ]);
   });
