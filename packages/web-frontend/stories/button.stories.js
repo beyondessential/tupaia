@@ -7,7 +7,7 @@ import React from 'react';
 import MuiBox from '@material-ui/core/Box';
 import styled from 'styled-components';
 import { PrimaryButton } from '../src/components/Buttons';
-import { SubmitButton } from '../src/containers/Form/common/SubmitButton';
+import { SubmitButton } from '../src/containers/Form/common';
 
 const Container = styled(MuiBox)`
   padding: 1rem;
@@ -25,6 +25,26 @@ export default {
   ],
 };
 
-export const Primary = () => <PrimaryButton>Button</PrimaryButton>;
+const PrimaryButtonTemplate = args => <PrimaryButton {...args} />;
 
-export const Submit = () => <SubmitButton text="Sign in" />;
+export const Primary = PrimaryButtonTemplate.bind({});
+Primary.args = {
+  children: 'Button',
+  disabled: false,
+};
+Primary.argTypes = { onClick: { action: 'clicked' } };
+
+export const Disabled = PrimaryButtonTemplate.bind({});
+Disabled.args = {
+  children: 'Button',
+  disabled: true,
+};
+Disabled.argTypes = { onClick: { action: 'clicked' } };
+
+const SubmitButtonTemplate = args => <SubmitButton {...args} />;
+
+export const Submit = SubmitButtonTemplate.bind({});
+Submit.args = {
+  text: 'Submit',
+};
+Submit.argTypes = { handleClick: { action: 'clicked' } };

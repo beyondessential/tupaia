@@ -17,5 +17,5 @@ export const getAccessToken = state => getAuthenticationState(state).accessToken
 export const getRefreshToken = state => getAuthenticationState(state).refreshToken;
 
 // User details
-const getUser = state => getAuthenticationState(state).user || {}; // If null, return empty object
+export const getUser = state => getAuthenticationState(state).user || {}; // If null, return empty object
 export const getUserFullName = state => getUser(state).name;

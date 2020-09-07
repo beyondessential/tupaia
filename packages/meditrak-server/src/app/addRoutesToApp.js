@@ -27,6 +27,11 @@ const {
   getDashboardReports,
   getDashboardGroups,
   getMapOverlays,
+  getSurveyResponses,
+  getQuestions,
+  getPermissionGroups,
+  getOptions,
+  getOptionSets,
   getSocialFeed,
   importEntities,
   importStriveLabResults,
@@ -35,7 +40,7 @@ const {
   importOptionSets,
   postChanges,
   pruneChanges,
-  updateSurveyResponses,
+  importSurveyResponses,
   createUser,
   changePassword,
   requestCountryAccess,
@@ -107,6 +112,11 @@ export function addRoutesToApp(app) {
   app.get('(/v[0-9]+)/dashboardReports/:recordId?', getDashboardReports);
   app.get('(/v[0-9]+)/dashboardGroups/:recordId?', getDashboardGroups);
   app.get('(/v[0-9]+)/mapOverlays/:recordId?', getMapOverlays);
+  app.get('(/v[0-9]+)/surveyResponses/:recordId?', getSurveyResponses);
+  app.get('(/v[0-9]+)/questions/:recordId?', getQuestions);
+  app.get('(/v[0-9]+)/permissionGroups/:recordId?', getPermissionGroups);
+  app.get('(/v[0-9]+)/options/:recordId?', getOptions);
+  app.get('(/v[0-9]+)/optionSets/:recordId?', getOptionSets);
 
   /**
    * POST routes
@@ -126,7 +136,7 @@ export function addRoutesToApp(app) {
   app.post(
     '(/v[0-9]+)/import/surveyResponses',
     upload.single('surveyResponses'),
-    updateSurveyResponses,
+    importSurveyResponses,
   );
   app.post('(/v[0-9]+)/import/disaster', upload.single('disaster'), importDisaster);
   app.post('(/v[0-9]+)/import/users', upload.single('users'), importUsers);

@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
 
 const SURVEY_FIELDS = [
@@ -62,7 +63,16 @@ const SURVEY_COLUMNS = [
           Header: 'Data Service',
           source: 'data_source.service_type',
           editConfig: {
-            options: ['dhis', 'tupaia'],
+            options: [
+              {
+                label: 'DHIS',
+                value: 'dhis',
+              },
+              {
+                label: 'Tupaia',
+                value: 'tupaia',
+              },
+            ],
             setFieldsOnChange: (newValue, currentRecord) => {
               const { isDataRegional = true } = currentRecord['data_source.config'];
               const config = newValue === 'dhis' ? { isDataRegional } : {};
@@ -98,6 +108,7 @@ const SURVEY_COLUMNS = [
                 label: 'MS1',
                 fieldName: 'ms1',
                 type: 'json',
+                variant: 'grey',
                 getJsonFieldSchema: () => [
                   {
                     label: 'Endpoint',
@@ -296,7 +307,16 @@ const IMPORT_CONFIG = {
       label: 'Data service',
       secondaryLabel: 'Select the data service this survey should use, or leave blank for tupaia',
       parameterKey: 'serviceType',
-      options: ['dhis', 'tupaia'],
+      options: [
+        {
+          label: 'DHIS',
+          value: 'dhis',
+        },
+        {
+          label: 'Tupaia',
+          value: 'tupaia',
+        },
+      ],
     },
   ],
 };
@@ -305,7 +325,7 @@ const EDIT_CONFIG = {
   title: 'Edit Survey',
 };
 
-export const SurveysPage = () => (
+export const SurveysPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Surveys"
     endpoint="surveys"
@@ -313,5 +333,10 @@ export const SurveysPage = () => (
     expansionTabs={EXPANSION_CONFIG}
     importConfig={IMPORT_CONFIG}
     editConfig={EDIT_CONFIG}
+    getHeaderEl={getHeaderEl}
   />
 );
+
+SurveysPage.propTypes = {
+  getHeaderEl: PropTypes.func.isRequired,
+};
