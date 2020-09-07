@@ -2,10 +2,8 @@
  * Tupaia Config Server
  * Copyright (c) 2019 Beyond Essential Systems Pty Ltd
  */
-
 import { getSortByKey, getSortByExtractedValue, getUniqueEntries } from '@tupaia/utils';
 
-import { Project } from '/models';
 import { NO_DATA_AVAILABLE } from '/apiV1/dataBuilders/constants';
 
 export class DataBuilder {
@@ -108,7 +106,7 @@ export class DataBuilder {
 
   async fetchEntityHierarchyId() {
     const { projectCode } = this.query;
-    const project = await Project.findOne({ code: projectCode });
+    const project = await this.models.project.findOne({ code: projectCode });
     return project.entity_hierarchy_id;
   }
 

@@ -14,7 +14,6 @@ import {
 } from '/utils/geoJson';
 import { BaseModel } from './BaseModel';
 import { AncestorDescendantRelation } from './AncestorDescendantRelation';
-import { Project } from './Project';
 
 const CASE = 'case';
 const CASE_CONTACT = 'case_contact';

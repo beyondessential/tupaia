@@ -4,7 +4,7 @@
  */
 
 import keyBy from 'lodash.keyby';
-import { Entity, Project, EntityRelation } from '/models';
+import { Entity, EntityRelation } from '/models';
 import { RouteHandler } from './RouteHandler';
 import { NoPermissionRequiredChecker } from './permissions';
 
@@ -39,8 +39,8 @@ export default class extends RouteHandler {
     return allResults;
   }
 
-  async getSearchResults(searchString, projectCode, limit) {
-    const project = await Project.findOne({ code: projectCode });
+  async getSearchResults(searchString, limit) {
+    const project = await this.fetchProject();
     const projectEntity = await Entity.findOne({ id: project.entity_id });
 
     const allEntities = await projectEntity.getDescendants(project.entity_hierarchy_id);
@@ -64,11 +64,11 @@ export default class extends RouteHandler {
   };
 
   buildResponse = async () => {
-    const { limit = DEFAULT_LIMIT, criteria: searchString, projectCode } = this.req.query;
+    const { limit = DEFAULT_LIMIT, criteria: searchString } = this.req.query;
     if (!searchString || searchString === '' || isNaN(parseInt(limit, 10))) {
       throw new Error('Query parameters must match "criteria" (text) and "limit" (number)');
     }
-    return this.getSearchResults(searchString, projectCode, limit);
+    return this.getSearchResults(searchString, limit);
   };
 }
 

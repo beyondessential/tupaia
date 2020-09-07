@@ -2,28 +2,11 @@
  * Tupaia Config Server
  * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
  **/
-import { TYPES } from '@tupaia/database';
-import { BaseModel } from './BaseModel';
+import { ProjectModel as CommonProjectModel } from '@tupaia/database';
 
-export class Project extends BaseModel {
-  static databaseType = TYPES.PROJECT;
-
-  static fields = [
-    'id',
-    'code',
-    'user_groups',
-    'entity_id',
-    'description',
-    'sort_order',
-    'image_url',
-    'logo_url',
-    'dashboard_group_name',
-    'default_measure',
-    'entity_hierarchy_id',
-  ];
-
-  static async getProjectDetails() {
-    return Project.database.executeSql(`
+export class ProjectModel extends CommonProjectModel {
+  async getAllProjectDetails() {
+    return this.database.executeSql(`
       select p.id, p.code,
             to_json(sub.child_id) AS entity_ids,
             E."name", p.description,

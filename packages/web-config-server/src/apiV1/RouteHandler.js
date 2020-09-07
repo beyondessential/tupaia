@@ -1,5 +1,5 @@
 import { respond, PermissionsError } from '@tupaia/utils';
-import { Entity, Project } from '/models';
+import { Entity } from '/models';
 
 import { ValidationError } from '@tupaia/utils/dist/errors';
 
@@ -52,7 +52,11 @@ export class RouteHandler {
     }
   }
 
+  async fetchProject() {
+    return this.models.project.findOne({ code: this.query.projectCode || 'explore' });
+  }
+
   async fetchHierarchyId() {
-    return (await Project.findOne({ code: this.query.projectCode })).entity_hierarchy_id;
+    return (await this.fetchProject()).entity_hierarchy_id;
   }
 }

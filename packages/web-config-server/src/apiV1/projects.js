@@ -1,5 +1,5 @@
 import { respond } from '@tupaia/utils';
-import { Project, Entity } from '/models';
+import { Entity } from '/models';
 import { calculateBoundsFromEntities } from '/utils/geoJson';
 
 async function fetchEntitiesWithProjectAccess(req, entities, userGroups) {
@@ -56,7 +56,7 @@ async function buildProjectDataForFrontend(project, req) {
 }
 
 export async function getProjects(req, res) {
-  const data = await Project.getProjectDetails();
+  const data = await req.models.project.getAllProjectDetails();
 
   const promises = data.map(project => buildProjectDataForFrontend(project, req));
   const projects = await Promise.all(promises);

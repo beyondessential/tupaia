@@ -74,6 +74,7 @@ export { EntityModel } from './Entity';
 export { GeographicalAreaModel } from './GeographicalArea';
 export { MeditrakDeviceModel } from './MeditrakDevice';
 export { PermissionGroupModel } from './PermissionGroup';
+export { ProjectModel } from './Project';
 export { SurveyScreenComponentModel } from './SurveyScreenComponent';
 export { SurveyScreenModel } from './SurveyScreen';
 export { UserEntityPermissionModel } from './UserEntityPermission';

@@ -12,6 +12,7 @@ import { Authenticator } from '@tupaia/auth';
 import { getRoutesForApiV1 } from './apiV1';
 import { bindUserSessions } from './authSession';
 import { BaseModel } from './models/BaseModel';
+import { modelClasses } from './models';
 import { handleError } from './utils';
 
 import './log';
@@ -56,7 +57,7 @@ export async function createApp() {
   BaseModel.database = database;
 
   // Attach newer model registry to req, along with the authenticator
-  const modelRegistry = new ModelRegistry(database);
+  const modelRegistry = new ModelRegistry(database, modelClasses);
   const authenticator = new Authenticator(modelRegistry);
   app.use((req, res, next) => {
     req.models = modelRegistry;

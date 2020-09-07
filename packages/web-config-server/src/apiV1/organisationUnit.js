@@ -4,7 +4,7 @@
  */
 
 import { reduceToDictionary } from '@tupaia/utils';
-import { Project, Entity, EntityRelation } from '/models';
+import { Entity, EntityRelation } from '/models';
 import { RouteHandler } from './RouteHandler';
 import { PermissionsChecker } from './permissions';
 
@@ -17,14 +17,14 @@ export default class extends RouteHandler {
   static PermissionsChecker = PermissionsChecker; // checks the user has access to requested entity
 
   async buildResponse() {
-    const { includeCountryData, projectCode = 'explore' } = this.query;
+    const { includeCountryData } = this.query;
+    const project = await this.fetchProject();
     return includeCountryData === 'true'
-      ? this.getEntityAndCountryDataByCode(projectCode)
-      : this.getEntityAndChildrenByCode(projectCode);
+      ? this.getEntityAndCountryDataByCode(project)
+      : this.getEntityAndChildrenByCode(project);
   }
 
-  async getEntityAndCountryDataByCode(projectCode) {
-    const project = await Project.findOne({ code: projectCode });
+  async getEntityAndCountryDataByCode(project) {
     const projectEntity = await Entity.findOne({ id: project.entity_id });
     const country = await this.entity.country();
     const countryDescendants = country
@@ -56,9 +56,7 @@ export default class extends RouteHandler {
     };
   }
 
-  async getEntityAndChildrenByCode(projectCode) {
-    const project = await Project.findOne({ code: projectCode });
-
+  async getEntityAndChildrenByCode(project) {
     // Don't check parent permission (as we already know we have permission for at least one of its children)
     const parent = await this.entity.parent();
     const allChildren = await this.entity.getChildren(project.entity_hierarchy_id);
