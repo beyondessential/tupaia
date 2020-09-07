@@ -3,7 +3,7 @@ import keyBy from 'lodash.keyby';
 import { CustomError } from '@tupaia/utils';
 import { getMeasureBuilder } from '/apiV1/measureBuilders/getMeasureBuilder';
 import { getDhisApiInstance } from '/dhis';
-import { Entity, MapOverlay } from '/models';
+import { Entity } from '/models';
 import { getDateRange, getAggregatePeriod } from './utils';
 import { DataAggregatingRouteHandler } from './DataAggregatingRouteHandler';
 import { MapOverlayPermissionsChecker } from './permissions';
@@ -133,7 +133,7 @@ export default class extends DataAggregatingRouteHandler {
     const { code } = this.entity;
     const { measureId } = this.query;
     const measureIds = measureId.split(',');
-    const overlayResults = await MapOverlay.find({ id: measureIds });
+    const overlayResults = await this.models.mapOverlay.find({ id: measureIds });
 
     //Re-order the overlays array to follow the order in measureIds
     const overlaysById = keyBy(overlayResults, 'id');

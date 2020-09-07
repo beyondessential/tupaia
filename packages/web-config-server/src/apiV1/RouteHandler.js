@@ -25,6 +25,7 @@ export class RouteHandler {
       );
     }
     this.permissionsChecker = new PermissionsChecker(
+      this.models,
       this.query,
       this.req.userHasAccess,
       this.entity,

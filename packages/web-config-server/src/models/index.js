@@ -5,7 +5,6 @@
 
 import { ProjectModel } from './Project';
 export { UserSession } from './UserSession';
-export { MapOverlay } from './MapOverlay';
 export { DashboardGroup } from './DashboardGroup';
 export { DashboardReport } from './DashboardReport';
 export { Disaster } from './Disaster';
