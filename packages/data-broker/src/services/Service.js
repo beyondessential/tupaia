@@ -18,7 +18,6 @@ export class Service {
   /**
    * @abstract
    */
-  // eslint-disable-next-line class-methods-use-this
   async push() {
     throw new Error('Any subclass of Service must implement the "push" method');
   }
@@ -26,16 +25,27 @@ export class Service {
   /**
    * @abstract
    */
-  // eslint-disable-next-line class-methods-use-this
   async delete() {
     throw new Error('Any subclass of Service must implement the "delete" method');
   }
 
   /**
    * @abstract
+   * @param {} dataSources
+   * @param string type - one of DataSource.DATA_SOURCE_TYPES
+   * @param {} options
    */
-  // eslint-disable-next-line class-methods-use-this
-  async pull() {
+  async pull(dataSources, type, options = {}) {
     throw new Error('Any subclass of Service must implement the "pull" method');
+  }
+
+  /**
+   * @abstract
+   * @param [] dataSources
+   * @param string type - one of DataSource.DATA_SOURCE_TYPES
+   * @returns Promise<{Object.<name: string, id: string, code: string>}>
+   */
+  pullMetadata(dataSources, type) {
+    throw new Error('Any subclass of Service must implement the "pullMetadata" method');
   }
 }
