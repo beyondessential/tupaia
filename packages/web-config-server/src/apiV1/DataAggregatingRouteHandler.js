@@ -15,7 +15,6 @@ import { filterEntities } from './utils';
 export class DataAggregatingRouteHandler extends RouteHandler {
   constructor(req, res) {
     super(req, res);
-    this.models = req.models;
     this.aggregator = createAggregator(Aggregator, this.models, this);
   }
 
