@@ -8,7 +8,7 @@ import { TextField } from '@tupaia/ui-components';
 import PropTypes from 'prop-types';
 
 export const JsonEditor = ({ inputKey, label, secondaryLabel, value, onChange }) => {
-  let editorValue = '';
+  let editorValue;
 
   switch (typeof value) {
     case 'object':
