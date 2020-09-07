@@ -101,7 +101,9 @@ export const convertUrlPeriodStringToObject = (periodString, periodGranularity) 
 export const convertObjectToUrlPeriodString = ({ startDate, endDate }, periodGranularity) => {
   if (GRANULARITIES_WITH_ONE_DATE.includes(periodGranularity)) {
     if (!startDate.isSame(endDate)) {
-      console.error('Not good');
+      console.error(
+        `Caution: periodGranularity of ${periodGranularity} has different startDate and endDate`,
+      );
     }
     return startDate.format(GRANULARITY_CONFIG[periodGranularity].urlFormat);
   }
