@@ -58,7 +58,7 @@ const ORG_UNIT_ENTITY_TYPES = {
   VILLAGE,
 };
 
-class EntityType extends DatabaseType {
+export class EntityType extends DatabaseType {
   static databaseType = TYPES.ENTITY;
 
   // Exposed for access policy creation.
@@ -162,6 +162,7 @@ export class EntityModel extends DatabaseModel {
     'metadata',
     'image_url',
     'attributes',
+    'timezone',
   ];
 
   static geoFields = ['point', 'region', 'bounds'];
