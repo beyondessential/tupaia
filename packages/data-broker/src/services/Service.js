@@ -33,6 +33,9 @@ export class Service {
 
   /**
    * @abstract
+   * @param {} dataSources
+   * @param string type - one of DataSource.DATA_SOURCE_TYPES
+   * @param {} options
    */
   async pull(dataSources, type, options) {
     throw new Error('Any subclass of Service must implement the "pull" method');
@@ -40,6 +43,10 @@ export class Service {
 
   /**
    * @abstract
+   * @param [] dataSources
+   * @param string type - one of DataSource.DATA_SOURCE_TYPES
+   * @param {} options
+   * @returns Promise<{Object.<name: string, id: string, code: string>}>
    */
   async pullMetadata(dataSources, type, options) {
     throw new Error('Any subclass of Service must implement the "pullMetadata" method');
