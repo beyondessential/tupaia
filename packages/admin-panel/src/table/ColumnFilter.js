@@ -17,7 +17,9 @@ export const ColumnFilter = ({ filter, onChange }) => (
 );
 
 ColumnFilter.propTypes = {
-  filter: PropTypes.object,
+  filter: PropTypes.PropTypes.shape({
+    value: PropTypes.string,
+  }),
   onChange: PropTypes.func,
 };
 
