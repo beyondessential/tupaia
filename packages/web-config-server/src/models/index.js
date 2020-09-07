@@ -7,8 +7,6 @@ import { ProjectModel } from './Project';
 export { UserSession } from './UserSession';
 export { DashboardGroup } from './DashboardGroup';
 export { DashboardReport } from './DashboardReport';
-export { Disaster } from './Disaster';
-export { DisasterEvent } from './DisasterEvent';
 export { Facility } from './Facility';
 export { EntityRelation } from './EntityRelation';
 export { Entity } from './Entity';

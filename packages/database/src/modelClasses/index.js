@@ -13,6 +13,8 @@ import { DashboardGroupModel } from './DashboardGroup';
 import { DashboardReportModel } from './DashboardReport';
 import { DataElementDataGroupModel } from './DataElementDataGroup';
 import { DataSourceModel } from './DataSource';
+import { DisasterModel } from './Disaster';
+import { DisasterEventModel } from './DisasterEvent';
 import { EntityModel } from './Entity';
 import { EntityRelationModel } from './EntityRelation';
 import { GeographicalAreaModel } from './GeographicalArea';
@@ -44,6 +46,8 @@ export const modelClasses = {
   DashboardReport: DashboardReportModel,
   DataElementDataGroup: DataElementDataGroupModel,
   DataSource: DataSourceModel,
+  Disaster: DisasterModel,
+  DisasterEvent: DisasterEventModel,
   Entity: EntityModel,
   EntityRelation: EntityRelationModel,
   GeographicalArea: GeographicalAreaModel,

@@ -1,5 +1,5 @@
 import { respond } from '@tupaia/utils';
-import { Disaster, DisasterEvent, Entity } from '/models';
+import { Entity } from '/models';
 import { translateBoundsForFrontend, translatePointForFrontend } from '/utils/geoJson';
 
 // disaster event types (match disasterEvent.type enum in postgres)
@@ -59,8 +59,8 @@ function determineDisasterDetails(events) {
 }
 
 // get events from database and annotate disaster with more detailed info
-async function addAdditionalDetails(disaster) {
-  const events = await DisasterEvent.find({
+async function addAdditionalDetails(models, disaster) {
+  const events = await models.disasterEvent.find({
     disasterId: disaster.code,
   });
 
@@ -75,9 +75,12 @@ async function addAdditionalDetails(disaster) {
 }
 
 export async function disasters(req, res) {
-  const data = (
-    await Promise.all((await Disaster.getDisasters()).map(d => addAdditionalDetails(d)))
-  )
+  const { models } = req;
+  const allDisasters = await models.disaster.getAllDisasterDetails();
+  const allDisastersWithExtraDetails = await Promise.all(
+    allDisasters.map(d => addAdditionalDetails(models, d)),
+  );
+  const responseData = allDisastersWithExtraDetails
     .filter(d => d.status !== DISASTER_RESOLVED)
     .map(({ bounds, point, ...d }) => ({
       ...d,
@@ -85,5 +88,5 @@ export async function disasters(req, res) {
       coordinates: translatePointForFrontend(point),
     }));
 
-  respond(res, { disasters: data });
+  respond(res, { disasters: responseData });
 }
