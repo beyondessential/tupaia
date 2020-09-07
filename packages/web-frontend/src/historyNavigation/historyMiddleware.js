@@ -10,43 +10,39 @@
  */
 
 import {
-  SET_PROJECT,
-  SET_ORG_UNIT,
-  SET_DASHBOARD_GROUP,
-  OPEN_ENLARGED_DIALOG,
-  CLOSE_ENLARGED_DIALOG,
-  SET_MEASURE,
   CLEAR_MEASURE,
-  GO_HOME,
-  updateHistoryLocation,
-  setOrgUnit,
-  setMeasure,
-  setOverlayComponent,
-  setVerifyEmailToken,
-  setPasswordResetToken,
-  openUserPage,
+  CLOSE_ENLARGED_DIALOG,
   DIALOG_PAGE_ONE_TIME_LOGIN,
+  GO_HOME,
   openEnlargedDialog,
+  openUserPage,
+  OPEN_ENLARGED_DIALOG,
+  setMeasure,
+  setOrgUnit,
+  setOverlayComponent,
+  setPasswordResetToken,
+  setVerifyEmailToken,
+  SET_DASHBOARD_GROUP,
+  SET_MEASURE,
+  SET_ORG_UNIT,
+  SET_PROJECT,
+  updateCurrentMeasureConfigOnceHierarchyLoads,
+  updateHistoryLocation,
   UPDATE_MEASURE_CONFIG,
-  updateMeasureConfigOnceHierarchyLoads,
 } from '../actions';
-import { setProject } from '../projects/actions';
 import { DEFAULT_PROJECT_CODE } from '../defaults';
-import {
-  setLocationComponent,
-  clearLocation,
-  attemptPushHistory,
-  getInitialLocation,
-  addPopStateListener,
-} from './historyNavigation';
-import {
-  decodeLocation,
-  convertObjectToUrlPeriodString,
-  convertUrlPeriodStringToObject,
-} from './utils';
-import { URL_COMPONENTS, PASSWORD_RESET_PREFIX, VERIFY_EMAIL_PREFIX } from './constants';
-import { PROJECTS_WITH_LANDING_PAGES, PROJECT_LANDING } from '../containers/OverlayDiv/constants';
+import { setProject } from '../projects/actions';
 import { selectCurrentPeriodGranularity } from '../selectors';
+import { PASSWORD_RESET_PREFIX, URL_COMPONENTS, VERIFY_EMAIL_PREFIX } from './constants';
+import {
+  addPopStateListener,
+  attemptPushHistory,
+  clearLocation,
+  getInitialLocation,
+  setLocationComponent,
+} from './historyNavigation';
+import { decodeLocation, convertObjectToUrlPeriodString } from './utils';
+import { PROJECTS_WITH_LANDING_PAGES, PROJECT_LANDING } from '../containers/OverlayDiv/constants';
 
 export const reactToInitialState = store => {
   reactToLocationChange(store, getInitialLocation(), clearLocation());
@@ -83,11 +79,10 @@ const reactToLocationChange = (store, location, previousLocation) => {
   setComponentIfUpdated(URL_COMPONENTS.ORG_UNIT, setOrgUnit);
   setComponentIfUpdated(URL_COMPONENTS.URL_COMPONENTS, setMeasure);
   setComponentIfUpdated(URL_COMPONENTS.REPORT, openEnlargedDialog);
-
-  const currentMeasureId = otherComponents[URL_COMPONENTS.MEASURE];
-  const measurePeriod = otherComponents[URL_COMPONENTS.MEASURE_PERIOD];
-  if (measurePeriod && measurePeriod !== previousComponents[URL_COMPONENTS.MEASURE_PERIOD])
-    dispatchSetMeasurePeriod(store, currentMeasureId, measurePeriod);
+  setComponentIfUpdated(
+    URL_COMPONENTS.MEASURE_PERIOD,
+    updateCurrentMeasureConfigOnceHierarchyLoads,
+  );
 };
 
 const reactToUserPage = (userPage, initialComponents, dispatch) => {
@@ -182,13 +177,4 @@ const dispatchLocationUpdate = (store, component, value) => {
 const dispatchClearLocation = store => {
   const { dispatch } = store;
   dispatch(updateHistoryLocation(clearLocation()));
-};
-
-const dispatchSetMeasurePeriod = async (store, currentMeasureId, periodString) => {
-  const { dispatch } = store;
-  await setTimeout(() => 1, 1000);
-  const periodGranularity = selectCurrentPeriodGranularity(store.getState());
-  const { startDate, endDate } = convertUrlPeriodStringToObject(periodString, periodGranularity);
-  console.log(startDate, endDate, currentMeasureId, periodString, periodGranularity);
-  dispatch(updateMeasureConfigOnceHierarchyLoads(currentMeasureId, { startDate, endDate }));
 };

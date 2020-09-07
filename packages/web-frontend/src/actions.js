@@ -562,11 +562,10 @@ export function updateMeasureConfig(measureId, measureConfig) {
  *
  * @param {object} measureConfig
  */
-export function updateMeasureConfigOnceHierarchyLoads(measureId, measureConfig) {
+export function updateCurrentMeasureConfigOnceHierarchyLoads(periodString) {
   return {
     type: UPDATE_MEASURE_CONFIG_ONCE_HIERARCHY_LOADS,
-    measureId,
-    measureConfig,
+    periodString,
   };
 }
 
