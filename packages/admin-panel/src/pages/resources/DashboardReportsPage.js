@@ -1,40 +1,43 @@
+/*
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
+
 import React from 'react';
+import PropTypes from 'prop-types';
 import { ResourcePage } from './ResourcePage';
-import { prettyJSON } from '../../utilities/pretty';
 
 const FIELDS = [
   {
     Header: 'ID',
     source: 'id',
+    type: 'tooltip',
   },
   {
     Header: 'Drill Down Level',
     source: 'drillDownLevel',
-    width: 150,
   },
   {
     Header: 'Data Builder',
     source: 'dataBuilder',
+    type: 'tooltip',
   },
   {
     Header: 'Data Builder Config',
     source: 'dataBuilderConfig',
-    width: 350,
-    Cell: ({ value }) => prettyJSON(value),
+    type: 'jsonTooltip',
     editConfig: { type: 'jsonEditor' },
   },
   {
     Header: 'View JSON',
     source: 'viewJson',
-    width: 350,
-    Cell: ({ value }) => prettyJSON(value),
+    type: 'jsonTooltip',
     editConfig: { type: 'jsonEditor' },
   },
   {
     Header: 'Data Services',
     source: 'dataServices',
-    width: 250,
-    Cell: ({ value }) => prettyJSON(value),
+    type: 'jsonTooltip',
     editConfig: { type: 'jsonEditor' },
   },
 ];
@@ -52,7 +55,7 @@ const COLUMNS = [
   },
 ];
 
-export const DashboardReportsPage = () => (
+export const DashboardReportsPage = ({ getHeaderEl }) => (
   <ResourcePage
     title="Dashboard Reports"
     endpoint="dashboardReports"
@@ -60,5 +63,10 @@ export const DashboardReportsPage = () => (
     editConfig={{
       title: 'Edit Dashboard Report',
     }}
+    getHeaderEl={getHeaderEl}
   />
 );
+
+DashboardReportsPage.propTypes = {
+  getHeaderEl: PropTypes.func.isRequired,
+};

@@ -16,12 +16,18 @@ import { Form } from '../Form';
 import { TextField } from '../Form/Fields';
 import { emailAddress } from '../Form/validators';
 import { ForgotPassword } from './ForgotPassword';
-import { SubmitButton } from '../Form/common/SubmitButton';
+import { SubmitButton } from '../Form/common';
 import { SignupComplete } from '../SignupForm/SignupComplete';
 import { EmailVerification, EMAIL_VERIFIED_STATUS } from '../EmailVerification';
 
 const PasswordField = styled(TextField)`
   margin-bottom: 16px;
+`;
+
+const FlexRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 `;
 
 export const LoginFormComponent = React.memo(
@@ -59,8 +65,10 @@ export const LoginFormComponent = React.memo(
             required
             onKeyPress={e => e.key === 'Enter' && submitForm()}
           />
-          <ForgotPassword handleClick={onClickResetPassword} />
-          <SubmitButton text="Sign in" handleClick={submitForm} />
+          <FlexRow>
+            <ForgotPassword handleClick={onClickResetPassword} />
+            <SubmitButton handleClick={submitForm}>Sign in</SubmitButton>
+          </FlexRow>
         </>
       ),
       [onClickResetPassword],
