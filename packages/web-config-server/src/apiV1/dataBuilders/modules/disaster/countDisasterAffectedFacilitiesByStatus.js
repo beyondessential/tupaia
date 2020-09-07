@@ -1,5 +1,4 @@
 import { convertDateRangeToPeriodString } from '@tupaia/utils';
-import { Entity } from '/models';
 
 const AFFECTED_STATUS_DATA_ELEMENT_CODE = 'DP_NEW008';
 
@@ -7,17 +6,18 @@ const AFFECTED_STATUS_DATA_ELEMENT_CODE = 'DP_NEW008';
 const TO_BE_COMPLETED = 'To be completed';
 
 export const countDisasterAffectedFacilitiesByStatus = async (
-  { dataBuilderConfig, query },
+  { entity, dataBuilderConfig, query, fetchHierarchyId },
   aggregator,
   dhisApi,
 ) => {
-  const { organisationUnitCode, disasterStartDate, disasterEndDate } = query;
+  const { disasterStartDate, disasterEndDate } = query;
   const { dataServices, optionSetCode } = dataBuilderConfig;
 
   if (!disasterStartDate) return { data: [] }; // show no data message in view.
 
   const period = convertDateRangeToPeriodString(disasterStartDate, disasterEndDate || Date.now());
-  const facilities = await Entity.getFacilitiesOfOrgUnit(organisationUnitCode);
+  const hierarchyId = await fetchHierarchyId();
+  const facilities = await entity.getFacilityDescendants(hierarchyId);
   const options = await dhisApi.getOptionSetOptions({ code: optionSetCode });
   const { results } = await aggregator.fetchAnalytics([AFFECTED_STATUS_DATA_ELEMENT_CODE], {
     dataServices,

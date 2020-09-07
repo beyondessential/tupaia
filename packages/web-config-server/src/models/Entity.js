@@ -132,11 +132,6 @@ export class Entity extends BaseModel {
     return Entity.find({ id: descendantIds, ...criteria });
   }
 
-  static async getFacilitiesOfOrgUnit(organisationUnitCode) {
-    const entity = await Entity.findOne({ code: organisationUnitCode });
-    return entity ? entity.getDescendantsOfType(ENTITY_TYPES.FACILITY) : [];
-  }
-
   async getAncestorOfType(entityType, hierarchyId) {
     if (this.type === entityType) return this;
     const [ancestor] = await this.getAncestors(hierarchyId, { type: entityType });

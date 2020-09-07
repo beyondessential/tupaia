@@ -192,6 +192,10 @@ class EntityType extends DatabaseType {
   async getChildren(hierarchyId) {
     return this.getDescendants(hierarchyId, undefined, true);
   }
+
+  async getFacilityDescendants(hierarchyId) {
+    return this.getDescendantsOfType(FACILITY, hierarchyId);
+  }
 }
 
 export class EntityModel extends DatabaseModel {
