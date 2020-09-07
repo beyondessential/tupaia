@@ -127,15 +127,6 @@ export class Entity extends BaseModel {
     return Entity.find({ id: ancestorIds, ...criteria });
   }
 
-  /**
-   * Fetch the codes of all ancestors of the current entity, by default excluding 'World'
-   * @param {string} id The id of the entity to fetch ancestor codes of
-   */
-  async getAncestorCodes(hierarchyId) {
-    const ancestors = await this.getAncestors(hierarchyId);
-    return ancestors.map(a => a.code);
-  }
-
   async getChildren(hierarchyId, criteria = {}) {
     const childIds = await AncestorDescendantRelation.getChildIds(this.id, hierarchyId);
     return Entity.find({ id: childIds, ...criteria });

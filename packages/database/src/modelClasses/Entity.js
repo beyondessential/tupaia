@@ -183,6 +183,11 @@ class EntityType extends DatabaseType {
     const ancestors = await this.getAncestors(entityHierarchyId);
     return ancestors.find(d => orgUnitEntityTypes.has(d.type));
   }
+
+  async getAncestorCodes(hierarchyId) {
+    const ancestors = await this.getAncestors(hierarchyId);
+    return ancestors.map(a => a.code);
+  }
 }
 
 export class EntityModel extends DatabaseModel {
