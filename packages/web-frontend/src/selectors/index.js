@@ -56,4 +56,6 @@ export {
   selectMeasureBarItemById,
   selectCurrentMeasureId,
   selectMeasureBarItemCategoryById,
+  selectIsMeasureInHierarchy,
+  selectDefaultMeasureId,
 } from './measureSelectors';

@@ -13,6 +13,8 @@ import {
   getMeasureDisplayInfo,
   POLYGON_MEASURE_TYPES,
   calculateRadiusScaleFactor,
+  flattenMeasureHierarchy,
+  isMeasureHierarchyEmpty,
 } from '../utils/measures';
 import { getLocationComponentValue, URL_COMPONENTS } from '../historyNavigation';
 import { safeGet, selectLocation, getOrgUnitFromCountry } from './utils';
@@ -24,7 +26,8 @@ import {
   selectAllOrgUnitsInCountry,
   selectDescendantsFromCache,
 } from './orgUnitSelectors';
-import { selectCurrentProjectCode } from './projectSelectors';
+import { selectCurrentProjectCode, selectCurrentProject } from './projectSelectors';
+import { DEFAULT_MEASURE_ID } from '../defaults';
 
 const displayInfoCache = createCachedSelector(
   [
@@ -201,5 +204,26 @@ export const selectMeasureBarItemCategoryById = createSelector(
     });
 
     return categoryMeasureIndex;
+  },
+);
+
+export const selectIsMeasureInHierarchy = createSelector(
+  [state => state.measureBar.measureHierarchy, (_, id) => id],
+  (measureHierarchy, id) => !!getMeasureFromHierarchy(measureHierarchy, id),
+);
+
+export const selectDefaultMeasureId = createSelector(
+  [state => state.measureBar.measureHierarchy, selectCurrentProject],
+  (measureHierarchy, project) => {
+    const projectMeasureId = project.defaultMeasure;
+    const measureIsDefined = id => !!getMeasureFromHierarchy(measureHierarchy, id);
+
+    if (measureIsDefined(projectMeasureId)) return projectMeasureId;
+    else if (measureIsDefined(DEFAULT_MEASURE_ID)) return DEFAULT_MEASURE_ID;
+    else if (!isMeasureHierarchyEmpty(measureHierarchy)) {
+      return flattenMeasureHierarchy(measureHierarchy)[0].measureId;
+    }
+
+    return DEFAULT_MEASURE_ID;
   },
 );

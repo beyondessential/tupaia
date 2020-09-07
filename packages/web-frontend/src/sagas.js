@@ -14,12 +14,13 @@ import {
   selectOrgUnitChildren,
   selectOrgUnitCountry,
   selectCurrentProjectCode,
-  selectCurrentProject,
   selectCurrentMeasureId,
   selectIsProject,
   selectMeasureBarItemById,
   selectCurrentInfoViewKey,
   selectCurrentExpandedViewContent,
+  selectDefaultMeasureId,
+  selectIsMeasureInHierarchy,
 } from './selectors';
 import {
   ATTEMPT_CHANGE_PASSWORD,
@@ -104,17 +105,10 @@ import {
   UPDATE_MEASURE_CONFIG,
   SET_DRILL_DOWN_DATE_RANGE,
 } from './actions';
-import {
-  isMobile,
-  processMeasureInfo,
-  formatDateForApi,
-  flattenMeasureHierarchy,
-  getMeasureFromHierarchy,
-  isMeasureHierarchyEmpty,
-} from './utils';
+import { isMobile, processMeasureInfo, formatDateForApi } from './utils';
 import { createUrlString, URL_COMPONENTS } from './historyNavigation';
 import { getDefaultDates } from './utils/periodGranularities';
-import { DEFAULT_MEASURE_ID, DEFAULT_PROJECT_CODE } from './defaults';
+import { DEFAULT_PROJECT_CODE } from './defaults';
 import { setProject } from './projects/actions';
 import { LANDING } from './containers/OverlayDiv/constants';
 import { LOGIN_TYPES } from './constants';
@@ -746,28 +740,8 @@ function* watchMeasureChange() {
   yield takeLatest(SET_MEASURE, fetchMeasureInfoForMeasureChange);
 }
 
-function* fetchMeasureInfoForMeasurePeriodChange() {
-  const state = yield select();
-  const currentMeasureId = selectCurrentMeasureId(state);
 
-  yield fetchMeasureInfo(currentMeasureId);
-}
 
-function* watchMeasurePeriodChange() {
-  yield takeLatest(UPDATE_MEASURE_CONFIG, fetchMeasureInfoForMeasurePeriodChange);
-}
-
-function getSelectedMeasureFromHierarchy(measureHierarchy, selectedMeasureId, project) {
-  const projectMeasureId = project.defaultMeasure;
-  if (getMeasureFromHierarchy(measureHierarchy, selectedMeasureId)) return selectedMeasureId;
-  else if (getMeasureFromHierarchy(measureHierarchy, projectMeasureId)) return projectMeasureId;
-  else if (getMeasureFromHierarchy(measureHierarchy, DEFAULT_MEASURE_ID)) return DEFAULT_MEASURE_ID;
-  else if (!isMeasureHierarchyEmpty(measureHierarchy)) {
-    return flattenMeasureHierarchy(measureHierarchy)[0].measureId;
-  }
-
-  return DEFAULT_MEASURE_ID;
-}
 
 function* fetchCurrentMeasureInfo() {
   const state = yield select();
@@ -776,25 +750,18 @@ function* fetchCurrentMeasureInfo() {
   const selectedMeasureId = selectCurrentMeasureId(state);
 
   if (currentOrganisationUnitCode) {
-    const isHierarchyPopulated = measureHierarchy.length;
+    const isHierarchyPopulated = !!measureHierarchy.length;
 
-    // Update the default measure ID
-    if (isHierarchyPopulated) {
-      const newMeasure = getSelectedMeasureFromHierarchy(
-        measureHierarchy,
-        selectedMeasureId,
-        selectCurrentProject(state),
-      );
-
-      if (newMeasure !== selectedMeasureId) {
-        yield put(setMeasure(newMeasure));
-      }
-    } else {
+    if (!isHierarchyPopulated) {
       /** Ensure measure is selected if there is a current measure selected in the case
        * it is not selected through the measureBar UI
        * i.e. page reloaded when on org with measure selected
        */
       yield put(setMeasure(selectedMeasureId));
+    } else if (!selectIsMeasureInHierarchy(state, selectedMeasureId)) {
+      // Update to the default measure ID if the current measure id isn't in the hierarchy
+      const newMeasureId = selectDefaultMeasureId(state);
+      yield put(setMeasure(newMeasureId));
     }
   }
 }
