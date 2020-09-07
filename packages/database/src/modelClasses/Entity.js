@@ -131,6 +131,14 @@ class EntityType extends DatabaseType {
 
     throw new Error(`Maximum of (${MAX_ENTITY_HIERARCHY_LEVELS}) entity hierarchy levels reached`);
   }
+
+  pointLatLon() {
+    const pointJson = JSON.parse(this.point);
+    return {
+      lat: pointJson.coordinates[1],
+      lon: pointJson.coordinates[0],
+    };
+  }
 }
 
 export class EntityModel extends DatabaseModel {
@@ -138,11 +146,61 @@ export class EntityModel extends DatabaseModel {
     return EntityType;
   }
 
+  static fields = [
+    'id',
+    'code',
+    'parent_id',
+    'name',
+    'type',
+    'point',
+    'region',
+    'image_url',
+    'country_code',
+    'bounds',
+    'metadata',
+    'image_url',
+    'attributes',
+  ];
+
+  static geoFields = ['point', 'region', 'bounds'];
+
   orgUnitEntityTypes = ORG_UNIT_ENTITY_TYPES;
 
   types = ENTITY_TYPES;
 
   isOrganisationUnitType = type => Object.values(ORG_UNIT_ENTITY_TYPES).includes(type);
+
+  getColumnSpecs = tableAlias => {
+    return this.buildColumnSpecs(tableAlias, false);
+  };
+
+  buildColumnSpecs = tableAlias => {
+    const tableAliasPrefix = tableAlias ? `${tableAlias}.` : '';
+    return EntityModel.fields.map(field => {
+      if (EntityModel.geoFields.includes(field)) {
+        return { [field]: `ST_AsGeoJSON(${tableAliasPrefix}${field})` };
+      }
+      return { [field]: `${tableAliasPrefix}${field}` };
+    });
+  };
+
+  async findOne(conditions) {
+    return super.findOne(conditions, {
+      columns: this.getColumnSpecs(),
+    });
+  }
+
+  async find(conditions) {
+    return super.find(conditions, {
+      columns: this.getColumnSpecs(),
+    });
+  }
+
+  async findById(id) {
+    return super.findById(id, {
+      columns: this.getColumnSpecs(),
+    });
+  }
 
   async updatePointCoordinates(code, { longitude, latitude }) {
     const point = JSON.stringify({ coordinates: [longitude, latitude], type: 'Point' });
