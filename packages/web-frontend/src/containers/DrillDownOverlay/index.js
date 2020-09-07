@@ -140,16 +140,19 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => {
       const { infoViewKey } = enlargedDialog;
       const { parameterLink, keyLink } = drillDown;
 
+      const newDrillDownLevel = currentLevel + 1;
+      const drillDownConfigKey = `${infoViewKey}_${newDrillDownLevel}`;
+
       dispatch(
-        attemptDrillDown(
-          {
-            infoViewKey,
+        attemptDrillDown({
+          viewContent: {
+            infoViewKey: drillDownConfigKey,
             ...viewContent,
           },
           parameterLink,
-          chartItem[keyLink],
-          currentLevel + 1,
-        ),
+          parameterValue: chartItem[keyLink],
+          drillDownLevel: newDrillDownLevel,
+        }),
       );
     },
     onBack: () => {

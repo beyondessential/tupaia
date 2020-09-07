@@ -1033,6 +1033,10 @@ function* fetchDrillDownViewContentForPeriod(action) {
   const state = yield select();
   const { startDate, endDate, drillDownLevel } = action;
   const { viewContent } = state.drillDown.levelContents[drillDownLevel];
+  const { enlargedDialog } = state;
+  const { infoViewKey } = enlargedDialog;
+  const drillDownConfigKey = `${infoViewKey}_${drillDownLevel}`;
+
   const {
     viewId,
     organisationUnitCode,
@@ -1051,6 +1055,7 @@ function* fetchDrillDownViewContentForPeriod(action) {
     isExpanded: true,
     parameterLink,
     parameterValue,
+    infoViewKey: drillDownConfigKey,
   };
 
   yield call(fetchDrillDownData, parameters);

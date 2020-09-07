@@ -166,20 +166,20 @@ const mergeProps = (stateProps, { dispatch, ...dispatchProps }, ownProps) => ({
     }
 
     dispatch(
-      attemptDrillDown(
-        {
+      attemptDrillDown({
+        viewContent: {
           dashboardGroupId,
           organisationUnitCode,
           ...drillDownConfig,
           infoViewKey: drillDownConfigKey,
           viewId,
         },
-        defaultStartDate,
-        defaultEndDate,
+        startDate: defaultStartDate,
+        endDate: defaultEndDate,
         parameterLink,
-        chartItem[keyLink],
-        newDrillDownLevel,
-      ),
+        parameterValue: chartItem[keyLink],
+        drillDownLevel: newDrillDownLevel,
+      }),
     );
   },
   onExport: extraConfig => {
