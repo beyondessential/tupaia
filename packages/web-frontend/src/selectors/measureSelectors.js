@@ -5,30 +5,28 @@
  * found in the LICENSE file in the root directory of this source tree.
  */
 
-import { createSelector } from 'reselect';
 import createCachedSelector from 're-reselect';
-
+import { createSelector } from 'reselect';
+import { DEFAULT_MEASURE_ID } from '../defaults';
+import { getLocationComponentValue, URL_COMPONENTS } from '../historyNavigation';
 import { getMeasureFromHierarchy } from '../utils';
 import {
-  getMeasureDisplayInfo,
-  POLYGON_MEASURE_TYPES,
   calculateRadiusScaleFactor,
   flattenMeasureHierarchy,
+  getMeasureDisplayInfo,
   isMeasureHierarchyEmpty,
+  POLYGON_MEASURE_TYPES,
 } from '../utils/measures';
-import { getLocationComponentValue, URL_COMPONENTS } from '../historyNavigation';
-import { safeGet, selectLocation, getOrgUnitFromCountry } from './utils';
 import {
-  selectCurrentOrgUnitCode,
-  selectAncestors,
   selectActiveProjectCountries,
-  selectCountryHierarchy,
   selectAllOrgUnitsInCountry,
+  selectAncestors,
+  selectCountryHierarchy,
+  selectCurrentOrgUnitCode,
   selectDescendantsFromCache,
 } from './orgUnitSelectors';
-import { selectCurrentProjectCode, selectCurrentProject } from './projectSelectors';
-import { DEFAULT_MEASURE_ID } from '../defaults';
-import { GRANULARITIES } from '../utils/periodGranularities';
+import { selectCurrentProject, selectCurrentProjectCode } from './projectSelectors';
+import { getOrgUnitFromCountry, safeGet, selectLocation } from './utils';
 
 const displayInfoCache = createCachedSelector(
   [
@@ -230,5 +228,5 @@ export const selectDefaultMeasureId = createSelector(
 
 export const selectCurrentPeriodGranularity = createSelector(
   [selectCurrentMeasure],
-  measure => measure.periodGranularity || GRANULARITIES.DAY,
+  measure => measure.periodGranularity,
 );

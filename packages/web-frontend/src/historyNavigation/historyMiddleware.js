@@ -32,7 +32,7 @@ import {
 } from '../actions';
 import { DEFAULT_PROJECT_CODE } from '../defaults';
 import { setProject } from '../projects/actions';
-import { selectCurrentPeriodGranularity } from '../selectors';
+import { selectCurrentPeriodGranularity, selectMeasureBarItemById } from '../selectors';
 import { PASSWORD_RESET_PREFIX, URL_COMPONENTS, VERIFY_EMAIL_PREFIX } from './constants';
 import {
   addPopStateListener,
@@ -102,6 +102,7 @@ const reactToUserPage = (userPage, initialComponents, dispatch) => {
 export const historyMiddleware = store => next => action => {
   if (action.meta && action.meta.preventHistoryUpdate) return next(action);
 
+  const state = store.getState();
   switch (action.type) {
     // Actions that modify the path
     case SET_PROJECT:
@@ -125,20 +126,28 @@ export const historyMiddleware = store => next => action => {
     case CLOSE_ENLARGED_DIALOG:
       dispatchLocationUpdate(store, URL_COMPONENTS.REPORT, null);
       break;
-    case SET_MEASURE:
+    case SET_MEASURE: {
+      const { startDate, endDate, periodGranularity } = selectMeasureBarItemById(
+        state,
+        action.measureId,
+      );
       dispatchLocationUpdate(store, URL_COMPONENTS.MEASURE, action.measureId);
+      dispatchLocationUpdate(
+        store,
+        URL_COMPONENTS.MEASURE_PERIOD,
+        convertObjectToUrlPeriodString({ startDate, endDate }, periodGranularity),
+      );
       break;
+    }
     case CLEAR_MEASURE:
       dispatchLocationUpdate(store, URL_COMPONENTS.MEASURE, null);
+      dispatchLocationUpdate(store, URL_COMPONENTS.MEASURE_PERIOD, null);
       break;
     case UPDATE_MEASURE_CONFIG:
       dispatchLocationUpdate(
         store,
         URL_COMPONENTS.MEASURE_PERIOD,
-        convertObjectToUrlPeriodString(
-          action.measureConfig,
-          selectCurrentPeriodGranularity(store.getState()),
-        ),
+        convertObjectToUrlPeriodString(action.measureConfig, selectCurrentPeriodGranularity(state)),
       );
       break;
     default:

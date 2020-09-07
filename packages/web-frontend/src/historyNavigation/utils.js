@@ -8,18 +8,21 @@
 /**
  * History utils. These are helper functions that aren't used outside of historyNavigation.
  */
-import queryString from 'query-string';
 import { invert } from 'lodash';
 import moment from 'moment';
-
+import queryString from 'query-string';
+import {
+  GRANULARITIES,
+  GRANULARITIES_WITH_ONE_DATE,
+  GRANULARITY_CONFIG,
+} from '../utils/periodGranularities';
 import {
   PATH_COMPONENTS,
   SEARCH_COMPONENTS,
   SEARCH_PARAM_KEY_MAP,
-  USER_PAGE_PREFIXES,
   URL_COMPONENTS,
+  USER_PAGE_PREFIXES,
 } from './constants';
-import { GRANULARITY_CONFIG, GRANULARITIES_WITH_ONE_DATE } from '../utils/periodGranularities';
 
 export const createLocation = params => {
   const { userPage } = params;
@@ -89,27 +92,35 @@ export const isLocationEqual = (a, b) => {
   return true;
 };
 
-export const convertUrlPeriodStringToObject = (periodString, periodGranularity) => {
+export const convertUrlPeriodStringToObject = (
+  periodString,
+  periodGranularity = GRANULARITIES.DAY,
+) => {
   const [startDate, endDate] = periodString.split('-');
-
+  const format = GRANULARITY_CONFIG[periodGranularity].urlFormat;
   return {
-    startDate: moment(startDate, GRANULARITY_CONFIG[periodGranularity].urlFormat),
-    endDate: moment(endDate || startDate, GRANULARITY_CONFIG[periodGranularity].urlFormat),
+    startDate: moment(startDate, format),
+    endDate: moment(endDate || startDate, format),
   };
 };
 
-export const convertObjectToUrlPeriodString = ({ startDate, endDate }, periodGranularity) => {
+export const convertObjectToUrlPeriodString = (
+  { startDate, endDate },
+  periodGranularity = GRANULARITIES.DAY,
+) => {
+  if (!(startDate || endDate)) return null;
+
+  const format = GRANULARITY_CONFIG[periodGranularity].urlFormat;
+
   if (GRANULARITIES_WITH_ONE_DATE.includes(periodGranularity)) {
     if (!startDate.isSame(endDate)) {
       console.error(
         `Caution: periodGranularity of ${periodGranularity} has different startDate and endDate`,
       );
     }
-    return startDate.format(GRANULARITY_CONFIG[periodGranularity].urlFormat);
+    return startDate.format(format);
   }
-  return `${startDate.format(GRANULARITY_CONFIG[periodGranularity].urlFormat)}-${endDate.format(
-    GRANULARITY_CONFIG[periodGranularity].urlFormat,
-  )}`;
+  return `${startDate.format(format)}-${endDate.format(format)}`;
 };
 
 const parseSearch = search => {
