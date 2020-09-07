@@ -27,6 +27,7 @@ const CATCHMENT = 'catchment';
 const SUB_CATCHMENT = 'sub_catchment';
 const VILLAGE = 'village';
 const WORLD = 'world';
+const PROJECT = 'project';
 
 const ENTITY_TYPES = {
   CASE,
@@ -41,6 +42,7 @@ const ENTITY_TYPES = {
   SUB_CATCHMENT,
   VILLAGE,
   WORLD,
+  PROJECT,
 };
 
 export const ORG_UNIT_ENTITY_TYPES = {
@@ -67,8 +69,16 @@ class EntityType extends DatabaseType {
     return this.type === FACILITY;
   }
 
+  isCountry() {
+    return this.type === COUNTRY;
+  }
+
   isWorld() {
     return this.type === WORLD;
+  }
+
+  isProject() {
+    return this.type === PROJECT;
   }
 
   isOrganisationUnit() {

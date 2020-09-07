@@ -212,10 +212,6 @@ export class Entity extends BaseModel {
     return pascal(this.type); // sub_district -> SubDistrict
   }
 
-  isCountry() {
-    return this.type === COUNTRY;
-  }
-
   static translateTypeForFrontend = type => pascal(type);
 
   translateForFrontend() {
@@ -245,15 +241,6 @@ export class Entity extends BaseModel {
       region: translateRegionForFrontend(region),
     };
   }
-
-  isFacility() {
-    return this.type === FACILITY;
-  }
-
-  isProject() {
-    return this.type === PROJECT;
-  }
-
   async project() {
     return Project.findOne({ entity_id: this.id });
   }
