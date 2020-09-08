@@ -11,12 +11,12 @@ import { hasContent, isAString, isPlainObject } from '@tupaia/utils';
 import { getAggregationsByCode, fetchAnalytics, validateConfig } from './helpers';
 import { AnalyticCluster, Builder, AggregationSpecs, FetchOptions } from '../types';
 
-export type DefaultSpecs = Readonly<Record<string, number>>;
+export type DefaultValuesSpecs = Readonly<Record<string, number>>;
 
 export type ArithmeticConfig = {
   readonly formula: string;
   readonly aggregation: AggregationSpecs;
-  readonly defaultValues?: DefaultSpecs;
+  readonly defaultValues?: DefaultValuesSpecs;
 };
 
 const assertAggregationIsDefinedForCodesInFormula = (
@@ -38,7 +38,7 @@ const configValidators = {
 const fetchAnalyticClusters = async (
   aggregator: Aggregator,
   aggregationSpecs: AggregationSpecs,
-  defaultValues: DefaultSpecs,
+  defaultValues: DefaultValuesSpecs,
   fetchOptions: FetchOptions,
 ) => {
   const aggregationsByCode = getAggregationsByCode(aggregationSpecs);
@@ -50,21 +50,20 @@ const fetchAnalyticClusters = async (
   const checkClusterIncludesAllElements = (cluster: AnalyticCluster) =>
     allElements.every(member => member in cluster.dataValues);
 
-  const replaceEmptyElementsWithDefault = (cluster: AnalyticCluster) => ({
-    ...cluster,
-    dataValues: allElements.reduce((acc, dataElementCode) => {
-      if (defaultValues[dataElementCode] || cluster.dataValues[dataElementCode]) {
-        return {
-          ...acc,
-          [dataElementCode]: cluster.dataValues[dataElementCode] || defaultValues[dataElementCode],
-        };
-      }
-      return acc;
-    }, {}),
-  });
+  const replaceAnalyticValuesWithDefaults = (cluster: AnalyticCluster) => {
+    const returnDataValues = cluster.dataValues;
+    Object.keys(defaultValues).forEach(code => {
+      returnDataValues[code] = returnDataValues[code] || defaultValues[code];
+    });
+
+    return {
+      ...cluster,
+      dataValues: returnDataValues,
+    };
+  };
 
   // Remove clusters that do not include all elements referenced in the specs
-  return clusters.map(replaceEmptyElementsWithDefault).filter(checkClusterIncludesAllElements);
+  return clusters.map(replaceAnalyticValuesWithDefaults).filter(checkClusterIncludesAllElements);
 };
 
 const buildAnalyticValues = (analyticClusters: AnalyticCluster[], formula: string) =>
