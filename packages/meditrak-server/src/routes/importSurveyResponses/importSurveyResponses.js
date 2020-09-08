@@ -68,12 +68,7 @@ export async function importSurveyResponses(req, res) {
 
         for (let columnIndex = 0; columnIndex <= maxColumnIndex; columnIndex++) {
           const columnHeader = getColumnHeader(sheet, columnIndex);
-          if (isInfoColumn(columnIndex)) {
-            // Just an info column, validate and move on
-            if (columnHeader !== INFO_COLUMN_HEADERS[columnIndex]) {
-              throw new ImportValidationError(`Missing ${INFO_COLUMN_HEADERS[columnIndex]} column`);
-            }
-          } else {
+          if (!isInfoColumn(columnIndex)) {
             // A column representing a survey response
             try {
               if (checkIsNewSurveyResponse(columnHeader)) {
@@ -210,9 +205,6 @@ export async function importSurveyResponses(req, res) {
   }
 }
 
-//Only extract the entities and permission group to perform permissions check.
-//No validation is done here since it's out of scope and is already done when
-//the real import happens
 const getEntitiesByPermissionGroup = async (models, sheets) => {
   const entitiesGroupedByPermissionGroup = {};
 
@@ -223,6 +215,8 @@ const getEntitiesByPermissionGroup = async (models, sheets) => {
     const permissionGroup = await models.permissionGroup.findById(survey.permission_group_id);
 
     for (let columnIndex = 0; columnIndex <= maxColumnIndex; columnIndex++) {
+      const columnHeader = getColumnHeader(sheet, columnIndex);
+
       if (!isInfoColumn(columnIndex)) {
         const entityCode = getInfoForColumn(sheet, columnIndex, 'Entity Code');
 
@@ -231,6 +225,8 @@ const getEntitiesByPermissionGroup = async (models, sheets) => {
         }
 
         entitiesGroupedByPermissionGroup[permissionGroup.name].push(entityCode);
+      } else if (columnHeader !== INFO_COLUMN_HEADERS[columnIndex]) {
+        throw new ImportValidationError(`Missing ${INFO_COLUMN_HEADERS[columnIndex]} column`);
       }
     }
   }
@@ -316,11 +312,16 @@ async function getSurveyFromSheet(models, sheet) {
   const firstSurveyResponseId = getColumnHeader(sheet, INFO_COLUMN_HEADERS.length);
 
   if (!firstSurveyResponseId) {
-    throw new Error(
+    throw new ImportValidationError('Missing survey response id column');
+  }
+
+  const firstSurveyResponse = await models.surveyResponse.findById(firstSurveyResponseId);
+
+  if (!firstSurveyResponse) {
+    throw new ImportValidationError(
       'Each tab of the import file must have at least one previously submitted survey as the first entry',
     );
   }
 
-  const firstSurveyResponse = await models.surveyResponse.findById(firstSurveyResponseId);
   return models.survey.findById(firstSurveyResponse.survey_id);
 }

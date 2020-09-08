@@ -18,107 +18,98 @@ const DEFAULT_POLICY = {
 };
 
 describe('Permissions checker for Importing Entities', async () => {
-  describe('Sufficient permissions when importing entities', () => {
-    const accessPolicy = new AccessPolicy(DEFAULT_POLICY);
+  const accessPolicy = new AccessPolicy(DEFAULT_POLICY);
 
-    it('Should allow importing entities within 1 country if users have access to the country that the entities are within', async () => {
-      const entitiesByCountryName = {
-        Kiribati: [
-          {
-            code: 'KI_1',
-            name: 'Kiribati test entity 1',
-          },
-          {
-            code: 'KI_2',
-            name: 'Kiribati test entity 2',
-          },
-          {
-            code: 'KI_3',
-            name: 'Kiribati test entity 3',
-          },
-        ],
-      };
+  it('Sufficient permissions: Should allow importing entities within 1 country if users have access to the country that the entities are within', async () => {
+    const entitiesByCountryName = {
+      Kiribati: [
+        {
+          code: 'KI_1',
+          name: 'Kiribati test entity 1',
+        },
+        {
+          code: 'KI_2',
+          name: 'Kiribati test entity 2',
+        },
+        {
+          code: 'KI_3',
+          name: 'Kiribati test entity 3',
+        },
+      ],
+    };
 
-      const result = await assertCanImportEntities(accessPolicy, entitiesByCountryName);
-      expect(result).to.true;
-    });
-
-    it('Should allow importing entities within multiple country if users have access to all the countries that the entities are within', async () => {
-      const entitiesByCountryName = {
-        Kiribati: [
-          {
-            code: 'KI_1',
-            name: 'Kiribati test entity 1',
-          },
-          {
-            code: 'KI_2',
-            name: 'Kiribati test entity 2',
-          },
-          {
-            code: 'KI_3',
-            name: 'Kiribati test entity 3',
-          },
-        ],
-        'Solomon Islands': [
-          {
-            code: 'SB_1',
-            name: 'Solomon Islands test entity 1',
-          },
-          {
-            code: 'SB_2',
-            name: 'Solomon Islands test entity 2',
-          },
-          {
-            code: 'SB_3',
-            name: 'Solomon Islands test entity 3',
-          },
-        ],
-      };
-
-      const result = await assertCanImportEntities(accessPolicy, entitiesByCountryName);
-      expect(result).to.true;
-    });
+    const result = await assertCanImportEntities(accessPolicy, entitiesByCountryName);
+    expect(result).to.true;
   });
 
-  describe('Insufficient permissions when importing entities', async () => {
-    const accessPolicy = new AccessPolicy(DEFAULT_POLICY);
+  it('Sufficient permissions: Should allow importing entities within multiple country if users have access to all the countries that the entities are within', async () => {
+    const entitiesByCountryName = {
+      Kiribati: [
+        {
+          code: 'KI_1',
+          name: 'Kiribati test entity 1',
+        },
+        {
+          code: 'KI_2',
+          name: 'Kiribati test entity 2',
+        },
+        {
+          code: 'KI_3',
+          name: 'Kiribati test entity 3',
+        },
+      ],
+      'Solomon Islands': [
+        {
+          code: 'SB_1',
+          name: 'Solomon Islands test entity 1',
+        },
+        {
+          code: 'SB_2',
+          name: 'Solomon Islands test entity 2',
+        },
+        {
+          code: 'SB_3',
+          name: 'Solomon Islands test entity 3',
+        },
+      ],
+    };
 
-    it('Should not allow import entities within 1 country if users do not have access to the country that the entities are within', async () => {
-      const entitiesByCountryName = {
-        Laos: [
-          {
-            code: 'LA_1',
-            name: 'Laos test entity 1',
-          },
-          {
-            code: 'LA_2',
-            name: 'Laos test entity 2',
-          },
-          {
-            code: 'LA_3',
-            name: 'Laos test entity 3',
-          },
-        ],
-        Vanuatu: [
-          {
-            code: 'VU_1',
-            name: 'Vanuatu test entity 1',
-          },
-          {
-            code: 'VU_2',
-            name: 'Vanuatu test entity 2',
-          },
-          {
-            code: 'VU_3',
-            name: 'Vanuatu test entity 3',
-          },
-        ],
-      };
+    const result = await assertCanImportEntities(accessPolicy, entitiesByCountryName);
+    expect(result).to.true;
+  });
 
-      // const result = await assertCanImportEntities(accessPolicy, entitiesByCountryName);
-      // console.log('result', result);
+  it('Insufficient permissions: Should not allow import entities within 1 country if users do not have access to the country that the entities are within', async () => {
+    const entitiesByCountryName = {
+      Laos: [
+        {
+          code: 'LA_1',
+          name: 'Laos test entity 1',
+        },
+        {
+          code: 'LA_2',
+          name: 'Laos test entity 2',
+        },
+        {
+          code: 'LA_3',
+          name: 'Laos test entity 3',
+        },
+      ],
+      Vanuatu: [
+        {
+          code: 'VU_1',
+          name: 'Vanuatu test entity 1',
+        },
+        {
+          code: 'VU_2',
+          name: 'Vanuatu test entity 2',
+        },
+        {
+          code: 'VU_3',
+          name: 'Vanuatu test entity 3',
+        },
+      ],
+    };
 
-      expect(() => assertCanImportEntities(accessPolicy, entitiesByCountryName)).to.throw;
-    });
+    expect(() => assertCanImportEntities(accessPolicy, entitiesByCountryName)).to.throw;
   });
 });

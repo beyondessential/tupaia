@@ -134,7 +134,10 @@ export const testImportSurveyResponses = (app, models, syncQueue) =>
           addQuestion('faccc42a44705c02b9e_test', 'FreeText'),
         ]);
 
-        const [{ survey }] = await buildAndInsertSurveys(models, [{ code: 'TEST_SURVEY' }]);
+        const publicPermissionGroup = await models.permissionGroup.findOne({ name: 'Public' });
+        const [{ survey }] = await buildAndInsertSurveys(models, [
+          { code: 'TEST_IMPORT_SURVEY', permission_group_id: publicPermissionGroup.id },
+        ]);
         const surveyId = survey.id;
 
         const entityId = 'entity_000000000001_test';
@@ -308,7 +311,10 @@ export const testImportSurveyResponses = (app, models, syncQueue) =>
 
       it('should respond with an error if the header row is missing', async () => {
         const response = await importFile('missingHeaderRow.xlsx');
-        expectError(response, /Missing .* column/);
+        expectError(
+          response,
+          /Each tab of the import file must have at least one previously submitted survey as the first entry/,
+        );
       });
 
       it('should respond with an error if the id column is missing', async () => {
@@ -323,7 +329,7 @@ export const testImportSurveyResponses = (app, models, syncQueue) =>
 
       it('should respond with an error if a response id is missing', async () => {
         const response = await importFile('missingResponseId.xlsx');
-        expectError(response, /Should not be empty/);
+        expectError(response, /Missing survey response id column/);
       });
 
       it('should respond with an error if the type column is missing', async () => {
