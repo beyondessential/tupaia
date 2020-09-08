@@ -4,7 +4,7 @@
  **/
 
 import { pascal } from 'case';
-import { EntityModel as CommonEntityModel } from '@tupaia/database';
+import { EntityType as CommonEntityType, EntityModel as CommonEntityModel } from '@tupaia/database';
 
 import {
   translateBoundsForFrontend,
@@ -12,10 +12,7 @@ import {
   translateRegionForFrontend,
 } from '/utils/geoJson';
 
-export class EntityModel extends CommonEntityModel {
-  // a set of basic fields so that entities used for search etc. can be as light as possible
-  static minimalFields = ['id', 'code', 'type', 'parent_id', 'country_code', 'name'];
-
+class EntityType extends CommonEntityType {
   getOrganisationLevel() {
     return pascal(this.type); // sub_district -> SubDistrict
   }
@@ -46,5 +43,10 @@ export class EntityModel extends CommonEntityModel {
       bounds: translateBoundsForFrontend(bounds),
       region: translateRegionForFrontend(region),
     };
+  }
+}
+export class EntityModel extends CommonEntityModel {
+  get DatabaseTypeClass() {
+    return EntityType;
   }
 }
