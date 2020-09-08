@@ -31,7 +31,7 @@ export const groupData = async (
   );
 
   const returnData = mapDataToCountries
-    ? await mapMeasureDataToCountries(groupedData)
+    ? await mapMeasureDataToCountries(models, groupedData)
     : groupedData;
 
   return { data: returnData, period };

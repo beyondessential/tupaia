@@ -1,5 +1,4 @@
 import { respond, PermissionsError } from '@tupaia/utils';
-import { Entity } from '/models';
 
 import { ValidationError } from '@tupaia/utils/dist/errors';
 
@@ -40,7 +39,7 @@ export class RouteHandler {
   async handleRequest() {
     // Fetch permissions
     const { organisationUnitCode: entityCode } = this.query;
-    this.entity = await Entity.findOne({ code: entityCode });
+    this.entity = await this.models.entity.findOne({ code: entityCode });
     if (!this.entity) {
       throw new ValidationError(`Entity ${entityCode} could not be found`);
     }

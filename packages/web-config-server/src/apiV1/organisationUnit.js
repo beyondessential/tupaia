@@ -4,7 +4,6 @@
  */
 
 import { reduceToDictionary } from '@tupaia/utils';
-import { Entity } from '/models';
 import { RouteHandler } from './RouteHandler';
 import { PermissionsChecker } from './permissions';
 
@@ -25,7 +24,7 @@ export default class extends RouteHandler {
   }
 
   async getEntityAndCountryDataByCode(project) {
-    const projectEntity = await Entity.findOne({ id: project.entity_id });
+    const projectEntity = await project.entity();
     const country = await this.entity.country();
     const countryDescendants = country
       ? await country.getDescendants(project.entity_hierarchy_id)

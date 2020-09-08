@@ -7,7 +7,6 @@ import { inspect } from 'util';
 import { periodToMoment } from '@tupaia/utils/dist/period/period';
 import { getMeasureBuilder } from './getMeasureBuilder';
 import { checkValueSatisfiesCondition } from '../dataBuilders/helpers/checkAgainstConditions';
-import { Entity } from '../../models';
 
 export const fetchComposedData = async (models, aggregator, dhisApi, query, config, entity) => {
   const { measureBuilders, dataServices } = config || {};
@@ -49,9 +48,9 @@ export const mapMeasureValuesToGroups = (measureValue, dataElementGroupCode, gro
   };
 };
 
-export const mapMeasureDataToCountries = async data => {
+export const mapMeasureDataToCountries = async (models, data) => {
   const dataMappedToCountry = data.map(async res => {
-    const resultEntity = await Entity.findOne({ code: res.organisationUnitCode });
+    const resultEntity = await models.entity.findOne({ code: res.organisationUnitCode });
     if (!resultEntity) {
       throw new Error(
         `Could not find entity with code: ${res.organisationUnitCode} for result: ${inspect(

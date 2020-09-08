@@ -8,7 +8,6 @@ import keyBy from 'lodash.keyby';
 
 import { reduceToDictionary, reduceToSet } from '@tupaia/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { Entity } from '/models';
 
 import { TableConfig } from './TableConfig';
 import { getValuesByCell } from './getValuesByCell';
@@ -292,7 +291,7 @@ export class TableOfDataValuesBuilder extends DataBuilder {
 
   getOrgUnitCategoryToTitle = async dimension => {
     const orgUnitCodes = dimension.map(({ category }) => category);
-    const orgUnits = await Entity.find({ code: orgUnitCodes });
+    const orgUnits = await this.models.entity.find({ code: orgUnitCodes });
     const orgUnitCodeToName = reduceToDictionary(orgUnits, 'code', 'name');
 
     return code => orgUnitCodeToName[code];
@@ -374,7 +373,7 @@ export class TableOfDataValuesBuilder extends DataBuilder {
 
   fetchOrgUnitCodesToName = async columns => {
     const orgUnitCodes = columns.map(c => c.title);
-    const orgUnits = await Entity.find({ code: orgUnitCodes });
+    const orgUnits = await this.models.entity.find({ code: orgUnitCodes });
     return reduceToDictionary(orgUnits, 'code', 'name');
   };
 

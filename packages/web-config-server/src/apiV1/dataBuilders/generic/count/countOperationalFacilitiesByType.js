@@ -8,7 +8,6 @@ import {
   translateCategoryCodeToFacilityType,
   pluraliseFacilityType,
 } from '/apiV1/utils';
-import { ENTITY_TYPES } from '/models/Entity';
 
 class CountOperationalFacilitiesByTypeBuilder extends DataBuilder {
   async build() {
@@ -43,7 +42,7 @@ class CountOperationalFacilitiesByTypeBuilder extends DataBuilder {
 
   async fetchFacilityTypeData() {
     // Get facility entities under this entity, for the given project
-    const facilityEntities = await this.fetchDescendantsOfType(ENTITY_TYPES.FACILITY);
+    const facilityEntities = await this.fetchDescendantsOfType(this.models.entity.types.FACILITY);
     if (facilityEntities.length === 0) return {};
 
     // Find matching facility records

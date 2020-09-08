@@ -4,7 +4,6 @@
  */
 
 import keyBy from 'lodash.keyby';
-import { Entity } from '/models';
 import { RouteHandler } from './RouteHandler';
 import { NoPermissionRequiredChecker } from './permissions';
 
@@ -41,7 +40,7 @@ export default class extends RouteHandler {
 
   async getSearchResults(searchString, limit) {
     const project = await this.fetchProject();
-    const projectEntity = await Entity.findOne({ id: project.entity_id });
+    const projectEntity = await project.entity();
 
     const allEntities = await projectEntity.getDescendants(project.entity_hierarchy_id);
     const matchingEntities = await this.getMatchingEntities(searchString, allEntities, limit);

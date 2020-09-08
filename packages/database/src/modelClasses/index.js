@@ -81,7 +81,7 @@ export { CommentModel } from './Comment';
 export { CountryModel } from './Country';
 export { DataSourceModel } from './DataSource';
 export { DashboardGroupModel } from './DashboardGroup';
-export { EntityModel } from './Entity';
+export { EntityModel, EntityType } from './Entity';
 export { FacilityModel } from './Facility';
 export { GeographicalAreaModel } from './GeographicalArea';
 export { MeditrakDeviceModel } from './MeditrakDevice';

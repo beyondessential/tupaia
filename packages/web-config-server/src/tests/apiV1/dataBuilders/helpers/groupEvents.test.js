@@ -6,7 +6,6 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 
 import { groupEvents, getAllDataElementCodes } from '/apiV1/dataBuilders/helpers/groupEvents';
-import * as Models from '/models/Entity';
 
 const EVENTS_1 = [
   {
@@ -49,33 +48,23 @@ const PARENT_ORG_UNIT = {
       : [],
 };
 
-const stubEntity = () => {
-  sinon
-    .stub(Models.Entity, 'findOne')
-    .callsFake(({ code }) => (code === PARENT_ORG_UNIT.code ? PARENT_ORG_UNIT : null));
-};
-
-const restoreEntity = () => {
-  Models.Entity.findOne.restore();
+const models = {
+  entity: {
+    findOne: sinon
+      .stub()
+      .callsFake(({ code }) => (code === PARENT_ORG_UNIT.code ? PARENT_ORG_UNIT : null)),
+  },
 };
 
 describe('groupEvents()', () => {
-  before(() => {
-    stubEntity();
-  });
-
-  after(() => {
-    restoreEntity();
-  });
-
   it('groups by nothing', () =>
-    expect(groupEvents(EVENTS_1, { type: 'nothing' })).to.eventually.deep.equal({
+    expect(groupEvents(models, EVENTS_1, { type: 'nothing' })).to.eventually.deep.equal({
       all: [...EVENTS_1],
     }));
 
   it('groups by allOrgUnitNames', () =>
     expect(
-      groupEvents(EVENTS_1, {
+      groupEvents(models, EVENTS_1, {
         type: 'allOrgUnitNames',
         options: { parentCode: 'TO', type: 'district' },
       }),
@@ -104,7 +93,7 @@ describe('groupEvents()', () => {
 
   it('rejects unknown groupBy type', async () => {
     const assertCorrectErrorIsThrown = groupBySpecs =>
-      expect(groupEvents(EVENTS_1, groupBySpecs)).to.be.rejectedWith(
+      expect(groupEvents(models, EVENTS_1, groupBySpecs)).to.be.rejectedWith(
         'not a supported groupBy type',
       );
 
@@ -113,7 +102,7 @@ describe('groupEvents()', () => {
 
   it('groups by dataValues basic', () => {
     expect(
-      groupEvents(EVENTS_2, {
+      groupEvents(models, EVENTS_2, {
         type: 'dataValues',
         options: {
           GROUPING_1: {
@@ -152,7 +141,7 @@ describe('groupEvents()', () => {
 
   it('uses a union type condition check when grouping by dataValues', () => {
     expect(
-      groupEvents(EVENTS_2, {
+      groupEvents(models, EVENTS_2, {
         type: 'dataValues',
         options: {
           GROUPING_1: {

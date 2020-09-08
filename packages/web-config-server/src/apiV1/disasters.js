@@ -1,5 +1,4 @@
 import { respond } from '@tupaia/utils';
-import { Entity } from '/models';
 import { translateBoundsForFrontend, translatePointForFrontend } from '/utils/geoJson';
 
 // disaster event types (match disasterEvent.type enum in postgres)
@@ -65,7 +64,7 @@ async function addAdditionalDetails(models, disaster) {
   });
 
   const details = determineDisasterDetails(events);
-  const location = (await Entity.findOne({ code: disaster.countryCode })).name;
+  const location = (await models.entity.findOne({ code: disaster.countryCode })).name;
 
   return {
     ...disaster,

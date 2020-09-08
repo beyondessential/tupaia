@@ -3,16 +3,15 @@
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
 
-import { Entity } from '/models';
 import { getEventsThatSatisfyConditions } from './checkAgainstConditions';
 
-const getOrgUnits = async ({ parentCode, type }) => {
-  const parentOrgUnit = await Entity.findOne({ code: parentCode });
+const getOrgUnits = async (models, { parentCode, type }) => {
+  const parentOrgUnit = await models.entity.findOne({ code: parentCode });
   return parentOrgUnit.getDescendantsOfType(type);
 };
 
-const groupByAllOrgUnitNames = async (events, options) => {
-  const eventsByOrgUnitName = (await getOrgUnits(options)).reduce(
+const groupByAllOrgUnitNames = async (events, options, models) => {
+  const eventsByOrgUnitName = (await getOrgUnits(models, options)).reduce(
     (results, { name }) => ({ ...results, [name]: [] }),
     {},
   );
@@ -26,9 +25,9 @@ const groupByAllOrgUnitNames = async (events, options) => {
   return eventsByOrgUnitName;
 };
 
-const groupByAllOrgUnitParentNames = async (events, options) => {
+const groupByAllOrgUnitParentNames = async (events, options, models) => {
   const { aggregationLevel } = options;
-  const orgUnits = await getOrgUnits(options);
+  const orgUnits = await getOrgUnits(models, options);
   const eventsByOrgUnitName = orgUnits.reduce(
     (results, { name }) => ({ ...results, [name]: [] }),
     {},
@@ -83,14 +82,14 @@ const GROUP_BY_VALUE_TO_METHOD = {
  * @param {object} groupBySpecs
  * @returns {Promise<object>} object of groupName => eventsForGroup
  */
-export const groupEvents = async (events, groupBySpecs = {}) => {
+export const groupEvents = async (models, events, groupBySpecs = {}) => {
   const { type, options } = groupBySpecs;
   const groupByMethod = GROUP_BY_VALUE_TO_METHOD[type];
   if (!groupByMethod) {
     throw new Error(`'${type}' is not a supported groupBy type`);
   }
 
-  return groupByMethod(events, options);
+  return groupByMethod(events, options, models);
 };
 
 /**

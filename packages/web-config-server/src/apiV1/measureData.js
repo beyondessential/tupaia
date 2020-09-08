@@ -3,7 +3,6 @@ import keyBy from 'lodash.keyby';
 import { CustomError } from '@tupaia/utils';
 import { getMeasureBuilder } from '/apiV1/measureBuilders/getMeasureBuilder';
 import { getDhisApiInstance } from '/dhis';
-import { Entity } from '/models';
 import { getDateRange, getAggregatePeriod } from './utils';
 import { DataAggregatingRouteHandler } from './DataAggregatingRouteHandler';
 import { MapOverlayPermissionsChecker } from './permissions';
@@ -319,7 +318,7 @@ export default class extends DataAggregatingRouteHandler {
     const entityCode = shouldFetchSiblings
       ? await this.getCountryLevelOrgUnitCode()
       : this.entity.code;
-    const entity = await Entity.findOne({ code: entityCode });
+    const entity = await this.models.entity.findOne({ code: entityCode });
     const dataServices = createDataServices(mapOverlay);
     const dhisApi = getDhisApiInstance({ entityCode: this.entity.code, isDataRegional });
     dhisApi.injectFetchDataSourceEntities(this.fetchDataSourceEntities);

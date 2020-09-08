@@ -6,7 +6,6 @@ import { reduceToDictionary } from '@tupaia/utils';
 
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { fetchOperationalFacilityCodes } from '/apiV1/utils';
-import { ENTITY_TYPES } from '/models/Entity';
 
 class CountOperationalFacilitiesByCountryBuilder extends DataBuilder {
   async build() {
@@ -15,7 +14,7 @@ class CountOperationalFacilitiesByCountryBuilder extends DataBuilder {
       this.entity.code,
       this.period,
     );
-    const facilityEntities = await this.fetchDescendantsOfType(ENTITY_TYPES.FACILITY);
+    const facilityEntities = await this.fetchDescendantsOfType(this.models.entity.types.FACILITY);
     const countsByCountryCode = {};
     facilityEntities.forEach(({ code, country_code: countryCode }) => {
       if (operationalFacilityCodes.includes(code)) {

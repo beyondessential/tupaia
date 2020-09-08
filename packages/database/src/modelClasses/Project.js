@@ -13,6 +13,10 @@ class ProjectType extends DatabaseType {
   async permissionGroups() {
     return this.otherModels.permissionGroup.find({ name: this.user_groups });
   }
+
+  async entity() {
+    return this.otherModels.entity.findById(this.entity_id);
+  }
 }
 
 export class ProjectModel extends DatabaseModel {

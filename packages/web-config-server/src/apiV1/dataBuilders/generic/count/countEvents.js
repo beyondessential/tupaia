@@ -67,7 +67,7 @@ export class CountEventsBuilder extends DataBuilder {
 
   async groupEvents(events) {
     const { groupBy } = this.config;
-    return groupBy ? groupEvents(events, groupBy) : { value: events };
+    return groupBy ? groupEvents(this.models, events, groupBy) : { value: events };
   }
 
   buildDataForGroup(events, name = 'countEvents') {

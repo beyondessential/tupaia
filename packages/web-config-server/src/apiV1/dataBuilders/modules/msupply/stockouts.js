@@ -7,7 +7,6 @@ import keyBy from 'lodash.keyby';
 
 import { stripFromString } from '@tupaia/utils';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
-import { ENTITY_TYPES } from '/models/Entity';
 
 class StockoutsDataBuilder extends DataBuilder {
   async build() {
@@ -27,7 +26,7 @@ class StockoutsDataBuilder extends DataBuilder {
 
   getStockoutsByFacility = async (results, metadata) => {
     const { dataElementCodeToName } = metadata;
-    const facilities = await this.entity.getDescendantsOfType(ENTITY_TYPES.FACILITY);
+    const facilities = await this.entity.getDescendantsOfType(this.models.entity.types.FACILITY);
     const facilitiesByCode = keyBy(facilities, 'code');
     const stockoutsByOrgUnit = results.reduce((stockouts, vaccine) => {
       const orgUnitName = facilitiesByCode[vaccine.organisationUnit].name;

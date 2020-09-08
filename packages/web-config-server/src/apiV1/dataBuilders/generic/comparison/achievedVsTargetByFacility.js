@@ -1,9 +1,8 @@
 import keyBy from 'lodash.keyby';
 import { aggregateOperationalFacilityValues, getFacilityStatuses } from '/apiV1/utils';
-import { ENTITY_TYPES } from '/models/Entity';
 
 export const achievedVsTargetByFacility = async (
-  { dataBuilderConfig, query, entity },
+  { models, dataBuilderConfig, query, entity },
   aggregator,
 ) => {
   const { achievedDataElementCodes, targetDataElementCodes, dataServices } = dataBuilderConfig;
@@ -21,7 +20,7 @@ export const achievedVsTargetByFacility = async (
     { aggregationType: aggregator.aggregationTypes.FINAL_EACH_MONTH },
   );
 
-  const facilities = await entity.getDescendantsOfType(ENTITY_TYPES.FACILITY);
+  const facilities = await entity.getDescendantsOfType(models.entity.types.FACILITY);
   const facilitiesByCode = keyBy(facilities, 'code');
 
   // Set up achieved to be aggregated (potentially acrosss multiple facilities)

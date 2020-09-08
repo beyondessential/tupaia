@@ -69,7 +69,7 @@ class TableOfEventsBuilder extends DataBuilder {
     });
 
     const { metadata } = this.getKeysBySourceType();
-    return addMetadataToEvents(events, metadata);
+    return addMetadataToEvents(this.models, events, metadata);
   }
 
   async buildRows() {
@@ -126,7 +126,7 @@ class TableOfEventsBuilder extends DataBuilder {
     const values = pick(reduceToDictionary(event.dataValues, 'dataElement', 'value'), keys);
     const { transformation } = this.config.columns[primaryKey];
 
-    return transformation ? transformObject(transformation, values) : values;
+    return transformation ? transformObject(this.models, transformation, values) : values;
   };
 
   valuesToString(values, shouldNumberLines) {

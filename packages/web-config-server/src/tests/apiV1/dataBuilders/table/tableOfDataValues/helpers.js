@@ -46,26 +46,26 @@ const createAggregatorStub = dataValues => {
   return sinon.createStubInstance(Aggregator, { fetchAnalytics, fetchDataElements });
 };
 
-export const createAssertTableResults = (table, availableDataValues) => {
+export const createAssertTableResults = (models, table, availableDataValues) => {
   const aggregator = createAggregatorStub(availableDataValues);
   const dhisApi = {};
 
   return async (tableConfig, expectedResults) => {
     const dataBuilderConfig = { ...tableConfig, dataServices };
     return expect(
-      table({ dataBuilderConfig, query }, aggregator, dhisApi),
+      table({ models, dataBuilderConfig, query }, aggregator, dhisApi),
     ).to.eventually.deep.equal({ period, ...expectedResults });
   };
 };
 
-export const createAssertErrorIsThrown = (table, availableDataValues) => {
+export const createAssertErrorIsThrown = (models, table, availableDataValues) => {
   const aggregator = createAggregatorStub(availableDataValues);
   const dhisApi = {};
 
   return async (tableConfig, expectedError) => {
     const dataBuilderConfig = { ...tableConfig, dataServices };
-    return expect(table({ dataBuilderConfig, query }, aggregator, dhisApi)).to.be.rejectedWith(
-      expectedError,
-    );
+    return expect(
+      table({ models, dataBuilderConfig, query }, aggregator, dhisApi),
+    ).to.be.rejectedWith(expectedError);
   };
 };

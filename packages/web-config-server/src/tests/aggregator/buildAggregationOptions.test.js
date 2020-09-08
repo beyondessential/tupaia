@@ -6,12 +6,12 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 import { Aggregator } from '@tupaia/aggregator';
+import { EntityType } from '@tupaia/database';
 
 import { buildAggregationOptions } from '/aggregator/buildAggregationOptions';
-import { Entity } from '/models/Entity';
 
 const createDataSourceEntity = (code, name, type, ancestors) => {
-  const dataSourceEntity = sinon.createStubInstance(Entity);
+  const dataSourceEntity = sinon.createStubInstance(EntityType);
   dataSourceEntity.getAncestorOfType.callsFake((ancestorType, hierarchyId) => {
     return ancestors[`${ancestorType}_${hierarchyId}`];
   });

@@ -10,7 +10,6 @@ import { PERIOD_TYPES, parsePeriodType } from '@tupaia/utils';
 import { DataPerPeriodBuilder } from 'apiV1/dataBuilders/DataPerPeriodBuilder';
 import { PercentagesOfValueCountsBuilder } from '/apiV1/dataBuilders/generic/percentage/percentagesOfValueCounts';
 import { divideValues, mapAnalyticsToCountries } from '/apiV1/dataBuilders/helpers';
-import { Entity } from '/models';
 
 const filterFacility = async (models, filterCriteria, analytics) => {
   const facilities = await models.facility.find({
@@ -87,14 +86,14 @@ class BaseBuilder extends PercentagesOfValueCountsBuilder {
 
   getDataClassesWithAnalytics = async analytics => {
     if (this.config.isProjectReport) {
-      const dataWithCountries = await mapAnalyticsToCountries(analytics);
+      const dataWithCountries = await mapAnalyticsToCountries(this.models, analytics);
       const dataByCountry = groupBy(dataWithCountries, result => result.organisationUnit);
       // Only one data class is supported for country data classes
       const baseDataClass = Object.values(this.config.dataClasses)[0];
       const countryCodesToName = {};
       const countryCodesToNamePromises = Object.entries(dataByCountry).map(
         async ([countryCode]) => {
-          const country = await Entity.findOne({ code: countryCode });
+          const country = await this.models.entity.findOne({ code: countryCode });
           return { [countryCode]: country.name };
         },
         {},

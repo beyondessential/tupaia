@@ -3,7 +3,6 @@ import session from 'client-sessions';
 
 import { getAccessPolicyForUser } from './getAccessPolicyForUser';
 import { PUBLIC_USER_NAME } from './publicAccess';
-import { Entity } from '/models';
 
 const allowedUnauthRoutes = ['/login', '/version'];
 
@@ -56,7 +55,7 @@ const addUserAccessHelper = (req, res, next) => {
 
     const entity =
       typeof entityOrCode === 'string'
-        ? await Entity.findOne({
+        ? await req.models.entity.findOne({
             code: entityOrCode,
           })
         : entityOrCode;
@@ -94,7 +93,7 @@ const addUserAccessHelper = (req, res, next) => {
       return [];
     }
 
-    const entity = await Entity.findOne({
+    const entity = await req.models.entity.findOne({
       code: entityCode,
     });
 

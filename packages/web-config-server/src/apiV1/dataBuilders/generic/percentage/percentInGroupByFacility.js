@@ -6,12 +6,11 @@ import {
   getPacificFacilityStatuses,
   limitRange,
 } from '/apiV1/utils';
-import { ENTITY_TYPES } from '/models/Entity';
 
 // Medicines available by Clinic
 // Medicines available by Country
 export const percentInGroupByFacility = async (
-  { dataBuilderConfig, query, entity },
+  { models, dataBuilderConfig, query, entity },
   aggregator,
 ) => {
   const { dataElementCodes, dataServices, countries, range } = dataBuilderConfig;
@@ -30,7 +29,15 @@ export const percentInGroupByFacility = async (
         period.requested,
         range,
       )
-    : await buildData(aggregator, results, query.organisationUnitCode, period.requested, entity, range);
+    : await buildData(
+        models,
+        aggregator,
+        results,
+        query.organisationUnitCode,
+        period.requested,
+        entity,
+        range,
+      );
 
   return returnJson;
 };
@@ -83,9 +90,17 @@ const buildDataForPacificCountries = async (
 };
 
 // parse analytic response and convert to config api response
-const buildData = async (aggregator, results, organisationUnitCode, period, entity, range) => {
+const buildData = async (
+  models,
+  aggregator,
+  results,
+  organisationUnitCode,
+  period,
+  entity,
+  range,
+) => {
   const averagedValues = [];
-  const facilities = await entity.getDescendantsOfType(ENTITY_TYPES.FACILITY);
+  const facilities = await entity.getDescendantsOfType(models.entity.types.FACILITY);
   const facilitiesByCode = keyBy(facilities, 'code');
   const addToAveragedValues = ({ facilityId: facilityCode, value }) => {
     averagedValues.push({
@@ -95,7 +110,11 @@ const buildData = async (aggregator, results, organisationUnitCode, period, enti
   };
 
   // Will count only operational facilities
-  const operationalFacilities = await getFacilityStatuses(aggregator, organisationUnitCode, period.requested);
+  const operationalFacilities = await getFacilityStatuses(
+    aggregator,
+    organisationUnitCode,
+    period.requested,
+  );
   aggregateOperationalFacilityValues(operationalFacilities, results, addToAveragedValues);
 
   // Return the result array sorted by name

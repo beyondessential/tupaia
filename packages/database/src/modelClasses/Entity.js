@@ -57,7 +57,7 @@ export const ORG_UNIT_ENTITY_TYPES = {
 const ANCESTORS = 'ancestors';
 const DESCENDANTS = 'descendants';
 
-class EntityType extends DatabaseType {
+export class EntityType extends DatabaseType {
   static databaseType = TYPES.ENTITY;
 
   // Exposed for access policy creation.

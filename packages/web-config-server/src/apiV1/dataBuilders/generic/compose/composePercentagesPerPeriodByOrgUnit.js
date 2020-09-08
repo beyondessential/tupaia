@@ -1,7 +1,6 @@
 /* eslint-disable no-restricted-syntax */
 import { fetchComposedData } from '/apiV1/dataBuilders/helpers';
 import { divideValues } from '/apiV1/dataBuilders/helpers';
-import { Entity } from '/models';
 
 export const composePercentagesPerPeriodByOrgUnit = async (config, aggregator, dhisApi) => {
   const responses = await fetchComposedData(config, aggregator, dhisApi);
@@ -16,7 +15,9 @@ export const composePercentagesPerPeriodByOrgUnit = async (config, aggregator, d
 
     for (const [orgUnitCode, denominatorValue] of Object.entries(orgUnits)) {
       if (!orgUnitCodeToName[orgUnitCode]) {
-        orgUnitCodeToName[orgUnitCode] = (await Entity.findOne({ code: orgUnitCode })).name;
+        orgUnitCodeToName[orgUnitCode] = (
+          await config.models.entity.findOne({ code: orgUnitCode })
+        ).name;
       }
       const orgUnitName = orgUnitCodeToName[orgUnitCode];
       const numeratorValue = numeratorReponse ? numeratorReponse[orgUnitCode] || 0 : 0;

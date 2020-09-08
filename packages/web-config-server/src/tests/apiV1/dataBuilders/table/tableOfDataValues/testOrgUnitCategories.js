@@ -6,12 +6,19 @@
 import sinon from 'sinon';
 
 import { getSortByKey } from '@tupaia/utils';
-import * as Entity from '/models/Entity';
 import { createAssertTableResults } from './helpers';
 import { DATA_VALUES, ORG_UNITS } from './tableOfDataValues.fixtures';
 import { tableOfDataValues } from '/apiV1/dataBuilders';
 
+const models = {
+  entity: {
+    find: sinon
+      .stub()
+      .callsFake(({ code: codes }) => ORG_UNITS.filter(({ code }) => codes.includes(code))),
+  },
+};
 const assertTableResults = createAssertTableResults(
+  models,
   tableOfDataValues,
   // Sort results in DESC org unit order, to assert their ASC ordering in the results
   DATA_VALUES.filter(
@@ -20,16 +27,6 @@ const assertTableResults = createAssertTableResults(
 );
 
 export const testOrgUnitCategories = () => {
-  before(() => {
-    sinon
-      .stub(Entity.Entity, 'find')
-      .callsFake(({ code: codes }) => ORG_UNITS.filter(({ code }) => codes.includes(code)));
-  });
-
-  after(() => {
-    Entity.Entity.find.restore();
-  });
-
   describe('row org unit categories', () => {
     it('no column categories', () =>
       assertTableResults(
