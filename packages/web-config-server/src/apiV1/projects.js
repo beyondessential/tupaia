@@ -27,7 +27,7 @@ async function buildProjectDataForFrontend(project, req) {
     default_measure: defaultMeasure,
   } = project;
 
-  const entities = await Promise.all(entityIds.map(id => req.model.entity.findById(id)));
+  const entities = await Promise.all(entityIds.map(id => req.models.entity.findById(id)));
   const accessByEntity = await fetchEntitiesWithProjectAccess(req, entities, userGroups);
   const entitiesWithAccess = accessByEntity.filter(e => e.hasAccess.some(x => x));
   const names = entities.map(e => e.name);
