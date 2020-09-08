@@ -41,6 +41,7 @@ export const JsonEditor = ({ inputKey, label, secondaryLabel, value, onChange })
   return (
     <Container>
       <Label gutterBottom>{label}</Label>
+      {/* Use json editor plugin. For configuration options @see https://github.com/vankop/jsoneditor-react */}
       <Editor
         history
         value={editorValue}
