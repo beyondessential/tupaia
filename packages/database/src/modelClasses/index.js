@@ -74,6 +74,7 @@ export { AlertModel } from './Alert';
 export { CommentModel } from './Comment';
 export { CountryModel } from './Country';
 export { DataSourceModel } from './DataSource';
+export { DashboardGroupModel } from './DashboardGroup';
 export { EntityModel } from './Entity';
 export { GeographicalAreaModel } from './GeographicalArea';
 export { MeditrakDeviceModel } from './MeditrakDevice';

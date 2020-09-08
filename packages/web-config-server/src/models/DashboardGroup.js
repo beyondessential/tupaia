@@ -1,26 +1,13 @@
 /**
- * Tupaia Config Server
- * Copyright (c) 2018 Beyond Essential Systems Pty Ltd
- **/
+ * Tupaia
+ * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
+ */
 
-import { TYPES } from '@tupaia/database';
-import { BaseModel } from './BaseModel';
+import { DashboardGroupModel as CommonDashboardGroupModel } from '@tupaia/database';
 
-export class DashboardGroup extends BaseModel {
-  static databaseType = TYPES.DASHBOARD_GROUP;
-
-  static fields = [
-    'id',
-    'organisationLevel',
-    'userGroup',
-    'organisationUnitCode',
-    'dashboardReports',
-    'name',
-    'projectCodes',
-  ];
-
+export class DashboardGroupModel extends CommonDashboardGroupModel {
   // Return all dashboardGroups with matching organisationLevel and organisationUnits
-  static async getAllDashboardGroups(organisationLevel, entity, projectCode, hierarchyId) {
+  async getAllDashboardGroups(organisationLevel, entity, projectCode, hierarchyId) {
     return this.fetchDashboardGroups(
       entity,
       hierarchyId,
@@ -29,13 +16,7 @@ export class DashboardGroup extends BaseModel {
   }
 
   // Return dashboardGroup with matching userGroups, organisationLevel and organisationUnits
-  static async getDashboardGroups(
-    userGroups = [],
-    organisationLevel,
-    entity,
-    projectCode,
-    hierarchyId,
-  ) {
+  async getDashboardGroups(userGroups = [], organisationLevel, entity, projectCode, hierarchyId) {
     return this.fetchDashboardGroups(
       entity,
       hierarchyId,
@@ -46,10 +27,13 @@ export class DashboardGroup extends BaseModel {
     );
   }
 
-  static async fetchDashboardGroups(entity, hierarchyId, params) {
+  async fetchDashboardGroups(entity, hierarchyId, params) {
     const ancestorCodes = await entity.getAncestorCodes(hierarchyId);
     const entityCodes = [...ancestorCodes, entity.code];
-    const results = await DashboardGroup.find({ ...params, organisationUnitCode: entityCodes });
+    const results = await this.find({
+      ...params,
+      organisationUnitCode: entityCodes,
+    });
     const dashboardGroups = {};
     results.forEach(dashboardGroup => {
       const { name, userGroup, organisationUnitCode } = dashboardGroup;
@@ -72,7 +56,7 @@ export class DashboardGroup extends BaseModel {
     return dashboardGroups;
   }
 
-  static buildDashboardGroupQueryParams(projectCode, params) {
+  buildDashboardGroupQueryParams(projectCode, params) {
     return {
       ...params,
       projectCodes: {
