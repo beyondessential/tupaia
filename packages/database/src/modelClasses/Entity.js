@@ -54,6 +54,16 @@ export const ORG_UNIT_ENTITY_TYPES = {
   VILLAGE,
 };
 
+// reflects how org units are stored on DHIS2
+const ORG_UNIT_TYPE_LEVELS = {
+  [WORLD]: 1,
+  [COUNTRY]: 2,
+  [DISTRICT]: 3,
+  [SUB_DISTRICT]: 4,
+  [FACILITY]: 5,
+  [VILLAGE]: 6,
+};
+
 const ANCESTORS = 'ancestors';
 const DESCENDANTS = 'descendants';
 
@@ -372,5 +382,14 @@ export class EntityModel extends DatabaseModel {
       descendantEntityType,
       childrenOnly,
     );
+  }
+
+  getDhisLevel(type) {
+    const level = ORG_UNIT_TYPE_LEVELS[type];
+    if (!level) {
+      throw new Error(`${type} is not an organisational unit type`);
+    }
+
+    return level;
   }
 }

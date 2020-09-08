@@ -45,15 +45,6 @@ export const ENTITY_TYPES = {
   PROJECT,
 };
 
-const ORG_UNIT_TYPE_LEVELS = {
-  [WORLD]: 1,
-  [COUNTRY]: 2,
-  [DISTRICT]: 3,
-  [SUB_DISTRICT]: 4,
-  [FACILITY]: 5,
-  [VILLAGE]: 6,
-};
-
 export class Entity extends BaseModel {
   static databaseType = TYPES.ENTITY;
 
@@ -135,15 +126,6 @@ export class Entity extends BaseModel {
       {},
     );
   };
-
-  static getDhisLevel(type) {
-    const level = ORG_UNIT_TYPE_LEVELS[type];
-    if (!level) {
-      throw new Error(`${type} is not an organisational unit type`);
-    }
-
-    return level;
-  }
 
   getOrganisationLevel() {
     return pascal(this.type); // sub_district -> SubDistrict

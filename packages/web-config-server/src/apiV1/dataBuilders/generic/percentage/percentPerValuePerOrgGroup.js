@@ -11,7 +11,7 @@ import {
 } from '/apiV1/utils';
 
 export const percentPerValuePerOrgGroup = async (
-  { dataBuilderConfig, query },
+  { models, dataBuilderConfig, query, entity },
   aggregator,
   dhisApi,
 ) => {
@@ -22,13 +22,11 @@ export const percentPerValuePerOrgGroup = async (
     range,
     valuesOfInterest,
   } = dataBuilderConfig;
-  const { organisationUnitCode } = query;
 
   const organisationUnits = await getChildOrganisationUnits(
-    {
-      organisationUnitGroupCode: organisationUnitCode,
-      type: organisationUnitType,
-    },
+    models,
+    entity,
+    organisationUnitType,
     dhisApi,
   );
 
