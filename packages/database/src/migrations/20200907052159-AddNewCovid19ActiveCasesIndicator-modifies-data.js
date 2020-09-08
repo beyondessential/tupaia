@@ -18,13 +18,13 @@ exports.setup = function(options, seedLink) {
 
 const indicators = [
   {
-    code: 'COVIDAU_ACTIVE_CASES',
+    code: 'COVIDAU_DELTA_ACTIVE_CASES',
     builder: 'arithmetic',
     config: {
       formula: 'dailysurvey003 - dailysurvey005',
       aggregation: {
-        dailysurvey003: 'SUM_PREVIOUS_EACH_DAY',
-        dailysurvey005: 'SUM_PREVIOUS_EACH_DAY',
+        dailysurvey003: 'FINAL_EACH_DAY',
+        dailysurvey005: 'FINAL_EACH_DAY',
       },
       defaultValues: {
         dailysurvey003: 0,
