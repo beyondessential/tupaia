@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 /**
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
@@ -162,6 +163,36 @@ describe('buildArithmetic', () => {
           aggregation: getAggregationForCodes(['C_ToPg_2019', 'D_To_20192020', 'E_Pg_20192020']),
         },
         [],
+      ],
+      [
+        'some combos include an undefined data element, but all defaults defined',
+        {
+          formula: 'C_ToPg_2019 + E_Pg_20192020',
+          aggregation: getAggregationForCodes(['C_ToPg_2019', 'E_Pg_20192020']),
+          defaultValues: {
+            C_ToPg_2019: 10,
+            E_Pg_20192020: 100,
+          },
+        },
+        [
+          { organisationUnit: 'TO', period: '2019', value: 103 },
+          { organisationUnit: 'PG', period: '2019', value: 8.8 },
+          { organisationUnit: 'PG', period: '2020', value: 65 },
+        ],
+      ],
+      [
+        'some combos include an undefined data element, but not all defaults defined',
+        {
+          formula: 'C_ToPg_2019 + E_Pg_20192020',
+          aggregation: getAggregationForCodes(['C_ToPg_2019', 'E_Pg_20192020']),
+          defaultValues: {
+            C_ToPg_2019: 10,
+          },
+        },
+        [
+          { organisationUnit: 'PG', period: '2019', value: 8.8 },
+          { organisationUnit: 'PG', period: '2020', value: 65 },
+        ],
       ],
     ];
 

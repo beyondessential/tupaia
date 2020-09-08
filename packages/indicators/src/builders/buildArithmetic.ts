@@ -11,9 +11,12 @@ import { hasContent, isAString, isPlainObject } from '@tupaia/utils';
 import { getAggregationsByCode, fetchAnalytics, validateConfig } from './helpers';
 import { AnalyticCluster, Builder, AggregationSpecs, FetchOptions } from '../types';
 
+export type DefaultSpecs = Readonly<Record<string, number>>;
+
 export type ArithmeticConfig = {
   readonly formula: string;
   readonly aggregation: AggregationSpecs;
+  readonly defaultValues?: DefaultSpecs;
 };
 
 const assertAggregationIsDefinedForCodesInFormula = (
@@ -40,6 +43,7 @@ const fetchAnalyticClusters = async (
   const aggregationsByCode = getAggregationsByCode(aggregationSpecs);
   const analytics = await fetchAnalytics(aggregator, aggregationsByCode, fetchOptions);
   const clusters = analyticsToAnalyticClusters(analytics);
+  console.log(aggregationsByCode, analytics, clusters);
 
   const allElements = Object.keys(aggregationsByCode);
   const checkClusterIncludesAllElements = (cluster: AnalyticCluster) =>
@@ -61,8 +65,10 @@ const buildAnalyticValues = (analyticClusters: AnalyticCluster[], formula: strin
 export const buildArithmetic: Builder = async input => {
   const { aggregator, config: configInput, fetchOptions } = input;
   const config = await validateConfig<ArithmeticConfig>(configInput, configValidators);
+  console.log(input);
 
   const { formula, aggregation: aggregationSpecs } = config;
   const clusters = await fetchAnalyticClusters(aggregator, aggregationSpecs, fetchOptions);
+  console.log(clusters);
   return buildAnalyticValues(clusters, formula);
 };
