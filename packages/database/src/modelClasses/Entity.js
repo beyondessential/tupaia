@@ -203,6 +203,12 @@ export class EntityModel extends DatabaseModel {
     return EntityType;
   }
 
+  static customColumnSelectors = {
+    region: fieldName => `ST_AsGeoJSON(${fieldName})`,
+    point: fieldName => `ST_AsGeoJSON(${fieldName})`,
+    bounds: fieldName => `ST_AsGeoJSON(${fieldName})`,
+  };
+
   orgUnitEntityTypes = ORG_UNIT_ENTITY_TYPES;
 
   types = ENTITY_TYPES;

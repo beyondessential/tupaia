@@ -85,7 +85,13 @@ export class DatabaseModel {
     // with same column names.
     const fieldNames = await this.fetchFieldNames();
     options.columns = fieldNames.map(fieldName => {
-      return `${this.databaseType}.${fieldName}`;
+      const qualifiedName = `${this.databaseType}.${fieldName}`;
+      const customSelector =
+        this.constructor.customColumnSelectors && this.constructor.customColumnSelectors[fieldName];
+      if (customSelector) {
+        return { [fieldName]: customSelector(qualifiedName) };
+      }
+      return qualifiedName;
     });
 
     if (this.joins.length > 0) {

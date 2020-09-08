@@ -74,28 +74,6 @@ export class Entity extends BaseModel {
   // a set of basic fields so that entities used for search etc. can be as light as possible
   static minimalFields = ['id', 'code', 'type', 'parent_id', 'country_code', 'name'];
 
-  static geoFields = ['point', 'region', 'bounds'];
-
-  static getColumnSpecs = tableAlias => {
-    return this.buildColumnSpecs(tableAlias, false);
-  };
-
-  static buildColumnSpecs = tableAlias => {
-    const tableAliasPrefix = tableAlias ? `${tableAlias}.` : '';
-    return Entity.fields.map(field => {
-      if (Entity.geoFields.includes(field)) {
-        return { [field]: `ST_AsGeoJSON(${tableAliasPrefix}${field})` };
-      }
-      return { [field]: `${tableAliasPrefix}${field}` };
-    });
-  };
-
-  static getSqlForColumns = tableAlias =>
-    Entity.getColumnSpecs(tableAlias).map(columnSpec => {
-      const [fieldAlias, selector] = Object.entries(columnSpec)[0];
-      return `${selector} as ${fieldAlias}`;
-    });
-
   static FACILITY = FACILITY;
 
   static COUNTRY = COUNTRY;
@@ -141,27 +119,6 @@ export class Entity extends BaseModel {
   async getDescendantsOfType(entityType, hierarchyId) {
     if (this.type === entityType) return [this];
     return this.getDescendants(hierarchyId, { type: entityType });
-  }
-
-  static async findOne(conditions, loadOptions, queryOptions) {
-    return super.findOne(conditions, loadOptions, {
-      columns: Entity.getColumnSpecs(),
-      ...queryOptions, // columns can be overridden by client
-    });
-  }
-
-  static async find(conditions, loadOptions, queryOptions) {
-    return super.find(conditions, loadOptions, {
-      columns: Entity.getColumnSpecs(),
-      ...queryOptions, // columns can be overridden by client
-    });
-  }
-
-  static async findById(id, loadOptions, queryOptions) {
-    return super.findById(id, loadOptions, {
-      columns: Entity.getColumnSpecs(),
-      ...queryOptions, // columns can be overridden by client
-    });
   }
 
   static fetchChildToParentCode = async childrenCodes => {
