@@ -144,13 +144,13 @@ export class EntityType extends DatabaseType {
     );
   }
 
-  async getAncestorOfType(entityType, hierarchyId) {
+  async getAncestorOfType(hierarchyId, entityType) {
     if (this.type === entityType) return this;
     const [ancestor] = await this.getAncestors(hierarchyId, entityType);
     return ancestor;
   }
 
-  async getDescendantsOfType(entityType, hierarchyId) {
+  async getDescendantsOfType(hierarchyId, entityType) {
     if (this.type === entityType) return [this];
     return this.getDescendants(hierarchyId, entityType);
   }
