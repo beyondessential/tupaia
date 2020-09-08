@@ -35,7 +35,7 @@ class ValueForOrgGroupMeasureBuilder extends DataBuilder {
         data: facilitiesByCode,
       };
     } else if (dataElementCode === SCHOOL_TYPE_CODE) {
-      const schools = await this.fetchDescendantsOfType(ENTITY_TYPES.SCHOOL);
+      const schools = await this.fetchDescendantsOfType(this.models.entity.types.SCHOOL);
       const facilitiesByCode = schools.map(school => ({
         organisationUnitCode: school.code,
         schoolTypeName: school.attributes.type,

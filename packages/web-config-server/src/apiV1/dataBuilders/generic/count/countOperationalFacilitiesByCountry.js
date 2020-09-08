@@ -31,7 +31,7 @@ class CountOperationalFacilitiesByCountryBuilder extends DataBuilder {
   }
 
   async fetchCountryNamesByCode() {
-    const countryEntities = await this.fetchDescendantsOfType(ENTITY_TYPES.COUNTRY);
+    const countryEntities = await this.fetchDescendantsOfType(this.models.entity.types.COUNTRY);
     return reduceToDictionary(countryEntities, 'code', 'name');
   }
 }
