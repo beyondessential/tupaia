@@ -10,10 +10,10 @@ import { PERIOD_TYPES, parsePeriodType } from '@tupaia/utils';
 import { DataPerPeriodBuilder } from 'apiV1/dataBuilders/DataPerPeriodBuilder';
 import { PercentagesOfValueCountsBuilder } from '/apiV1/dataBuilders/generic/percentage/percentagesOfValueCounts';
 import { divideValues, mapAnalyticsToCountries } from '/apiV1/dataBuilders/helpers';
-import { Facility, Entity } from '/models';
+import { Entity } from '/models';
 
-const filterFacility = async (filterCriteria, analytics) => {
-  const facilities = await Facility.find({
+const filterFacility = async (models, filterCriteria, analytics) => {
+  const facilities = await models.facility.find({
     type: {
       comparator: filterCriteria.comparator,
       comparisonValue: '1',
@@ -68,6 +68,7 @@ class BaseBuilder extends PercentagesOfValueCountsBuilder {
 
     if (this.config.customFilter) {
       filteredData = await FILTERS[this.config.customFilter.name](
+        this.models,
         this.config.customFilter,
         analytics,
       );

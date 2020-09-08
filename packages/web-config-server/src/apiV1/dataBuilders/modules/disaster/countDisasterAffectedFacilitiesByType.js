@@ -1,6 +1,5 @@
 import keyBy from 'lodash.keyby';
 import { convertDateRangeToPeriodString } from '@tupaia/utils';
-import { Facility } from '/models';
 
 const AFFECTED_STATUS_DATA_ELEMENT_CODE = 'DP_NEW008';
 
@@ -13,7 +12,7 @@ const FACILITY_STATUS_UNKNOWN = 'Unknown';
 
 // Number of Operational Facilities by Facility Type
 export const countDisasterAffectedFacilitiesByType = async (
-  { dataBuilderConfig, query, entity, fetchHierarchyId },
+  { models, dataBuilderConfig, query, entity, fetchHierarchyId },
   aggregator,
   dhisApi,
 ) => {
@@ -25,7 +24,7 @@ export const countDisasterAffectedFacilitiesByType = async (
   const period = convertDateRangeToPeriodString(disasterStartDate, disasterEndDate || Date.now());
   const hierarchyId = await fetchHierarchyId();
   const facilities = await entity.getFacilityDescendants(hierarchyId);
-  const facilityMetadatas = await Facility.find({
+  const facilityMetadatas = await models.facility.find({
     code: facilities.map(facility => facility.code),
   });
   const { results } = await aggregator.fetchAnalytics([AFFECTED_STATUS_DATA_ELEMENT_CODE], {

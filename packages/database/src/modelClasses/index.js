@@ -17,6 +17,7 @@ import { DisasterModel } from './Disaster';
 import { DisasterEventModel } from './DisasterEvent';
 import { EntityModel } from './Entity';
 import { EntityRelationModel } from './EntityRelation';
+import { FacilityModel } from './Facility';
 import { GeographicalAreaModel } from './GeographicalArea';
 import { MapOverlayGroupModel } from './MapOverlayGroup';
 import { MapOverlayGroupRelationModel } from './MapOverlayGroupRelation';
@@ -51,6 +52,7 @@ export const modelClasses = {
   DisasterEvent: DisasterEventModel,
   Entity: EntityModel,
   EntityRelation: EntityRelationModel,
+  Facility: FacilityModel,
   GeographicalArea: GeographicalAreaModel,
   MapOverlay: MapOverlayModel,
   MapOverlayGroup: MapOverlayGroupModel,
@@ -78,6 +80,7 @@ export { CountryModel } from './Country';
 export { DataSourceModel } from './DataSource';
 export { DashboardGroupModel } from './DashboardGroup';
 export { EntityModel } from './Entity';
+export { FacilityModel } from './Facility';
 export { GeographicalAreaModel } from './GeographicalArea';
 export { MeditrakDeviceModel } from './MeditrakDevice';
 export { PermissionGroupModel } from './PermissionGroup';

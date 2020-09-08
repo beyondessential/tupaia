@@ -34,7 +34,7 @@ class TableOfDataValuesWithCalcBuilder extends TableOfDataValuesBuilder {
     if (baseLine.length === 0) return { data: [] };
     const baseLineDate = moment(baseLine[0].period, 'YYYYMMDD');
     this.transformConfig(baseLineDate);
-    this.tableConfig = new TableConfig(this.config, baseLine);
+    this.tableConfig = new TableConfig(this.models, this.config, baseLine);
     this.valuesByCell = getValuesByCell(this.tableConfig, baseLine);
 
     const data = {

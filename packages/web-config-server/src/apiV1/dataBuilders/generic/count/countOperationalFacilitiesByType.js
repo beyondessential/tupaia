@@ -2,7 +2,6 @@
  * Tupaia
  * Copyright (c) 2017 - 2020 Beyond Essential Systems Pty Ltd
  */
-import { Facility } from '/models';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import {
   fetchOperationalFacilityCodes,
@@ -48,7 +47,7 @@ class CountOperationalFacilitiesByTypeBuilder extends DataBuilder {
     if (facilityEntities.length === 0) return {};
 
     // Find matching facility records
-    const facilities = await Facility.find({ code: facilityEntities.map(e => e.code) });
+    const facilities = await this.models.facility.find({ code: facilityEntities.map(e => e.code) });
 
     // Work out which "type" to use
     // To have a cohesive aggregation of facility types across multiple countries, we use standard

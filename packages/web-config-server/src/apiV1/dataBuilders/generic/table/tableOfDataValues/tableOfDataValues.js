@@ -27,7 +27,7 @@ export class TableOfDataValuesBuilder extends DataBuilder {
   async build() {
     const { results, period } = await this.fetchAnalyticsAndMetadata();
     this.results = results;
-    this.tableConfig = new TableConfig(this.config, this.results);
+    this.tableConfig = new TableConfig(this.models, this.config, this.results);
     this.valuesByCell = this.buildValuesByCell();
     this.totalCalculator = new TotalCalculator(this.tableConfig, this.valuesByCell);
     this.rowsToDescriptions = {};

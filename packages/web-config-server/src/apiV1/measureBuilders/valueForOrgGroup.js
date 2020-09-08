@@ -1,4 +1,3 @@
-import { Facility } from '/models';
 import { DataBuilder } from '/apiV1/dataBuilders/DataBuilder';
 import { analyticsToMeasureData } from './helpers';
 import { ENTITY_TYPES } from '/models/Entity';
@@ -21,7 +20,7 @@ class ValueForOrgGroupMeasureBuilder extends DataBuilder {
       // create index of all facilities
       const facilityEntities = await this.fetchDescendantsOfType(ENTITY_TYPES.FACILITY);
       const facilityCodes = facilityEntities.map(facility => facility.code);
-      const facilityMetaDatas = await Facility.find({ code: facilityCodes });
+      const facilityMetaDatas = await this.models.facility.find({ code: facilityCodes });
       const facilitiesByCode = facilityMetaDatas.reduce(
         (array, metadata) => [
           ...array,
