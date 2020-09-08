@@ -1,46 +1,47 @@
-import flattenDeep from 'lodash.flattendeep';
-import keyBy from 'lodash.keyby';
+import { flattenDeep } from 'lodash';
 
 import { TUPAIA_ADMIN_PANEL_PERMISSION_GROUP } from '../../permissions';
+
+const getCountryNames = async (models, surveyCountryCodes) => {
+  if (surveyCountryCodes) {
+    const surveyCountries = await models.country.find({ code: surveyCountryCodes });
+    return surveyCountries.map(c => c.name).join(',');
+  }
+
+  return 'any countries';
+};
 
 export const assertCanExportSurveys = async (accessPolicy, models, surveys) => {
   const surveyCountryIds = flattenDeep(surveys.map(s => s.country_ids));
   const surveyPermissionGroupIds = flattenDeep(surveys.map(s => s.permission_group_id));
-  const allSurveyCountries = await models.country.find({
-    id: surveyCountryIds,
-  });
-  const surveyPermissionGroups = await models.permissionGroup.find({
-    id: surveyPermissionGroupIds,
-  });
-  const surveyCountryById = keyBy(allSurveyCountries, 'id');
-  const surveyPermissionGroupById = keyBy(surveyPermissionGroups, 'id');
+  const countryCodeById = await models.country.getCountryCodeById(surveyCountryIds);
+  const permissionGroupNameById = await models.permissionGroup.getPermissionGroupNameById(
+    surveyPermissionGroupIds,
+  );
 
   for (const survey of surveys) {
-    const surveyPermissionGroup = surveyPermissionGroupById[survey.permission_group_id];
-    const surveyCountries =
+    const surveyPermissionGroupName = permissionGroupNameById[survey.permission_group_id];
+    const surveyCountryCodes =
       survey.country_ids && survey.country_ids.length
-        ? survey.country_ids.map(id => surveyCountryById[id])
+        ? survey.country_ids.map(id => countryCodeById[id])
         : null;
 
-    let surveyCountryNamesString = 'any countries';
-    let surveyCountryCodes = null;
+    if (!accessPolicy.allowsSome(surveyCountryCodes, surveyPermissionGroupName)) {
+      const surveyCountryNamesString = await getCountryNames(models, surveyCountryCodes);
 
-    if (surveyCountries) {
-      surveyCountryCodes = surveyCountries.map(c => c.code);
-      const surveyCountryNames = surveyCountries.map(c => c.name);
-      surveyCountryNamesString = surveyCountryNames.join(',');
-    }
-
-    if (!accessPolicy.allowsSome(surveyCountryCodes, surveyPermissionGroup.name)) {
       throw new Error(
-        `Need ${surveyPermissionGroup.name} access to ${surveyCountryNamesString} to export the survey ${survey.name}`,
+        `Need ${surveyPermissionGroupName} access to ${surveyCountryNamesString} to export the survey ${survey.name}`,
       );
     }
 
     if (!accessPolicy.allowsSome(surveyCountryCodes, TUPAIA_ADMIN_PANEL_PERMISSION_GROUP)) {
+      const surveyCountryNamesString = await getCountryNames(models, surveyCountryCodes);
+
       throw new Error(
         `Need ${TUPAIA_ADMIN_PANEL_PERMISSION_GROUP} access to ${surveyCountryNamesString} to export the survey ${survey.name}`,
       );
     }
   }
+
+  return true;
 };
