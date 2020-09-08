@@ -213,7 +213,7 @@ export class EntityModel extends DatabaseModel {
     return EntityType;
   }
 
-  static customColumnSelectors = {
+  customColumnSelectors = {
     region: fieldName => `ST_AsGeoJSON(${fieldName})`,
     point: fieldName => `ST_AsGeoJSON(${fieldName})`,
     bounds: fieldName => `ST_AsGeoJSON(${fieldName})`,
@@ -328,11 +328,8 @@ export class EntityModel extends DatabaseModel {
         ? ['ancestor_id', 'descendant_id']
         : ['descendant_id', 'ancestor_id'];
     return this.runCachedFunction(cacheKey, async () =>
-      this.findWithSql(
+      this.selectFromModelWithExtraSql(
         `
-        SELECT entity.*
-        FROM
-          entity
         JOIN
           ancestor_descendant_relation ON entity.id = ${joinTablesOn}
         WHERE

@@ -78,21 +78,24 @@ export class DatabaseModel {
     };
   }
 
-  async getQueryOptions(customQueryOptions = {}) {
-    const options = {};
-
+  async getColumnsForQuery() {
     // Alias field names to the table to prevent errors when joining other tables
     // with same column names.
     const fieldNames = await this.fetchFieldNames();
-    options.columns = fieldNames.map(fieldName => {
+    return fieldNames.map(fieldName => {
       const qualifiedName = `${this.databaseType}.${fieldName}`;
-      const customSelector =
-        this.constructor.customColumnSelectors && this.constructor.customColumnSelectors[fieldName];
+      const customSelector = this.customColumnSelectors && this.customColumnSelectors[fieldName];
       if (customSelector) {
         return { [fieldName]: customSelector(qualifiedName) };
       }
       return qualifiedName;
     });
+  }
+
+  async getQueryOptions(customQueryOptions = {}) {
+    const options = {};
+
+    options.columns = await this.getColumnsForQuery();
 
     if (this.joins.length > 0) {
       options.multiJoin = this.joins;
@@ -161,11 +164,22 @@ export class DatabaseModel {
   /**
    * Run some custom sql that returns records of the correct database type, and generate
    * DatabaseType instances for each record. Handy if filtering by a join table etc.
-   * @param {string}      sql               Must return records with all the expected fields, e.g. SELECT entity.* FROM entity ...
+   * @param {string}      sql               The sql to append to the select statement
    * @param {[string[]]}  parametersToBind  Parameters to safely substitute for `?` in the sql string
    */
-  async findWithSql(sql, parametersToBind) {
-    const records = await this.database.executeSql(sql, parametersToBind);
+  async selectFromModelWithExtraSql(sql, parametersToBind) {
+    const columns = await this.getColumnsForQuery();
+    const selectStatement = `
+      SELECT ${columns
+        .map(c => {
+          if (typeof c === 'string') return c;
+          const [alias, selector] = Object.entries(c)[0];
+          return `${selector} as ${alias}`;
+        })
+        .join(', ')}
+      FROM ${this.databaseType}
+    `;
+    const records = await this.database.executeSql(`${selectStatement} ${sql}`, parametersToBind);
     return Promise.all(records.map(this.generateInstance));
   }
 
