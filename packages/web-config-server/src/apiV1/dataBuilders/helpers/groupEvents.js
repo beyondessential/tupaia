@@ -5,9 +5,9 @@
 
 import { getEventsThatSatisfyConditions } from './checkAgainstConditions';
 
-const getOrgUnits = async (models, { parentCode, type }) => {
+const getOrgUnits = async (models, { parentCode, type, hierarchyId }) => {
   const parentOrgUnit = await models.entity.findOne({ code: parentCode });
-  return parentOrgUnit.getDescendantsOfType(type);
+  return parentOrgUnit.getDescendantsOfType(hierarchyId, type);
 };
 
 const groupByAllOrgUnitNames = async (events, options, models) => {
@@ -26,7 +26,7 @@ const groupByAllOrgUnitNames = async (events, options, models) => {
 };
 
 const groupByAllOrgUnitParentNames = async (events, options, models) => {
-  const { aggregationLevel } = options;
+  const { aggregationLevel, hierarchyId } = options;
   const orgUnits = await getOrgUnits(models, options);
   const eventsByOrgUnitName = orgUnits.reduce(
     (results, { name }) => ({ ...results, [name]: [] }),
@@ -43,7 +43,10 @@ const groupByAllOrgUnitParentNames = async (events, options, models) => {
   await Promise.all(
     orgUnits.map(async parentOrgUnit => {
       const { name } = parentOrgUnit;
-      const childrenAndSelf = await parentOrgUnit.getDescendantsOfType(aggregationLevel);
+      const childrenAndSelf = await parentOrgUnit.getDescendantsOfType(
+        hierarchyId,
+        aggregationLevel,
+      );
       childrenAndSelf.forEach(orgUnit => {
         allOrgUnitsByOrgUnitName[orgUnit.name] = name;
       });

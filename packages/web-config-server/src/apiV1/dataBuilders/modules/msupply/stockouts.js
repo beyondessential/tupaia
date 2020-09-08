@@ -26,7 +26,11 @@ class StockoutsDataBuilder extends DataBuilder {
 
   getStockoutsByFacility = async (results, metadata) => {
     const { dataElementCodeToName } = metadata;
-    const facilities = await this.entity.getDescendantsOfType(this.models.entity.types.FACILITY);
+    const hierarchyId = await this.fetchEntityHierarchyId();
+    const facilities = await this.entity.getDescendantsOfType(
+      hierarchyId,
+      this.models.entity.types.FACILITY,
+    );
     const facilitiesByCode = keyBy(facilities, 'code');
     const stockoutsByOrgUnit = results.reduce((stockouts, vaccine) => {
       const orgUnitName = facilitiesByCode[vaccine.organisationUnit].name;

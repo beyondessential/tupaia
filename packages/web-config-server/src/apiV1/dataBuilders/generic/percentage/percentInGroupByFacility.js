@@ -10,7 +10,7 @@ import {
 // Medicines available by Clinic
 // Medicines available by Country
 export const percentInGroupByFacility = async (
-  { models, dataBuilderConfig, query, entity },
+  { models, dataBuilderConfig, query, entity, fetchHierarchyId },
   aggregator,
 ) => {
   const { dataElementCodes, dataServices, countries, range } = dataBuilderConfig;
@@ -20,26 +20,30 @@ export const percentInGroupByFacility = async (
     query,
   );
 
-  const returnJson = {};
-  returnJson.data = countries
-    ? await buildDataForPacificCountries(
-        aggregator,
-        results,
-        query.organisationUnitCode,
-        period.requested,
-        range,
-      )
-    : await buildData(
-        models,
-        aggregator,
-        results,
-        query.organisationUnitCode,
-        period.requested,
-        entity,
-        range,
-      );
+  if (countries) {
+    const data = await buildDataForPacificCountries(
+      aggregator,
+      results,
+      query.organisationUnitCode,
+      period.requested,
+      range,
+    );
+    return { data };
+  }
 
-  return returnJson;
+  const hierarchyId = await fetchHierarchyId();
+  const data = await buildData(
+    models,
+    aggregator,
+    results,
+    query.organisationUnitCode,
+    period.requested,
+    entity,
+    range,
+    hierarchyId,
+  );
+
+  return { data };
 };
 
 const buildDataForPacificCountries = async (
@@ -98,9 +102,10 @@ const buildData = async (
   period,
   entity,
   range,
+  hierarchyId,
 ) => {
   const averagedValues = [];
-  const facilities = await entity.getDescendantsOfType(models.entity.types.FACILITY);
+  const facilities = await entity.getDescendantsOfType(hierarchyId, models.entity.types.FACILITY);
   const facilitiesByCode = keyBy(facilities, 'code');
   const addToAveragedValues = ({ facilityId: facilityCode, value }) => {
     averagedValues.push({

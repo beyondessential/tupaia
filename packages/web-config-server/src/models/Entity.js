@@ -107,7 +107,7 @@ export class Entity extends BaseModel {
   }
 
   // assumes all entities of the given type are found at the same level in the hierarchy tree
-  async getDescendantsOfType(entityType, hierarchyId) {
+  async getDescendantsOfType(hierarchyId, entityType) {
     if (this.type === entityType) return [this];
     return this.getDescendants(hierarchyId, { type: entityType });
   }

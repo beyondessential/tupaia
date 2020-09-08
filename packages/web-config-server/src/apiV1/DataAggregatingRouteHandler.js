@@ -33,7 +33,7 @@ export class DataAggregatingRouteHandler extends RouteHandler {
     // check both directions for related entities of the correct type, starting with ancestors
     // as it's a narrower/faster path to follow than spreading out to descendants
     const ancestor = await entity.getAncestorOfType(entityType, hierarchyId);
-    return ancestor ? [ancestor] : entity.getDescendantsOfType(entityType, hierarchyId);
+    return ancestor ? [ancestor] : entity.getDescendantsOfType(hierarchyId, entityType);
   };
 
   filterOutNonPermittedEntities = async entities => {

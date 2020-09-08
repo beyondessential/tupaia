@@ -112,7 +112,7 @@ export class DataBuilder {
 
   async fetchDescendantsOfType(type) {
     const entityHierarchyId = await this.fetchEntityHierarchyId();
-    return this.entity.getDescendantsOfType(type, entityHierarchyId);
+    return this.entity.getDescendantsOfType(entityHierarchyId, type);
   }
 
   /**

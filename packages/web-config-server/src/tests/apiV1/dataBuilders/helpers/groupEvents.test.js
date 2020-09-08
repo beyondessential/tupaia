@@ -38,7 +38,7 @@ const EVENTS_2 = [
 const PARENT_ORG_UNIT = {
   code: 'TO',
   name: 'Tonga',
-  getDescendantsOfType: type =>
+  getDescendantsOfType: (_, type) =>
     type === 'district'
       ? [
           { code: 'TO_Tongatapu', name: 'Tongatapu' },
